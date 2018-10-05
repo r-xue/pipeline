@@ -30,7 +30,9 @@ class TcleanQAHandler(pqa.QAPlugin):
         observatory = context.observing_run.measurement_sets[0].antenna_array.name
         # For the time being the VLA calibrator imaging is generating an error
         # due to the dynamic range limitation. Bypass the real score here.
-        if 'VLA' in result.imaging_mode:
+        if 'VLASS' in result.imaging_mode:
+            result.qa.pool[:] = [pqa.QAScore(1.0)]
+        elif 'VLA' in result.imaging_mode and 'VLASS' not in result.imaging_mode:
             snr = result.image_max / result.image_rms
             score = scorecalc.linear_score(x=snr, x1=5, x2=20, y1=0.0, y2=1.0)  # CAS-10925
             # Set score messages and origin.
