@@ -97,6 +97,9 @@ pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline
    the task.
    default: 'automatic'.
 
+tecmaps -- Run tecmaps priorcal.
+    default: False
+
 ---- pipeline context defined parameter argument which can be set only in
 'interactive mode'
 

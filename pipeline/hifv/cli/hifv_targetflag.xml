@@ -96,6 +96,8 @@ pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline
 ---- pipeline context defined parameter argument which can be set only in
 'interactive mode'
 
+intents -- List of intents of scans to be flagged
+    default: '*CALIBRATE*,*TARGET*'
 
 --- pipeline task execution modes
 

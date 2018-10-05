@@ -125,18 +125,18 @@
 	    <description>Add the results into the pipeline context</description>
 	    <value>True</value>
 	</param>
-	
+
 	<constraints>
 	    <when param="pipelinemode">
 		<equals type="string" value="automatic">
 		</equals>
-		<equals type="string" value="interactive"> 
+		<equals type="string" value="interactive">
 		    <default param="vis"><value type="stringArray"></value></default>
 		    <default param="flagbackup"><value type="bool">False</value></default>
 		    <default param="dryrun"><value type="bool">False</value></default>
 		    <default param="acceptresults"><value type="bool">True</value></default>
 		</equals>
-		<equals type="string" value="getinputs"> 
+		<equals type="string" value="getinputs">
 		    <default param="vis"><value type="stringArray"></value></default>
 		    <default param="flagbackup"><value type="bool">False</value></default>
 		</equals>
@@ -174,8 +174,8 @@
 	        <equals type="bool" value="False">
 	        </equals>
 	    </when>
-	    
-	    
+
+
 	    <when param="hm_tbuff">
 			<equals type="string" value="1.5int">
 	        </equals>
@@ -250,7 +250,11 @@ edgespw -- Flag the edge spectral window channels.
 fracspw -- Fraction of the baseline correlator TDM edge channels to be flagged.
     default: 0.05
 
+hm_tbuff -- The time buffer computation heuristic
+    default: 1.5int
 
+tbuff -- List of time buffers (sec) to pad timerange in flag commands
+	default: 0.0
 
 online -- Apply the online flags.
    default: True

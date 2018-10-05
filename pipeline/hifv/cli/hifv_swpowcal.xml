@@ -87,7 +87,8 @@ vis -- List of visibility data files. These may be ASDMs, tar files of ASDMs,
    default: []
    example: vis=['X227.ms', 'asdms.tar.gz']
 
-
+spw -- Spectral-window/frequency/channel: '' ==&gt; all, spw="0:17~19"
+    default: ''
 
 caltable -- name of caltable to create
 

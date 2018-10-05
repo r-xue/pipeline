@@ -144,8 +144,14 @@ vis -- List of visibility data files. These may be ASDMs, tar files of ASDMs,
    default: []
    example: vis=['X227.ms', 'asdms.tar.gz']
 
+scalebychan -- Scale the flux density on a per channel basis or else on a per spw basis
+    default: True
 
+standard -- Flux density standard
+    default: ''
 
+fluxdensity -- Specified flux density [I,Q,U,V]; -1 will lookup values
+    default: -1
 
 pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline
    determines the values of all context defined pipeline inputs
@@ -158,6 +164,28 @@ pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline
 ---- pipeline context defined parameter argument which can be set only in
 'interactive mode'
 
+field -- List of field names or ids
+    default: ''
+
+intent -- Observing intent of flux calibrators
+    default: ''
+
+spw -- List of spectral window ids
+    default: ''
+
+model -- File location for field model
+    default: ''
+
+reffile -- Path to file with fluxes for non-solar system calibrators
+    default: ''
+
+---- pipeline parameter arguments which can be set when fluxdensity is not -1
+
+spix -- Spectral index of fluxdensity
+    default: 0.0
+
+reffreq -- Reference frequency for spix
+    default: '1GHz'
 
 --- pipeline task execution modes
 
@@ -174,6 +202,8 @@ Output:
 results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
    the results object for the pipeline task is returned.
 
+standard -- Flux density standard
+    default: ''
 
 Examples
 

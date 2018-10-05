@@ -121,14 +121,6 @@ acceptresults -- Add the results of the task to the pipeline context (True) or
    reject them (False).
    default: True
 
-limit_short_solint -- string keyword argument in units of seconds to limit the short solution interval.
-    Can be set to a string value of 'int'.
-    default: ''
-
-refantignore -- string list to be ignored as reference antennas.
-    default: ''
-    Example:  refantignore='ea02,ea03'
-
 Output:
 
 results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
