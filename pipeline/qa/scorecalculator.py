@@ -542,11 +542,11 @@ def score_missing_intents(mses, array_type='ALMA_12m'):
     score = 1.0
     if array_type == 'ALMA_TP':
         score_map = {'ATMOSPHERE': -1.0}
-    if array_type == 'VLA':
+    elif array_type == 'VLA':
         score_map = {
             'PHASE': -1.0,
-#             'FLUX': -1.0,
-            #CALIBRATE_FLUX and CALIBRATE_AMPLITUDE are both associated to 'AMPLITUDE'
+            # 'FLUX': -1.0,
+            # CALIBRATE_FLUX and CALIBRATE_AMPLITUDE are both associated to 'AMPLITUDE'
             'AMPLITUDE': -1.0
         }
     else:
