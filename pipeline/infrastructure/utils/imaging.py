@@ -7,6 +7,7 @@ import re
 
 from .. import casatools
 from .. import logging
+import numpy
 
 LOG = logging.get_logger(__name__)
 
