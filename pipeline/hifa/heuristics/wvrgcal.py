@@ -6,8 +6,7 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class WvrgcalHeuristics(object):
-    def __init__(self, context, vis, hm_tie, tie, hm_smooth, smooth,
-      sourceflag, nsol, segsource):
+    def __init__(self, context, vis, hm_tie, tie, hm_smooth, smooth, sourceflag, nsol, segsource):
         self.context = context
         self.vis = vis
         self.hm_smooth = hm_smooth
@@ -41,16 +40,14 @@ class WvrgcalHeuristics(object):
         else:
             self._sourceflag = sourceflag
         if self._sourceflag != [] and not self._segsource:
-            raise Exception, \
-              'WvrgHeuristics:sourceflag incompatible with segsource False'  
+            raise Exception('WvrgHeuristics:sourceflag incompatible with segsource False')  
         
         if nsol is None:
             self._nsol = 1
         else:
             self._nsol = nsol
         if self._nsol != 1 and self._segsource:
-            raise Exception, \
-              'WvrgHeuristics: nsol <>1 incompatible with segsource True'  
+            raise Exception('WvrgHeuristics: nsol <>1 incompatible with segsource True')  
 
     def _calculate_smooth(self, ms):
         # get info on all spectral windows
@@ -60,8 +57,7 @@ class WvrgcalHeuristics(object):
               spw.num_channels, spw.intents))
 
         # Get the data_desc_ids of the wvr data.
-        wvr_spw = [spw for spw in self.spws
-          if spw.num_channels==4 and 'WVR' in spw.intents]
+        wvr_spw = [spw for spw in self.spws if spw.num_channels == 4 and 'WVR' in spw.intents]
 
         # Check that wvr data are available
         if wvr_spw == []:
@@ -101,11 +97,9 @@ class WvrgcalHeuristics(object):
 
         LOG.info('median WVR integration time: %s' % self.wvr_integration)
         if wvr_max_integration != self.wvr_integration:
-            LOG.warning('max WVR integration time is different: %s' %
-              wvr_max_integration)
+            LOG.warning('max WVR integration time is different: %s' % wvr_max_integration)
         if wvr_min_integration != self.wvr_integration:
-            LOG.warning('min WVR integration time is different: %s' %
-              wvr_min_integration)
+            LOG.warning('min WVR integration time is different: %s' % wvr_min_integration)
 
         # get the median integration time for science data associated with
         # science targets, warn if there is a range of values
@@ -193,12 +187,11 @@ class WvrgcalHeuristics(object):
     def segsource(self):
         return self._segsource
 
-    def smoothall (self, allspws):
+    def smoothall(self, allspws):
         if self.hm_smooth == 'automatic':
-	    temp = 0.0
-	    for spw in allspws:
-               temp = max(temp, self.science_integration[spw],
-	           self.wvr_integration)
+            temp = 0.0
+            for spw in allspws:
+               temp = max(temp, self.science_integration[spw], self.wvr_integration)
             return '%ss' % temp        
         else:
             return self._smooth
@@ -234,8 +227,3 @@ class WvrgcalHeuristics(object):
 
     def wvr_available(self):
         return self._wvr_available
-
-
-
-
-

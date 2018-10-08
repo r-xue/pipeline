@@ -165,11 +165,11 @@ class ContFileHandler(object):
         lsrk_freq_selection, refer = selection.split()
         if refer != 'LSRK':
             LOG.error('Original reference frame must be LSRK.')
-            raise Exception, 'Original reference frame must be LSRK.'
+            raise Exception('Original reference frame must be LSRK.')
 
         if len(msnames) != len(fields):
             LOG.error('MS names and fields lists must match in length.')
-            raise Exception, 'MS names and fields lists must match in length.'
+            raise Exception('MS names and fields lists must match in length.')
 
         spw_id = int(spw_id)
 

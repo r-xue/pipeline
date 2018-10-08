@@ -96,7 +96,7 @@ class BaseCleanSequence:
         """
 
         if self.iter is None:
-            raise Exception, 'no data for iteration'
+            raise Exception('no data for iteration')
 
         else:
             self.result.threshold = '0.0Jy'
@@ -105,5 +105,3 @@ class BaseCleanSequence:
             self.result.iterating = False
 
         return self.result
-
-

@@ -348,7 +348,7 @@ class BandpassEdgeFlagger(object):
                                                rule)
 
             else:
-                raise Exception, 'bad rule: %s' % rule['rule']
+                raise Exception('bad rule: %s' % rule['rule'])
 
         return new_flags
 

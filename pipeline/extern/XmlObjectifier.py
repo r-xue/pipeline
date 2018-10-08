@@ -193,7 +193,7 @@ class _XmlObject:
                 if matches == 1:
                     match_list.append(element)
             if len(match_list) > 1:
-                raise KeyError, 'More than one result found'
+                raise KeyError('More than one result found')
             elif len(match_list) < 1:
                 return None
             else:

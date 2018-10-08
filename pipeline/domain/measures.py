@@ -110,7 +110,7 @@ class ComparableUnit(object):
         self.value, self.units = state
 
     def __init__(self):
-        raise Exception, 'Must override __init__ of ComparableUnit'
+        raise Exception('Must override __init__ of ComparableUnit')
     
     def __eq__(self, other):
         if not isinstance(other, self.__class__):
@@ -128,49 +128,58 @@ class ComparableUnit(object):
 
     def __add__(self, other):
         if not isinstance(other, self.__class__):
-            raise TypeError, "unsupported operand type(s) for +: '%s' and '%s'" % (self.__class__.__name__, other.__class__.__name__)
+            raise TypeError("unsupported operand type(s) for +: '%s' and '%s'" % (self.__class__.__name__,
+                                                                                  other.__class__.__name__))
         return self.__class__(other.to_units(self.units) + self.value, self.units)
 
     def __div__(self, other):
         if isinstance(other, self.__class__):
             return self.to_units() / other.to_units()
         if not isinstance(other, (int, float, long, decimal.Decimal)):
-            raise TypeError, "unsupported operand type(s) for /: '%s' and '%s'" % (self.__class__.__name__, other.__class__.__name__)
+            raise TypeError("unsupported operand type(s) for /: '%s' and '%s'" % (self.__class__.__name__,
+                                                                                  other.__class__.__name__))
         return self.__class__(self.value / decimal.Decimal(str(other)), self.units)
 
     def __ge__(self, other):
         if not isinstance(other, self.__class__):
-            raise TypeError, "unsupported operand type(s) for >=: '%s' and '%s'" % (self.__class__.__name__, other.__class__.__name__)
+            raise TypeError("unsupported operand type(s) for >=: '%s' and '%s'" % (self.__class__.__name__,
+                                                                                   other.__class__.__name__))
         return self.value >= other.to_units(self.units)
 
     def __gt__(self, other):
         if not isinstance(other, self.__class__):
-            raise TypeError, "unsupported operand type(s) for >: '%s' and '%s'" % (self.__class__.__name__, other.__class__.__name__)
+            raise TypeError("unsupported operand type(s) for >: '%s' and '%s'" % (self.__class__.__name__,
+                                                                                  other.__class__.__name__))
         return self.value > other.to_units(self.units)
 
     def __idiv__(self, other):
         if not isinstance(other, (int, float, long, decimal.Decimal)):
-            raise TypeError, "unsupported operand type(s) for /: '%s' and '%s'" % (self.__class__.__name__, other.__class__.__name__)
+            raise TypeError("unsupported operand type(s) for /: '%s' and '%s'" % (self.__class__.__name__,
+                                                                                  other.__class__.__name__))
         self.value /= other
         
     def __le__(self, other):
         if not isinstance(other, self.__class__):
-            raise TypeError, "unsupported operand type(s) for <=: '%s' and '%s'" % (self.__class__.__name__, other.__class__.__name__)
+            raise TypeError("unsupported operand type(s) for <=: '%s' and '%s'" % (self.__class__.__name__,
+                                                                                   other.__class__.__name__))
         return self.value <= other.to_units(self.units)
 
     def __lt__(self, other):
         if not isinstance(other, self.__class__):
-            raise TypeError, "unsupported operand type(s) for <: '%s' and '%s'" % (self.__class__.__name__, other.__class__.__name__)
+            raise TypeError("unsupported operand type(s) for <: '%s' and '%s'" % (self.__class__.__name__,
+                                                                                  other.__class__.__name__))
         return self.value < other.to_units(self.units)
 
     def __mul__(self, other):
         if not isinstance(other, (int, float, long, decimal.Decimal)):
-            raise TypeError, "unsupported operand type(s) for *: '%s' and '%s'" % (self.__class__.__name__, other.__class__.__name__)
+            raise TypeError("unsupported operand type(s) for *: '%s' and '%s'" % (self.__class__.__name__,
+                                                                                  other.__class__.__name__))
         return self.__class__(self.value * other, self.units)
 
     def __rmul__(self, other):
         if not isinstance(other, (int, float, long, decimal.Decimal)):
-            raise TypeError, "unsupported operand type(s) for *: '%s' and '%s'" % (self.__class__.__name__, other.__class__.__name__)
+            raise TypeError("unsupported operand type(s) for *: '%s' and '%s'" % (self.__class__.__name__,
+                                                                                  other.__class__.__name__))
         return self.__class__(self.value * other, self.units)
 
     def __repr__(self):
@@ -178,14 +187,15 @@ class ComparableUnit(object):
 
     def __sub__(self, other):
         if not isinstance(other, self.__class__):
-            raise TypeError, "unsupported operand type(s) for -: '%s' and '%s'" % (self.__class__.__name__, other.__class__.__name__)
+            raise TypeError("unsupported operand type(s) for -: '%s' and '%s'" % (self.__class__.__name__,
+                                                                                  other.__class__.__name__))
         return self.__class__(self.value - other.to_units(self.units), self.units)
 
     def convert_to(self, newUnits=None):
-        raise Exception, 'Must override convert_to of ComparableUnit'
+        raise Exception('Must override convert_to of ComparableUnit')
 
     def to_units(self, otherUnits=None):
-        raise Exception, 'Must override to_units of ComparableUnit'
+        raise Exception('Must override to_units of ComparableUnit')
     
     
 class Distance(ComparableUnit):
@@ -470,7 +480,7 @@ class FileSize(ComparableUnit):
         units
             the new units for this file size
         """
-        if isinstance(value, (float,long)):
+        if isinstance(value, (float, long)):
             value = str(value)
         self.value = decimal.Decimal(value)
         self.units = units
@@ -866,11 +876,12 @@ class Latitude(EquatorialArc):
         m = Latitude.patt.match(value)
         
         try:
-            y = abs(decimal.Decimal(m.group('degs'))) + decimal.Decimal(m.group('mins'))/60 + decimal.Decimal(m.group('secs'))/3600
+            y = abs(decimal.Decimal(m.group('degs'))) + decimal.Decimal(m.group('mins'))/60 \
+                + decimal.Decimal(m.group('secs'))/3600
         except AttributeError:
             raise ValueError
 
-        #Check & fix for negativity
+        # Check & fix for negativity
         if m.group('degs').startswith('-'):
             y *= -1
         
@@ -921,8 +932,8 @@ class Latitude(EquatorialArc):
     def __str__(self):
         (d, m, s) = self.toDms()
         return '%+.2d%s%.2d%s%05.2f%s' % (d, ArcUnits.DEGREE['symbol'],
-                                         m, ArcUnits.ARC_MINUTE['symbol'],
-                                         round(s, 2), ArcUnits.ARC_SECOND['symbol'])
+                                          m, ArcUnits.ARC_MINUTE['symbol'],
+                                          round(s, 2), ArcUnits.ARC_SECOND['symbol'])
 
 
 class Longitude(EquatorialArc):
@@ -1185,6 +1196,6 @@ class TimeInterval(object):
         """ 
         return TimeInterval(datetime.datetime.utcnow(), TimeInterval.FOREVER)
 
-    FOREVER = datetime.datetime(9999,12,31)
+    FOREVER = datetime.datetime(9999, 12, 31)
     startingFrom = staticmethod(startingFrom)
     startingFromNow = staticmethod(startingFromNow)

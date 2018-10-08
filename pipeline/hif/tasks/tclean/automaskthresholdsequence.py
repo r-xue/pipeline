@@ -35,7 +35,7 @@ class AutoMaskThresholdSequence(BaseCleanSequence):
             extension = ''
 
         if self.iter is None:
-            raise Exception, 'no data for iteration'
+            raise Exception('no data for iteration')
 
         elif self.iter == 0:
             self.result.cleanmask = new_cleanmask

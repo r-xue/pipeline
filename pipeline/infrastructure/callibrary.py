@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+
 import collections
 import copy
 import datetime
@@ -443,19 +444,19 @@ class CalFrom(object):
             spwmap = []
         
         if gaintable is None:
-            raise ValueError, 'gaintable must be specified. Got None'
+            raise ValueError('gaintable must be specified. Got None')
         
         if type(gainfield) is not types.StringType:
-            raise ValueError, 'gainfield must be a string. Got %s' % str(gainfield)
+            raise ValueError('gainfield must be a string. Got %s' % str(gainfield))
 
         if type(interp) is not types.StringType:
-            raise ValueError, 'interp must be a string. Got %s' % str(interp)
+            raise ValueError('interp must be a string. Got %s' % str(interp))
 
         if isinstance(spwmap, tuple):
             spwmap = [spw for spw in spwmap]
 
         if not isinstance(spwmap, list):
-            raise ValueError, 'spwmap must be a list. Got %s' % str(spwmap)
+            raise ValueError('spwmap must be a list. Got %s' % str(spwmap))
         # Flyweight instances should be immutable, so convert spwmap to a
         # tuple. This also makes spwmap hashable for our hash function.
         spwmap = tuple([o for o in spwmap])
@@ -623,7 +624,7 @@ class CalToIdAdapter(object):
             msg = 'Illegal field ID \'%s\' for vis \'%s\'' % (field_id, 
                                                               self._calto.vis)
             LOG.error(msg)
-            raise ValueError, msg        
+            raise ValueError(msg)        
         return fields[0]
 
     def _get_spw(self, spw_id):
@@ -633,7 +634,7 @@ class CalToIdAdapter(object):
             msg = 'Illegal spw ID \'%s\' for vis \'%s\'' % (spw_id, 
                                                             self._calto.vis)
             LOG.error(msg)
-            raise ValueError, msg        
+            raise ValueError(msg)        
         return spws[0]
 
     def __repr__(self):
@@ -871,7 +872,6 @@ class DictCalLibrary(object):
                                     current.remove(c)
                                 except ValueError:
                                     LOG.debug('%s not found in calstate', c)
-
 
         LOG.trace('Calstate after _remove:\n%s', calstate.as_applycal())
 

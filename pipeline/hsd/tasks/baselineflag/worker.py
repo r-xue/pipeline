@@ -292,7 +292,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                         (os.path.basename(ms.work_data), antid, fieldid, spwid))
             do_flag = self.generateFlagCommandFile(datatable, ms, antid, fieldid, spwid, pollist, filename)
             if not os.path.exists(filename):
-                raise RuntimeError, 'Failed to create flag command file %s' % filename
+                raise RuntimeError('Failed to create flag command file %s' % filename)
             if do_flag:
                 inpfiles.append(filename)
             else:
@@ -347,12 +347,12 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
         #tbIn.open(DataIn)
         datacolIn = self._search_datacol(tbIn)
         if not datacolIn:
-            raise RuntimeError, 'Could not find any data column in %s' % DataIn
+            raise RuntimeError('Could not find any data column in %s' % DataIn)
         if is_baselined:
             #tbOut.open(DataOut)
             datacolOut = self._search_datacol(tbOut)
             if not datacolOut:
-                raise RuntimeError, 'Could not find any data column in %s' % DataOut
+                raise RuntimeError('Could not find any data column in %s' % DataOut)
 
         # Create progress timer
         #Timer = ProgressTimer(80, NROW, LogLevel)
@@ -600,14 +600,14 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
         """Get a list of channel mask (1=valid 0=flagged)"""
         array_type = [list, tuple, numpy.ndarray]
         if type(flagchan) not in array_type:
-            raise Exception, "flagchan should be an array"
+            raise Exception("flagchan should be an array")
         if flagrow:
             return [0]*len(flagchan)
         # Not row flagged
         if type(masklist) not in array_type:
-            raise Exception, "masklist should be an array"
+            raise Exception("masklist should be an array")
         if len(masklist) > 0 and type(masklist[0]) not in array_type:
-            raise Exception, "masklist should be an array of array"
+            raise Exception("masklist should be an array of array")
         if type(edge) not in array_type:
             edge = (edge, edge)
         elif len(edge) == 1:
@@ -621,9 +621,9 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
         # deviation mask
         if deviation_mask is not None:
             if type(deviation_mask) not in array_type:
-                raise Exception, "deviation_mask should be an array or None"
+                raise Exception("deviation_mask should be an array or None")
             if len(deviation_mask) > 0 and type(deviation_mask[0]) not in array_type:
-                raise Exception, "deviation_mask should be an array of array or None"
+                raise Exception("deviation_mask should be an array of array or None")
             for m0, m1 in deviation_mask:
                 mask[m0:m1] = 0
                 

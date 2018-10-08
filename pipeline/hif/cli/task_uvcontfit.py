@@ -14,13 +14,13 @@ from update_spw import *
 #    no leave in place for now
 mycb, myms, mytb = gentools(['cb', 'ms', 'tb'])
 
+
 # Notes
 #    It is not clear what field is for. It is not selected for in the
 #    caltable computation, but it is used to computed channel ranges
 #    Leave in place for now
-
-def uvcontfit (vis=None, caltable=None, field=None, intent=None, spw=None,
-    combine=None, solint=None, fitorder=None, append=None):
+def uvcontfit(vis=None, caltable=None, field=None, intent=None, spw=None, combine=None, solint=None, fitorder=None,
+              append=None):
     
     # Python script
     casalog.origin('uvcontfit')
@@ -40,7 +40,7 @@ def uvcontfit (vis=None, caltable=None, field=None, intent=None, spw=None,
             mycb.setvi(old=True, quiet=False)
             mycb.open(filename=vis, compress=False, addcorr=False, addmodel=False)
         else:
-            raise Exception, 'Visibility data set not found - please verify the name'
+            raise Exception('Visibility data set not found - please verify the name')
 
         # Select the data for continuum subtraction
         #   Intent forces the selection to be on TARGET data only
@@ -55,8 +55,7 @@ def uvcontfit (vis=None, caltable=None, field=None, intent=None, spw=None,
             mycombine = ''
         else:
             mycombine = combine
-        mycb.setsolve(type='A', t=solint, table=caltable, combine=mycombine,
-            fitorder=fitorder, append=append)
+        mycb.setsolve(type='A', t=solint, table=caltable, combine=mycombine, fitorder=fitorder, append=append)
 
         # Solve for the continuum
         mycb.solve()
@@ -66,10 +65,10 @@ def uvcontfit (vis=None, caltable=None, field=None, intent=None, spw=None,
     except Exception as instance:
         casalog.post('Error in uvcontfit: ' + str(instance), 'SEVERE')
         mycb.close()                        # Harmless if cb is closed.
-        raise Exception, 'Error in uvcontfit: ' + str(instance)
+        raise Exception('Error in uvcontfit: ' + str(instance))
 
 
-def _new_quantityRangesToChannels (vis, field, infitspw, excludechans):
+def _new_quantityRangesToChannels(vis, field, infitspw, excludechans):
 
     """
     private function to convert frequnecy (in the future, velocity

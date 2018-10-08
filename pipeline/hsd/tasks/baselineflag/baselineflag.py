@@ -18,6 +18,7 @@ from ..common import utils as sdutils
 
 LOG = infrastructure.get_logger(__name__)
 
+
 class SDBLFlagInputs(vdp.StandardInputs):
     """
     Inputs for single dish flagging
@@ -114,7 +115,6 @@ class SDBLFlagInputs(vdp.StandardInputs):
         
         return ','.join(pols)
 
-
     def __init__(self, context, output_dir=None,
                  iteration=None, edge=None, flag_tsys=None, tsys_thresh=None,
                  flag_weath=None, weath_thresh=None,
@@ -185,29 +185,28 @@ class SDBLFlagInputs(vdp.StandardInputs):
         for (k,v) in d.iteritems():
             (b,p) = v
             if b == True:
-                self.activateFlagRule( k )
+                self.activateFlagRule(k)
                 for i in xrange(len(p)):
                     self.FlagRuleDictionary[k][keys[i]] = p[i]
             elif b == False:
-                self.deactivateFlagRule( k )
+                self.deactivateFlagRule(k)
             else:
-                raise RuntimeError, "Invalid flag operation definition for %s" % k
+                raise RuntimeError("Invalid flag operation definition for %s" % k)
 
-    def activateFlagRule(self,key):
+    def activateFlagRule(self, key):
         """Activates a flag type specified by the input parameter in FlagRuleDictionary"""
         if(key in self.FlagRuleDictionary.keys()):
             self.FlagRuleDictionary[key]['isActive'] = True
         else:
-            raise RuntimeError, 'Error: %s not in predefined Flagging Rules' % key
+            raise RuntimeError('Error: %s not in predefined Flagging Rules' % key)
 
-    def deactivateFlagRule(self,key):
+    def deactivateFlagRule(self, key):
         """Deactivates a flag type specified by the input parameter in FlagRuleDictionary"""
         if(key in self.FlagRuleDictionary.keys()):
             self.FlagRuleDictionary[key]['isActive'] = False
         else:
-            raise RuntimeError, 'Error: %s not in predefined Flagging Rules' % key
+            raise RuntimeError('Error: %s not in predefined Flagging Rules' % key)
 
-        
 
 class SDBLFlagResults(common.SingleDishResults):
     """
@@ -286,7 +285,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
                            m.antenna_name, m.spw_id, m.field_id, m.field_name))
 
             nchan = group_desc.nchan
-            if nchan ==1:
+            if nchan == 1:
                 LOG.info('Skipping a group of channel averaged spw')
                 continue
  
@@ -299,7 +298,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
                 LOG.info('Skip reduction group %d'%(group_id))
                 continue
  
-            member_list.sort() #list of group_desc IDs to flag
+            member_list.sort()  # list of group_desc IDs to flag
             antenna_list = [group_desc[i].antenna_id for i in member_list]
             spwid_list = [group_desc[i].spw_id for i in member_list]
             ms_list = [group_desc[i].ms for i in member_list]
@@ -316,13 +315,14 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
                                            antenna_id=member.antenna_id,
                                            spw_id=member.spw_id,
                                            pol_ids=pols_list[i])
-                
 
         # per-MS loop
         for msobj, accumulator in registry.items():
             rowmap = None
-            if os.path.abspath(cal_name)==os.path.abspath(bl_name):
-                LOG.warn("%s is not yet baselined. Skipping flag by post-fit statistics for the data. MASKLIST will also be cleared up. You may go on flagging but the statistics will contain line emission." % self.inputs.ms.basename)
+            if os.path.abspath(cal_name) == os.path.abspath(bl_name):
+                LOG.warn("%s is not yet baselined. Skipping flag by post-fit statistics for the data."
+                         " MASKLIST will also be cleared up. You may go on flagging but the statistics"
+                         " will contain line emission." % self.inputs.ms.basename)
             else:
                 # row map generation is very expensive. Do as few time as possible
                 _ms = context.observing_run.get_ms(msobj.name)
@@ -349,10 +349,11 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
 
             nchan = 0
             # Calculate flag and update DataTable
-            flagging_inputs = worker.SDBLFlagWorkerInputs(context, clip_niteration,
-                                            msobj.name, antenna_list, fieldid_list,
-                                            spwid_list, pols_list, nchan, flag_rule,
-                                            rowmap=rowmap)
+            flagging_inputs = worker.SDBLFlagWorkerInputs(
+                context, clip_niteration,
+                msobj.name, antenna_list, fieldid_list,
+                spwid_list, pols_list, nchan, flag_rule,
+                rowmap=rowmap)
             flagging_task = worker.SDBLFlagWorker(flagging_inputs)
 
             flagging_results = self._executor.execute(flagging_task, merge=False)
@@ -374,10 +375,10 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
         stats_after = self._executor.execute(flagdata_summary_job)
  
         outcome = {'flagdata_summary': [stats_before, stats_after],
-                    'summary': flagResult}
+                   'summary': flagResult}
         results = SDBLFlagResults(task=self.__class__,
-                                    success=True,
-                                    outcome=outcome)
+                                  success=True,
+                                  outcome=outcome)
         return results
  
     def analyse(self, result):
@@ -402,18 +403,19 @@ class HpcSDBLFlagInputs(SDBLFlagInputs):
                  flag_user=None, user_thresh=None, plotflag=None,
                  infiles=None, antenna=None, field=None,
                  spw=None, pol=None, parallel=None):
-        super(HpcSDBLFlagInputs, self).__init__(context, output_dir=output_dir,
-                 iteration=iteration, edge=edge,
-                 flag_tsys=flag_tsys, tsys_thresh=tsys_thresh,
-                 flag_weath=flag_weath, weath_thresh=weath_thresh,
-                 flag_prfre=flag_prfre, prfre_thresh=prfre_thresh,
-                 flag_pofre=flag_pofre, pofre_thresh=pofre_thresh,
-                 flag_prfr=flag_prfr, prfr_thresh=prfr_thresh,
-                 flag_pofr=flag_pofr, pofr_thresh=pofr_thresh,
-                 flag_prfrm=flag_prfrm, prfrm_thresh=prfrm_thresh, prfrm_nmean=prfrm_nmean,
-                 flag_pofrm=flag_pofrm, pofrm_thresh=pofrm_thresh, pofrm_nmean=pofrm_nmean,
-                 flag_user=flag_user, user_thresh=user_thresh, plotflag=plotflag,
-                 infiles=infiles, antenna=antenna, field=field, spw=spw, pol=pol)
+        super(HpcSDBLFlagInputs, self).__init__(
+            context, output_dir=output_dir,
+            iteration=iteration, edge=edge,
+            flag_tsys=flag_tsys, tsys_thresh=tsys_thresh,
+            flag_weath=flag_weath, weath_thresh=weath_thresh,
+            flag_prfre=flag_prfre, prfre_thresh=prfre_thresh,
+            flag_pofre=flag_pofre, pofre_thresh=pofre_thresh,
+            flag_prfr=flag_prfr, prfr_thresh=prfr_thresh,
+            flag_pofr=flag_pofr, pofr_thresh=pofr_thresh,
+            flag_prfrm=flag_prfrm, prfrm_thresh=prfrm_thresh, prfrm_nmean=prfrm_nmean,
+            flag_pofrm=flag_pofrm, pofrm_thresh=pofrm_thresh, pofrm_nmean=pofrm_nmean,
+            flag_user=flag_user, user_thresh=user_thresh, plotflag=plotflag,
+            infiles=infiles, antenna=antenna, field=field, spw=spw, pol=pol)
         self.parallel = parallel
 
 

@@ -35,7 +35,7 @@ class ImageCentreThresholdSequence(BaseCleanSequence):
             extension = ''
 
         if self.iter is None:
-            raise Exception, 'no data for iteration'
+            raise Exception('no data for iteration')
 
         elif self.iter == 0:
             # next iteration, 1, should have mask covering central area:

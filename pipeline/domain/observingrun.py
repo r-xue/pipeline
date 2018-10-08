@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+
 import datetime
 import itertools
 import types
@@ -22,7 +23,7 @@ class ObservingRun(object):
         if ms.basename in [m.basename for m in self.measurement_sets]:
             msg = '{0} is already in the pipeline context'.format(ms.name)
             LOG.error(msg)
-            raise Exception, msg
+            raise Exception(msg)
 
         # Initialise virtual science spw IDs from first MS 
         if self.measurement_sets == []:
@@ -43,7 +44,9 @@ class ObservingRun(object):
         else:
             for s in ms.get_spectral_windows(science_windows_only=True):
                 if s.name not in self.virtual_science_spw_names:
-                    msg = 'Science spw name {0} (ID {1}) of EB {2} does not match spw names of first EB. Virtual spw ID mapping will not work.'.format(s.name, s.id, os.path.basename(ms.name).replace('.ms',''))
+                    msg = 'Science spw name {0} (ID {1}) of EB {2} does not match spw names of first EB. Virtual spw' \
+                          ' ID mapping will not work.'.format(s.name, s.id,
+                                                              os.path.basename(ms.name).replace('.ms', ''))
                     LOG.error(msg)
 
         self.measurement_sets.append(ms)
@@ -63,8 +66,7 @@ class ObservingRun(object):
                 if with_suffix in (ms.name, ms.basename):
                     return ms
             
-            raise KeyError, ('No measurement set found with '
-                             'name {0}'.format(name))
+            raise KeyError('No measurement set found with name {0}'.format(name))
 
         if intent:
             # Remove any extraneous characters, as intent could be specified
@@ -74,8 +76,7 @@ class ObservingRun(object):
                 for field in ms.fields:
                     if intent in field.intents:
                         return ms
-            raise KeyError, ('No measurement set found with '
-                             'intent {0}'.format(intent))
+            raise KeyError('No measurement set found with intent {0}'.format(intent))
 
     def get_measurement_sets(self, names=None, intents=None, fields=None, imaging_preferred=False):
         """

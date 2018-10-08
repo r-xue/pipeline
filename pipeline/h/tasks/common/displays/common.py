@@ -747,7 +747,7 @@ class CaltableWrapper(object):
         mask = numpy.zeros_like(data)
         for a in allowed:
             if a not in data:
-                raise KeyError, '%s is not in caltable data' % a
+                raise KeyError('%s is not in caltable data' % a)
             mask = (mask==1) | (data==a)
         return mask
 

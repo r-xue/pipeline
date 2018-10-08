@@ -127,7 +127,7 @@ class MandatoryInputsMixin(object):
         if not isinstance(self._context, launcher.Context):
             msg = (self.__class__.__name__ + ' did not set the pipeline '
                    'context')
-            raise TypeError, msg  
+            raise TypeError(msg)  
         return self._context
         
     @context.setter
@@ -135,7 +135,7 @@ class MandatoryInputsMixin(object):
         if not isinstance(value, launcher.Context):
             msg = ('context must be a pipeline context. Got ' + 
                    value.__class__.__name__ + '.')
-            raise TypeError, msg  
+            raise TypeError(msg)  
         self._context = value
     
     @property

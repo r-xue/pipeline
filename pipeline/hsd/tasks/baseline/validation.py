@@ -28,7 +28,7 @@ def ValidationFactory(pattern):
     elif pattern == 'SINGLE-POINT' or pattern == 'MULTI-POINT':
         return ValidateLineSinglePointing
     else:
-        raise ValueError, 'Invalid observing pattern'
+        raise ValueError('Invalid observing pattern')
 
 
 class ValidateLineInputs(vdp.StandardInputs):
@@ -2078,4 +2078,3 @@ class SVDSolver2D(object):
         
         LOG.trace('best eps: {} (score {})', intlog(best_eps), best_score)
         return best_ans
-    

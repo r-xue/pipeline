@@ -1,6 +1,8 @@
 import numpy as np
+
 from pipeline.infrastructure import casa_tasks
 import pipeline.infrastructure.casatools as casatools
+
 
 class BPOrder:
     def __init__(self):
@@ -53,7 +55,7 @@ class BPOrder:
             if len(caldesc_id) > 0:
                 caldesc_id = caldesc_id[0]
             else:
-                raise Exception, 'SpW %s not found' % spw
+                raise Exception('SpW %s not found' % spw)
 
         with casatools.TableReader(table) as htb:
 
@@ -143,10 +145,7 @@ class BPOrder:
         # analyse the power spectrum to derive a suitable degamp    
         spw = int(kwargs['spw'])
         
-        data,flag = self.getbandpassview(table=channelbpr,
-         spw=spw,
-         msobject=ms,
-         dryrun=dryrun)
+        data, flag = self.getbandpassview(table=channelbpr, spw=spw, msobject=ms, dryrun=dryrun)
 
         # estimate the polynomial order for amp and phase in each antenna
     
@@ -172,7 +171,6 @@ class BPOrder:
     def degamp(self, **kwargs):
         self.getorders(**kwargs)
         return self._amporder, list(self._jobs)
-
 
     def degphase(self, **kwargs):
         self.getorders(**kwargs)

@@ -25,7 +25,6 @@ import pipeline.infrastructure as infrastructure
 LOG = infrastructure.get_logger(__name__)
 
 
-
 class PhaseUpSolIntAdapter(adapters.Adapter):
     """PhaseUpSolIntAdapter adapts the
     :class:`~pipeline.hif.heuristics.solint.PhaseUpSolInt` heuristic, taking in a
@@ -116,11 +115,11 @@ class PolynomialHeuristicAdapter(adapters.Adapter):
         cal_desc = os.path.join(caltable.name, 'CAL_DESC')        
         with casatools.TableReader(cal_desc) as table:
             caldesc_2_spw = table.getcol('SPECTRAL_WINDOW_ID')[0]
-            caldesc_id = numpy.arange(len(caldesc_2_spw))[caldesc_2_spw==spw]
+            caldesc_id = numpy.arange(len(caldesc_2_spw))[caldesc_2_spw == spw]
             if len(caldesc_id) > 0:
                 caldesc_id = caldesc_id[0]
             else:
-                raise KeyError, 'SpW %s not found' % spw
+                raise KeyError('SpW %s not found' % spw)
 
         # For channel by channel calibrations read the results
         # themselves. Limiting the length of the gain and
@@ -131,9 +130,9 @@ class PolynomialHeuristicAdapter(adapters.Adapter):
             taql = 'CAL_DESC_ID=={0}'.format(caldesc_id) 
             subtable = table.query(query=taql)
             antenna1 = subtable.getcol('ANTENNA1')
-            gain = subtable.getcol('GAIN')[:,:nchannels,:]
-            cal_flag = subtable.getcol('FLAG')[:,:nchannels,:]
-	    subtable.close()
+            gain = subtable.getcol('GAIN')[:, :nchannels, :]
+            cal_flag = subtable.getcol('FLAG')[:, :nchannels, :]
+            subtable.close()
 
             # average the polarization results
             antenna_ids = [antenna.id for antenna in ms.antennas]
@@ -145,10 +144,10 @@ class PolynomialHeuristicAdapter(adapters.Adapter):
                          if i in antenna_ids]
             for ant in antennas1:
                 for p in range(npol):
-                    data[ant,:] += gain[p,:,i]
-                    flag[ant,:] = numpy.logical_or(flag[ant,:],
-                     cal_flag[p,:,i])
-                data[ant,:] /= float(npol)
+                    data[ant, :] += gain[p, :, i]
+                    flag[ant, :] = numpy.logical_or(flag[ant, :],
+                     cal_flag[p, :, i])
+                data[ant, :] /= float(npol)
 
         return data
 
@@ -166,7 +165,7 @@ class DegAmpAdapter(PolynomialHeuristicAdapter):
         amplitudes = {}
         for antenna in antennas:
             identifier = antenna.name if antenna.name else antenna.id
-            amplitudes[identifier] = numpy.abs(data[antenna.id,:])
+            amplitudes[identifier] = numpy.abs(data[antenna.id, :])
         return amplitudes
 
 
@@ -183,5 +182,5 @@ class DegPhaseAdapter(PolynomialHeuristicAdapter):
         phases = {}
         for antenna in antennas:
             identifier = antenna.name if antenna.name else antenna.id
-            phases[identifier] = numpy.angle(data[antenna.id,:])
+            phases[identifier] = numpy.angle(data[antenna.id, :])
         return phases

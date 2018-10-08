@@ -1,8 +1,9 @@
 from __future__ import absolute_import
 
-import numpy
 import os
 import re
+
+import numpy
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
@@ -487,7 +488,7 @@ class SDInspection(object):
             group_spw_name = names[0]
             group_field_name = names[1]
             if group_spw_name == '':
-                raise RuntimeError, "Got empty group spectral window name"
+                raise RuntimeError("Got empty group spectral window name")
             elif spw_name == group_spw_name and field_name == group_field_name:
                 match = group_key
                 break
@@ -496,8 +497,9 @@ class SDInspection(object):
     def __find_match_by_coverage(self, nchan, min_frequency, max_frequency, reduction_group, fraction=0.99,
                                  field_name=None):
         if fraction <= 0 or fraction > 1.0:
-            raise ValueError, "overlap fraction should be between 0.0 and 1.0"
-        LOG.warn("Creating reduction group by frequency overlap. This may not be proper if observation dates extend over long period.")
+            raise ValueError("overlap fraction should be between 0.0 and 1.0")
+        LOG.warn("Creating reduction group by frequency overlap. This may not be proper if observation dates extend"
+                 " over long period.")
         match = False
         for (group_key, group_desc) in reduction_group.iteritems():
             group_field_name = group_desc.field
@@ -542,7 +544,8 @@ def match_field_name(name1, name2):
 #         is_match = lambda s: re.match(pattern, s) is not None
         if re.match(pattern, suffix) is not None:
             if pattern == old_pattern:
-                LOG.warn("OFF source field identified using old field name heuristics. You may want to review field mapping carefully.")
+                LOG.warn("OFF source field identified using old field name heuristics. You may want to review field"
+                         " mapping carefully.")
             return True
 
     return False

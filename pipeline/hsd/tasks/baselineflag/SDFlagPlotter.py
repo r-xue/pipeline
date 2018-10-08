@@ -5,10 +5,11 @@ Created on 2013/07/02
 """
 from __future__ import print_function
 
+import os
+
 #import numpy as NP
 import pylab as PL
 #import math
-import os
 
 from .SDFlagRule import INVALID_STAT
 
@@ -35,7 +36,9 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
     #                           having the equal length of row
     #            }
 
-    if FigFileDir == False: return
+    if FigFileDir == False:
+        return
+
     PL.ioff()
     PL.figure(MATPLOTLIB_FIGURE_ID[8])
     
@@ -64,9 +67,11 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
     PL.xticks(size=6)
     PL.yticks(size=6)
     if PlotData['isActive']:
-        PL.figtext(0.01, 0.98, "ACTIVE", horizontalalignment='left', verticalalignment='top', color='green', size=18, style='italic', weight='bold')
+        PL.figtext(0.01, 0.98, "ACTIVE", horizontalalignment='left', verticalalignment='top', color='green', size=18,
+                   style='italic', weight='bold')
     else:
-        PL.figtext(0.01, 0.98, "INACTIVE", horizontalalignment='left', verticalalignment='top', color='red', size=18, style='italic', weight='bold')
+        PL.figtext(0.01, 0.98, "INACTIVE", horizontalalignment='left', verticalalignment='top', color='red', size=18,
+                   style='italic', weight='bold')
 
     # X-scale
     xmin = min(PlotData['row'])
@@ -74,9 +79,10 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
     # For NO DATA
     if PlotData['data'] is None:
         if PlotData['isActive']:
-            raise Exception, "Got no valid data for active flag type." 
+            raise Exception("Got no valid data for active flag type.") 
         PL.axis([xmin, xmax, 0.0, 1.0])
-        PL.figtext(0.5, 0.5, "NO DATA", horizontalalignment='center', verticalalignment='center', color='Gray', size=24, style='normal', weight='bold')
+        PL.figtext(0.5, 0.5, "NO DATA", horizontalalignment='center', verticalalignment='center', color='Gray', size=24,
+                   style='normal', weight='bold')
         PL.ion()
         PL.draw()
         if FigFileDir != False:
@@ -84,9 +90,9 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
             PL.savefig(OldPlot, format='png', dpi=DPIDetail)
         PL.gcf().set_size_inches(figsize_org)
         return
-        
 
-    if len(PlotData['thre']) > 1: LowRange = True
+    if len(PlotData['thre']) > 1:
+        LowRange = True
     else:
         LowRange = False
         if PlotData['threType'] != "plot":
@@ -97,23 +103,25 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
     # Calculate Y-scale
     if PlotData['threType'] == "plot":
         yrange = max(PlotData['thre'][0]) - PlotData['thre'][1]
-        if yrange == 0.0: yrange = 1.0
+        if yrange == 0.0:
+            yrange = 1.0
         ymin = max(0.0, PlotData['thre'][1] - yrange * 0.5)
         ymax = (max(PlotData['thre'][0]) - ymin) * 1.3333333333 + ymin
     else:
         yrange = PlotData['thre'][0] - PlotData['thre'][1]
-        if yrange == 0.0: yrange = 1.0
+        if yrange == 0.0:
+            yrange = 1.0
         ymin = max(0.0, PlotData['thre'][1] - yrange * 0.5)
         ymax = (PlotData['thre'][0] - ymin) * 1.3333333333 + ymin
     yy = ymax - ymin
-    ScaleOut = [[ymax - yy * 0.1, ymax - yy * 0.04], \
+    ScaleOut = [[ymax - yy * 0.1, ymax - yy * 0.04],
                 [ymin + yy * 0.1, ymin + yy * 0.04]]
     # Make Plot Data
     x = 0
     data = [[],[],[],[],[],[]]
 
     for Pflag in PlotData['permanentflag']:
-        if Pflag == 0 or PlotData['data'][x] == INVALID_STAT: # Flag-out case
+        if Pflag == 0 or PlotData['data'][x] == INVALID_STAT:  # Flag-out case
             data[4].append(PlotData['row'][x])
             if PlotData['data'][x] > ScaleOut[0][0] or PlotData['data'][x] == INVALID_STAT:
                 data[5].append(ScaleOut[0][1])
@@ -121,7 +129,7 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
                 data[5].append(ScaleOut[1][1])
             else:
                 data[5].append(PlotData['data'][x])
-        elif PlotData['flag'][x] == 0: # Flag-out case
+        elif PlotData['flag'][x] == 0:  # Flag-out case
             data[2].append(PlotData['row'][x])
             if PlotData['data'][x] > ScaleOut[0][0]:
                 data[3].append(ScaleOut[0][1])
@@ -129,7 +137,7 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
                 data[3].append(ScaleOut[1][1])
             else:
                 data[3].append(PlotData['data'][x])
-        else: # Normal case
+        else:  # Normal case
             data[0].append(PlotData['row'][x])
             data[1].append(PlotData['data'][x])
         x += 1
@@ -169,4 +177,3 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
 
     del data, ScaleOut
     return
-

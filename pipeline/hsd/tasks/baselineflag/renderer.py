@@ -45,7 +45,7 @@ def accumulate_flag_per_source_spw(results):
     for r in results:
         before, after = r.outcome['flagdata_summary']
         if not before['name'] == 'before' or not after['name'] == 'after':
-            raise RuntimeError, "Got unexpected flag summary"
+            raise RuntimeError("Got unexpected flag summary")
         for field, fieldflag in after.iteritems():
             if not isinstance(fieldflag, dict) or 'spw' not in fieldflag:
                 continue

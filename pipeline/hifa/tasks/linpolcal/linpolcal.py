@@ -161,8 +161,7 @@ class Linpolcal(basetask.StandardTaskTemplate):
         result = LinpolcalResult() 
 
         if isinstance(inputs.vis, list):
-            raise Exception,\
-              'hif_linpolcal can only handle single measurement sets'
+            raise Exception('hif_linpolcal can only handle single measurement sets')
 
         # Compute time-dependent gain over whole timerange
         g0_result = self._do_gaincal(caltable=inputs.g0table)

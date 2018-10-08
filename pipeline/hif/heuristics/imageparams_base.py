@@ -136,7 +136,7 @@ class ImageParamsHeuristics(object):
         linesfile = self.linesfile if self.linesfile is not None else ''
 
         # read and merge continuum regions if contfile exists
-        if (os.path.isfile(contfile)):
+        if os.path.isfile(contfile):
             LOG.info('Using continuum frequency ranges from %s to calculate continuum frequency selections.' % (contfile))
 
             contfile_handler = contfilehandler.ContFileHandler(contfile, warn_nonexist=True)
@@ -147,7 +147,7 @@ class ImageParamsHeuristics(object):
                     cont_ranges_spwsel[field_name][spw_id] = contfile_handler.get_merged_selection(field_name, spw_id)
 
         # alternatively read and merge line regions and calculate continuum regions
-        elif (os.path.isfile(linesfile)):
+        elif os.path.isfile(linesfile):
             LOG.info('Using line frequency ranges from %s to calculate continuum frequency selections.' % (linesfile))
 
             p = re.compile('([\d.]*)(~)([\d.]*)(\D*)')
@@ -823,9 +823,9 @@ class ImageParamsHeuristics(object):
                         if target_sources != []:
                             break
                     if target_sources == []:
-                        raise Exception, 'Cannot select any representative target from calibration intents.'
+                        raise Exception('Cannot select any representative target from calibration intents.')
                 else:
-                    raise Exception, 'Cannot select any representative target from TARGET intent.'
+                    raise Exception('Cannot select any representative target from TARGET intent.')
 
             repr_source = target_sources[0]
             repr_spw_obj = repr_ms.get_spectral_windows()[0]
@@ -1522,7 +1522,7 @@ class ImageParamsHeuristics(object):
                         elif len(uvtaper) == 3:
                             bmaj, bmin, bpa = uvtaper
                         else:
-                            raise Exception, 'Unknown uvtaper format: %s' % (str(uvtaper))
+                            raise Exception('Unknown uvtaper format: %s' % (str(uvtaper)))
                         imTool.filter(type='gaussian', bmaj=bmaj, bmin=bmin, bpa=bpa)
                     result = imTool.apparentsens()
 

@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+
 import collections
 import itertools
 import math
@@ -37,23 +38,23 @@ class AntennaArray(object):
 
     @property
     def elevation(self):
-        '''
+        """
         Get the array elevation as a CASA quantity.
-        '''
+        """
         return self.__position['m2']
 
     @property
     def latitude(self):
-        '''
+        """
         Get the array latitude as a CASA quantity.
-        '''
+        """
         return self.__position['m1']
 
     @property
     def longitude(self):
-        '''
+        """
         Get the array longitude as a CASA quantity.
-        '''
+        """
         return self.__position['m0']
 
     @property
@@ -107,9 +108,9 @@ class AntennaArray(object):
         return baselines
 
     def get_offset(self, antenna):
-        '''
+        """
         Get the offset of the given antenna from the centre of the array.
-        '''
+        """
 #         qa = casatools.quanta       
 #         longitude = qa.convert(self.longitude, 'rad')
 #         latitude = qa.convert(self.latitude, 'rad')
@@ -141,7 +142,7 @@ class AntennaArray(object):
         x_offset = measures.Distance(dx, measures.DistanceUnits.METRE)
         y_offset = measures.Distance(dy, measures.DistanceUnits.METRE)
 
-        return (x_offset, y_offset)
+        return x_offset, y_offset
     
     def get_baseline(self, antenna1, antenna2):
         try:
@@ -165,16 +166,16 @@ class AntennaArray(object):
         if id is not None:
             l = [ant for ant in self.antennas if ant.id == id]
             if not l:
-                raise IndexError, 'No antenna with ID {0}'.format(id)
+                raise IndexError('No antenna with ID {0}'.format(id))
             return l[0]
 
         if name is not None:
             l = [ant for ant in self.antennas if ant.name == name]
             if not l:
-                raise IndexError, 'No antenna with name {0}'.format(name)  
+                raise IndexError('No antenna with name {0}'.format(name))  
             return l[0]
 
-        raise Exception, 'No id or name given to get_antenna'
+        raise Exception('No id or name given to get_antenna')
 
     @property
     def median_direction(self):

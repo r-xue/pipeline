@@ -29,7 +29,7 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
     if idx >= 0 and idx < len(context.observing_run.measurement_sets):
         ref_msobj = context.observing_run.measurement_sets[idx]
     else:
-        raise ValueError, "The reference ms, %s, not registered to context" % ms_names[0]
+        raise ValueError("The reference ms, %s, not registered to context" % ms_names[0])
     ref_fieldid = fieldid_list[0]
     ref_spw = spw_list[0]
     source_name = ref_msobj.fields[ref_fieldid].name
@@ -82,7 +82,7 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
 #            (datatable.getcolkeyword('DEC', 'UNIT') != 'deg'):
         if (datatable.getcolkeyword('SHIFT_RA', 'UNIT') != 'deg') or \
             (datatable.getcolkeyword('SHIFT_DEC', 'UNIT') != 'deg'):
-            raise RuntimeError, "Found unexpected unit of RA/DEC in DataTable. It should be in 'deg'"
+            raise RuntimeError("Found unexpected unit of RA/DEC in DataTable. It should be in 'deg'")
         
         index_list = common.get_index_list_for_ms(datatable, [vis], [ant_id], [field_id], [spw_id])
         
@@ -277,7 +277,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         if idx >= 0 and idx < len(context.observing_run.measurement_sets):
             reference_data = context.observing_run.measurement_sets[idx]
         else:
-            raise ValueError, "The reference ms, %s, not registered to context" % infiles[0]
+            raise ValueError("The reference ms, %s, not registered to context" % infiles[0])
         ref_spwid = spwid_list[0]
 
         LOG.debug('Members to be processed:')
@@ -321,7 +321,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         # restfreq
         restfreq = self.inputs.restfreq
         if type(restfreq) != str:
-            raise RuntimeError, "Invalid type for restfreq '{0}' (not a string)".format(restfreq)
+            raise RuntimeError("Invalid type for restfreq '{0}' (not a string)".format(restfreq))
         if restfreq.strip() == '':
             # if restfreq is NOT given by user
             # first try using SOURCE.REST_FREQUENCY 
@@ -338,17 +338,17 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
                 qa = casatools.quanta
                 restfreq = qa.tos(qa.quantity(rest_freq_value, rest_freq_unit))
             else:
-                raise RuntimeError, "Could not get reference frequency of Spw %d" % ref_spwid
+                raise RuntimeError("Could not get reference frequency of Spw %d" % ref_spwid)
         else:
             # restfreq is given by user
             # check if user provided restfreq is valid
             qa = casatools.quanta
             x = qa.quantity(restfreq)
             if x['value'] <= 0:
-                raise RuntimeError, "Invalid restfreq '{0}' (must be positive)".format(restfreq)
+                raise RuntimeError("Invalid restfreq '{0}' (must be positive)".format(restfreq))
             x = qa.convert(x, 'Hz') 
             if qa.getunit(x) != 'Hz':
-                raise RuntimeError, "Invalid restfreq '{0}' (inappropriate unit)".format(restfreq)
+                raise RuntimeError("Invalid restfreq '{0}' (inappropriate unit)".format(restfreq))
 
         # outframe
         outframe = 'LSRK'

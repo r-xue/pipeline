@@ -1,11 +1,12 @@
 from __future__ import absolute_import
 from __future__ import print_function
 
-import os
-import numpy
-import time
 import copy
 import itertools
+import os
+import time
+
+import numpy
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
@@ -108,7 +109,7 @@ class SDBLFlagSummary(object):
                         thresholds.pop(i)
                         break
                 if (not is_baselined) and not iteration == 0:
-                    raise Exception, "Internal error: is_baselined flag is set to False for baselined data."
+                    raise Exception("Internal error: is_baselined flag is set to False for baselined data.")
                 t0 = time.time()
                 htmlName, nflags = self.plot_flag(datatable, dt_idx, polid,
                                                   time_gap[0], time_gap[1],
@@ -439,6 +440,7 @@ def _format_table_row_html(label, isactive, threshold, nflag, ntotal):
     if not valid_flag: typestr="%s"
     html_str = '<tr align="center" class="stp"><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>'+typestr+'</th></tr>'
     return html_str % (label, isactive, threshold, (nflag if valid_flag else "N/A"), (nflag*100.0/ntotal if valid_flag else "N/A"))
+
 
 # validity check in _get_iteration is not necessary since group_member 
 # has already been validated at upper level (baselineflag.py)

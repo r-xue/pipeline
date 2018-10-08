@@ -587,6 +587,7 @@ class SDSparseMapDisplay(SDImageDisplay):
             full_trc[iax] = min(trc[i], array_shape[iax])
         return data[map(slice, full_blc,full_trc)]
 
+
 class SDChannelMapDisplay(SDImageDisplay):
     #MATPLOTLIB_FIGURE_ID = 8910
     NumChannelMap = 15
@@ -1189,7 +1190,7 @@ class SDSpectralMapDisplay(SDImageDisplay):
             #Npanel = (NROW - 1) / (self.MaxNhPanel * self.MaxNvPanel) + 1
             #if Npanel > 1:  (NhPanel, NvPanel) = (self.MaxNhPanel, self.MaxNvPanel)
             #else: (NhPanel, NvPanel) = (int((NROW - 0.1) ** 0.5) + 1, int((NROW - 0.1) ** 0.5) + 1)
-            raise Exception, "non-Raster map is not supported yet."
+            raise Exception("non-Raster map is not supported yet.")
 
         LOG.debug("Generating spectral map")
         LOG.debug("- Stride: [%d, %d]" % (STEPX, STEPY))
@@ -1212,7 +1213,6 @@ class SDSpectralMapDisplay(SDImageDisplay):
         xmin = min(self.frequency[chan0], self.frequency[chan1])
         xmax = max(self.frequency[chan0], self.frequency[chan1])
 
-
         NSp = 0
         xtick = abs(self.frequency[-1] - self.frequency[0]) / 4.0
         Order = int(math.floor(math.log10(xtick)))
@@ -1221,7 +1221,6 @@ class SDSpectralMapDisplay(SDImageDisplay):
         if Order < 0: FMT = '%%.%dfG' % (-Order)
         else: FMT = '%.2fG'
         Format = pl.FormatStrFormatter(FMT)
-
 
         (xrp,xrv,xic) = self.image.direction_axis(0)
         (yrp,yrv,yic) = self.image.direction_axis(1)

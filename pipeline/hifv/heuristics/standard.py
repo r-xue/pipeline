@@ -3,10 +3,12 @@ import pipeline.infrastructure.utils as utils
 
 
 class Standard(api.Heuristic):
-    ephemeris_fields = set(['Mars', 'Jupiter', 'Uranus', 'Neptune', 'Pluto',
-                            'Io', 'Europa', 'Ganymede', 'Callisto', 'Titan',
-                            'Triton', 'Ceres', 'Pallas', 'Vesta', 'Juno',
-                            'Victoria', 'Davida'])
+
+    ephemeris_fields = {
+        'Mars', 'Jupiter', 'Uranus', 'Neptune', 'Pluto',
+        'Io', 'Europa', 'Ganymede', 'Callisto', 'Titan',
+        'Triton', 'Ceres', 'Pallas', 'Vesta', 'Juno',
+        'Victoria', 'Davida'}
 
     def calculate(self, field):
         field = set(utils.safe_split(field))
@@ -16,4 +18,4 @@ class Standard(api.Heuristic):
         elif field.isdisjoint(self.ephemeris_fields):
             return 'Perley-Butler 2017'
         else:
-            raise Exception, 'not all fields in same standard'
+            raise Exception('not all fields in same standard')

@@ -811,7 +811,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         for i in range(1, num_range):
             segment = range_list[i]
             if len(segment) < 2:
-                raise ValueError, "segments in range list much have 2 elements"
+                raise ValueError("segments in range list much have 2 elements")
             overlap = -1
             for j in range(len(merged)):
                 if segment[1] < merged[j][0] or segment[0] > merged[j][1]:  # no overlap

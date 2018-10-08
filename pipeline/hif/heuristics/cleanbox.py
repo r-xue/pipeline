@@ -1,10 +1,8 @@
-import math
-import numpy as np
 import os.path
-import types
+
+import numpy as np
 
 import pipeline.infrastructure.casatools as casatools
-import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
 
@@ -12,11 +10,11 @@ LOG = infrastructure.get_logger(__name__)
 
 
 def clean_more(loop, threshold_list, new_threshold, sum, residual_max,
-  residual_min, non_cleaned_rms, island_peaks_list, flux_list,
-  flux_change_enable=True, flux_change_limit=0.03,
-  low_threshold_enable=True, low_threshold_limit=1.5,
-  noisepeaks1_enable=True,
-  noisepeaks2_enable=True):
+               residual_min, non_cleaned_rms, island_peaks_list, flux_list,
+               flux_change_enable=True, flux_change_limit=0.03,
+               low_threshold_enable=True, low_threshold_limit=1.5,
+               noisepeaks1_enable=True,
+               noisepeaks2_enable=True):
     """Do we need to clean more deeply?
     """
 
@@ -127,6 +125,7 @@ def clean_more(loop, threshold_list, new_threshold, sum, residual_max,
 
     return clean_more
 
+
 def niter_and_mask(psf, residual, new_mask):
     """Method for calibrators reported by Eric Villard.
 
@@ -226,7 +225,7 @@ def niter_and_mask(psf, residual, new_mask):
         # planes. 
         # There should be 1 plane with 1 island in it.
         if len(island_pix) != 1:
-            raise Exception, 'mask has more than 1 plane'
+            raise Exception('mask has more than 1 plane')
         if len(island_pix[0]) > 1:
             LOG.warning('Calibrator mask has more than 1 island, check result')
 
@@ -239,8 +238,7 @@ def niter_and_mask(psf, residual, new_mask):
         collapsed.done(remove=True)
 
         # Create mask
-        nm = image.newimagefromimage(infile=residual,
-          outfile=new_mask, overwrite=True)
+        nm = image.newimagefromimage(infile=residual, outfile=new_mask, overwrite=True)
 
         maskpix = nm.getchunk(blc=[0,0,0,0], trc=[-1,-1,-1,-1])
         maskpix[:] = 0.0
@@ -255,8 +253,9 @@ def niter_and_mask(psf, residual, new_mask):
     LOG.debug('Niter: %s' % niter)
     return niter
 
+
 def threshold_and_mask(residual, old_mask, new_mask, sidelobe_ratio,
-  npeak=30, flux=None, multiterm=None):
+                       npeak=30, flux=None, multiterm=None):
     """Adapted from an algorithm by Amy Kimball, NRAO.
 
     Starting with peak in image, find islands; contiguous pixels above
@@ -286,27 +285,21 @@ def threshold_and_mask(residual, old_mask, new_mask, sidelobe_ratio,
     # An explicitly separate mask is used so as not to risk messing
     # up any mask that arrives with the residual.
     # Set all its values to 1 (=True=good).
-    searchmask = casatools.image.newimagefromimage(infile=residual+extension,
-      outfile='searchmask', overwrite=True)
+    searchmask = casatools.image.newimagefromimage(infile=residual+extension, outfile='searchmask', overwrite=True)
     searchmask.calc('1', verbose=False) 
 
     # Ignore parts of image where flux map is less than 0.1
     # NOTE: logic may appear strange because the LEL 'replace'
     # function replaces masked pixels (i.e. bad pixels) 
-    searchmask.calc('replace(searchmask["%s" > 0.1], 0)' % flux,
-      verbose=False)
+    searchmask.calc('replace(searchmask["%s" > 0.1], 0)' % flux, verbose=False)
  
     # Ignore edges of image in an effort to prevent divergence; spikes
     # sometimes appear there
     shape = searchmask.shape()
-    searchmask.calc('replace(searchmask[indexin(0,[5:%s])], 0)' % shape[0],
-      verbose=False)
-    searchmask.calc('replace(searchmask[indexin(0,[0:%s])], 0)' % (shape[0]-5),
-      verbose=False)
-    searchmask.calc('replace(searchmask[indexin(1,[5:%s])], 0)' % shape[1],
-      verbose=False)
-    searchmask.calc('replace(searchmask[indexin(1,[0:%s])], 0)' % (shape[1]-5),
-      verbose=False)
+    searchmask.calc('replace(searchmask[indexin(0,[5:%s])], 0)' % shape[0], verbose=False)
+    searchmask.calc('replace(searchmask[indexin(0,[0:%s])], 0)' % (shape[0]-5), verbose=False)
+    searchmask.calc('replace(searchmask[indexin(1,[5:%s])], 0)' % shape[1], verbose=False)
+    searchmask.calc('replace(searchmask[indexin(1,[0:%s])], 0)' % (shape[1]-5), verbose=False)
 
     with casatools.ImageReader(residual+extension) as image:
         # find the max pixel value and derive the threshold for the clean mask
@@ -442,11 +435,9 @@ def threshold_and_mask(residual, old_mask, new_mask, sidelobe_ratio,
         if new_mask is not None:
             if old_mask is None:
                 # construct empty mask the same shape as the map
-                nm = image.newimagefromimage(infile=residual,
-                  outfile=new_mask, overwrite=True)
+                nm = image.newimagefromimage(infile=residual, outfile=new_mask, overwrite=True)
             else:
-                nm = image.newimagefromimage(infile=old_mask,
-                  outfile=new_mask, overwrite=True)
+                nm = image.newimagefromimage(infile=old_mask, outfile=new_mask, overwrite=True)
 
             # add new islands cumulatively - Kumar says this is best as it
             # allows clean to correct mistakes in previous iterations
@@ -465,9 +456,9 @@ def threshold_and_mask(residual, old_mask, new_mask, sidelobe_ratio,
                         # needed further
                         ignore = island_tree.pop(node, None)
 
-                maskpix = nm.putchunk(blc=[0,0,0,plane], pixels=maskpix)
+                maskpix = nm.putchunk(blc=[0, 0, 0, plane], pixels=maskpix)
 
-	    nm.close()
+            nm.close()
             nm.done()
 
     # free the searchmask
@@ -477,11 +468,12 @@ def threshold_and_mask(residual, old_mask, new_mask, sidelobe_ratio,
     LOG.debug('%s %s' % (threshold, island_tree_peaks))
     return threshold, island_tree_peaks
 
+
 def psf_sidelobe_ratio(psf, island_threshold=0.1, peak_threshold=0.1, multiterm=None):
     """Adapted from an algorithm by Amy Kimball, NRAO.
     """
 
-    if (multiterm):
+    if multiterm:
         extension = '.tt0'
     else:
         extension = ''
@@ -502,7 +494,7 @@ def psf_sidelobe_ratio(psf, island_threshold=0.1, peak_threshold=0.1, multiterm=
           (psf+extension, island_threshold), getmask=True)[:,:,0,target_chan]
 
         # get pixels
-        pixels = image.getregion()[:,:,0,target_chan]
+        pixels = image.getregion()[:, :, 0, target_chan]
         nx, ny = np.shape(pixels)
 
         grid = np.indices(np.shape(searchmask))
@@ -571,8 +563,7 @@ def psf_sidelobe_ratio(psf, island_threshold=0.1, peak_threshold=0.1, multiterm=
         # first sidelobe
         if len(islandpeak.keys()) > 1:
             sidelobe_ratio = islandpeak[1] / islandpeak[0]
-            LOG.info('Psf peak:%s first sidelobe:%s sidelobe ratio:%s' % (
-              islandpeak[0], islandpeak[1], sidelobe_ratio))
+            LOG.info('Psf peak:%s first sidelobe:%s sidelobe ratio:%s' % (islandpeak[0], islandpeak[1], sidelobe_ratio))
 #            if sidelobe_ratio > 0.7:
 #                # too high a value leads to problems with small clean
 #                # islands and slow convergence
@@ -584,6 +575,7 @@ def psf_sidelobe_ratio(psf, island_threshold=0.1, peak_threshold=0.1, multiterm=
 
     return sidelobe_ratio
 
+
 def build_island_tree(island_tree, node, island_pix):
     # island is a single island on plane
     # see if it joins to islands on adjacent planes
@@ -594,18 +586,18 @@ def build_island_tree(island_tree, node, island_pix):
     node_set = set(island_pix[plane][node[1]])
     new_nodes = []
     try:
-        for k,candidate in island_pix[plane-1].items():
+        for k, candidate in island_pix[plane-1].items():
             candidate_set = set(candidate)
             if not node_set.isdisjoint(candidate_set):
                 # add this island if it is not already a node
                 # in the tree
-                if (plane-1,k) not in island_tree.keys():
+                if (plane-1, k) not in island_tree.keys():
                     # link to the new node from the current node
-                    island_tree[node].append({(plane-1,k): []})
+                    island_tree[node].append({(plane-1, k): []})
                     # add the new node
-                    island_tree[(plane-1,k)] = []
+                    island_tree[(plane-1, k)] = []
                     # note that we have added a new node 
-                    new_nodes.append((plane-1,k))
+                    new_nodes.append((plane-1, k))
 
         # at this point any islands in plane-1 that are linked to the 
         # island in the input plane should have been added to island_tree.
@@ -618,18 +610,19 @@ def build_island_tree(island_tree, node, island_pix):
     # second, planes with higher index
     new_nodes = []
     try:
-        for k,candidate in island_pix[plane+1].items():
+        for k, candidate in island_pix[plane+1].items():
             candidate_set = set(candidate)
             if not node_set.isdisjoint(candidate_set):
-                if (plane+1,k) not in island_tree.keys():
-                    island_tree[node].append({(plane+1,k): []})
-                    island_tree[(plane+1,k)] = []
-                    new_nodes.append((plane+1,k))
+                if (plane+1, k) not in island_tree.keys():
+                    island_tree[node].append({(plane+1, k): []})
+                    island_tree[(plane+1, k)] = []
+                    new_nodes.append((plane+1, k))
 
         for new_node in new_nodes:
             build_island_tree(island_tree, new_node, island_pix)
     except:
         pass
+
 
 def find_island(searchmask, pixels, grid):
     island_pix = []
@@ -692,12 +685,14 @@ def find_island(searchmask, pixels, grid):
 
     return peak, peak_x, peak_y, island_pix
 
-def analyse_clean_result(multiterm, model, restored, residual, flux, cleanmask, pblimit_image=0.2, pblimit_cleanmask=0.3, cont_freq_ranges=None):
+
+def analyse_clean_result(multiterm, model, restored, residual, flux, cleanmask, pblimit_image=0.2,
+                         pblimit_cleanmask=0.3, cont_freq_ranges=None):
 
     if flux == '':
         flux = None
 
-    if (multiterm):
+    if multiterm:
         extension = '.tt0'
     else:
         extension = ''
@@ -705,7 +700,7 @@ def analyse_clean_result(multiterm, model, restored, residual, flux, cleanmask, 
     # get the sum of the model image to find how much flux has been
     # cleaned
     model_sum = None
-    if (model is not None):
+    if model is not None:
         with casatools.ImageReader(model+extension) as image:
             model_stats = image.statistics(robust=False)
             model_sum = model_stats['sum'][0]
@@ -730,13 +725,11 @@ def analyse_clean_result(multiterm, model, restored, residual, flux, cleanmask, 
             # Area inside clean mask
             statsmask = '"%s" > 0.1' % (os.path.basename(cleanmask))
 
-            resid_clean_stats = image.statistics(mask=statsmask, 
-              robust=False)
+            resid_clean_stats = image.statistics(mask=statsmask, robust=False)
 
             try:
                 residual_cleanmask_rms = resid_clean_stats['rms'][0]
-                LOG.info('Residual rms inside cleaned area: %s' %
-                  residual_cleanmask_rms)
+                LOG.info('Residual rms inside cleaned area: %s' % residual_cleanmask_rms)
             except:
                 pass
 
@@ -744,15 +737,16 @@ def analyse_clean_result(multiterm, model, restored, residual, flux, cleanmask, 
         residual_non_cleanmask_rms = None
 
         if flux is not None and os.path.exists(flux+extension):
-            have_mask= True
+            have_mask = True
             # Default is annulus 0.2 < pb < 0.3
-            statsmask = '("%s" > %f) && ("%s" < %f)' % (os.path.basename(flux)+extension, pblimit_image, os.path.basename(flux)+extension, pblimit_cleanmask)
+            statsmask = '("%s" > %f) && ("%s" < %f)' % (os.path.basename(flux)+extension, pblimit_image,
+                                                        os.path.basename(flux)+extension, pblimit_cleanmask)
         elif cleanmask is not None and os.path.exists(cleanmask):
-            have_mask= True
+            have_mask = True
             # Area outside clean mask
             statsmask = '"%s" < 0.1' % (os.path.basename(cleanmask))
         else:
-            have_mask= False
+            have_mask = False
             statsmask = ''
 
         residual_stats = image.statistics(mask=statsmask, robust=False)
@@ -797,15 +791,15 @@ def analyse_clean_result(multiterm, model, restored, residual, flux, cleanmask, 
         with casatools.ImageReader(restored.replace('.image','.image%s' % (extension))) as image:
             # define mask outside the cleaned area
             if flux is not None and os.path.exists(flux+extension):
-                have_mask= True
+                have_mask = True
                 # Default is area pb > 0.3
                 statsmask = '"%s" > %f' % (os.path.basename(flux)+extension, pblimit_cleanmask)
             elif cleanmask is not None and os.path.exists(cleanmask):
-                have_mask= True
+                have_mask = True
                 # Area inside clean mask
                 statsmask = '"%s" > 0.1' % (os.path.basename(cleanmask))
             else:
-                have_mask= False
+                have_mask = False
                 statsmask = ''
 
             image_stats = image.statistics(mask=statsmask)
@@ -822,23 +816,24 @@ def analyse_clean_result(multiterm, model, restored, residual, flux, cleanmask, 
 
         # get RMS in non cleanmask area of non-pb-corrected cleaned result
         if restored.find('.image.pbcor') != -1:
-            nonpbcor_imagename = restored.replace('.image.pbcor','.image%s' % (extension))
+            nonpbcor_imagename = restored.replace('.image.pbcor', '.image%s' % extension)
         else:
-            nonpbcor_imagename = restored.replace('.image','.image%s' % (extension))
+            nonpbcor_imagename = restored.replace('.image', '.image%s' % extension)
 
         with casatools.ImageReader(nonpbcor_imagename) as image:
 
             # define mask outside the cleaned area
             if flux is not None and os.path.exists(flux+extension):
-                have_mask= True
+                have_mask = True
                 # Default is annulus 0.2 < pb < 0.3
-                statsmask = '("%s" > %f) && ("%s" < %f)' % (os.path.basename(flux)+extension, pblimit_image, os.path.basename(flux)+extension, pblimit_cleanmask)
+                statsmask = '("%s" > %f) && ("%s" < %f)' % (os.path.basename(flux)+extension, pblimit_image,
+                                                            os.path.basename(flux)+extension, pblimit_cleanmask)
             elif cleanmask is not None and os.path.exists(cleanmask):
-                have_mask= True
+                have_mask = True
                 # Area outside clean mask
                 statsmask = '"%s" < 0.1' % (os.path.basename(cleanmask))
             else:
-                have_mask= False
+                have_mask = False
                 statsmask = ''
 
             try:
@@ -862,7 +857,8 @@ def analyse_clean_result(multiterm, model, restored, residual, flux, cleanmask, 
                     area_text = 'annulus'
                 else:
                     area_text = 'full image'
-                LOG.info('Clean image statistics (%s) for %s: rmsmedian: %s Jy/bm rmsmean: %s Jy/bm rmsmin: %s Jy/bm rmsmax: %s Jy/bm' % \
+                LOG.info('Clean image statistics (%s) for %s: rmsmedian: %s Jy/bm rmsmean: %s Jy/bm rmsmin:'
+                         ' %s Jy/bm rmsmax: %s Jy/bm' % \
                     (area_text, os.path.basename(nonpbcor_imagename), \
                      nonpbcor_image_non_cleanmask_rms_median, \
                      nonpbcor_image_non_cleanmask_rms_mean, \
