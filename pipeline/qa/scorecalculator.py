@@ -826,8 +826,39 @@ def score_flagged_vla_baddef(amp_collection, phase_collection, num_antennas):
         return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
+def countbaddelays(m, delaytable, delaymax):
+    """
+    Args:
+        m: measurement set object
+        delaytable: Delay caltable
+        delaymax: units of ns.  If delay is over this value, it could be added to the dictionary
+
+    Returns:
+        Dictionary with antenna name as key
+    """
+    delaydict = collections.defaultdict(list)
+    with casatools.TableReader(delaytable) as tb:
+        spws = np.unique(tb.getcol('SPECTRAL_WINDOW_ID'))
+        for ispw in spws:
+            tbspw = tb.query(query='SPECTRAL_WINDOW_ID==' + str(ispw), name='byspw')
+            ants = np.unique(tbspw.getcol('ANTENNA1'))
+            for iant in ants:
+                tbant = tbspw.query(query='ANTENNA1==' + str(iant), name='byant')
+                absdel = np.absolute(tbant.getcol('FPARAM'))
+                if np.max(absdel) > delaymax:
+                    antname = m.get_antenna(iant)[0].name
+                    delaydict[antname].append((absdel > delaymax).sum())
+                    LOG.info('Spw=' + str(ispw) + ' Ant=' + antname
+                             + '  Delays greater than 200 ns ='
+                             + str((absdel > delaymax).sum()))
+                tbant.close()
+            tbspw.close()
+
+    return delaydict
+
+
 @log_qa
-def score_total_data_vla_delay(filename):
+def score_total_data_vla_delay(filename, m):
     """
     Use a filename of a delay (K-type) calibration table
     Calculate a score for antennas with a delay > 200 ns
@@ -842,8 +873,9 @@ def score_total_data_vla_delay(filename):
     if maxdelay < 200.0:
         score = 1.0
     else:
-        # For each occurrence with a delay > 200.0 ns, deduct 0.1 from the score
-        count = (delays > 200.0).sum()
+        # For each antenna with a delay > 200.0 ns, deduct 0.1 from the score
+        delaydict = countbaddelays(m, filename, 200.0)
+        count = len(delaydict.keys())
         score = 1.0 - (0.1 * count)
     if score < 0.0:
         score = 0.0

@@ -24,13 +24,15 @@ class semiFinalBPdcalsQAHandler(pqa.QAPlugin):
         # 5%-60% of data flagged  --> 1 to 0
         # > 60%  of data flagged  --> 0
 
+        m = context.observing_run.get_ms(result.inputs['vis'])
+
         if result.flaggedSolnApplycalbandpass and result.flaggedSolnApplycaldelay:
             self._checkKandBsolution(result.flaggedSolnApplycaldelay)
             self._checkKandBsolution(result.flaggedSolnApplycalbandpass)
 
             score1 = qacalc.score_total_data_flagged_vla_bandpass(result.bpdgain_touse,
                                                                   result.flaggedSolnApplycalbandpass['antmedian']['fraction'])
-            score2 = qacalc.score_total_data_vla_delay(result.ktypecaltable)
+            score2 = qacalc.score_total_data_vla_delay(result.ktypecaltable, m)
             scores = [score1, score2]
         else:
             LOG.error('Error with bandpass and/or delay table.')
