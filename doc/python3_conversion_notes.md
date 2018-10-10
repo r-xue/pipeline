@@ -170,3 +170,13 @@ After:
 ```
 if a != 1:
 ```
+
+### Implicit tuple parameter unpacking is no longer supported
+Before:
+```
+lambda (x, y): y - x
+```
+After:
+```
+lambda x_y: x_y[1] - x_y[0]
+```

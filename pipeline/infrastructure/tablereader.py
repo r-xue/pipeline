@@ -754,10 +754,8 @@ class SourceTable(object):
         LOG.debug('Analysing SOURCE table')
         ids = msmd.sourceidsfromsourcetable()
         sourcenames = msmd.sourcenames()
-        directions = [v for _, v in sorted(msmd.sourcedirs().items(),
-                                           key=lambda (k, _): int(k))]
-        propermotions = [v for _, v in sorted(msmd.propermotions().items(),
-                                              key=lambda (k, _): int(k))]
+        directions = [v for _, v in sorted(msmd.sourcedirs().items(), key=lambda d: int(d[0]))]
+        propermotions = [v for _, v in sorted(msmd.propermotions().items(), key=lambda pm: int(pm[0]))]
         eph_sourcenames = SourceTable._get_eph_sourcenames(msmd.name())
         is_eph_objs = [sourcename in eph_sourcenames for sourcename in sourcenames]
 

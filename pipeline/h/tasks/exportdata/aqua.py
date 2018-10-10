@@ -247,7 +247,7 @@ class AquaXmlGenerator(object):
         """
         # group scores into a {<metric name>: [<QAScore, ...>]} dict
         metric_to_scores = {}
-        keyfunc = lambda (_, qa_score): qa_score.origin.metric_name
+        keyfunc = lambda vis_qa_score: vis_qa_score[1].origin.metric_name
         s = sorted(list(items), key=keyfunc)
         for k, g in itertools.groupby(s, keyfunc):
             metric_to_scores[k] = list(g)
@@ -501,7 +501,7 @@ class LowestScoreMetricXmlGenerator(MetricXmlGenerator):
         if not handled:
             return []
 
-        lowest = min(handled, key=lambda (_, qa_score): operator.attrgetter('score'))
+        lowest = min(handled, key=lambda vis_qa_score: vis_qa_score[1].score)
         return [lowest]
 
 

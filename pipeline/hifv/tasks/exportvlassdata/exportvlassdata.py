@@ -335,7 +335,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         # Initialize the output session names and visibility file lists
         session_names = []
         session_vis_list = []
-        for key, value in sorted(session_dict.iteritems(), key=lambda (k, v): (v, k)):
+        for key, value in sorted(session_dict.iteritems(), key=lambda k_v: (k_v[1], k_v[0])):
             session_names.append(key)
             session_vis_list.append([])
 

@@ -140,8 +140,7 @@ class Fluxscale(basetask.StandardTaskTemplate):
             return result
 
         no_result = numpy.array([-1., -1., -1., -1.])
-        no_result_fn = lambda (spw, flux): not numpy.array_equal(no_result, 
-                                                                 flux)
+        no_result_fn = lambda spw_fl: not numpy.array_equal(no_result, spw_fl[1])
 
         # fields in the fluxscale output dictionary are identified by a 
         # numeric field ID                  

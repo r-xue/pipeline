@@ -126,7 +126,7 @@ class PhaseUpBandpass(basetask.StandardTaskTemplate):
         # tuples
         for spw in scores:
             by_score = sorted(scores[spw].items(),
-                              key=lambda (caltable, score): score,
+                              key=lambda caltable_score: caltable_score[1],
                               reverse=True)
     
             # the tuple with the highest SNR is the first item in the sorted

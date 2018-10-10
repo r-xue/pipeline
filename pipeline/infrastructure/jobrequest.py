@@ -84,7 +84,7 @@ def alphasort(argument):
         # group the indices into consecutive ranges, i.e., between
         # flagdata summaries. Commands within these ranges can be
         # sorted.
-        for _, g in itertools.groupby(enumerate(apply_cmd_idxs), lambda (i, x): i - x):
+        for _, g in itertools.groupby(enumerate(apply_cmd_idxs), lambda i_x: i_x[0] - i_x[1]):
             idxs = map(operator.itemgetter(1), g)
             start_idx = idxs[0]
             end_idx = idxs[-1] + 1
