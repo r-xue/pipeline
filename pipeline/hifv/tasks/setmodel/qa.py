@@ -21,11 +21,20 @@ class VLASetjyQAHandler(pqa.QAPlugin):
     def handle(self, context, result):
         standard_source_names, standard_source_fields = vlasetjy.standard_sources(result.inputs['vis'])
 
+        m = context.observing_run.get_ms(result.inputs['vis'])
+
         if sum(standard_source_fields, []):
-            score = pqa.QAScore(1.0, longmsg='Standard calibrator present.',
-                                shortmsg='Standard calibrator present.')
+            scorevalue = 0.5  # Default if a standard source position is found, but no intents.
+            msg = 'No standard calibrator present.'
+            for i, fields in enumerate(standard_source_fields):
+                for myfield in fields:
+                    domainfield = m.get_fields(myfield)[0]
+                    if 'AMPLITUDE' in domainfield.intents:
+                        scorevalue = 1.0
+                        msg = 'Standard calibrator present.'
+            score = pqa.QAScore(scorevalue, longmsg=msg, shortmsg=msg)
         else:
-            score = pqa.QAScore(0.5, longmsg='Warning - no standard calibrator present.',
+            score = pqa.QAScore(0.5, longmsg='No standard calibrator present.',
                                 shortmsg='No standard calibrator present.')
             LOG.warn('No standard calibrator present.')
 
@@ -66,4 +75,3 @@ class VLASetjyListQAHandler(pqa.QAPlugin):
         mses = [r.inputs['vis'] for r in result]
         longmsg = 'No missing flux measurements in %s' % utils.commafy(mses, quotes=False, conjunction='or')
         result.qa.all_unity_longmsg = longmsg
-
