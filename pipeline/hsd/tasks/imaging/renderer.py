@@ -150,8 +150,10 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
     
     @staticmethod
     def _summary_plots_channelmap(context, plot_group):
-        # take first ms as representative one
-        ms = context.observing_run.measurement_sets[0]
+        # take the ms having the largest number of fields
+        nfields = [len(ms.fields) for ms in context.observing_run.measurement_sets]
+        repid = nfields.index(max(nfields))
+        ms = context.observing_run.measurement_sets[repid]
         source_names = [filenamer.sanitize(s.name) for s in ms.sources]
         
         summary_plots = {}
