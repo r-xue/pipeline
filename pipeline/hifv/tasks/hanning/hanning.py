@@ -77,8 +77,19 @@ class Hanning(basetask.StandardTaskTemplate):
     def _checkpreaveraged(self):
 
         with casatools.TableReader(self.inputs.vis + '/SPECTRAL_WINDOW') as table:
-            effective_bw = table.getvarcol('EFFECTIVE_BW')
-            resolution = table.getvarcol('RESOLUTION')
+            # effective_bw = table.getvarcol('EFFECTIVE_BW')
+            # resolution = table.getvarcol('RESOLUTION')
+            try:
+                sdm_num_bin = table.getvarcol('SDM_NUM_BIN')
+            except Exception as e:
+                sdm_num_bin = 1
+                LOG.debug('Column SDM_NUM_BIN was not found in the SDM.  Proceeding with hanning smoothing.')
 
-        return not(resolution['r1'][0][0] < effective_bw['r1'][0][0])
+        # return not(resolution['r1'][0][0] < effective_bw['r1'][0][0])
+
+        if sdm_num_bin['r1'][0] > 1:
+            return False
+        else:
+            return True
+
 
