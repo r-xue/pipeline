@@ -306,7 +306,8 @@ class MakeImList(basetask.StandardTaskTemplate):
             band = ms.get_vla_spw2band()
             band_spws = {}
             for k, v in band.items():
-                band_spws.setdefault(v, []).append(k)
+                if str(k) in spwlist:
+                    band_spws.setdefault(v, []).append(k)
         else:
             band_spws = {None: 0}
 
