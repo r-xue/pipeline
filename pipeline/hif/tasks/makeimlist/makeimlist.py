@@ -308,7 +308,7 @@ class MakeImList(basetask.StandardTaskTemplate):
             for k, v in band.items():
                 band_spws.setdefault(v, []).append(k)
         else:
-            band_spws = {'dummy': 0}
+            band_spws = {None: 0}
 
         # Need to record if there are targets for a vislist
         have_targets = {}
@@ -316,7 +316,7 @@ class MakeImList(basetask.StandardTaskTemplate):
         max_num_targets = 0
 
         for band in band_spws:
-            if band != 'dummy':
+            if band != None:
                 spw = band_spws[band].__repr__()
                 spwlist = band_spws[band]
             for vislist in vislists:
@@ -567,7 +567,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                             imagenames[(field_intent,spwspec)] = \
                               self.heuristics.imagename(
                               output_dir=inputs.output_dir, intent=field_intent[1],
-                              field=field_intent[0], spwspec=spwspec, specmode=specmode)
+                              field=field_intent[0], spwspec=spwspec, specmode=specmode, band=band)
                         else:
                             imagenames[(field_intent,spwspec)] = inputs.imagename
 

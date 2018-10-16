@@ -47,6 +47,7 @@ class FileNameComponentBuilder(object):
         self._source = None
         self._spectral_window = None
         self._spectral_window_nochan = None
+        self._band = None
         self._specmode = None
         self._type = None
 
@@ -67,6 +68,7 @@ class FileNameComponentBuilder(object):
                       '_'.join([x for x in (self._source, self._intent) if x is not None]),
                       self._spectral_window,
                       self._spectral_window_nochan,
+                      self._band,
                       self._specmode,
                       self._line_region,
                       self._polarization,
@@ -174,6 +176,13 @@ class FileNameComponentBuilder(object):
             self._spectral_window = 'spw' + sort_spws(str(window))
         else:
             self._spectral_window = None
+        return self
+
+    def band(self, band):
+        if band not in (None, 'None', ''):
+            self._band = str(band)
+        else:
+            self._band = None
         return self
 
     def specmode(self, specmode):
@@ -624,6 +633,10 @@ class Image(NamingTemplate):
 
     def type(self, type):
         self._associations.type(type)
+        return self
+
+    def band(self, band):
+        self._associations.band(band)
         return self
 
     # Association convenience methods ----------------------------------------
