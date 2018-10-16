@@ -34,7 +34,7 @@ class TcleanQAHandler(pqa.QAPlugin):
             result.qa.pool[:] = [pqa.QAScore(1.0)]
         elif 'VLA' in result.imaging_mode and 'VLASS' not in result.imaging_mode:
             snr = result.image_max / result.image_rms
-            score = scorecalc.linear_score(x=snr, x1=5, x2=20, y1=0.0, y2=1.0)  # CAS-10925
+            score = scorecalc.linear_score(x=snr, x1=5, x2=100, y1=0.0, y2=1.0)  # CAS-10925
             # Set score messages and origin.
             longmsg = ('{} pbcor image max / non-pbcor image RMS = {:0.2f}'.format(result.sourcename, snr))
             shortmsg = 'snr = {:0.2f}'.format(snr)
