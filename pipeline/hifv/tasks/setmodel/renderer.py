@@ -30,7 +30,7 @@ class T2_4MDetailsVLASetjyRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             plots = self.create_plots(context, 
                                       result, 
                                       setjy_display.AmpVsUVSummaryChart, 
-                                      intents, correlation='LL,RR')
+                                      intents, correlation='LL,RR', overplot_receivers=False)
 
             for vis, vis_plots in plots.items():
                 amp_vs_uv_summary_plots[vis].extend(vis_plots)
@@ -61,6 +61,12 @@ class T2_4MDetailsVLASetjyRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             for fluxm in result.measurements[fieldname]:
                 spws.append(fluxm.spw_id)
         spwlist = ','.join([str(i) for i in spws])
+
+        ms = context.observing_run.get_ms(result.inputs['vis'])
+        spwobjects = ms.get_spectral_windows()
+        spws = [spw.id for spw in spwobjects]
+        spwlist = ','.join([str(i) for i in spws])
+
         calto = callibrary.CalTo(result.inputs['vis'], spw=spwlist)
 
         plotter = plotter_cls(context, output_dir, calto, intents, **kwargs)
