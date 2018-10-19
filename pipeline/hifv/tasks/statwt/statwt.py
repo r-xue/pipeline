@@ -43,22 +43,23 @@ class Statwt(basetask.StandardTaskTemplate):
     
     def prepare(self):
 
+        fielddict = cont_file_to_CASA()
+        fields = str(',').join(fielddict.keys()) if fielddict != {} else ''
+
         flag_summaries = []
         # flag statistics before task
-        flag_summaries.append(self._do_flagsummary('before'))
+        flag_summaries.append(self._do_flagsummary('before', field=fields))
         # actual statwt operation
-        statwt_result = self._do_statwt()
+        statwt_result = self._do_statwt(fielddict)
         # flag statistics after task
-        flag_summaries.append(self._do_flagsummary('statwt'))
+        flag_summaries.append(self._do_flagsummary('statwt', field=fields))
         
         return StatwtResults(jobs=[statwt_result], flag_summaries=flag_summaries)
     
     def analyse(self, results):
         return results
     
-    def _do_statwt(self):
-
-        fielddict = cont_file_to_CASA()
+    def _do_statwt(self, fielddict):
 
         if fielddict != {}:
             LOG.info('cont.dat file present.  Using VLA Spectral Line Heuristics for task statwt.')
@@ -87,6 +88,7 @@ class Statwt(basetask.StandardTaskTemplate):
 
             return statwt_result
 
-    def _do_flagsummary(self, name):
-        job = casa_tasks.flagdata(name=name, vis = self.inputs.vis, mode='summary')
+    def _do_flagsummary(self, name, field = ''):
+        fielddict = cont_file_to_CASA()
+        job = casa_tasks.flagdata(name=name, vis = self.inputs.vis, field = field, mode='summary')
         return self._executor.execute(job)
