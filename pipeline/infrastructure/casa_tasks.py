@@ -14,27 +14,27 @@ from __future__ import absolute_import
 
 import shutil
 
-import applycal_pg
-import bandpass_pg
+import applycal_cli
+import bandpass_cli
 import calstat_cli
 import clean_cli
 import clearcal_cli
 import delmod_cli
 import exportfits_cli
 import flagcmd_cli
-import flagdata_pg
+import flagdata_cli
 import flagmanager_cli
-import fluxscale_pg
-import gaincal_pg
+import fluxscale_cli
+import gaincal_cli
 import gencal_cli
 import hanningsmooth_cli
 import imdev_cli
 import imhead_cli
 import immath_cli
 import immoments_cli
-import impbcor_pg
+import impbcor_cli
 import importasdm_cli
-import imregrid_pg
+import imregrid_cli
 import imstat_cli
 import imsubimage_cli
 import initweights_cli
@@ -44,16 +44,16 @@ import partition_cli
 import plotants_cli
 import plotbandpass_cli
 import plotcal_cli
-import plotms_pg
+import plotms_cli
 import plotweather_cli
 import polcal_cli
-import sdbaseline_pg
-import sdcal_pg
+import sdbaseline_cli
+import sdcal_cli
 import sdimaging_cli
-import setjy_pg
+import setjy_cli
 import split_cli
 import statwt_cli
-import tclean_pg
+import tclean_cli
 import visstat_cli
 import wvrgcal_cli
 
@@ -64,11 +64,11 @@ LOG = logging.get_logger(__name__)
 
 
 def applycal(*v, **k):
-    return _get_job(applycal_pg.applycal_pg, *v, **k)
+    return _get_job(applycal_cli.applycal_cli, *v, **k)
 
 
 def bandpass(*v, **k):
-    return _get_job(bandpass_pg.bandpass_pg, *v, **k)
+    return _get_job(bandpass_cli.bandpass_cli, *v, **k)
 
 
 def calstat(*v, **k):
@@ -92,7 +92,7 @@ def exportfits(*v, **k):
 
 
 def gaincal(*v, **k):
-    return _get_job(gaincal_pg.gaincal_pg, *v, **k)
+    return _get_job(gaincal_cli.gaincal_cli, *v, **k)
 
 
 def flagcmd(*v, **k):
@@ -100,7 +100,7 @@ def flagcmd(*v, **k):
 
 
 def flagdata(*v, **k):
-    return _get_job(flagdata_pg.flagdata_pg, *v, **k)
+    return _get_job(flagdata_cli.flagdata_cli, *v, **k)
 
 
 def flagmanager(*v, **k):
@@ -108,11 +108,7 @@ def flagmanager(*v, **k):
 
 
 def fluxscale(*v, **k):
-    # work around problem with fluxscale_pg that says:
-    # An error occurred running task fluxscale: in method 'calibrater_fluxscale', argument 15 of type 'bool'
-    if 'display' not in k:
-        k['display'] = False
-    return _get_job(fluxscale_pg.fluxscale_pg, *v, **k)
+    return _get_job(fluxscale_cli.fluxscale_cli, *v, **k)
 
 
 def gencal(*v, **k):
@@ -140,11 +136,11 @@ def immoments(*v, **k):
 
 
 def imregrid(*v, **k):
-    return _get_job(imregrid_pg.imregrid_pg, *v, **k)
+    return _get_job(imregrid_cli.imregrid_cli, *v, **k)
 
 
 def impbcor(*v, **k):
-    return _get_job(impbcor_pg.impbcor_pg, *v, **k)
+    return _get_job(impbcor_cli.impbcor_cli, *v, **k)
 
 
 def importasdm(*v, **k):
@@ -188,7 +184,7 @@ def plotcal(*v, **k):
 
 
 def plotms(*v, **k):
-    return _get_job(plotms_pg.plotms_pg, *v, **k)
+    return _get_job(plotms_cli.plotms_cli, *v, **k)
 
 
 def plotweather(*v, **k):
@@ -200,7 +196,7 @@ def polcal(*v, **k):
 
 
 def setjy(*v, **k):
-    return _get_job(setjy_pg.setjy_pg, *v, **k)
+    return _get_job(setjy_cli.setjy_cli, *v, **k)
 
 
 def split(*v, **k):
@@ -211,12 +207,8 @@ def statwt(*v, **k):
     return _get_job(statwt_cli.statwt_cli, *v, **k)
 
 
-def statwt2(*v, **k):
-    return _get_job(statwt2_cli.statwt2_cli, *v, **k)
-
-
 def tclean(*v, **k):
-    return _get_job(tclean_pg.tclean_pg, *v, **k)
+    return _get_job(tclean_cli.tclean_cli, *v, **k)
 
 
 def wvrgcal(*v, **k):
@@ -238,11 +230,11 @@ def sdimaging(*v, **k):
 
 
 def sdcal(*v, **k):
-    return _get_job(sdcal_pg.sdcal_pg, *v, **k)
+    return _get_job(sdcal_cli.sdcal_cli, *v, **k)
 
 
 def sdbaseline(*v, **k):
-    return _get_job(sdbaseline_pg.sdbaseline_pg, *v, **k)
+    return _get_job(sdbaseline_cli.sdbaseline_cli, *v, **k)
 
 
 def copyfile(*v, **k):
