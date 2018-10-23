@@ -81,13 +81,14 @@ class Hanning(basetask.StandardTaskTemplate):
             # resolution = table.getvarcol('RESOLUTION')
             try:
                 sdm_num_bin = table.getvarcol('SDM_NUM_BIN')
+                max_sdm_num_bin = max([sdm_num_bin[key][0] for key in sdm_num_bin.keys()])
             except Exception as e:
-                sdm_num_bin = 1
+                max_sdm_num_bin = 1
                 LOG.debug('Column SDM_NUM_BIN was not found in the SDM.  Proceeding with hanning smoothing.')
 
         # return not(resolution['r1'][0][0] < effective_bw['r1'][0][0])
 
-        if sdm_num_bin['r1'][0] > 1:
+        if max_sdm_num_bin > 1:
             return False
         else:
             return True
