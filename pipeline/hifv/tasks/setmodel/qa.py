@@ -25,7 +25,7 @@ class VLASetjyQAHandler(pqa.QAPlugin):
 
         if sum(standard_source_fields, []):
             scorevalue = 0.5  # Default if a standard source position is found, but no intents.
-            msg = 'No standard calibrator present.'
+            msg = 'QA No VLA standard calibrator present, continuing with the FLUX calibrator assuming a flux of 1 Jy.'
             for i, fields in enumerate(standard_source_fields):
                 for myfield in fields:
                     domainfield = m.get_fields(myfield)[0]
@@ -34,9 +34,9 @@ class VLASetjyQAHandler(pqa.QAPlugin):
                         msg = 'Standard calibrator present.'
             score = pqa.QAScore(scorevalue, longmsg=msg, shortmsg=msg)
         else:
-            score = pqa.QAScore(0.5, longmsg='No standard calibrator present.',
+            score = pqa.QAScore(0.5, longmsg='QA No VLA standard calibrator present, continuing with the FLUX calibrator assuming a flux of 1 Jy.',
                                 shortmsg='No standard calibrator present.')
-            LOG.warn('No standard calibrator present.')
+            LOG.warn('QA No VLA standard calibrator present, continuing with the FLUX calibrator assuming a flux of 1 Jy.')
 
         scores = [score]
 
