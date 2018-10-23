@@ -105,13 +105,13 @@ class swpowPerAntennaChart(object):
             plotrange = []
 
             if self.yaxis == 'spgain':
-                plotrange = [0,0,0,1.0]
+                plotrange = [0, 0, 0, 1.0]
             if self.yaxis == 'tsys':
-                plotrange = [0,0,0,100]
+                plotrange = [0, 0, 0, 100]
                 spws = m.get_all_spectral_windows()
                 freqs = sorted(set([spw.max_frequency.value for spw in spws]))
                 if float(max(freqs)) >= 18000000000.0:
-                    plotrange = [0,0,0,200]
+                    plotrange = [0, 0, 0, 200]
 
             if not os.path.exists(figfile):
                 try:
@@ -129,7 +129,8 @@ class swpowPerAntennaChart(object):
                                 antenna=antPlot, spw=self.result.sw_result.spw, timerange='',
                                 plotrange=plotrange, coloraxis='spw',
                                 title='Switched Power  swpow.tbl   Antenna: {!s}'.format(antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                xconnector='line')
 
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename)

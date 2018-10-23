@@ -70,7 +70,7 @@ class PolarizationPlotCalChart(object):
                                           'antenna': self.antenna,
                                           'spw': '',
                                           'figfile': figfile,
-                                          'caption': self.caption+typeentry})
+                                          'caption': self.caption + typeentry})
 
         if not os.path.exists(figfile):
             LOG.trace('plotsummary Plotcal plot not found. Creating new plot.')
@@ -132,10 +132,10 @@ class ampfreqPerAntennaChart(object):
                         antName = ','.join(idents)
 
                     casa.plotms(vis=self.caltable, xaxis='freq', yaxis='amp', field='',
-                                antenna=antPlot, spw='', timerange='',
-                                plotrange=plotrange, coloraxis='spw',
+                                antenna=antPlot, spw='', timerange='', plotrange=plotrange, coloraxis='spw',
                                 title='POL table: {!s}   Antenna: {!s}'.format(self.caltable, antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                xconnector='step')
 
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename + str(ex))

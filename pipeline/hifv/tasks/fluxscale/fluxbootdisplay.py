@@ -79,7 +79,8 @@ class fluxgaincalSummaryChart(object):
                     scan='', correlation='', averagedata=True,
                     avgtime='', avgscan=False, transform=False, extendflag=False, iteraxis='',
                     coloraxis='field', plotrange=[], title='', xlabel='', ylabel='', showmajorgrid=False,
-                    showminorgrid=False, plotfile=figfile, overwrite=True, clearplots=True, showgui=False)
+                    showminorgrid=False, plotfile=figfile, overwrite=True, clearplots=True, showgui=False,
+                    xconnector='step')
 
     def get_figfile(self):
         return os.path.join(self.context.report_dir,

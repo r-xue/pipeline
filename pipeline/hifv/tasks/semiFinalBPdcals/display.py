@@ -47,9 +47,9 @@ class semifinalBPdcalsSummaryChart(object):
     def get_plot_wrapper(self):
         figfile = self.get_figfile()
         wrapper = logger.Plot(figfile, x_axis='freq', y_axis='amp',
-                              parameters={'vis'      : self.ms.basename,
-                                          'type'     : 'semifinalcalibratedcals'+self.suffix,
-                                          'spw'      : ''})
+                              parameters={'vis': self.ms.basename,
+                                          'type': 'semifinalcalibratedcals'+self.suffix,
+                                          'spw': ''})
 
         if not os.path.exists(figfile):
             LOG.trace('semifinalBPdcals summary plot not found. Creating new plot.')
@@ -79,18 +79,15 @@ class DelaysPerAntennaChart(object):
         context = self.context
         result = self.result
         m = context.observing_run.measurement_sets[0]
-        
-        numAntenna = len(m.antennas)
 
+        nplots = len(m.antennas)
         plots = []
-
-        nplots = numAntenna
 
         LOG.info("Plotting semiFinal delays")
 
         for ii in range(nplots):
-            filename='delay'+str(ii)+'_'+self.suffix+'.png'
-            antPlot=str(ii)
+            filename = 'delay'+str(ii)+'_'+self.suffix+'.png'
+            antPlot = str(ii)
             
             stage = 'stage%s' % result.stage_number
             stage_dir = os.path.join(context.report_dir, stage)
@@ -114,7 +111,8 @@ class DelaysPerAntennaChart(object):
                                 antenna=antPlot, spw='', timerange='',
                                 plotrange=[], coloraxis='spw',
                                 title='K table: delay.tbl   Antenna: {!s}'.format(antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                xconnector='step')
 
                 except:
                     LOG.warn("Unable to plot " + filename)
@@ -154,10 +152,9 @@ class semifinalphaseGainPerAntennaChart(object):
         result = self.result
         m = context.observing_run.measurement_sets[0]
         
-        numAntenna = len(m.antennas)
+        nplots = len(m.antennas)
 
         plots = []
-        nplots=numAntenna
 
         LOG.info("Plotting phase gain solutions")
 
@@ -186,7 +183,8 @@ class semifinalphaseGainPerAntennaChart(object):
                                 antenna=antPlot, spw='', timerange='',
                                 coloraxis='spw', plotrange=[0, 0, -180, 180], symbolshape='circle',
                                 title='G table: {!s}   Antenna: {!s}'.format(result.bpdgain_touse, antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                xconnector='line')
 
                 except:
                     LOG.warn("Unable to plot " + filename)
@@ -227,7 +225,7 @@ class semifinalbpSolAmpPerAntennaChart(object):
         result = self.result
         m = context.observing_run.measurement_sets[0]
         
-        numAntenna = len(m.antennas)
+        nplots = len(m.antennas)
 
         plots = []
         
@@ -243,22 +241,20 @@ class semifinalbpSolAmpPerAntennaChart(object):
         for rrow in rowlist:
             dataArr = dataVarCol[rrow]
             flagArr = flagVarCol[rrow]
-            amps=np.abs(dataArr)
-            phases=np.arctan2(np.imag(dataArr),np.real(dataArr))
-            good=np.logical_not(flagArr)
-            tmparr=amps[good]
-            if (len(tmparr)>0):
-                maxamp=np.max(amps[good])
-                if (maxamp>maxmaxamp):
-                    maxmaxamp=maxamp
+            amps = np.abs(dataArr)
+            phases = np.arctan2(np.imag(dataArr),np.real(dataArr))
+            good = np.logical_not(flagArr)
+            tmparr = amps[good]
+            if len(tmparr)>0:
+                maxamp = np.max(amps[good])
+                if maxamp > maxmaxamp:
+                    maxmaxamp = maxamp
             tmparr=np.abs(phases[good])
-            if (len(tmparr)>0):
-                maxphase=np.max(np.abs(phases[good]))*180./math.pi
-                if (maxphase>maxmaxphase):
-                    maxmaxphase=maxphase
-        ampplotmax=maxmaxamp
-
-        nplots=numAntenna
+            if len(tmparr) > 0:
+                maxphase = np.max(np.abs(phases[good]))*180./math.pi
+                if maxphase > maxmaxphase:
+                    maxmaxphase = maxphase
+        ampplotmax = maxmaxamp
 
         for ii in range(nplots):
             filename = 'BPcal_amp'+str(ii)+'_'+self.suffix+'.png'
@@ -283,7 +279,8 @@ class semifinalbpSolAmpPerAntennaChart(object):
                                 antenna=antPlot, spw='', timerange='',
                                 coloraxis='spw', plotrange=[0, 0, 0, ampplotmax], symbolshape='circle',
                                 title='B table: {!s}   Antenna: {!s}'.format('BPcal.b', antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                xconnector='step')
                 except:
                     LOG.warn("Unable to plot " + filename)
             else:
@@ -322,7 +319,7 @@ class semifinalbpSolPhasePerAntennaChart(object):
         result = self.result
         m = context.observing_run.measurement_sets[0]
         
-        numAntenna = len(m.antennas)
+        nplots = len(m.antennas)
 
         plots = []
         
@@ -338,22 +335,20 @@ class semifinalbpSolPhasePerAntennaChart(object):
         for rrow in rowlist:
             dataArr = dataVarCol[rrow]
             flagArr = flagVarCol[rrow]
-            amps=np.abs(dataArr)
-            phases=np.arctan2(np.imag(dataArr),np.real(dataArr))
-            good=np.logical_not(flagArr)
-            tmparr=amps[good]
-            if (len(tmparr)>0):
-                maxamp=np.max(amps[good])
-                if (maxamp>maxmaxamp):
-                    maxmaxamp=maxamp
+            amps = np.abs(dataArr)
+            phases = np.arctan2(np.imag(dataArr),np.real(dataArr))
+            good = np.logical_not(flagArr)
+            tmparr = amps[good]
+            if len(tmparr) > 0:
+                maxamp = np.max(amps[good])
+                if maxamp > maxmaxamp:
+                    maxmaxamp = maxamp
             tmparr=np.abs(phases[good])
-            if (len(tmparr)>0):
-                maxphase=np.max(np.abs(phases[good]))*180./math.pi
-                if (maxphase>maxmaxphase):
-                    maxmaxphase=maxphase
-        phaseplotmax=maxmaxphase
-
-        nplots=numAntenna
+            if len(tmparr) > 0:
+                maxphase = np.max(np.abs(phases[good]))*180./math.pi
+                if maxphase>maxmaxphase:
+                    maxmaxphase = maxphase
+        phaseplotmax = maxmaxphase
 
         for ii in range(nplots):
             filename = 'BPcal_phase'+str(ii)+'_'+self.suffix+'.png'
@@ -379,7 +374,8 @@ class semifinalbpSolPhasePerAntennaChart(object):
                                 coloraxis='spw', plotrange=[0, 0, -phaseplotmax, phaseplotmax],
                                 symbolshape='circle',
                                 title='B table: {!s}   Antenna: {!s}'.format('BPcal.tbl', antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                xconnector='step')
                 except:
                     LOG.warn("Unable to plot " + filename)
             else:
@@ -398,17 +394,6 @@ class semifinalbpSolPhasePerAntennaChart(object):
                 plots.append(None)
                 
         # Get BPcal.b to close...
-        '''
-        stage = 'stage%s' % result.stage_number
-        stage_dir = os.path.join(context.report_dir, stage)
-        # construct the relative filename, eg. 'stageX/testdelay0.png'
-        figfile = os.path.join(stage_dir, 'junk.png')
-        casa.plotcal(caltable='testBPcal.b', xaxis='freq', yaxis='phase',
-                     poln='', field='', antenna='0', spw='',        timerange='',
-                     subplot=311,  overplot=False, clearpanel='Auto', iteration='antenna',
-                     plotrange=[0,0,-180,180],        showflags=False, plotsymbol='o',
-                     plotcolor='blue', markersize=5.0, fontsize=10.0, showgui=False, figfile=figfile)
-        '''
 
         return [p for p in plots if p is not None]
 

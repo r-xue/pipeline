@@ -96,14 +96,18 @@ class testgainsPerAntennaChart(object):
             # construct the relative filename, eg. 'stageX/testdelay0.png'
             
             figfile = os.path.join(stage_dir, filename)
-            
+
+            xconnector = 'step'
+
             if self.yaxis == 'amp':
                 plotrange = [0,0,0,plotmax]
                 plotsymbol = 'o'
+                xconnector = 'step'
             
             if self.yaxis == 'phase':
                 plotrange = [0,0,-180,180]
                 plotsymbol = 'o-'
+                xconnector = 'line'
             
             if not os.path.exists(figfile):
                 try:
@@ -118,7 +122,8 @@ class testgainsPerAntennaChart(object):
                     casa.plotms(vis=self.result.bpdgain_touse, xaxis='time', yaxis=self.yaxis, field='',
                                 antenna=antPlot, spw='', timerange='', plotrange=plotrange, coloraxis='spw',
                                 title='G table: {!s}   Antenna: {!s}'.format(self.result.bpdgain_touse, antname),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                xconnector=xconnector)
 
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename + str(ex))

@@ -35,17 +35,16 @@ class finalcalsSummaryChart(object):
                     titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
 
     def get_figfile(self):
-        return os.path.join(self.context.report_dir, 
-                            'stage%s' % self.result.stage_number, 
+        return os.path.join(self.context.report_dir, 'stage%s' % self.result.stage_number,
                             'finalcalsjunk'+'-%s-summary.png' % self.ms.basename)
 
     def get_plot_wrapper(self):
         figfile = self.get_figfile()
 
         wrapper = logger.Plot(figfile, x_axis='freq', y_axis='delay',
-                              parameters={'vis'      : self.ms.basename,
-                                          'type'     : 'finalcalsjunk',
-                                          'spw'      : ''})
+                              parameters={'vis': self.ms.basename,
+                                          'type': 'finalcalsjunk',
+                                          'spw': ''})
 
         if not os.path.exists(figfile):
             LOG.trace('finalcals summary plot not found. Creating new plot.')
@@ -67,8 +66,7 @@ class finalDelaysPerAntennaChart(object):
         self.basevis = os.path.basename(result.inputs['vis'])
         
         self.json = {}
-        self.json_filename = os.path.join(context.report_dir, 
-                                          'stage%s' % result.stage_number, 
+        self.json_filename = os.path.join(context.report_dir, 'stage%s' % result.stage_number,
                                           'finaldelays-%s.json' % self.ms)
 
     def plot(self):
@@ -106,7 +104,8 @@ class finalDelaysPerAntennaChart(object):
                                 antenna=antPlot, spw='', timerange='',
                                 plotrange=[], coloraxis='spw',
                                 title='K table: finaldelay.tbl   Antenna: {!s}'.format(antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                xconnector='step')
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename + str(ex))
             else:
@@ -137,8 +136,7 @@ class finalphaseGainPerAntennaChart(object):
         self.basevis = os.path.basename(result.inputs['vis'])
         
         self.json = {}
-        self.json_filename = os.path.join(context.report_dir, 
-                                          'stage%s' % result.stage_number, 
+        self.json_filename = os.path.join(context.report_dir, 'stage%s' % result.stage_number,
                                           'finalphasegain-%s.json' % self.ms)
 
     def plot(self):
@@ -146,17 +144,15 @@ class finalphaseGainPerAntennaChart(object):
         result = self.result
         m = context.observing_run.measurement_sets[0]
         
-        numAntenna = len(m.antennas)
-
+        nplots = len(m.antennas)
         plots = []
-        nplots=numAntenna
 
         LOG.info("Plotting final phase gain solutions")
 
         for ii in range(nplots):
 
-            filename='finalBPinitialgainphase'+str(ii)+'.png'
-            antPlot=str(ii)
+            filename = 'finalBPinitialgainphase'+str(ii)+'.png'
+            antPlot = str(ii)
             
             stage = 'stage%s' % result.stage_number
             stage_dir = os.path.join(context.report_dir, stage)
@@ -178,7 +174,8 @@ class finalphaseGainPerAntennaChart(object):
                                 antenna=antPlot, spw='', timerange='',
                                 coloraxis='spw', plotrange=[0, 0, -180, 180], symbolshape='circle',
                                 title='G table: finalBPinitialgain.tbl   Antenna: {!s}'.format(antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                xconnector='line')
 
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename + str(ex))
@@ -217,8 +214,7 @@ class finalbpSolAmpPerAntennaChart(object):
         result = self.result
         m = context.observing_run.measurement_sets[0]
         
-        numAntenna = len(m.antennas)
-
+        nplots = len(m.antennas)
         plots = []
 
         with casatools.TableReader(self.result.bpcaltable) as tb:
@@ -245,8 +241,6 @@ class finalbpSolAmpPerAntennaChart(object):
                 if maxphase > maxmaxphase:
                     maxmaxphase = maxphase
         ampplotmax = maxmaxamp
-
-        nplots = numAntenna
 
         LOG.info("Plotting amp bandpass solutions")
 
@@ -275,7 +269,8 @@ class finalbpSolAmpPerAntennaChart(object):
                                 antenna=antPlot, spw='', timerange='',
                                 coloraxis='spw', plotrange=[0, 0, 0, ampplotmax], symbolshape='circle',
                                 title='B table: {!s}   Antenna: {!s}'.format('finalBPcal.tbl', antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                xconnector='step')
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename + str(ex))
             else:
@@ -284,7 +279,7 @@ class finalbpSolAmpPerAntennaChart(object):
             try:
                 real_figfile = figfile
             
-                plot = logger.Plot(real_figfile, x_axis='Freq', y_axis='Amp',field='',
+                plot = logger.Plot(real_figfile, x_axis='Freq', y_axis='Amp', field='',
                                    parameters={'spw': '',
                                                'pol': '',
                                                'ant': antName,
@@ -315,8 +310,7 @@ class finalbpSolPhasePerAntennaChart(object):
         result = self.result
         m = context.observing_run.measurement_sets[0]
         
-        numAntenna = len(m.antennas)
-
+        nplots = len(m.antennas)
         plots = []
 
         with casatools.TableReader(self.result.bpcaltable) as tb:
@@ -329,29 +323,27 @@ class finalbpSolPhasePerAntennaChart(object):
         for rrow in rowlist:
             dataArr = dataVarCol[rrow]
             flagArr = flagVarCol[rrow]
-            amps=np.abs(dataArr)
-            phases=np.arctan2(np.imag(dataArr),np.real(dataArr))
-            good=np.logical_not(flagArr)
-            tmparr=amps[good]
-            if (len(tmparr)>0):
-                maxamp=np.max(amps[good])
-                if (maxamp>maxmaxamp):
-                    maxmaxamp=maxamp
-            tmparr=np.abs(phases[good])
-            if (len(tmparr)>0):
-                maxphase=np.max(np.abs(phases[good]))*180./math.pi
-                if (maxphase>maxmaxphase):
-                    maxmaxphase=maxphase
+            amps = np.abs(dataArr)
+            phases = np.arctan2(np.imag(dataArr), np.real(dataArr))
+            good = np.logical_not(flagArr)
+            tmparr = amps[good]
+            if len(tmparr) > 0:
+                maxamp = np.max(amps[good])
+                if (maxamp > maxmaxamp):
+                    maxmaxamp = maxamp
+            tmparr = np.abs(phases[good])
+            if len(tmparr) > 0:
+                maxphase = np.max(np.abs(phases[good]))*180./math.pi
+                if maxphase > maxmaxphase:
+                    maxmaxphase = maxphase
         phaseplotmax = maxmaxphase
-
-        nplots = numAntenna
 
         LOG.info("Plotting phase bandpass solutions")
 
         for ii in range(nplots):
 
-            filename='finalBPcal_phase'+str(ii)+'.png'
-            antPlot=str(ii)
+            filename = 'finalBPcal_phase'+str(ii)+'.png'
+            antPlot = str(ii)
             
             stage = 'stage%s' % result.stage_number
             stage_dir = os.path.join(context.report_dir, stage)
@@ -374,7 +366,8 @@ class finalbpSolPhasePerAntennaChart(object):
                                 coloraxis='spw', plotrange=[0, 0, -phaseplotmax, phaseplotmax],
                                 symbolshape='circle',
                                 title='B table: {!s}   Antenna: {!s}'.format('finalBPcal.tbl', antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                xconnector='step')
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename + str(ex))
             else:
@@ -414,10 +407,8 @@ class finalbpSolPhaseShortPerAntennaChart(object):
         result = self.result
         m = context.observing_run.measurement_sets[0]
         
-        numAntenna = len(m.antennas)
+        nplots = len(m.antennas)
         plots = []
-        
-        nplots = numAntenna
 
         LOG.info("Plotting phase short gaincal")
 
@@ -446,7 +437,8 @@ class finalbpSolPhaseShortPerAntennaChart(object):
                                 antenna=antPlot, spw='', timerange='',
                                 coloraxis='spw', plotrange=[0, 0, -180, 180], symbolshape='circle',
                                 title='G table: phaseshortgaincal.tbl   Antenna: {!s}'.format(antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                xconnector='line')
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename + str(ex))
             else:
@@ -484,7 +476,7 @@ class finalAmpTimeCalPerAntennaChart(object):
         result = self.result
         m = context.observing_run.measurement_sets[0]
         
-        numAntenna = len(m.antennas)
+        nplots = len(m.antennas)
 
         plots = []
         
@@ -495,8 +487,6 @@ class finalAmpTimeCalPerAntennaChart(object):
         good = np.logical_not(flgs)
         maxamp = np.max(amps[good])
         plotmax = max(2.0,maxamp)
-
-        nplots = numAntenna
 
         LOG.info("Plotting final amp timecal")
 
@@ -525,7 +515,8 @@ class finalAmpTimeCalPerAntennaChart(object):
                                 antenna=antPlot, spw='', timerange='',
                                 coloraxis='spw', plotrange=[0, 0, 0, plotmax], symbolshape='circle',
                                 title='G table: finalampgaincal.tbl   Antenna: {!s}'.format(antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                xconnector='line')
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename + str(ex))
             else:
@@ -563,7 +554,7 @@ class finalAmpFreqCalPerAntennaChart(object):
         result = self.result
         m = context.observing_run.measurement_sets[0]
         
-        numAntenna = len(m.antennas)
+        nplots = len(m.antennas)
 
         plots = []
 
@@ -574,8 +565,6 @@ class finalAmpFreqCalPerAntennaChart(object):
         good = np.logical_not(flgs)
         maxamp = np.max(amps[good])
         plotmax = max(2.0,maxamp)
-
-        nplots=numAntenna
 
         LOG.info("Plotting final amp freqcal")
 
@@ -604,7 +593,8 @@ class finalAmpFreqCalPerAntennaChart(object):
                                 antenna=antPlot, spw='', timerange='',
                                 coloraxis='spw', plotrange=[0, 0, 0, plotmax], symbolshape='circle',
                                 title='G table: finalampgaincal.tbl   Antenna: {!s}'.format(antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                xconnector='step')
                     
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename + str(ex))
@@ -645,11 +635,8 @@ class finalPhaseGainCalPerAntennaChart(object):
         result = self.result
         m = context.observing_run.measurement_sets[0]
         
-        numAntenna = len(m.antennas)
-
+        nplots = len(m.antennas)
         plots = []
-
-        nplots = numAntenna
 
         LOG.info("Plotting final phase freqcal")
 
@@ -678,7 +665,8 @@ class finalPhaseGainCalPerAntennaChart(object):
                                 antenna=antPlot, spw='', timerange='',
                                 coloraxis='spw', plotrange=[0, 0, -180, 180], symbolshape='circle',
                                 title='G table: finalphasegaincal.tbl   Antenna: {!s}'.format(antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                xconnector='line')
 
                 except Exception as ex:
                     LOG.warn("Problem with plotting " + filename + str(ex))
