@@ -428,18 +428,17 @@ class VLASetjy(basetask.StandardTaskTemplate):
                 spwkeys = setjy_dict[field_id].keys()
                 field = self.inputs.ms.get_fields(field_id)[0]
 
-                if field_id not in result.measurements.keys():
-                    if field.name not in result.measurements.keys():
-                        for spw_id in spwkeys:
-                            I = setjy_dict[field_id][spw_id]['fluxd'][0]
-                            Q = setjy_dict[field_id][spw_id]['fluxd'][1]
-                            U = setjy_dict[field_id][spw_id]['fluxd'][2]
-                            V = setjy_dict[field_id][spw_id]['fluxd'][3]
-                            flux = domain.FluxMeasurement(spw_id, I, Q=Q, U=U, V=V, origin=ORIGIN)
+                if inputs.refspectra[1] is -1:
+                    for spw_id in spwkeys:
+                        I = setjy_dict[field_id][spw_id]['fluxd'][0]
+                        Q = setjy_dict[field_id][spw_id]['fluxd'][1]
+                        U = setjy_dict[field_id][spw_id]['fluxd'][2]
+                        V = setjy_dict[field_id][spw_id]['fluxd'][3]
+                        flux = domain.FluxMeasurement(spw_id, I, Q=Q, U=U, V=V, origin=ORIGIN)
                     
-                            if spw_id not in spw_seen:
-                                result.measurements[field.identifier].append(flux)
-                                spw_seen.add(spw_id)
+                        if spw_id not in spw_seen:
+                            result.measurements[field.identifier].append(flux)
+                            spw_seen.add(spw_id)
 
         return result
 
