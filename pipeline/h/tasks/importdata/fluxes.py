@@ -424,7 +424,7 @@ def import_flux(output_dir, observing_run, filename=None):
                     # .. removing any existing measurements in these spws from
                     # these fields..
                     map(field.flux_densities.remove,
-                        [m for m in field.flux_densities if m.spw_id is spw_id])
+                        [m for m in field.flux_densities if m.spw_id == spw_id])
 
                     # .. and then updating with our new values
                     LOG.trace('Adding {} to spw {}'.format(measurement, spw_id))

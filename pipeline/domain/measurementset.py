@@ -120,7 +120,7 @@ class MeasurementSet(object):
                          if dd.spw is spw]
             elif isinstance(spw, int):
                 match = [dd for dd in self.data_descriptions
-                         if dd.spw.id is spw]        
+                         if dd.spw.id == spw]
         if id is not None:
             match = [dd for dd in self.data_descriptions if dd.id == id]
             
@@ -377,7 +377,7 @@ class MeasurementSet(object):
         if spw_id is not None:
             spw_id = int(spw_id)
             match = [spw for spw in self.spectral_windows 
-                     if spw.id is spw_id]
+                     if spw.id == spw_id]
             if match:
                 return match[0]
             else:

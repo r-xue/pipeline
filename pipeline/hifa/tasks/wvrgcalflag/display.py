@@ -161,7 +161,7 @@ class WVRPhaseVsBaselineChart(object):
                 # find the data description for this scan. Just one dd 
                 # expected.
                 dds = [dd for dd in scan.data_descriptions 
-                       if dd.spw.id is spw.id]
+                       if dd.spw.id == spw.id]
                 if len(dds) is not 1:
                     LOG.info('Bypassing plot generation for %s scan %s spw '
                              '%s. Expected 1 matching data description but '
