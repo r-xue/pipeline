@@ -68,7 +68,7 @@ class Statwt(basetask.StandardTaskTemplate):
                      'fitspw': '',
                      'fitcorr': '',
                      'combine': '',
-                     'minsamp': 10,
+                     'minsamp': 8,
                      'field': '',
                      'spw': '',
                      'datacolumn': 'corrected'}
