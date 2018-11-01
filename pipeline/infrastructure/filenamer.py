@@ -548,6 +548,11 @@ class CalibrationTable(NamingTemplate):
         calibration.
         """
         return self.extension('xyf0cal')
+    
+    def sdsky_cal(self):
+        """Set the filename extension as appropriate for a single
+        dish sky calibration."""
+        return self.extension('skycal')
 
     # Fit type convenience methods --------------------------------------------
 
@@ -810,6 +815,11 @@ class WvrgCalibrationTable(CalibrationTable):
     def __init__(self, other=None):
         super(WvrgCalibrationTable, self).__init__(other)
         self.wvrg_cal()
+        
+class SDSkyCalibrationTable(CalibrationTable):
+    def __init__(self, other=None):
+        super(SDSkyCalibrationTable, self).__init__(other)
+        self.sdsky_cal()
 
 
 if __name__ == '__main__':
