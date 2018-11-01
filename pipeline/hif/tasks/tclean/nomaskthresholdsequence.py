@@ -2,7 +2,6 @@ from __future__ import absolute_import
 
 import pipeline.infrastructure as infrastructure
 from .basecleansequence import BaseCleanSequence
-from .resultobjects import BoxResult
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -19,8 +18,6 @@ class NoMaskThresholdSequence(BaseCleanSequence):
         self.dr_corrected_sensitivity = sensitivity
         self.niter = niter
         self.iter = None
-        self.result = BoxResult()
-        self.sidelobe_ratio = -1
 
     def iteration(self, new_cleanmask='', pblimit_image=0.2, pblimit_cleanmask=0.3, spw=None, frequency_selection=None,
                   keep_iterating=None):

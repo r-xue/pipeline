@@ -15,7 +15,6 @@ class BaseCleanSequence:
         self.iter = None
         self.result = BoxResult()
 
-        self.sidelobe_ratio = None
         self.psf = None
         self.flux = None
 
@@ -29,7 +28,6 @@ class BaseCleanSequence:
         self.image_non_cleanmask_rms_list = []
         self.image_non_cleanmask_rms_min_list = []
         self.image_non_cleanmask_rms_max_list = []
-        self.island_peaks_list = []
         self.thresholds = []
         self.multiterm = multiterm
 
@@ -42,8 +40,6 @@ class BaseCleanSequence:
         self.iter = iter
         self.multiterm = multiterm
 
-        if self.sidelobe_ratio is None:
-            self.sidelobe_ratio = cbheuristic.psf_sidelobe_ratio(psf=psf, multiterm=multiterm)
         self.psf = psf
         self.flux = flux
 

@@ -28,8 +28,6 @@ Compute clean results from a list of specified targets.
        <allowed kind="enum">
          <value>auto</value>
          <value>centralregion</value>
-         <value>psf</value>
-         <value>psfiter</value>
          <value>none</value>
          <value>manual</value>
          <value></value>
@@ -96,11 +94,6 @@ Compute clean results from a list of specified targets.
   <param type="int" name="masklimit" subparam="true">
        <description>Times good mask pixels for cleaning</description>
        <value>4</value>
-  </param>
-
-  <param type="int" name="maxncleans" subparam="true">
-    <description>Maximum number of clean task calls</description>
-    <value>1</value>
   </param>
 
   <param type="bool" name="cleancontranges">
@@ -178,11 +171,6 @@ Compute clean results from a list of specified targets.
       </equals>
       <equals value="centralregion">
       </equals>
-      <equals value="psf">
-      </equals>
-      <equals value="psfiter">
-        <default param="maxncleans"><value type="int">10</value></default>
-      </equals>
       <equals value="none">
       </equals>
       <equals value="">
@@ -245,7 +233,7 @@ vis -- The list of input MeasurementSets. Defaults to the list of
     default: use all MeasurementSets in the context 
 
 hm_masking -- Clean masking mode. Options are 'centralregion',
-    'psf', 'psfiter', 'auto', 'manual' and 'none'
+    'auto', 'manual' and 'none'
     default: 'auto'
     example: 'manual'
 

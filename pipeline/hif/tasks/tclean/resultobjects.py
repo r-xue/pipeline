@@ -19,7 +19,6 @@ class BoxResult(basetask.Results):
         self.threshold = None
         self.sensitivity = None
         self.cleanmask = None
-        self.island_peaks = None
 
     def merge_with_context(self, context):
         pass

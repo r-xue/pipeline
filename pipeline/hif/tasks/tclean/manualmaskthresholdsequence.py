@@ -3,7 +3,6 @@ from __future__ import absolute_import
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure as infrastructure
 from .basecleansequence import BaseCleanSequence
-from .resultobjects import BoxResult
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -22,8 +21,6 @@ class ManualMaskThresholdSequence(BaseCleanSequence):
         self.channel_rms_factor = channel_rms_factor
         self.niter = niter
         self.iter = None
-        self.result = BoxResult()
-        self.sidelobe_ratio = -1
 
     def iteration(self, new_cleanmask, pblimit_image=-1, pblimit_cleanmask=-1, spw=None, frequency_selection=None, keep_iterating=None):
 

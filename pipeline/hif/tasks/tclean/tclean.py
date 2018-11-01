@@ -15,8 +15,6 @@ from pipeline.infrastructure import task_registry
 from . import cleanbase
 from .automaskthresholdsequence import AutoMaskThresholdSequence
 from .imagecentrethresholdsequence import ImageCentreThresholdSequence
-from .iterativesequence import IterativeSequence
-from .iterativesequence2 import IterativeSequence2
 from .manualmaskthresholdsequence import ManualMaskThresholdSequence
 from .nomaskthresholdsequence import NoMaskThresholdSequence
 from .resultobjects import TcleanResult
@@ -64,12 +62,6 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
     def imagename(self, value):
         return value.replace('STAGENUMBER', str(self.context.stage))
 
-    maxncleans = vdp.VisDependentProperty(default=10)
-    @maxncleans.convert
-    def maxncleans(self, value):
-        # the original code ignored any user value and returned 10!
-        return 10
-
     specmode = vdp.VisDependentProperty(default=None)
     @specmode.convert
     def specmode(self, value):
@@ -110,7 +102,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
                  restoringbeam=None, hm_masking=None, hm_sidelobethreshold=None, hm_noisethreshold=None,
                  hm_lownoisethreshold=None, hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None,
                  hm_dogrowprune=None, hm_minpercentchange=None, hm_cleaning=None,
-                 iter=None, mask=None, niter=None, threshold=None, tlimit=None, masklimit=None, maxncleans=None,
+                 iter=None, mask=None, niter=None, threshold=None, tlimit=None, masklimit=None,
                  calcsb=None, cleancontranges=None, parallel=None,
                  # Extra parameters not in the CLI task interface
                  weighting=None, robust=None, uvtaper=None, scales=None, nsigma=None, cycleniter=None, cyclefactor=None,
@@ -141,7 +133,6 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
         self.hm_cleaning = hm_cleaning
         self.image_heuristics = heuristics
         self.masklimit = masklimit
-        self.maxncleans = maxncleans
         self.nbin = nbin
         self.nsigma = nsigma
         self.reffreq = reffreq
@@ -448,51 +439,39 @@ class Tclean(cleanbase.CleanBase):
         else:
             inputs.spwsel_topo = ['%s' % inputs.spw] * len(inputs.vis)
 
-        # Choose cleaning method.
-        if inputs.hm_masking in ('centralregion', 'auto', 'manual', 'none'):
-            # Determine threshold
-            if inputs.hm_cleaning == 'manual':
+        # Determine threshold
+        if inputs.hm_cleaning == 'manual':
+            threshold = inputs.threshold
+        elif inputs.hm_cleaning == 'sensitivity':
+            raise Exception('sensitivity threshold not yet implemented')
+        elif inputs.hm_cleaning == 'rms':
+            if inputs.threshold not in (None, '', 0.0):
                 threshold = inputs.threshold
-            elif inputs.hm_cleaning == 'sensitivity':
-                raise Exception('sensitivity threshold not yet implemented')
-            elif inputs.hm_cleaning == 'rms':
-                if inputs.threshold not in (None, '', 0.0):
-                    threshold = inputs.threshold
-                else:
-                    threshold = '%.3gJy' % (inputs.tlimit * sensitivity)
+            else:
+                threshold = '%.3gJy' % (inputs.tlimit * sensitivity)
 
-            # Choose sequence manager
-            # Central mask based on PB
-            if inputs.hm_masking == 'centralregion':
-                sequence_manager = ImageCentreThresholdSequence(
-                    gridder=inputs.gridder, threshold=threshold,
-                    sensitivity=sensitivity, niter=inputs.niter)
-            # Auto-boxing
-            elif inputs.hm_masking == 'auto':
-                sequence_manager = AutoMaskThresholdSequence(
-                    gridder=inputs.gridder, threshold=threshold,
-                    sensitivity=sensitivity, niter=inputs.niter)
-            # Manually supplied mask
-            elif inputs.hm_masking == 'manual':
-                sequence_manager = ManualMaskThresholdSequence(
-                    mask=inputs.mask,
-                    gridder=inputs.gridder, threshold=threshold,
-                    sensitivity=sensitivity, niter=inputs.niter)
-            # No mask
-            elif inputs.hm_masking == 'none':
-                sequence_manager = NoMaskThresholdSequence(
-                    gridder=inputs.gridder, threshold=threshold,
-                    sensitivity=sensitivity, niter=inputs.niter)
-
-        elif inputs.hm_masking == 'psfiter':
-            sequence_manager = IterativeSequence(
-                maxncleans=inputs.maxncleans,
-                sensitivity=sensitivity)
-
-        elif inputs.hm_masking == 'psfiter2':
-            sequence_manager = IterativeSequence2(
-                maxncleans=inputs.maxncleans,
-                sensitivity=sensitivity)
+        # Choose sequence manager
+        # Central mask based on PB
+        if inputs.hm_masking == 'centralregion':
+            sequence_manager = ImageCentreThresholdSequence(
+                gridder=inputs.gridder, threshold=threshold,
+                sensitivity=sensitivity, niter=inputs.niter)
+        # Auto-boxing
+        elif inputs.hm_masking == 'auto':
+            sequence_manager = AutoMaskThresholdSequence(
+                gridder=inputs.gridder, threshold=threshold,
+                sensitivity=sensitivity, niter=inputs.niter)
+        # Manually supplied mask
+        elif inputs.hm_masking == 'manual':
+            sequence_manager = ManualMaskThresholdSequence(
+                mask=inputs.mask,
+                gridder=inputs.gridder, threshold=threshold,
+                sensitivity=sensitivity, niter=inputs.niter)
+        # No mask
+        elif inputs.hm_masking == 'none':
+            sequence_manager = NoMaskThresholdSequence(
+                gridder=inputs.gridder, threshold=threshold,
+                sensitivity=sensitivity, niter=inputs.niter)
 
         result = self._do_iterative_imaging(sequence_manager=sequence_manager)
 

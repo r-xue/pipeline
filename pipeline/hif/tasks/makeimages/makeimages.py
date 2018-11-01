@@ -33,7 +33,6 @@ class MakeImagesInputs(vdp.StandardInputs):
     hm_noisethreshold = vdp.VisDependentProperty(default=-999.0)
     hm_sidelobethreshold = vdp.VisDependentProperty(default=-999.0)
     masklimit = vdp.VisDependentProperty(default=2.0)
-    maxncleans = vdp.VisDependentProperty(default=10)
     parallel = vdp.VisDependentProperty(default='automatic')
     tlimit = vdp.VisDependentProperty(default=2.0)
     weighting = vdp.VisDependentProperty(default='briggs')
@@ -46,7 +45,7 @@ class MakeImagesInputs(vdp.StandardInputs):
                  hm_masking=None, hm_sidelobethreshold=None, hm_noisethreshold=None,
                  hm_lownoisethreshold=None, hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None,
                  hm_dogrowprune=None, hm_minpercentchange=None,
-                 hm_cleaning=None, tlimit=None, masklimit=None, maxncleans=None,
+                 hm_cleaning=None, tlimit=None, masklimit=None,
                  cleancontranges=None, calcsb=None, mosweight=None,
                  parallel=None,
                  # Extra parameters
@@ -69,7 +68,6 @@ class MakeImagesInputs(vdp.StandardInputs):
         self.hm_cleaning = hm_cleaning
         self.tlimit = tlimit
         self.masklimit = masklimit
-        self.maxncleans = maxncleans
         self.cleancontranges = cleancontranges
         self.calcsb = calcsb
         self.mosweight = mosweight
@@ -290,7 +288,6 @@ class CleanTaskFactory(object):
                 # For the time being the target imaging uses the
                 # inner quarter. Other methods will be made available
                 # later.
-                #datatask_args['hm_masking'] = 'psfiter'
                 task_args['hm_masking'] = 'auto'
             else:
                 task_args['hm_masking'] = 'auto'
@@ -311,11 +308,6 @@ class CleanTaskFactory(object):
             task_args['hm_cleaning'] = 'rms'
         else:
             task_args['hm_cleaning'] = inputs.hm_cleaning
-
-        if task_args['hm_masking'] == 'psfiter':
-            task_args['maxncleans'] = inputs.maxncleans
-        else:
-            task_args['maxncleans'] = 1
 
         if target['vis']:
             task_args['vis'] = target['vis']
