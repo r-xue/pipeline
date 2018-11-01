@@ -9,6 +9,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.sdfilenamer as filenamer
+from pipeline.h.heuristics import caltable as caltable_heuristic
 import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tasks
@@ -143,13 +144,16 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
             # output file
             reference_field_name = ms.get_fields(reference_id)[0].clean_name
             if myargs['outfile'] is None or len(myargs['outfile']) == 0:
-                namer = filenamer.SkyCalibrationTable()
-                # caltable name should be <ASDM uid>.ms.<FIELD>.skycal.tbl
-                #asdm = common.asdm_name_from_ms(ms)
-                asdm = ms.basename
-                namer.asdm(asdm)
-                namer.field(reference_field_name)
-                myargs['outfile'] = os.path.join(self.inputs.output_dir, namer.get_filename())
+                namer = caltable_heuristic.SDSkyCaltable()
+                # filenamer requires field name instead of id
+                myargs['field'] = reference_field_name
+                try:
+                    # we temporarily need 'vis' 
+                    myargs['vis'] = myargs['infile']
+                    myargs['outfile'] = namer.calculate(output_dir=self.inputs.output_dir,
+                                                        stage=self.inputs.context.stage, **myargs)
+                finally:
+                    del myargs['vis']
             else:
                 myargs['outfile'] = myargs['outfile'] + '.%s'%(reference_field_name)
                 
