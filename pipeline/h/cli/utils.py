@@ -86,9 +86,6 @@ def execute_task(context, casa_task, casa_args):
     if accept_results and not dry_run:
         _merge_results(context, results)
 
-    # before returning them
-    gc.collect()
-
     tracebacks = utils.get_tracebacks(results)
     if len(tracebacks) > 0:
         previous_tracebacks_as_string = "{}".format("\n".join([tb for tb in tracebacks]))

@@ -264,8 +264,6 @@ def executeppr(pprXmlFile, importonly=True, breakpoint='breakpoint',
                     "Error: Failed to update context for " + pipeline_task_name,
                     echo_to_screen=echo_to_screen)
                 raise
-            finally:
-                gc.collect()
 
             if pipeline_task_name == 'ImportData' and importonly:
                 casatools.post_to_log(

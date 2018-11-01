@@ -184,8 +184,6 @@ def reduce(vis=None, infiles=None, procedure='procedure_hifa_calimage.xml',
                 LOG.error('Unhandled error in recipereducer while running pipeline task %s.' % task._hif_call)
                 traceback.print_exc()
                 return context
-            finally:
-                gc.collect()
 
             tracebacks = utils.get_tracebacks(result)
             if len(tracebacks) > 0:
