@@ -12,23 +12,11 @@ class BaseCleanSequence:
     def __init__(self, multiterm=None, gridder='', threshold='0.0mJy', sensitivity=0.0, niter=0):
         """Constructor.
         """
-        self.iter = None
         self.result = BoxResult()
 
-        self.psf = None
         self.flux = None
 
-        self.iters = []
         self.residuals = []
-        self.cleanmasks = []
-        self.model_sums = []
-        self.residual_maxs = []
-        self.residual_mins = []
-        self.residual_non_cleanmask_rms_list = []
-        self.image_non_cleanmask_rms_list = []
-        self.image_non_cleanmask_rms_min_list = []
-        self.image_non_cleanmask_rms_max_list = []
-        self.thresholds = []
         self.multiterm = multiterm
         self.gridder = gridder
         self.threshold = threshold
@@ -36,15 +24,13 @@ class BaseCleanSequence:
         self.dr_corrected_sensitivity = sensitivity
         self.niter = niter
 
-    def iteration_result(self, iter, psf, model, restored, residual,
-                         flux, cleanmask, threshold=None, pblimit_image=0.2, pblimit_cleanmask=0.3,
+    def iteration_result(self, model, restored, residual,
+                         flux, cleanmask, pblimit_image=0.2, pblimit_cleanmask=0.3,
                          cont_freq_ranges=None):
         """This method sets the iteration counter and returns statistics for
         that iteration.
         """
-        self.iter = iter
 
-        self.psf = psf
         self.flux = flux
 
         model_sum, \
@@ -67,17 +53,7 @@ class BaseCleanSequence:
         LOG.info('Residual peak / scaled MAD: %s', peak_over_rms)
 
         # Append the statistics.
-        self.iters.append(iter)
         self.residuals.append(residual)
-        self.cleanmasks.append(cleanmask)
-        self.thresholds.append(threshold)
-        self.model_sums.append(model_sum)
-        self.residual_maxs.append(residual_max)
-        self.residual_mins.append(residual_min)
-        self.residual_non_cleanmask_rms_list.append(residual_non_cleanmask_rms)
-        self.image_non_cleanmask_rms_list.append(nonpbcor_image_non_cleanmask_rms)
-        self.image_non_cleanmask_rms_min_list.append(nonpbcor_image_non_cleanmask_rms_min)
-        self.image_non_cleanmask_rms_max_list.append(nonpbcor_image_non_cleanmask_rms_max)
 
         return model_sum, \
                residual_cleanmask_rms, \
@@ -90,7 +66,7 @@ class BaseCleanSequence:
                pbcor_image_min, pbcor_image_max, \
                residual_robust_rms
 
-    def iteration(self, new_cleanmask):
+    def iteration(self):
         """The base boxworker allows only one iteration.
         """
 

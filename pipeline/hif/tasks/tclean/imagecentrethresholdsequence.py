@@ -12,18 +12,18 @@ LOG = infrastructure.get_logger(__name__)
 
 class ImageCentreThresholdSequence(BaseCleanSequence):
 
-    def iteration(self, new_cleanmask, pblimit_image=0.2, pblimit_cleanmask=0.3, spw=None, frequency_selection=None,
-                  keep_iterating=None):
+    def iteration(self, new_cleanmask=None, pblimit_image=0.2, pblimit_cleanmask=0.3, spw=None, frequency_selection=None,
+                  keep_iterating=None, iteration=None):
 
         if self.multiterm:
             extension = '.tt0'
         else:
             extension = ''
 
-        if self.iter is None:
+        if iteration is None:
             raise Exception('no data for iteration')
 
-        elif self.iter == 0:
+        elif iteration == 1:
             # next iteration, 1, should have mask covering central area:
             #   flux > 0.3 (or adjusted for image size) when flux available
             #   centre quarter otherwise

@@ -530,9 +530,9 @@ class Tclean(cleanbase.CleanBase):
          pbcor_image_min,
          pbcor_image_max,
          residual_robust_rms) = \
-            sequence_manager.iteration_result(iter=0, psf=result.psf, model=result.model,
+            sequence_manager.iteration_result(model=result.model,
                                               restored=result.image, residual=result.residual,
-                                              flux=result.flux, cleanmask=None, threshold=None,
+                                              flux=result.flux, cleanmask=None,
                                               pblimit_image=self.pblimit_image,
                                               pblimit_cleanmask=self.pblimit_cleanmask,
                                               cont_freq_ranges=self.cont_freq_ranges)
@@ -596,11 +596,13 @@ class Tclean(cleanbase.CleanBase):
 
             # perform an iteration.
             if (inputs.specmode == 'cube') and (not inputs.cleancontranges):
-                seq_result = sequence_manager.iteration(new_cleanmask, self.pblimit_image, self.pblimit_cleanmask,
-                                                        inputs.spw, inputs.spwsel_lsrk, keep_iterating=keep_iterating)
+                seq_result = sequence_manager.iteration(new_cleanmask, self.pblimit_image,
+                                                        self.pblimit_cleanmask,inputs.spw, inputs.spwsel_lsrk,
+                                                        keep_iterating=keep_iterating, iteration=iteration)
             else:
-                seq_result = sequence_manager.iteration(new_cleanmask, self.pblimit_image, self.pblimit_cleanmask,
-                                                        keep_iterating=keep_iterating)
+                seq_result = sequence_manager.iteration(new_cleanmask, self.pblimit_image,
+                                                        self.pblimit_cleanmask, keep_iterating=keep_iterating,
+                                                        iteration=iteration)
 
             # Check the iteration status.
             if not seq_result.iterating:
@@ -644,10 +646,9 @@ class Tclean(cleanbase.CleanBase):
              pbcor_image_min,
              pbcor_image_max,
              residual_robust_rms) = \
-                sequence_manager.iteration_result(iter=iteration, psf=result.psf, model=result.model,
+                sequence_manager.iteration_result(model=result.model,
                                                   restored=result.image, residual=result.residual,
                                                   flux=result.flux, cleanmask=new_cleanmask,
-                                                  threshold=seq_result.threshold,
                                                   pblimit_image=self.pblimit_image,
                                                   pblimit_cleanmask=self.pblimit_cleanmask,
                                                   cont_freq_ranges=self.cont_freq_ranges)

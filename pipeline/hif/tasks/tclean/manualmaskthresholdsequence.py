@@ -17,12 +17,13 @@ class ManualMaskThresholdSequence(BaseCleanSequence):
         self.mask = mask
         self.channel_rms_factor = channel_rms_factor
 
-    def iteration(self, new_cleanmask, pblimit_image=-1, pblimit_cleanmask=-1, spw=None, frequency_selection=None, keep_iterating=None):
+    def iteration(self, new_cleanmask=None, pblimit_image=-1, pblimit_cleanmask=-1, spw=None, frequency_selection=None,
+                  keep_iterating=None, iteration=None):
 
-        if self.iter is None:
+        if iteration is None:
             raise Exception('no data for iteration')
 
-        elif self.iter == 0:
+        if iteration == 1:
             tbTool = casatools.table
             tbTool.open(self.mask)
             tbTool.copy(new_cleanmask)

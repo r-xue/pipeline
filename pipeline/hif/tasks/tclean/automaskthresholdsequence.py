@@ -12,24 +12,24 @@ LOG = infrastructure.get_logger(__name__)
 
 class AutoMaskThresholdSequence(BaseCleanSequence):
 
-    def iteration(self, new_cleanmask, pblimit_image=-1, pblimit_cleanmask=-1, spw=None, frequency_selection=None,
-                  keep_iterating=False):
+    def iteration(self, new_cleanmask=None, pblimit_image=-1, pblimit_cleanmask=-1, spw=None, frequency_selection=None,
+                  keep_iterating=False, iteration=None):
 
         if self.multiterm:
             extension = '.tt0'
         else:
             extension = ''
 
-        if self.iter is None:
+        if iteration is None:
             raise Exception('no data for iteration')
 
-        elif self.iter == 0:
+        elif iteration == 1:
             self.result.cleanmask = new_cleanmask
             self.result.threshold = self.threshold
             self.result.sensitivity = self.sensitivity
             self.result.niter = self.niter
             self.result.iterating = True
-        elif self.iter == 1 and keep_iterating:
+        elif iteration == 2 and keep_iterating:
             if self.flux not in (None, ''):
                 # Make a circular one
                 cm = casatools.image.newimagefromimage(infile=self.flux+extension, outfile=new_cleanmask,
