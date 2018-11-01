@@ -19,9 +19,9 @@ from pipeline.infrastructure import task_registry
 
 LOG = infrastructure.get_logger(__name__)
 
-# Fit the contininuum in the UV plane using the CASA style
-# uvcontfit task written by the pipeline.
 
+# Fit the continuum in the UV plane using the CASA style
+# uvcontfit task written by the pipeline.
 class UVcontFitInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
@@ -65,11 +65,10 @@ class UVcontFitInputs(vdp.StandardInputs):
         else:
             return ','.join([str(i) for i in field_ids])
 
-    intent = vdp.VisDependentProperty(default = 'TARGET')
+    intent = vdp.VisDependentProperty(default='TARGET')
 
     # Find all the the spws with the specified intent. These may be a subset of the
     # science spws which include calibration only spws.
-
     @vdp.VisDependentProperty
     def spw(self):
         science_target_intents = set(self.intent.split(','))
@@ -94,14 +93,12 @@ class UVcontFitInputs(vdp.StandardInputs):
 
         return ','.join([str(spw.id) for spw in science_target_spws])
 
-    combine = vdp.VisDependentProperty(default = '')
-    solint = vdp.VisDependentProperty(default = 'int')
-    fitorder = vdp.VisDependentProperty(default = 1)
+    combine = vdp.VisDependentProperty(default='')
+    solint = vdp.VisDependentProperty(default='int')
+    fitorder = vdp.VisDependentProperty(default=1)
 
-
-    def __init__(self, context, output_dir=None, vis=None,
-        caltable=None, contfile=None, field=None, intent=None, spw=None,
-        combine=None, solint=None, fitorder=None):
+    def __init__(self, context, output_dir=None, vis=None, caltable=None, contfile=None, field=None, intent=None,
+                 spw=None, combine=None, solint=None, fitorder=None):
 
         super(UVcontFitInputs, self).__init__()
 
@@ -159,11 +156,11 @@ class UVcontFit(basetask.StandardTaskTemplate):
         inputs = self.inputs
 
         # Check for size mitigation errors.
-        if 'status' in inputs.context.size_mitigation_parameters:
-            if inputs.context.size_mitigation_parameters['status'] == 'ERROR':
-                result = UVcontFitResults()
-                result.mitigation_error = True
-                return result
+        if 'status' in inputs.context.size_mitigation_parameters and \
+                inputs.context.size_mitigation_parameters['status'] == 'ERROR':
+            result = UVcontFitResults()
+            result.mitigation_error = True
+            return result
 
         # Compute the spw list from the frequency selection string
         #    This is passed to callibrary
@@ -188,11 +185,11 @@ class UVcontFit(basetask.StandardTaskTemplate):
             # Create the callibrary object
             calto = callibrary.CalTo(vis=inputs.vis, spw=orig_spw, intent=inputs.intent)
             calfrom = callibrary.CalFrom(caltable,
-                                     caltype='uvcont',
-                                     spwmap=[],
-                                     interp='',
-                                     calwt=False)
-            calapps.append (callibrary.CalApplication(calto, calfrom))
+                                         caltype='uvcont',
+                                         spwmap=[],
+                                         interp='',
+                                         calwt=False)
+            calapps.append(callibrary.CalApplication(calto, calfrom))
 
         else:
             # Get the continuum ranges
@@ -223,8 +220,8 @@ class UVcontFit(basetask.StandardTaskTemplate):
                 #     Not ideal because of the way inputs works but ...
 
                 caltable = uvcaltable.UVcontCaltable()
-                caltable = caltable(output_dir=inputs.output_dir,
-                    stage=inputs.context.stage, vis=inputs.vis, source=sname)
+                caltable = caltable(output_dir=inputs.output_dir, stage=inputs.context.stage, vis=inputs.vis,
+                                    source=sname)
                 spwdict[sname] = spwstr
 
                 # Fire off task
@@ -236,10 +233,10 @@ class UVcontFit(basetask.StandardTaskTemplate):
                 # Create the callibrary object
                 calto = callibrary.CalTo(vis=inputs.vis, field=sname, spw=orig_spw, intent=inputs.intent)
                 calfrom = callibrary.CalFrom(caltable,
-                                     caltype='uvcont',
-                                     spwmap=[],
-                                     interp='',
-                                     calwt=False)
+                                             caltype='uvcont',
+                                             spwmap=[],
+                                             interp='',
+                                             calwt=False)
                 calapps.append(callibrary.CalApplication(calto, calfrom))
                 
                 inputs.intent = orig_intent
@@ -247,7 +244,6 @@ class UVcontFit(basetask.StandardTaskTemplate):
         return UVcontFitResults(spwdict=spwdict, pool=calapps)
 
     def analyse(self, result):
-
         # With no best caltable to find, our task is simply to set the one
         # caltable as the best result
 
@@ -289,34 +285,43 @@ class UVcontFit(basetask.StandardTaskTemplate):
             else:
                 rep_field_id = source_fields[0].id
                 rep_field_name = source_fields[0].name
-            LOG.info('Representative field for MS %s source %s is field %s with id %d' % (inputs.ms.basename, sname, rep_field_name, rep_field_id))
+
+            LOG.info('Representative field for MS %s source %s is field %s with id %d' % (inputs.ms.basename, sname,
+                                                                                          rep_field_name, rep_field_id))
             cranges_spwsel[sname] = collections.OrderedDict()
             for spw_id in [str(spw.id) for spw in inputs.ms.get_spectral_windows(task_arg=inputs.spw)]:
+
                 # convert real to virtual spw id
                 virtual_spw_id = str(inputs.context.observing_run.real2virtual_spw_id (int(spw_id), inputs.ms))
-                #cranges_spwsel[sname][spw_id] = contfile_handler.get_merged_selection(sname, spw_id)
+                # cranges_spwsel[sname][spw_id] = contfile_handler.get_merged_selection(sname, spw_id)
                 cranges_spwsel[sname][spw_id] = contfile_handler.get_merged_selection(sname, virtual_spw_id)
+
                 if not cranges_spwsel[sname][spw_id]:
-                    LOG.info('No continuum region detection attempted for MS %s source %s spw %d' % (inputs.ms.basename, sname, int(spw_id)))
+                    LOG.info('No continuum region detection attempted for MS %s source %s spw %d' % (
+                        inputs.ms.basename, sname, int(spw_id)))
                     continue
                 elif cranges_spwsel[sname][spw_id] in ['NONE']:
-                    LOG.warn('Continuum region detection failed for MS %s source %s spw %d' % (inputs.ms.basename, sname, int(spw_id)))
+                    LOG.warn('Continuum region detection failed for MS %s source %s spw %d' % (
+                        inputs.ms.basename, sname, int(spw_id)))
                     continue
                 else:
-                    LOG.info('Input continuum frequency ranges for MS %s and spw %d are %s' % (inputs.ms.basename, int(spw_id), cranges_spwsel[sname][spw_id]))
+                    LOG.info('Input continuum frequency ranges for MS %s and spw %d are %s' % (
+                        inputs.ms.basename, int(spw_id), cranges_spwsel[sname][spw_id]))
                 try:
-                    #freq_ranges, chan_ranges, aggregate_lsrk_bw = contfile_handler.lsrk_to_topo(cranges_spwsel[sname][spw_id],
-                        #[inputs.vis], [rep_field_id], int(spw_id), self.inputs.context.observing_run)
-                    freq_ranges, chan_ranges, aggregate_lsrk_bw = contfile_handler.lsrk_to_topo(cranges_spwsel[sname][spw_id],
-                        [inputs.vis], [rep_field_id], int(virtual_spw_id), self.inputs.context.observing_run)
-                    LOG.info('Output continuum frequency range for MS %s and spw %d are %s' % (inputs.ms.basename, int(spw_id),
-                        freq_ranges[0]))
-                    LOG.info('Output continuum channel ranges for MS %s and spw %d are %s' % (inputs.ms.basename, int(spw_id),
-                       chan_ranges[0]))
+                    # freq_ranges, chan_ranges, aggregate_lsrk_bw = contfile_handler.lsrk_to_topo(
+                    #     cranges_spwsel[sname][spw_id], [inputs.vis], [rep_field_id], int(spw_id),
+                    #     self.inputs.context.observing_run)
+                    freq_ranges, chan_ranges, aggregate_lsrk_bw = contfile_handler.lsrk_to_topo(
+                        cranges_spwsel[sname][spw_id], [inputs.vis], [rep_field_id], int(virtual_spw_id),
+                        self.inputs.context.observing_run)
+                    LOG.info('Output continuum frequency range for MS %s and spw %d are %s' % (
+                        inputs.ms.basename, int(spw_id), freq_ranges[0]))
+                    LOG.info('Output continuum channel ranges for MS %s and spw %d are %s' % (
+                        inputs.ms.basename, int(spw_id), chan_ranges[0]))
                     cranges_spwsel[sname][spw_id] = freq_ranges[0]
                 except:
-                    LOG.info('Output continuum frequency ranges for MS %s and spw %d are %s' % (inputs.ms.basename, int(spw_id),
-                        cranges_spwsel[sname][spw_id]))
+                    LOG.info('Output continuum frequency ranges for MS %s and spw %d are %s' % (
+                        inputs.ms.basename, int(spw_id), cranges_spwsel[sname][spw_id]))
 
         return cranges_spwsel
 
@@ -324,7 +329,7 @@ class UVcontFit(basetask.StandardTaskTemplate):
     # estimates the phase center of a mosaic.
     #    This and the imaging code heuristics should be refactored at
     #    some point.
-    def _get_rep_field (self, source_fields):
+    def _get_rep_field(self, source_fields):
 
         # Initialize
         rep_field = -1
