@@ -556,9 +556,10 @@ class Tclean(cleanbase.CleanBase):
                                                            residual_max, new_threshold)
         sequence_manager.niter = new_niter
 
-        keep_iterating = False
+        keep_iterating = True
         iteration = 1
-        while True:
+        do_not_copy_mask = False
+        while keep_iterating:
             # Create the name of the next clean mask from the root of the 
             # previous residual image.
             rootname, ext = os.path.splitext(result.residual)
@@ -604,19 +605,10 @@ class Tclean(cleanbase.CleanBase):
                                                         self.pblimit_cleanmask, keep_iterating=keep_iterating,
                                                         iteration=iteration)
 
-            # Check the iteration status.
-            if not seq_result.iterating:
-                break
-
             # Use previous iterations's products as starting point
             old_pname = '%s.iter%s' % (rootname, iteration-1)
             new_pname = '%s.iter%s' % (rootname, iteration)
-            self.copy_products(os.path.basename(old_pname), os.path.basename(new_pname))
-            if keep_iterating:
-                # Delete existing (iter2) mask from autoboxing since we
-                # now switch to a user supplied mask.
-                rmtree_job = casa_tasks.rmtree('%s.iter%s.mask' % (rootname, iteration))
-                self._executor.execute(rmtree_job)
+            self.copy_products(os.path.basename(old_pname), os.path.basename(new_pname), ignore='mask' if do_not_copy_mask else None)
 
             # Determine the cleaning threshold
             if 'VLASS-SE' in self.image_heuristics.imaging_mode and inputs.hm_masking == 'auto':
@@ -653,32 +645,11 @@ class Tclean(cleanbase.CleanBase):
                                                   pblimit_cleanmask=self.pblimit_cleanmask,
                                                   cont_freq_ranges=self.cont_freq_ranges)
 
-            # Check for zero automask
-            if (inputs.hm_masking == 'auto') and (result.tclean_stopcode == 7):
-                if inputs.intent in ('BANDPASS', 'PHASE'):
-                    if residual_max / residual_robust_rms > 10.0:
-                        LOG.warn('No automatic clean mask was found despite clean residual peak / scaled MAD > 10, '
-                                 'switched to pb-based mask and tlimit=4. '
-                                 'Field %s Intent %s SPW %s' % (inputs.field, inputs.intent, inputs.spw))
-                    else:
-                        LOG.warn('No automatic clean mask was found, switched to pb-based mask and tlimit=4. Field %s '
-                                 'Intent %s SPW %s' % (inputs.field, inputs.intent, inputs.spw))
-                    # If no automask is found, always try the simple circular mask for calibrators
-                    inputs.hm_masking = 'centralregion'
-                    keep_iterating = True
-                elif inputs.intent in ('CHECK', 'TARGET'):
-                    if residual_max / residual_robust_rms > 10.0:
-                        if (inputs.specmode == 'cube') or (dirty_dynamic_range <= 30.0):
-                            LOG.warn('No automatic clean mask was found despite clean residual peak / scaled MAD > 10, '
-                                     'check the results. '
-                                     'Field %s Intent %s SPW %s' % (inputs.field, inputs.intent, inputs.spw))
-                        else:
-                            LOG.warn('No automatic clean mask was found despite clean residual peak / scaled MAD > 10, '
-                                     'switched to pb-based mask and tlimit=4. '
-                                     'Field %s Intent %s SPW %s' % (inputs.field, inputs.intent, inputs.spw))
-                            # If no automask is found, try the simple circular mask for high DR continuum
-                            inputs.hm_masking = 'centralregion'
-                            keep_iterating = True
+            keep_iterating, hm_masking = self.image_heuristics.keep_iterating(iteration, inputs.hm_masking, result.tclean_stopcode,
+                                                                              dirty_dynamic_range, residual_max, residual_robust_rms,
+                                                                              inputs.field, inputs.intent, inputs.spw)
+            do_not_copy_mask = hm_masking != inputs.hm_masking
+            inputs.hm_masking = hm_masking
 
             # Keep image cleanmask area min and max and non-cleanmask area RMS for weblog and QA
             result.set_image_min(pbcor_image_min)

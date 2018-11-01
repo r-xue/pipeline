@@ -1706,3 +1706,12 @@ class ImageParamsHeuristics(object):
         # Currently only ALMA has decided to use this flag (CAS-11840). So
         # the default is set to False here.
         return False
+
+    def keep_iterating(self, iteration, hm_masking, tclean_stopcode, dirty_dynamic_range, residual_max, residual_robust_rms, field, intent, spw):
+
+        '''Determine if another tclean iteration is necessary.'''
+
+        if iteration == 0:
+            return True, hm_masking
+        else:
+            return False, hm_masking
