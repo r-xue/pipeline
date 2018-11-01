@@ -8,7 +8,6 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.casatools as casatools
-import pipeline.infrastructure.sdfilenamer as filenamer
 from pipeline.h.heuristics import caltable as caltable_heuristic
 import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.vdp as vdp
@@ -102,7 +101,7 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
 
     def prepare(self):
         args = self.inputs.to_casa_args()
-        LOG.trace('args: %s' % args)
+        LOG.trace('args: {}'.format(args))
         
         # retrieve ms domain object
         ms = self.inputs.ms
@@ -155,23 +154,23 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
                 finally:
                     del myargs['vis']
             else:
-                myargs['outfile'] = myargs['outfile'] + '.%s'%(reference_field_name)
+                myargs['outfile'] = myargs['outfile'] + '.{}'.format(reference_field_name)
                 
             # field
             myargs['field'] = str(reference_id)
                 
-            LOG.debug('args for tsdcal: %s'%(myargs))
+            LOG.debug('args for sdcal: {}'.format(myargs))
     
             # create job
             job = casa_tasks.sdcal(**myargs)
     
             # execute job
             tb = casatools.table
-            LOG.info('Table cache before sdcal: {}'.format(tb.showcache()))
+            LOG.debug('Table cache before sdcal: {}'.format(tb.showcache()))
             try:
                 self._executor.execute(job)
             finally:
-                LOG.info('Table cache after sdcal: {}'.format(tb.showcache()))
+                LOG.debug('Table cache after sdcal: {}'.format(tb.showcache()))
     
             # make a note of the current inputs state before we start fiddling
             # with it. This origin will be attached to the final CalApplication.
