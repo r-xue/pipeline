@@ -63,7 +63,7 @@
 	<value type="bool">True</value>
     </param>
 
-    <param type="bool" name="gainmap" subparam="true">
+    <param type="bool" name="gainmap">
 	<description>Mode to map gainfields to scans.</description>
 	<value>False</value>
     </param>
