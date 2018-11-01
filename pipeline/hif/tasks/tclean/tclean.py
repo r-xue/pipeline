@@ -450,28 +450,29 @@ class Tclean(cleanbase.CleanBase):
             else:
                 threshold = '%.3gJy' % (inputs.tlimit * sensitivity)
 
+        multiterm = inputs.nterms if inputs.deconvolver == 'mtmfs' else None
+
         # Choose sequence manager
         # Central mask based on PB
         if inputs.hm_masking == 'centralregion':
-            sequence_manager = ImageCentreThresholdSequence(
-                gridder=inputs.gridder, threshold=threshold,
-                sensitivity=sensitivity, niter=inputs.niter)
+            sequence_manager = ImageCentreThresholdSequence(multiterm=multiterm,
+                                                            gridder=inputs.gridder, threshold=threshold,
+                                                            sensitivity=sensitivity, niter=inputs.niter)
         # Auto-boxing
         elif inputs.hm_masking == 'auto':
-            sequence_manager = AutoMaskThresholdSequence(
-                gridder=inputs.gridder, threshold=threshold,
-                sensitivity=sensitivity, niter=inputs.niter)
+            sequence_manager = AutoMaskThresholdSequence(multiterm=multiterm,
+                                                         gridder=inputs.gridder, threshold=threshold,
+                                                         sensitivity=sensitivity, niter=inputs.niter)
         # Manually supplied mask
         elif inputs.hm_masking == 'manual':
-            sequence_manager = ManualMaskThresholdSequence(
-                mask=inputs.mask,
-                gridder=inputs.gridder, threshold=threshold,
-                sensitivity=sensitivity, niter=inputs.niter)
+            sequence_manager = ManualMaskThresholdSequence(multiterm=multiterm, mask=inputs.mask,
+                                                           gridder=inputs.gridder, threshold=threshold,
+                                                           sensitivity=sensitivity, niter=inputs.niter)
         # No mask
         elif inputs.hm_masking == 'none':
-            sequence_manager = NoMaskThresholdSequence(
-                gridder=inputs.gridder, threshold=threshold,
-                sensitivity=sensitivity, niter=inputs.niter)
+            sequence_manager = NoMaskThresholdSequence(multiterm=multiterm,
+                                                       gridder=inputs.gridder, threshold=threshold,
+                                                       sensitivity=sensitivity, niter=inputs.niter)
 
         result = self._do_iterative_imaging(sequence_manager=sequence_manager)
 
@@ -529,8 +530,7 @@ class Tclean(cleanbase.CleanBase):
          pbcor_image_min,
          pbcor_image_max,
          residual_robust_rms) = \
-            sequence_manager.iteration_result(iter=0,
-                                              multiterm=result.multiterm, psf=result.psf, model=result.model,
+            sequence_manager.iteration_result(iter=0, psf=result.psf, model=result.model,
                                               restored=result.image, residual=result.residual,
                                               flux=result.flux, cleanmask=None, threshold=None,
                                               pblimit_image=self.pblimit_image,
@@ -644,8 +644,7 @@ class Tclean(cleanbase.CleanBase):
              pbcor_image_min,
              pbcor_image_max,
              residual_robust_rms) = \
-                sequence_manager.iteration_result(iter=iteration,
-                                                  multiterm=result.multiterm, psf=result.psf, model=result.model,
+                sequence_manager.iteration_result(iter=iteration, psf=result.psf, model=result.model,
                                                   restored=result.image, residual=result.residual,
                                                   flux=result.flux, cleanmask=new_cleanmask,
                                                   threshold=seq_result.threshold,

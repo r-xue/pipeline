@@ -9,7 +9,7 @@ LOG = infrastructure.get_logger(__name__)
 
 class BaseCleanSequence:
 
-    def __init__(self, multiterm=None):
+    def __init__(self, multiterm=None, gridder='', threshold='0.0mJy', sensitivity=0.0, niter=0):
         """Constructor.
         """
         self.iter = None
@@ -30,20 +30,23 @@ class BaseCleanSequence:
         self.image_non_cleanmask_rms_max_list = []
         self.thresholds = []
         self.multiterm = multiterm
+        self.gridder = gridder
+        self.threshold = threshold
+        self.sensitivity = sensitivity
+        self.dr_corrected_sensitivity = sensitivity
+        self.niter = niter
 
-    def iteration_result(self, iter, multiterm, psf, model, restored, residual,
+    def iteration_result(self, iter, psf, model, restored, residual,
                          flux, cleanmask, threshold=None, pblimit_image=0.2, pblimit_cleanmask=0.3,
                          cont_freq_ranges=None):
         """This method sets the iteration counter and returns statistics for
         that iteration.
         """
         self.iter = iter
-        self.multiterm = multiterm
 
         self.psf = psf
         self.flux = flux
 
-        #if cleanmask is not None and os.path.exists(cleanmask):
         model_sum, \
         residual_cleanmask_rms, \
         residual_non_cleanmask_rms, \
@@ -53,7 +56,7 @@ class BaseCleanSequence:
         nonpbcor_image_non_cleanmask_rms_max, \
         nonpbcor_image_non_cleanmask_rms, \
         pbcor_image_min, pbcor_image_max, \
-        residual_robust_rms = cbheuristic.analyse_clean_result(multiterm, model, restored,
+        residual_robust_rms = cbheuristic.analyse_clean_result(self.multiterm, model, restored,
                                                                residual, flux, cleanmask,
                                                                pblimit_image, pblimit_cleanmask,
                                                                cont_freq_ranges)
@@ -90,14 +93,5 @@ class BaseCleanSequence:
     def iteration(self, new_cleanmask):
         """The base boxworker allows only one iteration.
         """
-
-        if self.iter is None:
-            raise Exception('no data for iteration')
-
-        else:
-            self.result.threshold = '0.0Jy'
-            self.result.cleanmask = ''
-            self.result.niter = 0
-            self.result.iterating = False
 
         return self.result

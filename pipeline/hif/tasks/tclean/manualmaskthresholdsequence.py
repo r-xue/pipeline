@@ -9,18 +9,13 @@ LOG = infrastructure.get_logger(__name__)
 
 class ManualMaskThresholdSequence(BaseCleanSequence):
 
-    def __init__(self, mask, gridder, threshold='0.0mJy', sensitivity=0.0, channel_rms_factor=1.0, niter=0):
+    def __init__(self, multiterm=None, gridder='', threshold='0.0mJy', sensitivity=0.0, niter=0, mask='',
+                 channel_rms_factor=1.0):
         """Constructor.
         """
-        BaseCleanSequence.__init__(self)
+        BaseCleanSequence.__init__(self, multiterm, gridder, threshold, sensitivity, niter)
         self.mask = mask
-        self.gridder = gridder
-        self.threshold = threshold
-        self.sensitivity = sensitivity
-        self.dr_corrected_sensitivity = sensitivity
         self.channel_rms_factor = channel_rms_factor
-        self.niter = niter
-        self.iter = None
 
     def iteration(self, new_cleanmask, pblimit_image=-1, pblimit_cleanmask=-1, spw=None, frequency_selection=None, keep_iterating=None):
 

@@ -8,17 +8,6 @@ LOG = infrastructure.get_logger(__name__)
 
 class NoMaskThresholdSequence(BaseCleanSequence):
 
-    def __init__(self, gridder, threshold='0.0mJy', sensitivity=0.0, niter=0):
-        """Constructor.
-        """
-        BaseCleanSequence.__init__(self)
-        self.gridder = gridder
-        self.threshold = threshold
-        self.sensitivity = sensitivity
-        self.dr_corrected_sensitivity = sensitivity
-        self.niter = niter
-        self.iter = None
-
     def iteration(self, new_cleanmask='', pblimit_image=0.2, pblimit_cleanmask=0.3, spw=None, frequency_selection=None,
                   keep_iterating=None):
 
