@@ -41,15 +41,19 @@ class FinalcalsQAHandler(pqa.QAPlugin):
 
         result.qa.pool.extend(scores)
 
-
     @staticmethod
     def _checkKandBsolution(table):
         for antenna in table['antspw'].keys():
+            spwcollect = []
             for spw in table['antspw'][antenna].keys():
                 for pol in table['antspw'][antenna][spw].keys():
                     frac = table['antspw'][antenna][spw][pol]['fraction']
                     if frac == 1.0:
-                        LOG.warn('Antenna {!s}, spw {!s}, pol {!s} has a fraction of flagged solutions of: {!s}'.format(antenna, spw, pol, frac))
+                        spwcollect.append(str(spw))
+            if len(spwcollect) > 1:
+                spwcollect = list(set(spwcollect))
+                LOG.warn(
+                    'Antenna {!s}, spws: {!s} have a flagging fraction of 1.0.'.format(antenna, ','.join(spwcollect)))
 
         return
 
