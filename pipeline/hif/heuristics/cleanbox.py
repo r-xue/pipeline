@@ -79,7 +79,7 @@ def analyse_clean_result(multiterm, model, restored, residual, flux, cleanmask, 
             if have_mask:
                 LOG.info('Residual rms in the annulus: %s' % residual_non_cleanmask_rms)
             else:
-                LOG.info('Residual rms across full area: %s' %  residual_non_cleanmask_rms)
+                LOG.info('Residual rms across full area: %s' % residual_non_cleanmask_rms)
         except:
             pass
 
@@ -182,28 +182,18 @@ def analyse_clean_result(multiterm, model, restored, residual, flux, cleanmask, 
                     area_text = 'full image'
                 LOG.info('Clean image statistics (%s) for %s: rmsmedian: %s Jy/bm rmsmean: %s Jy/bm rmsmin:'
                          ' %s Jy/bm rmsmax: %s Jy/bm' % \
-                    (area_text, os.path.basename(nonpbcor_imagename), \
-                     nonpbcor_image_non_cleanmask_rms_median, \
-                     nonpbcor_image_non_cleanmask_rms_mean, \
-                     nonpbcor_image_non_cleanmask_rms_min, \
+                    (area_text, os.path.basename(nonpbcor_imagename),
+                     nonpbcor_image_non_cleanmask_rms_median,
+                     nonpbcor_image_non_cleanmask_rms_mean,
+                     nonpbcor_image_non_cleanmask_rms_min,
                      nonpbcor_image_non_cleanmask_rms_max))
             except Exception as e:
-                nonpbcor_image_non_cleanmask_rms_median = \
-                nonpbcor_image_non_cleanmask_rms_mean = \
                 nonpbcor_image_non_cleanmask_rms_min = \
                 nonpbcor_image_non_cleanmask_rms_max = \
                 nonpbcor_image_non_cleanmask_rms = \
                     -999.0
                 LOG.warn('Exception while determining image RMS for %s: %s' % (nonpbcor_imagename, e))
 
-    return model_sum, \
-           residual_cleanmask_rms, \
-           residual_non_cleanmask_rms, \
-           residual_min, \
-           residual_max, \
-           nonpbcor_image_non_cleanmask_rms_min, \
-           nonpbcor_image_non_cleanmask_rms_max, \
-           nonpbcor_image_non_cleanmask_rms, \
-           pbcor_image_min, \
-           pbcor_image_max, \
-           residual_robust_rms
+    return (residual_cleanmask_rms, residual_non_cleanmask_rms, residual_min, residual_max,
+            nonpbcor_image_non_cleanmask_rms_min, nonpbcor_image_non_cleanmask_rms_max,
+            nonpbcor_image_non_cleanmask_rms, pbcor_image_min, pbcor_image_max, residual_robust_rms)

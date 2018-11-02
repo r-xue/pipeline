@@ -33,7 +33,6 @@ class BaseCleanSequence:
 
         self.flux = flux
 
-        model_sum, \
         residual_cleanmask_rms, \
         residual_non_cleanmask_rms, \
         residual_min, \
@@ -55,8 +54,7 @@ class BaseCleanSequence:
         # Append the statistics.
         self.residuals.append(residual)
 
-        return model_sum, \
-               residual_cleanmask_rms, \
+        return residual_cleanmask_rms, \
                residual_non_cleanmask_rms, \
                residual_min, \
                residual_max, \
