@@ -822,7 +822,7 @@ def score_flagged_vla_baddef(amp_collection, phase_collection, num_antennas):
         # Set score messages and origin.
         percent = 100.0 * frac_flagged
         longmsg = "{:d} of {:d} ({:0.2f}%) antennas affected and some of their spws are flagged".format(num_affected_antennas, num_antennas, percent)
-        shortmsg = "{:0.2f}% data flagged".format(percent)
+        shortmsg = "{:0.2f}% antennas affected".format(percent)
         return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
