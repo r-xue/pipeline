@@ -10,6 +10,7 @@ import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.sdfilenamer as filenamer
+from pipeline.h.heuristics import caltable as caltable_heuristic
 from pipeline.hsd.heuristics import CubicSplineFitParamConfig
 from pipeline.domain import DataTable
 from .. import common
@@ -52,14 +53,9 @@ class BaselineSubtractionInputsBase(vdp.StandardInputs):
             
         # baseline caltable filename
         if self.bloutput is None or len(self.bloutput) == 0:
-            namer = filenamer.BaselineSubtractedTable()
-            #namer.spectral_window(self.spwid)
-            #st = self.data_object()
-            #asdm = common.asdm_name(st)
-            asdm = prefix
-            namer.asdm(asdm)
-            #namer.antenna_name(st.antenna.name)
-            bloutput = namer.get_filename() 
+            namer = caltable_heuristic.SDBaselinetable()
+            bloutput = namer.calculate(output_dir=self.output_dir,
+                                       stage=self.context.stage, **args)
             args['bloutput'] = bloutput
         else:
             args['bloutput'] = self.bloutput
@@ -93,6 +89,7 @@ class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
     fit_order = vdp.VisDependentProperty(default='automatic')
     edge = vdp.VisDependentProperty(default=(0,0))
     deviationmask = vdp.VisDependentProperty(default={})
+    bloutput = vdp.VisDependentProperty(default=None)
         
     @vdp.VisDependentProperty
     def prefix(self):
@@ -101,17 +98,6 @@ class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
     @vdp.VisDependentProperty
     def blparam(self):
         return self.prefix + '_blparam.txt'
-    
-    @vdp.VisDependentProperty
-    def bloutput(self):
-        namer = filenamer.BaselineSubtractedTable()
-        #namer.spectral_window(self.spwid)
-        #st = self.data_object()
-        #asdm = common.asdm_name(st)
-        asdm = self.prefix
-        namer.asdm(asdm)
-        #namer.antenna_name(st.antenna.name)
-        return namer.get_filename()
     
     @vdp.VisDependentProperty(readonly=True)
     def field(self):

@@ -553,6 +553,12 @@ class CalibrationTable(NamingTemplate):
         """Set the filename extension as appropriate for a single
         dish sky calibration."""
         return self.extension('skycal')
+    
+    def sdbaseline(self):
+        """Set the filename extension as appropriate for a single
+        dish baseline subtraction."""
+        return self.extension('bl')
+        
 
     # Fit type convenience methods --------------------------------------------
 
@@ -820,6 +826,11 @@ class SDSkyCalibrationTable(CalibrationTable):
     def __init__(self, other=None):
         super(SDSkyCalibrationTable, self).__init__(other)
         self.sdsky_cal()
+        
+class SDBaselineTable(CalibrationTable):
+    def __init__(self, other=None):
+        super(SDBaselineTable, self).__init__(other)
+        self.sdbaseline()
 
 
 if __name__ == '__main__':

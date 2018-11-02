@@ -30,7 +30,6 @@ import pipeline.h.tasks.common.manifest as manifest
 import pipeline.h.tasks.exportdata.exportdata as exportdata
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.sdfilenamer as filenamer
 from pipeline.h.tasks.exportdata.aqua import export_to_disk as aqua_export_to_disk
 from pipeline.infrastructure import task_registry
 from . import almasdaqua
@@ -153,6 +152,18 @@ class SDExportData(exportdata.ExportData):
 
         return sessiondict
 
+    def __get_last_baseline_table(self, vis):
+        basename = os.path.basename(vis.rstrip('/'))
+        bl_tables = glob.glob('{}.*hsd_baseline*.bl.tbl'.format(basename))
+        if len(bl_tables) > 0:
+            bl_tables.sort()
+            name = bl_tables[-1]
+            LOG.debug('bl cal table for {} is {}'.format(vis, name))
+            return name
+        else:
+            return None
+        
+
     def _export_final_baseline_calfiles(self, context, oussid, session, vislist, products_dir):
         """
         Save the final calibration tables in a tarfile one file
@@ -185,33 +196,18 @@ class SDExportData(exportdata.ExportData):
                 LOG.info('Collecting final caltables for %s in %s',
                          os.path.basename(visfile), tarfilename)
 
-                # Create the list of applied caltables for that vis
-#                 try:
-#                     calto = callibrary.CalTo(vis=visfile)
-#                     calstate = context.callibrary.applied.trimmed(context, calto)
-#                     caltables.update(calstate.get_caltable())
-#                 except:
-#                     LOG.info('No caltables for MS %s' % os.path.basename(visfile))
-                    
                 # Create the list of baseline caltable for that vis
-                namer = filenamer.CalibrationTable()
-                namer.asdm(os.path.basename(visfile))
-                namer.bl_cal()
-                name = namer.get_filename()
-                LOG.debug('bl cal table for %s is %s' % (visfile, name))
-                if os.path.exists(name):
+                name = self.__get_last_baseline_table(visfile)
+                if name is not None:
                     bl_caltables.add(name)
-
-#             if not caltables:
-#                 return 'Undefined'
-
-            with tarfile.open(os.path.join(products_dir, tarfilename), 'w:gz') as tar:
-                # Tar the session list.
-                # for table in caltables:
-                #     tar.add(table, arcname=os.path.basename(table))
-                    
-                for table in bl_caltables:
-                    tar.add(table, arcname=os.path.basename(table))
+                
+                with tarfile.open(os.path.join(products_dir, tarfilename), 'w:gz') as tar:
+                    # Tar the session list.
+                    # for table in caltables:
+                    #     tar.add(table, arcname=os.path.basename(table))
+                        
+                    for table in bl_caltables:
+                        tar.add(table, arcname=os.path.basename(table))
 
             return tarfilename
 
@@ -257,15 +253,11 @@ class SDExportData(exportdata.ExportData):
                                   " bltable='${bltable}', blfunc='poly', outfile='${outfile}', overwrite=True)")
 
             # Create the list of baseline caltable for that vis
-            namer = filenamer.CalibrationTable()
-            namer.asdm(os.path.basename(vis))
-            namer.bl_cal()
-            name = namer.get_filename()
-            LOG.debug('bl cal table for %s is %s' % (vis, name))
+            name = self.__get_last_baseline_table(vis)
             ms = context.observing_run.get_ms(vis)
             science_spws = ms.get_spectral_windows(science_windows_only=True)
             spw = ','.join(itertools.imap(lambda s: str(s.id), science_spws))
-            if os.path.exists(name):
+            if name is not None:
                 applied_calstate = cmd.safe_substitute(infile=vis,
                                                        bltable=name,
                                                        spw=spw,

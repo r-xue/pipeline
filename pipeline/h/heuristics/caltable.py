@@ -198,3 +198,7 @@ class SDSkyCaltable(CaltableNamer):
         if 'field' in task_args:
             print('Set FIELD {}'.format(task_args['field']))
             namer.source(task_args['field'])
+            
+class SDBaselinetable(CaltableNamer):
+    def get_namer(self):
+        return filenamer.SDBaselineTable()
