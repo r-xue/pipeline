@@ -615,11 +615,10 @@ class Tclean(cleanbase.CleanBase):
             if (inputs.specmode == 'cube') and (not inputs.cleancontranges):
                 seq_result = sequence_manager.iteration(new_cleanmask, self.pblimit_image,
                                                         self.pblimit_cleanmask,inputs.spw, inputs.spwsel_lsrk,
-                                                        keep_iterating=keep_iterating, iteration=iteration)
+                                                        iteration=iteration)
             else:
                 seq_result = sequence_manager.iteration(new_cleanmask, self.pblimit_image,
-                                                        self.pblimit_cleanmask, keep_iterating=keep_iterating,
-                                                        iteration=iteration)
+                                                        self.pblimit_cleanmask, iteration=iteration)
 
             # Use previous iterations's products as starting point
             old_pname = '%s.iter%s' % (rootname, iteration-1)

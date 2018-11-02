@@ -12,8 +12,8 @@ LOG = infrastructure.get_logger(__name__)
 
 class ImageCentreThresholdSequence(BaseCleanSequence):
 
-    def iteration(self, new_cleanmask=None, pblimit_image=0.2, pblimit_cleanmask=0.3, spw=None, frequency_selection=None,
-                  keep_iterating=None, iteration=None):
+    def iteration(self, new_cleanmask=None, pblimit_image=0.2, pblimit_cleanmask=0.3, spw=None,
+                  frequency_selection=None, iteration=None):
 
         if self.multiterm:
             extension = '.tt0'
@@ -69,12 +69,10 @@ class ImageCentreThresholdSequence(BaseCleanSequence):
             self.result.threshold = self.threshold
             self.result.sensitivity = self.sensitivity
             self.result.niter = self.niter
-            self.result.iterating = True
         else:
             self.result.cleanmask = ''
             self.result.threshold = '0.0mJy'
             self.result.sensitivity = 0.0
             self.result.niter = 0
-            self.result.iterating = False
 
         return self.result

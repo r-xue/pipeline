@@ -13,7 +13,7 @@ LOG = infrastructure.get_logger(__name__)
 class AutoMaskThresholdSequence(BaseCleanSequence):
 
     def iteration(self, new_cleanmask=None, pblimit_image=-1, pblimit_cleanmask=-1, spw=None, frequency_selection=None,
-                  keep_iterating=False, iteration=None):
+                  iteration=None):
 
         if self.multiterm:
             extension = '.tt0'
@@ -28,8 +28,7 @@ class AutoMaskThresholdSequence(BaseCleanSequence):
             self.result.threshold = self.threshold
             self.result.sensitivity = self.sensitivity
             self.result.niter = self.niter
-            self.result.iterating = True
-        elif iteration == 2 and keep_iterating:
+        elif iteration == 2:
             if self.flux not in (None, ''):
                 # Make a circular one
                 cm = casatools.image.newimagefromimage(infile=self.flux+extension, outfile=new_cleanmask,
@@ -68,13 +67,11 @@ class AutoMaskThresholdSequence(BaseCleanSequence):
             self.result.threshold = '%sJy' % (cqa.getvalue(cqa.mul(self.threshold, 2.0))[0])
             self.result.sensitivity = self.sensitivity
             self.result.niter = self.niter
-            self.result.iterating = keep_iterating
 
         else:
             self.result.cleanmask = ''
             self.result.threshold = '0.0mJy'
             self.result.sensitivity = 0.0
             self.result.niter = 0
-            self.result.iterating = False
 
         return self.result

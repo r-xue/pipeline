@@ -18,7 +18,7 @@ class ManualMaskThresholdSequence(BaseCleanSequence):
         self.channel_rms_factor = channel_rms_factor
 
     def iteration(self, new_cleanmask=None, pblimit_image=-1, pblimit_cleanmask=-1, spw=None, frequency_selection=None,
-                  keep_iterating=None, iteration=None):
+                  iteration=None):
 
         if iteration is None:
             raise Exception('no data for iteration')
@@ -34,13 +34,10 @@ class ManualMaskThresholdSequence(BaseCleanSequence):
             self.result.threshold = self.threshold
             self.result.sensitivity = self.sensitivity
             self.result.niter = self.niter
-            self.result.iterating = True
-
         else:
             self.result.cleanmask = ''
             self.result.threshold = self.threshold
             self.result.sensitivity = self.sensitivity
             self.result.niter = self.niter
-            self.result.iterating = False
 
         return self.result
