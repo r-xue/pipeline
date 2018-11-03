@@ -9,7 +9,6 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.casatools as casatools
-import pipeline.infrastructure.sdfilenamer as filenamer
 from pipeline.h.heuristics import caltable as caltable_heuristic
 from pipeline.hsd.heuristics import CubicSplineFitParamConfig
 from pipeline.domain import DataTable
