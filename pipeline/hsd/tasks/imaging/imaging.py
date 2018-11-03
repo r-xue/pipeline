@@ -11,7 +11,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.imagelibrary as imagelibrary
-import pipeline.infrastructure.sdfilenamer as filenamer
+import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.utils as utils
 from pipeline.extern import sensitivity_improvement
 from pipeline.h.heuristics import fieldnames
@@ -310,14 +310,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 LOG.debug('infiles=%s' % infiles)
                   
                 # image name
-                namer = filenamer.Image()
-                namer.casa_image()
-                namer.source(source_name)
-                namer.antenna_name(ant_name)
-                namer.asdm(asdm)
-                namer.spectral_window(spwids[0])
-                namer.polarization(self.stokes)
-                imagename = namer.get_filename()
+                imagename = self.get_imagename(imagemode, source_name, spwids, ant_name)
                 LOG.info("Output image name: %s" % imagename)
 
                 # pick restfreq from restfreq_list
@@ -500,12 +493,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             ref_ms = context.observing_run.get_ms(name=sdutils.get_parent_ms_name(context, combined_infiles[0]))
             
             # image name
-            namer = filenamer.Image()
-            namer.casa_image()
-            namer.source(source_name)
-            namer.spectral_window(combined_spws[0])
-            namer.polarization(self.stokes)
-            imagename = namer.get_filename()
+            imagename = self.get_imagename(imagemode, source_name, combined_spws)
   
             # Step 3.
             # Imaging of all antennas
@@ -852,3 +840,33 @@ class SDImaging(basetask.StandardTaskTemplate):
             merged = self._merge_ranges(merged)
         #LOG.info("#####Merged: %s" % str(merged))
         return merged
+    
+    def get_imagename(self, imagemode, source, spwids, antenna=None):
+        context = self.inputs.context
+        namer = filenamer.Image()
+        nameroot = context.project_structure.ousstatus_entity_id
+        if nameroot == 'unknown':
+            nameroot = 'oussid'
+        nameroot = filenamer.sanitize(nameroot)
+        namer._associations.asdm(nameroot)
+        #output_dir = context.output_dir
+        #if output_dir:
+        #    namer.output_dir(output_dir)
+        namer.stage(context.stage)
+        namer.source(source)
+        if imagemode == 'AMPCAL':
+            namer.intent(imagemode.lower())
+        else:
+            namer.science()
+        namer.spectral_window(spwids[0])
+        namer.polarization(self.stokes)
+        # so far we always create native resolution, full channel image
+        namer.specmode('cube')
+        #namer.spectral_image()
+        namer._associations.format('image')
+        namer.single_dish()
+        namer.antenna(antenna)
+        # iteration is necessary for exportdata
+        namer.iteration(1)
+        imagename = namer.get_filename()
+        return imagename

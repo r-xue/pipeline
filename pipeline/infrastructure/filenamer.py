@@ -44,6 +44,7 @@ class FileNameComponentBuilder(object):
         self._line_region = None
         self._output_dir = None
         self._polarization = None
+        self._antenna = None
         self._source = None
         self._spectral_window = None
         self._spectral_window_nochan = None
@@ -72,6 +73,7 @@ class FileNameComponentBuilder(object):
                       self._specmode,
                       self._line_region,
                       self._polarization,
+                      self._antenna,
                       self._type,
                       self._method,
                       self._solint,
@@ -137,6 +139,10 @@ class FileNameComponentBuilder(object):
 
     def polarization(self, polarization):
         self._polarization = polarization
+        return self
+    
+    def antenna(self, antenna):
+        self._antenna = antenna
         return self
 
     def solint(self, solint):
@@ -649,6 +655,10 @@ class Image(NamingTemplate):
     def band(self, band):
         self._associations.band(band)
         return self
+    
+    def antenna(self, antenna):
+        self._associations.antenna(antenna)
+        return self
 
     # Association convenience methods ----------------------------------------
 
@@ -699,6 +709,9 @@ class Image(NamingTemplate):
     def flat_flux_residual(self):
         self._associations.extension('ffres')
         return self
+    
+    def single_dish(self):
+        self._associations.extension('sd')
 
     # Intent convenience methods --------------------------------------------
 

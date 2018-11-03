@@ -1107,7 +1107,11 @@ finally:
         for image in images_list:
             print('Working on {}'.format(image))
             fitsfile = self._fitsfile(products_dir, image)
-            LOG.info('Saving final image %s to FITS file {}'.format(os.path.basename(image),
+            # skip if fitsfile doesn't exist
+            if not os.path.exists(image):
+                LOG.info('Skipping unexisting image {}'.format(os.path.basename(image)))
+                continue
+            LOG.info('Saving final image {} to FITS file {}'.format(os.path.basename(image),
                                                                     os.path.basename(fitsfile)))
             if not self._executor._dry_run:
                 task = casa_tasks.exportfits(imagename=image, fitsimage=fitsfile, velocity=False, optical=False,
