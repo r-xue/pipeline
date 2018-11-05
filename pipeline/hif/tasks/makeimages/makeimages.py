@@ -41,6 +41,13 @@ class MakeImagesInputs(vdp.StandardInputs):
     def target_list(self):
         return self.context.clean_list_pending
 
+    @tlimit.convert
+    def tlimit(self, tlimit):
+        if tlimit <= 0.0:
+            raise ValueError('tlimit values must be larger than 0.0')
+        else:
+            return tlimit
+
     def __init__(self, context, output_dir=None, vis=None, target_list=None,
                  hm_masking=None, hm_sidelobethreshold=None, hm_noisethreshold=None,
                  hm_lownoisethreshold=None, hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None,
