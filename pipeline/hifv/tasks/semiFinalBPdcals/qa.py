@@ -52,6 +52,7 @@ class semiFinalBPdcalsQAHandler(pqa.QAPlugin):
                         spwcollect.append(str(spw))
             if len(spwcollect) > 1:
                 spwcollect = list(set(spwcollect))
+                spwcollect.sort()
                 LOG.warn(
                     'Antenna {!s}, spws: {!s} have a flagging fraction of 1.0.'.format(antenna, ','.join(spwcollect)))
 
