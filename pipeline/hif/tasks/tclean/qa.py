@@ -40,7 +40,7 @@ class TcleanQAHandler(pqa.QAPlugin):
             shortmsg = 'snr = {:0.2f}'.format(snr)
             result.qa.pool[:] = [pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg)]
         elif (result.error is not None):
-            result.qa.pool[:] = [pqa.QAScore(0.0, longmsg=result.error, shortmsg=result.error)]
+            result.qa.pool[:] = [pqa.QAScore(0.0, longmsg=result.error.longmsg, shortmsg=result.error.shortmsg)]
         else:
             qaTool = casac.quanta()
             try:
