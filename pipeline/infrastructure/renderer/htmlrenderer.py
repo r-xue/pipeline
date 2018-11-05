@@ -57,7 +57,7 @@ def get_task_description(result_obj, context, include_stage=True):
                 # Try to extract task description from renderer belonging to
                 # original task.
                 try:
-                    renderer = weblog.get_renderer(task_cls, context, result)
+                    renderer = weblog.registry.get_renderer(task_cls, context, result)
                 except KeyError:
                     LOG.error('No renderer registered for task {0}'.format(task_cls.__name__))
                     raise
@@ -89,7 +89,7 @@ def get_task_description(result_obj, context, include_stage=True):
             try:
                 # taking index 0 should be safe as entry to function ensures
                 # result_obj is a list
-                renderer = weblog.get_renderer(task_cls, context, result_obj[0])
+                renderer = weblog.registry.get_renderer(task_cls, context, result_obj[0])
             except KeyError:
                 LOG.error('No renderer registered for task {0}'.format(task_cls.__name__))
                 raise
@@ -1593,7 +1593,7 @@ class T2_4MDetailsRenderer(object):
             else:
                 task = task_result[0].task
             try:
-                renderer = weblog.get_renderer(task, context, task_result)
+                renderer = weblog.registry.get_renderer(task, context, task_result)
             except KeyError:
                 LOG.warning('No renderer was registered for task {0}'.format(task.__name__))
                 renderer = cls._default_renderer
@@ -1602,7 +1602,7 @@ class T2_4MDetailsRenderer(object):
 
             container_urls = {}
 
-            if task.__name__ in weblog.RENDER_UNGROUPED:
+            if weblog.registry.render_ungrouped(task.__name__):
                 cls.render_result(renderer, context, task_result)
 
                 ms_weblog_path = cls.get_path(context, task_result, '')
@@ -1615,7 +1615,7 @@ class T2_4MDetailsRenderer(object):
                 container = T2_4MDetailsContainerRenderer
                 container.render(context, task_result, container_urls)
 
-            elif task.__name__ in weblog.RENDER_BY_SESSION:
+            elif weblog.registry.render_by_session(task.__name__):
                 session_grouped = group_into_sessions(context, task_result)
                 for session_id, session_results in session_grouped.items():
                     container_urls[session_id] = {}
