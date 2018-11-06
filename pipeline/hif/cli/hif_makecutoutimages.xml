@@ -11,17 +11,17 @@
 <input>
     <param type="stringArray" name="vis" subparam="true">
 	<description>List of input visibility data</description>
-	<value></value>
+	<value/>
     </param>
 
-    <param type="doubleArray" name="offsetblc" subparam="true">
+    <param type="doubleArray" name="offsetblc">
 	<description>-x and -y offsets to the bottom lower corner (blc) in arcseconds</description>
-	<value></value>
+	<value/>
     </param>
 
-    <param type="doubleArray" name="offsettrc" subparam="true">
+    <param type="doubleArray" name="offsettrc">
 	<description>+x and +y offsets to the top right corner (trc) in arcseconds</description>
-	<value></value>
+	<value/>
     </param>
 
 
@@ -47,18 +47,16 @@
 
     <constraints>
 	<when param="pipelinemode">
-	    <equals type="string" value="automatic">
-	    </equals>
-	    <equals type="string" value="interactive">
-                <default param="vis"><value type="stringArray"></value></default>
-
-		<default param="dryrun"><value type="bool">False</value></default>
-		<default param="acceptresults"><value type="bool">True</value></default>
-	    </equals>
-	    <equals type="string" value="getinputs">
-                <default param="vis"><value type="stringArray"></value></default>
-
-	    </equals>
+        <equals type="string" value="automatic">
+        </equals>
+        <equals type="string" value="interactive">
+            <default param="vis"><value type="stringArray"/></default>
+            <default param="dryrun"><value type="bool">False</value></default>
+            <default param="acceptresults"><value type="bool">True</value></default>
+        </equals>
+        <equals type="string" value="getinputs">
+            <default param="vis"><value type="stringArray"/></default>
+        </equals>
 	</when>
     </constraints>
 
@@ -68,7 +66,7 @@
     <param type="any" name="results">
         <description>The output results object</description>
         <any type="variant"/>
-        <value></value>
+        <value/>
     </param>
 </output>
 <returns type="void"/>
@@ -80,12 +78,6 @@ The hif_makecutoutimages task
 Keyword arguments:
 
 ---- pipeline parameter arguments which can be set in any pipeline mode
-
-vis -- List of visibility data files. These may be ASDMs, tar files of ASDMs,
-   MSs, or tar files of MSs, If ASDM files are specified, they will be
-   converted  to MS format.
-   default: []
-   example: vis=['X227.ms', 'asdms.tar.gz']
 
 offsetblc --  -x and -y offsets to the bottom lower corner (blc) in arcseconds
     default: [0.0,0.0]
@@ -104,6 +96,12 @@ pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline
 
 ---- pipeline context defined parameter argument which can be set only in
 'interactive mode'
+
+vis -- List of visibility data files. These may be ASDMs, tar files of ASDMs,
+   MSs, or tar files of MSs, If ASDM files are specified, they will be
+   converted  to MS format.
+   default: []
+   example: vis=['X227.ms', 'asdms.tar.gz']
 
 
 --- pipeline task execution modes
