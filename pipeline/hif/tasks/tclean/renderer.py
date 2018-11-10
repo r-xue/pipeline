@@ -7,6 +7,7 @@ import collections
 import itertools
 import os
 import string
+from random import randint
 
 import numpy
 
@@ -454,6 +455,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 values['qa_url'] = renderer.path
                 new_row = ImageRow(**values)
                 final_rows.append(new_row)
+            except IOError as e:
+                LOG.error(e)
             except:
                 final_rows.append(row)
         # primary sort images by vis, field, secondary sort on spw, then by pol
@@ -478,7 +481,24 @@ class TCleanPlotsRenderer(basetemplates.CommonRenderer):
     def __init__(self, context, result, plots_dict, field, spw, pol, urls):
         super(TCleanPlotsRenderer, self).__init__('tcleanplots.mako', context, result)
 
-        outfile = 'field%s-spw%s-pol%s-cleanplots.html' % (field, spw, pol)
+        # VLA only
+        if ('VLA' in result[0].results[0].imaging_mode and
+                'VLASS' not in result[0].results[0].imaging_mode and
+                any([item.specmode == 'cont' for item in result[0].results])):
+            # ms = context.observing_run.get_ms(result[0].results[0].vis[0])
+            # band = ms.get_vla_spw2band()
+            # band_spws = {}
+            # for k, v in band.items():
+            #     band_spws.setdefault(v, []).append(k)
+            # for k, v in band_spws.items():
+            #     for spw in spw.split(','):
+            #         if int(spw) in v:
+            #             band = k
+            #             break
+            outfile = 'field%s-pol%s-cleanplots-%d.html' % (field, pol, randint(1, 1e12))
+        else:
+            outfile = 'field%s-spw%s-pol%s-cleanplots.html' % (field, spw, pol)
+
         # HTML encoded filenames, so can't have plus sign
         valid_chars = "_.-%s%s" % (string.ascii_letters, string.digits)
         self.path = os.path.join(self.dirname, filenamer.sanitize(outfile, valid_chars))
