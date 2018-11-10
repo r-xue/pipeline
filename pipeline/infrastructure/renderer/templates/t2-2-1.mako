@@ -27,8 +27,13 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
             <th scope="col" rowspan="2">Intent</th>
         </tr>
         <tr>
+		  % if ms.sources[0].frame.upper() == 'GALACTIC':
+            <th scope="col">GL</th>
+            <th scope="col">GB</th>
+          % else:
             <th scope="col">RA</th>
             <th scope="col">Dec</th>
+          % endif
             <th scope="col">Ref. Frame</th>
             <th scope="col">X</th>
             <th scope="col">Y</th>
@@ -41,8 +46,13 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 		<tr>
 		  <td>${source.id}</td>
 		  <td>${source.name}</td>
+		  % if source.frame.upper() == 'GALACTIC':
+		  <td>${source.gl}</td>
+		  <td>${source.gb}</td>
+		  % else:
 		  <td>${source.ra}</td>
 		  <td>${source.dec}</td>
+		  % endif
 		  <td>${source.frame}</td>
 		  <td>${source.pm_x}</td>
 		  <td>${source.pm_y}</td>
@@ -67,8 +77,13 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
             <th scope="col" rowspan="2">Source Reference</th>
         </tr>
         <tr>
+		  % if ms.fields[0].frame.upper() == 'GALACTIC':
+            <th scope="col">GL</th>
+            <th scope="col">GB</th>
+          % else:
             <th scope="col">RA</th>
             <th scope="col">Dec</th>
+          % endif
             <th scope="col">Ref. Frame</th>
         </tr>
     </thead>
@@ -78,8 +93,13 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 		<tr>
 		  <td>${field.id}</td>		
 		  <td>${field.name}</td>
+		  % if source.frame.upper() == 'GALACTIC':
+		  <td>${field.gl}</td>
+		  <td>${field.gb}</td>
+		  % else:
 		  <td>${field.ra}</td>
 		  <td>${field.dec}</td>
+		  % endif
 		  <td>${field.frame}</td>
 		  <td>${', '.join(sorted([i for i in field.intents]))}</td>
 		% if len(sources) == 1:

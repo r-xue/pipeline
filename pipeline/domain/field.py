@@ -91,6 +91,16 @@ class Field(object):
     def ra(self):        
         return casatools.quanta.formxxx(self.longitude, format='hms', prec=3)
 
+    # Galactic Longitude: it is usually expressed in DMS format
+    @property
+    def gl(self):
+        return casatools.quanta.formxxx(self.longitude, format='dms', prec=2)
+    
+    # Galactic Latitude
+    @property
+    def gb(self):
+        return self.dec
+
     def set_source_type(self, source_type):
         source_type = string.strip(source_type)
         source_type = string.upper(source_type)
