@@ -236,8 +236,12 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
         
         converted= me.measure(direction, rf=outref)
         LOG.debug('converted direction=%s'%(converted))
+        if outref.upper() == 'GALACTIC':
+            xformat = 'dms'
+        else:
+            xformat = 'hms'
         coord = '{ref} {ra} {dec}'.format(ref=outref,
-                                          ra=qa.formxxx(converted['m0'], format='hms'),
+                                          ra=qa.formxxx(converted['m0'], format=xformat),
                                           dec=qa.formxxx(converted['m1'], format='dms'))
         
         return coord
