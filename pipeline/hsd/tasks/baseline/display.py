@@ -13,10 +13,10 @@ import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.displays.pointing as pointing
 #from ..common.display import RADEClabel, RArotation, DECrotation, DDMMSSs, HHMMSSss
 from pipeline.domain.datatable import DataTableImpl as DataTable
-from ..common.display import DPISummary, DPIDetail, SingleDishDisplayInputs, ShowPlot, LightSpeed, MapAxesManagerBase
+from ..common.display import DPISummary, DPIDetail, SingleDishDisplayInputs, ShowPlot, LightSpeed
+from pipeline.infrastructure.displays.pointing import MapAxesManagerBase
 LOG = infrastructure.get_logger(__name__)
 
-RADEClabel = pointing.RADEClabel
 RArotation = pointing.RArotation
 DECrotation = pointing.DECrotation
 DDMMSSs = pointing.DDMMSSs
@@ -80,8 +80,9 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
             # 2008/9/20 DEC Effect
             axes.set_aspect(self.aspect_ratio)
             #axes.set_aspect('equal')
-            pl.xlabel(self.get_horizontal_axis_label(), size=self.ticksize)
-            pl.ylabel(self.get_vertical_axis_label(), size=self.ticksize)
+            xlabel, ylabel = self.get_axes_labels()
+            pl.xlabel(xlabel, size=self.ticksize)
+            pl.ylabel(ylabel, size=self.ticksize)
             axes.xaxis.set_major_formatter(self.xformatter)
             axes.yaxis.set_major_formatter(self.yformatter)
             axes.xaxis.set_major_locator(self.xlocator)
@@ -315,9 +316,6 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
         marker_size = int(300.0 / (max(nx, ny * 1.414) * num_panel_h) + 1.0)
         tick_size = int(6 + (1 / num_panel_h) * 2)
 
-        span = max(xmax - xmin, ymax - ymin)
-        (RAlocator, DEClocator, RAformatter, DECformatter) = RADEClabel(span)
-
         # direction reference
         reference_ms = self.context.observing_run.measurement_sets[0]
         datatable_name = os.path.join(self.context.observing_run.ms_datatable_name, reference_ms.basename)
@@ -325,6 +323,10 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
         datatable.importdata(datatable_name, minimal=False, readonly=True)
         direction_reference = datatable.direction_ref
         del datatable
+
+        span = max(xmax - xmin, ymax - ymin)
+        (RAlocator, DEClocator, RAformatter, DECformatter) = pointing.XYlabel(span,
+                                                                              direction_reference)
 
         axes_manager = ClusterValidationAxesManager(num_cluster,
                                                     num_panel_h,

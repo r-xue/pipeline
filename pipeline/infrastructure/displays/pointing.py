@@ -103,6 +103,53 @@ def DDMMSSss(x, pos):
     sstr = ('%4.2f'%(s-int(s))).lstrip('0')
     return '%+02d%s%02d\'%02d\"%s' % (d, dsyb, m, sint, sstr)
 
+def XYlabel(span, direction_reference):
+    if direction_reference.upper() == 'GALACTIC':
+        return GLGBlabel(span)
+    else:
+        return RADEClabel(span)
+
+def GLGBlabel(span):
+    """
+    return (GLlocator, GBlocator, GLformatter, GBformatter) for Galactic coordinate
+    """
+    #RAtick = [15.0, 5.0, 2.5, 1.25, 1/2.0, 1/4.0, 1/12.0, 1/24.0, 1/48.0, 1/120.0, 1/240.0, 1/480.0, 1/1200.0, 1/2400.0, 1/4800.0, 1/12000.0, 1/24000.0, 1/48000.0, -1.0]
+    XYtick = [20.0, 10.0, 5.0, 2.0, 1.0, 1/3.0, 1/6.0, 1/12.0, 1/30.0, 1/60.0, 1/180.0, 1/360.0, 1/720.0, 1/1800.0, 1/3600.0, 1/7200.0, 1/18000.0, 1/36000.0, -1.0]
+    #for RAt in RAtick:
+    #    if span > (RAt * 3.0) and RAt > 0:
+    #        RAlocator = MultipleLocator(RAt)
+    #        break
+    #if RAt < 0: RAlocator = MultipleLocator(1/96000.)
+    #if RAt < 0: RAlocator = AutoLocator()
+    for t in XYtick:
+        if span > (t * 3.0) and t > 0:
+            GLlocator = MultipleLocator(t)
+            GBlocator = MultipleLocator(t)
+            break
+    #if DECt < 0: DEClocator = MultipleLocator(1/72000.0)
+    if t < 0: 
+        GLlocator = AutoLocator()
+        GBlocator = AutoLocator()
+            
+    if span < 0.0001:
+        GLformatter=FuncFormatter(DDMMSSss)
+        GBformatter=FuncFormatter(DDMMSSss)
+    elif span < 0.001:
+        GLformatter=FuncFormatter(DDMMSSs)
+        GBformatter=FuncFormatter(DDMMSSs)
+    elif span < 0.01:
+        GLformatter=FuncFormatter(DDMMSS)
+        GBformatter=FuncFormatter(DDMMSS)
+    elif span < 1.0:
+        GLformatter=FuncFormatter(DDMMSS)
+        #GBformatter=FuncFormatter(DDMM)
+        GBformatter=FuncFormatter(DDMMSS)
+    else:
+        GLformatter=FuncFormatter(DDMM)
+        GBformatter=FuncFormatter(DDMM)
+
+    return (GLlocator, GBlocator, GLformatter, GBformatter)
+
 def RADEClabel(span):
     """
     return (RAlocator, DEClocator, RAformatter, DECformatter)
@@ -141,7 +188,34 @@ def RADEClabel(span):
 
     return (RAlocator, DEClocator, RAformatter, DECformatter)
 
-class PointingAxesManager(object):
+class MapAxesManagerBase(object):
+    @property
+    def direction_reference(self):
+        return self._direction_reference
+    
+    @direction_reference.setter
+    def direction_reference(self, value):
+        if isinstance(value, str):
+            self._direction_reference = value
+    
+    def __init__(self):
+        self._direction_reference = None
+        
+    def get_axes_labels(self):
+        # default label is RA/Dec
+        xlabel = 'RA'
+        ylabel = 'Dec'
+        if isinstance(self.direction_reference, str):
+            if self.direction_reference in ['J2000', 'ICRS']:
+                xlabel = 'RA ({0})'.format(self.direction_reference)
+                ylabel = 'Dec ({0})'.format(self.direction_reference)
+            elif self.direction_reference.upper() == 'GALACTIC':
+                xlabel = 'GL'
+                ylabel = 'GB'
+        return xlabel, ylabel
+
+        
+class PointingAxesManager(MapAxesManagerBase):
     MATPLOTLIB_FIGURE_ID = 9005
     
     @property
@@ -188,12 +262,9 @@ class PointingAxesManager(object):
 
     def __axes(self):
         a = pl.axes([0.15, 0.2, 0.7, 0.7])
-        if self.direction_reference is None:
-            pl.xlabel('RA')
-            pl.ylabel('Dec')
-        else:
-            pl.xlabel('RA ({0})'.format(self.direction_reference))
-            pl.ylabel('Dec ({0})'.format(self.direction_reference))
+        xlabel, ylabel = self.get_axes_labels()
+        pl.xlabel(xlabel)
+        pl.ylabel(ylabel)
         pl.title('')
         return a
 
@@ -211,7 +282,8 @@ def draw_pointing(axes_manager, RA, DEC, FLAG=None, plotfile=None, connect=True,
     xmin = max(RA) + span / 10.0
     ymax = max(DEC) + span / 10.0
     ymin = min(DEC) - span / 10.0
-    (RAlocator, DEClocator, RAformatter, DECformatter) = RADEClabel(span)
+    (RAlocator, DEClocator, RAformatter, DECformatter) = XYlabel(span,
+                                                                 axes_manager.direction_reference)
 
     Aspect = 1.0 / math.cos(DEC[0] / 180.0 * 3.141592653)
 

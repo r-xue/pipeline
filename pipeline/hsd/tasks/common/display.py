@@ -480,34 +480,8 @@ def form4(n):
         return 5.5
 
 
-class MapAxesManagerBase(object):
-    @property
-    def direction_reference(self):
-        return self._direction_reference
-    
-    @direction_reference.setter
-    def direction_reference(self, value):
-        if isinstance(value, str):
-            self._direction_reference = value
-    
-    def __init__(self):
-        self._direction_reference = None
-        
-    def __get_axis_label(self, base_label):
-        if self.direction_reference is None:
-            return base_label
-        else:
-            return '{0} ({1})'.format(base_label,
-                                      self.direction_reference)
-        
-    def get_horizontal_axis_label(self):
-        return self.__get_axis_label('RA')
-    
-    def get_vertical_axis_label(self):
-        return self.__get_axis_label('Dec')
-        
 
-class SparseMapAxesManager(MapAxesManagerBase):
+class SparseMapAxesManager(pointing.MapAxesManagerBase):
     def __init__(self, nh, nv, brightnessunit, ticksize, clearpanel=True, figure_id=None):
         super(SparseMapAxesManager, self).__init__()
         self.nh = nh
@@ -597,14 +571,18 @@ class SparseMapAxesManager(MapAxesManagerBase):
                 yield axes
 
     def setup_labels(self, label_ra, label_dec):
+        if self.direction_reference.upper() == 'GALACTIC':
+            xaxislabel = pointing.DDMMSSs
+        else:
+            xaxislabel = pointing.HHMMSSss
         for x in xrange(self.nh):
             a1 = pl.subplot(self.gs_bottom[-1, self.nh - x])
             a1.set_axis_off()
             if len(a1.texts) == 0:
-                pl.text(0.5, 0.5, pointing.HHMMSSss((label_ra[x][0]+label_ra[x][1])/2.0, 0),
+                pl.text(0.5, 0.5, xaxislabel((label_ra[x][0]+label_ra[x][1])/2.0, 0),
                         horizontalalignment='center', verticalalignment='center', size=self.ticksize)
             else:
-                a1.texts[0].set_text(pointing.HHMMSSss((label_ra[x][0]+label_ra[x][1])/2.0, 0))
+                a1.texts[0].set_text(xaxislabel((label_ra[x][0]+label_ra[x][1])/2.0, 0))
         for y in xrange(self.nv):
             a1 = pl.subplot(self.gs_bottom[self.nv - y - 1, 0])
             a1.set_axis_off()
@@ -615,8 +593,7 @@ class SparseMapAxesManager(MapAxesManagerBase):
                 a1.texts[0].set_text(pointing.DDMMSSs((label_dec[y][0]+label_dec[y][1])/2.0, 0))
         a1 = pl.subplot(self.gs_bottom[-1, 0])
         a1.set_axis_off()
-        ralabel = self.get_horizontal_axis_label()
-        declabel = self.get_vertical_axis_label()
+        ralabel, declabel = self.get_axes_labels()
         pl.text(0.5, 1, declabel, horizontalalignment='center', verticalalignment='bottom', size=(self.ticksize+1))
         pl.text(1, 0.5, ralabel, horizontalalignment='right', verticalalignment='center', size=(self.ticksize+1))
 

@@ -17,14 +17,14 @@ from ..common.display import DPIDetail, DPISummary, SDImageDisplay, SDImageDispl
 import pipeline.infrastructure.casatools as casatools
 from ..common.display import sd_polmap as polmap
 #from ..common.display import DDMMSSs, HHMMSSss
-from ..common.display import SDSparseMapPlotter, MapAxesManagerBase
+from ..common.display import SDSparseMapPlotter
 from ..common.display import NoData, NoDataThreshold
 from ..common import atmutil
+from pipeline.infrastructure.displays.pointing import MapAxesManagerBase
 
 # NoData = -32767.0
 # NoDataThreshold = NoData + 10000.0
 
-RADEClabel = pointing.RADEClabel
 RArotation = pointing.RArotation
 DECrotation = pointing.DECrotation
 DDMMSSs = pointing.DDMMSSs
@@ -61,8 +61,9 @@ class ChannelAveragedAxesManager(MapAxesManagerBase):
             ylabels = axes.get_yticklabels()
             pl.setp(ylabels, 'rotation', self.yrotation, fontsize=self.ticksize)
             pl.title('Baseline RMS Map', size=self.ticksize)
-            pl.xlabel(self.get_horizontal_axis_label(), size=self.ticksize)
-            pl.ylabel(self.get_vertical_axis_label(), size=self.ticksize)
+            xlabel, ylabel = self.get_axes_labels()
+            pl.xlabel(xlabel, size=self.ticksize)
+            pl.ylabel(ylabel, size=self.ticksize)
 
             if self.isgray:
                 pl.gray()
@@ -82,7 +83,8 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
         
         Extent = (self.ra_max+self.grid_size/2.0, self.ra_min-self.grid_size/2.0, self.dec_min-self.grid_size/2.0, self.dec_max+self.grid_size/2.0)
         span = max(self.ra_max - self.ra_min + self.grid_size, self.dec_max - self.dec_min + self.grid_size)
-        (RAlocator, DEClocator, RAformatter, DECformatter) = RADEClabel(span)
+        (RAlocator, DEClocator, RAformatter, DECformatter) = pointing.XYlabel(span,
+                                                                              self.direction_reference)
 
         # Plotting
         if ShowPlot: pl.ion()
@@ -101,6 +103,7 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
                                                   RAlocator, DEClocator,
                                                   RArotation, DECrotation,
                                                   TickSize, colormap)
+        axes_manager.direction_reference = self.direction_reference
         axes_tpmap = axes_manager.axes_tpmap
         tpmap_colorbar = None
         beam_circle = None
@@ -220,7 +223,8 @@ class SDMomentMapDisplay(SDImageDisplay):
         
         Extent = (self.ra_max+self.grid_size/2.0, self.ra_min-self.grid_size/2.0, self.dec_min-self.grid_size/2.0, self.dec_max+self.grid_size/2.0)
         span = max(self.ra_max - self.ra_min + self.grid_size, self.dec_max - self.dec_min + self.grid_size)
-        (RAlocator, DEClocator, RAformatter, DECformatter) = RADEClabel(span)
+        (RAlocator, DEClocator, RAformatter, DECformatter) = pointing.XYlabel(span,
+                                                                              self.direction_reference)
 
         # Plotting
         if ShowPlot: pl.ion()
@@ -352,9 +356,9 @@ class ChannelMapAxesManager(ChannelAveragedAxesManager):
             pl.setp(xlabels, 'rotation', self.xrotation, fontsize=self.ticksize)
             ylabels = axes.get_yticklabels()
             pl.setp(ylabels, 'rotation', self.yrotation, fontsize=self.ticksize)
-            
-            pl.xlabel(self.get_horizontal_axis_label(), size=self.ticksize)
-            pl.ylabel(self.get_vertical_axis_label(), size=self.ticksize)
+            xlabel, ylabel = self.get_axes_labels()
+            pl.xlabel(xlabel, size=self.ticksize)
+            pl.ylabel(ylabel, size=self.ticksize)
             if self.isgray:
                 pl.gray()
             else:
@@ -710,7 +714,8 @@ class SDChannelMapDisplay(SDImageDisplay):
         ExtentCM = ((self.x_max+0.5)*grid_size_arcsec, (self.x_min-0.5)*grid_size_arcsec, (self.y_min-0.5)*grid_size_arcsec, (self.y_max+0.5)*grid_size_arcsec)
         Extent = (self.ra_max+self.grid_size/2.0, self.ra_min-self.grid_size/2.0, self.dec_min-self.grid_size/2.0, self.dec_max+self.grid_size/2.0)
         span = max(self.ra_max - self.ra_min + self.grid_size, self.dec_max - self.dec_min + self.grid_size)
-        (RAlocator, DEClocator, RAformatter, DECformatter) = RADEClabel(span)
+        (RAlocator, DEClocator, RAformatter, DECformatter) = pointing.XYlabel(span,
+                                                                              self.direction_reference)
 
         # How to coordinate the map
         TickSize = 6
@@ -974,6 +979,10 @@ class RmsMapAxesManager(ChannelAveragedAxesManager):
     @property
     def axes_rmsmap(self):
         return self.axes_tpmap
+    
+    def __init__(self, xformatter, yformatter, xlocator, ylocator, xrotation, yrotation, ticksize, colormap):
+        super(RmsMapAxesManager, self).__init__(xformatter, yformatter, xlocator, ylocator,
+                                                xrotation, yrotation, ticksize, colormap)
 
 
 class SDRmsMapDisplay(SDImageDisplay):
@@ -1021,7 +1030,8 @@ class SDRmsMapDisplay(SDImageDisplay):
 
         Extent = (self.ra_max+self.grid_size/2.0, self.ra_min-self.grid_size/2.0, self.dec_min-self.grid_size/2.0, self.dec_max+self.grid_size/2.0)
         span = max(self.ra_max - self.ra_min + self.grid_size, self.dec_max - self.dec_min + self.grid_size)
-        (RAlocator, DEClocator, RAformatter, DECformatter) = RADEClabel(span)
+        (RAlocator, DEClocator, RAformatter, DECformatter) = pointing.XYlabel(span,
+                                                                              self.direction_reference)
 
         axes_manager = RmsMapAxesManager(RAformatter, DECformatter,
                                          RAlocator, DEClocator,
@@ -1099,6 +1109,7 @@ class SDRmsMapDisplay(SDImageDisplay):
 
 class SpectralMapAxesManager(MapAxesManagerBase):
     def __init__(self, nh, nv, brightnessunit, formatter, locator, ticksize):
+        super(SpectralMapAxesManager, self).__init__()
         self.nh = nh
         self.nv = nv
         self.brightnessunit = brightnessunit
