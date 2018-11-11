@@ -73,8 +73,14 @@ class SkyDisplay(object):
         if vmin is not None and vmax is not None:
             imshow_args['norm'] = plt.normalize(vmin, vmax, clip=True)
 
-        plotfile, coord_names, field = self._plot_panel(reportdir, result, collapseFunction=collapseFunction,
-                                                        **imshow_args)
+        if (context.results[-1].results[0].imaging_mode in ('VLA', 'EVLA', 'JVLA') and
+                context.results[-1].results[0].specmode == 'cont'):
+            ms = context.observing_run.get_measurement_sets()[0]  # only 1 ms for VLA
+        else:
+            ms = None
+
+        plotfile, coord_names, field, band = self._plot_panel(reportdir, result, collapseFunction=collapseFunction, ms=ms,
+                                                              **imshow_args)
 
         # field names may not be unique, which leads to incorrectly merged
         # plots in the weblog output. As a temporary fix, change to field +
@@ -87,6 +93,7 @@ class SkyDisplay(object):
 
         parameters = {k: miscinfo[k] for k in ['spw', 'pol', 'field', 'type', 'iter'] if k in miscinfo}
         parameters['ant'] = None
+        parameters['band'] = band
 
         plot = logger.Plot(plotfile, x_axis=coord_names[0],
                            y_axis=coord_names[1], field=field,
@@ -94,7 +101,7 @@ class SkyDisplay(object):
 
         return plot
 
-    def _plot_panel(self, reportdir, result, collapseFunction='mean', **imshow_args):
+    def _plot_panel(self, reportdir, result, collapseFunction='mean', ms=None, **imshow_args):
         """Method to plot a map."""
 
         plotfile = plotfilename(image=os.path.basename(result), reportdir=reportdir)
@@ -130,7 +137,7 @@ class SkyDisplay(object):
             # don't replot if a file of the required name already exists
             if os.path.exists(plotfile):
                 LOG.info('plotfile already exists: %s', plotfile) 
-                return plotfile, coord_names, miscinfo.get('field')
+                return plotfile, coord_names, miscinfo.get('field'), None
 
             # otherwise do the plot
             data = collapsed.getchunk()
@@ -237,14 +244,41 @@ class SkyDisplay(object):
                 if image_info['type'] == 'mom8_fc':
                     image_info['type'] = 'Line-free Moment 8'
 
-            label = [TextArea('%s:%s' % (key, image_info[key]), textprops=dict(color=color))
-                     for key, color in [('type', 'k'),
-                                        ('display', 'r'),
-                                        ('field', 'k'),
-                                        ('spw', 'k'),
-                                        ('pol', 'k'),
-                                        ('iter', 'k')]
-                     if image_info.get(key) is not None]
+            # VLA only, not VLASS
+            if ms:
+                band = ms.get_vla_spw2band()
+                band_spws = {}
+                for k, v in band.items():
+                    band_spws.setdefault(v, []).append(k)
+                for k, v in band_spws.items():
+                    for spw in image_info['spw'].split(','):
+                        if int(spw) in v:
+                            image_info['band'] = k
+                            del image_info['spw']
+                            break
+                    if 'spw' not in image_info:
+                        break
+
+            if 'band' in image_info.keys():
+                label = [TextArea('%s:%s' % (key, image_info[key]), textprops=dict(color=color))
+                         for key, color in [('type', 'k'),
+                                            ('display', 'r'),
+                                            ('field', 'k'),
+                                            ('band', 'k'),
+                                            ('pol', 'k'),
+                                            ('iter', 'k')]
+                         if image_info.get(key) is not None]
+                band = image_info.get('band')
+            else:
+                label = [TextArea('%s:%s' % (key, image_info[key]), textprops=dict(color=color))
+                         for key, color in [('type', 'k'),
+                                            ('display', 'r'),
+                                            ('field', 'k'),
+                                            ('spw', 'k'),
+                                            ('pol', 'k'),
+                                            ('iter', 'k')]
+                         if image_info.get(key) is not None]
+                band = None
 
             txt = HPacker(children=label, align="baseline", pad=0, sep=7)
 
@@ -269,7 +303,7 @@ class SkyDisplay(object):
             plt.clf()
             plt.close(1)
 
-            return plotfile, coord_names, miscinfo.get('field')
+            return plotfile, coord_names, miscinfo.get('field'), band
 
     @staticmethod
     def plottext(xoff, yoff, text, maxchars, ny_subplot=1, mult=1):
