@@ -172,6 +172,12 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
             finally:
                 LOG.debug('Table cache after sdcal: {}'.format(tb.showcache()))
     
+            # check if caltable is empty
+            with casatools.TableReader(myargs['outfile']):
+                is_caltable_empty = tb.nrows() == 0
+            if is_caltable_empty:
+                continue
+                
             # make a note of the current inputs state before we start fiddling
             # with it. This origin will be attached to the final CalApplication.
             origin = callibrary.CalAppOrigin(task=SerialSDSkyCal,
