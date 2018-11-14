@@ -52,8 +52,10 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
                                                                     overlay='antenna',
                                                                     solutionTimeThresholdSeconds=3600.)
 
+        # self._figfile structure: {spw_id: {antenna_id: filename}}
         self.spw_ids = self._figfile.keys()
-        self._figfile = dict(((spw_id, self._figfile[spw_id][0]) \
+        # take any value from the dictionary
+        self._figfile = dict(((spw_id, self._figfile[spw_id].values()[0]) \
                               for spw_id in self.spw_ids))
         self.init_with_field(context, result, field)
         
@@ -102,6 +104,7 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
                 spw_index = pieces.index(spw_indicator)
             except:
                 spw_index = -3
+            # remove antenna name from the filename
             pieces.pop(spw_index - 1)
             self._figfile[spw_id] = '.'.join(pieces)
 
