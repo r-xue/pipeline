@@ -32,6 +32,7 @@ import string
 from matplotlib.offsetbox import HPacker, TextArea, AnnotationBbox
 
 # alma modules
+from pipeline.hif.tasks.makeimages.resultobjects import MakeImagesResult
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.renderer.logger as logger
@@ -73,9 +74,12 @@ class SkyDisplay(object):
         if vmin is not None and vmax is not None:
             imshow_args['norm'] = plt.normalize(vmin, vmax, clip=True)
 
-        if (context.results[-1].results[0].imaging_mode in ('VLA', 'EVLA', 'JVLA') and
-                context.results[-1].results[0].specmode == 'cont'):
-            ms = context.observing_run.get_measurement_sets()[0]  # only 1 ms for VLA
+        if isinstance(context.results[-1], MakeImagesResult):
+            if (context.results[-1].results[0].imaging_mode in ('VLA', 'EVLA', 'JVLA') and
+                    context.results[-1].results[0].specmode == 'cont'):
+                ms = context.observing_run.get_measurement_sets()[0]  # only 1 ms for VLA
+            else:
+                ms = None
         else:
             ms = None
 
