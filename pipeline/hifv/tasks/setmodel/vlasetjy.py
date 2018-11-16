@@ -126,7 +126,7 @@ class VLASetjyInputs(vdp.StandardInputs):
         if not self.ms:
             return
 
-        # The fluxdensity parameter  is set ot  -1 which indicates that we must do a
+        # The fluxdensity parameter is set to -1 which indicates that we must do a
         # flux lookup. The # lookup order is:
         #     1) from file, unless it's a solar system object
         #     2) from CASA
@@ -238,7 +238,7 @@ class VLASetjyInputs(vdp.StandardInputs):
     @vdp.VisDependentProperty
     def standard(self):
 
-        # Get the standard heuriistics function.
+        # Get the standard heuristics function.
         heu_standard = standard.Standard()
 
         # The field may be an integer, but the standard heuristic operates on
