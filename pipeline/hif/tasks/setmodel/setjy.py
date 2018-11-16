@@ -156,7 +156,7 @@ class SetjyInputs(vdp.StandardInputs):
     @vdp.VisDependentProperty
     def standard(self):
 
-        # Get the standard heuriistics function.
+        # Get the standard heuristics function.
         heu_standard = standard.Standard()
 
         # The field may be an integer, but the standard heuristic operates on
