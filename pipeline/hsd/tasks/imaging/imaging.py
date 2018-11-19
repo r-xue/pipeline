@@ -749,7 +749,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             LOG.debug("#####{} : DEVIATION MASK = {}".format(msobj.basename, str(exclude_range)))
             if len(exclude_range)==1 and exclude_range[0] == [0, spwobj.num_channels-1]:
                 # deviation mask is full channel range when all data are flagged
-                LOG.warn("Ignoring DEVIATION MASK of {} (SPW {:d}, FIELD {:d}, ANT {:d}). Possibly all data flagged".format(msobj.basename, spwid, antid, fieldid))
+                LOG.warn("Ignoring DEVIATION MASK of {} (SPW {:d}, FIELD {:d}, ANT {:d}). Possibly all data flagged".format(msobj.basename, spwid, fieldid, antid))
                 exclude_range = []
             if edge[0] > 0: exclude_range.append([0, edge[0]-1])
             if edge[1] > 0: exclude_range.append([spwobj.num_channels-edge[1], spwobj.num_channels-1])
