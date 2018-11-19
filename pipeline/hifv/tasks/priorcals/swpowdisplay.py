@@ -32,7 +32,7 @@ class swpowSummaryChart(object):
         plotmax = 100
         casa.plotms(vis=self.caltable, xaxis='time', yaxis='amp', field='',
                     antenna=antPlot, spw='', timerange='',
-                    plotrange=[0,0,0,plotmax], coloraxis='spw',
+                    plotrange=[0,0,0,plotmax], coloraxis='',
                     title='Switched Power  swpow.tbl   Antenna: {!s}'.format('0~2'),
                     titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
 
@@ -127,7 +127,7 @@ class swpowPerAntennaChart(object):
 
                     casa.plotms(vis=self.caltable, xaxis='time', yaxis=self.yaxis, field='',
                                 antenna=antPlot, spw=self.result.sw_result.spw, timerange='',
-                                plotrange=plotrange, coloraxis='spw',
+                                plotrange=plotrange, coloraxis='',
                                 title='Switched Power  swpow.tbl   Antenna: {!s}'.format(antName),
                                 titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                 xconnector='line')

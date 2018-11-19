@@ -109,7 +109,7 @@ class DelaysPerAntennaChart(object):
 
                     casa.plotms(vis=self.result.ktypecaltable, xaxis='freq', yaxis='amp', field='',
                                 antenna=antPlot, spw='', timerange='',
-                                plotrange=[], coloraxis='spw',
+                                plotrange=[], coloraxis='',
                                 title='K table: delay.tbl   Antenna: {!s}'.format(antName),
                                 titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                 xconnector='step')
@@ -181,7 +181,7 @@ class semifinalphaseGainPerAntennaChart(object):
 
                     casa.plotms(vis=result.bpdgain_touse, xaxis='time', yaxis='phase', field='',
                                 antenna=antPlot, spw='', timerange='',
-                                coloraxis='spw', plotrange=[0, 0, -180, 180], symbolshape='circle',
+                                coloraxis='', plotrange=[0, 0, -180, 180], symbolshape='circle',
                                 title='G table: {!s}   Antenna: {!s}'.format(result.bpdgain_touse, antName),
                                 titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                 xconnector='line')
@@ -277,7 +277,7 @@ class semifinalbpSolAmpPerAntennaChart(object):
 
                     casa.plotms(vis=self.result.bpcaltable, xaxis='freq', yaxis='amp', field='',
                                 antenna=antPlot, spw='', timerange='',
-                                coloraxis='spw', plotrange=[0, 0, 0, ampplotmax], symbolshape='circle',
+                                coloraxis='', plotrange=[0, 0, 0, ampplotmax], symbolshape='circle',
                                 title='B table: {!s}   Antenna: {!s}'.format('BPcal.b', antName),
                                 titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                 xconnector='step')
@@ -371,7 +371,7 @@ class semifinalbpSolPhasePerAntennaChart(object):
 
                     casa.plotms(vis=self.result.bpcaltable, xaxis='freq', yaxis='phase', field='',
                                 antenna=antPlot, spw='', timerange='',
-                                coloraxis='spw', plotrange=[0, 0, -phaseplotmax, phaseplotmax],
+                                coloraxis='', plotrange=[0, 0, -phaseplotmax, phaseplotmax],
                                 symbolshape='circle',
                                 title='B table: {!s}   Antenna: {!s}'.format('BPcal.tbl', antName),
                                 titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,

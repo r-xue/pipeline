@@ -120,7 +120,7 @@ class testgainsPerAntennaChart(object):
                         antname = ','.join(idents)
 
                     casa.plotms(vis=self.result.bpdgain_touse, xaxis='time', yaxis=self.yaxis, field='',
-                                antenna=antPlot, spw='', timerange='', plotrange=plotrange, coloraxis='spw',
+                                antenna=antPlot, spw='', timerange='', plotrange=plotrange, coloraxis='',
                                 title='G table: {!s}   Antenna: {!s}'.format(self.result.bpdgain_touse, antname),
                                 titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                 xconnector=xconnector)

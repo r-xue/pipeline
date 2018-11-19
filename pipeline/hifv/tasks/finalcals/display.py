@@ -102,7 +102,7 @@ class finalDelaysPerAntennaChart(object):
 
                     casa.plotms(vis=self.result.ktypecaltable, xaxis='freq', yaxis='amp', field='',
                                 antenna=antPlot, spw='', timerange='',
-                                plotrange=[], coloraxis='spw',
+                                plotrange=[], coloraxis='',
                                 title='K table: finaldelay.tbl   Antenna: {!s}'.format(antName),
                                 titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                 xconnector='step')
@@ -172,7 +172,7 @@ class finalphaseGainPerAntennaChart(object):
                     LOG.debug("Plotting final phase gain solutions "+antName)
                     casa.plotms(vis=result.bpdgain_touse, xaxis='time', yaxis='phase', field='',
                                 antenna=antPlot, spw='', timerange='',
-                                coloraxis='spw', plotrange=[0, 0, -180, 180], symbolshape='circle',
+                                coloraxis='', plotrange=[0, 0, -180, 180], symbolshape='circle',
                                 title='G table: finalBPinitialgain.tbl   Antenna: {!s}'.format(antName),
                                 titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                 xconnector='line')
@@ -267,7 +267,7 @@ class finalbpSolAmpPerAntennaChart(object):
                     LOG.debug("Plotting amp bandpass solutions "+antName)
                     casa.plotms(vis=self.result.bpcaltable, xaxis='freq', yaxis='amp', field='',
                                 antenna=antPlot, spw='', timerange='',
-                                coloraxis='spw', plotrange=[0, 0, 0, ampplotmax], symbolshape='circle',
+                                coloraxis='', plotrange=[0, 0, 0, ampplotmax], symbolshape='circle',
                                 title='B table: {!s}   Antenna: {!s}'.format('finalBPcal.tbl', antName),
                                 titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                 xconnector='step')
@@ -363,7 +363,7 @@ class finalbpSolPhasePerAntennaChart(object):
                     LOG.debug("Plotting phase bandpass solutions "+antName)
                     casa.plotms(vis=self.result.bpcaltable, xaxis='freq', yaxis='phase', field='',
                                 antenna=antPlot, spw='', timerange='',
-                                coloraxis='spw', plotrange=[0, 0, -phaseplotmax, phaseplotmax],
+                                coloraxis='', plotrange=[0, 0, -phaseplotmax, phaseplotmax],
                                 symbolshape='circle',
                                 title='B table: {!s}   Antenna: {!s}'.format('finalBPcal.tbl', antName),
                                 titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
@@ -435,7 +435,7 @@ class finalbpSolPhaseShortPerAntennaChart(object):
                     LOG.debug("Plotting phase short gaincal "+antName)
                     casa.plotms(vis=self.result.phaseshortgaincaltable, xaxis='time', yaxis='phase', field='',
                                 antenna=antPlot, spw='', timerange='',
-                                coloraxis='spw', plotrange=[0, 0, -180, 180], symbolshape='circle',
+                                coloraxis='', plotrange=[0, 0, -180, 180], symbolshape='circle',
                                 title='G table: phaseshortgaincal.tbl   Antenna: {!s}'.format(antName),
                                 titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                 xconnector='line')
@@ -513,7 +513,7 @@ class finalAmpTimeCalPerAntennaChart(object):
                     LOG.debug("Plotting final amp timecal "+antName)
                     casa.plotms(vis=self.result.finalampgaincaltable, xaxis='time', yaxis='amp', field='',
                                 antenna=antPlot, spw='', timerange='',
-                                coloraxis='spw', plotrange=[0, 0, 0, plotmax], symbolshape='circle',
+                                coloraxis='', plotrange=[0, 0, 0, plotmax], symbolshape='circle',
                                 title='G table: finalampgaincal.tbl   Antenna: {!s}'.format(antName),
                                 titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                 xconnector='line')
@@ -591,7 +591,7 @@ class finalAmpFreqCalPerAntennaChart(object):
                     LOG.debug("Plotting final amp freqcal "+antName)
                     casa.plotms(vis=self.result.finalampgaincaltable, xaxis='freq', yaxis='amp', field='',
                                 antenna=antPlot, spw='', timerange='',
-                                coloraxis='spw', plotrange=[0, 0, 0, plotmax], symbolshape='circle',
+                                coloraxis='', plotrange=[0, 0, 0, plotmax], symbolshape='circle',
                                 title='G table: finalampgaincal.tbl   Antenna: {!s}'.format(antName),
                                 titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                 xconnector='step')
@@ -663,7 +663,7 @@ class finalPhaseGainCalPerAntennaChart(object):
                     LOG.debug("Plotting final phase freqcal "+antName)
                     casa.plotms(vis=self.result.finalphasegaincaltable, xaxis='time', yaxis='phase', field='',
                                 antenna=antPlot, spw='', timerange='',
-                                coloraxis='spw', plotrange=[0, 0, -180, 180], symbolshape='circle',
+                                coloraxis='', plotrange=[0, 0, -180, 180], symbolshape='circle',
                                 title='G table: finalphasegaincal.tbl   Antenna: {!s}'.format(antName),
                                 titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                 xconnector='line')
