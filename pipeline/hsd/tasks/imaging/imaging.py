@@ -183,7 +183,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 baseline_stage = stage
         if baseline_stage > 0:
             edge = list(registered_results[baseline_stage].outcome['edge'])
-            LOG.info('Retrieved edge information from SDBaselineResults: %s' % edge)
+            LOG.info('Retrieved edge information from SDBaselineResults: {}'.format(edge))
         else:
             LOG.info('No SDBaselineResults available. Set edge as [0,0]')
             edge = [0, 0]
@@ -193,12 +193,13 @@ class SDImaging(basetask.StandardTaskTemplate):
         
         # loop over reduction group (spw and source combination)
         for (group_id, group_desc) in reduction_group.iteritems():
-            LOG.debug('Processing Reduction Group %s' % group_id)
+            LOG.debug('Processing Reduction Group {}'.format(group_id))
             LOG.debug('Group Summary:')
             for m in group_desc:
-                LOG.debug('\t%s: Antenna %d (%s) Spw %d Field %d (%s)' % \
-                          (os.path.basename(m.ms.work_data), m.antenna_id,
-                           m.antenna_name, m.spw_id, m.field_id, m.field_name))
+                LOG.debug('\t{}: Antenna {:d} ({}) Spw {:d} Field {:d} ({})'.format(os.path.basename(m.ms.work_data), 
+                                                                                    m.antenna_id, m.antenna_name, 
+                                                                                    m.spw_id, 
+                                                                                    m.field_id, m.field_name))
             # Which group in group_desc list should be processed
             
             # fix for CAS-9747
@@ -216,15 +217,15 @@ class SDImaging(basetask.StandardTaskTemplate):
                 field_sel = group_desc.field_name
             else:
                 # no field name is included in in_field, skip
-                LOG.info('Skip reduction group %d' % group_id)
+                LOG.info('Skip reduction group {:d}'.format(group_id))
                 continue
                 
             member_list = list(common.get_valid_ms_members(group_desc, ms_names, inputs.antenna, field_sel, in_spw))
-            LOG.trace('group %s: member_list=%s' % (group_id, member_list))
+            LOG.trace('group {}: member_list={}'.format(group_id, member_list))
             
             # skip this group if valid member list is empty
             if len(member_list) == 0:
-                LOG.info('Skip reduction group %d'%(group_id))
+                LOG.info('Skip reduction group {:d}'.format(group_id))
                 continue
  
             member_list.sort()  # list of group_desc IDs to image
@@ -244,9 +245,10 @@ class SDImaging(basetask.StandardTaskTemplate):
              
             LOG.debug('Members to be processed:')
             for i in xrange(len(member_list)):
-                LOG.debug('\t%s: Antenna %s Spw %s Field %s' % \
-                          (os.path.basename(ms_list[i].work_data),
-                           antenna_list[i], spwid_list[i], fieldid_list[i]))
+                LOG.debug('\t{}: Antenna {} Spw {} Field {}'.format(os.path.basename(ms_list[i].work_data),
+                                                                    antenna_list[i], 
+                                                                    spwid_list[i], 
+                                                                    fieldid_list[i]))
  
             #continue
  
@@ -267,7 +269,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                     image_group[identifier].append([msobj, ant, spwid, fieldid, pollist, chanmap])
                 else:
                     image_group[identifier] = [[msobj, ant, spwid, fieldid, pollist, chanmap]]
-            LOG.debug('image_group=%s' % image_group)
+            LOG.debug('image_group={}'.format(image_group))
  
             # loop over antennas
             combined_infiles = []
@@ -286,13 +288,12 @@ class SDImaging(basetask.StandardTaskTemplate):
                 fieldids = map(lambda x: x[3], _members)
                 polslist = map(lambda x: x[4], _members)
                 chanmap_range_list = map(lambda x: x[5], _members)
-                LOG.info("Processing image group: %s" % name)
+                LOG.info("Processing image group: {}".format(name))
                 for idx in xrange(len(msobjs)):
-                    LOG.info("\t%s: Antenna %d (%s) Spw %s Field %d (%s)" % \
-                             (msobjs[idx].basename,
-                              antids[idx], msobjs[idx].antennas[antids[idx]].name,
-                              spwids[idx], fieldids[idx],
-                              msobjs[idx].fields[fieldids[idx]].name))
+                    LOG.info("\t{}: Antenna {:d} ({}) Spw {} Field {:d} ({})".format(msobjs[idx].basename,
+                                                                                     antids[idx], msobjs[idx].antennas[antids[idx]].name,
+                                                                                     spwids[idx], 
+                                                                                     fieldids[idx], msobjs[idx].fields[fieldids[idx]].name))
                 # reference data is first MS
                 ref_ms = msobjs[0]
                 ant_name = ref_ms.antennas[antids[0]].name
@@ -307,11 +308,11 @@ class SDImaging(basetask.StandardTaskTemplate):
                 # filenames for gridding
                 infiles = [ms.work_data for ms in msobjs]
   
-                LOG.debug('infiles=%s' % infiles)
+                LOG.debug('infiles={}'.format(infiles))
                   
                 # image name
                 imagename = self.get_imagename(imagemode, source_name, spwids, ant_name)
-                LOG.info("Output image name: %s" % imagename)
+                LOG.info("Output image name: {}".format(imagename))
 
                 # pick restfreq from restfreq_list
                 if type(restfreq_list) == list:
@@ -321,13 +322,13 @@ class SDImaging(basetask.StandardTaskTemplate):
                         restfreq = restfreq_list[v_idx]
                         if restfreq is None:
                             restfreq = ''
-                        LOG.info( "Picked restfreq = '%s' from %s" % (restfreq, restfreq_list) )
+                        LOG.info( "Picked restfreq = '{}' from {}".format(restfreq, restfreq_list) )
                     else:
                         restfreq = ''
-                        LOG.warning( "No restfreq for spw %s in %s. Applying default value." % (v_spwid, restfreq_list) )
+                        LOG.warning( "No restfreq for spw {} in {}. Applying default value.".format(v_spwid, restfreq_list) )
                 else:
                     restfreq = restfreq_list
-                    LOG.info("Processing with restfreq = %s" % restfreq )
+                    LOG.info("Processing with restfreq = {}".format(restfreq ))
 
                 # Step 1.
                 # Initialize weight column based on baseline RMS.
@@ -344,7 +345,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 # Step 2.
                 # Imaging
                 # Image per antenna, source
-                LOG.info('Imaging Source %s, Ant %s Spw %d' % (source_name, ant_name, spwids[0]))
+                LOG.info('Imaging Source {}, Ant {} Spw {:d}'.format(source_name, ant_name, spwids[0]))
                 # map coordinate (use identical map coordinate per spw)
                 if not coord_set:
                     image_coord = worker.ALMAImageCoordinateUtil(context, infiles, antids, spwids, fieldids)
@@ -446,7 +447,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                         frequency_frame = cs.getconversiontype('spectral')
                         rms_exclude_freq = self._get_rms_exclude_freq_range_image(
                             frequency_frame, chanmap_range_list, edge, msobjs, antids, spwids, fieldids)
-                        LOG.info("The spectral line and deviation mask frequency ranges = %s" % str(rms_exclude_freq))
+                        LOG.info("The spectral line and deviation mask frequency ranges = {}".format(str(rms_exclude_freq)))
                     combined_rms_exclude.extend(rms_exclude_freq)
 
                     image_item = imagelibrary.ImageItem(imagename=imagename,
@@ -487,7 +488,7 @@ class SDImaging(basetask.StandardTaskTemplate):
   
             # Make combined image
             if len(tocombine_images) == 0:
-                LOG.warn("No valid image to combine for Source %s, Spw %d" % (source_name, spwids[0]))
+                LOG.warn("No valid image to combine for Source {}, Spw {:d}".format(source_name, spwids[0]))
                 continue
             # reference MS
             ref_ms = context.observing_run.get_ms(name=sdutils.get_parent_ms_name(context, combined_infiles[0]))
@@ -497,7 +498,7 @@ class SDImaging(basetask.StandardTaskTemplate):
   
             # Step 3.
             # Imaging of all antennas
-            LOG.info('Combine images of Source %s Spw %d' % (source_name, combined_spws[0]))
+            LOG.info('Combine images of Source {} Spw {:d}'.format(source_name, combined_spws[0]))
             if False:
                 imager_inputs = worker.SDImagingWorker.Inputs(context, combined_infiles, 
                                                               outfile=imagename, mode=imagemode,
@@ -589,7 +590,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 ref_world = cs.referencevalue()['numeric']
                 qcell = cs.increment(format='q', type='direction')['quantity'].values() #cs.increment(format='s', type='direction')['string']
 #                 rms_exclude_freq = self._merge_ranges(combined_rms_exclude)
-                LOG.info("Aggregated spectral line frequency ranges of combined image = %s" % str(combined_rms_exclude))
+                LOG.info("Aggregated spectral line frequency ranges of combined image = {}".format(str(combined_rms_exclude)))
                 combined_rms_exclude_chan = [] # should be list for sort
                 for i in range(len(combined_rms_exclude)):
                     segment = combined_rms_exclude[i]
@@ -600,15 +601,15 @@ class SDImaging(basetask.StandardTaskTemplate):
                     # handling of LSB
                     min_chan = min(start_chan, end_chan)
                     max_chan = max(start_chan, end_chan)
-                    #LOG.info("#####Freq to Chan: [%f, %f] -> [%f, %f]" % (segment[0], segment[1], min_chan, max_chan))
+                    #LOG.info("#####Freq to Chan: [{:f}, {:f}] -> [{:f}, {:f}]".format(segment[0], segment[1], min_chan, max_chan))
                     if max_chan < -0.5 or min_chan > num_chan - 0.5: #out of range
-                        #LOG.info("#####Omitting channel range [%f, %f]" % (min_chan, max_chan))
+                        #LOG.info("#####Omitting channel range [{:f}, {:f}]".format(min_chan, max_chan))
                         continue
                     combined_rms_exclude_chan.append([max(int(min_chan), 0),
                                            min(int(max_chan), num_chan-1)])
                 combined_rms_exclude_chan.sort()
                 rms_exclude_chan = self._merge_ranges(combined_rms_exclude_chan)
-                LOG.info("Merged spectral line channel ranges of combined image = %s" % str(rms_exclude_chan))
+                LOG.info("Merged spectral line channel ranges of combined image = {}".format(str(rms_exclude_chan)))
                 include_channel_range = []
                 if len(rms_exclude_chan) == 0:
                     include_channel_range = [edge[0], num_chan-1-edge[1]]
@@ -622,14 +623,14 @@ class SDImaging(basetask.StandardTaskTemplate):
                             include_channel_range.extend([start_include, end_include])
                     if rms_exclude_chan[-1][1] + 1 < num_chan-1-edge[1]:
                         include_channel_range.extend([rms_exclude_chan[-1][1] + 1, num_chan-1-edge[1]])
-                LOG.info("Line free channel ranges of image to calculate RMS = %s" % str(include_channel_range))
+                LOG.info("Line free channel ranges of image to calculate RMS = {}".format(str(include_channel_range)))
 
-                stat_chans = str(';').join([ '%d~%d' % (include_channel_range[iseg], include_channel_range[iseg+1]) for iseg in range(0, len(include_channel_range), 2) ])
+                stat_chans = str(';').join([ '{:d}~{:d}'.format(include_channel_range[iseg], include_channel_range[iseg+1]) for iseg in range(0, len(include_channel_range), 2) ])
                 # statistics
                 imstat_job = casa_tasks.imstat(imagename=imagename, chans=stat_chans)
                 statval = self._executor.execute(imstat_job)
                 image_rms = statval['rms'][0]
-                LOG.info("Statistics of line free channels (%s): RMS = %f %s, Stddev = %f %s, Mean = %f %s" % (stat_chans, statval['rms'][0], brightnessunit, statval['sigma'][0], brightnessunit, statval['mean'][0], brightnessunit))
+                LOG.info("Statistics of line free channels ({}): RMS = {:f} {}, Stddev = {:f} {}, Mean = {:f} {}".format(stat_chans, statval['rms'][0], brightnessunit, statval['sigma'][0], brightnessunit, statval['mean'][0], brightnessunit))
 
                 # estimate
                 if is_representative_spw:
@@ -642,13 +643,12 @@ class SDImaging(basetask.StandardTaskTemplate):
                     else:
                         if not cqa.isquantity(rep_bw): # assume Hz
                             rep_bw = cqa.quantity(rep_bw, 'Hz')
-                        LOG.info("Estimate RMS in representative bandwidth: %fkHz (native: %fkHz)" % \
-                                 (cqa.getvalue(cqa.convert(cqa.quantity(rep_bw), 'kHz')), chan_width*1.e-3))
+                        LOG.info("Estimate RMS in representative bandwidth: {:f}kHz (native: {:f}kHz)".format(cqa.getvalue(cqa.convert(cqa.quantity(rep_bw), 'kHz')), chan_width*1.e-3))
                         factor = sensitivity_improvement.sensitivityImprovement(ref_ms.name, rep_spwid, cqa.tos(rep_bw))
                         if factor is None:
                             LOG.warn('No image RMS improvement because representative bandwidth is narrower than native width')
                             factor = 1.0
-                        LOG.info("Image RMS improvement of factor %f estimated. %f => %f [Jy/beam]" % (factor, image_rms, image_rms/factor))
+                        LOG.info("Image RMS improvement of factor {:f} estimated. {:f} => {:f} [Jy/beam]".format(factor, image_rms, image_rms/factor))
                         image_rms = image_rms/factor
                         chan_width = numpy.abs(cqa.getvalue(cqa.convert(cqa.quantity(rep_bw), 'Hz'))[0])
                 elif rep_bw is None:
@@ -665,7 +665,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 cs.done()
                 if len(freqs) > 1 and freqs[0] > freqs[1]:  # LSB
                     freqs.reverse()
-                stat_freqs = str(', ').join(['%f~%fGHz' % (freqs[iseg]*1.e-9, freqs[iseg+1]*1.e-9)
+                stat_freqs = str(', ').join(['{:f}f~{:f}GHz'.format(freqs[iseg]*1.e-9, freqs[iseg+1]*1.e-9)
                                              for iseg in range(0, len(freqs), 2)])
                   
                 image_item = imagelibrary.ImageItem(imagename=imagename,
@@ -729,14 +729,14 @@ class SDImaging(basetask.StandardTaskTemplate):
         """
         image_rms_freq_range = []
         channelmap_range = []
-        #LOG.info("#####Raw chanmap_range=%s" % str(chanmap_ranges))
+        #LOG.info("#####Raw chanmap_range={}".format(str(chanmap_ranges)))
         for chanmap_range in chanmap_ranges:
             for map_range in chanmap_range:
                 if map_range[2]:
                     min_chan = int(map_range[0]-map_range[1]*0.5)
                     max_chan = int(numpy.ceil(map_range[0]+map_range[1]*0.5))
                     channelmap_range.append([min_chan, max_chan])
-        LOG.debug("#####CHANNEL MAP RANGE = %s" % str(channelmap_range))
+        LOG.debug("#####CHANNEL MAP RANGE = {}".format(str(channelmap_range)))
         for i in range(len(msobj_list)):
             # define channel ranges of lines and deviation mask for each MS
             msobj = msobj_list[i]
@@ -746,24 +746,24 @@ class SDImaging(basetask.StandardTaskTemplate):
             spwobj = msobj.get_spectral_window(spwid)
             deviation_mask = getattr(msobj, 'deviation_mask', {})
             exclude_range = deviation_mask.get((fieldid, antid, spwid), [])
-            LOG.debug("#####%s : DEVIATION MASK = %s" % (msobj.basename, str(exclude_range)))
+            LOG.debug("#####{} : DEVIATION MASK = {}".format(msobj.basename, str(exclude_range)))
             if len(exclude_range)==1 and exclude_range[0] == [0, spwobj.num_channels-1]:
                 # deviation mask is full channel range when all data are flagged
-                LOG.warn("Ignoring DEVIATION MASK of %s (SPW %d, FIELD %d, ANT %d). Possibly all data flagged" % (msobj.basename, spwid, antid, fieldid))
+                LOG.warn("Ignoring DEVIATION MASK of {} (SPW {:d}, FIELD {:d}, ANT {:d}). Possibly all data flagged".format(msobj.basename, spwid, antid, fieldid))
                 exclude_range = []
             if edge[0] > 0: exclude_range.append([0, edge[0]-1])
             if edge[1] > 0: exclude_range.append([spwobj.num_channels-edge[1], spwobj.num_channels-1])
             if len(channelmap_range) >0:
                 exclude_range.extend(channelmap_range)
             exclude_channel_range = self._merge_ranges(exclude_range)
-            LOG.info("%s : channel map and deviation mask channel ranges in MS frame = %s" % (msobj.basename, str(exclude_channel_range)))
+            LOG.info("{} : channel map and deviation mask channel ranges in MS frame = {}".format(msobj.basename, str(exclude_channel_range)))
             # define frequency ranges of RMS
             exclude_freq_range = numpy.zeros(2*len(exclude_channel_range))
             for jseg in range(len(exclude_channel_range)):
                 (lfreq, rfreq) = (spwobj.channels.chan_freqs[jchan] for jchan in exclude_channel_range[jseg])
                 # handling of LSB
                 exclude_freq_range[2*jseg:2*jseg+2] = [min(lfreq, rfreq), max(lfreq, rfreq)]
-            LOG.debug("#####CHANNEL MAP AND DEVIATION MASK FREQ RANGE = %s" % str(exclude_freq_range))
+            LOG.debug("#####CHANNEL MAP AND DEVIATION MASK FREQ RANGE = {}".format(str(exclude_freq_range)))
             if len(exclude_freq_range) == 0:
                 continue  # no ranges to add
             # convert MS freqency ranges to image frame
@@ -795,7 +795,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             to_imageframe = numpy.vectorize(_to_imageframe)
             image_rms_freq_range.extend(to_imageframe(exclude_freq_range))
 
-        #LOG.info("#####Overall LINE CHANNELS IN IMAGE FRAME = %s" % str(image_rms_freq_range))
+        #LOG.info("#####Overall LINE CHANNELS IN IMAGE FRAME = {}".format(str(image_rms_freq_range)))
         if len(image_rms_freq_range) == 0:
             return image_rms_freq_range
 
@@ -813,7 +813,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             a list of merged ranges
             e.g., [[min_merged0,max_marged0], [min_merged1,max_merged1], ....]
         """
-        #LOG.info("#####Merge ranges: %s" % str(range_list))
+        #LOG.info("#####Merge ranges: {}".format(str(range_list)))
         num_range = len(range_list)
         if num_range == 0:
             return []
@@ -838,7 +838,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         while len(merged) < num_range:
             num_range = len(merged)
             merged = self._merge_ranges(merged)
-        #LOG.info("#####Merged: %s" % str(merged))
+        #LOG.info("#####Merged: {}".format(str(merged)))
         return merged
     
     def get_imagename(self, imagemode, source, spwids, antenna=None):
