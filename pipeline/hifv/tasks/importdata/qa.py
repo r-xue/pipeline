@@ -32,7 +32,7 @@ class VLAImportDataQAHandler(hqa.ImportDataQAHandler, pqa.QAPlugin):
         """
         qascore = hqa.ImportDataQAHandler._check_history_column(mses, inputs)
         if qascore.score < 1.0:
-            qascore.longmsg += " If hanning smooth has already been applied in previous execution, invoking hiv_hanning in a following stage means smoothing twice."
+            qascore.longmsg += " If hanning smooth has already been applied in previous execution, invoking hifv_hanning in a following stage means smoothing twice."
         return qascore
 
     def _check_intents(self, mses):
