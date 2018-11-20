@@ -993,10 +993,13 @@ class VLAScanHeuristics(object):
             self.bandpass_scan_select_string = \
                 buildSelectionString(msmd.scansforintent("CALIBRATE_BANDPASS*"))
             bpfieldlist = msmd.fieldsforintent("CALIBRATE_BANDPASS*")
+            self.bandpass_field_select_string = \
+                buildSelectionString([bpfieldlist[0]])
             if len(bpfieldlist) > 1:
-                self.bandpass_field_select_string = buildSelectionString([bpfieldlist[0]])
-            else:
-                self.bandpass_field_select_string = buildSelectionString(bpfieldlist)
+                LOG.warn("More than one field is defined as the bandpass calibrator.")
+                LOG.warn("  Models are required for all BP calibrators if multiple fields ")
+                LOG.warn("  are to be used, not yet implemented; the pipeline will use ")
+                LOG.warn("  only the first field.")
 
             if (self.bandpass_scan_select_string == '' or
                 self.bandpass_field_select_string == ''):
