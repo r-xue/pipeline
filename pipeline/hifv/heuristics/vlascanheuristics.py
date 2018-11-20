@@ -994,11 +994,9 @@ class VLAScanHeuristics(object):
                 buildSelectionString(msmd.scansforintent("CALIBRATE_BANDPASS*"))
             bpfieldlist = msmd.fieldsforintent("CALIBRATE_BANDPASS*")
             if len(bpfieldlist) > 1:
-                self.bandpass_field_select_string = \
-                    buildSelectionString([bpfieldlist[0]])
+                self.bandpass_field_select_string = buildSelectionString([bpfieldlist[0]])
             else:
-                self.bandpass_field_select_string = \
-                    buildSelectionString(bpfieldlist)
+                self.bandpass_field_select_string = buildSelectionString(bpfieldlist)
 
             if (self.bandpass_scan_select_string == '' or
                 self.bandpass_field_select_string == ''):
