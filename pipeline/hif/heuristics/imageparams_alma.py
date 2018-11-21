@@ -344,3 +344,15 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
                             keep_iterating = True
     
         return keep_iterating, hm_masking
+
+    def threshold(self, iteration, threshold, rms_threshold, nsigma, hm_masking):
+
+        if iteration == 0:
+            return '0.0mJy'
+        elif iteration == 1:
+            return threshold
+        else:
+            # Fallback to circular mask if auto-boxing fails.
+            # CAS-10489: old centralregion option needs higher threshold
+            cqa = casatools.quanta
+            return '%sJy' % (cqa.getvalue(cqa.mul(threshold, 2.0))[0])

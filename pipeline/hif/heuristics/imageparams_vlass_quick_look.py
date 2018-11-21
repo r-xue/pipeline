@@ -402,3 +402,25 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
         print('Found {} fields within {}'.format(len(fieldlist), distance))
         if not skipmatch:
             print('Rejected {} distance matches for regex'.format(nreject))
+
+    def _new_threshold(self, threshold, rms_threshold, nsigma):
+
+        if rms_threshold:
+            if threshold:
+                LOG.warn("Both the 'threshold' and 'threshold_nsigma' were specified.")
+                LOG.warn('Setting new threshold to max of input threshold and scaled MAD * nsigma.')
+                LOG.info("    Input 'threshold' = {tt}".format(tt=threshold))
+                LOG.info("    Input 'threshold_nsigma' = {ns}".format(ns=nsigma))
+                LOG.info("    Scaled MAD * 'threshold_nsigma' = {ts}".format(ts=rms_threshold))
+                LOG.info('    max(threshold, scaled MAD * nsigma)= {nt}'.format(nt=max(threshold, rms_threshold)))
+                new_threshold = max(threshold, rms_threshold)
+            else:
+                new_threshold = rms_threshold
+        else:
+            new_threshold = threshold
+
+        return new_threshold
+
+    def threshold(self, iteration, threshold, rms_threshold, nsigma, hm_masking):
+
+        return self._new_threshold(threshold, rms_threshold, nsigma)

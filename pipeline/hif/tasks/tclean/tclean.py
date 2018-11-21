@@ -1,4 +1,3 @@
-import commands
 import glob
 import os
 
@@ -163,9 +162,22 @@ class Tclean(cleanbase.CleanBase):
 
     is_multi_vis_task = True
 
+    def rm_stage_files(self, imagename):
+        filenames = glob.glob('%s.iter*' % (imagename))
+        for filename in filenames:
+            try:
+                if os.path.isfile(filename):
+                    os.remove(filename)
+                elif os.path.isdir(filename):
+                    rmtree_job = casa_tasks.rmtree(filename, ignore_errors=False)
+                    self._executor.execute(rmtree_job)
+                else:
+                    raise Exception('Cannot remove %s' % name)
+            except Exception as e:
+                LOG.warning('Exception while deleting %s: %s' % (filename, e))
+
     def copy_products(self, old_pname, new_pname, ignore=None):
-        imlist = commands.getoutput('ls -d '+old_pname+'.*')
-        imlist = imlist.split('\n')
+        imlist = glob.glob('%s.*' % (old_pname))
         imlist = [xx for xx in imlist if ignore is None or ignore not in xx]
         for image_name in imlist:
             newname = image_name.replace(old_pname, new_pname)
@@ -195,8 +207,7 @@ class Tclean(cleanbase.CleanBase):
         # delete any old files with this naming root. One of more
         # of these (don't know which) will interfere with this run.
         LOG.info('deleting %s*.iter*', inputs.imagename)
-        rmtree_job = casa_tasks.rmtree('%s*.iter*' % inputs.imagename, ignore_errors=True)
-        self._executor.execute(rmtree_job)
+        self.rm_stage_files(inputs.imagename)
 
         # Set initial masking limits
         self.pblimit_image = 0.2
@@ -292,7 +303,7 @@ class Tclean(cleanbase.CleanBase):
                                             intent=inputs.intent,
                                             spw=inputs.spw,
                                             specmode=inputs.specmode)
-                error_result.error = '%s/%s/spw%s clean error: %s' % (inputs.field, inputs.intent, inputs.spw)
+                error_result.error = '%s/%s/spw%s clean error: No frequency intersect among selected MSs' % (inputs.field, inputs.intent, inputs.spw)
                 return error_result
 
             # Check for manually supplied values
@@ -492,6 +503,9 @@ class Tclean(cleanbase.CleanBase):
             sequence_manager = NoMaskThresholdSequence(multiterm=multiterm,
                                                        gridder=inputs.gridder, threshold=threshold,
                                                        sensitivity=sensitivity, niter=inputs.niter)
+        else:
+            raise Exception('hm_masking mode {} not recognized. '
+                            'Sequence manager not set.'.format(inputs.hm_masking))
 
         result = self._do_iterative_imaging(sequence_manager=sequence_manager)
 
@@ -594,22 +608,15 @@ class Tclean(cleanbase.CleanBase):
                 new_cleanmask = '%s.iter%s.mask' % (rootname, iteration)
             elif inputs.hm_masking == 'manual':
                 new_cleanmask = inputs.mask
+            elif inputs.hm_masking == 'none':
+                new_cleanmask = ''
             else:
                 new_cleanmask = '%s.iter%s.cleanmask' % (rootname, iteration)
 
             rms_threshold = self.image_heuristics.rms_threshold(residual_robust_rms, inputs.nsigma)
-            if rms_threshold:
-                if inputs.threshold:
-                    LOG.warn("Both the 'threshold' and 'threshold_nsigma' were specified.")
-                    LOG.warn('Setting new threshold to max of input threshold and scaled MAD * nsigma.')
-                    LOG.info("    Input 'threshold' = {tt}".format(tt=inputs.threshold))
-                    LOG.info("    Input 'threshold_nsigma' = {ns}".format(ns=inputs.nsigma))
-                    LOG.info("    Scaled MAD * 'threshold_nsigma' = {ts}".format(ts=rms_threshold))
-                    LOG.info('    max(threshold, scaled MAD * nsigma)= {nt}'.format(nt=max(inputs.threshold,
-                                                                                           rms_threshold)))
-                    sequence_manager.threshold = max(inputs.threshold, rms_threshold)
-                else:
-                    sequence_manager.threshold = rms_threshold
+            threshold = self.image_heuristics.threshold(iteration, sequence_manager.threshold, rms_threshold, inputs.nsigma, inputs.hm_masking)
+            nsigma = self.image_heuristics.nsigma(iteration, inputs.hm_masking)
+            savemodel = self.image_heuristics.savemodel(iteration)
 
             # perform an iteration.
             if (inputs.specmode == 'cube') and (not inputs.cleancontranges):
@@ -626,21 +633,14 @@ class Tclean(cleanbase.CleanBase):
             self.copy_products(os.path.basename(old_pname), os.path.basename(new_pname),
                                ignore='mask' if do_not_copy_mask else None)
 
-            # Determine the cleaning threshold
-            if 'VLASS-SE' in self.image_heuristics.imaging_mode and inputs.hm_masking == 'auto':
-                threshold = 0.0
-                nsigma = 3.0
-            else:
-                threshold = seq_result.threshold
-                nsigma = None
-
             LOG.info('Iteration %s: Clean control parameters' % iteration)
             LOG.info('    Mask %s', new_cleanmask)
             LOG.info('    Threshold %s', threshold)
             LOG.info('    Niter %s', seq_result.niter)
 
             result = self._do_clean(iternum=iteration, cleanmask=new_cleanmask, niter=seq_result.niter, nsigma=nsigma,
-                                    threshold=threshold, sensitivity=sequence_manager.sensitivity, result=result)
+                                    threshold=threshold, sensitivity=sequence_manager.sensitivity, savemodel=savemodel,
+                                    result=result)
 
             # Give the result to the clean 'sequencer'
             (residual_cleanmask_rms,
@@ -699,36 +699,6 @@ class Tclean(cleanbase.CleanBase):
 
             # Up the iteration counter
             iteration += 1
-
-        if iteration == 2 and 'VLASS-SE' in self.image_heuristics.imaging_mode:
-            # Use previous iterations's products as starting point
-            old_pname = '%s.iter%s' % (rootname, iteration-1)
-            new_pname = '%s.iter%s' % (rootname, iteration)
-            self.copy_products(os.path.basename(old_pname), os.path.basename(new_pname), ignore='mask')
-
-            rms_threshold = self.image_heuristics.rms_threshold(residual_robust_rms, inputs.nsigma)
-            if rms_threshold:
-                if inputs.threshold:
-                    LOG.warn("Both the 'threshold' and 'threshold_nsigma' were specified.")
-                    LOG.warn('Setting new threshold to max of input threshold and scaled MAD * nsigma.')
-                    LOG.info("    Input 'threshold' = {tt}".format(tt=inputs.threshold))
-                    LOG.info("    Input 'threshold_nsigma' = {ns}".format(ns=inputs.nsigma))
-                    LOG.info("    Scaled MAD * 'threshold_nsigma' = {ts}".format(ts=rms_threshold))
-                    LOG.info('    max(threshold, scaled MAD * nsigma)= {nt}'.format(nt=max(inputs.threshold,
-                                                                                           rms_threshold)))
-                    sequence_manager.threshold = max(inputs.threshold, rms_threshold)
-                else:
-                    sequence_manager.threshold = rms_threshold
-
-            # Adjust niter based on the dirty image statistics
-            new_niter = self.image_heuristics.niter_correction(inputs.niter, inputs.cell, inputs.imsize,
-                                                               residual_max, new_threshold)
-            sequence_manager.niter = new_niter
-
-            LOG.info('Final VLASS single epoch tclean call with no mask')
-            inputs.hm_masking = 'none'
-            result = self._do_clean(iternum=iteration, cleanmask='', niter=new_niter, threshold=0.0, nsigma=4.5,
-                                    sensitivity=sequence_manager.sensitivity, savemodel='modelcolumn', result=result)
 
         # If specmode is "cube", create from the non-pbcorrected cube
         # after continuum subtraction an image of the moment 0 / 8 integrated

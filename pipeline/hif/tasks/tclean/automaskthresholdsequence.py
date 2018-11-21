@@ -29,7 +29,7 @@ class AutoMaskThresholdSequence(BaseCleanSequence):
             self.result.sensitivity = self.sensitivity
             self.result.niter = self.niter
         elif iteration == 2:
-            if self.flux not in (None, ''):
+            if new_cleanmask != '' and self.flux not in (None, ''):
                 # Make a circular one
                 cm = casatools.image.newimagefromimage(infile=self.flux+extension, outfile=new_cleanmask,
                                                        overwrite=True)

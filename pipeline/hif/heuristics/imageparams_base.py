@@ -1715,3 +1715,18 @@ class ImageParamsHeuristics(object):
             return True, hm_masking
         else:
             return False, hm_masking
+
+    def threshold(self, iteration, threshold, rms_threshold, nsigma, hm_masking):
+
+        if iteration == 0:
+            return '0.0mJy'
+        else:
+            return threshold
+
+    def nsigma(self, iteration, hm_masking):
+
+        return None
+
+    def savemodel(self, iteration):
+
+        return None

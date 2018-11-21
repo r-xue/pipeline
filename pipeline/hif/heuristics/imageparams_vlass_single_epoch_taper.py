@@ -195,3 +195,64 @@ class ImageParamsHeuristicsVlassSeTaper(ImageParamsHeuristics):
             print('Rejected {} distance matches for regex'.format(nreject))
 
         return fieldlist
+
+    def keep_iterating(self, iteration, hm_masking, tclean_stopcode, dirty_dynamic_range, residual_max, residual_robust_rms, field, intent, spw):
+
+        '''Determine if another tclean iteration is necessary.'''
+
+        if iteration == 0:
+            return True, hm_masking
+        elif iteration == 1:
+            LOG.info('Final VLASS single epoch tclean call with no mask')
+            return True, 'none'
+        else:
+            return False, hm_masking
+
+    def _new_threshold(self, threshold, rms_threshold, nsigma):
+
+        if rms_threshold:
+            if threshold:
+                LOG.warn("Both the 'threshold' and 'threshold_nsigma' were specified.")
+                LOG.warn('Setting new threshold to max of input threshold and scaled MAD * nsigma.')
+                LOG.info("    Input 'threshold' = {tt}".format(tt=threshold))
+                LOG.info("    Input 'threshold_nsigma' = {ns}".format(ns=nsigma))
+                LOG.info("    Scaled MAD * 'threshold_nsigma' = {ts}".format(ts=rms_threshold))
+                LOG.info('    max(threshold, scaled MAD * nsigma)= {nt}'.format(nt=max(threshold, rms_threshold)))
+                new_threshold = max(threshold, rms_threshold)
+            else:
+                new_threshold = rms_threshold
+        else:
+            new_threshold = threshold
+
+        return new_threshold
+
+    def threshold(self, iteration, threshold, rms_threshold, nsigma, hm_masking):
+
+        if hm_masking == 'auto':
+            return '0.0mJy'
+        elif hm_masking == 'none':
+            if iteration in [0, 1]:
+                return self._new_threshold(threshold, rms_threshold, nsigma)
+            else:
+                return '0.0mJy'
+        else:
+            return self._new_threshold(threshold, rms_threshold, nsigma)
+
+    def nsigma(self, iteration, hm_masking):
+
+        if hm_masking == 'auto':
+            if iteration == 0:
+                return None
+            elif iteration == 1:
+                return 3.0
+            else:
+                return 4.5
+        else:
+            return None
+
+    def savemodel(self, iteration):
+
+        if iteration == 2:
+            return 'modelcolumn'
+        else:
+            return None
