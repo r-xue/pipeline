@@ -595,6 +595,7 @@ class ImageParamsHeuristics(object):
             vislist = self.vislist
 
         mdirections = []
+        sdirections = []
         field_names = []
         for ivis, vis in enumerate(vislist):
 
@@ -616,7 +617,29 @@ class ImageParamsHeuristics(object):
                 else:
                     phase_dir = fieldobj.mdirection
                 mdirections.append(phase_dir)
+                # Store source direction for ephemeris objects
+                # for later correction of mosaic center position.
+                if self.is_eph_obj(fieldobj.name):
+                    ref = cme.getref(fieldobj.source.direction)
+                    if ref == 'ICRS' or ref == 'J2000' or ref == 'B1950':
+                        phase_dir = cme.measure(fieldobj.source.direction, 'ICRS')
+                    else:
+                        phase_dir = fieldobj.source.direction
+                    sdirections.append(phase_dir)
                 field_names.append(fieldobj.name)
+
+        # Correct field directions for ephemeris source motion
+        if sdirections != []:
+            sdirection_m0_rad = []
+            sdirection_m1_rad = []
+            for sdirection in sdirections:
+                sdirection_m0_rad.append(cqa.getvalue(cqa.convert(sdirection['m0'], 'rad')))
+                sdirection_m1_rad.append(cqa.getvalue(cqa.convert(sdirection['m1'], 'rad')))
+            avg_sdirection_m0_rad = np.average(sdirection_m0_rad)
+            avg_sdirection_m1_rad = np.average(sdirection_m1_rad)
+            for i in range(len(mdirections)):
+                mdirections[i]['m0'] = cqa.sub(mdirections[i]['m0'], cqa.sub(sdirections[i]['m0'], cqa.quantity(avg_sdirection_m0_rad, 'rad'))) 
+                mdirections[i]['m1'] = cqa.sub(mdirections[i]['m1'], cqa.sub(sdirections[i]['m1'], cqa.quantity(avg_sdirection_m1_rad, 'rad'))) 
 
         # sanity check - for single field images the field centres from
         # different measurement sets should be coincident and can
