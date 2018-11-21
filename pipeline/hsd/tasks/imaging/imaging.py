@@ -643,7 +643,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                     else:
                         if not cqa.isquantity(rep_bw): # assume Hz
                             rep_bw = cqa.quantity(rep_bw, 'Hz')
-                        LOG.info("Estimate RMS in representative bandwidth: {:f}kHz (native: {:f}kHz)".format(cqa.getvalue(cqa.convert(cqa.quantity(rep_bw), 'kHz')), chan_width*1.e-3))
+                        LOG.info("Estimate RMS in representative bandwidth: {:f}kHz (native: {:f}kHz)".format(cqa.getvalue(cqa.convert(cqa.quantity(rep_bw), 'kHz'))[0], chan_width*1.e-3))
                         factor = sensitivity_improvement.sensitivityImprovement(ref_ms.name, rep_spwid, cqa.tos(rep_bw))
                         if factor is None:
                             LOG.warn('No image RMS improvement because representative bandwidth is narrower than native width')
