@@ -104,20 +104,20 @@ It generates an image combined spectral data from whole antenna as well as image
 
 <h3>Contents</h3>
 <ul>
-%if len(rms_table) > 0:
+%if rms_table is not None and len(rms_table) > 0:
     <li><a href="#sensitivity">Image Sensitivity Table</a></li>
 %endif
-%if sparsemap_subpage != {}:
+%if sparsemap_subpage is not None and sparsemap_subpage != {}:
     <li><a href="#profilemap">Profile Map</a></li>
 %endif
 % for plots in plots_list:
-    % if plots['subpage'] != {}: 
+    % if plots['subpage'] is not None and plots['subpage'] != {}: 
         <li><a href="#${plots['title'].replace(" ", "")}">${plots['title']}</a></li>
     %endif
 % endfor
 </ul>
 
-%if len(rms_table) > 0:
+%if rms_table is not None and len(rms_table) > 0:
 	<h3 id="sensitivity" class="jumptarget">Image Sensitivity</h3>
 	<p>
 	RMS of line-free channels. Estimated RMS is listed for representative images.
@@ -143,7 +143,7 @@ It generates an image combined spectral data from whole antenna as well as image
 %endif
 
 
-%if sparsemap_subpage != {}:
+%if sparsemap_subpage is not None and sparsemap_subpage != {}:
 <h3 id="profilemap" class="jumptarget">Profile Map</h3>
   % for field in sparsemap_subpage.keys():
     <h4><a class="replace"

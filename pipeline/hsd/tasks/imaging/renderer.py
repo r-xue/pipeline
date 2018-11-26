@@ -119,6 +119,9 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                             _ap[ant].append(pol)
                     profilemap_entries[field] = _ap
                 ctx.update({'profilemap_entries': profilemap_entries, 'rms_table': rms_table})
+                
+        if 'rms_table' not in ctx:
+            ctx.update({'rms_table': None})
     
     @staticmethod
     def _plots_per_field_with_type(plots, type_string):
