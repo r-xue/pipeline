@@ -867,6 +867,6 @@ class SDImaging(basetask.StandardTaskTemplate):
         namer.single_dish()
         namer.antenna(antenna)
         # iteration is necessary for exportdata
-        namer.iteration(1)
+        namer.iteration(0)
         imagename = namer.get_filename()
         return imagename
