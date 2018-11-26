@@ -88,6 +88,10 @@ class SDImagingInputs(vdp.StandardInputs):
     def vis(self):
         return self.infiles
     
+    @property
+    def is_ampcal(self):
+        return self.mode.upper() == 'AMPCAL'
+    
     def __init__(self, context, mode=None, restfreq=None, infiles=None, field=None, spw=None):
         super(SDImagingInputs, self).__init__()
 
@@ -262,7 +266,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 antenna = msobj.antennas[ant].name
                 identifier += ('.'+antenna)
                 # create image per asdm and antenna for ampcal
-                if imagemode == 'AMPCAL':
+                if inputs.is_ampcal:
                     asdm_name = common.asdm_name_from_ms(msobj)
                     identifier += ('.'+asdm_name)
                 if identifier in image_group.keys():
@@ -299,7 +303,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 ant_name = ref_ms.antennas[antids[0]].name
                 # for ampcal
                 asdm = None
-                if imagemode == 'AMPCAL':
+                if inputs.is_ampcal:
                     asdm = common.asdm_name_from_ms(ref_ms)
  
                 # source name
@@ -311,7 +315,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 LOG.debug('infiles={}'.format(infiles))
                   
                 # image name
-                imagename = self.get_imagename(imagemode, source_name, spwids, ant_name)
+                imagename = self.get_imagename(source_name, spwids, ant_name, asdm)
                 LOG.info("Output image name: {}".format(imagename))
 
                 # pick restfreq from restfreq_list
@@ -388,7 +392,6 @@ class SDImaging(basetask.StandardTaskTemplate):
                     # Make grid_table and put rms and valid spectral number array 
                     # to the outcome.
                     # The rms and number of valid spectra is used to create RMS maps.
-#                     if imagemode != 'AMPCAL':
                     LOG.info('Additional Step. Make grid_table')
                     with casatools.ImageReader(imager_result.outcome) as ia:
                         cs = ia.coordsys()
@@ -468,7 +471,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                     outcome['assoc_fields'] = fieldids
                     outcome['assoc_spws'] = spwids
 #                     outcome['assoc_pols'] = pols
-                    if imagemode == 'AMPCAL':
+                    if inputs.is_ampcal:
                         if len(infiles)==1 and (asdm not in ['', None]): outcome['vis'] = asdm
 #                         # to register exported_ms to each scantable instance
 #                         outcome['export_results'] = export_results
@@ -482,7 +485,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
                     results.append(result)
                       
-            if imagemode == 'AMPCAL':
+            if inputs.is_ampcal:
                 LOG.info("Skipping combined image for the amplitude calibrator.")
                 continue
   
@@ -494,7 +497,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             ref_ms = context.observing_run.get_ms(name=sdutils.get_parent_ms_name(context, combined_infiles[0]))
             
             # image name
-            imagename = self.get_imagename(imagemode, source_name, combined_spws)
+            imagename = self.get_imagename(source_name, combined_spws)
   
             # Step 3.
             # Imaging of all antennas
@@ -841,12 +844,17 @@ class SDImaging(basetask.StandardTaskTemplate):
         #LOG.info("#####Merged: {}".format(str(merged)))
         return merged
     
-    def get_imagename(self, imagemode, source, spwids, antenna=None):
+    def get_imagename(self, source, spwids, antenna=None, asdm=None):
         context = self.inputs.context
         namer = filenamer.Image()
-        nameroot = context.project_structure.ousstatus_entity_id
-        if nameroot == 'unknown':
-            nameroot = 'oussid'
+        if self.inputs.is_ampcal:
+            nameroot = asdm
+            if nameroot is None:
+                raise ValueError('ASDM uid must be provided to construct ampcal image name')
+        else:
+            nameroot = context.project_structure.ousstatus_entity_id
+            if nameroot == 'unknown':
+                nameroot = 'oussid'
         nameroot = filenamer.sanitize(nameroot)
         namer._associations.asdm(nameroot)
         #output_dir = context.output_dir
@@ -854,8 +862,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         #    namer.output_dir(output_dir)
         namer.stage(context.stage)
         namer.source(source)
-        if imagemode == 'AMPCAL':
-            namer.intent(imagemode.lower())
+        if self.inputs.is_ampcal:
+            namer.intent(self.inputs.mode.lower())
         else:
             namer.science()
         namer.spectral_window(spwids[0])
