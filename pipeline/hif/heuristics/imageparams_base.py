@@ -1730,7 +1730,7 @@ class ImageParamsHeuristics(object):
         # the default is set to False here.
         return False
 
-    def keep_iterating(self, iteration, hm_masking, tclean_stopcode, dirty_dynamic_range, residual_max, residual_robust_rms, field, intent, spw):
+    def keep_iterating(self, iteration, hm_masking, tclean_stopcode, dirty_dynamic_range, residual_max, residual_robust_rms, field, intent, spw, specmode):
 
         '''Determine if another tclean iteration is necessary.'''
 

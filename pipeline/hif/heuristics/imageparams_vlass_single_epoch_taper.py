@@ -196,7 +196,7 @@ class ImageParamsHeuristicsVlassSeTaper(ImageParamsHeuristics):
 
         return fieldlist
 
-    def keep_iterating(self, iteration, hm_masking, tclean_stopcode, dirty_dynamic_range, residual_max, residual_robust_rms, field, intent, spw):
+    def keep_iterating(self, iteration, hm_masking, tclean_stopcode, dirty_dynamic_range, residual_max, residual_robust_rms, field, intent, spw, specmode):
 
         '''Determine if another tclean iteration is necessary.'''
 

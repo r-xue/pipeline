@@ -664,7 +664,8 @@ class Tclean(cleanbase.CleanBase):
                                                                               result.tclean_stopcode,
                                                                               dirty_dynamic_range, residual_max,
                                                                               residual_robust_rms,
-                                                                              inputs.field, inputs.intent, inputs.spw)
+                                                                              inputs.field, inputs.intent, inputs.spw,
+                                                                              inputs.specmode)
             do_not_copy_mask = hm_masking != inputs.hm_masking
             inputs.hm_masking = hm_masking
 
