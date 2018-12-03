@@ -993,13 +993,16 @@ class VLAScanHeuristics(object):
             self.bandpass_scan_select_string = \
                 buildSelectionString(msmd.scansforintent("CALIBRATE_BANDPASS*"))
             bpfieldlist = msmd.fieldsforintent("CALIBRATE_BANDPASS*")
-            self.bandpass_field_select_string = \
-                buildSelectionString([bpfieldlist[0]])
             if len(bpfieldlist) > 1:
+                self.bandpass_field_select_string = \
+                    buildSelectionString([bpfieldlist[0]])
                 LOG.warn("More than one field is defined as the bandpass calibrator.")
                 LOG.warn("  Models are required for all BP calibrators if multiple fields ")
                 LOG.warn("  are to be used, not yet implemented; the pipeline will use ")
                 LOG.warn("  only the first field.")
+            else:
+                self.bandpass_field_select_string = \
+                    buildSelectionString(bpfieldlist)
 
             if (self.bandpass_scan_select_string == '' or
                 self.bandpass_field_select_string == ''):
@@ -1010,8 +1013,16 @@ class VLAScanHeuristics(object):
             # Delay Cal Intent
             self.delay_scan_select_string = \
                 buildSelectionString(msmd.scansforintent("CALIBRATE_DELAY*"))
-            self.delay_field_select_string =\
-                buildSelectionString(msmd.fieldsforintent("CALIBRATE_DELAY*"))
+            delayfieldlist = msmd.fieldsforintent("CALIBRATE_DELAY*")
+            if len(delayfieldlist) > 1:
+                self.delay_field_select_string = \
+                    buildSelectionString([delayfieldlist[0]])
+                LOG.warn("More than one field is defined as the delay calibrator.")
+                LOG.warn("  The pipeline will use only the first field.")
+            else:
+                self.delay_field_select_string = \
+                    buildSelectionString(delayfieldlist)
+
             if (self.delay_scan_select_string == '' or
                 self.delay_field_select_string == ''):
                 # Default to using the bandpass for the delay
