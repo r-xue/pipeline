@@ -101,7 +101,7 @@ def get_field_name(plot):
                 </div>
             </a>
             <div class="caption">
-                <h4>raster scan including reference after ephemeris correction</h4>
+                <h4>raster scan after ephemeris correction</h4>
             </div>
         </div>
     % endfor
