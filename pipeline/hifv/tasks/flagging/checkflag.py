@@ -50,7 +50,7 @@ class Checkflag(basetask.StandardTaskTemplate):
     Inputs = CheckflagInputs
     
     def prepare(self):
-        
+
         LOG.info("Checking RFI flagging of BP and Delay Calibrators")
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         self.tint = m.get_vla_max_integration_time()
@@ -74,6 +74,8 @@ class Checkflag(basetask.StandardTaskTemplate):
         self.rflagThreshMultiplierCalsPpol = 4.0
         self.rflagThreshMultiplierTargetXpol = 4.0
         self.rflagThreshMultiplierTargetPpol = 7.0
+        if self.inputs.checkflagmode == 'vlass-imaging':
+            self.rflagThreshMultiplierTargetPpol = 4.0
         self.tfcropThreshMultiplierCals = 3.0
         self.tfcropThreshMultiplierTarget = 3.0
 
@@ -89,7 +91,7 @@ class Checkflag(basetask.StandardTaskTemplate):
             extendflag_result = self.do_allcalsvlass()
             return extendflag_result
 
-        if self.inputs.checkflagmode == 'target-vlass':
+        if self.inputs.checkflagmode == 'target-vlass' or self.inputs.checkflagmode == 'vlass-imaging':
             fieldsobj = m.get_fields(intent='TARGET')
             fieldids = [field.id for field in fieldsobj]
             fieldselect = ','.join([str(fieldid) for fieldid in fieldids])
@@ -532,10 +534,14 @@ class Checkflag(basetask.StandardTaskTemplate):
 
     def do_targetvlass(self):
 
-        for correlation, scale, datacolumn in [('ABS_RL', self.rflagThreshMultiplierTargetXpol, 'corrected'),
-                                               ('ABS_LR', self.rflagThreshMultiplierTargetXpol, 'corrected'),
-                                               ('ABS_RR', self.rflagThreshMultiplierTargetPpol, 'corrected'),
-                                               ('ABS_LL', self.rflagThreshMultiplierTargetPpol, 'corrected')]:
+        datacolumn = 'corrected'
+        if self.inputs.checkflagmode == 'vlass-imaging':
+            datacolumn = 'data'
+
+        for correlation, scale, datacolumn in [('ABS_RL', self.rflagThreshMultiplierTargetXpol, datacolumn),
+                                               ('ABS_LR', self.rflagThreshMultiplierTargetXpol, datacolumn),
+                                               ('ABS_RR', self.rflagThreshMultiplierTargetPpol, datacolumn),
+                                               ('ABS_LL', self.rflagThreshMultiplierTargetPpol, datacolumn)]:
 
             method_args = {'mode': 'rflag',
                            'field': '',
@@ -571,7 +577,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                            'timecutoff': self.tfcropThreshMultiplierTarget,
                            'freqcutoff': self.tfcropThreshMultiplierTarget,
                            'ntime': self.tint,
-                           'datacolumn': 'corrected',
+                           'datacolumn': datacolumn,
                            'flagbackup': False,
                            'savepars': False}
 
@@ -580,8 +586,10 @@ class Checkflag(basetask.StandardTaskTemplate):
             self._do_extendflag(field='', scan='', intent='*TARGET*', growtime=100.0, growfreq=100.0)
 
         # Grow flags
-        extendflag_result = self._do_extendflag(field='', scan='', intent='*TARGET*',
-                                                growtime=100.0, growfreq=100.0,
-                                                growaround=True, flagneartime=True, flagnearfreq=True)
-
-        return extendflag_result
+        if self.inputs.checkflagmode == 'target-vlass':
+            extendflag_result = self._do_extendflag(field='', scan='', intent='*TARGET*',
+                                                    growtime=100.0, growfreq=100.0,
+                                                    growaround=True, flagneartime=True, flagnearfreq=True)
+            return extendflag_result
+        else:
+            return CheckflagResults()
