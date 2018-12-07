@@ -102,7 +102,7 @@ class testgainsPerAntennaChart(object):
             if self.yaxis == 'amp':
                 plotrange = [0,0,0,plotmax]
                 plotsymbol = 'o'
-                xconnector = 'step'
+                xconnector = 'line'
             
             if self.yaxis == 'phase':
                 plotrange = [0,0,-180,180]
