@@ -26,9 +26,9 @@
                 <value/>
             </param>
 
-            <param type="bool" name="conjbeams">
+            <param type="string" name="conjbeams">
                 <description>Use conjugate frequency in tclean for wideband A-terms.</description>
-                <value>False</value>
+                <value/>
             </param>
 
             <param type="string" name="cyclefactor">
@@ -36,9 +36,9 @@
                 <value/>
             </param>
 
-            <param type="int" name="cycleniter">
+            <param type="string" name="cycleniter">
                 <description>Controls max number of minor cycle iterations in a single major cycle.</description>
-                <value type="int">500</value>
+                <value/>
             </param>
 
             <param type="string" name="deconvolver">
@@ -87,9 +87,9 @@
                 <value type="string"/>
             </param>
 
-            <param type="string" name="nchan">
+            <param type="int" name="nchan">
                 <description>Number of channels, -1 = all</description>
-                <value/>
+                <value>-1</value>
             </param>
 
             <param type="int" name="niter">
@@ -115,6 +115,11 @@
 
             <param type="string" name="reffreq">
                 <description/>
+                <value/>
+            </param>
+
+            <param type="string" name="restfreq">
+                <description>List of rest frequencies or a rest frequency in a string for output image.</description>
                 <value/>
             </param>
 

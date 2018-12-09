@@ -73,6 +73,7 @@ class EditimlistInputs(vdp.StandardInputs):
     parameter_file = vdp.VisDependentProperty(default=None)
     phasecenter = vdp.VisDependentProperty(default=None)
     reffreq = vdp.VisDependentProperty(default=None)
+    restfreq = vdp.VisDependentProperty(default=None)
     robust = vdp.VisDependentProperty(default=None)
     scales = vdp.VisDependentProperty(default=None)
     specmode = vdp.VisDependentProperty(default=None)
@@ -92,7 +93,7 @@ class EditimlistInputs(vdp.StandardInputs):
                  editmode=None, field=None, imaging_mode=None,
                  imagename=None, imsize=None, intent=None, gridder=None,
                  mask=None, nbin=None, nchan=None, niter=None, nterms=None,
-                 parameter_file=None, phasecenter=None, reffreq=None,
+                 parameter_file=None, phasecenter=None, reffreq=None, restfreq=None,
                  robust=None, scales=None, specmode=None, spw=None,
                  start=None, stokes=None, threshold=None, threshold_nsigma=None,
                  uvtaper=None, uvrange=None, width=None, sensitivity=None):
@@ -123,6 +124,7 @@ class EditimlistInputs(vdp.StandardInputs):
         self.parameter_file = parameter_file
         self.phasecenter = phasecenter
         self.reffreq = reffreq
+        self.restfreq = restfreq
         self.robust = robust
         self.scales = scales
         self.specmode = specmode
@@ -140,7 +142,7 @@ class EditimlistInputs(vdp.StandardInputs):
                             'phasecenter', 'specmode', 'gridder', 'imagename', 'scales',
                             'start', 'width', 'nbin', 'nchan', 'uvrange', 'stokes', 'nterms',
                             'robust', 'uvtaper', 'niter', 'cyclefactor', 'cycleniter', 'mask',
-                            'search_radius_arcsec', 'threshold', 'imaging_mode', 'reffreq',
+                            'search_radius_arcsec', 'threshold', 'imaging_mode', 'reffreq', 'restfreq',
                             'editmode', 'threshold_nsigma', 'sensitivity', 'conjbeams')
 
         self.keys_to_change = []
@@ -278,6 +280,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['stokes'] = th.stokes() if not inpdict['stokes'] else inpdict['stokes']
         imlist_entry['conjbeams'] = th.conjbeams() if not inpdict['conjbeams'] else inpdict['conjbeams']
         imlist_entry['reffreq'] = th.reffreq() if not inpdict['reffreq'] else inpdict['reffreq']
+        imlist_entry['restfreq'] = th.restfreq() if not inpdict['restfreq'] else inpdict['restfreq']
         imlist_entry['niter'] = th.niter_correction(None, None, None, None, None) if not inpdict['niter'] else inpdict['niter']
         imlist_entry['cyclefactor'] = th.cyclefactor() if not inpdict['cyclefactor'] else inpdict['cyclefactor']
         imlist_entry['cycleniter'] = th.cycleniter() if not inpdict['cycleniter'] else int(inpdict['cycleniter'])
@@ -304,8 +307,9 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['imsize'] = th.imsize(None, None, None, None, None, None) if not inpdict['imsize'] else inpdict['imsize']
         imlist_entry['intent'] = th.intent() if not inpdict['intent'] else inpdict['intent']
         imlist_entry['nterms'] = th.nterms() if not inpdict['nterms'] else inpdict['nterms']
-        imlist_entry['sensitivity'] = th.get_sensitivity(None, None, None, None, None, None, None, None, None,
-                                                   None)[0] if not inpdict['sensitivity'] else inpdict['sensitivity']
+        # imlist_entry['sensitivity'] = th.get_sensitivity(ms_do=None, field=None, intent=None, spw=None, chansel=None,
+        #                                                  specmode=None, cell=None, imsize=None, weighting=None,
+        #                                                  robust=None, uvtaper=None)[0] if not inpdict['sensitivity'] else inpdict['sensitivity']
         # ------------------------------
         imlist_entry['nchan'] = inpdict['nchan']
         imlist_entry['nbin'] = inpdict['nbin']

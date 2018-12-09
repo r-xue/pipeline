@@ -31,6 +31,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
     mosweight = vdp.VisDependentProperty(default=None)
     nsigma = vdp.VisDependentProperty(default=None)
     reffreq = vdp.VisDependentProperty(default=None)
+    restfreq = vdp.VisDependentProperty(default=None)
     tlimit = vdp.VisDependentProperty(default=2.0)
     usepointing = vdp.VisDependentProperty(default=None)
     weighting = vdp.VisDependentProperty(default='briggs')
@@ -105,8 +106,8 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
                  calcsb=None, cleancontranges=None, parallel=None,
                  # Extra parameters not in the CLI task interface
                  weighting=None, robust=None, uvtaper=None, scales=None, nsigma=None, cycleniter=None, cyclefactor=None,
-                 sensitivity=None, reffreq=None, conjbeams=None, is_per_eb=None, antenna=None, usepointing=None,
-                 mosweight=None,
+                 sensitivity=None, reffreq=None, restfreq=None, conjbeams=None, is_per_eb=None, antenna=None,
+                 usepointing=None, mosweight=None,
                  # End of extra parameters
                  heuristics=None):
         super(TcleanInputs, self).__init__(context, output_dir=output_dir, vis=vis,
@@ -136,6 +137,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
         self.nbin = nbin
         self.nsigma = nsigma
         self.reffreq = reffreq
+        self.restfreq = restfreq
         self.spwsel_lsrk = spwsel_lsrk
         self.spwsel_topo = spwsel_topo
         self.tlimit = tlimit
@@ -728,6 +730,7 @@ class Tclean(cleanbase.CleanBase):
                                                   spw=inputs.spw,
                                                   spwsel=inputs.spwsel_topo,
                                                   reffreq=inputs.reffreq,
+                                                  restfreq=inputs.restfreq,
                                                   conjbeams=inputs.conjbeams,
                                                   uvrange=inputs.uvrange,
                                                   orig_specmode=inputs.orig_specmode,

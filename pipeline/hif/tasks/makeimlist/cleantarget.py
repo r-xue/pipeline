@@ -32,6 +32,7 @@ class CleanTarget(dict):
          self['sensitivity'] = None     # string
          self['threshold'] = None       # string
          self['reffreq'] = None         # string
+         self['restfreq'] = None        # string
          self['heuristics'] = None      # object
          self['nsigma'] = None          # float
          # vis list only for special setups like CHECK source

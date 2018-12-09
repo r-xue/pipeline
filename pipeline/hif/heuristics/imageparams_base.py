@@ -1628,6 +1628,9 @@ class ImageParamsHeuristics(object):
     def reffreq(self):
         return None
 
+    def restfreq(self):
+        return None
+
     def conjbeams(self):
         return None
 

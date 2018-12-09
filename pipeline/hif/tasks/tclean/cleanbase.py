@@ -66,6 +66,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     uvtaper = vdp.VisDependentProperty(default=None)
     weighting = vdp.VisDependentProperty(default='briggs')
     width = vdp.VisDependentProperty(default='')
+    restfreq = vdp.VisDependentProperty(default=None)
 
     # properties requiring some logic ----------------------------------------------------------------------------------
 
@@ -108,8 +109,8 @@ class CleanBaseInputs(vdp.StandardInputs):
                  hm_sidelobethreshold=None, hm_noisethreshold=None, hm_lownoisethreshold=None,
                  hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None, hm_dogrowprune=None,
                  hm_minpercentchange=None, pblimit=None, niter=None, nsigma=None,
-                 threshold=None, sensitivity=None, reffreq=None, conjbeams=None, is_per_eb=None, antenna=None,
-                 usepointing=None, mosweight=None,
+                 threshold=None, sensitivity=None, reffreq=None, restfreq=None, conjbeams=None, is_per_eb=None,
+                 antenna=None, usepointing=None, mosweight=None,
                  result=None, parallel=None, heuristics=None):
         self.context = context
         self.output_dir = output_dir
@@ -162,6 +163,7 @@ class CleanBaseInputs(vdp.StandardInputs):
         self.nsigma = nsigma
         self.sensitivity = sensitivity
         self.reffreq = reffreq
+        self.restfreq = restfreq
         self.conjbeams = conjbeams
         self.result = result
         self.parallel = parallel
@@ -442,6 +444,13 @@ class CleanBase(basetask.StandardTaskTemplate):
             reffreq = inputs.heuristics.reffreq()
             if reffreq:
                 tclean_job_parameters['reffreq'] = reffreq
+
+        if inputs.restfreq:
+            tclean_job_parameters['restfreq'] = inputs.restfreq
+        else:
+            restfreq = inputs.heuristics.restfreq()
+            if restfreq:
+                tclean_job_parameters['restfreq'] = restfreq
 
         if inputs.conjbeams is not None:
             tclean_job_parameters['conjbeams'] = inputs.conjbeams
