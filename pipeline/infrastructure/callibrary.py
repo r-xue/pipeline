@@ -14,6 +14,7 @@ import weakref
 
 import pipeline.extern
 import intervaltree
+from callibrary import applycaltocallib
 
 from . import logging
 from . import utils
@@ -21,7 +22,6 @@ from . import utils
 from . import casatools
 
 LOG = logging.get_logger(__name__)
-
 
 CalToArgs = collections.namedtuple('CalToArgs',
                                    ['vis', 'spw', 'field', 'intent', 'antenna'])
@@ -76,10 +76,10 @@ class CalApplication(object):
         :rtype: the unmarshalled :class:`CalApplication` object
         """
         d = eval(string.replace(s, 'applycal(', 'dict('))
-        calto = CalTo(vis=d['vis'], field=d['field'], spw=d['spw'], 
+        calto = CalTo(vis=d['vis'], field=d['field'], spw=d['spw'],
                       antenna=d['antenna'], intent=d['intent'])
-        
-        # wrap these values in a list if they are single valued, 
+
+        # wrap these values in a list if they are single valued,
         # eg. 'm31' -> ['m31']
         for key in ('gainfield', 'gaintable', 'interp'):
             if type(d[key]) is types.StringType:
@@ -89,8 +89,8 @@ class CalApplication(object):
                 d[key] = [d[key]]
 
         # do the same for spwmap. A bit more complicated, as a single valued
-        # spwmap is a list of integers, or may not have any values at all.                
-        try:            
+        # spwmap is a list of integers, or may not have any values at all.
+        try:
             if not isinstance(d['spwmap'][0], list):
                 d['spwmap'] = [d['spwmap']]
         except IndexError:
@@ -103,15 +103,15 @@ class CalApplication(object):
         for (gaintable, gainfield, interp, spwmap, calwt) in zipped:
             with casatools.TableReader(gaintable) as caltable:
                 viscal = caltable.getkeyword('VisCal')
-            
-            caltype = CalFrom.get_caltype_for_viscal(viscal) 
-            calfrom = CalFrom(gaintable, gainfield=gainfield, interp=interp, 
+
+            caltype = CalFrom.get_caltype_for_viscal(viscal)
+            calfrom = CalFrom(gaintable, gainfield=gainfield, interp=interp,
                               spwmap=spwmap, calwt=calwt, caltype=caltype)
             LOG.trace('Marking caltable \'%s\' as caltype \'%s\''
                       '' % (gaintable, calfrom.caltype))
 
             calfroms.append(calfrom)
-        
+
         return CalApplication(calto, calfroms)
 
     def as_applycal(self):
@@ -132,11 +132,11 @@ class CalApplication(object):
             'interp': self.interp,
             'calwt': self.calwt
         }
-        
+
         for key in ('gaintable', 'gainfield', 'spwmap', 'interp', 'calwt'):
             if type(args[key]) is types.StringType:
                 args[key] = '\'%s\'' % args[key]
-        
+
         return ('applycal(vis=\'{vis}\', field=\'{field}\', '
                 'intent=\'{intent}\', spw=\'{spw}\', antenna=\'{antenna}\', '
                 'gaintable={gaintable}, gainfield={gainfield}, '
@@ -149,27 +149,27 @@ class CalApplication(object):
         The antennas to which the calibrations apply.
 
         :rtype: string
-        """ 
+        """
         return self.calto.antenna
 
     @property
     def calwt(self):
         """
         The calwt parameters to be used when applying these calibrations.
-        
+
         :rtype: a scalar string if representing 1 calibration, otherwise a
                 list of strings
         """
         l = [cf.calwt for cf in self.calfrom]
         return l[0] if len(l) is 1 else l
-    
+
     def exists(self):
         """
         Test whether all calibration tables referred to by this application exist.
-        
+
         :rtype: boolean
-        """ 
-        for cf in self.calfrom: 
+        """
+        for cf in self.calfrom:
             if not os.path.exists(cf.gaintable):
                 return False
         return True
@@ -180,14 +180,14 @@ class CalApplication(object):
         The fields to which the calibrations apply.
 
         :rtype: string
-        """ 
+        """
         return self.calto.field
 
     @property
     def gainfield(self):
         """
         The gainfield parameters to be used when applying these calibrations.
-        
+
         :rtype: a scalar string if representing 1 calibration, otherwise a
                 list of strings
         """
@@ -198,53 +198,53 @@ class CalApplication(object):
     def gaintable(self):
         """
         The gaintable parameters to be used when applying these calibrations.
-        
+
         :rtype: a scalar string if representing 1 calibration, otherwise a
                 list of strings
         """
         l = [cf.gaintable for cf in self.calfrom]
         return l[0] if len(l) is 1 else l
-    
+
     @property
     def intent(self):
         """
         The observing intents to which the calibrations apply.
 
         :rtype: string
-        """ 
+        """
         return self.calto.intent
 
     @property
     def interp(self):
         """
         The interp parameters to be used when applying these calibrations.
-        
+
         :rtype: a scalar string if representing 1 calibration, otherwise a
                 list of strings
         """
         l = [cf.interp for cf in self.calfrom]
         return l[0] if len(l) is 1 else l
-        
+
     @property
     def spw(self):
         """
         The spectral windows to which the calibrations apply.
 
         :rtype: string
-        """ 
+        """
         return self.calto.spw
-    
+
     @property
     def spwmap(self):
         """
         The spwmap parameters to be used when applying these calibrations.
-        
+
         :rtype: a scalar string if representing 1 calibration, otherwise a
                 list of strings
         """
         # convert tuples back into lists for the CASA argument
         l = [list(cf.spwmap) for cf in self.calfrom]
-        return l[0] if len(l) is 1 else l 
+        return l[0] if len(l) is 1 else l
 
     @property
     def vis(self):
@@ -252,27 +252,27 @@ class CalApplication(object):
         The name of the measurement set to which the calibrations apply.
 
         :rtype: string
-        """ 
+        """
         return self.calto.vis
 
     def __str__(self):
         return self.as_applycal()
-    
+
     def __repr__(self):
         return 'CalApplication(%s, %s)' % (self.calto, self.calfrom)
 
 
 class CalTo(object):
     """
-    CalTo represents a target data selection to which a calibration can be 
+    CalTo represents a target data selection to which a calibration can be
     applied.
     """
 
     __slots__ = ('_antenna', '_intent', '_field', '_spw', '_vis')
-      
+
     def __getstate__(self):
         return self._antenna, self._intent, self._field, self._spw, self._vis
- 
+
     def __setstate__(self, state):
         self._antenna, self._intent, self._field, self._spw, self._vis = state
 
@@ -286,7 +286,7 @@ class CalTo(object):
     @property
     def antenna(self):
         return self._antenna
-    
+
     @antenna.setter
     def antenna(self, value):
         if value is None:
@@ -296,7 +296,7 @@ class CalTo(object):
     @property
     def field(self):
         return self._field
-    
+
     @field.setter
     def field(self, value):
         if value is None:
@@ -306,7 +306,7 @@ class CalTo(object):
     @property
     def intent(self):
         return self._intent
-    
+
     @intent.setter
     def intent(self, value):
         if value is None:
@@ -316,7 +316,7 @@ class CalTo(object):
     @property
     def spw(self):
         return self._spw
-    
+
     @spw.setter
     def spw(self, value):
         if value is None:
@@ -326,14 +326,14 @@ class CalTo(object):
     @property
     def vis(self):
         return self._vis
-    
+
     @vis.setter
     def vis(self, value=None):
         self._vis = str(value)
 
     def __repr__(self):
         return ('CalTo(vis=\'%s\', field=\'%s\', spw=\'%s\', antenna=\'%s\','
-                'intent=\'%s\')' % (self.vis, self.field, self.spw, self.antenna, 
+                'intent=\'%s\')' % (self.vis, self.field, self.spw, self.antenna,
                                     self.intent))
 
 
@@ -344,15 +344,15 @@ class CalFrom(object):
 
     .. py:attribute:: CALTYPES
 
-        an enumeration of calibration table types identified by this code. 
-        
+        an enumeration of calibration table types identified by this code.
+
     .. py:attribute:: CALTYPE_TO_VISCAL
-    
+
         mapping of calibration type to caltable identifier as store in the table
         header
 
     .. py:attribute:: VISCAL
-    
+
         mapping of calibration table header information to a description of
         that table type
     """
@@ -385,7 +385,7 @@ class CalFrom(object):
         'tsys': ('B TSYS',),
         'antpos': ('KANTPOS JONES',),
         'uvcont': ('A MUELLER',),
-        #'amp': ('G JONES',),
+        # 'amp': ('G JONES',),
         'ps': ('SDSKY_PS',),
         'otfraster': ('SDSKY_RASTER',),
         'otf': ('SDSKY_OTF',),
@@ -418,7 +418,7 @@ class CalFrom(object):
     }
 
     # Hundreds of thousands of CalFroms can be created and stored in a context.
-    # To save memory, CalFrom uses a Flyweight pattern, caching objects in 
+    # To save memory, CalFrom uses a Flyweight pattern, caching objects in
     # _CalFromPool and returning a shared immutable instance for CalFroms
     # constructed with the same arguments.
     _CalFromPool = weakref.WeakValueDictionary()
@@ -427,25 +427,25 @@ class CalFrom(object):
     def _calc_hash(gaintable, gainfield, interp, spwmap, calwt):
         """
         Generate a hash code unique to the given arguments.
-        
+
         :rtype: integer
-        """ 
+        """
         result = 17
-        result = 37*result + hash(gaintable)
-        result = 37*result + hash(gainfield)
-        result = 37*result + hash(interp)
-        result = 37*result + hash(spwmap)
-        result = 37*result + hash(calwt)
+        result = 37 * result + hash(gaintable)
+        result = 37 * result + hash(gainfield)
+        result = 37 * result + hash(interp)
+        result = 37 * result + hash(spwmap)
+        result = 37 * result + hash(calwt)
         return result
-    
-    def __new__(cls, gaintable=None, gainfield='', interp='linear,linear', 
+
+    def __new__(cls, gaintable=None, gainfield='', interp='linear,linear',
                 spwmap=None, caltype='unknown', calwt=True):
         if spwmap is None:
             spwmap = []
-        
+
         if gaintable is None:
             raise ValueError('gaintable must be specified. Got None')
-        
+
         if type(gainfield) is not types.StringType:
             raise ValueError('gainfield must be a string. Got %s' % str(gainfield))
 
@@ -460,19 +460,19 @@ class CalFrom(object):
         # Flyweight instances should be immutable, so convert spwmap to a
         # tuple. This also makes spwmap hashable for our hash function.
         spwmap = tuple([o for o in spwmap])
-                
+
         caltype = string.lower(caltype)
         assert caltype in CalFrom.CALTYPES
 
-        arg_hash = CalFrom._calc_hash(gaintable, gainfield, interp, spwmap, 
+        arg_hash = CalFrom._calc_hash(gaintable, gainfield, interp, spwmap,
                                       calwt)
-        
+
         obj = CalFrom._CalFromPool.get(arg_hash, None)
         if not obj:
             LOG.trace('Creating new CalFrom(gaintable=\'%s\', '
                       'gainfield=\'%s\', interp=\'%s\', spwmap=%s, '
-                      'caltype=\'%s\', calwt=%s)' % 
-                (gaintable, gainfield, interp, spwmap, caltype, calwt))
+                      'caltype=\'%s\', calwt=%s)' %
+                      (gaintable, gainfield, interp, spwmap, caltype, calwt))
             obj = object.__new__(cls)
             obj.__gaintable = gaintable
             obj.__gainfield = gainfield
@@ -487,35 +487,35 @@ class CalFrom(object):
         else:
             LOG.trace('Reusing existing CalFrom(gaintable=\'%s\', '
                       'gainfield=\'%s\', interp=\'%s\', spwmap=\'%s\', '
-                      'caltype=\'%s\', calwt=%s)' % 
-                (gaintable, gainfield, interp, spwmap, caltype, calwt))
-                        
+                      'caltype=\'%s\', calwt=%s)' %
+                      (gaintable, gainfield, interp, spwmap, caltype, calwt))
+
         return obj
 
-    __slots__ = ('__caltype', '__calwt', '__gainfield', '__gaintable', 
+    __slots__ = ('__caltype', '__calwt', '__gainfield', '__gaintable',
                  '__interp', '__spwmap', '__weakref__')
-          
+
     def __getstate__(self):
-        return (self.__caltype, self.__calwt, self.__gainfield, 
+        return (self.__caltype, self.__calwt, self.__gainfield,
                 self.__gaintable, self.__interp, self.__spwmap)
-     
+
     def __setstate__(self, state):
         # a misguided attempt to clear stale CalFroms when loading from a
         # pickle. I don't think this should be done here.
-#         # prevent exception with pickle format #1 by calling hash on properties
-#         # rather than the object
-#         (_, calwt, gainfield, gaintable, interp, spwmap) = state
-#         old_hash = CalFrom._calc_hash(gaintable, gainfield, interp, spwmap, calwt)
-#         if old_hash in CalFrom._CalFromPool:
-#             del CalFrom._CalFromPool[old_hash]
+        #         # prevent exception with pickle format #1 by calling hash on properties
+        #         # rather than the object
+        #         (_, calwt, gainfield, gaintable, interp, spwmap) = state
+        #         old_hash = CalFrom._calc_hash(gaintable, gainfield, interp, spwmap, calwt)
+        #         if old_hash in CalFrom._CalFromPool:
+        #             del CalFrom._CalFromPool[old_hash]
 
-        (self.__caltype, self.__calwt, self.__gainfield, self.__gaintable, 
+        (self.__caltype, self.__calwt, self.__gainfield, self.__gaintable,
          self.__interp, self.__spwmap) = state
 
     def __getnewargs__(self):
-        return (self.gaintable, self.gainfield, self.interp, self.spwmap, 
+        return (self.gaintable, self.gainfield, self.interp, self.spwmap,
                 self.caltype, self.calwt)
-    
+
     def __init__(self, *args, **kw):
         pass
 
@@ -526,15 +526,15 @@ class CalFrom(object):
     @property
     def calwt(self):
         return self.__calwt
-    
+
     @property
     def gainfield(self):
         return self.__gainfield
-    
+
     @property
     def gaintable(self):
         return self.__gaintable
-    
+
     @staticmethod
     def get_caltype_for_viscal(viscal):
         s = string.upper(viscal)
@@ -546,26 +546,26 @@ class CalFrom(object):
     @property
     def interp(self):
         return self.__interp
-    
+
     @property
     def spwmap(self):
         return self.__spwmap
-    
-#     def __eq__(self, other):
-#         return (self.gaintable == other.gaintable and
-#                 self.gainfield == other.gainfield and
-#                 self.interp    == other.interp    and
-#                 self.spwmap    == other.spwmap    and
-#                 self.calwt     == other.calwt)
-    
+
+    #     def __eq__(self, other):
+    #         return (self.gaintable == other.gaintable and
+    #                 self.gainfield == other.gainfield and
+    #                 self.interp    == other.interp    and
+    #                 self.spwmap    == other.spwmap    and
+    #                 self.calwt     == other.calwt)
+
     def __hash__(self):
         return CalFrom._calc_hash(self.gaintable, self.gainfield, self.interp,
                                   self.spwmap, self.calwt)
 
     def __repr__(self):
         return ('CalFrom(\'%s\', gainfield=\'%s\', interp=\'%s\', spwmap=%s, '
-                'caltype=\'%s\', calwt=%s)' % 
-                (self.gaintable, self.gainfield, self.interp, self.spwmap, 
+                'caltype=\'%s\', calwt=%s)' %
+                (self.gaintable, self.gainfield, self.interp, self.spwmap,
                  self.caltype, self.calwt))
 
 
@@ -585,7 +585,7 @@ class CalToIdAdapter(object):
         # we fall back to field IDs.
         all_field_names = [f.name for f in self.ms.get_fields()]
         ### Activate the following line for NRO ###
-#         return [f.id for f in fields]
+        #         return [f.id for f in fields]
         if len(set(all_field_names)) == len(all_field_names):
             return [f.name for f in fields]
         else:
@@ -602,7 +602,7 @@ class CalToIdAdapter(object):
 
         spw = self._get_spw(spw_id)
         spw_intents = spw.intents
-        
+
         user_intents = frozenset(self._calto.intent.split(','))
         if self._calto.intent == '':
             user_intents = field.intents
@@ -616,29 +616,29 @@ class CalToIdAdapter(object):
     @property
     def spw(self):
         return [spw.id for spw in self.ms.get_spectral_windows(
-                self._calto.spw, science_windows_only=False)]
+            self._calto.spw, science_windows_only=False)]
 
     def _get_field(self, field_id):
         fields = self.ms.get_fields(task_arg=field_id)
         if len(fields) != 1:
-            msg = 'Illegal field ID \'%s\' for vis \'%s\'' % (field_id, 
+            msg = 'Illegal field ID \'%s\' for vis \'%s\'' % (field_id,
                                                               self._calto.vis)
             LOG.error(msg)
-            raise ValueError(msg)        
+            raise ValueError(msg)
         return fields[0]
 
     def _get_spw(self, spw_id):
-        spws = self.ms.get_spectral_windows(spw_id, 
+        spws = self.ms.get_spectral_windows(spw_id,
                                             science_windows_only=False)
         if len(spws) != 1:
-            msg = 'Illegal spw ID \'%s\' for vis \'%s\'' % (spw_id, 
+            msg = 'Illegal spw ID \'%s\' for vis \'%s\'' % (spw_id,
                                                             self._calto.vis)
             LOG.error(msg)
-            raise ValueError(msg)        
+            raise ValueError(msg)
         return spws[0]
 
     def __repr__(self):
-        return ('CalToIdAdapter(ms=\'%s\', field=\'%s\', intent=\'%s\', ' 
+        return ('CalToIdAdapter(ms=\'%s\', field=\'%s\', intent=\'%s\', '
                 'spw=%s, antenna=%s)' % (self.ms.name, self.field,
                                          self.intent, self.spw, self.antenna))
 
@@ -646,9 +646,17 @@ class CalToIdAdapter(object):
 # CalState extends defaultdict. For defaultdicts to be pickleable, their
 # default factories must be defined at the module level.
 def _antenna_dim(): return []
+
+
 def _intent_dim(): return collections.defaultdict(_antenna_dim)
+
+
 def _field_dim(): return collections.defaultdict(_intent_dim)
+
+
 def _spw_dim(): return collections.defaultdict(_field_dim)
+
+
 def _ms_dim(): return collections.defaultdict(_spw_dim)
 
 
@@ -656,9 +664,9 @@ class DictCalState(collections.defaultdict):
     """
     DictCalState is a data structure used to map calibrations for all data
     registered with the pipeline.
-    
+
     It is implemented as a multi-dimensional array indexed by data selection
-    parameters (ms, spw, field, intent, antenna), with the end value being a 
+    parameters (ms, spw, field, intent, antenna), with the end value being a
     list of CalFroms, representing the calibrations to be applied to that data
     selection.
     """
@@ -708,29 +716,29 @@ class DictCalState(collections.defaultdict):
 
     def get_caltable(self, caltypes=None):
         """
-        Get the names of all caltables registered with this CalState. 
-        
+        Get the names of all caltables registered with this CalState.
+
         If an optional caltypes argument is given, only caltables of the
         requested type will be returned.
 
         :param caltypes: Caltypes should be one or/a list of table
         types known in CalFrom.CALTYPES.
-            
+
         :rtype: set of strings
-        """ 
+        """
         if caltypes is None:
             caltypes = CalFrom.CALTYPES.keys()
 
         if type(caltypes) is types.StringType:
             caltypes = (caltypes,)
-            
+
         for c in caltypes:
             assert c in CalFrom.CALTYPES
 
         calfroms = (itertools.chain(*self.merged().values()))
         return set([cf.gaintable for cf in calfroms
                     if cf.caltype in caltypes])
-        
+
     @staticmethod
     def dictify(dd):
         """
@@ -747,7 +755,7 @@ class DictCalState(collections.defaultdict):
             calfrom_hash = tuple([hash(cf) for cf in calfrom])
             if calfrom_hash not in hashes:
                 LOG.trace('Creating new CalFrom hash for %s', calfrom)
-                calto_args = CalToArgs(*[[x,] for x in calto_tup])
+                calto_args = CalToArgs(*[[x, ] for x in calto_tup])
                 hashes[calfrom_hash] = (calto_args, calfrom)
             else:
                 calto_args = hashes[calfrom_hash][0]
@@ -761,12 +769,12 @@ class DictCalState(collections.defaultdict):
                 l.sort()
 
         result = {}
-        for calto_args, calfrom in hashes.values():            
+        for calto_args, calfrom in hashes.values():
             for vis in calto_args.vis:
                 calto = CalTo(vis=vis,
-                              spw=self._commafy(calto_args.spw), 
+                              spw=self._commafy(calto_args.spw),
                               field=self._commafy(calto_args.field),
-                              intent=self._commafy(calto_args.intent), 
+                              intent=self._commafy(calto_args.intent),
                               antenna=self._commafy(calto_args.antenna))
                 result[calto] = calfrom
 
@@ -786,8 +794,8 @@ class DictCalState(collections.defaultdict):
         return active
 
     def as_applycal(self):
-        calapps = [CalApplication(k,v) 
-                   for k,v in self.merged(hide_empty=True).items()]
+        calapps = [CalApplication(k, v)
+                   for k, v in self.merged(hide_empty=True).items()]
         return '\n'.join([str(c) for c in calapps])
 
     def __str__(self):
@@ -795,6 +803,8 @@ class DictCalState(collections.defaultdict):
 
     def __repr__(self):
         return self.as_applycal()
+
+
 #        return 'CalState(%s)' % repr(CalState.dictify(self.merged))
 
 
@@ -802,6 +812,7 @@ class DictCalLibrary(object):
     """
     CalLibrary is the root object for the pipeline calibration state.
     """
+
     def __init__(self, context):
         self._context = context
         self._active = DictCalState()
@@ -838,7 +849,7 @@ class DictCalLibrary(object):
     def _export(self, calstate, filename=None):
         filename = self._calc_filename(filename)
 
-        calapps = [CalApplication(k,v) for k,v in calstate.merged().items()]
+        calapps = [CalApplication(k, v) for k, v in calstate.merged().items()]
 
         with open(filename, 'w') as export_file:
             for ca in calapps:
@@ -995,7 +1006,7 @@ class DictCalLibrary(object):
         self._add(calto, calfrom, self._applied)
 
         LOG.debug('New calibration state:\n'
-                 '%s' % self.active.as_applycal())
+                  '%s' % self.active.as_applycal())
         LOG.debug('Applied calibration state:\n'
                   '%s' % self.applied.as_applycal())
 
@@ -1022,7 +1033,7 @@ def contiguous_sequences(l):
 
 
 # intervals are not inclusive of the upper bound, hence the +1 on the right bound
-sequence_to_range = lambda l: (l[0], l[-1]+1)
+sequence_to_range = lambda l: (l[0], l[-1] + 1)
 
 
 def sequence_to_casa_range(seq):
@@ -1091,10 +1102,12 @@ def create_data_reducer(join):
     :param join: the function to call on the two input objects
     :return:
     """
+
     def m(td1, td2, join=join):
         oldest = min(td1, td2)
         newest = max(td1, td2)
         return TimestampedData(oldest.time, join(oldest, newest))
+
     return m
 
 
@@ -1106,8 +1119,10 @@ def merge_lists(join_fn=operator.add):
     :param join_fn:
     :return:
     """
+
     def m(oldest, newest):
         return join_fn(oldest.data, newest.data)
+
     return m
 
 
@@ -1119,11 +1134,13 @@ def merge_intervaltrees(on_intersect):
     :param on_intersect: the function to call on overlapping Intervals
     :return: function
     """
+
     def m(oldest, newest):
         union = oldest.data | newest.data
         union.split_overlaps()
         union.merge_equals(data_reducer=on_intersect)
         return union
+
     return m
 
 
@@ -1238,6 +1255,7 @@ def get_id_to_intent_fn(id_to_intent):
     :param id_to_intent: dict of vis : intent ID : string intent
     :return: set of intents
     """
+
     def f(vis, intent_ids):
         assert vis in id_to_intent
 
@@ -1265,6 +1283,7 @@ def get_id_to_field_fn(id_to_field):
     :param id_to_field: dict of vis : field ID : field name
     :return: set of field names (or field IDs if names are not unique)
     """
+
     def f(vis, field_ids):
         assert vis in id_to_field
 
@@ -1697,6 +1716,7 @@ class IntervalCalState(object):
     list of CalFroms, representing the calibrations to be applied to that data
     selection.
     """
+
     def __init__(self):
         self.data = {}
         self.id_to_intent = {}
@@ -1866,6 +1886,17 @@ class IntervalCalState(object):
         # the tuple
         return dict(calapps)
 
+    def export_to_casa_callibrary(self, ms, callibfile):
+        calapps = (CalApplication(calto, calfroms)
+                   for calto, calfroms in self.merged(hide_empty=True).iteritems())
+        append = False
+        for calapp in calapps:
+            casa_intents = utils.to_CASA_intent(ms, calapp.intent)
+            applycaltocallib(callibfile, append=append, field=calapp.field, intent=casa_intents, spw=calapp.spw,
+                             gaintable=calapp.gaintable, gainfield=calapp.gainfield, interp=calapp.interp,
+                             spwmap=calapp.spwmap, calwt=calapp.calwt)
+            append = True
+
     def as_applycal(self):
         calapps = (CalApplication(calto, calfroms)
                    for calto, calfroms in self.merged(hide_empty=True).iteritems())
@@ -1964,24 +1995,29 @@ class IntervalCalState(object):
         return iter(self.data)
 
 
-def fix_cycle0_data_selection(context, merged):
-    results = {}
+def fix_cycle0_data_selection(context, calstate):
+    # shortcut to minimise processing for data from Cycle 1 onwards.
+    if any(utils.get_epoch_as_datetime(ms.start_time) <= CYCLE_0_END_DATE
+           for ms in context.observing_run.measurement_sets):
+        return calstate
+
+    final_calstate = IntervalCalState.create_from_context(context)
 
     # We can't trust Cycle 0 data intents. If this is Cycle 0 data we need
     # to resolve the intents to fields and add them to the CalTo data
     # selection to ensure that the correct data is selected.
-    for calto, calfroms in merged.items():
+    for calto, calfroms in calstate.merged().iteritems():
         vis = calto.vis
         ms = context.observing_run.get_ms(vis)
         if utils.get_epoch_as_datetime(ms.start_time) > CYCLE_0_END_DATE:
-            results[calto] = calfroms
+            final_calstate += IntervalCalState.from_calapplication(context, calto, calfroms)
             continue
 
         if calto.intent is not '':
             fields_with_intent = ms.get_fields(task_arg=calto.field, intent=calto.intent)
-
             field_names = {f.name for f in fields_with_intent}
-            if len(field_names) is len(fields_with_intent):
+
+            if len(field_names) == len(fields_with_intent):
                 new_field_arg = ','.join(field_names)
             else:
                 new_field_arg = ','.join([str(field.id) for field in fields_with_intent])
@@ -1989,21 +2025,20 @@ def fix_cycle0_data_selection(context, merged):
             if new_field_arg != calto.field:
                 LOG.info('Rewriting data selection to work around mislabeled Cycle 0 data intents. '
                          'Old field selection: %r; new field selection: %r', calto.field, new_field_arg)
-                calto = CalTo(vis=calto.vis,
-                              field=new_field_arg,
-                              spw=calto.spw,
-                              antenna=calto.antenna,
+                calto = CalTo(vis=calto.vis, field=new_field_arg, spw=calto.spw, antenna=calto.antenna,
                               intent=calto.intent)
 
-        results[calto] = calfroms
+        to_add = IntervalCalState.from_calapplication(context, calto, calfroms)
+        final_calstate += to_add
 
-    return results
+    return final_calstate
 
 
 class IntervalCalLibrary(object):
     """
     CalLibrary is the root object for the pipeline calibration state.
     """
+
     def __init__(self, context):
         self._context = context
         self._active = IntervalCalState.create_from_context(context)
@@ -2226,9 +2261,9 @@ class TimestampedData(collections.namedtuple('TimestampedDataBase', ['time', 'da
         :rtype: bool
         """
         return (
-            self.time == other.time and
-            self.data == other.data and
-            self.marker == other.marker
+                self.time == other.time and
+                self.data == other.data and
+                self.marker == other.marker
         )
 
 
@@ -2290,7 +2325,7 @@ def _merge_intervals(unmerged):
     for k, v in unmerged.iteritems():
         reversed[v].add(k)
     return tuple(sorted((tuple(sequence_to_range(seq) for seq in contiguous_sequences(v)), k)
-                         for k, v in reversed.items()))
+                        for k, v in reversed.items()))
 
 
 def _print_dimensions(calstate):
@@ -2310,7 +2345,8 @@ def _print_dimensions(calstate):
                     for intent_interval in field_interval.data.data:
                         intent_ranges = (intent_interval.begin, intent_interval.end)
 
-                        tree_intervals = (os.path.basename(vis), antenna_ranges, spw_ranges, field_ranges, intent_ranges)
+                        tree_intervals = (
+                        os.path.basename(vis), antenna_ranges, spw_ranges, field_ranges, intent_ranges)
                         print('{!r}'.format(tree_intervals))
 
 
@@ -2356,24 +2392,24 @@ def copy_calfrom(calfrom, gaintable=None, gainfield=None, interp=None, spwmap=No
 
 def set_calstate_marker(calstate, marker):
     """
-    Return a copy of a calstate, modified so that TimeStampedData objects in 
+    Return a copy of a calstate, modified so that TimeStampedData objects in
     the final leaf node are annotated with the given marker object.
-     
+
     Technical details:
-        
-    CalFroms are flyweight objects, so two identical CalFroms have the same 
-    hash. Identical hashes stop the IntervalTree union function from working 
-    as expected: IntervalTrees are based on sets, and as such adding two 
-    lists of CalFrom with identical hashes results in just one CalFrom list in 
-    the final IntervalTree, when we actually *wanted* the duplicate to be 
+
+    CalFroms are flyweight objects, so two identical CalFroms have the same
+    hash. Identical hashes stop the IntervalTree union function from working
+    as expected: IntervalTrees are based on sets, and as such adding two
+    lists of CalFrom with identical hashes results in just one CalFrom list in
+    the final IntervalTree, when we actually *wanted* the duplicate to be
     added.
-    
-    This function is used to ensure that CalState arithmetic works as 
-    expected. By changing the TimeStampedData marker and thus making the 
+
+    This function is used to ensure that CalState arithmetic works as
+    expected. By changing the TimeStampedData marker and thus making the
     hashes different, 'identical' calibrations can indeed be duplicated in the
-    IntervalTree union operation, and subsequently operated on in a 
+    IntervalTree union operation, and subsequently operated on in a
     merge_equals step.
-    
+
     :param calstate: the calstate to modify
     :param marker: the object to annotate calstates with
     :return: annotated calstate 

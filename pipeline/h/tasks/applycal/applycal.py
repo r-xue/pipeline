@@ -29,6 +29,7 @@ class ApplycalInputs(vdp.StandardInputs):
     """
     ApplycalInputs defines the inputs for the Applycal pipeline task.
     """
+
     @vdp.VisDependentProperty
     def antenna(self):
         return ''
@@ -97,13 +98,13 @@ class ApplycalInputs(vdp.StandardInputs):
 
 class ApplycalResults(basetask.Results):
     """
-    ApplycalResults is the results class for the pipeline Applycal task.     
+    ApplycalResults is the results class for the pipeline Applycal task.
     """
-    
+
     def __init__(self, applied=None):
         """
         Construct and return a new ApplycalResults.
-        
+
         The resulting object should be initialized with a list of
         CalibrationTables corresponding to the caltables applied by this task.
 
@@ -142,9 +143,10 @@ class ApplycalResults(basetask.Results):
                     name=','.join(basenames))
             else:
                 s += '\t{name} applied to {vis} spw #{spw}\n'.format(
-                    name=caltable.gaintable, spw=caltable.spw, 
+                    name=caltable.gaintable, spw=caltable.spw,
                     vis=os.path.basename(caltable.vis))
         return s
+
 
 @task_registry.set_equivalent_casa_task('h_applycal')
 @task_registry.set_casa_commands_comment('Calibrations are applied to the data. Final flagging summaries are computed')
@@ -153,7 +155,7 @@ class Applycal(basetask.StandardTaskTemplate):
     Applycal executes CASA applycal tasks for the current active context
     state, applying calibrations registered with the pipeline context to the
     target measurement set.
-    
+
     Applying the results from this task to the context marks the referred
     tables as applied. As a result, they will not be included in future
     on-the-fly calibration arguments.
@@ -181,46 +183,27 @@ class Applycal(basetask.StandardTaskTemplate):
 
         # Now get the calibration state for that CalTo data selection. The
         # returned dictionary of CalTo:CalFroms specifies the calibrations to
-        # be applied and the data selection to apply them to.
+        # be applied and the data selection to apply them to. While the CASA
+        # callibrary could use the full, untrimmed calibration state for the
+        # whole MS, we need the trimmed version for 1) the web log, where it
+        # is used to state what specific calibrations were applied, and 2),
+        # the pipeline callibrary, where we mark the target data selection as
+        # having calibration applied.
         #
         # Note that no 'ignore' argument is given to get_calstate
         # (specifically, we don't say ignore=['calwt'] like many other tasks)
         # as applycal is a task that can handle calwt and so different values
         # of calwt should in this case result in different tasks.
         calstate = inputs.context.callibrary.get_calstate(calto)
+        calstate = callibrary.fix_cycle0_data_selection(self.inputs.context, calstate)
+
         merged = calstate.merged()
-
-        merged = callibrary.fix_cycle0_data_selection(inputs.context, merged)
-
-        jobs = []
-        # sort for a stable applycal order, to make diffs easier to parse
-        for calto, calfroms in sorted(merged.iteritems()):
-            # if there's nothing to apply for this data selection, continue
-            if not calfroms:
-                LOG.warn('There is no calibration information for field %s intent %s spw %s in %s' %
-                    (str(calto.field), str(calto.intent), str(calto.spw), inputs.ms.basename))
-                continue
-
-            # arrange a calibration job for the unique data selection
-            inputs.spw = calto.spw
-            inputs.field = calto.field
-            inputs.intent = calto.intent
-
-            task_args = inputs.to_casa_args()
-
-            # set the on-the-fly calibration state for the data selection.
-            calapp = callibrary.CalApplication(calto, calfroms)
-            task_args['gaintable'] = calapp.gaintable
-            task_args['gainfield'] = calapp.gainfield
-            task_args['spwmap'] = calapp.spwmap
-            task_args['interp'] = calapp.interp
-            task_args['calwt'] = calapp.calwt
-            task_args['applymode'] = inputs.applymode
-
-            # give subclasses a chance to modify the task arguments
-            task_args = self.modify_task_args(task_args)
-
-            jobs.append(casa_tasks.applycal(**task_args))
+        if contains_uvcont_table(merged):
+            LOG.info('Calibration state contains uvcont tables: reverting to non-callibrary applycal call')
+            jobs = jobs_without_calapply(calstate, inputs, self.modify_task_args)
+        else:
+            LOG.info('No uvcont tables in calibration state: using CASA callibrary applycal.')
+            jobs = jobs_with_calapply(calstate, inputs, self.modify_task_args)
 
         # if requested, schedule additional flagging tasks to determine
         # statistics
@@ -233,9 +216,9 @@ class Applycal(basetask.StandardTaskTemplate):
             jobs.append(casa_tasks.flagdata(name='applycal', **summary_args))
 
             if inputs.flagdetailedsum:
+                ms = inputs.context.observing_run.get_ms(inputs.vis)
                 # Schedule a flagdata job to determine flagging stats per spw
                 # and per field
-                ms = inputs.context.observing_run.get_ms(inputs.vis)
                 flagkwargs = ["spw='{!s}' fieldcnt=True mode='summary' name='AntSpw{:0>3}'".format(spw.id, spw.id)
                               for spw in ms.get_spectral_windows()]
 
@@ -337,3 +320,75 @@ class HpcApplycal(sessionutils.ParallelTemplate):
     def get_result_for_exception(self, vis, exception):
         LOG.error('Error applying calibrations for {!s}'.format(os.path.basename(vis)))
         return ApplycalResults()
+
+
+def jobs_without_calapply(calstate, inputs, mod_fn):
+    merged = calstate.merged()
+
+    jobs = []
+    # sort for a stable applycal order, to make diffs easier to parse
+    for calto, calfroms in sorted(merged.iteritems()):
+        # if there's nothing to apply for this data selection, continue
+        if not calfroms:
+            LOG.warn('There is no calibration information for field %s intent %s spw %s in %s' %
+                     (str(calto.field), str(calto.intent), str(calto.spw), inputs.ms.basename))
+            continue
+
+        # arrange a calibration job for the unique data selection
+        inputs.spw = calto.spw
+        inputs.field = calto.field
+        inputs.intent = calto.intent
+
+        task_args = inputs.to_casa_args()
+
+        # set the on-the-fly calibration state for the data selection.
+        calapp = callibrary.CalApplication(calto, calfroms)
+        task_args['gaintable'] = calapp.gaintable
+        task_args['gainfield'] = calapp.gainfield
+        task_args['spwmap'] = calapp.spwmap
+        task_args['interp'] = calapp.interp
+        task_args['calwt'] = calapp.calwt
+        task_args['applymode'] = inputs.applymode
+
+        # give subclasses a chance to modify the task arguments
+        task_args = mod_fn(task_args)
+
+        jobs.append(casa_tasks.applycal(**task_args))
+
+    return jobs
+
+
+def jobs_with_calapply(calstate, inputs, mod_fn):
+    callibrary_file = '{}.s{}.{}.callibrary'.format(inputs.vis,
+                                                    inputs.context.task_counter,
+                                                    inputs.context.subtask_counter)
+    ms = inputs.context.observing_run.get_ms(inputs.vis)
+    calstate.export_to_casa_callibrary(ms, callibrary_file)
+
+    calstate_file = '{}.s{}.{}.calstate'.format(inputs.vis,
+                                                inputs.context.task_counter,
+                                                inputs.context.subtask_counter)
+    with open(calstate_file, "w") as applyfile:
+        applyfile.write('# Apply file for %s\n' % (os.path.basename(inputs.vis)))
+        applyfile.write(calstate.as_applycal())
+
+    task_args = inputs.to_casa_args()
+
+    # Don't delete spw, field, or intents as the inputs may request
+    # calibration of a subset of the total MS. The CASA callibrary can
+    # still define calibration for the whole MS, that's not a problem.
+    for a in ['gaintable', 'gainfield', 'spwmap', 'interp', 'calwt']:
+        if a in task_args:
+            del task_args[a]
+
+    task_args['applymode'] = inputs.applymode
+    task_args['docallib'] = True
+    task_args['callib'] = callibrary_file
+
+    mod_fn(task_args)
+
+    return [casa_tasks.applycal(**task_args)]
+
+
+def contains_uvcont_table(merged):
+    return 'uvcont' in [calfrom.caltype for calfroms in merged.values() for calfrom in calfroms]

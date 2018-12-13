@@ -96,8 +96,6 @@ class Applycals(applycal.IFApplycal):
             stats_before = self._executor.execute(flagdata_summary_job)
             stats_before['name'] = 'before'
 
-        merged = callibrary.fix_cycle0_data_selection(inputs.context, merged)
-
         if inputs.gainmap:
             applycalgroups = self.match_fields_scans()
         else:
