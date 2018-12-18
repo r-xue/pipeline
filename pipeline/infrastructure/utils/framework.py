@@ -438,5 +438,5 @@ def plotms_iterate(jobs_and_wrappers, iteraxis=None):
     # at this point, the sequentially-named plots from the merged job have
     # been renamed match that of the unmerged job, so we can simply check
     # whether the plot (with the original filename) exists or not.
-    wrappers = [w for _, w in jobs_and_wrappers]
-    return filter(lambda w: os.path.exists(w.abspath), wrappers)
+    wrappers = [w for _, w in jobs_and_wrappers if os.path.exists(w.abspath)]
+    return wrappers
