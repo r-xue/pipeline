@@ -18,13 +18,14 @@ LOG = infrastructure.get_logger(__name__)
 __all__ = [
     'FlagTargetsALMA',
     'FlagTargetsALMAInputs',
-    'FlagTargetsALMAFlagResults'
+    'FlagTargetsALMAResults'
 ]
 
 
 """
 Flag ALMA target science target data.
 """
+
 
 class FlagTargetsALMAInputs(vdp.StandardInputs):
     """
@@ -78,8 +79,7 @@ class FlagTargetsALMAInputs(vdp.StandardInputs):
         vis_root = os.path.splitext(self.vis)[0].split('_target')[0]
         return os.path.join(self.output_dir, vis_root + '.flagtargetscmds.txt')
     
-    def __init__(self, context, vis=None, output_dir=None, flagbackup=None,
-        template=None, filetemplate=None):
+    def __init__(self, context, vis=None, output_dir=None, flagbackup=None, template=None, filetemplate=None):
 
         super(FlagTargetsALMAInputs, self).__init__()
 
@@ -101,11 +101,11 @@ class FlagTargetsALMAInputs(vdp.StandardInputs):
         
         :rtype: dict        
         """
-        return {'vis'        : self.vis,
-                'mode'       : 'list',
-                'action'     : 'apply',                     
-                'inpfile'    : self.inpfile,
-                'flagbackup' : self.flagbackup}
+        return {'vis': self.vis,
+                'mode': 'list',
+                'action': 'apply',
+                'inpfile': self.inpfile,
+                'flagbackup': self.flagbackup}
 
 
 # tell the infrastructure to prefentially apply the targets
@@ -115,9 +115,9 @@ api.ImagingMeasurementSetsPreferred.register(FlagTargetsALMAInputs)
 
 class FlagTargetsALMAResults(basetask.Results):
     def __init__(self, summaries, flagcmds):
-       super(FlagTargetsALMAResults, self).__init__()
-       self.summaries = summaries
-       self._flagcmds = flagcmds
+        super(FlagTargetsALMAResults, self).__init__()
+        self.summaries = summaries
+        self._flagcmds = flagcmds
 
     def flagcmds(self):
         return self._flagcmds
@@ -217,23 +217,22 @@ class FlagTargetsALMA(basetask.StandardTaskTemplate):
         # create a local variable for the inputs associated with this instance
         inputs = self.inputs
         
-        # the empty list which will hold the flagging commands
-        flag_cmds = []        
-        flag_cmds.append("mode='summary' name='before'")
-        
+        # create list which will hold the flagging commands
+        flag_cmds = ["mode='summary' name='before'"]
+
         # flag template?
         if inputs.template:
             if not os.path.exists(inputs.filetemplate):
                 LOG.warning('Template flag file \'%s\' for \'%s\' not found.'
-                             % (inputs.filetemplate, inputs.ms.basename))
+                            % (inputs.filetemplate, inputs.ms.basename))
             else:
                 flag_cmds.extend(self._read_flagfile(inputs.filetemplate))
             flag_cmds.append("mode='summary' name='template'")
-    
-        
+
         return flag_cmds
 
-    def _read_flagfile(self, filename):
+    @staticmethod
+    def _read_flagfile(filename):
         if not os.path.exists(filename):
             LOG.warning('%s does not exist' % filename)
             return []
