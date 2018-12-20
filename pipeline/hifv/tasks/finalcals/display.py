@@ -104,8 +104,7 @@ class finalDelaysPerAntennaChart(object):
                                 antenna=antPlot, spw='', timerange='',
                                 plotrange=[], coloraxis='',
                                 title='K table: finaldelay.tbl   Antenna: {!s}'.format(antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
-                                xconnector='step')
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename + str(ex))
             else:
@@ -174,8 +173,7 @@ class finalphaseGainPerAntennaChart(object):
                                 antenna=antPlot, spw='', timerange='',
                                 coloraxis='', plotrange=[0, 0, -180, 180], symbolshape='circle',
                                 title='G table: finalBPinitialgain.tbl   Antenna: {!s}'.format(antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
-                                xconnector='line')
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
 
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename + str(ex))
@@ -269,8 +267,7 @@ class finalbpSolAmpPerAntennaChart(object):
                                 antenna=antPlot, spw='', timerange='',
                                 coloraxis='', plotrange=[0, 0, 0, ampplotmax], symbolshape='circle',
                                 title='B table: {!s}   Antenna: {!s}'.format('finalBPcal.tbl', antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
-                                xconnector='step')
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename + str(ex))
             else:
@@ -366,8 +363,7 @@ class finalbpSolPhasePerAntennaChart(object):
                                 coloraxis='', plotrange=[0, 0, -phaseplotmax, phaseplotmax],
                                 symbolshape='circle',
                                 title='B table: {!s}   Antenna: {!s}'.format('finalBPcal.tbl', antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
-                                xconnector='step')
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename + str(ex))
             else:
@@ -437,8 +433,7 @@ class finalbpSolPhaseShortPerAntennaChart(object):
                                 antenna=antPlot, spw='', timerange='',
                                 coloraxis='', plotrange=[0, 0, -180, 180], symbolshape='circle',
                                 title='G table: phaseshortgaincal.tbl   Antenna: {!s}'.format(antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
-                                xconnector='line')
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename + str(ex))
             else:
@@ -515,8 +510,7 @@ class finalAmpTimeCalPerAntennaChart(object):
                                 antenna=antPlot, spw='', timerange='',
                                 coloraxis='', plotrange=[0, 0, 0, plotmax], symbolshape='circle',
                                 title='G table: finalampgaincal.tbl   Antenna: {!s}'.format(antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
-                                xconnector='line')
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename + str(ex))
             else:
@@ -593,8 +587,7 @@ class finalAmpFreqCalPerAntennaChart(object):
                                 antenna=antPlot, spw='', timerange='',
                                 coloraxis='', plotrange=[0, 0, 0, plotmax], symbolshape='circle',
                                 title='G table: finalampgaincal.tbl   Antenna: {!s}'.format(antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
-                                xconnector='step')
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
                     
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename + str(ex))
@@ -665,8 +658,7 @@ class finalPhaseGainCalPerAntennaChart(object):
                                 antenna=antPlot, spw='', timerange='',
                                 coloraxis='', plotrange=[0, 0, -180, 180], symbolshape='circle',
                                 title='G table: finalphasegaincal.tbl   Antenna: {!s}'.format(antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
-                                xconnector='line')
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
 
                 except Exception as ex:
                     LOG.warn("Problem with plotting " + filename + str(ex))

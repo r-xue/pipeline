@@ -134,8 +134,7 @@ class ampfreqPerAntennaChart(object):
                     casa.plotms(vis=self.caltable, xaxis='freq', yaxis='amp', field='',
                                 antenna=antPlot, spw='', timerange='', plotrange=plotrange, coloraxis='',
                                 title='POL table: {!s}   Antenna: {!s}'.format(self.caltable, antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
-                                xconnector='step')
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
 
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename + str(ex))
