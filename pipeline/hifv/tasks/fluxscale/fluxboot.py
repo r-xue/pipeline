@@ -291,7 +291,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
         for field_id in dictkeys:        
             sourcename = fluxscale_result[field_id]['fieldName']
             secondary_keys = fluxscale_result[field_id].keys()
-            secondary_keys_to_remove=['fitRefFreq', 'spidxerr', 'spidx', 'fitFluxd', 'fieldName', 'fitFluxdErr']
+            secondary_keys_to_remove=['fitRefFreq', 'spidxerr', 'spidx', 'fitFluxd', 'fieldName', 'fitFluxdErr', 'covarMat']
             spwkeys = [spw_id for spw_id in secondary_keys if spw_id not in secondary_keys_to_remove]
             
             for spw_id in spwkeys:

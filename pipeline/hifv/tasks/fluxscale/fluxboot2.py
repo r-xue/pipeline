@@ -338,7 +338,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
         for field_id in dictkeys:
             sourcename = fluxscale_result[field_id]['fieldName']
             secondary_keys = fluxscale_result[field_id].keys()
-            secondary_keys_to_remove = ['fitRefFreq', 'spidxerr', 'spidx', 'fitFluxd', 'fieldName', 'fitFluxdErr']
+            secondary_keys_to_remove = ['fitRefFreq', 'spidxerr', 'spidx', 'fitFluxd', 'fieldName', 'fitFluxdErr', 'covarMat']
             spwkeys = [int(spw_id) for spw_id in secondary_keys if spw_id not in secondary_keys_to_remove]
 
             # fluxscale results  give all spectral windows
