@@ -262,6 +262,9 @@ class Editimlist(basetask.StandardTaskTemplate):
         iph = imageparams_factory.ImageParamsHeuristicsFactory()
         th = imlist_entry['heuristics'] = iph.getHeuristics(vislist=inp.vis, spw=imlist_entry['spw'],
                                                             observing_run=inp.context.observing_run,
+                                                            imagename_prefix=inp.context.project_structure.ousstatus_entity_id,
+                                                            proj_params=inp.context.project_performance_parameters,
+                                                            imaging_params=inp.context.imaging_parameters,
                                                             imaging_mode=img_mode)
 
         threshold_set_by_user = bool(inpdict['threshold'])
@@ -281,17 +284,17 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['conjbeams'] = th.conjbeams() if not inpdict['conjbeams'] else inpdict['conjbeams']
         imlist_entry['reffreq'] = th.reffreq() if not inpdict['reffreq'] else inpdict['reffreq']
         imlist_entry['restfreq'] = th.restfreq() if not inpdict['restfreq'] else inpdict['restfreq']
+        # niter_correction is run again in tclean.py
         imlist_entry['niter'] = th.niter_correction(None, None, None, None, None) if not inpdict['niter'] else inpdict['niter']
         imlist_entry['cyclefactor'] = th.cyclefactor() if not inpdict['cyclefactor'] else inpdict['cyclefactor']
         imlist_entry['cycleniter'] = th.cycleniter() if not inpdict['cycleniter'] else int(inpdict['cycleniter'])
         imlist_entry['scales'] = th.scales() if not inpdict['scales'] else inpdict['scales']
-        imlist_entry['uvtaper'] = th.uvtaper(None) if not inpdict['uvtaper'] else inpdict['uvtaper']
+        imlist_entry['uvtaper'] = th.uvtaper() if not inpdict['uvtaper'] else inpdict['uvtaper']
         imlist_entry['uvrange'] = th.uvrange() if not inpdict['uvrange'] else inpdict['uvrange']
         imlist_entry['deconvolver'] = th.deconvolver(None, None) if not inpdict['deconvolver'] else inpdict['deconvolver']
         imlist_entry['robust'] = th.robust() if not inpdict['robust'] else inpdict['robust']
         imlist_entry['mask'] = th.mask() if not inpdict['mask'] else inpdict['mask']
         imlist_entry['specmode'] = th.specmode() if not inpdict['specmode'] else inpdict['specmode']
-        imlist_entry['gridder'] = th.gridder(None, None) if not inpdict['gridder'] else inpdict['gridder']
         LOG.info('RADIUS')
         LOG.info(repr(inpdict['search_radius_arcsec']))
         LOG.info('default={d}'.format(d=not inpdict['search_radius_arcsec']
@@ -303,19 +306,38 @@ class Editimlist(basetask.StandardTaskTemplate):
                 and not isinstance(inpdict['search_radius_arcsec'], int)) else inpdict['search_radius_arcsec']
         LOG.info("{k} = {v}".format(k='search_radius', v=buffer_arcsec))
         result.capture_buffer_size(buffer_arcsec)
-        imlist_entry['cell'] = th.cell(None, None) if not inpdict['cell'] else inpdict['cell']
-        imlist_entry['imsize'] = th.imsize(None, None, None, None, None, None) if not inpdict['imsize'] else inpdict['imsize']
         imlist_entry['intent'] = th.intent() if not inpdict['intent'] else inpdict['intent']
         imlist_entry['nterms'] = th.nterms() if not inpdict['nterms'] else inpdict['nterms']
-        # imlist_entry['sensitivity'] = th.get_sensitivity(ms_do=None, field=None, intent=None, spw=None, chansel=None,
-        #                                                  specmode=None, cell=None, imsize=None, weighting=None,
-        #                                                  robust=None, uvtaper=None)[0] if not inpdict['sensitivity'] else inpdict['sensitivity']
+        imlist_entry['sensitivity'] = (None, None, None) if 'ALMA' in img_mode else (0.0, None, None)
+        # ---------------------------------------------------------------------------------- set cell (SRDP ALMA)
+        ppb = 5.0  # pixels per beam
+        if fieldnames:
+            synthesized_beam, ksb = th.synthesized_beam(field_intent_list=[[fieldnames[0], 'TARGET']],
+                                                        spwspec=imlist_entry['spw'],
+                                                        robust=imlist_entry['robust'],
+                                                        uvtaper=imlist_entry['uvtaper'],
+                                                        pixperbeam=ppb,
+                                                        known_beams=inp.context.synthesized_beams,
+                                                        force_calc=False)
+        else:
+            synthesized_beam = None
+        imlist_entry['cell'] = th.cell(beam=synthesized_beam,
+                                       pixperbeam=ppb) if not inpdict['cell'] else inpdict['cell']
+        # ----------------------------------------------------------------------------------  set imsize (SRDP ALMA)
+        largest_primary_beam = th.largest_primary_beam_size(spwspec=imlist_entry['spw'], intent='TARGET')
+        fieldids = th.field('TARGET', fieldnames)
+        imlist_entry['imsize'] = th.imsize(fields=fieldids, cell=imlist_entry['cell'],
+                                           primary_beam=largest_primary_beam,
+                                           sfpblimit=0.2) if not inpdict['imsize'] else inpdict['imsize']
+
         # ------------------------------
         imlist_entry['nchan'] = inpdict['nchan']
         imlist_entry['nbin'] = inpdict['nbin']
         imlist_entry['start'] = inpdict['start']
         imlist_entry['width'] = inpdict['width']
-        imlist_entry['imagename'] = inpdict['imagename']
+
+        # for VLASS phasecenter is required user input (not determined by heuristics)
+        imlist_entry['phasecenter'] = th.phasecenter(fieldids) if not inpdict['phasecenter'] else inpdict['phasecenter']
 
         # set the field name list in the image list target
         if fieldnames:
@@ -342,11 +364,16 @@ class Editimlist(basetask.StandardTaskTemplate):
                 if found_fields:
                     imlist_entry['field'] = ','.join(str(x) for x in found_fields)
 
+        imlist_entry['gridder'] = th.gridder(imlist_entry['intent'], imlist_entry['field']) if not inpdict['gridder'] else inpdict['gridder']
+        imlist_entry['imagename'] = th.imagename(intent=imlist_entry['intent'], field=imlist_entry['field'],
+                                                 spwspec=imlist_entry['spw'], specmode=imlist_entry['specmode'],
+                                                 band=None) if not inpdict['imagename'] else inpdict['imagename']
+
         for key, value in imlist_entry.items():
             LOG.info("{k} = {v}".format(k=key, v=value))
 
         try:
-            if len(imlist_entry['field']) > 0:
+            if imlist_entry['field']:
                 # In the coarse cube case we want one entry per spw per stokes
                 # so we want to loop over spw/stokes and create an imlist_entry for each
                 if 'VLASS-SE-CUBE' == img_mode:

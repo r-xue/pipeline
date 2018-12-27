@@ -72,6 +72,9 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristics):
     def buffer_radius(self):
         return 1000.
 
+    def field(self, intent, field, exclude_intent=None, vislist=None):
+        return None
+
     def specmode(self):
         return 'mfs'
 

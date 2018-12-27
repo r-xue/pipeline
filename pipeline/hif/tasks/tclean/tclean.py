@@ -206,6 +206,12 @@ class Tclean(cleanbase.CleanBase):
         per_spw_cont_sensitivities_all_chan = context.per_spw_cont_sensitivities_all_chan
         qaTool = casatools.quanta
 
+        # if 'start' or 'width' are defined in velocity units, track these
+        #  for conversion to frequency and back before tclean call. Added
+        #  to support SRDP ALMA optimized imaging.
+        self.start_as_velocity = None
+        self.width_as_velocity = None
+
         # delete any old files with this naming root. One of more
         # of these (don't know which) will interfere with this run.
         LOG.info('deleting %s*.iter*', inputs.imagename)
@@ -314,9 +320,16 @@ class Tclean(cleanbase.CleanBase):
             channel_width_auto = channel_width
 
             if inputs.start != '':
+
+                # if specified in velocity units, convert to frequency
+                #    then back again before the tclean call
+                if 'm/' in inputs.start:
+                    self.start_as_velocity = qaTool.quantity(inputs.start)
+                    inputs.start = self._to_frequency(inputs.start, inputs.restfreq)
+
                 if0 = qaTool.convert(inputs.start, 'Hz')['value']
                 if if0 < if0_auto:
-                    LOG.error('Supplied start frequency %s < f_low for Field %s SPW %s' % (inputs.start, inputs.field,
+                    LOG.error('Supplied start frequency %s < f_low (%s)for Field %s SPW %s' % (if0, if0_auto, inputs.field,
                                                                                            inputs.spw))
                     error_result = TcleanResult(vis=inputs.vis,
                                                 sourcename=inputs.field,
@@ -341,10 +354,18 @@ class Tclean(cleanbase.CleanBase):
                 return error_result
 
             if inputs.width != '':
+                # if specified in velocity units, convert to frequency
+                #    then back again before the tclean call
+                if 'm/' in inputs.width:
+                    self.width_as_velocity = qaTool.quantity(inputs.width)
+                    start_plus_width = qaTool.add(self.start_as_velocity, inputs.width)
+                    start_plus_width_freq = self._to_frequency(start_plus_width, inputs.restfreq)
+                    inputs.width = qaTool.sub(start_plus_width_freq, inputs.start)
+
                 channel_width_manual = qaTool.convert(inputs.width, 'Hz')['value']
                 if channel_width_manual < channel_width_auto:
-                    LOG.error('User supplied channel width smaller than native '
-                              'value of %s GHz for Field %s SPW %s' % (channel_width_auto, inputs.field, inputs.spw))
+                    LOG.error('User supplied channel width (%s) smaller than native '
+                              'value of %s GHz for Field %s SPW %s' % (channel_width_manual/1e9, channel_width_auto/1e9, inputs.field, inputs.spw))
                     error_result = TcleanResult(vis=inputs.vis,
                                                 sourcename=inputs.field,
                                                 intent=inputs.intent,
@@ -719,6 +740,13 @@ class Tclean(cleanbase.CleanBase):
 
         parallel = mpihelpers.parse_mpi_input_parameter(inputs.parallel)
 
+        # if 'start' or 'width' are defined in velocity units, convert from frequency back
+        # to velocity before tclean call. Added to support SRDP ALMA optimized imaging.
+        if self.start_as_velocity:
+            inputs.start = casatools.quanta.tos(self.start_as_velocity)
+        if self.width_as_velocity:
+            inputs.width = casatools.quanta.tos(self.width_as_velocity)
+
         clean_inputs = cleanbase.CleanBase.Inputs(inputs.context,
                                                   output_dir=inputs.output_dir,
                                                   vis=inputs.vis,
@@ -866,3 +894,26 @@ class Tclean(cleanbase.CleanBase):
             LOG.warning('Cannot create MOM0_FC / MOM8_FC images for intent "%s", '
                         'field %s, spw %s, no continuum ranges found.' %
                         (self.inputs.intent, self.inputs.field, self.inputs.spw))
+
+    def _to_frequency(self, velocity, restfreq):
+        # f = f_rest / (v/c + 1)
+        # https://www.iram.fr/IRAMFR/ARN/may95/node4.htm
+        qa = casatools.quanta
+        light_speed = qa.convert(qa.constants('c'), 'km/s')['value']
+        velocity = qa.convert(qa.quantity(velocity), 'km/s')['value']
+        val = qa.getvalue(restfreq)[0] / ((velocity / light_speed) + 1)
+        unit = qa.getunit(restfreq)
+        frequency = qa.tos(qa.quantity(val, unit))
+        return frequency
+
+    def _to_velocity(self, frequency, restfreq, velo):
+        # v = c * (f - f_rest) / f
+        # https://www.iram.fr/IRAMFR/ARN/may95/node4.htm
+        qa = casatools.quanta
+        light_speed = qa.convert(qa.constants('c'), 'km/s')['value']
+        restfreq = qa.getvalue(qa.convert(restfreq, 'MHz'))[0]
+        freq = qa.getvalue(qa.convert(frequency, 'MHz'))[0]
+        val = light_speed * ((freq - restfreq) / freq)
+        unit = qa.getunit(velo)
+        velocity = qa.tos(qa.quantity(val, unit))
+        return velocity

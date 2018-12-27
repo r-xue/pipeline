@@ -75,6 +75,9 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
     def specmode(self):
         return 'mfs'
 
+    def field(self, intent, field, exclude_intent=None, vislist=None):
+        return None
+
     def intent(self):
         return 'TARGET'
 

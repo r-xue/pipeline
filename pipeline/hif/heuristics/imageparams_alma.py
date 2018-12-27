@@ -356,3 +356,6 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
             # CAS-10489: old centralregion option needs higher threshold
             cqa = casatools.quanta
             return '%sJy' % (cqa.getvalue(cqa.mul(threshold, 2.0))[0])
+
+    def intent(self):
+        return 'TARGET'

@@ -1756,3 +1756,12 @@ class ImageParamsHeuristics(object):
     def savemodel(self, iteration):
 
         return None
+
+    def stokes(self):
+        return 'I'
+
+    def mask(self):
+        return ''
+
+    def specmode(self):
+        return 'mfs'

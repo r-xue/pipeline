@@ -256,3 +256,6 @@ class ImageParamsHeuristicsVlassSeTaper(ImageParamsHeuristics):
             return 'modelcolumn'
         else:
             return None
+
+    def field(self, intent, field, exclude_intent=None, vislist=None):
+        return None
