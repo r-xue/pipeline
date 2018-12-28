@@ -207,10 +207,12 @@ class Tclean(cleanbase.CleanBase):
         qaTool = casatools.quanta
 
         # if 'start' or 'width' are defined in velocity units, track these
-        #  for conversion to frequency and back before tclean call. Added
+        #  for conversion to frequency and back before and after tclean call. Added
         #  to support SRDP ALMA optimized imaging.
         self.start_as_velocity = None
         self.width_as_velocity = None
+        self.start_as_frequency = None
+        self.width_as_frequency = None
 
         # delete any old files with this naming root. One of more
         # of these (don't know which) will interfere with this run.
@@ -326,6 +328,7 @@ class Tclean(cleanbase.CleanBase):
                 if 'm/' in inputs.start:
                     self.start_as_velocity = qaTool.quantity(inputs.start)
                     inputs.start = self._to_frequency(inputs.start, inputs.restfreq)
+                    self.start_as_frequency = inputs.start
 
                 if0 = qaTool.convert(inputs.start, 'Hz')['value']
                 if if0 < if0_auto:
@@ -361,6 +364,7 @@ class Tclean(cleanbase.CleanBase):
                     start_plus_width = qaTool.add(self.start_as_velocity, inputs.width)
                     start_plus_width_freq = self._to_frequency(start_plus_width, inputs.restfreq)
                     inputs.width = qaTool.sub(start_plus_width_freq, inputs.start)
+                    self.width_as_frequency = inputs.width
 
                 channel_width_manual = qaTool.convert(inputs.width, 'Hz')['value']
                 if channel_width_manual < channel_width_auto:
@@ -803,7 +807,17 @@ class Tclean(cleanbase.CleanBase):
                                                   heuristics=inputs.image_heuristics)
         clean_task = cleanbase.CleanBase(clean_inputs)
 
-        return self._executor.execute(clean_task)
+        clean_result = self._executor.execute(clean_task)
+
+        # if 'start' or 'width' were defined in velocity units, convert from velocity back
+        # to frequency after tclean call. Added to support SRDP ALMA optimized imaging.
+        if self.start_as_velocity:
+            inputs.start = self.start_as_frequency
+        if self.width_as_velocity:
+            inputs.width = self.width_as_frequency
+
+        return clean_result
+
 
     # Remove pointing table.
     def _empty_pointing_table(self):
