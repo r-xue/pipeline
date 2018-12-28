@@ -90,7 +90,7 @@ class ImageParamsHeuristicsVlassSeTaper(ImageParamsHeuristics):
     def conjbeams(self):
         return False
 
-    def get_sensitivity(self, ms_do, field, spw, chansel, specmode, cell, imsize, weighting, robust, uvtaper):
+    def get_sensitivity(self, ms_do, field, intent, spw, chansel, specmode, cell, imsize, weighting, robust, uvtaper):
         return 0.0, None, None
 
     def find_fields(self, distance='0deg', phase_center=None, matchregex=''):

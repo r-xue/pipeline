@@ -309,7 +309,10 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['intent'] = th.intent() if not inpdict['intent'] else inpdict['intent']
         imlist_entry['nterms'] = th.nterms() if not inpdict['nterms'] else inpdict['nterms']
         if 'ALMA' not in img_mode:
-            imlist_entry['sensitivity'] = th.sensitivity([None]*11)
+            imlist_entry['sensitivity'] = th.get_sensitivity(ms_do=None, field=None, intent=None, spw=None, 
+                                                             chansel=None, specmode=None, cell=None, imsize=None,
+                                                             weighting=None, robust=None,
+                                                             uvtaper=None) if not inpdict['sensitivity'] else inpdict['sensitivity']
         # ---------------------------------------------------------------------------------- set cell (SRDP ALMA)
         ppb = 5.0  # pixels per beam
         if fieldnames:
