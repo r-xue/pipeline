@@ -684,14 +684,15 @@ class T1_4MRenderer(RendererBase):
             # remove unnecessary precision for execution duration
             task_duration.append(datetime.timedelta(days=dt.days, seconds=dt.seconds))
 
-        # take first MS of first session
-#        s = sorted(context.observing_run.measurement_sets,
-#                   key=lambda ms: (ms.session, ms.basename)) 
-#        root = s[0].basename
-                
+        # copy PPR for weblog
+        pprfile = context.project_structure.ppr_file
+        if pprfile != '' and os.path.exists(pprfile):
+            dest_path = os.path.join(context.report_dir,
+                                     os.path.basename(pprfile))
+            shutil.copy(pprfile, dest_path)
+  
         return {'pcontext' : context,
                 'results'  : context.results,
-#                'root'     : root,
                 'scores'   : scores,
                 'task_duration': task_duration}
         

@@ -59,8 +59,9 @@ $(document).ready(function() {
 	</tbody>
 </table>
 
-<%def name="li_anchor_to_file(relpath, tooltip)">
+<%def name="li_anchor_to_file(relpath, tooltip, preamble=True)">
 	<%
+	relpath = os.path.basename(relpath)
 	abspath = os.path.join(pcontext.report_dir, relpath)
 	file_exists = os.path.exists(abspath)
 	if file_exists:
@@ -68,11 +69,15 @@ $(document).ready(function() {
 		filesize = measures.FileSize(total_bytes, measures.FileSizeUnits.BYTES)
 	%>
 	% if file_exists:
-		<li><a href="${relpath}" data-title="${relpath}" class="replace-pre">View</a>, <a href="t1-4.html?logfile=${relpath}" target="_blank">view in new tab</a> or <a href="${relpath}" download="${relpath}" data-title="Click to download ${tooltip}">download</a> ${relpath} (${str(filesize)})</li>
+		% if preamble:
+			<li><a href="${relpath}" data-title="${relpath}" class="replace-pre">View</a>, <a href="t1-4.html?logfile=${relpath}" target="_blank">view in new tab</a> or <a href="${relpath}" download="${relpath}" data-title="Click to download ${tooltip}">download</a> ${relpath} (${str(filesize)})</li>
+		% else:
+			<li><a href="${relpath}">View</a>, <a href="${relpath}" target="_blank">view in new tab</a> or <a href="${relpath}" download="${relpath}" data-title="Click to download ${tooltip}">download</a> ${relpath} (${str(filesize)})</li>
+		% endif
 	% endif
 </%def>
 
-% if any(logname in ['casalogs', 'casa_commands', 'pipeline_script', 'pipeline_restore_script'] for logname in pcontext.logs):
+% if any(logname in ['casalogs', 'casa_commands', 'pipeline_script', 'pipeline_restore_script'] for logname in pcontext.logs) or pcontext.project_structure.ppr_file != '':
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<h3 class="panel-title">CASA logs and scripts</h3>
@@ -85,6 +90,7 @@ $(document).ready(function() {
 		${li_anchor_to_file(pcontext.logs['casa_commands'], 'CASA commands log')}
 		${li_anchor_to_file(pcontext.logs['pipeline_script'], 'pipeline equivalent script')}
 		${li_anchor_to_file(pcontext.logs['pipeline_restore_script'], 'pipeline restore script')}
+		${li_anchor_to_file(pcontext.project_structure.ppr_file, 'pipeline processing request', False)}
 		</ul>	
 	</div>
 </div>
