@@ -1,4 +1,3 @@
-
 # ------------------------------------------------------------------------------
 # Subsystem module ICD
 # ------------------------------------------------------------------------------
@@ -80,15 +79,14 @@
 #               Function bpcal_html() removed.
 
 # ------------------------------------------------------------------------------
-
 # Imports
 # -------
-
 import math
 import os
 import string
 
 import numpy
+import numpy.ma as ma
 import scipy
 import scipy.stats.mstats
 import matplotlib.pyplot as pl
@@ -101,8 +99,10 @@ except:
 
 import utility.logs as logs
 
+
 def rms(data):
     return numpy.ma.sqrt(numpy.ma.sum(data**2) / len(data))
+
 
 # ------------------------------------------------------------------------------
 # Subsystem user function and ICD
@@ -153,103 +153,84 @@ def rms(data):
 #               scores, and plots dictionaries.
 # 2013 Dec 17 - Dirk Muders, MPIfR
 #               Made plotting optional.
-
 # ------------------------------------------------------------------------------
+def bpcal(in_table, out_dir, logobj='PYTHON', create_plots=False):
 
-def bpcal( in_table, out_dir, logobj='PYTHON', create_plots=False ):
+    # Initialize the logger
+    root = 'bpcal.bpcal'
+    level = logs.INFO
 
-	# Initialize the logger
+    log_local, logger = logs.init(out_dir, root, level, logobj)
 
-	root = 'bpcal.bpcal'
-	level = logs.INFO
+    # Print the first log message
+    msg = 'Bandpass statistics started for ' + in_table + ' ...'
+    origin = root
+    logger.info(msg, origin=origin)
 
-	log_local, logger = logs.init( out_dir, root, level, logobj )
+    # Check to see if the output file already exists
+    out_table_root = os.path.basename(os.path.splitext(in_table)[0])
+    out_table = out_dir + '/' + out_table_root + '.bpcal.stats'
 
+    if os.path.exists(out_table):
+        msg = 'Output table ' + out_table + ' already exists ...\n'
+        origin = root
+        logger.error(msg, origin=origin)
+        raise IOError(msg)
 
-	# Print the first log message
+    # Calculate the bandpass calibration statistics
 
-	msg = 'Bandpass statistics started for ' + in_table + ' ...'
-	origin = root
-	logger.info( msg, origin=origin )
+    try:
+        bpcal_stats = bpcal_calc(in_table, logger=logger)
+    except Exception as err:
+        origin = root
+        logger.error(err.args[0], origin=origin)
+        raise Exception(err.args[0])
 
+    msg = 'Bandpass statistics of ' + in_table + ' calculated ...'
+    origin = root
+    logger.info(msg, origin=origin)
 
-	# Check to see if the output file already exists
+    # Write the bandpass calibration statistics to the table
+    status = bpcal_write(bpcal_stats, out_table)
+    msg = 'Bandpass statistics written in ' + out_table + ' ...'
+    origin = root
+    logger.info(msg, origin=origin)
 
-	out_table_root = os.path.basename( os.path.splitext( in_table )[0] )
-	out_table = out_dir + '/' + out_table_root + '.bpcal.stats'
+    # Calculate the bandpass calibration scores
+    bpcal_scores = bpcal_score(bpcal_stats)
+    msg = 'Bandpass scores of ' + in_table + ' calculated ...'
+    origin = root
+    logger.info(msg, origin=origin)
 
-	if os.path.exists( out_table ):
-		msg = 'Output table ' + out_table + ' already exists ...\n'
-		origin = root
-		logger.error( msg, origin=origin )
-		raise IOError( msg )
+    # Create the bandpass calibration statistics plots
+    if create_plots:
+        bpcal_plots = bpcal_plot(in_table, out_dir, bpcal_stats)
 
+        msg = 'Bandpass calibration statistics plots created in '
+        msg += out_dir + ' ...'
+        origin = root
+        logger.info(msg, origin=origin)
+    else:
+        bpcal_plots = {}
 
-	# Calculate the bandpass calibration statistics
+    # Print the last log message
+    msg = 'Bandpass calibration statistics finished for '
+    msg += in_table + ' ...\n'
+    origin = root
+    logger.info( msg, origin=origin )
 
-	try:
-		bpcal_stats = bpcal_calc( in_table, logger=logger )
-	except Exception as err:
-		origin = root
-		logger.error( err.args[0], origin=origin )
-		raise Exception( err.args[0] )
+    # Delete the logger, if it was created locally
+    if log_local:
+        del logger
 
-	msg = 'Bandpass statistics of ' + in_table + ' calculated ...'
-	origin = root
-	logger.info( msg, origin=origin )
+    # Return the dictionary containing the bandpass statistics, scores, and
+    # plots dictionaries
+    bpcal_qa = {'QANUMBERS': bpcal_stats,
+                'QASCORES': bpcal_scores,
+                'QAPLOTS': bpcal_plots}
 
+    return bpcal_qa
 
-	# Write the bandpass calibration statistics to the table
-
-	status = bpcal_write( bpcal_stats, out_table )
-
-	msg = 'Bandpass statistics written in ' + out_table + ' ...'
-	origin = root
-	logger.info( msg, origin=origin )
-
-
-	# Calculate the bandpass calibration scores
-
-	bpcal_scores = bpcal_score( bpcal_stats )
-
-	msg = 'Bandpass scores of ' + in_table + ' calculated ...'
-	origin = root
-	logger.info( msg, origin=origin )
-
-
-	# Create the bandpass calibration statistics plots
-
-        if (create_plots):
-	    bpcal_plots = bpcal_plot( in_table, out_dir, bpcal_stats )
-
-	    msg = 'Bandpass calibration statistics plots created in '
-	    msg += out_dir + ' ...'
-	    origin = root
-	    logger.info( msg, origin=origin )
-        else:
-            bpcal_plots = {}
-
-
-	# Print the last log message
-
-	msg = 'Bandpass calibration statistics finished for '
-	msg += in_table + ' ...\n'
-	origin = root
-	logger.info( msg, origin=origin )
-
-
-	# Delete the logger, if it was created locally
-
-	if log_local: del logger
-
-
-	# Return the dictionary containing the bandpass statistics, scores, and
-	# plots dictionaries
-        bpcal_qa = {'QANUMBERS': bpcal_stats, \
-                    'QASCORES': bpcal_scores, \
-                    'QAPLOTS': bpcal_plots}
-
-	return bpcal_qa
 
 # ------------------------------------------------------------------------------
 # Component user functions and ICDs
@@ -375,150 +356,142 @@ def bpcal( in_table, out_dir, logobj='PYTHON', create_plots=False ):
 #               Added AMPLITUDE_SN.
 # 2013 Jul 23 - Dirk Muders, MPIfR
 #               Added AMPLITUDE.
-
 # ------------------------------------------------------------------------------
+def bpcal_calc(in_table, logger=''):
 
-def bpcal_calc( in_table, logger='' ):
+    # Get the list of spw ids actually in the caltable
+    #    Should be handled by calanalysis tool meta data
+    #    fetchers but is not.
+    tbLoc = casac.table()
+    tbLoc.open(in_table)
+    spwidList = numpy.unique(tbLoc.getcol('SPECTRAL_WINDOW_ID')).tolist()
+    tbLoc.close()
 
-        # Get the list of spw ids actually in the caltable
-        #    Should be handled by calanalysis tool meta data
-        #    fetchers but is not.
-        tbLoc = casac.table()
-        tbLoc.open(in_table)
-        spwidList = numpy.unique(tbLoc.getcol('SPECTRAL_WINDOW_ID')).tolist()
-        tbLoc.close()
+    # Create the local instance of the calibration analysis tool and open
+    # the bandpass caltable
+    try:
+        caLoc = casac.calanalysis()
+    except:
+        caLoc = casac.homefinder.find_home_by_name('calanalysisHome').create()
 
-	# Create the local instance of the calibration analysis tool and open
-	# the bandpass caltable
+    caLoc.open(in_table)
 
-        try:
-	    caLoc = casac.calanalysis()
-        except:
-            caLoc = casac.homefinder.find_home_by_name( 'calanalysisHome' ).create()
+    # Get the spw ids and corresponding number of channels in the
+    #    caltable meta data and remove values that are not represented
+    #    in the caltable.
+    full_spwList = caLoc.spw(name=False)
+    full_numchanList = caLoc.numchannel()
+    spwList = []
+    numchanList = []
+    for spwid, numchan in zip(full_spwList, full_numchanList):
+        if int(spwid) not in spwidList:
+            continue
+        spwList.append(spwid)
+        numchanList.append(numchan)
 
-	caLoc.open( in_table )
+    # Initialize the bandpass calibration statistics dictionary
+    bpcal_stats = dict()
 
-        # Get the spw ids and corresponding number of channels in the
-        #    caltable meta data and remove values that are not represented
-        #    in the caltable.
-        full_spwList = caLoc.spw( name=False )
-        full_numchanList = caLoc.numchannel()
-        spwList = []; numchanList = []
-        for spwid, numchan in zip(full_spwList, full_numchanList):
-            if int(spwid) not in spwidList:
+    # Get the amplitude fit statistics for each spectral window and time.
+    # The spectral window and channel range elements are appended to the
+    # result from ca.fit().  Effectively, the spectral window is another
+    # iteration axis.
+    bpcal_stats['AMPLITUDE_FIT'] = dict()
+    try:
+        for s in range(len(spwList)):
+            chanRange = bpcal_chanRangeList(numchanList[s])
+            if chanRange == []:
                 continue
-            spwList.append(spwid)
-            numchanList.append(numchan)
+            spw = bpcal_spwChanString(spwList[s], chanRange)
+            f = caLoc.fit(spw=spw, axis='TIME', ap='AMPLITUDE',
+                          norm=True, order='LINEAR', type='LSQ',
+                          weight=False)
+            f['spw'] = int(spwList[s])
+            f['chanRange'] = chanRange
+            bpcal_stats['AMPLITUDE_FIT'][spwList[s]] = f
 
-	# Initialize the bandpass calibration statistics dictionary
+    except Exception as err:
+        origin = 'bpcal.bpcal_calc'
+        if logger != '':
+            logger.error(err.args[0], origin=origin)
+        raise Exception(err.args[0])
 
-	bpcal_stats = dict()
+    # Get the phase fit statistics for each spectral window and time.  The
+    # spectral window and channel range elements are appended to the result
+    # from ca.fit().
+    bpcal_stats['PHASE_FIT'] = dict()
+    try:
+        # TODO: Use spwList directly, using "range" seems wrong.
+        for s in range(len(spwList)):
+            chanRange = bpcal_chanRangeList(numchanList[s])
+            if chanRange == []:
+                continue
+            spw = bpcal_spwChanString(spwList[s], chanRange)
+            f = caLoc.fit(spw=spw, axis='TIME', ap='PHASE',
+                          unwrap=True, jumpmax=0.1, order='LINEAR',
+                          type='LSQ', weight=False)
+            f['spw'] = int(spwList[s])
+            f['chanRange'] = chanRange
+            bpcal_stats['PHASE_FIT'][spwList[s]] = f
 
+    except Exception as err:
+        origin = 'bpcal.bpcal_calc'
+        if logger != '':
+            logger.error(err.args[0], origin=origin)
+        raise Exception(err.args[0])
 
-	# Get the amplitude fit statistics for each spectral window and time.
-	# The spectral window and channel range elements are appended to the
-	# result from ca.fit().  Effectively, the spectral window is another
-	# iteration axis.
+    # Get the amplitudes and phases and calculate signal-to-noise ratios
+    bpcal_stats['AMPLITUDE'] = dict()
+    bpcal_stats['AMPLITUDE_SNR'] = dict()
+    bpcal_stats['PHASE'] = dict()
+    try:
+        for s in range(len(spwList)):
+            chanRange = [0, numchanList[s]-1]
 
-	bpcal_stats['AMPLITUDE_FIT'] = dict()
+            # Consider full channel range. Any roll-off should be flagged
+            # already.
+            spw = spwList[s]
 
-	try:
-		for s in range( len(spwList) ):
-			chanRange = bpcal_chanRangeList( numchanList[s] )
-			if chanRange == []: continue
-			spw = bpcal_spwChanString( spwList[s], chanRange )
-			f = caLoc.fit( spw=spw, axis='TIME', ap='AMPLITUDE',
-			    norm=True, order='LINEAR', type='LSQ',
-			    weight=False )
-			f['spw'] = int( spwList[s] )
-			f['chanRange'] = chanRange
-			bpcal_stats['AMPLITUDE_FIT'][spwList[s]] = f
+            bpcal_stats['AMPLITUDE'][spwList[s]] = dict()
+            bpcal_stats['AMPLITUDE'][spwList[s]]['spw'] = int(spwList[s])
+            bpcal_stats['AMPLITUDE'][spwList[s]]['chanRange'] = chanRange
+            bpcal_stats['PHASE'][spwList[s]] = dict()
+            bpcal_stats['PHASE'][spwList[s]]['spw'] = int(spwList[s])
+            bpcal_stats['PHASE'][spwList[s]]['chanRange'] = chanRange
+            bpcal_stats['AMPLITUDE_SNR'][spwList[s]] = dict()
+            bpcal_stats['AMPLITUDE_SNR'][spwList[s]]['spw'] = int(spwList[s])
+            bpcal_stats['AMPLITUDE_SNR'][spwList[s]]['chanRange'] = chanRange
 
-	except Exception as err:
-		origin = 'bpcal.bpcal_calc'
-		if logger != '': logger.error( err.args[0], origin=origin )
-		raise Exception( err.args[0] )
+            # Amplitude
+            bp_data = caLoc.get(spw=spw)
+            for pol in bp_data.iterkeys():
+                amp_values = numpy.ma.array(bp_data[pol]['value'], mask=bp_data[pol]['flag'])
+                bpcal_stats['AMPLITUDE'][spwList[s]][pol] = amp_values
+                amp_mean = numpy.ma.average(bpcal_stats['AMPLITUDE'][spwList[s]][pol])
+                amp_rms = rms(amp_values-amp_mean)
+                bpcal_stats['AMPLITUDE_SNR'][spwList[s]][pol] = amp_mean / amp_rms
 
+            # Phase
+            bp_data = caLoc.get(spw=spw, ap='PHASE')
+            for pol in bp_data.iterkeys():
+                phase_values = numpy.ma.array(bp_data[pol]['value'], mask=bp_data[pol]['flag'])
+                bpcal_stats['PHASE'][spwList[s]][pol] = phase_values
 
-	# Get the phase fit statistics for each spectral window and time.  The
-	# spectral window and channel range elements are appended to the result
-	# from ca.fit().
+    except Exception as err:
+        origin = 'bpcal.bpcal_calc'
+        if logger != '':
+            logger.error(err.args[0], origin=origin)
+        raise Exception(err.args[0])
 
-	bpcal_stats['PHASE_FIT'] = dict()
+    # Close the calibration analysis tool and delete the local instance
+    caLoc.close()
+    del caLoc
 
-	try:
-                # TODO: Use spwList directly, using "range" seems wrong.
-		for s in range( len(spwList) ):
-			chanRange = bpcal_chanRangeList( numchanList[s] )
-			if chanRange == []: continue
-			spw = bpcal_spwChanString( spwList[s], chanRange )
-			f = caLoc.fit( spw=spw, axis='TIME', ap='PHASE',
-			    unwrap=True, jumpmax=0.1, order='LINEAR',
-			    type='LSQ', weight=False )
-			f['spw'] = int( spwList[s] )
-			f['chanRange'] = chanRange
-			bpcal_stats['PHASE_FIT'][spwList[s]] = f
+    # Return the dictionary containing the bandpass calibration statistics
+    return bpcal_stats
 
-	except Exception as err:
-		origin = 'bpcal.bpcal_calc'
-		if logger != '': logger.error( err.args[0], origin=origin )
-		raise Exception( err.args[0] )
-
-
-        # Get the amplitudes and phases and calculate signal-to-noise ratios
-        bpcal_stats['AMPLITUDE'] = dict()
-	bpcal_stats['AMPLITUDE_SNR'] = dict()
-        bpcal_stats['PHASE'] = dict()
-
-	try:
-            for s in range( len(spwList) ):
-                chanRange = [0, numchanList[s]-1]
-
-                # Consider full channel range. Any roll-off should be flagged
-                # already.
-                spw = spwList[s]
-
-                bpcal_stats['AMPLITUDE'][spwList[s]] = dict()
-                bpcal_stats['AMPLITUDE'][spwList[s]]['spw'] = int( spwList[s] )
-                bpcal_stats['AMPLITUDE'][spwList[s]]['chanRange'] = chanRange
-                bpcal_stats['PHASE'][spwList[s]] = dict()
-                bpcal_stats['PHASE'][spwList[s]]['spw'] = int( spwList[s] )
-                bpcal_stats['PHASE'][spwList[s]]['chanRange'] = chanRange
-                bpcal_stats['AMPLITUDE_SNR'][spwList[s]] = dict()
-                bpcal_stats['AMPLITUDE_SNR'][spwList[s]]['spw'] = int( spwList[s] )
-                bpcal_stats['AMPLITUDE_SNR'][spwList[s]]['chanRange'] = chanRange
-                # Amplitude
-                bp_data = caLoc.get(spw = spw)
-                for pol in bp_data.iterkeys():
-                    amp_values = numpy.ma.array(bp_data[pol]['value'], mask=bp_data[pol]['flag'])
-                    bpcal_stats['AMPLITUDE'][spwList[s]][pol] = amp_values
-                    amp_mean = numpy.ma.average(bpcal_stats['AMPLITUDE'][spwList[s]][pol])
-                    amp_rms = rms(amp_values-amp_mean)
-                    bpcal_stats['AMPLITUDE_SNR'][spwList[s]][pol] = amp_mean / amp_rms
-                # Phase
-                bp_data = caLoc.get(spw = spw, ap='PHASE')
-                for pol in bp_data.iterkeys():
-                    phase_values = numpy.ma.array(bp_data[pol]['value'], mask=bp_data[pol]['flag'])
-                    bpcal_stats['PHASE'][spwList[s]][pol] = phase_values
-	except Exception as err:
-		origin = 'bpcal.bpcal_calc'
-		if logger != '': logger.error( err.args[0], origin=origin )
-		raise Exception( err.args[0] )
-
-
-	# Close the calibration analysis tool and delete the local instance
-
-	caLoc.close()
-
-	del caLoc
-
-
-	# Return the dictionary containing the bandpass calibration statistics
-
-	return bpcal_stats
 
 # ------------------------------------------------------------------------------
-
 # bpcal_write
 
 # Description:
@@ -554,82 +527,65 @@ def bpcal_calc( in_table, logger='' ):
 #               Modified to handle different spectral window configurations.
 # 2012 May 09 - Nick Elias, NRAO
 #               Reverted to writing one spectral window at a time.
-
 # ------------------------------------------------------------------------------
+def bpcal_write(bpcal_stats, out_table):
 
-def bpcal_write( bpcal_stats, out_table ):
+    # Create the local instance of the table tool, create the output main
+    # table with a place holder data description, and close the table
+    try:
+        tbLoc = casac.table()
+    except:
+        tbLoc = casa.__tablehome__.create()
 
-	# Create the local instance of the table tool, create the output main
-	# table with a place holder data description, and close the table
+    tbLoc.create(out_table, bpcal_desc())
+    tbLoc.addrows()
+    tbLoc.putcol('place_holder', True, 0, 1, 1)
+    tbLoc.close()
 
-        try:
-	    tbLoc = casac.table()
-        except:
-            tbLoc = casa.__tablehome__.create()
+    # Get the list of subtables and create them (AMPLITUDE and PHASE)
+    subtables = bpcal_stats.keys()
+    subtables.sort()
+    for st in subtables:
+        out_subtable = out_table + '/' + st.upper()
+        tbLoc.create(out_subtable, bpcal_desc_st())
+        tbLoc.close()
 
-	tbLoc.create( out_table, bpcal_desc() )
+    # Put the data into the subtables
+    for st in subtables:
 
-	tbLoc.addrows()
-	tbLoc.putcol( 'place_holder', True, 0, 1, 1 )
+        # Cannot write AMPLITUDE_SNR data yet.
+        if st.find('FIT') != -1:
+            out_subtable = out_table + '/' + st.upper()
+            tbLoc.open(out_subtable, nomodify=False)
 
-	tbLoc.close()
+            dictST = bpcal_stats[st]
+            spwGroup = dictST.keys()
+            spwGroup.sort()
 
+            for s in spwGroup:
+                dictSPW = bpcal_stats[st][s]
+                spw = dictSPW['spw']
+                chanRange = dictSPW['chanRange']
+                row = tbLoc.nrows()
+                for r in range(len(dictSPW)-2):  # -2: spw & chanRange
+                    dictRow = dictSPW[str(r)]
+                    tbLoc.addrows(1)
+                    bpcal_putFitRow(tbLoc, spw, chanRange, dictRow, row+r)
 
-	# Get the list of subtables and create them (AMPLITUDE and PHASE)
+            tbLoc.close()
 
-	subtables = bpcal_stats.keys(); subtables.sort()
+    # Link the output subtables to the output main table using keywords,
+    # close the main table, and delete the local table tool
+    tbLoc.open(out_table, nomodify=False)
+    for st in subtables:
+        keyword = st.upper()
+        value = 'Table: ' + out_table + '/' + keyword
+        tbLoc.putkeyword(keyword, value)
+    tbLoc.close()
+    del tbLoc
 
-	for st in subtables:
-		out_subtable = out_table + '/' + st.upper()
-		tbLoc.create( out_subtable, bpcal_desc_st() )
-		tbLoc.close()
+    return True
 
-
-	# Put the data into the subtables
-
-	for st in subtables:
-
-            # Cannot write AMPLITUDE_SNR data yet.
-            if (st.find('FIT') != -1):
-		out_subtable = out_table + '/' + st.upper()
-		tbLoc.open( out_subtable, nomodify=False )
-
-		dictST = bpcal_stats[st]
-
-		spwGroup = dictST.keys(); spwGroup.sort()
-
-		for s in spwGroup:
-			dictSPW = bpcal_stats[st][s]
-			spw = dictSPW['spw']
-			chanRange = dictSPW['chanRange']
-			row = tbLoc.nrows()
-			for r in range( len(dictSPW)-2 ): # -2: spw & chanRange
-				dictRow = dictSPW[str(r)]
-				tbLoc.addrows( 1 )
-				bpcal_putFitRow( tbLoc, spw, chanRange, dictRow,
-				    row+r )
-
-		tbLoc.close()
-
-
-	# Link the output subtables to the output main table using keywords,
-	# close the main table, and delete the local table tool
-
-	tbLoc.open( out_table, nomodify=False )
-
-	for st in subtables:
-		keyword = st.upper()
-		value = 'Table: ' + out_table + '/' + keyword
-		tbLoc.putkeyword( keyword, value )
-
-	tbLoc.close()
-
-	del tbLoc
-
-
-	# Return True
-
-	return True
 
 # ------------------------------------------------------------------------------
 # Unit functions and ICDs
@@ -665,50 +621,47 @@ def bpcal_write( bpcal_stats, out_table ):
 #               Initial version.
 # 2012 May 11 - Nick Elias, NRAO
 #               Input parameters spw and chanRange added.
+# ------------------------------------------------------------------------------
+def bpcal_putFitRow(tbLoc, spw, chanRange, dictRow, row):
+
+    # Put the columns in the desired row using the putcell method of the
+    # table tool
+    tbLoc.putcell('field', row, int(dictRow['field']))
+    tbLoc.putcell('antenna1', row, int(dictRow['antenna1']))
+    tbLoc.putcell('antenna2', row, int(dictRow['antenna2']))
+
+    tbLoc.putcell('spw', row, spw)
+    tbLoc.putcell('chanRange', row, chanRange)
+
+    tbLoc.putcell('feed', row, dictRow['feed'])
+
+    tbLoc.putcell('abscissa', row, dictRow['abscissa'])
+    tbLoc.putcell('time', row, dictRow['time'])
+    tbLoc.putcell('frequency', row, dictRow['frequency'])
+
+    tbLoc.putcell('value', row, dictRow['value'])
+    tbLoc.putcell('valueErr', row, dictRow['valueErr'])
+    tbLoc.putcell('flag', row, dictRow['flag'])
+
+    tbLoc.putcell('order', row, dictRow['order'])
+    tbLoc.putcell('type', row, dictRow['type'])
+    tbLoc.putcell('weight', row, dictRow['weight'])
+
+    tbLoc.putcell('validFit', row, dictRow['validFit'])
+
+    tbLoc.putcell('pars', row, dictRow['pars'])
+    tbLoc.putcell('vars', row, dictRow['vars'])
+    tbLoc.putcell('covars', row, dictRow['covars'])
+    tbLoc.putcell('redChi2', row, dictRow['redChi2'])
+    tbLoc.putcell('res', row, dictRow['res'])
+    tbLoc.putcell('resVar', row, dictRow['resVar'])
+    tbLoc.putcell('resMean', row, dictRow['resMean'])
+    tbLoc.putcell('model', row, dictRow['model'])
+
+    return True
+
 
 # ------------------------------------------------------------------------------
-
-def bpcal_putFitRow( tbLoc, spw, chanRange, dictRow, row ):
-
-	# Put the columns in the desired row using the putcell method of the
-	# table tool
-
-	tbLoc.putcell( 'field', row, int(dictRow['field']) )
-	tbLoc.putcell( 'antenna1', row, int(dictRow['antenna1']) )
-	tbLoc.putcell( 'antenna2', row, int(dictRow['antenna2']) )
-
-	tbLoc.putcell( 'spw', row, spw )
-	tbLoc.putcell( 'chanRange', row, chanRange )
-
-	tbLoc.putcell( 'feed', row, dictRow['feed'] )
-
-	tbLoc.putcell( 'abscissa', row, dictRow['abscissa'] )
-	tbLoc.putcell( 'time', row, dictRow['time'] )
-	tbLoc.putcell( 'frequency', row, dictRow['frequency'] )
-
-	tbLoc.putcell( 'value', row, dictRow['value'] )
-	tbLoc.putcell( 'valueErr', row, dictRow['valueErr'] )
-	tbLoc.putcell( 'flag', row, dictRow['flag'] )
-
-	tbLoc.putcell( 'order', row, dictRow['order'] )
-	tbLoc.putcell( 'type', row, dictRow['type'] )
-	tbLoc.putcell( 'weight', row, dictRow['weight'] )
-
-	tbLoc.putcell( 'validFit', row, dictRow['validFit'] )
-
-	tbLoc.putcell( 'pars', row, dictRow['pars'] )
-	tbLoc.putcell( 'vars', row, dictRow['vars'] )
-	tbLoc.putcell( 'covars', row, dictRow['covars'] )
-	tbLoc.putcell( 'redChi2', row, dictRow['redChi2'] )
-	tbLoc.putcell( 'res', row, dictRow['res'] )
-	tbLoc.putcell( 'resVar', row, dictRow['resVar'] )
-	tbLoc.putcell( 'resMean', row, dictRow['resMean'] )
-	tbLoc.putcell( 'model', row, dictRow['model'] )
-
-	return True
-
-# ------------------------------------------------------------------------------
-
 # bpcal_desc
 
 # Description:
@@ -728,31 +681,26 @@ def bpcal_putFitRow( tbLoc, spw, chanRange, dictRow, row ):
 # ---------------------
 # 2012 Mar 09 - Nick Elias, NRAO
 #               Initial version.
-
 # ------------------------------------------------------------------------------
-
 def bpcal_desc():
 
-	# Create the data description dictionary
+    # Create the data description dictionary
+    desc = dict()
 
-	desc = dict()
+    desc['place_holder'] = {
+         'comment': 'Place holder',
+         'dataManagerGroup': 'StandardStMan',
+         'dataManagerType': 'StandardStMan',
+         'maxlen': 0,
+         'option': 0,
+         'valueType': 'boolean'
+    }
 
-	desc['place_holder'] = {
-		'comment': 'Place holder',
-		'dataManagerGroup': 'StandardStMan',
-		'dataManagerType': 'StandardStMan',
-		'maxlen': 0,
-		'option': 0,
-		'valueType': 'boolean'
-	}
+    # Return the data description dictionary
+    return desc
 
-
-	# Return the data description dictionary
-
-	return desc
 
 # ------------------------------------------------------------------------------
-
 # bpcal_desc_st
 
 # Description:
@@ -776,249 +724,244 @@ def bpcal_desc():
 # 2012 May 09 - Nick Elias, NRAO
 #               Made the spectral window cells scalar and removed the start and
 #               stop channel columns.
-
 # ------------------------------------------------------------------------------
-
 def bpcal_desc_st():
+    # Create the bandpass calibration subtable data description dictionary
 
-	# Create the bandpass calibration subtable data description dictionary
+    desc = dict()
 
-	desc = dict()
+    desc['field'] = {
+        'comment': 'Field number',
+        'dataManagerGroup': 'StandardStMan',
+        'dataManagerType': 'StandardStMan',
+        'maxlen': 0,
+        'option': 0,
+        'valueType': 'integer'
+    }
 
-	desc['field'] = {
-		'comment': 'Field number',
-		'dataManagerGroup': 'StandardStMan',
-		'dataManagerType': 'StandardStMan',
-		'maxlen': 0,
-		'option': 0,
-		'valueType': 'integer'
-	}
+    desc['antenna1'] = {
+        'comment': 'Antenna 1 number',
+        'dataManagerGroup': 'StandardStMan',
+        'dataManagerType': 'StandardStMan',
+        'maxlen': 0,
+        'option': 0,
+        'valueType': 'integer'
+    }
 
-	desc['antenna1'] = {
-		'comment': 'Antenna 1 number',
-		'dataManagerGroup': 'StandardStMan',
-		'dataManagerType': 'StandardStMan',
-		'maxlen': 0,
-		'option': 0,
-		'valueType': 'integer'
-	}
+    desc['antenna2'] = {
+        'comment': 'Antenna 2 number',
+        'dataManagerGroup': 'StandardStMan',
+        'dataManagerType': 'StandardStMan',
+        'maxlen': 0,
+        'option': 0,
+        'valueType': 'integer'
+    }
 
-	desc['antenna2'] = {
-		'comment': 'Antenna 2 number',
-		'dataManagerGroup': 'StandardStMan',
-		'dataManagerType': 'StandardStMan',
-		'maxlen': 0,
-		'option': 0,
-		'valueType': 'integer'
-	}
+    desc['spw'] = {
+        'comment': 'Spectral window',
+        'dataManagerGroup': 'SSM',
+        'dataManagerType': 'StandardStMan',
+        'maxlen': 0,
+        'option': 0,
+        'valueType': 'integer'
+    }
 
-	desc['spw'] = {
-		'comment': 'Spectral window',
-		'dataManagerGroup': 'SSM',
-		'dataManagerType': 'StandardStMan',
-		'maxlen': 0,
-		'option': 0,
-		'valueType': 'integer'
-	}
+    desc['chanRange'] = {
+        'comment': 'Start and stop channels',
+        'dataManagerGroup': 'SSM',
+        'dataManagerType': 'StandardStMan',
+        'maxlen': 0,
+        'ndim': 1,
+        'option': 0,
+        'valueType': 'integer'
+    }
 
-	desc['chanRange'] = {
-		'comment': 'Start and stop channels',
-		'dataManagerGroup': 'SSM',
-		'dataManagerType': 'StandardStMan',
-		'maxlen': 0,
-		'ndim': 1,
-		'option': 0,
-		'valueType': 'integer'
-	}
+    desc['feed'] = {
+        'comment': 'Feed',
+        'dataManagerGroup': 'StandardStMan',
+        'dataManagerType': 'StandardStMan',
+        'maxlen': 0,
+        'option': 0,
+        'valueType': 'string'
+    }
 
-	desc['feed'] = {
-		'comment': 'Feed',
-		'dataManagerGroup': 'StandardStMan',
-		'dataManagerType': 'StandardStMan',
-		'maxlen': 0,
-		'option': 0,
-		'valueType': 'string'
-	}
+    desc['abscissa'] = {
+        'comment': 'Abscissa',
+        'dataManagerGroup': 'StandardStMan',
+        'dataManagerType': 'StandardStMan',
+        'maxlen': 0,
+        'option': 0,
+        'valueType': 'string'
+    }
 
-	desc['abscissa'] = {
-		'comment': 'Abscissa',
-		'dataManagerGroup': 'StandardStMan',
-		'dataManagerType': 'StandardStMan',
-		'maxlen': 0,
-		'option': 0,
-		'valueType': 'string'
-	}
+    desc['time'] = {
+        'comment': 'Times',
+        'dataManagerGroup': 'SSM',
+        'dataManagerType': 'StandardStMan',
+        'maxlen': 0,
+        'ndim': 1,
+        'option': 0,
+        'valueType': 'double'
+    }
 
-	desc['time'] = {
-		'comment': 'Times',
-		'dataManagerGroup': 'SSM',
-		'dataManagerType': 'StandardStMan',
-		'maxlen': 0,
-		'ndim': 1,
-		'option': 0,
-		'valueType': 'double'
-	}
+    desc['frequency'] = {
+        'comment': 'Frequencies',
+        'dataManagerGroup': 'SSM',
+        'dataManagerType': 'StandardStMan',
+        'maxlen': 0,
+        'ndim': 1,
+        'option': 0,
+        'valueType': 'double'
+    }
 
-	desc['frequency'] = {
-		'comment': 'Frequencies',
-		'dataManagerGroup': 'SSM',
-		'dataManagerType': 'StandardStMan',
-		'maxlen': 0,
-		'ndim': 1,
-		'option': 0,
-		'valueType': 'double'
-	}
+    desc['value'] = {
+        'comment': 'Values',
+        'dataManagerGroup': 'SSM',
+        'dataManagerType': 'StandardStMan',
+        'maxlen': 0,
+        'ndim': 1,
+        'option': 0,
+        'valueType': 'double'
+    }
 
-	desc['value'] = {
-		'comment': 'Values',
-		'dataManagerGroup': 'SSM',
-		'dataManagerType': 'StandardStMan',
-		'maxlen': 0,
-		'ndim': 1,
-		'option': 0,
-		'valueType': 'double'
-	}
+    desc['valueErr'] = {
+        'comment': 'Value errors',
+        'dataManagerGroup': 'SSM',
+        'dataManagerType': 'StandardStMan',
+        'maxlen': 0,
+        'ndim': 1,
+        'option': 0,
+        'valueType': 'double'
+    }
 
-	desc['valueErr'] = {
-		'comment': 'Value errors',
-		'dataManagerGroup': 'SSM',
-		'dataManagerType': 'StandardStMan',
-		'maxlen': 0,
-		'ndim': 1,
-		'option': 0,
-		'valueType': 'double'
-	}
+    desc['flag'] = {
+        'comment': 'Flags',
+        'dataManagerGroup': 'SSM',
+        'dataManagerType': 'StandardStMan',
+        'maxlen': 0,
+        'ndim': 1,
+        'option': 0,
+        'valueType': 'boolean'
+    }
 
-	desc['flag'] = {
-		'comment': 'Flags',
-		'dataManagerGroup': 'SSM',
-		'dataManagerType': 'StandardStMan',
-		'maxlen': 0,
-		'ndim': 1,
-		'option': 0,
-		'valueType': 'boolean'
-	}
+    desc['order'] = {
+        'comment': 'Fit order',
+        'dataManagerGroup': 'StandardStMan',
+        'dataManagerType': 'StandardStMan',
+        'maxlen': 0,
+        'option': 0,
+        'valueType': 'string'
+    }
 
-	desc['order'] = {
-		'comment': 'Fit order',
-		'dataManagerGroup': 'StandardStMan',
-		'dataManagerType': 'StandardStMan',
-		'maxlen': 0,
-		'option': 0,
-		'valueType': 'string'
-	}
+    desc['type'] = {
+        'comment': 'Fit type',
+        'dataManagerGroup': 'StandardStMan',
+        'dataManagerType': 'StandardStMan',
+        'maxlen': 0,
+        'option': 0,
+        'valueType': 'string'
+    }
 
-	desc['type'] = {
-		'comment': 'Fit type',
-		'dataManagerGroup': 'StandardStMan',
-		'dataManagerType': 'StandardStMan',
-		'maxlen': 0,
-		'option': 0,
-		'valueType': 'string'
-	}
+    desc['weight'] = {
+        'comment': 'Fit Weight',
+        'dataManagerGroup': 'StandardStMan',
+        'dataManagerType': 'StandardStMan',
+        'maxlen': 0,
+        'option': 0,
+        'valueType': 'string'
+    }
 
-	desc['weight'] = {
-		'comment': 'Fit Weight',
-		'dataManagerGroup': 'StandardStMan',
-		'dataManagerType': 'StandardStMan',
-		'maxlen': 0,
-		'option': 0,
-		'valueType': 'string'
-	}
+    desc['validFit'] = {
+        'comment': 'Fit valid boolean',
+        'dataManagerGroup': 'StandardStMan',
+        'dataManagerType': 'StandardStMan',
+        'maxlen': 0,
+        'option': 0,
+        'valueType': 'boolean'
+    }
 
-	desc['validFit'] = {
-		'comment': 'Fit valid boolean',
-		'dataManagerGroup': 'StandardStMan',
-		'dataManagerType': 'StandardStMan',
-		'maxlen': 0,
-		'option': 0,
-		'valueType': 'boolean'
-	}
+    desc['pars'] = {
+        'comment': 'Fit parameters',
+        'dataManagerGroup': 'StandardStMan',
+        'dataManagerType': 'StandardStMan',
+        'maxlen': 0,
+        'ndim': 1,
+        'option': 0,
+        'valueType': 'double'
+    }
 
-	desc['pars'] = {
-		'comment': 'Fit parameters',
-		'dataManagerGroup': 'StandardStMan',
-		'dataManagerType': 'StandardStMan',
-		'maxlen': 0,
-		'ndim': 1,
-		'option': 0,
-		'valueType': 'double'
-	}
+    desc['vars'] = {
+        'comment': 'Fit variances',
+        'dataManagerGroup': 'StandardStMan',
+        'dataManagerType': 'StandardStMan',
+        'maxlen': 0,
+        'ndim': 1,
+        'option': 0,
+        'valueType': 'double'
+    }
 
-	desc['vars'] = {
-		'comment': 'Fit variances',
-		'dataManagerGroup': 'StandardStMan',
-		'dataManagerType': 'StandardStMan',
-		'maxlen': 0,
-		'ndim': 1,
-		'option': 0,
-		'valueType': 'double'
-	}
+    desc['covars'] = {
+        'comment': 'Fit covariances',
+        'dataManagerGroup': 'StandardStMan',
+        'dataManagerType': 'StandardStMan',
+        'maxlen': 0,
+        'ndim': 1,
+        'option': 0,
+        'valueType': 'double'
+    }
 
-	desc['covars'] = {
-		'comment': 'Fit covariances',
-		'dataManagerGroup': 'StandardStMan',
-		'dataManagerType': 'StandardStMan',
-		'maxlen': 0,
-		'ndim': 1,
-		'option': 0,
-		'valueType': 'double'
-	}
+    desc['redChi2'] = {
+        'comment': 'Fit chi-squared',
+        'dataManagerGroup': 'StandardStMan',
+        'dataManagerType': 'StandardStMan',
+        'maxlen': 0,
+        'option': 0,
+        'valueType': 'double'
+    }
 
-	desc['redChi2'] = {
-		'comment': 'Fit chi-squared',
-		'dataManagerGroup': 'StandardStMan',
-		'dataManagerType': 'StandardStMan',
-		'maxlen': 0,
-		'option': 0,
-		'valueType': 'double'
-	}
+    desc['res'] = {
+        'comment': 'Fit residuals',
+        'dataManagerGroup': 'StandardStMan',
+        'dataManagerType': 'StandardStMan',
+        'maxlen': 0,
+        'ndim': 1,
+        'option': 0,
+        'valueType': 'double'
+    }
 
-	desc['res'] = {
-		'comment': 'Fit residuals',
-		'dataManagerGroup': 'StandardStMan',
-		'dataManagerType': 'StandardStMan',
-		'maxlen': 0,
-		'ndim': 1,
-		'option': 0,
-		'valueType': 'double'
-	}
+    desc['resVar'] = {
+        'comment': 'Variance of residuals',
+        'dataManagerGroup': 'StandardStMan',
+        'dataManagerType': 'StandardStMan',
+        'maxlen': 0,
+        'option': 0,
+        'valueType': 'double'
+    }
 
-	desc['resVar'] = {
-		'comment': 'Variance of residuals',
-		'dataManagerGroup': 'StandardStMan',
-		'dataManagerType': 'StandardStMan',
-		'maxlen': 0,
-		'option': 0,
-		'valueType': 'double'
-	}
+    desc['resMean'] = {
+        'comment': 'Mean of residuals',
+        'dataManagerGroup': 'StandardStMan',
+        'dataManagerType': 'StandardStMan',
+        'maxlen': 0,
+        'option': 0,
+        'valueType': 'double'
+    }
 
-	desc['resMean'] = {
-		'comment': 'Mean of residuals',
-		'dataManagerGroup': 'StandardStMan',
-		'dataManagerType': 'StandardStMan',
-		'maxlen': 0,
-		'option': 0,
-		'valueType': 'double'
-	}
+    desc['model'] = {
+        'comment': 'Fit model',
+        'dataManagerGroup': 'StandardStMan',
+        'dataManagerType': 'StandardStMan',
+        'maxlen': 0,
+        'ndim': 1,
+        'option': 0,
+        'valueType': 'double'
+    }
 
-	desc['model'] = {
-		'comment': 'Fit model',
-		'dataManagerGroup': 'StandardStMan',
-		'dataManagerType': 'StandardStMan',
-		'maxlen': 0,
-		'ndim': 1,
-		'option': 0,
-		'valueType': 'double'
-	}
+    # Return the data description dictionary
+    return desc
 
-
-	# Return the data description dictionary
-
-	return desc
 
 # ------------------------------------------------------------------------------
-
 # bpcal_chanRangeList
 
 # Description:
@@ -1052,25 +995,21 @@ def bpcal_desc_st():
 # ---------------------
 # 2012 May 15 - Nick Elias, NRAO
 #               Initial version.
+# ------------------------------------------------------------------------------
+def bpcal_chanRangeList(numchan, trim=0.1):
+
+    # If the spectral window has no channels, return []
+    if numchan == 0:
+        return []
+
+    # Calculate the start and stop channels and return them
+    startChan = int(round(trim*numchan - 0.5))
+    stopChan = int(round((1.0-trim)*numchan - 0.5))
+
+    return [startChan, stopChan]
+
 
 # ------------------------------------------------------------------------------
-
-def bpcal_chanRangeList( numchan, trim=0.1 ):
-
-	# If the spectral window has no channels, return []
-
-	if numchan == 0: return []
-
-
-	# Calculate the start and stop channels and return them
-
-	startChan = int(round( trim*numchan - 0.5 ))
-	stopChan = int(round( (1.0-trim)*numchan - 0.5 ))
-
-	return [startChan,stopChan]
-
-# ------------------------------------------------------------------------------
-
 # bpcal_spwChanString
 
 # Description:
@@ -1093,19 +1032,16 @@ def bpcal_chanRangeList( numchan, trim=0.1 ):
 # ---------------------
 # 2012 May 15 - Nick Elias, NRAO
 #               Initial version.
+# ------------------------------------------------------------------------------
+def bpcal_spwChanString(spw, sschan):
+
+    # Form the spectral window string and return it
+    spwS = str(spw) + ':' + str(sschan[0]) + '~' + str(sschan[1])
+
+    return spwS
+
 
 # ------------------------------------------------------------------------------
-
-def bpcal_spwChanString( spw, sschan ):
-
-	# Form the spectral window string and return it
-
-	spwS = str(spw) + ':' + str(sschan[0]) + '~' + str(sschan[1])
-
-	return spwS
-
-# ------------------------------------------------------------------------------
-
 # bpcal_score
 
 # Description:
@@ -1178,142 +1114,143 @@ def bpcal_spwChanString( spw, sschan ):
 # 2013 Aug 06 - Dirk Muders, MPIfR
 #               Renamed SHAPE to FLATNESS (FN)
 #               Added derivative deviation scoring
-
 # ------------------------------------------------------------------------------
+def bpcal_score(bpcal_stats):
 
-def bpcal_score( bpcal_stats ):
+    # Initialize the score dictionary
+    bpcal_scores = dict()
 
-	# Initialize the score dictionary
+    bpcal_scores['AMPLITUDE_SCORE_FLAG'] = dict()
+    bpcal_scores['AMPLITUDE_SCORE_RMS'] = dict()
+    bpcal_scores['AMPLITUDE_SCORE_SNR'] = dict()
+    bpcal_scores['AMPLITUDE_SCORE_FN'] = dict()
+    bpcal_scores['AMPLITUDE_SCORE_DD'] = dict()
+    bpcal_scores['AMPLITUDE_SCORE_TOTAL'] = dict()
 
-	bpcal_scores = dict()
+    bpcal_scores['PHASE_SCORE_FLAG'] = dict()
+    bpcal_scores['PHASE_SCORE_RMS'] = dict()
+    bpcal_scores['PHASE_SCORE_FN'] = dict()
+    bpcal_scores['PHASE_SCORE_DD'] = dict()
+    bpcal_scores['PHASE_SCORE_DELAY'] = dict()
+    bpcal_scores['PHASE_SCORE_TOTAL'] = dict()
 
-	bpcal_scores['AMPLITUDE_SCORE_FLAG'] = dict()
-	bpcal_scores['AMPLITUDE_SCORE_RMS'] = dict()
-	bpcal_scores['AMPLITUDE_SCORE_SNR'] = dict()
-	bpcal_scores['AMPLITUDE_SCORE_FN'] = dict()
-	bpcal_scores['AMPLITUDE_SCORE_DD'] = dict()
-	bpcal_scores['AMPLITUDE_SCORE_TOTAL'] = dict()
+    # Calculate all of the amplitude (flag, RMS, total) scores for each
+    # spectral window and save them to the score dictionary.  The keys are
+    # antenna1, antenna2, and feed (hopefully, field and time have only one
+    # value).
+    amp = bpcal_stats['AMPLITUDE_FIT']
+    spw = amp.keys()
 
-	bpcal_scores['PHASE_SCORE_FLAG'] = dict()
-	bpcal_scores['PHASE_SCORE_RMS'] = dict()
-	bpcal_scores['PHASE_SCORE_FN'] = dict()
-	bpcal_scores['PHASE_SCORE_DD'] = dict()
-	bpcal_scores['PHASE_SCORE_DELAY'] = dict()
-	bpcal_scores['PHASE_SCORE_TOTAL'] = dict()
+    for s in spw:
 
+        keys = amp[s].keys()
 
-	# Calculate all of the amplitude (flag, RMS, total) scores for each
-	# spectral window and save them to the score dictionary.  The keys are
-	# antenna1, antenna2, and feed (hopefully, field and time have only one
-	# value).
+        spwNum = amp[s]['spw']
+        keys.remove('spw')
 
-	amp = bpcal_stats['AMPLITUDE_FIT']
-	spw = amp.keys()
+        chanRange = amp[s]['chanRange']
+        keys.remove('chanRange')
 
-	for s in spw:
+        if len(keys) == 0:
+            continue
 
-		keys = amp[s].keys()
+        bpcal_scores['AMPLITUDE_SCORE_FLAG'][s] = dict()
+        bpcal_scores['AMPLITUDE_SCORE_RMS'][s] = dict()
+        bpcal_scores['AMPLITUDE_SCORE_SNR'][s] = dict()
+        bpcal_scores['AMPLITUDE_SCORE_FN'][s] = dict()
+        bpcal_scores['AMPLITUDE_SCORE_DD'][s] = dict()
+        bpcal_scores['AMPLITUDE_SCORE_TOTAL'][s] = dict()
 
-		spwNum = amp[s]['spw']; keys.remove( 'spw' )
-		chanRange = amp[s]['chanRange']; keys.remove( 'chanRange' )
+        for k in keys:
 
-		if len(keys) == 0: continue
+            if len(amp[s][k]['pars']) == 0:
+                continue
 
-		bpcal_scores['AMPLITUDE_SCORE_FLAG'][s] = dict()
-		bpcal_scores['AMPLITUDE_SCORE_RMS'][s] = dict()
-		bpcal_scores['AMPLITUDE_SCORE_SNR'][s] = dict()
-		bpcal_scores['AMPLITUDE_SCORE_FN'][s] = dict()
-		bpcal_scores['AMPLITUDE_SCORE_DD'][s] = dict()
-		bpcal_scores['AMPLITUDE_SCORE_TOTAL'][s] = dict()
+            bpcal_scores['AMPLITUDE_SCORE_FLAG'][s][k] = \
+                bpcal_score_flag(amp[s][k]['flag'], chanRange)
 
-		for k in keys:
+            bpcal_scores['AMPLITUDE_SCORE_RMS'][s][k] = \
+                bpcal_score_RMS(math.sqrt(amp[s][k]['resVar']), 0.1)
 
-			if len( amp[s][k]['pars'] ) == 0: continue
+            bpcal_scores['AMPLITUDE_SCORE_SNR'][s][k] = \
+                bpcal_score_SNR(bpcal_stats['AMPLITUDE_SNR'][s][k])
 
-			bpcal_scores['AMPLITUDE_SCORE_FLAG'][s][k] = \
-			    bpcal_score_flag( amp[s][k]['flag'], chanRange )
+            bpcal_scores['AMPLITUDE_SCORE_FN'][s][k] = \
+                bpcal_score_flatness(bpcal_stats['AMPLITUDE'][s][k])
 
-			bpcal_scores['AMPLITUDE_SCORE_RMS'][s][k] = \
-			    bpcal_score_RMS( math.sqrt(amp[s][k]['resVar']),
-			    0.1 )
+            bpcal_scores['AMPLITUDE_SCORE_DD'][s][k] = \
+                bpcal_score_derivative_deviation(bpcal_stats['AMPLITUDE'][s][k])
 
-                        bpcal_scores['AMPLITUDE_SCORE_SNR'][s][k] = \
-                            bpcal_score_SNR( bpcal_stats['AMPLITUDE_SNR'][s][k] )
+            bpcal_scores['AMPLITUDE_SCORE_TOTAL'][s][k] = \
+                bpcal_scores['AMPLITUDE_SCORE_FLAG'][s][k] \
+                * bpcal_scores['AMPLITUDE_SCORE_RMS'][s][k]
 
-                        bpcal_scores['AMPLITUDE_SCORE_FN'][s][k] = \
-                            bpcal_score_flatness( bpcal_stats['AMPLITUDE'][s][k] )
+    # Calculate all of the phase scores (flag, RMS, delay, total) for each
+    # spectral window and save them to the score dictionary.  The keys are
+    # antenna1, antenna2, and feed (hopefully, field and time have only one
+    # value).
+    phase = bpcal_stats['PHASE_FIT']
+    spw = phase.keys()
 
-                        bpcal_scores['AMPLITUDE_SCORE_DD'][s][k] = \
-                            bpcal_score_derivative_deviation( bpcal_stats['AMPLITUDE'][s][k] )
+    for s in spw:
 
-			bpcal_scores['AMPLITUDE_SCORE_TOTAL'][s][k] = \
-			    bpcal_scores['AMPLITUDE_SCORE_FLAG'][s][k] \
-			    * bpcal_scores['AMPLITUDE_SCORE_RMS'][s][k]
+        keys = phase[s].keys()
 
+        spwNum = phase[s]['spw']
+        keys.remove('spw')
 
-	# Calculate all of the phase scores (flag, RMS, delay, total) for each
-	# spectral window and save them to the score dictionary.  The keys are
-	# antenna1, antenna2, and feed (hopefully, field and time have only one
-	# value).
+        chanRange = phase[s]['chanRange']
+        keys.remove('chanRange')
 
-	phase = bpcal_stats['PHASE_FIT']
-	spw = phase.keys()
+        if len(keys) == 0:
+            continue
 
-	for s in spw:
+        bpcal_scores['PHASE_SCORE_FLAG'][s] = dict()
+        bpcal_scores['PHASE_SCORE_RMS'][s] = dict()
+        bpcal_scores['PHASE_SCORE_FN'][s] = dict()
+        bpcal_scores['PHASE_SCORE_DD'][s] = dict()
+        bpcal_scores['PHASE_SCORE_DELAY'][s] = dict()
+        bpcal_scores['PHASE_SCORE_TOTAL'][s] = dict()
 
-		keys = phase[s].keys()
+        for k in keys:
 
-		spwNum = phase[s]['spw']; keys.remove( 'spw' )
-		chanRange = phase[s]['chanRange']; keys.remove( 'chanRange' )
+            if len(phase[s][k]['pars']) == 0:
+                continue
 
-		if len(keys) == 0: continue
+            bpcal_scores['PHASE_SCORE_FLAG'][s][k] = \
+                bpcal_score_flag(phase[s][k]['flag'], chanRange)
 
-		bpcal_scores['PHASE_SCORE_FLAG'][s] = dict()
-		bpcal_scores['PHASE_SCORE_RMS'][s] = dict()
-		bpcal_scores['PHASE_SCORE_FN'][s] = dict()
-		bpcal_scores['PHASE_SCORE_DD'][s] = dict()
-		bpcal_scores['PHASE_SCORE_DELAY'][s] = dict()
-		bpcal_scores['PHASE_SCORE_TOTAL'][s] = dict()
+            bpcal_scores['PHASE_SCORE_RMS'][s][k] = \
+                bpcal_score_RMS(math.sqrt(phase[s][k]['resVar']), 0.05)
 
-		for k in keys:
+            bpcal_scores['PHASE_SCORE_FN'][s][k] = \
+                bpcal_score_flatness(bpcal_stats['PHASE'][s][k]+45./180.*math.pi)
 
-			if len( phase[s][k]['pars'] ) == 0: continue
+            bpcal_scores['PHASE_SCORE_DD'][s][k] = \
+                bpcal_score_derivative_deviation(bpcal_stats['PHASE'][s][k])
 
-			bpcal_scores['PHASE_SCORE_FLAG'][s][k] = \
-			    bpcal_score_flag( phase[s][k]['flag'], chanRange )
+            bpcal_scores['PHASE_SCORE_DELAY'][s][k] = \
+                bpcal_score_delay(
+                    phase[s][k]['pars'][1]/(2.0*math.pi),
+                    phase[s][k]['vars'][1]/(2.0*math.pi),
+                    phase[s][k]['frequency'], phase[s][k]['value'],
+                    phase[s][k]['flag'], chanRange)
 
-			bpcal_scores['PHASE_SCORE_RMS'][s][k] = \
-			    bpcal_score_RMS( math.sqrt(phase[s][k]['resVar']),
-			    0.05 )
-
-                        bpcal_scores['PHASE_SCORE_FN'][s][k] = \
-                            bpcal_score_flatness( bpcal_stats['PHASE'][s][k]+45./180.*math.pi )
-
-                        bpcal_scores['PHASE_SCORE_DD'][s][k] = \
-                            bpcal_score_derivative_deviation( bpcal_stats['PHASE'][s][k] )
-
-			bpcal_scores['PHASE_SCORE_DELAY'][s][k] = \
-			    bpcal_score_delay(
-			    phase[s][k]['pars'][1]/(2.0*math.pi),
-			    phase[s][k]['vars'][1]/(2.0*math.pi),
-			    phase[s][k]['frequency'], phase[s][k]['value'],
-			    phase[s][k]['flag'], chanRange )
-
-			bpcal_scores['PHASE_SCORE_TOTAL'][s][k] = \
-			    bpcal_scores['PHASE_SCORE_FLAG'][s][k] \
-			    * bpcal_scores['PHASE_SCORE_RMS'][s][k] \
-			    * bpcal_scores['PHASE_SCORE_DELAY'][s][k]
+            bpcal_scores['PHASE_SCORE_TOTAL'][s][k] = \
+                bpcal_scores['PHASE_SCORE_FLAG'][s][k] \
+                * bpcal_scores['PHASE_SCORE_RMS'][s][k] \
+                * bpcal_scores['PHASE_SCORE_DELAY'][s][k]
 
         # Calculate grand total score
         bpcal_scores['TOTAL'] = \
-            numpy.median([numpy.median(bpcal_scores['AMPLITUDE_SCORE_SNR'][s].values()) for s in bpcal_scores['AMPLITUDE_SCORE_SNR'].iterkeys()])
+            numpy.median([numpy.median(bpcal_scores['AMPLITUDE_SCORE_SNR'][s].values())
+                          for s in bpcal_scores['AMPLITUDE_SCORE_SNR'].iterkeys()])
 
-	# Return the bandpass score dictionary
+    # Return the bandpass score dictionary
+    return bpcal_scores
 
-	return bpcal_scores
 
 # ------------------------------------------------------------------------------
-
 # bpcal_score_flag
 
 # Description:
@@ -1344,24 +1281,19 @@ def bpcal_score( bpcal_stats ):
 # ---------------------
 # 2012 Aug 20 - Nick Elias, NRAO
 #               Initial version.
+# ------------------------------------------------------------------------------
+def bpcal_score_flag(flags, chanRange):
+
+    # Calculate and return the flag score for this iteration
+    flagsTemp = flags[chanRange[0]:chanRange[1]+1]
+    nData = len(flagsTemp)
+    nFlag = len(numpy.where(flagsTemp == True))
+    score = 1.0 - (float(nFlag)/float(nData))
+
+    return score
+
 
 # ------------------------------------------------------------------------------
-
-def bpcal_score_flag( flags, chanRange ):
-
-	# Calculate and return the flag score for this iteration
-
-	flagsTemp = flags[chanRange[0]:chanRange[1]+1]
-
-	nData = len( flagsTemp )
-	nFlag = len( numpy.where( flagsTemp == True ) )
-
-	score = 1.0 - (float(nFlag)/float(nData))
-
-	return score
-
-# ------------------------------------------------------------------------------
-
 # bpcal_score_RMS
 
 # Description:
@@ -1390,51 +1322,48 @@ def bpcal_score_flag( flags, chanRange ):
 # ---------------------
 # 2012 Aug 20 - Nick Elias, NRAO
 #               Initial version.
+# ------------------------------------------------------------------------------
+def bpcal_score_RMS(RMS, RMSMax):
+
+    # Calculate and return the RMS score for this iteration
+    if RMS <= RMSMax:
+        RMSTemp = RMS
+    else:
+        RMSTemp = RMSMax
+
+    if RMSTemp == 0.0:
+        score = 1.0
+    else:
+        try:
+            score = scipy.special.erf(RMSMax / RMSTemp / math.sqrt(2.0))
+        except FloatingPointError:
+            # work around scipy bug triggered with certain values, such as when
+            # SNR=37.5922006575. The bug is supposed to be fixed in scipy 0.12.0,
+            # so detect which version of scipy we're running under and try the
+            # operation again if this version is known to be affected.
+            #
+            # We can safely ignore the exception as it is only thrown when the
+            # error function return value is so close to -1 or 1 that the lack of
+            # precision makes no practical difference.
+            (_, minor_version, _) = string.split(scipy.version.short_version, '.')
+            if int(minor_version) < 12:
+                under_orig = scipy.geterr()['under']
+                try:
+                    scipy.seterr(under='warn')
+                    score = scipy.special.erf(RMSMax / RMSTemp / math.sqrt(2.0))
+                except FloatingPointError:
+                    msg = 'Error calling scipy.special.erf(%s/math.sqrt(2.0))' % (RMSMax / RMSTemp)
+                    raise FloatingPointError(msg)
+                finally:
+                    scipy.seterr(under=under_orig)
+            else:
+                msg = 'Error calling scipy.special.erf(%s/math.sqrt(2.0))' % (RMSMax / RMSTemp)
+                raise FloatingPointError(msg)
+
+    return score
+
 
 # ------------------------------------------------------------------------------
-
-def bpcal_score_RMS( RMS, RMSMax ):
-
-	# Calculate and return the RMS score for this iteration
-
-	if RMS <= RMSMax:
-		RMSTemp = RMS
-	else:
-		RMSTemp = RMSMax
-
-        if (RMSTemp == 0.0):
-            score = 1.0
-        else:
-            try:
-	        score = scipy.special.erf( RMSMax / RMSTemp / math.sqrt(2.0) )
-            except FloatingPointError as e:
-                # work around scipy bug triggered with certain values, such as when
-                # SNR=37.5922006575. The bug is supposed to be fixed in scipy 0.12.0,
-                # so detect which version of scipy we're running under and try the
-                # operation again if this version is known to be affected.
-                #
-                # We can safely ignore the exception as it is only thrown when the
-                # error function return value is so close to -1 or 1 that the lack of
-                # precision makes no practical difference.
-                (_, minor_version, _) = string.split(scipy.version.short_version, '.')
-                if int(minor_version) < 12:
-                        under_orig = scipy.geterr()['under']
-                        try:
-                                scipy.seterr(under='warn')
-                                score = scipy.special.erf( RMSMax / RMSTemp / math.sqrt(2.0) )
-                        except FloatingPointError as e:
-                                msg = 'Error calling scipy.special.erf(%s/math.sqrt(2.0))' % (RMSMax / RMSTemp)
-                                raise FloatingPointError(msg)
-                        finally:
-                                scipy.seterr(under=under_orig)
-                else:
-                        msg = 'Error calling scipy.special.erf(%s/math.sqrt(2.0))' % (RMSMax / RMSTemp)
-                        raise FloatingPointError(msg)
-
-	return score
-
-# ------------------------------------------------------------------------------
-
 # bpcal_score_SNR
 
 # Description:
@@ -1449,40 +1378,38 @@ def bpcal_score_RMS( RMS, RMSMax ):
 # ---------------------
 # 2013 Jan 22 - Dirk Muders, MPIfR
 #               Initial version.
+# ------------------------------------------------------------------------------
+def bpcal_score_SNR(SNR):
+    try:
+        score = scipy.special.erf(SNR / math.sqrt(2.0))
+    except FloatingPointError:
+        # work around scipy bug triggered with certain values, such as when
+        # SNR=37.5922006575. The bug is supposed to be fixed in scipy 0.12.0,
+        # so detect which version of scipy we're running under and try the
+        # operation again if this version is known to be affected.
+        #
+        # We can safely ignore the exception as it is only thrown when the
+        # error function return value is so close to -1 or 1 that the lack of
+        # precision makes no practical difference.
+        (_, minor_version, _) = string.split(scipy.version.short_version, '.')
+        if int(minor_version) < 12:
+            under_orig = scipy.geterr()['under']
+            try:
+                scipy.seterr(under='warn')
+                score = scipy.special.erf(SNR / math.sqrt(2.0))
+            except FloatingPointError:
+                msg = 'Error calling scipy.special.erf(%s/math.sqrt(2.0))' % SNR
+                raise FloatingPointError(msg)
+            finally:
+                scipy.seterr(under=under_orig)
+        else:
+            msg = 'Error calling scipy.special.erf(%s/math.sqrt(2.0))' % SNR
+            raise FloatingPointError(msg)
+
+    return score
+
 
 # ------------------------------------------------------------------------------
-
-def bpcal_score_SNR( SNR ):
-	try:
-		score = scipy.special.erf( SNR / math.sqrt(2.0) )
-	except FloatingPointError as e:
-		# work around scipy bug triggered with certain values, such as when
-		# SNR=37.5922006575. The bug is supposed to be fixed in scipy 0.12.0,
-		# so detect which version of scipy we're running under and try the
-		# operation again if this version is known to be affected.
-		#
-		# We can safely ignore the exception as it is only thrown when the
-		# error function return value is so close to -1 or 1 that the lack of
-		# precision makes no practical difference.
-		(_, minor_version, _) = string.split(scipy.version.short_version, '.')
-		if int(minor_version) < 12:
-			under_orig = scipy.geterr()['under']
-			try:
-				scipy.seterr(under='warn')
-				score = scipy.special.erf( SNR / math.sqrt(2.0) )
-			except FloatingPointError as e:
-				msg = 'Error calling scipy.special.erf(%s/math.sqrt(2.0))' % SNR
-				raise FloatingPointError(msg)
-			finally:
-				scipy.seterr(under=under_orig)				
-		else:
-			msg = 'Error calling scipy.special.erf(%s/math.sqrt(2.0))' % SNR
-			raise FloatingPointError(msg)
-
-	return score
-
-# ------------------------------------------------------------------------------
-
 # bpcal_score_flatness
 
 # Description:
@@ -1511,29 +1438,29 @@ def bpcal_score_SNR( SNR ):
 # 2013 Aug 05 - Dirk Muders, MPIfR
 #               Weight Wiener entropy with error function
 #               to create sharper fall-off.
-
-def bpcal_score_flatness( values ):
+# ------------------------------------------------------------------------------
+def bpcal_score_flatness(values):
 
     # Need to avoid zero mean
-    if (numpy.ma.mean(values) == 0.0):
-        if ((values == 0.0).all()):
+    if numpy.ma.mean(values) == 0.0:
+        if (values == 0.0).all():
             wEntropy = 1.0
         else:
             wEntropy = 1.0e10
     else:
         # Geometrical mean can not be calculated for vectors <= 0.0 for all
         # elements.
-        if ((values <= 0.0).all()):
+        if (values <= 0.0).all():
             wEntropy = 1.0e10
         else:
             wEntropy = scipy.stats.mstats.gmean(values)/numpy.ma.mean(values)
 
-    if (wEntropy == 1.0):
+    if wEntropy == 1.0:
         flatnessScore = 1.0
     else:
         try:
             flatnessScore = scipy.special.erf(0.001 / abs(1.0 - wEntropy) / math.sqrt(2.0))
-        except FloatingPointError as e:
+        except FloatingPointError:
             # work around scipy bug triggered with certain values, such as when
             # SNR=37.5922006575. The bug is supposed to be fixed in scipy 0.12.0,
             # so detect which version of scipy we're running under and try the
@@ -1548,7 +1475,7 @@ def bpcal_score_flatness( values ):
                 try:
                     scipy.seterr(under='warn')
                     flatnessScore = scipy.special.erf(0.001 / abs(1.0 - wEntropy) / math.sqrt(2.0))
-                except FloatingPointError as e:
+                except FloatingPointError:
                     msg = 'Error calling scipy.special.erf(%s/math.sqrt(2.0))' % (0.001 / abs(1.0 - wEntropy))
                     raise FloatingPointError(msg)
                 finally:
@@ -1562,9 +1489,6 @@ def bpcal_score_flatness( values ):
 
 # ------------------------------------------------------------------------------
 # TODO: Use usual MAD function from pipeline.
-
-import numpy.ma as ma
-
 def MAD(a, c=0.6745, axis=None):
     """
     Median Absolute Deviation along given axis of an array:
@@ -1573,14 +1497,13 @@ def MAD(a, c=0.6745, axis=None):
 
     c = 0.6745 is the constant to convert from MAD to std; it is used by
     default
-
     """
 
     # Avoid underflow exceptions
     under_orig = scipy.geterr()['under']
     scipy.seterr(under='warn')
 
-    a = ma.masked_where(a!=a, a)
+    a = ma.masked_where(a != a, a)
     if a.ndim == 1:
         d = ma.median(a)
         m = ma.median(ma.fabs(a - d) / c)
@@ -1588,7 +1511,7 @@ def MAD(a, c=0.6745, axis=None):
         d = ma.median(a, axis=axis)
         # I don't want the array to change so I have to copy it?
         if axis > 0:
-            aswp = ma.swapaxes(a,0,axis)
+            aswp = ma.swapaxes(a, 0, axis)
         else:
             aswp = a
         m = ma.median(ma.fabs(aswp - d) / c, axis=0)
@@ -1597,14 +1520,15 @@ def MAD(a, c=0.6745, axis=None):
 
     return m
 
+
 def nanmedian(arr, **kwargs):
     """
     Returns median ignoring NAN
     """
-    return ma.median( ma.masked_where(arr!=arr, arr), **kwargs )
+    return ma.median(ma.masked_where(arr != arr, arr), **kwargs)
+
 
 # ------------------------------------------------------------------------------
-
 # bpcal_score_derivative_deviation
 
 # Description:
@@ -1630,18 +1554,17 @@ def nanmedian(arr, **kwargs):
 # ---------------------
 # 2013 Aug 06 - Dirk Muders, MPIfR
 #               Initial version.
-
-def bpcal_score_derivative_deviation( values ):
+def bpcal_score_derivative_deviation(values):
 
     # Avoid scoring numerical inaccuracies for the reference antenna phase
-    if (numpy.ma.sum(numpy.abs(values)) < 1e-4):
+    if numpy.ma.sum(numpy.abs(values)) < 1e-4:
         ddScore = 1.0
     else:
         derivative = values[:-1]-values[1:]
         derivativeMAD = MAD(derivative)
         numOutliers = len(numpy.ma.where(derivative > 5.0 * derivativeMAD)[0])
 
-        if (numOutliers == 0):
+        if numOutliers == 0:
             ddScore = 1.0
         else:
             outliersFraction = float(numOutliers) / float(len(values))
@@ -1649,27 +1572,26 @@ def bpcal_score_derivative_deviation( values ):
             fractionRatio = 3.0 * toleratedFraction / outliersFraction
             try:
                 ddScore = scipy.special.erf(fractionRatio / math.sqrt(2.0))
-            except FloatingPointError as e:
+            except FloatingPointError:
                 (_, minor_version, _) = string.split(scipy.version.short_version, '.')
                 if int(minor_version) < 12:
                     under_orig = scipy.geterr()['under']
                     try:
                         scipy.seterr(under='warn')
                         ddScore = scipy.special.erf(fractionRatio / math.sqrt(2.0))
-                    except FloatingPointError as e:
-                        msg = 'Error calling scipy.special.erf(%s/math.sqrt(2.0))' % (fractionRatio)
+                    except FloatingPointError:
+                        msg = 'Error calling scipy.special.erf(%s/math.sqrt(2.0))' % fractionRatio
                         raise FloatingPointError(msg)
                     finally:
                         scipy.seterr(under=under_orig)
                 else:
-                    msg = 'Error calling scipy.special.erf(%s/math.sqrt(2.0))' % (fractionRatio)
+                    msg = 'Error calling scipy.special.erf(%s/math.sqrt(2.0))' % fractionRatio
                     raise FloatingPointError(msg)
 
     return ddScore
 
 
 # ------------------------------------------------------------------------------
-
 # bpcal_score_delay
 
 # Description:
@@ -1710,37 +1632,38 @@ def bpcal_score_derivative_deviation( values ):
 # ---------------------
 # 2012 Aug 20 - Nick Elias, NRAO
 #               Initial version.
+# ------------------------------------------------------------------------------
+def bpcal_score_delay(delay, delayErr, freqs, phases, flags, chanRange):
+
+    # Calculate and return the delay score for this iteration
+    if delay <= 3.0*delayErr:
+        return 1.0
+
+    chanMiddle = int(0.5*(chanRange[0]+chanRange[1]))
+
+    if chanRange[1]-chanRange[0] < 2:
+        return 0.0
+    if chanMiddle <= chanRange[0] or chanMiddle >= chanRange[1]:
+        return 0.0
+    if flags[chanMiddle] or flags[chanMiddle+1]:
+        return 0.0
+
+    dFreq = abs(freqs[chanMiddle+1] - freqs[chanMiddle])
+    dPhase = abs(phases[chanMiddle+1] - phases[chanMiddle])
+
+    delayMax = dPhase / ((2.0*math.pi) * dFreq)
+
+    if delay <= delayMax:
+        delayTemp = delay
+    else:
+        delayTemp = delayMax
+
+    score = 1.0 - (delayTemp/delayMax)
+
+    return score
+
 
 # ------------------------------------------------------------------------------
-
-def bpcal_score_delay( delay, delayErr, freqs, phases, flags, chanRange ):
-
-	# Calculate and return the delay score for this iteration
-
-	if delay <= 3.0*delayErr: return 1.0
-
-	chanMiddle = int( 0.5*(chanRange[0]+chanRange[1]) )
-
-	if chanRange[1]-chanRange[0] < 2: return 0.0
-	if chanMiddle <= chanRange[0] or chanMiddle >= chanRange[1]: return 0.0
-	if flags[chanMiddle] or flags[chanMiddle+1]: return 0.0
-
-	dFreq = abs( freqs[chanMiddle+1]-freqs[chanMiddle] )
-	dPhase = abs( phases[chanMiddle+1]-phases[chanMiddle] )
-
-	delayMax = dPhase / ( (2.0*math.pi) * dFreq )
-
-	if delay <= delayMax:
-		delayTemp = delay
-	else:
-		delayTemp = delayMax
-
-	score = 1.0 - (delayTemp/delayMax)
-
-	return score
-
-# ------------------------------------------------------------------------------
-
 # bpcal_plot
 
 # Directory:
@@ -1789,86 +1712,75 @@ def bpcal_score_delay( delay, delayErr, freqs, phases, flags, chanRange ):
 # 2012 Jun 20 - Nick Elias, NRAO
 #               Added calls to bpcal_plot_hist() for histograms of number of
 #               flagged data, RMSes, and absolute value of delays.
+# ------------------------------------------------------------------------------
+def bpcal_plot(in_table, out_dir, bpcal_stats):
+
+    # Initialize the plot names dictionary
+    bpcal_plots = dict()
+
+    # Create all amplitude plots for all keys for each spectral window.  The
+    # keys are antenna1, antenna2, and feed (hopefully, field and time are
+    # have only one value).
+    amp = bpcal_stats['AMPLITUDE_FIT']
+    spw = amp.keys()
+
+    bpcal_plots['AMPLITUDE_PLOT'] = dict()
+
+    for s in spw:
+
+        keys = amp[s].keys()
+        keys.remove('spw')
+        chanRange = amp[s]['chanRange']; keys.remove('chanRange')
+
+        bpcal_plots['AMPLITUDE_PLOT'][s] = dict()
+
+        if len(keys) == 0:
+            continue
+
+        for k in keys:
+            bpcal_plots['AMPLITUDE_PLOT'][s][k] = bpcal_plot1(
+                in_table, out_dir, amp[s][k], s, chanRange, k, 'AMPLITUDE')
+
+    # Create the amplitude histograms for the number of flagged data and the
+    # absolute value of the delay
+    bpcal_plot_hist(in_table, out_dir, amp, ap='AMPLITUDE', hist='FLAG')
+    bpcal_plot_hist(in_table, out_dir, amp, ap='AMPLITUDE', hist='RMS')
+
+    # Create all phase plots for all keys for each spectral window.  The
+    # keys are antenna1, antenna2, and feed (hopefully, field and time are
+    # have only one value).
+    phase = bpcal_stats['PHASE_FIT']
+    spw = phase.keys()
+
+    bpcal_plots['PHASE_PLOT'] = dict()
+
+    for s in spw:
+        keys = phase[s].keys()
+        keys.remove('spw')
+        chanRange = phase[s]['chanRange']
+
+        keys.remove('chanRange')
+
+        bpcal_plots['PHASE_PLOT'][s] = dict()
+
+        if len(keys) == 0:
+            continue
+
+        for k in keys:
+            bpcal_plots['PHASE_PLOT'][s][k] = bpcal_plot1(
+                in_table, out_dir, phase[s][k], s, chanRange, k, 'PHASE')
+
+    # Create the phase histograms for the number of flagged data, the
+    # RMS, and the absolute value of the delay
+    bpcal_plot_hist(in_table, out_dir, amp, ap='PHASE', hist='FLAG')
+    bpcal_plot_hist(in_table, out_dir, amp, ap='PHASE', hist='RMS')
+    bpcal_plot_hist(in_table, out_dir, amp, ap='PHASE', hist='DELAY')
+
+    # Return the plot names dictionary
+    return bpcal_plots
+
 
 # ------------------------------------------------------------------------------
-
-def bpcal_plot( in_table, out_dir, bpcal_stats ):
-
-	# Initialize the plot names dictionary
-
-	bpcal_plots = dict()
-
-
-	# Create all amplitude plots for all keys for each spectral window.  The
-	# keys are antenna1, antenna2, and feed (hopefully, field and time are
-	# have only one value).
-
-	amp = bpcal_stats['AMPLITUDE_FIT']
-	spw = amp.keys()
-
-	bpcal_plots['AMPLITUDE_PLOT'] = dict()
-
-	for s in spw:
-
-		keys = amp[s].keys()
-		keys.remove( 'spw' )
-		chanRange = amp[s]['chanRange']; keys.remove( 'chanRange' )
-
-		bpcal_plots['AMPLITUDE_PLOT'][s] = dict()
-
-		if len(keys) == 0: continue
-
-		for k in keys:
-			bpcal_plots['AMPLITUDE_PLOT'][s][k] = bpcal_plot1(
-			    in_table, out_dir, amp[s][k], s, chanRange, k,
-			    'AMPLITUDE' )
-
-
-	# Create the amplitude histograms for the number of flagged data and the
-	# absolute value of the delay
-
-	bpcal_plot_hist( in_table, out_dir, amp, ap='AMPLITUDE', hist='FLAG' )
-	bpcal_plot_hist( in_table, out_dir, amp, ap='AMPLITUDE', hist='RMS' )
-
-
-	# Create all phase plots for all keys for each spectral window.  The
-	# keys are antenna1, antenna2, and feed (hopefully, field and time are
-	# have only one value).
-
-	phase = bpcal_stats['PHASE_FIT']
-	spw = phase.keys()
-
-	bpcal_plots['PHASE_PLOT'] = dict()
-
-	for s in spw:
-
-		keys = phase[s].keys()
-		keys.remove( 'spw' )
-		chanRange = phase[s]['chanRange']; keys.remove( 'chanRange' )
-
-		bpcal_plots['PHASE_PLOT'][s] = dict()
-
-		if len(keys) == 0: continue
-
-		for k in keys:
-			bpcal_plots['PHASE_PLOT'][s][k] = bpcal_plot1( in_table,
-			    out_dir, phase[s][k], s, chanRange, k, 'PHASE' )
-
-
-	# Create the phase histograms for the number of flagged data, the
-	# RMS, and the absolute value of the delay
-
-	bpcal_plot_hist( in_table, out_dir, amp, ap='PHASE', hist='FLAG' )
-	bpcal_plot_hist( in_table, out_dir, amp, ap='PHASE', hist='RMS' )
-	bpcal_plot_hist( in_table, out_dir, amp, ap='PHASE', hist='DELAY' )
-
-
-	# Return the plot names dictionary
-
-	return bpcal_plots
-
-# ------------------------------------------------------------------------------
-
 # bpcal_plot1
 
 # Description:
@@ -1907,130 +1819,105 @@ def bpcal_plot( in_table, out_dir, bpcal_stats ):
 # ---------------------
 # 2012 Jun 20 - Nick Elias, NRAO
 #               Initial version.
+# ------------------------------------------------------------------------------
+def bpcal_plot1(in_table, out_dir, stats_dict, spw, chanRange, iteration, ap):
+
+    # Determine and check amplitude 'A' or phase 'P'
+    apTemp = ap[0].upper()
+
+    if apTemp != 'A' and apTemp != 'P':
+        return False
+
+    # Get and check the frequencies
+    frequency = stats_dict['frequency']
+
+    if len(frequency) == 0:
+        return False
+
+    # Get the bandpass calibration values and their errors
+    value = stats_dict['value']
+    valueErr = stats_dict['valueErr']
+
+    # Plot the bandpass calibration values and their errors with green
+    # symbols.  Overwrite flagged data with red symbols.
+    pl.errorbar(frequency, value, yerr=valueErr, fmt='go', label='good')
+
+    flag = stats_dict['flag']
+    index = numpy.ma.where(flag == True)[0]
+    if len(index) > 0:
+        pl.errorbar(frequency[index], value[index], yerr=valueErr[index], fmt='ro', label='flagged')
+
+    # Add the title to the plot, which contains the spectral window, feed,
+    # antenna1, antenna2, and time
+
+    feed = stats_dict['feed']
+    ant1 = str(stats_dict['antenna1'])
+    ant2 = str(stats_dict['antenna2'])
+    time = str(stats_dict['time'])
+
+    title = 'SPW = ' + spw + ':'
+    title += str(chanRange[0]) + '~' + str(chanRange[1]) + ', '
+    title += 'Feed = ' + feed + ', '
+    title += 'Baseline = ' + ant1 + '&' + ant2 + ', '
+    title += 'Time = ' + time
+    pl.title(title)
+
+    # Add the x and y labels
+    pl.xlabel('Frequency (GHz)')
+
+    if apTemp == 'A':
+        pl.ylabel('Normalized Bandpass Amplitude')
+    else:
+        pl.ylabel('Unwrapped Bandpass Phase')
+
+    # If there is a valid model, add it as a line
+    if stats_dict['validFit']:
+        model = stats_dict['model']
+        pl.plot(frequency, model, 'b-', label='model')
+
+    # Add the legen for all points plotted
+    pl.legend()
+
+    # Add annotations (RMS for amplitude and phase plots, delay for phase
+    # plots)
+    RMS = math.sqrt(stats_dict['resVar'])
+    RMSS = 'Fit RMS = %.3e' % RMS
+    pl.annotate(RMSS, xycoords='figure fraction', xy=(0.15, 0.125))
+
+    if apTemp == 'P' and stats_dict['validFit']:
+        delay = stats_dict['pars'][1] / (2.0*math.pi)
+        delayErr = math.sqrt(stats_dict['vars'][1]) / (2.0*math.pi)
+        delayS = 'Delay = %.3e' % delay
+        delayS += ' +/- %.3e ns' % delayErr
+        pl.annotate(delayS, xycoords='figure fraction', xy=(0.15, 0.15))
+
+    # Create the bandpass plot name based on amp/phase, spectral window
+    # number, feed, antenna1, and antenna2
+    noExt = os.path.splitext(in_table)[0]
+    out_plot_root = os.path.basename(noExt)
+
+    if apTemp == 'A':
+        ext = '.amp'
+    else:
+        ext = '.phase'
+
+    out_plot = out_dir + '/' + out_plot_root
+    out_plot += '.bpcal.stats' + ext
+    out_plot += '.' + spw
+    out_plot += '.' + feed
+    out_plot += '.' + ant1
+    out_plot += '.' + ant2
+    out_plot += '.png'
+
+    # Save the plot to disk and clear
+    pl.savefig(out_plot)
+    pl.clf()
+
+    # Return the bandpass plot name
+    return out_plot
+
 
 # ------------------------------------------------------------------------------
-
-def bpcal_plot1( in_table, out_dir, stats_dict, spw, chanRange, iteration, ap ):
-
-	# Determine and check amplitude 'A' or phase 'P'
-
-	apTemp = ap[0].upper()
-
-	if apTemp != 'A' and apTemp != 'P': return False
-
-
-	# Get and check the frequencies
-
-	frequency = stats_dict['frequency']
-
-	if len(frequency) == 0: return False
-
-
-	# Get the bandpass calibration values and their errors
-
-	value = stats_dict['value']
-	valueErr = stats_dict['valueErr']
-
-
-	# Plot the bandpass calibration values and their errors with green
-	# symbols.  Overwrite flagged data with red symbols.
-
-	pl.errorbar( frequency, value, yerr=valueErr, fmt='go', label='good' )
-
-	flag = stats_dict['flag']
-	index = numpy.ma.where( flag==True )[0]
-	if len(index) > 0:
-		pl.errorbar( frequency[index], value[index],
-		    yerr=valueErr[index], fmt='ro', label='flagged' )
-
-
-	# Add the title to the plot, which contains the spectral window, feed,
-	# antenna1, antenna2, and time
-
-	feed = stats_dict['feed']
-	ant1 = str( stats_dict['antenna1'] )
-	ant2 = str( stats_dict['antenna2'] )
-	time = str( stats_dict['time'] )
-
-	title = 'SPW = ' + spw + ':'
-	title += str(chanRange[0]) + '~' + str(chanRange[1]) + ', '
-	title += 'Feed = ' + feed + ', '
-	title += 'Baseline = ' + ant1 + '&' + ant2 + ', '
-	title += 'Time = ' + time
-	pl.title( title )
-
-
-	# Add the x and y labels
-
-	pl.xlabel( 'Frequency (GHz)' )
-
-	if apTemp == 'A':
-		pl.ylabel( 'Normalized Bandpass Amplitude' )
-	else:
-		pl.ylabel( 'Unwrapped Bandpass Phase' )
-
-
-	# If there is a valid model, add it as a line
-
-	if stats_dict['validFit']:
-		model = stats_dict['model']
-		pl.plot( frequency, model, 'b-', label='model' )
-
-
-	# Add the legen for all points plotted
-
-	pl.legend()
-
-
-	# Add annotations (RMS for amplitude and phase plots, delay for phase
-	# plots)
-
-	RMS = math.sqrt( stats_dict['resVar'] )
-	RMSS = 'Fit RMS = %.3e' % RMS
-	pl.annotate( RMSS, xycoords='figure fraction', xy=(0.15,0.125) )
-
-	if apTemp == 'P' and stats_dict['validFit']:
-		delay = stats_dict['pars'][1] / (2.0*math.pi)
-		delayErr = math.sqrt(stats_dict['vars'][1]) / (2.0*math.pi)
-		delayS = 'Delay = %.3e' % delay
-		delayS += ' +/- %.3e ns' % delayErr
-		pl.annotate( delayS, xycoords='figure fraction',
-		    xy=(0.15,0.15) )
-
-
-	# Create the bandpass plot name based on amp/phase, spectral window
-	# number, feed, antenna1, and antenna2
-
-	noExt = os.path.splitext( in_table )[0]
-	out_plot_root = os.path.basename( noExt )
-
-	if apTemp == 'A':
-		ext = '.amp'
-	else:
-		ext = '.phase'
-
-	out_plot = out_dir + '/' + out_plot_root
-	out_plot += '.bpcal.stats' + ext
-	out_plot += '.' + spw
-	out_plot += '.' + feed
-	out_plot += '.' + ant1
-	out_plot += '.' + ant2
-	out_plot += '.png'
-
-
-	# Save the plot to disk and clear
-
-	pl.savefig( out_plot )
-
-	pl.clf()
-
-
-	# Return the bandpass plot name
-
-	return out_plot
-
-# ------------------------------------------------------------------------------
-
 # bpcal_plot_hist
 
 # Description:
@@ -2048,8 +1935,6 @@ def bpcal_plot1( in_table, out_dir, stats_dict, spw, chanRange, iteration, ap ):
 # ---------------------
 # 2012 Jun 22 - Nick Elias, NRAO
 #               Initial stub version created.
-
 # ------------------------------------------------------------------------------
-
-def bpcal_plot_hist( in_table, out_dir, stats, ap='AMPLITUDE', hist='FLAG' ):
-	return None
+def bpcal_plot_hist(in_table, out_dir, stats, ap='AMPLITUDE', hist='FLAG'):
+    return None
