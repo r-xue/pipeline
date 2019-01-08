@@ -65,7 +65,7 @@ def initcli():
             LOG.debug('Import error: {!s}'.format(e))
             LOG.info('No tasks found for package: {!s}'.format(package))
         else:
-            execfile(path_to_cli, my_globals)
+            exec(compile(open(path_to_cli).read(), path_to_cli, 'exec'), my_globals)
             LOG.info('Loaded CASA tasks from package: {!s}'.format(package))
 
 

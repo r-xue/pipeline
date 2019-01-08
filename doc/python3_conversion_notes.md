@@ -23,13 +23,13 @@ nonzero, operator, paren, renames, sys_exc, throw, xreadlines
 Rules that have been applied (guard against regression):
 
 ```
-basestring, except, has_key, ne, print, raise, reduce, repr, tuple_params
+basestring, except, execfile, filter, has_key, ne, print, raise, reduce, repr, tuple_params
 ```
 
 Rules that can be updated on trunk during C7 dev:
 
 ```
-execfile, idioms, import, isinstance, map, set_literal (optional),
+idioms, import, map, set_literal (optional),
 types (after idioms), ws_comma (optional), zip
 ```
 
