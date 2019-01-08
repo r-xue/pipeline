@@ -853,8 +853,9 @@ def _read_polarization_table(vis):
             corr_types.append(vcorr_types['r%s' % (i + 1)])
             corr_products.append(vcorr_products['r%s' % (i + 1)])
 
-        rows = zip(rowids, num_corrs, corr_types, corr_products, flag_rows)
+        rows = list(zip(rowids, num_corrs, corr_types, corr_products, flag_rows))
         return rows
+
 
 def get_restfrequency(vis, spwid, source_id):
     source_table = os.path.join(vis, 'SOURCE')
@@ -871,6 +872,7 @@ def get_restfrequency(vis, spwid, source_id):
         finally:
             tsel.close()
             
+
 class RGAccumulator(object):
     def __init__(self):
         self.field = []
@@ -932,8 +934,7 @@ class RGAccumulator(object):
             _g = g.decompress()
             yield f, a, s, _g, c
             del _g
-        
-    
+
     def get_process_list(self, withpol=False):
         field_id_list = self.get_field_id_list()
         antenna_id_list = self.get_antenna_id_list()
@@ -948,5 +949,3 @@ class RGAccumulator(object):
             return field_id_list, antenna_id_list, spw_id_list, pol_ids_list
         else:
             return field_id_list, antenna_id_list, spw_id_list
-
-

@@ -23,14 +23,14 @@ nonzero, operator, paren, renames, sys_exc, throw, xreadlines
 Rules that have been applied (guard against regression):
 
 ```
-basestring, except, execfile, filter, has_key, ne, print, raise, reduce, repr, tuple_params
+basestring, except, execfile, filter, has_key, ne, print, raise, reduce, repr, tuple_params, zip
 ```
 
 Rules that can be updated on trunk during C7 dev:
 
 ```
 idioms, import, map, set_literal (optional),
-types (after idioms), ws_comma (optional), zip
+types (after idioms), ws_comma (optional)
 ```
 
 Rules that require updates on a Py3-only branch during C8 dev:

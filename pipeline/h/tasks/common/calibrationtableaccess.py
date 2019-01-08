@@ -106,4 +106,4 @@ class CalibrationTableDataFiller(object):
                 else:
                     coldata.append(table.getcol(colname))
 
-            return zip(*coldata)
+            return list(zip(*coldata))

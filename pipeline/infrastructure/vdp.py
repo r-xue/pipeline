@@ -625,7 +625,7 @@ class InputsContainer(object):
         if not isinstance(val, (list, tuple)):
             val = [val] * len(self._active_instances)
 
-        return zip(self._active_instances, val)
+        return list(zip(self._active_instances, val))
 
     def _get_scope(self):
         scope = [getattr(i, self._scope_attr) for i in self._active_instances]

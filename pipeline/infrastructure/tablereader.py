@@ -131,8 +131,7 @@ class MeasurementSetReader(object):
                     epoch_midpoints = [mt.epoch(time_ref, qt.quantity(o, time_unit))
                                        for o in unique_midpoints]
                     
-                    scan_times[dd.spw.id] = zip(epoch_midpoints,
-                                                itertools.repeat(exposures[dd.spw.id]))
+                    scan_times[dd.spw.id] = list(zip(epoch_midpoints, itertools.repeat(exposures[dd.spw.id])))
 
                 LOG.trace('Creating domain object for scan %s', scan_id)
                 scan = domain.Scan(id=scan_id, states=states, fields=fields,
@@ -550,7 +549,7 @@ class DataDescriptionTable(object):
         spw_ids = msmd.spwfordatadesc()
         pol_ids = msmd.polidfordatadesc()
 
-        return zip(dd_ids, spw_ids, pol_ids)
+        return list(zip(dd_ids, spw_ids, pol_ids))
 
 
 class SBSummaryTable(object):
@@ -714,9 +713,8 @@ class PolarizationTable(object):
         corr_types = [msmd.corrtypesforpol(i) for i in pol_ids]
         corr_products = [msmd.corrprodsforpol(i) for i in pol_ids]
 
-        rows = list(zip(pol_ids, num_corrs, corr_types, corr_products))
-
-        return [PolarizationTable._create_pol_description(*row) for row in rows]
+        return [PolarizationTable._create_pol_description(*row)
+                for row in zip(pol_ids, num_corrs, corr_types, corr_products)]
 
     @staticmethod
     def _create_pol_description(id, num_corr, corr_type, corr_product):

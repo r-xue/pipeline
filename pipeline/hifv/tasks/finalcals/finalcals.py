@@ -700,8 +700,8 @@ class Finalcals(basetask.StandardTaskTemplate):
 
                 # Sort arrays based on frequency
                 lfreqs_orig = lfreqs
-                lfreqs, lfds = zip(*sorted(zip(lfreqs, lfds)))
-                lfreqs_orig, lerrs = zip(*sorted(zip(lfreqs_orig, lerrs)))
+                lfreqs, lfds = list(zip(*sorted(zip(lfreqs, lfds))))
+                lfreqs_orig, lerrs = list(zip(*sorted(zip(lfreqs_orig, lerrs))))
 
                 for ii in range(len(freqs)):
                     # SS = fluxdensity * (10.0**lfreqs[ii]/reffreq/1.0e9)**spix

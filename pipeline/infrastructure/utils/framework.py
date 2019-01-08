@@ -263,7 +263,7 @@ def merge_jobs(jobs, task, merge=None, ignore=None):
         # add this to the record of jobs we merged
         component_jobs[job_hash].append(job)
 
-    return zip(merged_jobs.values(), component_jobs.values())
+    return list(zip(merged_jobs.values(), component_jobs.values()))
 
 
 def flatten_dict(d, join=operator.add, lift=lambda x: (x,)):

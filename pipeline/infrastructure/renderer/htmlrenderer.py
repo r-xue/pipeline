@@ -196,6 +196,7 @@ def get_plot_dir(context, stage_number):
     plots_dir = os.path.join(stage_dir, 'plots')
     return plots_dir
 
+
 def is_singledish_ms(context):
     # importdata results
     result0 = context.results[0]
@@ -210,6 +211,7 @@ def is_singledish_ms(context):
     
     result_repr = str(result0)
     return result_repr.find('SDImportDataResults') != -1
+
 
 def get_casa_version():
     casa_version = casatools.utils.version()
@@ -295,8 +297,7 @@ class T1_1Renderer(RendererBase):
     """
     output_file = 't1-1.html'
     template = 't1-1.mako'
-    
-    
+
     # named tuple holding values for each row in the main summary table
     TableRow = collections.namedtuple(
                 'Tablerow', 
@@ -347,7 +348,7 @@ class T1_1Renderer(RendererBase):
         else:
             pipeline_doclink = None
 
-        #Observation Summary (formerly the T1-2 page)
+        # Observation Summary (formerly the T1-2 page)
         ms_summary_rows = []
         for ms in get_mses_by_time(context):
             link = 'sidebar_%s' % re.sub('[^a-zA-Z0-9]', '_', ms.basename)
@@ -1471,8 +1472,7 @@ class T2_4MDetailsDefaultRenderer(object):
             return None
 
 
-
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 
 class T2_4MDetailsContainerRenderer(RendererBase):
     output_file = 't2-4m_details-container.html'
@@ -1740,9 +1740,8 @@ def group_into_measurement_sets(context, task_results):
     times = [utils.get_epoch_as_datetime(ms.start_time) for ms in mses]
 
     # sort MSes within session by execution time
-    decorated = zip(times, ms_names, task_results)
-    decorated.sort()
-    
+    decorated = sorted(zip(times, ms_names, task_results))
+
     d = collections.OrderedDict()
     for (_, name, task) in decorated:
         d[name] = wrap_in_resultslist(task)
@@ -2078,5 +2077,3 @@ def compute_az_el_for_ms(ms, observatory, func):
             el.append(func([el0, el1]))
 
     return func(az), func(el)
-
-

@@ -975,7 +975,7 @@ class Correctedampflag(basetask.StandardTaskTemplate):
                 # Flag any ultra high outliers for corresponding baseline/timestamp.
                 if len(id_ultrahighsig) > 0:
                     bad_timestamps = time_sel[id_ultrahighsig]
-                    bad_bls = zip(ant1_sel[id_ultrahighsig], ant2_sel[id_ultrahighsig])
+                    bad_bls = list(zip(ant1_sel[id_ultrahighsig], ant2_sel[id_ultrahighsig]))
                     newflags.extend(
                         self._create_flags_for_ultrahigh_baselines_timestamps(
                             ms, spwid, intent, icorr, field, bad_timestamps, bad_bls, antenna_id_to_name))
@@ -1023,7 +1023,7 @@ class Correctedampflag(basetask.StandardTaskTemplate):
                 # timestamp.
                 outlier_ant1 = ant1[id_flagsig]
                 outlier_ant2 = ant2[id_flagsig]
-                outlier_bl = zip(outlier_ant1, outlier_ant2)
+                outlier_bl = list(zip(outlier_ant1, outlier_ant2))
 
                 # Compute for each baseline how many outlier timestamps
                 # it is a part of. This creates a dictionary with
@@ -1035,7 +1035,7 @@ class Correctedampflag(basetask.StandardTaskTemplate):
                 # it is a part of. This creates a dictionary with
                 # baselines as keys, and number of timestamps
                 # as values.
-                baselines = zip(ant1, ant2)
+                baselines = list(zip(ant1, ant2))
                 bl_counts = collections.Counter(baselines)
 
                 # Compute final threshold for maximum fraction of "outlier

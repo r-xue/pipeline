@@ -121,4 +121,4 @@ def flagged_intervals(vec):
     if vec[-1] != 0:
         edge_vec.append([len(vec)])
     edges = np.concatenate(edge_vec)
-    return zip(edges[::2], edges[1::2] - 1)
+    return list(zip(edges[::2], edges[1::2] - 1))

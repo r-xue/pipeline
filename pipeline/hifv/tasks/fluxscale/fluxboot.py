@@ -448,8 +448,8 @@ class Fluxboot(basetask.StandardTaskTemplate):
                 LOG.info("Frequency, data, error, and fitted data:")
                 # Sort arrays based on frequency
                 lfreqs_orig = lfreqs
-                lfreqs, lfds = zip(*sorted(zip(lfreqs, lfds)))
-                lfreqs_orig, lerrs = zip(*sorted(zip(lfreqs_orig, lerrs)))
+                lfreqs, lfds = list(zip(*sorted(zip(lfreqs, lfds))))
+                lfreqs_orig, lerrs = list(zip(*sorted(zip(lfreqs_orig, lerrs))))
 
                 for ii in range(len(lfreqs)):
                     SS = fluxdensity * (10.0**lfreqs[ii]/reffreq/1.0e9)**spix

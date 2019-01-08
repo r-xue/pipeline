@@ -56,7 +56,7 @@ def merge_td_columns(rows, num_to_merge=None, vertical_align=False):
     Output:
     A list of strings, one string per row, containing TD elements.
     """
-    transposed = zip(*rows)
+    transposed = list(zip(*rows))
     if num_to_merge is None:
         num_to_merge = len(transposed)
     valign = ' style="vertical-align:middle;"' if vertical_align else ''
@@ -87,7 +87,7 @@ def merge_td_columns(rows, num_to_merge=None, vertical_align=False):
 
         new_cols.append(merged)
 
-    return zip(*new_cols)
+    return list(zip(*new_cols))
 
 
 def get_vis_from_plots(plots):

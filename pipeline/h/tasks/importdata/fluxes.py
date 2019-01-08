@@ -130,8 +130,6 @@ def get_measurement(ms, spw, frequency_text, flux_text):
     # 4-tuples
     row_frequencies = to_hertz(frequency_text)
     row_iquvs = to_jansky(flux_text)
-    # zip to give a list of (frequency, [I,Q,U,V]) tuples
-    zipped = zip(row_frequencies, row_iquvs)
 
     spw = ms.get_spectral_window(spw)
 
@@ -140,7 +138,7 @@ def get_measurement(ms, spw, frequency_text, flux_text):
 
     # first, sort the measurements by distance to spw centre
     # frequency, annotating each tuple with the delta frequency
-    by_delta = sorted([(abs(spw.centre_frequency - f), f, iquv) for f, iquv in zipped])
+    by_delta = sorted([(abs(spw.centre_frequency - f), f, iquv) for f, iquv in zip(row_frequencies, row_iquvs)])
 
     # identify all measurements equally as close as this provisionally
     # 'closest' measurement
