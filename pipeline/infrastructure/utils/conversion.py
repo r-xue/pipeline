@@ -77,7 +77,7 @@ def flatten(l):
     Flatten a list of lists into a single list
     """
     for el in l:
-        if isinstance(el, collections.Iterable) and not isinstance(el, (basestring, pipelineqa.QAScore)):
+        if isinstance(el, collections.Iterable) and not isinstance(el, (str, unicode, pipelineqa.QAScore)):
             for sub in flatten(el):
                 yield sub
         else:
