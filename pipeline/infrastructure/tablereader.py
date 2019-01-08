@@ -102,7 +102,7 @@ class MeasurementSetReader(object):
                 exposures = {spw_id: msmd.exposuretime(scan=scan_id, spwid=spw_id)
                              for spw_id in spwsforscans[str(scan_id)]}
                 
-                scan_mask = (scan_number_col==scan_id)                
+                scan_mask = (scan_number_col == scan_id)
 
                 # get the antennas used for this scan 
                 LOG.trace('Calculating antennas used for scan %s', scan_id)
@@ -124,7 +124,7 @@ class MeasurementSetReader(object):
                 scan_times = {}  
                 LOG.trace('Processing scan times for scan %s', scan_id)
                 for dd in data_descriptions:
-                    dd_mask = (scan_number_col==scan_id) & (data_desc_id_col==dd.id)
+                    dd_mask = (scan_number_col == scan_id) & (data_desc_id_col == dd.id)
 
                     raw_midpoints = list(time_col[dd_mask])
                     unique_midpoints = set(raw_midpoints)
@@ -136,8 +136,8 @@ class MeasurementSetReader(object):
 
                 LOG.trace('Creating domain object for scan %s', scan_id)
                 scan = domain.Scan(id=scan_id, states=states, fields=fields,
-                            data_descriptions=data_descriptions, antennas=antennas,
-                            scan_times=scan_times, intents=intents)
+                                   data_descriptions=data_descriptions, antennas=antennas,
+                                   scan_times=scan_times, intents=intents)
                 scans.append(scan)
 
                 LOG.trace('{0}'.format(scan))
@@ -159,8 +159,7 @@ class MeasurementSetReader(object):
                 spw.band = 'ALMA Band %s' % band_num
                 continue
             
-            spw.band = BandDescriber.get_description(spw.ref_frequency, 
-                    observatory=ms.antenna_array.name)
+            spw.band = BandDescriber.get_description(spw.ref_frequency, observatory=ms.antenna_array.name)
             
             # Used EVLA band name from spw instead of frequency range
             observatory = string.upper(ms.antenna_array.name)
@@ -175,22 +174,21 @@ class MeasurementSetReader(object):
                     freqHz = float(spw.ref_frequency.value)
                     EVLA_band = find_EVLA_band(freqHz)
                 
-                EVLA_band_dict = {'4' : '4m (4)',
-                                  'P' : '90cm (P)',
-                                  'L' : '20cm (L)',
-                                  'S' : '13cm (S)',
-                                  'C' : '6cm (C)',
-                                  'X' : '3cm (X)',
-                                  'U' : '2cm (Ku)',
-                                  'K' : '1.3cm (K)',
-                                  'A' : '1cm (Ka)',
-                                  'Q':  '0.7cm (Q)'}
+                EVLA_band_dict = {'4': '4m (4)',
+                                  'P': '90cm (P)',
+                                  'L': '20cm (L)',
+                                  'S': '13cm (S)',
+                                  'C': '6cm (C)',
+                                  'X': '3cm (X)',
+                                  'U': '2cm (Ku)',
+                                  'K': '1.3cm (K)',
+                                  'A': '1cm (Ka)',
+                                  'Q': '0.7cm (Q)'}
                 
                 spw.band = EVLA_band_dict[EVLA_band]
        
-            #LOG.info('************************(2) '+spw.band+'********************')
-            
-       
+            # LOG.info('************************(2) '+spw.band+'********************')
+
     @staticmethod
     def link_intents_to_spws(msmd, ms):
         # we can't use msmd.intentsforspw directly as we may have a modified
@@ -243,8 +241,7 @@ class MeasurementSetReader(object):
             # it is necessary to distinguish which intents belong to
             # each field
             obs_modes_for_field = set(msmd.intentsforfield(field.id))
-            states_for_field = [s for s in states \
-                if not obs_modes_for_field.isdisjoint(s.obs_mode.split(','))]
+            states_for_field = [s for s in states if not obs_modes_for_field.isdisjoint(s.obs_mode.split(','))]
 
             field.states.update(states_for_field)
             for state in states_for_field:
@@ -295,10 +292,12 @@ class MeasurementSetReader(object):
             if 'ALMA' in msmd.observatorynames():
                 sbinfo = SBSummaryTable.get_sbsummary_info(ms, msmd.observatorynames())
                 if sbinfo[0] is None:
-                    LOG.warn('Unable to identify representative target for %s. Will try to fall back to existing science target sources in the imaging tasks.' % (ms.basename))
+                    LOG.warn('Unable to identify representative target for %s. Will try to fall back to existing '
+                             'science target sources in the imaging tasks.' % ms.basename)
                 else:
                     if sbinfo[0] == 'none':
-                        LOG.warn('Representative target for %s is set to "none". Will try to fall back to existing science target sources or calibrators in the imaging tasks.' % (ms.basename))
+                        LOG.warn('Representative target for %s is set to "none". Will try to fall back to existing '
+                                 'science target sources or calibrators in the imaging tasks.' % ms.basename)
                     LOG.info('Populating ms.representative_target ...')
                     ms.representative_target = (sbinfo[0], sbinfo[1], sbinfo[2])
                 LOG.info('Populating ms.science_goals ...')
@@ -306,13 +305,16 @@ class MeasurementSetReader(object):
                     observing_mode = SBSummaryTable.get_observing_mode(ms)
                     # Only warn if the number of 12m antennas is greater than the number of 7m antennas
                     # and if the observation is not single dish
-                    if len([a for a in ms.get_antenna() if a.diameter == 12.0]) > len([a for a in ms.get_antenna() if a.diameter == 7.0]) \
-                      and 'Standard Single Dish' not in observing_mode:
-                        LOG.warn('Undefined angular resolution limits for %s' % (ms.basename))
-                    ms.science_goals = {'minAcceptableAngResolution': '0.0arcsec', 'maxAcceptableAngResolution': '0.0arcsec'}
+                    if len([a for a in ms.get_antenna() if a.diameter == 12.0]) > \
+                            len([a for a in ms.get_antenna() if a.diameter == 7.0]) \
+                            and 'Standard Single Dish' not in observing_mode:
+                        LOG.warn('Undefined angular resolution limits for %s' % ms.basename)
+                    ms.science_goals = {'minAcceptableAngResolution': '0.0arcsec',
+                                        'maxAcceptableAngResolution': '0.0arcsec'}
                 else:
-                    #LOG.info('Populating ms.science_goals ...')
-                    ms.science_goals = {'minAcceptableAngResolution': sbinfo[3], 'maxAcceptableAngResolution': sbinfo[4]}
+                    # LOG.info('Populating ms.science_goals ...')
+                    ms.science_goals = {'minAcceptableAngResolution': sbinfo[3],
+                                        'maxAcceptableAngResolution': sbinfo[4]}
                 if not sbinfo[5]:
                     ms.science_goals['sensitivity'] = '0.0mJy'
                 else:
@@ -335,7 +337,7 @@ class MeasurementSetReader(object):
                     # (True = selection contains data); this can be used to
                     # check that the subsequent getdata call will succeed.
                     if openms.selectinit(datadescid=dd.id):
-                        ms_info = openms.getdata(['axis_info','time'])
+                        ms_info = openms.getdata(['axis_info', 'time'])
 
                         dd.obs_time = numpy.mean(ms_info['time'])
                         dd.chan_freq = ms_info['axis_info']['freq_axis']['chan_freq'].tolist()
@@ -411,9 +413,9 @@ class SpectralWindowTable(object):
             chan_widths = msmd.chanwidths(i)            
             chan_effective_bws = msmd.chaneffbws(i)
             sideband = msmd.sideband(i)
-            ### BBC_NO column is optional
+            # BBC_NO column is optional
             if 'NRO' in msmd.observatorynames():
-                ### For Nobeyama (TODO: how to define BBC_NO for NRO)
+                # For Nobeyama (TODO: how to define BBC_NO for NRO)
                 baseband = i
             else:
                 baseband = msmd.baseband(i)
@@ -422,7 +424,7 @@ class SpectralWindowTable(object):
             # Read transitions for target spws. Other spws may cause severe
             # messages because the target source IDs may not have the spw.
             if i in target_spw_ids:
-                try: ### TRANSITIONS column does not exist in old data
+                try:  # TRANSITIONS column does not exist in old data
                     # TODO: Are the transitions of a given spw the same for all
                     #       target source IDs ?
                     transitions = msmd.transitions(sourceid=first_target_source_id, spw=i)
@@ -436,9 +438,8 @@ class SpectralWindowTable(object):
             if spw_name in [None, '']:
                 spw_name = 'spw_%s' % str(i)
 
-            spw = domain.SpectralWindow(i, spw_name, spw_type, bandwidth,
-                    ref_freq, mean_freq, chan_freqs, chan_widths,
-                    chan_effective_bws, sideband, baseband, transitions=transitions)
+            spw = domain.SpectralWindow(i, spw_name, spw_type, bandwidth, ref_freq, mean_freq, chan_freqs, chan_widths,
+                                        chan_effective_bws, sideband, baseband, transitions=transitions)
             spws.append(spw)
 
         return spws
@@ -556,13 +557,12 @@ class SBSummaryTable(object):
     @staticmethod
     def get_sbsummary_info(ms, obsnames):
         try:
-            sbsummary_info = [SBSummaryTable._create_sbsummary_info(*row) 
-               for row in SBSummaryTable._read_table(ms)]
+            sbsummary_info = [SBSummaryTable._create_sbsummary_info(*row) for row in SBSummaryTable._read_table(ms)]
             return sbsummary_info[0]
         except:
             if 'ALMA' in obsnames:
-                LOG.warn('Error reading science goals for %s' % (ms.basename))
-            return (None, None, None, None, None)
+                LOG.warn('Error reading science goals for %s' % ms.basename)
+            return None, None, None, None, None
 
     @staticmethod
     def get_observing_mode(ms):
@@ -573,12 +573,12 @@ class SBSummaryTable(object):
             with casatools.TableReader(sbsummary_table) as tb:
                 observing_mode = tb.getcol('observingMode')
                 for irow in xrange(tb.nrows()):
-                    cell = observing_mode[:,irow]
+                    cell = observing_mode[:, irow]
                     for mode in cell:
                         if mode not in observing_modes:
                             observing_modes.append(mode)
         except:
-            LOG.warn ('Error reading observing modes for %s' % (ms.basename))
+            LOG.warn('Error reading observing modes for %s' % ms.basename)
 
         return observing_modes
 
@@ -604,7 +604,7 @@ class SBSummaryTable(object):
                 scienceGoals = table.getcol('scienceGoal')
                 numScienceGoals = table.getcol('numScienceGoal')
             except:
-                #LOG.warn('Error reading science goals for %s' % (ms.basename))
+                # LOG.warn('Error reading science goals for %s' % (ms.basename))
                 raise 
 
             repSources = []
@@ -617,51 +617,51 @@ class SBSummaryTable(object):
             for i in range(table.nrows()):
 
                 # Create source
-                repSource = _get_science_goal_value (scienceGoals[0:numScienceGoals[i],i],
-                    'representativeSource')
+                repSource = _get_science_goal_value(scienceGoals[0:numScienceGoals[i], i], 'representativeSource')
                 repSources.append(repSource)
 
                 # Create frequency
-                repFrequency = qa.quantity(_get_science_goal_value (scienceGoals[0:numScienceGoals[i],i],
-                    'representativeFrequency'))
+                repFrequency = qa.quantity(_get_science_goal_value(scienceGoals[0:numScienceGoals[i], i],
+                                                                   'representativeFrequency'))
                 if repFrequency['value'] <= 0.0 or repFrequency['unit'] == '':
                     repFrequency = None
                 repFrequencies.append(repFrequency)
 
                 # Create representative bandwidth
-                repBandWidth = qa.quantity(_get_science_goal_value (scienceGoals[0:numScienceGoals[i],i],
-                    'representativeBandwidth'))
+                repBandWidth = qa.quantity(_get_science_goal_value(scienceGoals[0:numScienceGoals[i], i],
+                                                                   'representativeBandwidth'))
                 if repBandWidth['value'] <= 0.0 or repBandWidth['unit'] == '':
                     repBandWidth = None
                 repBandWidths.append(repBandWidth)
 
                 # Create minimum angular resolution
-                minAngResolution = qa.quantity(_get_science_goal_value (scienceGoals[0:numScienceGoals[i],i],
-                    'minAcceptableAngResolution'))
+                minAngResolution = qa.quantity(_get_science_goal_value(scienceGoals[0:numScienceGoals[i], i],
+                                                                       'minAcceptableAngResolution'))
                 if minAngResolution['value'] <= 0.0 or minAngResolution['unit'] == '':
                     minAngResolution = None
                 minAngResolutions.append(minAngResolution)
 
                 # Create maximum angular resolution
-                maxAngResolution = qa.quantity(_get_science_goal_value (scienceGoals[0:numScienceGoals[i],i],
-                    'maxAcceptableAngResolution'))
+                maxAngResolution = qa.quantity(_get_science_goal_value(scienceGoals[0:numScienceGoals[i], i],
+                                                                       'maxAcceptableAngResolution'))
                 if maxAngResolution['value'] <= 0.0 or maxAngResolution['unit'] == '':
                     maxAngResolution = None
                 maxAngResolutions.append(maxAngResolution)
 
                 # Create sensitivity goal
-                sensitivity = qa.quantity(_get_science_goal_value (scienceGoals[0:numScienceGoals[i],i],
-                    'sensitivityGoal'))
+                sensitivity = qa.quantity(_get_science_goal_value(scienceGoals[0:numScienceGoals[i], i],
+                                                                  'sensitivityGoal'))
                 if sensitivity['value'] <= 0.0 or sensitivity['unit'] == '':
                     sensitivity = None
                 sensitivities.append(sensitivity)
 
                 # Create dynamic range goal
-                dynamicRange = qa.quantity(_get_science_goal_value (scienceGoals[0:numScienceGoals[i],i],
-                    'dynamicRange'))
+                dynamicRange = qa.quantity(_get_science_goal_value(scienceGoals[0:numScienceGoals[i], i],
+                                                                   'dynamicRange'))
                 dynamicRanges.append(dynamicRange)
 
-        rows = zip(repSources, repFrequencies, repBandWidths, minAngResolutions, maxAngResolutions, sensitivities, dynamicRanges)
+        rows = list(zip(repSources, repFrequencies, repBandWidths, minAngResolutions, maxAngResolutions, sensitivities,
+                        dynamicRanges))
         return rows
 
 
@@ -669,8 +669,7 @@ class ExecblockTable(object):
     @staticmethod
     def get_execblock_info(ms):
         try:
-            execblock_info = [ExecblockTable._create_execblock_info(*row) 
-               for row in ExecblockTable._read_table(ms)]
+            execblock_info = [ExecblockTable._create_execblock_info(*row) for row in ExecblockTable._read_table(ms)]
             if execblock_info[0][0] == 'ALMA':
                 if execblock_info[0][1] == 'A':
                     return None
@@ -683,7 +682,7 @@ class ExecblockTable(object):
            
     @staticmethod
     def _create_execblock_info(telescopeName, configName):
-       return (telescopeName, configName) 
+        return telescopeName, configName
 
     @staticmethod
     def _read_table(ms):
@@ -696,13 +695,13 @@ class ExecblockTable(object):
         msname = _get_ms_name(ms)
         execblock_table = os.path.join(msname, 'ASDM_EXECBLOCK')        
         with casatools.TableReader(execblock_table) as table:
-            telescopeNames = table.getcol('telescopeName')
-            configNames = table.getcol('configName')
+            telescope_names = table.getcol('telescopeName')
+            config_names = table.getcol('configName')
 
         # In case multiple columns are extracted at some point
         # in which case rows would be constructed from the zipped
         # columns
-        rows = zip(telescopeNames, configNames)
+        rows = list(zip(telescope_names, config_names))
         return rows
 
 
@@ -715,7 +714,7 @@ class PolarizationTable(object):
         corr_types = [msmd.corrtypesforpol(i) for i in pol_ids]
         corr_products = [msmd.corrprodsforpol(i) for i in pol_ids]
 
-        rows = zip(pol_ids, num_corrs, corr_types, corr_products)
+        rows = list(zip(pol_ids, num_corrs, corr_types, corr_products))
 
         return [PolarizationTable._create_pol_description(*row) for row in rows]
 
@@ -886,32 +885,32 @@ def _make_range(f_min, f_max):
     
     
 class BandDescriber(object):
-    alma_bands = {_make_range(31.3, 45) : 'ALMA Band 1',
-                  _make_range(67, 90) : 'ALMA Band 2',
-                  _make_range(84, 116) : 'ALMA Band 3',
-                  _make_range(125, 163) : 'ALMA Band 4',
-                  _make_range(163, 211) : 'ALMA Band 5',
-                  _make_range(211, 275) : 'ALMA Band 6',
-                  _make_range(275, 373) : 'ALMA Band 7',
-                  _make_range(385, 500) : 'ALMA Band 8',
-                  _make_range(602, 720) : 'ALMA Band 9',
-                  _make_range(787, 950) : 'ALMA Band 10'}
+    alma_bands = {_make_range(31.3, 45): 'ALMA Band 1',
+                  _make_range(67, 90): 'ALMA Band 2',
+                  _make_range(84, 116): 'ALMA Band 3',
+                  _make_range(125, 163): 'ALMA Band 4',
+                  _make_range(163, 211): 'ALMA Band 5',
+                  _make_range(211, 275): 'ALMA Band 6',
+                  _make_range(275, 373): 'ALMA Band 7',
+                  _make_range(385, 500): 'ALMA Band 8',
+                  _make_range(602, 720): 'ALMA Band 9',
+                  _make_range(787, 950): 'ALMA Band 10'}
 
-    #From original EVLA pipeline script
-    #FLOW = [ 0.0e6, 150.0e6, 700.0e6, 2.0e9, 4.0e9, 8.0e9, 12.0e9, 18.0e9, 26.5e9, 40.0e9 ]
-    #FHIGH = [ 150.0e6, 700.0e6, 2.0e9, 4.0e9, 8.0e9, 12.0e9, 18.0e9, 26.5e9, 40.0e9, 56.0e9 ]
-    #BBAND = [ '4', 'P', 'L', 'S', 'C', 'X', 'U', 'K', 'A', 'Q' ]
+    # From original EVLA pipeline script
+    # FLOW = [ 0.0e6, 150.0e6, 700.0e6, 2.0e9, 4.0e9, 8.0e9, 12.0e9, 18.0e9, 26.5e9, 40.0e9 ]
+    # FHIGH = [ 150.0e6, 700.0e6, 2.0e9, 4.0e9, 8.0e9, 12.0e9, 18.0e9, 26.5e9, 40.0e9, 56.0e9 ]
+    # BBAND = [ '4', 'P', 'L', 'S', 'C', 'X', 'U', 'K', 'A', 'Q' ]
 
-    evla_bands = {_make_range(0.7, 2.0) : '20cm (L)',
-                  _make_range(2.0, 4.0) : '13cm (S)',
-                  _make_range(4, 8) : '6cm (C)',
-                  _make_range(8, 12) : '3cm (X)',
-                  _make_range(12, 18) : '2cm (Ku)',
-                  _make_range(18, 26.5) : '1.3cm (K)',
-                  _make_range(26.5, 40) : '1cm (Ka)',
-                  _make_range(40, 56.0) : '0.7cm (Q)'}
+    evla_bands = {_make_range(0.7, 2.0): '20cm (L)',
+                  _make_range(2.0, 4.0): '13cm (S)',
+                  _make_range(4, 8): '6cm (C)',
+                  _make_range(8, 12): '3cm (X)',
+                  _make_range(12, 18): '2cm (Ku)',
+                  _make_range(18, 26.5): '1.3cm (K)',
+                  _make_range(26.5, 40): '1cm (Ka)',
+                  _make_range(40, 56.0): '0.7cm (Q)'}
     
-    unknown = { measures.FrequencyRange() : 'Unknown'}
+    unknown = {measures.FrequencyRange(): 'Unknown'}
 
     @staticmethod
     def get_description(f, observatory='ALMA'):
