@@ -2,7 +2,6 @@ from __future__ import absolute_import
 
 from .antpos import Antpos
 from .applycal import IFApplycal, HpcIFApplycal
-from .atmflag import Atmflag
 from .bandpass import BandpassMode, ChannelBandpass, PhcorBandpass
 from .correctedampflag import Correctedampflag
 from .checkproductsize import CheckProductSize
