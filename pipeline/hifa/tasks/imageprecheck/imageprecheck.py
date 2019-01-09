@@ -8,7 +8,6 @@ import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.utils as utils
-import pipeline.infrastructure.imageparamsfilehandler as imageparamsfilehandler
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.hifa.heuristics import imageprecheck
