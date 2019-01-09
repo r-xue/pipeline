@@ -20,7 +20,6 @@ from .setmodel import SetModels
 from .tclean import Tclean
 from .uvcontsub import UVcontFit, UVcontSub
 from .polarization import Polarization
-from .linfeedpolcal import Linfeedpolcal
 from .editimlist import Editimlist
 from .transformimagedata import Transformimagedata
 from .makermsimages import Makermsimages
