@@ -10,11 +10,7 @@ from .gsplinegaincal import GSplineGaincal
 from .gaincalmode import GaincalMode
 
 from . import common
-#from . import renderer
 
 qaadapter.registry.register_to_calibration_topic(common.GaincalResults)
 
-#weblog.add_renderer(GTypeGaincal, renderer.T2_4MDetailsGaincalRenderer(), group_by='session')
-#weblog.add_renderer(KTypeGaincal, renderer.T2_4MDetailsGaincalRenderer(), group_by='session')
-#weblog.add_renderer(GSplineGaincal, renderer.T2_4MDetailsGaincalRenderer(), group_by='session')
 weblog.add_renderer(GaincalMode, basetemplates.T2_4MDetailsDefaultRenderer(), group_by='session')
