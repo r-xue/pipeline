@@ -295,7 +295,7 @@ class RendererBase(object):
             template = weblog.TEMPLATE_LOOKUP.get_template(cls.template)
             display_context = cls.get_display_context(context)
             display_context['use_minified_js'] = use_minified_js
-            fileobj.write(template.render(**display_context))
+            fileobj.write(template.render(**display_context).encode('utf-8'))
 
 
 class T1_1Renderer(RendererBase):

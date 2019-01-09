@@ -39,7 +39,8 @@ def _get_template_lookup():
 
     templates_path = pkg_resources.resource_filename(pipeline.infrastructure.renderer.templates.__name__, '')
     lookup = mako.lookup.TemplateLookup(directories=[templates_path],
-                                        module_directory=tmpdir)
+                                        module_directory=tmpdir,
+                                        default_filters=['decode.utf8'])
     return lookup
 TEMPLATE_LOOKUP = _get_template_lookup()
 
