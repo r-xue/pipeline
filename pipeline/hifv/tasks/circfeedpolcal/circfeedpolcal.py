@@ -291,7 +291,6 @@ class Circfeedpolcal(polarization.Polarization):
 
         GainTables = self._modifyGainTables(GainTables)
 
-        # Similar inputs to hifa/linpolcal.py
         task_inputs = gaincal.GTypeGaincal.Inputs(self.inputs.context,
                                                   output_dir='',
                                                   vis=self.inputs.vis,

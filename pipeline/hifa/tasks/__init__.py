@@ -14,7 +14,6 @@ from .gaincal import TimeGaincal
 from .gaincalsnr import GaincalSnr
 from .gfluxscaleflag import Gfluxscaleflag
 from .importdata import ALMAImportData
-from .linpolcal import Linpolcal
 from .restoredata import ALMARestoreData
 from .spwphaseup import SpwPhaseup
 from .tsysflag import Tsysflag as ALMATsysflag
