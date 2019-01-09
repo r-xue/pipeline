@@ -16,7 +16,6 @@ LOG = infrastructure.get_logger(__name__)
 class BandpassModeInputs(vdp.ModeInputs):
     _modes = {
         'channel': channelbandpass.ChannelBandpass,
-        # 'poly': polynomialbandpass.PolynomialBandpass
     }
 
     def __init__(self, context, mode=None, **parameters):

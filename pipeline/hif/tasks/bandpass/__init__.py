@@ -7,9 +7,7 @@ from . import qa
 from . import renderer
 from .bandpassmode import BandpassMode
 from .channelbandpass import ChannelBandpass
-from .phaseupbandpass import PhaseUpBandpass
 from .phcorbandpass import PhcorBandpass
-from .polynomialbandpass import PolynomialBandpass
 
 qaadapter.registry.register_to_calibration_topic(common.BandpassResults)
 
