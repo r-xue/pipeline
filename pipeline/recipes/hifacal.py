@@ -23,7 +23,6 @@ from hifa_importdata_cli import hifa_importdata_cli as hifa_importdata
 from hifa_flagdata_cli import hifa_flagdata_cli as hifa_flagdata
 from hifa_fluxcalflag_cli import hifa_fluxcalflag_cli as hifa_fluxcalflag
 from hif_rawflagchans_cli import hif_rawflagchans_cli as hif_rawflagchans
-# from hifa_fluxdb_cli import hifa_fluxdb_cli as hifa_fluxdb
 from hif_refant_cli import hif_refant_cli as hif_refant
 from h_tsyscal_cli import h_tsyscal_cli as h_tsyscal
 from hifa_tsysflag_cli import hifa_tsysflag_cli as hifa_tsysflag

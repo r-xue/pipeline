@@ -4,7 +4,6 @@ from .antpos import ALMAAntpos
 from .bandpass import ALMAPhcorBandpass, SessionALMAPhcorBandpass
 from .bandpassflag import Bandpassflag
 from .bpsolint import BpSolint
-from .dbservice import Fluxdb
 from .exportdata import ALMAExportData
 from .flagging import FlagDeterALMA
 from .flagging import FlagTargetsALMA
