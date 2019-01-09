@@ -15,10 +15,7 @@ The following pipeline tasks make use of the flagging framework and are part of 
 - hif_lowgainflag: flags antennas in MS, based on evaluating heuristics on gain amplitude caltable created within task.
 - hifa_wvrgcalflag: evaluates if applying WVR correction provides tangible improvement, flagging WVR caltable in process where needed, using WVR caltable created within task (using hifa_wvrgcal).
 
-The following pipeline tasks make use of the flagging framework, but are not presently part of standard pipeline recipes:
-- hif_gainflag: flags antennas in MS, based on evaluating heuristics on gain amplitude caltable created within task.
-
-Finally, the following are pipeline tasks that perform flagging, but that do not make use of the common flagging framework:
+The following pipeline tasks perform flagging but do not make use of the common flagging framework:
 - hif_correctedampflag: Flag corrected - model amplitudes based on calibrators.
 - hifa_bandpassflag: uses hif_correctedampflag to flag corrected-model amplitude outliers for the bandpass calibrator.
 - hifa_gfluxscaleflag: uses hif_correctedampflag to flag corrected-model amplitude outliers for the phase and flux calibrators.
@@ -211,38 +208,3 @@ In the current standard pipeline, all six metrics are active, and evaluated in t
       This evaluates all timestamps at once, flagging all antennas for all timestamps within current view (spw, pol) when the fraction of antennas that are entirely flagged in all timestamps exceeds the threshold "tmef1_limit" (default: 0.666).
       
       Flagging commands are generated for each data point in the view that is newly flagged.
-      
-### Task: hif_gainflag
-Since Cycle 5, this task is not part of any standard recipe (replaced by hifa_bandpassflag and hifa_gfluxscaleflag).
-
-This task first creates a phased-up bandpass caltable, then a gain phase caltable, and finally a gain amplitude caltable. This final gain amplitude caltable is used to identify antennas with outlier gains, for each spw. Flagging commands for outlier antennas (per spw) are applied to the entire MS.
-
-Gainflag offers two separate flagging metrics, where each metric creates its own flagging view and has its own corresponding flagging rule(s). In the latest pipeline release (C4R1), only the "rmsdeviant" metric is active.
-
-- Metric 1: "rmsdeviant" (enabled in C4R1):
-
-   **View generation**
-
-   A separate view is created for each spw. Each view is a matrix with axes "time" vs. "antenna". Each point in the matrix is the "standard deviation of the gain amplitudes for that antenna and all timestamps, divided by the median absolute deviation of the gain amplitude for all antennas and all timestamps".
-   
-   **View flagging**
-   
-   The views are evaluated against the "max abs" matrix flagging rule, where data points are identified as outliers if their absolute value exceeds the threshold "frmsdev_limit" (default: 8.0).
-   
-   Flagging commands are generated for each of the identified outlier data points.
-
-- Metric 2: "mediandeviant" (disabled in C4R1)
-   
-   **View generation**
-   
-   A separate view is created for each spw. Each view is a matrix with axes "time" vs. "antenna". Each point in the matrix is calculated as follows: 
-   
-   ```abs(median(antenna) - median(all antennas)) / mad(all antennas)```
-   
-   wherein each quantity is calculated across all timestamps.
-   
-   **View flagging**
-   
-   The views are evaluated against the "max abs" flagging rule, where data points are identified as outliers if their absolute value exceeds the threshold "fmeddev_limit" (default: 3.0).
-   
-   Flagging commands are generated for each of the identified outlier data points.

@@ -8,7 +8,6 @@ from .checkproductsize import CheckProductSize
 from .findcont import FindCont
 from .fluxscale import Fluxscale
 from .gaincal import GaincalMode, GTypeGaincal, GSplineGaincal, KTypeGaincal
-from .gainflag import Gainflag
 from .lowgainflag import Lowgainflag
 from .makeimages import MakeImages
 from .makeimlist import MakeImList
