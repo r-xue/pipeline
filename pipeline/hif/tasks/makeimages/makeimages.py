@@ -136,16 +136,23 @@ class MakeImages(basetask.StandardTaskTemplate):
 
         # set of descriptions
         if inputs.context.clean_list_info.get('msg', '') != '':
-            description = {
-                _get_description_map(inputs.context.clean_list_info.get('intent', '')).get(inputs.context.clean_list_info.get('specmode', ''), 'Calculate clean products')  # map specmode to description..
-            }
+            target_list = [inputs.context.clean_list_info]
         else:
-            description = {
-                _get_description_map(target['intent']).get(target['specmode'], 'Calculate clean products')  # map specmode to description..
-                for target in inputs.target_list                       # .. for every clean target..
-            }
+            target_list = inputs.target_list
 
+        description = {
+            # map specmode to description for every clean target
+            _get_description_map(target['intent']).get(target['specmode'], 'Calculate clean products')
+            for target in target_list
+        }
         result.metadata['long description'] = ' / '.join(description)
+
+        sidebar = {
+            # map specmode to description for every clean target
+            _get_sidebar_map(target['intent']).get(target['specmode'], '')
+            for target in target_list
+        }
+        result.metadata['sidebar suffix'] = '/'.join(sidebar)
 
         return result
 
@@ -346,6 +353,25 @@ def _get_description_map(intent):
             'cube': 'Make target cubes',
             'repBW': 'Make representative bandwidth target cube'
 
+        }
+    else:
+        return {}
+
+def _get_sidebar_map(intent):
+    if intent in ('PHASE', 'BANDPASS', 'AMPLITUDE'):
+        return {
+            'mfs': 'cals'
+        }
+    elif intent == 'CHECK':
+        return {
+            'mfs': 'checksrc'
+        }
+    elif intent == 'TARGET':
+        return {
+            'mfs': 'mfs',
+            'cont': 'cont',
+            'cube': 'cube',
+            'repBW': 'cube_repBW'
         }
     else:
         return {}

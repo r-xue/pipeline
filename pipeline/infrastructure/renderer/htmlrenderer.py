@@ -124,6 +124,7 @@ def get_task_name(result_obj, include_stage=True):
             task_cls = result_obj.origtask.inputs._task_cls
         else:
             task_cls = result_obj.task
+
         try:
             casa_task = task_registry.get_casa_task(task_cls)
         except KeyError:
@@ -131,6 +132,9 @@ def get_task_name(result_obj, include_stage=True):
 
         # Prepend stage number to task name.
         s = '%s%s' % (stage, casa_task)
+
+        if hasattr(result_obj, 'metadata') and 'sidebar suffix' in result_obj.metadata:
+            s = '{} ({})'.format(s, result_obj.metadata['sidebar suffix'])
 
         if isinstance(result_obj, basetask.FailedTaskResults):
             s += ' (failed)'
@@ -169,6 +173,9 @@ def get_task_name(result_obj, include_stage=True):
 
         # Prepend stage number to task name.
         s = '%s%s' % (stage, casa_task)
+
+        if hasattr(result_obj, 'metadata') and 'sidebar suffix' in result_obj.metadata:
+            s = '{} ({})'.format(s, result_obj.metadata['sidebar suffix'])
 
         # Append a label to task name if any of the results in the task result
         # list indicates that the task encountered a failure.

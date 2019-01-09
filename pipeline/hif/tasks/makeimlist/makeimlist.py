@@ -188,6 +188,9 @@ class MakeImList(basetask.StandardTaskTemplate):
         long_descriptions = [_DESCRIPTIONS.get((intent.strip(), inputs.specmode), inputs.specmode) for intent in inputs.intent.split(',')]
         result.metadata['long description'] = 'Set-up parameters for %s imaging' % ' & '.join(set(long_descriptions))
 
+        sidebar_suffixes = {_SIDEBAR_SUFFIX.get((intent.strip(), inputs.specmode), inputs.specmode) for intent in inputs.intent.split(',')}
+        result.metadata['sidebar suffix'] = '/'.join(sidebar_suffixes)
+
         # Check for size mitigation errors.
         if 'status' in inputs.context.size_mitigation_parameters:
             if inputs.context.size_mitigation_parameters['status'] == 'ERROR':
@@ -713,4 +716,15 @@ _DESCRIPTIONS = {
     ('TARGET', 'cont'): 'target aggregate continuum',
     ('TARGET', 'cube'): 'target cube',
     ('TARGET', 'repBW'): 'representative bandwidth target cube',
+}
+
+_SIDEBAR_SUFFIX = {
+    ('PHASE', 'mfs'): 'cals',
+    ('BANDPASS', 'mfs'): 'cals',
+    ('AMPLITUDE', 'mfs'): 'cals',
+    ('CHECK', 'mfs'): 'checksrc',
+    ('TARGET', 'mfs'): 'mfs',
+    ('TARGET', 'cont'): 'cont',
+    ('TARGET', 'cube'): 'cube',
+    ('TARGET', 'repBW'): 'cube_repBW',
 }
