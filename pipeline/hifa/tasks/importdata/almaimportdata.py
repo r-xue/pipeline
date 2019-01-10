@@ -16,7 +16,7 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class ALMAImportDataInputs(importdata.ImportDataInputs):
-    asis = vdp.VisDependentProperty(default='Antenna CalAtmosphere CalWVR ExecBlock Receiver SBSummary Source Station')
+    asis = vdp.VisDependentProperty(default='Antenna CalAtmosphere CalPointing CalWVR ExecBlock Receiver SBSummary Source Station')
     dbservice = vdp.VisDependentProperty(default=True)
     createmms = vdp.VisDependentProperty(default='false')
 
