@@ -53,7 +53,7 @@ def write_blparam(fileobj, param):
 
 
 def as_maskstring(masklist):
-    return ';'.join(map(lambda x: '%s~%s' % (x[0], x[1]), masklist))
+    return ';'.join(['%s~%s' % (x[0], x[1]) for x in masklist])
 
 
 class BaselineFitParamConfig(api.Heuristic):

@@ -214,9 +214,6 @@ class RawflagchansData(basetask.StandardTaskTemplate):
         LOG.info('Reading flagging view data for vis {0}'.format(
             self.inputs.vis))
 
-        # Get the spws to use
-        spwids = map(int, self.inputs.spw.split(','))
-
         # Get the MS object.
         ms = self.inputs.context.observing_run.get_ms(name=self.inputs.vis)
 
@@ -232,7 +229,7 @@ class RawflagchansData(basetask.StandardTaskTemplate):
         nbaselines = len(baselines)
 
         # Create a separate flagging view for each spw.
-        for spwid in spwids:
+        for spwid in map(int, self.inputs.spw.split(',')):
 
             LOG.info('Reading flagging view data for spw {0}'.format(spwid))
 

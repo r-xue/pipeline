@@ -242,7 +242,7 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
         # associates spectra in data_in and weights with grids.
         # bind_to_grid = dict([(k,[]) for k in self.data_in.keys()])
         bind_to_grid = collections.defaultdict(list)
-        vislist = map(lambda x: x.basename, self.inputs.context.observing_run.measurement_sets)
+        vislist = [x.basename for x in self.inputs.context.observing_run.measurement_sets]
         for grid_table_row in xrange(nrow):
             [IF, POL, X, Y, RAcent, DECcent, RowDelta] = grid_table[grid_table_row]
             for [_data_row, _, _, _index, _ant, _msid] in RowDelta:
@@ -274,7 +274,7 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
 #                     else: Weight = 1.0
 #                     bind_to_grid[vis].append([data_row, grid_table_row, Weight, tSFLAG[index]])
 #         del tTSYS, tEXPT, tSFLAG
-        LOG.debug('bind_to_grid.keys() = %s'%(map(lambda x: x.name, bind_to_grid.keys())))
+        LOG.debug('bind_to_grid.keys() = %s' % ([x.name for x in bind_to_grid.keys()]))
         LOG.debug('bind_to_grid={}', bind_to_grid)
         
         def cmp(x, y):

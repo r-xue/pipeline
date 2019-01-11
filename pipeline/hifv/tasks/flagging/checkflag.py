@@ -377,7 +377,7 @@ class Checkflag(basetask.StandardTaskTemplate):
         # values
 
         vlabasebands = self.vla_basebands()
-        bbspws = [map(int, i.split(',')) for i in vlabasebands]  # Need to change for Python 3?
+        bbspws = [list(map(int, i.split(','))) for i in vlabasebands]
 
         # bbspws = [[2, 3, 4, 5, 6, 7, 8, 9], [10, 11, 12, 13, 14, 15, 16, 17]]
 

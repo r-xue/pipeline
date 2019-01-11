@@ -46,12 +46,10 @@ def read_session_based(context, reffile):
             if line[0] == '#':
                 # header
                 meta = parser.parse_header(line)
-                #print meta
                 storage.register_meta(meta)
             else:
                 # data
                 data = parser.parse_data(line)
-                #print data
                 storage.register_data(data)
                 
     with associate(context, storage) as f:
@@ -160,30 +158,24 @@ def associate(context, factors):
             else:
                 # session_name should be 'Session_X' where X is an integer
                 session_id = int(session_name.split('_')[-1])
-            #print 'ms', ms.basename, 'session_id', session_id
-            session_list = numpy.array(map(lambda x: int(x), data['sessionID']))
-            #print 'session_list', session_list
+            session_list = numpy.array([int(x) for x in data['sessionID']])
             idx = numpy.where(session_list == session_id)
-            #print 'index list', idx
-            #print 'selected sessions', session_list[idx]
-    
-            antennas = map(lambda x: x.name, ms.antennas)
+
+            antennas = [x.name for x in ms.antennas]
             antenna_list = data['Antenna']
     
-            factor_list = numpy.array(map(lambda x: float(x), data['Factor']))
-            #print factor_list
-            
+            factor_list = numpy.array([float(x) for x in data['Factor']])
+
             spws = ms.get_spectral_windows()
-            bandcenter = numpy.array(map(lambda x: float(x) * 1.0e6, data['BandCenter(MHz)']))
-            bandwidth = numpy.array(map(lambda x: float(x) * 1.0e6, data['BandWidth(MHz)']))
+            bandcenter = numpy.array([float(x) * 1.0e6 for x in data['BandCenter(MHz)']])
+            bandwidth = numpy.array([float(x) * 1.0e6 for x in data['BandWidth(MHz)']])
             range_min = bandcenter - 0.5 * bandwidth
             range_max = bandcenter + 0.5 * bandwidth
             for spw in spws:
                 max_freq = float(spw.max_frequency.value)
                 min_freq = float(spw.min_frequency.value)
                 tot_bandwidth = float(spw.bandwidth.value)
-                #print 'spw', spw.id, min_freq, max_freq
-    
+
                 spwid = spw.id
                 d = {}
                 for i in idx[0]:
@@ -203,20 +195,15 @@ def associate(context, factors):
                         LOG.info('%s: No factors available for spw %s antenna %s use ANONYMOUS' %
                                  (session_name, spwid, ant))
                         f = d['ANONYMOUS']
-                    #print ant, f
-                    coverage_list = map(lambda x: inspect_coverage(min_freq, max_freq, range_min[x], range_max[x]), f)
-                    #print coverage_list
+                    coverage_list = [inspect_coverage(min_freq, max_freq, range_min[x], range_max[x]) for x in f]
                     #_best_index = numpy.argmax(coverage_list)
                     best_index = f[0]
                     _best_score = inspect_coverage(min_freq, max_freq, range_min[f[0]], range_max[f[0]])
-                    #print f[0], _best_score
                     for _i in f[1:]:
                         coverage = inspect_coverage(min_freq, max_freq, range_min[_i], range_max[_i])
-                        #print _i, coverage
                         if coverage > _best_score:
                             best_index = _i
                             _best_score = coverage
-                    #print best_index
                     line = '%s,%s,%s,%s,%s' % (ms.basename, ant, spwid, data['POL'][best_index],
                                                factor_list[best_index])
                     LOG.debug(line)
@@ -234,7 +221,6 @@ def inspect_coverage(minval, maxval, minref, maxref):
         return 0.0
 
     coverage = (min(maxval, maxref) - max(minval, minref)) / (maxval - minval)
-    #print minval, maxval, minref, maxref, coverage
 
     bandwidth_ratio = (maxref - minref) / (maxval - minval)
     

@@ -486,7 +486,7 @@ class Finalcals(basetask.StandardTaskTemplate):
             spw_bandwidths = table.getcol('TOTAL_BANDWIDTH')
             reference_frequencies = table.getcol('REF_FREQUENCY')
 
-        center_frequencies = map(lambda rf, spwbw: rf + spwbw / 2, reference_frequencies, spw_bandwidths)
+        center_frequencies = [rf + spwbw / 2 for rf, spwbw in zip(reference_frequencies, spw_bandwidths)]
 
         for i, fields in enumerate(standard_source_fields):
             for myfield in fields:
@@ -574,7 +574,7 @@ class Finalcals(basetask.StandardTaskTemplate):
             spw_bandwidths = table.getcol('TOTAL_BANDWIDTH')
             reference_frequencies = table.getcol('REF_FREQUENCY')
 
-        center_frequencies = map(lambda rf, spwbw: rf + spwbw / 2, reference_frequencies, spw_bandwidths)
+        center_frequencies = [rf + spwbw / 2 for rf, spwbw in zip(reference_frequencies, spw_bandwidths)]
 
         fitfunc = lambda p, x: p[0] + p[1] * x
         errfunc = lambda p, x, y, err: (y - fitfunc(p, x)) / err
@@ -684,10 +684,9 @@ class Finalcals(basetask.StandardTaskTemplate):
                 freqs = freqs[uspws]
                 freqs.sort()
 
-                fittedfluxd = map(
-                    lambda x: 10.0 ** (
-                        spidx[0] + spidx[1] * math.log10(x / fitreff) + spidx[2] * (math.log10(x / fitreff)) ** 2),
-                    freqs)
+                fittedfluxd = [
+                    10.0 ** (spidx[0] + spidx[1] * math.log10(x / fitreff) + spidx[2] * (math.log10(x / fitreff)) ** 2)
+                    for x in freqs]
 
                 reffreq = fitreff / 1.e9
                 fluxdensity = fitflx

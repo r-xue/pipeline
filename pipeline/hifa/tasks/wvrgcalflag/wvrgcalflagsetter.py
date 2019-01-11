@@ -83,7 +83,7 @@ class WvrgcalFlagSetter(basetask.StandardTaskTemplate):
                  if antenna.id == f.flagcoords[antindex]])
 
         new_wvrflag = list(new_wvrflag)
-        new_wvrflag = map(str, new_wvrflag)
+        new_wvrflag = list(map(str, new_wvrflag))
 
         # Update the inputs of the datatask to include the flags newly found by
         # pipeline heuristics, to be used during next iteration of datatask.

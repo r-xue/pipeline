@@ -174,7 +174,7 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
             # number of channels for a given spectral window, skip it.
             #frac_chan = int(round(fracspw * spw.num_channels + 0.5))
             # Make rounding less agressive
-            frac_chan_list = map(lambda x: int(round(x * spw.num_channels)), fracspw_list)[:2]
+            frac_chan_list = [int(round(x * spw.num_channels)) for x in fracspw_list][:2]
             if sum(frac_chan_list) >= spw.num_channels:
                 LOG.debug('Too many flagged channels %s for spw %s '
                           '' % (spw.num_channels, spw.id))

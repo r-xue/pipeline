@@ -49,9 +49,9 @@ def log_call(fn, logger, level):
             arg, val = arg_val
             return '%s=%r' % (arg, val)
 
-        nameless = map(repr, args[argcount:])
-        positional = map(format_arg_value, positional.iteritems())
-        keyword = map(format_arg_value, kwargs.iteritems())
+        nameless = list(map(repr, args[argcount:]))
+        positional = list(map(format_arg_value, positional.iteritems()))
+        keyword = list(map(format_arg_value, kwargs.iteritems()))
 
         # don't want self in message as it is an object memory reference
         msg_args = [v for v in positional + nameless + keyword if not v.startswith('self=')]

@@ -195,7 +195,7 @@ class PlotGroup(object):
         re_digits = re.compile(r'(\d+)')
         # split into digits/non-digits
         pieces = re_digits.split(selector.value) 
-        pieces[1::2] = map(int, pieces[1::2]) # turn digits into numbers
+        pieces[1::2] = list(map(int, pieces[1::2]))  # turn digits into numbers
         return pieces
 
     def _get_selectors(self, parameter):

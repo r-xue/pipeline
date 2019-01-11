@@ -85,7 +85,7 @@ def alphasort(argument):
         # flagdata summaries. Commands within these ranges can be
         # sorted.
         for _, g in itertools.groupby(enumerate(apply_cmd_idxs), lambda i_x: i_x[0] - i_x[1]):
-            idxs = map(operator.itemgetter(1), g)
+            idxs = list(map(operator.itemgetter(1), g))
             start_idx = idxs[0]
             end_idx = idxs[-1] + 1
             value[start_idx:end_idx] = sorted(value[start_idx:end_idx], key=natural_sort)
@@ -149,7 +149,8 @@ class JobRequest(object):
         # remove any keyword arguments that have a value of None or an empty
         # string, letting CASA use the default value for that argument
         null_keywords = [k for k, v in kw.iteritems() if v in (None, '')]
-        map(lambda key: kw.pop(key), null_keywords)
+        for key in null_keywords:
+            kw.pop(key)
 
         self.fn = fn
 
@@ -176,7 +177,8 @@ class JobRequest(object):
         unexpected_kw = [k for k, v in kw.iteritems() if k not in argnames]
         if unexpected_kw:
             LOG.warning('Removing unexpected keywords from JobRequest: {!s}'.format(unexpected_kw))
-            map(lambda key: kw.pop(key), unexpected_kw)
+            for key in unexpected_kw:
+                kw.pop(key)
 
         self.args = args
         self.kw = kw

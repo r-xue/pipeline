@@ -122,8 +122,7 @@ class SDK2JyCalWorker(basetask.StandardTaskTemplate):
                 LOG.warn("No Jy/K factor is given for Spw=%d of %s" % (spwid, name))
                 continue
             ddid = ms.get_data_description(spw=spwid)
-            pol_list = map(ddid.get_polarization_label,
-                           range(ddid.num_polarizations))
+            pol_list = list(map(ddid.get_polarization_label, range(ddid.num_polarizations)))
             # mapping for anonymous antenna if necessary
             is_anonymous_ant = 'ANONYMOUS' in result.ms_factors[spwid]
             all_ant_factor = result.ms_factors[spwid].pop('ANONYMOUS') if is_anonymous_ant else {}

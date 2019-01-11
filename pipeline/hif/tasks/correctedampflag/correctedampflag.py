@@ -622,7 +622,7 @@ class Correctedampflag(basetask.StandardTaskTemplate):
         inputs = self.inputs
 
         # Get the spws to use.
-        spwids = map(int, inputs.spw.split(','))
+        spwids = list(map(int, inputs.spw.split(',')))
 
         # Initialize list of newly found flags.
         newflags = []

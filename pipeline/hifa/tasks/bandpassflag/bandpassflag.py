@@ -442,9 +442,9 @@ class Bandpassflag(basetask.StandardTaskTemplate):
 
     @staticmethod
     def _identify_ants_to_remove(result, ms, ants_fully_flagged, antenna_id_to_name):
-        # Get the spw ids and intents from the inputs.
+        # Get the intents and the set of unique spw ids from the inputs.
         intents = result.cafresult.inputs['intent'].split(',')
-        spwids = map(int, result.cafresult.inputs['spw'].split(','))
+        spwids = set(map(int, result.cafresult.inputs['spw'].split(',')))
 
         # Initialize set of antennas that are fully flagged for all spws, for any intent
         ants_fully_flagged_in_all_spws_any_intent = set()
@@ -464,7 +464,7 @@ class Bandpassflag(basetask.StandardTaskTemplate):
 
             # Only proceed if the set of spws for which flagged antennas were found
             # matches the set of spws for which correctedampflag ran.
-            if spws_found == set(spwids):
+            if spws_found == spwids:
                 # Select the fully flagged antennas for current intent and field.
                 ants_fully_flagged_for_intent_field = [
                     ants_fully_flagged[key]

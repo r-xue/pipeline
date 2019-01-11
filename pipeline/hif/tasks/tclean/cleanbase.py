@@ -83,7 +83,7 @@ class CleanBaseInputs(vdp.StandardInputs):
         if isinstance(value, str) and value.startswith('['):
             temp = value.translate(None, '[]\'')
             temp = temp.split(',')
-            return map(int, temp)
+            return list(map(int, temp))
         return value
 
     @vdp.VisDependentProperty

@@ -36,7 +36,7 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
                     spw_band[spw.id] = spw.band
                 for ant in ms.get_antenna():
                     ant_name = ant.name
-                    corrs = map(ddid.get_polarization_label, range(ddid.num_polarizations))
+                    corrs = list(map(ddid.get_polarization_label, range(ddid.num_polarizations)))
 #                     # an attempt to collapse pol rows
 #                     # corr_collector[factor] = [corr0, corr1, ...]
 #                     corr_collector = collections.defaultdict(lambda: [])

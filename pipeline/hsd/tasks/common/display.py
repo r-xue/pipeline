@@ -403,7 +403,7 @@ class SDImageDisplay(object):
     def __reshape2d(self, array2d, dtype=None):
         array3d = numpy.zeros((self.npol, self.ny, self.nx), dtype=dtype)
         if len(array2d) == self.npol:
-            each_len = numpy.array(map(len, array2d))
+            each_len = numpy.array(list(map(len, array2d)))
             if numpy.all(each_len == 0):
                 # no valid data in the pixel
                 array3d = numpy.zeros((self.npol, self.ny, self.nx), dtype=dtype)
@@ -478,7 +478,6 @@ def form4(n):
         return 5
     else:
         return 5.5
-
 
 
 class SparseMapAxesManager(pointing.MapAxesManagerBase):

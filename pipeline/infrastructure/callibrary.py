@@ -1552,7 +1552,7 @@ def expand_calstate(calstate):
 
 def get_min_max(l, keyfunc=None):
     if keyfunc:
-        l = map(keyfunc, l)
+        l = list(map(keyfunc, l))
     # this function is used to specify Interval ranges, which are not
     # inclusive of the upper bound - hence the +1.
     return min(l), max(l) + 1
@@ -2430,7 +2430,9 @@ def set_calstate_marker(calstate, marker):
                         new_tsd = TimestampedData(time=old_tsd.time, data=old_tsd.data, marker=marker)
                         to_add.append(intervaltree.Interval(intent_interval.begin, intent_interval.end, new_tsd))
 
-                    map(intent_intervaltree.remove, to_remove)
-                    map(intent_intervaltree.add, to_add)
+                    for interval in to_remove:
+                        intent_intervaltree.remove(interval)
+                    for interval in to_add:
+                        intent_intervaltree.add(interval)
 
     return calstate_copy

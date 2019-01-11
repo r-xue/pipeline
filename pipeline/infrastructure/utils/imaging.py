@@ -60,7 +60,7 @@ def chan_selection_to_frequencies(img, selection, unit='GHz'):
             return ['NONE']
 
         for crange in selection.split(';'):
-            c0, c1 = map(float, crange.split('~'))
+            c0, c1 = list(map(float, crange.split('~')))
             # Make sure c0 is the lower channel so that the +/-0.5 channel
             # adjustments below go in the right direction.
             if (c1 < c0):

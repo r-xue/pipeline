@@ -61,7 +61,7 @@ class MetaDataReader(object):
         
         ms = self.ms
         spws = ms.get_spectral_windows(science_windows_only=True)
-        return map(lambda x: x.id, spws)
+        return [x.id for x in spws]
     
     def detect_target_data_desc(self):
         science_windows = self.detect_target_spw()

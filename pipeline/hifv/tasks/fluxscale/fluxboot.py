@@ -125,7 +125,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
                 spw_bandwidths = table.getcol('TOTAL_BANDWIDTH')
                 reference_frequencies = table.getcol('REF_FREQUENCY')
 
-            center_frequencies = map(lambda rf, spwbw: rf + spwbw/2, reference_frequencies, spw_bandwidths)
+            center_frequencies = [rf + spwbw / 2 for rf, spwbw in zip(reference_frequencies, spw_bandwidths)]
 
             for i, fields in enumerate(standard_source_fields):
                 for myfield in fields:
@@ -251,8 +251,8 @@ class Fluxboot(basetask.StandardTaskTemplate):
             spw_bandwidths = table.getcol('TOTAL_BANDWIDTH')
             reference_frequencies = table.getcol('REF_FREQUENCY')
     
-        center_frequencies = map(lambda rf, spwbw: rf + spwbw/2, reference_frequencies, spw_bandwidths)
-    
+        center_frequencies = [rf + spwbw / 2 for rf, spwbw in zip(reference_frequencies, spw_bandwidths)]
+
         # the variable center_frequencies should already have been filled out
         # with the reference frequencies of the spectral window table
         

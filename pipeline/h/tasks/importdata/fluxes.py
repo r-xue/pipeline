@@ -201,7 +201,7 @@ def get_atoms(text, conv_fn=lambda x: x):
     values = string.split(text)
     # syntax is <num dimensions> <size dimension 1> <size dimension 2> etc.
     num_dimensions = int(values[0])
-    dimension_sizes = map(int, values[1:num_dimensions + 1])
+    dimension_sizes = list(map(int, values[1:num_dimensions + 1]))
 
     # find how may values are needed to form one complete 'entity'
     step_size = reduce(operator.mul, dimension_sizes)
@@ -214,7 +214,7 @@ def get_atoms(text, conv_fn=lambda x: x):
         # parcelled up into dimensions
         data = values[idx:idx + step_size]
         # convert the values using the given function, eg. from string to Jy
-        data = map(conv_fn, data)
+        data = list(map(conv_fn, data))
         # group the values into dimensions using the sizes in the header
         for s in dimension_sizes[-1:0:-1]:
             data = list(grouper(s, data))
@@ -421,8 +421,9 @@ def import_flux(output_dir, observing_run, filename=None):
                 for field in fields:
                     # .. removing any existing measurements in these spws from
                     # these fields..
-                    map(field.flux_densities.remove,
-                        [m for m in field.flux_densities if m.spw_id == spw_id])
+                    to_remove = [m for m in field.flux_densities if m.spw_id == spw_id]
+                    for flux_density in to_remove:
+                        field.flux_densities.remove(flux_density)
 
                     # .. and then updating with our new values
                     LOG.trace('Adding {} to spw {}'.format(measurement, spw_id))

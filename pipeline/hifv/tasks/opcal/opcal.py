@@ -26,11 +26,11 @@ def _find_spw(vis, bands, context):
         originalBBClist = table.getcol('BBC_NO')
         spw_bandwidths = table.getcol('TOTAL_BANDWIDTH')
         reference_frequencies = table.getcol('REF_FREQUENCY')
-    
-    center_frequencies = map(lambda rf, spwbw: rf + spwbw/2, reference_frequencies, spw_bandwidths)
-    
+
+    center_frequencies = [rf + spwbw / 2 for rf, spwbw in zip(reference_frequencies, spw_bandwidths)]
+
     if bands == []:
-        bands = map(find_EVLA_band, center_frequencies)
+        bands = list(map(find_EVLA_band, center_frequencies))
     
     unique_bands = list(numpy.unique(bands))
     

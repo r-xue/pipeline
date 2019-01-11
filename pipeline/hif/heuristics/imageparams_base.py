@@ -80,7 +80,7 @@ class ImageParamsHeuristics(object):
         self.spwids = set()
         for spwclean in spwlist:
             spwidsclean = p.findall(' %s' % spwclean)
-            spwidsclean = map(int, spwidsclean)
+            spwidsclean = list(map(int, spwidsclean))
             self.spwids.update(spwidsclean)
 
     def primary_beam_size(self, spwid, intent):
@@ -285,8 +285,7 @@ class ImageParamsHeuristics(object):
         # get the spwids in spwspec
         p = re.compile(r"[ ,]+(\d+)")
         spwids = p.findall(' %s' % spwspec)
-        spwids = map(int, spwids)
-        spwids = list(set(spwids))
+        spwids = set(map(int, spwids))
 
         # find largest beam among spws in spwspec
         largest_primary_beam_size = 0.0
@@ -312,8 +311,7 @@ class ImageParamsHeuristics(object):
         # a string
         p = re.compile(r"[ ,]+(\d+)")
         spwids = p.findall(' %s' % spwspec)
-        spwids = map(int, spwids)
-        spwids = list(set(spwids))
+        spwids = set(map(int, spwids))
 
         # Select only the highest frequency spw to get the smallest beam
         # ref_ms = self.observing_run.get_ms(self.vislist[0])
@@ -355,7 +353,7 @@ class ImageParamsHeuristics(object):
                         LOG.info('uvtaper value changed (old: %s, new: %s). Re-calculating beams.' % (str(local_known_beams['uvtaper']), str(uvtaper)))
                         local_known_beams = {}
                         raise Exception('uvtaper value changed (old: %s, new: %s). Re-calculating beams.' % (str(local_known_beams['uvtaper']), str(uvtaper)))
-                    makepsf_beam = local_known_beams[field][intent][','.join(map(str,sorted(spwids)))]['beam']
+                    makepsf_beam = local_known_beams[field][intent][','.join(map(str, sorted(spwids)))]['beam']
                     LOG.info('Using previously calculated beam of %s for Field %s Intent %s SPW %s' % (str(makepsf_beam), field, intent, ','.join(map(str,sorted(spwids)))))
                     if makepsf_beam != 'invalid':
                         makepsf_beams.append(makepsf_beam)
@@ -396,13 +394,13 @@ class ImageParamsHeuristics(object):
                     if not valid_data[(field, intent)]:
                         # no point carrying on for this field/intent
                         LOG.debug('No data for field %s' % (field))
-                        utils.set_nested_dict(local_known_beams, (field, intent, ','.join(map(str,sorted(spwids))), 'beam'), 'invalid')
+                        utils.set_nested_dict(local_known_beams,
+                                              (field, intent, ','.join(map(str, sorted(spwids))), 'beam'), 'invalid')
                         continue
 
                     # use imager.advise to get the maximum cell size
                     aipsfieldofview = '%4.1farcsec' % (2.0 * largest_primary_beam_size)
-                    rtn = casatools.imager.advise(takeadvice=False,
-                                              amplitudeloss=0.5, fieldofview=aipsfieldofview)
+                    rtn = casatools.imager.advise(takeadvice=False, amplitudeloss=0.5, fieldofview=aipsfieldofview)
                     casatools.imager.done()
                     if not rtn[0]:
                         # advise can fail if all selected data are flagged
@@ -411,7 +409,8 @@ class ImageParamsHeuristics(object):
                         LOG.warning('imager.advise failed for field/intent %s/%s spw %s - no valid data?'
                                     % (field, intent, spwid))
                         valid_data[(field, intent)] = False
-                        utils.set_nested_dict(local_known_beams, (field, intent, ','.join(map(str,sorted(spwids))), 'beam'), 'invalid')
+                        utils.set_nested_dict(local_known_beams,
+                                              (field, intent, ','.join(map(str, sorted(spwids))), 'beam'), 'invalid')
                     else:
                         cellv = qaTool.convert(rtn[2], 'arcsec')['value']
                         cellu = 'arcsec'
@@ -426,7 +425,7 @@ class ImageParamsHeuristics(object):
                         mosweight = self.mosweight(intent, field)
                         paramList = ImagerParameters(msname=valid_vis_list,
                                                      antenna=antenna,
-                                                     spw=map(str, valid_real_spwid_list),
+                                                     spw=list(map(str, valid_real_spwid_list)),
                                                      field=field,
                                                      imagename=tmp_psf_filename,
                                                      imsize=cleanhelper.cleanhelper.getOptimumSize(int(2.0*largest_primary_beam_size/cellv)),
@@ -494,8 +493,7 @@ class ImageParamsHeuristics(object):
             # get the spwids in spwspec
             p = re.compile(r"[ ,]+(\d+)")
             spwids = p.findall(' %s' % spwspec)
-            spwids = map(int, spwids)
-            spwids = list(set(spwids))
+            spwids = list(set(map(int, spwids)))
 
             # Use the first spw for the time being. TBD if this needs to be improved.
             msname = self.vislist[0]
@@ -605,7 +603,7 @@ class ImageParamsHeuristics(object):
             if visfields == '':
                 continue
             visfields = visfields.split(',')
-            visfields = map(int, visfields)
+            visfields = list(map(int, visfields))
 
             # Get the phase directions and convert to ICRS
             for field in visfields:
@@ -938,9 +936,7 @@ class ImageParamsHeuristics(object):
             # find all the spwids present in the list
             p = re.compile(r"[ ,]+(\d+)")
             spwids = p.findall(' %s' % spwspec)
-            spwids = list(set(spwids))
-            spwids = map(str, sorted(map(int, spwids)))
-            spw = '_'.join(spwids)
+            spw = '_'.join(map(str, sorted(map(int, set(spwids)))))
             namer.spectral_window(spw)
         if specmode:
             namer.specmode(specmode)
@@ -1409,7 +1405,8 @@ class ImageParamsHeuristics(object):
                             if spw_topo_chan_param_dict[os.path.basename(msname)].get(str(intSpw), '') != '':
                                 # Use continuum frequency selection
                                 chansel = spw_topo_chan_param_dict[os.path.basename(msname)][str(intSpw)]
-                                nchan_sel = np.sum([c[1]-c[0]+1 for c in [map(int, sel.split('~')) for sel in chansel.split(';')]])
+                                nchan_sel = np.sum([c[1]-c[0]+1 for c in [list(map(int, sel.split('~')))
+                                                                          for sel in chansel.split(';')]])
                             else:
                                 # Use full spw
                                 chansel = '0~%d' % (spw_do.num_channels - 1)
@@ -1467,7 +1464,6 @@ class ImageParamsHeuristics(object):
                     if bw_corr_factor != 1.0:
                         LOG.info('Effective BW heuristic: Correcting sensitivity for EB %s Field %s SPW %s by %.3g from %.3g Jy/beam to %.3g Jy/beam' % (os.path.basename(msname).replace('.ms',''), field, str(intSpw), bw_corr_factor, chansel_corrected_center_field_sensitivity, center_field_sensitivity))
 
-
                     if gridder == 'mosaic':
                         # Correct for mosaic overlap factor
                         source_name = [f.source.name for f in ms.fields if (utils.dequote(f.name) == utils.dequote(field) and intent in f.intents)][0]
@@ -1478,10 +1474,10 @@ class ImageParamsHeuristics(object):
 
                         if calc_sens and not center_only:
                             # Calculate diagnostic sensitivities for first and last field
-                            first_field_id = min(map(int, field_ids[ms_index].split(',')))
+                            first_field_id = min(int(i) for i in field_ids[ms_index].split(','))
                             first_field_full_spw_sensitivity, first_field_eff_ch_bw, first_field_sens_bw = self.get_sensitivity(ms, first_field_id, intent, intSpw, chansel_full, specmode, cell, imsize, weighting, robust, uvtaper)
                             first_field_sensitivity = first_field_full_spw_sensitivity * (float(nchan_unflagged) / float(nchan_sel)) ** 0.5 * bw_corr_factor / overlap_factor
-                            last_field_id = max(map(int, field_ids[ms_index].split(',')))
+                            last_field_id = max(int(i) for i in field_ids[ms_index].split(','))
                             last_field_full_spw_sensitivity, last_field_eff_ch_bw, last_field_sens_bw = self.get_sensitivity(ms, last_field_id, intent, intSpw, chansel_full, specmode, cell, imsize, weighting, robust, uvtaper)
                             last_field_sensitivity = last_field_full_spw_sensitivity * (float(nchan_unflagged) / float(nchan_sel)) ** 0.5 * bw_corr_factor / overlap_factor
 
@@ -1499,7 +1495,7 @@ class ImageParamsHeuristics(object):
             sens_bw = sum(sens_bws.values())
             if specmode == 'cont' and spw_topo_chan_param_dict == {}:
                 # Correct for spw frequency overlaps
-                agg_bw = cqa.getvalue(cqa.convert(self.aggregate_bandwidth(map(int, spw.split(','))), 'Hz'))
+                agg_bw = cqa.getvalue(cqa.convert(self.aggregate_bandwidth(list(map(int, spw.split(',')))), 'Hz'))
                 sensitivity = sensitivity * (sens_bw / agg_bw) ** 0.5
                 sens_bw = agg_bw
             LOG.info('Final sensitivity estimate for Field %s, SPW %s specmode %s: %.3g Jy/beam', field, str(spw), specmode, sensitivity)
@@ -1556,7 +1552,7 @@ class ImageParamsHeuristics(object):
 
                 LOG.info('apparentsens result for EB %s Field %s SPW %s ChanRange %s: %s Jy/beam' % (os.path.basename(ms_do.name).replace('.ms',''), field, real_spwid, chanrange, apparentsens_value))
 
-                cstart, cstop = map(int, chanrange.split('~'))
+                cstart, cstop = list(map(int, chanrange.split('~')))
                 nchan = cstop - cstart + 1
 
                 SCF, physicalBW_of_1chan, effectiveBW_of_1chan = self.get_bw_corr_factor(ms_do, spw, nchan)

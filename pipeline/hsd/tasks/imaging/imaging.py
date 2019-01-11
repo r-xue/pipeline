@@ -216,7 +216,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             if len(in_field) == 0:
                 # fine, just go ahead
                 field_sel = in_field
-            elif group_desc.field_name in map(lambda x: x.strip('"'), in_field.split(',')):
+            elif group_desc.field_name in [x.strip('"') for x in in_field.split(',')]:
                 # pre-selection of the field name
                 field_sel = group_desc.field_name
             else:
@@ -286,12 +286,12 @@ class SDImaging(basetask.StandardTaskTemplate):
 
             coord_set = False
             for (name, _members) in image_group.iteritems():
-                msobjs = map(lambda x: x[0], _members)
-                antids = map(lambda x: x[1], _members)
-                spwids = map(lambda x: x[2], _members)
-                fieldids = map(lambda x: x[3], _members)
-                polslist = map(lambda x: x[4], _members)
-                chanmap_range_list = map(lambda x: x[5], _members)
+                msobjs = [x[0] for x in _members]
+                antids = [x[1] for x in _members]
+                spwids = [x[2] for x in _members]
+                fieldids = [x[3] for x in _members]
+                polslist = [x[4] for x in _members]
+                chanmap_range_list = [x[5] for x in _members]
                 LOG.info("Processing image group: {}".format(name))
                 for idx in xrange(len(msobjs)):
                     LOG.info("\t{}: Antenna {:d} ({}) Spw {} Field {:d} ({})".format(msobjs[idx].basename,

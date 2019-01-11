@@ -20,6 +20,7 @@ from .accumulator import Accumulator
 LOG = infrastructure.get_logger(__name__)
 DO_TEST = True
 
+
 def gridding_factory(observing_pattern):
     LOG.info('ObsPattern = %s' % observing_pattern)
     if observing_pattern.upper() == 'RASTER':
@@ -199,25 +200,27 @@ class GriddingBase(basetask.StandardTaskTemplate):
             index_dict[index_dict_key].extend(_index_list)
             index_dict_key += 1
         indexer = DataTableIndexer(context)
+
         def _g():
             for x in xrange(index_dict_key):
                 msid = self.msidxs[x]
                 ms = mses[msid]
                 for i in index_dict[x]:
                     yield indexer.perms2serial(ms.basename, i)
+
         index_list = numpy.fromiter(_g(), dtype=numpy.int64)
         num_spectra = len(index_list)
 
         if len(index_list) == 0:
             # no valid data, return empty table
             return []
-            
 
         def _g2(colname):
             for i in index_list:
                 vis, j = indexer.serial2perms(i)
                 datatable = dt_dict[vis]
                 yield datatable.getcell(colname, j)
+
         def _g3(colname):
             for key, msid in enumerate(self.msidxs):
                 basename = mses[msid].basename
@@ -373,6 +376,7 @@ class GriddingBase(basetask.StandardTaskTemplate):
         del GridTable
         return OutputTable
 
+
 class RasterGridding(GriddingBase):
     def _group(self, index_list, rows, msids, ras, decs, stats, CombineRadius, Allowance, GridSpacing, DecCorrection):
         """
@@ -441,7 +445,8 @@ class RasterGridding(GriddingBase):
                     ssIDX = numpy.take(sIDX, SelectR)
                     ssMS = numpy.take(sMS, SelectR)
                     ssDelta = numpy.sqrt(numpy.take(Delta, SelectR))
-                    line = (map(lambda x: self.spwmap[x], ssMS), self.poltype[0], x, y, RA, DEC, numpy.transpose([ssROW, ssDelta, ssRMS, ssIDX, ssMS]))
+                    line = ([self.spwmap[x] for x in ssMS], self.poltype[0], x, y, RA, DEC,
+                            numpy.transpose([ssROW, ssDelta, ssRMS, ssIDX, ssMS]))
                     del ssROW, ssRMS, ssIDX, ssMS, ssDelta
                 else:
                     line = (self.spw, self.poltype[0], x, y, RA, DEC, ())
@@ -455,6 +460,7 @@ class RasterGridding(GriddingBase):
         end = time.time()
         LOG.info('_group: elapsed time %s sec'%(end-start))
         return GridTable
+
 
 class SinglePointGridding(GriddingBase):
     def _group(self, index_list, rows, msids, ras, decs, stats, CombineRadius, Allowance, GridSpacing, DecCorrection):
@@ -532,4 +538,3 @@ class MultiPointGridding(GriddingBase):
         end = time.time()
         LOG.info('_group: elapsed time %s sec'%(end-start))
         return GridTable
-        

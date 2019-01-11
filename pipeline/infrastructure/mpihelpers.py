@@ -199,9 +199,9 @@ class Tier0FunctionCall(object):
             arg, val = arg_val
             return '%s=%r' % (arg, val)
 
-        self.__positional = map(format_arg_value, zip(arg_names, args))
-        self.__nameless = map(repr, args[arg_count:])
-        self.__keyword = map(format_arg_value, kwargs.items())
+        self.__positional = list(map(format_arg_value, zip(arg_names, args)))
+        self.__nameless = list(map(repr, args[arg_count:]))
+        self.__keyword = list(map(format_arg_value, kwargs.items()))
 
     def get_executable(self):
         return lambda: self.__fn(*self.__args, **self.__kwargs)

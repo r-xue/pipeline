@@ -37,8 +37,8 @@ def find_ranges(data):
     s = sorted(integers)
     ranges = []
     for _, g in itertools.groupby(enumerate(s), lambda i_x: i_x[0] - i_x[1]):
-        rng = map(operator.itemgetter(1), g)
-        if len(rng) is 1:
+        rng = list(map(operator.itemgetter(1), g))
+        if len(rng) == 1:
             ranges.append('%s' % rng[0])
         else:
             ranges.append('%s~%s' % (rng[0], rng[-1]))

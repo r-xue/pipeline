@@ -432,7 +432,7 @@ class LineWindowParser(object):
         self.parsed = None
         
         # science spectral windows
-        self.science_spw = map(lambda x: x.id, self.ms.get_spectral_windows(science_windows_only=True))
+        self.science_spw = [x.id for x in self.ms.get_spectral_windows(science_windows_only=True)]
         
         # measure tool
         self.me = casatools.measures
@@ -589,7 +589,7 @@ class LineWindowParser(object):
         
         # convert floating-point value to quantity string
         if item_type in (float, numpy.float32, numpy.float64):
-            return self._freq2chan(spwid, map(lambda x: '{0}Hz'.format(x), window))
+            return self._freq2chan(spwid, ['{0}Hz'.format(x) for x in window])
     
         # now list item should be a quantity string
         assert item_type == str, 'unexpected item type {0}'.format(item_type)
@@ -626,12 +626,12 @@ class LineWindowParser(object):
         
         # assuming that measure tool is properly initialized
         qa = casatools.quanta
-        qfreq = map(lambda x: qa.quantity(x), window)
+        qfreq = [qa.quantity(x) for x in window]
         if qa.gt(qfreq[0], qfreq[1]):
             qfreq = [qfreq[1], qfreq[0]]
-        mfreq = map(lambda x: self.me.frequency(rf='LSRK', v0=x), qfreq)
-        new_mfreq = map(lambda x: self.me.measure(v=x, rf=frame), mfreq)
-        new_window = map(lambda x: '{value}{unit}'.format(**x['m0']), new_mfreq)
+        mfreq = [self.me.frequency(rf='LSRK', v0=x) for x in qfreq]
+        new_mfreq = [self.me.measure(v=x, rf=frame) for x in mfreq]
+        new_window = ['{value}{unit}'.format(**x['m0']) for x in new_mfreq]
         return new_window
     
     def _construct_msselection(self, spwid, window):
@@ -662,7 +662,7 @@ def test_parser(ms):
     target_fields = ms.get_fields(intent='TARGET')
     field_id = target_fields[0].id
     science_spws = ms.get_spectral_windows(science_windows_only=True)
-    science_spw_ids = map(lambda x: x.id, science_spws)
+    science_spw_ids = [x.id for x in science_spws]
     # alias for science_spw_ids
     spwids = science_spw_ids
     chan_freq0 = science_spws[0].channels.chan_freqs.start

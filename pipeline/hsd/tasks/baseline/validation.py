@@ -1817,7 +1817,7 @@ def _to_validated_lines(detect_lines):
         for line in line_prop[2]:
             if line not in lines:
                 lines.append(line)
-    lines_withflag = map(lambda x: [0.5*sum(x), x[1]-x[0], True], lines)
+    lines_withflag = [[0.5*sum(x), x[1]-x[0], True] for x in lines]
     return lines_withflag
 
 
@@ -2044,7 +2044,7 @@ class SVDSolver2D(object):
     
     def find_good_solution(self, z, threshold=0.05):
         assert 0.0 <= threshold
-        eps_list = map(lambda x: 10**x, xrange(-11, -3))
+        eps_list = [10**x for x in xrange(-11, -3)]
         
         best_score = 1e30
         best_eps = eps_list[0]

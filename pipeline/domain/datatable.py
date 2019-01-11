@@ -1056,7 +1056,7 @@ def _interpolate(v, t, tref):
 
 
 def construct_timegroup(rows, group_id_list, group_association_list):
-    timetable_dict = dict(map(lambda x: (x, [[], []]), group_id_list))
+    timetable_dict = {x: [[], []] for x in group_id_list}
     for (idx, group_id) in enumerate(group_association_list):
         if group_id not in group_id_list:
             continue

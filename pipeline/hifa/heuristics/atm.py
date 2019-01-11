@@ -181,7 +181,7 @@ class AtmHeuristics(object):
         spw_ids = [spw.id for spw in self.science_spws]
 
         result = spw_ids[np.argsort(spw_freqs)[::-1]]
-        result = map(str, result)
+        result = list(map(str, result))
 
         for ispw, spw_id in enumerate(spw_ids):
             LOG.info('spw: %s median opacity: %s' % (spw_id, spw_freqs[ispw]))
@@ -200,7 +200,7 @@ class AtmHeuristics(object):
             median_opacity[ispw] = np.median(self.opacities[spw_id].data)
 
         result = spw_ids[np.argsort(median_opacity)[::-1]]
-        result = map(str, result)
+        result = list(map(str, result))
 
         for ispw, spw_id in enumerate(spw_ids):
             LOG.info('spw: %s median opacity: %s' % (spw_id, median_opacity[ispw]))
@@ -222,7 +222,7 @@ class AtmHeuristics(object):
                            np.exp(-1.0 * np.median(self.opacities[spw.id].data))
 
         result = spw_ids[np.argsort(metric)[::-1]]
-        result = map(str, result)
+        result = list(map(str, result))
 
         for ispw, spw_id in enumerate(spw_ids):
             LOG.info('spw: %s => spw score metric: %s' % (spw_id, metric[ispw]))
@@ -275,7 +275,7 @@ class AtmHeuristics(object):
 
         # Sort spws by highest to lowest metric; convert to list of strings.
         result = spw_ids[np.argsort(metric)[::-1]]
-        result = map(str, result)
+        result = list(map(str, result))
 
         for ispw, spw_id in enumerate(spw_ids):
             LOG.info('spw: %s => spw score metric: %s' % (spw_id, metric[ispw]))

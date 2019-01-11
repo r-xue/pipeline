@@ -173,7 +173,7 @@ class ImportData(basetask.StandardTaskTemplate):
                 raise TypeError('{!s} is of unhandled type'.format(vis))
 
             # convert all paths to absolute paths for the next sequence
-            to_import = map(os.path.abspath, to_import)
+            to_import = list(map(os.path.abspath, to_import))
 
             # if the file is not in the working directory, copy it across,
             # replacing the filename with the relocated filename
@@ -271,7 +271,7 @@ class ImportData(basetask.StandardTaskTemplate):
             LOG.debug('Adding measurement set(s) {0} from {1} to import queue'
                       ''.format(', '.join([os.path.basename(f) for f in ms_dirs]),
                                 vis))
-            cleaned_paths = map(os.path.normpath, ms_dirs)
+            cleaned_paths = list(map(os.path.normpath, ms_dirs))
             to_import.update(cleaned_paths)
 
         asdm_dirs = self._asdm_directories(filenames)

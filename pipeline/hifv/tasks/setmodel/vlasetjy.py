@@ -345,7 +345,7 @@ class VLASetjy(basetask.StandardTaskTemplate):
             spw_bandwidths = table.getcol('TOTAL_BANDWIDTH')
             reference_frequencies = table.getcol('REF_FREQUENCY')
     
-        center_frequencies = map(lambda rf, spwbw: rf + spwbw/2, reference_frequencies, spw_bandwidths)
+        center_frequencies = [rf + spwbw / 2 for rf, spwbw in zip(reference_frequencies, spw_bandwidths)]
 
         # LOG.info("STANDARD SOURCE FIELDS:")
         # print standard_source_fields

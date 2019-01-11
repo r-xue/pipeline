@@ -40,7 +40,7 @@ class FluxMeasurement(object):
         if isinstance(arg, Decimal):
             return arg
         elif isinstance(arg, (int, float, long)):
-            return Decimal(map(str, arg))
+            return Decimal(list(map(str, arg)))
         else:
             raise ValueError('Could not convert {!r} to Decimal'.format(arg))
 
@@ -50,7 +50,7 @@ class FluxMeasurement(object):
                 self.Q.to_units(FluxDensityUnits.JANSKY),
                 self.U.to_units(FluxDensityUnits.JANSKY),
                 self.V.to_units(FluxDensityUnits.JANSKY)]
-        return map(float, iquv)
+        return list(map(float, iquv))
 
     def __str__(self):
         return '<FluxMeasurement(Spw #{spw}, IQUV=({iquv}), spix={spix}, origin={origin}>'.format(

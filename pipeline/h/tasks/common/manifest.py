@@ -20,7 +20,7 @@ class PipelineManifest(object):
         Import the manifest from an existing manifest file
         """
         with open(xmlfile, 'r') as f:
-            lines = map(lambda x: x.replace('\n', '').strip(), f.readlines())
+            lines = [x.replace('\n', '').strip() for x in f.readlines()]
             self.piperesults = eltree.fromstring(''.join(lines))
 
     def set_ous(self, ous_name):

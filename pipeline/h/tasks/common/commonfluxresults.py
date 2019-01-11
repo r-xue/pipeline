@@ -63,7 +63,8 @@ class FluxCalibrationResults(basetask.Results):
                 for new_m in measurements:
                     to_replace = [m for m in field.flux_densities
                                   if m.origin == new_m.origin and m.spw_id == new_m.spw_id]
-                    map(field.flux_densities.remove, to_replace)
+                    for flux_density in to_replace:
+                        field.flux_densities.remove(flux_density)
 
                 # .. and then updating with our new values
                 field.flux_densities.update(measurements)
@@ -75,8 +76,8 @@ class FluxCalibrationResults(basetask.Results):
             # rather complicated string format to display something like:
             # 0841+708 spw #0: I=3.2899 Jy; Q=0 Jy; U=0 Jy; V=0 Jy
             lines = ['\tField {field} spw #{spw}: I={I}; Q={Q}; U={U}; V={V}; spix={spix}\n'.format(
-                    field=field, spw=flux.spw_id, 
-                    I=str(flux.I), Q=str(flux.Q), U=str(flux.U), V=str(flux.V), spix=str(flux.spix)) 
+                    field=field, spw=flux.spw_id,
+                    I=str(flux.I), Q=str(flux.Q), U=str(flux.U), V=str(flux.V), spix=str(flux.spix))
                     for flux in flux_by_spw]
             s += ''.join(lines)
 

@@ -4,8 +4,8 @@ This document provides notes on the conversion of the Pipeline code to become
 Python 3 compatible.
 
 Python 3 conversion is tracked in 
-[CAS-11189](https://open-jira.nrao.edu/browse/CAS-11189)
-
+[CAS-11189](https://open-jira.nrao.edu/browse/CAS-11189) and 
+[CAS-12005](https://open-jira.nrao.edu/browse/CAS-12005).
 
 ## Updating code with '2to3' tool
 
@@ -23,14 +23,13 @@ nonzero, operator, paren, renames, sys_exc, throw, xreadlines
 Rules that have been applied (guard against regression):
 
 ```
-basestring, except, execfile, filter, has_key, ne, print, raise, reduce, repr, tuple_params, zip
+basestring, except, execfile, filter, has_key, map, ne, print, raise, reduce, repr, tuple_params, zip
 ```
 
 Rules that can be updated on trunk during C7 dev:
 
 ```
-idioms, import, map, set_literal (optional),
-types (after idioms), ws_comma (optional)
+idioms, import, set_literal (optional), types (after idioms), ws_comma (optional)
 ```
 
 Rules that require updates on a Py3-only branch during C8 dev:
@@ -178,4 +177,32 @@ lambda (x, y): y - x
 After:
 ```
 lambda x_y: x_y[1] - x_y[0]
+```
+
+### map, filter, zip now return an iterable object, instead of a list
+If the result from a call to map, filter, or zip is expected to be a list, then wrap the call in an explicit list
+statement.
+
+Before:
+```
+spwids = map(int, inputs['spw'].split(','))
+return spwids[0]
+```
+After:
+```
+spwids = list(map(int, inputs['spw'].split(',')))
+return spwids[0]
+```
+
+As a side-effect of this change, one can no longer use a call to 'map' (with/without assigning result to variable)
+to run an implicit for loop. The loop has to be made explicit.
+
+Before:
+```
+map(intent_intervaltree.remove, to_remove)
+```
+After:
+```
+for interval in to_remove:
+    intent_intervaltree.remove(interval)
 ```
