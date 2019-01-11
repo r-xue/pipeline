@@ -60,8 +60,8 @@ class SDBLFlagSummary(object):
         #userFlag = self.userFlag
 
         LOG.debug('Members to be processed in worker class:')
-        for (a,f,s,p) in itertools.izip(antid_list, fieldid_list, spwid_list, pols_list):
-            LOG.debug('\t%s: Antenna %s Field %d Spw %d Pol %s'%(ms.basename,a,f,s,p))
+        for (a, f, s, p) in itertools.izip(antid_list, fieldid_list, spwid_list, pols_list):
+            LOG.debug('\t%s: Antenna %s Field %d Spw %d Pol %s'%(ms.basename, a, f, s, p))
         
         # output directory
         stage_number = self.context.task_counter
@@ -73,8 +73,8 @@ class SDBLFlagSummary(object):
 
         flagSummary = []
         # loop over members (practically, per antenna loop in an MS)
-        for (antid,fieldid,spwid,pollist) in itertools.izip(antid_list, fieldid_list, spwid_list, pols_list):
-            LOG.debug('Performing flagging for %s Antenna %d Field %d Spw %d'%(ms.basename,antid,fieldid,spwid))
+        for (antid, fieldid, spwid, pollist) in itertools.izip(antid_list, fieldid_list, spwid_list, pols_list):
+            LOG.debug('Performing flagging for %s Antenna %d Field %d Spw %d' % (ms.basename, antid, fieldid, spwid))
             filename_in = ms.name
             ant_name = ms.get_antenna(antid)[0].name
             asdm = common.asdm_name_from_ms(ms)
@@ -171,20 +171,20 @@ class SDBLFlagSummary(object):
         # Plot statistics
         NROW = len(ids)
         # Store data for plotting
-        FlaggedRowsCategory = [[],[],[],[],[],[],[],[],[],[]]
+        FlaggedRowsCategory = [[], [], [], [], [], [], [], [], [], []]
         FlaggedRows = []
         PermanentFlag = []
-        NPpdata = numpy.zeros((7,NROW), numpy.float)
-        NPpflag = numpy.zeros((7,NROW), numpy.int)
-        NPprows = numpy.zeros((2,NROW), numpy.int)
+        NPpdata = numpy.zeros((7, NROW), numpy.float)
+        NPpflag = numpy.zeros((7, NROW), numpy.int)
+        NPprows = numpy.zeros((2, NROW), numpy.int)
         N = 0
         for ID in ids:
             row = DataTable.getcell('ROW', ID)
             # Check every flags to create summary flag
-            tFLAG = DataTable.getcell('FLAG',ID)[polid]
-            tPFLAG = DataTable.getcell('FLAG_PERMANENT',ID)[polid]
-            tTSYS = DataTable.getcell('TSYS',ID)[polid]
-            tSTAT = DataTable.getcell('STATISTICS',ID)[polid]
+            tFLAG = DataTable.getcell('FLAG', ID)[polid]
+            tPFLAG = DataTable.getcell('FLAG_PERMANENT', ID)[polid]
+            tTSYS = DataTable.getcell('TSYS', ID)[polid]
+            tSTAT = DataTable.getcell('STATISTICS', ID)[polid]
 
             # permanent flag
             Flag = self._get_parmanent_flag_summary(tPFLAG, FlagRule_local)

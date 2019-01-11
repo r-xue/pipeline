@@ -298,7 +298,7 @@ class CheckProductSizeHeuristics(object):
                 small_cube_productsizes = [productsizes[spw] for spw in small_cube_spws]
                 small_cube_info = list(zip(small_cube_spws, small_cube_frequencies, small_cube_productsizes))
                 # Sort spw list by size and frequency
-                small_cube_info = sorted(small_cube_info, key=operator.itemgetter(2,1))
+                small_cube_info = sorted(small_cube_info, key=operator.itemgetter(2, 1))
                 for small_cube_spw, small_cube_frequency, small_cube_productsize in small_cube_info:
                     if (mitigated_productsize + small_cube_productsize <= self.inputs.maxproductsize) or (self.inputs.maxproductsize == -1):
                         mitigated_spws.append(small_cube_spw)

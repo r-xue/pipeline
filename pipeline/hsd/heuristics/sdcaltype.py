@@ -20,7 +20,7 @@ class CalibrationTypeHeuristics(api.Heuristic):
     def _heuristics_factory(self, filename):
         h = DataTypeHeuristics()
         datatype = h(filename).lower()
-        return getattr(self,'_generate_%s_heuristics'%(datatype))()
+        return getattr(self, '_generate_%s_heuristics' % datatype)()
 
     def _generate_ms2_heuristics(self):
         return MsCalibrationTypeHeuristics()
@@ -49,8 +49,6 @@ class DefaultCalibrationTypeHeuristics(api.Heuristic):
         return 'none'
 
 
-
-
 def _gap_analysis(timestamps, intervals, threshold_factor=3.0):
     separation = timestamps[1:] - timestamps[:-1]
     real_separation = separation.take(separation.nonzero()[0])
@@ -60,16 +58,17 @@ def _gap_analysis(timestamps, intervals, threshold_factor=3.0):
     LOG.debug('threshold = %s'%(threshold))
     gaplist = numpy.where(separation > threshold)[0]
     return gaplist
-        
+
+
 def _israster(timestamp, interval, direction):
     # gap analysis
     gap_list = _gap_analysis(timestamp, interval, threshold_factor=5.0)
     LOG.debug('gap_list=%s'%(gap_list))
 
     # inspect scan direction
-    dir0 = direction[:,:(gap_list[0]+1)]
-    ddir0 = dir0[:,1:] - dir0[:,:-1]
-    ddir0_nonzero = ddir0[:,ddir0[0].nonzero()[0]]
+    dir0 = direction[:, :(gap_list[0]+1)]
+    ddir0 = dir0[:, 1:] - dir0[:, :-1]
+    ddir0_nonzero = ddir0[:, ddir0[0].nonzero()[0]]
     slope = ddir0_nonzero[1] / ddir0_nonzero[0]
     LOG.debug('slope=%s'%(slope))
     slope_mean = slope.mean()
@@ -127,11 +126,11 @@ class MsCalibrationTypeHeuristics(api.Heuristic):
                 regex = '^OBSERVE_TARGET[#,_](ON|OFF)_SOURCE'
                 found = False
                 for obsmode in obsmodes:
-                    if re.match(regex,obsmode) is not None:
+                    if re.match(regex, obsmode) is not None:
                         found = True
                         break
                 if found:
-                    caltype = 'ps' #'otf'
+                    caltype = 'ps'  # 'otf'
 
         return caltype
 
@@ -143,14 +142,13 @@ class AsdmCalibrationTypeHeuristics(api.Heuristic):
         caltype = 'none'
         
         import xml.dom.minidom as DOM
-        scan_table = os.path.join(filename,'Scan.xml')
+        scan_table = os.path.join(filename, 'Scan.xml')
         dom3 = DOM.parse(scan_table)
         rootnode = dom3.getElementsByTagName('scanIntent')[0]
         intelm = rootnode
-        intstr = intelm.childNodes[0].data.encode( 'UTF-8' )
+        intstr = intelm.childNodes[0].data.encode('UTF-8')
         if ( intstr.find( 'OBSERVE_TARGET' ) != -1 ):
-            caltype = 'ps' #'otf'
+            caltype = 'ps'  # 'otf'
         dom3.unlink()
         
         return caltype
-    

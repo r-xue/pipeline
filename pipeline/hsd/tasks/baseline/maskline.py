@@ -24,7 +24,7 @@ NoData = common.NoData
 class MaskLineInputs(vdp.StandardInputs):
     window = vdp.VisDependentProperty(default=[])
     windowmode = vdp.VisDependentProperty(default='replace')
-    edge = vdp.VisDependentProperty(default=(0,0))
+    edge = vdp.VisDependentProperty(default=(0, 0))
     broadline = vdp.VisDependentProperty(default=True)
     clusteringalgorithm = vdp.VisDependentProperty(default='kmean')
     
@@ -87,7 +87,6 @@ class MaskLine(basetask.StandardTaskTemplate):
         index_dict = utils.get_index_list_for_ms3(dt_dict, group_desc, member_list, srctype)
         t1 = time.time()
         LOG.info('Elapsed time for generating index_dict: {0} sec'.format(t1 - t0))
-        
 
         LOG.debug('index_dict={}', index_dict)
         # debugging

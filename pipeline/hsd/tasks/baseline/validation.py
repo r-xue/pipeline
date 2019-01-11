@@ -33,7 +33,7 @@ def ValidationFactory(pattern):
 
 class ValidateLineInputs(vdp.StandardInputs):
     window = vdp.VisDependentProperty(default=[])
-    edge = vdp.VisDependentProperty(default=(0,0))
+    edge = vdp.VisDependentProperty(default=(0, 0))
     nsigma = vdp.VisDependentProperty(default=3.0)
     xorder = vdp.VisDependentProperty(default=-1.0)
     yorder = vdp.VisDependentProperty(default=-1.0)
@@ -129,8 +129,8 @@ class ValidateLineSinglePointing(basetask.StandardTaskTemplate):
             for i in index_list:
                 vis, row = indexer.serial2perms(i)
                 datatable = datatable_dict[vis]
-                datatable.putcell('MASKLIST',row,signal[2])
-                datatable.putcell('NOCHANGE',row,False)
+                datatable.putcell('MASKLIST', row, signal[2])
+                datatable.putcell('NOCHANGE', row, False)
             outcome = {'lines': lines,
                        'channelmap_range': lines,
                        'cluster_info': {}}
@@ -150,7 +150,6 @@ class ValidateLineSinglePointing(basetask.StandardTaskTemplate):
             center = float(sum(w)) / 2
             width = max(w) - min(w)
             lines.append([center, width, True])
-            
 
         LOG.info('Accept all detected lines without clustering analysis.')
 
@@ -162,19 +161,19 @@ class ValidateLineSinglePointing(basetask.StandardTaskTemplate):
             for i in index_list:
                 vis, row = indexer.serial2perms(i)
                 datatable = datatable_dict[vis]
-                mask_list = datatable.getcell('MASKLIST',row)
-                no_change = datatable.getcell('NOCHANGE',row)
+                mask_list = datatable.getcell('MASKLIST', row)
+                no_change = datatable.getcell('NOCHANGE', row)
                 #LOG.debug('DataTable = %s, detect_signal = %s, OldFlag = %s' % (mask_list, detect_signal[row][2], no_change))
-                datatable.putcell('MASKLIST',row,detect_signal[row][2])
-                datatable.putcell('NOCHANGE',row,False)
+                datatable.putcell('MASKLIST', row, detect_signal[row][2])
+                datatable.putcell('NOCHANGE', row, False)
 
         # Iteration case
         else:
             for i in index_list:
                 vis, row = indexer.serial2perms(i)
                 datatable = datatable_dict[vis]
-                mask_list = datatable.getcell('MASKLIST',row)
-                no_change = datatable.getcell('NOCHANGE',row)
+                mask_list = datatable.getcell('MASKLIST', row)
+                no_change = datatable.getcell('NOCHANGE', row)
                 #LOG.debug('DataTable = %s, detect_signal = %s, OldFlag = %s' % (mask_list, detect_signal[0][2], no_change))
                 if mask_list == detect_signal[0][2]:
                     #if type(no_change) != int:
@@ -184,10 +183,10 @@ class ValidateLineSinglePointing(basetask.StandardTaskTemplate):
                         # iteration counter is incremented *after* the
                         # baseline subtraction in refactorred code.
                         #datatable.putcell('NOCHANGE',row,iteration - 1)
-                        datatable.putcell('NOCHANGE',row,iteration)
+                        datatable.putcell('NOCHANGE', row, iteration)
                 else:
-                    datatable.putcell('MASKLIST',row,detect_signal[0][2])
-                    datatable.putcell('NOCHANGE',row,False)
+                    datatable.putcell('MASKLIST', row, detect_signal[0][2])
+                    datatable.putcell('NOCHANGE', row, False)
         outcome = {'lines': lines,
                    'channelmap_range': lines,
                    'cluster_info': {}}
@@ -262,8 +261,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             for i in index_list:
                 vis, row = indexer.serial2perms(i)
                 datatable = datatable_dict[vis]
-                datatable.putcell('MASKLIST',row,signal[2])
-                datatable.putcell('NOCHANGE',row,False)
+                datatable.putcell('MASKLIST', row, signal[2])
+                datatable.putcell('NOCHANGE', row, False)
             outcome = {'lines': lines,
                        'channelmap_range': lines,
                        'cluster_info': {}}
@@ -334,7 +333,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             self.DebugOutVer[0] += 1
             with open('ClstRegion.%s.%02d.txt' % (self.DebugOutName, self.DebugOutVer[0]), 'w') as fp:
                 for i in range(len(Region)):
-                    fp.writelines('%d %f %f %f %f %d %d\n' % (Region[i][0],Region[i][1],Region[i][2],Region[i][3],Region[i][4],Region[i][5],Region[i][6]))
+                    fp.writelines('%d %f %f %f %f %d %d\n' % (Region[i][0], Region[i][1], Region[i][2], Region[i][3],
+                                                              Region[i][4], Region[i][5], Region[i][6]))
 
         del dummy
         LOG.debug('Npos = {}', Npos)
@@ -347,8 +347,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             for i in index_list:
                 vis, row = indexer.serial2perms(i)
                 datatable = datatable_dict[vis]
-                datatable.putcell('MASKLIST',row,signal)
-                datatable.putcell('NOCHANGE',row,False)
+                datatable.putcell('MASKLIST', row, signal)
+                datatable.putcell('NOCHANGE', row, False)
             outcome = {'lines': manual_window,
                        'channelmap_range': manual_window,
                        'cluster_info': {}}
@@ -429,8 +429,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             for i in index_list:
                 vis, row = indexer.serial2perms(i)
                 datatable = datatable_dict[vis]
-                datatable.putcell('MASKLIST',row,signal)
-                datatable.putcell('NOCHANGE',row,False)
+                datatable.putcell('MASKLIST', row, signal)
+                datatable.putcell('NOCHANGE', row, False)
             outcome = {'lines': manual_window,
                        'channelmap_range': manual_window,
                        'cluster_info': {}}
@@ -447,7 +447,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         print('LineIndex: {}'.format(LineIndex))
 
         ### 2011/05/17 anti-scaling of the line width
-        Region2[:,0] = Region2[:,0] * self.CLUSTER_WHITEN
+        Region2[:, 0] = Region2[:, 0] * self.CLUSTER_WHITEN
         for Nc in range(Ncluster):
             lines[Nc][1] *= self.CLUSTER_WHITEN
 
@@ -458,12 +458,12 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         #for i in range(len(BestCategory)): category[i] = LineIndex2[BestCategory[i]]
         category = [LineIndex2[bc] for bc in BestCategory]
 
-
         ######## Clustering: Detection Stage ########
         ProcStartTime = time.time()
         LOG.info('Clustering: Detection Stage Start')
 
-        (GridCluster, GridMember) = self.detection_stage(Ncluster, nra, ndec, x0, y0, grid_ra, grid_dec, category, Region, detect_signal)
+        (GridCluster, GridMember) = self.detection_stage(Ncluster, nra, ndec, x0, y0, grid_ra, grid_dec, category,
+                                                         Region, detect_signal)
 
         ProcEndTime = time.time()
         LOG.info('Clustering: Detection Stage End: Elapsed time = {} sec', (ProcEndTime - ProcStartTime))
@@ -500,7 +500,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         # create virtual index_list
         (RealSignal, lines, channelmap_range) = self.final_stage(GridCluster, GridMember, Region, Region2, 
                                                                  lines, category, grid_ra, grid_dec, broad_component, 
-                                                                 xorder, yorder, x0, y0, Grid2SpectrumID, index_list, PosList)
+                                                                 xorder, yorder, x0, y0, Grid2SpectrumID, index_list,
+                                                                 PosList)
 
         ProcEndTime = time.time()
         LOG.info('Clustering: Final Stage End: Elapsed time = {} sec', (ProcEndTime - ProcStartTime))
@@ -531,7 +532,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             # available, while NOCHANGE -1 indicates NOCHANGE is False.
             #tMASKLIST = datatable.getcell('MASKLIST',row)
             #tNOCHANGE = datatable.getcell('NOCHANGE',row)
-            tMASKLIST = datatable.getcell('MASKLIST',row)
+            tMASKLIST = datatable.getcell('MASKLIST', row)
             if len(tMASKLIST) == 0 or tMASKLIST[0][0] < 0:
                 tMASKLIST = []
             else:
@@ -678,12 +679,13 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
            (min(old[1], new[1]) - max(old[0], new[0]) + 1) / float(max((old[1] - old[0] + 1), (new[1] - new[0] + 1))) >= overlap:
             #print 'Identical', old, new
             return True
-        else: return False
+        else:
+            return False
 
     def clustering_kmean(self, Region, Region2):
         # Region = [[row, chan0, chan1, RA, DEC, flag, Binning],[],[],,,[]]
         # Region2 = [[Width, Center],[],[],,,[]]
-        MedianWidth = numpy.median(Region2[:,0])
+        MedianWidth = numpy.median(Region2[:, 0])
         LOG.trace('MedianWidth = {}', MedianWidth)
 
         MaxCluster = int(rules.ClusterRule['MaxCluster'])
@@ -702,7 +704,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         for Ncluster in xrange(1, MaxCluster + 1):
             index0=len(ListScore)
             # Fix the random seed 2008/5/23
-            numpy.random.seed((1234,567))
+            numpy.random.seed((1234, 567))
             # Try multiple times to supress random selection effect 2007/09/04
             for Multi in xrange(min(Ncluster+1, 10)):
                 codebook, diff = VQ.kmeans(Region2, Ncluster, iter=50)
@@ -719,8 +721,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                     LOG.trace('Cluster Category&Distance {}, distance = {}', category, distance)
 
                     # remove empty line in codebook
-                    codebook = codebook.take([x for x in xrange(0,len(codebook)) 
-                                            if any(category==x)], axis=0)
+                    codebook = codebook.take([x for x in xrange(0, len(codebook)) if any(category==x)], axis=0)
                     NclusterNew = len(codebook)
 
                     # Clear Flag
@@ -759,7 +760,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                     if infrastructure.logging.logging_level == infrastructure.logging.LOGGING_LEVELS['trace'] or \
                        infrastructure.logging.logging_level == infrastructure.logging.LOGGING_LEVELS['debug']:
                         with open('ClstProp.%s.%02d.txt' % (self.DebugOutName, self.DebugOutVer[1]), "wa") as fp:
-                            fp.writelines('%d,%f,%f,%f,%f,%s\n' % (NclusterNew, Score, MeanDistance, MedianWidth, MemberRate, lines))
+                            fp.writelines('%d,%f,%f,%f,%f,%s\n' % (NclusterNew, Score, MeanDistance, MedianWidth,
+                                                                   MemberRate, lines))
 
                     if BestScore < 0 or Score < BestScore:
                         BestNcluster = NclusterNew
@@ -782,7 +784,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                 break
 
         if converged is False:
-            LOG.warn('Clustering analysis not converged. Number of clusters may be greater than upper limit (MaxCluster={})', MaxCluster)
+            LOG.warn('Clustering analysis not converged. Number of clusters may be greater than upper limit'
+                     ' (MaxCluster={})', MaxCluster)
 
         self.cluster_info['cluster_score'] = [ListNcluster, ListScore]
         self.cluster_info['detected_lines'] = Region2
@@ -815,8 +818,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             self.Category
             self.Ncluster
         """
-        Data = self.set_data(Region2, ordering=[0,1]) # Data: numpy[[width, center],[w,c],,,]
-        Repeat = 3 # Number of artificial detection points to normalize the cluster distance 
+        Data = self.set_data(Region2, ordering=[0, 1])  # Data: numpy[[width, center],[w,c],,,]
+        Repeat = 3  # Number of artificial detection points to normalize the cluster distance
         # Calculate LinkMatrix from given data set
         if method.lower() == 'single': # nearest point linkage method
             H_Clustering = HIERARCHY.single
@@ -910,7 +913,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             Bestlines.append([Range[j][1], Range[j][0], True, Range[j][4]])
         LOG.info('Final: Ncluster = {}, lines = {}', Ncluster, Bestlines)
 
-        self.cluster_info['cluster_score'] = [[1,2,3,4,5], [1,2,3,4,5]]
+        self.cluster_info['cluster_score'] = [[1, 2, 3, 4, 5], [1, 2, 3, 4, 5]]
         self.cluster_info['detected_lines'] = Region2
         self.cluster_info['cluster_property'] = Bestlines # [[Center, Width, T/F, ClusterRadius],[],[],,,[]]
         self.cluster_info['cluster_scale'] = self.CLUSTER_WHITEN
@@ -984,11 +987,11 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                 Range[k][i] = NewData[i].mean()
                 Stdev[k][i] = NewData[i].std()
             if(NumParam == 4):
-                Tmp = ((NewData - numpy.array([[Range[k][0]],[Range[k][1]],[Range[k][2]],[Range[k][3]]]))**2).sum(axis=0)**0.5
+                Tmp = ((NewData - numpy.array([[Range[k][0]], [Range[k][1]], [Range[k][2]], [Range[k][3]]]))**2).sum(axis=0)**0.5
             elif(NumParam == 3):
-                Tmp = ((NewData - numpy.array([[Range[k][0]],[Range[k][1]],[Range[k][2]]]))**2).sum(axis=0)**0.5
+                Tmp = ((NewData - numpy.array([[Range[k][0]], [Range[k][1]], [Range[k][2]]]))**2).sum(axis=0)**0.5
             else: # NumParam == 2
-                Tmp = ((NewData - numpy.array([[Range[k][0]],[Range[k][1]]]))**2).sum(axis=0)**0.5
+                Tmp = ((NewData - numpy.array([[Range[k][0]], [Range[k][1]]]))**2).sum(axis=0)**0.5
             Threshold = numpy.median(Tmp) + Tmp.std() * Nthreshold
             #Threshold = Tmp.mean() + Tmp.std() * Nthreshold
             Range[k][4] = Threshold
@@ -1116,7 +1119,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         # 3/3 (0.7<V)-> detected for all spectra -> Valid
         # ThresholdValid should be 0.5 -> 0.7 in the future
 
-        (Ncluster,nra,ndec) = GridCluster.shape
+        (Ncluster, nra, ndec) = GridCluster.shape
         MinChanBinSp = 50.0
         BinningVariation = 1 + int(math.ceil(math.log(self.nchan/MinChanBinSp)/math.log(4)))
 
@@ -1156,7 +1159,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         #          [0.2, 0.5, 1.0, 0.5, 0.2]
         #          [0.0, 0.2, 0.3, 0.2, 0.0]
         # NewRating = 1.0 / (Dx**2 + Dy**2) : if (Dx, Dy) == (0, 0) rating = 6.0
-        (Ncluster,nra,ndec) = GridCluster.shape
+        (Ncluster, nra, ndec) = GridCluster.shape
         GridScore = numpy.zeros((2, nra, ndec), dtype=numpy.float32)
         LOG.trace('GridCluster = {}', GridCluster)
         LOG.trace('lines = {}', lines)
@@ -1164,9 +1167,9 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             if lines[Nc][2] != False:
                 GridScore[:] = 0.0
                 for x in xrange(nra):
-                    range_x = range(-min(2,x),0) + range(1,min(3,nra-x))
+                    range_x = range(-min(2, x), 0) + range(1, min(3, nra-x))
                     for y in xrange(ndec):
-                        range_y = range(-min(2,y),0) + range(1,min(3,ndec-y))
+                        range_y = range(-min(2, y), 0) + range(1, min(3, ndec-y))
                         # TN refactoring 
                         # split smoothing loop
                         # dx = 0 and dy = 0
@@ -1445,7 +1448,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                     # following clipping stage. So, evalueate Diff 
                     # only once here and reuse it in clipping.
                     for (Width, Center, x, y, flag) in FitData:
-                        LOG.trace('{} {} {} {} {} {}', xorder0,yorder0,x,y,A0,A1)
+                        LOG.trace('{} {} {} {} {} {}', xorder0, yorder0, x, y, A0, A1)
                         (Fit0, Fit1) = _eval_poly(xorder0+1, yorder0+1, x, y, A0, A1)
                         Fit0 -= Center
                         Fit1 -= Width
@@ -1550,8 +1553,9 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                             # Setup the position near the border
                             RA2 = RA1 - (RA1 - RA0) * HalfGrid / sqrt(Dist2)
                             DEC2 = DEC1 - (DEC1 - DEC0) * HalfGrid / sqrt(Dist2)
-                            LOG.trace('[X,Y],[XX,YY] = [{},{}],{}', x,y,Nearest)
-                            LOG.trace('(RA0,DEC0),(RA1,DEC1),(RA2,DEC2) = ({:.5},{:.5}),({:.5},{:.5}),({:.5},{:.5})',RA0,DEC0,RA1,DEC1,RA2,DEC2)
+                            LOG.trace('[X,Y],[XX,YY] = [{},{}],{}', x, y, Nearest)
+                            LOG.trace('(RA0,DEC0),(RA1,DEC1),(RA2,DEC2) = ({:.5},{:.5}),({:.5},{:.5}),({:.5},{:.5})',
+                                      RA0, DEC0, RA1, DEC1, RA2, DEC2)
                             # Calculate Fit and apply same value to all the spectra in the Blur Grid
                             ### 2011/05/15 (Width, Center) -> (minchan, maxChan)
                             # Border case
@@ -1570,9 +1574,9 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                                     if ID in RealSignal:
                                         RealSignal[ID][2].append(ProtectMask)
                                     else:
-                                        RealSignal[ID] = [PosList[0][PID], PosList[1][PID] ,[ProtectMask]]
+                                        RealSignal[ID] = [PosList[0][PID], PosList[1][PID], [ProtectMask]]
                             else:
-                                LOG.trace('------12------ out of range Fit0={} Fit1={}', Fit0,Fit1)
+                                LOG.trace('------12------ out of range Fit0={} Fit1={}', Fit0, Fit1)
                                 continue
 
                 # Add every SubClusters to GridCluster just for Plot
@@ -1635,9 +1639,9 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                     while(len(SearchList) != 0):
                         cx, cy = SearchList[0]
                         #for dx in [-1, 0, 1]:
-                        for dx in xrange(-min(1,cx),min(2,nra-cx)):
+                        for dx in xrange(-min(1, cx), min(2, nra-cx)):
                             #for dy in [-1, 0, 1]:
-                            for dy in xrange(-min(1,cy),min(2,ndec-cy)):
+                            for dy in xrange(-min(1, cy), min(2, ndec-cy)):
                                 (nx, ny) = (cx + dx, cy + dy)
                                 #if 0 <= nx < nra and 0 <= ny < ndec and Plane[nx][ny] == 1:
                                 if Plane[nx][ny] == 1:
@@ -1677,7 +1681,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         # caution: if nra < (Blur*2+1) and ndec < (Blur*2+1)
         #  => dimension of SPC.convolve2d(Sub,kernel) gets not (nra,ndec) but (Blur*2+1,Blur*2+1)
         if nra < (Blur * 2 + 1) and ndec < (Blur * 2 + 1): Blur = int((max(nra, ndec) - 1) / 2)
-        kernel = numpy.zeros((Blur * 2 + 1, Blur * 2 + 1),dtype=int)
+        kernel = numpy.zeros((Blur * 2 + 1, Blur * 2 + 1), dtype=int)
         for x in xrange(Blur * 2 + 1):
             dx = Blur - x
             for y in xrange(Blur * 2 + 1):
@@ -1724,8 +1728,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             sorted_index = flat_lines.argsort()
             flag = -1
             left_edge = flat_lines[sorted_index[0]]
-            nedges=0
-            for i in xrange(1,nlines-2):
+            nedges = 0
+            for i in xrange(1, nlines-2):
                 if sorted_index[i] % 2 == 0:
                     flag -= 1
                 else:
@@ -1739,7 +1743,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             sorted_index[nedges] = left_edge
             sorted_index[nedges+1] = flat_lines[sorted_index[-1]]
             nedges += 2
-            return sorted_index[:nedges].reshape((nedges/2,2)).tolist()
+            return sorted_index[:nedges].reshape((nedges/2, 2)).tolist()
             #region = numpy.ones(nchan + 2, dtype=int)
             #for [chan0, chan1] in lines:
             #    region[chan0 + 1:chan1 + 1] = 0
@@ -1762,28 +1766,28 @@ def convolve2d(data, kernel, mode='nearest', cval=0.0):
     mode = 'nearest'  use nearest pixel value for pixels beyond the edge
            'constant' use cval for pixels beyond the edge
     """
-    (ndx,ndy) = data.shape
-    (nkx,nky) = kernel.shape
-    edgex = int( 0.5 * ( nkx - 1 ) )
-    edgey = int( 0.5 * ( nky - 1 ) )
-    dummy = numpy.ones( (ndx+2*edgex,ndy+2*edgey), dtype=numpy.float64 ) * cval
-    dummy[edgex:ndx+edgex,edgey:ndy+edgey] = data
-    if ( mode == 'nearest' ):
-        dummy[0:edgex,0:edgey] = data[0][0]
-        dummy[0:edgex,edgey+ndy:] = data[0][ndy-1]
-        dummy[edgex+ndx:,0:edgey] = data[ndx-1][0]
-        dummy[edgex+ndx:,edgey+ndy:] = data[ndx-1][ndy-1]
+    (ndx, ndy) = data.shape
+    (nkx, nky) = kernel.shape
+    edgex = int(0.5 * (nkx - 1))
+    edgey = int(0.5 * (nky - 1))
+    dummy = numpy.ones((ndx+2*edgex, ndy+2*edgey), dtype=numpy.float64) * cval
+    dummy[edgex:ndx+edgex, edgey:ndy+edgey] = data
+    if mode == 'nearest':
+        dummy[0:edgex, 0:edgey] = data[0][0]
+        dummy[0:edgex, edgey+ndy:] = data[0][ndy-1]
+        dummy[edgex+ndx:, 0:edgey] = data[ndx-1][0]
+        dummy[edgex+ndx:, edgey+ndy:] = data[ndx-1][ndy-1]
         for i in xrange(ndx):
-            dummy[i+edgex,0:edgey] = data[i][0]
-            dummy[i+edgex,edgey+ndy:] = data[i][ndy-1]
+            dummy[i+edgex, 0:edgey] = data[i][0]
+            dummy[i+edgex, edgey+ndy:] = data[i][ndy-1]
         for i in xrange(ndy):
-            dummy[0:edgex,i+edgey] = data[0][i]
-            dummy[edgex+ndx:,i+edgey] = data[ndx-1][i]
-    cdata = numpy.zeros( (ndx,ndy), dtype=numpy.float64 ) 
+            dummy[0:edgex, i+edgey] = data[0][i]
+            dummy[edgex+ndx:, i+edgey] = data[ndx-1][i]
+    cdata = numpy.zeros((ndx, ndy), dtype=numpy.float64)
     for ix in xrange(ndx):
         for iy in xrange(ndy):
-            for jx in xrange( nkx ):
-                for jy in xrange( nky ):
+            for jx in xrange(nkx):
+                for jy in xrange(nky):
                     idx = ix + jx
                     idy = iy + jy
                     val = dummy[idx][idy]
@@ -1807,7 +1811,7 @@ def _eval_poly(xorder, yorder, x, y, xcoeff, ycoeff):
             xjyk *= x
             idx += 1
         yk *= y
-    return (xpoly, ypoly)
+    return xpoly, ypoly
 
 
 def _to_validated_lines(detect_lines):
@@ -1874,7 +1878,7 @@ class SVDSolver2D(object):
                 xp = 1.0
                 for j in xrange(self.xorder + 1):
                     l = j + (self.xorder + 1) * i
-                    self.G[k,l] = xp * yp
+                    self.G[k, l] = xp * yp
                     xp *= x[k]
                 yp *= y[k]
                 
@@ -1958,7 +1962,7 @@ class SVDSolver2D(object):
         poly = 0.0
         for k in xrange(self.yorder + 1):
             for j in xrange(self.xorder + 1):
-                poly += self.G[row,idx] * coeff[idx]
+                poly += self.G[row, idx] * coeff[idx]
                 idx += 1
         #LOG.trace('poly=%s'%(poly))
         return poly   
@@ -2066,7 +2070,7 @@ class SVDSolver2D(object):
                     diff[i] = fit
             #score = diff.max()
             score = diff.mean()
-            LOG.trace('eps={}, score={}', intlog(eps),score)
+            LOG.trace('eps={}, score={}', intlog(eps), score)
             if best_ans is None or score < best_score:
                 best_ans[:] = ans
                 best_score = score

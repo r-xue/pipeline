@@ -60,35 +60,35 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
             l80, min_diameter = self.calc_percentile_baseline_length(80.)
             LOG.info('ALMA uvtaper heuristic: L80 baseline length is %.1f meter' % (l80)) 
 
-            c = cqa.getvalue(cqa.convert(cqa.constants('c'),'m/s'))[0]
-            uvtaper_value = protect_long * l80 / cqa.getvalue(cqa.convert(cqa.constants('c'),'m/s'))[0] * cqa.getvalue(cqa.convert(repr_freq, 'Hz'))[0]
-            uvtaper = ['%.2fklambda' % round(uvtaper_value/1000.,2)]
+            c = cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0]
+            uvtaper_value = protect_long * l80 / cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0] * cqa.getvalue(cqa.convert(repr_freq, 'Hz'))[0]
+            uvtaper = ['%.2fklambda' % round(uvtaper_value/1000., 2)]
 
             return uvtaper
         else:
             return []
 
-        # Original Cycle 5 heuristic follows below for possible later use.
-        if not real_repr_target:
-            LOG.info('ALMA uvtaper heuristic: No representative target found. Using uvtaper=[]')
-            return []
-
-        try:
-            beam_natural_v = math.sqrt(cqa.getvalue(cqa.convert(beam_natural['major'], 'arcsec')) * cqa.getvalue(cqa.convert(beam_natural['minor'], 'arcsec')))
-        except Exception as e:
-            LOG.error('ALMA uvtaper heuristic: Cannot get natural beam size: %s. Using uvtaper=[]' % (e))
-            return []
-
-        minAR_v = cqa.getvalue(cqa.convert(minAcceptableAngResolution, 'arcsec'))
-        maxAR_v = cqa.getvalue(cqa.convert(maxAcceptableAngResolution, 'arcsec'))
-
-        if beam_natural_v < 1.1 * maxAR_v:
-            beam_taper = math.sqrt(maxAR_v ** 2 - beam_natural_v ** 2)
-            uvtaper = ['%.3garcsec' % (beam_taper)]
-        else:
-            uvtaper = []
-
-        return uvtaper
+        # # Original Cycle 5 heuristic follows below for possible later use.
+        # if not real_repr_target:
+        #     LOG.info('ALMA uvtaper heuristic: No representative target found. Using uvtaper=[]')
+        #     return []
+        #
+        # try:
+        #     beam_natural_v = math.sqrt(cqa.getvalue(cqa.convert(beam_natural['major'], 'arcsec')) * cqa.getvalue(cqa.convert(beam_natural['minor'], 'arcsec')))
+        # except Exception as e:
+        #     LOG.error('ALMA uvtaper heuristic: Cannot get natural beam size: %s. Using uvtaper=[]' % (e))
+        #     return []
+        #
+        # minAR_v = cqa.getvalue(cqa.convert(minAcceptableAngResolution, 'arcsec'))
+        # maxAR_v = cqa.getvalue(cqa.convert(maxAcceptableAngResolution, 'arcsec'))
+        #
+        # if beam_natural_v < 1.1 * maxAR_v:
+        #     beam_taper = math.sqrt(maxAR_v ** 2 - beam_natural_v ** 2)
+        #     uvtaper = ['%.3garcsec' % (beam_taper)]
+        # else:
+        #     uvtaper = []
+        #
+        # return uvtaper
 
     def dr_correction(self, threshold, dirty_dynamic_range, residual_max, intent, tlimit):
 
@@ -132,10 +132,11 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
                     dirtyDRthreshold = 75
                     n_dr_max = 3.5
 
-                if (dirty_dynamic_range > dirtyDRthreshold):
+                if dirty_dynamic_range > dirtyDRthreshold:
                     new_threshold = max(n_dr_max * old_threshold, residual_max / maxSciEDR * tlimit)
                     n_dr_effective = new_threshold / old_threshold
-                    LOG.info('DR heuristic: Applying maxSciEDR(ACA)=%s (for %d EB) effective_N_DR=%.2f' % (maxSciEDR,numberEBs,n_dr_effective))
+                    LOG.info('DR heuristic: Applying maxSciEDR(ACA)=%s (for %d EB) effective_N_DR=%.2f' %
+                             (maxSciEDR, numberEBs, n_dr_effective))
                     maxEDR_used = True
                 else:
                     if (dirty_dynamic_range > 40.):

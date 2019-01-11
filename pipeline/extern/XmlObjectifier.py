@@ -230,9 +230,9 @@ def _createLists(xmlObject, mapNameSpaces, nameSpaceMapping, skipChars):
                             if path.startswith('http://'):
                                 path = path[len('http://'):]
                             # Python names must not contain the '.' character
-                            path = path.replace('.','_')
+                            path = path.replace('.', '_')
                             # Python names must not contain the '/' character
-                            path = path.replace('/','_') + '_'
+                            path = path.replace('/', '_') + '_'
                             nameSpaceMapping[name_space_key] = path
                         else:
                             nameSpaceMapping[name_space_key] = ''

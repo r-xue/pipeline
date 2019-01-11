@@ -22,11 +22,11 @@ def removeRows(caltable, spwids):
     tb.flush()
     tb.close()
 
-    tb.open(caltable + '/SPECTRAL_WINDOW',nomodify=False)
+    tb.open(caltable + '/SPECTRAL_WINDOW', nomodify=False)
     for spwid in spwids:
         temparray = tb.getcol('FLAG_ROW')
         temparray[spwid] = True
-        tb.putcol('FLAG_ROW',temparray)
+        tb.putcol('FLAG_ROW', temparray)
     tb.close()
 
 

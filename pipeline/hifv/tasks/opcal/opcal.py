@@ -40,7 +40,7 @@ def _find_spw(vis, bands, context):
     
     all_spws_list = range(numSpws)
     
-    all_spws = ','.join(map(str,all_spws_list))
+    all_spws = ','.join(map(str, all_spws_list))
     
     return all_spws, center_frequencies
 

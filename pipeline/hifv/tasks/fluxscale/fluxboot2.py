@@ -216,7 +216,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
             # use flagdata to clip fluxflag.g outside the range 0.9-1.1
             flagjob = casa_tasks.flagdata(vis=fluxflagtable, mode='clip', correlation='ABS_ALL',
-                                          datacolumn='CPARAM', clipminmax=[0.9,1.1], clipoutside=True,
+                                          datacolumn='CPARAM', clipminmax=[0.9, 1.1], clipoutside=True,
                                           action='apply', flagbackup=False, savepars=False)
             self._executor.execute(flagjob)
 

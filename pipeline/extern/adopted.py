@@ -13,7 +13,7 @@ LOG = logging.get_logger(__name__)
 qa = casatools.quanta
 
 
-def getMedianPWV(vis='.', myTimes=[0,999999999999], asdm='', verbose=False):
+def getMedianPWV(vis='.', myTimes=[0, 999999999999], asdm='', verbose=False):
     """
     Extracts the PWV measurements from the WVR on all antennas for the
     specified time range.  The time range is input as a two-element list of

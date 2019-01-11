@@ -36,7 +36,7 @@ def getPower(vis, scan, spw, duration, fromEnd=False, skipStartSecs=1.0,
     with casatools.MSReader(vis) as ms:
         ms.selectinit(datadescid=spw)
         ms.selecttaql('SCAN_NUMBER==%d AND DATA_DESC_ID==%d AND ANTENNA1==ANTENNA2'%(scan, spw))
-        d = ms.getdata([datacolname,'axis_info'], ifraxis=True)
+        d = ms.getdata([datacolname, 'axis_info'], ifraxis=True)
 
     powers = d[datacolname]
     ants = d['axis_info']['ifr_axis']['ifr_name']
@@ -88,12 +88,11 @@ def getPower(vis, scan, spw, duration, fromEnd=False, skipStartSecs=1.0,
     for ant in range(len(ants)):
         powersPol0 = powers[idxPol0][0][ant][sampStart:sampEnd]
         powersPol1 = powers[idxPol1][0][ant][sampStart:sampEnd]
-        #print "Ant %d powers pol 0: %s, pol 1: %s" % (ant, str(powersPol0), str(powersPol1))
         medianP0 = np.median(powersPol0)
         medianP1 = np.median(powersPol1)
-        result.append([medianP0,medianP1])
-        #print "Ant %2d (%s) median powers for pols 0,1: %12.6f, %12.6f (nSamples = %d, %d)" % (ant, ants[ant], medianP0, medianP1, len(powersPol0), len(powersPol1))
+        result.append([medianP0, medianP1])
     return result
+
 
 def scienceSpwForTsysSpw(mymsmd, tsysSpw):
     """
@@ -103,7 +102,7 @@ def scienceSpwForTsysSpw(mymsmd, tsysSpw):
     """
     # FIXME: Use domain objects from context instead of msmd.
     baseband = mymsmd.baseband(tsysSpw)
-    spws = np.intersect1d(mymsmd.almaspws(tdm=True,fdm=True),mymsmd.spwsforbaseband(baseband))
+    spws = np.intersect1d(mymsmd.almaspws(tdm=True, fdm=True), mymsmd.spwsforbaseband(baseband))
     if 'OBSERVE_TARGET#ON_SOURCE' in mymsmd.intents():
         spws = np.intersect1d(mymsmd.spwsforintent('OBSERVE_TARGET#ON_SOURCE'), spws)
     elif 'CALIBRATE_FLUX#ON_SOURCE' in mymsmd.intents():
@@ -155,10 +154,10 @@ def tsysNormalize(vis, tsysTable, newTsysTable, scaleSpws=[], verbose=False):
         with casatools.TableReader(tsysTable, nomodify=False) as table:
         
             # For convenience squish the useful columns into unique lists
-            tsysSpws     = pb.unique(table.getcol("SPECTRAL_WINDOW_ID"))
-            tsysScans    = pb.unique(table.getcol("SCAN_NUMBER"))
-            tsysTimes    = pb.unique(table.getcol("TIME"))
-            tsysFields   = pb.unique(table.getcol("FIELD_ID"))
+            tsysSpws = pb.unique(table.getcol("SPECTRAL_WINDOW_ID"))
+            tsysScans = pb.unique(table.getcol("SCAN_NUMBER"))
+            tsysTimes = pb.unique(table.getcol("TIME"))
+            tsysFields = pb.unique(table.getcol("FIELD_ID"))
             tsysAntennas = pb.unique(table.getcol("ANTENNA1"))
         
             if len(scaleSpws) < len(tsysSpws):
@@ -183,16 +182,19 @@ def tsysNormalize(vis, tsysTable, newTsysTable, scaleSpws=[], verbose=False):
                 fieldAllScans = msmd.scansforfield(f)
                 fieldNonTsysScans = [x for x in fieldAllScans if x not in fieldTsysScans]
                 if (len(fieldNonTsysScans) < 1):
-                    # Then there is no non-tsys scan for this field, e.g. which can happen in a mosaic where the Tsys scan has a different field ID,
-                    # but in this case the field name will have other scans with different field IDs, so revert to using field names.  Using field
-                    # names might work from the outset, but I have not tried it.
+                    # Then there is no non-tsys scan for this field, e.g.
+                    # which can happen in a mosaic where the Tsys scan has a
+                    # different field ID, but in this case the field name will
+                    # have other scans with different field IDs, so revert to
+                    # using field names. Using field names might work from the
+                    # outset, but I have not tried it.
                     fieldName = msmd.namesforfields(f)[0]
                     fieldAllScans = msmd.scansforfield(fieldName)
                     fieldNonTsysScans = [x for x in fieldAllScans if x not in fieldTsysScans]
                     if (len(fieldNonTsysScans) < 1):
                         LOG.info("This field (id={0}, name={1}) appears to have "
                                  "no non-Tsys-like-scans, and thus cannot be "
-                                 "normalized.".format(f,fieldName))
+                                 "normalized.".format(f, fieldName))
                         return -1
                 scienceLikeScans = []
                 for s in fieldNonTsysScans:
@@ -214,10 +216,9 @@ def tsysNormalize(vis, tsysTable, newTsysTable, scaleSpws=[], verbose=False):
                             minDist = dist
                             refScan = r
                     powerRefScans.append(refScan)
-                LOG.info("Field {0} Tsys scans: {1}, All scans: {2}, Non-Tsys "
-                         "scans: {3}, Non-Tsys science-like scans: {4}".format(
-                         f, fieldTsysScans, fieldAllScans, fieldNonTsysScans, 
-                         scienceLikeScans))
+                LOG.info("Field {0} Tsys scans: {1}, All scans: {2}, Non-Tsys scans: {3},"
+                         " Non-Tsys science-like scans: {4}".format(f, fieldTsysScans, fieldAllScans, fieldNonTsysScans,
+                                                                    scienceLikeScans))
                 for i in range(len(fieldTsysScans)):
                     LOG.info("        Tsys scan {0} power reference scan: {1}".format(
                              fieldTsysScans[i], powerRefScans[i]))
@@ -230,13 +231,14 @@ def tsysNormalize(vis, tsysTable, newTsysTable, scaleSpws=[], verbose=False):
                         if verbose:
                             LOG.info("calling getPower(vis, {0}, {1}, 10.0, {2})".format(
                               powerRefScans[i], spw, str(powerRefScans[i] < fieldTsysScans[i])))
-                        p = getPower(vis, powerRefScans[i], spw, 10.0, 
-                          powerRefScans[i] < fieldTsysScans[i], 
-                          datacolname=datacolname, verbose=verbose)
+                        p = getPower(vis, powerRefScans[i], spw, 10.0, powerRefScans[i] < fieldTsysScans[i],
+                                     datacolname=datacolname, verbose=verbose)
                         refPowers[fieldTsysScans[i]].append(p)
                     if verbose:
-                        LOG.info("powers to use for Tsys scan {0}: {1}".format(fieldTsysScans[i], refPowers[fieldTsysScans[i]]))
-            if verbose: LOG.info(refPowers)
+                        LOG.info("powers to use for Tsys scan {0}: {1}".format(fieldTsysScans[i],
+                                                                               refPowers[fieldTsysScans[i]]))
+            if verbose:
+                LOG.info(refPowers)
         
             # Create copy of the original Tsys caltable.
             copy = table.copy(newTsysTable)
@@ -244,19 +246,20 @@ def tsysNormalize(vis, tsysTable, newTsysTable, scaleSpws=[], verbose=False):
 
     with casatools.TableReader(newTsysTable, nomodify=False) as table:
         startRefPower = refPowers[tsysScans[0]]
-        for i in range(1,len(tsysScans)):
+        for i in range(1, len(tsysScans)):
             # need to adjust each successive Tsys
             for ispw in range(len(tsysSpws)):
                 spw = tsysSpws[ispw]
                 for ant in range(len(tsysAntennas)):
-                    tsysSubTab1 = table.query("SCAN_NUMBER==%d AND SPECTRAL_WINDOW_ID==%d AND ANTENNA1==%d"%(tsysScans[i],tsysSpws[ispw],ant))
+                    tsysSubTab1 = table.query("SCAN_NUMBER==%d AND SPECTRAL_WINDOW_ID==%d AND ANTENNA1==%d" %
+                                              (tsysScans[i], tsysSpws[ispw], ant))
                     tsys1 = tsysSubTab1.getcell('FPARAM', 0)
                     newTsys = tsysSubTab1.getcell('FPARAM', 0)
                     for pol in range(len(tsys1)):
                         for chan in range(len(tsys1[pol])):
-                            a = TsysAfterPowerChange(refPowers[tsysScans[i]][ispw][ant][pol], startRefPower[ispw][ant][pol], tsys1[pol][chan])
+                            a = TsysAfterPowerChange(refPowers[tsysScans[i]][ispw][ant][pol],
+                                                     startRefPower[ispw][ant][pol], tsys1[pol][chan])
                             newTsys[pol][chan] = a
-                        #LOG.info("Scan %2d spw %2d pol %d mean %.1f --> %.1f" % (tsysScans[i], spw, pol, np.mean(tsys1[pol]), np.mean(newTsys[pol])))
                         LOG.info("Scan {0:2d} spw {1:2d} pol {2} mean {3:.1f} --> {4:.1f}".format(
                                  tsysScans[i], spw, pol, np.mean(tsys1[pol]), np.mean(newTsys[pol])))
                     tsysSubTab1.putcell('FPARAM', 0, newTsys)

@@ -118,7 +118,7 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
                 [ymin + yy * 0.1, ymin + yy * 0.04]]
     # Make Plot Data
     x = 0
-    data = [[],[],[],[],[],[]]
+    data = [[], [], [], [], [], []]
 
     for Pflag in PlotData['permanentflag']:
         if Pflag == 0 or PlotData['data'][x] == INVALID_STAT:  # Flag-out case

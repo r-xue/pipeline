@@ -152,7 +152,7 @@ class ImageParamsHeuristics(object):
 
             p = re.compile('([\d.]*)(~)([\d.]*)(\D*)')
             try:
-                line_regions = p.findall(open(linesfile, 'r').read().replace('\n','').replace(';','').replace(' ',''))
+                line_regions = p.findall(open(linesfile, 'r').read().replace('\n', '').replace(';', '').replace(' ', ''))
             except Exception as e:
                 line_regions = []
             line_ranges_GHz = []
@@ -354,7 +354,8 @@ class ImageParamsHeuristics(object):
                         local_known_beams = {}
                         raise Exception('uvtaper value changed (old: %s, new: %s). Re-calculating beams.' % (str(local_known_beams['uvtaper']), str(uvtaper)))
                     makepsf_beam = local_known_beams[field][intent][','.join(map(str, sorted(spwids)))]['beam']
-                    LOG.info('Using previously calculated beam of %s for Field %s Intent %s SPW %s' % (str(makepsf_beam), field, intent, ','.join(map(str,sorted(spwids)))))
+                    LOG.info('Using previously calculated beam of %s for Field %s Intent %s SPW %s' %
+                             (str(makepsf_beam), field, intent, ','.join(map(str, sorted(spwids)))))
                     if makepsf_beam != 'invalid':
                         makepsf_beams.append(makepsf_beam)
                 except Exception as e:
@@ -395,7 +396,8 @@ class ImageParamsHeuristics(object):
                         # no point carrying on for this field/intent
                         LOG.debug('No data for field %s' % (field))
                         utils.set_nested_dict(local_known_beams,
-                                              (field, intent, ','.join(map(str, sorted(spwids))), 'beam'), 'invalid')
+                                              (field, intent, ','.join(map(str, sorted(spwids))), 'beam'),
+                                              'invalid')
                         continue
 
                     # use imager.advise to get the maximum cell size
@@ -410,7 +412,8 @@ class ImageParamsHeuristics(object):
                                     % (field, intent, spwid))
                         valid_data[(field, intent)] = False
                         utils.set_nested_dict(local_known_beams,
-                                              (field, intent, ','.join(map(str, sorted(spwids))), 'beam'), 'invalid')
+                                              (field, intent, ','.join(map(str, sorted(spwids))), 'beam'),
+                                              'invalid')
                     else:
                         cellv = qaTool.convert(rtn[2], 'arcsec')['value']
                         cellu = 'arcsec'
@@ -455,11 +458,15 @@ class ImageParamsHeuristics(object):
                                                          'minor': {'value': restoringbeam_minor_rounded, 'unit': 'arcsec'},
                                                          'positionangle': restoringbeam['positionangle']}
                                 makepsf_beams.append(restoringbeam_rounded)
-                                utils.set_nested_dict(local_known_beams, (field, intent, ','.join(map(str,sorted(spwids))), 'beam'), restoringbeam_rounded)
+                                utils.set_nested_dict(local_known_beams,
+                                                      (field, intent, ','.join(map(str, sorted(spwids))), 'beam'),
+                                                      restoringbeam_rounded)
                             else:
-                                utils.set_nested_dict(local_known_beams, (field, intent, ','.join(map(str,sorted(spwids))), 'beam'), 'invalid')
+                                utils.set_nested_dict(local_known_beams,
+                                                      (field, intent, ','.join(map(str, sorted(spwids))), 'beam'),
+                                                      'invalid')
 
-                        tmp_psf_images = glob.glob('%s.*' % (tmp_psf_filename))
+                        tmp_psf_images = glob.glob('%s.*' % tmp_psf_filename)
                         for tmp_psf_image in tmp_psf_images:
                             shutil.rmtree(tmp_psf_image)
         finally:
@@ -1439,7 +1446,10 @@ class ImageParamsHeuristics(object):
                         nchan_unflagged = local_known_sensitivities[os.path.basename(msname)][field][intent][intSpw]['nchanUnflagged']
                         eff_ch_bw = cqa.getvalue(cqa.convert(local_known_sensitivities[os.path.basename(msname)][field][intent][intSpw]['effChanBW'], 'Hz'))[0]
                         sens_bws[intSpw] = cqa.getvalue(cqa.convert(local_known_sensitivities[os.path.basename(msname)][field][intent][intSpw]['sensBW'], 'Hz'))[0]
-                        LOG.info('Using previously calculated full SPW apparentsens value of %.3g Jy/beam for EB %s Field %s Intent %s SPW %s' % (center_field_full_spw_sensitivity, os.path.basename(msname).replace('.ms',''), field, intent, str(intSpw)))
+                        LOG.info('Using previously calculated full SPW apparentsens value of %.3g Jy/beam'
+                                 ' for EB %s Field %s Intent %s SPW %s' % (center_field_full_spw_sensitivity,
+                                                                           os.path.basename(msname).replace('.ms', ''),
+                                                                           field, intent, str(intSpw)))
                     except Exception as e:
                         calc_sens = True
                         center_field_full_spw_sensitivity, eff_ch_bw, sens_bws[intSpw] = self.get_sensitivity(ms, center_field_ids[ms_index], intent, intSpw, chansel_full, specmode, cell, imsize, weighting, robust, uvtaper)
@@ -1456,20 +1466,28 @@ class ImageParamsHeuristics(object):
                     # Correct from full spw to channel selection
                     chansel_corrected_center_field_sensitivity = center_field_full_spw_sensitivity * (float(nchan_unflagged) / float(nchan_sel)) ** 0.5
                     sens_bws[intSpw] = sens_bws[intSpw] * float(nchan_sel) / float(spw_do.num_channels)
-                    LOG.info('Channel selection bandwidth heuristic (nbin or findcont; (spw BW / nchan_sel BW) ** 0.5): Correcting sensitivity for EB %s Field %s SPW %s by %.3g from %.3g Jy/beam to %.3g Jy/beam' % (os.path.basename(msname).replace('.ms',''), field, str(intSpw), (float(nchan_unflagged) / float(nchan_sel)) ** 0.5, center_field_full_spw_sensitivity, chansel_corrected_center_field_sensitivity))
+                    LOG.info('Channel selection bandwidth heuristic (nbin or findcont; (spw BW / nchan_sel BW) ** 0.5):'
+                             ' Correcting sensitivity for EB %s Field %s SPW %s by %.3g from %.3g Jy/beam to'
+                             ' %.3g Jy/beam' % (os.path.basename(msname).replace('.ms', ''), field, str(intSpw),
+                                                (float(nchan_unflagged) / float(nchan_sel)) ** 0.5,
+                                                center_field_full_spw_sensitivity,
+                                                chansel_corrected_center_field_sensitivity))
 
                     # Correct for effective bandwidth effects
                     bw_corr_factor, physicalBW_of_1chan, effectiveBW_of_1chan = self.get_bw_corr_factor(ms, intSpw, nchan_sel)
                     center_field_sensitivity = chansel_corrected_center_field_sensitivity * bw_corr_factor
                     if bw_corr_factor != 1.0:
-                        LOG.info('Effective BW heuristic: Correcting sensitivity for EB %s Field %s SPW %s by %.3g from %.3g Jy/beam to %.3g Jy/beam' % (os.path.basename(msname).replace('.ms',''), field, str(intSpw), bw_corr_factor, chansel_corrected_center_field_sensitivity, center_field_sensitivity))
+                        LOG.info('Effective BW heuristic: Correcting sensitivity for EB %s Field %s SPW %s by %.3g from %.3g Jy/beam to %.3g Jy/beam' % (os.path.basename(msname).replace('.ms', ''), field, str(intSpw), bw_corr_factor, chansel_corrected_center_field_sensitivity, center_field_sensitivity))
 
                     if gridder == 'mosaic':
                         # Correct for mosaic overlap factor
                         source_name = [f.source.name for f in ms.fields if (utils.dequote(f.name) == utils.dequote(field) and intent in f.intents)][0]
                         diameter = np.median([a.diameter for a in ms.antennas])
                         overlap_factor = mosaicoverlap.mosaicOverlapFactorMS(ms, source_name, intSpw, diameter)
-                        LOG.info('Dividing by mosaic overlap improvement factor of %s corrects sensitivity for EB %s Field %s SPW %s from %.3g Jy/beam to %.3g Jy/beam.' % (overlap_factor, os.path.basename(msname).replace('.ms',''), field, str(intSpw), center_field_sensitivity, center_field_sensitivity / overlap_factor))
+                        LOG.info('Dividing by mosaic overlap improvement factor of %s corrects sensitivity for EB %s'
+                                 ' Field %s SPW %s from %.3g Jy/beam to %.3g Jy/beam.'
+                                 '' % (overlap_factor, os.path.basename(msname).replace('.ms', ''), field, str(intSpw),
+                                       center_field_sensitivity, center_field_sensitivity / overlap_factor))
                         center_field_sensitivity = center_field_sensitivity / overlap_factor
 
                         if calc_sens and not center_only:
@@ -1481,7 +1499,10 @@ class ImageParamsHeuristics(object):
                             last_field_full_spw_sensitivity, last_field_eff_ch_bw, last_field_sens_bw = self.get_sensitivity(ms, last_field_id, intent, intSpw, chansel_full, specmode, cell, imsize, weighting, robust, uvtaper)
                             last_field_sensitivity = last_field_full_spw_sensitivity * (float(nchan_unflagged) / float(nchan_sel)) ** 0.5 * bw_corr_factor / overlap_factor
 
-                            LOG.info('Corrected sensitivities for EB %s, Field %s, SPW %s for the first, central, and last pointings are: %.3g / %.3g / %.3g Jy/beam' % (os.path.basename(msname).replace('.ms',''), field, str(real_spwid), first_field_sensitivity, center_field_sensitivity, last_field_sensitivity))
+                            LOG.info('Corrected sensitivities for EB %s, Field %s, SPW %s for the first, central, and'
+                                     ' last pointings are: %.3g / %.3g / %.3g Jy/beam'
+                                     '' % (os.path.basename(msname).replace('.ms', ''), field, str(real_spwid),
+                                           first_field_sensitivity, center_field_sensitivity, last_field_sensitivity))
 
                     sensitivities.append(center_field_sensitivity)
                 except Exception as e:
@@ -1550,7 +1571,9 @@ class ImageParamsHeuristics(object):
 
                 apparentsens_value = result[1]
 
-                LOG.info('apparentsens result for EB %s Field %s SPW %s ChanRange %s: %s Jy/beam' % (os.path.basename(ms_do.name).replace('.ms',''), field, real_spwid, chanrange, apparentsens_value))
+                LOG.info('apparentsens result for EB %s Field %s SPW %s ChanRange %s: %s Jy/beam'
+                         '' % (os.path.basename(ms_do.name).replace('.ms', ''), field, real_spwid, chanrange,
+                               apparentsens_value))
 
                 cstart, cstop = list(map(int, chanrange.split('~')))
                 nchan = cstop - cstart + 1
@@ -1562,7 +1585,8 @@ class ImageParamsHeuristics(object):
 
             except Exception as e:
                 if (str(e) != 'Empty selection'):
-                    LOG.info('Could not calculate sensitivity for EB %s Field %s SPW %s ChanRange %s: %s' % (os.path.basename(ms_do.name).replace('.ms',''), field, real_spwid, chanrange, e))
+                    LOG.info('Could not calculate sensitivity for EB %s Field %s SPW %s ChanRange %s: %s'
+                             '' % (os.path.basename(ms_do.name).replace('.ms', ''), field, real_spwid, chanrange, e))
 
         if (len(chansel_sensitivities) > 0):
             return 1.0 / np.sqrt(np.sum(1.0 / np.array(chansel_sensitivities) ** 2)), effectiveBW_of_1chan, sens_bw

@@ -40,21 +40,21 @@ def find_standards(positions):
     position_3C286 = casatools.measures.direction('j2000', '13h31m8.288', '30d30m32.959')
     fields_3C286 = []
 
-    for ii in range(0,len(positions)):
+    for ii in range(0, len(positions)):
         position = casatools.measures.direction('j2000', str(positions[ii][0])+'rad', str(positions[ii][1])+'rad')
-        separation = casatools.measures.separation(position,position_3C48)['value'] * math.pi/180.0
+        separation = casatools.measures.separation(position, position_3C48)['value'] * math.pi/180.0
         if (separation < MAX_SEPARATION):
             fields_3C48.append(ii)
         else:
-            separation = casatools.measures.separation(position,position_3C138)['value'] * math.pi/180.0
+            separation = casatools.measures.separation(position, position_3C138)['value'] * math.pi/180.0
             if (separation < MAX_SEPARATION):
                 fields_3C138.append(ii)
             else:
-                separation = casatools.measures.separation(position,position_3C147)['value'] * math.pi/180.0
+                separation = casatools.measures.separation(position, position_3C147)['value'] * math.pi/180.0
                 if (separation < MAX_SEPARATION):
                     fields_3C147.append(ii)
                 else:
-                    separation = casatools.measures.separation(position,position_3C286)['value'] * math.pi/180.0
+                    separation = casatools.measures.separation(position, position_3C286)['value'] * math.pi/180.0
                     if (separation < MAX_SEPARATION):
                         fields_3C286.append(ii)
 
@@ -73,7 +73,7 @@ def standard_sources(vis):
         
     positions = []
 
-    for ii in range(0,len(field_positions[0][0])):
+    for ii in range(0, len(field_positions[0][0])):
         positions.append([field_positions[0][0][ii], field_positions[1][0][ii]])
 
     standard_source_names = ['3C48', '3C138', '3C147', '3C286']
@@ -404,7 +404,7 @@ class VLASetjy(basetask.StandardTaskTemplate):
 
                         if inputs.refspectra[1] is not -1:
                             try:
-                                (I,Q,U,V) = inputs.refspectra[1]
+                                (I, Q, U, V) = inputs.refspectra[1]
                                 flux = domain.FluxMeasurement(spw_id=spw.id, I=I, Q=Q, U=U, V=V, origin=ORIGIN)
                             except:
                                 I = inputs.refspectra[1][0]

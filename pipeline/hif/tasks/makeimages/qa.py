@@ -21,7 +21,7 @@ class MakeImagesQAHandler(pqa.QAPlugin):
             result.qa.pool[:] = [pqa.QAScore(0.0, longmsg='Size mitigation error. No targets were processed.',
                                              shortmsg='Size mitigation error')]
         elif len(result.results) > 0:
-            score_objects = reduce(lambda x,y: x+y, [item.qa.pool for item in result.results])
+            score_objects = reduce(lambda x, y: x+y, [item.qa.pool for item in result.results])
             result.qa.pool[:] = score_objects
         else:
             if len(result.targets) == 0:

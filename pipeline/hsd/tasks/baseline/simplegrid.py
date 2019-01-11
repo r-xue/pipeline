@@ -236,7 +236,7 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
         reference_spw = self.inputs.reference_member.spw_id 
         nchan = reference_data.spectral_windows[reference_spw].num_channels
         npol = reference_data.get_data_description(spw=reference_spw).num_polarizations
-        LOG.debug('nrow={} nchan={} npol={}', nrow,nchan,npol)
+        LOG.debug('nrow={} nchan={} npol={}', nrow, nchan, npol)
         
         # loop for all ROWs in grid_table to make dictionary that 
         # associates spectra in data_in and weights with grids.
@@ -287,7 +287,7 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
             elif x[1] > y[1]:
                 return 1
             return 0
-        for (k,v) in bind_to_grid.iteritems():
+        for (k, v) in bind_to_grid.iteritems():
             v.sort(cmp=cmp)
         LOG.debug('sorted bind_to_grid={}', bind_to_grid)
 
@@ -337,7 +337,7 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
                             if Sp is None:
                                 Sp = tb.getcell(ms_colname, mapped_row)
                             if numpy.any(numpy.isnan(Sp[Pol])):
-                                LOG.debug('vis "{}" row {} pol {} contains NaN', os.path.basename(vis),tROW,Pol)
+                                LOG.debug('vis "{}" row {} pol {} contains NaN', os.path.basename(vis), tROW, Pol)
                             if Mask is None:
                                 Mask = numpy.asarray(numpy.logical_not(tb.getcell('FLAG', mapped_row)),
                                                      dtype=int)#vquery(tb.getcell('FLAG', mapped_row) == False)
@@ -367,11 +367,11 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
                 RMS = 0.0
             else:
                 for ichan in xrange(nchan):
-                    if StorageWeight[ROW,ichan] == 0.0:
-                        StorageOut[ROW,ichan] = NoData
+                    if StorageWeight[ROW, ichan] == 0.0:
+                        StorageOut[ROW, ichan] = NoData
                         #FlagOut[ROW,ichan] = 1
                     else:
-                        StorageOut[ROW,ichan] /= StorageWeight[ROW,ichan]
+                        StorageOut[ROW, ichan] /= StorageWeight[ROW, ichan]
                 RMS = 1.0
             OutputTable.append([IF, POL, X, Y, RAcent, DECcent, StorageNumSp[ROW], StorageNumFlag[ROW], RMS])
 

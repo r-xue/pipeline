@@ -414,8 +414,8 @@ class PlotbandpassLeaf(object):
             'x'        : self._xaxis,
             'y'        : self._yaxis,
             'spw'      : '' if self._spw == '' else 'spw%s-' % self._spw,
-            'ant'      : '' if self._ant == '' else 'ant%s-' % self._ant.replace(',','_'),
-            'intent'   : '' if self._intent == '' else '%s-' % self._intent.replace(',','_'),
+            'ant'      : '' if self._ant == '' else 'ant%s-' % self._ant.replace(',', '_'),
+            'intent'   : '' if self._intent == '' else '%s-' % self._intent.replace(',', '_'),
             'pol'      : '' if self._pol == '' else '%s-' % self._pol
         }
         png = '{caltable}-{spw}{pol}{ant}{intent}{y}_vs_{x}.png'.format(**fileparts)

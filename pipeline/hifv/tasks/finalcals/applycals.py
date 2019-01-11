@@ -313,7 +313,7 @@ class Applycals(applycal.IFApplycal):
             # or see if we have a phase2
             # if so, end the group
             if phase2 or idx == len(scans)-1:
-                groups.append(TargetGroup(phase1,targetscans,phase2))
+                groups.append(TargetGroup(phase1, targetscans, phase2))
                 phase1 = False
                 phase2 = False
                 targetscans = []

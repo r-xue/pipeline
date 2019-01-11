@@ -71,7 +71,7 @@ class ObservingRun(object):
         if intent:
             # Remove any extraneous characters, as intent could be specified
             # as *BANDPASS* for example
-            intent = intent.replace('*','')
+            intent = intent.replace('*', '')
             for ms in self.measurement_sets:
                 for field in ms.fields:
                     if intent in field.intents:
@@ -199,7 +199,7 @@ class ObservingRun(object):
         qt = casatools.quanta
         s = sorted(self.measurement_sets, 
                    key=lambda ms: ms.start_time['m0'],
-                   cmp=lambda x,y: 1 if qt.gt(x,y) else 0 if qt.eq(x,y) else -1)
+                   cmp=lambda x, y: 1 if qt.gt(x, y) else 0 if qt.eq(x, y) else -1)
         return s[0].start_time
 
     @property
@@ -209,7 +209,6 @@ class ObservingRun(object):
         qt = casatools.quanta
         mt = casatools.measures
         s = qt.time(mt.getvalue(self.start_time)['m0'], form=['fits'])
-        #return datetime.datetime.strptime(s, '%Y-%m-%dT%H:%M:%S')
         return datetime.datetime.strptime(s[0], '%Y-%m-%dT%H:%M:%S')
 
     @property
@@ -219,7 +218,7 @@ class ObservingRun(object):
         qt = casatools.quanta
         s = sorted(self.measurement_sets, 
                    key=lambda ms: ms.end_time['m0'],
-                   cmp=lambda x,y: 1 if qt.gt(x,y) else 0 if qt.eq(x,y) else -1)
+                   cmp=lambda x, y: 1 if qt.gt(x, y) else 0 if qt.eq(x, y) else -1)
         return s[-1].end_time
 
     @property
@@ -229,7 +228,6 @@ class ObservingRun(object):
         qt = casatools.quanta
         mt = casatools.measures
         s = qt.time(mt.getvalue(self.end_time)['m0'], form=['fits'])
-        #return datetime.datetime.strptime(s, '%Y-%m-%dT%H:%M:%S')
         return datetime.datetime.strptime(s[0], '%Y-%m-%dT%H:%M:%S')
 
     @property

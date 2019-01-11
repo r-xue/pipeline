@@ -2248,11 +2248,11 @@ def test_flatsize(failf=None, stdf=None):
                     t.append(v.type())
             except Exception:  # ignore errors
                 pass
-        t.extend(({1:1, 2:2, 3:3, 4:4, 5:5, 6:6, 7:7, 8:8},
-                  [1,2,3,4,5,6,7,8], ['1', '2', '3'], [0] * 100,
+        t.extend(({1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8},
+                  [1, 2, 3, 4, 5, 6, 7, 8], ['1', '2', '3'], [0] * 100,
                   '12345678', 'x' * 1001,
-                  (1,2,3,4,5,6,7,8), ('1', '2', '3'), (0,) * 100,
-                  _Slots((1,2,3,4,5,6,7,8)), _Slots(('1', '2', '3')), _Slots((0,) * 100),
+                  (1, 2, 3, 4, 5, 6, 7, 8), ('1', '2', '3'), (0,) * 100,
+                  _Slots((1, 2, 3, 4, 5, 6, 7, 8)), _Slots(('1', '2', '3')), _Slots((0,) * 100),
                   0, 1 << 8, 1 << 16, 1 << 32, 1 << 64, 1 << 128,
                   complex(0, 1), True, False))
         _getsizeof = None  # zap _getsizeof for flatsize()
@@ -2550,7 +2550,7 @@ if __name__ == '__main__':
         t = {}  # [(i,j)]
         for i in range(n):
             for j in range(m):
-                t[(i,j)] = None
+                t[(i, j)] = None
         t = asizeof(t, stats=1)
 
         _printf('%sasizeof(dict[i][j]) is %s of asizeof(dict[(i,j)])', linesep, _p100(p, t))

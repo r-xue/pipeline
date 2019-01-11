@@ -86,7 +86,7 @@ class GroupByPosition2(api.Heuristic):
                 PosDict[SelectDict[sRA][sDEC][0]] = SelectDict[sRA][sDEC]
                 if len(SelectDict[sRA][sDEC]) != 1:
                     for x in SelectDict[sRA][sDEC][1:]:
-                        PosDict[x] = [-1,SelectDict[sRA][sDEC][0]]
+                        PosDict[x] = [-1, SelectDict[sRA][sDEC][0]]
         del SelectDict
 
         # Calculate thresholds to determine gaps
@@ -156,12 +156,12 @@ class GroupByTime2(api.Heuristic):
         
         # Threshold for grouping
         h = ThresholdForGroupByTime()
-        (Threshold1,Threshold2) = h(timebase)
+        (Threshold1, Threshold2) = h(timebase)
 
-        TimeTable = [[],[]]
+        TimeTable = [[], []]
         SubTable1 = [0]
         SubTable2 = [0]
-        TimeGap = [[],[]]
+        TimeGap = [[], []]
 
         # Detect small and large time gaps
         for index in xrange(len(time_diff)):
@@ -197,7 +197,7 @@ class GroupByTime2(api.Heuristic):
 
         #print '\nTimeGap', TimeGap
         #print '\nTimeTable', TimeTable
-        return  TimeTable, TimeGap
+        return TimeTable, TimeGap
         # TimeGap is index
         # TimeTable[][0] is row, TimeTable[][1] is index
         
@@ -252,7 +252,7 @@ class MergeGapTables2(api.Heuristic):
         IDX = list(numpy.sort(numpy.array(idxs)))
         tmpGap = list(numpy.sort(numpy.array(TimeGap[0] + PosGap)))
         NewGap = []
-        if len( tmpGap ) != 0: 
+        if len(tmpGap) != 0:
             t = n = tmpGap[0]
             for n in tmpGap[1:]:
                 if t != n and t in IDX:
@@ -303,4 +303,4 @@ class MergeGapTables2(api.Heuristic):
 
         #print '\nTimeGap', TimeGap
         #print '\nTimeTable', TimeTable
-        return(TimeTable, TimeGap)
+        return TimeTable, TimeGap

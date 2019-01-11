@@ -1,10 +1,10 @@
-'''
+"""
 Compute the mean per spectral window per scan exposure and
 integration times for the selected data
-'''
+"""
 
-def get_scan_exptimes (ms, fieldnamelist, intent, spwidlist): 
 
+def get_scan_exptimes (ms, fieldnamelist, intent, spwidlist):
     """
     Input Parameters
                    ms: The pipeline context ms object
@@ -44,8 +44,7 @@ def get_scan_exptimes (ms, fieldnamelist, intent, spwidlist):
         # one spw to the next
         spwscans = []
         for obscan in obscans:
-            scanspwset = set ([scanspw.id for scanspw in list(obscan.spws) \
-                if scanspw.num_channels not in (1,4)])
+            scanspwset = set([scanspw.id for scanspw in list(obscan.spws) if scanspw.num_channels not in (1, 4)])
             if len(set([spwid]).intersection(scanspwset)) == 0:
                 continue
             spwscans.append(obscan)
@@ -72,6 +71,6 @@ def get_scan_exptimes (ms, fieldnamelist, intent, spwidlist):
         exposureTime = 0.0
         for scan in fscans:
             exposureTime = exposureTime + scan.exposure_time(spw.id).total_seconds()
-        exptimes.append ((spwid, exposureTime / len(fscans)))
+        exptimes.append((spwid, exposureTime / len(fscans)))
 
         return exptimes

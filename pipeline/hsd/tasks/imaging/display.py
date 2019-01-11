@@ -51,7 +51,7 @@ class ChannelAveragedAxesManager(MapAxesManagerBase):
     @property
     def axes_tpmap(self):
         if self._axes_tpmap is None:
-            axes = pl.axes([0.25,0.25,0.5,0.5])
+            axes = pl.axes([0.25, 0.25, 0.5, 0.5])
             axes.xaxis.set_major_formatter(self.xformatter)
             axes.yaxis.set_major_formatter(self.yformatter)
             axes.xaxis.set_major_locator(self.xlocator)
@@ -143,9 +143,9 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
 #                         tpmap_colorbar.ax.set_title('[%s]'%(self.image.brightnessunit))
 #                         lab = tpmap_colorbar.ax.title
 #                         lab.set_fontsize(newfontsize)
-                        tpmap_colorbar.ax.set_ylabel('[%s]'%(self.image.brightnessunit), fontsize=newfontsize)
+                        tpmap_colorbar.ax.set_ylabel('[%s]' % self.image.brightnessunit, fontsize=newfontsize)
                     else:
-                        tpmap_colorbar.set_clim((tmin,tmax))
+                        tpmap_colorbar.set_clim((tmin, tmax))
                         tpmap_colorbar.draw_all()
                         
             # draw beam pattern
@@ -158,7 +158,7 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
 
             if ShowPlot: pl.draw()
             FigFileRoot = self.inputs.imagename+'.pol%s'%(pol)
-            plotfile = os.path.join(self.stage_dir,FigFileRoot+'_TP.png')
+            plotfile = os.path.join(self.stage_dir, FigFileRoot+'_TP.png')
             pl.savefig(plotfile, format='png', dpi=DPIDetail)
 
             im.remove()
@@ -282,20 +282,22 @@ class SDMomentMapDisplay(SDImageDisplay):
                         #if newfontsize is None: # no ticks in colorbar likely invalid TP map
                         tpmap_colorbar.ax.set_ylabel('[%s]'%(self.brightnessunit), fontsize=newfontsize)
                     else:
-                        tpmap_colorbar.set_clim((tmin,tmax))
+                        tpmap_colorbar.set_clim((tmin, tmax))
                         tpmap_colorbar.draw_all()
                         
             # draw beam pattern
             if beam_circle is None:
-                beam_circle = pointing.draw_beam(axes_tpmap, 0.5 * self.beam_size, self.aspect, self.ra_min, self.dec_min)
+                beam_circle = pointing.draw_beam(axes_tpmap, 0.5 * self.beam_size, self.aspect, self.ra_min,
+                                                 self.dec_min)
 
             pl.title(self.MAP_TITLE, size=TickSize)
             axes_tpmap.set_xlim(xlim)
             axes_tpmap.set_ylim(ylim)
 
-            if ShowPlot: pl.draw()
-            FigFileRoot = self.inputs.imagename+'.pol%s'%(pol)
-            plotfile = os.path.join(self.stage_dir,FigFileRoot+'_TP.png')
+            if ShowPlot:
+                pl.draw()
+            FigFileRoot = self.inputs.imagename+'.pol%s' % pol
+            plotfile = os.path.join(self.stage_dir, FigFileRoot+'_TP.png')
             pl.savefig(plotfile, format='png', dpi=DPIDetail)
 
             im.remove()
@@ -322,11 +324,12 @@ class SDMomentMapDisplay(SDImageDisplay):
  
 
 class ChannelMapAxesManager(ChannelAveragedAxesManager):
-    def __init__(self, xformatter, yformatter, xlocator, ylocator, xrotation, yrotation, ticksize, colormap, nh, nv, brightnessunit):
-        super(ChannelMapAxesManager,self).__init__(xformatter, yformatter,
-                                                   xlocator, ylocator,
-                                                   xrotation, yrotation,
-                                                   ticksize, colormap)
+    def __init__(self, xformatter, yformatter, xlocator, ylocator, xrotation, yrotation, ticksize, colormap, nh, nv,
+                 brightnessunit):
+        super(ChannelMapAxesManager, self).__init__(xformatter, yformatter,
+                                                    xlocator, ylocator,
+                                                    xrotation, yrotation,
+                                                    ticksize, colormap)
         self.nh = nh
         self.nv = nv
         self.brightnessunit = brightnessunit
@@ -377,7 +380,7 @@ class ChannelMapAxesManager(ChannelAveragedAxesManager):
             pl.xticks(size=self.ticksize)
             pl.yticks(size=self.ticksize)
             pl.xlabel('Frequency (GHz)', size=self.ticksize)
-            pl.ylabel('Intensity (%s)'%(self.brightnessunit), size=self.ticksize)
+            pl.ylabel('Intensity (%s)' % self.brightnessunit, size=self.ticksize)
             pl.title('Integrated Spectrum', size=self.ticksize)
 
             self._axes_integsp_full = axes
@@ -392,7 +395,7 @@ class ChannelMapAxesManager(ChannelAveragedAxesManager):
             pl.xticks(size=self.ticksize)
             pl.yticks(size=self.ticksize)
             pl.xlabel('Relative Velocity w.r.t. Window Center (km/s)', size=self.ticksize)
-            pl.ylabel('Intensity (%s)'%(self.brightnessunit), size=self.ticksize)
+            pl.ylabel('Intensity (%s)' % self.brightnessunit, size=self.ticksize)
             pl.title('Integrated Spectrum (zoom)', size=self.ticksize)
 
             self._axes_integsp_zoom = axes
@@ -460,7 +463,7 @@ class SDSparseMapDisplay(SDImageDisplay):
         NH = (self.x_max - self.x_min) / STEP + 1
         NV = (self.y_max - self.y_min) / STEP + 1
 
-        LOG.info('num_panel=%s, STEP=%s, NH=%s, NV=%s'%(num_panel,STEP,NH,NV))
+        LOG.info('num_panel=%s, STEP=%s, NH=%s, NV=%s' % (num_panel, STEP, NH, NV))
 
         chan0 = 0
         chan1 = self.nchan
@@ -470,9 +473,9 @@ class SDSparseMapDisplay(SDImageDisplay):
 
         plot_list = []
 
-        refpix = [0,0]
-        refval = [0,0]
-        increment = [0,0]
+        refpix = [0, 0]
+        refval = [0, 0]
+        increment = [0, 0]
         refpix[0], refval[0], increment[0] = self.image.direction_axis(0, unit='deg')
         refpix[1], refval[1], increment[1] = self.image.direction_axis(1, unit='deg')
         plotter.setup_labels(refpix, refval, increment)
@@ -509,12 +512,14 @@ class SDSparseMapDisplay(SDImageDisplay):
                     me.doframe(time_ref)
                     me.doframe(direction_ref)
                     me.doframe(position_ref)
+
                     def _tolsrk(x):
                         # ATM is always in TOPO
                         m = me.frequency(rf='TOPO', v0=qa.quantity(x, 'GHz'))
                         converted = me.measure(v=m, rf=frame)
                         qout = qa.convert(converted['m0'], outunit='GHz')
                         return qout['value']
+
                     tolsrk = numpy.vectorize(_tolsrk)
                     atm_freq = tolsrk(atm_freq)
                 plotter.set_atm_transmission(atm_transmission, atm_freq)
@@ -522,10 +527,10 @@ class SDSparseMapDisplay(SDImageDisplay):
         # loop over pol
         for pol in xrange(self.npol):
             Plot = numpy.zeros((num_panel, num_panel, (chan1 - chan0)), numpy.float32) + NoData
-            TotalSP = (self.data.take([pol], axis=self.id_stokes) * self.mask.take([pol], axis=self.id_stokes)).squeeze().sum(axis=(0,1))
+            TotalSP = (self.data.take([pol], axis=self.id_stokes) * self.mask.take([pol], axis=self.id_stokes)).squeeze().sum(axis=(0, 1))
             isvalid = numpy.any(self.mask.take([pol], axis=self.id_stokes).squeeze(), axis=2)
             Nsp = sum(isvalid.flatten())
-            LOG.info('Nsp=%s'%(Nsp))
+            LOG.info('Nsp=%s' % Nsp)
             TotalSP /= Nsp
             
             slice_axes = (self.image.id_direction[0], self.image.id_direction[1], self.id_stokes)
@@ -536,14 +541,14 @@ class SDSparseMapDisplay(SDImageDisplay):
                 for y in xrange(NV):
                     y0 = y * STEP
                     y1 = (y + 1) * STEP
-                    valid_index = isvalid[x0:x1,y0:y1].nonzero()
+                    valid_index = isvalid[x0:x1, y0:y1].nonzero()
                     chunk = self._get_array_chunk(self.data, (x0, y0, pol), (x1, y1, pol+1), slice_axes).squeeze(axis=self.id_stokes) * self._get_array_chunk(self.mask, (x0, y0, pol), (x1, y1, pol+1), slice_axes).squeeze(axis=self.id_stokes)
-                    valid_sp = chunk[valid_index[0],valid_index[1],:]
+                    valid_sp = chunk[valid_index[0], valid_index[1], :]
                     Plot[x][y] = valid_sp.mean(axis=0)
                     del valid_index, chunk, valid_sp
             del isvalid
  
-            FigFileRoot = self.inputs.imagename+'.pol%s_Sparse'%(pol)
+            FigFileRoot = self.inputs.imagename+'.pol%s_Sparse' % pol
             plotfile = os.path.join(self.stage_dir, FigFileRoot+'_0.png')
 
             status = plotter.plot(Plot, TotalSP, self.frequency[chan0:chan1], 
@@ -618,20 +623,19 @@ class SDChannelMapDisplay(SDImageDisplay):
 #         for group_desc in reduction_group.values():
         for g in group_desc:
             found = False
-            for (msid, ant, fid, spw) in itertools.izip(msid_list, ant_index,
-                                             fieldid_list, spwid_list):
+            for (msid, ant, fid, spw) in itertools.izip(msid_list, ant_index, fieldid_list, spwid_list):
                 msobj_list = self.inputs.context.observing_run.measurement_sets
-                msname_list = [os.path.abspath(msobj_list[idx].name) \
+                msname_list = [os.path.abspath(msobj_list[idx].name)
                                for idx in xrange(len(msobj_list))]
                 group_msid = msname_list.index(os.path.abspath(g.ms.name))
                 del msobj_list, msname_list
-                if group_msid==msid and g.antenna_id == ant and \
+                if group_msid == msid and g.antenna_id == ant and \
                     g.field_id == fid and g.spw_id == spw:
                     found = True
                     break
             if found:
                 for ll in g.channelmap_range:
-                    if not ll in line_list and ll[2] is True:
+                    if ll not in line_list and ll[2] is True:
                         line_list.append(ll)
         return line_list
 
@@ -675,16 +679,17 @@ class SDChannelMapDisplay(SDImageDisplay):
         finally:
             collapsed_ia.close()
         # devive averaged image by averaged weight
-        data_weight_integ = numpy.ma.masked_array((data_integ / weight_integ), [ not val for val in mask_integ ], fill_value=0.0)
-        sp_ave = numpy.ma.masked_array(numpy.zeros((self.npol, self.nchan),dtype=numpy.float32))
+        data_weight_integ = numpy.ma.masked_array((data_integ / weight_integ), [not val for val in mask_integ],
+                                                  fill_value=0.0)
+        sp_ave = numpy.ma.masked_array(numpy.zeros((self.npol, self.nchan), dtype=numpy.float32))
         if self.npol == 1:
             if len(data_weight_integ) == self.nchan:
-                sp_ave[0,:] = data_weight_integ
+                sp_ave[0, :] = data_weight_integ
         else:
             for pol in xrange(self.npol):
-                curr_sp= data_weight_integ.take([pol], axis=new_id_stokes).squeeze()
+                curr_sp = data_weight_integ.take([pol], axis=new_id_stokes).squeeze()
                 if len(curr_sp) == self.nchan:
-                    sp_ave[pol,:] = curr_sp
+                    sp_ave[pol, :] = curr_sp
         return sp_ave
 
     def __plot_channel_map(self):
@@ -706,7 +711,8 @@ class SDChannelMapDisplay(SDImageDisplay):
             return plot_list
             
         # Set data
-        Map = numpy.zeros((self.NumChannelMap, (self.y_max - self.y_min + 1), (self.x_max - self.x_min + 1)), dtype=numpy.float32)
+        Map = numpy.zeros((self.NumChannelMap, (self.y_max - self.y_min + 1), (self.x_max - self.x_min + 1)),
+                          dtype=numpy.float32)
 #         RMSMap = numpy.zeros(((self.y_max - self.y_min + 1), (self.x_max - self.x_min + 1)), dtype=numpy.float32)
 
         # Swap (x,y) to match the clustering result
@@ -790,8 +796,8 @@ class SDChannelMapDisplay(SDImageDisplay):
             vertical_lines = []
             # vertical lines for integrated spectrum #1
             pl.gcf().sca(axes_integsp1)
-            vertical_lines.append(pl.axvline(x = self.frequency[max(ChanB,0)], linewidth=0.3, color='r'))
-            vertical_lines.append(pl.axvline(x = self.frequency[chan1], linewidth=0.3, color='r'))
+            vertical_lines.append(pl.axvline(x=self.frequency[max(ChanB, 0)], linewidth=0.3, color='r'))
+            vertical_lines.append(pl.axvline(x=self.frequency[chan1], linewidth=0.3, color='r'))
 
             # vertical lines for integrated spectrum #2
             pl.gcf().sca(axes_integsp2)
@@ -837,9 +843,9 @@ class SDChannelMapDisplay(SDImageDisplay):
 #                             integmap_colorbar.ax.set_title('[%s km/s]'%(self.brightnessunit))
 #                             lab = integmap_colorbar.ax.title
 #                             lab.set_fontsize(newfontsize)
-                            integmap_colorbar.ax.set_ylabel('[%s km/s]'%(self.brightnessunit), fontsize=newfontsize)
+                            integmap_colorbar.ax.set_ylabel('[%s km/s]' % self.brightnessunit, fontsize=newfontsize)
                         else:
-                            integmap_colorbar.set_clim((Total.min(),Total.max()))
+                            integmap_colorbar.set_clim((Total.min(), Total.max()))
                             integmap_colorbar.draw_all()
 
                 # draw beam pattern
@@ -897,15 +903,19 @@ class SDChannelMapDisplay(SDImageDisplay):
                     width = abs(self.velocity[C0] - self.velocity[C1])
                     Title.append('(Vel,Wid) = (%.1f, %.1f) (km/s)' % (velo, width))
                     NMap += 1
-                    tmp = masked_data[:,:,C0:C1].sum(axis=2) * ChanVelWidth
+                    tmp = masked_data[:, :, C0:C1].sum(axis=2) * ChanVelWidth
                     Map[i] = numpy.flipud(tmp.transpose())
                 del masked_data
                 Vmax0 = Map.max()
                 Vmin0 = Map.min()
-                if type(scale_max) == bool: Vmax = Vmax0 - (Vmax0 - Vmin0) * 0.1
-                else:                       Vmax = scale_max
-                if type(scale_min) == bool: Vmin = Vmin0 + (Vmax0 - Vmin0) * 0.1
-                else:                       Vmin = scale_min
+                if type(scale_max) == bool:
+                    Vmax = Vmax0 - (Vmax0 - Vmin0) * 0.1
+                else:
+                    Vmax = scale_max
+                if type(scale_min) == bool:
+                    Vmin = Vmin0 + (Vmax0 - Vmin0) * 0.1
+                else:
+                    Vmin = scale_min
 
                 if Vmax == 0 and Vmin == 0: 
                     print("No data to create channel maps. Check the flagging criteria.")
@@ -921,17 +931,17 @@ class SDChannelMapDisplay(SDImageDisplay):
                         if x == (self.NhPanel - 1):
                             y = int(i / self.NhPanel)
                             if chmap_colorbar[y] is None:
-                                cb=pl.colorbar()
+                                cb = pl.colorbar()
                                 for t in cb.ax.get_yticklabels():
                                     newfontsize = t.get_fontsize()*0.5
                                     t.set_fontsize(newfontsize)
 #                                 cb.ax.set_title('[%s km/s]'%(self.brightnessunit))
 #                                 lab=cb.ax.title
 #                                 lab.set_fontsize(newfontsize)
-                                cb.ax.set_ylabel('[%s km/s]'%(self.brightnessunit), fontsize=newfontsize)
+                                cb.ax.set_ylabel('[%s km/s]' % self.brightnessunit, fontsize=newfontsize)
                                 chmap_colorbar[y] = cb
                             else:
-                                chmap_colorbar[y].set_clim(Vmin,Vmax)
+                                chmap_colorbar[y].set_clim(Vmin, Vmax)
                                 chmap_colorbar[y].draw_all()
                         pl.title(Title[i], size=TickSize)
 
@@ -1010,10 +1020,10 @@ class SDRmsMapDisplay(SDImageDisplay):
         # reshape 2d array in shape, (npol, nx*ny), to (nx, ny, npol)
         npol_data = len(array2d)
         # retruned value will be transposed
-        array3d = numpy.zeros((npol_data, self.ny, self.nx),dtype=dtype)
+        array3d = numpy.zeros((npol_data, self.ny, self.nx), dtype=dtype)
         for pol in xrange(npol_data):
             if len(array2d[pol]) == self.nx*self.ny:
-                array3d[pol,:,:] = numpy.array(array2d[pol]).reshape((self.ny,self.nx))
+                array3d[pol, :, :] = numpy.array(array2d[pol]).reshape((self.ny, self.nx))
         return numpy.flipud(array3d.transpose())
 
     def __plot_channel_map(self):
@@ -1028,10 +1038,10 @@ class SDRmsMapDisplay(SDImageDisplay):
         # Draw RMS Map
         TickSize = 6
 
-        Extent = (self.ra_max+self.grid_size/2.0, self.ra_min-self.grid_size/2.0, self.dec_min-self.grid_size/2.0, self.dec_max+self.grid_size/2.0)
+        Extent = (self.ra_max+self.grid_size/2.0, self.ra_min-self.grid_size/2.0,
+                  self.dec_min-self.grid_size/2.0, self.dec_max+self.grid_size/2.0)
         span = max(self.ra_max - self.ra_min + self.grid_size, self.dec_max - self.dec_min + self.grid_size)
-        (RAlocator, DEClocator, RAformatter, DECformatter) = pointing.XYlabel(span,
-                                                                              self.direction_reference)
+        (RAlocator, DEClocator, RAformatter, DECformatter) = pointing.XYlabel(span, self.direction_reference)
 
         axes_manager = RmsMapAxesManager(RAformatter, DECformatter,
                                          RAlocator, DEClocator,
@@ -1047,7 +1057,7 @@ class SDRmsMapDisplay(SDImageDisplay):
         npol_data = rms.shape[2]
 #         for pol in xrange(self.npol):
         for pol in xrange(npol_data):
-            rms_map = rms[:,:,pol] * (nvalid[:,:,pol] > 0)
+            rms_map = rms[:, :, pol] * (nvalid[:, :, pol] > 0)
             rms_map = numpy.flipud(rms_map.transpose())
             #LOG.debug('rms_map=%s'%(rms_map))
             # 2008/9/20 DEC Effect
@@ -1069,7 +1079,7 @@ class SDRmsMapDisplay(SDImageDisplay):
 #                         lab = rms_colorbar.ax.title
                         rms_colorbar.ax.set_ylabel('[%s]' % self.brightnessunit)
                     else:
-                        rms_colorbar.set_clim((rmsmin,rmsmax))
+                        rms_colorbar.set_clim((rmsmin, rmsmax))
                         rms_colorbar.draw_all()
             del rms_map
 
@@ -1080,8 +1090,9 @@ class SDRmsMapDisplay(SDImageDisplay):
             rms_axes.set_xlim(xlim)
             rms_axes.set_ylim(ylim)
 
-            if ShowPlot: pl.draw()
-            FigFileRoot = self.inputs.imagename + '.pol%s'%(pol)
+            if ShowPlot:
+                pl.draw()
+            FigFileRoot = self.inputs.imagename + '.pol%s' % pol
             plotfile = os.path.join(self.stage_dir, FigFileRoot+'_rmsmap.png')
             pl.savefig(plotfile, format='png', dpi=DPISummary)
 
@@ -1141,7 +1152,7 @@ class SpectralMapAxesManager(MapAxesManagerBase):
             a = pl.axes([x0, y0, x1, y1])
             a.xaxis.set_major_formatter(self.formatter)
             a.xaxis.set_major_locator(self.locator)
-            a.yaxis.set_label_coords(-0.22,0.5)
+            a.yaxis.set_label_coords(-0.22, 0.5)
             a.title.set_y(0.95)
             a.title.set_size(self.ticksize)
             pl.ylabel('Intensity (%s)'%(self.brightnessunit), size=self.ticksize)
@@ -1166,8 +1177,8 @@ class SDSpectralMapDisplay(SDImageDisplay):
         units = self.image.coordsys.units()
         factors = []
         for idx in self.image.id_direction:
-            cell = qa.convert(qa.quantity(increment['numeric'][idx],units[idx]),'deg')['value']
-            factors.append( int( numpy.round( abs(self.grid_size / cell) ) ) )
+            cell = qa.convert(qa.quantity(increment['numeric'][idx], units[idx]), 'deg')['value']
+            factors.append(int(numpy.round(abs(self.grid_size / cell))))
         return factors
 
     def __plot_spectral_map(self):
@@ -1179,18 +1190,20 @@ class SDSpectralMapDisplay(SDImageDisplay):
         mode = 'raster'
         if mode.upper() == 'RASTER':
             # the number of panels in each page
-            NhPanel = min( max((self.x_max - self.x_min + 1)/STEPX, (self.y_max - self.y_min + 1)/STEPY), self.MaxNhPanel )
-            NvPanel = min( max((self.x_max - self.x_min + 1)/STEPX, (self.y_max - self.y_min + 1)/STEPY), self.MaxNvPanel )
+            NhPanel = min(max((self.x_max - self.x_min + 1)/STEPX,
+                              (self.y_max - self.y_min + 1)/STEPY), self.MaxNhPanel)
+            NvPanel = min(max((self.x_max - self.x_min + 1)/STEPX,
+                              (self.y_max - self.y_min + 1)/STEPY), self.MaxNvPanel)
             # total number of pages in horizontal and vertical directions
             NH = int((self.x_max - self.x_min) / STEPX / NhPanel + 1)
             NV = int((self.y_max - self.y_min) / STEPY / NvPanel + 1)
             # an array with length of total number of spectra to be plotted (initialized by -1)
             ROWS = numpy.zeros(NH * NV * NhPanel * NvPanel, dtype=numpy.int) - 1
             # 2010/6/15 GK Change the plotting direction: UpperLeft->UpperRight->OneLineDown repeat...
-            for x in xrange(0,self.nx,STEPX):
+            for x in xrange(0, self.nx, STEPX):
                 posx = (self.x_max - x)/STEPX / NhPanel
                 offsetx = ( (self.x_max - x)/STEPX ) % NhPanel
-                for y in xrange(0,self.ny,STEPY):
+                for y in xrange(0, self.ny, STEPY):
                     posy = (self.y_max - y)/STEPY / NvPanel
                     offsety = NvPanel - 1 - (self.y_max - y)/STEPY % NvPanel
                     row = (self.nx - x - 1) * self.ny + y
@@ -1214,8 +1227,10 @@ class SDSpectralMapDisplay(SDImageDisplay):
 
         # Plotting routine
         connect = True
-        if connect is True: Mark = '-b'
-        else: Mark = 'bo'
+        if connect is True:
+            Mark = '-b'
+        else:
+            Mark = 'bo'
         chan0 = 0
         chan1 = -1
         if chan1 == -1:
@@ -1233,8 +1248,8 @@ class SDSpectralMapDisplay(SDImageDisplay):
         else: FMT = '%.2fG'
         Format = pl.FormatStrFormatter(FMT)
 
-        (xrp,xrv,xic) = self.image.direction_axis(0)
-        (yrp,yrv,yic) = self.image.direction_axis(1)
+        (xrp, xrv, xic) = self.image.direction_axis(0)
+        (yrp, yrv, yic) = self.image.direction_axis(1)
 
         plot_list = []
 
@@ -1257,11 +1272,12 @@ class SDSpectralMapDisplay(SDImageDisplay):
 #             valid_index = numpy.where(self.num_valid_spectrum[:,:,pol] > 0)
             mask2d = numpy.any(self.mask.take([pol], axis=self.id_stokes).squeeze(), axis=2)
             valid_index = mask2d.nonzero()
-            valid_data = data[valid_index[0],valid_index[1],chan0:chan1]
+            valid_data = data[valid_index[0], valid_index[1], chan0:chan1]
             ListMax = valid_data.max(axis=1)
             ListMin = valid_data.min(axis=1)
             del valid_index, valid_data
-            if len(ListMax) == 0: continue 
+            if len(ListMax) == 0:
+                continue
             if is_baselined:
                 ymax = numpy.sort(ListMax)[len(ListMax) - len(ListMax)/10 - 1]
                 ymin = numpy.sort(ListMin)[len(ListMin)/10]
@@ -1270,7 +1286,7 @@ class SDSpectralMapDisplay(SDImageDisplay):
                 ymin = numpy.sort(ListMin)[1]
             ymax = ymax + (ymax - ymin) * 0.2
             ymin = ymin - (ymax - ymin) * 0.1
-            LOG.debug('ymin=%s, ymax=%s'%(ymin,ymax))
+            LOG.debug('ymin=%s, ymax=%s' % (ymin, ymax))
             del ListMax, ListMin
 
             for irow in xrange(len(ROWS)):
@@ -1279,8 +1295,8 @@ class SDSpectralMapDisplay(SDImageDisplay):
                 _x = row / self.ny
                 _y = row % self.ny
                 
-                prefix = self.inputs.imagename+'.pol%s_Result'%(pol)
-                plotfile = os.path.join(self.stage_dir, prefix+'_%s.png'%(Npanel))
+                prefix = self.inputs.imagename+'.pol%s_Result' % pol
+                plotfile = os.path.join(self.stage_dir, prefix+'_%s.png' % Npanel)
 
                 if not os.path.exists(plotfile):
                     if 0 <= _x < self.nx and 0 <= _y < self.ny:
@@ -1293,11 +1309,13 @@ class SDSpectralMapDisplay(SDImageDisplay):
 #                         if self.num_valid_spectrum[_x][_y][pol] > 0:
                         if mask2d[_x][_y]:
                             plot_objects.extend(
-                                pl.plot(self.frequency, data[_x][_y], Mark, markersize=2, markeredgecolor='b', markerfacecolor='b')
+                                pl.plot(self.frequency, data[_x][_y], Mark, markersize=2, markeredgecolor='b',
+                                        markerfacecolor='b')
                                 )
                         else:
                             plot_objects.append(
-                                pl.text((xmin+xmax)/2.0, (ymin+ymax)/2.0, 'NO DATA', horizontalalignment='center', verticalalignment='center', size=TickSize)
+                                pl.text((xmin+xmax)/2.0, (ymin+ymax)/2.0, 'NO DATA', horizontalalignment='center',
+                                        verticalalignment='center', size=TickSize)
                                 )
                         a.title.set_text(title)
                         pl.axis([xmin, xmax, ymin, ymax])
@@ -1312,13 +1330,13 @@ class SDSpectralMapDisplay(SDImageDisplay):
                     if ShowPlot:
                         pl.draw()
 
-                    prefix = self.inputs.imagename+'.pol%s_Result'%(pol)
-                    plotfile = os.path.join(self.stage_dir, prefix+'_%s.png'%(Npanel))
+                    prefix = self.inputs.imagename+'.pol%s_Result' % pol
+                    plotfile = os.path.join(self.stage_dir, prefix+'_%s.png' % Npanel)
                     if not os.path.exists(plotfile):
-                        LOG.debug('Regenerate plot: %s'%(plotfile))
+                        LOG.debug('Regenerate plot: %s' % plotfile)
                         pl.savefig(plotfile, format='png', dpi=DPIDetail)
                     else:
-                        LOG.debug('Use existing plot: %s'%(plotfile))
+                        LOG.debug('Use existing plot: %s' % plotfile)
 
                     for obj in plot_objects:
                         obj.remove()

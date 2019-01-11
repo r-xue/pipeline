@@ -3,7 +3,6 @@ import os
 import shutil
 
 import pipeline.hif.tasks.common.flagging_renderer_utils as fru
-#import pipeline.infrastructure.displays.flagging as flagging
 import pipeline.h.tasks.common.displays.flagging as flagging
 import displaycheckflag as displaycheckflag
 import pipeline.infrastructure.logging as logging
@@ -32,8 +31,8 @@ class T2_4MDetailsFlagDeterVLARenderer(basetemplates.T2_4MDetailsDefaultRenderer
                                   'stage%s' % result.stage_number)
 
         flag_totals = {}
-        non_science_agents = ['before', 'anos','shadow', 'intents']
-        #Note that the call to common.flagging_renderer_utils.flags_for_result
+        non_science_agents = ['before', 'anos', 'shadow', 'intents']
+        # Note that the call to common.flagging_renderer_utils.flags_for_result
         for r in result:
             flag_totals = utils.dict_merge(flag_totals, 
                                            fru.flags_for_result(r, context, non_science_agents))
@@ -72,17 +71,17 @@ class T2_4MDetailsFlagDeterVLARenderer(basetemplates.T2_4MDetailsDefaultRenderer
 
         # return all agents so we get ticks and crosses against each one
         agents = ['before', 'anos', 'shadow', 'intents', 'online', 'template', 'autocorr', 
-                   'edgespw', 'clip', 'quack', 'baseband']
+                  'edgespw', 'clip', 'quack', 'baseband']
 
         flagplots = {os.path.basename(r.inputs['vis']): self.flagplot(r, context)
                      for r in result}
 
         ctx.update({
-            'flags'     : flag_totals,
-            'agents'    : agents,
-            'dirname'   : weblog_dir,
-            'flagcmds'  : flagcmd_files,
-            'flagplots' : flagplots})
+            'flags': flag_totals,
+            'agents': agents,
+            'dirname': weblog_dir,
+            'flagcmds': flagcmd_files,
+            'flagplots': flagplots})
 
         return ctx
 
@@ -162,14 +161,12 @@ class T2_4MDetailsFlagDeterVLARenderer(basetemplates.T2_4MDetailsDefaultRenderer
         return total
         
 
-
-
-#not used in 4.5.2+ and C3R4+
+# not used in 4.5.2+ and C3R4+
 class T2_4MDetailstargetflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def __init__(self, uri='targetflag.mako', 
                  description='Targetflag (All targets through RFLAG)', always_rerender=False):
-        super(T2_4MDetailstargetflagRenderer, self).__init__(uri=uri,
-                description=description, always_rerender=always_rerender)
+        super(T2_4MDetailstargetflagRenderer, self).__init__(
+            uri=uri, description=description, always_rerender=always_rerender)
     
     def get_display_context(self, context, results):
         super_cls = super(T2_4MDetailstargetflagRenderer, self)
@@ -189,8 +186,8 @@ class T2_4MDetailstargetflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             summary_plots[ms] = plots
         '''
 
-        ctx.update({'summary_plots'   : summary_plots,
-                    'dirname'         : weblog_dir})
+        ctx.update({'summary_plots': summary_plots,
+                    'dirname': weblog_dir})
                 
         return ctx
 

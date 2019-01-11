@@ -25,7 +25,7 @@ LOG = utils.OnDemandStringParseLogger(_LOG)
 
 class DetectLineInputs(vdp.StandardInputs):
     window = vdp.VisDependentProperty(default=[])
-    edge = vdp.VisDependentProperty(default=(0,0))
+    edge = vdp.VisDependentProperty(default=(0, 0))
     broadline = vdp.VisDependentProperty(default=True)
     
     @property
@@ -694,9 +694,9 @@ def test_parser(ms):
         # single global window (channel)
         [100, 200], 
         # multiple global window (channel)
-        [[100, 200], [500,700]], 
+        [[100, 200], [500, 700]], 
         # per spw windows (channel)
-        {spwids[0]: [100, 200], spwids[-1]: [[100, 200], [500,700]]},
+        {spwids[0]: [100, 200], spwids[-1]: [[100, 200], [500, 700]]},
         # single global window (frequency value)
         [get_chan_freq0(100), get_chan_freq0(200)],
         # multiple global window (frequency value)

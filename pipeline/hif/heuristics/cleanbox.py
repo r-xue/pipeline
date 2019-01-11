@@ -111,7 +111,7 @@ def analyse_clean_result(multiterm, model, restored, residual, flux, cleanmask, 
     nonpbcor_image_non_cleanmask_rms_max = None
     if restored not in [None, '']:
         # get min and max of the pb-corrected cleaned result
-        with casatools.ImageReader(restored.replace('.image','.image%s' % (extension))) as image:
+        with casatools.ImageReader(restored.replace('.image', '.image%s' % extension)) as image:
             # define mask outside the cleaned area
             if flux is not None and os.path.exists(flux+extension):
                 have_mask = True
@@ -161,7 +161,7 @@ def analyse_clean_result(multiterm, model, restored, residual, flux, cleanmask, 
 
             try:
                 # Get image RMS for all channels (this is for the weblog)
-                image_stats = image.statistics(mask=statsmask, robust=False, axes=[0,1,2])
+                image_stats = image.statistics(mask=statsmask, robust=False, axes=[0, 1, 2])
 
                 # Filter continuum frequency ranges if given
                 if cont_freq_ranges not in (None, ''):

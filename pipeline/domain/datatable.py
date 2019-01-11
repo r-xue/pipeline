@@ -896,7 +896,7 @@ class DataTableImpl(object):
         # back to previous impl. with reduced memory usage
         # (performance degraded)
         ms_rows = self.getcol('ROW')
-        tmp_array = numpy.empty((4,1,), dtype=numpy.int32)
+        tmp_array = numpy.empty((4, 1,), dtype=numpy.int32)
         with casatools.TableReader(infile) as tb:
             # for dt_row in index[0]:
             for dt_row, ms_row in enumerate(ms_rows):

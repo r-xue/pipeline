@@ -2,6 +2,7 @@ import os
 import re
 import pipeline.infrastructure.api as api
 
+
 def is_ms(filename):
     table_info = os.path.join(filename, 'table.info')
     if os.path.exists(filename) and os.path.exists(table_info):
@@ -9,6 +10,7 @@ def is_ms(filename):
             line = f.readline()
         return re.match('^Type ?= ?Measurement ?Set *$', line) is not None
     return False
+
 
 class DataTypeHeuristics(api.Heuristic):
     """
@@ -33,7 +35,7 @@ class DataTypeHeuristics(api.Heuristic):
         if is_ms(abspath):
             datatype = 'MS2'
         if os.path.isdir(abspath):
-            if os.path.exists(os.path.join(abspath,'ASDM.xml')):
+            if os.path.exists(os.path.join(abspath, 'ASDM.xml')):
                 datatype = 'ASDM'
         else:
             # regular file, so examine its contents
@@ -51,4 +53,3 @@ class DataTypeHeuristics(api.Heuristic):
                     # it may be NRO OTF data
                     datatype = 'NRO'
         return datatype
-                

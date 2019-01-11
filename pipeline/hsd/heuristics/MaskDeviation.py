@@ -101,8 +101,8 @@ class MaskDeviation(object):
             npol, nchan, nrow = r['flag'].shape
             self.nrow = npol * nrow
             self.nchan = nchan
-            self.data= NP.real(r[colname.lower()]).transpose((2,0,1)).reshape((nrow * npol, nchan))
-            self.flag = r['flag'].transpose((2,0,1)).reshape((nrow * npol, nchan))
+            self.data= NP.real(r[colname.lower()]).transpose((2, 0, 1)).reshape((nrow * npol, nchan))
+            self.flag = r['flag'].transpose((2, 0, 1)).reshape((nrow * npol, nchan))
                         
         LOG.debug('MaskDeviation.ReadDataFromMS: %s %s'%(self.nrow, self.nchan))
         
@@ -161,7 +161,8 @@ class MaskDeviation(object):
         self.ymax = self.maxSP.max()
         self.ymin = self.minSP.min()
         
-        LOG.trace('std %s\nmean %s\n max %s\n min %s\n ymax %s ymin %s'%(self.stdSP,self.meanSP,self.maxSP,self.minSP,self.ymax,self.ymin))
+        LOG.trace('std %s\nmean %s\n max %s\n min %s\n ymax %s ymin %s' %
+                  (self.stdSP, self.meanSP, self.maxSP, self.minSP, self.ymax, self.ymin))
 
     def CalcRange(self, threshold=3.0, detection=5.0, extension=2.0, iteration=10, consider_flag=False):
         """

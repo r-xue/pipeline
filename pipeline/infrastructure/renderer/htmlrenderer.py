@@ -825,7 +825,7 @@ class T2_1DetailsRenderer(object):
                 try:
                     band = spw.name.split('#')[0].split('_')[1]
                     baseband = spw.name.split('#')[1]
-                    banddict[band][baseband].append({str(spw.id):(spw.min_frequency,spw.max_frequency)})
+                    banddict[band][baseband].append({str(spw.id): (spw.min_frequency, spw.max_frequency)})
                 except:
                     LOG.debug("Baseband name cannot be parsed and will not appear in the weblog.")
 
@@ -852,11 +852,11 @@ class T2_1DetailsRenderer(object):
             field_strategy = ms.calibration_strategy['field_strategy']
             target = field_strategy.keys()[0]
             reference = field_strategy[target]
-            LOG.debug('target field id %s / reference field id %s'%(target,reference))
-            task = pointing.SingleDishPointingChart(context, ms, antenna, 
-                                                        target_field_id=target,
-                                                        reference_field_id=reference,
-                                                        target_only=True)
+            LOG.debug('target field id %s / reference field id %s' % (target, reference))
+            task = pointing.SingleDishPointingChart(context, ms, antenna,
+                                                    target_field_id=target,
+                                                    reference_field_id=reference,
+                                                    target_only=True)
             pointing_plot = task.plot()
         else:
             pointing_plot = None
@@ -1149,12 +1149,12 @@ class T2_2_7Renderer(T2_2_XRendererBase):
             #LOG.info('valid_ephem_names={}'.format(valid_ephem_names))
             for antenna in ms.antennas:
                 for (target, reference) in ms.calibration_strategy['field_strategy'].items():
-                    LOG.debug('target field id %s / reference field id %s'%(target,reference))
+                    LOG.debug('target field id %s / reference field id %s' % (target, reference))
                     # pointing pattern without OFF-SOURCE intents
                     task = pointing.SingleDishPointingChart(context, ms, antenna, 
-                                                                target_field_id=target,
-                                                                reference_field_id=reference,
-                                                                target_only=True)
+                                                            target_field_id=target,
+                                                            reference_field_id=reference,
+                                                            target_only=True)
                     plotres = task.plot()
                     # for missing antenna, spw, field combinations
                     if plotres is None: continue
@@ -1162,9 +1162,9 @@ class T2_2_7Renderer(T2_2_XRendererBase):
                     
                     # pointing pattern with OFF-SOURCE intents
                     task = pointing.SingleDishPointingChart(context, ms, antenna, 
-                                                                target_field_id=target,
-                                                                reference_field_id=reference,
-                                                                target_only=False)
+                                                            target_field_id=target,
+                                                            reference_field_id=reference,
+                                                            target_only=False)
                     plotres = task.plot()
                     if plotres is not None:
                         whole_pointings.append(plotres)

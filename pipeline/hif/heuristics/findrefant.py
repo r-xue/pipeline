@@ -213,7 +213,7 @@ class RefAntHeuristics(object):
         # Calculate the final score and return the list of ranked
         # reference antennas.  NB: The best antennas have the highest
         # score, so a reverse sort is required.
-        return [k for k,_ in sorted(score.iteritems(), key=operator.itemgetter(1), reverse=True)]
+        return [k for k, _ in sorted(score.iteritems(), key=operator.itemgetter(1), reverse=True)]
 
 # ------------------------------------------------------------------------------
 
@@ -414,19 +414,16 @@ class RefAntGeometry:
 
 # ------------------------------------------------------------------------------
 
-    def _get_info( self ):
+    def _get_info(self):
 
         # Create the local instance of the table tool and open it with
         # the antenna subtable of the MS
-
         #tbLoc = casa.__tablehome__.create()
         tbLoc = casac.table()
         #tbLoc.open( self.vis[0]+'/ANTENNA' ) # Take zeroth element
-        tbLoc.open( self.vis+'/ANTENNA' ) # Take zeroth element
-
+        tbLoc.open(self.vis+'/ANTENNA')  # Take zeroth element
 
         # Get the antenna information from the antenna table
-
         info = dict()
 
         info['position'] = tbLoc.getcol( 'POSITION' )
@@ -434,20 +431,15 @@ class RefAntGeometry:
         info['name'] = tbLoc.getcol( 'NAME' )
         info['position_keywords'] = tbLoc.getcolkeywords( 'POSITION' )
 
-
         # Close the table tool and delete the local instance
-
         tbLoc.close()
         del tbLoc
-
 
         # The flag tool appears to return antenna names as upper case,
         # which seems to be different from the antenna names stored in
         # MSes.  Therefore, these names will be capitalized here.
-
-        rRow = range( len( info['name'] ) )
+        rRow = range(len(info['name']))
         #for r in rRow: info['name'][r] = info['name'][r].upper()
-
 
         # Return the antenna information
 
@@ -480,7 +472,7 @@ class RefAntGeometry:
 
 # ------------------------------------------------------------------------------
 
-    def _get_measures( self, info ):
+    def _get_measures(self, info):
 
         # Create the local instances of the measures and quanta tools
 
@@ -488,7 +480,6 @@ class RefAntGeometry:
         meLoc = casac.measures()
         #qaLoc = casa.__quantahome__.create()
         qaLoc = casac.quanta()
-
 
         # Initialize the measures dictionary and the position and
         # position_keywords variables
@@ -500,31 +491,28 @@ class RefAntGeometry:
 
         rf = position_keywords['MEASINFO']['Ref']
 
-        for row,ant in enumerate( info['name'] ):
+        for row, ant in enumerate(info['name']):
 
             if not info['flag_row'][row]:
 
-                p = position[0,row]
+                p = position[0, row]
                 pk = position_keywords['QuantumUnits'][0]
-                v0 = qaLoc.quantity( p, pk )
+                v0 = qaLoc.quantity(p, pk)
 
-                p = position[1,row]
+                p = position[1, row]
                 pk = position_keywords['QuantumUnits'][1]
-                v1 = qaLoc.quantity( p, pk )
+                v1 = qaLoc.quantity(p, pk)
 
-                p = position[2,row]
+                p = position[2, row]
                 pk = position_keywords['QuantumUnits'][2]
-                v2 = qaLoc.quantity( p, pk )
+                v2 = qaLoc.quantity(p, pk)
 
-                measures[ant] = meLoc.position( rf=rf, v0=v0,
-                    v1=v1, v2=v2 )
-
+                measures[ant] = meLoc.position(rf=rf, v0=v0, v1=v1, v2=v2)
 
         # Delete the local instances of the measures and quanta tools
 
         del qaLoc
         del meLoc
-
 
         # Return the measures
 
@@ -662,8 +650,8 @@ class RefAntGeometry:
         distance = dict()
         names = radii.keys()
 
-        for i,ant in enumerate(names):
-            distance[ant] = numpy.sqrt( pow(x[i],2) + pow(y[i],2) )
+        for i, ant in enumerate(names):
+            distance[ant] = numpy.sqrt(pow(x[i], 2) + pow(y[i], 2))
 
         return distance
 
@@ -975,7 +963,7 @@ class RefAntFlagging:
 
 # ------------------------------------------------------------------------------
 
-    def _calc_score( self, good ):
+    def _calc_score(self, good):
 
         score = dict()
 
@@ -983,17 +971,15 @@ class RefAntFlagging:
             # Get the number of good data, calculate the fraction of good
             # data, and calculate the good and bad weights
 
-            nGood = numpy.array( good.values(), numpy.float )
-            fGood = nGood / float( numpy.max(nGood) )
+            nGood = numpy.array(good.values(), numpy.float)
+            fGood = nGood / float(numpy.max(nGood))
 
             wGood = fGood * len(nGood)
-            wBad = ( 1.0 - fGood ) * len(nGood)
-
+            wBad = (1.0 - fGood) * len(nGood)
 
             # Calculate the score for each antenna and return them
-
             names = good.keys()
-            rName = range( len(wGood) )
+            rName = range(len(wGood))
 
             for n in rName:
                 score[names[n]] = wGood[n]

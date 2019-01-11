@@ -7,7 +7,6 @@ result = task.exectue(dry_run=False)
 result.accept(context)
 
 """
-
 from __future__ import absolute_import
 
 import datetime
@@ -30,7 +29,7 @@ from . import resultobjects
 LOG = infrastructure.get_logger(__name__)
 
 
-def correct_ant_posns (vis_name, print_offsets=False):
+def correct_ant_posns(vis_name, print_offsets=False):
     """
     Given an input visibility MS name (vis_name), find the antenna
     position offsets that should be applied.  This application should
@@ -72,8 +71,8 @@ def correct_ant_posns (vis_name, print_offsets=False):
     spring 2012
     """
 
-    MONTHS = [ 'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
-               'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC' ]
+    MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
+              'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
     URL_BASE = 'http://www.vla.nrao.edu/cgi-bin/evlais_blines.cgi?Year='
 
     #
@@ -84,15 +83,15 @@ def correct_ant_posns (vis_name, print_offsets=False):
         time_range = table.getcol('TIME_RANGE')
 
     MJD_start_time = time_range[0][0] / 86400
-    q1 = casatools.quanta.quantity(time_range[0][0],'s')
-    date_time = casatools.quanta.time(q1,form='ymd')
+    q1 = casatools.quanta.quantity(time_range[0][0], 's')
+    date_time = casatools.quanta.time(q1, form='ymd')
     # date_time looks like: '2011/08/10/06:56:49'
-    [obs_year,obs_month,obs_day,obs_time_string] = date_time[0].split('/')
+    [obs_year, obs_month, obs_day, obs_time_string] = date_time[0].split('/')
     if (int(obs_year) < 2010):
         if (print_offsets):
             LOG.warn('Does not work for VLA observations')
         return [1, '', []]
-    [obs_hour,obs_minute,obs_second] = obs_time_string.split(':')
+    [obs_hour, obs_minute, obs_second] = obs_time_string.split(':')
     obs_time = 10000*int(obs_year) + 100*int(obs_month) + int(obs_day) + \
                int(obs_hour)/24.0 + int(obs_minute)/1440.0 + \
                int(obs_second)/86400.0
@@ -106,8 +105,7 @@ def correct_ant_posns (vis_name, print_offsets=False):
         ant_stations = table.getcol('STATION')
     ant_num_stas = []
     for ii in range(len(ant_names)):
-        ant_num_stas.append([int(ant_names[ii][2:]), ant_names[ii], \
-                            ant_stations[ii], 0.0, 0.0, 0.0, False])
+        ant_num_stas.append([int(ant_names[ii][2:]), ant_names[ii], ant_stations[ii], 0.0, 0.0, 0.0, False])
 
     correction_lines = []
     current_year = datetime.datetime.now().year
@@ -119,7 +117,7 @@ def correct_ant_posns (vis_name, print_offsets=False):
             LOG.warn('No internet connection to antenna position correction URL {}'.format(err.reason))
         return [2, '', []]
     response.close()
-    for year in range(2010,current_year+1):
+    for year in range(2010, current_year+1):
         response = urllib2.urlopen(URL_BASE + str(year))
         html = response.read()
         response.close()
@@ -165,7 +163,8 @@ def correct_ant_posns (vis_name, print_offsets=False):
         put_time = 10000 * int(c_year) + 100 * i_month + int(put_date[3:])
         [put_hr, put_min] = put_time_str.split(':')
         put_time += (int(put_hr)/24.0 + int(put_min)/1440.0)
-        corrections_list.append([c_year, moved_date, moved_time, obs_date, obs_time_2, put_date, put_time, int(ant), pad, float(Bx), float(By), float(Bz)])
+        corrections_list.append([c_year, moved_date, moved_time, obs_date, obs_time_2, put_date, put_time, int(ant),
+                                 pad, float(Bx), float(By), float(Bz)])
 
     for correction_list in corrections_list:
         [c_year, moved_date, moved_time, obs_date, obs_time_2, put_date, put_time, ant, pad, Bx, By, Bz] = correction_list
@@ -190,8 +189,7 @@ def correct_ant_posns (vis_name, print_offsets=False):
                 ant_num_sta[3] = 0.0
                 ant_num_sta[4] = 0.0
                 ant_num_sta[5] = 0.0
-        if ((put_time > obs_time) and (not ant_num_sta[6]) and \
-            (pad == ant_num_sta[2])):
+        if ((put_time > obs_time) and (not ant_num_sta[6]) and (pad == ant_num_sta[2])):
             # it's the right antenna/pad; add the offsets to those already accumulated
             ant_num_sta[3] += Bx
             ant_num_sta[4] += By
@@ -201,11 +199,10 @@ def correct_ant_posns (vis_name, print_offsets=False):
     parms = []
     for ii in range(len(ant_num_stas)):
         ant_num_sta = ant_num_stas[ii]
-        if ((ant_num_sta[3] != 0.0) or (ant_num_sta[4] != 0.0) or \
-            (ant_num_sta[3] != 0.0)):
+        if ((ant_num_sta[3] != 0.0) or (ant_num_sta[4] != 0.0) or (ant_num_sta[3] != 0.0)):
             if (print_offsets):
-                LOG.info("offsets for antenna %4s : %8.5f  %8.5f  %8.5f" % \
-                      (ant_num_sta[1], ant_num_sta[3], ant_num_sta[4], ant_num_sta[5]))
+                LOG.info("offsets for antenna %4s : %8.5f  %8.5f  %8.5f" %
+                         (ant_num_sta[1], ant_num_sta[3], ant_num_sta[4], ant_num_sta[5]))
             ants.append(ant_num_sta[1])
             parms.append(ant_num_sta[3])
             parms.append(ant_num_sta[4])
@@ -213,7 +210,7 @@ def correct_ant_posns (vis_name, print_offsets=False):
     if ((len(parms) == 0) and print_offsets):
         LOG.info("No offsets found for this MS")
     ant_string = ','.join(["%s" % ii for ii in ants])
-    return [ 0, ant_string, parms ]
+    return [0, ant_string, parms]
 
 
 class PriorcalsInputs(vdp.StandardInputs):

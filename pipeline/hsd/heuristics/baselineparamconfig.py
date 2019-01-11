@@ -134,7 +134,7 @@ class BaselineFitParamConfig(api.Heuristic):
         assert type(edge) == list and len(edge) == 2, 'edge must be a list [L, R]. "{0}" was given.'.format(edge)
         
         if DEBUG or TRACE:
-            LOG.debug('nchan={nchan} edge={edge}'.format(nchan=nchan,edge=edge))
+            LOG.debug('nchan={nchan} edge={edge}'.format(nchan=nchan, edge=edge))
         
         if self.ApplicableDuration == 'subscan':
             timetable_index = 1

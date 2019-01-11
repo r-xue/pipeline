@@ -196,23 +196,22 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
 
                         # Create the line object and add it into a list of
                         # line objects.
-                        fluxcal_line = MolecularLine(fieldname=field.name,
-                            species=species, freqrange=(line[0],line[1]),
+                        fluxcal_line = MolecularLine(
+                            fieldname=field.name,
+                            species=species, freqrange=(line[0], line[1]),
                             spwid=spw.id, chanrange=chanrange,
                             nchan=spw.num_channels)
                         fluxcal_lines.append(fluxcal_line)
 
         # Generate the channel flagging statistics per field and spw.
-        flagstats = self._newflagstats (fluxcal_lines)
+        flagstats = self._newflagstats(fluxcal_lines)
 
         # Compute the reference spw map
-        flagall, refspwmap = self._refspwmap(all_spws, science_spws, flagstats,
-            inputs.threshold)
+        flagall, refspwmap = self._refspwmap(all_spws, science_spws, flagstats, inputs.threshold)
         LOG.info('Spectral window map for flux scaling %s' % refspwmap)
 
         # Generate a list of flagging commands
-        flagcmds = self._flagcmds (fluxcal_lines, flagstats, amp_obsmodes,
-            inputs.threshold, flagall)
+        flagcmds = self._flagcmds(fluxcal_lines, flagstats, amp_obsmodes, inputs.threshold, flagall)
         LOG.info('Flagging commands generated')
         if not flagcmds:
             LOG.info('    None')
@@ -228,12 +227,14 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
                 allflagcmds.append("mode='summary' name='after'")
 
                 # Flag the data
-                task = casa_tasks.flagdata(vis=inputs.vis, mode='list',
+                task = casa_tasks.flagdata(
+                    vis=inputs.vis, mode='list',
                     action='apply', inpfile=allflagcmds, savepars=False,
                     flagbackup=False)
                 flagresults = self._executor.execute(task)
 
-                stats_before = {}; stats_after = {}
+                stats_before = {}
+                stats_after = {}
                 for summary in flagresults.keys():
                     if flagresults[summary]['name'] == 'before':
                         stats_before = flagresults[summary]
@@ -244,9 +245,9 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
                 else:
                     summaries = [stats_before, stats_after]
 
-        result = FluxcalFlagResults(inputs.vis,
-            fluxcal_linelist=fluxcal_lines, fluxcal_flagcmds=flagcmds,
-                refspwmap=refspwmap, science_spw_ids=science_spw_ids) 
+        result = FluxcalFlagResults(
+            inputs.vis, fluxcal_linelist=fluxcal_lines, fluxcal_flagcmds=flagcmds, refspwmap=refspwmap,
+            science_spw_ids=science_spw_ids)
         result.summaries = summaries
 
         return result
@@ -262,8 +263,8 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
     #    the molecular species name, e.g. '13CO' and the starting
     #    and ending frequency in GHz.
     #
-    def _append_linesfile (self, linedict, linefile):
-        with open (linefile, 'r') as datafile:
+    def _append_linesfile(self, linedict, linefile):
+        with open(linefile, 'r') as datafile:
             for line in datafile:
 
                 # Parse the line
@@ -275,14 +276,14 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
                 if len(fields) < 4:
                     continue
                 source = fields[0]; species = fields[1]
-                region = (float(fields[2]),float(fields[3]))
+                region = (float(fields[2]), float(fields[3]))
 
                 # New source
                 if source not in linedict:
                     linedict[source] = [(species, [region])]
                 # Existing source
                 else:
-                    # New melcular species
+                    # New molecular species
                     #    If not append line to species list
                     #    If not create new species list
                     newspecies = True
@@ -293,28 +294,29 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
                     if newspecies:
                         linedict[source].append((species, [region]))
 
-
     # Generate channel flagging statistics per field and spw allowing
     # for line region overlaps. For each field, spwid combination create
     # a mask array of zeros equal to the size of the spw. Populate the
     # mask corresponding to line regions with 1's. When appropriate
     # compute the fraction of the array containing 1's by summing the
     # array and dividing by the total number of channels.
-    def _newflagstats (self, fluxcal_lines):
+    def _newflagstats(self, fluxcal_lines):
 
-        flagstats = {}; maskarrays = {}
-        prev_fieldname = None; prev_spwid = None
+        flagstats = {}
+        maskarrays = {}
+        prev_fieldname = None
+        prev_spwid = None
         for line in fluxcal_lines:
             if line.fieldname != prev_fieldname:
                 flagstats[line.fieldname] = {}
                 maskarrays[line.fieldname] = {}
-                spwmask = np.zeros (line.nchan, dtype=np.int32)
+                spwmask = np.zeros(line.nchan, dtype=np.int32)
                 spwmask[line.chanrange[0]:line.chanrange[1]:1] = 1 
                 flagstats[line.fieldname][line.spwid] = \
                     np.sum(spwmask) / float(line.nchan) 
                 maskarrays[line.fieldname][line.spwid] = spwmask
             elif line.spwid != prev_spwid:
-                spwmask = np.zeros (line.nchan, dtype=np.int32)
+                spwmask = np.zeros(line.nchan, dtype=np.int32)
                 spwmask[line.chanrange[0]:line.chanrange[1]:1] = 1 
                 flagstats[line.fieldname][line.spwid] = \
                     np.sum(spwmask) / float(line.nchan) 
@@ -336,7 +338,6 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
 
         # return flagging statistic
         return flagstats
-      
 
     # Compute the reference spwmap
     def _refspwmap (self, allspws, scispws, flagstats, threshold):
@@ -398,10 +399,8 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
         #return True, refspwmap
         return False, refspwmap
 
-
     # Generate flagging commands one per field and spw
-    def _flagcmds (self, fluxcal_lines, flagstats, obsmodes, threshold,
-        flagall):
+    def _flagcmds (self, fluxcal_lines, flagstats, obsmodes, threshold, flagall):
 
         # Generate the flagging commands
         flagcmds = []; flagcmd = ''
@@ -414,8 +413,7 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
                 # Write out the previous command
                 # Note: the first single quote closes the value of the spw field
                 if flagcmd != '':
-                    flagcmds.append(flagcmd +
-                        "' reason='Flux_calibrator_atmospheric_line'")
+                    flagcmds.append(flagcmd + "' reason='Flux_calibrator_atmospheric_line'")
 
                 # Initialize the command
                 flagcmd = ''
@@ -425,8 +423,7 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
                     # Note: the value of spw field is not closed by single quote, 
                     # for in case additional channel ranges are added.
                     flagcmd = "mode='manual' field='%s' intent='%s' spw='%d:%d~%d" % \
-                        (line.fieldname, ','.join(obsmodes), line.spwid,
-                        line.chanrange[0], line.chanrange[1])
+                        (line.fieldname, ','.join(obsmodes), line.spwid, line.chanrange[0], line.chanrange[1])
 
             # Append a new channel range if appropriate.
             elif flagall and flagstats[line.fieldname][line.spwid] > threshold:
@@ -444,9 +441,7 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
                     
         return flagcmds
 
-    def _get_chanrange (self, vis=None, fieldid=0, spwid=None, minfreq=None,
-        maxfreq=None, refframe='TOPO'):
-    
+    def _get_chanrange(self, vis=None, fieldid=0, spwid=None, minfreq=None, maxfreq=None, refframe='TOPO'):
         """
         Returns a tuple containing the two channels in an spw corresponding
            to the minimum and maximum frequency in the given ref frame
@@ -457,15 +452,14 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
           spwid - id of the spw 
         minfreq - minimum freq in Hz
         maxfreq - maximum freq in Hz
-       refframe - frequency reference frame
+        refframe - frequency reference frame
         """
     
-        if (vis==None or spwid==None or minfreq==None or maxfreq==None):
-            raise Exception ('_get_chanrange : Undefined values for vis, \
-            spwid, minfreq, and maxfreq')
+        if vis is None or spwid is None or minfreq is None or maxfreq is None:
+            raise Exception('_get_chanrange : Undefined values for vis, spwid, minfreq, and maxfreq')
     
         rval = (None, None)
-        if(minfreq > maxfreq):
+        if minfreq > maxfreq:
             return rval
     
         iminfreq = -1
@@ -474,8 +468,7 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
         # Get frequencies
         mse = casatools.ms
         mse.open(vis)
-        a = mse.cvelfreqs(fieldids=[fieldid], spwids=[spwid], mode='frequency',
-            outframe=refframe)
+        a = mse.cvelfreqs(fieldids=[fieldid], spwids=[spwid], mode='frequency', outframe=refframe)
         mse.close()
     
         # Initialize
@@ -485,16 +478,16 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
         ilowedge = 0
         upedge = a[ichanmax]
         iupedge = ichanmax
-        if(ichanmax > 0 and (a[ichanmax] < a[0])): # frequencies are descending
+        if ichanmax > 0 and (a[ichanmax] < a[0]):  # frequencies are descending
             ascending = False
             lowedge = a[ichanmax]
             upedge = a[0]
             ilowedge = ichanmax
             iupedge = 0
     
-        if(minfreq < lowedge):
-            if(maxfreq > lowedge):
-                if(maxfreq > upedge):
+        if minfreq < lowedge:
+            if maxfreq > lowedge:
+                if maxfreq > upedge:
                     iminfreq = ilowedge
                     imaxfreq = iupedge
                 else:
@@ -504,13 +497,13 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
             #else:
                 # both imaxfreq and iminfreq are -1
         else:
-            if(minfreq < upedge):
-                if(maxfreq >= upedge):
+            if minfreq < upedge:
+                if maxfreq >= upedge:
                     # take iminfreq from below search
                     iminfreq = -2
                     imaxfreq = iupedge
                 else:
-                    #take both iminfreq and imaxfreq from above search
+                    # take both iminfreq and imaxfreq from above search
                     iminfreq = -2
                     imaxfreq = -2
             #else:
@@ -522,7 +515,7 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
                     if a[i] >= minfreq:
                         iminfreq = i
                         break
-            if imaxfreq==-2:
+            if imaxfreq == -2:
                 for j in xrange(iminfreq, len(a)):
                     if a[j] >= maxfreq:
                         imaxfreq = j
@@ -535,7 +528,7 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
                         iminfreq = i
                         break
             if imaxfreq == -2:
-                for j in xrange(iminfreq,-1,-1):
+                for j in xrange(iminfreq, -1, -1):
                     if a[j] >= maxfreq:
                         imaxfreq = j
                         break
@@ -543,16 +536,16 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
             rval = (imaxfreq, iminfreq)
     
         if rval == (-1, -1):
-            return (None, None)
+            return None, None
         else:
             return rval
 
+
 class MolecularLine():
-    def __init__(self, fieldname='', species='', freqrange=(), spwid=None,
-        chanrange=(), nchan=None): 
-        self.fieldname=fieldname
-        self.species=species
+    def __init__(self, fieldname='', species='', freqrange=(), spwid=None, chanrange=(), nchan=None):
+        self.fieldname = fieldname
+        self.species = species
         self.freqrange = freqrange
         self.spwid = spwid 
-        self.chanrange=chanrange
-        self.nchan=nchan
+        self.chanrange = chanrange
+        self.nchan = nchan

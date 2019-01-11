@@ -113,7 +113,7 @@ class finalDelaysPerAntennaChart(object):
             try:
                 real_figfile = figfile
 
-                plot = logger.Plot(real_figfile, x_axis='Frequency', y_axis='Delay',field='',
+                plot = logger.Plot(real_figfile, x_axis='Frequency', y_axis='Delay', field='',
                                    parameters={'spw': '',
                                                'pol': '',
                                                'ant': antName,
@@ -181,7 +181,7 @@ class finalphaseGainPerAntennaChart(object):
                 LOG.debug('Using existing ' + filename + ' plot.')
             
             try:
-                plot = logger.Plot(figfile, x_axis='Time', y_axis='Phase',field='',
+                plot = logger.Plot(figfile, x_axis='Time', y_axis='Phase', field='',
                                    parameters={'spw': '',
                                                'pol': '',
                                                'ant': antName,
@@ -226,7 +226,7 @@ class finalbpSolAmpPerAntennaChart(object):
             dataArr = dataVarCol[rrow]
             flagArr = flagVarCol[rrow]
             amps = np.abs(dataArr)
-            phases = np.arctan2(np.imag(dataArr),np.real(dataArr))
+            phases = np.arctan2(np.imag(dataArr), np.real(dataArr))
             good = np.logical_not(flagArr)
             tmparr = amps[good]
             if len(tmparr) > 0:
@@ -481,7 +481,7 @@ class finalAmpTimeCalPerAntennaChart(object):
         amps = np.abs(cpar)
         good = np.logical_not(flgs)
         maxamp = np.max(amps[good])
-        plotmax = max(2.0,maxamp)
+        plotmax = max(2.0, maxamp)
 
         LOG.info("Plotting final amp timecal")
 
@@ -558,7 +558,7 @@ class finalAmpFreqCalPerAntennaChart(object):
         amps = np.abs(cpar)
         good = np.logical_not(flgs)
         maxamp = np.max(amps[good])
-        plotmax = max(2.0,maxamp)
+        plotmax = max(2.0, maxamp)
 
         LOG.info("Plotting final amp freqcal")
 

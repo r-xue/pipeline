@@ -105,7 +105,7 @@ class GriddingBase(basetask.StandardTaskTemplate):
             self.spw = inputs.spwids
         # maps variety of spwid among MSes (not supposed to happen)
         self.msidxs = [common.get_parent_ms_idx(context, name) for name in self.files]
-        self.spwmap = dict([(m,s) for (m,s) in itertools.izip(self.msidxs,self.spw)])
+        self.spwmap = dict([(m, s) for (m, s) in itertools.izip(self.msidxs, self.spw)])
         if type(inputs.fieldids) == int:
             self.field = [inputs.fieldids]
         else:
@@ -130,8 +130,8 @@ class GriddingBase(basetask.StandardTaskTemplate):
             self.polid[msidx] = ddobj.get_polarization_id(poltype)
         
         LOG.debug('Members to be processed:')
-        for (m,a,s,p) in itertools.izip(self.files, self.antenna, self.spw, self.poltype):
-            LOG.debug('\t%s Antenna %s Spw %s Pol %s'%(os.path.basename(m),a,s,p))
+        for (m, a, s, p) in itertools.izip(self.files, self.antenna, self.spw, self.poltype):
+            LOG.debug('\t%s Antenna %s Spw %s Pol %s'%(os.path.basename(m), a, s, p))
         
         reference_data = context.observing_run.get_ms(name=self.files[0])
         reference_spw = reference_data.spectral_windows[self.spw[0]]
@@ -264,7 +264,7 @@ class GriddingBase(basetask.StandardTaskTemplate):
                 ipol = polids[i]
                 tsys[i] = ttsys[ipol, i]
                 net_flag[i] = tnet_flag[ipol, i]
-                stats[:,i] = tstats[ipol,:,i]
+                stats[:, i] = tstats[ipol, :, i]
         del ttsys, tnet_flag, tstats, polids
 
         ### test code (to check selected index_list meets selection)
@@ -295,10 +295,10 @@ class GriddingBase(basetask.StandardTaskTemplate):
         
         # create storage
         _counter = 0
-        num_spectra_per_data = dict([(i,0) for i in self.msidxs])
+        num_spectra_per_data = dict([(i, 0) for i in self.msidxs])
         for i in xrange(num_spectra):
             num_spectra_per_data[msids[i]] += 1
-        LOG.trace('num_spectra_per_data=%s'%(num_spectra_per_data))
+        LOG.trace('num_spectra_per_data=%s' % num_spectra_per_data)
 
         LOG.info('Processing %d spectra...' % num_spectra)
         
@@ -342,11 +342,11 @@ class GriddingBase(basetask.StandardTaskTemplate):
                 deltalist = ()
                 rmslist = ()
             else:
-                indexlist = numpy.array([IDX2StorageID[int(idx)] for idx in RowDelta[:,3]])
+                indexlist = numpy.array([IDX2StorageID[int(idx)] for idx in RowDelta[:, 3]])
                 valid_index = numpy.where(net_flag[indexlist] == 1)[0]
                 indexlist = indexlist.take(valid_index)
-                deltalist = RowDelta[:,1].take(valid_index)
-                rmslist = RowDelta[:,2].take(valid_index)
+                deltalist = RowDelta[:, 1].take(valid_index)
+                rmslist = RowDelta[:, 2].take(valid_index)
                 del valid_index
             num_valid = len(indexlist)
             num_flagged = len(RowDelta) - num_valid

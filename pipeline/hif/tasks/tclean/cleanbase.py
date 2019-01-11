@@ -509,15 +509,21 @@ class CleanBase(basetask.StandardTaskTemplate):
                 tclean_niter = tclean_result['niter']
             else:
                 # Parallel tclean result structure is currently (2017-03) different
-                tclean_stopcodes = [tclean_result[key][int(key.replace('node',''))]['stopcode'] for key in tclean_result.keys()]
+                tclean_stopcodes = [tclean_result[key][int(key.replace('node', ''))]['stopcode']
+                                    for key in tclean_result.keys()]
                 # If zero masks (stopcode 7) occur only a subset of regions, they should not be reported.
-                if all([stopcode in [2, 7] for stopcode in tclean_stopcodes]) and not all([stopcode==7 for stopcode in tclean_stopcodes]):
+                if all([stopcode in [2, 7] for stopcode in tclean_stopcodes]) \
+                        and not all([stopcode == 7 for stopcode in tclean_stopcodes]):
                     tclean_stopcode = 2
                 else:
-                    # This reduction rule needs to be revisited since the max() is not necessarily what should be reported.
-                    tclean_stopcode = max([tclean_result[key][int(key.replace('node',''))]['stopcode'] for key in tclean_result.keys()])
-                tclean_iterdone = sum([tclean_result[key][int(key.replace('node',''))]['iterdone'] for key in tclean_result.keys()])
-                tclean_niter = max([tclean_result[key][int(key.replace('node',''))]['niter'] for key in tclean_result.keys()])
+                    # This reduction rule needs to be revisited since the
+                    # max() is not necessarily what should be reported.
+                    tclean_stopcode = max([tclean_result[key][int(key.replace('node', ''))]['stopcode']
+                                           for key in tclean_result.keys()])
+                tclean_iterdone = sum([tclean_result[key][int(key.replace('node', ''))]['iterdone']
+                                       for key in tclean_result.keys()])
+                tclean_niter = max([tclean_result[key][int(key.replace('node', ''))]['niter']
+                                    for key in tclean_result.keys()])
 
             LOG.info('tclean used %d iterations' % tclean_iterdone)
             if (tclean_stopcode == 1) and (tclean_iterdone >= tclean_niter):
@@ -534,7 +540,8 @@ class CleanBase(basetask.StandardTaskTemplate):
                 result.error = CleanBaseError('tclean stopped to prevent divergence (stop code %d). Field: %s SPW: %s' %
                                               (tclean_stopcode, inputs.field, inputs.spw),
                                               'tclean stopped to prevent divergence.')
-                LOG.warning('tclean stopped to prevent divergence (stop code %d). Field: %s SPW: %s' % (tclean_stopcode, inputs.field, inputs.spw))
+                LOG.warning('tclean stopped to prevent divergence (stop code %d). Field: %s SPW: %s' %
+                            (tclean_stopcode, inputs.field, inputs.spw))
 
         if iter > 0:
             # Store the model.

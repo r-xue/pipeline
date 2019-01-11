@@ -169,7 +169,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     * summary['incr'][frequency_axis]
                 centre_ghz = qaTool.convert('%s %s' % (center_frequency, summary['axisunits'][frequency_axis]), 'GHz')
                 if nchan > 1:
-                    job = casa_tasks.imhead(image_path,mode='get',hdkey='restfreq')
+                    job = casa_tasks.imhead(image_path, mode='get', hdkey='restfreq')
                     restfreq = job.execute(dry_run=False)
                     rest_ghz = qaTool.convert(restfreq, 'GHz')
                     row_frequency = '%s / %s (LSRK)' % (casatools.quanta.tos(centre_ghz, 4), casatools.quanta.tos(rest_ghz, 4))

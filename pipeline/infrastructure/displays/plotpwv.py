@@ -38,7 +38,7 @@ overlayColors = [
       [0.99,  0.41,  0.23]]
 
 
-def plotPWV(ms, figfile='', plotrange=[0,0,0,0], clip=True):
+def plotPWV(ms, figfile='', plotrange=[0, 0, 0, 0], clip=True):
     """
     Read and plot the PWV values from the ms via the ASDM_CALWVR table.
     If that table is not found, read them from the ASDM_CALATMOSPHERE table.
@@ -263,7 +263,7 @@ def MAD(a, c=0.6745, axis=0):
         d = np.median(a[good], axis=axis)
         # I don't want the array to change so I have to copy it?
         if axis > 0:
-            aswp = swapaxes(a[good],0,axis)
+            aswp = np.swapaxes(a[good], 0, axis)
         else:
             aswp = a[good]
         m = np.median(np.fabs(aswp - d) / c, axis=0)

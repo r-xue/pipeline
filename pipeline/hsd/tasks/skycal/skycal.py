@@ -17,6 +17,7 @@ from .. import common
 
 LOG = infrastructure.get_logger(__name__)
 
+
 class SDSkyCalInputs(vdp.StandardInputs):
     calmode = vdp.VisDependentProperty(default='auto')
     elongated = vdp.VisDependentProperty(default=False)
@@ -260,9 +261,8 @@ class HpcSDSkyCalInputs(SDSkyCalInputs):
                                                 spw=spw,
                                                 scan=scan)
         self.parallel = parallel
-    
-    
-    
+
+
 #@task_registry.set_equivalent_casa_task('hpc_hsd_skycal')
 @task_registry.set_equivalent_casa_task('hsd_skycal')
 @task_registry.set_casa_commands_comment('Generates sky calibration table according to calibration strategy.')
@@ -347,7 +347,8 @@ def compute_elevation_difference(context, results):
                 fields = ms.get_fields(name=gainfield)
                 assert len(fields) > 0
                 field_id_off = fields[0].id
-            LOG.info('Computing elevation difference for "{}" Field ID {} (ON) and {} (OFF)'.format(ms.basename, field_id_on,field_id_off))
+            LOG.info('Computing elevation difference for "{}" Field ID {} (ON) and {} (OFF)'
+                     ''.format(ms.basename, field_id_on, field_id_off))
                 
             resultfield = {}
                     
@@ -361,18 +362,19 @@ def compute_elevation_difference(context, results):
                     # get timestamp from caltable
                     with casatools.TableReader(caltable) as tb:
                         selected = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}'.format(spw_id, antenna_id))
-                        timecal = selected.getcol('TIME') / 86400.0 #sec -> day
+                        timecal = selected.getcol('TIME') / 86400.0  # sec -> day
                         selected.close()
-                    
-                
+
                     # access DataTable to get elevation 
                     ro_datatable_name = os.path.join(context.observing_run.ms_datatable_name, ms.basename, 'RO')
                     with casatools.TableReader(ro_datatable_name) as tb:
-                        selected = tb.query('IF=={}&&ANTENNA=={}&&FIELD_ID=={}&&SRCTYPE==0'.format(spw_id, antenna_id, field_id_on))
+                        selected = tb.query('IF=={}&&ANTENNA=={}&&FIELD_ID=={}&&SRCTYPE==0'.format(spw_id, antenna_id,
+                                                                                                   field_id_on))
                         timeon = selected.getcol('TIME')
                         elon = selected.getcol('EL')
                         selected.close()
-                        selected = tb.query('IF=={}&&ANTENNA=={}&&FIELD_ID=={}&&SRCTYPE!=0'.format(spw_id, antenna_id, field_id_off))
+                        selected = tb.query('IF=={}&&ANTENNA=={}&&FIELD_ID=={}&&SRCTYPE!=0'.format(spw_id, antenna_id,
+                                                                                                   field_id_off))
                         timeoff = selected.getcol('TIME')
                         eloff = selected.getcol('EL')
                         selected.close()
@@ -414,4 +416,3 @@ def compute_elevation_difference(context, results):
             resultdict[field_id_on] = resultfield
             
     return resultdict
-    

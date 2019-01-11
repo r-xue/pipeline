@@ -71,8 +71,8 @@ class GaincalPerAntennaChart(object):
         wrapper = logger.Plot(real_figfile,
                               x_axis='freq',
                               y_axis='amp',
-                              parameters={'vis' : self.ms.basename,
-                                          'ant' : antenna.name})
+                              parameters={'vis': self.ms.basename,
+                                          'ant': antenna.name})
         
         if not os.path.exists(real_figfile):
             LOG.trace('Tsys per antenna plot for antenna %s not found. '
@@ -117,21 +117,20 @@ class PhaseVsBaselineChart(common.PlotBase):
         """
         Get the plot symbol and colour for this polarization and bandtype.
         """
-        d = {'BEFORE' : {'L' : ('-', 'orange', 0.3),
-                         'R' : ('--', 'sandybrown', 0.3),
-                         'X' : ('^', 'lightslategray', 0.3),
-                         'Y' : ('o', 'lightslategray', 0.3),
-                         'XX' : ('^', 'lightslategray', 0.3),
-                         'YY' : ('o', 'lightslategray', 0.3)},
-             'AFTER' : {'L' : ('-', 'green', 0.6),
-                        'R' : ('-', 'red', 0.6),
-                        'X' : ('^', 'green', 0.6),
-                        'Y' : ('o', 'red', 0.6),
-                        'XX' : ('^', 'green', 0.6),
-                        'YY' : ('o', 'red', 0.6)}}
+        d = {'BEFORE': {'L': ('-', 'orange', 0.3),
+                        'R': ('--', 'sandybrown', 0.3),
+                        'X': ('^', 'lightslategray', 0.3),
+                        'Y': ('o', 'lightslategray', 0.3),
+                        'XX': ('^', 'lightslategray', 0.3),
+                        'YY': ('o', 'lightslategray', 0.3)},
+             'AFTER': {'L': ('-', 'green', 0.6),
+                       'R': ('-', 'red', 0.6),
+                       'X': ('^', 'green', 0.6),
+                       'Y': ('o', 'red', 0.6),
+                       'XX': ('^', 'green', 0.6),
+                       'YY': ('o', 'red', 0.6)}}
     
         return d.get(state, {}).get(pol, ('x', 'grey'))
-
 
     def get_xlim(self, points):
         data = [p.x for p in points]
@@ -282,17 +281,16 @@ class PhaseVsBaselineChart(common.PlotBase):
         # a property
         try:
             ax.legend(plots, legend, prop={'size':10}, numpoints=1,
-                       loc='upper center', bbox_to_anchor=(0.5, -0.07),
-                       frameon=False, ncol=len(legend))
+                      loc='upper center', bbox_to_anchor=(0.5, -0.07),
+                      frameon=False, ncol=len(legend))
         except TypeError:
             # old matplotlib doesn't expect frameon either
             l = ax.legend(plots, legend, prop={'size':10}, numpoints=1,
-                           loc='upper center', bbox_to_anchor=(0.5, -0.07),
-                           ncol=len(legend))
+                          loc='upper center', bbox_to_anchor=(0.5, -0.07),
+                          ncol=len(legend))
             l.draw_frame(False)
          
-        spw_msg = 'SPW %s Correlation%s' % (spw.id, 
-                utils.commafy(corr_axes, quotes=False, multi_prefix='s'))
+        spw_msg = 'SPW %s Correlation%s' % (spw.id, utils.commafy(corr_axes, quotes=False, multi_prefix='s'))
         pyplot.text(0.0, 1.026, spw_msg, color='k', 
                     transform=ax.transAxes, size=10)
         pyplot.text(0.5, 1.110, '%s (%s)' % (scan_fields, scan_intents), 
@@ -459,7 +457,8 @@ class GaincalPhaseOffsetPlot(phaseoffset.PhaseOffsetPlot):
         vis = os.path.basename(calapp.vis)
         ms = context.observing_run.get_ms(vis)
         plothelper = GaincalPhaseOffsetPlotHelper(context, result)        
-        super(GaincalPhaseOffsetPlot, self).__init__(context, ms, plothelper, scan_intent='PHASE', score_retriever=common.NullScoreFinder())
+        super(GaincalPhaseOffsetPlot, self).__init__(context, ms, plothelper, scan_intent='PHASE',
+                                                     score_retriever=common.NullScoreFinder())
 
 
 class GaincalSummaryChart(common.PlotcalSpwComposite):
@@ -487,6 +486,7 @@ class GaincalSummaryChart(common.PlotcalSpwComposite):
         super(GaincalSummaryChart, self).__init__(
                 context, result, calapp, xaxis=xaxis, yaxis=yaxis, ant='', 
                 plotrange=plotrange)
+
 
 class GaincalSummaryChart2(common.PlotmsCalSpwComposite):
     """
@@ -540,7 +540,8 @@ class GaincalDetailChart(common.PlotcalAntSpwComposite):
         super(GaincalDetailChart, self).__init__(
                 context, result, calapp, xaxis=xaxis, yaxis=yaxis, 
                 plotrange=plotrange)
-    
+
+
 class GaincalDetailChart2(common.PlotmsCalAntSpwComposite):
     """
     Base class for executing plotcal per spw and antenna
@@ -576,6 +577,7 @@ class GaincalAmpVsTimeSummaryChart(GaincalSummaryChart):
         super(GaincalAmpVsTimeSummaryChart, self).__init__(
                 context, result, calapps, intent, xaxis='time', yaxis='amp')
 
+
 class GaincalAmpVsTimeSummaryChart2(GaincalSummaryChart2):
     """
     Create an amplitude vs time plot for each spw, overplotting by antenna.
@@ -583,6 +585,7 @@ class GaincalAmpVsTimeSummaryChart2(GaincalSummaryChart2):
     def __init__(self, context, result, calapps, intent):
         super(GaincalAmpVsTimeSummaryChart2, self).__init__(
                 context, result, calapps, intent, xaxis='time', yaxis='amp', coloraxis='antenna1')
+
 
 class GaincalAmpVsTimeDetailChart(GaincalDetailChart):
     """
@@ -593,6 +596,7 @@ class GaincalAmpVsTimeDetailChart(GaincalDetailChart):
         super(GaincalAmpVsTimeDetailChart, self).__init__(
                 context, result, calapps, intent, xaxis='time', yaxis='amp')
 
+
 class GaincalAmpVsTimeDetailChart2(GaincalDetailChart2):
     """
     Create a phase vs time plot for each spw/antenna combination.
@@ -602,6 +606,7 @@ class GaincalAmpVsTimeDetailChart2(GaincalDetailChart2):
         super(GaincalAmpVsTimeDetailChart2, self).__init__(
                 context, result, calapps, intent, xaxis='time', yaxis='amp', coloraxis='corr')
 
+
 class GaincalPhaseVsTimeSummaryChart(GaincalSummaryChart):
     """
     Create a phase vs time plot for each spw, overplotting by antenna.
@@ -610,7 +615,8 @@ class GaincalPhaseVsTimeSummaryChart(GaincalSummaryChart):
         # request plots per spw, overlaying all antennas
         super(GaincalPhaseVsTimeSummaryChart, self).__init__(
                 context, result, calapps, intent, xaxis='time', yaxis='phase',
-                plotrange=[0,0,-180,180])
+                plotrange=[0, 0, -180, 180])
+
 
 class GaincalPhaseVsTimeSummaryChart2(GaincalSummaryChart2):
     """
@@ -620,7 +626,8 @@ class GaincalPhaseVsTimeSummaryChart2(GaincalSummaryChart2):
         # request plots per spw, overlaying all antennas
         super(GaincalPhaseVsTimeSummaryChart2, self).__init__(
                 context, result, calapps, intent, xaxis='time', yaxis='phase',
-                plotrange=[0,0,-180,180], coloraxis='antenna1')
+                plotrange=[0, 0, -180, 180], coloraxis='antenna1')
+
 
 class GaincalPhaseVsTimeDetailChart(GaincalDetailChart):
     """
@@ -630,7 +637,8 @@ class GaincalPhaseVsTimeDetailChart(GaincalDetailChart):
         # request plots per spw, overlaying all antennas
         super(GaincalPhaseVsTimeDetailChart, self).__init__(
                 context, result, calapps, intent, xaxis='time', yaxis='phase', 
-                plotrange=[0,0,-180,180])
+                plotrange=[0, 0, -180, 180])
+
 
 class GaincalPhaseVsTimeDetailChart2(GaincalDetailChart2):
     """
@@ -640,5 +648,4 @@ class GaincalPhaseVsTimeDetailChart2(GaincalDetailChart2):
         # request plots per spw, overlaying all antennas
         super(GaincalPhaseVsTimeDetailChart2, self).__init__(
                 context, result, calapps, intent, xaxis='time', yaxis='phase', 
-                plotrange=[0,0,-180,180], coloraxis='corr')
-
+                plotrange=[0, 0, -180, 180], coloraxis='corr')

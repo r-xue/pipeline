@@ -316,9 +316,9 @@ class TcleanResult(basetask.Results):
         else:
             repr += ' flux: None'
 
-        items_to_print = ['image','residual','model','cleanmask','mom0_fc']
+        items_to_print = ['image', 'residual', 'model', 'cleanmask', 'mom0_fc']
         str_len = max([len(item) for item in items_to_print])
-        for k,v in self.iterations.items():
+        for k, v in self.iterations.items():
             repr += ' iteration %s:\n' % k
             for item in items_to_print:
                 if item in v:

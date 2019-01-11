@@ -22,7 +22,7 @@ LOG = logging.get_logger(__name__)
 
 
 # minimum allowed CASA revision. Set to 0 or None to disable
-MIN_CASA_REVISION = [5,3,0,91]
+MIN_CASA_REVISION = [5, 3, 0, 91]
 # maximum allowed CASA revision. Set to 0 or None to disable
 MAX_CASA_REVISION = None
 
@@ -290,7 +290,7 @@ class Pipeline(object):
                 last_context = utils.pickle_load(context_file)
                 self.context = last_context
                 
-            for k,v in path_overrides.items():
+            for k, v in path_overrides.items():
                 setattr(self.context, k, v)
 
         self._link_casa_log(self.context)

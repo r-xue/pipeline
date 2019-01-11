@@ -219,8 +219,7 @@ class PhaseOffsetPlot(object):
                         dummy_time.time = [matplotlib.dates.date2num(start_dt), 
                                            matplotlib.dates.date2num(end_dt)]
 
-                        dummy_data = numpy.ma.MaskedArray(data=[0,1],
-                                                          mask=True)
+                        dummy_data = numpy.ma.MaskedArray(data=[0, 1], mask=True)
  
                         axis.plot_date(dummy_time.time, dummy_data, '.')
                         _, = axis.plot_date(dummy_time.time, dummy_data)
@@ -246,7 +245,8 @@ class PhaseOffsetPlot(object):
 
                     for corr_idx, corr_axis in enumerate(corr_axes):
                         if len(data.time) is 0:
-                            LOG.info('No data to plot for antenna %s scan %s corr %s' % (antenna.name, scan.id, corr_axis))
+                            LOG.info('No data to plot for antenna %s scan %s corr %s' %
+                                     (antenna.name, scan.id, corr_axis))
                             continue
 
                         phase_for_corr = data.data[:, corr_idx]
@@ -407,7 +407,7 @@ class PhaseOffsetPlot(object):
 
         # We want x to be in data coordinates and y to
         # span from 0..1 in axes coords
-        rect = matplotlib.patches.Rectangle((start,0), width=width, height=1,
+        rect = matplotlib.patches.Rectangle((start, 0), width=width, height=1,
                                             transform=trans, color='#EEEEEE',
                                             alpha=0.2)
                 

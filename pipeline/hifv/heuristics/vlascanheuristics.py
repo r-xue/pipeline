@@ -220,8 +220,8 @@ def buildscans(msfile, scd):
         polindex = {}
         poldescr = {}
         for ip in range(npols):
-            cort=table.getcol("CORR_TYPE",startrow=ip,nrow=1)
-            (nct,nr) = cort.shape
+            cort = table.getcol("CORR_TYPE", startrow=ip, nrow=1)
+            (nct, nr) = cort.shape
             cortypes = []
             cordescs = []
             for ict in range(nct):
@@ -276,8 +276,8 @@ def buildscans(msfile, scd):
         fielddict[ifld] = {}
         fielddict[ifld]['name'] = flist[ifld]
         # these are numpy.float64
-        fielddict[ifld]['rra'] = fpdirarr[0,0,ifld]
-        fielddict[ifld]['rdec'] = fpdirarr[1,0,ifld]
+        fielddict[ifld]['rra'] = fpdirarr[0, 0, ifld]
+        fielddict[ifld]['rdec'] = fpdirarr[1, 0, ifld]
     #
     # Now compile list of visibility times and info
     #
@@ -509,9 +509,9 @@ class VLAScanHeuristics(object):
         # print tb.showcache()
 
         if startdate <= 55978.50:
-            for state_ID in range(0,len(intents)):
+            for state_ID in range(0, len(intents)):
                 self.state_intents = intents[state_ID].rsplit(',')
-                for intent in range(0,len(self.state_intents)):
+                for intent in range(0, len(self.state_intents)):
                     self.scan_intent = self.state_intents[intent].rsplit('#')[0]
                     self.subscan_intent = self.state_intents[intent].rsplit('#')[1]
                     if self.scan_intent == 'CALIBRATE_BANDPASS':
@@ -541,7 +541,7 @@ class VLAScanHeuristics(object):
                 raise Exception("No flux density calibration scans found")
             else:
                 self.flux_state_select_string = ('STATE_ID in [%s'%self.flux_state_IDs[0])
-                for state_ID in range(1,len(self.flux_state_IDs)):
+                for state_ID in range(1, len(self.flux_state_IDs)):
                     self.flux_state_select_string += (',%s')%self.flux_state_IDs[state_ID]
                 self.flux_state_select_string += ']'
 
@@ -573,7 +573,7 @@ class VLAScanHeuristics(object):
                 # +bandpass_field_select_string, logfileout='logs/msinfo.log')
             else:
                 self.bandpass_state_select_string = ('STATE_ID in [%s'%self.bandpass_state_IDs[0])
-                for state_ID in range(1,len(self.bandpass_state_IDs)):
+                for state_ID in range(1, len(self.bandpass_state_IDs)):
                     self.bandpass_state_select_string += (',%s')%self.bandpass_state_IDs[state_ID]
                 self.bandpass_state_select_string += ']'
 
@@ -612,7 +612,7 @@ class VLAScanHeuristics(object):
                 # logprint ("Delay calibrator(s) are fields "+delay_field_select_string, logfileout='logs/msinfo.log')
             else:
                 self.delay_state_select_string = ('STATE_ID in [%s'%self.delay_state_IDs[0])
-                for state_ID in range(1,len(self.delay_state_IDs)):
+                for state_ID in range(1, len(self.delay_state_IDs)):
                     self.delay_state_select_string += (',%s') % self.delay_state_IDs[state_ID]
                 self.delay_state_select_string += ']'
 
@@ -648,7 +648,7 @@ class VLAScanHeuristics(object):
                 # logprint ("Warning: polarization calibration scans found,
                 # but polarization calibration not yet implemented", logfileout='logs/msinfo.log')
                 self.polarization_state_select_string = ('STATE_ID in [%s'%self.polarization_state_IDs[0])
-                for state_ID in range(1,len(self.polarization_state_IDs)):
+                for state_ID in range(1, len(self.polarization_state_IDs)):
                     self.polarization_state_select_string += (',%s')%self.polarization_state_IDs[state_ID]
                 self.polarization_state_select_string += ']'
 
@@ -673,7 +673,7 @@ class VLAScanHeuristics(object):
                 raise Exception("No gain calibration scans found")
             else:
                 self.phase_state_select_string = ('STATE_ID in [%s'%self.phase_state_IDs[0])
-                for state_ID in range(1,len(self.phase_state_IDs)):
+                for state_ID in range(1, len(self.phase_state_IDs)):
                     self.phase_state_select_string += (',%s')%self.phase_state_IDs[state_ID]
                 self.phase_state_select_string += ']'
 
@@ -695,7 +695,7 @@ class VLAScanHeuristics(object):
             # Find all calibrator scans and fields
 
             self.calibrator_state_select_string = ('STATE_ID in [%s'%self.calibrator_state_IDs[0])
-            for state_ID in range(1,len(self.calibrator_state_IDs)):
+            for state_ID in range(1, len(self.calibrator_state_IDs)):
                 self.calibrator_state_select_string += (',%s')%self.calibrator_state_IDs[state_ID]
 
             self.calibrator_state_select_string += ']'
@@ -714,9 +714,9 @@ class VLAScanHeuristics(object):
             # casatools.table.close()
 
         else:
-            for state_ID in range(0,len(intents)):
+            for state_ID in range(0, len(intents)):
                 self.state_intents = intents[state_ID].rsplit(',')
-                for intent in range(0,len(self.state_intents)):
+                for intent in range(0, len(self.state_intents)):
                     self.scan_intent = self.state_intents[intent].rsplit('#')[0]
                     self.subscan_intent = self.state_intents[intent].rsplit('#')[1]
                     if self.scan_intent == 'CALIBRATE_BANDPASS':
@@ -749,7 +749,7 @@ class VLAScanHeuristics(object):
                 raise Exception("No flux density calibration scans found")
             else:
                 self.flux_state_select_string = ('STATE_ID in [%s'%self.flux_state_IDs[0])
-                for state_ID in range(1,len(self.flux_state_IDs)):
+                for state_ID in range(1, len(self.flux_state_IDs)):
                     self.flux_state_select_string += (',%s')%self.flux_state_IDs[state_ID]
                 self.flux_state_select_string += ']'
 
@@ -779,7 +779,7 @@ class VLAScanHeuristics(object):
                 # logfileout='logs/msinfo.log')
             else:
                 self.bandpass_state_select_string = ('STATE_ID in [%s'%self.bandpass_state_IDs[0])
-                for state_ID in range(1,len(self.bandpass_state_IDs)):
+                for state_ID in range(1, len(self.bandpass_state_IDs)):
                     self.bandpass_state_select_string += (',%s')%self.bandpass_state_IDs[state_ID]
                 self.bandpass_state_select_string += ']'
 
@@ -816,7 +816,7 @@ class VLAScanHeuristics(object):
                 # logprint ("Delay calibrator(s) are fields "+delay_field_select_string, logfileout='logs/msinfo.log')
             else:
                 self.delay_state_select_string = ('STATE_ID in [%s'%self.delay_state_IDs[0])
-                for state_ID in range(1,len(self.delay_state_IDs)):
+                for state_ID in range(1, len(self.delay_state_IDs)):
                     self.delay_state_select_string += (',%s') % self.delay_state_IDs[state_ID]
                 self.delay_state_select_string += ']'
 
@@ -843,7 +843,7 @@ class VLAScanHeuristics(object):
                 # logprint ("Warning: polarization calibration scans found,
                 # but polarization calibration not yet implemented", logfileout='logs/msinfo.log')
                 self.polarization_state_select_string = ('STATE_ID in [%s' % self.polarization_state_IDs[0])
-                for state_ID in range(1,len(self.polarization_state_IDs)):
+                for state_ID in range(1, len(self.polarization_state_IDs)):
                     self.polarization_state_select_string += (',%s') % self.polarization_state_IDs[state_ID]
                 self.polarization_state_select_string += ']'
 
@@ -868,7 +868,7 @@ class VLAScanHeuristics(object):
                 raise Exception("No gain calibration scans found")
             else:
                 self.phase_state_select_string = ('STATE_ID in [%s'%self.phase_state_IDs[0])
-                for state_ID in range(1,len(self.phase_state_IDs)):
+                for state_ID in range(1, len(self.phase_state_IDs)):
                     self.phase_state_select_string += (',%s')%self.phase_state_IDs[state_ID]
                 self.phase_state_select_string += ']'
 
@@ -895,7 +895,7 @@ class VLAScanHeuristics(object):
                 # logprint ("Amplitude calibrator(s) are fields "+amp_field_select_string, logfileout='logs/msinfo.log')
             else:
                 self.amp_state_select_string = ('STATE_ID in [%s'%self.amp_state_IDs[0])
-                for state_ID in range(1,len(self.amp_state_IDs)):
+                for state_ID in range(1, len(self.amp_state_IDs)):
                     self.amp_state_select_string += (',%s') % self.amp_state_IDs[state_ID]
                 self.amp_state_select_string += ']'
 
@@ -917,7 +917,7 @@ class VLAScanHeuristics(object):
             # Find all calibrator scans and fields
 
             self.calibrator_state_select_string = ('STATE_ID in [%s'%self.calibrator_state_IDs[0])
-            for state_ID in range(1,len(self.calibrator_state_IDs)):
+            for state_ID in range(1, len(self.calibrator_state_IDs)):
                 self.calibrator_state_select_string += (',%s')%self.calibrator_state_IDs[state_ID]
 
             self.calibrator_state_select_string += ']'
@@ -1085,7 +1085,7 @@ class VLAScanHeuristics(object):
         position_3C84 = casatools.measures.direction('j2000', '3h19m48.160', '41d30m42.106')
         fields_3C84 = []
 
-        for ii in range(0,len(positions)):
+        for ii in range(0, len(positions)):
             position = casatools.measures.direction('j2000', str(positions[ii][0])+'rad', str(positions[ii][1])+'rad')
             separation = casatools.measures.separation(position, position_3C84)['value'] * math.pi/180.0
             if separation < MAX_SEPARATION:
@@ -1103,7 +1103,7 @@ class VLAScanHeuristics(object):
         with casatools.TableReader(self.vis + '/FIELD') as table:
             self.field_positions = table.getcol('PHASE_DIR')
 
-        for ii in range(0,len(self.field_positions[0][0])):
+        for ii in range(0, len(self.field_positions[0][0])):
             self.positions.append([self.field_positions[0][0][ii], self.field_positions[1][0][ii]])
 
         self.fields_3C84 = self.find_3C84(self.positions)

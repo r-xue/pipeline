@@ -221,7 +221,7 @@ def getCalFlaggedSoln(calTable):
         #
         flagArr = flagVarCol[rrow]
         # Get the shape of this data row
-        (np,nc,ni) = flagArr.shape
+        (np, nc, ni) = flagArr.shape
         # ni should be 1 for this
         iid = 0
         #
@@ -474,7 +474,7 @@ def buildscans(msfile):
 
     # Access the MS
     try:
-        ms.open(msfile,nomodify=True)
+        ms.open(msfile, nomodify=True)
     except:
         print("ERROR: failed to open ms tool on file {}".format(msfile))
         exit(1)
@@ -523,8 +523,8 @@ def buildscans(msfile):
     polindex = {}
     poldescr = {}
     for ip in range(npols):
-        cort=tb.getcol("CORR_TYPE",startrow=ip,nrow=1)
-        (nct,nr) = cort.shape
+        cort=tb.getcol("CORR_TYPE", startrow=ip, nrow=1)
+        (nct, nr) = cort.shape
         cortypes = []
         cordescs = []
         for ict in range(nct):
@@ -581,8 +581,8 @@ def buildscans(msfile):
         fielddict[ifld] = {}
         fielddict[ifld]['name'] = flist[ifld]
         # these are numpy.float64
-        fielddict[ifld]['rra'] = fpdirarr[0,0,ifld]
-        fielddict[ifld]['rdec'] = fpdirarr[1,0,ifld]
+        fielddict[ifld]['rra'] = fpdirarr[0, 0, ifld]
+        fielddict[ifld]['rdec'] = fpdirarr[1, 0, ifld]
     #
     # Now compile list of visibility times and info
     #
@@ -599,7 +599,7 @@ def buildscans(msfile):
         #recf = ms.getdata(["flag"])
         #(nx,nc,ni) = recf['flag'].shape
         # get the times
-        rect = ms.getdata(["time","field_id","scan_number"],ifraxis=True)
+        rect = ms.getdata(["time", "field_id", "scan_number"], ifraxis=True)
         nt = rect['time'].shape[0]
         ntottimes+=nt
         print('Found {} times in DD={}'.format(nt, idd))
@@ -953,10 +953,10 @@ def getBCalStatistics(calTable,innerbuff=0.1):
 
     """
     # define range for "inner" channels
-    if innerbuff>=0.0 and innerbuff<0.5:
-        fcrange = [innerbuff,1.0-innerbuff]
+    if innerbuff >= 0.0 and innerbuff < 0.5:
+        fcrange = [innerbuff, 1.0-innerbuff]
     else:
-        fcrange = [0.1,0.9]
+        fcrange = [0.1, 0.9]
 
     # Print extra information here?
     doprintall = False
@@ -1013,7 +1013,7 @@ def getBCalStatistics(calTable,innerbuff=0.1):
     spwDict = {}
     for ispw in range(nspw):
         try:
-            (rx,bb,sb) = spwNameCol[ispw].split('#')
+            (rx, bb, sb) = spwNameCol[ispw].split('#')
         except:
             rx = 'Unknown'
             bb = 'Unknown'
@@ -1168,7 +1168,7 @@ def getBCalStatistics(calTable,innerbuff=0.1):
                     cx = dataArr[poln][chan][iid]
                     # get quantities from complex data
                     ampx = pl.absolute(cx)
-                    phasx = pl.angle(cx,deg=True)
+                    phasx = pl.angle(cx, deg=True)
                     realx = pl.real(cx)
                     imagx = pl.imag(cx)
                     #

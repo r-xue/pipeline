@@ -411,11 +411,13 @@ class Circfeedpolcal(polarization.Polarization):
         fluxcalfieldname = ''
         for i, fields in enumerate(standard_source_fields):
             for myfield in fields:
-                if standard_source_names[i] in ('3C48','3C286') and 'POLANGLE' in m.get_fields(field_id=myfield)[0].intents:
+                if standard_source_names[i] in ('3C48', '3C286') \
+                        and 'POLANGLE' in m.get_fields(field_id=myfield)[0].intents:
                     fluxcalfieldid = myfield
                     fluxcalfieldname = m.get_fields(field_id=myfield)[0].name
                     fluxcal = standard_source_names[i]
-                elif standard_source_names[i] in ('3C48','3C286') and 'AMPLITUDE' in m.get_fields(field_id=myfield)[0].intents:
+                elif standard_source_names[i] in ('3C48', '3C286') \
+                        and 'AMPLITUDE' in m.get_fields(field_id=myfield)[0].intents:
                     fluxcalfieldid = myfield
                     fluxcalfieldname = m.get_fields(field_id=myfield)[0].name
                     fluxcal = standard_source_names[i]
@@ -429,11 +431,11 @@ class Circfeedpolcal(polarization.Polarization):
                              'field': fluxcalfieldname,
                              'standard': 'manual',
                              'spw': '',
-                             'fluxdensity': [9.97326,0,0,0],
-                             'spix': [-0.582142,-0.154655],
+                             'fluxdensity': [9.97326, 0, 0, 0],
+                             'spix': [-0.582142, -0.154655],
                              'reffreq': '3000.0MHz',
-                             'polindex': [0.107943,0.01184,-0.0055,0.0224,-0.0312],
-                             'polangle': [d0,0],
+                             'polindex': [0.107943, 0.01184, -0.0055, 0.0224, -0.0312],
+                             'polangle': [d0, 0],
                              'rotmeas': 0,
                              'scalebychan': True,
                              'usescratch': True}

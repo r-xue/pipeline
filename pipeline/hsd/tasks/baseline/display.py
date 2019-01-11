@@ -258,13 +258,14 @@ class ClusterPropertyDisplay(ClusterDisplayWorker):
         pl.xlabel('Line Center (Channel)', fontsize=11)
         pl.ylabel('Line Width (Channel)', fontsize=11)
         pl.axis([xmin-1, xmax+1, 0, ymax+1])
-        pl.title('Clusters in the line Center-Width space\n\nRed Oval(s) shows each clustering region. Size of the oval represents cluster radius', fontsize=11)
+        pl.title('Clusters in the line Center-Width space\n\nRed Oval(s) shows each clustering region. '
+                 'Size of the oval represents cluster radius', fontsize=11)
 
         if ShowPlot:
             pl.draw()
 
         plotfile = os.path.join(self.stage_dir,
-                                'cluster_property_group%s_spw%s_iter%s.png'%(self.group_id,self.spw,self.iteration))
+                                'cluster_property_group%s_spw%s_iter%s.png' % (self.group_id, self.spw, self.iteration))
         pl.savefig(plotfile, format='png', dpi=DPISummary)
         plot = self._create_plot(plotfile, 'line_property',
                                  'Line Center', 'Line Width')
@@ -365,7 +366,8 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
                 # Convert Channel to Frequency and Velocity
                 #ichan = self.lines[icluster][0] + 0.5
                 (frequency, width) = self.__line_property(icluster)
-                pl.title('Cluster%s: Center=%.4f GHz Width=%.1f km/s'%(icluster,frequency,width), fontsize=tick_size+1)
+                pl.title('Cluster%s: Center=%.4f GHz Width=%.1f km/s' %
+                         (icluster, frequency, width), fontsize=tick_size+1)
                 if self.lines[icluster][2] == False and mode == 'final':
                     if num_panel_h > 2:
                         _tick_size = tick_size
@@ -396,8 +398,9 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
             if ShowPlot:
                 pl.draw()
 
-            plotfile = os.path.join(self.stage_dir,
-                                    'cluster_group_%s_spw%s_iter%s_%s.png'%(self.group_id,self.spw,self.iteration,mode))
+            plotfile = os.path.join(
+                self.stage_dir,
+                'cluster_group_%s_spw%s_iter%s_%s.png' % (self.group_id, self.spw, self.iteration, mode))
             pl.savefig(plotfile, format='png', dpi=DPISummary)
 
             for obj in plot_objects:
@@ -416,7 +419,7 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
                 _data = self.cluster['cluster_flag']
                 _digit = digits[key]
                 data = (_data / _digit) % 10
-                LOG.debug('data=%s' % (data))
+                LOG.debug('data=%s' % data)
                 threshold = self.cluster[key+'_threshold']
                 desc = self.Description[key]
                 if key == 'validation':

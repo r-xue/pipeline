@@ -4,7 +4,6 @@ import os
 # should that be needed.
 
 import numpy as np
-import re
 
 from taskinit import *
 from update_spw import *
@@ -30,10 +29,10 @@ def uvcontfit(vis=None, caltable=None, field=None, intent=None, spw=None, combin
 
         # Determine the channels to be used in the fit
         #    Not sure why this was needed but leave code in place for now. What is wrong with frequency ranges ?
-        #if spw.count('Hz'):
-            #locfitspw = _new_quantityRangesToChannels(vis,field,fitspw,False)
-        #else:
-            #locfitspw=spw
+        # if spw.count('Hz'):
+        #     locfitspw = _new_quantityRangesToChannels(vis,field,fitspw,False)
+        # else:
+        #     locfitspw=spw
         locfitspw = spw
 
         if (type(vis) == str) and os.path.isdir(vis):
@@ -69,105 +68,102 @@ def uvcontfit(vis=None, caltable=None, field=None, intent=None, spw=None, combin
 
 
 def _new_quantityRangesToChannels(vis, field, infitspw, excludechans):
-
     """
-    private function to convert frequnecy (in the future, velocity
+    private function to convert frequency (in the future, velocity
     as well) ranges in fitspw to channel indexes.
     For excludeechans=True, it will select channels outside given by infitspw
     returns: list containing new channel ranges
     """
 
     mytb.open(vis+'/SPECTRAL_WINDOW')
-    nspw=mytb.nrows()
+    nspw = mytb.nrows()
     mytb.close()
    
-    fullspwids=str(range(nspw)).strip('[,]')
-    tql={'field':field,'spw':fullspwids}
+    fullspwids = str(range(nspw)).strip('[,]')
+    tql = {'field': field, 'spw': fullspwids}
     myms.open(vis)
-    myms.msselect(tql,True)
-    allsels=myms.msselectedindices()
-    myms.reset()  
+    myms.msselect(tql, True)
+    allsels = myms.msselectedindices()
+    myms.reset()
+
     # input fitspw selection
-    tql['spw']=infitspw
-    myms.msselect(tql,True)
-    usersels=myms.msselectedindices()['channel']
+    tql['spw'] = infitspw
+    myms.msselect(tql, True)
+    usersels = myms.msselectedindices()['channel']
     myms.close()
+
     # sort the arrays so that chan ranges are
     # in order
-    usersels=usersels[np.lexsort((usersels[:,1],usersels[:,0]))]
-    spwsels=''
-    spwid=-1
-    prevspwid=None
-    newchanlist=[]
-    nsels=len(usersels)
-    #print "Usersels=",usersels
-    if excludechans:
-	for isel in range(nsels):
-	    prevspwid = spwid
-	    spwid=usersels[isel][0] 
-	    lochan=usersels[isel][1]
-	    hichan=usersels[isel][2]
-	    stp=usersels[isel][3]
-	    maxchanid=allsels['channel'][spwid][2]
-	    # find left and right side ranges of the selected range
-	    if spwid != prevspwid:
-		# first line in the selected spw
-		if lochan > 0:
-		    outloL=0
-		    outhiL=lochan-1
-		    outloR= (0 if hichan+1>=maxchanid else hichan+1)
-		    if outloR:
-			if isel<nsels-1 and usersels[isel+1][0]==spwid:
-			    outhiR=usersels[isel+1][1]-1
-			else:
-			    outhiR=maxchanid
-		    else:
-			outhiR=0 # higher end of the user selected range reaches maxchanid
-				 # so no right hand side range
-		    #print "outloL,outhiL,outloR,outhiR==", outloL,outhiL,outloR,outhiR
-		else:
-		    # no left hand side range
-		    outloL=0
-		    outhiL=0
-		    outloR=hichan+1
-		    if isel<nsels-1 and usersels[isel+1][0]==spwid:
-			outhiR=usersels[isel+1][1]-1
-		    else:
-			outhiR=maxchanid
-	    else:
-		#expect the left side range is already taken care of
-		outloL=0
-		outhiL=0
-		outloR=hichan+1
-		if outloR>=maxchanid:
-		    #No more boundaries to consider
-		    outloR=0
-		    outhiR=0
-		else:
-		    if isel<nsels-1 and usersels[isel+1][0]==spwid:
-			outhiR=min(usersels[isel+1][1]-1,maxchanid)
-		    else:
-			outhiR=maxchanid
-		    if outloR > outhiR:
-			outloR = 0
-			outhiR = 0
+    usersels = usersels[np.lexsort((usersels[:, 1], usersels[:, 0]))]
+    spwsels = ''
+    spwid = -1
+    prevspwid = None
+    newchanlist = []
+    nsels = len(usersels)
 
-	#
-	    if (not(outloL == 0 and outhiL == 0)) and outloL <= outhiL:
-		newchanlist.append([spwid,outloL,outhiL,stp])
-	    if (not(outloR == 0 and outhiR == 0)) and outloR <= outhiR:
-		newchanlist.append([spwid,outloR,outhiR,stp])
-	#print "newchanlist=",newchanlist
+    if excludechans:
+        for isel in range(nsels):
+            prevspwid = spwid
+            spwid = usersels[isel][0]
+            lochan = usersels[isel][1]
+            hichan = usersels[isel][2]
+            stp = usersels[isel][3]
+            maxchanid = allsels['channel'][spwid][2]
+            # find left and right side ranges of the selected range
+            if spwid != prevspwid:
+                # first line in the selected spw
+                if lochan > 0:
+                    outloL = 0
+                    outhiL = lochan-1
+                    outloR = (0 if hichan+1 >= maxchanid else hichan+1)
+                    if outloR:
+                        if isel < nsels-1 and usersels[isel+1][0] == spwid:
+                            outhiR = usersels[isel+1][1]-1
+                        else:
+                            outhiR = maxchanid
+                    else:
+                        outhiR = 0  # higher end of the user selected range reaches maxchanid so no right hand side range
+                else:
+                    # no left hand side range
+                    outloL = 0
+                    outhiL = 0
+                    outloR = hichan+1
+                    if isel < nsels-1 and usersels[isel+1][0] == spwid:
+                        outhiR = usersels[isel+1][1]-1
+                    else:
+                        outhiR = maxchanid
+            else:
+                # expect the left side range is already taken care of
+                outloL = 0
+                outhiL = 0
+                outloR = hichan+1
+                if outloR >= maxchanid:
+                    # No more boundaries to consider
+                    outloR = 0
+                    outhiR = 0
+                else:
+                    if isel < nsels-1 and usersels[isel+1][0] == spwid:
+                        outhiR = min(usersels[isel+1][1]-1, maxchanid)
+                    else:
+                        outhiR = maxchanid
+                    if outloR > outhiR:
+                        outloR = 0
+                        outhiR = 0
+
+        #
+            if (not(outloL == 0 and outhiL == 0)) and outloL <= outhiL:
+                newchanlist.append([spwid, outloL, outhiL, stp])
+            if (not(outloR == 0 and outhiR == 0)) and outloR <= outhiR:
+                newchanlist.append([spwid, outloR, outhiR, stp])
     else:
         # excludechans=False
-        newchanlist=usersels
+        newchanlist = usersels
 
-    #return newchanlist
     # create spw selection string from newchanlist
-    spwstr=''
+    spwstr = ''
     for irange in range(len(newchanlist)):
-        chanrange=newchanlist[irange]
-        spwstr+=str(chanrange[0])+':'+str(chanrange[1])+'~'+str(chanrange[2])         
+        chanrange = newchanlist[irange]
+        spwstr += str(chanrange[0])+':'+str(chanrange[1])+'~'+str(chanrange[2])
         if irange != len(newchanlist)-1:
-            spwstr+=','
+            spwstr += ','
     return spwstr 

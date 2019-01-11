@@ -174,7 +174,7 @@ class SDImagingWorkerInputs(vdp.StandardInputs):
     spwids = vdp.VisDependentProperty(default=-1)
     fieldids = vdp.VisDependentProperty(default=-1)
     stokes = vdp.VisDependentProperty(default='I')
-    edge = vdp.VisDependentProperty(default=(0,0))
+    edge = vdp.VisDependentProperty(default=(0, 0))
     phasecenter = vdp.VisDependentProperty(default='')
     cellx = vdp.VisDependentProperty(default='')
     celly = vdp.VisDependentProperty(default='')
@@ -281,8 +281,8 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         ref_spwid = spwid_list[0]
 
         LOG.debug('Members to be processed:')
-        for (m, a,s, f) in itertools.izip(infiles, antid_list, spwid_list, fieldid_list):
-            LOG.debug('\tMS %s: Antenna %s Spw %s Field %s'%(os.path.basename(m), a,s,f))
+        for (m, a, s, f) in itertools.izip(infiles, antid_list, spwid_list, fieldid_list):
+            LOG.debug('\tMS %s: Antenna %s Spw %s Field %s'%(os.path.basename(m), a, s, f))
     
         # Check for ephemeris source
         known_ephemeris_list = ['MERCURY', 'VENUS', 'MARS', 'JUPITER', 'SATURN', 'URANUS', 'NEPTUNE', 'PLUTO', 'SUN',

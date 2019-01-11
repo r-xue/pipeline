@@ -121,7 +121,7 @@ class testDelaysPerAntennaChart(object):
 
                     casa.plotms(vis=self.result.ktypecaltable, xaxis='freq', yaxis='amp', field='',
                                 antenna=antPlot, spw='', timerange='', plotrange=[], coloraxis='',
-                                title='K table: {!s}   Antenna: {!s}'.format(self.result.ktypecaltable,antName),
+                                title='K table: {!s}   Antenna: {!s}'.format(self.result.ktypecaltable, antName),
                                 titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
 
                 except Exception as ex:
@@ -272,7 +272,7 @@ class phaseGainPerAntennaChart(object):
 
                     casa.plotms(vis=result.bpdgain_touse, xaxis='time', yaxis='phase', field='',
                                 antenna=antPlot, spw='', timerange='',
-                                coloraxis='', plotrange=[0,0,-180,180], symbolshape='circle',
+                                coloraxis='', plotrange=[0, 0, -180, 180], symbolshape='circle',
                                 title='G table: {!s}   Antenna: {!s}'.format(result.bpdgain_touse, antName),
                                 titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
 
@@ -283,7 +283,7 @@ class phaseGainPerAntennaChart(object):
             
             try:
 
-                plot = logger.Plot(figfile, x_axis='Time', y_axis='Phase',field='',
+                plot = logger.Plot(figfile, x_axis='Time', y_axis='Phase', field='',
                                    parameters={'spw': '',
                                                'pol': '',
                                                'ant': antName,
@@ -341,7 +341,7 @@ class bpSolAmpPerAntennaChart(object):
             if len(tmparr) > 0:
                 maxamp = np.max(amps[good])
                 if maxamp > maxmaxamp:
-                    maxmaxamp=maxamp
+                    maxmaxamp = maxamp
             tmparr = np.abs(phases[good])
             if len(tmparr) > 0:
                 maxphase = np.max(np.abs(phases[good]))*180./math.pi
@@ -387,7 +387,7 @@ class bpSolAmpPerAntennaChart(object):
             
             try:
             
-                plot = logger.Plot(figfile, x_axis='Freq', y_axis='Amp',field='',
+                plot = logger.Plot(figfile, x_axis='Freq', y_axis='Amp', field='',
                                    parameters={'spw': '',
                                                'pol': '',
                                                'ant': antName,
@@ -439,7 +439,7 @@ class bpSolPhasePerAntennaChart(object):
             dataArr = dataVarCol[rrow]
             flagArr = flagVarCol[rrow]
             amps = np.abs(dataArr)
-            phases = np.arctan2(np.imag(dataArr),np.real(dataArr))
+            phases = np.arctan2(np.imag(dataArr), np.real(dataArr))
             good = np.logical_not(flagArr)
             tmparr = amps[good]
             if len(tmparr) > 0:
@@ -504,4 +504,3 @@ class bpSolPhasePerAntennaChart(object):
                 plots.append(None)
 
         return [p for p in plots if p is not None]
-

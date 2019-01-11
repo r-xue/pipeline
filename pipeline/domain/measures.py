@@ -205,7 +205,7 @@ class Distance(ComparableUnit):
         If no arguments are given, a new distance of 0 km is created. If no
         units are given, kilometres are assumed.
         """
-        if isinstance(value, (float,long)):
+        if isinstance(value, (float, long)):
             value = str(value)
         self.value = decimal.Decimal(value)
         self.units = units
@@ -259,7 +259,7 @@ class EquatorialArc(ComparableUnit):
         If no arguments are given, a new arc of 0 degrees is created. If no
         units are given, degrees are assumed.
         """
-        if isinstance(value, (float,long)):
+        if isinstance(value, (float, long)):
             value = str(value)
         self.value = decimal.Decimal(value)
         self.units = units
@@ -328,7 +328,7 @@ class EquatorialArc(ComparableUnit):
             dd += 1
             mm = 0
             
-        return (dd,mm,ss)
+        return dd, mm, ss
 
     def toHms(self):
         """Returns a representation of this arc in hours, minutes, and seconds. 
@@ -359,7 +359,7 @@ class FluxDensity(ComparableUnit):
         units
             the new units for this flux density
         """
-        if isinstance(value, (float,long)):
+        if isinstance(value, (float, long)):
             value = str(value)
         self.value = decimal.Decimal(value)
         self.units = units
@@ -418,7 +418,7 @@ class LinearVelocity(ComparableUnit):
         units
             the new units for this linear velocity
         """
-        if isinstance(value, (float,long)):
+        if isinstance(value, (float, long)):
             value = str(value)
         self.value = decimal.Decimal(value)
         self.units = units
@@ -541,7 +541,7 @@ class Frequency(ComparableUnit):
         units
             the new units for this frequency
         """
-        if isinstance(value, (float,long)):
+        if isinstance(value, (float, long)):
             value = str(value)
         self.value = decimal.Decimal(value)
         self.units = units

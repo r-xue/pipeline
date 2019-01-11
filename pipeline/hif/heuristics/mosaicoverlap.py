@@ -1,4 +1,3 @@
-import os
 import math
 import numpy as np
 import scipy as sp
@@ -10,9 +9,8 @@ import pipeline.infrastructure.casatools as casatools
 # Speed of light in MKS system
 c_mks = 2.99792458e8
 
-def mosaicOverlapFactorMS(ms, source, spw, diameter, intent='TARGET',
-    fwhmfactor=1.13, taper=10.0, obscuration=0.75):
 
+def mosaicOverlapFactorMS(ms, source, spw, diameter, intent='TARGET', fwhmfactor=1.13, taper=10.0, obscuration=0.75):
     """
     This routine computes the maximum sensitivity increase factor for a 
     mosaic. It handles an arbitrary mosaic pattern. It does not account for
@@ -41,7 +39,6 @@ def mosaicOverlapFactorMS(ms, source, spw, diameter, intent='TARGET',
     spent on only one of the pointings of the mosaic.
 
     """
-
 
     # Find the fields associated with the selected mosaic source
     msource = []
@@ -91,8 +88,7 @@ def mosaicOverlapFactorMS(ms, source, spw, diameter, intent='TARGET',
     frequency = np.mean(frequencies)
 
     # Compute the primary beam size in arc seconds.
-    primaryBeam = primaryBeamArcsec (frequency, diameter,
-        taper=taper, obscuration=obscuration, fwhmfactor=fwhmfactor)
+    primaryBeam = primaryBeamArcsec(frequency, diameter, taper=taper, obscuration=obscuration, fwhmfactor=fwhmfactor)
 
     # Compute the radius at first null
     #    Approximately correct for Bessel function
@@ -112,8 +108,8 @@ def mosaicOverlapFactorMS(ms, source, spw, diameter, intent='TARGET',
             if (f != field):
                 # Fill the upper half of a matrix to hold separations
                 # in order to avoid calculating each field separation twice.
-                smallerField = np.min([f,field])
-                largerField = np.max([f,field])
+                smallerField = np.min([f, field])
+                largerField = np.max([f, field])
                 if (smallerField not in separationDict.keys()):
                     separationDict[smallerField] = {}
                 if (largerField not in separationDict[smallerField]):
@@ -141,9 +137,9 @@ def mosaicOverlapFactorMS(ms, source, spw, diameter, intent='TARGET',
     maxresponse = np.max(timeOnSource) ** 0.5
     return maxresponse
 
-def mosaicOverlapFactorVIS(vis, source, spw, diameter, fwhmfactor=1.13,
-    taper=10.0, obscuration=0.75, intent='OBSERVE_TARGET#ON_SOURCE'):
 
+def mosaicOverlapFactorVIS(vis, source, spw, diameter, fwhmfactor=1.13, taper=10.0, obscuration=0.75,
+                           intent='OBSERVE_TARGET#ON_SOURCE'):
     """
     This routine computes the maximum sensitivity increase factor for an ALMA
     mosaic. It handles an arbitrary mosaic pattern. It does not account for
@@ -168,7 +164,6 @@ def mosaicOverlapFactorVIS(vis, source, spw, diameter, fwhmfactor=1.13,
       meant to be applied to a theoretical rms computed based on the total time
       spent on only one of the pointings of the mosaic.
     """
-
 
     # Get the science fields and frequencies
     with casatools.MSMDReader(vis) as msmd:
@@ -215,8 +210,7 @@ def mosaicOverlapFactorVIS(vis, source, spw, diameter, fwhmfactor=1.13,
 
     # Compute the primary beam and radius at first null
     #    Note that in this call fwhmfactor is set 
-    primaryBeam = primaryBeamArcsec (frequency, diameter,
-        taper=taper, obscuration=obscuration, fwhmfactor=fwhmfactor)
+    primaryBeam = primaryBeamArcsec(frequency, diameter, taper=taper, obscuration=obscuration, fwhmfactor=fwhmfactor)
 
     # Approximately correct for Bessel function
     #    Same as above
@@ -234,8 +228,8 @@ def mosaicOverlapFactorVIS(vis, source, spw, diameter, fwhmfactor=1.13,
                 if (f != field):
                     # Fill the upper half of a matrix to hold separations
                     # in order to avoid calculating each field separation twice.
-                    smallerField = np.min([f,field])
-                    largerField = np.max([f,field])
+                    smallerField = np.min([f, field])
+                    largerField = np.max([f, field])
                     if (smallerField not in separationDict.keys()):
                         separationDict[smallerField] = {}
                     if (largerField not in separationDict[smallerField]):
@@ -261,9 +255,7 @@ def mosaicOverlapFactorVIS(vis, source, spw, diameter, fwhmfactor=1.13,
     return maxresponse
 
 
-def primaryBeamArcsec (frequency, diameter, taper=10.0, obscuration=0.75,
-    fwhmfactor=None, use2007formula=True):
-
+def primaryBeamArcsec (frequency, diameter, taper=10.0, obscuration=0.75, fwhmfactor=None, use2007formula=True):
     """
     Implements the Baars formula: b * lambda / D.
         if use2007formula==False, use the formula from ALMA Memo 456
@@ -309,9 +301,8 @@ def primaryBeamArcsec (frequency, diameter, taper=10.0, obscuration=0.75,
     return primaryBeam
 
 
-def gaussianBeamResponse (radius, frequency, diameter, taper=10.0,
-    obscuration=0.75, fwhmfactor=None, use2007formula=True):
-
+def gaussianBeamResponse (radius, frequency, diameter, taper=10.0, obscuration=0.75, fwhmfactor=None,
+                          use2007formula=True):
     """
     Computes the gain at the specified radial offset from the center
     of a Gaussian beam.
@@ -333,8 +324,8 @@ def gaussianBeamResponse (radius, frequency, diameter, taper=10.0,
     gain = np.exp(-((radius / sigma) **2) * 0.5)
     return gain
 
-def baarsTaperFactor(taper_dB, use2007formula=True):
 
+def baarsTaperFactor(taper_dB, use2007formula=True):
     """
     Converts a taper in dB to the constant X in the formula
     FWHM=X*lambda/D for the parabolic illumination pattern.
@@ -354,8 +345,8 @@ def baarsTaperFactor(taper_dB, use2007formula=True):
     else:
         return (1.243 - 0.343*tau + 0.12*(tau**2))
 
-def centralObstructionFactor(diameter, obscuration=0.75):
 
+def centralObstructionFactor(diameter, obscuration=0.75):
     """
     Computes the scale factor of an Airy pattern as a function of the
     central obscuration, using Table 10.1 of Schroeder's "Astronomical Optics".
@@ -366,14 +357,14 @@ def centralObstructionFactor(diameter, obscuration=0.75):
     """
 
     epsilon = obscuration / diameter
-    myspline = sp.interpolate.UnivariateSpline([0,0.1,0.2,0.33,0.4],
-        [1.22,1.205,1.167,1.098,1.058], s=0)
+    myspline = sp.interpolate.UnivariateSpline([0, 0.1, 0.2, 0.33, 0.4],
+        [1.22, 1.205, 1.167, 1.098, 1.058], s=0)
     factor = myspline(epsilon) / 1.22
 
     return factor
 
-def effectiveTaper(fwhmFactor, diameter, obscuration=0.75,
-                   use2007formula=True):
+
+def effectiveTaper(fwhmFactor, diameter, obscuration=0.75, use2007formula=True):
     """
     The inverse of Baars formula multiplied by the central obstruction
     factor. Converts an observed value of the constant X in the formula
@@ -391,38 +382,35 @@ def effectiveTaper(fwhmFactor, diameter, obscuration=0.75,
     """
 
     cOF = centralObstructionFactor (diameter, obscuration=obscuration)
-    if (fwhmFactor < 1.02 or fwhmFactor > 1.22):
+    if fwhmFactor < 1.02 or fwhmFactor > 1.22:
         return None
-    if (baarsTaperFactor(10, use2007formula=use2007formula) * cOF < fwhmFactor):
+    if baarsTaperFactor(10, use2007formula=use2007formula) * cOF < fwhmFactor:
         increment = 0.01
         for taper_dB in np.arange(10, 10 + increment * 1000, increment):
-            if (baarsTaperFactor(taper_dB, use2007formula=use2007formula) * \
-                cOF - fwhmFactor > 0):
+            if baarsTaperFactor(taper_dB, use2007formula=use2007formula) * cOF - fwhmFactor > 0:
                 break
     else:
         increment = -0.01
         for taper_dB in np.arange(10, 10 + increment * 1000, increment):
-            if (baarsTaperFactor(taper_dB, use2007formula=use2007formula) * \
-                cOF - fwhmFactor < 0):
+            if baarsTaperFactor(taper_dB, use2007formula=use2007formula) * cOF - fwhmFactor < 0:
                 break
 
     return taper_dB
 
-def angularSeparationOfDirections(dir1, dir2, returnComponents=False):
 
+def angularSeparationOfDirections(dir1, dir2, returnComponents=False):
     """
     Accepts two direction dictionaries and returns the separation in radians.
     It computes great circle angle using the Vincenty formula.
     """
 
-    rad = angularSeparationRadians (dir1['m0']['value'], dir1['m1']['value'],
-        dir2['m0']['value'], dir2['m1']['value'],returnComponents)
+    rad = angularSeparationRadians(dir1['m0']['value'], dir1['m1']['value'], dir2['m0']['value'], dir2['m1']['value'],
+                                   returnComponents)
 
     return rad
 
 
 def angularSeparationRadians(ra0, dec0, ra1, dec1, returnComponents=False):
-
     """
     Computes the great circle angle between two celestial coordinates.
     using the Vincenty formula from wikipedia which is correct for all
@@ -444,8 +432,8 @@ def angularSeparationRadians(ra0, dec0, ra1, dec1, returnComponents=False):
     else:
         return (result * math.pi / 180.)
 
-def angularSeparation(ra0, dec0, ra1, dec1, returnComponents=False):
 
+def angularSeparation(ra0, dec0, ra1, dec1, returnComponents=False):
     """
     Computes the great circle angle between two celestial coordinates.
     using the Vincenty formula from wikipedia which is correct for all
@@ -471,26 +459,25 @@ def angularSeparation(ra0, dec0, ra1, dec1, returnComponents=False):
     deltaLong = ra0-ra1
 
     argument1 = (((math.cos(dec1)*math.sin(deltaLong))**2) +
-               ((math.cos(dec0)*math.sin(dec1)-math.sin(dec0)*math.cos(dec1)*math.cos(deltaLong))**2))**0.5
+                 ((math.cos(dec0)*math.sin(dec1)-math.sin(dec0)*math.cos(dec1)*math.cos(deltaLong))**2))**0.5
     argument2 = math.sin(dec0)*math.sin(dec1) + math.cos(dec0)*math.cos(dec1)*math.cos(deltaLong)
 
     angle = math.atan2(argument1, argument2) / (math.pi/180.)
-    if (angle > 360):
+    if angle > 360:
         angle -= 360
 
-    if (returnComponents):
+    if returnComponents:
         cosdec = math.cos((dec1+dec0)*0.5)
         radegreesCosDec = np.degrees(ra0-ra1)*cosdec
         radegrees = np.degrees(ra0-ra1)
         decdegrees = np.degrees(dec0-dec1)
-        if (radegrees > 360):
+        if radegrees > 360:
             radegrees -= 360
-        if (decdegrees > 360):
+        if decdegrees > 360:
             decdegrees -= 360
 #        positionAngle = -math.atan2(decdegrees*math.pi/180., radegreesCosDec*math.pi/180.)*180/math.pi
-        retval = angle,radegrees,decdegrees, radegreesCosDec
+        retval = angle, radegrees, decdegrees, radegreesCosDec
     else:
         retval = angle
 
-    return(retval)
-
+    return retval

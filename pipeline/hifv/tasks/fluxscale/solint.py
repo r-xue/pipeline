@@ -87,8 +87,8 @@ class Solint(basetask.StandardTaskTemplate):
         # Testgains section
         context = self.inputs.context
         tablebase = tableprefix + str(stage_number) + '_1.' + 'testgaincal'
-        table_suffix = ['.tbl','3.tbl','10.tbl', 'scan.tbl', 'limit.tbl']
-        soltimes = [1.0,3.0,10.0] 
+        table_suffix = ['.tbl', '3.tbl', '10.tbl', 'scan.tbl', 'limit.tbl']
+        soltimes = [1.0, 3.0, 10.0] 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         soltimes = [m.get_vla_max_integration_time() * x for x in soltimes]
 
@@ -195,7 +195,7 @@ class Solint(basetask.StandardTaskTemplate):
         LOG.info("ShortSol1: " + str(shortsol1))
         LOG.info("ShortSol2: " + str(shortsol2))
         
-        short_solint = max(shortsol1,shortsol2)
+        short_solint = max(shortsol1, shortsol2)
         LOG.info("Short_solint determined from heuristics: " + str(short_solint))
         new_gain_solint1 = str(short_solint)+'s'
 

@@ -35,8 +35,8 @@ class semifinalBPdcalsSummaryChart(object):
 
         casa.plotms(vis=m.name, xaxis='freq', yaxis='amp', ydatacolumn='corrected', selectdata=True,
                     scan=calibrator_scan_select_string, correlation=corrstring, averagedata=True, avgtime='1e8',
-                    avgscan=False, transform=False,    extendflag=False,iteraxis='',  coloraxis='antenna2',
-                    plotrange=[], title='', xlabel='', ylabel='', showmajorgrid=False,    showminorgrid=False,
+                    avgscan=False, transform=False, extendflag=False, iteraxis='', coloraxis='antenna2',
+                    plotrange=[], title='', xlabel='', ylabel='', showmajorgrid=False, showminorgrid=False,
                     plotfile=figfile, overwrite=True, clearplots=True, showgui=False)
 
     def get_figfile(self):
@@ -240,14 +240,14 @@ class semifinalbpSolAmpPerAntennaChart(object):
             dataArr = dataVarCol[rrow]
             flagArr = flagVarCol[rrow]
             amps = np.abs(dataArr)
-            phases = np.arctan2(np.imag(dataArr),np.real(dataArr))
+            phases = np.arctan2(np.imag(dataArr), np.real(dataArr))
             good = np.logical_not(flagArr)
             tmparr = amps[good]
-            if len(tmparr)>0:
+            if len(tmparr) > 0:
                 maxamp = np.max(amps[good])
                 if maxamp > maxmaxamp:
                     maxmaxamp = maxamp
-            tmparr=np.abs(phases[good])
+            tmparr = np.abs(phases[good])
             if len(tmparr) > 0:
                 maxphase = np.max(np.abs(phases[good]))*180./math.pi
                 if maxphase > maxmaxphase:
@@ -333,14 +333,14 @@ class semifinalbpSolPhasePerAntennaChart(object):
             dataArr = dataVarCol[rrow]
             flagArr = flagVarCol[rrow]
             amps = np.abs(dataArr)
-            phases = np.arctan2(np.imag(dataArr),np.real(dataArr))
+            phases = np.arctan2(np.imag(dataArr), np.real(dataArr))
             good = np.logical_not(flagArr)
             tmparr = amps[good]
             if len(tmparr) > 0:
                 maxamp = np.max(amps[good])
                 if maxamp > maxmaxamp:
                     maxmaxamp = maxamp
-            tmparr=np.abs(phases[good])
+            tmparr = np.abs(phases[good])
             if len(tmparr) > 0:
                 maxphase = np.max(np.abs(phases[good]))*180./math.pi
                 if maxphase>maxmaxphase:
@@ -392,4 +392,3 @@ class semifinalbpSolPhasePerAntennaChart(object):
         # Get BPcal.b to close...
 
         return [p for p in plots if p is not None]
-

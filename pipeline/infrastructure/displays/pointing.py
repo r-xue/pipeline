@@ -2,9 +2,9 @@ from __future__ import absolute_import
 
 import os
 import math
-import pylab as pl
-import numpy
 
+import numpy
+import pylab as pl
 from matplotlib.ticker import FuncFormatter, MultipleLocator, AutoLocator
 
 import pipeline.infrastructure as infrastructure
@@ -12,7 +12,6 @@ import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.renderer.logger as logger
 from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.domain.datatable import OnlineFlagIndex
-#from . import common
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -25,6 +24,7 @@ dsyb = '$^\circ$'
 hsyb = ':'
 msyb = ':'
 
+
 def Deg2HMS(x, arrowance):
     # Transform degree to HHMMSS.sss format
     xx = x % 360 + arrowance
@@ -33,11 +33,13 @@ def Deg2HMS(x, arrowance):
     s = ((xx % 15) * 4 - m) * 60.0
     return (h, m, s)
 
+
 def HHMM(x, pos):
     # HHMM format
     (h, m, s) = Deg2HMS(x, 1/40.0)
     #return '%02dh%02dm' % (h, m)
     return '%02d%s%02d' % (h, hsyb, m)
+
 
 def HHMMSS(x, pos):
     # HHMMSS format
@@ -45,17 +47,20 @@ def HHMMSS(x, pos):
     #return '%02dh%02dm%02ds' % (h, m, s)
     return '%02d%s%02d%s%02d' % (h, hsyb, m, msyb, s)
 
+
 def HHMMSSs(x, pos):
     # HHMMSS.s format
     (h, m, s) = Deg2HMS(x, 1/24000.0)
     #return '%02dh%02dm%04.1fs' % (h, m, s)
     return '%02d%s%02d%s%04.1f' % (h, hsyb, m, msyb, s)
 
+
 def HHMMSSss(x, pos):
     # HHMMSS.ss format
     (h, m, s) = Deg2HMS(x, 1/240000.0)
     #return '%02dh%02dm%05.2fs' % (h, m, s)
     return '%02d%s%02d%s%05.2f' % (h, hsyb, m, msyb, s)
+
 
 def HHMMSSsss(x, pos):
     # HHMMSS.sss format
@@ -75,17 +80,20 @@ def Deg2DMS(x, arrowance):
     s = ((xx % 1) * 60 - m) * 60.0
     return (d, m, s)
 
+
 def DDMM(x, pos):
     # +DDMM format
     (d, m, s) = Deg2DMS(x, 1/600.0)
     #return '%+02dd%02dm' % (d, m)
     return '%+02d%s%02d\'' % (d, dsyb, m)
 
+
 def DDMMSS(x, pos):
     # +DDMMSS format
     (d, m, s) = Deg2DMS(x, 1/36000.0)
     #return '%+02dd%02dm%02ds' % (d, m, s)
     return '%+02d%s%02d\'%02d\"' % (d, dsyb, m, s)
+
 
 def DDMMSSs(x, pos):
     # +DDMMSS.s format
@@ -95,6 +103,7 @@ def DDMMSSs(x, pos):
     sstr = ('%3.1f'%(s-int(s))).lstrip('0')
     return '%+02d%s%02d\'%02d\"%s' % (d, dsyb, m, sint, sstr)
 
+
 def DDMMSSss(x, pos):
     # +DDMMSS.ss format
     (d, m, s) = Deg2DMS(x, 1/3600000.0)
@@ -103,18 +112,22 @@ def DDMMSSss(x, pos):
     sstr = ('%4.2f'%(s-int(s))).lstrip('0')
     return '%+02d%s%02d\'%02d\"%s' % (d, dsyb, m, sint, sstr)
 
+
 def XYlabel(span, direction_reference):
     if direction_reference.upper() == 'GALACTIC':
         return GLGBlabel(span)
     else:
         return RADEClabel(span)
 
+
 def GLGBlabel(span):
     """
     return (GLlocator, GBlocator, GLformatter, GBformatter) for Galactic coordinate
     """
-    #RAtick = [15.0, 5.0, 2.5, 1.25, 1/2.0, 1/4.0, 1/12.0, 1/24.0, 1/48.0, 1/120.0, 1/240.0, 1/480.0, 1/1200.0, 1/2400.0, 1/4800.0, 1/12000.0, 1/24000.0, 1/48000.0, -1.0]
-    XYtick = [20.0, 10.0, 5.0, 2.0, 1.0, 1/3.0, 1/6.0, 1/12.0, 1/30.0, 1/60.0, 1/180.0, 1/360.0, 1/720.0, 1/1800.0, 1/3600.0, 1/7200.0, 1/18000.0, 1/36000.0, -1.0]
+    # RAtick = [15.0, 5.0, 2.5, 1.25, 1/2.0, 1/4.0, 1/12.0, 1/24.0, 1/48.0, 1/120.0, 1/240.0, 1/480.0, 1/1200.0,
+    #           1/2400.0, 1/4800.0, 1/12000.0, 1/24000.0, 1/48000.0, -1.0]
+    XYtick = [20.0, 10.0, 5.0, 2.0, 1.0, 1/3.0, 1/6.0, 1/12.0, 1/30.0, 1/60.0, 1/180.0, 1/360.0, 1/720.0, 1/1800.0,
+              1/3600.0, 1/7200.0, 1/18000.0, 1/36000.0, -1.0]
     #for RAt in RAtick:
     #    if span > (RAt * 3.0) and RAt > 0:
     #        RAlocator = MultipleLocator(RAt)
@@ -150,12 +163,15 @@ def GLGBlabel(span):
 
     return (GLlocator, GBlocator, GLformatter, GBformatter)
 
+
 def RADEClabel(span):
     """
     return (RAlocator, DEClocator, RAformatter, DECformatter)
     """
-    RAtick = [15.0, 5.0, 2.5, 1.25, 1/2.0, 1/4.0, 1/12.0, 1/24.0, 1/48.0, 1/120.0, 1/240.0, 1/480.0, 1/1200.0, 1/2400.0, 1/4800.0, 1/12000.0, 1/24000.0, 1/48000.0, -1.0]
-    DECtick = [20.0, 10.0, 5.0, 2.0, 1.0, 1/3.0, 1/6.0, 1/12.0, 1/30.0, 1/60.0, 1/180.0, 1/360.0, 1/720.0, 1/1800.0, 1/3600.0, 1/7200.0, 1/18000.0, 1/36000.0, -1.0]
+    RAtick = [15.0, 5.0, 2.5, 1.25, 1/2.0, 1/4.0, 1/12.0, 1/24.0, 1/48.0, 1/120.0, 1/240.0, 1/480.0, 1/1200.0, 1/2400.0,
+              1/4800.0, 1/12000.0, 1/24000.0, 1/48000.0, -1.0]
+    DECtick = [20.0, 10.0, 5.0, 2.0, 1.0, 1/3.0, 1/6.0, 1/12.0, 1/30.0, 1/60.0, 1/180.0, 1/360.0, 1/720.0, 1/1800.0,
+               1/3600.0, 1/7200.0, 1/18000.0, 1/36000.0, -1.0]
     for RAt in RAtick:
         if span > (RAt * 3.0) and RAt > 0:
             RAlocator = MultipleLocator(RAt)
@@ -187,6 +203,7 @@ def RADEClabel(span):
         DECformatter=FuncFormatter(DDMM)
 
     return (RAlocator, DEClocator, RAformatter, DECformatter)
+
 
 class MapAxesManagerBase(object):
     @property
@@ -232,7 +249,8 @@ class PointingAxesManager(MapAxesManagerBase):
         self.is_initialized = False
         self._direction_reference = None
 
-    def init_axes(self, xlocator, ylocator, xformatter, yformatter, xrotation, yrotation, aspect, xlim=None, ylim=None, reset=False):
+    def init_axes(self, xlocator, ylocator, xformatter, yformatter, xrotation, yrotation, aspect, xlim=None, ylim=None,
+                  reset=False):
         if self._axes is None:
             self._axes = self.__axes()
 
@@ -268,34 +286,38 @@ class PointingAxesManager(MapAxesManagerBase):
         pl.title('')
         return a
 
+
 def draw_beam(axes, r, aspect, x_base, y_base, offset=1.0):
     xy = numpy.array([[r * (math.sin(t * 0.13) + offset) * aspect + x_base,
                        r * (math.cos(t * 0.13) + offset) + y_base]
                       for t in xrange(50)])
     pl.gcf().sca(axes)
-    line = pl.plot(xy[:,0], xy[:,1], 'r-')
+    line = pl.plot(xy[:, 0], xy[:, 1], 'r-')
     return line[0]
 
-def draw_pointing(axes_manager, RA, DEC, FLAG=None, plotfile=None, connect=True, circle=[], ObsPattern=False, plotpolicy='ignore'):
+
+def draw_pointing(axes_manager, RA, DEC, FLAG=None, plotfile=None, connect=True, circle=[], ObsPattern=False,
+                  plotpolicy='ignore'):
     span = max(max(RA) - min(RA), max(DEC) - min(DEC))
     xmax = min(RA) - span / 10.0
     xmin = max(RA) + span / 10.0
     ymax = max(DEC) + span / 10.0
     ymin = min(DEC) - span / 10.0
-    (RAlocator, DEClocator, RAformatter, DECformatter) = XYlabel(span,
-                                                                 axes_manager.direction_reference)
+    (RAlocator, DEClocator, RAformatter, DECformatter) = XYlabel(span, axes_manager.direction_reference)
 
     Aspect = 1.0 / math.cos(DEC[0] / 180.0 * 3.141592653)
 
     # Plotting routine
-    if connect is True: Mark = 'g-o'
-    else: Mark = 'bo'
+    if connect is True:
+        Mark = 'g-o'
+    else:
+        Mark = 'bo'
     axes_manager.init_axes(RAlocator, DEClocator,
-                                RAformatter, DECformatter,
-                                RArotation, DECrotation,
-                                Aspect,
-                                xlim=(xmin,xmax),
-                                ylim=(ymin,ymax))
+                           RAformatter, DECformatter,
+                           RArotation, DECrotation,
+                           Aspect,
+                           xlim=(xmin, xmax),
+                           ylim=(ymin, ymax))
     a = axes_manager.axes
     if ObsPattern == False:
         a.title.set_text('Telescope Pointing on the Sky')
@@ -343,7 +365,8 @@ def draw_pointing(axes_manager, RA, DEC, FLAG=None, plotfile=None, connect=True,
     for obj in plot_objects:
         obj.remove()
     
-class SingleDishPointingChart(object):    
+
+class SingleDishPointingChart(object):
     def __init__(self, context, ms, antenna, target_field_id=None, reference_field_id=None, target_only=True,
                  shift_coord=False):
         self.context = context
@@ -433,8 +456,9 @@ class SingleDishPointingChart(object):
             return None
         
         RA = datatable.getcol(racol)[dt_rows]
-        if len(RA) == 0: # no row found
-            LOG.warn('No data found with antenna=%d, spw=%d, and field=%s in %s.' % (antenna_id, spw_id, str(field_id), ms.basename))
+        if len(RA) == 0:  # no row found
+            LOG.warn('No data found with antenna=%d, spw=%d, and field=%s in %s.' %
+                     (antenna_id, spw_id, str(field_id), ms.basename))
             LOG.warn('Skipping pointing plots.')
             return None
         DEC = datatable.getcol(deccol)[dt_rows]
@@ -449,7 +473,8 @@ class SingleDishPointingChart(object):
         self.axes_manager.direction_reference = datatable.direction_ref
         
         pl.clf()
-        draw_pointing(self.axes_manager, RA, DEC, FLAG, self.figfile, circle=[0.5*beam_size_in_deg], ObsPattern=obs_pattern, plotpolicy='greyed')
+        draw_pointing(self.axes_manager, RA, DEC, FLAG, self.figfile, circle=[0.5*beam_size_in_deg],
+                      ObsPattern=obs_pattern, plotpolicy='greyed')
         pl.close()
 
         return self._get_plot_object()
@@ -494,7 +519,7 @@ class SingleDishPointingChart(object):
         return logger.Plot(self.figfile,
                            x_axis=xaxis,
                            y_axis=yaxis,
-                           parameters={'vis' : self.ms.basename,
+                           parameters={'vis': self.ms.basename,
                                        'antenna': self.antenna.name,
                                        'field': field_name,
                                        'intent': intent})

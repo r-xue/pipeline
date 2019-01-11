@@ -100,7 +100,7 @@ class SDBaselineResults(common.SingleDishResults):
             lines = b['lines']
             channelmap_range = b['channelmap_range']
             group_desc = reduction_group[group_id]
-            for (ms,field,ant,spw) in utils.iterate_group_member(reduction_group[group_id], member_list):#itertools.izip(vislist,fieldlist,antennalist,spwlist):
+            for (ms, field, ant, spw) in utils.iterate_group_member(reduction_group[group_id], member_list):
                 group_desc.iter_countup(ms, ant, spw, field)
                 group_desc.add_linelist(lines, ms, ant, spw, field,
                                         channelmap_range=channelmap_range)
@@ -426,12 +426,12 @@ def test_deviation_mask_heuristic(spw=None):
     import time
     start_time = time.time()
     serial_tasks = [deviation_mask_heuristic(vis=vis, field_list=field_list, antenna_list=antenna_list, spw_list=spw_list, consider_flag=consider_flag, parallel=False) for vis in vislist]
-    serial_results = [(v, t.get_result()) for v,t in serial_tasks]
+    serial_results = [(v, t.get_result()) for v, t in serial_tasks]
     end_time = time.time()
     print('serial execution duration {0}sec'.format(end_time-start_time))
     start_time = time.time()
     parallel_tasks = [deviation_mask_heuristic(vis=vis, field_list=field_list, antenna_list=antenna_list, spw_list=spw_list, consider_flag=consider_flag, parallel=True) for vis in vislist]
-    parallel_results = [(v,t.get_result()) for v,t in parallel_tasks]
+    parallel_results = [(v, t.get_result()) for v, t in parallel_tasks]
     end_time = time.time()
     print('parallel execution duration {0}sec'.format(end_time-start_time))
    

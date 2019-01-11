@@ -18,14 +18,14 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #*******************************************************************************
-import os
+
 import numpy as np
 
 import pipeline.infrastructure.api as api
-import pipeline.infrastructure.casatools as casatools
 
 # from asap.asaplinefind import linefinder
 # from asap import _asap, scantable, rcParams
+
 
 class HeuristicsLineFinder(api.Heuristic):
     """
@@ -33,7 +33,7 @@ class HeuristicsLineFinder(api.Heuristic):
     def calculate(self, spectrum, threshold=7.0, min_nchan=3, avg_limit=2, box_size=2, tweak=False, mask=[], edge=None):
         _spectrum = np.array(spectrum)
         if len(mask) == 0:
-            mask = np.ones(len(_spectrum),dtype=np.int)
+            mask = np.ones(len(_spectrum), dtype=np.int)
         else:
             mask = np.array(mask, np.int)
         if edge is not None:
@@ -41,15 +41,16 @@ class HeuristicsLineFinder(api.Heuristic):
                 if edge[0] != 0:
                     mask[:edge[0]] = 0
                     mask[-edge[0]:] = 0
-                    _edge=(edge[0], len(_spectrum)-edge[0])
+                    _edge = (edge[0], len(_spectrum)-edge[0])
                 else:
-                    _edge=(0, len(_spectrum))
+                    _edge = (0, len(_spectrum))
             else:
                 mask[:edge[0]] = 0
                 if edge[1] != 0:
                     mask[-edge[1]:] = 0
-                _edge=(edge[0], len(_spectrum)-edge[1])
-        else: _edge=(0, len(_spectrum))
+                _edge = (edge[0], len(_spectrum)-edge[1])
+        else:
+            _edge = (0, len(_spectrum))
         indeces = np.arange(len(_spectrum))
 
         previous_line_indeces = np.array([], np.int)
@@ -58,23 +59,18 @@ class HeuristicsLineFinder(api.Heuristic):
         max_iteration = 10
 
         while iteration <= max_iteration:
-            #print 'iteration', iteration
             iteration += 1
             iteration_mask = np.array(mask)
             iteration_mask[previous_line_indeces] = 0
-            variances = np.abs(_spectrum -
-             np.median(_spectrum[iteration_mask==1]))
+            variances = np.abs(_spectrum - np.median(_spectrum[iteration_mask==1]))
 
             good_variances = variances[iteration_mask==1]
             good_variances.sort()
             good_variances = good_variances[:int(0.8*len(good_variances))]
             mad = np.median(good_variances)
-            #print mad
 
             #line_indeces = indeces[np.logical_and(mask==1, variances > 7*mad)]
             line_indeces = indeces[np.logical_and(mask==1, variances > threshold*mad)]
-            #print line_indeces, previous_line_indeces,\
-            # line_indeces==previous_line_indeces
 
             if mad > previous_mad or list(line_indeces) == list(previous_line_indeces):
                 break
@@ -103,9 +99,8 @@ class HeuristicsLineFinder(api.Heuristic):
 
         if range_start is not None and (range_end - range_start + 1 > 2):
             ranges += [range_start, range_end]
-        #print 'result', previous_line_indeces
-        #print ranges
-        if tweak: ranges = self.tweak_lines(_spectrum, ranges, _edge)
+        if tweak:
+            ranges = self.tweak_lines(_spectrum, ranges, _edge)
 
         #return len(ranges)/2
         return ranges
@@ -114,7 +109,6 @@ class HeuristicsLineFinder(api.Heuristic):
         """
         """
         med = np.median(spectrum)
-        #print med
         mask = np.array(spectrum) >= med
         for i in range(0, len(ranges), 2):
             if spectrum[ranges[i]] > med:
@@ -125,14 +119,16 @@ class HeuristicsLineFinder(api.Heuristic):
                 Mask = False
             ignore = 0
             for j in range(ranges[i], edge[0]-1, -1):
-                if (spectrum[j]-spectrum[j+1] > 0) == Mask: ignore += 1
+                if (spectrum[j]-spectrum[j+1] > 0) == Mask:
+                    ignore += 1
                 if (mask[j] != Mask) or (ignore > n_ignore):
-                   ranges[i] = j
-                   break
+                    ranges[i] = j
+                    break
             ignore = 0
             for j in range(ranges[i+1], edge[1]):
-                if (spectrum[j]-spectrum[j-1] > 0) == Mask: ignore += 1
+                if (spectrum[j]-spectrum[j-1] > 0) == Mask:
+                    ignore += 1
                 if (mask[j] != Mask) or (ignore > n_ignore):
-                   ranges[i+1] = j
-                   break
+                    ranges[i+1] = j
+                    break
         return ranges

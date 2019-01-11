@@ -89,7 +89,7 @@ def utc_locator(start_time=None, end_time=None):
         #print dt
         tick_interval = int(dt/10) + 1
         #print tick_interval
-        return MinuteLocator(byminute=range(0,60,tick_interval))
+        return MinuteLocator(byminute=range(0, 60, tick_interval))
 
 
 class PlotObjectHandler(object):
@@ -231,7 +231,7 @@ class SpectralImage(object):
 
 class SDImageDisplayInputs(SingleDishDisplayInputs):
     def __init__(self, context, result):
-        super(SDImageDisplayInputs,self).__init__(context, result)
+        super(SDImageDisplayInputs, self).__init__(context, result)
         
     @property
     def imagename(self):
@@ -735,29 +735,29 @@ class SDSparseMapPlotter(object):
         #    ListMin = ListMin.data[ListMin.mask == False]
         #if isinstance(ListMax, numpy.ma.masked_array):
         #    ListMax = ListMax.data[ListMax.mask == False]
-        LOG.debug('ListMax=%s'%(list(ListMax)))
-        LOG.debug('ListMin=%s'%(list(ListMin)))            
+        LOG.debug('ListMax=%s' % (list(ListMax)))
+        LOG.debug('ListMin=%s' % (list(ListMin)))
         global_ymax = numpy.sort(ListMax)[len(ListMax) - len(ListMax)/10 - 1]
         global_ymin = numpy.sort(ListMin)[len(ListMin)/10]
         global_ymax = global_ymax + (global_ymax - global_ymin) * 0.2
         global_ymin = global_ymin - (global_ymax - global_ymin) * 0.1
         del ListMax, ListMin
 
-        LOG.info('global_ymin=%s, global_ymax=%s'%(global_ymin,global_ymax))
+        LOG.info('global_ymin=%s, global_ymax=%s' % (global_ymin, global_ymax))
 
         pl.gcf().sca(self.axes.axes_integsp)
         plot_helper.plot(frequency, averaged_data, color='b', linestyle='-', linewidth=0.4)
-        (_xmin,_xmax,_ymin,_ymax) = pl.axis()
+        (_xmin, _xmax, _ymin, _ymax) = pl.axis()
         #pl.axis((_xmin,_xmax,spmin,spmax))
         pl.axis((global_xmin, global_xmax, spmin, spmax))
         if self.lines_averaged is not None:
             for chmin, chmax in self.lines_averaged:
                 fmin = ch_to_freq(chmin, frequency)
                 fmax = ch_to_freq(chmax, frequency)
-                LOG.debug('plotting line range for mean spectrum: [%s, %s]'%(chmin,chmax))
+                LOG.debug('plotting line range for mean spectrum: [%s, %s]' % (chmin, chmax))
                 plot_helper.axvspan(fmin, fmax, color='cyan')
         if self.deviation_mask is not None:
-            LOG.debug('plotting deviation mask %s'%(self.deviation_mask))
+            LOG.debug('plotting deviation mask %s' % self.deviation_mask)
             for chmin, chmax in self.deviation_mask:
                 fmin = ch_to_freq(chmin, frequency)
                 fmax = ch_to_freq(chmax, frequency)

@@ -33,7 +33,7 @@ class SDBLFlagWorkerInputs(vdp.StandardInputs):
     NOTE: infile should be a complete list of MSes 
     """
     userFlag = vdp.VisDependentProperty(default=[])
-    edge = vdp.VisDependentProperty(default=(0,0))
+    edge = vdp.VisDependentProperty(default=(0, 0))
 
     def __init__(self, context, clip_niteration, vis, antenna_list, fieldid_list, spwid_list, pols_list, nchan,
                  flagRule, userFlag=None, edge=None, rowmap=None):
@@ -232,9 +232,10 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
             container.open(ms)
 
             if not is_baselined:
-                LOG.warn("No baseline subtraction operated to {} Field {} Antenna {} Spw {}. Skipping flag by post fit spectra.".format(ms.basename, fieldid, antid, spwid))
+                LOG.warn("No baseline subtraction operated to {} Field {} Antenna {} Spw {}. Skipping flag by post fit"
+                         " spectra.".format(ms.basename, fieldid, antid, spwid))
                 # Reset MASKLIST for the non-baselined DataTable
-                self.ResetDataTableMaskList(datatable,TimeTable)
+                self.ResetDataTableMaskList(datatable, TimeTable)
                 # force disable post fit flagging (not really effective except for flagSummary)
                 flagRule_local['RmsPostFitFlag']['isActive'] = False
                 flagRule_local['RunMeanPostFitFlag']['isActive'] = False
@@ -261,10 +262,12 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                 tmpdata = tmpdict[polid]
                 t0 = time.time()
                 LOG.debug('tmpdata.shape=%s, len(Threshold)=%s' % (str(tmpdata.shape), len(Threshold)))
-                LOG.info('Calculating the thresholds by Standard Deviation and Diff from running mean of Pre/Post fit. (Iterate %d times)' % (clip_niteration))
+                LOG.info('Calculating the thresholds by Standard Deviation and Diff from running mean of Pre/Post fit.'
+                         ' (Iterate %d times)' % clip_niteration)
                 stat_flag, final_thres = self._get_flag_from_stats(tmpdata, Threshold, clip_niteration, is_baselined)
                 LOG.debug('final threshold shape = %d' % len(final_thres))
-                LOG.info('Final thresholds: StdDev (pre-/post-fit) = %.2f / %.2f , Diff StdDev (pre-/post-fit) = %.2f / %.2f , Tsys=%.2f' % tuple([final_thres[i][1] for i in (1,0,3,2,4)]))
+                LOG.info('Final thresholds: StdDev (pre-/post-fit) = %.2f / %.2f , Diff StdDev (pre-/post-fit) ='
+                         ' %.2f / %.2f , Tsys=%.2f' % tuple([final_thres[i][1] for i in (1, 0, 3, 2, 4)]))
                 #del tmpdata, _
                 
                 self._apply_stat_flag(datatable, dt_idx, polid, stat_flag)
@@ -364,7 +367,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
         output_array_size = sum((len(c[0]) for c in TimeTable))
         output_array_index = 0
         datatable_index = numpy.zeros(output_array_size, dtype=int)
-        statistics_array = dict((p, numpy.zeros((5,output_array_size), dtype=numpy.float)) for p in polids)
+        statistics_array = dict((p, numpy.zeros((5, output_array_size), dtype=numpy.float)) for p in polids)
         num_masked_array = dict((p, numpy.zeros(output_array_size, dtype=int)) for p in polids)
         for chunks in TimeTable:
             # chunks[0]: row, chunks[1]: index
@@ -742,7 +745,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
         #tTSYS = DataTable.getcol('TSYS')
 
         for ID in ids:
-            row = DataTable.getcell('ROW',ID)
+            row = DataTable.getcell('ROW', ID)
             # The HHT and APEX test data show the "on" time only in the CLASS
             # header. To get the total time, at least a factor of 2 is needed,
             # for OTFs and rasters with several on per off even higher, but this
@@ -754,7 +757,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
             # may be needed. This factor was read above.
             tTSYS = DataTable.getcell('TSYS', ID)[polid]
             # K->Jy factor
-            tAnt = DataTable.getcell('ANTENNA',ID)
+            tAnt = DataTable.getcell('ANTENNA', ID)
             antname = msobj.get_antenna(tAnt)[0].name
             polname = msobj.get_data_description(spw=spwid).get_polarization_label(polid)
             k2jy_fact = msobj.k2jy_factor[(spwid, antname, polname)] if (hasattr(msobj, 'k2jy_factor') and (spwid, antname, polname) in msobj.k2jy_factor) else 1.0
@@ -764,10 +767,11 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                 expectedRMS = currentTsys / math.sqrt(noiseEquivBW * integTimeSec)
                 # 2008/10/31
                 # Comparison with both pre- and post-BaselineFit RMS
-                stats = DataTable.getcell('STATISTICS',ID)
+                stats = DataTable.getcell('STATISTICS', ID)
                 PostFitRMS = stats[polid, 1]
                 PreFitRMS = stats[polid, 2]
-                LOG.debug('DEBUG_DM: Row: %d Expected RMS: %f PostFit RMS: %f PreFit RMS: %f' % (row, expectedRMS, PostFitRMS, PreFitRMS))
+                LOG.debug('DEBUG_DM: Row: %d Expected RMS: %f PostFit RMS: %f PreFit RMS: %f' %
+                          (row, expectedRMS, PostFitRMS, PreFitRMS))
                 stats[polid, 5] = expectedRMS * ThreExpectedRMSPostFit if is_baselined else -1
                 stats[polid, 6] = expectedRMS * ThreExpectedRMSPreFit
                 DataTable.putcell('STATISTICS', ID, stats)
@@ -895,7 +899,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                 tFLAG = datatable.getcell('FLAG', ID)
                 tPFLAG = datatable.getcell('FLAG_PERMANENT', ID)
                 flag_sum = tFLAG.sum(axis=1) + tPFLAG.sum(axis=1)
-                online = tPFLAG[:,OnlineFlagIndex]
+                online = tPFLAG[:, OnlineFlagIndex]
                 # num_flag: the number of flag types.
                 # data are valid (unflagged) only if all elements of flags are 1.
                 # Hence sum of flag == num_flag

@@ -173,8 +173,8 @@ class Fluxboot(basetask.StandardTaskTemplate):
             LOG.info("Long solint = " + gain_solint2)
 
             refantfield = context.evla['msinfo'][m.name].calibrator_field_select_string
-            refantobj = findrefant.RefAntHeuristics(vis=calMs,field=refantfield,
-                                                    geometry=True,flagging=True, intent='',
+            refantobj = findrefant.RefAntHeuristics(vis=calMs, field=refantfield,
+                                                    geometry=True, flagging=True, intent='',
                                                     spw='', refantignore = self.inputs.refantignore)
 
             RefAntOutput = refantobj.calculate()
@@ -298,14 +298,13 @@ class Fluxboot(basetask.StandardTaskTemplate):
                 flux_d = list(fluxscale_result[field_id][spw_id]['fluxd'])
                 flux_d_err = list(fluxscale_result[field_id][spw_id]['fluxdErr'])
                 # spwslist  = list(int(spw_id))
-                
-            
+
                 # flux_d = list(fluxscale_result[field_id]['fluxd'])
                 # flux_d_err = list(fluxscale_result[field_id]['fluxdErr'])
                 # spwslist  = list(fluxscale_result['spwID'])
         
-                for i in range(0,len(flux_d)):
-                    if (flux_d[i] != -1.0 and flux_d[i] != 0.0):
+                for i in range(0, len(flux_d)):
+                    if flux_d[i] != -1.0 and flux_d[i] != 0.0:
                         sources.append(sourcename)
                         flux_densities.append([float(flux_d[i]), float(flux_d_err[i])])
                         spws.append(int(spw_id))

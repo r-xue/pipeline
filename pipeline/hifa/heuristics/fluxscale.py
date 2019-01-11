@@ -42,7 +42,7 @@ def antenna(ms, refsource, refant, peak_frac=0.7):
 
         rtn = ss_setjy.solar_system_setjy().solar_system_fd(
           source_name=name, MJDs=[obs_time['value']],
-          frequencies=[[1.e9,1.1e9]], observatory='ALMA',
+          frequencies=[[1.e9, 1.1e9]], observatory='ALMA',
           casalog=casatools.casalog)
         calibrator_size = max(rtn[3][0][:2])
     except:
@@ -109,7 +109,7 @@ def antenna(ms, refsource, refant, peak_frac=0.7):
     for baseline in np.arange(10000) + shortest_baseline:
         arg = math.pi * baseline * calibrator_size / (
           206265.0 * max_lambda)
-        if scipy.jn(1,arg) / arg < peak_frac * peak_vis:
+        if scipy.jn(1, arg) / arg < peak_frac * peak_vis:
             limit_baseline = baseline
             break
     LOG.info('Maximum baseline: %s' % limit_baseline)

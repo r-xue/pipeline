@@ -69,7 +69,7 @@ class SDBLFlagInputs(vdp.StandardInputs):
     def iteration(self, value):
         return int(value)
     
-    edge = vdp.VisDependentProperty(default=[0,0])
+    edge = vdp.VisDependentProperty(default=[0, 0])
     
     @edge.convert
     def edge(self, value):
@@ -172,18 +172,18 @@ class SDBLFlagInputs(vdp.StandardInputs):
 
     def _configureFlagRule(self):
         """A private method to convert input parameters to FlagRuleDictionary"""
-        d = { 'TsysFlag': (self.flag_tsys, [self.tsys_thresh]),
-              'WeatherFlag': (self.flag_weath, [self.weath_thresh]),
-              'UserFlag': (self.flag_user, [self.user_thresh]),
-              'RmsPreFitFlag': (self.flag_prfr, [self.prfr_thresh]),
-              'RmsPostFitFlag': (self.flag_pofr, [self.pofr_thresh]),
-              'RmsExpectedPreFitFlag': (self.flag_prfre, [self.prfre_thresh]),
-              'RmsExpectedPostFitFlag': (self.flag_pofre, [self.pofre_thresh]),
-              'RunMeanPreFitFlag': (self.flag_prfrm, [self.prfrm_thresh, self.prfrm_nmean]),
-              'RunMeanPostFitFlag': (self.flag_pofrm, [self.pofrm_thresh, self.pofrm_nmean]) }
+        d = {'TsysFlag': (self.flag_tsys, [self.tsys_thresh]),
+             'WeatherFlag': (self.flag_weath, [self.weath_thresh]),
+             'UserFlag': (self.flag_user, [self.user_thresh]),
+             'RmsPreFitFlag': (self.flag_prfr, [self.prfr_thresh]),
+             'RmsPostFitFlag': (self.flag_pofr, [self.pofr_thresh]),
+             'RmsExpectedPreFitFlag': (self.flag_prfre, [self.prfre_thresh]),
+             'RmsExpectedPostFitFlag': (self.flag_pofre, [self.pofre_thresh]),
+             'RunMeanPreFitFlag': (self.flag_prfrm, [self.prfrm_thresh, self.prfrm_nmean]),
+             'RunMeanPostFitFlag': (self.flag_pofrm, [self.pofrm_thresh, self.pofrm_nmean])}
         keys = ['Threshold', 'Nmean']
-        for (k,v) in d.iteritems():
-            (b,p) = v
+        for (k, v) in d.iteritems():
+            (b, p) = v
             if b == True:
                 self.activateFlagRule(k)
                 for i in xrange(len(p)):
@@ -276,11 +276,11 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
         
         # loop over reduction group (spw and source combination)
         flagResult = []
-        for (group_id,group_desc) in reduction_group.iteritems():
-            LOG.debug('Processing Reduction Group %s'%(group_id))
+        for (group_id, group_desc) in reduction_group.iteritems():
+            LOG.debug('Processing Reduction Group %s' % group_id)
             LOG.debug('Group Summary:')
             for m in group_desc:
-                LOG.debug('\t%s: Antenna %d (%s) Spw %d Field %d (%s)' % \
+                LOG.debug('\t%s: Antenna %d (%s) Spw %d Field %d (%s)' %
                           (os.path.basename(m.ms.name), m.antenna_id,
                            m.antenna_name, m.spw_id, m.field_id, m.field_name))
 
@@ -291,11 +291,11 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
  
             # Which group in group_desc list should be processed
             member_list = list(common.get_valid_ms_members(group_desc, [cal_name], in_ant, in_field, in_spw))
-            LOG.trace('group %s: member_list=%s'%(group_id, member_list))
+            LOG.trace('group %s: member_list=%s' % (group_id, member_list))
             
             # skip this group if valid member list is empty
             if len(member_list) == 0:
-                LOG.info('Skip reduction group %d'%(group_id))
+                LOG.info('Skip reduction group %d' % group_id)
                 continue
  
             member_list.sort()  # list of group_desc IDs to flag
@@ -303,9 +303,9 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
             spwid_list = [group_desc[i].spw_id for i in member_list]
             ms_list = [group_desc[i].ms for i in member_list]
             fieldid_list = [group_desc[i].field_id for i in member_list]
-            temp_dd_list = [ms_list[i].get_data_description(spw=spwid_list[i]) \
-                       for i in xrange(len(member_list))]
-            pols_list = [[corr for corr in ddobj.corr_axis if (in_pol=='' or corr in in_pol) ] \
+            temp_dd_list = [ms_list[i].get_data_description(spw=spwid_list[i])
+                            for i in xrange(len(member_list))]
+            pols_list = [[corr for corr in ddobj.corr_axis if (in_pol == '' or corr in in_pol)]
                          for ddobj in temp_dd_list]
             del temp_dd_list
              

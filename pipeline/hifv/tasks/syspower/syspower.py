@@ -238,10 +238,10 @@ class Syspower(basetask.StandardTaskTemplate):
         # common baseband template
         for i, this_ant in enumerate(antenna_ids):
             LOG.info('Creating template for antenna {0}'.format(antenna_names[this_ant]))
-            for bband in [0,1]:
+            for bband in [0, 1]:
                 common_indices = range(0, 8) if bband == 0 else range(8, 16)
                 for pol in [0, 1]:
-                    LOG.info('  processing baseband {0},  polarization {1}'.format(bband,pol))
+                    LOG.info('  processing baseband {0},  polarization {1}'.format(bband, pol))
 
                     # create initial template
                     sp_data = dat_filtered[i, common_indices, pol, :]
@@ -250,7 +250,7 @@ class Syspower(basetask.StandardTaskTemplate):
                     sp_data.mask = dat_online_flags[i]
 
                     sp_data, flag_percent = self.flag_with_medfilt(sp_data, sp_data, flag_median=True,
-                                                                   k=9, threshold=8,do_shift=True)
+                                                                   k=9, threshold=8, do_shift=True)
                     LOG.info('    total flagged data: {0:.2f}% in first pass'.format(flag_percent))
 
                     sp_data, flag_percent = self.flag_with_medfilt(sp_data, sp_data, flag_rms=True,

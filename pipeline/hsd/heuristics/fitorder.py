@@ -1,10 +1,8 @@
 import numpy
 
-import pipeline.infrastructure.casatools as casatools
-import pipeline.infrastructure.api as api
-import math
-
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.api as api
+
 LOG = infrastructure.get_logger(__name__)
 
 
@@ -14,7 +12,7 @@ class FitOrderHeuristics(api.Heuristic):
     """
     MaxDominantFreq = 15
     
-    def calculate(self, data, mask=None, edge=(0,0)):
+    def calculate(self, data, mask=None, edge=(0, 0)):
         """
         Determine fitting order from a set of spectral data, data,
         with masks for each spectral data, mask, and number of edge
@@ -37,7 +35,7 @@ class FitOrderHeuristics(api.Heuristic):
               [[-1,-1]] indicates no mask. Default is None.
         edge: number of edge channels to be dropped. Default is (0,0).
         """
-        (nrow,nchan) = data.shape
+        (nrow, nchan) = data.shape
         effective_nchan = nchan - sum(edge)
         power_spectrum = []
         if mask is not None:
@@ -64,16 +62,23 @@ class FitOrderHeuristics(api.Heuristic):
         # Normalize the power
         power2 = power / power.mean()
         max_power = power2[:max_freq].max()
-        if max_power < 3.0: poly_order = 1.0
-        elif max_power < 5.0: poly_order = 1.5
-        elif max_power < 10.0: poly_order = 2.0
+        if max_power < 3.0:
+            poly_order = 1.0
+        elif max_power < 5.0:
+            poly_order = 1.5
+        elif max_power < 10.0:
+            poly_order = 2.0
         else:
             flag = False
             for i in xrange(max_freq, -1, -1):
-                if power2[i] > 10.0: break
-                if power2[i] > 5.0: flag = True
-            if flag == True: poly_order = float(max(2.0, i)) + 0.5
-            else: poly_order = float(max(2.0, i))
+                if power2[i] > 10.0:
+                    break
+                if power2[i] > 5.0:
+                    flag = True
+            if flag is True:
+                poly_order = float(max(2.0, i)) + 0.5
+            else:
+                poly_order = float(max(2.0, i))
 
         # Finally, convert to polynomial order
         #poly_order = int(poly_order * 3.0)
@@ -91,10 +96,11 @@ class MaskMakerNoLine(object):
 
     def get_mask(self, row):
         return self.flag
-        
+
+
 class MaskMaker(MaskMakerNoLine):
     def __init__(self, nchan, lines, edge):
-        super(MaskMaker,self).__init__(nchan, edge)
+        super(MaskMaker, self).__init__(nchan, edge)
         self.lines = lines
 
     def get_mask(self, row):
@@ -103,4 +109,3 @@ class MaskMaker(MaskMakerNoLine):
             if line[0] != -1:
                 flag[line[0]:line[1]] = 0
         return flag
-

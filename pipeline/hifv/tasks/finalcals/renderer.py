@@ -486,10 +486,10 @@ class T2_4MDetailsVLAApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         
             # defines the parameters for the visstat job
             job_params = {
-                'vis'        : ms.name,
-                'axis'       : 'amp',
-                'datacolumn' : 'corrected',
-                'spw'        : ','.join(map(str, spw_ids)),
+                'vis': ms.name,
+                'axis': 'amp',
+                'datacolumn': 'corrected',
+                'spw': ','.join(map(str, spw_ids)),
             }
 
             # solve circular import problem by importing at run-time
@@ -565,10 +565,10 @@ class T2_4MDetailsVLAApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
 
     def caltypes_for_result(self, result):
         type_map = {
-            'bandpass' : 'Bandpass',
-            'gaincal'  : 'Gain',
-            'tsys'     : 'T<sub>sys</sub>',
-            'wvr'      : 'WVR',
+            'bandpass': 'Bandpass',
+            'gaincal': 'Gain',
+            'tsys': 'T<sub>sys</sub>',
+            'wvr': 'WVR',
         }
         
         d = {}

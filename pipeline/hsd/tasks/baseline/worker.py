@@ -86,7 +86,7 @@ class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
     vis = vdp.VisDependentProperty(default='', null_input=['', None, [], ['']])
     plan = vdp.VisDependentProperty(default=None)
     fit_order = vdp.VisDependentProperty(default='automatic')
-    edge = vdp.VisDependentProperty(default=(0,0))
+    edge = vdp.VisDependentProperty(default=(0, 0))
     deviationmask = vdp.VisDependentProperty(default={})
     bloutput = vdp.VisDependentProperty(default=None)
         
@@ -142,8 +142,7 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         A reference to the :class:`Heuristics` class.
         """
         raise NotImplementedError
-        
-    
+
     is_multi_vis_task = False
     
     def __init__(self, inputs):

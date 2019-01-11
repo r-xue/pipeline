@@ -4,6 +4,7 @@ import pipeline.infrastructure as infrastructure
 
 LOG = infrastructure.get_logger(__name__)
 
+
 class MSReductionGroupMember(object):
     def __init__(self, ms, antenna_id, spw_id, field_id=None):
         self.ms = ms
@@ -60,7 +61,8 @@ class MSReductionGroupMember(object):
 
     def __ne__(self, other):
         return other.ms.name != self.ms.name or other.antenna_id != self.antenna_id or other.spw_id != self.spw_id or other.field_id != self.field_id
-     
+
+
 class MSReductionGroupDesc(list):
     def __init__(self, spw_name=None, min_frequency=None, max_frequency=None, nchan=None, field=None):
         self.spw_name = spw_name
@@ -80,14 +82,16 @@ class MSReductionGroupDesc(list):
     def merge(self, other):
         assert self == other
         for member in other:
-            LOG.trace('ms.name=\"%s\" antenna=%s spw=%s, field_id=%s'%(member.ms.name, member.antenna_id, member.spw_id, member.field_id))
+            LOG.trace('ms.name=\"%s\" antenna=%s spw=%s, field_id=%s' %
+                      (member.ms.name, member.antenna_id, member.spw_id, member.field_id))
             if not member in self:
-                LOG.debug('Adding (%s, %s, %s, %s)'%(member.ms.name,member.antenna_id,member.spw_id,member.field_id))
+                LOG.debug('Adding (%s, %s, %s, %s)' %
+                          (member.ms.name, member.antenna_id, member.spw_id, member.field_id))
                 self.append(member)
 
     def add_member(self, ms, antenna_id, spw_id, field_id=None):
         new_member = MSReductionGroupMember(ms, antenna_id, spw_id, field_id)
-        if not new_member in self:
+        if new_member not in self:
             self.append(new_member)
 
     def get_iteration(self, ms, antenna_id, spw_id, field_id=None):
@@ -135,4 +139,3 @@ class MSReductionGroupDesc(list):
             return 'MSReductionGroupDesc(frequency_range=%s, nchan=%s, field=\'%s\', member=%s)' % (self.frequency_range, self.nchan, self.field_name, self[:])
         else:
             return 'MSReductionGroupDesc(spw_name=%s, frequency_range=%s, nchan=%s, field=\'%s\', member=%s)' % (self.spw_name, self.frequency_range, self.nchan, self.field_name, self[:])
-  

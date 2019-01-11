@@ -24,6 +24,7 @@ ANTENNA_LIST = { 'DV[0-6][0-9]': 12.0,
                  'CEDUNA': 30.0,
                  'HOBART': 26.0 }
 
+
 class AntennaDiameter(api.Heuristic):
     """
     get antenna diameter in metre from its name.
@@ -35,13 +36,13 @@ class AntennaDiameter(api.Heuristic):
         name: antenna name
         """
         d = None
-        for (key,item) in ANTENNA_LIST.iteritems():
+        for (key, item) in ANTENNA_LIST.iteritems():
             if re.match(key, name) is not None:
                 #print 'matched %s'%(key)
                 d = item
                 break
         if d is None:
-            raise Exception('No data in lookup table: %s'%(name))
+            raise Exception('No data in lookup table: %s' % name)
         return d
         
 
@@ -60,7 +61,6 @@ class SingleDishBeamSize(api.Heuristic):
         frequency: observing frequency in GHz
         """
         accuratesize = self.__accuratebeamsize(diameter, frequency)
-        #print 'accurate size=',accuratesize
         #return self.__rounding(accuratesize)
         return accuratesize
 
@@ -91,11 +91,12 @@ class SingleDishBeamSize(api.Heuristic):
         if p > 0:
             dstr = '1.'
         else:
-            dstr = '.'+string.join(['0' for i in xrange(abs(p))],'')+'1'
+            dstr = '.'+string.join(['0' for i in xrange(abs(p))], '')+'1'
         #ret = Decimal(s).quantize(Decimal(dstr),rounding=ROUND_HALF_UP)
-        ret = Decimal(s).quantize(Decimal(dstr),rounding=ROUND_UP)
+        ret = Decimal(s).quantize(Decimal(dstr), rounding=ROUND_UP)
         return float(ret)
-        
+
+
 class SingleDishBeamSizeFromName(SingleDishBeamSize):
     """
     calculate beam size in arcsec.
@@ -110,5 +111,4 @@ class SingleDishBeamSizeFromName(SingleDishBeamSize):
         """
         h = AntennaDiameter()
         diameter = h(name)
-        return super(SingleDishBeamSizeFromName,self).calculate(diameter,frequency)
-    
+        return super(SingleDishBeamSizeFromName, self).calculate(diameter, frequency)

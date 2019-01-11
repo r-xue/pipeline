@@ -821,7 +821,8 @@ def score_flagged_vla_baddef(amp_collection, phase_collection, num_antennas):
         score = linear_score(frac_flagged, 0.0, 0.3, 1.0, 0.0)
         # Set score messages and origin.
         percent = 100.0 * frac_flagged
-        longmsg = "{:d} of {:d} ({:0.2f}%) antennas affected and some of their spws are flagged".format(num_affected_antennas, num_antennas, percent)
+        longmsg = "{:d} of {:d} ({:0.2f}%) antennas affected and some of their spws are flagged" \
+                  "".format(num_affected_antennas, num_antennas, percent)
         shortmsg = "{:0.2f}% antennas affected".format(percent)
         return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
@@ -2348,7 +2349,8 @@ def score_science_spw_names(mses, virtual_science_spw_names):
                 score = 0.0
                 spw_msgs.append('{0} (ID {1})'.format(s.name, s.id))
         if spw_msgs != []:
-            msgs.append('Science spw names {0} of EB {1} do not match spw names of first EB.'.format(','.join(spw_msgs), os.path.basename(ms.name).replace('.ms','')))
+            msgs.append('Science spw names {0} of EB {1} do not match spw names of first EB.'
+                        ''.format(','.join(spw_msgs), os.path.basename(ms.name).replace('.ms', '')))
 
     if msgs == []:
         longmsg = 'Science spw names match virtual spw lookup table'

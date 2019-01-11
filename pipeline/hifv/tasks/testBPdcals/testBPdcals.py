@@ -119,7 +119,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
             ktype_delaycal_result = self._do_ktype_delaycal(caltable=ktypecaltable, addcaltable=gtypecaltable,
                                                             context=context, RefAntOutput=RefAntOutput)
             flaggedSolnResult = getCalFlaggedSoln(ktypecaltable)
-            (fracFlaggedSolns,RefAntOutput)  = self._check_flagSolns(flaggedSolnResult, RefAntOutput)
+            (fracFlaggedSolns, RefAntOutput) = self._check_flagSolns(flaggedSolnResult, RefAntOutput)
             LOG.info("Fraction of flagged solutions = " + str(flaggedSolnResult['all']['fraction']))
             LOG.info("Median fraction of flagged solutions per antenna = " +
                      str(flaggedSolnResult['antmedian']['fraction']))
@@ -352,7 +352,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
         critfrac = m.get_vla_critfrac()
 
         if fracFlaggedSolns > critfrac:
-            RefAntOutput = np.delete(RefAntOutput,0)
+            RefAntOutput = np.delete(RefAntOutput, 0)
             self.inputs.context.observing_run.measurement_sets[0].reference_antenna = ','.join(RefAntOutput)
             LOG.info("Not enough good solutions, trying a different reference antenna.")
             LOG.info("The pipeline will start with antenna "+RefAntOutput[0].lower()+" as the reference.")
