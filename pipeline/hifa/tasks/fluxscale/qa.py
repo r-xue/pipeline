@@ -2,6 +2,7 @@ from __future__ import absolute_import
 
 import ast
 import collections
+import functools
 import operator
 import re
 from datetime import timedelta
@@ -452,7 +453,7 @@ def compute_aggregate_bandwidth(spws):
             # interval is disjoint with existing, so add a new interval
             aggregate.append((spw_fmin, spw_fmax))
 
-    bw = reduce(lambda x, f_range: x + f_range[1] - f_range[0], aggregate, Frequency(0))
+    bw = functools.reduce(lambda x, f_range: x + f_range[1] - f_range[0], aggregate, Frequency(0))
     return bw
 
 
