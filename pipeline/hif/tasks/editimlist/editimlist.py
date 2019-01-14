@@ -292,7 +292,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['uvtaper'] = th.uvtaper() if not inpdict['uvtaper'] else inpdict['uvtaper']
         imlist_entry['uvrange'] = th.uvrange() if not inpdict['uvrange'] else inpdict['uvrange']
         imlist_entry['deconvolver'] = th.deconvolver(None, None) if not inpdict['deconvolver'] else inpdict['deconvolver']
-        imlist_entry['robust'] = th.robust() if not inpdict['robust'] else inpdict['robust']
+        imlist_entry['robust'] = th.robust() if inpdict['robust'] in (None, -999.0) else inpdict['robust']
         imlist_entry['mask'] = th.mask() if not inpdict['mask'] else inpdict['mask']
         imlist_entry['specmode'] = th.specmode() if not inpdict['specmode'] else inpdict['specmode']
         LOG.info('RADIUS')
