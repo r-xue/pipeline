@@ -5,7 +5,6 @@ import operator
 import os
 
 import pipeline.domain.measures as measures
-import display as finalcalsdisplay
 import pipeline.infrastructure
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
@@ -13,6 +12,7 @@ import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.renderer.weblog as weblog
 import pipeline.infrastructure.utils as utils
 from pipeline.h.tasks.common.displays import applycal as applycal
+from . import display as finalcalsdisplay
 
 LOG = logging.get_logger(__name__)
 

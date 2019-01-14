@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
-import sys
-import numpy as np
 import copy
+import sys
+
+import numpy as np
 from casac import casac
-import scipy.special
-import utility.scorers as scorers
-import utility.filters as filters
+
+import pipeline.qa.utility.scorers as scorers
+import pipeline.qa.utility.filters as filters
 
 
 def gpcal(caltable):
@@ -111,7 +112,6 @@ def gpcal_calc(caltable):
  
                 phase1 = np.angle(phase1)
                 phase1 = np.unwrap(phase1)
- 
 
                 if len(phase1) == 2:
  

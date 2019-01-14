@@ -2,12 +2,12 @@ import collections
 import contextlib
 import os
 
-import fluxbootdisplay as fluxbootdisplay
-import testgainsdisplay as testgainsdisplay
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.renderer.weblog as weblog
+from . import fluxbootdisplay
+from . import testgainsdisplay
 
 LOG = logging.get_logger(__name__)
 

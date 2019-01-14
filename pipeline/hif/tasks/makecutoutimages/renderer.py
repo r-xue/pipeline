@@ -2,10 +2,10 @@ import os
 
 import numpy
 
-import display as display
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
+from . import display
 
 LOG = logging.get_logger(__name__)
 

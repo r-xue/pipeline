@@ -1,15 +1,14 @@
 import contextlib
 import os
 
-import display as testBPdcalsdisplay
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.renderer.weblog as weblog
-
-#import pipeline.infrastructure.renderer.htmlrenderer as hr
+from . import display as testBPdcalsdisplay
 
 LOG = logging.get_logger(__name__)
+
 
 class VLASubPlotRenderer(object):
     #template = 'testdelays_plots.html'
@@ -20,7 +19,7 @@ class VLASubPlotRenderer(object):
         self.plots = plots
         self.ms = os.path.basename(self.result.inputs['vis'])
         self.template = template
-        self.filename_prefix=filename_prefix
+        self.filename_prefix = filename_prefix
 
         self.summary_plots = {}
         self.testdelay_subpages = {}
@@ -28,7 +27,6 @@ class VLASubPlotRenderer(object):
         self.phasegain_subpages = {}
         self.bpsolamp_subpages = {}
         self.bpsolphase_subpages = {}
-        
 
         self.testdelay_subpages[self.ms] = filenamer.sanitize('testdelays' + '-%s.html' % self.ms)
         self.ampgain_subpages[self.ms] = filenamer.sanitize('ampgain' + '-%s.html' % self.ms)
@@ -43,16 +41,16 @@ class VLASubPlotRenderer(object):
             self.json = '{}'
             
     def _get_display_context(self):
-        return {'pcontext'   : self.context,
-                'result'     : self.result,
-                'plots'      : self.plots,
-                'dirname'    : self.dirname,
-                'json'       : self.json,
-                'testdelay_subpages' : self.testdelay_subpages,
-                'ampgain_subpages'   : self.ampgain_subpages,
-                'phasegain_subpages' : self.phasegain_subpages,
-                'bpsolamp_subpages'  : self.bpsolamp_subpages,
-                'bpsolphase_subpages' : self.bpsolphase_subpages}
+        return {'pcontext': self.context,
+                'result': self.result,
+                'plots': self.plots,
+                'dirname': self.dirname,
+                'json': self.json,
+                'testdelay_subpages': self.testdelay_subpages,
+                'ampgain_subpages': self.ampgain_subpages,
+                'phasegain_subpages': self.phasegain_subpages,
+                'bpsolamp_subpages': self.bpsolamp_subpages,
+                'bpsolphase_subpages': self.bpsolphase_subpages}
 
     @property
     def dirname(self):
@@ -82,10 +80,10 @@ class VLASubPlotRenderer(object):
 
 
 class T2_4MDetailstestBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
-    def __init__(self,uri='testbpdcals.mako', description='Initial test calibrations', 
+    def __init__(self, uri='testbpdcals.mako', description='Initial test calibrations',
                  always_rerender=False):
-        super(T2_4MDetailstestBPdcalsRenderer, self).__init__(uri=uri,
-                description=description, always_rerender=always_rerender)
+        super(T2_4MDetailstestBPdcalsRenderer, self).__init__(
+            uri=uri, description=description, always_rerender=always_rerender)
     
     def get_display_context(self, context, results):
         super_cls = super(T2_4MDetailstestBPdcalsRenderer, self)
@@ -113,7 +111,7 @@ class T2_4MDetailstestBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             plots = plotter.plot() 
             json_path = plotter.json_filename
             
-             # write the html for each MS to disk
+            # write the html for each MS to disk
             renderer = VLASubPlotRenderer(context, result, plots, json_path, 'testdelays_plots.mako', 'testdelays')
             with renderer.get_file() as fileobj:
                 fileobj.write(renderer.render())
@@ -124,7 +122,7 @@ class T2_4MDetailstestBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             plots = plotter.plot() 
             json_path = plotter.json_filename
             
-             # write the html for each MS to disk
+            # write the html for each MS to disk
             renderer = VLASubPlotRenderer(context, result, plots, json_path, 'ampgain_plots.mako', 'ampgain')
             with renderer.get_file() as fileobj:
                 fileobj.write(renderer.render())
@@ -135,7 +133,7 @@ class T2_4MDetailstestBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             plots = plotter.plot() 
             json_path = plotter.json_filename
             
-             # write the html for each MS to disk
+            # write the html for each MS to disk
             renderer = VLASubPlotRenderer(context, result, plots, json_path, 'phasegain_plots.mako', 'phasegain')
             with renderer.get_file() as fileobj:
                 fileobj.write(renderer.render())
@@ -146,7 +144,7 @@ class T2_4MDetailstestBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             plots = plotter.plot() 
             json_path = plotter.json_filename
             
-             # write the html for each MS to disk
+            # write the html for each MS to disk
             renderer = VLASubPlotRenderer(context, result, plots, json_path, 'bpsolamp_plots.mako', 'bpsolamp')
             with renderer.get_file() as fileobj:
                 fileobj.write(renderer.render())
@@ -157,18 +155,18 @@ class T2_4MDetailstestBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             plots = plotter.plot() 
             json_path = plotter.json_filename
             
-             # write the html for each MS to disk
+            # write the html for each MS to disk
             renderer = VLASubPlotRenderer(context, result, plots, json_path, 'bpsolphase_plots.mako', 'bpsolphase')
             with renderer.get_file() as fileobj:
                 fileobj.write(renderer.render())
                 bpsolphase_subpages[ms] = renderer.filename
         
-        ctx.update({'summary_plots'   : summary_plots,
-                    'testdelay_subpages' : testdelay_subpages,
-                    'ampgain_subpages'   : ampgain_subpages,
-                    'phasegain_subpages' : phasegain_subpages,
-                    'bpsolamp_subpages'  : bpsolamp_subpages,
-                    'bpsolphase_subpages' : bpsolphase_subpages,
-                    'dirname'         : weblog_dir})
+        ctx.update({'summary_plots': summary_plots,
+                    'testdelay_subpages': testdelay_subpages,
+                    'ampgain_subpages': ampgain_subpages,
+                    'phasegain_subpages': phasegain_subpages,
+                    'bpsolamp_subpages': bpsolamp_subpages,
+                    'bpsolphase_subpages': bpsolphase_subpages,
+                    'dirname': weblog_dir})
                 
         return ctx

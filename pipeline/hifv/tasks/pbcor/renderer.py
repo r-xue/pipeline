@@ -2,10 +2,10 @@ import os
 
 import numpy
 
-import display as pbcorimages
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
+from . import display as pbcorimages
 
 LOG = logging.get_logger(__name__)
 
@@ -14,8 +14,8 @@ class T2_4MDetailsMakepbcorimagesRenderer(basetemplates.T2_4MDetailsDefaultRende
     def __init__(self, uri='pbcor.mako',
                  description='Produce primary beam corrected tt0 images',
                  always_rerender=False):
-        super(T2_4MDetailsMakepbcorimagesRenderer, self).__init__(uri=uri,
-                description=description, always_rerender=always_rerender)
+        super(T2_4MDetailsMakepbcorimagesRenderer, self).__init__(
+            uri=uri, description=description, always_rerender=always_rerender)
 
     def update_mako_context(self, ctx, context, results):
         weblog_dir = os.path.join(context.report_dir,
@@ -40,7 +40,7 @@ class T2_4MDetailsMakepbcorimagesRenderer(basetemplates.T2_4MDetailsDefaultRende
 
             for pbcorimagename in pbcorimagenames:
                 image_path = pbcorimagename
-                LOG.info('Getting properties of %s for the weblog.' % (image_path))
+                LOG.info('Getting properties of %s for the weblog.' % image_path)
 
                 with casatools.ImageReader(image_path) as image:
                     info = image.miscinfo()

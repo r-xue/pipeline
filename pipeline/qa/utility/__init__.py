@@ -1,1 +1,1 @@
-from logs import *
+from .logs import *

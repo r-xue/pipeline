@@ -11,9 +11,9 @@ import string
 import sys
 import traceback
 
-import argmapper
 import pipeline
 import pipeline.extern.XmlObjectifier as XmlObjectifier
+import pipeline.infrastructure.argmapper as argmapper
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.project as project
 import pipeline.infrastructure.utils as utils

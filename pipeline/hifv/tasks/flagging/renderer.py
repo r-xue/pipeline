@@ -4,10 +4,10 @@ import shutil
 
 import pipeline.hif.tasks.common.flagging_renderer_utils as fru
 import pipeline.h.tasks.common.displays.flagging as flagging
-import displaycheckflag as displaycheckflag
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
+from . import displaycheckflag
 
 LOG = logging.get_logger(__name__)
 

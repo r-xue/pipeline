@@ -97,7 +97,7 @@ except:
     import casa
     import casac
 
-import utility.logs as logs
+import pipeline.qa.utility.logs as logs
 
 
 def rms(data):

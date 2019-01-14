@@ -7,12 +7,12 @@ Created on 24 Oct 2014
 import contextlib
 import os
 
-import opacitiesdisplay as opacitiesdisplay
-import swpowdisplay as swpowdisplay
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.renderer.weblog as weblog
+from . import opacitiesdisplay
+from . import swpowdisplay
 
 LOG = logging.get_logger(__name__)
 
