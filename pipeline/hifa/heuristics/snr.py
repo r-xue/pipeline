@@ -486,7 +486,6 @@ def get_mediantemp(ms, tsys_spwlist, scan_list, antenna='', temptype='tsys'):
         # Compute the time range of validity for each tsys measurement 
         #    Worry about memory efficiency later
         tsys_start_times = tsys_start_times - 0.5 * tsys_intervals
-        tsys_end_times = np.zeros(len(tsys_start_times))
         tsys_end_times = tsys_start_times + tsys_intervals
 
         # Create a scan id array and populate it with zeros
@@ -662,7 +661,6 @@ def get_obsinfo(ms, fieldnamelist, intent, spwidlist, compute_nantennas='all', m
     obsdict = collections.OrderedDict()
     LOG.info('Observation summary')
     fieldset = set(fieldnamelist)
-    spwset = set(spwidlist)
 
     # Get the scans associated with the field name list and intent
     obscans = []
@@ -676,9 +674,6 @@ def get_obsinfo(ms, fieldnamelist, intent, spwidlist, compute_nantennas='all', m
     # No data scans found
     if not obscans:
         return obsdict
-
-    mt = casatools.measures
-    qt = casatools.quanta
 
     # Loop over the spws
     prev_spwid = None
@@ -746,8 +741,8 @@ def get_obsinfo(ms, fieldnamelist, intent, spwidlist, compute_nantennas='all', m
             n12mant, n7mant = _get_unflagged_antennas(ms.name, scanids, ant12m, ant7m, max_fracflagged=max_fracflagged)
         else:
             # Use values from previous spw
-            nant7m = obsdict[prev_spwid]['num_7mantenna']
-            nant12m = obsdict[prev_spwid]['num_12mantenna']
+            n7mant = obsdict[prev_spwid]['num_7mantenna']
+            n12mant = obsdict[prev_spwid]['num_12mantenna']
 
         obsdict[spwid]['num_12mantenna'] = n12mant
         obsdict[spwid]['num_7mantenna'] = n7mant
