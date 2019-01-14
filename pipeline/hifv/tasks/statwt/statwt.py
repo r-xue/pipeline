@@ -79,7 +79,7 @@ class Statwt(basetask.StandardTaskTemplate):
 
         # cont.dat file present and need to execute by field and fitspw
         if fielddict != {}:
-            for field in fielddict.keys():
+            for field in fielddict:
                 task_args['fitspw'] = fielddict[field]
                 task_args['field'] = field
                 job = casa_tasks.statwt(**task_args)

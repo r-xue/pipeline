@@ -295,10 +295,10 @@ class SDBaseline(basetask.StandardTaskTemplate):
 #         plot_manager = plotter.BaselineSubtractionPlotManager(self.inputs.context, datatable)
         
         # Generate and apply baseline fitting solutions
-        vislist = [ms.name for ms in registry.keys()]
-        plan = [registry[ms] for ms in registry.keys()]
-        blparam = [blparam_file(ms) for ms in registry.keys()]
-        deviationmask_list = [deviation_mask[ms.basename] for ms in registry.keys()]
+        vislist = [ms.name for ms in registry]
+        plan = [registry[ms] for ms in registry]
+        blparam = [blparam_file(ms) for ms in registry]
+        deviationmask_list = [deviation_mask[ms.basename] for ms in registry]
         # 21/05/2018 TN temporal workaround
         # I don't know how to use vdp.ModeInputs so directly specify worker task class here
         worker_cls = worker.HpcCubicSplineBaselineSubtractionWorker
@@ -317,13 +317,13 @@ class SDBaseline(basetask.StandardTaskTemplate):
             failed_results = basetask.ResultsList([fitter_results])
         elif isinstance(fitter_results, basetask.ResultsList) and numpy.any([isinstance(r, basetask.FailedTaskResults) for r in fitter_results]):
             fitting_failed = True
-            failed_results = basetask.ResultsList([r for r in fitter_results if isinstance(r, basetask.FailedTaskResults)])
+            failed_results = basetask.ResultsList([r for r in fitter_results
+                                                   if isinstance(r, basetask.FailedTaskResults)])
         if fitting_failed:
             for r in failed_results:
                 r.origtask = self
             return failed_results
         
-        #for result in fitter_results:
         results_dict = dict((os.path.basename(r.outcome['infile']), r) for r in fitter_results)
         for ms in context.observing_run.measurement_sets:
             if ms.basename not in results_dict:

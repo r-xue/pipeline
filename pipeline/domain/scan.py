@@ -47,7 +47,7 @@ class Scan(object):
         int_seconds = {k: v[0][1]['value']
                        for k, v in scan_times.iteritems()}
         self.__mean_intervals = {k: datetime.timedelta(seconds=v)
-                                 for k, v in int_seconds.items()}
+                                 for k, v in int_seconds.iteritems()}
 
         # will hold the start and end epochs per spw
         self.__start_time = None
@@ -97,7 +97,7 @@ class Scan(object):
         end_epoch = self.end_time
 
         scan_times = {}
-        for spw_id, interval in self.__mean_intervals.items():
+        for spw_id, interval in self.__mean_intervals.iteritems():
             interval_quanta = qt.unit('{0}s'.format(interval.total_seconds()))
             half_interval = qt.div(interval_quanta, 2)
 

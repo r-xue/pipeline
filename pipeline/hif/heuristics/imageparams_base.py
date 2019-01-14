@@ -1724,7 +1724,7 @@ class ImageParamsHeuristics(object):
         with casatools.ImageReader(psf_name) as image:
             try:
                 beams = image.restoringbeam()['beams']
-                bmaj = np.array([cqa.getvalue(cqa.convert(b['*0']['major'], 'arcsec')) for b in beams.values()])
+                bmaj = np.array([cqa.getvalue(cqa.convert(b['*0']['major'], 'arcsec')) for b in beams.itervalues()])
 
                 # Filter empty psf planes
                 bmaj = bmaj[np.where(bmaj > 1e-6)]

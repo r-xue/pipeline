@@ -47,7 +47,7 @@ class T2_4MDetailsGFluxscaleRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             self.sort_plots_by_baseband(plots)
 
             key = intents
-            for vis, vis_plots in plots.items():
+            for vis, vis_plots in plots.iteritems():
                 if len(vis_plots) > 0:
                     ampuv_allant_plots[vis][key] = vis_plots
                 
@@ -62,7 +62,7 @@ class T2_4MDetailsGFluxscaleRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             self.sort_plots_by_baseband(plots)
 
             key = intents
-            for vis, vis_plots in plots.items():
+            for vis, vis_plots in plots.iteritems():
                 if len(vis_plots) > 0:
                     ampuv_ant_plots[vis][key] = vis_plots
 
@@ -81,7 +81,7 @@ class T2_4MDetailsGFluxscaleRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         })
 
     def sort_plots_by_baseband(self, d):
-        for vis, plots in d.items():
+        for vis, plots in d.iteritems():
             plots = sorted(plots, 
                            key=lambda plot: plot.parameters['baseband'])
             d[vis] = plots
@@ -156,7 +156,7 @@ def make_flux_table(context, results):
         if len(single_result.measurements) is 0:
             continue
 
-        for field_arg, measurements in single_result.measurements.items():
+        for field_arg, measurements in single_result.measurements.iteritems():
             field = ms_for_result.get_fields(field_arg)[0]
             intents = ' '. join(field.intents.intersection({'BANDPASS', 'PHASE', 'CHECK'}))
             field_cell = '%s (#%s) %s' % (field.name, field.id, intents)

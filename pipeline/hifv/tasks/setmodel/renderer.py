@@ -1,9 +1,9 @@
-'''
+"""
 Created on 11 Sep 2014
 
 @author: sjw
          bkent April 2015
-'''
+"""
 import collections
 import os
 
@@ -11,7 +11,6 @@ import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
-#import pipeline.infrastructure.displays.setjy as setjy_display
 from pipeline.hif.tasks.setmodel import display as setjy_display
 
 LOG = logging.get_logger(__name__)
@@ -21,8 +20,8 @@ class T2_4MDetailsVLASetjyRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def __init__(self, uri='vlasetjy.mako',
                  description='Set calibrator model visibilities',
                  always_rerender=False):
-        super(T2_4MDetailsVLASetjyRenderer, self).__init__(uri=uri,
-                description=description, always_rerender=always_rerender)
+        super(T2_4MDetailsVLASetjyRenderer, self).__init__(
+            uri=uri, description=description, always_rerender=always_rerender)
 
     def update_mako_context(self, ctx, context, result):
         amp_vs_uv_summary_plots = collections.defaultdict(list)
@@ -32,7 +31,7 @@ class T2_4MDetailsVLASetjyRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                                       setjy_display.AmpVsUVSummaryChart, 
                                       intents, correlation='LL,RR', overplot_receivers=False)
 
-            for vis, vis_plots in plots.items():
+            for vis, vis_plots in plots.iteritems():
                 amp_vs_uv_summary_plots[vis].extend(vis_plots)
 
         table_rows = make_flux_table(context, result)
@@ -57,7 +56,7 @@ class T2_4MDetailsVLASetjyRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         # create a fake CalTo object so we can use the applycal class
         spws = []
-        for fieldname in result.measurements.keys():
+        for fieldname in result.measurements:
             for fluxm in result.measurements[fieldname]:
                 spws.append(fluxm.spw_id)
         spwlist = ','.join([str(i) for i in spws])
@@ -82,7 +81,8 @@ class T2_4MDetailsVLASetjyRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 fileobj.write(renderer.render())        
 
         return d
-    
+
+
 FluxTR = collections.namedtuple('FluxTR', 'vis field spw freq band i q u v')
 
 
@@ -98,11 +98,11 @@ def make_flux_table(context, results):
         if len(single_result.measurements) is 0:
             continue
 
-        for field_arg, measurements in single_result.measurements.items():
+        for field_arg, measurements in single_result.measurements.iteritems():
             fields = ms_for_result.get_fields(field_arg)
             field = ms_for_result.get_fields(field_arg)[0]
             try:
-                if (len(fields) > 1):
+                if len(fields) > 1:
                     for f in fields:
                         for intent in f.intents:
                             if 'AMPLITUDE' in intent:

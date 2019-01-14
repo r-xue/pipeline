@@ -366,7 +366,7 @@ class RawflagchansView(object):
             # The dataresult should have stored separate results
             # for each spwid it could find data for in the MS.
             # Create a separate flagging view for each spw.
-            for spwid, spwdata in dataresult.data.items():
+            for spwid, spwdata in dataresult.data.iteritems():
     
                 LOG.info('Calculating flagging view for spw %s' % spwid)
 

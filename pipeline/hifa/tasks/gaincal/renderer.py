@@ -206,7 +206,7 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 (diagnostic_phase_vs_time_details, GaincalPhaseVsTimeDiagnosticPlotRenderer, diagnostic_phase_vs_time_subpages),
                 (diagnostic_phaseoffset_vs_time_details, GaincalPhaseOffsetVsTimeDiagnosticPlotRenderer, diagnostic_phaseoffset_vs_time_subpages)):
             if d:
-                all_plots = list(utils.flatten([v for v in d.values()]))
+                all_plots = list(utils.flatten([v for v in d.itervalues()]))
                 renderer = plotter_cls(context, results, all_plots)
                 with renderer.get_file() as fileobj:
                     fileobj.write(renderer.render())
@@ -297,8 +297,7 @@ class GaincalPhaseVsTimeDiagnosticPlotRenderer(basetemplates.JsonPlotRenderer):
         self._qa_data = {}
         for result in results:
             b = os.path.basename(result.inputs['vis'])
-            self._qa_data[b] = [v for k, v in result.qa.qa_results_dict.items()
-                                if b in k]
+            self._qa_data[b] = [v for k, v in result.qa.qa_results_dict.iteritems() if b in k]
 
         self._score_types = frozenset(['PHASE_SCORE_XY', 'PHASE_SCORE_X2X1'])
                 
@@ -312,7 +311,7 @@ class GaincalPhaseVsTimeDiagnosticPlotRenderer(basetemplates.JsonPlotRenderer):
 
         scores_dict = {}
         for qa_data in self._qa_data[plot.parameters['vis']]:
-            antenna_ids = dict((v, k) for (k, v) in qa_data['QASCORES']['ANTENNAS'].items())
+            antenna_ids = dict((v, k) for (k, v) in qa_data['QASCORES']['ANTENNAS'].iteritems())
             ant_id = antenna_ids[ant_name]
 
             for score_type in self._score_types:            

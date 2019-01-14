@@ -37,7 +37,7 @@ def calculate_view(context, nowvrtable, withwvrtable, result, qa_intent):
     nowvr_results = calculate_phase_rms(context, nowvrtable, qa_intent)
     wvr_results = calculate_phase_rms(context, withwvrtable, qa_intent)
     
-    for k, v in wvr_results.items():
+    for k, v in wvr_results.iteritems():
         result.vis = v.filename
         
         # the ratio withwvr/nowvr is the view we want

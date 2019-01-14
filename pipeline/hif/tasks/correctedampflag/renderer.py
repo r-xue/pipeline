@@ -114,7 +114,7 @@ class T2_4MDetailsCorrectedampflagRenderer(basetemplates.T2_4MDetailsDefaultRend
         previous_summary = None
         for summary in summaries:
 
-            for intent, scan_ids in intent_scans.items():
+            for intent, scan_ids in intent_scans.iteritems():
                 flagcount = 0
                 totalcount = 0
 

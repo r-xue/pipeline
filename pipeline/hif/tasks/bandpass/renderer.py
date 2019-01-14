@@ -137,7 +137,7 @@ class T2_4MDetailsBandpassRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 (phase_details, BandpassPhaseVsFreqPlotRenderer, phase_vs_time_subpages),
                 (amp_details, BandpassAmpVsFreqPlotRenderer, amp_vs_time_subpages)):
             if d:
-                all_plots = list(utils.flatten([v for v in d.values()]))
+                all_plots = list(utils.flatten([v for v in d.itervalues()]))
                 renderer = plotter_cls(context, with_cal_results, all_plots)
                 with renderer.get_file() as fileobj:
                     fileobj.write(renderer.render())

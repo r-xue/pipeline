@@ -281,7 +281,7 @@ class Circfeedpolcal(polarization.Polarization):
         calto = callibrary.CalTo(self.inputs.vis)
         calstate = self.inputs.context.callibrary.get_calstate(calto)
         merged = calstate.merged()
-        for calto, calfroms in merged.items():
+        for calto, calfroms in merged.iteritems():
             calapp = callibrary.CalApplication(calto, calfroms)
             GainTables.append(calapp.gaintable)
             interp.append(calapp.interp)
@@ -348,7 +348,7 @@ class Circfeedpolcal(polarization.Polarization):
         calto = callibrary.CalTo(self.inputs.vis)
         calstate = self.inputs.context.callibrary.get_calstate(calto)
         merged = calstate.merged()
-        for calto, calfroms in merged.items():
+        for calto, calfroms in merged.iteritems():
             calapp = callibrary.CalApplication(calto, calfroms)
             GainTables.append(calapp.gaintable)
 
@@ -491,11 +491,11 @@ class Circfeedpolcal(polarization.Polarization):
             except Exception as ex:
                 LOG.warn("Exception: Baseband name cannot be parsed. {!s}".format(str(ex)))
 
-        for band in banddict.keys():
-            basebands = banddict[band].keys()
-            for baseband in basebands:
+        for band in banddict:
+            for baseband in banddict[band]:
                 spws = []
                 for spwitem in banddict[band][baseband]:
+                    # TODO: review if this relies on order of keys.
                     spws.append(spwitem.keys()[0])
                 vlabasebands.append(','.join(spws))
 

@@ -70,7 +70,7 @@ class T2_4MDetailsTsysflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             flag_totals[table]['before'] = self._flags_for_result(result, context, summary='first')
 
             # summarise flagging by each step
-            for component, r in result.components.items():
+            for component, r in result.components.iteritems():
                 if r is not None:
                     flag_totals[table][component] = self._flags_for_result(r, context)
                 else:
@@ -247,7 +247,7 @@ class T2_4MDetailsTsysflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         previous_summary = None
         for summary in summaries:
 
-            for intent, fields in intent_fields.items():
+            for intent, fields in intent_fields.iteritems():
                 flagcount = 0
                 totalcount = 0
     

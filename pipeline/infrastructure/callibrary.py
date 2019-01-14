@@ -538,7 +538,7 @@ class CalFrom(object):
     @staticmethod
     def get_caltype_for_viscal(viscal):
         s = string.upper(viscal)
-        for caltype, viscals in CalFrom.CALTYPE_TO_VISCAL.items():
+        for caltype, viscals in CalFrom.CALTYPE_TO_VISCAL.iteritems():
             if s in viscals:
                 return caltype
         return 'unknown'
@@ -764,12 +764,12 @@ class DictCalState(collections.defaultdict):
                     if new_key not in old_key:
                         old_key.append(new_key)
 
-        for calto_tup, _ in hashes.values():
+        for calto_tup, _ in hashes.itervalues():
             for l in calto_tup:
                 l.sort()
 
         result = {}
-        for calto_args, calfrom in hashes.values():
+        for calto_args, calfrom in hashes.itervalues():
             for vis in calto_args.vis:
                 calto = CalTo(vis=vis,
                               spw=self._commafy(calto_args.spw),
@@ -795,7 +795,7 @@ class DictCalState(collections.defaultdict):
 
     def as_applycal(self):
         calapps = [CalApplication(k, v)
-                   for k, v in self.merged(hide_empty=True).items()]
+                   for k, v in self.merged(hide_empty=True).iteritems()]
         return '\n'.join([str(c) for c in calapps])
 
     def __str__(self):
@@ -849,7 +849,7 @@ class DictCalLibrary(object):
     def _export(self, calstate, filename=None):
         filename = self._calc_filename(filename)
 
-        calapps = [CalApplication(k, v) for k, v in calstate.merged().items()]
+        calapps = [CalApplication(k, v) for k, v in calstate.merged().iteritems()]
 
         with open(filename, 'w') as export_file:
             for ca in calapps:
@@ -1489,7 +1489,7 @@ def consolidate_calibrations(calapps):
 
     # dict values are lists, which we need to flatten into a single list
     result = []
-    for l in accepted.values():
+    for l in accepted.itervalues():
         result.extend(l)
     return result
 
@@ -2057,7 +2057,7 @@ class IntervalCalLibrary(object):
     def _export(self, calstate, filename=None):
         filename = self._calc_filename(filename)
 
-        calapps = [CalApplication(k, v) for k, v in calstate.merged().items()]
+        calapps = [CalApplication(k, v) for k, v in calstate.merged().iteritems()]
 
         with open(filename, 'w') as export_file:
             for ca in calapps:
@@ -2325,7 +2325,7 @@ def _merge_intervals(unmerged):
     for k, v in unmerged.iteritems():
         reversed[v].add(k)
     return tuple(sorted((tuple(sequence_to_range(seq) for seq in contiguous_sequences(v)), k)
-                        for k, v in reversed.items()))
+                        for k, v in reversed.iteritems()))
 
 
 def _print_dimensions(calstate):

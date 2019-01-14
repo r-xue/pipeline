@@ -240,7 +240,7 @@ def executeppr(pprXmlFile, importonly=True, breakpoint='breakpoint',
             casatools.post_to_log("    Using python class ..." + pipeline_task_name, echo_to_screen=echo_to_screen)
 
             # List parameters
-            for keyword, value in task_args.items():
+            for keyword, value in task_args.iteritems():
                 casatools.post_to_log("    Parameter: " + \
                                       keyword + " = " + str(value), echo_to_screen=echo_to_screen)
 

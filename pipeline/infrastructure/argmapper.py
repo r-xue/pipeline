@@ -80,7 +80,7 @@ def convert_args(pipeline_cls, casa_args, convert_nulls=True):
     # pipeline to use its default value.
     if convert_nulls:
         converted = {}
-        converted.update((k, _convert_null(v)) for k, v in accepted.items())
+        converted.update((k, _convert_null(v)) for k, v in accepted.iteritems())
     else:
         converted = accepted
 

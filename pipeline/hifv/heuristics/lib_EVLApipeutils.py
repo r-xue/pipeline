@@ -41,8 +41,8 @@ from taskinit import *
 import pipeline.infrastructure.contfilehandler as contfilehandler
 import pipeline.infrastructure as infrastructure
 
-
 LOG = infrastructure.get_logger(__name__)
+
 
 def find_EVLA_band(frequency, bandlimits=[0.0e6, 150.0e6, 700.0e6, 2.0e9, 4.0e9, 8.0e9, 12.0e9, 18.0e9, 26.5e9, 40.0e9, 56.0e9], BBAND='?4PLSCXUKAQ?'):
     from bisect import bisect_left
@@ -50,6 +50,7 @@ def find_EVLA_band(frequency, bandlimits=[0.0e6, 150.0e6, 700.0e6, 2.0e9, 4.0e9,
     i = bisect_left(bandlimits, frequency)
 
     return BBAND[i]
+
 
 def cont_file_to_CASA(contfile='cont.dat'):
         '''
@@ -60,7 +61,6 @@ def cont_file_to_CASA(contfile='cont.dat'):
         contfile_handler = contfilehandler.ContFileHandler(contfile)
         contdict = contfile_handler.read(warn_nonexist=False)
 
-
         #if contdict == {}:
         #    #LOG.error(contfile + " is empty, does not exist or cannot be read.")
         #    LOG.info('cont.dat file not present.  Default to VLA Continuum Heuristics.')
@@ -68,9 +68,9 @@ def cont_file_to_CASA(contfile='cont.dat'):
 
         fielddict = {}
 
-        for field in contdict['fields'].keys():
+        for field in contdict['fields']:
             spwstring = ''
-            for spw in contdict['fields'][field].keys():
+            for spw in contdict['fields'][field]:
                 spwstring = spwstring + spw + ':'
                 for freqrange in contdict['fields'][field][spw]:
                     spwstring = spwstring + str(freqrange['range'][0]) + '~' + str(freqrange['range'][1]) + 'GHz;'
@@ -281,10 +281,10 @@ def getCalFlaggedSoln(calTable):
         outDict['all']['fraction'] = 0.0
 
     # Go back and get fractions
-    for antIdx in outDict['ant'].keys():
+    for antIdx in outDict['ant']:
         nptotal = 0
         npflagged = 0
-        for poln in outDict['ant'][antIdx].keys():
+        for poln in outDict['ant'][antIdx]:
             nctotal = outDict['ant'][antIdx][poln]['total']
             ncflagged = outDict['ant'][antIdx][poln]['flagged']
             outDict['ant'][antIdx][poln]['fraction'] = float(ncflagged)/float(nctotal)
@@ -295,22 +295,22 @@ def getCalFlaggedSoln(calTable):
         medDict['flagged'].append(npflagged)
         medDict['fraction'].append(float(npflagged)/float(nptotal))
     #
-    for spwIdx in outDict['spw'].keys():
-        for poln in outDict['spw'][spwIdx].keys():
+    for spwIdx in outDict['spw']:
+        for poln in outDict['spw'][spwIdx]:
             nptotal = outDict['spw'][spwIdx][poln]['total']
             npflagged = outDict['spw'][spwIdx][poln]['flagged']
             outDict['spw'][spwIdx][poln]['fraction'] = float(npflagged)/float(nptotal)
     #
-    for antIdx in outDict['antspw'].keys():
-        for spwIdx in outDict['antspw'][antIdx].keys():
-            for poln in outDict['antspw'][antIdx][spwIdx].keys():
+    for antIdx in outDict['antspw']:
+        for spwIdx in outDict['antspw'][antIdx]:
+            for poln in outDict['antspw'][antIdx][spwIdx]:
                 nptotal = outDict['antspw'][antIdx][spwIdx][poln]['total']
                 npflagged = outDict['antspw'][antIdx][spwIdx][poln]['flagged']
                 outDict['antspw'][antIdx][spwIdx][poln]['fraction'] = float(npflagged)/float(nptotal)
     #
     # do medians
     outDict['antmedian'] = {}
-    for item in medDict.keys():
+    for item in medDict:
         alist = medDict[item]
         aarr = pl.array(alist)
         amed = pl.median(aarr)
@@ -319,7 +319,6 @@ def getCalFlaggedSoln(calTable):
     
     return outDict
     
-
 
 #Not used
 def buildscans(msfile):
@@ -1031,7 +1030,7 @@ def getBCalStatistics(calTable,innerbuff=0.1):
             rxBasebandDict[rx][bb] = [ispw]
     
     print('Found {} Rx bands'.format(len(rxbands)))
-    for rx in rxBasebandDict.keys():
+    for rx in rxBasebandDict:
         bblist = rxBasebandDict[rx].keys()
         print('Rx band {} has basebands: {}'.format(rx, bblist))
 
@@ -1300,28 +1299,28 @@ def getBCalStatistics(calTable,innerbuff=0.1):
     #
     # Print more?
     if doprintall:
-        for ant in outDict['antband'].keys():
+        for ant in outDict['antband']:
             antName = antDict[ant]
-            for rx in outDict['antband'][ant].keys():
-                for bb in outDict['antband'][ant][rx].keys():
+            for rx in outDict['antband'][ant]:
+                for bb in outDict['antband'][ant][rx]:
                     xmin = outDict['antband'][ant][rx][bb]['all']['amp']['min']
                     xmax = outDict['antband'][ant][rx][bb]['all']['amp']['max']
                     ymin = outDict['antband'][ant][rx][bb]['inner']['amp']['min']
                     ymax = outDict['antband'][ant][rx][bb]['inner']['amp']['max']
-                    if xmax!=0.0:
+                    if xmax != 0.0:
                         xrat = xmin/xmax
                     else:
                         xrat = -1
-                    if ymax!=0.0:
+                    if ymax != 0.0:
                         yrat = ymin/ymax
                     else:
                         yrat = -1
                     #
-                    if yrat<0.05:
+                    if yrat < 0.05:
                         print(' %12s %12s %12s %12s  %12.4f  %12.4f *** ' % (ant, antName, rx, bb, xrat, yrat))
-                    elif yrat<0.1:
+                    elif yrat < 0.1:
                         print(' %12s %12s %12s %12s  %12.4f  %12.4f ** ' % (ant, antName, rx, bb, xrat, yrat))
-                    elif yrat<0.2:
+                    elif yrat < 0.2:
                         print(' %12s %12s %12s %12s  %12.4f  %12.4f * ' % (ant, antName, rx, bb, xrat, yrat))
                     else:
                         print(' %12s %12s %12s %12s  %12.4f  %12.4f ' % (ant, antName, rx, bb, xrat, yrat))

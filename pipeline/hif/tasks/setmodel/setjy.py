@@ -328,7 +328,7 @@ class Setjy(basetask.StandardTaskTemplate):
         spw_seen = set()
         for setjy_dict in setjy_dicts:
             setjy_dict.pop('format')
-            for field_id in setjy_dict.keys():
+            for field_id in setjy_dict:
                 setjy_dict[field_id].pop('fieldName')
                 spwkeys = setjy_dict[field_id].keys()
                 field = self.inputs.ms.get_fields(field_id)[0]

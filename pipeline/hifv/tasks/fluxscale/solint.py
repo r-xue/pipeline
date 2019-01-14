@@ -88,7 +88,7 @@ class Solint(basetask.StandardTaskTemplate):
         context = self.inputs.context
         tablebase = tableprefix + str(stage_number) + '_1.' + 'testgaincal'
         table_suffix = ['.tbl', '3.tbl', '10.tbl', 'scan.tbl', 'limit.tbl']
-        soltimes = [1.0, 3.0, 10.0] 
+        soltimes = [1.0, 3.0, 10.0]
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         soltimes = [m.get_vla_max_integration_time() * x for x in soltimes]
 
@@ -118,11 +118,11 @@ class Solint(basetask.StandardTaskTemplate):
                  str(flaggedSolnResult1['antmedian']['fraction']))
 
         if flaggedSolnResult1['all']['total'] > 0:
-            fracFlaggedSolns1=flaggedSolnResult1['antmedian']['fraction']
+            fracFlaggedSolns1 = flaggedSolnResult1['antmedian']['fraction']
         else:
-            fracFlaggedSolns1=1.0
+            fracFlaggedSolns1 = 1.0
 
-        shortsol2=soltime
+        shortsol2 = soltime
 
         if fracFlaggedSolns1 > 0.05:
             soltime = soltimes[1]
@@ -138,9 +138,9 @@ class Solint(basetask.StandardTaskTemplate):
                      str(flaggedSolnResult3['antmedian']['fraction']))
 
             if flaggedSolnResult3['all']['total'] > 0:
-                fracFlaggedSolns3=flaggedSolnResult3['antmedian']['fraction']
+                fracFlaggedSolns3 = flaggedSolnResult3['antmedian']['fraction']
             else:
-                fracFlaggedSolns3=1.0
+                fracFlaggedSolns3 = 1.0
 
             if fracFlaggedSolns3 < fracFlaggedSolns1:
                 shortsol2 = soltime
@@ -168,8 +168,8 @@ class Solint(basetask.StandardTaskTemplate):
                         bpdgain_touse = tablebase + table_suffix[2]
 
                         if fracFlaggedSolns10 > 0.05:
-                            solint='inf'
-                            combtime=''
+                            solint = 'inf'
+                            combtime = ''
                             testgains_result = self._do_gtype_testgains(calMs, tablebase + table_suffix[3],
                                                                         solint=solint, context=context,
                                                                         combtime=combtime, refAnt=refAnt)
@@ -185,7 +185,7 @@ class Solint(basetask.StandardTaskTemplate):
                                 fracFlaggedSolnsScan = 1.0
                                 
                             if fracFlaggedSolnsScan < fracFlaggedSolns10:
-                                shortsol2=context.evla['msinfo'][m.name].longsolint
+                                shortsol2 = context.evla['msinfo'][m.name].longsolint
                                 bpdgain_touse = tablebase + table_suffix[3]
                                 
                                 if fracFlaggedSolnsScan > 0.05:
@@ -286,8 +286,8 @@ class Solint(basetask.StandardTaskTemplate):
                 try:
                     # Collect beginning and ending times
                     # Take max of end times and min of beginning times
-                    endtimes = [scan_summary[str(ii)][scankey]['EndTime'] for scankey in scan_summary[str(ii)].keys()]
-                    begintimes = [scan_summary[str(ii)][scankey]['BeginTime'] for scankey in scan_summary[str(ii)].keys()]
+                    endtimes = [scan_summary[str(ii)][scankey]['EndTime'] for scankey in scan_summary[str(ii)]]
+                    begintimes = [scan_summary[str(ii)][scankey]['BeginTime'] for scankey in scan_summary[str(ii)]]
 
                     end_time = max(endtimes)
                     begin_time = min(begintimes)

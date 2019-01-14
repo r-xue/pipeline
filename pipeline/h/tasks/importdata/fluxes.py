@@ -34,7 +34,7 @@ def get_setjy_results(mses):
         result = commonfluxresults.FluxCalibrationResults(ms.name)
         science_spw_ids = [spw.id for spw in ms.get_spectral_windows()]
 
-        for source, measurements in read_fluxes_nodb(ms).items():
+        for source, measurements in read_fluxes_nodb(ms).iteritems():
             m = [m for m in measurements if int(m.spw_id) in science_spw_ids]
 
             # import flux values for all fields and intents so that we can
@@ -263,7 +263,7 @@ def CYCLE7_export_flux_from_result(results, context, filename='flux.csv'):
         for setjy_result in results:
             ms_name = setjy_result.vis
             ms_basename = os.path.basename(ms_name)
-            for field_id, measurements in setjy_result.measurements.items():
+            for field_id, measurements in setjy_result.measurements.iteritems():
                 for m in measurements:
 
                     prefix = '%s,%s,%s' % (ms_basename, field_id, m.spw_id)
@@ -318,7 +318,7 @@ def export_flux_from_result(results, context, filename='flux.csv'):
         for setjy_result in results:
             ms_name = setjy_result.vis
             ms_basename = os.path.basename(ms_name)
-            for field_id, measurements in setjy_result.measurements.items():
+            for field_id, measurements in setjy_result.measurements.iteritems():
                 for m in measurements:
 
                     prefix = '%s,%s,%s' % (ms_basename, field_id, m.spw_id)

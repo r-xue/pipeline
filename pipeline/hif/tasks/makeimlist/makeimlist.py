@@ -308,7 +308,7 @@ class MakeImList(basetask.StandardTaskTemplate):
             ms = inputs.context.observing_run.get_ms(inputs.vis[0])
             band = ms.get_vla_spw2band()
             band_spws = {}
-            for k, v in band.items():
+            for k, v in band.iteritems():
                 if str(k) in spwlist:
                     band_spws.setdefault(v, []).append(k)
         else:

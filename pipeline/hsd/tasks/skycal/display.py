@@ -124,7 +124,7 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
         return wrappers
     
     def _update_figfile(self, old_prefix, new_prefix):
-        for spw_id in self._figfile.keys():
+        for spw_id in self._figfile:
             for antenna_id, figfile in self._figfile[spw_id].iteritems():
                 new_figfile = figfile.replace(old_prefix, new_prefix)
                 self._figfile[spw_id][antenna_id] = new_figfile 
@@ -267,10 +267,10 @@ def plot_elevation_difference(context, result, eldiff, threshold=3.0, perantenna
     ms = context.observing_run.get_ms(vis)
     
     figure = pl.figure()
-    start_time = numpy.min([numpy.min(x.timeon) for z in eldiff.values() for y in z.values() 
-                            for x in y.values() if len(x.timeon) > 0])
-    end_time = numpy.max([numpy.max(x.timeon) for z in eldiff.values() for y in z.values() 
-                          for x in y.values() if len(x.timeon) > 0])
+    start_time = numpy.min([numpy.min(x.timeon) for z in eldiff.itervalues() for y in z.itervalues()
+                            for x in y.itervalues() if len(x.timeon) > 0])
+    end_time = numpy.max([numpy.max(x.timeon) for z in eldiff.itervalues() for y in z.itervalues()
+                          for x in y.itervalues() if len(x.timeon) > 0])
     
     def init_figure():
         pl.clf()
@@ -302,20 +302,18 @@ def plot_elevation_difference(context, result, eldiff, threshold=3.0, perantenna
         lon = None
         loff = None
         
-        for antenna_id, eldant in eldiff_field.items():
+        for antenna_id, eldant in eldiff_field.iteritems():
             antenna_name = ms.antennas[antenna_id].name
             
-            for spw_id, eld in eldant.items():
+            for spw_id, eld in eldant.iteritems():
             
                 if len(eld.timeon) == 0 or len(eld.timecal) == 0:
                     continue
                 
                 # Elevation vs. Time
                 figure.sca(a0)
-                lon = pl.plot(sd_display.mjd_to_plotval(eld.timeon), eld.elon, '.', color='black', 
-                        mew=0)
-                loff = pl.plot(sd_display.mjd_to_plotval(eld.timecal), eld.elcal, '.-', color='blue', 
-                        mew=0)
+                lon = pl.plot(sd_display.mjd_to_plotval(eld.timeon), eld.elon, '.', color='black', mew=0)
+                loff = pl.plot(sd_display.mjd_to_plotval(eld.timecal), eld.elcal, '.-', color='blue', mew=0)
                         
                 # Elevation Difference vs. Time
                 figure.sca(a1)

@@ -119,7 +119,7 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                          'bad quadrant': 8,
                          'bad antenna': 9,
                          'too many entirely flagged': 10}
-    flag_reason_key = {value: key for (key, value) in flag_reason_index.items()}
+    flag_reason_key = {value: key for (key, value) in flag_reason_index.iteritems()}
 
     # override the inherited __init__ method so that references to the
     # task objects can be kept outside self.inputs. Later on self.inputs
@@ -218,7 +218,7 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
     
                 # Accumulate new flags and flag reasons
                 flags += newflags
-                for description in newflags_reason.keys():
+                for description in newflags_reason:
                     if description in flag_reason_plane:
                         flag_reason_plane[description][newflags_reason[description] > 0] = \
                             newflags_reason[description][newflags_reason[description] > 0]
@@ -375,9 +375,9 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
             # results, then raise an exception.
             if flagsetterresult.results[0] is None:
                 raise exceptions.PipelineException("Results from flagdata are empty, cannot continue.")
-            if all(['report' in k for k in flagsetterresult.results[0].keys()]):
+            if all(['report' in k for k in flagsetterresult.results[0]]):
                 # Go through dictionary of reports.
-                for report in flagsetterresult.results[0].keys():
+                for report in flagsetterresult.results[0]:
                     if flagsetterresult.results[0][report]['name'] == 'before':
                         stats_before = flagsetterresult.results[0][report]
                     if flagsetterresult.results[0][report]['name'] == 'after':
@@ -1633,9 +1633,9 @@ class VectorFlagger(basetask.StandardTaskTemplate):
             # results, then raise an exception.
             if flagsetterresult.results[0] is None:
                 raise exceptions.PipelineException("Results from flagdata are empty, cannot continue.")
-            if all(['report' in k for k in flagsetterresult.results[0].keys()]):
+            if all(['report' in k for k in flagsetterresult.results[0]]):
                 # Go through dictionary of reports...
-                for report in flagsetterresult.results[0].keys():
+                for report in flagsetterresult.results[0]:
                     if flagsetterresult.results[0][report]['name'] == 'before':
                         stats_before = flagsetterresult.results[0][report]
                     if flagsetterresult.results[0][report]['name'] == 'after':

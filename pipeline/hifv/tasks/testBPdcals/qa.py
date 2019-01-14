@@ -30,8 +30,8 @@ class testBPdcalsQAHandler(pqa.QAPlugin):
             self._checkKandBsolution(result.flaggedSolnApplycaldelay)
             self._checkKandBsolution(result.flaggedSolnApplycalbandpass)
 
-            score1 = qacalc.score_total_data_flagged_vla_bandpass(result.bpdgain_touse,
-                                                                  result.flaggedSolnApplycalbandpass['antmedian']['fraction'])
+            score1 = qacalc.score_total_data_flagged_vla_bandpass(
+                result.bpdgain_touse, result.flaggedSolnApplycalbandpass['antmedian']['fraction'])
             score2 = qacalc.score_total_data_vla_delay(result.ktypecaltable, m)
             scores = [score1, score2]
         else:
@@ -43,10 +43,10 @@ class testBPdcalsQAHandler(pqa.QAPlugin):
 
     @staticmethod
     def _checkKandBsolution(table):
-        for antenna in table['antspw'].keys():
+        for antenna in table['antspw']:
             spwcollect = []
-            for spw in table['antspw'][antenna].keys():
-                for pol in table['antspw'][antenna][spw].keys():
+            for spw in table['antspw'][antenna]:
+                for pol in table['antspw'][antenna][spw]:
                     frac = table['antspw'][antenna][spw][pol]['fraction']
                     if frac == 1.0:
                         spwcollect.append(str(spw))

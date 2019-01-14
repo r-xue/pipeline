@@ -921,7 +921,7 @@ class RefAntFlagging:
         try:
             antenna = d['antenna']
 
-            for a in antenna.keys():
+            for a in antenna:
                 good[a] = antenna[a]['total'] - antenna[a]['flagged']
         except:
             msg = "The CASA 'flagdata' task returned invalid " \

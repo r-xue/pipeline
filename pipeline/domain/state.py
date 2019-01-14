@@ -68,9 +68,8 @@ class State(object):
     def get_obs_mode_for_intent(self, intent):
         intents = set([i.strip('*') for i in intent.split(',') 
                        if i is not None])
-        return [mode for mode, pipeline_intent in self.obs_mode_mapping.items()
-                if pipeline_intent in intents
-                and self.obs_mode.find(mode) != -1]
+        return [mode for mode, pipeline_intent in self.obs_mode_mapping.iteritems()
+                if pipeline_intent in intents and self.obs_mode.find(mode) != -1]
 
     def __str__(self):
         return '{0}(id={1}, intents={2})'.format(self.__class__.__name__, 
@@ -172,11 +171,9 @@ class StateALMACycle0(StateALMA):
             
             # .. find the obs_mode(s) responsible for the addition of the
             # phase intent..
-            phase_obs_modes = [k for k, v in self.obs_mode_mapping.items()
-                               if v == 'PHASE']
+            phase_obs_modes = [k for k, v in self.obs_mode_mapping.iteritems() if v == 'PHASE']
             # and remove them from the obsmodes we should register
-            dephased_obs_modes = [m for m in obs_mode.split(',')
-                                  if m not in phase_obs_modes]
+            dephased_obs_modes = [m for m in obs_mode.split(',') if m not in phase_obs_modes]
 
             LOG.trace('Before: %s' % self.__repr__())
             # .. so that in resetting this object's obs_modes to the 

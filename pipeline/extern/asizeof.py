@@ -2426,7 +2426,7 @@ if __name__ == '__main__':
     if _opts('-C'):  # show all Csizeof values
         _sizeof_Cdouble  = _calcsize('d')  #PYCHOK OK
         _sizeof_Cssize_t = _calcsize('z')  #PYCHOK OK
-        t = [t for t in locals().items() if t[0].startswith('_sizeof_')]
+        t = [t for t in locals().iteritems() if t[0].startswith('_sizeof_')]
         _printf('%s%d C sizes: (bytes) ... -C', linesep, len(t))
         for n, v in _sorted(t):
             _printf(' sizeof(%s): %r', n[len('_sizeof_'):], v)

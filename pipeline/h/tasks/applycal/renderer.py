@@ -96,7 +96,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 intents
             )
 
-            for vis, vis_plots in plots.items():
+            for vis, vis_plots in plots.iteritems():
                 amp_vs_freq_summary_plots[vis].extend(vis_plots)
 
         phase_vs_freq_summary_plots = utils.OrderedDefaultdict(list)
@@ -108,7 +108,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 intents
             )
 
-            for vis, vis_plots in plots.items():
+            for vis, vis_plots in plots.iteritems():
                 phase_vs_freq_summary_plots[vis].extend(vis_plots)
 
         # CAS-7659: Add plots of all calibrator calibrated amp vs uvdist to
@@ -122,7 +122,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 intents
             )
 
-            for vis, vis_plots in plots.items():
+            for vis, vis_plots in plots.iteritems():
                 amp_vs_uv_summary_plots[vis].extend(vis_plots)
 
         # CAS-5970: add science target plots to the applycal page
@@ -151,7 +151,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     uvrange=uv_cutoff
                 )
 
-                for vis, vis_plots in p.items():
+                for vis, vis_plots in p.iteritems():
                     corrected_ratio_to_antenna1_plots[vis].extend(vis_plots)
 
             p, _ = self.create_plots(
@@ -219,7 +219,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 (amp_vs_time_detail_plots, ApplycalAmpVsTimePlotRenderer, amp_vs_time_subpages),
                 (phase_vs_time_detail_plots, ApplycalPhaseVsTimePlotRenderer, phase_vs_time_subpages)):
             if d:
-                all_plots = list(utils.flatten([v for v in d.values()]))
+                all_plots = list(utils.flatten([v for v in d.itervalues()]))
                 renderer = plotter_cls(context, result, all_plots)
                 with renderer.get_file() as fileobj:
                     fileobj.write(renderer.render())
@@ -304,7 +304,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             max_uvs[vis] = half_baselines[-1].length
 
             brightest_fields = T2_4MDetailsApplycalRenderer.get_brightest_fields(ms)        
-            for source_id, brightest_field in brightest_fields.items():
+            for source_id, brightest_field in brightest_fields.iteritems():
                 plots = self.science_plots_for_result(context,
                                                       result, 
                                                       applycal.AmpVsFrequencySummaryChart,
@@ -345,7 +345,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 (amp_vs_freq_detail_plots, ApplycalAmpVsFreqSciencePlotRenderer),
                 (amp_vs_uv_detail_plots, ApplycalAmpVsUVSciencePlotRenderer)):
             if d:
-                all_plots = list(utils.flatten([v for v in d.values()]))
+                all_plots = list(utils.flatten([v for v in d.itervalues()]))
                 renderer = plotter_cls(context, results, all_plots)
                 with renderer.get_file() as fileobj:
                     fileobj.write(renderer.render())
@@ -454,11 +454,11 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 average_flux[(field_id, field_name)] = float(result['CORRECTED']['mean'])
                 
             LOG.debug('Mean flux for %s targets:', intent)
-            for (field_id, field_name), v in average_flux.items():
+            for (field_id, field_name), v in average_flux.iteritems():
                 LOG.debug('\t%r (%s): %s', field_name, field_id, v)
         
             # find the ID of the field with the highest average flux
-            sorted_by_flux = sorted(average_flux.iteritems(), 
+            sorted_by_flux = sorted(average_flux.iteritems(),
                                     key=operator.itemgetter(1),
                                     reverse=True)
             (brightest_id, brightest_name), highest_flux = sorted_by_flux[0]
@@ -610,7 +610,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         previous_summary = None
         for summary in summaries:
 
-            for intent, scan_ids in intent_scans.items():
+            for intent, scan_ids in intent_scans.iteritems():
                 flagcount = 0
                 totalcount = 0
     

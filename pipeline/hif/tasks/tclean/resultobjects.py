@@ -99,8 +99,7 @@ class TcleanResult(basetask.Results):
         iters = self.iterations.keys()
         iters.sort()
         image = self.iterations[iters[-1]].get('image', None)
-        imageplot = sky.plotfilename(image=image,
-          reportdir=self.plotdir)
+        imageplot = sky.plotfilename(image=image, reportdir=self.plotdir)
         return imageplot
 
     @property
@@ -318,7 +317,7 @@ class TcleanResult(basetask.Results):
 
         items_to_print = ['image', 'residual', 'model', 'cleanmask', 'mom0_fc']
         str_len = max([len(item) for item in items_to_print])
-        for k, v in self.iterations.items():
+        for k, v in self.iterations.iteritems():
             repr += ' iteration %s:\n' % k
             for item in items_to_print:
                 if item in v:

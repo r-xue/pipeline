@@ -23,7 +23,7 @@ class BPOrder(api.Heuristic):
 
         # we ignore the antenna identifier in our heuristic. Perhaps you might
         # want to weight the polynomials differently based on this id.        
-        for antenna, data in channel_data.items():
+        for antenna, data in channel_data.iteritems():
             transform = numpy.abs(numpy.fft.fft(data)) 
             ntransform = numpy.array(transform)
             ntransform /= numpy.mean(ntransform) 

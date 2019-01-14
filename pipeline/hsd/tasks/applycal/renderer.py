@@ -116,7 +116,7 @@ class T2_4MDetailsSDApplycalRenderer(T2_4MDetailsApplycalRenderer,
         for d, plotter_cls in (
                 (amp_vs_freq_detail_plots, ApplycalAmpVsFreqSciencePlotRenderer),):
             if d:
-                all_plots = list(utils.flatten([v for v in d.values()]))
+                all_plots = list(utils.flatten([v for v in d.itervalues()]))
                 renderer = plotter_cls(context, results, all_plots)
                 with renderer.get_file() as fileobj:
                     fileobj.write(renderer.render())

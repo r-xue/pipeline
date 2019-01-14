@@ -22,8 +22,8 @@ class BandpassDetailChart(common.PlotbandpassDetailBase):
 
     def plot(self):
         missing = [(spw_id, ant_id)
-                   for spw_id in self._figfile.keys()
-                   for ant_id in self._antmap.keys()
+                   for spw_id in self._figfile
+                   for ant_id in self._antmap
                    if not os.path.exists(self._figfile[spw_id][ant_id])]
         if missing:
             LOG.trace('Executing new plotbandpass job for missing figures')
@@ -38,8 +38,8 @@ class BandpassDetailChart(common.PlotbandpassDetailBase):
                 return None
 
         wrappers = []
-        for spw_id in self._figfile.keys():
-            for antenna_id, figfile in self._figfile[spw_id].items():
+        for spw_id in self._figfile:
+            for antenna_id, figfile in self._figfile[spw_id].iteritems():
                 ant_name = self._antmap[antenna_id]
                 if os.path.exists(figfile):
                     task = self.create_task(spw_id, antenna_id)
@@ -68,7 +68,7 @@ class BandpassSummaryChart(common.PlotbandpassDetailBase):
         # into joint keys, and the filenames into a list as the output could
         # be any of the filenames, depending on whether spws were flagged
         spw_ids = [spw_id for spw_id in self._figfile]
-        ant_ids = [ant_ids.keys() for _, ant_ids in self._figfile.items()]
+        ant_ids = [ant_ids.keys() for _, ant_ids in self._figfile.iteritems()]
         ant_ids = set(itertools.chain(*ant_ids))
 
         d = dict((ant_id,
@@ -78,7 +78,7 @@ class BandpassSummaryChart(common.PlotbandpassDetailBase):
 
     def plot(self):
         missing = [ant_id
-                   for ant_id in self._antmap.keys()
+                   for ant_id in self._antmap
                    if not any([os.path.exists(f) for f in self._figfile[ant_id]])]
         if missing:
             LOG.trace('Executing new plotbandpass job for missing figures')
@@ -92,7 +92,7 @@ class BandpassSummaryChart(common.PlotbandpassDetailBase):
                 return None
 
         wrappers = []
-        for antenna_id, figfiles in self._figfile.items():
+        for antenna_id, figfiles in list(self._figfile.iteritems()):
             for figfile in figfiles:
                 if os.path.exists(figfile):
                     task = self.create_task('', antenna_id)

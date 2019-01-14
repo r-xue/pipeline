@@ -1815,7 +1815,7 @@ def score_flagging_view_exists(filename, result):
     try:
         # Set score to 1 as soon as a single metric contains a
         # valid flagging view.
-        for metricresult in result.components.values():
+        for metricresult in result.components.itervalues():
             view = metricresult.view
             if view:
                 score = 1.0
@@ -2072,7 +2072,7 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
     for ms in mses:
         if not ms.derived_fluxes:
             continue
-        for field_arg, measurements in ms.derived_fluxes.items():
+        for field_arg, measurements in ms.derived_fluxes.iteritems():
             mfield = ms.get_fields(field_arg)
             chkfield = None
             for mfielditem in mfield:
@@ -2245,8 +2245,8 @@ def score_sd_skycal_elevation_difference(ms, resultdict, threshold=3.0):
         
         eldiffant = resultdict[field_id]
         warned_antennas = set()
-        for antenna_id, eldiff in eldiffant.items():
-            for spw_id, eld in eldiff.items():
+        for antenna_id, eldiff in eldiffant.iteritems():
+            for spw_id, eld in eldiff.iteritems():
                 preceding = eld.eldiff0
                 subsequent = eld.eldiff1
                 # LOG.info('field {} antenna {} spw {} preceding={}'.format(field_id, antenna_id, spw_id, preceding))

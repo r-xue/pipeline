@@ -67,7 +67,7 @@ def consolidate_flagcmd_channels(flagcmds, antenna_id_to_name=None):
             consolidated_flagcmds.append(flagcmd)
 
     # add consolidated flagcmds
-    for ftuple in flagcmd_dict.keys():
+    for ftuple in flagcmd_dict:
         flagchannels = list(flagcmd_dict[ftuple])
         flagchannels.sort()
 

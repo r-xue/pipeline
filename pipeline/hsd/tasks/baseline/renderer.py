@@ -69,7 +69,7 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
             subpage = {}
             # flattened = [plot for inner in plot_list.values() for plot in inner]
             flattened = compress.CompressedList()
-            for inner in plot_list.values():
+            for inner in plot_list.itervalues():
                 for plot in inner:
                     flattened.append(plot)
             datatype = 'Raw' if subtype == 'raw' else 'Averaged'

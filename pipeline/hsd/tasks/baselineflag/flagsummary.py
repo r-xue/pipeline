@@ -400,19 +400,25 @@ class SDBLFlagSummary(object):
         if len(FlaggedRowsCategory[3]) > 0:
             LOG.debug('Flagged rows by Tsys =%s ' % FlaggedRowsCategory[3])
         # Pre-fit RMS
-        LOG.info('Number of rows flagged by the baseline fluctuation (pre-fit) = %d /%d' % (len(FlaggedRowsCategory[5]), NROW))
+        LOG.info('Number of rows flagged by the baseline fluctuation (pre-fit) = %d /%d' %
+                 (len(FlaggedRowsCategory[5]), NROW))
         if len(FlaggedRowsCategory[5]) > 0:
             LOG.debug('Flagged rows by the baseline fluctuation (pre-fit) =%s ' % FlaggedRowsCategory[5])
         # Post-fit RMS
-        if is_baselined: LOG.info('Number of rows flagged by the baseline fluctuation (post-fit) = %d /%d' % (len(FlaggedRowsCategory[4]), NROW))
+        if is_baselined:
+            LOG.info('Number of rows flagged by the baseline fluctuation (post-fit) = %d /%d' %
+                     (len(FlaggedRowsCategory[4]), NROW))
         if len(FlaggedRowsCategory[4]) > 0:
             LOG.debug('Flagged rows by the baseline fluctuation (post-fit) =%s ' % FlaggedRowsCategory[4])
         # Pre-fit running mean
-        LOG.info('Number of rows flagged by the difference from running mean (pre-fit) = %d /%d' % (len(FlaggedRowsCategory[7]), NROW))
+        LOG.info('Number of rows flagged by the difference from running mean (pre-fit) = %d /%d' %
+                 (len(FlaggedRowsCategory[7]), NROW))
         if len(FlaggedRowsCategory[7]) > 0:
             LOG.debug('Flagged rows by the difference from running mean (pre-fit) =%s ' % FlaggedRowsCategory[7])
         # Post-fit running mean
-        if is_baselined: LOG.info('Number of rows flagged by the difference from running mean (post-fit) = %d /%d' % (len(FlaggedRowsCategory[6]), NROW))
+        if is_baselined:
+            LOG.info('Number of rows flagged by the difference from running mean (post-fit) = %d /%d' %
+                     (len(FlaggedRowsCategory[6]), NROW))
         if len(FlaggedRowsCategory[6]) > 0:
             LOG.debug('Flagged rows by the difference from running mean (post-fit) =%s ' % FlaggedRowsCategory[6])
         # Pre-fit expected RMS
@@ -420,7 +426,9 @@ class SDBLFlagSummary(object):
         if len(FlaggedRowsCategory[9]) > 0:
             LOG.debug('Flagged rows by the expected RMS (pre-fit) =%s ' % FlaggedRowsCategory[9])
         # Post-fit expected RMS
-        if is_baselined: LOG.info('Number of rows flagged by the expected RMS (post-fit) = %d /%d' % (len(FlaggedRowsCategory[8]), NROW))
+        if is_baselined:
+            LOG.info('Number of rows flagged by the expected RMS (post-fit) = %d /%d' %
+                     (len(FlaggedRowsCategory[8]), NROW))
         if len(FlaggedRowsCategory[8]) > 0:
             LOG.debug('Flagged rows by the expected RMS (post-fit) =%s ' % FlaggedRowsCategory[8])
         # All categories
@@ -446,7 +454,7 @@ def _format_table_row_html(label, isactive, threshold, nflag, ntotal):
 # has already been validated at upper level (baselineflag.py)
 def _get_iteration(reduction_group, msobj, antid, fieldid, spwid):
     members = []
-    for group_desc in reduction_group.values():
+    for group_desc in reduction_group.itervalues():
         #memids = common.get_valid_ms_members(group_desc, [msobj.name], antid, fieldid, spwid)
         #members.extend([group_desc[i] for i in memids])
         member_id = group_desc._search_member(msobj, antid, spwid, fieldid)

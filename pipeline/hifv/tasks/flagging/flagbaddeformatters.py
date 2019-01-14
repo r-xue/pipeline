@@ -166,12 +166,12 @@ class FlagBadDeformatters(basetask.StandardTaskTemplate):
         extflaglist = []
         weblogflagdict = collections.defaultdict(list)
         
-        for iant in calBPstatresult['antband'].keys():
+        for iant in calBPstatresult['antband']:
             antName = calBPstatresult['antDict'][iant]
             badspwlist = []
             flaggedspwlist = []
-            for rrx in calBPstatresult['antband'][iant].keys():
-                for bband in calBPstatresult['antband'][iant][rrx].keys():
+            for rrx in calBPstatresult['antband'][iant]:
+                for bband in calBPstatresult['antband'][iant][rrx]:
                     # List of spw in this baseband
                     spwl = calBPstatresult['rxBasebandDict'][rrx][bband]
                     
@@ -186,7 +186,7 @@ class FlagBadDeformatters(basetask.StandardTaskTemplate):
                         for ispw in spwl:
                             testvalid = False
                             if ispw in calBPstatresult['antspw'][iant]:
-                                for poln in calBPstatresult['antspw'][iant][ispw].keys():
+                                for poln in calBPstatresult['antspw'][iant][ispw]:
                                     # Get stats of this ant/spw/poln
                                     nbp = calBPstatresult['antspw'][iant][ispw][poln]['inner']['number']
                                     

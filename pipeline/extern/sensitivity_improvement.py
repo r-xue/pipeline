@@ -163,7 +163,7 @@ def windowFunction(window='', channelAveraging=1, returnValue='FWHM',
                     a = 1
                     b = 2
                 myspline = scipy.interpolate.UnivariateSpline(mydict[window][returnValue].keys(),
-                                                              mydict[window][returnValue].values(), 
+                                                              mydict[window][returnValue].values(),
                                                               k=splineDegree, 
                                                               s=splineSmoothing)
                 factor = float(myspline(channelAveraging))
@@ -233,7 +233,7 @@ def onlineChannelAveraging(vis, spw, mymsmd=''):
         mymsmd.close()
     ns = []
     ratios = []
-    for N in eff_bw.keys():
+    for N in eff_bw:
         ratios.append(eff_bw[N] / N)
         ns.append(N)
     ratio = chaneffwidth/chanwidth

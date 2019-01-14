@@ -1045,7 +1045,7 @@ class Correctedampflag(basetask.StandardTaskTemplate):
 
                 # Identify "bad baselines" as those baselines whose number
                 # of timestamps with outliers exceeds the threshold.
-                bad_bls = [bl for bl, count in outlier_bl_counts.items()
+                bad_bls = [bl for bl, count in outlier_bl_counts.iteritems()
                            if count > np.max([1, bl_counts[bl] * tmint_scaled])]
 
                 # Compute for each antenna how many "bad baselines" it is
@@ -1333,9 +1333,9 @@ class Correctedampflag(basetask.StandardTaskTemplate):
         fsresult = self._executor.execute(fstask)
 
         # Extract "before" and/or "after" summary
-        if all(['report' in k for k in fsresult.results[0].keys()]):
+        if all(['report' in k for k in fsresult.results[0]]):
             # Go through dictionary of reports...
-            for report in fsresult.results[0].keys():
+            for report in fsresult.results[0]:
                 if fsresult.results[0][report]['name'] == 'before':
                     stats_before = fsresult.results[0][report]
                 if fsresult.results[0][report]['name'] == 'after':

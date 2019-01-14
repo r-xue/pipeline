@@ -105,7 +105,7 @@ class Applycals(applycal.IFApplycal):
         jobs = []
 
         for gainfield, scanlist in applycalgroups.iteritems():
-            for calto, calfroms in merged.items():
+            for calto, calfroms in merged.iteritems():
                 # if there's nothing to apply for this data selection, continue
                 if not calfroms:
                     continue
@@ -149,7 +149,7 @@ class Applycals(applycal.IFApplycal):
                 jobs.append(casa_tasks.applycal(**args))
 
         if inputs.gainmap:
-            for calto, calfroms in merged.items():
+            for calto, calfroms in merged.iteritems():
                 # if there's nothing to apply for this data selection, continue
                 if not calfroms:
                     continue
@@ -194,7 +194,7 @@ class Applycals(applycal.IFApplycal):
             stats_after['name'] = 'applycal'
 
         applied = [callibrary.CalApplication(calto, calfroms)
-                   for calto, calfroms in merged.items()]
+                   for calto, calfroms in merged.iteritems()]
 
         result = happlycal.ApplycalResults(applied)
 
@@ -253,7 +253,7 @@ class Applycals(applycal.IFApplycal):
                 flagdicts = {}
                 flagdicts['report0'] = flagdictssingle
 
-            for key in flagdicts.keys():  # report level
+            for key in flagdicts:  # report level
                 fieldnames = flagdicts[key].keys()
                 fieldnames.remove('name')
                 fieldnames.remove('type')

@@ -45,7 +45,7 @@ class PlotterPool(object):
         return plotter
     
     def done(self):
-        for plotter in self.pool.values():
+        for plotter in self.pool.itervalues():
             plotter.done()
 
 

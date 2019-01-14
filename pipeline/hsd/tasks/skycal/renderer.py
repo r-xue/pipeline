@@ -17,8 +17,8 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
     def __init__(self, uri='skycal.mako',
                  description='Single-Dish Sky Calibration', 
                  always_rerender=False):
-        super(T2_4MDetailsSingleDishSkyCalRenderer, self).__init__(uri=uri,
-                description=description, always_rerender=always_rerender)
+        super(T2_4MDetailsSingleDishSkyCalRenderer, self).__init__(
+            uri=uri, description=description, always_rerender=always_rerender)
         
     def update_mako_context(self, ctx, context, results):
         stage_dir = os.path.join(context.report_dir, 
@@ -117,10 +117,9 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
             details_amp_vs_time[vis].extend(details_time)
             summary_elev_diff[vis].extend(summaries_elev)
             details_elev_diff[vis].extend(details_elev)
-            
-            
+
         # Sky Level vs Frequency
-        flattened = [plot for inner in details_amp_vs_freq.values() for plot in inner]
+        flattened = [plot for inner in details_amp_vs_freq.itervalues() for plot in inner]
         renderer = basetemplates.JsonPlotRenderer(uri='hsd_generic_x_vs_y_ant_field_spw_plots.mako',
                                                   context=context,
                                                   result=result,
@@ -129,11 +128,11 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
                                                   outfile='sky_level_vs_frequency.html')
         with renderer.get_file() as fileobj:
             fileobj.write(renderer.render())
-        for vis in details_amp_vs_freq.keys():
+        for vis in details_amp_vs_freq:
             amp_vs_freq_subpages[vis] = os.path.basename(renderer.path)        
             
         # Sky Level vs Time
-        flattened = [plot for inner in details_amp_vs_time.values() for plot in inner]
+        flattened = [plot for inner in details_amp_vs_time.itervalues() for plot in inner]
         renderer = basetemplates.JsonPlotRenderer(uri='hsd_generic_x_vs_y_ant_field_spw_plots.mako',
                                                   context=context,
                                                   result=result,
@@ -142,23 +141,23 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
                                                   outfile='sky_level_vs_time.html')
         with renderer.get_file() as fileobj:
             fileobj.write(renderer.render())
-        for vis in details_amp_vs_time.keys():
+        for vis in details_amp_vs_time:
             amp_vs_time_subpages[vis] = os.path.basename(renderer.path)
             
         # Elevation difference
-        flattened = [plot for inner in details_elev_diff.values() for plot in inner]
+        flattened = [plot for inner in details_elev_diff.itervalues() for plot in inner]
         renderer = basetemplates.JsonPlotRenderer(uri='generic_x_vs_y_ant_field_plots.mako',
-                                                context=context,
-                                                result=result,
-                                                plots=flattened,
-                                                title='Elevation Difference vs. Time',
-                                                outfile='elevation_difference_vs_time.html')
+                                                  context=context,
+                                                  result=result,
+                                                  plots=flattened,
+                                                  title='Elevation Difference vs. Time',
+                                                  outfile='elevation_difference_vs_time.html')
         with renderer.get_file() as fileobj:
             fileobj.write(renderer.render())
-        for vis in details_elev_diff.keys():
+        for vis in details_elev_diff:
             elev_diff_subpages[vis] = os.path.basename(renderer.path)
            
-        LOG.debug('reference_coords=%s'%(reference_coords))    
+        LOG.debug('reference_coords=%s' % reference_coords)
         
         # update Mako context                
         ctx.update({'applications': applications,
@@ -173,8 +172,8 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
     def get_skycal_applications(self, context, result, ms):
         applications = []
         
-        calmode_map = {'ps':'Position-switch',
-                       'otfraster':'OTF raster edge'}
+        calmode_map = {'ps': 'Position-switch',
+                       'otfraster': 'OTF raster edge'}
         
         calapps = result.outcome
         for calapp in calapps:
@@ -196,7 +195,6 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
                                  'caltype': caltype})
         
         return applications
-        
 
     def _get_reference_coord(self, context, ms, field):
         LOG.debug('_get_reference_coord({ms}, {field})'.format(ms=ms.basename, field=field.name))
@@ -207,7 +205,8 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
         state_ids = [state.id for state in reference_states]
         field_id = field.id
         with casatools.TableReader(ms.name) as tb:
-            t = tb.query('ANTENNA1==ANTENNA2 && FIELD_ID=={field} && DATA_DESC_ID={ddid} && STATE_ID IN {states}'.format(field=field_id, ddid=data_desc_id, states=state_ids))
+            t = tb.query('ANTENNA1==ANTENNA2 && FIELD_ID=={field} && DATA_DESC_ID={ddid} && STATE_ID IN {states}'
+                         ''.format(field=field_id, ddid=data_desc_id, states=state_ids))
             rownumbers = t.rownumbers()
             antenna_ids = t.getcol('ANTENNA1')
             times = t.getcol('TIME')
@@ -221,7 +220,7 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
         me = casatools.measures
         epoch = me.epoch(rf=timeref, v0=qa.quantity(times[0], timeunit))
         
-        LOG.debug('pointing_direction=%s'%(pointing_direction))
+        LOG.debug('pointing_direction=%s' % pointing_direction)
         
         direction = pointing_direction['antenna1']['pointingdirection']
         me.doframe(antenna_position)
@@ -234,8 +233,8 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
         datatable.importdata(datatable_name, minimal=False, readonly=True)
         outref = datatable.direction_ref
         
-        converted= me.measure(direction, rf=outref)
-        LOG.debug('converted direction=%s'%(converted))
+        converted = me.measure(direction, rf=outref)
+        LOG.debug('converted direction=%s' % converted)
         if outref.upper() == 'GALACTIC':
             xformat = 'dms'
         else:

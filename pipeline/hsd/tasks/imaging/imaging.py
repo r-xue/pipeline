@@ -269,7 +269,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 if inputs.is_ampcal:
                     asdm_name = common.asdm_name_from_ms(msobj)
                     identifier += ('.'+asdm_name)
-                if identifier in image_group.keys():
+                if identifier in image_group:
                     image_group[identifier].append([msobj, ant, spwid, fieldid, pollist, chanmap])
                 else:
                     image_group[identifier] = [[msobj, ant, spwid, fieldid, pollist, chanmap]]

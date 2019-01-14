@@ -63,7 +63,8 @@ class Targetflag(basetask.StandardTaskTemplate):
 
         fielddict = cont_file_to_CASA()
 
-        if fielddict != {}: LOG.info('cont.dat file present.  Using VLA Spectral Line Heuristics for task targetflag.')
+        if fielddict != {}:
+            LOG.info('cont.dat file present.  Using VLA Spectral Line Heuristics for task targetflag.')
 
         # LOG.info(self.inputs.intents)
 
@@ -74,8 +75,7 @@ class Targetflag(basetask.StandardTaskTemplate):
         summarydict = self._executor.execute(job)
         summaries.append(summarydict)
 
-
-        if ('CALIBRATE' in self.inputs.intents):
+        if 'CALIBRATE' in self.inputs.intents:
             LOG.info("TARGETFLAG INFO: Running RFLAG ON intent=*CALIBRATE*")
             method_args = {'field'       : '',
                            'correlation' : 'ABS_' + corrstring,
@@ -85,7 +85,7 @@ class Targetflag(basetask.StandardTaskTemplate):
 
             rflag_result = self._do_rflag(**method_args)
 
-        if ('TARGET' in self.inputs.intents and fielddict == {}):
+        if 'TARGET' in self.inputs.intents and fielddict == {}:
             LOG.info("TARGETFLAG INFO:  Running RFLAG ON intent=*TARGET* for all spws and frequencies.")
             method_args = {'field'       : '',
                            'correlation' : 'ABS_' + corrstring,
@@ -95,7 +95,7 @@ class Targetflag(basetask.StandardTaskTemplate):
 
             rflag_result = self._do_rflag(**method_args)
 
-        if (self.inputs.intents == '' and fielddict == {}):
+        if self.inputs.intents == '' and fielddict == {}:
             LOG.info("TARGETFLAG INFO:  Running RFLAG on ALL intents for all spws and frequencies.")
             method_args = {'field'       : '',
                            'correlation' : 'ABS_' + corrstring,
@@ -112,10 +112,10 @@ class Targetflag(basetask.StandardTaskTemplate):
 
             return TargetflagResults([rflag_result], summarydict=summaries)
 
-        if ('TARGET' in self.inputs.intents and fielddict != {}):
+        if 'TARGET' in self.inputs.intents and fielddict != {}:
             LOG.info("TARGETFLAG INFO:  Spectral line heuristics for intent=*TARGET*")
 
-            for field in fielddict.keys():
+            for field in fielddict:
                 method_args = {'field'       : field,
                                'correlation' : 'ABS_' + corrstring,
                                'scan'        : '',
@@ -158,6 +158,3 @@ class Targetflag(basetask.StandardTaskTemplate):
         job = casa_tasks.flagdata(**task_args)
             
         return self._executor.execute(job)
-
-
-

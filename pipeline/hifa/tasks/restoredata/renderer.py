@@ -55,8 +55,8 @@ def _get_flags(pipeline_context, results):
 
     # Extract information for each result, session, and vis.
     for r in results:
-        for session, res_summaries in r.flagging_summaries.items():
-            for vis, session_summaries in res_summaries.items():
+        for session, res_summaries in r.flagging_summaries.iteritems():
+            for vis, session_summaries in res_summaries.iteritems():
 
                 # Load the MS.
                 ms = pipeline_context.observing_run.get_ms(name=vis)
@@ -68,7 +68,7 @@ def _get_flags(pipeline_context, results):
                 sci_spw_ids = [spw.id for spw in ms.get_spectral_windows(science_windows_only=True)]
 
                 # Extract information for each source in current vis.
-                for source, src_summary in session_summaries.items():
+                for source, src_summary in session_summaries.iteritems():
                     if source in sci_sources:
                         flags[source][vis] = {}
 

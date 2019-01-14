@@ -317,7 +317,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
                                            pol_ids=pols_list[i])
 
         # per-MS loop
-        for msobj, accumulator in registry.items():
+        for msobj, accumulator in registry.iteritems():
             rowmap = None
             if os.path.abspath(cal_name) == os.path.abspath(bl_name):
                 LOG.warn("%s is not yet baselined. Skipping flag by post-fit statistics for the data."

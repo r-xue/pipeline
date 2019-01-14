@@ -98,7 +98,7 @@ class SDSkyCalResults(common.SingleDishResults):
 #@task_registry.set_casa_commands_comment('Generates sky calibration table according to calibration strategy.')
 class SerialSDSkyCal(basetask.StandardTaskTemplate):
     Inputs = SDSkyCalInputs
-    ElevationDifferenceThreshold = 3.0 #deg
+    ElevationDifferenceThreshold = 3.0  # deg
 
     def prepare(self):
         args = self.inputs.to_casa_args()
@@ -112,7 +112,7 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
         # take calmode from calibration strategy if it is set to 'auto'
         if args['calmode'] is None or args['calmode'].lower() == 'auto':
             args['calmode'] = calibration_strategy['calmode']
-            
+
         # spw selection ---> task.prepare
         if args['spw'] is None or len(args['spw']) == 0:
             spw_list = ms.get_spectral_windows(science_windows_only=True)
@@ -148,7 +148,7 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
                 # filenamer requires field name instead of id
                 myargs['field'] = reference_field_name
                 try:
-                    # we temporarily need 'vis' 
+                    # we temporarily need 'vis'
                     myargs['vis'] = myargs['infile']
                     myargs['outfile'] = namer.calculate(output_dir=self.inputs.output_dir,
                                                         stage=self.inputs.context.stage, **myargs)
@@ -178,7 +178,7 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
                 is_caltable_empty = tb.nrows() == 0
             if is_caltable_empty:
                 continue
-                
+
             # make a note of the current inputs state before we start fiddling
             # with it. This origin will be attached to the final CalApplication.
             origin = callibrary.CalAppOrigin(task=SerialSDSkyCal,
@@ -200,8 +200,8 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
             calapps.append(calapp)
         
         results = SDSkyCalResults(task=self.__class__,
-                                    success=True,
-                                    outcome=calapps)
+                                  success=True,
+                                  outcome=calapps)
         return results
     
     def analyse(self, result):
@@ -219,9 +219,9 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
         #if ms_index == 1:
         #    resultdict[1][1][19].eldiff1[2] = -4.0
         ###
-        for field_id, eldfield in resultdict.items():
-            for antenna_id, eldant in eldfield.items():
-                for spw_id, eld in eldant.items():
+        for field_id, eldfield in resultdict.iteritems():
+            for antenna_id, eldant in eldfield.iteritems():
+                for spw_id, eld in eldant.iteritems():
                     eldiff0 = eld.eldiff0
                     eldiff1 = eld.eldiff1
                     if len(eldiff0) > 0:
@@ -236,8 +236,9 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
                     if eldmax >= threshold:
                         field_name = ms.fields[field_id].name
                         antenna_name = ms.antennas[antenna_id].name
-                        LOG.warn('Elevation difference bewteen ON and OFF for {} field {} antenna {} spw {} was {}deg exceeding the threhold {}deg'.format(
-                            ms.basename, field_name, antenna_name, spw_id, eldmax, threshold))                    
+                        LOG.warn('Elevation difference between ON and OFF for {} field {} antenna {} spw {} was {}deg'
+                                 ' exceeding the threshold {}deg'
+                                 ''.format(ms.basename, field_name, antenna_name, spw_id, eldmax, threshold))
             
         return result
     
@@ -368,13 +369,13 @@ def compute_elevation_difference(context, results):
                     # access DataTable to get elevation 
                     ro_datatable_name = os.path.join(context.observing_run.ms_datatable_name, ms.basename, 'RO')
                     with casatools.TableReader(ro_datatable_name) as tb:
-                        selected = tb.query('IF=={}&&ANTENNA=={}&&FIELD_ID=={}&&SRCTYPE==0'.format(spw_id, antenna_id,
-                                                                                                   field_id_on))
+                        selected = tb.query('IF=={}&&ANTENNA=={}&&FIELD_ID=={}&&SRCTYPE==0'
+                                            ''.format(spw_id, antenna_id, field_id_on))
                         timeon = selected.getcol('TIME')
                         elon = selected.getcol('EL')
                         selected.close()
-                        selected = tb.query('IF=={}&&ANTENNA=={}&&FIELD_ID=={}&&SRCTYPE!=0'.format(spw_id, antenna_id,
-                                                                                                   field_id_off))
+                        selected = tb.query('IF=={}&&ANTENNA=={}&&FIELD_ID=={}&&SRCTYPE!=0'
+                                            ''.format(spw_id, antenna_id, field_id_off))
                         timeoff = selected.getcol('TIME')
                         eloff = selected.getcol('EL')
                         selected.close()

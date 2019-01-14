@@ -270,7 +270,7 @@ class JobRequest(object):
             return hash(o)
 
         new_o = copy.deepcopy(o)
-        for k, v in new_o.items():
+        for k, v in new_o.iteritems():
             new_o[k] = self._gen_hash(v)
 
         return hash(tuple(frozenset(new_o.items())))

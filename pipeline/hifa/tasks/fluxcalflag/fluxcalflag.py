@@ -21,6 +21,7 @@ __all__ = [
 
 LOG = infrastructure.get_logger(__name__)
 
+
 class FluxcalFlagInputs(vdp.StandardInputs):
     """
     Initialise the flux calibration flagging task inputs object.
@@ -65,14 +66,14 @@ class FluxcalFlagInputs(vdp.StandardInputs):
         self.linesfile = linesfile
         self.applyflags = applyflags
 
+
 class FluxcalFlagResults(basetask.Results):
-    def __init__(self, vis, fluxcal_linelist=[], fluxcal_flagcmds=[],
-        refspwmap=[-1], science_spw_ids=[]):
+    def __init__(self, vis, fluxcal_linelist=[], fluxcal_flagcmds=[], refspwmap=[-1], science_spw_ids=[]):
         """
         Initialise the flux calibration flagging task results object.
         """
         super(FluxcalFlagResults, self).__init__()
-        self._vis=vis
+        self._vis = vis
         self._fluxcal_linelist = fluxcal_linelist
         self._fluxcal_flagcmds = fluxcal_flagcmds
         self._refspwmap = refspwmap
@@ -81,12 +82,12 @@ class FluxcalFlagResults(basetask.Results):
     def merge_with_context(self, context):
 
         if self._vis is None: 
-            LOG.error ( ' No results to merge ')
+            LOG.error(' No results to merge ')
             return
 
         # Store the refspwmap and flagging commands
         # in the context. Leave out the line list for now
-        ms = context.observing_run.get_ms( name = self._vis)
+        ms = context.observing_run.get_ms(name=self._vis)
         if ms:
             #ms.fluxcal_linelist = self._fluxcal_linelist
             ms.flagcmds.extend(self._fluxcal_flagcmds)
@@ -95,7 +96,7 @@ class FluxcalFlagResults(basetask.Results):
     def __repr__(self):
         if self._vis is None or not self._fluxcal_linelist:
             return('FluxcalFlagResults:\n'
-            '\tNo lines detected in flux calibrators')
+                   '\tNo lines detected in flux calibrators')
         else:
             linelist = 'FluxcalFlagResults:\n'
             for line in self._fluxcal_linelist:
@@ -124,34 +125,30 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
         # Return if the MS has no data with the required intent.
         flux_fields = inputs.ms.get_fields(inputs.field, intent=inputs.intent)
         if not flux_fields:
-            LOG.warning('Field(s) \'%s\' in %s have no data with intent %s' % 
-                (inputs.field, inputs.ms.basename, inputs.intent))
+            LOG.warning('Field(s) \'%s\' in %s have no data with intent %s' %
+                        (inputs.field, inputs.ms.basename, inputs.intent))
             result = FluxcalFlagResults(inputs.vis)
             result.summaries = summaries
             return result
 
         # Get the science spws. 
-        science_spws = inputs.ms.get_spectral_windows(task_arg=inputs.spw,
-            science_windows_only=True)
+        science_spws = inputs.ms.get_spectral_windows(task_arg=inputs.spw, science_windows_only=True)
         if not science_spws:
-            LOG.warning('No science spw(s) specified for %s' %
-                (inputs.ms.basename)) 
+            LOG.warning('No science spw(s) specified for %s' % inputs.ms.basename)
             result = FluxcalFlagResults(inputs.vis)
             result.summaries = summaries
             return result
         science_spw_ids = [spw.id for spw in science_spws]
         
         # Get all the spws. These will be used to construct refspwmap
-        all_spws = inputs.ms.get_spectral_windows(task_arg=inputs.spw,
-            science_windows_only=False)
+        all_spws = inputs.ms.get_spectral_windows(task_arg=inputs.spw, science_windows_only=False)
 
         # Read in user defined lines and append them to the builtin
         # lines dictionary.
         UserSolarSystemLineList = SolarSystemLineList.copy()
         if inputs.appendlines:
-            LOG.info('Appending user line list %s to builtin dictionary' % \
-                inputs.linesfile)
-            self._append_linesfile (UserSolarSystemLineList, inputs.linesfile)
+            LOG.info('Appending user line list %s to builtin dictionary' % inputs.linesfile)
+            self._append_linesfile(UserSolarSystemLineList, inputs.linesfile)
 
         # Get the pipeline to CASA intents mapping to be used in the CASA
         # flagging commands. Should be handled transparently by framework
@@ -178,13 +175,15 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
 
                 # Loop over the target solar system object lines
                 for molecule in UserSolarSystemLineList[field.name]:
-                    species = molecule[0]; lines = molecule[1]
+                    species = molecule[0]
+                    lines = molecule[1]
 
                     # Loop over the lines for each molecule
                     for line in lines:
 
                         # Return channel overlap for each line
-                        chanrange = self._get_chanrange (vis=inputs.ms.name,
+                        chanrange = self._get_chanrange(
+                            vis=inputs.ms.name,
                             fieldid=field.id, spwid=spw.id,
                             minfreq=1.0e9*line[0],
                             maxfreq=1.0e9*line[1],
@@ -192,7 +191,7 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
                         if chanrange == (None, None):
                             continue
                         LOG.info('    Found line %s %.3f~%.3fGHz in spw %d:%d~%d' %
-                            (species, line[0], line[1], spw.id, chanrange[0], chanrange[1]))
+                                 (species, line[0], line[1], spw.id, chanrange[0], chanrange[1]))
 
                         # Create the line object and add it into a list of
                         # line objects.
@@ -227,15 +226,13 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
                 allflagcmds.append("mode='summary' name='after'")
 
                 # Flag the data
-                task = casa_tasks.flagdata(
-                    vis=inputs.vis, mode='list',
-                    action='apply', inpfile=allflagcmds, savepars=False,
-                    flagbackup=False)
+                task = casa_tasks.flagdata(vis=inputs.vis, mode='list', action='apply', inpfile=allflagcmds,
+                                           savepars=False, flagbackup=False)
                 flagresults = self._executor.execute(task)
 
                 stats_before = {}
                 stats_after = {}
-                for summary in flagresults.keys():
+                for summary in flagresults:
                     if flagresults[summary]['name'] == 'before':
                         stats_before = flagresults[summary]
                     elif flagresults[summary]['name'] == 'after':
@@ -245,9 +242,8 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
                 else:
                     summaries = [stats_before, stats_after]
 
-        result = FluxcalFlagResults(
-            inputs.vis, fluxcal_linelist=fluxcal_lines, fluxcal_flagcmds=flagcmds, refspwmap=refspwmap,
-            science_spw_ids=science_spw_ids)
+        result = FluxcalFlagResults(inputs.vis, fluxcal_linelist=fluxcal_lines, fluxcal_flagcmds=flagcmds,
+                                    refspwmap=refspwmap, science_spw_ids=science_spw_ids)
         result.summaries = summaries
 
         return result
@@ -275,7 +271,8 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
                 fields = line.split()
                 if len(fields) < 4:
                     continue
-                source = fields[0]; species = fields[1]
+                source = fields[0]
+                species = fields[1]
                 region = (float(fields[2]), float(fields[3]))
 
                 # New source
@@ -331,8 +328,8 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
             prev_spwid = line.spwid
 
         # Delete the mask arrays
-        for key1 in maskarrays.keys():
-            for key2 in maskarrays[key1].keys():
+        for key1 in list(maskarrays.keys()):
+            for key2 in list(maskarrays[key1].keys()):
                 del(maskarrays[key1][key2])
             maskarrays[key1].clear()
 
@@ -340,13 +337,15 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
         return flagstats
 
     # Compute the reference spwmap
-    def _refspwmap (self, allspws, scispws, flagstats, threshold):
+    def _refspwmap(self, allspws, scispws, flagstats, threshold):
 
         # Determine which science windows should be flagged
         # entirely and which not. Assume that the same spw in
         # different fields will have the same flagging statistics
 
-        max_spwid = 0; flaggedspws = {}; unflaggedspws = {}
+        max_spwid = 0
+        flaggedspws = {}
+        unflaggedspws = {}
         for spw in scispws:
 
             # Find the maximum science spw id
@@ -390,21 +389,22 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
             for _, ufvalue in unflaggedspws.iteritems():
                 uctrfreq = ufvalue.centre_frequency.value
                 diff = abs(ctrfreq - uctrfreq)
-                if (diff < maxdiff):
+                if diff < maxdiff:
                     closest_spwid = ufvalue.id
                     maxdiff = diff
             if closest_spwid is not None:
                 refspwmap[fkey] = closest_spwid
-        
-        #return True, refspwmap
+
         return False, refspwmap
 
     # Generate flagging commands one per field and spw
-    def _flagcmds (self, fluxcal_lines, flagstats, obsmodes, threshold, flagall):
+    def _flagcmds(self, fluxcal_lines, flagstats, obsmodes, threshold, flagall):
 
         # Generate the flagging commands
-        flagcmds = []; flagcmd = ''
-        prev_fieldname = None; prev_spwid = None
+        flagcmds = []
+        flagcmd = ''
+        prev_fieldname = None
+        prev_spwid = None
         for line in fluxcal_lines:
 
             # Field or spw has changed so start a new command

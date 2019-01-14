@@ -83,7 +83,7 @@ class PhaseOffsetPlot(object):
         if self._caltables_loaded:
             return
         
-        data = [(state, common.CaltableWrapper.from_caltable(c)) for state, c in caltable_map.items()]
+        data = [(state, common.CaltableWrapper.from_caltable(c)) for state, c in caltable_map.iteritems()]
 
         # some sanity checks, as unequal caltables have bit me before
         # this doesn't work when WVR data are missing and should be interpolated over

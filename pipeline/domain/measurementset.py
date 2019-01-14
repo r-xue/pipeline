@@ -438,7 +438,7 @@ class MeasurementSet(object):
             return [spw for spw in self.spectral_windows if spw.id in selected]
 
         spws = []
-        for spw_id, channels in selected.items():
+        for spw_id, channels in selected.iteritems():
             spw_obj = self.get_spectral_window(spw_id)
             proxy = spectralwindow.SpectralWindowWithChannelSelection(spw_obj, 
                                                                       channels)
@@ -723,7 +723,7 @@ class MeasurementSet(object):
 
         with casatools.MSMDReader(vis) as msmd:
             spwsforfields = msmd.spwsforfields()
-            spwfieldkeys = [int(i) for i in spwsforfields.keys()]
+            spwfieldkeys = [int(i) for i in spwsforfields]
             spwfieldkeys.sort()
             spwfieldkeys = [str(i) for i in spwfieldkeys]
 

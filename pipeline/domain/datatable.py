@@ -208,6 +208,7 @@ class DataTableIndexer(object):
                                                    index_list < base + length), index_list)
         return perms_list - base
 
+
 class DataTableImpl(object):
     """
     DataTable is an object to hold meta data of scantable on memory. 
@@ -291,7 +292,7 @@ class DataTableImpl(object):
     def position_group_id(self):
         key = 'POSGRP_REP'
         if self.haskeyword(key):
-            return numpy.max(numpy.fromiter((int(x) for x in self.getkeyword(key).keys()), dtype=numpy.int32)) + 1
+            return numpy.max(numpy.fromiter((int(x) for x in self.getkeyword(key)), dtype=numpy.int32)) + 1
         else:
             return 0
 
@@ -331,7 +332,7 @@ class DataTableImpl(object):
             for key in self.tb2.keywordnames():
                 if re.match(pattern, key) is not None:
                     max_id = numpy.max(
-                        numpy.fromiter((int(x) for x in self.getkeyword(key).keys()), dtype=numpy.int32)) + 1
+                        numpy.fromiter((int(x) for x in self.getkeyword(key)), dtype=numpy.int32)) + 1
                     group_id = max(group_id, max_id)
             return group_id
         else:

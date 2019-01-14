@@ -32,7 +32,7 @@ class ObservingRun(object):
             self.virtual_science_spw_names = \
                 dict((s.name, int(s.id)) for s in ms.get_spectral_windows(science_windows_only=True))
             self.virtual_science_spw_shortnames = {}
-            for name in self.virtual_science_spw_names.keys():
+            for name in self.virtual_science_spw_names:
                 if 'ALMA' in name:
                     i = name.rfind('#')
                     if i != -1:

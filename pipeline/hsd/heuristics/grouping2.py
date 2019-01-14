@@ -80,9 +80,9 @@ class GroupByPosition2(api.Heuristic):
         # store the list in PosDict[i] where 'i' is the smallest row number in the list
         # Other spectra have a reference to 'i'
         LOG.debug('SelectDict.keys() : %s' % SelectDict.keys())
-        for sRA in SelectDict.keys():
+        for sRA in SelectDict:
             LOG.debug('len(SelectDict[%s].keys()) : %s' % (sRA, len(SelectDict[sRA].keys())))
-            for sDEC in SelectDict[sRA].keys():
+            for sDEC in SelectDict[sRA]:
                 PosDict[SelectDict[sRA][sDEC][0]] = SelectDict[sRA][sDEC]
                 if len(SelectDict[sRA][sDEC]) != 1:
                     for x in SelectDict[sRA][sDEC][1:]:

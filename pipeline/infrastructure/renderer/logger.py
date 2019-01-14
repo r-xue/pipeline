@@ -152,8 +152,8 @@ class PlotGroup(object):
 
         plot_groups = []        
         # create a dictonary like groups{"phase"}{"time"}=[plot1,plot2,plot3]
-        for y_axes in grouped.values():
-            for plots_with_common_axes in y_axes.values():
+        for y_axes in grouped.itervalues():
+            for plots_with_common_axes in y_axes.itervalues():
                 plot_groups.append(PlotGroup(plots_with_common_axes))
         
         return plot_groups
@@ -218,10 +218,10 @@ class PlotGroup(object):
         parameter_names = collections.defaultdict(int)
         # determine unique parameter names for our plots
         for plot in self.plots:
-            for k in plot.parameters.keys():
+            for k in plot.parameters:
                 parameter_names[k] += 1
         # get a list of selectors for each unique parameter
-        selectors = [self._get_selectors(p) for p in parameter_names.keys()]
+        selectors = [self._get_selectors(p) for p in parameter_names]
         # remove any redundant selectors
         selectors = [s for s in selectors if len(s) > 1]
         # numerically sort selectors by value
@@ -301,7 +301,7 @@ class Plot(object):
         """
         regex = re.compile('\W')
         css_classes = [Parameters.getCssId(parameter) + ''.join(regex.split(str(val)))
-                       for parameter, val in self.parameters.items()]
+                       for parameter, val in self.parameters.iteritems()]
         return string.join(css_classes)
 
     @property
@@ -319,7 +319,7 @@ class Plot(object):
         params = ''
         if len(self.parameters) > 0:
             params = [string.join((Parameters.getDescription(str(k)), str(v)), ' ') 
-                      for k, v in self.parameters.items() if k != "field"]
+                      for k, v in self.parameters.iteritems() if k != "field"]
             params = string.join(params, ', ').rstrip(', ')
             # eg. ' for antenna 1, spectral window 2'
             params = ' for ' + params

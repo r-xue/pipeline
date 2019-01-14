@@ -265,7 +265,7 @@ class StandardInputs(api.Inputs, MandatoryInputsMixin):
         # set the value of each parameter to that given in the input arguments
         # force context to be set first as some of the others depend on it.
         setattr(self, 'context', properties['context'])
-        for k, v in properties.items():
+        for k, v in properties.iteritems():
             if k not in kw_ignore:
                 try:
                     setattr(self, k, v)
@@ -356,7 +356,7 @@ class StandardInputs(api.Inputs, MandatoryInputsMixin):
         if args.get('intent', None) is not None:
             args['intent'] = utils.to_CASA_intent(ms, args['intent'])
 
-        for k, v in args.items():
+        for k, v in args.iteritems():
             if v is None:
                 del args[k]        
         return args
@@ -382,14 +382,14 @@ class ModeInputs(api.Inputs):
     def __init__(self, context, mode=None, **parameters):
         # create a dictionary of Inputs objects, one of each type
         self._delegates = {}
-        for k, task_cls in self._modes.items():
+        for k, task_cls in self._modes.iteritems():
             self._delegates[k] = task_cls.Inputs(context)
 
         # set the mode to the requested mode, thus setting the active Inputs
         self.mode = mode
         
         # set any parameters provided by the user
-        for k, v in parameters.items():
+        for k, v in parameters.iteritems():
             setattr(self, k, v)
 
     def _handle_multiple_vis(self, property_name):
@@ -465,7 +465,7 @@ class ModeInputs(api.Inputs):
         # otherwise, set the said attribute on all of our delegate Inputs. In
         # doing so, the user can switch mode at any time and have the new
         # Inputs present with all their previously set parameters.
-        for d in self._delegates.values():
+        for d in self._delegates.itervalues():
             if hasattr(d, name):
                 LOG.trace(
                     'Setting \'{0}\' attribute to \'{1}\' on \'{2}'
@@ -520,7 +520,7 @@ class ModeInputs(api.Inputs):
         all_args.update(args)        
 
         # now do the same for each inputs class we can switch between         
-        for task_cls in cls._modes.values():
+        for task_cls in cls._modes.itervalues():
             # get the arguments of the task Inputs constructor
             args = inspect.getargspec(task_cls.Inputs.__init__).args 
             # and add them to our set
@@ -1103,7 +1103,7 @@ class StandardTaskTemplate(api.Task):
             to_split = ('calphasetable', 'targetphasetable', 'offsetstable')
             split_properties = self._get_handled_headtails(to_split)
 
-            for name, ht in split_properties.items():
+            for name, ht in split_properties.iteritems():
                 setattr(self.inputs, name, ht.head)
 
             refant_tail = None
@@ -1127,7 +1127,7 @@ class StandardTaskTemplate(api.Task):
                 LOG.trace('Deleting VISLIST_RESET_KEY after task execution')
                 delattr(self.inputs, VISLIST_RESET_KEY)
 
-            for name, ht in split_properties.items():
+            for name, ht in split_properties.iteritems():
                 setattr(self.inputs, name, ht.tail)
 
             if hasattr(self.inputs, 'refant') and refant_tail is not None:

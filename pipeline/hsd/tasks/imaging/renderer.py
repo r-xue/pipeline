@@ -81,7 +81,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                 continue
             
             flattened = []
-            for inner in plot_list.values():
+            for inner in plot_list.itervalues():
                 for plot in inner:
                     flattened.append(plot)
             LOG.debug('flattened=%s'%((flattened)));
@@ -160,7 +160,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
         source_names = [filenamer.sanitize(s.name) for s in ms.sources]
         
         summary_plots = {}
-        for (field_name, plots) in plot_group.items():
+        for (field_name, plots) in plot_group.iteritems():
             spw_list = []
             summary_plots[field_name] = []
             best_plot = {}

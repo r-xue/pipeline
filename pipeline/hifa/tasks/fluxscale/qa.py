@@ -156,7 +156,7 @@ def score_kspw(context, result):
         return []
 
     # gather spw ID for all measurements in the result
-    measurement_spw_ids = {fd.spw_id for measurements in result.measurements.values() for fd in measurements}
+    measurement_spw_ids = {fd.spw_id for measurements in result.measurements.itervalues() for fd in measurements}
     measurement_spws = {spw for spw in ms.spectral_windows if spw.id in measurement_spw_ids}
 
     # run gaincalSNR

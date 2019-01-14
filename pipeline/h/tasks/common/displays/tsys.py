@@ -31,9 +31,9 @@ class TsysSummaryChart(object):
                             and tsys in tsys_in_caltable)
 
         tsysmap = collections.defaultdict(list)
-        for sci, tsys in self._spwmap.items():
+        for sci, tsys in self._spwmap.iteritems():
             tsysmap[tsys].append(sci)
-        self._tsysmap = dict((k, sorted(v)) for k, v in tsysmap.items())
+        self._tsysmap = dict((k, sorted(v)) for k, v in tsysmap.iteritems())
 
         self._figroot = os.path.join(context.report_dir, 
                                      'stage%s' % result.stage_number, 
@@ -74,7 +74,7 @@ class TsysSummaryChart(object):
         wrappers = []
 
         task = self.create_task()
-        for tsys_spw, science_spws in self._tsysmap.items():
+        for tsys_spw, science_spws in self._tsysmap.iteritems():
             wrapper = logger.Plot(self._real_figfiles[tsys_spw],
                                   x_axis='freq',
                                   y_axis='tsys',
@@ -103,9 +103,8 @@ class TsysSummaryChart(object):
 
 class TsysPerAntennaChart(common.PlotbandpassDetailBase):
     def __init__(self, context, result, **kwargs):
-        super(TsysPerAntennaChart, self).__init__(context, result, 'freq',
-                'tsys', overlay='time', showatm=True, showfdm=True,
-                chanrange='90%', **kwargs)
+        super(TsysPerAntennaChart, self).__init__(context, result, 'freq', 'tsys', overlay='time', showatm=True,
+                                                  showfdm=True, chanrange='90%', **kwargs)
 
         # create a mapping of Tsys windows to science windows
         calto = result.final[0]
@@ -123,7 +122,7 @@ class TsysPerAntennaChart(common.PlotbandpassDetailBase):
             if science_spw_id in science_spw_ids:
                 spwmap[tsys_spw_id].append(science_spw_id)                    
         self._tsys_map = dict((tsys_id, ','.join([str(i) for i in science_ids]))
-                              for tsys_id, science_ids in spwmap.items())
+                              for tsys_id, science_ids in spwmap.iteritems())
 
         # showfdm does not make sense for NRO
         if ms.antenna_array.name == 'NRO':
@@ -131,8 +130,8 @@ class TsysPerAntennaChart(common.PlotbandpassDetailBase):
 
     def plot(self):
         missing = [(spw_id, ant_id)
-                   for spw_id in self._figfile.keys() 
-                   for ant_id in self._antmap.keys()
+                   for spw_id in self._figfile
+                   for ant_id in self._antmap
                    if not os.path.exists(self._figfile[spw_id][ant_id])]
         if missing:
             LOG.trace('Executing new plotbandpass job for missing figures')
@@ -147,12 +146,12 @@ class TsysPerAntennaChart(common.PlotbandpassDetailBase):
                 return None
 
         wrappers = []
-        for tsys_spw_id in self._figfile.keys():
+        for tsys_spw_id in self._figfile:
             # some science windows may not have a Tsys window
             science_spws =self._tsys_map.get(tsys_spw_id, 'N/A')
-            for antenna_id, figfile in self._figfile[tsys_spw_id].items():
+            for antenna_id, figfile in self._figfile[tsys_spw_id].iteritems():
                 ant_name = self._antmap[antenna_id]
-                if os.path.exists(figfile):                    
+                if os.path.exists(figfile):
                     task = self.create_task(tsys_spw_id, antenna_id)
                     wrapper = logger.Plot(figfile,
                                           x_axis=self._xaxis,

@@ -829,9 +829,8 @@ class T2_1DetailsRenderer(object):
                 except:
                     LOG.debug("Baseband name cannot be parsed and will not appear in the weblog.")
 
-            for band in banddict.keys():
-                basebands = banddict[band].keys()
-                for baseband in basebands:
+            for band in banddict:
+                for baseband in banddict[band]:
                     spws = []
                     minfreqs = []
                     maxfreqs = []
@@ -1146,9 +1145,9 @@ class T2_2_7Renderer(T2_2_XRendererBase):
         if is_singledish_ms(context):
             ephem_names = casatools.measures.listcodes(casatools.measures.direction())['extra']
             valid_ephem_names = [x for x in ephem_names if x != 'COMET']
-            #LOG.info('valid_ephem_names={}'.format(valid_ephem_names))
+            # LOG.info('valid_ephem_names={}'.format(valid_ephem_names))
             for antenna in ms.antennas:
-                for (target, reference) in ms.calibration_strategy['field_strategy'].items():
+                for (target, reference) in ms.calibration_strategy['field_strategy'].iteritems():
                     LOG.debug('target field id %s / reference field id %s' % (target, reference))
                     # pointing pattern without OFF-SOURCE intents
                     task = pointing.SingleDishPointingChart(context, ms, antenna, 
@@ -1213,7 +1212,7 @@ class T2_3_XMBaseRenderer(RendererBase):
             scores[result.stage_number] = result.qa.representative
 
         tablerows = []
-        for list_of_results_lists in topic.results_by_type.values():
+        for list_of_results_lists in topic.results_by_type.itervalues():
             if not list_of_results_lists:
                 continue
             
@@ -1625,11 +1624,11 @@ class T2_4MDetailsRenderer(object):
 
             elif weblog.registry.render_by_session(task.__name__):
                 session_grouped = group_into_sessions(context, task_result)
-                for session_id, session_results in session_grouped.items():
+                for session_id, session_results in session_grouped.iteritems():
                     container_urls[session_id] = {}
                     ms_grouped = group_into_measurement_sets(context, session_results)
         
-                    for ms_id, ms_result in ms_grouped.items():
+                    for ms_id, ms_result in ms_grouped.iteritems():
                         cls.render_result(renderer, context, ms_result, ms_id)
     
                         ms_weblog_path = cls.get_path(context, ms_result, ms_id)

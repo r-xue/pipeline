@@ -36,7 +36,7 @@ class T2_4MDetailsFlagDeterBaseRenderer(basetemplates.T2_4MDetailsDefaultRendere
             toggle_to_filenames = {'online': 'fileonline',
                                    'template': 'filetemplate'}
             inputs = r.inputs
-            for toggle, filenames in toggle_to_filenames.items():
+            for toggle, filenames in toggle_to_filenames.iteritems():
                 src = inputs[filenames]
                 if inputs[toggle] and os.path.exists(src):
                     LOG.trace('Copying %s to %s' % (src, weblog_dir))

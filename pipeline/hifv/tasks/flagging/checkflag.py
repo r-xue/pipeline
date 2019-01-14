@@ -361,9 +361,8 @@ class Checkflag(basetask.StandardTaskTemplate):
             except Exception as ex:
                 LOG.warn("Exception: Baseband name cannot be parsed. {!s}".format(str(ex)))
 
-        for band in banddict.keys():
-            basebands = banddict[band].keys()
-            for baseband in basebands:
+        for band in banddict:
+            for baseband in banddict[band]:
                 spws = []
                 for spwitem in banddict[band][baseband]:
                     spws.append(spwitem.keys()[0])

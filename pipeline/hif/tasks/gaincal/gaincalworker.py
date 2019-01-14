@@ -93,7 +93,7 @@ class GaincalWorker(basetask.StandardTaskTemplate):
         orig_antenna = inputs.antenna
 
         jobs = []
-        for calto, calfroms in calstate.merged().items():
+        for calto, calfroms in calstate.merged().iteritems():
             # arrange a gaincal job for the data selection
             if ':' in inputs.spw or '~' in inputs.spw:
                 inputs.spw = orig_spw

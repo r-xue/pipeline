@@ -120,7 +120,7 @@ class SDInspection(object):
         science_windows = ms.get_spectral_windows(science_windows_only=True)
         assert hasattr(ms, 'calibration_strategy')
         field_strategy = ms.calibration_strategy['field_strategy']
-        for field_id in field_strategy.keys():
+        for field_id in field_strategy:
             fields = ms.get_fields(field_id)
             assert len(fields) == 1
             field = fields[0]

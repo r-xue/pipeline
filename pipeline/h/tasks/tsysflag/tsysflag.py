@@ -55,14 +55,11 @@ def _identify_ants_to_demote(flagging_state, ms, antenna_id_to_name):
     # antennas that are fully flagged for all available timestamps for one
     # or more fields belonging to one or more of the intents of interest
     # in one or more of the spws.
-    intents_found = set([key[0] for key in flagging_state.keys()])
+    intents_found = {key[0] for key in flagging_state}
     for intent in intents_found:
-        fields_found = set([key[1]
-                            for key in flagging_state.keys()
-                            if key[0] == intent])
+        fields_found = {key[1] for key in flagging_state if key[0] == intent}
         for field in fields_found:
-            spws_found = set([key[2] for key in flagging_state.keys()
-                              if key[0:2] == (intent, field)])
+            spws_found = {key[2] for key in flagging_state if key[0:2] == (intent, field)}
             for spwid in spws_found:
                 flags_per_ant = np.array(flagging_state[(intent, field, spwid)]).T
                 for iant, flag_for_ant in enumerate(flags_per_ant):
@@ -91,10 +88,9 @@ def _identify_ants_to_demote(flagging_state, ms, antenna_id_to_name):
 
     # Store the set of antennas that were fully flagged in at least
     # one Tsys spw, for any of the fields for any of the intents.
-    ants_to_demote_as_refant = {
-        antenna_id_to_name[iant]
-        for iants in ants_fully_flagged.values()
-        for iant in iants}
+    ants_to_demote_as_refant = {antenna_id_to_name[iant]
+                                for iants in ants_fully_flagged.itervalues()
+                                for iant in iants}
 
     return ants_to_demote_as_refant, ants_fully_flagged
 
@@ -126,24 +122,20 @@ def _identify_ants_to_remove(result, ms, metric_to_test, ants_fully_flagged, ant
 
     # Identify the field and intent combinations for which fully flagged
     # antennas were found.
-    intent_field_found = set([key[0:2] for key in ants_fully_flagged.keys()])
+    intent_field_found = {key[0:2] for key in ants_fully_flagged}
     for (intent, field) in intent_field_found:
 
         # Identify the spws for which fully flagged antennas were found (for current
         # intent and field).
-        spws_found = set([key[2] for key in ants_fully_flagged.keys()
-                          if key[0:2] == (intent, field)])
+        spws_found = {key[2] for key in ants_fully_flagged if key[0:2] == (intent, field)}
 
         # Only proceed if the set of spws for which flagged antennas were found is
         # the same as the set of spws declared by CalTo, i.e. flagged antennas
         # were found in all spws.
         if spws_found == set(tsys_spw_ids):
             # Select the fully flagged antennas for current intent and field.
-            ants_fully_flagged_for_intent_field = [
-                ants_fully_flagged[key]
-                for key in ants_fully_flagged.keys()
-                if key[0:2] == (intent, field)
-            ]
+            ants_fully_flagged_for_intent_field = [ants_fully_flagged[key] for key in ants_fully_flagged
+                                                   if key[0:2] == (intent, field)]
 
             # Identify which antennas are fully flagged in all spws, for
             # current intent and field, and store these for later warning
@@ -330,7 +322,7 @@ class Tsysflag(basetask.StandardTaskTemplate):
             return result
         else:
             # Store each metric result in final result.
-            for metric, metric_result in hresults.items():
+            for metric, metric_result in hresults.iteritems():
                 result.add(metric, metric_result)
             # Store order of metrics in result.
             result.metric_order.extend(metric_order)
@@ -372,7 +364,7 @@ class Tsysflag(basetask.StandardTaskTemplate):
 
         # Create list of all flagging commands.
         flagcmds = []
-        for component in components.values():
+        for component in components.itervalues():
             flagcmds.extend(component.flagging)
 
         # Create and execute flagsetter task for original caltable.
@@ -673,7 +665,7 @@ class Tsysflag(basetask.StandardTaskTemplate):
 
         # Extract "before" and/or "after" summary
         # Go through dictionary of reports...
-        for report in fsresult.results[0].values():
+        for report in fsresult.results[0].itervalues():
             if report['name'] == 'before':
                 stats_before = report
             if report['name'] == 'after':
@@ -718,7 +710,7 @@ class Tsysflag(basetask.StandardTaskTemplate):
 
         # If any of the requested metrics are not defined in the metric order,
         # then log an error and stop further evaluation of Tsysflag.
-        for metric_name, metric_enabled in metrics_from_inputs.items():
+        for metric_name, metric_enabled in metrics_from_inputs.iteritems():
             if metric_enabled and metric_name not in metric_order_as_list:
                 errmsg = (
                     "Flagging metric '{0}' is enabled, but not specified in"

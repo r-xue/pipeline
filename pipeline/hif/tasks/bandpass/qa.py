@@ -61,8 +61,8 @@ class BandpassQAPool(pqa.QAScorePool):
         min_id = None
         min_spw = None
 
-        for spw_str, spwdict in rawscores.items():
-            for id_str, score in spwdict.items():
+        for spw_str, spwdict in rawscores.iteritems():
+            for id_str, score in spwdict.iteritems():
                 if score < min_score:
                     min_score = score
                     min_spw = spw_str

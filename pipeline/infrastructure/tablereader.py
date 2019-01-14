@@ -291,12 +291,12 @@ class MeasurementSetReader(object):
             if 'ALMA' in msmd.observatorynames():
                 sbinfo = SBSummaryTable.get_sbsummary_info(ms, msmd.observatorynames())
                 if sbinfo[0] is None:
-                    LOG.warn('Unable to identify representative target for %s. Will try to fall back to existing '
-                             'science target sources in the imaging tasks.' % ms.basename)
+                    LOG.warn('Unable to identify representative target for %s. Will try to fall back to existing'
+                             ' science target sources in the imaging tasks.' % ms.basename)
                 else:
                     if sbinfo[0] == 'none':
-                        LOG.warn('Representative target for %s is set to "none". Will try to fall back to existing '
-                                 'science target sources or calibrators in the imaging tasks.' % ms.basename)
+                        LOG.warn('Representative target for %s is set to "none". Will try to fall back to existing'
+                                 ' science target sources or calibrators in the imaging tasks.' % ms.basename)
                     LOG.info('Populating ms.representative_target ...')
                     ms.representative_target = (sbinfo[0], sbinfo[1], sbinfo[2])
                 LOG.info('Populating ms.science_goals ...')
@@ -920,7 +920,7 @@ class BandDescriber(object):
         else:
             bands = BandDescriber.unknown
     
-        for rng, description in bands.items():
+        for rng, description in bands.iteritems():
             if rng.contains(f):
                 return description
         

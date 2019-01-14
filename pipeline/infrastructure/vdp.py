@@ -529,7 +529,7 @@ class InputsContainer(object):
             else:
                 remapped[key] = [os.path.basename(remove_slash(v)) for v in remapped[key]]
 
-        task_args = ['%s=%r' % (k, v) for k, v in remapped.items()
+        task_args = ['%s=%r' % (k, v) for k, v in remapped.iteritems()
                      if k not in ['self', 'context']
                      and v is not None]
 
@@ -810,7 +810,7 @@ class StandardInputs(api.Inputs):
         if args.get('intent', None) is not None:
             args['intent'] = utils.to_CASA_intent(ms, args['intent'])
 
-        for k, v in args.items():
+        for k, v in list(args.items()):
             if v is None:
                 del args[k]        
         return args
@@ -840,13 +840,14 @@ class ModeInputs(api.Inputs):
 
     def __init__(self, context, mode=None, **parameters):
         # create a dictionary of Inputs objects, one of each type
-        self._delegates = {k: task_cls.Inputs(context, vis=parameters['vis']) for k, task_cls in self._modes.items()}
+        self._delegates = {k: task_cls.Inputs(context, vis=parameters['vis'])
+                           for k, task_cls in self._modes.iteritems()}
 
         # set the mode to the requested mode, thus setting the active Inputs
         self.mode = mode
 
         # set any parameters provided by the user
-        for k, v in parameters.items():
+        for k, v in parameters.iteritems():
             setattr(self, k, v)
 
     def __getattr__(self, name):
@@ -914,7 +915,7 @@ class ModeInputs(api.Inputs):
         # otherwise, set the said attribute on all of our delegate Inputs. In
         # doing so, the user can switch mode at any time and have the new
         # Inputs present with all their previously set parameters.
-        for d in self._delegates.values():
+        for d in self._delegates.itervalues():
             if hasattr(d, name):
                 LOG.trace('Setting {!s}.{!s} = {!r}'.format(self.__class__.__name__, name, val))
                 setattr(d, name, val)
@@ -966,7 +967,7 @@ class ModeInputs(api.Inputs):
         all_args.update(args)
 
         # now do the same for each inputs class we can switch between
-        for task_cls in cls._modes.values():
+        for task_cls in cls._modes.itervalues():
             # get the arguments of the task Inputs constructor
             args = inspect.getargspec(task_cls.Inputs.__init__).args
             # and add them to our set
@@ -1009,7 +1010,7 @@ def gen_hash(o):
         return hash(o)
 
     new_o = copy.deepcopy(o)
-    for k, v in new_o.items():
+    for k, v in new_o.iteritems():
         new_o[k] = gen_hash(v)
 
     return hash(tuple(frozenset(new_o.items())))

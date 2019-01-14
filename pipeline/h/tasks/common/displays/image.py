@@ -308,7 +308,7 @@ class ImageDisplay(object):
         # this is not sufficient; the standard Normalize gets called 
         # by something in matplotlib and initialises vmin and vmax incorrectly.
         sentinel_mask = np.zeros(np.shape(data), np.bool)
-        for sentinel in sentinels.keys():
+        for sentinel in sentinels:
             sentinel_mask += (data == sentinel)
         actual_data = data[np.logical_not(sentinel_mask)]
         # watch out for nans which mess up vmin, vmax
@@ -584,7 +584,7 @@ class _SentinelMap(Colormap):
         else:
             mult = 1
 
-        for sentinel, rgb in self.sentinels.items():
+        for sentinel, rgb in self.sentinels.iteritems():
             r, g, b = rgb
             if np.ndim(rgba) == 3:
                 rgba[:, :, 0][scaledData == sentinel] = r * mult

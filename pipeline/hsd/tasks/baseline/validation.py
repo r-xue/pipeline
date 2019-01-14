@@ -257,6 +257,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         if len(window) != 0 and windowmode == 'replace':
             LOG.info('Skip clustering analysis since predefined line window is set.')
             lines = _to_validated_lines(detect_signal)
+            # TODO: review whether this relies on order of dictionary values.
             signal = detect_signal.values()[0]
             for i in index_list:
                 vis, row = indexer.serial2perms(i)
@@ -595,6 +596,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         """
         # grouping by position
         Gthreshold = 1.0 / 3600.
+        # TODO: review whether the following relies on a specific order of keys.
         DSkey = DS.keys()
         PosGroup = []
         # PosGroup: [[ID,ID,ID],[ID,ID,ID],...,[ID,ID,ID]]
@@ -648,12 +650,14 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                                 Lines[2] += 1.0
                                 # clear identical line
                                 data[nID][j] = [-1, -1, 1]
-                        if Lines[2] > 0: tmp.append([nID, [Lines[0]/Lines[2], Lines[1]/Lines[2], ref[2]]])
+                        if Lines[2] > 0:
+                            tmp.append([nID, [Lines[0]/Lines[2], Lines[1]/Lines[2], ref[2]]])
                     if len(tmp) / NSP >= threshold:
                         for nID, ref in tmp:
                             ret[nID].append(ref)
         for ID in data.keys():
-            if len(ret[ID]) == 0: ret[ID].append([-1, -1, 1])
+            if len(ret[ID]) == 0:
+                ret[ID].append([-1, -1, 1])
 
         return ret
 
@@ -1817,7 +1821,7 @@ def _eval_poly(xorder, yorder, x, y, xcoeff, ycoeff):
 def _to_validated_lines(detect_lines):
     # conversion from [chmin, chmax] to [center, width, T/F]
     lines = []
-    for line_prop in detect_lines.values():
+    for line_prop in detect_lines.itervalues():
         for line in line_prop[2]:
             if line not in lines:
                 lines.append(line)

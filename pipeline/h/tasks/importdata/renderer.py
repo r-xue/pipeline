@@ -83,7 +83,7 @@ def make_flux_table(context, results):
         if len(single_result.measurements) is 0:
             continue
             
-        for field_arg, measurements in single_result.measurements.items():
+        for field_arg, measurements in single_result.measurements.iteritems():
             field = ms_for_result.get_fields(field_arg)[0]
             field_cell = '%s (#%s)' % (field.name, field.id)
 

@@ -33,7 +33,7 @@ class T2_4MDetailsSetjyRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                                       intents)
             self.sort_plots_by_baseband(plots)
 
-            for vis, vis_plots in plots.items():
+            for vis, vis_plots in plots.iteritems():
                 amp_vs_uv_summary_plots[vis].extend(vis_plots)
 
         table_rows = make_flux_table(context, result)
@@ -42,7 +42,7 @@ class T2_4MDetailsSetjyRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     'table_rows': table_rows})
 
     def sort_plots_by_baseband(self, d):
-        for vis, plots in d.items():
+        for vis, plots in d.iteritems():
             plots = sorted(plots, 
                            key=lambda plot: plot.parameters['baseband'])
             d[vis] = plots
@@ -62,7 +62,7 @@ class T2_4MDetailsSetjyRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         # create a fake CalTo object so we can use the applycal class
         spws = []
-        for fieldname in result.measurements.keys():
+        for fieldname in result.measurements:
             for fluxm in result.measurements[fieldname]:
                 spws.append(fluxm.spw_id)
         spwlist = ','.join([str(i) for i in spws])
@@ -107,7 +107,7 @@ def make_flux_table(context, results):
             LOG.trace('Copying %s to %s' % (fluxcsv_filename, weblog_dir))
             shutil.copy(fluxcsv_filename, weblog_dir)
 
-        for field_arg, measurements in single_result.measurements.items():
+        for field_arg, measurements in single_result.measurements.iteritems():
             field = ms_for_result.get_fields(field_arg)[0]
             intents = " ".join(field.intents.intersection({'AMPLITUDE', 'BANDPASS', 'CHECK', 'PHASE'}))
             field_cell = '%s (#%s) %s' % (field.name, field.id, intents)

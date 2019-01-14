@@ -435,7 +435,7 @@ class Bandpassflag(basetask.StandardTaskTemplate):
         # one spw, for any of the fields for any of the intents.
         ants_to_demote_as_refant = {
             antenna_id_to_name[iant]
-            for iants in ants_fully_flagged.values()
+            for iants in ants_fully_flagged.itervalues()
             for iant in iants}
 
         return ants_to_demote_as_refant, ants_fully_flagged
@@ -452,15 +452,14 @@ class Bandpassflag(basetask.StandardTaskTemplate):
         # Check if any antennas were found to be fully flagged in all
         # spws, for any intent.
 
-        # Identify the field and intent combinations for which fully flagged
+        # Identify the unique field and intent combinations for which fully flagged
         # antennas were found.
-        intent_field_found = set([key[0:2] for key in ants_fully_flagged.keys()])
+        intent_field_found = {key[0:2] for key in ants_fully_flagged}
         for (intent, field) in intent_field_found:
 
-            # Identify the spws for which fully flagged antennas were found (for current
+            # Identify the unique spws for which fully flagged antennas were found (for current
             # intent and field).
-            spws_found = set([key[2] for key in ants_fully_flagged.keys()
-                              if key[0:2] == (intent, field)])
+            spws_found = {key[2] for key in ants_fully_flagged.iterkeys() if key[0:2] == (intent, field)}
 
             # Only proceed if the set of spws for which flagged antennas were found
             # matches the set of spws for which correctedampflag ran.
@@ -468,7 +467,7 @@ class Bandpassflag(basetask.StandardTaskTemplate):
                 # Select the fully flagged antennas for current intent and field.
                 ants_fully_flagged_for_intent_field = [
                     ants_fully_flagged[key]
-                    for key in ants_fully_flagged.keys()
+                    for key in ants_fully_flagged
                     if key[0:2] == (intent, field)
                 ]
 

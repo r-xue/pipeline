@@ -51,10 +51,9 @@ class FluxCalibrationResults(basetask.Results):
             measurements = copy.deepcopy(self.measurements[field_id])
 
             LOG.info('Recording flux density measurements for {field} '
-                     'in {vis}:\n\t{measurements}'.format(
-                field=','.join([f.identifier for f in fields]),
-                vis=ms.basename,
-                measurements='\n\t'.join([str(m) for m in measurements])))
+                     'in {vis}:\n\t{measurements}'
+                     ''.format(field=','.join([f.identifier for f in fields]), vis=ms.basename,
+                               measurements='\n\t'.join([str(m) for m in measurements])))
 
             # there should only be one flux measurement per field/spw/origin,
             # hence we loop through removing any stale measurements before
@@ -71,7 +70,7 @@ class FluxCalibrationResults(basetask.Results):
 
     def __repr__(self):
         s = 'Flux calibration results for %s:\n' % os.path.basename(self.vis)
-        for field, flux_densities in self.measurements.items():
+        for field, flux_densities in self.measurements.iteritems():
             flux_by_spw = sorted(flux_densities, key=lambda f: f.spw_id)                    
             # rather complicated string format to display something like:
             # 0841+708 spw #0: I=3.2899 Jy; Q=0 Jy; U=0 Jy; V=0 Jy
