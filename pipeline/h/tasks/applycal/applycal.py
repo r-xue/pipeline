@@ -197,7 +197,14 @@ class Applycal(basetask.StandardTaskTemplate):
         calstate = inputs.context.callibrary.get_calstate(calto)
         calstate = callibrary.fix_cycle0_data_selection(self.inputs.context, calstate)
 
-        merged = calstate.merged()
+        # The 'hide_empty=True' is important here. The working calstate
+        # contains empty state for MSes outside the scope of this task, i.e.,
+        # MSes in the context that are not specified in inputs.vis for this
+        # task. These extra MSes cause problems in weblog code downstream,
+        # which expects results.applied to refer to just the MSes specified in
+        # the inputs. Using hide_empty gives the data the expected shape.
+        merged = calstate.merged(hide_empty=True)
+
         if contains_uvcont_table(merged):
             LOG.info('Calibration state contains uvcont tables: reverting to non-callibrary applycal call')
             jobs = jobs_without_calapply(calstate, inputs, self.modify_task_args)
