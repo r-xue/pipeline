@@ -342,12 +342,26 @@ def get_valid_ms_members(group_desc, msname_filter, ant_selection, field_selecti
         ant_id = member.antenna_id
         msobj = member.ms
         if msobj.name in [os.path.abspath(name) for name in msname_filter]:
+            _field_selection = field_selection
             try:
+                nfields = len(msobj.fields)
+                if not field_selection.isdigit():
+                    # selection by name, bracket by ""
+                    LOG.debug('non-digit field selection')
+                    _field_selection = '"{}"'.format(field_selection)
+                else:
+                    tmp_id = int(field_selection)
+                    LOG.debug('field_id = {}'.format(tmp_id))
+                    if tmp_id < 0 or nfields <= tmp_id:
+                        # could be selection by name consisting of digits, bracket by ""
+                        LOG.debug('field name consisting digits')
+                        _field_selection = '"{}"'.format(field_selection)
+                LOG.debug('field_selection = "{}"'.format(_field_selection))
                 mssel = casatools.ms.msseltoindex(vis=msobj.name, spw=spw_selection,
-                                                  field=field_selection, baseline=ant_selection)
+                                                  field=_field_selection, baseline=ant_selection)
             except RuntimeError as e:
                 LOG.trace('RuntimeError: {0}'.format(str(e)))
-                LOG.trace('vis="{0}" field_selection: "{1}"'.format(msobj.name, field_selection))
+                LOG.trace('vis="{0}" field_selection: "{1}"'.format(msobj.name, _field_selection))
                 continue
             spwsel = mssel['spw']
             fieldsel = mssel['field']
