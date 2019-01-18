@@ -367,7 +367,7 @@ class Tclean(cleanbase.CleanBase):
                     self.width_as_frequency = inputs.width
 
                 channel_width_manual = qaTool.convert(inputs.width, 'Hz')['value']
-                if channel_width_manual < channel_width_auto:
+                if abs(channel_width_manual) < channel_width_auto:
                     LOG.error('User supplied channel width (%s) smaller than native '
                               'value of %s GHz for Field %s SPW %s' % (channel_width_manual/1e9, channel_width_auto/1e9, inputs.field, inputs.spw))
                     error_result = TcleanResult(vis=inputs.vis,
@@ -382,8 +382,8 @@ class Tclean(cleanbase.CleanBase):
 
                 LOG.info('Using supplied width %s' % inputs.width)
                 channel_width = channel_width_manual
-                if channel_width > channel_width_auto:
-                    inputs.nbin = int(round(channel_width / channel_width_auto) + 0.5)
+                if abs(channel_width) > channel_width_auto:
+                    inputs.nbin = abs(int(round(channel_width / channel_width_auto) + 0.5))
             elif inputs.nbin not in (None, -1):
                 LOG.info('Applying binning factor %d' % inputs.nbin)
                 channel_width *= inputs.nbin
