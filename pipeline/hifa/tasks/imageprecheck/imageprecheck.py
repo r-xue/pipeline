@@ -8,6 +8,7 @@ import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.utils as utils
+import pipeline.infrastructure.imageparamsfilehandler as imageparamsfilehandler
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.hifa.heuristics import imageprecheck
@@ -177,7 +178,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
         else:
             field_ids = image_heuristics.field('TARGET', repr_field)
             phasecenter = None
-        cont_spwids = [s for s in context.observing_run.virtual_science_spw_ids]
+        cont_spwids = [s for s in context.observing_run.virtual_science_spw_ids.keys()]
         cont_spwids.sort()
         cont_spw = ','.join(map(str, cont_spwids))
         num_cont_spw = len(cont_spwids)
@@ -276,7 +277,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
             if sensitivity_bandwidth is None:
                 sensitivity_bandwidth = cqa.quantity(_bandwidth, 'Hz')
 
-        # Apply robust heuristic based on beam sizes for robust=(-0.5, 0.5, 2.0)
+        # Apply robust heuristic based on beam sizes for robust=(-0.5, 0.0, 0.5, 1.0, 2.0)
         if reprBW_mode in ['nbin', 'repr_spw']:
             hm_robust, hm_robust_score = imageprecheck_heuristics.compare_beams( \
                 beams[(-0.5, str(default_uvtaper), 'repBW')], \
@@ -285,7 +286,8 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
                 beams[(1.0, str(default_uvtaper), 'repBW')], \
                 beams[(2.0, str(default_uvtaper), 'repBW')], \
                 minAcceptableAngResolution, \
-                maxAcceptableAngResolution)
+                maxAcceptableAngResolution, \
+                gridder == 'mosaic')
         else:
             hm_robust, hm_robust_score = imageprecheck_heuristics.compare_beams( \
                 beams[(-0.5, str(default_uvtaper), 'aggBW')], \
@@ -294,7 +296,8 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
                 beams[(1.0, str(default_uvtaper), 'aggBW')], \
                 beams[(2.0, str(default_uvtaper), 'aggBW')], \
                 minAcceptableAngResolution, \
-                maxAcceptableAngResolution)
+                maxAcceptableAngResolution, \
+                gridder == 'mosaic')
 
         if real_repr_target:
             # Determine heuristic UV taper value
