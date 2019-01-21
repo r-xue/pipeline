@@ -109,8 +109,7 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
                     # Clean up order of channel ranges high to low
                     chan1 = '{0}~{1}'.format(minchan_lo, maxchan_lo)
                     chan2 = '{0}~{1}'.format(minchan_hi, maxchan_hi)
-                    chans = [chan1, chan2]
-                    chans.sort()
+                    chans = sorted([chan1, chan2])
                     cmd = '{0}:{1};{2}'.format(spw.id, chans[0], chans[1])
                     to_flag.append(cmd)
 

@@ -90,7 +90,7 @@ def convert_args(pipeline_cls, casa_args, convert_nulls=True):
 
 def _convert_null(val):
     # convert empty string to None
-    if type(val) is types.StringType:
+    if isinstance(val, str):
         return None if val in ['', 'context'] else val
 
     # convert empty lists and ['', ''] etc to None

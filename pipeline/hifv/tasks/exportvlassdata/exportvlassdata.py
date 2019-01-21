@@ -174,7 +174,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
         # Force inputs.vis to be a list.
         vislist = vis
-        if type(vislist) is types.StringType:
+        if isinstance(vislist, str):
             vislist = [vislist, ]
         if imaging:
             vislist = [vis for vis in vislist if context.observing_run.get_ms(name=vis).is_imaging_ms]

@@ -207,8 +207,7 @@ class taskutil(object):
                 print('No parameter<P>', file=f)
             else:
                 print('<TABLE BORDER="1">', file=f)
-                keys = paramlist[0].keys()
-                keys.sort()
+                keys = sorted(paramlist[0].keys())
                 line = ''
                 for j in xrange(len(keys)):
                     truekey = keys[j][2:]
@@ -256,8 +255,7 @@ class hetaskutil(object):
         
     @property
     def keys(self):
-        keys = self.tasks.keys()[:]
-        keys.sort()
+        keys = sorted(self.tasks.keys()[:])
         return keys    
     
     def addmodule(self, name, title, version=2):

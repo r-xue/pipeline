@@ -137,8 +137,7 @@ class ImageDisplay(object):
 
         vis = results.vis
         flagcmds = results.flagcmds()
-        descriptionlist = results.descriptions()
-        descriptionlist.sort()
+        descriptionlist = sorted(results.descriptions())
 
         for description in descriptionlist:
             xtitle = results.first(description).axes[0].name

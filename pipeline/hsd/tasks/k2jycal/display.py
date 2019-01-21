@@ -24,7 +24,7 @@ class K2JyHistDisplay(object):
         self.stage_dir = stage
         self.spw = spw
         self.band = bandname
-        if type(valid_factors)==dict or numpy.iterable(valid_factors)==1:
+        if isinstance(valid_factors, dict) or numpy.iterable(valid_factors) == 1:
             self.factors = valid_factors
         else:
             raise ValueError("valid_factors should be dictionary or an iterable")

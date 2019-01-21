@@ -681,8 +681,7 @@ class Finalcals(basetask.StandardTaskTemplate):
                 spidx = fluxscale_result[fieldid]['spidx']
                 # fittedfluxd = []
 
-                freqs = freqs[uspws]
-                freqs.sort()
+                freqs = sorted(freqs[uspws])
 
                 fittedfluxd = [
                     10.0 ** (spidx[0] + spidx[1] * math.log10(x / fitreff) + spidx[2] * (math.log10(x / fitreff)) ** 2)

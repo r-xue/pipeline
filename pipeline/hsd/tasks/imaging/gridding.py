@@ -90,27 +90,27 @@ class GriddingBase(basetask.StandardTaskTemplate):
         assert datatable_dict is not None
         inputs = self.inputs
         context = inputs.context
-        if type(inputs.antennaids) == int:
+        if isinstance(inputs.antennaids, int):
             self.antenna = [inputs.antennaids]
         else:
             self.antenna = inputs.antennaids
         # Make sure using parent MS name
-        if type(inputs.infiles) == str:
+        if isinstance(inputs.infiles, str):
             self.files = [common.get_parent_ms_name(context, inputs.infiles)]
         else:
             self.files = [ common.get_parent_ms_name(context, name) for name in inputs.infiles]
-        if type(inputs.spwids) == int:
+        if isinstance(inputs.spwids, int):
             self.spw = [inputs.spwids]
         else:
             self.spw = inputs.spwids
         # maps variety of spwid among MSes (not supposed to happen)
         self.msidxs = [common.get_parent_ms_idx(context, name) for name in self.files]
         self.spwmap = dict([(m, s) for (m, s) in itertools.izip(self.msidxs, self.spw)])
-        if type(inputs.fieldids) == int:
+        if isinstance(inputs.fieldids, int):
             self.field = [inputs.fieldids]
         else:
             self.field = inputs.fieldids
-        if type(inputs.poltypes) == int:
+        if isinstance(inputs.poltypes, int):
             self.poltype = [inputs.poltypes]
         else:
             self.poltype = inputs.poltypes

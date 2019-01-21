@@ -908,11 +908,11 @@ class SDChannelMapDisplay(SDImageDisplay):
                 del masked_data
                 Vmax0 = Map.max()
                 Vmin0 = Map.min()
-                if type(scale_max) == bool:
+                if isinstance(scale_max, bool):
                     Vmax = Vmax0 - (Vmax0 - Vmin0) * 0.1
                 else:
                     Vmax = scale_max
-                if type(scale_min) == bool:
+                if isinstance(scale_min, bool):
                     Vmin = Vmin0 + (Vmax0 - Vmin0) * 0.1
                 else:
                     Vmin = scale_min

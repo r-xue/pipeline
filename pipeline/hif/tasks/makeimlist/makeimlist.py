@@ -285,8 +285,7 @@ class MakeImList(basetask.StandardTaskTemplate):
             spw = inputs.spw
    
             if spw == '':
-                spwids = inputs.context.observing_run.virtual_science_spw_ids.keys()
-                spwids.sort()
+                spwids = sorted(inputs.context.observing_run.virtual_science_spw_ids.keys())
             else:
                 spwids = spw.split(',')
             spw = ','.join("'%s'" % (spwid) for spwid in spwids)
@@ -353,7 +352,7 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                 # Parse hm_cell to get optional pixperbeam setting
                 cell = inputs.hm_cell
-                if type(cell) is types.StringType:
+                if isinstance(cell, str):
                     pixperbeam = float(cell.split('ppb')[0])
                     cell = []
                 else:
@@ -483,7 +482,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                 # if imsize not set then use heuristic code to calculate the
                 # centers for each field/spwspec
                 imsize = inputs.hm_imsize
-                if type(imsize) is types.StringType:
+                if isinstance(imsize, str):
                     sfpblimit = float(imsize.split('pb')[0])
                     imsize = []
                 else:

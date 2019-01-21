@@ -61,8 +61,7 @@ class SliceDisplay(object):
 
         if description_to_plot is None:
             # plot all results
-            descriptionlist = results.descriptions()
-            descriptionlist.sort()
+            descriptionlist = sorted(results.descriptions())
         else:
             # plot just this one
             descriptionlist = [description_to_plot]

@@ -82,7 +82,7 @@ class CalApplication(object):
         # wrap these values in a list if they are single valued,
         # eg. 'm31' -> ['m31']
         for key in ('gainfield', 'gaintable', 'interp'):
-            if type(d[key]) is types.StringType:
+            if isinstance(d[key], str):
                 d[key] = [d[key]]
         for key in ('calwt',):
             if isinstance(d[key], bool):
@@ -134,7 +134,7 @@ class CalApplication(object):
         }
 
         for key in ('gaintable', 'gainfield', 'spwmap', 'interp', 'calwt'):
-            if type(args[key]) is types.StringType:
+            if isinstance(args[key], str):
                 args[key] = '\'%s\'' % args[key]
 
         return ('applycal(vis=\'{vis}\', field=\'{field}\', '
@@ -446,10 +446,10 @@ class CalFrom(object):
         if gaintable is None:
             raise ValueError('gaintable must be specified. Got None')
 
-        if type(gainfield) is not types.StringType:
+        if not isinstance(gainfield, str):
             raise ValueError('gainfield must be a string. Got %s' % str(gainfield))
 
-        if type(interp) is not types.StringType:
+        if not isinstance(interp, str):
             raise ValueError('interp must be a string. Got %s' % str(interp))
 
         if isinstance(spwmap, tuple):
@@ -729,7 +729,7 @@ class DictCalState(collections.defaultdict):
         if caltypes is None:
             caltypes = CalFrom.CALTYPES.keys()
 
-        if type(caltypes) is types.StringType:
+        if isinstance(caltypes, str):
             caltypes = (caltypes,)
 
         for c in caltypes:
@@ -1866,7 +1866,7 @@ class IntervalCalState(object):
         if caltypes is None:
             caltypes = CalFrom.CALTYPES.keys()
 
-        if type(caltypes) is types.StringType:
+        if isinstance(caltypes, str):
             caltypes = (caltypes,)
 
         for c in caltypes:

@@ -211,7 +211,7 @@ class FileNameComponentBuilder(object):
 
 
 def sort_spws(unsorted):
-    if type(unsorted) != str or ',' not in unsorted:
+    if not isinstance(unsorted, str) or ',' not in unsorted:
         return unsorted
     vals = unsorted.split(',')
     return ','.join(utils.numeric_sort(vals))

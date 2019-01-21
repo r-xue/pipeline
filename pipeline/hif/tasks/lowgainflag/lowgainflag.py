@@ -456,10 +456,7 @@ class LowgainflagView(object):
         # same diameter.
         for antdiam in ant_diameters:
             # Identify antennas with current diameter.
-            antenna_ids = [antenna.id
-                           for antenna in ms.antennas
-                           if antenna.diameter == antdiam]
-            antenna_ids.sort()
+            antenna_ids = sorted([antenna.id for antenna in ms.antennas if antenna.diameter == antdiam])
 
             # Create translation of antenna ID to flagging view
             # axis ID.

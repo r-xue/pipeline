@@ -281,7 +281,8 @@ class Syspower(basetask.StandardTaskTemplate):
                              100.0 * np.sum(sp_median_mask) / sp_median_mask.size))
 
                     # repeat after square root
-                    if type(sp_data.mask) == type(False): sp_data.mask = np.ma.getmaskarray(sp_data)
+                    if isinstance(sp_data.mask, bool):
+                        sp_data.mask = np.ma.getmaskarray(sp_data)
                     sp_data.mask[sp_data < 0] = True
                     sp_data = sp_data ** .5
                     sp_template = sp_template ** .5
@@ -399,7 +400,7 @@ class Syspower(basetask.StandardTaskTemplate):
             y.mask[-j:, -(i + 1)] = True
         medians = np.ma.median(y, axis=1)
 
-        if type(medians.mask) == np.bool_:
+        if isinstance(medians.mask, np.bool_):
             medians.mask = np.ma.getmaskarray(medians)
 
         if np.ma.all(medians.mask): return medians

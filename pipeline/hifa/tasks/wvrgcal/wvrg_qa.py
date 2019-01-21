@@ -88,18 +88,16 @@ def calculate_phase_rms(context, gaintable, qa_intent):
                 
                 sb = table.query('SCAN_NUMBER in %s' % str(intent_scans))
                 spectral_window_id = sb.getcol('SPECTRAL_WINDOW_ID')
-                spwids = list(set(spectral_window_id))
-                spwids.sort()
+                spwids = sorted(set(spectral_window_id))
                 antenna1 = sb.getcol('ANTENNA1')
                 antennas = set(antenna1)
                 timecol = sb.getcol('TIME')
 
                 # Are there any times.
-                times = list(set(timecol))
+                times = sorted(set(timecol))
                 if len(times) <= 0:
                     sb.done()
                     continue
-                times.sort()
                 times = np.array(times)
 
                 # look for continuously sampled chunks of data. Sometimes

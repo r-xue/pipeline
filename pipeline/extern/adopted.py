@@ -260,7 +260,7 @@ def call_qa_time(arg, form='', prec=0, showform=False):
     of strings instead of just a scalar string.
     - Todd Hunter
     """
-    if type(arg) is dict and type(arg['value']) in (list, np.ndarray) and len(arg['value']) > 1:
+    if isinstance(arg, dict) and isinstance(arg['value'], (list, np.ndarray)) and len(arg['value']) > 1:
         LOG.warning('qa_time() received a dictionary containing a list'
                     'of length=%d rather than a scalar. Using first '
                     'value.', len(arg['value']))

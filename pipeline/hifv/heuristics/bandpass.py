@@ -36,12 +36,10 @@ def computeChanFlag(vis, caltable, context):
     channels = m.get_vla_numchan()
 
     with casatools.TableReader(caltable) as table:
-        spwVarCol  = table.getvarcol('SPECTRAL_WINDOW_ID')
+        spwVarCol = table.getvarcol('SPECTRAL_WINDOW_ID')
         dataVarCol = table.getvarcol('CPARAM')
         flagVarCol = table.getvarcol('FLAG')
-        rowlist = dataVarCol.keys()
-        rowlist.sort()
-        nrows = len(rowlist)
+        rowlist = sorted(dataVarCol.keys())
 
         spwids = []
 

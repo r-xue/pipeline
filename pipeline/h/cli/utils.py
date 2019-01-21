@@ -43,7 +43,7 @@ def get_heuristic(arg):
     # If the argument is a non-empty string, try to get the class with the
     # given name, or if that class doesn't exist, wrap the input in an
     # EchoHeuristic
-    if type(arg) is types.StringType and arg:
+    if isinstance(arg, str) and arg:
         packages = arg.split('.')
         module = '.'.join(packages[:-1])
         # if arg was a raw string with no dots, module is empty

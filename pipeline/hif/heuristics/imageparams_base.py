@@ -236,10 +236,9 @@ class ImageParamsHeuristics(object):
             for vis in self.vislist:
                 ms = self.observing_run.get_ms(name=vis)
 
-                scanids = [scan.id for scan in ms.scans if
-                           intent in scan.intents and
-                           re_field in [utils.dequote(f.name) for f in scan.fields]]
-                scanids.sort()
+                scanids = sorted(
+                    [scan.id for scan in ms.scans
+                     if intent in scan.intents and re_field in [utils.dequote(f.name) for f in scan.fields]])
 
                 vis_scanids[vis] = scanids
 

@@ -8,8 +8,7 @@ LOG = infrastructure.get_logger(__name__)
 def get_antenna_names(ms):
     """Get antenna names.
     """
-    antenna_ids = [antenna.id for antenna in ms.antennas]
-    antenna_ids.sort()
+    antenna_ids = sorted([antenna.id for antenna in ms.antennas])
     antenna_name = {}
     for antenna_id in antenna_ids:
         antenna_name[antenna_id] = [antenna.name for antenna in ms.antennas

@@ -56,26 +56,26 @@ def plotWeather(vis='', figfile='', station=[], help=False):
     stations = mytb.getcol('NS_WX_STATION_ID') if 'NS_WX_STATION_ID' in available_cols else []
     uniqueStations = np.unique(stations)
 
-    if (station != []):
-        if (type(station) == int):
-            if (station not in uniqueStations):
+    if station != []:
+        if isinstance(station, int):
+            if station not in uniqueStations:
                 print("Station %d is not in the data.  Present are: " % station, uniqueStations)
                 return
             uniqueStations = [station]
-        elif (type(station) == list):
-            if (len(station) > 2):
+        elif isinstance(station, list):
+            if len(station) > 2:
                 print("Only 2 stations can be overlaid.")
                 return
-            if (station[0] not in uniqueStations):
+            if station[0] not in uniqueStations:
                 print("Station %d is not in the data.  Present are: " % station[0], uniqueStations)
                 return
-            if (station[1] not in uniqueStations):
+            if station[1] not in uniqueStations:
                 print("Station %d is not in the data.  Present are: " % station[1], uniqueStations)
                 return
             uniqueStations = station
-        elif (type(station) == str):
-            if (station.isdigit()):
-                if (int(station) not in uniqueStations):
+        elif isinstance(station, str):
+            if station.isdigit():
+                if int(station) not in uniqueStations:
                     print("Station %s is not in the data.  Present are: " % station, uniqueStations)
                     return
                 uniqueStations = [int(station)]
@@ -83,7 +83,7 @@ def plotWeather(vis='', figfile='', station=[], help=False):
                 print("Invalid station ID, it must be an integer, or list of integers.")
                 return
             
-    if (len(uniqueStations) > 1):
+    if len(uniqueStations) > 1:
         firstStationRows = np.where(stations == uniqueStations[0])[0]
         secondStationRows = np.where(stations == uniqueStations[1])[0]
 
@@ -326,7 +326,7 @@ def call_qa_time(arg, form='', prec=0):
     """
     myqa = casac.quanta()
     result = myqa.time(arg, form=form, prec=prec)
-    if (type(result) == list or type(result) == np.ndarray):
+    if isinstance(result, (list, np.ndarray)):
         return result[0]
     else:
         return result

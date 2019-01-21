@@ -77,7 +77,7 @@ def alphasort(argument):
     name = argument.name
     value = argument.value
 
-    if name == 'inpfile' and type(value) == list:
+    if name == 'inpfile' and isinstance(value, list):
         # get the indices of commands that are not summaries.
         apply_cmd_idxs = [idx for idx, val in enumerate(value) if "mode='summary'" not in val]
 
@@ -137,7 +137,7 @@ def truncate_paths(arg):
 
 
 def _recur_map(fn, data):
-    return [type(x) is types.StringType and fn(x) or _recur_map(fn, x) for x in data]
+    return [isinstance(x, str) and fn(x) or _recur_map(fn, x) for x in data]
 
 
 class JobRequest(object):
@@ -156,7 +156,7 @@ class JobRequest(object):
 
         # CASA tasks are instances rather than functions, whose execution
         # begins at __call__
-        if type(fn) is types.InstanceType:
+        if isinstance(fn, types.InstanceType):
             fn = fn.__call__
 
         # the next piece of code does some introspection on the given function

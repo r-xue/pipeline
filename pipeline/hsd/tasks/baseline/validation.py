@@ -944,7 +944,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         else:
             NumParam = len(Observation[0])
             OrderList = range(NumParam)
-        if type(Observation) == list:
+        if isinstance(Observation, list):
             Obs = numpy.array(Observation, numpy.float)
         else: Obs = Observation.copy()
         if len(Obs.shape) == 2:

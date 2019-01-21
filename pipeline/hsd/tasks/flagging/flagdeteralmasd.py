@@ -36,7 +36,7 @@ class FlagDeterALMASingleDishInputs(flagdeterbase.FlagDeterBaseInputs):
 
     @flagdeterbase.FlagDeterBaseInputs.filetemplate.postprocess
     def filetemplate(self, unprocessed):
-        if type(unprocessed) == list and len(unprocessed) == 1:
+        if isinstance(unprocessed, list) and len(unprocessed) == 1:
             value = unprocessed[0]
         else:
             value = unprocessed

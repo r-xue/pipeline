@@ -67,7 +67,6 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
     LOG.info('Calculating image coordinate of field \'%s\', reference frequency %fGHz' % (fnames[0], freq_hz * 1.e-9))
     LOG.info('cell=%s' % (qa.tos(cellx)))
 
-
     # nx, ny and center
     parent_mses = [utils.get_parent_ms_name(context, name) for name in ms_names]
     ra = []
@@ -84,10 +83,8 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
             (datatable.getcolkeyword('SHIFT_DEC', 'UNIT') != 'deg'):
             raise RuntimeError("Found unexpected unit of RA/DEC in DataTable. It should be in 'deg'")
         
-        index_list = common.get_index_list_for_ms(datatable, [vis], [ant_id], [field_id], [spw_id])
-        
-        index_list.sort()
-        
+        index_list = sorted(common.get_index_list_for_ms(datatable, [vis], [ant_id], [field_id], [spw_id]))
+
 #        _ra = datatable.getcol('RA').take(index_list)
 #        _dec = datatable.getcol('DEC').take(index_list)
         _ra = datatable.getcol('SHIFT_RA').take(index_list)
@@ -320,7 +317,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
             nchan = 1
         # restfreq
         restfreq = self.inputs.restfreq
-        if type(restfreq) != str:
+        if not isinstance(restfreq, str):
             raise RuntimeError("Invalid type for restfreq '{0}' (not a string)".format(restfreq))
         if restfreq.strip() == '':
             # if restfreq is NOT given by user

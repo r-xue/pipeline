@@ -51,8 +51,7 @@ class testBPdcalsQAHandler(pqa.QAPlugin):
                     if frac == 1.0:
                         spwcollect.append(str(spw))
             if len(spwcollect) > 1:
-                spwcollect = list(set(spwcollect))
-                spwcollect.sort()
+                spwcollect = sorted(set(spwcollect))
                 LOG.warn(
                     'Antenna {!s}, spws: {!s} have a flagging fraction of 1.0.'.format(antenna, ','.join(spwcollect)))
 

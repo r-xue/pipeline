@@ -520,7 +520,7 @@ class Circfeedpolcal(polarization.Polarization):
     def _do_clipflag(self, dcaltable):
 
         clipminmax = self.inputs.clipminmax
-        if type(self.inputs.clipminmax) is str:
+        if isinstance(self.inputs.clipminmax, str):
             clipminmax = ast.literal_eval(self.inputs.clipminmax)
 
         task_args = {'vis': dcaltable,

@@ -329,8 +329,7 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
     def flag_view(self, view, rules):
         newflags = []
         newflags_reason = {}
-        descriptionlist = view.descriptions()
-        descriptionlist.sort() 
+        descriptionlist = sorted(view.descriptions())
         for description in descriptionlist:
             image = view.last(description)
             # get flags for this view according to the rules
@@ -1589,8 +1588,7 @@ class VectorFlagger(basetask.StandardTaskTemplate):
 
     def flag_view(self, view):
         newflags = []
-        descriptionlist = view.descriptions()
-        descriptionlist.sort() 
+        descriptionlist = sorted(view.descriptions())
         for description in descriptionlist:
             image = view.last(description)
             # get flags for this view according to the rules

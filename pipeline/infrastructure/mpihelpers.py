@@ -242,7 +242,7 @@ def is_mpi_ready():
 
 def _splitall(path):
     allparts = []
-    while 1:
+    while True:
         parts = os.path.split(path)
         if parts[0] == path:  # sentinel for absolute paths
             allparts.insert(0, parts[0])

@@ -185,9 +185,9 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
             offsettrc = inputs.offsettrc
             buffer_deg = 0.0
 
-            if type(offsetblc) is str:
+            if isinstance(offsetblc, str):
                 offsetblc = ast.literal_eval(offsetblc)
-            if type(offsettrc) is str:
+            if isinstance(offsettrc, str):
                 offsettrc = ast.literal_eval(offsettrc)
 
             fld_subim_size_x_blc = round(3600.0 * (offsetblc[0] / 3600.0 + buffer_deg / 2.0) / xcellsize)

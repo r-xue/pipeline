@@ -178,8 +178,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
         else:
             field_ids = image_heuristics.field('TARGET', repr_field)
             phasecenter = None
-        cont_spwids = [s for s in context.observing_run.virtual_science_spw_ids.keys()]
-        cont_spwids.sort()
+        cont_spwids = sorted([s for s in context.observing_run.virtual_science_spw_ids])
         cont_spw = ','.join(map(str, cont_spwids))
         num_cont_spw = len(cont_spwids)
 

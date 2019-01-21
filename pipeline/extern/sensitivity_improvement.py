@@ -57,7 +57,7 @@ def sensitivityImprovement(vis, spw, newchanwidth, useCAS8534=True,
     meanfreq = mymsmd.meanfreq(spw)
     mymsmd.close()
     myqa = casatools.quanta
-    if type(newchanwidth) == str:
+    if isinstance(newchanwidth, str):
         if newchanwidth.lower().find('km/s') > 0:
             velocity = float(newchanwidth.lower().replace('km/s', ''))
             newchanwidth = 1000 * velocity * meanfreq / c_mks
@@ -74,7 +74,7 @@ def sensitivityImprovement(vis, spw, newchanwidth, useCAS8534=True,
     if cubechanwidth is None:
         original_eff_bw = windowFunction(window, channelAveraging=N, returnValue='EffectiveBW')
     else:
-        if type(cubechanwidth) == str:
+        if isinstance(cubechanwidth, str):
             if cubechanwidth.lower().find('km/s') > 0:
                 velocity = float(cubechanwidth.lower().replace('km/s', ''))
                 cubechanwidth = 1000*velocity*meanfreq/c_mks

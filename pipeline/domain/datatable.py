@@ -981,7 +981,7 @@ class DataTableColumnNoChange(RWDataTableColumn):
         super(RWDataTableColumn, self).__init__(table, "NOCHANGE", int)
 
     def putcell(self, idx, val):
-        if type(val) == bool:
+        if isinstance(val, bool):
             v = -1
         else:
             v = val

@@ -96,8 +96,7 @@ class TcleanResult(basetask.Results):
     # this is used to generate a pipeline product, not used by weblog
     @property
     def imageplot(self):
-        iters = self.iterations.keys()
-        iters.sort()
+        iters = sorted(self.iterations.keys())
         image = self.iterations[iters[-1]].get('image', None)
         imageplot = sky.plotfilename(image=image, reportdir=self.plotdir)
         return imageplot
@@ -112,8 +111,7 @@ class TcleanResult(basetask.Results):
 
     @property
     def cleanmask(self, iter, image):
-        iters = self.iterations.keys()
-        iters.sort()
+        iters = sorted(self.iterations.keys())
         if len(iters) > 0:
             return self.iterations[iters[-1]].get('cleanmask', None)
         else:
@@ -124,8 +122,7 @@ class TcleanResult(basetask.Results):
 
     @property
     def image(self):
-        iters = self.iterations.keys()
-        iters.sort()
+        iters = sorted(self.iterations.keys())
         if len(iters) > 0:
             return self.iterations[iters[-1]].get('image', None)
         else:
@@ -136,8 +133,7 @@ class TcleanResult(basetask.Results):
 
     @property
     def model(self):
-        iters = self.iterations.keys()
-        iters.sort()
+        iters = sorted(self.iterations.keys())
         if len(iters) > 0:
             return self.iterations[iters[-1]].get('model', None)
         else:
@@ -172,8 +168,7 @@ class TcleanResult(basetask.Results):
 
     @property
     def residual(self):
-        iters = self.iterations.keys()
-        iters.sort()
+        iters = sorted(self.iterations.keys())
         if len(iters) > 0:
             return self.iterations[iters[-1]].get('residual', None)
         else:

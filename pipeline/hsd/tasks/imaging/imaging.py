@@ -52,7 +52,7 @@ class SDImagingInputs(vdp.StandardInputs):
         # filters field with intents in self.intent
         p = fieldnames.IntentFieldnames()
         fields = set()
-        vislist = [self.vis] if type(self.vis) == str else self.vis
+        vislist = [self.vis] if isinstance(self.vis, str) else self.vis
         for vis in vislist:
             # This assumes the same fields in all MSes
             msobj = self.context.observing_run.get_ms(vis)
@@ -70,7 +70,7 @@ class SDImagingInputs(vdp.StandardInputs):
             return unprocessed
         
         # filters science spws by default (assumes the same spw setting for all MSes)
-        vis = self.vis if type(self.vis) == str else self.vis[0]
+        vis = self.vis if isinstance(self.vis, str) else self.vis[0]
         msobj = self.context.observing_run.get_ms(vis)
         science_spws = msobj.get_spectral_windows(unprocessed, with_channels=True)
         return ','.join([str(spw.id) for spw in science_spws])
@@ -319,7 +319,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 LOG.info("Output image name: {}".format(imagename))
 
                 # pick restfreq from restfreq_list
-                if type(restfreq_list) == list:
+                if isinstance(restfreq_list, list):
                     v_spwid = context.observing_run.real2virtual_spw_id(spwids[0], msobjs[0])
                     v_idx = in_spw.split(',').index(str(v_spwid))
                     if len(restfreq_list) > v_idx:

@@ -21,7 +21,7 @@ class SDImageCombineInputs(vdp.StandardInputs):
     
     @inimages.convert
     def inimages(self, value):
-        if type(value) == str:
+        if isinstance(value, str):
             _check_image(value)
         else:
             for v in value:

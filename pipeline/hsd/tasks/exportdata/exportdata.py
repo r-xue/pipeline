@@ -119,7 +119,7 @@ class SDExportData(exportdata.ExportData):
         LOG.info('Single dish specific _make_lists')
         # Force inputs.vis to be a list.
         vislist = vis
-        if type(vislist) is types.StringType:
+        if isinstance(vislist, str):
             vislist = [vislist, ]
         # in single dish pipeline, all mses are non-imaging ones but they need to be 
         # returned even when imaging is False so no filtering is done

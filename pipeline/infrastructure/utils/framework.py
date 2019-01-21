@@ -77,7 +77,7 @@ def get_calfroms(context, vis, caltypes=None):
         caltypes = callibrary.CalFrom.CALTYPES.keys()
 
     # check that the
-    if type(caltypes) is types.StringType:
+    if isinstance(caltypes, str):
         caltypes = (caltypes,)
 
     for c in caltypes:

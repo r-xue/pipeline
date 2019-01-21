@@ -543,8 +543,7 @@ def bpcal_write(bpcal_stats, out_table):
     tbLoc.close()
 
     # Get the list of subtables and create them (AMPLITUDE and PHASE)
-    subtables = bpcal_stats.keys()
-    subtables.sort()
+    subtables = sorted(bpcal_stats.keys())
     for st in subtables:
         out_subtable = out_table + '/' + st.upper()
         tbLoc.create(out_subtable, bpcal_desc_st())
@@ -559,8 +558,7 @@ def bpcal_write(bpcal_stats, out_table):
             tbLoc.open(out_subtable, nomodify=False)
 
             dictST = bpcal_stats[st]
-            spwGroup = dictST.keys()
-            spwGroup.sort()
+            spwGroup = sorted(dictST.keys())
 
             for s in spwGroup:
                 dictSPW = bpcal_stats[st][s]

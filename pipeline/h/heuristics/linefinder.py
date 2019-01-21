@@ -64,8 +64,7 @@ class HeuristicsLineFinder(api.Heuristic):
             iteration_mask[previous_line_indeces] = 0
             variances = np.abs(_spectrum - np.median(_spectrum[iteration_mask==1]))
 
-            good_variances = variances[iteration_mask==1]
-            good_variances.sort()
+            good_variances = sorted(variances[iteration_mask == 1])
             good_variances = good_variances[:int(0.8*len(good_variances))]
             mad = np.median(good_variances)
 

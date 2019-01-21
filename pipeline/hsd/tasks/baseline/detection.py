@@ -439,7 +439,7 @@ class LineWindowParser(object):
             
     def parse(self, field_id):
         # convert self.window into dictionary
-        if type(self.window) == str:
+        if isinstance(self.window, str):
             if self.window.strip().startswith('{'):
                 # should be a dictionary as a string (PPR execution)
                 # convert string into dictionary
@@ -457,11 +457,11 @@ class LineWindowParser(object):
                 # convert string into dictionary
                 # then, filter out non-science spectral windows
                 processed = self._exclude_non_science_spws(self._string2dict(self.window))
-        elif type(self.window) == list or type(self.window) == numpy.ndarray:
+        elif isinstance(self.window, (list, numpy.ndarray)):
             # convert string into dictionary
             # keys are all science spectral window ids
             processed = self._list2dict(self.window)
-        elif type(self.window) == dict:
+        elif isinstance(self.window, dict):
             # filter out non-science spectral windows
             processed = self._exclude_non_science_spws(self._dict2dict(self.window))
         else:
@@ -475,7 +475,7 @@ class LineWindowParser(object):
             for (spwid, _window) in processed.iteritems():
                 LOG.trace('_window={0} type {1}', _window, type(_window))
                 new_window = self._freq2chan(spwid, _window)
-                if len(new_window) > 0 and type(new_window[0]) != list:
+                if len(new_window) > 0 and not isinstance(new_window[0], list):
                     new_window = [new_window]
 #                 if len(new_window) > 0:
 #                     tmp = []
@@ -561,7 +561,7 @@ class LineWindowParser(object):
     
     def _freq2chan(self, spwid, window):
         # window must be a list
-        assert type(window) == list
+        assert isinstance(window, list), "Unexpected value for 'window', must be a list."
         
         # return without conversion if empty list
         if len(window) == 0:
@@ -580,8 +580,7 @@ class LineWindowParser(object):
                     converted.append(_w)
             
             return converted
-        
-        
+
         # return without conversion if item is an integer
         if item_type in (int, numpy.int32, numpy.int64):
             window.sort()
@@ -609,8 +608,7 @@ class LineWindowParser(object):
         # target spwid should exist
         assert spwid in processed
         
-        new_window = processed[spwid]
-        new_window.sort()
+        new_window = sorted(processed[spwid])
         LOG.trace('_freq2chan: new_window={0} type {1}', new_window, type(new_window))
         if len(new_window) == 0:
             return []

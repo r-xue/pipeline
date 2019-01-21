@@ -347,7 +347,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
         print("Unrecognized option for meanSpectrumMethod: %s" % meanSpectrumMethod)
         print("Available options: %s " % meanSpectrumMethods)
         return
-    if type(centralArcsec) == str:
+    if isinstance(centralArcsec, str):
         if centralArcsec.isdigit():
             centralArcsecValue = centralArcsec
             centralArcsec = float(centralArcsec)
@@ -360,10 +360,10 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
     else:
         casalogPost("\n BEGINNING: findContinuum.findContinuum('%s', centralArcsec=%s, mask='%s', overwrite=%s, sigmaFindContinuum='%s', meanSpectrumMethod='%s', peakFilterFWHM=%.0f, meanSpectrumFile='%s', triangleFraction=%.2f, singleContinuum=%s, useIAGetProfile=%s)" % (img, centralArcsecValue, mask, overwrite, str(sigmaFindContinuum), meanSpectrumMethod, peakFilterFWHM, meanSpectrumFile, triangleFraction, singleContinuum, useIAGetProfile))
     img = img.rstrip('/')
-    imageInfo = [] # information returned from getImageInfo
-    if (len(vis) > 0):
+    imageInfo = []  # information returned from getImageInfo
+    if len(vis) > 0:
         # vis is a non-blank list or non-blank string
-        if (type(vis) == str):
+        if isinstance(vis, str):
             vis = vis.split(',')
         # vis is now assured to be a non-blank list
         for v in vis:
@@ -922,9 +922,9 @@ def writeContDat(meanSpectrumFile, selection, png, aggregateBandwidth,
     if True:
         f = open(contDat, 'w')
         f.write('%s %s %g\n' % (selection, png, aggregateBandwidth))
-        if (len(vis) > 0):
+        if len(vis) > 0:
             # vis is a non-blank list or non-blank string
-            if (type(vis) == str):
+            if isinstance(vis, str):
                 vis = vis.split(',')
             # vis is now assured to be a non-blank list
             topoFreqRanges = []
@@ -1401,7 +1401,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
         casalogPost("Using existing meanSpectrumFile = %s" % (meanSpectrumFile))
         if (is_binary(meanSpectrumFile)):
             fitsTable = True
-    if ((type(nBaselineChannels) == float or type(nBaselineChannels) == np.float64) and not fitsTable):
+    if isinstance(nBaselineChannels, (float, np.float64)) and not fitsTable:
         # chanInfo will be == [] if an ASCII meanSpectrumFile is specified
         if len(chanInfo) >= 4:
             nchan, firstFreq, lastFreq, channelWidth = chanInfo
@@ -2846,7 +2846,7 @@ def splitListIntoContiguousListsAndTrim(channels, trimChannels=0.1,
     maxTrim: used in 'auto' mode
     Returns: a new single list
     """
-    if type(trimChannels) != str:
+    if not isinstance(trimChannels, str):
         if (trimChannels <= 0):
             return(np.array(channels))
     length = len(channels)
@@ -3250,7 +3250,7 @@ def findSpectralAxis(img):
     Finds the spectral axis number of an image tool instance, or an image.
     img: string or iatool instance
     """
-    if (type(img) == str):
+    if isinstance(img, str):
         myia = iatool()
         myia.open(img)
         needToClose = True
@@ -3277,7 +3277,7 @@ def countUnmaskedPixels(img, useImstat=True):
     """
     if useImstat:
         npix = imstat(img, listit=imstatListit, verbose=imstatVerbose)['npts']
-        if type(npix) == list or type(npix) == np.ndarray:
+        if isinstance(npix, (list, np.ndarray)):
             if len(npix) == 0:
                 npix = 0
             else:
@@ -3306,7 +3306,7 @@ def countPixelsAboveZero(img, useImstat=True, value=0):
         return
     if useImstat:
         npix = imstat(img, mask='"%s">0'%(img), listit=imstatListit, verbose=imstatVerbose)['npts']
-        if type(npix) == list or type(npix) == np.ndarray:
+        if isinstance(npix, (list, np.ndarray)):
             if len(npix) == 0:
                 npix = 0
             else:
@@ -3793,7 +3793,7 @@ def create_casa_quantity(myqatool,value,unit):
     A wrapper to handle the changing ways in which casa quantities are invoked.
     Todd Hunter
     """
-    if (type(casac.Quantity) != type):  # casa 4.x
+    if not isinstance(casac.Quantity, type):  # casa 4.x
         myqa = myqatool.quantity(value, unit)
     else:  # casa 3.x
         myqa = casac.Quantity(value, unit)
@@ -4038,7 +4038,7 @@ def cubeLSRKToTopo(img, imageInfo, freqrange='', prec=4, verbose=False,
     if len(freqrange) == 0:
         startFreq = f0 
         stopFreq = f1
-    elif (type(freqrange) == str):
+    elif isinstance(freqrange, str):
         if (freqrange.find(',') > 0):
             freqrange = [parseFrequencyArgument(i) for i in freqrange.split(',')]
         elif (freqrange.find('~') > 0):
@@ -4075,7 +4075,7 @@ def rad2radec(ra=0,dec=0, prec=5, verbose=True, component=0,
     delimiter: the character to use to delimit the RA and Dec strings output
     prependEquinox: if True, insert "J2000" before coordinates (i.e. for clean or simobserve)
     """
-    if (type(ra) == tuple or type(ra) == list or type(ra) == np.ndarray):
+    if isinstance(ra, (tuple, list, np.ndarray)):
         if (len(ra) == 2):
             dec = ra[1] # must come first before ra is redefined
             ra = ra[0]
@@ -4350,7 +4350,7 @@ def linfit(x, y, yerror, pinit=[0,0]):
     """
     x = np.array(x)
     y = np.array(y)
-    if (type(yerror) != list and type(yerror) != np.ndarray):
+    if not isinstance(yerror, (list, np.ndarray)):
         yerror = np.ones(len(x)) * yerror
     fitfunc = lambda p, x: p[1] + p[0]*x
     errfunc = lambda p,x,y,err: (y-fitfunc(p,x))/(err**2)
@@ -4377,7 +4377,7 @@ def polyfit(x, y, yerror, pinit=[0,0,0,0]):
     y = np.array(y)
     pinit[2] = np.mean(y)
     pinit[3] = x[len(x)/2]
-    if (type(yerror) != list and type(yerror) != np.ndarray):
+    if not isinstance(yerror, (list, np.ndarray)):
         yerror = np.ones(len(x)) * yerror
     fitfunc = lambda p, x: p[2] + p[1]*(x-p[3]) + p[0]*(x-p[3])**2
     errfunc = lambda p,x,y,err: (y-fitfunc(p,x))/(err**2)
@@ -4479,7 +4479,7 @@ def topoFreqToChannel(freqlist, vis, spw, mymsmd=''):
     width = np.abs(mymsmd.chanwidths(spw))[0]
     if needToClose:
         mymsmd.close()
-    if type(freqlist) != list and type(freqlist) != np.ndarray:
+    if not isinstance(freqlist, (list, np.ndarray)):
         freqlist = [freqlist]
     channels = []
     for freq in freqlist:
@@ -5274,7 +5274,7 @@ def isSingleContinuum(vis, spw='', source='', intent='OBSERVE_TARGET',
     mymsmd: an existing instance of the msmd tool
     """
     if vis=='': return False
-    if type(vis) == list or type(vis) == np.ndarray:
+    if isinstance(vis, (list, np.ndarray)):
         vis = vis[0]
     else:
         vis = vis.split(',')[0]
@@ -5326,7 +5326,7 @@ def transition(vis, spw, source='', intent='OBSERVE_TARGET',
     sourceIDs = mytb.getcol('SOURCE_ID')
     names = mytb.getcol('NAME')
     spw = int(spw)
-    if (type(source) == str):
+    if isinstance(source, str):
         if (source.isdigit()):
             source = int(source)
         elif (source == ''):
@@ -5337,7 +5337,7 @@ def transition(vis, spw, source='', intent='OBSERVE_TARGET',
             source = mymsmd.namesforfields(fields[0])[0]
             if verbose:
                 print("For spw %d, picked source: " % (spw), source)
-    if (type(source) == str or type(source) == np.string_):
+    if isinstance(source, (str, np.string_)):
         sourcerows = np.where(names==source)[0]
         if (len(sourcerows) == 0):
             # look for characters ()/ and replace with underscore
@@ -5433,7 +5433,7 @@ def makeUvcontsub(files='*.dat', fitorder=1, useFrequency=False):
         if len(np.unique(uids)) > 1:
             print("There are results for more than one OUS in this directory.  Be more specific.")
             return
-    elif type(files) == str:
+    elif isinstance(files, str):
         resultFiles = sorted(files.split(','))
     else:
         resultFiles = sorted(files)

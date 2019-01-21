@@ -162,8 +162,7 @@ class Transformimagedata(mssplit.MsSplit):
         visfields = ','.join(visfields)
 
         visspws = set(visspws)
-        visspws = list(visspws)
-        visspws.sort()
+        visspws = sorted(visspws)
         visspws = ','.join(visspws)
 
         mstransform_args = inputs.to_casa_args()

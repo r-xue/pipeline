@@ -29,7 +29,7 @@ class BaselineSubtractionInputsBase(vdp.StandardInputs):
     @vdp.VisDependentProperty
     def colname(self):
         colname = ''
-        if type(self.vis) is types.StringType:
+        if isinstance(self.vis, str):
             with casatools.TableReader(self.vis) as tb:
                 candidate_names = ['CORRECTED_DATA', 
                                    'DATA',

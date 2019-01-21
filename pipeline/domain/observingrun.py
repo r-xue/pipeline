@@ -91,7 +91,7 @@ class ObservingRun(object):
 
         # filter out MeasurementSets with no intent hits
         if intents is not None:
-            if type(intents) is types.StringType:
+            if isinstance(intents, str):
                 intents = utils.safe_split(intents)
             intents = set(intents)
 
@@ -100,7 +100,7 @@ class ObservingRun(object):
 
         # filter out MeasurementSets with no field name hits
         if fields is not None:
-            if type(fields) is types.StringType:
+            if isinstance(fields, str):
                 fields = utils.safe_split(fields)
             fields_to_match = set(fields)
 
@@ -126,7 +126,7 @@ class ObservingRun(object):
         match = itertools.chain(*match)
         
         if names is not None:
-            if type(names) is types.StringType:
+            if isinstance(names, str):
                 names = utils.safe_split(names)
             names = set(names)
             match = [f for f in match if f.name in names] 

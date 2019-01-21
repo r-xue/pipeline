@@ -61,9 +61,9 @@ def mosaicOverlapFactorMS(ms, source, spw, diameter, intent='TARGET', fwhmfactor
          fields = myfields
 
     # Make a list of the selected spw ids
-    if type(spw) == str:
+    if isinstance(spw, str):
         spws = [int(i) for i in spw.split(',')]
-    elif type(spw) != list:
+    elif not isinstance(spw, list):
         # i.e. integer
         spws = [spw]
     else:
@@ -185,9 +185,9 @@ def mosaicOverlapFactorVIS(vis, source, spw, diameter, fwhmfactor=1.13, taper=10
 
         # Get the specified science spws
         # the mean
-        if type(spw) == str:
+        if isinstance(spw, str):
             spws = [int(i) for i in spw.split(',')]
-        elif type(spw) != list:
+        elif not isinstance(spw, list):
             # i.e. integer
             spws = [spw]
         else:

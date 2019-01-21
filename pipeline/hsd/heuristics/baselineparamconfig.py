@@ -79,7 +79,7 @@ class BaselineFitParamConfig(api.Heuristic):
     
     def __datacolumn(self, vis):
         colname = ''
-        if type(vis) is types.StringType:
+        if isinstance(vis, str):
             with casatools.TableReader(vis) as tb:
                 candidate_names = ['CORRECTED_DATA', 
                                    'DATA',
@@ -131,7 +131,7 @@ class BaselineFitParamConfig(api.Heuristic):
         data_desc = ms.get_data_description(spw=spw_id)
         npol = data_desc.num_polarizations
         # edge must be formatted to [L, R]
-        assert type(edge) == list and len(edge) == 2, 'edge must be a list [L, R]. "{0}" was given.'.format(edge)
+        assert isinstance(edge, list) and len(edge) == 2, 'edge must be a list [L, R]. "{0}" was given.'.format(edge)
         
         if DEBUG or TRACE:
             LOG.debug('nchan={nchan} edge={edge}'.format(nchan=nchan, edge=edge))
@@ -281,7 +281,7 @@ class BaselineFitParamConfig(api.Heuristic):
                              fragment, nwindow, mask):
         # Create mask for line protection
         nchan_without_edge = nchan - sum(edge)
-        if type(masklist) == list or type(masklist) == numpy.ndarray:
+        if isinstance(masklist, (list, numpy.ndarray)):
             for [m0, m1] in masklist:
                 mask[m0:m1] = 0
         else:

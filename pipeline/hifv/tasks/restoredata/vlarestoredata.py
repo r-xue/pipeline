@@ -48,10 +48,10 @@ class VLARestoreData(restoredata.RestoreData):
 
         # Force inputs.vis and inputs.session to be a list.
         sessionlist = inputs.session
-        if type(sessionlist) is types.StringType:
+        if isinstance(sessionlist, str):
             sessionlist = [sessionlist, ]
         tmpvislist = inputs.vis
-        if type(tmpvislist) is types.StringType:
+        if isinstance(tmpvislist, str):
             tmpvislist = [tmpvislist, ]
         vislist = []
         for vis in tmpvislist:
