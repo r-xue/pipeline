@@ -38,7 +38,7 @@ def check_ppr(pprfile):
         LOG.info('Please provide a valid xml PPR file as input and try again.')
         return False
 
-    tasks_in_ppr = set([str(x.firstChild.data) for x in doc.getElementsByTagName('Command')])
+    tasks_in_ppr = {str(x.firstChild.data) for x in doc.getElementsByTagName('Command')}
 
     undefined_tasks = (tasks_in_ppr - casatasks)
     for suspect_task in undefined_tasks:

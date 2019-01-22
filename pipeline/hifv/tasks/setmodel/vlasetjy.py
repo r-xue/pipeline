@@ -99,8 +99,8 @@ class VLASetjyInputs(vdp.StandardInputs):
         # Get field ids in the current ms that have been observed
         # with the desired intent
         fields = self.ms.get_fields(intent=self.intent)
-        unique_field_names = set([f.name for f in fields])
-        field_ids = set([f.id for f in fields])
+        unique_field_names = {f.name for f in fields}
+        field_ids = {f.id for f in fields}
 
         # Fields with different intents may have the same name. Check for this
         # and return the field ids rather than the names to resolve any
@@ -181,8 +181,8 @@ class VLASetjyInputs(vdp.StandardInputs):
 
             # Field names may resolve to multiple field IDs
             fields = self.ms.get_fields(task_arg=field_arg, intent=self.intent)
-            field_ids = set([str(field.id) for field in fields])
-            field_names = set([field.name for field in fields])
+            field_ids = {str(field.id) for field in fields}
+            field_names = {field.name for field in fields}
 
             # Find fluxes
             flux_by_spw = []

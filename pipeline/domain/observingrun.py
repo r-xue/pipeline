@@ -232,16 +232,16 @@ class ObservingRun(object):
 
     @property
     def project_ids(self):
-        return set([ms.project_id for ms in self.measurement_sets])
+        return {ms.project_id for ms in self.measurement_sets}
     
     @property
     def schedblock_ids(self):
-        return set([ms.schedblock_id for ms in self.measurement_sets])
+        return {ms.schedblock_id for ms in self.measurement_sets}
     
     @property
     def execblock_ids(self):
-        return set([ms.execblock_id for ms in self.measurement_sets])
+        return {ms.execblock_id for ms in self.measurement_sets}
         
     @property
     def observers(self):
-        return set([ms.observer for ms in self.measurement_sets])
+        return {ms.observer for ms in self.measurement_sets}

@@ -282,7 +282,7 @@ def get_tsysinfo(ms, fieldnamelist, intent, spwidlist):
     atmscans = []
     for scan in ms.get_scans(scan_intent='ATMOSPHERE'):
         # Remove scans not associated with the input field names
-        scanfieldset = set([field.name for field in scan.fields])
+        scanfieldset = {field.name for field in scan.fields}
         if len(fieldset.intersection(scanfieldset)) == 0:
             continue
         atmscans.append(scan)
@@ -295,12 +295,12 @@ def get_tsysinfo(ms, fieldnamelist, intent, spwidlist):
         scifields = ms.get_fields(intent='TARGET')
         if len(scifields) <= 0:
             return tsysdict
-        scifieldset = set([scifield.name for scifield in scifields])
+        scifieldset = {scifield.name for scifield in scifields}
 
         # Find atmospheric scans associated with the science target
         for scan in ms.get_scans(scan_intent='ATMOSPHERE'):
             # Remove scans not associated with the input field names
-            scanfieldset = set([field.name for field in scan.fields])
+            scanfieldset = {field.name for field in scan.fields}
             if len(scifieldset.intersection(scanfieldset)) == 0:
                 continue
             atmscans.append(scan)
@@ -314,7 +314,7 @@ def get_tsysinfo(ms, fieldnamelist, intent, spwidlist):
     obscans = []
     for scan in ms.get_scans(scan_intent=intent):
         # Remove scans not associated with the input field names
-        scanfieldset = set([field.name for field in scan.fields])
+        scanfieldset = {field.name for field in scan.fields}
         if len(fieldset.intersection(scanfieldset)) == 0:
             continue
         obscans.append(scan)
@@ -666,7 +666,7 @@ def get_obsinfo(ms, fieldnamelist, intent, spwidlist, compute_nantennas='all', m
     obscans = []
     for scan in ms.get_scans(scan_intent=intent):
         # Remove scans not associated with the input field names
-        scanfieldset = set([field.name for field in scan.fields])
+        scanfieldset = {field.name for field in scan.fields}
         if len(fieldset.intersection(scanfieldset)) == 0:
             continue
         obscans.append(scan)
@@ -690,9 +690,8 @@ def get_obsinfo(ms, fieldnamelist, intent, spwidlist, compute_nantennas='all', m
         # one spw to the next
         spwscans = []
         for obscan in obscans:
-            scanspwset = set([scanspw.id for scanspw in list(obscan.spws)
-                              if scanspw.num_channels not in (1, 4)])
-            if len(set([spwid]).intersection(scanspwset)) == 0:
+            scanspwset = {scanspw.id for scanspw in list(obscan.spws) if scanspw.num_channels not in (1, 4)}
+            if len({spwid}.intersection(scanspwset)) == 0:
                 continue
             spwscans.append(obscan)
         if not spwscans:

@@ -736,8 +736,7 @@ class DictCalState(collections.defaultdict):
             assert c in CalFrom.CALTYPES
 
         calfroms = (itertools.chain(*self.merged().values()))
-        return set([cf.gaintable for cf in calfroms
-                    if cf.caltype in caltypes])
+        return {cf.gaintable for cf in calfroms if cf.caltype in caltypes}
 
     @staticmethod
     def dictify(dd):

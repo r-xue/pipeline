@@ -172,7 +172,7 @@ class syspowerPerAntennaChart(object):
             if self.yaxis == 'tsys':
                 plotrange = [0, 0, 0, 100]
                 spws = m.get_all_spectral_windows()
-                freqs = sorted(set([spw.max_frequency.value for spw in spws]))
+                freqs = sorted({spw.max_frequency.value for spw in spws})
                 if float(max(freqs)) >= 18000000000.0:
                     plotrange = [0, 0, 0, 200]
             if self.tabletype == 'pdiff':

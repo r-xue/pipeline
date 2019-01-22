@@ -63,9 +63,9 @@ class CheckProductSizeHeuristics(object):
         imlist = makeimlist_result.targets
 
         # Extract some information for later
-        fields = list(set([i['field'] for i in imlist]))
+        fields = list({i['field'] for i in imlist})
         nfields = len(fields)
-        spws = list(set([i['spw'] for i in imlist]))
+        spws = list({i['spw'] for i in imlist})
         ref_ms = self.context.observing_run.measurement_sets[0]
         real_spws = [self.context.observing_run.virtual2real_spw_id(int(spw), ref_ms) for spw in spws]
         nchans = dict([(spw, ref_ms.get_spectral_window(real_spw).num_channels) for spw, real_spw in zip(spws, real_spws)])

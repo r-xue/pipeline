@@ -28,7 +28,7 @@ class VLASubPlotRenderer(object):
         self.plots = plots
         self.ms = os.path.basename(self.result.inputs['vis'])
         self.template = template
-        self.filename_prefix=filename_prefix
+        self.filename_prefix = filename_prefix
 
         self.summary_plots = {}
         self.finaldelay_subpages = {}
@@ -56,19 +56,19 @@ class VLASubPlotRenderer(object):
             self.json = '{}'
             
     def _get_display_context(self):
-        return {'pcontext'   : self.context,
-                'result'     : self.result,
-                'plots'      : self.plots,
-                'dirname'    : self.dirname,
-                'json'       : self.json,
-                'finaldelay_subpages' : self.finaldelay_subpages,
-                'phasegain_subpages' : self.phasegain_subpages,
-                'bpsolamp_subpages'  : self.bpsolamp_subpages,
-                'bpsolphase_subpages' : self.bpsolphase_subpages,
-                'bpsolphaseshort_subpages' : self.bpsolphaseshort_subpages,
-                'finalamptimecal_subpages' : self.finalamptimecal_subpages,
-                'finalampfreqcal_subpages' : self.finalampfreqcal_subpages,
-                'finalphasegaincal_subpages' : self.finalphasegaincal_subpages}
+        return {'pcontext': self.context,
+                'result': self.result,
+                'plots': self.plots,
+                'dirname': self.dirname,
+                'json': self.json,
+                'finaldelay_subpages': self.finaldelay_subpages,
+                'phasegain_subpages': self.phasegain_subpages,
+                'bpsolamp_subpages': self.bpsolamp_subpages,
+                'bpsolphase_subpages': self.bpsolphase_subpages,
+                'bpsolphaseshort_subpages': self.bpsolphaseshort_subpages,
+                'finalamptimecal_subpages': self.finalamptimecal_subpages,
+                'finalampfreqcal_subpages': self.finalampfreqcal_subpages,
+                'finalphasegaincal_subpages': self.finalphasegaincal_subpages}
 
     @property
     def dirname(self):
@@ -274,7 +274,6 @@ class T2_4MDetailsVLAApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                     'dirname'  : weblog_dir,
                     'filesizes': filesizes})
 
-
     def create_science_plots(self, context, results, correlation):
         """
         Create plots for the science targets, returning two dictionaries of 
@@ -448,11 +447,11 @@ class T2_4MDetailsVLAApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         # get IDs for all science spectral windows
         spw_ids = set()
         for scan in ms.get_scans(scan_intent=intent):
-            scan_spw_ids = set([dd.spw.id for dd in scan.data_descriptions])
+            scan_spw_ids = {dd.spw.id for dd in scan.data_descriptions}
             spw_ids.update(scan_spw_ids)
 
         if intent == 'TARGET':
-            science_ids = set([spw.id for spw in ms.get_spectral_windows()])
+            science_ids = {spw.id for spw in ms.get_spectral_windows()}
             spw_ids = spw_ids.intersection(science_ids)
 
         result = collections.OrderedDict()
@@ -472,16 +471,17 @@ class T2_4MDetailsVLAApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 result[source_id] = fields[0]
                 continue
             
-            field_ids = set([(f.id, f.name) for f in fields])
-    
             field = fields[0]
             LOG.warning('Bypassing brightest field selection due to problem '
                         'with visstat. Using Field #%s (%s) for Source #%s'
                         '', field.id, field.name, source_id)
             result[source_id] = field
             continue
-    
-            # holds the mapping of field name to mean flux 
+            # FIXME: code below here in remainder of for-loop is unreachable
+
+            field_ids = {(f.id, f.name) for f in fields}
+
+            # holds the mapping of field name to mean flux
             average_flux = {}
         
             # defines the parameters for the visstat job

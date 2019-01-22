@@ -27,8 +27,8 @@ class BandpassDetailChart(common.PlotbandpassDetailBase):
                    if not os.path.exists(self._figfile[spw_id][ant_id])]
         if missing:
             LOG.trace('Executing new plotbandpass job for missing figures')
-            spw_ids = ','.join(set([str(spw_id) for spw_id, _ in missing]))
-            ant_ids = ','.join(set([str(ant_id) for _, ant_id in missing]))
+            spw_ids = ','.join({str(spw_id) for spw_id, _ in missing})
+            ant_ids = ','.join({str(ant_id) for _, ant_id in missing})
             try:
                 task = self.create_task(spw_ids, ant_ids)
                 task.execute(dry_run=False)

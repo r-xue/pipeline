@@ -385,7 +385,7 @@ def score_bwswitching(mses):
     # analyse each MS
     for ms in mses:
         # Get the science spws
-        scispws = set([spw.id for spw in ms.get_spectral_windows(science_windows_only=True)])
+        scispws = {spw.id for spw in ms.get_spectral_windows(science_windows_only=True)}
 
         # Get phase calibrator science spw ids
         phasespws = []
@@ -1172,7 +1172,7 @@ def score_setjy_measurements(ms, reqfields, reqintents, reqspws, measurements):
     # Loop over the expected fields
     nexpected = 0
     for scifield in scifields:
-        validspws = set([spw.id for spw in scifield.valid_spws])
+        validspws = {spw.id for spw in scifield.valid_spws}
         nexpected += len(validspws.intersection(scispws))
 
     # Loop over the measurements
@@ -1311,7 +1311,7 @@ def score_refspw_mapping_fraction(ms, ref_spwmap):
                               metric_units='Number of unmapped science spws')
     else:
         # Expected science windows
-        scispws = set([spw.id for spw in ms.get_spectral_windows(science_windows_only=True)])
+        scispws = {spw.id for spw in ms.get_spectral_windows(science_windows_only=True)}
         nexpected = len(scispws)
 
         nunmapped = 0

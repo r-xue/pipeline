@@ -162,4 +162,4 @@ class Scan(object):
 
     @property
     def spws(self):
-        return set([dd.spw for dd in self.data_descriptions])
+        return {dd.spw for dd in self.data_descriptions}

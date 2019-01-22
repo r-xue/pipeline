@@ -30,8 +30,7 @@ class State(object):
     @property
     def intents(self):
         # return all intents
-        return set([intent for mode, intent in self.obs_mode_mapping.iteritems()
-                   if self.obs_mode.find(mode) != -1])
+        return {intent for mode, intent in self.obs_mode_mapping.iteritems() if self.obs_mode.find(mode) != -1}
 
     @property
     def reduction_intents(self):
@@ -66,8 +65,7 @@ class State(object):
         return red_intents
 
     def get_obs_mode_for_intent(self, intent):
-        intents = set([i.strip('*') for i in intent.split(',') 
-                       if i is not None])
+        intents = {i.strip('*') for i in intent.split(',') if i is not None}
         return [mode for mode, pipeline_intent in self.obs_mode_mapping.iteritems()
                 if pipeline_intent in intents and self.obs_mode.find(mode) != -1]
 

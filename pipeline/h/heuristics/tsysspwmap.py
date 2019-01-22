@@ -177,7 +177,7 @@ def tsysspwmap(ms, tsystable, trim=True, relax=False, tsysChanTol=1):
                 spwWithoutMatch.append(i)
             applyCalSpwMap.append(int(useSpw))        
 
-    science_window_ids = list(set([spw.id for spw in ms.get_spectral_windows(science_windows_only=True)]))
+    science_window_ids = list({spw.id for spw in ms.get_spectral_windows(science_windows_only=True)})
     unmatched_science_spws = list(set(spwWithoutMatch).intersection(science_window_ids))
 
     if len(unmatched_science_spws) != 0:

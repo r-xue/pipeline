@@ -229,8 +229,7 @@ class PhaseVsBaselineChart(common.PlotBase):
             scan_corrs = [tuple(dd.polarizations) for dd in scan.data_descriptions
                               if dd.spw.id == spw.id]
             # discard WVR and other strange data descriptions 
-            scan_corrs = set([x for x in scan_corrs 
-                              if x not in [(), ('I',)]])
+            scan_corrs = {x for x in scan_corrs if x not in [(), ('I',)]}
             corr_axes.update(scan_corrs)
 
         assert len(corr_axes) is 1, ('Data descriptions have different corr '

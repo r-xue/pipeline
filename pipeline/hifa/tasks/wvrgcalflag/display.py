@@ -115,7 +115,7 @@ class WVRPhaseVsBaselineChart(object):
         self.ms = context.observing_run.get_ms(result.inputs['vis'])
         self._caltables_loaded = False
 
-        nowvr_gaintables = set([c.gaintable for c in result.dataresult.nowvr_result.pool])
+        nowvr_gaintables = {c.gaintable for c in result.dataresult.nowvr_result.pool}
         assert len(nowvr_gaintables) is 1, ('Unexpected number of pre-WVR phase-up'
                                             'gaintables: %s' % nowvr_gaintables) 
 
@@ -146,7 +146,7 @@ class WVRPhaseVsBaselineChart(object):
 
         # get the windows this was tested on from the caltable.
         spw_ids = set(data_before.spw).intersection(set(data_after.spw))
-        spws = set([spw for spw in self.ms.spectral_windows if spw.id in spw_ids])
+        spws = {spw for spw in self.ms.spectral_windows if spw.id in spw_ids}
 
         plot_scans = self._get_plot_scans()
 
@@ -311,7 +311,7 @@ class WVRPhaseVsBaselineChart(object):
                 continue
 
             # discard WVR and other strange data descriptions
-            corr_axes = set([x for x in corr_axes if x not in [(), ('I',)]])
+            corr_axes = {x for x in corr_axes if x not in [(), ('I',)]}
             assert len(corr_axes) is 1, ('Data descriptions have different '
                                          'corr axes for scan %s. Got %s'
                                          '' % (scan.id, corr_axes))
@@ -477,7 +477,7 @@ class WVRPhaseOffsetPlotHelper(phaseoffset.PhaseOffsetPlotHelper):
                                'stage%s' % result.stage_number)
         prefix = '%s.phase_offset' % os.path.basename(calapp.vis)
 
-        nowvr_gaintables = set([c.gaintable for c in result.nowvr_result.pool])
+        nowvr_gaintables = {c.gaintable for c in result.nowvr_result.pool}
         assert len(nowvr_gaintables) is 1, ('Unexpected number of pre-WVR phase-up'
                                             'gaintables: %s' % nowvr_gaintables) 
 

@@ -30,7 +30,7 @@ class BpSolintInputs(vdp.StandardInputs):
     def spw(self):
 
         # Get the science spw ids
-        sci_spws = set([spw.id for spw in self.ms.get_spectral_windows(science_windows_only=True)])
+        sci_spws = {spw.id for spw in self.ms.get_spectral_windows(science_windows_only=True)}
 
         # Get the bandpass spw ids
         bandpass_spws = []

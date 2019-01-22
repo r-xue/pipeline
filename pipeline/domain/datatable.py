@@ -492,8 +492,7 @@ class DataTableImpl(object):
         rwtable = self.get_rwtable_name(self.plaintable)
 
         # list of ordinary columns
-        ordinary_cols = set(['STATISTICS', 'FLAG', 'FLAG_PERMANENT',
-                             'FLAG_SUMMARY', 'NMASK', 'POSGRP'])
+        ordinary_cols = {'STATISTICS', 'FLAG', 'FLAG_PERMANENT', 'FLAG_SUMMARY', 'NMASK', 'POSGRP'}
         intersects = ordinary_cols.intersection(cols)
 
         # columns with special care

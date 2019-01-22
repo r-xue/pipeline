@@ -55,8 +55,8 @@ class UVcontFitInputs(vdp.StandardInputs):
         # Return  field ids  in the current ms that have been observed
         # with the specified intent
         fields = self.ms.get_fields(intent=self.intent)
-        unique_field_names = set([f.name for f in fields])
-        field_ids = set([f.id for f in fields])
+        unique_field_names = {f.name for f in fields}
+        field_ids = {f.id for f in fields}
 
         # Fields with different intents may have the same name. Check for this
         # and return ids instead of names if this is required to resolve ambiguities
@@ -270,7 +270,7 @@ class UVcontFit(basetask.StandardTaskTemplate):
 
         # Get all the associated sources
         all_sources = [f.source for f in all_fields]
-        all_source_names = list(set([f.source.name for f in all_fields]))
+        all_source_names = list({f.source.name for f in all_fields})
 
         # Collect the merged ranges
         #    Error checking ?
@@ -402,8 +402,8 @@ class UVcontFit(basetask.StandardTaskTemplate):
         # filter on source name. Use field names for now
         #    The '''' are a work around
         fields = inputs.ms.get_fields(task_arg=inputs.field)
-        unique_field_names = set([f.name for f in fields if (f.name == sname or f.name == '"'+sname+'"')])
-        field_ids = set([f.id for f in fields if (f.name == sname or f.name == '"'+sname+'"')])
+        unique_field_names = {f.name for f in fields if (f.name == sname or f.name == '"'+sname+'"')}
+        field_ids = {f.id for f in fields if (f.name == sname or f.name == '"'+sname+'"')}
 
         # Add proper intent filter
         #    May not be necessary

@@ -1,8 +1,8 @@
-'''
+"""
 Created on 9 Sep 2014
 
 @author: sjw
-'''
+"""
 import collections
 import os
 
@@ -13,8 +13,6 @@ import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
-
-#import pipeline.infrastructure.displays.tsys as displays
 from pipeline.h.tasks.common.displays import tsys as displays
 
 LOG = logging.get_logger(__name__)
@@ -27,8 +25,8 @@ class T2_4MDetailsTsyscalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def __init__(self, uri='tsyscal.mako', 
                  description='Calculate Tsys calibration',
                  always_rerender=False):
-        super(T2_4MDetailsTsyscalRenderer, self).__init__(uri=uri,
-                description=description, always_rerender=always_rerender)
+        super(T2_4MDetailsTsyscalRenderer, self).__init__(
+            uri=uri, description=description, always_rerender=always_rerender)
 
     def update_mako_context(self, mako_context, pipeline_context, results):
         weblog_dir = os.path.join(pipeline_context.report_dir,
@@ -148,13 +146,13 @@ class TsyscalPlotRenderer(basetemplates.JsonPlotRenderer):
             return self.get_stat_from_calanalysis(ca_result)
 
     def get_stat_from_calanalysis(self, ca_result):
-        '''
+        """
         Calculate the median and RMS for a calanalysis result. The argument
         supplied to this function should be a calanalysis result for ONE
         spectral window and ONE antenna only!
-        ''' 
+        """
         # get the unique timestamps from the calanalysis result
-        times = set([v['time'] for v in ca_result.itervalues()])
+        times = {v['time'] for v in ca_result.itervalues()}
         mean_tsyses = []
         for timestamp in sorted(times):
             # get the dictionary for each timestamp, giving one dictionary per

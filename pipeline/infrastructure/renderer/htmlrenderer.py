@@ -771,16 +771,13 @@ class T2_1DetailsRenderer(object):
         task = summary.FieldVsTimeChart(inputs)
         field_vs_time = task.plot()
         
-
         science_spws = ms.get_spectral_windows(science_windows_only=True)
-        all_bands = sorted(set([spw.band for spw in ms.spectral_windows]))
-        science_bands = sorted(set([spw.band for spw in science_spws]))
+        all_bands = sorted({spw.band for spw in ms.spectral_windows})
+        science_bands = sorted({spw.band for spw in science_spws})
         
-        science_sources = sorted(set([source.name for source in ms.sources 
-                                      if 'TARGET' in source.intents]))
+        science_sources = sorted({source.name for source in ms.sources if 'TARGET' in source.intents})
 
-        calibrators = sorted(set([source.name for source in ms.sources 
-                                  if 'TARGET' not in source.intents]))
+        calibrators = sorted({source.name for source in ms.sources if 'TARGET' not in source.intents})
 
         baseline_min = ms.antenna_array.min_baseline.length
         baseline_max = ms.antenna_array.max_baseline.length

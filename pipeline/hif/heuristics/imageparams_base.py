@@ -988,7 +988,7 @@ class ImageParamsHeuristics(object):
         # Determine the number of correlations
         #   Check that they are between 1 and 4
         ncorr = len(dd.corr_axis)
-        if ncorr not in set([1, 2, 4]):
+        if ncorr not in {1, 2, 4}:
             LOG.debug('Wrong number of correlations %s for spw %s ' % (ncorr, spwid))
             return 0
 

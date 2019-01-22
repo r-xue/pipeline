@@ -19,7 +19,7 @@ def get_scan_exptimes (ms, fieldnamelist, intent, spwidlist):
     obscans = []
     for scan in ms.get_scans (scan_intent=intent):
         # Remove scans not associated with the input field names
-        scanfieldset = set([field.name for field in scan.fields])
+        scanfieldset = {field.name for field in scan.fields}
         if len(fieldset.intersection(scanfieldset)) == 0:
             continue
         obscans.append(scan)
@@ -44,7 +44,7 @@ def get_scan_exptimes (ms, fieldnamelist, intent, spwidlist):
         # one spw to the next
         spwscans = []
         for obscan in obscans:
-            scanspwset = set([scanspw.id for scanspw in list(obscan.spws) if scanspw.num_channels not in (1, 4)])
+            scanspwset = {scanspw.id for scanspw in list(obscan.spws) if scanspw.num_channels not in (1, 4)}
             if len(set([spwid]).intersection(scanspwset)) == 0:
                 continue
             spwscans.append(obscan)

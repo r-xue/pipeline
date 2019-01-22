@@ -13,11 +13,11 @@ from pipeline.infrastructure import task_registry
 
 LOG = infrastructure.get_logger(__name__)
 
+
 # Define the minimum set of parameters required to split out
 # the TARGET data from the complete and fully calibrated
-# original MS. Other parameters will be added here  as more
-# capabilites are added to hif_mstransform.
-
+# original MS. Other parameters will be added here as more
+# capabilities are added to hif_mstransform.
 class MstransformInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
@@ -66,13 +66,13 @@ class MstransformInputs(vdp.StandardInputs):
                              'removing Field {!s}'.format(last_field.id))
                     fields.remove(last_field)
 
-        unique_field_names = set([f.name for f in fields])
-        field_ids = set([f.id for f in fields])
+        unique_field_names = {f.name for f in fields}
+        field_ids = {f.id for f in fields}
 
         # Fields with different intents may have the same name. Check for this
         # and return the ids rather than the names if necessary to resolve any
         # ambiguities
-        if len(unique_field_names) is len(field_ids):
+        if len(unique_field_names) == len(field_ids):
             return ','.join(unique_field_names)
         else:
             return ','.join([str(i) for i in field_ids])
@@ -106,8 +106,7 @@ class MstransformInputs(vdp.StandardInputs):
 
         return ','.join([str(spw.id) for spw in science_target_spws])
 
-    def __init__(self, context, output_dir=None, vis=None,
-        outputvis=None, field=None, intent=None, spw=None):
+    def __init__(self, context, output_dir=None, vis=None, outputvis=None, field=None, intent=None, spw=None):
 
         super(MstransformInputs, self).__init__()
 
@@ -141,8 +140,7 @@ class Mstransform(basetask.StandardTaskTemplate):
         inputs = self.inputs
 
         # Create the results structure
-        result = MstransformResults(vis=inputs.vis,
-            outputvis=inputs.outputvis)
+        result = MstransformResults(vis=inputs.vis, outputvis=inputs.outputvis)
 
         # Run CASA task
         mstransform_args = inputs.to_casa_args()
@@ -196,7 +194,8 @@ class MstransformResults(basetask.Results):
         for ms in self.mses:
             if not ms.is_imaging_ms:
                 continue
-            template_flagsfile = os.path.join(self.inputs['output_dir'], os.path.splitext(os.path.basename(self.vis))[0] + '.flagtargetstemplate.txt')
+            template_flagsfile = os.path.join(
+                self.inputs['output_dir'], os.path.splitext(os.path.basename(self.vis))[0] + '.flagtargetstemplate.txt')
             self._make_template_flagfile(template_flagsfile, 'User flagging commands file for the imaging pipeline')
 
         # Initialize callibrary
@@ -225,6 +224,7 @@ class MstransformResults(basetask.Results):
     def __repr__(self):
         return 'MstranformResults({}, {})'.format(os.path.basename(self.vis), os.path.basename(self.outputvis))
 
+
 FLAGGING_TEMPLATE_HEADER = '''#
 # ___TITLESTR___
 #
@@ -236,4 +236,3 @@ FLAGGING_TEMPLATE_HEADER = '''#
 # mode='manual' antenna='DV07' timerange='2013/01/31/08:09:55.248~2013/01/31/08:10:01.296' reason='quack'
 #
 '''
-

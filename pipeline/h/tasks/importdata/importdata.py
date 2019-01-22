@@ -107,8 +107,7 @@ class ImportData(basetask.StandardTaskTemplate):
         matching = [os.path.dirname(n) for n in names
                     if os.path.basename(n) in identifiers]
 
-        return set([m for m in matching
-                    if matching.count(m) == len(identifiers)])
+        return {m for m in matching if matching.count(m) == len(identifiers)}
 
     @staticmethod
     def _asdm_directories(members):
@@ -121,8 +120,7 @@ class ImportData(basetask.StandardTaskTemplate):
         matching = [os.path.dirname(m) for m in members
                     if os.path.basename(m) in identifiers]
 
-        return set([m for m in matching
-                    if matching.count(m) == len(identifiers)])
+        return {m for m in matching if matching.count(m) == len(identifiers)}
 
     def prepare(self, **parameters):
         inputs = self.inputs

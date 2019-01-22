@@ -32,7 +32,7 @@ class FluxcalFlagInputs(vdp.StandardInputs):
         # Return each field in the current ms that has been observed
         # with the desired intent
         fields = self.ms.get_fields(intent=self.intent)
-        field_names = set([f.name for f in fields])
+        field_names = {f.name for f in fields}
         return ','.join(field_names)
 
     intent = vdp.VisDependentProperty(default='AMPLITUDE')

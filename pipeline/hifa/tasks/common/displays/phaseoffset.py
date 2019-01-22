@@ -121,8 +121,7 @@ class PhaseOffsetPlot(object):
         if antenna_ids is not None:
             common_antenna_ids = common_antenna_ids.intersection(set(antenna_ids))
         if antenna_names is not None:
-            named_antenna_ids = set([ant.id for ant in ms.antennas
-                                     if ant.name in antenna_names])
+            named_antenna_ids = {ant.id for ant in ms.antennas if ant.name in antenna_names}
             common_antenna_ids = common_antenna_ids.intersection(named_antenna_ids)
         # .. before converting to domain objects
         antennas = [ant for ant in ms.antennas
@@ -236,7 +235,7 @@ class PhaseOffsetPlot(object):
                     corr_axes = [tuple(dd.polarizations) for dd in scan.data_descriptions
                                  if dd.spw.id == spw.id]
                     # discard WVR and other strange data descriptions
-                    corr_axes = set([x for x in corr_axes if x not in [(), ('I',)]])
+                    corr_axes = {x for x in corr_axes if x not in [(), ('I',)]}
                     assert len(corr_axes) is 1, ('Data descriptions have different '
                                                  'corr axes for scan %s. Got %s'
                                                  '' % (scan.id, corr_axes))

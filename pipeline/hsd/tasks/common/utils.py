@@ -513,13 +513,13 @@ def make_row_map(src_ms, derived_vis, src_tb=None, derived_tb=None):
             try:
                 if is_unique_observation_id:
                     observation_id_list0 = None
-                    observation_id_set = set([0])
+                    observation_id_set = {0}
                 else:
                     observation_id_list0 = tsel.getcol('OBSERVATION_ID')
                     observation_id_set = set(observation_id_list0)
                 if is_unique_processor_id:
                     processor_id_list0 = None
-                    processor_id_set = set([0])
+                    processor_id_set = {0}
                 else:
                     processor_id_list0 = tsel.getcol('PROCESSOR_ID')
                     processor_id_set = set(processor_id_list0)
@@ -537,13 +537,13 @@ def make_row_map(src_ms, derived_vis, src_tb=None, derived_tb=None):
         try:
             if is_unique_observation_id:
                 observation_id_list0 = None
-                observation_id_set = set([0])
+                observation_id_set = {0}
             else:
                 observation_id_list0 = tsel.getcol('OBSERVATION_ID')
                 observation_id_set = set(observation_id_list0)
             if is_unique_processor_id:
                 processor_id_list0 = None
-                processor_id_set = set([0])
+                processor_id_set = {0}
             else:
                 processor_id_list0 = tsel.getcol('PROCESSOR_ID')
                 processor_id_set = set(processor_id_list0)

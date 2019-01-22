@@ -444,11 +444,11 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         # get IDs for all science spectral windows
         spw_ids = set()
         for scan in ms.get_scans(scan_intent=intent):
-            scan_spw_ids = set([dd.spw.id for dd in scan.data_descriptions])
+            scan_spw_ids = {dd.spw.id for dd in scan.data_descriptions}
             spw_ids.update(scan_spw_ids)
 
         if intent == 'TARGET':
-            science_ids = set([spw.id for spw in ms.get_spectral_windows()])
+            science_ids = {spw.id for spw in ms.get_spectral_windows()}
             spw_ids = spw_ids.intersection(science_ids)
 
         result = collections.OrderedDict()
@@ -468,14 +468,15 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 result[source_id] = fields[0]
                 continue
 
-            field_ids = set([(f.id, f.name) for f in fields])
-
             field = fields[0]
             LOG.warning('Bypassing brightest field selection due to problem '
                         'with visstat. Using Field #%s (%s) for Source #%s'
                         '', field.id, field.name, source_id)
             result[source_id] = field
             continue
+            # FIXME: code below here in remainder of for-loop is unreachable
+
+            field_ids = {(f.id, f.name) for f in fields}
 
             # holds the mapping of field name to mean flux
             average_flux = {}

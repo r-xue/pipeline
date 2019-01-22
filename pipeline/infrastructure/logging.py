@@ -254,8 +254,7 @@ def suspend_handler(handler_class):
     :param handler_class: the class to remove
     :return: set of handler classes removed by this call
     """
-    to_remove = set([h for l in _loggers for h in l.handlers
-                     if isinstance(h, handler_class)])
+    to_remove = {h for l in _loggers for h in l.handlers if isinstance(h, handler_class)}
     for h in to_remove:
         remove_handler(h)
     return to_remove
