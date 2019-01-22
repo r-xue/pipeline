@@ -533,7 +533,27 @@ class CaltableWrapperFactory(object):
                 # the unnecessary dimension and swap the channel and correlation
                 # axes.
                 row_data = [records['r{}'.format(k + 1)].squeeze(2) for k in range(len(records))]
-                data[c] = row_data
+
+                # Different spectral windows can have different numbers of
+                # channels, e.g., TDM vs FDM. NumPy doesn't support jagged
+                # arrays, so the code below ensures the data are uniformly
+                # sized. Spectral windows with fewer channels are coerced to
+                # the same size as the most detailed windows by adding masked
+                # values to the 'end' of the data for that row.
+
+                # Defines required envelope of dimensions, with the number of
+                # rows (unused), number of polarisations, maximum number of
+                # channels
+                _, x_dim, y_dim = data[c].shape
+                column_dtype = data[c].dtype
+
+                coerced_rows = []
+                for row in row_data:
+                    data_channels = numpy.ma.masked_array(data=row, dtype=column_dtype)
+                    row_x_dim, row_y_dim = row.shape
+                    fake_channels = numpy.ma.masked_all((x_dim, y_dim-row_y_dim), dtype=column_dtype)
+                    coerced_rows.append(numpy.hstack((data_channels, fake_channels)))
+                data[c] = numpy.ma.masked_array(data=coerced_rows, dtype=column_dtype)
 
             table_keywords = tb.getkeywords()
             column_keywords = {c: tb.getcolkeywords(c) for c in colnames}
@@ -573,15 +593,21 @@ def get_dtype(tb, col):
 
     elif tb.isvarcol(col):
         try:
-            shape_string = set(tb.getcolshapestring(col))
+            shapes_string = tb.getcolshapestring(col)
         except RuntimeError:
             return None
         else:
-            assert len(shape_string) == 1
-            shape = ast.literal_eval(shape_string.pop())
-            # add structured record labels to the columns. This varies depending on the caltable type
+            # spectral windows can have different shapes, e.g., TDM vs FDM,
+            # therefore the shape needs to be a list of shapes.
+            shapes = [ast.literal_eval(s) for s in shapes_string]
 
-            return col, CASA_DATA_TYPES[col_dtype], shape
+            x_dimensions = {shape[0] for shape in shapes}
+            assert(len(x_dimensions) == 1)
+
+            # find the maximum dimensions of a row
+            max_row_shape = max(shapes)
+
+            return col, CASA_DATA_TYPES[col_dtype], max_row_shape
 
 
 class CaltableWrapper(object):
