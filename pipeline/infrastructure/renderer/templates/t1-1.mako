@@ -215,14 +215,18 @@ $(document).ready(function() {
                             ouslabel = '<b> Observing Unit Set Status: </b>'
                             ousid = ouskey
                     %>
-                    % for sbkey, sbgroup in itertools.groupby(ousgroup, key=operator.attrgetter('schedblock_id')):
+                    % for sb_id, sbgroup in itertools.groupby(ousgroup, key=operator.attrgetter('schedblock_id')):
                         <%
-                            sblabel = '<b> Scheduling Block ID: </b>'
-                            sbid = sbkey
+                            sb_group = list(sbgroup)
+                            sb_name = sb_group[0].schedblock_name
+                            if sb_name != None:
+                                sb_name_markup = '<b>Scheduling Block Name:</b> {}'.format(sb_name)
+                            else:
+                                sb_name_markup = ''
                         %>
-                        % for sessionkey, sessiongroup in itertools.groupby(sbgroup, key=operator.attrgetter('session')):
+                        % for sessionkey, sessiongroup in itertools.groupby(sb_group, key=operator.attrgetter('session')):
                             <tr bgcolor="#D1E0FF">
-                                <td colspan="10">${ouslabel} ${ousid} ${sblabel} ${sbid}  </td>
+                                <td colspan="10">${ouslabel} ${ousid} <b>Scheduling Block ID:</b> ${sb_id} ${sb_name_markup}</td>
                             </tr>
                             <tr bgcolor="#E8F0FF">
                                 <td colspan="10"><b>Session:</b> ${sessionkey} </td>

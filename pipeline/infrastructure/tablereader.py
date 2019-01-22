@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 
+import collections
 import datetime
 import itertools
 import operator
@@ -290,17 +291,19 @@ class MeasurementSetReader(object):
             # For now the SBSummary table is ALMA specific
             if 'ALMA' in msmd.observatorynames():
                 sbinfo = SBSummaryTable.get_sbsummary_info(ms, msmd.observatorynames())
-                if sbinfo[0] is None:
+
+                if sbinfo.repSource is None:
                     LOG.warn('Unable to identify representative target for %s. Will try to fall back to existing'
                              ' science target sources in the imaging tasks.' % ms.basename)
                 else:
-                    if sbinfo[0] == 'none':
+                    if sbinfo.repSource == 'none':
                         LOG.warn('Representative target for %s is set to "none". Will try to fall back to existing'
                                  ' science target sources or calibrators in the imaging tasks.' % ms.basename)
                     LOG.info('Populating ms.representative_target ...')
-                    ms.representative_target = (sbinfo[0], sbinfo[1], sbinfo[2])
+                    ms.representative_target = (sbinfo.repSource, sbinfo.repFrequency, sbinfo.repBandwidth)
+
                 LOG.info('Populating ms.science_goals ...')
-                if not (sbinfo[3] and sbinfo[4]):
+                if not (sbinfo.minAngResolution and sbinfo.maxAngResolution):
                     observing_mode = SBSummaryTable.get_observing_mode(ms)
                     # Only warn if the number of 12m antennas is greater than the number of 7m antennas
                     # and if the observation is not single dish
@@ -312,16 +315,20 @@ class MeasurementSetReader(object):
                                         'maxAcceptableAngResolution': '0.0arcsec'}
                 else:
                     # LOG.info('Populating ms.science_goals ...')
-                    ms.science_goals = {'minAcceptableAngResolution': sbinfo[3],
-                                        'maxAcceptableAngResolution': sbinfo[4]}
-                if not sbinfo[5]:
+                    ms.science_goals = {'minAcceptableAngResolution': sbinfo.minAngResolution,
+                                        'maxAcceptableAngResolution': sbinfo.maxAngResolution}
+                if not sbinfo.sensitivity:
                     ms.science_goals['sensitivity'] = '0.0mJy'
                 else:
-                    ms.science_goals['sensitivity'] = sbinfo[5]
-                if not sbinfo[6]:
+                    ms.science_goals['sensitivity'] = sbinfo.sensitivity
+
+                if not sbinfo.dynamicRange:
                     ms.science_goals['dynamicRange'] = '1.0'
                 else:
-                    ms.science_goals['dynamicRange'] = sbinfo[6]
+                    ms.science_goals['dynamicRange'] = sbinfo.dynamicRange
+
+                ms.science_goals['sbName'] = sbinfo.sbName
+
             LOG.info('Populating ms.array_name ...')
             # No MSMD functions to help populating the ASDM_EXECBLOCK table
             ms.array_name = ExecblockTable.get_execblock_info(ms)
@@ -552,6 +559,8 @@ class DataDescriptionTable(object):
         return list(zip(dd_ids, spw_ids, pol_ids))
 
 
+SBSummaryInfo = collections.namedtuple('SBSummaryInfo', 'repSource repFrequency repBandwidth minAngResolution '
+                                                        'maxAngResolution sensitivity dynamicRange sbName')
 class SBSummaryTable(object):
     @staticmethod
     def get_sbsummary_info(ms, obsnames):
@@ -583,8 +592,10 @@ class SBSummaryTable(object):
 
     @staticmethod
     def _create_sbsummary_info(repSource, repFrequency, repBandwidth, minAngResolution, maxAngResolution, sensitivity,
-                               dynamicRange):
-        return repSource, repFrequency, repBandwidth, minAngResolution, maxAngResolution, sensitivity, dynamicRange
+                               dynamicRange, sbName):
+        return SBSummaryInfo(repSource=repSource, repFrequency=repFrequency, repBandwidth=repBandwidth,
+                             minAngResolution=minAngResolution, maxAngResolution=maxAngResolution,
+                             sensitivity=sensitivity, dynamicRange=dynamicRange, sbName=sbName)
 
     @staticmethod
     def _read_table(ms):
@@ -594,7 +605,6 @@ class SBSummaryTable(object):
         but handle the more general case
         """
         LOG.debug('Analysing ASDM_SBSummary table')
-        me = casatools.measures
         qa = casatools.quanta
         msname = _get_ms_name(ms)
         sbsummary_table = os.path.join(msname, 'ASDM_SBSUMMARY')        
@@ -613,6 +623,8 @@ class SBSummaryTable(object):
             maxAngResolutions = []
             sensitivities = []
             dynamicRanges = []
+            sbNames = []
+
             for i in range(table.nrows()):
 
                 # Create source
@@ -659,8 +671,11 @@ class SBSummaryTable(object):
                                                                    'dynamicRange'))
                 dynamicRanges.append(dynamicRange)
 
+                sbName = _get_science_goal_value(scienceGoals[0:numScienceGoals[i], i], 'SBName')
+                sbNames.append(sbName)
+
         rows = list(zip(repSources, repFrequencies, repBandWidths, minAngResolutions, maxAngResolutions, sensitivities,
-                        dynamicRanges))
+                        dynamicRanges, sbNames))
         return rows
 
 
