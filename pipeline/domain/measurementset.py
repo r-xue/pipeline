@@ -4,7 +4,6 @@ import contextlib
 import itertools
 import os
 import string
-import types
 
 import numpy
 import pylab
@@ -98,7 +97,7 @@ class MeasurementSet(object):
             pool = [s for s in pool if s.id in scan_id]
 
         if scan_intent is not None:
-            if type(scan_intent) in types.StringTypes:
+            if isinstance(scan_intent, str):
                 if scan_intent in ('', '*'):
                     # empty string equals all intents for CASA
                     scan_intent = ','.join(self.intents)
@@ -357,13 +356,13 @@ class MeasurementSet(object):
             pool = [f for f in pool if f.id in field_id]
 
         if name is not None:
-            if type(name) in types.StringTypes:
+            if isinstance(name, str):
                 name = string.split(name, ',')
             name = set(name) 
             pool = [f for f in pool if f.name in name]
         
         if intent is not None:
-            if type(intent) in types.StringTypes:
+            if isinstance(intent, str):
                 if intent in ('', '*'):
                     # empty string equals all intents for CASA
                     intent = ','.join(self.intents)

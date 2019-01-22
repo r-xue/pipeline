@@ -117,7 +117,7 @@ class UVcontSubResults(basetask.Results):
 #    def __repr__(self):
 #        for caltable in self.applied:
 #            s = 'UVcontSubResults:\n'
-#            if type(caltable.gaintable) is types.ListType:
+#            if isinstance(caltable.gaintable, list):
 #                basenames = [os.path.basename(x) for x in caltable.gaintable]
 #                s += '\t{name} applied to {vis} spw #{spw}\n'.format(
 #                    spw=caltable.spw, vis=os.path.basename(caltable.vis),

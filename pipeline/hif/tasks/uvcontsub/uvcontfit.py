@@ -127,9 +127,7 @@ class UVcontFitInputs(vdp.StandardInputs):
         d['caltable'] = caltable
 
         # Fix combine
-        if 'combine' not in d:
-            d['combine'] = ''
-        elif d['combine'] is not types.StringType:
+        if 'combine' not in d or not isinstance(d['combine'], str):
             d['combine'] = ''
 
         # If field and spw are not defined use the default

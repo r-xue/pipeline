@@ -58,7 +58,7 @@ class DetectLineResults(common.SingleDishResults):
         LOG.debug('DetectLineResults.merge_with_context')
         super(DetectLineResults, self).merge_with_context(context)
         # exporting datatable should be done within the parent task
-#         if type(self.outcome) is types.DictType and 'datatable' in self.outcome:
+#         if isinstance(self.outcome, dict) and 'datatable' in self.outcome:
 #             datatable = self.outcome.pop('datatable')
 #             start_time = time.time()
 #             LOG.debug('Start exporting datatable (minimal): {}', start_time)

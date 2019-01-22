@@ -23,14 +23,9 @@ nonzero, operator, paren, renames, sys_exc, throw, xreadlines
 Rules that have been applied (guard against regression):
 
 ```
-basestring, except, execfile, filter, has_key, idioms, import, map, ne, print, raise,
-reduce, repr, set_literal (optional), tuple_params, ws_comma (optional), zip
-```
-
-Rules that can be updated on trunk during C7 dev:
-
-```
-types (after idioms)
+basestring, except, execfile, filter, has_key, idioms, import, map, ne, print,
+raise, reduce, repr, set_literal (optional), tuple_params, types (after
+idioms), ws_comma (optional), zip
 ```
 
 Rules that require updates on a Py3-only branch during C8 dev:
@@ -51,7 +46,7 @@ Medium risk, have to review/test
 imports, long, unicode, urllib
 ```
 
-Low risk, but ran last:
+Low risk, but run last:
 
 ```
 isinstance: removes duplicates, e.g. isinstance(x, (int, int)) or isinstance(x, (str, str))

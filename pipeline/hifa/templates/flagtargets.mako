@@ -74,13 +74,12 @@ def agent_data(agent, ms):
 		if agent in ('template'):
 			return '<td></td><td></td>'
 		else:
-			return '<td></td>' 
+			return '<td></td>'
 
 	if agent in ('template'):
-		vis_type = type(result.inputs['vis'])
-		if vis_type is types.StringType:
+		if isinstance(result.inputs['vis'], str):
 			flagfile = os.path.basename(result.inputs['file%s' % agent])			
-		elif vis_type is types.ListType:
+		elif isinstance(result.inputs['vis'], list):
 			for v in result.inputs['vis']:
 				if os.path.basename(v) == ms:
 					ms_idx = result.inputs['vis'].index(v)
@@ -99,9 +98,9 @@ def agent_data(agent, ms):
 
 def agent_td(agent, ms):
 	if agent not in flags[ms]:
-		return '<td><span class="glyphicon glyphicon-remove"></span></td>' 
+		return '<td><span class="glyphicon glyphicon-remove"></span></td>'
 	else:
-		return '<td><span class="glyphicon glyphicon-ok"></span></td>'		
+		return '<td><span class="glyphicon glyphicon-ok"></span></td>'
 
 %>
 

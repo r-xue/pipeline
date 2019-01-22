@@ -2,7 +2,6 @@ from __future__ import absolute_import
 import os
 import re
 import string
-import types
 
 import matplotlib.ticker as ticker
 from matplotlib.colors import ColorConverter, Colormap, Normalize
@@ -332,7 +331,7 @@ class ImageDisplay(object):
         plt.subplot(1, nplots, plotnumber)
 
         # look out for yaxis values that would trip up matplotlib
-        if isinstance(ydata[0], types.StringType):
+        if isinstance(ydata[0], str):
             if re.match('\d+&\d+', ydata[0]):
                 # baseline - replace & by . and convert to float
                 ydata_numeric = []
