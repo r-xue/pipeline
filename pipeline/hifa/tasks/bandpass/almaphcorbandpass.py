@@ -13,10 +13,10 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import callibrary
 from pipeline.infrastructure import exceptions
 from pipeline.infrastructure import task_registry
-from ..bpsolint import bpsolint
-from ....hif.tasks import gaincal
-from ....hif.tasks.bandpass import bandpassmode, bandpassworker
-from ....hif.tasks.bandpass.common import BandpassResults
+from pipeline.hif.tasks import gaincal
+from pipeline.hif.tasks.bandpass import bandpassmode, bandpassworker
+from pipeline.hif.tasks.bandpass.common import BandpassResults
+from pipeline.hifa.tasks.bpsolint import bpsolint
 
 LOG = infrastructure.get_logger(__name__)
 

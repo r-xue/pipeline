@@ -25,10 +25,10 @@ import pipeline.infrastructure.displays.pointing as pointing
 import pipeline.infrastructure.displays.summary as summary
 import pipeline.infrastructure.logging as logging
 from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import utils
 from pipeline.infrastructure.renderer.templates import resources
 from . import qaadapter
 from . import weblog
-from .. import utils
 
 LOG = infrastructure.get_logger(__name__)
 

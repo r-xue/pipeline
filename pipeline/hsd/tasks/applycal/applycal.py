@@ -3,10 +3,10 @@ from __future__ import absolute_import
 import os
 
 import pipeline.infrastructure as infrastructure
-from pipeline.domain.datatable import DataTableImpl as DataTable
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
+from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.h.tasks.applycal.applycal import Applycal, ApplycalInputs, ApplycalResults
 from pipeline.infrastructure import task_registry
 
@@ -30,6 +30,7 @@ class SDApplycalInputs(ApplycalInputs):
 class SDApplycalResults(ApplycalResults):
     def __init__(self, applied=None):
         super(SDApplycalResults, self).__init__(applied)
+
 
 #@task_registry.set_equivalent_casa_task('hsd_applycal')
 #@task_registry.set_casa_commands_comment('Calibrations are applied to the data. Final flagging summaries are computed')
@@ -96,7 +97,7 @@ class SDApplycal(Applycal):
         return sdresults
     
 
-### Tier-0 parallelization
+# Tier-0 parallelization
 class HpcSDApplycalInputs(SDApplycalInputs):
     # use common implementation for parallel inputs argument
     parallel = sessionutils.parallel_inputs_impl()
@@ -124,4 +125,3 @@ class HpcSDApplycal(sessionutils.ParallelTemplate):
         if tb.startswith('None'):
             tb = '{0}({1})'.format(exception.__class__.__name__, exception.message)
         return basetask.FailedTaskResults(self, exception, tb)
-

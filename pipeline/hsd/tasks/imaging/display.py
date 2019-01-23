@@ -9,17 +9,15 @@ import math
 from matplotlib.ticker import MultipleLocator
 
 import pipeline.infrastructure as infrastructure
-from pipeline.infrastructure import casa_tasks
-import pipeline.infrastructure.renderer.logger as logger
-import pipeline.infrastructure.displays.pointing as pointing
-#from ..common.display import RADEClabel, RArotation, DECrotation
-from ..common.display import DPIDetail, DPISummary, SDImageDisplay, SDImageDisplayInputs, ShowPlot
 import pipeline.infrastructure.casatools as casatools
-from ..common.display import sd_polmap as polmap
-#from ..common.display import DDMMSSs, HHMMSSss
-from ..common.display import SDSparseMapPlotter
-from ..common.display import NoData, NoDataThreshold
-from ..common import atmutil
+import pipeline.infrastructure.displays.pointing as pointing
+import pipeline.infrastructure.renderer.logger as logger
+from pipeline.hsd.tasks.common import atmutil
+from pipeline.hsd.tasks.common.display import DPIDetail, DPISummary, SDImageDisplay, SDImageDisplayInputs, ShowPlot
+from pipeline.hsd.tasks.common.display import sd_polmap as polmap
+from pipeline.hsd.tasks.common.display import SDSparseMapPlotter
+from pipeline.hsd.tasks.common.display import NoData, NoDataThreshold
+from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure.displays.pointing import MapAxesManagerBase
 
 # NoData = -32767.0

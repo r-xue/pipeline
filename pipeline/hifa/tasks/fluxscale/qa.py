@@ -20,9 +20,9 @@ import pipeline.qa.scorecalculator as qacalc
 from pipeline.domain.measures import FluxDensity, FluxDensityUnits, Frequency, FrequencyUnits
 from pipeline.h.tasks.common import commonfluxresults
 from pipeline.h.tasks.common.displays.common import CaltableWrapperFactory
+from pipeline.h.tasks.importdata.fluxes import ORIGIN_ANALYSIS_UTILS, ORIGIN_XML
+from pipeline.hifa.tasks.importdata.dbfluxes import ORIGIN_DB
 from . import gcorfluxscale
-from ..importdata.dbfluxes import ORIGIN_DB
-from ....h.tasks.importdata.fluxes import ORIGIN_ANALYSIS_UTILS, ORIGIN_XML
 
 LOG = infrastructure.get_logger(__name__)
 

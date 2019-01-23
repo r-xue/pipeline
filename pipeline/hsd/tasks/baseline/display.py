@@ -11,10 +11,10 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.displays.pointing as pointing
-#from ..common.display import RADEClabel, RArotation, DECrotation, DDMMSSs, HHMMSSss
 from pipeline.domain.datatable import DataTableImpl as DataTable
-from ..common.display import DPISummary, DPIDetail, SingleDishDisplayInputs, ShowPlot, LightSpeed
+from pipeline.hsd.tasks.common.display import DPISummary, DPIDetail, SingleDishDisplayInputs, ShowPlot, LightSpeed
 from pipeline.infrastructure.displays.pointing import MapAxesManagerBase
+
 LOG = infrastructure.get_logger(__name__)
 
 RArotation = pointing.RArotation

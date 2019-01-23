@@ -13,7 +13,6 @@ import inspect
 import itertools
 import operator
 import os
-import types
 import uuid
 
 from mpi4casa.MPIEnvironment import MPIEnvironment

@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
-import os, shutil
+import os
+import shutil
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask

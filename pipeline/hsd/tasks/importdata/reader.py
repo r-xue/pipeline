@@ -8,8 +8,7 @@ import pipeline.infrastructure.casatools as casatools
 from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.domain.datatable import DataTableColumnMaskList as ColMaskList
 from pipeline.domain.datatable import OnlineFlagIndex
-
-from ..common import mjd_to_datestring, TableSelector
+from pipeline.hsd.tasks.common import mjd_to_datestring, TableSelector
 
 LOG = infrastructure.get_logger(__name__)
 
