@@ -682,10 +682,15 @@ class Finalcals(basetask.StandardTaskTemplate):
                 # fittedfluxd = []
 
                 freqs = sorted(freqs[uspws])
-
-                fittedfluxd = [
-                    10.0 ** (spidx[0] + spidx[1] * math.log10(x / fitreff) + spidx[2] * (math.log10(x / fitreff)) ** 2)
-                    for x in freqs]
+                
+                try:
+                    fittedfluxd = [
+                        10.0 ** (spidx[0] + spidx[1] * math.log10(x / fitreff) + spidx[2] * (math.log10(x / fitreff)) ** 2)
+                        for x in freqs]
+                except Exception as e:
+                    fittedfluxd = [
+                        10.0 ** (spidx[0] + spidx[1] * math.log10(x / fitreff) )
+                        for x in freqs]
 
                 reffreq = fitreff / 1.e9
                 fluxdensity = fitflx
