@@ -28,7 +28,6 @@ class T2_4MDetailsRestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         repsource_table_rows, repsource_name_is_none = make_repsource_table(pipeline_context, results)
         # True if representative source is defined for any MS
         repsource_defined = any('N/A' not in td for tr in repsource_table_rows for td in tr[1:])
-        repsource_table_rows = merge_td_columns(repsource_table_rows)
 
         # Extract information for flagging summary table.
         flags = _get_flags(pipeline_context, results)
