@@ -289,8 +289,20 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
                 LOG.info('Skipping a group of channel averaged spw')
                 continue
  
+            field_sel = ''
+            if len(in_field) == 0:
+                # fine, just go ahead
+                field_sel = in_field
+            elif group_desc.field_name in [x.strip('"') for x in in_field.split(',')]:
+                # pre-selection of the field name
+                field_sel = group_desc.field_name
+            else:
+                # no field name is included in in_field, skip
+                LOG.info('Skip reduction group {:d}'.format(group_id))
+                continue
+
             # Which group in group_desc list should be processed
-            member_list = list(common.get_valid_ms_members(group_desc, [cal_name], in_ant, in_field, in_spw))
+            member_list = list(common.get_valid_ms_members(group_desc, [cal_name], in_ant, field_sel, in_spw))
             LOG.trace('group %s: member_list=%s' % (group_id, member_list))
             
             # skip this group if valid member list is empty

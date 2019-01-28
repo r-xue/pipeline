@@ -345,17 +345,22 @@ def get_valid_ms_members(group_desc, msname_filter, ant_selection, field_selecti
             _field_selection = field_selection
             try:
                 nfields = len(msobj.fields)
-                if not field_selection.isdigit():
+                if len(field_selection) == 0:
+                    # fine, go ahead
+                    pass
+                elif not field_selection.isdigit():
                     # selection by name, bracket by ""
                     LOG.debug('non-digit field selection')
-                    _field_selection = '"{}"'.format(field_selection)
+                    if not _field_selection.startswith('"'):
+                        _field_selection = '"{}"'.format(field_selection)
                 else:
                     tmp_id = int(field_selection)
                     LOG.debug('field_id = {}'.format(tmp_id))
                     if tmp_id < 0 or nfields <= tmp_id:
                         # could be selection by name consisting of digits, bracket by ""
                         LOG.debug('field name consisting digits')
-                        _field_selection = '"{}"'.format(field_selection)
+                        if not _field_selection.startswith('"'):
+                            _field_selection = '"{}"'.format(field_selection)
                 LOG.debug('field_selection = "{}"'.format(_field_selection))
                 mssel = casatools.ms.msseltoindex(vis=msobj.name, spw=spw_selection,
                                                   field=_field_selection, baseline=ant_selection)
