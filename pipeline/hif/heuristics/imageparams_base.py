@@ -425,7 +425,7 @@ class ImageParamsHeuristics(object):
                         antenna = [','.join(map(str, antenna_ids.get(os.path.basename(v), ''))) for v in valid_vis_list]
                         gridder = self.gridder(intent, field)
                         mosweight = self.mosweight(intent, field)
-                        if intent == 'TARGET':
+                        if intent == 'TARGET' and gridder == 'mosaic':
                             field_ids = self.field(intent, field, exclude_intent='ATMOSPHERE')
                         else:
                             field_ids = self.field(intent, field)
