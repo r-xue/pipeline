@@ -425,7 +425,10 @@ class ImageParamsHeuristics(object):
                         antenna = [','.join(map(str, antenna_ids.get(os.path.basename(v), ''))) for v in valid_vis_list]
                         gridder = self.gridder(intent, field)
                         mosweight = self.mosweight(intent, field)
-                        field_ids = self.field('TARGET', field, exclude_intent='ATMOSPHERE')
+                        if intent == 'TARGET':
+                            field_ids = self.field(intent, field, exclude_intent='ATMOSPHERE')
+                        else:
+                            field_ids = self.field(intent, field)
                         imsize = self.imsize(fields=field_ids, cell=['%.2g%s' % (cellv, cellu)], primary_beam=largest_primary_beam_size)
                         phasecenter = self.phasecenter(field_ids)
                         paramList = ImagerParameters(msname=valid_vis_list,
