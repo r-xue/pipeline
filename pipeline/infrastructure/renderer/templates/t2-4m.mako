@@ -24,7 +24,9 @@ $(document).ready(function() {
 				   data-stagenum="${result.stage_number}"
 				   data-taskname="${hr.get_task_name(result)}"
 				   href="stage${result.stage_number}/t2-4m_details-container.html">
-					${hr.get_task_name(result)}
+                    <span class="${rendererutils.get_sidebar_style_for_task(result)}">
+    					${hr.get_task_name(result)}
+                    </span>
 					<span class="pull-right">
 						${rendererutils.get_symbol_badge(result)}						
 					</span>

@@ -133,6 +133,12 @@ def format_score(pqascore):
     return '%0.2f' % pqascore.score
 
 
+def get_sidebar_style_for_task(result):
+    if all(qa_score.score in (None, '', 'N/A') for qa_score in result.qa.pool):
+        return 'text-muted'
+    return 'text-dark'
+
+
 def get_symbol_badge(result):
     if get_failures_badge(result):
         symbol = '<span class="glyphicon glyphicon-minus-sign alert-danger transparent-bg" aria-hidden="true"></span>'

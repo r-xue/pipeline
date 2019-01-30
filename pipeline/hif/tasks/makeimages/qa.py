@@ -25,7 +25,7 @@ class MakeImagesQAHandler(pqa.QAPlugin):
             result.qa.pool[:] = score_objects
         else:
             if len(result.targets) == 0:
-                result.qa.pool[:] = [pqa.QAScore(1.0, longmsg='No imaging targets were defined',
+                result.qa.pool[:] = [pqa.QAScore(None, longmsg='No imaging targets were defined',
                                                  shortmsg='Nothing to image')]
             else:
                 result.qa.pool[:] = [

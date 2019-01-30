@@ -21,7 +21,7 @@ class MakeImListQAHandler(pqa.QAPlugin):
             longmsg = 'Size mitigation error. No targets were created.'
             shortmsg = 'Size mitigation error.'
         elif result.max_num_targets == 0:
-            score = 1.0
+            score = None
             longmsg = 'No clean targets expected.'
             shortmsg = ''
         else:
