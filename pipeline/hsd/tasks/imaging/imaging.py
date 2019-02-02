@@ -871,8 +871,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         # so far we always create native resolution, full channel image
         namer.specmode('cube')
         #namer.spectral_image()
-        namer._associations.format('image')
-        namer.single_dish()
+        namer._associations.format('image.sd')
+        #namer.single_dish()
         namer.antenna(antenna)
         # iteration is necessary for exportdata
         namer.iteration(0)
