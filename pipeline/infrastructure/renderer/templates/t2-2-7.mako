@@ -39,7 +39,7 @@ def get_field_name(plot):
 
 <div class="row">
 % if target_pointing is not None and len(target_pointing) > 0:
-    % for plots in zip(target_pointing):
+    % for plots in zip(target_pointing, whole_pointing):
         % for plot in plots:
             <div class="col-md-6">
                 <a href="${os.path.relpath(plot.abspath, pcontext.report_dir)}"
@@ -56,29 +56,7 @@ def get_field_name(plot):
                     </div>
                 </a>
                 <div class="caption">
-                    <h4>raster scan on source</h4>
-                </div>
-            </div>
-        % endfor
-    % endfor
-    % for plots in zip(whole_pointing):
-        % for plot in plots:
-            <div class="col-md-6">
-                <a href="${os.path.relpath(plot.abspath, pcontext.report_dir)}"
-                    data-fancybox="group_target_pointing"
-                    data-caption='Antenna: ${plot.parameters["antenna"]}<br>
-                        Field: ${plot.parameters["field"]}<br>
-                        Intent: ${plot.parameters["intent"]}'>
-                    <h3>Antenna ${antenna_name(plot)} Field ${get_field_name(plot)}</h3>
-                    <div class="thumbnail">
-                        <img class="lazyload"
-                            data-src="${os.path.relpath(plot.thumbnail, pcontext.report_dir)}"
-                            title="Telescope pointing for antenna ${antenna_name(plot)}"
-                            alt="Telescope pointing for antenna ${antenna_name(plot)}" />
-                    </div>
-                </a>
-                <div class="caption">
-                    <h4>raster scan including reference</h4>
+                    <h4>${caption_string(plot)}</h4>
                 </div>
             </div>
         % endfor
