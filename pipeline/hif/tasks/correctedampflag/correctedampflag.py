@@ -804,8 +804,7 @@ class Correctedampflag(basetask.StandardTaskTemplate):
         modeldata = np.squeeze(data['model_data'], axis=1)
         flag_all = np.squeeze(data['flag'], axis=1)
 
-        # Compute "scalar difference" between corrected data and
-        # model data.
+        # Compute "scalar difference" between corrected data and model data.
         cmetric_all = np.abs(corrdata) - np.abs(modeldata)
 
         # Select non-autocorrelations.
@@ -815,13 +814,30 @@ class Correctedampflag(basetask.StandardTaskTemplate):
         ant2 = data['antenna2'][id_nonac]
 
         # Get number of correlations for this spw.
-        ncorrs = len(commonhelpermethods.get_corr_products(ms, spwid))
+        corr_type = commonhelpermethods.get_corr_products(ms, spwid)
+        ncorrs = len(corr_type)
+
+        # For multi-scan observations, analyze the sum of the metric for XX and YY (CAS-12011).
+        if nscans > 1:
+            if ncorrs == 2:
+                cmetric_all = np.sum(cmetric_all, axis=0, keepdims=True)
+                flag_all = np.sum(flag_all, axis=0, keepdims=True)
+                ncorrs = 1
+            elif ncorrs == 4 and set(corr_type) == {'XX', 'XY', 'YX', 'YY'}:
+                # Create sum of XX and YY polarization.
+                col_sel = [corr_type.index('XX'), corr_type.index('YY')]
+                cmetric_copol = np.sum(cmetric_all[col_sel, :], axis=0, keepdims=True)
+                # Create sum of XY and YX polarization.
+                col_sel = [corr_type.index('XY'), corr_type.index('YX')]
+                cmetric_crosspol = np.sum(cmetric_all[col_sel, :], axis=0, keepdims=True)
+                # Create new scalar difference array with the summed data.
+                cmetric_all = np.concatenate(cmetric_copol, cmetric_crosspol)
+                ncorrs = 2
 
         # Evaluate flagging heuristics separately for each polarisation.
         for icorr in range(ncorrs):
 
-            # Select non-autocorrelations from corrected and model
-            # data.
+            # Select non-autocorrelations from corrected and model data.
             cmetric = cmetric_all[icorr][id_nonac]
             flag = flag_all[icorr][id_nonac]
 
@@ -1040,8 +1056,11 @@ class Correctedampflag(basetask.StandardTaskTemplate):
 
                 # Compute final threshold for maximum fraction of "outlier
                 # timestamps" over "total timestamps" that a baseline can
-                # be a part of.
+                # be a part of. Scale up the threshold for multi-scan
+                # observations.
                 tmint_scaled = inputs.tmint * thresh_scale_factor
+                if nscans > 1:
+                    tmint_scaled = tmint_scaled * 2**0.5
 
                 # Identify "bad baselines" as those baselines whose number
                 # of timestamps with outliers exceeds the threshold.
