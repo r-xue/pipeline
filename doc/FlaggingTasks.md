@@ -171,7 +171,7 @@ In the current standard pipeline, all six metrics are active, and evaluated in t
 
    **View flagging**
 
-   The views are evaluated against the "max abs" matrix flagging rule, where data points are identified as outliers if their absolute value exceeds the threshold "ff_max_limit" (default: 5).
+   The views are evaluated against the "max abs" matrix flagging rule, where data points are identified as outliers if their absolute value exceeds the threshold "ff_max_limit" (default: 13).
 
 - Metric 5: "birdies"
 

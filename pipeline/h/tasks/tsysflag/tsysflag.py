@@ -216,7 +216,7 @@ class TsysflagInputs(vdp.StandardInputs):
     fb_sharps_limit = vdp.VisDependentProperty(default=0.05)
     fd_max_limit = vdp.VisDependentProperty(default=5)
     fe_edge_limit = vdp.VisDependentProperty(default=3.0)
-    ff_max_limit = vdp.VisDependentProperty(default=5)
+    ff_max_limit = vdp.VisDependentProperty(default=13)
     ff_refintent = vdp.VisDependentProperty(default='BANDPASS')
 
     @vdp.VisDependentProperty

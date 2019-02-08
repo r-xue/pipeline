@@ -73,7 +73,7 @@ file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
     <param type="double" name="ff_max_limit" subparam="true">
         <description>Flag Tsys spectra with \'fieldshape\' metric greater than ff_max_limit</description>
-        <value>5.0</value>
+        <value>13</value>
     </param>
 
     <param type="bool" name="flag_birdies">
@@ -177,7 +177,7 @@ file:///opt/casa/code/xmlcasa/xml/casa.xsd">
         <when param="flag_fieldshape">
             <equals type="bool" value="True">
                 <default param="ff_refintent"><value type="string">BANDPASS</value></default>
-                <default param="ff_max_limit"><value>5.0</value></default>
+                <default param="ff_max_limit"><value>13</value></default>
             </equals>
             <equals type="bool" value="False">
             </equals>
@@ -299,7 +299,7 @@ ff_refintent -- Data intent that provides the reference shape for
 ff_max_limit -- Flag Tsys spectra with 'fieldshape' metric values &gt;
     ff_max_limit.
 
-    default: 5.0
+    default: 13
 
 flag_birdies -- True to flag channels covering sharp spectral features.
 
