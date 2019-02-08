@@ -1,7 +1,6 @@
 from __future__ import absolute_import
 
 import collections
-import glob
 import os
 import shutil
 import tarfile
@@ -9,7 +8,6 @@ import tarfile
 from pipeline.infrastructure import task_registry
 import pipeline.infrastructure.vdp as vdp
 
-import pipeline.h.tasks.common.manifest as manifest
 import pipeline.h.tasks.exportdata.exportdata as exportdata
 import pipeline.infrastructure as infrastructure
 from . import almaifaqua
@@ -75,7 +73,7 @@ class ALMAExportData(exportdata.ExportData):
             prefix = oussid
         else:
             prefix = oussid + '.' + recipe_name
-        auxfproducts = self._do_auxiliary_products(prefix, self.inputs.output_dir, self.inputs.products_dir, vislist,
+        auxfproducts = self._do_if_auxiliary_products(prefix, self.inputs.output_dir, self.inputs.products_dir, vislist,
                                                    self.inputs.imaging_products_only)
 
         # Export the AQUA report
@@ -120,102 +118,6 @@ class ALMAExportData(exportdata.ExportData):
 
         return visdict
 
-    def _do_auxiliary_products(self, oussid, output_dir, products_dir, vislist, imaging_products_only):
-        """
-        Generate the auxiliary products
-        """
-
-        if imaging_products_only:
-            contfile_name = 'cont.dat'
-            fluxfile_name = 'Undefined'
-            antposfile_name = 'Undefined'
-        else:
-            fluxfile_name = 'flux.csv'
-            antposfile_name = 'antennapos.csv'
-            contfile_name = 'cont.dat'
-        empty = True
-
-        # Get the flux, antenna position, and continuum subtraction
-        # files and test to see if at least one of them exists
-        flux_file = os.path.join(output_dir, fluxfile_name)
-        antpos_file = os.path.join(output_dir, antposfile_name)
-        cont_file = os.path.join(output_dir, contfile_name)
-        if os.path.exists(flux_file) or os.path.exists(antpos_file) or os.path.exists(cont_file):
-            empty = False
-
-        # Export the general and target source template flagging files
-        #    The general template flagging files are not required for the restore but are
-        #    informative to the user.
-        #    Whether or not the target template files should be exported to the archive depends
-        #    on the final place of the target flagging step in the work flow and
-        #    how flags will or will not be stored back into the ASDM.
-
-        targetflags_filelist = []
-        if self.inputs.imaging_products_only:
-            flags_file_list = glob.glob('*.flagtargetstemplate.txt')
-        elif not vislist:
-            flags_file_list = glob.glob('*.flagtemplate.txt')
-            flags_file_list.extend(glob.glob('*.flagtsystemplate.txt'))
-        else:
-            flags_file_list = glob.glob('*.flag*template.txt')
-        for file_name in flags_file_list:
-            flags_file = os.path.join(output_dir, file_name)
-            if os.path.exists(flags_file):
-                empty = False
-                targetflags_filelist.append(flags_file)
-            else:
-                targetflags_filelist.append('Undefined')
-
-        if empty:
-            return None
-
-        # Create the tarfile
-        cwd = os.getcwd()
-        try:
-            os.chdir(output_dir)
-
-            # Define the name of the output tarfile
-            tarfilename = '{}.auxproducts.tgz'.format(oussid)
-            LOG.info('Saving auxiliary data products in %s', tarfilename)
-
-            # Open tarfile
-            with tarfile.open(os.path.join(products_dir, tarfilename), 'w:gz') as tar:
-
-                # Save flux file
-                if os.path.exists(flux_file):
-                    tar.add(flux_file, arcname=os.path.basename(flux_file))
-                    LOG.info('Saving auxiliary data product %s in %s', os.path.basename(flux_file), tarfilename)
-                else:
-                    LOG.info('Auxiliary data product flux.csv does not exist')
-
-                # Save antenna positions file
-                if os.path.exists(antpos_file):
-                    tar.add(antpos_file, arcname=os.path.basename(antpos_file))
-                    LOG.info('Saving auxiliary data product %s in %s', os.path.basename(antpos_file), tarfilename)
-                else:
-                    LOG.info('Auxiliary data product antennapos.csv does not exist')
-
-                # Save continuum regions file
-                if os.path.exists(cont_file):
-                    tar.add(cont_file, arcname=os.path.basename(cont_file))
-                    LOG.info('Saving auxiliary data product %s in %s', os.path.basename(cont_file), tarfilename)
-                else:
-                    LOG.info('Auxiliary data product cont.dat does not exist')
-
-                # Save target flag files
-                for flags_file in targetflags_filelist:
-                    if os.path.exists(flags_file):
-                        tar.add(flags_file, arcname=os.path.basename(flags_file))
-                        LOG.info('Saving auxiliary data product %s in %s', os.path.basename(flags_file), tarfilename)
-                    else:
-                        LOG.info('Auxiliary data product flagging target templates file does not exist')
-
-                tar.close()
-        finally:
-            # Restore the original current working directory
-            os.chdir(cwd)
-
-        return tarfilename
 
     def _export_casa_restore_script(self, context, script_name, products_dir, oussid, vislist, session_list):
         """
@@ -289,29 +191,3 @@ finally:
         LOG.info('Copying AQUA report %s to %s' % (aqua_file, out_aqua_file))
         shutil.copy(aqua_file, out_aqua_file)
         return os.path.basename(out_aqua_file)
-
-    @staticmethod
-    def _add_to_manifest(manifest_file, aux_fproducts, aux_caltablesdict, aux_calapplysdict, aqua_report):
-
-        pipemanifest = manifest.PipelineManifest('')
-        pipemanifest.import_xml(manifest_file)
-        ouss = pipemanifest.get_ous()
-
-        if aqua_report:
-            pipemanifest.add_aqua_report(ouss, os.path.basename(aqua_report))
-
-        if aux_fproducts:
-            # Add auxiliary data products file
-            pipemanifest.add_aux_products_file(ouss, os.path.basename(aux_fproducts))
-
-        # Add the auxiliary caltables
-        if aux_caltablesdict:
-            for session_name in aux_caltablesdict:
-                session = pipemanifest.get_session(ouss, session_name)
-                if session is None:
-                    session = pipemanifest.set_session(ouss, session_name)
-                pipemanifest.add_auxcaltables(session, aux_caltablesdict[session_name][1])
-                for vis_name in aux_caltablesdict[session_name][0]:
-                    pipemanifest.add_auxasdm(session, vis_name, aux_calapplysdict[vis_name])
-
-        pipemanifest.write(manifest_file)

@@ -34,11 +34,36 @@ class VLAExportData(exportdata.ExportData):
 
         results = super(VLAExportData, self).prepare()
 
+        oussid = self.get_oussid(self.inputs.context) # returns string of 'unknown' for VLA
+
+        # Make the imaging vislist and the sessions lists.
+        #     Force this regardless of the value of imaging_only_products
+        session_list, session_names, session_vislists, vislist = super(VLAExportData, self)._make_lists(
+            self.inputs.context, self.inputs.session, self.inputs.vis, imaging_only_mses=False)
+
+        # Export the auxiliary file products into a single tar file
+        #    These are optional for reprocessing but informative to the user
+        #    The calibrator source fluxes file
+        #    The antenna positions file
+        #    The continuum regions file
+        #    The target flagging file
+        recipe_name = self.get_recipename(self.inputs.context)
+        if not recipe_name:
+            prefix = oussid
+        else:
+            prefix = oussid + '.' + recipe_name
+        auxfproducts = self._do_if_auxiliary_products(prefix, self.inputs.output_dir, self.inputs.products_dir, vislist,
+                                                   self.inputs.imaging_products_only)
+
         # Export the AQUA report
-        oussid = self.get_oussid(self.inputs.context)  # returns string of 'unknown' for VLA
         aquareport_name = 'pipeline_aquareport.xml'
         pipe_aqua_reportfile = self._export_aqua_report(self.inputs.context, oussid, aquareport_name,
                                                         self.inputs.products_dir)
+
+        # Update the manifest
+        if auxfproducts is not None or pipe_aqua_reportfile is not None:
+            manifest_file = os.path.join(self.inputs.products_dir, results.manifest)
+            self._add_to_manifest(manifest_file, auxfproducts, False, [], pipe_aqua_reportfile)
 
         return results
 
