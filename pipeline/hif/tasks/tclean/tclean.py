@@ -383,7 +383,7 @@ class Tclean(cleanbase.CleanBase):
                 LOG.info('Using supplied width %s' % inputs.width)
                 channel_width = channel_width_manual
                 if abs(channel_width) > channel_width_auto:
-                    inputs.nbin = abs(int(round(channel_width / channel_width_auto) + 0.5))
+                    inputs.nbin = int(round(abs(channel_width) / channel_width_auto) + 0.5)
             elif inputs.nbin not in (None, -1):
                 LOG.info('Applying binning factor %d' % inputs.nbin)
                 channel_width *= inputs.nbin
