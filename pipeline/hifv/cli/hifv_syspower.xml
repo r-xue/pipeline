@@ -19,6 +19,16 @@
 	<value>0.7, 1.2</value>
     </param>
 
+    <param type="string" name="antexclude">
+	<description>String list of antennas to exclude</description>
+	<value></value>
+    </param>
+
+    <param type="bool" name="usemedian">
+	    <description>Use median values of good antennas</description>
+	    <value>False</value>
+	</param>
+
     <param type="string" name="pipelinemode">
 	<description>The pipeline operating mode</description>
 	<value>automatic</value>
@@ -76,6 +86,12 @@ Keyword arguments:
 
 clip_sp_template -- clipping range
     default: [0.7, 1.2]
+
+antexclude -- csv string of antennas to exclude
+    default: ''
+
+usemedian -- if antexclude is specified with usemedian=False, the template values are replaced with 1.0
+             if usemedian = True, the template values are replaced with the median of the good antennas
 
 pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline
    determines the values of all context defined pipeline inputs

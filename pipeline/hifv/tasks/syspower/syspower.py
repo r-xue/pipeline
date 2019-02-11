@@ -135,10 +135,13 @@ class SyspowerInputs(vdp.StandardInputs):
     def clip_sp_template(self):
         return [0.7, 1.2]
 
-    def __init__(self, context, vis=None, clip_sp_template=None):
+    def __init__(self, context, vis=None, clip_sp_template=None, antexclude=None, usemedian=None, templatevalue=None):
         self.context = context
         self.vis = vis
         self.clip_sp_template = clip_sp_template
+        self.antexclude = antexclude
+        self.usemedian = usemedian
+        self.templatevalue = templatevalue
 
 
 @task_registry.set_equivalent_casa_task('hifv_syspower')
@@ -204,7 +207,7 @@ class Syspower(basetask.StandardTaskTemplate):
                 for line in flag_file:
                     try:
                         r = re.search("antenna='ea(\d*)&&\*' timerange='(.*)' reason", line)
-                    except:
+                    except Exception as e:
                         r = False
                     if r:
                         this_ant = 'ea' + r.groups()[0]
@@ -314,6 +317,34 @@ class Syspower(basetask.StandardTaskTemplate):
 
         final_template.mask[final_template < clip_sp_template[0]] = True
         final_template.mask[final_template > clip_sp_template[1]] = True
+
+        goodantennasidx = []
+        medianant = 1.0
+        if self.inputs.usemedian and self.inputs.antexclude != '':
+            antids = list(antenna_ids)
+            for i, this_ant in enumerate(antenna_ids):
+                antindex = antids.index(i)
+                antname = antenna_names[antindex]
+                if antname in self.inputs.antexclude:
+                    LOG.info("Antenna " + antname + " to be excluded.")
+                else:
+                    goodantennasidx.append(i)
+            medianant = np.ma.median(final_template[goodantennasidx, :, :, :])
+
+        antids = list(antenna_ids)
+        for i, this_ant in enumerate(antenna_ids):
+            antindex = antids.index(i)
+            antname = antenna_names[antindex]
+            if antname in self.inputs.antexclude:
+                data = final_template[i, :, :, :].data
+                if self.inputs.usemedian:
+                    data[:] = medianant
+                    LOG.info("Using median value of "+str(medianant) + " for antenna " + antname + ".")
+                else:
+                    data[:] = 1.0
+                    LOG.info("Using value of 1.0 for antenna " + antname + ".")
+                final_template.data[i, :, :, :] = data  # Change data values to 1.0
+                final_template.mask[i, :, :, :] = np.ma.masked  # Change mask values to False for that antenna
 
         with casatools.TableReader(rq_table, nomodify=False) as tb:
             rq_time = tb.getcol('TIME')
