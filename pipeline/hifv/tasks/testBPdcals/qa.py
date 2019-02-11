@@ -27,8 +27,8 @@ class testBPdcalsQAHandler(pqa.QAPlugin):
         m = context.observing_run.get_ms(result.inputs['vis'])
 
         if result.flaggedSolnApplycalbandpass and result.flaggedSolnApplycaldelay:
-            self._checkKandBsolution(result.flaggedSolnApplycaldelay)
-            self._checkKandBsolution(result.flaggedSolnApplycalbandpass)
+            self._checkKandBsolution(result.flaggedSolnApplycaldelay, m)
+            self._checkKandBsolution(result.flaggedSolnApplycalbandpass, m)
 
             score1 = qacalc.score_total_data_flagged_vla_bandpass(
                 result.bpdgain_touse, result.flaggedSolnApplycalbandpass['antmedian']['fraction'])
@@ -42,7 +42,10 @@ class testBPdcalsQAHandler(pqa.QAPlugin):
         result.qa.pool.extend(scores)
 
     @staticmethod
-    def _checkKandBsolution(table):
+    def _checkKandBsolution(table, m):
+
+        antenna_names = [a.name for a in m.antennas]
+
         for antenna in table['antspw']:
             spwcollect = []
             for spw in table['antspw'][antenna]:
@@ -53,7 +56,7 @@ class testBPdcalsQAHandler(pqa.QAPlugin):
             if len(spwcollect) > 1:
                 spwcollect = sorted(set(spwcollect))
                 LOG.warn(
-                    'Antenna {!s}, spws: {!s} have a flagging fraction of 1.0.'.format(antenna, ','.join(spwcollect)))
+                    'Antenna {!s}, spws: {!s} have a flagging fraction of 1.0.'.format(antenna_names[antenna], ','.join(spwcollect)))
 
         return
 
