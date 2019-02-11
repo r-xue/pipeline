@@ -12,6 +12,7 @@ import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hif.tasks.polarization import polarization
 from pipeline.hifv.tasks.setmodel.vlasetjy import standard_sources
+from pipeline.hifv.heuristics import uvrange
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 
@@ -92,6 +93,10 @@ class Circfeedpolcal(polarization.Polarization):
     def prepare(self):
 
         self.callist = []
+        try:
+            self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
+        except Exception as e:
+            self.setjy_results = self.inputs.context.results[0].read().setjy_results
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         intents = list(m.intents)
@@ -324,7 +329,12 @@ class Circfeedpolcal(polarization.Polarization):
                           'interp': interp,
                           'minblperant': minBL_for_cal,
                           'parang': True,
+                          'uvrange': '',
                           'append': append}
+
+        fieldobj = m.get_fields(name=field)[0]
+        fieldid = fieldobj.id
+        casa_task_args['uvrange'] = uvrange(self.setjy_results, fieldid)
 
         job = casa_tasks.gaincal(**casa_task_args)
 

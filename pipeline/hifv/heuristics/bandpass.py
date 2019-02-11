@@ -1,10 +1,13 @@
 from __future__ import absolute_import
 
+import os
+
 import numpy as np
 
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure as infrastructure
+from . import uvrange
 
 from pipeline.infrastructure import casa_tasks
 
@@ -93,7 +96,11 @@ def computeChanFlag(vis, caltable, context):
                 if length > len(flagArr[1])/32.0:
                     largechunk = True
 
-            #print rrow.rjust(4), 'Pol A:', str(np.sum(flagArr[0])).rjust(4),' Pol B:', str(np.sum(flagArr[1])).rjust(4),                                 ' / ',str(len(flagArr[0])), ' chan flagged ', '(', 100.0*float(np.sum(flagArr[0]))/len(flagArr[0]),'%,  ',                                 100.0*float(np.sum(flagArr[1]))/len(flagArr[1]), '%)'
+            # print rrow.rjust(4), 'Pol A:', str(np.sum(flagArr[0])).rjust(4),' Pol B:',
+                    # str(np.sum(flagArr[1])).rjust(4),
+                    # ' / ',str(len(flagArr[0])),
+                    # ' chan flagged ', '(', 100.0*float(np.sum(flagArr[0]))/len(flagArr[0]),
+                    # '%,  ',                                 100.0*float(np.sum(flagArr[1]))/len(flagArr[1]), '%)'
 
     spwids = np.unique(spwids)
     spwids = list(spwids)
@@ -101,7 +108,74 @@ def computeChanFlag(vis, caltable, context):
     return (largechunk, spwids)
 
 
-def do_bandpass(vis, caltable, context=None, RefAntOutput=None, spw=None, ktypecaltable=None, bpdgain_touse=None, solint=None, append=None):
+def do_bandpass(vis, caltable, context=None, RefAntOutput=None, spw=None, ktypecaltable=None,
+                bpdgain_touse=None, solint=None, append=None):
+    """Run CASA task bandpass"""
+
+    m = context.observing_run.get_ms(vis)
+    bandpass_field_select_string = context.evla['msinfo'][m.name].bandpass_field_select_string
+    bandpass_scan_select_string = context.evla['msinfo'][m.name].bandpass_scan_select_string
+    minBL_for_cal = m.vla_minbaselineforcal()
+
+    try:
+        setjy_results = context.results[0].read()[0].setjy_results
+    except Exception as e:
+        setjy_results = context.results[0].read().setjy_results
+
+    BPGainTables = sorted(context.callibrary.active.get_caltable())
+    BPGainTables.append(ktypecaltable)
+    BPGainTables.append(bpdgain_touse)
+
+    bandpass_task_args = {'vis': vis,
+                          'caltable': caltable,
+                          'field': '',
+                          'spw': spw,
+                          'intent': '',
+                          'selectdata': True,
+                          'uvrange': '',
+                          'scan': '',
+                          'solint': solint,
+                          'combine': 'scan',
+                          'refant': ','.join(RefAntOutput),
+                          'minblperant': minBL_for_cal,
+                          'minsnr': 5.0,
+                          'solnorm': False,
+                          'bandtype': 'B',
+                          'fillgaps': 0,
+                          'smodel': [],
+                          'append': append,
+                          'docallib': False,
+                          'gaintable': BPGainTables,
+                          'gainfield': [''],
+                          'interp': [''],
+                          'spwmap': [],
+                          'parang': True}
+
+    bpscanslist = map(int, bandpass_scan_select_string.split(','))
+    scanobjlist = m.get_scans(scan_id=bpscanslist)
+    fieldidlist = []
+    for scanobj in scanobjlist:
+        fieldobj, = scanobj.fields
+        if str(fieldobj.id) not in fieldidlist:
+            fieldidlist.append(str(fieldobj.id))
+
+    for fieldidstring in fieldidlist:
+        fieldid = int(fieldidstring)
+        uvrangestring = uvrange(setjy_results, fieldid)
+        bandpass_task_args['field'] = fieldidstring
+        bandpass_task_args['uvrange'] = uvrangestring
+        if os.path.exists(caltable):
+            bandpass_task_args['append'] = True
+
+        job = casa_tasks.bandpass(**bandpass_task_args)
+
+        job.execute()
+
+    return True
+
+
+def do_bandpassweakbp(vis, caltable, context=None, RefAntOutput=None, spw=None, ktypecaltable=None,
+                      bpdgain_touse=None, solint=None, append=None):
     """Run CASA task bandpass"""
 
     m = context.observing_run.get_ms(vis)
@@ -113,73 +187,81 @@ def do_bandpass(vis, caltable, context=None, RefAntOutput=None, spw=None, ktypec
     BPGainTables.append(ktypecaltable)
     BPGainTables.append(bpdgain_touse)
 
-    bandpass_task_args = {'vis'         :vis,
-                          'caltable'    :caltable,
-                          'field'       :bandpass_field_select_string,
-                          'spw'         :spw,
-                          'intent'      :'',
-                          'selectdata'  :True,
-                          'uvrange'     :'',
-                          'scan'        :bandpass_scan_select_string,
-                          'solint'      :solint,
-                          'combine'     :'scan',
-                          'refant'      :','.join(RefAntOutput),
-                          'minblperant' :minBL_for_cal,
-                          'minsnr'      :5.0,
-                          'solnorm'     :False,
-                          'bandtype'    :'B',
-                          'fillgaps'    :0,
-                          'smodel'      :[],
-                          'append'      :append,
-                          'docallib'    :False,
-                          'gaintable'   :BPGainTables,
-                          'gainfield'   :[''],
-                          'interp'      :[''],
-                          'spwmap'      :[],
-                          'parang'      :True}
+    bandpass_task_args = {'vis': vis,
+                          'caltable': caltable,
+                          'field': bandpass_field_select_string,
+                          'spw': spw,
+                          'intent': '',
+                          'selectdata': True,
+                          'uvrange': '',
+                          'scan': bandpass_scan_select_string,
+                          'solint': solint,
+                          'combine': 'scan',
+                          'refant': ','.join(RefAntOutput),
+                          'minblperant': minBL_for_cal,
+                          'minsnr': 5.0,
+                          'solnorm': False,
+                          'bandtype': 'B',
+                          'fillgaps': 0,
+                          'smodel': [],
+                          'append': append,
+                          'docallib': False,
+                          'gaintable': BPGainTables,
+                          'gainfield': [''],
+                          'interp': [''],
+                          'spwmap': [],
+                          'parang': True}
 
     job = casa_tasks.bandpass(**bandpass_task_args)
 
     return job
 
 
-def weakbp(vis, caltable, context=None, RefAntOutput=None, ktypecaltable=None, bpdgain_touse=None, solint=None, append=None):
+def weakbp(vis, caltable, context=None, RefAntOutput=None, ktypecaltable=None,
+           bpdgain_touse=None, solint=None, append=None):
 
     m = context.observing_run.get_ms(vis)
-    channels = m.get_vla_numchan()  #Number of channels before averaging
+    channels = m.get_vla_numchan()  # Number of channels before averaging
 
-    bpjob = do_bandpass(vis, caltable, context=context, spw='', RefAntOutput=RefAntOutput,
+    bpjob = do_bandpassweakbp(vis, caltable, context=context, spw='', RefAntOutput=RefAntOutput,
                         ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse, solint='inf', append=False)
     bpjob.execute()
     (largechunk, spwids) = computeChanFlag(vis, caltable, context)
     # print largechunk, spwids
-    if largechunk==False and spwids==[]:
+    if not largechunk and spwids == []:
         # All solutions found - proceed as normal with the pipeline
         interp = ''
         return interp
 
     LOG.warning("Solutions for all channels not obtained.  Using weak bandpass calibration heuristic.")
     cpa = 2  # Channel pre-averaging
-    while largechunk == True:
+    while largechunk:
 
         LOG.info("Removing rows in table " + caltable + " for spws="+','.join([str(i) for i in spwids]))
         removeRows(caltable, spwids)
-        solint = 'inf,'+str(cpa)+'ch'
-        LOG.warning("Largest contiguous set of channels with no BP solution is greater than maximum allowable 1/32 fractional bandwidth for spw="+','.join([str(i) for i in spwids])+"."+ "  Using solint=" + solint)
+        solint = 'inf,' + str(cpa) + 'ch'
+        LOG.warning("Largest contiguous set of channels with no BP solution is greater than maximum " +
+                    "allowable 1/32 fractional bandwidth for spw="+','.join([str(i) for i in spwids])
+                    + "." + "  Using solint=" + solint)
         LOG.info('Weak bandpass calibration heuristic.  Using solint='+solint)
-        bpjob = do_bandpass(vis, caltable, context=context, RefAntOutput=RefAntOutput, spw=','.join([str(i) for i in spwids]),
-                            ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse, solint=solint, append=True)
+        bpjob = do_bandpassweakbp(vis, caltable, context=context, RefAntOutput=RefAntOutput,
+                                  spw=','.join([str(i) for i in spwids]),
+                                  ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse, solint=solint, append=True)
         bpjob.execute()
         (largechunk, spwids) = computeChanFlag(vis, caltable, context)
         for spw in spwids:
             preavgnchan = channels[spw]/float(cpa)
-            LOG.debug("CPA: "+str(cpa)+"   NCHAN: "+str(preavgnchan)+"    NCHAN/32: "+str(preavgnchan/32.0))
+            LOG.debug("CPA: " + str(cpa) + "   NCHAN: "+str(preavgnchan)+"    NCHAN/32: "+str(preavgnchan/32.0))
             if cpa > preavgnchan/32.0:
-                LOG.warn("Limiting pre-averaging to maximum 1/32 fractional bandwidth for spw="+str(spw)+". Interpolation in applycal will need to extend over greater than 1/32 fractional bandwidth, which may fail to capture significant bandpass structure.")
+                LOG.warn("Limiting pre-averaging to maximum 1/32 fractional bandwidth for spw="+str(spw)
+                         + ". Interpolation in applycal will need to extend over greater " +
+                         "than 1/32 fractional bandwidth, which may fail to capture significant bandpass structure.")
                 largechunk = False  # This will break the while loop and move onto applycal
         cpa = cpa * 2
 
     LOG.warning("Channel gaps in bandpass solutions will be linearly interpolated over in applycal.")
-    LOG.warning("Accuracy of bandpass solutions will be slightly degraded at interpolated channels, particularly if these fall at spectral window edges where applycal will perform 'nearest' extrapolation.")
+    LOG.warning("Accuracy of bandpass solutions will be slightly degraded at interpolated channels, " +
+                "particularly if these fall at spectral window edges where applycal will " +
+                "perform 'nearest' extrapolation.")
     interp = 'nearest'
     return interp

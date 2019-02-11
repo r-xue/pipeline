@@ -298,7 +298,7 @@ def export_flux_from_result(results, context, filename='flux.csv'):
         results = [results, ]
     abspath = os.path.join(context.output_dir, filename)
 
-    columns = ['ms', 'field', 'spw', 'I', 'Q', 'U', 'V', 'spix', 'comment']
+    columns = ['ms', 'field', 'spw', 'I', 'Q', 'U', 'V', 'spix', 'uvmin', 'uvmax', 'comment']
     existing = []
 
     # if the file exists, read it in
@@ -342,7 +342,7 @@ def export_flux_from_result(results, context, filename='flux.csv'):
                                                           intents=','.join(sorted(field.intents)), origin=origin,
                                                           age=age, queried_at=queried_at)
 
-                        writer.writerow([ms_basename, field_id, m.spw_id, I, Q, U, V, float(m.spix), comment])
+                        writer.writerow([ms_basename, field_id, m.spw_id, I, Q, U, V, float(m.spix), float(m.uvmin), float(m.uvmax), comment])
                         counter += 1
 
         LOG.info('Exported %s flux measurements to %s' % (counter, abspath))
@@ -366,6 +366,7 @@ def import_flux(output_dir, observing_run, filename=None):
         counter = 0
         for row in reader:
             ms_name = row['ms']
+
             try:
                 ms = observing_run.get_ms(ms_name)
             except KeyError:
@@ -386,6 +387,16 @@ def import_flux(output_dir, observing_run, filename=None):
                 spix = decimal.Decimal(row['spix'])
             except decimal.InvalidOperation:
                 spix = decimal.Decimal('0.0')
+
+            try:
+                uvmin = decimal.Decimal(row['uvmin'])
+            except decimal.InvalidOperation:
+                uvmin = decimal.Decimal('0.0')
+
+            try:
+                uvmax = decimal.Decimal(row['uvmax'])
+            except decimal.InvalidOperation:
+                uvmax = decimal.Decimal('0.0')
 
             comment = row['comment']
 
@@ -414,7 +425,7 @@ def import_flux(output_dir, observing_run, filename=None):
 
             try:
                 fields = ms.get_fields(field_id)
-                measurement = domain.FluxMeasurement(spw_id, I, Q, U, V, spix, origin=origin, age=age, queried_at=query_date)
+                measurement = domain.FluxMeasurement(spw_id, I, Q, U, V, spix, uvmin, uvmax, origin=origin, age=age, queried_at=query_date)
 
                 # A single field identifier could map to multiple field objects,
                 # but the flux should be the same for all, so we iterate..

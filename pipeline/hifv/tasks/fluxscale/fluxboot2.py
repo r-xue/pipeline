@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
 import math
+import os
 
 import numpy as np
 import scipy as scp
@@ -11,7 +12,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
-from pipeline.hifv.heuristics import find_EVLA_band
+from pipeline.hifv.heuristics import find_EVLA_band, uvrange
 from pipeline.hifv.heuristics import standard as standard
 from pipeline.hifv.tasks.setmodel.vlasetjy import standard_sources
 from pipeline.infrastructure import casa_tasks
@@ -106,6 +107,11 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
         calMs = 'calibrators.ms'
         context = self.inputs.context
+
+        try:
+            self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
+        except Exception as e:
+            self.setjy_results = self.inputs.context.results[0].read().setjy_results
 
         if (self.inputs.caltable is None):
             # FLUXGAIN stage
@@ -455,14 +461,12 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                     alerrs = scp.array(lerrs)
                     alfreqs = scp.array(lfreqs)
                     pinit = [0.0, 0.0]
-                    ## fit_out = scpo.leastsq(errfunc, pinit, args=(alfreqs, alfds, alerrs), full_output=1)
-                    ## pfinal = fit_out[0]
-                    ## covar = fit_out[1]
+                    # fit_out = scpo.leastsq(errfunc, pinit, args=(alfreqs, alfds, alerrs), full_output=1)
+                    # pfinal = fit_out[0]
+                    # covar = fit_out[1]
 
                     # aa = pfinal[0]
                     # bb = pfinal[1]
-
-
 
                     # Use result from fluxscale, not from fitting function
                     aa = fluxscale_result[fieldid]['spidx'][0]
@@ -481,15 +485,14 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                     # http://stackoverflow.com/questions/14854339/in-scipy-how-and-why-does-curve-fit-calculate-the-covariance-of-the-parameter-es
                     #
 
-                    '''
                     summed_error = 0.0
                     for ii in range(len(alfds)):
                         model = aa + bb * alfreqs[ii]
                         residual = (model - alfds[ii]) * (model - alfds[ii])
                         summed_error += residual
                     residual_variance = summed_error / (len(alfds) - 2)
-                    SNR = math.fabs(bb) / math.sqrt(covar[1][1] * residual_variance)
-                    '''
+                    ##SNR = math.fabs(bb) / math.sqrt(covar[1][1] * residual_variance)
+
                     SNR = 0.0
 
                 #
@@ -663,6 +666,8 @@ class Fluxboot2(basetask.StandardTaskTemplate):
         # temp_inputs = gaincal.GTypeGaincal.Inputs(context)
         # refant = temp_inputs.refant.lower()
 
+        calibrator_scan_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_scan_select_string
+
         task_args = {'vis': calMs,
                      'caltable': caltable,
                      'field': field,
@@ -684,8 +689,32 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                      'gainfield': [''],
                      'interp': [''],
                      'spwmap': [],
+                     'uvrange': '',
                      'parang': True}
 
-        job = casa_tasks.gaincal(**task_args)
+        if field == '':
+            calscanslist = map(int, calibrator_scan_select_string.split(','))
+            scanobjlist = m.get_scans(scan_id=calscanslist)
+            fieldidlist = []
+            for scanobj in scanobjlist:
+                fieldobj, = scanobj.fields
+                if str(fieldobj.id) not in fieldidlist:
+                    fieldidlist.append(str(fieldobj.id))
 
-        return self._executor.execute(job)
+            for fieldidstring in fieldidlist:
+                fieldid = int(fieldidstring)
+                uvrangestring = uvrange(self.setjy_results, fieldid)
+                task_args['field'] = fieldidstring
+                task_args['uvrange'] = uvrangestring
+                if os.path.exists(caltable):
+                    task_args['append'] = True
+
+                job = casa_tasks.gaincal(**task_args)
+
+                self._executor.execute(job)
+
+            return True
+        else:
+            job = casa_tasks.gaincal(**task_args)
+
+            return self._executor.execute(job)

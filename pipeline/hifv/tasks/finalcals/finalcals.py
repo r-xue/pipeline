@@ -16,7 +16,7 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.hifv.heuristics import getCalFlaggedSoln
 from pipeline.hifv.heuristics import find_EVLA_band
 from pipeline.hifv.heuristics import standard as standard
-from pipeline.hifv.heuristics import weakbp, do_bandpass
+from pipeline.hifv.heuristics import weakbp, do_bandpass, uvrange
 from pipeline.hifv.tasks.setmodel.vlasetjy import standard_sources
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
@@ -84,6 +84,10 @@ class Finalcals(basetask.StandardTaskTemplate):
     def prepare(self):
 
         self.parang = True
+        try:
+            self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
+        except Exception as e:
+            self.setjy_results = self.inputs.context.results[0].read().setjy_results
 
         try:
             stage_number = self.inputs.context.results[-1].read()[0].stage_number + 1
@@ -116,17 +120,16 @@ class Finalcals(basetask.StandardTaskTemplate):
 
         LOG.info("The pipeline will use antenna(s) " + refAnt + " as the reference")
 
-        gtype_delaycal_result = self._do_gtype_delaycal(caltable=gtypecaltable, context=context, refAnt=refAnt)
+        self._do_gtype_delaycal(caltable=gtypecaltable, context=context, refAnt=refAnt)
 
-        ktype_delaycal_result = self._do_ktype_delaycal(caltable=ktypecaltable,
-                                                        addcaltable=gtypecaltable, context=context, refAnt=refAnt)
+        self._do_ktype_delaycal(caltable=ktypecaltable, addcaltable=gtypecaltable, context=context, refAnt=refAnt)
 
         LOG.info("Delay calibration complete")
 
         # Do initial gaincal on BP calibrator then semi-final BP calibration
         gain_solint1 = context.evla['msinfo'][m.name].gain_solint1
-        gtype_gaincal_result = self._do_gtype_bpdgains(tablebase + table_suffix[0], addcaltable=ktypecaltable,
-                                                       solint=gain_solint1, context=context, refAnt=refAnt)
+        self._do_gtype_bpdgains(tablebase + table_suffix[0], addcaltable=ktypecaltable,
+                                solint=gain_solint1, context=context, refAnt=refAnt)
 
         bpdgain_touse = tablebase + table_suffix[0]
         LOG.info("Initial BP gain calibration complete")
@@ -138,11 +141,8 @@ class Finalcals(basetask.StandardTaskTemplate):
         else:
             # LOG.info("Using REGULAR heuristics")
             interp = ''
-            bandpass_job = do_bandpass(self.inputs.vis, bpcaltable, context=context, RefAntOutput=RefAntOutput,
-                                       spw='',
-                                       ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse, solint='inf',
-                                       append=False)
-            self._executor.execute(bandpass_job)
+            do_bandpass(self.inputs.vis, bpcaltable, context=context, RefAntOutput=RefAntOutput,
+                        spw='', ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse, solint='inf', append=False)
 
         LOG.info("Bandpass calibration complete")
 
@@ -157,18 +157,16 @@ class Finalcals(basetask.StandardTaskTemplate):
 
         avgpgain = tableprefix + str(stage_number) + '_5.' + 'averagephasegain.tbl'
 
-        avgphase_result = self._do_avgphasegaincal(avgpgain, context, refAnt,
-                                                   ktypecaltable=ktypecaltable, bpcaltable=bpcaltable,
-                                                   refantmode=refantmode)
+        self._do_avgphasegaincal(avgpgain, context, refAnt,
+                                 ktypecaltable=ktypecaltable, bpcaltable=bpcaltable, refantmode=refantmode)
 
         # In case any antenna is flagged by this process, unflag all solutions
         # in this gain table (if an antenna does exist or has bad solutions from
         # other steps, it will be flagged by those gain tables).
 
-        unflag_result = self._do_unflag(avgpgain)
-
-        applycal_result = self._do_applycal(context=context, ktypecaltable=ktypecaltable,
-                                            bpcaltable=bpcaltable, avgphasegaincaltable=avgpgain, interp=interp)
+        self._do_unflag(avgpgain)
+        self._do_applycal(context=context, ktypecaltable=ktypecaltable,
+                          bpcaltable=bpcaltable, avgphasegaincaltable=avgpgain, interp=interp)
 
         # ---------------------------------------------------
 
@@ -198,8 +196,6 @@ class Finalcals(basetask.StandardTaskTemplate):
         finalampgaincal_results = self._do_calibratorgaincal(calMs, finalampgaincaltable, gain_solint2, 5.0,
                                                              'ap', [phaseshortgaincaltable], refAnt,
                                                              refantmode=refantmode)
-
-
 
         finalphasegaincaltable = tableprefix + str(stage_number) + '_8.' + 'finalphasegaincal.tbl'
         finalphasegaincal_results = self._do_calibratorgaincal(calMs, finalphasegaincaltable, gain_solint2,
@@ -245,7 +241,7 @@ class Finalcals(basetask.StandardTaskTemplate):
 
         delaycal_task_args = {'vis': self.inputs.vis,
                               'caltable': caltable,
-                              'field': delay_field_select_string,
+                              'field': '',
                               'spw': tst_delay_spw,
                               'intent': '',
                               'selectdata': True,
@@ -269,9 +265,20 @@ class Finalcals(basetask.StandardTaskTemplate):
                               'spwmap': [],
                               'parang': self.parang}
 
-        job = casa_tasks.gaincal(**delaycal_task_args)
+        fields = delay_field_select_string.split(',')
+        for fieldidstring in fields:
+            fieldid = int(fieldidstring)
+            uvrangestring = uvrange(self.setjy_results, fieldid)
+            delaycal_task_args['field'] = fieldidstring
+            delaycal_task_args['uvrange'] = uvrangestring
+            if os.path.exists(caltable):
+                delaycal_task_args['append'] = True
 
-        return self._executor.execute(job)
+            job = casa_tasks.gaincal(**delaycal_task_args)
+
+            self._executor.execute(job)
+
+        return True
 
     def _do_ktype_delaycal(self, caltable=None, addcaltable=None, context=None, refAnt=None):
 
@@ -286,7 +293,7 @@ class Finalcals(basetask.StandardTaskTemplate):
 
         delaycal_task_args = {'vis': self.inputs.vis,
                               'caltable': caltable,
-                              'field': delay_field_select_string,
+                              'field': '',
                               'spw': '',
                               'intent': '',
                               'selectdata': True,
@@ -310,9 +317,19 @@ class Finalcals(basetask.StandardTaskTemplate):
                               'spwmap': [],
                               'parang': self.parang}
 
-        job = casa_tasks.gaincal(**delaycal_task_args)
+        for fieldidstring in delay_field_select_string.split(','):
+            fieldid = int(fieldidstring)
+            uvrangestring = uvrange(self.setjy_results, fieldid)
+            delaycal_task_args['field'] = fieldidstring
+            delaycal_task_args['uvrange'] = uvrangestring
+            if os.path.exists(caltable):
+                delaycal_task_args['append'] = True
 
-        return self._executor.execute(job)
+            job = casa_tasks.gaincal(**delaycal_task_args)
+
+            self._executor.execute(job)
+
+        return True
 
     def _do_gtype_bpdgains(self, caltable, addcaltable=None, solint='int', context=None, refAnt=None):
 
@@ -331,7 +348,7 @@ class Finalcals(basetask.StandardTaskTemplate):
                               'intent': '',
                               'selectdata': True,
                               'uvrange': '',
-                              'scan': bandpass_scan_select_string,
+                              'scan': '',
                               'solint': solint,
                               'combine': 'scan',
                               'preavg': -1.0,
@@ -350,9 +367,27 @@ class Finalcals(basetask.StandardTaskTemplate):
                               'spwmap': [],
                               'parang': self.parang}
 
-        job = casa_tasks.gaincal(**bpdgains_task_args)
+        bpscanslist = map(int, bandpass_scan_select_string.split(','))
+        scanobjlist = m.get_scans(scan_id=bpscanslist)
+        fieldidlist = []
+        for scanobj in scanobjlist:
+            fieldobj, = scanobj.fields
+            if str(fieldobj.id) not in fieldidlist:
+                fieldidlist.append(str(fieldobj.id))
 
-        return self._executor.execute(job)
+        for fieldidstring in fieldidlist:
+            fieldid = int(fieldidstring)
+            uvrangestring = uvrange(self.setjy_results, fieldid)
+            bpdgains_task_args['field'] = fieldidstring
+            bpdgains_task_args['uvrange'] = uvrangestring
+            if os.path.exists(caltable):
+                bpdgains_task_args['append'] = True
+
+            job = casa_tasks.gaincal(**bpdgains_task_args)
+
+            self._executor.execute(job)
+
+        return True
 
     def _do_avgphasegaincal(self, caltable, context, refAnt, ktypecaltable=None, bpcaltable=None,
                             refantmode='flex'):
@@ -368,11 +403,11 @@ class Finalcals(basetask.StandardTaskTemplate):
 
         avgphasegaincal_task_args = {'vis': self.inputs.vis,
                                      'caltable': caltable,
-                                     'field': bandpass_field_select_string,
+                                     'field': '',
                                      'spw': '',
                                      'selectdata': True,
                                      'uvrange': '',
-                                     'scan': bandpass_scan_select_string,
+                                     'scan': '',
                                      'solint': 'inf',
                                      'combine': 'scan',
                                      'preavg': -1.0,
@@ -392,9 +427,27 @@ class Finalcals(basetask.StandardTaskTemplate):
                                      'parang': self.parang,
                                      'refantmode': refantmode}
 
-        job = casa_tasks.gaincal(**avgphasegaincal_task_args)
+        bpscanslist = map(int, bandpass_scan_select_string.split(','))
+        scanobjlist = m.get_scans(scan_id=bpscanslist)
+        fieldidlist = []
+        for scanobj in scanobjlist:
+            fieldobj, = scanobj.fields
+            if str(fieldobj.id) not in fieldidlist:
+                fieldidlist.append(str(fieldobj.id))
 
-        return self._executor.execute(job)
+        for fieldidstring in fieldidlist:
+            fieldid = int(fieldidstring)
+            uvrangestring = uvrange(self.setjy_results, fieldid)
+            avgphasegaincal_task_args['field'] = fieldidstring
+            avgphasegaincal_task_args['uvrange'] = uvrangestring
+            if os.path.exists(caltable):
+                avgphasegaincal_task_args['append'] = True
+
+            job = casa_tasks.gaincal(**avgphasegaincal_task_args)
+
+            self._executor.execute(job)
+
+        return True
 
     def _do_unflag(self, gaintable):
 
@@ -682,14 +735,15 @@ class Finalcals(basetask.StandardTaskTemplate):
                 # fittedfluxd = []
 
                 freqs = sorted(freqs[uspws])
-                
+
                 try:
                     fittedfluxd = [
-                        10.0 ** (spidx[0] + spidx[1] * math.log10(x / fitreff) + spidx[2] * (math.log10(x / fitreff)) ** 2)
+                        10.0 ** (
+                        spidx[0] + spidx[1] * math.log10(x / fitreff) + spidx[2] * (math.log10(x / fitreff)) ** 2)
                         for x in freqs]
                 except Exception as e:
                     fittedfluxd = [
-                        10.0 ** (spidx[0] + spidx[1] * math.log10(x / fitreff) )
+                        10.0 ** (spidx[0] + spidx[1] * math.log10(x / fitreff))
                         for x in freqs]
 
                 reffreq = fitreff / 1.e9
@@ -805,6 +859,7 @@ class Finalcals(basetask.StandardTaskTemplate):
         context = self.inputs.context
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        calibrator_scan_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_scan_select_string
         minBL_for_cal = m.vla_minbaselineforcal()
 
         task_args = {'vis': calMs,
@@ -829,8 +884,29 @@ class Finalcals(basetask.StandardTaskTemplate):
                      'interp': [''],
                      'spwmap': [],
                      'parang': self.parang,
+                     'uvrange': '',
                      'refantmode' : refantmode}
 
-        job = casa_tasks.gaincal(**task_args)
+        calscanslist = map(int, calibrator_scan_select_string.split(','))
+        scanobjlist = m.get_scans(scan_id=calscanslist)
+        fieldidlist = []
+        for scanobj in scanobjlist:
+            fieldobj, = scanobj.fields
+            if str(fieldobj.id) not in fieldidlist:
+                fieldidlist.append(str(fieldobj.id))
 
-        return self._executor.execute(job)
+        for fieldidstring in fieldidlist:
+            fieldid = int(fieldidstring)
+            uvrangestring = uvrange(self.setjy_results, fieldid)
+            task_args['field'] = fieldidstring
+            task_args['uvrange'] = uvrangestring
+            if os.path.exists(caltable):
+                task_args['append'] = True
+
+            job = casa_tasks.gaincal(**task_args)
+
+            self._executor.execute(job)
+
+        return True
+
+

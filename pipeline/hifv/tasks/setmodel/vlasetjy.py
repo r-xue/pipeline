@@ -146,7 +146,7 @@ class VLASetjyInputs(vdp.StandardInputs):
                 for row in reader:
                     try:
                         try:
-                            (ms_name, field_id, spw_id, I, Q, U, V, spix, comment) = row
+                            (ms_name, field_id, spw_id, I, Q, U, V, spix, uvmin, uvmax, comment) = row
                         except:
                             (ms_name, field_id, spw_id, I, Q, U, V, comment) = row
                             spix = str(self.spix)
@@ -162,7 +162,7 @@ class VLASetjyInputs(vdp.StandardInputs):
                     # Add the value
                     spw_id = int(spw_id)
                     ref_flux.append((field_id, spw_id, float(I), float(Q),
-                                     float(U), float(V), float(spix)))
+                                     float(U), float(V), float(spix), float(uvmin), float(uvmax)))
 
                     # TODO sort the flux values in spw order?
 
@@ -190,13 +190,13 @@ class VLASetjyInputs(vdp.StandardInputs):
                 reffreq = str(self.ms.get_spectral_window(spw_id).centre_frequency)
                 if self.normfluxes:
                     flux = [(reffreq, [I / I, Q / I, U / I, V / I], spix)
-                            for (ref_field_id, ref_spw_id, I, Q, U, V, spix) in ref_flux
+                            for (ref_field_id, ref_spw_id, I, Q, U, V, spix, uvmin, uvmax) in ref_flux
                             if (ref_field_id in field_ids
                                 or ref_field_id in field_names)
                             and ref_spw_id == spw_id]
                 else:
                     flux = [(reffreq, [I, Q, U, V], spix)
-                            for (ref_field_id, ref_spw_id, I, Q, U, V, spix) in ref_flux
+                            for (ref_field_id, ref_spw_id, I, Q, U, V, spix, uvmin, uvmax) in ref_flux
                             if (ref_field_id in field_ids
                                 or ref_field_id in field_names)
                             and ref_spw_id == spw_id]

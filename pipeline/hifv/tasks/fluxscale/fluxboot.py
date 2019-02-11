@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
 import math
+import os
 
 import numpy as np
 import scipy as scp
@@ -13,7 +14,7 @@ import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hifv.heuristics import standard as standard
-from pipeline.hifv.heuristics import find_EVLA_band
+from pipeline.hifv.heuristics import find_EVLA_band, uvrange
 from pipeline.hifv.tasks.setmodel.vlasetjy import standard_sources
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
@@ -101,6 +102,11 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
         calMs = 'calibrators.ms'
         context = self.inputs.context
+
+        try:
+            self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
+        except Exception as e:
+            self.setjy_results = self.inputs.context.results[0].read().setjy_results
 
         if (self.inputs.caltable is None):
             # FLUXGAIN stage
@@ -293,7 +299,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
             secondary_keys = fluxscale_result[field_id].keys()
             secondary_keys_to_remove=['fitRefFreq', 'spidxerr', 'spidx', 'fitFluxd', 'fieldName', 'fitFluxdErr', 'covarMat']
             spwkeys = [spw_id for spw_id in secondary_keys if spw_id not in secondary_keys_to_remove]
-            
+
             for spw_id in spwkeys:
                 flux_d = list(fluxscale_result[field_id][spw_id]['fluxd'])
                 flux_d_err = list(fluxscale_result[field_id][spw_id]['fluxdErr'])
@@ -553,6 +559,9 @@ class Fluxboot(basetask.StandardTaskTemplate):
         # Do this to get the reference antenna string
         # temp_inputs = gaincal.GTypeGaincal.Inputs(context)
         # refant = temp_inputs.refant.lower()
+
+        calibrator_scan_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_scan_select_string
+        field = ''
         
         task_args = {'vis'            : calMs,
                      'caltable'       : caltable,
@@ -575,8 +584,33 @@ class Fluxboot(basetask.StandardTaskTemplate):
                      'gainfield'      : [''],
                      'interp'         : [''],
                      'spwmap'         : [],
+                     'uvrange'        : '',
                      'parang'         : True}
         
-        job = casa_tasks.gaincal(**task_args)
-            
-        return self._executor.execute(job)
+        if field == '':
+            calscanslist = map(int, calibrator_scan_select_string.split(','))
+            scanobjlist = m.get_scans(scan_id=calscanslist)
+            fieldidlist = []
+            for scanobj in scanobjlist:
+                fieldobj, = scanobj.fields
+                if str(fieldobj.id) not in fieldidlist:
+                    fieldidlist.append(str(fieldobj.id))
+
+            for fieldidstring in fieldidlist:
+                fieldid = int(fieldidstring)
+                uvrangestring = uvrange(self.setjy_results, fieldid)
+                task_args['field'] = fieldidstring
+                task_args['uvrange'] = uvrangestring
+                if os.path.exists(caltable):
+                    task_args['append'] = True
+
+                job = casa_tasks.gaincal(**task_args)
+
+                self._executor.execute(job)
+
+            return True
+        else:
+            job = casa_tasks.gaincal(**task_args)
+            self._executor.execute(job)
+
+            return True

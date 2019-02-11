@@ -8,7 +8,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.vdp as vdp
-from pipeline.hifv.heuristics import getCalFlaggedSoln
+from pipeline.hifv.heuristics import getCalFlaggedSoln, uvrange
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 
@@ -76,6 +76,11 @@ class Solint(basetask.StandardTaskTemplate):
         calMs = 'calibrators.ms'
         split_result = self._do_split(calMs)
         (longsolint, gain_solint2) = self._do_determine_solint(calMs)
+
+        try:
+            self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
+        except Exception as e:
+            self.setjy_results = self.inputs.context.results[0].read().setjy_results
 
         try:
             stage_number = self.inputs.context.results[-1].read()[0].stage_number + 1
@@ -346,8 +351,27 @@ class Solint(basetask.StandardTaskTemplate):
                      'gainfield': [''],
                      'interp': [''],
                      'spwmap': [],
+                     'uvrange': '',
                      'parang': True}
 
-        job = casa_tasks.gaincal(**task_args)
-            
-        return self._executor.execute(job)
+        calscanslist = map(int, calibrator_scan_select_string.split(','))
+        scanobjlist = m.get_scans(scan_id=calscanslist)
+        fieldidlist = []
+        for scanobj in scanobjlist:
+            fieldobj, = scanobj.fields
+            if str(fieldobj.id) not in fieldidlist:
+                fieldidlist.append(str(fieldobj.id))
+
+        for fieldidstring in fieldidlist:
+            fieldid = int(fieldidstring)
+            uvrangestring = uvrange(self.setjy_results, fieldid)
+            task_args['field'] = fieldidstring
+            task_args['uvrange'] = uvrangestring
+            if os.path.exists(caltable):
+                task_args['append'] = True
+
+            job = casa_tasks.gaincal(**task_args)
+
+            self._executor.execute(job)
+
+        return True

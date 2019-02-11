@@ -10,6 +10,7 @@ LOG = infrastructure.get_logger(__name__)
 
 class FluxMeasurement(object):
     def __init__(self, spw_id, I, Q=FluxDensity(0), U=FluxDensity(0), V=FluxDensity(0), spix=Decimal('0.0'),
+                 uvmin=Decimal('0.0'), uvmax=Decimal('0.0'),
                  origin=None, age=None, queried_at=None):
         self.spw_id = int(spw_id)
         self.I = self._to_flux_density(I)
@@ -17,6 +18,8 @@ class FluxMeasurement(object):
         self.U = self._to_flux_density(U)
         self.V = self._to_flux_density(V)
         self.spix = self._to_decimal(spix)
+        self.uvmin = self._to_decimal(uvmin)
+        self.uvmax = self._to_decimal(uvmax)
         self.origin = origin
         self.age = age
         self.queried_at = queried_at
@@ -53,10 +56,12 @@ class FluxMeasurement(object):
         return list(map(float, iquv))
 
     def __str__(self):
-        return '<FluxMeasurement(Spw #{spw}, IQUV=({iquv}), spix={spix}, origin={origin}>'.format(
+        return '<FluxMeasurement(Spw #{spw}, IQUV=({iquv}), spix={spix}, uvmin={uvmin}, uvmax={uvmax}, origin={origin}>'.format(
             spw=self.spw_id,
             iquv=','.join(map(str, (self.I, self.Q, self.U, self.V))),
             spix=float(self.spix),
+            uvmin=float(self.uvmin),
+            uvmax=float(self.uvmax),
             origin=self.origin
         )
 
@@ -71,8 +76,10 @@ class FluxMeasurement(object):
         U = self.U + other.U
         V = self.V + other.V
         spix = self.spix
+        uvmin = self.uvmin
+        uvmax = self.uvmax
 
-        return self.__class__(spw_id, I, Q, U, V, spix)
+        return self.__class__(spw_id, I, Q, U, V, spix, uvmin, uvmax)
 
     def __div__(self, other):
         if not isinstance(other, (int, float, long, Decimal)):
@@ -85,8 +92,10 @@ class FluxMeasurement(object):
         U = self.U / other
         V = self.V / other
         spix = self.spix
+        uvmin = self.uvmin
+        uvmax = self.uvmax
 
-        return self.__class__(spw_id, I, Q, U, V, spix)
+        return self.__class__(spw_id, I, Q, U, V, spix, uvmin, uvmax)
 
     def __mul__(self, other):
         if not isinstance(other, (int, float, long, Decimal)):
@@ -99,8 +108,10 @@ class FluxMeasurement(object):
         U = self.U * other
         V = self.V * other
         spix = self.spix
+        uvmin = self.uvmin
+        uvmax = self.uvmax
 
-        return self.__class__(spw_id, I, Q, U, V, spix, )
+        return self.__class__(spw_id, I, Q, U, V, spix, uvmin, uvmax,)
 
     def __rmul__(self, other):
         if not isinstance(other, (int, float, long, Decimal)):
@@ -113,5 +124,7 @@ class FluxMeasurement(object):
         U = self.U * other
         V = self.V * other
         spix = self.spix
+        uvmin = self.uvmin
+        uvmax = self.uvmax
 
-        return self.__class__(spw_id, I, Q, U, V, spix)
+        return self.__class__(spw_id, I, Q, U, V, spix, uvmin, uvmax)

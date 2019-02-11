@@ -8,7 +8,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hifv.heuristics import getCalFlaggedSoln
-from pipeline.hifv.heuristics import weakbp, do_bandpass
+from pipeline.hifv.heuristics import weakbp, do_bandpass, uvrange
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 
@@ -62,6 +62,11 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
 
         self.parang = True
         try:
+            self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
+        except Exception as e:
+            self.setjy_results = self.inputs.context.results[0].read().setjy_results
+
+        try:
             stage_number = self.inputs.context.results[-1].read()[0].stage_number + 1
         except Exception as e:
             stage_number = self.inputs.context.results[-1].read().stage_number + 1
@@ -89,8 +94,7 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
         
         RefAntOutput = refantobj.calculate()
         
-        gtype_delaycal_result = self._do_gtype_delaycal(caltable=gtypecaltable,
-                                                        context=context, RefAntOutput=RefAntOutput)
+        self._do_gtype_delaycal(caltable=gtypecaltable, context=context, RefAntOutput=RefAntOutput)
 
         fracFlaggedSolns = 1.0
 
@@ -100,8 +104,8 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
         flagcount = 0
         while fracFlaggedSolns > critfrac and flagcount < 4:
                 
-            ktype_delaycal_result = self._do_ktype_delaycal(caltable=ktypecaltable, addcaltable=gtypecaltable,
-                                                            context=context, RefAntOutput=RefAntOutput)
+            self._do_ktype_delaycal(caltable=ktypecaltable, addcaltable=gtypecaltable,
+                                    context=context, RefAntOutput=RefAntOutput)
             flaggedSolnResult = getCalFlaggedSoln(ktypecaltable)
             fracFlaggedSolns = self._check_flagSolns(flaggedSolnResult, RefAntOutput)
             
@@ -114,8 +118,8 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
 
         # Do initial gaincal on BP calibrator then semi-final BP calibration
         gain_solint1 = context.evla['msinfo'][m.name].gain_solint1
-        gtype_gaincal_result = self._do_gtype_bpdgains(tablebase + table_suffix[0], addcaltable=ktypecaltable,
-                                                       solint=gain_solint1, context=context, RefAntOutput=RefAntOutput)
+        self._do_gtype_bpdgains(tablebase + table_suffix[0], addcaltable=ktypecaltable,
+                                solint=gain_solint1, context=context, RefAntOutput=RefAntOutput)
         
         bpdgain_touse = tablebase + table_suffix[0]
         
@@ -128,10 +132,9 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
         else:
             LOG.debug("Using REGULAR heuristics")
             interp = ''
-            bandpass_job = do_bandpass(self.inputs.vis, bpcaltable, context=context, RefAntOutput=RefAntOutput,
-                                       spw='', ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse,
-                                       solint='inf', append=False)
-            self._executor.execute(bandpass_job)
+            do_bandpass(self.inputs.vis, bpcaltable, context=context, RefAntOutput=RefAntOutput,
+                        spw='', ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse,
+                        solint='inf', append=False)
 
             AllCalTables = sorted(self.inputs.context.callibrary.active.get_caltable())
             AllCalTables.append(ktypecaltable)
@@ -142,7 +145,7 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
             LOG.info("Using 'linear,linearflag' for bandpass table")
             interp[-1] = 'linear,linearflag'
 
-        applycal_result = self._do_applycal(context=context, ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse,
+        self._do_applycal(context=context, ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse,
                                             bpcaltable=bpcaltable, interp=interp)
 
         flaggedSolnApplycalbandpass = getCalFlaggedSoln(bpdgain_touse)
@@ -168,7 +171,7 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
         # ref antenna string needs to be lower case for gaincal
         delaycal_task_args = {'vis': self.inputs.vis,
                               'caltable': caltable,
-                              'field': delay_field_select_string,
+                              'field': '',
                               'spw': tst_delay_spw,
                               'intent': '',
                               'selectdata': True,
@@ -192,9 +195,20 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
                               'spwmap': [],
                               'parang': self.parang}
 
-        job = casa_tasks.gaincal(**delaycal_task_args)
+        fields = delay_field_select_string.split(',')
+        for fieldidstring in fields:
+            fieldid = int(fieldidstring)
+            uvrangestring = uvrange(self.setjy_results, fieldid)
+            delaycal_task_args['field'] = fieldidstring
+            delaycal_task_args['uvrange'] = uvrangestring
+            if os.path.exists(caltable):
+                delaycal_task_args['append'] = True
 
-        return self._executor.execute(job)
+            job = casa_tasks.gaincal(**delaycal_task_args)
+
+            self._executor.execute(job)
+
+        return True
     
     def _do_ktype_delaycal(self, caltable=None, addcaltable=None, context=None, RefAntOutput=None):
         
@@ -211,7 +225,7 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
 
         delaycal_task_args = {'vis': self.inputs.vis,
                               'caltable': caltable,
-                              'field': delay_field_select_string,
+                              'field': '',
                               'spw': '',
                               'intent': '',
                               'selectdata': True,
@@ -235,9 +249,19 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
                               'spwmap': [],
                               'parang': self.parang}
 
-        job = casa_tasks.gaincal(**delaycal_task_args)
+        for fieldidstring in delay_field_select_string.split(','):
+            fieldid = int(fieldidstring)
+            uvrangestring = uvrange(self.setjy_results, fieldid)
+            delaycal_task_args['field'] = fieldidstring
+            delaycal_task_args['uvrange'] = uvrangestring
+            if os.path.exists(caltable):
+                delaycal_task_args['append'] = True
 
-        return self._executor.execute(job)
+            job = casa_tasks.gaincal(**delaycal_task_args)
+
+            self._executor.execute(job)
+
+        return True
     
     def _check_flagSolns(self, flaggedSolnResult, RefAntOutput):
         
@@ -282,7 +306,7 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
                               'intent': '',
                               'selectdata': True,
                               'uvrange': '',
-                              'scan': bandpass_scan_select_string,
+                              'scan': '',
                               'solint': solint,
                               'combine': 'scan',
                               'preavg': -1.0,
@@ -301,9 +325,27 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
                               'spwmap': [],
                               'parang': self.parang}
 
-        job = casa_tasks.gaincal(**bpdgains_task_args)
+        bpscanslist = map(int, bandpass_scan_select_string.split(','))
+        scanobjlist = m.get_scans(scan_id=bpscanslist)
+        fieldidlist = []
+        for scanobj in scanobjlist:
+            fieldobj, = scanobj.fields
+            if str(fieldobj.id) not in fieldidlist:
+                fieldidlist.append(str(fieldobj.id))
 
-        return self._executor.execute(job)
+        for fieldidstring in fieldidlist:
+            fieldid = int(fieldidstring)
+            uvrangestring = uvrange(self.setjy_results, fieldid)
+            bpdgains_task_args['field'] = fieldidstring
+            bpdgains_task_args['uvrange'] = uvrangestring
+            if os.path.exists(caltable):
+                bpdgains_task_args['append'] = True
+
+            job = casa_tasks.gaincal(**bpdgains_task_args)
+
+            self._executor.execute(job)
+
+        return True
       
     def _do_applycal(self, context=None, ktypecaltable=None, bpdgain_touse=None, bpcaltable=None, interp=None):
         """Run CASA task applycal"""

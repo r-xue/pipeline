@@ -83,12 +83,23 @@ class SetjyInputs(vdp.StandardInputs):
                     except decimal.InvalidOperation:
                         spix = decimal.Decimal('0.0')
 
+                    try:
+                        uvmin = decimal.Decimal(row['uvmin'])
+                    except decimal.InvalidOperation:
+                        uvmin = decimal.Decimal('0.0')
+
+                    try:
+                        uvmax = decimal.Decimal(row['uvmax'])
+                    except decimal.InvalidOperation:
+                        uvmax = decimal.Decimal('0.0')
+
                     # Check that the entry is for the correct MS
                     if os.path.basename(ms_name) != self.ms.basename:
                         continue
 
                     # Add the value
-                    ref_flux.append((field_id, spw_id, float(I), float(Q), float(U), float(V), float(spix)))
+                    ref_flux.append((field_id, spw_id, float(I), float(Q),
+                                     float(U), float(V), float(spix), float(uvmin), float(uvmax)))
 
         # Issue warning if the reference file was specified but not found.
         if not os.path.exists(self.reffile) and self.reffile not in ('', None):
@@ -114,11 +125,11 @@ class SetjyInputs(vdp.StandardInputs):
                 reffreq = str(self.ms.get_spectral_window(spw_id).centre_frequency)
                 if self.normfluxes:
                     flux = [(reffreq, [I/I, Q/I, U/I, V/I], spix) 
-                            for (ref_field_id, ref_spw_id, I, Q, U, V, spix) in ref_flux
+                            for (ref_field_id, ref_spw_id, I, Q, U, V, spix, uvmin, uvmax) in ref_flux
                             if (ref_field_id in field_ids or ref_field_id in field_names) and ref_spw_id == spw_id]
                 else:
                     flux = [(reffreq, [I, Q, U, V], spix)
-                            for (ref_field_id, ref_spw_id, I, Q, U, V, spix) in ref_flux
+                            for (ref_field_id, ref_spw_id, I, Q, U, V, spix, uvmin, uvmax) in ref_flux
                             if (ref_field_id in field_ids or ref_field_id in field_names) and ref_spw_id == spw_id]
                 
                 # No flux measurements found for the requested field/spws, so do
