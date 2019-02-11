@@ -62,7 +62,27 @@ import os
 	    <th scope="col">Final Tarfile</th>
 	</tr>
     </thead>
-%else:
+    <tbody>
+
+%for r in result:
+    %for session in r.sessiondict:
+        %for vis in r.sessiondict[session][0]:
+      <tr>
+          <td>${vis}</td>
+          <td>${session}</td>
+          <td>${r.msvisdict[vis]}</td>
+      </tr>
+        %endfor
+    %endfor
+%endfor
+
+    </tbody>
+</table>
+
+% endif
+
+%if result[0].inputs['exportcalprods']:
+
 <h4>Calibration Instructions and Final Flags</h4>
 
 <p>Per ASDM, text file of applycal instructions and compressed tar file of final flags </p>
@@ -77,40 +97,27 @@ import os
 	    <th scope="col">Final Flags</th>
 	</tr>
     </thead>
-%endif
-
     <tbody>
 
-%if result[0].inputs['exportmses']:
 %for r in result:
     %for session in r.sessiondict:
         %for vis in r.sessiondict[session][0]:
       <tr>
           <td>${vis}</td>
           <td>${session}</td>
-          <td>${r.visdict[vis]}</td>
+          <td>${r.calvisdict[vis][1]}</td>
+          <td>${r.calvisdict[vis][0]}</td>
       </tr>
         %endfor
     %endfor
 %endfor
-%else:
-%for r in result:
-    %for session in r.sessiondict:
-        %for vis in r.sessiondict[session][0]:
-      <tr>
-          <td>${vis}</td>
-          <td>${session}</td>
-          <td>${r.visdict[vis][1]}</td>
-          <td>${r.visdict[vis][0]}</td>
-      </tr>
-        %endfor
-    %endfor
-%endfor
-% endif
+
     </tbody>
 </table>
 
-% if not result[0].inputs['exportmses']:
+% endif
+
+% if result[0].inputs['exportcalprods']:
 
 <h4>Calibration Tables</h4>
 

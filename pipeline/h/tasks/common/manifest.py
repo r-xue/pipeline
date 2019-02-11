@@ -1,10 +1,32 @@
 import collections
+# import distutils.spawn as spawn
 import itertools
 import operator
+# import platform
 import xml.etree.cElementTree as eltree
 from xml.dom import minidom
 
 import pipeline.environment
+
+# # Set the command used to calculate MD5 (see infrastructure.renderer.logger)
+# CHECKSUM_CMD = None 
+# 
+# if platform.system() == 'Darwin':
+#     # Look for md5 on OS X.
+#     md5_path = spawn.find_executable('md5')
+#     if md5_path:
+#         LOG.trace('Using md5 executable at \'%s\' to generate MD5' 
+#                   % md5_path)
+#         CHECKSUM_CMD = lambda name : (md5_path, name)
+# else:
+#     # .. otherwise try to find md5sum command.    
+#     md5sum_path = spawn.find_executable('md5sum')
+#     if md5sum_path:
+#         LOG.trace('Using convert executable at \'%s\' to generate MD5' % \
+#                    md5sum_path)
+#         CHECKSUM_CMD = lambda name : (md5sum_path, name)
+#     else:
+#         LOG.warning('Could not find command to calculate checksum. MD5 will not be written to manifest.')
 
 
 class PipelineManifest(object):
@@ -143,14 +165,6 @@ class PipelineManifest(object):
         return caltables_dict
 
     @staticmethod
-    def add_ms(session, asdm_name, ms_file):
-        """
-        Add an alternative ASDM element to a SESSION element
-        """
-        asdm = eltree.SubElement(session, "asdm", name=asdm_name)
-        eltree.SubElement(asdm, "finalms", name=ms_file)
-
-    @staticmethod
     def add_asdm(session, asdm_name, flags_file, calapply_file):
         """
         Add an ASDM element to a SESSION element
@@ -160,13 +174,17 @@ class PipelineManifest(object):
         eltree.SubElement(asdm, "applycmds", name=calapply_file)
 
     @staticmethod
-    def add_asdm_imlist(session, asdm_name, flags_file, calapply_file, imagelist, imtype):
+    def add_asdm_imlist(session, asdm_name, ms_file, flags_file, calapply_file, imagelist, imtype):
         """
         Add an ASDM element to a SESSION element
         """
         asdm = eltree.SubElement(session, "asdm", name=asdm_name)
-        eltree.SubElement(asdm, "finalflags", name=flags_file)
-        eltree.SubElement(asdm, "applycmds", name=calapply_file)
+        if ms_file is not None:
+            eltree.SubElement(asdm, "finalms", name=ms_file)
+        if flags_file is not None:
+            eltree.SubElement(asdm, "finalflags", name=flags_file)
+        if calapply_file is not None:
+            eltree.SubElement(asdm, "applycmds", name=calapply_file)
         for image in imagelist:
             eltree.SubElement(asdm, "image", name=image, imtype=imtype)
 

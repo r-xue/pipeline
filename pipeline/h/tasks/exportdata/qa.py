@@ -17,7 +17,7 @@ class ExportDataQAHandler(pqa.QAPlugin):
 
     def handle(self, context, result):
 
-	# Check for existance of core pipeline products 
+        # Check for existance of core pipeline products 
         score1 = self._ppr_exists(result.inputs['products_dir'],
 	    result.pprequest)
         score2 = self._weblog_exists(result.inputs['products_dir'],
@@ -28,25 +28,25 @@ class ExportDataQAHandler(pqa.QAPlugin):
 	    result.commandslog)
 
         if result.inputs['exportmses']:
-	    score5 = self._mses_exist (result.inputs['products_dir'], result.visdict)
+            score5 = self._mses_exist (result.inputs['products_dir'], result.msvisdict)
             scores = [score1, score2, score3, score4, score5]
         elif result.inputs['imaging_products_only']:
-	    score5 = self._images_exist (result.inputs['products_dir'], result.inputs['imaging_products_only'], result.calimages[1], result.targetimages[1])
+            score5 = self._images_exist (result.inputs['products_dir'], result.inputs['imaging_products_only'], result.calimages[1], result.targetimages[1])
             scores = [score1, score2, score3, score4, score5]
         else:
             score5 = self._restorescript_exists(result.inputs['products_dir'],
 	        result.restorescript)
-	    score6 = self._flags_exist (result.inputs['products_dir'],
-	        result.visdict)
-	    score7 = self._applycmds_exist (result.inputs['products_dir'],
-	        result.visdict)
-	    score8 = self._caltables_exist (result.inputs['products_dir'],
+            score6 = self._flags_exist (result.inputs['products_dir'],
+	        result.calvisdict)
+            score7 = self._applycmds_exist (result.inputs['products_dir'],
+	        result.calvisdict)
+            score8 = self._caltables_exist (result.inputs['products_dir'],
 	        result.sessiondict)
-	    score9 = self._images_exist (result.inputs['products_dir'], result.inputs['imaging_products_only'], result.calimages[1], result.targetimages[1])
+            score9 = self._images_exist (result.inputs['products_dir'], result.inputs['imaging_products_only'], result.calimages[1], result.targetimages[1])
             scores = [score1, score2, score3, score4, score5, score6, score7, score8, score9]
-	    
+
         result.qa.pool[:] = scores
-	result.qa.all_unity_longmsg = \
+        result.qa.all_unity_longmsg = \
 	    'All expected pipeline products have been exported'
     
     def _ppr_exists(self, products_dir, ppr_file):
@@ -129,5 +129,5 @@ class ExportDataListQAHandler(pqa.QAPlugin):
         # own QAscore list
         collated = utils.flatten([r.qa.pool for r in result])
         result.qa.pool[:] = collated
-	result.qa.all_unity_longmsg = \
+        result.qa.all_unity_longmsg = \
 	    'All expected pipeline products have been exported'

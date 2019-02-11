@@ -126,6 +126,10 @@ class ExportDataInputs(vdp.StandardInputs):
         else:
             return self.context.products_dir
 
+    @vdp.VisDependentProperty
+    def exportcalprods(self):
+        return not (self.imaging_products_only or self.exportmses)
+
     def __init__(self, context, output_dir=None, session=None, vis=None, exportmses=None,
                  pprfile=None, calintents=None, calimages=None, targetimages=None,
                  products_dir=None, imaging_products_only=None):
@@ -166,7 +170,7 @@ class ExportDataInputs(vdp.StandardInputs):
 
 
 class ExportDataResults(basetask.Results):
-    def __init__(self, pprequest='', sessiondict=None, visdict=None, calimages=None, targetimages=None, weblog='',
+    def __init__(self, pprequest='', sessiondict=None, msvisdict=None, calvisdict=None, calimages=None, targetimages=None, weblog='',
                  pipescript='', restorescript='', commandslog='', manifest=''):
         """
         Initialise the results object with the given list of JobRequests.
@@ -175,8 +179,10 @@ class ExportDataResults(basetask.Results):
 
         if sessiondict is None:
             sessiondict = collections.OrderedDict()
-        if visdict is None:
-            visdict = collections.OrderedDict()
+        if msvisdict is None:
+            msvisdict = collections.OrderedDict()
+        if calvisdict is None:
+            calvisdict = collections.OrderedDict()
         if calimages is None:
             calimages = []
         if targetimages is None:
@@ -184,7 +190,8 @@ class ExportDataResults(basetask.Results):
 
         self.pprequest = pprequest
         self.sessiondict = sessiondict
-        self.visdict = visdict
+        self.msvisdict = msvisdict
+        self.calvisdict = msvisdict
         self.calimages = calimages
         self.targetimages = targetimages
         self.weblog = weblog
@@ -233,6 +240,9 @@ class ExportData(basetask.StandardTaskTemplate):
         # 'self.inputs' everywhere
         inputs = self.inputs
 
+        ### TEMPORAL DEBUG LOG
+        LOG.info("exportcalprods = %s" % inputs.exportcalprods)
+
         try:
             LOG.trace('Creating products directory: {!s}'.format(inputs.products_dir))
             os.makedirs(inputs.products_dir)
@@ -256,7 +266,7 @@ class ExportData(basetask.StandardTaskTemplate):
         #    The pipeline processing request
         #    A compressed tarfile of the weblog
         #    The pipeline processing script
-        #    The pipeline restore script (if exportmses = False or imaging_products_only = False)
+        #    The pipeline restore script (if exportporting calibartion products)
         #    The CASA commands log
         recipe_name = self.get_recipename(inputs.context)
         if not recipe_name:
@@ -264,13 +274,13 @@ class ExportData(basetask.StandardTaskTemplate):
         else:
             prefix = oussid + '.' + recipe_name
         stdfproducts = self._do_standard_ous_products(
-            inputs.context, inputs.exportmses, prefix, inputs.pprfile, session_list, vislist, inputs.output_dir,
-            inputs.products_dir, imaging_only_mses=inputs.imaging_products_only)
+            inputs.context, inputs.exportcalprods, prefix, inputs.pprfile, session_list, vislist, inputs.output_dir,
+            inputs.products_dir)
         if stdfproducts.ppr_file:
             result.pprequest = os.path.basename(stdfproducts.ppr_file)
         result.weblog = os.path.basename(stdfproducts.weblog_file)
         result.pipescript = os.path.basename(stdfproducts.casa_pipescript)
-        if inputs.imaging_products_only or inputs.exportmses:
+        if not inputs.exportcalprods:
             result.restorescript = 'Undefined'
         else:
             result.restorescript = os.path.basename(stdfproducts.casa_restore_script)
@@ -279,21 +289,28 @@ class ExportData(basetask.StandardTaskTemplate):
         # Make the standard ms dictionary and export per ms products
         #    Currently these are compressed tar files of per MS flagging tables and per MS text files of calibration
         #    apply instructions
-        if inputs.imaging_products_only:
-            visdict = collections.OrderedDict()
-        elif inputs.exportmses:
-            visdict = self._do_ms_products(inputs.context, vislist, inputs.products_dir)
-        else:
-            visdict = self._do_standard_ms_products(inputs.context, vislist, inputs.products_dir)
-        result.visdict = visdict
+        msvisdict = collections.OrderedDict()
+        calvisdict = collections.OrderedDict()
+        if not inputs.imaging_products_only:
+            if inputs.exportmses:
+                msvisdict = self._do_ms_products(inputs.context, vislist, inputs.products_dir)
+            if inputs.exportcalprods:
+                calvisdict = self._do_standard_ms_products(inputs.context, vislist, inputs.products_dir)
+        result.msvisdict = msvisdict
+        result.calvisdict = calvisdict
 
         # Make the standard sessions dictionary and export per session products
         #    Currently these are compressed tar files of per session calibration tables
-        if inputs.imaging_products_only or inputs.exportmses:
-            sessiondict = collections.OrderedDict()
-        else:
-            sessiondict = self._do_standard_session_products(inputs.context, oussid, session_names, session_vislists,
+        sessiondict = collections.OrderedDict()
+        if not inputs.imaging_products_only:
+            if inputs.exportcalprods:
+                sessiondict = self._do_standard_session_products(inputs.context, oussid, session_names, session_vislists,
                                                              inputs.products_dir)
+            elif inputs.exportmses:
+                # still needs sessiondict
+                for i in range(len(session_names)):
+                    sessiondict[session_names[i]] = \
+                    ([os.path.basename(visfile) for visfile in session_vislists[i]], )
         result.sessiondict = sessiondict
 
         # Export calibrator images to FITS
@@ -308,8 +325,8 @@ class ExportData(basetask.StandardTaskTemplate):
         
         # Export the pipeline manifest file
         # 
-        pipemanifest = self._make_pipe_manifest(inputs.context, oussid, stdfproducts, sessiondict, visdict,
-                                                inputs.exportmses,
+        pipemanifest = self._make_pipe_manifest(inputs.context, oussid, stdfproducts, sessiondict, msvisdict,
+                                                inputs.exportmses, calvisdict, inputs.exportcalprods,
                                                 [os.path.basename(image) for image in calimages_fitslist],
                                                 [os.path.basename(image) for image in targetimages_fitslist])
         casa_pipe_manifest = self._export_pipe_manifest(prefix, 'pipeline_manifest.xml', inputs.products_dir,
@@ -382,8 +399,8 @@ class ExportData(basetask.StandardTaskTemplate):
 
         return session_list, session_names, session_vislists, vislist
 
-    def _do_standard_ous_products(self, context, exportmses, oussid, pprfile, session_list, vislist, output_dir,
-                                  products_dir, imaging_only_mses=False):
+    def _do_standard_ous_products(self, context, exportcalprods, oussid, pprfile, session_list, vislist, output_dir,
+                                  products_dir):
         """
         Generate the per ous standard products
         """
@@ -408,7 +425,7 @@ class ExportData(basetask.StandardTaskTemplate):
         casa_pipescript = self._export_casa_script(context, context.logs['pipeline_script'], products_dir, oussid)
 
         # Export the restore script independently of the web log
-        if exportmses or imaging_only_mses:
+        if not exportcalprods:
             casa_restore_script = 'Undefined'
         else:
             casa_restore_script = self._export_casa_restore_script(context, context.logs['pipeline_restore_script'],
@@ -600,8 +617,8 @@ class ExportData(basetask.StandardTaskTemplate):
 
         return tarfilename
 
-    def _make_pipe_manifest(self, context, oussid, stdfproducts, sessiondict, visdict, exportmses, calimages,
-                             targetimages):
+    def _make_pipe_manifest(self, context, oussid, stdfproducts, sessiondict, msvisdict, exportmses, calvisdict,
+                            exportcalprods, calimages, targetimages):
         """
         Generate the manifest file
         """
@@ -630,14 +647,17 @@ class ExportData(basetask.StandardTaskTemplate):
         # Add the flagging and calibration products
         for session_name in sessiondict:
             session = pipemanifest.set_session(ouss, session_name)
-            pipemanifest.add_caltables(session, sessiondict[session_name][1])
+            if exportcalprods:
+                pipemanifest.add_caltables(session, sessiondict[session_name][1])
             for vis_name in sessiondict[session_name][0]:
                 immatchlist = [imname for imname in per_ms_calimages if imname.startswith(vis_name)]
+                (ms_file, flags_file, calapply_file) = (None, None, None)
                 if exportmses:
-                    pipemanifest.add_ms(session, vis_name, visdict[vis_name])
-                else:
-                    pipemanifest.add_asdm_imlist(session, vis_name, visdict[vis_name][0], visdict[vis_name][1],
-                                                 immatchlist, 'calibrator')
+                    ms_file = msvisdict[vis_name]
+                if exportcalprods:
+                    (flags_file, calapply_file) = calvisdict[vis_name]
+                pipemanifest.add_asdm_imlist(session, vis_name, ms_file, flags_file,
+                                             calapply_file,immatchlist, 'calibrator')
 
         # Add a tar file of the web log
         pipemanifest.add_weblog(ouss, os.path.basename(stdfproducts.weblog_file))
@@ -649,7 +669,7 @@ class ExportData(basetask.StandardTaskTemplate):
         pipemanifest.add_pipescript(ouss, os.path.basename(stdfproducts.casa_pipescript))
 
         # Add the restore script independently of the web log
-        if not exportmses or stdfproducts.casa_restore_script != 'Undefined':
+        if stdfproducts.casa_restore_script != 'Undefined':
             pipemanifest.add_restorescript(ouss, os.path.basename(stdfproducts.casa_restore_script))
 
         # Add the calibrator images

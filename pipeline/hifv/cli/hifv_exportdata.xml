@@ -20,7 +20,12 @@
     </param>
 
     <param type="bool" name="exportmses">
-	<description>Export MeasurementSets instead of flags and caltables</description>
+	<description>Export MeasurementSets</description>
+	<value>False</value>
+    </param>
+
+    <param type="bool" name="exportcalprods" subparam="true">
+	<description>Export flags and caltables in addition to MeasurementSets.</description>
 	<value>False</value>
     </param>
 
@@ -75,6 +80,13 @@
     </param>
 
     <constraints>
+	<when param="exportmses">
+	    <equals type="bool" value="False">
+	    </equals>
+	    <equals type="bool" value="True">
+		<default param="exportcalprods"><value type="bool">False</value></default>
+	    </equals>
+	</when>
 	<when param="pipelinemode">
 	    <equals type="string" value="automatic">
 	    </equals>

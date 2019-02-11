@@ -14,14 +14,26 @@ LOG = infrastructure.get_logger(__name__)
 
 class VLAExportDataInputs(exportdata.ExportDataInputs):
     gainmap = vdp.VisDependentProperty(default=False)
+    exportcalprods = vdp.VisDependentProperty(default=False)
 
-    def __init__(self, context, output_dir=None, session=None, vis=None, exportmses=None, pprfile=None, calintents=None,
-                 calimages=None, targetimages=None, products_dir=None, gainmap=None):
+    @exportcalprods.convert
+    def exportcalprods(self, value):
+        # calibration products are exported when
+        # (1) not imaging_product_only and not exportmses
+        # OR
+        # (2) not imaging_product_only and both exportmses and exportcalprods are True
+        if self.imaging_products_only: return False
+        elif not self.exportmses: return True
+        else: return value
+
+    def __init__(self, context, output_dir=None, session=None, vis=None, exportmses=None, exportcalprods=None, 
+                 pprfile=None, calintents=None, calimages=None, targetimages=None, products_dir=None, gainmap=None):
         super(VLAExportDataInputs, self).__init__(context, output_dir=output_dir, session=session, vis=vis,
                                                   exportmses=exportmses, pprfile=pprfile, calintents=calintents,
                                                   calimages=calimages, targetimages=targetimages,
                                                   products_dir=products_dir)
         self.gainmap = gainmap
+        self.exportcalprods = exportcalprods
 
 
 @task_registry.set_equivalent_casa_task('hifv_exportdata')

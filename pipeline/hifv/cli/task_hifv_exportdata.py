@@ -1,13 +1,11 @@
 import sys
 
-from taskinit import casalog
-
 import pipeline.h.cli.utils as utils
 
 
-def hifv_exportdata(vis=None, session=None, exportmses=None, pprfile=None,
-    calintents=None, calimages=None, targetimages=None, products_dir=None, gainmap=None,
-    pipelinemode=None, dryrun=None, acceptresults=None):
+def hifv_exportdata(vis=None, session=None, exportmses=None, exportcalprods=None,
+    pprfile=None, calintents=None, calimages=None, targetimages=None, products_dir=None,
+    gainmap=None, pipelinemode=None, dryrun=None, acceptresults=None):
 
     ##########################################################################
     #                                                                        #
