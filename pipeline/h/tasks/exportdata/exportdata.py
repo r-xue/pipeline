@@ -240,9 +240,6 @@ class ExportData(basetask.StandardTaskTemplate):
         # 'self.inputs' everywhere
         inputs = self.inputs
 
-        ### TEMPORAL DEBUG LOG
-        LOG.info("exportcalprods = %s" % inputs.exportcalprods)
-
         try:
             LOG.trace('Creating products directory: {!s}'.format(inputs.products_dir))
             os.makedirs(inputs.products_dir)
