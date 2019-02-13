@@ -1,13 +1,17 @@
 from __future__ import absolute_import
 
+import os
+import numpy
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
-from pipeline.hifa.heuristics import snr as snr_heuristics
+import pipeline.infrastructure.casatools as casatools
 from pipeline.infrastructure import task_registry
+from pipeline.h.tasks.common import calibrationtableaccess as caltableaccess
+from pipeline.hifa.heuristics import snr as snr_heuristics
 
 LOG = infrastructure.get_logger(__name__)
-
 
 class BpSolintInputs(vdp.StandardInputs):
 
@@ -54,13 +58,14 @@ class BpSolintInputs(vdp.StandardInputs):
     minphaseupints = vdp.VisDependentProperty(default=2)
     evenbpints = vdp.VisDependentProperty(default=False)
     bpsnr = vdp.VisDependentProperty(default=50.0)
+    minbpsnr = vdp.VisDependentProperty(default=20.0)
     minbpnchan = vdp.VisDependentProperty(default=8)
     hm_nantennas = vdp.VisDependentProperty(default='unflagged')
     maxfracflagged = vdp.VisDependentProperty(default=0.90)
 
     def __init__(self, context, output_dir=None, vis=None, field=None,
                  intent=None, spw=None, phaseupsnr=None, minphaseupints=None,
-                 evenbpints=None, bpsnr=None, minbpnchan=None, hm_nantennas=None, maxfracflagged=None):
+                 evenbpints=None, bpsnr=None, minbpsnr=None, minbpnchan=None, hm_nantennas=None, maxfracflagged=None):
 
         super(BpSolintInputs, self).__init__()
 
@@ -76,6 +81,7 @@ class BpSolintInputs(vdp.StandardInputs):
         self.minphaseupints = minphaseupints
         self.evenbpints = evenbpints
         self.bpsnr = bpsnr
+        self.minbpsnr = minbpsnr
         self.minbpnchan = minbpnchan
         self.hm_natennas = hm_nantennas
         self.maxfracflagged = maxfracflagged
@@ -94,6 +100,9 @@ class BpSolint(basetask.StandardTaskTemplate):
         # Turn the CASA field name and spw id lists into Python lists
         fieldlist = inputs.field.split(',')
         spwlist = [int(spw) for spw in inputs.spw.split(',')]
+        
+        #Setup BP SNR
+        bpsnr = inputs.bpsnr if not parameters.has_key('bpsnr') else parameters['bpsnr']
 
         # Log the data selection choices
         LOG.info('Estimating bandpass solution intervals for MS %s' % inputs.ms.basename)
@@ -101,7 +110,7 @@ class BpSolint(basetask.StandardTaskTemplate):
         LOG.info('    Selecting bandpass fields %s ' % fieldlist)
         LOG.info('    Selecting bandpass spws %s ' % spwlist)
         LOG.info('    Setting requested phaseup snr to %0.1f ' % inputs.phaseupsnr)
-        LOG.info('    Setting requested bandpass snr to %0.1f ' % inputs.bpsnr)
+        LOG.info('    Setting requested bandpass snr to %0.1f ' % bpsnr)
         if len(fieldlist) <= 0 or len(spwlist) <= 0:
             LOG.info('    No bandpass data')
             return BpSolintResults(vis=inputs.vis)
@@ -111,12 +120,25 @@ class BpSolint(basetask.StandardTaskTemplate):
         solint_dict = snr_heuristics.estimate_bpsolint(inputs.ms, fieldlist,
                                                        inputs.intent, spwlist, inputs.hm_nantennas,
                                                        inputs.maxfracflagged,
-                                                       inputs.phaseupsnr, inputs.minphaseupints, inputs.bpsnr,
+                                                       inputs.phaseupsnr, inputs.minphaseupints, bpsnr,
                                                        inputs.minbpnchan, evenbpsolints=inputs.evenbpints)
 
         if not solint_dict:
             LOG.info('No solution interval dictionary')
             return BpSolintResults(vis=inputs.vis)
+        
+        # Check the existence of strong atmospheric line and recalculate
+        # solution interval with lower bpsnr if necessary
+        if bpsnr > inputs.minbpsnr and \
+            self._get_max_solint_channels(solint_dict) >= 2:
+            # check if Tsys caltable exists in context
+            caltable = self._get_tsys_caltable(inputs.ms.name)
+            if caltable is None:
+                LOG.warn("No Tsys calibration table found for MS %s. Skipping strong atmospheric line check." % \
+                         inputs.ms.basename)
+            elif check_strong_atm_lines(inputs.ms, fieldlist, inputs.intent, spwlist, solint_dict, caltable):
+                LOG.info("Strong atmospheric line(s) detected in Tsys spectra. Recalculating solution interval with bpsnr = %f" % inputs.minbpsnr)
+                return self.prepare(bpsnr=inputs.minbpsnr)
 
         # Construct the results object
         result = self._get_results(inputs.vis, spwlist, solint_dict)
@@ -202,6 +224,34 @@ class BpSolint(basetask.StandardTaskTemplate):
 
         return result
 
+    @staticmethod
+    def _get_max_solint_channels(solint_dict):
+        """
+        The method returns maximum BP solution interval of all SPWs
+        in solution interval dictionary (solint_dict)
+        
+        Inputs: solution interval dictionary returned by snr.estimate_bpsolint
+        """
+        max_solint = 0
+        for spw_solint in solint_dict.values():
+            max_solint = max(spw_solint['nchan_bpsolint'], max_solint)
+        return max_solint
+
+    def _get_tsys_caltable(self, vis):
+        caltables = self.inputs.context.callibrary.active.get_caltable(
+            caltypes='tsys')
+
+        # return just the tsys table that matches the vis being handled
+        result = None
+        for name in caltables:
+            # Get the tsys table name
+            tsystable_vis = \
+                caltableaccess.CalibrationTableDataFiller._readvis(name)
+            if tsystable_vis in vis:
+                result = name
+                break
+
+        return result        
 
 # The results class
 class BpSolintResults(basetask.Results):
@@ -255,3 +305,117 @@ class BpSolintResults(basetask.Results):
                        (self.spwids[i], self.bpsolints[i], self.bpchansolints[i],
                         self.bpchansensitivities[i], self.bpchansnrs[i])
             return line
+
+def check_strong_atm_lines(ms, fieldlist, intent, spwidlist, solint_dict, tsysname,
+                           lineStrengthThreshold = 0.1, minAdjacantChannels = 3, nSigma = 8):
+    """
+    This function tests if existence of strong atmospheric lines in Tsys spectra
+    (see CAS-11951).
+    
+    Inputs:
+        ms: Measurementset object
+        fieldlist: a list of field names
+        intents: an intent string
+        spwidlist: a list of spw IDs
+        solint_dict: solution interval dictionary returned by snr.estimate_bpsolint
+        tsysname: the name of Tsys caltable
+
+    Conditions of strong atmospheric line:
+        (a) the peak of atmospheric line components is larger than a threshold, AND
+        (b) there is at least an atmospheric line with it's width larger than a threshold
+
+    Returns: True if any of SpW meets condition of strong atmospheric lines
+    """
+    LOG.info('Check for strong atmospheric line in Tsys spectra.')
+    # make sure MS and Tsys caltable corresponds
+    tsystable_vis = \
+            caltableaccess.CalibrationTableDataFiller._readvis(tsysname)
+    if tsystable_vis != ms.name:
+        raise RuntimeError, 'Input MS (%s) and Tsys caltable (%s) does not correspond.' % \
+            (os.path.basename(ms.name), os.path.basename(tsysname))
+
+    tsys_info = snr_heuristics.get_tsysinfo(ms, fieldlist, intent, spwidlist)
+    
+    strong_atm_lines = False
+    for spw in spwidlist:
+        if spw not in tsys_info or spw not in solint_dict:
+            continue
+        tsys_spw = solint_dict[spw]['tsys_spw']
+        LOG.info('Investigating Tsys spectra for spw %d (Tsys spw %d)' % \
+                 (spw, tsys_spw))
+        # Obtain median Tsys spectrum
+        median_tsys = get_median_tsys_spectrum_from_caltable(tsysname,
+                                                             tsys_spw,
+                                                             tsys_info[spw]['tsys_scan'])
+        if median_tsys is None:
+            LOG.warn('Unable to define median Tsys spectrum for Tsys spw = %d, scan = %d' % \
+                     tsys_spw, tsys_info[spw]['tsys_scan'])
+            continue
+        # Smooth median Tsys spectrum
+        kernel_width = solint_dict[spw]['nchan_bpsolint']
+        kernel = numpy.ones(kernel_width)/float(kernel_width)
+        smoothed_tsys = numpy.convolve(median_tsys, kernel, mode='same')
+        # Take absolute difference of median Tsys spectum w/ and w/o smoothing
+        diff_tsys = numpy.abs(median_tsys - smoothed_tsys)
+        # If peak is smaller than a threshold, no strong line -> continue to the next spw
+        peak = numpy.max(diff_tsys)
+        threshold = lineStrengthThreshold * numpy.median(median_tsys)
+        if peak < threshold:
+            LOG.info('No strong line is found. peak = %f, threshold = %f' % (peak, threshold))
+            continue
+        LOG.info('Strong line(s) are found. peak = %f, threshold = %f' % (peak, threshold))
+        # Scaled MAD of diff_tsys
+        scaled_mad = 1.4826*numpy.median(numpy.abs(diff_tsys - numpy.median(diff_tsys)))
+        LOG.debug('*** Scaled MAD of diff_tsys = %f' % scaled_mad)
+        # Check amplitude and width of diff_tsys (presumably atm lines).
+        # If both exceeds thresholds -> strong line 
+        diff_tsys.mask = (diff_tsys.data < nSigma * scaled_mad)
+        line_slices = numpy.ma.notmasked_contiguous(diff_tsys)
+        for line in line_slices:
+            LOG.debug('*** line channels: start = %d, width=%d' % (line.start, line.stop-line.start))
+            # check line width
+            if line.stop-line.start < minAdjacantChannels: continue
+            else:
+                # strong atmospheric line
+                strong_atm_lines = True
+                LOG.info('*** Found a spectral line with >= %d channels' % minAdjacantChannels)
+                return strong_atm_lines
+        LOG.info('*** All lines are < %d channels' % minAdjacantChannels)
+
+    return strong_atm_lines
+
+def get_median_tsys_spectrum_from_caltable(tsysname, spwid, scanid, interpolate_flagged=True):
+    """
+    Returns masked median Tsys spectrum of an SPW and scan combination in Tsys caltable.
+    
+    Inputs:
+        tsysname: the path to Tsys caltable
+        spwid: SPW ID of Tsys to select
+        scanid: scan ID of Tsys to select
+        interpolate_flag: if True, operate piecewise linear interpolation of flagged channels
+    
+    Returns: masked array of median Tsys spectrum
+    """
+    if not os.path.exists(tsysname):
+        raise ValueError, 'Could not find Tsys caltable, %s' % tsysname
+    with casatools.TableReader(tsysname) as tb:
+        seltb = tb.query('SPECTRAL_WINDOW_ID == %s && SCAN_NUMBER == %s' % (spwid, scanid))
+        if seltb.nrows() == 0:
+            seltb.close()
+            LOG.warn('No matching Tsys measurement for SPW=%s and scan=%s in Tsys caltable %s' % (spwid, scanid, tsysname))
+            return None
+        try: # axis order: [POL, FREQ, ROW]
+            tsys = seltb.getcol('FPARAM')
+            flag = seltb.getcol('FLAG')
+        finally:
+            seltb.close()
+    ma_median = numpy.median(numpy.ma.masked_array(tsys, flag), axis=[0, 2])
+    if ma_median.count() == 0: #No valid channel
+        return None
+    if interpolate_flagged:
+        ma_median.data[ma_median.mask] = numpy.interp(numpy.where(ma_median.mask==True)[0],
+                                                 numpy.where(ma_median.mask==False)[0],
+                                                 ma_median[~ma_median.mask])
+        # clear-up mask
+        ma_median.mask = False
+        return ma_median

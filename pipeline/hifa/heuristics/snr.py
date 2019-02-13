@@ -275,17 +275,34 @@ def get_tsysinfo(ms, fieldnamelist, intent, spwidlist):
     tsysdict = collections.OrderedDict()
     LOG.info('Matching spws')
 
-    # Get the list of unique field names
-    fieldset = set(fieldnamelist)
+    ##### Helper function
+    def get_scans_for_field_intent(msobj, fieldname_list, scan_intent):
+        """
+        Return a list of scan object that matches an intent and
+        the list of field names
+        
+        Inputs:
+            msobj: Measurementset object
+            fieldname_list: a list of field names
+            scan_intent: a Pipeline scan intent string
+        Retruns: a list of scan objects
+        """
+        # Get the list of unique field names
+        fieldset = set(fieldname_list)
+
+        # Get scans with the intent associated with the field name list
+        scans = []
+        for scan in msobj.get_scans(scan_intent=scan_intent):
+            # Remove scans not associated with the input field names
+            scanfieldset = {field.name for field in scan.fields}
+            if len(fieldset.intersection(scanfieldset)) == 0:
+                continue
+            scans.append(scan)
+        return scans
+    ###### End: helper function
 
     # Get atmospheric scans associated with the field name list
-    atmscans = []
-    for scan in ms.get_scans(scan_intent='ATMOSPHERE'):
-        # Remove scans not associated with the input field names
-        scanfieldset = {field.name for field in scan.fields}
-        if len(fieldset.intersection(scanfieldset)) == 0:
-            continue
-        atmscans.append(scan)
+    atmscans = get_scans_for_field_intent(ms, fieldnamelist, 'ATMOSPHERE')
 
     # No atmospheric scans found
     #    If phase calibrator examine the TARGET atmospheric scans
@@ -295,15 +312,10 @@ def get_tsysinfo(ms, fieldnamelist, intent, spwidlist):
         scifields = ms.get_fields(intent='TARGET')
         if len(scifields) <= 0:
             return tsysdict
-        scifieldset = {scifield.name for scifield in scifields}
+        scifieldlist = [scifield.name for scifield in scifields]
 
         # Find atmospheric scans associated with the science target
-        for scan in ms.get_scans(scan_intent='ATMOSPHERE'):
-            # Remove scans not associated with the input field names
-            scanfieldset = {field.name for field in scan.fields}
-            if len(scifieldset.intersection(scanfieldset)) == 0:
-                continue
-            atmscans.append(scan)
+        atmscans = get_scans_for_field_intent(ms, scifieldlist, 'ATMOSPHERE')
 
     # Still no atmospheric scans found
     #    Return
@@ -311,13 +323,7 @@ def get_tsysinfo(ms, fieldnamelist, intent, spwidlist):
         return tsysdict
 
     # Get the scans associated with the field name list and intent
-    obscans = []
-    for scan in ms.get_scans(scan_intent=intent):
-        # Remove scans not associated with the input field names
-        scanfieldset = {field.name for field in scan.fields}
-        if len(fieldset.intersection(scanfieldset)) == 0:
-            continue
-        obscans.append(scan)
+    obscans = get_scans_for_field_intent(ms, fieldnamelist, intent)
 
     # No data scans found
     if not obscans:
