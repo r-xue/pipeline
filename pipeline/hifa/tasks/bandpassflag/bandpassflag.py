@@ -80,7 +80,7 @@ class BandpassflagInputs(ALMAPhcorBandpassInputs):
 
     def __init__(self, context, output_dir=None, vis=None, caltable=None, intent=None, field=None, spw=None,
                  antenna=None, hm_phaseup=None, phaseupsolint=None, phaseupbw=None, phaseupsnr=None, phaseupnsols=None,
-                 hm_bandpass=None, solint=None, maxchannels=None, evenbpints=None, bpsnr=None, bpnsols=None,
+                 hm_bandpass=None, solint=None, maxchannels=None, evenbpints=None, bpsnr=None, minbpsnr=None, bpnsols=None,
                  combine=None, refant=None, minblperant=None, minsnr=None, solnorm=None, antnegsig=None, antpossig=None,
                  tmantint=None, tmint=None, tmbl=None, antblnegsig=None, antblpossig=None, relaxed_factor=None,
                  niter=None, mode='channel'):
@@ -88,8 +88,8 @@ class BandpassflagInputs(ALMAPhcorBandpassInputs):
             context, output_dir=output_dir, vis=vis, caltable=caltable, intent=intent, field=field, spw=spw,
             antenna=antenna, hm_phaseup=hm_phaseup, phaseupsolint=phaseupsolint, phaseupbw=phaseupbw,
             phaseupsnr=phaseupsnr, phaseupnsols=phaseupnsols, hm_bandpass=hm_bandpass, solint=solint,
-            maxchannels=maxchannels, evenbpints=evenbpints, bpsnr=bpsnr, bpnsols=bpnsols, combine=combine,
-            refant=refant, minblperant=minblperant, minsnr=minsnr, solnorm=solnorm, mode=mode
+            maxchannels=maxchannels, evenbpints=evenbpints, bpsnr=bpsnr, minbpsnr=minbpsnr, bpnsols=bpnsols,
+            combine=combine, refant=refant, minblperant=minblperant, minsnr=minsnr, solnorm=solnorm, mode=mode
         )
 
         # flagging parameters
@@ -181,7 +181,7 @@ class Bandpassflag(basetask.StandardTaskTemplate):
                 phaseupnsols=inputs.phaseupnsols,
                 phaseupsolint=inputs.phaseupsolint, hm_bandpass=inputs.hm_bandpass,
                 solint=inputs.solint, maxchannels=inputs.maxchannels,
-                evenbpints=inputs.evenbpints, bpsnr=inputs.bpsnr,
+                evenbpints=inputs.evenbpints, bpsnr=inputs.bpsnr, minbpsnr=inputs.minbpsnr,
                 bpnsols=inputs.bpnsols, combine=inputs.combine,
                 refant=inputs.refant, solnorm=inputs.solnorm,
                 minblperant=inputs.minblperant, minsnr=inputs.minsnr)
@@ -293,7 +293,7 @@ class Bandpassflag(basetask.StandardTaskTemplate):
                 phaseupnsols=inputs.phaseupnsols,
                 phaseupsolint=inputs.phaseupsolint, hm_bandpass=inputs.hm_bandpass,
                 solint=inputs.solint, maxchannels=inputs.maxchannels,
-                evenbpints=inputs.evenbpints, bpsnr=inputs.bpsnr,
+                evenbpints=inputs.evenbpints, bpsnr=inputs.bpsnr, minbpsnr=inputs.minbpsnr,
                 bpnsols=inputs.bpnsols, combine=inputs.combine,
                 refant=inputs.refant, solnorm=inputs.solnorm,
                 minblperant=inputs.minblperant, minsnr=inputs.minsnr)

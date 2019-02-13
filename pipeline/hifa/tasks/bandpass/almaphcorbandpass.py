@@ -32,6 +32,7 @@ __all__ = [
 class ALMAPhcorBandpassInputs(bandpassmode.BandpassModeInputs):
     bpnsols = vdp.VisDependentProperty(default=8)
     bpsnr = vdp.VisDependentProperty(default=50.0)
+    minbpsnr = vdp.VisDependentProperty(default=20.0)
     evenbpints = vdp.VisDependentProperty(default=True)
 
     # Bandpass heuristics, options are 'fixed', 'smoothed', and 'snr'
@@ -65,10 +66,11 @@ class ALMAPhcorBandpassInputs(bandpassmode.BandpassModeInputs):
 
     def __init__(self, context, output_dir=None, vis=None, mode='channel', hm_phaseup=None, phaseupbw=None,
                  phaseupsolint=None, phaseupsnr=None, phaseupnsols=None, hm_bandpass=None, solint=None,
-                 maxchannels=None, evenbpints=None, bpsnr=None, bpnsols=None, **parameters):
+                 maxchannels=None, evenbpints=None, bpsnr=None, minbpsnr=None, bpnsols=None, **parameters):
         super(ALMAPhcorBandpassInputs, self).__init__(context, output_dir=output_dir, vis=vis, mode=mode, **parameters)
         self.bpnsols = bpnsols
         self.bpsnr = bpsnr
+        self.minbpsnr = minbpsnr
         self.evenbpints = evenbpints
         self.hm_bandpass = hm_bandpass
         self.hm_phaseup = hm_phaseup
@@ -152,6 +154,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
             minphaseupints = inputs.phaseupnsols,
             evenbpints     = inputs.evenbpints,
             bpsnr          = inputs.bpsnr,
+            minbpsnr       = inputs.minbpsnr,
             minbpnchan    = inputs.bpnsols
         )
 
@@ -530,13 +533,14 @@ class SessionALMAPhcorBandpassInputs(ALMAPhcorBandpassInputs):
 
     def __init__(self, context, mode=None, hm_phaseup=None, phaseupbw=None, phaseupsolint=None, phaseupsnr=None,
                  phaseupnsols=None, hm_bandpass=None, solint=None, maxchannels=None, evenbpints=None, bpsnr=None,
-                 bpnsols=None, parallel=None, **parameters):
+                 minbpsnr=None, bpnsols=None, parallel=None, **parameters):
         super(SessionALMAPhcorBandpassInputs, self).__init__(context, mode=mode, hm_phaseup=hm_phaseup,
                                                              phaseupbw=phaseupbw, phaseupsolint=phaseupsolint,
                                                              phaseupsnr=phaseupsnr, phaseupnsols=phaseupnsols,
                                                              hm_bandpass=hm_bandpass, solint=solint,
                                                              maxchannels=maxchannels, evenbpints=evenbpints,
-                                                             bpsnr=bpsnr, bpnsols=bpnsols, **parameters)
+                                                             bpsnr=bpsnr, minbpsnr=minbpsnr,
+                                                             bpnsols=bpnsols, **parameters)
         self.parallel = parallel
 
 

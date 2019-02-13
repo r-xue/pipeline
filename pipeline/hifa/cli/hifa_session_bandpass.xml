@@ -106,6 +106,11 @@
                 <value>50.0</value>
             </param>
 
+ 		  	<param type="double" name="minbpsnr" subparam="true">
+				<description>The minimum required bandpass frequency solution signal to noise when strong atmospheric lines exist in Tsys spectra</description>
+				<value>20.0</value>
+   			</param>
+
             <param type="int" name="bpnsols" subparam="true">
                 <description>Minimum number of bandpass solutions</description>
                 <value>8</value>
@@ -221,6 +226,9 @@
                         </default>
                         <default param="bpsnr">
                             <value type="double">50.0</value>
+                        </default>
+                        <default param="minbpsnr">
+                            <value type="double">20.0</value>
                         </default>
                         <default param="bpnsols">
                             <value type="int">8</value>
@@ -419,7 +427,14 @@ bpsnr -- The required SNR for the bandpass solution. Used only if
     hm_bandpass='snr'
 
     default: 50.0
-    example: bpsnr=20.0
+    example: bpsnr=30.0
+
+minbpsnr -- The minimum required SNR for the bandpass solution
+    when strong atmospheric lines exist in Tsys spectra.
+    Used only if hm_bandpass='snr'.
+
+    default: 20.0
+    example: minbpsnr=10.0
 
 bpnsols -- The minimum number of bandpass solutions. Used only if
     hm_bandpass='snr'.

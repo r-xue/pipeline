@@ -56,6 +56,11 @@ array characteristics the meta data associated with the observation.
 	<value>50.0</value>
    </param>
 
+   <param type="double" name="minbpsnr">
+	<description>The minimum required bandpass frequency solution signal to noise when strong atmospheric lines exist in Tsys spectra</description>
+	<value>20.0</value>
+   </param>
+
     <param type="int" name="minbpnchan">
 	<description>The minimum number of channels in the frequency solution</description>
 	<value type="int">8</value>
@@ -158,10 +163,16 @@ minphaseupints -- The minimum number of time intervals in the phaseup gain.
     default: 2
     example: minphaseupints=4
 
-bpnsr -- The required bandpass frequency interval solution signal to noise.
+bpsnr -- The required bandpass frequency interval solution signal to noise.
 
     default: 50.0
-    example: phaseupsnr=20.0
+    example: bpsnr=30.0
+
+minbpsnr -- The minimum required bandpass frequency interval solution signal
+    to noise when strong atmospheric lines exist in Tsys spectra.
+
+    default: 20.0
+    example: minbpsnr=10.0
 
 minbpnchan -- The minimum number of frequency intervals in the bandpass
     solution.
@@ -280,6 +291,8 @@ o The frequency interval, in MHz and number of channels required to meet the
 o Warnings are issued if estimated bandpass solution would contain fewer than
   minbpnchan solutions
 
+o If Tsys spectra has strong atmospheric features, the frequency interval of bandpass
+  solution is recalculate with to meet the lower threshold, minbpsnr. 
 
 Examples
 
