@@ -318,33 +318,28 @@ class Syspower(basetask.StandardTaskTemplate):
         final_template.mask[final_template < clip_sp_template[0]] = True
         final_template.mask[final_template > clip_sp_template[1]] = True
 
-        goodantennasidx = []
-        medianant = 1.0
+        antids = list(antenna_ids)
         if self.inputs.usemedian and self.inputs.antexclude != '':
-            antids = list(antenna_ids)
             for i, this_ant in enumerate(antenna_ids):
                 antindex = antids.index(i)
                 antname = antenna_names[antindex]
                 if antname in self.inputs.antexclude:
                     LOG.info("Antenna " + antname + " to be excluded.")
-                else:
-                    goodantennasidx.append(i)
-            medianant = np.ma.median(final_template[goodantennasidx, :, :, :])
+                    final_template.mask[i, :, :, :] = np.ma.masked  # Change mask values to True for that antenna
+            median_final_template = np.ma.median(final_template, axis=0)
 
-        antids = list(antenna_ids)
         for i, this_ant in enumerate(antenna_ids):
             antindex = antids.index(i)
             antname = antenna_names[antindex]
             if antname in self.inputs.antexclude:
-                data = final_template[i, :, :, :].data
                 if self.inputs.usemedian:
-                    data[:] = medianant
-                    LOG.info("Using median value of "+str(medianant) + " for antenna " + antname + ".")
+                    LOG.info("Using median value in template for antenna " + antname + ".")
+                    final_template.data[i, :, :, :] = median_final_template.data
+                    final_template.mask[i, :, :, :] = median_final_template.mask
                 else:
-                    data[:] = 1.0
-                    LOG.info("Using value of 1.0 for antenna " + antname + ".")
-                final_template.data[i, :, :, :] = data  # Change data values to 1.0
-                final_template.mask[i, :, :, :] = np.ma.masked  # Change mask values to False for that antenna
+                    LOG.info("Using value of 1.0 in template for antenna " + antname + ".")
+                    final_template.data[i, :, :, :] = 1.0
+                    final_template.mask[i, :, :, :] = np.ma.nomask
 
         with casatools.TableReader(rq_table, nomodify=False) as tb:
             rq_time = tb.getcol('TIME')
