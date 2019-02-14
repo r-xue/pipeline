@@ -435,8 +435,8 @@ class Checkflag(basetask.StandardTaskTemplate):
 
             rflagthresholdsnew = self.thresholds(rflagthresholds)
 
-            method_args['timedev'] = rflagthresholdsnew
-            method_args['freqdev'] = rflagthresholdsnew
+            method_args['timedev'] = rflagthresholdsnew['report0']['timedev']
+            method_args['freqdev'] = rflagthresholdsnew['report0']['freqdev']
             method_args['action'] = 'apply'
 
             self._do_checkflag(**method_args)
@@ -500,8 +500,8 @@ class Checkflag(basetask.StandardTaskTemplate):
 
             rflagthresholdsnew = self.thresholds(rflagthresholds)
 
-            method_args['timedev'] = rflagthresholdsnew
-            method_args['freqdev'] = rflagthresholdsnew
+            method_args['timedev'] = rflagthresholdsnew['report0']['timedev']
+            method_args['freqdev'] = rflagthresholdsnew['report0']['freqdev']
             method_args['action'] = 'apply'
 
             self._do_checkflag(**method_args)
@@ -559,8 +559,8 @@ class Checkflag(basetask.StandardTaskTemplate):
 
             rflagthresholdsnew = self.thresholds(rflagthresholds)
 
-            method_args['timedev'] = rflagthresholdsnew
-            method_args['freqdev'] = rflagthresholdsnew
+            method_args['timedev'] = rflagthresholdsnew['report0']['timedev']
+            method_args['freqdev'] = rflagthresholdsnew['report0']['freqdev']
             method_args['action'] = 'apply'
 
             self._do_checkflag(**method_args)
