@@ -577,9 +577,9 @@ class Correctedampflag(basetask.StandardTaskTemplate):
             # Propagate PHASE 'bad baseline' flags to TARGET.
             allflags = _propagate_phase_flags(allflags, ms, antenna_id_to_name)
 
-            # Report final number of new flags.
-            LOG.warning("Evaluation of flagging heuristics for {} raised total of {} flagging command(s)"
-                        "".format(os.path.basename(inputs.vis), len(allflags)))
+            # Report final number of new flags (CAS-7336: show as info message instead of warning).
+            LOG.info("Evaluation of flagging heuristics for {} raised total of {} flagging command(s)"
+                     "".format(os.path.basename(inputs.vis), len(allflags)))
 
         # Store final list of flags in result.
         result.addflags(allflags)

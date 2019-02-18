@@ -205,9 +205,9 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                              "".format(inputs.prepend, os.path.basename(inputs.vis), counter, len(newflags)))
                     break
                 else:
-                    # Report newly found flags as a warning message
-                    LOG.warning("{0}{1} iteration {2} raised {3} flagging commands"
-                                "".format(inputs.prepend, os.path.basename(inputs.vis), counter, len(newflags)))
+                    # Report newly found flags (CAS-7336: show as info message instead of warning).
+                    LOG.info("{0}{1} iteration {2} raised {3} flagging commands"
+                             "".format(inputs.prepend, os.path.basename(inputs.vis), counter, len(newflags)))
     
                 # Accumulate new flags and flag reasons
                 flags += newflags
@@ -1446,9 +1446,9 @@ class VectorFlagger(basetask.StandardTaskTemplate):
                              "".format(inputs.prepend, os.path.basename(inputs.vis), counter, len(newflags)))
                     break
                 else:
-                    # Report newly found flags as a warning message
-                    LOG.warning("{0}{1} iteration {2} raised {3} flagging commands"
-                                "".format(inputs.prepend, os.path.basename(inputs.vis), counter, len(newflags)))
+                    # Report newly found flags (CAS-7336: show as info message instead of warning).
+                    LOG.info("{0}{1} iteration {2} raised {3} flagging commands"
+                             "".format(inputs.prepend, os.path.basename(inputs.vis), counter, len(newflags)))
 
                 # Accumulate new flags
                 flags += newflags
