@@ -13,7 +13,7 @@ LOG = infrastructure.get_logger(__name__)
 def export_flux_from_fit_result(results, context, filename, fieldids_with_spix=None):
     """
     Export flux densities from a set of results to a CSV file.
-    Optional merge in spix values for fields in mergfields.
+    Optional merge in spix values for fields in mergefields.
     """
     if fieldids_with_spix is None:
         fieldids_with_spix = []
@@ -23,7 +23,7 @@ def export_flux_from_fit_result(results, context, filename, fieldids_with_spix=N
 
     abspath = os.path.join(context.output_dir, filename)
 
-    columns = ['ms', 'field', 'spw', 'I', 'Q', 'U', 'V', 'spix', 'comment']
+    columns = ['ms', 'field', 'spw', 'I', 'Q', 'U', 'V', 'spix', 'uvmin', 'uvmax', 'comment']
 
     with open(abspath, 'w+') as f:
         writer = csv.writer(f)
@@ -52,7 +52,8 @@ def export_flux_from_fit_result(results, context, filename, fieldids_with_spix=N
                     (I, Q, U, V) = m.casa_flux_density
                     ms = context.observing_run.get_ms(ms.basename)
                     comment = '# {} intent={}'.format(field.clean_name, ','.join(sorted(field.intents)))
-                    writer.writerow((ms.basename, field_id, m.spw_id, I, Q, U, V, '%0.3f' % float(m.spix), comment))
+                    writer.writerow((ms.basename, field_id, m.spw_id, I, Q, U, V, '%0.3f' % float(m.spix),
+                                     float(m.uvmin), float(m.uvmax), comment))
                     counter += 1
 
         LOG.info('Exported %s flux measurements to %s' % (counter, abspath))

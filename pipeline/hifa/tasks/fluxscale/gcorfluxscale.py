@@ -286,9 +286,10 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
                 # what we passed in as arguments
                 result.measurements.update(fluxscale_result.measurements)
 
-            except Exception:
+            except Exception as e:
                 # Something has gone wrong, return an empty result
                 LOG.error('Unable to complete flux scaling operation for MS %s' % (os.path.basename(inputs.vis)))
+                LOG.exception('Flux scaling error:')
                 return result
 
             finally:
