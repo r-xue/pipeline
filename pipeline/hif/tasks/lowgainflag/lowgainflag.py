@@ -13,12 +13,12 @@ from pipeline.h.tasks.common import calibrationtableaccess as caltableaccess
 from pipeline.h.tasks.common import commonresultobjects
 from pipeline.h.tasks.common import viewflaggers
 from pipeline.h.tasks.flagging.flagdatasetter import FlagdataSetter
+from pipeline.hif.tasks import bandpass
+from pipeline.hif.tasks import gaincal
 from pipeline.infrastructure import task_registry
 from .resultobjects import LowgainflagDataResults
 from .resultobjects import LowgainflagResults
 from .resultobjects import LowgainflagViewResults
-from .. import bandpass
-from .. import gaincal
 
 __all__ = [
     'LowgainflagInputs',
@@ -335,8 +335,7 @@ class LowgainflagData(basetask.StandardTaskTemplate):
         bpcal_task = bandpass.PhcorBandpass(bpcal_inputs)
         bpcal = self._executor.execute(bpcal_task, merge=False)
         if not bpcal.final:
-            LOG.warning('No bandpass solution computed for {0}'.format(
-                inputs.ms.basename))
+            LOG.warning("No bandpass solution computed for {}".format(inputs.ms.basename))
         else:
             bpcal.accept(inputs.context)
 
@@ -347,8 +346,7 @@ class LowgainflagData(basetask.StandardTaskTemplate):
         gpcal_task = gaincal.GTypeGaincal(gpcal_inputs)
         gpcal = self._executor.execute(gpcal_task, merge=False)
         if not gpcal.final:
-            LOG.warning('No phase time solution computed for {0}'.format(
-                inputs.ms.basename))
+            LOG.warning("No phase time solution computed for {}".format(inputs.ms.basename))
         else:
             gpcal.accept(inputs.context)
 
@@ -363,8 +361,7 @@ class LowgainflagData(basetask.StandardTaskTemplate):
         if not gacal.final:
             gatable = list(gacal.error)
             gatable = gatable[0].gaintable
-            LOG.warning('No amplitude time solution computed for %s '.format(
-                inputs.ms.basename))
+            LOG.warning("No amplitude time solution computed for {}".format(inputs.ms.basename))
             result.table = gatable
             result.table_available = False
         else:
