@@ -299,11 +299,23 @@ def export_flux_from_result(results, context, filename='flux.csv'):
     abspath = os.path.join(context.output_dir, filename)
 
     columns = ['ms', 'field', 'spw', 'I', 'Q', 'U', 'V', 'spix', 'uvmin', 'uvmax', 'comment']
+    old_standard_cols = columns[:8] + columns[10:]
+    use_old_std_cols = False
     existing = []
 
     # if the file exists, read it in
     if os.path.exists(abspath):
         with open(abspath, 'r') as f:
+
+            first = f.readline()
+            if not first.startswith(','.join(columns)):
+                # Try old format, without uvmin/uvmax (before r42290)
+                if first.startswith(','.join(old_standard_cols)):
+                    columns = old_standard_cols
+                    use_old_std_cols = True
+                else:
+                    raise ValueError('Cannot recognize header line in flux file: {0}'.format(first))
+
             # slurp in all but the header rows
             existing.extend([l for l in f.readlines() if not l.startswith(','.join(columns))])
 
@@ -342,7 +354,14 @@ def export_flux_from_result(results, context, filename='flux.csv'):
                                                           intents=','.join(sorted(field.intents)), origin=origin,
                                                           age=age, queried_at=queried_at)
 
-                        writer.writerow([ms_basename, field_id, m.spw_id, I, Q, U, V, float(m.spix), float(m.uvmin), float(m.uvmax), comment])
+                        # writer.writerow([ms_basename, field_id, m.spw_id, I, Q, U, V, float(m.spix), float(m.uvmin), float(m.uvmax), comment])
+                        if not use_old_std_cols:
+                            out_row = [ms_basename, field_id, m.spw_id, I, Q, U, V, float(m.spix), float(m.uvmin),
+                                       float(m.uvmax), comment]
+                        else:
+                            out_row = [ms_basename, field_id, m.spw_id, I, Q, U, V, float(m.spix), comment]
+                        writer.writerow(out_row)
+
                         counter += 1
 
         LOG.info('Exported %s flux measurements to %s' % (counter, abspath))
@@ -385,17 +404,17 @@ def import_flux(output_dir, observing_run, filename=None):
 
             try:
                 spix = decimal.Decimal(row['spix'])
-            except decimal.InvalidOperation:
+            except (decimal.InvalidOperation, TypeError):
                 spix = decimal.Decimal('0.0')
 
             try:
                 uvmin = decimal.Decimal(row['uvmin'])
-            except decimal.InvalidOperation:
+            except (decimal.InvalidOperation, TypeError):
                 uvmin = decimal.Decimal('0.0')
 
             try:
                 uvmax = decimal.Decimal(row['uvmax'])
-            except decimal.InvalidOperation:
+            except (decimal.InvalidOperation, TypeError):
                 uvmax = decimal.Decimal('0.0')
 
             comment = row['comment']
