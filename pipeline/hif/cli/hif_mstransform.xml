@@ -35,6 +35,16 @@
     <value></value>
   </param>
 
+  <param type="int" name="chanbin">
+    <description>Width (bin) of input channels to average to form an output channel.</description>
+    <value>1</value>
+  </param>
+
+  <param type="string" name="timebin">
+    <description>Bin width for time averaging.</description>
+    <value type="string">0s</value>
+  </param>
+
   <param type="string" name="pipelinemode">
     <description>The pipeline operating mode</description>
     <value>automatic</value>
@@ -137,6 +147,14 @@ intent -- Select intents for which associated fields will be imaged.
 spw -- Select spectral window/channels to image.
     default: '', All science spws for which the specified intent is valid are selected 
     example: '9'
+
+chanbin -- Width (bin) of input channels to average to form an output channel.
+    default: 1, if chanbin > 1 then chanaverage is automatically switched to True
+    example: 2
+
+timebin -- Bin width for time averaging
+    default: '0s', if timebin > 0s then timeaverage is automatically switched to True
+    example '4s'
 
 --- pipeline task execution modes
 dryrun -- Run the commands (True) or generate the commands to be run but

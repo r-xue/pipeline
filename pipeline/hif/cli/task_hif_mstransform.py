@@ -6,7 +6,7 @@ import pipeline.h.cli.utils as utils
 
 
 def hif_mstransform(vis=None, outputvis=None, field=None, intent=None,
-                   spw=None, pipelinemode=None, dryrun=None, acceptresults=None):
+                    spw=None, chanbin=None, timebin=None, pipelinemode=None, dryrun=None, acceptresults=None):
 
     ##########################################################################
     #                                                                        #

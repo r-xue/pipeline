@@ -106,7 +106,11 @@ class MstransformInputs(vdp.StandardInputs):
 
         return ','.join([str(spw.id) for spw in science_target_spws])
 
-    def __init__(self, context, output_dir=None, vis=None, outputvis=None, field=None, intent=None, spw=None):
+    chanbin = vdp.VisDependentProperty(default=1)
+    timebin = vdp.VisDependentProperty(default='0s')
+
+    def __init__(self, context, output_dir=None, vis=None, outputvis=None, field=None, intent=None, spw=None,
+                 chanbin=None, timebin=None):
 
         super(MstransformInputs, self).__init__()
 
@@ -118,6 +122,8 @@ class MstransformInputs(vdp.StandardInputs):
         self.field = field
         self.intent = intent
         self.spw = spw
+        self.chanbin = chanbin
+        self.timebin = timebin
 
     def to_casa_args(self):
 
@@ -128,6 +134,16 @@ class MstransformInputs(vdp.StandardInputs):
         # new (with casa 4.6) reindex parameter to be False 
         d['datacolumn'] = 'corrected'
         d['reindex'] = False
+
+        if self.chanbin > 1:
+            d['chanaverage'] = True
+        else:
+            d['chanaverage'] = False
+
+        if self.timebin > '0s':
+            d['timeaverage'] = True
+        else:
+            d['timeaverage'] = False
 
         return d
 
