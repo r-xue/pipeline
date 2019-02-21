@@ -1,7 +1,9 @@
 from __future__ import absolute_import
 
 import copy
+import itertools
 import math
+import operator
 import os
 
 import numpy as np
@@ -14,6 +16,7 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.common import arrayflaggerbase
 from pipeline.h.tasks.common import flaggableviewresults
+from pipeline.h.tasks.common import ozone
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -1916,6 +1919,18 @@ class VectorFlagger(basetask.StandardTaskTemplate):
                 # limit for a 'sharp feature'
                 newflag = (diff > limit) & np.logical_not(diff_flag)
 
+                # If no new flags were found, stop evaluating; otherwise,
+                # retrieve the ozone line exclusion array.
+                if not np.any(newflag):
+                    continue
+                else:
+                    ozone_channels = ozone.get_ozone_channels_for_spw(self.inputs.ms, spw)
+
+                # Prepare string for antenna.
+                ant_msg = ""
+                if antenna is not None:
+                    ant_msg = "ant {} ({}), ".format(antenna, antenna_id_to_name[antenna])
+
                 # now broaden the flags until the diff falls below
                 # 2 times the median diff, to catch the wings of
                 # sharp features
@@ -1942,10 +1957,31 @@ class VectorFlagger(basetask.StandardTaskTemplate):
                                 newflag[start:end] = True
                             start = None
 
-                # Store new flags (based on difference array) back in original flagging array.
+                # Convert new channels-to-flag based on difference array to channels-to-flag within
+                # the original array.
                 flag_chan = np.zeros([len(newflag)+1], np.bool)
                 flag_chan[:-1] = newflag
                 flag_chan[1:] = (flag_chan[1:] | newflag)
+
+                # CAS-12242: reject sharps that could be due to ozone lines.
+                # Find ranges of contiguous channels among new channels-to-flag.
+                for _, g in itertools.groupby(enumerate(np.where(flag_chan)[0]), lambda i_x: i_x[0] - i_x[1]):
+                    rng = list(map(operator.itemgetter(1), g))
+                    # Check if single channel or range of channels overlaps with known ozone lines. If so, then
+                    # mark that channel (or range of channels) as no longer newly flagged, and log a message.
+                    if len(rng) == 1:
+                        if ozone_channels[rng[0]]:
+                            flag_chan[rng[0]] = False
+                            LOG.info("Rejected potential outlier found with flagging rule '{}' for {}, {}"
+                                     "spw {}, pol {}, channel {}, since this channel overlaps with an atmospheric "
+                                     "ozone line.".format(rulename, os.path.basename(table), ant_msg, spw, pol, rng[0]))
+                    else:
+                        if np.any(ozone_channels[rng[0]:rng[-1]+1]):
+                            flag_chan[rng[0]:rng[-1]+1] = False
+                            LOG.info("Rejected potential outlier found with flagging rule '{}' for {}, {}"
+                                     "spw {}, pol {}, channels {}-{}, since one or more of these "
+                                     "channels overlaps with an atmospheric ozone line."
+                                     "".format(rulename, os.path.basename(table), ant_msg, spw, pol, rng[0], rng[-1]))
 
                 # flag the 'view', for any subsequent rules being evaluated.
                 flag[flag_chan] = True
@@ -1958,10 +1994,10 @@ class VectorFlagger(basetask.StandardTaskTemplate):
                 if len(channels_flagged) > 0:
                     # Log a debug message with outliers.
                     flagged_as_str = ", ".join([str(ol) for ol in channels_flagged])
-                    msg = ("Outliers found with flagging rule '{}' for {}, spw {}, pol {}.\n"
+                    msg = ("Outliers found with flagging rule '{}' for {}, {}spw {}, pol {}.\n"
                            "Sharp feature limit: {}.\n"
-                           "The following {} channels were flagged: {}"
-                           "".format(rulename, os.path.basename(table), spw, pol, limit,
+                           "The following {} channels will be flagged: {}"
+                           "".format(rulename, os.path.basename(table), ant_msg, spw, pol, limit,
                                      len(channels_flagged), flagged_as_str))
                     _log_outlier(msg)
 
