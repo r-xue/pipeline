@@ -421,16 +421,20 @@ class Circfeedpolcal(polarization.Polarization):
         fluxcalfieldname = ''
         for i, fields in enumerate(standard_source_fields):
             for myfield in fields:
-                if standard_source_names[i] in ('3C48', '3C286') \
+                if standard_source_names[i] in ('3C48', '3C286', '3C138') \
                         and 'POLANGLE' in m.get_fields(field_id=myfield)[0].intents:
                     fluxcalfieldid = myfield
                     fluxcalfieldname = m.get_fields(field_id=myfield)[0].name
                     fluxcal = standard_source_names[i]
-                elif standard_source_names[i] in ('3C48', '3C286') \
+                elif standard_source_names[i] in ('3C48', '3C286', '3C138') \
                         and 'AMPLITUDE' in m.get_fields(field_id=myfield)[0].intents:
                     fluxcalfieldid = myfield
                     fluxcalfieldname = m.get_fields(field_id=myfield)[0].name
                     fluxcal = standard_source_names[i]
+                else:  # J1800+7828
+                    fluxcalfieldid = m.get_fields(intent='POLANGLE')[0].id
+                    fluxcalfieldname = m.get_fields(intent='POLANGLE')[0].name
+                    fluxcal = fluxcalfieldname
 
 
         try:
@@ -473,6 +477,43 @@ class Circfeedpolcal(polarization.Polarization):
                              'fluxdict': {},
                              'useephemdir': False,
                              'interpolation': 'nearest',
+                             'usescratch': True}
+            elif fluxcal in ('3C138'):
+                task_args = {'vis': self.inputs.vis,
+                             'field': fluxcalfieldname,
+                             'spw': '',
+                             'selectdata': False,
+                             'timerange': '',
+                             'scan': '',
+                             'intent': '',
+                             'observation': '',
+                             'scalebychan': True,
+                             'standard': 'manual',
+                             'model': '',
+                             'modimage': '',
+                             'listmodels': False,
+                             'fluxdensity': [5.443, 0.5371, 0.1903, 0],
+                             'spix': [-0.6431, -0.1416],
+                             'reffreq': '3000.0MHz',
+                             'polindex': [0.104934, -0.0356232, -0.0934229, 0.538256, -0.616788, 0.208026],
+                             'polangle': [-0.170256, -0.0486613, 0.0145242],
+                             'rotmeas': 0,  # inside polangle
+                             'fluxdict': {},
+                             'useephemdir': False,
+                             'interpolation': 'nearest',
+                             'usescratch': True}
+            elif fluxcal in ('J1800+7828', '1800+7828'):
+                task_args = {'vis': self.inputs.vis,
+                             'field': fluxcalfieldname,
+                             'standard': 'manual',
+                             'spw': '',
+                             'fluxdensity': [1.16181, 0.01095, 0.053, 0],
+                             'spix': [0.0281132, -4.20709],
+                             'reffreq': '3000.0MHz',
+                             'polindex': [0.04689, -0.00454149],
+                             'polangle': [0.683462, 1.42563, -2.83473, 5.1067, 4.56107],
+                             'rotmeas': 0,
+                             'scalebychan': True,
                              'usescratch': True}
             else:
                 LOG.error("No known flux calibrator found - please check the data.")
