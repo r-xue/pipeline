@@ -14,6 +14,11 @@
 	<value></value>
     </param>
 
+    <param type="string" name="datacolumn">
+    <description>Data column to use to compute weights. Supported values are "data", "corrected", "residual", and "residual_data" (case insensitive, minimum match supported).</description>
+    <value>corrected</value>
+    </param>
+
     <param type="string" name="pipelinemode">
 	<description>The pipeline operating mode</description>
 	<value>automatic</value>
@@ -75,7 +80,8 @@ vis -- List of visibility data files. These may be ASDMs, tar files of ASDMs,
    default: []
    example: vis=['X227.ms', 'asdms.tar.gz']
 
-
+datacolumn -- Data column to use to compute weights.
+              default: 'corrected'
 
 
 pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline

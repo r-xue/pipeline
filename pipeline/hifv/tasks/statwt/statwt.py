@@ -14,10 +14,13 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class StatwtInputs(vdp.StandardInputs):
-    def __init__(self, context, vis=None):
+    datacolumn = vdp.VisDependentProperty(default='corrected')
+
+    def __init__(self, context, vis=None, datacolumn=None):
         super(StatwtInputs, self).__init__()
         self.context = context
         self.vis = vis
+        self.datacolumn = datacolumn
 
 
 class StatwtResults(basetask.Results):
@@ -71,7 +74,7 @@ class Statwt(basetask.StandardTaskTemplate):
                      'minsamp': 8,
                      'field': '',
                      'spw': '',
-                     'datacolumn': 'corrected'}
+                     'datacolumn': self.inputs.datacolumn}
 
         if fielddict == {}:
             job = casa_tasks.statwt(**task_args)
