@@ -831,7 +831,7 @@ class Correctedampflag(basetask.StandardTaskTemplate):
                 col_sel = [corr_type.index('XY'), corr_type.index('YX')]
                 cmetric_crosspol = np.sum(cmetric_all[col_sel, :], axis=0, keepdims=True)
                 # Create new scalar difference array with the summed data.
-                cmetric_all = np.concatenate(cmetric_copol, cmetric_crosspol)
+                cmetric_all = np.concatenate((cmetric_copol, cmetric_crosspol), axis=0)
                 ncorrs = 2
 
         # Evaluate flagging heuristics separately for each polarisation.
