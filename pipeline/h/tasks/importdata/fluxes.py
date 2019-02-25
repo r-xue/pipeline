@@ -404,17 +404,17 @@ def import_flux(output_dir, observing_run, filename=None):
 
             try:
                 spix = decimal.Decimal(row['spix'])
-            except (decimal.InvalidOperation, TypeError):
+            except (decimal.InvalidOperation, KeyError):
                 spix = decimal.Decimal('0.0')
 
             try:
                 uvmin = decimal.Decimal(row['uvmin'])
-            except (decimal.InvalidOperation, TypeError):
+            except (decimal.InvalidOperation, KeyError):
                 uvmin = decimal.Decimal('0.0')
 
             try:
                 uvmax = decimal.Decimal(row['uvmax'])
-            except (decimal.InvalidOperation, TypeError):
+            except (decimal.InvalidOperation, KeyError):
                 uvmax = decimal.Decimal('0.0')
 
             comment = row['comment']
