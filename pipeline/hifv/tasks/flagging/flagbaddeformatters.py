@@ -14,7 +14,7 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class FlagBadDeformattersInputs(vdp.StandardInputs):
-    doflagundernspwlimit = vdp.VisDependentProperty(default=True)
+    doflagundernspwlimit = vdp.VisDependentProperty(default=False)
 
     def __init__(self, context, vis=None, doflagundernspwlimit=None):
         super(FlagBadDeformattersInputs, self).__init__()

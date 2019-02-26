@@ -16,7 +16,7 @@
 
     <param type="bool" name="doflagundernspwlimit">
 	<description>If bad spws is greater than zero keyword is True, then spws are flagged individually.</description>
-	<value>True</value>
+	<value>False</value>
     </param>
 
     <param type="string" name="pipelinemode">
