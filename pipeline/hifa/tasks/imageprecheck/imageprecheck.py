@@ -136,7 +136,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
             imaging_mode='ALMA'
         )
 
-        repr_target, repr_source, repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, sensitivityGoal = image_heuristics.representative_target()
+        repr_target, repr_source, repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, sensitivityGoal = image_heuristics.representative_target()
 
         repr_field = list(image_heuristics.field_intent_list('TARGET', repr_source))[0][0]
 
@@ -188,7 +188,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
         sensitivity_bandwidth = None
         # Get default heuristics uvtaper value
         default_uvtaper = image_heuristics.uvtaper()
-        for robust in [-0.5, 0.0, 0.5, 1.0, 2.0]:
+        for robust in [0.0, 0.5, 1.0, 2.0]:
             # Calculate nbin / reprBW sensitivity if necessary
             if reprBW_mode in ['nbin', 'repr_spw']:
                 beams[(robust, str(default_uvtaper), 'repBW')], known_synthesized_beams = image_heuristics.synthesized_beam([(repr_field, 'TARGET')], str(repr_spw), robust=robust, uvtaper=default_uvtaper, known_beams=known_synthesized_beams, force_calc=calcsb)
@@ -275,10 +275,9 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
             if sensitivity_bandwidth is None:
                 sensitivity_bandwidth = cqa.quantity(_bandwidth, 'Hz')
 
-        # Apply robust heuristic based on beam sizes for robust=(-0.5, 0.0, 0.5, 1.0, 2.0)
+        # Apply robust heuristic based on beam sizes for robust=(0.0, 0.5, 1.0, 2.0)
         if reprBW_mode in ['nbin', 'repr_spw']:
             hm_robust, hm_robust_score = imageprecheck_heuristics.compare_beams( \
-                beams[(-0.5, str(default_uvtaper), 'repBW')], \
                 beams[(0.0, str(default_uvtaper), 'repBW')], \
                 beams[(0.5, str(default_uvtaper), 'repBW')], \
                 beams[(1.0, str(default_uvtaper), 'repBW')], \
@@ -288,7 +287,6 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
                 gridder == 'mosaic')
         else:
             hm_robust, hm_robust_score = imageprecheck_heuristics.compare_beams( \
-                beams[(-0.5, str(default_uvtaper), 'aggBW')], \
                 beams[(0.0, str(default_uvtaper), 'aggBW')], \
                 beams[(0.5, str(default_uvtaper), 'aggBW')], \
                 beams[(1.0, str(default_uvtaper), 'aggBW')], \

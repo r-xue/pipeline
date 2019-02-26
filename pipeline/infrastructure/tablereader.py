@@ -303,7 +303,7 @@ class MeasurementSetReader(object):
                     ms.representative_target = (sbinfo.repSource, sbinfo.repFrequency, sbinfo.repBandwidth)
 
                 LOG.info('Populating ms.science_goals ...')
-                if not (sbinfo.minAngResolution and sbinfo.maxAngResolution):
+                if sbinfo.minAngResolution is None and sbinfo.maxAngResolution is None:
                     observing_mode = SBSummaryTable.get_observing_mode(ms)
                     # Only warn if the number of 12m antennas is greater than the number of 7m antennas
                     # and if the observation is not single dish
@@ -317,12 +317,18 @@ class MeasurementSetReader(object):
                     # LOG.info('Populating ms.science_goals ...')
                     ms.science_goals = {'minAcceptableAngResolution': sbinfo.minAngResolution,
                                         'maxAcceptableAngResolution': sbinfo.maxAngResolution}
-                if not sbinfo.sensitivity:
+
+                if sbinfo.maxAllowedBeamAxialRatio is None:
+                    ms.science_goals['maxAllowedBeamAxialRatio'] = '0.0'
+                else:
+                    ms.science_goals['maxAllowedBeamAxialRatio'] = sbinfo.maxAllowedBeamAxialRatio
+
+                if sbinfo.sensitivity is None:
                     ms.science_goals['sensitivity'] = '0.0mJy'
                 else:
                     ms.science_goals['sensitivity'] = sbinfo.sensitivity
 
-                if not sbinfo.dynamicRange:
+                if sbinfo.dynamicRange is None:
                     ms.science_goals['dynamicRange'] = '1.0'
                 else:
                     ms.science_goals['dynamicRange'] = sbinfo.dynamicRange

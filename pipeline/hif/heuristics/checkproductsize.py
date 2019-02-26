@@ -88,6 +88,7 @@ class CheckProductSizeHeuristics(object):
         real_repr_target, \
         minAcceptableAngResolution, \
         maxAcceptableAngResolution, \
+        maxAllowedBeamAxialRatio, \
         sensitivityGoal = \
             imlist[0]['heuristics'].representative_target()
 

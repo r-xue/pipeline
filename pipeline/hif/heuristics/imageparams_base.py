@@ -826,6 +826,8 @@ class ImageParamsHeuristics(object):
             elif cqa.gt(repr_target[2], cqa.mul(repr_spw_bw, 0.2)):
                 reprBW_mode = 'repr_spw'
 
+            science_goals = self.observing_run.get_measurement_sets()[0].science_goals
+
             # Check if there is a non-zero min/max angular resolution
             minAcceptableAngResolution = cqa.convert(self.proj_params.min_angular_resolution, 'arcsec')
             maxAcceptableAngResolution = cqa.convert(self.proj_params.max_angular_resolution, 'arcsec')
@@ -835,14 +837,14 @@ class ImageParamsHeuristics(object):
                     minAcceptableAngResolution = cqa.mul(desired_angular_resolution, 0.8)
                     maxAcceptableAngResolution = cqa.mul(desired_angular_resolution, 1.2)
                 else:
-                    science_goals = self.observing_run.get_measurement_sets()[0].science_goals
                     minAcceptableAngResolution = cqa.convert(science_goals['minAcceptableAngResolution'], 'arcsec')
                     maxAcceptableAngResolution = cqa.convert(science_goals['maxAcceptableAngResolution'], 'arcsec')
+
+            maxAllowedBeamAxialRatio = science_goals['maxAllowedBeamAxialRatio']
 
             # Check if there is a non-zero sensitivity goal
             sensitivityGoal = cqa.convert(self.proj_params.desired_sensitivity, 'mJy')
             if cqa.getvalue(sensitivityGoal) == 0.0:
-                science_goals = self.observing_run.get_measurement_sets()[0].science_goals
                 sensitivityGoal = cqa.convert(science_goals['sensitivity'], 'mJy')
 
         else:
@@ -877,7 +879,7 @@ class ImageParamsHeuristics(object):
 
         virtual_repr_spw = self.observing_run.real2virtual_spw_id(repr_spw, repr_ms)
 
-        return repr_target, repr_source, virtual_repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, sensitivityGoal
+        return repr_target, repr_source, virtual_repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, sensitivityGoal
 
     def imsize(self, fields, cell, primary_beam, sfpblimit=None, max_pixels=None, centreonly=False):
         # get spread of beams
