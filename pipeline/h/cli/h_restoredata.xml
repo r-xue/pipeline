@@ -127,10 +127,15 @@ session -- List of sessions one per visibility file.
    default: []
    example: session=['session_3']
 
-products_dir -- Name of the data products directory. Currently not
-   used.
+products_dir -- Name of the data products directory to copy calibration
+    products from. The parameter is effective only when copytoraw = True.
+    When copytoraw = False, calibration products in rawdata_dir will be used.
    default: '../products'
    example: products_dir='myproductspath'
+
+copytoraw -- Copy calibration and flagging tables to rawdata_dir directory.
+   default: True
+   example: copytoraw=False
 
 rawdata_dir -- Name of the rawdata subdirectory. 
    default: '../rawdata'
