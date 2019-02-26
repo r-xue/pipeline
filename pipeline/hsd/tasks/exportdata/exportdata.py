@@ -1,6 +1,6 @@
 """
 The exportdata for SD module provides base classes for preparing data products
-on disk for upload to the archive. 
+on disk for upload to the archive.
 
 To test these classes, register some data with the pipeline using ImportData,
 then execute:
@@ -24,9 +24,7 @@ import os
 import shutil
 import string
 import tarfile
-import types
 
-import pipeline.h.tasks.common.manifest as manifest
 import pipeline.h.tasks.exportdata.exportdata as exportdata
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -49,7 +47,7 @@ class SDExportData(exportdata.ExportData):
     """
     SDExportData is the base class for exporting data to the products
     subdirectory. It performs the following operations:
-    
+
     - Saves the pipeline processing request in an XML file
     - Saves the images in FITS cubes one per target and spectral window
     - Saves the final flags and bl coefficient per ASDM in a compressed / tarred CASA flag
@@ -58,8 +56,8 @@ class SDExportData(exportdata.ExportData):
     - Saves the text formatted list of contents of products directory
     """
     Inputs = SDExportDataInputs
-    
-    # This is almost equivalent to ALMAExportData.prepare() 
+
+    # This is almost equivalent to ALMAExportData.prepare()
     # only difference is to use self._make_lists instead of ExportData._make_lists
     def prepare(self):
 
@@ -70,7 +68,7 @@ class SDExportData(exportdata.ExportData):
         # Make the imaging vislist and the sessions lists.
         session_list, session_names, session_vislists, vislist = self._make_lists(
             self.inputs.context, self.inputs.session, self.inputs.vis, imaging_only_mses=True)
-        
+
         LOG.info('vislist={}'.format(vislist))
 
         if vislist:
@@ -121,7 +119,7 @@ class SDExportData(exportdata.ExportData):
         vislist = vis
         if isinstance(vislist, str):
             vislist = [vislist, ]
-        # in single dish pipeline, all mses are non-imaging ones but they need to be 
+        # in single dish pipeline, all mses are non-imaging ones but they need to be
         # returned even when imaging is False so no filtering is done
 
         # Get the session list and the visibility files associated with
@@ -162,14 +160,14 @@ class SDExportData(exportdata.ExportData):
             return name
         else:
             return None
-        
+
 
     def _export_final_baseline_calfiles(self, context, oussid, session, vislist, products_dir):
         """
         Save the final calibration tables in a tarfile one file
         per session.
-        
-        This method is an exact copy of same method in superclass except 
+
+        This method is an exact copy of same method in superclass except
         for handling baseline caltables.
         """
 
@@ -189,7 +187,7 @@ class SDExportData(exportdata.ExportData):
                 return tarfilename
 
 #             caltables = set()
-            
+
             bl_caltables = set()
 
             for visfile in vislist:
@@ -200,12 +198,12 @@ class SDExportData(exportdata.ExportData):
                 name = self.__get_last_baseline_table(visfile)
                 if name is not None:
                     bl_caltables.add(name)
-                
+
                 with tarfile.open(os.path.join(products_dir, tarfilename), 'w:gz') as tar:
                     # Tar the session list.
                     # for table in caltables:
                     #     tar.add(table, arcname=os.path.basename(table))
-                        
+
                     for table in bl_caltables:
                         tar.add(table, arcname=os.path.basename(table))
 
@@ -216,7 +214,7 @@ class SDExportData(exportdata.ExportData):
             os.chdir(cwd)
 
     def _do_aux_ms_products(self, context, vislist, products_dir):
-   
+
         # Loop over the measurements sets in the working directory, and
         # create the calibration apply file(s) in the products directory.
         apply_file_list = []
@@ -269,30 +267,30 @@ class SDExportData(exportdata.ExportData):
                     applyfile.write(applied_calstate)
         except:
             applyfile_name = 'Undefined'
-            LOG.info('No calibrations for MS %s' % os.path.basename(vis)) 
+            LOG.info('No calibrations for MS %s' % os.path.basename(vis))
 
         return applyfile_name
 
     def _detect_jyperk(self, context):
         reffile_list = set(self.__get_reffile(context.results))
-        
+
         if len(reffile_list) == 0:
             # if no reffile is found, return None
             LOG.debug('No K2Jy factor file found.')
             return None
         if len(reffile_list) > 1:
             raise RuntimeError("K2Jy conversion file must be only one. %s found." % (len(reffile_list)))
-        
+
         jyperk = reffile_list.pop()
-        
+
         if not os.path.exists(jyperk):
             # if reffile doesn't exist, return None
             LOG.debug('K2Jy file \'%s\' not found' % jyperk)
             return None
-        
+
         LOG.info('Exporting {0} as a product'.format(jyperk))
         return os.path.abspath(jyperk)
-    
+
     @staticmethod
     def __get_reffile(results):
         for proxy in results:
@@ -304,7 +302,7 @@ class SDExportData(exportdata.ExportData):
                     reffile = r.reffile
                     if reffile is not None and os.path.exists(reffile):
                         yield reffile
-                            
+
     def _do_auxiliary_products(self, context, oussid, output_dir, products_dir):
         # Track whether any auxiliary products exist to be exported.
         aux_prod_exists = False
@@ -362,7 +360,7 @@ class SDExportData(exportdata.ExportData):
             os.chdir(cwd)
 
         return tarfilename
-    
+
     def _export_casa_restore_script(self, context, script_name, products_dir, oussid, vislist, session_list):
         """
         Save the CASA restore scropt.
@@ -438,34 +436,3 @@ finally:
         LOG.info('Copying AQUA report %s to %s' % (aqua_file, out_aqua_file))
         shutil.copy(aqua_file, out_aqua_file)
         return os.path.basename(out_aqua_file)
-
-###########################################################
-### NOTICE This method duplicates one in 
-### hifa/tasks/almaexportdata.py
-### to avoid dependency to hifa module.
-### See discussion at CAS-10726.
-###########################################################
-    def _add_to_manifest(self, manifest_file, aux_fproducts, aux_caltablesdict, aux_calapplysdict, aqua_report):
-
-        # pipemanifest = manifest.ALMAIfPipelineManifest('')
-        pipemanifest = manifest.PipelineManifest('')
-        pipemanifest.import_xml(manifest_file)
-        ouss = pipemanifest.get_ous()
-
-        if aqua_report:
-            pipemanifest.add_aqua_report(ouss, os.path.basename(aqua_report))
-
-        if aux_fproducts:
-            # Add auxliary data products file
-            pipemanifest.add_aux_products_file(ouss, os.path.basename(aux_fproducts))
-
-        # Add the auxiliary caltables
-        if aux_caltablesdict:
-            for session_name in aux_caltablesdict:
-                session = pipemanifest.get_session(ouss, session_name)
-                pipemanifest.add_auxcaltables(session, aux_caltablesdict[session_name][1])
-                for vis_name in aux_caltablesdict[session_name][0]:
-                    pipemanifest.add_auxasdm(session, vis_name, aux_calapplysdict[vis_name])
-
-        pipemanifest.write(manifest_file)
-###########################################################
