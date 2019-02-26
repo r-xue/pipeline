@@ -559,8 +559,8 @@ class DataDescriptionTable(object):
         return list(zip(dd_ids, spw_ids, pol_ids))
 
 
-SBSummaryInfo = collections.namedtuple('SBSummaryInfo', 'repSource repFrequency repBandwidth minAngResolution '
-                                                        'maxAngResolution sensitivity dynamicRange sbName')
+SBSummaryInfo = collections.namedtuple('SBSummaryInfo', 'repSource repFrequency repBandwidth repWindow minAngResolution '
+                                                        'maxAngResolution maxAllowedBeamAxialRatio sensitivity dynamicRange sbName')
 class SBSummaryTable(object):
     @staticmethod
     def get_sbsummary_info(ms, obsnames):
@@ -591,10 +591,10 @@ class SBSummaryTable(object):
         return observing_modes
 
     @staticmethod
-    def _create_sbsummary_info(repSource, repFrequency, repBandwidth, minAngResolution, maxAngResolution, sensitivity,
-                               dynamicRange, sbName):
-        return SBSummaryInfo(repSource=repSource, repFrequency=repFrequency, repBandwidth=repBandwidth,
-                             minAngResolution=minAngResolution, maxAngResolution=maxAngResolution,
+    def _create_sbsummary_info(repSource, repFrequency, repBandwidth, repWindow, minAngResolution, maxAngResolution, maxAllowedBeamAxialRatio,
+                               sensitivity, dynamicRange, sbName):
+        return SBSummaryInfo(repSource=repSource, repFrequency=repFrequency, repBandwidth=repBandwidth, repWindow=repWindow,
+                             minAngResolution=minAngResolution, maxAngResolution=maxAngResolution, maxAllowedBeamAxialRatio=maxAllowedBeamAxialRatio,
                              sensitivity=sensitivity, dynamicRange=dynamicRange, sbName=sbName)
 
     @staticmethod
@@ -619,8 +619,10 @@ class SBSummaryTable(object):
             repSources = []
             repFrequencies = []
             repBandWidths = []
+            repWindows = []
             minAngResolutions = []
             maxAngResolutions = []
+            maxAllowedBeamAxialRatios = []
             sensitivities = []
             dynamicRanges = []
             sbNames = []
@@ -645,6 +647,10 @@ class SBSummaryTable(object):
                     repBandWidth = None
                 repBandWidths.append(repBandWidth)
 
+                # Create window
+                repWindow = _get_science_goal_value(scienceGoals[0:numScienceGoals[i], i], 'representativeWindow')
+                repWindows.append(repWindow)
+
                 # Create minimum angular resolution
                 minAngResolution = qa.quantity(_get_science_goal_value(scienceGoals[0:numScienceGoals[i], i],
                                                                        'minAcceptableAngResolution'))
@@ -658,6 +664,13 @@ class SBSummaryTable(object):
                 if maxAngResolution['value'] <= 0.0 or maxAngResolution['unit'] == '':
                     maxAngResolution = None
                 maxAngResolutions.append(maxAngResolution)
+
+                # Create maximum allowed beam axial ratio
+                maxAllowedBeamAxialRatio = qa.quantity(_get_science_goal_value(scienceGoals[0:numScienceGoals[i], i],
+                                                                       'maxAllowedBeamAxialRatio'))
+                if maxAllowedBeamAxialRatio['value'] <= 0.0 or maxAllowedBeamAxialRatio['value'] >= 999.:
+                    maxAllowedBeamAxialRatio = None
+                maxAllowedBeamAxialRatios.append(maxAllowedBeamAxialRatio)
 
                 # Create sensitivity goal
                 sensitivity = qa.quantity(_get_science_goal_value(scienceGoals[0:numScienceGoals[i], i],
@@ -674,8 +687,8 @@ class SBSummaryTable(object):
                 sbName = _get_science_goal_value(scienceGoals[0:numScienceGoals[i], i], 'SBName')
                 sbNames.append(sbName)
 
-        rows = list(zip(repSources, repFrequencies, repBandWidths, minAngResolutions, maxAngResolutions, sensitivities,
-                        dynamicRanges, sbNames))
+        rows = list(zip(repSources, repFrequencies, repBandWidths, repWindows, minAngResolutions, maxAngResolutions, maxAllowedBeamAxialRatios,
+                        sensitivities, dynamicRanges, sbNames))
         return rows
 
 
