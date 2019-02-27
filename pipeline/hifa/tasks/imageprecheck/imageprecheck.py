@@ -21,7 +21,7 @@ class ImagePreCheckResults(basetask.Results):
     def __init__(self, real_repr_target=False, repr_target='', repr_source='', repr_spw=None,
                  reprBW_mode=None, reprBW_nbin=None,
                  minAcceptableAngResolution='0.0arcsec', maxAcceptableAngResolution='0.0arcsec',
-                 sensitivityGoal='0mJy', hm_robust=0.5, hm_uvtaper=[],
+                 maxAllowedBeamAxialRatio=0.0, sensitivityGoal='0mJy', hm_robust=0.5, hm_uvtaper=[],
                  sensitivities=None, sensitivity_bandwidth=None, score=None, single_continuum=False,
                  per_spw_cont_sensitivities_all_chan=None, synthesized_beams=None):
         super(ImagePreCheckResults, self).__init__()
@@ -37,6 +37,7 @@ class ImagePreCheckResults(basetask.Results):
         self.reprBW_nbin = reprBW_nbin
         self.minAcceptableAngResolution = minAcceptableAngResolution
         self.maxAcceptableAngResolution = maxAcceptableAngResolution
+        self.maxAllowedBeamAxialRatio = maxAllowedBeamAxialRatio
         self.sensitivityGoal = sensitivityGoal
         self.hm_robust = hm_robust
         self.hm_uvtaper = hm_uvtaper
@@ -398,6 +399,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
             nbin,
             minAcceptableAngResolution=minAcceptableAngResolution,
             maxAcceptableAngResolution=maxAcceptableAngResolution,
+            maxAllowedBeamAxialRatio=maxAllowedBeamAxialRatio,
             sensitivityGoal=sensitivityGoal,
             hm_robust=hm_robust,
             hm_uvtaper=hm_uvtaper,

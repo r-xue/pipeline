@@ -22,6 +22,7 @@ minAR_v = cqa.getvalue(cqa.convert(result[0].minAcceptableAngResolution, 'arcsec
 maxAR_v = cqa.getvalue(cqa.convert(result[0].maxAcceptableAngResolution, 'arcsec'))
 minAR = '%#.3g arcsec' % (minAR_v)
 maxAR = '%#.3g arcsec' % (maxAR_v)
+maxBR_v = cqa.getvalue(result[0].maxAllowedBeamAxialRatio)[0]
 sensitivityGoal_v = cqa.getvalue(cqa.convert(result[0].sensitivityGoal, 'mJy'))
 sensitivityGoal = '%#.3g mJy' % (sensitivityGoal_v)
 robust = '%.1f' % (result[0].hm_robust)
@@ -58,6 +59,13 @@ Min / Max Acceptable Resolution:
     Not available
 %else:
     ${minAR} / ${maxAR}
+%endif
+<br>
+Maximum allowed beam axial ratio:
+%if maxBR_v==0.0:
+    Not available
+%else:
+    ${maxBR_v}
 %endif
 <br>
 Goal PI sensitivity:
