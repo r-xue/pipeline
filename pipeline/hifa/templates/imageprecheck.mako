@@ -122,7 +122,6 @@ baseline based effects, residual antenna position errors, etc.).
             <th>robust</th>
             <th>uvtaper</th>
             <th>Synthesized Beam</th>
-            <th>%Diff from mean AR</th>
             <th>cell</th>
             <th>bandwidth</th>
             <th>bwmode</th>

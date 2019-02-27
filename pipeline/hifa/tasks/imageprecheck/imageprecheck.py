@@ -284,7 +284,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
                 beams[(2.0, str(default_uvtaper), 'repBW')], \
                 minAcceptableAngResolution, \
                 maxAcceptableAngResolution, \
-                gridder == 'mosaic')
+                maxAllowedBeamAxialRatio)
         else:
             hm_robust, hm_robust_score = imageprecheck_heuristics.compare_beams( \
                 beams[(0.0, str(default_uvtaper), 'aggBW')], \
@@ -293,7 +293,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
                 beams[(2.0, str(default_uvtaper), 'aggBW')], \
                 minAcceptableAngResolution, \
                 maxAcceptableAngResolution, \
-                gridder == 'mosaic')
+                maxAllowedBeamAxialRatio)
 
         if real_repr_target:
             # Determine heuristic UV taper value

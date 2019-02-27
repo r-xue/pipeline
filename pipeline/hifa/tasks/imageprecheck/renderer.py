@@ -9,7 +9,7 @@ import pipeline.infrastructure.casatools as casatools
 
 LOG = logging.get_logger(__name__)
 
-TR = collections.namedtuple('TR', 'robust uvtaper beam beam_vs_minAR_maxAR cell bandwidth bwmode sensitivity')
+TR = collections.namedtuple('TR', 'robust uvtaper beam cell bandwidth bwmode sensitivity')
 
 
 class T2_4MDetailsCheckProductSizeRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -80,6 +80,6 @@ class T2_4MDetailsCheckProductSizeRenderer(basetemplates.T2_4MDetailsDefaultRend
             else:
                 sensitivity = 'N/A'
 
-            rows.append(TR(robust=robust, uvtaper=uvtaper, beam=beam, beam_vs_minAR_maxAR=beam_vs_minAR_maxAR, cell=cell, bandwidth=bandwidth, bwmode=bwmode, sensitivity=sensitivity))
+            rows.append(TR(robust=robust, uvtaper=uvtaper, beam=beam, cell=cell, bandwidth=bandwidth, bwmode=bwmode, sensitivity=sensitivity))
 
         return rows
