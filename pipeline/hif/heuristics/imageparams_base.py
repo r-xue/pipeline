@@ -873,6 +873,7 @@ class ImageParamsHeuristics(object):
 
             minAcceptableAngResolution = '0.0arcsec'
             maxAcceptableAngResolution = '0.0arcsec'
+            maxAllowedBeamAxialRatio = '0.0'
             sensitivityGoal = '0.0mJy'
 
             LOG.info('Image Heuristics: No representative target found. Choosing %s SPW %d.' % (repr_source, repr_spw))
