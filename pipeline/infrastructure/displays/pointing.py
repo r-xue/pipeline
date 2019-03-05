@@ -25,9 +25,9 @@ hsyb = ':'
 msyb = ':'
 
 
-def Deg2HMS(x, arrowance):
+def Deg2HMS(x, allowance):
     # Transform degree to HHMMSS.sss format
-    xx = x % 360 + arrowance
+    xx = x % 360 + allowance
     h = int(xx / 15)
     m = int((xx % 15) * 4)
     s = ((xx % 15) * 4 - m) * 60.0
@@ -69,10 +69,10 @@ def HHMMSSsss(x, pos):
     return '%02d%s%02d%s%06.3f' % (h, hsyb, m, msyb, s)
 
 
-def Deg2DMS(x, arrowance):
+def Deg2DMS(x, allowance):
     # Transform degree to +ddmmss.ss format
     xxx = (x + 90) % 180 - 90
-    xx = abs(xxx) + arrowance
+    xx = abs(xxx) + allowance
     if xxx < 0: sign = -1
     else: sign = 1
     d = int(xx)
