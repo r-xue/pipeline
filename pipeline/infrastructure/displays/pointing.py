@@ -75,42 +75,43 @@ def Deg2DMS(x, arrowance):
     xx = abs(xxx) + arrowance
     if xxx < 0: sign = -1
     else: sign = 1
-    d = int(xx * sign)
+    d = int(xx)
     m = int((xx % 1) * 60)
     s = ((xx % 1) * 60 - m) * 60.0
-    return (d, m, s)
+    ss = '-' if sign == -1 else '+'
+    return (ss, d, m, s)
 
 
 def DDMM(x, pos):
     # +DDMM format
-    (d, m, s) = Deg2DMS(x, 1/600.0)
+    (sign, d, m, s) = Deg2DMS(x, 1/600.0)
     #return '%+02dd%02dm' % (d, m)
-    return '%+02d%s%02d\'' % (d, dsyb, m)
+    return '%s%02d%s%02d\'' % (sign, d, dsyb, m)
 
 
 def DDMMSS(x, pos):
     # +DDMMSS format
-    (d, m, s) = Deg2DMS(x, 1/36000.0)
+    (sign, d, m, s) = Deg2DMS(x, 1/36000.0)
     #return '%+02dd%02dm%02ds' % (d, m, s)
-    return '%+02d%s%02d\'%02d\"' % (d, dsyb, m, s)
+    return '%s%02d%s%02d\'%02d\"' % (sign, d, dsyb, m, s)
 
 
 def DDMMSSs(x, pos):
     # +DDMMSS.s format
-    (d, m, s) = Deg2DMS(x, 1/360000.0)
+    (sign, d, m, s) = Deg2DMS(x, 1/360000.0)
     #return '%+02dd%02dm%04.1fs' % (d, m, s)
     sint = int(s)
     sstr = ('%3.1f'%(s-int(s))).lstrip('0')
-    return '%+02d%s%02d\'%02d\"%s' % (d, dsyb, m, sint, sstr)
+    return '%s%02d%s%02d\'%02d\"%s' % (sign, d, dsyb, m, sint, sstr)
 
 
 def DDMMSSss(x, pos):
     # +DDMMSS.ss format
-    (d, m, s) = Deg2DMS(x, 1/3600000.0)
+    (sign, d, m, s) = Deg2DMS(x, 1/3600000.0)
     #return '%+02dd%02dm%05.2fs' % (d, m, s)
     sint = int(s)
     sstr = ('%4.2f'%(s-int(s))).lstrip('0')
-    return '%+02d%s%02d\'%02d\"%s' % (d, dsyb, m, sint, sstr)
+    return '%s%02d%s%02d\'%02d\"%s' % (sign, d, dsyb, m, sint, sstr)
 
 
 def XYlabel(span, direction_reference):
