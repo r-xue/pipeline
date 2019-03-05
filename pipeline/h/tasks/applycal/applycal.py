@@ -205,7 +205,10 @@ class Applycal(basetask.StandardTaskTemplate):
         # the inputs. Using hide_empty gives the data the expected shape.
         merged = calstate.merged(hide_empty=True)
 
-        if contains_uvcont_table(merged):
+        if os.getenv('DISABLE_CASA_CALLIBRARY', False):
+            LOG.info('CASA callibrary disabled: reverting to non-callibrary applycal call')
+            jobs = jobs_without_calapply(calstate, inputs, self.modify_task_args)
+        elif contains_uvcont_table(merged):
             LOG.info('Calibration state contains uvcont tables: reverting to non-callibrary applycal call')
             jobs = jobs_without_calapply(calstate, inputs, self.modify_task_args)
         else:
