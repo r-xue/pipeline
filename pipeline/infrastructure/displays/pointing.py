@@ -36,35 +36,36 @@ def Deg2HMS(x, allowance):
 
 def HHMM(x, pos):
     # HHMM format
-    (h, m, s) = Deg2HMS(x, 1/40.0)
+    (h, m, s) = Deg2HMS(x, 1/8.0)
     #return '%02dh%02dm' % (h, m)
     return '%02d%s%02d' % (h, hsyb, m)
 
 
 def HHMMSS(x, pos):
     # HHMMSS format
-    (h, m, s) = Deg2HMS(x, 1/2400.0)
+    (h, m, s) = Deg2HMS(x, 1/480.0)
     #return '%02dh%02dm%02ds' % (h, m, s)
     return '%02d%s%02d%s%02d' % (h, hsyb, m, msyb, s)
 
 
 def HHMMSSs(x, pos):
     # HHMMSS.s format
-    (h, m, s) = Deg2HMS(x, 1/24000.0)
+    
+    (h, m, s) = Deg2HMS(x, 1/4800.0)
     #return '%02dh%02dm%04.1fs' % (h, m, s)
     return '%02d%s%02d%s%04.1f' % (h, hsyb, m, msyb, s)
 
 
 def HHMMSSss(x, pos):
     # HHMMSS.ss format
-    (h, m, s) = Deg2HMS(x, 1/240000.0)
+    (h, m, s) = Deg2HMS(x, 1/48000.0)
     #return '%02dh%02dm%05.2fs' % (h, m, s)
     return '%02d%s%02d%s%05.2f' % (h, hsyb, m, msyb, s)
 
 
 def HHMMSSsss(x, pos):
     # HHMMSS.sss format
-    (h, m, s) = Deg2HMS(x, 1/2400000.0)
+    (h, m, s) = Deg2HMS(x, 1/480000.0)
     #return '%02dh%02dm%06.3fs' % (h, m, s)
     return '%02d%s%02d%s%06.3f' % (h, hsyb, m, msyb, s)
 
