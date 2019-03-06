@@ -85,21 +85,24 @@ def Deg2DMS(x, allowance):
 
 def DDMM(x, pos):
     # +DDMM format
-    (sign, d, m, s) = Deg2DMS(x, 1/600.0)
+    (sign, d, m, s) = Deg2DMS(x, 1/120.0)
     #return '%+02dd%02dm' % (d, m)
     return '%s%02d%s%02d\'' % (sign, d, dsyb, m)
 
 
 def DDMMSS(x, pos):
     # +DDMMSS format
-    (sign, d, m, s) = Deg2DMS(x, 1/36000.0)
+    (sign, d, m, s) = Deg2DMS(x, 1/7200.0)
     #return '%+02dd%02dm%02ds' % (d, m, s)
     return '%s%02d%s%02d\'%02d\"' % (sign, d, dsyb, m, s)
 
 
 def DDMMSSs(x, pos):
     # +DDMMSS.s format
-    (sign, d, m, s) = Deg2DMS(x, 1/360000.0)
+    # NOTE: 
+    # s will automatically be rounded off when sstr is 
+    # formed below. Thus no allowance is needed.
+    (sign, d, m, s) = Deg2DMS(x, 0)
     #return '%+02dd%02dm%04.1fs' % (d, m, s)
     sint = int(s)
     sstr = ('%3.1f'%(s-int(s))).lstrip('0')
@@ -108,7 +111,10 @@ def DDMMSSs(x, pos):
 
 def DDMMSSss(x, pos):
     # +DDMMSS.ss format
-    (sign, d, m, s) = Deg2DMS(x, 1/3600000.0)
+    # NOTE: 
+    # s will automatically be rounded off when sstr is 
+    # formed below. Thus no allowance is needed.
+    (sign, d, m, s) = Deg2DMS(x, 0)
     #return '%+02dd%02dm%05.2fs' % (d, m, s)
     sint = int(s)
     sstr = ('%4.2f'%(s-int(s))).lstrip('0')
