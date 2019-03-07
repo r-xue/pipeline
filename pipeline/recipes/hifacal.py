@@ -52,7 +52,7 @@ IMPORT_ONLY = 'Import only'
 
 
 # Run the procedure
-def hifacal(vislist, importonly=True, pipelinemode='automatic',
+def hifacal(vislist, importonly=True, dbservice=True, pipelinemode='automatic',
             interactive=True):
 
     echo_to_screen = interactive
@@ -63,7 +63,7 @@ def hifacal(vislist, importonly=True, pipelinemode='automatic',
         h_init()
 
         # Load the data
-        hifa_importdata(vis=vislist, dbservice=True, pipelinemode=pipelinemode)
+        hifa_importdata(vis=vislist, dbservice=dbservice, pipelinemode=pipelinemode)
         if importonly:
             raise Exception(IMPORT_ONLY)
     
