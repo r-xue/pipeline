@@ -77,7 +77,7 @@ class CheckProductSizeHeuristics(object):
 
         if len(fields) == 0:
             LOG.error('Cannot determine any default imaging targets')
-            return {}, 0.0, 0.0, True, {'longmsg': 'Cannot determine any default imaging targets', 'shortmsg': 'Cannot determine targets'}
+            return {}, 0.0, 0.0, 0.0, 0.0, 0.0, True, {'longmsg': 'Cannot determine any default imaging targets', 'shortmsg': 'Cannot determine targets'}, known_synthesized_beams
 
         # Get representative target information
         repr_target, \
