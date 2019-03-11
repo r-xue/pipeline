@@ -130,6 +130,8 @@ class SyspowerResults(basetask.Results):
 
 
 class SyspowerInputs(vdp.StandardInputs):
+    antexclude = vdp.VisDependentProperty(default='')
+    usemedian = vdp.VisDependentProperty(default=False)
 
     @vdp.VisDependentProperty
     def clip_sp_template(self):
