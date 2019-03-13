@@ -955,8 +955,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             Factor = numpy.ones(NumParam, numpy.float)
             Ndata = len(Data)
         else:
-            print("Data should be 2-dimensional...exit...")
-            sys.exit(0)
+            LOG.error("Data should be 2-dimensional. {}-dimensional data was given".format(len(Obs.shape)))
+            raise ValueError('Data should be 2-dimensional!')
         del Obs, OrderList
         return (Data)
 
