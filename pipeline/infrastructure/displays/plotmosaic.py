@@ -127,6 +127,8 @@ def plot_mosaic(ms, source, figfile):
     ax.xaxis.grid(True, which='major')
     ax.yaxis.grid(True, which='major')
 
+    ax.invert_xaxis()
+
     fig.savefig(figfile)
     matplotlib.pyplot.close(fig)
 
