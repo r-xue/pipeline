@@ -207,10 +207,10 @@ class Applycal(basetask.StandardTaskTemplate):
 
         if os.getenv('DISABLE_CASA_CALLIBRARY', False):
             LOG.info('CASA callibrary disabled: reverting to non-callibrary applycal call')
-            jobs = jobs_without_calapply(calstate, inputs, self.modify_task_args)
+            jobs = jobs_without_calapply(merged, inputs, self.modify_task_args)
         elif contains_uvcont_table(merged):
             LOG.info('Calibration state contains uvcont tables: reverting to non-callibrary applycal call')
-            jobs = jobs_without_calapply(calstate, inputs, self.modify_task_args)
+            jobs = jobs_without_calapply(merged, inputs, self.modify_task_args)
         else:
             LOG.info('No uvcont tables in calibration state: using CASA callibrary applycal.')
             jobs = jobs_with_calapply(calstate, inputs, self.modify_task_args)
@@ -332,15 +332,14 @@ class HpcApplycal(sessionutils.ParallelTemplate):
         return ApplycalResults()
 
 
-def jobs_without_calapply(calstate, inputs, mod_fn):
-    merged = calstate.merged()
-
+def jobs_without_calapply(merged, inputs, mod_fn):
     jobs = []
     # sort for a stable applycal order, to make diffs easier to parse
     for calto, calfroms in sorted(merged.iteritems()):
-        # if there's nothing to apply for this data selection, continue
+        # if there's nothing to apply for this data selection, continue. This
+        # should never be seen as merged is called with hide_empty=True
         if not calfroms:
-            LOG.warn('There is no calibration information for field %s intent %s spw %s in %s' %
+            LOG.info('There is no calibration information for field %s intent %s spw %s in %s' %
                      (str(calto.field), str(calto.intent), str(calto.spw), inputs.ms.basename))
             continue
 
