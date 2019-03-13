@@ -52,7 +52,7 @@ def gpcal_calc(caltable):
  
         if 'CAL_DESC' not in tbLoc.keywordnames():
             tbLoc.close()
-            gpcal_stats = {'FIELDS': {'ERROR'}, 'SPWS': {'ERROR'}, 'ANTENNAS': {'ERROR'}, 'STATS': {'ERROR'}}
+            gpcal_stats = {'FIELDS': {'ERROR': True}, 'SPWS': {'ERROR': True}, 'ANTENNAS': {'ERROR': True}, 'STATS': {'ERROR': True}}
             return gpcal_stats
 
         tbLoc.close()
@@ -189,6 +189,9 @@ def gpcal_score(gpcal_stats):
     gpcal_scores['FIELDS'] = copy.deepcopy(gpcal_stats['FIELDS'])
     gpcal_scores['SPWS'] = copy.deepcopy(gpcal_stats['SPWS'])
     gpcal_scores['ANTENNAS'] = copy.deepcopy(gpcal_stats['ANTENNAS'])
+
+    if 'ERROR' in gpcal_stats['STATS']:
+        return gpcal_scores
 
     # Using average sigmas for now. Eric's report lists sigmas per band / frequency.
     # Need to check if we have to distinguish by band.
