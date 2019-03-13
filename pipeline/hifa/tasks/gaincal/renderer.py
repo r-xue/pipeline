@@ -310,37 +310,38 @@ class GaincalPhaseVsTimeDiagnosticPlotRenderer(basetemplates.JsonPlotRenderer):
         spw_id = plot.parameters['spw']
 
         scores_dict = {}
-        for qa_data in self._qa_data[plot.parameters['vis']]:
-            antenna_ids = dict((v, k) for (k, v) in qa_data['QASCORES']['ANTENNAS'].iteritems())
-            ant_id = antenna_ids[ant_name]
+        try:
+            for qa_data in self._qa_data[plot.parameters['vis']]:
+                antenna_ids = dict((v, k) for (k, v) in qa_data['QASCORES']['ANTENNAS'].iteritems())
+                ant_id = antenna_ids[ant_name]
 
-            for score_type in self._score_types:            
-                average_score = 0.0
-                num_scores = 0
+                for score_type in self._score_types:            
+                    average_score = 0.0
+                    num_scores = 0
     
-                phase_field_ids = set(qa_data['PHASE_FIELDS'])
-                if phase_field_ids:
-                    # not all PHASE fields have scores, eg. uid://A002/X6a533e/X834.
-                    # Avoid KeyErrors by only retrieving scores for those
-                    # with scores.
-                    fields_with_scores = set(qa_data['QASCORES']['SCORES'].keys())
-                    for field_id in phase_field_ids.intersection(fields_with_scores):
-                        score = qa_data['QASCORES']['SCORES'][field_id][spw_id][ant_id][score_type]
-                        if score == 'C/C':
-                            average_score += -0.1
-                        else:
-                            average_score += score
+                    phase_field_ids = set(qa_data['PHASE_FIELDS'])
+                    if phase_field_ids:
+                        # not all PHASE fields have scores, eg. uid://A002/X6a533e/X834.
+                        # Avoid KeyErrors by only retrieving scores for those
+                        # with scores.
+                        fields_with_scores = set(qa_data['QASCORES']['SCORES'].keys())
+                        for field_id in phase_field_ids.intersection(fields_with_scores):
+                            score = qa_data['QASCORES']['SCORES'][field_id][spw_id][ant_id][score_type]
+                            if score == 'C/C':
+                                average_score += -0.1
+                            else:
+                                average_score += score
+                            num_scores += 1
+                    else:
+                        average_score += 1.0
                         num_scores += 1
-                else:
-                    average_score += 1.0
-                    num_scores += 1
     
-                if num_scores != 0:
-                    average_score /= num_scores
-                scores_dict[score_type] = average_score
+                    if num_scores != 0:
+                        average_score /= num_scores
+                    scores_dict[score_type] = average_score
 
-        if not scores_dict:
-            scores_dict = dict((score_type, 1.0) 
+        except:
+            scores_dict = dict((score_type, 0.0) 
                                for score_type in self._score_types)
         
         json_dict.update(scores_dict)
