@@ -31,7 +31,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
         try:
             self.pool[:] = [self._get_qascore(ms, phase_field_ids, t) for t in self.score_types.iterkeys()]
         except Exception as e:
-            LOG.warning('Score calculation failed: %s' % (e))
+            LOG.error('Score calculation failed: %s' % (e))
 
     def _get_qascore(self, ms, phase_field_ids, score_type):
         (total_score, table_name, field_name, ant_name, spw_name) = self._get_total(phase_field_ids,
