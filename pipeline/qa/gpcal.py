@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import copy
-import sys
 
 import numpy as np
 from casac import casac
@@ -51,7 +50,11 @@ def gpcal_calc(caltable):
  
     else:
  
-        if 'CAL_DESC' not in tbLoc.keywordnames(): sys.exit('ERROR')
+        if 'CAL_DESC' not in tbLoc.keywordnames():
+            tbLoc.close()
+            gpcal_stats = {'FIELDS': {'ERROR'}, 'SPWS': {'ERROR'}, 'ANTENNAS': {'ERROR'}, 'STATS': {'ERROR'}}
+            return gpcal_stats
+
         tbLoc.close()
  
         tbLoc.open(caltable + '/CAL_DESC')
@@ -177,7 +180,7 @@ def gpcal_calc(caltable):
 
 def gpcal_score(gpcal_stats):
 
-    '''Calculate scores for phasee statistics.'''
+    '''Calculate scores for phase statistics.'''
 
     gpcal_scores = {'SCORES': \
         {'TOTAL': {'FIELD': 'N/A', 'SPW': 'N/A', 'ANTENNA': 'N/A', 'SCORE': 1.0}, \
