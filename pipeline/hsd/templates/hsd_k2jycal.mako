@@ -12,6 +12,9 @@ import pipeline.infrastructure.utils as utils
 
 <%
 stage_dir = os.path.join(pcontext.report_dir, 'stage%s'%(result.stage_number))
+observing_run = pcontext.observing_run
+def id2name(spwid):
+    return observing_run.virtual_science_spw_shortnames[observing_run.virtual_science_spw_ids[spwid]]
 %>
 
 <p>This task generates calibtation tables to convert the unit of single dish spectra from Kelvin to Jansky.</p>
@@ -42,11 +45,19 @@ combination whose conversion factor is in each bin.
 
                 <div class="caption">
                     <!-- title -->
+                    %if dovirtual:
+                    <h4>Virtual Spectral Window ${plot.parameters['spw']}</h4>
+                    % else:
                     <h4>Spectral Window ${plot.parameters['spw']}</h4>
+                    % endif
                     <!-- sub-title -->
 	                <h6>${plot.parameters['receiver']}</h6>
                     <!-- description -->
+                    % if dovirtual:
+                    <p>Variation of Jy/K factors in virtual spw ${plot.parameters['spw']}<br>name: ${id2name(plot.parameters['spw'])}</p>
+                    % else:
                     <p>Variation of Jy/K factors in spw ${plot.parameters['spw']}</p>
+                    % endif
                 </div>
             </div>
         % endif
@@ -64,7 +75,11 @@ No Jy/K factors file is specified.
 % endif
 <table class="table table-bordered table-striped" summary="Jy/K factors">
     <thead>
+    % if dovirtual:
+	<tr><th>Virtual Spw</th><th>MS</th><th>Real Spw</th><th>Antenna</th><th>Pol</th><th>Factor</th></tr>
+	% else:
 	<tr><th>Spw</th><th>MS</th><th>Antenna</th><th>Pol</th><th>Factor</th></tr>
+	% endif
     </thead>
 	<tbody>
 	% for tr in jyperk_rows:

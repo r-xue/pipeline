@@ -1,6 +1,7 @@
 import os
 import collections
 import shutil
+import numpy
 
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.logging as logging
@@ -10,8 +11,15 @@ from . import display as display
 
 LOG = logging.get_logger(__name__)
 
-JyperKTR = collections.namedtuple('JyperKTR', 'spw msname antenna pol factor')
+JyperKTRV = collections.namedtuple('JyperKTRV', 'virtualspw msname realspw antenna pol factor')
+JyperKTR  = collections.namedtuple('JyperKTR',  'spw msname antenna pol factor')
 
+def require_virtual_spw_id_handling(observing_run):
+    virtual_ids = observing_run.virtual_science_spw_ids.keys()
+    a = True
+    for vid in virtual_ids:
+        a &= numpy.all([vid == observing_run.virtual2real_spw_id(vid, ms) for ms in observing_run.measurement_sets])
+    return not a
 
 class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def __init__(self, uri='hsd_k2jycal.mako', 
@@ -24,6 +32,11 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
         reffile = None
         spw_factors = collections.defaultdict(lambda: [])
         valid_spw_factors = collections.defaultdict(lambda: collections.defaultdict(lambda: []))
+        
+        dovirtual = require_virtual_spw_id_handling(context.observing_run)
+        trfunc_r = lambda _a, _b, _c, _d, _e, _f: JyperKTR(_c, _b, _d, _e, _f)
+        trfunc_v = lambda _a, _b, _c, _d, _e, _f: JyperKTRV(_a, _b, _c, _d, _e, _f)
+        trfunc = trfunc_v if dovirtual else trfunc_r
         for r in results:
             # rearrange jyperk factors
             ms = context.observing_run.get_ms(name=r.vis)
@@ -31,9 +44,11 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
             spw_band = {}
             for spw in ms.get_spectral_windows(science_windows_only=True):
                 spwid = spw.id
+                # virtual spw id
+                vspwid = context.observing_run.real2virtual_spw_id(spwid, ms)
                 ddid = ms.get_data_description(spw=spwid)
-                if spw.id not in spw_band:
-                    spw_band[spw.id] = spw.band
+                if vspwid not in spw_band:
+                    spw_band[vspwid] = spw.band
                 for ant in ms.get_antenna():
                     ant_name = ant.name
                     corrs = list(map(ddid.get_polarization_label, range(ddid.num_polarizations)))
@@ -47,17 +62,17 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
 #                         corr = str(', ').join(corrlist)
                         jyperk = factor if factor is not None else 'N/A (1.0)'
 #                         tr = JyperKTR(vis, spwid, ant_name, corr, jyperk)
-                        tr = JyperKTR(spwid, vis, ant_name, corr, jyperk)
-                        spw_factors[spwid].append(tr)
+                        tr = trfunc(vspwid, vis, spwid, ant_name, corr, jyperk)
+                        spw_factors[vspwid].append(tr)
                         if factor is not None:
-                            valid_spw_factors[spwid][corr].append(factor)
+                            valid_spw_factors[vspwid][corr].append(factor)
             reffile = r.reffile
         stage_dir = os.path.join(context.report_dir, 'stage%s' % results.stage_number)
         # histogram plots of Jy/K factors
         hist_plots = []
-        for spwid, valid_factors in valid_spw_factors.iteritems():
+        for vspwid, valid_factors in valid_spw_factors.iteritems():
             if len(valid_factors) > 0:
-                task = display.K2JyHistDisplay(stage_dir, spwid, valid_factors, spw_band[spwid])
+                task = display.K2JyHistDisplay(stage_dir, vspwid, valid_factors, spw_band[vspwid])
                 hist_plots += task.plot()
         # input Jy/K files
         reffile_copied = None
@@ -71,7 +86,8 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
             row_values += list(factor_list)
         ctx.update({'jyperk_rows': utils.merge_td_columns(row_values),
                     'reffile': reffile_copied,
-                    'jyperk_hist': hist_plots})
+                    'jyperk_hist': hist_plots,
+                    'dovirtual': dovirtual})
 
     @staticmethod
     def __get_factor(factor_dict, vis, spwid, ant_name, pol_name):
