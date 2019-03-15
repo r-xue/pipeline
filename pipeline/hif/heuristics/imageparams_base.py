@@ -1424,13 +1424,19 @@ class ImageParamsHeuristics(object):
                                 nchan_sel = np.sum([c[1]-c[0]+1 for c in [list(map(int, sel.split('~')))
                                                                           for sel in chansel.split(';')]])
                             else:
-                                # Use full spw
-                                chansel = '0~%d' % (spw_do.num_channels - 1)
-                                nchan_sel = spw_do.num_channels
+                                # Use full spw (unflagged channels)
+                                channel_flags = self.get_channel_flags(msname, field, intSpw)
+                                nchan_unflagged = np.where(channel_flags == False)[0].shape[0]
+                                # Dummy selection
+                                chansel = '0~%d' % (nchan_unflagged - 1)
+                                nchan_sel = nchan_unflagged
                         else:
-                            # Use full spw
-                            chansel = '0~%d' % (spw_do.num_channels - 1)
-                            nchan_sel = spw_do.num_channels
+                            # Use full spw (unflagged channels)
+                            channel_flags = self.get_channel_flags(msname, field, intSpw)
+                            nchan_unflagged = np.where(channel_flags == False)[0].shape[0]
+                            # Dummy selection
+                            chansel = '0~%d' % (nchan_unflagged - 1)
+                            nchan_sel = nchan_unflagged
 
                     chansel_full = '0~%d' % (spw_do.num_channels - 1)
 
@@ -1473,14 +1479,17 @@ class ImageParamsHeuristics(object):
                         utils.set_nested_dict(local_known_sensitivities, (os.path.basename(msname), field, intent, intSpw, 'sensBW'), '%s Hz' % (sens_bws[intSpw]))
 
                     # Correct from full spw to channel selection
-                    chansel_corrected_center_field_sensitivity = center_field_full_spw_sensitivity * (float(nchan_unflagged) / float(nchan_sel)) ** 0.5
-                    sens_bws[intSpw] = sens_bws[intSpw] * float(nchan_sel) / float(spw_do.num_channels)
-                    LOG.info('Channel selection bandwidth heuristic (nbin or findcont; (spw BW / nchan_sel BW) ** 0.5):'
-                             ' Correcting sensitivity for EB %s Field %s SPW %s by %.3g from %.3g Jy/beam to'
-                             ' %.3g Jy/beam' % (os.path.basename(msname).replace('.ms', ''), field, str(intSpw),
-                                                (float(nchan_unflagged) / float(nchan_sel)) ** 0.5,
-                                                center_field_full_spw_sensitivity,
-                                                chansel_corrected_center_field_sensitivity))
+                    if nchan_sel != nchan_unflagged:
+                        chansel_corrected_center_field_sensitivity = center_field_full_spw_sensitivity * (float(nchan_unflagged) / float(nchan_sel)) ** 0.5
+                        sens_bws[intSpw] = sens_bws[intSpw] * float(nchan_sel) / float(spw_do.num_channels)
+                        LOG.info('Channel selection bandwidth heuristic (nbin or findcont; (spw BW / nchan_sel BW) ** 0.5):'
+                                 ' Correcting sensitivity for EB %s Field %s SPW %s by %.3g from %.3g Jy/beam to'
+                                 ' %.3g Jy/beam' % (os.path.basename(msname).replace('.ms', ''), field, str(intSpw),
+                                                    (float(nchan_unflagged) / float(nchan_sel)) ** 0.5,
+                                                    center_field_full_spw_sensitivity,
+                                                    chansel_corrected_center_field_sensitivity))
+                    else:
+                        chansel_corrected_center_field_sensitivity = center_field_full_spw_sensitivity
 
                     # Correct for effective bandwidth effects
                     bw_corr_factor, physicalBW_of_1chan, effectiveBW_of_1chan = self.get_bw_corr_factor(ms, intSpw, nchan_sel)
