@@ -59,9 +59,6 @@ def plot_mosaic(ms, source, figfile):
     # field labels overlap and become unintelligible if there are too many of
     # them
     draw_field_labels = True if len(fields) <= 500 else False
-    # for the same reason, just draw the field numbers if there's a risk of the
-    # plot labels becoming unintelligible
-    include_field_name_in_label = True if len(fields) <= 20 else False
 
     legend_labels = {}
     legend_colours = {}
@@ -79,10 +76,7 @@ def plot_mosaic(ms, source, figfile):
             ax.add_patch(cir)
 
             if draw_field_labels:
-                if include_field_name_in_label:
-                    label = '{} (#{})'.format(field.name, field.id)
-                else:
-                    label = '{}'.format(field.id)
+                label = '{}'.format(field.id)
                 ax.text(x + x_label_offset, y + y_label_offset, label, fontsize=12, color=colour, weight='normal')
 
             ax.plot(x, y, '{}+'.format(colour), markersize=4)
