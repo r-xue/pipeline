@@ -95,6 +95,12 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
     def get_sensitivity(self, ms_do, field, intent, spw, chansel, specmode, cell, imsize, weighting, robust, uvtaper):
         return 0.0, None, None
 
+    def savemodel(self, iteration):
+        if iteration == 1:
+            return 'modelcolumn'
+        else:
+            return None
+
     def find_fields(self, distance='0deg', phase_center=None, matchregex=''):
 
         # Created STM 2016-May-16 use center direction measure
