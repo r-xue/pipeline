@@ -7,6 +7,7 @@ from copy import deepcopy
 from math import factorial
 import json
 import re
+import ast
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -156,6 +157,8 @@ class Syspower(basetask.StandardTaskTemplate):
 
         # flag normalized p_diff outside this range
         clip_sp_template = self.inputs.clip_sp_template
+        if isinstance(self.inputs.clip_sp_template, str):
+            clip_sp_template = ast.literal_eval(self.inputs.clip_sp_template)
 
         try:
             rq_table = self.inputs.context.results[4].read()[0].rq_result[0].final[0].gaintable
