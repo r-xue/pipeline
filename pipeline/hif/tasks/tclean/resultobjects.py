@@ -57,6 +57,7 @@ class TcleanResult(basetask.Results):
         self._image_rms = 0.0
         self._image_rms_min = 0.0
         self._image_rms_max = 0.0
+        self._image_robust_rms_and_spectra = None
         # Temporarily needed until CAS-8576 is fixed
         self._residual_max = 0.0
         self._tclean_stopcode = 0
@@ -267,6 +268,13 @@ class TcleanResult(basetask.Results):
 
     def set_image_rms_max(self, image_rms_max):
         self._image_rms_max = image_rms_max
+
+    @property
+    def image_robust_rms_and_spectra(self):
+        return self._image_robust_rms_and_spectra
+
+    def set_image_robust_rms_and_spectra(self, image_robust_rms_and_spectra):
+        self._image_robust_rms_and_spectra = image_robust_rms_and_spectra
 
     @property
     def tclean_stopcode(self):

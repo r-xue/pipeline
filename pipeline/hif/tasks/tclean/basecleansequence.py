@@ -33,18 +33,20 @@ class BaseCleanSequence:
 
         self.flux = flux
 
-        residual_cleanmask_rms, \
-        residual_non_cleanmask_rms, \
-        residual_min, \
-        residual_max, \
-        nonpbcor_image_non_cleanmask_rms_min, \
-        nonpbcor_image_non_cleanmask_rms_max, \
-        nonpbcor_image_non_cleanmask_rms, \
-        pbcor_image_min, pbcor_image_max, \
-        residual_robust_rms = cbheuristic.analyse_clean_result(self.multiterm, model, restored,
-                                                               residual, flux, cleanmask,
-                                                               pblimit_image, pblimit_cleanmask,
-                                                               cont_freq_ranges)
+        (residual_cleanmask_rms,
+         residual_non_cleanmask_rms,
+         residual_min,
+         residual_max,
+         nonpbcor_image_non_cleanmask_rms_min,
+         nonpbcor_image_non_cleanmask_rms_max,
+         nonpbcor_image_non_cleanmask_rms,
+         pbcor_image_min, pbcor_image_max,
+         residual_robust_rms,
+         nonpbcor_image_robust_rms_and_spectra) = \
+            cbheuristic.analyse_clean_result(self.multiterm, model, restored,
+                                             residual, flux, cleanmask,
+                                             pblimit_image, pblimit_cleanmask,
+                                             cont_freq_ranges)
 
         peak_over_rms = residual_max/residual_robust_rms
         LOG.info('Residual peak: %s', residual_max)
@@ -62,7 +64,8 @@ class BaseCleanSequence:
                nonpbcor_image_non_cleanmask_rms_max, \
                nonpbcor_image_non_cleanmask_rms, \
                pbcor_image_min, pbcor_image_max, \
-               residual_robust_rms
+               residual_robust_rms, \
+               nonpbcor_image_robust_rms_and_spectra
 
     def iteration(self):
         """The base boxworker allows only one iteration.

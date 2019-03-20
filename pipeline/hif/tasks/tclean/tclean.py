@@ -586,7 +586,8 @@ class Tclean(cleanbase.CleanBase):
          pbcor_image_min,  # added to result, later used in Weblog under name 'image_min'
          pbcor_image_max,  # added to result, later used in Weblog under name 'image_max'
          # USED
-         residual_robust_rms) = \
+         residual_robust_rms,
+         nonpbcor_image_robust_rms_and_spectra) = \
             sequence_manager.iteration_result(model=result.model,
                                               restored=result.image, residual=result.residual,
                                               flux=result.flux, cleanmask=None,
@@ -679,7 +680,8 @@ class Tclean(cleanbase.CleanBase):
              nonpbcor_image_non_cleanmask_rms,
              pbcor_image_min,
              pbcor_image_max,
-             residual_robust_rms) = \
+             residual_robust_rms,
+             nonpbcor_image_robust_rms_and_spectra) = \
                 sequence_manager.iteration_result(model=result.model,
                                                   restored=result.image, residual=result.residual,
                                                   flux=result.flux, cleanmask=new_cleanmask,
@@ -702,6 +704,7 @@ class Tclean(cleanbase.CleanBase):
             result.set_image_rms(nonpbcor_image_non_cleanmask_rms)
             result.set_image_rms_min(nonpbcor_image_non_cleanmask_rms_min)
             result.set_image_rms_max(nonpbcor_image_non_cleanmask_rms_max)
+            result.set_image_robust_rms_and_spectra(nonpbcor_image_robust_rms_and_spectra)
 
             # Keep dirty DR, correction factor and information about maxEDR heuristic for weblog
             result.set_dirty_dynamic_range(dirty_dynamic_range)
