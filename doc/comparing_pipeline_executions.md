@@ -66,11 +66,11 @@ for certain tools by editing `pipeline/infrastructure/casatasks.py`. For
 example, to enable logging of calls the imager tool alone, edit `casatasks.py`
 and change the definition of the imager tool from
 ```
-imager = log_tool_invocations(casac.imager)
+imager = create_logging_class(casac.imager)
 ```
 to 
 ```
-imager = log_tool_invocations(casac.imager, logging.DEBUG)
+imager = create_logging_class(casac.imager, logging.DEBUG)
 ```
 To omit log records entirely, remove the `log_tool_invocations` decorating
 call, e.g., 

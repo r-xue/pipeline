@@ -4,6 +4,7 @@ import contextlib
 import copy_reg
 import datetime
 import inspect
+import operator
 import os
 import platform
 import sys
@@ -69,15 +70,14 @@ def log_call(fn, level):
     return f
 
 
-def log_tool_invocations(cls, level=logging.TRACE, methods=None):
+def create_logging_class(cls, level=logging.TRACE, methods=None):
     """
-    Return an instance of a class, with all class methods decorated to log
-    method calls.
+    Return a class with all methods decorated to log method calls.
 
     :param cls: class to wrap
     :param level: log level for emitted messages
     :param methods: methods to log calls for, or None to log all methods
-    :return: an instance of the decorated class
+    :return: the decorated class
     """
     bound_methods = {name: method for (name, method) in inspect.getmembers(cls, inspect.ismethod)
                      if not name.startswith('__') and not name.endswith('__')}
@@ -91,40 +91,67 @@ def log_tool_invocations(cls, level=logging.TRACE, methods=None):
     cls_name = 'Logging{!s}'.format(cls.__name__.capitalize())
     new_cls = type(cls_name, (cls,), logging_override_methods)
 
-    return new_cls()
+    return new_cls
 
 
-# log messages from CASA tool X with log level Y.
+# wrappers around CASA tool classes that create CASA tools where method calls
+# are logged with log level Y.
 # The assigned log level for tools should be DEBUG or lower, otherwise the log
 # file is created and written to even on non-debug pipeline runs, where
 # loglevel=INFO. The default log level is TRACE.
 #
 # Example:
-# imager = log_tool_invocations(casac.imager, logging.DEBUG)
-imager = log_tool_invocations(casac.imager, level=logging.INFO, methods=('selectvis', 'apparentsens', 'advise'))
-measures = log_tool_invocations(casac.measures)
-quanta = log_tool_invocations(casac.quanta)
-table = log_tool_invocations(casac.table)
-ms = log_tool_invocations(casac.ms)
-tableplot = log_tool_invocations(casac.table)
-calibrater = log_tool_invocations(casac.calibrater)
-calanalysis = log_tool_invocations(casac.calanalysis)
-msplot = log_tool_invocations(casac.msplot)
-calplot = log_tool_invocations(casac.calplot)
-agentflagger = log_tool_invocations(casac.agentflagger)
-image = log_tool_invocations(casac.image)
-imagepol = log_tool_invocations(casac.imagepol)
-simulator = log_tool_invocations(casac.simulator)
-componentlist = log_tool_invocations(casac.componentlist)
-coordsys = log_tool_invocations(casac.coordsys)
-regionmanager = log_tool_invocations(casac.regionmanager)
-spectralline = log_tool_invocations(casac.spectralline)
-utils = log_tool_invocations(casac.utils)
-deconvolver = log_tool_invocations(casac.deconvolver)
-vpmanager = log_tool_invocations(casac.vpmanager)
-vlafillertask = log_tool_invocations(casac.vlafillertask)
-atmosphere = log_tool_invocations(casac.atmosphere)
-msmd = log_tool_invocations(casac.msmetadata)
+# _logging_imager_cls = create_logging_class(casac.imager, logging.DEBUG)
+_logging_imager_cls = create_logging_class(casac.imager,
+                                           level=logging.INFO, methods=('selectvis', 'apparentsens', 'advise'))
+_logging_measures_cls = create_logging_class(casac.measures)
+_logging_quanta_cls = create_logging_class(casac.quanta)
+_logging_table_cls = create_logging_class(casac.table)
+_logging_ms_cls = create_logging_class(casac.ms)
+_logging_tableplot_cls = create_logging_class(casac.table)
+_logging_calibrater_cls = create_logging_class(casac.calibrater)
+_logging_calanalysis_cls = create_logging_class(casac.calanalysis)
+_logging_msplot_cls = create_logging_class(casac.msplot)
+_logging_calplot_cls = create_logging_class(casac.calplot)
+_logging_agentflagger_cls = create_logging_class(casac.agentflagger)
+_logging_image_cls = create_logging_class(casac.image)
+_logging_imagepol_cls = create_logging_class(casac.imagepol)
+_logging_simulator_cls = create_logging_class(casac.simulator)
+_logging_componentlist_cls = create_logging_class(casac.componentlist)
+_logging_coordsys_cls = create_logging_class(casac.coordsys)
+_logging_regionmanager_cls = create_logging_class(casac.regionmanager)
+_logging_spectralline_cls = create_logging_class(casac.spectralline)
+_logging_utils_cls = create_logging_class(casac.utils)
+_logging_deconvolver_cls = create_logging_class(casac.deconvolver)
+_logging_vpmanager_cls = create_logging_class(casac.vpmanager)
+_logging_vlafillertask_cls = create_logging_class(casac.vlafillertask)
+_logging_atmosphere_cls = create_logging_class(casac.atmosphere)
+_logging_msmd_cls = create_logging_class(casac.msmetadata)
+
+imager = _logging_imager_cls()
+measures = _logging_measures_cls()
+quanta = _logging_quanta_cls()
+table = _logging_table_cls()
+ms = _logging_ms_cls()
+tableplot = _logging_table_cls()
+calibrater = _logging_calibrater_cls()
+calanalysis = _logging_calanalysis_cls()
+msplot = _logging_msplot_cls()
+calplot = _logging_calplot_cls()
+agentflagger = _logging_agentflagger_cls()
+image = _logging_image_cls()
+imagepol = _logging_imagepol_cls()
+simulator = _logging_simulator_cls()
+componentlist = _logging_componentlist_cls()
+coordsys = _logging_coordsys_cls()
+regionmanager = _logging_regionmanager_cls()
+spectralline = _logging_spectralline_cls()
+utils = _logging_utils_cls()
+deconvolver = _logging_deconvolver_cls()
+vpmanager = _logging_vpmanager_cls()
+vlafillertask = _logging_vlafillertask_cls()
+atmosphere = _logging_atmosphere_cls()
+msmd = _logging_msmd_cls()
 
 log = casalog
 
@@ -139,7 +166,7 @@ def set_log_origin(fromwhere=''):
     log.origin(fromwhere)
 
 
-def context_manager_factory(tool, close_fn=lambda tool: tool.close()):
+def context_manager_factory(tool_cls):
     """
     Create a context manager function that wraps the given CASA tool.
 
@@ -148,23 +175,27 @@ def context_manager_factory(tool, close_fn=lambda tool: tool.close()):
     may be used for queries or other operations pertaining to the tool. The
     tool is closed once it falls out of scope or an exception is raised.
     """
-    tool_name = tool.__class__.__name__
+    tool_name = tool_cls.__name__
 
     @contextlib.contextmanager
     def f(filename, **kwargs):
         if not os.path.exists(filename):
             raise IOError('No such file or directory: {!r}'.format(filename))
         LOG.trace('%s tool: opening %r', tool_name, filename)
-        tool.open(filename, **kwargs)
+        tool_instance = tool_cls()
+        tool_instance.open(filename, **kwargs)
         try:
-            yield tool
+            yield tool_instance
         finally:
-            LOG.trace('%s tool: closing %r', tool_name, filename)
-            close_fn(tool)
+            LOG.trace('{!s} tool: closing {!r}'.format(tool_name, filename))
+            if hasattr(tool_instance, 'close'):
+                tool_instance.close()
+            if hasattr(tool_instance, 'done'):
+                tool_instance.done()
     return f
 
 
-def selectvis_context_manager(tool):
+def selectvis_context_manager(tool_cls):
     """
     Create an imager tool context manager function that opens the MS using
     im.selectvis in read-only mode.
@@ -174,33 +205,38 @@ def selectvis_context_manager(tool):
     may be used for queries or other operations pertaining to the tool. The
     tool is closed once it falls out of scope or an exception is raised.
     """
-    tool_name = tool.__class__.__name__
+    tool_name = tool_cls.__name__
 
     @contextlib.contextmanager
     def f(filename, **kwargs):
         if not os.path.exists(filename):
             raise IOError('No such file or directory: {!r}'.format(filename))
         LOG.trace('{!s} tool: opening {!r} using .selectvis(writeaccess=False)'.format(tool_name, filename))
-        rtn = tool.selectvis(filename, writeaccess=False, **kwargs)
+        tool_instance = tool_cls()
+        rtn = tool_instance.selectvis(filename, writeaccess=False, **kwargs)
         if rtn is False:
             raise Exception('selectvis did not return any data')
         try:
-            yield tool
+            yield tool_instance
         finally:
             LOG.trace('{!s} tool: closing {!r}'.format(tool_name, filename))
-            tool.close()
+            if hasattr(tool_instance, 'close'):
+                tool_instance.close()
+            if hasattr(tool_instance, 'done'):
+                tool_instance.done()
+
     return f
 
 
 # context managers for frequently used CASA tools
-CalAnalysis = context_manager_factory(calanalysis)
-ImageReader = context_manager_factory(image)
-ImagerReader = context_manager_factory(imager)
-MSReader = context_manager_factory(ms)
-TableReader = context_manager_factory(table)
-MSMDReader = context_manager_factory(msmd)
-SelectvisReader = selectvis_context_manager(imager)
-AgentFlagger = context_manager_factory(agentflagger, close_fn=lambda tool: tool.done())
+CalAnalysis = context_manager_factory(_logging_calanalysis_cls)
+ImageReader = context_manager_factory(_logging_image_cls)
+ImagerReader = context_manager_factory(_logging_imager_cls)
+MSReader = context_manager_factory(_logging_ms_cls)
+TableReader = context_manager_factory(_logging_table_cls)
+MSMDReader = context_manager_factory(_logging_msmd_cls)
+SelectvisReader = selectvis_context_manager(_logging_imager_cls)
+AgentFlagger = context_manager_factory(_logging_agentflagger_cls)
 
 # C extensions cannot be pickled, so ignore the CASA logger on pickle and
 # replace with it with the current CASA logger on unpickle
