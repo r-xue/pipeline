@@ -8,15 +8,12 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.utils as utils
 
 from . import display as display
+from ..common import utils as sdutils
 
 LOG = logging.get_logger(__name__)
 
 JyperKTRV = collections.namedtuple('JyperKTRV', 'virtualspw msname realspw antenna pol factor')
 JyperKTR  = collections.namedtuple('JyperKTR',  'spw msname antenna pol factor')
-
-def require_virtual_spw_id_handling(observing_run):
-    return numpy.any([spw.id != observing_run.real2virtual_spw_id(spw.id, ms) for ms in observing_run.measurement_sets 
-                      for spw in ms.get_spectral_windows(science_windows_only=True)])
 
 class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def __init__(self, uri='hsd_k2jycal.mako', 
@@ -30,7 +27,7 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
         spw_factors = collections.defaultdict(lambda: [])
         valid_spw_factors = collections.defaultdict(lambda: collections.defaultdict(lambda: []))
         
-        dovirtual = require_virtual_spw_id_handling(context.observing_run)
+        dovirtual = sdutils.require_virtual_spw_id_handling(context.observing_run)
         trfunc_r = lambda _vspwid, _vis, _rspwid, _antenna, _pol, _factor: JyperKTR(_rspwid, _vis, _antenna, _pol, _factor)
         trfunc_v = lambda _vspwid, _vis, _rspwid, _antenna, _pol, _factor: JyperKTRV(_vspwid, _vis, _rspwid, _antenna, _pol, _factor)
         trfunc = trfunc_v if dovirtual else trfunc_r

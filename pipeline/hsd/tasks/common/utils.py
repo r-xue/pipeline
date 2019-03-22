@@ -78,6 +78,16 @@ def profiler(func):
     return wrapper
 
 
+def require_virtual_spw_id_handling(observing_run):
+    """
+    Judge if spw ids vary across EBs. Return True if ids vary.
+    
+    observing_run -- domain.ObservingRun instance
+    """
+    return numpy.any([spw.id != observing_run.real2virtual_spw_id(spw.id, ms) for ms in observing_run.measurement_sets 
+                      for spw in ms.get_spectral_windows(science_windows_only=True)])
+
+
 def asdm_name(scantable_object):
     """
     Return ASDM name that target scantable belongs to.
