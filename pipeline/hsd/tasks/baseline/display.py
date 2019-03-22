@@ -143,17 +143,18 @@ class ClusterDisplay(object):
             spw = rep_member.spw_id
             field = rep_member.field_id
             ms = self.context.observing_run.get_ms(vis)
+            virtual_spw = self.context.observing_run.real2virtual_spw_id(spw, ms)
             source_name = ms.fields[field].source.name.replace(' ', '_').replace('/', '_')
             iteration = group['iteration']
             t0 = time.time()
-            plot_score = ClusterScoreDisplay(group_id, iteration, cluster, spw, source_name, stage_dir)
+            plot_score = ClusterScoreDisplay(group_id, iteration, cluster, virtual_spw, source_name, stage_dir)
             plot_list.extend(plot_score.plot())
             t1 = time.time()
-            plot_property = ClusterPropertyDisplay(group_id, iteration, cluster, spw, source_name, stage_dir)
+            plot_property = ClusterPropertyDisplay(group_id, iteration, cluster, virtual_spw, source_name, stage_dir)
             plot_list.extend(plot_property.plot())
             t2 = time.time()
             plot_validation = ClusterValidationDisplay(self.context, group_id, iteration, cluster, vis, 
-                                                       spw, source_name, antenna, lines, stage_dir)
+                                                       virtual_spw, source_name, antenna, lines, stage_dir)
             plot_list.extend(plot_validation.plot())
             t3 = time.time()
 
@@ -173,6 +174,9 @@ class ClusterDisplayWorker(object):
     MATPLOTLIB_FIGURE_ID = 8907
     
     def __init__(self, group_id, iteration, cluster, spw, field, stage_dir):
+        """
+        spw is a virtual spw id 
+        """
         self.group_id = group_id
         self.iteration = iteration
         self.cluster = cluster
@@ -197,7 +201,7 @@ class ClusterDisplayWorker(object):
     def _create_plot(self, plotfile, type, x_axis, y_axis):
         parameters = {}
         parameters['intent'] = 'TARGET'
-        parameters['spw'] = self.spw
+        parameters['spw'] = self.spw # spw id should be virtual one
         parameters['pol'] = 0
         parameters['ant'] = 'all'
         parameters['type'] = type
@@ -437,12 +441,13 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
         field = reduction_group[0].field
         source_id = field.source_id
         ms = self.context.observing_run.get_ms(self.vis)
-        spectral_window = ms.get_spectral_window(self.spw)
+        real_spw = self.context.observing_run.virtual2real_spw_id(self.spw, ms)
+        spectral_window = ms.get_spectral_window(real_spw)
         refpix = 0
         refval = spectral_window.channels.chan_freqs[0]
         increment = spectral_window.channels.chan_widths[0]
         with casatools.TableReader(os.path.join(self.vis, 'SOURCE')) as tb:
-            tsel = tb.query('SOURCE_ID == %s && SPECTRAL_WINDOW_ID == %s' % (source_id, self.spw))
+            tsel = tb.query('SOURCE_ID == %s && SPECTRAL_WINDOW_ID == %s' % (source_id, real_spw))
             try:
                 if tsel.nrows() == 0:
                     rest_frequency = refval

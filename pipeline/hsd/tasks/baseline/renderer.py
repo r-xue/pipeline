@@ -8,6 +8,7 @@ from . import display
 
 from ..common import renderer as sdsharedrenderer
 from ..common import compress
+from ..common import utils
 
 LOG = logging.get_logger(__name__)
 
@@ -57,8 +58,11 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
                     group_desc['cover_plots'] = pfplots
                     plot_cover[field].append(group_desc)
 
+        # whether or not virtual spw id is effective
+        dovirtual = utils.require_virtual_spw_id_handling(context.observing_run)
         ctx.update({'detail': plot_detail,
-                    'cover_only': plot_cover})
+                    'cover_only': plot_cover,
+                    'dovirtual': dovirtual})
                 
         # profile map before and after baseline subtracton
         maptype_list = ['before', 'after', 'before']

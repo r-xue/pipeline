@@ -32,6 +32,48 @@ $(document).ready(function() {
 
 
 <%
+def get_spw_exp(spw):
+    spw_exp = 'Spectral Window {}'.format(spw)
+    if dovirtual:
+        spw_exp = 'Virtual ' + spw_exp 
+    return spw_exp 
+    
+def get_spw_desc(spw):
+    spw_exp = get_spw_exp(spw).replace('Window', 'Window:')
+    if dovirtual:
+        spw_name = pcontext.observing_run.virtual_science_spw_ids[spw]
+        spw_short_name = pcontext.observing_run.virtual_science_spw_shortnames[spw_name]
+        spw_exp += '<br>({})'.format(spw_short_name)
+    return spw_exp
+        
+def get_spw_inline_desc(spw):
+    spw_exp = get_spw_exp(spw).lower()
+    if dovirtual:
+        spw_name = pcontext.observing_run.virtual_science_spw_ids[spw]
+        spw_short_name = pcontext.observing_run.virtual_science_spw_shortnames[spw_name]
+        spw_exp += ' ({})'.format(spw_short_name)
+    return spw_exp
+
+def spmap_plot_title(spw, apply_bl):
+    spw_exp = get_spw_exp(spw)
+    
+    if apply_bl:
+        apply_exp = 'after'
+    else:
+        apply_exp = 'before'
+    
+    return "Sparse Profile Map for {} {} Baseline Subtraction".format(spw_exp, apply_exp)
+
+def clustering_plot_title(title_exp, spw, field=None):
+    spw_exp = get_spw_exp(spw)
+    
+    title = "{} for {}".format(title_exp, spw_exp)
+
+    if field is not None:
+        title += " Field {}".format(field)
+        
+    return title
+    
 try:
    pass
 except Exception, e:
@@ -78,7 +120,7 @@ line detection stage.</p>
 	                   data-fancybox="thumbs">
 	                    <img class="lazyload"
                              data-src="${os.path.relpath(plot.thumbnail, pcontext.report_dir)}"
-	                         title="Sparse Profile Map for Spectral Window ${plot.parameters['spw']} before Baseline Subtraction">
+	                         title="${spmap_plot_title(plot.parameters['spw'], apply_bl=False)}">
 	                </a>
 	
 	                <div class="caption">
@@ -87,12 +129,12 @@ line detection stage.</p>
 	                           class="replace"
 	                           data-spw="${plot.parameters['spw']}"
 	                           data-field="${field}">
-	                           Spectral Window ${plot.parameters['spw']}
+	                           ${get_spw_exp(plot.parameters['spw'])}
 	                        </a>
 	                    </h4>
 	                    <p>Antenna: ${plot.parameters['ant']}<br>
 	                        Field: ${plot.parameters['field']}<br>
-	                        Spectral Window: ${plot.parameters['spw']}<br>
+	                        ${get_spw_desc(plot.parameters['spw'])}<br>
 	                        Polarisation: ${plot.parameters['pol']}
 	                    </p>
 	                </div>
@@ -122,7 +164,7 @@ for baseline subtraction.</p>
 	                   data-fancybox="thumbs">
 	                    <img class="lazyload"
                              data-src="${os.path.relpath(plot.thumbnail, pcontext.report_dir)}"
-	                         title="Sparse Profile Map for Spectral Window ${plot.parameters['spw']} before Baseline Subtraction">
+	                         title="${spmap_plot_title(plot.parameters['spw'], apply_bl=False)}">
 	                </a>
 	
 	                <div class="caption">
@@ -131,12 +173,12 @@ for baseline subtraction.</p>
 	                           class="replace"
 	                           data-spw="${plot.parameters['spw']}"
 	                           data-field="${field}">
-	                           Spectral Window ${plot.parameters['spw']}
+	                           ${get_spw_exp(plot.parameters['spw'])}
 	                        </a>
 	                    </h4>
 	                    <p>Antenna: ${plot.parameters['ant']}<br>
 	                        Field: ${plot.parameters['field']}<br>
-	                        Spectral Window: ${plot.parameters['spw']}<br>
+	                        ${get_spw_desc(plot.parameters['spw'])}<br>
 	                        Polarisation: ${plot.parameters['pol']}
 	                    </p>
 	                </div>
@@ -165,7 +207,7 @@ for baseline subtraction.</p>
 	                   data-fancybox="thumbs">
 	                    <img class="lazyload"
                              data-src="${os.path.relpath(plot.thumbnail, pcontext.report_dir)}"
-	                         title="Sparse Profile Map for Spectral Window ${plot.parameters['spw']} after Baseline Subtraction">
+	                         title="${spmap_plot_title(plot.parameters['spw'], apply_bl=True)}">
 	                </a>
 	
 	                <div class="caption">
@@ -174,12 +216,12 @@ for baseline subtraction.</p>
 	                           class="replace"
 	                           data-spw="${plot.parameters['spw']}"
 	                           data-field="${field}">
-	                           Spectral Window ${plot.parameters['spw']}
+	                           ${get_spw_exp(plot.parameters['spw'])}
 	                        </a>
 	                    </h4>
 	                    <p>Antenna: ${plot.parameters['ant']}<br>
 	                        Field: ${plot.parameters['field']}<br>
-	                        Spectral Window: ${plot.parameters['spw']}<br>
+	                        ${get_spw_desc(plot.parameters['spw'])}<br>
 	                        Polarisation: ${plot.parameters['pol']}
 	                    </p>
 	                </div>
@@ -211,7 +253,7 @@ for baseline subtraction.</p>
                        data-fancybox="thumbs">
                        <img class="lazyload"
                             data-src="${os.path.relpath(plot.thumbnail, pcontext.report_dir)}"
-                            title="${plots['title']} for Spectral Window ${plot.parameters['spw']} Field ${plot.field}">
+                            title="${clustering_plot_title(plots['title'], plot.parameters['spw'], plot.field)}">
                     </a>
                     <div class="caption">
                         <h4>
@@ -219,11 +261,10 @@ for baseline subtraction.</p>
                                class="replace"
                                data-spw="${plot.parameters['spw']}"
                                data-field=${plot.field}>
-                               Spectral Window ${plot.parameters['spw']}
+                               ${get_spw_exp(plot.parameters['spw'])}
                             </a>
                         </h4>
-                        <p>Clustering plot of spectral
-                            window ${plot.parameters['spw']}.
+                        <p>Clustering plot of ${get_spw_inline_desc(plot.parameters['spw'])}.
                         </p>
                     </div>
                 </div>
@@ -244,12 +285,11 @@ for baseline subtraction.</p>
                        data-fancybox="thumbs">
                        <img class="lazyload"
                             data-src="${os.path.relpath(plot.thumbnail, pcontext.report_dir)}"
-                            title="${plots['title']} for Spectral Window ${plot.parameters['spw']}">
+                            title="${clustering_plot_title(plots['title'], plot.parameters['spw'])}">
                     </a>
 					<div class="caption">
-						<h4>Spectral Window ${plot.parameters['spw']}</h4>
-						<p>Clustering plot of spectral window 
-						${plot.parameters['spw']}.</p>
+						<h4>${get_spw_exp(plot.parameters['spw'])}</h4>
+						<p>Clustering plot of ${get_spw_inline_desc(plot.parameters['spw'])}.</p>
 					</div>
 				</div>
 			</div>
