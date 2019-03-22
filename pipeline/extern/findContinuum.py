@@ -75,7 +75,7 @@ def version(showfile=True):
     """
     Returns the CVS revision number.
     """
-    myversion = "$Id: findContinuumCycle7.py,v 3.36 2019/03/07 23:59:59 we Exp $" 
+    myversion = "$Id: findContinuumCycle7.py,v 3.45 2019/03/21 02:45:48 we Exp $" 
     if (showfile):
         print("Loaded from %s" % (__file__))
     return myversion
@@ -143,6 +143,9 @@ def getMemorySize():
         # SC_PHYS_PAGES can be missing on OS X
         return int(subprocess.check_output(['sysctl', '-n', 'hw.memsize']).strip())
 
+MOM8MINSNR_DEFAULT = 4
+MOM0MINSNR_DEFAULT = 5
+
 def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', transition='', 
                   baselineModeA='min', baselineModeB='min', sigmaCube=3, 
                   nBaselineChannels=0.19, sigmaFindContinuum='auto',
@@ -167,7 +170,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                   dpi=dpiDefault, normalizeByMAD='auto', returnSnrs=False,
                   overwriteMoments=False,minPeakOverMadForSFCAdjustment=[19,19],
                   minPixelsInJointMask=3, userJointMask='', signalRatioTier1=0.967, 
-                  snrThreshold=23, mom0minsnr=5, mom8minsnr=4, overwriteMasks=True, 
+                  snrThreshold=23, mom0minsnr=MOM0MINSNR_DEFAULT, mom8minsnr=MOM8MINSNR_DEFAULT, overwriteMasks=True, 
                   rmStatContQuadratic=False, quadraticNsigma=1.8, bidirectionalMaskPhase2=False,
                   makeMovie=False, returnAllContinuumBoolean=False, outdir='', allowBluePruning=True): 
     """
@@ -244,7 +247,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
             knowledge of beamsize from psfcube.  To avoid having any effect, it should be set 
             to < minbeamfrac*minPixelsPerBeam, which is typically 0.5*7=3.5; so use 3 or less.
         * userJointMask: if specified, use this joint mask instead of the one computed
-                         (this option is meant for test purposes only)
+                         (this option is meant for test purposes only, typically *.mask2_bi)
         * normalizeByMAD: can be True, False or 'auto' (default); 
             if 'auto', then if atmospheric transmission varies enough across the spw, 
               set to True, otherwise set to False.  
@@ -342,11 +345,14 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                  if float, then the fraction of channels to use (i.e. the percentile)
                  default = 0.19, which is 24 channels (i.e. 12 on each side) of a TDM window
 
-    Parameters for function findContinuumChannels:
-    ----------------------------------------------
+    Parameters for function findContinuumChannels (which is called by all meanSpectrum heuristics):
+    -----------------------------------------------------------------------------------------------
     baselineModeB: 'min' (default) or 'edge', method to define the baseline 
         Parameters only relevant if baselineModeB='min':
         * dropBaselineChannels: percentage of extreme values to drop
+    nBaselineChannels: if integer, then the number of channels to use in computing
+         standard deviation/MAD of the baseline channels (i.e. the blue points in the plot)
+         if float, then it is the fraction of channels to use (i.e. the percentile)
     sigmaFindContinuum: passed to findContinuumChannels, 'auto' starts with value:
         TDM: singleContinuum: 9, meanAboveThreshold: 4.5, peakOverMAD: 6.5,
              mom0mom8jointMask: 7.2
@@ -1068,7 +1074,7 @@ def writeContDat(meanSpectrumFile, selection, png, aggregateBandwidth,
             if (type(vis) == str):
                 vis = vis.split(',')
             # vis is now assured to be a non-blank list
-            topoFreqRanges = []
+            topoFreqRanges = [] # this will be a list of lists
             for v in vis:
                 casalogPost("Converting from LSRK to TOPO for vis = %s" % (v))
                 vselection = ''
@@ -1560,7 +1566,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                      maxMadRatioForSFCAdjustment=1.20, 
                      minPixelsInJointMask=3, userJointMask='',
                      signalRatioTier1=0.965, signalRatioTier2=0.94, 
-                     snrThreshold=23, mom0minsnr=5, mom8minsnr=4, 
+                     snrThreshold=23, mom0minsnr=MOM0MINSNR_DEFAULT, mom8minsnr=MOM8MINSNR_DEFAULT, 
                      overwriteMasks=True, rmStatContQuadratic=True, 
                      quadraticNsigma=2, bidirectionalMaskPhase2=False, 
                      plotQuadraticPoints=True, makeMovie=True, outdir='', allowBluePruning=True):
@@ -1968,6 +1974,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
             # We are using either peakOverMad or mom0mom8jointMask
             if ((groups >= minGroupsForSFCAdjustment and not tdmSpectrum(channelWidth,nchan) 
                  or (groups >= 3 and tdmSpectrum(channelWidth,nchan)))  and 
+                sigmaFindContinuumAutomatic and # added Mar 27, 2019
 #               (peakOverMad>minPeakOverMadForSFCAdjustment or 
                ((peakOverMad>minPeakOverMadForSFCAdjustment and madRatio<maxMadRatioForSFCAdjustment) or 
                 meanSpectrumMethod.find('peakOver') >= 0)): 
@@ -2083,8 +2090,9 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                     if peakOverMad <= 6: # we got into here only because more than 4/5 channels were picked
                         if gapMinThreshold < 30:
                             gapMinThreshold = 30  # 30 was set to avoid gaps with no lines
-                        elif gapMinThreshold > 50:
-                            gapMinThreshold = 50  # 50 was set by E2E6.1.00030.S spw16 CO galaxy w/no continuum
+                        elif gapMinThreshold > 45: #50:
+                            gapMinThreshold = 45 #50  # 50 was set by E2E6.1.00030.S spw16 CO galaxy w/no continuum uid___A002_Xcff05c_X1bd.s28_0.HCG25b_sci.spw16.mfs.I.findcont.residual, but this line is 111 channels wide, so no longer appears to motivate this value
+                                                 #49 was needed by 2018.1.00635.S spw29 CI1-0
                     else:
                         gapMinThreshold = np.max([16,gapMinThreshold]) # original heuristic, Note: can be a large number, even > gapMaxThreshold!
                     if (gapMinThreshold > gapMaxThreshold):  
@@ -3765,7 +3773,8 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
                                       overwriteMasks=True, phase2=True, 
                                       normalizeByMAD=True, minPixelsInJointMask=3,
                                       initialQuadraticImprovementThreshold=1.6, userJointMask='', 
-                                      snrThreshold=23, mom0minsnr=5, mom8minsnr=4, rmStatContQuadratic=True,
+                                      snrThreshold=23, mom0minsnr=MOM0MINSNR_DEFAULT, 
+                                      mom8minsnr=MOM8MINSNR_DEFAULT, rmStatContQuadratic=True,
                                       bidirectionalMaskPhase2=False, outdir=''):
     """
     This function is called by runFindContinuum when meanSpectrumMethod='mom0mom8jointMask'.
@@ -3876,7 +3885,10 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
         mom0peak = classicResult['max'][0]
         mom0snr = classicResult['max'][0]/result['medabsdevmed'][0]
         scaledMAD = result['medabsdevmed'][0]*1.4826
-        mom0sigma = np.max([mom0minsnr,oneEvent(nptsInCube,1)])
+        if mom0minsnr == MOM0MINSNR_DEFAULT:
+            mom0sigma = np.max([mom0minsnr,oneEvent(nptsInCube,1)])
+        else:
+            mom0sigma = mom0minsnr
         casalogPost("+++ nptsInCube=%d, initial mom0sigma=%f, scaledMAD=%f,  mom0median=%f" % (nptsInCube, mom0sigma, scaledMAD, result['median'][0]))
         mom0threshold = mom0sigma*scaledMAD + result['median'][0]
         mom0min = classicResult['min'][0]
@@ -3907,7 +3919,11 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
         mom8peak = classicResult['max'][0]
         mom8snr = classicResult['max'][0]/result['medabsdevmed'][0]
         scaledMAD = result['medabsdevmed'][0]*1.4826
-        mom8sigma = np.max([mom8minsnr,oneEvent(nptsInCube,1)])
+        if mom8minsnr == MOM8MINSNR_DEFAULT:
+            mom8sigma = np.max([mom8minsnr,oneEvent(nptsInCube,1)])
+        else:
+            mom8sigma = mom8minsnr
+        casalogPost("Choosing %f from mom8minsnr=%f, oneEvent=%f" % (mom8sigma, mom8minsnr, oneEvent(nptsInCube,1)))
         mom8min = classicResult['min'][0]
         mom8max = classicResult['max'][0]
         mom8threshold = mom8sigma*scaledMAD + result['median'][0]
@@ -3970,7 +3986,10 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
                 if len(resultPositive['medabsdevmed']) == 0:
                     print("WARNING: zero-length results from mom0")
                 # reduce the sigma somewhat: 
-                mom0sigma2 = np.max([mom0minsnr-1,oneEvent(nptsInCube,0.5)])
+                if mom0minsnr == MOM0MINSNR_DEFAULT:
+                    mom0sigma2 = np.max([mom0minsnr-1,oneEvent(nptsInCube,0.5)])
+                else:
+                    mom0sigma2 = mom0minsnr-1
                 mom0threshold = mom0sigma2*scaledMAD + result['median'][0]
                 casalogPost('++++++ phase 2 mom0sigma2=%f, npts=%d, scaledMAD=%f, median=%f' % (mom0sigma2, result['npts'][0], scaledMAD, result['median'][0]))
                 casalogPost('++++++ phase 2 mom0threshold = %f' % mom0threshold)
@@ -3996,7 +4015,10 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
                     print("WARNING: zero-length results from mom8")
                 scaledMAD = result['medabsdevmed'][0]*1.4826
                 # reduce the sigma somewhat
-                mom8sigma2 = np.max([mom8minsnr,oneEvent(nptsInCube,0.5)])
+                if mom8minsnr == MOM8MINSNR_DEFAULT:
+                    mom8sigma2 = np.max([mom8minsnr,oneEvent(nptsInCube,0.5)])
+                else:
+                    mom8sigma2 = mom8minsnr
                 mom8threshold = mom8sigma2*scaledMAD + result['median'][0]
                 casalogPost('++++++ phase 2 mom8sigma2=%f, npts=%d, scaledMAD=%f, median=%f' % (mom8sigma2, result['npts'][0], scaledMAD, result['median'][0]))
                 casalogPost('++++++ phase 2 mom8threshold = %f' % mom8threshold)
@@ -4073,6 +4095,7 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
         mom8snrs = [None,None,None]
         mom0threshold = 0
         mom8threshold = 0
+        numberPixelsInMom8Mask = 0
     if userJointMask != '':
         jointMask = userJointMask
         meanSpectrumFile = cube+'.meanSpectrum.userJointMask'
@@ -4197,7 +4220,11 @@ def computeStatisticalSpectrumFromMask(cube, jointmask, pbcube=None, imageInfo=N
         if not pbcubeExists:
             casalogPost("Computing potential normalization spectrum from outside the joint mask (to remove atmospheric features).")
             casalogPost("**** Number of unmasked pixels in jointmask = %s" % (countUnmaskedPixels(jointmask)))
-            outsideMask = jointmask.replace('.joint.','.inverseJoint.')
+            if jointmask.find('.joint.') > 0:
+                outsideMask = jointmask.replace('.joint.','.inverseJoint.')
+            else:
+                outsideMask = jointmask + '.inverseJoint'
+                print("Generating outsideMask = %s" % (outsideMask))
             mask = jointmaskQuoted + ' < 0.5'
             print("Running imsubimage('%s', mask='%s', outfile='%s')" % (jointmask, mask, outsideMask))
             os.system('rm -rf '+outsideMask)
@@ -4541,7 +4568,7 @@ def cubeLSRKToTopo(img, imageInfo, freqrange='', prec=4, verbose=False,
           floating point list of two frequencies, or a delimited string
           (delimiter = ',', '~' or space)
     prec: in fractions of Hz (only used to display the value when verbose=True)
-    vis: read date of observation from the specified measurement set
+    vis: read date of observation from the specified measurement set (instead of from img)
     """
     if getFreqType(img).upper() == 'TOPO':
         print("This cube is purportedly already in TOPO.")
@@ -4566,11 +4593,36 @@ def cubeLSRKToTopo(img, imageInfo, freqrange='', prec=4, verbose=False,
     myia.open(img)
     equinox = getEquinox(img,myia)
     observatory = getTelescope(img,myia)
-    datestring = getDateObs(img,myia)
+    if vis == '':
+        datestring = getDateObs(img,myia)
+    else:
+        if not os.path.exists(vis):
+            print("Measurement set does not exist!")
+            return
+        datestring = getObservationStartDate(vis)
     myia.close()
     f0 = lsrkToTopo(startFreq, datestring, ra, dec, equinox, observatory, prec, verbose)
     f1 = lsrkToTopo(stopFreq, datestring, ra, dec, equinox, observatory, prec, verbose) 
     return(np.array([f0,f1]))
+
+def getObservationStartDate(vis, obsid=0, delimiter='-', measuresToolFormat=True):
+    """
+    Uses the tb tool to read the start time of the observation and reports the date.
+    See also getObservationStartDay.
+    Returns: '2013-01-31 07:36:01 UT'
+    measuresToolFormat: if True, then return '2013/01/31/07:36:01', suitable for lsrkToTopo
+    -Todd Hunter
+    """
+    mjdsec = getObservationStart(vis, obsid)
+    if (mjdsec is None):
+        return
+    obsdateString = mjdToUT(mjdsec/86400.)
+    if (delimiter != '-'):
+        obsdateString = obsdateString.replace('-', delimiter)
+    if measuresToolFormat:
+        return(obsdateString.replace(' UT','').replace(delimiter,'/').replace(' ','/'))
+    else:
+        return(obsdateString)
 
 def rad2radec(ra=0,dec=0, prec=5, verbose=True, component=0,
               replaceDecDotsWithColons=True, hmsdms=False, delimiter=', ',
@@ -4981,6 +5033,7 @@ def topoFreqToChannel(freqlist, vis, spw, mymsmd=''):
     channel ranges in the specified ms.
     freqlist:  [150.45e9,151.67e9]  or [150.45, 151.67] 
     spw: integer ID
+    vis: reads the channel frequencies from this measurement set for the specified spw
     Returns: a python list of channels
     """
     needToClose = False
@@ -5002,7 +5055,11 @@ def topoFreqToChannel(freqlist, vis, spw, mymsmd=''):
         if freq < f0  or freq > f1:
             chanoff = np.min([np.abs(f0-freq),np.abs(freq-f1)]) / width
             print("frequency %.6f GHz not within spw %d: %.6f - %.6f GHz (off by %.2f channels)" % (freq*1e-9, spw, f0*1e-9, f1*1e-9, chanoff))
-            return
+            if freq < f0:
+                freq = f0
+            elif freq > f1:
+                freq = f1
+            print("Setting frequency to last channel: %f" % (freq))
         diffs = np.abs(chanfreqs-freq)
         channels.append(np.argmin(diffs))
     return channels
@@ -5048,6 +5105,7 @@ def topoFreqRangeListToChannel(contdatline='', vispath='./', spw=-1, freqlist=''
             f1 = myqa.convert(myfreq, 'Hz')['value']
             unit = myfreq['unit'] 
             f0 = myqa.convert(myqa.quantity(freqs[0]+unit), 'Hz')['value']
+            print("Running topoFreqToChannel([%f,%f], '%s', %d)" % (f0,f1,vis,spw))
             chans = topoFreqToChannel([f0,f1], vis, spw, mymsmd)
             chanlist += '%d~%d' % (np.min(chans), np.max(chans))
             if r != freqlist[-1]:
@@ -5911,6 +5969,41 @@ def getScienceSpws(vis, intent='OBSERVE_TARGET#ON_SOURCE', returnString=True,
         return(','.join(str(i) for i in scienceSpws))
     else:
         return(list(scienceSpws))
+
+def getObservationStart(vis, obsid=-1, verbose=False):
+    """
+    Reads the start time of the observation from the OBSERVATION table (using tb tool)
+    and reports it in MJD seconds.
+    obsid: if -1, return the start time of the earliest obsID
+    -Todd Hunter
+    """
+    if (os.path.exists(vis) == False):
+        print("vis does not exist = %s" % (vis))
+        return
+    if (os.path.exists(vis+'/table.dat') == False):
+        print("No table.dat.  This does not appear to be an ms.")
+        print("Use au.getObservationStartDateFromASDM().")
+        return
+    mytb = tbtool()
+    try:
+        mytb.open(vis+'/OBSERVATION')
+    except:
+        print("ERROR: failed to open OBSERVATION table on file "+vis)
+        return(3)
+    time_range = mytb.getcol('TIME_RANGE')
+    mytb.close()
+    if verbose:  print("time_range: ", str(time_range))
+    # the first index is whether it is starttime(0) or stoptime(1) 
+    time_range = time_range[0]
+    if verbose:  print("time_range[0]: ", str(time_range))
+    if (obsid >= len(time_range)):
+        print("Invalid obsid")
+        return
+    if obsid >= 0:
+        time_range = time_range[obsid]
+    elif (type(time_range) == np.ndarray):
+        time_range = np.min(time_range)
+    return(time_range)
 
 def getObservatoryName(vis):
     """
