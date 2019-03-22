@@ -107,6 +107,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
 
     pbcor_image_min = None
     pbcor_image_max = None
+    nonpbcor_imagename = None
     nonpbcor_image_non_cleanmask_rms = None
     nonpbcor_image_non_cleanmask_rms_min = None
     nonpbcor_image_non_cleanmask_rms_max = None
@@ -115,7 +116,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
     nonpbcor_image_non_cleanmask_freq_chN = None
     nonpbcor_image_non_cleanmask_freq_frame = None
     nonpbcor_image_cleanmask_spectrum = None
-    nonpbcor_image_cleanmask_spectrum_type = None
+    nonpbcor_image_cleanmask_spectrum_pblimit = None
     nonpbcor_image_cleanmask_npoints = None
     if restored not in [None, '']:
         # get min and max of the pb-corrected cleaned result
@@ -211,14 +212,14 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
 
             try:
                 # Get image RMS for all channels (this is for the weblog)
-                image_stats = image.statistics(mask=statsmask, robust=True, axes=[0, 1, 2])
+                image_stats = image.statistics(mask=statsmask, robust=True, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5)
 
                 # Filter continuum frequency ranges if given
                 if cont_freq_ranges not in (None, ''):
                     # TODO: utils.freq_selection_to_channels uses casatools.image to get the frequency axis
-                    #       and closes the global pipeline image tool. Thus all subsequent operations on
-                    #       "image" would fail. For the time being a new with statement is used below. Need
-                    #       to consider new tool instance every time a tool is used from casatools.
+                    #       and closes the global pipeline image tool. The context manager wrapped tool
+                    #       used in this "with" statement is a different instance, so this is OK, but stacked
+                    #       use of casatools.image might lead to unexpected results.
                     cont_chan_ranges = utils.freq_selection_to_channels(nonpbcor_imagename, cont_freq_ranges)
                     cont_chan_indices = np.hstack([np.arange(start, stop+1) for start, stop in cont_chan_ranges])
                     nonpbcor_image_non_cleanmask_rms_vs_chan = image_stats['rms'][cont_chan_indices]
@@ -250,31 +251,28 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                     -999.0
                 LOG.warn('Exception while determining image RMS for %s: %s' % (nonpbcor_imagename, e))
 
-        # Extra with statement due to mangling of the image analysis tool
-        # as described above.
-        with casatools.ImageReader(nonpbcor_imagename) as image:
             # Get the flux density spectrum in the clean mask area if available
             if nonpbcor_image_cleanmask_npoints is not None:
                 if nonpbcor_image_cleanmask_npoints != 0:
                     # Area in flattened clean mask
                     spectrum_mask = '"%s" > 0.1' % (os.path.basename(flattened_mask))
-                    nonpbcor_image_cleanmask_spectrum_type = 'mask'
                 elif pb is not None:
                     # Area of pb > pblimit_cleanmask
                     spectrum_mask = '"%s" > %f' % (os.path.basename(pb)+extension, pblimit_cleanmask)
-                    nonpbcor_image_cleanmask_spectrum_type = 'pblimit'
+                    nonpbcor_image_cleanmask_spectrum_pblimit = pblimit_cleanmask
                 else:
                     spectrum_mask = None
-                nonpbcor_image_cleanmask_spectrum = image.getprofile(function='mean', mask=spectrum_mask, axis=freq_axis)['values']
+                nonpbcor_image_cleanmask_spectrum = image.getprofile(function='flux', mask=spectrum_mask, stretch=True, axis=freq_axis)['values']
 
     return (residual_cleanmask_rms, residual_non_cleanmask_rms, residual_min, residual_max,
             nonpbcor_image_non_cleanmask_rms_min, nonpbcor_image_non_cleanmask_rms_max,
             nonpbcor_image_non_cleanmask_rms, pbcor_image_min, pbcor_image_max, residual_robust_rms,
-            {'nonpbcor_image_non_cleanmask_freq_ch1': nonpbcor_image_non_cleanmask_freq_ch1,
+            {'nonpbcor_imagename': nonpbcor_imagename,
+             'nonpbcor_image_non_cleanmask_freq_ch1': nonpbcor_image_non_cleanmask_freq_ch1,
              'nonpbcor_image_non_cleanmask_freq_chN': nonpbcor_image_non_cleanmask_freq_chN,
              'nonpbcor_image_non_cleanmask_freq_frame': nonpbcor_image_non_cleanmask_freq_frame,
              'nonpbcor_image_non_cleanmask_robust_rms': nonpbcor_image_non_cleanmask_robust_rms,
              'nonpbcor_image_cleanmask_spectrum': nonpbcor_image_cleanmask_spectrum,
-             'nonpbcor_image_cleanmask_spectrum_type': nonpbcor_image_cleanmask_spectrum_type,
+             'nonpbcor_image_cleanmask_spectrum_pblimit': nonpbcor_image_cleanmask_spectrum_pblimit,
              'nonpbcor_image_cleanmask_npoints': nonpbcor_image_cleanmask_npoints,
              'cont_freq_ranges': cont_freq_ranges})
