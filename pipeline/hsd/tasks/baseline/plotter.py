@@ -149,6 +149,9 @@ class BaselineSubtractionPlotManager(object):
     def plot_spectra_with_fit(self, field_id, antenna_id, spw_id, 
                               grid_table=None, deviation_mask=None, channelmap_range=None,
                               showatm=True):
+        """
+        NB: spw_id is the real spw id.
+        """
         if basetask.DISABLE_WEBLOG:
             return []
         
@@ -166,6 +169,7 @@ class BaselineSubtractionPlotManager(object):
         self.field_id = field_id
         self.antenna_id = antenna_id
         self.spw_id = spw_id
+        self.virtual_spw_id = self.context.observing_run.real2virtual_spw_id(self.spw_id, self.ms)
         data_desc = self.ms.get_data_description(spw=spw_id)
         num_pol = data_desc.num_polarizations
         self.pol_list = numpy.arange(num_pol, dtype=int)
@@ -178,7 +182,7 @@ class BaselineSubtractionPlotManager(object):
                                                                                          '.'.join(self.ms.basename.split('.')[:-1]),
                                                                                          source_name,
                                                                                          self.antenna_id,
-                                                                                         self.spw_id)
+                                                                                         self.virtual_spw_id)
         prefit_prefix = os.path.join(self.stage_dir, outprefix_template('before'))
         postfit_prefix = os.path.join(self.stage_dir, outprefix_template('after'))
         LOG.debug('prefit_prefix=\'{}\'', os.path.basename(prefit_prefix))
@@ -207,7 +211,7 @@ class BaselineSubtractionPlotManager(object):
             for (pol, figfile) in plots.iteritems():
                 if os.path.exists(figfile):
                     parameters = {'intent': 'TARGET',
-                                  'spw': self.spw_id,
+                                  'spw': self.virtual_spw_id, # parameter for plots are virtual spw id
                                   'pol': sd_polmap[pol],
                                   'ant': self.ms.antennas[self.antenna_id].name,
                                   'vis': self.ms.basename,
@@ -234,6 +238,7 @@ class BaselineSubtractionPlotManager(object):
         ms_id = self.context.observing_run.measurement_sets.index(ms)
         antid = self.antenna_id
         spwid = self.spw_id
+        virtual_spwid = self.virtual_spw_id
         polids = self.pol_list
         prefit_data = self.prefit_data
         postfit_data = self.postfit_data
@@ -241,10 +246,11 @@ class BaselineSubtractionPlotManager(object):
         
         dtrows = self.datatable.getcol('ROW')
     
+        # grid_table is baseed on virtual spw id
         num_ra, num_dec, num_plane, refpix, refval, increment, rowlist = analyze_plot_table(ms, 
                                                                                             ms_id,
                                                                                             antid, 
-                                                                                            spwid, 
+                                                                                            virtual_spwid, 
                                                                                             polids,
                                                                                             grid_table)
             
@@ -430,7 +436,7 @@ def configure_2d_panel(xpanel, ypanel, ngridx, ngridy, num_plane=3):
     return xypanel
 
 #@utils.profiler
-def analyze_plot_table(ms, ms_id, antid, spwid, polids, grid_table):
+def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table):
     # plot table is separated into two parts: meta data part and row list part
     # plot_table layout: [RA_ID, DEC_ID, RA_DIR, DEC_DIR]
     # [[0, 0, RA0, DEC0], <- plane 0
@@ -442,15 +448,16 @@ def analyze_plot_table(ms, ms_id, antid, spwid, polids, grid_table):
     #  [0, 1, RA0, DEC1], <- plane 0
     #  ...
     #  [M, N, RAM, DECN]] <- plane 2
-    plot_table = BaselineSubtractionPlotManager.generate_plot_meta_table(spwid, 
+    plot_table = BaselineSubtractionPlotManager.generate_plot_meta_table(virtual_spwid, 
                                                                          polids, 
                                                                          grid_table)
     grid_rowlist = BaselineSubtractionPlotManager._generate_plot_rowlist(ms_id, 
                                                                          antid, 
-                                                                         spwid, 
+                                                                         virtual_spwid, 
                                                                          polids, 
                                                                          grid_table)
     num_grid_rows = len(plot_table)  # num_plane * num_grid_ra * num_grid_dec
+    assert num_grid_rows > 0
     num_grid_dec = plot_table[-1][1] + 1
     num_grid_ra = plot_table[-1][0] + 1
     num_plane = num_grid_rows / (num_grid_dec * num_grid_ra)

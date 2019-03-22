@@ -105,8 +105,9 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
         """
         reference_data = self.inputs.reference_member.ms
         reference_antenna = self.inputs.reference_member.antenna_id
-        reference_spw = self.inputs.reference_member.spw_id
-        beam_size = reference_data.beam_sizes[reference_antenna][reference_spw]
+        real_spw = self.inputs.reference_member.spw_id
+        reference_spw = self.inputs.context.observing_run.real2virtual_spw_id(real_spw, reference_data)
+        beam_size = reference_data.beam_sizes[reference_antenna][real_spw]
         grid_size = casatools.quanta.convert(beam_size, 'deg')['value']
         
         indexer = DataTableIndexer(self.inputs.context)
@@ -228,14 +229,17 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
                     ......
             [IF, POL, X, Y, RA, DEC, # of Combined Sp., # of flagged Sp., RMS]]
 
+        Note that IF above is the virtual spw id that should be translated into real spw id
+        when applying to measurementset domain object.
         """
         nrow = len(grid_table)
         LOG.info('SimpleGrid: Processing {} spectra...', nrow)
 
         reference_data = self.inputs.reference_member.ms
-        reference_spw = self.inputs.reference_member.spw_id 
-        nchan = reference_data.spectral_windows[reference_spw].num_channels
-        npol = reference_data.get_data_description(spw=reference_spw).num_polarizations
+        real_spw = self.inputs.reference_member.spw_id
+        reference_spw = self.inputs.context.observing_run.real2virtual_spw_id(real_spw, reference_data)
+        nchan = reference_data.spectral_windows[real_spw].num_channels
+        npol = reference_data.get_data_description(spw=real_spw).num_polarizations
         LOG.debug('nrow={} nchan={} npol={}', nrow, nchan, npol)
         
         # loop for all ROWs in grid_table to make dictionary that 
