@@ -166,7 +166,7 @@ def set_log_origin(fromwhere=''):
     log.origin(fromwhere)
 
 
-def context_manager_factory(tool_cls):
+def context_manager_factory(tool_cls, finalisers=None):
     """
     Create a context manager function that wraps the given CASA tool.
 
@@ -176,6 +176,9 @@ def context_manager_factory(tool_cls):
     tool is closed once it falls out of scope or an exception is raised.
     """
     tool_name = tool_cls.__name__
+
+    if finalisers is None:
+        finalisers = ('close', 'done')
 
     @contextlib.contextmanager
     def f(filename, **kwargs):
@@ -188,10 +191,10 @@ def context_manager_factory(tool_cls):
             yield tool_instance
         finally:
             LOG.trace('{!s} tool: closing {!r}'.format(tool_name, filename))
-            if hasattr(tool_instance, 'close'):
-                tool_instance.close()
-            if hasattr(tool_instance, 'done'):
-                tool_instance.done()
+            for method_name in finalisers:
+                if hasattr(tool_instance, method_name):
+                    m = operator.methodcaller(method_name)
+                    m(tool_instance)
     return f
 
 
@@ -232,7 +235,7 @@ def selectvis_context_manager(tool_cls):
 CalAnalysis = context_manager_factory(_logging_calanalysis_cls)
 ImageReader = context_manager_factory(_logging_image_cls)
 ImagerReader = context_manager_factory(_logging_imager_cls)
-MSReader = context_manager_factory(_logging_ms_cls)
+MSReader = context_manager_factory(_logging_ms_cls, finalisers=['done'])
 TableReader = context_manager_factory(_logging_table_cls)
 MSMDReader = context_manager_factory(_logging_msmd_cls)
 SelectvisReader = selectvis_context_manager(_logging_imager_cls)
