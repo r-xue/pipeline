@@ -166,15 +166,14 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
             job = casa_tasks.sdcal(**myargs)
     
             # execute job
-            tb = casatools.table
-            LOG.debug('Table cache before sdcal: {}'.format(tb.showcache()))
+            LOG.debug('Table cache before sdcal: {}'.format(casatools.table.showcache()))
             try:
                 self._executor.execute(job)
             finally:
-                LOG.debug('Table cache after sdcal: {}'.format(tb.showcache()))
+                LOG.debug('Table cache after sdcal: {}'.format(casatools.table.showcache()))
     
             # check if caltable is empty
-            with casatools.TableReader(myargs['outfile']):
+            with casatools.TableReader(myargs['outfile']) as tb:
                 is_caltable_empty = tb.nrows() == 0
             if is_caltable_empty:
                 continue
