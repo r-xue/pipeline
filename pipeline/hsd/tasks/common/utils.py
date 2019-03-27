@@ -88,6 +88,11 @@ def require_virtual_spw_id_handling(observing_run):
                       for spw in ms.get_spectral_windows(science_windows_only=True)])
 
 
+def is_nro(context):
+    mses = context.observing_run.measurement_sets
+    return numpy.all(map(lambda ms: ms.antenna_array.name == 'NRO', mses))
+    
+
 def asdm_name(scantable_object):
     """
     Return ASDM name that target scantable belongs to.
