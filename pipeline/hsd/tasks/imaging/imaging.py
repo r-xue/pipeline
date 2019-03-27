@@ -846,11 +846,14 @@ class SDImaging(basetask.StandardTaskTemplate):
     
     def get_imagename(self, source, spwids, antenna=None, asdm=None):
         context = self.inputs.context
+        is_nro = sdutils.is_nro(context)
         namer = filenamer.Image()
         if self.inputs.is_ampcal:
             nameroot = asdm
             if nameroot is None:
                 raise ValueError('ASDM uid must be provided to construct ampcal image name')
+        elif is_nro:
+            nameroot = ''
         else:
             nameroot = context.project_structure.ousstatus_entity_id
             if nameroot == 'unknown':
@@ -860,10 +863,14 @@ class SDImaging(basetask.StandardTaskTemplate):
         #output_dir = context.output_dir
         #if output_dir:
         #    namer.output_dir(output_dir)
-        namer.stage(context.stage)
+        if not is_nro:
+            namer.stage(context.stage)
+            
         namer.source(source)
         if self.inputs.is_ampcal:
             namer.intent(self.inputs.mode.lower())
+        elif is_nro:
+            pass
         else:
             namer.science()
         namer.spectral_window(spwids[0])
