@@ -6,8 +6,11 @@ import matplotlib
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
+import pipeline.infrastructure.renderer.logger as logger
 
 from pipeline.h.tasks.common.displays import sky as sky
+
+from .plot_spectra import plot_spectra
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -138,12 +141,39 @@ class CleanSummary(object):
                         sky.SkyDisplay().plot(self.context, iteration['mom8_fc'] + extension, reportdir=stage_dir,
                                                    intent=r.intent, **extra_args))
 
-                # cleanmask for this iteration - not for iter 0
+                # cleanmask and cube spectra for this iteration - not for iter 0
                 if i > 0:
                     collapse_function = 'max' if (('cube' in iteration['cleanmask']) or ('repBW' in iteration['cleanmask'])) else 'mean'
                     plot_wrappers.append(
                         sky.SkyDisplay().plot(self.context, iteration['cleanmask'], reportdir=stage_dir,
                                                    intent=r.intent, collapseFunction=collapse_function,
                                                    **{'cmap': copy.deepcopy(matplotlib.cm.YlOrRd)}))
+
+                    if 'cube' in iteration['cleanmask']:
+                        imagename = r.image_robust_rms_and_spectra['nonpbcor_imagename']
+                        with casatools.ImageReader(r.image_robust_rms_and_spectra['nonpbcor_imagename']) as image:
+                            miscinfo = image.miscinfo()
+
+                        parameters = {k: miscinfo[k] for k in ['spw', 'iter'] if k in miscinfo}
+                        parameters['field'] = '%s (%s)' % (miscinfo['field'], miscinfo['intent'])
+                        parameters['type'] = 'spectra'
+
+                        virtual_spw = parameters['spw']
+                        imaging_mss = [m for m in self.context.observing_run.measurement_sets if m.is_imaging_ms]
+                        if imaging_mss != []:
+                            ref_ms = imaging_mss[0]
+                        else:
+                            ref_ms = self.context.observing_run.measurement_sets[0]
+                        real_spw = self.context.observing_run.virtual2real_spw_id(virtual_spw, ref_ms)
+                        real_spw_obj = ref_ms.get_spectral_window(real_spw)
+                        # TODO: PIPE-198: Get real receiver type and LO1 frequency once PIPE-305 is ready.
+                        rec_info = {'type': 'TSB', 'LO1': '0GHz'}
+                        # rec_info = {'type': real_spw_obj.receiver_type, 'LO1': real_spw_obj.LO1}
+
+                        plotfile = '%s.spectrum.png' % (os.path.join(stage_dir, os.path.basename(imagename)))
+
+                        plot_spectra(r.image_robust_rms_and_spectra, rec_info, plotfile)
+
+                        plot_wrappers.append(logger.Plot(plotfile, parameters=parameters))
 
         return [p for p in plot_wrappers if p is not None]

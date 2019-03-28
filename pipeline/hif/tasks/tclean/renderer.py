@@ -509,7 +509,7 @@ class TCleanPlotsRenderer(basetemplates.CommonRenderer):
         show_mom0_8_fc = any([item.specmode == 'cube' for item in result[0].results])
         
         if show_mom0_8_fc:
-            colorder = ['pbcorimage', 'residual', 'cleanmask', 'mom0_fc', 'mom8_fc']
+            colorder = ['pbcorimage', 'residual', 'cleanmask', 'mom0_fc', 'mom8_fc', 'spectra']
         else:
             colorder = ['pbcorimage', 'residual', 'cleanmask']
 

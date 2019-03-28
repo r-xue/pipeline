@@ -170,11 +170,21 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
         with casatools.ImageReader(nonpbcor_imagename) as image:
             # Get the image frequency axis for later plotting.
             imhead = image.summary(list=False)
+            lcs = image.coordsys()
             try:
-                freq_axis = list(imhead['axisnames']).index('Frequency')
+                freq_axis = image.coordsys().findaxisbyname('spectral')
             except:
-                LOG.warn('Cannot find frequency axis in %s. Assuming it is 3.' % (nonpbcor_imagename))
-                freq_axis = 3
+                num_axes = image.shape().shape[0]
+                if num_axes > 3:
+                    LOG.warn("Can't find spectral axis. Assuming it is 3.")
+                    freq_axis = 3
+                elif num_axes > 2:
+                    LOG.warn("Can't find spectral axis. Assuming it is 2.")
+                    freq_axis = 2
+                elif num_axes == 2:
+                    LOG.error("No spectral axis found")
+                    freq_axis = -1
+            lcs.done()
             nonpbcor_image_non_cleanmask_freq_ch1 = qaTool.quantity(imhead['refval'][freq_axis] - imhead['refpix'][freq_axis] * imhead['incr'][freq_axis], imhead['axisunits'][freq_axis])
             nonpbcor_image_non_cleanmask_freq_chN = qaTool.quantity(imhead['refval'][freq_axis] + (imhead['shape'][freq_axis] - imhead['refpix'][freq_axis]) * imhead['incr'][freq_axis], imhead['axisunits'][freq_axis])
             # Get the spectral reference. Unfortunately this is coded in text

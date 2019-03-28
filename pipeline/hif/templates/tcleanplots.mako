@@ -9,7 +9,8 @@ columns = {'cleanmask' : ('Clean Mask', 'Clean Mask'),
 	   'model' : ('Final Model', 'Final Model'),
 	   'psf' : ('PSF', 'PSF'),
 	   'mom0_fc': ('Line-free Moment 0', 'Integrated intensity (moment 0) of line-free channels after continuum subtraction'),
-	   'mom8_fc': ('Line-free Moment 8', 'Integrated intensity (moment 8) of line-free channels after continuum subtraction')}
+	   'mom8_fc': ('Line-free Moment 8', 'Integrated intensity (moment 8) of line-free channels after continuum subtraction'),
+	   'spectra': ('Spectra', 'Spectrum from flattened clean mask and per channel MAD')}
 
 def get_plot(plots, field, spw, i, colname):
 	try:
