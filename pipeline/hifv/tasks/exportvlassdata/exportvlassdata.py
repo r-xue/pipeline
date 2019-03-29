@@ -54,6 +54,8 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
     Inputs = ExportvlassdataInputs
 
+    NameBuilder = exportdata.PipelineProductNameBuiler
+
     def prepare(self):
 
         LOG.info("This Exportvlassdata class is running.")
@@ -369,12 +371,14 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
         # Define the name of the output tarfile
         ps = context.project_structure
-        if ps is None:
-            tarfilename = 'weblog.tgz'
-        elif ps.ousstatus_entity_id == 'unknown':
-            tarfilename = 'weblog.tgz'
-        else:
-            tarfilename = oussid + '.weblog.tgz'
+        tarfile = self.NameBuilder.weblog(project_structure=ps,
+                                          ousstatus_entity_id=oussid)
+        # if ps is None:
+        #     tarfilename = 'weblog.tgz'
+        # elif ps.ousstatus_entity_id == 'unknown':
+        #     tarfilename = 'weblog.tgz'
+        # else:
+        #     tarfilename = oussid + '.weblog.tgz'
 
         LOG.info('Saving final weblog in %s' % tarfilename)
 
@@ -395,15 +399,20 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         """
 
         ps = context.project_structure
-        if ps is None:
-            casalog_file = os.path.join(context.report_dir, casalog_name)
-            out_casalog_file = os.path.join(products_dir, casalog_name)
-        elif ps.ousstatus_entity_id == 'unknown':
-            casalog_file = os.path.join(context.report_dir, casalog_name)
-            out_casalog_file = os.path.join(products_dir, casalog_name)
-        else:
-            casalog_file = os.path.join(context.report_dir, casalog_name)
-            out_casalog_file = os.path.join(products_dir, oussid + '.' + casalog_name)
+        casalog_file = os.path.join(context.report_dir, casalog_name)
+        out_casalog_file = self.NameBuilder.casa_script(casalog_name,
+                                                        project_structure=ps,
+                                                        ousstatus_entity_id=oussid,
+                                                        output_dir=products_dir)
+        # if ps is None:
+        #     casalog_file = os.path.join(context.report_dir, casalog_name)
+        #     out_casalog_file = os.path.join(products_dir, casalog_name)
+        # elif ps.ousstatus_entity_id == 'unknown':
+        #     casalog_file = os.path.join(context.report_dir, casalog_name)
+        #     out_casalog_file = os.path.join(products_dir, casalog_name)
+        # else:
+        #     casalog_file = os.path.join(context.report_dir, casalog_name)
+        #     out_casalog_file = os.path.join(products_dir, oussid + '.' + casalog_name)
 
         LOG.info('Copying casa commands log %s to %s' % \
                  (casalog_file, out_casalog_file))
@@ -418,16 +427,21 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         """
 
         ps = context.project_structure
-        if ps is None:
-            casascript_file = os.path.join(context.report_dir, casascript_name)
-            out_casascript_file = os.path.join(products_dir, casascript_name)
-        elif ps.ousstatus_entity_id == 'unknown':
-            casascript_file = os.path.join(context.report_dir, casascript_name)
-            out_casascript_file = os.path.join(products_dir, casascript_name)
-        else:
-            # ousid = ps.ousstatus_entity_id.translate(string.maketrans(':/', '__'))
-            casascript_file = os.path.join(context.report_dir, casascript_name)
-            out_casascript_file = os.path.join(products_dir, oussid + '.' + casascript_name)
+        casascript_file = os.path.join(context.report_dir, casascript_name)
+        out_casascript_file = self.NameBuilder.casa_script(casascript_name, 
+                                                           project_structure=ps,
+                                                           ousstatus_entity_id=oussid,
+                                                           output_dir=products_dir)
+        # if ps is None:
+        #     casascript_file = os.path.join(context.report_dir, casascript_name)
+        #     out_casascript_file = os.path.join(products_dir, casascript_name)
+        # elif ps.ousstatus_entity_id == 'unknown':
+        #     casascript_file = os.path.join(context.report_dir, casascript_name)
+        #     out_casascript_file = os.path.join(products_dir, casascript_name)
+        # else:
+        #     # ousid = ps.ousstatus_entity_id.translate(string.maketrans(':/', '__'))
+        #     casascript_file = os.path.join(context.report_dir, casascript_name)
+        #     out_casascript_file = os.path.join(products_dir, oussid + '.' + casascript_name)
 
         LOG.info('Copying casa script file %s to %s' % \
                  (casascript_file, out_casascript_file))

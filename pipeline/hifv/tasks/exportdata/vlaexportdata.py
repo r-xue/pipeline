@@ -88,16 +88,21 @@ class VLAExportData(exportdata.ExportData):
 
         # Get the output file name
         ps = context.project_structure
-        if ps is None:
-            script_file = os.path.join(context.report_dir, script_name)
-            out_script_file = os.path.join(products_dir, script_name)
-        elif ps.ousstatus_entity_id == 'unknown':
-            script_file = os.path.join(context.report_dir, script_name)
-            out_script_file = os.path.join(products_dir, script_name)
-        else:
-            # ousid = ps.ousstatus_entity_id.translate(string.maketrans(':/', '__'))
-            script_file = os.path.join(context.report_dir, script_name)
-            out_script_file = os.path.join(products_dir, oussid + '.' + script_name)
+        script_file = os.path.join(context.report_dir, script_name)
+        out_script_file = self.NameBuilder.casa_script(script_name,
+                                                       project_structure=ps,
+                                                       ousstatus_entity_id=oussid,
+                                                       output_dir=products_dir)
+        # if ps is None:
+        #     script_file = os.path.join(context.report_dir, script_name)
+        #     out_script_file = os.path.join(products_dir, script_name)
+        # elif ps.ousstatus_entity_id == 'unknown':
+        #     script_file = os.path.join(context.report_dir, script_name)
+        #     out_script_file = os.path.join(products_dir, script_name)
+        # else:
+        #     # ousid = ps.ousstatus_entity_id.translate(string.maketrans(':/', '__'))
+        #     script_file = os.path.join(context.report_dir, script_name)
+        #     out_script_file = os.path.join(products_dir, oussid + '.' + script_name)
 
         LOG.info('Creating casa restore script %s' % (script_file))
 
@@ -151,12 +156,16 @@ finally:
             return 'Undefined'
 
         ps = context.project_structure
-        if ps is None:
-            out_aqua_file = os.path.join(products_dir, aquareport_name)
-        elif ps.ousstatus_entity_id == 'unknown':
-            out_aqua_file = os.path.join(products_dir, aquareport_name)
-        else:
-            out_aqua_file = os.path.join(products_dir, oussid + '.' + aquareport_name)
+        out_aqua_file = self.NameBuilder.aqua_report(aquareport_name,
+                                                     project_structure=ps,
+                                                     ousstatus_entity_id=oussid,
+                                                     output_dir=products_dir)
+        # if ps is None:
+        #     out_aqua_file = os.path.join(products_dir, aquareport_name)
+        # elif ps.ousstatus_entity_id == 'unknown':
+        #     out_aqua_file = os.path.join(products_dir, aquareport_name)
+        # else:
+        #     out_aqua_file = os.path.join(products_dir, oussid + '.' + aquareport_name)
 
         LOG.info('Copying AQUA report %s to %s' % (aqua_file, out_aqua_file))
         shutil.copy(aqua_file, out_aqua_file)

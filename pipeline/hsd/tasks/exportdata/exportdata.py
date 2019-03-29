@@ -178,7 +178,10 @@ class SDExportData(exportdata.ExportData):
             os.chdir(context.output_dir)
 
             # Define the name of the output tarfile
-            tarfilename = '{}.{}.auxcaltables.tgz'.format(oussid, session)
+            tarfilename = self.NameBuilder.caltables(ousstatus_entity_id=oussid,
+                                                     session_name=session,
+                                                     aux_product=True)
+            #tarfilename = '{}.{}.auxcaltables.tgz'.format(oussid, session)
             #tarfilename = '{}.{}.caltables.tgz'.format(oussid, session)
             LOG.info('Saving final caltables for %s in %s', session, tarfilename)
 
@@ -238,7 +241,9 @@ class SDExportData(exportdata.ExportData):
         a text file. Eventually it will be the CASA callibrary file.
         """
 
-        applyfile_name = os.path.basename(vis) + '.auxcalapply.txt'
+        applyfile_name = self.NameBuilder.calapply_list(os.path.basename(vis),
+                                                        aux_product=True)
+        #applyfile_name = os.path.basename(vis) + '.auxcalapply.txt'
         LOG.info('Storing calibration apply list for %s in  %s',
                  os.path.basename(vis), applyfile_name)
 
@@ -332,7 +337,9 @@ class SDExportData(exportdata.ExportData):
             os.chdir(output_dir)
 
             # Define the name of the output tarfile.
-            tarfilename = '{}.auxproducts.tgz'.format(oussid)
+            tarfilename = self.NameBuilder.auxiliary_products('auxproducts.tgz',
+                                                              ousstatus_entity_id=oussid)
+            #tarfilename = '{}.auxproducts.tgz'.format(oussid)
             LOG.info('Saving auxiliary data products in %s', tarfilename)
 
             # Open tarfile.
@@ -370,12 +377,17 @@ class SDExportData(exportdata.ExportData):
 
         # Get the output file name
         ps = context.project_structure
-        if ps is None or ps.ousstatus_entity_id == 'unknown':
-            script_file = os.path.join(context.report_dir, script_name)
-            out_script_file = os.path.join(products_dir, script_name)
-        else:
-            script_file = os.path.join(context.report_dir, script_name)
-            out_script_file = os.path.join(products_dir, oussid + '.' + script_name)
+        script_file = os.path.join(context.report_dir, script_name)
+        out_script_file = self.NameBuilder.casa_script(script_name,
+                                                       project_structure=ps,
+                                                       ousstatus_entity_id=oussid,
+                                                       output_dir=products_dir)
+        # if ps is None or ps.ousstatus_entity_id == 'unknown':
+        #     script_file = os.path.join(context.report_dir, script_name)
+        #     out_script_file = os.path.join(products_dir, script_name)
+        # else:
+        #     script_file = os.path.join(context.report_dir, script_name)
+        #     out_script_file = os.path.join(products_dir, oussid + '.' + script_name)
 
         LOG.info('Creating casa restore script %s' % script_file)
 
@@ -428,10 +440,14 @@ finally:
             return 'Undefined'
 
         ps = context.project_structure
-        if ps is None or ps.ousstatus_entity_id == 'unknown':
-            out_aqua_file = os.path.join(products_dir, aquareport_name)
-        else:
-            out_aqua_file = os.path.join(products_dir, oussid + '.' + aquareport_name)
+        out_aqua_file = self.NameBuilder.aqua_report(aquareport_name,
+                                                     project_structure=ps,
+                                                     ousstatus_entity_id=oussid,
+                                                     output_dir=products_dir)
+        # if ps is None or ps.ousstatus_entity_id == 'unknown':
+        #     out_aqua_file = os.path.join(products_dir, aquareport_name)
+        # else:
+        #     out_aqua_file = os.path.join(products_dir, oussid + '.' + aquareport_name)
 
         LOG.info('Copying AQUA report %s to %s' % (aqua_file, out_aqua_file))
         shutil.copy(aqua_file, out_aqua_file)

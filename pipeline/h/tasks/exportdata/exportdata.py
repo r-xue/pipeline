@@ -60,6 +60,107 @@ LOG = infrastructure.get_logger(__name__)
 StdFileProducts = collections.namedtuple('StdFileProducts', 'ppr_file weblog_file casa_commands_file casa_pipescript casa_restore_script')
 
 
+# product name utility 
+class PipelineProductNameBuiler(object):
+    @classmethod
+    def __build(self, *args, **kwargs):
+        if 'separator' in kwargs:
+            separator = kwargs['separator']
+        else:
+            separator = '.'
+        return separator.join(map(str, args))
+
+    @classmethod
+    def _join_dir(self, name, output_dir=None):
+        if output_dir is not None:
+            name = os.path.join(output_dir, name)
+        return name
+
+    @classmethod
+    def _build_from_oussid(self, basename, ousstatus_entity_id=None, output_dir=None):
+        if ousstatus_entity_id is None:
+            name = basename
+        else:
+            name = self.__build(ousstatus_entity_id, basename)
+        return self._join_dir(name, output_dir)
+
+    @classmethod
+    def _build_from_ps_oussid(self, basename, project_structure=None, ousstatus_entity_id=None, output_dir=None):
+        if project_structure is None:
+            name = basename
+        elif project_structure.ousstatus_entity_id == 'unknown':
+            name = basename
+        else:
+            name = self._build_from_oussid(basename, ousstatus_entity_id=ousstatus_entity_id)
+        return self._join_dir(name, output_dir)
+
+    @classmethod
+    def _build_from_oussid_session(self, basename, ousstatus_entity_id=None, session_name=None, output_dir=None):
+        name = self.__build(ousstatus_entity_id, session_name, basename)
+        return self._join_dir(name, output_dir)
+
+    @classmethod
+    def _build_calproduct_name(self, basename, aux_product=False, output_dir=None):
+        if aux_product:
+            prefix='auxcal'
+        else:
+            prefix='cal'
+        name = self.__build(prefix, basename, separator='')
+        return self._join_dir(name, output_dir)
+
+    @classmethod
+    def _build_from_vis(self, basename, vis, output_dir=None):
+        name = self.__build(os.path.basename(vis), basename)
+        return self._join_dir(name, output_dir)
+
+    @classmethod
+    def weblog(self, project_structure=None, ousstatus_entity_id=None, output_dir=None):
+        return self._build_from_ps_oussid('weblog.tgz', 
+                                          project_structure=project_structure, 
+                                          ousstatus_entity_id=ousstatus_entity_id,
+                                          output_dir=output_dir)
+
+    @classmethod
+    def casa_script(self, basename, project_structure=None, ousstatus_entity_id=None, output_dir=None):
+        return self._build_from_ps_oussid(basename, 
+                                          project_structure=project_structure, 
+                                          ousstatus_entity_id=ousstatus_entity_id,
+                                          output_dir=output_dir)
+    
+    @classmethod
+    def manifest(self, basename, ousstatus_entity_id, output_dir=None):
+        return self._build_from_ps_oussid(basename, 
+                                          project_structure=None,
+                                          ousstatus_entity_id=ousstatus_entity_id,
+                                          output_dir=output_dir)
+
+    @classmethod
+    def calapply_list(self, vis, aux_product=False, output_dir=None):
+        basename = self._build_calproduct_name('apply.txt', aux_product=aux_product)
+        return self._build_from_vis(basename, vis, output_dir=output_dir)
+
+    @classmethod
+    def caltables(self, ousstatus_entity_id=None, session_name=None, aux_product=False, output_dir=None):
+        basename = self._build_calproduct_name('tables.tgz', aux_product=aux_product)
+        return self._build_from_oussid_session(basename=basename,
+                                               ousstatus_entity_id=ousstatus_entity_id,
+                                               session_name=session_name,
+                                               output_dir=None)
+
+    @classmethod
+    def aqua_report(self, basename, project_structure=None, ousstatus_entity_id=None, output_dir=None):
+        return self._build_from_ps_oussid(basename, 
+                                          project_structure=project_structure, 
+                                          ousstatus_entity_id=ousstatus_entity_id,
+                                          output_dir=output_dir)
+
+    @classmethod
+    def auxiliary_products(self, basename, ousstatus_entity_id=None, output_dir=None):
+        return self._build_from_oussid(basename,
+                                       ousstatus_entity_id=ousstatus_entity_id,
+                                       output_dir=output_dir)
+
+
 class ExportDataInputs(vdp.StandardInputs):
     """
     ExportDataInputs manages the inputs for the ExportData task.
@@ -230,6 +331,9 @@ class ExportData(basetask.StandardTaskTemplate):
 
     # Override the default behavior for multi-vis tasks
     is_multi_vis_task = True
+
+    # name builder
+    NameBuilder = PipelineProductNameBuiler
 
     def prepare(self):
         """
@@ -811,10 +915,11 @@ class ExportData(basetask.StandardTaskTemplate):
         a text file. Eventually it will be the CASA callibrary file.
         """
 
-        if imaging:
-            applyfile_name = os.path.basename(vis) + '.auxcalapply.txt'
-        else:
-            applyfile_name = os.path.basename(vis) + '.calapply.txt'
+        applyfile_name = self.NameBuilder.calapply_list(vis=vis, aux_product=imaging)
+        # if imaging:
+        #     applyfile_name = os.path.basename(vis) + '.auxcalapply.txt'
+        # else:
+        #     applyfile_name = os.path.basename(vis) + '.calapply.txt'
         LOG.info('Storing calibration apply list for %s in  %s',
                  os.path.basename(vis), applyfile_name)
 
@@ -915,10 +1020,13 @@ class ExportData(basetask.StandardTaskTemplate):
             os.chdir(context.output_dir)
 
             # Define the name of the output tarfile
-            if imaging:
-                tarfilename = '{}.{}.auxcaltables.tgz'.format(oussid, session)
-            else:
-                tarfilename = '{}.{}.caltables.tgz'.format(oussid, session)
+            tarfilename = self.NameBuilder.caltables(ousstatus_entity_id=oussid,
+                                                     session_name=session,
+                                                     aux_product=imaging)
+            # if imaging:
+            #     tarfilename = '{}.{}.auxcaltables.tgz'.format(oussid, session)
+            # else:
+            #     tarfilename = '{}.{}.caltables.tgz'.format(oussid, session)
             LOG.info('Saving final caltables for %s in %s', session, tarfilename)
 
             # Create the tar file
@@ -966,12 +1074,14 @@ class ExportData(basetask.StandardTaskTemplate):
 
         # Define the name of the output tarfile
         ps = context.project_structure
-        if ps is None:
-            tarfilename = 'weblog.tgz'
-        elif ps.ousstatus_entity_id == 'unknown':
-            tarfilename = 'weblog.tgz'
-        else:
-            tarfilename = oussid + '.weblog.tgz'
+        # if ps is None:
+        #     tarfilename = 'weblog.tgz'
+        # elif ps.ousstatus_entity_id == 'unknown':
+        #     tarfilename = 'weblog.tgz'
+        # else:
+        #     tarfilename = oussid + '.weblog.tgz'
+        tarfilename = self.NameBuilder.weblog(project_structure=ps,
+                                              ousstatus_entity_id=oussid)
 
         LOG.info('Saving final weblog in %s' %(tarfilename))
 
@@ -993,10 +1103,14 @@ class ExportData(basetask.StandardTaskTemplate):
         casalog_file = os.path.join(context.report_dir, casalog_name)
 
         ps = context.project_structure
-        if ps is None or ps.ousstatus_entity_id == 'unknown':
-            out_casalog_file = os.path.join(products_dir, casalog_name)
-        else:
-            out_casalog_file = os.path.join(products_dir, oussid + '.' + casalog_name)
+        out_casalog_file = self.NameBuilder.casa_script(casalog_name, 
+                                                        project_structure=ps, 
+                                                        ousstatus_entity_id=oussid,
+                                                        output_dir=products_dir)
+        # if ps is None or ps.ousstatus_entity_id == 'unknown':
+        #     out_casalog_file = os.path.join(products_dir, casalog_name)
+        # else:
+        #     out_casalog_file = os.path.join(products_dir, oussid + '.' + casalog_name)
 
         LOG.info('Copying casa commands log {} to {}'.format(casalog_file, out_casalog_file))
         if not self._executor._dry_run:
@@ -1012,10 +1126,14 @@ class ExportData(basetask.StandardTaskTemplate):
 
         # Get the output file name
         ps = context.project_structure
-        if ps is None or ps.ousstatus_entity_id == 'unknown':
-            out_script_file = os.path.join(products_dir, script_name)
-        else:
-            out_script_file = os.path.join(products_dir, oussid + '.' + script_name)
+        out_script_file = self.NameBuilder.casa_script(script_name, 
+                                                       project_structure=ps, 
+                                                       ousstatus_entity_id=oussid,
+                                                       output_dir=products_dir)
+        # if ps is None or ps.ousstatus_entity_id == 'unknown':
+        #     out_script_file = os.path.join(products_dir, script_name)
+        # else:
+        #     out_script_file = os.path.join(products_dir, oussid + '.' + script_name)
 
         LOG.info('Creating casa restore script {}'.format(script_file))
 
@@ -1056,16 +1174,21 @@ finally:
         """
 
         ps = context.project_structure
-        if ps is None:
-            casascript_file = os.path.join(context.report_dir, casascript_name)
-            out_casascript_file = os.path.join(products_dir, casascript_name)
-        elif ps.ousstatus_entity_id == 'unknown':
-            casascript_file = os.path.join(context.report_dir, casascript_name)
-            out_casascript_file = os.path.join(products_dir, casascript_name)
-        else:
-            #ousid = ps.ousstatus_entity_id.translate(string.maketrans(':/', '__'))
-            casascript_file = os.path.join(context.report_dir, casascript_name)
-            out_casascript_file = os.path.join(products_dir, oussid + '.' + casascript_name)
+        casascript_file = os.path.join(context.report_dir, casascript_name)
+        out_casascript_file = self.NameBuilder.casa_script(casascript_name, 
+                                                           project_structure=ps, 
+                                                           ousstatus_entity_id=oussid,
+                                                           output_dir=products_dir)
+        # if ps is None:
+        #     casascript_file = os.path.join(context.report_dir, casascript_name)
+        #     out_casascript_file = os.path.join(products_dir, casascript_name)
+        # elif ps.ousstatus_entity_id == 'unknown':
+        #     casascript_file = os.path.join(context.report_dir, casascript_name)
+        #     out_casascript_file = os.path.join(products_dir, casascript_name)
+        # else:
+        #     #ousid = ps.ousstatus_entity_id.translate(string.maketrans(':/', '__'))
+        #     casascript_file = os.path.join(context.report_dir, casascript_name)
+        #     out_casascript_file = os.path.join(products_dir, oussid + '.' + casascript_name)
 
         LOG.info('Copying casa script file %s to %s' % \
                  (casascript_file, out_casascript_file))
@@ -1079,7 +1202,10 @@ finally:
         """
         Save the manifest file.
         """
-        out_manifest_file = os.path.join(products_dir, oussid + '.' + manifest_name)
+        out_manifest_file = self.NameBuilder.manifest(manifest_name, 
+                                                      ousstatus_entity_id=oussid,
+                                                      output_dir=products_dir)
+        #out_manifest_file = os.path.join(products_dir, oussid + '.' + manifest_name)
         LOG.info('Creating manifest file {}'.format(out_manifest_file))
         if not self._executor._dry_run:
             pipemanifest.write(out_manifest_file)
