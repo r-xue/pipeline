@@ -608,6 +608,9 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         self.init()
 
+        if self.stokes_string != 'I':
+            return []
+
         return self.__plot_channel_map()
 
     def __valid_lines(self):

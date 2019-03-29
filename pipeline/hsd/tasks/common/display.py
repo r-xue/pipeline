@@ -359,6 +359,7 @@ class SDImageDisplay(object):
         self.ra_max = qa.convert(self.image.ra_max, 'deg')['value']
         self.dec_min = qa.convert(self.image.dec_min, 'deg')['value']
         self.dec_max = qa.convert(self.image.dec_max, 'deg')['value']
+        self.stokes_string = ''.join(self.image.coordsys.stokes())
 
         LOG.debug('(ra_min,ra_max)=(%s,%s)' % (self.ra_min, self.ra_max))
         LOG.debug('(dec_min,dec_max)=(%s,%s)' % (self.dec_min, self.dec_max))
