@@ -30,7 +30,6 @@ $(document).ready(function() {
 });
 </script>
 
-
 <%
 def get_spw_exp(spw):
     spw_exp = 'Spectral Window {}'.format(spw)
@@ -53,7 +52,7 @@ def get_spw_inline_desc(spw):
         spw_short_name = pcontext.observing_run.virtual_science_spw_shortnames[spw_name]
         spw_exp += ' ({})'.format(spw_short_name)
     return spw_exp
-
+    
 def spmap_plot_title(spw, apply_bl):
     spw_exp = get_spw_exp(spw)
     
@@ -73,12 +72,6 @@ def clustering_plot_title(title_exp, spw, field=None):
         title += " Field {}".format(field)
         
     return title
-    
-try:
-   pass
-except Exception, e:
-   print 'hsd_baseline html template exception:', e
-   raise e
 %>
 
 <!-- short description of what the task does -->
