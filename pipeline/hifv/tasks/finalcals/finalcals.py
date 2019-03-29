@@ -137,12 +137,14 @@ class Finalcals(basetask.StandardTaskTemplate):
         if self.inputs.weakbp:
             # LOG.info("USING WEAKBP HEURISTICS")
             interp = weakbp(self.inputs.vis, bpcaltable, context=context, RefAntOutput=RefAntOutput,
-                            ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse, solint='inf', append=False)
+                            ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse, solint='inf', append=False,
+                            executor=self._executor)
         else:
             # LOG.info("Using REGULAR heuristics")
             interp = ''
             do_bandpass(self.inputs.vis, bpcaltable, context=context, RefAntOutput=RefAntOutput,
-                        spw='', ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse, solint='inf', append=False)
+                        spw='', ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse, solint='inf', append=False,
+                        executor=self._executor)
 
         LOG.info("Bandpass calibration complete")
 

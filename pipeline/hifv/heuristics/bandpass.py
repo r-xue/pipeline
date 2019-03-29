@@ -109,7 +109,7 @@ def computeChanFlag(vis, caltable, context):
 
 
 def do_bandpass(vis, caltable, context=None, RefAntOutput=None, spw=None, ktypecaltable=None,
-                bpdgain_touse=None, solint=None, append=None):
+                bpdgain_touse=None, solint=None, append=None, executor=None):
     """Run CASA task bandpass"""
 
     m = context.observing_run.get_ms(vis)
@@ -169,7 +169,7 @@ def do_bandpass(vis, caltable, context=None, RefAntOutput=None, spw=None, ktypec
 
         job = casa_tasks.bandpass(**bandpass_task_args)
 
-        job.execute()
+        executor.execute(job)
 
     return True
 
@@ -218,14 +218,14 @@ def do_bandpassweakbp(vis, caltable, context=None, RefAntOutput=None, spw=None, 
 
 
 def weakbp(vis, caltable, context=None, RefAntOutput=None, ktypecaltable=None,
-           bpdgain_touse=None, solint=None, append=None):
+           bpdgain_touse=None, solint=None, append=None, executor=None):
 
     m = context.observing_run.get_ms(vis)
     channels = m.get_vla_numchan()  # Number of channels before averaging
 
     bpjob = do_bandpassweakbp(vis, caltable, context=context, spw='', RefAntOutput=RefAntOutput,
-                        ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse, solint='inf', append=False)
-    bpjob.execute()
+                              ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse, solint='inf', append=False)
+    executor.execute(bpjob)
     (largechunk, spwids) = computeChanFlag(vis, caltable, context)
     # print largechunk, spwids
     if not largechunk and spwids == []:
@@ -247,7 +247,7 @@ def weakbp(vis, caltable, context=None, RefAntOutput=None, ktypecaltable=None,
         bpjob = do_bandpassweakbp(vis, caltable, context=context, RefAntOutput=RefAntOutput,
                                   spw=','.join([str(i) for i in spwids]),
                                   ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse, solint=solint, append=True)
-        bpjob.execute()
+        executor.execute(bpjob)
         (largechunk, spwids) = computeChanFlag(vis, caltable, context)
         for spw in spwids:
             preavgnchan = channels[spw]/float(cpa)
