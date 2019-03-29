@@ -30,6 +30,11 @@ class NROPipelineNameBuilder(exportdata.PipelineProductNameBuiler):
         return self._join_dir(basename, output_dir)
 
 
+# Inputs class must be separated per task class even if it's effectively the same
+class NROExportDataInputs(sdexportdata.SDExportDataInputs):
+    pass
+
+
 @task_registry.set_equivalent_casa_task('hsdn_exportdata')
 @task_registry.set_casa_commands_comment('The output data products are computed.')
 class NROExportData(sdexportdata.SDExportData):
@@ -44,7 +49,7 @@ class NROExportData(sdexportdata.SDExportData):
     - Saves the final web log in a compressed / tarred file
     - Saves the text formatted list of contents of products directory
     """
-    Inputs = sdexportdata.SDExportDataInputs
+    Inputs = NROExportDataInputs
 
     NameBuilder = NROPipelineNameBuilder
 
