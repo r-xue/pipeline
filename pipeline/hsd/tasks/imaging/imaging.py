@@ -174,7 +174,10 @@ class SDImaging(basetask.StandardTaskTemplate):
 #         antennalist = inputs.antennalist
         imagemode = inputs.mode.upper()
         cqa = casatools.quanta
-         
+
+        # check if data is NRO 
+        is_nro = sdutils.is_nro(context)
+
         # task returns ResultsList
         results = SDImagingResults()
         # search results and retrieve edge parameter from the most
@@ -246,6 +249,16 @@ class SDImaging(basetask.StandardTaskTemplate):
             pols_list = [[corr for corr in ddobj.corr_axis \
                           if corr in self.required_pols ] for ddobj in temp_dd_list]
             del temp_dd_list
+
+            # NRO specific
+            correlations = None
+            if is_nro:
+                _correlations = []
+                for c in pols_list:
+                    if c not in _correlations:
+                        _correlations.append(c)
+                assert len(_correlations) == 1
+                correlations = ''.join(_correlations[0])
              
             LOG.debug('Members to be processed:')
             for i in xrange(len(member_list)):
@@ -285,6 +298,9 @@ class SDImaging(basetask.StandardTaskTemplate):
             combined_pols = []
             combined_rms_exclude = []
 
+            # for combined images for NRO
+            tocombine_images_nro = []
+
             coord_set = False
             for (name, _members) in image_group.iteritems():
                 msobjs = [x[0] for x in _members]
@@ -322,6 +338,10 @@ class SDImaging(basetask.StandardTaskTemplate):
                 assert len(v_spwids_unique) == 1
                 imagename = self.get_imagename(source_name, v_spwids_unique, ant_name, asdm)
                 LOG.info("Output image name: {}".format(imagename))
+                imagename_nro = None
+                if is_nro:
+                    imagename_nro = self.get_imagename(source_name, v_spwids_unique, ant_name, asdm, stokes=correlations)
+                    LOG.info("Output image name for NRO: {}".format(imagename_nro))
 
                 # pick restfreq from restfreq_list
                 if isinstance(restfreq_list, list):
@@ -371,21 +391,32 @@ class SDImaging(basetask.StandardTaskTemplate):
                 combined_v_spws.extend(v_spwids)
                 combined_pols.extend(polslist)
                 
-                imager_inputs = worker.SDImagingWorker.Inputs(context, infiles, 
-                                                              outfile=imagename,
-                                                              mode=imagemode,
-                                                              antids=antids,
-                                                              spwids=spwids,
-                                                              fieldids=fieldids,
-                                                              restfreq=restfreq,
-                                                              stokes = self.stokes,
-                                                              edge=edge,
-                                                              phasecenter=phasecenter,
-                                                              cellx=cellx,
-                                                              celly=celly,
-                                                              nx=nx, ny=ny)
-                imager_task = worker.SDImagingWorker(imager_inputs)
-                imager_result = self._executor.execute(imager_task)
+                stokes_list = [self.stokes]
+                imagename_list = [imagename]
+                if is_nro:
+                    stokes_list.append(correlations)
+                    imagename_list.append(imagename_nro)
+
+                imager_results = []
+                for _stokes, _imagename in zip(stokes_list, imagename_list):
+                    imager_inputs = worker.SDImagingWorker.Inputs(context, infiles, 
+                                                                  outfile=_imagename,
+                                                                  mode=imagemode,
+                                                                  antids=antids,
+                                                                  spwids=spwids,
+                                                                  fieldids=fieldids,
+                                                                  restfreq=restfreq,
+                                                                  stokes=_stokes,
+                                                                  edge=edge,
+                                                                  phasecenter=phasecenter,
+                                                                  cellx=cellx,
+                                                                  celly=celly,
+                                                                  nx=nx, ny=ny)
+                    imager_task = worker.SDImagingWorker(imager_inputs)
+                    _imager_result = self._executor.execute(imager_task)
+                    imager_results.append(_imager_result)
+                imager_result = imager_results[0]
+                imager_result_nro = imager_results[1] if is_nro else None
                   
                 if imager_result.outcome is not None:
                     # Imaging was successful, proceed following steps
@@ -468,6 +499,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                     outcome = {}
                     outcome['image'] = image_item
                     outcome['imagemode'] = imagemode
+                    outcome['stokes'] = self.stokes
                     outcome['validsp'] = validsps
                     outcome['rms'] = rmss
                     outcome['edge'] = edge
@@ -491,6 +523,42 @@ class SDImaging(basetask.StandardTaskTemplate):
 
                     results.append(result)
                       
+                if imager_result_nro is not None and imager_result_nro.outcome is not None:
+                    # Imaging was successful, proceed following steps
+  
+                    # add image list to combine
+                    if os.path.exists(imagename_nro) and os.path.exists(imagename_nro+'.weight'):
+                        tocombine_images_nro.append(imagename_nro)
+
+                    image_item = imagelibrary.ImageItem(imagename=imagename_nro,
+                                                        sourcename=source_name,
+                                                        spwlist=v_spwids, #virtual
+                                                        specmode='cube',
+                                                        sourcetype='TARGET')
+                    image_item.antenna = ant_name  # name #(group name)
+                    outcome = {}
+                    outcome['image'] = image_item
+                    outcome['imagemode'] = imagemode
+                    outcome['stokes'] = correlations
+                    outcome['validsp'] = validsps
+                    outcome['rms'] = rmss
+                    outcome['edge'] = edge
+                    outcome['reduction_group_id'] = group_id
+                    outcome['file_index'] = [common.get_parent_ms_idx(context, name) for name in infiles]
+                    outcome['assoc_antennas'] = antids
+                    outcome['assoc_fields'] = fieldids
+                    outcome['assoc_spws'] = v_spwids #virtual
+#                     outcome['assoc_pols'] = pols
+  
+                    result = SDImagingResultItem(task=self.__class__,
+                                                 success=True,
+                                                 outcome=outcome)
+                    result.task = self.__class__
+  
+                    result.stage_number = inputs.context.task_counter 
+
+                    results.append(result)
+
             if inputs.is_ampcal:
                 LOG.info("Skipping combined image for the amplitude calibrator.")
                 continue
@@ -689,6 +757,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 outcome = {}
                 outcome['image'] = image_item
                 outcome['imagemode'] = imagemode
+                outcome['stokes'] = self.stokes
                 outcome['validsp'] = validsps
                 outcome['rms'] = rmss
                 outcome['edge'] = edge
@@ -717,6 +786,54 @@ class SDImaging(basetask.StandardTaskTemplate):
 
                 results.append(result)
 
+            # NRO specific: generate combined image for each correlation
+            if is_nro:
+                if len(tocombine_images_nro) == 0:
+                    LOG.warn("No valid image to combine for Source {}, Spw {:d}".format(source_name, spwids[0]))
+                    continue
+            
+                # image name
+                # image name should be based on virtual spw id
+                imagename = self.get_imagename(source_name, combined_v_spws_unique, stokes=correlations)
+  
+                # Step 3.
+                # Imaging of all antennas
+                LOG.info('Combine images of Source {} Spw {:d}'.format(source_name, combined_spws[0]))
+                combine_inputs = sdcombine.SDImageCombineInputs(context, inimages=tocombine_images_nro,
+                                                                outfile=imagename)
+                combine_task = sdcombine.SDImageCombine(combine_inputs)
+                imager_result = self._executor.execute(combine_task)
+
+                if imager_result.outcome is not None:
+                # Imaging was successful, proceed following steps
+            
+                    image_item = imagelibrary.ImageItem(imagename=imagename,
+                                                        sourcename=source_name,
+                                                        spwlist=combined_v_spws, #virtual
+                                                        specmode='cube',
+                                                        sourcetype='TARGET')
+                    image_item.antenna = 'COMBINED'
+                    outcome = {}
+                    outcome['image'] = image_item
+                    outcome['imagemode'] = imagemode
+                    outcome['stokes'] = correlations
+                    outcome['rms'] = rmss
+                    outcome['validsp'] = validsps
+                    outcome['edge'] = edge
+                    outcome['reduction_group_id'] = group_id
+                    outcome['file_index'] = [common.get_parent_ms_idx(context, name) for name in combined_infiles]
+                    outcome['assoc_antennas'] = combined_antids
+                    outcome['assoc_fields'] = combined_fieldids
+                    outcome['assoc_spws'] = combined_v_spws #virtual
+
+                    result = SDImagingResultItem(task=self.__class__,
+                                                 success=True,
+                                                 outcome=outcome,
+                                                 sensitivity_info=None)
+                    result.stage_number = inputs.context.task_counter 
+
+                    results.append(result)
+                    
         return results
     
     def analyse(self, result):
@@ -853,7 +970,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         #LOG.info("#####Merged: {}".format(str(merged)))
         return merged
     
-    def get_imagename(self, source, spwids, antenna=None, asdm=None):
+    def get_imagename(self, source, spwids, antenna=None, asdm=None, stokes=None):
         context = self.inputs.context
         is_nro = sdutils.is_nro(context)
         namer = filenamer.Image()
@@ -883,7 +1000,9 @@ class SDImaging(basetask.StandardTaskTemplate):
         else:
             namer.science()
         namer.spectral_window(spwids[0])
-        namer.polarization(self.stokes)
+        if stokes is None:
+            stokes = self.stokes
+        namer.polarization(stokes)
         # so far we always create native resolution, full channel image
         namer.specmode('cube')
         #namer.spectral_image()
