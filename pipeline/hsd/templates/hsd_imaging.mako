@@ -84,6 +84,34 @@ $(document).ready(function() {
 </script>
 
 <%
+def get_spw_short_exp(spw):
+    spw_exp = 'SPW {}'.format(spw)
+    if dovirtual:
+        spw_exp = 'V' + spw_exp 
+    return spw_exp 
+    
+def get_spw_exp(spw):
+    spw_exp = 'Spectral Window {}'.format(spw)
+    if dovirtual:
+        spw_exp = 'Virtual ' + spw_exp 
+    return spw_exp 
+    
+def get_spw_desc(spw):
+    spw_exp = get_spw_exp(spw).replace('Window', 'Window:')
+    if dovirtual:
+        spw_name = pcontext.observing_run.virtual_science_spw_ids[spw]
+        spw_short_name = pcontext.observing_run.virtual_science_spw_shortnames[spw_name]
+        spw_exp += '<br>({})'.format(spw_short_name)
+    return spw_exp
+        
+def get_spw_inline_desc(spw):
+    spw_exp = get_spw_exp(spw).lower()
+    if dovirtual:
+        spw_name = pcontext.observing_run.virtual_science_spw_ids[spw]
+        spw_short_name = pcontext.observing_run.virtual_science_spw_shortnames[spw_name]
+        spw_exp += ' ({})'.format(spw_short_name)
+    return spw_exp
+    
 stage_dir = os.path.join(pcontext.report_dir, 'stage%s'%(result.stage_number))
 plots_list = [{'title': 'Channel Map',
                'subpage': channelmap_subpage,
@@ -157,11 +185,11 @@ It generates an image combined spectral data from whole antenna as well as image
 	        <div class="col-md-3">
 	            <div class="thumbnail">
 	                <a href="${os.path.relpath(plot.abspath, pcontext.report_dir)}"
-	                   title='<div class="pull-left">Profile Map<br>SPW ${plot.parameters['spw']}<br>Source ${field}</div>'
+	                   title='<div class="pull-left">Profile Map<br>${get_spw_short_exp(plot.parameters['spw'])}<br>Source ${field}</div>'
 	                   data-fancybox="thumbs">
 	                    <img class="lazyload"
                              data-src="${os.path.relpath(plot.thumbnail, pcontext.report_dir)}"
-	                         title="Profile map summary for Spectral Window ${plot.parameters['spw']}">
+	                         title="Profile map summary for ${get_spw_exp(plot.parameters['spw'])}">
 	                </a>
 	
 	                <div class="caption">
@@ -171,13 +199,11 @@ It generates an image combined spectral data from whole antenna as well as image
 	                           data-spw="${plot.parameters['spw']}"
 	                           data-ant="${plot.parameters['ant']}"
 	                           data-field="${field}">
-	                           Spectral Window ${plot.parameters['spw']}
+	                           ${get_spw_exp(plot.parameters['spw'])}
 	                        </a>
 	                    </h4>
 	
-	                    <p>Profile map for spectral
-	                        window ${plot.parameters['spw']}.
-	                    </p>
+	                    <p>Profile map for ${get_spw_inline_desc(plot.parameters['spw'])}.</p>
 	                    
 	                    % if profilemap_subpage is not None:
 	                      <h4>Detailed profile map</h4>
@@ -230,11 +256,11 @@ It generates an image combined spectral data from whole antenna as well as image
 	            <div class="col-md-3">
 	                <div class="thumbnail">
 	                    <a href="${os.path.relpath(plot.abspath, pcontext.report_dir)}"
-	                       title='<div class="pull-left">${plots['title']}<br>SPW ${plot.parameters['spw']}<br>Source ${field}</div>'
+	                       title='<div class="pull-left">${plots['title']}<br>${get_spw_short_exp(plot.parameters['spw'])}<br>Source ${field}</div>'
 	                       data-fancybox="thumbs">
 	                        <img class="lazyload"
                                  data-src="${os.path.relpath(plot.thumbnail, pcontext.report_dir)}"
-	                             title="${plots['title']} for Spectral Window ${plot.parameters['spw']}">
+	                             title="${plots['title']} for ${get_spw_exp(plot.parameters['spw'])}">
 	                    </a>
 	
 	                    <div class="caption">
@@ -244,13 +270,11 @@ It generates an image combined spectral data from whole antenna as well as image
 	                               data-spw="${plot.parameters['spw']}"
 	                               data-ant="${plot.parameters['ant']}"
 	                               data-field="${field}">
-	                               Spectral Window ${plot.parameters['spw']}
+	                               ${get_spw_exp(plot.parameters['spw'])}
 	                            </a>
 	                        </h4>
 	
-	                        <p>${plots['title']} for spectral
-	                            window ${plot.parameters['spw']}.
-	                        </p>
+	                        <p>${plots['title']} for ${get_spw_inline_desc(plot.parameters['spw'])}.</p>
 	                    </div>
 	                </div>
 	            </div>

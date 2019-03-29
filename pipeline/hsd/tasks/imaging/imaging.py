@@ -280,6 +280,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             combined_antids = []
             combined_fieldids = []
             combined_spws = []
+            combined_v_spws = []
             tocombine_images = []
             combined_pols = []
             combined_rms_exclude = []
@@ -315,7 +316,11 @@ class SDImaging(basetask.StandardTaskTemplate):
                 LOG.debug('infiles={}'.format(infiles))
                   
                 # image name
-                imagename = self.get_imagename(source_name, spwids, ant_name, asdm)
+                # image name should be based on virtual spw id
+                v_spwids = [context.observing_run.real2virtual_spw_id(s, m) for s,m in zip(spwids, msobjs)]
+                v_spwids_unique = numpy.unique(v_spwids)
+                assert len(v_spwids_unique) == 1
+                imagename = self.get_imagename(source_name, v_spwids_unique, ant_name, asdm)
                 LOG.info("Output image name: {}".format(imagename))
 
                 # pick restfreq from restfreq_list
@@ -363,6 +368,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 combined_antids.extend(antids)
                 combined_fieldids.extend(fieldids)
                 combined_spws.extend(spwids)
+                combined_v_spws.extend(v_spwids)
                 combined_pols.extend(polslist)
                 
                 imager_inputs = worker.SDImagingWorker.Inputs(context, infiles, 
@@ -455,7 +461,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
                     image_item = imagelibrary.ImageItem(imagename=imagename,
                                                         sourcename=source_name,
-                                                        spwlist=spwids,
+                                                        spwlist=v_spwids, #virtual
                                                         specmode='cube',
                                                         sourcetype='TARGET')
                     image_item.antenna = ant_name  # name #(group name)
@@ -469,7 +475,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                     outcome['file_index'] = [common.get_parent_ms_idx(context, name) for name in infiles]
                     outcome['assoc_antennas'] = antids
                     outcome['assoc_fields'] = fieldids
-                    outcome['assoc_spws'] = spwids
+                    outcome['assoc_spws'] = v_spwids #virtual
 #                     outcome['assoc_pols'] = pols
                     if inputs.is_ampcal:
                         if len(infiles)==1 and (asdm not in ['', None]): outcome['vis'] = asdm
@@ -497,7 +503,10 @@ class SDImaging(basetask.StandardTaskTemplate):
             ref_ms = context.observing_run.get_ms(name=sdutils.get_parent_ms_name(context, combined_infiles[0]))
             
             # image name
-            imagename = self.get_imagename(source_name, combined_spws)
+            # image name should be based on virtual spw id
+            combined_v_spws_unique = numpy.unique(combined_v_spws)
+            assert len(combined_v_spws_unique) == 1
+            imagename = self.get_imagename(source_name, combined_v_spws_unique)
   
             # Step 3.
             # Imaging of all antennas
@@ -673,7 +682,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                   
                 image_item = imagelibrary.ImageItem(imagename=imagename,
                                                     sourcename=source_name,
-                                                    spwlist=combined_spws,
+                                                    spwlist=combined_v_spws, #virtual
                                                     specmode='cube',
                                                     sourcetype='TARGET')
                 image_item.antenna = 'COMBINED'
@@ -687,7 +696,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 outcome['file_index'] = [common.get_parent_ms_idx(context, name) for name in combined_infiles]
                 outcome['assoc_antennas'] = combined_antids
                 outcome['assoc_fields'] = combined_fieldids
-                outcome['assoc_spws'] = combined_spws
+                outcome['assoc_spws'] = combined_v_spws #virtual
 #                 outcome['image_sensitivity'] = {'frequency_range': stat_freqs, 'rms': image_rms,
 #                                                 'channel_width': chan_width, 'representative': is_representative_spw}
 

@@ -28,6 +28,10 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
             uri=uri, description=description, always_rerender=always_rerender)
 
     def update_mako_context(self, ctx, context, results):
+        # whether or not virtual spw id handling is necessary
+        dovirtual = sdutils.require_virtual_spw_id_handling(context.observing_run)
+        ctx.update({'dovirtual': dovirtual})
+        
         cqa = casatools.quanta
         plots = []
         image_rms = []
@@ -36,8 +40,10 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                 image_item = r.outcome['image']
                 msid_list = r.outcome['file_index']
                 imagemode = r.outcome['imagemode']
-                spwid = image_item.spwlist
-                ref_ms = context.observing_run.measurement_sets[msid_list[0]]
+                v_spwid = image_item.spwlist
+                mses = context.observing_run.measurement_sets
+                spwid = [context.observing_run.virtual2real_spw_id(s, mses[i]) for s, i in zip(v_spwid, msid_list)]
+                ref_ms = mses[msid_list[0]]
                 ref_spw = spwid[0]
                 spw_type = 'TP' if imagemode.upper() == 'AMPCAL' else ref_ms.spectral_windows[ref_spw].type
                 task_cls = display.SDImageDisplayFactory(spw_type)
