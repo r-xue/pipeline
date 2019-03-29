@@ -18,7 +18,7 @@ class SDBLFlagListQAHandler(pqa.QAPlugin):
     def handle(self, context, result):
         # Accumulate flag per field, spw to a dictionary
         # accum_flag[field][spw] = {'additional': # of flagged in task, 'total': # of total}
-        accum_flag = accumulate_flag_per_source_spw(result)
+        accum_flag = accumulate_flag_per_source_spw(context, result)
         # Now define score per field, spw
         scores = []
         for field, spwflag in accum_flag.iteritems():
@@ -37,7 +37,7 @@ class SDBLFlagQAHandler(pqa.QAPlugin):
     def handle(self, context, result):
         # temporarily encapsulate result in a list so that we can use the same
         # QA scoring function as the aggregate ResultsList
-        accum_flag = accumulate_flag_per_source_spw([result])
+        accum_flag = accumulate_flag_per_source_spw(context, [result])
 
         vis = result.inputs['vis']
 

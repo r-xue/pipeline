@@ -11,33 +11,7 @@ def get_fraction(flagged, total):
        return '%0.1f%%' % (100.0 * float(flagged) / float(total))
 
 FlagDetailTR = collections.namedtuple("FlagDetailTR", "name spw ant pol nrow totnrow totfrac tsys weather user before postbl prebl postrmean prermean postrms prerms link")
-
-def make_detailed_table(result, stage_dir, fieldname):
-   rel_path = os.path.basename(stage_dir)   ### stage#
-   rows = []
-   for r in result:
-       summaries = r.outcome['summary']
-       for summary in summaries:
-           if summary['field'] != fieldname:
-               continue
-           html_name = summary['html']
-           asdm_name = summary['name']
-           ant_name = summary['antenna']
-           spw = summary['spw']
-           pol = summary['pol']
-           nrows = summary['nrow']
-           flags = summary['nflags']
-           cell_elems = [asdm_name, spw, ant_name, pol, nrows, flags[0]]
-           for nflg in flags:
-               cell_elems.append(get_fraction(nflg, nrows))
-           htext = '<a class="replace-pre" href="%s">details</a>' % (os.path.join(rel_path, html_name),)
-           cell_elems.append(htext)
-           trow = FlagDetailTR(*cell_elems)
-           rows.append(trow)
-   if len(rows) == 0:
-       return []
-   return utils.merge_td_columns(rows, num_to_merge=4)
-
+FlagDetailTRV = collections.namedtuple("FlagDetailTR", "name vspw spw ant pol nrow totnrow totfrac tsys weather user before postbl prebl postrmean prermean postrms prerms link")
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 
@@ -46,6 +20,39 @@ def make_detailed_table(result, stage_dir, fieldname):
 <%block name="title">Flag data by Tsys, weather, and statistics of spectra</%block>
 
 <%
+def make_detailed_table(result, stage_dir, fieldname):
+   rel_path = os.path.basename(stage_dir)   ### stage#
+   rows = []
+   for r in result:
+       summaries = r.outcome['summary']
+       vis = r.inputs['vis']
+       ms = pcontext.observing_run.get_ms(vis)
+       for summary in summaries:
+           if summary['field'] != fieldname:
+               continue
+           html_name = summary['html']
+           asdm_name = summary['name']
+           ant_name = summary['antenna']
+           spw = summary['spw']
+           vspw = pcontext.observing_run.real2virtual_spw_id(spw, ms)
+           pol = summary['pol']
+           nrows = summary['nrow']
+           flags = summary['nflags']
+           cell_elems = [asdm_name, spw, ant_name, pol, nrows, flags[0]]
+           for nflg in flags:
+               cell_elems.append(get_fraction(nflg, nrows))
+           htext = '<a class="replace-pre" href="%s">details</a>' % (os.path.join(rel_path, html_name),)
+           cell_elems.append(htext)
+           if dovirtual:
+               cell_elems.insert(1, vspw)
+               trow = FlagDetailTRV(*cell_elems)
+           else:
+               trow = FlagDetailTR(*cell_elems)
+           rows.append(trow)
+   if len(rows) == 0:
+       return []
+   return utils.merge_td_columns(rows, num_to_merge=4)
+
 try:
    stage_number = result.stage_number
    stage_dir = os.path.join(pcontext.report_dir,'stage%d'%(stage_number))
@@ -98,7 +105,11 @@ For 1.-3., the RMSes of spectra before and after baseline fit are obtained using
     <thead>
 	    <tr>
 	        <th scope="col" rowspan="2">Field</th>
+	        %if dovirtual:
+	        <th scope="col" rowspan="2">Virtual SpW</th>
+	        %else:
 	        <th scope="col" rowspan="2">SpW</th>
+	        %endif
 	        <th scope="col" colspan="3">Flagged Fraction</th>
 		</tr>
 		<tr>
@@ -136,8 +147,13 @@ For 1.-3., the RMSes of spectra before and after baseline fit are obtained using
 			<th rowspan="2">Plots</th>
 		</tr>
 		<tr>
+		    %if dovirtual:
+			<th>Name</th><th>vspw</th><th>spw</th><th>Ant.</th><th>Pol</th><th># of rows</th>
+			<th>row #</th><th>fraction</th>
+			%else:
 			<th>Name</th><th>spw</th><th>Ant.</th><th>Pol</th><th># of rows</th>
 			<th>row #</th><th>fraction</th>
+			%endif
 			%for fflag in fit_flags:
 				<th>post-fit</th><th>pre-fit</th>
 			%endfor

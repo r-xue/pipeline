@@ -8,6 +8,7 @@ import collections
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
+from ..common import utils as sdutils
 
 LOG = logging.get_logger(__name__)
 
@@ -26,16 +27,18 @@ class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             uri=uri, description=description, always_rerender=always_rerender)
 
     def update_mako_context(self, ctx, context, result):
-        accum_flag = accumulate_flag_per_source_spw(result)
+        accum_flag = accumulate_flag_per_source_spw(context, result)
         table_rows = make_summary_table(accum_flag)
+        dovirtual = sdutils.require_virtual_spw_id_handling(context.observing_run)
 
-        ctx.update({'sumary_table_rows': table_rows})
+        ctx.update({'sumary_table_rows': table_rows,
+                    'dovirtual': dovirtual})
 
 
 FlagSummaryTR = collections.namedtuple('FlagSummaryTR', 'field spw before additional total')
 
     
-def accumulate_flag_per_source_spw(results):
+def accumulate_flag_per_source_spw(context, results):
     # Accumulate flag per field, spw from the output of flagdata to a dictionary
     # accum_flag[field][spw] = {'additional': # of flagged in task,
     #                           'total': # of total samples,
@@ -43,6 +46,8 @@ def accumulate_flag_per_source_spw(results):
     #                           'after': total # of flagged}
     accum_flag = {}
     for r in results:
+        vis = r.inputs['vis']
+        ms = context.observing_run.get_ms(vis)
         before, after = r.outcome['flagdata_summary']
         if not before['name'] == 'before' or not after['name'] == 'after':
             raise RuntimeError("Got unexpected flag summary")
@@ -53,13 +58,14 @@ def accumulate_flag_per_source_spw(results):
                 accum_flag[field] = {}
             spwflag = fieldflag['spw']
             for spw, flagval in spwflag.iteritems():
+                vspw = context.observing_run.real2virtual_spw_id(spw, ms)
                 if spw not in accum_flag[field]:
-                    accum_flag[field][spw] = dict(before=0, additional=0, after=0, total=0)
+                    accum_flag[field][vspw] = dict(before=0, additional=0, after=0, total=0)
                 # sum up incremental flags
-                accum_flag[field][spw]['before'] += before[field]['spw'][spw]['flagged']
-                accum_flag[field][spw]['after'] += flagval['flagged']
-                accum_flag[field][spw]['total'] += flagval['total']
-                accum_flag[field][spw]['additional'] += (flagval['flagged']-before[field]['spw'][spw]['flagged'])
+                accum_flag[field][vspw]['before'] += before[field]['spw'][spw]['flagged']
+                accum_flag[field][vspw]['after'] += flagval['flagged']
+                accum_flag[field][vspw]['total'] += flagval['total']
+                accum_flag[field][vspw]['additional'] += (flagval['flagged']-before[field]['spw'][spw]['flagged'])
     return accum_flag
 
 
