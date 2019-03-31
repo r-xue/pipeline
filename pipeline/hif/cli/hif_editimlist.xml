@@ -81,10 +81,9 @@
                 <value/>
             </param>
 
-            <param type="any" name="nbin">
-                <description>Channel binning factors per spw, \'\' for default.</description>
-                <any type="variant"/>
-                <value type="string"/>
+            <param type="int" name="nbin">
+                <description>Channel binning factor.</description>
+                <value>-1</value>
             </param>
 
             <param type="int" name="nchan">
@@ -138,9 +137,10 @@
                 <value/>
             </param>
 
-            <param type="string" name="spw">
+            <param type="any" name="spw">
                 <description>Set of data selection spectral window/channels, \'\' for all</description>
-                <value/>
+                <any type="variant" limittypes="string int"/>
+                <value type="string"/>
             </param>
 
             <param type="any" name="start">

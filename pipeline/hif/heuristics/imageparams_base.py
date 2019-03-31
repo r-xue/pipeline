@@ -1623,6 +1623,9 @@ class ImageParamsHeuristics(object):
     def rms_threshold(self, rms, nsigma):
         return None
 
+    def threshold_nsigma(self):
+        return None
+
     def niter_correction(self, niter, cell, imsize, residual_max, threshold):
         # TODO: parameter should be clean mask to be able to count the pixels
 

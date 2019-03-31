@@ -52,40 +52,78 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class EditimlistInputs(vdp.StandardInputs):
-    search_radius_arcsec = vdp.VisDependentProperty(default=None)
-    cell = vdp.VisDependentProperty(default=None)
-    conjbeams = vdp.VisDependentProperty(default=None)
-    cyclefactor = vdp.VisDependentProperty(default=None)
-    cycleniter = vdp.VisDependentProperty(default=None)
-    deconvolver = vdp.VisDependentProperty(default=None)
-    editmode = vdp.VisDependentProperty(default=None)
-    field = vdp.VisDependentProperty(default=None)
-    imaging_mode = vdp.VisDependentProperty(default=None)
-    imagename = vdp.VisDependentProperty(default=None)
-    imsize = vdp.VisDependentProperty(default=None)
-    intent = vdp.VisDependentProperty(default=None)
-    gridder = vdp.VisDependentProperty(default=None)
+    search_radius_arcsec = vdp.VisDependentProperty(default=1000.0)
+    conjbeams = vdp.VisDependentProperty(default='')
+    cyclefactor = vdp.VisDependentProperty(default='')
+    cycleniter = vdp.VisDependentProperty(default='')
+    deconvolver = vdp.VisDependentProperty(default='')
+    editmode = vdp.VisDependentProperty(default='')
+    imaging_mode = vdp.VisDependentProperty(default='')
+    imagename = vdp.VisDependentProperty(default='')
+    intent = vdp.VisDependentProperty(default='')
+    gridder = vdp.VisDependentProperty(default='')
     mask = vdp.VisDependentProperty(default=None)
-    nbin = vdp.VisDependentProperty(default=None)
-    nchan = vdp.VisDependentProperty(default=None)
-    niter = vdp.VisDependentProperty(default=None)
-    nterms = vdp.VisDependentProperty(default=None)
-    parameter_file = vdp.VisDependentProperty(default=None)
-    phasecenter = vdp.VisDependentProperty(default=None)
-    reffreq = vdp.VisDependentProperty(default=None)
-    restfreq = vdp.VisDependentProperty(default=None)
-    robust = vdp.VisDependentProperty(default=None)
-    scales = vdp.VisDependentProperty(default=None)
-    specmode = vdp.VisDependentProperty(default=None)
-    spw = vdp.VisDependentProperty(default=None)
-    start = vdp.VisDependentProperty(default=None)
-    stokes = vdp.VisDependentProperty(default=None)
-    threshold = vdp.VisDependentProperty(default=None)
-    threshold_nsigma = vdp.VisDependentProperty(default=None)
-    uvtaper = vdp.VisDependentProperty(default=None)
-    uvrange = vdp.VisDependentProperty(default=None)
-    width = vdp.VisDependentProperty(default=None)
-    sensitivity = vdp.VisDependentProperty(default=None)
+    nbin = vdp.VisDependentProperty(default=-1)
+    nchan = vdp.VisDependentProperty(default=-1)
+    niter = vdp.VisDependentProperty(default=20000)
+    nterms = vdp.VisDependentProperty(default=2)
+    parameter_file = vdp.VisDependentProperty(default='')
+    phasecenter = vdp.VisDependentProperty(default='')
+    reffreq = vdp.VisDependentProperty(default='')
+    restfreq = vdp.VisDependentProperty(default='')
+    robust = vdp.VisDependentProperty(default=-999.0)
+    scales = vdp.VisDependentProperty(default='')
+    specmode = vdp.VisDependentProperty(default='')
+    start = vdp.VisDependentProperty(default='')
+    stokes = vdp.VisDependentProperty(default='')
+    threshold = vdp.VisDependentProperty(default='')
+    threshold_nsigma = vdp.VisDependentProperty(default=4.0)
+    uvtaper = vdp.VisDependentProperty(default='')
+    uvrange = vdp.VisDependentProperty(default='')
+    width = vdp.VisDependentProperty(default='')
+    sensitivity = vdp.VisDependentProperty(default=0.0)
+
+    @vdp.VisDependentProperty
+    def cell(self):
+        # mutable object, so should not use VisDependentProperty(default=[])
+        return []
+
+    @cell.convert
+    def cell(self, val):
+        if isinstance(val, str):
+            val = [val]
+        return val
+
+    @vdp.VisDependentProperty
+    def imsize(self):
+        # mutable object, so should not use VisDependentProperty(default=[])
+        return []
+
+    @imsize.convert
+    def imsize(self, val):
+        if isinstance(val, str):
+            val = [val]
+        return val
+
+    @vdp.VisDependentProperty
+    def field(self):
+        # mutable object, so should not use VisDependentProperty(default=[])
+        return []
+
+    @field.convert
+    def field(self, val):
+        if isinstance(val, str):
+            val = [val]
+        return val
+
+    @vdp.VisDependentProperty
+    def spw(self):
+        return ''
+
+    @spw.convert
+    def spw(self, val):
+        # Use str() method to catch single spwid case via PPR which maps to int.
+        return str(val)
 
     def __init__(self, context, output_dir=None, vis=None,
                  search_radius_arcsec=None, cell=None, conjbeams=None,
@@ -210,7 +248,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         ms = inp.context.observing_run.get_ms(inp.vis[0])
         fieldnames = []
 
-        if not isinstance(inpdict['field'], type(None)):
+        if inpdict['field']:
             # assume field entries are either all integers or all strings, but not a mix
             if isinstance(inpdict['field'][0], int):
                 fieldobj = ms.get_fields(field_id=inpdict['field'][0])
