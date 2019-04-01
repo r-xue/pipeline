@@ -371,8 +371,8 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
         # Define the name of the output tarfile
         ps = context.project_structure
-        tarfile = self.NameBuilder.weblog(project_structure=ps,
-                                          ousstatus_entity_id=oussid)
+        tarfilename = self.NameBuilder.weblog(project_structure=ps,
+                                              ousstatus_entity_id=oussid)
         # if ps is None:
         #     tarfilename = 'weblog.tgz'
         # elif ps.ousstatus_entity_id == 'unknown':
