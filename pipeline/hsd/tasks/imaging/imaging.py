@@ -120,14 +120,23 @@ class SDImagingResultItem(common.SingleDishResults):
         super(SDImagingResultItem, self).merge_with_context(context)
         LOG.todo('need to decide what is done in SDImagingResultItem.merge_with_context')
         
+        # check if data is NRO 
+        is_nro = sdutils.is_nro(context)
+
         if 'export_results' in self.outcome:
             self.outcome['export_results'].merge_with_context(context)
 
         # register ImageItem object to context.sciimlist if antenna is COMBINED
         if 'image' in self.outcome:
             image_item = self.outcome['image']
-            if isinstance(image_item, imagelibrary.ImageItem) \
-              and image_item.antenna == 'COMBINED':
+            if is_nro:
+                # NRO requirement is to export per-beam (per-antenna) images 
+                # as well as combined ones
+                cond = isinstance(image_item, imagelibrary.ImageItem)
+            else:
+                # ALMA requirement is to export only combined images
+                cond = isinstance(image_item, imagelibrary.ImageItem) and image_item.antenna == 'COMBINED'
+            if cond:
                 context.sciimlist.add_item(image_item)
 
     def _outcome_name(self):
