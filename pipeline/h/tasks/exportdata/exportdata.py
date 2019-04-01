@@ -129,10 +129,9 @@ class PipelineProductNameBuiler(object):
     
     @classmethod
     def manifest(self, basename, ousstatus_entity_id, output_dir=None):
-        return self._build_from_ps_oussid(basename, 
-                                          project_structure=None,
-                                          ousstatus_entity_id=ousstatus_entity_id,
-                                          output_dir=output_dir)
+        return self._build_from_oussid(basename,
+                                       ousstatus_entity_id=ousstatus_entity_id,
+                                       output_dir=output_dir)
 
     @classmethod
     def calapply_list(self, vis, aux_product=False, output_dir=None):
