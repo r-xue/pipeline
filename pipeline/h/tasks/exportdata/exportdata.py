@@ -1283,7 +1283,7 @@ finally:
                         cleanlist[image_number]['fitsfiles'].append(self._fitsfile(products_dir, imagename))
 
                     # Add PBs for interferometry
-                    if (image['imagename'].find('.image') != -1):
+                    if (image['imagename'].find('.image') != -1) and (image['imagename'].find('.image.sd') == -1):
                         if (image['imagename'].find('.pbcor') != -1):
                             if (image['multiterm']):
                                 imagename = image['imagename'].replace('.image.pbcor', '.pb.tt0')
@@ -1304,7 +1304,7 @@ finally:
                                 cleanlist[image_number]['auxfitsfiles'].append(self._fitsfile(products_dir, imagename))
 
                     # Add auto-boxing masks for interferometry
-                    if (image['imagename'].find('.image') != -1):
+                    if (image['imagename'].find('.image') != -1) and (image['imagename'].find('.image.sd') == -1):
                         if (image['imagename'].find('.pbcor') != -1):
                             imagename = image['imagename'].replace('.image.pbcor', '.mask')
                             imagename2 = image['imagename'].replace('.image.pbcor', '.cleanmask')
