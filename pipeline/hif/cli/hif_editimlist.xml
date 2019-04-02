@@ -8,7 +8,7 @@
         <shortdescription>Add to a list of images to be produced with hif_makeimages()</shortdescription>
         <description>
             Add to a list of images to be produced with hif_makeimages(), which uses hif_tclean() to invoke CASA tclean.  
-	    Many of the hif_editimlist() inputs map directly to tclean parameters.
+            Many of the hif_editimlist() inputs map directly to tclean parameters.
         </description>
         <input>
 
@@ -59,6 +59,15 @@
             <param type="string" name="imaging_mode">
                 <description>Identity of product type (e.g. VLASS quick look) desired.  This will determine the heuristics used.</description>
                 <value/>
+                <allowed kind="enum">
+                    <value/>
+                    <value>ALMA</value>
+                    <value>VLA</value>
+                    <value>VLASS-QL</value>
+                    <value>VLASS-SE-CONT</value>
+                    <value>VLASS-SE-TAPER</value>
+                    <value>VLASS-SE-CUBE</value>
+                </allowed>
             </param>
 
             <param type="stringArray" name="imsize">
@@ -125,7 +134,7 @@
             <param type="double" name="robust">
                 <description>Briggs robustness parameter</description>
                 <value>-999.0</value>
-	    </param>
+            </param>
 
             <param type="string" name="scales">
                 <description>The scales for multi-scale imaging.</description>
@@ -159,10 +168,10 @@
             <value type="double">0.0</value>
         </param>
 
-	    <param type="string" name="threshold">
-	        <description/>
-                <value/>
-	    </param>
+        <param type="string" name="threshold">
+            <description/>
+            <value/>
+        </param>
 
         <param type="double" name="threshold_nsigma">
             <description/>
@@ -185,6 +194,11 @@
                 <any type="variant"/>
                 <value type="string"/>
             </param>
+
+            <!--param type="bool" name="clearlist" subparam="true">
+                <description>Clear any previous target list</description>
+                <value>False</value>
+            </param-->
 
             <param type="string" name="pipelinemode">
                 <description>The pipeline operating mode</description>
@@ -305,8 +319,8 @@
             directions of all fields that are to be image together.
             example: 0, 'J2000 19h30m00 -40d00m00'
 
-	    <!-- TODO: add description-->
-	    reffreq --
+        <!-- TODO: add description-->
+        reffreq --
 
 
             robust -- Set the Briggs robustness factor for weighting. In general,

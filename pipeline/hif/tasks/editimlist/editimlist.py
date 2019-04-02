@@ -305,18 +305,20 @@ class Editimlist(basetask.StandardTaskTemplate):
                                                             imaging_params=inp.context.imaging_parameters,
                                                             imaging_mode=img_mode)
 
+        # NB: the 'threshold_nsigma' parameter in hif_editimlist translates to
+        #     the internal 'rms_sigma' in hif_makeimages
         threshold_set_by_user = bool(inpdict['threshold'])
-        nsigma_set_by_user = bool(inpdict['threshold_nsigma'])
-        if threshold_set_by_user and not nsigma_set_by_user:
+        rms_nsigma_set_by_user = bool(inpdict['threshold_nsigma'])
+        if threshold_set_by_user and not rms_nsigma_set_by_user:
             imlist_entry['threshold'] = inpdict['threshold']
-        elif nsigma_set_by_user and not threshold_set_by_user:
-            imlist_entry['nsigma'] = inpdict['threshold_nsigma']
-        elif nsigma_set_by_user and threshold_set_by_user:
+        elif rms_nsigma_set_by_user and not threshold_set_by_user:
+            imlist_entry['rms_nsigma'] = inpdict['threshold_nsigma']
+        elif rms_nsigma_set_by_user and threshold_set_by_user:
             imlist_entry['threshold'] = inpdict['threshold']
-            imlist_entry['nsigma'] = inpdict['threshold_nsigma']
+            imlist_entry['rms_nsigma'] = inpdict['threshold_nsigma']
             LOG.warn("Both 'threshold' and 'threshold_nsigma' were specified.")
         else:  # neither set by user.  Use nsigma.
-            imlist_entry['nsigma'] = th.threshold_nsigma()
+            imlist_entry['rms_nsigma'] = th.threshold_nsigma()
 
         imlist_entry['stokes'] = th.stokes() if not inpdict['stokes'] else inpdict['stokes']
         imlist_entry['conjbeams'] = th.conjbeams() if not inpdict['conjbeams'] else inpdict['conjbeams']
