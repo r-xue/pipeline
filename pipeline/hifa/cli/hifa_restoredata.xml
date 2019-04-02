@@ -139,7 +139,8 @@ products_dir -- Name of the data products directory to copy calibration
     default: '../products'
     example: products_dir='myproductspath'
 
-copytoraw -- Copy calibration and flagging tables to rawdata_dir directory.
+copytoraw -- Copy calibration and flagging tables from products_dir to
+    rawdata_dir directory.
 
    default: True
    example: copytoraw=False
