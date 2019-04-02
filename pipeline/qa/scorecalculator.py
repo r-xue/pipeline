@@ -2293,6 +2293,23 @@ def score_sd_skycal_elevation_difference(ms, resultdict, threshold=3.0):
 
 
 @log_qa
+def score_sdimage_masked_pixels(imagename):
+    # metric score is a fraction of masked pixels 
+    metric_score = 0.0
+
+    # score should be evaluated from metric score
+    score = 1.0
+
+    origin = pqa.QAOrigin(metric_name='SingleDishImageMaskedPixels',
+                          metric_score=metric_score,
+                          metric_units='Fraction of masked pixels in image')
+
+    return pqa.QAScore(score, 
+                       longmsg='',
+                       shortmsg='',
+                       origin=origin)
+
+@log_qa
 def score_gfluxscale_k_spw(vis, field, spw_id, k_spw, ref_spw):
     """ Convert internal spw_id-spw_id consistency ratio to a QA score.
 
