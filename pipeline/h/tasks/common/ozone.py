@@ -1,5 +1,7 @@
 from __future__ import absolute_import
 
+import decimal
+
 import numpy as np
 
 
@@ -345,5 +347,22 @@ def get_ozone_channels_for_spw(ms, spwid):
                  if oz_range[0] <= chan_freq*1.E-9 <= oz_range[1]]
         if match:
             oz_chans[ichan] = True
+
+    # PIPE-131: if the given spectral window came from a double sideband (DSB)
+    # receiver (e.g. ALMA Band 9 and 10), then check if any of the channels in
+    # image sideband match the location of ozone lines.
+    if spw.receiver == "DSB":
+        # First derive the frequency range for the image sideband based on the LO1
+        # frequency and the frequency range of the signal sideband, using:
+        # image_freq = 2 * LO1 - signal_freq.
+        imsb_chan_freqs = [decimal.Decimal(2.0) * spw.freq_lo[0].value - decimal.Decimal(freq)
+                           for freq in spw.channels.chan_freqs]
+
+        # For each channel in image sideband, check if it matches one of the ozone lines.
+        for ichan, chan_freq in enumerate(imsb_chan_freqs):
+            match = [oz_range for oz_range in OZONE_RANGES
+                     if oz_range[0] <= chan_freq * decimal.Decimal(1.0E-9) <= oz_range[1]]
+            if match:
+                oz_chans[ichan] = True
 
     return oz_chans
