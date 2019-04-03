@@ -208,18 +208,18 @@ class SpectralWindow(object):
     """
 
     __slots__ = ('id', 'band', 'bandwidth', 'type', 'intents', 'ref_frequency', 'name', 'baseband', 'sideband',
-                 'mean_frequency', '_min_frequency', '_max_frequency', '_centre_frequency', 'channels',
-                 '_ref_frequency_frame', 'transitions')
+                 'receiver', 'freq_lo', 'mean_frequency', '_min_frequency', '_max_frequency', '_centre_frequency',
+                 'channels', '_ref_frequency_frame', 'transitions')
 
     def __getstate__(self):
         return (self.id, self.band, self.bandwidth, self.type, self.intents, self.ref_frequency, self.name,
-                self.baseband, self.sideband, self.mean_frequency, self._min_frequency, self._max_frequency,
-                self._centre_frequency, self.channels, self._ref_frequency_frame, self.transitions)
+                self.baseband, self.sideband, self.receiver, self.freq_lo, self.mean_frequency, self._min_frequency,
+                self._max_frequency, self._centre_frequency, self.channels, self._ref_frequency_frame, self.transitions)
 
     def __setstate__(self, state):
         (self.id, self.band, self.bandwidth, self.type, self.intents, self.ref_frequency, self.name, self.baseband,
-         self.sideband, self.mean_frequency, self._min_frequency, self._max_frequency, self._centre_frequency,
-         self.channels, self._ref_frequency_frame, self.transitions) = state
+         self.sideband, self.receiver, self.freq_lo, self.mean_frequency, self._min_frequency, self._max_frequency,
+         self._centre_frequency, self.channels, self._ref_frequency_frame, self.transitions) = state
 
     def __repr__(self):
         chan_freqs = self.channels.chan_freqs
@@ -255,7 +255,7 @@ class SpectralWindow(object):
         )
 
     def __init__(self, spw_id, name, spw_type, bandwidth, ref_freq, mean_freq, chan_freqs, chan_widths,
-                 chan_effective_bws, sideband, baseband, band='Unknown', transitions=None):
+                 chan_effective_bws, sideband, baseband, receiver, freq_lo, band='Unknown', transitions=None):
         if transitions is None:
             transitions = ['Unknown']
 
@@ -277,6 +277,11 @@ class SpectralWindow(object):
         self.name = str(name)
         self.sideband = str(sideband)
         self.baseband = str(baseband)
+        self.receiver = receiver
+        if freq_lo is not None:
+            self.freq_lo = [measures.Frequency(freq, measures.FrequencyUnits.HERTZ) for freq in freq_lo]
+        else:
+            self.freq_lo = freq_lo
 
         chan_freqs = compress(chan_freqs)
         chan_widths = compress(chan_widths)

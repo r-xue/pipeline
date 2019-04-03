@@ -38,6 +38,10 @@ def _get_ms_name(ms):
     return ms.name if isinstance(ms, domain.MeasurementSet) else ms
 
 
+def _get_ms_basename(ms):
+    return ms.basename if isinstance(ms, domain.MeasurementSet) else ms
+
+
 def _get_science_goal_value(science_goals, goal_keyword):
     value = None
     for science_goal in science_goals:
@@ -278,7 +282,7 @@ class MeasurementSetReader(object):
             LOG.info('Populating ms.antenna_array...')
             ms.antenna_array = AntennaTable.get_antenna_array(msmd)
             LOG.info('Populating ms.spectral_windows...')
-            ms.spectral_windows = SpectralWindowTable.get_spectral_windows(msmd)
+            ms.spectral_windows = SpectralWindowTable.get_spectral_windows(msmd, ms)
             LOG.info('Populating ms.states...')
             ms.states = StateTable.get_states(msmd)
             LOG.info('Populating ms.fields...')
@@ -391,7 +395,7 @@ class MeasurementSetReader(object):
 
 class SpectralWindowTable(object):
     @staticmethod
-    def get_spectral_windows(msmd):
+    def get_spectral_windows(msmd, ms):
         # map spw ID to spw type
         spw_types = {i: 'FDM' for i in msmd.fdmspws()}
         spw_types.update({i: 'TDM' for i in msmd.tdmspws()})
@@ -412,6 +416,9 @@ class SpectralWindowTable(object):
             first_target_source_id = 0
 
         target_spw_ids = msmd.spwsforintent('*TARGET*')
+
+        # Read in information on receiver for current MS.
+        receiver_info = SpectralWindowTable.get_receiver_info(ms)
 
         spws = []
         for i, spw_name in enumerate(spw_names):
@@ -451,11 +458,73 @@ class SpectralWindowTable(object):
             if spw_name in [None, '']:
                 spw_name = 'spw_%s' % str(i)
 
+            # Extract receiver type and LO frequencies for current spw.
+            try:
+                receiver, freq_lo = receiver_info[i]
+            except KeyError:
+                LOG.warn("No receiver info available for MS {} spw id {}".format(_get_ms_basename(ms), i))
+                receiver, freq_lo = None, None
+
+            # Store all info in a new SpectralWindow object.
             spw = domain.SpectralWindow(i, spw_name, spw_type, bandwidth, ref_freq, mean_freq, chan_freqs, chan_widths,
-                                        chan_effective_bws, sideband, baseband, transitions=transitions)
+                                        chan_effective_bws, sideband, baseband, receiver, freq_lo,
+                                        transitions=transitions)
             spws.append(spw)
 
         return spws
+
+    @staticmethod
+    def get_receiver_info(ms):
+        """
+        Extract information about the receiver from the ASDM_RECEIVER table.
+        The following properties are extracted:
+        * receiver type (e.g.: TSB, DSB, NOSB)
+        * local oscillator frequencies
+
+        If multiple entries are present for the same ASDM spwid, then keep
+
+        :param ms: measurement set to inspect
+        :return: dict of MS spw: (receiver_type, freq_lo)
+        """
+        # Get mapping of ASDM spectral window id to MS spectral window id.
+        asdm_to_ms_spw_map = SpectralWindowTable.get_asdm_to_ms_spw_mapping(ms)
+
+        # Construct path to ASDM_RECEIVER table.
+        msname = _get_ms_name(ms)
+        receiver_table = os.path.join(msname, 'ASDM_RECEIVER')
+
+        receiver_info = {}
+        try:
+            # Read in required columns from table.
+            with casatools.TableReader(receiver_table) as tb:
+                # Extract the ASDM spw ids column.
+                spwids = tb.getcol('spectralWindowId')
+
+                # Go through the table row-by-row, and extract info for each
+                # ASDM spwid encountered:
+                for i, spwid in enumerate(spwids):
+                    # Assume that ASDM spectral windows are stored as a string
+                    # such as "SpectralWindow_<nn>", where <nn> is the ID integer.
+                    _, asdm_spwid = spwid.split('_')
+
+                    # Get MS spwid corresponding to the current ASDM spwid.
+                    ms_spwid = asdm_to_ms_spw_map[int(asdm_spwid)]
+
+                    # Add the information from the current row if either:
+                    #  a.) no info for the current spwid was stored yet.
+                    #  b.) info was already stored for the current spwid, but
+                    #      this info was not for receiver type of "TSB" or "DSB".
+                    # This will store one entry for each ASDM spwid encountered,
+                    # preferentially the first TSB/DSB row in the table
+                    # corresponding to the spwid, but otherwise the first
+                    # non-TSB/DSB row corresponding to the spwid.
+                    if ms_spwid not in receiver_info or receiver_info[ms_spwid][0] not in ["TSB", "DSB"]:
+                        receiver_info[ms_spwid] = (tb.getcell("receiverSideband", i), tb.getcell("freqLO", i))
+        except:
+            LOG.warn("Error reading receiver info for MS {}".format(_get_ms_basename(ms)))
+            receiver_info = {}
+
+        return receiver_info
 
     @staticmethod
     def parse_spectral_window_ids_from_xml(xml_path):
