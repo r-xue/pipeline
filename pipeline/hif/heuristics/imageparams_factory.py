@@ -22,7 +22,7 @@ class ImageParamsHeuristicsFactory(object):
             return ImageParamsHeuristicsVlassSeTaper(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
         elif imaging_mode == 'VLASS-SE-CUBE':  # single epoch cube
             return ImageParamsHeuristicsVlassSeCube(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
-        elif imaging_mode == 'VLA':  # VLA but not VLASS
+        elif imaging_mode == 'VLA' or imaging_mode == 'JVLA' or imaging_mode == 'EVLA':  # VLA but not VLASS
             return ImageParamsHeuristicsVLA(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
         else:
             raise Exception('Unknown imaging mode: %s' % imaging_mode)
