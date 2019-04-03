@@ -26,7 +26,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
 
     calcsb = vdp.VisDependentProperty(default=False)
     cleancontranges = vdp.VisDependentProperty(default=False)
-    hm_cleaning = vdp.VisDependentProperty(default='rms')
+    threshold = vdp.VisDependentProperty(default=None)
     masklimit = vdp.VisDependentProperty(default=4.0)
     mosweight = vdp.VisDependentProperty(default=None)
     rms_nsigma = vdp.VisDependentProperty(default=None)
@@ -101,7 +101,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
                  start=None, width=None, nbin=None,
                  restoringbeam=None, hm_masking=None, hm_sidelobethreshold=None, hm_noisethreshold=None,
                  hm_lownoisethreshold=None, hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None,
-                 hm_dogrowprune=None, hm_minpercentchange=None, hm_cleaning=None,
+                 hm_dogrowprune=None, hm_minpercentchange=None,
                  iter=None, mask=None, niter=None, threshold=None, tlimit=None, masklimit=None,
                  calcsb=None, cleancontranges=None, parallel=None,
                  # Extra parameters not in the CLI task interface
@@ -131,7 +131,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
 
         self.calcsb = calcsb
         self.cleancontranges = cleancontranges
-        self.hm_cleaning = hm_cleaning
+        self.threshold = threshold
         self.image_heuristics = heuristics
         self.masklimit = masklimit
         self.nbin = nbin
@@ -494,18 +494,10 @@ class Tclean(cleanbase.CleanBase):
             inputs.spwsel_topo = ['%s' % inputs.spw] * len(inputs.vis)
 
         # Determine threshold
-        if inputs.hm_cleaning == 'manual':
+        if inputs.threshold not in (None, '') or inputs.rms_nsigma not in (None, ''):
             threshold = inputs.threshold
-        elif inputs.hm_cleaning == 'sensitivity':
-            raise Exception('sensitivity threshold not yet implemented')
-        elif inputs.hm_cleaning == 'rms':
-            if inputs.threshold not in (None, '', 0.0):
-                threshold = inputs.threshold
-            else:
-                threshold = '%.3gJy' % (inputs.tlimit * sensitivity)
         else:
-            raise Exception('hm_cleaning mode {} not recognized. '
-                            'Threshold not set.'.format(inputs.hm_cleaning))
+            threshold = '%.3gJy' % (inputs.tlimit * sensitivity)
 
         multiterm = inputs.nterms if inputs.deconvolver == 'mtmfs' else None
 

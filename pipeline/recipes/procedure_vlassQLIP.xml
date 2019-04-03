@@ -42,10 +42,6 @@
         <Command xmlns="">hif_makeimages</Command>
         <ParameterSet>
             <Parameter>
-                <Keyword xmlns="">hm_cleaning</Keyword>
-                <Value xmlns="">manual</Value>
-            </Parameter>
-            <Parameter>
                 <Keyword xmlns="">hm_masking</Keyword>
                 <Value xmlns="">none</Value>
             </Parameter>

@@ -54,7 +54,7 @@ def vlassSEIP_cube(vislist, editimlist_infile, importonly=False, pipelinemode='a
         hif_transformimagedata(datacolumn="corrected", clear_pointing=True, modify_weights=False)
 
         # run tclean and create images
-        hif_makeimages(pipelinemode=pipelinemode, hm_cleaning='manual', hm_masking='none')
+        hif_makeimages(pipelinemode=pipelinemode, hm_masking='none')
 
         # apply a primary beam correction on images before rms and cutouts
         hifv_pbcor(pipelinemode=pipelinemode)

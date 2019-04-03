@@ -214,6 +214,8 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristics):
     def _new_threshold(self, threshold, rms_threshold, nsigma):
 
         if rms_threshold:
+            qa = casatools.quanta
+            threshold = qa.convert(qa.quantity(threshold), 'Jy')['value']
             if threshold:
                 LOG.warn("Both the 'threshold' and 'threshold_nsigma' were specified.")
                 LOG.warn('Setting new threshold to max of input threshold and scaled MAD * nsigma.')
