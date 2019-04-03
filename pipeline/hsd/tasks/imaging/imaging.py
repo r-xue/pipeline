@@ -23,6 +23,7 @@ from . import gridding
 from . import sdcombine
 from . import weighting
 from . import worker
+from . import resultobjects
 from .. import common
 from ..baseline import baseline
 from ..common import compress
@@ -106,54 +107,54 @@ class SDImagingInputs(vdp.StandardInputs):
         self.spw = spw
 
 
-class SDImagingResultItem(common.SingleDishResults):
-    """
-    The class to store result of each image.
-    """
-    def __init__(self, task=None, success=None, outcome=None, sensitivity_info=None):
-        super(SDImagingResultItem, self).__init__(task, success, outcome)
-        self.sensitivity_info = sensitivity_info
-        # logrecords attribute is mandatory but not created unless Result is returned by execute.
-        self.logrecords = []
+# class SDImagingResultItem(common.SingleDishResults):
+#     """
+#     The class to store result of each image.
+#     """
+#     def __init__(self, task=None, success=None, outcome=None, sensitivity_info=None):
+#         super(SDImagingResultItem, self).__init__(task, success, outcome)
+#         self.sensitivity_info = sensitivity_info
+#         # logrecords attribute is mandatory but not created unless Result is returned by execute.
+#         self.logrecords = []
 
-    def merge_with_context(self, context):
-        super(SDImagingResultItem, self).merge_with_context(context)
-        LOG.todo('need to decide what is done in SDImagingResultItem.merge_with_context')
+#     def merge_with_context(self, context):
+#         super(SDImagingResultItem, self).merge_with_context(context)
+#         LOG.todo('need to decide what is done in SDImagingResultItem.merge_with_context')
         
-        # check if data is NRO 
-        is_nro = sdutils.is_nro(context)
+#         # check if data is NRO 
+#         is_nro = sdutils.is_nro(context)
 
-        if 'export_results' in self.outcome:
-            self.outcome['export_results'].merge_with_context(context)
+#         if 'export_results' in self.outcome:
+#             self.outcome['export_results'].merge_with_context(context)
 
-        # register ImageItem object to context.sciimlist if antenna is COMBINED
-        if 'image' in self.outcome:
-            image_item = self.outcome['image']
-            if is_nro:
-                # NRO requirement is to export per-beam (per-antenna) images 
-                # as well as combined ones
-                cond = isinstance(image_item, imagelibrary.ImageItem)
-            else:
-                # ALMA requirement is to export only combined images
-                cond = isinstance(image_item, imagelibrary.ImageItem) and image_item.antenna == 'COMBINED'
-            if cond:
-                context.sciimlist.add_item(image_item)
+#         # register ImageItem object to context.sciimlist if antenna is COMBINED
+#         if 'image' in self.outcome:
+#             image_item = self.outcome['image']
+#             if is_nro:
+#                 # NRO requirement is to export per-beam (per-antenna) images 
+#                 # as well as combined ones
+#                 cond = isinstance(image_item, imagelibrary.ImageItem)
+#             else:
+#                 # ALMA requirement is to export only combined images
+#                 cond = isinstance(image_item, imagelibrary.ImageItem) and image_item.antenna == 'COMBINED'
+#             if cond:
+#                 context.sciimlist.add_item(image_item)
 
-    def _outcome_name(self):
-        # return [image.imagename for image in self.outcome]
-        return self.outcome['image'].imagename
+#     def _outcome_name(self):
+#         # return [image.imagename for image in self.outcome]
+#         return self.outcome['image'].imagename
 
 
-class SDImagingResults(basetask.ResultsList):
-    """
-    The class to store a list of per image results (SDImagingResultItem).
-    """
-    def merge_with_context(self, context):
-        # Assign logrecords of top level task to the first result item.
-        if hasattr(self, 'logrecords') and len(self) > 0:
-            self[0].logrecords.extend(self.logrecords)
-        # merge per item
-        super(SDImagingResults, self).merge_with_context(context)
+# class SDImagingResults(basetask.ResultsList):
+#     """
+#     The class to store a list of per image results (SDImagingResultItem).
+#     """
+#     def merge_with_context(self, context):
+#         # Assign logrecords of top level task to the first result item.
+#         if hasattr(self, 'logrecords') and len(self) > 0:
+#             self[0].logrecords.extend(self.logrecords)
+#         # merge per item
+#         super(SDImagingResults, self).merge_with_context(context)
 
 
 @task_registry.set_equivalent_casa_task('hsd_imaging')
@@ -166,6 +167,55 @@ class SDImaging(basetask.StandardTaskTemplate):
     required_pols = ['XX', 'YY']
 
     is_multi_vis_task = True
+
+    @classmethod
+    def _manipulate_worker_result(cls, result, **kwargs):
+        # image_item = imagelibrary.ImageItem(imagename=imagename,
+        #                                     sourcename=source_name,
+        #                                     spwlist=combined_v_spws, #virtual
+        #                                     specmode='cube',
+        #                                     sourcetype='TARGET')
+
+        # override attributes for image item
+        image_keys = [('sourcename', 'source_name'),
+                      ('spwlist', 'spwlist'),
+                      ('antenna', 'ant_name')]
+        for x, y in image_keys:
+            if y in kwargs:
+                setattr(result.outcome['image'], x, kwargs[y])
+        # imager_result.outcome['image'].sourcename = source_name
+        # imager_result.outcome['image'].spwlist = combined_v_spws
+        # imager_result.outcome['image'].antenna = 'COMBINED'
+
+        # fill missing attributes for outcome
+        outcome_keys = [('imagemode', 'imagemode'),
+                        ('stokes', 'stokes'),
+                        ('validsp', 'validsps'),
+                        ('rms', 'rmss'),
+                        ('edge', 'edge'),
+                        ('reduction_group_id', 'group_id'),
+                        ('file_index', 'file_index'),
+                        ('assoc_antennas', 'assoc_antennas'),
+                        ('assoc_fields', 'assoc_fields'),
+                        ('assoc_spws', 'assoc_spws')]
+        for x, y in outcome_keys:
+            if x not in result.outcome:
+                result.outcome[x] = kwargs[y]
+                
+        # imager_result.outcome['imagemode'] = imagemode
+        # imager_result.outcome['stokes'] = self.stokes
+        # imager_result.outcome['validsp'] = validsps
+        # imager_result.outcome['rms'] = rmss
+        # imager_result.outcome['edge'] = edge
+        # imager_result.outcome['reduction_group_id'] = group_id
+        # imager_result.outcome['file_index'] = [common.get_parent_ms_idx(context, name) for name in combined_infiles]
+        # imager_result.outcome['assoc_antennas'] = combined_antids
+        # imager_result.outcome['assoc_fields'] = combined_fieldids
+        # imager_result.outcome['assoc_spws'] = combined_v_spws #virtual
+        # pass
+
+        # finally replace task attribute with the top-level one
+        result.task = cls
 
     def prepare(self):
         inputs = self.inputs
@@ -188,7 +238,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         is_nro = sdutils.is_nro(context)
 
         # task returns ResultsList
-        results = SDImagingResults()
+        results = resultobjects.SDImagingResults()
         # search results and retrieve edge parameter from the most
         # recent SDBaselineResults if it exists
         getresult = lambda r: r.read() if hasattr(r, 'read') else r
@@ -439,7 +489,8 @@ class SDImaging(basetask.StandardTaskTemplate):
                     # to the outcome.
                     # The rms and number of valid spectra is used to create RMS maps.
                     LOG.info('Additional Step. Make grid_table')
-                    with casatools.ImageReader(imager_result.outcome) as ia:
+                    imagename = imager_result.outcome['image'].imagename
+                    with casatools.ImageReader(imagename) as ia:
                         cs = ia.coordsys()
                         dircoords = [i for i in xrange(cs.naxes())
                                      if cs.axiscoordinatetypes()[i] == 'Direction']
@@ -491,7 +542,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
                     # define RMS ranges in image
                     LOG.info("Calculate spectral line and deviation mask frequency ranges in image.")
-                    with casatools.ImageReader(imager_result.outcome) as ia:
+                    with casatools.ImageReader(imagename) as ia:
                         cs = ia.coordsys()
                         frequency_frame = cs.getconversiontype('spectral')
                         rms_exclude_freq = self._get_rms_exclude_freq_range_image(
@@ -499,38 +550,44 @@ class SDImaging(basetask.StandardTaskTemplate):
                         LOG.info("The spectral line and deviation mask frequency ranges = {}".format(str(rms_exclude_freq)))
                     combined_rms_exclude.extend(rms_exclude_freq)
 
-                    image_item = imagelibrary.ImageItem(imagename=imagename,
-                                                        sourcename=source_name,
-                                                        spwlist=v_spwids, #virtual
-                                                        specmode='cube',
-                                                        sourcetype='TARGET')
-                    image_item.antenna = ant_name  # name #(group name)
-                    outcome = {}
-                    outcome['image'] = image_item
-                    outcome['imagemode'] = imagemode
-                    outcome['stokes'] = self.stokes
-                    outcome['validsp'] = validsps
-                    outcome['rms'] = rmss
-                    outcome['edge'] = edge
-                    outcome['reduction_group_id'] = group_id
-                    outcome['file_index'] = [common.get_parent_ms_idx(context, name) for name in infiles]
-                    outcome['assoc_antennas'] = antids
-                    outcome['assoc_fields'] = fieldids
-                    outcome['assoc_spws'] = v_spwids #virtual
-#                     outcome['assoc_pols'] = pols
+                    stokes = stokes_list[0]
+                    file_index = [common.get_parent_ms_idx(context, name) for name in infiles]
+                    assoc_antennas = antids
+                    assoc_fields = fieldids
+                    assoc_spws = v_spwids
+                    self._manipulate_worker_result(imager_result, **locals())
+#                     # image_item = imagelibrary.ImageItem(imagename=imagename,
+#                     #                                     sourcename=source_name,
+#                     #                                     spwlist=v_spwids, #virtual
+#                     #                                     specmode='cube',
+#                     #                                     sourcetype='TARGET')
+#                     # image_item.antenna = ant_name  # name #(group name)
+#                     # outcome = {}
+#                     # outcome['image'] = image_item
+#                     # outcome['imagemode'] = imagemode
+#                     # outcome['stokes'] = self.stokes
+#                     imager_result.outcome['validsp'] = validsps
+#                     imager_result.outcome['rms'] = rmss
+#                     # outcome['edge'] = edge
+#                     imager_result.outcome['reduction_group_id'] = group_id
+#                     # outcome['file_index'] = [common.get_parent_ms_idx(context, name) for name in infiles]
+#                     # outcome['assoc_antennas'] = antids
+#                     # outcome['assoc_fields'] = fieldids
+#                     # outcome['assoc_spws'] = v_spwids #virtual
+# #                     outcome['assoc_pols'] = pols
                     if inputs.is_ampcal:
                         if len(infiles)==1 and (asdm not in ['', None]): outcome['vis'] = asdm
 #                         # to register exported_ms to each scantable instance
 #                         outcome['export_results'] = export_results
   
-                    result = SDImagingResultItem(task=self.__class__,
-                                                 success=True,
-                                                 outcome=outcome)
-                    result.task = self.__class__
+                    # result = resultobjects.SDImagingResultItem(task=self.__class__,
+                    #                              success=True,
+                    #                              outcome=outcome)
+                    # result.task = self.__class__
   
-                    result.stage_number = inputs.context.task_counter 
+                    # result.stage_number = inputs.context.task_counter 
 
-                    results.append(result)
+                    results.append(imager_result)
                       
                 if imager_result_nro is not None and imager_result_nro.outcome is not None:
                     # Imaging was successful, proceed following steps
@@ -539,34 +596,40 @@ class SDImaging(basetask.StandardTaskTemplate):
                     if os.path.exists(imagename_nro) and os.path.exists(imagename_nro+'.weight'):
                         tocombine_images_nro.append(imagename_nro)
 
-                    image_item = imagelibrary.ImageItem(imagename=imagename_nro,
-                                                        sourcename=source_name,
-                                                        spwlist=v_spwids, #virtual
-                                                        specmode='cube',
-                                                        sourcetype='TARGET')
-                    image_item.antenna = ant_name  # name #(group name)
-                    outcome = {}
-                    outcome['image'] = image_item
-                    outcome['imagemode'] = imagemode
-                    outcome['stokes'] = correlations
-                    outcome['validsp'] = validsps
-                    outcome['rms'] = rmss
-                    outcome['edge'] = edge
-                    outcome['reduction_group_id'] = group_id
-                    outcome['file_index'] = [common.get_parent_ms_idx(context, name) for name in infiles]
-                    outcome['assoc_antennas'] = antids
-                    outcome['assoc_fields'] = fieldids
-                    outcome['assoc_spws'] = v_spwids #virtual
+                    stokes = stokes_list[1]
+                    file_index = [common.get_parent_ms_idx(context, name) for name in infiles]
+                    assoc_antennas = antids
+                    assoc_fields = fieldids
+                    assoc_spws = v_spwids
+                    self._manipulate_worker_result(imager_result_nro, **locals())
+                    # # image_item = imagelibrary.ImageItem(imagename=imagename_nro,
+                    # #                                     sourcename=source_name,
+                    # #                                     spwlist=v_spwids, #virtual
+                    # #                                     specmode='cube',
+                    # #                                     sourcetype='TARGET')
+                    # # image_item.antenna = ant_name  # name #(group name)
+                    # # outcome = {}
+                    # # outcome['image'] = image_item
+                    # # outcome['imagemode'] = imagemode
+                    # # outcome['stokes'] = correlations
+                    # imager_result_nro.outcome['validsp'] = validsps
+                    # imager_result_nro.outcome['rms'] = rmss
+                    # # outcome['edge'] = edge
+                    # imager_result_nro.outcome['reduction_group_id'] = group_id
+                    # # outcome['file_index'] = [common.get_parent_ms_idx(context, name) for name in infiles]
+                    # # outcome['assoc_antennas'] = antids
+                    # # outcome['assoc_fields'] = fieldids
+                    # # outcome['assoc_spws'] = v_spwids #virtual
 #                     outcome['assoc_pols'] = pols
   
-                    result = SDImagingResultItem(task=self.__class__,
-                                                 success=True,
-                                                 outcome=outcome)
-                    result.task = self.__class__
+                    # result = resultobjects.SDImagingResultItem(task=self.__class__,
+                    #                              success=True,
+                    #                              outcome=outcome)
+                    # result.task = self.__class__
   
-                    result.stage_number = inputs.context.task_counter 
+                    # result.stage_number = inputs.context.task_counter 
 
-                    results.append(result)
+                    results.append(imager_result_nro)
 
             if inputs.is_ampcal:
                 LOG.info("Skipping combined image for the amplitude calibrator.")
@@ -615,7 +678,8 @@ class SDImaging(basetask.StandardTaskTemplate):
                 # to the outcome
                 # The rms and number of valid spectra is used to create RMS maps
                 LOG.info('Additional Step. Make grid_table')
-                with casatools.ImageReader(imager_result.outcome) as ia:
+                imagename = imager_result.outcome['image'].imagename
+                with casatools.ImageReader(imagename) as ia:
                     cs = ia.coordsys()
                     dircoords = [i for i in xrange(cs.naxes())
                                  if cs.axiscoordinatetypes()[i] == 'Direction']
@@ -669,7 +733,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 rep_bw = ref_ms.representative_target[2]
                 rep_spwid = ref_ms.get_representative_source_spw()[1]
                 is_representative_spw = (rep_spwid==combined_spws[0] and rep_bw is not None)
-                with casatools.ImageReader(imager_result.outcome) as ia:
+                with casatools.ImageReader(imagename) as ia:
                     cs = ia.coordsys()
                     faxis = cs.findaxisbyname('spectral')
                     num_chan = ia.shape()[faxis]
@@ -757,24 +821,32 @@ class SDImaging(basetask.StandardTaskTemplate):
                 stat_freqs = str(', ').join(['{:f}f~{:f}GHz'.format(freqs[iseg]*1.e-9, freqs[iseg+1]*1.e-9)
                                              for iseg in range(0, len(freqs), 2)])
                   
-                image_item = imagelibrary.ImageItem(imagename=imagename,
-                                                    sourcename=source_name,
-                                                    spwlist=combined_v_spws, #virtual
-                                                    specmode='cube',
-                                                    sourcetype='TARGET')
-                image_item.antenna = 'COMBINED'
-                outcome = {}
-                outcome['image'] = image_item
-                outcome['imagemode'] = imagemode
-                outcome['stokes'] = self.stokes
-                outcome['validsp'] = validsps
-                outcome['rms'] = rmss
-                outcome['edge'] = edge
-                outcome['reduction_group_id'] = group_id
-                outcome['file_index'] = [common.get_parent_ms_idx(context, name) for name in combined_infiles]
-                outcome['assoc_antennas'] = combined_antids
-                outcome['assoc_fields'] = combined_fieldids
-                outcome['assoc_spws'] = combined_v_spws #virtual
+                ant_name = 'COMBINED'
+                spwlist = combined_v_spws
+                stokes = self.stokes
+                file_idnex = [common.get_parent_ms_idx(context, name) for name in combined_infiles]
+                assoc_antennas = combined_antids
+                assoc_fields = combined_fieldids
+                assoc_spws = combined_v_spws
+                self._manipulate_worker_result(imager_result, **locals())
+                # image_item = imagelibrary.ImageItem(imagename=imagename,
+                #                                     sourcename=source_name,
+                #                                     spwlist=combined_v_spws, #virtual
+                #                                     specmode='cube',
+                #                                     sourcetype='TARGET')
+                # imager_result.outcome['image'].sourcename = source_name
+                # imager_result.outcome['image'].spwlist = combined_v_spws
+                # imager_result.outcome['image'].antenna = 'COMBINED'
+                # imager_result.outcome['imagemode'] = imagemode
+                # imager_result.outcome['stokes'] = self.stokes
+                # imager_result.outcome['validsp'] = validsps
+                # imager_result.outcome['rms'] = rmss
+                # imager_result.outcome['edge'] = edge
+                # imager_result.outcome['reduction_group_id'] = group_id
+                # imager_result.outcome['file_index'] = [common.get_parent_ms_idx(context, name) for name in combined_infiles]
+                # imager_result.outcome['assoc_antennas'] = combined_antids
+                # imager_result.outcome['assoc_fields'] = combined_fieldids
+                # imager_result.outcome['assoc_spws'] = combined_v_spws #virtual
 #                 outcome['image_sensitivity'] = {'frequency_range': stat_freqs, 'rms': image_rms,
 #                                                 'channel_width': chan_width, 'representative': is_representative_spw}
 
@@ -787,13 +859,13 @@ class SDImaging(basetask.StandardTaskTemplate):
                                           sensitivity=cqa.quantity(image_rms, 'Jy/beam'))
                 sensitivity_info = SensitivityInfo(sensitivity, is_representative_spw, stat_freqs)
 
-                result = SDImagingResultItem(task=self.__class__,
-                                             success=True,
-                                             outcome=outcome,
-                                             sensitivity_info=sensitivity_info)
-                result.stage_number = inputs.context.task_counter 
+                # result = resultobjects.SDImagingResultItem(task=self.__class__,
+                #                              success=True,
+                #                              outcome=outcome,
+                #                              sensitivity_info=sensitivity_info)
+                # result.stage_number = inputs.context.task_counter 
 
-                results.append(result)
+                results.append(imager_result)
 
             # NRO specific: generate combined image for each correlation
             if is_nro:
@@ -816,33 +888,58 @@ class SDImaging(basetask.StandardTaskTemplate):
                 if imager_result.outcome is not None:
                 # Imaging was successful, proceed following steps
             
-                    image_item = imagelibrary.ImageItem(imagename=imagename,
-                                                        sourcename=source_name,
-                                                        spwlist=combined_v_spws, #virtual
-                                                        specmode='cube',
-                                                        sourcetype='TARGET')
-                    image_item.antenna = 'COMBINED'
-                    outcome = {}
-                    outcome['image'] = image_item
-                    outcome['imagemode'] = imagemode
-                    outcome['stokes'] = correlations
-                    outcome['rms'] = rmss
-                    outcome['validsp'] = validsps
-                    outcome['edge'] = edge
-                    outcome['reduction_group_id'] = group_id
-                    outcome['file_index'] = [common.get_parent_ms_idx(context, name) for name in combined_infiles]
-                    outcome['assoc_antennas'] = combined_antids
-                    outcome['assoc_fields'] = combined_fieldids
-                    outcome['assoc_spws'] = combined_v_spws #virtual
+                    ant_name = 'COMBINED'
+                    spwids = combined_v_spws
+                    stokes = self.stokes
+                    file_idnex = [common.get_parent_ms_idx(context, name) for name in combined_infiles]
+                    assoc_antennas = combined_antids
+                    assoc_fields = combined_fieldids
+                    assoc_spws = combined_v_spws
+                    self._manipulate_worker_result(imager_result, **locals())
+                    # image_item = imagelibrary.ImageItem(imagename=imagename,
+                    #                                     sourcename=source_name,
+                    #                                     spwlist=combined_v_spws, #virtual
+                    #                                     specmode='cube',
+                    #                                     sourcetype='TARGET')
+                    # image_item.antenna = 'COMBINED'
+                    # outcome = {}
+                    # outcome['image'] = image_item
+                    # outcome['imagemode'] = imagemode
+                    # outcome['stokes'] = correlations
+                    # outcome['rms'] = rmss
+                    # outcome['validsp'] = validsps
+                    # outcome['edge'] = edge
+                    # outcome['reduction_group_id'] = group_id
+                    # outcome['file_index'] = [common.get_parent_ms_idx(context, name) for name in combined_infiles]
+                    # outcome['assoc_antennas'] = combined_antids
+                    # outcome['assoc_fields'] = combined_fieldids
+                    # outcome['assoc_spws'] = combined_v_spws #virtual
+                    # imager_result.outcome['image'].sourcename = source_name
+                    # imager_result.outcome['image'].spwlist = combined_v_spws
+                    # imager_result.outcome['image'].antenna = 'COMBINED'
+                    # imager_result.outcome['imagemode'] = imagemode
+                    # imager_result.outcome['stokes'] = self.stokes
+                    # imager_result.outcome['validsp'] = validsps
+                    # imager_result.outcome['rms'] = rmss
+                    # imager_result.outcome['edge'] = edge
+                    # imager_result.outcome['reduction_group_id'] = group_id
+                    # imager_result.outcome['file_index'] = [common.get_parent_ms_idx(context, name) for name in combined_infiles]
+                    # imager_result.outcome['assoc_antennas'] = combined_antids
+                    # imager_result.outcome['assoc_fields'] = combined_fieldids
+                    # imager_result.outcome['assoc_spws'] = combined_v_spws #virtual
 
-                    result = SDImagingResultItem(task=self.__class__,
-                                                 success=True,
-                                                 outcome=outcome,
-                                                 sensitivity_info=None)
-                    result.stage_number = inputs.context.task_counter 
+                    # result = resultobjects.SDImagingResultItem(task=self.__class__,
+                    #                              success=True,
+                    #                              outcome=outcome,
+                    #                              sensitivity_info=None)
+                    # result.stage_number = inputs.context.task_counter 
 
-                    results.append(result)
+                    results.append(imager_result)
                     
+        # # replace task attributes with the top-level one
+        # for r in results:
+        #     r.task = self.__class__
+            
         return results
     
     def analyse(self, result):

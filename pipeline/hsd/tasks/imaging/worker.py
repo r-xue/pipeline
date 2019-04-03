@@ -10,8 +10,10 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.casatools as casatools
+import pipeline.infrastructure.imagelibrary as imagelibrary
 from pipeline.infrastructure import casa_tasks
 from pipeline.domain import DataTable
+from . import resultobjects
 from .. import common
 from ..common import utils
 
@@ -206,16 +208,16 @@ class SDImagingWorkerInputs(vdp.StandardInputs):
         self.ny = ny
 
 
-class SDImagingWorkerResults(common.SingleDishResults):
-    def __init__(self, task=None, success=None, outcome=None):
-        super(SDImagingWorkerResults, self).__init__(task, success, outcome)
+# class SDImagingWorkerResults(common.SingleDishResults):
+#     def __init__(self, task=None, success=None, outcome=None):
+#         super(SDImagingWorkerResults, self).__init__(task, success, outcome)
 
-    def merge_with_context(self, context):
-        super(SDImagingWorkerResults, self).merge_with_context(context)
+#     def merge_with_context(self, context):
+#         super(SDImagingWorkerResults, self).merge_with_context(context)
 
-    def _outcome_name(self):
-        # return [image.imagename for image in self.outcome]
-        return self.outcome
+#     def _outcome_name(self):
+#         # return [image.imagename for image in self.outcome]
+#         return self.outcome
 
 
 class SDImagingWorker(basetask.StandardTaskTemplate):
@@ -233,6 +235,12 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         spwid_list = inputs.spwids
         fieldid_list = inputs.fieldids
         imagemode = inputs.mode
+        file_index = [common.get_parent_ms_idx(context, name) for name in infiles]
+        mses = context.observing_run.measurement_sets
+        v_spwids = [context.observing_run.real2virtual_spw_id(i, mses[j]) for i, j in zip(spwid_list, file_index)]
+        rep_ms = mses[file_index[0]]
+        ant_name = rep_ms.antennas[antid_list[0]].name
+        source_name = rep_ms.fields[fieldid_list[0]].clean_name
         phasecenter, cellx, celly, nx, ny = self._get_map_coord(inputs, context, infiles, antid_list, spwid_list,
                                                                 fieldid_list)
 
@@ -240,19 +248,37 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
                                   cellx, celly, nx, ny)
 
         if status is True:
-            result = SDImagingWorkerResults(task=self.__class__,
-                                            success=True,
-                                            outcome=outfile)
+            image_item = imagelibrary.ImageItem(imagename=outfile,
+                                                sourcename=source_name,
+                                                spwlist=v_spwids,  # virtual
+                                                specmode='cube',
+                                                sourcetype='TARGET')
+            image_item.antenna = ant_name  # name #(group name)
+            outcome = {}
+            outcome['image'] = image_item
+            outcome['imagemode'] = imagemode
+            outcome['stokes'] = self.inputs.stokes
+            #outcome['validsp'] = validsps
+            #outcome['rms'] = rmss
+            outcome['edge'] = edge
+            #outcome['reduction_group_id'] = group_id
+            outcome['file_index'] = file_index
+            outcome['assoc_antennas'] = antid_list
+            outcome['assoc_fields'] = fieldid_list
+            outcome['assoc_spws'] = v_spwids  # virtual
+            result = resultobjects.SDImagingResultItem(task=None,
+                                                       success=True,
+                                                       outcome=outcome)
         else:
             # Imaging failed due to missing valid data
-            result = SDImagingWorkerResults(task=self.__class__,
-                                            success=False,
-                                            outcome=None)
+            result = resultobjects.SDImagingResultItem(task=None,
+                                                       success=False,
+                                                       outcome=None)
 
-        if self.inputs.context.subtask_counter is 0:
-            result.stage_number = self.inputs.context.task_counter - 1
+        if context.subtask_counter == 0:
+            result.stage_number = context.task_counter - 1
         else:
-            result.stage_number = self.inputs.context.task_counter
+            result.stage_number = context.task_counter
 
         return result
 

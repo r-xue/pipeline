@@ -7,8 +7,9 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.casatools as casatools
+import pipeline.infrastructure.imagelibrary as imagelibrary
 from pipeline.infrastructure import casa_tasks
-from .worker import SDImagingWorkerResults
+from .resultobjects import SDImagingResultItem
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -50,8 +51,8 @@ class SDImageCombine(basetask.StandardTaskTemplate):
         num_in = len(infiles)
         if num_in == 0:
             LOG.warning("No input image to combine. %s is not generated." % outfile)
-            result = SDImagingWorkerResults(task=self.__class__,
-                                            success=False, outcome=None)
+            result = SDImagingResultItem(task=None,
+                                         success=False, outcome=None)
             return result
 
         # combine weight images
@@ -75,19 +76,25 @@ class SDImageCombine(basetask.StandardTaskTemplate):
                 if len(stat['npts']) > 0 and shape.prod() > stat['npts'][0]:
                     ia.replacemaskedpixels(0.0, update=False)
 
-            result = SDImagingWorkerResults(task=self.__class__,
-                                                   success=True,
-                                                   outcome=outfile)
+            image_item = imagelibrary.ImageItem(imagename=outfile,
+                                                sourcename='', # will be filled in later
+                                                spwlist=[],  # will be filled in later
+                                                specmode='cube',
+                                                sourcetype='TARGET')
+            outcome = {'image': image_item}
+            result = SDImagingResultItem(task=None,
+                                         success=True,
+                                         outcome=outcome)
         else:
             # Combination failed due to missing valid data
-            result = SDImagingWorkerResults(task=self.__class__,
-                                                   success=False,
-                                                   outcome=None)
+            result = SDImagingResultItem(task=None,
+                                         success=False,
+                                         outcome=None)
 
         if self.inputs.context.subtask_counter is 0: 
             result.stage_number = self.inputs.context.task_counter - 1
         else:
-            result.stage_number = self.inputs.context.task_counter 
+            result.stage_number = self.inputs.context.task_counter
 
         return result
 
