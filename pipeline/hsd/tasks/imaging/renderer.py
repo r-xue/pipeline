@@ -12,7 +12,7 @@ from ..common import renderer as sdsharedrenderer
 from ..common import utils as sdutils
 from ..common import compress
 
-from . import imaging
+from . import resultobjects
 from . import display
 
 LOG = logging.get_logger(__name__)
@@ -36,7 +36,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
         plots = []
         image_rms = []
         for r in results:
-            if isinstance(r, imaging.SDImagingResultItem):
+            if isinstance(r, resultobjects.SDImagingResultItem):
                 image_item = r.outcome['image']
                 msid_list = r.outcome['file_index']
                 imagemode = r.outcome['imagemode']
