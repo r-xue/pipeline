@@ -2,12 +2,13 @@ from __future__ import absolute_import
 
 import collections
 import datetime
+import glob
 import itertools
 import operator
 import os
 import re
 import string
-import glob
+import xml.etree.ElementTree as ElementTree
 from bisect import bisect_left
 from functools import reduce
 
@@ -455,6 +456,71 @@ class SpectralWindowTable(object):
             spws.append(spw)
 
         return spws
+
+    @staticmethod
+    def parse_spectral_window_ids_from_xml(xml_path):
+        """
+        Extract the spectral window ID element from each row of an XML file.
+
+        :param xml_path: path for XML file
+        :return: list of integer spectral window IDs
+        """
+        root_element = ElementTree.parse(xml_path)
+
+        ids = []
+        for row in root_element.findall('row'):
+            element = row.findtext('spectralWindowId')
+            _, str_id = string.split(element, '_')
+            ids.append(int(str_id))
+
+        return ids
+
+    @staticmethod
+    def get_data_description_spw_ids(ms):
+        """
+        Extract a list of spectral window IDs from the DataDescription XML for an
+        ASDM.
+
+        This function assumes the XML has been copied across to the measurement
+        set directory.
+
+        :param ms: measurement set to inspect
+        :return: list of integers corresponding to ASDM spectral window IDs
+        """
+        xml_path = os.path.join(ms.name, 'DataDescription.xml')
+        return SpectralWindowTable.parse_spectral_window_ids_from_xml(xml_path)
+
+    @staticmethod
+    def get_spectral_window_spw_ids(ms):
+        """
+        Extract a list of spectral window IDs from the SpectralWindow XML for an
+        ASDM.
+
+        This function assumes the XML has been copied across to the measurement
+        set directory.
+
+        :param ms: measurement set to inspect
+        :return: list of integers corresponding to ASDM spectral window IDs
+        """
+        xml_path = os.path.join(ms.name, 'SpectralWindow.xml')
+        return SpectralWindowTable.parse_spectral_window_ids_from_xml(xml_path)
+
+    @staticmethod
+    def get_asdm_to_ms_spw_mapping(ms):
+        """
+        Get the mapping of ASDM spectral window ID to Measurement Set spectral
+        window ID.
+
+        This function requires the SpectralWindow and DataDescription ASDM XML
+        files to have been copied across to the measurement set directory.
+
+        :param ms: measurement set to inspect
+        :return: dict of ASDM spw: MS spw
+        """
+        dd_spws = SpectralWindowTable.get_data_description_spw_ids(ms)
+        spw_spws = SpectralWindowTable.get_spectral_window_spw_ids(ms)
+        asdm_ids = [i for i in spw_spws if i in dd_spws] + [i for i in spw_spws if i not in dd_spws]
+        return {k: v for k, v in zip(asdm_ids, spw_spws)}
 
 
 class ObservationTable(object):
