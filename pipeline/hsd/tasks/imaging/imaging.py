@@ -801,7 +801,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 cs.done()
                 if len(freqs) > 1 and freqs[0] > freqs[1]:  # LSB
                     freqs.reverse()
-                stat_freqs = str(', ').join(['{:f}f~{:f}GHz'.format(freqs[iseg]*1.e-9, freqs[iseg+1]*1.e-9)
+                stat_freqs = str(', ').join(['{:f}~{:f}GHz'.format(freqs[iseg]*1.e-9, freqs[iseg+1]*1.e-9)
                                              for iseg in range(0, len(freqs), 2)])
                   
                 # ant_name = 'COMBINED'
