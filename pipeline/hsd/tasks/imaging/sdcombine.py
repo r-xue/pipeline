@@ -20,7 +20,7 @@ class SDImageCombineInputs(vdp.StandardInputs):
     """
     inimages = vdp.VisDependentProperty(default='')
     outfile = vdp.VisDependentProperty(default='')
-    
+
     @inimages.convert
     def inimages(self, value):
         if isinstance(value, str):
@@ -29,7 +29,7 @@ class SDImageCombineInputs(vdp.StandardInputs):
             for v in value:
                 _check_image(v)
         return value
-    
+
     def __init__(self, context, inimages, outfile):
         super(SDImageCombineInputs, self).__init__()
 
@@ -40,7 +40,7 @@ class SDImageCombineInputs(vdp.StandardInputs):
 
 class SDImageCombine(basetask.StandardTaskTemplate):
     Inputs = SDImageCombineInputs
-    
+
     is_multi_vis_task = True
 
     def prepare(self):
@@ -57,13 +57,13 @@ class SDImageCombine(basetask.StandardTaskTemplate):
 
         # combine weight images
         LOG.info("Generating combined weight image.")
-        expr = [ ("IM%d" % idx) for idx in range(num_in) ]
+        expr = [("IM%d" % idx) for idx in range(num_in)]
         status = self._do_combine(inweights, outweight, str("+").join(expr))
         if status is True:
             # combine images with weight
             LOG.info("Generating combined image.")
             in_images = list(infiles) + list(inweights) + [outweight]
-            expr = [ "IM%d*IM%d" % (idx, idx+num_in) for idx in range(num_in) ]
+            expr = ["IM%d*IM%d" % (idx, idx+num_in) for idx in range(num_in)]
             expr = "(%s)/IM%d" % (str("+").join(expr), len(in_images)-1)
             status = self._do_combine(in_images, outfile, expr)
 
@@ -77,7 +77,7 @@ class SDImageCombine(basetask.StandardTaskTemplate):
                     ia.replacemaskedpixels(0.0, update=False)
 
             image_item = imagelibrary.ImageItem(imagename=outfile,
-                                                sourcename='', # will be filled in later
+                                                sourcename='',  # will be filled in later
                                                 spwlist=[],  # will be filled in later
                                                 specmode='cube',
                                                 sourcetype='TARGET')
@@ -91,7 +91,7 @@ class SDImageCombine(basetask.StandardTaskTemplate):
                                          success=False,
                                          outcome=None)
 
-        if self.inputs.context.subtask_counter is 0: 
+        if self.inputs.context.subtask_counter is 0:
             result.stage_number = self.inputs.context.task_counter - 1
         else:
             result.stage_number = self.inputs.context.task_counter
@@ -113,8 +113,8 @@ class SDImageCombine(basetask.StandardTaskTemplate):
         self._executor.execute(combine_job)
 
         return True
-    
+
+
 def _check_image(imagename):
     assert os.path.exists(imagename), 'Input image "{0}" does not exist.'.format(imagename)
     assert os.path.exists(imagename.rstrip('/') + '.weight'), 'Weight image for "{0}" does not exist.'.format(imagename)
-    
