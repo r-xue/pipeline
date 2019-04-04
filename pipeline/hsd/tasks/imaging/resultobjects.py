@@ -22,8 +22,8 @@ class SDImagingResultItem(common.SingleDishResults):
     def merge_with_context(self, context):
         super(SDImagingResultItem, self).merge_with_context(context)
         LOG.todo('need to decide what is done in SDImagingResultItem.merge_with_context')
-        
-        # check if data is NRO 
+
+        # check if data is NRO
         is_nro = sdutils.is_nro(context)
 
         if 'export_results' in self.outcome:
@@ -33,7 +33,7 @@ class SDImagingResultItem(common.SingleDishResults):
         if 'image' in self.outcome:
             image_item = self.outcome['image']
             if is_nro:
-                # NRO requirement is to export per-beam (per-antenna) images 
+                # NRO requirement is to export per-beam (per-antenna) images
                 # as well as combined ones
                 cond = isinstance(image_item, imagelibrary.ImageItem)
             else:
