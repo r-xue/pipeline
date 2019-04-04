@@ -75,7 +75,6 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
     dec = []
     outref = None
     for vis, ant_id, field_id, spw_id in itertools.izip(parent_mses, ant_list, fieldid_list, spw_list):
-        
         datatable_name = os.path.join(context.observing_run.ms_datatable_name, os.path.basename(vis))
         datatable = DataTable(name=datatable_name, readonly=True)
         
@@ -84,20 +83,20 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
         if (datatable.getcolkeyword('SHIFT_RA', 'UNIT') != 'deg') or \
             (datatable.getcolkeyword('SHIFT_DEC', 'UNIT') != 'deg'):
             raise RuntimeError("Found unexpected unit of RA/DEC in DataTable. It should be in 'deg'")
-        
+
         index_list = sorted(common.get_index_list_for_ms(datatable, [vis], [ant_id], [field_id], [spw_id]))
 
 #        _ra = datatable.getcol('RA').take(index_list)
 #        _dec = datatable.getcol('DEC').take(index_list)
         _ra = datatable.getcol('SHIFT_RA').take(index_list)
         _dec = datatable.getcol('SHIFT_DEC').take(index_list)
-        
+
         ra.extend(_ra)
         dec.extend(_dec)
 
         outref = datatable.direction_ref
         del datatable
-       
+
     if len(ra) == 0:
         antenna_name = ref_msobj.antennas[ant_list[0]].name
         LOG.warn('No valid data for source %s antenna %s spw %s in %s. Image will not be created.' % (
@@ -136,18 +135,18 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
     nx = int(width / (cell_in_deg * dec_correction)) + 1
     ny = int(height / cell_in_deg) + 1
 
-    # Adjust nx and ny to be even number for performance (which is 
-    # recommended by imager). 
-    # Also increase nx and ny  by 2 if they are even number. 
-    # This is due to a behavior of the imager. The imager configures 
+    # Adjust nx and ny to be even number for performance (which is
+    # recommended by imager).
+    # Also increase nx and ny  by 2 if they are even number.
+    # This is due to a behavior of the imager. The imager configures
     # direction axis as follows:
     #     reference value: phasecenter
     #           increment: cellx, celly
     #     reference pixel: ceil((nx-1)/2), ceil((ny-1)/2)
-    # It means that reference pixel will not be map center if nx/ny 
-    # is even number. It results in asymmetric area coverage on both 
-    # sides of the reference pixel, which may miss certain range of 
-    # (order of 1 pixel) observed area near the edge. 
+    # It means that reference pixel will not be map center if nx/ny
+    # is even number. It results in asymmetric area coverage on both
+    # sides of the reference pixel, which may miss certain range of
+    # (order of 1 pixel) observed area near the edge.
     if nx % 2 == 0:
         nx += 2
     else:
@@ -184,7 +183,7 @@ class SDImagingWorkerInputs(vdp.StandardInputs):
     @vdp.VisDependentProperty
     def vis(self):
         return self.infiles
-    
+
     def __init__(self, context, infiles, outfile, mode, antids, spwids, fieldids, restfreq, stokes, edge=None, phasecenter=None,
                  cellx=None, celly=None, nx=None, ny=None):
         # NOTE: spwids and pols are list of numeric id list while scans
@@ -206,18 +205,6 @@ class SDImagingWorkerInputs(vdp.StandardInputs):
         self.celly = celly
         self.nx = nx
         self.ny = ny
-
-
-# class SDImagingWorkerResults(common.SingleDishResults):
-#     def __init__(self, task=None, success=None, outcome=None):
-#         super(SDImagingWorkerResults, self).__init__(task, success, outcome)
-
-#     def merge_with_context(self, context):
-#         super(SDImagingWorkerResults, self).merge_with_context(context)
-
-#     def _outcome_name(self):
-#         # return [image.imagename for image in self.outcome]
-#         return self.outcome
 
 
 class SDImagingWorker(basetask.StandardTaskTemplate):
@@ -248,6 +235,8 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
                                   cellx, celly, nx, ny)
 
         if status is True:
+            # missing attributes in result instance will be filled in by the 
+            # parent class
             image_item = imagelibrary.ImageItem(imagename=outfile,
                                                 sourcename=source_name,
                                                 spwlist=v_spwids,  # virtual
@@ -256,16 +245,6 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
             image_item.antenna = ant_name  # name #(group name)
             outcome = {}
             outcome['image'] = image_item
-            outcome['imagemode'] = imagemode
-            outcome['stokes'] = self.inputs.stokes
-            #outcome['validsp'] = validsps
-            #outcome['rms'] = rmss
-            outcome['edge'] = edge
-            #outcome['reduction_group_id'] = group_id
-            outcome['file_index'] = file_index
-            outcome['assoc_antennas'] = antid_list
-            outcome['assoc_fields'] = fieldid_list
-            outcome['assoc_spws'] = v_spwids  # virtual
             result = resultobjects.SDImagingResultItem(task=None,
                                                        success=True,
                                                        outcome=outcome)
@@ -347,7 +326,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
             raise RuntimeError("Invalid type for restfreq '{0}' (not a string)".format(restfreq))
         if restfreq.strip() == '':
             # if restfreq is NOT given by user
-            # first try using SOURCE.REST_FREQUENCY 
+            # first try using SOURCE.REST_FREQUENCY
             # if it is not available, use SPECTRAL_WINDOW.REF_FREQUENCY instead
             source_id = reference_field.source_id
             rest_freq_value = utils.get_restfrequency(vis=infiles[0], spwid=ref_spwobj.id, source_id=source_id)
@@ -382,7 +361,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         # truncate, gwidth, jwidth, and convsupport
         truncate = gwidth = jwidth = -1  # defaults (not used)
         convsupport = 6
-    
+
 #         temporary_name = imagename.rstrip('/')+'.tmp'
         cleanup_params = ['outfile', 'infiles', 'spw', 'scan']
         qa = casatools.quanta
@@ -445,8 +424,8 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
             return False
         # check for valid pixels (non-zero weight)
         # Task sdimaging does not fail even if no data is gridded to image.
-        # In that case, image is not masked, no restoring beam is set to 
-        # image, and all pixels in corresponding weight image is zero. 
+        # In that case, image is not masked, no restoring beam is set to
+        # image, and all pixels in corresponding weight image is zero.
         with casatools.ImageReader(weightname) as ia:
             sumsq = ia.statistics()['sumsq'][0]
         if sumsq == 0.0:
