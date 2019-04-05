@@ -42,7 +42,13 @@ class CheckflagResults(basetask.Results):
         s = 'Checkflag (rflag mode) results:\n'
         for job in self.jobs:
             s += '%s performed. Statistics to follow?' % str(job)
-        return s 
+        return s
+
+    def merge_with_context(self, context):
+
+        m = context.observing_run.get_ms(self.inputs['vis'])
+        if 'vlass' in self.inputs['checkflagmode']:
+            context.evla['msinfo'][m.name].vlassmode = True
 
 
 @task_registry.set_equivalent_casa_task('hifv_checkflag')

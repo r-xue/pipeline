@@ -902,6 +902,7 @@ class Finalcals(basetask.StandardTaskTemplate):
             uvrangestring = uvrange(self.setjy_results, fieldid)
             task_args['field'] = fieldidstring
             task_args['uvrange'] = uvrangestring
+            task_args['selectdata'] = True
             if os.path.exists(caltable):
                 task_args['append'] = True
 

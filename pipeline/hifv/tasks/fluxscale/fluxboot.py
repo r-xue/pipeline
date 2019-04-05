@@ -431,7 +431,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
                         summed_error += residual
                     residual_variance = summed_error / (len(alfds) - 2)
                     SNR = math.fabs(bb) / math.sqrt(covar[1][1] * residual_variance)
-                    
+
                 #
                 # take as the reference frequency the lowest one.  (this shouldn't matter, in principle).
                 #    
@@ -601,6 +601,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
                 uvrangestring = uvrange(self.setjy_results, fieldid)
                 task_args['field'] = fieldidstring
                 task_args['uvrange'] = uvrangestring
+                task_args['selectdata'] = True
                 if os.path.exists(caltable):
                     task_args['append'] = True
 

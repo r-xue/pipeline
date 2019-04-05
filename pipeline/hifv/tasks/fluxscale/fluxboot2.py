@@ -213,12 +213,15 @@ class Fluxboot2(basetask.StandardTaskTemplate):
             # after the first, to obtain (temporary) scan-averaged, normalized
             # amps for flagging, fluxflag.g
             fluxflagtable = 'fluxflag.g'
+
             for i, field in enumerate(field_objects):
-                append=False
-                if i > 0: append=True
+                append = False
+                if i > 0:
+                    append=True
                 gaincal_result = self._do_gaincal(context, calMs, fluxflagtable, 'ap', [fluxphase],
                                                   solint=gain_solint2, minsnr=5.0, refAnt=refAnt, field=field.name,
-                                                  solnorm=True, append=append)
+                                                  solnorm=True, append=append, fluxflag=True,
+                                                  vlassmode=context.evla['msinfo'][m.name].vlassmode)
 
             # use flagdata to clip fluxflag.g outside the range 0.9-1.1
             flagjob = casa_tasks.flagdata(vis=fluxflagtable, mode='clip', correlation='ABS_ALL',
@@ -591,7 +594,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
             scispws = [spw.id for spw in m.get_spectral_windows(science_windows_only=True)]
             newspws = [str(spwint) for spwint in list(set(scispws) & set(spws))]
 
-            LOG.info('Running setjy for field ' + str(fieldid) + ': ' +  str(fluxscale_result[fieldid]['fieldName']))
+            LOG.info('Running setjy for field ' + str(fieldid) + ': ' + str(fluxscale_result[fieldid]['fieldName']))
             task_args = {'vis': calMs,
                          'field': fluxscale_result[fieldid]['fieldName'],
                          'spw': ','.join(newspws),
@@ -656,7 +659,8 @@ class Fluxboot2(basetask.StandardTaskTemplate):
             return None
 
     def _do_gaincal(self, context, calMs, caltable, calmode, gaintablelist,
-                    solint='int', minsnr=3.0, refAnt=None, field='', solnorm=False, append=False):
+                    solint='int', minsnr=3.0, refAnt=None, field='', solnorm=False, append=False,
+                    fluxflag=False, vlassmode=False):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         # minBL_for_cal = context.evla['msinfo'][m.name].minBL_for_cal
@@ -706,6 +710,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                 uvrangestring = uvrange(self.setjy_results, fieldid)
                 task_args['field'] = fieldidstring
                 task_args['uvrange'] = uvrangestring
+                task_args['selectdata'] = True
                 if os.path.exists(caltable):
                     task_args['append'] = True
 
@@ -714,6 +719,26 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                 self._executor.execute(job)
 
             return True
+        elif fluxflag and vlassmode:
+            fieldobjlist = m.get_fields(name=field)
+            fieldidlist = []
+            for fieldobj in fieldobjlist:
+                if str(fieldobj.id) not in fieldidlist:
+                    fieldidlist.append(str(fieldobj.id))
+
+            for fieldidstring in fieldidlist:
+                fieldid = int(fieldidstring)
+                uvrangestring = uvrange(self.setjy_results, fieldid)
+                task_args['field'] = fieldidstring
+                task_args['uvrange'] = uvrangestring
+                task_args['selectdata'] = True
+                if os.path.exists(caltable):
+                    task_args['append'] = True
+
+                job = casa_tasks.gaincal(**task_args)
+
+                self._executor.execute(job)
+
         else:
             job = casa_tasks.gaincal(**task_args)
 
