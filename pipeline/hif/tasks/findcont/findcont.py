@@ -215,10 +215,17 @@ class FindCont(basetask.StandardTaskTemplate):
                     else:
                         phasecenter = target['phasecenter']
 
-                    if target['robust'] not in (-999, -999., None):
-                        robust = target['robust']
-                    else:
-                        robust = None
+                    # PIPE-107 requests using a fixed robust value of 1.0.
+                    robust = 1.0
+
+                    # Keep old code to use the general robust choice around
+                    # until the general weighting and beam size discussion
+                    # is settled (CAS-7210 etc.).
+                    #
+                    #if target['robust'] not in (-999, -999., None):
+                    #    robust = target['robust']
+                    #else:
+                    #    robust = None
 
                     if target['uvtaper'] not in ([], None):
                         uvtaper = target['uvtaper']

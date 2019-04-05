@@ -149,8 +149,16 @@ class CheckProductSizeHeuristics(object):
 
         # If still too large, try changing pixperbeam setting
         if (self.inputs.maxcubesize != -1.0) and (maxcubesize > self.inputs.maxcubesize):
-            size_mitigation_parameters['hm_cell'] = '3ppb'
-            LOG.info('Size mitigation: Setting hm_cell to 3ppb')
+            if 'robust' in self.context.imaging_parameters:
+                robust = self.context.imaging_parameters['robust']
+            else:
+                robust = None
+            if robust == 2.0:
+                # Special case to avoid undersampling the beam (PIPE-107)
+                size_mitigation_parameters['hm_cell'] = '3.25ppb'
+            else:
+                size_mitigation_parameters['hm_cell'] = '3ppb'
+            LOG.info('Size mitigation: Setting hm_cell to %s' % (size_mitigation_parameters['hm_cell']))
 
             # Recalculate sizes
             makeimlist_inputs.hm_cell = size_mitigation_parameters['hm_cell']
@@ -258,8 +266,16 @@ class CheckProductSizeHeuristics(object):
             if (self.inputs.maxproductsize != -1.0) and (total_productsize > self.inputs.maxproductsize):
                 LOG.info('Product size with single target is still too large. Trying cell size mitigation.')
 
-                size_mitigation_parameters['hm_cell'] = '3ppb'
-                LOG.info('Size mitigation: Setting hm_cell to 3ppb')
+                if 'robust' in self.context.imaging_parameters:
+                    robust = self.context.imaging_parameters['robust']
+                else:
+                    robust = None
+                if robust == 2.0:
+                    # Special case to avoid undersampling the beam (PIPE-107)
+                    size_mitigation_parameters['hm_cell'] = '3.25ppb'
+                else:
+                    size_mitigation_parameters['hm_cell'] = '3ppb'
+                LOG.info('Size mitigation: Setting hm_cell to %s' % (size_mitigation_parameters['hm_cell']))
 
                 # Recalculate sizes
                 makeimlist_inputs.hm_cell = size_mitigation_parameters['hm_cell']
