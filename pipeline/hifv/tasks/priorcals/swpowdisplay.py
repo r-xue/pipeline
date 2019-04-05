@@ -129,7 +129,8 @@ class swpowPerAntennaChart(object):
                                 antenna=antPlot, spw=self.result.sw_result.spw, timerange='',
                                 plotrange=plotrange, coloraxis='',
                                 title='Switched Power  swpow.tbl   Antenna: {!s}'.format(antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                xconnector='line')
 
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename)

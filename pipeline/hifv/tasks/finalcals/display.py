@@ -36,7 +36,7 @@ class finalcalsSummaryChart(object):
 
     def get_figfile(self):
         return os.path.join(self.context.report_dir, 'stage%s' % self.result.stage_number,
-                            'finalcalsjunk'+'-%s-summary.png' % self.ms.basename)
+                            'finalcalsjunk' + '-%s-summary.png' % self.ms.basename)
 
     def get_plot_wrapper(self):
         figfile = self.get_figfile()
@@ -57,14 +57,14 @@ class finalcalsSummaryChart(object):
 
         return wrapper
 
-    
+
 class finalDelaysPerAntennaChart(object):
     def __init__(self, context, result):
         self.context = context
         self.result = result
         self.ms = context.observing_run.get_ms(result.inputs['vis'])
         self.basevis = os.path.basename(result.inputs['vis'])
-        
+
         self.json = {}
         self.json_filename = os.path.join(context.report_dir, 'stage%s' % result.stage_number,
                                           'finaldelays-%s.json' % self.ms)
@@ -80,13 +80,13 @@ class finalDelaysPerAntennaChart(object):
 
         for ii in range(nplots):
 
-            filename = 'finaldelay'+str(ii)+'.png'
+            filename = 'finaldelay' + str(ii) + '.png'
             antPlot = str(ii)
-            
+
             stage = 'stage%s' % result.stage_number
             stage_dir = os.path.join(context.report_dir, stage)
             # construct the relative filename, eg. 'stageX/testdelay0.png'
-            
+
             figfile = os.path.join(stage_dir, filename)
 
             if not os.path.exists(figfile):
@@ -98,18 +98,19 @@ class finalDelaysPerAntennaChart(object):
                         idents = [a.name if a.name else a.id for a in domain_antennas]
                         antName = ','.join(idents)
 
-                    LOG.debug("Plotting final calibration tables "+antName)
+                    LOG.debug("Plotting final calibration tables " + antName)
 
                     casa.plotms(vis=self.result.ktypecaltable, xaxis='freq', yaxis='amp', field='',
                                 antenna=antPlot, spw='', timerange='',
                                 plotrange=[], coloraxis='',
                                 title='K table: finaldelay.tbl   Antenna: {!s}'.format(antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                xconnector='step')
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename + str(ex))
             else:
                 LOG.debug('Using existing ' + filename + ' plot.')
-            
+
             try:
                 real_figfile = figfile
 
@@ -133,7 +134,7 @@ class finalphaseGainPerAntennaChart(object):
         self.result = result
         self.ms = context.observing_run.get_ms(result.inputs['vis'])
         self.basevis = os.path.basename(result.inputs['vis'])
-        
+
         self.json = {}
         self.json_filename = os.path.join(context.report_dir, 'stage%s' % result.stage_number,
                                           'finalphasegain-%s.json' % self.ms)
@@ -142,7 +143,7 @@ class finalphaseGainPerAntennaChart(object):
         context = self.context
         result = self.result
         m = context.observing_run.measurement_sets[0]
-        
+
         nplots = len(m.antennas)
         plots = []
 
@@ -150,13 +151,13 @@ class finalphaseGainPerAntennaChart(object):
 
         for ii in range(nplots):
 
-            filename = 'finalBPinitialgainphase'+str(ii)+'.png'
+            filename = 'finalBPinitialgainphase' + str(ii) + '.png'
             antPlot = str(ii)
-            
+
             stage = 'stage%s' % result.stage_number
             stage_dir = os.path.join(context.report_dir, stage)
             # construct the relative filename, eg. 'stageX/testdelay0.png'
-            
+
             figfile = os.path.join(stage_dir, filename)
 
             if not os.path.exists(figfile):
@@ -168,18 +169,19 @@ class finalphaseGainPerAntennaChart(object):
                         idents = [a.name if a.name else a.id for a in domain_antennas]
                         antName = ','.join(idents)
 
-                    LOG.debug("Plotting final phase gain solutions "+antName)
+                    LOG.debug("Plotting final phase gain solutions " + antName)
                     casa.plotms(vis=result.bpdgain_touse, xaxis='time', yaxis='phase', field='',
                                 antenna=antPlot, spw='', timerange='',
                                 coloraxis='', plotrange=[0, 0, -180, 180], symbolshape='circle',
                                 title='G table: finalBPinitialgain.tbl   Antenna: {!s}'.format(antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                xconnector='line')
 
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename + str(ex))
             else:
                 LOG.debug('Using existing ' + filename + ' plot.')
-            
+
             try:
                 plot = logger.Plot(figfile, x_axis='Time', y_axis='Phase', field='',
                                    parameters={'spw': '',
@@ -201,24 +203,24 @@ class finalbpSolAmpPerAntennaChart(object):
         self.result = result
         self.ms = context.observing_run.get_ms(result.inputs['vis'])
         self.basevis = os.path.basename(result.inputs['vis'])
-        
+
         self.json = {}
-        self.json_filename = os.path.join(context.report_dir, 
-                                          'stage%s' % result.stage_number, 
+        self.json_filename = os.path.join(context.report_dir,
+                                          'stage%s' % result.stage_number,
                                           'finalbpsolamp-%s.json' % self.ms)
 
     def plot(self):
         context = self.context
         result = self.result
         m = context.observing_run.measurement_sets[0]
-        
+
         nplots = len(m.antennas)
         plots = []
 
         with casatools.TableReader(self.result.bpcaltable) as tb:
             dataVarCol = tb.getvarcol('CPARAM')
             flagVarCol = tb.getvarcol('FLAG')
-    
+
         rowlist = dataVarCol.keys()
         maxmaxamp = 0.0
         maxmaxphase = 0.0
@@ -235,7 +237,7 @@ class finalbpSolAmpPerAntennaChart(object):
                     maxmaxamp = maxamp
             tmparr = np.abs(phases[good])
             if len(tmparr) > 0:
-                maxphase = np.max(np.abs(phases[good]))*180./math.pi
+                maxphase = np.max(np.abs(phases[good])) * 180. / math.pi
                 if maxphase > maxmaxphase:
                     maxmaxphase = maxphase
         ampplotmax = maxmaxamp
@@ -244,13 +246,13 @@ class finalbpSolAmpPerAntennaChart(object):
 
         for ii in range(nplots):
 
-            filename='finalBPcal_amp'+str(ii)+'.png'
-            antPlot=str(ii)
-            
+            filename = 'finalBPcal_amp' + str(ii) + '.png'
+            antPlot = str(ii)
+
             stage = 'stage%s' % result.stage_number
             stage_dir = os.path.join(context.report_dir, stage)
             # construct the relative filename, eg. 'stageX/testdelay0.png'
-            
+
             figfile = os.path.join(stage_dir, filename)
 
             if not os.path.exists(figfile):
@@ -262,20 +264,21 @@ class finalbpSolAmpPerAntennaChart(object):
                         idents = [a.name if a.name else a.id for a in domain_antennas]
                         antName = ','.join(idents)
 
-                    LOG.debug("Plotting amp bandpass solutions "+antName)
+                    LOG.debug("Plotting amp bandpass solutions " + antName)
                     casa.plotms(vis=self.result.bpcaltable, xaxis='freq', yaxis='amp', field='',
                                 antenna=antPlot, spw='', timerange='',
                                 coloraxis='', plotrange=[0, 0, 0, ampplotmax], symbolshape='circle',
                                 title='B table: {!s}   Antenna: {!s}'.format('finalBPcal.tbl', antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                xconnector='step')
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename + str(ex))
             else:
                 LOG.debug('Using existing ' + filename + ' plot.')
-            
+
             try:
                 real_figfile = figfile
-            
+
                 plot = logger.Plot(real_figfile, x_axis='Freq', y_axis='Amp', field='',
                                    parameters={'spw': '',
                                                'pol': '',
@@ -296,24 +299,24 @@ class finalbpSolPhasePerAntennaChart(object):
         self.result = result
         self.ms = context.observing_run.get_ms(result.inputs['vis'])
         self.basevis = os.path.basename(result.inputs['vis'])
-        
+
         self.json = {}
-        self.json_filename = os.path.join(context.report_dir, 
-                                          'stage%s' % result.stage_number, 
+        self.json_filename = os.path.join(context.report_dir,
+                                          'stage%s' % result.stage_number,
                                           'finalbpsolphase-%s.json' % self.ms)
 
     def plot(self):
         context = self.context
         result = self.result
         m = context.observing_run.measurement_sets[0]
-        
+
         nplots = len(m.antennas)
         plots = []
 
         with casatools.TableReader(self.result.bpcaltable) as tb:
             dataVarCol = tb.getvarcol('CPARAM')
             flagVarCol = tb.getvarcol('FLAG')
-    
+
         rowlist = dataVarCol.keys()
         maxmaxamp = 0.0
         maxmaxphase = 0.0
@@ -330,7 +333,7 @@ class finalbpSolPhasePerAntennaChart(object):
                     maxmaxamp = maxamp
             tmparr = np.abs(phases[good])
             if len(tmparr) > 0:
-                maxphase = np.max(np.abs(phases[good]))*180./math.pi
+                maxphase = np.max(np.abs(phases[good])) * 180. / math.pi
                 if maxphase > maxmaxphase:
                     maxmaxphase = maxphase
         phaseplotmax = maxmaxphase
@@ -339,13 +342,13 @@ class finalbpSolPhasePerAntennaChart(object):
 
         for ii in range(nplots):
 
-            filename = 'finalBPcal_phase'+str(ii)+'.png'
+            filename = 'finalBPcal_phase' + str(ii) + '.png'
             antPlot = str(ii)
-            
+
             stage = 'stage%s' % result.stage_number
             stage_dir = os.path.join(context.report_dir, stage)
             # construct the relative filename, eg. 'stageX/testdelay0.png'
-            
+
             figfile = os.path.join(stage_dir, filename)
 
             if not os.path.exists(figfile):
@@ -357,21 +360,22 @@ class finalbpSolPhasePerAntennaChart(object):
                         idents = [a.name if a.name else a.id for a in domain_antennas]
                         antName = ','.join(idents)
 
-                    LOG.debug("Plotting phase bandpass solutions "+antName)
+                    LOG.debug("Plotting phase bandpass solutions " + antName)
                     casa.plotms(vis=self.result.bpcaltable, xaxis='freq', yaxis='phase', field='',
                                 antenna=antPlot, spw='', timerange='',
                                 coloraxis='', plotrange=[0, 0, -phaseplotmax, phaseplotmax],
                                 symbolshape='circle',
                                 title='B table: {!s}   Antenna: {!s}'.format('finalBPcal.tbl', antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                xconnector='step')
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename + str(ex))
             else:
                 LOG.debug('Using existing ' + filename + ' plot.')
-            
+
             try:
                 real_figfile = figfile
-            
+
                 plot = logger.Plot(real_figfile, x_axis='Freq', y_axis='Phase', field='',
                                    parameters={'spw': '',
                                                'pol': '',
@@ -392,17 +396,17 @@ class finalbpSolPhaseShortPerAntennaChart(object):
         self.result = result
         self.ms = context.observing_run.get_ms(result.inputs['vis'])
         self.basevis = os.path.basename(result.inputs['vis'])
-        
+
         self.json = {}
-        self.json_filename = os.path.join(context.report_dir, 
-                                          'stage%s' % result.stage_number, 
+        self.json_filename = os.path.join(context.report_dir,
+                                          'stage%s' % result.stage_number,
                                           'finalbpsolphaseshort-%s.json' % self.ms)
 
     def plot(self):
         context = self.context
         result = self.result
         m = context.observing_run.measurement_sets[0]
-        
+
         nplots = len(m.antennas)
         plots = []
 
@@ -410,13 +414,13 @@ class finalbpSolPhaseShortPerAntennaChart(object):
 
         for ii in range(nplots):
 
-            filename='phaseshortgaincal'+str(ii)+'.png'
-            antPlot=str(ii)
-            
+            filename = 'phaseshortgaincal' + str(ii) + '.png'
+            antPlot = str(ii)
+
             stage = 'stage%s' % result.stage_number
             stage_dir = os.path.join(context.report_dir, stage)
             # construct the relative filename, eg. 'stageX/testdelay0.png'
-            
+
             figfile = os.path.join(stage_dir, filename)
 
             if not os.path.exists(figfile):
@@ -428,17 +432,18 @@ class finalbpSolPhaseShortPerAntennaChart(object):
                         idents = [a.name if a.name else a.id for a in domain_antennas]
                         antName = ','.join(idents)
 
-                    LOG.debug("Plotting phase short gaincal "+antName)
+                    LOG.debug("Plotting phase short gaincal " + antName)
                     casa.plotms(vis=self.result.phaseshortgaincaltable, xaxis='time', yaxis='phase', field='',
                                 antenna=antPlot, spw='', timerange='',
                                 coloraxis='', plotrange=[0, 0, -180, 180], symbolshape='circle',
                                 title='G table: phaseshortgaincal.tbl   Antenna: {!s}'.format(antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                xconnector='line')
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename + str(ex))
             else:
                 LOG.debug('Using existing ' + filename + ' plot.')
-            
+
             try:
                 plot = logger.Plot(figfile, x_axis='Time', y_axis='Phase', field='',
                                    parameters={'spw': '',
@@ -460,21 +465,21 @@ class finalAmpTimeCalPerAntennaChart(object):
         self.result = result
         self.ms = context.observing_run.get_ms(result.inputs['vis'])
         self.basevis = os.path.basename(result.inputs['vis'])
-        
+
         self.json = {}
-        self.json_filename = os.path.join(context.report_dir, 
-                                          'stage%s' % result.stage_number, 
+        self.json_filename = os.path.join(context.report_dir,
+                                          'stage%s' % result.stage_number,
                                           'finalamptimecal-%s.json' % self.ms)
 
     def plot(self):
         context = self.context
         result = self.result
         m = context.observing_run.measurement_sets[0]
-        
+
         nplots = len(m.antennas)
 
         plots = []
-        
+
         with casatools.TableReader(self.result.finalampgaincaltable) as tb:
             cpar = tb.getcol('CPARAM')
             flgs = tb.getcol('FLAG')
@@ -487,13 +492,13 @@ class finalAmpTimeCalPerAntennaChart(object):
 
         for ii in range(nplots):
 
-            filename = 'finalamptimecal'+str(ii)+'.png'
+            filename = 'finalamptimecal' + str(ii) + '.png'
             antPlot = str(ii)
-            
+
             stage = 'stage%s' % result.stage_number
             stage_dir = os.path.join(context.report_dir, stage)
             # construct the relative filename, eg. 'stageX/testdelay0.png'
-            
+
             figfile = os.path.join(stage_dir, filename)
 
             if not os.path.exists(figfile):
@@ -505,17 +510,18 @@ class finalAmpTimeCalPerAntennaChart(object):
                         idents = [a.name if a.name else a.id for a in domain_antennas]
                         antName = ','.join(idents)
 
-                    LOG.debug("Plotting final amp timecal "+antName)
+                    LOG.debug("Plotting final amp timecal " + antName)
                     casa.plotms(vis=self.result.finalampgaincaltable, xaxis='time', yaxis='amp', field='',
                                 antenna=antPlot, spw='', timerange='',
                                 coloraxis='', plotrange=[0, 0, 0, plotmax], symbolshape='circle',
                                 title='G table: finalampgaincal.tbl   Antenna: {!s}'.format(antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                xconnector='line')
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename + str(ex))
             else:
                 LOG.debug('Using existing ' + filename + ' plot.')
-            
+
             try:
                 plot = logger.Plot(figfile, x_axis='Time', y_axis='Amp', field='',
                                    parameters={'spw': '',
@@ -537,17 +543,17 @@ class finalAmpFreqCalPerAntennaChart(object):
         self.result = result
         self.ms = context.observing_run.get_ms(result.inputs['vis'])
         self.basevis = os.path.basename(result.inputs['vis'])
-        
+
         self.json = {}
-        self.json_filename = os.path.join(context.report_dir, 
-                                          'stage%s' % result.stage_number, 
+        self.json_filename = os.path.join(context.report_dir,
+                                          'stage%s' % result.stage_number,
                                           'finalampfreqcal-%s.json' % self.ms)
 
     def plot(self):
         context = self.context
         result = self.result
         m = context.observing_run.measurement_sets[0]
-        
+
         nplots = len(m.antennas)
 
         plots = []
@@ -564,13 +570,13 @@ class finalAmpFreqCalPerAntennaChart(object):
 
         for ii in range(nplots):
 
-            filename = 'finalampfreqcal'+str(ii)+'.png'
+            filename = 'finalampfreqcal' + str(ii) + '.png'
             antPlot = str(ii)
-            
+
             stage = 'stage%s' % result.stage_number
             stage_dir = os.path.join(context.report_dir, stage)
             # construct the relative filename, eg. 'stageX/testdelay0.png'
-            
+
             figfile = os.path.join(stage_dir, filename)
 
             if not os.path.exists(figfile):
@@ -582,21 +588,22 @@ class finalAmpFreqCalPerAntennaChart(object):
                         idents = [a.name if a.name else a.id for a in domain_antennas]
                         antName = ','.join(idents)
 
-                    LOG.debug("Plotting final amp freqcal "+antName)
+                    LOG.debug("Plotting final amp freqcal " + antName)
                     casa.plotms(vis=self.result.finalampgaincaltable, xaxis='freq', yaxis='amp', field='',
                                 antenna=antPlot, spw='', timerange='',
                                 coloraxis='', plotrange=[0, 0, 0, plotmax], symbolshape='circle',
                                 title='G table: finalampgaincal.tbl   Antenna: {!s}'.format(antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
-                    
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                xconnector='step')
+
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename + str(ex))
             else:
                 LOG.debug('Using existing ' + filename + ' plot.')
-            
+
             try:
                 real_figfile = figfile
-            
+
                 plot = logger.Plot(real_figfile, x_axis='freq', y_axis='Amp', field='',
                                    parameters={'spw': '',
                                                'pol': '',
@@ -617,17 +624,17 @@ class finalPhaseGainCalPerAntennaChart(object):
         self.result = result
         self.ms = context.observing_run.get_ms(result.inputs['vis'])
         self.basevis = os.path.basename(result.inputs['vis'])
-        
+
         self.json = {}
-        self.json_filename = os.path.join(context.report_dir, 
-                                          'stage%s' % result.stage_number, 
+        self.json_filename = os.path.join(context.report_dir,
+                                          'stage%s' % result.stage_number,
                                           'finalphasegaincal-%s.json' % self.ms)
 
     def plot(self):
         context = self.context
         result = self.result
         m = context.observing_run.measurement_sets[0]
-        
+
         nplots = len(m.antennas)
         plots = []
 
@@ -635,13 +642,13 @@ class finalPhaseGainCalPerAntennaChart(object):
 
         for ii in range(nplots):
 
-            filename = 'finalphasegaincal'+str(ii)+'.png'
+            filename = 'finalphasegaincal' + str(ii) + '.png'
             antPlot = str(ii)
-            
+
             stage = 'stage%s' % result.stage_number
             stage_dir = os.path.join(context.report_dir, stage)
             # construct the relative filename, eg. 'stageX/testdelay0.png'
-            
+
             figfile = os.path.join(stage_dir, filename)
 
             if not os.path.exists(figfile):
@@ -653,18 +660,19 @@ class finalPhaseGainCalPerAntennaChart(object):
                         idents = [a.name if a.name else a.id for a in domain_antennas]
                         antName = ','.join(idents)
 
-                    LOG.debug("Plotting final phase freqcal "+antName)
+                    LOG.debug("Plotting final phase freqcal " + antName)
                     casa.plotms(vis=self.result.finalphasegaincaltable, xaxis='time', yaxis='phase', field='',
                                 antenna=antPlot, spw='', timerange='',
                                 coloraxis='', plotrange=[0, 0, -180, 180], symbolshape='circle',
                                 title='G table: finalphasegaincal.tbl   Antenna: {!s}'.format(antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                xconnector='line')
 
                 except Exception as ex:
                     LOG.warn("Problem with plotting " + filename + str(ex))
             else:
                 LOG.debug('Using existing ' + filename + ' plot.')
-            
+
             try:
                 plot = logger.Plot(figfile, x_axis='time', y_axis='phase', field='',
                                    parameters={'spw': '',
