@@ -543,7 +543,7 @@ class SpectralWindowTable(object):
                 _, str_id = string.split(element, '_')
                 ids.append(int(str_id))
         except IOError:
-            LOG.info("File not found: {}".format(xml_path))
+            LOG.info("Could not parse XML at: {}".format(xml_path))
 
         return ids
 
@@ -559,8 +559,14 @@ class SpectralWindowTable(object):
         :param ms: measurement set to inspect
         :return: list of integers corresponding to ASDM spectral window IDs
         """
+        result = []
         xml_path = os.path.join(ms.name, 'DataDescription.xml')
-        return SpectralWindowTable.parse_spectral_window_ids_from_xml(xml_path)
+        if not os.path.exists(xml_path):
+            LOG.info("No DataDescription XML found at {}.".format(xml_path))
+        else:
+            result = SpectralWindowTable.parse_spectral_window_ids_from_xml(xml_path)
+
+        return result
 
     @staticmethod
     def get_spectral_window_spw_ids(ms):
@@ -574,8 +580,14 @@ class SpectralWindowTable(object):
         :param ms: measurement set to inspect
         :return: list of integers corresponding to ASDM spectral window IDs
         """
+        result = []
         xml_path = os.path.join(ms.name, 'SpectralWindow.xml')
-        return SpectralWindowTable.parse_spectral_window_ids_from_xml(xml_path)
+        if not os.path.exists(xml_path):
+            LOG.info("No SpectralWindow XML found at {}.".format(xml_path))
+        else:
+            result = SpectralWindowTable.parse_spectral_window_ids_from_xml(xml_path)
+
+        return result
 
     @staticmethod
     def get_asdm_to_ms_spw_mapping(ms):
