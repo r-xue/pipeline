@@ -79,6 +79,11 @@ Compute clean results from a list of specified targets.
     <value>True</value>
     </param>
 
+  <param type="double" name="hm_nsigma">
+    <description>Multiplicative factor for rms-based threshold stopping</description>
+    <value>0.0</value>
+  </param>
+
   <!--param type="bool" name="hm_perchanweightdensity">
     <description></description>
     <value>False</value>
@@ -264,6 +269,8 @@ hm_dogrowprune -- Do pruning on the grow mask
 hm_minpercentchange -- Mask size change threshold
 
 hm_fastnoise -- Faster noise calucation for automask or nsigma stopping
+
+hm_nsigma -- Multiplicative factor for rms-based threshold stopping
 
 cleancontranges -- Clean continuum frequency ranges in cubes
                    default=False

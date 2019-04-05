@@ -241,7 +241,10 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         else:
             return self._new_threshold(threshold, rms_threshold, nsigma)
 
-    def nsigma(self, iteration, hm_masking):
+    def nsigma(self, iteration, hm_masking, hm_nsigma):
+
+        if hm_nsigma:
+            return hm_nsigma
 
         if hm_masking == 'auto':
             if iteration == 0:

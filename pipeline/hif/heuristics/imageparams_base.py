@@ -1791,9 +1791,9 @@ class ImageParamsHeuristics(object):
         else:
             return threshold
 
-    def nsigma(self, iteration, hm_masking):
+    def nsigma(self, iteration, hm_masking, hm_nsigma):
 
-        return None
+        return hm_nsigma
 
     def savemodel(self, iteration):
 

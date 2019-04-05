@@ -46,7 +46,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     mosweight = vdp.VisDependentProperty(default=None)
     nchan = vdp.VisDependentProperty(default=-1)
     niter = vdp.VisDependentProperty(default=5000)
-    nsigma = vdp.VisDependentProperty(default=None)
+    hm_nsigma = vdp.VisDependentProperty(default=0.0)
     nterms = vdp.VisDependentProperty(default=None)
     orig_specmode = vdp.VisDependentProperty(default='')
     outframe = vdp.VisDependentProperty(default='LSRK')
@@ -109,7 +109,7 @@ class CleanBaseInputs(vdp.StandardInputs):
                  robust=None, restoringbeam=None, iter=None, mask=None, savemodel=None, hm_masking=None,
                  hm_sidelobethreshold=None, hm_noisethreshold=None, hm_lownoisethreshold=None,
                  hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None, hm_dogrowprune=None,
-                 hm_minpercentchange=None, hm_fastnoise=None, pblimit=None, niter=None, nsigma=None,
+                 hm_minpercentchange=None, hm_fastnoise=None, pblimit=None, niter=None, hm_nsigma=None,
                  threshold=None, sensitivity=None, reffreq=None, restfreq=None, conjbeams=None, is_per_eb=None,
                  antenna=None, usepointing=None, mosweight=None,
                  result=None, parallel=None, heuristics=None):
@@ -162,7 +162,7 @@ class CleanBaseInputs(vdp.StandardInputs):
         self.pblimit = pblimit
         self.niter = niter
         self.threshold = threshold
-        self.nsigma = nsigma
+        self.hm_nsigma = hm_nsigma
         self.sensitivity = sensitivity
         self.reffreq = reffreq
         self.restfreq = restfreq
@@ -293,7 +293,6 @@ class CleanBase(basetask.StandardTaskTemplate):
             'pblimit':       inputs.pblimit,
             'niter':         inputs.niter,
             'threshold':     inputs.threshold,
-            'nsigma':        inputs.nsigma,
             'deconvolver':   inputs.deconvolver,
             'interactive':   0,
             'nchan':         inputs.nchan,
@@ -479,6 +478,13 @@ class CleanBase(basetask.StandardTaskTemplate):
             mosweight = inputs.heuristics.mosweight(inputs.intent, inputs.field)
             if mosweight is not None:
                 tclean_job_parameters['mosweight'] = mosweight
+
+        if inputs.hm_nsigma is not None:
+            tclean_job_parameters['nsigma'] = inputs.hm_nsigma
+        else:
+            hm_nsigma = inputs.heuristics.mosweight(inputs.intent, inputs.field)
+            if hm_nsigma is not None:
+                tclean_job_parameters['nsigma'] = hm_nsigma
 
         # Up until CASA 5.2 it is necessary to run tclean calls with
         # restoringbeam == 'common' in two steps in HPC mode (CAS-10849).
