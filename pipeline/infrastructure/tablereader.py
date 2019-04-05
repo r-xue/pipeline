@@ -462,7 +462,7 @@ class SpectralWindowTable(object):
             try:
                 receiver, freq_lo = receiver_info[i]
             except KeyError:
-                LOG.warn("No receiver info available for MS {} spw id {}".format(_get_ms_basename(ms), i))
+                LOG.info("No receiver info available for MS {} spw id {}".format(_get_ms_basename(ms), i))
                 receiver, freq_lo = None, None
 
             # Store all info in a new SpectralWindow object.
@@ -521,7 +521,7 @@ class SpectralWindowTable(object):
                     if ms_spwid not in receiver_info or receiver_info[ms_spwid][0] not in ["TSB", "DSB"]:
                         receiver_info[ms_spwid] = (tb.getcell("receiverSideband", i), tb.getcell("freqLO", i))
         except:
-            LOG.warn("Error reading receiver info for MS {}".format(_get_ms_basename(ms)))
+            LOG.info("Unable to read receiver info for MS {}".format(_get_ms_basename(ms)))
             receiver_info = {}
 
         return receiver_info
@@ -534,13 +534,16 @@ class SpectralWindowTable(object):
         :param xml_path: path for XML file
         :return: list of integer spectral window IDs
         """
-        root_element = ElementTree.parse(xml_path)
-
         ids = []
-        for row in root_element.findall('row'):
-            element = row.findtext('spectralWindowId')
-            _, str_id = string.split(element, '_')
-            ids.append(int(str_id))
+        try:
+            root_element = ElementTree.parse(xml_path)
+
+            for row in root_element.findall('row'):
+                element = row.findtext('spectralWindowId')
+                _, str_id = string.split(element, '_')
+                ids.append(int(str_id))
+        except IOError:
+            LOG.info("File not found: {}".format(xml_path))
 
         return ids
 
