@@ -212,6 +212,9 @@ class ImageParamsHeuristicsVlassSeTaper(ImageParamsHeuristics):
 
         if rms_threshold:
             if threshold:
+                qa = casatools.quanta
+                threshold = qa.quantity(threshold)['value']
+                rms_threshold = qa.quantity(rms_threshold)['value']
                 LOG.warn("Both the 'threshold' and 'threshold_nsigma' were specified.")
                 LOG.warn('Setting new threshold to max of input threshold and scaled MAD * nsigma.')
                 LOG.info("    Input 'threshold' = {tt}".format(tt=threshold))
