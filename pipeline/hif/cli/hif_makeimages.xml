@@ -74,9 +74,16 @@ Compute clean results from a list of specified targets.
        <value>-999.0</value>
   </param>
 
-  <param type="string" name="hm_threshold">
-     <description>Tclean threshold</description>
-       <value/>
+  <param type="string" name="hm_cleaning">
+     <description>Pipeline cleaning mode </description>
+       <value></value>
+       <allowed kind="enum">
+         <value></value>
+         <value>rms</value>
+         <value>sensitivity</value>
+         <value>timesmask</value>
+         <value>manual</value>
+       </allowed>
   </param>
 
   <param type="double" name="tlimit" subparam="true">
@@ -167,6 +174,20 @@ Compute clean results from a list of specified targets.
       <equals value="none">
       </equals>
       <equals value="">
+      </equals>
+    </when>
+
+    <when param="hm_cleaning">
+      <equals value="">
+      </equals>
+      <equals value="rms">
+        <default param="tlimit"><value type="double">2.0</value></default>
+      </equals>
+      <equals value="sensitivity">
+        <default param="tlimit"><value type="double">2.0</value></default>
+      </equals>
+      <equals value="timesmask">
+        <default param="masklimit"><value type="int">4</value></default>
       </equals>
     </when>
 

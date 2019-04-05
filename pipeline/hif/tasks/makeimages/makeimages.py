@@ -22,7 +22,7 @@ LOG = infrastructure.get_logger(__name__)
 class MakeImagesInputs(vdp.StandardInputs):
     calcsb = vdp.VisDependentProperty(default=False)
     cleancontranges = vdp.VisDependentProperty(default=False)
-    hm_threshold = vdp.VisDependentProperty(default=None)
+    hm_cleaning = vdp.VisDependentProperty(default='rms')
     hm_dogrowprune = vdp.VisDependentProperty(default=True)
     hm_growiterations = vdp.VisDependentProperty(default=-999)
     hm_lownoisethreshold = vdp.VisDependentProperty(default=-999.0)
@@ -52,7 +52,7 @@ class MakeImagesInputs(vdp.StandardInputs):
                  hm_masking=None, hm_sidelobethreshold=None, hm_noisethreshold=None,
                  hm_lownoisethreshold=None, hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None,
                  hm_dogrowprune=None, hm_minpercentchange=None,
-                 hm_threshold=None, tlimit=None, masklimit=None,
+                 hm_cleaning=None, tlimit=None, masklimit=None,
                  cleancontranges=None, calcsb=None, mosweight=None,
                  parallel=None,
                  # Extra parameters
@@ -72,7 +72,7 @@ class MakeImagesInputs(vdp.StandardInputs):
         self.hm_growiterations = hm_growiterations
         self.hm_dogrowprune = hm_dogrowprune
         self.hm_minpercentchange = hm_minpercentchange
-        self.hm_threshold = hm_threshold
+        self.hm_cleaning = hm_cleaning
         self.tlimit = tlimit
         self.masklimit = masklimit
         self.cleancontranges = cleancontranges
@@ -318,8 +318,10 @@ class CleanTaskFactory(object):
             task_args['hm_dogrowprune'] = inputs.hm_dogrowprune
             task_args['hm_minpercentchange'] = inputs.hm_minpercentchange
 
-        if inputs.hm_threshold:
-            task_args['threshold'] = inputs.hm_threshold
+        if inputs.hm_cleaning == '':
+            task_args['hm_cleaning'] = 'rms'
+        else:
+            task_args['hm_cleaning'] = inputs.hm_cleaning
 
         if target['vis']:
             task_args['vis'] = target['vis']
