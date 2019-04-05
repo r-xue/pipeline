@@ -74,6 +74,16 @@ Compute clean results from a list of specified targets.
        <value>-999.0</value>
   </param>
 
+  <param type="bool" name="hm_fastnoise">
+    <description>Faster noise calucation for automask or nsigma stopping</description>
+    <value>True</value>
+    </param>
+
+  <!--param type="bool" name="hm_perchanweightdensity">
+    <description></description>
+    <value>False</value>
+  </param-->
+
   <param type="string" name="hm_cleaning">
      <description>Pipeline cleaning mode </description>
        <value></value>
@@ -252,6 +262,8 @@ hm_growiterations -- Number of binary dilation iterations for growing the mask
 hm_dogrowprune -- Do pruning on the grow mask
 
 hm_minpercentchange -- Mask size change threshold
+
+hm_fastnoise -- Faster noise calucation for automask or nsigma stopping
 
 cleancontranges -- Clean continuum frequency ranges in cubes
                    default=False

@@ -1645,8 +1645,9 @@ class ImageParamsHeuristics(object):
         growiterations = None
         dogrowprune = None
         minpercentchange = None
+        fastnoise = None
 
-        return sidelobethreshold, noisethreshold, lownoisethreshold, negativethreshold, minbeamfrac, growiterations, dogrowprune, minpercentchange
+        return sidelobethreshold, noisethreshold, lownoisethreshold, negativethreshold, minbeamfrac, growiterations, dogrowprune, minpercentchange, fastnoise
 
     def nterms(self):
         return None

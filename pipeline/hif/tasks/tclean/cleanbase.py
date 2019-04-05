@@ -39,6 +39,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     hm_masking = vdp.VisDependentProperty(default='auto')
     hm_minbeamfrac = vdp.VisDependentProperty(default=-999.0)
     hm_minpercentchange = vdp.VisDependentProperty(default=-999.0)
+    hm_fastnoise = vdp.VisDependentProperty(default=True)
     hm_negativethreshold = vdp.VisDependentProperty(default=-999.0)
     hm_noisethreshold = vdp.VisDependentProperty(default=-999.0)
     hm_sidelobethreshold = vdp.VisDependentProperty(default=-999.0)
@@ -108,7 +109,7 @@ class CleanBaseInputs(vdp.StandardInputs):
                  robust=None, restoringbeam=None, iter=None, mask=None, savemodel=None, hm_masking=None,
                  hm_sidelobethreshold=None, hm_noisethreshold=None, hm_lownoisethreshold=None,
                  hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None, hm_dogrowprune=None,
-                 hm_minpercentchange=None, pblimit=None, niter=None, nsigma=None,
+                 hm_minpercentchange=None, hm_fastnoise=None, pblimit=None, niter=None, nsigma=None,
                  threshold=None, sensitivity=None, reffreq=None, restfreq=None, conjbeams=None, is_per_eb=None,
                  antenna=None, usepointing=None, mosweight=None,
                  result=None, parallel=None, heuristics=None):
@@ -156,6 +157,7 @@ class CleanBaseInputs(vdp.StandardInputs):
         self.hm_growiterations = hm_growiterations
         self.hm_dogrowprune = hm_dogrowprune
         self.hm_minpercentchange = hm_minpercentchange
+        self.hm_fastnoise = hm_fastnoise
 
         self.pblimit = pblimit
         self.niter = niter
@@ -336,7 +338,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             tclean_job_parameters['usemask'] = 'auto-multithresh'
 
             # get heuristics parameters 
-            sidelobethreshold, noisethreshold, lownoisethreshold, negativethreshold, minbeamfrac, growiterations, dogrowprune, minpercentchange = inputs.heuristics.get_autobox_params(inputs.intent, inputs.specmode, inputs.robust)
+            sidelobethreshold, noisethreshold, lownoisethreshold, negativethreshold, minbeamfrac, growiterations, dogrowprune, minpercentchange, fastnoise = inputs.heuristics.get_autobox_params(inputs.intent, inputs.specmode, inputs.robust)
 
             # Override individually with manual settings
             if inputs.hm_sidelobethreshold != -999.0:
@@ -378,6 +380,11 @@ class CleanBase(basetask.StandardTaskTemplate):
                 tclean_job_parameters['minpercentchange'] = inputs.hm_minpercentchange
             elif minpercentchange is not None:
                 tclean_job_parameters['minpercentchange'] = minpercentchange
+
+            if inputs.hm_fastnoise != -999:
+                tclean_job_parameters['fastnoise'] = inputs.hm_fastnoise
+            elif fastnoise is not None:
+                tclean_job_parameters['fastnoise'] = fastnoise
         else:
             if (inputs.hm_masking != 'none') and (inputs.mask != ''):
                 tclean_job_parameters['usemask'] = 'user'
