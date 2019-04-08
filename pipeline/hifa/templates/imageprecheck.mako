@@ -130,9 +130,10 @@ baseline based effects, residual antenna position errors, etc.).
             <th>robust</th>
             <th>uvtaper</th>
             <th>Synthesized Beam</th>
-            <th>cell</th>
-            <th>bandwidth</th>
-            <th>bwmode</th>
+            <th>Cell</th>
+            <th>Beam Ratio</th>
+            <th>Bandwidth</th>
+            <th>BW Mode</th>
             <th>Effective Sensitivity</th>
         </tr>
     </thead>

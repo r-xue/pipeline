@@ -23,7 +23,7 @@ class ImagePreCheckResults(basetask.Results):
                  minAcceptableAngResolution='0.0arcsec', maxAcceptableAngResolution='0.0arcsec',
                  maxAllowedBeamAxialRatio=0.0, sensitivityGoal='0mJy', hm_robust=0.5, hm_uvtaper=[],
                  sensitivities=None, sensitivity_bandwidth=None, score=None, single_continuum=False,
-                 per_spw_cont_sensitivities_all_chan=None, synthesized_beams=None):
+                 per_spw_cont_sensitivities_all_chan=None, synthesized_beams=None, beamRatios=None):
         super(ImagePreCheckResults, self).__init__()
 
         if sensitivities is None:
@@ -48,6 +48,7 @@ class ImagePreCheckResults(basetask.Results):
         self.single_continuum = single_continuum
         self.per_spw_cont_sensitivities_all_chan = per_spw_cont_sensitivities_all_chan
         self.synthesized_beams = synthesized_beams
+        self.beamRatios = beamRatios
 
     def merge_with_context(self, context):
         """
@@ -278,23 +279,33 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
 
         # Apply robust heuristic based on beam sizes for robust=(0.0, 0.5, 1.0, 2.0)
         if reprBW_mode in ['nbin', 'repr_spw']:
-            hm_robust, hm_robust_score = imageprecheck_heuristics.compare_beams( \
-                beams[(0.0, str(default_uvtaper), 'repBW')], \
-                beams[(0.5, str(default_uvtaper), 'repBW')], \
-                beams[(1.0, str(default_uvtaper), 'repBW')], \
-                beams[(2.0, str(default_uvtaper), 'repBW')], \
-                minAcceptableAngResolution, \
-                maxAcceptableAngResolution, \
-                maxAllowedBeamAxialRatio)
+            hm_robust, hm_robust_score, beamRatio_0p0, beamRatio_0p5, beamRatio_1p0, beamRatio_2p0 = \
+                imageprecheck_heuristics.compare_beams( \
+                    beams[(0.0, str(default_uvtaper), 'repBW')], \
+                    beams[(0.5, str(default_uvtaper), 'repBW')], \
+                    beams[(1.0, str(default_uvtaper), 'repBW')], \
+                    beams[(2.0, str(default_uvtaper), 'repBW')], \
+                    minAcceptableAngResolution, \
+                    maxAcceptableAngResolution, \
+                    maxAllowedBeamAxialRatio)
         else:
-            hm_robust, hm_robust_score = imageprecheck_heuristics.compare_beams( \
-                beams[(0.0, str(default_uvtaper), 'aggBW')], \
-                beams[(0.5, str(default_uvtaper), 'aggBW')], \
-                beams[(1.0, str(default_uvtaper), 'aggBW')], \
-                beams[(2.0, str(default_uvtaper), 'aggBW')], \
-                minAcceptableAngResolution, \
-                maxAcceptableAngResolution, \
-                maxAllowedBeamAxialRatio)
+            hm_robust, hm_robust_score, beamRatio_0p0, beamRatio_0p5, beamRatio_1p0, beamRatio_2p0 = \
+                imageprecheck_heuristics.compare_beams( \
+                    beams[(0.0, str(default_uvtaper), 'aggBW')], \
+                    beams[(0.5, str(default_uvtaper), 'aggBW')], \
+                    beams[(1.0, str(default_uvtaper), 'aggBW')], \
+                    beams[(2.0, str(default_uvtaper), 'aggBW')], \
+                    minAcceptableAngResolution, \
+                    maxAcceptableAngResolution, \
+                    maxAllowedBeamAxialRatio)
+
+        # Save beam ratios for weblog
+        beamRatios = { \
+            (0.0, str(default_uvtaper)): beamRatio_0p0,
+            (0.5, str(default_uvtaper)): beamRatio_0p5,
+            (1.0, str(default_uvtaper)): beamRatio_1p0,
+            (2.0, str(default_uvtaper)): beamRatio_2p0
+            }
 
         if real_repr_target:
             # Determine heuristic UV taper value
@@ -408,7 +419,8 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
             score=hm_robust_score,
             single_continuum=single_continuum,
             per_spw_cont_sensitivities_all_chan=known_per_spw_cont_sensitivities_all_chan,
-            synthesized_beams=known_synthesized_beams
+            synthesized_beams=known_synthesized_beams,
+            beamRatios=beamRatios
         )
 
     def analyse(self, results):

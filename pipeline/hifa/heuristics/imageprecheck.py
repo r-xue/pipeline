@@ -18,17 +18,17 @@ class ImagePreCheckHeuristics(object):
         cqa = casatools.quanta
 
         beams = {0.0: beam_0p0, 0.5: beam_0p5, 1.0: beam_1p0, 2.0: beam_2p0}
-        robusts = sorted(beams.keys())
 
-        # Define predicted beam areas and beam ratios
-        beamArea_0p0 =  cqa.mul(beams[0.0]['minor'], beams[0.0]['major'])
-        beamArea_0p5 =  cqa.mul(beams[0.5]['minor'], beams[0.5]['major'])
-        beamArea_1p0 =  cqa.mul(beams[1.0]['minor'], beams[1.0]['major'])
-        beamArea_2p0 =  cqa.mul(beams[2.0]['minor'], beams[2.0]['major'])
-        beamRatio_0p0 =  cqa.div(beams[0.0]['major'], beams[0.0]['minor'])
-        beamRatio_0p5 =  cqa.div(beams[0.5]['major'], beams[0.5]['minor'])
-        beamRatio_1p0 =  cqa.div(beams[1.0]['major'], beams[1.0]['minor'])
-        beamRatio_2p0 =  cqa.div(beams[2.0]['major'], beams[2.0]['minor'])
+        # Define predicted beam areas and beam ratios.
+        beamArea_0p0 =  cqa.mul(beam_0p0['minor'], beam_0p0['major'])
+        beamArea_0p5 =  cqa.mul(beam_0p5['minor'], beam_0p5['major'])
+        beamArea_1p0 =  cqa.mul(beam_1p0['minor'], beam_1p0['major'])
+        beamArea_2p0 =  cqa.mul(beam_2p0['minor'], beam_2p0['major'])
+        # Ratios should be rounded to 2 digits (PIPE-208)
+        beamRatio_0p0 =  cqa.tos(cqa.div(beam_0p0['major'], beam_0p0['minor']), 2)
+        beamRatio_0p5 =  cqa.tos(cqa.div(beam_0p5['major'], beam_0p5['minor']), 2)
+        beamRatio_1p0 =  cqa.tos(cqa.div(beam_1p0['major'], beam_1p0['minor']), 2)
+        beamRatio_2p0 =  cqa.tos(cqa.div(beam_2p0['major'], beam_2p0['minor']), 2)
 
         # Define PI requested beam area range
         minARbeamArea = cqa.mul(minAR, minAR)
@@ -131,4 +131,4 @@ class ImagePreCheckHeuristics(object):
             hm_robust_score_shortmsg = 'Requested beam falls in robust gap'
             LOG.warn(hm_robust_score_longmsg)
                 
-        return hm_robust, (hm_robust_score_value, hm_robust_score_longmsg, hm_robust_score_shortmsg)
+        return hm_robust, (hm_robust_score_value, hm_robust_score_longmsg, hm_robust_score_shortmsg), beamRatio_0p0, beamRatio_0p5, beamRatio_1p0, beamRatio_2p0
