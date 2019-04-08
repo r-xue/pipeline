@@ -23,6 +23,9 @@ LOG = infrastructure.get_logger(__name__)
 def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list):
     """
     An utility function to calculate spatial coordinate of image for ALMA
+
+    Items in ant_list can be None, which indicates that the function will take into
+    account pointing data from all the antennas in MS.
     """
     # A flag to use field direction as image center (True) rather than center of the map extent
     USE_FIELD_DIR = False
@@ -84,7 +87,17 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
             (datatable.getcolkeyword('SHIFT_DEC', 'UNIT') != 'deg'):
             raise RuntimeError("Found unexpected unit of RA/DEC in DataTable. It should be in 'deg'")
 
-        index_list = sorted(common.get_index_list_for_ms(datatable, [vis], [ant_id], [field_id], [spw_id]))
+        if ant_id is None:
+            # take all the antennas into account
+            msobj = context.observing_run.get_ms(vis)
+            num_antennas = len(msobj.antennas)
+            _vislist = [vis for _ in range(num_antennas)]
+            _antlist = [i for i in range(num_antennas)]
+            _fieldlist = [field_id for _ in range(num_antennas)]
+            _spwlist = [spw_id for _ in range(num_antennas)]
+            index_list = sorted(common.get_index_list_for_ms(datatable, _vislist, _antlist, _fieldlist, _spwlist))
+        else:
+            index_list = sorted(common.get_index_list_for_ms(datatable, [vis], [ant_id], [field_id], [spw_id]))
 
 #        _ra = datatable.getcol('RA').take(index_list)
 #        _dec = datatable.getcol('DEC').take(index_list)

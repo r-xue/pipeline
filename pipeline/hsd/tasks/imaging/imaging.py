@@ -365,7 +365,9 @@ class SDImaging(basetask.StandardTaskTemplate):
                 LOG.info('Imaging Source {}, Ant {} Spw {:d}'.format(source_name, ant_name, spwids[0]))
                 # map coordinate (use identical map coordinate per spw)
                 if not coord_set:
-                    image_coord = worker.ALMAImageCoordinateUtil(context, infiles, antids, spwids, fieldids)
+                    # PIPE-313: evaluate map extent using pointing data from all the antenna in the data
+                    dummyids = [None for _ in antids]
+                    image_coord = worker.ALMAImageCoordinateUtil(context, infiles, dummyids, spwids, fieldids)
                     if not image_coord:  # No valid data is found
                         continue
                     coord_set = True
