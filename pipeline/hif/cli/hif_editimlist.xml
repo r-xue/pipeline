@@ -26,9 +26,9 @@
                 <value/>
             </param>
 
-            <param type="string" name="conjbeams">
+            <param type="bool" name="conjbeams">
                 <description>Use conjugate frequency in tclean for wideband A-terms.</description>
-                <value/>
+                <value>True</value>
             </param>
 
             <param type="string" name="cyclefactor">

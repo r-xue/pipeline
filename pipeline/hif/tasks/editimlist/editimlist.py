@@ -53,7 +53,7 @@ LOG = infrastructure.get_logger(__name__)
 
 class EditimlistInputs(vdp.StandardInputs):
     search_radius_arcsec = vdp.VisDependentProperty(default=1000.0)
-    conjbeams = vdp.VisDependentProperty(default='')
+    conjbeams = vdp.VisDependentProperty(default=True)
     cyclefactor = vdp.VisDependentProperty(default='')
     cycleniter = vdp.VisDependentProperty(default='')
     deconvolver = vdp.VisDependentProperty(default='')
