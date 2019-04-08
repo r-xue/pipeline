@@ -24,12 +24,16 @@ class SDImagingQAHandler(pqa.QAPlugin):
         """
         This handles single SDImagingResultItem.
         """
+        # result.outcome should have 'image' 
         if 'image' not in result.outcome:
             return
 
-        image_item = result.outcome['image']
-        imagename = image_item.imagename
-        score_masked = qacalc.score_sdimage_masked_pixels(imagename)
+        # we only evaluate the score for combined image
+        antenna_name = result.outcome['image'].antenna
+        if antenna_name != 'COMBINED':
+            return
+
+        score_masked = qacalc.score_sdimage_masked_pixels(context, result)
         result.qa.pool.append(score_masked)
 
 
