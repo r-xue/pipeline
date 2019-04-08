@@ -28,7 +28,7 @@
 
             <param type="bool" name="conjbeams">
                 <description>Use conjugate frequency in tclean for wideband A-terms.</description>
-                <value>True</value>
+                <value>False</value>
             </param>
 
             <param type="string" name="cyclefactor">
@@ -102,12 +102,12 @@
 
             <param type="int" name="niter">
                 <description>Maximum number of clean iterations</description>
-                <value type="int">20000</value>
+                <value type="int">0</value>
             </param>
 
             <param type="int" name="nterms">
                 <description/>
-                <value type="int">2</value>
+                <value type="int">0</value>
             </param>
 
             <param type="string" name="parameter_file">
@@ -175,7 +175,7 @@
 
         <param type="double" name="threshold_nsigma">
             <description/>
-            <value type="double">4.0</value>
+            <value type="double">0</value>
         </param>
 
             <param type="string" name="uvtaper">
