@@ -1626,12 +1626,8 @@ class ImageParamsHeuristics(object):
     def threshold_nsigma(self):
         return None
 
-    def niter_correction(self, niter, cell, imsize, residual_max, threshold):
-        # TODO: parameter should be clean mask to be able to count the pixels
-
-        '''Adjustment of number of cleaning iterations due to mask size.'''
-
-        return niter
+    def niter(self):
+        return None
 
     def get_autobox_params(self, intent, specmode, robust):
 

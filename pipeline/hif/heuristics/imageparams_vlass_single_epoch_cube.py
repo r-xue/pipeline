@@ -21,6 +21,9 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristics):
         else:
             return 20000
 
+    def niter(self):
+        return self.niter_correction(None, None, None, None, None)
+
     def rms_threshold(self, rms, nsigma):
         try:
             LOG.info('Threshold nsigma multiplier: %s', nsigma)

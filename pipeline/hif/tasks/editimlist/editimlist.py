@@ -325,7 +325,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['reffreq'] = th.reffreq() if not inpdict['reffreq'] else inpdict['reffreq']
         imlist_entry['restfreq'] = th.restfreq() if not inpdict['restfreq'] else inpdict['restfreq']
         # niter_correction is run again in tclean.py
-        imlist_entry['niter'] = th.niter_correction(None, None, None, None, None) if not inpdict['niter'] else inpdict['niter']
+        imlist_entry['niter'] = th.niter() if not inpdict['niter'] else inpdict['niter']
         imlist_entry['cyclefactor'] = th.cyclefactor() if not inpdict['cyclefactor'] else inpdict['cyclefactor']
         imlist_entry['cycleniter'] = th.cycleniter() if not inpdict['cycleniter'] else int(inpdict['cycleniter'])
         imlist_entry['scales'] = th.scales() if not inpdict['scales'] else inpdict['scales']
