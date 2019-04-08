@@ -296,7 +296,13 @@ def _get_index_list_for_ms(datatable, vis_list, antennaid_list, fieldid_list,
     #online_flag = datatable.getcolslice('FLAG_PERMANENT', [0, OnlineFlagIndex], [-1, OnlineFlagIndex], 1)[0]
     #LOG.info('online_flag=%s'%(online_flag))
     for (_vis, _field, _ant, _spw) in itertools.izip(vis_list, fieldid_list, antennaid_list, spwid_list):
-        time_table = datatable.get_timetable(_ant, _spw, None, os.path.basename(_vis), _field)
+        try:
+            time_table = datatable.get_timetable(_ant, _spw, None, os.path.basename(_vis), _field)
+        except RuntimeError, e:
+            # data could be missing. just skip.
+            LOG.warn('Exception reported from datatable.get_timetable:')
+            LOG.warn(str(e))
+            continue
         # time table separated by large time gap
         the_table = time_table[1]
         for group in the_table:
