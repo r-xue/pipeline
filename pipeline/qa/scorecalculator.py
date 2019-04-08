@@ -2293,20 +2293,123 @@ def score_sd_skycal_elevation_difference(ms, resultdict, threshold=3.0):
 
 
 @log_qa
-def score_sdimage_masked_pixels(imagename):
+def score_sdimage_masked_pixels(context, result):
+    """
+    Evaluate QA score based on the fraction of masked pixels in image.
+
+    
+    Requirements (PIPE-249):
+        - calculate the number of masked pixels in image
+        - search area should be the extent of pointing direction
+        - QA score should be
+            1.0 (if the nuber of masked pixel == 0)
+            0.5 (if any of the pixel in pointing area is masked)
+            0.0 (if 10% of the pixels in pointing area are masked)
+            *linearly interpolate between 0.5 and 0.0
+    
+    Arguments:
+        context {Context} -- Pipeline context
+        result {SDImagingResultItem} -- Imaging result instance
+    
+    Returns:
+        QAScore -- QAScore instance holding the score based on number of
+                   masked pixels in image
+    """
     # metric score is a fraction of masked pixels 
-    metric_score = 0.0
+    result_item = result.outcome
+    image_item = result_item['image']
+    imagename = image_item.imagename
+
+    LOG.debug('imagename = {}'.format(imagename))
+    with casatools.ImageReader(imagename) as ia:
+        # get mask
+        # Mask Definition: True is valid, False is invalid.
+        mask = ia.getchunk(getmask=True)
+
+        # cs represents coordinate system of the image
+        cs = ia.coordsys()
+
+    # image shape: (lon, lat, stokes, freq)
+    LOG.debug('image shape: {}'.format(list(mask.shape)))
+        
+    # metric_mask is boolean array that defines the region to be excluded
+    #    True: included in the metric calculation
+    #   False: excluded from the metric calculation
+    # TODO: exclude pixels outside observed area
+    #metric_mask = np.ones_like(mask)
+
+    # preliminary evaluation of metric_mask
+    # check if weight is zero in each pixel
+    # TODO: need to take into account broadening effect due to gridfunction
+    wimagename = imagename.rstrip('/') + '.weight'
+
+    # return score 0 if weight image doesn't exist
+    if not os.path.exists(wimagename):
+        origin = pqa.QAOrigin(metric_name='SingleDishImageMaskedPixels',
+                              metric_score=0,
+                              metric_units='Fraction of masked pixels in image')
+
+        return pqa.QAScore(0, 
+                           longmsg='Weight image for {} does not exist'.format(imagename),
+                           shortmsg='Weight image does not exist',
+                           origin=origin)
+    
+    with casatools.ImageReader(wimagename) as ia:
+        weights = ia.getchunk()
+        metric_mask = weights > 0.0
+
+    # done using coordsys tool
+    cs.done()
+
+    # calculate metric_score
+    total_pixels = mask[metric_mask]
+    LOG.debug('Total number of pixels to be included in: {}'.format(len(total_pixels)))
+    masked_pixels = mask[mask == False]
+    masked_fraction = float(len(masked_pixels)) / float(len(total_pixels))
+    LOG.debug('Number of masked pixels: {} fraction {}'.format(len(masked_pixels), masked_fraction))
+    metric_score = masked_fraction
 
     # score should be evaluated from metric score
-    score = 1.0
+    lmsg = ''
+    smsg = ''
+    score = 0.0
+    metric_score_threshold = 0.1
+    metric_score_max = 1.0
+    metric_score_min = 0.0
+
+    # convert score and threhold for logging purpose
+    frac2percentage = lambda x: '{}%'.format(int(x * 100))
+
+    if metric_score > metric_score_max:
+        # metric_score should not exceed 1.0. something wrong.
+        _x = frac2percentage(metric_score_max)
+        lmsg = 'fraction of number of masked pixels should not exceed {}. something went wrong.'.format(_x)
+        score = 'metric value out of range.'
+    elif metric_score == metric_score_min:
+        score = 1.0
+    elif metric_score > metric_score_threshold:
+        _x = frac2percentage(metric_score_threshold)
+        lmsg = 'Number of masked pixels in image exceeds {}'.format(_x)
+        smsg = '{} of image pixels are masked'.format(_x)
+        score = 0.0
+    else:
+        # interpolate between 0.5 and 0.0
+        _x = frac2percentage(metric_score)
+        lmsg = '{} of image pixels are masked'.format(_x)
+        smsg = lmsg
+        smax = 0.5
+        mmax = 0.0
+        smin = 0.0
+        mmin = 0.1
+        score = (smax - smin) / (mmax - mmin) * (metric_score - mmin) + smin
 
     origin = pqa.QAOrigin(metric_name='SingleDishImageMaskedPixels',
                           metric_score=metric_score,
                           metric_units='Fraction of masked pixels in image')
 
     return pqa.QAScore(score, 
-                       longmsg='',
-                       shortmsg='',
+                       longmsg=lmsg,
+                       shortmsg=smsg,
                        origin=origin)
 
 @log_qa
