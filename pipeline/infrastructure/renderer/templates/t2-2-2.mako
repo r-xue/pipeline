@@ -37,6 +37,7 @@ import pipeline.domain.measures as measures
 			            <th scope="col" colspan="3">Channels ${'(%s)' % (ms.get_spectral_windows()[0].frame)}</th>
 			            <th scope="col" rowspan="2">Correlator Axis</th>
 			            <th scope="col" rowspan="2">Band</th>
+			            <th scope="col" rowspan="2">Band Type</th>
 						<%
 						basebandlabel=''
 						if pcontext.project_summary.telescope != 'ALMA':
@@ -77,6 +78,13 @@ import pipeline.domain.measures as measures
 					  <td>${str(measures.LinearVelocity(299792458 * spw.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ) / spw.centre_frequency.to_units(measures.FrequencyUnits.HERTZ), measures.LinearVelocityUnits.METRES_PER_SECOND))}</td>
 					  <td>${', '.join(sorted(ms.get_data_description(spw=spw).corr_axis))}</td>
 					  <td>${spw.band}</td>
+                      <%
+                      if spw.receiver:
+                          bandtype = "<td>{}</td>".format(spw.receiver)
+                      else:
+                          bandtype = "<td>Unknown</td>"
+                      %>
+                      ${bandtype}
 					  <%
 						basebanditem=''
 						if pcontext.project_summary.telescope != 'ALMA':
@@ -114,6 +122,7 @@ import pipeline.domain.measures as measures
 			            <th scope="col" colspan="3">Channels ${'(%s)' % (ms.get_spectral_windows()[0].frame)}</th>
 			            <th scope="col" rowspan="2">Correlator Axis</th>
 			            <th scope="col" rowspan="2">Band</th>
+			            <th scope="col" rowspan="2">Band Type</th>
 						<%
 						     basebandlabel=''
 						     if pcontext.project_summary.telescope != 'ALMA':
@@ -160,6 +169,13 @@ import pipeline.domain.measures as measures
 						%>
 						<td>${polarizations}</td>
 						<td>${spw.band}</td>
+                        <%
+                        if spw.receiver:
+                            bandtype = "<td>{}</td>".format(spw.receiver)
+                        else:
+                            bandtype = "<td>Unknown</td>"
+                        %>
+                        ${bandtype}
 						<%
 						    basebanditem=''
 						    if pcontext.project_summary.telescope != 'ALMA':
