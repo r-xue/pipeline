@@ -4,6 +4,10 @@ import decimal
 
 import numpy as np
 
+import pipeline.infrastructure as infrastructure
+
+LOG = infrastructure.get_logger(__name__)
+
 
 # Ozone line frequency ranges, used to skip flagging for sharps/birdies that
 # are likely ozone lines (CAS-12242).
@@ -334,6 +338,15 @@ def get_ozone_channels_for_spw(ms, spwid):
     For given spectral window in measurement set, compute an array of booleans
     where each element corresponds to a channel in the spectral window and
     signifies whether that channel falls inside a known atmospheric ozone line.
+
+    :param ms: measurement set to inspect
+    :type ms: :class:`~pipeline.domain.MeasurementSet`
+    :param spwid: spectral window id to inspect
+    :type spwid: int
+
+    :return: Numpy array of booleans, representing mask of channels where
+     channels corresponding to ozone lines are set to True.
+    :rtype: numpy.array[boolean]
     """
     # Get spectral window info from MS.
     spw = ms.get_spectral_window(spwid)
@@ -352,6 +365,9 @@ def get_ozone_channels_for_spw(ms, spwid):
     # receiver (e.g. ALMA Band 9 and 10), then check if any of the channels in
     # image sideband match the location of ozone lines.
     if spw.receiver == "DSB":
+        LOG.info("DSB receiver found for {}, spw {}: extending the atmospheric line check to the image sideband."
+                 "".format(ms.basename, spwid))
+
         # First derive the frequency range for the image sideband based on the LO1
         # frequency and the frequency range of the signal sideband, using:
         # image_freq = 2 * LO1 - signal_freq.
