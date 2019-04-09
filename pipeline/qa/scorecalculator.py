@@ -2336,8 +2336,6 @@ def score_sdimage_masked_pixels(context, result):
     #    True: included in the metric calculation
     #   False: excluded from the metric calculation
     # TODO: exclude pixels outside observed area
-    #metric_mask = np.ones_like(mask)
-
     # preliminary evaluation of metric_mask
     # check if weight is zero in each pixel
     # TODO: need to take into account broadening effect due to gridfunction
@@ -2378,7 +2376,7 @@ def score_sdimage_masked_pixels(context, result):
     metric_score_min = 0.0
 
     # convert score and threhold for logging purpose
-    frac2percentage = lambda x: '{}%'.format(int(x * 100))
+    frac2percentage = lambda x: '{:.4g}%'.format(x * 100)
 
     if metric_score > metric_score_max:
         # metric_score should not exceed 1.0. something wrong.
