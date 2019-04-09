@@ -430,7 +430,10 @@ class ImageParamsHeuristics(object):
                         else:
                             field_ids = self.field(intent, field)
                         imsize = self.imsize(fields=field_ids, cell=['%.2g%s' % (cellv, cellu)], primary_beam=largest_primary_beam_size)
-                        phasecenter = self.phasecenter(field_ids)
+                        if self.is_eph_obj(field):
+                            phasecenter = 'TRACKFIELD'
+                        else:
+                            phasecenter = self.phasecenter(field_ids)
                         paramList = ImagerParameters(msname=valid_vis_list,
                                                      antenna=antenna,
                                                      spw=list(map(str, valid_real_spwid_list)),

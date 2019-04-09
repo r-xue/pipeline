@@ -168,6 +168,7 @@ class CleanSummary(object):
                         real_spw_obj = ref_ms.get_spectral_window(real_spw)
                         if real_spw_obj.receiver is not None and real_spw_obj.freq_lo is not None:
                             rec_info = {'type': real_spw_obj.receiver, 'LO1': real_spw_obj.freq_lo[0].str_to_precision(12)}
+                            print 'DEBUG_DM:', rec_info, rec_info['type']=='DSB'
                         else:
                             LOG.warn('Could not determine receiver type. Assuming TSB.')
                             rec_info = {'type': 'TSB', 'LO1': '0GHz'}
