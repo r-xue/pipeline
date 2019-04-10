@@ -1629,6 +1629,9 @@ class ImageParamsHeuristics(object):
     def threshold_nsigma(self):
         return None
 
+    def niter_correction(self, niter, cell, imsize, residual_max, threshold):
+        return niter
+    
     def niter(self):
         return None
 
