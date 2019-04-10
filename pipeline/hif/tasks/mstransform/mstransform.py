@@ -2,6 +2,7 @@ from __future__ import absolute_import
 
 import operator
 import os
+import shutil
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -163,6 +164,9 @@ class Mstransform(basetask.StandardTaskTemplate):
         mstransform_job = casa_tasks.mstransform(**mstransform_args)
         self._executor.execute(mstransform_job)
 
+        # Copy across requisite XML files.
+        self._copy_xml_files(inputs.vis, inputs.outputvis)
+
         return result
 
     def analyse(self, result):
@@ -184,6 +188,16 @@ class Mstransform(basetask.StandardTaskTemplate):
         result.mses.extend(observing_run.measurement_sets)
 
         return result
+
+    @staticmethod
+    def _copy_xml_files(vis, outputvis):
+        for xml_filename in ['SpectralWindow.xml', 'DataDescription.xml']:
+            vis_source = os.path.join(vis, xml_filename)
+            outputvis_target = os.path.join(outputvis, xml_filename)
+            if os.path.exists(vis_source) and os.path.exists(outputvis):
+                LOG.info('Copying %s from original MS to target MS', xml_filename)
+                LOG.trace('Copying %s: %s to %s', xml_filename, vis_source, outputvis_target)
+                shutil.copyfile(vis_source, outputvis_target)
 
 
 class MstransformResults(basetask.Results):
