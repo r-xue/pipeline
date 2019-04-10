@@ -701,7 +701,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 stat_freqs = str(', ').join(['{:f}~{:f}GHz'.format(freqs[iseg]*1.e-9, freqs[iseg+1]*1.e-9)
                                              for iseg in range(0, len(freqs), 2)])
                   
-                file_idnex = [common.get_parent_ms_idx(context, name) for name in combined_infiles]
+                file_index = [common.get_parent_ms_idx(context, name) for name in combined_infiles]
                 sensitivity = Sensitivity(array='TP',
                                           field=source_name,
                                           spw=str(combined_spws[0]),
@@ -740,7 +740,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 if imager_result.outcome is not None:
                 # Imaging was successful, proceed following steps
             
-                    file_idnex = [common.get_parent_ms_idx(context, name) for name in combined_infiles]
+                    file_index = [common.get_parent_ms_idx(context, name) for name in combined_infiles]
                     self._finalize_worker_result(imager_result, 
                                                  sourcename=source_name, spwlist=combined_v_spws, antenna='COMBINED',  #specmode='cube', sourcetype='TARGET',
                                                  imagemode=imagemode, stokes=stokes_list[1], validsp=validsps, rms=rmss, edge=edge,
