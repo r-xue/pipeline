@@ -2292,6 +2292,86 @@ def score_sd_skycal_elevation_difference(ms, resultdict, threshold=3.0):
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, vis=ms.basename)
 
 
+def generate_metric_mask(context, result, cs, mask):
+    """
+    Generate boolean mask array for metric calculation in 
+    score_sdimage_masked_pixels. If image pixel contains 
+    observed points, mask will be True. Otherwise, mask is 
+    False. 
+
+    Arguments:
+        context {Context} -- Pipeline context
+        result {SDImagingResultItem} -- result item created by 
+                                        hsd_imaging
+        cs {coordsys} -- CASA coordsys tool
+        mask {bool array} -- image mask
+    
+    Returns:
+        bool array -- metric mask (True: valid, False: invalid)
+    """
+    outcome = result.outcome
+    imagename = outcome['image'].imagename
+    imshape = mask.shape
+
+    file_index = np.asarray(outcome['file_index'])
+    antenna_list = np.asarray(outcome['assoc_antennas'])
+    field_list = np.asarray(outcome['assoc_fields'])
+    vspw_list = np.asarray(outcome['assoc_spws'])
+
+    mses = context.observing_run.measurement_sets
+    ms_list = [mses[i] for i in file_index]
+    vis_list = np.asarray([m.basename for m in ms_list])
+    spw_list = np.asarray([context.observing_run.virtual2real_spw_id(i, m) for i, m in zip(vspw_list, ms_list)])
+
+    ra = []
+    dec = []
+    for i in range(len(mses)):
+        vis = mses[i].basename
+        datatable_name = os.path.join(context.observing_run.ms_datatable_name, vis)
+        rotable_name = os.path.join(datatable_name, 'RO')
+        _index = np.where(file_index == i)
+        _antlist = antenna_list[_index]
+        _fieldlist = field_list[_index]
+        _spwlist = spw_list[_index]
+        with casatools.TableReader(rotable_name) as tb:
+            unit_ra = tb.getcolkeyword('SHIFT_RA', 'UNIT')
+            unit_dec = tb.getcolkeyword('SHIFT_DEC', 'UNIT')
+            tsel = tb.query('SRCTYPE==0&&ANTENNA IN {}&&FIELD_ID IN {}&&IF IN {}'.format(list(_antlist), list(_fieldlist), list(_spwlist)))
+            ra.extend(tsel.getcol('SHIFT_RA'))
+            dec.extend(tsel.getcol('SHIFT_DEC'))
+            tsel.close()
+    ra = np.asarray(ra)
+    dec = np.asarray(dec)
+
+    metric_mask = np.empty(imshape, dtype=bool)
+    metric_mask[:] = False
+
+    qa = casatools.quanta
+
+    # template measure for world-pixel conversion
+    world = cs.toworld([0, 0, 0, 0], format='m')
+    px = np.empty_like(ra)
+    py = np.empty_like(dec)
+    for i, (x, y) in enumerate(zip(ra, dec)):
+        world['measure']['direction']['m0'] = qa.quantity(x, unit_ra)
+        world['measure']['direction']['m1'] = qa.quantity(y, unit_dec)
+        p = cs.topixel(world)
+        px[i] = p['numeric'][0]
+        py[i] = p['numeric'][1]
+        #print('WORLD {} {} <-> PIXEL {} {}'.format(x, y, px[i], py[i]))
+
+    for x, y in zip(map(int, np.round(px)), map(int, np.round(py))):
+        #print(x, y)
+        if 0 <= x and x <= imshape[0] - 1 and 0 <= y and y <= imshape[1] - 1:
+            metric_mask[x, y, :, :] = True
+
+    # exclude edge channels
+    edge_channels = [i for i in range(imshape[3]) if np.all(mask[:,:,:,i] == False)]
+    LOG.debug('edge channels: {}'.format(edge_channels))
+    metric_mask[:,:,:,edge_channels] = False
+
+    return metric_mask
+
 @log_qa
 def score_sdimage_masked_pixels(context, result):
     """
@@ -2326,35 +2406,19 @@ def score_sdimage_masked_pixels(context, result):
         # Mask Definition: True is valid, False is invalid.
         mask = ia.getchunk(getmask=True)
 
+        imageshape = ia.shape()
+
         # cs represents coordinate system of the image
         cs = ia.coordsys()
 
     # image shape: (lon, lat, stokes, freq)
-    LOG.debug('image shape: {}'.format(list(mask.shape)))
+    LOG.debug('image shape: {}'.format(list(imageshape)))
         
     # metric_mask is boolean array that defines the region to be excluded
     #    True: included in the metric calculation
     #   False: excluded from the metric calculation
-    # TODO: exclude pixels outside observed area
-    # preliminary evaluation of metric_mask
-    # check if weight is zero in each pixel
-    # TODO: need to take into account broadening effect due to gridfunction
-    wimagename = imagename.rstrip('/') + '.weight'
-
-    # return score 0 if weight image doesn't exist
-    if not os.path.exists(wimagename):
-        origin = pqa.QAOrigin(metric_name='SingleDishImageMaskedPixels',
-                              metric_score=0,
-                              metric_units='Fraction of masked pixels in image')
-
-        return pqa.QAScore(0, 
-                           longmsg='Weight image for {} does not exist'.format(imagename),
-                           shortmsg='Weight image does not exist',
-                           origin=origin)
-    
-    with casatools.ImageReader(wimagename) as ia:
-        weights = ia.getchunk()
-        metric_mask = weights > 0.0
+    # TODO: decide if any margin is necessary
+    metric_mask = generate_metric_mask(context, result, cs, mask)
 
     # done using coordsys tool
     cs.done()
@@ -2362,7 +2426,7 @@ def score_sdimage_masked_pixels(context, result):
     # calculate metric_score
     total_pixels = mask[metric_mask]
     LOG.debug('Total number of pixels to be included in: {}'.format(len(total_pixels)))
-    masked_pixels = mask[mask == False]
+    masked_pixels = total_pixels[total_pixels == False]
     masked_fraction = float(len(masked_pixels)) / float(len(total_pixels))
     LOG.debug('Number of masked pixels: {} fraction {}'.format(len(masked_pixels), masked_fraction))
     metric_score = masked_fraction
