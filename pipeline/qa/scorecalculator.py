@@ -2454,8 +2454,9 @@ def score_sdimage_masked_pixels(context, result):
         score = 1.0
     elif metric_score > metric_score_threshold:
         _x = frac2percentage(metric_score_threshold)
-        lmsg = 'Fraction of masked pixels in image {} exceeds {}.'.format(imbasename, _x)
-        smsg = '{} of image pixels are masked.'.format(_x)
+        _y = frac2percentage(metric_score)
+        lmsg = 'Fraction of masked pixels in image {} is {}, exceeding threshold value ({}).'.format(imbasename, _y, _x)
+        smsg = 'More than {} of image pixels are masked.'.format(_x)
         score = 0.0
     else:
         # interpolate between 0.5 and 0.0
