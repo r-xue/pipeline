@@ -70,11 +70,54 @@ class SDImageCombine(basetask.StandardTaskTemplate):
         if status is True:
             # Need to replace NaNs in masked pixels
             with casatools.ImageReader(outfile) as ia:
+                # save default mask name
+                default_mask = ia.maskhandler('default')[0]
+
+                # create mask for NaN pixels
+                nan_mask = 'nan'
+                ia.calcmask('!ISNAN("{}")'.format(ia.name()), name=nan_mask, asdefault=True)
+
                 stat = ia.statistics()
                 shape = ia.shape()
                 # replacemaskedpixels fails if all pixels are valid
                 if len(stat['npts']) > 0 and shape.prod() > stat['npts'][0]:
                     ia.replacemaskedpixels(0.0, update=False)
+
+                # restore default mask and delete tempral NaN mask
+                ia.maskhandler('set', default_mask)
+                ia.maskhandler('delete', nan_mask)
+
+            # PIPE-313 re-evaluate image mask based on the combined weight image
+            # according to sdimaging code, image pixels will be masked if
+            # weight is less than (minweight * median(weight image)) where
+            # minweight is task parameter whose default is 0.1. Here, we use
+            # dedault value to align with the parameter setting for sdimaging
+            # (see worker.py).
+            minweight = 0.1
+            with casatools.ImageReader(outweight) as ia:
+                # exclude 0 (and negative weights)
+                ia.calcmask('"{}" > 0.0'.format(ia.name()), name='nonzero')
+
+                stat = ia.statistics(robust=True)
+                median_weight = stat['median']
+
+            # re-evaluate mask
+            threshold = minweight * median_weight[0]
+            for imagename in [outfile, outweight]:
+                with casatools.ImageReader(imagename) as ia:
+                    # new mask name
+                    updated_mask = 'mask_combine'
+
+                    # calculate mask from weight image
+                    ia.calcmask('"{}" >= {}'.format(outweight, threshold),
+                                name=updated_mask,
+                                asdefault=True)
+
+                    # remove non-default masks
+                    masks = ia.maskhandler('get')
+                    masks.pop(masks.index(updated_mask))
+                    if len(masks) > 0:
+                        ia.maskhandler('delete', masks)
 
             image_item = imagelibrary.ImageItem(imagename=outfile,
                                                 sourcename='',  # will be filled in later
