@@ -267,11 +267,6 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
                                                        success=False,
                                                        outcome=None)
 
-        if context.subtask_counter == 0:
-            result.stage_number = context.task_counter - 1
-        else:
-            result.stage_number = context.task_counter
-
         return result
 
     def analyse(self, result):

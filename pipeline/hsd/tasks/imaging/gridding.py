@@ -140,7 +140,7 @@ class GriddingBase(basetask.StandardTaskTemplate):
         grid_size = casatools.quanta.convert(reference_data.beam_sizes[self.antenna[0]][self.spw[0]], 'deg')['value']
         self.grid_ra = grid_size
         self.grid_dec = grid_size
-        
+
         combine_radius = self.grid_ra
         kernel_width = 0.5 * combine_radius
         allowance = self.grid_ra * 0.1
@@ -156,16 +156,11 @@ class GriddingBase(basetask.StandardTaskTemplate):
         result.task = self.__class__
         del grid_table
 
-        if self.inputs.context.subtask_counter is 0: 
-            result.stage_number = self.inputs.context.task_counter - 1
-        else:
-            result.stage_number = self.inputs.context.task_counter 
-
         return result
-    
+
     def analyse(self, result):
         return result
-        
+
     def dogrid(self, DataIn, kernel_width, combine_radius, allowance_radius, grid_spacing, loglevel=2, datatable_dict=None):
         """
         The process does re-map and combine spectrum for each position

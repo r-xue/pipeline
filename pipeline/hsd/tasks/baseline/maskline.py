@@ -104,7 +104,7 @@ class MaskLine(basetask.StandardTaskTemplate):
         # LOG.trace('all(spwid == {}) ? {}', spwid_list[0], numpy.all(dt.getcol('IF').take(index_list) == spwid_list[0]))
         # LOG.trace('all(fieldid == {}) ? {}', field_list[0], numpy.all(dt.getcol('FIELD_ID').take(index_list) == field_list[0]))
         if len(index_list) == 0:
-            # No valid data 
+            # No valid data
             outcome = {'detected_lines': [],
                        'cluster_info': {},
                        'grid_table': None}
@@ -112,11 +112,7 @@ class MaskLine(basetask.StandardTaskTemplate):
                                      success=True,
                                      outcome=outcome)
             result.task = self.__class__
-                
-            if self.inputs.context.subtask_counter is 0: 
-                result.stage_number = self.inputs.context.task_counter - 1
-            else:
-                result.stage_number = self.inputs.context.task_counter 
+
             return result
 
         window = self.inputs.window

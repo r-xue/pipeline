@@ -134,11 +134,6 @@ class SDImageCombine(basetask.StandardTaskTemplate):
                                          success=False,
                                          outcome=None)
 
-        if self.inputs.context.subtask_counter is 0:
-            result.stage_number = self.inputs.context.task_counter - 1
-        else:
-            result.stage_number = self.inputs.context.task_counter
-
         return result
 
     def analyse(self, result):
