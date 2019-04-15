@@ -108,7 +108,7 @@ def hifvcalvlass(vislist, importonly=False, pipelinemode='automatic', interactiv
 
         # Do the flux density boostrapping -- fits spectral index of
         # calibrators with a power-law and puts fit in model column
-        hifv_fluxboot2(pipelinemode=pipelinemode)
+        hifv_fluxboot2(fitorder=2)
 
         # Make the final calibration tables
         hifv_finalcals(pipelinemode=pipelinemode)
