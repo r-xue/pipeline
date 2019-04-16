@@ -106,7 +106,7 @@ def hifvcalvlass(vislist, importonly=False, pipelinemode='automatic', interactiv
         # Determine solint for scan-average equivalent
         hifv_solint(limit_short_solint='0.45')
 
-        # Do the flux density boostrapping -- fits spectral index of
+        # Do the flux density bootstrapping -- fits spectral index of
         # calibrators with a power-law and puts fit in model column
         hifv_fluxboot2(fitorder=2)
 
