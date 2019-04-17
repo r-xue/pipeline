@@ -120,7 +120,7 @@ class VLAExportData(exportdata.ExportData):
         task_string = "    hifv_restoredata (vis=%s, session=%s, ocorr_mode='%s', gainmap=%s)" % (
         tmpvislist, session_list, ocorr_mode, self.inputs.gainmap)
 
-        task_string += '\n    hifv_statwt()'
+        task_string += "\n    hifv_statwt(pipelinemode='automatic')"
 
         template = '''__rethrow_casa_exceptions = True
 h_init()
