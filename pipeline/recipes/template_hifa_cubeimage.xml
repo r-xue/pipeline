@@ -58,6 +58,26 @@
         </ParameterSet>
     </ProcessingCommand>
 
+<!-- create aggregate continuum image if cont_image=true -->
+{{#cont_image}}
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimlist</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">specmode</Keyword>
+                <Value xmlns="">cont</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimages</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+{{/cont_image}}
+<!-- end of the continuum imaging section -->
+
 <!-- loop over list of cubes and create images -->
 {{#cube_list}}
 
@@ -105,7 +125,7 @@
         </ParameterSet>
     </ProcessingCommand>
 
-{{cube_list}}
+{{/cube_list}}
 <!-- end loop -->
 
     <ProcessingCommand>
