@@ -57,7 +57,7 @@
             </Parameter>
             <Parameter>
                 <Keyword xmlns="">fracspw</Keyword>
-                <Value xmlns="">0.05</Value>
+                <Value xmlns="">0.0</Value>
             </Parameter>
             <Parameter>
                 <Keyword xmlns="">shadow</Keyword>
@@ -91,6 +91,12 @@
                 <Keyword xmlns="">swpow_spw</Keyword>
                 <Value xmlns="">6,14</Value>
             </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hifv_syspower</Command>
+        <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -150,6 +156,10 @@
     <ProcessingCommand>
         <Command xmlns="">hifv_fluxboot2</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">fitorder</Keyword>
+                <Value xmlns="">2</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -216,6 +226,14 @@
         <ParameterSet>
             <Parameter>
                 <Keyword xmlns="">gainmap</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">exportmses</Keyword>
+                <Value xmlns="">False</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">exportcalprods</Keyword>
                 <Value xmlns="">True</Value>
             </Parameter>
         </ParameterSet>

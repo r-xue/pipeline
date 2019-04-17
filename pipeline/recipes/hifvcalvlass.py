@@ -28,6 +28,7 @@ from hifv_hanning_cli import hifv_hanning_cli as hifv_hanning
 from hifv_flagdata_cli import hifv_flagdata_cli as hifv_flagdata
 from hifv_vlasetjy_cli import hifv_vlasetjy_cli as hifv_vlasetjy
 from hifv_priorcals_cli import hifv_priorcals_cli as hifv_priorcals
+from hifv_syspower_cli import hifv_syspower_cli as hifv_syspower
 from hifv_testBPdcals_cli import hifv_testBPdcals_cli as hifv_testBPdcals
 from hifv_flagbaddef_cli import hifv_flagbaddef_cli as hifv_flagbaddef
 from hifv_checkflag_cli import hifv_checkflag_cli as hifv_checkflag
@@ -75,7 +76,7 @@ def hifvcalvlass(vislist, importonly=False, pipelinemode='automatic', interactiv
         # Flag known bad data
         hifv_flagdata(intents='*POINTING*,*FOCUS*,*ATMOSPHERE*,*SIDEBAND_RATIO*, *UNKNOWN*, *SYSTEM_CONFIGURATION*, *UNSPECIFIED#UNSPECIFIED*',
                       flagbackup=False, scan=True, baseband=False, clip=True, autocorr=True,
-                      hm_tbuff='manual', template=True, online=True, tbuff=0.225,
+                      hm_tbuff='manual', template=True, online=True, tbuff=0.225, fracspw=0.0,
                       shadow=True, quack=False, edgespw=False)
 
         # Fill model columns for primary calibrators
@@ -85,6 +86,9 @@ def hifvcalvlass(vislist, importonly=False, pipelinemode='automatic', interactiv
         # requantizer gains (NB: requires CASA 4.1!)
         # tecmaps default is False
         hifv_priorcals(tecmaps=False, swpow_spw='6,14')
+
+        # Syspower task
+        hifv_syspower(pipelinemode=pipelinemode)
 
         # Initial test calibrations using bandpass and delay calibrators
         hifv_testBPdcals(pipelinemode=pipelinemode)
@@ -138,7 +142,7 @@ def hifvcalvlass(vislist, importonly=False, pipelinemode='automatic', interactiv
         # hif_makeimages(pipelinemode=pipelinemode)
 
         # Export the data
-        hifv_exportdata(gainmap=True)
+        hifv_exportdata(gainmap=True, exportmses=False, exportcalprods=True)
 
     except Exception as e:
         if str(e) == IMPORT_ONLY:
