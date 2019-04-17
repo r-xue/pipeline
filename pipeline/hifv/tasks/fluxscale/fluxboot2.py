@@ -402,7 +402,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                 bands = bands_from_spw
 
             unique_bands = list(np.unique(bands))
-            print(unique_bands)
+            # print(unique_bands)
 
             fieldobject = m.get_fields(source)
             fieldid = str(fieldobject[0].id)
@@ -451,14 +451,17 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                 # to curve_fit, is better.
                 #
 
-                print(lfds)
+                # print(lfds)
 
                 if len(lfds) < 2:
                     aa = lfds[0]
                     bb = 0.0
                     curvature = 0.0
                     SNR = 0.0
+                    SNR_bb = 0.0
+                    SNR_cc = 0.0
                     bberr = 0.0
+                    curvatureerr = 0.0
                 else:
                     alfds = scp.array(lfds)
                     alerrs = scp.array(lerrs)
@@ -474,10 +477,14 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                     # Use result from fluxscale, not from fitting function
                     aa = fluxscale_result[fieldid]['spidx'][0]
                     bb = fluxscale_result[fieldid]['spidx'][1]
-                    curvature = fluxscale_result[fieldid]['spidx'][2]
                     bberr = fluxscale_result[fieldid]['spidxerr'][1]
-                    curvatureerr = fluxscale_result[fieldid]['spidxerr'][2]
 
+                    if self.inputs.fitorder > 1:
+                        curvature = fluxscale_result[fieldid]['spidx'][2]
+                        curvatureerr = fluxscale_result[fieldid]['spidxerr'][2]
+                    else:
+                        curvature = 0.0
+                        curvatureerr = 0.0
                     #
                     # the fit is of the form:
                     #     log(S) = a + b * log(f)
@@ -490,11 +497,17 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
                     summed_error = 0.0
                     for ii in range(len(alfds)):
-                        model = aa + bb * alfreqs[ii]
+                        model = aa + bb * alfreqs[ii] + curvature*alfreqs[ii]*alfreqs[ii]
                         residual = (model - alfds[ii]) * (model - alfds[ii])
                         summed_error += residual
-                    residual_variance = summed_error / (len(alfds) - 2)
-                    ##SNR = math.fabs(bb) / math.sqrt(covar[1][1] * residual_variance)
+                    residual_variance = summed_error / (len(alfds) - (self.inputs.fitorder + 1))
+                    covar = fluxscale_result[fieldid]['covarMat']
+                    SNR_bb = math.fabs(bb) / math.sqrt(covar[1][1] * residual_variance)
+                    cc = curvature
+                    if self.inputs.fitorder > 1:
+                        SNR_cc = math.fabs(cc) / math.sqrt(covar[2][2] * residual_variance)
+                    else:
+                        SNR_cc = 0.0
 
                     SNR = 0.0
 
@@ -510,24 +523,34 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
                 freqs = sorted(freqs[uspws])
 
-                fittedfluxd = [
-                    10.0 ** (spidx[0] + spidx[1] * math.log10(x / fitreff) + spidx[2] * (math.log10(x / fitreff)) ** 2)
-                    for x in freqs]
+                if self.inputs.fitorder > 1:
+                    fittedfluxd = [10.0 ** (spidx[0] + spidx[1] * math.log10(x / fitreff) + spidx[2] * (math.log10(x / fitreff)) ** 2)
+                        for x in freqs]
+                elif self.inputs.fitorder == 1:
+                    fittedfluxd = [10.0 ** (spidx[0] + spidx[1] * math.log10(x / fitreff)) for x in freqs]
+                elif self.inputs.fitorder == 0:
+                    fittedfluxd = [10.0 ** (spidx[0]) for x in freqs]
 
                 reffreq = fitreff/1.e9
                 fluxdensity = fitflx
                 spix = bb
                 spixerr = bberr
                 results.append([source, uspws, fluxdensity, spix, SNR, reffreq, curvature])
-                LOG.info(source + ' ' + band + ' fluxscale fitted spectral index = ' + str(spix) + '+/-' + str(spixerr))
-                spindex_results.append({'source'       : source,
-                                        'band'         : band,
-                                        'spix'         : str(spix),
-                                        'spixerr'      : str(spixerr),
-                                        'SNR'          : str(SNR),
-                                        'curvature'    : str(curvature),
-                                        'curvatureerr' : str(curvatureerr),
-                                        'fitorder'     : str(self.inputs.fitorder)})
+                LOG.info(' Source: ' + source +
+                         ' Band: ' + band +
+                         ' fluxscale fitted spectral index = ' + str(spix) + ' +/- ' + str(spixerr))
+                if self.inputs.fitorder > 1:
+                    LOG.info(' Source: ' + source +
+                             ' Band: ' + band +
+                             ' fluxscale fitted curvature = ' + str(curvature) + ' +/- ' + str(curvatureerr))
+                spindex_results.append({'source': source,
+                                        'band': band,
+                                        'spix': str(spix),
+                                        'spixerr': str(spixerr),
+                                        'SNR': str(SNR_bb) + ',' + str(SNR_cc),
+                                        'curvature': str(curvature),
+                                        'curvatureerr': str(curvatureerr),
+                                        'fitorder': str(self.inputs.fitorder)})
                 LOG.info("Frequency, data, error, and fitted data:")
                 # Sort arrays based on frequency
                 lfreqs_orig = lfreqs
@@ -544,8 +567,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                     # fitFluxdErr = ln(10)*fitFluxd*err_a0
                     fderr = math.log(10) * SS * fluxscale_result[fieldid]['spidxerr'][0]
 
-                    LOG.info('    ' + str(freq) + '  ' + str(data) + '  ' + str(
-                        fderr) + '  ' + str(SS))
+                    LOG.info('    ' + str(freq) + '  ' + str(data) + '  ' + str(fderr) + '  ' + str(SS))
                     weblog_results.append({'source': source,
                                            'freq': str(freq),
                                            'data': str(data),
