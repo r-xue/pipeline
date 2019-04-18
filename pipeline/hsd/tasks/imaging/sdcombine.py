@@ -55,6 +55,10 @@ class SDImageCombine(basetask.StandardTaskTemplate):
                                          success=False, outcome=None)
             return result
 
+        # relative path to the image
+        def getrelpath(path):
+            return os.path.relpath(path, self.inputs.context.output_dir)
+
         # combine weight images
         LOG.info("Generating combined weight image.")
         expr = [("IM%d" % idx) for idx in range(num_in)]
@@ -75,7 +79,7 @@ class SDImageCombine(basetask.StandardTaskTemplate):
 
                 # create mask for NaN pixels
                 nan_mask = 'nan'
-                ia.calcmask('!ISNAN("{}")'.format(ia.name()), name=nan_mask, asdefault=True)
+                ia.calcmask('!ISNAN("{}")'.format(getrelpath(ia.name())), name=nan_mask, asdefault=True)
 
                 stat = ia.statistics()
                 shape = ia.shape()
@@ -96,7 +100,7 @@ class SDImageCombine(basetask.StandardTaskTemplate):
             minweight = 0.1
             with casatools.ImageReader(outweight) as ia:
                 # exclude 0 (and negative weights)
-                ia.calcmask('"{}" > 0.0'.format(ia.name()), name='nonzero')
+                ia.calcmask('"{}" > 0.0'.format(getrelpath(ia.name())), name='nonzero')
 
                 stat = ia.statistics(robust=True)
                 median_weight = stat['median']
@@ -109,7 +113,7 @@ class SDImageCombine(basetask.StandardTaskTemplate):
                     updated_mask = 'mask_combine'
 
                     # calculate mask from weight image
-                    ia.calcmask('"{}" >= {}'.format(outweight, threshold),
+                    ia.calcmask('"{}" >= {}'.format(getrelpath(outweight), threshold),
                                 name=updated_mask,
                                 asdefault=True)
 
