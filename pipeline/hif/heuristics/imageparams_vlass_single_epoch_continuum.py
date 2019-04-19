@@ -252,15 +252,12 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         if hm_nsigma:
             return hm_nsigma
 
-        if hm_masking == 'auto':
-            if iteration == 0:
-                return None
-            elif iteration == 1:
-                return 3.0
-            else:
-                return 4.5
-        else:
+        if iteration == 0:
             return None
+        elif iteration == 1:
+            return 3.0
+        else:
+            return 4.5
 
     def savemodel(self, iteration):
 
