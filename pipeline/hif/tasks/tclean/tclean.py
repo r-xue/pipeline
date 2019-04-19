@@ -1,3 +1,4 @@
+
 import glob
 import os
 
@@ -165,8 +166,8 @@ class Tclean(cleanbase.CleanBase):
 
     is_multi_vis_task = True
 
-    def rm_stage_files(self, imagename):
-        filenames = glob.glob('%s.iter*' % (imagename))
+    def rm_stage_files(self, imagename, stokes=''):
+        filenames = glob.glob('%s*.%s.iter*' % (imagename, stokes))
         for filename in filenames:
             try:
                 if os.path.isfile(filename):
@@ -175,7 +176,7 @@ class Tclean(cleanbase.CleanBase):
                     rmtree_job = casa_tasks.rmtree(filename, ignore_errors=False)
                     self._executor.execute(rmtree_job)
                 else:
-                    raise Exception('Cannot remove %s' % name)
+                    raise Exception('Cannot remove %s' % filename)
             except Exception as e:
                 LOG.warning('Exception while deleting %s: %s' % (filename, e))
 
@@ -217,8 +218,12 @@ class Tclean(cleanbase.CleanBase):
 
         # delete any old files with this naming root. One of more
         # of these (don't know which) will interfere with this run.
-        LOG.info('deleting %s*.iter*', inputs.imagename)
-        self.rm_stage_files(inputs.imagename)
+        if inputs.stokes:
+            LOG.info('deleting {}*.{}.iter*'.format(inputs.imagename, inputs.stokes))
+            self.rm_stage_files(inputs.imagename, inputs.stokes)
+        else:
+            LOG.info('deleting {}*.iter*'.format(inputs.imagename))
+            self.rm_stage_files(inputs.imagename)
 
         # Set initial masking limits
         self.pblimit_image = 0.2
