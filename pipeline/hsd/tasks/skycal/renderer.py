@@ -95,14 +95,12 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
             # Compute elevation difference
             eldiff = skycal_task.compute_elevation_difference(context, result)
             
-            # Elevation difference: summary plots
-            summaries_elev.extend(skycal_display.plot_elevation_difference(context, result, eldiff, 
-                                                                           threshold=threshold, perantenna=False))
-            
-            # Elevation difference: detail plots
-            details_elev.extend(skycal_display.plot_elevation_difference(context, result, eldiff, 
-                                                                         threshold=threshold, perantenna=True))
-            
+            # Elevation difference
+            elplots = skycal_display.plot_elevation_difference(context, result, eldiff,
+                                                               threshold=threshold)
+            summaries_elev = [p for p in elplots if p.parameters['ant'] == '']
+            details_elev = [p for p in elplots if p.parameters['ant'] != '']
+
             summary_amp_vs_freq[vis].extend(summaries_freq)
             details_amp_vs_freq[vis].extend(details_freq)
             summary_amp_vs_time[vis].extend(summaries_time)

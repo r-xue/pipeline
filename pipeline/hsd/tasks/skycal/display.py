@@ -7,6 +7,7 @@ import pipeline.infrastructure.renderer.logger as logger
 from pipeline.h.tasks.common.displays import common as common
 from pipeline.h.tasks.common.displays import bandpass as bandpass
 from ..common import display as sd_display
+from ..common import utils
 from pipeline.infrastructure import casa_tasks
 
 LOG = logging.get_logger(__name__)
@@ -244,7 +245,8 @@ class SingleDishSkyCalAmpVsTimeDetailChart(SingleDishPlotmsAntSpwComposite):
                                                                    xaxis='time', yaxis='amp',
                                                                    coloraxis='corr')
         
-def plot_elevation_difference(context, result, eldiff, threshold=3.0, perantenna=False):
+@utils.profiler
+def plot_elevation_difference(context, result, eldiff, threshold=3.0):
     """
     context 
     result
@@ -260,13 +262,13 @@ def plot_elevation_difference(context, result, eldiff, threshold=3.0, perantenna
               eldiff is a nested dictionary whose first key is FIELD_ID for target, the second one 
               is ANTENNA_ID, and the third one is SPW_ID. 
     threhshold -- Elevation threshold for QA (default 3deg)
-    perantenna -- Generate plots per antenna or not. If False, overlay all the data into one plot
     """
     calapp = result.final[0]
     vis = calapp.calto.vis
     ms = context.observing_run.get_ms(vis)
     
-    figure = pl.figure()
+    figure0 = 'PERANTENNA_PLOT'
+    figure1 = 'ALLANTENNA_PLOT'
     start_time = numpy.min([numpy.min(x.timeon) for z in eldiff.itervalues() for y in z.itervalues()
                             for x in y.itervalues() if len(x.timeon) > 0])
     end_time = numpy.max([numpy.max(x.timeon) for z in eldiff.itervalues() for y in z.itervalues()
@@ -284,7 +286,10 @@ def plot_elevation_difference(context, result, eldiff, threshold=3.0, perantenna
         pl.ylabel('Elevation Difference [deg]')
         pl.xlabel('UTC')
         return a0, a1
+    pl.figure(figure0)
     a0, a1 = init_figure()
+    pl.figure(figure1)
+    a2, a3 = init_figure()
 
     figroot = os.path.join(context.report_dir, 
                            'stage%s' % result.stage_number)
@@ -301,6 +306,8 @@ def plot_elevation_difference(context, result, eldiff, threshold=3.0, perantenna
         
         lon = None
         loff = None
+        lon_all = []
+        loff_all = []
         
         for antenna_id, eldant in eldiff_field.iteritems():
             antenna_name = ms.antennas[antenna_id].name
@@ -311,12 +318,14 @@ def plot_elevation_difference(context, result, eldiff, threshold=3.0, perantenna
                     continue
                 
                 # Elevation vs. Time
-                figure.sca(a0)
-                lon = pl.plot(sd_display.mjd_to_plotval(eld.timeon), eld.elon, '.', color='black', mew=0)
-                loff = pl.plot(sd_display.mjd_to_plotval(eld.timecal), eld.elcal, '.-', color='blue', mew=0)
+                xon = sd_display.mjd_to_plotval(eld.timeon)
+                xoff = sd_display.mjd_to_plotval(eld.timecal)
+                lon = a0.plot(xon, eld.elon, '.', color='black', mew=0)
+                loff = a0.plot(xoff, eld.elcal, '.-', color='blue', mew=0)
+                lon_all.append(a2.plot(xon, eld.elon, '.', color='black', mew=0))
+                loff_all.append(a2.plot(xoff, eld.elcal, '.-', color='blue', mew=0))
                         
                 # Elevation Difference vs. Time
-                figure.sca(a1)
                 time0 = eld.time0
                 eldiff0 = eld.eldiff0
                 time1 = eld.time1
@@ -325,84 +334,19 @@ def plot_elevation_difference(context, result, eldiff, threshold=3.0, perantenna
                 ix0 = numpy.where(numpy.abs(eldiff0) >= threshold)[0]
                 io1 = numpy.where(numpy.abs(eldiff1) < threshold)[0]
                 ix1 = numpy.where(numpy.abs(eldiff1) >= threshold)[0]
-                if len(io0) > 0:
-                    x = time0[io0]
-                    y = numpy.abs(eldiff0[io0])
-                    pl.plot(sd_display.mjd_to_plotval(x), y, 'g.', mew=0)
-                if len(io1) > 0:
-                    x = time1[io1]
-                    y = numpy.abs(eldiff1[io1])
-                    pl.plot(sd_display.mjd_to_plotval(x), y, 'g.', mew=0)
-                #ymax = set()
-                if len(ix0) > 0:
-                    x = time0[ix0]
-                    y = numpy.abs(eldiff0[ix0])
-                    #ymax.add(numpy.max(y))
-                    pl.plot(sd_display.mjd_to_plotval(x), y, 'rs', mew=0)
-                if len(ix1) > 0:
-                    x = time1[ix1]
-                    y = numpy.abs(eldiff1[ix1])
-                    #ymax.add(numpy.max(y))
-                    pl.plot(sd_display.mjd_to_plotval(x), y, 'rs', mew=0)
-                
-                #if len(ymax) > 0:
-                #    LOG.warn('Elevation difference bewteen ON and OFF for {} field {} antenna {} spw {} was {}deg exceeding the threhold {}deg'.format(
-                #        ms.basename, field_name, antenna_name, spw_id, max(ymax), threshold))                    
-        
-            if perantenna == True:
-                # rescale y-axis
-                figure.sca(a1)
-                ymin, ymax = pl.ylim()
-                dy = ymax - ymin
-                pl.ylim([0, max(ymax + 0.1 * dy, threshold + 0.1)])
-                
-                pl.axhline(threshold, color='red')
-                xmin, xmax = pl.xlim()
-                dx = xmax - xmin
-                x = xmax - 0.01 * dx
-                y = threshold - 0.05
-                pl.text(x, y, 'QA threshold', ha='right', va='top', color='red', size='small')
-    
-                figure.sca(a0)
-                if lon is not None:
-                    for l in lon:
-                        l.set_label('ON')
-                if loff is not None:
-                    for l in loff:
-                        l.set_label('OFF')
-                pl.legend(loc='best', numpoints=1, prop={'size': 'small'})
+                index_list = [io0, io1, ix0, ix1]
+                time_list = [time0, time1, time0, time1]
+                eldiff_list = [eldiff0, eldiff1, eldiff0, eldiff1]
+                style_list = ['g.', 'g.', 'rs', 'rs']
+                for idx, t, ed, ls in zip(index_list, time_list, eldiff_list, style_list):
+                    if len(idx) > 0:
+                        x = sd_display.mjd_to_plotval(t[idx])
+                        y = numpy.abs(ed[idx])
+                        for a in [a1, a3]:
+                            a.plot(x, y, ls, mew=0)
 
-                # save plot and clear
-                figure.sca(a0)
-                pl.title('Elevation Difference between ON and OFF\n{} Field {} Antenna {}'.format(ms.basename, 
-                                                                                                  field_name, 
-                                                                                                  antenna_name))
-                vis_prefix = '.'.join(ms.basename.split('.')[:-1])
-                figfile = 'elevation_difference_{}_{}_{}.png'.format(vis_prefix, field_name, antenna_name)
-                figpath = os.path.join(figroot, figfile)
-                #LOG.info('figpath={}'.format(figpath))
-                pl.savefig(figpath)
-                if os.path.exists(figpath):
-                    parameters = {'intent': 'TARGET',
-                                  'spw': '',
-                                  'pol': '',
-                                  'ant': antenna_name,
-                                  'vis': ms.basename,
-                                  'type': 'Elevation Difference vs. Time',
-                                  'file': ms.basename}
-                    plot = logger.Plot(figpath,
-                                       x_axis='Time',
-                                       y_axis='Elevation Difference',
-                                       field=field_name,
-                                       parameters=parameters)
-                    plots_per_field.append(plot)
-                
-                a0, a1 = init_figure()
-                    
-        if perantenna == False:
-            assert len(plots_per_field) == 0
-            
             # rescale y-axis
+            pl.figure(figure0)
             pl.gcf().sca(a1)
             ymin, ymax = pl.ylim()
             dy = ymax - ymin
@@ -414,8 +358,8 @@ def plot_elevation_difference(context, result, eldiff, threshold=3.0, perantenna
             x = xmax - 0.01 * dx
             y = threshold - 0.05
             pl.text(x, y, 'QA threshold', ha='right', va='top', color='red', size='small')
-        
-            figure.sca(a0)
+
+            pl.gcf().sca(a0)
             if lon is not None:
                 for l in lon:
                     l.set_label('ON')
@@ -423,14 +367,13 @@ def plot_elevation_difference(context, result, eldiff, threshold=3.0, perantenna
                 for l in loff:
                     l.set_label('OFF')
             pl.legend(loc='best', numpoints=1, prop={'size': 'small'})
-
             # save plot and clear
-            figure.sca(a0)
+            pl.gcf().sca(a0)
             pl.title('Elevation Difference between ON and OFF\n{} Field {} Antenna {}'.format(ms.basename, 
                                                                                               field_name, 
-                                                                                              'ALL'))
+                                                                                              antenna_name))
             vis_prefix = '.'.join(ms.basename.split('.')[:-1])
-            figfile = 'elevation_difference_{}_{}.png'.format(vis_prefix, field_name)
+            figfile = 'elevation_difference_{}_{}_{}.png'.format(vis_prefix, field_name, antenna_name)
             figpath = os.path.join(figroot, figfile)
             #LOG.info('figpath={}'.format(figpath))
             pl.savefig(figpath)
@@ -438,7 +381,7 @@ def plot_elevation_difference(context, result, eldiff, threshold=3.0, perantenna
                 parameters = {'intent': 'TARGET',
                               'spw': '',
                               'pol': '',
-                              'ant': '',
+                              'ant': antenna_name,
                               'vis': ms.basename,
                               'type': 'Elevation Difference vs. Time',
                               'file': ms.basename}
@@ -448,8 +391,58 @@ def plot_elevation_difference(context, result, eldiff, threshold=3.0, perantenna
                                    field=field_name,
                                    parameters=parameters)
                 plots_per_field.append(plot)
-                
+            
             a0, a1 = init_figure()
+                    
+        pl.figure(figure1)
+        
+        # rescale y-axis
+        pl.gcf().sca(a3)
+        ymin, ymax = pl.ylim()
+        dy = ymax - ymin
+        pl.ylim([0, max(ymax + 0.1 * dy, threshold + 0.1)])
+        
+        pl.axhline(threshold, color='red')
+        xmin, xmax = pl.xlim()
+        dx = xmax - xmin
+        x = xmax - 0.01 * dx
+        y = threshold - 0.05
+        pl.text(x, y, 'QA threshold', ha='right', va='top', color='red', size='small')
+    
+        pl.gcf().sca(a2)
+        if len(lon_all) > 0:
+            for l in lon_all[-1]:
+                l.set_label('ON')
+        if len(loff_all) > 0:
+            for l in loff_all[-1]:
+                l.set_label('OFF')
+        pl.legend(loc='best', numpoints=1, prop={'size': 'small'})
+        # save plot and clear
+        pl.gcf().sca(a2)
+        pl.title('Elevation Difference between ON and OFF\n{} Field {} Antenna {}'.format(ms.basename, 
+                                                                                          field_name, 
+                                                                                          'ALL'))
+        vis_prefix = '.'.join(ms.basename.split('.')[:-1])
+        figfile = 'elevation_difference_{}_{}.png'.format(vis_prefix, field_name)
+        figpath = os.path.join(figroot, figfile)
+        #LOG.info('figpath={}'.format(figpath))
+        pl.savefig(figpath)
+        if os.path.exists(figpath):
+            parameters = {'intent': 'TARGET',
+                          'spw': '',
+                          'pol': '',
+                          'ant': '',
+                          'vis': ms.basename,
+                          'type': 'Elevation Difference vs. Time',
+                          'file': ms.basename}
+            plot = logger.Plot(figpath,
+                               x_axis='Time',
+                               y_axis='Elevation Difference',
+                               field=field_name,
+                               parameters=parameters)
+            plots_per_field.append(plot)
+            
+        a2, a3 = init_figure()
         
         plots.extend(plots_per_field)
     
