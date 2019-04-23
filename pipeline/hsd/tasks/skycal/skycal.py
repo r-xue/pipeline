@@ -211,13 +211,6 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
         context = self.inputs.context
         resultdict = compute_elevation_difference(context, result)
         ms = self.inputs.ms
-        ###
-        #ms_index = context.observing_run.measurement_sets.index(ms)
-        #if ms_index == 0:
-        #    resultdict[1][0][19].eldiff0[-16] = 3.78
-        #if ms_index == 1:
-        #    resultdict[1][1][19].eldiff1[2] = -4.0
-        ###
         for field_id, eldfield in resultdict.iteritems():
             for antenna_id, eldant in eldfield.iteritems():
                 for spw_id, eld in eldant.iteritems():
