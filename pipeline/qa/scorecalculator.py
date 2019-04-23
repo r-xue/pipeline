@@ -2274,20 +2274,22 @@ def score_sd_skycal_elevation_difference(ms, resultdict, threshold=3.0):
         else:
             longmsg = 'Elevation difference between ON and OFF is below threshold ({}deg)'.format(el_threshold)
         
-    # CAS-11054 it is decided that we do not calculate QA score based on elevation difference for Cycle 6
-    # if np.max(metric_score) >= el_threshold:
-    #     score = 0.0
-    # else:
-    #     score = 1.0
-    score = 1.0
+    # CAS-11054: it is decided that we do not calculate QA score based on elevation difference for Cycle 6
+    # PIPE-246: we implement QA score based on elevation difference for Cycle 7.
+    #           requirement is that score is 0.8 if elevation difference is larger than 3deg.
+    # make sure threshold is 3deg
+    assert el_threshold == 3.0
+    max_metric_score = np.max(metric_score)
+    # lower the score if elevation difference exceeds 3deg
+    score = 1.0 if max_metric_score < el_threshold else 0.8
     origin = pqa.QAOrigin(metric_name='OnOffElevationDifference',
-                          metric_score=np.max(metric_score),
+                          metric_score=max_metric_score,
                           metric_units='deg')
     
     if score < 1.0:
-        shortmsg = 'Elevation difference between ON and OFF exceeds the limit'
+        shortmsg = 'Elevation difference between ON and OFF exceeds {}deg'.format(el_threshold)
     else:
-        shortmsg = 'Elevation difference between ON and OFF is below the limit'
+        shortmsg = 'Elevation difference between ON and OFF is below {}deg'.format(el_threshold)
     
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, vis=ms.basename)
 
