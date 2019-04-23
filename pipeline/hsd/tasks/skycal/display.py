@@ -7,7 +7,6 @@ import pipeline.infrastructure.renderer.logger as logger
 from pipeline.h.tasks.common.displays import common as common
 from pipeline.h.tasks.common.displays import bandpass as bandpass
 from ..common import display as sd_display
-from ..common import utils
 from pipeline.infrastructure import casa_tasks
 
 LOG = logging.get_logger(__name__)
@@ -244,8 +243,8 @@ class SingleDishSkyCalAmpVsTimeDetailChart(SingleDishPlotmsAntSpwComposite):
         super(SingleDishSkyCalAmpVsTimeDetailChart, self).__init__(context, result, calapp, 
                                                                    xaxis='time', yaxis='amp',
                                                                    coloraxis='corr')
-        
-@utils.profiler
+
+
 def plot_elevation_difference(context, result, eldiff, threshold=3.0):
     """
     context 
