@@ -65,19 +65,20 @@ class GfluxscaleflagInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def intent(self):
-        # By default, this task will run for both FLUX and PHASE intent.
-        intents_to_flag = 'AMPLITUDE,PHASE'
+        # By default, this task will run for AMPLITUDE, PHASE, and CHECK
+        # intents.
+        intents_to_flag = 'AMPLITUDE,PHASE,CHECK'
 
         # Check if any of the AMPLITUDE intent fields were also used for
         # BANDPASS, in which case it has already been flagged by
-        # hifa_bandpassflag, and this task will just do PHASE fields.
-        # This assumes that there will only be 1 field for BANDPASS and
-        # 1 field for AMPLITUDE (which can be the same), which is valid as
+        # hifa_bandpassflag, and this task will just do PHASE and CHECK
+        # fields. This assumes that there will only be 1 field for BANDPASS
+        # and 1 field for AMPLITUDE (which can be the same), which is valid as
         # of Cycle 5.
         for field in self.ms.get_fields(intent='AMPLITUDE'):
             for fieldintent in field.intents:
                 if 'BANDPASS' in fieldintent:
-                    intents_to_flag = 'PHASE'
+                    intents_to_flag = 'PHASE,CHECK'
         return intents_to_flag
 
     minsnr = vdp.VisDependentProperty(default=2.0)

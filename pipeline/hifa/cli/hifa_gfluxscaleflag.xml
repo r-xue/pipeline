@@ -38,6 +38,11 @@ file:///opt/casa/code/xmlcasa/xml/casa.xsd">
         <value></value>
     </param>
 
+    <param type="string" name="intent" subparam="true">
+        <description>Set of data selection intents</description>
+        <value></value>
+    </param>
+
     <param type="any" name="phaseupsolint" subparam="true">
         <description>Phaseup correction solution interval</description>
         <any type="variant"/>
@@ -130,6 +135,7 @@ file:///opt/casa/code/xmlcasa/xml/casa.xsd">
             <equals type="string" value="automatic" />
             <equals type="string" value="interactive">
                 <default param="vis"><value type="stringArray"></value></default>
+                <default param="intent"><value type="string"></value></default>
                 <default param="phaseupsolint"><value type="string">int</value></default>
                 <default param="solint"><value type="string">inf</value></default>
                 <default param="minsnr"><value>2.0</value></default>
@@ -182,6 +188,16 @@ vis -- The list of input MeasurementSets. Defaults to the list of
 
     default: ''
     example: vis=['M51.ms']
+
+intent -- A string containing a comma delimited list of intents against
+    which the selected fields are matched. If undefined (default), it
+    will select all data with the AMPLITUDE, PHASE, and CHECK intents,
+    except for one case: if one of the AMPLITUDE intent fields was also
+    used for BANDPASS, then this task will select only data with PHASE
+    and CHECK intents.
+
+    default: ''
+    example: intent='*PHASE*'
 
 phaseupsolint -- The phase correction solution interval in CASA syntax.
 

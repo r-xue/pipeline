@@ -636,12 +636,12 @@ class Correctedampflag(basetask.StandardTaskTemplate):
                             if field.name in list(utils.safe_split(inputs.field))]
 
             # If no valid fields were found, raise warning, and continue to
-            # next intent.
+            # next intent. PIPE-281: CHECK intent is optional and does not
+            # require a warning.
             if not valid_fields:
-                LOG.warning("Invalid data selection for given intent(s) and "
-                            "field(s): fields {} do not include intent "
-                            "\'{}\'.".format(utils.commafy(utils.safe_split(inputs.field)),
-                                             intent))
+                if intent != "CHECK":
+                    LOG.warning("Invalid data selection for given intent(s) and field(s): fields {} do not include"
+                                " intent \'{}\'.".format(utils.commafy(utils.safe_split(inputs.field)), intent))
                 continue
 
             # Evaluate heuristic for each valid field.
