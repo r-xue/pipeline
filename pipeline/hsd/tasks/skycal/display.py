@@ -266,14 +266,17 @@ def plot_elevation_difference(context, result, eldiff, threshold=3.0):
     calapp = result.final[0]
     vis = calapp.calto.vis
     ms = context.observing_run.get_ms(vis)
-    
+
+    figroot = os.path.join(context.report_dir, 
+                           'stage%s' % result.stage_number)
+
     figure0 = 'PERANTENNA_PLOT'
     figure1 = 'ALLANTENNA_PLOT'
     start_time = numpy.min([numpy.min(x.timeon) for z in eldiff.itervalues() for y in z.itervalues()
                             for x in y.itervalues() if len(x.timeon) > 0])
     end_time = numpy.max([numpy.max(x.timeon) for z in eldiff.itervalues() for y in z.itervalues()
                           for x in y.itervalues() if len(x.timeon) > 0])
-    
+
     def init_figure(figure_id):
         pl.figure(figure_id)
         pl.clf()
@@ -298,7 +301,7 @@ def plot_elevation_difference(context, result, eldiff, threshold=3.0):
         ymin, ymax = pl.ylim()
         dy = ymax - ymin
         pl.ylim([0, max(ymax + 0.1 * dy, threshold + 0.1)])
-        
+
         pl.axhline(threshold, color='red')
         xmin, xmax = pl.xlim()
         dx = xmax - xmin
@@ -323,40 +326,56 @@ def plot_elevation_difference(context, result, eldiff, threshold=3.0):
                                                                                           field_name, 
                                                                                           antenna_name))
 
-    figroot = os.path.join(context.report_dir, 
-                           'stage%s' % result.stage_number)
-    field_ids = eldiff.keys()
-    
+    def generate_plot(figure_id, vis, field_name, antenna_name):
+        pl.figure(figure_id)
+        vis_prefix = '.'.join(vis.split('.')[:-1])
+        figfile = 'elevation_difference_{}_{}_{}.png'.format(vis_prefix, field_name, antenna_name)
+        figpath = os.path.join(figroot, figfile)
+        #LOG.info('figpath={}'.format(figpath))
+        pl.savefig(figpath)
+        plot = None
+        if os.path.exists(figpath):
+            parameters = {'intent': 'TARGET',
+                          'spw': '',
+                          'pol': '',
+                          'ant': antenna_name,
+                          'vis': vis,
+                          'type': 'Elevation Difference vs. Time',
+                          'file': vis}
+            plot = logger.Plot(figpath,
+                               x_axis='Time',
+                               y_axis='Elevation Difference',
+                               field=field_name,
+                               parameters=parameters)
+        return plot
+
     plots = []
-    for field_id in field_ids:
+    for field_id, eldiff_field in eldiff.items():
         # figure for summary plot
         a2, a3 = init_figure(figure1)
 
         field = ms.fields[field_id]
         field_name = field.clean_name
-        
-        eldiff_field = eldiff[field_id]
-        
+
         plots_per_field = []
-        
-        for antenna_id, eldant in eldiff_field.iteritems():
+
+        for antenna_id, eldant in eldiff_field.items():
             # figure for per-antenna plots
             a0, a1 = init_figure(figure0)
 
             antenna_name = ms.antennas[antenna_id].name
-            
-            for spw_id, eld in eldant.iteritems():
-            
+
+            for spw_id, eld in eldant.items():
                 if len(eld.timeon) == 0 or len(eld.timecal) == 0:
                     continue
-                
+
                 # Elevation vs. Time
                 xon = sd_display.mjd_to_plotval(eld.timeon)
                 xoff = sd_display.mjd_to_plotval(eld.timecal)
                 for a in [a0, a2]:
                     a.plot(xon, eld.elon, '.', color='black', mew=0)
                     a.plot(xoff, eld.elcal, '.-', color='blue', mew=0)
-                        
+
                 # Elevation Difference vs. Time
                 time0 = eld.time0
                 eldiff0 = eld.eldiff0
@@ -377,58 +396,22 @@ def plot_elevation_difference(context, result, eldiff, threshold=3.0):
                         for a in [a1, a3]:
                             a.plot(x, y, ls, mew=0)
 
-            # finalize figure
+            # finalize figure for per-antenna plot
             finalize_figure(figure0, ms.basename, field_name, antenna_name)
 
-            # rescale y-axis
-            pl.figure(figure0)
-
-            vis_prefix = '.'.join(ms.basename.split('.')[:-1])
-            figfile = 'elevation_difference_{}_{}_{}.png'.format(vis_prefix, field_name, antenna_name)
-            figpath = os.path.join(figroot, figfile)
-            #LOG.info('figpath={}'.format(figpath))
-            pl.savefig(figpath)
-            if os.path.exists(figpath):
-                parameters = {'intent': 'TARGET',
-                              'spw': '',
-                              'pol': '',
-                              'ant': antenna_name,
-                              'vis': ms.basename,
-                              'type': 'Elevation Difference vs. Time',
-                              'file': ms.basename}
-                plot = logger.Plot(figpath,
-                                   x_axis='Time',
-                                   y_axis='Elevation Difference',
-                                   field=field_name,
-                                   parameters=parameters)
+            # generate plot object
+            plot = generate_plot(figure0, ms.basename, field_name, antenna_name)
+            if plot is not None:
                 plots_per_field.append(plot)
-        
-        # finalize figure
+
+        # finalize figure for summary plot
         finalize_figure(figure1, ms.basename, field_name, 'ALL')
 
-        pl.figure(figure1)
-            
-        vis_prefix = '.'.join(ms.basename.split('.')[:-1])
-        figfile = 'elevation_difference_{}_{}.png'.format(vis_prefix, field_name)
-        figpath = os.path.join(figroot, figfile)
-        #LOG.info('figpath={}'.format(figpath))
-        pl.savefig(figpath)
-        if os.path.exists(figpath):
-            parameters = {'intent': 'TARGET',
-                          'spw': '',
-                          'pol': '',
-                          'ant': '',
-                          'vis': ms.basename,
-                          'type': 'Elevation Difference vs. Time',
-                          'file': ms.basename}
-            plot = logger.Plot(figpath,
-                               x_axis='Time',
-                               y_axis='Elevation Difference',
-                               field=field_name,
-                               parameters=parameters)
+        # generate plot object
+        plot = generate_plot(figure1, ms.basename, field_name, '')
+        if plot is not None:
             plots_per_field.append(plot)
-            
+
         plots.extend(plots_per_field)
-    
+
     return plots
-    
