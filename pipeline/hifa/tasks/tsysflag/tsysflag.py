@@ -2,6 +2,7 @@ from __future__ import absolute_import
 
 import pipeline.h.tasks.tsysflag.tsysflag as tsysflag
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import task_registry
 
 __all__ = [
@@ -16,6 +17,9 @@ class TsysflagInputs(tsysflag.TsysflagInputs):
     """
     TsysflagInputs defines the inputs for the Tsysflag pipeline task.
     """
+
+    fd_max_limit = vdp.VisDependentProperty(default=13)
+
     def __init__(self, context, output_dir=None, vis=None, caltable=None,
                  flag_nmedian=None, fnm_limit=None, fnm_byfield=None,
                  flag_derivative=None, fd_max_limit=None,

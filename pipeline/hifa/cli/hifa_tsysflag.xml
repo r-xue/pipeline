@@ -48,7 +48,7 @@ file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
     <param type="double" name="fd_max_limit" subparam="true">
         <description>Flag spectra with median derivative higher than fd_max_limit * median of this measure over all spectra</description>
-        <value>5.0</value>
+        <value>13.0</value>
     </param>
 
     <param type="bool" name="flag_edgechans">
@@ -160,7 +160,7 @@ file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
         <when param="flag_derivative">
             <equals type="bool" value="True">
-                <default param="fd_max_limit"><value>5.0</value></default>
+                <default param="fd_max_limit"><value>13.0</value></default>
             </equals>
             <equals type="bool" value="False">
             </equals>
@@ -275,7 +275,7 @@ flag_derivative -- True to flag Tsys spectra with high median derivative.
 fd_max_limit -- Flag spectra with median derivative higher than 
     fd_max_limit * median of this measure over all spectra.
 
-    default: 5.0
+    default: 13.0
 
 flag_edgechans -- True to flag edges of Tsys spectra.
 
