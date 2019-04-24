@@ -26,6 +26,7 @@ class SpwPhaseupInputs(gtypegaincal.GTypeGaincalInputs):
 
     # Spw mapping mode heuristics, options are 'auto', 'combine', 'simple', and 'default'
     hm_spwmapmode = vdp.VisDependentProperty(default='auto')
+
     @hm_spwmapmode.convert
     def hm_spwmapmode(self, value):
         allowed = ('auto', 'combine', 'simple', 'default')
@@ -39,6 +40,7 @@ class SpwPhaseupInputs(gtypegaincal.GTypeGaincalInputs):
 
     # Antenna flagging heuristics parameter
     hm_nantennas = vdp.VisDependentProperty(default='all')
+
     @hm_nantennas.convert
     def hm_nantennas(self, value):
         allowed = ('all', 'unflagged')
@@ -54,9 +56,9 @@ class SpwPhaseupInputs(gtypegaincal.GTypeGaincalInputs):
     caltable = vdp.VisDependentProperty(default=None)
 
     def __init__(self, context, vis=None, output_dir=None, caltable=None, intent=None, hm_spwmapmode=None,
-        phasesnr=None, bwedgefrac=None, hm_nantennas=None, maxfracflagged=None,
-        maxnarrowbw=None, minfracmaxbw=None, samebb=None, **parameters):
-        super(SpwPhaseupInputs, self).__init__(context, vis=vis, output_dir=output_dir,  **parameters)
+                 phasesnr=None, bwedgefrac=None, hm_nantennas=None, maxfracflagged=None,
+                 maxnarrowbw=None, minfracmaxbw=None, samebb=None, **parameters):
+        super(SpwPhaseupInputs, self).__init__(context, vis=vis, output_dir=output_dir, **parameters)
         self.caltable = caltable
         self.intent = intent
         self.hm_spwmapmode = hm_spwmapmode
@@ -79,84 +81,84 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         inputs = self.inputs
 
         # Get a list of all the spws and a list of the science spws
-        allspws = inputs.ms.get_spectral_windows(task_arg=inputs.spw,
-            science_windows_only=False)
-        scispws = inputs.ms.get_spectral_windows(task_arg=inputs.spw,
-            science_windows_only=True)
+        allspws = inputs.ms.get_spectral_windows(task_arg=inputs.spw, science_windows_only=False)
+        scispws = inputs.ms.get_spectral_windows(task_arg=inputs.spw, science_windows_only=True)
 
         # Compute the spw map according to the rules defined by each
         # mapping mode. The default map is [] which stands for the
         # default one to one spw mapping.
-        LOG.info('The spw mapping mode for %s is %s' % \
-            (inputs.ms.basename, inputs.hm_spwmapmode))
+        LOG.info("The spw mapping mode for {} is {}".format(inputs.ms.basename, inputs.hm_spwmapmode))
+
         if inputs.hm_spwmapmode == 'auto':
 
-            nosnrs, spwids, snrs, goodsnrs  = self._do_snrtest()
+            nosnrs, spwids, snrs, goodsnrs = self._do_snrtest()
 
             # No SNR estimates available, default to simple spw mapping
             if nosnrs:
-                LOG.warn('    No SNR estimates for any spws - Forcing simple spw mapping for %s' % (inputs.ms.basename))
+                LOG.warn('    No SNR estimates for any spws - Forcing simple spw mapping for {}'
+                         ''.format(inputs.ms.basename))
                 combinespwmap = []
-                phaseupspwmap = simple_n2wspwmap (allspws, scispws, inputs.maxnarrowbw,
-                    inputs.minfracmaxbw, inputs.samebb)
-                LOG.info('    Using spw map %s for %s' % (phaseupspwmap, inputs.ms.basename))
+                phaseupspwmap = simple_n2wspwmap(allspws, scispws, inputs.maxnarrowbw, inputs.minfracmaxbw,
+                                                 inputs.samebb)
+                LOG.info('    Using spw map {} for {}'.format(phaseupspwmap, inputs.ms.basename))
 
             # All spws have good SNR values, no spw mapping required
             elif len([goodsnr for goodsnr in goodsnrs if goodsnr is True]) == len(goodsnrs):
-                LOG.info('    High SNR - Default spw mapping used for all spws %s' % (inputs.ms.basename))
+                LOG.info('    High SNR - Default spw mapping used for all spws {}'.format(inputs.ms.basename))
                 combinespwmap = []
                 phaseupspwmap = []
-                LOG.info('    Using spw map %s for %s' % (phaseupspwmap, inputs.ms.basename))
+                LOG.info('    Using spw map {} for {}'.format(phaseupspwmap, inputs.ms.basename))
 
             # No spws have good SNR values use combined spw mapping
             elif len([goodsnr for goodsnr in goodsnrs if goodsnr is True]) == 0:
-                LOG.warn('    Low SNR for all spws - Forcing combined spw mapping for %s' % (inputs.ms.basename))
+                LOG.warn('    Low SNR for all spws - Forcing combined spw mapping for {}'.format(inputs.ms.basename))
                 if None in goodsnrs:
-                    LOG.warn('    Spws without SNR measurements %s' % [spwid for spwid, goodsnr in zip(spwids, goodsnrs) if goodsnr is None])
-                combinespwmap = combine_spwmap (allspws, scispws, scispws[0].id)
+                    LOG.warn('    Spws without SNR measurements {}'
+                             ''.format([spwid for spwid, goodsnr in zip(spwids, goodsnrs) if goodsnr is None]))
+                combinespwmap = combine_spwmap(allspws, scispws, scispws[0].id)
                 phaseupspwmap = []
-                LOG.info('    Using combined spw map %s for %s' % (combinespwmap, inputs.ms.basename))
+                LOG.info('    Using combined spw map {} for {}'.format(combinespwmap, inputs.ms.basename))
 
             else:
-                LOG.warn('    Some low SNR spws - using highest good SNR window for these in %s' % (inputs.ms.basename))
+                LOG.warn('    Some low SNR spws - using highest good SNR window for these in {}'
+                         ''.format(inputs.ms.basename))
                 if None in goodsnrs:
-                    LOG.warn('    Spws without SNR measurements %s' % [spwid for spwid, goodsnr in zip(spwids, goodsnrs) if goodsnr is None])
-                goodmap, phaseupspwmap, snrmap  = snr_n2wspwmap (allspws, scispws, snrs, goodsnrs) 
+                    LOG.warn('    Spws without SNR measurements {}'
+                             ''.format([spwid for spwid, goodsnr in zip(spwids, goodsnrs) if goodsnr is None]))
+                goodmap, phaseupspwmap, snrmap = snr_n2wspwmap(allspws, scispws, snrs, goodsnrs)
                 if not goodmap:
-                    LOG.warn('    Still unable to match all spws - Forcing combined spw mapping for %s' % (inputs.ms.basename))
+                    LOG.warn('    Still unable to match all spws - Forcing combined spw mapping for {}'
+                             ''.format(inputs.ms.basename))
                     phaseupspemap = []
-                    combinespwmap = combine_spwmap (allspws, scispws, scispws[0].id)
-                    LOG.info('    Using spw map %s for %s' % (combinespwmap, inputs.ms.basename))
+                    combinespwmap = combine_spwmap(allspws, scispws, scispws[0].id)
+                    LOG.info('    Using spw map {} for {}'.format(combinespwmap, inputs.ms.basename))
                 else:
                     combinespwmap = []
-                    LOG.info('    Using spw map %s for %s' % (phaseupspwmap, inputs.ms.basename))
+                    LOG.info('    Using spw map {} for {}'.format(phaseupspwmap, inputs.ms.basename))
 
         elif inputs.hm_spwmapmode == 'combine':
-            combinespwmap = combine_spwmap (allspws, scispws, scispws[0].id)
+            combinespwmap = combine_spwmap(allspws, scispws, scispws[0].id)
             phaseupspwmap = []
-            LOG.info('    Using combined spw map %s for %s' % (combinespwmap, inputs.ms.basename))
+            LOG.info('    Using combined spw map {} for {}'.format(combinespwmap, inputs.ms.basename))
 
         elif inputs.hm_spwmapmode == 'simple':
             combinespwmap = []
-            phaseupspwmap = simple_n2wspwmap (allspws, scispws, inputs.maxnarrowbw,
-                inputs.minfracmaxbw, inputs.samebb)
-            LOG.info('    Using simple spw map %s for %s' % (phaseupspwmap, inputs.ms.basename))
+            phaseupspwmap = simple_n2wspwmap(allspws, scispws, inputs.maxnarrowbw, inputs.minfracmaxbw, inputs.samebb)
+            LOG.info('    Using simple spw map {} for {}'.format(phaseupspwmap, inputs.ms.basename))
 
         else:
             phaseupspwmap = []
             combinespwmap = []
-            LOG.info('    Using standard spw map %s for %s' % (phaseupspwmap, inputs.ms.basename))
+            LOG.info('    Using standard spw map {} for {}'.format(phaseupspwmap, inputs.ms.basename))
 
         # Compute the phaseup table and set calwt to False
-        LOG.info('Computing spw phaseup table for %s is %s' % \
-            (inputs.ms.basename, inputs.hm_spwmapmode))
+        LOG.info('Computing spw phaseup table for {} is {}'.format(inputs.ms.basename, inputs.hm_spwmapmode))
         phaseupresult = self._do_phaseup()
-        self._mod_last_calwt (phaseupresult.pool[0], False)
+        self._mod_last_calwt(phaseupresult.pool[0], False)
 
         # Create the results object.
-        result = SpwPhaseupResults(vis=inputs.vis,
-            phaseup_result=phaseupresult, combine_spwmap=combinespwmap,
-            phaseup_spwmap=phaseupspwmap)
+        result = SpwPhaseupResults(vis=inputs.vis, phaseup_result=phaseupresult, combine_spwmap=combinespwmap,
+                                   phaseup_spwmap=phaseupspwmap)
 
         return result
 
@@ -169,36 +171,30 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # caltable as the best result
 
         # double-check that the caltable was actually generated
-        on_disk = [ca for ca in result.phaseup_result.pool
-                   if ca.exists() or self._executor._dry_run]
+        on_disk = [ca for ca in result.phaseup_result.pool if ca.exists() or self._executor._dry_run]
         result.phaseup_result.final[:] = on_disk
 
-        missing = [ca for ca in result.phaseup_result.pool
-                   if ca not in on_disk and not self._executor._dry_run]
+        missing = [ca for ca in result.phaseup_result.pool if ca not in on_disk and not self._executor._dry_run]
         result.phaseup_result.error.clear()
         result.phaseup_result.error.update(missing)
 
-
         return result
 
-
-    def _do_snrtest (self):
+    def _do_snrtest(self):
 
         # Simplify inputs.
         inputs = self.inputs
 
         task_args = {
-          'output_dir'       : inputs.output_dir,
-          'vis'              : inputs.vis,
-          'intent'           : 'PHASE',
-          'phasesnr'         : inputs.phasesnr,
-          'bwedgefrac'       : inputs.bwedgefrac,
-          'hm_nantennas'     : inputs.hm_nantennas,
-          'maxfracflagged'   : inputs.maxfracflagged
+          'output_dir': inputs.output_dir,
+          'vis': inputs.vis,
+          'intent': 'PHASE',
+          'phasesnr': inputs.phasesnr,
+          'bwedgefrac': inputs.bwedgefrac,
+          'hm_nantennas': inputs.hm_nantennas,
+          'maxfracflagged': inputs.maxfracflagged
         }
-        task_inputs = gaincalsnr.GaincalSnrInputs(inputs.context,
-                                                      **task_args)
-
+        task_inputs = gaincalsnr.GaincalSnrInputs(inputs.context, **task_args)
         gaincalsnr_task = gaincalsnr.GaincalSnr(task_inputs)
         result = self._executor.execute(gaincalsnr_task)
 
@@ -206,7 +202,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         spwids = []
         snrs = []
         goodsnrs = []
-        for i in range (len(result.spwids)):
+        for i in range(len(result.spwids)):
             if result.snrs[i] is None:
                 spwids.append(result.spwids[i])
                 snrs.append(None)
@@ -224,30 +220,27 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         return nosnr, spwids, snrs, goodsnrs
 
-
     def _do_phaseup(self):
 
         # Simplify inputs.
         inputs = self.inputs
 
         task_args = {
-          'output_dir'  : inputs.output_dir,
-          'vis'         : inputs.vis,
-          'caltable'    : inputs.caltable,
-          #'caltable'    : None,
-          'field'       : inputs.field,
-          'intent'      : inputs.intent,
-          'spw'         : inputs.spw,
-          'solint'      : 'inf',
-          'gaintype'    : 'G',
-          'calmode'     : 'p',
-          'minsnr'      : inputs.minsnr,
-          'combine'     : inputs.combine,
-          'refant'      : inputs.refant,
-          'minblperant' : inputs.minblperant
+          'output_dir': inputs.output_dir,
+          'vis': inputs.vis,
+          'caltable': inputs.caltable,
+          'field': inputs.field,
+          'intent': inputs.intent,
+          'spw': inputs.spw,
+          'solint': 'inf',
+          'gaintype': 'G',
+          'calmode': 'p',
+          'minsnr': inputs.minsnr,
+          'combine': inputs.combine,
+          'refant': inputs.refant,
+          'minblperant': inputs.minblperant
         }
-        task_inputs = gtypegaincal.GTypeGaincalInputs(inputs.context,
-                                                      **task_args)
+        task_inputs = gtypegaincal.GTypeGaincalInputs(inputs.context, **task_args)
         phaseup_task = gtypegaincal.GTypeGaincal(task_inputs)
         result = self._executor.execute(phaseup_task)
 
@@ -265,15 +258,13 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                                   calwt=calwt)
 
 
-
 class SpwPhaseupResults(basetask.Results):
-    def __init__(self, vis=None, phaseup_result=None, combine_spwmap=[],
-        phaseup_spwmap=[]):
+    def __init__(self, vis=None, phaseup_result=None, combine_spwmap=[], phaseup_spwmap=[]):
         """
         Initialise the phaseup spw mapping results object.
         """
         super(SpwPhaseupResults, self).__init__()
-        self.vis=vis
+        self.vis = vis
         self.phaseup_result = phaseup_result
         self.combine_spwmap = combine_spwmap
         self.phaseup_spwmap = phaseup_spwmap
@@ -281,11 +272,11 @@ class SpwPhaseupResults(basetask.Results):
     def merge_with_context(self, context):
 
         if self.vis is None:
-            LOG.error ( ' No results to merge ')
+            LOG.error(' No results to merge ')
             return
 
         if not self.phaseup_result.final:
-            LOG.error ( ' No results to merge ')
+            LOG.error(' No results to merge ')
             return
 
         # Merge the spw phaseup offset table
@@ -300,8 +291,8 @@ class SpwPhaseupResults(basetask.Results):
     def __repr__(self):
         if self.vis is None or not self.phaseup_result:
             return('SpwPhaseupResults:\n'
-            '\tNo spw phaseup table computed')
+                   '\tNo spw phaseup table computed')
         else:
-            spwmap = 'SpwPhaseupResults:\nCombine spwmap = %s\nNarrow to wide spwmap = %s\n' % \
-                (self.combine_spwmap, self.phaseup_spwmap)
+            spwmap = 'SpwPhaseupResults:\nCombine spwmap = {}\nNarrow to wide spwmap = {}\n' \
+                     ''.format(self.combine_spwmap, self.phaseup_spwmap)
             return spwmap
