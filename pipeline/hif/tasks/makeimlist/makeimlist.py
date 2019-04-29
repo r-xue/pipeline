@@ -587,8 +587,11 @@ class MakeImList(basetask.StandardTaskTemplate):
                         spwspec_ok = True
                         new_spwspec = []
                         spwsel = {}
+                        all_continuum = True
                         for spwid in spwspec.split(','):
-                            spwsel_spwid = self.heuristics.cont_ranges_spwsel().get(utils.dequote(field_intent[0]), {}).get(spwid, 'NONE')
+                            cont_ranges_spwsel, all_continuum_spwsel = self.heuristics.cont_ranges_spwsel()
+                            spwsel_spwid = cont_ranges_spwsel.get(utils.dequote(field_intent[0]), {}).get(spwid, 'NONE')
+                            all_continuum = all_continuum and all_continuum_spwsel.get(utils.dequote(field_intent[0]), {}).get(spwid, False)
                             if (field_intent[1] == 'TARGET'):
                                 if (spwsel_spwid == 'NONE'):
                                     LOG.warn('No continuum frequency range information detected for %s, spw %s. Will not image spw %s.' % (field_intent[0], spwid, spwspec))
@@ -658,6 +661,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 intent=field_intent[1],
                                 spw=new_spwspec,
                                 spwsel_lsrk=spwsel,
+                                spwsel_all_cont=all_continuum,
                                 cell=cells[spwspec],
                                 imsize=imsizes[(field_intent[0], spwspec)],
                                 phasecenter=phasecenters[field_intent[0]],

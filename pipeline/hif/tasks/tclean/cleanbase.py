@@ -59,6 +59,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     savemodel = vdp.VisDependentProperty(default='none')
     scales = vdp.VisDependentProperty(default=None)
     sensitivity = vdp.VisDependentProperty(default=None)
+    spwsel_all_cont = vdp.VisDependentProperty(default=None)
     start = vdp.VisDependentProperty(default='')
     stokes = vdp.VisDependentProperty(default='I')
     threshold = vdp.VisDependentProperty(default=None)
@@ -103,7 +104,7 @@ class CleanBaseInputs(vdp.StandardInputs):
         return []
 
     def __init__(self, context, output_dir=None, vis=None, imagename=None, datacolumn=None, intent=None, field=None,
-                 spw=None, spwsel=None, uvrange=None, orig_specmode=None, specmode=None, gridder=None, deconvolver=None,
+                 spw=None, spwsel=None, spwsel_all_cont=None, uvrange=None, orig_specmode=None, specmode=None, gridder=None, deconvolver=None,
                  uvtaper=None, nterms=None, cycleniter=None, cyclefactor=None, scales=None, outframe=None, imsize=None,
                  cell=None, phasecenter=None, nchan=None, start=None, width=None, stokes=None, weighting=None,
                  robust=None, restoringbeam=None, iter=None, mask=None, savemodel=None, hm_masking=None,
@@ -123,6 +124,7 @@ class CleanBaseInputs(vdp.StandardInputs):
         self.field = field
         self.spw = spw
         self.spwsel = spwsel
+        self.spwsel_all_cont = spwsel_all_cont
         self.uvrange = uvrange
         self.savemodel = savemodel
         self.orig_specmode = orig_specmode
@@ -255,7 +257,7 @@ class CleanBase(basetask.StandardTaskTemplate):
                 else:
                     rename_image(old_name=old_model_name, new_name=model_name)
 
-        if inputs.niter == 0:
+        if inputs.niter == 0 and not (inputs.specmode == 'cube' and inputs.spwsel_all_cont):
             image_name = ''
         else:
             image_name = '%s.%s.iter%s.image' % (
@@ -394,7 +396,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             tclean_job_parameters['nterms'] = result.multiterm
 
         # Select whether to restore image
-        if inputs.niter == 0:
+        if inputs.niter == 0 and not (inputs.specmode == 'cube' and inputs.spwsel_all_cont):
             tclean_job_parameters['restoration'] = False
             tclean_job_parameters['pbcor'] = False
         else:
@@ -556,7 +558,7 @@ class CleanBase(basetask.StandardTaskTemplate):
                 LOG.warning('tclean stopped to prevent divergence (stop code %d). Field: %s SPW: %s' %
                             (tclean_stopcode, inputs.field, inputs.spw))
 
-        if iter > 0:
+        if iter > 0 or (inputs.specmode == 'cube' and inputs.spwsel_all_cont):
             # Store the model.
             set_miscinfo(name=model_name, spw=inputs.spw, field=inputs.field,
                          type='model', iter=iter, multiterm=result.multiterm,

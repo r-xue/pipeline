@@ -112,9 +112,9 @@ class ContFileHandler(object):
                         fd.write('ALL\n')
                     else:
                         for freq_range in cont_ranges['fields'][field_name][spw_id]:
-                            if freq_range['range'] == 'NONE':
+                            if freq_range == 'NONE':
                                 fd.write('NONE\n')
-                            elif freq_range['range'] == 'ALL':
+                            elif freq_range == 'ALL':
                                 fd.write('ALL\n')
                             else:
                                 if cont_ranges['version'] == 1:
@@ -133,15 +133,16 @@ class ContFileHandler(object):
         if cont_ranges is None:
             cont_ranges = self.cont_ranges
 
+        all_continuum = False
         if field_name in cont_ranges['fields']:
             if spw_id in cont_ranges['fields'][field_name]:
                 if cont_ranges['fields'][field_name][spw_id] not in (['ALL'], [], ['NONE']):
                     merged_cont_ranges = utils.merge_ranges(
-                        [cont_range['range'] for cont_range in cont_ranges['fields'][field_name][spw_id]])
+                        [cont_range['range'] for cont_range in cont_ranges['fields'][field_name][spw_id] if isinstance(cont_range, dict)])
                     cont_ranges_spwsel = ';'.join(['%s~%sGHz' % (spw_sel_interval[0], spw_sel_interval[1])
                                                    for spw_sel_interval in merged_cont_ranges])
-                    refers = np.array([spw_sel_interval['refer']
-                                       for spw_sel_interval in cont_ranges['fields'][field_name][spw_id]])
+                    refers = np.array([cont_range['refer']
+                                       for cont_range in cont_ranges['fields'][field_name][spw_id] if isinstance(cont_range, dict)])
                     if (refers == 'TOPO').all():
                         refer = 'TOPO'
                     elif (refers == 'LSRK').all():
@@ -149,8 +150,11 @@ class ContFileHandler(object):
                     else:
                         refer = 'UNDEFINED'
                     cont_ranges_spwsel = '%s %s' % (cont_ranges_spwsel, refer)
+                    if 'ALL' in cont_ranges['fields'][field_name][spw_id]:
+                        all_continuum = True
                 elif cont_ranges['fields'][field_name][spw_id] == ['ALL']:
                     cont_ranges_spwsel = 'ALL'
+                    all_continuum = True
                 else:
                     cont_ranges_spwsel = 'NONE'
             else:
@@ -158,7 +162,7 @@ class ContFileHandler(object):
         else:
             cont_ranges_spwsel = ''
 
-        return cont_ranges_spwsel
+        return cont_ranges_spwsel, all_continuum
 
     def lsrk_to_topo(self, selection, msnames, fields, spw_id, observing_run, ctrim=0, ctrim_nchan=-1):
 

@@ -126,11 +126,14 @@ class ImageParamsHeuristics(object):
 
         # initialize lookup dictionary for all possible source names
         cont_ranges_spwsel = {}
+        all_continuum_spwsel = {}
         for ms_ref in self.observing_run.get_measurement_sets():
             for source_name in [s.name for s in ms_ref.sources]:
                 cont_ranges_spwsel[source_name] = {}
+                all_continuum_spwsel[source_name] = {}
                 for spwid in self.spwids:
                     cont_ranges_spwsel[source_name][str(spwid)] = ''
+                    all_continuum_spwsel[source_name][str(spwid)] = False
 
         contfile = self.contfile if self.contfile is not None else ''
         linesfile = self.linesfile if self.linesfile is not None else ''
@@ -144,7 +147,7 @@ class ImageParamsHeuristics(object):
             # Collect the merged the ranges
             for field_name in cont_ranges_spwsel.iterkeys():
                 for spw_id in cont_ranges_spwsel[field_name].iterkeys():
-                    cont_ranges_spwsel[field_name][spw_id] = contfile_handler.get_merged_selection(field_name, spw_id)
+                    cont_ranges_spwsel[field_name][spw_id], all_continuum_spwsel[field_name][spw_id] = contfile_handler.get_merged_selection(field_name, spw_id)
 
         # alternatively read and merge line regions and calculate continuum regions
         elif os.path.isfile(linesfile):
@@ -185,7 +188,7 @@ class ImageParamsHeuristics(object):
                 for source_name in [s.name for s in ms.sources]:
                     cont_ranges_spwsel[source_name][str(spwid)] = '%s LSRK' % (spw_selection)
 
-        return cont_ranges_spwsel
+        return cont_ranges_spwsel, all_continuum_spwsel
 
     def field_intent_list(self, intent, field):
         intent_list = intent.split(',')

@@ -153,6 +153,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
             nonpbcor_imagename = restored.replace('.image', '.image%s' % extension)
 
         # If possible use flattened clean mask for exclusion of areas for all spectral channels
+        flattened_mask = None
         if cleanmask is not None and os.path.exists(cleanmask):
             flattened_mask = cleanmask.replace('.mask', '.mask.flattened')
 
@@ -262,17 +263,16 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                 LOG.warn('Exception while determining image RMS for %s: %s' % (nonpbcor_imagename, e))
 
             # Get the flux density spectrum in the clean mask area if available
-            if nonpbcor_image_cleanmask_npoints is not None:
-                if nonpbcor_image_cleanmask_npoints != 0:
-                    # Area in flattened clean mask
-                    spectrum_mask = '"%s" > 0.1' % (os.path.basename(flattened_mask))
-                elif pb is not None:
-                    # Area of pb > pblimit_cleanmask
-                    spectrum_mask = '"%s" > %f' % (os.path.basename(pb)+extension, pblimit_cleanmask)
-                    nonpbcor_image_cleanmask_spectrum_pblimit = pblimit_cleanmask
-                else:
-                    spectrum_mask = None
-                nonpbcor_image_cleanmask_spectrum = image.getprofile(function='flux', mask=spectrum_mask, stretch=True, axis=freq_axis)['values']
+            if nonpbcor_image_cleanmask_npoints not in (None, 0):
+                # Area in flattened clean mask
+                spectrum_mask = '"%s" > 0.1' % (os.path.basename(flattened_mask))
+            elif pb is not None:
+                # Area of pb > pblimit_cleanmask
+                spectrum_mask = '"%s" > %f' % (os.path.basename(pb)+extension, pblimit_cleanmask)
+                nonpbcor_image_cleanmask_spectrum_pblimit = pblimit_cleanmask
+            else:
+                spectrum_mask = None
+            nonpbcor_image_cleanmask_spectrum = image.getprofile(function='flux', mask=spectrum_mask, stretch=True, axis=freq_axis)['values']
 
     return (residual_cleanmask_rms, residual_non_cleanmask_rms, residual_min, residual_max,
             nonpbcor_image_non_cleanmask_rms_min, nonpbcor_image_non_cleanmask_rms_max,

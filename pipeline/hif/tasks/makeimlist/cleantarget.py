@@ -9,6 +9,7 @@ class CleanTarget(dict):
          self['spw'] = None             # string
          self['spwsel_lsrk'] = None     # dictionary
          self['spwsel_topo'] = None     # list
+         self['spwsel_all_cont'] = None # boolean
          self['cell'] = None            # string
          self['imsize'] = None          # string / list
          self['phasecenter'] = None     # string
@@ -34,7 +35,7 @@ class CleanTarget(dict):
          self['reffreq'] = None         # string
          self['restfreq'] = None        # string
          self['heuristics'] = None      # object
-         self['rms_nsigma'] = None          # float
+         self['rms_nsigma'] = None      # float
          # vis list only for special setups like CHECK source
          # imaging per EB for ALMA
          self['vis'] = None             # list of strings

@@ -60,7 +60,7 @@ class CleanSummary(object):
             for i, iteration in [(k, r.iterations[k]) for k in sorted(r.iterations)]:
                 # process image for this iteration
                 if 'image' in iteration:
-                    collapse_function = 'max' if (('cube' in iteration['image']) or ('repBW' in iteration['cleanmask'])) else 'mean'
+                    collapse_function = 'max' if (('cube' in iteration.get('image', '')) or ('repBW' in iteration.get('cleanmask', ''))) else 'mean'
 
                     # PB corrected
                     image_path = iteration['image'].replace('.image', '.image%s' % (extension))
@@ -141,41 +141,42 @@ class CleanSummary(object):
                         sky.SkyDisplay().plot(self.context, iteration['mom8_fc'] + extension, reportdir=stage_dir,
                                                    intent=r.intent, **extra_args))
 
-                # cleanmask and cube spectra for this iteration - not for iter 0
+                # cleanmask - not for iter 0
                 if i > 0:
-                    collapse_function = 'max' if (('cube' in iteration['cleanmask']) or ('repBW' in iteration['cleanmask'])) else 'mean'
+                    collapse_function = 'max' if (('cube' in iteration.get('cleanmask', '')) or ('repBW' in iteration.get('cleanmask', ''))) else 'mean'
                     plot_wrappers.append(
-                        sky.SkyDisplay().plot(self.context, iteration['cleanmask'], reportdir=stage_dir,
+                        sky.SkyDisplay().plot(self.context, iteration.get('cleanmask', ''), reportdir=stage_dir,
                                                    intent=r.intent, collapseFunction=collapse_function,
                                                    **{'cmap': copy.deepcopy(matplotlib.cm.YlOrRd)}))
 
-                    if 'cube' in iteration['cleanmask']:
-                        imagename = r.image_robust_rms_and_spectra['nonpbcor_imagename']
-                        with casatools.ImageReader(r.image_robust_rms_and_spectra['nonpbcor_imagename']) as image:
-                            miscinfo = image.miscinfo()
+                # cube spectra for this iteration
+                if 'cube' in iteration.get('image', ''):
+                    imagename = r.image_robust_rms_and_spectra['nonpbcor_imagename']
+                    with casatools.ImageReader(r.image_robust_rms_and_spectra['nonpbcor_imagename']) as image:
+                        miscinfo = image.miscinfo()
 
-                        parameters = {k: miscinfo[k] for k in ['spw', 'iter'] if k in miscinfo}
-                        parameters['field'] = '%s (%s)' % (miscinfo['field'], miscinfo['intent'])
-                        parameters['type'] = 'spectra'
+                    parameters = {k: miscinfo[k] for k in ['spw', 'iter'] if k in miscinfo}
+                    parameters['field'] = '%s (%s)' % (miscinfo['field'], miscinfo['intent'])
+                    parameters['type'] = 'spectra'
 
-                        virtual_spw = parameters['spw']
-                        imaging_mss = [m for m in self.context.observing_run.measurement_sets if m.is_imaging_ms]
-                        if imaging_mss != []:
-                            ref_ms = imaging_mss[0]
-                        else:
-                            ref_ms = self.context.observing_run.measurement_sets[0]
-                        real_spw = self.context.observing_run.virtual2real_spw_id(virtual_spw, ref_ms)
-                        real_spw_obj = ref_ms.get_spectral_window(real_spw)
-                        if real_spw_obj.receiver is not None and real_spw_obj.freq_lo is not None:
-                            rec_info = {'type': real_spw_obj.receiver, 'LO1': real_spw_obj.freq_lo[0].str_to_precision(12)}
-                        else:
-                            LOG.warn('Could not determine receiver type. Assuming TSB.')
-                            rec_info = {'type': 'TSB', 'LO1': '0GHz'}
+                    virtual_spw = parameters['spw']
+                    imaging_mss = [m for m in self.context.observing_run.measurement_sets if m.is_imaging_ms]
+                    if imaging_mss != []:
+                        ref_ms = imaging_mss[0]
+                    else:
+                        ref_ms = self.context.observing_run.measurement_sets[0]
+                    real_spw = self.context.observing_run.virtual2real_spw_id(virtual_spw, ref_ms)
+                    real_spw_obj = ref_ms.get_spectral_window(real_spw)
+                    if real_spw_obj.receiver is not None and real_spw_obj.freq_lo is not None:
+                        rec_info = {'type': real_spw_obj.receiver, 'LO1': real_spw_obj.freq_lo[0].str_to_precision(12)}
+                    else:
+                        LOG.warn('Could not determine receiver type. Assuming TSB.')
+                        rec_info = {'type': 'TSB', 'LO1': '0GHz'}
 
-                        plotfile = '%s.spectrum.png' % (os.path.join(stage_dir, os.path.basename(imagename)))
+                    plotfile = '%s.spectrum.png' % (os.path.join(stage_dir, os.path.basename(imagename)))
 
-                        plot_spectra(r.image_robust_rms_and_spectra, rec_info, plotfile)
+                    plot_spectra(r.image_robust_rms_and_spectra, rec_info, plotfile)
 
-                        plot_wrappers.append(logger.Plot(plotfile, parameters=parameters))
+                    plot_wrappers.append(logger.Plot(plotfile, parameters=parameters))
 
         return [p for p in plot_wrappers if p is not None]

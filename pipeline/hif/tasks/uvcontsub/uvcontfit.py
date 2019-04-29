@@ -291,8 +291,8 @@ class UVcontFit(basetask.StandardTaskTemplate):
 
                 # convert real to virtual spw id
                 virtual_spw_id = str(inputs.context.observing_run.real2virtual_spw_id (int(spw_id), inputs.ms))
-                # cranges_spwsel[sname][spw_id] = contfile_handler.get_merged_selection(sname, spw_id)
-                cranges_spwsel[sname][spw_id] = contfile_handler.get_merged_selection(sname, virtual_spw_id)
+                # cranges_spwsel[sname][spw_id], _ = contfile_handler.get_merged_selection(sname, spw_id)
+                cranges_spwsel[sname][spw_id], _ = contfile_handler.get_merged_selection(sname, virtual_spw_id)
 
                 if not cranges_spwsel[sname][spw_id]:
                     LOG.info('No continuum region detection attempted for MS %s source %s spw %d' % (

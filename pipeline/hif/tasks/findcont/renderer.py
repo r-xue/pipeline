@@ -43,7 +43,7 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         ranges_dict = result.result_cont_ranges
 
         # structure used to recognise non-detections
-        non_detection = (['NONE'], [], [{'range': 'NONE', 'refer': 'LSRK'}], [{'range': 'NONE', 'refer': 'TOPO'}])
+        non_detection = (['NONE'], [])
 
         rows = []
         for field in sorted(set(ranges_dict.keys())):
@@ -58,8 +58,8 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     rows.append(TR(field=field, spw=spw, min='None', max='',
                                    frame='None', status=status, spectrum=plotfile))
                 else:
-                    raw_ranges_for_spw = [item['range'] for item in ranges_for_spw]
-                    refers = numpy.array([item['refer'] for item in ranges_for_spw])
+                    raw_ranges_for_spw = [item['range'] for item in ranges_for_spw if isinstance(item, dict)]
+                    refers = numpy.array([item['refer'] for item in ranges_for_spw if isinstance(item, dict)])
                     if (refers == 'TOPO').all():
                         refer = 'TOPO'
                     elif (refers == 'LSRK').all():
@@ -67,6 +67,8 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     else:
                         refer = 'UNDEFINED'
                     sorted_ranges = sorted(raw_ranges_for_spw, key=operator.itemgetter(0))
+                    if 'ALL' in ranges_for_spw:
+                        status += ' , All cont.'
                     for (range_min, range_max) in sorted_ranges:
                         # default units for Frequency is GHz, which matches the
                         # units of cont_ranges values

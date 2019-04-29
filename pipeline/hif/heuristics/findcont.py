@@ -17,10 +17,20 @@ class FindContHeuristics(object):
 
         if (stats['min'][0] == stats['max'][0]):
             LOG.error('Cube %s is constant at level %s.' % (dirty_cube, stats['max'][0]))
-            return ([{'range': 'NONE', 'refer': 'LSRK'}], 'none')
+            return (['NONE'], 'none')
 
         # Run continuum finder on cube
-        channel_selection, png_name, aggregate_bw = findContinuum(img=dirty_cube, pbcube=pb_cube, psfcube=psf_cube, singleContinuum=single_continuum)
-        frequency_ranges_GHz = \
-            [{'range': item, 'refer': 'LSRK'} for item in utils.chan_selection_to_frequencies(dirty_cube, channel_selection, 'GHz')]
+        channel_selection, png_name, aggregate_bw, all_continuum = \
+            findContinuum(img=dirty_cube, \
+                          pbcube=pb_cube, \
+                          psfcube=psf_cube, \
+                          singleContinuum=single_continuum, \
+                          returnAllContinuumBoolean=True)
+        if all_continuum:
+            frequency_ranges_GHz = ['ALL']
+        else:
+            frequency_ranges_GHz = []
+
+        frequency_ranges_GHz.extend([{'range': item, 'refer': 'LSRK'} for item in utils.chan_selection_to_frequencies(dirty_cube, channel_selection, 'GHz')])
+
         return (frequency_ranges_GHz, png_name)

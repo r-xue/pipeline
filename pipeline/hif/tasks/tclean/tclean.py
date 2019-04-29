@@ -108,7 +108,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
                  # Extra parameters not in the CLI task interface
                  weighting=None, robust=None, uvtaper=None, scales=None, rms_nsigma=None, cycleniter=None, cyclefactor=None,
                  sensitivity=None, reffreq=None, restfreq=None, conjbeams=None, is_per_eb=None, antenna=None,
-                 usepointing=None, mosweight=None,
+                 usepointing=None, mosweight=None, spwsel_all_cont=None,
                  # End of extra parameters
                  heuristics=None):
         super(TcleanInputs, self).__init__(context, output_dir=output_dir, vis=vis,
@@ -142,6 +142,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
         self.restfreq = restfreq
         self.spwsel_lsrk = spwsel_lsrk
         self.spwsel_topo = spwsel_topo
+        self.spwsel_all_cont = spwsel_all_cont
         self.tlimit = tlimit
 
         # For MOM0/8_FC and cube RMS we need the LSRK frequency ranges in
@@ -434,9 +435,14 @@ class Tclean(cleanbase.CleanBase):
         # For ALMA this is already done at the hif_makeimlist step. For VLASS
         # this does not (yet) happen in hif_editimlist.
         if inputs.spwsel_lsrk == {}:
+            all_continuum = True
             for spwid in inputs.spw.split(','):
-                spwsel_spwid = self.image_heuristics.cont_ranges_spwsel().get(utils.dequote(inputs.field),
-                                                                              {}).get(spwid, 'NONE')
+
+
+                cont_ranges_spwsel, all_continuum_spwsel = self.image_heuristics.cont_ranges_spwsel()
+                spwsel_spwid = cont_ranges_spwsel.get(utils.dequote(inputs.field), {}).get(spwid, 'NONE')
+                all_continuum = all_continuum and all_continuum_spwsel.get(utils.dequote(inputs.field), {}).get(spwid, False)
+
                 if inputs.intent == 'TARGET':
                     if (spwsel_spwid == 'NONE') and self.image_heuristics.warn_missing_cont_ranges():
                         LOG.warn('No continuum frequency range information detected for %s, spw %s.' % (inputs.field,
@@ -451,6 +457,7 @@ class Tclean(cleanbase.CleanBase):
                     LOG.warn('Frequency selection is specified in %s but must be in LSRK' % spwsel_spwid_refer)
 
                 inputs.spwsel_lsrk['spw%s' % spwid] = spwsel_spwid
+            inputs.spwsel_all_cont = all_continuum
 
         # Get TOPO frequency ranges for all MSs
         (spw_topo_freq_param, spw_topo_chan_param, spw_topo_freq_param_dict, spw_topo_chan_param_dict,
@@ -607,6 +614,18 @@ class Tclean(cleanbase.CleanBase):
         LOG.info('    Residual min: %s', residual_min)
         LOG.info('    Residual scaled MAD: %s', residual_robust_rms)
 
+        # All continuum
+        if inputs.specmode == 'cube' and inputs.spwsel_all_cont:
+            result.set_image_min(pbcor_image_min)
+            result.set_image_max(pbcor_image_max)
+            result.set_image_rms(nonpbcor_image_non_cleanmask_rms)
+            result.set_image_rms_min(nonpbcor_image_non_cleanmask_rms_min)
+            result.set_image_rms_max(nonpbcor_image_non_cleanmask_rms_max)
+            result.set_image_robust_rms_and_spectra(nonpbcor_image_robust_rms_and_spectra)
+            keep_iterating = False
+        else:
+            keep_iterating = True
+
         # Adjust threshold based on the dirty image statistics
         dirty_dynamic_range = residual_max / sequence_manager.sensitivity
         new_threshold, DR_correction_factor, maxEDR_used = \
@@ -620,7 +639,14 @@ class Tclean(cleanbase.CleanBase):
                                                            residual_max, new_threshold)
         sequence_manager.niter = new_niter
 
-        keep_iterating = True
+        # Save corrected sensitivity in iter0 result object for 'cube' and
+        # 'all continuum' since there is no further iteration.
+        if inputs.specmode == 'cube' and inputs.spwsel_all_cont:
+            result.set_dirty_dynamic_range(dirty_dynamic_range)
+            result.set_DR_correction_factor(DR_correction_factor)
+            result.set_maxEDR_used(maxEDR_used)
+            result.set_dr_corrected_sensitivity(sequence_manager.dr_corrected_sensitivity)
+
         iteration = 1
         do_not_copy_mask = False
         while keep_iterating:
@@ -771,6 +797,7 @@ class Tclean(cleanbase.CleanBase):
                                                   field=inputs.field,
                                                   spw=inputs.spw,
                                                   spwsel=inputs.spwsel_topo,
+                                                  spwsel_all_cont=inputs.spwsel_all_cont,
                                                   reffreq=inputs.reffreq,
                                                   restfreq=inputs.restfreq,
                                                   conjbeams=inputs.conjbeams,
