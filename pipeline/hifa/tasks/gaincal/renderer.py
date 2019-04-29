@@ -1,8 +1,8 @@
-'''
+"""
 Created on 29 Oct 2014
 
 @author: sjw
-'''
+"""
 import collections
 import os
 
@@ -18,7 +18,7 @@ from . import display as gaincal_displays
 LOG = logging.get_logger(__name__)
 
 GaincalApplication = collections.namedtuple('GaincalApplication', 
-                                            'ms gaintable calmode solint intent spw') 
+                                            'ms gaintable calmode solint intent spw gainfield')
 
 
 class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -265,8 +265,12 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
             calmode = utils.get_origin_input_arg(calapp, 'calmode')
             calmode = calmode_map.get(calmode, calmode)
+
+            assert(len(calapp.calfrom) == 1)
+            gainfield = calapp.calfrom[0].gainfield
+
             a = GaincalApplication(ms.basename, gaintable, calmode, solint,
-                                   to_intent, spw)
+                                   to_intent, spw, gainfield)
             applications.append(a)
 
         return applications

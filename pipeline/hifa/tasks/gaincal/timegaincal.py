@@ -1,6 +1,5 @@
 from __future__ import absolute_import
 
-import copy
 import os
 
 import pipeline.infrastructure as infrastructure
@@ -16,7 +15,6 @@ LOG = infrastructure.get_logger(__name__)
 __all__ = [
     'TimeGaincalInputs',
     'TimeGaincal',
-    'TimeGaincalResults'
 ]
 
 
@@ -32,9 +30,9 @@ class TimeGaincalInputs(gtypegaincal.GTypeGaincalInputs):
     targetsolint = vdp.VisDependentProperty(default='inf')
     targetminsnr = vdp.VisDependentProperty(default=3.0)
 
-    def __init__(self, context, vis=None, output_dir=None, calamptable=None, calphasetable=None,
-        offsetstable=None, amptable=None, targetphasetable=None, calsolint=None,
-        targetsolint=None, calminsnr=None, targetminsnr=None, **parameters):
+    def __init__(self, context, vis=None, output_dir=None, calamptable=None, calphasetable=None, offsetstable=None,
+                 amptable=None, targetphasetable=None, calsolint=None, targetsolint=None, calminsnr=None,
+                 targetminsnr=None, **parameters):
         super(TimeGaincalInputs, self).__init__(context, vis=vis, output_dir=output_dir,  **parameters)
         self.calamptable = calamptable
         self.calphasetable = calphasetable
@@ -53,7 +51,6 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
     Inputs = TimeGaincalInputs
 
     def prepare(self, **parameters):
-
         # Simplify
         inputs = self.inputs
 
@@ -62,107 +59,57 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
 
         # Get the spw mapping mode
         if inputs.ms.combine_spwmap:
-            spwidlist = [spw.id for spw in inputs.ms.get_spectral_windows(task_arg=inputs.spw, science_windows_only=True)]
-            fieldnamelist = [field.name for field in inputs.ms.get_fields(task_arg=inputs.field, intent='PHASE')]
-            exptimes = gexptimes.get_scan_exptimes(inputs.ms, fieldnamelist, 'PHASE', spwidlist)
+            spw_ids = [spw.id for spw in inputs.ms.get_spectral_windows(task_arg=inputs.spw, science_windows_only=True)]
+            field_names = [field.name for field in inputs.ms.get_fields(task_arg=inputs.field, intent='PHASE')]
+            exptimes = gexptimes.get_scan_exptimes(inputs.ms, field_names, 'PHASE', spw_ids)
             phase_calsolint = '%0.3fs' % (min([exptime[1] for exptime in exptimes]) / 4.0)
             phase_gaintype = 'T'
             phase_combine = 'spw'
-            phaseup_spwmap = inputs.ms.combine_spwmap
-            phase_interp = 'linearPD,linear'
         else:
             phase_calsolint = inputs.calsolint
             phase_gaintype = 'G'
             phase_combine = inputs.combine
-            phaseup_spwmap = inputs.ms.phaseup_spwmap
-            phase_interp = 'linear,linear'
         amp_calsolint = phase_calsolint
-        amp_interp = 'nearest,linear'
 
         # Produce the diagnostic table for displaying amplitude vs time plots. 
         #     This table is not applied to the data
         #     No special mapping required here.
-        calampresult = self._do_caltarget_ampcal(solint=amp_calsolint)
-        result.calampresult = calampresult
+        amp_diagnostic_result = self._do_caltarget_ampcal(solint=amp_calsolint)
+        result.calampresult = amp_diagnostic_result
 
-        # Compute the science target phase solution
-        targetphaseresult = self._do_scitarget_phasecal(solint=inputs.targetsolint,
-            gaintype=phase_gaintype, combine=phase_combine)
+        # Compute the science target phase solution. This solution will be applied to the target, check source, and
+        # phase calibrator when the result for this task is accepted.
+        cal_calapp, target_calapp = self._do_target_phasecal(solint=inputs.targetsolint, gaintype=phase_gaintype,
+                                                             combine=phase_combine)
+        # Adopt the solutions, but don't apply them yet.
+        result.pool.extend((cal_calapp, target_calapp))
+        result.final.extend((cal_calapp, target_calapp))
 
-        # Readjust to the true calto.intent
-        targetphaseresult.pool[0].calto.intent = 'PHASE,CHECK,TARGET'
-        targetphaseresult.final[0].calto.intent = 'PHASE,CHECK,TARGET'
+        # Now compute the calibrator phase solution. This solution will eventually be applied to the AMPLITUDE and
+        # BANDPASS calibrators, and temporarily to the PHASE calibrator within this task so we can calculate the
+        # residual phase offsets.
+        cal_phase_result = self._do_calibrator_phasecal(solint=phase_calsolint, gaintype=phase_gaintype,
+                                                        combine=phase_combine)
 
-        # CalFroms are immutable, so we must replace them with a new 
-        # object rather than editing them directly
-        self._mod_last_calwt(targetphaseresult.pool[0], False)
-        self._mod_last_calwt(targetphaseresult.final[0], False)
-        if inputs.ms.combine_spwmap:
-            self._mod_last_interp(targetphaseresult.pool[0], phase_interp)
-            self._mod_last_interp(targetphaseresult.final[0], phase_interp)
-        if phaseup_spwmap:
-            self._mod_last_spwmap(targetphaseresult.pool[0], phaseup_spwmap)
-            self._mod_last_spwmap(targetphaseresult.final[0], phaseup_spwmap)
+        # Do a local merge of this result, thus applying the phase solution to the PHASE calibrator but only in the
+        # scope of this task. Then, calculate the residuals by calculating another phase solution on the 'corrected'
+        # data.
+        cal_phase_result.accept(inputs.context)
+        phase_residuals_result = self._do_offsets_phasecal(solint='inf', gaintype=phase_gaintype, combine='')
+        result.phaseoffsetresult = phase_residuals_result
 
-        # Adopt the target phase result
-        result.pool.extend(targetphaseresult.pool)
-        result.final.extend(targetphaseresult.final)
-
-        # Compute the calibrator target phase solution
-        calphaseresult = self._do_caltarget_phasecal(solint=phase_calsolint,
-            gaintype=phase_gaintype, combine=phase_combine)
-
-        # CalFroms are immutable, so we must replace them with a new one
-        self._mod_last_calwt(calphaseresult.pool[0], False)
-        self._mod_last_calwt(calphaseresult.final[0], False)
-        if inputs.ms.combine_spwmap:
-            self._mod_last_interp(calphaseresult.pool[0], phase_interp)
-            self._mod_last_interp(calphaseresult.final[0], phase_interp)
-        if phaseup_spwmap:
-            self._mod_last_spwmap(calphaseresult.pool[0], phaseup_spwmap)
-            self._mod_last_spwmap(calphaseresult.final[0], phaseup_spwmap)
-
-        # Do a local merge of this result.
-        calphaseresult.accept(inputs.context)
-
-        # Compute an spw mapping diagnostic table which preapplies the
-        # previous table phase table if any spw mapping was done
-        # Compute it for maps including the default map
-        #     The solution interval is set to 'inf'
-        #     The gaintype 'T' or 'G' is set to the gaintype of the parent phase table
-        #     Spw combine is off
-        #     Unique name generated internally
-        phaseoffsetresult = self._do_offsets_phasecal(solint='inf',
-            gaintype=phase_gaintype, combine='')
-        result.phaseoffsetresult = phaseoffsetresult
-
-        # Readjust to the true calto.intent
-        calphaseresult.pool[0].calto.intent = 'AMPLITUDE,BANDPASS'
-        calphaseresult.final[0].calto.intent = 'AMPLITUDE,BANDPASS'
-
-        # Accept calphase result as is.
-        result.pool.extend(calphaseresult.pool)
-        result.final.extend(calphaseresult.final)
+        # Direct the initial calibrator phase solution for application to the AMPLTIUDE and BANDPASS calibrators
+        calphaseresult_calapp = cal_phase_result.final[0]
+        calphase_calapp = copy_calapplication(calphaseresult_calapp, intent='AMPLITUDE,BANDPASS')
+        result.final.append(calphase_calapp)
+        result.pool.append(calphase_calapp)
 
         # Compute the amplitude calibration
-        #   Make a deep copy of the results
-        ampresult = self._do_target_ampcal()
-
-        # The solint for this table is always 'inf'
-        #    Use nearest interpolation for the flux, bandpass, and
-        #    phase calibraters, the standard linear interpolation
-        #    for the check and target sources.
-        ampresult2 = copy.deepcopy(ampresult)
-        ampresult.pool[0].calto.intent='AMPLITUDE,BANDPASS,PHASE'
-        self._mod_last_interp(ampresult.pool[0], amp_interp)
-        self._mod_last_interp(ampresult.final[0], amp_interp)
-        ampresult2.pool[0].calto.intent='CHECK,TARGET'
-        result.pool.extend(ampresult2.pool)
-        result.final.extend(ampresult2.final)
+        amplitude_calapps = self._do_target_ampcal()
 
         # Accept the amplitude results
-        result.pool.extend(ampresult.pool)
-        result.final.extend(ampresult.final)
+        result.pool.extend(amplitude_calapps)
+        result.final.extend(amplitude_calapps)
 
         return result
 
@@ -171,74 +118,108 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         # caltable as the best result
 
         # double-check that the caltable was actually generated
-        on_disk = [table for table in result.pool
-                   if table.exists() or self._executor._dry_run]
+        on_disk = [table for table in result.pool if table.exists() or self._executor._dry_run]
         result.final[:] = on_disk
 
-        missing = [table for table in result.pool
-                   if table not in on_disk and not self._executor._dry_run]
+        missing = [table for table in result.pool if table not in on_disk and not self._executor._dry_run]
         result.error.clear()
         result.error.update(missing)
 
         return result
 
-    # Used to calibrated "selfcaled" targets
-    def _do_caltarget_phasecal(self, solint=None, gaintype=None, combine=None):
+    def _do_target_phasecal(self, solint=None, gaintype=None, combine=None):
         inputs = self.inputs
 
         task_args = {
-            'output_dir'  : inputs.output_dir,
-            'vis'         : inputs.vis,
-            'caltable'    : inputs.calphasetable,
-            'field'       : inputs.field,
-            'intent'      : inputs.intent,
-            'spw'         : inputs.spw,
-            'solint'      : solint,
-            'gaintype'    : gaintype,
-            'calmode'     : 'p',
-            'minsnr'      : inputs.calminsnr,
-            'combine'     : combine,
-            'refant'      : inputs.refant,
-            'minblperant' : inputs.minblperant,
-            'solnorm'     : inputs.solnorm
+            'output_dir': inputs.output_dir,
+            'vis': inputs.vis,
+            'caltable': inputs.targetphasetable,
+            'field': inputs.field,
+            'intent': inputs.intent,
+            'spw': inputs.spw,
+            'solint': solint,
+            'gaintype': gaintype,
+            'calmode': 'p',
+            'minsnr': inputs.targetminsnr,
+            'combine': combine,
+            'refant': inputs.refant,
+            'minblperant': inputs.minblperant,
+            'solnorm': inputs.solnorm
         }
-        task_inputs = gtypegaincal.GTypeGaincalInputs(inputs.context,
-                                                      **task_args)
+        result = do_gtype_gaincal(inputs.context, self._executor, task_args)
 
-        gaincal_task = gtypegaincal.GTypeGaincal(task_inputs)
-        result = self._executor.execute(gaincal_task)
+        result_calapp = result.final[0]
+        # calculate required values for interp/spwmap depending on state of ms.combine_spwmap and phaseup_spwmap
+        overrides = get_phaseup_overrides(inputs.ms)
+
+        # Spec for gainfield application from CAS-12214:
+        cal_calapp = copy_calapplication(result_calapp, intent='PHASE', gainfield='nearest', **overrides)
+        target_calapp = copy_calapplication(result_calapp, intent='TARGET,CHECK', gainfield='', **overrides)
+
+        return cal_calapp, target_calapp
+
+    # Used to calibrate "selfcaled" targets
+    def _do_calibrator_phasecal(self, solint=None, gaintype=None, combine=None):
+        inputs = self.inputs
+
+        task_args = {
+            'output_dir': inputs.output_dir,
+            'vis': inputs.vis,
+            'caltable': inputs.calphasetable,
+            'field': inputs.field,
+            'intent': inputs.intent,
+            'spw': inputs.spw,
+            'solint': solint,
+            'gaintype': gaintype,
+            'calmode': 'p',
+            'minsnr': inputs.calminsnr,
+            'combine': combine,
+            'refant': inputs.refant,
+            'minblperant': inputs.minblperant,
+            'solnorm': inputs.solnorm
+        }
+        result = do_gtype_gaincal(inputs.context, self._executor, task_args)
+
+        result_calapp = result.final[0]
+        overrides = get_phaseup_overrides(inputs.ms)
+        calapp = copy_calapplication(result_calapp, **overrides)
+
+        result.final = [calapp]
+        result.pool = [calapp]
 
         return result
 
     # Used to compute spw mapping diagnostic table
     def _do_offsets_phasecal(self, solint=None, gaintype=None, combine=None):
+        # Compute an spw mapping diagnostic table which preapplies the
+        # previous table phase table if any spw mapping was done
+        # Compute it for maps including the default map
         inputs = self.inputs
 
         task_args = {
-            'output_dir'  : inputs.output_dir,
-            'vis'         : inputs.vis,
-            'caltable'    : inputs.offsetstable,
-            'field'       : inputs.field,
-            'intent'      : inputs.intent,
-            'spw'         : inputs.spw,
-            'solint'      : solint,
-            'gaintype'    : gaintype,
-            'calmode'     : 'p',
-            'minsnr'      : inputs.calminsnr,
-            'combine'     : combine,
-            'refant'      : inputs.refant,
-            'minblperant' : inputs.minblperant,
-            'solnorm'     : inputs.solnorm
+            'output_dir': inputs.output_dir,
+            'vis': inputs.vis,
+            'caltable': inputs.offsetstable,
+            'field': inputs.field,
+            'intent': inputs.intent,
+            'spw': inputs.spw,
+            'solint': solint,
+            'gaintype': gaintype,
+            'calmode': 'p',
+            'minsnr': inputs.calminsnr,
+            'combine': combine,
+            'refant': inputs.refant,
+            'minblperant': inputs.minblperant,
+            'solnorm': inputs.solnorm
         }
 
-        task_inputs = gtypegaincal.GTypeGaincalInputs(inputs.context,
-                                                      **task_args)
-        # Create a unique table nmae
+        # Create a unique table name. The component filenames depend on task arguments (solint, calmode, gaintype,
+        # etc.), hence we create a task to calculate the arguments, then modify the resesulting filename
+        task_inputs = gtypegaincal.GTypeGaincalInputs(inputs.context, **task_args)
         root, ext = os.path.splitext(task_inputs.caltable)
-        task_inputs.caltable = '{!s}.{!s}{!s}'.format(root, 'offsets', ext)
+        task_args['caltable'] = '{}.{}{}'.format(root, 'offsets', ext)
 
-        gaincal_task = gtypegaincal.GTypeGaincal(task_inputs)
-        result = self._executor.execute(gaincal_task)
+        result = do_gtype_gaincal(inputs.context, self._executor, task_args)
 
         return result
 
@@ -247,53 +228,22 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         inputs = self.inputs
 
         task_args = {
-            'output_dir'  : inputs.output_dir,
-            'vis'         : inputs.vis,
-            'caltable'    : inputs.calamptable,
-            'field'       : inputs.field,
-            'intent'      : inputs.intent,
-            'spw'         : inputs.spw,
-            'solint'      : solint,
-            'gaintype'    : 'T',
-            'calmode'     : 'a',
-            'minsnr'      : inputs.calminsnr,
-            'combine'     : inputs.combine,
-            'refant'      : inputs.refant,
-            'minblperant' : inputs.minblperant,
-            'solnorm'     : inputs.solnorm
+            'output_dir': inputs.output_dir,
+            'vis': inputs.vis,
+            'caltable': inputs.calamptable,
+            'field': inputs.field,
+            'intent': inputs.intent,
+            'spw': inputs.spw,
+            'solint': solint,
+            'gaintype': 'T',
+            'calmode': 'a',
+            'minsnr': inputs.calminsnr,
+            'combine': inputs.combine,
+            'refant': inputs.refant,
+            'minblperant': inputs.minblperant,
+            'solnorm': inputs.solnorm
         }
-        task_inputs = gtypegaincal.GTypeGaincalInputs(inputs.context,
-                                                      **task_args)
-
-        gaincal_task = gtypegaincal.GTypeGaincal(task_inputs)
-        result = self._executor.execute(gaincal_task)
-
-        return result
-
-    def _do_scitarget_phasecal(self, solint=None, gaintype=None, combine=None):
-        inputs = self.inputs
-
-        task_args = {
-            'output_dir'  : inputs.output_dir,
-            'vis'         : inputs.vis,
-            'caltable'    : inputs.targetphasetable,
-            'field'       : inputs.field,
-            'intent'      : inputs.intent,
-            'spw'         : inputs.spw,
-            'solint'      : solint,
-            'gaintype'    : gaintype,
-            'calmode'     : 'p',
-            'minsnr'      : inputs.targetminsnr,
-            'combine'     : combine,
-            'refant'      : inputs.refant,
-            'minblperant' : inputs.minblperant,
-            'solnorm'     : inputs.solnorm
-        }
-        task_inputs = gtypegaincal.GTypeGaincalInputs(inputs.context,
-                                                      **task_args)
-
-        gaincal_task = gtypegaincal.GTypeGaincal(task_inputs)
-        result = self._executor.execute(gaincal_task)
+        result = do_gtype_gaincal(inputs.context, self._executor, task_args)
 
         return result
 
@@ -301,58 +251,99 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         inputs = self.inputs
 
         task_args = {
-            'output_dir'  : inputs.output_dir,
-            'vis'         : inputs.vis,
-            'caltable'    : inputs.amptable,
-            'field'       : inputs.field,
-            'intent'      : inputs.intent,
-            'spw'         : inputs.spw,
-            'solint'      : 'inf',
-            'gaintype'    : 'T',
-            'calmode'     : 'a',
-            'minsnr'      : inputs.targetminsnr,
-            'combine'     : inputs.combine,
-            'refant'      : inputs.refant,
-            'minblperant' : inputs.minblperant,
-            'solnorm'     : inputs.solnorm
+            'output_dir': inputs.output_dir,
+            'vis': inputs.vis,
+            'caltable': inputs.amptable,
+            'field': inputs.field,
+            'intent': inputs.intent,
+            'spw': inputs.spw,
+            'solint': 'inf',
+            'gaintype': 'T',
+            'calmode': 'a',
+            'minsnr': inputs.targetminsnr,
+            'combine': inputs.combine,
+            'refant': inputs.refant,
+            'minblperant': inputs.minblperant,
+            'solnorm': inputs.solnorm
         }
-        task_inputs = gtypegaincal.GTypeGaincalInputs(inputs.context,
-                                                      **task_args)
+        result = do_gtype_gaincal(inputs.context, self._executor, task_args)
 
-        gaincal_task = gtypegaincal.GTypeGaincal(task_inputs)
-        result = self._executor.execute(gaincal_task)
+        # Spec for gainfield application from CAS-12214:
+        #
+        # 1) When applying phase and/or amp gain tables to calibrators,
+        #   continue to use gainfield='nearest'. This will ensure that time
+        #   interpolations from one group's complex gain calibrator's
+        #   solutions to the next group's complex gain calibrator solutions
+        #   will never influence how either calibrator gets calibrated.
+        #
+        # 2) When applying phase and/or amp gain tables to science targets,
+        #    leave gainfield blank (instead of 'nearest'), so that time
+        #    interpolation across all gain calibrators will be used to
+        #    calibrate science targets. This will automagically take care of
+        #    the multiple science groups case. Specifically, since it is
+        #    assumed that all science target groups are bracketed on both
+        #    sides by "their" complex gain calibrator, there will never be a
+        #    case where the interpolated solution between two complex gain
+        #    calibrators needs to be used.
+        result_calapp = result.final[0]
+        cal_calapp = copy_calapplication(result_calapp, intent='AMPLITUDE,BANDPASS,PHASE', gainfield='nearest',
+                                         interp='nearest,linear')
+        target_calapp = copy_calapplication(result_calapp, intent='TARGET,CHECK', gainfield='')
 
-        return result
+        return [cal_calapp, target_calapp]
 
-    def _mod_last_interp(self, l, interp):
-        l.calfrom[-1] = self._copy_with_interp(l.calfrom[-1], interp)
 
-    def _copy_with_interp(self, old_calfrom, interp):
-        return callibrary.CalFrom(gaintable=old_calfrom.gaintable,
-                                  gainfield=old_calfrom.gainfield,
-                                  interp=interp,
-                                  spwmap=old_calfrom.spwmap,
-                                  caltype=old_calfrom.caltype,
-                                  calwt=old_calfrom.calwt)
+def do_gtype_gaincal(context, executor, task_args):
+    task_inputs = gtypegaincal.GTypeGaincalInputs(context, **task_args)
+    task = gtypegaincal.GTypeGaincal(task_inputs)
+    result = executor.execute(task)
 
-    def _mod_last_spwmap(self, l, spwmap):
-        l.calfrom[-1] = self._copy_with_spwmap(l.calfrom[-1], spwmap)
+    # sanity checks in case gaincal starts returning additional caltable applications
+    assert len(result.final) == 1, '>1 caltable application registered by gaincal'
 
-    def _copy_with_spwmap(self, old_calfrom, spwmap):
-        return callibrary.CalFrom(gaintable=old_calfrom.gaintable,
-                                  gainfield=old_calfrom.gainfield,
-                                  interp=old_calfrom.interp,
-                                  spwmap=spwmap,
-                                  caltype=old_calfrom.caltype,
-                                  calwt=old_calfrom.calwt)
+    return result
 
-    def _mod_last_calwt(self, l, calwt):
-        l.calfrom[-1] = self._copy_with_calwt(l.calfrom[-1], calwt)
 
-    def _copy_with_calwt(self, old_calfrom, calwt):
-        return callibrary.CalFrom(gaintable=old_calfrom.gaintable,
-                                  gainfield=old_calfrom.gainfield,
-                                  interp=old_calfrom.interp,
-                                  spwmap=list(old_calfrom.spwmap),
-                                  caltype=old_calfrom.caltype,
-                                  calwt=calwt)
+def get_phaseup_overrides(ms):
+    # calwt is always False for the initial phaseups
+    overrides = dict(calwt=False)
+    if ms.combine_spwmap:
+        overrides['interp'] = 'linearPD,linear'
+        overrides['spwmap'] = ms.combine_spwmap
+    else:
+        overrides['interp'] = 'linear,linear'
+        overrides['spwmap'] = ms.phaseup_spwmap
+    return overrides
+
+
+def modify_last_calapp(l, **overrides):
+    last = l.calfrom[-1]
+    return copy_calfrom(last, **overrides)
+
+
+def copy_calfrom(calfrom, **overrides):
+    new_kwargs = dict(gaintable=calfrom.gaintable, gainfield=calfrom.gainfield, interp=calfrom.interp,
+                      spwmap=list(calfrom.spwmap), caltype=calfrom.caltype, calwt=calfrom.calwt)
+    new_kwargs.update(overrides)
+    return callibrary.CalFrom(**new_kwargs)
+
+
+def copy_calto(calto, **overrides):
+    new_kwargs = dict(vis=calto.vis, field=calto.field, spw=calto.spw, antenna=calto.antenna, intent=calto.intent)
+    new_kwargs.update(overrides)
+    return callibrary.CalTo(**new_kwargs)
+
+
+def copy_calapplication(calapp, origin=None, **overrides):
+    if origin is None:
+        origin = calapp.origin
+
+    calto_kw = ['vis', 'field', 'spw', 'antenna', 'intent']
+    calto_overrides = {k: v for k, v in overrides.iteritems() if k in calto_kw}
+    calto = copy_calto(calapp.calto, **calto_overrides)
+
+    calfrom_kw = ['gaintable', 'gainfield', 'interp', 'spwmap', 'caltype', 'calwt']
+    calfrom_overrides = {k: v for k, v in overrides.iteritems() if k in calfrom_kw}
+    calfrom = [copy_calfrom(calfrom, **calfrom_overrides) for calfrom in calapp.calfrom]
+
+    return callibrary.CalApplication(calto, calfrom, origin=origin)

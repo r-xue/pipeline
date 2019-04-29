@@ -71,7 +71,7 @@ def get_mapped_scispws(ms):
         <tr>
             <th scope="col" rowspan="2">Measurement Set</th>
 			<th scope="col" colspan="2">Solution Parameters</th>
-			<th scope="col" colspan="2">Applied To</th>
+			<th scope="col" colspan="3">Applied To</th>
             <th scope="col" rowspan="2">Calibration Table</th>
 		</tr>
 		<tr>
@@ -79,6 +79,7 @@ def get_mapped_scispws(ms):
             <th>Interval</th>
 			<th>Scan Intent</th>
 			<th>Spectral Windows</th>
+            <th>Gainfield</th>
         </tr>
     </thead>
 	<tbody>
@@ -89,6 +90,7 @@ def get_mapped_scispws(ms):
 		  	<td>${application.solint}</td>
 		  	<td>${application.intent}</td>
 		  	<td>${application.spw}</td>
+            <td>${application.gainfield}</td>
 		  	<td>${application.gaintable}</td>
 		</tr>
 % endfor		
