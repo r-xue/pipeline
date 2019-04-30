@@ -118,6 +118,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
     nonpbcor_image_cleanmask_spectrum = None
     nonpbcor_image_cleanmask_spectrum_pblimit = None
     nonpbcor_image_cleanmask_npoints = None
+    nonpbcor_image_statsmask = None
     if restored not in [None, '']:
         # get min and max of the pb-corrected cleaned result
         with casatools.ImageReader(restored.replace('.image', '.image%s' % extension)) as image:
@@ -224,6 +225,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
             try:
                 # Get image RMS for all channels (this is for the weblog)
                 image_stats = image.statistics(mask=statsmask, robust=True, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5)
+                nonpbcor_image_statsmask = statsmask
 
                 # Filter continuum frequency ranges if given
                 if cont_freq_ranges not in (None, ''):
@@ -285,4 +287,5 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
              'nonpbcor_image_cleanmask_spectrum': nonpbcor_image_cleanmask_spectrum,
              'nonpbcor_image_cleanmask_spectrum_pblimit': nonpbcor_image_cleanmask_spectrum_pblimit,
              'nonpbcor_image_cleanmask_npoints': nonpbcor_image_cleanmask_npoints,
-             'cont_freq_ranges': cont_freq_ranges})
+             'cont_freq_ranges': cont_freq_ranges,
+             'nonpbcor_image_statsmask': nonpbcor_image_statsmask})

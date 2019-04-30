@@ -83,7 +83,7 @@ class SkyDisplay(object):
         else:
             ms = None
 
-        plotfile, coord_names, field, band = self._plot_panel(reportdir, result, collapseFunction=collapseFunction, ms=ms,
+        plotfile, coord_names, field, band = self._plot_panel(context, reportdir, result, collapseFunction=collapseFunction, ms=ms,
                                                               **imshow_args)
 
         # field names may not be unique, which leads to incorrectly merged
@@ -105,7 +105,7 @@ class SkyDisplay(object):
 
         return plot
 
-    def _plot_panel(self, reportdir, result, collapseFunction='mean', ms=None, **imshow_args):
+    def _plot_panel(self, context, reportdir, result, collapseFunction='mean', ms=None, **imshow_args):
         """Method to plot a map."""
 
         plotfile = plotfilename(image=os.path.basename(result), reportdir=reportdir)
@@ -203,6 +203,11 @@ class SkyDisplay(object):
             yoff = self.plottext(1.05, yoff, 'Reference position:', 40)
             for i, k in enumerate(coord_refs['string']):
                 yoff = self.plottext(1.05, yoff, '%s: %s' % (coord_names[i], k), 40, mult=0.8)
+
+            # if peaksnr is available for the mom8_fc image, include it in the plot
+            if 'mom8_fc' in result and hasattr(context, 'peak_snr'):
+                yoff = 0.90
+                self.plottext(1.05, yoff, 'Peak SNR: {:.5f}'.format(context.peak_snr), 40)
 
             # plot beam
             cqa = casatools.quanta
