@@ -22,6 +22,7 @@ class MeasurementSet(object):
         self.name = name
         self.array_name = None
         self.representative_target = (None, None, None)
+        self.representative_window = None
         self.science_goals = {}
         self.antenna_array = None
         self.data_descriptions = []
@@ -200,6 +201,15 @@ class MeasurementSet(object):
                 LOG.warning('No target source data for representative spw %s in data set %s' % \
                     (str(source_spwid), self.basename))
                 return (target_source_name, None)
+
+        # Check for representative spw from ASDM (>= Cycle 7)
+        if self.representative_window:
+            try:
+                target_spwid = [s.id for s in self.get_spectral_windows() if s.name == self.representative_window][0]
+            except:
+                LOG.warning('Could not translate spw name %s to ID.' % (self.representative_window))
+                target_spwid = None
+            return (target_source_name, target_spwid)
 
         # Get the representative bandwidth
         #     Return if there isn't one

@@ -306,6 +306,7 @@ class MeasurementSetReader(object):
                                  ' science target sources or calibrators in the imaging tasks.' % ms.basename)
                     LOG.info('Populating ms.representative_target ...')
                     ms.representative_target = (sbinfo.repSource, sbinfo.repFrequency, sbinfo.repBandwidth)
+                    ms.representative_window = sbinfo.repWindow
 
                 LOG.info('Populating ms.science_goals ...')
                 if sbinfo.minAngResolution is None and sbinfo.maxAngResolution is None:
@@ -726,7 +727,9 @@ class SBSummaryTable(object):
         except:
             if 'ALMA' in obsnames:
                 LOG.warn('Error reading science goals for %s' % ms.basename)
-            return None, None, None, None, None
+            return SBSummaryInfo(repSource=None, repFrequency=None, repBandwidth=None, repWindow=None,
+                                 minAngResolution=None, maxAngResolution=None, maxAllowedBeamAxialRatio=None,
+                                 sensitivity=None, dynamicRange=None, sbName=None)
 
     @staticmethod
     def get_observing_mode(ms):
