@@ -42,6 +42,16 @@ def combine_spwmap(allspws, scispws, combine_spwid):
         return combinespwmap
 
 
+def get_spectral_spec(spw):
+    """Extract spectral spec from spectral window name."""
+    spectralspec = ''
+    if spw.name and 'ALMA' in spw.name:
+        i = spw.name.find('#')
+        if i != -1:
+            spectralspec = spw.name[:i]
+    return spectralspec
+
+
 def snr_n2wspwmap(allspws, scispws, snrs, goodsnrs):
     # Heuristics for computing an spwmap which uses SNR information.
     # Here an spw is the spw object stored in the domain object.
@@ -83,6 +93,9 @@ def snr_n2wspwmap(allspws, scispws, snrs, goodsnrs):
             LOG.debug('No good SNR spw in receiver band so match spw id %s to itself' % scispw.id)
             continue
 
+        # Retrieve the SpectralSpec for the current science spw.
+        scispwspec = get_spectral_spec(scispw)
+
         # Loop through the other science windows looking for a match
         bestspw = None
         bestsnr = None
@@ -97,6 +110,12 @@ def snr_n2wspwmap(allspws, scispws, snrs, goodsnrs):
             # Don't match across receiver bands
             if matchspw.band != scispw.band:
                 LOG.debug('Skipping bad receiver band match to spw id %s' % matchspw.id)
+                continue
+
+            # Don't match across SpectralSpec if a non-empty SpectralSpec is available (PIPE-316).
+            matchspec = get_spectral_spec(matchspw)
+            if scispwspec and scispwspec != matchspec:
+                LOG.debug('Skipping bad spectral spec match to spw id %s' % matchspw.id)
                 continue
 
             # Skip bad SNR matches if at least one good SNR window in the receiver band exists
@@ -151,7 +170,7 @@ def snr_n2wspwmap(allspws, scispws, snrs, goodsnrs):
         if matchedgoodsnr is not True:
             goodmap = False
 
-    # Return  the new map
+    # Return the new map
     if goodmap is True and phasespwmap == refphasespwmap:
         return True, [], []
     else:
