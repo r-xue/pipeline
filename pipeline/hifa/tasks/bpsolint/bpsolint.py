@@ -326,7 +326,8 @@ def check_strong_atm_lines(ms, fieldlist, intent, spwidlist, solint_dict, tsysna
 
     Returns: True if any of SpW meets condition of strong atmospheric lines
     """
-    LOG.info('Check for strong atmospheric line in Tsys spectra.')
+    LOG.info('Check for strong atmospheric line in Tsys spectra of fields, %s, in %s' % \
+             (str(fieldlist), ms.basename))
     # make sure MS and Tsys caltable corresponds
     tsystable_vis = \
             caltableaccess.CalibrationTableDataFiller._readvis(tsysname)
@@ -349,12 +350,15 @@ def check_strong_atm_lines(ms, fieldlist, intent, spwidlist, solint_dict, tsysna
                                                              tsys_info[spw]['tsys_scan'])
         if median_tsys is None:
             LOG.warn('Unable to define median Tsys spectrum for Tsys spw = %d, scan = %d' % \
-                     tsys_spw, tsys_info[spw]['tsys_scan'])
+                     (tsys_spw, tsys_info[spw]['tsys_scan']))
             continue
         # Smooth median Tsys spectrum
         kernel_width = solint_dict[spw]['nchan_bpsolint']
         kernel = numpy.ones(kernel_width)/float(kernel_width)
-        smoothed_tsys = numpy.convolve(median_tsys, kernel, mode='same')
+        # NB: Use mode='full' and cut-out to handle the case, kernel_width > num_chan of Tsys.
+        #smoothed_tsys = numpy.convolve(median_tsys, kernel, mode='same')
+        index_offset = (kernel_width-1) // 2
+        smoothed_tsys = numpy.convolve(median_tsys, kernel, mode='full')[index_offset : index_offset+len(median_tsys)]
         # Take absolute difference of median Tsys spectum w/ and w/o smoothing
         diff_tsys = numpy.abs(median_tsys - smoothed_tsys)
         # If peak is smaller than a threshold, no strong line -> continue to the next spw
@@ -369,12 +373,21 @@ def check_strong_atm_lines(ms, fieldlist, intent, spwidlist, solint_dict, tsysna
         LOG.debug('*** Scaled MAD of diff_tsys = %f' % scaled_mad)
         # Check amplitude and width of diff_tsys (presumably atm lines).
         # If both exceeds thresholds -> strong line 
+        LOG.info('Examining line intensities and width.')
+        LOG.info('Thresholds: intensity = %f, width = %d channels' % (nSigma * scaled_mad, minAdjacantChannels))
         diff_tsys.mask = (diff_tsys.data < nSigma * scaled_mad)
         line_slices = numpy.ma.notmasked_contiguous(diff_tsys)
+        if line_slices is None:
+            # notmasked_contiguous returns None when all array is masked.
+            # this happens when diff_tsys does not exceed nSigma threshold.
+            LOG.info('No line exceeds intensity threshold.')
+            continue
         for line in line_slices:
             LOG.debug('*** line channels: start = %d, width=%d' % (line.start, line.stop-line.start))
             # check line width
-            if line.stop-line.start < minAdjacantChannels: continue
+            if line.stop-line.start < minAdjacantChannels:
+                LOG.info('No line exceeds width threshold.')
+                continue
             else:
                 # strong atmospheric line
                 strong_atm_lines = True
