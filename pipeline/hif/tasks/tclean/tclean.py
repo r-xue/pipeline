@@ -108,7 +108,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
                  # Extra parameters not in the CLI task interface
                  weighting=None, robust=None, uvtaper=None, scales=None, rms_nsigma=None, cycleniter=None, cyclefactor=None,
                  sensitivity=None, reffreq=None, restfreq=None, conjbeams=None, is_per_eb=None, antenna=None,
-                 usepointing=None, mosweight=None, spwsel_all_cont=None,
+                 usepointing=None, mosweight=None, spwsel_all_cont=None, num_all_spws=None, num_good_spws=None,
                  # End of extra parameters
                  heuristics=None):
         super(TcleanInputs, self).__init__(context, output_dir=output_dir, vis=vis,
@@ -143,6 +143,8 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
         self.spwsel_lsrk = spwsel_lsrk
         self.spwsel_topo = spwsel_topo
         self.spwsel_all_cont = spwsel_all_cont
+        self.num_all_spws = num_all_spws
+        self.num_good_spws = num_good_spws
         self.tlimit = tlimit
 
         # For MOM0/8_FC and cube RMS we need the LSRK frequency ranges in

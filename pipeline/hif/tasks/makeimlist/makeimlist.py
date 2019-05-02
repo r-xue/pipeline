@@ -560,19 +560,6 @@ class MakeImList(basetask.StandardTaskTemplate):
                             nchans[(field_intent[0], spwspec)] = nchan
                             widths[(field_intent[0], spwspec)] = width
 
-                # construct imagename
-                imagename = inputs.imagename
-                imagenames = {}
-                for field_intent in field_intent_list:
-                    for spwspec in spwlist:
-                        if inputs.imagename == '':
-                            imagenames[(field_intent, spwspec)] = \
-                              self.heuristics.imagename(
-                              output_dir=inputs.output_dir, intent=field_intent[1],
-                              field=field_intent[0], spwspec=spwspec, specmode=specmode, band=band)
-                        else:
-                            imagenames[(field_intent, spwspec)] = inputs.imagename
-
                 usepointing = self.heuristics.usepointing()
 
                 # now construct the list of imaging command parameter lists that must
@@ -588,16 +575,33 @@ class MakeImList(basetask.StandardTaskTemplate):
                         new_spwspec = []
                         spwsel = {}
                         all_continuum = True
+                        cont_ranges_spwsel_dict = {}
+                        all_continuum_spwsel_dict = {}
+                        spwsel_spwid_dict = {}
+
                         for spwid in spwspec.split(','):
-                            cont_ranges_spwsel, all_continuum_spwsel = self.heuristics.cont_ranges_spwsel()
-                            spwsel_spwid = cont_ranges_spwsel.get(utils.dequote(field_intent[0]), {}).get(spwid, 'NONE')
-                            all_continuum = all_continuum and all_continuum_spwsel.get(utils.dequote(field_intent[0]), {}).get(spwid, False)
-                            if (field_intent[1] == 'TARGET'):
-                                if (spwsel_spwid == 'NONE'):
-                                    LOG.warn('No continuum frequency range information detected for %s, spw %s. Will not image spw %s.' % (field_intent[0], spwid, spwspec))
-                                    spwspec_ok = False
+                            cont_ranges_spwsel_dict[spwid], all_continuum_spwsel_dict[spwid] = self.heuristics.cont_ranges_spwsel()
+                            spwsel_spwid_dict[spwid] = cont_ranges_spwsel_dict[spwid].get(utils.dequote(field_intent[0]), {}).get(spwid, 'NONE')
+
+                        no_cont_ranges = False
+                        if field_intent[1] == 'TARGET' and specmode == 'cont' and all([v == 'NONE' for v in spwsel_spwid_dict.itervalues()]):
+                            LOG.warn('No valid continuum ranges were found for any spw. Creating an aggregate continuum image from the full bandwidth from all spws, but this should be used with caution.')
+                            no_cont_ranges = True
+
+                        for spwid in spwspec.split(','):
+                            spwsel_spwid = spwsel_spwid_dict[spwid]
+                            if field_intent[1] == 'TARGET' and not no_cont_ranges:
+                                if spwsel_spwid == 'NONE':
+                                    if specmode == 'cont':
+                                        LOG.warn('Spw {!s} will not be used in creating the aggregate continuum image of {!s} because no continuum range was found.'.format(spwid, field_intent[0]))
+                                    else:
+                                        LOG.warn('Spw {!s} will not be used for {!s} because no continuum range was found.'.format(spwid, field_intent[0]))
+                                        spwspec_ok = False
+                                    continue
                                 #elif (spwsel_spwid == ''):
                                 #    LOG.warn('Empty continuum frequency range for %s, spw %s. Run hif_findcont ?' % (field_intent[0], spwid))
+
+                            all_continuum = all_continuum and all_continuum_spwsel_dict[spwid].get(utils.dequote(field_intent[0]), {}).get(spwid, False)
 
                             if spwsel_spwid in ('ALL', '', 'NONE'):
                                 spwsel_spwid_freqs = ''
@@ -613,6 +617,18 @@ class MakeImList(basetask.StandardTaskTemplate):
                             spwsel['spw%s' % (spwid)] = spwsel_spwid
 
                         new_spwspec = ','.join(new_spwspec)
+
+                        num_all_spws = len(spwspec.split(','))
+                        num_good_spws = 0 if no_cont_ranges else len(new_spwspec.split(','))
+
+                        # construct imagename
+                        if inputs.imagename == '':
+                            imagename = \
+                              self.heuristics.imagename(
+                              output_dir=inputs.output_dir, intent=field_intent[1],
+                              field=field_intent[0], spwspec=new_spwspec, specmode=specmode, band=band)
+                        else:
+                            imagename = inputs.imagename
 
                         if inputs.nbins != '' and inputs.specmode != 'cont':
                             nbin_items = inputs.nbins.split(',')
@@ -662,12 +678,14 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 spw=new_spwspec,
                                 spwsel_lsrk=spwsel,
                                 spwsel_all_cont=all_continuum,
+                                num_all_spws=num_all_spws,
+                                num_good_spws=num_good_spws,
                                 cell=cells[spwspec],
                                 imsize=imsizes[(field_intent[0], spwspec)],
                                 phasecenter=phasecenters[field_intent[0]],
                                 specmode=inputs.specmode,
                                 gridder=self.heuristics.gridder(field_intent[1], field_intent[0]),
-                                imagename=imagenames[(field_intent, spwspec)],
+                                imagename=imagename,
                                 start=inputs.start,
                                 width=widths[(field_intent[0], spwspec)],
                                 nbin=nbin,

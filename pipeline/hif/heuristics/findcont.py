@@ -26,11 +26,15 @@ class FindContHeuristics(object):
                           psfcube=psf_cube, \
                           singleContinuum=single_continuum, \
                           returnAllContinuumBoolean=True)
-        if all_continuum:
-            frequency_ranges_GHz = ['ALL']
-        else:
-            frequency_ranges_GHz = []
 
-        frequency_ranges_GHz.extend([{'range': item, 'refer': 'LSRK'} for item in utils.chan_selection_to_frequencies(dirty_cube, channel_selection, 'GHz')])
+        if channel_selection == '':
+            frequency_ranges_GHz = ['NONE']
+        else:
+            if all_continuum:
+                frequency_ranges_GHz = ['ALL']
+            else:
+                frequency_ranges_GHz = []
+
+            frequency_ranges_GHz.extend([{'range': item, 'refer': 'LSRK'} for item in utils.chan_selection_to_frequencies(dirty_cube, channel_selection, 'GHz')])
 
         return (frequency_ranges_GHz, png_name)

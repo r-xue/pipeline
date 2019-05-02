@@ -10,6 +10,8 @@ class CleanTarget(dict):
          self['spwsel_lsrk'] = None     # dictionary
          self['spwsel_topo'] = None     # list
          self['spwsel_all_cont'] = None # boolean
+         self['num_all_spws'] = None    # int
+         self['num_good_spws'] = None   # int
          self['cell'] = None            # string
          self['imsize'] = None          # string / list
          self['phasecenter'] = None     # string

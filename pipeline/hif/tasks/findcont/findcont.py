@@ -99,7 +99,8 @@ class FindCont(basetask.StandardTaskTemplate):
                         'plotfile': 'none',
                         'status': 'OLD'
                     }
-                    num_found += 1
+                    if cont_ranges_source_spw != ['NONE']:
+                        num_found += 1
 
                 else:
                     LOG.info('Determining continuum ranges for field %s, spw %s' % (source_name, spwid))
@@ -273,7 +274,7 @@ class FindCont(basetask.StandardTaskTemplate):
                         'status': 'NEW'
                     }
 
-                    if cont_range not in [['NONE'], ['']]:
+                    if cont_range not in [['NONE'], [''], []]:
                         num_found += 1
 
                 num_total += 1
