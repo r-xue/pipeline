@@ -43,6 +43,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
+from pipeline.infrastructure.utils import utils
 from pipeline.hif.heuristics import imageparams_factory
 from pipeline.hif.tasks.makeimlist.cleantarget import CleanTarget
 from pipeline.infrastructure import task_registry
@@ -261,6 +262,8 @@ class Editimlist(basetask.StandardTaskTemplate):
             if len(fieldnames) > 1:
                 fieldnames = [','.join(fieldnames)]
         # fieldnames is now a list of fieldnames: ['fieldA', 'fieldB', ...]
+        # add quotes to any fieldnames with disallowed characters
+        fieldnames = [utils.fieldname_for_casa(fn) for fn in fieldnames]
 
         imlist_entry = CleanTarget()  # initialize a target structure for clean_list_pending
 
@@ -406,7 +409,7 @@ class Editimlist(basetask.StandardTaskTemplate):
                                                                       phase_center=imlist_entry['phasecenter'],
                                                                       matchregex=['^0', '^1', '^2'])
                 if found_fields:
-                    imlist_entry['field'] = ','.join(str(x) for x in found_fields)
+                    imlist_entry['field'] = ','.join(str(x) for x in found_fields)  # field ids, not names
 
         imlist_entry['gridder'] = th.gridder(imlist_entry['intent'], imlist_entry['field']) if not inpdict['gridder'] else inpdict['gridder']
         imlist_entry['imagename'] = th.imagename(intent=imlist_entry['intent'], field=imlist_entry['field'],

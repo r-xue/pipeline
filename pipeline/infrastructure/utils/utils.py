@@ -6,6 +6,7 @@ import copy
 import itertools
 import operator
 import re
+import string
 
 import numpy as np
 
@@ -122,3 +123,20 @@ def flagged_intervals(vec):
         edge_vec.append([len(vec)])
     edges = np.concatenate(edge_vec)
     return list(zip(edges[::2], edges[1::2] - 1))
+
+
+def fieldname_for_casa(field):
+    if field.isdigit() or field != fieldname_clean(field):
+        return '"{0}"'.format(field)
+    return field
+
+
+def fieldname_clean(field):
+    """
+    Indicate if the fieldname is allowed as-is.
+
+    This property is used to determine whether the field name, when given
+    as a CASA argument, should be enclosed in quotes.
+    """
+    allowed = string.ascii_letters + string.digits + '+-'
+    return ''.join(map(lambda c: c if c in allowed else '_', field))

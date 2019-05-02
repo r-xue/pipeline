@@ -3,7 +3,7 @@ import pprint
 import string
 
 import pipeline.infrastructure.casatools as casatools
-
+from pipeline.infrastructure.utils import utils
 
 _pprinter = pprint.PrettyPrinter(width=1e99)
 
@@ -43,9 +43,7 @@ class Field(object):
         This property is used to determine whether the field name, when given
         as a CASA argument, should be enclosed in quotes. 
         """
-        allowed = string.ascii_letters + string.digits + '+-'
-        fn = lambda c : c if c in allowed else '_'
-        return ''.join(map(fn, self._name))
+        return utils.fieldname_clean(self._name)
 
     @property
     def dec(self):
@@ -79,10 +77,8 @@ class Field(object):
         # SCOPS-1666
         # work around CASA data selection problems with names consisting
         # entirely of digits
-        if self._name.isdigit() or self._name != self.clean_name:
-            return '"{0}"'.format(self._name)
-        return self._name
-        
+        return utils.fieldname_for_casa(self._name)
+
     @name.setter
     def name(self, value):
         self._name = value
