@@ -8,8 +8,17 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class TsyscalResults(basetask.Results):
-    def __init__(self, final=[], pool=[], preceding=[], unmappedspws=[]):
+    def __init__(self, final=None, pool=None, preceding=None, unmappedspws=None):
         super(TsyscalResults, self).__init__()
+
+        if final is None:
+            final = []
+        if pool is None:
+            pool = []
+        if preceding is None:
+            preceding = []
+        if unmappedspws is None:
+            unmappedspws = []
 
         self.vis = None
         self.pool = pool[:]
@@ -23,7 +32,7 @@ class TsyscalResults(basetask.Results):
             LOG.error('No results to merge')
             return
 
-        for calapp in self.final:            
+        for calapp in self.final:
             LOG.debug('Adding calibration to callibrary:\n'
                       '%s\n%s' % (calapp.calto, calapp.calfrom))
             context.callibrary.add(calapp.calto, calapp.calfrom)
