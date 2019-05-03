@@ -228,7 +228,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                 nonpbcor_image_statsmask = statsmask
 
                 # Filter continuum frequency ranges if given
-                if cont_freq_ranges not in (None, ''):
+                if cont_freq_ranges not in (None, '', 'NONE', 'ALL'):
                     # TODO: utils.freq_selection_to_channels uses casatools.image to get the frequency axis
                     #       and closes the global pipeline image tool. The context manager wrapped tool
                     #       used in this "with" statement is a different instance, so this is OK, but stacked
@@ -258,6 +258,8 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                      nonpbcor_image_non_cleanmask_rms_min,
                      nonpbcor_image_non_cleanmask_rms_max))
             except Exception as e:
+                nonpbcor_image_non_cleanmask_rms_median, \
+                nonpbcor_image_non_cleanmask_rms_mean, \
                 nonpbcor_image_non_cleanmask_rms_min = \
                 nonpbcor_image_non_cleanmask_rms_max = \
                 nonpbcor_image_non_cleanmask_rms = \

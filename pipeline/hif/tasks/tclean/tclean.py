@@ -915,7 +915,10 @@ class Tclean(cleanbase.CleanBase):
         if cont_chan_ranges[0] != 'NONE':
 
             # Create a channel ranges string.
-            cont_chan_ranges_str = ";".join(["%s~%s" % (ch0, ch1) for ch0, ch1 in cont_chan_ranges])
+            if cont_chan_ranges[0] == 'ALL':
+                cont_chan_ranges_str = ''
+            else:
+                cont_chan_ranges_str = ";".join(["%s~%s" % (ch0, ch1) for ch0, ch1 in cont_chan_ranges])
 
             # Execute job to create the MOM0_FC image.
             job = casa_tasks.immoments(imagename=imagename, moments=[0], outfile=mom0_name, chans=cont_chan_ranges_str)

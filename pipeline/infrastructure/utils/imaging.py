@@ -48,6 +48,10 @@ def chan_selection_to_frequencies(img, selection, unit='GHz'):
     :param unit:
     :return:
     """
+
+    if selection in ('NONE', 'ALL'):
+        return [selection]
+
     frequencies = []
     if selection != '':
         qaTool = casatools.quanta
@@ -89,6 +93,10 @@ def freq_selection_to_channels(img, selection):
     :param selection:
     :return:
     """
+
+    if selection in ('NONE', 'ALL'):
+        return [selection]
+
     channels = []
     if selection != '':
         qaTool = casatools.quanta
