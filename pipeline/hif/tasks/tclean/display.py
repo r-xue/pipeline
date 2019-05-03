@@ -127,7 +127,7 @@ class CleanSummary(object):
                         image_mad = stats.get('medabsdevmed')[0]
                         image_max = stats.get('max')[0]
 
-                    if os.path.exists(iteration['cleanmask']):
+                    if os.path.exists(iteration.get('cleanmask', '')):
                         # Mask should include annulus with with clean mask regions removed
                         # Continuum channel selection was already applied when mom8_fc was created in tclean.py
                         # PB corrected
