@@ -352,13 +352,11 @@ def check_strong_atm_lines(ms, fieldlist, intent, spwidlist, solint_dict, tsysna
             LOG.warn('Unable to define median Tsys spectrum for Tsys spw = %d, scan = %d' % \
                      (tsys_spw, tsys_info[spw]['tsys_scan']))
             continue
-        # Smooth median Tsys spectrum
-        kernel_width = solint_dict[spw]['nchan_bpsolint']
+        # Smooth median Tsys spectrum with kernel size, # of Tsys chans /16
+        kernel_width = len(median_tsys) // 16
         kernel = numpy.ones(kernel_width)/float(kernel_width)
-        # NB: Use mode='full' and cut-out to handle the case, kernel_width > num_chan of Tsys.
-        #smoothed_tsys = numpy.convolve(median_tsys, kernel, mode='same')
-        index_offset = (kernel_width-1) // 2
-        smoothed_tsys = numpy.convolve(median_tsys, kernel, mode='full')[index_offset : index_offset+len(median_tsys)]
+        LOG.debug("Subtracting smoothed Tsys spectrum (kernel = %d channels)" % kernel_width)
+        smoothed_tsys = numpy.convolve(median_tsys, kernel, mode='same')
         # Take absolute difference of median Tsys spectum w/ and w/o smoothing
         diff_tsys = numpy.abs(median_tsys - smoothed_tsys)
         # If peak is smaller than a threshold, no strong line -> continue to the next spw
@@ -373,8 +371,9 @@ def check_strong_atm_lines(ms, fieldlist, intent, spwidlist, solint_dict, tsysna
         LOG.debug('*** Scaled MAD of diff_tsys = %f' % scaled_mad)
         # Check amplitude and width of diff_tsys (presumably atm lines).
         # If both exceeds thresholds -> strong line 
-        LOG.info('Examining line intensities and width.')
-        LOG.info('Thresholds: intensity = %f, width = %d channels' % (nSigma * scaled_mad, minAdjacantChannels))
+        LOG.info('Examining line intensities and widths ' + \
+                 '(thresholds: intensity = %f, width = %d channels)' % \
+                 (nSigma * scaled_mad, minAdjacantChannels))
         diff_tsys.mask = (diff_tsys.data < nSigma * scaled_mad)
         line_slices = numpy.ma.notmasked_contiguous(diff_tsys)
         if line_slices is None:
