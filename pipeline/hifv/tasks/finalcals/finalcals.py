@@ -614,7 +614,6 @@ class Finalcals(basetask.StandardTaskTemplate):
         context = self.inputs.context
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        # field_spws = m.get_vla_field_spws()
         sources = context.evla['msinfo'][m.name].fluxscale_sources
         flux_densities = context.evla['msinfo'][m.name].fluxscale_flux_densities
         spws = context.evla['msinfo'][m.name].fluxscale_spws
@@ -624,46 +623,17 @@ class Finalcals(basetask.StandardTaskTemplate):
 
         # Look in spectral window domain object as this information already exists!
         with casatools.TableReader(self.inputs.vis + '/SPECTRAL_WINDOW') as table:
-            channels = table.getcol('NUM_CHAN')
-            originalBBClist = table.getcol('BBC_NO')
             spw_bandwidths = table.getcol('TOTAL_BANDWIDTH')
             reference_frequencies = table.getcol('REF_FREQUENCY')
 
         center_frequencies = [rf + spwbw / 2 for rf, spwbw in zip(reference_frequencies, spw_bandwidths)]
 
-        fitfunc = lambda p, x: p[0] + p[1] * x
-        errfunc = lambda p, x, y, err: (y - fitfunc(p, x)) / err
-
-        ##try:
-        ##    ff = open(fluxscale_output, 'r')
-        ##except IOError as err:
-        ##    LOG.error(fluxscale_output+" doesn't exist, error: "+err.filename)
-
-        # looking for lines like:
-        # 2012-03-09 21:30:23     INFO    fluxscale::::    Flux density for J1717-3342 in SpW=3 is: 1.94158 +/- 0.0123058 (SNR = 157.777, N= 34)
-        # sometimes they look like:
-        # 2012-03-09 21:30:23     INFO    fluxscale::::    Flux density for J1717-3342 in SpW=0 is:  INSUFFICIENT DATA
-        # so watch for that.
-
-        ##sources = []
-        ##flux_densities = []
-        ##spws = []
-
-        ##for line in ff:
-        ##    if 'Flux density for' in line:
-        ##        fields = line[:-1].split()
-        ##        if (fields[11] != 'INSUFFICIENT'):
-        ##            sources.append(fields[7])
-        ##            flux_densities.append([float(fields[11]), float(fields[13])])
-        ##            spws.append(int(fields[9].split('=')[1]))
-
-        ii = 0
         unique_sources = list(np.unique(sources))
         results = []
         for source in unique_sources:
             indices = []
             for ii in range(len(sources)):
-                if (sources[ii] == source):
+                if sources[ii] == source:
                     indices.append(ii)
             bands_from_spw = []
 
@@ -705,68 +675,33 @@ class Finalcals(basetask.StandardTaskTemplate):
                             uspws.append(spws[indices[ii]])
 
                 if len(lfds) < 2:
-                    pfinal = [lfds[0], 0.0]
-                    covar = [0.0, 0.0]
-                    aa = lfds[0]
-                    bb = 0.0
-                    SNR = 0.0
-                    bberr = 0.0
+                    fitcoeff = [lfds[0], 0.0, 0.0, 0.0, 0.0]
                 else:
-                    alfds = scp.array(lfds)
-                    alerrs = scp.array(lerrs)
-                    alfreqs = scp.array(lfreqs)
-                    pinit = [0.0, 0.0]
-                    # fit_out = scpo.leastsq(errfunc, pinit, args=(alfreqs, alfds, alerrs), full_output=1)
-                    # pfinal = fit_out[0]
-                    # covar = fit_out[1]
-                # aa = pfinal[0]
-                # bb = pfinal[1]
-
-                aa = fluxscale_result[fieldid]['spidx'][0]
-                bb = fluxscale_result[fieldid]['spidx'][1]
-                bberr = fluxscale_result[fieldid]['spidxerr'][1]
-
-                # reffreq = 10.0**lfreqs[0]/1.0e9
-                # fluxdensity = 10.0**(aa + bb*lfreqs[0])
-                # spix = bb
+                    fitcoeff = fluxscale_result[fieldid]['spidx']
 
                 freqs = fluxscale_result['freq']
                 fitflx = fluxscale_result[fieldid]['fitFluxd']
                 fitreff = fluxscale_result[fieldid]['fitRefFreq']
                 spidx = fluxscale_result[fieldid]['spidx']
-                # fittedfluxd = []
-
-                freqs = sorted(freqs[uspws])
-
-                try:
-                    fittedfluxd = [
-                        10.0 ** (
-                        spidx[0] + spidx[1] * math.log10(x / fitreff) + spidx[2] * (math.log10(x / fitreff)) ** 2)
-                        for x in freqs]
-                except Exception as e:
-                    fittedfluxd = [
-                        10.0 ** (spidx[0] + spidx[1] * math.log10(x / fitreff))
-                        for x in freqs]
-
                 reffreq = fitreff / 1.e9
-                fluxdensity = fitflx
-                spix = bb
-                spixerr = bberr
+                spix = fluxscale_result[fieldid]['spidx'][1]
+                spixerr = fluxscale_result[fieldid]['spidxerr'][1]
 
-                results.append([source, uspws, fluxdensity, spix, reffreq])
+                freqs = np.array(sorted(freqs[uspws]))
+
+                logfittedfluxd = np.zeros(len(freqs))
+                for i in range(len(spidx)):
+                    logfittedfluxd += spidx[i] * (np.log10(freqs / fitreff)) ** i
+
+                fittedfluxd = 10.0 ** logfittedfluxd
+
+                results.append([source, uspws, fitflx, spix, reffreq])
                 LOG.info(source + ' ' + band + ' fitted spectral index = ' + str(spix))
                 LOG.info("Frequency, data, and fitted data:")
 
-                # Sort arrays based on frequency
-                lfreqs_orig = lfreqs
-                lfreqs, lfds = list(zip(*sorted(zip(lfreqs, lfds))))
-                lfreqs_orig, lerrs = list(zip(*sorted(zip(lfreqs_orig, lerrs))))
-
                 for ii in range(len(freqs)):
-                    # SS = fluxdensity * (10.0**lfreqs[ii]/reffreq/1.0e9)**spix
                     SS = fittedfluxd[ii]
                     freq = freqs[ii] / 1.e9
-                    # LOG.info('    '+str(10.0**lfreqs[ii]/1.0e9)+'  '+ str(10.0**lfds[ii])+'  '+str(SS))
                     LOG.info('    ' + str(freq) + '  ' + str(10.0 ** lfds[ii]) + '  ' + str(SS))
 
         return results

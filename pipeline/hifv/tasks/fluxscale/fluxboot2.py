@@ -4,7 +4,6 @@ import math
 import os
 
 import numpy as np
-import scipy as scp
 
 import pipeline.hif.heuristics.findrefant as findrefant
 import pipeline.infrastructure as infrastructure
@@ -42,9 +41,6 @@ class Fluxboot2Inputs(vdp.StandardInputs):
         self.refantignore = refantignore
         self.fitorder = fitorder
         self.spix = 0.0
-        self.sources = []
-        self.flux_densities = []
-        self.spws = []
 
 
 class Fluxboot2Results(basetask.Results):
@@ -108,13 +104,17 @@ class Fluxboot2(basetask.StandardTaskTemplate):
         calMs = 'calibrators.ms'
         context = self.inputs.context
 
+        self.sources = []
+        self.flux_densities = []
+        self.spws = []
+
         try:
             self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
         except Exception as e:
             self.setjy_results = self.inputs.context.results[0].read().setjy_results
 
-        if (self.inputs.caltable is None):
-            # FLUXGAIN stage
+        if self.inputs.caltable is None:
+            # Original Fluxgain stage
 
             caltable = 'fluxgaincal.g'
 
@@ -127,12 +127,9 @@ class Fluxboot2(basetask.StandardTaskTemplate):
             new_gain_solint1 = context.evla['msinfo'][m.name].new_gain_solint1
             gain_solint2 = context.evla['msinfo'][m.name].gain_solint2
             spw2band = m.get_vla_spw2band()
-            bands = spw2band.values()
 
             # Look in spectral window domain object as this information already exists!
             with casatools.TableReader(self.inputs.vis + '/SPECTRAL_WINDOW') as table:
-                channels = table.getcol('NUM_CHAN')
-                originalBBClist = table.getcol('BBC_NO')
                 spw_bandwidths = table.getcol('TOTAL_BANDWIDTH')
                 reference_frequencies = table.getcol('REF_FREQUENCY')
 
@@ -143,13 +140,12 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                     domainfield = m.get_fields(myfield)[0]
                     if 'AMPLITUDE' in domainfield.intents:
                         spws = field_spws[myfield]
-                        # spws = [1,2,3]
                         jobs = []
                         for myspw in spws:
                             reference_frequency = center_frequencies[myspw]
                             try:
                                 EVLA_band = spw2band[myspw]
-                            except:
+                            except Exception as e:
                                 LOG.info('Unable to get band from spw id - using reference frequency instead')
                                 EVLA_band = find_EVLA_band(reference_frequency)
 
@@ -180,7 +176,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                         for job, _ in jobs_and_components:
                             try:
                                 self._executor.execute(job)
-                            except Exception:
+                            except Exception as e:
                                 LOG.warn("SetJy issue with field id=" + str(job.kw['field']) + " and spw=" + str(
                                     job.kw['spw']))
 
@@ -201,8 +197,8 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
             fluxphase = 'fluxphaseshortgaincal.g'
 
-            gaincal_result = self._do_gaincal(context, calMs, fluxphase, 'p', [''],
-                                              solint=new_gain_solint1, minsnr=3.0, refAnt=refAnt)
+            self._do_gaincal(context, calMs, fluxphase, 'p', [''],
+                             solint=new_gain_solint1, minsnr=3.0, refAnt=refAnt)
 
             # ----------------------------------------------------------------------------
             # New Heuristics, CAS-9186
@@ -217,11 +213,11 @@ class Fluxboot2(basetask.StandardTaskTemplate):
             for i, field in enumerate(field_objects):
                 append = False
                 if i > 0:
-                    append=True
-                gaincal_result = self._do_gaincal(context, calMs, fluxflagtable, 'ap', [fluxphase],
-                                                  solint=gain_solint2, minsnr=5.0, refAnt=refAnt, field=field.name,
-                                                  solnorm=True, append=append, fluxflag=True,
-                                                  vlassmode=context.evla['msinfo'][m.name].vlassmode)
+                    append = True
+                self._do_gaincal(context, calMs, fluxflagtable, 'ap', [fluxphase],
+                                 solint=gain_solint2, minsnr=5.0, refAnt=refAnt, field=field.name,
+                                 solnorm=True, append=append, fluxflag=True,
+                                 vlassmode=context.evla['msinfo'][m.name].vlassmode)
 
             # use flagdata to clip fluxflag.g outside the range 0.9-1.1
             flagjob = casa_tasks.flagdata(vis=fluxflagtable, mode='clip', correlation='ABS_ALL',
@@ -239,7 +235,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
             # -------------------------------------------------------------------------------
 
-            gaincal_result = self._do_gaincal(context, calMs, caltable, 'ap', [fluxphase],
+            self._do_gaincal(context, calMs, caltable, 'ap', [fluxphase],
                                               solint=gain_solint2, minsnr=5.0, refAnt=refAnt)
 
             LOG.info("Gain table " + caltable + " is ready for flagging.")
@@ -251,11 +247,10 @@ class Fluxboot2(basetask.StandardTaskTemplate):
         # Fluxboot stage
 
         LOG.info("Doing flux density bootstrapping using caltable " + caltable)
-        # LOG.info("Flux densities will be written to " + fluxscale_output)
         try:
             fluxscale_result = self._do_fluxscale(context, calMs, caltable)
-            LOG.info("Fitting data with power law")
-            powerfit_results, weblog_results, spindex_results = self._do_powerfit(context, fluxscale_result)
+            LOG.info("Fitting data with power law.")
+            powerfit_results, weblog_results, spindex_results = self._do_powerfit(fluxscale_result)
             setjy_result = self._do_setjy(calMs, fluxscale_result)
         except Exception as e:
             LOG.warning(e.message)
@@ -265,8 +260,8 @@ class Fluxboot2(basetask.StandardTaskTemplate):
             spindex_results = []
             fluxscale_result = {}
 
-        return Fluxboot2Results(sources=self.inputs.sources, flux_densities=self.inputs.flux_densities,
-                                spws=self.inputs.spws, weblog_results=weblog_results,
+        return Fluxboot2Results(sources=self.sources, flux_densities=self.flux_densities,
+                                spws=self.spws, weblog_results=weblog_results,
                                 spindex_results=spindex_results, vis=self.inputs.vis, caltable=caltable,
                                 fluxscale_result=fluxscale_result)
 
@@ -280,29 +275,86 @@ class Fluxboot2(basetask.StandardTaskTemplate):
         fluxcalfields = flux_field_select_string
 
         task_args = {'vis': calMs,
-                     'caltable'  : caltable,
-                     'fluxtable' : 'fluxgaincalFcal.g',
-                     'reference' : [fluxcalfields],
-                     'transfer'  : [''],
-                     'append'    : False,
-                     'refspwmap' : [-1],
-                     'fitorder'  : self.inputs.fitorder}
+                     'caltable': caltable,
+                     'fluxtable': 'fluxgaincalFcal.g',
+                     'reference': [fluxcalfields],
+                     'transfer': [''],
+                     'append': False,
+                     'refspwmap': [-1],
+                     'fitorder': self.inputs.fitorder}
 
         job = casa_tasks.fluxscale(**task_args)
 
         return self._executor.execute(job)
 
-    def _do_powerfit(self, context, fluxscale_result):
+    def find_fitorder(self):
+
+        # if self.inputs.fitorder > -1:
+        #     LOG.info("User defined fitorder for fluxscale will be fitorder={!s}.".format(self.inputs.fitorder))
+        #     return self.inputs.fitorder
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        field_spws = m.get_vla_field_spws()
+        spw2band = m.get_vla_spw2band()
+        bands = spw2band.values()
+        spws = m.get_spectral_windows()
+        minfreq = min([spw.min_frequency for spw in spws])
+        maxfreq = max([spw.max_frequency for spw in spws])
+        deltaf = maxfreq - minfreq
+        centerfreq = (maxfreq + minfreq) / 2.0
+        fractional_bandwidth = deltaf / centerfreq
+
+        unique_bands = list(np.unique(bands))
+
+        lower_bands = '4PLSCXU'
+
+        # Single band observation first
+        if len(unique_bands) == 1:
+            if unique_bands[0] in 'KAQ':
+                fitorder = 1
+            if unique_bands[0] in lower_bands:
+                if fractional_bandwidth > 1.6:
+                    fitorder = 4
+                elif 0.8 <= fractional_bandwidth < 1.6:
+                    fitorder = 3
+                elif 0.3 <= fractional_bandwidth < 0.8:
+                    fitorder = 2
+                elif fractional_bandwidth < 0.3:
+                    fitorder = 1
+        elif len(unique_bands) == 2 and 'A' in unique_bands and 'Q' in unique_bands:
+            fitorder = 1
+        elif ((len(unique_bands) > 2) or
+              (len(unique_bands) == 2 and (unique_bands[0] in lower_bands or unique_bands[1] in lower_bands))):
+            if fractional_bandwidth > 1.6:
+                fitorder = 4
+            elif 0.8 <= fractional_bandwidth < 1.6:
+                fitorder = 3
+            elif 0.4 <= fractional_bandwidth < 0.8:
+                fitorder = 2
+            elif fractional_bandwidth < 0.4:
+                    fitorder = 1
+        else:
+            fitorder = 1
+            LOG.warn('Heuristics could not determine a fitorder for fluxscale.  Defaulting to fitorder=1.')
+
+        LOG.debug('Displaying fit order heuristics...')
+        print('DEBUG:  Fit order heuristics:')
+        print('  Number of spws: ', str(len(spws)))
+        print('  Bands: ', ','.join(unique_bands))
+        print('  Max frequency: ', str(maxfreq))
+        print('  Min frequency: ', str(minfreq))
+        print('  delta nu / nu: ', fractional_bandwidth)
+        print('  Fit order: ', fitorder)
+
+        return fitorder
+
+    def _do_powerfit(self, fluxscale_result):
+
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         spw2band = m.get_vla_spw2band()
         bands = spw2band.values()
 
         # Look in spectral window domain object as this information already exists!
         with casatools.TableReader(self.inputs.vis + '/SPECTRAL_WINDOW') as table:
-            channels = table.getcol('NUM_CHAN')
-            originalBBClist = table.getcol('BBC_NO')
             spw_bandwidths = table.getcol('TOTAL_BANDWIDTH')
             reference_frequencies = table.getcol('REF_FREQUENCY')
 
@@ -311,33 +363,9 @@ class Fluxboot2(basetask.StandardTaskTemplate):
         # the variable center_frequencies should already have been filled out
         # with the reference frequencies of the spectral window table
 
-        fitfunc = lambda p, x: p[0] + p[1] * x
-        errfunc = lambda p, x, y, err: (y - fitfunc(p, x)) / err
-
-        #########################################################################
-        # Old method of parsing fluxscale results from the CASA log
-        ##try:
-        ##    ff = open(fluxscale_output, 'r')
-        ##except IOError as err:
-        ##    LOG.fatal(fluxscale_output + " doesn't exist, error: " + err.filename)
-
-        # looking for lines like:
-        # 2012-03-09 21:30:23     INFO    fluxscale::::
-        #                        Flux density for J1717-3342 in SpW=3 is: 1.94158 +/- 0.0123058 (SNR = 157.777, N= 34)
-        # sometimes they look like:
-        # 2012-03-09 21:30:23     INFO    fluxscale::::    Flux density for J1717-3342 in SpW=0 is:  INSUFFICIENT DATA
-        # so watch for that.
-
         sources = []
         flux_densities = []
         spws = []
-        # for line in ff:
-        #     if 'Flux density for' in line:
-        #         fields = line[:-1].split()
-        #         if (fields[11] != 'INSUFFICIENT'):
-        #             sources.append(fields[7])
-        #             flux_densities.append([float(fields[11]), float(fields[13])])
-        #             spws.append(int(fields[9].split('=')[1]))
 
         # Find the field_ids in the dictionary returned from the CASA task fluxscale
         dictkeys = fluxscale_result.keys()
@@ -347,7 +375,8 @@ class Fluxboot2(basetask.StandardTaskTemplate):
         for field_id in dictkeys:
             sourcename = fluxscale_result[field_id]['fieldName']
             secondary_keys = fluxscale_result[field_id].keys()
-            secondary_keys_to_remove = ['fitRefFreq', 'spidxerr', 'spidx', 'fitFluxd', 'fieldName', 'fitFluxdErr', 'covarMat']
+            secondary_keys_to_remove = ['fitRefFreq', 'spidxerr', 'spidx', 'fitFluxd', 'fieldName',
+                                        'fitFluxdErr', 'covarMat']
             spwkeys = [int(spw_id) for spw_id in secondary_keys if spw_id not in secondary_keys_to_remove]
 
             # fluxscale results  give all spectral windows
@@ -360,35 +389,26 @@ class Fluxboot2(basetask.StandardTaskTemplate):
             for spw_id in newspwkeys:
                 flux_d = list(fluxscale_result[field_id][spw_id]['fluxd'])
                 flux_d_err = list(fluxscale_result[field_id][spw_id]['fluxdErr'])
-                # spwslist  = list(int(spw_id))
-
-                # flux_d = list(fluxscale_result[field_id]['fluxd'])
-                # flux_d_err = list(fluxscale_result[field_id]['fluxdErr'])
-                # spwslist  = list(fluxscale_result['spwID'])
 
                 for i in range(0, len(flux_d)):
-                    if (flux_d[i] != -1.0 and flux_d[i] != 0.0):
+                    if flux_d[i] != -1.0 and flux_d[i] != 0.0:
                         sources.append(sourcename)
                         flux_densities.append([float(flux_d[i]), float(flux_d_err[i])])
                         spws.append(int(spw_id))
 
-        self.inputs.sources = sources
-        self.inputs.flux_densities = flux_densities
-        self.inputs.spws = spws
+        self.sources = sources
+        self.flux_densities = flux_densities
+        self.spws = spws
 
-        ii = 0
         unique_sources = list(np.unique(sources))
         results = []
         weblog_results = []
         spindex_results = []
 
-        # print 'fluxscale result: ', fluxscale_result
-        # print 'unique_sources: ', unique_sources
-
         for source in unique_sources:
             indices = []
             for ii in range(len(sources)):
-                if (sources[ii] == source):
+                if sources[ii] == source:
                     indices.append(ii)
 
             bands_from_spw = []
@@ -402,7 +422,6 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                 bands = bands_from_spw
 
             unique_bands = list(np.unique(bands))
-            # print(unique_bands)
 
             fieldobject = m.get_fields(source)
             fieldid = str(fieldobject[0].id)
@@ -430,141 +449,59 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                             lfds.append(math.log10(flux_densities[indices[ii]][0]))
                             lerrs.append((flux_densities[indices[ii]][1]) / (flux_densities[indices[ii]][0]) / 2.303)
                             uspws.append(spws[indices[ii]])
-                # if we didn't care about the errors on the data or the fit coefficients, just:
-                #       coefficients = np.polyfit(lfreqs, lfds, 1)
-                # or, if we ever get to numpy 1.7.x, for weighted fit, and returning
-                # covariance matrix, do:
-                #       ...
-                #       weights = []
-                #       weight_sum = 0.0
-                #       for ii in range(len(lfreqs)):
-                #           weights.append(1.0 / (lerrs[ii]*lerrs[ii]))
-                #           weight_sum += weights[ii]
-                #       for ii in range(len(weights)):
-                #           weights[ii] /= weight_sum
-                #       coefficients = np.polyfit(lfreqs, lfds, 1, w=weights, cov=True)
-                # but, for now, use the full scipy.optimize.leastsq route...
-                #
-                # actually, after a lot of testing, np.polyfit does not return a global
-                # minimum solution.  sticking with leastsq (modified as below to get the
-                # proper errors), or once we get a modern enough version of scipy, moving
-                # to curve_fit, is better.
-                #
-
-                # print(lfds)
 
                 if len(lfds) < 2:
-                    aa = lfds[0]
-                    bb = 0.0
-                    curvature = 0.0
-                    SNR = 0.0
-                    SNR_bb = 0.0
-                    SNR_cc = 0.0
-                    bberr = 0.0
-                    curvatureerr = 0.0
+                    fitcoeff = [lfds[0], 0.0, 0.0, 0.0, 0.0]
                 else:
-                    alfds = scp.array(lfds)
-                    alerrs = scp.array(lerrs)
-                    alfreqs = scp.array(lfreqs)
-                    pinit = [0.0, 0.0]
-                    # fit_out = scpo.leastsq(errfunc, pinit, args=(alfreqs, alfds, alerrs), full_output=1)
-                    # pfinal = fit_out[0]
-                    # covar = fit_out[1]
-
-                    # aa = pfinal[0]
-                    # bb = pfinal[1]
-
-                    # Use result from fluxscale, not from fitting function
-                    aa = fluxscale_result[fieldid]['spidx'][0]
-                    bb = fluxscale_result[fieldid]['spidx'][1]
-                    bberr = fluxscale_result[fieldid]['spidxerr'][1]
-
-                    if self.inputs.fitorder > 1:
-                        curvature = fluxscale_result[fieldid]['spidx'][2]
-                        curvatureerr = fluxscale_result[fieldid]['spidxerr'][2]
-                    else:
-                        curvature = 0.0
-                        curvatureerr = 0.0
-                    #
-                    # the fit is of the form:
-                    #     log(S) = a + b * log(f)
-                    # with a = pfinal[0] and b = pfinal[1].  the errors on the coefficients are
-                    # sqrt(covar[i][i]*residual_variance) with the residual covariance calculated
-                    # as below (it's like the reduced chi squared without dividing out the errors).
-                    # see the scipy.optimize.leastsq documentation and
-                    # http://stackoverflow.com/questions/14854339/in-scipy-how-and-why-does-curve-fit-calculate-the-covariance-of-the-parameter-es
-                    #
-
-                    summed_error = 0.0
-                    for ii in range(len(alfds)):
-                        model = aa + bb * alfreqs[ii] + curvature*alfreqs[ii]*alfreqs[ii]
-                        residual = (model - alfds[ii]) * (model - alfds[ii])
-                        summed_error += residual
-                    residual_variance = summed_error / (len(alfds) - (self.inputs.fitorder + 1))
-                    covar = fluxscale_result[fieldid]['covarMat']
-                    SNR_bb = math.fabs(bb) / math.sqrt(covar[1][1] * residual_variance)
-                    cc = curvature
-                    if self.inputs.fitorder > 1:
-                        SNR_cc = math.fabs(cc) / math.sqrt(covar[2][2] * residual_variance)
-                    else:
-                        SNR_cc = 0.0
-
-                    SNR = 0.0
-
-                #
-                # take as the reference frequency the lowest one.  (this shouldn't matter, in principle).
-                #
+                    fitcoeff = fluxscale_result[fieldid]['spidx']
 
                 freqs = fluxscale_result['freq']
                 fitflx = fluxscale_result[fieldid]['fitFluxd']
                 fitreff = fluxscale_result[fieldid]['fitRefFreq']
                 spidx = fluxscale_result[fieldid]['spidx']
-                # fittedfluxd = []
+                reffreq = fitreff / 1.e9
+                spix = fluxscale_result[fieldid]['spidx'][1]
+                spixerr = fluxscale_result[fieldid]['spidxerr'][1]
+                SNR = 0.0
+                curvature = 0.0
+                curvatureerr = 0.0
 
-                freqs = sorted(freqs[uspws])
+                freqs = np.array(sorted(freqs[uspws]))
 
-                if self.inputs.fitorder > 1:
-                    fittedfluxd = [10.0 ** (spidx[0] + spidx[1] * math.log10(x / fitreff) + spidx[2] * (math.log10(x / fitreff)) ** 2)
-                        for x in freqs]
-                elif self.inputs.fitorder == 1:
-                    fittedfluxd = [10.0 ** (spidx[0] + spidx[1] * math.log10(x / fitreff)) for x in freqs]
-                elif self.inputs.fitorder == 0:
-                    fittedfluxd = [10.0 ** (spidx[0]) for x in freqs]
+                logfittedfluxd = np.zeros(len(freqs))
+                for i in range(len(spidx)):
+                    logfittedfluxd += spidx[i] * (np.log10(freqs/fitreff)) ** i
 
-                reffreq = fitreff/1.e9
-                fluxdensity = fitflx
-                spix = bb
-                spixerr = bberr
-                results.append([source, uspws, fluxdensity, spix, SNR, reffreq, curvature])
+                fittedfluxd = 10.0 ** logfittedfluxd
+
                 LOG.info(' Source: ' + source +
                          ' Band: ' + band +
                          ' fluxscale fitted spectral index = ' + str(spix) + ' +/- ' + str(spixerr))
+
                 if self.inputs.fitorder > 1:
+                    curvature = fluxscale_result[fieldid]['spidx'][2]
+                    curvatureerr = fluxscale_result[fieldid]['spidxerr'][2]
                     LOG.info(' Source: ' + source +
                              ' Band: ' + band +
                              ' fluxscale fitted curvature = ' + str(curvature) + ' +/- ' + str(curvatureerr))
+
+                results.append([source, uspws, fitflx, spix, SNR, reffreq, curvature])
+
                 spindex_results.append({'source': source,
                                         'band': band,
                                         'spix': str(spix),
                                         'spixerr': str(spixerr),
-                                        'SNR': str(SNR_bb) + ',' + str(SNR_cc),
+                                        'SNR': SNR,
                                         'curvature': str(curvature),
                                         'curvatureerr': str(curvatureerr),
                                         'fitorder': str(self.inputs.fitorder)})
                 LOG.info("Frequency, data, error, and fitted data:")
-                # Sort arrays based on frequency
-                lfreqs_orig = lfreqs
-                lfreqs, lfds = list(zip(*sorted(zip(lfreqs, lfds))))
-                lfreqs_orig, lerrs = list(zip(*sorted(zip(lfreqs_orig, lerrs))))
 
                 for ii in range(len(freqs)):
                     SS = fittedfluxd[ii]
                     freq = freqs[ii]/1.e9
                     data = 10.0 ** lfds[ii]
 
-                    # fderr = lerrs[ii] * (10 ** lfds[ii]) / math.log10(math.e)
-                    # fitFluxd = 10**a0  #(or 10**spidx[0] in my previous example)
-                    # fitFluxdErr = ln(10)*fitFluxd*err_a0
                     fderr = math.log(10) * SS * fluxscale_result[fieldid]['spidxerr'][0]
 
                     LOG.info('    ' + str(freq) + '  ' + str(data) + '  ' + str(fderr) + '  ' + str(SS))
@@ -573,27 +510,11 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                                            'data': str(data),
                                            'error': str(fderr),
                                            'fitteddata': str(SS)})
-                '''
-                for ii in range(len(lfreqs)):
-                    SS = fluxdensity * (10.0 ** lfreqs[ii] / reffreq / 1.0e9) ** spix
-
-                    import pdb
-                    pdb.set_trace()
-
-                    fderr = lerrs[ii] * (10 ** lfds[ii]) / math.log10(math.e)
-                    LOG.info('    ' + str(10.0 ** lfreqs[ii] / 1.0e9) + '  ' + str(10.0 ** lfds[ii]) + '  ' + str(
-                        fderr) + '  ' + str(SS))
-                    weblog_results.append({'source': source,
-                                           'freq': str(10.0 ** lfreqs[ii] / 1.0e9),
-                                           'data': str(10.0 ** lfds[ii]),
-                                           'error': str(fderr),
-                                           'fitteddata': str(SS)})
-                '''
 
         self.spix = spix
         self.curvature = curvature
 
-        LOG.info("Setting fluxscale power-law fit in the model column")
+        LOG.info("Setting fluxscale fit in the model column.")
 
         # Sort weblog results by frequency
         weblog_results = sorted(weblog_results, key=lambda k: (k['source'], k['freq']))
