@@ -115,11 +115,11 @@ def num_lines(relpath):
 		</tr>
 	</thead>
 	<tbody>
-		% for k in ['TOTAL', 'BANDPASS', 'AMPLITUDE', 'PHASE', 'TARGET']:
+		% for k in ['TOTAL', 'BANDPASS', 'AMPLITUDE', 'PHASE', 'CHECK', 'TARGET']:
 		<tr>
 			<th>${k}</th>
 			% for step in ['before','after']:
-			% if flags[ms].get(step) is not None:
+			% if flags[ms].get(step) is not None and flags[ms][step]['Summary'].get(k) is not None:
 				<td>${percent_flagged(flags[ms][step]['Summary'][k])}</td>
 			% else:
 				<td>0.0%</td>
