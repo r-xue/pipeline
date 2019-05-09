@@ -40,13 +40,16 @@ class MakeImListQAHandler(pqa.QAPlugin):
         # Score 2
         for target in result.targets:
             if target['specmode'] == 'cont':
-                if target['num_good_spws'] == 0:
+                num_bad_spws = target['num_all_spws'] - target['num_good_spws']
+                num_bad_spw_ratio = float(num_bad_spws) / float(target['num_all_spws'])
+                if num_bad_spws == 0:
+                    score = 1.0
+                    longmsg = shortmsg = 'Continuum range found'
+                elif target['num_good_spws'] == 0:
                     score = 0.3
                     longmsg = 'No continuum ranges found for any spw for cont image of {!s}.'.format(target['field'])
                     shortmsg = 'No continuum ranges'
                 else:
-                    num_bad_spws = target['num_all_spws'] - target['num_good_spws']
-                    num_bad_spw_ratio = float(num_bad_spws) / float(target['num_all_spws'])
                     if num_bad_spws == 1 and num_bad_spw_ratio < 0.5:
                         score = 0.9
                     elif num_bad_spws == 2 or num_bad_spw_ratio == 0.5:
