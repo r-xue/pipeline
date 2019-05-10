@@ -382,11 +382,10 @@ class CleanBase(basetask.StandardTaskTemplate):
             elif minpercentchange is not None:
                 tclean_job_parameters['minpercentchange'] = minpercentchange
 
-            if inputs.hm_fastnoise != -999:
-                tclean_job_parameters['fastnoise'] = inputs.hm_fastnoise
-            elif fastnoise is not None:
-                tclean_job_parameters['fastnoise'] = fastnoise
+            tclean_job_parameters['fastnoise'] = fastnoise
+
         else:
+            tclean_job_parameters['fastnoise'] = inputs.hm_fastnoise
             if (inputs.hm_masking != 'none') and (inputs.mask != ''):
                 tclean_job_parameters['usemask'] = 'user'
                 tclean_job_parameters['mask'] = inputs.mask
