@@ -231,10 +231,14 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
         dogrowprune = None
         minpercentchange = None
 
-        fastnoise = True   # always True for now until heuristic in place
-
         repBaselineLength, min_diameter = self.calc_percentile_baseline_length(75.)
-        LOG.info('autobox heuristic: Representative baseline length is %.1f meter' % (repBaselineLength)) 
+        LOG.info('autobox heuristic: Representative baseline length is %.1f meter' % (repBaselineLength))
+
+        # PIPE-307
+        if min_diameter == 12.0 and repBaselineLength > 300:
+            fastnoise = True
+        else:
+            fastnoise = False
 
         if ('TARGET' in intent) or ('CHECK' in intent):
             if min_diameter == 12.0:
