@@ -345,23 +345,29 @@ def check_strong_atm_lines(ms, fieldlist, intent, spwidlist, solint_dict, tsysna
         LOG.info('Investigating Tsys spectra for spw %d (Tsys spw %d)' % \
                  (spw, tsys_spw))
         # Obtain median Tsys spectrum
+        scanobj = ms.get_scans(scan_id = tsys_info[spw]['tsys_scan'])[0]
+        atmfields = ms.get_fields(intent='ATMOSPHERE')
+        fieldids = [fobj.id for fobj in scanobj.fields.intersection(frozenset(atmfields))]
         median_tsys = get_median_tsys_spectrum_from_caltable(tsysname,
                                                              tsys_spw,
-                                                             tsys_info[spw]['tsys_scan'])
+                                                             fieldids[0])
         if median_tsys is None:
             LOG.warn('Unable to define median Tsys spectrum for Tsys spw = %d, scan = %d' % \
                      (tsys_spw, tsys_info[spw]['tsys_scan']))
             continue
         # Smooth median Tsys spectrum with kernel size, # of Tsys chans /16
         kernel_width = len(median_tsys) // 16
-        kernel = numpy.ones(kernel_width)/float(kernel_width)
+        kernel = numpy.ones(kernel_width, dtype=float)/float(kernel_width)
         LOG.debug("Subtracting smoothed Tsys spectrum (kernel = %d channels)" % kernel_width)
         smoothed_tsys = numpy.convolve(median_tsys, kernel, mode='same')
+        # Define an index range to avoid edge effect of smoothing
+        idx_offset = kernel_width // 2
+        idx_range = slice(idx_offset, idx_offset + numpy.abs(len(median_tsys)-kernel_width) + 1, 1)
         # Take absolute difference of median Tsys spectum w/ and w/o smoothing
-        diff_tsys = numpy.abs(median_tsys - smoothed_tsys)
+        diff_tsys = numpy.abs(median_tsys - smoothed_tsys)[idx_range]
         # If peak is smaller than a threshold, no strong line -> continue to the next spw
         peak = numpy.max(diff_tsys)
-        threshold = lineStrengthThreshold * numpy.median(median_tsys)
+        threshold = lineStrengthThreshold * numpy.median(median_tsys[idx_range])
         if peak < threshold:
             LOG.info('No strong line is found. peak = %f, threshold = %f' % (peak, threshold))
             continue
@@ -382,10 +388,10 @@ def check_strong_atm_lines(ms, fieldlist, intent, spwidlist, solint_dict, tsysna
             LOG.info('No line exceeds intensity threshold.')
             continue
         for line in line_slices:
-            LOG.debug('*** line channels: start = %d, width=%d' % (line.start, line.stop-line.start))
+            LOG.debug('*** line channels: start = %d, width=%d' % \
+                      (line.start+idx_offset, line.stop-line.start))
             # check line width
             if line.stop-line.start < minAdjacantChannels:
-                LOG.info('No line exceeds width threshold.')
                 continue
             else:
                 # strong atmospheric line
@@ -396,14 +402,14 @@ def check_strong_atm_lines(ms, fieldlist, intent, spwidlist, solint_dict, tsysna
 
     return strong_atm_lines
 
-def get_median_tsys_spectrum_from_caltable(tsysname, spwid, scanid, interpolate_flagged=True):
+def get_median_tsys_spectrum_from_caltable(tsysname, spwid, fieldid, interpolate_flagged=True):
     """
     Returns masked median Tsys spectrum of an SPW and scan combination in Tsys caltable.
     
     Inputs:
         tsysname: the path to Tsys caltable
         spwid: SPW ID of Tsys to select
-        scanid: scan ID of Tsys to select
+        fieldid: field ID of Tsys to select
         interpolate_flag: if True, operate piecewise linear interpolation of flagged channels
     
     Returns: masked array of median Tsys spectrum
@@ -411,10 +417,10 @@ def get_median_tsys_spectrum_from_caltable(tsysname, spwid, scanid, interpolate_
     if not os.path.exists(tsysname):
         raise ValueError, 'Could not find Tsys caltable, %s' % tsysname
     with casatools.TableReader(tsysname) as tb:
-        seltb = tb.query('SPECTRAL_WINDOW_ID == %s && SCAN_NUMBER == %s' % (spwid, scanid))
+        seltb = tb.query('SPECTRAL_WINDOW_ID == %s && FIELD_ID == %s' % (spwid, fieldid))
         if seltb.nrows() == 0:
             seltb.close()
-            LOG.warn('No matching Tsys measurement for SPW=%s and scan=%s in Tsys caltable %s' % (spwid, scanid, tsysname))
+            LOG.warn('No matching Tsys measurement for SPW=%s and field=%s in Tsys caltable %s' % (spwid, fieldid, tsysname))
             return None
         try: # axis order: [POL, FREQ, ROW]
             tsys = seltb.getcol('FPARAM')
