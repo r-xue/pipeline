@@ -62,7 +62,11 @@ def get_plot(plots, field, spw, i, colname):
 		% for i in sorted(plots_dict[field][spw].keys())[::-1]:
 		<tr>
 		    <!-- iteration row heading -->
-		    <td class="vertical-align"><p class="text-center">${i}</p></td>
+		    <td class="vertical-align"><p class="text-center">${i}
+                    %if i==0 and cube_all_cont:
+                        <br>findCont=AllCont<br>no cleaning
+                    %endif
+                    </p></td>
 		    <!-- plots for this iteration, in column order -->
 	        % for colname in colorder:
 	        <td>

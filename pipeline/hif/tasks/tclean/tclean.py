@@ -624,6 +624,7 @@ class Tclean(cleanbase.CleanBase):
             result.set_image_rms_min(nonpbcor_image_non_cleanmask_rms_min)
             result.set_image_rms_max(nonpbcor_image_non_cleanmask_rms_max)
             result.set_image_robust_rms_and_spectra(nonpbcor_image_robust_rms_and_spectra)
+            result.cube_all_cont = True
             keep_iterating = False
         else:
             keep_iterating = True

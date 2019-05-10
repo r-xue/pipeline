@@ -166,7 +166,11 @@ except:
                 </tr>
 
                 <tr>
-                    <th>cleaning threshold</th>
+                    <th>cleaning threshold
+                    %if row.cube_all_cont:
+                        <br>findCont=AllCont<br>no cleaning
+                    %endif
+                    </th>
                     <td>${row.cleaning_threshold}</td>
                 </tr>
 

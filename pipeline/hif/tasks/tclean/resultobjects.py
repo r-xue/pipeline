@@ -74,6 +74,7 @@ class TcleanResult(basetask.Results):
         self.imaging_mode = imaging_mode
         self.per_spw_cont_sensitivities_all_chan = None
         self.check_source_fit = None
+        self.cube_all_cont = False
 
     def merge_with_context(self, context):
         # Calculated sensitivities for later stages

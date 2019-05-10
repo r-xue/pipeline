@@ -29,7 +29,7 @@ ImageRow = collections.namedtuple('ImageInfo', (
     'fractional_bw_label fractional_bw aggregate_bw_label aggregate_bw aggregate_bw_num '
     'image_file nchan plot qa_url iterdone stopcode stopreason '
     'chk_pos_offset chk_frac_beam_offset chk_fitflux chk_fitpeak_fitflux_ratio img_snr '
-    'chk_gfluxscale chk_gfluxscale_snr chk_fitflux_gfluxscale_ratio'))
+    'chk_gfluxscale chk_gfluxscale_snr chk_fitflux_gfluxscale_ratio cube_all_cont'))
 
 
 class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -379,6 +379,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             else:
                 img_snr = 'N/A'
 
+            cube_all_cont = r.cube_all_cont
+
             # create our table row for this image.
             # Plot is set to None as we have a circular dependency: the row
             # needs the plot, but the plot generator needs the image_stats
@@ -421,7 +423,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 img_snr=img_snr,
                 chk_gfluxscale=chk_gfluxscale,
                 chk_gfluxscale_snr=chk_gfluxscale_snr,
-                chk_fitflux_gfluxscale_ratio=chk_fitflux_gfluxscale_ratio
+                chk_fitflux_gfluxscale_ratio=chk_fitflux_gfluxscale_ratio,
+                cube_all_cont=cube_all_cont
             )
             image_rows.append(row)
 
@@ -434,7 +437,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # sort the rows so the links will be in the same order as the rows
         image_rows.sort(key=lambda row: (row.field, utils.natural_sort(row.spw), row.pol))
         temp_urls = (None, None, None)
-        qa_renderers = [TCleanPlotsRenderer(context, results, plots_dict, row.field, str(row.spw), row.pol, temp_urls)
+        qa_renderers = [TCleanPlotsRenderer(context, results, plots_dict, row.field, str(row.spw), row.pol, temp_urls, row.cube_all_cont)
                         for row in image_rows]
         qa_links = triadwise([renderer.path for renderer in qa_renderers])
 
@@ -446,7 +449,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
                 renderer = TCleanPlotsRenderer(context, results,
                                                plots_dict, row.field, str(row.spw), row.pol,
-                                               qa_urls)
+                                               qa_urls, row.cube_all_cont)
                 with renderer.get_file() as fileobj:
                     fileobj.write(renderer.render())
 
@@ -478,7 +481,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
 
 class TCleanPlotsRenderer(basetemplates.CommonRenderer):
-    def __init__(self, context, result, plots_dict, field, spw, pol, urls):
+    def __init__(self, context, result, plots_dict, field, spw, pol, urls, cube_all_cont):
         super(TCleanPlotsRenderer, self).__init__('tcleanplots.mako', context, result)
 
         # VLA only
@@ -520,7 +523,8 @@ class TCleanPlotsRenderer(basetemplates.CommonRenderer):
             'colorder': colorder,
             'qa_previous': urls[0],
             'qa_next': urls[2],
-            'base_url': os.path.join(self.dirname, 't2-4m_details.html')
+            'base_url': os.path.join(self.dirname, 't2-4m_details.html'),
+            'cube_all_cont': cube_all_cont
         }
     
     def update_mako_context(self, mako_context):
