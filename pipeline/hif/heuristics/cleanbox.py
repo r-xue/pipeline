@@ -168,6 +168,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                         nonpbcor_image_cleanmask_npoints = 0
                 except:
                     nonpbcor_image_cleanmask_npoints = 0
+                flattened_mask_image.done()
 
         with casatools.ImageReader(nonpbcor_imagename) as image:
             # Get the image frequency axis for later plotting.
