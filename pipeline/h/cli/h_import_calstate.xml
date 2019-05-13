@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" ?>
 <casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task type="function" name="h_import_calstate" category="pipeline">
 <shortdescription>Import a calibration state from disk</shortdescription>
@@ -10,7 +10,7 @@
 <description>
 h_import_calstate clears and then recreates the pipeline calibration state
 based on the set of applycal calls given in the named file.
-</description>		
+</description>
 
 <input>
     <param type="string" name="filename">
@@ -21,7 +21,7 @@ based on the set of applycal calls given in the named file.
 
 <example>
 Import a calibration state to disk.
-		
+
 Keyword arguments:
 
 filename -- Name of the saved calibration state.

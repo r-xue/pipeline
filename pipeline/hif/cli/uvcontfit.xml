@@ -11,10 +11,10 @@ file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 Fit the continuum in the UV plane using polynomials.
 </description>
 <input>
-	<param type="string" name="vis" mustexist="true">
-		<description>The name of the input visibility file</description>
-		<value></value>
-	</param>
+        <param type="string" name="vis" mustexist="true">
+                <description>The name of the input visibility file</description>
+                <value></value>
+        </param>
 
         <param type="string" name="caltable">
                 <description>Name of output mueller matrix calibration table</description>
@@ -31,31 +31,31 @@ Fit the continuum in the UV plane using polynomials.
                 <value type="string"></value>
         </param>
 
-	<param type="string" name="spw">
-		<description>Spectral window / channels for fitting the continuum</description>
-		<value></value>
-	</param>
+        <param type="string" name="spw">
+                <description>Spectral window / channels for fitting the continuum</description>
+                <value></value>
+        </param>
 
         <param type="string" name="combine">
                 <description>Data axes to combine for the continuum estimation (none, spw and/or scan)</description>
                 <value></value>
         </param>
 
-	<param type="any" name="solint">
-		<description>Time scale for the continuum fit</description>
+        <param type="any" name="solint">
+                <description>Time scale for the continuum fit</description>
                 <any type="variant"/>
                 <value type="string">int</value>
-	</param>
+        </param>
 
-	<param type="int" name="fitorder">
-		<description>Polynomial order for the continuum fits</description>
-		<value>0</value>
-	</param>
+        <param type="int" name="fitorder">
+                <description>Polynomial order for the continuum fits</description>
+                <value>0</value>
+        </param>
 
-	<param type="bool" name="append">
-		<description>Append to a pre-existing table</description>
-		<value>False</value>
-	</param>
+        <param type="bool" name="append">
+                <description>Append to a pre-existing table</description>
+                <value>False</value>
+        </param>
 
 </input>
 
@@ -66,7 +66,7 @@ the real and imaginary parts of the spectral windows and channels
 selected by spw and exclude spw. This fit represents a model of
 the continuum in all channels. Fit orders less than 2 are strongly
 recommended.
-	
+
 </example> 
 
 </task>

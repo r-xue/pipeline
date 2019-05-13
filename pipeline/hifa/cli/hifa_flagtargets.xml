@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" ?>
 <casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-	 	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd">
 
 <task type="function" name="hifa_flagtargets" category="pipeline">
 
@@ -13,71 +13,71 @@
 </description>
 
 <input>
-	<param type="stringArray" name="vis" subparam="true">
-	    <description>List of input MeasurementSets to flag</description>
-	    <value></value>
-	</param>			
+    <param type="stringArray" name="vis" subparam="true">
+        <description>List of input MeasurementSets to flag</description>
+        <value></value>
+    </param>
 
-	<param type="bool" name="template">
-	    <description>Apply a flagging template</description>
-	    <value>True</value>
-	</param>
+    <param type="bool" name="template">
+        <description>Apply a flagging template</description>
+        <value>True</value>
+    </param>
 
-	<param type="stringArray" name="filetemplate" subparam="true">
-	    <description>File that contains the flagging template</description>
-	    <value></value>
-	</param>
+    <param type="stringArray" name="filetemplate" subparam="true">
+        <description>File that contains the flagging template</description>
+        <value></value>
+    </param>
 
-	<param type="string" name="pipelinemode">
-	    <description>The pipeline operating mode</description>
-	    <value>automatic</value>
-	    <allowed kind="enum">
-		<value>automatic</value>
-		<value>interactive</value>
-		<value>getinputs</value>
-	    </allowed>
-	</param>
+    <param type="string" name="pipelinemode">
+        <description>The pipeline operating mode</description>
+        <value>automatic</value>
+        <allowed kind="enum">
+            <value>automatic</value>
+            <value>interactive</value>
+            <value>getinputs</value>
+        </allowed>
+    </param>
 
-	<param type="bool" name="flagbackup" subparam="true">
-	    <description>Backup pre-existing flags before applying new ones</description>
-	    <value type="bool">False</value>
-	</param>
+    <param type="bool" name="flagbackup" subparam="true">
+        <description>Backup pre-existing flags before applying new ones</description>
+        <value type="bool">False</value>
+    </param>
 
-	<param type="bool" name="dryrun" subparam="true">
-	    <description>Run the task (False) or display the command (True)</description>
-	    <value>False</value>
-	</param>
-	
-	<param type="bool" name="acceptresults" subparam="true">
-	    <description>Add the results into the pipeline context</description>
-	    <value>True</value>
-	</param>
-	
-	<constraints>
-	    <when param="pipelinemode">
-		<equals type="string" value="automatic">
-		</equals>
-		<equals type="string" value="interactive"> 
-		    <default param="vis"><value type="stringArray"></value></default>
-		    <default param="flagbackup"><value type="bool">False</value></default>
-		    <default param="dryrun"><value type="bool">False</value></default>
-		    <default param="acceptresults"><value type="bool">True</value></default>
-		</equals>
-		<equals type="string" value="getinputs"> 
-		    <default param="vis"><value type="stringArray"></value></default>
-		    <default param="flagbackup"><value type="bool">False</value></default>
-		</equals>
-	    </when>
+    <param type="bool" name="dryrun" subparam="true">
+        <description>Run the task (False) or display the command (True)</description>
+        <value>False</value>
+    </param>
+    
+    <param type="bool" name="acceptresults" subparam="true">
+        <description>Add the results into the pipeline context</description>
+        <value>True</value>
+    </param>
+    
+    <constraints>
+        <when param="pipelinemode">
+            <equals type="string" value="automatic">
+            </equals>
+            <equals type="string" value="interactive"> 
+                <default param="vis"><value type="stringArray"></value></default>
+                <default param="flagbackup"><value type="bool">False</value></default>
+                <default param="dryrun"><value type="bool">False</value></default>
+                <default param="acceptresults"><value type="bool">True</value></default>
+            </equals>
+            <equals type="string" value="getinputs"> 
+                <default param="vis"><value type="stringArray"></value></default>
+                <default param="flagbackup"><value type="bool">False</value></default>
+            </equals>
+        </when>
 
-	    <when param="template">
-	        <equals type="bool" value="True">
-		    <default param="filetemplate"><value type="stringArray"></value></default>
-	        </equals>
-	        <equals type="bool" value="False">
-	        </equals>
-	    </when>
+        <when param="template">
+            <equals type="bool" value="True">
+                <default param="filetemplate"><value type="stringArray"></value></default>
+            </equals>
+            <equals type="bool" value="False">
+            </equals>
+        </when>
 
-	</constraints>
+    </constraints>
 </input>
 
 <output>
@@ -121,7 +121,7 @@ filetemplate -- The name of a text file that contains the flagging template
 'interactive mode'
 
 vis -- The list of input MeasurementSets. Defaults to the list of
-	MeasurementSets defined in the pipeline context.
+    MeasurementSets defined in the pipeline context.
 
     default: ''
 
@@ -132,7 +132,7 @@ flagbackup -- Back up any pre-existing flags.
 --- pipeline task execution modes
 
 dryrun -- Run the commands (True) or generate the commands to be run but do not
-	execute (False).
+    execute (False).
 
     default: True
 

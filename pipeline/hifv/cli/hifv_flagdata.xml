@@ -1,99 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" ?>
 <casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-	 	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd">
 
 <task type="function" name="hifv_flagdata" category="pipeline">
 
 <shortdescription>Do basic deterministic flagging of a list of MeasurementSets</shortdescription>
 
 <input>
-	<param type="stringArray" name="vis" subparam="true">
-	    <description>List of input MeasurementSets to flag</description>
-	    <value></value>
-	</param>			
+    <param type="stringArray" name="vis" subparam="true">
+        <description>List of input MeasurementSets to flag</description>
+        <value></value>
+    </param>
 
-	<param type="bool" name="autocorr">
-	    <description>Flag autocorrelation data</description>
-	    <value type="bool">True</value>
-	</param>
+    <param type="bool" name="autocorr">
+        <description>Flag autocorrelation data</description>
+        <value type="bool">True</value>
+    </param>
 
-	<param type="bool" name="shadow">
-	    <description>Flag shadowed antennas</description>
-	    <value type="bool">True</value>
-	</param>
+    <param type="bool" name="shadow">
+        <description>Flag shadowed antennas</description>
+        <value type="bool">True</value>
+    </param>
 
-	<param type="bool" name="scan">
-	    <description>Flag specified scans</description>
-	    <value>True</value>
-	</param>
+    <param type="bool" name="scan">
+        <description>Flag specified scans</description>
+        <value>True</value>
+    </param>
 
-	<param type="string" name="scannumber" subparam="true">
-	    <description>List of scans to be flagged</description>
-	    <value></value>
-	</param>
+    <param type="string" name="scannumber" subparam="true">
+        <description>List of scans to be flagged</description>
+        <value></value>
+    </param>
 
         <param type="bool" name="quack">
-	    <description>Quack scans</description>
-	    <value>True</value>
-	</param>
+        <description>Quack scans</description>
+        <value>True</value>
+    </param>
 
         <param type="bool" name="clip">
-	    <description>Clip mode</description>
-	    <value>True</value>
-	</param>
+        <description>Clip mode</description>
+        <value>True</value>
+    </param>
 
         <param type="bool" name="baseband">
-	    <description>Flag 20MHz of each edge of basebands</description>
-	    <value>True</value>
-	</param>
+        <description>Flag 20MHz of each edge of basebands</description>
+        <value>True</value>
+    </param>
 
-	<param type="string" name="intents" subparam="true">
-	    <description>List of intents of scans to be flagged</description>
-	    <value>*POINTING*,*FOCUS*,*ATMOSPHERE*,*SIDEBAND_RATIO*, *UNKNOWN*, *SYSTEM_CONFIGURATION*, *UNSPECIFIED#UNSPECIFIED*</value>
-	</param>
+    <param type="string" name="intents" subparam="true">
+        <description>List of intents of scans to be flagged</description>
+        <value>*POINTING*,*FOCUS*,*ATMOSPHERE*,*SIDEBAND_RATIO*, *UNKNOWN*, *SYSTEM_CONFIGURATION*, *UNSPECIFIED#UNSPECIFIED*</value>
+    </param>
 
-	<param type="bool" name="edgespw">
-	    <description>Flag edge channels</description>
-	    <value type="bool">True</value>
-	</param>
+    <param type="bool" name="edgespw">
+        <description>Flag edge channels</description>
+        <value type="bool">True</value>
+    </param>
 
-	<param type="double" name="fracspw" subparam="true">
-	    <description>Fraction of baseline correlator edge channels to be flagged</description>
-	    <value>0.05</value>
-	</param>
+    <param type="double" name="fracspw" subparam="true">
+        <description>Fraction of baseline correlator edge channels to be flagged</description>
+        <value>0.05</value>
+    </param>
 
 
-	<param type="bool" name="online">
-	    <description>Apply the online flags</description>
-	    <value type="bool">True</value>
-	</param>
+    <param type="bool" name="online">
+        <description>Apply the online flags</description>
+        <value type="bool">True</value>
+    </param>
 
-	<param type="string" name="fileonline" subparam="true">
-	    <description>File of online flags to be applied</description>
-	    <value></value>
-	</param>
+    <param type="string" name="fileonline" subparam="true">
+        <description>File of online flags to be applied</description>
+        <value></value>
+    </param>
 
-	<param type="bool" name="template">
-	    <description>Apply a flagging template</description>
-	    <value>True</value>
-	</param>
+    <param type="bool" name="template">
+        <description>Apply a flagging template</description>
+        <value>True</value>
+    </param>
 
-	<param type="stringArray" name="filetemplate" subparam="true">
-	    <description>File that contains the flagging template</description>
-	    <value></value>
-	</param>
-	
-	<param type="string" name="hm_tbuff">
-	    <description>The time buffer computation heuristic</description>
-	    <value>1.5int</value>
-	    <allowed kind="enum">
-		<value>1.5int</value>
-		<value>halfint</value>
-		<value>manual</value>
-	    </allowed>
-	</param>
+    <param type="stringArray" name="filetemplate" subparam="true">
+        <description>File that contains the flagging template</description>
+        <value></value>
+    </param>
+    
+    <param type="string" name="hm_tbuff">
+        <description>The time buffer computation heuristic</description>
+        <value>1.5int</value>
+        <allowed kind="enum">
+            <value>1.5int</value>
+            <value>halfint</value>
+            <value>manual</value>
+        </allowed>
+    </param>
 
         <param type="any" name="tbuff" subparam="true">
             <description>List of time buffers (sec) to pad timerange in flag commands</description>
@@ -101,92 +101,92 @@
             <value type="double">0.0</value>
         </param>
 
-	<param type="string" name="pipelinemode">
-	    <description>The pipeline operating mode</description>
-	    <value>automatic</value>
-	    <allowed kind="enum">
-		<value>automatic</value>
-		<value>interactive</value>
-		<value>getinputs</value>
-	    </allowed>
-	</param>
+    <param type="string" name="pipelinemode">
+        <description>The pipeline operating mode</description>
+        <value>automatic</value>
+        <allowed kind="enum">
+            <value>automatic</value>
+            <value>interactive</value>
+            <value>getinputs</value>
+        </allowed>
+    </param>
 
-	<param type="bool" name="flagbackup" subparam="true">
-	    <description>Backup pre-existing flags before applying new ones</description>
-	    <value type="bool">False</value>
-	</param>
+    <param type="bool" name="flagbackup" subparam="true">
+        <description>Backup pre-existing flags before applying new ones</description>
+        <value type="bool">False</value>
+    </param>
 
-	<param type="bool" name="dryrun" subparam="true">
-	    <description>Run the task (False) or display the command (True)</description>
-	    <value>False</value>
-	</param>
-	
-	<param type="bool" name="acceptresults" subparam="true">
-	    <description>Add the results into the pipeline context</description>
-	    <value>True</value>
-	</param>
+    <param type="bool" name="dryrun" subparam="true">
+        <description>Run the task (False) or display the command (True)</description>
+        <value>False</value>
+    </param>
+    
+    <param type="bool" name="acceptresults" subparam="true">
+        <description>Add the results into the pipeline context</description>
+        <value>True</value>
+    </param>
 
-	<constraints>
-	    <when param="pipelinemode">
-		<equals type="string" value="automatic">
-		</equals>
-		<equals type="string" value="interactive">
-		    <default param="vis"><value type="stringArray"></value></default>
-		    <default param="flagbackup"><value type="bool">False</value></default>
-		    <default param="dryrun"><value type="bool">False</value></default>
-		    <default param="acceptresults"><value type="bool">True</value></default>
-		</equals>
-		<equals type="string" value="getinputs">
-		    <default param="vis"><value type="stringArray"></value></default>
-		    <default param="flagbackup"><value type="bool">False</value></default>
-		</equals>
-	    </when>
+    <constraints>
+        <when param="pipelinemode">
+            <equals type="string" value="automatic">
+            </equals>
+            <equals type="string" value="interactive">
+                <default param="vis"><value type="stringArray"></value></default>
+                <default param="flagbackup"><value type="bool">False</value></default>
+                <default param="dryrun"><value type="bool">False</value></default>
+                <default param="acceptresults"><value type="bool">True</value></default>
+            </equals>
+            <equals type="string" value="getinputs">
+                <default param="vis"><value type="stringArray"></value></default>
+                <default param="flagbackup"><value type="bool">False</value></default>
+            </equals>
+        </when>
 
-	    <when param="scan">
-	        <equals type="bool" value="True">
-		    <default param="scannumber"><value type="string"></value></default>
-		    <default param="intents"><value type="string">*POINTING*,*FOCUS*,*ATMOSPHERE*,*SIDEBAND_RATIO*,*UNKNOWN*, *SYSTEM_CONFIGURATION*, *UNSPECIFIED#UNSPECIFIED*</value></default>
-	        </equals>
-	        <equals type="bool" value="False">
-	        </equals>
-	    </when>
+        <when param="scan">
+            <equals type="bool" value="True">
+                <default param="scannumber"><value type="string"></value></default>
+                <default param="intents"><value type="string">*POINTING*,*FOCUS*,*ATMOSPHERE*,*SIDEBAND_RATIO*,*UNKNOWN*, *SYSTEM_CONFIGURATION*, *UNSPECIFIED#UNSPECIFIED*</value></default>
+            </equals>
+            <equals type="bool" value="False">
+            </equals>
+        </when>
 
-	    <when param="edgespw">
-	        <equals type="bool" value="True">
-		    <default param="fracspw"><value type="double">0.05</value></default>
-	        </equals>
-	        <equals type="bool" value="False">
-		</equals>
-	    </when>
+        <when param="edgespw">
+            <equals type="bool" value="True">
+                <default param="fracspw"><value type="double">0.05</value></default>
+            </equals>
+            <equals type="bool" value="False">
+            </equals>
+        </when>
 
-	    <when param="online">
-	        <equals type="bool" value="True">
-		    <default param="fileonline"><value type="string"></value></default>
-	        </equals>
-	        <equals type="bool" value="False">
-	        </equals>
-	    </when>
+        <when param="online">
+            <equals type="bool" value="True">
+                <default param="fileonline"><value type="string"></value></default>
+            </equals>
+            <equals type="bool" value="False">
+            </equals>
+        </when>
 
-	    <when param="template">
-	        <equals type="bool" value="True">
-		    <default param="filetemplate"><value type="stringArray"></value></default>
-	        </equals>
-	        <equals type="bool" value="False">
-	        </equals>
-	    </when>
+        <when param="template">
+            <equals type="bool" value="True">
+                <default param="filetemplate"><value type="stringArray"></value></default>
+            </equals>
+            <equals type="bool" value="False">
+            </equals>
+        </when>
 
 
-	    <when param="hm_tbuff">
-			<equals type="string" value="1.5int">
-	        </equals>
-	        <equals type="string" value="halfint">
-	        </equals>
-	        <equals type="string" value="manual">
-		    <default param="tbuff"><value type="double">0.0</value></default>
-	        </equals>
-	    </when>
+        <when param="hm_tbuff">
+            <equals type="string" value="1.5int">
+            </equals>
+            <equals type="string" value="halfint">
+            </equals>
+            <equals type="string" value="manual">
+                <default param="tbuff"><value type="double">0.0</value></default>
+            </equals>
+        </when>
 
-	</constraints>
+    </constraints>
 </input>
 
 <output>
@@ -254,7 +254,7 @@ hm_tbuff -- The time buffer computation heuristic
     default: 1.5int
 
 tbuff -- List of time buffers (sec) to pad timerange in flag commands
-	default: 0.0
+    default: 0.0
 
 online -- Apply the online flags.
    default: True

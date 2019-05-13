@@ -14,28 +14,28 @@ Fills the model column with the model visibilities.
 
 <input>
     <param type="stringArray" name="vis" subparam="true">
-	<description>List of input MeasurementSets</description>
-	<value></value>
+    <description>List of input MeasurementSets</description>
+    <value></value>
     </param>
 
     <param type="string" name="field" subparam="true">
-	<description>List of field names or ids</description>
+    <description>List of field names or ids</description>
         <value type="string"></value>
     </param>
 
     <param type="string" name="intent" subparam="true">
-    	<description>Observing intent of flux calibrators</description>
+        <description>Observing intent of flux calibrators</description>
         <value></value>
     </param>
 
     <param type="string" name="spw" subparam="true">
-	<description>List of spectral window ids</description>
-	<value></value>
+    <description>List of spectral window ids</description>
+    <value></value>
     </param>
 
     <param type="string" name="model" subparam="true">
-	<description>File location for field model</description>
-	<value></value>
+    <description>File location for field model</description>
+    <value></value>
     </param>
 
     <param type="string" name="reffile" subparam="true">
@@ -54,9 +54,9 @@ Fills the model column with the model visibilities.
     </param>
 
     <param type="any" name="fluxdensity">
-	<any type="variant" limittypes="int intArray doubleArray"/>
-	<description>Specified flux density [I,Q,U,V]; -1 will lookup values</description>
-	<value type="int">-1</value>
+    <any type="variant" limittypes="int intArray doubleArray"/>
+    <description>Specified flux density [I,Q,U,V]; -1 will lookup values</description>
+    <value type="int">-1</value>
     </param>
 
     <param type="double" name="spix" subparam="true">
@@ -65,60 +65,60 @@ Fills the model column with the model visibilities.
     </param>
 
     <param type="bool" name="scalebychan">
-	<description>Scale the flux density on a per channel basis or else on a per spw basis</description>
-	<value>True</value>
+    <description>Scale the flux density on a per channel basis or else on a per spw basis</description>
+    <value>True</value>
     </param>
 
     <param type="variant" name="standard">
-	<description>Flux density standard</description>
-	<value type="string"></value>
+    <description>Flux density standard</description>
+    <value type="string"></value>
     </param>
 
     <param type="string" name="pipelinemode">
-	<description>The pipeline operating mode</description>
-	<value>automatic</value>
-	<allowed kind="enum">
-	    <value>automatic</value>
-	    <value>interactive</value>
-	    <value>getinputs</value>
-	</allowed>
+    <description>The pipeline operating mode</description>
+    <value>automatic</value>
+    <allowed kind="enum">
+        <value>automatic</value>
+        <value>interactive</value>
+        <value>getinputs</value>
+    </allowed>
    </param>
 
     <param type="bool" name="dryrun" subparam="true">
-	<description>Run the task (False) or display the commands (True)</description>
-	<value type="bool">False</value>
+    <description>Run the task (False) or display the commands (True)</description>
+    <value type="bool">False</value>
     </param>
 
     <param type="bool" name="acceptresults" subparam="true">
-	<description>Automatically accept results into the context</description>
-	<value type="bool">True</value>
+    <description>Automatically accept results into the context</description>
+    <value type="bool">True</value>
     </param>
 
     <constraints>
 
-	<when param="pipelinemode">
-	    <equals type="string" value="automatic" />
-	    <equals type="string" value="interactive">
-		<default param="vis"><value type="stringArray"></value></default>
-		<default param="field"><value type="string"></value></default>
-		<default param="intent"><value type="string"></value></default>
-		<default param="spw"><value type="string"></value></default>
-	        <default param="reffile"><value type="string"></value></default>
-	        <default param="normfluxes"><value type="bool">False</value></default>
-		<default param="model"><value type="string"></value></default>
-		<default param="dryrun"><value type="bool">False</value></default>
-		<default param="acceptresults"><value type="bool">True</value></default>
-	    </equals>
-	    <equals type="string" value="getinputs">
-		<default param="vis"><value type="stringArray"></value></default>
-		<default param="field"><value type="string"></value></default>
-		<default param="intent"><value type="string"></value></default>
-		<default param="spw"><value type="string"></value></default>
-	        <default param="reffile"><value type="string"></value></default>
-	        <default param="normfluxes"><value type="bool">False</value></default>
-		<default param="model"><value type="string"></value></default>
-	    </equals>
-	</when>
+    <when param="pipelinemode">
+        <equals type="string" value="automatic" />
+        <equals type="string" value="interactive">
+            <default param="vis"><value type="stringArray"></value></default>
+            <default param="field"><value type="string"></value></default>
+            <default param="intent"><value type="string"></value></default>
+            <default param="spw"><value type="string"></value></default>
+            <default param="reffile"><value type="string"></value></default>
+            <default param="normfluxes"><value type="bool">False</value></default>
+            <default param="model"><value type="string"></value></default>
+            <default param="dryrun"><value type="bool">False</value></default>
+            <default param="acceptresults"><value type="bool">True</value></default>
+        </equals>
+        <equals type="string" value="getinputs">
+            <default param="vis"><value type="stringArray"></value></default>
+            <default param="field"><value type="string"></value></default>
+            <default param="intent"><value type="string"></value></default>
+            <default param="spw"><value type="string"></value></default>
+            <default param="reffile"><value type="string"></value></default>
+            <default param="normfluxes"><value type="bool">False</value></default>
+            <default param="model"><value type="string"></value></default>
+        </equals>
+    </when>
 
         <when param="fluxdensity">
            <notequals type="int" value="-1">
@@ -162,13 +162,13 @@ fluxdensity -- Specified flux density [I,Q,U,V] in Jy. Uses [1,0,0,0]
     example: [3.06,0.0,0.0,0.0]
 
 reffile -- Path to a file containing flux densities for calibrators unknown to
-	CASA. Values given in this file take precedence over the CASA-derived
+    CASA. Values given in this file take precedence over the CASA-derived
     values for all calibrators except solar system calibrators. By default the
     path is set to the CSV file created by h_importdata, consisting of
     catalogue fluxes extracted from the ASDM.
 
-	default: ''
-	example: reffile='', reffile='working/flux.csv'
+    default: ''
+    example: reffile='', reffile='working/flux.csv'
 
 spix -- Spectral index for fluxdensity S = fluxdensity * (freq/reffreq)**spix
     Only used if fluxdensity is being used. If fluxdensity is positive, and

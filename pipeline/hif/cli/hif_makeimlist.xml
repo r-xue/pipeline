@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" ?>
 <casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task type="function" name="hif_makeimlist" category="pipeline">
 <shortdescription>Compute list of clean images to be produced</shortdescription>
@@ -272,7 +272,7 @@ hm_imsize -- Image X and Y size in pixels or PB level for single field. The
          2. Set the size of the image to cover the spread of field centers plus
             a border of width 0.75 * beam radius, to first null.
          3. Divide X and Y extents by cell size to arrive at the number of
-	    pixels required. 
+            pixels required. 
          The PB level setting for single fields leads to an imsize extending
          to the specified level plus 5% padding in all directions.
     example: [120, 120], '0.3pb'

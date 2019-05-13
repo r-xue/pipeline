@@ -11,10 +11,10 @@ file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 Fit the continuum in the UV plane using polynomials.
 </description>
 <input>
-	<param type="stringArray" name="vis" subparam="true">
-		<description>The name of the input visibility file</description>
-		<value></value>
-	</param>
+  <param type="stringArray" name="vis" subparam="true">
+    <description>The name of the input visibility file</description>
+    <value></value>
+  </param>
 
         <param type="stringArray" name="caltable" subparam="true">
                 <description>Name of output Mueller matrix calibration table</description>
@@ -36,10 +36,10 @@ Fit the continuum in the UV plane using polynomials.
                 <value type="string"></value>
         </param>
 
-	<param type="string" name="spw" subparam="true">
-		<description>Spectral window / channels for fitting the continuum</description>
-		<value></value>
-	</param>
+  <param type="string" name="spw" subparam="true">
+    <description>Spectral window / channels for fitting the continuum</description>
+    <value></value>
+  </param>
 
         <param type="string" name="combine" subparam="true">
                 <description>Data axes to combine for the continuum estimation (none, spw and/or scan)</description>
@@ -47,14 +47,14 @@ Fit the continuum in the UV plane using polynomials.
         </param>
 
   <param type="any" name="solint">
-	<description>Time scale for the continuum fit</description>
+  <description>Time scale for the continuum fit</description>
          <any type="variant"/>
         <value type="string">int</value>
   </param>
 
   <param type="int" name="fitorder">
-	<description>Polynomial order for the continuum fits</description>
-	<value>1</value>
+  <description>Polynomial order for the continuum fits</description>
+  <value>1</value>
   </param>
 
   <param type="string" name="pipelinemode">
@@ -129,7 +129,7 @@ the real and imaginary parts of the spectral windows and channels
 selected by spw and exclude spw. This fit represents a model of
 the continuum in all channels. Fit orders less than 2 are strongly
 recommended. Spw window combination is not currently supported.
-	
+
 
 Keyword Arguments
 

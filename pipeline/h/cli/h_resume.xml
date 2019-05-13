@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" ?>
 <casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task type="function" name="h_resume" category="pipeline">
 <shortdescription>Restore a save pipeline state from disk</shortdescription>
@@ -12,8 +12,8 @@ pipeline reduction session to be resumed.
 </description>
 <input>
     <param type="string" name="filename">
-	<description>Filename of saved state to be restored</description>
-	<value>last</value>
+    <description>Filename of saved state to be restored</description>
+    <value>last</value>
     </param>
 </input>
 <example>
@@ -28,7 +28,7 @@ filename -- Name of the saved pipeline state. Setting filename to
     name begins with 'context*'.
     default: 'last'
     example: filename='context.s3.2012-02-13T10:49:11'
-	     filename='last' 
+             filename='last' 
 
 Description
 
