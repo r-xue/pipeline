@@ -222,7 +222,7 @@ def onlineChannelAveraging(vis, spw, mymsmd=''):
     cqa = casatools.quanta
     chanwidth = abs(chanwidths[0])
     chaneffwidth = mymsmd.chaneffbws(spw)[0]
-    
+
     # warning of nominal effective bandwidth for < Cycle 3
     start_time = mymsmd.timerangeforobs(0)['begin']
     if cqa.time(start_time['m0'], 0, ['ymd', 'no_time'])[0] < "2015-10-01" and chanwidth == chaneffwidth:

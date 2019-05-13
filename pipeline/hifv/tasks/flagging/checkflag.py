@@ -23,7 +23,7 @@ class CheckflagInputs(vdp.StandardInputs):
         self.context = context
         self.vis = vis
         self.checkflagmode = checkflagmode
-    
+
 
 class CheckflagResults(basetask.Results):
     def __init__(self, jobs=None, summary_stats=None):
@@ -37,7 +37,7 @@ class CheckflagResults(basetask.Results):
 
         self.jobs = jobs
         self.summary_stats = summary_stats
-        
+
     def __repr__(self):
         s = 'Checkflag (rflag mode) results:\n'
         for job in self.jobs:
@@ -54,7 +54,7 @@ class CheckflagResults(basetask.Results):
 @task_registry.set_equivalent_casa_task('hifv_checkflag')
 class Checkflag(basetask.StandardTaskTemplate):
     Inputs = CheckflagInputs
-    
+
     def prepare(self):
 
         LOG.info("Checking RFI flagging of BP and Delay Calibrators")
@@ -230,7 +230,7 @@ class Checkflag(basetask.StandardTaskTemplate):
         checkflagfields = self.inputs.context.evla['msinfo'][m.name].checkflagfields
         corrstring = m.get_vla_corrstring()
         testgainscans = self.inputs.context.evla['msinfo'][m.name].testgainscans
-        
+
         method_args = {'mode': 'rflag',
                        'field': checkflagfields,
                        'correlation': 'ABS_' + corrstring,
@@ -238,11 +238,11 @@ class Checkflag(basetask.StandardTaskTemplate):
                        'ntime': 'scan',
                        'datacolumn': 'corrected',
                        'flagbackup': False}
-        
+
         if self.inputs.checkflagmode == 'semi':
             calibrator_field_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
             calibrator_scan_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_scan_select_string
-        
+
             method_args = {'mode': 'rflag',
                            'field': calibrator_field_select_string,
                            'correlation': 'ABS_' + corrstring,
@@ -250,7 +250,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                            'ntime': 'scan',
                            'datacolumn': 'corrected',
                            'flagbackup': False}
-        
+
         self._do_checkflag(**method_args)
 
         # get the after flag total statistics
@@ -263,7 +263,7 @@ class Checkflag(basetask.StandardTaskTemplate):
     def _do_checkflag(self, mode='rflag', field=None, correlation=None, scan=None, intent='',
                       ntime='scan', datacolumn='corrected', flagbackup=False, timedevscale=4.0,
                       freqdevscale=4.0, action='apply', timedev='', freqdev='', savepars=True):
-        
+
         task_args = {'vis': self.inputs.vis,
                      'mode': mode,
                      'field': field,
@@ -283,11 +283,11 @@ class Checkflag(basetask.StandardTaskTemplate):
                      'extendflags': False,
                      'flagbackup': flagbackup,
                      'savepars': savepars}
-                     
+
         job = casa_tasks.flagdata(**task_args)
-            
+
         jobresult = self._executor.execute(job)
-                
+
         return jobresult
 
     def analyse(self, results):

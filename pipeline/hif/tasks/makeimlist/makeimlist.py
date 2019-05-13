@@ -283,7 +283,7 @@ class MakeImList(basetask.StandardTaskTemplate):
         if (not repr_target_mode) or (repr_target_mode and image_repr_target):
             # read the spw, if none then set default 
             spw = inputs.spw
-   
+
             if spw == '':
                 spwids = sorted(inputs.context.observing_run.virtual_science_spw_ids.keys())
             else:

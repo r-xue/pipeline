@@ -27,7 +27,7 @@ class T2_4MDetailsCheckProductSizeRenderer(basetemplates.T2_4MDetailsDefaultRend
 
     @staticmethod
     def _get_table_rows(context, result):
-        
+
         if 'nbins' in result.size_mitigation_parameters:
             nbins = result.size_mitigation_parameters['nbins']
         else:

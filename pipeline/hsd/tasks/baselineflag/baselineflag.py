@@ -25,13 +25,13 @@ class SDBLFlagInputs(vdp.StandardInputs):
     """
     def __to_numeric(self, val):
         return sdutils.to_numeric(val)
-    
+
     def __to_bool(self, val):
         return sdutils.to_bool(val)
 
     def __to_int(self, val):
         return int(val)
-    
+
     intent = vdp.VisDependentProperty(default='TARGET')
     iteration = vdp.VisDependentProperty(default=5, fconvert=__to_int)
     flag_tsys = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
@@ -64,13 +64,13 @@ class SDBLFlagInputs(vdp.StandardInputs):
     def infiles(self, value):
         self.vis = value
         return value
-    
+
     @iteration.convert
     def iteration(self, value):
         return int(value)
-    
+
     edge = vdp.VisDependentProperty(default=[0, 0])
-    
+
     @edge.convert
     def edge(self, value):
         return sdutils.to_list(value)
@@ -112,7 +112,7 @@ class SDBLFlagInputs(vdp.StandardInputs):
         pols = set()
         for idx in selected_spwids:
             pols.update(self.ms.get_data_description(spw=idx).corr_axis)
-        
+
         return ','.join(pols)
 
     def __init__(self, context, output_dir=None,
@@ -129,7 +129,7 @@ class SDBLFlagInputs(vdp.StandardInputs):
                  infiles=None, antenna=None, field=None,
                  spw=None, pol=None):
         super(SDBLFlagInputs, self).__init__()
-        
+
         # context and vis/infiles must be set first so that properties that require
         # domain objects can be function
         self.context = context
@@ -163,7 +163,7 @@ class SDBLFlagInputs(vdp.StandardInputs):
         self.field = field
         self.spw = spw
         self.pol = pol
-       
+
         ### Default Flag rule
         from . import SDFlagRule
         reload(SDFlagRule)
@@ -217,7 +217,7 @@ class SDBLFlagResults(common.SingleDishResults):
 
     def merge_with_context(self, context):
         super(SDBLFlagResults, self).merge_with_context(context)
-        
+
     def _outcome_name(self):
         return 'none'
 
@@ -270,10 +270,10 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
                                                    spwcorr=True, fieldcnt=True,
                                                    name='before')
         stats_before = self._executor.execute(flagdata_summary_job)
-        
+
         # collection of field, antenna, and spw ids in reduction group per MS
         registry = collections.defaultdict(sdutils.RGAccumulator)
-        
+
         # loop over reduction group (spw and source combination)
         flagResult = []
         for (group_id, group_desc) in reduction_group.iteritems():
@@ -288,7 +288,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
             if nchan == 1:
                 LOG.info('Skipping a group of channel averaged spw')
                 continue
- 
+
             field_sel = ''
             if len(in_field) == 0:
                 # fine, just go ahead
@@ -304,12 +304,12 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
             # Which group in group_desc list should be processed
             member_list = list(common.get_valid_ms_members(group_desc, [cal_name], in_ant, field_sel, in_spw))
             LOG.trace('group %s: member_list=%s' % (group_id, member_list))
-            
+
             # skip this group if valid member list is empty
             if len(member_list) == 0:
                 LOG.info('Skip reduction group %d' % group_id)
                 continue
- 
+
             member_list.sort()  # list of group_desc IDs to flag
             antenna_list = [group_desc[i].antenna_id for i in member_list]
             spwid_list = [group_desc[i].spw_id for i in member_list]
@@ -320,7 +320,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
             pols_list = [[corr for corr in ddobj.corr_axis if (in_pol == '' or corr in in_pol)]
                          for ddobj in temp_dd_list]
             del temp_dd_list
-             
+
             for i in xrange(len(member_list)):
                 member = group_desc[member_list[i]]
                 registry[member.ms].append(field_id=member.field_id,
@@ -339,7 +339,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
                 # row map generation is very expensive. Do as few time as possible
                 _ms = context.observing_run.get_ms(msobj.name)
                 rowmap = sdutils.make_row_map_for_baselined_ms(_ms)
-                
+
             antenna_list = accumulator.get_antenna_id_list()
             fieldid_list = accumulator.get_field_id_list()
             spwid_list = accumulator.get_spw_id_list()
@@ -356,7 +356,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
                     field_id,
                     msobj.fields[field_id].name,
                     ','.join(pol_ids)))
-                
+
             LOG.info("*"*60)
 
             nchan = 0
@@ -377,7 +377,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
                                            pols_list, thresholds, flag_rule)
                 result = self._executor.execute(renderer, merge=False)
                 flagResult += result
-            
+
         # Calculate flag fraction after operation.
         flagdata_summary_job = casa_tasks.flagdata(vis=bl_name, mode='summary',
                                                    antenna=in_ant, field=in_field,
@@ -385,14 +385,14 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
                                                    spwcorr=True, fieldcnt=True,
                                                    name='after')
         stats_after = self._executor.execute(flagdata_summary_job)
- 
+
         outcome = {'flagdata_summary': [stats_before, stats_after],
                    'summary': flagResult}
         results = SDBLFlagResults(task=self.__class__,
                                   success=True,
                                   outcome=outcome)
         return results
- 
+
     def analyse(self, result):
         return result
 

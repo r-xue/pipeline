@@ -130,5 +130,5 @@ class ImagePreCheckHeuristics(object):
             hm_robust_score_longmsg = 'Requested beam area range falls in robust gap'
             hm_robust_score_shortmsg = 'Requested beam falls in robust gap'
             LOG.warn(hm_robust_score_longmsg)
-                
+
         return hm_robust, (hm_robust_score_value, hm_robust_score_longmsg, hm_robust_score_shortmsg), beamRatio_0p0, beamRatio_0p5, beamRatio_1p0, beamRatio_2p0

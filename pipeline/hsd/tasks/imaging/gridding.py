@@ -41,12 +41,12 @@ class GriddingInputs(vdp.StandardInputs):
     poltypes = vdp.VisDependentProperty(default='')
     nx = vdp.VisDependentProperty(default=-1)
     ny = vdp.VisDependentProperty(default=-1)
-    
+
     # Synchronization between infiles and vis is still necessary
     @vdp.VisDependentProperty
     def vis(self):
         return self.infiles
-    
+
     def __init__(self, context, infiles, antennaids, fieldids, spwids, poltypes, nx=None, ny=None):
         super(GriddingInputs, self).__init__()
 
@@ -128,11 +128,11 @@ class GriddingBase(basetask.StandardTaskTemplate):
             poltype = self.poltype[i]
             ddobj = context.observing_run.measurement_sets[msidx].get_data_description(spw=spwid)
             self.polid[msidx] = ddobj.get_polarization_id(poltype)
-        
+
         LOG.debug('Members to be processed:')
         for (m, a, s, p) in itertools.izip(self.files, self.antenna, self.spw, self.poltype):
             LOG.debug('\t%s Antenna %s Spw %s Pol %s'%(os.path.basename(m), a, s, p))
-        
+
         reference_data = context.observing_run.get_ms(name=self.files[0])
         reference_spw = reference_data.spectral_windows[self.spw[0]]
         self.nchan = reference_spw.num_channels
@@ -222,7 +222,7 @@ class GriddingBase(basetask.StandardTaskTemplate):
                 datatable = dt_dict[basename]
                 _list = index_dict[key]
                 yield datatable.getcol(colname).take(_list, axis=-1)
-                
+
         #rows = table.getcol('ROW').take(index_list)
         rows = numpy.fromiter(_g2('ROW'), dtype=numpy.int64, count=num_spectra)
 
@@ -287,7 +287,7 @@ class GriddingBase(basetask.StandardTaskTemplate):
 
 ###### TODO: Proper handling of POL
         GridTable = self._group(index_list, rows, msids, ras, decs, stats, combine_radius, allowance_radius, grid_spacing, dec_corr)
-        
+
         # create storage
         _counter = 0
         num_spectra_per_data = dict([(i, 0) for i in self.msidxs])
@@ -296,7 +296,7 @@ class GriddingBase(basetask.StandardTaskTemplate):
         LOG.trace('num_spectra_per_data=%s' % num_spectra_per_data)
 
         LOG.info('Processing %d spectra...' % num_spectra)
-        
+
         if self.nchan != 1:
             accum = Accumulator(minmaxclip=(self.Rule['Clipping'].upper()=='MINMAXREJECT'),
                                 weight_rms=self.Rule['WeightRMS'],
@@ -314,7 +314,7 @@ class GriddingBase(basetask.StandardTaskTemplate):
         LOG.info('Accumulate nearby spectrum for each Grid position...')
         LOG.info('Processing %d spectra...' % (num_grid))
         OutputTable = []
-        
+
         # create storage for output
         # 2011/11/12 DataIn and rowsSel are [list]
         IDX2StorageID = {}
@@ -356,7 +356,7 @@ class GriddingBase(basetask.StandardTaskTemplate):
                 # Data accumulation by Accumulator
                 accum.init(len(indexlist))
                 accum.accumulate(indexlist, rmslist, deltalist, tsys, exposure)
-                
+
                 RMS = accum.rms
 
             OutputTable.append((IF, POL, X, Y, RAcent, DECcent, num_valid, num_flagged, RMS))

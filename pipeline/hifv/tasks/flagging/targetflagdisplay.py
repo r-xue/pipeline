@@ -20,7 +20,7 @@ class targetflagSummaryChart(object):
         plots = []
         context = self.context
         result = self.result
-        
+
         m = context.observing_run.measurement_sets[0]
         numAntenna = len(m.antennas)
         bandpass_field_select_string = context.evla['msinfo'][m.name].bandpass_field_select_string
@@ -36,12 +36,12 @@ class targetflagSummaryChart(object):
         field_names = m.get_vla_field_names()
         #channels = context.evla['msinfo'][m.name].channels
         channels = m.get_vla_numchan()
-    
+
         ms_active = m.name
-        
+
         # create phase time plot for all calibrators
         figfile = self.get_figfile('all_calibrators_phase_time')
-                            
+
         plot = logger.Plot(figfile, x_axis='time', y_axis='phase',
                           parameters={'vis'      : self.ms.basename,
                                       'type'     : 'All calibrators',
@@ -62,23 +62,23 @@ class targetflagSummaryChart(object):
                 LOG.error('Could not create fluxboot plot.')
                 LOG.exception(ex)
                 plot = None
-        
+
         plots.append(plot)
-        
+
         # create amp vs. UVwave plots of each field
         for ii in field_ids:
             figfile = self.get_figfile('field'+str(field_ids[ii])+'_amp_uvdist')
             #figfile = self.get_figfile('targetflag')
-            
+
             plot = logger.Plot(figfile, x_axis='uvwave', y_axis='amp',
                           parameters={'vis'      : self.ms.basename,
                                       'type'     : 'Field '+str(field_ids[ii])+', '+field_names[ii],
                                       'field'    : str(field_ids[ii]),
                                       'spw'      : ''})
-                                      
+
             if not os.path.exists(figfile):
                 LOG.trace('Plotting amp vs. uvwave for field id='+str(field_ids[ii])+'.  Creating new plot.')
-                      
+
                 try:
                     casa.plotms(vis=ms_active,  xaxis='uvwave',  yaxis='amp',  ydatacolumn='corrected',
                                 selectdata=True, field=str(field_ids[ii]), correlation=corrstring, averagedata=True,
@@ -91,7 +91,7 @@ class targetflagSummaryChart(object):
                     LOG.error('Could not create plot for field '+str(field_ids[ii]))
                     LOG.exception(ex)
                     plot = None
-                    
+
             plots.append(plot)
 
         return [p for p in plots if p is not None]

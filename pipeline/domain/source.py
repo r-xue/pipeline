@@ -69,17 +69,17 @@ class Source(object):
     @property
     def ra(self):        
         return casatools.quanta.formxxx(self.longitude, format='hms', prec=3)
-    
+
     # Galactic Longitude: it is usually expressed in DMS format
     @property
     def gl(self):
         return casatools.quanta.formxxx(self.longitude, format='dms', prec=2)
-    
+
     # Galactic Latitude
     @property
     def gb(self):
         return self.dec
-        
+
     def __format_pm(self, axis):
         qa = casatools.quanta
         val = qa.getvalue(self._proper_motion[axis])

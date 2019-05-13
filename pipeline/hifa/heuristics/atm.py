@@ -50,7 +50,7 @@ class AtmHeuristics(object):
                 channel_width[i] = float(channels[i].low.value -
                                          channels[i].high.value)
                 res[i] = float(channels[i].low.value - channels[i].high.value)
-      
+
             centre_frequency = spw.centre_frequency
             centre_freq.append(float(centre_frequency.value))
             centre_freq_unit = centre_frequency.units['symbol']

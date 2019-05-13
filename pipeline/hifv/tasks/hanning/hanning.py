@@ -45,7 +45,7 @@ class HanningResults(basetask.Results):
 @task_registry.set_equivalent_casa_task('hifv_hanning')
 class Hanning(basetask.StandardTaskTemplate):
     Inputs = HanningInputs
-    
+
     def prepare(self):
 
         if self._checkpreaveraged():
@@ -62,10 +62,10 @@ class Hanning(basetask.StandardTaskTemplate):
             LOG.warn("Data in this MS are pre-averaged.  CASA task hanningsmooth() was not executed.")
 
         return HanningResults()
-    
+
     def analyse(self, results):
         return results
-    
+
     def _do_hanningsmooth(self):
 
         task = casa_tasks.hanningsmooth(vis=self.inputs.vis,

@@ -28,7 +28,7 @@ class K2JyHistDisplay(object):
             self.factors = valid_factors
         else:
             raise ValueError("valid_factors should be dictionary or an iterable")
-    
+
     def plot(self):
         pl.ioff()
         pl.clf()
@@ -89,7 +89,7 @@ def collect_dict_values(in_value):
     [1, 2, 4]
     When in_value is a simple number or an array, it returns a list
     of the number or the array
-        
+
     in_value: a dictionary, number or array to collect values and construct a list
     """
     if type(in_value) not in [dict, collections.defaultdict]:

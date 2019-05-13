@@ -171,7 +171,7 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                 # If requested to re-run datatask on iteration, then
                 # run the flag-setting task which modifies the data
                 # and then re-run the data task
-                
+
                 # If no "before summary" was done, include this in the flag
                 # setting task
                 if include_before:
@@ -180,7 +180,7 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                     include_before = False
                 else:
                     _, _ = self.set_flags(newflags)
-                    
+
                 dataresult = self._executor.execute(inputs.datatask)
             else:
                 # If not iterating the datatask, the previous 
@@ -193,13 +193,13 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
 
             # If a view could be created, continue with flagging
             if viewresult.descriptions():
-            
+
                 # Import the views from viewtask into the final result
                 result.importfrom(viewresult)
-    
+
                 # Flag the view
                 newflags, newflags_reason = self.flag_view(viewresult, inputs.rules)
-            
+
                 # Report how many flags were found in this iteration and
                 # stop iteration if no new flags were found
                 if len(newflags) == 0:
@@ -211,7 +211,7 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                     # Report newly found flags (CAS-7336: show as info message instead of warning).
                     LOG.info("{0}{1} iteration {2} raised {3} flagging commands"
                              "".format(inputs.prepend, os.path.basename(inputs.vis), counter, len(newflags)))
-    
+
                 # Accumulate new flags and flag reasons
                 flags += newflags
                 for description in newflags_reason:
@@ -220,7 +220,7 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                             newflags_reason[description][newflags_reason[description] > 0]
                     else:
                         flag_reason_plane[description] = newflags_reason[description]
-                
+
                 counter += 1
             else:
                 # If no view could be created, exit the iteration
@@ -230,14 +230,14 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
         # Create final set of flags by removing duplicates from our accumulated
         # flags
         flags = list(set(flags))
-        
+
         # If flags were found...
         if len(flags) > 0:
 
             # If newflags were found on last iteration loop, we need to still
             # set these.
             if len(newflags) > 0:
-                
+
                 # If datatask needs to be iterated...
                 if inputs.iter_datatask is True:
 
@@ -257,14 +257,14 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
 
                     # After setting the latest flags, re-run the data task.
                     dataresult = self._executor.execute(inputs.datatask)
-                                 
+
                 # If the datatask did not need to be iterated, then no flags
                 # were set yet and no "before" summary was performed yet, so
                 # set all flags and include both "before" and "after" summary.
                 else:
                     stats_before, stats_after = self.set_flags(
                         flags, summarize_before=True, summarize_after=True)
-                
+
                 # Create final post-flagging view                
                 viewresult = inputs.viewtask(dataresult)
 
@@ -286,22 +286,22 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                 else:
                     stats_before, stats_after = self.set_flags(
                         flags, summarize_before=True, summarize_after=True)
-            
+
             # Store the final set of flags in the final result
             result.addflags(flags)
-            
+
             # Store the flag reasons in the last (i.e. post-flagging) view in
             # the final result
             result.add_flag_reason_plane(flag_reason_plane,
                                          self.flag_reason_key)
-        
+
         # if no flags were found at all
         else:
             # Run a single flagging summary and use the result as both the "before" 
             # and "after" summary.
             stats_before, _ = self.set_flags(flags, summarize_before=True)
             stats_after = copy.deepcopy(stats_before)
-        
+
         # Store in the final result the name of the measurement set or caltable
         # to which any potentially found flags would need to be applied to.
         result.table = inputs.flagsettertask.inputs.table
@@ -321,7 +321,7 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
 
     def analyse(self, result):
         return result
-        
+
     def flag_view(self, view, rules):
         newflags = []
         newflags_reason = {}
@@ -344,17 +344,17 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
         # Add the "before" summary to the flagging commands.
         if summarize_before:
             allflagcmds = ["mode='summary' name='before'"]
-        
+
         # Add the flagging commands.
         allflagcmds.extend(flags)
-        
+
         # Add the "before" summary to the flagging commands.
         if summarize_after:
             allflagcmds.append("mode='summary' name='after'")
-        
+
         # Update flag setting task with all flagging commands.
         self.inputs.flagsettertask.flags_to_set(allflagcmds)
-        
+
         # Run flag setting task
         flagsetterresult = self._executor.execute(self.inputs.flagsettertask)
 
@@ -501,7 +501,7 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
             antenna_id_to_name = _get_ant_id_to_name_dict(self.inputs.ms)
         else:
             antenna_id_to_name = {}
-            
+
         # If requested, expand current spw to all spws within the same
         # baseband, thus changing spw from an integer to a list of integers
         if self.inputs.extendbaseband:
@@ -1414,14 +1414,14 @@ class VectorFlagger(basetask.StandardTaskTemplate):
                 # If requested to re-run datatask on iteration, then
                 # run the flag-setting task which modifies the data
                 # and then re-run the data task
-                
+
                 # If no "before summary" was done, include this in the flag setting task
                 if include_before:
                     stats_before, _ = self.set_flags(newflags, summarize_before=True)
                     include_before = False
                 else:
                     _, _ = self.set_flags(newflags)
-                    
+
                 dataresult = self._executor.execute(inputs.datatask)
             else:
                 # If not iterating the datatask, the previous 
@@ -1434,13 +1434,13 @@ class VectorFlagger(basetask.StandardTaskTemplate):
 
             # If a view could be created, continue with flagging
             if viewresult.descriptions():
-            
+
                 # Import the views from viewtask into the final result
                 result.importfrom(viewresult)
-    
+
                 # Flag the view
                 newflags = self.flag_view(viewresult)
-            
+
                 # Report how many flags were found in this iteration and
                 # stop iteration if no new flags were found
                 if len(newflags) == 0:
@@ -1455,7 +1455,7 @@ class VectorFlagger(basetask.StandardTaskTemplate):
 
                 # Accumulate new flags
                 flags += newflags
-                
+
                 counter += 1
             else:
                 # If no view could be created, exit the iteration
@@ -1464,14 +1464,14 @@ class VectorFlagger(basetask.StandardTaskTemplate):
 
         # Create final set of flags by removing duplicates from our accumulated flags
         flags = list(set(flags))
-        
+
         # If flags were found...
         if len(flags) > 0:
-            
+
             # If newflags were found on last iteration loop, we need to still set 
             # these.
             if len(newflags) > 0:
-                
+
                 # If datatask needs to be iterated...
                 if inputs.iter_datatask is True:
 
@@ -1497,18 +1497,18 @@ class VectorFlagger(basetask.StandardTaskTemplate):
                 else:
                     stats_before, stats_after = self.set_flags(
                         flags, summarize_before=True, summarize_after=True)
-                
+
                 # Create final post-flagging view                
                 viewresult = inputs.viewtask(dataresult)
 
                 # Import the post-flagging view into the final result
                 result.importfrom(viewresult)
-                
+
             # If flags were found, but no newflags were found on last iteration
             # then the dataresult is already up-to-date, and all that is needed
             # is to ensure the flags are set, and that summaries are created.
             else:
-                
+
                 # If datatask needs to be iterated, then the "before" summary has
                 # already been done, and the flags have already been set, so only
                 # need to do an "after" summary.
@@ -1520,17 +1520,17 @@ class VectorFlagger(basetask.StandardTaskTemplate):
                 else:
                     stats_before, stats_after = self.set_flags(
                         flags, summarize_before=True, summarize_after=True)
-            
+
             # Store the final set of flags in the final result
             result.addflags(flags)
-            
+
         # if no flags were found at all
         else:
             # Run a single flagging summary and use the result as both the "before" 
             # and "after" summary.
             stats_before, _ = self.set_flags(flags, summarize_before=True)
             stats_after = copy.deepcopy(stats_before)
-        
+
         # Store in the final result the name of the measurement set or caltable
         # to which any potentially found flags would need to be applied to.
         result.table = inputs.flagsettertask.inputs.table
@@ -1560,7 +1560,7 @@ class VectorFlagger(basetask.StandardTaskTemplate):
             newflags += self.generate_flags(image)
 
         return newflags
-    
+
     def set_flags(self, flags, summarize_before=False, summarize_after=False):
         # Initialize flagging summaries
         allflagcmds = []
@@ -1568,17 +1568,17 @@ class VectorFlagger(basetask.StandardTaskTemplate):
         # Add the "before" summary to the flagging commands
         if summarize_before:
             allflagcmds = ["mode='summary' name='before'"]
-        
+
         # Add the flagging commands
         allflagcmds.extend(flags)
-        
+
         # Add the "before" summary to the flagging commands
         if summarize_after:
             allflagcmds.append("mode='summary' name='after'")
-        
+
         # Update flag setting task with all flagging commands
         self.inputs.flagsettertask.flags_to_set(allflagcmds)
-        
+
         # Run flag setting task
         flagsetterresult = self._executor.execute(self.inputs.flagsettertask)
 

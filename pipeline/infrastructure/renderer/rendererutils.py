@@ -25,7 +25,7 @@ def printTsysFlags(tsystable, htmlreport):
     """
     with casatools.TableReader(tsystable) as mytb:
         spws = mytb.getcol("SPECTRAL_WINDOW_ID")
-        
+
     with casatools.TableReader(tsystable+"/ANTENNA") as mytb:
         ant_names = mytb.getcol("NAME")
 
@@ -35,7 +35,7 @@ def printTsysFlags(tsystable, htmlreport):
         with casatools.TableReader(tsystable) as mytb:
             for iant in range(len(ant_names)):
                 for spw in np.unique(spws):
-                    
+
                     # select rows from table for specified antenna and spw
                     zseltb = mytb.query("SPECTRAL_WINDOW_ID=={0} && ANTENNA1=={1}".format(spw, iant))
                     try:
@@ -67,7 +67,7 @@ def printTsysFlags(tsystable, htmlreport):
                                   chans + "<br>\n"
 
                                 stream.write(myline)
-                
+
                 # format break between antennas
                 stream.write('<br>\n')
 

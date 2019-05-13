@@ -117,49 +117,49 @@ class T2_4MDetailsFlagDeterVLARenderer(basetemplates.T2_4MDetailsDefaultRenderer
             for intent, scan_ids in intent_scans.iteritems():
                 flagcount = 0
                 totalcount = 0
-    
+
                 for i in scan_ids:
                     flagcount += int(summary['scan'][i]['flagged'])
                     totalcount += int(summary['scan'][i]['total'])
-        
+
                     if previous_summary:
                         flagcount -= int(previous_summary['scan'][i]['flagged'])
-    
+
                 ft = T2_4MDetailsFlagDeterVLARenderer.FlagTotal(flagcount,
                                                                 totalcount)
                 total[summary['name']][intent] = ft
-                
+
             previous_summary = summary
-                
+
         return total 
-    
+
     def flags_by_science_spws(self, ms, summaries):
         science_spws = ms.get_spectral_windows(science_windows_only=True)
-    
+
         total = collections.defaultdict(dict)
-    
+
         previous_summary = None
         for summary in summaries:
-    
+
             flagcount = 0
             totalcount = 0
-    
+
             for spw in science_spws:
                 spw_id = str(spw.id)
                 flagcount += int(summary['spw'][spw_id]['flagged'])
                 totalcount += int(summary['spw'][spw_id]['total'])
-        
+
                 if previous_summary:
                     flagcount -= int(previous_summary['spw'][spw_id]['flagged'])
 
             ft = T2_4MDetailsFlagDeterVLARenderer.FlagTotal(flagcount,
                                                             totalcount)
             total[summary['name']]['SCIENCE SPWS'] = ft
-                
+
             previous_summary = summary
-                
+
         return total
-        
+
 
 # not used in 4.5.2+ and C3R4+
 class T2_4MDetailstargetflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -167,14 +167,14 @@ class T2_4MDetailstargetflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                  description='Targetflag (All targets through RFLAG)', always_rerender=False):
         super(T2_4MDetailstargetflagRenderer, self).__init__(
             uri=uri, description=description, always_rerender=always_rerender)
-    
+
     def get_display_context(self, context, results):
         super_cls = super(T2_4MDetailstargetflagRenderer, self)
         ctx = super_cls.get_display_context(context, results)
-        
+
         weblog_dir = os.path.join(context.report_dir,
                                   'stage%s' % results.stage_number)
-        
+
         summary_plots = {}
 
         '''
@@ -188,7 +188,7 @@ class T2_4MDetailstargetflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         ctx.update({'summary_plots': summary_plots,
                     'dirname': weblog_dir})
-                
+
         return ctx
 
 

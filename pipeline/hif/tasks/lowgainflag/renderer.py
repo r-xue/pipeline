@@ -23,7 +23,7 @@ class T2_4MDetailsLowgainFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                  always_rerender=False):
         super(T2_4MDetailsLowgainFlagRenderer, self).__init__(
             uri=uri, description=description, always_rerender=always_rerender)
-        
+
     def update_mako_context(self, mako_context, pipeline_context, results):
         htmlreports = self.get_htmlreports(pipeline_context, results)        
 
@@ -88,7 +88,7 @@ class T2_4MDetailsLowgainFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             if not flagcmds:
                 flagfile.writelines(['# No flag commands generated\n'])
         return filename
-    
+
 
 class TimeVsAntenna1PlotRenderer(basetemplates.JsonPlotRenderer):
     def __init__(self, context, result, plots):

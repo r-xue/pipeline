@@ -141,7 +141,7 @@ class SpectrumResult(ResultBase):
               np.arange(np.shape(self.data)[0]))
         else:
             self.axis = axis
-        
+
         if nodata is None:
             self.nodata = np.zeros(np.shape(self.data), np.bool)
         else:

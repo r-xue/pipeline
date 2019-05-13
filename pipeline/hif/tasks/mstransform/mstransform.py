@@ -45,7 +45,7 @@ class MstransformInputs(vdp.StandardInputs):
         # not contain any TARGET data for the science spectral windows, e.g. there is square
         # law detector data but nothing else. The following code removes fields that do not contain
         # data for the requested spectral windows - the science spectral windows by default.
-        
+
         if fields:
             fields_by_id = sorted(fields, key=operator.attrgetter('id'))
             last_field = fields_by_id[-1]

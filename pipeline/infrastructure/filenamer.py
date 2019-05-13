@@ -140,7 +140,7 @@ class FileNameComponentBuilder(object):
     def polarization(self, polarization):
         self._polarization = polarization
         return self
-    
+
     def antenna(self, antenna):
         self._antenna = antenna
         return self
@@ -554,17 +554,17 @@ class CalibrationTable(NamingTemplate):
         calibration.
         """
         return self.extension('xyf0cal')
-    
+
     def sdsky_cal(self):
         """Set the filename extension as appropriate for a single
         dish sky calibration."""
         return self.extension('skycal')
-    
+
     def sdbaseline(self):
         """Set the filename extension as appropriate for a single
         dish baseline subtraction."""
         return self.extension('bl')
-        
+
 
     # Fit type convenience methods --------------------------------------------
 
@@ -655,7 +655,7 @@ class Image(NamingTemplate):
     def band(self, band):
         self._associations.band(band)
         return self
-    
+
     def antenna(self, antenna):
         self._associations.antenna(antenna)
         return self
@@ -709,7 +709,7 @@ class Image(NamingTemplate):
     def flat_flux_residual(self):
         self._associations.extension('ffres')
         return self
-    
+
     def single_dish(self):
         self._associations.extension('sd')
 
@@ -834,12 +834,12 @@ class WvrgCalibrationTable(CalibrationTable):
     def __init__(self, other=None):
         super(WvrgCalibrationTable, self).__init__(other)
         self.wvrg_cal()
-        
+
 class SDSkyCalibrationTable(CalibrationTable):
     def __init__(self, other=None):
         super(SDSkyCalibrationTable, self).__init__(other)
         self.sdsky_cal()
-        
+
 class SDBaselineTable(CalibrationTable):
     def __init__(self, other=None):
         super(SDBaselineTable, self).__init__(other)

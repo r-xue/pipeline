@@ -30,7 +30,7 @@ class BandpassQAPool(pqa.QAScorePool):
         # rawdata will hold the dictionary output by the CA QA task
         self.rawdata = rawdata
         self._num_pols = utils.get_num_caltable_polarizations(caltable)
-        
+
     def update_scores(self, ms):
         """
         MeasurementSet is needed to convert from integer identifier stored in
@@ -55,7 +55,7 @@ class BandpassQAPool(pqa.QAScorePool):
 
     def _get_min(self, score_type):
         rawscores = self.rawdata['QASCORES'][score_type]
-        
+
         # attrs to hold score and QA identifier
         min_score = 1.0
         min_id = None
@@ -78,7 +78,7 @@ class BandpassQAPool(pqa.QAScorePool):
 
         ant_id = int(qa_id) / self._num_pols
         feed_id = int(qa_id) % self._num_pols
-                
+
         polarization = dd.get_polarization_label(feed_id)
         antenna = ms.get_antenna(ant_id)[0]
 

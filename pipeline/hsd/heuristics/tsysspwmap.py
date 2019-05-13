@@ -11,10 +11,10 @@ class TsysSpwMapHeuristics(api.Heuristic):
     Heuristics for Tsys spw mapping
     Examine frequency coverage and choose one Tsys spw for each science spw. 
     Score for frequency coverage is calculated by the following formula:
-    
+
         score = (min(fmax_tsys,fmax_science) - max(fmin_tsys,fmin_science)) 
                     / (fmax_science - fmin_science)
-                   
+
     The score 1.0 is the best (whole science frequency range is covered by Tsys 
     spw) while score <= 0.0 is the worst (no overlap between Tsys spw and science 
     spw).
@@ -30,11 +30,11 @@ class TsysSpwMapHeuristics(api.Heuristic):
             if spwto not in scores:
                 scores[spwto] = {}
             scores[spwto][spwfrom] = score
-            
+
         LOG.debug('scores=%s' % scores)
 
         tsysspwmap = list(best_spwmap(scores))
-        
+
         return tsysspwmap
 
 
@@ -47,7 +47,7 @@ def best_spwmap(scores):
                 best_spw = atmspw
                 best_score = score
         LOG.debug('science spw %s: best_spw %s (score %s)' % (spw, best_spw, best_score))
-        
+
         if best_score < 1.0:
             LOG.warn('spw %s: Tsys spw %s doesn\'t cover whole frequnecy range (only %s%% overlap)' %
                      (spw, best_spw, 100.0*best_score))

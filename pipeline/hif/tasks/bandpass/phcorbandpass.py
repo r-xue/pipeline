@@ -18,7 +18,7 @@ class PhcorBandpassInputs(bandpassmode.BandpassModeInputs):
     phaseupbw     = vdp.VisDependentProperty(default='')
     phaseupsolint = vdp.VisDependentProperty(default='int')
     solint        = vdp.VisDependentProperty(default='inf')
-    
+
     def __init__(self, context, mode=None, phaseup=None, phaseupbw=None, phaseupsolint=None,
                  solint=None, **parameters):
         super(PhcorBandpassInputs, self).__init__(context, mode='channel', phaseup=phaseup,
@@ -35,7 +35,7 @@ class PhcorBandpass(bandpassworker.BandpassWorker):
 
     def prepare(self, **parameters):
         inputs = self.inputs
-        
+
         # if requested, execute a phaseup job. This will add the resulting
         # caltable to the on-the-fly calibration context, so we don't need any
         # subsequent gaintable manipulation
@@ -44,7 +44,7 @@ class PhcorBandpass(bandpassworker.BandpassWorker):
 
         # Now perform the bandpass
         result = self._do_bandpass()
-        
+
         # Attach the preparatory result to the final result so we have a
         # complete log of all the executed tasks. 
         if inputs.phaseup:
@@ -68,7 +68,7 @@ class PhcorBandpass(bandpassworker.BandpassWorker):
             minsnr      = inputs.minsnr)
 
         phaseup_task = gaincal.GTypeGaincal(phaseup_inputs)
-        
+
         result = self._executor.execute(phaseup_task, merge=False)
         if not result.final:
             LOG.warning('No bandpass phaseup solution computed for %s' % (inputs.ms.basename))
@@ -82,11 +82,11 @@ class PhcorBandpass(bandpassworker.BandpassWorker):
 
     def _get_phaseup_spw(self):
         '''
-	           ms -- measurement set object 
-	       spwstr -- comma delimited list of spw ids
-	    bandwidth -- bandwidth in Hz of central channels used to
-	                 phaseup
-    	'''
+                   ms -- measurement set object 
+               spwstr -- comma delimited list of spw ids
+            bandwidth -- bandwidth in Hz of central channels used to
+                         phaseup
+        '''
         inputs = self.inputs
 
         # Add the channel ranges in. Note that this currently assumes no prior
@@ -100,7 +100,7 @@ class PhcorBandpass(bandpassworker.BandpassWorker):
         bw_quantity = quanta.convert(quanta.quantity(inputs.phaseupbw), 'Hz')        
         bandwidth = measures.Frequency(quanta.getvalue(bw_quantity)[0], 
                                        measures.FrequencyUnits.HERTZ)
-    
+
         # Loop over the spws creating a new list with channel ranges
         outspw = []
         for spw in self.inputs.ms.get_spectral_windows(self.inputs.spw):
@@ -110,5 +110,5 @@ class PhcorBandpass(bandpassworker.BandpassWorker):
             minchan, maxchan = spw.channel_range(lo_freq, hi_freq)
             cmd = '{0}:{1}~{2}'.format(spw.id, minchan, maxchan)
             outspw.append(cmd)
-    
+
         return ','.join(outspw)

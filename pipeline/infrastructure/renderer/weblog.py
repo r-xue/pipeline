@@ -51,7 +51,7 @@ def register_mako_templates(directory, prefix=''):
     template lookup. Templates will be registered to a URI composed of the URI
     prefix argument (optional) plus the template filename, minus filename
     extension.
-    
+
     For example, a call with prefix='hif' finding a file called
     'importdata.mako' would register the template to the Mako URI 
     'hif/importdata'.

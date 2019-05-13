@@ -39,7 +39,7 @@ def get_heuristic(arg):
         return arg
 
     # TODO LOOK IN HEURISTICS MODULE
-    
+
     # If the argument is a non-empty string, try to get the class with the
     # given name, or if that class doesn't exist, wrap the input in an
     # EchoHeuristic
@@ -49,7 +49,7 @@ def get_heuristic(arg):
         # if arg was a raw string with no dots, module is empty
         if not module:
             return heuristics.EchoHeuristic(arg)
-        
+
         try:
             m = __import__(module)
         except ImportError:
@@ -57,7 +57,7 @@ def get_heuristic(arg):
         for package in packages[1:]:
             m = getattr(m, package, heuristics.EchoHeuristic(arg))
         return m()
-    
+
     return heuristics.EchoHeuristic(arg)
 
 
@@ -68,7 +68,7 @@ def execute_task(context, casa_task, casa_args):
 
     # get the pipeline task inputs
     task_inputs = _get_task_inputs(casa_task, context, casa_args)
-    
+
     # print them if necessary
     if pipelinemode == 'getinputs':
         _print_inputs(casa_task, casa_args, task_inputs)
@@ -81,7 +81,7 @@ def execute_task(context, casa_task, casa_args):
     # weblog can print help from the XML task definition rather than the
     # python class
     results.taskname = casa_task
-    
+
     # accept the results if desired
     if accept_results and not dry_run:
         _merge_results(context, results)
@@ -139,7 +139,7 @@ def _print_inputs(casa_task, casa_args, task_inputs):
 
     print('Pipeline-derived inputs for {!s}:'.format(casa_task))
     pprint.pprint(casa_args)
-    
+
     # Resetting pipelinemode after a call to getinputs is not a good idea, as
     # it makes it very easy to unintentionally execute and commit tasks to the
     # context, plus the user most probably wants to tweak and call getinputs 

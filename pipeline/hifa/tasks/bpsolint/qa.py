@@ -34,9 +34,9 @@ class BpSolintQAHandler(pqa.QAPlugin):
         score4 = self._poor_bandpass_solutions(ms, result.spwids,
                 result.nbpsolutions, minbpnchans)
         scores = [score1, score2, score3, score4]
-            
+
         result.qa.pool.extend(scores)
-    
+
     def _missing_phaseup_snrs(self, ms, spwids, phsolints):
         '''
         Check whether there are missing phaseup solints. 
@@ -67,7 +67,7 @@ class BpSolintQAHandler(pqa.QAPlugin):
         return qacalc.score_poor_bandpass_solutions(ms, spwids, nbpsolutions, 
                                                     min_nsolutions)
 
-    
+
 class BpSolintListQAHandler(pqa.QAPlugin):
     """
     QA handler for a list containing BpSolintResults.

@@ -49,13 +49,13 @@ class MeasurementSet(object):
             for f in filenames:
                 fp = os.path.join(dirpath, f)
                 total_bytes += os.path.getsize(fp)
-    
+
         return measures.FileSize(total_bytes, 
                                  measures.FileSizeUnits.BYTES)
-    
+
     def __str__(self):
         return 'MeasurementSet({0})'.format(self.name)
-        
+
     @property
     def intents(self):
         intents = set()
@@ -64,7 +64,7 @@ class MeasurementSet(object):
         for field in self.fields:
             intents.update(field.intents)
         return intents
-    
+
     @property
     def antennas(self):
         # return a copy rather than the underlying list
@@ -73,7 +73,7 @@ class MeasurementSet(object):
     @property
     def basename(self):
         return os.path.basename(self.name)
-    
+
     def get_antenna(self, search_term=''):
         if search_term == '':
             return self.antennas
@@ -123,12 +123,12 @@ class MeasurementSet(object):
                          if dd.spw.id == spw]
         if id is not None:
             match = [dd for dd in self.data_descriptions if dd.id == id]
-            
+
         if match:
             return match[0]
         else:
             return None
-    
+
     def get_representative_source_spw(self, source_name=None, source_spwid=None):
         qa = casatools.quanta
         cme = casatools.measures
@@ -313,9 +313,9 @@ class MeasurementSet(object):
             LOG.warning('No target spws with channel spacing <= representative bandwith overlap the representative frequency in data set %s' % (self.basename))
             max_chanwidth = None
             for spw in target_spws_bw:
-               chanwidth = spw.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ)
-               if (max_chanwidth is None) or (chanwidth > max_chanwidth):
-               #if not_max_chanwidth or chanwidth > max_chanwidth:
+                chanwidth = spw.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ)
+                if (max_chanwidth is None) or (chanwidth > max_chanwidth):
+                #if not_max_chanwidth or chanwidth > max_chanwidth:
                     target_spwid = spw.id
             LOG.info('Selecting widest channel width spw id %s with channel width <= rerpesentative bandwidth in data set %s' % \
                 (str(target_spwid), self.basename))
@@ -346,7 +346,7 @@ class MeasurementSet(object):
         sequences of the expected type, or in the case of name or intent, as
         comma separated strings. For instance, name could be 'HOIX', 
         'HOIX,0841+708' or ('HOIX','0841+708').
-        
+
         :param field_id: field ID(s) to match
         :param name: field name(s) to match
         :param intent: observing intent(s) to match
@@ -358,7 +358,7 @@ class MeasurementSet(object):
         if task_arg not in (None, ''):
             pool = [f for f in pool
                     if f.id in utils.field_arg_to_id(self.name, task_arg)]
-        
+
         if field_id is not None:
             # encase raw numbers in a tuple
             if not isinstance(field_id, collections.Sequence):
@@ -370,7 +370,7 @@ class MeasurementSet(object):
                 name = string.split(name, ',')
             name = set(name) 
             pool = [f for f in pool if f.name in name]
-        
+
         if intent is not None:
             if isinstance(intent, str):
                 if intent in ('', '*'):
@@ -405,10 +405,10 @@ class MeasurementSet(object):
         # if requested, filter spws by number of channels
         if num_channels:
             spws = [w for w in spws if w.num_channels in num_channels] 
-            
+
         if not science_windows_only:
             return spws
-        
+
         if self.antenna_array.name == 'ALMA':
             science_intents = {'TARGET', 'PHASE', 'BANDPASS', 'AMPLITUDE',
                                'POLARIZATION', 'POLANGLE', 'POLLEAKAGE',
@@ -442,7 +442,7 @@ class MeasurementSet(object):
         selected = collections.defaultdict(set)
         for (spw, start, end, step) in utils.spw_arg_to_id(self.name, task_arg):
             selected[spw].update(set(range(start, end+1, step))) 
-            
+
         if not with_channels:
             return [spw for spw in self.spectral_windows if spw.id in selected]
 
@@ -462,7 +462,7 @@ class MeasurementSet(object):
         obs_modes = [state.get_obs_mode_for_intent(intent)
                      for state in self.states]
         return set(itertools.chain(*obs_modes))
-    
+
     @property
     def start_time(self):
         qt = casatools.quanta
@@ -481,10 +481,10 @@ class MeasurementSet(object):
 
     def get_vla_max_integration_time(self):
         """Get the integration time used by the original VLA scripts
-       
+
            Returns -- The max integration time used
         """
-        
+
         vis = self.name
 
         # with casatools.TableReader(vis + '/FIELD') as table:
@@ -492,7 +492,7 @@ class MeasurementSet(object):
         #     field_positions = table.getcol('PHASE_DIR')
         #     field_ids = range(numFields)
         #     field_names = table.getcol('NAME')
-        
+
         # with casatools.TableReader(vis) as table:
         #     scanNums = sorted(numpy.unique(table.getcol('SCAN_NUMBER')))
         #     field_scans = []
@@ -500,7 +500,7 @@ class MeasurementSet(object):
         #         subtable = table.query('FIELD_ID==%s'%ii)
         #         field_scans.append(list(numpy.unique(subtable.getcol('SCAN_NUMBER'))))
         #         subtable.close()
-        
+
         # field_scans is now a list of lists containing the scans for each field.
         # so, to access all the scans for the fields, you'd:
         #
@@ -508,14 +508,14 @@ class MeasurementSet(object):
         #    for jj in range(0,len(field_scans[ii]))
         #
         # the jj'th scan of the ii'th field is in field_scans[ii][jj]
-        
+
         # Identify intents
-        
+
         with casatools.TableReader(vis + '/STATE') as table:
             # casatools.table.open(vis+'/STATE')
             intents = table.getcol('OBS_MODE')
             # casatools.table.close()
-        
+
         """Figure out integration time used"""
 
         with casatools.MSReader(vis) as ms:
@@ -527,25 +527,25 @@ class MeasurementSet(object):
         for scan in scan_summary:
             integ_scan_list.append(int(scan))
         sorted_scan_list = sorted(integ_scan_list)
-        
+
         # find max and median integration times
         #
         integration_times = []
         for ii in sorted_scan_list:
             integration_times.append(scan_summary[str(ii)]['0']['IntegrationTime'])
-            
+
         maximum_integration_time = max(integration_times)
         median_integration_time = numpy.median(integration_times)
-        
+
         int_time = maximum_integration_time
-        
+
         return int_time
-    
+
     def get_vla_datadesc(self):
         """Generate VLA data description index"""
-        
+
         vis = self.name
-        
+
         cordesclist = ['Undefined', 'I', 'Q', 'U', 'V',
                        'RR', 'RL', 'LR', 'LL',
                        'XX', 'XY', 'YX', 'YY',
@@ -556,7 +556,7 @@ class MeasurementSet(object):
                        'Linear', 'Ptotal',
                        'Plinear', 'PFtotal',
                        'PFlinear', 'Pangle']
-        
+
         # From Steve Myers buildscans function
         with casatools.TableReader(vis + '/DATA_DESCRIPTION') as table:
             # tb.open(msfile+"/DATA_DESCRIPTION")
@@ -566,7 +566,7 @@ class MeasurementSet(object):
         ddspwlist = ddspwarr.tolist()
         ddpollist = ddpolarr.tolist()
         ndd = len(ddspwlist)
-        
+
         with casatools.TableReader(vis + '/SPECTRAL_WINDOW') as table:
             # tb.open(msfile+"/SPECTRAL_WINDOW")
             nchanarr = table.getcol("NUM_CHAN")
@@ -615,49 +615,49 @@ class MeasurementSet(object):
             ddindex[idd]['npol'] = ncorlist[ipol]
             ddindex[idd]['corrtype'] = polindex[ipol]
             ddindex[idd]['corrdesc'] = poldescr[ipol]
-            
+
         return ddindex
 
     def get_vla_corrstring(self):
         """Get correlation string for VLA"""
-        
+
         """
         Prep string listing of correlations from dictionary created by method buildscans
         For now, only use the parallel hands.  Cross hands will be implemented later.
         """
-        
+
         ddindex = self.get_vla_datadesc()
-        
+
         corrstring_list = ddindex[0]['corrdesc']
         removal_list = ['RL', 'LR', 'XY', 'YX']
         corrstring_list = list(set(corrstring_list).difference(set(removal_list)))
         corrstring = string.join(corrstring_list, ',')
-        
+
         return corrstring
-        
+
     def get_alma_corrstring(self):
         """Get correlation string for ALMA for the science windows"""
-        
+
         sci_spwlist = self.get_spectral_windows(science_windows_only=True)
         sci_spwids = [spw.id for spw in sci_spwlist]
-        
+
         datadescs = [dd for dd in self.data_descriptions if dd.spw.id in sci_spwids]
-        
+
         numpols = len(datadescs[0].polarizations)
-        
+
         if numpols == 1:
             corrstring = 'XX'
         else:
             corrstring = 'XX,YY'
-        
+
         return corrstring
-        
+
     def get_vla_spw2band(self):
-    
+
         ddindex = self.get_vla_datadesc()
-        
+
         spw2band = {}
-    
+
         for spw in ddindex:
 
             strelems = list(ddindex[spw]['spwname'])
@@ -680,51 +680,51 @@ class MeasurementSet(object):
 
     def vla_spws_for_field(self, field):
         """VLA spws for field"""
-    
+
         vis = self.name
-    
+
         # get observed DDIDs for specified field from MAIN
         with casatools.TableReader(vis) as table:
             st = table.query('FIELD_ID=='+str(field))
             ddids = pylab.unique(st.getcol('DATA_DESC_ID'))
             st.close()
-    
+
         # get SPW_IDs corresponding to those DDIDs
         with casatools.TableReader(vis+'/DATA_DESCRIPTION') as table:
             spws = table.getcol('SPECTRAL_WINDOW_ID')[ddids]
-        
+
         # return as a list
         return list(spws)
-    
+
     def get_vla_field_ids(self):
         """Find field ids for VLA"""
-        
+
         vis = self.name
-        
+
         with casatools.TableReader(vis+'/FIELD') as table:
             numFields = table.nrows()
             field_ids = range(numFields)
-        
+
         return field_ids
-        
+
     def get_vla_field_names(self):
         """Find field names for VLA"""
-        
+
         vis = self.name
-        
+
         with casatools.TableReader(vis+'/FIELD') as table:
             field_names = table.getcol('NAME')
-        
+
         return field_names
-        
+
     def get_vla_field_spws(self):
         """Find field spws for VLA"""
-        
+
         vis = self.name
-        
+
         # with casatools.TableReader(vis+'/FIELD') as table:
         #     numFields = table.nrows()
-            
+
         # Map field IDs to spws
         field_spws = []
         # for ii in range(numFields):
@@ -742,25 +742,25 @@ class MeasurementSet(object):
 
     def get_vla_numchan(self):
         """Get number of channels for VLA"""
-        
+
         vis = self.name
-        
+
         with casatools.TableReader(vis+'/SPECTRAL_WINDOW') as table:
             channels = table.getcol('NUM_CHAN')
-            
+
         return channels
 
     def get_vla_tst_bpass_spw(self):
         """Get VLA test bandpass spws"""
-        
+
         vis = self.name
         tst_delay_spw = ''
-        
+
         with casatools.TableReader(vis+'/SPECTRAL_WINDOW') as table:
             channels = table.getcol('NUM_CHAN')
-        
+
         numSpws = len(channels)
-        
+
         for ispw in range(numSpws):
             endch1 = int(channels[ispw]/3.0)
             endch2 = int(2.0*channels[ispw]/3.0)+1
@@ -770,22 +770,22 @@ class MeasurementSet(object):
             else:
                 tst_delay_spw = tst_delay_spw+str(ispw)+':'+str(endch1)+'~'+str(endch2)
                 # all_spw=all_spw+str(ispw)
-        
+
         tst_bpass_spw = tst_delay_spw
-        
+
         return tst_bpass_spw
 
     def get_vla_tst_delay_spw(self):
         """Get VLA test bandpass spws"""
-        
+
         vis = self.name
         tst_delay_spw = ''
-        
+
         with casatools.TableReader(vis+'/SPECTRAL_WINDOW') as table:
             channels = table.getcol('NUM_CHAN')
-        
+
         numSpws = len(channels)
-        
+
         for ispw in range(numSpws):
             endch1 = int(channels[ispw]/3.0)
             endch2 = int(2.0*channels[ispw]/3.0)+1
@@ -797,22 +797,22 @@ class MeasurementSet(object):
                 # all_spw=all_spw+str(ispw)
 
         return tst_delay_spw
-    
+
     def get_vla_quackingscans(self):
         """Find VLA scans for quacking.  Quack! :)"""
-        
+
         vis = self.name
         with casatools.MSReader(vis) as ms:
             scan_summary = ms.getscansummary()
-        
+
         integ_scan_list = []
         for scan in scan_summary:
             integ_scan_list.append(int(scan))
         sorted_scan_list = sorted(integ_scan_list)
-        
+
         scan_list = [1]
         old_scan = scan_summary[str(sorted_scan_list[0])]['0']
-        
+
         old_field = old_scan['FieldId']
         old_spws = old_scan['SpwIds']
         for ii in range(1, len(sorted_scan_list)):
@@ -824,14 +824,14 @@ class MeasurementSet(object):
                 old_field = new_field
                 old_spws = new_spws
         quack_scan_string = ','.join(["%s" % ii for ii in scan_list])
-        
+
         return quack_scan_string
 
     def get_vla_critfrac(self):
         """Identify bands/basebands/spws"""
-        
+
         vis = self.name
-        
+
         with casatools.TableReader(vis+'/SPECTRAL_WINDOW') as table:
             spw_names = table.getcol('NAME')
 
@@ -874,7 +874,7 @@ class MeasurementSet(object):
             for spw_info in spws_info:
                 spw_info_string = spw_info[0] + '   ' + spw_info[1] + '   [' + ','.join(["%d" % ii for ii in spw_info[2]]) + ']   [' + ','.join(["%d" % ii for ii in spw_info[3]]) + ']'
                 # logprint(spw_info_string, logfileout='logs/msinfo.log')
-                
+
             # Critical fraction of flagged solutions in delay cal to avoid an
             # entire baseband being flagged on all antennas
             critfrac = 0.9/float(len(spws_info))
@@ -883,21 +883,21 @@ class MeasurementSet(object):
             # logprint("old spw names with :", logfileout='logs/msinfo.log')
         else:
             print("unknown spw names")
-    
+
         return critfrac
 
     def get_median_integration_time(self, intent=None):
         """Get the median integration time used to get data for the given
         intent.
-    
+
         Keyword arguments:
         intent  -- The intent of the data of interest.
-      
+
         Returns -- The median integration time used.
         """
         LOG.debug('inefficiency - MSFlagger reading file to get integration '
                   'time')
-    
+
         # get the field IDs and state IDs for fields in the measurement set,
         # filtering by intent if necessary
         if intent:    
@@ -915,12 +915,12 @@ class MeasurementSet(object):
         else:
             field_ids = [field.id for field in self.fields]
             state_ids = [state.id for state in self.states]
-            
+
         # VLA datasets have an empty STATE table; in the main table such rows
         # have a state ID of -1.
         if not state_ids:
             state_ids = [-1] 
-        
+
         with casatools.TableReader(self.name) as table:
             taql = '(STATE_ID IN %s AND FIELD_ID IN %s)' % (state_ids, field_ids)
             with contextlib.closing(table.query(taql)) as subtable:
@@ -930,27 +930,27 @@ class MeasurementSet(object):
     def get_median_science_integration_time(self, intent=None, spw=None):
         """Get the median integration time for science targets used to get data for the given
         intent.
-    
+
         Keyword arguments:
         intent  -- The intent of the data of interest.
         spw     -- spw string list - '1,7,11,18'
-      
+
         Returns -- The median integration time used.
         """
         LOG.debug('inefficiency - MSFlagger reading file to get median integration '
                   'time for science targets')
-        
+
         if spw is None:
             spws = self.spectral_windows
         else: 
-            
+
             try:
                 # Put csv string of spws into a list
                 spw_string_list = spw.split(',')
-                
+
                 # Get all spw objects
                 all_spws = self.spectral_windows
-        
+
                 # Filter out the science spw objects
                 spws = [ispw for ispw in all_spws if str(ispw.id) in spw_string_list]
             except:
@@ -963,7 +963,7 @@ class MeasurementSet(object):
             and not ispw.intents.isdisjoint(['BANDPASS', 'AMPLITUDE', 'PHASE',
                                              'TARGET'])]
         LOG.debug('science spws are: %s' % [ispw.id for ispw in science_spws])
-    
+
         # and the science fields/states
         science_field_ids = [
             field.id for field in self.fields
@@ -975,7 +975,7 @@ class MeasurementSet(object):
                                                   'PHASE', 'TARGET'])]
 
         science_spw_dd_ids = [self.get_data_description(spw).id for spw in science_spws]
-        
+
         with casatools.TableReader(self.name) as table:
             taql = '(STATE_ID IN %s AND FIELD_ID IN %s AND DATA_DESC_ID in %s)' % (science_state_ids, science_field_ids, science_spw_dd_ids)
             with contextlib.closing(table.query(taql)) as subtable:
@@ -1021,7 +1021,7 @@ class MeasurementSet(object):
     @property
     def session(self):
         return self._session
-    
+
     @session.setter
     def session(self, value):
         if value is None:

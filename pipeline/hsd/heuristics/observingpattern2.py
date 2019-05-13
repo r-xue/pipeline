@@ -37,4 +37,4 @@ class ObservingPattern2(api.Heuristic):
         LOG.info('Pattern is %s' % (ret))
         return ret
 
-        
+

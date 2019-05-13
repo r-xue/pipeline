@@ -109,7 +109,7 @@ def scienceSpwForTsysSpw(mymsmd, tsysSpw):
         spws = np.intersect1d(mymsmd.spwsforintent('CALIBRATE_FLUX#ON_SOURCE'), spws)
     elif 'CALIBRATE_AMPLI#ON_SOURCE' in mymsmd.intents():
         spws = np.intersect1d(mymsmd.spwsforintent('CALIBRATE_AMPLI#ON_SOURCE'), spws)
-        
+
     if (len(spws) > 1):
         LOG.info("Multiple science spws for this tsys spw (%d).  Picking the first one (%d)" % (tsysSpw, spws[0]))
         return(spws[0])
@@ -152,26 +152,26 @@ def tsysNormalize(vis, tsysTable, newTsysTable, scaleSpws=[], verbose=False):
     with casatools.MSMDReader(vis) as msmd:
 
         with casatools.TableReader(tsysTable, nomodify=False) as table:
-        
+
             # For convenience squish the useful columns into unique lists
             tsysSpws = pb.unique(table.getcol("SPECTRAL_WINDOW_ID"))
             tsysScans = pb.unique(table.getcol("SCAN_NUMBER"))
             tsysTimes = pb.unique(table.getcol("TIME"))
             tsysFields = pb.unique(table.getcol("FIELD_ID"))
             tsysAntennas = pb.unique(table.getcol("ANTENNA1"))
-        
+
             if len(scaleSpws) < len(tsysSpws):
                 scaleSpws = []
                 for tsysSpw in tsysSpws:
                     scaleSpws.append(scienceSpwForTsysSpw(msmd, tsysSpw))
                 LOG.info("Identified autocorrelation spws to use: {0}".format(scaleSpws))
-            
+
             LOG.info("Tsys Spws ({0}): {1}".format(len(tsysSpws), tsysSpws))
             LOG.info("Tsys Scans ({0}): {1}".format(len(tsysScans), tsysScans))
             LOG.info("Tsys Times ({0}): {1}".format(len(tsysTimes), tsysTimes))
             LOG.info("Tsys Fields ({0}): {1}".format(len(tsysFields), tsysFields))
             LOG.info("Tsys Antennas ({0}): {1}".format(len(tsysAntennas), tsysAntennas))
-        
+
             # Gather the power levels to use in the normalization process
             refPowers = {}
             refScans = {}
@@ -239,7 +239,7 @@ def tsysNormalize(vis, tsysTable, newTsysTable, scaleSpws=[], verbose=False):
                                                                                refPowers[fieldTsysScans[i]]))
             if verbose:
                 LOG.info(refPowers)
-        
+
             # Create copy of the original Tsys caltable.
             copy = table.copy(newTsysTable)
             copy.close()    

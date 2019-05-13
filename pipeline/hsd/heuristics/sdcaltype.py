@@ -95,9 +95,9 @@ def _israster(timestamp, interval, direction):
     # is regarded as 'raster'.
     israster = (slope_std / abs(slope_mean) < 0.01) \
                and (max(dx_fraction, dy_fraction) > 0.34)
-    
+
     return israster
-    
+
 
 class MsCalibrationTypeHeuristics(api.Heuristic):
     """
@@ -110,7 +110,7 @@ class MsCalibrationTypeHeuristics(api.Heuristic):
         by examining STATE subtable.
         """
         caltype = 'none'
-        
+
         with casatools.TableReader(filename) as tb:
             statetable = tb.getkeyword('STATE').lstrip('Table: ')
         if os.path.exists(statetable):
@@ -140,7 +140,7 @@ class AsdmCalibrationTypeHeuristics(api.Heuristic):
     """
     def calculate(self, filename):
         caltype = 'none'
-        
+
         import xml.dom.minidom as DOM
         scan_table = os.path.join(filename, 'Scan.xml')
         dom3 = DOM.parse(scan_table)
@@ -150,5 +150,5 @@ class AsdmCalibrationTypeHeuristics(api.Heuristic):
         if ( intstr.find( 'OBSERVE_TARGET' ) != -1 ):
             caltype = 'ps'  # 'otf'
         dom3.unlink()
-        
+
         return caltype

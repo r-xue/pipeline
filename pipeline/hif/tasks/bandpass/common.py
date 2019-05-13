@@ -74,11 +74,11 @@ class BandpassResults(basetask.Results):
     BandpassResults is the results class common to all pipeline bandpass
     calibration tasks.
     """
-    
+
     def __init__(self, final=None, pool=None, preceding=None, applies_adopted=False):
         """
         Construct and return a new BandpassResults.
-        
+
         The resulting object can optionally be initialized with lists of
         CalibrationTables referring to all caltables created by this task
         (caltables), those caltables deemed the best results for this task

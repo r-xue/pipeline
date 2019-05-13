@@ -64,13 +64,13 @@ class SDSkyCalInputs(vdp.StandardInputs):
 
         # overwrite is always True
         args['overwrite'] = True
-        
+
         # parameter name for input data is 'infile'
         args['infile'] = args.pop('infiles')
-        
+
         # vis is not necessary
         del args['vis']
-        
+
         return args
 
 
@@ -103,12 +103,12 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
     def prepare(self):
         args = self.inputs.to_casa_args()
         LOG.trace('args: {}'.format(args))
-        
+
         # retrieve ms domain object
         ms = self.inputs.ms
         calibration_strategy = ms.calibration_strategy
         default_field_strategy = calibration_strategy['field_strategy']
-        
+
         # take calmode from calibration strategy if it is set to 'auto'
         if args['calmode'] is None or args['calmode'].lower() == 'auto':
             args['calmode'] = calibration_strategy['calmode']
@@ -117,7 +117,7 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
         if args['spw'] is None or len(args['spw']) == 0:
             spw_list = ms.get_spectral_windows(science_windows_only=True)
             args['spw'] = ','.join(map(str, [spw.id for spw in spw_list]))
-        
+
         # field selection ---> task.prepare
         if args['field'] is None or len(args['field']) == 0:
             field_strategy = default_field_strategy
@@ -132,15 +132,15 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
                     elif field_id == reference_id:
                         field_strategy[target_id] = field_id
                         continue
-                        
+
         # scan selection 
         if args['scan'] is None:
             args['scan'] = ''
-            
+
         calapps = []
         for (target_id, reference_id) in field_strategy.iteritems():
             myargs = args.copy()
-            
+
             # output file
             reference_field_name = ms.get_fields(reference_id)[0].clean_name
             if myargs['outfile'] is None or len(myargs['outfile']) == 0:
@@ -156,22 +156,22 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
                     del myargs['vis']
             else:
                 myargs['outfile'] = myargs['outfile'] + '.{}'.format(reference_field_name)
-                
+
             # field
             myargs['field'] = str(reference_id)
-                
+
             LOG.debug('args for sdcal: {}'.format(myargs))
-    
+
             # create job
             job = casa_tasks.sdcal(**myargs)
-    
+
             # execute job
             LOG.debug('Table cache before sdcal: {}'.format(casatools.table.showcache()))
             try:
                 self._executor.execute(job)
             finally:
                 LOG.debug('Table cache after sdcal: {}'.format(casatools.table.showcache()))
-    
+
             # check if caltable is empty
             with casatools.TableReader(myargs['outfile']) as tb:
                 is_caltable_empty = tb.nrows() == 0
@@ -182,12 +182,12 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
             # with it. This origin will be attached to the final CalApplication.
             origin = callibrary.CalAppOrigin(task=SerialSDSkyCal,
                                              inputs=args)
-            
+
             calto = callibrary.CalTo(vis=myargs['infile'],
                                      spw=myargs['spw'],
                                      field=str(target_id),
                                      intent='TARGET')
-    
+
             # create SDCalFrom object
             calfrom = callibrary.CalFrom(gaintable=myargs['outfile'],
                                          gainfield=str(reference_id),
@@ -197,14 +197,14 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
             # create CalApplication object
             calapp = callibrary.CalApplication(calto, calfrom, origin)
             calapps.append(calapp)
-        
+
         results = SDSkyCalResults(task=self.__class__,
                                   success=True,
                                   outcome=calapps)
         return results
-    
+
     def analyse(self, result):
-        
+
         # compute elevation difference between ON and OFF and 
         # warn if it exceeds elevation limit
         threshold = self.ElevationDifferenceThreshold
@@ -231,14 +231,14 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
                         LOG.warn('Elevation difference between ON and OFF for {} field {} antenna {} spw {} was {}deg'
                                  ' exceeding the threshold {}deg'
                                  ''.format(ms.basename, field_name, antenna_name, spw_id, eldmax, threshold))
-            
+
         return result
-    
-    
+
+
 class HpcSDSkyCalInputs(SDSkyCalInputs):
     # use common implementation for parallel inputs argument
     parallel = sessionutils.parallel_inputs_impl()
-    
+
     def __init__(self, context, calmode=None, fraction=None, noff=None, width=None, elongated=None, output_dir=None,
                  infiles=None, outfile=None, field=None, spw=None, scan=None, parallel=None):
         super(HpcSDSkyCalInputs, self).__init__(context,
@@ -275,29 +275,29 @@ class HpcSDSkyCal(sessionutils.ParallelTemplate):
         if tb.startswith('None'):
             tb = '{0}({1})'.format(exception.__class__.__name__, exception.message)
         return basetask.FailedTaskResults(self, exception, tb)
-   
-    
+
+
 def compute_elevation_difference(context, results):
     """
     Compute elevation difference 
-    
+
     Returns:
         dictionary[field_id][antenna_id][spw_id]
-        
+
         Value of the dictionary should be ElevationDifference and the value should 
         contain the result from one MS (given that SDSkyCal is per-MS task)
     """
     ElevationDifference = collections.namedtuple('ElevationDifference', 
                                                  ['timeon', 'elon', 'timecal', 'elcal', 
                                                   'time0', 'eldiff0', 'time1', 'eldiff1'])
-    
+
     if not isinstance(results, SDSkyCalResults):
         raise TypeError('Results type should be SDSkyCalResults')
-    
+
     calapps = results.outcome
-    
+
     resultdict = {}
-    
+
     for calapp in calapps:
         calto = calapp.calto
         vis = calto.vis
@@ -309,12 +309,12 @@ def compute_elevation_difference(context, results):
             fields = ms.get_fields(name=target_field)
             assert len(fields) > 0
             field_id_on = fields[0].id
-        
+
         #if ms.basename not in resultdict:
         #    resultdict[ms.basename] = {}
-        
+
         antenna_ids = [ant.id for ant in ms.antennas]
-        
+
         # representative spw
         science_spw = ms.get_spectral_windows(science_windows_only=True)
 #         # choose representative spw based on representative frequency if it is available
@@ -326,12 +326,12 @@ def compute_elevation_difference(context, results):
 #             spw_id = science_spw[numpy.argmin(freq_diffs)].id
 #         else:
 #             spw_id = science_spw[0].id
-            
+
         calfroms = calapp.calfrom
-        
+
         for calfrom in calfroms:
             caltable = calfrom.gaintable
-            
+
             # FIELD_ID
             gainfield = calfrom.gainfield
             if gainfield.isdigit():
@@ -342,16 +342,16 @@ def compute_elevation_difference(context, results):
                 field_id_off = fields[0].id
             LOG.info('Computing elevation difference for "{}" Field ID {} (ON) and {} (OFF)'
                      ''.format(ms.basename, field_id_on, field_id_off))
-                
+
             resultfield = {}
-                    
+
             for antenna_id in antenna_ids:
-                
+
                 resultant = {}
-                
+
                 for spw in science_spw:
                     spw_id = spw.id
-            
+
                     # get timestamp from caltable
                     with casatools.TableReader(caltable) as tb:
                         selected = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}'.format(spw_id, antenna_id))
@@ -371,11 +371,11 @@ def compute_elevation_difference(context, results):
                         timeoff = selected.getcol('TIME')
                         eloff = selected.getcol('EL')
                         selected.close()
-                        
+
                     elcal = eloff[[numpy.argmin(numpy.abs(timeoff - t)) for t in timecal]]
-                    
+
                     del timeoff, eloff
-                    
+
                     eldiff0 = []
                     eldiff1 = []
                     time0 = []
@@ -396,16 +396,16 @@ def compute_elevation_difference(context, results):
                     eldiff1 = numpy.asarray(eldiff1)
                     time0 = numpy.asarray(time0)
                     time1 = numpy.asarray(time1)
-                    
+
                     result = ElevationDifference(timeon=timeon, elon=elon, 
                                                  timecal=timecal, elcal=elcal,
                                                  time0=time0, eldiff0=eldiff0,
                                                  time1=time1, eldiff1=eldiff1)
-                    
+
                     resultant[spw_id] = result
-                
+
                 resultfield[antenna_id] = resultant
-                
+
             resultdict[field_id_on] = resultfield
-            
+
     return resultdict

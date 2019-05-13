@@ -59,7 +59,7 @@ class SDImagingInputs(vdp.StandardInputs):
             # this will give something like '0542+3243,0343+242'
             intent_fields = p(msobj, self.intent)
             fields.update(utils.safe_split(intent_fields))
-   
+
         #LOG.info('field.postprocess: fields = "{0}"'.format(fields))
 
         return ','.join(fields)
@@ -216,7 +216,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 # no field name is included in in_field, skip
                 LOG.info('Skip reduction group {:d}'.format(group_id))
                 continue
- 
+
             member_list = list(common.get_valid_ms_members(group_desc, ms_names, inputs.antenna, field_sel, in_spw))
             LOG.trace('group {}: member_list={}'.format(group_id, member_list))
 
@@ -492,12 +492,12 @@ class SDImaging(basetask.StandardTaskTemplate):
                         if len(infiles)==1 and (asdm not in ['', None]): imager_result.outcome['vis'] = asdm
 #                         # to register exported_ms to each scantable instance
 #                         outcome['export_results'] = export_results
-  
+
                     results.append(imager_result)
-                      
+
                 if imager_result_nro is not None and imager_result_nro.outcome is not None:
                     # Imaging was successful, proceed following steps
-  
+
                     # add image list to combine
                     if os.path.exists(imagename_nro) and os.path.exists(imagename_nro+'.weight'):
                         tocombine_images_nro.append(imagename_nro)
@@ -514,20 +514,20 @@ class SDImaging(basetask.StandardTaskTemplate):
             if inputs.is_ampcal:
                 LOG.info("Skipping combined image for the amplitude calibrator.")
                 continue
-  
+
             # Make combined image
             if len(tocombine_images) == 0:
                 LOG.warn("No valid image to combine for Source {}, Spw {:d}".format(source_name, spwids[0]))
                 continue
             # reference MS
             ref_ms = context.observing_run.get_ms(name=sdutils.get_parent_ms_name(context, combined_infiles[0]))
-            
+
             # image name
             # image name should be based on virtual spw id
             combined_v_spws_unique = numpy.unique(combined_v_spws)
             assert len(combined_v_spws_unique) == 1
             imagename = self.get_imagename(source_name, combined_v_spws_unique)
-  
+
             # Step 3.
             # Imaging of all antennas
             LOG.info('Combine images of Source {} Spw {:d}'.format(source_name, combined_spws[0]))
@@ -552,7 +552,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
             if imager_result.outcome is not None:
                 # Imaging was successful, proceed following steps
-      
+
                 # Additional Step.
                 # Make grid_table and put rms and valid spectral number array 
                 # to the outcome
@@ -583,7 +583,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                             grid_input_dict[p][1].append(antid)
                             grid_input_dict[p][2].append(fieldid)
                             grid_input_dict[p][3].append(spwid)
-  
+
                 for (pol, member) in grid_input_dict.iteritems():
                     _mses = member[0]
                     _antids = member[1]
@@ -700,7 +700,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                     freqs.reverse()
                 stat_freqs = str(', ').join(['{:f}~{:f}GHz'.format(freqs[iseg]*1.e-9, freqs[iseg+1]*1.e-9)
                                              for iseg in range(0, len(freqs), 2)])
-                  
+
                 file_index = [common.get_parent_ms_idx(context, name) for name in combined_infiles]
                 sensitivity = Sensitivity(array='TP',
                                           field=source_name,
@@ -724,11 +724,11 @@ class SDImaging(basetask.StandardTaskTemplate):
                 if len(tocombine_images_nro) == 0:
                     LOG.warn("No valid image to combine for Source {}, Spw {:d}".format(source_name, spwids[0]))
                     continue
-            
+
                 # image name
                 # image name should be based on virtual spw id
                 imagename = self.get_imagename(source_name, combined_v_spws_unique, stokes=correlations)
-  
+
                 # Step 3.
                 # Imaging of all antennas
                 LOG.info('Combine images of Source {} Spw {:d}'.format(source_name, combined_spws[0]))
@@ -739,7 +739,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
                 if imager_result.outcome is not None:
                 # Imaging was successful, proceed following steps
-            
+
                     file_index = [common.get_parent_ms_idx(context, name) for name in combined_infiles]
                     self._finalize_worker_result(imager_result, 
                                                  sourcename=source_name, spwlist=combined_v_spws, antenna='COMBINED',  #specmode='cube', sourcetype='TARGET',
@@ -748,9 +748,9 @@ class SDImaging(basetask.StandardTaskTemplate):
                                                  assoc_antennas=combined_antids, assoc_fields=combined_fieldids, assoc_spws=combined_v_spws)  #, assoc_pols=pols)
 
                     results.append(imager_result)
-                    
+
         return results
-    
+
     def analyse(self, result):
         return result
 
@@ -884,7 +884,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             merged = self._merge_ranges(merged)
         #LOG.info("#####Merged: {}".format(str(merged)))
         return merged
-    
+
     def get_imagename(self, source, spwids, antenna=None, asdm=None, stokes=None):
         context = self.inputs.context
         is_nro = sdutils.is_nro(context)
@@ -906,7 +906,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         #    namer.output_dir(output_dir)
         if not is_nro:
             namer.stage(context.stage)
-            
+
         namer.source(source)
         if self.inputs.is_ampcal:
             namer.intent(self.inputs.mode.lower())

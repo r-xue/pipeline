@@ -55,41 +55,41 @@ def hsdms(vislist, importonly=False, pipelinemode='automatic',
         hsd_importdata(vis=vislist, pipelinemode=pipelinemode)
         if importonly:
             raise Exception(IMPORT_ONLY)
-       
+
         # Deterministic flagging
         hsd_flagdata(pipelinemode=pipelinemode)
-        
+
         # Tsys calibration
         h_tsyscal(pipelinemode=pipelinemode)
-        
+
         # Flag system temperature calibration
         hsd_tsysflag(pipelinemode=pipelinemode)
-        
+
         # Compute the sky calibration
         hsd_skycal(pipelinemode=pipelinemode)
-    
+
         # Compute the Kelvin to Jansky calibration
         hsd_k2jycal(pipelinemode=pipelinemode)
-    
+
         # Apply the calibrations
         hsd_applycal(pipelinemode=pipelinemode)
-        
+
         # # Improve line mask for baseline subtraction by executing 
         # # hsd_baseline and hsd_blflag iteratively
         for i in xrange(ITERATION):
-            
+
             # Baseline subtraction with automatic line detection
             hsd_baseline(pipelinemode=pipelinemode)
-            
+
             # Flag data based on baseline quality
             hsd_blflag(pipelinemode=pipelinemode)
-            
+
         # Imaging
         hsd_imaging(pipelinemode=pipelinemode)
 
         # Export the data
         hsd_exportdata(pipelinemode=pipelinemode)
-    
+
     except Exception as e:
         if str(e) == IMPORT_ONLY:
             casatools.post_to_log("Exiting after import step ...",

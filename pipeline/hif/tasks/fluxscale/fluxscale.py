@@ -118,12 +118,12 @@ class Fluxscale(basetask.StandardTaskTemplate):
         inputs = self.inputs
         ms = inputs.ms
         result = commonfluxresults.FluxCalibrationResults(inputs.vis)
-        
+
         if inputs.transfer == '' or inputs.reference == '':
             LOG.warning('Fluxscale invoked with no transfer and/or reference '
                         'field. Bypassing fluxscale for %s' % ms.basename)
             return result
-        
+
         # if the user didn't specify a caltable to analyse, generate it now
         if inputs.caltable is None:
             LOG.info('No caltable specified in fluxscale inputs. '
@@ -162,7 +162,7 @@ class Fluxscale(basetask.StandardTaskTemplate):
                 uI, uQ, uU, uV = flux_for_field[spw_id]['fluxdErr']
                 unc = domain.FluxMeasurement(spw_id, uI, Q=uQ, U=uU, V=uV, origin=ORIGIN)
                 flux.uncertainty = unc
-                
+
                 result.measurements[field_id].append(flux)
 
         return result

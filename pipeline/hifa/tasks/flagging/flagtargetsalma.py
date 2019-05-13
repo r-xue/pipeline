@@ -30,28 +30,28 @@ Flag ALMA target science target data.
 class FlagTargetsALMAInputs(vdp.StandardInputs):
     """
     FlagTargetsALMA Inputs manages the inputs for the FlagTargetALMA task.
-    
+
     .. py:attribute:: context
 
         the (:class:`~pipeline.infrastructure.launcher.Context`) holding all
         pipeline state
 
     .. py:attribute:: vis
-    
+
         a string or list of strings containing the MS name(s) on which to
         operate
-        
+
     .. py:attribute:: output_dir
-    
+
         the directory to which pipeline data should be sent
 
     .. py:attribute:: flagbackup
-    
+
         a boolean indicating whether whether existing flags should be backed
         up before new flagging begins.
 
     .. py:attribute:: template
-    
+
         A boolean indicating whether flagging templates are to be applied.
 
     .. py:attribute:: filetemplate
@@ -78,7 +78,7 @@ class FlagTargetsALMAInputs(vdp.StandardInputs):
     def inpfile(self):
         vis_root = os.path.splitext(self.vis)[0].split('_target')[0]
         return os.path.join(self.output_dir, vis_root + '.flagtargetscmds.txt')
-    
+
     def __init__(self, context, vis=None, output_dir=None, flagbackup=None, template=None, filetemplate=None):
 
         super(FlagTargetsALMAInputs, self).__init__()
@@ -88,7 +88,7 @@ class FlagTargetsALMAInputs(vdp.StandardInputs):
         # vis must be set first, as other properties may depend on it
         self.vis = vis
         self.output_dir = output_dir
-        
+
         self.flagbackup = flagbackup
         self.template = template
         self.filetemplate = filetemplate
@@ -98,7 +98,7 @@ class FlagTargetsALMAInputs(vdp.StandardInputs):
         Translate the input parameters of this class to task parameters 
         required by the CASA task flagdata. The returned object is a 
         dictionary of flagdata arguments as keyword/value pairs.
-        
+
         :rtype: dict        
         """
         return {'vis': self.vis,
@@ -131,7 +131,7 @@ class FlagTargetsALMAResults(basetask.Results):
         # SUBTRACT flag counts from previous agents, because the counts are
         # cumulative.
         s = 'Target flagging results:\n'
-        
+
         for idx in range(0, len(self.summaries)):
             flagcount = int(self.summaries[idx]['flagged'])
             totalcount = int(self.summaries[idx]['total'])
@@ -144,7 +144,7 @@ class FlagTargetsALMAResults(basetask.Results):
             s += '\tSummary %s (%s) :  Flagged : %s out of %s (%0.2f%%)\n' % (
                     idx, self.summaries[idx]['name'], flagcount, totalcount,
                     100.0*flagcount/totalcount)
-        
+
         return s
 
 
@@ -152,9 +152,9 @@ class FlagTargetsALMAResults(basetask.Results):
 class FlagTargetsALMA(basetask.StandardTaskTemplate):
     """
     FlagTargetsALMA is a class for target flagging. It can perform
-    
+
     - Template flags
-    
+
     """
 
     # link the accompanying inputs to this task 
@@ -169,7 +169,7 @@ class FlagTargetsALMA(basetask.StandardTaskTemplate):
         # create a local alias for inputs, so we're not saying 'self.inputs'
         # everywhere
         inputs = self.inputs
-        
+
         # get the flagdata command string required for the results
         flag_cmds = self._get_flag_commands()
         flag_str = '\n'.join(flag_cmds)
@@ -189,7 +189,7 @@ class FlagTargetsALMA(basetask.StandardTaskTemplate):
         summary_dict = self._executor.execute(job)
 
         agent_summaries = dict((v['name'], v) for v in summary_dict.itervalues())
-        
+
         ordered_agents = ['before', 'template']
 
         summary_reps = [agent_summaries[agent] 
@@ -202,7 +202,7 @@ class FlagTargetsALMA(basetask.StandardTaskTemplate):
     def analyse(self, results):
         """
         Analyse the results of the flagging operation.
-        
+
         This method does not perform any analysis, so the results object is
         returned exactly as-is, with no data massaging or results items
         added. If additional statistics needed to be calculated based on the
@@ -216,7 +216,7 @@ class FlagTargetsALMA(basetask.StandardTaskTemplate):
         """
         # create a local variable for the inputs associated with this instance
         inputs = self.inputs
-        
+
         # create list which will hold the flagging commands
         flag_cmds = ["mode='summary' name='before'"]
 

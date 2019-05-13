@@ -241,13 +241,13 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'a': 'Amplitude only',
             'ap': 'Phase and amplitude'
         }
-        
+
         for calapp in result.final:
             solint = utils.get_origin_input_arg(calapp, 'solint')
 
             if solint == 'inf':
                 solint = 'Infinite'
-            
+
             # Convert solint=int to a real integration time. 
             # solint is spw dependent; science windows usually have the same
             # integration time, though that's not guaranteed.
@@ -255,7 +255,7 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 in_secs = ['%0.2fs' % (dt.seconds + dt.microseconds * 1e-6) 
                            for dt in utils.get_intervals(context, calapp)]
                 solint = 'Per integration (%s)' % utils.commafy(in_secs, quotes=False, conjunction='or')
-            
+
             gaintable = os.path.basename(calapp.gaintable)
             spw = ', '.join(calapp.spw.split(','))
 
@@ -304,7 +304,7 @@ class GaincalPhaseVsTimeDiagnosticPlotRenderer(basetemplates.JsonPlotRenderer):
             self._qa_data[b] = [v for k, v in result.qa.qa_results_dict.iteritems() if b in k]
 
         self._score_types = frozenset(['PHASE_SCORE_XY', 'PHASE_SCORE_X2X1'])
-                
+
         super(GaincalPhaseVsTimeDiagnosticPlotRenderer, self).__init__(
                 'diagnostic_phase_vs_time_plots.mako', context, results, plots,
                 title, outfile)        
@@ -322,7 +322,7 @@ class GaincalPhaseVsTimeDiagnosticPlotRenderer(basetemplates.JsonPlotRenderer):
                 for score_type in self._score_types:            
                     average_score = 0.0
                     num_scores = 0
-    
+
                     phase_field_ids = set(qa_data['PHASE_FIELDS'])
                     if phase_field_ids:
                         # not all PHASE fields have scores, eg. uid://A002/X6a533e/X834.
@@ -339,7 +339,7 @@ class GaincalPhaseVsTimeDiagnosticPlotRenderer(basetemplates.JsonPlotRenderer):
                     else:
                         average_score += 1.0
                         num_scores += 1
-    
+
                     if num_scores != 0:
                         average_score /= num_scores
                     scores_dict[score_type] = average_score
@@ -347,7 +347,7 @@ class GaincalPhaseVsTimeDiagnosticPlotRenderer(basetemplates.JsonPlotRenderer):
         except:
             scores_dict = dict((score_type, 0.0) 
                                for score_type in self._score_types)
-        
+
         json_dict.update(scores_dict)
         plot.scores = scores_dict
 
@@ -358,7 +358,7 @@ class GaincalAmpVsTimePlotRenderer(basetemplates.JsonPlotRenderer):
 
         title = 'Amplitude vs time for %s' % vis
         outfile = filenamer.sanitize('amp_vs_time-%s.html' % vis)
-        
+
         super(GaincalAmpVsTimePlotRenderer, self).__init__(
                 'generic_x_vs_y_spw_ant_plots.mako', context, 
                 result, plots, title, outfile)
@@ -370,7 +370,7 @@ class GaincalAmpVsTimeDiagnosticPlotRenderer(basetemplates.JsonPlotRenderer):
 
         title = 'Amplitude vs time for %s' % vis
         outfile = filenamer.sanitize('diagnostic_amp_vs_time-%s.html' % vis)
-        
+
         super(GaincalAmpVsTimeDiagnosticPlotRenderer, self).__init__(
                 'generic_x_vs_y_spw_ant_plots.mako', context, 
                 result, plots, title, outfile)
@@ -381,7 +381,7 @@ class GaincalPhaseOffsetVsTimeDiagnosticPlotRenderer(basetemplates.JsonPlotRende
 
         title = 'Phase offset vs time for %s' % vis
         outfile = filenamer.sanitize('diagnostic_phaseoffset_vs_time-%s.html' % vis)
-        
+
         super(GaincalPhaseOffsetVsTimeDiagnosticPlotRenderer, self).__init__(
                 'generic_x_vs_y_spw_ant_plots.mako', context, 
                 result, plots, title, outfile)

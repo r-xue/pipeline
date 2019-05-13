@@ -44,13 +44,13 @@ def set_plot_level(plotlevel):
     module = sys.modules[__name__]
     setattr(module, 'PLOT_LEVEL', _PLOT_LEVELS[plotlevel])
 
-    
+
 def generate_detail_plots(result=None): 
     if result is None:
         LOG.warning('Calling generate_detail_plots without a result argument '
                     'is deprecated.')
         return PLOT_LEVEL >= _PLOT_DETAIL_THRESHOLDS['default']
-    
+
     task = getattr(result, 'pipeline_casa_task', '')
     # task_cls_name = result.task.__name__
 

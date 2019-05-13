@@ -14,7 +14,7 @@ class Adapter(api.Heuristic):
         if not callable(heuristic):
             #heuristic = heuristics.EchoHeuristic(heuristic)
             heuristic = echoheuristic.EchoHeuristic(heuristic)
-            
+
         self._adaptee = heuristic 
 
 

@@ -58,13 +58,13 @@ class BandpassWorker(basetask.StandardTaskTemplate):
     """
     BandpassWorker performs a simple bandpass calibration exactly as specified
     by the inputs, with no analysis or parameter refinement.
-    
+
     As this task has no analysis, it is not expected to be used in an
     interactive session. The expected use-case for this task is as a worker
     task for higher-level tasks.
     """
     Inputs = BandpassWorkerInputs
-    
+
     def prepare(self):
         # create a local variable for the inputs associated with this instance
         inputs = self.inputs
@@ -73,7 +73,7 @@ class BandpassWorker(basetask.StandardTaskTemplate):
         # with it. This origin will be attached to the final CalApplication.
         origin = callibrary.CalAppOrigin(task=BandpassWorker, 
                                          inputs=inputs.to_casa_args())
-        
+
         # make fast the caltable name by manually setting it to its current 
         # value. This makes the caltable name permanent, so we can 
         # subsequently append calibrations for each spectral window to the one
@@ -88,7 +88,7 @@ class BandpassWorker(basetask.StandardTaskTemplate):
         # apply the resultant caltable to
         orig_spw = inputs.spw
         orig_antenna = inputs.antenna
-        
+
         jobs = []
         for calto, calfroms in calstate.merged().iteritems():
             # arrange a bandpass job for the data selection
@@ -105,7 +105,7 @@ class BandpassWorker(basetask.StandardTaskTemplate):
             args['gainfield'] = calapp.gainfield
             args['spwmap']    = calapp.spwmap
             args['interp']    = calapp.interp
-            
+
             jobs.append(casa_tasks.bandpass(**args))
 
             # append subsequent bandpass output to the same caltable 
@@ -143,7 +143,7 @@ class BandpassWorker(basetask.StandardTaskTemplate):
         on_disk = [ca for ca in result.pool
                    if ca.exists() or self._executor._dry_run]
         result.final[:] = on_disk
-        
+
         missing = [ca for ca in result.pool
                    if ca not in on_disk and not self._executor._dry_run]        
         result.error.clear()

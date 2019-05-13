@@ -16,7 +16,7 @@ def flags_for_result(result, context, non_science_agents=[]):
     by_intent = flags_by_intent(ms, summaries)
     by_spw = flags_by_science_spws(ms, summaries)
     merged = utils.dict_merge(by_intent, by_spw)
-    
+
     adjusted = adjust_non_science_totals(merged, non_science_agents)
 
     return {ms.basename: adjusted}
@@ -45,18 +45,18 @@ def flags_by_intent(ms, summaries):
             for i in scan_ids:
                 if i not in summary['scan']:
                     continue
-                
+
                 flagcount += int(summary['scan'][i]['flagged'])
                 totalcount += int(summary['scan'][i]['total'])
-    
+
                 if previous_summary:
                     flagcount -= int(previous_summary['scan'][i]['flagged'])
 
             ft = FlagTotal(flagcount, totalcount)
             total[summary['name']][intent] = ft
-            
+
         previous_summary = summary
-            
+
     return total 
 
 
@@ -75,15 +75,15 @@ def flags_by_science_spws(ms, summaries):
             spw_id = str(spw.id)
             flagcount += int(summary['spw'][spw_id]['flagged'])
             totalcount += int(summary['spw'][spw_id]['total'])
-    
+
             if previous_summary:
                 flagcount -= int(previous_summary['spw'][spw_id]['flagged'])
 
         ft = FlagTotal(flagcount, totalcount)
         total[summary['name']]['SCIENCE SPWS'] = ft
-            
+
         previous_summary = summary
-            
+
     return total
 
 
@@ -91,7 +91,7 @@ def adjust_non_science_totals(flagtotals, non_science_agents=[]):
     """
     Return a copy of the FlagSummary dictionaries, with totals reduced to
     account for flagging performed by non-science flagging agents.
-    
+
     The incoming flagtotals report how much data was flagged per agent per
     data selection. These flagtotals are divided into two groups: those whose 
     agent should be considered 'non-science' (and are indicated as such in the 
@@ -110,13 +110,13 @@ def adjust_non_science_totals(flagtotals, non_science_agents=[]):
     adjusted_results = dict((agent, flagtotals[agent]) 
                             for agent in agents_to_copy
                             if agent in flagtotals)
-    
+
     # tot up how much data was flagged by each agent per data selection
     flagged_non_science = {}
     for data_selection in data_selections:
         flagged_non_science[data_selection] = sum([v[data_selection].flagged 
                                                    for v in adjusted_results.itervalues()])
-        
+
     # subtract this 'number of rows flagged per data selection' from the total
     # for the remaining agents
     for agent in agents_to_adjust:

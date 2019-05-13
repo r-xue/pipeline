@@ -404,7 +404,7 @@ class FlagDeterVLA(flagdeterbase.FlagDeterBase):
         """ Adding quack and clip
         """
         # flag_cmds = super(FlagDeterVLA, self)._get_flag_commands()
-        
+
         flag_cmds = []
 
         inputs = self.inputs
@@ -462,7 +462,7 @@ class FlagDeterVLA(flagdeterbase.FlagDeterBase):
         # if inputs.autocorr:
         #     flag_cmds.append('mode=manual antenna=*&&&')
         #     flag_cmds.append(self._get_autocorr_cmd())
-    
+
         # Flag autocorrelations?
         if inputs.autocorr:
             flag_cmds.append('mode=\'manual\' autocorr=True reason=\'autocorr\'')
@@ -487,7 +487,7 @@ class FlagDeterVLA(flagdeterbase.FlagDeterBase):
         if inputs.clip:
             flag_cmds.append('mode=\'clip\' correlation=\'ABS_ALL\' clipzeros=True reason=\'clip\'')
             flag_cmds.append('mode=\'summary\' name=\'clip\'')
-        
+
         # Flag quack
         if inputs.quack: 
             flag_cmds.append(self._get_quack_cmds())
@@ -508,7 +508,7 @@ class FlagDeterVLA(flagdeterbase.FlagDeterBase):
         # state is unflagged
         # if flag_cmds:
         #    flag_cmds.insert(0, "mode='summary' name='before'")
-        
+
         return flag_cmds
 
     def _get_autocorr_cmd(self):
@@ -527,9 +527,9 @@ class FlagDeterVLA(flagdeterbase.FlagDeterBase):
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         channels = m.get_vla_numchan()
         numSpws = len(channels)
-        
+
         SPWtoflag = ''
-        
+
         for ispw in range(numSpws):
             spwedge_nchan = int(inputs.fracspw * channels[ispw])
             # Minimum number of channels flagged must be one on each end
@@ -539,34 +539,34 @@ class FlagDeterVLA(flagdeterbase.FlagDeterBase):
             startch2 = spwedge_nchan - 1
             endch1 = channels[ispw] - spwedge_nchan
             endch2 = channels[ispw] - 1
-                        
+
             if ispw < max(range(numSpws)):
                 SPWtoflag = SPWtoflag+str(ispw)+':'+str(startch1)+'~'+str(startch2)+';'+str(endch1)+'~'+str(endch2)+','
             else:
                 SPWtoflag = SPWtoflag+str(ispw)+':'+str(startch1)+'~'+str(startch2)+';'+str(endch1)+'~'+str(endch2)
-                
+
         edgespw_cmd = ['mode=\'manual\' spw=\'%s\' reason=\'edgespw\' name=\'edgespw\'' % SPWtoflag]
-        
+
         return edgespw_cmd
 
     def _get_quack_cmds(self):
-            """
-            Return a flagdata flagging command that will quack, ie
-            flagdata_list.append("mode='quack' scan=" + quack_scan_string +
-            " quackinterval=" + str(1.5*int_time) + " quackmode='beg' " +
-            "quackincrement=False")
-            
-            :rtype: a string
-            """
-            inputs = self.inputs
+        """
+        Return a flagdata flagging command that will quack, ie
+        flagdata_list.append("mode='quack' scan=" + quack_scan_string +
+        " quackinterval=" + str(1.5*int_time) + " quackmode='beg' " +
+        "quackincrement=False")
 
-            m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-            quack_scan_string = m.get_vla_quackingscans()
-            int_time = m.get_vla_max_integration_time()
-            
-            quack_mode_cmd = 'mode=\'quack\' scan=\'%s\' quackinterval=%s quackmode=\'beg\' quackincrement=False reason=\'quack\' name=\'quack\'' % (quack_scan_string, str(1.5*int_time))
+        :rtype: a string
+        """
+        inputs = self.inputs
 
-            return quack_mode_cmd
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        quack_scan_string = m.get_vla_quackingscans()
+        int_time = m.get_vla_max_integration_time()
+
+        quack_mode_cmd = 'mode=\'quack\' scan=\'%s\' quackinterval=%s quackmode=\'beg\' quackincrement=False reason=\'quack\' name=\'quack\'' % (quack_scan_string, str(1.5*int_time))
+
+        return quack_mode_cmd
 
     def _get_baseband_cmds(self):
         """
@@ -579,7 +579,7 @@ class FlagDeterVLA(flagdeterbase.FlagDeterBase):
         # get heuristics from the context
         context = inputs.context
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        
+
         bottomSPW=''
         topSPW=''
 
@@ -590,14 +590,14 @@ class FlagDeterVLA(flagdeterbase.FlagDeterBase):
             spw_bandwidths = table.getcol('TOTAL_BANDWIDTH')  # spwobj.bandwidth
             originalBBClist = table.getcol('BBC_NO')  # spwobj.baseband
             channels = table.getcol('NUM_CHAN')  # spwobj.num_channels
-            
+
         sorted_indices = reference_frequencies.argsort()
         sorted_frequencies = reference_frequencies[sorted_indices]
-        
+
         spwList = []
         BBC_bandwidths = []
         ii = 0
-        
+
         while ii < len(sorted_frequencies):
             upper_frequency = sorted_frequencies[ii] + spw_bandwidths[sorted_indices[ii]]
             BBC_bandwidth = spw_bandwidths[sorted_indices[ii]]
@@ -617,7 +617,7 @@ class FlagDeterVLA(flagdeterbase.FlagDeterBase):
             spwList.append(thisSpwList)
             BBC_bandwidths.append(BBC_bandwidth)
             ii += 1        
-        
+
         low_spws = []
         high_spws = []
 
@@ -652,7 +652,7 @@ class FlagDeterVLA(flagdeterbase.FlagDeterBase):
 
         LOG.info('bottomSPW: {!s}'.format(bottomSPW))
         LOG.info('topSPW: {!s}'.format(topSPW))
-        
+
         if bottomSPW != '':
             SPWtoflag = bottomSPW + ',' + topSPW
             baseband_cmd = 'mode=\'manual\' spw=\'%s\' reason=\'baseband\' name=\'baseband\'' % SPWtoflag
@@ -683,7 +683,7 @@ class FlagDeterVLA(flagdeterbase.FlagDeterBase):
         else:
             with open(filename) as stream:
                 return stream.read().rstrip('\n')
-                
+
     def _read_flagfile(self, filename):
         if not os.path.exists(filename):
             LOG.warning('%s does not exist' % filename)

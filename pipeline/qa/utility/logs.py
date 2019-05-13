@@ -82,27 +82,27 @@ CRITICAL = logging.CRITICAL
 
 def init( out_dir, root, level, logobj ):
 
-	# Create the logger instance
+    # Create the logger instance
 
-	if logobj == 'CASA':
+    if logobj == 'CASA':
 
-		log_local = True
-		logger = logsCASA()
+        log_local = True
+        logger = logsCASA()
 
-	elif logobj == 'PYTHON':
+    elif logobj == 'PYTHON':
 
-		log_local = True
-		logger = logsPYTHON( out_dir, root=root, level=level )
+        log_local = True
+        logger = logsPYTHON( out_dir, root=root, level=level )
 
-	else:
+    else:
 
-		log_local = False
-		logger = logobj
+        log_local = False
+        logger = logobj
 
 
-	# Return the local log flag and the logger instance as a tuple
+    # Return the local log flag and the logger instance as a tuple
 
-	return log_local, logger
+    return log_local, logger
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
@@ -158,18 +158,18 @@ class logsCASA:
 
 # ------------------------------------------------------------------------------
 
-	def __init__( self ):
+    def __init__( self ):
 
-		# Create the instance of the CASA logger
+        # Create the instance of the CASA logger
 
-		myLog = casa.casac.homefinder.find_home_by_name( 'logsinkHome' )
+        myLog = casa.casac.homefinder.find_home_by_name( 'logsinkHome' )
 
-		self._casaLog = myLog.create()
+        self._casaLog = myLog.create()
 
 
-		# Return None
+        # Return None
 
-		return None
+        return None
 
 # ------------------------------------------------------------------------------
 
@@ -194,16 +194,16 @@ class logsCASA:
 
 # ------------------------------------------------------------------------------
 
-	def __del__( self ):
+    def __del__( self ):
 
-		# Destruct the CASA logger instance
+        # Destruct the CASA logger instance
 
-		del self._casaLog
+        del self._casaLog
 
 
-		# Return None
+        # Return None
 
-		return None
+        return None
 
 # ------------------------------------------------------------------------------
 
@@ -231,16 +231,16 @@ class logsCASA:
 
 # ------------------------------------------------------------------------------
 
-	def critical( self, msg, origin='' ):
+    def critical( self, msg, origin='' ):
 
-		# Post the message to the CASA logger
+        # Post the message to the CASA logger
 
-		self._casaLog.post( msg, priority='SEVERE', origin=origin )
+        self._casaLog.post( msg, priority='SEVERE', origin=origin )
 
 
-		# Return None
+        # Return None
 
-		return None
+        return None
 
 # ------------------------------------------------------------------------------
 
@@ -268,16 +268,16 @@ class logsCASA:
 
 # ------------------------------------------------------------------------------
 
-	def debug( self, msg, origin='' ):
+    def debug( self, msg, origin='' ):
 
-		# Post the message to the CASA logger
+        # Post the message to the CASA logger
 
-		self._casaLog.post( msg, priority='INFO', origin=origin )
+        self._casaLog.post( msg, priority='INFO', origin=origin )
 
 
-		# Return None
+        # Return None
 
-		return None
+        return None
 
 # ------------------------------------------------------------------------------
 
@@ -305,16 +305,16 @@ class logsCASA:
 
 # ------------------------------------------------------------------------------
 
-	def error( self, msg, origin='' ):
+    def error( self, msg, origin='' ):
 
-		# Post the message to the CASA logger
+        # Post the message to the CASA logger
 
-		self._casaLog.post( msg, priority='SEVERE', origin=origin )
+        self._casaLog.post( msg, priority='SEVERE', origin=origin )
 
 
-		# Return None
+        # Return None
 
-		return None
+        return None
 
 # ------------------------------------------------------------------------------
 
@@ -341,16 +341,16 @@ class logsCASA:
 
 # ------------------------------------------------------------------------------
 
-	def info( self, msg, origin='' ):
+    def info( self, msg, origin='' ):
 
-		# Post the message to the CASA logger
+        # Post the message to the CASA logger
 
-		self._casaLog.post( msg, priority='INFO', origin=origin )
+        self._casaLog.post( msg, priority='INFO', origin=origin )
 
 
-		# Return None
+        # Return None
 
-		return None
+        return None
 
 # ------------------------------------------------------------------------------
 
@@ -378,16 +378,16 @@ class logsCASA:
 
 # ------------------------------------------------------------------------------
 
-	def warning( self, msg, origin='' ):
+    def warning( self, msg, origin='' ):
 
-		# Post the message to the CASA logger
+        # Post the message to the CASA logger
 
-		self._casaLog.post( msg, priority='INFO', origin=origin )
+        self._casaLog.post( msg, priority='INFO', origin=origin )
 
 
-		# Return None
+        # Return None
 
-		return None
+        return None
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
@@ -455,40 +455,40 @@ class logsPYTHON:
 
 # ------------------------------------------------------------------------------
 
-	def __init__( self, dir_name, root, level=INFO ):
+    def __init__( self, dir_name, root, level=INFO ):
 
-		# Initialize the "private" variables
+        # Initialize the "private" variables
 
-		self._dir_name = dir_name
-		self._root = root
-		self._level = level
+        self._dir_name = dir_name
+        self._root = root
+        self._level = level
 
-		dt = time.asctime( time.gmtime() ).replace( ' ', '-' )
-		self._file_name = dir_name + '/' + root + '-' + dt + '.log'
-
-
-		# Start up and configure the file handler
-
-		self._fh = logging.FileHandler( self._file_name )
-
-		self._fh.setLevel( self._level )
-
-		format = '%(levelname)s %(message)s'
-		self._fh.setFormatter( logging.Formatter( format ) )
+        dt = time.asctime( time.gmtime() ).replace( ' ', '-' )
+        self._file_name = dir_name + '/' + root + '-' + dt + '.log'
 
 
-		# Start up and configure the Logger.  This pointer is used from
-		# outside the class to write to the log.
+        # Start up and configure the file handler
 
-		self._Logger = logging.getLogger()
+        self._fh = logging.FileHandler( self._file_name )
 
-		self._Logger.setLevel( self._level )
-		self._Logger.addHandler( self._fh )
+        self._fh.setLevel( self._level )
+
+        format = '%(levelname)s %(message)s'
+        self._fh.setFormatter( logging.Formatter( format ) )
 
 
-		# Return None
+        # Start up and configure the Logger.  This pointer is used from
+        # outside the class to write to the log.
 
-		return None
+        self._Logger = logging.getLogger()
+
+        self._Logger.setLevel( self._level )
+        self._Logger.addHandler( self._fh )
+
+
+        # Return None
+
+        return None
 
 # ------------------------------------------------------------------------------
 
@@ -513,21 +513,21 @@ class logsPYTHON:
 
 # ------------------------------------------------------------------------------
 
-	def __del__( self ):
+    def __del__( self ):
 
-		# Remove the file handler from the logger, close the file
-		# handler, and delete file handler and logger
+        # Remove the file handler from the logger, close the file
+        # handler, and delete file handler and logger
 
-		self._Logger.removeHandler( self._fh )
-		self._fh.close()
+        self._Logger.removeHandler( self._fh )
+        self._fh.close()
 
-		del self._fh
-		del self._Logger
+        del self._fh
+        del self._Logger
 
 
-		# Return None
+        # Return None
 
-		return None
+        return None
 
 # ------------------------------------------------------------------------------
 
@@ -554,16 +554,16 @@ class logsPYTHON:
 
 # ------------------------------------------------------------------------------
 
-	def critical( self, msg, origin='' ):
+    def critical( self, msg, origin='' ):
 
-		# Print the message to the python logger
+        # Print the message to the python logger
 
-		self._Logger.critical( origin + ': ' + msg )
+        self._Logger.critical( origin + ': ' + msg )
 
 
-		# Return None
+        # Return None
 
-		return None
+        return None
 
 # ------------------------------------------------------------------------------
 
@@ -590,16 +590,16 @@ class logsPYTHON:
 
 # ------------------------------------------------------------------------------
 
-	def debug( self, msg, origin='' ):
+    def debug( self, msg, origin='' ):
 
-		# Print the message to the python logger
+        # Print the message to the python logger
 
-		self._Logger.debug( origin + ': ' + msg )
+        self._Logger.debug( origin + ': ' + msg )
 
 
-		# Return None
+        # Return None
 
-		return None
+        return None
 
 # ------------------------------------------------------------------------------
 
@@ -624,11 +624,11 @@ class logsPYTHON:
 
 # ------------------------------------------------------------------------------
 
-	def dir_name( self ):
+    def dir_name( self ):
 
-		# Return the output directory
+        # Return the output directory
 
-		return self._dir_name
+        return self._dir_name
 
 # ------------------------------------------------------------------------------
 
@@ -655,16 +655,16 @@ class logsPYTHON:
 
 # ------------------------------------------------------------------------------
 
-	def error( self, msg, origin='' ):
+    def error( self, msg, origin='' ):
 
-		# Print the message to the python logger
+        # Print the message to the python logger
 
-		self._Logger.error( origin + ': ' + msg )
+        self._Logger.error( origin + ': ' + msg )
 
 
-		# Return None
+        # Return None
 
-		return None
+        return None
 
 # ------------------------------------------------------------------------------
 
@@ -689,11 +689,11 @@ class logsPYTHON:
 
 # ------------------------------------------------------------------------------
 
-	def file_name( self ):
+    def file_name( self ):
 
-		# Return the log file name
+        # Return the log file name
 
-		return self._file_name
+        return self._file_name
 
 # ------------------------------------------------------------------------------
 
@@ -720,16 +720,16 @@ class logsPYTHON:
 
 # ------------------------------------------------------------------------------
 
-	def info( self, msg, origin='' ):
+    def info( self, msg, origin='' ):
 
-		# Print the message to the python logger
+        # Print the message to the python logger
 
-		self._Logger.info( origin + ': ' + msg )
+        self._Logger.info( origin + ': ' + msg )
 
 
-		# Return None
+        # Return None
 
-		return None
+        return None
 
 # ------------------------------------------------------------------------------
 
@@ -754,11 +754,11 @@ class logsPYTHON:
 
 # ------------------------------------------------------------------------------
 
-	def level( self ):
+    def level( self ):
 
-		# Return the log level
+        # Return the log level
 
-		return self._level
+        return self._level
 
 # ------------------------------------------------------------------------------
 
@@ -783,11 +783,11 @@ class logsPYTHON:
 
 # ------------------------------------------------------------------------------
 
-	def root( self ):
+    def root( self ):
 
-		# Return the root of the output file name
+        # Return the root of the output file name
 
-		return self._root
+        return self._root
 
 # ------------------------------------------------------------------------------
 
@@ -814,13 +814,13 @@ class logsPYTHON:
 
 # ------------------------------------------------------------------------------
 
-	def warning( self, msg, origin='' ):
+    def warning( self, msg, origin='' ):
 
-		# Print the message to the python logger
+        # Print the message to the python logger
 
-		self._Logger.warning( origin + ': ' + msg )
+        self._Logger.warning( origin + ': ' + msg )
 
 
-		# Return None
+        # Return None
 
-		return None
+        return None

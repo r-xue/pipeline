@@ -24,19 +24,19 @@ class UVcontFitQAHandler(pqa.QAPlugin):
         if result.mitigation_error:
             scores.append(pqa.QAScore(0.0, longmsg = 'Size mitigation error. No continuum information available.', shortmsg = 'Size mitigation error'))
         else:
-	    # Check for existance of the UV continuum table
+            # Check for existance of the UV continuum table
             for calapp in result.pool:
                 score = self._uvtable_exists(result.inputs['output_dir'], os.path.basename(calapp.calfrom[0].gaintable))
                 scores.append(score)
 
         result.qa.pool.extend(scores)
-    
+
     def _uvtable_exists(self, output_dir, caltable):
         '''
         Check for the existence of the target MS
         '''
         return qacalc.score_path_exists(output_dir, caltable,
-	    'uv continuum fit table')
+            'uv continuum fit table')
 
 class UVcontFitListQAHandler(pqa.QAPlugin):
     """
@@ -55,7 +55,7 @@ class UVcontFitListQAHandler(pqa.QAPlugin):
         longmsg = 'No missing target MS(s) for %s' % utils.commafy(mses,
                                                                    quotes=False,
                                                                    conjunction='or')
-	result.qa.all_unity_longmsg = longmsg
+        result.qa.all_unity_longmsg = longmsg
 
 class UVcontSubQAHandler(pqa.QAPlugin):
     result_cls = uvcontsub.UVcontSubResults
@@ -72,7 +72,7 @@ class UVcontSubQAHandler(pqa.QAPlugin):
             scores.append(pqa.QAScore(1.0, longmsg = 'Continuum subtraction cal tables applied.', shortmsg = ''))
 
         result.qa.pool.extend(scores)
-    
+
 class UVcontSubListQAHandler(pqa.QAPlugin):
     """
     QA handler for a list containing UVcontSubResults.
@@ -90,4 +90,4 @@ class UVcontSubListQAHandler(pqa.QAPlugin):
         longmsg = 'No missing target MS(s) for %s' % utils.commafy(mses,
                                                                    quotes=False,
                                                                    conjunction='or')
-	result.qa.all_unity_longmsg = longmsg
+        result.qa.all_unity_longmsg = longmsg

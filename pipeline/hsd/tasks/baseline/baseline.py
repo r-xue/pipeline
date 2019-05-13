@@ -41,12 +41,12 @@ class SDBaselineInputs(vdp.StandardInputs):
     fitfunc = vdp.VisDependentProperty(default='cspline')
     clusteringalgorithm = vdp.VisDependentProperty(default='kmean')
     deviationmask = vdp.VisDependentProperty(default=True)
-    
+
     # Synchronization between infiles and vis is still necessary
     @vdp.VisDependentProperty
     def vis(self):
         return self.infiles
-    
+
     # use common implementation for parallel inputs argument
     parallel = sessionutils.parallel_inputs_impl()
 
@@ -54,7 +54,7 @@ class SDBaselineInputs(vdp.StandardInputs):
                  linewindow=None, linewindowmode=None, edge=None, broadline=None, fitorder=None,
                  fitfunc=None, clusteringalgorithm=None, deviationmask=None, parallel=None):
         super(SDBaselineInputs, self).__init__()
-        
+
         self.context = context
         self.infiles = infiles
         self.antenna = antenna
@@ -77,7 +77,7 @@ class SDBaselineInputs(vdp.StandardInputs):
             self.infiles = infiles[0]
         args = super(SDBaselineInputs, self).to_casa_args()
         self.infiles = infiles
-        
+
         if 'antenna' not in args:
             args['antenna'] = ''
         return args
@@ -104,13 +104,13 @@ class SDBaselineResults(common.SingleDishResults):
                 group_desc.iter_countup(ms, ant, spw, field)
                 group_desc.add_linelist(lines, ms, ant, spw, field,
                                         channelmap_range=channelmap_range)
-                
+
         # register working data that stores spectra after baseline subtraction
         if 'work_data' in self.outcome:
             for (vis, work_data) in self.outcome['work_data'].iteritems():
                 ms = context.observing_run.get_ms(vis)
                 ms.work_data = work_data
-                 
+
         # merge deviation_mask with context
         for ms in context.observing_run.measurement_sets:
             ms.deviation_mask = None
@@ -128,7 +128,7 @@ class SDBaselineResults(common.SingleDishResults):
     def _outcome_name(self):
         return '\n'.join(['Reduction Group {0}: member {1}'.format(b['group_id'], b['members'])
                           for b in self.outcome['baselined']])
-        
+
 
 @task_registry.set_equivalent_casa_task('hsd_baseline')
 @task_registry.set_casa_commands_comment(
@@ -139,7 +139,7 @@ class SDBaselineResults(common.SingleDishResults):
 class SDBaseline(basetask.StandardTaskTemplate):
     Inputs = SDBaselineInputs
     is_multi_vis_task = True
-    
+
 #    @memory_profiler.profile
     def prepare(self):
         LOG.debug('Starting SDMDBaseline.prepare')
@@ -159,7 +159,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
         fitfunc = inputs.fitfunc
         clusteringalgorithm = inputs.clusteringalgorithm
         deviationmask = inputs.deviationmask
-        
+
         # mkdir stage_dir if it doesn't exist
         stage_number = context.task_counter
         stage_dir = os.path.join(context.report_dir, "stage%d" % stage_number)
@@ -170,10 +170,10 @@ class SDBaseline(basetask.StandardTaskTemplate):
 
         # This is a dictionary for deviation mask that will be merged with top-level context
         deviation_mask = collections.defaultdict(dict)
-        
+
         # collection of field, antenna, and spw ids in reduction group per MS
         registry = collections.defaultdict(utils.RGAccumulator)
-        
+
         # outcome for baseline subtraction
         baselined = []
 
@@ -193,14 +193,14 @@ class SDBaseline(basetask.StandardTaskTemplate):
             first_member = group_desc[0]
             iteration = first_member.iteration
             LOG.debug('iteration for group {group_id} is {iter}', group_id=group_id, iter=iteration)
- 
+
             # skip channel averaged spw
             nchan = group_desc.nchan
             LOG.debug('nchan for group {group_id} is {nchan}', group_id=group_id, nchan=nchan)
             if nchan == 1:
                 LOG.info('Skip channel averaged spw {}.', first_member.spw)
                 continue
- 
+
             LOG.debug('spw=\'{}\'', args['spw'])
             LOG.debug('vis_list={}', vis_list)
             member_list = numpy.fromiter(
@@ -211,14 +211,14 @@ class SDBaseline(basetask.StandardTaskTemplate):
             if len(member_list) == 0:
                 LOG.info('Skip reduction group {}', group_id)
                 continue
- 
+
             member_list.sort()
-            
+
             LOG.debug('Members to be processed:')
             for (gms, gfield, gant, gspw) in utils.iterate_group_member(group_desc, member_list):
                 LOG.debug('\tMS "{}" Field ID {} Antenna ID {} Spw ID {}', 
                           gms.basename, gfield, gant, gspw)
-                 
+
             # Deviation Mask 
             # NOTE: deviation mask is evaluated per ms per field per spw
             if deviationmask:
@@ -273,13 +273,13 @@ class SDBaseline(basetask.StandardTaskTemplate):
             detected_lines = maskline_result.outcome['detected_lines']
             channelmap_range = maskline_result.outcome['channelmap_range']
             cluster_info = maskline_result.outcome['cluster_info']
-            
+
             # register ids to per MS id collection
             for i in member_list:
                 member = group_desc[i]
                 registry[member.ms].append(member.field_id, member.antenna_id, member.spw_id, 
                                            grid_table=compressed_table, channelmap_range=channelmap_range)
-             
+
             # add entry to outcome
             baselined.append({'group_id': group_id, 'iteration': iteration,
                               'members': member_list,
@@ -287,13 +287,13 @@ class SDBaseline(basetask.StandardTaskTemplate):
                               'channelmap_range': channelmap_range,
                               'clusters': cluster_info})
         # - end of the loop over reduction group
-            
+
         blparam_file = lambda ms: ms.basename.rstrip('/') \
             + '_blparam_stage{stage}.txt'.format(stage=stage_number)
         work_data = {}
         plot_list = []
 #         plot_manager = plotter.BaselineSubtractionPlotManager(self.inputs.context, datatable)
-        
+
         # Generate and apply baseline fitting solutions
         vislist = [ms.name for ms in registry]
         plan = [registry[ms] for ms in registry]
@@ -309,7 +309,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
                                             parallel=self.inputs.parallel)
         fitter_task = worker_cls(fitter_inputs)
         fitter_results = self._executor.execute(fitter_task, merge=False)
-        
+
         # Check if fitting was successful
         fitting_failed = False
         if isinstance(fitter_results, basetask.FailedTaskResults):
@@ -323,22 +323,22 @@ class SDBaseline(basetask.StandardTaskTemplate):
             for r in failed_results:
                 r.origtask = self
             return failed_results
-        
+
         results_dict = dict((os.path.basename(r.outcome['infile']), r) for r in fitter_results)
         for ms in context.observing_run.measurement_sets:
             if ms.basename not in results_dict:
                 continue
-            
+
             result = results_dict[ms.basename]
             vis = result.outcome['infile']
- 
+
             outfile = result.outcome['outfile']
             LOG.debug('infile: {0}, outfile: {1}'.format(os.path.basename(vis), os.path.basename(outfile)))
             work_data[ms.name] = outfile
-            
+
             if 'plot_list' in result.outcome:
                 plot_list.extend(result.outcome['plot_list'])
-        
+
         outcome = {'baselined': baselined,
                    'work_data': work_data,
                    'edge': edge,
@@ -347,12 +347,12 @@ class SDBaseline(basetask.StandardTaskTemplate):
         results = SDBaselineResults(task=self.__class__,
                                     success=True,
                                     outcome=outcome)
-                        
+
         return results
 
     def analyse(self, result):
         return result
-    
+
     @staticmethod
     def evaluate_deviation_mask(vis, field_id, antenna_id, spw_id, consider_flag=False):
         """
@@ -362,7 +362,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
         mask_list = h.calculate(vis=vis, field_id=field_id, antenna_id=antenna_id, spw_id=spw_id, 
                                 consider_flag=consider_flag)
         return mask_list
-    
+
 
 class HeuristicsTask(object):
     def __init__(self, heuristics_cls, *args, **kwargs):
@@ -375,9 +375,9 @@ class HeuristicsTask(object):
     def execute(self, dry_run=False):
         if dry_run:
             return []
-        
+
         return self.heuristics.calculate(*self.args, **self.kwargs)
-    
+
     def get_executable(self):
         return lambda: self.execute(dry_run=False)
 
@@ -389,11 +389,11 @@ class DeviationMaskHeuristicsTask(HeuristicsTask):
         self.field_list = field_list
         self.antenna_list = antenna_list
         self.spw_list = spw_list
-        
+
     def execute(self, dry_run=False):
         if dry_run:
             return {}
-        
+
         result = []
         for field_id, antenna_id, spw_id in itertools.izip(self.field_list, self.antenna_list, self.spw_list):
             self.kwargs.update({'field_id': field_id, 'antenna_id': antenna_id, 'spw_id': spw_id})
@@ -434,7 +434,7 @@ def test_deviation_mask_heuristic(spw=None):
     parallel_results = [(v, t.get_result()) for v, t in parallel_tasks]
     end_time = time.time()
     print('parallel execution duration {0}sec'.format(end_time-start_time))
-   
+
     for vis, smask in serial_results:
         for _vis, pmask in parallel_results:
             if vis == _vis:

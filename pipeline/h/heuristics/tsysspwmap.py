@@ -33,7 +33,7 @@ class SpwMap(object):
         self.validFreqRange = []
         self.mapsToSpw = []
         self.bbNo = None
-        
+
 
 class SpwInfo(object):
     def __init__(self, mstable, spwId):
@@ -45,12 +45,12 @@ class SpwInfo(object):
 
     def setTable(self, mstable):
         self.parameters = mstable.colnames()
-        
+
     def setSpwId(self, mstable, spwId):
         self.values = {}
         for i in self.parameters:
             self.values[i] = mstable.getcell(i, spwId)
-    
+
 
 def areIdentical(spwInfo1, spwInfo2):
     if len(spwInfo1.parameters) <= len(spwInfo2.parameters):
@@ -78,8 +78,8 @@ def trimSpwmap(spwMap):
         if compare[i:] == spwMap[i:]:
             break
     return spwMap[:i]
-        
-        
+
+
 def tsysspwmap(ms, tsystable, trim=True, relax=False, tsysChanTol=1):
     """
     Generate default spwmap for ALMA Tsys, including TDM->FDM associations

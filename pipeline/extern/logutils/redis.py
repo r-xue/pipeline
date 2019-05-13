@@ -11,7 +11,7 @@ class RedisQueueHandler(QueueHandler):
     """
     A QueueHandler implementation which pushes pickled
     records to a Redis queue using a specified key.
-    
+
     :param key: The key to use for the queue. Defaults to
                 "python.logging".
     :param redis: If specified, this instance is used to
@@ -27,7 +27,7 @@ class RedisQueueHandler(QueueHandler):
         assert limit >= 0
         self.limit = limit
         QueueHandler.__init__(self, redis)
-        
+
     def enqueue(self, record):
         s = pickle.dumps(vars(record))
         self.queue.rpush(self.key, s)
@@ -38,7 +38,7 @@ class RedisQueueListener(QueueListener):
     """
     A QueueListener implementation which fetches pickled
     records from a Redis queue using a specified key.
-    
+
     :param key: The key to use for the queue. Defaults to
                 "python.logging".
     :param redis: If specified, this instance is used to

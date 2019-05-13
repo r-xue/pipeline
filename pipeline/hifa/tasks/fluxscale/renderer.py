@@ -50,7 +50,7 @@ class T2_4MDetailsGFluxscaleRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             for vis, vis_plots in plots.iteritems():
                 if len(vis_plots) > 0:
                     ampuv_allant_plots[vis][key] = vis_plots
-                
+
         #List of antenna for the fluxscale result, sorted by baseband
         ampuv_ant_plots = collections.defaultdict(dict)
 
@@ -106,7 +106,7 @@ class T2_4MDetailsGFluxscaleRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             d = utils.dict_merge(d, plots)
 
         return d
-        
+
     def create_plots_ants(self, context, results, plotter_cls, intents, renderer_cls=None):
         """
         Create plots and return a dictionary of vis:[Plots].  Antenna and UVrange selection
@@ -140,8 +140,8 @@ class T2_4MDetailsGFluxscaleRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 fileobj.write(renderer.render())        
 
         return d
-    
-    
+
+
 FluxTR = collections.namedtuple('FluxTR', 'vis field spw freqbw i q u v fluxratio spix')
 
 def make_flux_table(context, results):
@@ -174,13 +174,13 @@ def make_flux_table(context, results):
                         if stokes == 'I':
                             flux_jy_I = flux_jy
                         unc_jy = unc.to_units(measures.FluxDensityUnits.JANSKY)
-                        
+
                         if flux_jy != 0 and unc_jy != 0:
                             unc_ratio = decimal.Decimal('100')*(unc_jy/flux_jy)
                             uncertainty = ' &#177; %s (%0.1f%%)' % (str(unc), unc_ratio)
                         else:
                             uncertainty = ''
-                            
+
                         fluxes[stokes] = '%s%s' % (flux, uncertainty)
                     except:
                         pass
@@ -214,7 +214,7 @@ def make_flux_table(context, results):
                     if fluxes['I'] != 'N/A' and catfluxes['I'] != 'N/A':
                         flux_ratio = '%0.3f' % (float(flux_jy_I) / float(catflux_jy_I))
                     break
-                                    
+
                 tr = FluxTR(vis_cell, field_cell, measurement.spw_id, freqbw, 
                             fluxes['I'],
                             fluxes['Q'],

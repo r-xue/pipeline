@@ -68,13 +68,13 @@ class AzElChart(object):
 
         if not os.path.exists(self.figfile):
             task.execute()
-        
+
         return self._get_plot_object(task)
 
     def _get_figfile(self):
         session_part = self.ms.session
         ms_part = self.ms.basename
-        
+
         return os.path.join(self.context.report_dir, 
                             'session%s' % session_part, 
                             ms_part, 'azel.png')
@@ -147,7 +147,7 @@ class ElVsTimeChart(object):
         if DISABLE_PLOTMS:
             LOG.debug('Disabling ElVsTime plot due to problems with plotms')
             return None
-    
+
         # Inputs based on analysisUtils.plotElevationSummary
         task_args = {'vis': self.ms.name,
                      'xaxis': 'time',
@@ -223,7 +223,7 @@ class FieldVsTimeChart(object):
                        'POLLEAKAGE': 'plum',
                        'UNKNOWN': 'grey',
                        }
-    
+
     def __init__(self, inputs):
         self.inputs = inputs
 
@@ -232,7 +232,7 @@ class FieldVsTimeChart(object):
 
         obs_start = utils.get_epoch_as_datetime(ms.start_time)
         obs_end = utils.get_epoch_as_datetime(ms.end_time)
-        
+
         filename = self.inputs.output
         if os.path.exists(filename):
             plot = logger.Plot(filename,
@@ -240,7 +240,7 @@ class FieldVsTimeChart(object):
                                y_axis='Field',
                                parameters={'vis': ms.basename})
             return plot
-        
+
         f = pylab.figure()
         pylab.clf()
         pylab.axes([0.1, 0.15, 0.8, 0.7])
@@ -254,7 +254,7 @@ class FieldVsTimeChart(object):
                 # all 'datetime' objects are in UTC.
                 x0 = utils.get_epoch_as_datetime(scan.start_time)
                 x1 = utils.get_epoch_as_datetime(scan.end_time)
-                
+
                 y0 = nfield-0.5
                 y1 = nfield+0.5
 
@@ -297,7 +297,7 @@ class FieldVsTimeChart(object):
                            x_axis='Time',
                            y_axis='Field',
                            parameters={'vis': ms.basename})
-        
+
         return plot
 
     def _plot_key(self):
@@ -408,7 +408,7 @@ class IntentVsTimeChart(object):
                        'POLANGLE': ('mediumslateblue', 50),
                        'POLLEAKAGE': ('plum', 55),
                        }
-    
+
     def __init__(self, inputs):
         self.inputs = inputs
 
@@ -418,11 +418,11 @@ class IntentVsTimeChart(object):
 
         fig = pyplot.figure(figsize=(14, 9))
         ax = fig.add_subplot(111)
-    
+
         ms = self.inputs.ms        
         obs_start = utils.get_epoch_as_datetime(ms.start_time)
         obs_end = utils.get_epoch_as_datetime(ms.end_time)
-    
+
         for scan in ms.scans:
             scan_start = utils.get_epoch_as_datetime(scan.start_time)
             scan_end = utils.get_epoch_as_datetime(scan.end_time)
@@ -435,7 +435,7 @@ class IntentVsTimeChart(object):
                         facecolor=colour)
 
                 ax.annotate('%s' % scan.id, (scan_start, scan_y+6))
-    
+
         ax.set_ylim(0, 57.5)
         ax.set_yticks([2.5, 7.5, 12.5, 17.5, 22.5, 27.5, 32.5, 37.5, 42.5, 47.5, 52.5, 57.5])
         ax.set_yticklabels(['SCIENCE', 'PHASE', 'CHECK', 'BANDPASS',
@@ -446,18 +446,18 @@ class IntentVsTimeChart(object):
         FieldVsTimeChart._set_time_axis(
             figure=fig, ax=ax, datemin=obs_start, datemax=obs_end)
         ax.grid(True)
-    
+
         pyplot.title(
             'Measurement set: ' + ms.basename + ' - Start time:' +
             obs_start.strftime('%Y-%m-%dT%H:%M:%S') + ' End time:' +
             obs_end.strftime('%Y-%m-%dT%H:%M:%S'), fontsize=12)
-    
+
         fig.savefig(self.inputs.output)
         pylab.clf()
         pylab.close()
 
         return self._get_plot_object()
-        
+
     @staticmethod
     def _in_minutes(dt):
         return (dt.days * 86400 + dt.seconds + dt.microseconds * 1e-6) / 60.0 
@@ -652,7 +652,7 @@ class PlotAntsChart(object):
     def draw_polarlog_ant_map_in_subplot(self, plf):
         """
         Draw a polar-log map of antennas.
-        
+
         plf: a pylab.figure instance
         """
 
@@ -681,11 +681,11 @@ class PlotAntsChart(object):
         # Set rmin, clamp between a min and max value, ignore station
         # at r=0 if one is there.
         rmin = min(rmin_max, max(rmin_min, 0.8*np.min(r[r > 0])))
-        
+
         # Update r to move any points below rmin to r=rmin.
         r[r <= rmin] = rmin
         rmin = np.log(rmin)
-        
+
         # Set rmax.
         rmax = np.log(1.5*np.max(r))
 
@@ -698,14 +698,14 @@ class PlotAntsChart(object):
         # Set zero point and direction for theta angle.
         subpl.set_theta_zero_location('N')
         subpl.set_theta_direction(-1)
-        
+
         # Do not show azimuth labels.
         subpl.set_xticklabels([])
         subpl.set_yticklabels([])
-        
+
         # Do not show grid.
         subpl.grid(False)
-        
+
         # Draw circles at specific distances from the center.
         angles = np.arange(0, 2.01*np.pi, 0.01*np.pi)
         show_circle = True
@@ -750,11 +750,11 @@ class PlotAntsChart(object):
 
             # Draw the antenna position.
             subpl.plot(theta[i], np.log(r[i]), 'ko', ms=5, mfc='k')
-    
+
             # Draw label for the antenna.
             subpl.text(theta[i], np.log(r[i]), '   '+antenna.name, size=8,
                        color='k', ha='left', va='bottom', weight='bold')
-    
+
             # Create label for legend
             if max(r) < 100:
                 label = r'{}: {:2.0f} m, {:4.0f}$^\circ$'.format(

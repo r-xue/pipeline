@@ -725,7 +725,7 @@ class StandardInputs(api.Inputs):
             msg = '{!s} did not set the pipeline context'.format(self.__class__.__name__)
             raise TypeError(msg)
         return self._context
-        
+
     @context.setter
     def context(self, value):
         if not isinstance(value, launcher.Context):
@@ -741,7 +741,7 @@ class StandardInputs(api.Inputs):
     def ms(self):
         """
         Return the MeasurementSet for the current value of vis.
-     
+
         :rtype: :class:`~pipeline.domain.MeasurementSet`
         """
         if isinstance(self.vis, list):
@@ -756,7 +756,7 @@ class StandardInputs(api.Inputs):
         """
         Express this class as a dictionary of CASA arguments, listing all
         inputs except those named in ignore. 
-        
+
         The main purpose of the ignore argument is used to prevent an infinite
         loop in :meth:`~CommonCalibrationInputs.caltable`, which determines the
         value of caltable based on the value of the other CASA task arguments.
@@ -791,7 +791,7 @@ class StandardInputs(api.Inputs):
         Express these inputs as a dictionary of CASA arguments. The values
         in the dictionary are in a format suitable for CASA and can be 
         directly passed to the CASA task.
-        
+
         :rtype: a dictionary of string/??? kw/val pairs
         """        
         args = self._get_task_args()

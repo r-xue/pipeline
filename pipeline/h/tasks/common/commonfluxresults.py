@@ -34,7 +34,7 @@ class FluxCalibrationResults(basetask.Results):
 
     def merge_with_context(self, context):
         ms = context.observing_run.get_ms(self.vis)
-        
+
         for field_id in self.measurements:
             # resolve the potentially foreign fields to native fields
             # contained in our target measurement set

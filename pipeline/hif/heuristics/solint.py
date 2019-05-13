@@ -8,7 +8,7 @@ class PhaseUpSolInt(api.Heuristic):
 
     def calculate(self, int_time):
         """Get the range of phase-up solution intervals.
-        
+
         :param int_time: the integration time for the bandpass observation
             under consideration
         :type int_time: an integer or float

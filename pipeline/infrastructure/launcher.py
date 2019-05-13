@@ -42,39 +42,39 @@ class Context(object):
     ... py:attribute:: project_summary
 
         project summary information.
-    
+
     ... py:attribute:: project_structure
 
         ALMA project structure information.
-    
+
     .. py:attribute:: observing_run
 
         the top-level (:class:`~pipeline.domain.observingrun.ObservingRun`)
         through which all other pipeline.domain objects can be accessed
 
     .. py:attribute:: callibrary
-    
+
         the (:class:`~pipeline.infrastructure.callibrary.CalLibrary`) object
         holding the calibration state for registered measurement sets
-        
+
     .. py:attribute:: calimlist
-    
+
         the (:class:`~pipeline.infrastructure.imagelibrary.ImageLibrary`)
         object holding final images of calibrators
 
     .. py:attribute:: sciimlist
-    
+
         the (:class:`~pipeline.infrastructure.imagelibrary.ImageLibrary`)
         object holding final images of science targets
 
     .. py:attribute:: results
-    
+
         the list of (:class:`~pipeline.infrastructure.api.Result`) objects
         holding summaries of the pipeline run, one 
         (:class:`~pipeline.infrastructure.api.Result`) for each task.
-        
+
     .. py:attribute:: output_dir
-    
+
         the directory to which pipeline data should be sent
 
     .. py:attribute:: raw_dir
@@ -82,19 +82,19 @@ class Context(object):
         the directory holding the raw ASDMs or measurement sets (not used)
 
     .. py:attribute:: report_dir
-    
+
         the directory where pipeline HTML reports should be sent
 
     .. py:attribute:: task_counter
-    
+
         integer holding the index of the last task to complete
 
     .. py:attribute:: subtask_counter
-    
+
         integer holding the index of the last subtask to complete
-    
+
     .. py:attribute:: name
-    
+
         name of the context; also forms the root of the filename used for the
         pickled state 
 
@@ -156,7 +156,7 @@ class Context(object):
     @property
     def report_dir(self):
         return os.path.join(self.output_dir, self.name, 'html')
-    
+
     @property
     def output_dir(self):
         return self._output_dir
@@ -179,11 +179,11 @@ class Context(object):
         if value is None:
             (root_dir, _) = os.path.split(self.output_dir)
             value = os.path.join(root_dir, 'products')
-        
+
         value = os.path.abspath(value)
         LOG.trace('Setting products_dir to \'%s\'' % value)
         self._products_dir = value
-        
+
     def save(self, filename=None):
         if filename in ('', None):
             filename = '%s.context' % self.name
@@ -244,7 +244,7 @@ class Pipeline(object):
         """
         Initialise the pipeline, creating a new ~Context or loading a saved
         ~Context from disk.
-    
+
         :param context: filename of the pickled Context to load from disk.
             Specifying 'last' loads the last-saved Context, while passing None
             creates a new Context.
@@ -283,13 +283,13 @@ class Pipeline(object):
             # .. by finding either last session, or..
             if context == 'last':
                 context = self._find_most_recent_session()
-        
+
             # .. the user-specified file
             with open(context, 'rb') as context_file:
                 LOG.info('Reading context from file {0}'.format(context))
                 last_context = utils.pickle_load(context_file)
                 self.context = last_context
-                
+
             for k, v in path_overrides.iteritems():
                 setattr(self.context, k, v)
 
@@ -303,7 +303,7 @@ class Pipeline(object):
 
     def _link_casa_log(self, context):
         report_dir = context.report_dir
-        
+
         # create a hard-link to the current CASA log in the report directory 
         src = casatools.log.logfile()
         dst = os.path.join(report_dir, os.path.basename(src))
@@ -322,7 +322,7 @@ class Pipeline(object):
             context.logs['casalogs'] = []
         if src not in context.logs['casalogs']:
             context.logs['casalogs'].append(os.path.basename(dst))
-    
+
     def _find_most_recent_session(self, directory='./'):
         # list all the files in the directory..
         files = [f for f in os.listdir(directory) if f.endswith('.context')]
@@ -331,10 +331,10 @@ class Pipeline(object):
         # modification timestamps, ..
         name_n_timestamp = dict([(f, os.stat(directory+f).st_mtime) 
                                  for f in files])
- 
+
         # .. then return the file with the most recent timestamp
         return max(name_n_timestamp, key=name_n_timestamp.get)
-    
+
     def __repr__(self):
         ms_names = [ms.name 
                     for ms in self.context.observing_run.measurement_sets]

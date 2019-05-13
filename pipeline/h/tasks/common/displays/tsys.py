@@ -23,7 +23,7 @@ class TsysSummaryChart(object):
         ms = context.observing_run.get_ms(self._vis)
         science_spws = ms.get_spectral_windows(science_windows_only=True)
         science_spw_ids = [spw.id for spw in science_spws]
-        
+
         wrapper = common.CaltableWrapperFactory.from_caltable(self._caltable)
         tsys_in_caltable = set(wrapper.spw) 
         self._spwmap = dict((spw, tsys) for (spw, tsys) in enumerate(calto.spwmap)
@@ -53,7 +53,7 @@ class TsysSummaryChart(object):
     def create_task(self):
         unique_tsys_spws = set(self._spwmap.values())
         spw_arg = ','.join([str(spw) for spw in unique_tsys_spws])
-        
+
         task_args = {'vis'         : self._vis,
                      'caltable'    : self._caltable,
                      'xaxis'       : 'freq',
@@ -83,7 +83,7 @@ class TsysSummaryChart(object):
                                               'tsys_spw' : tsys_spw},
                                   command=str(task))
             wrappers.append(wrapper)
-        
+
         if not all([os.path.exists(w.abspath) for w in wrappers]):
             LOG.trace('Tsys summary plots not found. Creating new plots.')
             try:
@@ -97,7 +97,7 @@ class TsysSummaryChart(object):
             if not os.path.exists(w.abspath):
                 LOG.info('Tsys summary plot not generated for %s spw %s',
                          w.parameters['vis'], w.parameters['spw'])
-            
+
         return wrappers
 
 

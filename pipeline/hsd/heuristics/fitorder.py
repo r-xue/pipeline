@@ -11,13 +11,13 @@ class FitOrderHeuristics(api.Heuristic):
     Determine fitting order from a set of spectral data.
     """
     MaxDominantFreq = 15
-    
+
     def calculate(self, data, mask=None, edge=(0, 0)):
         """
         Determine fitting order from a set of spectral data, data,
         with masks for each spectral data, mask, and number of edge
         channels to be excluded, edge.
-        
+
         First, manipulate each spectral data by the following procedure:
 
            1) mask regions specified by mask and edge,
@@ -54,7 +54,7 @@ class FitOrderHeuristics(api.Heuristic):
         # Average seems to be better than median
         #power = numpy.median(power_spectrum, axis=0)
         power = numpy.average(power_spectrum, axis=0)
-        
+
         max_freq = max(int(self.MaxDominantFreq * effective_nchan / 2048.0), 1)
 
         # 2007/09/01 Absolute value of power should be taken into account
@@ -87,7 +87,7 @@ class FitOrderHeuristics(api.Heuristic):
 
         return poly_order
 
-        
+
 class MaskMakerNoLine(object):
     def __init__(self, nchan, edge):
         self.flag = numpy.ones(nchan)

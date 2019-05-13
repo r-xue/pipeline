@@ -92,7 +92,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
 
     def prepare(self, **parameters):
         inputs = self.inputs
-        
+
         # Call the SNR estimater if either
         #     hm_phaseup='snr'
         # or
@@ -132,7 +132,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
         else:
             LOG.info('Using fixed solint estimates')
             result = self._do_bandpass()
-        
+
         # Attach the preparatory result to the final result so we have a
         # complete log of all the executed tasks. 
         if inputs.hm_phaseup != '': 
@@ -210,7 +210,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
                     # for each spw in the phase-up scan(s). We can't rely on 
                     # this though, so we need to check this assumption on each
                     # access 
-                    
+
                     # But if multiple solint were were used for scans with the
                     # same intent, bail out again
                     if len(solints) != 1:
@@ -226,7 +226,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
                     # note the extra s to denote units, otherwise the quanta
                     # tool can't make a comparison 
                     old_solint = timedelta_solint
-                    
+
                 newsolint = quanta.tos(quanta.mul(quanta.quantity(snr_result.exptimes[i]), quanta.quantity(factor)), 3)
                 LOG.warning('Rounding estimated phaseup solint for spw %s from %s to %s in MS %s' %
                             (snr_result.spwids[i], snr_result.phsolints[i], newsolint, inputs.ms.basename))
@@ -271,7 +271,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
                 best_solint = tmpsolints[i]
         if best_solint == '0.0s':
             best_solint = 'int'
-            
+
         LOG.info("Best phaseup solint estimate is '%s'" % best_solint)
         return best_solint
 
@@ -324,7 +324,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
             # generate. Ideally this would be a list on the CalApp itself,
             # but we don't have time to do that right now.
             calapp_origins = []
-            
+
             # Loop through the spw appending the results of each spw
             # to the results of the previous one.
             for spw in spwlist:
@@ -366,7 +366,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
             if result.final:
                 result.final[0].calto.spw = orig_spw
                 result.final[0].origin = calapp_origins
-            
+
             return result
 
         finally:
@@ -434,7 +434,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
                     LOG.info('Setting bandpass solint to %s for spw %s' % (inputs.solint, spw.id))
 
                 elif ncorr * spw.num_channels > 256:
-                    
+
                     if (spw.num_channels / inputs.maxchannels) < 1:
                         inputs.solint = orig_solint
                     else:
@@ -490,7 +490,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
         bw_quantity = quanta.convert(quanta.quantity(inputs.phaseupbw), 'Hz')        
         bandwidth = measures.Frequency(quanta.getvalue(bw_quantity)[0], 
                                        measures.FrequencyUnits.HERTZ)
-    
+
         # Loop over the spws creating a new list with channel ranges
         outspw = []
         for spw in self.inputs.ms.get_spectral_windows(self.inputs.spw):
@@ -500,7 +500,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
             minchan, maxchan = spw.channel_range(lo_freq, hi_freq)
             cmd = '{0}:{1}~{2}'.format(spw.id, minchan, maxchan)
             outspw.append(cmd)
-    
+
         return ','.join(outspw)
 
 

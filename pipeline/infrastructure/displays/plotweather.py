@@ -82,7 +82,7 @@ def plotWeather(vis='', figfile='', station=[], help=False):
             else:
                 print("Invalid station ID, it must be an integer, or list of integers.")
                 return
-            
+
     if len(uniqueStations) > 1:
         firstStationRows = np.where(stations == uniqueStations[0])[0]
         secondStationRows = np.where(stations == uniqueStations[1])[0]
@@ -107,7 +107,7 @@ def plotWeather(vis='', figfile='', station=[], help=False):
             temperature2 -= 273.15        
         if (dewPoint2 is not None and np.mean(dewPoint2) > 100):
             dewPoint2 -= 273.15        
-        
+
     if (np.mean(temperature) > 100):
         # convert to Celsius
         temperature -= 273.15        
@@ -145,7 +145,7 @@ def plotWeather(vis='', figfile='', station=[], help=False):
         list_of_date_times = mjdSecondsListToDateTime(mjdsec2)
         timeplot2 = pb.date2num(list_of_date_times)
         pb.plot_date(timeplot2, pressure2, markersize=markersize, color='r')
-        
+
     resizeFonts(adesc, myfontsize)
     #pb.xlabel('MJD - %d'%mjdOffset,size=mysize)
     #pb.xlabel('Universal Time (%s)'%plotbp.utdatestring(mjdsec[0]),size=mysize)

@@ -29,7 +29,7 @@ class ImportDataQAHandler(pqa.QAPlugin):
         self._check_flagged_calibrator_data(result.mses)
         score3 = self._check_model_data_column(result.mses)
         score4 = self._check_history_column(result.mses, result.inputs)
-        
+
         LOG.todo('How long can MSes be separated and still be considered ' 
                  'contiguous?')
         score5 = self._check_contiguous(result.mses)
@@ -37,14 +37,14 @@ class ImportDataQAHandler(pqa.QAPlugin):
         score6 = self._check_coordinates(result.mses)
 
         score7 = self._check_science_spw_names(result.mses, context.observing_run.virtual_science_spw_names)
-        
+
         LOG.todo('ImportData QA: missing source.xml and calibrator unknown to ' 
                  'CASA')
         LOG.todo('ImportData QA: missing BDFs')
 
         scores = [score1, score3, score4, score5, score6, score7]
         result.qa.pool.extend(scores)
-    
+
     @staticmethod
     def _check_contiguous(mses):
         """
@@ -52,7 +52,7 @@ class ImportDataQAHandler(pqa.QAPlugin):
         """
         tolerance = datetime.timedelta(hours=1)
         return qacalc.score_contiguous_session(mses, tolerance=tolerance)
-    
+
     @staticmethod
     def _check_model_data_column(mses):
         """
@@ -60,14 +60,14 @@ class ImportDataQAHandler(pqa.QAPlugin):
         complaining if present, and returning an appropriate QA score.
         """
         bad_mses = []
-    
+
         for ms in mses:
             with casatools.TableReader(ms.name) as table:
                 if 'MODEL_DATA' in table.colnames():
                     bad_mses.append(ms)
-    
+
         return qacalc.score_ms_model_data_column_present(mses, bad_mses)
-    
+
     @staticmethod
     def _check_history_column(mses, inputs):
         """
@@ -75,9 +75,9 @@ class ImportDataQAHandler(pqa.QAPlugin):
         column, potentially signifying a non-pristine data set.
         """
         bad_mses = []
-        
+
         createmms = False if 'createmms' not in inputs else inputs['createmms']
-    
+
         for ms in mses:
             history_table = os.path.join(ms.name, 'HISTORY')
             with casatools.TableReader(history_table) as table:
@@ -97,9 +97,9 @@ class ImportDataQAHandler(pqa.QAPlugin):
                                 continue
                             bad_mses.append(ms)
                             break
-    
+
         return qacalc.score_ms_history_entries_present(mses, bad_mses)
-    
+
     @staticmethod
     def _check_flagged_calibrator_data(mses):
         """
@@ -108,21 +108,21 @@ class ImportDataQAHandler(pqa.QAPlugin):
         """
         LOG.todo('What fraction of flagged calibrator data should result in a warning?')
         threshold = 0.10
-    
+
         # which intents should be checked for flagged data
         calibrator_intents = {'AMPLITUDE', 'BANDPASS', 'PHASE'}
-        
+
         # flag for whether to print 'all scans ok' message at end
         all_ok = True
-        
+
         for ms in mses:
             bad_scans = collections.defaultdict(list)
-            
+
             # inspect each MS with flagdata, capturing the dictionary 
             # describing the number of flagged rows 
             flagdata_task = casa_tasks.flagdata(vis=ms.name, mode='summary')
             flagdata_result = flagdata_task.execute(dry_run=False)
-    
+
             for intent in calibrator_intents:
                 # collect scans with the calibrator intent
                 calscans = [scan for scan in ms.scans if intent in scan.intents]
@@ -135,7 +135,7 @@ class ImportDataQAHandler(pqa.QAPlugin):
                     if flagged / total >= threshold:
                         bad_scans[intent].append(scan)
                         all_ok = False
-    
+
             for intent in bad_scans:
                 scan_ids = [scan.id for scan in bad_scans[intent]]
                 multi = False if len(scan_ids) is 1 else True
@@ -148,17 +148,17 @@ class ImportDataQAHandler(pqa.QAPlugin):
                                   utils.commafy(scan_ids, quotes=False),
                                   ms.basename,
                                   'are' if multi else 'is'))
-    
+
         if all_ok:
             LOG.info('All %s scans in %s have less than %s%% flagged '
                      'data' % (utils.commafy(calibrator_intents, False),
                                utils.commafy([ms.basename for ms in mses]),
                                threshold * 100.0))
-    
+
     def _check_intents(self, mses):
         """
         Check each measurement set in the list for a set of required intents.
-        
+
         TODO Should we terminate execution on missing intents?        
         """
         return qacalc.score_missing_intents(mses)
@@ -166,7 +166,7 @@ class ImportDataQAHandler(pqa.QAPlugin):
     def _check_coordinates(self, mses):
         """
         Check each measurement set in the list for zero valued coordinates.
-        
+
         """
         return qacalc.score_ephemeris_coordinates(mses)
 

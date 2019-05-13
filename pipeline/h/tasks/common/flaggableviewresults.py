@@ -46,10 +46,10 @@ class FlaggableViewResults(object):
 
     def last(self, description):
         return copy.deepcopy(self.view[description][-1])
-    
+
     def importfrom(self, result):
         if isinstance(result, FlaggableViewResults):
-            
+
             # copy over the views
             for description in result.descriptions():
                 for view in result.view[description]:
@@ -57,13 +57,13 @@ class FlaggableViewResults(object):
 
             # copy over the flagging
             self.flagging += result.flagging
-            
+
             # copy over table if present
             try:
                 self.table = result.table
             except AttributeError:
                 pass
-            
+
     def sort_flagcmds(self):
         # Try to sort the flagging commands by antenna and spw.
         try:

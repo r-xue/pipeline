@@ -37,12 +37,12 @@ class SDImportDataResults(basetask.Results):
     Purpose of SDImportDataResults is to replace QA scoring associated 
     with ImportDataResults with single dish specific QA scoring, which 
     is associated with this class.
-    
+
     ImportDataResults holds the results of the ImportData task. It contains
     the resulting MeasurementSet domain objects and optionally the additional 
     SetJy results generated from flux entries in Source.xml.
     """
-    
+
     def __init__(self, mses=None, reduction_group_list=None, datatable_prefix=None, setjy_results=None):
         super(SDImportDataResults, self).__init__()
         self.mses = [] if mses is None else mses
@@ -51,17 +51,17 @@ class SDImportDataResults(basetask.Results):
         self.setjy_results = setjy_results
         self.origin = {}
         self.results = importdata.ImportDataResults(mses=mses, setjy_results=setjy_results)
-        
+
     def merge_with_context(self, context):
         self.results.merge_with_context(context)
         self.__merge_reduction_group(context.observing_run, self.reduction_group_list)
         context.observing_run.ms_datatable_name = self.datatable_prefix
-        
+
     def __merge_reduction_group(self, observing_run, reduction_group_list):
         if not hasattr(observing_run, 'ms_reduction_group'):
             LOG.info('Adding ms_reduction_group to observing_run')
             observing_run.ms_reduction_group = {}
-            
+
         # merge reduction group
         for reduction_group in reduction_group_list:
             for (myid, mydesc) in reduction_group.iteritems():
@@ -77,21 +77,21 @@ class SDImportDataResults(basetask.Results):
                     LOG.info('add new group')
                     key = len(observing_run.ms_reduction_group)
                     observing_run.ms_reduction_group[key] = mydesc
-           
+
     def __repr__(self):
         return 'SDImportDataResults:\n\t{0}'.format(
                 '\n\t'.join([ms.name for ms in self.mses]))
-        
+
 
 @task_registry.set_equivalent_casa_task('hsd_importdata')
 @task_registry.set_casa_commands_comment('If required, ASDMs are converted to MeasurementSets.')
 class SDImportData(importdata.ImportData):
     Inputs = SDImportDataInputs 
-    
+
     def prepare(self, **parameters):
         # get results object by running super.prepare()
         results = super(SDImportData, self).prepare()
-        
+
         # per MS inspection
         table_prefix = absolute_path(os.path.join(self.inputs.context.name, 'MSDataTable.tbl'))
         reduction_group_list = []
@@ -101,13 +101,13 @@ class SDImportData(importdata.ImportData):
             inspector = inspection.SDInspection(table_name, ms=ms)
             reduction_group = self._executor.execute(inspector, merge=False)
             reduction_group_list.append(reduction_group)
-            
+
         # create results object
         myresults = SDImportDataResults(mses=results.mses,
                                         reduction_group_list=reduction_group_list,
                                         datatable_prefix=table_prefix,
                                         setjy_results=results.setjy_results)
-        
+
         myresults.origin = results.origin
         return myresults
 
@@ -132,7 +132,7 @@ class HpcSDImportDataInputs(SDImportDataInputs):
 class HpcSDImportData(sessionutils.ParallelTemplate):    
     Inputs = HpcSDImportDataInputs
     Task = SDImportData
-    
+
     def __init__(self, inputs):
         super(HpcSDImportData, self).__init__(inputs)
 
@@ -146,4 +146,4 @@ class HpcSDImportData(sessionutils.ParallelTemplate):
             tb = '{0}({1})'.format(exception.__class__.__name__, exception.message)
         return basetask.FailedTaskResults(self, exception, tb)
 
-    
+

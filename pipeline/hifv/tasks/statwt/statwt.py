@@ -32,7 +32,7 @@ class StatwtResults(basetask.Results):
         super(StatwtResults, self).__init__()
         self.jobs = jobs
         self.summaries = flag_summaries
-        
+
     def __repr__(self):
         s = 'Statwt results:\n'
         for job in self.jobs:
@@ -43,7 +43,7 @@ class StatwtResults(basetask.Results):
 @task_registry.set_equivalent_casa_task('hifv_statwt')
 class Statwt(basetask.StandardTaskTemplate):
     Inputs = StatwtInputs
-    
+
     def prepare(self):
 
         fielddict = cont_file_to_CASA()
@@ -56,12 +56,12 @@ class Statwt(basetask.StandardTaskTemplate):
         statwt_result = self._do_statwt(fielddict)
         # flag statistics after task
         flag_summaries.append(self._do_flagsummary('statwt', field=fields))
-        
+
         return StatwtResults(jobs=[statwt_result], flag_summaries=flag_summaries)
-    
+
     def analyse(self, results):
         return results
-    
+
     def _do_statwt(self, fielddict):
 
         if fielddict != {}:

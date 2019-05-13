@@ -22,29 +22,29 @@ DO_TEST = False
 
 class SDSimpleGriddingInputs(vdp.StandardInputs):
     nplane = vdp.VisDependentProperty(default=3)
-    
+
     @property
     def group_desc(self):
         return self.context.observing_run.ms_reduction_group[self.group_id]
-    
+
     @property
     def reference_member(self):
         return self.group_desc[self.member_list[0]]
-    
+
     @property
     def windowmode(self):
         return getattr(self, '_windowmode', 'replace')
-        
+
     @windowmode.setter
     def windowmode(self, value):
         if value not in ['replace', 'merge']:
             raise ValueError("linewindowmode must be either 'replace' or 'merge'.")
         self._windowmode = value
-    
+
     def __init__(self, context, group_id, member_list, window, 
                  windowmode, nplane=None):
         super(SDSimpleGriddingInputs, self).__init__()
-        
+
         self.context = context
         self.group_id = group_id
         self.member_list = member_list
@@ -58,7 +58,7 @@ class SDSimpleGriddingResults(common.SingleDishResults):
 
     def merge_with_context(self, context):
         super(SDSimpleGriddingResults, self).merge_with_context(context)
-    
+
     def _outcome_name(self):
         return ''
 
@@ -67,7 +67,7 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
     Inputs = SDSimpleGriddingInputs
 
     def prepare(self, datatable_dict=None, index_list=None):
-            
+
         assert datatable_dict is not None
         assert index_list is not None
 
@@ -85,7 +85,7 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
             retval = self.grid(grid_table=grid_table, datatable_dict=datatable_dict)
             end = time.time()
             LOG.debug('Elapsed time: {} sec', (end - start))
-        
+
         outcome = {'spectral_data': retval[0],
                    'meta_data': retval[1],
                    'grid_table': grid_table}
@@ -93,9 +93,9 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
                                        success=True,
                                        outcome=outcome)
         result.task = self.__class__
-                       
+
         return result
-    
+
     def analyse(self, result):
         return result
 
@@ -109,7 +109,7 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
         reference_spw = self.inputs.context.observing_run.real2virtual_spw_id(real_spw, reference_data)
         beam_size = reference_data.beam_sizes[reference_antenna][real_spw]
         grid_size = casatools.quanta.convert(beam_size, 'deg')['value']
-        
+
         indexer = DataTableIndexer(self.inputs.context)
         def _g(colname):
             for i in index_list:
@@ -120,7 +120,7 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
 #        decs = numpy.fromiter(_g('DEC'), dtype=numpy.float64)
         ras = numpy.fromiter(_g('SHIFT_RA'), dtype=numpy.float64)
         decs = numpy.fromiter(_g('SHIFT_DEC'), dtype=numpy.float64)
-        
+
         # Curvature has not been taken account
         dec_corr = 1.0 / cos(decs[0] / 180.0 * 3.141592653)
         grid_ra_corr = grid_size * dec_corr
@@ -241,7 +241,7 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
         nchan = reference_data.spectral_windows[real_spw].num_channels
         npol = reference_data.get_data_description(spw=real_spw).num_polarizations
         LOG.debug('nrow={} nchan={} npol={}', nrow, nchan, npol)
-        
+
         # loop for all ROWs in grid_table to make dictionary that 
         # associates spectra in data_in and weights with grids.
         # bind_to_grid = dict([(k,[]) for k in self.data_in.keys()])
@@ -280,7 +280,7 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
 #         del tTSYS, tEXPT, tSFLAG
         LOG.debug('bind_to_grid.keys() = %s' % ([x.name for x in bind_to_grid.keys()]))
         LOG.debug('bind_to_grid={}', bind_to_grid)
-        
+
         def cmp(x, y):
             if x[0] < y[0]:
                 return -1
@@ -309,7 +309,7 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
         if number_of_spectra == 0:
             LOG.warn('Empty grid table, maybe all the data are flagged out in the previous step.')
             return ([], [])
-        
+
         # Create progress timer
         Timer = common.ProgressTimer(80, sum(map(len, bind_to_grid.values())), LOG.logger.level)
 

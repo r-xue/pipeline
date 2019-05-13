@@ -510,7 +510,7 @@ class TCleanPlotsRenderer(basetemplates.CommonRenderer):
         # in which case the weblog will need to show the MOM0_FC and
         # MOM8_FC columns.
         show_mom0_8_fc = any([item.specmode == 'cube' for item in result[0].results])
-        
+
         if show_mom0_8_fc:
             colorder = ['pbcorimage', 'residual', 'cleanmask', 'mom0_fc', 'mom8_fc', 'spectra']
         else:
@@ -526,7 +526,7 @@ class TCleanPlotsRenderer(basetemplates.CommonRenderer):
             'base_url': os.path.join(self.dirname, 't2-4m_details.html'),
             'cube_all_cont': cube_all_cont
         }
-    
+
     def update_mako_context(self, mako_context):
         mako_context.update(self.extra_data)
 

@@ -21,7 +21,7 @@ _LOG = infrastructure.get_logger(__name__)
 
 class OnDemandStringParseLogger(object):
     PRIORITY_MAP = {'warn': 'warning'}
-    
+
     def __init__(self, logger):
         self.logger = logger
         self._func_list = []
@@ -58,7 +58,7 @@ class OnDemandStringParseLogger(object):
 
     def trace(self, msg_template, *args, **kwargs):
         self._post('trace', msg_template, *args, **kwargs)
-        
+
 
 LOG = OnDemandStringParseLogger(_LOG)
 
@@ -71,9 +71,9 @@ def profiler(func):
         result = func(*args, **kw)
         end = time.time()
 #        LOG.info('#TIMING# End {} at {}', func.__name__, end)
-        
+
         LOG.info('#PROFILE# %s: elapsed %s sec' % (func.__name__, end - start))
-    
+
         return result
     return wrapper
 
@@ -81,7 +81,7 @@ def profiler(func):
 def require_virtual_spw_id_handling(observing_run):
     """
     Judge if spw ids vary across EBs. Return True if ids vary.
-    
+
     observing_run -- domain.ObservingRun instance
     """
     return numpy.any([spw.id != observing_run.real2virtual_spw_id(spw.id, ms) for ms in observing_run.measurement_sets 
@@ -91,7 +91,7 @@ def require_virtual_spw_id_handling(observing_run):
 def is_nro(context):
     mses = context.observing_run.measurement_sets
     return numpy.all(map(lambda ms: ms.antenna_array.name == 'NRO', mses))
-    
+
 
 def asdm_name(scantable_object):
     """
@@ -282,13 +282,13 @@ def iterate_group_member(group_desc, member_id_list):
     for mid in member_id_list:
         member = group_desc[mid]
         yield member.ms, member.field_id, member.antenna_id, member.spw_id
-        
+
 
 def get_index_list_for_ms(datatable, vis_list, antennaid_list, fieldid_list,
                           spwid_list, srctype=None):
     return numpy.fromiter(_get_index_list_for_ms(datatable, vis_list, antennaid_list, fieldid_list, 
                                                 spwid_list, srctype), dtype=numpy.int64)
-    
+
 
 def _get_index_list_for_ms(datatable, vis_list, antennaid_list, fieldid_list,
                            spwid_list, srctype=None):
@@ -311,7 +311,7 @@ def _get_index_list_for_ms(datatable, vis_list, antennaid_list, fieldid_list,
                 online_flag = permanent_flag[:, OnlineFlagIndex]
                 if any(online_flag == 1):
                     yield row  
-                      
+
 
 def get_index_list_for_ms2(datatable, group_desc, member_list, srctype=None):
     # use time_table instead of data selection
@@ -328,7 +328,7 @@ def get_index_list_for_ms2(datatable, group_desc, member_list, srctype=None):
                 online_flag = permanent_flag[:, OnlineFlagIndex]
                 if any(online_flag == 1):
                     yield row    
-               
+
 def get_index_list_for_ms3(datatable_dict, group_desc, member_list, srctype=None):
     # use time_table instead of data selection
     #online_flag = datatable.getcolslice('FLAG_PERMANENT', [0, OnlineFlagIndex], [-1, OnlineFlagIndex], 1)[0]
@@ -436,22 +436,22 @@ def TableSelector(name, query):
         tsel = tb.query(query)
         yield tsel
         tsel.close()
-    
+
 
 # dictionary that always returns key
 class EchoDictionary(dict):
     def __getitem__(self, x):
         return x
-    
+
 
 def make_row_map_for_baselined_ms(ms, table_container=None):
     """
     Make row mapping between calibrated MS and baselined MS.
     Return value is a dictionary whose key is row number for calibrated MS and 
     its corresponding value is the one for baselined MS.
-    
+
     ms: measurement set domain object
-    
+
     returns: row mapping dictionary
     """
     work_data = ms.work_data
@@ -460,7 +460,7 @@ def make_row_map_for_baselined_ms(ms, table_container=None):
     if table_container is not None:
         src_tb = table_container.tb1
         derived_tb = table_container.tb2
-    
+
     return make_row_map(ms, work_data, src_tb, derived_tb)
 
 
@@ -468,33 +468,33 @@ def make_row_map_for_baselined_ms(ms, table_container=None):
 def make_row_map(src_ms, derived_vis, src_tb=None, derived_tb=None):
     """
     Make row mapping between source MS and associating MS
-     
+
     src_ms: measurement set domain object for source MS 
     derived_vis: name of the MS that derives from source MS
-     
+
     returns: row mapping dictionary
     """
     ms = src_ms
     vis0 = ms.name
     vis1 = derived_vis
- 
+
     rowmap = {}
- 
+
     if vis0 == vis1:
         return EchoDictionary()
-          
+
     # make polarization map between src MS and derived MS
     to_derived_polid = make_polid_map(vis0, vis1)
     LOG.trace('to_derived_polid=%s' % to_derived_polid)
-     
+
     # make spw map between src MS and derived MS
     to_derived_spwid = make_spwid_map(vis0, vis1)
     LOG.trace('to_derived_spwid=%s' % to_derived_spwid)
-     
+
     # make a map between (polid, spwid) pair and ddid for derived MS
     derived_ddid_map = make_ddid_map(vis1)
     LOG.trace('derived_ddid_map=%s' % derived_ddid_map)
-     
+
     scans = ms.get_scans(scan_intent='TARGET')
     scan_numbers = [s.id for s in scans]
     fields = {}
@@ -526,13 +526,13 @@ def make_row_map(src_ms, derived_vis, src_tb=None, derived_tb=None):
         nrow_obs1 = tb.nrows()
     with casatools.TableReader(os.path.join(vis1, 'PROCESSOR')) as tb:
         nrow_proc1 = tb.nrows()
-        
+
     assert nrow_obs0 == nrow_obs1
     assert nrow_proc0 == nrow_proc1
-    
+
     is_unique_observation_id = nrow_obs0 == 1
     is_unique_processor_id = nrow_proc0 == 1
-        
+
     if src_tb is None:
         with casatools.TableReader(vis0) as tb:
             tsel = tb.query(taql)
@@ -582,7 +582,7 @@ def make_row_map(src_ms, derived_vis, src_tb=None, derived_tb=None):
             rownumber_list0 = tsel.rownumbers()
         finally:
             tsel.close()
-     
+
     if derived_tb is None:
         with casatools.TableReader(vis1) as tb:
             tsel = tb.query(taql)
@@ -624,24 +624,24 @@ def make_row_map(src_ms, derived_vis, src_tb=None, derived_tb=None):
             rownumber_list1 = tsel.rownumbers()
         finally:
             tsel.close()
- 
+
     for processor_id in processor_id_set:
-         
+
         LOG.trace('PROCESSOR_ID %s' % processor_id)
-                      
+
         for observation_id in observation_id_set:
             LOG.trace('OBSERVATION_ID %s' % observation_id)
-             
+
             for scan_number in scan_numbers:
                 LOG.trace('SCAN_NUMBER %s' % scan_number)
- 
+
                 if scan_number not in states:
                     LOG.trace('No target states in SCAN %s' % scan_number)
                     continue
-                 
+
                 for field_id in fields[scan_number]:
                     LOG.trace('FIELD_ID %s' % field_id)
-                                         
+
                     for antenna in ms.antennas:
                         antenna_id = antenna.id
                         LOG.trace('ANTENNA_ID %s' % antenna_id)
@@ -678,13 +678,13 @@ def make_row_map(src_ms, derived_vis, src_tb=None, derived_tb=None):
                                 numpy.logical_and(tmask1, processor_id_list1 == processor_id, out=tmask1)
                             if not is_unique_observation_id:
                                 numpy.logical_and(tmask1, observation_id_list1 == observation_id, out=tmask1)
-                            
+
                             if numpy.all(tmask0 == False) and numpy.all(tmask1 == False):
                                 # no corresponding data (probably due to PROCESSOR_ID for non-science windows)
                                 LOG.trace('SKIP PROCESSOR %s SCAN %s DATA_DESC_ID %s ANTENNA %s FIELD %s' %
                                           (processor_id, scan_number, data_desc_id, antenna_id, field_id))
                                 continue
-                            
+
                             tstate0 = state_id_list0[tmask0]
                             tstate1 = state_id_list1[tmask1]
                             ttime0 = time_list0[tmask0]
@@ -700,7 +700,7 @@ def make_row_map(src_ms, derived_vis, src_tb=None, derived_tb=None):
                             assert numpy.all(tstate0[sort_index0] == tstate1[sort_index1])
                             # assert set(tstate0) == set(states[scan_number])
                             assert set(tstate0).issubset(set(states[scan_number]))
-                            
+
                             for (i0, i1) in itertools.izip(sort_index0, sort_index1):
                                 r0 = trow0[i0]
                                 r1 = trow1[i1]
@@ -716,7 +716,7 @@ class SpwSimpleView(object):
     def __init__(self, spwid, name):
         self.id = spwid
         self.name = name
-        
+
 
 class SpwDetailedView(object):
     def __init__(self, spwid, name, num_channels, ref_frequency, min_frequency, max_frequency):
@@ -776,18 +776,18 @@ def make_spwid_map(srcvis, dstvis):
 
     src_spws = __read_table(None, get_spw_properties, srcvis)
     dst_spws = __read_table(None, get_spw_properties, dstvis)
-    
+
     for spw in src_spws:
         LOG.trace('SRC SPWID %s NAME %s' % (spw.id, spw.name))
     for spw in dst_spws:
         LOG.trace('DST SPWID %s NAME %s' % (spw.id, spw.name))
-        
+
     map_byname = collections.defaultdict(list)
     for src_spw in src_spws:
         for dst_spw in dst_spws:
             if src_spw.name == dst_spw.name:
                 map_byname[src_spw].append(dst_spw)
-    
+
     spwid_map = {}
     for (src, dst) in map_byname.iteritems():
         LOG.trace('map_byname src spw %s: dst spws %s' % (src.id, [spw.id for spw in dst]))
@@ -807,7 +807,7 @@ def make_spwid_map(srcvis, dstvis):
                         raise RuntimeError('Failed to create spw map for MSs \'%s\' and \'%s\'' % (srcvis, dstvis))
                     spwid_map[src.id] = spw.id
     return spwid_map
-    
+
 
 # @profiler
 def make_polid_map(srcvis, dstvis):
@@ -911,7 +911,7 @@ def get_restfrequency(vis, spwid, source_id):
                     return None
         finally:
             tsel.close()
-            
+
 
 class RGAccumulator(object):
     def __init__(self):
@@ -921,7 +921,7 @@ class RGAccumulator(object):
         self.pols = []
         self.grid_table = []
         self.channelmap_range = []
-        
+
     def append(self, field_id, antenna_id, spw_id, pol_ids=None, grid_table=None, channelmap_range=None):
         self.field.append(field_id)
         self.antenna.append(antenna_id)
@@ -932,7 +932,7 @@ class RGAccumulator(object):
         else:
             self.grid_table.append(compress.CompressedObj(grid_table))
         self.channelmap_range.append(channelmap_range)
-        
+
 #         def extend(self, field_id_list, antenna_id_list, spw_id_list):
 #             self.field.extend(field_id_list)
 #             self.antenna.extend(antenna_id_list)
@@ -940,29 +940,29 @@ class RGAccumulator(object):
 #             
     def get_field_id_list(self):
         return self.field
-    
+
     def get_antenna_id_list(self):
         return self.antenna
-    
+
     def get_spw_id_list(self):
         return self.spw
 
     def get_pol_ids_list(self):
         return self.pols
-    
+
     def get_grid_table_list(self):
         return self.grid_table
-    
+
     def get_channelmap_range_list(self):
         return self.channelmap_range
-    
+
     def iterate_id(self):
         assert len(self.field) == len(self.antenna)
         assert len(self.field) == len(self.spw)
         assert len(self.field) == len(self.pols)
         for v in itertools.izip(self.field, self.antenna, self.spw):
             yield v
-            
+
     def iterate_all(self):
         assert len(self.field) == len(self.antenna)
         assert len(self.field) == len(self.spw)
@@ -979,10 +979,10 @@ class RGAccumulator(object):
         field_id_list = self.get_field_id_list()
         antenna_id_list = self.get_antenna_id_list()
         spw_id_list = self.get_spw_id_list()
-        
+
         assert len(field_id_list) == len(antenna_id_list)
         assert len(field_id_list) == len(spw_id_list)
-        
+
         if withpol == True:
             pol_ids_list = self.get_pol_ids_list()
             assert len(field_id_list) == len(pol_ids_list)

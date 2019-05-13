@@ -39,7 +39,7 @@ class Field(object):
     def clean_name(self):
         """
         Get the field name with illegal characters replaced with underscores.
-        
+
         This property is used to determine whether the field name, when given
         as a CASA argument, should be enclosed in quotes. 
         """
@@ -91,7 +91,7 @@ class Field(object):
     @property
     def gl(self):
         return casatools.quanta.formxxx(self.longitude, format='dms', prec=2)
-    
+
     # Galactic Latitude
     @property
     def gb(self):

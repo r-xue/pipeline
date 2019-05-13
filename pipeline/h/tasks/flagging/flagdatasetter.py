@@ -26,7 +26,7 @@ class FlagdataSetterInputs(vdp.StandardInputs):
         """
         Initialise the Inputs, initialising any property values to those given
         here.
-        
+
         :param context: the pipeline Context state object
         :type context: :class:`~pipeline.infrastructure.launcher.Context`
         :param table: the measurement set or caltable to flag

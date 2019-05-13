@@ -53,33 +53,33 @@ def find_EVLA_band(frequency, bandlimits=[0.0e6, 150.0e6, 700.0e6, 2.0e9, 4.0e9,
 
 
 def cont_file_to_CASA(contfile='cont.dat'):
-        '''
-        Take the dictionary created by _read_cont_file and put it into the format:
-        spw = '0:1.380~1.385GHz;1.390~1.400GHz'
-        '''
+    '''
+    Take the dictionary created by _read_cont_file and put it into the format:
+    spw = '0:1.380~1.385GHz;1.390~1.400GHz'
+    '''
 
-        contfile_handler = contfilehandler.ContFileHandler(contfile)
-        contdict = contfile_handler.read(warn_nonexist=False)
+    contfile_handler = contfilehandler.ContFileHandler(contfile)
+    contdict = contfile_handler.read(warn_nonexist=False)
 
-        #if contdict == {}:
-        #    #LOG.error(contfile + " is empty, does not exist or cannot be read.")
-        #    LOG.info('cont.dat file not present.  Default to VLA Continuum Heuristics.')
-        #    return {}
+    #if contdict == {}:
+    #    #LOG.error(contfile + " is empty, does not exist or cannot be read.")
+    #    LOG.info('cont.dat file not present.  Default to VLA Continuum Heuristics.')
+    #    return {}
 
-        fielddict = {}
+    fielddict = {}
 
-        for field in contdict['fields']:
-            spwstring = ''
-            for spw in contdict['fields'][field]:
-                spwstring = spwstring + spw + ':'
-                for freqrange in contdict['fields'][field][spw]:
-                    spwstring = spwstring + str(freqrange['range'][0]) + '~' + str(freqrange['range'][1]) + 'GHz;'
-                spwstring = spwstring[:-1]
-                spwstring = spwstring + ','
+    for field in contdict['fields']:
+        spwstring = ''
+        for spw in contdict['fields'][field]:
+            spwstring = spwstring + spw + ':'
+            for freqrange in contdict['fields'][field][spw]:
+                spwstring = spwstring + str(freqrange['range'][0]) + '~' + str(freqrange['range'][1]) + 'GHz;'
             spwstring = spwstring[:-1]
-            fielddict[field] = spwstring
+            spwstring = spwstring + ','
+        spwstring = spwstring[:-1]
+        fielddict[field] = spwstring
 
-        return fielddict
+    return fielddict
 
 
 def getCalFlaggedSoln(calTable):
@@ -90,7 +90,7 @@ def getCalFlaggedSoln(calTable):
     Version 2012-09-12 v1.2 STM median over ant revised
     Version 2012-11-13 v2.0 STM casa 4.0 version with new call mechanism
     Version 2013-01-11 v2.1 STM use getvarcol
-    
+
     This method will look at the specified calibration table and return the
     fraction of flagged solutions for each Antenna, SPW, Poln.  This assumes
     that the specified cal table will not have any channel dependent flagging.
@@ -173,7 +173,7 @@ def getCalFlaggedSoln(calTable):
 
     goodspw
         Out: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-    
+
     """
 
     #from taskinit import tbtool
@@ -181,7 +181,7 @@ def getCalFlaggedSoln(calTable):
     mytb = casac.table()
 
     import pylab as pl
-    
+
     mytb.open(calTable)
     antCol = mytb.getcol('ANTENNA1')
     spwCol = mytb.getcol('SPECTRAL_WINDOW_ID')
@@ -212,7 +212,7 @@ def getCalFlaggedSoln(calTable):
     medDict['total'] = []
     medDict['flagged'] = []
     medDict['fraction'] = []
-    
+
     for rrow in rowlist:
         rown = rrow.strip('r')
         idx = int(rown)-1
@@ -316,35 +316,35 @@ def getCalFlaggedSoln(calTable):
         amed = pl.median(aarr)
         outDict['antmedian'][item] = amed
     outDict['antmedian']['number'] = len(medDict['fraction'])
-    
+
     return outDict
-    
+
 
 #Not used
 def buildscans(msfile):
     """
    buildscans:  compile scan information for msfile
-  
+
    Created S.T. Myers 2012-05-07  v1.0 
    Updated S.T. Myers 2012-05-14  v1.1 add corrtype
    Updated S.T. Myers 2012-06-27  v1.2 add corrdesc lookup
    Updated S.T. Myers 2012-11-13  v2.0 STM casa 4.0 new calls
-             
+
    Usage:
           from lib_EVLApipeutils import buildscans
-  
+
    Input:
-  
+
            msfile   -   name of MS
-  
+
    Output: scandict (return value)
-  
+
    Examples:
-  
+
    CASA <2>: from lib_EVLApipeutils import buildscans
-   
+
    CASA <3>: msfile = 'TRSR0045_sb600507.55900.ms'
-   
+
    CASA <4>: myscans = buildscans(msfile)
    Getting scansummary from MS
    Found 16 DataDescription IDs
@@ -368,13 +368,13 @@ def buildscans(msfile):
    Found total 54752 times
    Found 175 scans min=1 max=180
    Size of scandict in memory is 248 bytes
-   
+
    CASA <5>: myscans['Scans'][1]['intents']
      Out[5]: 'CALIBRATE_AMPLI#UNSPECIFIED,UNSPECIFIED#UNSPECIFIED'
-   
+
    CASA <6>: myscans['Scans'][1]['dd']
      Out[6]: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
-   
+
    CASA <7>: myscans['DataDescription'][0]
      Out[7]: 
    {'corrdesc': ['RR', 'RL', 'LR'', 'LL'],
@@ -401,7 +401,7 @@ def buildscans(msfile):
    in the 'Scans' part to index into the 'DataDescription' info.
 
    You can also list the keys available in the Scans sub-dictionary:
-   
+
    CASA <9>: myscans['Scans'][1].keys()
      Out[9]: 
    ['scan_mid',
@@ -458,7 +458,7 @@ def buildscans(msfile):
     # Usage: find desc for an index, e.g. cordesclist[corrtype]
     #        find index for a desc, e.g. cordesclist.index(corrdesc)
     #
-    
+
     #try:
     #    import casac
     #except ImportError, e:
@@ -622,7 +622,7 @@ def buildscans(msfile):
                 ddlookup[isc] = [idd]
                 ddscantimes[isc] = {}
                 ddscantimes[isc][idd] = [tim]
-        
+
     #
     print('Found total {} times'.format(ntottimes))
 
@@ -649,7 +649,7 @@ def buildscans(msfile):
 
     # Put DataDescription lookup into dictionary
     scandict['DataDescription'] = ddindex
-        
+
     # Put Scan information in dictionary
     scandict['Scans'] = {}
     for isc in scanlist:
@@ -702,23 +702,23 @@ def buildscans(msfile):
         # DDs for this scan
         ddlist = ddlookup[isc]
         scandict['Scans'][isc]['dd'] = ddlist
-        
+
         # number of polarizations for this list of dds
         ddnpollist = []
         for idd in ddlist:
             npol = ddindex[idd]['npol']
             ddnpollist.append(npol)
         scandict['Scans'][isc]['npol'] = ddnpollist
-        
+
         # visibility times per dd in this scan
         #
         scandict['Scans'][isc]['times'] = {}
         for idd in ddlist:
             scandict['Scans'][isc]['times'][idd] = ddscantimes[isc][idd]
-        
+
     mysize = scandict.__sizeof__()
     print('Size of scandict in memory is {} bytes'.format(mysize))
-    
+
     return scandict
 
 
@@ -726,7 +726,7 @@ def getBCalStatistics(calTable,innerbuff=0.1):
     """
     Version 2012-11-20 v1.0 STM casa 4.0 version
     Version 2012-12-17 v1.0 STM casa 4.1 version, phase, real, imag stats
-    
+
     This method will look at the specified B calibration table and return the
     statistics of unflagged solutions for each Antenna, SPW, Poln.  This assumes
     that the specified cal table will not have any channel dependent flagging.
@@ -736,13 +736,13 @@ def getBCalStatistics(calTable,innerbuff=0.1):
     the order specified in the Cal Table.
 
     Input:
-  
+
          calTable  -  name of MS
          innerbuff -  fraction of spw bandwidth to ignore at each edge
                       (<0.5, default=0.1 use inner 80% of channels each spw)
-  
+
     Output: OutDict (return value)
-  
+
     STM 2012-11-19 dictionary structure:
     key: 'antspw' indexed by antenna and spectral window id per poln
              ['antspw'][<antid>][<spwid>][<polid>]
@@ -759,13 +759,13 @@ def getBCalStatistics(calTable,innerbuff=0.1):
        ['antDict'][ant] the name of antenna with index ant
        ['spwDict'][spw] {'RX':rx, 'Baseband':bb, 'Subband':sb} correspoding to a given spw
        ['rxBasebandDict'][rx][bb] list of spws corresponding to a given rx and bb
-       
+
     Example:
 
     !cp /home/sandrock2/smyers/casa/pipeline/pipeline4.1/lib_EVLApipeutils.py .
     from lib_EVLApipeutils import getBCalStatistics
     result = getBCalStatistics('testBPcal.b')
-    
+
     This is a B Jones table, proceeding
     Found 1 Rx bands
     Rx band EVLA_K has basebands: ['A0C0', 'B0D0']
@@ -968,7 +968,7 @@ def getBCalStatistics(calTable,innerbuff=0.1):
     mytb = casac.table()
 
     import pylab as pl
-    
+
     mytb.open(calTable)
 
     # Check that this is a B Jones table
@@ -978,7 +978,7 @@ def getBCalStatistics(calTable,innerbuff=0.1):
     else:
         print('This is NOT a B Jones table, aborting')
         return outDict
-    
+
     antCol = mytb.getcol('ANTENNA1')
     spwCol = mytb.getcol('SPECTRAL_WINDOW_ID')
     fldCol = mytb.getcol('FIELD_ID')
@@ -1028,7 +1028,7 @@ def getBCalStatistics(calTable,innerbuff=0.1):
         else:
             rxBasebandDict[rx] = {}
             rxBasebandDict[rx][bb] = [ispw]
-    
+
     print('Found {} Rx bands'.format(len(rxbands)))
     for rx in rxBasebandDict:
         bblist = rxBasebandDict[rx].keys()
@@ -1072,7 +1072,7 @@ def getBCalStatistics(calTable,innerbuff=0.1):
         rx = spwDict[spwIdx]['RX']
         bb = spwDict[spwIdx]['Baseband']
         sb = spwDict[spwIdx]['Subband']
-        
+
         # Set up dictionaries if needed
         parts = ['all', 'inner']
         quants = ['amp', 'phase', 'real', 'imag']
@@ -1277,8 +1277,8 @@ def getBCalStatistics(calTable,innerbuff=0.1):
                                 qy = ny*vary + (vy-meany)*(vy-runy)
                                 outDict['antband'][antIdx][rx][bb]['inner'][quan]['var'] = qy/float(ny+1)
                             outDict['antband'][antIdx][rx][bb]['inner']['number'] += 1
-                        
-                            
+
+
             npflagged = float(ncflagged)/float(nc)
             nflagged += float(ncflagged)/float(nc)
             ngood += ncgood
@@ -1288,7 +1288,7 @@ def getBCalStatistics(calTable,innerbuff=0.1):
     outDict['antDict'] = antDict
     outDict['spwDict'] = spwDict
     outDict['rxBasebandDict'] = rxBasebandDict
-        
+
     # Print summary
     print('Within all channels:')
     print('Found {} total solutions with {} good (unflagged)'.format(ntotal, ngood))
@@ -1324,5 +1324,5 @@ def getBCalStatistics(calTable,innerbuff=0.1):
                         print(' %12s %12s %12s %12s  %12.4f  %12.4f * ' % (ant, antName, rx, bb, xrat, yrat))
                     else:
                         print(' %12s %12s %12s %12s  %12.4f  %12.4f ' % (ant, antName, rx, bb, xrat, yrat))
-    
+
     return outDict

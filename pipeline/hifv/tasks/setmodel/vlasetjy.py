@@ -59,7 +59,7 @@ def find_standards(positions):
                         fields_3C286.append(ii)
 
     fields = [fields_3C48, fields_3C138, fields_3C147, fields_3C286]
-    
+
     return fields
 
 
@@ -70,7 +70,7 @@ def standard_sources(vis):
 
     with casatools.TableReader(vis+'/FIELD') as table:
         field_positions = table.getcol('PHASE_DIR')
-        
+
     positions = []
 
     for ii in range(0, len(field_positions[0][0])):
@@ -78,7 +78,7 @@ def standard_sources(vis):
 
     standard_source_names = ['3C48', '3C138', '3C147', '3C286']
     standard_source_fields = find_standards(positions)
-    
+
     standard_source_found = False
     for standard_source_field in standard_source_fields:
         if standard_source_field:
@@ -331,7 +331,7 @@ class VLASetjy(basetask.StandardTaskTemplate):
         # standards
 
         setjy_dicts = []
-        
+
         standard_source_names, standard_source_fields = standard_sources(self.inputs.vis)
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         field_spws = m.get_vla_field_spws()
@@ -344,7 +344,7 @@ class VLASetjy(basetask.StandardTaskTemplate):
             originalBBClist = table.getcol('BBC_NO')
             spw_bandwidths = table.getcol('TOTAL_BANDWIDTH')
             reference_frequencies = table.getcol('REF_FREQUENCY')
-    
+
         center_frequencies = [rf + spwbw / 2 for rf, spwbw in zip(reference_frequencies, spw_bandwidths)]
 
         # LOG.info("STANDARD SOURCE FIELDS:")

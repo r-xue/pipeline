@@ -87,7 +87,7 @@ def test(pwv=1.0, elevation=45.0):
     return transmission
 
 def plot(frequency, dry_opacity, wet_opacity, transmission):
-    
+
     pl.clf()
     a1 = pl.gcf().gca()
     pl.plot(frequency, dry_opacity, label='dry')
@@ -103,7 +103,7 @@ def plot(frequency, dry_opacity, wet_opacity, transmission):
     ymin = (M - Y) / (1.0 - Y)
     ymax = transmission.max() + (1.0 - transmission.max()) * 0.1
     pl.ylim([ymin, ymax])
-    
+
 
 def get_spw_spec(vis, spw_id):
     """
@@ -132,7 +132,7 @@ def get_spw_spec(vis, spw_id):
     toGHz = 1.0e-9
     center_freq *= toGHz
     resolution *= toGHz
-    
+
     return center_freq, nchan, resolution
 
 def get_median_elevation(vis, antenna_id):
@@ -156,11 +156,11 @@ def get_median_elevation(vis, antenna_id):
 def get_transmission(vis, antenna_id=0, spw_id=0, doplot=False):
     """
     calculate atmospheric transmission assuming PWV=1mm.
-    
+
     vis -- MS name
     antenna_id -- antenna ID
     spw_id -- spw ID
-    
+
     Returns:
         (frequency array [GHz], atm transmission)
     """
@@ -171,7 +171,7 @@ def get_transmission(vis, antenna_id=0, spw_id=0, doplot=False):
     #pwv = 1.0
     # get median PWV using Todd's script
     (pwv, pwvmad) = adopted.getMedianPWV(vis=vis)
-    
+
     myat = casac.atmosphere()
     init_at(myat, fcenter=center_freq, nchan=nchan, resolution=resolution)
     myat.setUserWH2O(qa.quantity(pwv, 'mm'))
@@ -183,10 +183,10 @@ def get_transmission(vis, antenna_id=0, spw_id=0, doplot=False):
     transmission = calc_transmission(airmass, dry_opacity, wet_opacity)
     #frequency = numpy.fromiter((center_freq + (float(i) - 0.5 * nchan) * resolution for i in xrange(nchan)), dtype=numpy.float64)
     frequency = qa.convert(myat.getSpectralWindow(0), "GHz")['value']
-   
+
     if doplot:
         plot(frequency, dry_opacity, wet_opacity, transmission)
 
     return frequency, transmission
-    
-    
+
+

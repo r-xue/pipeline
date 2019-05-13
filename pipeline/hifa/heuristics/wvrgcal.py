@@ -41,7 +41,7 @@ class WvrgcalHeuristics(object):
             self._sourceflag = sourceflag
         if self._sourceflag != [] and not self._segsource:
             raise Exception('WvrgHeuristics:sourceflag incompatible with segsource False')  
-        
+
         if nsol is None:
             self._nsol = 1
         else:
@@ -133,7 +133,7 @@ class WvrgcalHeuristics(object):
 
         # tie all target fields as assume they are close to each other
         tied_targets = [target[0] for target in targets]
-        
+
         # get names and directions of phase calibrators
         #     this may be a cycle 0 relic and need modifcation in the future so
         #     that multiple intents are properly handled
@@ -141,7 +141,7 @@ class WvrgcalHeuristics(object):
                   if 'PHASE' in field.intents
                   and 'BANDPASS' not in field.intents
                   and 'AMPLITUDE' not in field.intents]
-        
+
         # add phase calibrator to tie if it's less than 15 degress from target
         tied_phases = []
         for phase in phases:
@@ -151,10 +151,10 @@ class WvrgcalHeuristics(object):
             if casatools.quanta.le(separation, '15deg'):
                 tied_phases.append(phase[0])
         LOG.info('phase calibrators tied to target: %s' % tied_phases)
-        
+
         # assemble the full tie
         tied = tied_phases + tied_targets
-        
+
         # and format it
         if len(tied) > 1:
             # eliminate duplicate names, remove quotes from names; these cause 
@@ -164,7 +164,7 @@ class WvrgcalHeuristics(object):
                 name = name.replace('"', '')
                 name = name.replace("'", "")
                 tie.add(name)                
-        
+
             tie = ','.join([name for name in tie])
             tie = ['%s' % tie]
             return tie
@@ -181,7 +181,7 @@ class WvrgcalHeuristics(object):
         if self.hm_smooth == 'automatic':
             temp = 0.0
             for spw in allspws:
-               temp = max(temp, self.science_integration[spw], self.wvr_integration)
+                temp = max(temp, self.science_integration[spw], self.wvr_integration)
             return '%ss' % temp        
         else:
             return self._smooth

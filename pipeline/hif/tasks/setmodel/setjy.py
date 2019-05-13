@@ -25,7 +25,7 @@ class SetjyInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def field(self):
-        
+
         # Get field ids in the current ms that have been observed
         # with the desired intent
         fields = self.ms.get_fields(intent=self.intent)
@@ -60,7 +60,7 @@ class SetjyInputs(vdp.StandardInputs):
         # do a flux lookup. The lookup order is:
         #     1) from file, unless it's a solar system object
         #     2) from CASA
-        
+
         # TODO: Replace with reading directly from the context 
 
         # Read the reference flux values from a file
@@ -131,7 +131,7 @@ class SetjyInputs(vdp.StandardInputs):
                     flux = [(reffreq, [I, Q, U, V], spix)
                             for (ref_field_id, ref_spw_id, I, Q, U, V, spix, uvmin, uvmax) in ref_flux
                             if (ref_field_id in field_ids or ref_field_id in field_names) and ref_spw_id == spw_id]
-                
+
                 # No flux measurements found for the requested field/spws, so do
                 # either a CASA model look-up (-1) or reset the flux to 1.                
                 if not flux:
@@ -157,7 +157,7 @@ class SetjyInputs(vdp.StandardInputs):
     def reffile(self):
         value = os.path.join(self.context.output_dir, 'flux.csv')
         return value
-    
+
     normfluxes = vdp.VisDependentProperty(default=False)
     reffreq = vdp.VisDependentProperty(default='1GHz')
     fluxdensity = vdp.VisDependentProperty(default=-1)
@@ -261,9 +261,9 @@ class Setjy(basetask.StandardTaskTemplate):
 
         # loop over fields so that we can use Setjy for sources with different
         # standards
-        
+
         setjy_dicts = []
-        
+
         for field_name in utils.safe_split(inputs.field):
             jobs = []
 
@@ -278,7 +278,7 @@ class Setjy(basetask.StandardTaskTemplate):
                 field_is_unique = False
             else: 
                 field_is_unique = True if len(fields) is 1 else False
-                        
+
             for field in fields:
 
                 # Determine the valid spws for that field
@@ -298,7 +298,7 @@ class Setjy(basetask.StandardTaskTemplate):
                     if spw.id not in valid_spwids:
                         continue
                     inputs.spw = spw.id
-    
+
                     orig_intent = inputs.intent
                     try:                
                         # The field may not have all intents, which leads to its
@@ -309,12 +309,12 @@ class Setjy(basetask.StandardTaskTemplate):
                         if not targeted_intents:
                             continue 
                         inputs.intent = ','.join(targeted_intents)
-    
+
                         task_args = inputs.to_casa_args()
                         jobs.append(casa_tasks.setjy(**task_args))
                     finally:
                         inputs.intent = orig_intent
-                    
+
                     # Flux densities coming from a non-lookup are added to the
                     # results so that user-provided calibrator fluxes are
                     # committed back to the domain objects
@@ -355,7 +355,7 @@ class Setjy(basetask.StandardTaskTemplate):
                         if spw_id not in spw_seen:
                             result.measurements[str(field_id)].append(flux)
                             spw_seen.add(spw_id)
-            
+
         return result
 
     def analyse(self, result):

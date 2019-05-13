@@ -26,7 +26,7 @@ class StatwtQAHandler(pqa.QAPlugin):
                                   metric_score=score0.origin.metric_score,
                                   metric_units=score0.origin.metric_units)
         score0.origin = new_origin
-        
+
         scores = [ score0 ]
 
         result.qa.pool.extend(scores)

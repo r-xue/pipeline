@@ -26,7 +26,7 @@ class testgainsSummaryChart(object):
         figfile = self.get_figfile(prefix)
 
         antplot = '0~2'
-        
+
         plotmax = 100
 
         # Dummy plot
@@ -54,7 +54,7 @@ class testgainsSummaryChart(object):
                 LOG.error('Could not create ' + prefix + ' plot.')
                 LOG.exception(ex)
                 return None
-            
+
         return wrapper
 
 
@@ -64,7 +64,7 @@ class testgainsPerAntennaChart(object):
         self.result = result
         self.ms = context.observing_run.get_ms(result.inputs['vis'])
         self.yaxis = yaxis
-        
+
         self.json = {}
         self.json_filename = os.path.join(context.report_dir, 'stage%s' % result.stage_number,
                                           yaxis + 'testgains-%s.json' % self.ms)
@@ -73,7 +73,7 @@ class testgainsPerAntennaChart(object):
         m = self.context.observing_run.measurement_sets[0]
         numAntenna = len(m.antennas)
         plots = []
-        
+
         LOG.info("Plotting testgain solutions")
 
         with casatools.TableReader(self.result.bpdgain_touse) as tb:
@@ -90,11 +90,11 @@ class testgainsPerAntennaChart(object):
 
             filename = 'testgaincal_' + self.yaxis + str(ii) + '.png'
             antPlot = str(ii)
-            
+
             stage = 'stage%s' % self.result.stage_number
             stage_dir = os.path.join(self.context.report_dir, stage)
             # construct the relative filename, eg. 'stageX/testdelay0.png'
-            
+
             figfile = os.path.join(stage_dir, filename)
 
             xconnector = 'step'
@@ -103,12 +103,12 @@ class testgainsPerAntennaChart(object):
                 plotrange = [0, 0, 0, plotmax]
                 plotsymbol = 'o'
                 xconnector = 'line'
-            
+
             if self.yaxis == 'phase':
                 plotrange = [0, 0, -180, 180]
                 plotsymbol = 'o-'
                 xconnector = 'line'
-            
+
             if not os.path.exists(figfile):
                 try:
 
@@ -129,7 +129,7 @@ class testgainsPerAntennaChart(object):
                     LOG.warn("Unable to plot " + filename + str(ex))
             else:
                 LOG.debug('Using existing ' + filename + ' plot.')
-            
+
             try:
                 plot = logger.Plot(figfile, x_axis='Time', y_axis=self.yaxis.title(), field='',
                                    parameters={'spw': '',

@@ -37,7 +37,7 @@ class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
 FlagSummaryTR = collections.namedtuple('FlagSummaryTR', 'field spw before additional total')
 
-    
+
 def accumulate_flag_per_source_spw(context, results):
     # Accumulate flag per field, spw from the output of flagdata to a dictionary
     # accum_flag[field][spw] = {'additional': # of flagged in task,
@@ -81,5 +81,5 @@ def make_summary_table(flagdict):
             tr = FlagSummaryTR(field, spw, '%0.1f%%' % (frac_before*100), '%0.1f%%' % (frac_additional*100),
                                '%0.1f%%' % (frac_total*100))
             rows.append(tr)
-    
+
     return utils.merge_td_columns(rows, num_to_merge=2)

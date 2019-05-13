@@ -48,7 +48,7 @@ class T2_4MDetailsSDApplycalRenderer(T2_4MDetailsApplycalRenderer,
 
         # return all agents so we get ticks and crosses against each one
         agents = ['before', 'applycal']
-        
+
         ctx.update({
             'flags': flag_totals,
             'calapps': calapps,
@@ -65,7 +65,7 @@ class T2_4MDetailsSDApplycalRenderer(T2_4MDetailsApplycalRenderer,
             'science_amp_vs_freq_plots': science_amp_vs_freq_summary_plots,
             'uv_max': uv_max,
         })
-        
+
     def create_single_dish_science_plots(self, context, results):
         """
         Create plots for the science targets, returning two dictionaries of 
@@ -81,7 +81,7 @@ class T2_4MDetailsSDApplycalRenderer(T2_4MDetailsApplycalRenderer,
             vis = os.path.basename(result.inputs['vis'])
             ms = context.observing_run.get_ms(vis)
             max_uvs[vis] = measures.Distance(value=0.0, units=measures.DistanceUnits.METRE)
-            
+
             amp_vs_freq_summary_plots[vis] = []
 
             # Plot for 1 science field (either 1 science target or for a mosaic 1
@@ -95,7 +95,7 @@ class T2_4MDetailsSDApplycalRenderer(T2_4MDetailsApplycalRenderer,
                                                       applycal.RealVsFrequencySummaryChart,
                                                       [brightest_field.id], None)
                 amp_vs_freq_summary_plots[vis].extend(plots)
-    
+
             if pipeline.infrastructure.generate_detail_plots(result):
                 fields = set()
                 # scans = ms.get_scans(scan_intent='TARGET')
@@ -103,7 +103,7 @@ class T2_4MDetailsSDApplycalRenderer(T2_4MDetailsApplycalRenderer,
                 #     fields.update([field.id for field in scan.fields])
                 with casatools.MSMDReader(vis) as msmd:
                     fields.update(list(msmd.fieldsforintent("OBSERVE_TARGET#ON_SOURCE")))
-                
+
                 # Science target detail plots. Note that summary plots go onto the
                 # detail pages; we don't create plots per spw or antenna
                 plots = self.science_plots_for_result(context,

@@ -21,12 +21,12 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
                  always_rerender=False):
         super(T2_4MDetailsSingleDishK2JyCalRenderer, self).__init__(
             uri=uri, description=description, always_rerender=always_rerender)
-    
+
     def update_mako_context(self, ctx, context, results):            
         reffile = None
         spw_factors = collections.defaultdict(lambda: [])
         valid_spw_factors = collections.defaultdict(lambda: collections.defaultdict(lambda: []))
-        
+
         dovirtual = sdutils.require_virtual_spw_id_handling(context.observing_run)
         trfunc_r = lambda _vspwid, _vis, _rspwid, _antenna, _pol, _factor: JyperKTR(_rspwid, _vis, _antenna, _pol, _factor)
         trfunc_v = lambda _vspwid, _vis, _rspwid, _antenna, _pol, _factor: JyperKTRV(_vspwid, _vis, _rspwid, _antenna, _pol, _factor)

@@ -12,7 +12,7 @@ class MedianSNRNoAdapter(api.Heuristic):
     def calculate(self, caltable):
         """Opens and reads the SNR column from the given caltable,
         and returns the median value.
-        
+
         :param caltable: the caltable filename 
         :type caltable: string
         """
@@ -40,9 +40,9 @@ class MedianSNRNoAdapter(api.Heuristic):
             subtable = table.query(query=taql)
             snr = subtable.getcol('SNR')
             calflag = subtable.getcol('FLAG')
-	    subtable.close()
+            subtable.close()
             valid_snr = snr[numpy.logical_not(calflag)]
-            
+
         if len(valid_snr) > 0:
             return numpy.median(valid_snr)
         else:

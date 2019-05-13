@@ -59,19 +59,19 @@ class GaincalResults(basetask.Results):
     GaincalResults is the results class common to all pipeline gaincal
     calibration tasks.
     """
-    
+
     def __init__(self, final=None, pool=None, subtask_results=None):
         """
         Construct and return a new GaincalResults.
-        
+
         GaincalResults can be initialised with an optional list of 
         CalApplications detailing which calibrations, from a pool of candidate
         calibrations (pool), are considered the best to apply (final).
-        
+
         Results from child tasks can be added to the children parameter. They
         will not be added to the context, but their execution may be recorded
         in the weblog.
-        
+
         :param final: the calibrations selected as the best to apply 
         :type final: list of :class:`~pipeline.infrastructure.callibrary.CalApplication`
         :param pool: the pool of all calibrations evaluated by the task 
@@ -99,7 +99,7 @@ class GaincalResults(basetask.Results):
 
         for calapp in self.final:            
             calto = self._get_calto(calapp.calto, to_field, to_intent)
-            
+
             LOG.debug('Adding calibration to callibrary:\n'
                       '%s\n%s' % (calto, calapp.calfrom))
             context.callibrary.add(calto, calapp.calfrom)
@@ -119,7 +119,7 @@ class GaincalResults(basetask.Results):
         # scope accordingly. Therefore, we can use the to_field and to_intent
         # values directly as they should already be appropriate for the target
         # measurement set specified in this result.
-        
+
         # Give the astronomer a chance to override the destination field and
         # intents, so that the reduction does not need to be repeated just to
         # change how the caltable should be applied.

@@ -54,15 +54,15 @@ class Applycals(applycal.IFApplycal):
     antenna_to_apply = '*&*'
 
     def prepare(self):
-        
+
         # Run applycal
         applycal_results = self._do_applycal()
 
         return applycal_results
-    
+
     def analyse(self, results):
         return results
-    
+
     def _do_applycal(self):
 
         result = self.applycal_run()

@@ -37,7 +37,7 @@ class T2_4MDetailsTsysflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def update_mako_context(self, ctx, context, results):
         weblog_dir = os.path.join(context.report_dir,
                                   'stage%s' % results.stage_number)
-        
+
         # Initialize items that are to be exported to the
         # mako context
         task_incomplete_msg = {}
@@ -54,13 +54,13 @@ class T2_4MDetailsTsysflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         # For each result in the results list...
         for result in results:
-            
+
             # If the result is marked as from a Tsysflag task that ended
             # prematurely, then store the reason to be passed to mako context.
             if result.task_incomplete_reason:
                 task_incomplete_msg[result.inputs['vis']] = result.task_incomplete_reason
                 continue
-                
+
             # Otherwise, continue with generating all necessary reports
 
             # Create flag totals from the summaries:
@@ -206,7 +206,7 @@ class T2_4MDetailsTsysflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                                 '%s%s.report.html' % (tablename, component))
         if os.path.exists(filename):
             return filename
-        
+
         rendererutils.printTsysFlags(result.table, filename)
         return filename
 
@@ -250,12 +250,12 @@ class T2_4MDetailsTsysflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             for intent, fields in intent_fields.iteritems():
                 flagcount = 0
                 totalcount = 0
-    
+
                 for field in fields:
                     if field in summary['field'].keys():
                         flagcount += int(summary['field'][field]['flagged'])
                         totalcount += int(summary['field'][field]['total'])
-        
+
                     if previous_summary:
                         if field in previous_summary['field'].keys():
                             flagcount -= int(previous_summary['field'][field]['flagged'])
@@ -265,22 +265,22 @@ class T2_4MDetailsTsysflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 # each other, but the renderer will expect a single summary, so 
                 # consolidate summaries into a single summary named "Summary"
                 total['Summary'][intent] = ft
-    
+
             previous_summary = summary
-                
+
         return total 
-    
+
     @staticmethod
     def _flags_by_spws(summaries):
         total = collections.defaultdict(dict)
-    
+
         previous_summary = None
         for summary in summaries:
             tsys_spws = summary['spw'].keys()
-    
+
             flagcount = 0
             totalcount = 0
-    
+
             for spw in tsys_spws:
                 try:
                     flagcount += int(summary['spw'][spw]['flagged'])
@@ -295,7 +295,7 @@ class T2_4MDetailsTsysflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             total[summary['name']]['TSYS SPWS'] = ft
 
             previous_summary = summary
-                
+
         return total
 
 

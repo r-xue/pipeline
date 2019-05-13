@@ -17,15 +17,15 @@ class SetModelsQAHandler(pqa.QAPlugin):
     result_cls = commonfluxresults.FluxCalibrationResults
     child_cls = None
     generating_task = setmodel.SetModels
-    
+
     def handle(self, context, result):
 
-	vis= result.inputs['vis']
-	ms = context.observing_run.get_ms(vis)
-	if 'spw' in result.inputs:
-	    spw = result.inputs['spw']
-	else:
-	    spw = ''
+        vis= result.inputs['vis']
+        ms = context.observing_run.get_ms(vis)
+        if 'spw' in result.inputs:
+            spw = result.inputs['spw']
+        else:
+            spw = ''
 
         # Concatenate the reference and transfer fields
         fields = ''
@@ -35,7 +35,7 @@ class SetModelsQAHandler(pqa.QAPlugin):
             fields = fields + ','
         if result.inputs['transfer'] not in (None, ''):
             fields = fields + result.inputs['transfer']
-            
+
 
         # Concatenate the reference and transfer intents
         intents = ''
@@ -46,36 +46,36 @@ class SetModelsQAHandler(pqa.QAPlugin):
         if result.inputs['transintent'] not in (None, ''):
             intents = intents + result.inputs['transintent']
 
-	# Check for the existence of the expected flux measurements
-	# and assign a score based on the fraction of actual to 
-	# expected ones.
-	scores = [qacalc.score_setjy_measurements(ms, fields, intents, spw,
+        # Check for the existence of the expected flux measurements
+        # and assign a score based on the fraction of actual to 
+        # expected ones.
+        scores = [qacalc.score_setjy_measurements(ms, fields, intents, spw,
             result.measurements)]
-	result.qa.pool[:] = scores
-	result.qa.all_unity_longmsg = 'No missing flux measurements in %s' % ms.basename 
+        result.qa.pool[:] = scores
+        result.qa.all_unity_longmsg = 'No missing flux measurements in %s' % ms.basename 
 
 
 class SetjyQAHandler(pqa.QAPlugin):
     result_cls = commonfluxresults.FluxCalibrationResults
     child_cls = None
     generating_task = setjy.Setjy
-    
+
     def handle(self, context, result):
 
-	vis= result.inputs['vis']
-	ms = context.observing_run.get_ms(vis)
-	if 'spw' in result.inputs:
-	    spw = result.inputs['spw']
-	else:
-	    spw = ''
+        vis= result.inputs['vis']
+        ms = context.observing_run.get_ms(vis)
+        if 'spw' in result.inputs:
+            spw = result.inputs['spw']
+        else:
+            spw = ''
 
-	# Check for the existence of the expected flux measurements
-	# and assign a score based on the fraction of actual to 
-	# expected ones.
-	scores = [qacalc.score_setjy_measurements(ms, result.inputs['field'],
-	    result.inputs['intent'], spw, result.measurements)]
-	result.qa.pool[:] = scores
-	result.qa.all_unity_longmsg = 'No missing flux measurements in %s' % ms.basename 
+        # Check for the existence of the expected flux measurements
+        # and assign a score based on the fraction of actual to 
+        # expected ones.
+        scores = [qacalc.score_setjy_measurements(ms, result.inputs['field'],
+            result.inputs['intent'], spw, result.measurements)]
+        result.qa.pool[:] = scores
+        result.qa.all_unity_longmsg = 'No missing flux measurements in %s' % ms.basename 
 
 
 class SetjyListQAHandler(pqa.QAPlugin):

@@ -20,7 +20,7 @@ class SingleDishResults(basetask.Results):
         self.success = success
         self.outcome = outcome
         self.error = set()
-        
+
     def merge_with_context(self, context):
         self.error.clear()
 
@@ -33,7 +33,7 @@ class SingleDishResults(basetask.Results):
             return self.outcome.get(key, None)
         else:
             return None
-        
+
     def __repr__(self):
         # taskname = self.task if hasattr(self,'task') else 'none'
         s = '%s:\n\toutcome is %s' % (self.__class__.__name__, self._outcome_name())
@@ -50,7 +50,7 @@ class SingleDishTask(basetask.StandardTaskTemplate):
             return self.inputs.context.observing_run.ms_datatable_name
         else:
             return None
-         
+
     @property
     def datatable_instance(self):
         if hasattr(self, '_datatable_instance'):
@@ -67,13 +67,13 @@ class SingleDishTask(basetask.StandardTaskTemplate):
             else:
                 self._datatable_instance = None
             return self._datatable_instance
-    
+
 
 class ParameterContainerJob(object):
     def __init__(self, task, **parameters):
         self.task = task
         self.parameters = parameters
-    
+
     def execute(self, dry_run=True):
         result = self.task.execute(dry_run, **self.parameters)
         return result

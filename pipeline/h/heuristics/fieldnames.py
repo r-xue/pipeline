@@ -6,7 +6,7 @@ class IntentFieldnames(api.Heuristic):
         fields = ms.get_fields(intent=intent)
 
         identifiers = []
-        
+
         # Check whether each field can be uniquely identified by its name 
         # alone, or whether it has also been observed with other intents and
         # must therefore be referred to by numeric ID. This sometimes occurs
@@ -20,5 +20,5 @@ class IntentFieldnames(api.Heuristic):
                 identifiers.append(field.name)
             else:
                 identifiers.append(str(field.id))
-                
+
         return ','.join(identifiers)

@@ -19,7 +19,7 @@ class FlagDeterBaseQAHandler(pqa.QAPlugin):
     def handle(self, context, result):
         vis = result.inputs['vis']
         ms = context.observing_run.get_ms(vis)
-    
+
         # CAS-7059 base the metric (and warnings) on Shadowing+Online, instead
         # of on the Total.
         score = qacalc.score_online_shadow_template_agents(ms, result.summaries)
@@ -27,7 +27,7 @@ class FlagDeterBaseQAHandler(pqa.QAPlugin):
                                   metric_score=score.origin.metric_score,
                                   metric_units=score.origin.metric_units)
         score.origin = new_origin
-                  
+
         result.qa.pool[:] = [score]
 
 

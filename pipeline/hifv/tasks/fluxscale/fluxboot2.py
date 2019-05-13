@@ -331,7 +331,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
             elif 0.4 <= fractional_bandwidth < 0.8:
                 fitorder = 2
             elif fractional_bandwidth < 0.4:
-                    fitorder = 1
+                fitorder = 1
         else:
             fitorder = 1
             LOG.warn('Heuristics could not determine a fitorder for fluxscale.  Defaulting to fitorder=1.')

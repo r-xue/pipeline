@@ -225,7 +225,7 @@ class Antpos(basetask.StandardTaskTemplate):
         on_disk = [ca for ca in result.pool
                    if ca.exists() or self._executor._dry_run]
         result.final[:] = on_disk
-        
+
         missing = [ca for ca in result.pool
                    if ca not in on_disk and not self._executor._dry_run]        
         result.error.clear()

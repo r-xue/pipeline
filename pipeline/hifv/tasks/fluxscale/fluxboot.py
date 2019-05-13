@@ -238,9 +238,9 @@ class Fluxboot(basetask.StandardTaskTemplate):
                      'transfer'     : [''],
                      'append'       : False,
                      'refspwmap'    : [-1]}
-                     
+
         job = casa_tasks.fluxscale(**task_args)
-        
+
         return self._executor.execute(job)
 
     def _do_powerfit(self, context, fluxscale_result):
@@ -256,28 +256,28 @@ class Fluxboot(basetask.StandardTaskTemplate):
             originalBBClist = table.getcol('BBC_NO')
             spw_bandwidths = table.getcol('TOTAL_BANDWIDTH')
             reference_frequencies = table.getcol('REF_FREQUENCY')
-    
+
         center_frequencies = [rf + spwbw / 2 for rf, spwbw in zip(reference_frequencies, spw_bandwidths)]
 
         # the variable center_frequencies should already have been filled out
         # with the reference frequencies of the spectral window table
-        
+
         fitfunc = lambda p, x: p[0] + p[1] * x
         errfunc = lambda p, x, y, err: (y - fitfunc(p, x)) / err
-        
+
         #########################################################################
         # Old method of parsing fluxscale results from the CASA log
         ##try:
         ##    ff = open(fluxscale_output, 'r')
         ##except IOError as err:
         ##    LOG.fatal(fluxscale_output + " doesn't exist, error: " + err.filename)
-        
+
         # looking for lines like:
         #2012-03-09 21:30:23     INFO    fluxscale::::    Flux density for J1717-3342 in SpW=3 is: 1.94158 +/- 0.0123058 (SNR = 157.777, N= 34)
         # sometimes they look like:
         #2012-03-09 21:30:23     INFO    fluxscale::::    Flux density for J1717-3342 in SpW=0 is:  INSUFFICIENT DATA 
         # so watch for that.
-        
+
         sources = []
         flux_densities = []
         spws = []
@@ -288,12 +288,12 @@ class Fluxboot(basetask.StandardTaskTemplate):
         ##            sources.append(fields[7])
         ##            flux_densities.append([float(fields[11]), float(fields[13])])
         ##            spws.append(int(fields[9].split('=')[1]))
-        
+
         # Find the field_ids in the dictionary returned from the CASA task fluxscale
         dictkeys = fluxscale_result.keys()
         keys_to_remove = ['freq', 'spwName', 'spwID']
         dictkeys = [field_id for field_id in dictkeys if field_id not in keys_to_remove]
-                
+
         for field_id in dictkeys:        
             sourcename = fluxscale_result[field_id]['fieldName']
             secondary_keys = fluxscale_result[field_id].keys()
@@ -308,23 +308,23 @@ class Fluxboot(basetask.StandardTaskTemplate):
                 # flux_d = list(fluxscale_result[field_id]['fluxd'])
                 # flux_d_err = list(fluxscale_result[field_id]['fluxdErr'])
                 # spwslist  = list(fluxscale_result['spwID'])
-        
+
                 for i in range(0, len(flux_d)):
                     if flux_d[i] != -1.0 and flux_d[i] != 0.0:
                         sources.append(sourcename)
                         flux_densities.append([float(flux_d[i]), float(flux_d_err[i])])
                         spws.append(int(spw_id))
-        
+
         self.inputs.sources = sources
         self.inputs.flux_densities = flux_densities
         self.inputs.spws = spws
-        
+
         ii = 0
         unique_sources = list(np.unique(sources))
         results = []
         weblog_results = []
         spindex_results = []
-        
+
         #print 'fluxscale result: ', fluxscale_result
         #print 'unique_sources: ', unique_sources
 
@@ -335,7 +335,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
                     indices.append(ii)
 
             bands_from_spw = []
-            
+
             if bands == []:
                 for ii in range(len(indices)):
                     bands.append(find_EVLA_band(center_frequencies[spws[indices[ii]]]))
@@ -343,7 +343,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
                 for ii in range(len(indices)):
                     bands_from_spw.append(spw2band[spws[indices[ii]]])
                 bands = bands_from_spw
-                
+
             unique_bands = list(np.unique(bands))
             print(unique_bands)
             for band in unique_bands:
@@ -389,9 +389,9 @@ class Fluxboot(basetask.StandardTaskTemplate):
                 # proper errors), or once we get a modern enough version of scipy, moving
                 # to curve_fit, is better.
                 #
-                
+
                 print(lfds)
-                
+
                 if len(lfds) < 2:
                     aa = lfds[0]
                     bb = 0.0
@@ -413,7 +413,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
                     curvature = 0.0
                     curvatureerr = 0.0
-        
+
                     #
                     # the fit is of the form:
                     #     log(S) = a + b * log(f)
@@ -423,7 +423,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
                     # see the scipy.optimize.leastsq documentation and 
                     # http://stackoverflow.com/questions/14854339/in-scipy-how-and-why-does-curve-fit-calculate-the-covariance-of-the-parameter-es
                     #
-                    
+
                     summed_error = 0.0
                     for ii in range(len(alfds)):
                         model = aa + bb*alfreqs[ii]
@@ -435,7 +435,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
                 #
                 # take as the reference frequency the lowest one.  (this shouldn't matter, in principle).
                 #    
-        
+
                 reffreq = 10.0**lfreqs[0]/1.0e9
                 fluxdensity = 10.0**(aa + bb*lfreqs[0])
                 spix = bb
@@ -469,23 +469,23 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
         self.spix = spix
         self.curvature = curvature
-        
+
         LOG.info("Setting power-law fit in the model column")
-        
+
         # Sort weblog results by frequency
         weblog_results = sorted(weblog_results, key=lambda k: (k['source'], k['freq']))
-        
+
         return results, weblog_results, spindex_results
-                
+
     def _do_setjy(self, calMs, results):
-        
+
         for result in results:
 
             jobs_calMs = []
             jobs_vis = []
 
             for spw_i in result[1]:
-                
+
                 LOG.info('Running setjy on spw '+str(spw_i))
                 task_args = {'vis'            : calMs,
                              'field'          : str(result[0]),
@@ -499,18 +499,18 @@ class Fluxboot(basetask.StandardTaskTemplate):
                              'reffreq'        : str(result[5])+'GHz',
                              'standard'       : 'manual',
                              'usescratch'     : True}
-        
+
                 #job = casa_tasks.setjy(**task_args)
                 jobs_calMs.append(casa_tasks.setjy(**task_args))
 
                 #self._executor.execute(job)
-                
+
                 #Run on the ms
                 task_args['vis'] = self.inputs.vis
                 jobs_vis.append(casa_tasks.setjy(**task_args))
                 #job = casa_tasks.setjy(**task_args)
                 #self._executor.execute(job)
-                
+
                 if (abs(self.spix) > 5.0):
                     LOG.warn("abs(spix) > 5.0 - Fail")
 
@@ -524,9 +524,9 @@ class Fluxboot(basetask.StandardTaskTemplate):
             jobs_and_components_vis = utils.merge_jobs(jobs_vis, casa_tasks.setjy, merge=('spw',))
             for job, _ in jobs_and_components_vis:
                 self._executor.execute(job)
-        
+
         LOG.info("Flux density bootstrapping finished")
-        
+
         return True
 
     def _fluxgains_setjy(self, calMs, field, spw, modimage, fluxdensity):
@@ -542,27 +542,27 @@ class Fluxboot(basetask.StandardTaskTemplate):
                          'fluxdensity'    : -1,
                          'standard'       : standard.Standard()(field),
                          'usescratch'     : True}
-        
+
             job = casa_tasks.setjy(**task_args)
-            
+
             return job
         except Exception as e:
             print(e)
             return None
 
     def _do_gaincal(self, context, calMs, caltable, calmode, gaintablelist, solint='int', minsnr=3.0, refAnt=None):
-        
+
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         # minBL_for_cal = context.evla['msinfo'][m.name].minBL_for_cal
         minBL_for_cal = m.vla_minbaselineforcal()
-        
+
         # Do this to get the reference antenna string
         # temp_inputs = gaincal.GTypeGaincal.Inputs(context)
         # refant = temp_inputs.refant.lower()
 
         calibrator_scan_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_scan_select_string
         field = ''
-        
+
         task_args = {'vis'            : calMs,
                      'caltable'       : caltable,
                      'field'          : '',
@@ -586,7 +586,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
                      'spwmap'         : [],
                      'uvrange'        : '',
                      'parang'         : True}
-        
+
         if field == '':
             calscanslist = map(int, calibrator_scan_select_string.split(','))
             scanobjlist = m.get_scans(scan_id=calscanslist)

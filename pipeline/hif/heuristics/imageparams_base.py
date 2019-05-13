@@ -1634,7 +1634,7 @@ class ImageParamsHeuristics(object):
 
     def niter_correction(self, niter, cell, imsize, residual_max, threshold):
         return niter
-    
+
     def niter(self):
         return None
 

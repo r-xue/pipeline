@@ -18,19 +18,19 @@ class MstransformQAHandler(pqa.QAPlugin):
 
     def handle(self, context, result):
 
-	# Check for existance of the the target MS.
+        # Check for existance of the the target MS.
         score1 = self._targetms_exists(os.path.dirname(result.outputvis),
-	    os.path.basename(result.outputvis))
+            os.path.basename(result.outputvis))
         scores = [score1]
-	    
+
         result.qa.pool.extend(scores)
-    
+
     def _targetms_exists(self, output_dir, target_ms):
         '''
         Check for the existence of the target MS
         '''
         return qacalc.score_path_exists(output_dir, target_ms,
-	    'science target ms')
+            'science target ms')
 
 class MstransformListQAHandler(pqa.QAPlugin):
     """
@@ -49,4 +49,4 @@ class MstransformListQAHandler(pqa.QAPlugin):
         longmsg = 'No missing target MS(s) for %s' % utils.commafy(mses,
                                                                    quotes=False,
                                                                    conjunction='or')
-	result.qa.all_unity_longmsg = longmsg
+        result.qa.all_unity_longmsg = longmsg

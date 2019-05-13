@@ -21,7 +21,7 @@ class SDImportDataQAHandler(importdataqa.ImportDataQAHandler, QAPlugin):
     def _check_intents(self, mses):
         """
         Check each measurement set in the list for a set of required intents.
-        
+
         TODO Should we terminate execution on missing intents?        
         """
         return qacalc.score_missing_intents(mses, array_type='ALMA_TP')

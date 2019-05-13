@@ -41,7 +41,7 @@ class SDBLFlagSummary(object):
         self.thres_value = thresholds
         self.flagRule = flagRule
         self.userFlag = userFlag
-    
+
     def execute(self, dry_run=True):
         """
         Summarizes flagging results.
@@ -62,7 +62,7 @@ class SDBLFlagSummary(object):
         LOG.debug('Members to be processed in worker class:')
         for (a, f, s, p) in itertools.izip(antid_list, fieldid_list, spwid_list, pols_list):
             LOG.debug('\t%s: Antenna %s Field %d Spw %d Pol %s'%(ms.basename, a, f, s, p))
-        
+
         # output directory
         stage_number = self.context.task_counter
         FigFileDir = (self.context.report_dir+"/stage%d" % stage_number)
@@ -135,7 +135,7 @@ class SDBLFlagSummary(object):
         # FLAG_PERMANENT[3] --- 'OnlineFlag' (fixed)
         if pflag[OnlineFlagIndex] == 0:
             return 0
-        
+
         types = ['WeatherFlag', 'TsysFlag', 'UserFlag']
         mask = 1
         for idx in xrange(len(types)):
@@ -344,7 +344,7 @@ class SDBLFlagSummary(object):
             field_name = msobj.get_fields(field_id=fieldid)[0].name
             ddobj = msobj.get_data_description(spw=spwid)
             pol_name = ddobj.corr_axis[polid]
-            
+
             Out = open(Filename, 'w')
             print('<body>', file=Out)
             print('<p class="ttl">Data Summary</p>', file=Out)
@@ -356,7 +356,7 @@ class SDBLFlagSummary(object):
             print('<tr align="left" class="stp"><th>%s</th><th>:</th><th>%s</th></tr>' % ('Spw ID', spwid), file=Out)
             print('<tr align="left" class="stp"><th>%s</th><th>:</th><th>%s</th></tr>' % ('Pol', pol_name), file=Out)
             print('</table>\n', file=Out)
-            
+
             print('<HR><p class="ttl">Flagging Status</p>', file=Out)
             # A table of flag statistics summary
             print('<table border="1">', file=Out)

@@ -58,7 +58,7 @@ def mosaicOverlapFactorMS(ms, source, spw, diameter, intent='TARGET', fwhmfactor
     #    if the length of the intersection list is greater than 0
     myfields = np.intersect1d(science_fields, fields)
     if len(myfields) > 0:
-         fields = myfields
+        fields = myfields
 
     # Make a list of the selected spw ids
     if isinstance(spw, str):

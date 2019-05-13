@@ -24,7 +24,7 @@ class NROPipelineNameBuilder(exportdata.PipelineProductNameBuiler):
     @classmethod
     def _build_from_ps_oussid(self, basename, project_structure=None, ousstatus_entity_id=None, output_dir=None):
         return self._join_dir(basename, output_dir)
-    
+
     @classmethod
     def _build_from_oussid_session(self, basename, ousstatus_entity_id=None, session_name=None, output_dir=None):
         return self._join_dir(basename, output_dir)

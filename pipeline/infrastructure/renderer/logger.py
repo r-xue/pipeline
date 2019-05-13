@@ -91,7 +91,7 @@ class Parameters(object):
                                         'solint' : 'solint',
                                         'vis'    : 'vis',
                                         'file'   : 'file'    })
-                                                                             
+
     descriptions = collections.defaultdict(itertools.repeat('Unknown').next,
                                            { 'ant'    : 'Antenna',
                                              'spw'    : 'Spectral Window',
@@ -113,7 +113,7 @@ class Parameters(object):
         Get the CSS class associated with this parameter in HTML output.
         """
         return Parameters.css_ids[parameter]
-    
+
     @staticmethod
     def getDescription(parameter):
         """
@@ -155,7 +155,7 @@ class PlotGroup(object):
         for y_axes in grouped.itervalues():
             for plots_with_common_axes in y_axes.itervalues():
                 plot_groups.append(PlotGroup(plots_with_common_axes))
-        
+
         return plot_groups
 
     def __init__(self, plots=[]):
@@ -182,14 +182,14 @@ class PlotGroup(object):
                              string.capwords(self.x_axis)])
         if title == 'Dec Offset vs Ra Offset':
             title = 'Image Maps (Dec Offset vs RA Offset)'
-        
+
         return title
 
     @staticmethod
     def numericalSort(selector):
         """
         Sorts strings numerically, eg. [b13, a2, a10] -> [a2, a10, b13]
-        
+
         Based on Recipe 5.5 from Python Cookbook 2nd Edition.
         """
         re_digits = re.compile(r'(\d+)')
@@ -227,7 +227,7 @@ class PlotGroup(object):
         # numerically sort selectors by value
 #        selectors.sort(key=PlotGroup.numericalSort)
         return selectors
-    
+
     @property
     def thumbnails(self):
         html = [plot.getThumbnailHtml() for plot in self.plots]
@@ -245,16 +245,16 @@ class PlotGroup(object):
             return backButton + '\n\t' + clearFilterButton
         else:
             return backButton
-                
+
     def __repr__(self):
         return self.toHtml()
-                
+
 
 class Selector(object):
     # CSS classes have a restricted character sets, so we use a regex to 
     # remove them
     _regex = re.compile('\W')
-    
+
     def __init__(self, parameter, value):
         self.value = string.capwords(value)
         self.prefix = Parameters.getCssId(parameter)
@@ -342,7 +342,7 @@ class Plot(object):
             return thumb_file
 
         return self._create_thumbnail()
-    
+
     def _create_thumbnail(self):
         """
         Create a scaled-down copy of the plot, returning the filename to be

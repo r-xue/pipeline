@@ -51,18 +51,18 @@ class ValidateLineInputs(vdp.StandardInputs):
     @property
     def windowmode(self):
         return getattr(self, '_windowmode', 'replace')
-        
+
     @windowmode.setter
     def windowmode(self, value):
         if value not in ['replace', 'merge']:
             raise ValueError("linewindowmode must be either 'replace' or 'merge'.")
         self._windowmode = value
-    
+
     def __init__(self, context, group_id, member_list, iteration, grid_ra, grid_dec,
                  window=None, windowmode=None, edge=None, nsigma=None, xorder=None, yorder=None, 
                  broad_component=None, clusteringalgorithm=None):
         super(ValidateLineInputs, self).__init__()
-        
+
         self.context = context
         self.group_id = group_id
         self.member_list = member_list
@@ -77,7 +77,7 @@ class ValidateLineInputs(vdp.StandardInputs):
         self.yorder = yorder
         self.broad_component = broad_component
         self.clusteringalgorithm = clusteringalgorithm
-        
+
 
 class ValidateLineResults(common.SingleDishResults):
     def __init__(self, task=None, success=None, outcome=None):
@@ -88,7 +88,7 @@ class ValidateLineResults(common.SingleDishResults):
         # exporting datatable should be done within the parent task
 #         datatable = self.outcome.pop('datatable')
 #         datatable.exportdata(minimal=True)
-        
+
     def _outcome_name(self):
         return ''
 
@@ -113,14 +113,14 @@ class ValidateLineSinglePointing(basetask.StandardTaskTemplate):
         """
         window = self.inputs.window
         windowmode = self.inputs.windowmode
-        
+
         assert datatable_dict is not None 
         assert index_list is not None
         assert detect_signal is not None
 
         # indexer translates serial index into per-MS index 
         indexer = DataTableIndexer(self.inputs.context)
-        
+
         # for Pre-Defined Spectrum Window
         if len(window) != 0 and windowmode == 'replace':
             LOG.info('Skip clustering analysis since predefined line window is set.')
@@ -137,14 +137,14 @@ class ValidateLineSinglePointing(basetask.StandardTaskTemplate):
             result = ValidateLineResults(task=self.__class__,
                                          success=True,
                                          outcome=outcome)
-                
+
             result.task = self.__class__
-                
+
             return result
 
         # Dictionary for final output
         lines = []
-        
+
         # register manually specified line windows to lines
         for w in window:
             center = float(sum(w)) / 2
@@ -154,7 +154,7 @@ class ValidateLineSinglePointing(basetask.StandardTaskTemplate):
         LOG.info('Accept all detected lines without clustering analysis.')
 
         iteration = self.inputs.iteration
-        
+
         # First cycle
         #if len(grid_table) == 0:
         if iteration == 0:
@@ -193,11 +193,11 @@ class ValidateLineSinglePointing(basetask.StandardTaskTemplate):
         result = ValidateLineResults(task=self.__class__,
                                      success=True,
                                      outcome=outcome)
-                
+
         result.task = self.__class__
-                
+
         return result
-    
+
     def analyse(self, result):
         return result
 
@@ -218,7 +218,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
     #Clustering_Algorithm = rules.ClusterRule['ClusterAlgorithm']
     DebugOutName = '%05d' % (int(time.time())%100000)
     DebugOutVer = [0, 0]
-    
+
     @property
     def MaxFWHM(self):
         num_edge = sum(self.inputs.edge)
@@ -270,9 +270,9 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             result = ValidateLineResults(task=self.__class__,
                                          success=True,
                                          outcome=outcome)
-                
+
             return result
-        
+
         manual_window = []
         # register manually specified line windows to lines
         for w in window:
@@ -281,7 +281,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             manual_window.append([center, width, True, 0.0])            
 
         iteration = self.inputs.iteration
-        
+
         grid_ra = self.inputs.grid_ra
         grid_dec = self.inputs.grid_dec
         broad_component = self.inputs.broad_component
@@ -356,9 +356,9 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             result = ValidateLineResults(task=self.__class__,
                                          success=True,
                                          outcome=outcome)
-                
+
             result.task = self.__class__
-                
+
             return result
 
         # 2008/9/20 Dec Effect was corrected
@@ -474,7 +474,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         LOG.info('Clustering: Validation Stage Start')
 
         (GridCluster, GridMember, lines) = self.validation_stage(GridCluster, GridMember, lines)
-        
+
         ProcEndTime = time.time()
         LOG.info('Clustering: Validation Stage End: Elapsed time = {} sec', (ProcEndTime - ProcStartTime))
 
@@ -493,7 +493,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
         ProcEndTime = time.time()
         LOG.info('Clustering: Smoothing Stage End: Elapsed time = {} sec', (ProcEndTime - ProcStartTime))
-        
+
         ######## Clustering: Final Stage ########
         ProcStartTime = time.time()
         LOG.info('Clustering: Final Stage Start')
@@ -563,21 +563,21 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         del GridCluster, RealSignal
         ProcEndTime = time.time()
         LOG.info('Clustering: Merging End: Elapsed time = {} sec', (ProcEndTime - ProcStartTime))
-        
+
         lines.extend(manual_window)
         channelmap_range.extend(manual_window)
-        
+
         outcome = {'lines': lines,
                    'channelmap_range': channelmap_range,
                    'cluster_info': self.cluster_info}
         result = ValidateLineResults(task=self.__class__,
                                      success=True,
                                      outcome=outcome)
-                
+
         result.task = self.__class__
-                
+
         return result
-    
+
     def analyse(self, result):
         return result
 
@@ -1023,7 +1023,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         for j in range(len(Category)): Category[j] = ReNumber[Category[j]]
         #return (Region, Range, Stdev)
         return (Region, numpy.array(ValidRange), numpy.array(ValidStdev), Category)
-    
+
     def clustering_kmean_score(self, MeanDistance, MedianWidth, Ncluster, MemberRate):
         # Rating
         ### 2011/05/12 modified for (distance==0)
@@ -1109,7 +1109,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         self.cluster_info['cluster_flag'] = numpy.zeros(GridCluster.shape, dtype=numpy.uint16)
         threshold = [1.5, 0.5]
         self.__update_cluster_flag('detection', GridCluster, threshold, 1)
-        
+
         return (GridCluster, GridMember)
 
     def validation_stage(self, GridCluster, GridMember, lines):
@@ -1147,7 +1147,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         LOG.trace('GridCluster {}', GridCluster)
         LOG.trace('GridMember {}', GridMember)
         self.GridClusterValidation = GridCluster.copy()
-        
+
         return (GridCluster, GridMember, lines)
 
     def smoothing_stage(self, GridCluster, lines):
@@ -1221,11 +1221,11 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         self.__update_cluster_flag('smoothing', GridCluster, threshold, 100)
         LOG.trace('threshold = {}', threshold)
         LOG.trace('GridCluster = {}', GridCluster)
-        
+
         return (GridCluster, lines)
 
     def final_stage(self, GridCluster, GridMember, Region, Region2, lines, category, grid_ra, grid_dec, broad_component, xorder, yorder, x0, y0, Grid2SpectrumID, index_list, PosList):
-                
+
         (Ncluster, nra, ndec) = GridCluster.shape
         xorder0 = xorder
         yorder0 = yorder
@@ -1239,10 +1239,10 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         RealSignal = {}
 
         HalfGrid = 0.5 * sqrt(grid_ra*grid_ra + grid_dec*grid_dec)
-        
+
         MinFWHM = self.MinFWHM
         MaxFWHM = self.MaxFWHM
-        
+
         # for Channel Map velocity range determination 2014/1/12
         channelmap_range = []
         for i in range(len(lines)):
@@ -1345,7 +1345,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
                     # assertion
                     assert len(effective) > 0
-                    
+
                     # prepare data for SVD fit
                     #xdata = numpy.array([FitData[i][2] for i in effective], dtype=numpy.float64)
                     #ydata = numpy.array([FitData[i][3] for i in effective], dtype=numpy.float64)
@@ -1606,7 +1606,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
         threshold = [1.5, 0.5, 0.5, 0.5]
         self.__update_cluster_flag('final', GridCluster, threshold, 1000)
-        
+
         return (RealSignal, lines, channelmap_range)
 
     def CleanIsolation(self, nra, ndec, Original, Plane, GridMember):
@@ -1715,7 +1715,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         #ProtectMask = [max(int(Fit0 - Allowance + 0.5), 0), min(int(Fit0 + Allowance + 0.5), nchan - 1)]
         LOG.trace('Allowance = %s ProtectMask = %s' % (Allowance, ProtectMask))
         return ProtectMask
-        
+
     def __merge_lines(self, lines, nchan):
         nlines = len(lines)
         if nlines < 1:
@@ -1831,7 +1831,7 @@ def _to_validated_lines(detect_lines):
 
 class SVDSolver2D(object):
     CONDITION_NUMBER_LIMIT = 1.0e-12
-    
+
     def __init__(self, xorder, yorder):
         self.xorder = xorder
         self.yorder = yorder
@@ -1851,7 +1851,7 @@ class SVDSolver2D(object):
         self.Vs = numpy.empty((self.L, self.L), dtype=numpy.float64)
         self.B = numpy.empty(self.L, dtype=numpy.float64)
         self.U = None
-    
+
     def set_data_points(self, x, y):
         nx = len(x)
         ny = len(y)
@@ -1862,13 +1862,13 @@ class SVDSolver2D(object):
             #self.G.resize((nx, self.L))
         self.N = nx
         assert self.L <= self.N
-        
+
         self.G = self.storage[:self.N * self.L].reshape((self.N, self.L))
-        
+
         # matrix operation
         self._set_design_matrix(x, y)
         #self._svd()
-    
+
     def _set_design_matrix(self, x, y):
         # The design matrix G is a basis array that stores gj(xi)
         # where g0  = 1,   g1  = x,     g2  = x^2      g3  = x^3,
@@ -1885,7 +1885,7 @@ class SVDSolver2D(object):
                     self.G[k, l] = xp * yp
                     xp *= x[k]
                 yp *= y[k]
-                
+
     def _do_svd(self):
         LOG.trace('G.shape={}', self.G.shape)
         self.U, self.s, self.Vh = LA.svd(self.G, full_matrices=False)
@@ -1896,14 +1896,14 @@ class SVDSolver2D(object):
         assert self.U.shape == (self.N, self.L)
         assert len(self.s) == self.L
         assert self.Vh.shape == (self.L, self.L)
-        
+
     def _svd_with_mask(self, nmask=0):
         if not hasattr(self, 's'):
             # do SVD
             self._do_svd()
-            
+
         assert nmask < self.L
-        
+
         for icol in xrange(self.L):
             if self.L - 1 - icol < nmask:
                 sinv = 0.0
@@ -1911,14 +1911,14 @@ class SVDSolver2D(object):
                 sinv = 1.0 / self.s[icol]
             for irow in xrange(self.L):
                 self.Vs[irow, icol] = self.Vh[icol, irow] * sinv
-                        
+
     def _svd_with_eps(self, eps=1.0e-7):
         if not hasattr(self, 's'):
             # do SVD
             self._do_svd()
-            
+
         assert 0.0 < eps
-        
+
         # max value of s is always s[0] since it is sorted 
         # in descendent order
         #threshold = self.s.max() * eps
@@ -1930,7 +1930,7 @@ class SVDSolver2D(object):
                 sinv = 1.0 / self.s[icol]
             for irow in xrange(self.L):
                 self.Vs[irow, icol] = self.Vh[icol, irow] * sinv
-                        
+
     def _svd(self, eps):
         LOG.trace('G.shape={}', self.G.shape)
         self.U, s, Vh = LA.svd(self.G, full_matrices=False)
@@ -1944,13 +1944,13 @@ class SVDSolver2D(object):
         assert len(s) == self.L
         assert Vh.shape == (self.L, self.L)
         assert 0.0 < eps
-        
+
 #         absolute_s = abs(s)
 #         condition_number = absolute_s.min() / absolute_s.max()
 #         if condition_number < self.CONDITION_NUMBER_LIMIT:
 #             LOG.trace('smax {}, smin {}, condition_number is {}', absolute_s.max(), absolute_s.min(), condition_number)
 #             raise RuntimeError('singular matrix')
-        
+
         threshold = s.max() * eps
         for i in xrange(self.L):
             if s[i] < threshold:
@@ -1960,7 +1960,7 @@ class SVDSolver2D(object):
         for icol in xrange(self.L):
             for irow in xrange(self.L):
                 self.Vs[irow, icol] = Vh[icol, irow] * s[icol]
-        
+
     def _eval_poly_from_G(self, row, coeff):
         idx = 0 
         poly = 0.0
@@ -1970,13 +1970,13 @@ class SVDSolver2D(object):
                 idx += 1
         #LOG.trace('poly=%s'%(poly))
         return poly   
-                
+
     def solve_with_mask(self, z, out=None, nmask=0):
         nz = len(z)
         assert nz == self.N
-        
+
         self._svd_with_mask(nmask)
-        
+
         if out is None:
             A = numpy.zeros(self.L, dtype=numpy.float64)
         else:
@@ -1990,20 +1990,20 @@ class SVDSolver2D(object):
         for i in xrange(self.L):
             for k in xrange(self.L):
                 A[i] += self.Vs[i, k] * self.B[k] 
-                
+
         #fit = numpy.fromiter((self._eval_poly_from_G(i, A) for i in xrange(self.N)), dtype=numpy.float64)   
         #LOG.trace('fit=%s'%(fit))
         #LOG.trace('diff=%s'%(abs(fit - z)/z))
         return A    
-    
+
     def solve_with_eps(self, z, out=None, eps=1.0e-7):
         assert 0.0 <= eps
-        
+
         nz = len(z)
         assert nz == self.N
-        
+
         self._svd_with_eps(eps)
-        
+
         if out is None:
             A = numpy.zeros(self.L, dtype=numpy.float64)
         else:
@@ -2017,20 +2017,20 @@ class SVDSolver2D(object):
         for i in xrange(self.L):
             for k in xrange(self.L):
                 A[i] += self.Vs[i, k] * self.B[k] 
-                
+
         #fit = numpy.fromiter((self._eval_poly_from_G(i, A) for i in xrange(self.N)), dtype=numpy.float64)   
         #LOG.trace('fit=%s'%(fit))
         #LOG.trace('diff=%s'%(abs(fit - z)/z))
         return A        
-        
+
     def solve_for(self, z, out=None, eps=1.0e-7):
         assert 0.0 <= eps
-        
+
         nz = len(z)
         assert nz == self.N
-        
+
         self._svd(eps)
-        
+
         if out is None:
             A = numpy.zeros(self.L, dtype=numpy.float64)
         else:
@@ -2044,26 +2044,26 @@ class SVDSolver2D(object):
         for i in xrange(self.L):
             for k in xrange(self.L):
                 A[i] += self.Vs[i, k] * self.B[k] 
-                
+
         #fit = numpy.fromiter((self._eval_poly_from_G(i, A) for i in xrange(self.N)), dtype=numpy.float64)   
         #LOG.trace('fit=%s'%(fit))
         #LOG.trace('diff=%s'%(abs(fit - z)/z))
         return A
-    
+
     def find_good_solution(self, z, threshold=0.05):
         assert 0.0 <= threshold
         eps_list = [10**x for x in xrange(-11, -3)]
-        
+
         best_score = 1e30
         best_eps = eps_list[0]
         intlog = lambda x: int(numpy.log10(x))
         ans = numpy.empty(self.L, dtype=numpy.float64)
         best_ans = numpy.empty(self.L, dtype=numpy.float64)
         diff = numpy.empty(self.N, dtype=numpy.float64)
-        
+
         # do SVD
         self._do_svd()
-        
+
         for eps in eps_list:
             ans = self.solve_with_eps(z, out=ans, eps=eps)
             for i in xrange(self.N):
@@ -2083,6 +2083,6 @@ class SVDSolver2D(object):
             raise RuntimeError('No good solution is found.')
         elif threshold < best_score:
             LOG.trace('Score is higher than given threshold (threshold {}, score {})', threshold, best_score)
-        
+
         LOG.trace('best eps: {} (score {})', intlog(best_eps), best_score)
         return best_ans

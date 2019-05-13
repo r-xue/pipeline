@@ -39,7 +39,7 @@ class SDApplycal(Applycal):
     Applycal executes CASA applycal tasks for the current context state,
     applying calibrations registered with the pipeline context to the target
     measurement set.
-    
+
     Applying the results from this task to the context marks the referred
     tables as applied. As a result, they will not be included in future
     on-the-fly calibration arguments.
@@ -57,7 +57,7 @@ class SDApplycal(Applycal):
         task_args = super(SDApplycal, self)._get_flagsum_arg(args)
         task_args['intent'] = 'OBSERVE_TARGET#ON_SOURCE'
         return task_args
-        
+
     def _tweak_flagkwargs(self, template):
         # CAS-8813 flag fraction should be based on target instead of total
         # use of ' rather than " is required to prevent escaping of flagcmds
@@ -88,14 +88,14 @@ class SDApplycal(Applycal):
 
         # here, full export is necessary
         datatable.exportdata(minimal=False)
-        
+
         sdresults = SDApplycalResults(applied=results.applied)
         sdresults.summaries = results.summaries
         if hasattr(results, 'flagsummary'):
             sdresults.flagsummary = results.flagsummary
 
         return sdresults
-    
+
 
 # Tier-0 parallelization
 class HpcSDApplycalInputs(SDApplycalInputs):
@@ -108,14 +108,14 @@ class HpcSDApplycalInputs(SDApplycalInputs):
                                                antenna=antenna, intent=intent, parang=parang, applymode=applymode,
                                                flagbackup=flagbackup, flagsum=flagsum, flagdetailedsum=flagdetailedsum)
         self.parallel = parallel
-        
+
 
 @task_registry.set_equivalent_casa_task('hsd_applycal')
 @task_registry.set_casa_commands_comment('Calibrations are applied to the data. Final flagging summaries are computed')
 class HpcSDApplycal(sessionutils.ParallelTemplate):
     Inputs = HpcSDApplycalInputs
     Task = SDApplycal
-    
+
     @basetask.result_finaliser
     def get_result_for_exception(self, vis, exception):
         LOG.error('Error operating target flag for {!s}'.format(os.path.basename(vis)))

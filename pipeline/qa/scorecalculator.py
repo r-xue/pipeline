@@ -203,14 +203,14 @@ def linear_score(x, x1, x2, y1=0.0, y2=1.0):
     """
     Calculate the score for the given data value, assuming the
     score follows a linear gradient between the low and high values.
-    
+
     x values will be clipped to lie within the range x1->x2
     """
     x1 = float(x1)
     x2 = float(x2)
     y1 = float(y1)
     y2 = float(y2)
-    
+
     clipped_x = sorted([x1, x, x2])[1]
     m = (y2-y1) / (x2-x1)
     c = y1 - m*x1
@@ -574,7 +574,7 @@ def score_missing_intents(mses, array_type='ALMA_12m'):
             longmsg = ('%s is missing %s calibration intents'
                        '' % (ms.basename, utils.commafy(missing, False)))
             complaints.append(longmsg)
-            
+
     if all_ok:
         longmsg = ('All required calibration intents were found in '
                    '%s.' % utils.commafy([ms.basename for ms in mses], False))
@@ -709,7 +709,7 @@ def score_total_data_flagged(filename, summaries):
     """
     Calculate a score for the flagging task based on the total fraction of
     data flagged.
-    
+
     0%-5% flagged   -> 1
     5%-50% flagged  -> 0.5
     50-100% flagged -> 0
@@ -897,7 +897,7 @@ def score_fraction_newly_flagged(filename, summaries, vis):
     """
     Calculate a score for the flagging task based on the fraction of
     data newly flagged.
-    
+
     0%-5% flagged   -> 1
     5%-50% flagged  -> 0.5
     50-100% flagged -> 0
@@ -928,7 +928,7 @@ def linear_score_fraction_newly_flagged(filename, summaries, vis):
     """
     Calculate a score for the flagging task based on the fraction of
     data newly flagged.
-    
+
     fraction flagged   -> score
     """
     # Calculate fraction of flagged data.
@@ -1078,7 +1078,7 @@ def score_sdtotal_data_flagged(label, frac_flagged):
     """
     Calculate a score for the flagging task based on the total fraction of
     data flagged.
-    
+
     0%-5% flagged   -> 1
     5%-50% flagged  -> 0.5
     50-100% flagged -> 0
@@ -1087,7 +1087,7 @@ def score_sdtotal_data_flagged(label, frac_flagged):
         score = 0
     else:
         score = linear_score(frac_flagged, 0.05, 0.5, 1.0, 0.5)
-    
+
     percent = 100.0 * frac_flagged
     longmsg = '%0.2f%% of data in %s was newly flagged' % (percent, label)
     shortmsg = '%0.2f%% data flagged' % percent
@@ -1104,7 +1104,7 @@ def score_sdtotal_data_flagged_old(name, ant, spw, pol, frac_flagged, field=None
     """
     Calculate a score for the flagging task based on the total fraction of
     data flagged.
-    
+
     0%-5% flagged   -> 1
     5%-50% flagged  -> 0.5
     50-100% flagged -> 0
@@ -1113,7 +1113,7 @@ def score_sdtotal_data_flagged_old(name, ant, spw, pol, frac_flagged, field=None
         score = 0
     else:
         score = linear_score(frac_flagged, 0.05, 0.5, 1.0, 0.5)
-    
+
     percent = 100.0 * frac_flagged
     if field is None:
         longmsg = '%0.2f%% of data in %s (Ant=%s, SPW=%d, Pol=%d) was flagged' % (percent, name, ant, spw, pol)
@@ -1318,7 +1318,7 @@ def score_refspw_mapping_fraction(ms, ref_spwmap):
         for spwid in scispws:
             if spwid == ref_spwmap[spwid]: 
                 nunmapped += 1
-        
+
         if nunmapped >= nexpected:
             score = 1.0
             longmsg = 'No mapped science spws for %s ' % ms.basename
@@ -1367,7 +1367,7 @@ def score_phaseup_mapping_fraction(ms, fullcombine, phaseup_spwmap):
             else:
                 if scispw.sideband != ms.get_spectral_window(phaseup_spwmap[spwid]).sideband:
                     samesideband = False
-        
+
         if nunmapped >= nexpected:
             score = 1.0
             longmsg = 'No spw mapping for %s ' % ms.basename
@@ -2192,7 +2192,7 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
             if gfluxscale_err != 0.0:
                 chk_gfluxscale_snr = gfluxscale / gfluxscale_err
                 if chk_gfluxscale_snr < 20.:
-                   snr_msg = ', however, the S/N of the gfluxscale measurement is low'
+                    snr_msg = ', however, the S/N of the gfluxscale measurement is low'
 
         if any(np.array([offset_score, fitflux_score, fitpeak_score]) < 1.0):
             score = math.sqrt(offset_score * fitflux_score * fitpeak_score)
@@ -2242,7 +2242,7 @@ def score_sd_skycal_elevation_difference(ms, resultdict, threshold=3.0):
         field = ms.fields[field_id]
         if field_id not in resultdict:
             continue
-        
+
         eldiffant = resultdict[field_id]
         warned_antennas = set()
         for antenna_id, eldiff in eldiffant.iteritems():
@@ -2264,7 +2264,7 @@ def score_sd_skycal_elevation_difference(ms, resultdict, threshold=3.0):
                     if max_subq >= el_threshold:
                         warned_antennas.add(antenna_id)
                 LOG.debug('field {} antenna {} spw {} metric_score {}'.format(field_id, antenna_id, spw_id, metric_score))
-        
+
         if len(warned_antennas) > 0:
             antenna_names = ', '.join([ms.antennas[a].name for a in warned_antennas])
             longmsg = '{} field {} antennas {}: elevation difference between ON and OFF exceed {}deg'.format(ms.basename,
@@ -2273,7 +2273,7 @@ def score_sd_skycal_elevation_difference(ms, resultdict, threshold=3.0):
                                                                                                              el_threshold)
         else:
             longmsg = 'Elevation difference between ON and OFF is below threshold ({}deg)'.format(el_threshold)
-        
+
     # CAS-11054: it is decided that we do not calculate QA score based on elevation difference for Cycle 6
     # PIPE-246: we implement QA score based on elevation difference for Cycle 7.
     #           requirement is that score is 0.8 if elevation difference is larger than 3deg.
@@ -2285,12 +2285,12 @@ def score_sd_skycal_elevation_difference(ms, resultdict, threshold=3.0):
     origin = pqa.QAOrigin(metric_name='OnOffElevationDifference',
                           metric_score=max_metric_score,
                           metric_units='deg')
-    
+
     if score < 1.0:
         shortmsg = 'Elevation difference between ON and OFF exceeds {}deg'.format(el_threshold)
     else:
         shortmsg = 'Elevation difference between ON and OFF is below {}deg'.format(el_threshold)
-    
+
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, vis=ms.basename)
 
 
@@ -2307,7 +2307,7 @@ def generate_metric_mask(context, result, cs, mask):
                                         hsd_imaging
         cs {coordsys} -- CASA coordsys tool
         mask {bool array} -- image mask
-    
+
     Returns:
         bool array -- metric mask (True: valid, False: invalid)
     """
@@ -2379,7 +2379,7 @@ def score_sdimage_masked_pixels(context, result):
     """
     Evaluate QA score based on the fraction of masked pixels in image.
 
-    
+
     Requirements (PIPE-249):
         - calculate the number of masked pixels in image
         - search area should be the extent of pointing direction
@@ -2388,11 +2388,11 @@ def score_sdimage_masked_pixels(context, result):
             0.5 (if any of the pixel in pointing area is masked)
             0.0 (if 10% of the pixels in pointing area are masked)
             *linearly interpolate between 0.5 and 0.0
-    
+
     Arguments:
         context {Context} -- Pipeline context
         result {SDImagingResultItem} -- Imaging result instance
-    
+
     Returns:
         QAScore -- QAScore instance holding the score based on number of
                    masked pixels in image
@@ -2415,7 +2415,7 @@ def score_sdimage_masked_pixels(context, result):
 
     # image shape: (lon, lat, stokes, freq)
     LOG.debug('image shape: {}'.format(list(imageshape)))
-        
+
     # metric_mask is boolean array that defines the region to be excluded
     #    True: included in the metric calculation
     #   False: excluded from the metric calculation

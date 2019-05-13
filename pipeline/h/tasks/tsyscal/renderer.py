@@ -76,19 +76,19 @@ class T2_4MDetailsTsyscalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         for result in results:
             vis = os.path.basename(result.inputs['vis'])
             calto = result.final[0]
-            
+
             ms = pipeline_context.observing_run.get_ms(vis)
             science_spws = ms.get_spectral_windows(science_windows_only=True)
             science_spw_ids = [spw.id for spw in science_spws]
-            
+
             sci2tsys = dict((spw, tsys) for (spw, tsys) in enumerate(calto.spwmap)
                             if spw in science_spw_ids 
                             and spw not in result.unmappedspws)
-    
+
             tsys2sci = collections.defaultdict(list)
             for sci, tsys in sci2tsys.iteritems():
                 tsys2sci[tsys].append(sci)
-                
+
             tsysmap = dict((k, sorted(v)) for k, v in tsys2sci.iteritems())
 
             for tsys, sci in tsysmap.iteritems():
@@ -98,7 +98,7 @@ class T2_4MDetailsTsyscalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             if result.unmappedspws:
                 tr = TsysMapTR(vis, 'Unmapped', ', '.join([str(w) for w in result.unmappedspws]))
                 rows.append(tr)
-                
+
         return utils.merge_td_columns(rows)
 
 
@@ -117,7 +117,7 @@ class TsyscalPlotRenderer(basetemplates.JsonPlotRenderer):
                           for r in result}
         self._spwmap = {os.path.basename(r.inputs['vis']): r.final[0].spwmap
                         for r in result}
-        
+
         super(TsyscalPlotRenderer, self).__init__(
                 'tsyscal_plots.mako', context, result, plots, title, outfile)
 
@@ -131,7 +131,7 @@ class TsyscalPlotRenderer(basetemplates.JsonPlotRenderer):
                   'median': stat.median,
                   'median_max': stat.median_max,
                   'rms': stat.rms})
-            
+
     def get_stat(self, vis, spw, antenna):
         tsys_spw = self._spwmap[vis][spw]
         with casatools.CalAnalysis(self._caltable[vis]) as ca:
@@ -139,7 +139,7 @@ class TsyscalPlotRenderer(basetemplates.JsonPlotRenderer):
                     'antenna': antenna,
                     'axis': 'TIME',
                     'ap': 'AMPLITUDE'}
-    
+
             LOG.trace('Retrieving caltable data for %s %s spw %s', vis,
                       antenna, spw)
             ca_result = ca.get(**args)
@@ -163,7 +163,7 @@ class TsyscalPlotRenderer(basetemplates.JsonPlotRenderer):
             # use the average of the medians per antenna feed as the typical
             # tsys for this antenna at this timestamp
             mean_tsyses.append(numpy.mean(medians))
-    
+
         median = numpy.median(mean_tsyses)
         rms = numpy.std(mean_tsyses)
         median_max = numpy.max(mean_tsyses)

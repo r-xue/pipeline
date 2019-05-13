@@ -24,13 +24,13 @@ class WeightMSInputs(vdp.StandardInputs):
     spwid = vdp.VisDependentProperty(default=-1)
     fieldid = vdp.VisDependentProperty(default=-1)
     spwtype = vdp.VisDependentProperty(default=None)
-    
+
     @vdp.VisDependentProperty(readonly=True)
     def spwtype(self):
         msobj = self.context.observing_run.get_ms(self.vis)
         spwobj = msobj.spectral_windows[self.spwid]
         return spwobj.type
-    
+
     # Synchronization between infiles and vis is still necessary
     @vdp.VisDependentProperty
     def vis(self):
@@ -47,7 +47,7 @@ class WeightMSInputs(vdp.StandardInputs):
         self.fieldid = fieldid
         self.spwid = spwid
 
-        
+
 class WeightMSResults(common.SingleDishResults):
     def __init__(self, task=None, success=None, outcome=None):
         super(WeightMSResults, self).__init__(task, success, outcome)
@@ -62,12 +62,12 @@ class WeightMSResults(common.SingleDishResults):
 
 class WeightMS(basetask.StandardTaskTemplate):
     Inputs = WeightMSInputs
- 
+
     Rule = {'WeightDistance': 'Gauss',
             'Clipping': 'MinMaxReject',
             'WeightRMS': True,
             'WeightTsysExpTime': False}
-   
+
     def prepare(self, datatable_dict=None):
         # for each data
         outfile = self.inputs.outfiles
@@ -75,10 +75,10 @@ class WeightMS(basetask.StandardTaskTemplate):
         LOG.info('Setting weight for %s Antenna %s Spw %s Field %s' % \
                  (os.path.basename(outfile), self.inputs.ms.antennas[self.inputs.antenna].name,
                   self.inputs.spwid, self.inputs.ms.fields[self.inputs.fieldid].name))
-        
+
         # make row mapping table between scantable and ms
         row_map = self._make_row_map()
-        
+
         # set weight
         if is_full_resolution:
             minmaxclip = (WeightMS.Rule['Clipping'].upper() == 'MINMAXREJECT')
@@ -122,7 +122,7 @@ class WeightMS(basetask.StandardTaskTemplate):
         with casatools.TableReader(os.path.join(infile, 'DATA_DESCRIPTION')) as tb:
             spwids = tb.getcol('SPECTRAL_WINDOW_ID')
             data_desc_id = numpy.where(spwids == spwid)[0][0]
-        
+
         with casatools.TableReader(infile) as tb:
             tsel = tb.query('DATA_DESC_ID==%d && FIELD_ID==%d && ANTENNA1==%d && ANTENNA2==%d' %
                             (data_desc_id, fieldid, antid, antid),
@@ -130,25 +130,25 @@ class WeightMS(basetask.StandardTaskTemplate):
             if tsel.nrows() > 0:
                 in_rows = tsel.rownumbers() 
             tsel.close()
-    
+
         with casatools.TableReader(os.path.join(outfile, 'DATA_DESCRIPTION')) as tb:
             spwids = tb.getcol('SPECTRAL_WINDOW_ID')
             data_desc_id = numpy.where(spwids == spwid)[0][0]
-    
+
         with casatools.TableReader(outfile) as tb:
             tsel = tb.query('DATA_DESC_ID==%s && FIELD_ID==%d && ANTENNA1==%d && ANTENNA2==%d' %
                             (data_desc_id, fieldid, antid, antid),
                             sortlist='TIME')
             out_rows = tsel.rownumbers() 
             tsel.close()
-    
+
         row_map = {}
         # in_row: out_row
         for index in xrange(len(in_rows)):
             row_map[in_rows[index]] = out_rows[index]
-    
+
         return row_map
-         
+
     def _set_weight(self, row_map, minmaxclip, weight_rms, weight_tintsys, try_fallback=False, default_datatable=None):
         inputs = self.inputs
         infile = inputs.infiles
@@ -166,20 +166,20 @@ class WeightMS(basetask.StandardTaskTemplate):
         if datatable is None:
             datatable_name = os.path.join(context.observing_run.ms_datatable_name, os.path.basename(infile))
             datatable = DataTable(name=datatable_name, readonly=True)
-        
+
         # get corresponding datatable rows (only IDs of target scans will be retruned)
         index_list = common.get_index_list_for_ms(datatable, [infile], [antid], [fieldid], [spwid])
-    
+
         in_rows = datatable.getcol('ROW').take(index_list)
         # row map filtered by target scans (key: target input 
         target_row_map = {}
         for idx in in_rows:
             target_row_map[idx] = row_map.get(idx, -1)
-        
+
         weight = {}
 #         for row in in_rows:
 #             weight[row] = 1.0
-    
+
         # set weight (key: input MS row ID, value: weight)
         # TODO: proper handling of pols
         if weight_rms:
@@ -199,7 +199,7 @@ class WeightMS(basetask.StandardTaskTemplate):
                         weight_tintsys = True
                     else:
                         weight[row][ipol] = 0.0
-    
+
         if weight_tintsys:
             exposures = datatable.getcol('EXPOSURE').take(index_list)
             tsyss = datatable.getcol('TSYS').take(index_list, axis=1)
@@ -214,7 +214,7 @@ class WeightMS(basetask.StandardTaskTemplate):
                         weight[row][ipol] *= (exposure / (tsys[ipol] * tsys[ipol]))
                     else:
                         weight[row][ipol] = 0.0
-    
+
         # put weight
         with casatools.TableReader(outfile, nomodify=False) as tb:
             # The selection, tsel, contains all intents.
@@ -231,7 +231,7 @@ class WeightMS(basetask.StandardTaskTemplate):
                 ms_weights[:, ms_index] = ms_weight
             tsel.putcol('WEIGHT', ms_weights)
             tsel.close()
-    
+
         # set channel flag for min/max in each channel
         minmaxclip = False
         if minmaxclip:
@@ -243,7 +243,7 @@ class WeightMS(basetask.StandardTaskTemplate):
                 else:
                     data_column = 'DATA'
                 data = tsel.getcol(data_column)  # (npol, nchan, nrow)
-    
+
                 (npol, nchan, nrow) = data.shape
                 if nrow > 2:
                     argmax = data.argmax(axis=2)

@@ -42,7 +42,7 @@ class NRORestoreDataResults(restoredata.RestoreDataResults):
                 self._merge_k2jycal(context, result)
         else:
             self._merge_k2jycal(context, self.applycal_results)
-            
+
     def _merge_k2jycal(self, context, applycal_results):
         for calapp in applycal_results.applied:
             msobj = context.observing_run.get_ms(name=os.path.basename(calapp.vis))
@@ -81,14 +81,14 @@ class NRORestoreData(restoredata.RestoreData):
     def prepare(self):
         # run prepare method in the parent class
         results = super(NRORestoreData, self).prepare()
-        
+
         # apply baseline table and produce baseline-subtracted MSs
-        
+
         # apply final flags for baseline-subtracted MSs
-        
+
         sdresults = NRORestoreDataResults(results.importdata_results,
                                          results.applycal_results)
-        
+
         return sdresults
 
     def _do_importasdm(self, sessionlist, vislist):
@@ -101,7 +101,7 @@ class NRORestoreData(restoredata.RestoreData):
                                         asis=inputs.asis, ocorr_mode=inputs.ocorr_mode)
         importdata_task = importdata.NROImportData(container)
         return self._executor.execute(importdata_task, merge=True)
-    
+
     def _do_applycal(self):
         inputs = self.inputs
         # NROApplyCalInputs operates in the scope of a single measurement set.

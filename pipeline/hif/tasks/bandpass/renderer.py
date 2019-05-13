@@ -168,11 +168,11 @@ class T2_4MDetailsBandpassRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # return early if phase-up was not activated
         if not result.inputs.get('phaseup', False):
             return []
-        
+
         calmode_map = {'p': 'Phase only',
                        'a': 'Amplitude only',
                        'ap': 'Phase and amplitude'}
-        
+
         # identify phaseup from 'preceding' list attached to result
         phaseup_calapps = [] 
         for previous_result in result.preceding:
@@ -180,14 +180,14 @@ class T2_4MDetailsBandpassRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 l = [cf for cf in calapp.calfrom if cf.caltype == 'gaincal']
                 if l and calapp not in phaseup_calapps:
                     phaseup_calapps.append(calapp)
-                
+
         applications = []
         for calapp in phaseup_calapps:
             solint = utils.get_origin_input_arg(calapp, 'solint')
 
             if solint == 'inf':
                 solint = 'Infinite'
-            
+
             # Convert solint=int to a real integration time. 
             # solint is spw dependent; science windows usually have the same
             # integration time, though that's not guaranteed by the MS.
@@ -210,13 +210,13 @@ class T2_4MDetailsBandpassRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             applications.append(a)
 
         return applications
-    
+
     def get_bandpass_table(self, context, result, ms):
         applications = []
-        
+
         bandtype_map = {'B': 'Channel',
                         'BPOLY': 'Polynomial'}
-        
+
         for calapp in result.final:
             gaintable = os.path.basename(calapp.gaintable)
             to_intent = ', '.join(calapp.intent.split(','))
@@ -225,12 +225,12 @@ class T2_4MDetailsBandpassRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
             for origin in calapp.origins:
                 spws = origin.inputs['spw'].split(',')
-                
+
                 solint = origin.inputs['solint']
-    
+
                 if solint == 'inf':
                     solint = 'Infinite'
-                
+
                 # Convert solint=int to a real integration time. 
                 # solint is spw dependent; science windows usually have the same
                 # integration time, though that's not guaranteed by the MS.
@@ -293,7 +293,7 @@ class BaseBandpassPlotRenderer(basetemplates.JsonPlotRenderer):
             # QA dictionary keys are a function of both antenna and feed.
             qa_id = int(antenna.id) * num_pols + pol_id
             qa_str = str(qa_id)
-    
+
             for score_type in self._score_types:            
                 if 'QASCORES' in qa_data:
                     try:
@@ -305,12 +305,12 @@ class BaseBandpassPlotRenderer(basetemplates.JsonPlotRenderer):
                         score = None 
                 else:
                     score = 1.0
-                    
+
                 scores_dict[score_type][corr_axis] = score
-        
+
         json_dict.update(scores_dict)
         plot.scores = scores_dict
-            
+
     # def update_mako_context(self, mako_context):
     #     super(BaseBandpassPlotRenderer, self).update_mako_context(mako_context)
     #     mako_context['vis'] = self._vis
@@ -340,7 +340,7 @@ class BandpassPhaseVsFreqPlotRenderer(BaseBandpassPlotRenderer):
         score_types = frozenset(['PHASE_SCORE_DD',
                                  'PHASE_SCORE_FN',
                                  'PHASE_SCORE_RMS'])
-        
+
         super(BandpassPhaseVsFreqPlotRenderer, self).__init__(
                 'bandpass-phase_vs_freq_plots.mako', context, 
                 results, plots, title, outfile, score_types)

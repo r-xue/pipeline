@@ -17,7 +17,7 @@ from .SDFlagRule import INVALID_STAT
 MATPLOTLIB_FIGURE_ID = [8904, 8905, 8906, 8907, 8908, 8909, 8910, 8911, 8912, 8913]
 DPIDetail = 130
 FIGSIZE_INCHES = (7.0, 2.8)
-    
+
 
 def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
     # PlotData = {
@@ -41,7 +41,7 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
 
     PL.ioff()
     PL.figure(MATPLOTLIB_FIGURE_ID[8])
-    
+
     if FigFileDir != False:
         if os.access(FigFileDir+'listofplots.txt', os.F_OK):
             BrowserFile = open(FigFileDir+'listofplots.txt', 'a')
@@ -172,7 +172,7 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
         OldPlot = FigFileDir+FigFileRoot+'.png'
         PL.savefig(OldPlot, format='png', dpi=DPIDetail)
     PL.gcf().set_size_inches(figsize_org)
-    
+
     PL.close()
 
     del data, ScaleOut

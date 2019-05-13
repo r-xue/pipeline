@@ -11,7 +11,7 @@ def h_init(pipelinemode=None, loglevel=None, plotlevel=None, output_dir=None,
     # SO HOW TO IMPLEMENT IT.
 
     # TBD: CASA PARAMETER CHECKS BEFORE CREATING A CONTEXT ?
-    
+
     # Create the pipeline and store the Pipeline object in the stack
     pipeline = launcher.Pipeline(output_dir=output_dir, loglevel=loglevel, 
                                  plotlevel=plotlevel)    

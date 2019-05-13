@@ -19,7 +19,7 @@ class ApplycalQAHandler(pqa.QAPlugin):
     def handle(self, context, result):
         vis = result.inputs['vis']
         ms = context.observing_run.get_ms(vis)
-    
+
         # calculate QA scores from agentflagger summary dictionary, adopting
         # the minimum score as the representative score for this task
         try:
@@ -37,7 +37,7 @@ class ApplycalQAHandler(pqa.QAPlugin):
                                       metric_units='Percentage newly flagged by applycal')
             score.origin = new_origin
             scores = [score]
-        
+
         result.qa.pool[:] = scores
 
 

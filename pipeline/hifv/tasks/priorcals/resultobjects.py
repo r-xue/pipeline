@@ -19,7 +19,7 @@ class PriorcalsResults(basetask.Results):
             preceding = []
 
         super(PriorcalsResults, self).__init__()
-        
+
         self.vis = None
         self.pool = pool
         self.final = final
@@ -34,7 +34,7 @@ class PriorcalsResults(basetask.Results):
         self.antcorrect = antcorrect
         self.tecmaps_result = tecmaps_result
         # print self.antcorrect
-        
+
     def merge_with_context(self, context):
         if self.gc_result:
             try:

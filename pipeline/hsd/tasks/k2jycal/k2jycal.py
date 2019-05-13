@@ -39,7 +39,7 @@ class SDK2JyCalInputs(vdp.StandardInputs):
         casa_args = self._get_task_args(ignore=('caltable',))
         return namer.calculate(output_dir=self.output_dir,
                                stage=self.context.stage, **casa_args)
-    
+
     def __init__(self, context, output_dir=None, infiles=None, caltable=None,
                  reffile=None):
         super(SDK2JyCalInputs, self).__init__()
@@ -111,7 +111,7 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
         reffile = os.path.abspath(os.path.expandvars(os.path.expanduser(inputs.reffile)))
         factors_list = jyperkreader.read(inputs.context, reffile)
         LOG.debug('factors_list=%s' % factors_list)
-        
+
         # generate scaling factor dictionary
         factors = rearrange_factors_list(factors_list)
 

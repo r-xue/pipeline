@@ -59,13 +59,13 @@ class ObservingRun(object):
             for ms in self.measurement_sets:
                 if name in (ms.name, ms.basename):
                     return ms
-            
+
             for ms in self.measurement_sets:
                 # single dish data are registered without the MS suffix
                 with_suffix = '%s.ms' % name
                 if with_suffix in (ms.name, ms.basename):
                     return ms
-            
+
             raise KeyError('No measurement set found with name {0}'.format(name))
 
         if intent:
@@ -124,7 +124,7 @@ class ObservingRun(object):
         match = [ms.fields for ms in self.measurement_sets]
         # flatten the fields lists to one sequence
         match = itertools.chain(*match)
-        
+
         if names is not None:
             if isinstance(names, str):
                 names = utils.safe_split(names)
@@ -233,15 +233,15 @@ class ObservingRun(object):
     @property
     def project_ids(self):
         return {ms.project_id for ms in self.measurement_sets}
-    
+
     @property
     def schedblock_ids(self):
         return {ms.schedblock_id for ms in self.measurement_sets}
-    
+
     @property
     def execblock_ids(self):
         return {ms.execblock_id for ms in self.measurement_sets}
-        
+
     @property
     def observers(self):
         return {ms.observer for ms in self.measurement_sets}

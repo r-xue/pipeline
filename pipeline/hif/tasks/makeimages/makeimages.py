@@ -162,7 +162,7 @@ class MakeImages(basetask.StandardTaskTemplate):
 
     def analyse(self, result):
         return result
-    
+
     def _get_image_rms_as_sensitivity(self, result, target, heuristics):
         imname = result.image
         if not os.path.exists(imname):

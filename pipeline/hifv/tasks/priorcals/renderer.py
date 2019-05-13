@@ -83,14 +83,14 @@ class T2_4MDetailspriorcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         super(T2_4MDetailspriorcalsRenderer, self).__init__(uri=uri,
                                                             description=description,
                                                             always_rerender=always_rerender)
-    
+
     def get_display_context(self, context, results):
         super_cls = super(T2_4MDetailspriorcalsRenderer, self)
         ctx = super_cls.get_display_context(context, results)
-        
+
         weblog_dir = os.path.join(context.report_dir,
                                   'stage%s' % results.stage_number)
-        
+
         opacity_plots = {}
         spw = {}
         center_frequencies = {}
@@ -99,14 +99,14 @@ class T2_4MDetailspriorcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         swpowtsys_subpages = {}
         summary_plots = {}
         tec_plotfile = ''
-        
+
         for result in results:
-            
+
             ms = os.path.basename(result.inputs['vis'])
             spw[ms] = result.oc_result.spw.split(',')
             center_frequencies[ms] = result.oc_result.center_frequencies
             opacities[ms] = result.oc_result.opacities
-            
+
             plotter = opacitiesdisplay.opacitiesSummaryChart(context, result)
             plots = plotter.plot()
             opacity_plots[ms] = plots
@@ -123,7 +123,7 @@ class T2_4MDetailspriorcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             else:
                 plots = None
             json_path = plotter.json_filename
-            
+
             # write the html for each MS to disk
             renderer = VLASubPlotRenderer(context, result, plots, json_path, 'swpow_plots.mako', 'spgain')
             with renderer.get_file() as fileobj:
@@ -163,5 +163,5 @@ class T2_4MDetailspriorcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     'swpowspgain_subpages': swpowspgain_subpages,
                     'swpowtsys_subpages': swpowtsys_subpages,
                     'tec_plotfile': tec_plotfile})
-                
+
         return ctx

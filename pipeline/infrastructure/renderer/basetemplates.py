@@ -41,7 +41,7 @@ class T2_4MDetailsDefaultRenderer(object):
 
     def update_mako_context(self, mako_context, pipeline_context, result):
         LOG.trace('No-op update_mako_context for %s', self.__class__.__name__)
-        
+
     def render(self, context, result):
         display_context = self.get_display_context(context, result)
         uri = self.uri
@@ -172,13 +172,13 @@ class CommonRenderer(object):
         if self.path is None:
             LOG.error('No path specified for renderer')
             raise IOError()
-        
+
         if not os.path.exists(self.dirname):
             os.makedirs(self.dirname)
-            
+
         file_obj = open(self.path, 'w')
         return contextlib.closing(file_obj)
-    
+
 
 class JsonPlotRenderer(CommonRenderer):
     def __init__(self, uri, context, result, plots, title, outfile):
@@ -217,7 +217,7 @@ class JsonPlotRenderer(CommonRenderer):
             d[image_relpath] = json_dict_for_plot
 
         self.json = json.dumps(d)
-    
+
     def update_json_dict(self, d, plot):
         """
         Hook function that can be used by extending classes to extract extra
@@ -225,11 +225,11 @@ class JsonPlotRenderer(CommonRenderer):
         dictionary for that plot.
         """
         pass
-         
+
     def update_mako_context(self, mako_context):
         super(JsonPlotRenderer, self).update_mako_context(mako_context)
         well_formed = self.json.replace("'", "\\'").replace('"', '&quot;')
-        
+
         mako_context.update({'plots': self.plots,
                              'json': well_formed,
                              'plot_title': self.title})

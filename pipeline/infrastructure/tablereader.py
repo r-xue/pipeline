@@ -97,17 +97,17 @@ class MeasurementSetReader(object):
                           if s.id in statesforscans[str(scan_id)]]
 
                 intents = reduce(lambda s, t: s.union(t.intents), states, set())
-                
+
                 fields = [f for f in ms.fields
                           if f.id in fieldsforscans[str(scan_id)]]
 
                 # can't use msmd.timesforscan as we need unique times grouped by 
                 # spw
 #                 scan_times = msmd.timesforscan(scan_id)
-                
+
                 exposures = {spw_id: msmd.exposuretime(scan=scan_id, spwid=spw_id)
                              for spw_id in spwsforscans[str(scan_id)]}
-                
+
                 scan_mask = (scan_number_col == scan_id)
 
                 # get the antennas used for this scan 
@@ -136,7 +136,7 @@ class MeasurementSetReader(object):
                     unique_midpoints = set(raw_midpoints)
                     epoch_midpoints = [mt.epoch(time_ref, qt.quantity(o, time_unit))
                                        for o in unique_midpoints]
-                    
+
                     scan_times[dd.spw.id] = list(zip(epoch_midpoints, itertools.repeat(exposures[dd.spw.id])))
 
                 LOG.trace('Creating domain object for scan %s', scan_id)
@@ -155,7 +155,7 @@ class MeasurementSetReader(object):
             if spw.type == 'WVR':
                 spw.band = 'WVR'
                 continue
-        
+
             # Expected format is something like ALMA_RB_03#BB_1#SW-01#FULL_RES
             m = re.search(r'ALMA_RB_(?P<band>\d+)', spw.name)
             if m:
@@ -163,22 +163,22 @@ class MeasurementSetReader(object):
                 band_num = int(band_str)
                 spw.band = 'ALMA Band %s' % band_num
                 continue
-            
+
             spw.band = BandDescriber.get_description(spw.ref_frequency, observatory=ms.antenna_array.name)
-            
+
             # Used EVLA band name from spw instead of frequency range
             observatory = string.upper(ms.antenna_array.name)
             if observatory in ('VLA', 'EVLA'):
                 spw2band = ms.get_vla_spw2band()
                 bands = spw2band.values()
-            
+
                 try:
                     EVLA_band = spw2band[spw.id]
                 except:
                     LOG.info('Unable to get band from spw id - using reference frequency instead')
                     freqHz = float(spw.ref_frequency.value)
                     EVLA_band = find_EVLA_band(freqHz)
-                
+
                 EVLA_band_dict = {'4': '4m (4)',
                                   'P': '90cm (P)',
                                   'L': '20cm (L)',
@@ -189,9 +189,9 @@ class MeasurementSetReader(object):
                                   'K': '1.3cm (K)',
                                   'A': '1cm (Ka)',
                                   'Q': '0.7cm (Q)'}
-                
+
                 spw.band = EVLA_band_dict[EVLA_band]
-       
+
             # LOG.info('************************(2) '+spw.band+'********************')
 
     @staticmethod
@@ -217,7 +217,7 @@ class MeasurementSetReader(object):
 
             LOG.trace('Intents for spw #{0}: {1}'
                       ''.format(spw.id, ','.join(spw.intents)))
-            
+
     @staticmethod
     def link_fields_to_states(msmd, ms):
         # for each field..
@@ -276,7 +276,7 @@ class MeasurementSetReader(object):
     def get_measurement_set(ms_file):
         LOG.info('Analysing {0}'.format(ms_file))
         ms = domain.MeasurementSet(ms_file)
-        
+
         # populate ms properties with results of table readers 
         with casatools.MSMDReader(ms_file) as msmd:
             LOG.info('Populating ms.antenna_array...')
@@ -360,7 +360,7 @@ class MeasurementSetReader(object):
                         dd.obs_time = numpy.mean(ms_info['time'])
                         dd.chan_freq = ms_info['axis_info']['freq_axis']['chan_freq'].tolist()
                         dd.corr_axis = ms_info['axis_info']['corr_axis'].tolist()
-    
+
             # now back to pure MSMD calls
             LOG.info('Linking fields to states...')
             MeasurementSetReader.link_fields_to_states(msmd, ms)
@@ -670,9 +670,9 @@ class AntennaTable(object):
             antenna = domain.Antenna(i, name, station, position, offset,
                                      diameter)
             antennas.append(antenna)
-            
+
         return antennas
-    
+
     @staticmethod
     def _create_antenna(antenna_id, name, station, diameter, position, offset,
                         flag):
@@ -691,17 +691,17 @@ class DataDescriptionTable(object):
         # read the data descriptions table and create the objects
         descriptions = [DataDescriptionTable._create_data_description(spws, *row) 
                         for row in DataDescriptionTable._read_table(msmd)]
-            
+
         return descriptions            
-        
+
     @staticmethod
     def _create_data_description(spws, dd_id, spw_id, pol_id):
         # find the SpectralWindow matching the given spectral window ID
         matching_spws = [spw for spw in spws if spw.id == spw_id]
         spw = matching_spws[0]
-        
+
         return domain.DataDescription(dd_id, spw, pol_id)
-    
+
     @staticmethod
     def _read_table(msmd):
         """
@@ -865,7 +865,7 @@ class ExecblockTable(object):
                 return execblock_info[0][1]             
         except:
             return None
-           
+
     @staticmethod
     def _create_execblock_info(telescopeName, configName):
         return telescopeName, configName
@@ -984,7 +984,7 @@ class StateTable(object):
         state_table = os.path.join(msmd.name(), 'STATE')
         with casatools.TableReader(state_table) as table:
             obs_modes = table.getcol('OBS_MODE')
-        
+
         states = []
         for i in range(msmd.nstates()):
             obs_mode = obs_modes[i]
@@ -1007,10 +1007,10 @@ class StateTable(object):
             time_colkeywords = table.getcolkeywords('TIME')
             time_unit = time_colkeywords['QuantumUnits'][0]
             time_ref = time_colkeywords['MEASINFO']['Ref']    
-        
+
         me = casatools.measures
         qa = casatools.quanta
-                
+
         epoch_start = me.epoch(time_ref, qa.quantity(scan_start, time_unit))
         str_start = qa.time(epoch_start['m0'], form=['fits'])[0]
         dt_start = datetime.datetime.strptime(str_start, '%Y-%m-%dT%H:%M:%S')
@@ -1053,7 +1053,7 @@ class FieldTable(object):
     def get_fields(msmd):
         return [FieldTable._create_field(*row) 
                 for row in FieldTable._read_table(msmd)]
-    
+
     @staticmethod
     def _create_field(field_id, name, source_id, time, source_type, phase_centre):
         field = domain.Field(field_id, name, source_id, time, phase_centre)
@@ -1067,8 +1067,8 @@ class FieldTable(object):
 def _make_range(f_min, f_max):
     return measures.FrequencyRange(measures.Frequency(f_min),
                                    measures.Frequency(f_max))
-    
-    
+
+
 class BandDescriber(object):
     alma_bands = {_make_range(31.3, 45): 'ALMA Band 1',
                   _make_range(67, 90): 'ALMA Band 2',
@@ -1094,7 +1094,7 @@ class BandDescriber(object):
                   _make_range(18, 26.5): '1.3cm (K)',
                   _make_range(26.5, 40): '1cm (Ka)',
                   _make_range(40, 56.0): '0.7cm (Q)'}
-    
+
     unknown = {measures.FrequencyRange(): 'Unknown'}
 
     @staticmethod
@@ -1106,9 +1106,9 @@ class BandDescriber(object):
             bands = BandDescriber.evla_bands
         else:
             bands = BandDescriber.unknown
-    
+
         for rng, description in bands.iteritems():
             if rng.contains(f):
                 return description
-        
+
         return 'Unknown'

@@ -157,7 +157,7 @@ class BraceMessage(object):
         self.args = args
         self.kwargs = kwargs
         self.str = None
-        
+
     def __str__(self):
         if self.str is None:
             self.str = self.fmt.format(*self.args, **self.kwargs)
@@ -168,7 +168,7 @@ class DollarMessage(object):
         self.fmt = fmt
         self.kwargs = kwargs
         self.str = None
-        
+
     def __str__(self):
         if self.str is None:
             self.str = Template(self.fmt).substitute(**self.kwargs)

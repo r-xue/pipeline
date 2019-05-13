@@ -19,7 +19,7 @@ class BasebandComposite(applycal.BasebandComposite):
     def __init__(self, context, output_dir, calto, xaxis, yaxis, ant='', field='', intent='', uvrange='', **kwargs):
         super(BasebandComposite, self).__init__(context, output_dir, calto, xaxis, yaxis, ant=ant, field=field,
                                                 intent=intent, uvrange=uvrange, **kwargs)
-        
+
 
 class PlotmsBasebandComposite(BasebandComposite):
     leaf_class = applycal.PlotmsLeaf
@@ -29,7 +29,7 @@ class PlotmsBasebandComposite(BasebandComposite):
         jobs_and_wrappers = super(PlotmsBasebandComposite, self).plot()
         successful_wrappers = utils.plotms_iterate(jobs_and_wrappers)
         return successful_wrappers
-        
+
 
 class BasebandSummaryChart(PlotmsBasebandComposite):
     """

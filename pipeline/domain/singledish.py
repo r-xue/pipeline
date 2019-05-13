@@ -18,23 +18,23 @@ class MSReductionGroupMember(object):
     @property
     def npol(self):
         return 1
-    
+
     @property
     def spw(self):
         return self.ms.spectral_windows[self.spw_id]
-        
+
     @property
     def antenna(self):
         return self.ms.antennas[self.antenna_id]
-    
+
     @property
     def antenna_name(self):
         return self.antenna.name
-    
+
     @property
     def field(self):
         return self.ms.fields[self.field_id]
-    
+
     @property
     def field_name(self):
         return self.field.name
@@ -70,11 +70,11 @@ class MSReductionGroupDesc(list):
         self.min_frequency = min_frequency
         self.nchan = nchan
         self.field = field
-        
+
     @property
     def frequency_range(self):
         return [self.min_frequency, self.max_frequency]
-    
+
     @property
     def field_name(self):
         return self.field.name.strip('"')    
@@ -97,7 +97,7 @@ class MSReductionGroupDesc(list):
     def get_iteration(self, ms, antenna_id, spw_id, field_id=None):
         member = self[self._search_member(ms, antenna_id, spw_id, field_id)]
         return member.iteration
-            
+
     def iter_countup(self, ms, antenna_id, spw_id, field_id=None):
         member = self[self._search_member(ms, antenna_id, spw_id, field_id)]
         member.iter_countup()
@@ -112,7 +112,7 @@ class MSReductionGroupDesc(list):
             if member.ms.name == ms.name and member.antenna_id == antenna_id and member.spw_id == spw_id and member.field_id == field_id:
                 return indx
                 break
-            
+
     def __eq__(self, other):
         #LOG.debug('MSReductionGroupDesc.__eq__')
         if (not isinstance(self.spw_name, str)) or len(self.spw_name) == 0:
@@ -123,7 +123,7 @@ class MSReductionGroupDesc(list):
         else:
             return self.spw_name == other.spw_name \
                 and self.field_name == other.field_name
-            
+
     def __ne__(self, other):
         if (not isinstance(self.spw_name, str)) or len(self.spw_name) == 0:
             return self.max_frequency != other.max_frequency \

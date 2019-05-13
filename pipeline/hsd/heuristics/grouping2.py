@@ -153,7 +153,7 @@ class GroupByTime2(api.Heuristic):
             TimeGap[1]: large gap (for plot)
         """
         LOG.info('Grouping by Time...')
-        
+
         # Threshold for grouping
         h = ThresholdForGroupByTime()
         (Threshold1, Threshold2) = h(timebase)
@@ -200,7 +200,7 @@ class GroupByTime2(api.Heuristic):
         return TimeTable, TimeGap
         # TimeGap is index
         # TimeTable[][0] is row, TimeTable[][1] is index
-        
+
 
 class ThresholdForGroupByTime(api.Heuristic):
     def calculate(self, timebase):
@@ -229,8 +229,8 @@ class ThresholdForGroupByTime(api.Heuristic):
         LOG.info('MinDeltaT = %s sec' % DeltaT1.min())
 
         return Threshold1, Threshold2
-    
-        
+
+
 class MergeGapTables2(api.Heuristic):
     def calculate(self, TimeGap, TimeTable, PosGap, tBEAM):
         """

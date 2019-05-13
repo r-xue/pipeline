@@ -8,7 +8,7 @@ def getOutlierIndices(nData, sigma):
     nDataMedian = np.median(nData)
     nDataMAD = np.median(abs(nData-nDataMedian)) / 0.6745
     return np.where(abs(nData-nDataMedian) < sigma * nDataMAD)
-    
+
 def outlierFilter(data, sigma):
     nData = np.array(data)
     return nData[getOutlierIndices(nData, sigma)]

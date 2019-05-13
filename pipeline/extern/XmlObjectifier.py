@@ -153,7 +153,7 @@ class _XmlObject:
     """
     def __init__(self, elementsList):
         self.elementsList = elementsList
-        
+
     def __call__(self, number=None, text=None, **keywords):
         if keywords == {} and text is None:
             if len(self.elementsList) > 1:
@@ -328,7 +328,7 @@ class XmlElement(minidom.Element):
         elif len(self.childNodes) < 1:
             msg = "Xml Element does not have any child nodes"
             raise XmlObjectifierError(msg)
-        
+
         node = self.childNodes[0]
         if node.nodeType == 3:
             value = castType(node.nodeValue)
@@ -345,7 +345,7 @@ class XmlElement(minidom.Element):
         elif len(self.childNodes) < 1:
             msg = "Xml Element does not have any child nodes"
             raise XmlObjectifierError(msg)
-        
+
         node = self.childNodes[0]
         if node.nodeType == 3:
             node.nodeValue = unicode(value)
@@ -355,11 +355,11 @@ class XmlElement(minidom.Element):
 
 
 class XmlObjectifierError(Exception):
-    
+
     def __init__(self, msg, code=None):
         self.code = code
         self.msg = msg
-        
+
     def __str__(self):
         return repr(self.msg)
 

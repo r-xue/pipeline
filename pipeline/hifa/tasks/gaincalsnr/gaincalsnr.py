@@ -43,7 +43,7 @@ class GaincalSnrInputs(vdp.StandardInputs):
         for scan in self.ms.get_scans(scan_intent='TARGET'):
             target_spws.extend([spw.id for spw in scan.spws])
         target_spws = set(target_spws).intersection(sci_spws)
-        
+
         # Compute the intersection of the bandpass and science target spw
         # ids
         #    Sanity check not reuired for more advanced observingr modes
@@ -156,7 +156,7 @@ class GaincalSnr(basetask.StandardTaskTemplate):
 
         return result
 
-            
+
 # The results class
 class GaincalSnrResults(basetask.Results):
     def __init__(self, vis=None, spwids=[], scantimes=[], inttimes=[],

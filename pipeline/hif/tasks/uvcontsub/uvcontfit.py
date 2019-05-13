@@ -236,7 +236,7 @@ class UVcontFit(basetask.StandardTaskTemplate):
                                              interp='',
                                              calwt=False)
                 calapps.append(callibrary.CalApplication(calto, calfrom))
-                
+
                 inputs.intent = orig_intent
 
         return UVcontFitResults(spwdict=spwdict, pool=calapps)

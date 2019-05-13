@@ -171,7 +171,7 @@ class SliceDisplay(object):
             if len(flagcmds) > 0:
                 ax = plt.gca()
                 rulesplotted = set()
-                
+
                 for flagcmd in flagcmds:
                     if flagcmd.rulename == 'ignore':
                         continue
@@ -292,7 +292,7 @@ class SliceDisplay(object):
         plot_data_mad = data_mad[not_noisy]
         plot_flag = flag[not_noisy]
         plot_axis = xaxis[not_noisy]
-        
+
         good_data = plot_data[np.logical_not(plot_flag)]
         good_data_mad = plot_data_mad[np.logical_not(plot_flag)]
         if len(good_data) > 0:
@@ -381,7 +381,7 @@ class SliceDisplay(object):
                          plot_data_mad[plot_flag],
                          linestyle='None',
                          marker='^', markersize=5, color='blue')
-        
+
         if xtitle.upper() == 'CHANNEL' and lineregions is not None:
             line_ranges = []
             for lineregion in lineregions:

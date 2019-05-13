@@ -17,7 +17,7 @@ class RefantQAHandler(pqa.QAPlugin):
     def handle(self, context, result):
         vis = result.inputs['vis']
         ms = context.observing_run.get_ms(vis)
-    
+
         if result._refant != '':
             qa_score = 1.0
             longmsg = 'Reference antenna for %s was selected successfully' % ms.basename

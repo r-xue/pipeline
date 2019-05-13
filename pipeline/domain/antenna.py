@@ -7,40 +7,40 @@ import pipeline.infrastructure.casatools as casatools
 
 _pprinter = pprint.PrettyPrinter()
 
-    
+
 class Antenna(object):
     """
     Antenna is a logical representation of an antenna. 
-    
+
     An Antenna has the following properties:
 
     .. py:attribute:: id
-    
+
         the numerical identifier of this antenna within the ANTENNA subtable
         of the measurement set
-        
+
     .. py:attribute:: name
-    
+
         the (potentially empty) name of this antenna
-        
+
     .. py:attribute:: longitude
-    
+
         the longitude of this antenna
 
     .. py:attribute:: latitude
-    
+
         the latitude of this antenna
 
     .. py:attribute:: height
-    
+
         the radial distance of this antenna from the Earth's centre
 
     .. py:attribute:: diameter
-    
+
         the physical diameter of this antenna
 
     .. py:attribute:: direction
-    
+
         the J2000 position on the sky to which this antenna points
     """
     def __init__(self, antenna_id, name, station, position, offset, diameter):
@@ -60,7 +60,7 @@ class Antenna(object):
         self.longitude = position['m0']
         self.latitude = position['m1']
         self.height = position['m2']
-        
+
         mt = casatools.measures
         self.direction = mt.direction(v0=self.longitude, v1=self.latitude)
 

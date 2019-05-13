@@ -9,7 +9,7 @@ import simutil
 
 import pipeline.infrastructure.casatools as casatools
 from . import measures
-    
+
 Baseline = collections.namedtuple('Baseline', 'antenna1 antenna2 length')
 
 
@@ -67,7 +67,7 @@ class AntennaArray(object):
         longitude = qa.convert(self.longitude, 'rad')
         latitude = qa.convert(self.latitude, 'rad')
         elevation = qa.convert(self.elevation, 'm')
-        
+
         s = simutil.simutil()
         return s.long2xyz(qa.getvalue(longitude)[0],
                           qa.getvalue(latitude)[0],
@@ -85,12 +85,12 @@ class AntennaArray(object):
     @property
     def baselines(self):
         qa = casatools.quanta
-        
+
         def diff(ant1, ant2, attr):
             v1 = qa.getvalue(ant1.offset[attr])[0]
             v2 = qa.getvalue(ant2.offset[attr])[0]
             return v1-v2
-        
+
         baselines = []
         for (ant1, ant2) in itertools.combinations(self.antennas, 2):
             raw_length = math.sqrt(diff(ant1, ant2, 'longitude offset')**2 + 
@@ -143,7 +143,7 @@ class AntennaArray(object):
         y_offset = measures.Distance(dy, measures.DistanceUnits.METRE)
 
         return x_offset, y_offset
-    
+
     def get_baseline(self, antenna1, antenna2):
         try:
             int(antenna1)
@@ -151,14 +151,14 @@ class AntennaArray(object):
             attr_getter = lambda antenna: antenna.id
         except ValueError:
             attr_getter = lambda antenna: antenna.name
-        
+
         matching = [b for b in self.baselines
                     if attr_getter(b.antenna1) in (antenna1, antenna2)
                     and attr_getter(b.antenna2) in (antenna1, antenna2)]
         if matching:
             return matching[0]
         return None
-    
+
     def add_antenna(self, antenna):
         self.antennas.append(antenna)
 

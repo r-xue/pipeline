@@ -95,7 +95,7 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
             pl.yticks(size=self.ticksize)
 
             yield axes
-        
+
 
 class ClusterDisplay(object):
     Inputs = SingleDishDisplayInputs
@@ -111,7 +111,7 @@ class ClusterDisplay(object):
         for group in self.inputs.result.outcome['baselined']:
             if 'clusters' in group and 'lines' in group:
                 yield group
-            
+
     def plot(self):
         plot_list = []
 
@@ -164,15 +164,15 @@ class ClusterDisplay(object):
 
         end_time = time.time()
         LOG.debug('PROFILE: plot elapsed time is %s sec'%(end_time-start_time))
-        
+
         return plot_list
 
 
 class ClusterDisplayWorker(object):
     __metaclass__ = abc.ABCMeta
-    
+
     MATPLOTLIB_FIGURE_ID = 8907
-    
+
     def __init__(self, group_id, iteration, cluster, spw, field, stage_dir):
         """
         spw is a virtual spw id 
@@ -226,7 +226,7 @@ class ClusterScoreDisplay(ClusterDisplayWorker):
         pl.ylabel('Score (Lower is better)', fontsize=11)
         pl.title('Score are plotted versus number of the cluster', fontsize=11)
         pl.axis([0, xmax+1, ymin, ymax])
-        
+
         if ShowPlot:
             pl.draw()
 
@@ -293,7 +293,7 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
 
     def _plot(self):
         pl.clf()
-        
+
         marks = ['gs', 'bs', 'cs', 'ys']
 
         num_cluster = len(self.cluster['cluster_property'])
@@ -347,13 +347,13 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
         axes_manager.direction_reference = direction_reference
         axes_list = axes_manager.axes_list
         axes_legend = axes_manager.axes_legend
-        
+
         for (mode, data, threshold, description) in self.__stages():
             plot_objects = []
-            
+
             for icluster in xrange(num_cluster):
                 pl.gcf().sca(axes_list[icluster])
-                
+
                 xdata = []
                 ydata = []
                 for i in xrange(len(threshold)):
@@ -409,7 +409,7 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
 
             for obj in plot_objects:
                 obj.remove()
-            
+
             plot = self._create_plot(plotfile, 'clustering_%s'%(mode),
                                      'R.A.', 'Dec.')
             yield plot
@@ -458,7 +458,7 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
                         rest_frequency = refval
             finally:
                 tsel.close()
-        
+
         # line property in channel
         line_center = self.lines[icluster][0] 
         line_width = self.lines[icluster][1]

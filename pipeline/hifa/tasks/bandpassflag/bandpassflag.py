@@ -338,7 +338,7 @@ class Bandpassflag(basetask.StandardTaskTemplate):
         return result
 
     def _mod_last_interp(self, l, interp):
-            l.calfrom[-1] = self._copy_with_interp(l.calfrom[-1], interp)
+        l.calfrom[-1] = self._copy_with_interp(l.calfrom[-1], interp)
 
     @staticmethod
     def _copy_with_interp(old_calfrom, interp):
@@ -400,8 +400,8 @@ class Bandpassflag(basetask.StandardTaskTemplate):
         # command.
         for flag in flags:
 
-            # Only consider flagging commands with a specified antenna and
-            # without a specified timestamp.
+        # Only consider flagging commands with a specified antenna and
+        # without a specified timestamp.
             if flag.antenna is not None and flag.time is None:
                 # Skip flagging commands for baselines.
                 if '&' in str(flag.antenna):

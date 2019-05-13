@@ -341,13 +341,13 @@ def _basicsize(t, base=0, heap=False, obj=None):
     s = max(getattr(t, '__basicsize__', 0), base)
      # include gc header size
     if t != _Type_type:
-       h = getattr(t,   '__flags__', 0) & _Py_TPFLAGS_HAVE_GC
+        h = getattr(t,   '__flags__', 0) & _Py_TPFLAGS_HAVE_GC
     elif heap:  # type, allocated on heap
-       h = True
+        h = True
     else:  # None has no __flags__ attr
-       h = getattr(obj, '__flags__', 0) & _Py_TPFLAGS_HEAPTYPE
+        h = getattr(obj, '__flags__', 0) & _Py_TPFLAGS_HEAPTYPE
     if h:
-       s += _sizeof_CPyGC_Head
+        s += _sizeof_CPyGC_Head
      # include reference counters
     return s + _sizeof_Crefcounts
 
@@ -387,7 +387,7 @@ def _dir2(obj, pref='', excl=(), slots=None, itor=''):
     else:  # regular attrs
         for a in dir(obj):
             if a.startswith(pref) and a not in excl and hasattr(obj, a):
-               yield a, getattr(obj, a)
+                yield a, getattr(obj, a)
 
 def _infer_dict(obj):
     '''Return True for likely dict object.
@@ -433,11 +433,11 @@ def _lengstr(obj):
     '''
     n = leng(obj)
     if n is None:  # no len
-       r = ''
+        r = ''
     elif n > _len(obj):  # extended
-       r = ' leng %d!' % n
+        r = ' leng %d!' % n
     else:
-       r = ' leng %d' % n
+        r = ' leng %d' % n
     return r
 
 def _nameof(obj, dflt=''):
@@ -718,9 +718,9 @@ def _len_dict(obj):
     '''
     n = len(obj)  # active items
     if n < 6:  # ma_smalltable ...
-       n = 0  # ... in basicsize
+        n = 0  # ... in basicsize
     else:  # at least one unused
-       n = _power2(n + 1)
+        n = _power2(n + 1)
     return n
 
 def _len_frame(obj):
@@ -728,9 +728,9 @@ def _len_frame(obj):
     '''
     c = getattr(obj, 'f_code', None)
     if c:
-       n = _len_code(c)
+        n = _len_code(c)
     else:
-       n = 0
+        n = 0
     return n
 
 _digit2p2 =  1 << (_sizeof_Cdigit << 3)
@@ -754,9 +754,9 @@ def _len_iter(obj):
     '''
     n = getattr(obj, '__length_hint__', None)
     if n:
-       n = n()
+        n = n()
     else:  # try len()
-       n = _len(obj)
+        n = _len(obj)
     return n
 
 def _len_list(obj):
@@ -765,9 +765,9 @@ def _len_list(obj):
     n = len(obj)
      # estimate over-allocation
     if n > 8:
-       n += 6 + (n >> 3)
+        n += 6 + (n >> 3)
     elif n:
-       n += 4
+        n += 4
     return n
 
 def _len_module(obj):
@@ -780,9 +780,9 @@ def _len_set(obj):
     '''
     n = len(obj)
     if n > 8:  # assume half filled
-       n = _power2(n + n - 2)
+        n = _power2(n + n - 2)
     elif n:  # at least 8
-       n = 8
+        n = 8
     return n
 
 def _len_slice(obj):
@@ -1182,7 +1182,7 @@ except NameError:  # missing
     pass
 try:
     if type(bytes) is not type(str):  # bytes is str in 2.6 #PYCHOK bytes new in 2.6, 3.0
-      _typedef_both(bytes, item=_sizeof_Cbyte, leng=_len)  #PYCHOK bytes new in 2.6, 3.0
+        _typedef_both(bytes, item=_sizeof_Cbyte, leng=_len)  #PYCHOK bytes new in 2.6, 3.0
 except NameError:  # missing
     pass
 try:  # XXX like bytes
@@ -1471,11 +1471,11 @@ class _Prof(object):
         self.number += 1
         self.total  += size
         if self.high < size:  # largest
-           self.high = size
-           try:  # prefer using weak ref
-               self.objref, self.weak = Weakref.ref(obj), True
-           except TypeError:
-               self.objref, self.weak = obj, False
+            self.high = size
+            try:  # prefer using weak ref
+                self.objref, self.weak = Weakref.ref(obj), True
+            except TypeError:
+                self.objref, self.weak = obj, False
 
 
  # public classes
@@ -1627,7 +1627,7 @@ class Asizer(object):
                                 s += z(o, d, None)
                          # recursion depth
                         if self._depth < d:
-                           self._depth = d
+                            self._depth = d
             self._seen[i] += 1
         except RuntimeError:  # XXX RecursionLimitExceeded:
             self._missed += 1
@@ -2275,8 +2275,8 @@ def test_flatsize(failf=None, stdf=None):
                         failf('%s vs %s for %s: %s',
                               a, s, _nameof(type(o)), _repr(o))
                 if stdf:
-                   _printf('flatsize() %s vs sys.getsizeof() %s for %s: %s%s',
-                            a, s, _nameof(type(o)), _repr(o), x, file=stdf)
+                    _printf('flatsize() %s vs sys.getsizeof() %s for %s: %s%s',
+                             a, s, _nameof(type(o)), _repr(o), x, file=stdf)
         _getsizeof = g  # restore
     return len(t), e
 
@@ -2301,7 +2301,7 @@ if __name__ == '__main__':
         _printf('%s(): %s', ' refs',     _repr(refs(obj)))
         _printf('%s(): %s', ' flatsize',  flatsize(obj, align=align))  # , code=code
         _printf('%s(): %s', ' asized',           asized(obj, align=align, detail=detail, code=code, limit=limit))
-      ##_printf('%s(): %s', '.asized',   _asizer.asized(obj, align=align, detail=detail, code=code, limit=limit))
+        ##_printf('%s(): %s', '.asized',   _asizer.asized(obj, align=align, detail=detail, code=code, limit=limit))
 
     def _bool(arg):
         a = arg.lower()
@@ -2471,11 +2471,11 @@ if __name__ == '__main__':
             _print_asizeof(o, infer=True)
 
   ##if _opts('-gc'):  # gc examples
-      ##_printf('%sasizeof(limit=%s, code=%s, *%s) ...', linesep, 'MAX', False, 'gc.garbage')
-      ##from gc import collect, garbage  # list()
-      ##asizeof(limit=MAX, code=False, stats=1, *garbage)
-      ##collect()
-      ##asizeof(limit=MAX, code=False, stats=2, *garbage)
+        ##_printf('%sasizeof(limit=%s, code=%s, *%s) ...', linesep, 'MAX', False, 'gc.garbage')
+        ##from gc import collect, garbage  # list()
+        ##asizeof(limit=MAX, code=False, stats=1, *garbage)
+        ##collect()
+        ##asizeof(limit=MAX, code=False, stats=2, *garbage)
 
     if _opts('-gen', '-generator'):  # generator examples
         _printf('%sasizeof(%s, code=%s) ... %s', linesep, '<generator>', True, '-gen[erator]')

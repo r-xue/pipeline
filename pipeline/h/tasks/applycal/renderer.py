@@ -55,7 +55,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         # return all agents so we get ticks and crosses against each one
         agents = ['before', 'applycal']
-        
+
         ctx.update({
             'flags': flag_totals,
             'calapps': calapps,
@@ -323,7 +323,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 fields = set()
                 for scan in scans:
                     fields.update([field.id for field in scan.fields])
-                
+
                 # Science target detail plots. Note that summary plots go onto the
                 # detail pages; we don't create plots per spw or antenna
                 plots = self.science_plots_for_result(context,
@@ -388,7 +388,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     @staticmethod
     def get_brightest_fields(ms, intent='TARGET'):
         """
-        
+
         """
         # get IDs for all science spectral windows
         spw_ids = set()
@@ -408,7 +408,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         for source_id, source_fields in itertools.groupby(fields_by_source_id,
                                                           by_source_id):
             fields = list(source_fields)
-            
+
             # give the sole science target name if there's only one science target
             # in this ms.
             if len(fields) is 1:
@@ -416,7 +416,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                          'brightest target selection.', intent, source_id)
                 result[source_id] = fields[0]
                 continue
-            
+
             # Switch to second field
             # field = fields[0]
             field = fields[1]
@@ -431,7 +431,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
             # holds the mapping of field name to mean flux
             average_flux = {}
-        
+
             # defines the parameters for the visstat job
             job_params = {
                 'vis': ms.name,
@@ -442,7 +442,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
             # solve circular import problem by importing at run-time
             from pipeline.infrastructure import casa_tasks
-        
+
             LOG.info('Calculating which %s field has the highest mean flux '
                      'for Source #%s', intent, source_id)
             # run visstat for each scan selection for the target
@@ -451,19 +451,19 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 job = casa_tasks.visstat(**job_params)
                 LOG.debug('Calculating statistics for %r (#%s)', field_name, field_id)
                 result = job.execute(dry_run=False)
-                
+
                 average_flux[(field_id, field_name)] = float(result['CORRECTED']['mean'])
-                
+
             LOG.debug('Mean flux for %s targets:', intent)
             for (field_id, field_name), v in average_flux.iteritems():
                 LOG.debug('\t%r (%s): %s', field_name, field_id, v)
-        
+
             # find the ID of the field with the highest average flux
             sorted_by_flux = sorted(average_flux.iteritems(),
                                     key=operator.itemgetter(1),
                                     reverse=True)
             (brightest_id, brightest_name), highest_flux = sorted_by_flux[0]
-            
+
             LOG.info('%s field %r (%s) has highest mean flux (%s)', intent,
                      brightest_name, brightest_id, highest_flux)
             result[source_id] = brightest_id
@@ -522,7 +522,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'wvr': 'WVR',
             'ps': 'Sky',
         }
-        
+
         d = {}
         for calapp in result.applied:
             for calfrom in calapp.calfrom:
@@ -532,11 +532,11 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     # try heuristics to detect phase-only and amp-only 
                     # solutions 
                     caltype += self.get_gain_solution_type(calfrom.gaintable)
-                    
+
                 d[calfrom.gaintable] = caltype
 
         return d
-                
+
     def get_gain_solution_type(self, gaintable):
         # CAS-9835: hif_applycal() "type" descriptions are misleading /
         # incomplete in weblog table
@@ -614,7 +614,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             for intent, scan_ids in intent_scans.iteritems():
                 flagcount = 0
                 totalcount = 0
-    
+
                 for i in scan_ids:
                     # workaround for KeyError exception when summary 
                     # dictionary doesn't contain the scan
@@ -623,41 +623,41 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
                     flagcount += int(summary['scan'][i]['flagged'])
                     totalcount += int(summary['scan'][i]['total'])
-        
+
                     if previous_summary:
                         flagcount -= int(previous_summary['scan'][i]['flagged'])
-    
+
                 ft = FlagTotal(flagcount, totalcount)
                 total[summary['name']][intent] = ft
-                
+
             previous_summary = summary
-                
+
         return total 
-    
+
     def flags_by_science_spws(self, ms, summaries):
         science_spws = ms.get_spectral_windows(science_windows_only=True)
-    
+
         total = collections.defaultdict(dict)
-    
+
         previous_summary = None
         for summary in summaries:
-    
+
             flagcount = 0
             totalcount = 0
-    
+
             for spw in science_spws:
                 spw_id = str(spw.id)
                 flagcount += int(summary['spw'][spw_id]['flagged'])
                 totalcount += int(summary['spw'][spw_id]['total'])
-        
+
                 if previous_summary:
                     flagcount -= int(previous_summary['spw'][spw_id]['flagged'])
 
             ft = FlagTotal(flagcount, totalcount)
             total[summary['name']]['SCIENCE SPWS'] = ft
-                
+
             previous_summary = summary
-                
+
         return total
 
 
@@ -667,7 +667,7 @@ class ApplycalAmpVsFreqPlotRenderer(basetemplates.JsonPlotRenderer):
 
         title = 'Calibrated amplitude vs frequency for %s' % vis
         outfile = filenamer.sanitize('amp_vs_freq-%s.html' % vis)
-        
+
         super(ApplycalAmpVsFreqPlotRenderer, self).__init__(
                 'generic_x_vs_y_field_spw_ant_detail_plots.mako', context, 
                 result, plots, title, outfile)
@@ -679,7 +679,7 @@ class ApplycalPhaseVsFreqPlotRenderer(basetemplates.JsonPlotRenderer):
 
         title = 'Calibrated phase vs frequency for %s' % vis
         outfile = filenamer.sanitize('phase_vs_freq-%s.html' % vis)
-        
+
         super(ApplycalPhaseVsFreqPlotRenderer, self).__init__(
                 'generic_x_vs_y_field_spw_ant_detail_plots.mako', context, 
                 result, plots, title, outfile)
@@ -691,7 +691,7 @@ class ApplycalAmpVsFreqSciencePlotRenderer(basetemplates.JsonPlotRenderer):
 
         title = 'Calibrated amplitude vs frequency for %s' % vis
         outfile = filenamer.sanitize('science_amp_vs_freq-%s.html' % vis)
-        
+
         super(ApplycalAmpVsFreqSciencePlotRenderer, self).__init__(
                 'generic_x_vs_y_spw_field_detail_plots.mako', context,
                 result, plots, title, outfile)
@@ -703,7 +703,7 @@ class ApplycalAmpVsUVSciencePlotRenderer(basetemplates.JsonPlotRenderer):
 
         title = 'Calibrated amplitude vs UV distance for %s' % vis
         outfile = filenamer.sanitize('science_amp_vs_uv-%s.html' % vis)
-        
+
         super(ApplycalAmpVsUVSciencePlotRenderer, self).__init__(
                 'generic_x_vs_y_spw_field_detail_plots.mako', context,
                 result, plots, title, outfile)
@@ -715,7 +715,7 @@ class ApplycalAmpVsUVPlotRenderer(basetemplates.JsonPlotRenderer):
 
         title = 'Calibrated amplitude vs UV distance for %s' % vis
         outfile = filenamer.sanitize('amp_vs_uv-%s.html' % vis)
-        
+
         super(ApplycalAmpVsUVPlotRenderer, self).__init__(
                 'generic_x_vs_y_field_spw_ant_detail_plots.mako', context,
                 result, plots, title, outfile)
@@ -727,7 +727,7 @@ class ApplycalPhaseVsUVPlotRenderer(basetemplates.JsonPlotRenderer):
 
         title = 'Calibrated phase vs UV distance for %s' % vis
         outfile = filenamer.sanitize('phase_vs_uv-%s.html' % vis)
-        
+
         super(ApplycalPhaseVsUVPlotRenderer, self).__init__(
                 'generic_x_vs_y_spw_ant_plots.mako', context, 
                 result, plots, title, outfile)
@@ -739,7 +739,7 @@ class ApplycalAmpVsTimePlotRenderer(basetemplates.JsonPlotRenderer):
 
         title = 'Calibrated amplitude vs times for %s' % vis
         outfile = filenamer.sanitize('amp_vs_time-%s.html' % vis)
-        
+
         super(ApplycalAmpVsTimePlotRenderer, self).__init__(
                 'generic_x_vs_y_spw_ant_plots.mako', context,
                 result, plots, title, outfile)
@@ -751,7 +751,7 @@ class ApplycalPhaseVsTimePlotRenderer(basetemplates.JsonPlotRenderer):
 
         title = 'Calibrated phase vs times for %s' % vis
         outfile = filenamer.sanitize('phase_vs_time-%s.html' % vis)
-        
+
         super(ApplycalPhaseVsTimePlotRenderer, self).__init__(
                 'generic_x_vs_y_field_spw_ant_detail_plots.mako', context, 
                 result, plots, title, outfile)

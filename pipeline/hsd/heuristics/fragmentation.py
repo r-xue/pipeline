@@ -17,7 +17,7 @@ class FragmentationHeuristics(api.Heuristic):
     MaxOrder = 9
     MaxFragmentation = 3
     MinChannels = 512
-    
+
     def calculate(self, polyorder, nchan, edge, modification=0):
         """
         Determine fragmentation from given total number of channels,

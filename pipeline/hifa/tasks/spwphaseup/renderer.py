@@ -31,10 +31,10 @@ class T2_4MDetailsSpwPhaseupRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 spwmap = result.combine_spwmap
             else:
                 spwmap = result.phaseup_spwmap
-                
+
             # Get science spws
             science_spw_ids = [spw.id for spw in ms.get_spectral_windows(science_windows_only=True)]
-            
+
             spwmaps.append(SpwMaps(ms.basename, spwmap, science_spw_ids))
 
             applications.extend(self.get_gaincal_applications(context, result.phaseup_result, ms))
@@ -52,13 +52,13 @@ class T2_4MDetailsSpwPhaseupRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'a': 'Amplitude only',
             'ap': 'Phase and amplitude'
         }
-        
+
         for calapp in result.final:
             solint = utils.get_origin_input_arg(calapp, 'solint')
 
             if solint == 'inf':
                 solint = 'Infinite'
-            
+
             # Convert solint=int to a real integration time. 
             # solint is spw dependent; science windows usually have the same
             # integration time, though that's not guaranteed.
@@ -66,7 +66,7 @@ class T2_4MDetailsSpwPhaseupRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 in_secs = ['%0.2fs' % (dt.seconds + dt.microseconds * 1e-6) 
                            for dt in utils.get_intervals(context, calapp)]
                 solint = 'Per integration (%s)' % utils.commafy(in_secs, quotes=False, conjunction='or')
-            
+
             gaintable = os.path.basename(calapp.gaintable)
             spw = ', '.join(calapp.spw.split(','))
 

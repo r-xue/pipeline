@@ -49,7 +49,7 @@ class Tsysflag(tsysflag.Tsysflag):
 class HpcTsysflagInputs(TsysflagInputs):
     # use common implementation for parallel inputs argument
     parallel = sessionutils.parallel_inputs_impl()
-    
+
     def __init__(self, context, output_dir=None, vis=None, caltable=None,
                  flag_nmedian=None, fnm_limit=None, fnm_byfield=None,
                  flag_derivative=None, fd_max_limit=None,

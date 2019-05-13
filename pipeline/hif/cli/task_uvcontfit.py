@@ -20,7 +20,7 @@ mycb, myms, mytb = gentools(['cb', 'ms', 'tb'])
 #    Leave in place for now
 def uvcontfit(vis=None, caltable=None, field=None, intent=None, spw=None, combine=None, solint=None, fitorder=None,
               append=None):
-    
+
     # Python script
     casalog.origin('uvcontfit')
 
@@ -78,7 +78,7 @@ def _new_quantityRangesToChannels(vis, field, infitspw, excludechans):
     mytb.open(vis+'/SPECTRAL_WINDOW')
     nspw = mytb.nrows()
     mytb.close()
-   
+
     fullspwids = str(range(nspw)).strip('[,]')
     tql = {'field': field, 'spw': fullspwids}
     myms.open(vis)

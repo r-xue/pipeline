@@ -31,7 +31,7 @@ class FlagDeterALMASingleDishInputs(flagdeterbase.FlagDeterBaseInputs):
         intents_to_flag = {'POINTING', 'FOCUS', 'ATMOSPHERE', 'SIDEBAND',
                            'UNKNOWN', 'SYSTEM_CONFIGURATION', 'CHECK'}
         return ','.join(self.ms.intents.intersection(intents_to_flag))
-    
+
     template = vdp.VisDependentProperty(default=True)
 
     @flagdeterbase.FlagDeterBaseInputs.filetemplate.postprocess
@@ -72,7 +72,7 @@ class FlagDeterALMASingleDishResults(flagdeterbase.FlagDeterBaseResults):
     def merge_with_context(self, context):
         # call parent's method
         super(FlagDeterALMASingleDishResults, self).merge_with_context(context)
-        
+
         # regenerate pointing plots
         if not basetask.DISABLE_WEBLOG:
             ephem_names = casatools.measures.listcodes(casatools.measures.direction())['extra']
@@ -92,7 +92,7 @@ class FlagDeterALMASingleDishResults(flagdeterbase.FlagDeterBaseResults):
                                                             reference_field_id=reference,
                                                             target_only=False)
                     task.plot(revise_plot=True)
-                    
+
                     # if the target is ephemeris, shifted pointing pattern should also be plotted
                     target_field = msobj.fields[target]
                     source_name = target_field.source.name
@@ -106,7 +106,7 @@ class FlagDeterALMASingleDishResults(flagdeterbase.FlagDeterBaseResults):
                         plotres = task.plot(revise_plot=True)
                         if plotres is not None:
                             shift_pointings.append(plotres)
-            
+
 
 #@task_registry.set_equivalent_casa_task('hsd_flagdata')
 #@task_registry.set_casa_commands_comment(
@@ -117,7 +117,7 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
     # Make the member functions of the FlagDeterALMASingleDishInputs() class member
     # functions of this class
     Inputs = FlagDeterALMASingleDishInputs
-    
+
     # Flag edge channels if bandwidth exceeds bandwidth_limit
     # Currently, default bandwidth limit is set to 1.875GHz but it is 
     # controllable via parameter 'fracspw' 
@@ -127,10 +127,10 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
             return casatools.quanta.convert(self.inputs.fracspw, 'Hz')['value']
         else:
             return 1.875e9 # 1.875GHz
-    
+
     def prepare(self):
         results = super(FlagDeterALMASingleDish, self).prepare()
-        
+
         # update datatable
         # this task uses _handle_multiple_vis framework 
         msobj = self.inputs.context.observing_run.get_ms(self.inputs.vis)
@@ -138,9 +138,9 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
         datatable = DataTable(name=table_name, readonly=False)
         datatable._update_flag(msobj.name)
         datatable.exportdata(minimal=False)
-        
+
         return FlagDeterALMASingleDishResults(results.summaries, results.flagcmds())
-        
+
     def _yield_edge_spw_cmds(self):
         inputs = self.inputs
         # loop over the spectral windows, generate a flagging command for each
@@ -199,9 +199,9 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
 
             if len(channel_ranges) == 0:
                 continue
-            
+
             cmd = '{0}:{1}'.format(spw.id, ';'.join(channel_ranges))
-            
+
             LOG.debug('list type edge fraction specification for spw %s' % spw.id)
             LOG.debug('cmd=\'%s\'' % cmd)
 
@@ -209,20 +209,20 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
 
     def _get_edgespw_cmds(self):
         inputs = self.inputs
-        
+
         if isinstance(inputs.fracspw, float) or isinstance(inputs.fracspw, str):
             to_flag = super(FlagDeterALMASingleDish, self)._get_edgespw_cmds()
         elif isinstance(inputs.fracspw, collections.Iterable):
             # inputs.fracspw is iterable indicating that the user want to flag 
             # edge channels with different fractions/number of channels for 
             # left and right edges
-            
+
 
             # to_flag is the list to which flagging commands will be appended
             to_flag = list(self._yield_edge_spw_cmds())
-                        
+
         return to_flag
-    
+
     def get_fracspw(self, spw):    
         # override the default fracspw getter with our ACA-aware code
         #if spw.num_channels in (62, 124, 248):
@@ -263,7 +263,7 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
         for i in xrange(len(flag_cmds)):
             if flag_cmds[i].startswith("mode='summary'"):
                 flag_cmds[i] += " intent='OBSERVE_TARGET#ON_SOURCE'"
-        
+
         return flag_cmds
 
 
@@ -291,7 +291,7 @@ class HpcFlagDeterALMASingleDishInputs(FlagDeterALMASingleDishInputs):
 class HpcFlagDeterALMASingleDish(sessionutils.ParallelTemplate):
     Inputs = HpcFlagDeterALMASingleDishInputs
     Task = FlagDeterALMASingleDish
-    
+
     @basetask.result_finaliser
     def get_result_for_exception(self, vis, exception):
         LOG.error('Error operating target flag for {!s}'.format(os.path.basename(vis)))
@@ -301,4 +301,4 @@ class HpcFlagDeterALMASingleDish(sessionutils.ParallelTemplate):
         if tb.startswith('None'):
             tb = '{0}({1})'.format(exception.__class__.__name__, exception.message)
         return basetask.FailedTaskResults(self, exception, tb)
-    
+

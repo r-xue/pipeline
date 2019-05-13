@@ -27,16 +27,16 @@ class SpwPhaseupQAHandler(pqa.QAPlugin):
             score1 = self._phaseup_mapping_fraction(ms, True, result.combine_spwmap)
         else:
             score1 = self._phaseup_mapping_fraction(ms, False, result.phaseup_spwmap)
-	if not result.phaseup_result.final:
-	    score2= qacalc.score_path_exists(ms.name,
-	    list(result.phaseup_result.error)[0].gaintable, 'caltable')
-	else:
-	    score2= qacalc.score_path_exists(ms.name,
-	        result.phaseup_result.final[0].gaintable, 'caltable')
+        if not result.phaseup_result.final:
+            score2= qacalc.score_path_exists(ms.name,
+            list(result.phaseup_result.error)[0].gaintable, 'caltable')
+        else:
+            score2= qacalc.score_path_exists(ms.name,
+                result.phaseup_result.final[0].gaintable, 'caltable')
         scores = [score1, score2]
-            
+
         result.qa.pool.extend(scores)
-    
+
     def _phaseup_mapping_fraction(self, ms, fullcombine, phaseup_spwmap):
         '''
         Check whether or not there has been spw phaseup mapping . 

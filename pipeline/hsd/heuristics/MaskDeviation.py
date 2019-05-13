@@ -19,13 +19,13 @@ def _calculate(worker, consider_flag=False):
     #worker.SavePlot()
     mask_list = worker.masklist
     return mask_list
-    
+
 class MaskDeviationHeuristic(api.Heuristic):
     def calculate(self, vis, field_id='', antenna_id='', spw_id='', consider_flag=False):
         """
         Channel mask heuristics using MaskDeviation algorithm implemented 
         in MaskDeviation class. 
-        
+
         vis -- input MS filename
         field_id -- target field identifier
         antenna_id -- target antenna identifier
@@ -37,7 +37,7 @@ class MaskDeviationHeuristic(api.Heuristic):
         mask_list = _calculate(worker, consider_flag=consider_flag)
         del worker
         return mask_list
-        
+
 
 def VarPlot(infile):
     # infile is asap format
@@ -81,7 +81,7 @@ class MaskDeviation(object):
                  'scanintent': 'OBSERVE_TARGET#ON_SOURCE*'}
         LOG.debug('vis="%s"'%(vis))
         LOG.debug('mssel=%s'%(mssel))
-        
+
         if colname is None:
             with casatools.TableReader(vis) as mytb:
                 colnames = mytb.colnames()
@@ -93,7 +93,7 @@ class MaskDeviation(object):
                 colname = 'data'
             else:
                 raise RuntimeError('{} doesn\'t have any data column (CORRECTED, FLOAT, DATA)'.format(os.path.basename(vis)))
-            
+
         with casatools.MSReader(vis) as myms:
             mssel['baseline'] = '%s&&&'%(antenna)
             myms.msselect(mssel)
@@ -103,11 +103,11 @@ class MaskDeviation(object):
             self.nchan = nchan
             self.data= NP.real(r[colname.lower()]).transpose((2, 0, 1)).reshape((nrow * npol, nchan))
             self.flag = r['flag'].transpose((2, 0, 1)).reshape((nrow * npol, nchan))
-                        
+
         LOG.debug('MaskDeviation.ReadDataFromMS: %s %s'%(self.nrow, self.nchan))
-        
+
         return r
-        
+
 
     def SubtractMedian(self, threshold=3.0, consider_flag=False):
         """
@@ -148,19 +148,19 @@ class MaskDeviation(object):
             with_flag = True
         else:
             with_flag = False
-            
+
         if with_flag:
             work_data = NP.ma.masked_array(self.data, self.flag)
         else:
             work_data = self.data
-            
+
         self.stdSP = work_data.std(axis=0)
         self.meanSP = work_data.mean(axis=0)
         self.maxSP = work_data.max(axis=0)
         self.minSP = work_data.min(axis=0)
         self.ymax = self.maxSP.max()
         self.ymin = self.minSP.min()
-        
+
         LOG.trace('std %s\nmean %s\n max %s\n min %s\n ymax %s ymin %s' %
                   (self.stdSP, self.meanSP, self.maxSP, self.minSP, self.ymax, self.ymin))
 
@@ -180,13 +180,13 @@ class MaskDeviation(object):
         else:
             with_flag = False
             stdSP = self.stdSP
-            
+
         # mask: True => valid, False => invalid
         mask = (stdSP>-99999)
-        
+
         if with_flag:
             mask = NP.logical_and(mask, self.stdSP.mask == False)
-        
+
         Nmask0 = 0
         for i in range(iteration):
             median = NP.median(stdSP[NP.where(mask == True)])

@@ -40,7 +40,7 @@ class PhaseOffsetPlotHelper(object):
         self._prefix = prefix
         self.caltable_map = caltable_map
         self.plot_per_antenna = plot_per_antenna
-        
+
     def get_symbol_and_colour(self, pol, state):
         return self.colour_map[state][pol]
 
@@ -57,7 +57,7 @@ class PhaseOffsetPlotHelper(object):
             return [[ant] for ant in antennas]
         else:
             return [antennas]
-                        
+
     def label_antenna(self, fig, antennas):
         if self.plot_per_antenna:
             text = '%s' % antennas[0].name
@@ -66,7 +66,7 @@ class PhaseOffsetPlotHelper(object):
 
         pyplot.text(0.5, 0.911, '%s' % text, color='k', 
                     transform=fig.transFigure, ha='center', size=10)
-            
+
 
 class PhaseOffsetPlot(object):
     def __init__(self, context, ms, plothelper, scan_intent=None, scan_id=None, score_retriever=None):
@@ -75,14 +75,14 @@ class PhaseOffsetPlot(object):
         self._plothelper = plothelper        
         self._scans = ms.get_scans(scan_id=scan_id, scan_intent=scan_intent)
         self._score_retriever = score_retriever if score_retriever else common.NullScoreFinder()
-        
+
         self._caltables_loaded = False
         self._load_caltables(plothelper.caltable_map)
 
     def _load_caltables(self, caltable_map):
         if self._caltables_loaded:
             return
-        
+
         data = [(state, common.CaltableWrapper.from_caltable(c)) for state, c in caltable_map.iteritems()]
 
         # some sanity checks, as unequal caltables have bit me before
@@ -97,7 +97,7 @@ class PhaseOffsetPlot(object):
 
         self.data = data
         self._caltables_loaded = True
-        
+
     def plot(self, spw_ids=None, antenna_ids=None, antenna_names=None):
         # these function arguments are used for debugging the plot routines,
         # so we can call plot for a particular troublesome spw/antenna.
@@ -136,7 +136,7 @@ class PhaseOffsetPlot(object):
                 plots.append(self.get_plot_wrapper(spw, self._scans, antenna_group))
 
         return [p for p in plots if p is not None]
-    
+
     def create_plot(self, spw, scans, antennas):
         # get the fields and scan intents from the list of scans. These are
         # used in the plot title, eg. NGC123 (PHASE)
@@ -167,11 +167,11 @@ class PhaseOffsetPlot(object):
                 label.set_visible(False)
 
         axes.insert(0, ax0)
-        
+
         # if num_scans is 1, axes will be a scalar instead of a list
         if not isinstance(axes, (tuple, list, numpy.ndarray)):
             axes = [axes]
-            
+
         for axis in axes:
             axis.xaxis.set_ticks_position('none')
             axis.yaxis.set_ticks_position('none')
@@ -185,9 +185,9 @@ class PhaseOffsetPlot(object):
         axes[-1].spines['right'].set_visible(True)
         axes[-1].yaxis.set_ticks_position('right')
         axes[-1].yaxis.tick_right()                 
-        
+
         pyplot.subplots_adjust(wspace=0.0)
-             
+
         plothelper = self._plothelper
         flag_annotate = len(antennas) is 1
         for scan_idx, scan in enumerate(scans):
@@ -202,12 +202,12 @@ class PhaseOffsetPlot(object):
                                                  spw=[spw.id])
                     except KeyError:
                         # scan/antenna/id not in caltable, probably flagged.
-                        
+
                         # create fake masked slices and data arrays so we can 
                         # plot flagged annotation 
                         class dummy(object):
                             pass
-                        
+
                         dummy_slice = dummy()
                         dummy_slice.start = 0
                         dummy_slice.stop = 1
@@ -219,16 +219,16 @@ class PhaseOffsetPlot(object):
                                            matplotlib.dates.date2num(end_dt)]
 
                         dummy_data = numpy.ma.MaskedArray(data=[0, 1], mask=True)
- 
+
                         axis.plot_date(dummy_time.time, dummy_data, '.')
                         _, = axis.plot_date(dummy_time.time, dummy_data)
 
                         self._plot_flagged_data(dummy_time, dummy_slice, axis,
                                                 True, annotation='NO DATA')
-                        
+
                         axis.set_xlim(dummy_time.time[0], dummy_time.time[-1])
                         axis.set_ylim(autoscale_yaxis_range)
-                        
+
                         continue
 
                     # get the polarisations for this scan
@@ -258,7 +258,7 @@ class PhaseOffsetPlot(object):
 
                         for masked_slice in numpy.ma.clump_masked(offset_deg):
                             self._plot_flagged_data(data, masked_slice, axis, flag_annotate)
-                        
+
                         (symbol, color, alpha) = plothelper.get_symbol_and_colour(corr_axis, 
                                                                                   state)
                         axis.plot_date(data.time, offset_deg, '.',
@@ -270,7 +270,7 @@ class PhaseOffsetPlot(object):
                         if legend_entry not in legends:
                             legends.append(legend_entry)
                             plots.append(p)
-    
+
                         # shrink the x axis range by a couple of integrations
                         # so that the first/last scan symbols are not clipped 
 #                         delta = numpy.mean(numpy.diff(data.time)) / 2
@@ -297,7 +297,7 @@ class PhaseOffsetPlot(object):
 
                     axis.xaxis.set_ticks([])                        
                     axis.xaxis.set_major_formatter(matplotlib.ticker.NullFormatter())
-    
+
         # shrink the y height slightly to make room for the legend
         for axis in axes:
             box = axis.get_position()
@@ -307,7 +307,7 @@ class PhaseOffsetPlot(object):
 
 #         # sort legend and associated plots by legend text 
 #         legends, plots = zip(*sorted(zip(legends, plots)))
- 
+
         # CASA is using an old matplotlib, so we can't specify fontsize as
         # a property
         try:
@@ -322,7 +322,7 @@ class PhaseOffsetPlot(object):
                                 ncol=len(legends), 
                                 bbox_transform = pyplot.gcf().transFigure)
             l.draw_frame(False)
-        
+
         spw_msg = 'SPW %s Correlation%s' % (spw.id, 
                 utils.commafy(corr_axes, quotes=False, multi_prefix='s'))
         pyplot.text(0.0, 1.013, spw_msg, color='k', 
@@ -332,10 +332,10 @@ class PhaseOffsetPlot(object):
         plothelper.label_antenna(fig, antennas)
         pyplot.text(0.5, 0.07, 'Scan', color='k', transform=fig.transFigure,
                     ha='center', size=10)
-                
+
         scan_ids = [str(s.id) for s in scans]
         max_scans_for_msg = 8
-        
+
         # print 'Scans 4, 8, 12 ... 146' if there are too many scans to 
         # print
         if num_scans > max_scans_for_msg:
@@ -347,16 +347,16 @@ class PhaseOffsetPlot(object):
                                      quotes=False, separator=',')
         pyplot.text(1.0, 1.013, 'Scan%s' % scan_txt, color='k', ha='right', 
                     transform=axes[-1].transAxes, size=10)
-        
+
         figfile = plothelper.get_figfile(spw, antennas)
         pyplot.savefig(figfile)
         pyplot.close()
 
     def get_plot_wrapper(self, spw, scans, antennas):
         plothelper = self._plothelper
-        
+
         antenna_names = [ant.name for ant in antennas]
-        
+
         figfile = plothelper.get_figfile(spw, antennas)
         wrapper = logger.Plot(figfile,
                               x_axis='scan',
@@ -364,10 +364,10 @@ class PhaseOffsetPlot(object):
                               parameters={'vis': self._ms.basename,
                                           'spw': spw.id,
                                           'ant': antenna_names})
-        
+
         if plothelper.plot_per_antenna and len(antennas) is 1:
             wrapper.qa_score = self._score_retriever.get_score(spw, antennas[0])
-        
+
         if not os.path.exists(figfile):
             LOG.trace('Phase offset plot for antenna %s spw %s not found.'
                       ' Creating new plot: %s' % (utils.commafy(antenna_names, quotes=False), spw.id, figfile))
@@ -383,12 +383,12 @@ class PhaseOffsetPlot(object):
         if os.path.exists(figfile):
             return wrapper            
         return None
-    
+
     def _plot_flagged_data(self, data, masked_slice, axis, annotate=True,
                            annotation='FLAGGED'):
         """
         Plot flagged data.
-        
+
         data -- the CaltableWrapper for the data selection
         masked_slice -- the Slice object defining the flagged extent
         axis -- the Axis object to be used for plotting
@@ -398,7 +398,7 @@ class PhaseOffsetPlot(object):
         start = data.time[idx_start]
         stop = data.time[idx_stop]
         width = stop - start
-        
+
         # the x coords of this transformation are data, and the
         # y coord are axes
         trans = matplotlib.transforms.blended_transform_factory(axis.transData,
@@ -409,9 +409,9 @@ class PhaseOffsetPlot(object):
         rect = matplotlib.patches.Rectangle((start, 0), width=width, height=1,
                                             transform=trans, color='#EEEEEE',
                                             alpha=0.2)
-                
+
         axis.add_patch(rect)
-        
+
         if annotate:
             axis.text(start + width/2, 0.5, annotation, color='k', transform=trans,
                       size=10, ha='center', va='center', rotation=90)                            

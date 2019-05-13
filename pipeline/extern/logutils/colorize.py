@@ -14,7 +14,7 @@ class ColorizingStreamHandler(logging.StreamHandler):
     :param strm: The stream to colorize - typically ``sys.stdout``
                  or ``sys.stderr``.
     """
-    
+
     # color names to indices
     color_map = {
         'black': 0,

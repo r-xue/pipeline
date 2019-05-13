@@ -44,7 +44,7 @@ class AntennaDiameter(api.Heuristic):
         if d is None:
             raise Exception('No data in lookup table: %s' % name)
         return d
-        
+
 
 class SingleDishBeamSize(api.Heuristic):
     """
@@ -56,7 +56,7 @@ class SingleDishBeamSize(api.Heuristic):
         returned value is rounded, like 33.0 for 32.199992 or
         9.8 for 9.783333331.
         NOTE: CURRENTLY the rounding is DISABLED to match manual reduction
-        
+
         diameter: antenna diameter in metre 
         frequency: observing frequency in GHz
         """

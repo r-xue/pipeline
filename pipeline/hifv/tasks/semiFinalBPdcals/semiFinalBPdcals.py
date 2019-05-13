@@ -57,7 +57,7 @@ class semiFinalBPdcalsResults(basetask.Results):
 @task_registry.set_equivalent_casa_task('hifv_semiFinalBPdcals')
 class semiFinalBPdcals(basetask.StandardTaskTemplate):
     Inputs = semiFinalBPdcalsInputs
-    
+
     def prepare(self):
 
         self.parang = True
@@ -72,7 +72,7 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
             stage_number = self.inputs.context.results[-1].read().stage_number + 1
 
         tableprefix = os.path.basename(self.inputs.vis) + '.' + 'hifv_semiFinalBPdcals.s'
-        
+
         gtypecaltable = tableprefix + str(stage_number) + '_1.' + 'semiFinaldelayinitialgain.tbl'
         ktypecaltable = tableprefix + str(stage_number) + '_2.' + 'delay.tbl'
         bpcaltable    = tableprefix + str(stage_number) + '_4.' + 'BPcal.tbl'
@@ -85,15 +85,15 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
         solints = ['int', '3.0s', '10.0s']
         soltime = soltimes[0]
         solint = solints[0]
-        
+
         context = self.inputs.context
         refantfield = context.evla['msinfo'][m.name].calibrator_field_select_string
         refantobj = findrefant.RefAntHeuristics(vis=self.inputs.vis, field=refantfield,
                                                 geometry=True, flagging=True, intent='',
                                                 spw='', refantignore=self.inputs.refantignore)
-        
+
         RefAntOutput = refantobj.calculate()
-        
+
         self._do_gtype_delaycal(caltable=gtypecaltable, context=context, RefAntOutput=RefAntOutput)
 
         fracFlaggedSolns = 1.0
@@ -103,12 +103,12 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
         # Iterate and check the fraciton of Flagged solutions, each time running gaincal in 'K' mode
         flagcount = 0
         while fracFlaggedSolns > critfrac and flagcount < 4:
-                
+
             self._do_ktype_delaycal(caltable=ktypecaltable, addcaltable=gtypecaltable,
                                     context=context, RefAntOutput=RefAntOutput)
             flaggedSolnResult = getCalFlaggedSoln(ktypecaltable)
             fracFlaggedSolns = self._check_flagSolns(flaggedSolnResult, RefAntOutput)
-            
+
             LOG.info("Fraction of flagged solutions = " + str(flaggedSolnResult['all']['fraction']))
             LOG.info("Median fraction of flagged solutions per antenna = " +
                      str(flaggedSolnResult['antmedian']['fraction']))
@@ -120,9 +120,9 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
         gain_solint1 = context.evla['msinfo'][m.name].gain_solint1
         self._do_gtype_bpdgains(tablebase + table_suffix[0], addcaltable=ktypecaltable,
                                 solint=gain_solint1, context=context, RefAntOutput=RefAntOutput)
-        
+
         bpdgain_touse = tablebase + table_suffix[0]
-        
+
         LOG.debug("WEAKBP: "+str(self.inputs.weakbp))
 
         if self.inputs.weakbp:
@@ -159,15 +159,15 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
 
     def analyse(self, results):
         return results
-    
+
     def _do_gtype_delaycal(self, caltable=None, context=None, RefAntOutput=None):
-        
+
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         delay_field_select_string = context.evla['msinfo'][m.name].delay_field_select_string
         tst_delay_spw = m.get_vla_tst_delay_spw()
         delay_scan_select_string = context.evla['msinfo'][m.name].delay_scan_select_string
         minBL_for_cal = m.vla_minbaselineforcal()
-        
+
         # need to add scan?
         # ref antenna string needs to be lower case for gaincal
         delaycal_task_args = {'vis': self.inputs.vis,
@@ -210,9 +210,9 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
             self._executor.execute(job)
 
         return True
-    
+
     def _do_ktype_delaycal(self, caltable=None, addcaltable=None, context=None, RefAntOutput=None):
-        
+
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         delay_field_select_string = context.evla['msinfo'][m.name].delay_field_select_string
         delay_scan_select_string = context.evla['msinfo'][m.name].delay_scan_select_string
@@ -263,9 +263,9 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
             self._executor.execute(job)
 
         return True
-    
+
     def _check_flagSolns(self, flaggedSolnResult, RefAntOutput):
-        
+
         if flaggedSolnResult['all']['total'] > 0:
             fracFlaggedSolns = flaggedSolnResult['antmedian']['fraction']
         else:
@@ -286,7 +286,7 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
             LOG.info("The pipeline start with antenna "+RefAntOutput[0]+" as the reference.")
 
         return fracFlaggedSolns
-    
+
     def _do_gtype_bpdgains(self, caltable, addcaltable=None, solint='int', context=None, RefAntOutput=None):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
@@ -347,13 +347,13 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
             self._executor.execute(job)
 
         return True
-      
+
     def _do_applycal(self, context=None, ktypecaltable=None, bpdgain_touse=None, bpcaltable=None, interp=None):
         """Run CASA task applycal"""
-        
+
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         calibrator_scan_select_string = context.evla['msinfo'][m.name].calibrator_scan_select_string
-        
+
         LOG.info("Applying semi-final delay and BP calibrations to all calibrators")
 
         AllCalTables = sorted(self.inputs.context.callibrary.active.get_caltable())

@@ -15,7 +15,7 @@ class SDK2JyCalQAHandler(pqa.QAPlugin):
 
     def handle(self, context, result):
         is_missing_factor = (not result.all_ok)
-        
+
         shortmsg = "Missing Jy/K factors for some data" if is_missing_factor else "Jy/K factors are found for all data"
         longmsg = shortmsg + (" in "+result.vis if result.vis is not None else "") + (". Those data will remain in the unit of Kelvin after applying the calibration tables." if is_missing_factor else "")
         score = 0.0 if is_missing_factor else 1.0

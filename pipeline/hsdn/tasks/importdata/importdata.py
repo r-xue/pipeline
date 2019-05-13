@@ -23,7 +23,7 @@ class NROImportDataInputs(importdata.ImportDataInputs):
         lazy=False
         ocorr_mode='ao'
         save_flagonline=False
-        
+
         super(NROImportDataInputs, self).__init__(context, vis=vis, output_dir=output_dir, asis=asis,
                                                   process_caldevice=process_caldevice, session=session,
                                                   overwrite=overwrite, nocopy=nocopy, save_flagonline=save_flagonline,
@@ -37,16 +37,16 @@ class NROImportDataResults(sd_importdata.SDImportDataResults):
     Purpose of NROImportDataResults is to replace QA scoring associated 
     with ImportDataResults with single dish specific QA scoring, which 
     is associated with this class.
-    
+
     ImportDataResults holds the results of the ImportData task. It contains
     the resulting MeasurementSet domain objects and optionally the additional 
     SetJy results generated from flux entries in Source.xml.
     """
-    
+
     def __init__(self, mses=None, reduction_group_list=None, datatable_prefix=None, setjy_results=None):
         super(NROImportDataResults, self).__init__(mses=mses, reduction_group_list=reduction_group_list,
                                                    datatable_prefix=datatable_prefix, setjy_results=setjy_results)
-        
+
     def merge_with_context(self, context):
         super(NROImportDataResults, self).merge_with_context(context)
         # Set observatory information
@@ -55,7 +55,7 @@ class NROImportDataResults(sd_importdata.SDImportDataResults):
                 context.project_summary.telescope = 'NRO'
                 context.project_summary.observatory = 'Nobeyama Radio Observatory'
                 break
-               
+
 
 @task_registry.set_equivalent_casa_task('hsdn_importdata')
 @task_registry.set_casa_commands_comment('Import Nobeyama MeasurementSets.')

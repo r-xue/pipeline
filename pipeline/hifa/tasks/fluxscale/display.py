@@ -15,7 +15,7 @@ class GFluxscaleSummaryChart(setjy.BasebandSummaryChart):
     def __init__(self, context, output_dir, calto, intent='', ydatacolumn='model', ant='', uvrange='', **overrides):
         # Get uvdist min/max  for horizontal axis
         uvrangeplot = {}
-        
+
         try:
             with casatools.MSReader(calto.vis) as msfile:
                 # Numpy arrays must be converted to standard Python primitives, otherwise
@@ -24,7 +24,7 @@ class GFluxscaleSummaryChart(setjy.BasebandSummaryChart):
         except:
             LOG.warn("Unable to obtain plotting ranges for gfluxscale uvdist.")
             uvrangeplot = [0, 0]
-        
+
         # Get amp min/max   for vertical axis
         # Visstat call removed for 4.2.2 release
         '''
@@ -49,7 +49,7 @@ class GFluxscaleSummaryChart(setjy.BasebandSummaryChart):
         '''
         pltmin = 0
         pltmax = 0
-        
+
         plot_args = {
             'ydatacolumn': ydatacolumn,
             'field': calto.field,

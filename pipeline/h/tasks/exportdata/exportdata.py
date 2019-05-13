@@ -126,7 +126,7 @@ class PipelineProductNameBuiler(object):
                                           project_structure=project_structure, 
                                           ousstatus_entity_id=ousstatus_entity_id,
                                           output_dir=output_dir)
-    
+
     @classmethod
     def manifest(self, basename, ousstatus_entity_id, output_dir=None):
         return self._build_from_oussid(basename,
@@ -422,7 +422,7 @@ class ExportData(basetask.StandardTaskTemplate):
         targetimages_list, targetimages_fitslist = self._export_images(inputs.context, False, 'TARGET',
                                                                        inputs.targetimages, inputs.products_dir)
         result.targetimages=(targetimages_list, targetimages_fitslist)
-        
+
         # Export the pipeline manifest file
         # 
         pipemanifest = self._make_pipe_manifest(inputs.context, oussid, stdfproducts, sessiondict, msvisdict,
@@ -1363,7 +1363,7 @@ finally:
         new_cleanlist = copy.deepcopy(cleanlist)
 
         return new_cleanlist, fits_list
-            
+
     @staticmethod
     def _add_to_manifest(manifest_file, aux_fproducts, aux_caltablesdict, aux_calapplysdict, aqua_report):
 
@@ -1389,4 +1389,4 @@ finally:
                     pipemanifest.add_auxasdm(session, vis_name, aux_calapplysdict[vis_name])
 
         pipemanifest.write(manifest_file)
-    
+

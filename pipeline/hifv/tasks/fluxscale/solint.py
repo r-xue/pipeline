@@ -50,17 +50,17 @@ class SolintResults(basetask.Results):
         self.error = set()
         self.longsolint = longsolint
         self.gain_solint2 = gain_solint2
-        
+
         self.shortsol2 = shortsol2
         self.short_solint = short_solint
         self.new_gain_solint1 = new_gain_solint1
         self.bpdgain_touse = bpdgain_touse
-        
+
     def merge_with_context(self, context):    
         m = context.observing_run.get_ms(self.vis)
         context.evla['msinfo'][m.name].gain_solint2 = self.gain_solint2
         context.evla['msinfo'][m.name].longsolint = self.longsolint
-        
+
         context.evla['msinfo'][m.name].shortsol2 = self.shortsol2
         context.evla['msinfo'][m.name].short_solint = self.short_solint
         context.evla['msinfo'][m.name].new_gain_solint1 = self.new_gain_solint1
@@ -69,9 +69,9 @@ class SolintResults(basetask.Results):
 @task_registry.set_equivalent_casa_task('hifv_solint')
 class Solint(basetask.StandardTaskTemplate):
     Inputs = SolintInputs
-    
+
     def prepare(self):
-    
+
         # Solint section
         calMs = 'calibrators.ms'
         split_result = self._do_split(calMs)
@@ -88,7 +88,7 @@ class Solint(basetask.StandardTaskTemplate):
             stage_number = self.inputs.context.results[-1].read().stage_number + 1
 
         tableprefix = os.path.basename(self.inputs.vis) + '.' + 'hifv_solint.s'
-        
+
         # Testgains section
         context = self.inputs.context
         tablebase = tableprefix + str(stage_number) + '_1.' + 'testgaincal'
@@ -107,7 +107,7 @@ class Solint(basetask.StandardTaskTemplate):
         refantobj = findrefant.RefAntHeuristics(vis=calMs, field=refantfield,
                                                 geometry=True, flagging=True, intent='',
                                                 spw='', refantignore=self.inputs.refantignore)
-        
+
         RefAntOutput = refantobj.calculate()
 
         refAnt = ','.join(RefAntOutput)
@@ -136,7 +136,7 @@ class Solint(basetask.StandardTaskTemplate):
             testgains_result = self._do_gtype_testgains(calMs, tablebase + table_suffix[1], solint=solint,
                                                         context=context, combtime=combtime, refAnt=refAnt)
             flaggedSolnResult3 = getCalFlaggedSoln(tablebase + table_suffix[0])
-            
+
             LOG.info("For solint = "+solint+" fraction of flagged solutions = " +
                      str(flaggedSolnResult3['all']['fraction']))
             LOG.info("Median fraction of flagged solutions per antenna = " +
@@ -150,7 +150,7 @@ class Solint(basetask.StandardTaskTemplate):
             if fracFlaggedSolns3 < fracFlaggedSolns1:
                 shortsol2 = soltime
                 bpdgain_touse = tablebase + table_suffix[1]
-            
+
                 if fracFlaggedSolns3 > 0.05:
                     soltime = soltimes[2]
                     solint = solints[2]
@@ -183,23 +183,23 @@ class Solint(basetask.StandardTaskTemplate):
                                      str(flaggedSolnResult3['all']['fraction']))
                             LOG.info("Median fraction of flagged solutions per antenna = " +
                                      str(flaggedSolnResult3['antmedian']['fraction']))
-                            
+
                             if flaggedSolnResultScan['all']['total'] > 0:
                                 fracFlaggedSolnsScan = flaggedSolnResultScan['antmedian']['fraction']
                             else:
                                 fracFlaggedSolnsScan = 1.0
-                                
+
                             if fracFlaggedSolnsScan < fracFlaggedSolns10:
                                 shortsol2 = context.evla['msinfo'][m.name].longsolint
                                 bpdgain_touse = tablebase + table_suffix[3]
-                                
+
                                 if fracFlaggedSolnsScan > 0.05:
                                     LOG.warn("Warning, large fraction of flagged solutions.  " +
                                              "There might be something wrong with your data")
 
         LOG.info("ShortSol1: " + str(shortsol1))
         LOG.info("ShortSol2: " + str(shortsol2))
-        
+
         short_solint = max(shortsol1, shortsol2)
         LOG.info("Short_solint determined from heuristics: " + str(short_solint))
         new_gain_solint1 = str(short_solint)+'s'
@@ -237,17 +237,17 @@ class Solint(basetask.StandardTaskTemplate):
         return SolintResults(longsolint=longsolint, gain_solint2=gain_solint2, shortsol2=shortsol2,
                              short_solint=short_solint, new_gain_solint1=new_gain_solint1, vis=self.inputs.vis,
                              bpdgain_touse=bpdgain_touse)
-    
+
     def analyse(self, results):
         return results
-    
+
     def _do_split(self, calMs):
-        
+
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         calibrator_scan_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_scan_select_string
-    
+
         LOG.info("Splitting out calibrators into " + calMs)
-    
+
         task_args = {'vis': m.name,
                      'outputvis': calMs,
                      'datacolumn': 'corrected',
@@ -266,28 +266,28 @@ class Solint(basetask.StandardTaskTemplate):
                      'correlation': '',
                      'observation': '',
                      'keepflags': False}
-        
+
         job = casa_tasks.split(**task_args)
-            
+
         return self._executor.execute(job)
 
     def _do_determine_solint(self, calMs):
-        
+
         durations = []
         old_spws = []
         old_field = ''
-        
+
         with casatools.MSReader(calMs) as ms:
             scan_summary = ms.getscansummary()    
-            
+
             m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
 
             phase_scan_list = self.inputs.context.evla['msinfo'][m.name].phase_scan_select_string.split(',')
             phase_scan_list = [int(i) for i in phase_scan_list]
-            
+
             for kk in range(len(phase_scan_list)):
                 ii = phase_scan_list[kk]
-                
+
                 try:
                     # Collect beginning and ending times
                     # Take max of end times and min of beginning times
@@ -299,7 +299,7 @@ class Solint(basetask.StandardTaskTemplate):
 
                     new_spws = scan_summary[str(ii)]['0']['SpwIds']
                     new_field = scan_summary[str(ii)]['0']['FieldId']
-                    
+
                     if ((kk > 0) and (phase_scan_list[kk-1] == ii-1) and
                             (set(new_spws) == set(old_spws)) and (new_field == old_field)):
                         # if contiguous scans, just increase the time on the previous one
@@ -313,13 +313,13 @@ class Solint(basetask.StandardTaskTemplate):
                     LOG.info("Scan "+str(ii)+" has "+str(durations[-1])+"s on source")
                     old_spws = new_spws
                     old_field = new_field
-                
+
                 except KeyError:
                     LOG.warn("WARNING: scan "+str(ii)+" is completely flagged and missing from " + calMs)
 
         longsolint = (np.max(durations)) * 1.01
         gain_solint2 = str(longsolint) + 's'
-                   
+
         return longsolint, gain_solint2
 
     def _do_gtype_testgains(self, calMs, caltable, solint='int', context=None, combtime='scan', refAnt=None):

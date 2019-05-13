@@ -52,19 +52,19 @@ class Scan(object):
         # will hold the start and end epochs per spw
         self.__start_time = None
         self.__end_time = None
-        
+
         # midpoints is a list of tuple of (midpoint epochs, integation time)            
         sorted_epochs = {spw_id: sorted(midpoints, key=lambda e: e[0]['m0']['value'])
                          for spw_id, midpoints in scan_times.iteritems()}
 
         qt = casatools.quanta
         mt = casatools.measures            
-                
+
         self.__exposure_time = {}
         for spw_id, epochs in sorted_epochs.iteritems():
             (min_epoch, exposure) = epochs[0]
             max_epoch = epochs[-1][0]
-                         
+
             # add and subtract half the exposure to get the start and
             # end exposure times for this spw in the scan
             half_exposure = qt.div(exposure, 2)

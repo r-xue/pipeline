@@ -119,18 +119,18 @@ class Rawflagchans(basetask.StandardTaskTemplate):
             context=inputs.context, vis=inputs.vis, spw=inputs.spw,
             intent=inputs.intent)
         datatask = RawflagchansData(datainputs)
-        
+
         # Construct the generator that will create the view of the data
         # that is the basis for flagging.
         viewtask = RawflagchansView()
-        
+
         # Construct the task that will set any flags raised in the
         # underlying data.
         flagsetterinputs = FlagdataSetter.Inputs(
             context=inputs.context,
             vis=inputs.vis, table=inputs.vis, inpfile=[])
         flagsettertask = FlagdataSetter(flagsetterinputs)
-        
+
         # Define which type of flagger to use.
         flagger = viewflaggers.MatrixFlagger
 
@@ -143,7 +143,7 @@ class Rawflagchans(basetask.StandardTaskTemplate):
             fbq_hilo_limit=inputs.fbq_hilo_limit,
             fbq_antenna_frac_limit=inputs.fbq_antenna_frac_limit,
             fbq_baseline_frac_limit=inputs.fbq_baseline_frac_limit)
-        
+
         # Construct the flagger task around the data view task and the
         # flagger task. 
         flaggerinputs = flagger.Inputs(
@@ -155,17 +155,17 @@ class Rawflagchans(basetask.StandardTaskTemplate):
 
         # Execute the flagger task.
         flaggerresult = self._executor.execute(flaggertask)
-        
+
         # Import views, flags, and "measurement set or caltable to flag"
         # into final result.
         result.importfrom(flaggerresult)
-        
+
         # Copy flagging summaries to final result, and update
         # names to match expectations by renderer.
         result.summaries = flaggerresult.summaries
         result.summaries[0]['name'] = 'before'
         result.summaries[-1]['name'] = 'after'
-        
+
         return result
 
     def analyse(self, result):
@@ -173,7 +173,7 @@ class Rawflagchans(basetask.StandardTaskTemplate):
 
 
 class RawflagchansDataInputs(vdp.StandardInputs):
-    
+
     def __init__(self, context, vis=None, spw=None, intent=None):
         """
         RawflagchansDataInputs defines the inputs for the RawflagchansData task.
@@ -199,7 +199,7 @@ class RawflagchansData(basetask.StandardTaskTemplate):
 
     def __init__(self, inputs):
         super(RawflagchansData, self).__init__(inputs)
-    
+
     def prepare(self):
 
         # Initialize result structure
@@ -210,7 +210,7 @@ class RawflagchansData(basetask.StandardTaskTemplate):
 
         # Take vis from inputs, and add to result.
         result.table = self.inputs.vis
-        
+
         LOG.info('Reading flagging view data for vis {0}'.format(
             self.inputs.vis))
 
@@ -255,7 +255,7 @@ class RawflagchansData(basetask.StandardTaskTemplate):
                     openms.close()
                     # Continue to next spw.
                     continue
-                
+
                 # Read in the MS data in chunks of limited number of rows at a time.
                 openms.iterinit(maxrows=500)
                 openms.iterorigin()
@@ -265,17 +265,17 @@ class RawflagchansData(basetask.StandardTaskTemplate):
                         ['data', 'flag', 'antenna1', 'antenna2'])
                     if 'data' not in rec.keys():
                         break
-    
+
                     for row in range(np.shape(rec['data'])[2]):
                         ant1 = rec['antenna1'][row]
                         ant2 = rec['antenna2'][row]
-    
+
                         if ant1 == ant2:
                             continue
-    
+
                         baseline1 = ant1 * (ants[-1] + 1) + ant2
                         baseline2 = ant2 * (ants[-1] + 1) + ant1
-    
+
                         for icorr in range(len(corrs)):
 
                             data[icorr, :, baseline1][
@@ -293,7 +293,7 @@ class RawflagchansData(basetask.StandardTaskTemplate):
 
                             ndata[icorr, :, baseline2][
                               rec['flag'][icorr, :, row] == False] += 1
-    
+
                     iterating = openms.iternext()
 
             # Calculate the average data value, suppress any divide by 0
@@ -303,10 +303,10 @@ class RawflagchansData(basetask.StandardTaskTemplate):
 
             # Take the absolute value of the data points.
             data = np.abs(data)
-            
+
             # Set flagging state to "True" wherever no data points were available.
             flag = ndata == 0
-            
+
             # Store data and related information for this spwid.
             result.data[spwid] = {
                 'data': data,
@@ -315,7 +315,7 @@ class RawflagchansData(basetask.StandardTaskTemplate):
                 'nchans': nchans,
                 'corrs': corrs
             }
-                    
+
         return result
 
     def analyse(self, result):
@@ -328,7 +328,7 @@ class RawflagchansView(object):
         """
         Creates an RawflagchansView instance.
         """
-        
+
         # Initialize result structure. By initializing here,
         # it is ensured that repeated calls to this instance will
         # have access to all previously generated results,
@@ -342,7 +342,7 @@ class RawflagchansView(object):
         for the vis / table provided by RawflagchansDataResults.
 
         dataresult  -- RawflagchansDataResults object.
-                    
+
         Returns:
         RawflagchansViewResults object containing the flagging view.
         """
@@ -355,7 +355,7 @@ class RawflagchansView(object):
 
         # Check if dataresult is new for current iteration, or created during 
         # a previous iteration.
-        
+
         if dataresult.new:
             # If the dataresult is from a newly run datatask, then 
             # create the flagging view.
@@ -367,7 +367,7 @@ class RawflagchansView(object):
             # for each spwid it could find data for in the MS.
             # Create a separate flagging view for each spw.
             for spwid, spwdata in dataresult.data.iteritems():
-    
+
                 LOG.info('Calculating flagging view for spw %s' % spwid)
 
                 # Create axes for flagging view.
@@ -379,19 +379,19 @@ class RawflagchansView(object):
                         name='Baseline', units='',
                         data=np.array(spwdata['baselines']), channel_width=1)
                 ]
-    
+
                 # From the data array, create a view for each polarisation.
                 for icorr, corrlist in enumerate(spwdata['corrs']):
                     corr = corrlist[0]
-    
+
                     self.refine_view(spwdata['data'][icorr], spwdata['flag'][icorr])
-    
+
                     viewresult = commonresultobjects.ImageResult(
                         filename=self.result.vis, data=spwdata['data'][icorr],
                         flag=spwdata['flag'][icorr], axes=axes,
                         datatype='Mean amplitude', spw=spwid, pol=corr,
                         intent=intent)
-    
+
                     # add the view results to the result structure
                     self.result.addview(viewresult.description, viewresult)
         else:
@@ -399,7 +399,7 @@ class RawflagchansView(object):
             # the datatask is not being iterated, and instead the 
             # flagging view will be created as a refinement from an 
             # earlier flagging view.
-            
+
             # Check in the result structure stored in this instance of RawflagchansView
             # for the presence of previous result descriptions.
             prev_descriptions = self.result.descriptions()
@@ -409,14 +409,14 @@ class RawflagchansView(object):
                 # Since the current view will be very similar to the last, it is
                 # approximated to be identical, which saves having to recalculate.
                 for description in prev_descriptions:
-                    
+
                     # Get a deep copy of the last result belonging to the description.
                     copy_of_prev_result = self.result.last(description)
-    
+
                     # re-refine the data to take into account possible
                     # new flagging
                     self.refine_view(copy_of_prev_result.data, copy_of_prev_result.flag)
-             
+
                     # Store the refined view as the new view in the result structure.
                     self.result.addview(description, copy_of_prev_result)
             else:

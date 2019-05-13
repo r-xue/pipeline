@@ -49,27 +49,27 @@ class FlagDeterALMAInputs(flagdeterbase.FlagDeterBaseInputs):
 )
 class FlagDeterALMA(flagdeterbase.FlagDeterBase):
     Inputs = FlagDeterALMAInputs
-        
+
     def get_fracspw(self, spw):    
         # override the default fracspw getter with our ACA-aware code
         if spw.num_channels in (62, 124, 248):
             return self.inputs.fracspwfps
         else:
             return self.inputs.fracspw
-    
+
     def verify_spw(self, spw):
         # override the default verifier, adding an extra test that bypasses
         # flagging of TDM windows
         super(FlagDeterALMA, self).verify_spw(spw)
-    
+
         # Skip if TDM mode where TDM modes are defined to be modes with 
         # <= 256 channels per correlation
         dd = self.inputs.ms.get_data_description(spw=spw)
         ncorr = len(dd.corr_axis)
-            
+
         if ncorr*spw.num_channels > 256:
             raise ValueError('Skipping edge flagging for FDM spw %s' % spw.id)
-        
+
     def _get_edgespw_cmds(self):
         # Append to the default _get_edgespw_cmds method, and flag the portions
         # of any FDM spw that extend beyond a total width of 1875 MHz, that is, 
@@ -88,7 +88,7 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
                 self.verify_spw(spw)
             except ValueError:
                 # this spw has more than 256 chns per corr.  Proceed with FDM flagging.
-                
+
                 # Calculate the range outside the FDM spws for all channels that lie 
                 # beyond +-937.5 MHz from the mean frequency (937.5=1875/2)                
                 if spw.bandwidth > threshold:
@@ -99,12 +99,12 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
                     lo_freq = cen_freq - spw.bandwidth / 2.0
                     hi_freq = cen_freq - threshold / 2.0
                     minchan_lo, maxchan_lo = spw.channel_range(lo_freq, hi_freq)
-                    
+
                     # upper range higher than threshold
                     lo_freq = cen_freq + threshold / 2.0
                     hi_freq = cen_freq + spw.bandwidth / 2.0
                     minchan_hi, maxchan_hi = spw.channel_range(lo_freq, hi_freq)
-                    
+
                     # Append to flag list
                     # Clean up order of channel ranges high to low
                     chan1 = '{0}~{1}'.format(minchan_lo, maxchan_lo)

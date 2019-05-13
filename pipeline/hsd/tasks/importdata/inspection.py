@@ -162,7 +162,7 @@ class SDInspection(object):
 #                 for antenna in ms.antennas:
 #                         reduction_group[key].add_member(ms, antenna.id, spw.id, field_id)
                 for ant_id in valid_antid:
-                        reduction_group[key].add_member(ms, ant_id, spw.id, field_id)
+                    reduction_group[key].add_member(ms, ant_id, spw.id, field_id)
 
         return reduction_group
 

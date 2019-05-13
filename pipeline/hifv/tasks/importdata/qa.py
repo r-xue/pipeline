@@ -38,16 +38,16 @@ class VLAImportDataQAHandler(hqa.ImportDataQAHandler, pqa.QAPlugin):
     def _check_intents(self, mses):
         """
         Check each measurement set in the list for a set of required intents.
-        
+
         TODO Should we terminate execution on missing intents?        
         """
         return qacalc.score_missing_intents(mses, array_type='VLA')
-    
+
 
 class VLAImportDataListQAHandler(pqa.QAPlugin):
     result_cls = collections.Iterable
     child_cls = importdata.VLAImportDataResults
- 
+
     def handle(self, context, result):
         # collate the QAScores from each child result, pulling them into our
         # own QAscore list

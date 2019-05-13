@@ -52,67 +52,67 @@ LOG = infrastructure.get_logger(__name__)
 class FlagDeterBaseInputs(vdp.StandardInputs):
     """
     FlagDeterBaseInputs manages the inputs for the FlagDeterBase task.
-    
+
     .. py:attribute:: context
 
         the (:class:`~pipeline.infrastructure.launcher.Context`) holding all
         pipeline state
 
     .. py:attribute:: vis
-    
+
         a string or list of strings containing the MS name(s) on which to
         operate
-        
+
     .. py:attribute:: output_dir
-    
+
         the directory to which pipeline data should be sent
 
     .. py:attribute:: flagbackup
-    
+
         a boolean indicating whether whether existing flags should be backed
         up before new flagging begins.
-        
+
     .. py:attribute:: autocorr
 
         a boolean indicating whether autocorrelations are to be flagged.
 
     .. py:attribute:: shadow
-    
+
         a boolean indicating whether shadowed antennas are to be flagged.
-        
+
     .. py:attribute:: scan
-    
+
         a boolean indicating whether scan flagging is to be performed.
 
     .. py:attribute:: scannumber
 
         A comma-delimited string stating the scans to flag. Standard data
         selection syntax is valid.
-        
+
     .. py:attribute:: intents
-    
+
         A comma-delimited string stating the intents to flag. Wildcards (*
         character) are allowed.
 
     .. py:attribute:: edgespw
-    
+
         A boolean stating whether edge channels are flagged.
-        
+
     .. py:attribute:: fracspw
-    
+
         A float contains the fraction (between 0.0 and 1.0) of channels
         to removed from the edge.
-        
+
     .. py:attribute:: online
-        
+
         A boolean indicating whether online flags are to be applied.
-        
+
     .. py:attribute:: fileonline
-    
+
         The filename of the ASCII file containing online flagging commands.
 
     .. py:attribute:: template
-    
+
         A boolean indicating whether flagging templates are to be applied.
 
     .. py:attribute:: filetemplate
@@ -225,7 +225,7 @@ class FlagDeterBaseInputs(vdp.StandardInputs):
         Translate the input parameters of this class to task parameters 
         required by the CASA task flagdata. The returned object is a 
         dictionary of flagdata arguments as keyword/value pairs.
-        
+
         :rtype: dict        
         """
         return {'vis': self.vis,
@@ -255,7 +255,7 @@ class FlagDeterBaseResults(basetask.Results):
         # SUBTRACT flag counts from previous agents, because the counts are
         # cumulative.
         s = 'Deterministic flagging results:\n'
-        
+
         for idx in range(0, len(self.summaries)):
             flagcount = int(self.summaries[idx]['flagged'])
             totalcount = int(self.summaries[idx]['total'])
@@ -268,7 +268,7 @@ class FlagDeterBaseResults(basetask.Results):
             s += '\tSummary %s (%s) :  Flagged : %s out of %s (%0.2f%%)\n' % (
                     idx, self.summaries[idx]['name'], flagcount, totalcount,
                     100.0*flagcount/totalcount)
-        
+
         return s
 
 
@@ -276,14 +276,14 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
     """
     FlagDeterBase is the base class for deterministic flagging. It can perform
     many different types of deterministic flagging:
-    
+
     - Autocorrelations
     - Shadowed antennas
     - Scan and intents
     - Edge channels
     - Online flags
     - Template flags
-    
+
     FlagDeterBase outputs flagdata flagging commands to a temporary ASCII 
     file located in the pipeline working directory; flagdata is then invoked
     using this command file as input.
@@ -295,7 +295,7 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
         """
         Prepare and execute a flagdata flagging job appropriate to the
         task inputs.
-        
+
         This method generates, overwriting if necessary, an ASCII file 
         containing flagdata flagging commands. A flagdata task is then
         executed, using this ASCII file as inputs. 
@@ -303,7 +303,7 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
         # create a local alias for inputs, so we're not saying 'self.inputs'
         # everywhere
         inputs = self.inputs
-        
+
         # get the flagdata command string, ready for the flagdata input file
         flag_cmds = self._get_flag_commands()
         flag_str = '\n'.join(flag_cmds)
@@ -323,7 +323,7 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
         summary_dict = self._executor.execute(job)
 
         agent_summaries = dict((v['name'], v) for v in summary_dict.itervalues())
-        
+
         ordered_agents = ['before', 'anos', 'intents', 'qa0', 'qa2', 'online',  'template', 'autocorr',
                           'shadow', 'edgespw', 'clip', 'quack',
                           'baseband']
@@ -338,12 +338,12 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
     def analyse(self, results):
         """
         Analyse the results of the flagging operation.
-        
+
         This method does not perform any analysis, so the results object is
         returned exactly as-is, with no data massaging or results items
         added. If additional statistics needed to be calculated based on the
         post-flagging state, this would be a good place to do it.
-        
+
         :rtype: :class:~`FlagDeterBaseResults`        
         """
         return results
@@ -351,7 +351,7 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
     def _get_flag_commands(self):
         """
         Get the flagging commands as a string suitable for flagdata.
-        
+
         This method analyses the inputs associated with this instance, parsing
         the input parameters and converting them into a list of matching 
         flagdata flagging commands. This list of commands is then converted
@@ -362,10 +362,10 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
         """
         # create a local variable for the inputs associated with this instance
         inputs = self.inputs
-        
+
         # the empty list which will hold the flagging commands
         flag_cmds = []        
-        
+
         # flag online?
         '''
         if inputs.online:
@@ -412,11 +412,11 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
                     if inputs.qa2:
                         flag_cmds.extend([cmd for cmd in cmdlist if ('QA2' in cmd)])
                         flag_cmds.append("mode='summary' name='qa2'")
-                    
+
                     # All other online flags
                     flag_cmds.extend([cmd for cmd in cmdlist if not ('QA0' in cmd) and not('QA2' in cmd)])
                     flag_cmds.append("mode='summary' name='online'")
-            
+
                 else:
                     flag_cmds.extend(self._read_flagfile(inputs.fileonline))
                     flag_cmds.append("mode='summary' name='online'")
@@ -435,12 +435,12 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
         if inputs.autocorr:
             flag_cmds.append("mode='manual' autocorr=True reason='autocorr'")
             flag_cmds.append("mode='summary' name='autocorr'")
-    
+
         # Flag shadowed antennas?
         if inputs.shadow:
             flag_cmds.append("mode='shadow' reason='shadow'")
             flag_cmds.append("mode='summary' name='shadow'")
-        
+
         # Flag according to scan numbers and intents?
         if inputs.scan and inputs.scannumber != '':
             flag_cmds.append("mode='manual' scan='%s' reason='scans'" % inputs.scannumber)
@@ -469,7 +469,7 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
         """
         Verify that the given spw should be flagged, raising a ValueError if
         it should not.
-        
+
         Checks in this function should be generic. Observatory-dependent tests
         should be added by extending FlagDeterBase and overriding this
         method.
@@ -539,7 +539,7 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
         else:
             with open(filename) as stream:
                 return stream.read().rstrip('\n')
-                
+
     def _read_flagfile(self, filename):
         if not os.path.exists(filename):
             LOG.warning('%s does not exist' % filename)

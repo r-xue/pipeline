@@ -602,7 +602,7 @@ def CalcAtmTransmissionForImage(img, chanInfo='', airmass=1.5, pwv=-1,
     wet = np.array(myat.getWetOpacitySpec(0)[1]['value'])
     TebbSky = myat.getTebbSkySpec(spwid=0)[1]['value']
     # readback the values to be sure they got set
-    
+
     if (myat.getRefFreq()['unit'] != 'GHz'):
         LOG.warn("There is a unit mismatch for refFreq in the atm code.")
     if (myat.getChanSep()['unit'] != 'MHz'):

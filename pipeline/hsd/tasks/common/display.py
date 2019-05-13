@@ -61,7 +61,7 @@ mjd_to_datetime_vectorized = numpy.vectorize(mjd_to_datetime)
 def mjd_to_plotval(mjd_list):
     datetime_list = mjd_to_datetime_vectorized(mjd_list)
     return date2num(datetime_list)
-    
+
 
 class CustomDateFormatter(DateFormatter):
     """
@@ -95,30 +95,30 @@ def utc_locator(start_time=None, end_time=None):
 class PlotObjectHandler(object):
     def __init__(self):
         self.storage = []
-        
+
     def __del__(self):
         self.clear()
-    
+
     def plot(self, *args, **kwargs):
         object_list = pl.plot(*args, **kwargs)
         self.storage.extend(object_list)
         return object_list
-    
+
     def text(self, *args, **kwargs):
         object_list = pl.text(*args, **kwargs)
         self.storage.append(object_list)
         return object_list
-    
+
     def axvspan(self, *args, **kwargs):
         object_list = pl.axvspan(*args, **kwargs)
         self.storage.append(object_list)
         return object_list
-    
+
     def axhline(self, *args, **kwargs):
         object_list = pl.axhline(*args, **kwargs)
         self.storage.append(object_list)
         return object_list
-    
+
     def clear(self):
         for obj in self.storage:
             obj.remove()
@@ -129,13 +129,13 @@ class SingleDishDisplayInputs(object):
     def __init__(self, context, result):
         self.context = context
         self.result = result
-        
+
     @property
     def isnro(self):
         arrays = {ms.antenna_array.name for ms in self.context.observing_run.measurement_sets}
         if len(arrays) != 1:
             raise RuntimeError('array name is not unique: {}'.format(list(arrays)))
-        
+
         return 'NRO' in arrays
 
 
@@ -172,7 +172,7 @@ class SpectralImage(object):
             self.direction_reference = self.coordsys.referencecode('dir')[0]
         qa = casatools.quanta
         self._beamsize_in_deg = qa.convert(qa.sqrt(qa.mul(beam['major'], beam['minor'])), 'deg')['value']
-        
+
     @property
     def nx(self):
         return self.image_shape[self.id_direction[0]]
@@ -188,7 +188,7 @@ class SpectralImage(object):
     @property
     def npol(self):
         return self.image_shape[self.id_stokes]
-    
+
     @property
     def brightnessunit(self):
         return self._brightnessunit
@@ -215,7 +215,7 @@ class SpectralImage(object):
 
     def direction_axis(self, idx, unit='deg'):
         return self.__axis(self.id_direction[idx], unit=unit)
-        
+
     def __axis(self, idx, unit):
         qa = casatools.quanta
         refpix = self.coordsys.referencepixel()['numeric'][idx]
@@ -227,12 +227,12 @@ class SpectralImage(object):
             increment = qa.convert(qa.quantity(increment, _unit), unit)['value']
         #return numpy.array([refval+increment*(i-refpix) for i in xrange(self.nchan)])
         return (refpix, refval, increment)
-        
+
 
 class SDImageDisplayInputs(SingleDishDisplayInputs):
     def __init__(self, context, result):
         super(SDImageDisplayInputs, self).__init__(context, result)
-        
+
     @property
     def imagename(self):
         return self.result.outcome['image'].imagename
@@ -264,7 +264,7 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
         """
         group_id = self.result.outcome['reduction_group_id']
         return self.context.observing_run.ms_reduction_group[group_id]
-    
+
     @property
     def msid_list(self):
         return self.result.outcome['file_index']
@@ -272,7 +272,7 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
     @property
     def antennaid_list(self):
         return self.result.outcome['assoc_antennas']
-    
+
     @property
     def fieldid_list(self):
         return self.result.outcome['assoc_fields']
@@ -312,7 +312,7 @@ class SDCalibrationDisplay(object):
                 plot = None
             else:
                 plot = self.doplot(result, stage_dir)
-                
+
             if plot is not None:
                 plots.append(plot)
         return plots
@@ -321,7 +321,7 @@ class SDCalibrationDisplay(object):
     def doplot(self, result, stage_dir):
         raise NotImplementedError()
 
-        
+
 class SDImageDisplay(object):
     __metaclass__ = abc.ABCMeta
     Inputs = SDImageDisplayInputs
@@ -384,7 +384,7 @@ class SDImageDisplay(object):
     @property
     def id_spectral(self):
         return self.image.id_spectral if self.image is not None else None
-    
+
     @property
     def id_stokes(self):
         return self.image.id_stokes if self.image is not None else None
@@ -455,7 +455,7 @@ def drop_edge(array):
 class TimeAxesManager(object):
     def __init__(self):
         self.locator = utc_locator()
-        
+
     def init(self, start_time=None, end_time=None):
         self.locator = utc_locator(start_time, end_time)
 
@@ -489,11 +489,11 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
         self.ticksize = ticksize
         self.brightnessunit = brightnessunit
         self.numeric_formatter = pl.FormatStrFormatter('%.2f')
-        
+
         self._axes_integsp = None
         self._axes_spmap = None
         self._axes_atm = None
-        
+
         if figure_id is None:
             self.figure_id = self.MATPLOTLIB_FIGURE_ID()
         else:
@@ -501,7 +501,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
         self.figure = pl.figure(self.figure_id, dpi=DPIDetail)
         if clearpanel:
             pl.clf()
-            
+
         _f = form4(self.nv)
         self.gs_top = gridspec.GridSpec(1, 1,
                                         left=0.08,
@@ -516,11 +516,11 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
 #                                            hspace=0, wspace=0,
 #                                            left=0, right=0.95,
 #                                            bottom=0.01, top=1.0 - 1.0/form3(self.nv)-0.07)
-        
+
     @staticmethod
     def MATPLOTLIB_FIGURE_ID():
         return 8910
-        
+
     @property
     def axes_integsp(self):
         if self._axes_integsp is None:
@@ -545,7 +545,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             self._axes_spmap = list(self.__axes_spmap())
 
         return self._axes_spmap
-    
+
     @property
     def axes_atm(self):
         if self._axes_atm is None:
@@ -614,27 +614,27 @@ class SDSparseMapPlotter(object):
         self.deviation_mask = None
         self.atm_transmission = None
         self.atm_frequency = None
-        
+
     @property
     def nh(self):
         return self.axes.nh
-    
+
     @property
     def nv(self):
         return self.axes.nv
-        
+
     @property
     def TickSize(self):
         return self.axes.ticksize
-    
+
     @property
     def direction_reference(self):
         return self.axes.direction_reference
-    
+
     @direction_reference.setter
     def direction_reference(self, value):
         self.axes.direction_reference = value
-    
+
     def setup_labels(self, refpix_list, refval_list, increment_list):
         LabelRA = numpy.zeros((self.nh, 2), numpy.float32) + NoData
         LabelDEC = numpy.zeros((self.nv, 2), numpy.float32) + NoData
@@ -657,23 +657,23 @@ class SDSparseMapPlotter(object):
             LabelDEC[y][0] = refval + (y0 - refpix) * increment
             LabelDEC[y][1] = refval + (y1 - refpix) * increment
         self.axes.setup_labels(LabelRA, LabelDEC)
-        
+
     def setup_lines(self, lines_averaged, lines_map=None):
         self.lines_averaged = lines_averaged
         self.lines_map = lines_map
-        
+
     def setup_reference_level(self, level=0.0):
         self.reference_level = level
-        
+
     def set_global_scaling(self):
         self.global_scaling = True
-        
+
     def unset_global_scaling(self):
         self.global_scaling = False
-        
+
     def set_deviation_mask(self, mask):
         self.deviation_mask = mask
-        
+
     def set_atm_transmission(self, transmission, frequency):
         if self.atm_transmission is None:
             self.atm_transmission = [transmission]
@@ -681,16 +681,16 @@ class SDSparseMapPlotter(object):
         else:
             self.atm_transmission.append(transmission)
             self.atm_frequency.append(frequency)
-    
+
     def unset_atm_transmission(self):
         self.atm_transmission = None
         self.atm_frequency = None
-        
+
     def plot(self, map_data, averaged_data, frequency, fit_result=None, figfile=None):
         plot_helper = PlotObjectHandler()
-        
+
         overlay_atm_transmission = self.atm_transmission is not None
-        
+
         spmin = averaged_data.min()
         spmax = averaged_data.max()
         dsp = spmax - spmin
@@ -700,7 +700,7 @@ class SDSparseMapPlotter(object):
         else:
             spmax += dsp * 0.1
         LOG.debug('spmin=%s, spmax=%s' % (spmin, spmax))
-        
+
         global_xmin = min(frequency[0], frequency[-1])
         global_xmax = max(frequency[0], frequency[-1])
         LOG.debug('global_xmin=%s, global_xmax=%s' % (global_xmin, global_xmax))
@@ -775,7 +775,7 @@ class SDSparseMapPlotter(object):
             ymin = (amin - Y) / (1.0 - Y)
             ymax = amax + (1.0 - amax) * 0.1
             pl.axis((global_xmin, global_xmax, ymin, ymax))
-                    
+
         is_valid_fit_result = (fit_result is not None and fit_result.shape == map_data.shape)
 
         for x in xrange(self.nh):
@@ -830,11 +830,11 @@ class SDSparseMapPlotter(object):
         if figfile is not None:
             pl.savefig(figfile, format='png', dpi=DPIDetail)
         LOG.debug('figfile=\'%s\''%(figfile))
-        
+
         plot_helper.clear()
 
         return True
-    
+
     def done(self):
         pl.close()
         del self.axes

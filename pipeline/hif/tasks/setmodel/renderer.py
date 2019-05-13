@@ -122,10 +122,10 @@ def make_flux_table(context, results):
                         pass
 
                 spw = ms_for_result.get_spectral_window(measurement.spw_id)
-                                                   
+
                 tr = FluxTR(vis_cell, field_cell, str(spw.id),
                             str(spw.centre_frequency), spw.band, fluxes['I'],
                             fluxes['Q'], fluxes['U'], fluxes['V'], fluxes['spix'], fluxcsv_path_link)
                 rows.append(tr)
-    
+
     return utils.merge_td_columns(rows)

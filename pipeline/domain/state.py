@@ -16,7 +16,7 @@ class State(object):
 
     def __setstate__(self, state):
         self.id, self.obs_mode = state
-    
+
     def __init__(self, state_id, obs_mode):
         self.id = state_id
         # work around NumPy bug with empty strings
@@ -137,7 +137,7 @@ class StateALMA(State):
         'OBSERVE_TARGET.OFF_SOURCE'          : 'REFERENCE',
         'OBSERVE_TARGET_OFF_SOURCE'          : 'REFERENCE'
     }
-    
+
     def __init__(self, state_id, obs_mode):
         super(StateALMA, self).__init__(state_id, obs_mode)
 
@@ -152,10 +152,10 @@ class StateALMACycle0(StateALMA):
 
     def __init__(self, state_id, obs_mode):
         super(StateALMACycle0, self).__init__(state_id, obs_mode)
-        
+
         # For Cycle 0, check whether this state has PHASE and another cal
         # intent. If so, the PHASE obsmode will be removed.
-        
+
         # First collect the intents using the raw obsmodes recorded in the
         # state table.. 
         intents = self.intents
@@ -166,7 +166,7 @@ class StateALMACycle0(StateALMA):
         if 'PHASE' in intents and not has_bypass_intent:
             LOG.info('Cycle 0 mislabeled data workaround: removing PHASE '
                      'intent for State %s' % self.id)
-            
+
             # .. find the obs_mode(s) responsible for the addition of the
             # phase intent..
             phase_obs_modes = [k for k, v in self.obs_mode_mapping.iteritems() if v == 'PHASE']
@@ -241,7 +241,7 @@ class StateVLA(State):
         'SYSTEM_CONFIGURATION'               : 'SYSTEM_CONFIGURATION',
         'SYSTEM_CONFIGURATION#UNSPECIFIED'   : 'SYSTEM_CONFIGURATION'
     }
-    
+
     def __init__(self, state_id, obs_mode):
         super(StateVLA, self).__init__(state_id, obs_mode)
 
@@ -251,7 +251,7 @@ class StateAPEX(State):
     obs_mode_mapping = {
         'OBSERVE_TARGET#ON_SOURCE': 'TARGET'
     }
-    
+
     def __init__(self, state_id, obs_mode):
         super(StateAPEX, self).__init__(state_id, obs_mode)
 
@@ -261,7 +261,7 @@ class StateSMT(State):
     obs_mode_mapping = {
         'OBSERVE_TARGET#ON_SOURCE': 'TARGET'
     }
-    
+
     def __init__(self, state_id, obs_mode):
         super(StateSMT, self).__init__(state_id, obs_mode)
 
@@ -275,7 +275,7 @@ class StateNAOJ(State):
         'CALIBRATE_ATMOSPHERE#SKY_SOURCE'    : 'ATMOSPHERE',
         'CALIBRATE_ATMOSPHERE#ZERO_SOURCE'   : 'ATMOSPHERE'
     }
-    
+
     def __init__(self, state_id, obs_mode):
         super(StateNAOJ, self).__init__(state_id, obs_mode)
 

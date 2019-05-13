@@ -44,14 +44,14 @@ class taskutil(object):
         self.title = title
         self.prefix = prefix
         self.tasks = []
-        
+
     def createtasklist(self):
         s = commands.getoutput('ls '+self.taskdir+'/*.xml')
         tasks = s.split('\n')
         for i in xrange(len(tasks)):
             tasks[i] = tasks[i].split('/')[-1].replace('.xml', '')
         self.tasks = tasks
-        
+
     def gettasklist(self):
         return self.tasks
 
@@ -185,7 +185,7 @@ class taskutil(object):
         for i in xrange(len(tasklist)):
             print('<H3><A NAME="%s">%s</A></H3>' % (tasklist[i], tasklist[i]), file=f)
             print('<DL>', file=f)
-            
+
             # task description
             print('<DT> <B>Task Description</B><BR>', file=f)
             print('<DD><BR>', file=f)
@@ -252,18 +252,18 @@ class hetaskutil(object):
         self.tasks = {}
         self.addmodule('hif', 'Interferometry')
         self.addmodule('hsd', 'Single-Dish')
-        
+
     @property
     def keys(self):
         keys = sorted(self.tasks.keys()[:])
         return keys    
-    
+
     def addmodule(self, name, title, version=2):
         if version == 2:
             self.tasks[name] = taskutil2(dirname=os.path.join(self.phdir, name, 'cli'), title=title, prefix=name)
         else:
             self.tasks[name] = taskutil(dirname=os.path.join(self.phdir, name, 'cli'), title=title)
-        
+
     def createtasklist(self):
         for key in self.keys:
             self.tasks[key].createtasklist()

@@ -29,9 +29,9 @@ class GaincalSnrQAHandler(pqa.QAPlugin):
         score2 = self._poor_phase_snrs(ms, result.spwids,
             phasesnr, result.snrs)
         scores = [score1, score2]
-            
+
         result.qa.pool.extend(scores)
-    
+
     def _missing_phase_snrs(self, ms, spwids, snrs):
         '''
         Check whether there are missing phase snrs. 
@@ -45,7 +45,7 @@ class GaincalSnrQAHandler(pqa.QAPlugin):
         return qacalc.score_poor_phase_snrs(ms, spwids, phasesnr,
             snrs)
 
-    
+
 class GaincalSnrListQAHandler(pqa.QAPlugin):
     """
     QA handler for a list containing GaincalSnrResults.

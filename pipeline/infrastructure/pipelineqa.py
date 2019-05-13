@@ -70,7 +70,7 @@ class QAScore(object):
 class QAScorePool(object):
     all_unity_longmsg = 'All QA completed successfully'
     all_unity_shortmsg = 'QA pass'
-    
+
     def __init__(self):
         self.pool = []
         self._representative = None
@@ -79,10 +79,10 @@ class QAScorePool(object):
     def representative(self):
         if self._representative is not None:
             return self._representative
-        
+
         if not self.pool:
             return QAScore(None, 'No QA scores registered for this task', 'No QA')
-        
+
         # if all([s.score >= 0.9 for s in self.pool]):
         #     return QAScore(min([s.score for s in self.pool]), self.all_unity_longmsg, self.all_unity_shortmsg)
 
@@ -160,7 +160,7 @@ class QAPlugin(object):
         # return False
         if not isinstance(result, self.result_cls):
             return False
-        
+
         # this is the expected class and we weren't expecting any
         # children, so we should be able to handle the result
         if self.child_cls is None and (self.generating_task is None

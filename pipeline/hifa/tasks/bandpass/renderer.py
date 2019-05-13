@@ -36,7 +36,7 @@ class T2_4MDetailsBandpassRenderer(baserenderer.T2_4MDetailsBandpassRenderer):
             'a': 'Amplitude only',
             'ap': 'Phase and amplitude'
         }
-        
+
         # identify phaseup from 'preceding' list attached to result
         phaseup_calapps = [] 
         for previous_result in result.preceding:
@@ -44,14 +44,14 @@ class T2_4MDetailsBandpassRenderer(baserenderer.T2_4MDetailsBandpassRenderer):
                 l = [cf for cf in calapp.calfrom if cf.caltype == 'gaincal']
                 if l and calapp not in phaseup_calapps:
                     phaseup_calapps.append(calapp)
-                
+
         applications = []
         for calapp in phaseup_calapps:
             solint = utils.get_origin_input_arg(calapp, 'solint')
 
             if solint == 'inf':
                 solint = 'Infinite'
-            
+
             # Convert solint=int to a real integration time. 
             # solint is spw dependent; science windows usually have the same
             # integration time, though that's not guaranteed by the MS.

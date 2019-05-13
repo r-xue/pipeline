@@ -107,7 +107,7 @@ class Lowgainflag(basetask.StandardTaskTemplate):
 
     def prepare(self):
         inputs = self.inputs
-        
+
         # Initialize result and store vis in result
         result = LowgainflagResults(vis=inputs.vis)
 
@@ -117,7 +117,7 @@ class Lowgainflag(basetask.StandardTaskTemplate):
             vis=inputs.vis, intent=inputs.intent, spw=inputs.spw,
             refant=inputs.refant)
         datatask = LowgainflagData(datainputs)
-        
+
         # Construct the generator that will create the view of the data
         # that is the basis for flagging.
         viewtask = LowgainflagView(
@@ -153,14 +153,14 @@ class Lowgainflag(basetask.StandardTaskTemplate):
 
         # Execute the flagger task.
         flaggerresult = self._executor.execute(flaggertask)
-        
+
         # Import views, flags, and "measurement set or caltable to flag"
         # into final result
         result.importfrom(flaggerresult)
 
         # Copy flagging summaries to final result
         result.summaries = flaggerresult.summaries
-        
+
         return result
 
     def analyse(self, result):
@@ -370,18 +370,18 @@ class LowgainflagData(basetask.StandardTaskTemplate):
             gatable = gatable[0].gaintable
             result.table = gatable
             result.table_available = True
-            
+
         return result
 
     def analyse(self, result):
         return result
 
- 
+
 class LowgainflagView(object):
 
     def __init__(self, context, vis=None, intent=None, spw=None, refant=None,
                  min_nants_threshold=None):
-        
+
         self.context = context
         self.vis = vis
         self.intent = intent
@@ -390,7 +390,7 @@ class LowgainflagView(object):
         self.min_nants_threshold = min_nants_threshold
 
     def __call__(self, data):
-        
+
         # Initialize result structure
         self.result = LowgainflagViewResults()
 

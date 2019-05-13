@@ -30,11 +30,11 @@ class PhaseUpSolIntAdapter(adapters.Adapter):
     :class:`~pipeline.hif.heuristics.solint.PhaseUpSolInt` heuristic, taking in a
     MeasurementSet and intent and passing the median integration time for
     observations with that intent through to the science heuristic.
-    
+
     """
     def __init__(self, heuristic):
         """Create a new PhaseUpSolIntAdapter, wrapping the given heuristic.
-        
+
         :param heuristic: the target heuristic
         :type heuristic: :class:`~pipeline.hif.heuristics.solint.PhaseUpSolInt`
         """
@@ -44,7 +44,7 @@ class PhaseUpSolIntAdapter(adapters.Adapter):
         """Extract the integration time for observations with the given intent
         from the measurement set and pass it to the wrapped heuristic,
         returning the result.
-        
+
         :param ms: the MeasurementSet to examine 
         :type ms: :class:`~pipeline.domain.measurementset.MeasurementSet`
         :param intent: the intent for which to find the integration time 
@@ -60,11 +60,11 @@ class PolynomialHeuristicAdapter(adapters.Adapter):
     polynomial order heuristic, the string name of a caltable, to the data
     types needed by the heuristic itself, which are numerical data arrays.    
     """    
-        
+
     def __init__(self, heuristic):
         """
         Create a new PolynomialHeuristicAdapter, wrapping the given heuristic.
-        
+
         :param heuristic: the target heuristic
         :type heuristic: :class:`~pipeline.hifheuristics.bporder.BPOrder`
         """
@@ -75,7 +75,7 @@ class PolynomialHeuristicAdapter(adapters.Adapter):
             return self._adaptee.calculate()
 
         data = self.read_caltable(ms, caltable, spw)
- 
+
         channel_data = self._get_channel_data(data, ms.antennas)
 
         return self._adaptee(channel_data=channel_data)
@@ -103,7 +103,7 @@ class PolynomialHeuristicAdapter(adapters.Adapter):
             return numpy.ones([num_antenna+1, spw.num_channels], numpy.complex)
 
         spw = int(spw)
-        
+
         # The number of channels in the SpW (needed to correct
         # for the fact that the calibration table arrays all have
         # the number of channels of the largest spw)      
@@ -155,7 +155,7 @@ class PolynomialHeuristicAdapter(adapters.Adapter):
 class DegAmpAdapter(PolynomialHeuristicAdapter):
     def __init__(self, heuristic):
         """Create a new DegAmpAdapter, wrapping the given heuristic.
-        
+
         :param heuristic: the target heuristic
         :type heuristic: :class:`~pipeline.hif.heuristics.bandpass.BPOrder`
         """
@@ -172,7 +172,7 @@ class DegAmpAdapter(PolynomialHeuristicAdapter):
 class DegPhaseAdapter(PolynomialHeuristicAdapter):
     def __init__(self, heuristic):
         """Create a new DegPhaseAdapter, wrapping the given heuristic.
-        
+
         :param heuristic: the target heuristic
         :type heuristic: :class:`~pipeline.hif.heuristics.bandpass.BPOrder`
         """

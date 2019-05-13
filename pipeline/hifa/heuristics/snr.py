@@ -280,7 +280,7 @@ def get_tsysinfo(ms, fieldnamelist, intent, spwidlist):
         """
         Return a list of scan object that matches an intent and
         the list of field names
-        
+
         Inputs:
             msobj: Measurementset object
             fieldname_list: a list of field names
@@ -1204,5 +1204,5 @@ def nextHighestDivisibleInt(n, d):
     dd = d
     while n % dd != 0 and dd < n:
         dd += 1
-    
+
     return dd

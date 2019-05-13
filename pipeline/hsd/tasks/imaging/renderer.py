@@ -31,7 +31,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
         # whether or not virtual spw id handling is necessary
         dovirtual = sdutils.require_virtual_spw_id_handling(context.observing_run)
         ctx.update({'dovirtual': dovirtual})
-        
+
         cqa = casatools.quanta
         plots = []
         image_rms = []
@@ -59,7 +59,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                                     cqa.getvalue(cqa.convert(sensitivity['bandwidth'], 'kHz'))[0],
                                     cqa.getvalue(sensitivity['sensitivity'])[0])
                     image_rms.append(tr)
-   
+
         rms_table = utils.merge_td_columns(image_rms, num_to_merge=0)
 
         map_types = {'sparsemap': {'type': 'sd_sparse_map',
@@ -78,14 +78,14 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
         for (key, value) in map_types.iteritems():
             plot_list = self._plots_per_field_with_type(plots, value['type'])
             LOG.debug('plot_list=%s'%((plot_list)))
-            
+
             # plot_list can be empty
             # typical case is spectral map for NRO
             if len(plot_list) == 0:
                 ctx.update({'%s_subpage' % key: None,
                             '%s_plots' % key: None})
                 continue
-            
+
             flattened = []
             for inner in plot_list.itervalues():
                 for plot in inner:
@@ -125,10 +125,10 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                             _ap[ant].append(pol)
                     profilemap_entries[field] = _ap
                 ctx.update({'profilemap_entries': profilemap_entries, 'rms_table': rms_table})
-                
+
         if 'rms_table' not in ctx:
             ctx.update({'rms_table': None})
-    
+
     @staticmethod
     def _plots_per_field_with_type(plots, type_string):
         plot_group = {}
@@ -140,7 +140,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                 else:
                     plot_group[key] = [p]
         return plot_group
-        
+
     @staticmethod
     def _summary_plots(plot_group):
         summary_plots = {}
@@ -156,7 +156,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                     idx = spw_list.index(spw)
                     summary_plots[field_name][idx] = plot
         return summary_plots
-    
+
     @staticmethod
     def _summary_plots_channelmap(context, plot_group):
         # take the ms having the largest number of fields
@@ -164,18 +164,18 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
         repid = nfields.index(max(nfields))
         ms = context.observing_run.measurement_sets[repid]
         source_names = [filenamer.sanitize(s.name) for s in ms.sources]
-        
+
         summary_plots = {}
         for (field_name, plots) in plot_group.iteritems():
             spw_list = []
             summary_plots[field_name] = []
             best_plot = {}
             min_separation = {}
-            
+
             for plot in plots:
                 if plot.parameters['ant'] != 'COMBINED':
                     continue
-                
+
                 spw_id = plot.parameters['spw']
                 if spw_id not in spw_list:
                     spw_list.append(spw_id)
@@ -193,7 +193,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                     # the result may be wrong due to the difference of frequency reference
                     LOG.debug('rest frequency is not available for {} spw {}. Using center frequency instead.'.format(source_name, spw_id))
                     rest_frequency = center_freq
-                
+
                 # line window in LSRK frequency
                 line_window = plot.parameters['line']
                 if line_window[0] > line_window[1]:
@@ -202,7 +202,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                     line_window[0] = tmp
                 line_center = sum(line_window) / 2
                 LOG.debug('line_center = {}'.format(line_center))
-                    
+
                 penalty = center_freq
                 if line_window[0] <= rest_frequency and rest_frequency <= line_window[1]:
                     separation = abs(line_center - rest_frequency)
@@ -228,7 +228,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
             LOG.debug('spw_list {}'.format(spw_list))
             for spw_id in spw_list:
                 summary_plots[field_name].append(best_plot[spw_id])
-                
+
         return summary_plots
-                
-                
+
+

@@ -31,17 +31,17 @@ def _find_spw(vis, bands, context):
 
     if bands == []:
         bands = list(map(find_EVLA_band, center_frequencies))
-    
+
     unique_bands = list(numpy.unique(bands))
-    
+
     numSpws = len(channels)
 
     unique_bands_string = ','.join(unique_bands)
-    
+
     all_spws_list = range(numSpws)
-    
+
     all_spws = ','.join(map(str, all_spws_list))
-    
+
     return all_spws, center_frequencies
 
 
@@ -77,17 +77,17 @@ class Opcal(basetask.StandardTaskTemplate):
 
     def prepare(self):
         inputs = self.inputs
-        
+
         context = self.inputs.context
-        
+
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         # spw2band = context.evla['msinfo'][m.name].spw2band
         spw2band = m.get_vla_spw2band()
         bands = spw2band.values()
-        
+
         # with casatools.MSReader(inputs.vis) as ms:
         #     ms_summary = ms.summary()
-        
+
         # startdate = ms_summary['BeginTime']
 
         seasonal_weight = 1.0
@@ -116,9 +116,9 @@ class Opcal(basetask.StandardTaskTemplate):
         plotweather_args = {'vis' : inputs.vis, 'seasonal_weight': seasonal_weight, 'doPlot' : True}
         plotweather_job = casa_tasks.plotweather(**plotweather_args)
         opacities = self._executor.execute(plotweather_job)
- 
+
         inputs.parameter = opacities
-        
+
         inputs.spw, center_frequencies = _find_spw(inputs.vis, bands, context)
 
         gencal_args = inputs.to_casa_args()

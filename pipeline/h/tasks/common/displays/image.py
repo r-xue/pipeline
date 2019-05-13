@@ -157,13 +157,13 @@ class ImageDisplay(object):
                             'type': results.first(description).datatype,
                             'file': os.path.basename(results.first(description).filename)})
             plots.append(plot)
-            
+
             if os.path.exists(plotfile):
                 LOG.trace('Not overwriting existing image at %s' % plotfile)
                 continue
 
             plt.figure(num=1)
-            
+
             if len(flagcmds) > 0:
                 nsubplots = 3
                 self._plot_panel(nsubplots, 1, results.first(description),
@@ -199,13 +199,13 @@ class ImageDisplay(object):
             # key for data flagged during this stage
             if len(flagcmds) > 0:
                 rulesplotted = set()
-                
+
                 yoff = self.plottext(0.1, yoff, 'Flagged here:', 35, mult=0.9)
                 yoff = self.plottext(0.1, yoff, 'rules:', 45, mult=0.8)
                 for flagcmd in flagcmds:
                     if flagcmd.rulename == 'ignore':
                         continue
- 
+
                     if (flagcmd.rulename, flagcmd.ruleaxis,
                             flag_color[flagcmd.rulename]) not in rulesplotted:
                         color = flag_color[flagcmd.rulename]
@@ -236,7 +236,7 @@ class ImageDisplay(object):
                 if yoff < 0.0:
                     yoff = yoffstart
                     xoff += 0.30
-             
+
             # reset axis limits which otherwise will have been pulled
             # around by the plotting of the key
             plt.axis([0.0, 1.0, 0.0, 1.0])
@@ -274,7 +274,7 @@ class ImageDisplay(object):
         # yunits = image.axes[1].units
         dataunits = image.units
         datatype = image.datatype
-        
+
         # set sentinels at points with no data/violet. These should be
         # overwritten by other flag colours in a moment.
         data[flag != 0] = 2.0
@@ -354,7 +354,7 @@ class ImageDisplay(object):
                 ydata_numeric = np.arange(len(ydata))
         else:
             ydata_numeric = ydata
-        
+
         # only plot y tick labels on first panel to avoid collision
         # between y tick labels for second panel with greyscale for
         # first
@@ -373,7 +373,7 @@ class ImageDisplay(object):
                 extent = [xdata[0], xdata[-1], ydata_numeric[0], ydata_numeric[-1]+1]
             else:
                 extent = [xdata[0], xdata[-1], ydata_numeric[0], ydata_numeric[-1]]
-            
+
         # If plotting by antenna, then extend limits of the axis to ensure that 
         # the tick marks align correctly with the center of the antenna pixels.
         if 'ANTENNA' in xtitle.upper(): 
@@ -563,7 +563,7 @@ class _SentinelMap(Colormap):
     def __init__(self, cmap, sentinels={}):
         """
         Constructor.
- 
+
         Keyword arguments:
         """
         self.name = 'SentinelMap'

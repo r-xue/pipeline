@@ -21,7 +21,7 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
         super(T2_4MDetailsSingleDishBaselineRenderer, self).__init__(template,
                                                                      description,
                                                                      always_rerender)
-        
+
     def update_mako_context(self, ctx, context, results):
         plots = []
         sparsemap_plots = []
@@ -63,7 +63,7 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
         ctx.update({'detail': plot_detail,
                     'cover_only': plot_cover,
                     'dovirtual': dovirtual})
-                
+
         # profile map before and after baseline subtracton
         maptype_list = ['before', 'after', 'before']
         subtype_list = ['raw', 'raw', 'avg']
@@ -85,13 +85,13 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
                                                       plot_title,
                                                       filenamer.sanitize('%s.html' % (plot_title.lower())))
             with renderer.get_file() as fileobj:
-                    fileobj.write(renderer.render())
-            
+                fileobj.write(renderer.render())
+
             for name in plot_list:
                 subpage[name] = os.path.basename(renderer.path)
             ctx.update({'sparsemap_subpage_{}_{}'.format(maptype.lower(), subtype.lower()): subpage,
                         'sparsemap_{}_{}'.format(maptype.lower(), subtype.lower()): summary})
-            
+
     @staticmethod
     def _group_by_axes(plots):
         plot_group = {}
@@ -102,7 +102,7 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
             else:
                 plot_group[key] = [p]
         return plot_group
-    
+
     @staticmethod
     def _get_a_plot_per_spw(plots):
         known_spw = []
@@ -112,7 +112,7 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
                 known_spw.append(p.parameters['spw'])
                 plot_list.append(p)
         return plot_list
-    
+
     @staticmethod
     def _plots_per_field(plots):
         plot_group = {}
@@ -123,7 +123,7 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
             else:
                 plot_group[key] = [p]
         return plot_group
-    
+
     @staticmethod
     def _plots_per_field_with_type(plots, type_string, subtype_string):
         plot_group = {}
@@ -158,7 +158,7 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
                     summary_plots[field_name].append(xplot)
                 del plot
         return summary_plots
-    
+
 
 class SingleDishClusterPlotsRenderer(basetemplates.JsonPlotRenderer):
     def __init__(self, context, result, xytitle, plots):
@@ -167,6 +167,6 @@ class SingleDishClusterPlotsRenderer(basetemplates.JsonPlotRenderer):
 
         super(SingleDishClusterPlotsRenderer, self).__init__(
             'hsd_cluster_plots.mako', context, result, plots, new_title, outfile)
-        
+
     def update_json_dict(self, d, plot):
         d['type'] = plot.parameters['type']

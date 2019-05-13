@@ -143,15 +143,15 @@ class WvrgcalInputs(vdp.StandardInputs):
 @task_registry.set_equivalent_casa_task('hifa_wvrgcal')
 class Wvrgcal(basetask.StandardTaskTemplate):
     Inputs = WvrgcalInputs
-    
+
     def __init__(self, inputs):
         super(Wvrgcal, self).__init__(inputs)
-    
+
     def prepare(self):
         inputs = self.inputs
         result = resultobjects.WvrgcalResult(vis=inputs.vis)        
         jobs = []
-        
+
         # get parameters that can be set from outside or which will be derived
         # from heuristics otherwise
         wvrheuristics = wvrgcal_heuristic.WvrgcalHeuristics(
@@ -159,7 +159,7 @@ class Wvrgcal(basetask.StandardTaskTemplate):
             tie=inputs.tie, hm_smooth=inputs.hm_smooth, smooth=inputs.smooth,
             sourceflag=inputs.sourceflag, nsol=inputs.nsol,
             segsource=inputs.segsource)
-        
+
         # return an empty results object if no WVR data available
         if not wvrheuristics.wvr_available():
             # only 12m antennas are expected to have WVRs fitted
@@ -172,17 +172,17 @@ class Wvrgcal(basetask.StandardTaskTemplate):
             LOG.error('WVR data available for only 1 antenna in %s'
                       '' % os.path.basename(inputs.vis))
             return result
-        
+
         if inputs.hm_toffset == 'automatic':
             toffset = wvrheuristics.toffset()
         else:
             toffset = inputs.toffset
-        
+
         if inputs.segsource is None:
             segsource = wvrheuristics.segsource()
         else:
             segsource = inputs.segsource
-        
+
         if inputs.hm_tie == 'automatic':
             tie = wvrheuristics.tie()
         else:
@@ -190,17 +190,17 @@ class Wvrgcal(basetask.StandardTaskTemplate):
         # add tie to results object for display in the weblog. Tie is not spw
         # dependent, so we can add it early.
         result.tie = tie
-        
+
         if inputs.sourceflag is None:
             sourceflag = wvrheuristics.sourceflag()
         else:
             sourceflag = inputs.sourceflag
-        
+
         if inputs.nsol is None:
             nsol = wvrheuristics.nsol()
         else:
             nsol = inputs.nsol
-        
+
         # get parameters that must be set from outside
         disperse = inputs.disperse
         wvrflag = inputs.wvrflag
@@ -222,7 +222,7 @@ class Wvrgcal(basetask.StandardTaskTemplate):
                 refant = []
             else:
                 refant = refant.split(',')
-        
+
         # smooth may vary with spectral window so need to ensure we calculate
         # results that can cover them all
         science_spws = ms.get_spectral_windows(science_windows_only=True)
@@ -244,7 +244,7 @@ class Wvrgcal(basetask.StandardTaskTemplate):
                 smooth = wvrheuristics.smoothall(science_spwids)
             else:
                 smooth = inputs.smooth
-            
+
             # prepare to run the wvrgcal task if necessary
             caltable = caltable_heuristic.WvrgCaltable()
             caltable = caltable(output_dir=inputs.output_dir,
@@ -253,7 +253,7 @@ class Wvrgcal(basetask.StandardTaskTemplate):
             if smooth not in smooths_done:
                 # different caltable for each smoothing, remove old versions
                 shutil.rmtree(caltable, ignore_errors=True)
-                
+
                 task = casa_tasks.wvrgcal(vis=inputs.vis, caltable=caltable,
                                           offsetstable=inputs.offsetstable,
                                           toffset=toffset, segsource=segsource,
@@ -267,9 +267,9 @@ class Wvrgcal(basetask.StandardTaskTemplate):
                                           wvrspw=[wvr_spwids[0]],
                                           refant=refant)
                 jobs.append(task)
-                
+
                 smooths_done.add(smooth)
-            
+
             # add this wvrg table to the callibrary for this spw
             calto = callibrary.CalTo(vis=inputs.vis, spw=spw)
             calfrom = callibrary.CalFrom(caltable, caltype='wvr', spwmap=[],
@@ -281,7 +281,7 @@ class Wvrgcal(basetask.StandardTaskTemplate):
         # execute the jobs
         for job in jobs:
             job_result = self._executor.execute(job)
-            
+
             if job_result['success']:
                 # extract flags found by CASA job
                 job_name = np.array(job_result['Name'])
@@ -291,32 +291,32 @@ class Wvrgcal(basetask.StandardTaskTemplate):
                 LOG.warn('CASA wvrgcal job terminated unexpectedly with '
                          'exit code %s; no flags generated.' % (job_result['rval']))
                 job_wvrflag = set([])
-            
+
             input_wvrflag = set(wvrflag)
             generated_wvrflag = job_wvrflag.difference(input_wvrflag)
             if generated_wvrflag:
                 LOG.warn('%s wvrgcal has flagged antennas: %s' % (
                   os.path.basename(inputs.vis), list(generated_wvrflag)))
-         
+
             wvrflag_set = set(result.wvrflag)
             wvrflag_set.update(job_wvrflag)
             result.wvrflag = list(wvrflag_set)
-            
+
             result.wvr_infos = self._get_wvrinfos(job_result)
-        
+
         LOG.info('wvrgcal complete')
-        
+
         # removed any 'unsmoothed' wvrcal tables generated by the wvrgcal jobs
         for caltable in caltables:
             shutil.rmtree('%s_unsmoothed' % caltable, ignore_errors=True)
-        
+
         result.pool[:] = callist
-        
+
         return result
-    
+
     def analyse(self, result):
         inputs = self.inputs
-        
+
         # check that the caltable was actually generated
         on_disk = [ca for ca in result.pool
                    if ca.exists() or self._executor._dry_run]
@@ -324,18 +324,18 @@ class Wvrgcal(basetask.StandardTaskTemplate):
                    if ca not in on_disk and not self._executor._dry_run]
         result.error.clear()
         result.error.update(missing)
-        
+
         # wvrcal files to be applied
         result.final[:] = on_disk
-        
+
         qa_intent = inputs.qa_intent.strip()
         if not qa_intent:
             return result
-        
+
         # calculate the qa results if required
         if not result.final:
             return result
-        
+
         # get the spw for which qa results are needed
         # If no spw order was specified explicitly, then calculate an order
         # here; otherwise use the specified order (e.g. calculated during
@@ -354,7 +354,7 @@ class Wvrgcal(basetask.StandardTaskTemplate):
                 qa_spw_list = atmheuristics.spwid_rank_by_opacity_and_bandwidth()
         else:
             qa_spw_list = inputs.qa_spw.split(',')
-        
+
         for qa_spw in qa_spw_list:
             LOG.info('qa: %s attempting to calculate wvrgcal QA using spw %s' % (os.path.basename(inputs.vis), qa_spw))
             inputs.qa_spw = qa_spw
@@ -383,7 +383,7 @@ class Wvrgcal(basetask.StandardTaskTemplate):
         # callibrary
         LOG.debug('qa: accept WVR results into copy of context')
         result.accept(inputs.context)
-        
+
         # do a phase calibration on the bandpass and phase calibrators, now 
         # with bandpas *and* wvr preapplied.
         if not bp_result.final:
@@ -391,17 +391,17 @@ class Wvrgcal(basetask.StandardTaskTemplate):
         else:
             LOG.info('qa: calculating phase calibration with bandpass and wvr applied')
         wvr_result = self._do_wvr_gaincal(inputs)            
-        
+
         nowvr_caltable = nowvr_result.inputs['caltable']
         wvr_caltable = wvr_result.inputs['caltable']
         result.qa_wvr.gaintable_wvr = wvr_caltable
-        
+
         LOG.info('qa: calculate ratio no-WVR phase RMS / with-WVR phase rms')
         wvrg_qa.calculate_view(inputs.context, nowvr_caltable,
                                wvr_caltable, result.qa_wvr, qa_intent)
-        
+
         wvrg_qa.calculate_qa_numbers(result.qa_wvr)
-        
+
         # if the qa score indicates that applying the wvrg file will
         # make things worse then remove it from the results so that
         # it cannot be accepted into the context.
@@ -410,14 +410,14 @@ class Wvrgcal(basetask.StandardTaskTemplate):
                         '(%s) and will not be applied' %
                         (result.qa_wvr.overall_score, inputs.accept_threshold))
             result.final[:] = []
-        
+
         return result
-    
+
     def _do_qa_bandpass(self, inputs):
         """
         Create a bandpass caltable for QA analysis, returning the result of
         the worker bandpass task.
-        
+
         If a suitable bandpass caltable already exists, it will be reused. 
         """
         if inputs.bandpass_result:
@@ -429,19 +429,19 @@ class Wvrgcal(basetask.StandardTaskTemplate):
             LOG.info('Calculating new bandpass for QA analysis')
             result = self._do_new_qa_bandpass(inputs)
             return result
-    
+
     @staticmethod
     def _do_user_qa_bandpass(inputs):
         """
         Accept and return the bandpass result affixed to the inputs.
-        
+
         This code path is used as an optimisation, so identical caltables
         need not be recalculated.
         """
         bp_result = inputs.bandpass_result
         bp_result.accept(inputs.context)
         return bp_result
-    
+
     def _do_new_qa_bandpass(self, inputs):
         """
         Create a new bandpass caltable by spawning a bandpass worker task, 
@@ -464,7 +464,7 @@ class Wvrgcal(basetask.StandardTaskTemplate):
                 'hm_phaseup': 'manual',
                 'hm_bandpass': 'fixed',
                 'solint': 'inf,7.8125MHz'}
-        
+
         inputs = bandpass.ALMAPhcorBandpass.Inputs(inputs.context, **args)        
         task = bandpass.ALMAPhcorBandpass(inputs)
         result = self._executor.execute(task, merge=False)
@@ -473,12 +473,12 @@ class Wvrgcal(basetask.StandardTaskTemplate):
         else:
             result.accept(inputs.context)
         return result
-    
+
     def _do_nowvr_gaincal(self, inputs):
         # do a phase calibration on the bandpass and phase
         # calibrators with B preapplied
         LOG.info('Calculating phase calibration with B applied')
-        
+
         if inputs.nowvr_result:
             # if table already exists use it
             LOG.debug('Reusing WVR-uncorrected gain result for RMS:\n %s' %
@@ -490,7 +490,7 @@ class Wvrgcal(basetask.StandardTaskTemplate):
             nowvr_caltable_namer = self._get_nowvr_caltable_namer()
             result = self._do_qa_gaincal(inputs, nowvr_caltable_namer)            
             return result
-        
+
     def _do_wvr_gaincal(self, inputs):
         # get namer that will add '.flags_1_2.wvr' to caltable filename 
         wvr_caltable_namer = self._get_wvr_caltable_namer(inputs)            
@@ -499,7 +499,7 @@ class Wvrgcal(basetask.StandardTaskTemplate):
     def _do_qa_gaincal(self, inputs, caltable_namer):
         """
         Generate a new gain caltable via a call to a child pipeline task.
-        
+
         Analysing the improvement gained by applying the WVR requires that
         exactly the same gaincal job is called with and without the WVR 
         preapply. Coding the gaincal as a separate function with minimal
@@ -511,16 +511,16 @@ class Wvrgcal(basetask.StandardTaskTemplate):
                 'solint': 'int',
                 'calmode': 'p',
                 'minsnr': 0.0}
-        
+
         inputs = gaincal.GTypeGaincal.Inputs(inputs.context, **args)
-        
+
         # give calling code a chance to customise the caltable name via the
         # callback passed as an argument
         inputs.caltable = caltable_namer(inputs.caltable)
-        
+
         task = gaincal.GTypeGaincal(inputs)
         result = self._executor.execute(task, merge=False)
-        
+
         return result
 
     @staticmethod
@@ -534,9 +534,9 @@ class Wvrgcal(basetask.StandardTaskTemplate):
             LOG.debug('WVR uncorrected phase RMS gain table is %s' %
                       new_caltable_name)
             return new_caltable_name
-        
+
         return caltable_namer
-    
+
     @staticmethod
     def _get_wvr_caltable_namer(inputs):
         """        
@@ -544,14 +544,14 @@ class Wvrgcal(basetask.StandardTaskTemplate):
         filename.
         """
         flags = '.flagged_%d_antennas' % len(inputs.wvrflag) if inputs.wvrflag else ''
-        
+
         def caltable_namer(caltable):
             root, ext = os.path.splitext(caltable)
             new_caltable = '%s%s.wvr%s' % (root, flags, ext)
             LOG.debug('WVR-corrected phase RMS gain table is %s' %
                       os.path.basename(new_caltable))
             return new_caltable
-        
+
         return caltable_namer    
 
     @staticmethod
@@ -565,9 +565,9 @@ class Wvrgcal(basetask.StandardTaskTemplate):
         copied = dict(result)
         copied['RMS_um'] = [to_microns(v) for v in copied['RMS_um']]
         copied['Disc_um'] = [to_microns(v) for v in copied['Disc_um']]
-        
+
         attrs = ['Name', 'WVR', 'Flag', 'RMS_um', 'Disc_um']
         zipped = zip(*[copied.get(attr) for attr in attrs])
         wvr_infos = [WVRInfo(*row) for row in zipped]
-        
+
         return wvr_infos

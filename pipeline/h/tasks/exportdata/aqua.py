@@ -611,7 +611,7 @@ def xml_for_sensitivity_stage(context, stage_results, exporter, name):
     :rtype: xml.etree.cElementTree.Element
     """
     stage_name, stage_score = _get_pipeline_stage_and_score(stage_results)
-    
+
     tagname = name if name != '' else 'SensitivityEstimates'
 
     xml_root = ElementTree.Element(tagname,

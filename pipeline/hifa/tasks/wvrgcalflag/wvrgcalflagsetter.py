@@ -70,7 +70,7 @@ class WvrgcalFlagSetter(basetask.StandardTaskTemplate):
             # parameter, which would make this step unnecessary).
             ms = self.inputs.context.observing_run.get_ms(name=f.filename)
             antennas = ms.antennas
-           
+
             axisnames = np.array(f.axisnames)
             index = np.arange(len(axisnames))
             antindex = [i for i in index

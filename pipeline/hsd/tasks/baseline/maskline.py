@@ -27,11 +27,11 @@ class MaskLineInputs(vdp.StandardInputs):
     edge = vdp.VisDependentProperty(default=(0, 0))
     broadline = vdp.VisDependentProperty(default=True)
     clusteringalgorithm = vdp.VisDependentProperty(default='kmean')
-    
+
     @property
     def group_desc(self):
         return self.context.observing_run.ms_reduction_group[self.group_id]
-    
+
     @property
     def reference_member(self):
         return self.group_desc[self.member_list[0]]
@@ -39,7 +39,7 @@ class MaskLineInputs(vdp.StandardInputs):
     def __init__(self, context, iteration, group_id, member_list, #vis_list, field_list, antenna_list, spwid_list,
                  window=None, windowmode=None, edge=None, broadline=None, clusteringalgorithm=None):
         super(MaskLineInputs, self).__init__()
-        
+
         self.context = context
         self.iteration = iteration
         self.group_id = group_id
@@ -49,7 +49,7 @@ class MaskLineInputs(vdp.StandardInputs):
         self.edge = edge
         self.broadline = broadline
         self.clusteringalgorithm = clusteringalgorithm
-        
+
 
 class MaskLineResults(common.SingleDishResults):
     def __init__(self, task=None, success=None, outcome=None):
@@ -57,7 +57,7 @@ class MaskLineResults(common.SingleDishResults):
 
     def merge_with_context(self, context):
         super(MaskLineResults, self).merge_with_context(context)
-        
+
     def _outcome_name(self):
         return ''
 
@@ -123,27 +123,27 @@ class MaskLine(basetask.StandardTaskTemplate):
         clusteringalgorithm = self.inputs.clusteringalgorithm
         beam_size = casatools.quanta.convert(reference_data.beam_sizes[reference_antenna][reference_spw], 'deg')['value']
         observing_pattern = reference_data.observing_pattern[reference_antenna][reference_spw][reference_field]
-         
+
         # parse window
         parser = detection.LineWindowParser(reference_data, window)
         parser.parse(reference_field)
         parsed_window = parser.get_result(reference_spw)
-         
+
         LOG.debug('Members to be processed:')
         for (m, f, a, s) in utils.iterate_group_member(group_desc, member_list):#itertools.izip(vis_list, field_list, antenna_list, spwid_list):
             v = m.name
             LOG.debug('MS "{}" Field {} Antenna {} Spw {}', os.path.basename(v), f, a, s)
-             
+
         # filename for input/output
         # ms_list = [context.observing_run.get_ms(vis) for vis in vis_list]
         # filenames_work = [ms.work_data for ms in ms_list]
         # files_to_grid = dict(zip(file_index, filenames_work))
- 
+
         # LOG.debug('files_to_grid=%s'%(files_to_grid))
-                 
+
         # gridding size
         grid_size = beam_size
- 
+
         # simple gridding
         t0 = time.time()
         gridding_inputs = simplegrid.SDSimpleGridding.Inputs(context, group_id, member_list, parsed_window,
@@ -154,7 +154,7 @@ class MaskLine(basetask.StandardTaskTemplate):
         spectra = gridding_result.outcome['spectral_data']
         grid_table = gridding_result.outcome['grid_table']
         t1 = time.time()
- 
+
         # return empty result if grid_table is empty
         if len(grid_table) == 0: # or len(spectra) == 0:
             LOG.warn('Line detection/validation will not be done since grid table is empty. Maybe all the data are flagged out in the previous step.')
@@ -165,13 +165,13 @@ class MaskLine(basetask.StandardTaskTemplate):
                                      success=True,
                                      outcome=outcome)
             result.task = self.__class__
-                 
+
             return result
-         
+
         LOG.trace('len(grid_table)={}, spectra.shape={}', len(grid_table), numpy.asarray(spectra).shape)
         LOG.trace('grid_table={}', grid_table)
         LOG.debug('PROFILE simplegrid: elapsed time is {} sec', t1 - t0)
- 
+
         # line finding
         t0 = time.time()
         detection_inputs = detection.DetectLine.Inputs(context, group_id, parsed_window, windowmode,
@@ -182,10 +182,10 @@ class MaskLine(basetask.StandardTaskTemplate):
         detection_result = self._executor.execute(job, merge=False)
         detect_signal = detection_result.signals
         t1 = time.time()
- 
+
         LOG.trace('detect_signal={}', detect_signal)
         LOG.debug('PROFILE detection: elapsed time is {} sec', t1-t0)
- 
+
         # line validation
         t0 = time.time()
         validator_cls = validation.ValidationFactory(observing_pattern)
@@ -210,15 +210,15 @@ class MaskLine(basetask.StandardTaskTemplate):
         for datatable in dt_dict.itervalues():
             datatable.exportdata(minimal=True)
         t1 = time.time()
- 
+
         # LOG.debug('lines=%s'%(lines))
         LOG.debug('PROFILE validation: elapsed time is {} sec', t1-t0)
-         
+
         # LOG.debug('cluster_info=%s'%(cluster_info))
- 
+
         end_time = time.time()
         LOG.debug('PROFILE execute: elapsed time is {} sec', end_time-start_time)
- 
+
         outcome = {'detected_lines': lines,
                    'channelmap_range': channelmap_range,
                    'cluster_info': cluster_info,
@@ -229,6 +229,6 @@ class MaskLine(basetask.StandardTaskTemplate):
         result.task = self.__class__
 
         return result
-        
+
     def analyse(self, result):
         return result

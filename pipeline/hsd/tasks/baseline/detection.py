@@ -27,11 +27,11 @@ class DetectLineInputs(vdp.StandardInputs):
     window = vdp.VisDependentProperty(default=[])
     edge = vdp.VisDependentProperty(default=(0, 0))
     broadline = vdp.VisDependentProperty(default=True)
-    
+
     @property
     def windowmode(self):
         return getattr(self, '_windowmode', 'replace')
-        
+
     @windowmode.setter
     def windowmode(self, value):
         if value not in ['replace', 'merge']:
@@ -41,7 +41,7 @@ class DetectLineInputs(vdp.StandardInputs):
     def __init__(self, context, group_id=None, window=None, 
                  windowmode=None, edge=None, broadline=None):
         super(DetectLineInputs, self).__init__()
-        
+
         self.context = context
         self.group_id = group_id
         self.window = window
@@ -65,11 +65,11 @@ class DetectLineResults(common.SingleDishResults):
 #             datatable.exportdata(minimal=True)
 #             end_time = time.time()
 #             LOG.debug('End exporting datatable (minimal): {} ({} sec)', end_time, end_time - start_time)
-         
+
     @property
     def signals(self):
         return self._get_outcome('signals')
-        
+
     def _outcome_name(self):
         return ''
 
@@ -95,7 +95,7 @@ class DetectLine(basetask.StandardTaskTemplate):
         windowmode = self.inputs.windowmode
         edge = self.inputs.edge
         broadline = self.inputs.broadline
-        
+
         detect_signal = {}
 
         # Pre-Defined Spectrum Window
@@ -123,12 +123,12 @@ class DetectLine(basetask.StandardTaskTemplate):
                 antenna_id = m.antenna_id
                 if ms.basename not in datatable_dict:
                     continue
-                
+
                 datatable = datatable_dict[ms.basename]
                 for dt_row in utils.get_index_list_for_ms(datatable, [ms.basename], [antenna_id], 
                                                      [field_id], [spw_id]):
                     datatable.putcell('MASKLIST', dt_row, window)
-                
+
             result = DetectLineResults(task=self.__class__,
                                        success=True,
                                        outcome={'signals': detect_signal})
@@ -197,7 +197,7 @@ class DetectLine(basetask.StandardTaskTemplate):
                     MinNchan = (MinFWHM-2) / BINN + 2
                     SP = self.SpBinning(spectra[row], BINN, offset)
                     MSK = self.MaskBinning(masks[row], BINN, offset)
-    
+
                     protected = self._detect(spectrum=SP,
                                              mask=MSK,
                                              threshold=Thre+math.sqrt(BINN)-1.0,
@@ -225,7 +225,7 @@ class DetectLine(basetask.StandardTaskTemplate):
                                   Protected]           # Protected Region
             ProcEndTime = time.time()
             LOG.info('Channel ranges of detected lines for Row {}: {}', row, detect_signal[row][2])
-            
+
             LOG.debug('End Row {}: Elapsed Time={:.1} sec', row, (ProcEndTime - ProcStartTime))
         del Timer
 
@@ -233,11 +233,11 @@ class DetectLine(basetask.StandardTaskTemplate):
         result = DetectLineResults(task=self.__class__,
                                    success=True,
                                    outcome={'signals': detect_signal})
-                
+
         result.task = self.__class__
-                
+
         return result
-    
+
     def plot_detectrange(self, sp, protected, fname):
         print(protected, fname)
         PL.clf()
@@ -338,7 +338,7 @@ class DetectLine(basetask.StandardTaskTemplate):
         parser = LineWindowParser(ms, window)
         parser.parse(field_id)
         new_window = parser.get_result(spw)
-        
+
         # TODO
         # Channel range could be specified by LSRK frequency. This means that 
         # effective channnel range in TOPO frame may be different between MSs. 
@@ -347,9 +347,9 @@ class DetectLine(basetask.StandardTaskTemplate):
         # (i.e. gridding is done in TOPO frame), and (2) data format 
         # for detected lines doesn't support per-MS line lists. This have to be 
         # considered later.
-        
+
         return new_window
-    
+
 #         if len(window) == 0:
 #             return []
 #         else:
@@ -397,17 +397,17 @@ class LineWindowParser(object):
     """
     LineWindowParser is a parser for line window parameter. 
     Supported format is as follows:
-    
+
     [Single window list] -- apply to all spectral windows
       - integer list [chmin, chmax]
       - float list [fmin, fmax]
       - string list ['XGHz', 'YGHz']
-    
+
     [Multiple window list] -- apply to all spectral windows
       - nested integer list [[chmin, chmax], [chmin, chmax], ...] 
       - nested float list [[fmin, fmax], [fmin, fmax], ...]
       - nested string list [['XGHz', 'YGHz'], ['aMHz', 'bMHz'], ...]
-      
+
     [Dictionary] -- apply to selected spectral windows
       - {<spwid>: <window list>} style dictionary
       - spwid should be an integer specifying spectral window id
@@ -415,7 +415,7 @@ class LineWindowParser(object):
 
     [MS channel selection syntax] -- apply to selected spectral windows
       - channel selection string 'A:chmin~chmax;chmin~chmax,B:fmin~fmax,...'
-    
+
     Note that frequencies are interpreted as the value in LSRK frame. 
     Note also that frequencies given as a floating point number is interpreted 
     as the value in Hz.
@@ -423,20 +423,20 @@ class LineWindowParser(object):
     def __init__(self, ms, window):
         """
         Constructor
-        
+
         ms -- ms domain object
         window -- line window parameter
         """
         self.ms = ms
         self.window = window
         self.parsed = None
-        
+
         # science spectral windows
         self.science_spw = [x.id for x in self.ms.get_spectral_windows(science_windows_only=True)]
-        
+
         # measure tool
         self.me = casatools.measures
-            
+
     def parse(self, field_id):
         # convert self.window into dictionary
         if isinstance(self.window, str):
@@ -467,7 +467,7 @@ class LineWindowParser(object):
         else:
             # unsupported format or None
             processed = dict((spw, []) for spw in self.science_spw)
-            
+
         # convert frequency selection into channel selection
         self.parsed = {}
         self._measure_init(field_id)
@@ -486,26 +486,26 @@ class LineWindowParser(object):
                 self.parsed[spwid] = new_window
         finally:
             self._measure_done()
-            
+
         # consistency check
         for spwid in self.science_spw:
             assert spwid in self.parsed
-    
+
     def get_result(self, spw_id):
         if spw_id not in self.science_spw:
             LOG.info('Non-science spectral window was specified. Returning default window [].')
             return []
-        
+
         if self.parsed is None:
             LOG.info('You need to run parse method first. Returning default window [].')
             return []
-        
+
         if spw_id not in self.parsed:
             LOG.info('Unexpected behavior. Returning default window [].')
             return []
-        
+
         return self.parsed[spw_id]
-    
+
     def _string2dict(self, window):
         # utilize ms tool to convert selection string into lists
         with casatools.MSReader(self.ms.name) as ms:
@@ -519,34 +519,34 @@ class LineWindowParser(object):
                     idx = {'channel': []}
                 else:
                     raise e
-            
+
         new_window = {}
         channel_selection = idx['channel']
         for sel in channel_selection:
             assert len(sel) == 4
-            
+
             spwid = sel[0]
             chansel = list(sel[1:3])
             if spwid not in new_window:
                 new_window[spwid] = []
-            
+
             new_window[spwid].append(chansel)
-            
+
         for spwid in self.science_spw:
             if spwid not in new_window:
                 new_window[spwid] = []
-            
+
         return new_window
-    
+
     def _list2dict(self, window):
         # apply given window to all science windows
 
         return dict((spwid, window) for spwid in self.science_spw)
-    
+
     def _dict2dict(self, window):
         # key should be an integer
         return dict((int(spw), value) for spw, value in window.iteritems())
-    
+
     def _exclude_non_science_spws(self, window):
         # filter non-science windows
         # set default window to science windows if not specified
@@ -556,19 +556,19 @@ class LineWindowParser(object):
                 new_window[spwid] = list(window[spwid])
             else:
                 new_window[spwid] = []
-                
+
         return new_window
-    
+
     def _freq2chan(self, spwid, window):
         # window must be a list
         assert isinstance(window, list), "Unexpected value for 'window', must be a list."
-        
+
         # return without conversion if empty list
         if len(window) == 0:
             return window
-        
+
         item_type = type(window[0])
-        
+
         # process recursively if item is a list
         if item_type in (list, numpy.ndarray):
             converted = []
@@ -578,50 +578,50 @@ class LineWindowParser(object):
                 LOG.trace('_freq2chan: _w={0} type {1}', _w, type(_w))
                 if len(_w) == 2:
                     converted.append(_w)
-            
+
             return converted
 
         # return without conversion if item is an integer
         if item_type in (int, numpy.int32, numpy.int64):
             window.sort()
             return window
-        
+
         # convert floating-point value to quantity string
         if item_type in (float, numpy.float32, numpy.float64):
             return self._freq2chan(spwid, ['{0}Hz'.format(x) for x in window])
-    
+
         # now list item should be a quantity string
         assert item_type == str, 'unexpected item type {0}'.format(item_type)
-        
+
         # also, length of the window should be 2
         assert len(window) == 2
-        
+
         # frequency conversion from LSRK to TOPO
         new_window = self._lsrk2topo(spwid, window)
-                
+
         # construct ms channel selection syntax 
         spwsel = self._construct_msselection(spwid, new_window)
-        
+
         # channel mapping using ms tool
         processed = self._string2dict(spwsel)
-        
+
         # target spwid should exist
         assert spwid in processed
-        
+
         new_window = sorted(processed[spwid])
         LOG.trace('_freq2chan: new_window={0} type {1}', new_window, type(new_window))
         if len(new_window) == 0:
             return []
         assert len(new_window) == 1
         return new_window[0]
-        
+
     def _lsrk2topo(self, spwid, window):
         # if frequency frame for target spw is LSRK, just return input window
         spw = self.ms.get_spectral_window(spwid)
         frame = spw.frame
         if frame == 'LSRK':
             return window
-        
+
         # assuming that measure tool is properly initialized
         qa = casatools.quanta
         qfreq = [qa.quantity(x) for x in window]
@@ -631,30 +631,30 @@ class LineWindowParser(object):
         new_mfreq = [self.me.measure(v=x, rf=frame) for x in mfreq]
         new_window = ['{value}{unit}'.format(**x['m0']) for x in new_mfreq]
         return new_window
-    
+
     def _construct_msselection(self, spwid, window):
         return '{0}:{1}~{2}'.format(spwid, window[0], window[1])
-    
+
     def _measure_init(self, field_id):
         self._measure_done()
         # position is an observatory position
         position = self.ms.antenna_array.position
-        
+
         # direction is a field reference direction
         fields = self.ms.get_fields(field_id=field_id)
         direction = fields[0].mdirection
-        
+
         # epoch is an observing start time
         epoch = self.ms.start_time
-        
+
         # initialize the measure
         self.me.doframe(position)
         self.me.doframe(direction)
         self.me.doframe(epoch)
-        
+
     def _measure_done(self):
         self.me.done()
-    
+
 
 def test_parser(ms):
     target_fields = ms.get_fields(intent='TARGET')
@@ -687,7 +687,7 @@ def test_parser(ms):
         f3 = get_chan_qfreq1(100)
         f4 = get_chan_qfreq1(700)
         f5 = get_chan_qfreq1(500)
-        
+
     test_cases = [
         # single global window (channel)
         [100, 200], 
@@ -721,7 +721,7 @@ def test_parser(ms):
         '{0}:{1}~{2},{3}:{4}~{5};{6}~{7}'.format(spwids[0], f0, f1, 
                                                  spwids[-1], f2, f3, f4, f5)        
         ]
-    
+
     results = []
     for window in test_cases:
         s = 'INPUT WINDOW: {0} (type {1})\n'.format(window, type(window))
@@ -732,7 +732,7 @@ def test_parser(ms):
             parsed = parser.get_result(spwid)
             s += '\tSPW {0}: PARSED WINDOW = {1}\n'.format(spwid, parsed)
         results.append(s)
-        
+
     print('=== TEST RESULTS ===')
     for s in results:
         print(s)

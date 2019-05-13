@@ -46,7 +46,7 @@ def make_antpos_table(context, results):
             xoffset = '%0.2e' % item[1][0]
             yoffset = '%0.2e' % item[1][1]
             zoffset = '%0.2e' % item[1][2]
-                                 
+
             tr = AntposTR(vis_cell, antname, xoffset, yoffset, zoffset)
             rows.append(tr)
 

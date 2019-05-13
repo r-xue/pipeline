@@ -66,7 +66,7 @@ class WvrgcalflagQAHandler(pqa.QAPlugin):
                         result.qa.pool[:] = [score_object]
             except AttributeError:
                 pass
-    
+
 
 class WvrgcalflagListQAHandler(pqa.QAPlugin):
     """

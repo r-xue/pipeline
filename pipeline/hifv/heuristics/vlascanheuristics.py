@@ -1090,7 +1090,7 @@ class VLAScanHeuristics(object):
             position = casatools.measures.direction('j2000', str(positions[ii][0])+'rad', str(positions[ii][1])+'rad')
             separation = casatools.measures.separation(position, position_3C84)['value'] * math.pi/180.0
             if separation < MAX_SEPARATION:
-                    fields_3C84.append(ii)
+                fields_3C84.append(ii)
 
         return fields_3C84
 

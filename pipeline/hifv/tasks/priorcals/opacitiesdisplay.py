@@ -20,7 +20,7 @@ class opacitiesSummaryChart(object):
 
         # create phase time plot for all calibrators
         figfile = self.get_figfile()
-                            
+
         plot = logger.Plot(figfile, x_axis='freq', y_axis='opacity', parameters={'vis': self.ms.basename,
                                                                                  'type': 'opacities',
                                                                                  'spw': ''})
@@ -34,7 +34,7 @@ class opacitiesSummaryChart(object):
                 LOG.error('Could not copy plotweather plot.')
                 LOG.exception(ex)
                 plot = None
-        
+
         plots.append(plot)
 
         return [p for p in plots if p is not None]

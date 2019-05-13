@@ -61,13 +61,13 @@ class GaincalWorker(basetask.StandardTaskTemplate):
     """
     GaincalWorker performs a simple gain calibration exactly as specified by
     the inputs, with no analysis or parameter refinement.
-    
+
     As this task has no analysis, it is not expected to be used in an
     interactive session. The use-case for this task is as a worker task for 
     higher-level tasks.
     """
     Inputs = GaincalWorkerInputs
-    
+
     def prepare(self):
         # create a local variable for the inputs associated with this instance
         inputs = self.inputs
@@ -150,7 +150,7 @@ class GaincalWorker(basetask.StandardTaskTemplate):
         on_disk = [table for table in result.pool
                    if table.exists() or self._executor._dry_run]
         result.final[:] = on_disk
-        
+
         missing = [table for table in result.pool
                    if table not in on_disk and not self._executor._dry_run]        
 

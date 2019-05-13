@@ -74,21 +74,21 @@ def hifv (vislist, importonly=False, pipelinemode='automatic', interactive=True)
 
         # Hanning smooth the data
         hifv_hanning (pipelinemode=pipelinemode)
-    
+
         # Flag known bad data
         hifv_flagdata (pipelinemode=pipelinemode, scan=True, hm_tbuff='1.5int',
                        intents='*POINTING*,*FOCUS*,*ATMOSPHERE*,*SIDEBAND_RATIO*, *UNKNOWN*, *SYSTEM_CONFIGURATION*, *UNSPECIFIED#UNSPECIFIED*')
-    
+
         # Fill model columns for primary calibrators
         hifv_vlasetjy (pipelinemode=pipelinemode)
-        
+
         # Gain curves, opacities, antenna position corrections, 
         # requantizer gains (NB: requires CASA 4.1!)
         hifv_priorcals (pipelinemode=pipelinemode)
 
         # Initial test calibrations using bandpass and delay calibrators
         hifv_testBPdcals (pipelinemode=pipelinemode)
-    
+
         # Identify and flag basebands with bad deformatters or rfi based on
         # bp table amps and phases
         hifv_flagbaddef (pipelinemode=pipelinemode)
@@ -105,50 +105,50 @@ def hifv (vislist, importonly=False, pipelinemode='automatic', interactive=True)
 
         # Use flagdata rflag mode again on calibrators
         hifv_checkflag(pipelinemode=pipelinemode, checkflagmode='semi')
-    
+
         # Re-run semi-final delay and bandpass calibrations
         hifv_semiFinalBPdcals(pipelinemode=pipelinemode)
-        
+
         # Flag spws that have no calibration at this point
         # hifv_uncalspw(pipelinemode=pipelinemode, delaycaltable='delay.k', bpcaltable='BPcal.b')
-        
+
         # Determine solint for scan-average equivalent
         hifv_solint(pipelinemode=pipelinemode)
 
         # Do the flux density boostrapping -- fits spectral index of
         # calibrators with a power-law and puts fit in model column
         hifv_fluxboot (pipelinemode=pipelinemode)
-    
+
         # Make the final calibration tables
         hifv_finalcals (pipelinemode=pipelinemode)
 
         # Polarization calibration
         #hifv_circfeedpolcal (pipelinemode=pipelinemode)
-    
+
         # Apply all the calibrations and check the calibrated data
         hifv_applycals (pipelinemode=pipelinemode)
-    
+
         # Flag spws that have no calibration at this point
         # hifv_uncalspw(pipelinemode=pipelinemode, delaycaltable='finaldelay.k', bpcaltable='finalBPcal.b')
-    
+
         # Now run all calibrated data, including the target, through rflag
         hifv_targetflag (pipelinemode=pipelinemode, intents='*CALIBRATE*,*TARGET*')
-    
+
         # Calculate data weights based on standard deviation within each spw
         hifv_statwt(pipelinemode=pipelinemode)
 
         # Plotting Summary
         hifv_plotsummary (pipelinemode=pipelinemode)
-        
+
         # Make a list of expected point source calibrators to be cleaned
         hif_makeimlist (intent='PHASE,BANDPASS', specmode='cont', pipelinemode=pipelinemode)
-    
+
         # Make clean images for the selected calibrators
         hif_makeimages (hm_masking='none')
 
         # Export the data
         # hifv_exportdata(pipelinemode=pipelinemode)
-    
+
     except Exception as e:
         if str(e) == IMPORT_ONLY:
             casatools.post_to_log ("Exiting after import step ...", echo_to_screen=echo_to_screen)

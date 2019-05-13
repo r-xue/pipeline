@@ -159,7 +159,7 @@ class DataTableIndexer(object):
     @property
     def mses(self):
         return self.context.observing_run.measurement_sets
-    
+
     def __init__(self, context):
         self.context = context
         self.nrow_per_ms = []
@@ -168,13 +168,13 @@ class DataTableIndexer(object):
             with casatools.TableReader(ro_table_name) as tb:
                 self.nrow_per_ms.append(tb.nrows())
         self.num_mses = len(self.nrow_per_ms)
-    
+
     def serial2perms(self, i):
         """
         Return two indices. The former indicates a MS index while 
         the later corresponds to the row index of the datatable for 
         that MS.
-        
+
         i -- serial index
         """
         base = 0
@@ -183,23 +183,23 @@ class DataTableIndexer(object):
             base += self.nrow_per_ms[j]
             if i < base:
                 return self.mses[j].basename, i - past_base
-            
+
         raise RuntimeError('Internal Consistency Error. ')
-                
+
     def perms2serial(self, vis, i):
         """
         Return serial index.
-        
+
         vis -- basename of the MS
         i -- per MS datatable row index
         """
         j = self.mses.index(self.context.observing_run.get_ms(vis))
         assert j < self.num_mses
         assert i < self.nrow_per_ms[j]
-        
+
         base = sum(self.nrow_per_ms[:j])
         return base + i
-    
+
     def per_ms_index_list(self, ms, index_list):
         j = self.mses.index(ms)
         base = sum(self.nrow_per_ms[:j])
@@ -212,7 +212,7 @@ class DataTableIndexer(object):
 class DataTableImpl(object):
     """
     DataTable is an object to hold meta data of scantable on memory. 
-    
+
     row layout: [Row, Scan, IF, Pol, Beam, Date, Time, ElapsedTime,
                    0,    1,  2,   3,    4,    5,    6,            7,
                  Exptime, RA, DEC, Az, El, nchan, Tsys, TargetName, 
@@ -478,11 +478,11 @@ class DataTableImpl(object):
     def export_rwtable_exclusive(self, dirty_rows=None, cols=None):
         """
         Export "on-memory" RW table to the one on disk. 
-        
+
         To support parallel operation, the method will acquire a lock for RW table 
         to ensure the operation in one process doesn't overwrite the changes made by 
         other processes.
-        
+
         dirty_rows -- list of row numbers that are updated. If None, everything 
                       including unchanged rows will be flushed. Default is None.
         cols -- list of columns that are updated. If None, all rows will be flushed. 
@@ -817,7 +817,7 @@ class DataTableImpl(object):
                 flag = tsel.getcell('FLAG', i)
                 tsys_masked[i] = numpy.ma.masked_array(tsys, mask=(flag == True))
             tsel.close()
-            
+
         #LOG.info('tsys={}'.format(tsys_masked))
 
         def map_spwchans(atm_spw, science_spw):
@@ -849,7 +849,7 @@ class DataTableImpl(object):
             # only process atm spws
             if spw_from not in atm_spws:
                 continue
-            
+
             atm_spw = msobj.get_spectral_window(spw_from)
             science_spw = msobj.get_spectral_window(spw_to)
             start_atmchan, end_atmchan = map_spwchans(atm_spw, science_spw)

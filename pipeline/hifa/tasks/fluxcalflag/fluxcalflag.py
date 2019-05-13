@@ -139,7 +139,7 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
             result.summaries = summaries
             return result
         science_spw_ids = [spw.id for spw in science_spws]
-        
+
         # Get all the spws. These will be used to construct refspwmap
         all_spws = inputs.ms.get_spectral_windows(task_arg=inputs.spw, science_windows_only=False)
 
@@ -438,14 +438,14 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
         if flagcmd != '':
             # Note: the first single quote closes the value of the spw field
             flagcmds.append(flagcmd + "' reason='Flux_calibrator_atmospheric_line'")
-                    
+
         return flagcmds
 
     def _get_chanrange(self, vis=None, fieldid=0, spwid=None, minfreq=None, maxfreq=None, refframe='TOPO'):
         """
         Returns a tuple containing the two channels in an spw corresponding
            to the minimum and maximum frequency in the given ref frame
-    
+
             vis - MS name
         fieldid - field id of the observed field for reference frame \
                   calculations
@@ -454,23 +454,23 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
         maxfreq - maximum freq in Hz
         refframe - frequency reference frame
         """
-    
+
         if vis is None or spwid is None or minfreq is None or maxfreq is None:
             raise Exception('_get_chanrange : Undefined values for vis, spwid, minfreq, and maxfreq')
-    
+
         rval = (None, None)
         if minfreq > maxfreq:
             return rval
-    
+
         iminfreq = -1
         imaxfreq = -1
-    
+
         # Get frequencies
         mse = casatools.ms
         mse.open(vis)
         a = mse.cvelfreqs(fieldids=[fieldid], spwids=[spwid], mode='frequency', outframe=refframe)
         mse.close()
-    
+
         # Initialize
         ichanmax = len(a)-1
         ascending = True
@@ -484,7 +484,7 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
             upedge = a[0]
             ilowedge = ichanmax
             iupedge = 0
-    
+
         if minfreq < lowedge:
             if maxfreq > lowedge:
                 if maxfreq > upedge:
@@ -508,7 +508,7 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
                     imaxfreq = -2
             #else:
                 # both imaxfreq and iminfreq are -1
-    
+
         if ascending:
             if iminfreq == -2:
                 for i in xrange(0, len(a)):
@@ -534,7 +534,7 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
                         break
 
             rval = (imaxfreq, iminfreq)
-    
+
         if rval == (-1, -1):
             return None, None
         else:

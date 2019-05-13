@@ -28,7 +28,7 @@ class Topic(object):
 
         # text shown in weblog describing this Topic summary section 
         self.description = description
-    
+
         # set holding which Results classes have been registered in this topic
         self._registered_classes = set()
 
@@ -46,7 +46,7 @@ class Topic(object):
         """
         Allocating Results to the appropriate task type based on the Results
         classes registered to this Topic.
-    
+
         :param results: the results
         :type results: a list of :class:`~pipeline.infrastructure.api.Result`
         """
@@ -64,13 +64,13 @@ class Topic(object):
     def handles_result(self, result):
         """
         Return True if the given Result is part of this topic.
-    
+
         :param result: the task result
         :type result: :class:`~pipeline.infrastructure.api.Result`
         """
         if result.__class__ in self._registered_classes:
             return True
-        
+
         # list containing handled results (not necessarily of the same class)
         if isinstance(result, collections.Iterable) \
                 and all([o.__class__ in self._registered_classes for o in result]):
@@ -145,7 +145,7 @@ class TopicRegistry(object):
         """
         Construct a new ResultsToTopicAdapter, allocating Results to the
         appropriate Topic sections.  
-    
+
         :param results: the results
         """
         self._topics = collections.OrderedDict()
@@ -199,11 +199,11 @@ class TopicRegistry(object):
 
     def get_topics(self):
         return self._topics
-        
+
     def get_url(self, result):
         """
         Get the URL of the QA section appropriate to the given result.
-    
+
         :param result: the task result
         :type result: :class:`~pipeline.infrastructure.api.Result`
         :rtype: the filename of the appropriate QA section
@@ -229,7 +229,7 @@ class QABaseAdapter(object):
         json_file = os.path.join(context.report_dir, 
                                  'stage%s' % result.stage_number, 
                                  'qa.json')
-        
+
         LOG.trace('Writing QA data to %s' % json_file)
         with open(json_file, 'w') as fp:
             json.dump(self.scores, fp)

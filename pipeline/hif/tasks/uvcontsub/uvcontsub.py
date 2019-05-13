@@ -60,7 +60,7 @@ class UVcontSub(applycal.Applycal):
         finally:
             # Reset cluster to parallel mode
             if infrastructure.mpihelpers.is_mpi_ready():
-               ParallelTaskHelper.bypassParallelProcessing(0)
+                ParallelTaskHelper.bypassParallelProcessing(0)
 
             if remove_vi1cal:
                 del os.environ['VI1CAL']

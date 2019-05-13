@@ -122,14 +122,14 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
     This class defines per spwid flagging operation.
     """
     Inputs = SDBLFlagWorkerInputs
-    
+
     is_multi_vis_task = True
-    
+
     def _search_datacol(self, table):
         """
         Returns data column name to process. Returns None if not found.
         The search order is ['CORRECTED_DATA', 'FLOAT_DATA', 'DATA']
-        
+
         Argument: table tool object of MS to search a data column for.
         """
         col_found = None
@@ -171,7 +171,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
         datatable_name = os.path.join(context.observing_run.ms_datatable_name, ms.basename)
         datatable = DataTable(name=datatable_name, readonly=False)
         rowmap = self.inputs.rowmap
-        
+
         LOG.debug('Members to be processed in worker class:')
         for (a, f, s, p) in itertools.izip(antid_list, fieldid_list, spwid_list, pols_list):
             LOG.debug('\t%s: Antenna %s Field %d Spw %d Pol %s' % (ms.basename, a, f, s, p))
@@ -203,18 +203,18 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
             filename_in = ms.name
             filename_out = ms.work_data
             nchan = ms.spectral_windows[spwid].num_channels
-            
+
             LOG.info("*** Processing: {} ***" .format(os.path.basename(ms.name)))
             LOG.info('\tField {} Antenna {} Spw {} Pol {}'.format(fieldid, antid, spwid, ','.join(pollist)))
             LOG.info("\tpre-fit table: {}".format(os.path.basename(filename_in)))
             LOG.info("\tpost-fit table: {}".format(os.path.basename(filename_out)))
-            
+
             # deviation mask
             deviation_mask = ms.deviation_mask[(fieldid, antid, spwid)] \
                 if (hasattr(ms, 'deviation_mask') and (fieldid, antid, spwid) in ms.deviation_mask) else None
             LOG.debug('deviation mask for %s antenna %d field %d spw %d is %s' %
                       (ms.basename, antid, fieldid, spwid, deviation_mask))
-            
+
             time_table = datatable.get_timetable(antid, spwid, None, ms.basename, fieldid)
             # Select time gap list: 'subscan': large gap; 'raster': small gap
             if flagRule['Flagging']['ApplicableDuration'] == "subscan":
@@ -245,7 +245,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
             elif rowmap is None:
                 rowmap = sdutils.make_row_map_for_baselined_ms(ms, container)
             LOG.debug("FLAGRULE = %s" % str(flagRule_local))
-            
+
             # Calculate Standard Deviation and Diff from running mean
             t0 = time.time()
             ddobj = ms.get_data_description(spw=spwid)
@@ -258,7 +258,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
 
             for pol, polid in zip(pollist, polids):
                 LOG.info("[ POL=%s ]" % (pol))
-                
+
                 tmpdata = tmpdict[polid]
                 t0 = time.time()
                 LOG.debug('tmpdata.shape=%s, len(Threshold)=%s' % (str(tmpdata.shape), len(Threshold)))
@@ -269,27 +269,27 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                 LOG.info('Final thresholds: StdDev (pre-/post-fit) = %.2f / %.2f , Diff StdDev (pre-/post-fit) ='
                          ' %.2f / %.2f , Tsys=%.2f' % tuple([final_thres[i][1] for i in (1, 0, 3, 2, 4)]))
                 #del tmpdata, _
-                
+
                 self._apply_stat_flag(datatable, dt_idx, polid, stat_flag)
 
                 # flag by Expected RMS
                 self.flagExpectedRMS(datatable, dt_idx, ms.name, spwid, polid,
                                      FlagRule=flagRule_local, is_baselined=is_baselined)
-  
+
                 # flag by scantable row ID defined by user
                 self.flagUser(datatable, dt_idx, polid, UserFlag=userFlag)
                 # Check every flags to create summary flag
                 self.flagSummary(datatable, dt_idx, polid, flagRule_local)
                 t1 = time.time()
                 LOG.info('Apply flags End: Elapse time = %.1f sec' % (t1 - t0))
-                
+
 #                 # store statistics and flag information to bl.tbl
 #                 self.save_outtable(datatable, dt_idx, out_table_name)
                 flagSummary.append({'msname': ms.basename, 'antenna': antid,
                                     'field': fieldid, 'spw': spwid, 'pol': pol,
                                     'result_threshold': final_thres,
                                     'baselined': is_baselined})
-                
+
             # Generate flag command file
             filename = ("%s_ant%d_field%d_spw%d_blflag.txt" %
                         (os.path.basename(ms.work_data), antid, fieldid, spwid))
@@ -359,10 +359,10 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
 
         # Create progress timer
         #Timer = ProgressTimer(80, NROW, LogLevel)
-        
+
         # number of polarizations
         npol = len(polids)
-        
+
         # A priori evaluation of output array size
         output_array_size = sum((len(c[0]) for c in TimeTable))
         output_array_index = 0
@@ -407,31 +407,31 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
             ### loading of the data for one chunk is done
 
             datatable_index[output_array_index:output_array_index+nrow] = chunks[1]
-            
+
             # loop over polarizations
             for ip, polid in enumerate(polids):
-                
+
                 START = 0
 
                 # list of valid rows in this chunk
                 valid_indices = numpy.where(numpy.any(FlIn[ip] == 0, axis=1))[0]
                 valid_nrow = len(valid_indices)
-            
+
                 for index in xrange(len(chunks[0])):
                     row = chunks[0][index]
                     idx = chunks[1][index]
-                
+
                     # check if current row is valid or not
                     isvalid = index in valid_indices
-                
+
                     # Countup progress timer
                     #Timer.count()
-    
+
                     # Mask out line and edge channels
                     masklist = DataTable.getcell('MASKLIST', idx)
                     tStats = DataTable.getcell('STATISTICS', idx)
                     stats = tStats[polid]
-                    
+
                     # Calculate Standard Deviation (NOT RMS)
                     ### 2011/05/26 shrink the size of data on memory
                     mask_in = self._get_mask_array(masklist, (edgeL, edgeR), FlIn[ip, index], deviation_mask=deviation_mask)
@@ -441,7 +441,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                         OldRMS, Nmask = self._calculate_masked_stddev(SpIn[ip, index], mask_in)
                         #stats[2] = OldRMS
                         del Nmask
-        
+
                         NewRMS = -1
                         if is_baselined:
                             mask_out = self._get_mask_array(masklist, (edgeL, edgeR), FlOut[ip, index],
@@ -460,7 +460,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                     ### modified to calculate Old and New statistics in a single cycle
                     if isvalid:
                         START += 1
-    
+
                     if nrow == 1:
                         OldRMSdiff = 0.0
                         stats[4] = OldRMSdiff
@@ -542,15 +542,15 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                             mask0 = self._get_mask_array(masklist, (edgeL, edgeR), FlOut[ip, box_edge_left], 
                                                          deviation_mask=deviation_mask) if is_baselined else numpy.zeros(NCHAN, dtype=numpy.int64)
                             LmaskNew -= mask0
-    
+
                         diffOld0 = (LdataOld0 + RdataOld0) / float(NL + NR) - SpIn[ip, index]
                         diffNew0 = (LdataNew0 + RdataNew0) / float(NL + NR) - SpOut[ip, index]
-    
+
                         # Calculate Standard Deviation (NOT RMS)
                         mask0 = (RmaskOld + LmaskOld + mask_in) / (NL + NR + 1)
                         OldRMSdiff, Nmask = self._calculate_masked_stddev(diffOld0, mask0)
                         stats[4] = OldRMSdiff
-    
+
                         NewRMSdiff = -1
                         if is_baselined: 
                             mask0 = (RmaskNew + LmaskNew + mask_out) / (NL + NR + 1)
@@ -620,7 +620,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
         # masklist
         for [m0, m1] in masklist: 
             mask[m0:m1] = 0
-        
+
         # deviation mask
         if deviation_mask is not None:
             if type(deviation_mask) not in array_type:
@@ -629,7 +629,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                 raise Exception("deviation_mask should be an array of array or None")
             for m0, m1 in deviation_mask:
                 mask[m0:m1] = 0
-                
+
         # edge channels
         mask[0:edge[0]] = 0
         mask[len(flagchan)-edge[1]:] = 0
@@ -821,11 +821,11 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
         # FLAG_PERMANENT[1] --- 'TsysFlag'
         # FLAG_PERMANENT[2] --- 'UserFlag'
         # FLAG_PERMANENT[3] --- 'OnlineFlag' (fixed)
-        
+
         # OnlineFlag is always active
         if pflag[OnlineFlagIndex] == 0:
             return 0
-        
+
         types = ['WeatherFlag', 'TsysFlag', 'UserFlag']
         mask = 1
         for idx in range(len(types)):
@@ -857,7 +857,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
             for index in range(len(chunks[0])):
                 idx = chunks[1][index]
                 datatable.putcell("MASKLIST", idx, []) # OR more precisely, [[-1,-1]]
-    
+
     def generateFlagCommandFile(self, datatable, msobj, antid, fieldid, spwid, pollist, filename):
         """
         Summarize FLAG status in DataTable and generate flag command file

@@ -15,10 +15,10 @@ LOG = infrastructure.get_logger(__name__)
 
 class SDK2JyCalWorkerInputs(vdp.StandardInputs):
     caltype = vdp.VisDependentProperty(default='amp', readonly=True)
-    
+
     def __init__(self, context, output_dir, vis, caltable, factors):
         super(SDK2JyCalWorkerInputs, self).__init__()
-        
+
         self.context = context
         self.vis = vis
         self.output_dir = output_dir

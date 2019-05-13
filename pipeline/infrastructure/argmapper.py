@@ -29,14 +29,14 @@ _altmapping = {
 def convert_args(pipeline_cls, casa_args, convert_nulls=True):
     """
     Convert CASA arguments to pipeline Inputs arguments.
-    
+
     This function converts a dictionary of CASA arguments to the corresponding
     dictionary of pipeline Inputs arguments by doing the following: 
-    
+
     #. Rename CASA arguments to their pipeline equivalents.
     #. Remove any arguments not accepted by the Inputs constructor.
     #. Convert any CASA null values to pipeline null values.
-    
+
     :param pipeline_cls: the pipeline Task class
     :type pipeline_cls: class
     :param casa_args: the dictionary of CASA arguments and values
@@ -63,7 +63,7 @@ def convert_args(pipeline_cls, casa_args, convert_nulls=True):
 
     LOG.debug('Original arguments: %s' % casa_args)
     LOG.debug('Remapped arguments: %s' % remapped)
-    
+
     # inspect the signature of the Inputs constructor, getting a list of the
     # keyword arguments accepted by the constructor
     try:
@@ -108,7 +108,7 @@ def _convert_null(val):
 def task_to_casa(taskname, task_args):
     if taskname not in _altmapping:
         return task_args
-    
+
     # If required, rename CASA pipeline arguments to their pipeline equivalent
     casa_to_task = _altmapping[taskname]
     d = dict((v, k) for k, v in casa_to_task.iteritems())

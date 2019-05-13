@@ -51,7 +51,7 @@ def read_session_based(context, reffile):
                 # data
                 data = parser.parse_data(line)
                 storage.register_data(data)
-                
+
     with associate(context, storage) as f:
         return list(_read_stream(f))
 
@@ -163,7 +163,7 @@ def associate(context, factors):
 
             antennas = [x.name for x in ms.antennas]
             antenna_list = data['Antenna']
-    
+
             factor_list = numpy.array([float(x) for x in data['Factor']])
 
             spws = ms.get_spectral_windows()
@@ -187,7 +187,7 @@ def associate(context, factors):
                     else:
                         #d[antenna] = [[i, coverage, bandwidth[i]]]
                         d[antenna] = [i]
-    
+
                 for ant in antennas:
                     if ant in d:
                         f = d[ant]
@@ -208,10 +208,10 @@ def associate(context, factors):
                                                factor_list[best_index])
                     LOG.debug(line)
                     stream.write(line + '\n')
-        
+
         stream.seek(0, 0)
         yield stream
-        
+
     finally:
         stream.close()
 
@@ -223,7 +223,7 @@ def inspect_coverage(minval, maxval, minref, maxref):
     coverage = (min(maxval, maxref) - max(minval, minref)) / (maxval - minval)
 
     bandwidth_ratio = (maxref - minref) / (maxval - minval)
-    
+
     if coverage < 0.0 or coverage > 1.0 or bandwidth_ratio > 1.1:
         return 0.0
 

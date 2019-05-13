@@ -350,7 +350,7 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
                             # If no automask is found, try the simple circular mask for high DR continuum
                             hm_masking = 'centralregion'
                             keep_iterating = True
-    
+
         return keep_iterating, hm_masking
 
     def threshold(self, iteration, threshold, rms_threshold, nsigma, hm_masking):

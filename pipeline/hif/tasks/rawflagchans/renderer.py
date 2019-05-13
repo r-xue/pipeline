@@ -78,7 +78,7 @@ class T2_4MDetailsRawflagchansRenderer(basetemplates.T2_4MDetailsDefaultRenderer
             flagfile.writelines(['%s\n' % cmd for cmd in flagcmds])
             if not flagcmds:
                 flagfile.writelines(['# No flag commands generated\n'])
-                
+
         return filename
 
 

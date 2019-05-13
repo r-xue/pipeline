@@ -33,7 +33,7 @@ def get_state_id(ms, spw, intent):
             # Need to reset explicitly after CASA 5.3. See CAS-11088 for detail.
             msreader.selectinit(reset=True)
     return numpy.fromiter(state_ids, dtype=numpy.int32)
-        
+
 
 class MetaDataReader(object):
     def __init__(self, ms, table_name):
@@ -46,22 +46,22 @@ class MetaDataReader(object):
         self.datatable = DataTable(name=self.table_name, readonly=False)
         self.vAnt = 0
         self.appended_row = 0
-        
+
     @property
     def name(self):
         return self.ms.name
-        
+
     def get_datatable(self):
         return self.datatable
 
     def detect_target_spw(self):
         if not hasattr(self, 'name'):
             return []
-        
+
         ms = self.ms
         spws = ms.get_spectral_windows(science_windows_only=True)
         return [x.id for x in spws]
-    
+
     def detect_target_data_desc(self):
         science_windows = self.detect_target_spw()
         ms = self.ms
@@ -74,19 +74,19 @@ class MetaDataReader(object):
 
         dds = numpy.fromiter(_g(), dtype=numpy.int32)
         return dds
-                
+
     def execute(self, dry_run=True):
         if dry_run:
             return
-        
+
         # name of the MS
         name = self.name
         spwids = self.detect_target_spw()
         nchan_map = dict([(spwid, self.ms.get_spectral_window(spwid).num_channels) for spwid in spwids])
         ddids = self.detect_target_data_desc()
-        
+
         #Rad2Deg = 180. / 3.141592653
-        
+
         # FILENAME keyword stores name of the MS
         LOG.info('name=%s' % name)
         self.datatable.putkeyword('FILENAME', name)
@@ -155,7 +155,7 @@ class MetaDataReader(object):
                 else:
                     # non-ephemeris source
                     ephemsrc_name.update( { field_id:'' } )
-            
+
         with TableSelector(name, 'ANTENNA1 == ANTENNA2 && FEED1 == FEED2 && DATA_DESC_ID IN %s && STATE_ID IN %s'%(list(ddids), list(target_state_ids))) as tb:
 #             # generate ephemsrc_name dictionary (field_id:EphemName)
 #             ephemsrc_list = [] # list of ephemsrc names (unique appearance)
@@ -175,7 +175,7 @@ class MetaDataReader(object):
 #                 else:
 #                     # non-ephemeris source
 #                     ephemsrc_name.update( { field_id:'' } )
-                    
+
             # find the first onsrc for each ephemeris source and pack org_directions
             org_directions = {}
             nrow = tb.nrows()
@@ -256,7 +256,7 @@ class MetaDataReader(object):
             last_antenna = None
             last_result = None
             ref_direction = None
-            
+
             for irow in index:
                 iprogress += 1
                 if iprogress >= nprogress and iprogress % nprogress == 0:
@@ -287,16 +287,16 @@ class MetaDataReader(object):
                 lon = pointing_direction['m0']
                 lat = pointing_direction['m1']
                 ref = pointing_direction['refer']
-                
+
                 # 2018/04/18 TN
                 # CAS-10874 single dish pipeline should use ICRS instead of J2000
                 if ref in [azelref]:
                     if irow == 0:
                         LOG.info('Require direction conversion from {0} to {1}'.format(ref, outref))
-                        
+
                     Taz[irow] = get_value_in_deg(lon)
                     Tel[irow] = get_value_in_deg(lat)
-                    
+
                     # conversion to J2000
                     ra, dec = direction_convert(pointing_direction, mepoch, mposition, outframe=outref)                    
                     Tra[irow] = get_value_in_deg(ra)
@@ -304,10 +304,10 @@ class MetaDataReader(object):
                 elif ref in [outref]:
                     if irow == 0:
                         LOG.info('Require direction conversion from {0} to {1}'.format(ref, azelref))
-                        
+
                     Tra[irow] = get_value_in_deg(lon)
                     Tdec[irow] = get_value_in_deg(lat)
-                    
+
                     # conversion to AZELGEO
                     az, el = direction_convert(pointing_direction, mepoch, mposition, outframe=azelref)                  
                     Taz[irow] = get_value_in_deg(az)
@@ -316,7 +316,7 @@ class MetaDataReader(object):
                     if irow == 0:
                         LOG.info('Require direction conversion from {0} to {1} as well as to {2}'.format(ref, outref,
                                                                                                          azelref))
-                        
+
                     # conversion to J2000
                     ra, dec = direction_convert(pointing_direction, mepoch, mposition, outframe=outref)
                     Tra[irow] = get_value_in_deg(ra)
@@ -366,13 +366,13 @@ class MetaDataReader(object):
         self.datatable.putcol('POSGRP', intArr, startrow=ID)
         self.datatable.putcol('ANTENNA', Tant, startrow=ID)
         self.datatable.putcol('SRCTYPE', Tsrctype, startrow=ID)
-        
+
         # row base storing
         masklist = ColMaskList.NoMask
-        
+
         # Tsys will be overwritten in applycal stage
         tsys_template = numpy.ones(4, dtype=numpy.float32)
-        
+
         flag_summary_template = numpy.ones(4, dtype=numpy.int32)
         stats_template = numpy.zeros((4, 7), dtype=numpy.int32) - 1
         flags_template = numpy.ones((4, 7), dtype=numpy.int32)
@@ -397,12 +397,12 @@ class MetaDataReader(object):
 
         num_antenna = len(self.ms.antennas)
         self.vAnt += num_antenna
-        
+
         self.appended_row = nrow
-        
+
     def _get_outref(self):
         outref = None
-        
+
         if self.ms.representative_target[0] is not None:
             # if ms has representative target, take reference from that
             LOG.info(
@@ -431,9 +431,9 @@ class MetaDataReader(object):
                 outref = dirrefs[0]
         if outref is None:
             raise RuntimeError('Failed to get direction reference for TARGET.')
-        
+
         return outref
-        
+
     @staticmethod
     def _get_azelref():
         return 'AZELGEO'
@@ -443,13 +443,13 @@ def direction_convert(direction, mepoch, mposition, outframe):
     direction_type = direction['type']
     assert direction_type == 'direction'
     inframe = direction['refer']
-    
+
     # if outframe is same as input direction reference, just return 
     # direction as it is
     if outframe == inframe:
         # return direction
         return direction['m0'], direction['m1']
-   
+
     # conversion using measures tool
     me = casatools.measures
     me.doframe(mepoch)

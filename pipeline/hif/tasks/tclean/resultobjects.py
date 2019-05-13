@@ -22,7 +22,7 @@ class BoxResult(basetask.Results):
 
     def merge_with_context(self, context):
         pass
-    
+
     def __repr__(self):
         return 'BoxResult <threshold=%s cleanmask=%s>' % (
          self.threshold, self.cleanmask)

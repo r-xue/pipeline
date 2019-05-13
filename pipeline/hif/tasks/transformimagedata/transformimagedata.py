@@ -208,7 +208,7 @@ class Transformimagedata(mssplit.MsSplit):
 
         # Note there will be only 1 MS in the temporary observing run structure
         result.ms = observing_run.measurement_sets[0]
-        
+
         if inputs.clear_pointing:
             LOG.info('Removing POINTING table from ' + ms.name)
             with casatools.TableReader(ms.name + '/POINTING', nomodify=False) as table:

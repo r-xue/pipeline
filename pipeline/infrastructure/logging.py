@@ -113,14 +113,14 @@ def get_logger(name,
     """Do basic configuration for the logging system. Similar to 
     logging.basicConfig but the logger ``name`` is configurable and both a 
     file output and a stream output can be created. Returns a logger object. 
- 
+
     The default behaviour is to create a StreamHandler which writes to 
     sys.stdout, set a formatter using the "%(message)s" format string, and add
     the handler to the ``name`` logger. 
- 
+
     A number of optional keyword arguments may be specified, which can alter
     the default behaviour. 
- 
+
     :param name: Logger name 
     :param format: handler format string 
     :param datefmt: handler date/time format specifier 
@@ -137,10 +137,10 @@ def get_logger(name,
     """  
     if level is None:
         level = logging_level
-    
+
     # Get a logger for the specified name  
     logger = logging.getLogger(name)
-    
+
     def trace(self, msg, *args, **kwargs):
         """
         Log 'msg % args' with severity 'TRACE'.
@@ -167,20 +167,20 @@ def get_logger(name,
 
     logger.trace = types.MethodType(trace, logger)
     logger.todo = types.MethodType(todo, logger)
-    
+
     logger.setLevel(logging_level)
     fmt = UTCFormatter(format, datefmt)  
     logger.propagate = propagate  
-  
+
     # Remove existing handlers, otherwise multiple handlers can accrue  
     for hdlr in logger.handlers[:]:  
         logger.removeHandler(hdlr)  
-  
+
     # Add handlers. Add NullHandler if no file or stream output so that  
     # modules don't emit a warning about no handler.  
     if not (filename or stream):  
         logger.addHandler(logutils.NullHandler())  
-  
+
     if filename:
         # delay = 1 so that file is not opened until used
         hdlr = logging.FileHandler(filename, filemode, delay=1)
@@ -189,7 +189,7 @@ def get_logger(name,
         hdlr.setLevel(filelevel)  
         hdlr.setFormatter(fmt)  
         logger.addHandler(hdlr)  
-  
+
     if stream:
         hdlr = colorize.ColorizingStreamHandler(stream)
         hdlr.setLevel(level)  
@@ -202,7 +202,7 @@ def get_logger(name,
         logger.addHandler(hdlr)
 
     _loggers.append(logger)  
-    
+
     return logger
 
 
@@ -211,11 +211,11 @@ def set_logging_level(logger=None, level='info'):
 
     if logger is not None:
         logger.setLevel(level_no)
-        
+
     else:
         module = sys.modules[__name__]
         setattr(module, 'logging_level', level_no)
-    
+
         for logger in _loggers:
             logger.setLevel(level_no)
 
@@ -228,7 +228,7 @@ def set_logging_level(logger=None, level='info'):
 
     #     casa_level = CASALogHandler.get_casa_priority(level_no)
     #     casatools.log.filter(casa_level)
-    
+
 
 def add_handler(handler):
     """
@@ -237,7 +237,7 @@ def add_handler(handler):
     for l in _loggers:
         l.addHandler(handler)
 
-        
+
 def remove_handler(handler):
     """
     Remove specified handler from all registered loggers. 
@@ -272,13 +272,13 @@ class SuspendCapturingLogger(object):
         # don't suppress any raised exception
         return False
 
-       
+
 class CapturingHandler(logging.Handler):
     """
     A handler class which buffers logging records above a certain threshold
     in memory.
     """
-    
+
     def __init__(self, level=WARNING):
         """
         Initialize the handler.
@@ -298,7 +298,7 @@ class CapturingHandler(logging.Handler):
         if record.exc_info is not None:
             exc_type, exc_value, tb = record.exc_info
             record.exc_info = (exc_type, exc_value, Traceback(tb))
-        
+
         self.buffer.append(record)
 
     def flush(self):
@@ -321,7 +321,7 @@ class CapturingHandler(logging.Handler):
 
 class UTCFormatter(logging.Formatter):
     converter = time.gmtime
-    
+
 
 # Code, Frame and Traceback are serializable substitutes for the Traceback
 # logged with exceptions

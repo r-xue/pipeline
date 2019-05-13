@@ -57,7 +57,7 @@ def hifatargets (vislist, importonly=False, pipelinemode='automatic', interactiv
 
         # Flag the target data
         hifa_flagtargets (pipelinemode=pipelinemode)
- 
+
         # Check imaging parameters against PI specified values
         hifa_imageprecheck(pipelinemode=pipelinemode)
 
@@ -66,7 +66,7 @@ def hifatargets (vislist, importonly=False, pipelinemode='automatic', interactiv
 
         # Make a list of expected targets to be cleaned in mfs mode (used for continuum subtraction)
         hif_makeimlist (specmode='mfs', pipelinemode=pipelinemode)
- 
+
         # Find continuum frequency ranges
         hif_findcont(pipelinemode=pipelinemode)
 
@@ -81,7 +81,7 @@ def hifatargets (vislist, importonly=False, pipelinemode='automatic', interactiv
 
         # Make a list of expected targets to be cleaned in cont (aggregate over all spws) mode
         hif_makeimlist (specmode='cont', pipelinemode=pipelinemode)
- 
+
         # Make clean cont images for the selected targets
         hif_makeimages (pipelinemode=pipelinemode)
 

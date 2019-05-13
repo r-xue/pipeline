@@ -37,7 +37,7 @@ class T2_4MDetailsUVcontFitRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
     def get_uvtable_rows(self, context, result, ms):
         table_rows = []
-        
+
         # Construct the rows. All entries must be strings.
         for calapp in result.final:
 
@@ -45,7 +45,7 @@ class T2_4MDetailsUVcontFitRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             solint = result.inputs['solint']
             if solint == 'inf':
                 solint = 'Infinite'
-            
+
             # Convert solint=int to a real integration time. 
             # solint is spw dependent; science windows usually have the same
             # integration time, though that's not guaranteed.
@@ -54,7 +54,7 @@ class T2_4MDetailsUVcontFitRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 #in_secs = ['%0.2fs' % (dt.seconds + dt.microseconds * 1e-6) 
                            #for dt in utils.get_intervals(context, calapp)]
                 #solint = 'Per integration (%s)' % utils.commafy(in_secs, quotes=False, conjunction='or')
-            
+
             gaintable = os.path.basename(calapp.gaintable)
 
             #to_spws = ', '.join(calapp.spw.split(','))

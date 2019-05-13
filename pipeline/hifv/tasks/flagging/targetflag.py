@@ -53,9 +53,9 @@ class TargetflagResults(basetask.Results):
 @task_registry.set_equivalent_casa_task('hifv_targetflag')
 class Targetflag(basetask.StandardTaskTemplate):
     Inputs = TargetflagInputs
-    
+
     def prepare(self):
-        
+
         # Default values
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         # corrstring = self.inputs.context.evla['msinfo'][m.name].corrstring
@@ -130,12 +130,12 @@ class Targetflag(basetask.StandardTaskTemplate):
         summaries.append(summarydict)
 
         return TargetflagResults([rflag_result], summarydict=summaries)
-    
+
     def analyse(self, results):
         return results
-    
+
     def _do_rflag(self, field=None, correlation=None, scan=None, intent=None, spw=None):
-        
+
         task_args = {'vis'          : self.inputs.vis,
                      'mode'         : 'rflag',
                      'field'        : field,
@@ -154,7 +154,7 @@ class Targetflag(basetask.StandardTaskTemplate):
                      'extendflags'  : False,
                      'flagbackup'   : True,
                      'savepars'     : True}
-                     
+
         job = casa_tasks.flagdata(**task_args)
-            
+
         return self._executor.execute(job)

@@ -22,7 +22,7 @@ class RawflagchansQAHandler(pqa.QAPlugin):
     def handle(self, context, result):
         vis = result.inputs['vis']
         ms = context.observing_run.get_ms(vis)
-    
+
         # Calculate QA score from presence of flagging views and from the
         # flagging summary in the result, adopting the minimum score as the
         # representative score for this task.

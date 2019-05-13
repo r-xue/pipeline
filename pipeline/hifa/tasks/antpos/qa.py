@@ -25,9 +25,9 @@ class ALMAAntposQAHandler(pqa.QAPlugin):
         # Check for existence of antenna position corrections.
         score1 = self._number_antenna_offsets(ms, result.offsets)
         scores = [score1]
-            
+
         result.qa.pool.extend(scores)
-    
+
     @staticmethod
     def _number_antenna_offsets(ms, offsets):
         """

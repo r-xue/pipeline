@@ -12,10 +12,10 @@ LOG = logging.get_logger(__name__)
 class CompressedObj(object):
     def __init__(self, obj, protocol=pickle.HIGHEST_PROTOCOL, compresslevel=9):
         self.compressed = compress_object(obj, protocol=protocol, compresslevel=compresslevel)
-        
+
     def decompress(self):
         return decompress_object(self.compressed)
-        
+
 def compress_object(obj, protocol=pickle.HIGHEST_PROTOCOL, compresslevel=9):
     size_org = asizeof.asizeof(obj)
     start = time.time()
@@ -43,7 +43,7 @@ class CompressedIter(object):
     def __init__(self, obj):
         self.obj = obj
         self._count = 0
-        
+
     def next(self):
         if self._count < len(self.obj):
             v = self.obj[self._count]
@@ -54,7 +54,7 @@ class CompressedIter(object):
                 return v
         else:
             raise StopIteration()
-        
+
 class CompressedList(list):
     def __iter__(self):
         return CompressedIter(self)

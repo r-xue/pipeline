@@ -29,17 +29,17 @@ class SingleDishSkyCalDisplayBase(object):
         old_prefix = self._figroot.replace('.png', '')
         self._figroot = self._figroot.replace('.png', '-%s.png' % (self.field_name))
         new_prefix = self._figroot.replace('.png', '')
-        
+
         self._update_figfile(old_prefix, new_prefix)
-            
+
         if 'field' not in self._kwargs:
             self._kwargs['field'] = self.field_id
-            
+
     def add_field_identifier(self, plots):
         for plot in plots:
             if 'field' not in plot.parameters:
                 plot.parameters['field'] = self.field_name
-                
+
     def _update_figfile(self):
         raise NotImplementedError()
 
@@ -58,7 +58,7 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
         self._figfile = dict(((spw_id, self._figfile[spw_id].values()[0]) \
                               for spw_id in self.spw_ids))
         self.init_with_field(context, result, field)
-        
+
     def plot(self):
         missing = [spw_id
                    for spw_id in self.spw_ids
@@ -92,7 +92,7 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
             else:
                 LOG.trace('No plotbandpass summary plot found for spw '
                           '%s' % spw_id)
-                
+
         return wrappers
 
     def _update_figfile(self, old_prefix, new_prefix):
@@ -113,16 +113,16 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
     def __init__(self, context, result, field):
         super(SingleDishSkyCalAmpVsFreqDetailChart, self).__init__(
             context, result, xaxis='freq', yaxis='amp', showatm=True, overlay='time')
-        
+
         self.init_with_field(context, result, field)
-    
+
     def plot(self):
         wrappers = super(SingleDishSkyCalAmpVsFreqDetailChart, self).plot()
-         
+
         self.add_field_identifier(wrappers)
-        
+
         return wrappers
-    
+
     def _update_figfile(self, old_prefix, new_prefix):
         for spw_id in self._figfile:
             for antenna_id, figfile in self._figfile[spw_id].iteritems():
@@ -170,7 +170,7 @@ class SingleDishPlotmsLeaf(object):
 
         self._figroot = os.path.join(context.report_dir, 
                                      'stage%s' % result.stage_number)
-        
+
     def plot(self):
 
         prefix = '{caltable}-{y}_vs_{x}-{field}-{ant}-spw{spw}'.format(
@@ -186,9 +186,9 @@ class SingleDishPlotmsLeaf(object):
             LOG.debug('Returning existing plot')
         else:
             task.execute()
-            
+
         return [self._get_plot_object(figfile, task)]
-        
+
     def _create_task(self, title, figfile):
         task_args = {'vis': self.caltable,
                      'xaxis': self.xaxis,
@@ -203,15 +203,15 @@ class SingleDishPlotmsLeaf(object):
                      'showlegend': True,
                      'averagedata': True,
                      'avgchannel': '1e8'}
-        
+
         return casa_tasks.plotms(**task_args)
-    
+
     def _get_plot_object(self, figfile, task):
         parameters = {'vis': os.path.basename(self.vis),
                       'ant': self.antenna_selection,
                       'spw': self.spw,
                       'field': self.field_name}
-        
+
         return logger.Plot(figfile,
                            x_axis='Time',
                            y_axis='Amplitude',
@@ -225,11 +225,11 @@ class SingleDishPlotmsAntComposite(common.AntComposite):
 
 class SingleDishPlotmsSpwComposite(common.SpwComposite):
     leaf_class = SingleDishPlotmsLeaf
-    
+
 
 class SingleDishPlotmsAntSpwComposite(common.AntSpwComposite):
     leaf_class = SingleDishPlotmsSpwComposite
-    
+
 
 class SingleDishSkyCalAmpVsTimeSummaryChart(SingleDishPlotmsSpwComposite):
     def __init__(self, context, result, calapp):

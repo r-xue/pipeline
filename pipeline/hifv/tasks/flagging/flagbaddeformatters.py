@@ -58,9 +58,9 @@ class FlagBadDeformattersResults(basetask.Results):
 @task_registry.set_equivalent_casa_task('hifv_flagbaddef')
 class FlagBadDeformatters(basetask.StandardTaskTemplate):
     Inputs = FlagBadDeformattersInputs
-    
+
     def prepare(self):
-        
+
         # Setting control parameters as method arguments
 
         method_args = {'testq': 'amp',  # Which quantity to test? ['amp','phase','real','imag']
@@ -73,9 +73,9 @@ class FlagBadDeformatters(basetask.StandardTaskTemplate):
                        'doflagemptyspws': False,  # Flag data for spws with no unflagged channel solutions in any poln?
                        'calBPtablename': self.inputs.context.results[-1].read()[0].bpcaltable,  # Define the table
                        'flagreason': 'bad_deformatters_amp or RFI'}  # Define the REASON given for the flags
-        
+
         (result_amp, amp_collection, num_antennas) = self._do_flag_baddeformatters(**method_args)
-        
+
         method_args = {'testq': 'phase',
                        'tstat': 'diff',
                        'doprintall': True,
@@ -86,13 +86,13 @@ class FlagBadDeformatters(basetask.StandardTaskTemplate):
                        'doflagemptyspws': False,
                        'calBPtablename': self.inputs.context.results[-1].read()[0].bpcaltable,
                        'flagreason': 'bad_deformatters_phase or RFI'}
-        
+
         (result_phase, phase_collection, num_antennas) = self._do_flag_baddeformatters(**method_args)
-        
+
         return FlagBadDeformattersResults(result_amp=result_amp, result_phase=result_phase, 
                                           amp_collection=amp_collection, phase_collection=phase_collection,
                                           num_antennas=num_antennas)
-        
+
     def _do_flag_baddeformatters(self, testq=None, tstat=None, doprintall=True,
                                  testlimit=None, testunder=True, nspwlimit=4,
                                  doflagundernspwlimit=True,
@@ -101,10 +101,10 @@ class FlagBadDeformatters(basetask.StandardTaskTemplate):
         """Determine bad deformatters in the MS and flag them
            Looks for bandpass solutions that have small ratio of min/max amplitudes
         """
-        
+
         # Which quantity to test? ['amp','phase','real','imag']
         # testq = 'amp'
-        
+
         # Which stat to use? ['min','max','mean','var'] or 'rat'=min/max or 'diff'=max-min
         # tstat = 'rat'
 
@@ -125,47 +125,47 @@ class FlagBadDeformatters(basetask.StandardTaskTemplate):
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         num_antennas = len(m.antennas)
         startdate = m.start_time['m0']['value']
-        
+
         LOG.info("Start date for flag bad deformatters is: " + str(startdate))
-        
+
         if startdate <= 56062.7:
             doflagdata = False
         else:
             doflagdata = True
-        
+
         # Define the table to run this on
         # calBPtablename ='testBPcal.b'
         # Define the REASON given for the flags
         # flagreason = 'bad_deformatters_amp or RFI'
-        
+
         LOG.info("Will test on quantity: "+testq)
         LOG.info("Will test using statistic: "+tstat)
-        
+
         if testunder:
             LOG.info("Will flag values under limit = "+str(testlimit))
         else:
             LOG.info("Will flag values over limit = "+str(testlimit))
-        
+
         LOG.info("Will identify basebands with more than "+str(nspwlimit)+" bad spw")
-        
+
         if doflagundernspwlimit:
             LOG.info("Will identify individual spw when less than "+str(nspwlimit)+" bad spw")
-            
+
         if doflagemptyspws:
             LOG.info("Will identify spw with no unflagged channels")
-            
+
         LOG.info("Will use flag REASON = "+flagreason)
-        
+
         if doflagdata:
             LOG.info("Will flag data based on what we found")
         else:
             LOG.info("Will NOT flag data based on what we found")
-        
+
         calBPstatresult = getBCalStatistics(calBPtablename)
         flaglist = []
         extflaglist = []
         weblogflagdict = collections.defaultdict(list)
-        
+
         for iant in calBPstatresult['antband']:
             antName = calBPstatresult['antDict'][iant]
             badspwlist = []
@@ -174,7 +174,7 @@ class FlagBadDeformatters(basetask.StandardTaskTemplate):
                 for bband in calBPstatresult['antband'][iant][rrx]:
                     # List of spw in this baseband
                     spwl = calBPstatresult['rxBasebandDict'][rrx][bband]
-                    
+
                     nbadspws = 0
                     badspws = []
                     flaggedspws = []
@@ -182,19 +182,19 @@ class FlagBadDeformatters(basetask.StandardTaskTemplate):
                         if doprintall:
                             LOG.info(' Ant %s (%s) %s %s processing spws=%s' %
                                      (str(iant), antName, rrx, bband, str(spwl)))
-                        
+
                         for ispw in spwl:
                             testvalid = False
                             if ispw in calBPstatresult['antspw'][iant]:
                                 for poln in calBPstatresult['antspw'][iant][ispw]:
                                     # Get stats of this ant/spw/poln
                                     nbp = calBPstatresult['antspw'][iant][ispw][poln]['inner']['number']
-                                    
+
                                     if nbp > 0:
                                         if tstat == 'rat':
                                             bpmax = calBPstatresult['antspw'][iant][ispw][poln]['inner'][testq]['max']
                                             bpmin = calBPstatresult['antspw'][iant][ispw][poln]['inner'][testq]['min']
-                                            
+
                                             if bpmax == 0.0:
                                                 tval = 0.0
                                             else:
@@ -202,7 +202,7 @@ class FlagBadDeformatters(basetask.StandardTaskTemplate):
                                         elif tstat == 'diff':
                                             bpmax = calBPstatresult['antspw'][iant][ispw][poln]['inner'][testq]['max']
                                             bpmin = calBPstatresult['antspw'][iant][ispw][poln]['inner'][testq]['min']
-                                            
+
                                             tval = bpmax-bpmin
                                         else:
                                             # simple test on quantity
@@ -227,13 +227,13 @@ class FlagBadDeformatters(basetask.StandardTaskTemplate):
                                         if doprintall:
                                             LOG.info('  Found Ant %s (%s) %s %s spw=%s %s %s=%6.4f' %
                                                      (str(iant), antName, rrx, bband, str(ispw), testq, tstat, testval))
-                            
+
                             else:
                                 # this spw is missing from this antenna/rx
                                 if doprintall:
                                     LOG.info('  Ant %s (%s) %s %s spw=%s missing solution' %
                                              (str(iant), antName, rrx, bband, str(ispw)))
-                    
+
                     # Test to see if this baseband should be entirely flagged
                     if nbadspws > 0 and nbadspws >= nspwlimit:
                         # Flag all spw in this baseband
@@ -249,7 +249,7 @@ class FlagBadDeformatters(basetask.StandardTaskTemplate):
                         flaggedspwlist.extend(flaggedspws)
                         LOG.info('Ant %s (%s) %s %s no unflagged solutions spws=%s ' %
                                  (str(iant), antName, rrx, bband, str(flaggedspws)))
-                                    
+
             if len(badspwlist) > 0:
                 spwstr = '' 
                 for ispw in badspwlist:
@@ -266,7 +266,7 @@ class FlagBadDeformatters(basetask.StandardTaskTemplate):
                 flagstr = "mode='manual' antenna='"+antName+"' spw='"+spwstr+"'"
                 flaglist.append(flagstr)
                 weblogflagdict[antName].append(spwstr)
-                
+
             if doflagemptyspws and len(flaggedspwlist) > 0:
                 spwstr = '' 
                 for ispw in flaggedspwlist:
@@ -300,7 +300,7 @@ class FlagBadDeformatters(basetask.StandardTaskTemplate):
             LOG.info("No bad basebands/spws found")
         else:
             LOG.info("Possible bad basebands/spws found:")
-            
+
             for flagstr in flaglist:
                 LOG.info("    "+flagstr)
             if len(extflaglist) > 0:
@@ -310,16 +310,16 @@ class FlagBadDeformatters(basetask.StandardTaskTemplate):
                 flaglist.extend(extflaglist)
             if doflagdata:
                 LOG.info("Flagging bad deformatters in the ms...")
-                
+
                 task_args = {'vis': self.inputs.vis,
                              'mode': 'list',
                              'action': 'apply',
                              'inpfile': flaglist,
                              'savepars': True,
                              'flagbackup': True}
-                
+
                 job = casa_tasks.flagdata(**task_args)
-                
+
                 self._executor.execute(job)
 
                 # get the total fraction of data flagged for all antennas

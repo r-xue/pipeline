@@ -234,7 +234,7 @@ class Priorcals(basetask.StandardTaskTemplate):
     def prepare(self):
 
         callist = []
-        
+
         gc_result = self._do_gaincurves()
         oc_result = self._do_opcal()
         rq_result = self._do_rqcal()
@@ -243,12 +243,12 @@ class Priorcals(basetask.StandardTaskTemplate):
         tecmaps_result = None
         if self.inputs.tecmaps:
             tecmaps_result = self._do_tecmaps()
-        
+
         #try:
         #    antpos_result.merge_withcontext(self.inputs.context)
         #except:
         #    LOG.error('No antenna position corrections.')
-            
+
         return resultobjects.PriorcalsResults(pool=callist, gc_result=gc_result,
                                               oc_result=oc_result, rq_result=rq_result,
                                               antpos_result=antpos_result, antcorrect=antcorrect,
@@ -292,7 +292,7 @@ class Priorcals(basetask.StandardTaskTemplate):
         result = self._executor.execute(task)
 
         antcorrect = {}
-        
+
         try:
             antpos_caltable = result.final[0].gaintable
             if os.path.exists(antpos_caltable):

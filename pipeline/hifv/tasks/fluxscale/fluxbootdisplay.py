@@ -22,7 +22,7 @@ class fluxbootSummaryChart(object):
 
     def create_plot(self):
         figfile = self.get_figfile()
-        
+
         context = self.context
         m = context.observing_run.measurement_sets[0]
         corrstring = m.get_vla_corrstring()
@@ -42,7 +42,7 @@ class fluxbootSummaryChart(object):
 
     def get_plot_wrapper(self):
         figfile = self.get_figfile()
-       
+
         wrapper = logger.Plot(figfile, x_axis='freq', y_axis='amp', parameters={'vis': self.ms.basename,
                                                                                 'type': 'fluxboot',
                                                                                 'spw': '',
@@ -56,7 +56,7 @@ class fluxbootSummaryChart(object):
                 LOG.error('Could not create fluxboot plot.')
                 LOG.exception(ex)
                 return None
-            
+
         return wrapper
 
 

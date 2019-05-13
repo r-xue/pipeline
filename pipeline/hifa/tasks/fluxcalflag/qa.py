@@ -22,7 +22,7 @@ class FluxcalflagQAHandler(pqa.QAPlugin):
     def handle(self, context, result):
         vis = result.inputs['vis']
         ms = context.observing_run.get_ms(vis)
-    
+
         # calculate QA scores from agentflagger summary dictionary, adopting
         # the minimum score as the representative score for this task
         score1 = qacalc.score_fraction_newly_flagged(ms.basename,

@@ -893,7 +893,7 @@ class Tclean(cleanbase.CleanBase):
     # in the line-free (aka continuum) channels. If the continuum subtraction
     # worked well, then this image should just contain noise.
     def _calc_mom0_8_fc(self, result):
- 
+
         context = self.inputs.context
 
         # Find max iteration that was performed.

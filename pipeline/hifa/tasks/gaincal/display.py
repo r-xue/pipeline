@@ -36,7 +36,7 @@ class GaincalPerAntennaChart(object):
         plots = []
         for antenna in domain_antennas:
             plots.append(self.get_plot_wrapper(antenna))
-        
+
         return [p for p in plots if p is not None]
 
     def create_plot(self, antenna):
@@ -67,13 +67,13 @@ class GaincalPerAntennaChart(object):
         # plotbandpass injects antenna name, spw ID and t0 into every plot filename
         root, ext = os.path.splitext(figfile)
         real_figfile = '%s.%s.t0%s' % (root, antenna.name, ext)
-        
+
         wrapper = logger.Plot(real_figfile,
                               x_axis='freq',
                               y_axis='amp',
                               parameters={'vis': self.ms.basename,
                                           'ant': antenna.name})
-        
+
         if not os.path.exists(real_figfile):
             LOG.trace('Tsys per antenna plot for antenna %s not found. '
                       'Creating new plot.' % antenna.name)
@@ -90,7 +90,7 @@ class GaincalPerAntennaChart(object):
         if os.path.exists(real_figfile):
             return wrapper            
         return None
-    
+
 
 class PhaseVsBaselineChart(common.PlotBase):
     def __init__(self, context, result):
@@ -102,7 +102,7 @@ class PhaseVsBaselineChart(common.PlotBase):
         phaseup_gain = result.final[0].gaintable
 
         self._load_caltables(phaseup_gain)
-        
+
         self._score_retriever = common.NullScoreFinder()
 
         refant_name = result.inputs['refant'].split(',')[0]
@@ -112,7 +112,7 @@ class PhaseVsBaselineChart(common.PlotBase):
         intents = self.get_plot_intents()
         return [scan for scan in self.ms.scans 
                 if not intents.isdisjoint(scan.intents)]
-    
+
     def get_symbol_and_colour(self, pol, state='BEFORE'):
         """
         Get the plot symbol and colour for this polarization and bandtype.
@@ -129,7 +129,7 @@ class PhaseVsBaselineChart(common.PlotBase):
                        'Y': ('o', 'red', 0.6),
                        'XX': ('^', 'green', 0.6),
                        'YY': ('o', 'red', 0.6)}}
-    
+
         return d.get(state, {}).get(pol, ('x', 'grey'))
 
     def get_xlim(self, points):
@@ -183,9 +183,9 @@ class PhaseVsBaselineChart(common.PlotBase):
                         #except ValueError, IndexError:
                         except:
                             continue
-                        
+
                         wrappers.append(wrapper)
-                     
+
         xlim = self.get_xlim(wrappers)
         ylim = self.get_ylim(wrappers)                        
         LOG.trace('X range for %s = %s' % (self.ms.basename, xlim))
@@ -205,20 +205,20 @@ class PhaseVsBaselineChart(common.PlotBase):
 #         
 #         assert spw.id in data_before.spw, 'Spw %s not in %s' % (spw, self._table_before)
 #         assert spw.id in data_after.spw, 'Spw %s not in %s' % (spw, self._table_after)
-    
+
         # get the scan intents from the list of scans
         scan_intents = set()
         for scan in scans:
             scan_intents.update(scan.intents)
         scan_intents.discard('WVR')
         scan_intents = ','.join(scan_intents)
- 
+
         # get the fields from the list of scans
         scan_fields = set()
         for scan in scans:
             scan_fields.update([field.name for field in scan.fields])
         scan_fields = ','.join(scan_fields)
-            
+
         # get the polarisations for the calibration scans, assuming that
         # all scans with this calibration intent were observed with the
         # same polarisation setup
@@ -257,10 +257,10 @@ class PhaseVsBaselineChart(common.PlotBase):
             p, = ax.plot(x, y, symbol, color=color, alpha=alpha)
             plots.append(p)
             legend.append('%s' % corr_axis)
-        
+
         ax.set_xlim(xlim)
         ax.set_ylim(ylim)
-    
+
         # shrink the y height slightly to make room for the legend
         box2 = ax.get_position()
         ax.set_position([box2.x0, box2.y0 + box2.height * 0.02,
@@ -288,7 +288,7 @@ class PhaseVsBaselineChart(common.PlotBase):
                           loc='upper center', bbox_to_anchor=(0.5, -0.07),
                           ncol=len(legend))
             l.draw_frame(False)
-         
+
         spw_msg = 'SPW %s Correlation%s' % (spw.id, utils.commafy(corr_axes, quotes=False, multi_prefix='s'))
         pyplot.text(0.0, 1.026, spw_msg, color='k', 
                     transform=ax.transAxes, size=10)
@@ -299,7 +299,7 @@ class PhaseVsBaselineChart(common.PlotBase):
 
         scan_ids = [str(s.id) for s in scans]
         max_scans_for_msg = 8
-         
+
         # print 'Scans 4, 8, 12 ... 146' if there are too many scans to list
         if len(scans) > max_scans_for_msg:
             start = ','.join(scan_ids[0:max_scans_for_msg-1])
@@ -340,7 +340,7 @@ class PhaseVsBaselineChart(common.PlotBase):
         if os.path.exists(figfile):
             return wrapper            
         return None
-    
+
     def get_figfile(self, spw, scans, antennas):
         raise NotImplementedError()
 
@@ -349,13 +349,13 @@ class PhaseVsBaselineChart(common.PlotBase):
 
     def get_plot_intents(self):
         raise NotImplementedError()
-    
+
     def get_xlabel(self):
         raise NotImplementedError()
-    
+
     def get_ylabel(self):
         raise NotImplementedError()
-            
+
     def get_title(self):
         raise NotImplementedError()
 
@@ -370,7 +370,7 @@ class RMSOffsetVsRefAntDistanceChart(PhaseVsBaselineChart):
 
         def get_antennas(self):
             return self._antennas[:]
-                        
+
         def label_antenna(self, axes):
             pyplot.title('All Antennas', size=10)
 
@@ -380,14 +380,14 @@ class RMSOffsetVsRefAntDistanceChart(PhaseVsBaselineChart):
 
     def get_plot_intents(self):
         return {'PHASE'}
-    
+
     def get_xlabel(self):
         # CAS-7955: hif_timegaincal weblog: add refant next to phase(uvdist) plot
         return 'Distance to Reference Antenna {!s} (m)'.format(self.refant.name)
 
     def get_ylabel(self):
         return 'Unwrapped Phase RMS (degrees)'
-            
+
     def get_title(self):
         return ''                
 
@@ -432,12 +432,12 @@ class RMSOffsetVsRefAntDistanceChart(PhaseVsBaselineChart):
                                'spw': spw.id,
                                'scan': scan_ids
                            })
-    
-    
+
+
 class GaincalPhaseOffsetPlotHelper(phaseoffset.PhaseOffsetPlotHelper):
     def __init__(self, context, result):
         calapp = result.final[0]
-        
+
         rootdir = os.path.join(context.report_dir, 
                                'stage%s' % result.stage_number)
         prefix = '%s.phase_offset' % os.path.basename(calapp.vis)
@@ -480,7 +480,7 @@ class GaincalSummaryChart(common.PlotcalSpwComposite):
 
         assert len(selected) is 1, '%s %s solutions != 1' % (intent, yaxis)
         calapp = selected[0]
-        
+
         # request plots per spw, overlaying all antennas
         super(GaincalSummaryChart, self).__init__(
                 context, result, calapp, xaxis=xaxis, yaxis=yaxis, ant='', 
@@ -507,7 +507,7 @@ class GaincalSummaryChart2(common.PlotmsCalSpwComposite):
 
         assert len(selected) is 1, '%s %s solutions != 1' % (intent, yaxis)
         calapp = selected[0]
-        
+
         # request plots per spw, overlaying all antennas
         super(GaincalSummaryChart2, self).__init__(
                 context, result, calapp, xaxis=xaxis, yaxis=yaxis, ant='', 
@@ -534,7 +534,7 @@ class GaincalDetailChart(common.PlotcalAntSpwComposite):
 
         assert len(selected) is 1, '%s %s solutions != 1' % (intent, yaxis)
         calapp = selected[0]
-        
+
         # request plots per spw, overlaying all antennas
         super(GaincalDetailChart, self).__init__(
                 context, result, calapp, xaxis=xaxis, yaxis=yaxis, 
@@ -561,7 +561,7 @@ class GaincalDetailChart2(common.PlotmsCalAntSpwComposite):
 
         assert len(selected) is 1, '%s %s solutions != 1' % (intent, yaxis)
         calapp = selected[0]
-        
+
         # request plots per spw, overlaying all antennas
         super(GaincalDetailChart2, self).__init__(
                 context, result, calapp, xaxis=xaxis, yaxis=yaxis, 

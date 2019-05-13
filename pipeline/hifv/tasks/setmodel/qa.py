@@ -17,7 +17,7 @@ class VLASetjyQAHandler(pqa.QAPlugin):
     result_cls = commonfluxresults.FluxCalibrationResults
     child_cls = None
     generating_task = vlasetjy.VLASetjy
-    
+
     def handle(self, context, result):
         standard_source_names, standard_source_fields = vlasetjy.standard_sources(result.inputs['vis'])
 

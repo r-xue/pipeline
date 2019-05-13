@@ -36,7 +36,7 @@ class ALMAExportData(exportdata.ExportData):
 
     # link the accompanying inputs to this task
     Inputs = ALMAExportDataInputs
-   
+
     def prepare(self):
 
         results = super(ALMAExportData, self).prepare()
@@ -99,7 +99,7 @@ class ALMAExportData(exportdata.ExportData):
         return sessiondict
 
     def _do_aux_ms_products(self, context, vislist, products_dir):
-   
+
         # Loop over the measurements sets in the working directory, and
         # create the calibration apply file(s) in the products directory.
         apply_file_list = []

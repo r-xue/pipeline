@@ -68,7 +68,7 @@ class GcorFluxscaleQAHandler(pqa.QAPlugin):
         scores.extend(score_kspw(context, result))
 
         result.qa.pool.extend(scores)
-    
+
     def _missing_derived_fluxes(self, ms, field, intent, measurements):
         """
         Check whether there are missing derived fluxes. 

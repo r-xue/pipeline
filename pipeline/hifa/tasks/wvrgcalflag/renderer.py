@@ -98,7 +98,7 @@ class T2_4MDetailsWvrgcalflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 # generate the phase offset summary plots
                 phase_offset_summary_plotter = display.WVRPhaseOffsetSummaryPlot(context, result.flaggerresult)
                 phase_offset_summary_plots[vis] = phase_offset_summary_plotter.plot()
-                
+
                 # generate the per-antenna phase offset plots
                 phase_offset_plotter = display.WVRPhaseOffsetPlot(context, result.flaggerresult)
                 phase_offset_detail_plots[vis] = phase_offset_plotter.plot()
@@ -188,9 +188,9 @@ class T2_4MDetailsWvrgcalflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             for calapp in calapps:
                 ms = os.path.basename(calapp.vis)
                 gaintable = os.path.basename(calapp.gaintable)
-    
+
                 a = WvrApplication(ms, gaintable, interpolated, accept)            
-    
+
                 if not any([r for r in applications 
                             if r.ms == ms and r.gaintable == gaintable]):
                     applications.append(a)
@@ -231,7 +231,7 @@ class WvrgcalflagPhaseOffsetPlotRenderer(basetemplates.JsonPlotRenderer):
         super(WvrgcalflagPhaseOffsetPlotRenderer, self).__init__(
                 'wvrgcalflag_phase_offset_plots.mako', 
                 context, result, plots, title, outfile)
-         
+
     def update_json_dict(self, d, plot):
         if plot.qa_score <= 0.0:
             d['ratio'] = 0.0
@@ -246,7 +246,7 @@ class WvrgcalflagPhaseOffsetVsBaselinePlotRenderer(basetemplates.JsonPlotRendere
 
         title = 'Phase offset vs average baseline for %s' % vis
         outfile = filenamer.sanitize('phase_offsets_vs_baseline-%s.html' % vis)
-        
+
         super(WvrgcalflagPhaseOffsetVsBaselinePlotRenderer, self).__init__(
                 'generic_x_vs_y_spw_scan_plots.mako', context, 
                 result, plots, title, outfile)

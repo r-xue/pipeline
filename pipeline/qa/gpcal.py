@@ -24,7 +24,7 @@ def gpcal_calc(caltable):
        phase calibration tables.'''
 
     removeoutliers = True
- 
+
     caLoc = casac.calanalysis()
     caLoc.open(caltable)
     antennaNames = caLoc.antenna1()
@@ -33,40 +33,40 @@ def gpcal_calc(caltable):
 
     tbLoc = casac.table()
     tbLoc.open(caltable)
- 
+
     fieldIds = np.unique(tbLoc.getcol('FIELD_ID')).tolist()
     antIds = np.unique(tbLoc.getcol('ANTENNA1')).tolist()
- 
+
     if 'SPECTRAL_WINDOW_ID' in tbLoc.colnames():
- 
+
         spwIds = np.unique(tbLoc.getcol('SPECTRAL_WINDOW_ID')).tolist()
         tbLoc.close()
- 
+
         tbLoc.open(caltable + '/SPECTRAL_WINDOW')
         chanfreqs = tbLoc.getcol('CHAN_FREQ')[0]
         tbLoc.close()
- 
+
         caltableformat = 'new'
- 
+
     else:
- 
+
         if 'CAL_DESC' not in tbLoc.keywordnames():
             tbLoc.close()
             gpcal_stats = {'FIELDS': {'ERROR': True}, 'SPWS': {'ERROR': True}, 'ANTENNAS': {'ERROR': True}, 'STATS': {'ERROR': True}}
             return gpcal_stats
 
         tbLoc.close()
- 
+
         tbLoc.open(caltable + '/CAL_DESC')
         spwIds = tbLoc.getcol('SPECTRAL_WINDOW_ID')[0].tolist()
         tbLoc.close()
- 
+
         caltableformat = 'old'
 
     gpcal_stats = {'FIELDS': {}, 'SPWS': {}, 'ANTENNAS': {}, 'STATS': {}}
- 
+
     tbLoc.open(caltable)
- 
+
     for fIndex in xrange(len(fieldIds)):
 
         fieldId = fieldIds[fIndex]
@@ -86,7 +86,7 @@ def gpcal_calc(caltable):
             for aIndex in xrange(len(antIds)):
 
                 antId = antIds[aIndex]
- 
+
                 gpcal_stats['ANTENNAS'][antId] = antennaNames[aIndex]
 
                 if antId not in gpcal_stats['STATS'][fieldId][spwId]:
@@ -98,7 +98,7 @@ def gpcal_calc(caltable):
                     tb1 = tbLoc.query('FIELD_ID == '+str(fieldId)+' AND SPECTRAL_WINDOW_ID == '+str(spwId)+' AND ANTENNA1 == '+str(antId))
                 else:
                     tb1 = tbLoc.query('FIELD_ID == '+str(fieldId)+' AND CAL_DESC_ID == '+str(spwids.index(spwId))+' AND ANTENNA1 == '+str(antId))
- 
+
                 ngains = tb1.nrows()
                 if ngains == 0:
                     gpcal_stats['STATS'][fieldId][spwId][antId]['X-Y (deg)'] = 'C/C'
@@ -112,18 +112,18 @@ def gpcal_calc(caltable):
                     flag1 = tb1.getcol('FLAG')
                 else:
                     phase1 = tb1.getcol('GAIN')
- 
+
                 phase1 = np.angle(phase1)
                 phase1 = np.unwrap(phase1)
 
                 if len(phase1) == 2:
- 
+
                     phase2 = []
                     for i in range(ngains):
                         # don't use flagged points (see CAS-6804)
                         if ((flag1[0][0][i]==False) and (flag1[1][0][i]==False)):
                             phase2.append( phase1[0][0][i] - phase1[1][0][i] )
- 
+
                     # Unwrap the difference *after* flagging
                     phase2 = np.unwrap(np.array(phase2))
 
@@ -131,7 +131,7 @@ def gpcal_calc(caltable):
                     # CAS-6804. Threshold changed to 5 sigma.
                     if removeoutliers == True:
                         phase2 = filters.outlierFilter(phase2, 5.0)
- 
+
                 phase3 = []
                 for i in range(ngains-1):
                     # don't use flagged points (see CAS-6804)
@@ -149,7 +149,7 @@ def gpcal_calc(caltable):
                     else:
                         gpcal_stats['STATS'][fieldId][spwId][antId]['X-Y (deg)'] = 'C/C'
                         gpcal_stats['STATS'][fieldId][spwId][antId]['X-Y (m)'] = 'C/C'
-    
+
                     if (len(phase3) != 0):
                         gpcal_stats['STATS'][fieldId][spwId][antId]['X2-X1 (deg)'] = np.rad2deg(np.std(phase3))
                         gpcal_stats['STATS'][fieldId][spwId][antId]['X2-X1 (m)'] = np.std(phase3)*(2.9979e8/(2*np.pi*chanfreqs[spwId]))
@@ -158,14 +158,14 @@ def gpcal_calc(caltable):
                         gpcal_stats['STATS'][fieldId][spwId][antId]['X2-X1 (m)'] = 'C/C'
 
                 else:
- 
+
                     if ((len(phase1) == 2) and (len(phase2) != 0)):
                         gpcal_stats['STATS'][fieldId][spwId][antId]['X-Y (deg)'] = np.rad2deg(np.std(phase2))
                     else:
                         gpcal_stats['STATS'][fieldId][spwId][antId]['X-Y (deg)'] = 'C/C'
 
                     gpcal_stats['STATS'][fieldId][spwId][antId]['X-Y (m)'] = 'C/C'
-    
+
                     if (len(phase3) != 0):
                         gpcal_stats['STATS'][fieldId][spwId][antId]['X2-X1 (deg)'] = np.rad2deg(np.std(phase3))
                     else:

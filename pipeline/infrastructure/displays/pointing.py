@@ -50,7 +50,7 @@ def HHMMSS(x, pos):
 
 def HHMMSSs(x, pos):
     # HHMMSS.s format
-    
+
     (h, m, s) = Deg2HMS(x, 1/4800.0)
     #return '%02dh%02dm%04.1fs' % (h, m, s)
     return '%02d%s%02d%s%04.1f' % (h, hsyb, m, msyb, s)
@@ -151,7 +151,7 @@ def GLGBlabel(span):
     if t < 0: 
         GLlocator = AutoLocator()
         GBlocator = AutoLocator()
-            
+
     if span < 0.0001:
         GLformatter=FuncFormatter(DDMMSSss)
         GBformatter=FuncFormatter(DDMMSSss)
@@ -192,7 +192,7 @@ def RADEClabel(span):
             break
     #if DECt < 0: DEClocator = MultipleLocator(1/72000.0)
     if DECt < 0: DEClocator = AutoLocator()
-            
+
     if span < 0.0001:
         RAformatter=FuncFormatter(HHMMSSsss)
         DECformatter=FuncFormatter(DDMMSSss)
@@ -217,15 +217,15 @@ class MapAxesManagerBase(object):
     @property
     def direction_reference(self):
         return self._direction_reference
-    
+
     @direction_reference.setter
     def direction_reference(self, value):
         if isinstance(value, str):
             self._direction_reference = value
-    
+
     def __init__(self):
         self._direction_reference = None
-        
+
     def get_axes_labels(self):
         # default label is RA/Dec
         xlabel = 'RA'
@@ -239,19 +239,19 @@ class MapAxesManagerBase(object):
                 ylabel = 'GB'
         return xlabel, ylabel
 
-        
+
 class PointingAxesManager(MapAxesManagerBase):
     MATPLOTLIB_FIGURE_ID = 9005
-    
+
     @property
     def direction_reference(self):
         return self._direction_reference
-    
+
     @direction_reference.setter
     def direction_reference(self, value):
         if isinstance(value, str):
             self._direction_reference = value
-    
+
     def __init__(self):
         self._axes = None
         self.is_initialized = False
@@ -267,7 +267,7 @@ class PointingAxesManager(MapAxesManagerBase):
 
         if ylim is not None:
             self._axes.set_ylim(ylim)
-            
+
         if self.is_initialized == False or reset:
             # 2008/9/20 DEC Effect
             self._axes.set_aspect(aspect)
@@ -279,7 +279,7 @@ class PointingAxesManager(MapAxesManagerBase):
             pl.setp(xlabels, 'rotation', xrotation, fontsize=8)
             ylabels = self._axes.get_yticklabels()
             pl.setp(ylabels, 'rotation', yrotation, fontsize=8)
-            
+
     @property
     def axes(self):
         if self._axes is None:
@@ -332,7 +332,7 @@ def draw_pointing(axes_manager, RA, DEC, FLAG=None, plotfile=None, connect=True,
     else:
         a.title.set_text('Telescope Pointing on the Sky\nPointing Pattern = %s' % ObsPattern)
     plot_objects = []
-    
+
     if plotpolicy == 'plot':
         # Original
         plot_objects.extend(
@@ -360,7 +360,7 @@ def draw_pointing(axes_manager, RA, DEC, FLAG=None, plotfile=None, connect=True,
     # plot starting position with beam and end position 
     if len(circle) != 0:
         plot_objects.append(
-           	draw_beam(a, circle[0], Aspect, RA[0], DEC[0], offset=0.0)
+                draw_beam(a, circle[0], Aspect, RA[0], DEC[0], offset=0.0)
             )
         Mark = 'ro'
         plot_objects.extend(
@@ -372,7 +372,7 @@ def draw_pointing(axes_manager, RA, DEC, FLAG=None, plotfile=None, connect=True,
 
     for obj in plot_objects:
         obj.remove()
-    
+
 
 class SingleDishPointingChart(object):
     def __init__(self, context, ms, antenna, target_field_id=None, reference_field_id=None, target_only=True,
@@ -386,7 +386,7 @@ class SingleDishPointingChart(object):
         self.shift_coord = shift_coord
         self.figfile = self._get_figfile()
         self.axes_manager = PointingAxesManager()
-        
+
     def __get_field(self, field_id):
         if field_id is not None:
             fields = self.ms.get_fields(field_id)
@@ -396,14 +396,14 @@ class SingleDishPointingChart(object):
             return field
         else:
             return None
-        
+
     def plot(self, revise_plot=False):
         if revise_plot == False and os.path.exists(self.figfile):
             return self._get_plot_object()
-        
+
         ms = self.ms
         antenna_id = self.antenna.id
-        
+
         datatable_name = os.path.join(self.context.observing_run.ms_datatable_name, ms.basename)
         datatable = DataTable()
         datatable.importdata(datatable_name, minimal=False, readonly=True)
@@ -452,7 +452,7 @@ class SingleDishPointingChart(object):
                 func = lambda f, j, k: f in field_id and j == antenna_id and k == spw_id 
                 vfunc = numpy.vectorize(func)
                 dt_rows = vfunc(field_ids, antenna_ids, spw_ids)
-        
+
         if self.shift_coord == True:
             racol = 'SHIFT_RA'
             deccol = 'SHIFT_DEC'
@@ -462,7 +462,7 @@ class SingleDishPointingChart(object):
         LOG.debug('column names: {}, {}'.format(racol, deccol))
         if racol not in datatable.colnames() or deccol not in datatable.colnames():
             return None
-        
+
         RA = datatable.getcol(racol)[dt_rows]
         if len(RA) == 0:  # no row found
             LOG.warn('No data found with antenna=%d, spw=%d, and field=%s in %s.' %
@@ -477,9 +477,9 @@ class SingleDishPointingChart(object):
             pflags = datatable.getcell('FLAG_PERMANENT', row)
             # use flag for pol 0
             FLAG[i] = pflags[0][OnlineFlagIndex]
-                
+
         self.axes_manager.direction_reference = datatable.direction_ref
-        
+
         pl.clf()
         draw_pointing(self.axes_manager, RA, DEC, FLAG, self.figfile, circle=[0.5*beam_size_in_deg],
                       ObsPattern=obs_pattern, plotpolicy='greyed')

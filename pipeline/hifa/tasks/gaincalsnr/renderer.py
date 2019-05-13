@@ -20,7 +20,7 @@ class T2_4MDetailsGaincalSnrRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         table_rows = make_gaincalsnr_table(pipeline_context, results)
         mako_context.update({'table_rows'         : table_rows})
 
-    
+
 GaincalSnrTR = collections.namedtuple('GaincalSnrTR', 'vis spw sensitivities snrs')
 
 def make_gaincalsnr_table(context, results):
@@ -36,16 +36,16 @@ def make_gaincalsnr_table(context, results):
         # measurements will be empty if fluxscale derivation failed
         if len(single_result.spwids) is 0:
             continue
-            
+
         for i in range(len(single_result.spwids)):
 
-	    spwid = '%d' % single_result.spwids[i]
+            spwid = '%d' % single_result.spwids[i]
 
-	    # Sensitivities
-	    if not single_result.sensitivities[i]:
-	        sensitivities = ''
-	        snrs = ''
-	    else:
+            # Sensitivities
+            if not single_result.sensitivities[i]:
+                sensitivities = ''
+                snrs = ''
+            else:
                 sensitivities = '%0.3f' % single_result.sensitivities[i]
                 snrs = '%0.3f' % single_result.snrs[i]
             tr = GaincalSnrTR(vis_cell, spwid, sensitivities, snrs)

@@ -20,7 +20,7 @@ class T2_4MDetailsBpSolintRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         table_rows = make_bpsolint_table(pipeline_context, results)
         mako_context.update({'table_rows'         : table_rows})
 
-    
+
 BpsolintTR = collections.namedtuple('BpsolintTR', 'vis spw phintervals phnpoints bpintervals, bpnpoints')
 
 def make_bpsolint_table(context, results):
@@ -36,34 +36,34 @@ def make_bpsolint_table(context, results):
         # measurements will be empty if fluxscale derivation failed
         if len(single_result.spwids) is 0:
             continue
-            
+
         for i in range(len(single_result.spwids)):
 
-	    spwid = '%d' % single_result.spwids[i]
+            spwid = '%d' % single_result.spwids[i]
 
-	    # Phaseup solution intervalue
-	    if not single_result.phsolints[i]:
-	        phintervals = ''
-	        phnpoints = ''
-	    else:
-		if single_result.phsolints[i] == 'int':
-	            phintervals = 'int (%d)' % (single_result.phintsolints[i])
-		else:
-	            phintervals = '%7.3f (%d)' % (qt.getvalue(single_result.phsolints[i])[0],
-		        single_result.phintsolints[i])
-	        phnpoints = '%d' % single_result.nphsolutions[i]
+            # Phaseup solution intervalue
+            if not single_result.phsolints[i]:
+                phintervals = ''
+                phnpoints = ''
+            else:
+                if single_result.phsolints[i] == 'int':
+                    phintervals = 'int (%d)' % (single_result.phintsolints[i])
+                else:
+                    phintervals = '%7.3f (%d)' % (qt.getvalue(single_result.phsolints[i])[0],
+                        single_result.phintsolints[i])
+                phnpoints = '%d' % single_result.nphsolutions[i]
 
-	    # Bandpass solutions intervals
-	    if not single_result.bpsolints[i]:
-	        bpintervals = ''
-	        bpnpoints = ''
-	    else:
-		if single_result.bpsolints[i] == '1ch':
-	            bpintervals = '1ch (%d)' % (single_result.bpchansolints[i])
-		else:
-	            bpintervals = '%f (%d)' % (qt.getvalue(single_result.bpsolints[i])[0],
-		        single_result.bpchansolints[i])
-	        bpnpoints = '%d' % single_result.nbpsolutions[i]
+            # Bandpass solutions intervals
+            if not single_result.bpsolints[i]:
+                bpintervals = ''
+                bpnpoints = ''
+            else:
+                if single_result.bpsolints[i] == '1ch':
+                    bpintervals = '1ch (%d)' % (single_result.bpchansolints[i])
+                else:
+                    bpintervals = '%f (%d)' % (qt.getvalue(single_result.bpsolints[i])[0],
+                        single_result.bpchansolints[i])
+                bpnpoints = '%d' % single_result.nbpsolutions[i]
 
             tr = BpsolintTR(vis_cell, spwid,  phintervals, phnpoints,
                 bpintervals, bpnpoints)

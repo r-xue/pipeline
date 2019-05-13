@@ -14,7 +14,7 @@ class ALMAImportDataQAHandler(pqa.QAPlugin):
     result_cls = importdata.ImportDataResults
     child_cls = None
     generating_task = almaimportdata.ALMAImportData
-    
+
     def handle(self, context, result):
         # replace this with results of calls to ALMA-specific functions in qacalc
         #score = pqa.QAScore(0.1, longmsg='Hello from ALMA-specific QA', shortmsg='ALMA QA') 

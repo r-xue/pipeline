@@ -13,7 +13,7 @@ class T2_4MDetailsSingleDishImportDataRenderer(super_renderer.T2_4MDetailsImport
                  description='Register measurement sets with the pipeline', 
                  always_rerender=False):
         super(T2_4MDetailsSingleDishImportDataRenderer, self).__init__(uri, description, always_rerender)
-        
+
     def update_mako_context(self, mako_context, pipeline_context, result):
         super(T2_4MDetailsSingleDishImportDataRenderer, self).update_mako_context(mako_context, pipeline_context, result)
 

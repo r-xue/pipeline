@@ -80,7 +80,7 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
     for vis, ant_id, field_id, spw_id in itertools.izip(parent_mses, ant_list, fieldid_list, spw_list):
         datatable_name = os.path.join(context.observing_run.ms_datatable_name, os.path.basename(vis))
         datatable = DataTable(name=datatable_name, readonly=True)
-        
+
 #        if (datatable.getcolkeyword('RA', 'UNIT') != 'deg') or \
 #            (datatable.getcolkeyword('DEC', 'UNIT') != 'deg'):
         if (datatable.getcolkeyword('SHIFT_RA', 'UNIT') != 'deg') or \
@@ -293,7 +293,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         LOG.debug('Members to be processed:')
         for (m, a, s, f) in itertools.izip(infiles, antid_list, spwid_list, fieldid_list):
             LOG.debug('\tMS %s: Antenna %s Spw %s Field %s'%(os.path.basename(m), a, s, f))
-    
+
         # Check for ephemeris source
         known_ephemeris_list = ['MERCURY', 'VENUS', 'MARS', 'JUPITER', 'SATURN', 'URANUS', 'NEPTUNE', 'PLUTO', 'SUN',
                                 'MOON']

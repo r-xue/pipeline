@@ -41,9 +41,9 @@ class ChannelAveragedAxesManager(MapAxesManagerBase):
         self.xrotation = xrotation
         self.yrotation = yrotation
         self.isgray = (colormap == 'gray')
-        
+
         self.ticksize = ticksize
-        
+
         self._axes_tpmap = None
 
     @property
@@ -69,16 +69,16 @@ class ChannelAveragedAxesManager(MapAxesManagerBase):
                 pl.jet()
 
             self._axes_tpmap = axes
-            
+
         return self._axes_tpmap
 
 
 class SDChannelAveragedImageDisplay(SDImageDisplay):
     MATPLOTLIB_FIGURE_ID = 8911
-    
+
     def plot(self):
         self.init()
-        
+
         Extent = (self.ra_max+self.grid_size/2.0, self.ra_min-self.grid_size/2.0, self.dec_min-self.grid_size/2.0, self.dec_max+self.grid_size/2.0)
         span = max(self.ra_max - self.ra_min + self.grid_size, self.dec_max - self.dec_min + self.grid_size)
         (RAlocator, DEClocator, RAformatter, DECformatter) = pointing.XYlabel(span,
@@ -90,7 +90,7 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
         pl.figure(self.MATPLOTLIB_FIGURE_ID)
         if ShowPlot: pl.ioff()
         pl.clf()
-        
+
         # 2008/9/20 Dec Effect has been taken into account
         #Aspect = 1.0 / math.cos(0.5 * (self.dec_max + self.dec_min) / 180. * 3.141592653)
 
@@ -109,7 +109,7 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
         pl.gcf().sca(axes_tpmap)
 
         plot_list = []
-        
+
 #         masked_data = self.data * self.mask
         for pol in xrange(self.npol):
 #             Total = masked_data.take([pol], axis=self.id_stokes).squeeze()
@@ -145,7 +145,7 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
                     else:
                         tpmap_colorbar.set_clim((tmin, tmax))
                         tpmap_colorbar.draw_all()
-                        
+
             # draw beam pattern
             if beam_circle is None:
                 beam_circle = pointing.draw_beam(axes_tpmap, 0.5 * self.beam_size, self.aspect, self.ra_min, self.dec_min)
@@ -160,7 +160,7 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
             pl.savefig(plotfile, format='png', dpi=DPIDetail)
 
             im.remove()
-            
+
             parameters = {}
             parameters['intent'] = 'TARGET'
             parameters['spw'] = self.inputs.spw
@@ -215,10 +215,10 @@ class SDMomentMapDisplay(SDImageDisplay):
         job.execute(dry_run=False)
         assert os.path.exists(self.imagename)
         super(self.__class__, self).init()
-    
+
     def plot(self):
         self.init()
-        
+
         Extent = (self.ra_max+self.grid_size/2.0, self.ra_min-self.grid_size/2.0, self.dec_min-self.grid_size/2.0, self.dec_max+self.grid_size/2.0)
         span = max(self.ra_max - self.ra_min + self.grid_size, self.dec_max - self.dec_min + self.grid_size)
         (RAlocator, DEClocator, RAformatter, DECformatter) = pointing.XYlabel(span,
@@ -230,7 +230,7 @@ class SDMomentMapDisplay(SDImageDisplay):
         pl.figure(self.MATPLOTLIB_FIGURE_ID)
         if ShowPlot: pl.ioff()
         pl.clf()
-        
+
         # 2008/9/20 Dec Effect has been taken into account
         #Aspect = 1.0 / math.cos(0.5 * (self.dec_max + self.dec_min) / 180. * 3.141592653)
 
@@ -249,7 +249,7 @@ class SDMomentMapDisplay(SDImageDisplay):
         pl.gcf().sca(axes_tpmap)
 
         plot_list = []
-        
+
         for pol in xrange(self.npol):
             masked_data = (self.data.take([pol], axis=self.id_stokes) * self.mask.take([pol], axis=self.id_stokes)).squeeze()
             Total = numpy.flipud(masked_data.transpose())
@@ -282,7 +282,7 @@ class SDMomentMapDisplay(SDImageDisplay):
                     else:
                         tpmap_colorbar.set_clim((tmin, tmax))
                         tpmap_colorbar.draw_all()
-                        
+
             # draw beam pattern
             if beam_circle is None:
                 beam_circle = pointing.draw_beam(axes_tpmap, 0.5 * self.beam_size, self.aspect, self.ra_min,
@@ -299,7 +299,7 @@ class SDMomentMapDisplay(SDImageDisplay):
             pl.savefig(plotfile, format='png', dpi=DPIDetail)
 
             im.remove()
-            
+
             parameters = {}
             parameters['intent'] = 'TARGET'
             parameters['spw'] = self.inputs.spw
@@ -315,11 +315,11 @@ class SDMomentMapDisplay(SDImageDisplay):
                                y_axis='Dec.',
                                field=self.inputs.source,
                                parameters=parameters)
-            
+
             plot_list.append(plot)
 
         return plot_list
- 
+
 
 class ChannelMapAxesManager(ChannelAveragedAxesManager):
     def __init__(self, xformatter, yformatter, xlocator, ylocator, xrotation, yrotation, ticksize, colormap, nh, nv,
@@ -338,12 +338,12 @@ class ChannelMapAxesManager(ChannelAveragedAxesManager):
         self.height = 1.0 / 3.0 * 0.7
 
         self.numeric_formatter = pl.FormatStrFormatter('%.2f')
-        
+
         self._axes_integmap = None
         self._axes_integsp_full = None
         self._axes_integsp_zoom = None
         self._axes_chmap = None
-        
+
     @property
     def axes_integmap(self):
         if self._axes_integmap is None:
@@ -366,7 +366,7 @@ class ChannelMapAxesManager(ChannelAveragedAxesManager):
                 pl.jet()
 
             self._axes_integmap = axes
-            
+
         return self._axes_integmap
 
     @property
@@ -425,26 +425,26 @@ class ChannelMapAxesManager(ChannelAveragedAxesManager):
                 pl.jet()
 
             yield a
-        
+
 
 class SDSparseMapDisplay(SDImageDisplay):
     #MATPLOTLIB_FIGURE_ID = 8910
     MaxPanel = 8
-    
+
 #     @property
 #     def num_valid_spectrum(self):
 #         return self.inputs.num_valid_spectrum
 
     def enable_atm(self):
         self.showatm = True
-        
+
     def disable_atm(self):
         self.showatm = False
 
     def plot(self):
 
         self.init()
-        
+
         return self.__plot_sparse_map()
 
     def __plot_sparse_map(self):
@@ -455,7 +455,7 @@ class SDSparseMapDisplay(SDImageDisplay):
         #else: pl.ioff()
         #pl.figure(self.MATPLOTLIB_FIGURE_ID)
         #if ShowPlot: pl.ioff()
-        
+
         num_panel = min(max(self.x_max - self.x_min + 1, self.y_max - self.y_min + 1), self.MaxPanel)
         STEP = int((max(self.x_max - self.x_min + 1, self.y_max - self.y_min + 1) - 1) / num_panel) + 1
         NH = (self.x_max - self.x_min) / STEP + 1
@@ -465,7 +465,7 @@ class SDSparseMapDisplay(SDImageDisplay):
 
         chan0 = 0
         chan1 = self.nchan
-        
+
         plotter = SDSparseMapPlotter(NH, NV, STEP, self.brightnessunit)
         plotter.direction_reference = self.direction_reference
 
@@ -477,7 +477,7 @@ class SDSparseMapDisplay(SDImageDisplay):
         refpix[0], refval[0], increment[0] = self.image.direction_axis(0, unit='deg')
         refpix[1], refval[1], increment[1] = self.image.direction_axis(1, unit='deg')
         plotter.setup_labels(refpix, refval, increment)
-        
+
         if hasattr(self, 'showatm') and self.showatm is True:
             msid_list = numpy.unique(self.inputs.msid_list)
             for ms_id in msid_list:
@@ -504,7 +504,7 @@ class SDSparseMapDisplay(SDImageDisplay):
                     time_ref = me.epoch(rf=start_time['refer'], 
                                         v0=qmid_time)
                     position_ref = ms.antennas[antenna_id].position
-                    
+
                     # initialize
                     me.done()
                     me.doframe(time_ref)
@@ -521,7 +521,7 @@ class SDSparseMapDisplay(SDImageDisplay):
                     tolsrk = numpy.vectorize(_tolsrk)
                     atm_freq = tolsrk(atm_freq)
                 plotter.set_atm_transmission(atm_transmission, atm_freq)
-      
+
         # loop over pol
         for pol in xrange(self.npol):
             Plot = numpy.zeros((num_panel, num_panel, (chan1 - chan0)), numpy.float32) + NoData
@@ -530,7 +530,7 @@ class SDSparseMapDisplay(SDImageDisplay):
             Nsp = sum(isvalid.flatten())
             LOG.info('Nsp=%s' % Nsp)
             TotalSP /= Nsp
-            
+
             slice_axes = (self.image.id_direction[0], self.image.id_direction[1], self.id_stokes)
 
             for x in xrange(NH):
@@ -545,14 +545,14 @@ class SDSparseMapDisplay(SDImageDisplay):
                     Plot[x][y] = valid_sp.mean(axis=0)
                     del valid_index, chunk, valid_sp
             del isvalid
- 
+
             FigFileRoot = self.inputs.imagename+'.pol%s_Sparse' % pol
             plotfile = os.path.join(self.stage_dir, FigFileRoot+'_0.png')
 
             status = plotter.plot(Plot, TotalSP, self.frequency[chan0:chan1], 
                                   figfile=plotfile)
             del Plot, TotalSP
-            
+
             if status:
                 parameters = {}
                 parameters['intent'] = 'TARGET'
@@ -570,13 +570,13 @@ class SDSparseMapDisplay(SDImageDisplay):
                                    field=self.inputs.source,
                                    parameters=parameters)
                 plot_list.append(plot)
-            
+
         return plot_list
-    
+
     def _get_array_chunk(self, data, blc, trc, axes):
         """
         Returns a slice of an array
-        
+
         data : an array that could be sliced
         blc : a list of minimum index in each dimention of axes to slice
         trc : a list of maximum index in each dimention of axes to slice
@@ -603,7 +603,7 @@ class SDChannelMapDisplay(SDImageDisplay):
     #NumChannelMap = 12
     #NhPanel = 4
     #NvPanel = 3
-    
+
     def plot(self):
 
         self.init()
@@ -646,7 +646,7 @@ class SDChannelMapDisplay(SDImageDisplay):
         new_id_stokes = 0 if self.id_stokes < self.id_spectral else 1
         # un-weighted image
         unweight_ia = casatools.image.imagecalc(outfile='', pixels='"%s" * "%s"' % (imagename, weightname))
-        
+
         # if all pixels are masked, return fully masked array
         unweight_mask = unweight_ia.getchunk(getmask=True)
         if numpy.all(unweight_mask == False):
@@ -654,7 +654,7 @@ class SDChannelMapDisplay(SDImageDisplay):
             sp_ave = numpy.ma.masked_array(numpy.zeros((self.npol, self.nchan), dtype=numpy.float32), 
                                            mask=numpy.ones((self.npol, self.nchan), dtype=numpy.bool))
             return sp_ave
-        
+
         # average image spectra over map area taking mask into account
         try:
             collapsed_ia = unweight_ia.collapse(outfile='', function='mean', axes=self.image.id_direction)
@@ -697,9 +697,9 @@ class SDChannelMapDisplay(SDImageDisplay):
         colormap = 'color'
         scale_max = False
         scale_min = False
-        
+
         plot_list = []
-        
+
         # nrow is number of grid points for image
 #         nrow = self.nx * self.ny
 
@@ -710,7 +710,7 @@ class SDChannelMapDisplay(SDImageDisplay):
         # 2010/6/9 in the case of non-detection of the lines
         if len(line_list) == 0:
             return plot_list
-            
+
         # Set data
         Map = numpy.zeros((self.NumChannelMap, (self.y_max - self.y_min + 1), (self.x_max - self.x_min + 1)),
                           dtype=numpy.float32)
@@ -730,7 +730,7 @@ class SDChannelMapDisplay(SDImageDisplay):
         #else: pl.ioff()
         #pl.figure(self.MATPLOTLIB_FIGURE_ID)
         #if ShowPlot: pl.ioff()
-        
+
         # 2008/9/20 Dec Effect has been taken into account
         #Aspect = 1.0 / math.cos(0.5 * (self.dec_min + self.dec_max) / 180.0 * 3.141592653)
 
@@ -753,7 +753,7 @@ class SDChannelMapDisplay(SDImageDisplay):
         axes_integsp2 = axes_manager.axes_integsp_zoom
         axes_chmap = axes_manager.axes_chmap
         chmap_colorbar = [None for v in xrange(self.NvPanel)]
-        
+
         Sp_integ = self.__get_integrated_spectra()
         # loop over detected lines
         ValidCluster = 0
@@ -810,13 +810,13 @@ class SDChannelMapDisplay(SDImageDisplay):
                 elif ChanL == 0:
                     vertical_lines.append(pl.axvline(x = 0.5*(self.velocity[ChanL]-self.velocity[ChanL+1]) - VelC, linewidth=0.3, color='r'))
                 #print 'DEBUG: Vel[ChanL]', i, (self.velocity[ChanL]+self.velocity[ChanL-1])/2.0 - VelC
-            
+
             # loop over polarizations
             for pol in xrange(self.npol):
                 plotted_objects = []
-                
+
                 masked_data = (self.data.take([pol], axis=self.id_stokes) * self.mask.take([pol], axis=self.id_stokes)).squeeze()
-                
+
                 # Integrated Spectrum
                 t0 = time.time()
 
@@ -831,7 +831,7 @@ class SDChannelMapDisplay(SDImageDisplay):
 
                 xlim = axes_integmap.get_xlim()
                 ylim = axes_integmap.get_ylim()
-                
+
                 # colorbar
                 #print "min=%s, max of Total=%s" % (Total.min(),Total.max())
                 if not (Total.min() == Total.max()): 
@@ -852,7 +852,7 @@ class SDChannelMapDisplay(SDImageDisplay):
                 # draw beam pattern
                 if beam_circle is None:
                     beam_circle = pointing.draw_beam(axes_integmap, self.beam_radius, self.aspect, self.ra_min, self.dec_min)
-                    
+
                 pl.title('Total Intensity: CenterFreq.= %.3f GHz' % self.frequency[ChanC], size=TickSize)
                 axes_integmap.set_xlim(xlim)
                 axes_integmap.set_ylim(ylim)
@@ -876,7 +876,7 @@ class SDChannelMapDisplay(SDImageDisplay):
                 pl.axis([F0, F1, spmin, spmax])
 
                 t2 = time.time()
-                
+
                 # Plot Integrated Spectrum #2
                 pl.gcf().sca(axes_integsp2)
                 plotted_objects.extend(pl.plot(self.velocity[chan0:chan1] - VelC, Sp[chan0:chan1], '-b', markersize=2, markeredgecolor='b', markerfacecolor='b'))
@@ -889,7 +889,7 @@ class SDChannelMapDisplay(SDImageDisplay):
                 pl.axis([V0, V1, spmin_zoom, spmax_zoom])
 
                 t3 = time.time()
-                
+
                 # Draw Channel Map
                 NMap = 0
                 Vmax0 = Vmin0 = 0
@@ -959,7 +959,7 @@ class SDChannelMapDisplay(SDImageDisplay):
 
                 for obj in plotted_objects:
                     obj.remove()
-                
+
                 parameters = {}
                 parameters['intent'] = 'TARGET'
                 parameters['spw'] = self.spw
@@ -984,13 +984,13 @@ class SDChannelMapDisplay(SDImageDisplay):
                 line.remove()
 
         return plot_list
-        
+
 
 class RmsMapAxesManager(ChannelAveragedAxesManager):
     @property
     def axes_rmsmap(self):
         return self.axes_tpmap
-    
+
     def __init__(self, xformatter, yformatter, xlocator, ylocator, xrotation, yrotation, ticksize, colormap):
         super(RmsMapAxesManager, self).__init__(xformatter, yformatter, xlocator, ylocator,
                                                 xrotation, yrotation, ticksize, colormap)
@@ -1065,7 +1065,7 @@ class SDRmsMapDisplay(SDImageDisplay):
             image = pl.imshow(rms_map, interpolation='nearest', aspect=self.aspect, extent=Extent)
             xlim = rms_axes.get_xlim()
             ylim = rms_axes.get_ylim()
-            
+
             # colorbar
             rmsmin = rms_map.min()
             rmsmax = rms_map.max()
@@ -1117,7 +1117,7 @@ class SDRmsMapDisplay(SDImageDisplay):
             plot_list.append(plot2)
 
         return plot_list
-        
+
 
 class SpectralMapAxesManager(MapAxesManagerBase):
     def __init__(self, nh, nv, brightnessunit, formatter, locator, ticksize):
@@ -1130,7 +1130,7 @@ class SpectralMapAxesManager(MapAxesManagerBase):
         self.ticksize = ticksize
 
         self._axes = None
-        
+
     @property
     def axes_list(self):
         if self._axes is None:
@@ -1162,12 +1162,12 @@ class SpectralMapAxesManager(MapAxesManagerBase):
 
             yield a
 
-        
+
 class SDSpectralMapDisplay(SDImageDisplay):
     #MATPLOTLIB_FIGURE_ID = 8910
     MaxNhPanel = 5
     MaxNvPanel = 5
-    
+
     def plot(self):
         self.init()
         return self.__plot_spectral_map()
@@ -1222,7 +1222,7 @@ class SDSpectralMapDisplay(SDImageDisplay):
         LOG.debug("- Number of panels: [%d, %d]" % (NhPanel, NvPanel))
         LOG.debug("- Number of pages: [%d, %d]" % (NH, NV))
         LOG.debug("- Number of spcetra to be plotted: %d" % (len(ROWS)))
-        
+
         Npanel = 0
         TickSize = 11 - NhPanel
 
@@ -1263,7 +1263,7 @@ class SDSpectralMapDisplay(SDImageDisplay):
         # MS-based procedure
         reference_data = self.context.observing_run.measurement_sets[self.inputs.msid_list[0]]
         is_baselined = reference_data.work_data != reference_data.name
-        
+
         for pol in xrange(self.npol):
             data = (self.data.take([pol], axis=self.id_stokes) * self.mask.take([pol], axis=self.id_stokes)).squeeze()
             Npanel = 0
@@ -1292,10 +1292,10 @@ class SDSpectralMapDisplay(SDImageDisplay):
 
             for irow in xrange(len(ROWS)):
                 row = ROWS[irow]
-                    
+
                 _x = row / self.ny
                 _y = row % self.ny
-                
+
                 prefix = self.inputs.imagename+'.pol%s_Result' % pol
                 plotfile = os.path.join(self.stage_dir, prefix+'_%s.png' % Npanel)
 
@@ -1324,7 +1324,7 @@ class SDSpectralMapDisplay(SDImageDisplay):
                         a = axes_list[NSp]
                         a.set_axis_off()
                         a.title.set_text('')
-                        
+
                 NSp += 1
                 if NSp >= (NhPanel * NvPanel) or (irow == len(ROWS)-1 and mode.upper() != 'RASTER'):
                     NSp = 0
@@ -1367,7 +1367,7 @@ class SDSpectralMapDisplay(SDImageDisplay):
         print("Returning {} plots from spectralmap".format(len(plot_list)))
         return plot_list
 
-        
+
 class SDSpectralImageDisplay(SDImageDisplay):
     MATPLOTLIB_FIGURE_ID = 8910
 
@@ -1376,9 +1376,9 @@ class SDSpectralImageDisplay(SDImageDisplay):
         else: pl.ioff()
         pl.figure(self.MATPLOTLIB_FIGURE_ID)
         if ShowPlot: pl.ioff()
-        
+
 #         self.init()
-        
+
         plot_list = []
         t0 = time.time()
         worker = SDSparseMapDisplay(self.inputs)

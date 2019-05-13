@@ -91,7 +91,7 @@ class WvrgcalflagInputs(wvrgcal.WvrgcalInputs):
 )
 class Wvrgcalflag(basetask.StandardTaskTemplate):
     Inputs = WvrgcalflagInputs
-    
+
     def prepare(self):
         inputs = self.inputs
 

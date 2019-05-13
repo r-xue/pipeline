@@ -174,7 +174,7 @@ def reduce(vis=None, infiles=None, procedure='procedure_hifa_calimage.xml',
         while True:
             task = next(task_generator)
             LOG.info('Executing pipeline task %s' % task._hif_call)
-    
+
             try:
                 result = task.execute(dry_run=False)
                 result.accept(context)
@@ -197,5 +197,5 @@ def reduce(vis=None, infiles=None, procedure='procedure_hifa_calimage.xml',
     finally:
         LOG.info('Saving context...')
         context.save()
-        
+
     return context

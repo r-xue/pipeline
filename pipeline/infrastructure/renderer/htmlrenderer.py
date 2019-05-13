@@ -207,15 +207,15 @@ def get_plot_dir(context, stage_number):
 def is_singledish_ms(context):
     # importdata results
     result0 = context.results[0]
-    
+
     # if ResultsProxy, read pickled result
     if isinstance(result0, basetask.ResultsProxy):
         result0 = result0.read()
-                
+
     # if RestoreDataResults, get importdata_results
     if hasattr(result0, 'importdata_results'):
         result0 = result0.importdata_results[0]
-    
+
     result_repr = str(result0)
     return result_repr.find('SDImportDataResults') != -1
 
@@ -514,10 +514,10 @@ class T1_2Renderer(RendererBase):
             target_scans = [s for s in ms.scans if 'TARGET' in s.intents]
             time_on_source = utils.total_time_on_source(target_scans)
             time_on_source = utils.format_timedelta(time_on_source)
-           
+
             baseline_min = ms.antenna_array.min_baseline.length
             baseline_max = ms.antenna_array.max_baseline.length
-            
+
             # compile a list of primitive numbers representing the baseline 
             # lengths in metres..
             bls = [bl.length.to_units(measures.DistanceUnits.METRE)
@@ -527,7 +527,7 @@ class T1_2Renderer(RendererBase):
             baseline_rms = math.sqrt(sum(bl**2 for bl in bls)/len(bls))
             baseline_rms = measures.Distance(baseline_rms,
                                              units=measures.DistanceUnits.METRE)
- 
+
             science_spws = ms.get_spectral_windows(science_windows_only=True)
             receivers = sorted(set(spw.band for spw in science_spws))
 
@@ -544,9 +544,9 @@ class T1_2Renderer(RendererBase):
                                         baseline_min=baseline_min,
                                         baseline_max=baseline_max,
                                         baseline_rms=baseline_rms)
-        
+
             ms_summary_rows.append(row)
-        
+
         return {'pcontext': context,
                 'ms_summary_rows': ms_summary_rows}
 
@@ -557,9 +557,9 @@ class T1_3MRenderer(RendererBase):
     """
     output_file = 't1-3.html'
     template = 't1-3m.mako'
-    
+
     MsgTableRow = collections.namedtuple('MsgTableRow', 'stage task type message target')
-    
+
     @classmethod
     def get_display_context(cls, context):
         registry = qaadapter.registry
@@ -572,12 +572,12 @@ class T1_3MRenderer(RendererBase):
         for result in context.results:
             scores[result.stage_number] = result.qa.representative
             results_list = get_results_by_time(context, result)
-        
+
             qa_errors = cls._filter_qascores(results_list, -0.1, 0.33)
             tablerows.extend(cls._qascores_to_tablerows(qa_errors,
                                                         results_list,
                                                         'QA Error'))
-        
+
             qa_warnings = cls._filter_qascores(results_list, 0.33, 0.66)
             tablerows.extend(cls._qascores_to_tablerows(qa_warnings,
                                                         results_list,
@@ -592,7 +592,7 @@ class T1_3MRenderer(RendererBase):
             tablerows.extend(cls._logrecords_to_tablerows(warning_msgs,
                                                           results_list,
                                                           'Warning'))
-            
+
             if 'applycal' in get_task_description(result, context):
                 try:
                     for resultitem in result:
@@ -602,25 +602,25 @@ class T1_3MRenderer(RendererBase):
                         for field in resultitem.flagsummary:
                             intents = ','.join([f.intents for f in ms.get_fields(intent='BANDPASS,PHASE,AMPLITUDE,CHECK,TARGET')
                                                 if field in f.name][0])
-                            
+
                             flagsummary = resultitem.flagsummary[field]
-                            
+
                             if len(flagsummary) == 0:
                                 continue
-                        
+
                             fieldtable = {}
                             for _, v in flagsummary.iteritems():
                                 myname = v['name']
                                 myspw = v['spw']
                                 myant = v['antenna']
                                 spwkey = myspw.keys()[0]
-                            
+
                                 fieldtable[myname] = {spwkey: myant}
-                                
+
                             flagtable['Source name: '+ field + ', Intents: ' + intents] = fieldtable
-                        
+
                         flagtables[ms.basename] = flagtable
-                        
+
                 except:
                     LOG.debug('No flag summary table available yet from applycal')
 
@@ -650,7 +650,7 @@ class T1_3MRenderer(RendererBase):
         def get_target(qascore):
             vis = qascore.target.get('vis', None)
             return '&ms=%s' % vis if vis else ''
-        
+
         return [cls._create_tablerow(results, qascore.longmsg, msgtype, 
                                      get_target(qascore))
                 for qascore in qascores]
@@ -704,12 +704,12 @@ class T1_4MRenderer(RendererBase):
             dest_path = os.path.join(context.report_dir,
                                      os.path.basename(pprfile))
             shutil.copy(pprfile, dest_path)
-  
+
         return {'pcontext' : context,
                 'results'  : context.results,
                 'scores'   : scores,
                 'task_duration': task_duration}
-        
+
 
 class T2_1Renderer(RendererBase):
     """
@@ -762,7 +762,7 @@ class T2_1DetailsRenderer(object):
     @staticmethod
     def get_display_context(context, ms):
         T2_1DetailsRenderer.write_listobs(context, ms)
-        
+
         inputs = summary.IntentVsTimeChart.Inputs(context, vis=ms.basename)
         task = summary.IntentVsTimeChart(inputs)
         intent_vs_time = task.plot()
@@ -770,11 +770,11 @@ class T2_1DetailsRenderer(object):
         inputs = summary.FieldVsTimeChart.Inputs(context, vis=ms.basename)
         task = summary.FieldVsTimeChart(inputs)
         field_vs_time = task.plot()
-        
+
         science_spws = ms.get_spectral_windows(science_windows_only=True)
         all_bands = sorted({spw.band for spw in ms.spectral_windows})
         science_bands = sorted({spw.band for spw in science_spws})
-        
+
         science_sources = sorted({source.name for source in ms.sources if 'TARGET' in source.intents})
 
         calibrators = sorted({source.name for source in ms.sources if 'TARGET' not in source.intents})
@@ -791,7 +791,7 @@ class T2_1DetailsRenderer(object):
         time_on_source = utils.total_time_on_source(ms.scans) 
         science_scans = [scan for scan in ms.scans if 'TARGET' in scan.intents]
         time_on_science = utils.total_time_on_source(science_scans)
-        
+
 #         dirname = os.path.join(context.report_dir, 
 #                                'session%s' % ms.session,
 #                                ms.basename)
@@ -801,7 +801,7 @@ class T2_1DetailsRenderer(object):
 
         task = summary.PWVChart(context, ms)
         pwv_plot = task.plot()
-        
+
         task = summary.AzElChart(context, ms)
         azel_plot = task.plot()
 
@@ -1007,7 +1007,7 @@ class T2_2_3Renderer(T2_2_XRendererBase):
             # Create regular antenna positions plot.
             task = summary.PlotAntsChart(context, ms)
             plot_ants = task.plot()
-            
+
             # Create polar-log antenna positions plot.
             task = summary.PlotAntsChart(context, ms, polarlog=True)
             plot_ants_plog = task.plot()
@@ -1021,7 +1021,7 @@ class T2_2_3Renderer(T2_2_XRendererBase):
 
         dirname = os.path.join('session%s' % ms.session,
                                ms.basename)
-        
+
         return {'pcontext': context,
                 'plot_ants': plot_ants,
                 'plot_ants_plog': plot_ants_plog,
@@ -1107,7 +1107,7 @@ class T2_2_6Renderer(T2_2_XRendererBase):
             duration = utils.format_timedelta(scan.time_on_source)
             intents = sorted(scan.intents)
             fields = utils.commafy(sorted([f.name for f in scan.fields]))
-            
+
             spw_ids = sorted([spw.id for spw in scan.spws])
             spws = ', '.join([str(spw_id) for spw_id in spw_ids])
 
@@ -1122,7 +1122,7 @@ class T2_2_6Renderer(T2_2_XRendererBase):
             )
 
             tablerows.append(row)
-            
+
         return {'pcontext'     : context,
                 'ms'           : ms,
                 'tablerows'    : tablerows}
@@ -1161,7 +1161,7 @@ class T2_2_7Renderer(T2_2_XRendererBase):
                     # for missing antenna, spw, field combinations
                     if plotres is None: continue
                     target_pointings.append(plotres)
-                    
+
                     # pointing pattern with OFF-SOURCE intents
                     task = pointing.SingleDishPointingChart(context, ms, antenna, 
                                                             target_field_id=target,
@@ -1170,7 +1170,7 @@ class T2_2_7Renderer(T2_2_XRendererBase):
                     plotres = task.plot()
                     if plotres is not None:
                         whole_pointings.append(plotres)
-                    
+
                     # if the target is ephemeris, shifted pointing pattern should also be plotted
                     target_field = ms.fields[target]
                     source_name = target_field.source.name
@@ -1218,12 +1218,12 @@ class T2_3_XMBaseRenderer(RendererBase):
         for list_of_results_lists in topic.results_by_type.itervalues():
             if not list_of_results_lists:
                 continue
-            
+
             # CAS-11344: present results ordered by stage number
             for results_list in sorted(list_of_results_lists, key=operator.attrgetter('stage_number')):
                 qa_errors = cls._filter_qascores(results_list, -0.1, 0.33)
                 tablerows.extend(cls._qascores_to_tablerows(qa_errors, results_list, 'QA Error'))
-                    
+
                 qa_warnings = cls._filter_qascores(results_list, 0.33, 0.66)
                 tablerows.extend(cls._qascores_to_tablerows(qa_warnings, results_list, 'QA Warning'))
 
@@ -1239,7 +1239,7 @@ class T2_3_XMBaseRenderer(RendererBase):
             'tablerows': tablerows,
             'topic': topic
         }
-                
+
     @classmethod
     def _filter_qascores(cls, results_list, lo, hi):
         qa_pool = results_list.qa.pool
@@ -1259,7 +1259,7 @@ class T2_3_XMBaseRenderer(RendererBase):
         def get_target(qascore):
             vis = qascore.target.get('vis', None)
             return '&ms=%s' % vis if vis else ''
-        
+
         return [cls._create_tablerow(results, qascore.longmsg, msgtype, get_target(qascore))
                 for qascore in qascores]
 
@@ -1374,7 +1374,7 @@ class T2_4MRenderer(RendererBase):
     def get_display_context(context):
         return {'pcontext' : context,
                 'results'  : context.results}
-        
+
 #     @classmethod
 #     def get_file(cls, context, root):
 #         path = cls.get_path(context, root)
@@ -1444,7 +1444,7 @@ class T2_4MDetailsDefaultRenderer(object):
 
     def update_mako_context(self, mako_context, pipeline_context, result):
         LOG.trace('No-op update_mako_context for %s', self.__class__.__name__)
-        
+
     def render(self, context, result):
         display_context = self.get_display_context(context, result)
         # TODO remove fallback access once all templates are converted 
@@ -1522,7 +1522,7 @@ class T2_4MDetailsRenderer(object):
     # all results, the directory is stage-specific, so there's no risk of
     # collisions  
     output_file = 't2-4m_details.html'
-    
+
     # the default renderer should the task:renderer mapping not specify a
     # specialised renderer
     _default_renderer = T2_4MDetailsDefaultRenderer()
@@ -1548,11 +1548,11 @@ class T2_4MDetailsRenderer(object):
         dirname = os.path.dirname(path)
         if not os.path.exists(dirname):
             os.makedirs(dirname)
-        
+
         # create a file object that writes to a file if a hard copy is 
         # requested, otherwise return a file object that flushes to stdout
         file_obj = open(path, 'w')
-        
+
         # return the file object wrapped in a context manager, so we can use
         # it with the autoclosing 'with fileobj as f:' construct
         return contextlib.closing(file_obj)
@@ -1596,7 +1596,7 @@ class T2_4MDetailsRenderer(object):
             # list if necessary
             if not isinstance(task_result, collections.Iterable):
                 task_result = wrap_in_resultslist(task_result)
-            
+
             # find the renderer appropriate to the task..
             if any(isinstance(result, basetask.FailedTaskResults) for result in task_result):
                 task = basetask.FailedTask
@@ -1630,18 +1630,18 @@ class T2_4MDetailsRenderer(object):
                 for session_id, session_results in session_grouped.iteritems():
                     container_urls[session_id] = {}
                     ms_grouped = group_into_measurement_sets(context, session_results)
-        
+
                     for ms_id, ms_result in ms_grouped.iteritems():
                         cls.render_result(renderer, context, ms_result, ms_id)
-    
+
                         ms_weblog_path = cls.get_path(context, ms_result, ms_id)
                         relpath = os.path.relpath(ms_weblog_path, context.report_dir)
                         container_urls[session_id][ms_id] = (relpath, ms_result)
-    
+
                 # create new container
                 container = T2_4MDetailsContainerRenderer
                 container.render(context, task_result, container_urls)
-                
+
             else:
                 LOG.warning('Don\'t know how to group %s renderer', task.__name__)
 
@@ -1711,7 +1711,7 @@ def group_into_sessions(context, task_results):
     """
     session_map = {ms.basename : ms.session 
                    for ms in context.observing_run.measurement_sets}
-    
+
     def get_session(r):
         # return the session inputs argument if present, otherwise find
         # which session the measurement set is in
@@ -1720,7 +1720,7 @@ def group_into_sessions(context, task_results):
 
         basename = os.path.basename(r.inputs['vis'])
         return session_map.get(basename, 'Shared')
-    
+
     d = {}
     results_by_session = sorted(task_results, key=get_session)
     for k, g in itertools.groupby(results_by_session, get_session):
@@ -1742,7 +1742,7 @@ def group_into_measurement_sets(context, task_results):
             # in splitting by vis, there's only one MS in the mses array
             return r.mses[0].basename
         return os.path.basename(r.inputs['vis'])
-    
+
     vises = [get_vis(r) for r in task_results]
     mses = [context.observing_run.get_ms(vis) for vis in vises]
     ms_names = [ms.basename for ms in mses]
@@ -1756,7 +1756,7 @@ def group_into_measurement_sets(context, task_results):
         d[name] = wrap_in_resultslist(task)
 
     return d
-    
+
 
 def sort_by_time(mses):
     """
@@ -1821,11 +1821,11 @@ class WebLogGenerator(object):
     @staticmethod
     def copy_resources(context):
         outdir = os.path.join(context.report_dir, 'resources')
-        
+
         # shutil.copytree complains if the output directory exists
         if os.path.exists(outdir):
             shutil.rmtree(outdir)
-        
+
         # copy all uncompressed non-python resources to output directory
         src = pkg_resources.resource_filename(resources.__name__, '')
         dst = outdir
@@ -1845,7 +1845,7 @@ class WebLogGenerator(object):
         # those objects that we need to render.  
         LOG.todo('Add results argument to renderer interfaces!')
         proxies = context.results
-        
+
         try:
             # unpickle the results objects ready for rendering
             context.results = [proxy.read() for proxy in context.results]
@@ -1871,7 +1871,7 @@ class LogCopier(object):
     """
     LogCopier copies and handles the CASA logs so that they may be referenced
     by the pipeline web logs. 
-    
+
     Capturing the CASA log gives us a few problems:
     The previous log is renamed upon starting a new session. To be reliably
     referenced from the web log, we must give it an immutable name and copy it
@@ -1891,10 +1891,10 @@ class LogCopier(object):
     prevent this, we need to output anchors as CASA log comments, possibly
     timestamps, and then use javascript to navigate to the log location.
     """
-    
+
     # Thanks to the unique timestamps in the CASA log, the implementation
     # turns out to be quite simple. Is a class overkill?
-    
+
     @staticmethod
     def copy(context):
         output_file = os.path.join(context.report_dir, 'casapy.log')
@@ -1903,7 +1903,7 @@ class LogCopier(object):
         if os.path.exists(output_file):
             with open(output_file, 'r') as weblog:
                 existing_entries.extend(weblog.readlines())
-                    
+
         # read existing log, appending any non-duplicate entries to our casapy
         # web log. This is Python 2.6 so we can't define the context managers
         # on the same line
@@ -2024,7 +2024,7 @@ class LogCopier(object):
 # as you can just call WebLogGenerator.render(context) 
 DEBUG_CLASSES = []
 
-    
+
 def get_mses_by_time(context):
     return sorted(context.observing_run.measurement_sets,
                   key=lambda ms: ms.start_time['m0']['value'])

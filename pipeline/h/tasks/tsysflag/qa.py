@@ -50,7 +50,7 @@ class TsysflagQAHandler(pqa.QAPlugin):
                     metric_units='Percentage Tsys caltable newly flagged')
                 score.origin = new_origin
                 scores = [score]
-            
+
         result.qa.pool[:] = scores
 
         result.qa.all_unity_longmsg = 'No extra data was flagged in %s' % caltable

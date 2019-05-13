@@ -100,7 +100,7 @@ class BpSolint(basetask.StandardTaskTemplate):
         # Turn the CASA field name and spw id lists into Python lists
         fieldlist = inputs.field.split(',')
         spwlist = [int(spw) for spw in inputs.spw.split(',')]
-        
+
         #Setup BP SNR
         bpsnr = inputs.bpsnr if not parameters.has_key('bpsnr') else parameters['bpsnr']
 
@@ -126,7 +126,7 @@ class BpSolint(basetask.StandardTaskTemplate):
         if not solint_dict:
             LOG.info('No solution interval dictionary')
             return BpSolintResults(vis=inputs.vis)
-        
+
         # Check the existence of strong atmospheric line and recalculate
         # solution interval with lower bpsnr if necessary
         if bpsnr > inputs.minbpsnr and \
@@ -229,7 +229,7 @@ class BpSolint(basetask.StandardTaskTemplate):
         """
         The method returns maximum BP solution interval of all SPWs
         in solution interval dictionary (solint_dict)
-        
+
         Inputs: solution interval dictionary returned by snr.estimate_bpsolint
         """
         max_solint = 0
@@ -311,7 +311,7 @@ def check_strong_atm_lines(ms, fieldlist, intent, spwidlist, solint_dict, tsysna
     """
     This function tests if existence of strong atmospheric lines in Tsys spectra
     (see CAS-11951).
-    
+
     Inputs:
         ms: Measurementset object
         fieldlist: a list of field names
@@ -336,7 +336,7 @@ def check_strong_atm_lines(ms, fieldlist, intent, spwidlist, solint_dict, tsysna
             (os.path.basename(ms.name), os.path.basename(tsysname))
 
     tsys_info = snr_heuristics.get_tsysinfo(ms, fieldlist, intent, spwidlist)
-    
+
     strong_atm_lines = False
     for spw in spwidlist:
         if spw not in tsys_info or spw not in solint_dict:
@@ -405,13 +405,13 @@ def check_strong_atm_lines(ms, fieldlist, intent, spwidlist, solint_dict, tsysna
 def get_median_tsys_spectrum_from_caltable(tsysname, spwid, fieldid, interpolate_flagged=True):
     """
     Returns masked median Tsys spectrum of an SPW and scan combination in Tsys caltable.
-    
+
     Inputs:
         tsysname: the path to Tsys caltable
         spwid: SPW ID of Tsys to select
         fieldid: field ID of Tsys to select
         interpolate_flag: if True, operate piecewise linear interpolation of flagged channels
-    
+
     Returns: masked array of median Tsys spectrum
     """
     if not os.path.exists(tsysname):

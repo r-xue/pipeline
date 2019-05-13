@@ -64,8 +64,8 @@ class testBPdcalsResults(basetask.Results):
         m = context.observing_run.get_ms(self.vis)
         context.evla['msinfo'][m.name].gain_solint1 = self.gain_solint1
         context.evla['msinfo'][m.name].shortsol1 = self.shortsol1
-    
-        
+
+
 @task_registry.set_equivalent_casa_task('hifv_testBPdcals')
 class testBPdcals(basetask.StandardTaskTemplate):
     Inputs = testBPdcalsInputs
@@ -102,13 +102,13 @@ class testBPdcals(basetask.StandardTaskTemplate):
         refantobj = findrefant.RefAntHeuristics(vis=self.inputs.vis, field=refantfield,
                                                 geometry=True, flagging=True, intent='',
                                                 spw='', refantignore=self.inputs.refantignore)
-        
+
         RefAntOutput = refantobj.calculate()
-        
+
         LOG.info("RefAntOutput: {}".format(RefAntOutput))
-        
+
         self._do_gtype_delaycal(caltable=gtypecaltable, context=context, RefAntOutput=RefAntOutput)
-        
+
         LOG.info("Initial phase calibration on delay calibrator complete")
 
         fracFlaggedSolns = 1.0
@@ -140,9 +140,9 @@ class testBPdcals(basetask.StandardTaskTemplate):
         # calibrators (later)
 
         context = self.inputs.context
-        
+
         bpdgain_touse = tablebase + table_suffix[0]
-        
+
         self._do_gtype_bpdgains(tablebase + table_suffix[0], addcaltable=ktypecaltable,
                                 solint=solint, context=context, RefAntOutput=RefAntOutput)
 
@@ -165,7 +165,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
             solint = solints[1]
 
             context = self.inputs.context
-            
+
             self._do_gtype_bpdgains(tablebase + table_suffix[1], addcaltable=ktypecaltable,
                                     solint=solint, context=context, RefAntOutput=RefAntOutput)
 
@@ -183,15 +183,15 @@ class testBPdcals(basetask.StandardTaskTemplate):
             if fracFlaggedSolns3 < fracFlaggedSolns1:
                 gain_solint1 = solint
                 shortsol1 = soltime
-            
+
                 bpdgain_touse = tablebase + table_suffix[1]
-            
+
                 if fracFlaggedSolns3 > 0.05:
                     soltime = soltimes[2]
                     solint = solints[2]
 
                     context = self.inputs.context
-                
+
                     self._do_gtype_bpdgains(tablebase + table_suffix[2], addcaltable=ktypecaltable, solint=solint,
                                             context=context, RefAntOutput=RefAntOutput)
                     flaggedSolnResult10 = getCalFlaggedSoln(tablebase + table_suffix[2])
@@ -264,9 +264,9 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
     def analyse(self, results):
         return results
-    
+
     def _do_gtype_delaycal(self, caltable=None, context=None, RefAntOutput=None):
-        
+
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         delay_field_select_string = context.evla['msinfo'][m.name].delay_field_select_string
         tst_delay_spw = m.get_vla_tst_delay_spw()
@@ -315,7 +315,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
         return True
 
     def _do_ktype_delaycal(self, caltable=None, addcaltable=None, context=None, RefAntOutput=None):
-        
+
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         delay_field_select_string = context.evla['msinfo'][m.name].delay_field_select_string
         delay_scan_select_string = context.evla['msinfo'][m.name].delay_scan_select_string
@@ -365,7 +365,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
         return True
 
     def _check_flagSolns(self, flaggedSolnResult, RefAntOutput):
-        
+
         if flaggedSolnResult['all']['total'] > 0:
             fracFlaggedSolns = flaggedSolnResult['antmedian']['fraction']
         else:
@@ -464,7 +464,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
     def _do_applycal(self, context=None, ktypecaltable=None, bpdgain_touse=None, bpcaltable=None, interp=None):
         """Run CASA task applycal"""
-        
+
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         testgainscans = context.evla['msinfo'][m.name].testgainscans
 
