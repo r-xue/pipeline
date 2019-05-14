@@ -675,14 +675,7 @@ def set_miscinfo(name, spw=None, field=None, type=None, iter=None, multiterm=Non
                     ]
                 else:
                     spw_names = ['N/A']
-
-                # PIPE-325: abbreviate 'spw' for FITS header when spw string is "too long"
-                if len(spw) < 68:
-                    info['spw'] = spw
-                else:
-                    spw_sorted = sorted([int(x) for x in spw.split(',')])
-                    info['spw'] = '{},...,{}'.format(spw_sorted[0], spw_sorted[-1])
-
+                info['spw'] = spw
                 info['nspwnam'] = len(spw_names)
                 for i in xrange(len(spw_names)):
                     info['spwnam%02d' % (i+1)] = spw_names[i]

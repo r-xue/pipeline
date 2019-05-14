@@ -46,6 +46,7 @@ from casa_system import casa as casasys
 import pipeline as pipeline
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
+import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.imagelibrary as imagelibrary
 import pipeline.infrastructure.vdp as vdp
@@ -1353,6 +1354,15 @@ finally:
                 continue
             LOG.info('Saving final image {} to FITS file {}'.format(os.path.basename(image),
                                                                     os.path.basename(fitsfile)))
+
+            # PIPE-325: abbreviate 'spw' for FITS header when spw string is "too long"
+            with casatools.ImageReader(image) as img:
+                info = img.miscinfo()
+                if len(info['spw']) >= 68:
+                    spw_sorted = sorted([int(x) for x in info['spw'].split(',')])
+                    info['spw'] = '{},...,{}'.format(spw_sorted[0], spw_sorted[-1])
+                    img.setmiscinfo(info)
+
             if not self._executor._dry_run:
                 task = casa_tasks.exportfits(imagename=image, fitsimage=fitsfile, velocity=False, optical=False,
                                              bitpix=-32, minpix=0, maxpix=-1, overwrite=True, dropstokes=False,
