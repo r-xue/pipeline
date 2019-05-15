@@ -30,8 +30,7 @@ class PlotbandpassDetailBase(object):
         calapps = [c for c in result.final
                    if (c.intent == '' or 'TARGET' in c.intent)]
 
-        if len({c.gaintable for c in calapps}) > 1:
-            raise ValueError('Target solutions != 1')
+        assert len(calapps) is 1, 'Target bandpass solutions != 1'
         calapp = calapps[0]
 
         self._vis = calapp.vis
