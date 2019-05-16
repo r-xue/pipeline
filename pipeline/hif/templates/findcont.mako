@@ -14,6 +14,7 @@
                 <th colspan="3">Continuum Frequency Range</th>
                 <th rowspan="2">Status</th>
                 <th rowspan="2">Average spectrum</th>
+                <th rowspan="2">Joint mask</th>
             </tr>
             <tr>
                 <th>Start</th>

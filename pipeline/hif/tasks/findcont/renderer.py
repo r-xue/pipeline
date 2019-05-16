@@ -7,19 +7,22 @@ import collections
 import operator
 import os
 import shutil
+import glob
 
 import numpy
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure.logging as logging
+import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.renderer.logger as logger
+import pipeline.h.tasks.common.displays as displays
 
 LOG = logging.get_logger(__name__)
 
 
-TR = collections.namedtuple('TR', 'field spw min max frame status spectrum')
+TR = collections.namedtuple('TR', 'field spw min max frame status spectrum jointmask')
 
 
 class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -49,6 +52,7 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         for field in sorted(set(ranges_dict.keys())):
             for spw in map(str, sorted(map(int, set(ranges_dict[field].keys())))):
                 plotfile = self._get_plotfile(context, result, field, spw)
+                jointmaskplot = self._get_jointmaskplot(context, result, field, spw)  # PIPE-201
 
                 status = ranges_dict[field][spw]['status']
 
@@ -56,7 +60,7 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
                 if ranges_for_spw in non_detection:
                     rows.append(TR(field=field, spw=spw, min='None', max='',
-                                   frame='None', status=status, spectrum=plotfile))
+                                   frame='None', status=status, spectrum=plotfile, jointmask=jointmaskplot))
                 else:
                     raw_ranges_for_spw = [item['range'] for item in ranges_for_spw if isinstance(item, dict)]
                     refers = numpy.array([item['refer'] for item in ranges_for_spw if isinstance(item, dict)])
@@ -75,7 +79,7 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         min_freq = measures.Frequency(range_min).str_to_precision(5)
                         max_freq = measures.Frequency(range_max).str_to_precision(5)
                         rows.append(TR(field=field, spw=spw, min=min_freq, max=max_freq, frame=refer, status=status,
-                                       spectrum=plotfile))
+                                       spectrum=plotfile, jointmask=jointmaskplot))
 
         return utils.merge_td_columns(rows)
 
@@ -96,6 +100,56 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         plot_obj = logger.Plot(dst)
 
         fullsize_relpath = os.path.relpath(dst, context.report_dir)
+        thumbnail_relpath = os.path.relpath(plot_obj.thumbnail, context.report_dir)
+        title = 'Detected continuum ranges for %s spw %s' % (field, spw)
+
+        html_args = {
+            'fullsize': fullsize_relpath,
+            'thumbnail': thumbnail_relpath,
+            'title': title,
+            'alt': title,
+            'rel': 'findcont_plots_%s' % field
+        }
+
+        html = ('<a href="{fullsize}"'
+                '   title="{title}"'
+                '   data-fancybox="{rel}"'
+                '   data-caption="{title}">'
+                '    <img data-src="{thumbnail}"'
+                '         title="{title}"'
+                '         alt="{alt}"'
+                '         class="lazyload img-responsive">'
+                '</a>'.format(**html_args))
+
+        return html
+
+    def _get_jointmaskplot(self, context, result, field, spw):
+
+        joint2 = glob.glob('{}/*s{}*{}*spw{}*joint.mask2'.format(context.output_dir, result.stage_number, field, spw))
+        joint = glob.glob('{}/*s{}*{}*spw{}*joint.mask'.format(context.output_dir, result.stage_number, field, spw))
+        
+        if joint2:
+            src = joint2[0]
+            masktype = 'jointmask2'
+        elif joint:
+            src = joint[0]
+            masktype = 'jointmask'
+        else:
+            return 'No plot available'
+
+        with casatools.ImageReader(src) as image:
+            info = image.miscinfo()
+            info['type'] = masktype
+            info['spw'] = spw
+            info['field'] = field
+            image.setmiscinfo(info)
+
+        # create a plot object so we can access (thus generate) the thumbnail
+        reportdir = context.report_dir+'/stage{}/'.format(result.stage_number)
+
+        plot_obj = displays.sky.SkyDisplay().plot(context, src, reportdir=reportdir, intent='', collapseFunction='mean')
+
+        fullsize_relpath = os.path.relpath(plot_obj.abspath, context.report_dir)
         thumbnail_relpath = os.path.relpath(plot_obj.thumbnail, context.report_dir)
         title = 'Detected continuum ranges for %s spw %s' % (field, spw)
 
