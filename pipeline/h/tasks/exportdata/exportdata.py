@@ -1358,7 +1358,7 @@ finally:
             # PIPE-325: abbreviate 'spw' for FITS header when spw string is "too long"
             with casatools.ImageReader(image) as img:
                 info = img.miscinfo()
-                if len(info['spw']) >= 68:
+                if ('spw' in info) and (len(info['spw']) >= 68):
                     spw_sorted = sorted([int(x) for x in info['spw'].split(',')])
                     info['spw'] = '{},...,{}'.format(spw_sorted[0], spw_sorted[-1])
                     img.setmiscinfo(info)
