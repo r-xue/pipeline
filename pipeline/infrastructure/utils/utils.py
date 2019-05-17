@@ -17,7 +17,7 @@ from .. import logging
 LOG = logging.get_logger(__name__)
 
 __all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_caltable_polarizations',
-           'flagged_intervals']
+           'flagged_intervals', 'get_field_identifiers']
 
 
 def find_ranges(data):
@@ -140,3 +140,23 @@ def fieldname_clean(field):
     """
     allowed = string.ascii_letters + string.digits + '+-'
     return ''.join(map(lambda c: c if c in allowed else '_', field))
+
+
+def get_field_accessor(ms, field):
+    fields = ms.get_fields(name=field.name)
+    if len(fields) == 1:
+        return operator.attrgetter('name')
+
+    def accessor(x):
+        return str(operator.attrgetter('id')(x))
+    return accessor
+
+
+def get_field_identifiers(ms):
+    """
+    Get a dict of numeric field ID to unambiguous field identifier, using the
+    field name where possible and falling back to numeric field ID where the
+    name is duplicated, for instance in mosaic pointings.
+    """
+    field_name_accessors = {field.id: get_field_accessor(ms, field) for field in ms.fields}
+    return {field.id: field_name_accessors[field.id](field) for field in ms.fields}

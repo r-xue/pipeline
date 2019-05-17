@@ -1,11 +1,13 @@
 from __future__ import absolute_import
 
 from collections import namedtuple
-from operator import attrgetter
+from operator import itemgetter
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
+import pipeline.infrastructure.casatools as casatools
+import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.heuristics import caltable as caltable_heuristic
 from pipeline.h.heuristics.tsysspwmap import tsysspwmap
@@ -121,7 +123,7 @@ def get_gainfield_map(ms):
     :return: dict of {observing intent: gainfield}
     """
     def f(intent):
-        return ','.join(get_tsys_fields_for_intent(ms, intent))
+        return ','.join(str(s) for s in get_tsys_fields_for_intent(ms, intent))
 
     # Intent mapping extracted from CAS-12213 ticket:
     #
@@ -198,23 +200,13 @@ def get_tsys_fields_for_intent(ms, intent):
                                    for pointing in mosaic_fields
                                    for f in pointing.source.fields if 'ATMOSPHERE' in f.intents]
 
+    r = {field.id for field in intent_fields_with_tsys}
+    r.update({field.id for field in tsys_fields_for_mosaics})
+
     # when field names are not unique, as is usually the case for science
     # mosaics, then we must reference the numeric field ID instead
-    field_name_accessors = {field.id: get_field_accessor(ms, field) for field in ms.fields}
-    r = {field_name_accessors[field.id](field) for field in intent_fields_with_tsys}
-    r.update({field_name_accessors[field.id](field) for field in tsys_fields_for_mosaics})
-
-    return r
-
-
-def get_field_accessor(ms, field):
-    fields = ms.get_fields(name=field.name)
-    if len(fields) == 1:
-        return attrgetter('name')
-
-    def accessor(x):
-        return str(attrgetter('id')(x))
-    return accessor
+    field_identifiers = utils.get_field_identifiers(ms)
+    return {field_identifiers[i] for i in r}
 
 
 def get_calapplications(ms, tsys_table, calfrom_defaults, origin):
@@ -240,18 +232,70 @@ def get_calapplications(ms, tsys_table, calfrom_defaults, origin):
     calfrom_args = dict(calfrom_defaults)
     calfrom_args['gaintable'] = tsys_table
 
+    # get the mapping of field ID to unambiguous identifier for more user friendly logs
+    field_id_to_identifier = utils.get_field_identifiers(ms)
+
     # Now loop through the MS intents, creating a specific Tsys registration for each intent.
     calapps = []
     for intent in ms.intents:
         # get the preferred Tsys gainfield for this intent, falling back to 'nearest' if not specified
         gainfield = soln_map.get(intent, 'nearest')
 
-        LOG.info('Setting Tsys gainfield={!r} for {} data in {}'.format(gainfield, intent, ms.basename))
+        # The CASA callibrary cannot handle registrations with multiple fldmap fields, e.g., fldmap='1,2'.
+        if ',' in gainfield:
+            LOG.info('Calculating workaround for CASA callibrary fldmap incompatibility: '
+                     '{} intent -> fldmap={!r}'.format(intent, gainfield))
+            # get the fields for this non-Tsys intent
+            fields_with_intent = ms.get_fields(intent=intent)
+            # get the Tsys fields that were to be applied in the fldmap
+            tsys_fields = ms.get_fields(task_arg=gainfield)
 
-        # With gainfield set appropriately, construct the CalApplication and add it to the results
-        calto = callibrary.CalTo(vis=ms.name, intent=intent)
-        calfrom = callibrary.CalFrom(gainfield=gainfield, **calfrom_args)
-        calapp = callibrary.CalApplication(calto, calfrom, origin)
-        calapps.append(calapp)
+            field_to_tsys_field = {}
+
+            for non_tsys_field in fields_with_intent:
+                if 'ATMOSPHERE' in non_tsys_field.intents:
+                    LOG.info('Tying Tsys to self for {} field {}'.format(intent,
+                                                                         field_id_to_identifier[non_tsys_field.id]))
+                    field_to_tsys_field[non_tsys_field] = non_tsys_field
+
+            # do we have any non-Tsys fields still to process?
+            remaining_non_tsys = [f for f in fields_with_intent if f not in field_to_tsys_field]
+
+            # ok, so these fields do not have a related Tsys field. For these fields we'll emulate the
+            # gainfield='nearest' option by selecting the closest Tsys field
+            me = casatools.measures
+            qa = casatools.quanta
+            for non_tsys_field in remaining_non_tsys:
+                non_tsys_direction = non_tsys_field.mdirection
+
+                separations = []
+                for tsys_field in tsys_fields:
+                    tsys_direction = tsys_field.mdirection
+                    separation = me.separation(tsys_direction, non_tsys_direction)
+                    separation_degs = qa.getvalue(qa.convert(separation, 'deg'))[0]
+                    separations.append((tsys_field, separation_degs))
+
+                closest = min(separations, key=itemgetter(1))[0]
+                LOG.info('Tying {} field #{} to closest Tsys field: #{}'.format(
+                    intent, field_id_to_identifier[non_tsys_field.id], field_id_to_identifier[closest.id]))
+                field_to_tsys_field[non_tsys_field] = closest
+
+            # create a CalTo specifically for the intent fields with their selected Tsys field
+            for non_tsys_field, tsys_field in field_to_tsys_field.iteritems():
+                calto = callibrary.CalTo(vis=ms.name, intent=intent,
+                                         field=field_id_to_identifier[non_tsys_field.id])
+                calfrom = callibrary.CalFrom(gainfield='{}'.format(field_id_to_identifier[tsys_field.id]),
+                                             **calfrom_args)
+                calapp = callibrary.CalApplication(calto, calfrom, origin)
+                calapps.append(calapp)
+
+        else:
+            LOG.info('Setting Tsys gainfield={!r} for {} data in {}'.format(gainfield, intent, ms.basename))
+
+            # With gainfield set appropriately, construct the CalApplication and add it to the results
+            calto = callibrary.CalTo(vis=ms.name, intent=intent)
+            calfrom = callibrary.CalFrom(gainfield=gainfield, **calfrom_args)
+            calapp = callibrary.CalApplication(calto, calfrom, origin)
+            calapps.append(calapp)
 
     return calapps

@@ -8,7 +8,6 @@ import itertools
 import operator
 import os
 import string
-import types
 import uuid
 import weakref
 
@@ -1270,7 +1269,7 @@ def get_id_to_intent_fn(id_to_intent):
     return f
 
 
-def get_id_to_field_fn(id_to_field):
+def get_id_to_field_fn(ms_to_id_to_field):
     """
     Return a function that can convert field IDs to a field name.
 
@@ -1279,27 +1278,30 @@ def get_id_to_field_fn(id_to_field):
 
     {'a.ms': {0: 'field 1', 1: 'field 2'}
 
-    :param id_to_field: dict of vis : field ID : field name
+    :param ms_to_id_to_field: dict of vis : field ID : field name
     :return: set of field names (or field IDs if names are not unique)
     """
+    id_to_identifier = {}
+    for ms_name, id_to_field in ms_to_id_to_field.iteritems():
+        counter = collections.Counter()
+        counter.update(id_to_field.values())
+
+        # construct an id:name mapping using the ID for non-unique field names
+        d = {field_id: field_name if counter[field_name] == 1 else field_id
+             for field_id, field_name in id_to_field.iteritems()}
+        id_to_identifier[ms_name] = d
 
     def f(vis, field_ids):
-        assert vis in id_to_field
+        assert vis in id_to_identifier
 
-        mapping = id_to_field[vis]
+        field_id_to_field_name = id_to_identifier[vis]
 
         # if the field range spans all fields for this measurement set,
         # transform it back to '' to indicate all fields
-        if all((i in field_ids for i in mapping)):
+        if all(i in field_ids for i in field_id_to_field_name):
             return set('')
 
-        all_field_names = mapping.values()
-        names_are_unique = len(all_field_names) is len(set(all_field_names))
-
-        if names_are_unique:
-            return set((mapping[i] for i in field_ids))
-        else:
-            return field_ids
+        return set(field_id_to_field_name[i] for i in field_ids)
 
     return f
 
