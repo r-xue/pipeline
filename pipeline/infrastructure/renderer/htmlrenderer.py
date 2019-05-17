@@ -1146,9 +1146,6 @@ class T2_2_7Renderer(T2_2_XRendererBase):
         whole_pointings = []
         shift_pointings = []
         if is_singledish_ms(context):
-            ephem_names = casatools.measures.listcodes(casatools.measures.direction())['extra']
-            valid_ephem_names = [x for x in ephem_names if x != 'COMET']
-            # LOG.info('valid_ephem_names={}'.format(valid_ephem_names))
             for antenna in ms.antennas:
                 for (target, reference) in ms.calibration_strategy['field_strategy'].iteritems():
                     LOG.debug('target field id %s / reference field id %s' % (target, reference))
@@ -1174,8 +1171,7 @@ class T2_2_7Renderer(T2_2_XRendererBase):
                     # if the target is ephemeris, shifted pointing pattern should also be plotted
                     target_field = ms.fields[target]
                     source_name = target_field.source.name
-                    LOG.debug('source_name = {}'.format(source_name))
-                    if source_name.upper() in valid_ephem_names:
+                    if target_field.source.is_eph_obj:
                         LOG.info('generating shifted pointing plot for {}'.format(source_name))
                         task = pointing.SingleDishPointingChart(context, ms, antenna, 
                                                                 target_field_id=target,
