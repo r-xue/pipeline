@@ -145,17 +145,17 @@ class MetaDataReader(object):
 
         with casatools.TableReader(os.path.join(name, 'FIELD')) as tb:
             field_ids = range(tb.nrows())
-            ephemeris_ids = tb.getcol( 'EPHEMERIS_ID' )
             for field_id in list(set(field_ids)):
                 fields = ms.get_fields( field_id = field_id )
                 source_name = (fields[0].source.name) # removed upper() 2019.5.14
-                #if ephemeris_ids[field_id] < 0:
                 if not fields[0].source.is_eph_obj: 
                     # non-ephemeris source
                     ephemsrc_names.update( { field_id:'' } )
                     ephem_tables.update( {field_id:'' } )
                     LOG.info( "FIELD_ID={} ({}) as NORMAL SOURCE".format( field_id, source_name) )
                 else:
+                    if not 'ephemeris_ids' in locals():
+                        ephemeris_ids = tb.getcol( 'EPHEMERIS_ID' )
                     ephemsrc_names.update( { field_id:source_name } )
                     if source_name.upper not in ephemsrc_list:
                         # found a new ephemeris source
