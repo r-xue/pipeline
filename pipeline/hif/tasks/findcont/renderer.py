@@ -8,8 +8,10 @@ import operator
 import os
 import shutil
 import glob
+import copy
 
 import numpy
+import matplotlib
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure.logging as logging
@@ -147,7 +149,8 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # create a plot object so we can access (thus generate) the thumbnail
         reportdir = context.report_dir+'/stage{}/'.format(result.stage_number)
 
-        plot_obj = displays.sky.SkyDisplay().plot(context, src, reportdir=reportdir, intent='', collapseFunction='mean')
+        plot_obj = displays.sky.SkyDisplay().plot(context, src, reportdir=reportdir, intent='', collapseFunction='mean',
+                                                  **{'cmap': copy.deepcopy(matplotlib.cm.YlOrRd)})
 
         fullsize_relpath = os.path.relpath(plot_obj.abspath, context.report_dir)
         thumbnail_relpath = os.path.relpath(plot_obj.thumbnail, context.report_dir)
