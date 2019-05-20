@@ -124,9 +124,10 @@ class SkyDisplay(object):
                         collapsed = image.collapse(function=collapseFunction, axes=[2, 3])
             except:
                 # All channels flagged or some other error. Make collapsed zero image.
-                collapsed = image.newimagefromimage(infile=result)
-                collapsed.set(pixelmask=True, pixels='0')
-                collapsed = collapsed.collapse(function='mean', axes=[2, 3])
+                collapsed_new = image.newimagefromimage(infile=result)
+                collapsed_new.set(pixelmask=True, pixels='0')
+                collapsed = collapsed_new.collapse(function='mean', axes=[2, 3])
+                collapsed_new.done()
 
             name = image.name(strippath=True)
             coordsys = collapsed.coordsys()
@@ -167,6 +168,8 @@ class SkyDisplay(object):
                 world = coordsys.toworld([0, float(pix), 0, 0])
                 relative = coordsys.torel(world)
                 y[pix] = relative['numeric'][1]
+
+            coordsys.done()
 
             # remove any incomplete matplotlib plots, if left these can cause
             # weird errors
