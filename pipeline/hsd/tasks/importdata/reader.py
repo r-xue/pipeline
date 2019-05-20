@@ -165,13 +165,13 @@ class MetaDataReader(object):
                     if source_name.upper not in ephemsrc_list:
                         # found a new ephemeris source
                         ephemsrc_list.append( source_name )
-                    if source_name.upper() in ephemeris_nocomet and 'TARGET' in fields[0].intents:
-                        ephem_tables.update( {field_id:'' } )
-                        LOG.info( "FIELD_ID={} ({}) as EPHEMERIS SOURCE".format( field_id, source_name ) )
-                    else:
-                        ephem_table_files = glob.glob( ms.name+'/FIELD/EPHEM'+str(ephemeris_ids[field_id])+'_*.tab' )
-                        if len(ephem_table_files) > 1:
-                            raise RuntimeError( "multiple ephemeris tables found for field_id={}".format(field_id) )
+            
+                    # pick ephemeris table name
+                    ephem_table_files = glob.glob( ms.name+'/FIELD/EPHEM'+str(ephemeris_ids[field_id])+'_*.tab' )
+                    if len(ephem_table_files) > 1:
+                        raise RuntimeError( "multiple ephemeris tables found for field_id={}".format(field_id) )
+
+                    if len(ephem_table_files) == 1:
                         ephem_table_file = ephem_table_files[0]
                         # double check the source name in ephem_table_file
                         with casatools.TableReader(ephem_table_file) as tb2:
@@ -180,6 +180,15 @@ class MetaDataReader(object):
                                 raise RuntimeError( "source name in ephemeris table {0} was {1}, inconsistent with {2}".format( ephem_table_file, keywords['NAME'], source_name ) )
                         ephem_tables.update( {field_id:ephem_table_file} )
                         LOG.info( "FIELD_ID={} ({}) with ephemeris table {}".format( field_id, source_name, ephem_table_file ) )
+                    else:
+                        # if ephemeris file does not exist,
+                        # try to search the source name in ephemeris_nocomet
+                        if source_name.upper() in ephemeris_nocomet and 'TARGET' in fields[0].intents:
+                            ephem_tables.update( {field_id:'' } )
+                            LOG.info( "FIELD_ID={} ({}) as EPHEMERIS SOURCE".format( field_id, source_name ) )
+                        else:
+                            raise RuntimeError( "epheris data for field_id={} not found.".format(field_id) )
+
             
         with TableSelector(name, 'ANTENNA1 == ANTENNA2 && FEED1 == FEED2 && DATA_DESC_ID IN %s && STATE_ID IN %s'%(list(ddids), list(target_state_ids))) as tb:
             # find the first onsrc for each ephemeris source and pack org_directions
@@ -475,19 +484,20 @@ def get_reference_direction( source_name, ephem_table, mepoch, mposition, outfra
     ephemeris = direction_codes['extra']
     ephemeris_nocomet = numpy.delete( ephemeris, numpy.where(ephemeris=='COMET') )
 
-    if source_name.upper() in ephemeris_nocomet:
-        me.doframe(mepoch)
-        me.doframe(mposition)
-        obj_azel = me.measure( me.direction(source_name.upper()), 'AZELGEO' )
-        ref = me.measure( obj_azel, outframe )
-    elif ephem_table != "":
+    if ephem_table != "":
         me.framecomet( ephem_table )
         me.doframe(mepoch)
         me.doframe(mposition)
         obj_azel = me.measure( me.direction('COMET'), 'AZELGEO' )
         ref = me.measure( obj_azel, outframe )
     else:
-        raise RuntimeError( "{0} is not registered in ephemeris_nocomet".format(source_name) )
+        if source_name.upper() in ephemeris_nocomet:
+            me.doframe(mepoch)
+            me.doframe(mposition)
+            obj_azel = me.measure( me.direction(source_name.upper()), 'AZELGEO' )
+            ref = me.measure( obj_azel, outframe )
+        else:
+            raise RuntimeError( "{0} is not registered in ephemeris_nocomet".format(source_name) )
 
     return ref
 
