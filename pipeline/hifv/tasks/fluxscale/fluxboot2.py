@@ -27,12 +27,12 @@ class Fluxboot2Inputs(vdp.StandardInputs):
     """
     caltable = vdp.VisDependentProperty(default=None)
     refantignore = vdp.VisDependentProperty(default='')
-    fitorder = vdp.VisDependentProperty(default=1)
+    fitorder = vdp.VisDependentProperty(default=-1)
 
     def __init__(self, context, vis=None, caltable=None, refantignore=None, fitorder=None):
 
         if fitorder is None:
-            fitorder = 1
+            fitorder = -1
 
         super(Fluxboot2Inputs, self).__init__()
         self.context = context
@@ -274,6 +274,14 @@ class Fluxboot2(basetask.StandardTaskTemplate):
         flux_field_select_string = context.evla['msinfo'][m.name].flux_field_select_string
         fluxcalfields = flux_field_select_string
 
+        fitorder = self.inputs.fitorder
+        if self.inputs.fitorder == -1:
+            fitorder = self.find_fitorder()
+        elif self.inputs.fitorder > -1:
+            LOG.info("Keyword override:  Using input fitorder={!s}".format(fitorder))
+        elif self.inputs.fitorder < -1:
+            raise Exception
+
         task_args = {'vis': calMs,
                      'caltable': caltable,
                      'fluxtable': 'fluxgaincalFcal.g',
@@ -281,7 +289,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                      'transfer': [''],
                      'append': False,
                      'refspwmap': [-1],
-                     'fitorder': self.inputs.fitorder}
+                     'fitorder': fitorder}
 
         job = casa_tasks.fluxscale(**task_args)
 
@@ -336,14 +344,13 @@ class Fluxboot2(basetask.StandardTaskTemplate):
             fitorder = 1
             LOG.warn('Heuristics could not determine a fitorder for fluxscale.  Defaulting to fitorder=1.')
 
-        LOG.debug('Displaying fit order heuristics...')
-        print('DEBUG:  Fit order heuristics:')
-        print('  Number of spws: ', str(len(spws)))
-        print('  Bands: ', ','.join(unique_bands))
-        print('  Max frequency: ', str(maxfreq))
-        print('  Min frequency: ', str(minfreq))
-        print('  delta nu / nu: ', fractional_bandwidth)
-        print('  Fit order: ', fitorder)
+        LOG.info('Displaying fit order heuristics...')
+        LOG.info('  Number of spws: {!s}'.format(str(len(spws))))
+        LOG.info('  Bands: {!s}'.format(','.join(unique_bands)))
+        LOG.info('  Max frequency: {!s}'.format(str(maxfreq)))
+        LOG.info('  Min frequency: {!s}'.format(str(minfreq)))
+        LOG.info('  delta nu / nu: {!s}'.format(fractional_bandwidth))
+        LOG.info('  Fit order: {!s}'.format(fitorder))
 
         return fitorder
 
@@ -478,7 +485,8 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                          ' Band: ' + band +
                          ' fluxscale fitted spectral index = ' + str(spix) + ' +/- ' + str(spixerr))
 
-                if self.inputs.fitorder > 1:
+                fitorderused = len(spidx) - 1
+                if fitorderused > 1:
                     curvature = fluxscale_result[fieldid]['spidx'][2]
                     curvatureerr = fluxscale_result[fieldid]['spidxerr'][2]
                     LOG.info(' Source: ' + source +
@@ -494,7 +502,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                                         'SNR': SNR,
                                         'curvature': str(curvature),
                                         'curvatureerr': str(curvatureerr),
-                                        'fitorder': str(self.inputs.fitorder)})
+                                        'fitorder': str(fitorderused)})
                 LOG.info("Frequency, data, error, and fitted data:")
 
                 for ii in range(len(freqs)):
@@ -641,7 +649,9 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
         if field == '':
             calscanslist = map(int, calibrator_scan_select_string.split(','))
-            scanobjlist = m.get_scans(scan_id=calscanslist)
+            scanobjlist = m.get_scans(scan_id=calscanslist,
+                                      scan_intent=['AMPLITUDE', 'BANDPASS', 'POLLEAKAGE', 'POLANGLE',
+                                                   'PHASE', 'POLARIZATION', 'CHECK'])
             fieldidlist = []
             for scanobj in scanobjlist:
                 fieldobj, = scanobj.fields
@@ -682,6 +692,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
                 self._executor.execute(job)
 
+            return True
         else:
             job = casa_tasks.gaincal(**task_args)
 

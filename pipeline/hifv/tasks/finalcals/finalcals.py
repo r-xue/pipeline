@@ -4,7 +4,6 @@ import math
 import os
 
 import numpy as np
-import scipy as scp
 
 import pipeline.hif.heuristics.findrefant as findrefant
 import pipeline.infrastructure as infrastructure
@@ -793,8 +792,6 @@ class Finalcals(basetask.StandardTaskTemplate):
 
     def _do_calibratorgaincal(self, calMs, caltable, solint, minsnr, calmode, gaintablelist, refAnt, refantmode='flex'):
 
-        context = self.inputs.context
-
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         calibrator_scan_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_scan_select_string
         minBL_for_cal = m.vla_minbaselineforcal()
@@ -822,10 +819,12 @@ class Finalcals(basetask.StandardTaskTemplate):
                      'spwmap': [],
                      'parang': self.parang,
                      'uvrange': '',
-                     'refantmode' : refantmode}
+                     'refantmode': refantmode}
 
         calscanslist = map(int, calibrator_scan_select_string.split(','))
-        scanobjlist = m.get_scans(scan_id=calscanslist)
+        scanobjlist = m.get_scans(scan_id=calscanslist,
+                                  scan_intent=['AMPLITUDE', 'BANDPASS', 'POLLEAKAGE', 'POLANGLE',
+                                               'PHASE', 'POLARIZATION', 'CHECK'])
         fieldidlist = []
         for scanobj in scanobjlist:
             fieldobj, = scanobj.fields

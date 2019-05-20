@@ -355,7 +355,9 @@ class Solint(basetask.StandardTaskTemplate):
                      'parang': True}
 
         calscanslist = map(int, calibrator_scan_select_string.split(','))
-        scanobjlist = m.get_scans(scan_id=calscanslist)
+        scanobjlist = m.get_scans(scan_id=calscanslist,
+                                  scan_intent=['AMPLITUDE', 'BANDPASS', 'POLLEAKAGE', 'POLANGLE',
+                                               'PHASE', 'POLARIZATION', 'CHECK'])
         fieldidlist = []
         for scanobj in scanobjlist:
             fieldobj, = scanobj.fields

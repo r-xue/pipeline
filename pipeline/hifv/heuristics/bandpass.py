@@ -133,7 +133,7 @@ def do_bandpass(vis, caltable, context=None, RefAntOutput=None, spw=None, ktypec
                           'intent': '',
                           'selectdata': True,
                           'uvrange': '',
-                          'scan': '',
+                          'scan': bandpass_scan_select_string,
                           'solint': solint,
                           'combine': 'scan',
                           'refant': ','.join(RefAntOutput),
