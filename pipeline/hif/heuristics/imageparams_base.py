@@ -369,8 +369,13 @@ class ImageParamsHeuristics(object):
                     valid_vis_list = []
                     valid_real_spwid_list = []
                     valid_virtual_spwid_list = []
+                    valid_antenna_ids_list = []
                     # select data to be imaged
                     for vis in self.vislist:
+                        antenna_ids = self.antenna_ids(intent, [os.path.basename(vis)])
+                        valid_data_for_vis = False
+                        valid_real_spwid_list_for_vis = []
+                        valid_virtual_spwid_list_for_vis = []
                         for spwid in spwids:
                             ms = self.observing_run.get_ms(name=vis)
                             scanids = [str(scan.id) for scan in ms.scans
@@ -379,7 +384,6 @@ class ImageParamsHeuristics(object):
                             scanids = ','.join(scanids)
                             try:
                                 real_spwid = self.observing_run.virtual2real_spw_id(spwid, self.observing_run.get_ms(vis))
-                                antenna_ids = self.antenna_ids(intent, [os.path.basename(vis)])
                                 taql = '||'.join(['ANTENNA1==%d' % i for i in antenna_ids[os.path.basename(vis)]])
                                 rtn = casatools.imager.selectvis(vis=vis,
                                                                  field=field, spw=real_spwid, scan=scanids,
@@ -387,12 +391,18 @@ class ImageParamsHeuristics(object):
                                 if rtn is True:
                                     # flag to say that imager has some valid data to work
                                     # on
+                                    valid_data_for_vis = True
                                     valid_data[(field, intent)] = True
-                                    valid_vis_list.append(vis)
-                                    valid_real_spwid_list.append(real_spwid)
-                                    valid_virtual_spwid_list.append(spwid)
+                                    valid_real_spwid_list_for_vis.append(real_spwid)
+                                    valid_virtual_spwid_list_for_vis.append(spwid)
                             except:
                                 pass
+
+                        if valid_data_for_vis:
+                            valid_vis_list.append(vis)
+                            valid_real_spwid_list.append(','.join(map(str, valid_real_spwid_list_for_vis)))
+                            valid_virtual_spwid_list.append(','.join(map(str, valid_virtual_spwid_list_for_vis)))
+                            valid_antenna_ids_list.append(','.join(map(str, antenna_ids[os.path.basename(vis)])))
 
                     if not valid_data[(field, intent)]:
                         # no point carrying on for this field/intent
@@ -424,8 +434,6 @@ class ImageParamsHeuristics(object):
                         # Now get better estimate from makePSF
                         tmp_psf_filename = str(uuid.uuid4())
 
-                        antenna_ids = self.antenna_ids(intent, valid_vis_list)
-                        antenna = [','.join(map(str, antenna_ids.get(os.path.basename(v), ''))) for v in valid_vis_list]
                         gridder = self.gridder(intent, field)
                         mosweight = self.mosweight(intent, field)
                         if intent == 'TARGET' and gridder == 'mosaic':
@@ -438,8 +446,8 @@ class ImageParamsHeuristics(object):
                         else:
                             phasecenter = self.phasecenter(field_ids)
                         paramList = ImagerParameters(msname=valid_vis_list,
-                                                     antenna=antenna,
-                                                     spw=list(map(str, valid_real_spwid_list)),
+                                                     antenna=valid_antenna_ids_list,
+                                                     spw=valid_real_spwid_list,
                                                      field=field,
                                                      phasecenter=phasecenter,
                                                      imagename=tmp_psf_filename,
