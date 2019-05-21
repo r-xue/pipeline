@@ -889,6 +889,9 @@ class ImageParamsHeuristics(object):
         return repr_target, repr_source, virtual_repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, sensitivityGoal
 
     def imsize(self, fields, cell, primary_beam, sfpblimit=None, max_pixels=None, centreonly=False):
+
+        # fields: list of comma separated strings of field IDs per MS
+
         # get spread of beams
         if centreonly:
             xspread = yspread = 0.0
@@ -912,10 +915,16 @@ class ImageParamsHeuristics(object):
         beam_radius_v = primary_beam
 
         # set size of image to spread of field centres plus a
-        # border of 0.75 * beam radius (radius is to first null)
-        # wide
-        nxpix = int((1.5 * beam_radius_v + xspread) / cellx_v)
-        nypix = int((1.5 * beam_radius_v + yspread) / celly_v)
+        # border of 0.75 (0.825) * beam radius (radius is to
+        # first null) wide
+        nfields = int(np.median([len(field_ids.split(',')) for field_ids in fields]))
+        if nfields in (2, 3):
+            # PIPE-209 asks for a slightly larger size for small (2-3 field) mosaics.
+            nxpix = int((1.65 * beam_radius_v + xspread) / cellx_v)
+            nypix = int((1.65 * beam_radius_v + yspread) / celly_v)
+        else:
+            nxpix = int((1.5 * beam_radius_v + xspread) / cellx_v)
+            nypix = int((1.5 * beam_radius_v + yspread) / celly_v)
 
         if (not self._mosaic) and (sfpblimit is not None):
             beam_fwhp = 1.12 / 1.22 * beam_radius_v
