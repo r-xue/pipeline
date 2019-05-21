@@ -285,7 +285,7 @@ class CleanTaskFactory(object):
             'hm_nsigma': inputs.hm_nsigma,
         })
 
-        if target['robust']:
+        if target['robust'] not in (None, -999.0):
             task_args['robust'] = target['robust']
         else:
             task_args['robust'] = image_heuristics.robust()
