@@ -181,8 +181,10 @@ class MetaDataReader(object):
                         ephem_tables.update( {field_id:ephem_table_file} )
                         LOG.info( "FIELD_ID={} ({}) with ephemeris table {}".format( field_id, source_name, ephem_table_file ) )
                     else:
-                        # if ephemeris file does not exist,
+                        # if ephemeris data does not exist,
                         # try to search the source name in ephemeris_nocomet
+                        # Note: this should not happen for the existing def of
+                        # source.is_eph_obj
                         if source_name.upper() in ephemeris_nocomet and 'TARGET' in fields[0].intents:
                             ephem_tables.update( {field_id:'' } )
                             LOG.info( "FIELD_ID={} ({}) as EPHEMERIS SOURCE".format( field_id, source_name ) )
