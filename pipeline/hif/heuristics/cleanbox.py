@@ -40,6 +40,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
     if cleanmask is not None and os.path.exists(cleanmask):
         with casatools.ImageReader(cleanmask) as image:
             image.setcoordsys(csys.torecord())
+    csys.done()
 
     with casatools.ImageReader(residual+extension) as image:
         # get the rms of the residual image inside the cleaned area

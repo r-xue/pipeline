@@ -111,6 +111,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             coord_refs = coordsys.referencevalue(format='s')
             pol = coord_refs['string'][coord_names == 'Stokes'][0]
 
+            coordsys.done()
+
             #
             # beam calculation
             #
