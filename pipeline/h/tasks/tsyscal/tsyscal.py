@@ -123,6 +123,11 @@ def get_gainfield_map(ms):
     :return: dict of {observing intent: gainfield}
     """
     def f(intent):
+        if ',' in intent:
+            head, tail = intent.split(',', 1)
+            # the 'if o' test filters out results for intents that do not have
+            # fields, e.g., PHASE for SD data
+            return ','.join(o for o in (f(head), f(tail)) if o)
         return ','.join(str(s) for s in get_tsys_fields_for_intent(ms, intent))
 
     # Intent mapping extracted from CAS-12213 ticket:
@@ -139,7 +144,7 @@ def get_gainfield_map(ms):
         GainfieldMapping(intent='AMPLITUDE', preferred=f('AMPLITUDE'), fallback='nearest'),
         # GainfieldMapping(intent='DIFF_GAIN_CAL', preferred='DIFF_GAIN_CAL', fallback='nearest'),
         GainfieldMapping(intent='PHASE', preferred=f('PHASE'), fallback=f('TARGET')),
-        GainfieldMapping(intent='TARGET', preferred=f('TARGET'), fallback=f('PHASE')),
+        GainfieldMapping(intent='TARGET', preferred=f('TARGET'), fallback=f('PHASE,REFERENCE')),
         GainfieldMapping(intent='CHECK', preferred=f('TARGET'), fallback=f('PHASE')),
     ]
 
@@ -147,7 +152,9 @@ def get_gainfield_map(ms):
 
     # Detect cases where there's no preferred or fallback gainfield mapping,
     # e.g., if there are no Tsys scans on a target or phase calibrator.
-    undefined_intents = [k for k, v in final_map.iteritems() if not v]
+    undefined_intents = [k for k, v in final_map.iteritems()
+                         if not v              # gainfield mapping is empty..
+                         and k in ms.intents]  # ..for a valid intent in the MS
     if undefined_intents:
         msg = 'Undefined Tsys gainfield mapping for {} intents: {}'.format(ms.basename, undefined_intents)
         LOG.error(msg)
