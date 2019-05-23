@@ -581,6 +581,19 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
     def analyse(self, result):
         return result
 
+    def _merge_cluster_info(self, cluster_score, detected_lines, cluster_property, cluster_scale):
+        actions = {
+            'cluster_score': ('append', cluster_score),
+            'detected_lines': ('skip', detected_lines),
+            'cluster_property': ('append', cluster_property),
+            'cluster_scale': ('skip', cluster_scale)
+        }
+        for key, (action, value) in actions.items():
+            if key not in self.cluster_info:
+                self.cluster_info[key] = value
+            elif action == 'append':
+                self.cluster_info[key].extend(value)
+
     def clean_detect_signal(self, DS):
         """
         Spectra in each grid positions are splitted into 3 groups along time series.
@@ -791,10 +804,13 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             LOG.warn('Clustering analysis not converged. Number of clusters may be greater than upper limit'
                      ' (MaxCluster={})', MaxCluster)
 
-        self.cluster_info['cluster_score'] = [ListNcluster, ListScore]
-        self.cluster_info['detected_lines'] = Region2
-        self.cluster_info['cluster_property'] = Bestlines # [[Center, Width/WHITEN, T/F, ClusterRadius],[],,,[]]
-        self.cluster_info['cluster_scale'] = self.CLUSTER_WHITEN
+        cluster_info = {
+            'cluster_score': [ListNcluster, ListScore],
+            'detected_lines': Region2,
+            'cluster_property': Bestlines,  # [[Center, Width/WHITEN, T/F, ClusterRadius],[],,,[]]
+            'cluster_scale': self.CLUSTER_WHITEN
+        }
+        self._merge_cluster_info(**cluster_info)
         #SDP.ShowClusterScore(ListNcluster, ListScore, ShowPlot, FigFileDir, FigFileRoot)
         #SDP.ShowClusterInchannelSpace(Region2, Bestlines, self.CLUSTER_WHITEN, ShowPlot, FigFileDir, FigFileRoot)
         LOG.info('Final: Ncluster = {}, Score = {}, lines = {}', BestNcluster, BestScore, Bestlines)
@@ -917,10 +933,13 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             Bestlines.append([Range[j][1], Range[j][0], True, Range[j][4]])
         LOG.info('Final: Ncluster = {}, lines = {}', Ncluster, Bestlines)
 
-        self.cluster_info['cluster_score'] = [[1, 2, 3, 4, 5], [1, 2, 3, 4, 5]]
-        self.cluster_info['detected_lines'] = Region2
-        self.cluster_info['cluster_property'] = Bestlines # [[Center, Width, T/F, ClusterRadius],[],[],,,[]]
-        self.cluster_info['cluster_scale'] = self.CLUSTER_WHITEN
+        cluster_info = {
+            'cluster_score': [[1, 2, 3, 4, 5], [1, 2, 3, 4, 5]],
+            'detected_lines': Region2,
+            'cluster_property': Bestlines,  # [[Center, Width, T/F, ClusterRadius],[],,,[]]
+            'cluster_scale': self.CLUSTER_WHITEN
+        }
+        self._merge_cluster_info(**cluster_info)
 
         return (Ncluster, Bestlines, Category, Region)
 
