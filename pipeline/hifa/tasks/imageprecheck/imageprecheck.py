@@ -171,14 +171,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
 
         primary_beam_size = image_heuristics.largest_primary_beam_size(spwspec=str(repr_spw), intent='TARGET')
         gridder = image_heuristics.gridder('TARGET', repr_field)
-        if gridder == 'mosaic':
-            # Only pass phase center for mosaics to avoid filtering single fields with
-            # TARGET and ATMOSPHERE intents (CAS-10146).
-            field_ids = image_heuristics.field('TARGET', repr_field, exclude_intent='ATMOSPHERE')
-            phasecenter = image_heuristics.phasecenter(field_ids)
-        else:
-            field_ids = image_heuristics.field('TARGET', repr_field)
-            phasecenter = None
+        field_ids = image_heuristics.field('TARGET', repr_field)
         cont_spwids = sorted([s for s in context.observing_run.virtual_science_spw_ids])
         cont_spw = ','.join(map(str, cont_spwids))
         num_cont_spw = len(cont_spwids)

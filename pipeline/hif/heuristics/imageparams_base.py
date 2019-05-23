@@ -367,6 +367,7 @@ class ImageParamsHeuristics(object):
 
                     valid_data[(field, intent)] = False
                     valid_vis_list = []
+                    valid_scanids_list = []
                     valid_real_spwid_list = []
                     valid_virtual_spwid_list = []
                     valid_antenna_ids_list = []
@@ -376,12 +377,12 @@ class ImageParamsHeuristics(object):
                         valid_data_for_vis = False
                         valid_real_spwid_list_for_vis = []
                         valid_virtual_spwid_list_for_vis = []
+                        ms = self.observing_run.get_ms(name=vis)
+                        scanids = [str(scan.id) for scan in ms.scans
+                                   if intent in scan.intents
+                                   and field in [fld.name for fld in scan.fields]]
+                        scanids = ','.join(scanids)
                         for spwid in spwids:
-                            ms = self.observing_run.get_ms(name=vis)
-                            scanids = [str(scan.id) for scan in ms.scans
-                                       if intent in scan.intents
-                                       and field in [fld.name for fld in scan.fields]]
-                            scanids = ','.join(scanids)
                             try:
                                 real_spwid = self.observing_run.virtual2real_spw_id(spwid, self.observing_run.get_ms(vis))
                                 taql = '||'.join(['ANTENNA1==%d' % i for i in antenna_ids[os.path.basename(vis)]])
@@ -400,6 +401,7 @@ class ImageParamsHeuristics(object):
 
                         if valid_data_for_vis:
                             valid_vis_list.append(vis)
+                            valid_scanids_list.append(scanids)
                             valid_real_spwid_list.append(','.join(map(str, valid_real_spwid_list_for_vis)))
                             valid_virtual_spwid_list.append(','.join(map(str, valid_virtual_spwid_list_for_vis)))
                             valid_antenna_ids_list.append(','.join(map(str, antenna_ids[os.path.basename(vis)])))
@@ -436,16 +438,14 @@ class ImageParamsHeuristics(object):
 
                         gridder = self.gridder(intent, field)
                         mosweight = self.mosweight(intent, field)
-                        if intent == 'TARGET' and gridder == 'mosaic':
-                            field_ids = self.field(intent, field, exclude_intent='ATMOSPHERE')
-                        else:
-                            field_ids = self.field(intent, field)
+                        field_ids = self.field(intent, field)
                         imsize = self.imsize(fields=field_ids, cell=['%.2g%s' % (cellv, cellu)], primary_beam=largest_primary_beam_size)
                         if self.is_eph_obj(field):
                             phasecenter = 'TRACKFIELD'
                         else:
                             phasecenter = self.phasecenter(field_ids)
                         paramList = ImagerParameters(msname=valid_vis_list,
+                                                     scan=valid_scanids_list,
                                                      antenna=valid_antenna_ids_list,
                                                      spw=valid_real_spwid_list,
                                                      field=field,
@@ -458,7 +458,12 @@ class ImageParamsHeuristics(object):
                                                      weighting='briggs',
                                                      robust=robust,
                                                      uvtaper=uvtaper,
-                                                     specmode='mfs')
+                                                     specmode='mfs',
+                                                     conjbeams=False,
+                                                     psterm=False,
+                                                     mterm=False,
+                                                     dopbcorr=False,
+                                                     )
                         makepsf_imager = PySynthesisImager(params=paramList)
                         makepsf_imager.initializeImagers()
                         makepsf_imager.initializeNormalizers()
@@ -736,6 +741,7 @@ class ImageParamsHeuristics(object):
             vislist = self.vislist
 
         result = []
+        nfields_list = []
 
         for vis in vislist:
             ms = self.observing_run.get_ms(name=vis)
@@ -765,13 +771,14 @@ class ImageParamsHeuristics(object):
                     field_list = [fld.id for fld in fields if
                                   fld.id in field_list and re_intent in fld.intents]
 
-            # this will be a mosaic if there is more than 1 field_id for any 
-            # measurement set - probably needs more work, what if want to
-            # mosaic together single fields in multiple measurement sets?
-            self._mosaic = len(field_list) > 1
+            nfields_list.append(len([fld.id for fld in fields if fld.id in field_list and re_intent in fld.intents]))
 
             field_string = ','.join(str(fld_id) for fld_id in field_list)
             result.append(field_string)
+
+        # this will be a mosaic if there is more than 1 field_id for any 
+        # measurement set
+        self._mosaic = (np.array(nfields_list) > 1).any()
 
         return result
 
@@ -926,7 +933,7 @@ class ImageParamsHeuristics(object):
         # border of 0.75 (0.825) * beam radius (radius is to
         # first null) wide
         nfields = int(np.median([len(field_ids.split(',')) for field_ids in fields]))
-        if nfields in (2, 3):
+        if self._mosaic and nfields <= 3:
             # PIPE-209 asks for a slightly larger size for small (2-3 field) mosaics.
             nxpix = int((1.65 * beam_radius_v + xspread) / cellx_v)
             nypix = int((1.65 * beam_radius_v + yspread) / celly_v)
@@ -1419,10 +1426,7 @@ class ImageParamsHeuristics(object):
 
         field_ids = self.field(intent, field, vislist=vis)  # list of strings with comma separated IDs per MS
         phasecenter = self.phasecenter(field_ids, vislist=vis)  # string
-        if gridder == 'mosaic':
-            center_field_ids = self.center_field_ids(vis, field, intent, phasecenter, exclude_intent='ATMOSPHERE') # list of integer IDs per MS
-        else:
-            center_field_ids = self.center_field_ids(vis, field, intent, phasecenter)  # list of integer IDs per MS
+        center_field_ids = self.center_field_ids(vis, field, intent, phasecenter)  # list of integer IDs per MS
 
         for ms_index, msname in enumerate(vis):
             ms = self.observing_run.get_ms(name=msname)

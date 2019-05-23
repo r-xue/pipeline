@@ -463,14 +463,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                     for field_intent in field_intent_list:
                         try:
                             gridder = self.heuristics.gridder(field_intent[1], field_intent[0])
-                            if field_intent[1] == 'TARGET' and gridder == 'mosaic':
-                                field_ids = self.heuristics.field(
-                                  'TARGET', field_intent[0], exclude_intent='ATMOSPHERE')
-                            else:
-                                field_ids = self.heuristics.field(
-                                  field_intent[1], field_intent[0])
-                            phasecenters[field_intent[0]] = \
-                              self.heuristics.phasecenter(field_ids)
+                            field_ids = self.heuristics.field(field_intent[1], field_intent[0])
+                            phasecenters[field_intent[0]] = self.heuristics.phasecenter(field_ids)
                         except Exception as e:
                             # problem defining center
                             LOG.warn(e)
@@ -504,14 +498,9 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                             try:
                                 gridder = self.heuristics.gridder(field_intent[1], field_intent[0])
-                                if field_intent[1] == 'TARGET' and gridder == 'mosaic':
-                                    field_ids = self.heuristics.field(
-                                      'TARGET', field_intent[0], exclude_intent='ATMOSPHERE')
-                                else:
-                                    field_ids = self.heuristics.field(
-                                      field_intent[1], field_intent[0])
+                                field_ids = self.heuristics.field(field_intent[1], field_intent[0])
                                 himsize = self.heuristics.imsize(fields=field_ids,
-                                  cell=cells[spwspec], primary_beam=largest_primary_beams[spwspec], sfpblimit=sfpblimit)
+                                  cell=cells[spwspec], primary_beam=largest_primary_beams[spwspec], sfpblimit=sfpblimit, centreonly=False)
                                 if field_intent[1] in ['PHASE', 'BANDPASS', 'AMPLITUDE', 'FLUX', 'CHECK']:
                                     himsize = [min(npix, inputs.calmaxpix) for npix in himsize]
                                 imsizes[(field_intent[0], spwspec)] = himsize
