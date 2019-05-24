@@ -157,7 +157,12 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
         # If possible use flattened clean mask for exclusion of areas for all spectral channels
         flattened_mask = None
         if cleanmask is not None and os.path.exists(cleanmask):
-            flattened_mask = cleanmask.replace('.mask', '.mask.flattened')
+            if '.mask' in cleanmask:
+                flattened_mask = cleanmask.replace('.mask', '.mask.flattened')
+            elif '.cleanmask' in cleanmask:
+                flattened_mask = cleanmask.replace('.cleanmask', '.cleanmask.flattened')
+            else:
+                raise 'Cannot handle clean mask name %s' % (os.path.basename(cleanmask))
 
             with casatools.ImageReader(cleanmask) as image:
                 flattened_mask_image = image.collapse(function='max', axes=[2,3], outfile=flattened_mask)
