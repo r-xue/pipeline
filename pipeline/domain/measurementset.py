@@ -202,13 +202,15 @@ class MeasurementSet(object):
                     (str(source_spwid), self.basename))
                 return (target_source_name, None)
 
+        target_spwid = None
         # Check for representative spw from ASDM (>= Cycle 7)
-        if self.representative_window:
+        if self.representative_window is not None:
             try:
                 target_spwid = [s.id for s in self.get_spectral_windows() if s.name == self.representative_window][0]
             except:
-                LOG.warning('Could not translate spw name %s to ID.' % (self.representative_window))
-                target_spwid = None
+                LOG.warning('Could not translate spw name %s to ID. Trying frequency matching heuristics.' % (self.representative_window))
+
+        if target_spwid is not None:
             return (target_source_name, target_spwid)
 
         # Get the representative bandwidth
@@ -253,7 +255,6 @@ class MeasurementSet(object):
             return (target_source_name, None)
 
         # Find the science spw 
-        target_spwid = None
 
         # Get the science spw ids
         science_spw_ids = [spw.id for spw in self.get_spectral_windows()]

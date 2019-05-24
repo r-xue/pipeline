@@ -808,6 +808,8 @@ class SBSummaryTable(object):
 
                 # Create window
                 repWindow = _get_science_goal_value(scienceGoals[0:numScienceGoals[i], i], 'representativeWindow')
+                if repWindow in ('none', ''):
+                    repWindow = None
                 repWindows.append(repWindow)
 
                 # Create minimum angular resolution
