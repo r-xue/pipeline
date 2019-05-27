@@ -75,7 +75,7 @@ def version(showfile=True):
     """
     Returns the CVS revision number.
     """
-    myversion = "$Id: findContinuumCycle7.py,v 3.52 2019/05/26 22:51:35 we Exp $" 
+    myversion = "$Id: findContinuumCycle7.py,v 3.54 2019/05/27 13:42:26 we Exp $" 
     if (showfile):
         print("Loaded from %s" % (__file__))
     return myversion
@@ -1274,6 +1274,7 @@ def getFreqType(img):
     myia.open(img)
     mycs = myia.coordsys()
     mytype = mycs.referencecode('spectral')[0]
+    mycs.done()
     myia.close()
     return mytype
 
@@ -1289,6 +1290,7 @@ def getEquinox(img, myia=None):
         needToClose = False
     mycs = myia.coordsys()
     equinox = mycs.referencecode('direction')[0]
+    mycs.done()
     if needToClose: myia.close()
     return equinox
 
@@ -1305,6 +1307,7 @@ def getTelescope(img, myia=None):
     mycs = myia.coordsys()
     telescope = mycs.telescope()
 #    telescope = myia.miscinfo()['TELESCOP']  # not in images produced in 4.2.2
+    mycs.done()
     if needToClose: myia.close()
     return telescope
 
@@ -1321,6 +1324,7 @@ def getDateObs(img, myia=None):
         needToClose = False
     mycs = myia.coordsys()
     mjd = mycs.epoch()['m0']['value']
+    mycs.done()
     if needToClose: myia.close()
     mydate = mjdToUT(mjd).rstrip(' UT').replace('/','-').replace(' ','/')
     return mydate
@@ -3623,6 +3627,7 @@ def numberOfChannelsInCube(img, returnFreqs=False, returnChannelWidth=False,
     firstFreq = mycs.toworld(pixel, format='n')['numeric'][axis]
     pixel[axis] = nchan-1
     lastFreq = mycs.toworld(pixel, format='n')['numeric'][axis]
+    mycs.done()
     myia.close()
     if (returnFreqs):
         if (returnChannelWidth):
