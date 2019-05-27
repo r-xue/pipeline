@@ -374,6 +374,12 @@ def jobs_with_calapply(calstate, inputs, mod_fn):
     ms = inputs.context.observing_run.get_ms(inputs.vis)
     calstate.export_to_casa_callibrary(ms, callibrary_file)
 
+    # No callibrary file will be created when the merged calstate does not
+    # require the application of calibrations.
+    if not os.path.exists(callibrary_file):
+        LOG.info('No applycal job required for CASA callibrary: {}'.format(callibrary_file))
+        return []
+
     calstate_file = '{}.s{}.{}.calstate'.format(inputs.vis,
                                                 inputs.context.task_counter,
                                                 inputs.context.subtask_counter)
