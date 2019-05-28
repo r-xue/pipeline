@@ -425,6 +425,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                         cs = ia.coordsys()
                         dircoords = [i for i in xrange(cs.naxes())
                                      if cs.axiscoordinatetypes()[i] == 'Direction']
+                        cs.done()
                         nx = ia.shape()[dircoords[0]]
                         ny = ia.shape()[dircoords[1]]
 
@@ -476,6 +477,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                     with casatools.ImageReader(imagename) as ia:
                         cs = ia.coordsys()
                         frequency_frame = cs.getconversiontype('spectral')
+                        cs.done()
                         rms_exclude_freq = self._get_rms_exclude_freq_range_image(
                             frequency_frame, chanmap_range_list, edge, msobjs, antids, spwids, fieldids)
                         LOG.info("The spectral line and deviation mask frequency ranges = {}".format(str(rms_exclude_freq)))
@@ -563,6 +565,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                     cs = ia.coordsys()
                     dircoords = [i for i in xrange(cs.naxes())
                                  if cs.axiscoordinatetypes()[i] == 'Direction']
+                    cs.done()
                     nx = ia.shape()[dircoords[0]]
                     ny = ia.shape()[dircoords[1]]
                 observing_pattern =  ref_ms.observing_pattern[combined_antids[0]][combined_spws[0]][combined_fieldids[0]]
