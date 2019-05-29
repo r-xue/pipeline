@@ -31,6 +31,7 @@ class MakeImagesInputs(vdp.StandardInputs):
     hm_minpercentchange = vdp.VisDependentProperty(default=-999.0)
     hm_fastnoise = vdp.VisDependentProperty(default=True)
     hm_nsigma = vdp.VisDependentProperty(default=0.0)
+    hm_perchanweightdensity = vdp.VisDependentProperty(default=False)
     hm_negativethreshold = vdp.VisDependentProperty(default=-999.0)
     hm_noisethreshold = vdp.VisDependentProperty(default=-999.0)
     hm_sidelobethreshold = vdp.VisDependentProperty(default=-999.0)
@@ -54,7 +55,7 @@ class MakeImagesInputs(vdp.StandardInputs):
                  hm_masking=None, hm_sidelobethreshold=None, hm_noisethreshold=None,
                  hm_lownoisethreshold=None, hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None,
                  hm_dogrowprune=None, hm_minpercentchange=None, hm_fastnoise=None, hm_nsigma=None,
-                 hm_cleaning=None, tlimit=None, masklimit=None,
+                 hm_perchanweightdensity=None, hm_cleaning=None, tlimit=None, masklimit=None,
                  cleancontranges=None, calcsb=None, mosweight=None,
                  parallel=None,
                  # Extra parameters
@@ -76,6 +77,7 @@ class MakeImagesInputs(vdp.StandardInputs):
         self.hm_minpercentchange = hm_minpercentchange
         self.hm_fastnoise = hm_fastnoise
         self.hm_nsigma = hm_nsigma
+        self.hm_perchanweightdensity = hm_perchanweightdensity
         self.hm_cleaning = hm_cleaning
         self.tlimit = tlimit
         self.masklimit = masklimit
@@ -283,6 +285,7 @@ class CleanTaskFactory(object):
             'calcsb': inputs.calcsb,
             'parallel': parallel,
             'hm_nsigma': inputs.hm_nsigma,
+            'hm_perchanweightdensity': inputs.hm_perchanweightdensity,
         })
 
         if target['robust'] not in (None, -999.0):
