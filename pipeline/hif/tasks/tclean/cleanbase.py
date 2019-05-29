@@ -525,15 +525,31 @@ class CleanBase(basetask.StandardTaskTemplate):
                 # Parallel tclean result structure is currently (2017-03) different
                 tclean_stopcodes = [tclean_result[key][int(key.replace('node', ''))]['stopcode']
                                     for key in tclean_result]
-                # If zero masks (stopcode 7) occur only a subset of regions, they should not be reported.
-                if all([stopcode in [2, 7] for stopcode in tclean_stopcodes]) \
-                        and not all([stopcode == 7 for stopcode in tclean_stopcodes]):
+                # Bump up any error condition (8, 6, 5, 4, 3, 1) to the
+                # reporting level.
+                if 8 in tclean_stopcodes:
+                    tclean_stopcode = 8
+                elif 6 in tclean_stopcodes:
+                    tclean_stopcode = 6
+                elif 5 in tclean_stopcodes:
+                    tclean_stopcode = 5
+                elif 4 in tclean_stopcodes:
+                    tclean_stopcode = 4
+                elif 3 in tclean_stopcodes:
+                    tclean_stopcode = 3
+                elif 1 in tclean_stopcodes:
+                    tclean_stopcode = 1
+                elif (np.array(tclean_stopcodes) == 7).all():
+                    # If zero masks (stopcode 7) occur only in a subset of
+                    # frequency regions, they should not be reported.
+                    tclean_stopcode = 7
+                elif 2 in tclean_stopcodes:
+                    # Normal stop based on threshold
                     tclean_stopcode = 2
                 else:
-                    # This reduction rule needs to be revisited since the max() is not necessarily what should be
-                    # reported.
-                    tclean_stopcode = max([tclean_result[key][int(key.replace('node', ''))]['stopcode']
-                                           for key in tclean_result])
+                    # This should not happen. Just a fallback. Will cause
+                    # stop code reason evaluation to fail later on.
+                    tclean_stopcode = 0
                 tclean_iterdone = sum([tclean_result[key][int(key.replace('node', ''))]['iterdone']
                                        for key in tclean_result])
                 tclean_niter = max([tclean_result[key][int(key.replace('node', ''))]['niter']
