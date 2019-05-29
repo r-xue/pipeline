@@ -23,7 +23,8 @@ class ImagePreCheckResults(basetask.Results):
                  minAcceptableAngResolution='0.0arcsec', maxAcceptableAngResolution='0.0arcsec',
                  maxAllowedBeamAxialRatio=0.0, sensitivityGoal='0mJy', hm_robust=0.5, hm_uvtaper=[],
                  sensitivities=None, sensitivity_bandwidth=None, score=None, single_continuum=False,
-                 per_spw_cont_sensitivities_all_chan=None, synthesized_beams=None, beamRatios=None):
+                 per_spw_cont_sensitivities_all_chan=None, synthesized_beams=None, beamRatios=None,
+                 error=False, error_msg=None):
         super(ImagePreCheckResults, self).__init__()
 
         if sensitivities is None:
@@ -49,6 +50,8 @@ class ImagePreCheckResults(basetask.Results):
         self.per_spw_cont_sensitivities_all_chan = per_spw_cont_sensitivities_all_chan
         self.synthesized_beams = synthesized_beams
         self.beamRatios = beamRatios
+        self.error = error
+        self.error_msg = error_msg
 
     def merge_with_context(self, context):
         """
@@ -187,6 +190,9 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
             # Calculate nbin / reprBW sensitivity if necessary
             if reprBW_mode in ['nbin', 'repr_spw']:
                 beams[(robust, str(default_uvtaper), 'repBW')], known_synthesized_beams = image_heuristics.synthesized_beam([(repr_field, 'TARGET')], str(repr_spw), robust=robust, uvtaper=default_uvtaper, known_beams=known_synthesized_beams, force_calc=calcsb)
+                if beams[(robust, str(default_uvtaper), 'repBW')] == 'invalid':
+                    LOG.error('Beam for repBW and robust value of %.1f is invalid. Cannot continue.' % (robust))
+                    return ImagePreCheckResults(error=True, error_msg='Invalid beam')
                 cells[(robust, str(default_uvtaper), 'repBW')] = image_heuristics.cell(beams[(robust, str(default_uvtaper), 'repBW')])
                 imsizes[(robust, str(default_uvtaper), 'repBW')] = image_heuristics.imsize(field_ids, cells[(robust, str(default_uvtaper), 'repBW')], primary_beam_size, centreonly=False)
 
@@ -223,6 +229,9 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
                 sensitivity_bandwidth = cqa.quantity(sens_bw, 'Hz')
 
             beams[(robust, str(default_uvtaper), 'aggBW')], known_synthesized_beams = image_heuristics.synthesized_beam([(repr_field, 'TARGET')], cont_spw, robust=robust, uvtaper=default_uvtaper, known_beams=known_synthesized_beams, force_calc=calcsb)
+            if beams[(robust, str(default_uvtaper), 'aggBW')] == 'invalid':
+                LOG.error('Beam for aggBW and robust value of %.1f is invalid. Cannot continue.' % (robust))
+                return ImagePreCheckResults(error=True, error_msg='Invalid beam')
             cells[(robust, str(default_uvtaper), 'aggBW')] = image_heuristics.cell(beams[(robust, str(default_uvtaper), 'aggBW')])
             imsizes[(robust, str(default_uvtaper), 'aggBW')] = image_heuristics.imsize(field_ids, cells[(robust, str(default_uvtaper), 'aggBW')], primary_beam_size, centreonly=False)
 

@@ -16,10 +16,12 @@ class ImagePreCheckQAHandler(pqa.QAPlugin):
     def handle(self, context, result):
         if result.score is not None:
             score, longmsg, shortmsg = result.score
+        elif result.error:
+            score = 0.0
+            longmsg = shortmsg = result.error_msg
         else:
             score = 0.0
-            longmsg = 'No score information'
-            shortmsg = 'No score information'
+            longmsg = shortmsg = 'No score information'
         result.qa.pool[:] = [pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg)]
 
 

@@ -34,7 +34,9 @@ def get_message(result):
 
 <h2>List of Clean Targets</h2>
 
-%if num_targets(result) <= 0:
+%if result[0].error:
+This task had an error!
+%elif num_targets(result) <= 0:
     %if no_clean_targets(result):
         <p>There are no clean targets.
     %else:

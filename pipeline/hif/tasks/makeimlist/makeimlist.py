@@ -436,6 +436,11 @@ class MakeImList(basetask.StandardTaskTemplate):
                     min_cell = ['3600arcsec']
                     for spwspec in max_freq_spwlist:
                         synthesized_beams[spwspec], known_synthesized_beams = self.heuristics.synthesized_beam(field_intent_list=field_intent_list, spwspec=spwspec, robust=robust, uvtaper=uvtaper, pixperbeam=pixperbeam, known_beams=known_synthesized_beams, force_calc=calcsb)
+                        if synthesized_beams[spwspec] == 'invalid':
+                            LOG.error('Beam for virtual spw %s and robust value of %.1f is invalid. Cannot continue.' % (spwspec, robust))
+                            result.error = True
+                            result.error_msg = 'Invalid beam'
+                            return result
                         # Avoid recalculating every time since the dictionary will be cleared with the first recalculation request.
                         calcsb = False
                         # the heuristic cell is always the same for x and y as

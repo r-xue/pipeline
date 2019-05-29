@@ -8,6 +8,9 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
 <%block name="title">Image Pre-Check</%block>
 
+%if result[0].error:
+This task had an error!
+%else:
 <%
 cqa = casatools.quanta
 real_repr_target = result[0].real_repr_target
@@ -29,7 +32,9 @@ robust = '%.1f' % (result[0].hm_robust)
 uvtaper = '%s' % (result[0].hm_uvtaper)
 single_continuum = result[0].single_continuum
 %>
+%endif
 <p>
+%if not result[0].error:
 %if real_repr_target:
 <h4>Goals From OT:</h4>
 %else:
@@ -151,3 +156,4 @@ baseline based effects, residual antenna position errors, etc.).
         %endfor
     </tbody>
 </table>
+%endif
