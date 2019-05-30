@@ -431,7 +431,7 @@ def import_flux(output_dir, observing_run, filename=None):
             age = match.group('age') if match else None
             if age:
                 try:
-                    age = int(age)
+                    age = float(age)
                 except ValueError:
                     age = None
 
