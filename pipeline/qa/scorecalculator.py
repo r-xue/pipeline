@@ -2238,6 +2238,7 @@ def score_sd_skycal_elevation_difference(ms, resultdict, threshold=3.0):
     field_ids = resultdict.keys()
     metric_score = []
     el_threshold = threshold
+    lmsg_list = []
     for field_id in field_ids:
         field = ms.fields[field_id]
         if field_id not in resultdict:
@@ -2267,12 +2268,21 @@ def score_sd_skycal_elevation_difference(ms, resultdict, threshold=3.0):
 
         if len(warned_antennas) > 0:
             antenna_names = ', '.join([ms.antennas[a].name for a in warned_antennas])
-            longmsg = '{} field {} antennas {}: elevation difference between ON and OFF exceed {}deg'.format(ms.basename,
-                                                                                                             field.name,
-                                                                                                             antenna_names,
-                                                                                                             el_threshold)
-        else:
-            longmsg = 'Elevation difference between ON and OFF is below threshold ({}deg)'.format(el_threshold)
+            lmsg_list.append(
+                'field {} (antennas {})'.format(field.name, antenna_names)
+            )
+
+    if len(lmsg_list) > 0:
+        longmsg = 'Elevation difference between ON and OFF exceeds threshold ({}deg) for {}: {}'.format(
+            el_threshold,
+            ms.basename,
+            ', '.join(lmsg_list)
+        )
+    else:
+        longmsg = 'Elevation difference between ON and OFF is below threshold ({}deg) for {}'.format(
+            el_threshold,
+            ms.basename
+        )
 
     # CAS-11054: it is decided that we do not calculate QA score based on elevation difference for Cycle 6
     # PIPE-246: we implement QA score based on elevation difference for Cycle 7.
