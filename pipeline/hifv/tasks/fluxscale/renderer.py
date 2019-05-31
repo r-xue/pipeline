@@ -6,6 +6,7 @@ import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.renderer.weblog as weblog
+import pipeline.infrastructure.utils as utils
 from . import fluxbootdisplay
 from . import testgainsdisplay
 
@@ -170,6 +171,18 @@ class T2_4MDetailsfluxbootRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             weblog_results[ms] = result.weblog_results
             spindex_results[ms] = result.spindex_results
 
+            # Sort into dictionary collections and combine bands for a single source
+            FluxTR = collections.namedtuple('FluxTR', 'source band spix curvature fitorder')
+
+            rows = []
+
+            for row in result.spindex_results:
+                tr = FluxTR(row['source'], row['band'], str(row['spix']) + '+/-' + str(row['spixerr']),
+                            str(row['curvature']) + '+/-' + str(row['curvatureerr']), row['fitorder'])
+                rows.append(tr)
+
+            spixtable = utils.merge_td_columns(rows)
+
             # Sort into dictionary collections to prep for weblog table
             webdicts[ms] = collections.defaultdict(list)
             for row in sorted(weblog_results[ms], key=lambda p: (p['source'], float(p['freq']))):
@@ -181,6 +194,7 @@ class T2_4MDetailsfluxbootRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         ctx.update({'summary_plots': summary_plots,
                     'weblog_results': weblog_results,
                     'spindex_results': spindex_results,
+                    'spixtable': spixtable,
                     'dirname': weblog_dir})
 
         return ctx

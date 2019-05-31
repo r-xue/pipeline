@@ -249,7 +249,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
         LOG.info("Doing flux density bootstrapping using caltable " + caltable)
         try:
             fluxscale_result = self._do_fluxscale(context, calMs, caltable)
-            LOG.info("Fitting data with power law.")
+            LOG.info("Using fit from fluxscale.")
             powerfit_results, weblog_results, spindex_results = self._do_powerfit(fluxscale_result)
             setjy_result = self._do_setjy(calMs, fluxscale_result)
         except Exception as e:
@@ -467,8 +467,14 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                 fitreff = fluxscale_result[fieldid]['fitRefFreq']
                 spidx = fluxscale_result[fieldid]['spidx']
                 reffreq = fitreff / 1.e9
-                spix = fluxscale_result[fieldid]['spidx'][1]
-                spixerr = fluxscale_result[fieldid]['spidxerr'][1]
+
+                if len(spidx) > 1:
+                    spix = fluxscale_result[fieldid]['spidx'][1]
+                    spixerr = fluxscale_result[fieldid]['spidxerr'][1]
+                else:
+                    # Fit order = 0
+                    spix = 0.0
+                    spixerr = 0.0
                 SNR = 0.0
                 curvature = 0.0
                 curvatureerr = 0.0
@@ -480,6 +486,10 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                     logfittedfluxd += spidx[i] * (np.log10(freqs/fitreff)) ** i
 
                 fittedfluxd = 10.0 ** logfittedfluxd
+
+                # Single spectral window
+                if len(logfittedfluxd) == 1:
+                    fittedfluxd = np.array([fitflx])
 
                 LOG.info(' Source: ' + source +
                          ' Band: ' + band +

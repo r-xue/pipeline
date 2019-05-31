@@ -55,23 +55,16 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 	    </tr>
 
 	</thead>
-	<tbody>    
-    
-    % for row in spindex_results[ms]:
-    
-
+	<tbody>
+	% for tr in spixtable:
 		<tr>
-		    <td>${row['source']}</td>
-			<td>${row['band']}</td>
-			<td>${'{0:.4f}'.format(float(row['spix']))}  +/-  ${'{0:.4f}'.format(float(row['spixerr']))}</td>
-			<td>${'{0:.4f}'.format(float(row['curvature']))}  +/-  ${'{0:.4f}'.format(float(row['curvatureerr']))}</td>
-            <td>${row['fitorder']}</td>
+		% for td in tr:
+			${td}
+		% endfor
 		</tr>
-
-    % endfor
+	%endfor
 	</tbody>
     </table>
-
 
        <table class="table table-bordered table-striped table-condensed"
 	   summary="Fitting data with a power law">
