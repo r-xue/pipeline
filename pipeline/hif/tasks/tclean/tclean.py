@@ -103,7 +103,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
                  restoringbeam=None, hm_masking=None, hm_sidelobethreshold=None, hm_noisethreshold=None,
                  hm_lownoisethreshold=None, hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None,
                  hm_dogrowprune=None, hm_minpercentchange=None, hm_fastnoise=None, hm_nsigma=None,
-                 hm_perchanweightdensity=None, hm_cleaning=None,
+                 hm_perchanweightdensity=None, hm_npixels=None, hm_cleaning=None,
                  iter=None, mask=None, niter=None, threshold=None, tlimit=None, masklimit=None,
                  calcsb=None, cleancontranges=None, parallel=None,
                  # Extra parameters not in the CLI task interface
@@ -128,7 +128,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
                                            hm_growiterations=hm_growiterations, hm_dogrowprune=hm_dogrowprune,
                                            hm_minpercentchange=hm_minpercentchange, hm_fastnoise=hm_fastnoise, 
                                            hm_nsigma=hm_nsigma, hm_perchanweightdensity=hm_perchanweightdensity,
-                                           niter=niter, threshold=threshold,
+                                           hm_npixels=hm_npixels, niter=niter, threshold=threshold,
                                            sensitivity=sensitivity, conjbeams=conjbeams, is_per_eb=is_per_eb,
                                            usepointing=usepointing, mosweight=mosweight,
                                            parallel=parallel, heuristics=heuristics)
@@ -837,6 +837,7 @@ class Tclean(cleanbase.CleanBase):
                                                   niter=niter,
                                                   hm_nsigma=nsigma,
                                                   hm_perchanweightdensity=inputs.hm_perchanweightdensity,
+                                                  hm_npixels=inputs.hm_npixels,
                                                   threshold=threshold,
                                                   sensitivity=sensitivity,
                                                   pblimit=inputs.pblimit,

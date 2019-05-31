@@ -48,6 +48,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     niter = vdp.VisDependentProperty(default=5000)
     hm_nsigma = vdp.VisDependentProperty(default=0.0)
     hm_perchanweightdensity = vdp.VisDependentProperty(default=False)
+    hm_npixels = vdp.VisDependentProperty(default=0)
     nterms = vdp.VisDependentProperty(default=None)
     orig_specmode = vdp.VisDependentProperty(default='')
     outframe = vdp.VisDependentProperty(default='LSRK')
@@ -112,8 +113,8 @@ class CleanBaseInputs(vdp.StandardInputs):
                  hm_sidelobethreshold=None, hm_noisethreshold=None, hm_lownoisethreshold=None,
                  hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None, hm_dogrowprune=None,
                  hm_minpercentchange=None, hm_fastnoise=None, pblimit=None, niter=None, hm_nsigma=None,
-                 hm_perchanweightdensity=None, threshold=None, sensitivity=None, reffreq=None, restfreq=None,
-                 conjbeams=None, is_per_eb=None, antenna=None, usepointing=None, mosweight=None,
+                 hm_perchanweightdensity=None, hm_npixels=None, threshold=None, sensitivity=None, reffreq=None,
+                 restfreq=None, conjbeams=None, is_per_eb=None, antenna=None, usepointing=None, mosweight=None,
                  result=None, parallel=None, heuristics=None):
         self.context = context
         self.output_dir = output_dir
@@ -167,6 +168,7 @@ class CleanBaseInputs(vdp.StandardInputs):
         self.threshold = threshold
         self.hm_nsigma = hm_nsigma
         self.hm_perchanweightdensity = hm_perchanweightdensity
+        self.hm_npixels = hm_npixels
         self.sensitivity = sensitivity
         self.reffreq = reffreq
         self.restfreq = restfreq
@@ -311,6 +313,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             'uvrange':       inputs.uvrange,
             'savemodel':     inputs.savemodel,
             'perchanweightdensity':  inputs.hm_perchanweightdensity,
+            'npixels':    inputs.hm_npixels,
             'chanchunks':    chanchunks,
             'parallel':      parallel
             }

@@ -89,6 +89,11 @@ Compute clean results from a list of specified targets.
     <value>False</value>
   </param>
 
+  <param type="int" name="hm_npixels">
+    <description>Number of pixels to determine uv-cell size for super-uniform weighting</description>
+    <value>0</value>
+  </param>
+
   <param type="string" name="hm_cleaning">
      <description>Pipeline cleaning mode </description>
        <value></value>
@@ -273,6 +278,8 @@ hm_fastnoise -- Faster noise calucation for automask or nsigma stopping
 hm_nsigma -- Multiplicative factor for rms-based threshold stopping
 
 hm_perchanweightdensity -- Calculate the weight density for each channel independently
+
+hm_npixels -- Number of pixels to determine uv-cell size for super-uniform weighting
 
 cleancontranges -- Clean continuum frequency ranges in cubes
                    default=False
