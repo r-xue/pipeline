@@ -181,7 +181,9 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
             imhead = image.summary(list=False)
             lcs = image.coordsys()
             try:
-                freq_axis = image.coordsys().findaxisbyname('spectral')
+                csys = image.coordsys()
+                freq_axis = csys.findaxisbyname('spectral')
+                csys.done()
             except:
                 num_axes = image.shape().shape[0]
                 if num_axes > 3:
