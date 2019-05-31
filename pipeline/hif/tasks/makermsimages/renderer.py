@@ -52,6 +52,7 @@ class T2_4MDetailsMakermsimagesRenderer(basetemplates.T2_4MDetailsDefaultRendere
                     coordsys = image.coordsys()
                     coord_names = numpy.array(coordsys.names())
                     coord_refs = coordsys.referencevalue(format='s')
+                    coordsys.done()
                     pol = coord_refs['string'][coord_names == 'Stokes'][0]
                     info_dict[(field, spw, pol, 'image name')] = image.name(strippath=True)
 
