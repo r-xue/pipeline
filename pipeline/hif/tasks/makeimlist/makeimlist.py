@@ -348,7 +348,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                     field_intent_list = self.heuristics.field_intent_list(
                       intent=inputs.intent, field=inputs.field)
                 else:
-                    field_intent_list = []
+                    continue
 
                 # Parse hm_cell to get optional pixperbeam setting
                 cell = inputs.hm_cell
@@ -378,7 +378,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                         if (valid_data[str(spw)][list(field_intent_list)[0]]):
                             filtered_spwlist.append(spw)
                 else:
-                    filtered_spwlist = []
+                    continue
 
                 # Collapse cont spws
                 if inputs.specmode == 'cont':
