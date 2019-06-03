@@ -16,7 +16,7 @@ class VLAExportDataInputs(exportdata.ExportDataInputs):
     gainmap = vdp.VisDependentProperty(default=False)
     exportcalprods = vdp.VisDependentProperty(default=False)
 
-    @exportcalprods.convert
+    @exportcalprods.postprocess
     def exportcalprods(self, value):
         # calibration products are exported when
         # (1) not imaging_product_only and not exportmses
@@ -34,7 +34,6 @@ class VLAExportDataInputs(exportdata.ExportDataInputs):
                                                   products_dir=products_dir)
         self.gainmap = gainmap
         self.exportcalprods = exportcalprods
-
 
 @task_registry.set_equivalent_casa_task('hifv_exportdata')
 class VLAExportData(exportdata.ExportData):
