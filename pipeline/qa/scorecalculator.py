@@ -2306,14 +2306,14 @@ def score_sd_skycal_elevation_difference(ms, resultdict, threshold=3.0):
 
 def generate_metric_mask(context, result, cs, mask):
     """
-    Generate boolean mask array for metric calculation in 
-    score_sdimage_masked_pixels. If image pixel contains 
-    observed points, mask will be True. Otherwise, mask is 
-    False. 
+    Generate boolean mask array for metric calculation in
+    score_sdimage_masked_pixels. If image pixel contains
+    observed points, mask will be True. Otherwise, mask is
+    False.
 
     Arguments:
         context {Context} -- Pipeline context
-        result {SDImagingResultItem} -- result item created by 
+        result {SDImagingResultItem} -- result item created by
                                         hsd_imaging
         cs {coordsys} -- CASA coordsys tool
         mask {bool array} -- image mask
@@ -2426,14 +2426,15 @@ def score_sdimage_masked_pixels(context, result):
     # image shape: (lon, lat, stokes, freq)
     LOG.debug('image shape: {}'.format(list(imageshape)))
 
-    # metric_mask is boolean array that defines the region to be excluded
-    #    True: included in the metric calculation
-    #   False: excluded from the metric calculation
-    # TODO: decide if any margin is necessary
-    metric_mask = generate_metric_mask(context, result, cs, mask)
-
-    # done using coordsys tool
-    cs.done()
+    try:
+        # metric_mask is boolean array that defines the region to be excluded
+        #    True: included in the metric calculation
+        #   False: excluded from the metric calculation
+        # TODO: decide if any margin is necessary
+        metric_mask = generate_metric_mask(context, result, cs, mask)
+    finally:
+        # done using coordsys tool
+        cs.done()
 
     # calculate metric_score
     total_pixels = mask[metric_mask]
