@@ -96,7 +96,8 @@ class T2_4MDetailsTsysflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 lastflag = lastflag[-1]
             lastresult = result.components[lastflag]
 
-            plotter = tsys.TsysSummaryChart(context, lastresult)
+            calapp = lastresult.final[0]
+            plotter = tsys.TsysSummaryChart(context, lastresult, calapp)
             plots = plotter.plot()
             vis = os.path.basename(lastresult.inputs['vis'])
             summary_plots[vis] = plots

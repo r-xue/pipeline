@@ -25,7 +25,7 @@ COLSHAPE_FORMAT = re.compile(r'\[(?P<num_pols>\d+), (?P<num_rows>\d+)\]')
 
 
 class PlotbandpassDetailBase(object):
-    def __init__(self, context, result, xaxis, yaxis, pol='', **kwargs):
+    def __init__(self, context, result, xaxis, yaxis, **kwargs):
         # identify the bandpass solution for the target
         calapps = [c for c in result.final
                    if (c.intent == '' or 'TARGET' in c.intent)]
@@ -65,12 +65,13 @@ class PlotbandpassDetailBase(object):
                              for p in range(num_pols)])
             self._pols[spw] = pols
 
+        # Get base name of figure file(s).
         overlay = self._kwargs.get('overlay', '')
         fileparts = {
-            'caltable' : os.path.basename(calapp.gaintable),
-            'x'        : self._xaxis,
-            'y'        : self._yaxis,
-            'overlay'  : '-%s' % overlay if overlay else ''
+            'caltable': os.path.basename(calapp.gaintable),
+            'x': self._xaxis,
+            'y': self._yaxis,
+            'overlay': '-%s' % overlay if overlay else ''
         }
         png = '{caltable}-{y}_vs_{x}{overlay}.png'.format(**fileparts)
 
@@ -86,6 +87,9 @@ class PlotbandpassDetailBase(object):
         scan_to_suffix = {scan_id: '.t%02d' % i
                           for i, scan_id in enumerate(scan_ids_in_caltable)}
 
+        # Get prediction of final name of figure file for each spw and ant,
+        # assuming plotbandpass injects spw ID and ant into every plot
+        # filename.
         for spw_id, ant_id in itertools.product(spw_ids, antenna_ids):
             if 'time' not in overlay:
                 # filter the caltable down to the data containing the spw and
@@ -110,15 +114,15 @@ class PlotbandpassDetailBase(object):
             self._figfile[spw_id][ant_id] = real_figfile
 
     def create_task(self, spw_arg, antenna_arg):
-        task_args = {'vis'         : self._vis,
-                     'caltable'    : self._caltable,
-                     'xaxis'       : self._xaxis,
-                     'yaxis'       : self._yaxis,
-                     'interactive' : False,
-                     'spw'         : spw_arg,
-                     'antenna'     : antenna_arg,
-                     'subplot'     : 11,
-                     'figfile'     : self._figroot}
+        task_args = {'vis': self._vis,
+                     'caltable': self._caltable,
+                     'xaxis': self._xaxis,
+                     'yaxis': self._yaxis,
+                     'interactive': False,
+                     'spw': spw_arg,
+                     'antenna': antenna_arg,
+                     'subplot': 11,
+                     'figfile': self._figroot}
         task_args.update(**self._kwargs)
 
         return casa_tasks.plotbandpass(**task_args)
@@ -323,15 +327,6 @@ class PlotmsCalLeaf(object):
         return wrapper
 
     def _create_task(self):
-        #task_args = {'caltable'  : self._caltable,
-                     #'xaxis'     : self._xaxis,
-                     #'yaxis'     : self._yaxis,
-                     #'showgui'   : False,
-                     #'spw'       : str(self._spw),
-                     #'antenna'   : self._ant,
-                     #'figfile'   : self._figfile,
-                     #'plotrange' : self._plotrange}
-
         task_args = {'vis'       : self._caltable,
                      'xaxis'     : self._xaxis,
                      'yaxis'     : self._yaxis,
@@ -343,9 +338,7 @@ class PlotmsCalLeaf(object):
                      'plotrange' : self._plotrange,
                      'coloraxis' : self._coloraxis,
                      'title'     : self._title}
-
-        #return casa_tasks.plotcal(**task_args) 
-        return casa_tasks.plotms(**task_args) 
+        return casa_tasks.plotms(**task_args)
 
 
 class PlotbandpassLeaf(object):

@@ -51,7 +51,10 @@ frequency.</p>
 
 	<%def name="mouseover(plot)">Click to show Tsys vs frequency for Tsys spw ${plot.parameters['tsys_spw']}</%def>
 
-	<%def name="fancybox_caption(plot)">T<sub>sys</sub> spw: ${plot.parameters['tsys_spw']}<br/>Science spws: ${', '.join([str(i) for i in plot.parameters['spw']])}</%def>
+	<%def name="fancybox_caption(plot)">
+        T<sub>sys</sub> spw: ${plot.parameters['tsys_spw']}<br/>
+        Science spws: ${', '.join([str(i) for i in plot.parameters['spw']])}
+    </%def>
 
 	<%def name="caption_title(plot)">
 		T<sub>sys</sub> spw ${plot.parameters['tsys_spw']}

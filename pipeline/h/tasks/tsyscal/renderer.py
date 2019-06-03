@@ -36,7 +36,8 @@ class T2_4MDetailsTsyscalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         subpages = {}
         eb_plots = []
         for result in results:
-            plotter = displays.TsysSummaryChart(pipeline_context, result)
+            calapp = result.final[0]
+            plotter = displays.TsysSummaryChart(pipeline_context, result, calapp)
             plots = plotter.plot()
             vis = os.path.basename(result.inputs['vis'])
             summary_plots[vis] = plots

@@ -55,8 +55,7 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
         # self._figfile structure: {spw_id: {antenna_id: filename}}
         self.spw_ids = self._figfile.keys()
         # take any value from the dictionary
-        self._figfile = dict(((spw_id, self._figfile[spw_id].values()[0]) \
-                              for spw_id in self.spw_ids))
+        self._figfile = dict((spw_id, self._figfile[spw_id].values()[0]) for spw_id in self.spw_ids)
         self.init_with_field(context, result, field)
 
     def plot(self):
@@ -65,7 +64,6 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
                    if not os.path.exists(self._figfile[spw_id])]
         if missing:
             LOG.trace('Executing new plotbandpass job for missing figures')
-            #ant_ids = ','.join([str(ant_id) for ant_id in missing])
             for spw_id in missing:
                 try:
                     task = self.create_task(spw_id, '')
@@ -77,9 +75,7 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
 
         wrappers = []
         for spw_id, figfile in self._figfile.iteritems():
-            print('create plot for {}'.format(spw_id))
             if os.path.exists(figfile):
-                print('{} exists'.format(figfile))
                 task = self.create_task(spw_id, '')
                 wrapper = logger.Plot(figfile,
                                       x_axis=self._xaxis,
@@ -136,7 +132,8 @@ class SingleDishPlotmsLeaf(object):
     is customized for single dish usecase.
     """
     def __init__(self, context, result, calapp, xaxis, yaxis, spw='', ant='', coloraxis='', **kwargs):
-        LOG.debug('__init__(caltable={caltable}, spw={spw}, ant={ant})'.format(caltable=calapp.gaintable, spw=spw, ant=ant))
+        LOG.debug('__init__(caltable={caltable}, spw={spw}, ant={ant})'.format(caltable=calapp.gaintable, spw=spw,
+                                                                               ant=ant))
         self.xaxis = xaxis
         self.yaxis = yaxis
         self.field = calapp.gainfield
@@ -174,10 +171,12 @@ class SingleDishPlotmsLeaf(object):
     def plot(self):
 
         prefix = '{caltable}-{y}_vs_{x}-{field}-{ant}-spw{spw}'.format(
-            caltable=os.path.basename(self.caltable), y=self.yaxis, x=self.xaxis, field=self.field_name, ant=self.antenna_selection, spw=self.spw)
+            caltable=os.path.basename(self.caltable), y=self.yaxis, x=self.xaxis, field=self.field_name,
+            ant=self.antenna_selection, spw=self.spw)
 
         title = '{caltable} \nField "{field}" Antenna {ant} Spw {spw} \ncoloraxis={caxis}'.format(
-            caltable=os.path.basename(self.caltable), field=self.field_name, ant=self.antenna_selection, spw=self.spw, caxis=self.coloraxis)
+            caltable=os.path.basename(self.caltable), field=self.field_name, ant=self.antenna_selection, spw=self.spw,
+            caxis=self.coloraxis)
 
         figfile = os.path.join(self._figroot, '{prefix}.png'.format(prefix=prefix))
 

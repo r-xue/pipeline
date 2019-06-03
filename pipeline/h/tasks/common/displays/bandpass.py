@@ -46,9 +46,9 @@ class BandpassDetailChart(common.PlotbandpassDetailBase):
                     wrapper = logger.Plot(figfile,
                                           x_axis=self._xaxis,
                                           y_axis=self._yaxis,
-                                          parameters={'vis' : self._vis_basename,
-                                                      'ant' : ant_name,
-                                                      'spw' : spw_id},
+                                          parameters={'vis': self._vis_basename,
+                                                      'ant': ant_name,
+                                                      'spw': spw_id},
                                           command=str(task))
                     wrappers.append(wrapper)
                 else:
@@ -60,9 +60,7 @@ class BandpassDetailChart(common.PlotbandpassDetailBase):
 
 class BandpassSummaryChart(common.PlotbandpassDetailBase):
     def __init__(self, context, result, xaxis, yaxis, **kwargs):
-        super(BandpassSummaryChart, self).__init__(context, result, xaxis,
-                                                  yaxis, overlay='baseband',
-                                                  **kwargs)
+        super(BandpassSummaryChart, self).__init__(context, result, xaxis, yaxis, overlay='baseband', **kwargs)
 
         # overlaying baseband, so we need to merge the individual spw keys
         # into joint keys, and the filenames into a list as the output could
@@ -71,10 +69,8 @@ class BandpassSummaryChart(common.PlotbandpassDetailBase):
         ant_ids = [ant_ids.keys() for _, ant_ids in self._figfile.iteritems()]
         ant_ids = set(itertools.chain(*ant_ids))
 
-        d = dict((ant_id,
-                  [self._figfile[spw_id][ant_id] for spw_id in spw_ids])
-                 for ant_id in ant_ids)
-        self._figfile = d
+        self._figfile = dict((ant_id, [self._figfile[spw_id][ant_id] for spw_id in spw_ids])
+                             for ant_id in ant_ids)
 
     def plot(self):
         missing = [ant_id
@@ -99,8 +95,8 @@ class BandpassSummaryChart(common.PlotbandpassDetailBase):
                     wrapper = logger.Plot(figfile,
                                           x_axis=self._xaxis,
                                           y_axis=self._yaxis,
-                                          parameters={'vis' : self._vis_basename,
-                                                      'ant' : self._antmap[antenna_id]},
+                                          parameters={'vis': self._vis_basename,
+                                                      'ant': self._antmap[antenna_id]},
                                           command=str(task))
                     wrappers.append(wrapper)
                     break

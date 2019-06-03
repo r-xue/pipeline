@@ -11,94 +11,100 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class TsysSummaryChart(object):
-    def __init__(self, context, result, **kwargs):
-        calto = result.final[0]
-        self._vis = calto.vis
-        self._vis_basename = os.path.basename(self._vis)
-        self._caltable = calto.gaintable
+    def __init__(self, context, result, calapp, xaxis='freq', yaxis='tsys'):
+        self._context = context
+        self._result = result
 
-        # Create a spwmap containing just the science spws. Sometimes, not all
-        # science spws have a matching Tsys window. As a result, spwmap may be
-        # shorter than the index of the science spw we're trying to plot.
+        self._calapp = calapp
+        self._caltable = calapp.gaintable
+        self._vis = calapp.vis
+
+        self._xaxis = xaxis
+        self._yaxis = yaxis
+
         ms = context.observing_run.get_ms(self._vis)
-        science_spws = ms.get_spectral_windows(science_windows_only=True)
-        science_spw_ids = [spw.id for spw in science_spws]
 
-        wrapper = common.CaltableWrapperFactory.from_caltable(self._caltable)
-        tsys_in_caltable = set(wrapper.spw) 
-        self._spwmap = dict((spw, tsys) for (spw, tsys) in enumerate(calto.spwmap)
-                            if spw in science_spw_ids 
-                            and tsys in tsys_in_caltable)
-
-        tsysmap = collections.defaultdict(list)
-        for sci, tsys in self._spwmap.iteritems():
-            tsysmap[tsys].append(sci)
-        self._tsysmap = dict((k, sorted(v)) for k, v in tsysmap.iteritems())
-
-        self._figroot = os.path.join(context.report_dir, 
-                                     'stage%s' % result.stage_number, 
-                                     'tsys-%s-summary.png' % self._vis_basename)
-
-        # plotbandpass injects spw ID into every plot filename
-        root, ext = os.path.splitext(self._figroot)
-        self._real_figfiles = dict((tsys_spw, '%s.spw%0.2d%s' % (root, tsys_spw, ext))
-                                   for tsys_spw in self._tsysmap)
-
-        self._kwargs = kwargs
-
-        # showfdm does not make sense for NRO
+        # Set showfdm to True except for "NRO" array.
         self._showfdm = ms.antenna_array.name != 'NRO'
 
+        # Get science spws from MS.
+        science_spw_ids = [spw.id for spw in ms.get_spectral_windows(science_windows_only=True)]
 
-    def create_task(self):
-        unique_tsys_spws = set(self._spwmap.values())
-        spw_arg = ','.join([str(spw) for spw in unique_tsys_spws])
+        # Get list of Tsys spws in caltable.
+        wrapper = common.CaltableWrapperFactory.from_caltable(self._caltable)
+        tsys_in_caltable = set(wrapper.spw)
 
-        task_args = {'vis'         : self._vis,
-                     'caltable'    : self._caltable,
-                     'xaxis'       : 'freq',
-                     'yaxis'       : 'tsys',
-                     'overlay'     : 'antenna,time',
-                     'interactive' : False,
-                     'spw'         : spw_arg,
-                     'showatm'     : True,
-                     'showfdm'     : self._showfdm,
-                     'chanrange'   : '90%',  # CAS-7011
-                     'subplot'     : 11,
-                     'figfile'     : self._figroot}
-        task_args.update(self._kwargs)
+        # Create a mapping between Tsys and science spws. Sometimes, not all
+        # science spws have a matching Tsys window.
+        self._tsysmap = collections.defaultdict(list)
+        for spw, tsys_spw in enumerate(calapp.spwmap):
+            if spw in science_spw_ids and tsys_spw in tsys_in_caltable:
+                self._tsysmap[tsys_spw].append(spw)
 
-        return casa_tasks.plotbandpass(**task_args)
+        # Get base name of figure file(s).
+        self._figfile = self._get_figfile()
 
     def plot(self):
-        wrappers = []
+        plots = []
+        # Create plot for each Tsys spw.
+        for tsys_spw in self._tsysmap:
+            plots.append(self._get_plot_wrapper(tsys_spw))
 
-        task = self.create_task()
-        for tsys_spw, science_spws in self._tsysmap.iteritems():
-            wrapper = logger.Plot(self._real_figfiles[tsys_spw],
-                                  x_axis='freq',
-                                  y_axis='tsys',
-                                  parameters={'vis'      : self._vis_basename,
-                                              'spw'      : science_spws,
-                                              'tsys_spw' : tsys_spw},
-                                  command=str(task))
-            wrappers.append(wrapper)
+        for p in plots:
+            if not os.path.exists(p.abspath):
+                LOG.info("Tsys summary plot not generated for {} spw {}"
+                         "".format(p.parameters['vis'], p.parameters['tsys_spw']))
 
-        if not all([os.path.exists(w.abspath) for w in wrappers]):
-            LOG.trace('Tsys summary plots not found. Creating new plots.')
+        return [p for p in plots if p is not None and os.path.exists(p.abspath)]
+
+    def _get_figfile(self):
+        return os.path.join(self._context.report_dir,
+                            'stage%s' % self._result.stage_number,
+                            'tsys-%s-summary.png' % os.path.basename(self._vis))
+
+    def _create_task(self, spw_arg):
+        task_args = {'vis': self._vis,
+                     'caltable': self._caltable,
+                     'xaxis': self._xaxis,
+                     'yaxis': self._yaxis,
+                     'interactive': False,
+                     'spw': str(spw_arg),
+                     'subplot': 11,
+                     'figfile': self._figfile,
+                     'overlay': 'antenna,time',
+                     'showatm': True,
+                     'showfdm': self._showfdm,
+                     'chanrange': '90%',  # CAS-7011
+                     }
+        return casa_tasks.plotbandpass(**task_args)
+
+    def _get_plot_wrapper(self, tsys_spw):
+        task = self._create_task(tsys_spw)
+
+        # Get prediction of final name of figure files(s), assuming
+        # plotbandpass injects spw ID into every plot filename.
+        root, ext = os.path.splitext(self._figfile)
+        pb_figfile = '%s.spw%0.2d%s' % (root, tsys_spw, ext)
+
+        if not os.path.exists(pb_figfile):
+            LOG.trace("Creating new plot: {}".format(pb_figfile))
             try:
                 task.execute(dry_run=False)
             except Exception as ex:
-                LOG.error('Could not create Tsys summary plots')
+                LOG.error("Could not create plot {}".format(pb_figfile))
                 LOG.exception(ex)
                 return None
 
-        for w in wrappers:
-            if not os.path.exists(w.abspath):
-                LOG.info('Tsys summary plot not generated for %s spw %s',
-                         w.parameters['vis'], w.parameters['spw'])
+        parameters = {'vis': os.path.basename(self._vis),
+                      'spw': self._tsysmap[tsys_spw],
+                      'tsys_spw': tsys_spw}
 
-        return wrappers
+        wrapper = logger.Plot(pb_figfile,
+                              x_axis=self._xaxis,
+                              y_axis=self._yaxis,
+                              parameters=parameters,
+                              command=str(task))
+        return wrapper
 
 
 class TsysPerAntennaChart(common.PlotbandpassDetailBase):
@@ -106,27 +112,27 @@ class TsysPerAntennaChart(common.PlotbandpassDetailBase):
         super(TsysPerAntennaChart, self).__init__(context, result, 'freq', 'tsys', overlay='time', showatm=True,
                                                   showfdm=True, chanrange='90%', **kwargs)
 
-        # create a mapping of Tsys windows to science windows
-        calto = result.final[0]
+        # Get MS and bandpass solution.
         ms = context.observing_run.get_ms(self._vis)
-        science_spws = ms.get_spectral_windows(science_windows_only=True)
-        science_spw_ids = [spw.id for spw in science_spws]
+        calapp = result.final[0]
 
+        # Set showfdm to True except for "NRO" array.
+        if ms.antenna_array.name == 'NRO':
+            self._kwargs['showfdm'] = False
+
+        # Get science spws from MS.
+        science_spw_ids = [spw.id for spw in ms.get_spectral_windows(science_windows_only=True)]
+
+        # Get list of Tsys spws in caltable.
         wrapper = common.CaltableWrapperFactory.from_caltable(self._caltable)
         tsys_in_caltable = set(wrapper.spw) 
 
-        spwmap = collections.defaultdict(list)
-        for science_spw_id, tsys_spw_id in enumerate(calto.spwmap):
-            if tsys_spw_id not in tsys_in_caltable:
-                continue
-            if science_spw_id in science_spw_ids:
-                spwmap[tsys_spw_id].append(science_spw_id)                    
-        self._tsys_map = dict((tsys_id, ','.join([str(i) for i in science_ids]))
-                              for tsys_id, science_ids in spwmap.iteritems())
-
-        # showfdm does not make sense for NRO
-        if ms.antenna_array.name == 'NRO':
-            self._kwargs['showfdm'] = False
+        # Create a mapping between Tsys and science spws. Sometimes, not all
+        # science spws have a matching Tsys window.
+        self._tsysmap = collections.defaultdict(list)
+        for spw, tsys_spw in enumerate(calapp.spwmap):
+            if spw in science_spw_ids and tsys_spw in tsys_in_caltable:
+                self._tsysmap[tsys_spw].append(spw)
 
     def plot(self):
         missing = [(spw_id, ant_id)
@@ -148,7 +154,7 @@ class TsysPerAntennaChart(common.PlotbandpassDetailBase):
         wrappers = []
         for tsys_spw_id in self._figfile:
             # some science windows may not have a Tsys window
-            science_spws =self._tsys_map.get(tsys_spw_id, 'N/A')
+            science_spws = self._tsysmap.get(tsys_spw_id, 'N/A')
             for antenna_id, figfile in self._figfile[tsys_spw_id].iteritems():
                 ant_name = self._antmap[antenna_id]
                 if os.path.exists(figfile):
@@ -156,14 +162,14 @@ class TsysPerAntennaChart(common.PlotbandpassDetailBase):
                     wrapper = logger.Plot(figfile,
                                           x_axis=self._xaxis,
                                           y_axis=self._yaxis,
-                                          parameters={'vis'      : self._vis_basename,
-                                                      'ant'      : ant_name,
-                                                      'spw'      : science_spws,
-                                                      'tsys_spw' : tsys_spw_id},
+                                          parameters={'vis': self._vis_basename,
+                                                      'ant': ant_name,
+                                                      'spw': ','.join([str(i) for i in science_spws]),
+                                                      'tsys_spw': tsys_spw_id},
                                           command=str(task))
                     wrappers.append(wrapper)
                 else:
                     LOG.trace('No plotbandpass detail plot found for %s spw '
                               '%s antenna %s: %s not found', 
-                              self._vis_basename, spw_id, ant_name, figfile)
+                              self._vis_basename, tsys_spw_id, ant_name, figfile)
         return wrappers

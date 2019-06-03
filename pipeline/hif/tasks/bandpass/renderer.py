@@ -5,14 +5,12 @@ Created on 11 Sep 2014
 """
 import collections
 import os
-import types
 
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
 
-#import pipeline.infrastructure.displays.bandpass as bandpass
 from pipeline.h.tasks.common.displays import bandpass as bandpass
 
 LOG = logging.get_logger(__name__)
