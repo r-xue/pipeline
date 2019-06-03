@@ -6,7 +6,6 @@ import matplotlib
 import matplotlib.pyplot as pyplot
 
 import pipeline.h.tasks.common.displays.common as common
-from pipeline.infrastructure import casa_tasks
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.renderer.logger as logger
@@ -19,77 +18,6 @@ LOG = infrastructure.get_logger(__name__)
 # new classes whose names terminate in 2 are the plotms 
 # equivalents. The plotcal versions should be removed once
 # the plotms versions have been thoroughly tested.
-
-
-class GaincalPerAntennaChart(object):
-    def __init__(self, context, result):
-        self.context = context
-        self.result = result
-        self.ms = context.observing_run.get_ms(result.inputs['vis'])
-        self.caltable = result.final[0].gaintable
-
-    def plot(self):
-        wrapper = common.CaltableWrapper.from_caltable(self.caltable)
-        caltable_antennas = [int(i) for i in set(wrapper.antenna)]
-        domain_antennas = [a for a in self.ms.antennas if a.id in caltable_antennas]
-
-        plots = []
-        for antenna in domain_antennas:
-            plots.append(self.get_plot_wrapper(antenna))
-
-        return [p for p in plots if p is not None]
-
-    def create_plot(self, antenna):
-        figfile = self.get_figfile()
-
-        task_args = {'vis'         : self.ms.name,
-                     'caltable'    : self.caltable,
-                     'xaxis'       : 'freq',
-                     'yaxis'       : 'amp',
-                     'overlay'     : 'antenna',                     
-                     'interactive' : False,
-                     'antenna'     : antenna.id,
-                     'showatm'     : True,
-                     'subplot'     : 11,
-                     'figfile'     : figfile}
-
-        task = casa_tasks.plotbandpass(**task_args)
-        task.execute(dry_run=False)
-
-    def get_figfile(self):
-        return os.path.join(self.context.report_dir, 
-                            'stage%s' % self.result.stage_number, 
-                            '%s-bandpass.png' % self.ms.basename)
-
-    def get_plot_wrapper(self, antenna):
-        figfile = self.get_figfile()
-
-        # plotbandpass injects antenna name, spw ID and t0 into every plot filename
-        root, ext = os.path.splitext(figfile)
-        real_figfile = '%s.%s.t0%s' % (root, antenna.name, ext)
-
-        wrapper = logger.Plot(real_figfile,
-                              x_axis='freq',
-                              y_axis='amp',
-                              parameters={'vis': self.ms.basename,
-                                          'ant': antenna.name})
-
-        if not os.path.exists(real_figfile):
-            LOG.trace('Tsys per antenna plot for antenna %s not found. '
-                      'Creating new plot.' % antenna.name)
-            try:
-                self.create_plot(antenna)
-            except Exception as ex:
-                LOG.error('Could not create Tsys plot for antenna %s.'
-                          '' % antenna.name)
-                LOG.exception(ex)
-                return None
-
-        # the Tsys plot may not be created if all data for that antenna are
-        # flagged
-        if os.path.exists(real_figfile):
-            return wrapper            
-        return None
 
 
 class PhaseVsBaselineChart(common.PlotBase):
@@ -195,7 +123,6 @@ class PhaseVsBaselineChart(common.PlotBase):
         for spw in spws:
             plots.append(self.get_plot_wrapper(spw, scans, self.ms.antennas,
                                                xlim, ylim, wrappers))
-#                     return [p for p in plots if p is not None]
 
         return [p for p in plots if p is not None]
 
