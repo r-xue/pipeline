@@ -1,6 +1,5 @@
 from __future__ import absolute_import
 
-import os
 import collections
 import datetime
 import decimal
@@ -19,22 +18,13 @@ import pipeline.infrastructure.utils as utils
 
 LOG = infrastructure.get_logger(__name__)
 
-try:
-    FLUX_SERVICE_URL = os.environ['FLUX_SERVICE_URL']
-except Exception as e:
-    LOG.info('Environment variable FLUX_SERVICE_URL not defined.  Using JAO default.')
-    # FLUX_SERVICE_URL = 'https://almascience.eso.org/sc/flux'
-    # FLUX_SERVICE_URL = 'https://osf-sourcecat-2019may.asa-test.alma.cl/sc/'
-    FLUX_SERVICE_URL = 'https://2019may.asa-test.alma.cl/sc/flux'
-
-LOG.info('Using ALMA flux service URL: {!s}'.format(FLUX_SERVICE_URL))
-
+SERVICE_URL = 'https://almascience.eso.org/sc/flux'
 ORIGIN_DB = 'DB'
 
 
 def get_setjy_results(mses):
     """
-    Get flux values from the database service reverting to the Source
+    Get fluxes values from the database service reverting to the Source
     tables XML for backup values and store the values in the context
     """
     results = []
@@ -58,7 +48,7 @@ def get_setjy_results(mses):
 
 def read_fluxes_db(ms):
     """
-    Read fluxes from the database server, defaulting to the Source XML table
+    Read fluxes from the data base server, defaulting to the Source XML table
     if no fluxes can be found
     """
     xml_measurements = fluxes.read_fluxes_nodb(ms)
@@ -86,20 +76,6 @@ def flux_nosourcexml(ms):
     return result
 
 
-def buildurl(service_url, obs_time, frequency, sourcename):
-    # Example:
-    # https://almascience.eso.org/sc/flux?DATE=10-August-2017&FREQUENCY=232101563000.0&NAME=J1924-2914&WEIGHTED=true&RESULT=1
-    # New Example May 2019:
-    # https://osf-sourcecat-2019apr.asa-test.alma.cl/sc/flux?DATE=27-March-2013&FREQUENCY=86837309056.169219970703125&WEIGHTED=true&RESULT=0&NAME=J1427-4206
-    date = '{!s}-{!s}-{!s}'.format(obs_time.day, obs_time.strftime('%B'), obs_time.year)
-    sourcename = sanitize_string(sourcename)
-    urlparams = buildparams(sourcename, date, frequency)
-
-    url = '{!s}?{!s}'.format(service_url, urlparams)
-
-    return url
-
-
 def fluxservice(service_url, obs_time, frequency, sourcename):
     """
     Usage of this online service requires:
@@ -108,16 +84,21 @@ def fluxservice(service_url, obs_time, frequency, sourcename):
         - frequency_text - we will get the frequency out of this in Hz
         - source - we will get source.name from this object
     """
+    # Example:
+    # https://almascience.eso.org/sc/flux?DATE=10-August-2017&FREQUENCY=232101563000.0&NAME=J1924-2914&WEIGHTED=true&RESULT=1
+    date = '{!s}-{!s}-{!s}'.format(obs_time.day, obs_time.strftime('%B'), obs_time.year)
+    sourcename = sanitize_string(sourcename)
+    urlparams = buildparams(sourcename, date, frequency)
 
-    url = buildurl(service_url, obs_time, frequency, sourcename)
+    url = '{!s}?{!s}'.format(service_url, urlparams)
     LOG.debug('Querying {!s}'.format(url))
 
     # ignore HTTPS certificate
     ssl_context = ssl._create_unverified_context()
     try:
-        response = urllib2.urlopen(url, context=ssl_context, timeout=40.0)
+        response = urllib2.urlopen(url, context=ssl_context, timeout=10.0)
     except IOError:
-        LOG.warn('Error contacting flux service at: {!s}'.format(url))
+        LOG.warn('Error contacting ALMA Source Catalogue Database')
         raise
 
     try:
@@ -129,19 +110,19 @@ def fluxservice(service_url, obs_time, frequency, sourcename):
     rowdict = {}
     for node in dom.getElementsByTagName('TR'):
         row = node.getElementsByTagName('TD')
-        rowdict['statuscode'] = row[0].childNodes[0].nodeValue
-        rowdict['sourcename'] = row[1].childNodes[0].nodeValue
-        rowdict['dbfrequency'] = row[2].childNodes[0].nodeValue
-        rowdict['date'] = row[3].childNodes[0].nodeValue
-        rowdict['fluxdensity'] = row[4].childNodes[0].nodeValue
-        rowdict['fluxdensityerror'] = row[5].childNodes[0].nodeValue
-        rowdict['spectralindex'] = row[6].childNodes[0].nodeValue
-        rowdict['spectralindexerror'] = row[7].childNodes[0].nodeValue
-        rowdict['dataconditions'] = row[8].childNodes[0].nodeValue
-        rowdict['notms'] = row[9].childNodes[0].nodeValue
-        rowdict['ageOfNearestMonitorPoint'] = row[10].childNodes[0].nodeValue
-        # rowdict['verbose'] = row[11].childNodes[0].nodeValue
-        rowdict['version'] = row[12].childNodes[0].nodeValue
+        rowdict['sourcename'] = row[0].childNodes[0].nodeValue
+        rowdict['dbfrequency'] = row[1].childNodes[0].nodeValue
+        rowdict['date'] = row[2].childNodes[0].nodeValue
+        rowdict['fluxdensity'] = row[3].childNodes[0].nodeValue
+        rowdict['fluxdensityerror'] = row[4].childNodes[0].nodeValue
+        rowdict['spectralindex'] = row[5].childNodes[0].nodeValue
+        rowdict['spectralindexerror'] = row[6].childNodes[0].nodeValue
+        rowdict['error2'] = row[7].childNodes[0].nodeValue
+        rowdict['error3'] = row[8].childNodes[0].nodeValue
+        rowdict['error4'] = row[9].childNodes[0].nodeValue
+        rowdict['warning'] = row[10].childNodes[0].nodeValue
+        rowdict['notms'] = row[11].childNodes[0].nodeValue
+        rowdict['ageOfNearestMonitorPoint'] = row[12].childNodes[0].nodeValue
         rowdict['url'] = url
 
     return rowdict
@@ -163,7 +144,7 @@ def sanitize_string(name):
     return name.split(';')[0]
 
 
-def query_online_catalogue(flux_url, ms, spw, source):
+def query_online_catalogue(ms, spw, source):
     # At this point we take:
     #  - the source name string
     #  - the frequency of the spw_id in Hz
@@ -176,12 +157,12 @@ def query_online_catalogue(flux_url, ms, spw, source):
 
     utcnow = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
     try:
-        fluxdict = fluxservice(flux_url, obs_time, freq_hz, source_name)
+        fluxdict = fluxservice(SERVICE_URL, obs_time, freq_hz, source_name)
     except IOError:
         # error contacting service
         return None
     except ExpatError:
-        # error parsing the XML table
+        # error parsing VOtable
         return None
 
     try:
@@ -199,46 +180,14 @@ def query_online_catalogue(flux_url, ms, spw, source):
     final_spix = decimal.Decimal('%0.3f' % cat_spix)
     age_n_m_p = fluxdict['ageOfNearestMonitorPoint']
 
-    return fluxdict['url'], fluxdict['version'], domain.FluxMeasurement(spw.id, final_I, spix=final_spix,
-                                                                        origin=ORIGIN_DB, queried_at=utcnow,
-                                                                        age=age_n_m_p)
+    return domain.FluxMeasurement(spw.id, final_I, spix=final_spix, origin=ORIGIN_DB, queried_at=utcnow, age=age_n_m_p)
 
 
 def add_catalogue_fluxes(measurements, ms):
     results = collections.defaultdict(list)
+
     science_windows = ms.get_spectral_windows(science_windows_only=True)
 
-    # Test query to see if we need to switch to the backup URL
-    obs_time = datetime.datetime(2013, 3, 27, 7, 53, 3, 168000)
-    freq_hz = '86837309056.169219970703125'
-    source_name = 'J1427-4206'
-    contact_fail = False
-    backup_url = 'https://2019may.asa-test.alma.cl/sc/flux'
-    flux_url = FLUX_SERVICE_URL
-    try:
-        fluxdict = fluxservice(flux_url, obs_time, freq_hz, source_name)
-    except IOError:
-        # error contacting service
-        LOG.warn("Could not contact service at {!s}".format(flux_url))
-        flux_url = backup_url
-        contact_fail = True
-    except ExpatError:
-        # error parsing the XML table
-        LOG.warn("Table parsing issue.")
-        LOG.warn("Could not contact service at {!s}".format(flux_url))
-        flux_url = backup_url
-        contact_fail = True
-
-    if contact_fail:
-        try:
-            # Try the backup URL at JAO
-            LOG.warn("Switching to JAO url at: {!s}".format(flux_url))
-            fluxdict = fluxservice(flux_url, obs_time, freq_hz, source_name)
-        except IOError:
-            LOG.error("Could not contact either flux service URL.")
-            return
-
-    # Continue with required queries
     for source, xml_measurements in measurements.iteritems():
         for xml_measurement in xml_measurements:
             spw = ms.get_spectral_window(xml_measurement.spw_id)
@@ -247,7 +196,7 @@ def add_catalogue_fluxes(measurements, ms):
             if spw not in science_windows:
                 continue
 
-            url, version, catalogue_measurement = query_online_catalogue(flux_url, ms, spw, source)
+            catalogue_measurement = query_online_catalogue(ms, spw, source)
 
             if catalogue_measurement:
                 # Catalogue doesn't return Q,U,V so adopt Q,U,V from XML
@@ -271,16 +220,14 @@ def add_catalogue_fluxes(measurements, ms):
                 spix = 'N/A'
                 age = 'N/A'
 
-            log_result(source, spw, xml_measurement.I, catalogue_I, spix, age, url, version)
+            log_result(source, spw, xml_measurement.I, catalogue_I, spix, age)
 
     return results
 
 
-def log_result(source, spw, asdm_I, catalogue_I, spix, age, url, version):
-    LOG.info('Source: {!s} spw: {!s}    ASDM flux: {!s}    Catalogue flux: {!s}'.format(source.name, spw.id,
+def log_result(source, spw, asdm_I, catalogue_I, spix, age):
+    LOG.info('Source: {!s} spw: {!s}    ASDM flux: {!s}    Catalogue flux: {!s} Jy'.format(source.name, spw.id,
                                                                                            asdm_I, catalogue_I))
     LOG.info('         Online catalog Spectral Index: {!s}'.format(spix))
     LOG.info('         ageOfNearestMonitorPoint: {!s}'.format(age))
-    LOG.info('         URL: {!s}'.format(url))
-    LOG.info('         Version: {!s}'.format(version))
     LOG.info("---------------------------------------------")
