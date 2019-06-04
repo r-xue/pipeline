@@ -2361,15 +2361,50 @@ def generate_metric_mask(context, result, cs, mask):
     qa = casatools.quanta
 
     # template measure for world-pixel conversion
-    world = cs.toworld([0, 0, 0, 0], format='m')
+    # 2019/06/03 TN
+    # Workaround for memory consumption issue (PIPE-362)
+    # cs.topixel consumes some amount of memory and it accumulates, 
+    # too many call of cs.topixel results in unexpectedly large amount of 
+    # memory usage. To avoid cs.topixel, approximate mapping to pixel 
+    # coordinate is done manually.
+    blc = cs.toworld([-0.5, -0.5, 0, 0], format='q')
+    brc = cs.toworld([imshape[0] - 0.5, -0.5, 0, 0], format='q')
+    tlc = cs.toworld([-0.5, imshape[1] - 0.5, 0, 0], format='q')
+    trc = cs.toworld([imshape[0] - 0.5, imshape[1] - 0.5, 0, 0], format='q')
+    #print('blc {} {}'.format(blc['quantity']['*1'], blc['quantity']['*2']))
+    #print('brc {} {}'.format(brc['quantity']['*1'], brc['quantity']['*2']))
+    #print('tlc {} {}'.format(tlc['quantity']['*1'], tlc['quantity']['*2']))
+    #print('trc {} {}'.format(trc['quantity']['*1'], trc['quantity']['*2']))
+    #print('cen {} {}'.format(cen['quantity']['*1'], cen['quantity']['*2']))
+    cpi = qa.convert(qa.quantity(180, 'deg'), unit_ra)['value']
+    s0 = (qa.convert(tlc['quantity']['*1'], unit_ra)['value'] - qa.convert(blc['quantity']['*1'], unit_ra)['value']) \
+        / (qa.convert(tlc['quantity']['*2'], unit_dec)['value'] - qa.convert(blc['quantity']['*2'], unit_dec)['value'])
+    t0 = ((qa.convert(blc['quantity']['*1'], unit_ra)['value']) + cpi) % (cpi * 2) - cpi
+    s1 = (qa.convert(trc['quantity']['*1'], unit_ra)['value'] - qa.convert(brc['quantity']['*1'], unit_ra)['value']) \
+        / (qa.convert(trc['quantity']['*2'], unit_dec)['value'] - qa.convert(brc['quantity']['*2'], unit_dec)['value'])
+    t1 = ((qa.convert(brc['quantity']['*1'], unit_ra)['value']) + cpi) % (cpi * 2) - cpi
+    ymax = (qa.convert(tlc['quantity']['*2'], unit_dec)['value'] + qa.convert(trc['quantity']['*2'], unit_dec)['value']) / 2
+    ymin = (qa.convert(blc['quantity']['*2'], unit_dec)['value'] + qa.convert(brc['quantity']['*2'], unit_dec)['value']) / 2
+    dy = (ymax - ymin) / imshape[1]
+    #print('s0 {} t0 {} s1 {} t1 {}'.format(s0, t0, s1, t1))
+    #print('ymax {} ymin {} dy {}'.format(ymax, ymin, dy))
+    #world = cs.toworld([0, 0, 0, 0], format='m')
     px = np.empty_like(ra)
     py = np.empty_like(dec)
     for i, (x, y) in enumerate(zip(ra, dec)):
-        world['measure']['direction']['m0'] = qa.quantity(x, unit_ra)
-        world['measure']['direction']['m1'] = qa.quantity(y, unit_dec)
-        p = cs.topixel(world)
-        px[i] = p['numeric'][0]
-        py[i] = p['numeric'][1]
+        #world['measure']['direction']['m0']['value'] = qa.quantity(x, unit_ra)
+        #world['measure']['direction']['m1']['value'] = qa.quantity(y, unit_dec)
+        #p = cs.topixel(world)
+        #px[i] = p['numeric'][0]
+        #py[i] = p['numeric'][1]
+        y0 = y
+        xmin = s0 * (y - y0) + t0
+        xmax = s1 * (y - y0) + t1
+        dx = (xmax - xmin) / imshape[0]
+        #print('xmin {} xmax {} dx {}'.format(xmin, xmax, dx))
+        #print('x {} y {}'.format(x, y))
+        py[i] = (y - ymin) / dy - 0.5
+        px[i] = (x - xmin) / dx - 0.5
         #print('WORLD {} {} <-> PIXEL {} {}'.format(x, y, px[i], py[i]))
 
     for x, y in zip(map(int, np.round(px)), map(int, np.round(py))):
