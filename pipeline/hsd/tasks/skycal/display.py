@@ -65,8 +65,10 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
         if missing:
             LOG.trace('Executing new plotbandpass job for missing figures')
             for spw_id in missing:
+                # PIPE-110: show image sideband for DSB receivers.
+                showimage = self._rxmap[spw_id] == "DSB"
                 try:
-                    task = self.create_task(spw_id, '')
+                    task = self.create_task(spw_id, '', showimage=showimage)
                     task.execute(dry_run=False)
                 except Exception as ex:
                     LOG.error('Could not create plotbandpass summary plots')
@@ -75,8 +77,10 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
 
         wrappers = []
         for spw_id, figfile in self._figfile.iteritems():
+            # PIPE-110: show image sideband for DSB receivers.
+            showimage = self._rxmap[spw_id] == "DSB"
             if os.path.exists(figfile):
-                task = self.create_task(spw_id, '')
+                task = self.create_task(spw_id, '', showimage=showimage)
                 wrapper = logger.Plot(figfile,
                                       x_axis=self._xaxis,
                                       y_axis=self._yaxis,

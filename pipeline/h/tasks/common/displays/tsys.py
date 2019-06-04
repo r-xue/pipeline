@@ -44,6 +44,9 @@ class TsysSummaryChart(object):
         # Get base name of figure file(s).
         self._figfile = self._get_figfile()
 
+        # Get mapping from Tsys spw to receiver type.
+        self._rxmap = {tsys_spw: ms.get_spectral_windows(tsys_spw)[0].receiver for tsys_spw in self._tsysmap}
+
     def plot(self):
         plots = []
         # Create plot for each Tsys spw.
@@ -62,7 +65,7 @@ class TsysSummaryChart(object):
                             'stage%s' % self._result.stage_number,
                             'tsys-%s-summary.png' % os.path.basename(self._vis))
 
-    def _create_task(self, spw_arg):
+    def _create_task(self, spw_arg, showimage=False):
         task_args = {'vis': self._vis,
                      'caltable': self._caltable,
                      'xaxis': self._xaxis,
@@ -75,11 +78,14 @@ class TsysSummaryChart(object):
                      'showatm': True,
                      'showfdm': self._showfdm,
                      'chanrange': '90%',  # CAS-7011
+                     'showimage': showimage,
                      }
         return casa_tasks.plotbandpass(**task_args)
 
     def _get_plot_wrapper(self, tsys_spw):
-        task = self._create_task(tsys_spw)
+        # PIPE-110: Use showimage=True for DSB receiver spws.
+        showimage = self._rxmap[tsys_spw] == 'DSB'
+        task = self._create_task(tsys_spw, showimage=showimage)
 
         # Get prediction of final name of figure files(s), assuming
         # plotbandpass injects spw ID into every plot filename.
@@ -134,31 +140,37 @@ class TsysPerAntennaChart(common.PlotbandpassDetailBase):
             if spw in science_spw_ids and tsys_spw in tsys_in_caltable:
                 self._tsysmap[tsys_spw].append(spw)
 
-    def plot(self):
-        missing = [(spw_id, ant_id)
-                   for spw_id in self._figfile
-                   for ant_id in self._antmap
-                   if not os.path.exists(self._figfile[spw_id][ant_id])]
-        if missing:
-            LOG.trace('Executing new plotbandpass job for missing figures')
-            spw_ids = ','.join({str(spw_id) for spw_id, _ in missing})
-            ant_ids = ','.join({str(ant_id) for _, ant_id in missing})
-            try:
-                task = self.create_task(spw_ids, ant_ids)
-                task.execute(dry_run=False)
-            except Exception as ex:
-                LOG.error('Could not create plotbandpass details plots')
-                LOG.exception(ex)
-                return None
+        # Get mapping from Tsys spw to receiver type.
+        self._rxmap = {tsys_spw: ms.get_spectral_windows(tsys_spw)[0].receiver for tsys_spw in self._tsysmap}
 
+    def plot(self):
+        # PIPE-110: create separate calls to plotbandpass for DSB and non-DSB
+        # receivers.
+        missing_dsb = [(spw_id, ant_id)
+                       for spw_id in self._figfile
+                       for ant_id in self._antmap
+                       if not os.path.exists(self._figfile[spw_id][ant_id]) and self._rxmap[spw_id] == "DSB"]
+        if missing_dsb:
+            self._create_plotbandpass_task(missing_dsb, showimage=True)
+
+        missing_nondsb = [(spw_id, ant_id)
+                          for spw_id in self._figfile
+                          for ant_id in self._antmap
+                          if not os.path.exists(self._figfile[spw_id][ant_id]) and self._rxmap[spw_id] != "DSB"]
+        if missing_nondsb:
+            self._create_plotbandpass_task(missing_nondsb, showimage=False)
+
+        # Create plot wrappers.
         wrappers = []
         for tsys_spw_id in self._figfile:
+            # PIPE-110: show image sideband for DSB receivers.
+            showimage = self._rxmap[tsys_spw_id] == "DSB"
             # some science windows may not have a Tsys window
             science_spws = self._tsysmap.get(tsys_spw_id, 'N/A')
             for antenna_id, figfile in self._figfile[tsys_spw_id].iteritems():
                 ant_name = self._antmap[antenna_id]
                 if os.path.exists(figfile):
-                    task = self.create_task(tsys_spw_id, antenna_id)
+                    task = self.create_task(tsys_spw_id, antenna_id, showimage=showimage)
                     wrapper = logger.Plot(figfile,
                                           x_axis=self._xaxis,
                                           y_axis=self._yaxis,
@@ -173,3 +185,15 @@ class TsysPerAntennaChart(common.PlotbandpassDetailBase):
                               '%s antenna %s: %s not found', 
                               self._vis_basename, tsys_spw_id, ant_name, figfile)
         return wrappers
+
+    def _create_plotbandpass_task(self, missing, showimage=False):
+        LOG.trace('Executing new plotbandpass job for missing figures')
+        spw_ids = ','.join({str(spw_id) for spw_id, _ in missing})
+        ant_ids = ','.join({str(ant_id) for _, ant_id in missing})
+        try:
+            task = self.create_task(spw_ids, ant_ids, showimage=showimage)
+            task.execute(dry_run=False)
+        except Exception as ex:
+            LOG.error('Could not create plotbandpass details plots')
+            LOG.exception(ex)
+            return None

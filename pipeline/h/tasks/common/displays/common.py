@@ -42,6 +42,8 @@ class PlotbandpassDetailBase(object):
         self._yaxis = yaxis        
         self._kwargs = kwargs
 
+        ms = context.observing_run.get_ms(self._vis)
+
         # we should only request plots for the antennas and spws in the
         # caltable, which may be a subset of those in the measurement set
         caltable_wrapper = CaltableWrapperFactory.from_caltable(self._caltable)
@@ -50,7 +52,6 @@ class PlotbandpassDetailBase(object):
 
         # use antenna name rather than ID where possible
         antenna_arg = ','.join([str(i) for i in antenna_ids])
-        ms = context.observing_run.get_ms(self._vis)
         antennas = ms.get_antenna(antenna_arg)
         self._antmap = dict((a.id, a.name) for a in antennas)
 
@@ -64,6 +65,9 @@ class PlotbandpassDetailBase(object):
             pols = ','.join([dd.get_polarization_label(p)
                              for p in range(num_pols)])
             self._pols[spw] = pols
+
+        # Get mapping from spw to receiver type.
+        self._rxmap = {spw: ms.get_spectral_windows(spw)[0].receiver for spw in spw_ids}
 
         # Get base name of figure file(s).
         overlay = self._kwargs.get('overlay', '')
@@ -113,7 +117,7 @@ class PlotbandpassDetailBase(object):
                                                    time, ext)
             self._figfile[spw_id][ant_id] = real_figfile
 
-    def create_task(self, spw_arg, antenna_arg):
+    def create_task(self, spw_arg, antenna_arg, showimage=False):
         task_args = {'vis': self._vis,
                      'caltable': self._caltable,
                      'xaxis': self._xaxis,
@@ -122,7 +126,9 @@ class PlotbandpassDetailBase(object):
                      'spw': spw_arg,
                      'antenna': antenna_arg,
                      'subplot': 11,
-                     'figfile': self._figroot}
+                     'figfile': self._figroot,
+                     'showimage': showimage,
+                     }
         task_args.update(**self._kwargs)
 
         return casa_tasks.plotbandpass(**task_args)

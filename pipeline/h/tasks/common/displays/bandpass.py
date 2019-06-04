@@ -11,38 +11,36 @@ from . import common
 LOG = infrastructure.get_logger(__name__)
 
 
-class NullScoreFinder(object):
-    def get_score(self, spw, antenna):
-        return None
-
-
 class BandpassDetailChart(common.PlotbandpassDetailBase):
     def __init__(self, context, result, xaxis, yaxis, **kwargs):
         super(BandpassDetailChart, self).__init__(context, result, xaxis, yaxis, **kwargs)
 
     def plot(self):
-        missing = [(spw_id, ant_id)
-                   for spw_id in self._figfile
-                   for ant_id in self._antmap
-                   if not os.path.exists(self._figfile[spw_id][ant_id])]
-        if missing:
-            LOG.trace('Executing new plotbandpass job for missing figures')
-            spw_ids = ','.join({str(spw_id) for spw_id, _ in missing})
-            ant_ids = ','.join({str(ant_id) for _, ant_id in missing})
-            try:
-                task = self.create_task(spw_ids, ant_ids)
-                task.execute(dry_run=False)
-            except Exception as ex:
-                LOG.error('Could not create plotbandpass details plots')
-                LOG.exception(ex)
-                return None
+        # PIPE-110: create separate calls to plotbandpass for DSB and non-DSB
+        # receivers.
+        missing_dsb = [(spw_id, ant_id)
+                       for spw_id in self._figfile
+                       for ant_id in self._antmap
+                       if not os.path.exists(self._figfile[spw_id][ant_id]) and self._rxmap[spw_id] == "DSB"]
+        if missing_dsb:
+            self._create_plotbandpass_task(missing_dsb, showimage=True)
 
+        missing_nondsb = [(spw_id, ant_id)
+                          for spw_id in self._figfile
+                          for ant_id in self._antmap
+                          if not os.path.exists(self._figfile[spw_id][ant_id]) and self._rxmap[spw_id] != "DSB"]
+        if missing_nondsb:
+            self._create_plotbandpass_task(missing_nondsb, showimage=False)
+
+        # Create plot wrappers.
         wrappers = []
         for spw_id in self._figfile:
+            # PIPE-110: show image sideband for DSB receivers.
+            showimage = self._rxmap[spw_id] == "DSB"
             for antenna_id, figfile in self._figfile[spw_id].iteritems():
                 ant_name = self._antmap[antenna_id]
                 if os.path.exists(figfile):
-                    task = self.create_task(spw_id, antenna_id)
+                    task = self.create_task(spw_id, antenna_id, showimage=showimage)
                     wrapper = logger.Plot(figfile,
                                           x_axis=self._xaxis,
                                           y_axis=self._yaxis,
@@ -56,6 +54,18 @@ class BandpassDetailChart(common.PlotbandpassDetailBase):
                               '%s antenna %s: %s not found',
                               self._vis_basename, spw_id, ant_name, figfile)
         return wrappers
+
+    def _create_plotbandpass_task(self, missing, showimage=False):
+        LOG.trace('Executing new plotbandpass job for missing figures')
+        spw_ids = ','.join({str(spw_id) for spw_id, _ in missing})
+        ant_ids = ','.join({str(ant_id) for _, ant_id in missing})
+        try:
+            task = self.create_task(spw_ids, ant_ids, showimage=showimage)
+            task.execute(dry_run=False)
+        except Exception as ex:
+            LOG.error('Could not create plotbandpass details plots')
+            LOG.exception(ex)
+            return None
 
 
 class BandpassSummaryChart(common.PlotbandpassDetailBase):
@@ -72,6 +82,10 @@ class BandpassSummaryChart(common.PlotbandpassDetailBase):
         self._figfile = dict((ant_id, [self._figfile[spw_id][ant_id] for spw_id in spw_ids])
                              for ant_id in ant_ids)
 
+        # PIPE-110: if any of the spws corresponds to a DSB receiver, then show
+        # the image sideband.
+        self._showimage = "DSB" in [self._rxmap[spw] for spw in spw_ids]
+
     def plot(self):
         missing = [ant_id
                    for ant_id in self._antmap
@@ -80,7 +94,7 @@ class BandpassSummaryChart(common.PlotbandpassDetailBase):
             LOG.trace('Executing new plotbandpass job for missing figures')
             ant_ids = ','.join([str(ant_id) for ant_id in missing])
             try:
-                task = self.create_task('', ant_ids)
+                task = self.create_task('', ant_ids, showimage=self._showimage)
                 task.execute(dry_run=False)
             except Exception as ex:
                 LOG.error('Could not create plotbandpass summary plots')
@@ -91,7 +105,7 @@ class BandpassSummaryChart(common.PlotbandpassDetailBase):
         for antenna_id, figfiles in list(self._figfile.iteritems()):
             for figfile in figfiles:
                 if os.path.exists(figfile):
-                    task = self.create_task('', antenna_id)
+                    task = self.create_task('', antenna_id, showimage=self._showimage)
                     wrapper = logger.Plot(figfile,
                                           x_axis=self._xaxis,
                                           y_axis=self._yaxis,
