@@ -11,22 +11,17 @@ import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
-
-#import pipeline.infrastructure.displays.gaincal as gaincal_displays
 from . import display as gaincal_displays
 
 LOG = logging.get_logger(__name__)
 
-GaincalApplication = collections.namedtuple('GaincalApplication', 
-                                            'ms gaintable calmode solint intent spw gainfield')
+GaincalApplication = collections.namedtuple('GaincalApplication', 'ms gaintable calmode solint intent spw gainfield')
 
 
 class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
-    def __init__(self, uri='timegaincal.mako',
-                 description='Gain calibration',
-                 always_rerender=False):
-        super(T2_4MDetailsGaincalRenderer, self).__init__(uri=uri,
-                description=description, always_rerender=always_rerender)
+    def __init__(self, uri='timegaincal.mako', description='Gain calibration', always_rerender=False):
+        super(T2_4MDetailsGaincalRenderer, self).__init__(
+            uri=uri, description=description, always_rerender=always_rerender)
 
     def update_mako_context(self, ctx, context, results):
         applications = []
@@ -81,122 +76,75 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
             # result.final calapps contains p solution for solint=int,inf and a
             # solution for solint=inf.
-            calapps = result.final
 
             # generate amp vs time plots
-            #plotter = gaincal_displays.GaincalAmpVsTimeSummaryChart(context, result, 
-            #                                                        calapps, 'TARGET')
-            plotter = gaincal_displays.GaincalAmpVsTimeSummaryChart2(context, result, 
-                                                                    calapps, 'TARGET')
+            plotter = gaincal_displays.GaincalAmpVsTimeSummaryChart2(context, result, result.final, 'TARGET')
             amp_vs_time_summaries[vis] = plotter.plot()
 
             # generate phase vs time plots
-            #plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result,
-            #                                                          calapps, 'TARGET')
-            plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart2(context, result,
-                                                                      calapps, 'TARGET')
+            plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart2(context, result, result.final, 'TARGET')
             phase_vs_time_summaries[vis] = plotter.plot()
 
             # generate diagnostic phase vs time plots for bandpass solution, i.e. 
             # with solint=int
-            #plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result,
-            #                                                          calapps, 'BANDPASS')
-            plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart2(context, result,
-                                                                      calapps, 'BANDPASS')
+            plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart2(context, result, result.final, 'BANDPASS')
             diagnostic_phase_vs_time_summaries[vis] = plotter.plot()
 
             # generate diagnostic amp vs time plots for bandpass solution, 
             # pointing to the diagnostic calapps outside result.final
-            calapps = result.calampresult.final
-            #plotter = gaincal_displays.GaincalAmpVsTimeSummaryChart(context, result, 
-            #                                                        calapps, '')
-            plotter = gaincal_displays.GaincalAmpVsTimeSummaryChart2(context, result, 
-                                                                    calapps, '')
+            plotter = gaincal_displays.GaincalAmpVsTimeSummaryChart2(context, result, result.calampresult.final, '')
             diagnostic_amp_vs_time_summaries[vis] = plotter.plot()
 
-            # generate diganostic phase offset vs time plots
+            # generate diagnostic phase offset vs time plots
             if result.phaseoffsetresult is not None:
-                calapps = result.phaseoffsetresult.final
-                #plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result, 
-                #                                                    calapps, '')
-                plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart2(context, result, 
-                                                                    calapps, '')
+                plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart2(context, result,
+                                                                           result.phaseoffsetresult.final, '')
                 diagnostic_phaseoffset_vs_time_summaries[vis] = plotter.plot()
 
             if pipeline.infrastructure.generate_detail_plots(result):
-                calapps = result.final
-
                 # phase vs time plots
-                #plotter = gaincal_displays.GaincalPhaseVsTimeDetailChart(context, result,
-                #                                                         calapps, 'TARGET')
-                plotter = gaincal_displays.GaincalPhaseVsTimeDetailChart2(context, result,
-                                                                         calapps, 'TARGET')
+                plotter = gaincal_displays.GaincalPhaseVsTimeDetailChart2(context, result, result.final, 'TARGET')
                 phase_vs_time_details[vis] = plotter.plot()
-                renderer = GaincalPhaseVsTimePlotRenderer(context, result, 
-                                                          phase_vs_time_details[vis])
+                renderer = GaincalPhaseVsTimePlotRenderer(context, result, phase_vs_time_details[vis])
                 with renderer.get_file() as fileobj:
                     fileobj.write(renderer.render())
                     phase_vs_time_subpages[vis] = renderer.path
 
                 # amp vs time plots
-                #plotter = gaincal_displays.GaincalAmpVsTimeDetailChart(context, result,
-                #                                                       calapps, 'TARGET')
-                plotter = gaincal_displays.GaincalAmpVsTimeDetailChart2(context, result,
-                                                                       calapps, 'TARGET')
+                plotter = gaincal_displays.GaincalAmpVsTimeDetailChart2(context, result, result.final, 'TARGET')
                 amp_vs_time_details[vis] = plotter.plot()
-                renderer = GaincalAmpVsTimePlotRenderer(context, result, 
-                                                        amp_vs_time_details[vis])
+                renderer = GaincalAmpVsTimePlotRenderer(context, result, amp_vs_time_details[vis])
                 with renderer.get_file() as fileobj:
                     fileobj.write(renderer.render())        
                     amp_vs_time_subpages[vis] = renderer.path
 
                 # phase vs time for solint=int
-                #plotter = gaincal_displays.GaincalPhaseVsTimeDetailChart(context, result,
-                #                                                         calapps, 'BANDPASS')
-                plotter = gaincal_displays.GaincalPhaseVsTimeDetailChart2(context, result,
-                                                                         calapps, 'BANDPASS')
+                plotter = gaincal_displays.GaincalPhaseVsTimeDetailChart2(context, result, result.final, 'BANDPASS')
                 diagnostic_phase_vs_time_details[vis] = plotter.plot()
-                renderer = GaincalPhaseVsTimeDiagnosticPlotRenderer(context,
-                        result, diagnostic_phase_vs_time_details[vis])
+                renderer = GaincalPhaseVsTimeDiagnosticPlotRenderer(context, result,
+                                                                    diagnostic_phase_vs_time_details[vis])
                 with renderer.get_file() as fileobj:
                     fileobj.write(renderer.render())        
                     diagnostic_phase_vs_time_subpages[vis] = renderer.path
 
                 # amp vs time plots for solint=int
-                calapps = result.calampresult.final
-                #plotter = gaincal_displays.GaincalAmpVsTimeDetailChart(context, result,
-                #                                                       calapps, '')
-                plotter = gaincal_displays.GaincalAmpVsTimeDetailChart2(context, result,
-                                                                       calapps, '')
+                plotter = gaincal_displays.GaincalAmpVsTimeDetailChart2(context, result, result.calampresult.final, '')
                 diagnostic_amp_vs_time_details[vis] = plotter.plot()
-                renderer = GaincalAmpVsTimeDiagnosticPlotRenderer(context, 
-                        result, diagnostic_amp_vs_time_details[vis])
+                renderer = GaincalAmpVsTimeDiagnosticPlotRenderer(context, result, diagnostic_amp_vs_time_details[vis])
                 with renderer.get_file() as fileobj:
                     fileobj.write(renderer.render())        
                     diagnostic_amp_vs_time_subpages[vis] = renderer.path
 
                 # diagnostic phaseoffset vs time plots for solint=inf
                 if result.phaseoffsetresult is not None:
-                    calapps = result.phaseoffsetresult.final
-                    #plotter = gaincal_displays.GaincalPhaseVsTimeDetailChart(context, result,
-                    #                                                   calapps, '')
                     plotter = gaincal_displays.GaincalPhaseVsTimeDetailChart2(context, result,
-                                                                       calapps, '')
+                                                                              result.phaseoffsetresult.final, '')
                     diagnostic_phaseoffset_vs_time_details[vis] = plotter.plot()
-                    renderer = GaincalPhaseOffsetVsTimeDiagnosticPlotRenderer(context, 
-                        result, diagnostic_phaseoffset_vs_time_details[vis])
+                    renderer = GaincalPhaseOffsetVsTimeDiagnosticPlotRenderer(
+                        context, result, diagnostic_phaseoffset_vs_time_details[vis])
                     with renderer.get_file() as fileobj:
                         fileobj.write(renderer.render())        
                         diagnostic_phaseoffset_vs_time_subpages[vis] = renderer.path
-
-
-            # get the first scan for the PHASE intent(s)
-#             first_phase_scan = ms.get_scans(scan_intent='PHASE')[0]
-#             scan_id = first_phase_scan.id
-#             LOG.trace('Using scan %s for phase structure summary '
-#                       'plots' % first_phase_scan.id)
-#             structure_summary_plots[vis] = [p for p in structure_plots
-#                                             if scan_id in set(p.parameters['scan'].split(','))]
 
         # render plots for all EBs in one page
         for d, plotter_cls, subpages in (
@@ -233,7 +181,8 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'diagnostic_solints': diagnostic_solints
         })
 
-    def get_gaincal_applications(self, context, result, ms):
+    @staticmethod
+    def get_gaincal_applications(context, result, ms):
         applications = []
 
         calmode_map = {
@@ -269,8 +218,7 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             assert(len(calapp.calfrom) == 1)
             gainfield = calapp.calfrom[0].gainfield
 
-            a = GaincalApplication(ms.basename, gaintable, calmode, solint,
-                                   to_intent, spw, gainfield)
+            a = GaincalApplication(ms.basename, gaintable, calmode, solint, to_intent, spw, gainfield)
             applications.append(a)
 
         return applications
@@ -284,7 +232,7 @@ class GaincalPhaseVsTimePlotRenderer(basetemplates.JsonPlotRenderer):
         outfile = filenamer.sanitize('phase_vs_time-%s.html' % vis)
 
         super(GaincalPhaseVsTimePlotRenderer, self).__init__(
-                'generic_x_vs_y_spw_ant_plots.mako', context, result, plots, title, outfile)
+            'generic_x_vs_y_spw_ant_plots.mako', context, result, plots, title, outfile)
 
 
 class GaincalPhaseVsTimeDiagnosticPlotRenderer(basetemplates.JsonPlotRenderer):
@@ -306,8 +254,7 @@ class GaincalPhaseVsTimeDiagnosticPlotRenderer(basetemplates.JsonPlotRenderer):
         self._score_types = frozenset(['PHASE_SCORE_XY', 'PHASE_SCORE_X2X1'])
 
         super(GaincalPhaseVsTimeDiagnosticPlotRenderer, self).__init__(
-                'diagnostic_phase_vs_time_plots.mako', context, results, plots,
-                title, outfile)        
+            'diagnostic_phase_vs_time_plots.mako', context, results, plots, title, outfile)
 
     def update_json_dict(self, json_dict, plot):
         ant_name = plot.parameters['ant']
@@ -345,8 +292,7 @@ class GaincalPhaseVsTimeDiagnosticPlotRenderer(basetemplates.JsonPlotRenderer):
                     scores_dict[score_type] = average_score
 
         except:
-            scores_dict = dict((score_type, 0.0) 
-                               for score_type in self._score_types)
+            scores_dict = dict((score_type, 0.0) for score_type in self._score_types)
 
         json_dict.update(scores_dict)
         plot.scores = scores_dict
@@ -360,8 +306,7 @@ class GaincalAmpVsTimePlotRenderer(basetemplates.JsonPlotRenderer):
         outfile = filenamer.sanitize('amp_vs_time-%s.html' % vis)
 
         super(GaincalAmpVsTimePlotRenderer, self).__init__(
-                'generic_x_vs_y_spw_ant_plots.mako', context, 
-                result, plots, title, outfile)
+            'generic_x_vs_y_spw_ant_plots.mako', context, result, plots, title, outfile)
 
 
 class GaincalAmpVsTimeDiagnosticPlotRenderer(basetemplates.JsonPlotRenderer):
@@ -372,8 +317,8 @@ class GaincalAmpVsTimeDiagnosticPlotRenderer(basetemplates.JsonPlotRenderer):
         outfile = filenamer.sanitize('diagnostic_amp_vs_time-%s.html' % vis)
 
         super(GaincalAmpVsTimeDiagnosticPlotRenderer, self).__init__(
-                'generic_x_vs_y_spw_ant_plots.mako', context, 
-                result, plots, title, outfile)
+            'generic_x_vs_y_spw_ant_plots.mako', context, result, plots, title, outfile)
+
 
 class GaincalPhaseOffsetVsTimeDiagnosticPlotRenderer(basetemplates.JsonPlotRenderer):
     def __init__(self, context, result, plots):
@@ -383,5 +328,4 @@ class GaincalPhaseOffsetVsTimeDiagnosticPlotRenderer(basetemplates.JsonPlotRende
         outfile = filenamer.sanitize('diagnostic_phaseoffset_vs_time-%s.html' % vis)
 
         super(GaincalPhaseOffsetVsTimeDiagnosticPlotRenderer, self).__init__(
-                'generic_x_vs_y_spw_ant_plots.mako', context, 
-                result, plots, title, outfile)
+            'generic_x_vs_y_spw_ant_plots.mako', context, result, plots, title, outfile)
