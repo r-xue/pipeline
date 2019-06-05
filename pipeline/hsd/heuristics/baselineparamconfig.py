@@ -9,14 +9,21 @@ import types
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.logging as logging
 
 #from pipeline.domain.datatable import DataTableImpl as DataTable
 from . import fitorder
 from . import fragmentation
 
 LOG = infrastructure.get_logger(__name__)
-TRACE = False
-DEBUG = False
+
+
+def TRACE():
+    return LOG.isEnabledFor(logging.LOGGING_LEVELS['trace'])
+
+
+def DEBUG():
+    return LOG.isEnabledFor(logging.LOGGING_LEVELS['debug'])
 
 
 class BaselineParamKeys(object):
@@ -124,7 +131,7 @@ class BaselineFitParamConfig(api.Heuristic):
             self.fitorder_heuristic = lambda *args, **kwargs: fit_order #self.inputs.fit_order
 
         vis = ms.name
-        if DEBUG or TRACE:
+        if DEBUG() or TRACE():
             LOG.debug('MS "{}" ant {} field {} spw {}'.format(os.path.basename(vis), antenna_id, field_id, spw_id))
 
         nchan = ms.spectral_windows[spw_id].num_channels
@@ -133,7 +140,7 @@ class BaselineFitParamConfig(api.Heuristic):
         # edge must be formatted to [L, R]
         assert isinstance(edge, list) and len(edge) == 2, 'edge must be a list [L, R]. "{0}" was given.'.format(edge)
 
-        if DEBUG or TRACE:
+        if DEBUG() or TRACE():
             LOG.debug('nchan={nchan} edge={edge}'.format(nchan=nchan, edge=edge))
 
         if self.ApplicableDuration == 'subscan':
@@ -149,7 +156,7 @@ class BaselineFitParamConfig(api.Heuristic):
         mask_array[nchan-edge[1]:] = 0
 
         # deviation mask
-        if DEBUG or TRACE:
+        if DEBUG() or TRACE():
             LOG.debug('Deviation mask for field {} antenna {} spw {}: {}'.format(
                 field_id, antenna_id, spw_id, deviation_mask))
         if deviation_mask is not None:
@@ -170,7 +177,7 @@ class BaselineFitParamConfig(api.Heuristic):
         #colname = self.inputs.colname
         datacolumn = self.__datacolumn(vis)
 
-        if DEBUG or TRACE:
+        if DEBUG() or TRACE():
             LOG.debug('data column name is "{}"'.format(datacolumn))
 
         # open blparam file (append mode)
@@ -225,14 +232,14 @@ class BaselineFitParamConfig(api.Heuristic):
                         (fragment, nwindow, win_polyorder) = fragmentation_heuristic(polyorder, nchan, edge)
 
                         nrow = len(rows)
-                        if DEBUG or TRACE:
+                        if DEBUG() or TRACE():
                             LOG.debug('nrow = {}'.format(nrow))
                             LOG.debug('len(idxs) = {}'.format(len(idxs)))
 
                         for i in xrange(nrow):
                             row = rows[i]
                             idx = idxs[i]
-                            if TRACE:
+                            if TRACE():
                                 LOG.trace('===== Processing at row = {} ====='.format(row))
                             #nochange = datatable.getcell('NOCHANGE',idx)
                             #LOG.trace('row = %s, Flag = %s'%(row, nochange))
@@ -248,7 +255,7 @@ class BaselineFitParamConfig(api.Heuristic):
                                     #    (1 + 1/5 + 1/5)^(-1) = (5/7)^(-1)
                                     #                         = 7/5 = 1.4
                             max_polyorder = int((nchan - sum(edge)) / maxwidth + 1)
-                            if TRACE:
+                            if TRACE():
                                 LOG.trace('Masked Region from previous processes = {}'.format(
                                     _masklist))
                                 LOG.trace('edge parameters= {}'.format(edge))
@@ -266,7 +273,7 @@ class BaselineFitParamConfig(api.Heuristic):
                             # (masklist = [a, b+1] in pipeline masks a channel range a ~ b-1)
                             param[BLP.MASK] = [[start, end-1] for [start, end] in param[BLP.MASK]]
                             param[BLP.MASK] = as_maskstring(param[BLP.MASK])
-                            if TRACE:
+                            if TRACE():
                                 LOG.trace('Row {}: param={}'.format(row, param))
                             write_blparam(blparamfileobj, param)
 
@@ -289,14 +296,14 @@ class BaselineFitParamConfig(api.Heuristic):
         num_mask = int(nchan_without_edge - numpy.sum(mask[edge[0]:nchan-edge[1]] * 1.0))
         masklist_all = self.__mask_to_masklist(mask)
 
-        if TRACE:
+        if TRACE():
             LOG.trace('nchan_without_edge, num_mask, diff={}, {}'.format(
                 nchan_without_edge, num_mask))
 
         outdata = self._get_param(row_idx, pol, polyorder, nchan, mask, edge, nchan_without_edge, num_mask, fragment,
                                   nwindow, win_polyorder, masklist_all)
 
-        if TRACE:
+        if TRACE():
             LOG.trace('outdata={}'.format(outdata))
 
         return outdata
@@ -355,7 +362,7 @@ class CubicSplineFitParamConfig(BaselineFitParamConfig):
                    win_polyorder, masklist):
         num_nomask = nchan_without_edge - nchan_masked
         num_pieces = max(int(min(polyorder * num_nomask / float(nchan_without_edge) + 0.5, 0.1 * num_nomask)), 1)
-        if TRACE:
+        if TRACE():
             LOG.trace('Cubic Spline Fit: Number of Sections = {}'.format(num_pieces))
         self.paramdict[BLP.ROW] = idx
         self.paramdict[BLP.POL] = pol
