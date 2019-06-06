@@ -52,6 +52,8 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 		    <th scope="col" rowspan="2">Fitted Spectral Index</th>
 		    <th scope="col" rowspan="2">Fitted Curvature</th>
 		    <th scope="col" rowspan="2">Fit Order</th>
+		    <th scope="col" rowspan="2">Flux density</th>
+
 	    </tr>
 
 	</thead>

@@ -447,6 +447,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
                                         'spix'        : str(spix),
                                         'spixerr'     : str(spixerr),
                                         'SNR'         : str(SNR),
+                                        'fitflx'      : str(fluxdensity),
                                         'curvature'   : str(curvature),
                                         'curvatureerr': str(curvatureerr),
                                         'fitorder'    : str(1)})

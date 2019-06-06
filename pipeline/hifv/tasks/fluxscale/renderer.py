@@ -149,8 +149,7 @@ class T2_4MDetailsfluxbootRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         super_cls = super(T2_4MDetailsfluxbootRenderer, self)
         ctx = super_cls.get_display_context(context, results)
 
-        weblog_dir = os.path.join(context.report_dir,
-                                  'stage%s' % results.stage_number)
+        weblog_dir = os.path.join(context.report_dir, 'stage%s' % results.stage_number)
 
         summary_plots = {}
         weblog_results = {}
@@ -172,13 +171,22 @@ class T2_4MDetailsfluxbootRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             spindex_results[ms] = result.spindex_results
 
             # Sort into dictionary collections and combine bands for a single source
-            FluxTR = collections.namedtuple('FluxTR', 'source band spix curvature fitorder')
+            FluxTR = collections.namedtuple('FluxTR', 'source band spix curvature fitorder fitflx')
 
             rows = []
 
+            precision = 5
+            # print("{:.{}f}".format(pi, precision))
+
             for row in result.spindex_results:
-                tr = FluxTR(row['source'], row['band'], str(row['spix']) + '+/-' + str(row['spixerr']),
-                            str(row['curvature']) + '+/-' + str(row['curvatureerr']), row['fitorder'])
+                spix = "{:.{}f}".format(float(row['spix']), precision)
+                spixerr = "{:.{}f}".format(float(row['spixerr']), precision)
+                curvature = "{:.{}f}".format(float(row['curvature']), precision)
+                curvatureerr = "{:.{}f}".format(float(row['curvatureerr']), precision)
+                fitflx = "{:.{}f}".format(float(row['fitflx']), precision)
+
+                tr = FluxTR(row['source'], row['band'], spix + ' +/- ' + spixerr,
+                            curvature + ' +/- ' + curvatureerr, row['fitorder'], fitflx)
                 rows.append(tr)
 
             spixtable = utils.merge_td_columns(rows)
