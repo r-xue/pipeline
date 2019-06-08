@@ -1329,40 +1329,59 @@ class ImageParamsHeuristics(object):
             else:
                 return i_high
 
-    def freq_intersection(self, vis, field, spw, frame='LSRK'):
+    def freq_intersection(self, vis, field, intent, spw, frame='LSRK'):
         """
         Calculate LSRK frequency intersection of a list of MSs for a
         given field and spw. Exclude flagged channels.
         """
-        freq_ranges = []
+        per_eb_freq_ranges = []
         channel_widths = []
 
         for msname in vis:
             real_spw = str(self.observing_run.virtual2real_spw_id(spw, self.observing_run.get_ms(msname)))
 
-            # Get the channel flags (uses virtual spw ID !)
-            channel_flags = self.get_channel_flags(msname, field, spw)
+            # Loop over mosaic fields and determine the channel flags per field.
+            # Skip channels that have only partial pointing coverage.
+            field_ids = self.field(intent=intent, field=field, vislist=[msname])[0].split(',')
+            per_field_freq_ranges = []
+            for field_id in field_ids:
 
-            # Get indices of unflagged channels
-            nfi = np.where(channel_flags == False)[0]
+                # Get the channel flags (uses virtual spw ID !)
+                channel_flags = self.get_channel_flags(msname, field_id, spw)
 
-            # Use unflagged edge channels to determine LSRK frequency range
-            if nfi.shape != (0,):
-                # Just the edges. Skip one extra channel in final frequency range.
-                with casatools.SelectvisReader(msname, field=field,
-                                               spw='%s:%d~%d' % (real_spw, nfi[0], nfi[-1])) as imager:
-                    result = imager.advisechansel(getfreqrange=True, freqframe=frame)
+                # Get indices of unflagged channels
+                nfi = np.where(channel_flags == False)[0]
 
-                f0 = result['freqstart']
-                f1 = result['freqend']
+                # Use unflagged edge channels to determine LSRK frequency range
+                if nfi.shape != (0,):
+                    # Use the edges. Another heuristic will skip one extra channel later in the final frequency range.
+                    with casatools.SelectvisReader(msname, field=field_id,
+                                                   spw='%s:%d~%d' % (real_spw, nfi[0], nfi[-1])) as imager:
+                        result = imager.advisechansel(getfreqrange=True, freqframe=frame)
 
-                freq_ranges.append((f0, f1))
-                # The frequency range from advisechansel is from channel edge
-                # to channel edge. To get the width, one needs to divide by the
-                # number of channels in the selection.
-                channel_widths.append((f1 - f0) / (nfi[-1] - nfi[0] + 1))
+                    f0 = result['freqstart']
+                    f1 = result['freqend']
 
-        intersect_range = utils.intersect_ranges(freq_ranges)
+                    per_field_freq_ranges.append((f0, f1))
+                    # The frequency range from advisechansel is from channel edge
+                    # to channel edge. To get the width, one needs to divide by the
+                    # number of channels in the selection.
+                    channel_widths.append((f1 - f0) / (nfi[-1] - nfi[0] + 1))
+
+            # Calculate weighted intersection with threshold of 1.0 to avoid
+            # edge channels that have drifted too much in LSRK or REST during
+            # the EB.
+            intersect_range = utils.intersect_ranges_by_weight(per_field_freq_ranges, max(channel_widths), 1.0)
+            if intersect_range != ():
+                per_eb_freq_ranges.append(intersect_range)
+
+        if per_eb_freq_ranges == []:
+            return -1, -1, 0
+
+        # Calculate weighted intersection with threshold of 0.5 to avoid
+        # partially flagged spws of individual EBs restricting the frequency
+        # axis.
+        intersect_range = utils.intersect_ranges_by_weight(per_eb_freq_ranges, max(channel_widths), 0.5)
         if intersect_range != ():
             if0, if1 = intersect_range
             return if0, if1, max(channel_widths)

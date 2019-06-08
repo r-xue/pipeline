@@ -308,7 +308,7 @@ class Tclean(cleanbase.CleanBase):
                 frame = 'TOPO'
             else:
                 frame = 'LSRK'
-            if0, if1, channel_width = self.image_heuristics.freq_intersection(inputs.vis, inputs.field,
+            if0, if1, channel_width = self.image_heuristics.freq_intersection(inputs.vis, inputs.field, inputs.intent,
                                                                               inputs.spw, frame)
 
             if (if0 == -1) or (if1 == -1):

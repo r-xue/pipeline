@@ -12,7 +12,7 @@ import numpy
 LOG = logging.get_logger(__name__)
 
 __all__ = ['chan_selection_to_frequencies', 'freq_selection_to_channels', 'spw_intersect', 'update_sens_dict',
-           'update_beams_dict', 'set_nested_dict', 'intersect_ranges', 'merge_ranges', 'equal_to_n_digits']
+           'update_beams_dict', 'set_nested_dict', 'intersect_ranges', 'intersect_ranges_by_weight', 'merge_ranges', 'equal_to_n_digits']
 
 
 def _get_cube_freq_axis(img):
@@ -248,7 +248,7 @@ def intersect_ranges(ranges):
     """
     Compute intersection of ranges.
 
-    :param ranges:
+    :param ranges: list of tuples defining (frequency) intervals
     :return:
     """
     if len(ranges) == 0:
@@ -257,15 +257,43 @@ def intersect_ranges(ranges):
         return ranges[0]
     else:
         ref_range = ranges[0]
-        for range in ranges[1:]:
-            i0 = max(ref_range[0], range[0])
-            i1 = min(ref_range[1], range[1])
+        for myrange in ranges[1:]:
+            i0 = max(ref_range[0], myrange[0])
+            i1 = min(ref_range[1], myrange[1])
             if i0 <= i1:
                 ref_range = (i0, i1)
             else:
                 return ()
 
         return ref_range
+
+
+def intersect_ranges_by_weight(ranges, delta, threshold):
+    """
+    Compute intersection of ranges through weight arrays.
+
+    :param ranges:    list of tuples defining frequency intervals
+    :param delta:     frequency step to be used for the intersection
+    :param threshold: threshold to be used for the intersection
+    :return:
+    """
+    if len(ranges) == 0:
+        return ()
+    elif len(ranges) == 1:
+        return ranges[0]
+    else:
+        min_v = min(numpy.array(ranges).flatten())
+        max_v = max(numpy.array(ranges).flatten())
+    max_range = numpy.arange(min_v, max_v+delta, delta)
+    range_weights = numpy.zeros(max_range.shape, 'd')
+    for myrange in ranges:
+        range_weights += numpy.where((max_range >= myrange[0]) & (max_range <= myrange[1]), 1.0, 0.0)
+    range_weights /= len(ranges)
+    valid_indices = numpy.where(range_weights >= threshold)[0]
+    if valid_indices.shape != (0,):
+        return (max_range[valid_indices[0]], max_range[valid_indices[-1]])
+    else:
+        return ()
 
 
 def merge_ranges(ranges):
