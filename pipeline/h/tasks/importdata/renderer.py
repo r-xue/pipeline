@@ -42,7 +42,7 @@ class T2_4MDetailsImportDataRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         flux_table_rows = make_flux_table(pipeline_context, setjy_results)
 
         repsource_table_rows, repsource_name_is_none = make_repsource_table(pipeline_context, result)
-        repsource_defined = any('N/A' not in td for tr in repsource_table_rows for td in tr[1:])
+        repsource_defined = not any('N/A' in td for tr in repsource_table_rows for td in tr[1:])
 
         fluxcsv_files = {}
         for r in result:
