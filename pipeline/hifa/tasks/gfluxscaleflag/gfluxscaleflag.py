@@ -301,31 +301,8 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
     def _do_applycal(self, merge):
         inputs = self.inputs
 
-        # Change hifa_gfluxscaleflag so that the applycals are done per intent
-        # to prevent unintended cross intent interpolation
-        #
-        # See https://open-jira.nrao.edu/browse/CAS-10158?focusedCommentId=93725
-
-        # does any field have multiple intents?
-        mixed_intents = False
-        singular_intents = frozenset(inputs.intent.split(','))
-        if len(singular_intents) > 1:
-            for field in inputs.ms.get_fields(intent=inputs.intent):
-                intent_intersection = field.intents.intersection(singular_intents)
-                if len(intent_intersection) > 1:
-                    mixed_intents = True
-                    break
-
-        if mixed_intents:
-            # multiple items, one for each intent. Each intent will result
-            # in a separate job
-            ac_intents = singular_intents
-        else:
-            # one item, and hence one job, with 'PHASE,BANDPASS,...'
-            ac_intents = [','.join(singular_intents)]
-
         # SJW - always just one job
-        ac_intents = [','.join(singular_intents)]
+        ac_intents = [ inputs.intent ]
 
         applycal_tasks = []
         for intent in ac_intents:
@@ -366,13 +343,15 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
 
         if mixed_intents and solint == 'inf':
             # multiple items, one for each intent. Each intent will result
-            # in a separate job
-            task_intents = singular_intents
+            # in a separate job.
+            # Make sure a field with the intent exists (PIPE-367)
+            valid_intents = [i for i in singular_intents if len(inputs.ms.get_fields(intent=i))>0 ] 
+            task_intents = valid_intents
         else:
             # one item, and hence one job, with 'PHASE,BANDPASS,...'
             task_intents = [','.join(singular_intents)]
 
-        for idx, intent in enumerate(task_intents):
+        for intent in task_intents:
             # Initialize gaincal inputs.
             task_inputs = gaincal.GTypeGaincal.Inputs(
                 inputs.context,
