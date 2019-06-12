@@ -468,12 +468,13 @@ class GaincalDetailChart(common.PlotcalAntSpwComposite):
                 plotrange=plotrange)
 
 
-class GaincalDetailChart2(common.PlotmsCalAntSpwComposite):
+class GaincalDetailChart2(common.PlotmsCalSpwAntComposite):
     """
     Base class for executing plotcal per spw and antenna
     """
-    def __init__(self, context, result, calapps, intent, xaxis, yaxis, 
-                 plotrange=[], coloraxis=''): 
+    def __init__(self, context, result, calapps, intent, xaxis, yaxis, plotrange=None, coloraxis=''):
+        if plotrange is None:
+            plotrange = []
         if yaxis == 'amp':
             calmode = 'a'
         elif yaxis == 'phase':
@@ -489,10 +490,10 @@ class GaincalDetailChart2(common.PlotmsCalAntSpwComposite):
         assert len(selected) is 1, '%s %s solutions != 1' % (intent, yaxis)
         calapp = selected[0]
 
-        # request plots per spw, overlaying all antennas
-        super(GaincalDetailChart2, self).__init__(
-                context, result, calapp, xaxis=xaxis, yaxis=yaxis, 
-                plotrange=plotrange, coloraxis=coloraxis)
+        # request plots per spw, overlaying all antennas, and setting same
+        # y-range for each spw.
+        super(GaincalDetailChart2, self).__init__(context, result, calapp, xaxis=xaxis, yaxis=yaxis,
+                                                  plotrange=plotrange, coloraxis=coloraxis, ysamescale=True)
 
 
 class GaincalAmpVsTimeSummaryChart(GaincalSummaryChart):

@@ -531,6 +531,46 @@ class SpwComposite(LeafComposite):
         super(SpwComposite, self).__init__(children)
 
 
+class SpwAntComposite(LeafComposite):
+    """
+    Create a PlotLeaf for each spw and antenna in the caltable.
+    """
+    # reference to the PlotLeaf class to call
+    leaf_class = None
+
+    def __init__(self, context, result, calapp, xaxis, yaxis, pol='', ysamescale=False, **kwargs):
+        # Identify spws in caltable.
+        with casatools.TableReader(calapp.gaintable) as tb:
+            table_spws = set(tb.getcol('SPECTRAL_WINDOW_ID'))
+        caltable_spws = [int(spw) for spw in table_spws]
+
+        # PIPE-66: if requested, and no explicit (non-empty) plotrange was
+        # set, then use the same y-scale for plots of the same spw.
+        # TODO: in the future, this could potentially be refactored to use
+        # the yselfscale parameter in PlotMS together with "iteraxis", so as
+        # to let PlotMS take care of setting the same y-range for a set of
+        # plots. Would also need infrastructure.utils.framework.plotms_iterate.
+        update_yscale = ysamescale and not kwargs.get("plotrange", "")
+
+        children = []
+        for spw in caltable_spws:
+            if update_yscale:
+                caltable_wrapper = CaltableWrapperFactory.from_caltable(calapp.gaintable, gaincalamp=True)
+                filtered = caltable_wrapper.filter(spw=[spw])
+                ymin = numpy.ma.min(numpy.abs(filtered.data))
+                ymax = numpy.ma.max(numpy.abs(filtered.data))
+                yrange = ymax - ymin
+                ymin = ymin - 0.05 * yrange
+                ymax = ymax + 0.05 * yrange
+
+                kwargs.update({"plotrange": [0, 0, ymin, ymax]})
+
+            children.append(
+                self.leaf_class(context, result, calapp, xaxis, yaxis, spw=spw, pol=pol, **kwargs))
+
+        super(SpwAntComposite, self).__init__(children)
+
+
 class AntComposite(LeafComposite):
     """
     Create a PlotLeaf for each antenna in the caltable.
@@ -625,6 +665,10 @@ class PlotmsCalAntSpwComposite(AntSpwComposite):
     leaf_class = PlotmsCalSpwComposite
 
 
+class PlotmsCalSpwAntComposite(SpwAntComposite):
+    leaf_class = PlotmsCalAntComposite
+
+
 class PlotbandpassAntComposite(AntComposite):
     leaf_class = PlotbandpassLeaf
 
@@ -651,13 +695,13 @@ class PlotbandpassAntSpwPolComposite(AntSpwPolComposite):
 
 class CaltableWrapperFactory(object):
     @staticmethod
-    def from_caltable(filename):
+    def from_caltable(filename, gaincalamp=False):
         LOG.trace('CaltableWrapperFactory.from_caltable(%r)', filename)
         with casatools.TableReader(filename) as tb:
             viscal = tb.getkeyword('VisCal')            
             caltype = callibrary.CalFrom.get_caltype_for_viscal(viscal) 
         if caltype == 'gaincal':
-            return CaltableWrapperFactory.create_gaincal_wrapper(filename)
+            return CaltableWrapperFactory.create_gaincal_wrapper(filename, gaincalamp)
         if caltype == 'tsys':
             return CaltableWrapperFactory.create_param_wrapper(filename, 'FPARAM')            
         if caltype == 'bandpass':
@@ -667,7 +711,7 @@ class CaltableWrapperFactory(object):
         raise NotImplementedError('Unhandled caltype: %s' % viscal)
 
     @staticmethod    
-    def create_gaincal_wrapper(path):
+    def create_gaincal_wrapper(path, gaincalamp=False):
         with casatools.TableReader(path) as tb:
             time_mjd = tb.getcol('TIME')
             antenna1 = tb.getcol('ANTENNA1')
@@ -680,12 +724,14 @@ class CaltableWrapperFactory(object):
             time_unix = utils.mjd_seconds_to_datetime(time_mjd)
             time_matplotlib = matplotlib.dates.date2num(time_unix)
 
-            phase = numpy.arctan2(numpy.imag(gain),
-                                  numpy.real(gain)) * 180.0 / numpy.pi
-            data = numpy.ma.MaskedArray(phase, mask=flag)
+            # If requested, return the gain amplitudes rather than the phases.
+            if gaincalamp:
+                data = numpy.ma.MaskedArray(gain, mask=flag)
+            else:
+                phase = numpy.arctan2(numpy.imag(gain), numpy.real(gain)) * 180.0 / numpy.pi
+                data = numpy.ma.MaskedArray(phase, mask=flag)
 
-            return CaltableWrapper(path, data, time_matplotlib, antenna1, spw,
-                                   scan)
+            return CaltableWrapper(path, data, time_matplotlib, antenna1, spw, scan)
 
     @staticmethod    
     def create_param_wrapper(path, param):
