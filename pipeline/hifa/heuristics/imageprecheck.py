@@ -60,7 +60,7 @@ class ImagePreCheckHeuristics(object):
                 hm_robust_score_value = 0.5
                 hm_robust_score_longmsg = 'Predicted robust=0.5 beam is within the PI requested Beam Area, but the Axial Ratio exceeds the maximum allowed'
                 hm_robust_score_shortmsg = 'Beam within range, BR too large'
-            LOG.warn(hm_robust_score_longmsg)
+                LOG.warn(hm_robust_score_longmsg)
 
         # robust=0.0 beam area in range
         elif cqa.le(minARbeamArea, beamArea_0p0) and \

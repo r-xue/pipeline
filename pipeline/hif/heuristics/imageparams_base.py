@@ -439,7 +439,23 @@ class ImageParamsHeuristics(object):
                         gridder = self.gridder(intent, field)
                         mosweight = self.mosweight(intent, field)
                         field_ids = self.field(intent, field)
-                        imsize = self.imsize(fields=field_ids, cell=['%.2g%s' % (cellv, cellu)], primary_beam=largest_primary_beam_size)
+                        # Get single field imsize
+                        imsize_sf = self.imsize(fields=field_ids, cell=['%.2g%s' % (cellv, cellu)], primary_beam=largest_primary_beam_size, centreonly=True)
+                        # If it is a mosaic, adjust the size to be somewhat larger than one PB, but not the full
+                        # mosaic size to limit the makePSF run times. The resulting beam is still very close to
+                        # what tclean calculates later in the full mosaic size cleaning.
+                        if gridder == 'mosaic':
+                            imsize_mosaic = self.imsize(fields=field_ids, cell=['%.2g%s' % (cellv, cellu)], primary_beam=largest_primary_beam_size)
+                            nxpix_sf, nypix_sf = imsize_sf
+                            nxpix_mosaic, nypix_mosaic = imsize_mosaic
+                            if nxpix_mosaic <= 1.5 * nxpix_sf and nypix_mosaic <= 1.5 * nypix_sf:
+                                imsize = imsize_mosaic
+                            else:
+                                nxpix = cleanhelper.cleanhelper.getOptimumSize(int(1.5 * nxpix_sf))
+                                nypix = cleanhelper.cleanhelper.getOptimumSize(int(1.5 * nypix_sf))
+                                imsize = [nxpix, nypix]
+                        else:
+                            imsize = imsize_sf
                         if self.is_eph_obj(field):
                             phasecenter = 'TRACKFIELD'
                         else:
