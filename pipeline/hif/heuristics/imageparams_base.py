@@ -1387,9 +1387,10 @@ class ImageParamsHeuristics(object):
             # Calculate weighted intersection with threshold of 1.0 to avoid
             # edge channels that have drifted too much in LSRK or REST during
             # the EB.
-            intersect_range = utils.intersect_ranges_by_weight(per_field_freq_ranges, max(channel_widths), 1.0)
-            if intersect_range != ():
-                per_eb_freq_ranges.append(intersect_range)
+            if per_field_freq_ranges != []:
+                intersect_range = utils.intersect_ranges_by_weight(per_field_freq_ranges, max(channel_widths), 1.0)
+                if intersect_range != ():
+                    per_eb_freq_ranges.append(intersect_range)
 
         if per_eb_freq_ranges == []:
             return -1, -1, 0
