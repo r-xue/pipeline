@@ -21,14 +21,14 @@ class BandpassDetailChart(common.PlotbandpassDetailBase):
         missing_dsb = [(spw_id, ant_id)
                        for spw_id in self._figfile
                        for ant_id in self._antmap
-                       if not os.path.exists(self._figfile[spw_id][ant_id]) and self._rxmap[spw_id] == "DSB"]
+                       if not os.path.exists(self._figfile[spw_id][ant_id]) and self._rxmap.get(spw_id, "") == "DSB"]
         if missing_dsb:
             self._create_plotbandpass_task(missing_dsb, showimage=True)
 
         missing_nondsb = [(spw_id, ant_id)
                           for spw_id in self._figfile
                           for ant_id in self._antmap
-                          if not os.path.exists(self._figfile[spw_id][ant_id]) and self._rxmap[spw_id] != "DSB"]
+                          if not os.path.exists(self._figfile[spw_id][ant_id]) and self._rxmap.get(spw_id, "") != "DSB"]
         if missing_nondsb:
             self._create_plotbandpass_task(missing_nondsb, showimage=False)
 
@@ -36,7 +36,7 @@ class BandpassDetailChart(common.PlotbandpassDetailBase):
         wrappers = []
         for spw_id in self._figfile:
             # PIPE-110: show image sideband for DSB receivers.
-            showimage = self._rxmap[spw_id] == "DSB"
+            showimage = self._rxmap.get(spw_id, "") == "DSB"
             for antenna_id, figfile in self._figfile[spw_id].iteritems():
                 ant_name = self._antmap[antenna_id]
                 if os.path.exists(figfile):
@@ -84,7 +84,7 @@ class BandpassSummaryChart(common.PlotbandpassDetailBase):
 
         # PIPE-110: if any of the spws corresponds to a DSB receiver, then show
         # the image sideband.
-        self._showimage = "DSB" in [self._rxmap[spw] for spw in spw_ids]
+        self._showimage = "DSB" in [self._rxmap.get(spw_id, "") for spw_id in spw_ids]
 
     def plot(self):
         missing = [ant_id

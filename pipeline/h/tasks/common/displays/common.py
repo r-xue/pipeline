@@ -67,7 +67,7 @@ class PlotbandpassDetailBase(object):
             self._pols[spw] = pols
 
         # Get mapping from spw to receiver type.
-        self._rxmap = {spw: ms.get_spectral_windows(spw)[0].receiver for spw in spw_ids}
+        self._rxmap = utils.get_receiver_type_for_spws(ms, spw_ids)
 
         # Get base name of figure file(s).
         overlay = self._kwargs.get('overlay', '')

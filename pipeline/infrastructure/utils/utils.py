@@ -17,7 +17,7 @@ from .. import logging
 LOG = logging.get_logger(__name__)
 
 __all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_caltable_polarizations',
-           'flagged_intervals', 'get_field_identifiers']
+           'flagged_intervals', 'get_field_identifiers', 'get_receiver_type_for_spws']
 
 
 def find_ranges(data):
@@ -160,3 +160,24 @@ def get_field_identifiers(ms):
     """
     field_name_accessors = {field.id: get_field_accessor(ms, field) for field in ms.fields}
     return {field.id: field_name_accessors[field.id](field) for field in ms.fields}
+
+
+def get_receiver_type_for_spws(ms, spwids):
+    """
+    Return dictionary of receiver types for requested spectral window IDs.
+
+    :param ms: Measurement set to query for receiver types.
+    :type ms: domain.MeasurementSet.
+    :param spwids: list of spw ids to query for.
+    :type spwids: list of integers.
+
+    :return: dictionary of spwid: receiver type.
+    """
+    rxmap = {}
+    for spwid in spwids:
+        spw = ms.get_spectral_windows(spwid)
+        if not spw:
+            rxmap[spwid] = "N/A"
+        else:
+            rxmap[spwid] = spw[0].receiver
+    return rxmap
