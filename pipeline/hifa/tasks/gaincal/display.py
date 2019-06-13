@@ -1,39 +1,10 @@
 from __future__ import absolute_import
-import collections
-import os
 
 import pipeline.h.tasks.common.displays.common as common
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
-from ..common.displays import phaseoffset
 
 LOG = infrastructure.get_logger(__name__)
-
-
-class GaincalPhaseOffsetPlotHelper(phaseoffset.PhaseOffsetPlotHelper):
-    def __init__(self, context, result):
-        calapp = result.final[0]
-
-        rootdir = os.path.join(context.report_dir, 
-                               'stage%s' % result.stage_number)
-        prefix = '%s.phase_offset' % os.path.basename(calapp.vis)
-        caltable_map = collections.OrderedDict()
-        caltable_map['AFTER'] = calapp.gaintable
-
-        super(GaincalPhaseOffsetPlotHelper, self).__init__(rootdir, prefix, caltable_map)
-
-
-class GaincalPhaseOffsetPlot(phaseoffset.PhaseOffsetPlot):
-    def __init__(self, context, result):
-        # assume just one caltable - ie one calapp - to plot
-        calapp = [c for c in result.final
-                  if 'TARGET' in c.intent
-                  and 'p' == utils.get_origin_input_arg(c, 'calmode')][0]
-        vis = os.path.basename(calapp.vis)
-        ms = context.observing_run.get_ms(vis)
-        plothelper = GaincalPhaseOffsetPlotHelper(context, result)        
-        super(GaincalPhaseOffsetPlot, self).__init__(context, ms, plothelper, scan_intent='PHASE',
-                                                     score_retriever=common.NullScoreFinder())
 
 
 class GaincalSummaryChart2(common.PlotmsCalSpwComposite):
