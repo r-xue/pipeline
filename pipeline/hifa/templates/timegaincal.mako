@@ -43,9 +43,6 @@ def get_mapped_scispws(ms):
     % if phase_vs_time_plots:
         <li><a href="#phase_vs_time_plots">Phase vs time</a></li>
     % endif
-    % if structure_plots:
-        <li><a href="#structure_plots">Phase structure</a></li>
-    % endif
     % if amp_vs_time_plots:
         <li><a href="#amp_vs_time_plots">Amplitude vs time</a></li>
     % endif
@@ -97,7 +94,7 @@ def get_mapped_scispws(ms):
 	</tbody>
 </table>
 
-% if structure_plots or phase_vs_time_plots or amp_vs_time_plots:
+% if phase_vs_time_plots or amp_vs_time_plots:
 <h2>Plots</h2>
 
 <%self:plot_group plot_dict="${phase_vs_time_plots}"
@@ -131,42 +128,6 @@ def get_mapped_scispws(ms):
 	<%def name="caption_text(plot, intent)"> 
 		Phase vs time ${get_mapping(pcontext.observing_run.get_ms(name=plot.parameters['vis']), plot.parameters['spw'])},
                 all antennas and correlations.</%def>
-
-</%self:plot_group>
-
-
-<%self:plot_group plot_dict="${structure_plots}"
-				  url_fn="${lambda x: 'baseline-%s.html' % filenamer.sanitize(x)}"
-                  sort_row_by="spw"
-                  title_id="structure_plots">
-
-	<%def name="title()">
-		Phase structure: phase RMS vs distance to reference antenna
-	</%def>
-
-	<%def name="preamble()">
-		<p>Plots are generated per spectral window, with phase RMS data points per antenna and
-		correlation as a function of distance from the reference antenna. The phase RMS is calculated
-		as the RMS of the phase correction measured over all scans with phase observing intent.</p>
-	
-		<p>Click the summary plots to enlarge them.</p> 
-	</%def>
-
-    <%def name="ms_preamble(ms)">
-        <p><strong>Note that ${get_mapped_scispws(pcontext.observing_run.get_ms(name=ms))}</strong></p>
-    </%def>
-
-	<%def name="mouseover(plot)">Click to show phase RMS vs distance plots for spectral window ${plot.parameters['spw']}</%def>
-
-	<%def name="fancybox_caption(plot)">Spectral window ${plot.parameters['spw']}</%def>
-
-	<%def name="caption_title(plot)">
-		Spectral window ${plot.parameters['spw']}
-	</%def>
-
-    <%def name="caption_text(plot, intent)">
-        RMS phase vs distance to reference antenna ${get_mapping(pcontext.observing_run.get_ms(name=plot.parameters['vis']), plot.parameters['spw'])}, all antennas.
-    </%def>
 
 </%self:plot_group>
 

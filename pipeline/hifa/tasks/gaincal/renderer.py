@@ -25,7 +25,6 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
     def update_mako_context(self, ctx, context, results):
         applications = []
-        structure_plots = {}
 
         amp_vs_time_summaries = {}
         phase_vs_time_summaries = {}
@@ -69,10 +68,6 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 diagnostic_solints[vis]['amp'] = diag_solint
             except IndexError:
                 diagnostic_solints[vis]['amp'] = 'N/A'
-
-            # generate the phase structure plots
-            plotter = gaincal_displays.RMSOffsetVsRefAntDistanceChart(context, result)
-            structure_plots[vis] = plotter.plot()
 
             # result.final calapps contains p solution for solint=int,inf and a
             # solution for solint=inf.
@@ -167,7 +162,6 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # just created
         ctx.update({
             'applications': applications,
-            'structure_plots': structure_plots,
             'amp_vs_time_plots': amp_vs_time_summaries,
             'phase_vs_time_plots': phase_vs_time_summaries,
             'diagnostic_amp_vs_time_plots': diagnostic_amp_vs_time_summaries,
