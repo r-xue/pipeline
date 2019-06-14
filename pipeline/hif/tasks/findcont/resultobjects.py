@@ -9,8 +9,9 @@ import numpy
 
 LOG = infrastructure.get_logger(__name__)
 
+
 class FindContResult(basetask.Results):
-    def __init__(self, result_cont_ranges, cont_ranges, num_found, num_total):
+    def __init__(self, result_cont_ranges, cont_ranges, num_found, num_total, single_range_channel_fractions):
         super(FindContResult, self).__init__()
         self.result_cont_ranges = result_cont_ranges
         self.cont_ranges = cont_ranges
@@ -18,6 +19,7 @@ class FindContResult(basetask.Results):
         self.num_total = num_total
         self.mitigation_error = False
         self.plot_path = None
+        self.single_range_channel_fractions = single_range_channel_fractions
 
     def merge_with_context(self, context):
         # write the new ranges to the continuum file
@@ -31,17 +33,17 @@ class FindContResult(basetask.Results):
         for i, target in enumerate(context.clean_list_pending):
             new_target = target
             target_ok = True
-            if (target['specmode'] in ('mfs', 'cont')):
+            if target['specmode'] in ('mfs', 'cont'):
                 source_name = utils.dequote(target['field'])
                 spwids = target['spw']
                 new_spwids = []
                 new_spw_sel = 'NEW' in [self.result_cont_ranges[source_name][spwid]['status'] for spwid in spwids.split(',')]
 
                 all_continuum = True
-                if (new_spw_sel):
+                if new_spw_sel:
                     spwsel = {}
                     for spwid in spwids.split(','):
-                        if ((self.cont_ranges['fields'][source_name][spwid] == ['NONE']) and (target['intent'] == 'TARGET')):
+                        if (self.cont_ranges['fields'][source_name][spwid] == ['NONE']) and (target['intent'] == 'TARGET'):
                             spwsel['spw%s' % (spwid)] = ''
                             LOG.warn('No continuum frequency range information found for %s, spw %s.' % (target['field'], spwid))
                             all_continuum = False
@@ -51,9 +53,9 @@ class FindContResult(basetask.Results):
                             new_spwids.append(spwid)
                             spwsel['spw%s' % (spwid)] = ';'.join(['%s~%sGHz' % (cont_range['range'][0], cont_range['range'][1]) for cont_range in self.cont_ranges['fields'][source_name][spwid] if isinstance(cont_range, dict)])
                             refers = numpy.array([cont_range['refer'] for cont_range in self.cont_ranges['fields'][source_name][spwid] if isinstance(cont_range, dict)])
-                            if ((refers == 'TOPO').all()):
+                            if (refers == 'TOPO').all():
                                 refer = 'TOPO'
-                            elif ((refers == 'LSRK').all()):
+                            elif (refers == 'LSRK').all():
                                 refer = 'LSRK'
                             else:
                                 refer = 'UNDEFINED'
@@ -62,7 +64,7 @@ class FindContResult(basetask.Results):
                                 all_continuum = False
 
                     new_spwids = ','.join(new_spwids)
-                    if ((new_spwids == '') and (target['intent'] == 'TARGET')):
+                    if (new_spwids == '') and (target['intent'] == 'TARGET'):
                         LOG.warn('No continuum selection for target %s, spw %s. Will not image this selection.' % (new_target['field'], new_target['spw']))
                         target_ok = False
                     else:
@@ -70,7 +72,7 @@ class FindContResult(basetask.Results):
                         new_target['spwsel_lsrk'] = spwsel
                         new_target['spwsel_all_cont'] = all_continuum
 
-            if (target_ok):
+            if target_ok:
                 clean_list_pending.append(new_target)
 
         context.clean_list_pending = clean_list_pending
@@ -95,9 +97,9 @@ class FindContResult(basetask.Results):
                 else:
                     repr += '   Ranges: %s' % (';'.join(['%s~%sGHz' % (cont_range['range'][0], cont_range['range'][1]) for cont_range in self.result_cont_ranges[source_name][spwid]['cont_ranges'] if isinstance(cont_range, dict)]))
                     refers = numpy.array([cont_range['refer'] for cont_range in self.result_cont_ranges[source_name][spwid]['cont_ranges'] if isinstance(cont_range, dict)])
-                    if ((refers == 'TOPO').all()):
+                    if (refers == 'TOPO').all():
                         refer = 'TOPO'
-                    elif ((refers == 'LSRK').all()):
+                    elif (refers == 'LSRK').all():
                         refer = 'LSRK'
                     else:
                         refer = 'UNDEFINED'

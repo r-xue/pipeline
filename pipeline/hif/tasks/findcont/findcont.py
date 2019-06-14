@@ -2,6 +2,7 @@ from __future__ import absolute_import
 
 import copy
 import os
+import collections
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api
@@ -44,7 +45,6 @@ class FindContInputs(vdp.StandardInputs):
 # registering our preference for imaging measurement sets
 api.ImagingMeasurementSetsPreferred.register(FindContInputs)
 
-
 @task_registry.set_equivalent_casa_task('hif_findcont')
 class FindCont(basetask.StandardTaskTemplate):
     Inputs = FindContInputs
@@ -58,7 +58,7 @@ class FindCont(basetask.StandardTaskTemplate):
         # Check for size mitigation errors.
         if 'status' in inputs.context.size_mitigation_parameters and \
                 inputs.context.size_mitigation_parameters['status'] == 'ERROR':
-            result = FindContResult({}, [], 0, 0)
+            result = FindContResult({}, [], 0, 0, 0)
             result.mitigation_error = True
             return result
 
@@ -81,6 +81,7 @@ class FindCont(basetask.StandardTaskTemplate):
         result_cont_ranges = {}
         num_found = 0
         num_total = 0
+        single_range_channel_fractions = []
         for i, target in enumerate(inputs.target_list):
             for spwid in target['spw'].split(','):
                 source_name = utils.dequote(target['field'])
@@ -259,13 +260,31 @@ class FindCont(basetask.StandardTaskTemplate):
 
                     # Try detecting continuum frequency ranges
                     ref_ms = context.observing_run.measurement_sets[0]
+
+                    # Determine the representative source name and spwid for the ms
+                    repsource_name, repsource_spwid = ref_ms.get_representative_source_spw()
+
                     real_spwid = inputs.context.observing_run.virtual2real_spw_id(int(spwid), ref_ms)
                     spw_transitions = ref_ms.get_spectral_window(spwid).transitions
                     single_continuum = any(['Single_Continuum' in t for t in spw_transitions])
-                    cont_range, png = findcont_heuristics.find_continuum(dirty_cube = '%s.residual' % findcont_basename,
-                                                                         pb_cube = '%s.pb' % findcont_basename,
-                                                                         psf_cube = '%s.psf' % findcont_basename,
-                                                                         single_continuum = single_continuum)
+                    (cont_range, png, single_range_channel_fraction) = \
+                        findcont_heuristics.find_continuum(dirty_cube='%s.residual' % findcont_basename,
+                                                           pb_cube='%s.pb' % findcont_basename,
+                                                           psf_cube='%s.psf' % findcont_basename,
+                                                           single_continuum=single_continuum)
+                    # PIPE-74
+                    if single_range_channel_fraction < 0.05:
+                        LOG.warning('Only a single narrow range of channels was found for continuum in '
+                                    '{field} in spw {spw}, so the continuum subtraction '
+                                    'may be poor for that spw.'.format(field=target['field'], spw=spwid))
+
+                    is_repsource = (repsource_name == target['field']) and (repsource_spwid == spwid)
+                    chanfrac = {'fraction'    : single_range_channel_fraction,
+                                'field'       : target['field'],
+                                'spw'         : spwid,
+                                'is_repsource': is_repsource}
+                    single_range_channel_fractions.append(chanfrac)
+
                     cont_ranges['fields'][source_name][spwid] = cont_range
 
                     source_continuum_ranges[spwid] = {
@@ -279,7 +298,7 @@ class FindCont(basetask.StandardTaskTemplate):
 
                 num_total += 1
 
-        result = FindContResult(result_cont_ranges, cont_ranges, num_found, num_total)
+        result = FindContResult(result_cont_ranges, cont_ranges, num_found, num_total, single_range_channel_fractions)
 
         return result
 
