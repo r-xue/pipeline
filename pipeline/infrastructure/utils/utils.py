@@ -175,7 +175,7 @@ def get_receiver_type_for_spws(ms, spwids):
     """
     rxmap = {}
     for spwid in spwids:
-        spw = ms.get_spectral_windows(spwid)
+        spw = ms.get_spectral_windows(spwid, science_windows_only=False)
         if not spw:
             rxmap[spwid] = "N/A"
         else:
