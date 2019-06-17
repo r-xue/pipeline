@@ -1,9 +1,12 @@
 from __future__ import absolute_import
 
+import os
 import pipeline.h.tasks.importdata.fluxes as fluxes
 import pipeline.h.tasks.importdata.importdata as importdata
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
+import urllib2
+import ssl
 from pipeline.infrastructure import task_registry
 from . import dbfluxes
 
@@ -13,6 +16,13 @@ __all__ = [
 ]
 
 LOG = infrastructure.get_logger(__name__)
+
+try:
+    FLUX_SERVICE_URL = os.environ['FLUX_SERVICE_URL']
+except Exception as e:
+    # FLUX_SERVICE_URL = 'https://almascience.eso.org/sc/flux'
+    # FLUX_SERVICE_URL = 'https://osf-sourcecat-2019may.asa-test.alma.cl/sc/'
+    FLUX_SERVICE_URL = 'https://2019may.asa-test.alma.cl/sc/flux'
 
 
 class ALMAImportDataInputs(importdata.ImportDataInputs):
@@ -39,7 +49,19 @@ class ALMAImportData(importdata.ImportData):
     def _get_fluxes(self, context, observing_run):
         # get the flux measurements from Source.xml for each MS
         if self.inputs.dbservice:
-            xml_results = dbfluxes.get_setjy_results(observing_run.measurement_sets)
+            # Test for service response to see if it responses
+            baseurl = FLUX_SERVICE_URL
+            url = baseurl + '?DATE=27-March-2013&FREQUENCY=86837309056.169219970703125&WEIGHTED=true&RESULT=0&NAME=J1427-4206'
+
+            try:
+                # ignore HTTPS certificate
+                ssl_context = ssl._create_unverified_context()
+                response = urllib2.urlopen(url, context=ssl_context, timeout=40.0)
+                xml_results = dbfluxes.get_setjy_results(observing_run.measurement_sets)
+            except IOError:
+                LOG.warn('Error contacting flux service at: {!s}'.format(url))
+                LOG.warn('Proceeding without using the online flux service.')
+                xml_results = fluxes.get_setjy_results(observing_run.measurement_sets)
         else:
             xml_results = fluxes.get_setjy_results(observing_run.measurement_sets)
         # write/append them to flux.csv
