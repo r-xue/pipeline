@@ -217,6 +217,7 @@ class FlagDeterVLAInputs(flagdeterbase.FlagDeterBaseInputs):
     edgespw = vdp.VisDependentProperty(default=True)
     fracspw = vdp.VisDependentProperty(default=0.05)
     # fracspwfps = vdp.VisDependentProperty(default=0.04837)
+    template = vdp.VisDependentProperty(default=True)
 
     @vdp.VisDependentProperty
     def intents(self):
