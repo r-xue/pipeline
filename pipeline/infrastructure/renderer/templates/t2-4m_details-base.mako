@@ -59,7 +59,7 @@ def format_notification(tr_class, alert, msg, icon_class=None):
 </head>
 
 <%def name="plot_group(plot_dict, url_fn, data_spw=False, data_field=False, data_baseband=False, data_tsysspw=False,
-                       data_vis=False, title_id=None, rel_fn=None, break_rows_by='', sort_row_by='')">
+                       data_vis=False, data_ant=False, title_id=None, rel_fn=None, break_rows_by='', sort_row_by='')">
 % if plot_dict:
     % if title_id:
         <h3 id="${title_id}" class="jumptarget">${caller.title()}</h3>
@@ -176,6 +176,9 @@ def format_notification(tr_class, alert, msg, icon_class=None):
                             % endif
                             % if data_vis:
                                data-vis="${plot.parameters['vis']}"
+                            % endif
+                            % if data_ant:
+                               data-ant="${rendererutils.sanitize_data_selection_string(plot.parameters['ant'])}"
                             % endif
                                class="replace">
                         % endif

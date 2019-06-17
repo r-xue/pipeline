@@ -163,7 +163,7 @@ class PlotmsCalLeaf(object):
             ms = self._context.observing_run.get_ms(self._vis)
             domain_antennas = ms.get_antenna(ant)
             idents = [a.name if a.name else a.id for a in domain_antennas]
-            ant = ','.join(idents)
+            ant = ', '.join(idents)
         self._ant = ant
 
         self._figfile = self._get_figfile()
@@ -174,7 +174,7 @@ class PlotmsCalLeaf(object):
         if spw:
             self._title += ' spw {}'.format(spw)
         if ant:
-            self._title += ' {}'.format(ant)
+            self._title += ' ant {}'.format(ant)
 
     def plot(self):
         try:

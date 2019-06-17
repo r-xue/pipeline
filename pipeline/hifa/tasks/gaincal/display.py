@@ -29,10 +29,12 @@ class GaincalSummaryChart(common.PlotmsCalSpwComposite):
         assert len(selected) is 1, '%s %s solutions != 1' % (intent, yaxis)
         calapp = selected[0]
 
+        # Take ant from calapp.
+        ant = calapp.antenna
+
         # request plots per spw, overlaying all antennas
-        super(GaincalSummaryChart, self).__init__(
-                context, result, calapp, xaxis=xaxis, yaxis=yaxis, ant='', 
-                plotrange=plotrange, coloraxis=coloraxis)
+        super(GaincalSummaryChart, self).__init__(context, result, calapp, xaxis=xaxis, yaxis=yaxis, ant=ant,
+                                                  plotrange=plotrange, coloraxis=coloraxis)
 
 
 class GaincalDetailChart(common.PlotmsCalSpwAntComposite):

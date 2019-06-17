@@ -28,6 +28,19 @@ def get_mapped_scispws(ms):
     else:
         return 'no spectral windows have been combined or remapped'
 
+def get_ant_str_for_caption_text(parameters):
+    ants = parameters.get('ant', "")
+    if ants:
+        return ", and antennas: {}".format(', '.join(ants.split(',')))
+    else:
+        return ", all antennas"
+
+def get_ant_str_for_caption_title(parameters):
+    antdiam = parameters.get('antdiam', '')
+    if antdiam:
+        return ", {:.1f} m antennas".format(antdiam)
+    else:
+        return ""
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 
@@ -134,9 +147,11 @@ def get_mapped_scispws(ms):
 
 <%self:plot_group plot_dict="${amp_vs_time_plots}"
 				  url_fn="${lambda x: amp_vs_time_subpages[x]}"
+                  data_ant="${True}"
 				  data_spw="${True}"
                   data_vis="${True}"
                   sort_row_by="spw"
+                  break_rows_by="ant"
                   title_id="amp_vs_time_plots">
 
 	<%def name="title()">
@@ -145,8 +160,9 @@ def get_mapped_scispws(ms):
 
 	<%def name="preamble()">
 		<p>Plots show the amplitude calibration to be applied to the target source. 
-		A plot is shown for each spectral window, with amplitude correction data 
-		points per antenna and correlation as a function of time.</p>
+		A plot is shown for each spectral window and each set of antennas with the
+        same antenna diameter, with amplitude correction data points per antenna and
+        correlation as a function of time.</p>
 	
 		<p>Click the summary plots to enlarge them, or the spectral window heading to
 		see detailed plots per spectral window and antenna.</p> 
@@ -154,15 +170,17 @@ def get_mapped_scispws(ms):
 
 	<%def name="mouseover(plot)">Click to show amplitude vs time for spectral window ${plot.parameters['spw']}</%def>
 
-	<%def name="fancybox_caption(plot)">Spectral window ${plot.parameters['spw']}</%def>
+	<%def name="fancybox_caption(plot)">
+        Spectral window ${plot.parameters['spw']}${get_ant_str_for_caption_title(plot.parameters)}
+    </%def>
 
 	<%def name="caption_title(plot)">
-		Spectral window ${plot.parameters['spw']}
+        Spectral window ${plot.parameters['spw']}${get_ant_str_for_caption_title(plot.parameters)}
 	</%def>
 
 	<%def name="caption_text(plot, intent)"> 
 		Amplitude vs time for spectral window ${plot.parameters['spw']}, 
-		all antennas and correlations.
+        all correlations${get_ant_str_for_caption_text(plot.parameters)}.
 	</%def>
 
 </%self:plot_group>
@@ -263,9 +281,11 @@ def get_mapped_scispws(ms):
 
 <%self:plot_group plot_dict="${diagnostic_amp_vs_time_plots}"
 				  url_fn="${lambda x: diagnostic_amp_vs_time_subpages[x]}"
+                  data_ant="${True}"
 				  data_spw="${True}"
                   data_vis="${True}"
                   sort_row_by="spw"
+                  break_rows_by="ant"
                   title_id="diagnostic_amp_vs_time_plots">
 
 	<%def name="title()">
@@ -276,8 +296,8 @@ def get_mapped_scispws(ms):
 		<p>These diagnostic plots show the amplitude solution for a calibration
             generated using a short solution interval. This calibration is not applied
             to the target. One plot is shown for each non-combined spectral
-            window, with amplitude correction plotted per antenna and
-            correlation as a function of time.</p>
+            window and each set of antennas with the same antenna diameter, with
+            amplitude correction plotted per antenna and correlation as a function of time.</p>
 
 		<p>Click the summary plots to enlarge them, or the spectral window
             heading to see detailed plots per spectral window and antenna.</p>
@@ -290,15 +310,17 @@ def get_mapped_scispws(ms):
 
 	<%def name="mouseover(plot)">Click to show amplitude vs time for spectral window ${plot.parameters['spw']}</%def>
 
-	<%def name="fancybox_caption(plot)">Spectral window ${plot.parameters['spw']}</%def>
+	<%def name="fancybox_caption(plot)">
+        Spectral window ${plot.parameters['spw']}${get_ant_str_for_caption_title(plot.parameters)}
+    </%def>
 
 	<%def name="caption_title(plot)">
-		Spectral window ${plot.parameters['spw']}
+		Spectral window ${plot.parameters['spw']}${get_ant_str_for_caption_title(plot.parameters)}
 	</%def>
 
-	<%def name="caption_text(plot, intent)"> 
-		Amplitude vs time for spectral window ${plot.parameters['spw']}, 
-		all antennas and correlations.
+	<%def name="caption_text(plot, intent)">
+		Amplitude vs time for spectral window ${plot.parameters['spw']},
+        all correlations${get_ant_str_for_caption_text(plot.parameters)}.
 	</%def>
 
 </%self:plot_group>

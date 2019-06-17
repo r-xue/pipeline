@@ -4,6 +4,7 @@ Created on 29 Oct 2014
 @author: sjw
 """
 import collections
+import copy
 import os
 
 import pipeline.infrastructure
@@ -26,12 +27,12 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def update_mako_context(self, ctx, context, results):
         applications = []
 
-        amp_vs_time_summaries = {}
+        amp_vs_time_summaries = collections.defaultdict(list)
         phase_vs_time_summaries = {}
         amp_vs_time_details = {}
         phase_vs_time_details = {}
 
-        diagnostic_amp_vs_time_summaries = {}
+        diagnostic_amp_vs_time_summaries = collections.defaultdict(list)
         diagnostic_phase_vs_time_summaries = {}
         diagnostic_phaseoffset_vs_time_summaries = {}
         diagnostic_amp_vs_time_details = {}
@@ -50,6 +51,7 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             vis = os.path.basename(result.inputs['vis'])
             ms = context.observing_run.get_ms(vis)
 
+            # Get gain cal applications for current MS.
             ms_applications = self.get_gaincal_applications(context, result, ms)
             applications.extend(ms_applications)
 
@@ -69,12 +71,44 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             except IndexError:
                 diagnostic_solints[vis]['amp'] = 'N/A'
 
+            # Identify set of antennas of same antenna diameter.
+            ant_diameters = {antenna.diameter for antenna in ms.antennas}
+
             # result.final calapps contains p solution for solint=int,inf and a
             # solution for solint=inf.
 
-            # generate amp vs time plots
-            plotter = gaincal_displays.GaincalAmpVsTimeSummaryChart(context, result, result.final, 'TARGET')
-            amp_vs_time_summaries[vis] = plotter.plot()
+            # PIPE-125: for amp-vs-time plots, generate separate plots for
+            # antennas of different diameters.
+            for antdiam in ant_diameters:
+                ants = ','.join([str(antenna.id) for antenna in ms.antennas if antenna.diameter == antdiam])
+
+                # Generate the amp-vs-time plots.
+                # Create copy of CalApplication for subset of antennas with
+                # current antenna diameter.
+                calapps = copy.deepcopy(result.final)
+                for calapp in calapps:
+                    calapp.calto.antenna = ants
+                # Create plots
+                plotter = gaincal_displays.GaincalAmpVsTimeSummaryChart(context, result, calapps, 'TARGET')
+                plot_wrappers = plotter.plot()
+                # Add diameter info to plot wrappers and store wrappers.
+                for wrapper in plot_wrappers:
+                    wrapper.parameters['antdiam'] = antdiam
+                amp_vs_time_summaries[vis].extend(plot_wrappers)
+
+                # Generate diagnostic amp vs time plots for bandpass solution.
+                # Create copy of CalApplication for subset of antennas with
+                # current antenna diameter.
+                calapps = copy.deepcopy(result.calampresult.final)
+                for calapp in calapps:
+                    calapp.calto.antenna = ants
+                # Create plots
+                plotter = gaincal_displays.GaincalAmpVsTimeSummaryChart(context, result, calapps, '')
+                plot_wrappers = plotter.plot()
+                # Add diameter info to plot wrappers and store wrappers.
+                for wrapper in plot_wrappers:
+                    wrapper.parameters['antdiam'] = antdiam
+                diagnostic_amp_vs_time_summaries[vis].extend(plot_wrappers)
 
             # generate phase vs time plots
             plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result, result.final, 'TARGET')
@@ -85,17 +119,13 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result, result.final, 'BANDPASS')
             diagnostic_phase_vs_time_summaries[vis] = plotter.plot()
 
-            # generate diagnostic amp vs time plots for bandpass solution, 
-            # pointing to the diagnostic calapps outside result.final
-            plotter = gaincal_displays.GaincalAmpVsTimeSummaryChart(context, result, result.calampresult.final, '')
-            diagnostic_amp_vs_time_summaries[vis] = plotter.plot()
-
             # generate diagnostic phase offset vs time plots
             if result.phaseoffsetresult is not None:
                 plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result,
                                                                           result.phaseoffsetresult.final, '')
                 diagnostic_phaseoffset_vs_time_summaries[vis] = plotter.plot()
 
+            # Generate detailed plots and render corresponding sub-pages.
             if pipeline.infrastructure.generate_detail_plots(result):
                 # phase vs time plots
                 plotter = gaincal_displays.GaincalPhaseVsTimeDetailChart(context, result, result.final, 'TARGET')

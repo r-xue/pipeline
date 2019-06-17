@@ -254,3 +254,9 @@ def _build_rows(rows, data, keyfuncs):
         _build_rows(rows, items_with_value, keyfuncs[1:])
 
     return rows
+
+
+def sanitize_data_selection_string(text):
+    split_text = utils.safe_split(text)
+    sanitized_text = "[{}]".format(", ".join(["&quot;{}&quot;".format(field) for field in split_text]))
+    return sanitized_text
