@@ -97,10 +97,13 @@ class ImagePreCheckResults(basetask.Results):
 
 
 class ImagePreCheckInputs(vdp.StandardInputs):
-    def __init__(self, context, vis=None, calcsb=None):
+    calcsb = vdp.VisDependentProperty(default=False)
+    parallel = vdp.VisDependentProperty(default='automatic')
+    def __init__(self, context, vis=None, calcsb=None, parallel=None):
         self.context = context
         self.vis = vis
         self.calcsb = calcsb
+        self.parallel = parallel
 
 
 # tell the infrastructure to give us mstransformed data when possible by
@@ -122,6 +125,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
         cqa = casatools.quanta
 
         calcsb = inputs.calcsb
+        parallel = inputs.parallel
 
         known_per_spw_cont_sensitivities_all_chan = context.per_spw_cont_sensitivities_all_chan
         known_synthesized_beams = context.synthesized_beams
@@ -189,7 +193,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
         for robust in [0.0, 0.5, 1.0, 2.0]:
             # Calculate nbin / reprBW sensitivity if necessary
             if reprBW_mode in ['nbin', 'repr_spw']:
-                beams[(robust, str(default_uvtaper), 'repBW')], known_synthesized_beams = image_heuristics.synthesized_beam([(repr_field, 'TARGET')], str(repr_spw), robust=robust, uvtaper=default_uvtaper, known_beams=known_synthesized_beams, force_calc=calcsb)
+                beams[(robust, str(default_uvtaper), 'repBW')], known_synthesized_beams = image_heuristics.synthesized_beam([(repr_field, 'TARGET')], str(repr_spw), robust=robust, uvtaper=default_uvtaper, known_beams=known_synthesized_beams, force_calc=calcsb, parallel=parallel)
                 if beams[(robust, str(default_uvtaper), 'repBW')] == 'invalid':
                     LOG.error('Beam for repBW and robust value of %.1f is invalid. Cannot continue.' % (robust))
                     return ImagePreCheckResults(error=True, error_msg='Invalid beam')
@@ -228,7 +232,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
 
                 sensitivity_bandwidth = cqa.quantity(sens_bw, 'Hz')
 
-            beams[(robust, str(default_uvtaper), 'aggBW')], known_synthesized_beams = image_heuristics.synthesized_beam([(repr_field, 'TARGET')], cont_spw, robust=robust, uvtaper=default_uvtaper, known_beams=known_synthesized_beams, force_calc=calcsb)
+            beams[(robust, str(default_uvtaper), 'aggBW')], known_synthesized_beams = image_heuristics.synthesized_beam([(repr_field, 'TARGET')], cont_spw, robust=robust, uvtaper=default_uvtaper, known_beams=known_synthesized_beams, force_calc=calcsb, parallel=parallel)
             if beams[(robust, str(default_uvtaper), 'aggBW')] == 'invalid':
                 LOG.error('Beam for aggBW and robust value of %.1f is invalid. Cannot continue.' % (robust))
                 return ImagePreCheckResults(error=True, error_msg='Invalid beam')
@@ -321,7 +325,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
                     hm_uvtaper = image_heuristics.uvtaper(beam_natural=beams[(2.0, str(default_uvtaper), 'aggBW')], protect_long=None)
                 if hm_uvtaper != []:
                     # Add sensitivity entries with actual tapering
-                    beams[(hm_robust, str(hm_uvtaper), 'repBW')], known_synthesized_beams = image_heuristics.synthesized_beam([(repr_field, 'TARGET')], str(repr_spw), robust=hm_robust, uvtaper=hm_uvtaper, known_beams=known_synthesized_beams, force_calc=calcsb)
+                    beams[(hm_robust, str(hm_uvtaper), 'repBW')], known_synthesized_beams = image_heuristics.synthesized_beam([(repr_field, 'TARGET')], str(repr_spw), robust=hm_robust, uvtaper=hm_uvtaper, known_beams=known_synthesized_beams, force_calc=calcsb, parallel=parallel)
                     cells[(hm_robust, str(hm_uvtaper), 'repBW')] = image_heuristics.cell(beams[(hm_robust, str(hm_uvtaper), 'repBW')])
                     imsizes[(hm_robust, str(hm_uvtaper), 'repBW')] = image_heuristics.imsize(field_ids, cells[(hm_robust, str(hm_uvtaper), 'repBW')], primary_beam_size, centreonly=False)
                     if reprBW_mode in ['nbin', 'repr_spw']:
@@ -353,7 +357,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
                                 uvtaper=hm_uvtaper,
                                 sensitivity=cqa.quantity(0.0, 'Jy/beam')))
 
-                    beams[(hm_robust, str(hm_uvtaper), 'aggBW')], known_synthesized_beams = image_heuristics.synthesized_beam([(repr_field, 'TARGET')], cont_spw, robust=hm_robust, uvtaper=hm_uvtaper, known_beams=known_synthesized_beams, force_calc=calcsb)
+                    beams[(hm_robust, str(hm_uvtaper), 'aggBW')], known_synthesized_beams = image_heuristics.synthesized_beam([(repr_field, 'TARGET')], cont_spw, robust=hm_robust, uvtaper=hm_uvtaper, known_beams=known_synthesized_beams, force_calc=calcsb, parallel=parallel)
                     cells[(hm_robust, str(hm_uvtaper), 'aggBW')] = image_heuristics.cell(beams[(hm_robust, str(hm_uvtaper), 'aggBW')])
                     imsizes[(hm_robust, str(hm_uvtaper), 'aggBW')] = image_heuristics.imsize(field_ids, cells[(hm_robust, str(hm_uvtaper), 'aggBW')], primary_beam_size, centreonly=False)
                     try:

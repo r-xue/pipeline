@@ -34,6 +34,7 @@ class MakeImListInputs(vdp.StandardInputs):
     clearlist = vdp.VisDependentProperty(default=True)
     pbe_eb = vdp.VisDependentProperty(default=False)
     calcsb = vdp.VisDependentProperty(default=False)
+    parallel = vdp.VisDependentProperty(default='automatic')
 
     # properties requiring some processing or MS-dependent logic -------------------------------------------------------
 
@@ -126,7 +127,7 @@ class MakeImListInputs(vdp.StandardInputs):
     def __init__(self, context, output_dir=None, vis=None, imagename=None, intent=None, field=None, spw=None,
                  contfile=None, linesfile=None, uvrange=None, specmode=None, outframe=None, hm_imsize=None,
                  hm_cell=None, calmaxpix=None, phasecenter=None, nchan=None, start=None, width=None, nbins=None,
-                 robust=None, uvtaper=None, clearlist=None, per_eb=None, calcsb=None, known_synthesized_beams=None):
+                 robust=None, uvtaper=None, clearlist=None, per_eb=None, calcsb=None, parallel=None, known_synthesized_beams=None):
         self.context = context
         self.output_dir = output_dir
         self.vis = vis
@@ -153,6 +154,7 @@ class MakeImListInputs(vdp.StandardInputs):
         self.clearlist = clearlist
         self.per_eb = per_eb
         self.calcsb = calcsb
+        self.parallel = parallel
         self.known_synthesized_beams = known_synthesized_beams
 
 
@@ -173,6 +175,7 @@ class MakeImList(basetask.StandardTaskTemplate):
         inputs = self.inputs
 
         calcsb = inputs.calcsb
+        parallel = inputs.parallel
         if inputs.known_synthesized_beams is not None:
             known_synthesized_beams = inputs.known_synthesized_beams
         else:
@@ -435,7 +438,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                     synthesized_beams = {}
                     min_cell = ['3600arcsec']
                     for spwspec in max_freq_spwlist:
-                        synthesized_beams[spwspec], known_synthesized_beams = self.heuristics.synthesized_beam(field_intent_list=field_intent_list, spwspec=spwspec, robust=robust, uvtaper=uvtaper, pixperbeam=pixperbeam, known_beams=known_synthesized_beams, force_calc=calcsb)
+                        synthesized_beams[spwspec], known_synthesized_beams = self.heuristics.synthesized_beam(field_intent_list=field_intent_list, spwspec=spwspec, robust=robust, uvtaper=uvtaper, pixperbeam=pixperbeam, known_beams=known_synthesized_beams, force_calc=calcsb, parallel=parallel)
                         if synthesized_beams[spwspec] == 'invalid':
                             LOG.error('Beam for virtual spw %s and robust value of %.1f is invalid. Cannot continue.' % (spwspec, robust))
                             result.error = True

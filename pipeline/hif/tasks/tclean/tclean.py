@@ -30,6 +30,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
     hm_cleaning = vdp.VisDependentProperty(default='rms')
     masklimit = vdp.VisDependentProperty(default=4.0)
     mosweight = vdp.VisDependentProperty(default=None)
+    parallel = vdp.VisDependentProperty(default='automatic')
     rms_nsigma = vdp.VisDependentProperty(default=None)
     reffreq = vdp.VisDependentProperty(default=None)
     restfreq = vdp.VisDependentProperty(default=None)
@@ -283,7 +284,8 @@ class Tclean(cleanbase.CleanBase):
                 self.image_heuristics.synthesized_beam(field_intent_list=[(inputs.field, inputs.intent)],
                                                        spwspec=inputs.spw,
                                                        robust=inputs.robust,
-                                                       uvtaper=inputs.uvtaper)
+                                                       uvtaper=inputs.uvtaper,
+                                                       parallel=inputs.parallel)
             cell = self.image_heuristics.cell(beam=synthesized_beam)
 
             if inputs.cell in (None, [], ''):

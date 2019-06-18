@@ -11,6 +11,7 @@ import uuid
 import cleanhelper
 import numpy as np
 from imagerhelpers.imager_base import PySynthesisImager
+from imagerhelpers.imager_parallel_continuum import PyParallelContSynthesisImager
 from imagerhelpers.input_parameters import ImagerParameters
 
 import pipeline.domain.measures as measures
@@ -20,6 +21,7 @@ import pipeline.infrastructure.contfilehandler as contfilehandler
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.utils as utils
 from pipeline.hif.heuristics import mosaicoverlap
+import pipeline.infrastructure.mpihelpers as mpihelpers
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -297,7 +299,7 @@ class ImageParamsHeuristics(object):
         return largest_primary_beam_size
 
     def synthesized_beam(self, field_intent_list, spwspec, robust=0.5, uvtaper=[], pixperbeam=5.0, known_beams={},
-                         force_calc=False):
+                         force_calc=False, parallel='automatic'):
         """Calculate synthesized beam for a given field / spw selection."""
 
         qaTool = casatools.quanta
@@ -448,11 +450,11 @@ class ImageParamsHeuristics(object):
                             imsize_mosaic = self.imsize(fields=field_ids, cell=['%.2g%s' % (cellv, cellu)], primary_beam=largest_primary_beam_size)
                             nxpix_sf, nypix_sf = imsize_sf
                             nxpix_mosaic, nypix_mosaic = imsize_mosaic
-                            if nxpix_mosaic <= 1.5 * nxpix_sf and nypix_mosaic <= 1.5 * nypix_sf:
+                            if nxpix_mosaic <= 2.0 * nxpix_sf and nypix_mosaic <= 2.0 * nypix_sf:
                                 imsize = imsize_mosaic
                             else:
-                                nxpix = cleanhelper.cleanhelper.getOptimumSize(int(1.5 * nxpix_sf))
-                                nypix = cleanhelper.cleanhelper.getOptimumSize(int(1.5 * nypix_sf))
+                                nxpix = cleanhelper.cleanhelper.getOptimumSize(int(2.0 * nxpix_sf))
+                                nypix = cleanhelper.cleanhelper.getOptimumSize(int(2.0 * nypix_sf))
                                 imsize = [nxpix, nypix]
                         else:
                             imsize = imsize_sf
@@ -460,6 +462,7 @@ class ImageParamsHeuristics(object):
                             phasecenter = 'TRACKFIELD'
                         else:
                             phasecenter = self.phasecenter(field_ids)
+                        do_parallel = mpihelpers.parse_mpi_input_parameter(parallel)
                         paramList = ImagerParameters(msname=valid_vis_list,
                                                      scan=valid_scanids_list,
                                                      antenna=valid_antenna_ids_list,
@@ -479,8 +482,12 @@ class ImageParamsHeuristics(object):
                                                      psterm=False,
                                                      mterm=False,
                                                      dopbcorr=False,
+                                                     parallel=do_parallel
                                                      )
-                        makepsf_imager = PySynthesisImager(params=paramList)
+                        if do_parallel:
+                            makepsf_imager = PyParallelContSynthesisImager(params=paramList)
+                        else:
+                            makepsf_imager = PySynthesisImager(params=paramList)
                         makepsf_imager.initializeImagers()
                         makepsf_imager.initializeNormalizers()
                         makepsf_imager.setWeighting()

@@ -142,6 +142,16 @@ Create a a list of images to be cleaned.
     <value>False</value>
   </param>
 
+  <param type="string" name="parallel">
+    <description>Use MPI cluster where possible</description>
+    <value>automatic</value>
+    <allowed kind="enum">
+      <value>automatic</value>
+      <value>true</value>
+      <value>false</value>
+    </allowed>
+  </param>
+
   <param type="string" name="pipelinemode">
     <description>The pipeline operating mode</description>
     <value>automatic</value>
@@ -364,6 +374,9 @@ per_eb -- Make an image target per EB.
 calcsb -- Force (re-)calculation of sensitivities and beams
             default=False
             Options: False, True
+
+parallel -- Use MPI cluster where possible
+    default: \'automatic\'
 
 --- pipeline task execution modes
 dryrun -- Run the commands (True) or generate the commands to be run but
