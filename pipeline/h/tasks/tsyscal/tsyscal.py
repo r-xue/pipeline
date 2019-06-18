@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
-from collections import namedtuple
-from operator import itemgetter
+import collections
+from operator import itemgetter, attrgetter
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -88,7 +88,9 @@ class Tsyscal(basetask.StandardTaskTemplate):
         nospwmap, spwmap = tsysspwmap(ms=inputs.ms, tsystable=tsys_table, tsysChanTol=inputs.chantol)
 
         calfrom_defaults = dict(caltype='tsys', spwmap=spwmap, interp='linear,linear')
-        calapps = get_calapplications(inputs.ms, tsys_table, calfrom_defaults, origin)
+
+        is_single_dish = utils.contains_single_dish(inputs.context)
+        calapps = get_calapplications(inputs.ms, tsys_table, calfrom_defaults, origin, spwmap, is_single_dish)
 
         return resultobjects.TsyscalResults(pool=calapps, unmappedspws=nospwmap)
 
@@ -108,20 +110,19 @@ class Tsyscal(basetask.StandardTaskTemplate):
 
 
 # Holds an observing intent and the preferred/fallback gainfield args to be used for that intent
-GainfieldMapping = namedtuple('GainfieldMapping', 'intent preferred fallback')
+GainfieldMapping = collections.namedtuple('GainfieldMapping', 'intent preferred fallback')
 
 
-def get_gainfield_map(ms):
+def get_solution_map(ms, is_single_dish):
     """
-    Get the mapping of observing intent to gainfield parameter for a
-    measurement set.
-
-    The mapping follows the observing intent to gainfield intent defined in
-    CAS-12213.
+    Get gainfield solution map. Different solution maps are returned for
+    single dish and interferometric data.
 
     :param ms: MS to analyse
-    :return: dict of {observing intent: gainfield}
+    :param is_single_dish: True if MS is single dish data
+    :return: list of GainfieldMappings
     """
+    # define function to get Tsys fields for intent
     def f(intent):
         if ',' in intent:
             head, tail = intent.split(',', 1)
@@ -130,37 +131,65 @@ def get_gainfield_map(ms):
             return ','.join(o for o in (f(head), f(tail)) if o)
         return ','.join(str(s) for s in get_tsys_fields_for_intent(ms, intent))
 
-    # Intent mapping extracted from CAS-12213 ticket:
-    #
-    # ObjectToBeCalibrated 	TsysSolutionToUse 	IfNoSolutionPresentThenUse
-    # BANDPASS cal 	        all BANDPASS cals 	fallback to 'nearest'
-    # FLUX cal 	            all FLUX cals 	    fallback to 'nearest'
-    # DIFF_GAIN_CAL         all DIFF_GAIN_CALs 	fallback to 'nearest'
-    # PHASE cal 	        all PHASE cals 	    all TARGETs
-    # TARGET 	            all TARGETs 	    all PHASE cals
-    # CHECK_SOURCE        	all TARGETs     	all PHASE cals
-    soln_map = [
-        GainfieldMapping(intent='BANDPASS', preferred=f('BANDPASS'), fallback='nearest'),
-        GainfieldMapping(intent='AMPLITUDE', preferred=f('AMPLITUDE'), fallback='nearest'),
-        # GainfieldMapping(intent='DIFF_GAIN_CAL', preferred='DIFF_GAIN_CAL', fallback='nearest'),
-        GainfieldMapping(intent='PHASE', preferred=f('PHASE'), fallback=f('TARGET')),
-        GainfieldMapping(intent='TARGET', preferred=f('TARGET'), fallback=f('PHASE,REFERENCE')),
-        GainfieldMapping(intent='CHECK', preferred=f('TARGET'), fallback=f('PHASE')),
-    ]
+    # return different gainfield maps for single dish and interferometric
+    if is_single_dish:
+        return [
+            GainfieldMapping(intent='BANDPASS', preferred=f('BANDPASS'), fallback='nearest'),
+            GainfieldMapping(intent='AMPLITUDE', preferred=f('AMPLITUDE'), fallback='nearest'),
+            # non-empty magic string to differentiate between no field found and a null fallback
+            GainfieldMapping(intent='TARGET', preferred=f('TARGET'), fallback='___EMPTY_STRING___')
+        ]
 
+    else:
+        # Intent mapping extracted from CAS-12213 ticket:
+        #
+        # ObjectToBeCalibrated 	TsysSolutionToUse 	IfNoSolutionPresentThenUse
+        # BANDPASS cal 	        all BANDPASS cals 	fallback to 'nearest'
+        # FLUX cal 	            all FLUX cals 	    fallback to 'nearest'
+        # DIFF_GAIN_CAL         all DIFF_GAIN_CALs 	fallback to 'nearest'
+        # PHASE cal 	        all PHASE cals 	    all TARGETs
+        # TARGET 	            all TARGETs 	    all PHASE cals
+        # CHECK_SOURCE        	all TARGETs     	all PHASE cals
+        return [
+            GainfieldMapping(intent='BANDPASS', preferred=f('BANDPASS'), fallback='nearest'),
+            GainfieldMapping(intent='AMPLITUDE', preferred=f('AMPLITUDE'), fallback='nearest'),
+            # GainfieldMapping(intent='DIFF_GAIN_CAL', preferred='DIFF_GAIN_CAL', fallback='nearest'),
+            GainfieldMapping(intent='PHASE', preferred=f('PHASE'), fallback=f('TARGET')),
+            GainfieldMapping(intent='TARGET', preferred=f('TARGET'), fallback=f('PHASE')),
+            GainfieldMapping(intent='CHECK', preferred=f('TARGET'), fallback=f('PHASE')),
+        ]
+
+
+def get_gainfield_map(ms, is_single_dish):
+    """
+    Get the mapping of observing intent to gainfield parameter for a
+    measurement set.
+
+    The mapping follows the observing intent to gainfield intent defined in
+    CAS-12213.
+
+    :param ms: MS to analyse
+    :param is_single_dish: boolean for if SD data or not
+    :return: dict of {observing intent: gainfield}
+    """
+
+    soln_map = get_solution_map(ms, is_single_dish)
     final_map = {s.intent: s.preferred if s.preferred else s.fallback for s in soln_map}
 
     # Detect cases where there's no preferred or fallback gainfield mapping,
     # e.g., if there are no Tsys scans on a target or phase calibrator.
     undefined_intents = [k for k, v in final_map.iteritems()
-                         if not v              # gainfield mapping is empty..
+                         if not v  # gainfield mapping is empty..
                          and k in ms.intents]  # ..for a valid intent in the MS
     if undefined_intents:
         msg = 'Undefined Tsys gainfield mapping for {} intents: {}'.format(ms.basename, undefined_intents)
         LOG.error(msg)
         raise AssertionError(msg)
 
-    return final_map
+    # convert magic string back to empty string
+    converted = {k: v.replace('___EMPTY_STRING___', '') for k, v in final_map.iteritems()}
+
+    return converted
 
 
 def get_tsys_fields_for_intent(ms, intent):
@@ -216,7 +245,7 @@ def get_tsys_fields_for_intent(ms, intent):
     return {field_identifiers[i] for i in r}
 
 
-def get_calapplications(ms, tsys_table, calfrom_defaults, origin):
+def get_calapplications(ms, tsys_table, calfrom_defaults, origin, spw_map, is_single_dish):
     """
     Get a list of CalApplications that apply a Tsys caltable to a measurement
     set using the gainfield mapping defined in CAS-12213.
@@ -232,7 +261,7 @@ def get_calapplications(ms, tsys_table, calfrom_defaults, origin):
     :return: list of CalApplications
     """
     # Get the map of intent:gainfield
-    soln_map = get_gainfield_map(ms)
+    soln_map = get_gainfield_map(ms, is_single_dish)
 
     # Create the static dict of calfrom arguments. Only the 'gainfield' argument changes from calapp to calapp; the
     # other arguments remain unchanged.
@@ -241,6 +270,9 @@ def get_calapplications(ms, tsys_table, calfrom_defaults, origin):
 
     # get the mapping of field ID to unambiguous identifier for more user friendly logs
     field_id_to_identifier = utils.get_field_identifiers(ms)
+
+    # create a domain object mapping of science spw to Tsys spw
+    domain_spw_map = {ms.spectral_windows[i]: ms.spectral_windows[j] for i,j in enumerate(spw_map)}
 
     # Now loop through the MS intents, creating a specific Tsys registration for each intent.
     calapps = []
@@ -257,44 +289,78 @@ def get_calapplications(ms, tsys_table, calfrom_defaults, origin):
             # get the Tsys fields that were to be applied in the fldmap
             tsys_fields = ms.get_fields(task_arg=gainfield)
 
-            field_to_tsys_field = {}
+            # holds mapping of field,spw -> Tsys field
+            field_to_tsys_field = collections.defaultdict(dict)
 
             for non_tsys_field in fields_with_intent:
                 if 'ATMOSPHERE' in non_tsys_field.intents:
                     LOG.info('Tying Tsys to self for {} field {}'.format(intent,
                                                                          field_id_to_identifier[non_tsys_field.id]))
-                    field_to_tsys_field[non_tsys_field] = non_tsys_field
+                    # spw='' to map to all spectral windows as we don't need to be specific
+                    field_to_tsys_field[non_tsys_field][''] = non_tsys_field
 
-            # do we have any non-Tsys fields still to process?
+            # do we have any non-Tsys fields left to process?
             remaining_non_tsys = [f for f in fields_with_intent if f not in field_to_tsys_field]
 
             # ok, so these fields do not have a related Tsys field. For these fields we'll emulate the
-            # gainfield='nearest' option by selecting the closest Tsys field
+            # CASA gainfield='nearest' option by selecting the spatially closest Tsys field with the same tuning
             me = casatools.measures
             qa = casatools.quanta
             for non_tsys_field in remaining_non_tsys:
                 non_tsys_direction = non_tsys_field.mdirection
 
-                separations = []
-                for tsys_field in tsys_fields:
-                    tsys_direction = tsys_field.mdirection
-                    separation = me.separation(tsys_direction, non_tsys_direction)
-                    separation_degs = qa.getvalue(qa.convert(separation, 'deg'))[0]
-                    separations.append((tsys_field, separation_degs))
+                # For multi-tuning EBs, the spws may need different gainfield arguments. For example, in
+                # uid://A002/Xcf3a9c/X3a3d, the phase cal has no Tsys scans and was observed with three different
+                # tunings. Each tuning is distinct and was used for a different target field. Each target field *does*
+                # have a Tsys scan. Due to the lack of Tsys scans on the phase cal, the target fields are selected as
+                # the fallback gainfields (e.g., # gainfield='A,B,C'), which due to the CASA callibrary
+                # limitation we now need to boil down to the closest target that was observed using the same
+                # spectral setup.
 
-                closest = min(separations, key=itemgetter(1))[0]
-                LOG.info('Tying {} field #{} to closest Tsys field: #{}'.format(
-                    intent, field_id_to_identifier[non_tsys_field.id], field_id_to_identifier[closest.id]))
-                field_to_tsys_field[non_tsys_field] = closest
+                # get the spws used to observe with intent XXX for this non-Tsys field
+                non_tsys_scans = ms.get_scans(scan_intent=intent, field=non_tsys_field.id)
+                non_tsys_spws = {dd.spw for scan in non_tsys_scans for dd in scan.data_descriptions}
+                # filter out non-science windows, leaving just the spws for this non-Tsys field
+                non_tsys_spws = [spw for spw in non_tsys_spws if spw.type in ('TDM', 'FDM')]
+
+                for non_tsys_spw in sorted(non_tsys_spws, key=attrgetter('id')):
+                    # for each spw used for the intent=XXX scan, find the Tsys field that was observed using the Tsys
+                    # spw which is mapped to this science spw
+                    tsys_spw_for_spw = domain_spw_map[non_tsys_spw]
+                    tsys_fields_with_required_spw = [f for f in tsys_fields if tsys_spw_for_spw in f.valid_spws]
+
+                    LOG.debug('Candidate Tsys fields for spw {}: {}'
+                              ''.format(non_tsys_spw.id, ','.join(f.name for f in tsys_fields_with_required_spw)))
+
+                    separations = []
+                    for tsys_field in tsys_fields_with_required_spw:
+                        tsys_direction = tsys_field.mdirection
+                        separation = me.separation(tsys_direction, non_tsys_direction)
+                        separation_degs = qa.getvalue(qa.convert(separation, 'deg'))[0]
+                        separations.append((tsys_field, separation_degs))
+
+                    if not separations:
+                        msg = ('Failed Tsys calibration for {} spw {}: no Tsys scan with the same tuning identified'
+                               ''.format(non_tsys_field.name, non_tsys_spw.id))
+                        LOG.error(msg)
+                        continue
+
+                    closest = min(separations, key=itemgetter(1))[0]
+                    LOG.info('Tying {} field #{} spw #{} to closest Tsys field {} spw #{}'.format(
+                        intent, field_id_to_identifier[non_tsys_field.id], non_tsys_spw.id,
+                        field_id_to_identifier[closest.id], tsys_spw_for_spw.id)
+                    )
+                    field_to_tsys_field[non_tsys_field][non_tsys_spw.id] = closest
 
             # create a CalTo specifically for the intent fields with their selected Tsys field
-            for non_tsys_field, tsys_field in field_to_tsys_field.iteritems():
-                calto = callibrary.CalTo(vis=ms.name, intent=intent,
-                                         field=field_id_to_identifier[non_tsys_field.id])
-                calfrom = callibrary.CalFrom(gainfield='{}'.format(field_id_to_identifier[tsys_field.id]),
-                                             **calfrom_args)
-                calapp = callibrary.CalApplication(calto, calfrom, origin)
-                calapps.append(calapp)
+            for non_tsys_field, spw_to_tsys_field in field_to_tsys_field.iteritems():
+                field_arg = field_id_to_identifier[non_tsys_field.id]
+                for spw, tsys_field in spw_to_tsys_field.iteritems():
+                    gainfield_arg = field_id_to_identifier[tsys_field.id]
+                    calto = callibrary.CalTo(vis=ms.name, intent=intent, spw=spw, field=field_arg)
+                    calfrom = callibrary.CalFrom(gainfield=gainfield_arg, **calfrom_args)
+                    calapp = callibrary.CalApplication(calto, calfrom, origin)
+                    calapps.append(calapp)
 
         else:
             LOG.info('Setting Tsys gainfield={!r} for {} data in {}'.format(gainfield, intent, ms.basename))
