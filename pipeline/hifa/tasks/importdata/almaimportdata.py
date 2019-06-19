@@ -21,8 +21,8 @@ try:
     FLUX_SERVICE_URL = os.environ['FLUX_SERVICE_URL']
 except Exception as e:
     # FLUX_SERVICE_URL = 'https://almascience.eso.org/sc/flux'
-    # FLUX_SERVICE_URL = 'https://osf-sourcecat-2019may.asa-test.alma.cl/sc/'
-    FLUX_SERVICE_URL = 'https://2019may.asa-test.alma.cl/sc/flux'
+    # FLUX_SERVICE_URL = 'https://osf-sourcecat-2019jun.asa-test.alma.cl/sc/'
+    FLUX_SERVICE_URL = 'https://2019jun.asa-test.alma.cl/sc/flux'
 
 
 class ALMAImportDataInputs(importdata.ImportDataInputs):
