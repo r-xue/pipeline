@@ -1031,40 +1031,67 @@ class TsysflagView(object):
         self.result.vis = tsystable.vis
 
         # Get the MS object from the context
-        self.ms = self.context.observing_run.get_ms(name=self.vis)
+        ms = self.context.observing_run.get_ms(name=self.vis)
+        self.ms = ms
 
         # Get the spws from the tsystable.
-        tsysspws = set()
-        for row in tsystable.rows:
-            tsysspws.update([row.get('SPECTRAL_WINDOW_ID')])
+        tsysspws = {row.get('SPECTRAL_WINDOW_ID') for row in tsystable.rows}
 
-        # Get ids of fields for intents of interest
-        fieldids = {}
-        for intent in self.intentgroup:
-            fieldids_for_intent = self.intent_ids(intent, self.ms) 
-            fieldids[intent] = fieldids_for_intent
+        # Get the Tsys spw map by retrieving it from the first tsys CalFrom
+        # that is present in the callibrary. We need to know the Tsys mapping
+        # for multi-tuning EBs, where fields may only be observed with a
+        # subset of science spws, and we need to know which Tsys spws those
+        # science spws map to.
+        try:
+            spwmap = utils.get_calfroms(self.context, self.vis, 'tsys')[0].spwmap
+        except IndexError:
+            LOG.warning('No spwmap found for {}'.format(self.vis))
+            # proceed with 1:1 mapping
+            spwmap = range(len(ms.spectral_windows))
+
+        # holds dict of Tsys spw -> intent -> field ids that use the Tsys spw
+        tsys_spw_to_intent_to_field_ids = collections.defaultdict(dict)
+
+        for tsys_spw in tsysspws:
+            for intent in self.intentgroup:
+                # which fields were observed with this intent?
+                fields_for_intent = [ms.fields[i] for i in self.intent_ids(intent, ms)]
+
+                # which science spws map to this Tsys spw?
+                if intent == 'ATMOSPHERE':
+                    # .. bearing in mind that Tsys spws map to themselves
+                    science_spws = {tsys_spw}
+                else:
+                    science_spws = {science_id for science_id,mapped_tsys in enumerate(spwmap)
+                                    if tsys_spw == mapped_tsys}
+
+                # now which of the fields were observed using these science
+                # spws, and hence the Tsys spw currently in context?
+                domain_spws = {ms.spectral_windows[i] for i in science_spws}
+                field_ids_for_tsys_spw = {f.id for f in fields_for_intent if not domain_spws.isdisjoint(f.valid_spws)}
+
+                # these are the fields to analyse for this Tsys spw and intent
+                tsys_spw_to_intent_to_field_ids[tsys_spw][intent] = field_ids_for_tsys_spw
 
         # Compute the flagging view for every spw and every intent
-        LOG.info('Computing flagging metrics for caltable {0}'.format(table))
-        for tsysspwid in tsysspws:
-            for intent in self.intentgroup:
+        LOG.info('Computing flagging metrics for caltable {}'.format(table))
+        for tsys_spw_id, intent_to_field_ids in tsys_spw_to_intent_to_field_ids.iteritems():
+            for intent, field_ids in intent_to_field_ids.iteritems():
                 if self.metric in ['nmedian', 'toomany']:
-                    self.calculate_median_spectra_view(
-                        tsystable, tsysspwid, intent, fieldids[intent],
-                        split_by_field=self.split_by_field)
+                    self.calculate_median_spectra_view(tsystable, tsys_spw_id, intent, field_ids,
+                                                       split_by_field=self.split_by_field)
+
                 elif self.metric == 'derivative':
-                    self.calculate_derivative_view(
-                        tsystable, tsysspwid, intent, fieldids[intent])
+                    self.calculate_derivative_view(tsystable, tsys_spw_id, intent, field_ids)
+
                 elif self.metric == 'fieldshape':
-                    self.calculate_fieldshape_view(
-                        tsystable, tsysspwid, intent, fieldids[intent],
-                        self.refintent)
+                    self.calculate_fieldshape_view(tsystable, tsys_spw_id, intent, field_ids, self.refintent)
+
                 elif self.metric == 'birdies':
-                    self.calculate_antenna_diff_channel_view(
-                        tsystable, tsysspwid, intent, fieldids[intent])
+                    self.calculate_antenna_diff_channel_view(tsystable, tsys_spw_id, intent, field_ids)
+
                 elif self.metric == 'edgechans':
-                    self.calculate_median_channel_view(
-                        tsystable, tsysspwid, intent, fieldids[intent])
+                    self.calculate_median_channel_view(tsystable, tsys_spw_id, intent, field_ids)
 
     @staticmethod
     def get_tsystable_data(tsystable, spwid, fieldids, antenna_names,
