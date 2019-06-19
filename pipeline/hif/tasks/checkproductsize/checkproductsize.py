@@ -55,6 +55,26 @@ class CheckProductSize(basetask.StandardTaskTemplate):
 
     def prepare(self):
         # Check parameter settings
+        if (self.inputs.maxcubesize == -1) and \
+           (self.inputs.maxcubelimit == -1) and \
+           (self.inputs.maxcubesize == -1):
+            LOG.info('No size limits given.')
+            result = CheckProductSizeResult(self.inputs.maxcubesize, \
+                                            self.inputs.maxcubelimit, \
+                                            self.inputs.maxproductsize, \
+                                            -1, \
+                                            -1, \
+                                            -1, \
+                                            -1, \
+                                            -1, \
+                                            {}, \
+                                            'OK', \
+                                            {'longmsg': 'No size limits given', 'shortmsg': 'No size limits'}, \
+                                            None)
+            # Log summary information
+            LOG.info(str(result))
+            return result
+
         if (self.inputs.maxcubesize != -1) and \
            (self.inputs.maxcubelimit != -1) and \
            (self.inputs.maxcubesize > self.inputs.maxcubelimit):
