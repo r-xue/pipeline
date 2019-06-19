@@ -31,44 +31,46 @@ except:
 %>Tclean/MakeImages${long_description}</%block>
 
 %if len(result[0].targets) != 0:
-    %if image_info[0].intent == 'CHECK':
-        <h2>Check Source Fit Results</h2>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>EB</th>
-                        <th>Field</th>
-                        <th>Virtual SPW</th>
-                        <th>Bandwidth (GHz)</th>
-                        <th>Position offset (mas)</th>
-                        <th>Position offset (synth beam)</th>
-                        <th>Fitted Flux Density (mJy)</th>
-                        <th>Image S/N</th>
-                        <th>Fitted [Peak Intensity / Flux Density] Ratio</th>
-                        <th>gfluxscale Derived Flux</th>
-                        <th>gfluxscale S/N</th>
-                        <th>[Fitted / gfluxscale] Flux Density Ratio</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    %for row in chk_fit_info:
+    %if len(image_info) != 0:
+        %if image_info[0].intent == 'CHECK':
+            <h2>Check Source Fit Results</h2>
+                <table class="table table-striped">
+                    <thead>
                         <tr>
-                        %for td in row:
-                            ${td}
-                        %endfor
+                            <th>EB</th>
+                            <th>Field</th>
+                            <th>Virtual SPW</th>
+                            <th>Bandwidth (GHz)</th>
+                            <th>Position offset (mas)</th>
+                            <th>Position offset (synth beam)</th>
+                            <th>Fitted Flux Density (mJy)</th>
+                            <th>Image S/N</th>
+                            <th>Fitted [Peak Intensity / Flux Density] Ratio</th>
+                            <th>gfluxscale Derived Flux</th>
+                            <th>gfluxscale S/N</th>
+                            <th>[Fitted / gfluxscale] Flux Density Ratio</th>
                         </tr>
-                    %endfor
-                </tbody>
-            </table>
-            <h4>
-            NOTE: The Position offset uncertainties only include the error in
-            the fitted position; the uncertainty in the source catalog
-            positions are not available. Additionally, the Peak Fitted
-            Intensity, Fitted Flux Density, and gfluxscale Derived Flux may be
-            low due to a number of factors other than decorrelation, including
-            low S/N, and spatially resolved (non point-like) emission.
-            </h4>
-            <br>
+                    </thead>
+                    <tbody>
+                        %for row in chk_fit_info:
+                            <tr>
+                            %for td in row:
+                                ${td}
+                            %endfor
+                            </tr>
+                        %endfor
+                    </tbody>
+                </table>
+                <h4>
+                NOTE: The Position offset uncertainties only include the error in
+                the fitted position; the uncertainty in the source catalog
+                positions are not available. Additionally, the Peak Fitted
+                Intensity, Fitted Flux Density, and gfluxscale Derived Flux may be
+                low due to a number of factors other than decorrelation, including
+                low S/N, and spatially resolved (non point-like) emission.
+                </h4>
+                <br>
+        %endif
     %endif
 %endif
 
@@ -92,7 +94,7 @@ except:
         </tr>
         </thead>
         <tbody>
-
+        %if len(image_info) != 0:
             %for row in image_info:
                 %if row.frequency is not None:
                 <tr>
@@ -148,70 +150,73 @@ except:
                     % else:
                     <td>No image available</td>
                     % endif
-			    </tr>
+                    </tr>
 
-                <tr>
-    				<th>beam</th>
-                    <td>${row.beam}</td>
-			    </tr>
+                    <tr>
+                        <th>beam</th>
+                        <td>${row.beam}</td>
+                    </tr>
 
-                <tr>
-                    <th>beam p.a.</th>
-                    <td>${row.beam_pa}</td>
-                </tr>
+                    <tr>
+                        <th>beam p.a.</th>
+                        <td>${row.beam_pa}</td>
+                    </tr>
 
-                <tr>
-                    <th>final theoretical sensitivity</th>
-                    <td>${row.sensitivity}</td>
-                </tr>
+                    <tr>
+                        <th>final theoretical sensitivity</th>
+                        <td>${row.sensitivity}</td>
+                    </tr>
 
-                <tr>
-                    <th>cleaning threshold
-                    %if row.cube_all_cont:
-                        <br>findCont=AllCont<br>no cleaning
-                    %endif
-                    </th>
-                    <td>${row.cleaning_threshold}</td>
-                </tr>
+                    <tr>
+                        <th>cleaning threshold
+                        %if row.cube_all_cont:
+                            <br>findCont=AllCont<br>no cleaning
+                        %endif
+                        </th>
+                        <td>${row.cleaning_threshold}</td>
+                    </tr>
 
-                <tr>
-                    <th>clean residual peak / scaled MAD</th>
-                    <td>${row.residual_ratio}</td>
-                </tr>
+                    <tr>
+                        <th>clean residual peak / scaled MAD</th>
+                        <td>${row.residual_ratio}</td>
+                    </tr>
 
-                <tr>
-                    <th>${row.non_pbcor_label}</th>
-                    <td>${row.non_pbcor}</td>
-                </tr>
+                    <tr>
+                        <th>${row.non_pbcor_label}</th>
+                        <td>${row.non_pbcor}</td>
+                    </tr>
 
-                <tr>
-                    <th>pbcor image max / min</th>
-                    <td>${row.pbcor}</td>
-                </tr>
+                    <tr>
+                        <th>pbcor image max / min</th>
+                        <td>${row.pbcor}</td>
+                    </tr>
 
-                <tr>
-                    <th>${row.fractional_bw_label}</th>
-                    <td>${row.fractional_bw}</td>
-                </tr>
+                    <tr>
+                        <th>${row.fractional_bw_label}</th>
+                        <td>${row.fractional_bw}</td>
+                    </tr>
 
-                % if row.aggregate_bw_label is not None:
-                <tr>
-                    <th>${row.aggregate_bw_label}</th>
-                    <td>${row.aggregate_bw}</td>
-                </tr>
-                % endif
+                    % if row.aggregate_bw_label is not None:
+                        <tr>
+                            <th>${row.aggregate_bw_label}</th>
+                            <td>${row.aggregate_bw}</td>
+                        </tr>
+                    % endif
 
-                <tr>
-                    <th>score</th>
-                    <td>${row.score}</td>
-                </tr>
+                    <tr>
+                        <th>score</th>
+                        <td>${row.score}</td>
+                    </tr>
 
-                <tr>
-                   <th>image file</th>
-                   <td colspan="2">${row.image_file}</td>
-                </tr>
-            %endif
-        %endfor
+                    <tr>
+                       <th>image file</th>
+                       <td colspan="2">${row.image_file}</td>
+                    </tr>
+                %endif
+            %endfor
+        %else:
+            <h4 style="color:#990000">No image details found despite existing imaging targets. Please check for cleaning errors.</h4>
+        %endif
         </tbody>
     </table>
 %endif

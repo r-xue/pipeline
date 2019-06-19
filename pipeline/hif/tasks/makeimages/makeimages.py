@@ -129,6 +129,7 @@ class MakeImages(basetask.StandardTaskTemplate):
                     worker_result = task.get_result()
                 except exceptions.PipelineException:
                     result.add_result(TcleanResult(), target, outcome='failure')
+                    LOG.error('Cleaning failure for field {!s} spw {!s} specmode {!s}'.format(target['field'], target['spw'], target['specmode']))
                 else:
                     # Note add_result() removes 'heuristics' from worker_result
                     heuristics = target['heuristics']
