@@ -654,56 +654,100 @@ class Results(api.Results):
             import pipeline.h.cli.utils
             context = pipeline.h.cli.utils.get_context()
 
-        self._check_for_remerge(context)
-
-        # execute our template function
-        self.merge_with_context(context)
-
         # find whether this result is being accepted as part of a task
         # execution or whether it's being accepted after task completion
         task_completed = utils.task_depth() == 0
 
-        # perform QA if accepting this result from a top-level task
-        if task_completed:
-            pipelineqa.qa_registry.do_qa(context, self)
+        # Check to ensure this exact result was not already merged into the
+        # context.
+        self._check_for_remerge(context)
 
-        if task_completed:
-            # If accept() is called at the end of a task, create a proxy for
-            # this result and pickle it to the appropriate weblog stage 
-            # directory. This keeps the context size at a minimum.
-            proxy = ResultsProxy(context)
-            proxy.write(self)
-            result = proxy
-        else:
-            result = self
+        # If all goes well, this result is the one that will be appended to
+        # the results list of the context.
+        result_to_append = self
 
-        # with no exceptions thrown by this point, we can safely add this 
-        # results object to the results list
-        context.results.append(result)
+        # PIPE-16: handle exceptions that may occur during the acceptance of
+        # the result into the context:
+        # Try to execute the task-specific (non-pipeline-framework) parts of
+        # results acceptance, which are the merging of the result into the
+        # context, and the task QA calculation (for top-level tasks).
+        try:
+            # execute our template function
+            self.merge_with_context(context)
 
-        # having called the old constructor, we know that self.context is set.
-        # Use this context to find the report directory and write to the log
-        if task_completed:
-            # this needs to come before web log generation as the filesizes of
-            # various logs and scripts are calculated during web log generation
-            write_pipeline_casa_tasks(context)
+            # perform QA if accepting this result from a top-level task
+            if task_completed:
+                pipelineqa.qa_registry.do_qa(context, self)
 
-        # generate weblog if accepting a result from outside a task execution
-        if task_completed and not DISABLE_WEBLOG:
-            # cannot import at initial import time due to cyclic dependency
-            import pipeline.infrastructure.renderer.htmlrenderer as htmlrenderer
-            htmlrenderer.WebLogGenerator.render(context)
+        # If an exception happened during the acceptance of a top-level
+        # pipeline task, then create a new FailedTaskResults that contains
+        # the exception traceback, and mark this new result as the one
+        # to append to the context results list.
+        except Exception as ex:
+            if task_completed:
+                # Log error message.
+                tb = traceback.format_exc()
+                LOG.error('Error while accepting pipeline task result into context.')
+                LOG.error(tb)
 
-        if task_completed and LOG.isEnabledFor(logging.DEBUG):
-            basename = 'context-stage%s.pickle' % self.stage_number
-            path = os.path.join(context.output_dir,
-                                context.name,
-                                'saved_state',
-                                basename)
+                # Create a special result object representing the failed task.
+                failedresult = FailedTaskResults(self[0].task, ex, tb)
+                # Copy over necessary properties from real result.
+                failedresult.stage_number = self.stage_number
+                failedresult.inputs = self.inputs
+                failedresult.timestamps = self.timestamps
 
-            utils.mkdir_p(os.path.dirname(path))
-            with open(path, 'wb') as outfile:
-                pickle.dump(context, outfile, -1)
+                # Override the result that is to be appended to the context.
+                result_to_append = failedresult
+
+            # Re-raise the exception to allow executioner of pipeline tasks to
+            # decide how to proceed.
+            raise
+
+        # Whether the result acceptance went ok, or an exception occurred
+        # and a new FailedTaskResults was created, always carry out the
+        # following steps on the result_to_append, to ensure that e.g.
+        # the result is pickled to disk and the weblog is rendered.
+        finally:
+            if task_completed:
+                # If accept() is called at the end of a task, create a proxy for
+                # this result and pickle it to the appropriate weblog stage
+                # directory. This keeps the context size at a minimum.
+                proxy = ResultsProxy(context)
+                proxy.write(result_to_append)
+                result = proxy
+            else:
+                result = result_to_append
+
+            # Add the results object to the results list.
+            context.results.append(result)
+
+            # having called the old constructor, we know that self.context is set.
+            # Use this context to find the report directory and write to the log
+            if task_completed:
+                # this needs to come before web log generation as the filesizes of
+                # various logs and scripts are calculated during web log generation
+                write_pipeline_casa_tasks(context)
+
+            # generate weblog if accepting a result from outside a task execution
+            if task_completed and not DISABLE_WEBLOG:
+                # cannot import at initial import time due to cyclic dependency
+                import pipeline.infrastructure.renderer.htmlrenderer as htmlrenderer
+                htmlrenderer.WebLogGenerator.render(context)
+
+            # If running at DEBUG loglevel and this is a top-level task result,
+            # then store to disk a pickle of the context as it existed at the
+            # end of this pipeline stage; this may be useful for debugging.
+            if task_completed and LOG.isEnabledFor(logging.DEBUG):
+                basename = 'context-stage%s.pickle' % result_to_append.stage_number
+                path = os.path.join(context.output_dir,
+                                    context.name,
+                                    'saved_state',
+                                    basename)
+
+                utils.mkdir_p(os.path.dirname(path))
+                with open(path, 'wb') as outfile:
+                    pickle.dump(context, outfile, -1)
 
     def _check_for_remerge(self, context):
         """
