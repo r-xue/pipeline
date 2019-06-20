@@ -85,4 +85,4 @@ class HpcTsysflag(sessionutils.ParallelTemplate):
         tb = traceback.format_exc()
         if tb.startswith('None'):
             tb = '{0}({1})'.format(exception.__class__.__name__, exception.message)
-        return basetask.FailedTaskResults(self, exception, tb)
+        return basetask.FailedTaskResults(self.__class__, exception, tb)

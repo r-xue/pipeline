@@ -171,5 +171,5 @@ class HpcRefAnt(sessionutils.ParallelTemplate):
         super(HpcRefAnt, self).__init__(inputs)
 
     def get_result_for_exception(self, vis, result):
-        failed_result = basetask.FailedTaskResults(self, result, result.message)
+        failed_result = basetask.FailedTaskResults(self.__class__, result, result.message)
         return failed_result

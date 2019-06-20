@@ -659,7 +659,7 @@ class Results(api.Results):
         # execute our template function
         self.merge_with_context(context)
 
-        # find whether this result is being accepted as part of a task 
+        # find whether this result is being accepted as part of a task
         # execution or whether it's being accepted after task completion
         task_completed = utils.task_depth() == 0
 
@@ -738,16 +738,16 @@ class FailedTaskResults(Results):
     FailedTaskResults represents a results object for a task that encountered
     an exception during execution.
     """
-    def __init__(self, origtask, exception, tb):
+    def __init__(self, origtask_cls, exception, tb):
         super(FailedTaskResults, self).__init__()
         self.exception = exception
-        self.origtask = origtask
+        self.origtask_cls = origtask_cls
         self.task = FailedTask
         self.tb = tb
 
     def __repr__(self):
         s = "FailedTaskResults:\n"\
-             "\toriginal task: {}\n".format(self.origtask.inputs._task_cls.__name__)
+             "\toriginal task: {}\n".format(self.origtask_cls.__name__)
         return s
 
 
@@ -1046,7 +1046,7 @@ class StandardTaskTemplate(api.Task):
                 LOG.error(tb)
 
                 # Create a special result object representing the failed task.
-                result = FailedTaskResults(self, ex, tb)
+                result = FailedTaskResults(self.__class__, ex, tb)
 
                 # add the log records to the result
                 if not hasattr(result, 'logrecords'):

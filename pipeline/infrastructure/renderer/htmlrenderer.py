@@ -52,7 +52,7 @@ def get_task_description(result_obj, context, include_stage=True):
         for result in result_obj:
             if isinstance(result, basetask.FailedTaskResults):
                 # Extract original task class from failed result.
-                task_cls = result.origtask.inputs._task_cls
+                task_cls = result.origtask_cls
 
                 # Try to extract task description from renderer belonging to
                 # original task.
@@ -121,7 +121,7 @@ def get_task_name(result_obj, include_stage=True):
 
     if hasattr(result_obj, 'task'):
         if isinstance(result_obj, basetask.FailedTaskResults):
-            task_cls = result_obj.origtask.inputs._task_cls
+            task_cls = result_obj.origtask_cls
         else:
             task_cls = result_obj.task
 
@@ -154,7 +154,7 @@ def get_task_name(result_obj, include_stage=True):
 
         # Take task class from first result in result list.
         if isinstance(result_obj[0], basetask.FailedTaskResults):
-            task_cls = result_obj[0].origtask.inputs._task_cls
+            task_cls = result_obj[0].origtask_cls
         else:
             task_cls = result_obj[0].task
 
