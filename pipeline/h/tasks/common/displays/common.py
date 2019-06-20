@@ -143,8 +143,7 @@ class PlotmsCalLeaf(object):
     ant arguments through to plotms without further manipulation, creating
     exactly one plot. 
     """
-    def __init__(self, context, result, calapp, xaxis, yaxis, spw='', ant='',
-                 pol='', plotrange=[], coloraxis=''):
+    def __init__(self, context, result, calapp, xaxis, yaxis, spw='', ant='', pol='', plotrange=[], coloraxis=''):
         self._context = context
         self._result = result
 
@@ -163,7 +162,7 @@ class PlotmsCalLeaf(object):
             ms = self._context.observing_run.get_ms(self._vis)
             domain_antennas = ms.get_antenna(ant)
             idents = [a.name if a.name else a.id for a in domain_antennas]
-            ant = ', '.join(idents)
+            ant = ','.join(idents)
         self._ant = ant
 
         self._figfile = self._get_figfile()
@@ -174,7 +173,7 @@ class PlotmsCalLeaf(object):
         if spw:
             self._title += ' spw {}'.format(spw)
         if ant:
-            self._title += ' ant {}'.format(ant)
+            self._title += ' ant {}'.format(', '.join(ant.split(',')))
 
     def plot(self):
         try:
@@ -190,18 +189,26 @@ class PlotmsCalLeaf(object):
 
     def _get_figfile(self):
         fileparts = {
-            'caltable' : os.path.basename(self._calapp.gaintable),
-            'x'        : self._xaxis,
-            'y'        : self._yaxis,
-            'spw'      : '' if self._spw == '' else 'spw%0.2d-' % int(self._spw),
-            'ant'      : '' if self._ant == '' else 'ant%s-' % self._ant.replace(',', '_'),
-            'intent'   : '' if self._intent == '' else '%s-' % self._intent.replace(',', '_')
+            'caltable': os.path.basename(self._calapp.gaintable),
+            'x': self._xaxis,
+            'y': self._yaxis,
+            'spw': '' if self._spw == '' else 'spw%0.2d-' % int(self._spw),
+            'ant': '' if self._ant == '' else 'ant%s-' % self._ant.replace(',', '_'),
+            'intent': '' if self._intent == '' else '%s-' % self._intent.replace(',', '_')
         }
         png = '{caltable}-{spw}{ant}{intent}{y}_vs_{x}.png'.format(**fileparts)
 
-        return os.path.join(self._context.report_dir, 
-                            'stage%s' % self._result.stage_number,
-                            png)
+        # Maximum filename size for Lustre filesystems is 255 bytes. These
+        # plots can exceed this limit due to including the names of all
+        # antennas. Truncate over-long filename while keeping it unique by
+        # replacing it with the hash.
+        if len(png) > 251:  # 255 - '.png'
+            new_png = '{!s}.png'.format(hash(png))
+            LOG.info('Renaming plot to avoid exceeding filesystem limit on filename length.\n'
+                     'Old: {!s}\nNew: {!s}'.format(png, new_png))
+            png = new_png
+
+        return os.path.join(self._context.report_dir, 'stage%s' % self._result.stage_number, png)
 
     def _get_plot_wrapper(self):
         task = self._create_task()
@@ -215,8 +222,8 @@ class PlotmsCalLeaf(object):
                 LOG.exception(ex)
                 return None
 
-        parameters={'vis': os.path.basename(self._vis),
-                    'caltable': self._caltable}
+        parameters = {'vis': os.path.basename(self._vis),
+                      'caltable': self._caltable}
 
         for attr in ['spw', 'ant', 'intent']:
             val = getattr(self, '_%s' % attr)
