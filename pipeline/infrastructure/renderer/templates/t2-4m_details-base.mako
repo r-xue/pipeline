@@ -178,7 +178,7 @@ def format_notification(tr_class, alert, msg, icon_class=None):
                                data-vis="${plot.parameters['vis']}"
                             % endif
                             % if data_ant:
-                               data-ant="${rendererutils.sanitize_data_selection_string(plot.parameters['ant'])}"
+                               data-ant="${rendererutils.sanitize_data_selection_string(plot.parameters.get('ant', ""))}"
                             % endif
                                class="replace">
                         % endif
