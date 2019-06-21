@@ -1,7 +1,6 @@
 from __future__ import absolute_import
+
 import pprint
-import types
-import gc
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api

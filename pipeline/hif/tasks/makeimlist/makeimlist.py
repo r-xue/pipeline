@@ -1,9 +1,7 @@
 from __future__ import absolute_import
 
-import ast
 import copy
 import os
-import types
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
@@ -198,7 +196,9 @@ class MakeImList(basetask.StandardTaskTemplate):
         if 'status' in inputs.context.size_mitigation_parameters:
             if inputs.context.size_mitigation_parameters['status'] == 'ERROR':
                 result.mitigation_error = True
-                result.set_info({'msg': 'Size mitigation had failed. No imaging targets were created.', 'intent': inputs.intent, 'specmode': inputs.specmode})
+                result.set_info({'msg': 'Size mitigation had failed. No imaging targets were created.',
+                                 'intent': inputs.intent,
+                                 'specmode': inputs.specmode})
                 result.contfile = None
                 result.linesfile = None
                 return result
@@ -232,20 +232,30 @@ class MakeImList(basetask.StandardTaskTemplate):
             # The PI cube shall only be created for real representative targets
             if not real_repr_target:
                 LOG.info('No representative target found. No PI cube will be made.')
-                result.set_info({'msg': 'No representative target found. No PI cube will be made.', 'intent': 'TARGET', 'specmode': 'repBW'})
+                result.set_info({'msg': 'No representative target found. No PI cube will be made.',
+                                 'intent': 'TARGET',
+                                 'specmode': 'repBW'})
                 result.contfile = None
                 result.linesfile = None
                 return result
             # The PI cube shall only be created for cube mode
             elif reprBW_mode in ['multi_spw', 'all_spw']:
-                LOG.info("Representative target bandwidth specifies aggregate continuum. No PI cube will be made since specmode='cont' already covers this case.")
-                result.set_info({'msg': "Representative target bandwidth specifies aggregate continuum. No PI cube will be made since specmode='cont' already covers this case.", 'intent': 'TARGET', 'specmode': 'repBW'})
+                LOG.info("Representative target bandwidth specifies aggregate continuum. No PI cube will be made since"
+                         " specmode='cont' already covers this case.")
+                result.set_info({'msg': "Representative target bandwidth specifies aggregate continuum. No PI cube will"
+                                        " be made since specmode='cont' already covers this case.",
+                                 'intent': 'TARGET',
+                                 'specmode': 'repBW'})
                 result.contfile = None
                 result.linesfile = None
                 return result
             elif reprBW_mode == 'repr_spw':
-                LOG.info("Representative target bandwidth specifies per spw continuum. No PI cube will be made since specmode='mfs' already covers this case.")
-                result.set_info({'msg': "Representative target bandwidth specifies per spw continuum. No PI cube will be made since specmode='mfs' already covers this case.", 'intent': 'TARGET', 'specmode': 'repBW'})
+                LOG.info("Representative target bandwidth specifies per spw continuum. No PI cube will be made since"
+                         " specmode='mfs' already covers this case.")
+                result.set_info({'msg': "Representative target bandwidth specifies per spw continuum. No PI cube will"
+                                        " be made since specmode='mfs' already covers this case.",
+                                 'intent': 'TARGET',
+                                 'specmode': 'repBW'})
                 result.contfile = None
                 result.linesfile = None
                 return result
@@ -274,8 +284,14 @@ class MakeImList(basetask.StandardTaskTemplate):
                     inputs.field = repr_source
                     inputs.spw = str(repr_spw)
                 else:
-                    LOG.info('Representative target bandwidth is less or equal than 4 times the nbin averaged default cube channel width. No PI cube will be made since the default cube already covers this case.')
-                    result.set_info({'msg': 'Representative target bandwidth is less or equal than 4 times the nbin averaged default cube channel width. No PI cube will be made since the default cube already covers this case.', 'intent': 'TARGET', 'specmode': 'repBW'})
+                    LOG.info('Representative target bandwidth is less or equal than 4 times the nbin averaged default'
+                             ' cube channel width. No PI cube will be made since the default cube already covers this'
+                             ' case.')
+                    result.set_info({'msg': 'Representative target bandwidth is less or equal than 4 times the nbin'
+                                            ' averaged default cube channel width. No PI cube will be made since the'
+                                            ' default cube already covers this case.',
+                                     'intent': 'TARGET',
+                                     'specmode': 'repBW'})
                     result.contfile = None
                     result.linesfile = None
                     return result
@@ -327,9 +343,9 @@ class MakeImList(basetask.StandardTaskTemplate):
                 spwlist = band_spws[band]
             for vislist in vislists:
                 if inputs.per_eb:
-                    imagename_prefix=os.path.basename(vislist[0]).strip('.ms')
+                    imagename_prefix = os.path.basename(vislist[0]).strip('.ms')
                 else:
-                    imagename_prefix=inputs.context.project_structure.ousstatus_entity_id
+                    imagename_prefix = inputs.context.project_structure.ousstatus_entity_id
 
                 self.heuristics = image_heuristics_factory.getHeuristics(
                     vislist=vislist,
@@ -440,7 +456,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                     for spwspec in max_freq_spwlist:
                         synthesized_beams[spwspec], known_synthesized_beams = self.heuristics.synthesized_beam(field_intent_list=field_intent_list, spwspec=spwspec, robust=robust, uvtaper=uvtaper, pixperbeam=pixperbeam, known_beams=known_synthesized_beams, force_calc=calcsb, parallel=parallel)
                         if synthesized_beams[spwspec] == 'invalid':
-                            LOG.error('Beam for virtual spw %s and robust value of %.1f is invalid. Cannot continue.' % (spwspec, robust))
+                            LOG.error('Beam for virtual spw %s and robust value of %.1f is invalid. Cannot continue.'
+                                      '' % (spwspec, robust))
                             result.error = True
                             result.error_msg = 'Invalid beam'
                             return result
@@ -507,8 +524,9 @@ class MakeImList(basetask.StandardTaskTemplate):
                             try:
                                 gridder = self.heuristics.gridder(field_intent[1], field_intent[0])
                                 field_ids = self.heuristics.field(field_intent[1], field_intent[0])
-                                himsize = self.heuristics.imsize(fields=field_ids,
-                                  cell=cells[spwspec], primary_beam=largest_primary_beams[spwspec], sfpblimit=sfpblimit, centreonly=False)
+                                himsize = self.heuristics.imsize(
+                                    fields=field_ids, cell=cells[spwspec], primary_beam=largest_primary_beams[spwspec],
+                                    sfpblimit=sfpblimit, centreonly=False)
                                 if field_intent[1] in ['PHASE', 'BANDPASS', 'AMPLITUDE', 'FLUX', 'CHECK']:
                                     himsize = [min(npix, inputs.calmaxpix) for npix in himsize]
                                 imsizes[(field_intent[0], spwspec)] = himsize
@@ -540,7 +558,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                 nchans = {}
                 width = inputs.width
                 widths = {}
-                if ((specmode not in ('mfs', 'cont')) and (width == 'pilotimage')):
+                if specmode not in ('mfs', 'cont') and width == 'pilotimage':
                     for field_intent in field_intent_list:
                         for spwspec in spwlist:
                             try:
@@ -582,7 +600,9 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                         no_cont_ranges = False
                         if field_intent[1] == 'TARGET' and specmode == 'cont' and all([v == 'NONE' for v in spwsel_spwid_dict.itervalues()]):
-                            LOG.warn('No valid continuum ranges were found for any spw. Creating an aggregate continuum image from the full bandwidth from all spws, but this should be used with caution.')
+                            LOG.warn('No valid continuum ranges were found for any spw. Creating an aggregate continuum'
+                                     ' image from the full bandwidth from all spws, but this should be used with'
+                                     ' caution.')
                             no_cont_ranges = True
 
                         for spwid in spwspec.split(','):
@@ -590,9 +610,12 @@ class MakeImList(basetask.StandardTaskTemplate):
                             if field_intent[1] == 'TARGET' and not no_cont_ranges:
                                 if spwsel_spwid == 'NONE':
                                     if specmode == 'cont':
-                                        LOG.warn('Spw {!s} will not be used in creating the aggregate continuum image of {!s} because no continuum range was found.'.format(spwid, field_intent[0]))
+                                        LOG.warn('Spw {!s} will not be used in creating the aggregate continuum image'
+                                                 ' of {!s} because no continuum range was found.'
+                                                 ''.format(spwid, field_intent[0]))
                                     else:
-                                        LOG.warn('Spw {!s} will not be used for {!s} because no continuum range was found.'.format(spwid, field_intent[0]))
+                                        LOG.warn('Spw {!s} will not be used for {!s} because no continuum range was'
+                                                 ' found.'.format(spwid, field_intent[0]))
                                         spwspec_ok = False
                                     continue
                                 #elif (spwsel_spwid == ''):
@@ -606,8 +629,9 @@ class MakeImList(basetask.StandardTaskTemplate):
                             else:
                                 spwsel_spwid_freqs, spwsel_spwid_refer = spwsel_spwid.split()
 
-                            if (spwsel_spwid_refer != 'LSRK'):
-                                LOG.warn('Frequency selection is specified in %s but must be in LSRK' % (spwsel_spwid_refer))
+                            if spwsel_spwid_refer != 'LSRK':
+                                LOG.warn('Frequency selection is specified in %s but must be in LSRK'
+                                         '' % spwsel_spwid_refer)
                                 # TODO: skip this field and/or spw ?
 
                             new_spwspec.append(spwid)
@@ -620,10 +644,9 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                         # construct imagename
                         if inputs.imagename == '':
-                            imagename = \
-                              self.heuristics.imagename(
-                              output_dir=inputs.output_dir, intent=field_intent[1],
-                              field=field_intent[0], spwspec=new_spwspec, specmode=specmode, band=band)
+                            imagename = self.heuristics.imagename(output_dir=inputs.output_dir, intent=field_intent[1],
+                                                                  field=field_intent[0], spwspec=new_spwspec,
+                                                                  specmode=specmode, band=band)
                         else:
                             imagename = inputs.imagename
 
@@ -639,7 +662,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 else:
                                     nbin = nbins_dict[new_spwspec]
                             except:
-                                LOG.warn('Could not determine binning factor for spw %s. Using default channel width.' % (new_spwspec))
+                                LOG.warn('Could not determine binning factor for spw %s. Using default channel width.'
+                                         '' % new_spwspec)
                                 nbin = -1
                         else:
                             nbin = -1
@@ -652,7 +676,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                                phasecenters[field_intent[0]]))
 
                             # Remove MSs that do not contain data for the given field/intent combination
-                            scanidlist, visindexlist = self.heuristics.get_scanidlist(vislist, field_intent[0], field_intent[1])
+                            scanidlist, visindexlist = self.heuristics.get_scanidlist(vislist, field_intent[0],
+                                                                                      field_intent[1])
                             filtered_vislist = [vislist[i] for i in visindexlist]
 
                             # Save the filtered vislist in a copy of the heuristics object tailored to the

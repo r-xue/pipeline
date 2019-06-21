@@ -1,9 +1,7 @@
 from __future__ import absolute_import
-import types
 
 import pipeline.domain as domain
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.heuristics import fieldnames as fieldnames

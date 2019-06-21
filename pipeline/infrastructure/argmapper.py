@@ -11,7 +11,6 @@ pipeline equivalent.
 from __future__ import absolute_import
 
 import inspect
-import types
 
 from . import logging
 from . import task_registry

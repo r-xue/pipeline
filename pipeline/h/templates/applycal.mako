@@ -3,7 +3,6 @@ rsc_path = ""
 import cgi
 import os
 import string
-import types
 
 import pipeline.infrastructure.renderer.htmlrenderer as hr
 import pipeline.infrastructure.filenamer as filenamer

@@ -11,7 +11,7 @@ import string
 import uuid
 import weakref
 
-import pipeline.extern
+import pipeline.extern  # Used to resolve import of intervaltree.
 import intervaltree
 from callibrary import applycaltocallib
 
@@ -22,8 +22,7 @@ from . import casatools
 
 LOG = logging.get_logger(__name__)
 
-CalToArgs = collections.namedtuple('CalToArgs',
-                                   ['vis', 'spw', 'field', 'intent', 'antenna'])
+CalToArgs = collections.namedtuple('CalToArgs', ['vis', 'spw', 'field', 'intent', 'antenna'])
 
 # struct used to link calapplication to the task and inputs that created it
 CalAppOrigin = collections.namedtuple('CalAppOrigin', ['task', 'inputs'])
@@ -2358,8 +2357,7 @@ def get_calto_from_inputs(inputs):
     return CalTo(vis=inputs.vis, field=inputs.field, spw=inputs.spw, intent=inputs.intent, antenna=inputs.antenna)
 
 
-def copy_calfrom(calfrom, gaintable=None, gainfield=None, interp=None, spwmap=None, caltype=None,
-                 calwt=None):
+def copy_calfrom(calfrom, gaintable=None, gainfield=None, interp=None, spwmap=None, caltype=None, calwt=None):
     """
     Return a copy of a CalFrom object, optionally overriding the copy's
     properties with the given function arguments.

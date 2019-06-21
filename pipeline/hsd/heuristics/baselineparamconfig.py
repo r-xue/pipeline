@@ -4,7 +4,6 @@ import os
 import numpy
 import collections
 import abc
-import types
 
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure.casatools as casatools
@@ -369,4 +368,3 @@ class CubicSplineFitParamConfig(BaselineFitParamConfig):
         self.paramdict[BLP.MASK] = masklist
         self.paramdict[BLP.NPIECE] = num_pieces
         return self.paramdict
-

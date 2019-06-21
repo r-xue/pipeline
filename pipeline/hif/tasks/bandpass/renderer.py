@@ -10,7 +10,6 @@ import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
-
 from pipeline.h.tasks.common.displays import bandpass as bandpass
 
 LOG = logging.get_logger(__name__)
@@ -50,8 +49,7 @@ class T2_4MDetailsBandpassRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         template
     """
     def update_mako_context(self, ctx, context, results):
-        stage_dir = os.path.join(context.report_dir, 
-                                 'stage%d' % results.stage_number)
+        stage_dir = os.path.join(context.report_dir, 'stage%d' % results.stage_number)
         if not os.path.exists(stage_dir):
             os.mkdir(stage_dir)
 

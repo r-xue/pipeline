@@ -3,7 +3,6 @@ rsc_path = ""
 import cgi
 import os
 import string
-import types
 
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging

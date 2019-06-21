@@ -1,7 +1,5 @@
 from __future__ import absolute_import
 
-import types
-
 import numpy
 
 import pipeline.infrastructure as infrastructure
@@ -18,8 +16,7 @@ LOG = infrastructure.get_logger(__name__)
 
 
 def _find_spw(vis, bands, context):
-    """Identify spw information
-    """
+    """Identify spw information"""
 
     with casatools.TableReader(vis+'/SPECTRAL_WINDOW') as table:
         channels = table.getcol('NUM_CHAN')
@@ -96,7 +93,8 @@ class Opcal(basetask.StandardTaskTemplate):
             with casatools.TableReader(self.inputs.vis + '/WEATHER') as table:
                 numRows = table.nrows()
                 if numRows == 0:
-                    LOG.warn("Weather station broken during this period, using 100% seasonal model for calculating the zenith opacity")
+                    LOG.warn("Weather station broken during this period, using 100% seasonal model for calculating the"
+                             " zenith opacity")
                     seasonal_weight = 1.0
                 else:
                     LOG.info("Using seasonal_weight of 0.5")  # Standard value to use
@@ -113,7 +111,7 @@ class Opcal(basetask.StandardTaskTemplate):
             seasonal_weight=0.5
         '''
 
-        plotweather_args = {'vis' : inputs.vis, 'seasonal_weight': seasonal_weight, 'doPlot' : True}
+        plotweather_args = {'vis': inputs.vis, 'seasonal_weight': seasonal_weight, 'doPlot': True}
         plotweather_job = casa_tasks.plotweather(**plotweather_args)
         opacities = self._executor.execute(plotweather_job)
 

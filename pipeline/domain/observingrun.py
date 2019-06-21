@@ -2,7 +2,6 @@ from __future__ import absolute_import
 
 import datetime
 import itertools
-import types
 import os
 
 import pipeline.infrastructure as infrastructure
@@ -133,7 +132,8 @@ class ObservingRun(object):
 
         return match
 
-    def get_real_spw_id_by_name(self, spw_name, target_ms):
+    @staticmethod
+    def get_real_spw_id_by_name(spw_name, target_ms):
         """
         :param spw_name: the spw name to convert
         :type spw_name: string

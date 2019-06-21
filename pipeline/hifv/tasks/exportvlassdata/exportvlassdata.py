@@ -7,7 +7,6 @@ import os
 import shutil
 import string
 import tarfile
-import types
 
 from casa_system import casa as casasys
 
@@ -135,7 +134,6 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         return results
 
     def get_oussid(self, context):
-
         """
         Determine the ous prefix
         """
@@ -211,8 +209,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                                                             context.logs['casa_commands'], products_dir, oussid)
 
         # Export the processing script independently of the web log
-        casa_pipescript = self._export_casa_script(context,
-                                                   context.logs['pipeline_script'], products_dir, oussid)
+        casa_pipescript = self._export_casa_script(context, context.logs['pipeline_script'], products_dir, oussid)
 
         return StdFileProducts(ppr_file,
                                weblog_file,
@@ -239,15 +236,13 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             session = pipemanifest.set_session(ouss, session_name)
             pipemanifest.add_caltables(session, sessiondict[session_name][1])
             for vis_name in sessiondict[session_name][0]:
-                pipemanifest.add_asdm(session, vis_name, visdict[vis_name][0],
-                                      visdict[vis_name][1])
+                pipemanifest.add_asdm(session, vis_name, visdict[vis_name][0], visdict[vis_name][1])
 
         # Add a tar file of the web log
         pipemanifest.add_weblog(ouss, os.path.basename(stdfproducts.weblog_file))
 
         # Add the processing log independently of the web log
-        pipemanifest.add_casa_cmdlog(ouss,
-                                     os.path.basename(stdfproducts.casa_commands_file))
+        pipemanifest.add_casa_cmdlog(ouss, os.path.basename(stdfproducts.casa_commands_file))
 
         # Add the processing script independently of the web log
         pipemanifest.add_pipescript(ouss, os.path.basename(stdfproducts.casa_pipescript))
@@ -291,7 +286,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         if pprtemplate is not None:
             for file in os.listdir(output_dir):
                 if fnmatch.fnmatch(file, pprtemplate):
-                    LOG.debug('Located pipeline processing request %s' % (file))
+                    LOG.debug('Located pipeline processing request %s' % file)
                     pprmatches.append(os.path.join(output_dir, file))
 
         # Copy the pipeline processing request files.
@@ -302,8 +297,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             else:
                 outfile = file
             pprmatchesout.append(outfile)
-            LOG.info('Copying pipeline processing file %s to %s' % \
-                     (os.path.basename(file), os.path.basename(outfile)))
+            LOG.info('Copying pipeline processing file %s to %s' % (os.path.basename(file), os.path.basename(outfile)))
             if not self._executor._dry_run:
                 shutil.copy(file, outfile)
 
@@ -327,7 +321,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             wksessions = sessions
 
         # Determine the number of unique sessions.
-        session_seqno = 0;
+        session_seqno = 0
         session_dict = {}
         for i in range(len(wksessions)):
             if wksessions[i] not in session_dict:
@@ -354,8 +348,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
         # Log the sessions
         for i in range(len(session_vis_list)):
-            LOG.info('Visibility list for session %s is %s' % \
-                     (session_names[i], session_vis_list[i]))
+            LOG.info('Visibility list for session %s is %s' % (session_names[i], session_vis_list[i]))
 
         return wksessions, session_names, session_vis_list
 
@@ -414,8 +407,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         #     casalog_file = os.path.join(context.report_dir, casalog_name)
         #     out_casalog_file = os.path.join(products_dir, oussid + '.' + casalog_name)
 
-        LOG.info('Copying casa commands log %s to %s' % \
-                 (casalog_file, out_casalog_file))
+        LOG.info('Copying casa commands log %s to %s' % (casalog_file, out_casalog_file))
         if not self._executor._dry_run:
             shutil.copy(casalog_file, out_casalog_file)
 
@@ -443,8 +435,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         #     casascript_file = os.path.join(context.report_dir, casascript_name)
         #     out_casascript_file = os.path.join(products_dir, oussid + '.' + casascript_name)
 
-        LOG.info('Copying casa script file %s to %s' % \
-                 (casascript_file, out_casascript_file))
+        LOG.info('Copying casa script file %s to %s' % (casascript_file, out_casascript_file))
         if not self._executor._dry_run:
             shutil.copy(casascript_file, out_casascript_file)
 

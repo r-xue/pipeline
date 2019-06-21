@@ -1,7 +1,6 @@
 from __future__ import absolute_import
 
 import os
-import types
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask

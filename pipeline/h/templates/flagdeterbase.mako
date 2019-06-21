@@ -1,7 +1,6 @@
 <%!
 rsc_path = ""
 import os
-import types
 
 agent_description = {
 	'before'   : 'Before Task',

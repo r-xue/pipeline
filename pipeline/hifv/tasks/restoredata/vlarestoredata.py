@@ -1,7 +1,6 @@
 from __future__ import absolute_import
 
 import os
-import types
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
@@ -83,16 +82,14 @@ class VLARestoreData(restoredata.RestoreData):
 
         # Restore final MS.flagversions and flags
         flag_version_name = 'Pipeline_Final'
-        flag_version_list = self._do_restore_flags(pipemanifest,
-            flag_version_name=flag_version_name)
+        flag_version_list = self._do_restore_flags(pipemanifest, flag_version_name=flag_version_name)
 
         # Get the session list and the visibility files associated with
         # each session.
         session_names, session_vislists = self._get_sessions()
 
         # Restore calibration tables
-        self._do_restore_caltables(pipemanifest, session_names=session_names,
-            session_vislists=session_vislists)
+        self._do_restore_caltables(pipemanifest, session_names=session_names, session_vislists=session_vislists)
 
         # Import calibration apply lists
         self._do_restore_calstate(pipemanifest)
@@ -107,7 +104,8 @@ class VLARestoreData(restoredata.RestoreData):
     # now but should simplify parameters in future
     def _do_importasdm(self, sessionlist, vislist):
         inputs = self.inputs
-        container = vdp.InputsContainer(importdata.VLAImportData, inputs.context,
+        container = vdp.InputsContainer(
+            importdata.VLAImportData, inputs.context,
             vis=vislist, session=sessionlist, save_flagonline=False,
             lazy=inputs.lazy, bdfflags=inputs.bdfflags,
             asis=inputs.asis, ocorr_mode=inputs.ocorr_mode)
@@ -132,5 +130,3 @@ class VLARestoreData(restoredata.RestoreData):
                                         flagsum=flagsum, flagdetailedsum=flagdetailedsum)
         applycal_task = applycals.Applycals(container)
         return self._executor.execute(applycal_task, merge=True)
-
-

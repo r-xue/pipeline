@@ -1,7 +1,6 @@
 <%!
 rsc_path = ""
 import os
-import types
 
 agent_description = {
 	'before'   : 'Before Task',
@@ -25,7 +24,6 @@ def template_agent_header2(agent):
 
 def get_template_agents(agents):
 	return [a for a in agents if a in ('template')]
-
 
 %>
 <%inherit file="t2-4m_details-base.mako"/>

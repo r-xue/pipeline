@@ -1,8 +1,7 @@
 from __future__ import absolute_import
 
-import os
-import types
 import abc
+import os
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -41,7 +40,7 @@ class BaselineSubtractionInputsBase(vdp.StandardInputs):
         return colname
 
     def to_casa_args(self):
-        args = super(BaselineSubtractionInputsBase, self).to_casa_args()#{'vis': self.vis}
+        args = super(BaselineSubtractionInputsBase, self).to_casa_args()  # {'vis': self.vis}
         prefix = os.path.basename(self.vis.rstrip('/'))
 
         # blparam 
@@ -245,7 +244,7 @@ class CubicSplineBaselineSubtractionWorker(BaselineSubtractionWorker):
     Heuristics = CubicSplineFitParamConfig
 
 
-### Tier-0 Parallelization
+# Tier-0 Parallelization
 class HpcBaselineSubtractionWorkerInputs(BaselineSubtractionWorkerInputs):
     # use common implementation for parallel inputs argument
     parallel = sessionutils.parallel_inputs_impl()

@@ -19,7 +19,6 @@ from . import casatools
 from . import logging
 import pipeline.domain as domain
 import pipeline.domain.measures as measures
-# import pipeline.extern.profilehooks as profilehooks
 
 LOG = logging.get_logger(__name__)
 
@@ -27,8 +26,7 @@ LOG = logging.get_logger(__name__)
 def find_EVLA_band(frequency, bandlimits=None, BBAND='?4PLSCXUKAQ?'):
     """identify VLA band"""
     if bandlimits is None:
-        bandlimits = [0.0e6, 150.0e6, 700.0e6, 2.0e9, 4.0e9, 8.0e9, 12.0e9,
-                      18.0e9, 26.5e9, 40.0e9, 56.0e9]
+        bandlimits = [0.0e6, 150.0e6, 700.0e6, 2.0e9, 4.0e9, 8.0e9, 12.0e9, 18.0e9, 26.5e9, 40.0e9, 56.0e9]
     i = bisect_left(bandlimits, frequency)
 
     return BBAND[i]
@@ -98,12 +96,11 @@ class MeasurementSetReader(object):
 
                 intents = reduce(lambda s, t: s.union(t.intents), states, set())
 
-                fields = [f for f in ms.fields
-                          if f.id in fieldsforscans[str(scan_id)]]
+                fields = [f for f in ms.fields if f.id in fieldsforscans[str(scan_id)]]
 
-                # can't use msmd.timesforscan as we need unique times grouped by 
-                # spw
-#                 scan_times = msmd.timesforscan(scan_id)
+                # can't use msmd.timesforscan as we need unique times grouped
+                # by spw
+                # scan_times = msmd.timesforscan(scan_id)
 
                 exposures = {spw_id: msmd.exposuretime(scan=scan_id, spwid=spw_id)
                              for spw_id in spwsforscans[str(scan_id)]}
@@ -122,8 +119,7 @@ class MeasurementSetReader(object):
                 # get the data descriptions for this scan
                 LOG.trace('Calculating data descriptions used for scan %s', scan_id)
                 scan_data_desc_id = set(data_desc_id_col[scan_mask])
-                data_descriptions = [o for o in ms.data_descriptions 
-                                     if o.id in scan_data_desc_id]
+                data_descriptions = [o for o in ms.data_descriptions if o.id in scan_data_desc_id]
 
                 # times are specified per data description, so we must
                 # re-mask and calculate times per dd
@@ -134,15 +130,13 @@ class MeasurementSetReader(object):
 
                     raw_midpoints = list(time_col[dd_mask])
                     unique_midpoints = set(raw_midpoints)
-                    epoch_midpoints = [mt.epoch(time_ref, qt.quantity(o, time_unit))
-                                       for o in unique_midpoints]
+                    epoch_midpoints = [mt.epoch(time_ref, qt.quantity(o, time_unit)) for o in unique_midpoints]
 
                     scan_times[dd.spw.id] = list(zip(epoch_midpoints, itertools.repeat(exposures[dd.spw.id])))
 
                 LOG.trace('Creating domain object for scan %s', scan_id)
-                scan = domain.Scan(id=scan_id, states=states, fields=fields,
-                                   data_descriptions=data_descriptions, antennas=antennas,
-                                   scan_times=scan_times, intents=intents)
+                scan = domain.Scan(id=scan_id, states=states, fields=fields, data_descriptions=data_descriptions,
+                                   antennas=antennas, scan_times=scan_times, intents=intents)
                 scans.append(scan)
 
                 LOG.trace('{0}'.format(scan))
@@ -192,8 +186,6 @@ class MeasurementSetReader(object):
 
                 spw.band = EVLA_band_dict[EVLA_band]
 
-            # LOG.info('************************(2) '+spw.band+'********************')
-
     @staticmethod
     def link_intents_to_spws(msmd, ms):
         # we can't use msmd.intentsforspw directly as we may have a modified
@@ -215,8 +207,7 @@ class MeasurementSetReader(object):
             for state in states:
                 spw.intents.update(state.intents)
 
-            LOG.trace('Intents for spw #{0}: {1}'
-                      ''.format(spw.id, ','.join(spw.intents)))
+            LOG.trace('Intents for spw #{0}: {1}'.format(spw.id, ','.join(spw.intents)))
 
     @staticmethod
     def link_fields_to_states(msmd, ms):
@@ -655,9 +646,7 @@ class AntennaTable(object):
             flags = table.getcol('FLAG_ROW')
 
         antennas = []
-        for (i, name, station) in zip(msmd.antennaids(), 
-                                      msmd.antennanames(),
-                                      msmd.antennastations()):
+        for (i, name, station) in zip(msmd.antennaids(), msmd.antennanames(), msmd.antennastations()):
             # omit this antenna if it has been flagged
             if flags[i]:
                 continue
@@ -667,21 +656,18 @@ class AntennaTable(object):
             diameter_m = casatools.quanta.convert(msmd.antennadiameter(i), 'm')
             diameter = casatools.quanta.getvalue(diameter_m)[0]
 
-            antenna = domain.Antenna(i, name, station, position, offset,
-                                     diameter)
+            antenna = domain.Antenna(i, name, station, position, offset, diameter)
             antennas.append(antenna)
 
         return antennas
 
     @staticmethod
-    def _create_antenna(antenna_id, name, station, diameter, position, offset,
-                        flag):
+    def _create_antenna(antenna_id, name, station, diameter, position, offset, flag):
         # omit this antenna if it has been flagged
         if flag is True:
             return
 
-        return domain.Antenna(antenna_id, name, station, position, offset,
-                              diameter)
+        return domain.Antenna(antenna_id, name, station, position, offset, diameter)
 
 
 class DataDescriptionTable(object):
@@ -716,8 +702,11 @@ class DataDescriptionTable(object):
         return list(zip(dd_ids, spw_ids, pol_ids))
 
 
-SBSummaryInfo = collections.namedtuple('SBSummaryInfo', 'repSource repFrequency repBandwidth repWindow minAngResolution '
-                                                        'maxAngResolution maxAllowedBeamAxialRatio sensitivity dynamicRange sbName')
+SBSummaryInfo = collections.namedtuple(
+    'SBSummaryInfo', 'repSource repFrequency repBandwidth repWindow minAngResolution maxAngResolution '
+                     'maxAllowedBeamAxialRatio sensitivity dynamicRange sbName')
+
+
 class SBSummaryTable(object):
     @staticmethod
     def get_sbsummary_info(ms, obsnames):
@@ -750,11 +739,12 @@ class SBSummaryTable(object):
         return observing_modes
 
     @staticmethod
-    def _create_sbsummary_info(repSource, repFrequency, repBandwidth, repWindow, minAngResolution, maxAngResolution, maxAllowedBeamAxialRatio,
-                               sensitivity, dynamicRange, sbName):
-        return SBSummaryInfo(repSource=repSource, repFrequency=repFrequency, repBandwidth=repBandwidth, repWindow=repWindow,
-                             minAngResolution=minAngResolution, maxAngResolution=maxAngResolution, maxAllowedBeamAxialRatio=maxAllowedBeamAxialRatio,
-                             sensitivity=sensitivity, dynamicRange=dynamicRange, sbName=sbName)
+    def _create_sbsummary_info(repSource, repFrequency, repBandwidth, repWindow, minAngResolution, maxAngResolution,
+                               maxAllowedBeamAxialRatio, sensitivity, dynamicRange, sbName):
+        return SBSummaryInfo(repSource=repSource, repFrequency=repFrequency, repBandwidth=repBandwidth,
+                             repWindow=repWindow, minAngResolution=minAngResolution, maxAngResolution=maxAngResolution,
+                             maxAllowedBeamAxialRatio=maxAllowedBeamAxialRatio, sensitivity=sensitivity,
+                             dynamicRange=dynamicRange, sbName=sbName)
 
     @staticmethod
     def _read_table(ms):
@@ -828,7 +818,7 @@ class SBSummaryTable(object):
 
                 # Create maximum allowed beam axial ratio
                 maxAllowedBeamAxialRatio = qa.quantity(_get_science_goal_value(scienceGoals[0:numScienceGoals[i], i],
-                                                                       'maxAllowedBeamAxialRatio'))
+                                                                               'maxAllowedBeamAxialRatio'))
                 if maxAllowedBeamAxialRatio['value'] <= 0.0 or maxAllowedBeamAxialRatio['value'] >= 999.:
                     maxAllowedBeamAxialRatio = None
                 maxAllowedBeamAxialRatios.append(maxAllowedBeamAxialRatio)
@@ -848,8 +838,8 @@ class SBSummaryTable(object):
                 sbName = _get_science_goal_value(scienceGoals[0:numScienceGoals[i], i], 'SBName')
                 sbNames.append(sbName)
 
-        rows = list(zip(repSources, repFrequencies, repBandWidths, repWindows, minAngResolutions, maxAngResolutions, maxAllowedBeamAxialRatios,
-                        sensitivities, dynamicRanges, sbNames))
+        rows = list(zip(repSources, repFrequencies, repBandWidths, repWindows, minAngResolutions, maxAngResolutions,
+                        maxAllowedBeamAxialRatios, sensitivities, dynamicRanges, sbNames))
         return rows
 
 
@@ -925,8 +915,7 @@ class SourceTable(object):
 
         no_dups = [s[0] for s in grouped_by_source_id]
 
-        return [SourceTable._create_source(*row)
-                for row in no_dups]
+        return [SourceTable._create_source(*row) for row in no_dups]
 
     @staticmethod
     def _create_source(source_id, name, direction, proper_motion, is_eph_obj):
@@ -1046,15 +1035,13 @@ class FieldTable(object):
 
         # only return sources for which scans are present
         # create a mapping of source id to a boolean of whether any scans are present for that source
-        field_id_to_scans = {field_id: (len(msmd.scansforfield(field_id)) is not 0)
-                             for field_id in set(field_ids)}
+        field_id_to_scans = {field_id: (len(msmd.scansforfield(field_id)) is not 0) for field_id in set(field_ids)}
 
         return [row for row in all_fields if field_id_to_scans.get(row[0], False)]
 
     @staticmethod
     def get_fields(msmd):
-        return [FieldTable._create_field(*row) 
-                for row in FieldTable._read_table(msmd)]
+        return [FieldTable._create_field(*row) for row in FieldTable._read_table(msmd)]
 
     @staticmethod
     def _create_field(field_id, name, source_id, time, source_type, phase_centre):

@@ -4,7 +4,6 @@ import cgi
 import decimal
 import os
 import string
-import types
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure.renderer.htmlrenderer as hr
