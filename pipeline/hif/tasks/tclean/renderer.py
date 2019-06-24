@@ -188,11 +188,17 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 residual_abs = abs(residual.getchunk())
 
             residual_robust_rms = residual_stats.get('medabsdevmed')[0] * 1.4826  # see CAS-9631
-            if 'VLA' in r.imaging_mode:
-                residual_max = residual_abs.max()  # see CAS-10731
-            else:
-                residual_max = residual_stats.get('max')[0]
-            row_residual_ratio = '%.2f' % (residual_max / residual_robust_rms)
+            residual_abs_max = residual_abs.max()  # see CAS-10731
+            if abs(residual_stats['min'])[0] > abs(residual_stats['max'])[0]:
+                residual_abs_max = -residual_abs_max
+            ratio_val = (residual_abs_max / residual_robust_rms)
+            row_residual_ratio = '%.2f' % ratio_val
+            # preserve the sign of the largest magnitude value for printout
+            LOG.info('{field} clean absolute residual peak / scaled MAD'
+                     ' = {peak:.12f} / {rms:.12f} = {ratio:.2f} '.format(field=field,
+                                                                         peak=residual_abs_max,
+                                                                         rms=residual_robust_rms,
+                                                                         ratio=ratio_val))
 
             #
             # theoretical sensitivity
