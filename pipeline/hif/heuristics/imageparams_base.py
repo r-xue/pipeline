@@ -380,13 +380,18 @@ class ImageParamsHeuristics(object):
                         valid_real_spwid_list_for_vis = []
                         valid_virtual_spwid_list_for_vis = []
                         ms = self.observing_run.get_ms(name=vis)
-                        scanids = [str(scan.id) for scan in ms.scans
-                                   if intent in scan.intents
-                                   and field in [fld.name for fld in scan.fields]]
-                        scanids = ','.join(scanids)
+                        scan_dos = [scan for scan in ms.scans
+                                    if intent in scan.intents
+                                    and field in {f.name for f in scan.fields}]
+                        scanids = ','.join({str(scan.id) for scan in scan_dos})
+
                         for spwid in spwids:
+                            real_spwid = self.observing_run.virtual2real_spw_id(spwid, ms)
+                            # continue if the spw was not used for these scans
+                            if not [scan for scan in scan_dos if real_spwid in {spw.id for spw in scan.spws}]:
+                                continue
+
                             try:
-                                real_spwid = self.observing_run.virtual2real_spw_id(spwid, self.observing_run.get_ms(vis))
                                 taql = '||'.join(['ANTENNA1==%d' % i for i in antenna_ids[os.path.basename(vis)]])
                                 rtn = casatools.imager.selectvis(vis=vis,
                                                                  field=field, spw=real_spwid, scan=scanids,
