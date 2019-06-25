@@ -552,7 +552,7 @@ class CaltableWrapperFactory(object):
                     data_channels = numpy.ma.masked_array(data=row, dtype=column_dtype)
                     row_x_dim, row_y_dim = row.shape
                     fake_channels = numpy.ma.masked_all((x_dim, y_dim-row_y_dim), dtype=column_dtype)
-                    coerced_rows.append(numpy.hstack((data_channels, fake_channels)))
+                    coerced_rows.append(numpy.ma.hstack((data_channels, fake_channels)))
                 data[c] = numpy.ma.masked_array(data=coerced_rows, dtype=column_dtype)
 
             table_keywords = tb.getkeywords()
