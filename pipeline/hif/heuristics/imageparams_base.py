@@ -1361,13 +1361,25 @@ class ImageParamsHeuristics(object):
         channel_widths = []
 
         for msname in vis:
-            real_spw = str(self.observing_run.virtual2real_spw_id(spw, self.observing_run.get_ms(msname)))
+            ms = self.observing_run.get_ms(name=msname)
+            real_spw = str(self.observing_run.virtual2real_spw_id(spw, ms))
 
             # Loop over mosaic fields and determine the channel flags per field.
             # Skip channels that have only partial pointing coverage.
             field_ids = self.field(intent=intent, field=field, vislist=[msname])[0].split(',')
             per_field_freq_ranges = []
             for field_id in field_ids:
+
+                # For multi-tuning EBs, a field may be observed in just a subset of
+                # science spws. Filter out spws not applicable to this field.
+                spw_do = ms.get_spectral_window(real_spw)
+                field_dos = ms.get_fields(field)
+                # field(s) not in MS
+                if not field_dos:
+                    continue
+                # spw not observed for the field(s)
+                if not [f for f in field_dos if spw_do in f.valid_spws]:
+                    continue
 
                 # Get the channel flags (uses virtual spw ID !)
                 channel_flags = self.get_channel_flags(msname, field_id, spw)
@@ -1477,6 +1489,17 @@ class ImageParamsHeuristics(object):
                 try:
                     real_spwid = self.observing_run.virtual2real_spw_id(intSpw, self.observing_run.get_ms(msname))
                     spw_do = ms.get_spectral_window(real_spwid)
+
+                    # For multi-tuning EBs, a field may be observed in just a subset of
+                    # science spws. Filter out spws not applicable to this field.
+                    field_dos = ms.get_fields(field)
+                    # field(s) not in MS
+                    if not field_dos:
+                        continue
+                    # spw not observed for the field(s)
+                    if not [f for f in field_dos if spw_do in f.valid_spws]:
+                        continue
+
                     sens_bws[intSpw] = 0.0
                     if (specmode == 'cube'):
                         # Use the center channel selection

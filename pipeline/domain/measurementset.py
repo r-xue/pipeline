@@ -260,11 +260,8 @@ class MeasurementSet(object):
         science_spw_ids = [spw.id for spw in self.get_spectral_windows()]
 
         # Get the target science spws observed for the target source
-        target_spw_ids = []
-        for f in target_source.fields:
-            target_spw_ids.extend([spw.id for spw in f.valid_spws if spw.id in science_spw_ids])
-        target_spw_ids = set(science_spw_ids)
-        target_spws = [self.get_spectral_window(spwid) for spwid in target_spw_ids]
+        target_spws = {spw for f in target_source.fields for spw in f.valid_spws
+                       if spw.id in science_spw_ids}
 
         # Now find all the target_spws that have a channel width less than
         # or equal to the representative bandwidth
