@@ -115,7 +115,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                 if None in goodsnrs:
                     LOG.warn('    Spws without SNR measurements {}'
                              ''.format([spwid for spwid, goodsnr in zip(spwids, goodsnrs) if goodsnr is None]))
-                combinespwmap = combine_spwmap(allspws, scispws, scispws[0].id)
+                combinespwmap = combine_spwmap(scispws)
                 phaseupspwmap = []
                 LOG.info('    Using combined spw map {} for {}'.format(combinespwmap, inputs.ms.basename))
 
@@ -130,14 +130,14 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                     LOG.warn('    Still unable to match all spws - Forcing combined spw mapping for {}'
                              ''.format(inputs.ms.basename))
                     phaseupspemap = []
-                    combinespwmap = combine_spwmap(allspws, scispws, scispws[0].id)
+                    combinespwmap = combine_spwmap(scispws)
                     LOG.info('    Using spw map {} for {}'.format(combinespwmap, inputs.ms.basename))
                 else:
                     combinespwmap = []
                     LOG.info('    Using spw map {} for {}'.format(phaseupspwmap, inputs.ms.basename))
 
         elif inputs.hm_spwmapmode == 'combine':
-            combinespwmap = combine_spwmap(allspws, scispws, scispws[0].id)
+            combinespwmap = combine_spwmap(scispws)
             phaseupspwmap = []
             LOG.info('    Using combined spw map {} for {}'.format(combinespwmap, inputs.ms.basename))
 

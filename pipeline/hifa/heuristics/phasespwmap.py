@@ -1,3 +1,4 @@
+import collections
 import decimal
 
 import pipeline.infrastructure as infrastructure
@@ -7,35 +8,42 @@ import pipeline.domain.measures as measures
 LOG = infrastructure.get_logger(__name__)
 
 
-def combine_spwmap(allspws, scispws, combine_spwid):
-    # Heuristics for computing a simple combined spw map
-    #    At present all this does is assume that the science
-    #    windows are mapped to a single spwid
-    # Here an spw is the spw object stored in the domain object.
-    #        allspws - List of all spws in the MS (not actually used)
-    #        scipws  - List of all science spws in the MS
+def combine_spwmap(scispws):
+    """
+    Returns a spectral window map where each science spectral window is mapped
+    to the lowest science spectral window ID that matches its Spectral Spec.
 
-    # Find the maximum science spw id
-    max_spwid = 0
-    for scispw in scispws:
+    :param scispws: list of spectral window objects for science spectral windows
+    :return: spectral window map
+    """
+    # Create dictionary of spectral specs and their corresponding science
+    # spectral window ids.
+    spspec_to_spwid_map = collections.defaultdict(list)
+    for spw in scispws:
+        # Get spectral spec for current spw id; for older datasets where
+        # spws may have no spectral spec, group these no-spectral-spec spws
+        # together into a single "NONE" group.
+        spspec = get_spectral_spec(spw)
+        if not spspec:
+            spspec = "NONE"
+        spspec_to_spwid_map[spspec].append(spw.id)
 
-        # Find the maximum science spw id
-        if scispw.id > max_spwid:
-            max_spwid = scispw.id
+    # Identify highest science spw id, and initialize the spwmap for every
+    # spectral window id through the max science spectral window id.
+    max_scispwid = max([spw.id for spw in scispws])
+    combinespwmap = range(max_scispwid + 1)
 
-    # Initialize the spwmap. All spw ids up to the maximum
-    # science spw id must be defined.
-    combinespwmap = []
-    for i in range(max_spwid + 1):
-        combinespwmap.append(i)
-
-    # Make a reference copy for comparison
+    # Make a reference copy for comparison.
     refspwmap = list(combinespwmap)
 
-    for scispw in scispws:
-        combinespwmap[scispw.id] = combine_spwid
+    # For each spectral spec, map corresponding science spws to the lowest
+    # spw id of the same spectral spec.
+    for spspec_spwids in spspec_to_spwid_map.itervalues():
+        combine_spwid = min(spspec_spwids)
+        for spwid in spspec_spwids:
+            combinespwmap[spwid] = combine_spwid
 
-    # Return  the new map
+    # Return the new map
     if combinespwmap == refspwmap:
         return []
     else:
