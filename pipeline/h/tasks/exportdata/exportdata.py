@@ -36,7 +36,6 @@ import errno
 import fnmatch
 import glob
 import os
-import re
 import shutil
 import string
 import tarfile
@@ -50,6 +49,7 @@ import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.imagelibrary as imagelibrary
 import pipeline.infrastructure.vdp as vdp
+from pipeline.infrastructure.filenamer import fitsname
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 from ..common import manifest
@@ -1212,26 +1212,6 @@ finally:
 
         return out_manifest_file
 
-    def _fitsfile(self, products_dir, imagename):
-
-        """Strip off stage and iter information to generate
-           FITS file name."""
-
-        # Need to remove stage / iter information
-        #fitsname = re.sub('\.s\d+.*\.iter.*\.', '.', imagename)
-        fitsname = re.sub('\.s\d+[_]\d+\.', '.', imagename)
-        fitsname = re.sub('\.iter\d+\.image', '', fitsname)
-        fitsname = re.sub('\.iter\d+\.image.sd', '.sd', fitsname)
-        fitsname = re.sub('\.iter\d+\.image.pbcor', '.pbcor', fitsname)
-        fitsname = re.sub('\.iter\d+\.mask', '.mask', fitsname)
-        fitsname = re.sub('\.iter\d+\.alpha', '.alpha', fitsname)
-        # .pb must be tried after .pbcor.image !
-        fitsname = re.sub('\.iter\d+\.pb', '.pb', fitsname)
-        fitsfile = os.path.join(products_dir,
-                                 os.path.basename(fitsname) + '.fits')
-
-        return fitsfile
-
     def _export_images(self, context, calimages, calintents, images,
                        products_dir):
         """
@@ -1253,56 +1233,58 @@ finally:
                 LOG.info('Exporting target source images')
                 intents = ['TARGET']
                 cleanlist = context.sciimlist.get_imlist()
+
             for image_number, image in enumerate(cleanlist):
                 # We need to store the image
                 cleanlist[image_number]['fitsfiles'] = []
                 cleanlist[image_number]['auxfitsfiles'] = []
+                version = image.get('version', 1)
                 # Image name probably includes path
                 if image['sourcetype'] in intents:
                     if(image['multiterm']):
                         for nt in xrange(image['multiterm']):
                             imagename = image['imagename'].replace('.image', '.image.tt%d' % (nt))
-                            images_list.append(imagename)
-                            cleanlist[image_number]['fitsfiles'].append(self._fitsfile(products_dir, imagename))
+                            images_list.append((imagename, version))
+                            cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
                         if (image['imagename'].find('.pbcor') != -1):
                             imagename = image['imagename'].replace('.image.pbcor', '.alpha')
-                            images_list.append(imagename)
-                            cleanlist[image_number]['fitsfiles'].append(self._fitsfile(products_dir, imagename))
+                            images_list.append((imagename, version))
+                            cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
                             imagename = '%s.error' % (image['imagename'].replace('.image.pbcor', '.alpha'))
-                            images_list.append(imagename)
-                            cleanlist[image_number]['fitsfiles'].append(self._fitsfile(products_dir, imagename))
+                            images_list.append((imagename, version))
+                            cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
                         else:
                             imagename = image['imagename'].replace('.image', '.alpha')
-                            images_list.append(imagename)
-                            cleanlist[image_number]['fitsfiles'].append(self._fitsfile(products_dir, imagename))
+                            images_list.append((imagename, version))
+                            cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
                             imagename = '%s.error' % (image['imagename'].replace('.image', '.alpha'))
-                            images_list.append(imagename)
-                            cleanlist[image_number]['fitsfiles'].append(self._fitsfile(products_dir, imagename))
+                            images_list.append((imagename, version))
+                            cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
                     else:
                         imagename = image['imagename']
-                        images_list.append(imagename)
-                        cleanlist[image_number]['fitsfiles'].append(self._fitsfile(products_dir, imagename))
+                        images_list.append((imagename, version))
+                        cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
 
                     # Add PBs for interferometry
                     if (image['imagename'].find('.image') != -1) and (image['imagename'].find('.image.sd') == -1):
                         if (image['imagename'].find('.pbcor') != -1):
                             if (image['multiterm']):
                                 imagename = image['imagename'].replace('.image.pbcor', '.pb.tt0')
-                                images_list.append(imagename)
-                                cleanlist[image_number]['auxfitsfiles'].append(self._fitsfile(products_dir, imagename))
+                                images_list.append((imagename, version))
+                                cleanlist[image_number]['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
                             else:
                                 imagename = image['imagename'].replace('.image.pbcor', '.pb')
-                                images_list.append(imagename)
-                                cleanlist[image_number]['auxfitsfiles'].append(self._fitsfile(products_dir, imagename))
+                                images_list.append((imagename, version))
+                                cleanlist[image_number]['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
                         else:
                             if (image['multiterm']):
                                 imagename = image['imagename'].replace('.image', '.pb.tt0')
-                                images_list.append(imagename)
-                                cleanlist[image_number]['auxfitsfiles'].append(self._fitsfile(products_dir, imagename))
+                                images_list.append((imagename, version))
+                                cleanlist[image_number]['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
                             else:
                                 imagename = image['imagename'].replace('.image', '.pb')
-                                images_list.append(imagename)
-                                cleanlist[image_number]['auxfitsfiles'].append(self._fitsfile(products_dir, imagename))
+                                images_list.append((imagename, version))
+                                cleanlist[image_number]['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
 
                     # Add auto-boxing masks for interferometry
                     if (image['imagename'].find('.image') != -1) and (image['imagename'].find('.image.sd') == -1):
@@ -1310,14 +1292,14 @@ finally:
                             imagename = image['imagename'].replace('.image.pbcor', '.mask')
                             imagename2 = image['imagename'].replace('.image.pbcor', '.cleanmask')
                             if os.path.exists(imagename) and not os.path.exists(imagename2):
-                                images_list.append(imagename)
-                                cleanlist[image_number]['auxfitsfiles'].append(self._fitsfile(products_dir, imagename))
+                                images_list.append((imagename, version))
+                                cleanlist[image_number]['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
                         else:
                             imagename = image['imagename'].replace('.image', '.mask')
                             imagename2 = image['imagename'].replace('.image', '.cleanmask')
                             if os.path.exists(imagename) and not os.path.exists(imagename2):
-                                images_list.append(imagename)
-                                cleanlist[image_number]['auxfitsfiles'].append(self._fitsfile(products_dir, imagename))
+                                images_list.append((imagename, version))
+                                cleanlist[image_number]['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
         else:
             # Assume only the root image name was given.
             cleanlib = imagelibrary.ImageLibrary()
@@ -1334,21 +1316,22 @@ finally:
                                                        sourcetype='TARGET')
                 cleanlib.add_item(imageitem)
                 if os.path.basename(image) == '':
-                    images_list.append(os.path.join(context.output_dir, image))
+                    images_list.append((os.path.join(context.output_dir, image), 1))
                 else:
-                    images_list.append(image)
+                    images_list.append((image, 1))
             cleanlist = cleanlib.get_imlist()
             # Need to add the FITS names
             for i in xrange(len(cleanlist)):
-                cleanlist[i]['fitsfiles'] = [self._fitsfile(products_dir, images_list[i])]
+                cleanlist[i]['fitsfiles'] = [fitsname(products_dir, images_list[i][0])]
                 cleanlist[i]['auxfitsfiles'] = []
 
         # Convert to FITS.
         fits_list = []
-        for image in images_list:
+        for image_ver in images_list:
+            image, version = image_ver
             print('Working on {}'.format(image))
-            fitsfile = self._fitsfile(products_dir, image)
-            # skip if fitsfile doesn't exist
+            fitsfile = fitsname(products_dir, image, version)
+            # skip if image doesn't exist
             if not os.path.exists(image):
                 LOG.info('Skipping unexisting image {}'.format(os.path.basename(image)))
                 continue

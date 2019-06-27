@@ -3,6 +3,7 @@ from __future__ import absolute_import
 import os
 import shutil
 import string
+import re
 
 from . import utils
 
@@ -31,6 +32,32 @@ def sanitize(text, valid_chars=None):
         valid_chars = _valid_chars
     filename = ''.join(_char_replacer(c, valid_chars) for c in text)
     return filename
+
+
+def fitsname(products_dir, imagename, version=1):
+
+    """Strip off stage and iter information to generate
+       FITS file name."""
+
+    # Need to remove stage / iter information
+    #fitsname = re.sub('\.s\d+.*\.iter.*\.', '.', imagename)
+    fitsname = re.sub('\.s\d+[_]\d+\.', '.', imagename)
+    fitsname = re.sub('\.iter\d+\.image', '', fitsname)
+    fitsname = re.sub('\.iter\d+\.image.sd', '.sd', fitsname)
+    fitsname = re.sub('\.iter\d+\.image.pbcor', '.pbcor', fitsname)
+    fitsname = re.sub('\.iter\d+\.mask', '.mask', fitsname)
+    fitsname = re.sub('\.iter\d+\.alpha', '.alpha', fitsname)
+    # .pb must be tried after .pbcor.image !
+    fitsname = re.sub('\.iter\d+\.pb', '.pb', fitsname)
+    fitsfile = os.path.join(products_dir,
+                             os.path.basename(fitsname) + '.fits')
+
+    # update fitsname
+    if version > 1:
+        (aa, bb) = os.path.splitext(fitsfile)
+        fitsfile = ''.join((aa, '.v', str(version), bb))
+
+    return fitsfile
 
 
 class FileNameComponentBuilder(object):

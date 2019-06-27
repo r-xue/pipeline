@@ -131,6 +131,11 @@ Compute clean results from a list of specified targets.
     <value>None</value>
   </param>
 
+  <param type="bool" name="overwrite_on_export" subparam="true">
+    <description>Replace existing image products</description>
+    <value>True</value>
+  </param>
+
   <param type="string" name="parallel">
     <description>Clean images using MPI cluster</description>
     <value>automatic</value>
@@ -292,6 +297,15 @@ calcsb -- Force (re-)calculation of sensitivities and beams
 mosweight -- Mosaic weighting
              default=None
              Options: False, True
+
+overwrite_on_export -- Replace existing image products when h/hifa/hifv_exportdata is called
+    If False, images that would have the same FITS name on export, are amended to
+    include a version number.  For example, if oussid.J1248-4559_ph.spw21.mfs.I.pbcor.fits
+    would already be exported by a previous call to hif_makeimags, then
+    'oussid.J1248-4559_ph.spw21.mfs.I.pbcor.v2.fits' would also be exported to the products/ directory.
+    The first exported product retains the same name.  Additional products
+    start counting with 'v2', 'v3', etc.
+    default: True
 
 parallel -- use multiple CPU nodes to clean images
     default: \'automatic\'

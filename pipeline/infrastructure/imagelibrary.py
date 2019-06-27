@@ -1,6 +1,10 @@
 from __future__ import absolute_import
 
 from . import logging
+from . import filenamer as fn
+
+import os
+import copy
 
 LOG = logging.get_logger(__name__)
 
@@ -19,11 +23,28 @@ class ImageLibrary(object):
         del self._images[:]
 
     # Add image item to the list as a dictionary
-    def add_item(self, imageitem):
-        if self.find_imageitem(imageitem) < 0:
-            self._images.append(dict(imageitem))
+    def add_item(self, imageitem, overwrite=True):
+        if overwrite:
+            if self.find_imageitem(imageitem) < 0:
+                self._images.append(dict(imageitem))
+                self._version.append(1)
+            else:
+                LOG.warning('Image item %s already in list' % imageitem.imagename)
         else:
-            LOG.warning('Image item %s already in list' % imageitem.imagename)
+            version_count = self.product_in_list(imageitem)
+            if version_count <= 1:
+                self._images.append(dict(imageitem))
+            else:
+                fitsname = fn.fitsname('',imageitem.imagename)
+                LOG.info('Image product item {} already in image list'.format(fitsname))
+                imageitem.version = version_count
+                LOG.info('Adding new image version to list v{}: {}'.format(imageitem.version, imageitem.imagename))
+
+                (aa, bb) = os.path.splitext(fitsname)
+                fitsfile = ''.join((aa, '.v', str(imageitem.version), bb))
+                LOG.info('{} would be exported as {}'.format(imageitem.imagename, fitsfile))
+
+                self._images.append(dict(imageitem))
 
     # Remove image item from the list
     def delete_item(self, imageitem):
@@ -38,6 +59,17 @@ class ImageLibrary(object):
                 return i
         return -1
 
+    # check for existing entry using fits product name.
+    # this is for the case of adding new products from the same spw. PIPE-345
+    def product_in_list(self, imageitem):
+        for idx, img in enumerate(self._images):
+            if (fn.fitsname('', imageitem.imagename) == fn.fitsname('', img.get('imagename', '')) and
+                   1 == img.get('version')):
+                self._images[idx]['version_count'] += 1
+                return self._images[idx]['version_count']
+        else:
+            return 0
+
 
 # This class contains information for image data product
 class ImageItem (object):
@@ -51,6 +83,8 @@ class ImageItem (object):
         self.multiterm = multiterm
         self.imageplot = imageplot
         self._metadata = metadata
+        self.version = 1
+        self.version_count = 1
 
     def __iter__(self):
         return vars(self).iteritems()

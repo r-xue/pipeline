@@ -40,6 +40,7 @@ class MakeImagesInputs(vdp.StandardInputs):
     parallel = vdp.VisDependentProperty(default='automatic')
     tlimit = vdp.VisDependentProperty(default=2.0)
     weighting = vdp.VisDependentProperty(default='briggs')
+    overwrite_on_export = vdp.VisDependentProperty(default=True)
 
     @vdp.VisDependentProperty(null_input=['', None, {}])
     def target_list(self):
@@ -57,7 +58,7 @@ class MakeImagesInputs(vdp.StandardInputs):
                  hm_lownoisethreshold=None, hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None,
                  hm_dogrowprune=None, hm_minpercentchange=None, hm_fastnoise=None, hm_nsigma=None,
                  hm_perchanweightdensity=None, hm_npixels=None, hm_cleaning=None, tlimit=None, masklimit=None,
-                 cleancontranges=None, calcsb=None, mosweight=None,
+                 cleancontranges=None, calcsb=None, mosweight=None, overwrite_on_export=None,
                  parallel=None,
                  # Extra parameters
                  weighting=None):
@@ -87,6 +88,7 @@ class MakeImagesInputs(vdp.StandardInputs):
         self.calcsb = calcsb
         self.mosweight = mosweight
         self.parallel = parallel
+        self.overwrite_on_export = overwrite_on_export
 
 
 # tell the infrastructure to give us mstransformed data when possible by
@@ -105,6 +107,7 @@ class MakeImages(basetask.StandardTaskTemplate):
         inputs = self.inputs
 
         result = MakeImagesResult()
+        result.overwrite = inputs.overwrite_on_export
 
         # Carry any message from hif_makeimlist (e.g. for missing PI cube target)
         result.set_info(inputs.context.clean_list_info)

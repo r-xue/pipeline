@@ -17,6 +17,7 @@ class MakeImagesResult(basetask.Results):
         self.mitigation_error = False
         self.sensitivities_for_aqua = []
         self.logrecords = []
+        self.overwrite = True
 
     def add_result(self, result, target, outcome):
         target['outcome'] = outcome
@@ -43,9 +44,9 @@ class MakeImagesResult(basetask.Results):
                   multiterm=result.multiterm,
                   imageplot=result.imageplot)
                 if 'TARGET' in result.intent:
-                    context.sciimlist.add_item(imageitem)
+                    context.sciimlist.add_item(imageitem, self.overwrite)
                 else:
-                    context.calimlist.add_item(imageitem)
+                    context.calimlist.add_item(imageitem, self.overwrite)
             except:
                 pass
 
