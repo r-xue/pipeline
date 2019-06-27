@@ -2475,9 +2475,13 @@ def score_sdimage_masked_pixels(context, result):
     total_pixels = mask[metric_mask]
     LOG.debug('Total number of pixels to be included in: {}'.format(len(total_pixels)))
     masked_pixels = total_pixels[total_pixels == False]
-    masked_fraction = float(len(masked_pixels)) / float(len(total_pixels))
-    LOG.debug('Number of masked pixels: {} fraction {}'.format(len(masked_pixels), masked_fraction))
-    metric_score = masked_fraction
+    if len(total_pixels) == 0:
+        LOG.warn('No pixels associated with pointing data exist. QA score will be zero.')
+        metric_score = -1.0
+    else:
+        masked_fraction = float(len(masked_pixels)) / float(len(total_pixels))
+        LOG.debug('Number of masked pixels: {} fraction {}'.format(len(masked_pixels), masked_fraction))
+        metric_score = masked_fraction
 
     # score should be evaluated from metric score
     lmsg = ''
@@ -2495,7 +2499,12 @@ def score_sdimage_masked_pixels(context, result):
         # metric_score should not exceed 1.0. something wrong.
         _x = frac2percentage(metric_score_max)
         lmsg = '{}: fraction of number of masked pixels should not exceed {}. something went wrong.'.format(imbasename, _x)
-        score = 'metric value out of range.'
+        smsg = 'metric value out of range.'
+        score = 0.0
+    elif metric_score < metric_score_min:
+        lmsg = '{}: No pixels associated with pointing data exist. something went wrong.'.format(imbasename)
+        smsg = 'metric value out of range.'
+        score = 0.0
     elif metric_score == metric_score_min:
         lmsg = 'All examined pixels in image {} are valid.'.format(imbasename)
         smsg = 'All examined pixels are valid.'
@@ -2521,7 +2530,7 @@ def score_sdimage_masked_pixels(context, result):
                           metric_score=metric_score,
                           metric_units='Fraction of masked pixels in image')
 
-    return pqa.QAScore(score, 
+    return pqa.QAScore(score,
                        longmsg=lmsg,
                        shortmsg=smsg,
                        origin=origin)
