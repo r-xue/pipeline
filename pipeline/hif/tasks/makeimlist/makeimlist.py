@@ -420,7 +420,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                     # Check only possible field/spw combinations to speed up
                     filtered_spwlist = []
                     for field_intent in field_intent_list:
-                        if vislist_field_spw_combinations.get(field_intent[0], None):
+                        if vislist_field_spw_combinations.get(field_intent[0], None) is not None:
                             spwids_list = vislist_field_spw_combinations.get(field_intent[0], None).get('spwids', None)
                             if spwids_list is not None:
                                 for spw in map(str, spwids_list):
@@ -444,7 +444,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                 all_spw_keys = copy.deepcopy(filtered_spwlist)
                 all_spw_keys.append(','.join(filtered_spwlist))
                 # Add actual cont spw combinations to be able to properly populate the lookup tables later on
-                all_spw_keys.extend([','.join(map(str, vislist_field_spw_combinations[field_intent[0]]['spwids'])) for field_intent in field_intent_list])
+                all_spw_keys.extend([','.join(map(str, vislist_field_spw_combinations[field_intent[0]]['spwids'])) for field_intent in field_intent_list if vislist_field_spw_combinations[field_intent[0]]['spwids'] is not None])
 
                 # Select only the lowest / highest frequency spw to get the smallest (for cell size)
                 # and largest beam (for imsize)
@@ -491,9 +491,10 @@ class MakeImList(basetask.StandardTaskTemplate):
                         # Use only fields that were observed in spwspec
                         actual_field_intent_list = []
                         for field_intent in field_intent_list:
-                            if vislist_field_spw_combinations.get(field_intent[0], None):
-                                if spwspec in map(str, vislist_field_spw_combinations[field_intent[0]].get('spwids', None)):
-                                    actual_field_intent_list.append(field_intent)
+                            if vislist_field_spw_combinations.get(field_intent[0], None) is not None:
+                                if vislist_field_spw_combinations[field_intent[0]].get('spwids', None) is not None:
+                                    if spwspec in map(str, vislist_field_spw_combinations[field_intent[0]]['spwids']):
+                                        actual_field_intent_list.append(field_intent)
                         synthesized_beams[spwspec], known_synthesized_beams = self.heuristics.synthesized_beam(field_intent_list=actual_field_intent_list, spwspec=spwspec, robust=robust, uvtaper=uvtaper, pixperbeam=pixperbeam, known_beams=known_synthesized_beams, force_calc=calcsb, parallel=parallel)
                         if synthesized_beams[spwspec] == 'invalid':
                             LOG.error('Beam for virtual spw %s and robust value of %.1f is invalid. Cannot continue.'
@@ -633,8 +634,9 @@ class MakeImList(basetask.StandardTaskTemplate):
                         # space. Here we filter the actual combinations.
                         valid_field_spwspec_combination = False
                         for spwid in spwspec.split(','):
-                            if int(spwid) in vislist_field_spw_combinations[field_intent[0]]['spwids']:
-                                valid_field_spwspec_combination = True
+                            if vislist_field_spw_combinations[field_intent[0]].get('spwids', None) is not None:
+                                if int(spwid) in vislist_field_spw_combinations[field_intent[0]]['spwids']:
+                                    valid_field_spwspec_combination = True
                         if not valid_field_spwspec_combination:
                             continue
 
