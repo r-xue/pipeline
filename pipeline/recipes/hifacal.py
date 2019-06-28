@@ -120,7 +120,7 @@ def hifacal(vislist, importonly=True, dbservice=True, pipelinemode='automatic',
         hif_applycal(pipelinemode=pipelinemode)
 
         # Make a list of expected point source calibrators to be cleaned
-        hif_makeimlist(intent='PHASE,BANDPASS', pipelinemode=pipelinemode)
+        hif_makeimlist(intent='PHASE,BANDPASS,AMPLITUDE', pipelinemode=pipelinemode)
 
         # Make clean images for the selected calibrators
         hif_makeimages(pipelinemode=pipelinemode)
