@@ -389,7 +389,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                     vislist_for_field = []
                     spwids_for_field = set()
                     for vis in vislist:
-                        ms_domain_obj = inputs.context.observing_run.get_measurement_sets(vis)[0]
+                        ms_domain_obj = inputs.context.observing_run.get_ms(vis)
                         # Get the real spw IDs for this MS
                         ms_science_spwids = [s.id for s in ms_domain_obj.get_spectral_windows()]
                         try:
