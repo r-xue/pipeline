@@ -509,7 +509,7 @@ class Circfeedpolcal(polarization.Polarization):
                              'spw': '',
                              'fluxdensity': [2.3511, 0, 0, 0],
                              'spix': [0.1567, -0.104],
-                             'reffreq': '3.0MHz',
+                             'reffreq': '3.0GHz',
                              'polindex': [0.04709, -0.00860, 0.0096, -0.00285],
                              'polangle': [0.900, 1.28, -3.10, 5.26, -2.7],
                              'rotmeas': 0,
