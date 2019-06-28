@@ -56,7 +56,7 @@ class ALMAImportData(importdata.ImportData):
             try:
                 # ignore HTTPS certificate
                 ssl_context = ssl._create_unverified_context()
-                response = urllib2.urlopen(url, context=ssl_context, timeout=40.0)
+                response = urllib2.urlopen(url, context=ssl_context, timeout=60.0)
                 xml_results = dbfluxes.get_setjy_results(observing_run.measurement_sets)
             except IOError:
                 LOG.warn('Error contacting flux service at: {!s}'.format(url))

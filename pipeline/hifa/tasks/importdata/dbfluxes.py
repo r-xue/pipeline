@@ -116,7 +116,7 @@ def fluxservice(service_url, obs_time, frequency, sourcename):
     ssl_context = ssl._create_unverified_context()
 
     try:
-        response = urllib2.urlopen(url, context=ssl_context, timeout=40.0)
+        response = urllib2.urlopen(url, context=ssl_context, timeout=60.0)
     except IOError:
         LOG.warn('Error contacting flux service at: {!s}'.format(url))
         raise
@@ -200,9 +200,8 @@ def query_online_catalogue(flux_url, ms, spw, source):
     final_spix = decimal.Decimal('%0.3f' % cat_spix)
     age_n_m_p = fluxdict['ageOfNearestMonitorPoint']
 
-    return fluxdict['url'], fluxdict['version'], domain.FluxMeasurement(spw.id, final_I, spix=final_spix,
-                                                                        origin=ORIGIN_DB, queried_at=utcnow,
-                                                                        age=age_n_m_p)
+    return fluxdict['url'], fluxdict['version'], fluxdict['statuscode'], fluxdict['dataconditions'],\
+           domain.FluxMeasurement(spw.id, final_I, spix=final_spix, origin=ORIGIN_DB, queried_at=utcnow, age=age_n_m_p)
 
 
 def add_catalogue_fluxes(measurements, ms):
@@ -248,7 +247,7 @@ def add_catalogue_fluxes(measurements, ms):
             if spw not in science_windows:
                 continue
 
-            url, version, catalogue_measurement = query_online_catalogue(flux_url, ms, spw, source)
+            url, version, status_code, data_conditions, catalogue_measurement = query_online_catalogue(flux_url, ms, spw, source)
 
             if catalogue_measurement:
                 # Catalogue doesn't return Q,U,V so adopt Q,U,V from XML
@@ -272,16 +271,28 @@ def add_catalogue_fluxes(measurements, ms):
                 spix = 'N/A'
                 age = 'N/A'
 
-            log_result(source, spw, xml_measurement.I, catalogue_I, spix, age, url, version)
+            log_result(source, spw, xml_measurement.I, catalogue_I, spix, age, url, version, status_code, data_conditions)
 
     return results
 
 
-def log_result(source, spw, asdm_I, catalogue_I, spix, age, url, version):
+def log_result(source, spw, asdm_I, catalogue_I, spix, age, url, version, status_code, data_conditions):
+
+    codedict = {}
+    codedict[0] = "Grid cal flux estimation heuristic used"
+    codedict[1] = "Low-cadence flux estimation heuristic used"
+
+    # "dual-band data? " yes/no; "measurements bracketed in time? " yes/no.
+    decision = {'0': 'No', '1': 'Yes'}
+
     LOG.info('Source: {!s} spw: {!s}    ASDM flux: {!s}    Catalogue flux: {!s}'.format(source.name, spw.id,
                                                                                            asdm_I, catalogue_I))
     LOG.info('         Online catalog Spectral Index: {!s}'.format(spix))
     LOG.info('         ageOfNearestMonitorPoint: {!s}'.format(age))
+    LOG.info('         {!s}'.format(codedict[int(status_code)]))
+    LOG.info('         Number of measurements = {!s}'.format(str(data_conditions)[0]))
+    LOG.info('         Dual-band data? {!s}'.format(decision[str(data_conditions)[1]]))
+    LOG.info('         Measurements bracketed in time? {!s}'.format(decision[str(data_conditions)[2]]))
     LOG.info('         URL: {!s}'.format(url))
     LOG.info('         Version: {!s}'.format(version))
     LOG.info("---------------------------------------------")
