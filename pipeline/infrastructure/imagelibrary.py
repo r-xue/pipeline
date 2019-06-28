@@ -13,6 +13,7 @@ LOG = logging.get_logger(__name__)
 class ImageLibrary(object):
     def __init__(self):
         self._images = []
+        self._version = []
 
     # Return the image list.
     def get_imlist(self):
@@ -21,6 +22,7 @@ class ImageLibrary(object):
     # Clear the image list
     def clear_imlist(self):
         del self._images[:]
+        del self._version[:] 
 
     # Add image item to the list as a dictionary
     def add_item(self, imageitem, overwrite=True):
