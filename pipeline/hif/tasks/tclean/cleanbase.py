@@ -723,13 +723,11 @@ def set_miscinfo(name, spw=None, field=None, type=None, iter=None, multiterm=Non
             if observing_run is not None and project_summary is not None:
                 # TODO: Use more generic approach like in the imaging heuristics
                 if project_summary.telescope == 'ALMA':
-                    corrstring = observing_run.measurement_sets[0].get_alma_corrstring()
+                    info['npol'] = len(observing_run.measurement_sets[0].get_alma_corrstring().split(','))
                 elif project_summary.telescope == 'VLA':
-                    corrstring = observing_run.measurement_sets[0].get_vla_corrstring()
+                    info['npol'] = len(observing_run.measurement_sets[0].get_vla_corrstring().split(','))
                 else:
-                    corrstring = ''
-
-                info['npol'] = len(corrstring.split(','))
+                    info['npol'] = -999
 
             if type is not None:
                 info['type'] = type
