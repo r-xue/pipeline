@@ -32,4 +32,5 @@
             %endfor
         </tbody>
     </table>
+    <p>${contdat_path_link}
 %endif

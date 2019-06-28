@@ -44,6 +44,22 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         mako_context.update({'table_rows': table_rows})
 
+        weblog_dir = os.path.join(pipeline_context.report_dir,
+                                  'stage%s' % results[0].stage_number)
+
+        # copy cont.dat file across to weblog directory
+        contdat_filename = 'cont.dat'
+        contdat_path = os.path.join(weblog_dir, contdat_filename)
+        contdat_weblink = os.path.join('stage%s' % results[0].stage_number, contdat_filename)
+        contdat_path_link = '<a href="{!s}" class="replace-pre" data-title="{!s}">View</a>' \
+                            ' or <a href="{!s}" download="{!s}">download</a> {!s} file.'.format(contdat_weblink, contdat_filename,
+                                                                                                contdat_weblink, contdat_weblink, contdat_filename)
+        if os.path.exists(contdat_filename):
+            LOG.trace('Copying %s to %s' % (contdat_filename, weblog_dir))
+            shutil.copy(contdat_filename, weblog_dir)
+
+        mako_context.update({'contdat_path_link': contdat_path_link})
+
     def _get_table_rows(self, context, result):
         ranges_dict = result.result_cont_ranges
 
