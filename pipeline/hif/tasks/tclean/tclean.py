@@ -616,6 +616,8 @@ class Tclean(cleanbase.CleanBase):
 
         # All continuum
         if inputs.specmode == 'cube' and inputs.spwsel_all_cont:
+            self._update_miscinfo(result.image, len(self.image_heuristics.field(inputs.intent, inputs.field)), pbcor_image_min, pbcor_image_max)
+
             result.set_image_min(pbcor_image_min)
             result.set_image_max(pbcor_image_max)
             result.set_image_rms(nonpbcor_image_non_cleanmask_rms)
@@ -722,6 +724,8 @@ class Tclean(cleanbase.CleanBase):
                                                   pblimit_image=self.pblimit_image,
                                                   pblimit_cleanmask=self.pblimit_cleanmask,
                                                   cont_freq_ranges=self.cont_freq_ranges)
+
+            self._update_miscinfo(result.image, len(self.image_heuristics.field(inputs.intent, inputs.field)), pbcor_image_min, pbcor_image_max)
 
             keep_iterating, hm_masking = self.image_heuristics.keep_iterating(iteration, inputs.hm_masking,
                                                                               result.tclean_stopcode,
@@ -930,7 +934,8 @@ class Tclean(cleanbase.CleanBase):
             cleanbase.set_miscinfo(name=mom0_name, spw=self.inputs.spw,
                                    field=self.inputs.field, iter=maxiter, type='mom0_fc',
                                    intent=self.inputs.intent, specmode=self.inputs.specmode,
-                                   observing_run=context.observing_run)
+                                   observing_run=context.observing_run,
+                                   project_summary=context.project_summary)
 
             # Update the result.
             result.set_mom0_fc(maxiter, mom0_name)
@@ -944,7 +949,8 @@ class Tclean(cleanbase.CleanBase):
             cleanbase.set_miscinfo(name=mom8_name, spw=self.inputs.spw,
                                    field=self.inputs.field, iter=maxiter, type='mom8_fc',
                                    intent=self.inputs.intent, specmode=self.inputs.specmode,
-                                   observing_run=context.observing_run)
+                                   observing_run=context.observing_run,
+                                   project_summary=context.project_summary)
 
             # Update the result.
             result.set_mom8_fc(maxiter, mom8_name)
@@ -975,3 +981,15 @@ class Tclean(cleanbase.CleanBase):
         unit = qa.getunit(velo)
         velocity = qa.tos(qa.quantity(val, unit))
         return velocity
+
+    def _update_miscinfo(self, imagename, nfield, datamin, datamax):
+
+        # Update metadata
+        with casatools.ImageReader(imagename) as image:
+            info = image.miscinfo()
+
+            info['nfield'] = nfield
+            info['datamin'] = datamin
+            info['datamax'] = datamax
+
+            image.setmiscinfo(info)
