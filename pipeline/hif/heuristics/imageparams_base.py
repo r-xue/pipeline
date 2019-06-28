@@ -299,7 +299,7 @@ class ImageParamsHeuristics(object):
         return largest_primary_beam_size
 
     def synthesized_beam(self, field_intent_list, spwspec, robust=0.5, uvtaper=[], pixperbeam=5.0, known_beams={},
-                         force_calc=False, parallel='automatic'):
+                         force_calc=False, parallel='automatic', shift=False):
         """Calculate synthesized beam for a given field / spw selection."""
 
         qaTool = casatools.quanta
@@ -466,7 +466,8 @@ class ImageParamsHeuristics(object):
                         if self.is_eph_obj(field):
                             phasecenter = 'TRACKFIELD'
                         else:
-                            phasecenter = self.phasecenter(field_ids)
+                            phasecenter = self.phasecenter(field_ids, shift_to_nearest_field=shift,
+                                                           primary_beam=largest_primary_beam_size, intent=intent)
                         do_parallel = mpihelpers.parse_mpi_input_parameter(parallel)
                         paramList = ImagerParameters(msname=valid_vis_list,
                                                      scan=valid_scanids_list,
@@ -644,7 +645,8 @@ class ImageParamsHeuristics(object):
         else:
             return 'standard'
 
-    def phasecenter(self, fields, centreonly=True, vislist=None):
+    def phasecenter(self, fields, centreonly=True, vislist=None, shift_to_nearest_field=False,
+                    primary_beam=None, intent='TARGET'):
 
         cme = casatools.measures
         cqa = casatools.quanta
@@ -758,10 +760,37 @@ class ImageParamsHeuristics(object):
             m0 = cqa.angle(m0, prec=9)[0]
         m1 = cqa.angle(m1, prec=9)[0]
 
+        center = cme.direction(ref, m0, m1)
+        phase_center = '%s %s %s' % (ref, m0, m1)
+
+        # if the image center is outside of the mosaic pointings, shift to the nearest field
+        if shift_to_nearest_field:
+            nearest_field_to_center = self.center_field_ids(vislist, field_names[0], intent, phase_center)[0]
+            ms = self.observing_run.get_ms(name=vislist[0])
+            nearest = ms.get_fields(field_id=nearest_field_to_center)[0].mdirection
+            if primary_beam:
+                if cqa.getvalue(cqa.convert(cme.separation(center, nearest), 'arcsec'))[0] > 0.3 * primary_beam:
+                    LOG.info('The nearest pointing is > 0.3pb away from image center.  Shifting the phase '
+                             'center to the nearest field (id = {})'.format(nearest_field_to_center))
+                    LOG.info('Old phasecenter: {}'.format(phase_center))
+                    # convert to strings (CASA 4.0 returns as list for some reason hence 0 index)
+                    m0 = cme.getvalue(nearest)['m0']
+                    m1 = cme.getvalue(nearest)['m1']
+                    if ref == 'ICRS' or ref == 'J2000' or ref == 'B1950':
+                        m0 = cqa.time(m0, prec=10)[0]
+                    else:
+                        m0 = cqa.angle(m0, prec=9)[0]
+                    m1 = cqa.angle(m1, prec=9)[0]
+                    phase_center = '%s %s %s' % (ref, m0, m1)
+                    LOG.info('New phasecenter: {}'.format(phase_center))
+            else:
+                LOG.warning('No primary beam supplied.  Will not attempt to shift phasecenter to '
+                            'nearest field w/o a primary beam distance check.')
+
         if centreonly:
-            return '%s %s %s' % (ref, m0, m1)
+            return phase_center
         else:
-            return '%s %s %s' % (ref, m0, m1), xspread, yspread
+            return phase_center, xspread, yspread
 
     def field(self, intent, field, exclude_intent=None, vislist=None):
 

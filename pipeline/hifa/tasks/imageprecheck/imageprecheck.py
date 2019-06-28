@@ -194,10 +194,24 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
         for robust in [0.0, 0.5, 1.0, 2.0]:
             # Calculate nbin / reprBW sensitivity if necessary
             if reprBW_mode in ['nbin', 'repr_spw']:
+
                 beams[(robust, str(default_uvtaper), 'repBW')], known_synthesized_beams = image_heuristics.synthesized_beam([(repr_field, 'TARGET')], str(repr_spw), robust=robust, uvtaper=default_uvtaper, known_beams=known_synthesized_beams, force_calc=calcsb, parallel=parallel)
+
                 if beams[(robust, str(default_uvtaper), 'repBW')] == 'invalid':
-                    LOG.error('Beam for repBW and robust value of %.1f is invalid. Cannot continue.' % (robust))
-                    return ImagePreCheckResults(error=True, error_msg='Invalid beam')
+
+                    LOG.warning('Beam for repBW and robust value of {:.1f} is invalid. Trying again with phasecenter'
+                                ' shifted to the nearest field that is > 0.3 PB away.'.format(robust))
+
+                    beams[(robust, str(default_uvtaper),
+                           'repBW')], known_synthesized_beams = image_heuristics.synthesized_beam(
+                        [(repr_field, 'TARGET')], str(repr_spw), robust=robust, uvtaper=default_uvtaper,
+                        known_beams=known_synthesized_beams, force_calc=True, parallel=parallel, shift=True)
+
+                    # check again.  If the beam is still invalid, error and return.
+                    if beams[(robust, str(default_uvtaper), 'repBW')] == 'invalid':
+                        LOG.error('Beam for repBW and robust value of %.1f is still invalid. Cannot continue.' % robust)
+                        return ImagePreCheckResults(error=True, error_msg='Invalid beam')
+
                 cells[(robust, str(default_uvtaper), 'repBW')] = image_heuristics.cell(beams[(robust, str(default_uvtaper), 'repBW')])
                 imsizes[(robust, str(default_uvtaper), 'repBW')] = image_heuristics.imsize(field_ids, cells[(robust, str(default_uvtaper), 'repBW')], primary_beam_size, centreonly=False)
 
@@ -233,10 +247,24 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
 
                 sensitivity_bandwidth = cqa.quantity(sens_bw, 'Hz')
 
-            beams[(robust, str(default_uvtaper), 'aggBW')], known_synthesized_beams = image_heuristics.synthesized_beam([(repr_field, 'TARGET')], cont_spw, robust=robust, uvtaper=default_uvtaper, known_beams=known_synthesized_beams, force_calc=calcsb, parallel=parallel)
+            beams[(robust, str(default_uvtaper), 'aggBW')], known_synthesized_beams = image_heuristics.synthesized_beam([(repr_field, 'TARGET')], cont_spw, robust=robust, uvtaper=default_uvtaper,
+                                                                                                                        known_beams=known_synthesized_beams, force_calc=calcsb, parallel=parallel)
             if beams[(robust, str(default_uvtaper), 'aggBW')] == 'invalid':
-                LOG.error('Beam for aggBW and robust value of %.1f is invalid. Cannot continue.' % (robust))
-                return ImagePreCheckResults(error=True, error_msg='Invalid beam')
+                LOG.warning('Beam for aggBW and robust value of {:.1f} is invalid. Trying again with phasecenter '
+                            'shifted to the nearest field that is > 0.3 PB away.'.format(robust))
+
+                (beams[(robust, str(default_uvtaper), 'aggBW')],
+                 known_synthesized_beams) = image_heuristics.synthesized_beam([(repr_field, 'TARGET')], cont_spw,
+                                                                              robust=robust, uvtaper=default_uvtaper,
+                                                                              known_beams=known_synthesized_beams,
+                                                                              force_calc=True, parallel=parallel,
+                                                                              shift=True)
+
+                # check again.  If the beam is still invalid, error and return.
+                if beams[(robust, str(default_uvtaper), 'aggBW')] == 'invalid':
+                    LOG.error('Beam for aggBW and robust value of %.1f is still invalid. Cannot continue.' % (robust))
+                    return ImagePreCheckResults(error=True, error_msg='Invalid beam')
+
             cells[(robust, str(default_uvtaper), 'aggBW')] = image_heuristics.cell(beams[(robust, str(default_uvtaper), 'aggBW')])
             imsizes[(robust, str(default_uvtaper), 'aggBW')] = image_heuristics.imsize(field_ids, cells[(robust, str(default_uvtaper), 'aggBW')], primary_beam_size, centreonly=False)
 
