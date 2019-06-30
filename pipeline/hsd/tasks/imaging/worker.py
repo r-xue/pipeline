@@ -40,6 +40,7 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
     source_name = ref_msobj.fields[ref_fieldid].name
 #     # trim source name to workaround '"name"' type of sources
 #     trimmed_name = source_name.strip('"')
+    is_eph_obj = ref_msobj.get_fields(ref_fieldid)[0].source.is_eph_obj
 
     # qa tool
     qa = casatools.quanta
@@ -77,14 +78,22 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
     ra = []
     dec = []
     outref = None
+    org_direction = None
     for vis, ant_id, field_id, spw_id in itertools.izip(parent_mses, ant_list, fieldid_list, spw_list):
+
+        # get first org_direction if source if ephemeris source
+        if is_eph_obj and org_direction==None:
+            # get org_direction
+            msobj = context.observing_run.get_ms(vis)
+            org_direction = msobj.get_fields(field_id)[0].source.org_direction
+
         datatable_name = os.path.join(context.observing_run.ms_datatable_name, os.path.basename(vis))
         datatable = DataTable(name=datatable_name, readonly=True)
 
-#        if (datatable.getcolkeyword('RA', 'UNIT') != 'deg') or \
-#            (datatable.getcolkeyword('DEC', 'UNIT') != 'deg'):
-        if (datatable.getcolkeyword('SHIFT_RA', 'UNIT') != 'deg') or \
-            (datatable.getcolkeyword('SHIFT_DEC', 'UNIT') != 'deg'):
+        if (datatable.getcolkeyword('RA', 'UNIT') != 'deg') or \
+            (datatable.getcolkeyword('DEC', 'UNIT') != 'deg') or \
+            (datatable.getcolkeyword('OFS_RA', 'UNIT') != 'deg') or \
+            (datatable.getcolkeyword('OFS_DEC', 'UNIT') != 'deg'):
             raise RuntimeError("Found unexpected unit of RA/DEC in DataTable. It should be in 'deg'")
 
         if ant_id is None:
@@ -99,10 +108,12 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
         else:
             index_list = sorted(common.get_index_list_for_ms(datatable, [vis], [ant_id], [field_id], [spw_id]))
 
-#        _ra = datatable.getcol('RA').take(index_list)
-#        _dec = datatable.getcol('DEC').take(index_list)
-        _ra = datatable.getcol('SHIFT_RA').take(index_list)
-        _dec = datatable.getcol('SHIFT_DEC').take(index_list)
+        if is_eph_obj:
+            _ra = datatable.getcol('OFS_RA').take(index_list)
+            _dec = datatable.getcol('OFS_DEC').take(index_list)
+        else:
+            _ra = datatable.getcol('RA').take(index_list)
+            _dec = datatable.getcol('DEC').take(index_list)
 
         ra.extend(_ra)
         dec.extend(_dec)
@@ -119,6 +130,13 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
     if outref is None:
         LOG.warn('No direction reference is set. Assuming ICRS')
         outref = 'ICRS'
+
+    if is_eph_obj:
+        ra_offset = qa.convert( org_direction['m0'], 'deg' )['value']
+        dec_offset = qa.convert( org_direction['m1'], 'deg' )['value']
+    else:
+        ra_offset = 0.0 
+        dec_offset = 0.0
 
     ra_min = min(ra)
     ra_max = max(ra)
@@ -295,14 +313,21 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
             LOG.debug('\tMS %s: Antenna %s Spw %s Field %s'%(os.path.basename(m), a, s, f))
 
         # Check for ephemeris source
-        known_ephemeris_list = ['MERCURY', 'VENUS', 'MARS', 'JUPITER', 'SATURN', 'URANUS', 'NEPTUNE', 'PLUTO', 'SUN',
-                                'MOON']
+        # known_ephemeris_list = ['MERCURY', 'VENUS', 'MARS', 'JUPITER', 'SATURN', 'URANUS', 'NEPTUNE', 'PLUTO', 'SUN',
+        #                         'MOON']
+
         ephemsrcname = ''
         reference_field = reference_data.fields[fieldid_list[0]]
         source_name = reference_field.name
-        if source_name.upper() in known_ephemeris_list:
-            ephemsrcname = source_name.upper()
-            LOG.info("Generating an image of ephemeris source. Setting ephemsrcname='%s'" % ephemsrcname)
+        is_eph_obj = reference_data.get_fields(fieldid_list[0])[0].source.is_eph_obj
+
+        # for ephemeris sources without ephemeris data in MS (eg. not for ALMA)
+        if not is_eph_obj:
+            me = casatools.measures
+            ephemeris_list = me.listcodes(me.direction())['extra']
+            known_ephemeris_list = numpy.delete( ephemeris_list, numpy.where(ephemeris_list=='COMET') )
+            if source_name.upper() in known_ephemeris_list:
+                ephemsrcname = source_name.upper()
 
         # baseline
         # baseline = '0&&&'
@@ -372,6 +397,11 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
 
 #         temporary_name = imagename.rstrip('/')+'.tmp'
         cleanup_params = ['outfile', 'infiles', 'spw', 'scan']
+
+        if is_eph_obj:
+            phasecenter = 'TRACKFIELD'
+            LOG.info( "phasecenter is overrided with \'TRACKFIELD\'" )
+
         qa = casatools.quanta
         image_args = {'mode': mode,
                       'intent': "OBSERVE_TARGET#ON_SOURCE",
@@ -420,10 +450,16 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         image_args['field'] = fieldsel_list
         image_args['antenna'] = antsel_list
         LOG.debug('Executing sdimaging task: args=%s' % (image_args))
-        image_job = casa_tasks.sdimaging(**image_args)
+        # image_job = casa_tasks.sdimaging(**image_args)
+        image_job = casa_tasks.tsdimaging(**image_args)
 
         # execute job
         self._executor.execute(image_job)
+
+        # tsdimaging changes the image filename, workaround to revert it
+        imagename_tmp = imagename + '.image'
+        os.rename( imagename_tmp, imagename )
+
         # check imaging result
         imagename = image_args['outfile']
         weightname = imagename + '.weight'

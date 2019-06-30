@@ -43,12 +43,13 @@ class SDImportDataResults(basetask.Results):
     SetJy results generated from flux entries in Source.xml.
     """
 
-    def __init__(self, mses=None, reduction_group_list=None, datatable_prefix=None, setjy_results=None):
+    def __init__(self, mses=None, reduction_group_list=None, datatable_prefix=None, setjy_results=None, org_directions=None):
         super(SDImportDataResults, self).__init__()
         self.mses = [] if mses is None else mses
         self.reduction_group_list = reduction_group_list
         self.datatable_prefix = datatable_prefix
         self.setjy_results = setjy_results
+        self.org_directions = org_directions
         self.origin = {}
         self.results = importdata.ImportDataResults(mses=mses, setjy_results=setjy_results)
 
@@ -56,6 +57,7 @@ class SDImportDataResults(basetask.Results):
         self.results.merge_with_context(context)
         self.__merge_reduction_group(context.observing_run, self.reduction_group_list)
         context.observing_run.ms_datatable_name = self.datatable_prefix
+        context.observing_run.org_directions = self.org_directions
 
     def __merge_reduction_group(self, observing_run, reduction_group_list):
         if not hasattr(observing_run, 'ms_reduction_group'):
@@ -95,18 +97,24 @@ class SDImportData(importdata.ImportData):
         # per MS inspection
         table_prefix = absolute_path(os.path.join(self.inputs.context.name, 'MSDataTable.tbl'))
         reduction_group_list = []
+        org_directions_dict = {}
         for ms in results.mses:
             LOG.debug('Start inspection for %s' % (ms.basename))
             table_name = os.path.join(table_prefix, ms.basename)
             inspector = inspection.SDInspection(table_name, ms=ms)
-            reduction_group = self._executor.execute(inspector, merge=False)
+            reduction_group, org_directions = self._executor.execute(inspector, merge=False)
             reduction_group_list.append(reduction_group)
+
+            # update org_directions_dict for only new keys in org_directions
+            for key in org_directions:
+                org_directions_dict.setdefault( key, org_directions[key] )
 
         # create results object
         myresults = SDImportDataResults(mses=results.mses,
                                         reduction_group_list=reduction_group_list,
                                         datatable_prefix=table_prefix,
-                                        setjy_results=results.setjy_results)
+                                        setjy_results=results.setjy_results,
+                                        org_directions=org_directions_dict )
 
         myresults.origin = results.origin
         return myresults

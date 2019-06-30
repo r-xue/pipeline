@@ -88,6 +88,7 @@ class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
     edge = vdp.VisDependentProperty(default=(0, 0))
     deviationmask = vdp.VisDependentProperty(default={})
     bloutput = vdp.VisDependentProperty(default=None)
+    org_directions_dict = vdp.VisDependentProperty(default=None)
 
     @vdp.VisDependentProperty
     def prefix(self):
@@ -118,7 +119,7 @@ class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
         return self.plan.get_channelmap_range_list()
 
     def __init__(self, context, vis=None, plan=None,
-                 fit_order=None, edge=None, deviationmask=None, blparam=None, bloutput=None):
+                 fit_order=None, edge=None, deviationmask=None, blparam=None, bloutput=None, org_directions_dict=None):
         super(BaselineSubtractionWorkerInputs, self).__init__()
 
         self.context = context
@@ -129,7 +130,7 @@ class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
         self.deviationmask = deviationmask
         self.blparam = blparam
         self.bloutput = bloutput
-
+        self.org_directions_dict = org_directions_dict
 
 # Base class for workers
 class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
@@ -215,6 +216,7 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         plot_manager = plotter.BaselineSubtractionPlotManager(self.inputs.context, self.datatable) 
         outfile = results.outcome['outfile']
         ms = self.inputs.ms
+        org_directions_dict = self.inputs.org_directions_dict
         accum = self.inputs.plan
         deviationmask_list = self.inputs.deviationmask 
         LOG.info('deviationmask_list={}'.format(deviationmask_list))      
@@ -229,7 +231,13 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
                 deviationmask = None
 
             if status:
+                fields = ms.get_fields( field_id = field_id )
+                source_name = fields[0].source.name
+                if not source_name in org_directions_dict:
+                    raise RuntimeError( "source_name {} not found in org_directions_dict (sources found are {})".format( source_name, org_directions_dict.keys() ) )
+                org_direction = org_directions_dict[source_name]
                 plot_list.extend(plot_manager.plot_spectra_with_fit(field_id, antenna_id, spw_id, 
+                                                                    org_direction,
                                                                     grid_table, 
                                                                     deviationmask, channelmap_range))
         plot_manager.finalize()
@@ -251,13 +259,14 @@ class HpcBaselineSubtractionWorkerInputs(BaselineSubtractionWorkerInputs):
 
     def __init__(self, context, vis=None, plan=None,
                  fit_order=None, edge=None, deviationmask=None, blparam=None, bloutput=None,
-                 parallel=None):
+                 parallel=None, org_directions_dict=None):
         super(HpcBaselineSubtractionWorkerInputs, self).__init__(context, vis=vis, plan=plan, 
                                                                  fit_order=fit_order, edge=edge,
                                                                  deviationmask=deviationmask, 
-                                                                 blparam=blparam, bloutput=bloutput)
+                                                                 blparam=blparam, bloutput=bloutput,
+                                                                 org_directions_dict=org_directions_dict)
         self.parallel = parallel
-
+        
 
 # This is abstract class since Task is not specified yet
 class HpcBaselineSubtractionWorker(sessionutils.ParallelTemplate):

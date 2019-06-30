@@ -42,7 +42,7 @@ class SDInspection(object):
 
         dry_run = not os.path.exists(self.ms.name)
         #worker.set_name(ms.name)
-        worker.execute(dry_run=dry_run)
+        org_directions = worker.execute(dry_run=dry_run)
 
         datatable = worker.get_datatable()
         datatable.exportdata(minimal=False)
@@ -111,7 +111,7 @@ class SDInspection(object):
                                         ms=ms.basename, field_id=field_id)
         datatable.exportdata(minimal=False)
 
-        return reduction_group
+        return reduction_group, org_directions
 
     def _inspect_reduction_group(self):
         reduction_group = {}

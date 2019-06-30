@@ -177,6 +177,9 @@ class SDBaseline(basetask.StandardTaskTemplate):
         # outcome for baseline subtraction
         baselined = []
 
+        # dictionay of org_direction
+        org_directions_dict = {}
+
         LOG.debug('Starting per reduction group processing: number of groups is {ngroup}', ngroup=len(reduction_group))
         for (group_id, group_desc) in reduction_group.iteritems():
             LOG.info('Processing Reduction Group {}', group_id)
@@ -189,6 +192,20 @@ class SDBaseline(basetask.StandardTaskTemplate):
                          antenna_id=m.antenna_id, spw=m.spw_id,
                          field=m.field_name,
                          field_id=m.field_id)
+
+                # scan for org_direction and find the first one in group
+                msobj = context.observing_run.get_ms(m.ms.basename)
+                field_id = m.field_id
+                fields = msobj.get_fields( field_id = field_id )
+                source_name = fields[0].source.name
+                if fields[0].source.is_eph_obj:
+                    org_direction = fields[0].source.org_direction
+                else:
+                    org_direction = None
+                if source_name not in org_directions_dict:
+                    org_directions_dict.update( {source_name:org_direction} )
+                    LOG.info( "registered org_direction[{}]={}".format( source_name, org_direction ) )
+
             # assume all members have same spw and pollist
             first_member = group_desc[0]
             iteration = first_member.iteration
@@ -306,7 +323,8 @@ class SDBaseline(basetask.StandardTaskTemplate):
                                             vis=vislist, plan=plan, 
                                             fit_order=fitorder, edge=edge, blparam=blparam,
                                             deviationmask=deviationmask_list,
-                                            parallel=self.inputs.parallel)
+                                            parallel=self.inputs.parallel,
+                                            org_directions_dict=org_directions_dict )
         fitter_task = worker_cls(fitter_inputs)
         fitter_results = self._executor.execute(fitter_task, merge=False)
 

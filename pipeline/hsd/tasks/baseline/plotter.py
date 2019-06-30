@@ -146,7 +146,7 @@ class BaselineSubtractionPlotManager(object):
         self.prefit_storage.resize_storage(num_ra, num_dec, num_pol, num_chan)
         self.postfit_storage.resize_storage(num_ra, num_dec, num_pol, num_chan)
 
-    def plot_spectra_with_fit(self, field_id, antenna_id, spw_id, 
+    def plot_spectra_with_fit(self, field_id, antenna_id, spw_id, org_direction, 
                               grid_table=None, deviation_mask=None, channelmap_range=None,
                               showatm=True):
         """
@@ -196,6 +196,7 @@ class BaselineSubtractionPlotManager(object):
             atm_freq = None
         plot_list = self.plot_profile_map_with_fit(prefit_prefix, postfit_prefix, grid_table,
                                                    deviation_mask, line_range,
+                                                   org_direction,
                                                    atm_transmission, atm_freq)
         ret = []
         for (plot_type, plots) in plot_list.iteritems():
@@ -227,7 +228,8 @@ class BaselineSubtractionPlotManager(object):
         return ret
 
     def plot_profile_map_with_fit(self, prefit_figfile_prefix, postfit_figfile_prefix, grid_table,
-                                  deviation_mask, line_range, atm_transmission, atm_frequency):
+                                  deviation_mask, line_range, 
+                                  org_direction, atm_transmission, atm_frequency):
         """
         plot_table format:
         [[0, 0, RA0, DEC0, [IDX00, IDX01, ...]],
@@ -252,7 +254,8 @@ class BaselineSubtractionPlotManager(object):
                                                                                             antid, 
                                                                                             virtual_spwid, 
                                                                                             polids,
-                                                                                            grid_table)
+                                                                                            grid_table,
+                                                                                            org_direction )
 
         plotter = self.pool.create_plotter(num_ra, num_dec, num_plane, refpix, refval, increment,
                                            direction_reference=self.datatable.direction_ref)
@@ -436,7 +439,7 @@ def configure_2d_panel(xpanel, ypanel, ngridx, ngridy, num_plane=3):
     return xypanel
 
 #@utils.profiler
-def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table):
+def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table, org_direction):
     # plot table is separated into two parts: meta data part and row list part
     # plot_table layout: [RA_ID, DEC_ID, RA_DIR, DEC_DIR]
     # [[0, 0, RA0, DEC0], <- plane 0
@@ -470,6 +473,15 @@ def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table):
     num_dec = len(ypanel)
     each_grid = configure_2d_panel(xpanel, ypanel, num_grid_ra, num_grid_dec, num_plane)
     rowlist = [{} for i in xrange(num_dec * num_ra)]
+ 
+    qa = casatools.quanta
+    if org_direction is None:
+        ra_offset = 0
+        dec_offset = 0
+    else:
+        ra_offset  = qa.convert( org_direction['m0'], 'deg' )['value']
+        dec_offset = qa.convert( org_direction['m1'], 'deg' )['value']
+
     for row_index, each_plane in enumerate(each_grid):
         def g():
             for plot_table_rowid in each_plane:
@@ -491,8 +503,8 @@ def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table):
         declist = [plot_table[i][3] for i in each_plane]
         #ra = plot_table[each_plane[0]][2]
         #dec = plot_table[each_plane[0]][3]
-        ra = numpy.mean(ralist)
-        dec = numpy.mean(declist)
+        ra = numpy.mean(ralist) + ra_offset
+        dec = numpy.mean(declist) + dec_offset
         rowlist[row_index].update(
                 {"RAID": raid, "DECID": decid, "RA": ra, "DEC": dec,
                  "IDS": dataids})
@@ -760,8 +772,10 @@ def get_lines2(infile, datatable, num_ra, rowlist, polids, rowmap=None):
                 flag = tb.getcell('FLAG', row)
 #                ra = datatable.getcell('RA', dt_id)
 #                dec = datatable.getcell('DEC', dt_id)
-                ra = datatable.getcell('SHIFT_RA', dt_id)
-                dec = datatable.getcell('SHIFT_DEC', dt_id)
+#                ra = datatable.getcell('SHIFT_RA', dt_id)
+#                dec = datatable.getcell('SHIFT_DEC', dt_id)
+                ra = datatable.getcell('OFS_RA', dt_id)
+                dec = datatable.getcell('OFS_DEC', dt_id)
                 sqdist = (ra - ref_ra) * (ra - ref_ra) + (dec - ref_dec) * (dec - ref_dec)
                 for ipol in xrange(num_pol):
                     if numpy.all(flag[ipol] == True):

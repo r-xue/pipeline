@@ -50,6 +50,7 @@ import polcal_cli
 import sdbaseline_cli
 import sdcal_cli
 import sdimaging_cli
+import tsdimaging_cli
 import setjy_cli
 import split_cli
 import statwt_cli
@@ -227,6 +228,10 @@ def uvcontfit(*v, **k):
 
 def sdimaging(*v, **k):
     return _get_job(sdimaging_cli.sdimaging_cli, *v, **k)
+
+
+def tsdimaging(*v, **k):
+    return _get_job(tsdimaging_cli.tsdimaging_cli, *v, **k)
 
 
 def sdcal(*v, **k):
