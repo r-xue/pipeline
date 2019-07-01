@@ -11,6 +11,7 @@ import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import exceptions
 from pipeline.infrastructure import task_registry
+import pipeline.infrastructure.utils as utils
 from pipeline.h.tasks.common.sensitivity import Sensitivity
 from .resultobjects import MakeImagesResult
 from ..tclean import Tclean
@@ -139,8 +140,7 @@ class MakeImages(basetask.StandardTaskTemplate):
                     result.add_result(worker_result, target, outcome='success')
                     # Export RMS (reprSrc, reprSpw only)
                     repr_target, repr_source, repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, sensitivityGoal = heuristics.representative_target()
-                    if str(repr_spw) in worker_result.spw.split(',') and \
-                    repr_source==worker_result.sourcename:
+                    if str(repr_spw) in worker_result.spw.split(',') and repr_source==utils.dequote(worker_result.sourcename):
                         s = self._get_image_rms_as_sensitivity(worker_result, target, heuristics)
                         if s is not None:
                             result.sensitivities_for_aqua.append(s)
