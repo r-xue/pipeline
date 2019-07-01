@@ -131,7 +131,7 @@ Compute clean results from a list of specified targets.
     <value>None</value>
   </param>
 
-  <param type="bool" name="overwrite_on_export" subparam="true">
+  <param type="bool" name="overwrite_on_export">
     <description>Replace existing image products</description>
     <value>True</value>
   </param>
