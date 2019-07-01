@@ -392,13 +392,16 @@ class MakeImList(basetask.StandardTaskTemplate):
                         ms_domain_obj = inputs.context.observing_run.get_ms(vis)
                         # Get the real spw IDs for this MS
                         ms_science_spwids = [s.id for s in ms_domain_obj.get_spectral_windows()]
-                        try:
-                            field_domain_obj = ms_domain_obj.get_fields(field_intent[0])[0]
-                            # Get all science spw IDs for this field and record the ones that are present in this MS
-                            field_science_spwids = [spw_domain_obj.id for spw_domain_obj in field_domain_obj.valid_spws if spw_domain_obj.id in ms_science_spwids]
-                            # Record the virtual spwids
-                            spwids_per_vis_and_field = [inputs.context.observing_run.real2virtual_spw_id(spwid, ms_domain_obj) for spwid in field_science_spwids if inputs.context.observing_run.real2virtual_spw_id(spwid, ms_domain_obj) in map(int, spwids)]
-                        except:
+                        if field_intent[0] in [f.name for f in ms_domain_obj.fields]:
+                            try:
+                                field_domain_obj = ms_domain_obj.get_fields(field_intent[0])[0]
+                                # Get all science spw IDs for this field and record the ones that are present in this MS
+                                field_science_spwids = [spw_domain_obj.id for spw_domain_obj in field_domain_obj.valid_spws if spw_domain_obj.id in ms_science_spwids]
+                                # Record the virtual spwids
+                                spwids_per_vis_and_field = [inputs.context.observing_run.real2virtual_spw_id(spwid, ms_domain_obj) for spwid in field_science_spwids if inputs.context.observing_run.real2virtual_spw_id(spwid, ms_domain_obj) in map(int, spwids)]
+                            except:
+                                spwids_per_vis_and_field = []
+                        else:
                             spwids_per_vis_and_field = []
                         if spwids_per_vis_and_field != []:
                             vislist_for_field.append(vis)
