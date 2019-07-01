@@ -427,7 +427,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     valid_data[str(spw)] = self.heuristics.has_data(field_intent_list=[field_intent], spwspec=spw)
                                     if valid_data[str(spw)][field_intent]:
                                         filtered_spwlist.append(spw)
-                    filtered_spwlist = list(set(filtered_spwlist))
+                    filtered_spwlist = sorted(list(set(filtered_spwlist)))
                 else:
                     continue
 
