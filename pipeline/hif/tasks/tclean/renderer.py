@@ -492,10 +492,15 @@ class TCleanPlotsRenderer(basetemplates.CommonRenderer):
     def __init__(self, context, result, plots_dict, field, spw, pol, urls, cube_all_cont):
         super(TCleanPlotsRenderer, self).__init__('tcleanplots.mako', context, result)
 
-        # VLA only
-        if ('VLA' in result[0].results[0].imaging_mode and
-                'VLASS' not in result[0].results[0].imaging_mode and
-                any([item.specmode == 'cont' for item in result[0].results])):
+        # Set HTML page name
+        # VLA needs a slightly different name for some cases
+        # For that we need to check imaging_mode and specmode but we have to
+        # protect against iteration errors for empty results.
+        imaging_modes = [r.imaging_mode for r in result[0].results if not r.empty()]
+        specmodes = [r.specmode for r in result[0].results if not r.empty()]
+        if (any(['VLA' in item for item in imaging_modes]) and
+            any(['VLASS' not in item for item in imaging_modes]) and
+            any([item == 'cont' for item in imaging_modes])):
             # ms = context.observing_run.get_ms(result[0].results[0].vis[0])
             # band = ms.get_vla_spw2band()
             # band_spws = {}
