@@ -241,7 +241,11 @@ class Tclean(cleanbase.CleanBase):
 
         # Remove MSs that do not contain data for the given field(s)
         scanidlist, visindexlist = self.image_heuristics.get_scanidlist(inputs.vis, inputs.field, inputs.intent)
-        inputs.vis = [inputs.vis[i] for i in visindexlist]
+        filtered_vislist = [inputs.vis[i] for i in visindexlist]
+        if filtered_vislist != inputs.vis:
+            inputs.vis = filtered_vislist
+            # Also need to reset any antenna list to trigger recalculation below.
+            inputs.antenna = None
 
         # Generate the image name if one is not supplied.
         if inputs.imagename in (None, ''):

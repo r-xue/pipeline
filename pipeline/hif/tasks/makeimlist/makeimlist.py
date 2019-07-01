@@ -744,7 +744,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                             # Remove MSs that do not contain data for the given field/intent combination
                             scanidlist, visindexlist = target_heuristics.get_scanidlist(vislist_field_spw_combinations[field_intent[0]]['vislist'],
                                                                                         field_intent[0], field_intent[1])
-                            filtered_vislist = [vislist[i] for i in visindexlist]
+                            filtered_vislist = [vislist_field_spw_combinations[field_intent[0]]['vislist'][i] for i in visindexlist]
 
                             # Save the filtered vislist
                             target_heuristics.vislist = filtered_vislist
