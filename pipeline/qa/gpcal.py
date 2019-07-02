@@ -113,6 +113,8 @@ def gpcal_calc(caltable):
                 else:
                     phase1 = tb1.getcol('GAIN')
 
+                tb1.close()
+
                 phase1 = np.angle(phase1)
                 phase1 = np.unwrap(phase1)
 
@@ -172,7 +174,6 @@ def gpcal_calc(caltable):
                         gpcal_stats['STATS'][fieldId][spwId][antId]['X2-X1 (deg)'] = 'C/C'
                     gpcal_stats['STATS'][fieldId][spwId][antId]['X2-X1 (m)'] = 'C/C'
 
-    tb1.close()
     tbLoc.close()
 
     return gpcal_stats
