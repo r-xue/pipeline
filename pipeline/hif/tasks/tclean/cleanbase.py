@@ -716,7 +716,7 @@ def set_miscinfo(name, spw=None, field=None, type=None, iter=None, multiterm=Non
                 # TODO: Use more generic approach like in the imaging heuristics
                 if context.project_summary.telescope == 'ALMA':
                     info['npol'] = len(context.observing_run.measurement_sets[0].get_alma_corrstring().split(','))
-                elif context.project_summary.telescope == 'VLA':
+                elif context.project_summary.telescope in ('VLA', 'EVLA'):
                     info['npol'] = len(context.observing_run.measurement_sets[0].get_vla_corrstring().split(','))
                 else:
                     info['npol'] = -999
