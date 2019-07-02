@@ -938,8 +938,7 @@ class Tclean(cleanbase.CleanBase):
             cleanbase.set_miscinfo(name=mom0_name, spw=self.inputs.spw,
                                    field=self.inputs.field, iter=maxiter, type='mom0_fc',
                                    intent=self.inputs.intent, specmode=self.inputs.specmode,
-                                   observing_run=context.observing_run,
-                                   project_summary=context.project_summary)
+                                   context=context)
 
             # Update the result.
             result.set_mom0_fc(maxiter, mom0_name)
@@ -953,8 +952,7 @@ class Tclean(cleanbase.CleanBase):
             cleanbase.set_miscinfo(name=mom8_name, spw=self.inputs.spw,
                                    field=self.inputs.field, iter=maxiter, type='mom8_fc',
                                    intent=self.inputs.intent, specmode=self.inputs.specmode,
-                                   observing_run=context.observing_run,
-                                   project_summary=context.project_summary)
+                                   context=context)
 
             # Update the result.
             result.set_mom8_fc(maxiter, mom8_name)

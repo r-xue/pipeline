@@ -587,8 +587,7 @@ class CleanBase(basetask.StandardTaskTemplate):
                          type='model', iter=iter, multiterm=result.multiterm,
                          intent=inputs.intent, specmode=inputs.specmode,
                          is_per_eb=inputs.is_per_eb,
-                         observing_run=context.observing_run,
-                         project_summary=context.project_summary)
+                         context=context)
             result.set_model(iter=iter, image=model_name)
 
             # Always set info on the uncorrected image for plotting
@@ -596,8 +595,7 @@ class CleanBase(basetask.StandardTaskTemplate):
                          type='image', iter=iter, multiterm=result.multiterm,
                          intent=inputs.intent, specmode=inputs.specmode, robust=inputs.robust,
                          is_per_eb=inputs.is_per_eb,
-                         observing_run=context.observing_run,
-                         project_summary=context.project_summary)
+                         context=context)
 
             # Store the PB corrected image.
             if os.path.exists('%s' % (pbcor_image_name.replace('.image.pbcor', '.image.tt0.pbcor' if result.multiterm else '.image.pbcor'))):
@@ -605,8 +603,7 @@ class CleanBase(basetask.StandardTaskTemplate):
                              type='pbcorimage', iter=iter, multiterm=result.multiterm,
                              intent=inputs.intent, specmode=inputs.specmode, robust=inputs.robust,
                              is_per_eb=inputs.is_per_eb,
-                             observing_run=context.observing_run,
-                             project_summary=context.project_summary)
+                             context=context)
                 result.set_image(iter=iter, image=pbcor_image_name)
             else:
                 result.set_image(iter=iter, image=image_name)
@@ -620,8 +617,7 @@ class CleanBase(basetask.StandardTaskTemplate):
                      type='residual', iter=iter, multiterm=result.multiterm,
                      intent=inputs.intent, specmode=inputs.specmode,
                      is_per_eb=inputs.is_per_eb,
-                     observing_run=context.observing_run,
-                     project_summary=context.project_summary)
+                     context=context)
         result.set_residual(iter=iter, image=residual_name)
 
         # Store the PSF.
@@ -629,8 +625,7 @@ class CleanBase(basetask.StandardTaskTemplate):
                      type='psf', iter=iter, multiterm=result.multiterm,
                      intent=inputs.intent, specmode=inputs.specmode,
                      is_per_eb=inputs.is_per_eb,
-                     observing_run=context.observing_run,
-                     project_summary=context.project_summary)
+                     context=context)
         result.set_psf(image=psf_name)
 
         # Store the flux image.
@@ -638,8 +633,7 @@ class CleanBase(basetask.StandardTaskTemplate):
                      type='flux', iter=iter, multiterm=result.multiterm,
                      intent=inputs.intent, specmode=inputs.specmode,
                      is_per_eb=inputs.is_per_eb,
-                     observing_run=context.observing_run,
-                     project_summary=context.project_summary)
+                     context=context)
         result.set_flux(image=flux_name)
 
         # Make sure mask has path name
@@ -648,8 +642,7 @@ class CleanBase(basetask.StandardTaskTemplate):
                          type='cleanmask', iter=iter,
                          intent=inputs.intent, specmode=inputs.specmode,
                          is_per_eb=inputs.is_per_eb,
-                         observing_run=context.observing_run,
-                         project_summary=context.project_summary)
+                         context=context)
             result.set_cleanmask(iter=iter, image=inputs.mask)
         elif os.path.exists(mask_name):
             # Use mask made by tclean
@@ -657,8 +650,7 @@ class CleanBase(basetask.StandardTaskTemplate):
                          type='cleanmask', iter=iter,
                          intent=inputs.intent, specmode=inputs.specmode,
                          is_per_eb=inputs.is_per_eb,
-                         observing_run=context.observing_run,
-                         project_summary=context.project_summary)
+                         context=context)
             result.set_cleanmask(iter=iter, image=mask_name)
 
         # Keep threshold and sensitivity for QA and weblog
@@ -679,7 +671,7 @@ def rename_image(old_name, new_name, extensions=['']):
 
 
 def set_miscinfo(name, spw=None, field=None, type=None, iter=None, multiterm=None, intent=None, specmode=None,
-                 robust=None, is_per_eb=None, observing_run=None, project_summary=None):
+                 robust=None, is_per_eb=None, context=None):
     """
     Define miscellaneous image information
     """
@@ -701,10 +693,10 @@ def set_miscinfo(name, spw=None, field=None, type=None, iter=None, multiterm=Non
                 for i in xrange(len(filename_components)):
                     info['filnam%02d' % (i+1)] = filename_components[i]
             if spw is not None:
-                if observing_run is not None:
+                if context.observing_run is not None:
                     spw_names = [
-                        observing_run.virtual_science_spw_shortnames.get(
-                            observing_run.virtual_science_spw_ids.get(int(spw_id), 'N/A'), 'N/A')
+                        context.observing_run.virtual_science_spw_shortnames.get(
+                            context.observing_run.virtual_science_spw_ids.get(int(spw_id), 'N/A'), 'N/A')
                         for spw_id in spw.split(',')
                     ]
                 else:
@@ -720,12 +712,12 @@ def set_miscinfo(name, spw=None, field=None, type=None, iter=None, multiterm=Non
                 tmpfield = field.split(',')[0].replace('"', '')
                 info['field'] = tmpfield
 
-            if observing_run is not None and project_summary is not None:
+            if context is not None:
                 # TODO: Use more generic approach like in the imaging heuristics
-                if project_summary.telescope == 'ALMA':
-                    info['npol'] = len(observing_run.measurement_sets[0].get_alma_corrstring().split(','))
-                elif project_summary.telescope == 'VLA':
-                    info['npol'] = len(observing_run.measurement_sets[0].get_vla_corrstring().split(','))
+                if context.project_summary.telescope == 'ALMA':
+                    info['npol'] = len(context.observing_run.measurement_sets[0].get_alma_corrstring().split(','))
+                elif context.project_summary.telescope == 'VLA':
+                    info['npol'] = len(context.observing_run.measurement_sets[0].get_vla_corrstring().split(','))
                 else:
                     info['npol'] = -999
 
@@ -752,10 +744,10 @@ def set_miscinfo(name, spw=None, field=None, type=None, iter=None, multiterm=Non
             info['casaver'] = get_casa_version()
 
             # Project information
-            if project_summary is not None:
-                info['propcode'] = project_summary.proposal_code
+            if context is not None:
+                info['propcode'] = context.project_summary.proposal_code
                 info['group'] = 'N/A'
-                info['member'] = 'N/A'
+                info['member'] = context.project_structure.ous_entity_id
                 info['sgoal'] = 'N/A'
 
             # Some keywords should be present but are filled only
