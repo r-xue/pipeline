@@ -299,6 +299,8 @@ class CheckProductSizeHeuristics(object):
             if ([n != 0 for n in spw_oversizes.itervalues()].count(True) > 1) or \
                ((total_productsize > self.inputs.maxproductsize) and (self.inputs.maxproductsize != -1)):
                 oversize_spws = [spw for spw, n in spw_oversizes.iteritems() if n>0]
+                # Add one large cube if there are any and make sure the representative
+                # spw is chosen if it is among the large cubes.
                 if oversize_spws != []:
                     if str(repr_spw) in oversize_spws:
                         large_cube_spw = str(repr_spw)
@@ -309,11 +311,15 @@ class CheckProductSizeHeuristics(object):
                 else:
                     mitigated_spws = []
                     mitigated_productsize = 0.0
-                # Add small cubes
-                small_cube_spws = [spw for spw, n in spw_oversizes.iteritems() if n==0]
-                small_cube_frequencies = [frequencies[spw] for spw in small_cube_spws]
-                small_cube_productsizes = [productsizes[spw] for spw in small_cube_spws]
-                small_cube_info = list(zip(small_cube_spws, small_cube_frequencies, small_cube_productsizes))
+                # Add at least the representative spw if it is among the small cubes.
+                if str(repr_spw) not in oversize_spws:
+                    mitigated_spws.append(str(repr_spw))
+                    mitigated_productsize += productsizes[str(repr_spw)]
+                # Add other small cubes
+                other_small_cube_spws = [spw for spw, n in spw_oversizes.iteritems() if n==0 and spw != str(repr_spw)]
+                small_cube_frequencies = [frequencies[spw] for spw in other_small_cube_spws]
+                small_cube_productsizes = [productsizes[spw] for spw in other_small_cube_spws]
+                small_cube_info = list(zip(other_small_cube_spws, small_cube_frequencies, small_cube_productsizes))
                 # Sort spw list by size and frequency
                 small_cube_info = sorted(small_cube_info, key=operator.itemgetter(2, 1))
                 for small_cube_spw, small_cube_frequency, small_cube_productsize in small_cube_info:
