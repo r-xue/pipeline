@@ -231,7 +231,13 @@ class ImageParamsHeuristics(object):
 
         done_vis_scanids = []
 
-        for field_intent in list(field_intent_result):
+        # Loop through a reverse sorted list to make sure that the AMPLITUDE
+        # intent is removed for cases of shared BANDPASS and AMPLITUDE intents
+        # (PIPE-199). This should be done more explicitly rather than relying
+        # on the alphabetical order, but as it requires more refactoring, there
+        # was no time for this before the Cycle 7 deadline.
+        # TODO: Save duplicate intents for weblog rendering.
+        for field_intent in sorted(list(field_intent_result), reverse=True):
             field = field_intent[0]
             intent = field_intent[1]
 
@@ -248,7 +254,7 @@ class ImageParamsHeuristics(object):
                 vis_scanids[vis] = scanids
 
             if vis_scanids in done_vis_scanids:
-                LOG.warn(
+                LOG.info(
                     'field: %s intent: %s is a duplicate - removing from imlist' %
                     (field, intent))
                 field_intent_result.discard(field_intent)

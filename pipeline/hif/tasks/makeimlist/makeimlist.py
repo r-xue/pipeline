@@ -825,6 +825,7 @@ class MakeImList(basetask.StandardTaskTemplate):
 _DESCRIPTIONS = {
     ('PHASE', 'mfs'): 'phase calibrator',
     ('BANDPASS', 'mfs'): 'bandpass calibrator',
+    ('AMPLITUDE', 'mfs'): 'flux calibrator',
     ('CHECK', 'mfs'): 'check source',
     ('TARGET', 'mfs'): 'target per-spw continuum',
     ('TARGET', 'cont'): 'target aggregate continuum',
