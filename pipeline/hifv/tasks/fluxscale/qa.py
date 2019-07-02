@@ -2,15 +2,19 @@ from __future__ import absolute_import
 
 import collections
 import os
+import numpy as np
 
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 import pipeline.qa.scorecalculator as qacalc
 from . import fluxboot
+from . import Fluxboot2
+from . import Fluxboot2Results
 from . import solint
 
 LOG = logging.get_logger(__name__)
+
 
 class SolintQAHandler(pqa.QAPlugin):
     result_cls = solint.SolintResults
@@ -51,42 +55,63 @@ class SolintListQAHandler(pqa.QAPlugin):
 
 
 
-
-
-
-
-class FluxbootQAHandler(pqa.QAPlugin):
-    result_cls = fluxboot.FluxbootResults
+class Fluxboot2QAHandler(pqa.QAPlugin):
+    result_cls = Fluxboot2Results
     child_cls = None
-    generating_task = fluxboot.Fluxboot
+    generating_task = Fluxboot2
 
     def handle(self, context, result):
+        # Get a QA score based on RMS of the residuals per receiver band and source
 
-        # Check for existence of the the target MS.
-        score1 = self._ms_exists(os.path.dirname(result.inputs['vis']), os.path.basename(result.inputs['vis']))
+        m = context.observing_run.get_ms(result.inputs['vis'])
+        weblog_results = {}
+        webdicts = {}
+
+        ms = os.path.basename(result.inputs['vis'])
+
+        weblog_results[ms] = result.weblog_results
+
+        # Sort into dictionary collections to prep for table
+        webdicts[ms] = collections.defaultdict(list)
+        for row in sorted(weblog_results[ms], key=lambda p: (p['source'], float(p['freq']))):
+            webdicts[ms][row['source']].append({'freq': row['freq'], 'data': row['data'], 'error': row['error'],
+                                                'fitteddata': row['fitteddata']})
+
+        rmsvalues = self.computeRMS(webdicts[ms])
+        score1 = qacalc.score_vla_flux_residual_rms(rmsvalues)
         scores = [score1]
+        if scores == []:
+            LOG.error('Error with computing flux density bootstrapping residuals')
+            scores = [pqa.QAScore(0.0, longmsg='Unable to compute flux density bootstrapping residuals.',
+                                  shortmsg='Fluxboot issue.')]
 
         result.qa.pool.extend(scores)
 
-    def _ms_exists(self, output_dir, ms):
-        '''
-        Check for the existence of the target MS
-        '''
-        return qacalc.score_path_exists(output_dir, ms, 'Fluxboot')
+    def computeRMS(self, webdicts):
+        rmsvalues = []
+        for source, datadicts in webdicts.iteritems():
+            try:
+                frequencies = []
+                residuals = []
+                for datadict in datadicts:
+                    residuals.append(float(datadict['data']) - float(datadict['fitteddata']))
+                    frequencies.append(float(datadict['freq']))
+                rmsvalues.append(np.std(residuals))
+            except Exception as e:
+                continue
 
-class FluxbootListQAHandler(pqa.QAPlugin):
+        return rmsvalues
+
+
+class Fluxboot2ListQAHandler(pqa.QAPlugin):
     """
     QA handler for a list containing FluxbootResults.
     """
     result_cls = collections.Iterable
-    child_cls = fluxboot.FluxbootResults
-    generating_task = fluxboot.Fluxboot
+    child_cls = Fluxboot2Results
 
     def handle(self, context, result):
         # collate the QAScores from each child result, pulling them into our
         # own QAscore list
         collated = utils.flatten([r.qa.pool for r in result])
         result.qa.pool[:] = collated
-        mses = [r.inputs['vis'] for r in result]
-        longmsg = 'No missing target MS(s) for %s' % utils.commafy(mses, quotes=False, conjunction='or')
-        result.qa.all_unity_longmsg = longmsg

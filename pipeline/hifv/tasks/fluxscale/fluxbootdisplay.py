@@ -1,5 +1,7 @@
 from __future__ import absolute_import
 import os
+import numpy as np
+import pylab as pb
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
@@ -46,7 +48,7 @@ class fluxbootSummaryChart(object):
         wrapper = logger.Plot(figfile, x_axis='freq', y_axis='amp', parameters={'vis': self.ms.basename,
                                                                                 'type': 'fluxboot',
                                                                                 'spw': '',
-                                                                                'figurecaption':'Model calibrator'})
+                                                                                'figurecaption':'Model calibrator.  Plot of amp vs. freq.'})
 
         if not os.path.exists(figfile):
             LOG.trace('Plotting model calibrator flux densities. Creating new plot.')
@@ -93,7 +95,7 @@ class fluxgaincalSummaryChart(object):
                               parameters={'vis': self.ms.basename,
                                           'type': 'fluxgaincal',
                                           'spw': '',
-                                          'figurecaption': 'Caltable: {!s}'.format(self.caltable)})
+                                          'figurecaption': 'Caltable: {!s}. Plot of amp vs. freq.'.format(self.caltable)})
 
         if not os.path.exists(figfile):
             LOG.trace('Plotting amp vs. freq for fluxgaincal. Creating new plot.')
@@ -101,6 +103,149 @@ class fluxgaincalSummaryChart(object):
                 self.create_plot()
             except Exception as ex:
                 LOG.error('Could not create fluxgaincal plot.')
+                LOG.exception(ex)
+                return None
+
+        return wrapper
+
+
+class modelfitSummaryChart(object):
+    def __init__(self, context, result, webdicts):
+        self.context = context
+        self.result = result
+        self.webdicts = webdicts
+        self.ms = context.observing_run.get_ms(result.inputs['vis'])
+
+    def plot(self):
+        plots = [self.get_plot_wrapper()]
+        return [p for p in plots if p is not None]
+
+    def create_plot(self):
+        figfile = self.get_figfile()
+
+        webdicts = self.webdicts
+        pb.clf()
+
+        mysize = 'small'
+        colors = ['red', 'blue', 'green', 'cyan', 'yellow', 'orange', 'purple']
+        colorcount = 0
+        title = ''
+
+        for source, datadicts in webdicts.iteritems():
+            try:
+                frequencies = []
+                data = []
+                model = []
+                for datadict in datadicts:
+                    data.append(float(datadict['data']))
+                    model.append(float(datadict['fitteddata']))
+                    frequencies.append(float(datadict['freq']))
+                pb.plot(frequencies, data, 'o', label=source, color=colors[colorcount])
+                pb.plot(frequencies, model, '-', color=colors[colorcount])
+                pb.ylabel('Flux', size=mysize)
+                pb.xlabel('Frequency [GHz]', size=mysize)
+                pb.legend()
+                # title = title + '   ' + str(source) + '({!s})'.format(colors[colorcount])
+                colorcount += 1
+
+            except Exception as e:
+                continue
+
+        pb.title('Flux (Data and Fit) vs. Frequency')
+        pb.savefig(figfile)
+        pb.close()
+
+    def get_figfile(self):
+        return os.path.join(self.context.report_dir,
+                            'stage%s' % self.result.stage_number,
+                            'modelfit-%s-summary.png' % self.ms.basename)
+
+    def get_plot_wrapper(self):
+        figfile = self.get_figfile()
+
+        wrapper = logger.Plot(figfile, x_axis='freq', y_axis='flux',
+                              parameters={'vis': self.ms.basename,
+                                          'type': 'fluxbootmodelfit',
+                                          'figurecaption': 'Flux vs. frequency'})
+
+        if not os.path.exists(figfile):
+            LOG.trace('Plotting fluxboot fit vs. freq. Creating new plot.')
+            try:
+                self.create_plot()
+            except Exception as ex:
+                LOG.error('Could not create fluxboot fitting plot.')
+                LOG.exception(ex)
+                return None
+
+        return wrapper
+
+
+class residualsSummaryChart(object):
+    def __init__(self, context, result, webdicts):
+        self.context = context
+        self.result = result
+        self.webdicts = webdicts
+        self.ms = context.observing_run.get_ms(result.inputs['vis'])
+
+    def plot(self):
+        plots = [self.get_plot_wrapper()]
+        return [p for p in plots if p is not None]
+
+    def create_plot(self):
+        figfile = self.get_figfile()
+
+        webdicts = self.webdicts
+        pb.clf()
+
+        mysize = 'small'
+        colors = ['red', 'blue', 'green', 'cyan', 'yellow', 'orange', 'purple']
+        colorcount = 0
+        title = ''
+
+        for source, datadicts in webdicts.iteritems():
+            try:
+                frequencies = []
+                residuals = []
+                for datadict in datadicts:
+                    residuals.append(float(datadict['data']) - float(datadict['fitteddata']))
+                    frequencies.append(float(datadict['freq']))
+                pb.plot(frequencies, residuals, 'o', label=source, color=colors[colorcount])
+                pb.plot(np.linspace(np.min(frequencies),
+                                    np.max(frequencies),
+                                    10),
+                        np.zeros(10) + np.std(residuals), linestyle='--', color=colors[colorcount])
+                pb.ylabel('Residuals (data - fit)', size=mysize)
+                pb.xlabel('Frequency [GHz]', size=mysize)
+                pb.legend()
+                # title = title + '   ' + str(source) + '({!s})'.format(colors[colorcount])
+                colorcount += 1
+
+            except Exception as e:
+                continue
+
+        pb.title('Residuals vs. Frequency')
+        pb.savefig(figfile)
+        pb.close()
+
+    def get_figfile(self):
+        return os.path.join(self.context.report_dir,
+                            'stage%s' % self.result.stage_number,
+                            'residuals-%s-summary.png' % self.ms.basename)
+
+    def get_plot_wrapper(self):
+        figfile = self.get_figfile()
+
+        wrapper = logger.Plot(figfile, x_axis='freq', y_axis='residuals',
+                              parameters={'vis': self.ms.basename,
+                                          'type': 'fluxbootresiduals',
+                                          'figurecaption': 'Fluxboot residuals vs. frequency'})
+
+        if not os.path.exists(figfile):
+            LOG.trace('Plotting fluxboot residuals vs. freq Creating new plot.')
+            try:
+                self.create_plot()
+            except Exception as ex:
+                LOG.error('Could not create fluxboot residuals plot.')
                 LOG.exception(ex)
                 return None
 

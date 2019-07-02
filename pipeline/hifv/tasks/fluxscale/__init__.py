@@ -6,10 +6,15 @@ import pipeline.infrastructure.renderer.weblog as weblog
 from .solint import Solint
 from .fluxboot import Fluxboot
 from .fluxboot2 import Fluxboot2
+from .fluxboot2 import Fluxboot2Results
 from . import solint
 from . import fluxboot
 from . import renderer
 from . import fluxboot2
+
+from . import qa
+
+qaadapter.registry.register_to_dataset_topic(Fluxboot2Results)
 
 # from . import qa
 

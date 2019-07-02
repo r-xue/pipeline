@@ -57,6 +57,7 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_total_data_flagged_vla_bandpass',
            'score_flagged_vla_baddef',
            'score_total_data_vla_delay',
+           'score_vla_flux_residual_rms',
            'score_ms_model_data_column_present',
            'score_ms_history_entries_present',
            'score_contiguous_session',
@@ -890,6 +891,36 @@ def score_total_data_vla_delay(filename, m):
                           metric_units='Delays that exceed 200 ns')
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=os.path.basename(filename), origin=origin)
+
+
+@log_qa
+def score_vla_flux_residual_rms(rmsvalues):
+    """
+    Take the RMS values of the residuals.
+
+    """
+
+    if np.mean(rmsvalues) < 0.002:
+        score = 1.0
+    else:
+        count = len([x for x in rmsvalues if x < 0.002])
+        score = 1.0 - (0.1 * count)
+
+    if score < 0.0:
+        score = 0.0
+
+    # Set score message and origin
+    longmsg = 'Max rms of the residuals is {!s}'.format(np.max(rmsvalues))
+    shortmsg = longmsg
+
+    origin = pqa.QAOrigin(metric_name='score_vla_flux_residual_rms',
+                          metric_score=score,
+                          metric_units='rms values that exceed 0.002')
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+
+
+
 
 
 @log_qa

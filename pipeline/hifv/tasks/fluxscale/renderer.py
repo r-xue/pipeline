@@ -164,8 +164,8 @@ class T2_4MDetailsfluxbootRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
             plotter = fluxbootdisplay.fluxbootSummaryChart(context, result)
             plots.extend(plotter.plot())
+
             ms = os.path.basename(result.inputs['vis'])
-            summary_plots[ms] = plots
 
             weblog_results[ms] = result.weblog_results
             spindex_results[ms] = result.spindex_results
@@ -196,6 +196,14 @@ class T2_4MDetailsfluxbootRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             for row in sorted(weblog_results[ms], key=lambda p: (p['source'], float(p['freq']))):
                 webdicts[ms][row['source']].append({'freq': row['freq'], 'data': row['data'], 'error': row['error'],
                                                     'fitteddata': row['fitteddata']})
+
+            plotter = fluxbootdisplay.residualsSummaryChart(context, result, webdicts[ms])
+            plots.extend(plotter.plot())
+
+            plotter = fluxbootdisplay.modelfitSummaryChart(context, result, webdicts[ms])
+            plots.extend(plotter.plot())
+
+            summary_plots[ms] = plots
 
             weblog_results[ms] = webdicts[ms]
 

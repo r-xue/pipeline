@@ -28,7 +28,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
         
         
         <%def name="fancybox_caption(plot)">
-          ${plot.parameters['figurecaption']}. Plot of amp vs. freq
+          ${plot.parameters['figurecaption']}
         </%def>
         
         
