@@ -68,6 +68,9 @@ class FlaggableViewResults(object):
         # Try to sort the flagging commands by antenna and spw.
         try:
             self.flagging.sort(key=lambda k: k.antenna)
+        except:
+            pass
+        try:
             self.flagging.sort(key=lambda k: k.spw)
         except:
             pass
