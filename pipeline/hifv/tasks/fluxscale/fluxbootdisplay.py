@@ -213,7 +213,7 @@ class residualsSummaryChart(object):
                 pb.plot(np.linspace(np.min(frequencies),
                                     np.max(frequencies),
                                     10),
-                        np.zeros(10) + np.std(residuals), linestyle='--', color=colors[colorcount])
+                        np.zeros(10) + np.mean(residuals), linestyle='--', label='Mean', color=colors[colorcount])
                 pb.ylabel('Residuals (data - fit)', size=mysize)
                 pb.xlabel('Frequency [GHz]', size=mysize)
                 pb.legend()
