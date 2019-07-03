@@ -302,4 +302,6 @@ def log_result(source, spw, asdm_I, catalogue_I, spix, age, url, version, status
     LOG.info('         Measurements bracketed in time? {!s}'.format(decision[str(data_conditions)[2]]))
     LOG.info('         URL: {!s}'.format(url))
     LOG.info('         Version: {!s}'.format(version))
+    if catalogue_I == 'N/A':
+        LOG.warn('         **No flux returned from the flux catalogue service.**')
     LOG.info("---------------------------------------------")
