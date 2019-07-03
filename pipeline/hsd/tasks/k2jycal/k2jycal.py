@@ -111,7 +111,11 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
         reffile = None
         if inputs.dbservice is True:
             # Try accessing Jy/K DB if dbservice is True
+            reffile = 'jyperk_query.csv'
             factors_list = self._query_factors()
+            if len(factors_list) > 0:
+                # export factors for future reference
+                export_jyperk(reffile, factors_list)
 
         if (inputs.dbservice is False) or (len(factors_list) == 0):
             # Read scaling factor file
@@ -202,3 +206,14 @@ def rearrange_factors_list(factors_list):
             factors[vis] = {spwid: {ant: {pol: factor}}}
 
     return factors
+
+
+def export_jyperk(outfile, factors):
+    if not os.path.exists(outfile):
+        # create file with header information
+        with open(outfile, 'w') as f:
+            f.write('MS,Antenna,Spwid,Polarization,Factor\n')
+
+    with open(outfile, 'a') as f:
+        for row in factors:
+            f.write('{}\n'.format(','.join(row)))
