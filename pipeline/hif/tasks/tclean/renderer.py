@@ -500,7 +500,7 @@ class TCleanPlotsRenderer(basetemplates.CommonRenderer):
         specmodes = [r.specmode for r in result[0].results if not r.empty()]
         if (any(['VLA' in item for item in imaging_modes]) and
             any(['VLASS' not in item for item in imaging_modes]) and
-            any([item == 'cont' for item in imaging_modes])):
+            any([item == 'cont' for item in specmodes])):
             # ms = context.observing_run.get_ms(result[0].results[0].vis[0])
             # band = ms.get_vla_spw2band()
             # band_spws = {}
