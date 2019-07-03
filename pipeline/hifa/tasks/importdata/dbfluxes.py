@@ -175,26 +175,28 @@ def query_online_catalogue(flux_url, ms, spw, source):
     freq_hz = str(spw.centre_frequency.to_units(measures.FrequencyUnits.HERTZ))
     obs_time = utils.get_epoch_as_datetime(ms.start_time)
 
+    LOG.info("SOURCE NAME: "+str(source_name)+"  SPW: "+str(spw.id))
+
     utcnow = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
     try:
         fluxdict = fluxservice(flux_url, obs_time, freq_hz, source_name)
     except IOError:
         # error contacting service
-        return None
+        return fluxdict['url'], fluxdict['version'], fluxdict['statuscode'], fluxdict['dataconditions'], None
     except ExpatError:
         # error parsing the XML table
-        return None
+        return fluxdict['url'], fluxdict['version'], fluxdict['statuscode'], fluxdict['dataconditions'], None
 
     try:
         cat_fd = float(fluxdict['fluxdensity'])
         cat_spix = float(fluxdict['spectralindex'])
     except ValueError:
         # could not convert 'null' to number. Bad catalogue value.
-        return None
+        return fluxdict['url'], fluxdict['version'], fluxdict['statuscode'], fluxdict['dataconditions'], None
 
     valid_catalogue_val = cat_fd > 0.0 and cat_spix != -1000
     if not valid_catalogue_val:
-        return None
+        return fluxdict['url'], fluxdict['version'], fluxdict['statuscode'], fluxdict['dataconditions'], None
 
     final_I = measures.FluxDensity(cat_fd, measures.FluxDensityUnits.JANSKY)
     final_spix = decimal.Decimal('%0.3f' % cat_spix)
@@ -242,6 +244,7 @@ def add_catalogue_fluxes(measurements, ms):
     for source, xml_measurements in measurements.iteritems():
         for xml_measurement in xml_measurements:
             spw = ms.get_spectral_window(xml_measurement.spw_id)
+            # LOG.info("SPW ID: "+str(spw.id))
 
             # only query database for science windows
             if spw not in science_windows:
@@ -264,6 +267,7 @@ def add_catalogue_fluxes(measurements, ms):
 
             else:
                 # No/invalid catalogue entry, so use Source.XML measurement
+
                 results[source].append(xml_measurement)
 
                 # set text for logging statements
@@ -281,6 +285,9 @@ def log_result(source, spw, asdm_I, catalogue_I, spix, age, url, version, status
     codedict = {}
     codedict[0] = "Grid cal flux estimation heuristic used"
     codedict[1] = "Low-cadence flux estimation heuristic used"
+    codedict[2] = "Flux densities outside of the window were required to calculate an answer"
+    codedict[3] = "No valid flux density could be returned"
+    codedict[4] = "No valid flux density could be calculated"
 
     # "dual-band data? " yes/no; "measurements bracketed in time? " yes/no.
     decision = {'0': 'No', '1': 'Yes'}
