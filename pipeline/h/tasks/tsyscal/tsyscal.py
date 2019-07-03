@@ -292,21 +292,12 @@ def get_calapplications(ms, tsys_table, calfrom_defaults, origin, spw_map, is_si
             # holds mapping of field,spw -> Tsys field
             field_to_tsys_field = collections.defaultdict(dict)
 
-            for non_tsys_field in fields_with_intent:
-                if 'ATMOSPHERE' in non_tsys_field.intents:
-                    LOG.info('Tying Tsys to self for {} field {}'.format(intent,
-                                                                         field_id_to_identifier[non_tsys_field.id]))
-                    # spw='' to map to all spectral windows as we don't need to be specific
-                    field_to_tsys_field[non_tsys_field][''] = non_tsys_field
-
-            # do we have any non-Tsys fields left to process?
-            remaining_non_tsys = [f for f in fields_with_intent if f not in field_to_tsys_field]
-
-            # ok, so these fields do not have a related Tsys field. For these fields we'll emulate the
-            # CASA gainfield='nearest' option by selecting the spatially closest Tsys field with the same tuning
+            # For the fields for the current non-Tsys intent, we'll emulate the
+            # CASA gainfield='nearest' option by selecting the spatially
+            # closest Tsys field with the same tuning.
             me = casatools.measures
             qa = casatools.quanta
-            for non_tsys_field in remaining_non_tsys:
+            for non_tsys_field in fields_with_intent:
                 non_tsys_direction = non_tsys_field.mdirection
 
                 # For multi-tuning EBs, the spws may need different gainfield arguments. For example, in
