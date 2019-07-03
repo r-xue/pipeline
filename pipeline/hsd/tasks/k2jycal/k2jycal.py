@@ -41,7 +41,7 @@ class SDK2JyCalInputs(vdp.StandardInputs):
                                stage=self.context.stage, **casa_args)
 
     def __init__(self, context, output_dir=None, infiles=None, caltable=None,
-                 reffile=None):
+                 reffile=None, dbservice=None):
         super(SDK2JyCalInputs, self).__init__()
 
         # context and vis/infiles must be set first so that properties that require
@@ -53,6 +53,7 @@ class SDK2JyCalInputs(vdp.StandardInputs):
         # set the properties to the values given as input arguments
         self.caltable = caltable
         self.reffile = reffile
+        self.dbservice = dbservice
 
 
 class SDK2JyCalResults(basetask.Results):
@@ -73,7 +74,7 @@ class SDK2JyCalResults(basetask.Results):
             LOG.error('No results to merge')
             return
 
-        for calapp in self.final:            
+        for calapp in self.final:
             LOG.debug('Adding calibration to callibrary:\n'
                       '%s\n%s' % (calapp.calto, calapp.calfrom))
             context.callibrary.add(calapp.calto, calapp.calfrom)
@@ -99,7 +100,7 @@ class SDK2JyCalResults(basetask.Results):
 @task_registry.set_equivalent_casa_task('hsd_k2jycal')
 @task_registry.set_casa_commands_comment('The Kelvin to Jy calibration tables are generated.')
 class SDK2JyCal(basetask.StandardTaskTemplate):
-    Inputs = SDK2JyCalInputs    
+    Inputs = SDK2JyCalInputs
 
     def prepare(self):
         inputs = self.inputs
@@ -150,7 +151,7 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
 
 def rearrange_factors_list(factors_list):
     """
-    Rearrange scaling factor list to dictionary which looks like 
+    Rearrange scaling factor list to dictionary which looks like
     {'MS': {'spw': {'Ant': {'pol': factor}}}}
     """
     factors = {}
