@@ -9,6 +9,7 @@ from pipeline.h.heuristics import caltable as caltable_heuristic
 from pipeline.infrastructure import task_registry
 from . import jyperkreader
 from . import worker
+from . import jyperkdbaccess
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -105,13 +106,22 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
     def prepare(self):
         inputs = self.inputs
 
-        if not os.path.exists(self.inputs.reffile):
+        # obtain Jy/K factors
+        factors_list = []
+        reffile = None
+        if inputs.dbservice is True:
+            # Try accessing Jy/K DB if dbservice is True
+            factors_list = self._query_factors()
+
+        if (inputs.dbservice is False) or (len(factors_list) == 0):
+            # Read scaling factor file
+            reffile = os.path.abspath(os.path.expandvars(os.path.expanduser(inputs.reffile)))
+            factors_list = self._read_factors(reffile)
+
+        LOG.debug('factors_list=%s' % factors_list)
+        if len(factors_list) == 0:
             LOG.error('No scaling factors available')
             return SDK2JyCalResults(vis=os.path.basename(inputs.vis), pool=[])
-        # read scaling factor list
-        reffile = os.path.abspath(os.path.expandvars(os.path.expanduser(inputs.reffile)))
-        factors_list = jyperkreader.read(inputs.context, reffile)
-        LOG.debug('factors_list=%s' % factors_list)
 
         # generate scaling factor dictionary
         factors = rearrange_factors_list(factors_list)
@@ -147,6 +157,23 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
         result.error.update(missing)
 
         return result
+
+    def _read_factors(self, reffile):
+        inputs = self.inputs
+        if not os.path.exists(inputs.reffile):
+            return []
+        # read scaling factor list
+        factors_list = jyperkreader.read(inputs.context, reffile)
+        return factors_list
+
+    def _query_factors(self):
+        # only JyPerKAsdmEndPoint is implemented so far
+        query = jyperkdbaccess.JyPerKAsdmEndPoint(self.inputs.context)
+        try:
+            factors_list = query.getJyPerK(self.inputs.vis)
+        except Exception:
+            factors_list = []
+        return factors_list
 
 
 def rearrange_factors_list(factors_list):
