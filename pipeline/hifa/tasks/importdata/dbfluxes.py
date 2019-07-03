@@ -286,7 +286,7 @@ def log_result(source, spw, asdm_I, catalogue_I, spix, age, url, version, status
     codedict[0] = "Grid cal flux estimation heuristic used"
     codedict[1] = "Low-cadence flux estimation heuristic used"
     codedict[2] = "Flux densities outside of the window were required to calculate an answer"
-    codedict[3] = "No valid flux density could be returned"
+    codedict[3] = "Fallback algorithm used, went outside the window"
     codedict[4] = "No valid flux density could be calculated"
 
     # "dual-band data? " yes/no; "measurements bracketed in time? " yes/no.
