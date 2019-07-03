@@ -620,7 +620,7 @@ class Tclean(cleanbase.CleanBase):
 
         # All continuum
         if inputs.specmode == 'cube' and inputs.spwsel_all_cont:
-            self._update_miscinfo(result.image, len(self.image_heuristics.field(inputs.intent, inputs.field)), pbcor_image_min, pbcor_image_max)
+            self._update_miscinfo(result.image+extension, len(self.image_heuristics.field(inputs.intent, inputs.field)), pbcor_image_min, pbcor_image_max)
 
             result.set_image_min(pbcor_image_min)
             result.set_image_max(pbcor_image_max)
@@ -729,7 +729,7 @@ class Tclean(cleanbase.CleanBase):
                                                   pblimit_cleanmask=self.pblimit_cleanmask,
                                                   cont_freq_ranges=self.cont_freq_ranges)
 
-            self._update_miscinfo(result.image, len(self.image_heuristics.field(inputs.intent, inputs.field)), pbcor_image_min, pbcor_image_max)
+            self._update_miscinfo(result.image+extension, len(self.image_heuristics.field(inputs.intent, inputs.field)), pbcor_image_min, pbcor_image_max)
 
             keep_iterating, hm_masking = self.image_heuristics.keep_iterating(iteration, inputs.hm_masking,
                                                                               result.tclean_stopcode,
