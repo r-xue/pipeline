@@ -478,7 +478,7 @@ class Circfeedpolcal(polarization.Polarization):
                              'useephemdir': False,
                              'interpolation': 'nearest',
                              'usescratch': True}
-            elif fluxcal in ('3C138'):
+            elif fluxcal in ('3C138', '0521+1638', 'J0521+1638'):
                 task_args = {'vis': self.inputs.vis,
                              'field': fluxcalfieldname,
                              'spw': '',
