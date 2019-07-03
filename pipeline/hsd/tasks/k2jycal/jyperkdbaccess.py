@@ -67,10 +67,12 @@ class ALMAJyPerKDatabaseAccessBase(object):
         jyperk = self.get(vis)
 
         # convert to pipeline-friendly format
-        basename = os.path.basename(re.sub('\.ms$', '', vis.rstrip('/')))
-        formatted = self.format_jyperk(basename, jyperk)
+        formatted = self.format_jyperk(vis, jyperk)
+        #LOG.info('formatted = {}'.format(formatted))
+        filtered = self.filter_jyperk(vis, formatted)
+        #LOG.info('filtered = {}'.format(filtered))
 
-        return formatted
+        return filtered
 
     def get_params(self, vis):
         raise NotImplementedError
@@ -83,8 +85,8 @@ class ALMAJyPerKDatabaseAccessBase(object):
             vis {str} -- Name of MS
 
         Raises:
-            e: urllib2.HTTPError
-            e: urllib2.URLError
+            urllib2.HTTPError
+            urllib2.URLError
 
         Returns:
             [dict] -- Response from the DB as a dictionary. It should contain
@@ -114,9 +116,6 @@ class ALMAJyPerKDatabaseAccessBase(object):
                 + 'Error Message: URLError(Reason="{0}")\n'.format(e.reason)
             LOG.error(msg)
             raise e
-
-        LOG.info('URL="{0}"'.format(response.geturl()))
-
         retval = json.load(response)
         # retval should be a dict that consists of
         # 'query': query data
@@ -124,7 +123,7 @@ class ALMAJyPerKDatabaseAccessBase(object):
         # 'data': data
         return retval
 
-    def format_jyperk(self, basename, jyperk):
+    def format_jyperk(self, vis, jyperk):
         """
         Format given dictionary to the formatted list as below.
 
@@ -134,7 +133,7 @@ class ALMAJyPerKDatabaseAccessBase(object):
              ['MS_name', 'antenna_name', 'spwid', 'pol string', 'factor']]
 
         Arguments:
-            basename {str} -- Basename of MS
+            vis {str} -- Name of MS
             jyperk {dict} -- Dictionary containing Jy/K factors with meta data
 
         Returns:
@@ -142,8 +141,15 @@ class ALMAJyPerKDatabaseAccessBase(object):
         """
         template = string.Template('$vis $Antenna $Spwid I $Factor')
         data = jyperk['data']
+        basename = os.path.basename(vis.rstrip('/'))
         factors = [map(str, template.safe_substitute(vis=basename, **d).split()) for d in data]
         return factors
+
+    def filter_jyperk(self, vis, factors):
+        ms = self.context.observing_run.get_ms(vis)
+        science_windows = map(lambda x: x.id, ms.get_spectral_windows(science_windows_only=True))
+        filtered = [i for i in factors if (len(i) == 5) and (i[0] == ms.basename) and (int(i[2]) in science_windows)]
+        return filtered
 
 
 class JyPerKAsdmEndPoint(ALMAJyPerKDatabaseAccessBase):
@@ -158,6 +164,18 @@ class JyPerKModelFitEndPoint(ALMAJyPerKDatabaseAccessBase):
 
 
 def vis_to_uid(vis):
+    """
+    Convert MS name like uid___A002_Xabcd_X012 into uid://A002/Xabcd/X012
+
+    Arguments:
+        vis {str} -- Name of MS
+
+    Raises:
+        RuntimeError:
+
+    Returns:
+        str -- Corresponding ASDM uid
+    """
     basename = os.path.basename(vis.rstrip('/'))
     pattern = '^uid___A[0-9][0-9][0-9]_X[0-9a-f]+_X[0-9a-f]+\.ms$'
     if re.match(pattern, basename):
