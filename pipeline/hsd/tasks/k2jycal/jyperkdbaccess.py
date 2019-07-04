@@ -163,6 +163,10 @@ class JyPerKModelFitEndPoint(ALMAJyPerKDatabaseAccessBase):
     ENDPOINT_TYPE = 'model-fit'
 
 
+class JyPerKInterpolationEndPoint(ALMAJyPerKDatabaseAccessBase):
+    ENDPOINT_TYPE = 'interpolation'
+
+
 def vis_to_uid(vis):
     """
     Convert MS name like uid___A002_Xabcd_X012 into uid://A002/Xabcd/X012
