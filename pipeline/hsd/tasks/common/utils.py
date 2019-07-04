@@ -1,4 +1,4 @@
-from __future__ import absolute_import 
+from __future__ import absolute_import
 
 import sys
 import os
@@ -84,7 +84,7 @@ def require_virtual_spw_id_handling(observing_run):
 
     observing_run -- domain.ObservingRun instance
     """
-    return numpy.any([spw.id != observing_run.real2virtual_spw_id(spw.id, ms) for ms in observing_run.measurement_sets 
+    return numpy.any([spw.id != observing_run.real2virtual_spw_id(spw.id, ms) for ms in observing_run.measurement_sets
                       for spw in ms.get_spectral_windows(science_windows_only=True)])
 
 
@@ -133,7 +133,7 @@ def get_parent_ms_idx(context, msname):
         if msname in search_list:
             idx_found = idx
             break
-    return idx_found    
+    return idx_found
 
 
 def get_parent_ms_name(context, msname):
@@ -207,9 +207,9 @@ def mjd_to_datestring(t, unit='sec'):
     t: MJD
     unit: sec or day
     """
-    if unit == 'sec':
+    if unit in ['sec', 's']:
         mjd = t
-    elif unit == 'day':
+    elif unit in ['day', 'd']:
         mjd = t * 86400.0
     else:
         mjd = 0.0
@@ -221,7 +221,7 @@ def mjd_to_datestring(t, unit='sec'):
     dtd = timezero-mjdzero
     dtsec = mjd-(float(dtd.days)*86400.0+float(dtd.seconds)+float(dtd.microseconds)*1.0e-6)
     mjdstr = time.asctime(time.gmtime(dtsec))+' UTC'
-    return mjdstr 
+    return mjdstr
 
 
 def to_list(s):
@@ -286,7 +286,7 @@ def iterate_group_member(group_desc, member_id_list):
 
 def get_index_list_for_ms(datatable, vis_list, antennaid_list, fieldid_list,
                           spwid_list, srctype=None):
-    return numpy.fromiter(_get_index_list_for_ms(datatable, vis_list, antennaid_list, fieldid_list, 
+    return numpy.fromiter(_get_index_list_for_ms(datatable, vis_list, antennaid_list, fieldid_list,
                                                 spwid_list, srctype), dtype=numpy.int64)
 
 
@@ -310,7 +310,7 @@ def _get_index_list_for_ms(datatable, vis_list, antennaid_list, fieldid_list,
                 permanent_flag = datatable.getcell('FLAG_PERMANENT', row)
                 online_flag = permanent_flag[:, OnlineFlagIndex]
                 if any(online_flag == 1):
-                    yield row  
+                    yield row
 
 
 def get_index_list_for_ms2(datatable, group_desc, member_list, srctype=None):
@@ -327,7 +327,7 @@ def get_index_list_for_ms2(datatable, group_desc, member_list, srctype=None):
                 permanent_flag = datatable.getcell('FLAG_PERMANENT', row)
                 online_flag = permanent_flag[:, OnlineFlagIndex]
                 if any(online_flag == 1):
-                    yield row    
+                    yield row
 
 def get_index_list_for_ms3(datatable_dict, group_desc, member_list, srctype=None):
     # use time_table instead of data selection
@@ -447,7 +447,7 @@ class EchoDictionary(dict):
 def make_row_map_for_baselined_ms(ms, table_container=None):
     """
     Make row mapping between calibrated MS and baselined MS.
-    Return value is a dictionary whose key is row number for calibrated MS and 
+    Return value is a dictionary whose key is row number for calibrated MS and
     its corresponding value is the one for baselined MS.
 
     ms: measurement set domain object
@@ -469,7 +469,7 @@ def make_row_map(src_ms, derived_vis, src_tb=None, derived_tb=None):
     """
     Make row mapping between source MS and associating MS
 
-    src_ms: measurement set domain object for source MS 
+    src_ms: measurement set domain object for source MS
     derived_vis: name of the MS that derives from source MS
 
     returns: row mapping dictionary
@@ -767,10 +767,10 @@ def _read_table(reader, table, vis):
 
 # @profiler
 def make_spwid_map(srcvis, dstvis):
-#     src_spws = __read_table(casatools.MSMDReader, 
+#     src_spws = __read_table(casatools.MSMDReader,
 #                             tablereader.SpectralWindowTable.get_spectral_windows,
 #                             srcvis)
-#     dst_spws = __read_table(casatools.MSMDReader, 
+#     dst_spws = __read_table(casatools.MSMDReader,
 #                             tablereader.SpectralWindowTable.get_spectral_windows,
 #                             dstvis)
 
@@ -937,7 +937,7 @@ class RGAccumulator(object):
 #             self.field.extend(field_id_list)
 #             self.antenna.extend(antenna_id_list)
 #             self.spw.extend(spw_id_list)
-#             
+#
     def get_field_id_list(self):
         return self.field
 
@@ -969,7 +969,7 @@ class RGAccumulator(object):
         assert len(self.field) == len(self.pols)
         assert len(self.field) == len(self.grid_table)
         assert len(self.field) == len(self.channelmap_range)
-        for f, a, s, g, c in itertools.izip(self.field, self.antenna, self.spw, 
+        for f, a, s, g, c in itertools.izip(self.field, self.antenna, self.spw,
                                             self.grid_table, self.channelmap_range):
             _g = g.decompress()
             yield f, a, s, _g, c
