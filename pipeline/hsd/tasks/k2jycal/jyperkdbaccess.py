@@ -222,11 +222,33 @@ class JyPerKModelFitEndPoint(ALMAJyPerKDatabaseAccessBase):
                 # mean frequency
                 params['frequency'] = get_mean_frequency(spw)
 
-                # subparam is spw id
-                yield QueryStruct(param=params, subparam=spw.id)
+                # subparam is dictionary holding vis and spw id
+                subparam = {'vis': vis, 'spwid': spw.id}
+                yield QueryStruct(param=params, subparam=subparam)
 
     def access(self, queries):
-        return list(queries)
+        data = []
+        for result in queries:
+            # response from DB
+            response = result.response
+
+            # subparam is dictionary holding vis and spw id
+            subparam = result.subparam
+            assert isinstance(subparam, dict)
+            assert ('vis' in subparam) and ('spwid' in subparam)
+            spwid = subparam['spwid']
+            assert isinstance(spwid, int)
+            vis = subparam['vis']
+            assert isinstance(vis, str)
+            basename = os.path.basename(vis.rstrip('/'))
+
+            factor = float(response[u'factor'])
+            polarization = 'I'
+            antenna = response['query']['antenna']
+            data.append({'MS': basename, 'Antenna': antenna, 'Spwid': spwid,
+                           'Polarization': polarization, 'Factor': factor})
+
+        return {'query': '', 'data': data, 'total': len(data)}
 
 
 class JyPerKInterpolationEndPoint(ALMAJyPerKDatabaseAccessBase):
