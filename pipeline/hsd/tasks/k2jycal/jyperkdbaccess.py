@@ -13,7 +13,6 @@ import collections
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
 import pipeline.domain.measures as measures
-import pipeline.hsd.tasks.common.utils as utils
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -142,7 +141,7 @@ class ALMAJyPerKDatabaseAccessBase(object):
         # retval should be a dict that consists of
         # 'query': query data
         # 'total': number of data
-        # 'data': data
+        # 'data': response data
         return retval
 
     def format_jyperk(self, vis, jyperk):
@@ -174,26 +173,7 @@ class ALMAJyPerKDatabaseAccessBase(object):
         return filtered
 
 
-class JyPerKAsdmEndPoint(ALMAJyPerKDatabaseAccessBase):
-    ENDPOINT_TYPE = 'asdm'
-
-    def get_params(self, vis):
-        # no subparam
-        yield QueryStruct(param={'uid': vis_to_uid(vis)}, subparam=None)
-
-    def access(self, queries):
-        responses = list(queries)
-
-        # there should be only one query
-        assert len(responses) == 1
-
-        # formatting is not necessary
-        return responses[0].response
-
-
-class JyPerKModelFitEndPoint(ALMAJyPerKDatabaseAccessBase):
-    ENDPOINT_TYPE = 'model-fit'
-
+class JyPerKAbstractEndPoint(ALMAJyPerKDatabaseAccessBase):
     def get_params(self, vis):
         ms = self.context.observing_run.get_ms(vis)
 
@@ -205,6 +185,9 @@ class JyPerKModelFitEndPoint(ALMAJyPerKDatabaseAccessBase):
 
         # temperature
         params['temperature'] = get_mean_temperature(vis)
+
+        # other
+        params.update(self._aux_params())
 
         # loop over antennas and spws
         for ant in ms.antennas:
@@ -218,6 +201,9 @@ class JyPerKModelFitEndPoint(ALMAJyPerKDatabaseAccessBase):
                 # observing band is taken from the string spw.band
                 # whose format should be "ALMA Band X"
                 params['band'] = int(spw.band.split()[-1])
+
+                # baseband
+                params['baseband'] = int(spw.baseband)
 
                 # mean frequency
                 params['frequency'] = get_mean_frequency(spw)
@@ -242,17 +228,53 @@ class JyPerKModelFitEndPoint(ALMAJyPerKDatabaseAccessBase):
             assert isinstance(vis, str)
             basename = os.path.basename(vis.rstrip('/'))
 
-            factor = float(response[u'factor'])
+            factor = self._extract_factor(response)
             polarization = 'I'
             antenna = response['query']['antenna']
             data.append({'MS': basename, 'Antenna': antenna, 'Spwid': spwid,
-                           'Polarization': polarization, 'Factor': factor})
+                         'Polarization': polarization, 'Factor': factor})
 
         return {'query': '', 'data': data, 'total': len(data)}
 
+    def _aux_params(self):
+        return {}
 
-class JyPerKInterpolationEndPoint(ALMAJyPerKDatabaseAccessBase):
+    def _extract_factor(self, response):
+        raise NotImplementedError
+
+
+class JyPerKAsdmEndPoint(ALMAJyPerKDatabaseAccessBase):
+    ENDPOINT_TYPE = 'asdm'
+
+    def get_params(self, vis):
+        # no subparam
+        yield QueryStruct(param={'uid': vis_to_uid(vis)}, subparam=None)
+
+    def access(self, queries):
+        responses = list(queries)
+
+        # there should be only one query
+        assert len(responses) == 1
+
+        # formatting is not necessary
+        return responses[0].response
+
+
+class JyPerKModelFitEndPoint(JyPerKAbstractEndPoint):
+    ENDPOINT_TYPE = 'model-fit'
+
+    def _extract_factor(self, response):
+        return float(response[u'factor'])
+
+
+class JyPerKInterpolationEndPoint(JyPerKAbstractEndPoint):
     ENDPOINT_TYPE = 'interpolation'
+
+    def _aux_params(self):
+        return {'delta_days': 1000}
+
+    def _extract_factor(self, response):
+        return response[u'data'][u'mean']
 
 
 def vis_to_uid(vis):
@@ -289,7 +311,8 @@ def mjd_to_datestring(epoch):
 
     t = qa.splitdate(epoch['m0'])
     dd = datetime.datetime(t['year'], t['month'], t['monthday'], t['hour'], t['min'], t['sec'], t['usec'])
-    datestring = dd.strftime('%Y-%m-%dT%H:%M:%S.%f')
+    #datestring = dd.strftime('%Y-%m-%dT%H:%M:%S.%f')
+    datestring = dd.strftime('%Y-%m-%dT%H:%M:%S')
     return datestring
 
 
