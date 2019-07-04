@@ -7,38 +7,19 @@ import numpy
 import os
 import re
 import string
+import datetime
+import collections
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
+import pipeline.domain.measures as measures
+import pipeline.hsd.tasks.common.utils as utils
 
 LOG = infrastructure.get_logger(__name__)
 
 
-def generate_query(url, params):
-    if isinstance(params, dict):
-        params = [params]
-
-    try:
-        for p in params:
-            # encode params
-            encoded = urllib.urlencode(p)
-
-            # try opening url
-            query = '?'.join([url, encoded])
-            LOG.info('Accessing Jy/K DB: query is "{}"'.format(query))
-            response = urllib2.urlopen(query)
-            retval = json.load(response)
-            yield retval
-    except urllib2.HTTPError as e:
-        msg = 'Failed to load URL: {0}\n'.format(url) \
-            + 'Error Message: HTTPError(code={0}, Reason="{1}")\n'.format(e.code, e.reason)
-        LOG.error(msg)
-        raise e
-    except urllib2.URLError as e:
-        msg = 'Failed to load URL: {0}\n'.format(url) \
-            + 'Error Message: URLError(Reason="{0}")\n'.format(e.reason)
-        LOG.error(msg)
-        raise e
+QueryStruct = collections.namedtuple('QueryStruct', ['param', 'subparam'])
+ResponseStruct = collections.namedtuple('ResponseStruct', ['response', 'subparam'])
 
 
 class ALMAJyPerKDatabaseAccessBase(object):
@@ -65,6 +46,29 @@ class ALMAJyPerKDatabaseAccessBase(object):
         spws = ms.get_spectral_windows(science_windows_only=True)
         bands = [spw.band for spw in spws]
         return numpy.unique(bands)
+
+    def _generate_query(self, url, params):
+        try:
+            for p in params:
+                # encode params
+                encoded = urllib.urlencode(p.param)
+
+                # try opening url
+                query = '?'.join([url, encoded])
+                LOG.info('Accessing Jy/K DB: query is "{}"'.format(query))
+                response = urllib2.urlopen(query)
+                retval = json.load(response)
+                yield ResponseStruct(response=retval, subparam=p.subparam)
+        except urllib2.HTTPError as e:
+            msg = 'Failed to load URL: {0}\n'.format(url) \
+                + 'Error Message: HTTPError(code={0}, Reason="{1}")\n'.format(e.code, e.reason)
+            LOG.error(msg)
+            raise e
+        except urllib2.URLError as e:
+            msg = 'Failed to load URL: {0}\n'.format(url) \
+                + 'Error Message: URLError(Reason="{0}")\n'.format(e.reason)
+            LOG.error(msg)
+            raise e
 
     def validate(self, vis):
         basename = os.path.basename(vis.rstrip('/'))
@@ -132,7 +136,7 @@ class ALMAJyPerKDatabaseAccessBase(object):
 
         params = self.get_params(vis)
 
-        queries = generate_query(url, params)
+        queries = self._generate_query(url, params)
 
         retval = self.access(queries)
         # retval should be a dict that consists of
@@ -174,7 +178,8 @@ class JyPerKAsdmEndPoint(ALMAJyPerKDatabaseAccessBase):
     ENDPOINT_TYPE = 'asdm'
 
     def get_params(self, vis):
-        return {'uid': vis_to_uid(vis)}
+        # no subparam
+        yield QueryStruct(param={'uid': vis_to_uid(vis)}, subparam=None)
 
     def access(self, queries):
         responses = list(queries)
@@ -183,11 +188,45 @@ class JyPerKAsdmEndPoint(ALMAJyPerKDatabaseAccessBase):
         assert len(responses) == 1
 
         # formatting is not necessary
-        return responses[0]
+        return responses[0].response
 
 
 class JyPerKModelFitEndPoint(ALMAJyPerKDatabaseAccessBase):
     ENDPOINT_TYPE = 'model-fit'
+
+    def get_params(self, vis):
+        ms = self.context.observing_run.get_ms(vis)
+
+        # parameter dictionary
+        params = {}
+
+        # date
+        params['date'] = mjd_to_datestring(ms.start_time)
+
+        # temperature
+        params['temperature'] = get_mean_temperature(vis)
+
+        # loop over antennas and spws
+        for ant in ms.antennas:
+            # antenna name
+            params['antenna'] = ant.name
+
+            # elevation
+            params['elevation'] = get_mean_elevation(self.context, vis, ant.id)
+
+            for spw in ms.get_spectral_windows(science_windows_only=True):
+                # observing band is taken from the string spw.band
+                # whose format should be "ALMA Band X"
+                params['band'] = int(spw.band.split()[-1])
+
+                # mean frequency
+                params['frequency'] = get_mean_frequency(spw)
+
+                # subparam is spw id
+                yield QueryStruct(param=params, subparam=spw.id)
+
+    def access(self, queries):
+        return list(queries)
 
 
 class JyPerKInterpolationEndPoint(ALMAJyPerKDatabaseAccessBase):
@@ -213,3 +252,47 @@ def vis_to_uid(vis):
         return basename.replace('___', '://').replace('_', '/').replace('.ms', '')
     else:
         raise RuntimeError('MS name is not appropriate for DB query: {}'.format(basename))
+
+
+def mjd_to_datestring(epoch):
+    # casatools
+    me = casatools.measures
+    qa = casatools.quanta
+
+    if epoch['refer'] != 'UTC':
+        try:
+            epoch = me.measure(epoch, 'UTC')
+        finally:
+            me.done()
+
+    t = qa.splitdate(epoch['m0'])
+    dd = datetime.datetime(t['year'], t['month'], t['monthday'], t['hour'], t['min'], t['sec'], t['usec'])
+    datestring = dd.strftime('%Y-%m-%dT%H:%M:%S.%f')
+    return datestring
+
+
+def get_mean_frequency(spw):
+    return float(spw.mean_frequency.convert_to(measures.FrequencyUnits.HERTZ).value)
+
+
+def get_mean_temperature(vis):
+    with casatools.TableReader(os.path.join(vis, 'WEATHER')) as tb:
+        valid_temperatures = numpy.ma.masked_array(
+            tb.getcol('TEMPERATURE'),
+            tb.getcol('TEMPERATURE_FLAG')
+        )
+
+    return valid_temperatures.mean()
+
+
+def get_mean_elevation(context, vis, antenna_id):
+    dt_name = context.observing_run.ms_datatable_name
+    with casatools.TableReader(os.path.join(dt_name, vis, 'RO')) as tb:
+        try:
+            t = tb.query('ANTENNA=={}&&SRCTYPE==0'.format(antenna_id))
+            assert t.nrows() > 0
+            elevations = t.getcol('EL')
+        finally:
+            t.close()
+
+    return elevations.mean()
