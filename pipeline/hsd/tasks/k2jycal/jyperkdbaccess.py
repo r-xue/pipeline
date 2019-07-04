@@ -14,13 +14,42 @@ import pipeline.infrastructure.casatools as casatools
 LOG = infrastructure.get_logger(__name__)
 
 
+def generate_query(url, params):
+    if isinstance(params, dict):
+        params = [params]
+
+    try:
+        for p in params:
+            # encode params
+            encoded = urllib.urlencode(p)
+
+            # try opening url
+            query = '?'.join([url, encoded])
+            LOG.info('Accessing Jy/K DB: query is "{}"'.format(query))
+            response = urllib2.urlopen(query)
+            retval = json.load(response)
+            yield retval
+    except urllib2.HTTPError as e:
+        msg = 'Failed to load URL: {0}\n'.format(url) \
+            + 'Error Message: HTTPError(code={0}, Reason="{1}")\n'.format(e.code, e.reason)
+        LOG.error(msg)
+        raise e
+    except urllib2.URLError as e:
+        msg = 'Failed to load URL: {0}\n'.format(url) \
+            + 'Error Message: URLError(Reason="{0}")\n'.format(e.reason)
+        LOG.error(msg)
+        raise e
+
+
 class ALMAJyPerKDatabaseAccessBase(object):
     BASE_URL = 'https://asa.alma.cl/science/jy-kelvins'
     ENDPOINT_TYPE = None
 
     @property
     def url(self):
-        assert self.ENDPOINT_TYPE is not None
+        assert self.ENDPOINT_TYPE is not None, \
+            '{} cannot be instantiated. Please use subclasses.'.format(self.__class__.__name__)
+
         s = '/'.join([self.BASE_URL, self.ENDPOINT_TYPE])
         if not s.endswith('/'):
             s += '/'
@@ -77,6 +106,9 @@ class ALMAJyPerKDatabaseAccessBase(object):
     def get_params(self, vis):
         raise NotImplementedError
 
+    def access(self, queries):
+        raise NotImplementedError
+
     def get(self, vis):
         """
         Access Jy/K DB and return its response.
@@ -99,24 +131,10 @@ class ALMAJyPerKDatabaseAccessBase(object):
         url = self.url
 
         params = self.get_params(vis)
-        encoded = urllib.urlencode(params)
 
-        try:
-            # try opening url
-            query = '?'.join([url, encoded])
-            LOG.info('Accessing Jy/K DB: query is "{}"'.format(query))
-            response = urllib2.urlopen(query)
-        except urllib2.HTTPError as e:
-            msg = 'Failed to load URL: {0}\n'.format(url) \
-                + 'Error Message: HTTPError(code={0}, Reason="{1}")\n'.format(e.code, e.reason)
-            LOG.error(msg)
-            raise e
-        except urllib2.URLError as e:
-            msg = 'Failed to load URL: {0}\n'.format(url) \
-                + 'Error Message: URLError(Reason="{0}")\n'.format(e.reason)
-            LOG.error(msg)
-            raise e
-        retval = json.load(response)
+        queries = generate_query(url, params)
+
+        retval = self.access(queries)
         # retval should be a dict that consists of
         # 'query': query data
         # 'total': number of data
@@ -157,6 +175,15 @@ class JyPerKAsdmEndPoint(ALMAJyPerKDatabaseAccessBase):
 
     def get_params(self, vis):
         return {'uid': vis_to_uid(vis)}
+
+    def access(self, queries):
+        responses = list(queries)
+
+        # there should be only one query
+        assert len(responses) == 1
+
+        # formatting is not necessary
+        return responses[0]
 
 
 class JyPerKModelFitEndPoint(ALMAJyPerKDatabaseAccessBase):
