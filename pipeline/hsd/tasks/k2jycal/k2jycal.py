@@ -175,7 +175,9 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
         query = jyperkdbaccess.JyPerKAsdmEndPoint(self.inputs.context)
         try:
             factors_list = query.getJyPerK(self.inputs.vis)
-        except Exception:
+        except Exception as e:
+            LOG.error('Query to Jy/K DB was failed due to the following error. Fallback to the provided CSV file.')
+            LOG.error(str(e))
             factors_list = []
         return factors_list
 
