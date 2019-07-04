@@ -42,7 +42,7 @@ class SDK2JyCalInputs(vdp.StandardInputs):
                                stage=self.context.stage, **casa_args)
 
     def __init__(self, context, output_dir=None, infiles=None, caltable=None,
-                 reffile=None, dbservice=None):
+                 reffile=None, dbservice=None, endpoint=None):
         super(SDK2JyCalInputs, self).__init__()
 
         # context and vis/infiles must be set first so that properties that require
@@ -55,6 +55,7 @@ class SDK2JyCalInputs(vdp.StandardInputs):
         self.caltable = caltable
         self.reffile = reffile
         self.dbservice = dbservice
+        self.endpoint = endpoint
 
 
 class SDK2JyCalResults(basetask.Results):
@@ -171,8 +172,17 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
         return factors_list
 
     def _query_factors(self):
-        # only JyPerKAsdmEndPoint is implemented so far
-        query = jyperkdbaccess.JyPerKAsdmEndPoint(self.inputs.context)
+        # switch implementation class according to endpoint parameter
+        endpoint = self.inputs.endpoint
+        if endpoint == 'asdm':
+            impl = jyperkdbaccess.JyPerKAsdmEndPoint
+        elif endpoint == 'model-fit':
+            impl = jyperkdbaccess.JyPerKModelFitEndPoint
+        elif endpoint == 'interpolation':
+            impl = jyperkdbaccess.JyPerKInterpolationEndPoint
+        else:
+            raise RuntimeError('Invalid endpoint: {}'.format(endpoint))
+        query = impl(self.inputs.context)
         try:
             factors_list = query.getJyPerK(self.inputs.vis)
         except Exception as e:

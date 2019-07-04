@@ -18,6 +18,16 @@ Derive the Kelvin to Jy calibration for list of MeasurementSets.
         <value>False</value>
     </param>
 
+    <param type="string" name="endpoint" subparam="true">
+        <description>Endpoint type (asdm, model-fit, interpolation)</description>
+        <value>asdm</value>
+        <allowed kind="enum">
+            <value>asdm</value>
+            <value>model-fit</value>
+            <value>interpolation</value>
+        </allowed>
+    </param>
+
     <param type="string" name="reffile">
         <description>File of Jy/K conversion factor</description>
         <value>jyperk.csv</value>
@@ -54,6 +64,12 @@ Derive the Kelvin to Jy calibration for list of MeasurementSets.
     </param>
 
     <constraints>
+        <when param="dbservice">
+            <equals type="bool" value="False" />
+            <equals type="bool" value="True">
+                <default param="endpoint"><value type="string">asdm</value></default>
+            </equals>
+        </when>
         <when param="pipelinemode">
             <equals type="string" value="automatic" />
             <equals type="string" value="interactive">
@@ -96,6 +112,11 @@ pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline
 dbservice -- Whether or not accessing Jy/K DB to retrieve conversion factors.
 
     default: False
+
+endpoint -- Which endpoints to use for query
+
+    default: 'asdm'
+    options: 'asdm', 'model-fit', 'interpolation'
 
 reffile -- Path to a file containing Jy/K factors for science data, which
     must be provided by associating calibrator reduction or the observatory

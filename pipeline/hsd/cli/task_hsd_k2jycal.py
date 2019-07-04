@@ -3,8 +3,8 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
-def hsd_k2jycal(dbservice=None, reffile=None, pipelinemode=None, infiles=None, caltable=None,
-                dryrun=None, acceptresults=None):
+def hsd_k2jycal(dbservice=None, endpoint=None, reffile=None, pipelinemode=None,
+                infiles=None, caltable=None, dryrun=None, acceptresults=None):
 
     ##########################################################################
     #                                                                        #
