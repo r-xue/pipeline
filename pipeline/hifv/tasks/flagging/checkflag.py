@@ -57,7 +57,7 @@ class Checkflag(basetask.StandardTaskTemplate):
 
     def prepare(self):
 
-        LOG.info("Checking RFI flagging of BP and Delay Calibrators")
+        LOG.info("Checkflag task: " + self.inputs.checkflagmode)
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         self.tint = m.get_vla_max_integration_time()
         pols = m.polarizations[0]
@@ -389,6 +389,7 @@ class Checkflag(basetask.StandardTaskTemplate):
         outputThresholds = copy.deepcopy(inputThresholds)
 
         for ftdev in ['freqdev', 'timedev']:
+
             fields = inputThresholds['report0'][ftdev][:, 0]
             spws = inputThresholds['report0'][ftdev][:, 1]
             threshes = inputThresholds['report0'][ftdev][:, 2]
@@ -543,10 +544,15 @@ class Checkflag(basetask.StandardTaskTemplate):
         if self.inputs.checkflagmode == 'vlass-imaging':
             datacolumn = 'data'
 
-        for correlation, scale, datacolumn in [('ABS_RL', self.rflagThreshMultiplierTargetXpol, datacolumn),
-                                               ('ABS_LR', self.rflagThreshMultiplierTargetXpol, datacolumn),
-                                               ('ABS_RR', self.rflagThreshMultiplierTargetPpol, datacolumn),
-                                               ('ABS_LL', self.rflagThreshMultiplierTargetPpol, datacolumn)]:
+        for correlation, scale in [('ABS_RL', self.rflagThreshMultiplierTargetXpol),
+                                   ('ABS_LR', self.rflagThreshMultiplierTargetXpol),
+                                   ('ABS_RR', self.rflagThreshMultiplierTargetPpol),
+                                   ('ABS_LL', self.rflagThreshMultiplierTargetPpol)]:
+
+            if self.inputs.checkflagmode == 'vlass-imaging' and correlation == 'ABS_RR':
+                datacolumn = 'residual_data'
+            if self.inputs.checkflagmode == 'vlass-imaging' and correlation == 'ABS_LL':
+                datacolumn = 'residual_data'
 
             method_args = {'mode': 'rflag',
                            'field': '',
