@@ -121,7 +121,7 @@ class SDImaging(basetask.StandardTaskTemplate):
     def _finalize_worker_result(cls, result,
                                 sourcename, spwlist, antenna,  # specmode='cube', sourcetype='TARGET',
                                 imagemode, stokes, validsp, rms, edge,
-                                reduction_group_id, file_index, 
+                                reduction_group_id, file_index,
                                 assoc_antennas, assoc_fields, assoc_spws, # , assoc_pols=pols,
                                 sensitivity_info=None):
         # override attributes for image item
@@ -135,7 +135,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 setattr(result.outcome['image'], x, _locals[x])
 
         # fill outcomes
-        outcome_keys = ('imagemode', 'stokes', 'validsp', 'rms', 'edge', 'reduction_group_id', 
+        outcome_keys = ('imagemode', 'stokes', 'validsp', 'rms', 'edge', 'reduction_group_id',
                         'file_index', 'assoc_antennas', 'assoc_fields', 'assoc_spws', 'assoc_spws')
         for x in outcome_keys:
             if x in _locals:
@@ -158,14 +158,14 @@ class SDImaging(basetask.StandardTaskTemplate):
         ms_list = inputs.ms
         ms_names = [msobj.name for msobj in ms_list]
         in_spw = inputs.spw
-        # in_field is comma-separated list of target field names that are 
+        # in_field is comma-separated list of target field names that are
         # extracted from all input MSs
         in_field = inputs.field
 #         antennalist = inputs.antennalist
         imagemode = inputs.mode.upper()
         cqa = casatools.quanta
 
-        # check if data is NRO 
+        # check if data is NRO
         is_nro = sdutils.is_nro(context)
 
         # task returns ResultsList
@@ -185,7 +185,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             LOG.info('No SDBaselineResults available. Set edge as [0,0]')
             edge = [0, 0]
 
-        dt_dict = dict((ms.basename, DataTable(os.path.join(context.observing_run.ms_datatable_name, ms.basename))) 
+        dt_dict = dict((ms.basename, DataTable(os.path.join(context.observing_run.ms_datatable_name, ms.basename)))
                        for ms in ms_list)
 
         # loop over reduction group (spw and source combination)
@@ -193,15 +193,15 @@ class SDImaging(basetask.StandardTaskTemplate):
             LOG.debug('Processing Reduction Group {}'.format(group_id))
             LOG.debug('Group Summary:')
             for m in group_desc:
-                LOG.debug('\t{}: Antenna {:d} ({}) Spw {:d} Field {:d} ({})'.format(os.path.basename(m.ms.work_data), 
-                                                                                    m.antenna_id, m.antenna_name, 
-                                                                                    m.spw_id, 
+                LOG.debug('\t{}: Antenna {:d} ({}) Spw {:d} Field {:d} ({})'.format(os.path.basename(m.ms.work_data),
+                                                                                    m.antenna_id, m.antenna_name,
+                                                                                    m.spw_id,
                                                                                     m.field_id, m.field_name))
             # Which group in group_desc list should be processed
 
             # fix for CAS-9747
-            # There may be the case that observation didn't complete so that some of 
-            # target fields are missing in MS. In this case, directly pass in_field 
+            # There may be the case that observation didn't complete so that some of
+            # target fields are missing in MS. In this case, directly pass in_field
             # to get_valid_ms_members causes trouble. As a workaround, ad hoc pre-selection
             # of field name is applied here.
             # 2017/02/23 TN
@@ -253,8 +253,8 @@ class SDImaging(basetask.StandardTaskTemplate):
             LOG.debug('Members to be processed:')
             for i in xrange(len(member_list)):
                 LOG.debug('\t{}: Antenna {} Spw {} Field {}'.format(os.path.basename(ms_list[i].work_data),
-                                                                    antenna_list[i], 
-                                                                    spwid_list[i], 
+                                                                    antenna_list[i],
+                                                                    spwid_list[i],
                                                                     fieldid_list[i]))
 
             # image is created per antenna (science) or per asdm and antenna (ampcal)
@@ -301,7 +301,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 for idx in xrange(len(msobjs)):
                     LOG.info("\t{}: Antenna {:d} ({}) Spw {} Field {:d} ({})".format(msobjs[idx].basename,
                                                                                      antids[idx], msobjs[idx].antennas[antids[idx]].name,
-                                                                                     spwids[idx], 
+                                                                                     spwids[idx],
                                                                                      fieldids[idx], msobjs[idx].fields[fieldids[idx]].name))
                 # reference data is first MS
                 ref_ms = msobjs[0]
@@ -351,7 +351,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 # Initialize weight column based on baseline RMS.
                 original_ms = [msobj.name for msobj in msobjs]
                 work_ms = [msobj.work_data for msobj in msobjs]
-                weighting_inputs = vdp.InputsContainer(weighting.WeightMS, context, 
+                weighting_inputs = vdp.InputsContainer(weighting.WeightMS, context,
                                                        infiles=original_ms, outfiles=work_ms,
                                                        antenna=antids, spwid=spwids, fieldid=fieldids)
                 weighting_task = weighting.WeightMS(weighting_inputs)
@@ -389,7 +389,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
                 imager_results = []
                 for _stokes, _imagename in zip(stokes_list, imagename_list):
-                    imager_inputs = worker.SDImagingWorker.Inputs(context, infiles, 
+                    imager_inputs = worker.SDImagingWorker.Inputs(context, infiles,
                                                                   outfile=_imagename,
                                                                   mode=imagemode,
                                                                   antids=antids,
@@ -416,7 +416,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                         tocombine_images.append(imagename)
 
                     # Additional Step.
-                    # Make grid_table and put rms and valid spectral number array 
+                    # Make grid_table and put rms and valid spectral number array
                     # to the outcome.
                     # The rms and number of valid spectra is used to create RMS maps.
                     LOG.info('Additional Step. Make grid_table')
@@ -453,8 +453,8 @@ class SDImaging(basetask.StandardTaskTemplate):
                         _fieldids = member[2]
                         _spwids = member[3]
                         _pols = [pol for i in xrange(len(_mses))]
-                        gridding_inputs = grid_task_class.Inputs(context, infiles=_mses, 
-                                                                 antennaids=_antids, 
+                        gridding_inputs = grid_task_class.Inputs(context, infiles=_mses,
+                                                                 antennaids=_antids,
                                                                  fieldids=_fieldids,
                                                                  spwids=_spwids,
                                                                  poltypes=_pols,
@@ -484,10 +484,10 @@ class SDImaging(basetask.StandardTaskTemplate):
                     combined_rms_exclude.extend(rms_exclude_freq)
 
                     file_index = [common.get_parent_ms_idx(context, name) for name in infiles]
-                    self._finalize_worker_result(imager_result, 
+                    self._finalize_worker_result(imager_result,
                                                  sourcename=source_name, spwlist=v_spwids, antenna=ant_name, #specmode='cube', sourcetype='TARGET',
                                                  imagemode=imagemode, stokes=self.stokes, validsp=validsps, rms=rmss, edge=edge,
-                                                 reduction_group_id=group_id, file_index=file_index, 
+                                                 reduction_group_id=group_id, file_index=file_index,
                                                  assoc_antennas=antids, assoc_fields=fieldids, assoc_spws=v_spwids) #, assoc_pols=pols)
 
                     if inputs.is_ampcal:
@@ -505,10 +505,10 @@ class SDImaging(basetask.StandardTaskTemplate):
                         tocombine_images_nro.append(imagename_nro)
 
                     file_index = [common.get_parent_ms_idx(context, name) for name in infiles]
-                    self._finalize_worker_result(imager_result_nro, 
+                    self._finalize_worker_result(imager_result_nro,
                                                  sourcename=source_name, spwlist=v_spwids, antenna=ant_name, #specmode='cube', sourcetype='TARGET',
                                                  imagemode=imagemode, stokes=stokes_list[1], validsp=validsps, rms=rmss, edge=edge,
-                                                 reduction_group_id=group_id, file_index=file_index, 
+                                                 reduction_group_id=group_id, file_index=file_index,
                                                  assoc_antennas=antids, assoc_fields=fieldids, assoc_spws=v_spwids) #, assoc_pols=pols)
 
                     results.append(imager_result_nro)
@@ -534,12 +534,12 @@ class SDImaging(basetask.StandardTaskTemplate):
             # Imaging of all antennas
             LOG.info('Combine images of Source {} Spw {:d}'.format(source_name, combined_spws[0]))
             if False:
-                imager_inputs = worker.SDImagingWorker.Inputs(context, combined_infiles, 
+                imager_inputs = worker.SDImagingWorker.Inputs(context, combined_infiles,
                                                               outfile=imagename, mode=imagemode,
                                                               antids=combined_antids,
                                                               spwids=combined_spws,
                                                               fieldids=combined_fieldids,
-                                                              stokes = self.stokes,
+                                                              stokes=self.stokes,
                                                               edge=edge,
                                                               phasecenter=phasecenter,
                                                               cellx=cellx, celly=celly,
@@ -556,7 +556,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 # Imaging was successful, proceed following steps
 
                 # Additional Step.
-                # Make grid_table and put rms and valid spectral number array 
+                # Make grid_table and put rms and valid spectral number array
                 # to the outcome
                 # The rms and number of valid spectra is used to create RMS maps
                 LOG.info('Additional Step. Make grid_table')
@@ -593,8 +593,8 @@ class SDImaging(basetask.StandardTaskTemplate):
                     _fieldids = member[2]
                     _spwids = member[3]
                     _pols = [pol for i in xrange(len(_mses))]
-                    gridding_inputs = grid_task_class.Inputs(context, infiles=_mses, 
-                                                             antennaids=_antids, 
+                    gridding_inputs = grid_task_class.Inputs(context, infiles=_mses,
+                                                             antennaids=_antids,
                                                              fieldids=_fieldids,
                                                              spwids=_spwids,
                                                              poltypes=_pols,
@@ -713,12 +713,12 @@ class SDImaging(basetask.StandardTaskTemplate):
                                           beam=beam, cell=qcell,
                                           sensitivity=cqa.quantity(image_rms, 'Jy/beam'))
                 sensitivity_info = SensitivityInfo(sensitivity, is_representative_spw, stat_freqs)
-                self._finalize_worker_result(imager_result, 
+                self._finalize_worker_result(imager_result,
                                              sourcename=source_name, spwlist=combined_v_spws, antenna='COMBINED',  #specmode='cube', sourcetype='TARGET',
                                              imagemode=imagemode, stokes=self.stokes, validsp=validsps, rms=rmss, edge=edge,
-                                             reduction_group_id=group_id, file_index=file_index, 
+                                             reduction_group_id=group_id, file_index=file_index,
                                              assoc_antennas=combined_antids, assoc_fields=combined_fieldids, assoc_spws=combined_v_spws,  #, assoc_pols=pols,
-                                             sensitivity_info=sensitivity_info) 
+                                             sensitivity_info=sensitivity_info)
 
                 results.append(imager_result)
 
@@ -744,10 +744,10 @@ class SDImaging(basetask.StandardTaskTemplate):
                 # Imaging was successful, proceed following steps
 
                     file_index = [common.get_parent_ms_idx(context, name) for name in combined_infiles]
-                    self._finalize_worker_result(imager_result, 
+                    self._finalize_worker_result(imager_result,
                                                  sourcename=source_name, spwlist=combined_v_spws, antenna='COMBINED',  #specmode='cube', sourcetype='TARGET',
                                                  imagemode=imagemode, stokes=stokes_list[1], validsp=validsps, rms=rmss, edge=edge,
-                                                 reduction_group_id=group_id, file_index=file_index, 
+                                                 reduction_group_id=group_id, file_index=file_index,
                                                  assoc_antennas=combined_antids, assoc_fields=combined_fieldids, assoc_spws=combined_v_spws)  #, assoc_pols=pols)
 
                     results.append(imager_result)
@@ -805,7 +805,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             # check the validity of channel number and fix it when out of range
             min_chan = 0
             max_chan = spwobj.num_channels - 1
-            exclude_channel_range = map(lambda x: [max(min_chan, x[0]), min(max_chan, x[1])], 
+            exclude_channel_range = map(lambda x: [max(min_chan, x[0]), min(max_chan, x[1])],
                                         self._merge_ranges(exclude_range))
             LOG.info("{} : channel map and deviation mask channel ranges in MS frame = {}".format(msobj.basename, str(exclude_channel_range)))
             # define frequency ranges of RMS
