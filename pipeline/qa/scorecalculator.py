@@ -900,10 +900,10 @@ def score_vla_flux_residual_rms(rmsvalues):
 
     """
 
-    if np.mean(rmsvalues) < 0.002:
+    if np.mean(rmsvalues) < 0.02:
         score = 1.0
     else:
-        count = len([x for x in rmsvalues if x < 0.002])
+        count = len([x for x in rmsvalues if x > 0.01])
         score = 1.0 - (0.1 * count)
 
     if score < 0.0:
@@ -915,12 +915,9 @@ def score_vla_flux_residual_rms(rmsvalues):
 
     origin = pqa.QAOrigin(metric_name='score_vla_flux_residual_rms',
                           metric_score=score,
-                          metric_units='rms values that exceed 0.002')
+                          metric_units='rms values that exceed 0.01')
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
-
-
-
 
 
 @log_qa
