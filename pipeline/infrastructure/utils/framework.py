@@ -36,7 +36,7 @@ LOG = logging.get_logger(__name__)
 
 __all__ = ['task_depth', 'is_top_level_task', 'get_calfroms', 'pickle_copy', 'pickle_load', 'gen_hash',
            'collect_properties', 'mkdir_p', 'get_tracebacks', 'get_qascores', 'merge_jobs', 'get_origin_input_arg',
-           'contains_single_dish', 'plotms_iterate']
+           'contains_single_dish', 'plotms_iterate', 'flatten_dict']
 
 
 def task_depth():

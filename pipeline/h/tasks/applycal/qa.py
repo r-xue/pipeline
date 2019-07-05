@@ -38,7 +38,7 @@ class ApplycalQAHandler(pqa.QAPlugin):
             score.origin = new_origin
             scores = [score]
 
-        result.qa.pool[:] = scores
+        result.qa.pool.extend(scores)
 
 
 class ApplycalListQAHandler(pqa.QAPlugin):
@@ -49,7 +49,7 @@ class ApplycalListQAHandler(pqa.QAPlugin):
         # collate the QAScores from each child result, pulling them into our
         # own QAscore list
         collated = utils.flatten([r.qa.pool for r in result]) 
-        result.qa.pool[:] = collated
+        result.qa.pool.extend(collated)
 
 
 aqua_exporter = aqua.xml_generator_for_metric('%ApplycalFlags', '{:0.3%}')

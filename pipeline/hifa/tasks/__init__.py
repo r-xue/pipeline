@@ -19,3 +19,5 @@ from .tsysflag import Tsysflag as ALMATsysflag
 from .wvrgcal import Wvrgcal
 from .wvrgcalflag import Wvrgcalflag
 from .imageprecheck import ImagePreCheck
+# required to load ALMA-specific QA
+from . import applycal
