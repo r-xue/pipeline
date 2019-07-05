@@ -172,6 +172,8 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
         return factors_list
 
     def _query_factors(self):
+        vis = os.path.basename(self.inputs.vis)
+
         # switch implementation class according to endpoint parameter
         endpoint = self.inputs.endpoint
         if endpoint == 'asdm':
@@ -184,10 +186,14 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
             raise RuntimeError('Invalid endpoint: {}'.format(endpoint))
         query = impl(self.inputs.context)
         try:
-            factors_list = query.getJyPerK(self.inputs.vis)
+            factors_list = query.getJyPerK(vis)
+
+            # warn if result is empty
+            if len(factors_list) == 0:
+                LOG.warn('{}: Query to Jy/K DB returned empty result. Will fallback to reading CSV file.'.format(vis))
         except Exception as e:
-            LOG.error('Query to Jy/K DB was failed due to the following error. Fallback to the provided CSV file.')
-            LOG.error(str(e))
+            LOG.warn('{}: Query to Jy/K DB was failed due to the following error. Will fallback to reading CSV file.'.format(vis))
+            LOG.warn(str(e))
             factors_list = []
         return factors_list
 
