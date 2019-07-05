@@ -121,11 +121,11 @@ def DDMMSSss(x, pos):
     return '%s%02d%s%02d\'%02d\"%s' % (sign, d, dsyb, m, sint, sstr)
 
 
-def XYlabel(span, direction_reference):
+def XYlabel(span, direction_reference, ofs_coord=False):
     if direction_reference.upper() == 'GALACTIC':
         return GLGBlabel(span)
     else:
-        return RADEClabel(span)
+        return RADEClabel(span, ofs_coord)
 
 
 def GLGBlabel(span):
@@ -172,7 +172,7 @@ def GLGBlabel(span):
     return (GLlocator, GBlocator, GLformatter, GBformatter)
 
 
-def RADEClabel(span):
+def RADEClabel(span, ofs_coord):
     """
     return (RAlocator, DEClocator, RAformatter, DECformatter)
     """
@@ -194,20 +194,35 @@ def RADEClabel(span):
     if DECt < 0: DEClocator = AutoLocator()
 
     if span < 0.0001:
-        RAformatter=FuncFormatter(HHMMSSsss)
+        if ofs_coord:
+            RAformatter=FuncFormatter(DDMMSSss)
+        else:
+            RAformatter=FuncFormatter(HHMMSSsss)
         DECformatter=FuncFormatter(DDMMSSss)
     elif span < 0.001:
-        RAformatter=FuncFormatter(HHMMSSss)
+        if ofs_coord:
+            RAformatter=FuncFormatter(DDMMSSs)
+        else:
+            RAformatter=FuncFormatter(HHMMSSss)
         DECformatter=FuncFormatter(DDMMSSs)
     elif span < 0.01:
-        RAformatter=FuncFormatter(HHMMSSs)
+        if ofs_coord:
+            RAformatter=FuncFormatter(DDMMSS)
+        else:
+            RAformatter=FuncFormatter(HHMMSSs)
         DECformatter=FuncFormatter(DDMMSS)
     elif span < 1.0:
-        RAformatter=FuncFormatter(HHMMSS)
+        if ofs_coord:
+            RAformatter=FuncFormatter(DDMMSS)
+        else:
+            RAformatter=FuncFormatter(HHMMSS)
         #DECformatter=FuncFormatter(DDMM)
         DECformatter=FuncFormatter(DDMMSS)
     else:
-        RAformatter=FuncFormatter(HHMM)
+        if ofs_coord:
+            RAformatter=FuncFormatter(DDMM)
+        else:
+            RAformatter=FuncFormatter(HHMM)
         DECformatter=FuncFormatter(DDMM)
 
     return (RAlocator, DEClocator, RAformatter, DECformatter)
@@ -223,8 +238,18 @@ class MapAxesManagerBase(object):
         if isinstance(value, str):
             self._direction_reference = value
 
+    @property
+    def ofs_coord(self):
+        return self._ofs_coord
+
+    @ofs_coord.setter
+    def ofs_coord(self, value):
+        if isinstance(value, bool):
+            self._ofs_coord = value
+
     def __init__(self):
         self._direction_reference = None
+        self._ofs_coord = None
 
     def get_axes_labels(self):
         # default label is RA/Dec
@@ -232,8 +257,12 @@ class MapAxesManagerBase(object):
         ylabel = 'Dec'
         if isinstance(self.direction_reference, str):
             if self.direction_reference in ['J2000', 'ICRS']:
-                xlabel = 'RA ({0})'.format(self.direction_reference)
-                ylabel = 'Dec ({0})'.format(self.direction_reference)
+                if self.ofs_coord:
+                    xlabel = 'Offset-RA ({0})'.format(self.direction_reference)
+                    ylabel = 'Offset-Dec ({0})'.format(self.direction_reference)
+                else:
+                    xlabel = 'RA ({0})'.format(self.direction_reference)
+                    ylabel = 'Dec ({0})'.format(self.direction_reference)
             elif self.direction_reference.upper() == 'GALACTIC':
                 xlabel = 'GL'
                 ylabel = 'GB'
@@ -252,10 +281,20 @@ class PointingAxesManager(MapAxesManagerBase):
         if isinstance(value, str):
             self._direction_reference = value
 
+    @property
+    def ofs_coord(self):
+        return self._ofs_coord
+
+    @ofs_coord.setter
+    def ofs_coord(self, value):
+        if isinstance(value, bool):
+            self._ofs_coord = value
+
     def __init__(self):
         self._axes = None
         self.is_initialized = False
         self._direction_reference = None
+        self._ofs_coord = None
 
     def init_axes(self, xlocator, ylocator, xformatter, yformatter, xrotation, yrotation, aspect, xlim=None, ylim=None,
                   reset=False):
@@ -311,7 +350,7 @@ def draw_pointing(axes_manager, RA, DEC, FLAG=None, plotfile=None, connect=True,
     xmin = max(RA) + span / 10.0
     ymax = max(DEC) + span / 10.0
     ymin = min(DEC) - span / 10.0
-    (RAlocator, DEClocator, RAformatter, DECformatter) = XYlabel(span, axes_manager.direction_reference)
+    (RAlocator, DEClocator, RAformatter, DECformatter) = XYlabel(span, axes_manager.direction_reference, ofs_coord=axes_manager.ofs_coord)
 
     Aspect = 1.0 / math.cos(DEC[0] / 180.0 * 3.141592653)
 
@@ -376,14 +415,14 @@ def draw_pointing(axes_manager, RA, DEC, FLAG=None, plotfile=None, connect=True,
 
 class SingleDishPointingChart(object):
     def __init__(self, context, ms, antenna, target_field_id=None, reference_field_id=None, target_only=True,
-                 shift_coord=False):
+                 ofs_coord=False):
         self.context = context
         self.ms = ms
         self.antenna = antenna
         self.target_field = self.__get_field(target_field_id)
         self.reference_field = self.__get_field(reference_field_id) 
         self.target_only = target_only
-        self.shift_coord = shift_coord
+        self.ofs_coord = ofs_coord
         self.figfile = self._get_figfile()
         self.axes_manager = PointingAxesManager()
 
@@ -453,9 +492,9 @@ class SingleDishPointingChart(object):
                 vfunc = numpy.vectorize(func)
                 dt_rows = vfunc(field_ids, antenna_ids, spw_ids)
 
-        if self.shift_coord == True:
-            racol = 'SHIFT_RA'
-            deccol = 'SHIFT_DEC'
+        if self.ofs_coord == True:
+            racol = 'OFS_RA'
+            deccol = 'OFS_DEC'
         else:
             racol = 'RA'
             deccol = 'DEC'
@@ -479,6 +518,7 @@ class SingleDishPointingChart(object):
             FLAG[i] = pflags[0][OnlineFlagIndex]
 
         self.axes_manager.direction_reference = datatable.direction_ref
+        self.axes_manager.ofs_coord = self.ofs_coord
 
         pl.clf()
         draw_pointing(self.axes_manager, RA, DEC, FLAG, self.figfile, circle=[0.5*beam_size_in_deg],
@@ -497,8 +537,8 @@ class SingleDishPointingChart(object):
             clean_name = self.target_field.clean_name
             identifier = antenna_part + '.%s'%(clean_name)
         if self.target_only == True:
-            if self.shift_coord == True:
-                basename = 'shifted_target_pointing.%s'%(identifier)
+            if self.ofs_coord == True:
+                basename = 'offset_target_pointing.%s'%(identifier)
             else:
                 basename = 'target_pointing.%s'%(identifier)
         else:
@@ -518,9 +558,9 @@ class SingleDishPointingChart(object):
                 field_name = self.target_field.name
             else:
                 field_name = self.target_field.name + ',' + self.reference_field.name
-        if self.shift_coord == True:
-            xaxis = 'Shifted R.A.'
-            yaxis = 'Shifted Declination'
+        if self.ofs_coord == True:
+            xaxis = 'Offset R.A.'
+            yaxis = 'Offset Declination'
         else:
             xaxis = 'R.A.'
             yaxis = 'Declination'

@@ -378,12 +378,12 @@ class MetaDataReader(object):
                     ref_direction = get_reference_direction( source_name, ephem_tables[field_id], mepoch, mposition, outref )
                     direction2 = me.measure( pointing_direction, outref )
 
-                    shift_direction = direction_shift( direction2, mepoch, mposition, ref_direction, org_direction )
+                    shift_direction = direction_shift( direction2, ref_direction, org_direction )
                     shift_ra, shift_dec = direction_convert( shift_direction, mepoch, mposition, outframe=outref )
                     Tshift_ra[irow]  = get_value_in_deg(shift_ra)
                     Tshift_dec[irow] = get_value_in_deg(shift_dec)
 
-                    ofs_direction = direction_offset( direction2, mepoch, mposition, ref_direction )
+                    ofs_direction = direction_offset( direction2, ref_direction )
                     ofs_ra, ofs_dec = direction_convert( ofs_direction, mepoch, mposition, outframe=outref )
                     Tofs_ra[irow]  = get_value_in_deg(ofs_ra)
                     Tofs_dec[irow] = get_value_in_deg(ofs_dec)
@@ -531,7 +531,8 @@ def get_reference_direction( source_name, ephem_table, mepoch, mposition, outfra
     return ref
 
 
-def direction_shift( direction, mepoch, mposition, reference, origin ):
+def direction_shift( direction, reference, origin ):
+#def direction_shift( direction, mepoch, mposition, reference, origin ):
     # check if 'refer's are all identical for each directions
     if origin['refer'] != reference['refer']:
         raise RuntimeError( "'refer' of reference and origin should be identical" )
@@ -539,22 +540,23 @@ def direction_shift( direction, mepoch, mposition, reference, origin ):
         raise RuntimeError( "'refer' of reference and direction should be identical" )
 
     me = casatools.measures
-    me.doframe(mepoch)
-    me.doframe(mposition)
+    # me.doframe(mepoch)
+    # me.doframe(mposition)
     offset = me.separation( reference, origin )
     posang = me.posangle( reference, origin )
     new_direction = me.shift( direction, offset=offset, pa=posang )
 
     return new_direction
 
-def direction_offset( direction, mepoch, mposition, reference ):
+def direction_offset( direction, reference ):
+#def direction_offset( direction, mepoch, mposition, reference ):
     # check if 'refer's are all identical for each directions
     if direction['refer'] != reference['refer']:
         raise RuntimeError( "'refer' of reference and direction should be identical" )
 
     me = casatools.measures
-    me.doframe(mepoch)
-    me.doframe(mposition)
+    # me.doframe(mepoch)
+    # me.doframe(mposition)
     offset = me.separation( reference, direction )
     posang = me.posangle( reference, direction )
 

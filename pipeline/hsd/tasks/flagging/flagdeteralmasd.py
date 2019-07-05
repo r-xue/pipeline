@@ -93,19 +93,19 @@ class FlagDeterALMASingleDishResults(flagdeterbase.FlagDeterBaseResults):
                                                             target_only=False)
                     task.plot(revise_plot=True)
 
-                    # if the target is ephemeris, shifted pointing pattern should also be plotted
+                    # if the target is ephemeris, offset pointing pattern should also be plotted
                     target_field = msobj.fields[target]
                     source_name = target_field.source.name
-                    shift_pointings = []
+                    offset_pointings = []
                     if source_name.upper() in valid_ephem_names:
                         task = pointing.SingleDishPointingChart(context, msobj, antenna, 
                                                                 target_field_id=target,
                                                                 reference_field_id=reference, 
                                                                 target_only=True,
-                                                                shift_coord=True)
+                                                                ofs_coord=True)
                         plotres = task.plot(revise_plot=True)
                         if plotres is not None:
-                            shift_pointings.append(plotres)
+                            offset_pointings.append(plotres)
 
 
 #@task_registry.set_equivalent_casa_task('hsd_flagdata')

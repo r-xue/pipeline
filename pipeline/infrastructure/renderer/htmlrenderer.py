@@ -1144,7 +1144,7 @@ class T2_2_7Renderer(T2_2_XRendererBase):
     def get_display_context(context, ms):
         target_pointings = []
         whole_pointings = []
-        shift_pointings = []
+        offset_pointings = []
         if is_singledish_ms(context):
             for antenna in ms.antennas:
                 for (target, reference) in ms.calibration_strategy['field_strategy'].iteritems():
@@ -1168,20 +1168,20 @@ class T2_2_7Renderer(T2_2_XRendererBase):
                     if plotres is not None:
                         whole_pointings.append(plotres)
 
-                    # if the target is ephemeris, shifted pointing pattern should also be plotted
+                    # if the target is ephemeris, offset pointing pattern should also be plotted
                     target_field = ms.fields[target]
                     source_name = target_field.source.name
                     if target_field.source.is_eph_obj:
-                        LOG.info('generating shifted pointing plot for {}'.format(source_name))
+                        LOG.info('generating offset pointing plot for {}'.format(source_name))
                         task = pointing.SingleDishPointingChart(context, ms, antenna, 
                                                                 target_field_id=target,
                                                                 reference_field_id=reference, 
                                                                 target_only=True,
-                                                                shift_coord=True)
+                                                                ofs_coord=True)
                         plotres = task.plot()
                         if plotres is not None:
-                            LOG.info('Adding shifted pointing plot for {} (antenna {})'.format(source_name, antenna.name))
-                            shift_pointings.append(plotres)
+                            LOG.info('Adding offset pointing plot for {} (antenna {})'.format(source_name, antenna.name))
+                            offset_pointings.append(plotres)
 
         dirname = os.path.join('session%s' % ms.session,
                                ms.basename)
@@ -1190,7 +1190,7 @@ class T2_2_7Renderer(T2_2_XRendererBase):
                 'ms'              : ms,
                 'target_pointing' : target_pointings,
                 'whole_pointing'  : whole_pointings,
-                'shift_pointing'  : shift_pointings,
+                'offset_pointing' : offset_pointings,
                 'dirname'         : dirname}
 
 

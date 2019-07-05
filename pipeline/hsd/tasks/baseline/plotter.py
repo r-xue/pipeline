@@ -474,13 +474,13 @@ def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table, org_
     each_grid = configure_2d_panel(xpanel, ypanel, num_grid_ra, num_grid_dec, num_plane)
     rowlist = [{} for i in xrange(num_dec * num_ra)]
  
-    qa = casatools.quanta
-    if org_direction is None:
-        ra_offset = 0
-        dec_offset = 0
-    else:
-        ra_offset  = qa.convert( org_direction['m0'], 'deg' )['value']
-        dec_offset = qa.convert( org_direction['m1'], 'deg' )['value']
+    # qa = casatools.quanta
+    # if org_direction is None:
+    #     ra_offset = 0
+    #     dec_offset = 0
+    # else:
+    #     ra_offset  = qa.convert( org_direction['m0'], 'deg' )['value']
+    #     dec_offset = qa.convert( org_direction['m1'], 'deg' )['value']
 
     for row_index, each_plane in enumerate(each_grid):
         def g():
@@ -503,8 +503,11 @@ def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table, org_
         declist = [plot_table[i][3] for i in each_plane]
         #ra = plot_table[each_plane[0]][2]
         #dec = plot_table[each_plane[0]][3]
-        ra = numpy.mean(ralist) + ra_offset
-        dec = numpy.mean(declist) + dec_offset
+        ra = numpy.mean(ralist)
+        dec = numpy.mean(declist)
+        if org_direction is not None:
+            ra, dec = direction_recover( ra, dec, org_direction )
+        
         rowlist[row_index].update(
                 {"RAID": raid, "DECID": decid, "RA": ra, "DEC": dec,
                  "IDS": dataids})
@@ -545,6 +548,21 @@ def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table, org_
     LOG.debug('increment_list={}', increment_list)
 
     return num_ra, num_dec, num_plane, refpix_list, refval_list, increment_list, rowlist 
+
+def direction_recover( ra, dec, org_direction ):
+    me = casatools.measures
+    qa = casatools.quanta
+
+    direction = me.direction( org_direction['refer'], 
+                              str(ra)+'deg', str(dec)+'deg' )
+    zero_direction  = me.direction( org_direction['refer'], '0deg', '0deg' )
+    offset = me.separation( zero_direction, direction )
+    posang = me.posangle( zero_direction, direction )
+    new_direction = me.shift( org_direction, offset=offset, pa=posang )
+    new_ra  = qa.convert( new_direction['m0'], 'deg' )['value']
+    new_dec = qa.convert( new_direction['m1'], 'deg' )['value']
+
+    return new_ra, new_dec
 
 
 # #@utils.profiler

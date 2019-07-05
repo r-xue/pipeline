@@ -62,11 +62,11 @@ def get_field_name(plot):
         % endfor
     % endfor
 % endif
-% if shift_pointing is not None and len(shift_pointing) > 0:
-    % for plot in shift_pointing:
+% if offset_pointing is not None and len(offset_pointing) > 0:
+    % for plot in offset_pointing:
         <div class="col-md-6">
             <a href="${os.path.relpath(plot.abspath, pcontext.report_dir)}"
-                data-fancybox="group_shift_pointing"
+                data-fancybox="group_offset_pointing"
                 data-caption='Antenna: ${plot.parameters["antenna"]}<br>
                     Field: ${plot.parameters["field"]}<br>
                     Intent: ${plot.parameters["intent"]}'>
@@ -74,8 +74,8 @@ def get_field_name(plot):
                 <div class="thumbnail">
                     <img class="lazyload"
                         data-src="${os.path.relpath(plot.thumbnail, pcontext.report_dir)}"
-                        title="Shifted telescope pointing for antenna ${antenna_name(plot)}"
-                        alt="Shifted telescope pointing for antenna ${antenna_name(plot)}" />
+                        title="Offset telescope pointing for antenna ${antenna_name(plot)}"
+                        alt="Offset telescope pointing for antenna ${antenna_name(plot)}" />
                 </div>
             </a>
             <div class="caption">
