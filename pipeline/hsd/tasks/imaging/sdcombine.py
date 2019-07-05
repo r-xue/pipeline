@@ -55,9 +55,14 @@ class SDImageCombine(basetask.StandardTaskTemplate):
                                          success=False, outcome=None)
             return result
 
-        # relative path to the image
-        def getrelpath(path):
-            return os.path.relpath(path, self.inputs.context.output_dir)
+        # safe path to the image
+        #   - escape colon which has special meaning in LEL
+        def get_safe_path(path):
+            #p = os.path.relpath(path, self.inputs.context.output_dir)
+            LOG.debug('original path = "{}"'.format(path))
+            p = path.replace(':', '\:') if ':' in path else path
+            LOG.debug('safe path = "{}"'.format(p))
+            return p
 
         # combine weight images
         LOG.info("Generating combined weight image.")
@@ -79,7 +84,7 @@ class SDImageCombine(basetask.StandardTaskTemplate):
 
                 # create mask for NaN pixels
                 nan_mask = 'nan'
-                ia.calcmask('!ISNAN("{}")'.format(getrelpath(ia.name())), name=nan_mask, asdefault=True)
+                ia.calcmask('!ISNAN("{}")'.format(get_safe_path(ia.name())), name=nan_mask, asdefault=True)
 
                 stat = ia.statistics()
                 shape = ia.shape()
@@ -100,7 +105,7 @@ class SDImageCombine(basetask.StandardTaskTemplate):
             minweight = 0.1
             with casatools.ImageReader(outweight) as ia:
                 # exclude 0 (and negative weights)
-                ia.calcmask('"{}" > 0.0'.format(getrelpath(ia.name())), name='nonzero')
+                ia.calcmask('"{}" > 0.0'.format(get_safe_path(ia.name())), name='nonzero')
 
                 stat = ia.statistics(robust=True)
                 median_weight = stat['median']
@@ -113,7 +118,7 @@ class SDImageCombine(basetask.StandardTaskTemplate):
                     updated_mask = 'mask_combine'
 
                     # calculate mask from weight image
-                    ia.calcmask('"{}" >= {}'.format(getrelpath(outweight), threshold),
+                    ia.calcmask('"{}" >= {}'.format(get_safe_path(outweight), threshold),
                                 name=updated_mask,
                                 asdefault=True)
 
