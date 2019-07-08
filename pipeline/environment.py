@@ -147,6 +147,34 @@ def _pipeline_revision():
         return 'Unknown'
 
 
+def _ulimit():
+    """
+    Get the ulimit setting.
+
+    The 'too many open files' error during imaging is often due to an
+    incorrect ulimit. The ulimit value is recorded per host to assist in
+    diagnosing these errors.
+
+    See: PIPE-350; PIPE-338
+
+    :return: ulimit as string
+    """
+    # get soft limit on number of open files
+    args = ['ulimit', '-Sn']
+
+    p = subprocess.Popen(args, stdout=subprocess.PIPE,
+                         stderr=subprocess.PIPE, shell=False,
+                         cwd=pkg_resources.resource_filename(__name__, ''))
+    (stdout, _) = p.communicate()
+
+    if p.returncode is not 0:
+        return 'Unknown'
+
+    ulimit = string.strip(stdout)
+
+    return '{}'.format(ulimit)
+
+
 def _role():
     if not MPIEnvironment.is_mpi_enabled:
         return 'Non-MPI Host'
@@ -175,6 +203,7 @@ logical_cpu_cores = _logical_cpu_cores()
 memory_size = _memory_size()
 role = _role()
 pipeline_revision = _pipeline_revision()
+ulimit = _ulimit()
 
 node_details = {
     'cpu': cpu_type,
@@ -182,6 +211,7 @@ node_details = {
     'os': host_distribution,
     'num_cores': logical_cpu_cores,
     'ram': memory_size,
-    'role': role
+    'role': role,
+    'ulimit': ulimit
 }
 cluster_details = _cluster_details()
