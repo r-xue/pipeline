@@ -248,7 +248,7 @@ class JyPerKAsdmEndPoint(ALMAJyPerKDatabaseAccessBase):
 
     def get_params(self, vis):
         # no subparam
-        yield QueryStruct(param={'uid': vis_to_uid(vis)}, subparam=None)
+        yield QueryStruct(param={'uid': vis_to_uid(vis)}, subparam=vis)
 
     def access(self, queries):
         responses = list(queries)
@@ -256,8 +256,17 @@ class JyPerKAsdmEndPoint(ALMAJyPerKDatabaseAccessBase):
         # there should be only one query
         assert len(responses) == 1
 
-        # formatting is not necessary
-        return responses[0].response
+        # expand response struct
+        # subparam is vis
+        response = responses[0].response
+        vis = responses[0].subparam
+        ms = self.context.observing_run.get_ms(vis)
+
+        # translate spw id
+        data = translate_spw(response['data'], ms)
+        response['data'] = data
+        response['total'] = len(data)
+        return response
 
 
 class JyPerKModelFitEndPoint(JyPerKAbstractEndPoint):
@@ -342,3 +351,42 @@ def get_mean_elevation(context, vis, antenna_id):
             t.close()
 
     return elevations.mean()
+
+
+def translate_spw(data, ms):
+    vis = ms.name
+    science_windows = numpy.asarray(ms.get_spectral_windows(science_windows_only=True))
+    with casatools.TableReader(os.path.join(vis, 'ASDM_SPECTRALWINDOW')) as tb:
+        idcol = tb.getcol('spectralWindowId')
+        namecol = tb.getcol('name')
+
+    translated = []
+    science_window_names = numpy.asarray(map(lambda x: x.name, science_windows))
+    LOG.info('Translate ASDM Spws to MS Spws:')
+    for d in data:
+        asdm_spw_id = d['Spwid']
+        asdm_spw_names = namecol[numpy.where(idcol == 'SpectralWindow_{}'.format(asdm_spw_id))]
+        assert len(asdm_spw_names) == 1
+        asdm_spw_name = asdm_spw_names[0]
+        if asdm_spw_name.endswith('CH_AVG'):
+            chan_avg_name = asdm_spw_name
+            full_res_name = asdm_spw_name.replace('CH_AVG', 'FULL_RES')
+        elif asdm_spw_name.endswith('FULL_RES'):
+            chan_avg_name = asdm_spw_name.replace('FULL_RES', 'CH_AVG')
+            full_res_name = asdm_spw_name
+        else:
+            chan_avg_name = asdm_spw_name
+            full_res_name = asdm_spw_name
+        i = numpy.where(science_window_names == full_res_name)
+        if len(i[0]) == 0:
+            i = numpy.where(science_window_names == chan_avg_name)
+        if len(i[0]) > 0:
+            spws = science_windows[i]
+            assert len(spws) == 1
+            spw = spws[0]
+            t = d.copy()
+            t['Spwid'] = '{}'.format(spw.id)
+            translated.append(t)
+            LOG.info('   * ASDM Spw {} (name {})'.format(asdm_spw_id, asdm_spw_name))
+            LOG.info('    -> MS Spw {} (name {})'.format(spw.id, spw.name))
+    return translated
