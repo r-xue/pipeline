@@ -3,16 +3,16 @@ environment.py defines functions and variables related to the execution environm
 """
 import multiprocessing
 import os
-import pkg_resources
 import platform
 import re
+import resource
 import string
 import subprocess
 
+import pkg_resources
 from mpi4casa.MPIEnvironment import MPIEnvironment
+
 from .infrastructure import mpihelpers
-import operator
-import itertools
 
 __all__ = ['cpu_type', 'hostname', 'host_distribution', 'logical_cpu_cores', 'memory_size', 'pipeline_revision', 'role',
            'cluster_details']
@@ -147,6 +147,24 @@ def _pipeline_revision():
         return 'Unknown'
 
 
+def _ulimit():
+    """
+    Get the ulimit setting.
+
+    The 'too many open files' error during imaging is often due to an
+    incorrect ulimit. The ulimit value is recorded per host to assist in
+    diagnosing these errors.
+
+    See: PIPE-350; PIPE-338
+
+    :return: ulimit as string
+    """
+    # get soft limit on number of open files
+    soft_limit, hard_limit = resource.getrlimit(resource.RLIMIT_NOFILE)
+
+    return '{}'.format(soft_limit)
+
+
 def _role():
     if not MPIEnvironment.is_mpi_enabled:
         return 'Non-MPI Host'
@@ -175,6 +193,7 @@ logical_cpu_cores = _logical_cpu_cores()
 memory_size = _memory_size()
 role = _role()
 pipeline_revision = _pipeline_revision()
+ulimit = _ulimit()
 
 node_details = {
     'cpu': cpu_type,
@@ -182,6 +201,7 @@ node_details = {
     'os': host_distribution,
     'num_cores': logical_cpu_cores,
     'ram': memory_size,
-    'role': role
+    'role': role,
+    'ulimit': ulimit
 }
 cluster_details = _cluster_details()

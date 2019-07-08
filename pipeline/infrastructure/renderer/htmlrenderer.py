@@ -315,7 +315,8 @@ class T1_1Renderer(RendererBase):
                 'time_start time_end time_on_source '
                 'baseline_min baseline_max baseline_rms')
 
-    EnvironmentTableRow = collections.namedtuple('EnvironmentTableRow', 'hostname num_mpi_servers num_cores cpu ram os')
+    EnvironmentTableRow = collections.namedtuple('EnvironmentTableRow',
+                                                 'hostname num_mpi_servers num_cores cpu ram os ulimit')
 
     @staticmethod
     def get_display_context(context):
@@ -471,7 +472,8 @@ class T1_1Renderer(RendererBase):
                 num_cores=n['num_cores'],
                 num_mpi_servers=num_mpi_servers,
                 ram=str(measures.FileSize(n['ram'], measures.FileSizeUnits.BYTES)),
-                os=n['os']
+                os=n['os'],
+                ulimit=n['ulimit']
             )
             environment_rows.append(row)
         environment_rows.sort(key=operator.itemgetter(0))
