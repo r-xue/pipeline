@@ -52,7 +52,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 		    <th scope="col" rowspan="2">Fitted Spectral Index</th>
 		    <th scope="col" rowspan="2">Fitted Curvature</th>
 		    <th scope="col" rowspan="2">Fit Order</th>
-		    <th scope="col" rowspan="2">Flux density</th>
+		    <th scope="col" rowspan="2">Flux density [Jy]</th>
 		    <th scope="col" rowspan="2">Reference Frequency [GHz]</th>
 
 	    </tr>

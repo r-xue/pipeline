@@ -142,7 +142,7 @@ class modelfitSummaryChart(object):
                     frequencies.append(float(datadict['freq']))
                 pb.plot(frequencies, data, 'o', label=source, color=colors[colorcount])
                 pb.plot(frequencies, model, '-', color=colors[colorcount])
-                pb.ylabel('Flux', size=mysize)
+                pb.ylabel('Flux Density [Jy]', size=mysize)
                 pb.xlabel('Frequency [GHz]', size=mysize)
                 pb.legend()
                 # title = title + '   ' + str(source) + '({!s})'.format(colors[colorcount])
@@ -214,7 +214,7 @@ class residualsSummaryChart(object):
                                     np.max(frequencies),
                                     10),
                         np.zeros(10) + np.mean(residuals), linestyle='--', label='Mean', color=colors[colorcount])
-                pb.ylabel('Residuals (data - fit)', size=mysize)
+                pb.ylabel('Residuals (data - fit) [Jy]', size=mysize)
                 pb.xlabel('Frequency [GHz]', size=mysize)
                 pb.legend()
                 # title = title + '   ' + str(source) + '({!s})'.format(colors[colorcount])
