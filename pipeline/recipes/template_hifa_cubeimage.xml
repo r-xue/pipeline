@@ -30,6 +30,14 @@
                 <Keyword xmlns="">specmode</Keyword>
                 <Value xmlns="">mfs</Value>
             </Parameter>
+            <Parameter>
+                <Keyword xmlns="">pipelinemode</Keyword>
+                <Value xmlns="">interactive</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">field</Keyword>
+                <Value xmlns="">{{{field_list}}}</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -67,6 +75,14 @@
                 <Keyword xmlns="">specmode</Keyword>
                 <Value xmlns="">cont</Value>
             </Parameter>
+            <Parameter>
+                <Keyword xmlns="">pipelinemode</Keyword>
+                <Value xmlns="">interactive</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">field</Keyword>
+                <Value xmlns="">{{{field_list}}}</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -98,7 +114,7 @@
             </Parameter>
             <Parameter>
                 <Keyword xmlns="">spw</Keyword>
-                <Value xmlns="">{{{spw}}}</Value>
+                <Value xmlns="">{{spw}}</Value>
             </Parameter>
             <Parameter>
                 <Keyword xmlns="">restfreq</Keyword>
