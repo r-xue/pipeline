@@ -11,6 +11,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.filenamer as filenamer
+import pipeline.infrastructure.imageheader as imageheader
 import pipeline.infrastructure.utils as utils
 from pipeline.extern import sensitivity_improvement
 from pipeline.h.heuristics import fieldnames
@@ -118,7 +119,7 @@ class SDImaging(basetask.StandardTaskTemplate):
     is_multi_vis_task = True
 
     @classmethod
-    def _finalize_worker_result(cls, result,
+    def _finalize_worker_result(cls, context, result,
                                 sourcename, spwlist, antenna,  # specmode='cube', sourcetype='TARGET',
                                 imagemode, stokes, validsp, rms, edge,
                                 reduction_group_id, file_index,
@@ -144,6 +145,19 @@ class SDImaging(basetask.StandardTaskTemplate):
         # attach sensitivity_info if available
         if sensitivity_info is not None:
             result.sensitivity_info = sensitivity_info
+
+        # set some information to image header
+        image_item = result.outcome['image']
+        imagename = image_item.imagename
+        imageheader.set_miscinfo(name=imagename,
+                                 spw=','.join(map(str, spwlist)),
+                                 field=image_item.sourcename,
+                                 type='singledish',
+                                 iter=1,  # nominal
+                                 intent='TARGET',
+                                 specmode='cube',
+                                 is_per_eb=False,
+                                 context=context)
 
         # finally replace task attribute with the top-level one
         result.task = cls
@@ -484,7 +498,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                     combined_rms_exclude.extend(rms_exclude_freq)
 
                     file_index = [common.get_parent_ms_idx(context, name) for name in infiles]
-                    self._finalize_worker_result(imager_result,
+                    self._finalize_worker_result(context, imager_result,
                                                  sourcename=source_name, spwlist=v_spwids, antenna=ant_name, #specmode='cube', sourcetype='TARGET',
                                                  imagemode=imagemode, stokes=self.stokes, validsp=validsps, rms=rmss, edge=edge,
                                                  reduction_group_id=group_id, file_index=file_index,
@@ -505,7 +519,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                         tocombine_images_nro.append(imagename_nro)
 
                     file_index = [common.get_parent_ms_idx(context, name) for name in infiles]
-                    self._finalize_worker_result(imager_result_nro,
+                    self._finalize_worker_result(context, imager_result_nro,
                                                  sourcename=source_name, spwlist=v_spwids, antenna=ant_name, #specmode='cube', sourcetype='TARGET',
                                                  imagemode=imagemode, stokes=stokes_list[1], validsp=validsps, rms=rmss, edge=edge,
                                                  reduction_group_id=group_id, file_index=file_index,
@@ -713,7 +727,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                                           beam=beam, cell=qcell,
                                           sensitivity=cqa.quantity(image_rms, 'Jy/beam'))
                 sensitivity_info = SensitivityInfo(sensitivity, is_representative_spw, stat_freqs)
-                self._finalize_worker_result(imager_result,
+                self._finalize_worker_result(context, imager_result,
                                              sourcename=source_name, spwlist=combined_v_spws, antenna='COMBINED',  #specmode='cube', sourcetype='TARGET',
                                              imagemode=imagemode, stokes=self.stokes, validsp=validsps, rms=rmss, edge=edge,
                                              reduction_group_id=group_id, file_index=file_index,
@@ -744,7 +758,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 # Imaging was successful, proceed following steps
 
                     file_index = [common.get_parent_ms_idx(context, name) for name in combined_infiles]
-                    self._finalize_worker_result(imager_result,
+                    self._finalize_worker_result(context, imager_result,
                                                  sourcename=source_name, spwlist=combined_v_spws, antenna='COMBINED',  #specmode='cube', sourcetype='TARGET',
                                                  imagemode=imagemode, stokes=stokes_list[1], validsp=validsps, rms=rmss, edge=edge,
                                                  reduction_group_id=group_id, file_index=file_index,
