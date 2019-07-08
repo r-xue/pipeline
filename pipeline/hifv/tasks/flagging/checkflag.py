@@ -579,6 +579,10 @@ class Checkflag(basetask.StandardTaskTemplate):
 
             self._do_extendflag(field='', scan='', intent='*TARGET*', growtime=100.0, growfreq=100.0)
 
+        datacolumn = 'corrected'
+        if self.inputs.checkflagmode == 'vlass-imaging':
+            datacolumn = 'data'
+
         for correlation in ['ABS_LR', 'ABS_RL', 'ABS_LL', 'ABS_RR']:
             method_args = {'mode': 'tfcrop',
                            'field': '',
