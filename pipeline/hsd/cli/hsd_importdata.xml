@@ -31,7 +31,7 @@
 
     <param type="string" name="asis" subparam="true">
     <description>ASDM to convert as is</description>
-    <value>SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR</value>
+    <value>SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR SpectralWindow</value>
     </param>
 
     <param type="bool" name="process_caldevice" subparam="true">
@@ -58,7 +58,7 @@
     <description>Use the lazy import option</description>
     <value>False</value>
     </param>
-    
+
     <param type="bool" name="with_pointing_correction">
 	<description>Apply pointing correction to DIRECTION</description>
 	<value>True</value>
@@ -163,11 +163,11 @@ overwrite -- Overwrite existing MSes on output.
 
 bdfflags -- Apply BDF flags on line
    default: True
-   
+
 lazy -- Use the lazy filter import
    default: False
 
-with_pointing_correction -- add (ASDM::Pointing::encoder - ASDM::Pointing::pointingDirection) 
+with_pointing_correction -- add (ASDM::Pointing::encoder - ASDM::Pointing::pointingDirection)
    to the value to be written in MS::Pointing::direction
    default: True
 

@@ -15,7 +15,7 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class SDImportDataInputs(importdata.ImportDataInputs):
-    asis = vdp.VisDependentProperty(default='SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR')
+    asis = vdp.VisDependentProperty(default='SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR SpectralWindow')
     ocorr_mode = vdp.VisDependentProperty(default='ao')
     with_pointing_correction = vdp.VisDependentProperty(default=True)
     createmms = vdp.VisDependentProperty(default='false')
@@ -33,13 +33,13 @@ class SDImportDataInputs(importdata.ImportDataInputs):
 
 class SDImportDataResults(basetask.Results):
     """
-    SDImportDataResults is an equivalent class with ImportDataResults. 
-    Purpose of SDImportDataResults is to replace QA scoring associated 
-    with ImportDataResults with single dish specific QA scoring, which 
+    SDImportDataResults is an equivalent class with ImportDataResults.
+    Purpose of SDImportDataResults is to replace QA scoring associated
+    with ImportDataResults with single dish specific QA scoring, which
     is associated with this class.
 
     ImportDataResults holds the results of the ImportData task. It contains
-    the resulting MeasurementSet domain objects and optionally the additional 
+    the resulting MeasurementSet domain objects and optionally the additional
     SetJy results generated from flux entries in Source.xml.
     """
 
@@ -88,7 +88,7 @@ class SDImportDataResults(basetask.Results):
 @task_registry.set_equivalent_casa_task('hsd_importdata')
 @task_registry.set_casa_commands_comment('If required, ASDMs are converted to MeasurementSets.')
 class SDImportData(importdata.ImportData):
-    Inputs = SDImportDataInputs 
+    Inputs = SDImportDataInputs
 
     def prepare(self, **parameters):
         # get results object by running super.prepare()
@@ -131,13 +131,13 @@ class HpcSDImportDataInputs(SDImportDataInputs):
         super(HpcSDImportDataInputs, self).__init__(context, vis=vis, output_dir=output_dir, asis=asis,
                                                     process_caldevice=process_caldevice, session=session,
                                                     overwrite=overwrite, nocopy=nocopy, bdfflags=bdfflags, lazy=lazy,
-                                                    save_flagonline=save_flagonline, 
+                                                    save_flagonline=save_flagonline,
                                                     with_pointing_correction=with_pointing_correction,
                                                     createmms=createmms, ocorr_mode=ocorr_mode)
         self.parallel = parallel
 
 
-class HpcSDImportData(sessionutils.ParallelTemplate):    
+class HpcSDImportData(sessionutils.ParallelTemplate):
     Inputs = HpcSDImportDataInputs
     Task = SDImportData
 
