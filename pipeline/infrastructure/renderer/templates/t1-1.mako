@@ -270,7 +270,6 @@ $(document).ready(function() {
             <th>CPU</th>
             <th>RAM</th>
             <th>OS</th>
-            <th>Max open file descriptors</th>
         </thead>
         <tbody>
             % for tr in environment:
