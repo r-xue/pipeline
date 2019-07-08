@@ -38,6 +38,7 @@ from hifv_checkflag_cli import hifv_checkflag_cli as hifv_checkflag
 from hifv_semiFinalBPdcals_cli import hifv_semiFinalBPdcals_cli as hifv_semiFinalBPdcals
 from hifv_solint_cli import hifv_solint_cli as hifv_solint
 from hifv_fluxboot_cli import hifv_fluxboot_cli as hifv_fluxboot
+from hifv_fluxboot2_cli import hifv_fluxboot2_cli as hifv_fluxboot2
 from hifv_finalcals_cli import hifv_finalcals_cli as hifv_finalcals
 from hifv_circfeedpolcal_cli import hifv_circfeedpolcal_cli as hifv_circfeedpolcal
 from hifv_applycals_cli import hifv_applycals_cli as hifv_applycals
@@ -73,25 +74,25 @@ def hifv (vislist, importonly=False, pipelinemode='automatic', interactive=True)
             raise Exception(IMPORT_ONLY)
 
         # Hanning smooth the data
-        hifv_hanning (pipelinemode=pipelinemode)
+        hifv_hanning(pipelinemode=pipelinemode)
 
         # Flag known bad data
-        hifv_flagdata (pipelinemode=pipelinemode, scan=True, hm_tbuff='1.5int',
+        hifv_flagdata(pipelinemode=pipelinemode, scan=True, hm_tbuff='1.5int',
                        intents='*POINTING*,*FOCUS*,*ATMOSPHERE*,*SIDEBAND_RATIO*, *UNKNOWN*, *SYSTEM_CONFIGURATION*, *UNSPECIFIED#UNSPECIFIED*')
 
         # Fill model columns for primary calibrators
-        hifv_vlasetjy (pipelinemode=pipelinemode)
+        hifv_vlasetjy(pipelinemode=pipelinemode)
 
         # Gain curves, opacities, antenna position corrections, 
         # requantizer gains (NB: requires CASA 4.1!)
-        hifv_priorcals (pipelinemode=pipelinemode)
+        hifv_priorcals(pipelinemode=pipelinemode)
 
         # Initial test calibrations using bandpass and delay calibrators
-        hifv_testBPdcals (pipelinemode=pipelinemode)
+        hifv_testBPdcals(pipelinemode=pipelinemode)
 
         # Identify and flag basebands with bad deformatters or rfi based on
         # bp table amps and phases
-        hifv_flagbaddef (pipelinemode=pipelinemode)
+        hifv_flagbaddef(pipelinemode=pipelinemode)
 
         # Flag spws that have no calibration at this point
         # hifv_uncalspw(pipelinemode=pipelinemode, delaycaltable='testdelay.k', bpcaltable='testBPcal.b')
@@ -116,54 +117,54 @@ def hifv (vislist, importonly=False, pipelinemode='automatic', interactive=True)
         hifv_solint(pipelinemode=pipelinemode)
 
         # Do the flux density boostrapping -- fits spectral index of
-        # calibrators with a power-law and puts fit in model column
-        hifv_fluxboot (pipelinemode=pipelinemode)
+        # calibrators with a heuristics determined fit order
+        hifv_fluxboot2(pipelinemode=pipelinemode)
 
         # Make the final calibration tables
-        hifv_finalcals (pipelinemode=pipelinemode)
+        hifv_finalcals(pipelinemode=pipelinemode)
 
         # Polarization calibration
-        #hifv_circfeedpolcal (pipelinemode=pipelinemode)
+        # hifv_circfeedpolcal(pipelinemode=pipelinemode)
 
         # Apply all the calibrations and check the calibrated data
-        hifv_applycals (pipelinemode=pipelinemode)
+        hifv_applycals(pipelinemode=pipelinemode)
 
         # Flag spws that have no calibration at this point
         # hifv_uncalspw(pipelinemode=pipelinemode, delaycaltable='finaldelay.k', bpcaltable='finalBPcal.b')
 
         # Now run all calibrated data, including the target, through rflag
-        hifv_targetflag (pipelinemode=pipelinemode, intents='*CALIBRATE*,*TARGET*')
+        hifv_targetflag(pipelinemode=pipelinemode, intents='*CALIBRATE*,*TARGET*')
 
         # Calculate data weights based on standard deviation within each spw
         hifv_statwt(pipelinemode=pipelinemode)
 
         # Plotting Summary
-        hifv_plotsummary (pipelinemode=pipelinemode)
+        hifv_plotsummary(pipelinemode=pipelinemode)
 
         # Make a list of expected point source calibrators to be cleaned
-        hif_makeimlist (intent='PHASE,BANDPASS', specmode='cont', pipelinemode=pipelinemode)
+        hif_makeimlist(intent='PHASE,BANDPASS', specmode='cont', pipelinemode=pipelinemode)
 
         # Make clean images for the selected calibrators
-        hif_makeimages (hm_masking='none')
+        hif_makeimages(hm_masking='none')
 
         # Export the data
         # hifv_exportdata(pipelinemode=pipelinemode)
 
     except Exception as e:
         if str(e) == IMPORT_ONLY:
-            casatools.post_to_log ("Exiting after import step ...", echo_to_screen=echo_to_screen)
+            casatools.post_to_log("Exiting after import step ...", echo_to_screen=echo_to_screen)
         else:
-            casatools.post_to_log ("Error in procedure execution ...", echo_to_screen=echo_to_screen)
+            casatools.post_to_log("Error in procedure execution ...", echo_to_screen=echo_to_screen)
             errstr = traceback.format_exc()
-            casatools.post_to_log (errstr, echo_to_screen=echo_to_screen)
+            casatools.post_to_log(errstr, echo_to_screen=echo_to_screen)
 
     finally:
 
         # Save the results to the context
         h_save()
 
-        casatools.post_to_log ("VLA CASA Pipeline finished.  Terminating procedure execution ...",
-            echo_to_screen=echo_to_screen)
+        casatools.post_to_log("VLA CASA Pipeline finished.  Terminating procedure execution ...",
+                              echo_to_screen=echo_to_screen)
 
         # Restore previous state
         __rethrow_casa_exceptions = def_rethrow
