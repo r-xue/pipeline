@@ -513,7 +513,9 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                                         'fitflx': fitflx,
                                         'curvature': str(curvature),
                                         'curvatureerr': str(curvatureerr),
-                                        'fitorder': str(fitorderused)})
+                                        'fitorder': str(fitorderused),
+                                        'reffreq': str(reffreq)})
+
                 LOG.info("Frequency, data, error, and fitted data:")
 
                 for ii in range(len(freqs)):

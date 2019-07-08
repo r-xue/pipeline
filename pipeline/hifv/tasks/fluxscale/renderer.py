@@ -171,7 +171,7 @@ class T2_4MDetailsfluxbootRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             spindex_results[ms] = result.spindex_results
 
             # Sort into dictionary collections and combine bands for a single source
-            FluxTR = collections.namedtuple('FluxTR', 'source band spix curvature fitorder fitflx')
+            FluxTR = collections.namedtuple('FluxTR', 'source band spix curvature fitorder fitflx reffreq')
 
             rows = []
 
@@ -184,9 +184,10 @@ class T2_4MDetailsfluxbootRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 curvature = "{:.{}f}".format(float(row['curvature']), precision)
                 curvatureerr = "{:.{}f}".format(float(row['curvatureerr']), precision)
                 fitflx = "{:.{}f}".format(float(row['fitflx']), precision)
+                reffreq = "{:.{}f}".format(float(row['reffreq']), precision)
 
                 tr = FluxTR(row['source'], row['band'], spix + ' +/- ' + spixerr,
-                            curvature + ' +/- ' + curvatureerr, row['fitorder'], fitflx)
+                            curvature + ' +/- ' + curvatureerr, row['fitorder'], fitflx, reffreq)
                 rows.append(tr)
 
             spixtable = utils.merge_td_columns(rows)

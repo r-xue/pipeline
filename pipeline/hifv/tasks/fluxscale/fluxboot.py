@@ -450,7 +450,9 @@ class Fluxboot(basetask.StandardTaskTemplate):
                                         'fitflx'      : str(fluxdensity),
                                         'curvature'   : str(curvature),
                                         'curvatureerr': str(curvatureerr),
-                                        'fitorder'    : str(1)})
+                                        'fitorder'    : str(1),
+                                        'reffreq'     : str(reffreq)})
+
                 LOG.info("Frequency, data, error, and fitted data:")
                 # Sort arrays based on frequency
                 lfreqs_orig = lfreqs
