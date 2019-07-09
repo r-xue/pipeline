@@ -81,6 +81,7 @@ class QAMessage(object):
         self.full_message = ('{metric_axes} for {vis}, {intent} calibrator: {outlier_description}='
                              '{short_message}'.format(short_message=self.short_message, **msg_args))
 
+
 def outliers_to_qa_scores(ms, outliers):
     """
     Convert a list of consolidated Outliers into a list of equivalent
@@ -110,7 +111,6 @@ def outliers_to_qa_scores(ms, outliers):
             return messages[0].full_message
         return '{}; {}'.format(combine(messages[1:]), messages[0].short_message)
 
-
     qa_scores = []
     for reason in reasons:
         outliers_for_reason = [outlier for outlier in hashable if outlier.reason == reason]
@@ -121,11 +121,9 @@ def outliers_to_qa_scores(ms, outliers):
         long_msg = combine(msgs)
 
         worst_outlier = max(outliers_for_reason, key=operator.attrgetter('num_sigma'))
-        vis = ','.join(worst_outlier.vis)
-        intent = ','.join(worst_outlier.intent)
 
         metric_axes, outlier_description = REASONS_TO_TEXT[outlier.reason]
-        short_msg = '{} {} for {} {} calibrator'.format(metric_axes, outlier_description, vis, intent)
+        short_msg = '{} outliers'.format(metric_axes)
 
         score = pqa.QAScore(0.5, longmsg=long_msg, shortmsg=short_msg)
         score.origin = pqa.QAOrigin(metric_name='sigma_deviation',
