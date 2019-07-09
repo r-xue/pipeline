@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
 import os
+import re
 
 import numpy as np
 
@@ -15,6 +16,44 @@ from pipeline.infrastructure.renderer.htmlrenderer import get_casa_version
 from pipeline.infrastructure import casa_tasks
 
 LOG = infrastructure.get_logger(__name__)
+
+
+# utility to make miscinfo clean
+def clean_extendable_keys(data, key, num_keys=None):
+    """
+    Remove extra entries in data. Logic is as follows:
+
+        1. if num_keys is not given, take the number
+           from the data using key ("n{key}")
+        2. check if the entry whose keyword is "{key}X"
+           where X denotes any integer
+        3. remove the entry if X > num_keys
+
+    Arguments:
+        data {dict} -- Dictionary to be processed
+        key {str} -- Key for the dictionary
+
+    Keyword Arguments:
+        num_keys {int} -- Number of expected entries for
+                          given key. If not given (None),
+                          get the number from data.
+                          (default: {None})
+
+    Returns:
+        dict -- Reference to the data
+    """
+    if num_keys is None:
+        number_key = 'n{}'.format(key)
+        num_keys = data[number_key]
+
+    # remove extra entries of "filnam0X"
+    # it typically requires for single dish pipeline
+    for k in list(data.keys()):
+        if re.match('^{}[0-9]+$'.format(key), k):
+            n = int(re.sub('^[a-zA-Z]+', '', k))
+            if n > num_keys:
+                data.pop(k, None)
+    return data
 
 
 # Add information to image header
@@ -40,6 +79,10 @@ def set_miscinfo(name, spw=None, field=None, type=None, iter=None, multiterm=Non
                 info['nfilnam'] = len(filename_components)
                 for i in xrange(len(filename_components)):
                     info['filnam%02d' % (i+1)] = filename_components[i]
+
+                # clean up extra "filnamX" entries
+                info = clean_extendable_keys(info, 'filnam')
+
             if spw is not None:
                 if context.observing_run is not None:
                     spw_names = [
@@ -53,6 +96,10 @@ def set_miscinfo(name, spw=None, field=None, type=None, iter=None, multiterm=Non
                 info['nspwnam'] = len(spw_names)
                 for i in xrange(len(spw_names)):
                     info['spwnam%02d' % (i+1)] = spw_names[i]
+
+                # clean up extra "spwnamX" entries
+                info = clean_extendable_keys(info, 'spwnam')
+
             if field is not None:
                 # TODO: Find common key calculation. Long VLASS lists cause trouble downstream.
                 #       Truncated list may cause duplicates.
