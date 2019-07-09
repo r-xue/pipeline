@@ -4,7 +4,6 @@ Created on 24 Oct 2014
 @author: sjw
 """
 import collections
-import itertools
 import operator
 import os
 
@@ -15,8 +14,8 @@ import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
-
 from pipeline.h.tasks.common.displays import applycal as applycal
+from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure.displays.summary import UVChart
 
 LOG = logging.get_logger(__name__)
@@ -303,26 +302,33 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             LOG.debug('Setting UV range to %s for %s', uv_range, vis)
             max_uvs[vis] = half_baselines[-1].length
 
-            brightest_fields = T2_4MDetailsApplycalRenderer.get_brightest_fields(ms)        
-            for source_id, brightest_field in brightest_fields.iteritems():
-                plots = self.science_plots_for_result(context,
-                                                      result, 
-                                                      applycal.AmpVsFrequencySummaryChart,
-                                                      [brightest_field.id],
-                                                      uv_range)
-                amp_vs_freq_summary_plots[vis].extend(plots)
+            # source to select
+            representative_source_name, _ = ms.get_representative_source_spw()
+            representative_source = {s for s in ms.sources if s.name == representative_source_name}
+            if len(representative_source) >= 1:
+                representative_source = representative_source.pop()
 
-                plots = self.science_plots_for_result(context,
-                                                      result, 
-                                                      applycal.AmpVsUVSummaryChart,
-                                                      [brightest_field.id])
-                amp_vs_uv_summary_plots[vis].extend(plots)
+            brightest_field = get_brightest_field(ms, representative_source)
+            plots = self.science_plots_for_result(context,
+                                                  result,
+                                                  applycal.AmpVsFrequencySummaryChart,
+                                                  [brightest_field.id],
+                                                  uv_range)
+            for plot in plots:
+                plot.parameters['source'] = representative_source
+            amp_vs_freq_summary_plots[vis].extend(plots)
+
+            plots = self.science_plots_for_result(context,
+                                                  result,
+                                                  applycal.AmpVsUVSummaryChart,
+                                                  [brightest_field.id])
+            for plot in plots:
+                plot.parameters['source'] = representative_source
+            amp_vs_uv_summary_plots[vis].extend(plots)
 
             if pipeline.infrastructure.generate_detail_plots(results):
                 scans = ms.get_scans(scan_intent='TARGET')
-                fields = set()
-                for scan in scans:
-                    fields.update([field.id for field in scan.fields])
+                fields = {field.id for scan in scans for field in scan.fields}
 
                 # Science target detail plots. Note that summary plots go onto the
                 # detail pages; we don't create plots per spw or antenna
@@ -364,7 +370,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             overrides['avgantenna'] = False
 
         plots = []
-        plot_output_dir = os.path.join(context.report_dir, 'stage%s' % result.stage_number)
+        plot_output_dir = os.path.join(context.report_dir, 'stage{}'.format(result.stage_number))
         calto, _ = _get_data_selection_for_plot(context, result, ['TARGET'])
 
         for field in fields:
@@ -384,91 +390,6 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 fileobj.write(renderer.render())        
 
         return plots
-
-    @staticmethod
-    def get_brightest_fields(ms, intent='TARGET'):
-        """
-
-        """
-        # get IDs for all science spectral windows
-        spw_ids = set()
-        for scan in ms.get_scans(scan_intent=intent):
-            scan_spw_ids = {dd.spw.id for dd in scan.data_descriptions}
-            spw_ids.update(scan_spw_ids)
-
-        if intent == 'TARGET':
-            science_ids = {spw.id for spw in ms.get_spectral_windows()}
-            spw_ids = spw_ids.intersection(science_ids)
-
-        result = collections.OrderedDict()
-
-        by_source_id = lambda field: field.source.id
-        fields_by_source_id = sorted(ms.get_fields(intent=intent), 
-                                     key=by_source_id)
-        for source_id, source_fields in itertools.groupby(fields_by_source_id,
-                                                          by_source_id):
-            fields = list(source_fields)
-
-            # give the sole science target name if there's only one science target
-            # in this ms.
-            if len(fields) is 1:
-                LOG.info('Only one %s target for Source #%s. Bypassing '
-                         'brightest target selection.', intent, source_id)
-                result[source_id] = fields[0]
-                continue
-
-            # Switch to second field
-            # field = fields[0]
-            field = fields[1]
-            LOG.warning('Bypassing brightest field selection due to problem '
-                        'with visstat. Using Field #%s (%s) for Source #%s'
-                        '', field.id, field.name, source_id)
-            result[source_id] = field
-            continue
-            # FIXME: code below here in remainder of for-loop is unreachable
-
-            field_ids = {(f.id, f.name) for f in fields}
-
-            # holds the mapping of field name to mean flux
-            average_flux = {}
-
-            # defines the parameters for the visstat job
-            job_params = {
-                'vis': ms.name,
-                'axis': 'amp',
-                'datacolumn': 'corrected',
-                'spw': ','.join(map(str, spw_ids)),
-            }
-
-            # solve circular import problem by importing at run-time
-            from pipeline.infrastructure import casa_tasks
-
-            LOG.info('Calculating which %s field has the highest mean flux '
-                     'for Source #%s', intent, source_id)
-            # run visstat for each scan selection for the target
-            for field_id, field_name in field_ids:
-                job_params['field'] = str(field_id)
-                job = casa_tasks.visstat(**job_params)
-                LOG.debug('Calculating statistics for %r (#%s)', field_name, field_id)
-                result = job.execute(dry_run=False)
-
-                average_flux[(field_id, field_name)] = float(result['CORRECTED']['mean'])
-
-            LOG.debug('Mean flux for %s targets:', intent)
-            for (field_id, field_name), v in average_flux.iteritems():
-                LOG.debug('\t%r (%s): %s', field_name, field_id, v)
-
-            # find the ID of the field with the highest average flux
-            sorted_by_flux = sorted(average_flux.iteritems(),
-                                    key=operator.itemgetter(1),
-                                    reverse=True)
-            (brightest_id, brightest_name), highest_flux = sorted_by_flux[0]
-
-            LOG.info('%s field %r (%s) has highest mean flux (%s)', intent,
-                     brightest_name, brightest_id, highest_flux)
-            result[source_id] = brightest_id
-
-        return result
 
     def create_plots(self, context, results, plotter_cls, intents, renderer_cls=None, **kwargs):
         """
@@ -801,3 +722,71 @@ def _get_calapp_arg(result, arg):
     for calapp in result.applied:
         s.update(utils.safe_split(getattr(calapp, arg)))
     return ','.join(s)
+
+
+def get_brightest_field(ms, source, intent='TARGET'):
+    """
+    Analyse all fields associated with a source, identifying the brightest
+    field as the field with highest median flux averaged over all spws.
+
+    :param ms: measurementset to analyse
+    :param source: representative source
+    :param intent:
+    :return:
+    """
+    # get IDs for all science spectral windows
+    spw_ids = set()
+    for scan in ms.get_scans(scan_intent=intent):
+        scan_spw_ids = {dd.spw.id for dd in scan.data_descriptions}
+        spw_ids.update(scan_spw_ids)
+
+    if intent == 'TARGET':
+        science_ids = {spw.id for spw in ms.get_spectral_windows()}
+        spw_ids = spw_ids.intersection(science_ids)
+
+    fields_for_source = [f for f in source.fields if intent in f.intents]
+
+    # give the sole science target name if there's only one science target in this ms.
+    if len(fields_for_source) == 1:
+        LOG.info('Only one {} target for Source #{}. '
+                 'Bypassing brightest target selection.'.format(intent, source.id))
+        return fields_for_source[0]
+
+    # a list of (field, field flux) tuples
+    median_flux = []
+
+    # defines the parameters for the visstat job
+    job_params = {
+        'vis': ms.name,
+        'axis': 'amp',
+        'datacolumn': 'corrected',
+        'spw': ','.join(map(str, spw_ids)),
+        'field': ','.join((str(field.id) for field in fields_for_source)),
+        'reportingaxes': 'field',
+        'useflags': True
+    }
+
+    # run visstat for each scan selection for the target
+    LOG.info('Calculating which {} field has the highest median flux for Source #{}'.format(intent, source.id))
+    job = casa_tasks.visstat(**job_params)
+    visstat_result = job.execute(dry_run=False)
+
+    # representative visstat output:
+    #  'FIELD_ID=6': {'median': 2.4579226970672607}
+    for k, v in visstat_result.iteritems():
+        _, field_id = k.split('=')
+        measurement_field = [f for f in fields_for_source if f.id == int(field_id)][0]
+        median_flux.append((measurement_field, float(v['median'])))
+
+    LOG.debug('Median flux for {} targets:'.format(intent))
+    for field, field_flux in median_flux:
+        LOG.debug('\t{!r} ({}): {}'.format(field.name, field.id, field_flux))
+
+    # find the ID of the field with the highest average flux
+    sorted_by_flux = sorted(median_flux, key=operator.itemgetter(1), reverse=True)
+    brightest_field, highest_flux = sorted_by_flux[0]
+
+    LOG.info('{} field {!r} (#{}) has highest median flux ({})'.format(
+        intent, brightest_field.name, brightest_field.id, highest_flux
+    ))
+    return brightest_field

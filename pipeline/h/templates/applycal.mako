@@ -591,10 +591,11 @@ def format_spwmap(spwmap, scispws):
 
 	<%def name="preamble()">
 	% if uv_max[ms].value > 0.0:
-		<p>Calibrated amplitude vs frequency plots for a representative
-		science field in each measurement set. The science field displayed
-		here is the first field for the source. The atmospheric transmission
-        for each spectral window is overlayed on each plot in pink.</p>
+        <p>Calibrated amplitude vs frequency plots for the each measurement
+            set's representative source. For mosaics, the representative field is
+            identified as the field with the highest median channel-averaged amplitude,
+            calculated over all science spectral windows. The atmospheric transmission
+            for each spectral window is overlayed on each plot in pink.</p>
     % else: #Single dish (source = field, so far)
 		<p>Calibrated amplitude vs frequency plots of each source in each 
 		measurement set. The atmospheric transmission for each spectral window is
@@ -622,10 +623,10 @@ def format_spwmap(spwmap, scispws):
 		${rx_for_plot(plot)}
 	</%def>
 
-	<%def name="caption_text(plot, source_id)">
-		Source #${source_id}
-		(${utils.commafy(utils.safe_split(plot.parameters['field']), quotes=False)})
-	</%def>
+    <%def name="caption_text(plot, intent)">
+        Source: ${plot.parameters['source'].name} (#${plot.parameters['source'].id})<br>
+        Field: ${plot.parameters['field']}
+    </%def>
 
 </%self:plot_group>
 
@@ -643,10 +644,11 @@ def format_spwmap(spwmap, scispws):
 	</%def>
 
 	<%def name="preamble()">
-		<p>Calibrated amplitude vs UV distance plots for a representative
-		science field in each measurement set. The science field displayed 
-		here is the first field for the source.</p>
-
+        <p>Calibrated amplitude vs frequency plots for the each measurement
+            set's representative source. For mosaics, the representative field is
+            identified as the field with the highest median channel-averaged amplitude,
+            calculated over all science spectral windows. The atmospheric transmission
+            for each spectral window is overlayed on each plot in pink.</p>
 		<p>Data are plotted for all antennas and correlations, with different
 		spectral windows shown in different colours.</p>
 	</%def>
@@ -668,9 +670,9 @@ def format_spwmap(spwmap, scispws):
 		${rx_for_plot(plot)}
  	</%def>
 
-	<%def name="caption_text(plot, source_id)">
-		Source #${source_id}
-		(${utils.commafy(utils.safe_split(plot.parameters['field']), quotes=False)}). 
+	<%def name="caption_text(plot, intent)">
+        Source: ${plot.parameters['source'].name} (#${plot.parameters['source'].id})<br>
+        Field: ${plot.parameters['field']}
 	</%def>
 
 </%self:plot_group>
