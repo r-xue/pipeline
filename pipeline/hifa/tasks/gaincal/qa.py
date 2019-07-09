@@ -96,8 +96,15 @@ class TimegaincalQAHandler(pqa.QAPlugin):
                     qa_results_dict[calapp.gaintable] = gpcal.gpcal(calapp.gaintable)
                     qa_results_dict[calapp.gaintable]['PHASE_FIELDS'] = phase_field_ids
 
+            #
+            # PIPE-365: Revise hifa_timegaincal QA scores for Cy7
+            #
+            # Remy: Remove consideration of X-Y, X1-Y1 phase vs. time metrics
+            # from QA scoring (keep evaluation for now - I will open a CASR to
+            # revise these evaluations)
+            #
             result.qa = TimegaincalQAPool(qa_results_dict)
-            result.qa.update_scores(ms, phase_field_ids)
+            # result.qa.update_scores(ms, phase_field_ids)
         except Exception as e:
             LOG.error('Problem occurred running QA analysis. QA results will not be available for this task')
             LOG.exception(e)
