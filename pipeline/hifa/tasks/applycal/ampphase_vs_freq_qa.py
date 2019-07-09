@@ -2,6 +2,7 @@ import collections
 import copy
 import functools
 import operator
+import os
 
 import numpy
 import scipy.optimize
@@ -52,6 +53,16 @@ def score_all_scans(ms, intent):
             outlier_fn = functools.partial(Outlier, vis=ms.basename, intent=intent, spw=spw.id, scan=scan.id)
 
             outliers.extend(score_all(fits, outlier_fn))
+
+    if os.environ.get('DEBUG_APPLYCAL_QA', '') != '':
+        debug_path = '{}_applycal_qa.csv'.format(ms.basename)
+        with open(debug_path, 'a') as debug_file:
+            for outlier in outliers:
+                msg = '{outlier.vis} {outlier.intent} scan={outlier.scan} spw={outlier.spw} ant={outlier.ant} ' \
+                      'pol={outlier.pol} reason={outlier.reason} sigma_deviation={outlier.num_sigma}' \
+                      ''.format(outlier=outlier)
+                LOG.info('CASR-408: {}'.format(msg))
+                debug_file.write('{}\n'.format(msg))
 
     # collate the outlier reasons for all data. This step merges the outlier
     # reasons, leaving the endpoint array with a list of outlier reasons for
@@ -219,6 +230,7 @@ def score_all(all_fits, outlier_fn):
     outliers.extend(score_amp_intercept(all_fits, outlier_fn, AMPLITUDE_INTERCEPT_THRESHOLD))
     outliers.extend(score_phase_slope(all_fits, outlier_fn, PHASE_SLOPE_THRESHOLD))
     outliers.extend(score_phase_intercept(all_fits, outlier_fn, PHASE_INTERCEPT_THRESHOLD))
+
     return outliers
 
 
