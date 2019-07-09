@@ -775,9 +775,11 @@ class ImageParamsHeuristics(object):
             ms = self.observing_run.get_ms(name=vislist[0])
             nearest = ms.get_fields(field_id=nearest_field_to_center)[0].mdirection
             if primary_beam:
-                if cqa.getvalue(cqa.convert(cme.separation(center, nearest), 'arcsec'))[0] > 0.3 * primary_beam:
-                    LOG.info('The nearest pointing is > 0.3pb away from image center.  Shifting the phase '
-                             'center to the nearest field (id = {})'.format(nearest_field_to_center))
+                pb_dist = 0.408
+                if cqa.getvalue(cqa.convert(cme.separation(center, nearest), 'arcsec'))[0] > pb_dist * primary_beam:
+                    LOG.info('The nearest pointing is > {pb_dist}pb away from image center.  '
+                             'Shifting the phase center to the '
+                             'nearest field (id = {nf})'.format(pb_dist=pb_dist, nf=nearest_field_to_center))
                     LOG.info('Old phasecenter: {}'.format(phase_center))
                     # convert to strings (CASA 4.0 returns as list for some reason hence 0 index)
                     m0 = cme.getvalue(nearest)['m0']
