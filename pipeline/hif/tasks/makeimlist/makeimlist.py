@@ -304,7 +304,7 @@ class MakeImList(basetask.StandardTaskTemplate):
             spw = inputs.spw
 
             if spw == '':
-                spwids = sorted(inputs.context.observing_run.virtual_science_spw_ids.keys())
+                spwids = sorted(inputs.context.observing_run.virtual_science_spw_ids.keys(), key=int)
             else:
                 spwids = spw.split(',')
             spw = ','.join("'%s'" % (spwid) for spwid in spwids)
@@ -409,7 +409,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                     vislist_field_spw_combinations[field_intent[0]] = {'vislist': None, 'spwids': None}
                     if vislist_for_field != []:
                         vislist_field_spw_combinations[field_intent[0]]['vislist'] = vislist_for_field
-                        vislist_field_spw_combinations[field_intent[0]]['spwids'] = sorted(list(spwids_for_field))
+                        vislist_field_spw_combinations[field_intent[0]]['spwids'] = sorted(list(spwids_for_field), key=int)
 
                         # Add number of expected clean targets
                         if inputs.specmode == 'cont':
@@ -430,7 +430,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     valid_data[str(spw)] = self.heuristics.has_data(field_intent_list=[field_intent], spwspec=spw)
                                     if valid_data[str(spw)][field_intent]:
                                         filtered_spwlist.append(spw)
-                    filtered_spwlist = sorted(list(set(filtered_spwlist)))
+                    filtered_spwlist = sorted(list(set(filtered_spwlist)), key=int)
                 else:
                     continue
 
