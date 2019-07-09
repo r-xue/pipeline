@@ -12,9 +12,9 @@ columns = {'cleanmask' : ('Clean Mask', 'Clean Mask'),
 	   'mom8_fc': ('Line-free Moment 8', 'Integrated intensity (moment 8) of line-free channels after continuum subtraction'),
 	   'spectra': ('Spectra', 'Spectrum from flattened clean mask and per channel MAD')}
 
-def get_plot(plots, field, spw, i, colname):
+def get_plot(plots, prefix, field, spw, i, colname):
 	try:
-		return plots[field][spw][i][colname]
+		return plots[prefix][field][spw][i][colname]
 	except KeyError:
 		return None
 %>
@@ -24,7 +24,7 @@ def get_plot(plots, field, spw, i, colname):
 
 
 <div class="page-header">
-    <h2>Clean results for ${field} SpW ${spw}
+    <h2>Clean results for ${field} SpW ${spw} ${prefix}
         <div class="btn-toolbar pull-right" role="toolbar">
             % if qa_previous or qa_next:
             <div class="btn-group" role="group">
@@ -59,7 +59,7 @@ def get_plot(plots, field, spw, i, colname):
 	</thead>
 	<tbody>
 
-		% for i in sorted(plots_dict[field][spw].keys())[::-1]:
+		% for i in sorted(plots_dict[prefix][field][spw].keys())[::-1]:
 		<tr>
 		    <!-- iteration row heading -->
 		    <td class="vertical-align"><p class="text-center">${i}
@@ -70,7 +70,7 @@ def get_plot(plots, field, spw, i, colname):
 		    <!-- plots for this iteration, in column order -->
 	        % for colname in colorder:
 	        <td>
-	            <% plot = get_plot(plots_dict, field, spw, i, colname) %>
+	            <% plot = get_plot(plots_dict, prefix, field, spw, i, colname) %>
 	            <!-- use bootstrap markup for thumbnails -->
 	            % if plot is not None:
 	            <div class="thumbnail">
@@ -98,12 +98,12 @@ def get_plot(plots, field, spw, i, colname):
 		            % if colname == 'model':
 			            <!-- model plots are associated with the final iteration -->
 		                <% 
-		                lastiter = sorted(plots_dict[field][spw].keys())[-1]
-		                plot = get_plot(plots_dict, field, spw, lastiter, colname)
+		                lastiter = sorted(plots_dict[prefix][field][spw].keys())[-1]
+		                plot = get_plot(plots_dict, prefix, field, spw, lastiter, colname)
 		                %>
 		            % else:
 			            <!-- flux and PSF plots are associated with iteration 0 -->
-		                <% plot = get_plot(plots_dict, field, spw, 0, colname) %>
+		                <% plot = get_plot(plots_dict, prefix, field, spw, 0, colname) %>
 		            % endif
 		            % if plot is not None:
 		                <div class="thumbnail">

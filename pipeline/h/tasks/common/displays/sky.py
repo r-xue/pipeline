@@ -98,6 +98,10 @@ class SkyDisplay(object):
         parameters = {k: miscinfo[k] for k in ['spw', 'pol', 'field', 'type', 'iter'] if k in miscinfo}
         parameters['ant'] = None
         parameters['band'] = band
+        try:
+            parameters['prefix'] = miscinfo['filnam01']
+        except:
+            parameters['prefix'] = None
 
         plot = logger.Plot(plotfile, x_axis=coord_names[0],
                            y_axis=coord_names[1], field=field,

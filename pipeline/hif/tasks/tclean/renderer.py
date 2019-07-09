@@ -29,7 +29,7 @@ ImageRow = collections.namedtuple('ImageInfo', (
     'fractional_bw_label fractional_bw aggregate_bw_label aggregate_bw aggregate_bw_num '
     'image_file nchan plot qa_url iterdone stopcode stopreason '
     'chk_pos_offset chk_frac_beam_offset chk_fitflux chk_fitpeak_fitflux_ratio img_snr '
-    'chk_gfluxscale chk_gfluxscale_snr chk_fitflux_gfluxscale_ratio cube_all_cont'))
+    'chk_gfluxscale chk_gfluxscale_snr chk_fitflux_gfluxscale_ratio cube_all_cont result'))
 
 
 class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -432,7 +432,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 chk_gfluxscale=chk_gfluxscale,
                 chk_gfluxscale_snr=chk_gfluxscale_snr,
                 chk_fitflux_gfluxscale_ratio=chk_fitflux_gfluxscale_ratio,
-                cube_all_cont=cube_all_cont
+                cube_all_cont=cube_all_cont,
+                result=r
             )
             image_rows.append(row)
 
@@ -443,20 +444,21 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         # construct the renderers so we know what the back/forward links will be
         # sort the rows so the links will be in the same order as the rows
-        image_rows.sort(key=lambda row: (row.field, utils.natural_sort(row.spw), row.pol))
+        image_rows.sort(key=lambda row: (row.image_file.split('.')[0], row.field, utils.natural_sort(row.spw), row.pol))
         temp_urls = (None, None, None)
-        qa_renderers = [TCleanPlotsRenderer(context, results, plots_dict, row.field, str(row.spw), row.pol, temp_urls, row.cube_all_cont)
+        qa_renderers = [TCleanPlotsRenderer(context, results, row.result, plots_dict, row.image_file.split('.')[0], row.field, str(row.spw), row.pol, temp_urls, row.cube_all_cont)
                         for row in image_rows]
         qa_links = triadwise([renderer.path for renderer in qa_renderers])
 
         final_rows = []
         for row, renderer, qa_urls in zip(image_rows, qa_renderers, qa_links):
+            prefix = row.image_file.split('.')[0]
             try:
-                final_iter = sorted(plots_dict[row.field][str(row.spw)].keys())[-1]
-                plot = get_plot(plots_dict, row.field, str(row.spw), final_iter, 'image')
+                final_iter = sorted(plots_dict[prefix][row.field][str(row.spw)].keys())[-1]
+                plot = get_plot(plots_dict, prefix, row.field, str(row.spw), final_iter, 'image')
 
-                renderer = TCleanPlotsRenderer(context, results,
-                                               plots_dict, row.field, str(row.spw), row.pol,
+                renderer = TCleanPlotsRenderer(context, results, row.result,
+                                               plots_dict, prefix, row.field, str(row.spw), row.pol,
                                                qa_urls, row.cube_all_cont)
                 with renderer.get_file() as fileobj:
                     fileobj.write(renderer.render())
@@ -489,40 +491,46 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
 
 class TCleanPlotsRenderer(basetemplates.CommonRenderer):
-    def __init__(self, context, result, plots_dict, field, spw, pol, urls, cube_all_cont):
-        super(TCleanPlotsRenderer, self).__init__('tcleanplots.mako', context, result)
+    def __init__(self, context, makeimages_results, result, plots_dict, prefix, field, spw, pol, urls, cube_all_cont):
+        super(TCleanPlotsRenderer, self).__init__('tcleanplots.mako', context, makeimages_results)
 
         # Set HTML page name
         # VLA needs a slightly different name for some cases
         # For that we need to check imaging_mode and specmode but we have to
         # protect against iteration errors for empty results.
-        imaging_modes = [r.imaging_mode for r in result[0].results if not r.empty()]
-        specmodes = [r.specmode for r in result[0].results if not r.empty()]
-        if (any(['VLA' in item for item in imaging_modes]) and
-            any(['VLASS' not in item for item in imaging_modes]) and
-            any([item == 'cont' for item in specmodes])):
-            # ms = context.observing_run.get_ms(result[0].results[0].vis[0])
-            # band = ms.get_vla_spw2band()
-            # band_spws = {}
-            # for k, v in band.items():
-            #     band_spws.setdefault(v, []).append(k)
-            # for k, v in band_spws.items():
-            #     for spw in spw.split(','):
-            #         if int(spw) in v:
-            #             band = k
-            #             break
-            outfile = 'field%s-pol%s-cleanplots-%d.html' % (field, pol, randint(1, 1e12))
+        if not result.empty():
+            if 'VLA' in result.imaging_mode and 'VLASS' not in result.imaging_mode and result.specmode == 'cont':
+                # ms = context.observing_run.get_ms(result[0].results[0].vis[0])
+                # band = ms.get_vla_spw2band()
+                # band_spws = {}
+                # for k, v in band.items():
+                #     band_spws.setdefault(v, []).append(k)
+                # for k, v in band_spws.items():
+                #     for spw in spw.split(','):
+                #         if int(spw) in v:
+                #             band = k
+                #             break
+                # TODO: Not sure if a random number will work in all cases.
+                #       While working on PIPE-129 it happened that this code
+                #       was run 4 times for 2 targets. Better make sure the
+                #       name is well defined (see new setup for per EB images below).
+                outfile = '%s-field%s-pol%s-cleanplots-%d.html' % (prefix, field, pol, randint(1, 1e12))
+            else:
+                # The name needs to be unique also for the per EB imaging. Thus prepend the image name
+                # which contains the OUS or EB ID.
+                outfile = '%s-field%s-spw%s-pol%s-cleanplots.html' % (prefix, field, spw, pol)
+        # TODO: Check if this is useful since the result is empty.
         else:
-            outfile = 'field%s-spw%s-pol%s-cleanplots.html' % (field, spw, pol)
+            outfile = '%s-field%s-spw%s-pol%s-cleanplots.html' % (prefix, field, spw, pol)
 
         # HTML encoded filenames, so can't have plus sign
         valid_chars = "_.-%s%s" % (string.ascii_letters, string.digits)
         self.path = os.path.join(self.dirname, filenamer.sanitize(outfile, valid_chars))
 
-        # Determine whether any of targets were run with specmode = 'cube',
+        # Determine whether this target was run with specmode = 'cube',
         # in which case the weblog will need to show the MOM0_FC and
         # MOM8_FC columns.
-        show_mom0_8_fc = any([item.specmode == 'cube' for item in result[0].results])
+        show_mom0_8_fc = result.specmode == 'cube'
 
         if show_mom0_8_fc:
             colorder = ['pbcorimage', 'residual', 'cleanmask', 'mom0_fc', 'mom8_fc', 'spectra']
@@ -531,6 +539,7 @@ class TCleanPlotsRenderer(basetemplates.CommonRenderer):
 
         self.extra_data = {
             'plots_dict': plots_dict,
+            'prefix': prefix.split('.')[0],
             'field': field,
             'spw': spw,
             'colorder': colorder,
@@ -544,15 +553,16 @@ class TCleanPlotsRenderer(basetemplates.CommonRenderer):
         mako_context.update(self.extra_data)
 
 
-def get_plot(plots, field, spw, i, colname):
+def get_plot(plots, prefix, field, spw, i, colname):
     try:
-        return plots[field][spw][i][colname]
+        return plots[prefix][field][spw][i][colname]
     except KeyError:
         return None
 
 
 def make_plot_dict(plots):
     # Make the plots
+    prefixes = sorted({p.parameters['prefix'] for p in plots})
     fields = sorted({p.parameters['field'] for p in plots})
     spws = sorted({p.parameters['spw'] for p in plots})
     iterations = sorted({p.parameters['iter'] for p in plots})
@@ -560,18 +570,21 @@ def make_plot_dict(plots):
 
     iteration_dim = lambda: collections.defaultdict(dict)
     spw_dim = lambda: collections.defaultdict(iteration_dim)
-    plots_dict = collections.defaultdict(spw_dim)
-    for field in fields:
-        for spw in spws:
-            for iteration in iterations:
-                for t in types:
-                    matching = [p for p in plots
-                                if p.parameters['field'] == field
-                                and p.parameters['spw'] == spw
-                                and p.parameters['iter'] == iteration
-                                and p.parameters['type'] == t]
-                    if matching:
-                        plots_dict[field][spw][iteration][t] = matching[0]
+    field_dim = lambda: collections.defaultdict(spw_dim)
+    plots_dict = collections.defaultdict(field_dim)
+    for prefix in prefixes:
+        for field in fields:
+            for spw in spws:
+                for iteration in iterations:
+                    for t in types:
+                        matching = [p for p in plots
+                                    if p.parameters['prefix'] == prefix
+                                    and p.parameters['field'] == field
+                                    and p.parameters['spw'] == spw
+                                    and p.parameters['iter'] == iteration
+                                    and p.parameters['type'] == t]
+                        if matching != []:
+                            plots_dict[prefix][field][spw][iteration][t] = matching[0]
 
     return plots_dict
 

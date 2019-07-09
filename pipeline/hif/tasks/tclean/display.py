@@ -170,6 +170,10 @@ class CleanSummary(object):
                     parameters = {k: miscinfo[k] for k in ['spw', 'iter'] if k in miscinfo}
                     parameters['field'] = '%s (%s)' % (miscinfo['field'], miscinfo['intent'])
                     parameters['type'] = 'spectra'
+                    try:
+                        parameters['prefix'] = miscinfo['filnam01']
+                    except:
+                        parameters['prefix'] = None
 
                     virtual_spw = parameters['spw']
                     imaging_mss = [m for m in self.context.observing_run.measurement_sets if m.is_imaging_ms]
