@@ -188,7 +188,7 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
         ny += 1
 
     LOG.info('Image pixel size: [nx, ny] = [%s, %s]' % (nx, ny))
-    return phasecenter, cellx, celly, nx, ny
+    return phasecenter, cellx, celly, nx, ny, org_direction
 
 
 class SDImagingWorkerInputs(vdp.StandardInputs):
@@ -209,6 +209,7 @@ class SDImagingWorkerInputs(vdp.StandardInputs):
     celly = vdp.VisDependentProperty(default='')
     nx = vdp.VisDependentProperty(default=-1)
     ny = vdp.VisDependentProperty(default=-1)
+    org_direction = vdp.VisDependentProperty(default=None)
 
     # Synchronization between infiles and vis is still necessary
     @vdp.VisDependentProperty
@@ -216,7 +217,8 @@ class SDImagingWorkerInputs(vdp.StandardInputs):
         return self.infiles
 
     def __init__(self, context, infiles, outfile, mode, antids, spwids, fieldids, restfreq, stokes, edge=None, phasecenter=None,
-                 cellx=None, celly=None, nx=None, ny=None):
+                 cellx=None, celly=None, nx=None, ny=None,
+                 org_direction=None):
         # NOTE: spwids and pols are list of numeric id list while scans
         #       is string (mssel) list
         super(SDImagingWorkerInputs, self).__init__()
@@ -236,6 +238,7 @@ class SDImagingWorkerInputs(vdp.StandardInputs):
         self.celly = celly
         self.nx = nx
         self.ny = ny
+        self.org_direction = org_direction
 
 
 class SDImagingWorker(basetask.StandardTaskTemplate):
@@ -259,7 +262,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         rep_ms = mses[file_index[0]]
         ant_name = rep_ms.antennas[antid_list[0]].name
         source_name = rep_ms.fields[fieldid_list[0]].clean_name
-        phasecenter, cellx, celly, nx, ny = self._get_map_coord(inputs, context, infiles, antid_list, spwid_list,
+        phasecenter, cellx, celly, nx, ny, org_direction = self._get_map_coord(inputs, context, infiles, antid_list, spwid_list,
                                                                 fieldid_list)
 
         status = self._do_imaging(infiles, antid_list, spwid_list, fieldid_list, outfile, imagemode, edge, phasecenter,
@@ -272,7 +275,8 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
                                                 sourcename=source_name,
                                                 spwlist=v_spwids,  # virtual
                                                 specmode='cube',
-                                                sourcetype='TARGET')
+                                                sourcetype='TARGET',
+                                                org_direction=org_direction)
             image_item.antenna = ant_name  # name #(group name)
             outcome = {}
             outcome['image'] = image_item
@@ -291,12 +295,15 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         return result
 
     def _get_map_coord(self, inputs, context, infiles, ant_list, spw_list, field_list):
-        params = (inputs.phasecenter, inputs.cellx, inputs.celly, inputs.nx, inputs.ny)
-        coord_set = (params.count(None) == 0)
+        params = (inputs.phasecenter, inputs.cellx, inputs.celly, inputs.nx, inputs.ny, inputs.org_direction)
+        coord_set = (params.count(None) == 0) or ( (params.count(None) == 1) and inputs.org_direction is None )
         if coord_set:
             return params
         else:
-            return ALMAImageCoordinateUtil(context, infiles, ant_list, spw_list, field_list)
+            params = ALMAImageCoordinateUtil(context, infiles, ant_list, spw_list, field_list)
+            if not params:
+                raise RuntimeError( "No valid data" )
+            return params
 
     def _do_imaging(self, infiles, antid_list, spwid_list, fieldid_list, imagename, imagemode, edge, phasecenter, cellx,
                     celly, nx, ny):

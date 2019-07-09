@@ -2351,8 +2351,9 @@ def generate_metric_mask(context, result, cs, mask):
     """
     outcome = result.outcome
     imagename = outcome['image'].imagename
+    org_direction = outcome['image'].org_direction
     imshape = mask.shape
-
+    
     file_index = np.asarray(outcome['file_index'])
     antenna_list = np.asarray(outcome['assoc_antennas'])
     field_list = np.asarray(outcome['assoc_fields'])
@@ -2365,6 +2366,9 @@ def generate_metric_mask(context, result, cs, mask):
 
     ra = []
     dec = []
+    ofs_ra = []
+    ofs_dec = []
+
     for i in range(len(mses)):
         vis = mses[i].basename
         datatable_name = os.path.join(context.observing_run.ms_datatable_name, vis)
@@ -2373,15 +2377,27 @@ def generate_metric_mask(context, result, cs, mask):
         _antlist = antenna_list[_index]
         _fieldlist = field_list[_index]
         _spwlist = spw_list[_index]
+
         with casatools.TableReader(rotable_name) as tb:
-            unit_ra = tb.getcolkeyword('SHIFT_RA', 'UNIT')
-            unit_dec = tb.getcolkeyword('SHIFT_DEC', 'UNIT')
+            unit_ra = tb.getcolkeyword('OFS_RA', 'UNIT')
+            unit_dec = tb.getcolkeyword('OFS_DEC', 'UNIT')
             tsel = tb.query('SRCTYPE==0&&ANTENNA IN {}&&FIELD_ID IN {}&&IF IN {}'.format(list(_antlist), list(_fieldlist), list(_spwlist)))
-            ra.extend(tsel.getcol('SHIFT_RA'))
-            dec.extend(tsel.getcol('SHIFT_DEC'))
+            ofs_ra.extend(tsel.getcol('OFS_RA'))
+            ofs_dec.extend(tsel.getcol('OFS_DEC'))
             tsel.close()
-    ra = np.asarray(ra)
-    dec = np.asarray(dec)
+
+    if org_direction is None:
+        ra = np.asarray(ofs_ra)
+        dec = np.asarray(ofs_dec)
+    else:
+        for rr, dd in zip(ofs_ra, ofs_dec):
+            shift_ra, shift_dec = direction_recover( rr, dd, org_direction )
+            ra.append(shift_ra)
+            dec.append(shift_dec)
+        ra = np.asarray(ra)
+        dec = np.asarray(dec)
+
+    del ofs_ra, ofs_dec
 
     metric_mask = np.empty(imshape, dtype=bool)
     metric_mask[:] = False
@@ -2446,6 +2462,22 @@ def generate_metric_mask(context, result, cs, mask):
     metric_mask[:,:,:,edge_channels] = False
 
     return metric_mask
+
+def direction_recover( ra, dec, org_direction ):
+    me = casatools.measures
+    qa = casatools.quanta
+
+    direction = me.direction( org_direction['refer'], 
+                              str(ra)+'deg', str(dec)+'deg' )
+    zero_direction  = me.direction( org_direction['refer'], '0deg', '0deg' )
+    offset = me.separation( zero_direction, direction )
+    posang = me.posangle( zero_direction, direction )
+    new_direction = me.shift( org_direction, offset=offset, pa=posang )
+    new_ra  = qa.convert( new_direction['m0'], 'deg' )['value']
+    new_dec = qa.convert( new_direction['m1'], 'deg' )['value']
+
+    return new_ra, new_dec
+
 
 @log_qa
 def score_sdimage_masked_pixels(context, result):

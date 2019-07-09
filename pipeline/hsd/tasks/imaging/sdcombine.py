@@ -20,6 +20,7 @@ class SDImageCombineInputs(vdp.StandardInputs):
     """
     inimages = vdp.VisDependentProperty(default='')
     outfile = vdp.VisDependentProperty(default='')
+    org_directions = vdp.VisDependentProperty(default='')
 
     @inimages.convert
     def inimages(self, value):
@@ -30,12 +31,13 @@ class SDImageCombineInputs(vdp.StandardInputs):
                 _check_image(v)
         return value
 
-    def __init__(self, context, inimages, outfile):
+    def __init__(self, context, inimages, outfile, org_directions):
         super(SDImageCombineInputs, self).__init__()
 
         self.context = context
         self.inimages = inimages
         self.outfile = outfile
+        self.org_directions = org_directions
 
 
 class SDImageCombine(basetask.StandardTaskTemplate):
@@ -46,6 +48,7 @@ class SDImageCombine(basetask.StandardTaskTemplate):
     def prepare(self):
         infiles = self.inputs.inimages
         outfile = self.inputs.outfile
+        org_directions = self.inputs.org_directions
         inweights = [name+".weight" for name in infiles]
         outweight = outfile + ".weight"
         num_in = len(infiles)
@@ -63,6 +66,21 @@ class SDImageCombine(basetask.StandardTaskTemplate):
             p = path.replace(':', '\:') if ':' in path else path
             LOG.debug('safe path = "{}"'.format(p))
             return p
+
+        # check uniformity of org_directions and feed org_direction
+        threshold = 1E-5   #deg
+        me = casatools.measures
+        qa = casatools.quanta
+        if len(org_directions) > 1:
+            for idx in range(1,len(org_directions)):
+                if org_directions[0] is None:
+                    if org_directions[idx] is not None:
+                        raise RuntimeError( "inconsistent org_directions {}".org_directions )
+                else:
+                    separation = qa.convert(me.separation( org_directions[idx], org_directions[0] ), 'deg')['value']
+                    if separation > threshold:
+                        raise RuntimeError( "inconsistent org_directions (separation={} deg) {}".format(separation, org_directions) )
+        org_direction = org_directions[0]
 
         # combine weight images
         LOG.info("Generating combined weight image.")
@@ -132,7 +150,8 @@ class SDImageCombine(basetask.StandardTaskTemplate):
                                                 sourcename='',  # will be filled in later
                                                 spwlist=[],  # will be filled in later
                                                 specmode='cube',
-                                                sourcetype='TARGET')
+                                                sourcetype='TARGET',
+                                                org_direction=org_direction)
             outcome = {'image': image_item}
             result = SDImagingResultItem(task=None,
                                          success=True,

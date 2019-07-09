@@ -93,7 +93,7 @@ class SDImagingInputs(vdp.StandardInputs):
     def is_ampcal(self):
         return self.mode.upper() == 'AMPCAL'
 
-    def __init__(self, context, mode=None, restfreq=None, infiles=None, field=None, spw=None):
+    def __init__(self, context, mode=None, restfreq=None, infiles=None, field=None, spw=None, org_direction=None):
         super(SDImagingInputs, self).__init__()
 
         self.context = context
@@ -105,6 +105,7 @@ class SDImagingInputs(vdp.StandardInputs):
         self.field = field
         self.mode = mode
         self.spw = spw
+        self.org_direction = org_direction
 
 
 @task_registry.set_equivalent_casa_task('hsd_imaging')
@@ -297,6 +298,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             combined_spws = []
             combined_v_spws = []
             tocombine_images = []
+            tocombine_org_directions = []
             combined_pols = []
             combined_rms_exclude = []
 
@@ -385,7 +387,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                     if not image_coord:  # No valid data is found
                         continue
                     coord_set = True
-                    (phasecenter, cellx, celly, nx, ny) = image_coord
+                    (phasecenter, cellx, celly, nx, ny, org_direction) = image_coord
 
                 # register data for combining
                 combined_infiles.extend(infiles)
@@ -415,7 +417,8 @@ class SDImaging(basetask.StandardTaskTemplate):
                                                                   phasecenter=phasecenter,
                                                                   cellx=cellx,
                                                                   celly=celly,
-                                                                  nx=nx, ny=ny)
+                                                                  nx=nx, ny=ny,
+                                                                  org_direction=org_direction)
                     imager_task = worker.SDImagingWorker(imager_inputs)
                     _imager_result = self._executor.execute(imager_task)
                     imager_results.append(_imager_result)
@@ -428,7 +431,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                     # add image list to combine
                     if os.path.exists(imagename) and os.path.exists(imagename+'.weight'):
                         tocombine_images.append(imagename)
-
+                        tocombine_org_directions.append(org_direction)
                     # Additional Step.
                     # Make grid_table and put rms and valid spectral number array
                     # to the outcome.
@@ -562,7 +565,8 @@ class SDImaging(basetask.StandardTaskTemplate):
                 imager_result = self._executor.execute(imager_task)
             else:
                 combine_inputs = sdcombine.SDImageCombineInputs(context, inimages=tocombine_images,
-                                                                outfile=imagename)
+                                                                outfile=imagename,
+                                                                org_directions=tocombine_org_directions)
                 combine_task = sdcombine.SDImageCombine(combine_inputs)
                 imager_result = self._executor.execute(combine_task)
 
@@ -575,6 +579,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 # The rms and number of valid spectra is used to create RMS maps
                 LOG.info('Additional Step. Make grid_table')
                 imagename = imager_result.outcome['image'].imagename
+                org_direction = imager_result.outcome['image'].org_direction
                 with casatools.ImageReader(imagename) as ia:
                     cs = ia.coordsys()
                     dircoords = [i for i in xrange(cs.naxes())
