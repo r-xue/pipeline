@@ -56,9 +56,10 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             applications.extend(ms_applications)
 
             try:
+                # diagnostic phase vs time plots are made from a caltable for BANDPASS
                 diag_phase = [a for a in ms_applications
                               if a.calmode == 'Phase only'
-                              and 'TARGET' not in a.intent][0]
+                              and 'BANDPASS' in a.intent][0]
                 solint = 'int' if 'Per integration' in diag_phase.solint else diag_phase.solint
                 diagnostic_solints[vis]['phase'] = solint
             except IndexError:
