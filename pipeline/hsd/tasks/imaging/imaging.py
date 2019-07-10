@@ -304,6 +304,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
             # for combined images for NRO
             tocombine_images_nro = []
+            tocombine_org_directions_nro = []
 
             coord_set = False
             for (name, _members) in image_group.iteritems():
@@ -520,6 +521,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                     # add image list to combine
                     if os.path.exists(imagename_nro) and os.path.exists(imagename_nro+'.weight'):
                         tocombine_images_nro.append(imagename_nro)
+                        tocombine_org_directions_nro.append(org_direction)
 
                     file_index = [common.get_parent_ms_idx(context, name) for name in infiles]
                     self._finalize_worker_result(context, imager_result_nro,
@@ -755,7 +757,8 @@ class SDImaging(basetask.StandardTaskTemplate):
                 # Imaging of all antennas
                 LOG.info('Combine images of Source {} Spw {:d}'.format(source_name, combined_spws[0]))
                 combine_inputs = sdcombine.SDImageCombineInputs(context, inimages=tocombine_images_nro,
-                                                                outfile=imagename)
+                                                                outfile=imagename,
+                                                                org_directions=tocombine_org_directions_nro)
                 combine_task = sdcombine.SDImageCombine(combine_inputs)
                 imager_result = self._executor.execute(combine_task)
 
