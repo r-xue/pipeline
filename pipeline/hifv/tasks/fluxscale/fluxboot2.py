@@ -302,9 +302,16 @@ class Fluxboot2(basetask.StandardTaskTemplate):
         #     return self.inputs.fitorder
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        spw2band = m.get_vla_spw2band()
-        bands = spw2band.values()
+        spw2bandall = m.get_vla_spw2band()
         spws = m.get_spectral_windows()
+        spwidlist = [spw.id for spw in spws]
+
+        spw2band = {}
+        for key, value in spw2bandall.items():
+            if key in spwidlist:
+                spw2band[key] = value
+        bands = spw2band.values()
+
         minfreq = min([spw.min_frequency for spw in spws])
         maxfreq = max([spw.max_frequency for spw in spws])
         deltaf = maxfreq - minfreq
