@@ -273,7 +273,7 @@ class JyPerKModelFitEndPoint(JyPerKAbstractEndPoint):
     ENDPOINT_TYPE = 'model-fit'
 
     def _extract_factor(self, response):
-        return float(response[u'factor'])
+        return response[u'factor']
 
 
 class JyPerKInterpolationEndPoint(JyPerKAbstractEndPoint):
