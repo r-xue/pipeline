@@ -10,46 +10,61 @@
 </description>
 <input>
     <param type="stringArray" name="vis" subparam="true">
-	<description>List of input visibility data</description>
-	<value></value>
+        <description>List of input visibility data</description>
+        <value/>
     </param>
 
 
+    <param type="string" name="image">
+        <description>Restored subimage</description>
+        <value/>
+    </param>
+
+    <param type="string" name="alphafile">
+        <description>Input spectral index map</description>
+        <value/>
+    </param>
+
+    <param type="string" name="alphaerrorfile">
+        <description>Input spectral index error map</description>
+        <value/>
+    </param>
+
     <param type="string" name="pipelinemode">
-	<description>The pipeline operating mode</description>
-	<value>automatic</value>
-	<allowed kind="enum">
-	    <value>automatic</value>
-	    <value>interactive</value>
-	    <value>getinputs</value>
-	</allowed>
+        <description>The pipeline operating mode</description>
+        <value>automatic</value>
+        <allowed kind="enum">
+            <value>automatic</value>
+            <value>interactive</value>
+            <value>getinputs</value>
+        </allowed>
     </param>
 
     <param type="bool" name="dryrun" subparam="true">
-	<description>Run the task (False) or display task command (True)</description>
-	<value>False</value>
+        <description>Run the task (False) or display task command (True)</description>
+        <value>False</value>
     </param>
 
     <param type="bool" name="acceptresults" subparam="true">
-	<description>Add the results into the pipeline context</description>
-	<value>True</value>
+        <description>Add the results into the pipeline context</description>
+        <value>True</value>
     </param>
 
     <constraints>
-	<when param="pipelinemode">
-	    <equals type="string" value="automatic">
-	    </equals>
-	    <equals type="string" value="interactive">
-                <default param="vis"><value type="stringArray"></value></default>
+        <when param="pipelinemode">
+            <equals type="string" value="automatic">
+            </equals>
+            <equals type="string" value="interactive">
+                <default param="vis"><value type="stringArray"/></default>
 
-		<default param="dryrun"><value type="bool">False</value></default>
-		<default param="acceptresults"><value type="bool">True</value></default>
-	    </equals>
-	    <equals type="string" value="getinputs">
-                <default param="vis"><value type="stringArray"></value></default>
+                <default param="dryrun"><value type="bool">False</value></default>
+                <default param="acceptresults"><value type="bool">True</value></default>
+            </equals>
+            <equals type="string" value="getinputs">
+                <default param="vis"><value type="stringArray"/></default>
 
-	    </equals>
-	</when>
+            </equals>
+        </when>
     </constraints>
 
 </input>
@@ -58,7 +73,7 @@
     <param type="any" name="results">
         <description>The output results object</description>
         <any type="variant"/>
-        <value></value>
+        <value/>
     </param>
 </output>
 <returns type="void"/>
@@ -76,6 +91,13 @@ vis -- List of visisbility  data files. These may be ASDMs, tar files of ASDMs,
    converted  to MS format.
    default: []
    example: vis=['X227.ms', 'asdms.tar.gz']
+
+image --
+
+alphafile --
+
+alphaerrorfile --
+
 
 
 

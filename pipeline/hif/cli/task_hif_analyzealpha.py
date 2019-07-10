@@ -1,11 +1,10 @@
 import sys
 
-from taskinit import casalog
-
 import pipeline.h.cli.utils as utils
 
 
-def hif_analyzealpha(vis=None, pipelinemode=None, dryrun=None, acceptresults=None):
+def hif_analyzealpha(vis=None, image=None, alphafile=None, alphaerrorfile=None,
+                     pipelinemode=None, dryrun=None, acceptresults=None):
 
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

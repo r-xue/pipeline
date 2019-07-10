@@ -36,6 +36,7 @@ import impbcor_cli
 import importasdm_cli
 import imregrid_cli
 import imstat_cli
+import imval_cli
 import imsubimage_cli
 import initweights_cli
 import listobs_cli
@@ -150,6 +151,10 @@ def importasdm(*v, **k):
 
 def imstat(*v, **k):
     return _get_job(imstat_cli.imstat_cli, *v, **k)
+
+
+def imval(*v, **k):
+    return _get_job(imval_cli.imval_cli, *v, **k)
 
 
 def imsubimage(*v, **k):
