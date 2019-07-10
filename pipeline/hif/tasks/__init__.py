@@ -23,6 +23,7 @@ from .editimlist import Editimlist
 from .transformimagedata import Transformimagedata
 from .makermsimages import Makermsimages
 from .makecutoutimages import Makecutoutimages
+from .analyzealpha import Analyzealpha
 
 # set default tasks for tasks with several implementations to our desired
 # specific implementation
