@@ -84,7 +84,7 @@ def set_miscinfo(name, spw=None, field=None, type=None, iter=None, multiterm=Non
                 info = clean_extendable_keys(info, 'filnam')
 
             if spw is not None:
-                if context.observing_run is not None:
+                if context is not None and context.observing_run is not None:
                     spw_names = [
                         context.observing_run.virtual_science_spw_shortnames.get(
                             context.observing_run.virtual_science_spw_ids.get(int(spw_id), 'N/A'), 'N/A')
