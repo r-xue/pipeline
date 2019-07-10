@@ -185,20 +185,20 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             #
             with casatools.ImageReader(r.iterations[maxiter]['residual'] + extension) as residual:
                 residual_stats = residual.statistics(robust=True)
-                residual_abs = abs(residual.getchunk())
 
             residual_robust_rms = residual_stats.get('medabsdevmed')[0] * 1.4826  # see CAS-9631
-            residual_abs_max = residual_abs.max()  # see CAS-10731
-            if abs(residual_stats['min'])[0] > abs(residual_stats['max'])[0]:
-                residual_abs_max = -residual_abs_max
-            ratio_val = (residual_abs_max / residual_robust_rms)
-            row_residual_ratio = '%.2f' % ratio_val
+            if abs(residual_stats['min'])[0] > abs(residual_stats['max'])[0]:  # see CAS-10731 & PIPE-374
+                residual_peak_value = residual_stats['min'][0]
+            else:
+                residual_peak_value = residual_stats['max'][0]
+            residual_snr = (residual_peak_value / residual_robust_rms)
+            row_residual_ratio = '%.2f' % residual_snr
             # preserve the sign of the largest magnitude value for printout
             LOG.info('{field} clean absolute residual peak / scaled MAD'
                      ' = {peak:.12f} / {rms:.12f} = {ratio:.2f} '.format(field=field,
-                                                                         peak=residual_abs_max,
+                                                                         peak=residual_peak_value,
                                                                          rms=residual_robust_rms,
-                                                                         ratio=ratio_val))
+                                                                         ratio=residual_snr))
 
             #
             # theoretical sensitivity
