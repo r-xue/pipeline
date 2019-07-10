@@ -120,7 +120,7 @@ def calc_vk(wrapper):
     column_names = [c for c in wrapper.data.dtype.names if c not in excluded_columns]
     result_dtype = [mswrapper.get_dtype(wrapper.data, c) for c in column_names]
     result_dtype.insert(0, ('antenna', numpy.int32))
-    result_dtype.append(('sigma', numpy.float64, wrapper.data['corrected_data'].shape[1:]))
+    result_dtype.append(('sigma', wrapper['corrected_data'].dtype, wrapper['corrected_data'].shape[1:]))
 
     # get 1D array of channel frequencies and include its definition in the dtype
     chan_freq = wrapper.freq_axis['chan_freq']
@@ -147,8 +147,9 @@ def calc_vk(wrapper):
         # Equation 2: sigma_{k}(nu_{i}) = std(V_{jk}(nu_{i}))_{j} / sqrt(n_{ant})
         # select all visibilities created using this antenna.
         V_jk = wrapper.xor_filter(antenna1=k, antenna2=k)
-        sigma_k = V_jk['corrected_data'].std(axis=0) / root_num_antennas
-        V_k['sigma'] = sigma_k
+        sigma_k_real = V_jk['corrected_data'].real.std(axis=0) / root_num_antennas
+        sigma_k_imag = V_jk['corrected_data'].imag.std(axis=0) / root_num_antennas
+        V_k['sigma'] = sigma_k_real + 1j * sigma_k_imag
 
         # add the remaining columns
         for col in column_names:
@@ -197,8 +198,7 @@ def get_best_fits_per_ant(wrapper):
                 amplitude_fit = to_linear_fit_parameters(amp_fit, amp_err)
             except TypeError:
                 # Antenna probably flagged..
-                LOG.info('Could not fit amplitude vs frequency for ant {} pol {}'
-                         ''.format(wrapper.filename, wrapper.scan, wrapper.spw, ant, pol))
+                LOG.info('Could not fit amplitude vs frequency for ant {} pol {}'.format(ant, pol))
                 continue
 
             try:
@@ -206,8 +206,7 @@ def get_best_fits_per_ant(wrapper):
                 phase_fit = to_linear_fit_parameters(phase_fit, phase_err)
             except TypeError:
                 # Antenna probably flagged..
-                LOG.info('Could not fit phase vs frequency for ant {} pol {}'
-                         ''.format(wrapper.filename, wrapper.scan, wrapper.spw, ant, pol))
+                LOG.info('Could not fit phase vs frequency for ant {} pol {}'.format(ant, pol))
                 continue
 
             fit_obj = AntennaFit(ant=ant, pol=pol, amp=amplitude_fit, phase=phase_fit)

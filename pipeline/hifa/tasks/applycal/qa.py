@@ -11,6 +11,15 @@ from . import ampphase_vs_freq_qa
 
 LOG = logging.get_logger(__name__)
 
+REASONS_TO_TEXT = {
+    'amp.intercept,amp.slope': ('Amp-freq', 'zero point and slope outliers'),
+    'amp.intercept': ('Amp-freq', 'zero point outliers'),
+    'amp.slope': ('Amp-freq', 'slope outliers'),
+    'phase.intercept,phase.slope': ('Phase-freq', 'zero point and slope outliers'),
+    'phase.intercept': ('Phase-freq', 'zero point outliers'),
+    'phase.slope': ('Phase-freq', 'slope outliers')
+}
+
 
 class ALMAApplycalQAHandler(pqa.QAPlugin):
     result_cls = h_applycal.ApplycalResults
@@ -132,13 +141,3 @@ def outliers_to_qa_scores(ms, outliers):
         qa_scores.append(score)
 
     return qa_scores
-
-
-REASONS_TO_TEXT = {
-    'amp.intercept,amp.slope': ('Amp-freq', 'zero point and slope outliers'),
-    'amp.intercept': ('Amp-freq', 'zero point outliers'),
-    'amp.slope': ('Amp-freq', 'slope outliers'),
-    'phase.intercept,phase.slope': ('Phase-freq', 'zero point and slope outliers'),
-    'phase.intercept': ('Phase-freq', 'zero point outliers'),
-    'phase.slope': ('Phase-freq', 'slope outliers')
-}
