@@ -247,7 +247,7 @@ class JyPerKAsdmEndPoint(ALMAJyPerKDatabaseAccessBase):
     ENDPOINT_TYPE = 'asdm'
 
     def get_params(self, vis):
-        # no subparam
+        # subparam is vis
         yield QueryStruct(param={'uid': vis_to_uid(vis)}, subparam=vis)
 
     def access(self, queries):
