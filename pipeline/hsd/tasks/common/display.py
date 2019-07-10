@@ -144,16 +144,9 @@ class SpectralImage(object):
         # read data to storage
         with casatools.ImageReader(imagename) as ia:
             self.image_shape = ia.shape()
-            self.coordsys = ia.coordsys()
-            coord_types = self.coordsys.axiscoordinatetypes()
-            self.units = self.coordsys.units()
-            self.id_direction = coord_types.index('Direction')
-            self.id_direction = [self.id_direction, self.id_direction+1]
-            self.id_spectral = coord_types.index('Spectral')
-            self.id_stokes = coord_types.index('Stokes')
-            LOG.debug('id_direction=%s'%(self.id_direction))
-            LOG.debug('id_spectral=%s'%(self.id_spectral))
-            LOG.debug('id_stokes=%s'%(self.id_stokes))
+            coordsys = ia.coordsys()
+            self._load_coordsys(coordsys)
+            coordsys.done()
             self.data = ia.getchunk()
             self.mask = ia.getchunk(getmask=True)
             bottom = ia.toworld(numpy.zeros(len(self.image_shape), dtype=int), 'q')['quantity']
@@ -169,9 +162,30 @@ class SpectralImage(object):
             self.dec_max = top[key(self.id_direction[1])]
             self._brightnessunit = ia.brightnessunit()
             beam = ia.restoringbeam()
-            self.direction_reference = self.coordsys.referencecode('dir')[0]
         qa = casatools.quanta
         self._beamsize_in_deg = qa.convert(qa.sqrt(qa.mul(beam['major'], beam['minor'])), 'deg')['value']
+
+    def _load_coordsys(self, coordsys):
+        coord_types = coordsys.axiscoordinatetypes()
+        self._load_id_coord_types(coord_types)
+        self.units = coordsys.units()
+        self.direction_reference = coordsys.referencecode('dir')[0]
+        self.frequency_frame = coordsys.getconversiontype('spectral')
+        self.stokes_string = ''.join(coordsys.stokes())
+        self.stokes = coordsys.stokes()
+        self.rest_frequency = coordsys.restfrequency()
+        self.refpixs = coordsys.referencepixel()['numeric']
+        self.refvals = coordsys.referencevalue()['numeric']
+        self.increments = coordsys.increment()['numeric']
+
+    def _load_id_coord_types(self, coord_types):
+        id_direction = coord_types.index('Direction')
+        self.id_direction = [id_direction, id_direction+1]
+        self.id_spectral = coord_types.index('Spectral')
+        self.id_stokes = coord_types.index('Stokes')
+        LOG.debug('id_direction=%s'%(self.id_direction))
+        LOG.debug('id_spectral=%s'%(self.id_spectral))
+        LOG.debug('id_stokes=%s'%(self.id_stokes))
 
     @property
     def nx(self):
@@ -203,11 +217,10 @@ class SpectralImage(object):
 
     def to_velocity(self, frequency, freq_unit='GHz'):
         qa = casatools.quanta
-        rest_frequency = self.coordsys.restfrequency()
-        if rest_frequency['unit'] != freq_unit:
-            vrf = qa.convert(rest_frequency, freq_unit)['value']
+        if self.rest_frequency['unit'] != freq_unit:
+            vrf = qa.convert(self.rest_frequency, freq_unit)['value']
         else:
-            vrf = rest_frequency['value']
+            vrf = self.rest_frequency['value']
         return (1.0 - (frequency / vrf)) * LightSpeed
 
     def spectral_axis(self, unit='GHz'):
@@ -218,9 +231,10 @@ class SpectralImage(object):
 
     def __axis(self, idx, unit):
         qa = casatools.quanta
-        refpix = self.coordsys.referencepixel()['numeric'][idx]
-        refval = self.coordsys.referencevalue()['numeric'][idx]
-        increment = self.coordsys.increment()['numeric'][idx]
+        refpix = self.refpixs[idx]
+        refval = self.refvals[idx]
+        increment = self.increments[idx]
+
         _unit = self.units[idx]
         if _unit != unit:
             refval = qa.convert(qa.quantity(refval, _unit), unit)['value']
@@ -350,7 +364,7 @@ class SDImageDisplay(object):
         (refpix, refval, increment) = self.image.spectral_axis(unit='GHz')
         self.frequency = numpy.array([refval+increment*(i-refpix) for i in xrange(self.nchan)])
         self.velocity = self.image.to_velocity(self.frequency, freq_unit='GHz')
-        self.frequency_frame = self.image.coordsys.getconversiontype('spectral')
+        self.frequency_frame = self.image.frequency_frame
         self.x_max = self.nx - 1
         self.x_min = 0
         self.y_max = self.ny - 1
@@ -359,7 +373,7 @@ class SDImageDisplay(object):
         self.ra_max = qa.convert(self.image.ra_max, 'deg')['value']
         self.dec_min = qa.convert(self.image.dec_min, 'deg')['value']
         self.dec_max = qa.convert(self.image.dec_max, 'deg')['value']
-        self.stokes_string = ''.join(self.image.coordsys.stokes())
+        self.stokes_string = self.image.stokes_string
 
         LOG.debug('(ra_min,ra_max)=(%s,%s)' % (self.ra_min, self.ra_max))
         LOG.debug('(dec_min,dec_max)=(%s,%s)' % (self.dec_min, self.dec_max))

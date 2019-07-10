@@ -164,7 +164,7 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
             parameters = {}
             parameters['intent'] = 'TARGET'
             parameters['spw'] = self.inputs.spw
-            parameters['pol'] = self.image.coordsys.stokes()[pol]#polmap[pol]
+            parameters['pol'] = self.image.stokes[pol] #polmap[pol]
             parameters['ant'] = self.inputs.antenna
             #parameters['type'] = 'sd_channel-averaged'
             parameters['type'] = 'sd_integrated_map'
@@ -303,7 +303,7 @@ class SDMomentMapDisplay(SDImageDisplay):
             parameters = {}
             parameters['intent'] = 'TARGET'
             parameters['spw'] = self.inputs.spw
-            parameters['pol'] = self.image.coordsys.stokes()[pol]#polmap[pol]
+            parameters['pol'] = self.image.stokes[pol] #polmap[pol]
             parameters['ant'] = self.inputs.antenna
             parameters['type'] = 'sd_moment_map'
             parameters['file'] = self.inputs.imagename
@@ -557,7 +557,7 @@ class SDSparseMapDisplay(SDImageDisplay):
                 parameters = {}
                 parameters['intent'] = 'TARGET'
                 parameters['spw'] = self.inputs.spw
-                parameters['pol'] = self.image.coordsys.stokes()[pol]#polmap[pol]
+                parameters['pol'] = self.image.stokes[pol] #polmap[pol]
                 parameters['ant'] = self.inputs.antenna
                 parameters['type'] = 'sd_sparse_map'
                 parameters['file'] = self.inputs.imagename
@@ -963,7 +963,7 @@ class SDChannelMapDisplay(SDImageDisplay):
                 parameters = {}
                 parameters['intent'] = 'TARGET'
                 parameters['spw'] = self.spw
-                parameters['pol'] = self.image.coordsys.stokes()[pol]#polmap[pol]
+                parameters['pol'] = self.image.stokes[pol] #polmap[pol]
                 parameters['ant'] = self.antenna
                 parameters['type'] = 'channel_map'
                 parameters['file'] = self.inputs.imagename
@@ -1174,11 +1174,10 @@ class SDSpectralMapDisplay(SDImageDisplay):
 
     def __get_strides(self):
         qa = casatools.quanta
-        increment = self.image.coordsys.increment()
-        units = self.image.coordsys.units()
+        units = self.image.units
         factors = []
         for idx in self.image.id_direction:
-            cell = qa.convert(qa.quantity(increment['numeric'][idx], units[idx]), 'deg')['value']
+            cell = qa.convert(qa.quantity(self.image.increments[idx], units[idx]), 'deg')['value']
             factors.append(int(numpy.round(abs(self.grid_size / cell))))
         return factors
 
@@ -1347,7 +1346,7 @@ class SDSpectralMapDisplay(SDImageDisplay):
                     parameters = {}
                     parameters['intent'] = 'TARGET'
                     parameters['spw'] = self.inputs.spw
-                    parameters['pol'] = self.image.coordsys.stokes()[pol]#polmap[pol]
+                    parameters['pol'] = self.image.stokes[pol] #polmap[pol]
                     parameters['ant'] = self.inputs.antenna
                     parameters['type'] = 'sd_spectral_map'
                     parameters['file'] = self.inputs.imagename
