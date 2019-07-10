@@ -125,6 +125,7 @@ class CleanSummary(object):
                         stats = image.statistics(robust=True)
                         image_median = stats.get('median')[0]
                         image_mad = stats.get('medabsdevmed')[0]
+                        image_min = stats.get('min')[0]
                         image_max = stats.get('max')[0]
 
                     if os.path.exists(iteration.get('cleanmask', '')):
@@ -145,6 +146,11 @@ class CleanSummary(object):
                             'vmin': image_median - image_mad,
                             'vmax': 10 * image_sigma
                         }
+                        # in case min >= max, set min=image_min and max=image_max
+                        if extra_args['vmin'] >= extra_args['vmax']:
+                            extra_args['vmin'] = image_min
+                            extra_args['vmax'] = image_max
+
                         self.context.peak_snr = image_max / image_sigma
                     else:
                         LOG.info('No cleanmask available to exclude from RMS calculation.')
