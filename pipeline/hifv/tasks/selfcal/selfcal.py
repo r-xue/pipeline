@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 import os
 
+import pipeline.hif.heuristics.findrefant as findrefant
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
@@ -27,16 +28,18 @@ class SelfcalResults(basetask.Results):
 
 
 class SelfcalInputs(vdp.StandardInputs):
-    refant = vdp.VisDependentProperty(default='0')
+    refantignore = vdp.VisDependentProperty(default='')
     combine = vdp.VisDependentProperty(default='spw,field')
     selfcalmode = vdp.VisDependentProperty(default='VLASS')
+    refantmode = 'strict'
 
-    def __init__(self, context, vis=None, refant=None, combine=None, selfcalmode=None):
+    def __init__(self, context, vis=None, refantignore=None, combine=None, selfcalmode=None, refantmode=None):
         self.context = context
         self.vis = vis
-        self.refant = refant
+        self.refantignore = refantignore
         self.combine = combine
         self.selfcalmode = selfcalmode
+        self.refantmode = refantmode
 
 
 @task_registry.set_equivalent_casa_task('hifv_selfcal')
@@ -51,6 +54,15 @@ class Selfcal(basetask.StandardTaskTemplate):
             stage_number = self.inputs.context.results[-1].read()[0].stage_number + 1
         except Exception as e:
             stage_number = self.inputs.context.results[-1].read().stage_number + 1
+
+        context = self.inputs.context
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        refantfield = context.evla['msinfo'][m.name].calibrator_field_select_string
+        refantobj = findrefant.RefAntHeuristics(vis=self.inputs.vis, field=refantfield,
+                                                geometry=True, flagging=True, intent='',
+                                                spw='', refantignore=self.inputs.refantignore)
+
+        self.RefAntOutput = refantobj.calculate()
 
         tableprefix = os.path.basename(self.inputs.vis) + '.' + 'hifv_selfcal.s'
 
@@ -76,8 +88,8 @@ class Selfcal(basetask.StandardTaskTemplate):
                           'spw': spws,
                           'solint': 'inf',
                           'combine': self.inputs.combine,
-                          'refant': self.inputs.refant,
-                          'refantmode': 'strict',
+                          'refant': ','.join(self.RefAntOutput),
+                          'refantmode': self.inputs.refantmode,
                           'minblperant': 4,
                           'minsnr': 1.0,
                           'gaintype': 'G',

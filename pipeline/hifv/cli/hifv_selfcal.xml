@@ -35,9 +35,9 @@
 	<value>True</value>
     </param>
 
-    <param type="string" name="refant">
-	<description>String identifier of refant to use</description>
-	<value>0</value>
+    <param type="string" name="refantignore">
+	<description>String list of antennas to ignore</description>
+	<value></value>
     </param>
 
     <param type="string" name="combine">
@@ -48,6 +48,11 @@
     <param type="string" name="selfcalmode">
 	<description>Heuristics mode selection</description>
 	<value>VLASS</value>
+    </param>
+
+    <param type="string" name="refantmode">
+	<description>Reference antenna mode</description>
+	<value>strict</value>
     </param>
 
     <constraints>
@@ -92,7 +97,7 @@ vis -- List of visibility  data files. These may be ASDMs, tar files of ASDMs,
    default: []
    example: vis=['X227.ms', 'asdms.tar.gz']
 
-refant -- reference antenna to use
+refantignore -- string list of antennas to ignore
 
 combine --    combine: Data axes which to combine for solve
                             Default: 'scan' (solutions will break at obs,
@@ -107,6 +112,8 @@ combine --    combine: Data axes which to combine for solve
                           Default Value for pipeline task: spw,field
 
 selfcalmode -- project or survey based heuristics decision.  Default value:  VLASS
+
+refantmode -- Reference antenna mode.  Default for the pipeline task:  strict
 
 pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline
    determines the values of all context defined pipeline inputs
