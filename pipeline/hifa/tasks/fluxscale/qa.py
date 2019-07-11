@@ -574,7 +574,8 @@ CASA_DATA_TYPES = {
     'int': numpy.int32,
     'boolean': numpy.bool,
     'float': numpy.float64,
-    'double': numpy.float64
+    'double': numpy.float64,
+    'complex': numpy.complex128
 }
 
 
