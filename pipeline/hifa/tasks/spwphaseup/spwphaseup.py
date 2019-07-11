@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+import numpy
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -89,6 +90,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # default one to one spw mapping.
         LOG.info("The spw mapping mode for {} is {}".format(inputs.ms.basename, inputs.hm_spwmapmode))
 
+        low_combined_phasesnr_spws = []
         if inputs.hm_spwmapmode == 'auto':
 
             nosnrs, spwids, snrs, goodsnrs = self._do_snrtest()
@@ -117,6 +119,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                              ''.format([spwid for spwid, goodsnr in zip(spwids, goodsnrs) if goodsnr is None]))
                 combinespwmap = combine_spwmap(scispws)
                 phaseupspwmap = []
+                low_combined_phasesnr_spws = self._do_combined_snr_test(spwids, snrs, combinespwmap)
                 LOG.info('    Using combined spw map {} for {}'.format(combinespwmap, inputs.ms.basename))
 
             else:
@@ -131,6 +134,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                              ''.format(inputs.ms.basename))
                     phaseupspemap = []
                     combinespwmap = combine_spwmap(scispws)
+                    low_combined_phasesnr_spws = self._do_combined_snr_test(spwids, snrs, combinespwmap)
                     LOG.info('    Using spw map {} for {}'.format(combinespwmap, inputs.ms.basename))
                 else:
                     combinespwmap = []
@@ -138,6 +142,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         elif inputs.hm_spwmapmode == 'combine':
             combinespwmap = combine_spwmap(scispws)
+            low_combined_phasesnr_spws = scispws
             phaseupspwmap = []
             LOG.info('    Using combined spw map {} for {}'.format(combinespwmap, inputs.ms.basename))
 
@@ -158,7 +163,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         # Create the results object.
         result = SpwPhaseupResults(vis=inputs.vis, phaseup_result=phaseupresult, combine_spwmap=combinespwmap,
-                                   phaseup_spwmap=phaseupspwmap)
+                                   phaseup_spwmap=phaseupspwmap, low_combined_phasesnr_spws=low_combined_phasesnr_spws)
 
         return result
 
@@ -220,6 +225,59 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         return nosnr, spwids, snrs, goodsnrs
 
+    def _do_combined_snr_test(self, spwlist, perspwsnr, spwmap):
+        """
+        Calculate combined SNRs from per SpW SNR and
+        return a list of SpW IDs that does not meet phasesnr threshold.
+        Grouping of SpWs is specified by an input parameter, spwmap.
+        For each grouped SpWs, combined SNR is calculated by
+            combined SNR = numpy.linalg.nrom(list of per SpW SNR in a group) 
+        
+        Prameters:
+            spwlist : A list of spw IDs to calculate combined SNR
+            perspwsnr : A list of SNRs of each SpW
+            spwmap : A spectral window map that specifies which SpW IDs
+                    should be combined together. 
+        """
+        LOG.info("Start combined SNR test")
+        LOG.debug('- spwlist to analyze: %s' % spwlist)
+        LOG.debug('- per SpW SNR: %s' % perspwsnr)
+        LOG.debug('- spwmap = %s' % spwmap)
+        nosnr = True
+        combined_spwids = []
+        combined_snrs = []
+        combined_goodsnrs = [False for _ in spwlist]
+        low_snr_spwids = []
+        # Filter reference SpW IDs of each group.
+        unique_mappedspw = set([spwmap[spwid] for spwid in spwlist])
+        for mappedspwid in unique_mappedspw:
+            snrlist = []
+            combined_idx = []
+            # only consider SpW IDs in spwlist for combination
+            for i in xrange(len(spwlist)):
+                spwid = spwlist[i]
+                if spwmap[spwid] == mappedspwid:
+                    snr = perspwsnr[i]
+                    if snr is None:
+                        LOG.error('SNR not calculated for spw={}. Cannnot calculate combined SNR'.format(spwid))
+                        return False, [], [], []
+                    snrlist.append(perspwsnr[i])
+                    combined_idx.append(i)
+            # calculate combined SNR from per spw SNR
+            combined_snr = numpy.linalg.norm(snrlist)
+            LOG.info('Reference SpW = %s (Mapped SpWs = %s) : Combined SNR = %f' % (mappedspwid, str([spwlist[j] for j in combined_idx]), combined_snr))
+            
+            if combined_snr < self.inputs.phasesnr:
+                low_snr_spwids.extend([spwlist[i] for i in combined_idx])
+            else:
+                nosnr = False
+                for spwid in combined_idx:
+                    combined_goodsnrs[i] = True
+            combined_spwids.append(mappedspwid)
+            combined_snrs.append(combined_snr)
+        LOG.info('SpW IDs that has low combined SNR (threshold: %f) = %s' % (self.inputs.phasesnr, low_snr_spwids))
+        return low_snr_spwids
+
     def _do_phaseup(self):
 
         # Simplify inputs.
@@ -259,7 +317,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
 
 class SpwPhaseupResults(basetask.Results):
-    def __init__(self, vis=None, phaseup_result=None, combine_spwmap=[], phaseup_spwmap=[]):
+    def __init__(self, vis=None, phaseup_result=None, combine_spwmap=[],
+                 phaseup_spwmap=[], low_combined_phasesnr_spws =[]):
         """
         Initialise the phaseup spw mapping results object.
         """
@@ -268,6 +327,7 @@ class SpwPhaseupResults(basetask.Results):
         self.phaseup_result = phaseup_result
         self.combine_spwmap = combine_spwmap
         self.phaseup_spwmap = phaseup_spwmap
+        self.low_combined_phasesnr_spws = low_combined_phasesnr_spws
 
     def merge_with_context(self, context):
 
@@ -287,6 +347,7 @@ class SpwPhaseupResults(basetask.Results):
         if ms:
             ms.phaseup_spwmap = self.phaseup_spwmap
             ms.combine_spwmap = self.combine_spwmap
+            ms.low_combined_phasesnr_spws = self.low_combined_phasesnr_spws
 
     def __repr__(self):
         if self.vis is None or not self.phaseup_result:
