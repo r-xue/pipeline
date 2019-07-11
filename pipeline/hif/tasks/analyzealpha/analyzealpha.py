@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+import glob
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -10,9 +11,11 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class AnalyzealphaResults(basetask.Results):
-    def __init__(self):
+    def __init__(self, max_location=None, alpha_and_error=None):
         super(AnalyzealphaResults, self).__init__()
         self.pipeline_casa_task = 'Analyzealpha'
+        self.max_location = max_location
+        self.alpha_and_error = alpha_and_error
 
     def merge_with_context(self, context):
         """
@@ -43,50 +46,71 @@ class Analyzealpha(basetask.StandardTaskTemplate):
     def prepare(self):
         inputs = self.inputs
 
-        LOG.info("This Analyzealpha class is running.")
-        #
-        # The following is example code to extract the value from the .alpha and .alpha.error
-        # images (for wideband continuum MTMFS with nterms>1)
-        #
-        # Run imstat on the restored tt0 I subimage
-        with casatools.ImageReader(inputs.image) as image:
-            stats = image.statistics(robust=False)
+        LOG.info("Analyzealpha is running.")
 
-        # Extract the position of the maximum from imstat return dictionary
-        maxposx = stats['maxpos'][0]
-        maxposy = stats['maxpos'][1]
-        maxposf = stats['maxposf']
-        statstring = '|* Restored max at %s (%i,%i)' % (maxposf, maxposx, maxposy)
-        print(statstring)
+        imlist = self.inputs.context.subimlist.get_imlist()
 
-        # Set up a box string for that max pixel
-        mybox = '%i,%i,%i,%i' % (maxposx, maxposy, maxposx, maxposy)
+        subimagefile = inputs.image
+        alphafile = inputs.alphafile
+        alphaerrorfile = inputs.alphaerrorfile
 
-        # Extract the value of that pixel from the alpha subimage
-        try:
-            alpha_val = self._do_imval(imagename=inputs.alphafile, box=mybox)
-        except:
-            alpha_val = -999.
-        alpha_at_max = alpha_val['data'][0]
-        alpha_string = '{.3f}'.format(alpha_at_max)
+        # there should only be one subimage used in this task.  what if there are others in the directory?
+        for imageitem in imlist:
 
-        # Extract the value of that pixel from the alphaerror subimage
-        try:
-            alphaerror_val = self._do_imval(imagename=inputs.alphaerrorfile, box=mybox)
-        except:
-            alphaerror_val = -999.
-        alphaerror_at_max = alphaerror_val['data'][0]
-        alphaerror_string = '{.3f}'.format(alphaerror_at_max)
+            if not subimagefile:
+                if imageitem['multiterm']:
+                    subimagefile = glob.glob(imageitem['imagename'].replace('.subim', '.pbcor.tt0.subim'))[0]
+                else:
+                    subimagefile = glob.glob(imageitem['imagename'].replace('.subim', '.pbcor.subim'))[0]
 
-        statstring = '|* Alpha at restored max %s +/- %s' % (alpha_string, alphaerror_string)
-        LOG.info(statstring)
-        return AnalyzealphaResults()
+            if not alphafile:
+                alphafile = glob.glob(imlist[0]['imagename'].replace('.image.subim', '.alpha'))[0]
+
+            if not alphaerrorfile:
+                alphaerrorfile = glob.glob(imlist[0]['imagename'].replace('.image.subim', '.alpha.error'))[0]
+
+            #
+            # The following is example code to extract the value from the .alpha and .alpha.error
+            # images (for wideband continuum MTMFS with nterms>1)
+            #
+            # Run imstat on the restored tt0 I subimage
+            with casatools.ImageReader(subimagefile) as image:
+                stats = image.statistics(robust=False)
+
+            # Extract the position of the maximum from imstat return dictionary
+            maxposx = stats['maxpos'][0]
+            maxposy = stats['maxpos'][1]
+            maxposf = stats['maxposf']
+            max_location = '%s  (%i, %i)' % (maxposf, maxposx, maxposy)
+            LOG.info('|* Restored max at {}'.format(max_location))
+
+            # Set up a box string for that max pixel
+            mybox = '%i,%i,%i,%i' % (maxposx, maxposy, maxposx, maxposy)
+
+            # Extract the value of that pixel from the alpha subimage
+            try:
+                task = casa_tasks.imval(imagename=alphafile, box=mybox)
+                alpha_val = self._executor.execute(task)
+            except:
+                alpha_val = -999.
+
+            alpha_at_max = alpha_val['data'][0]
+            alpha_string = '{:.3f}'.format(alpha_at_max)
+
+            # Extract the value of that pixel from the alphaerror subimage
+            try:
+                task = casa_tasks.imval(imagename=alphaerrorfile, box=mybox)
+                alphaerror_val = self._executor.execute(task)
+            except:
+                alphaerror_val = -999.
+            alphaerror_at_max = alphaerror_val['data'][0]
+            alphaerror_string = '{:.3f}'.format(alphaerror_at_max)
+
+            alpha_and_error = '%s +/- %s' % (alpha_string, alphaerror_string)
+            LOG.info('|* Alpha at restored max {}'.format(alpha_and_error))
+
+        return AnalyzealphaResults(max_location=max_location, alpha_and_error=alpha_and_error)
 
     def analyse(self, results):
         return results
-
-    def _do_imval(self, **kwargs):
-        task = casa_tasks.imval(kwargs)
-
-        return self._executor.execute(task)
 
