@@ -24,7 +24,7 @@ def get_plot(plots, prefix, field, spw, i, colname):
 
 
 <div class="page-header">
-    <h2>Clean results for ${field} SpW ${spw} ${prefix}
+    <h2>Clean results for ${field} SpW ${spw}
         <div class="btn-toolbar pull-right" role="toolbar">
             % if qa_previous or qa_next:
             <div class="btn-group" role="group">
