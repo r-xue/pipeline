@@ -45,11 +45,6 @@ class UVcontSub(applycal.Applycal):
                 result.mitigation_error = True
                 return result
 
-        remove_vi1cal = False
-        if 'VI1CAL' not in os.environ:
-            os.environ['VI1CAL'] = '1'
-            remove_vi1cal = True
-
         try:
             # Set cluster to serial mode for this applycal
             if infrastructure.mpihelpers.is_mpi_ready():
@@ -61,9 +56,6 @@ class UVcontSub(applycal.Applycal):
             # Reset cluster to parallel mode
             if infrastructure.mpihelpers.is_mpi_ready():
                 ParallelTaskHelper.bypassParallelProcessing(0)
-
-            if remove_vi1cal:
-                del os.environ['VI1CAL']
 
         return UVcontSubResults()
 
