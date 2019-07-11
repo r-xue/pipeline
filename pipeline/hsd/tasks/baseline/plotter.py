@@ -534,7 +534,8 @@ def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table, org_
             increment_ra = (beam_size / dec_corr) * xgrid_per_panel
     if num_dec > 1:
         LOG.trace('num_dec > 1 ({})', num_dec)
-        increment_dec = (plot_table[num_plane * num_ra][3] - plot_table[0][3]) * ygrid_per_panel
+        # increment_dec = (plot_table[num_plane * num_ra][3] - plot_table[0][3]) * ygrid_per_panel
+        increment_dec = (plot_table[num_plane * num_grid_ra][3] - plot_table[0][3]) * ygrid_per_panel
     else:
         # assuming square grid, increment for dec is estimated from the one for ra
         LOG.trace('num_dec is 1')
