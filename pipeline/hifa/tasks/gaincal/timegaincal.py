@@ -100,7 +100,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
 
         # Direct the initial calibrator phase solution for application to the AMPLTIUDE and BANDPASS calibrators
         calphaseresult_calapp = cal_phase_result.final[0]
-        calphase_calapp = copy_calapplication(calphaseresult_calapp, intent='AMPLITUDE,BANDPASS')
+        calphase_calapp = callibrary.copy_calapplication(calphaseresult_calapp, intent='AMPLITUDE,BANDPASS')
         result.final.append(calphase_calapp)
         result.pool.append(calphase_calapp)
 
@@ -153,8 +153,8 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         overrides = get_phaseup_overrides(inputs.ms)
 
         # Spec for gainfield application from CAS-12214:
-        cal_calapp = copy_calapplication(result_calapp, intent='PHASE', gainfield='nearest', **overrides)
-        target_calapp = copy_calapplication(result_calapp, intent='TARGET,CHECK', gainfield='', **overrides)
+        cal_calapp = callibrary.copy_calapplication(result_calapp, intent='PHASE', gainfield='nearest', **overrides)
+        target_calapp = callibrary.copy_calapplication(result_calapp, intent='TARGET,CHECK', gainfield='', **overrides)
 
         return cal_calapp, target_calapp
 
@@ -182,7 +182,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
 
         result_calapp = result.final[0]
         overrides = get_phaseup_overrides(inputs.ms)
-        calapp = copy_calapplication(result_calapp, **overrides)
+        calapp = callibrary.copy_calapplication(result_calapp, **overrides)
 
         result.final = [calapp]
         result.pool = [calapp]
@@ -286,9 +286,9 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         #    case where the interpolated solution between two complex gain
         #    calibrators needs to be used.
         result_calapp = result.final[0]
-        cal_calapp = copy_calapplication(result_calapp, intent='AMPLITUDE,BANDPASS,PHASE', gainfield='nearest',
-                                         interp='nearest,linear')
-        target_calapp = copy_calapplication(result_calapp, intent='TARGET,CHECK', gainfield='')
+        cal_calapp = callibrary.copy_calapplication(result_calapp, intent='AMPLITUDE,BANDPASS,PHASE',
+                                                    gainfield='nearest', interp='nearest,linear')
+        target_calapp = callibrary.copy_calapplication(result_calapp, intent='TARGET,CHECK', gainfield='')
 
         return [cal_calapp, target_calapp]
 
@@ -314,36 +314,3 @@ def get_phaseup_overrides(ms):
         overrides['interp'] = 'linear,linear'
         overrides['spwmap'] = ms.phaseup_spwmap
     return overrides
-
-
-def modify_last_calapp(l, **overrides):
-    last = l.calfrom[-1]
-    return copy_calfrom(last, **overrides)
-
-
-def copy_calfrom(calfrom, **overrides):
-    new_kwargs = dict(gaintable=calfrom.gaintable, gainfield=calfrom.gainfield, interp=calfrom.interp,
-                      spwmap=list(calfrom.spwmap), caltype=calfrom.caltype, calwt=calfrom.calwt)
-    new_kwargs.update(overrides)
-    return callibrary.CalFrom(**new_kwargs)
-
-
-def copy_calto(calto, **overrides):
-    new_kwargs = dict(vis=calto.vis, field=calto.field, spw=calto.spw, antenna=calto.antenna, intent=calto.intent)
-    new_kwargs.update(overrides)
-    return callibrary.CalTo(**new_kwargs)
-
-
-def copy_calapplication(calapp, origin=None, **overrides):
-    if origin is None:
-        origin = calapp.origin
-
-    calto_kw = ['vis', 'field', 'spw', 'antenna', 'intent']
-    calto_overrides = {k: v for k, v in overrides.iteritems() if k in calto_kw}
-    calto = copy_calto(calapp.calto, **calto_overrides)
-
-    calfrom_kw = ['gaintable', 'gainfield', 'interp', 'spwmap', 'caltype', 'calwt']
-    calfrom_overrides = {k: v for k, v in overrides.iteritems() if k in calfrom_kw}
-    calfrom = [copy_calfrom(calfrom, **calfrom_overrides) for calfrom in calapp.calfrom]
-
-    return callibrary.CalApplication(calto, calfrom, origin=origin)

@@ -1,9 +1,10 @@
 import pipeline.infrastructure.api as api
 
+
 class IntentFieldnames(api.Heuristic):
-    def calculate(self, ms, intent):
-        # get all fields that have the required intent
-        fields = ms.get_fields(intent=intent)
+    def calculate(self, ms, intent, spw=None):
+        scans = ms.get_scans(scan_intent=intent, spw=spw)
+        fields = {fld for scan in scans for fld in scan.fields}
 
         identifiers = []
 

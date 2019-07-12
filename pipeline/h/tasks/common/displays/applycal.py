@@ -222,11 +222,10 @@ class SpwComposite(common.LeafComposite):
 
         children = []
         for spw in ms.get_spectral_windows(calto.spw):
-            # only create plots for spws with the desired intent
-            if intent != '':
-                wanted = set(intent.split(','))
-                if spw.intents.isdisjoint(wanted):
-                    continue
+            # only create plots for scans with data
+            scans = ms.get_scans(spw=spw.id, field=field, scan_intent=intent)
+            if not scans:
+                continue
 
             kwargs_copy = dict(kwargs)
             kwargs_copy['avgchannel'] = kwargs.get('avgchannel', str(spw.num_channels))

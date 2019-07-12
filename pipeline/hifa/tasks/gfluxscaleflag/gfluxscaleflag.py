@@ -6,6 +6,7 @@ Created on 01 Jun 2017
 from __future__ import absolute_import
 
 import functools
+import os.path
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -16,6 +17,7 @@ from pipeline.h.tasks.flagging.flagdatasetter import FlagdataSetter
 from pipeline.hif.tasks import applycal
 from pipeline.hif.tasks import correctedampflag
 from pipeline.hif.tasks import gaincal
+from pipeline.hifa.heuristics.phasespwmap import get_spspec_to_spwid_map
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 from .resultobjects import GfluxscaleflagResults
@@ -318,120 +320,117 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
                     calmode=None, combine=None, solint=None, antenna=None,
                     uvrange='', minsnr=None, refant=None, minblperant=None,
                     spwmap=None, interp=None, append=None, merge=True):
-
         inputs = self.inputs
+        ms = inputs.ms
 
         # Get the science spws
-        sci_spwids = [spw.id for spw in inputs.ms.get_spectral_windows(science_windows_only=True)]
+        request_spws = ms.get_spectral_windows(task_arg=inputs.spw)
+        targeted_scans = ms.get_scans(scan_intent=intent, spw=inputs.spw)
 
-        fields_with_intent = inputs.ms.get_fields(intent=intent)
+        # boil it down to just the valid spws for these fields and request
+        scan_spws = {spw for scan in targeted_scans for spw in scan.spws if spw in request_spws}
 
-        # boil it down to just the valid spws for these fields
-        field_spw_ids = {spw.id for fld in fields_with_intent for spw in fld.valid_spws}
-        spw_ids = ','.join([str(spw_id) for spw_id in sorted(field_spw_ids) if spw_id in sci_spwids])
+        for spectral_spec, tuning_spw_ids in get_spspec_to_spwid_map(scan_spws).iteritems():
+            tuning_spw_str = ','.join([str(i) for i in sorted(tuning_spw_ids)])
+            LOG.info('Processing spectral spec {}, spws {}'.format(spectral_spec, tuning_spw_str))
 
-        # of the fields that we are about to process, does any field have
-        # multiple intents?
-        mixed_intents = False
-        singular_intents = frozenset(intent.split(','))
-        if len(singular_intents) > 1:
-            for field in fields_with_intent:
-                intent_intersection = field.intents.intersection(singular_intents)
-                if len(intent_intersection) > 1:
-                    mixed_intents = True
-                    break
+            scans_with_data = ms.get_scans(spw=tuning_spw_str, scan_intent=intent)
+            if not scans_with_data:
+                LOG.info('No data to process for spectral spec {}. Continuing...'.format(spectral_spec))
+                continue
 
-        if mixed_intents and solint == 'inf':
-            # multiple items, one for each intent. Each intent will result
-            # in a separate job.
-            # Make sure a field with the intent exists (PIPE-367)
-            valid_intents = [i for i in singular_intents if len(inputs.ms.get_fields(intent=i))>0 ] 
-            task_intents = valid_intents
-        else:
-            # one item, and hence one job, with 'PHASE,BANDPASS,...'
-            task_intents = [','.join(singular_intents)]
+            # of the fields that we are about to process, does any field have
+            # multiple intents?
+            mixed_intents = False
+            fields_in_scans = {fld for scan in scans_with_data for fld in scan.fields}
+            singular_intents = frozenset(intent.split(','))
+            if len(singular_intents) > 1:
+                for field in fields_in_scans:
+                    intents_to_scans = {si: ms.get_scans(scan_intent=si, field=field.id, spw=tuning_spw_str)
+                                        for si in singular_intents}
+                    valid_intents = [k for k, v in intents_to_scans.iteritems() if v]
+                    if len(valid_intents) > 1:
+                        mixed_intents = True
+                        break
 
-        for intent in task_intents:
-            # Initialize gaincal inputs.
-            task_inputs = gaincal.GTypeGaincal.Inputs(
-                inputs.context,
-                vis=inputs.vis,
-                caltable=caltable,
-                intent=intent,
-                spw=spw_ids,
-                solint=solint,
-                gaintype=gaintype,
-                calmode=calmode,
-                minsnr=minsnr,
-                combine=combine,
-                refant=refant,
-                antenna=antenna,
-                uvrange=uvrange,
-                minblperant=minblperant,
-                solnorm=False,
-                append=append)
+            if mixed_intents and solint == 'inf':
+                # multiple items, one for each intent. Each intent will result
+                # in a separate job.
+                # Make sure data for the intent exists (PIPE-367)
+                intents_to_scans = {si: [scan for scan in scans_with_data if si in scan.intents]
+                                    for si in singular_intents}
+                valid_intents = [k for k, v in intents_to_scans.iteritems() if v]
+                task_intents = valid_intents
 
-            # if we need to generate multiple caltables, make the caltable
-            # names unique by inserting the intent to prevent them overwriting
-            # each other
-            if len(task_intents) > 1:
-                import os
-                root, ext = os.path.splitext(task_inputs.caltable)
-                task_inputs.caltable = '{!s}.{!s}{!s}'.format(root, intent, ext)
-
-            # Modify output table filename to append "prelim".
-            if task_inputs.caltable.endswith('.tbl'):
-                task_inputs.caltable = task_inputs.caltable[:-4] + '.prelim.tbl'
             else:
-                task_inputs.caltable += '.prelim'
+                # one item, and hence one job, with 'PHASE,BANDPASS,...'
+                task_intents = [','.join(singular_intents)]
 
-            # Initialize and execute gaincal task.
-            task = gaincal.GTypeGaincal(task_inputs)
-            result = self._executor.execute(task)
+            for intent in task_intents:
+                # Initialize gaincal inputs.
+                task_inputs = gaincal.GTypeGaincal.Inputs(
+                    inputs.context,
+                    vis=inputs.vis,
+                    caltable=caltable,
+                    intent=intent,
+                    spw=tuning_spw_str,
+                    solint=solint,
+                    gaintype=gaintype,
+                    calmode=calmode,
+                    minsnr=minsnr,
+                    combine=combine,
+                    refant=refant,
+                    antenna=antenna,
+                    uvrange=uvrange,
+                    minblperant=minblperant,
+                    solnorm=False,
+                    append=append)
 
-            # If requested to merge the result...
-            if merge:
-                # Adjust the interp if provided.
-                if interp:
-                    self._mod_last_interp(result.pool[0], interp)
-                    self._mod_last_interp(result.final[0], interp)
+                # if we need to generate multiple caltables, make the caltable
+                # names unique by inserting the intent to prevent them overwriting
+                # each other
+                if len(task_intents) > 1:
+                    root, ext = os.path.splitext(task_inputs.caltable)
+                    task_inputs.caltable = '{!s}.{!s}{!s}'.format(root, intent, ext)
 
-                # Adjust the spw map if provided.
-                if spwmap:
-                    self._mod_last_spwmap(result.pool[0], spwmap)
-                    self._mod_last_spwmap(result.final[0], spwmap)
+                # Modify output table filename to append "prelim".
+                if task_inputs.caltable.endswith('.tbl'):
+                    task_inputs.caltable = task_inputs.caltable[:-4] + '.prelim.tbl'
+                else:
+                    task_inputs.caltable += '.prelim'
+
+                # Initialize and execute gaincal task.
+                task = gaincal.GTypeGaincal(task_inputs)
+                result = self._executor.execute(task)
 
                 # modify the result so that this caltable is only applied to
                 # the intent from which the calibration was derived
-                result.pool[0].calto.intent = intent
-                result.final[0].calto.intent = intent
+                calapp_overrides = dict(intent=intent)
 
-                # Merge result to the local context
-                result.accept(inputs.context)
+                # Adjust the spw map if provided.
+                if spwmap:
+                    calapp_overrides['spwmap'] = spwmap
 
-    def _mod_last_interp(self, l, interp):
-        l.calfrom[-1] = self._copy_with_interp(l.calfrom[-1], interp)
+                # https://open-jira.nrao.edu/browse/PIPE-367?focusedCommentId=141097&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-141097
+                #
+                # '... then to apply this table you need the same spw map that
+                # is printed in the spwphaseup stage'
+                if combine == 'spw':
+                    calapp_overrides['spwmap'] = ms.combine_spwmap
 
-    @staticmethod
-    def _copy_with_interp(old_calfrom, interp):
-        return callibrary.CalFrom(gaintable=old_calfrom.gaintable,
-                                  gainfield=old_calfrom.gainfield,
-                                  interp=interp,
-                                  spwmap=old_calfrom.spwmap,
-                                  caltype=old_calfrom.caltype,
-                                  calwt=old_calfrom.calwt)
+                # Adjust the interp if provided.
+                if interp:
+                    calapp_overrides['interp'] = interp
 
-    def _mod_last_spwmap(self, l, spwmap):
-        l.calfrom[-1] = self._copy_with_spwmap(l.calfrom[-1], spwmap)
+                calapp = result.final[0]
+                modified = callibrary.copy_calapplication(calapp, **calapp_overrides)
+                result.pool[0] = modified
+                result.final[0] = modified
 
-    @staticmethod
-    def _copy_with_spwmap(old_calfrom, spwmap):
-        return callibrary.CalFrom(gaintable=old_calfrom.gaintable,
-                                  gainfield=old_calfrom.gainfield,
-                                  interp=old_calfrom.interp,
-                                  spwmap=spwmap,
-                                  caltype=old_calfrom.caltype,
-                                  calwt=old_calfrom.calwt)
+                # If requested, merge the result...
+                if merge:
+                    # Merge result to the local context
+                    result.accept(inputs.context)
 
 
 def create_plots(inputs, context, intents, suffix=''):
@@ -448,6 +447,8 @@ def create_plots(inputs, context, intents, suffix=''):
     # Exit early if weblog generation has been disabled
     if basetask.DISABLE_WEBLOG:
         return [], []
+
+    ms = inputs.ms
 
     calto = callibrary.CalTo(vis=inputs.vis, spw=inputs.spw, field=inputs.field)
     output_dir = context.output_dir

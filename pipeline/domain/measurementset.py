@@ -88,7 +88,7 @@ class MeasurementSet(object):
         else:
             return None
 
-    def get_scans(self, scan_id=None, scan_intent=None, field=None):
+    def get_scans(self, scan_id=None, scan_intent=None, field=None, spw=None):
         pool = self.scans
 
         if scan_id is not None:
@@ -109,6 +109,17 @@ class MeasurementSet(object):
         if field is not None:
             fields_with_name = frozenset(self.get_fields(task_arg=field))
             pool = [s for s in pool if not fields_with_name.isdisjoint(s.fields)]
+
+        if spw is not None:
+            if not isinstance(spw, collections.Sequence):
+                spw = (spw,)
+            if isinstance(spw, str):
+                if spw in ('', '*'):
+                    spw = ','.join(str(spw.id) for spw in self.spectral_windows)
+                spw = spw.split(',')
+            spw = {int(i) for i in spw}
+            pool = {scan for scan in pool for scan_spw in scan.spws if scan_spw.id in spw}
+            pool = list(pool)
 
         return pool
 

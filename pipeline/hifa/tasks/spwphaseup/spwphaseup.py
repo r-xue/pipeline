@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+
 import numpy
 
 import pipeline.infrastructure as infrastructure
@@ -7,6 +8,7 @@ import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hif.tasks.gaincal import gtypegaincal
 from pipeline.hifa.heuristics.phasespwmap import combine_spwmap
+from pipeline.hifa.heuristics.phasespwmap import get_spspec_to_spwid_map
 from pipeline.hifa.heuristics.phasespwmap import simple_n2wspwmap
 from pipeline.hifa.heuristics.phasespwmap import snr_n2wspwmap
 from pipeline.hifa.tasks.gaincalsnr import gaincalsnr
@@ -77,7 +79,6 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
     Inputs = SpwPhaseupInputs
 
     def prepare(self, **parameters):
-
         # Simplify the inputs
         inputs = self.inputs
 
@@ -159,7 +160,6 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # Compute the phaseup table and set calwt to False
         LOG.info('Computing spw phaseup table for {} is {}'.format(inputs.ms.basename, inputs.hm_spwmapmode))
         phaseupresult = self._do_phaseup()
-        self._mod_last_calwt(phaseupresult.pool[0], False)
 
         # Create the results object.
         result = SpwPhaseupResults(vis=inputs.vis, phaseup_result=phaseupresult, combine_spwmap=combinespwmap,
@@ -197,7 +197,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
           'phasesnr': inputs.phasesnr,
           'bwedgefrac': inputs.bwedgefrac,
           'hm_nantennas': inputs.hm_nantennas,
-          'maxfracflagged': inputs.maxfracflagged
+          'maxfracflagged': inputs.maxfracflagged,
+          'spw': inputs.spw
         }
         task_inputs = gaincalsnr.GaincalSnrInputs(inputs.context, **task_args)
         gaincalsnr_task = gaincalsnr.GaincalSnr(task_inputs)
@@ -231,13 +232,13 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         return a list of SpW IDs that does not meet phasesnr threshold.
         Grouping of SpWs is specified by an input parameter, spwmap.
         For each grouped SpWs, combined SNR is calculated by
-            combined SNR = numpy.linalg.nrom(list of per SpW SNR in a group) 
-        
+            combined SNR = numpy.linalg.nrom(list of per SpW SNR in a group)
+
         Prameters:
             spwlist : A list of spw IDs to calculate combined SNR
             perspwsnr : A list of SNRs of each SpW
             spwmap : A spectral window map that specifies which SpW IDs
-                    should be combined together. 
+                    should be combined together.
         """
         LOG.info("Start combined SNR test")
         LOG.debug('- spwlist to analyze: %s' % spwlist)
@@ -266,7 +267,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             # calculate combined SNR from per spw SNR
             combined_snr = numpy.linalg.norm(snrlist)
             LOG.info('Reference SpW = %s (Mapped SpWs = %s) : Combined SNR = %f' % (mappedspwid, str([spwlist[j] for j in combined_idx]), combined_snr))
-            
+
             if combined_snr < self.inputs.phasesnr:
                 low_snr_spwids.extend([spwlist[i] for i in combined_idx])
             else:
@@ -279,50 +280,70 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         return low_snr_spwids
 
     def _do_phaseup(self):
-
-        # Simplify inputs.
         inputs = self.inputs
+        ms = inputs.ms
 
-        task_args = {
-          'output_dir': inputs.output_dir,
-          'vis': inputs.vis,
-          'caltable': inputs.caltable,
-          'field': inputs.field,
-          'intent': inputs.intent,
-          'spw': inputs.spw,
-          'solint': 'inf',
-          'gaintype': 'G',
-          'calmode': 'p',
-          'minsnr': inputs.minsnr,
-          'combine': inputs.combine,
-          'refant': inputs.refant,
-          'minblperant': inputs.minblperant
-        }
-        task_inputs = gtypegaincal.GTypeGaincalInputs(inputs.context, **task_args)
-        phaseup_task = gtypegaincal.GTypeGaincal(task_inputs)
-        result = self._executor.execute(phaseup_task)
+        # Get the science spws
+        request_spws = ms.get_spectral_windows(task_arg=inputs.spw)
+        targeted_scans = ms.get_scans(scan_intent=inputs.intent, spw=inputs.spw)
 
-        return result
+        # boil it down to just the valid spws for these fields and request
+        scan_spws = {spw for scan in targeted_scans for spw in scan.spws if spw in request_spws}
 
-    def _mod_last_calwt(self, l, calwt):
-        l.calfrom[-1] = self._copy_with_calwt(l.calfrom[-1], calwt)
+        append = False
+        original_calapps = []
+        for spectral_spec, tuning_spw_ids in get_spspec_to_spwid_map(scan_spws).iteritems():
+            tuning_spw_str = ','.join([str(i) for i in sorted(tuning_spw_ids)])
+            LOG.info('Processing spectral spec {}, spws {}'.format(spectral_spec, tuning_spw_str))
 
-    def _copy_with_calwt(self, old_calfrom, calwt):
-        return callibrary.CalFrom(gaintable=old_calfrom.gaintable,
-                                  gainfield=old_calfrom.gainfield,
-                                  interp=old_calfrom.interp,
-                                  spwmap=list(old_calfrom.spwmap),
-                                  caltype=old_calfrom.caltype,
-                                  calwt=calwt)
+            scans_with_data = ms.get_scans(spw=tuning_spw_str, scan_intent=inputs.intent)
+            if not scans_with_data:
+                LOG.info('No data to process for spectral spec {}. Continuing...'.format(spectral_spec))
+                continue
+
+            task_args = {
+                'output_dir': inputs.output_dir,
+                'vis': inputs.vis,
+                'caltable': inputs.caltable,
+                'field': inputs.field,
+                'intent': inputs.intent,
+                'spw': tuning_spw_str,
+                'solint': 'inf',
+                'gaintype': 'G',
+                'calmode': 'p',
+                'minsnr': inputs.minsnr,
+                'combine': inputs.combine,
+                'refant': inputs.refant,
+                'minblperant': inputs.minblperant,
+                'append': append
+            }
+            task_inputs = gtypegaincal.GTypeGaincalInputs(inputs.context, **task_args)
+            phaseup_task = gtypegaincal.GTypeGaincal(task_inputs)
+            tuning_result = self._executor.execute(phaseup_task)
+            original_calapps.extend(tuning_result.pool)
+            append = True
+
+        processed_calapps = [callibrary.copy_calapplication(c, calwt=False) for c in original_calapps]
+        tuning_result.pool = processed_calapps
+        tuning_result.final = processed_calapps
+
+        return tuning_result
 
 
 class SpwPhaseupResults(basetask.Results):
-    def __init__(self, vis=None, phaseup_result=None, combine_spwmap=[],
-                 phaseup_spwmap=[], low_combined_phasesnr_spws =[]):
+    def __init__(self, vis=None, phaseup_result=None, combine_spwmap=None, phaseup_spwmap=None,
+                 low_combined_phasesnr_spws=None):
         """
         Initialise the phaseup spw mapping results object.
         """
         super(SpwPhaseupResults, self).__init__()
+        if combine_spwmap is None:
+            combine_spwmap = []
+        if phaseup_spwmap is None:
+            phaseup_spwmap = []
+        if low_combined_phasesnr_spws is None:
+            low_combined_phasesnr_spws = []
+
         self.vis = vis
         self.phaseup_result = phaseup_result
         self.combine_spwmap = combine_spwmap
@@ -330,7 +351,6 @@ class SpwPhaseupResults(basetask.Results):
         self.low_combined_phasesnr_spws = low_combined_phasesnr_spws
 
     def merge_with_context(self, context):
-
         if self.vis is None:
             LOG.error(' No results to merge ')
             return
@@ -343,7 +363,7 @@ class SpwPhaseupResults(basetask.Results):
         self.phaseup_result.merge_with_context(context)
 
         # Merge the phaseup spwmap
-        ms = context.observing_run.get_ms( name = self.vis)
+        ms = context.observing_run.get_ms(name=self.vis)
         if ms:
             ms.phaseup_spwmap = self.phaseup_spwmap
             ms.combine_spwmap = self.combine_spwmap

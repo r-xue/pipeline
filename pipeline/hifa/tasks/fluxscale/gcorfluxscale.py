@@ -371,16 +371,22 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
 
         # Merge
         if merge:
+            overrides = {}
+
             # Adjust the spwmap for the combine case
             if inputs.ms.combine_spwmap:
                 if phase_interp:
-                    self._mod_last_interp(result.pool[0], phase_interp)
-                    self._mod_last_interp(result.final[0], phase_interp)
+                    overrides['interp'] = phase_interp
 
             # Adjust the spw map
             if phaseup_spwmap:
-                self._mod_last_spwmap(result.pool[0], phaseup_spwmap)
-                self._mod_last_spwmap(result.final[0], phaseup_spwmap)
+                overrides['spwmap'] = phaseup_spwmap
+
+            if overrides:
+                original_calapp = result.pool[0]
+                modified_calapp = callibrary.copy_calapplication(original_calapp, **overrides)
+                result.pool[0] = modified_calapp
+                result.final[0] = modified_calapp
 
             # Merge result to the local context
             result.accept(inputs.context)
@@ -419,12 +425,6 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         task = setjy.Setjy(task_inputs)
 
         return self._executor.execute(task, merge=True)
-
-    def _mod_last_interp(self, l, interp):
-        l.calfrom[-1] = callibrary.copy_calfrom(l.calfrom[-1], interp=interp)
-
-    def _mod_last_spwmap(self, l, spwmap):
-        l.calfrom[-1] = callibrary.copy_calfrom(l.calfrom[-1], spwmap=spwmap)
 
 
 class SessionGcorFluxscaleInputs(GcorFluxscaleInputs):

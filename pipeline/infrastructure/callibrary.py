@@ -1779,7 +1779,17 @@ class IntervalCalState(object):
                 for field in ms.fields:
                     if spw in field.valid_spws:
                         # construct the list of observed intent IDs for this field
-                        observed_intent_ids = (intent_to_id[i] for i in field.intents)
+                        #
+                        # we can't rely on field.intents as this property
+                        # aggregates all intents across all spws, which may
+                        # differ from the specific spw in hand
+                        #
+                        # DON'T DO THIS!
+                        # observed_intent_ids = (intent_to_id[i] for i in field.intents)
+                        scans_for_field_and_spw = ms.get_scans(spw=spw.id, field=field.id)
+                        observed_intent_ids = (intent_to_id[i] for scan in scans_for_field_and_spw
+                                               for i in scan.intents)
+
                         # convert the intent IDs to an IntervalTree-friendly range
                         # and record it against the field ID
                         intents_for_field[field.id] = tuple(
@@ -2435,3 +2445,69 @@ def set_calstate_marker(calstate, marker):
                         intent_intervaltree.add(interval)
 
     return calstate_copy
+
+
+def _copy_calfrom(calfrom, **overrides):
+    """
+    Copy a CalFrom, overwriting any CalFrom properties with the specified
+    override values.
+
+    For instance, to create a copy of a CalFrom with calwt set to True:
+
+    modified = _copy_calfrom(calfrom, calwt=True)
+
+    :param calapp: CalFrom to copy
+    :param overrides: kw/val pairs of CalFrom properties to override
+    :return: CalFrom instance
+    """
+    new_kwargs = dict(gaintable=calfrom.gaintable, gainfield=calfrom.gainfield, interp=calfrom.interp,
+                      spwmap=list(calfrom.spwmap), caltype=calfrom.caltype, calwt=calfrom.calwt)
+    new_kwargs.update(overrides)
+    return CalFrom(**new_kwargs)
+
+
+def _copy_calto(calto, **overrides):
+    """
+    Copy a CalTo, overwriting any CalFrom properties with the specified
+    override values.
+
+    For instance, to create a copy of a CalTo with spw set to 9:
+
+    modified = _copy_calto(calto, spw=9)
+
+    :param calapp: CalTo to copy
+    :param overrides: kw/val pairs of CalTo properties to override
+    :return: CalTo instance
+    """
+    new_kwargs = dict(vis=calto.vis, field=calto.field, spw=calto.spw, antenna=calto.antenna, intent=calto.intent)
+    new_kwargs.update(overrides)
+    return CalTo(**new_kwargs)
+
+
+def copy_calapplication(calapp, origin=None, **overrides):
+    """
+    Copy a CalApplication, overwriting any CalTo or CalFrom values with the
+    given override values.
+
+    For instance, to create a copy of a CalApplication with the CalFrom.calwt
+    set to True and the CalTo.spw set to 9:
+
+    modified = copy_calapplication(calapp, calwt=True, spw=9)
+
+    :param calapp: CalApplication to copy
+    :param origin: origin to set, or None to copy the origin from calapp
+    :param overrides: kw/val pairs of calto/calfrom attributes to override
+    :return: CalApplication instance
+    """
+    if origin is None:
+        origin = calapp.origin
+
+    calto_kw = ['vis', 'field', 'spw', 'antenna', 'intent']
+    calto_overrides = {k: v for k, v in overrides.iteritems() if k in calto_kw}
+    calto = _copy_calto(calapp.calto, **calto_overrides)
+
+    calfrom_kw = ['gaintable', 'gainfield', 'interp', 'spwmap', 'caltype', 'calwt']
+    calfrom_overrides = {k: v for k, v in overrides.iteritems() if k in calfrom_kw}
+    calfrom = [_copy_calfrom(calfrom, **calfrom_overrides) for calfrom in calapp.calfrom]
+
+    return CalApplication(calto, calfrom, origin=origin)

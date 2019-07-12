@@ -60,7 +60,13 @@ def get_spspec_to_spwid_map(spws):
         if not spspec:
             spspec = "NONE"
         spspec_to_spwid_map[spspec].append(spw.id)
-    return spspec_to_spwid_map
+
+    # result sorted by spw number for more friendly processing when iterating downstream
+    d = collections.OrderedDict()
+    for k, v in sorted(spspec_to_spwid_map.iteritems(), key=lambda (a, b): (b, a)):
+        d[k] = v
+
+    return d
 
 
 def get_spectral_spec(spw):

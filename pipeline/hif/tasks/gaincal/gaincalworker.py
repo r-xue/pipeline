@@ -1,11 +1,8 @@
 from __future__ import absolute_import
-import os
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
-import pipeline.infrastructure.vdp as vdp
-import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tasks
 from . import common
 
@@ -19,7 +16,7 @@ class GaincalWorkerInputs(common.VdpCommonGaincalInputs):
         selectdata=None, gaintype=None, smodel=None, calmode=None, solint=None,
         combine=None, refant=None, minblperant=None, minsnr=None, solnorm=None,
         append=None, scan=None, splinetime=None, npointaver=None,
-        phasewrap=None, opacity=None, preavg=None):
+        phasewrap=None, opacity=None, preavg=None, parang=None):
 
         # Standard parameters
         self.context = context

@@ -32,7 +32,7 @@ class VdpCommonCalibrationInputs(vdp.StandardInputs):
     def field(self):
         # this will give something like '0542+3243,0343+242'
         field_finder = fieldnames.IntentFieldnames()
-        intent_fields = field_finder.calculate(self.ms, self.intent)
+        intent_fields = field_finder.calculate(self.ms, self.intent, self.spw)
 
         # run the answer through a set, just in case there are duplicates
         fields = set()

@@ -1137,6 +1137,11 @@ class Correctedampflag(basetask.StandardTaskTemplate):
 
     @staticmethod
     def _read_data_from_ms(ms, intent, field, spwid, baseline_set=None):
+        scans_with_data = ms.get_scans(scan_intent=intent, field=field, spw=spwid)
+        if not scans_with_data:
+            LOG.info('No data expected for {} {} intent, field {}, spw {}. Continuing...'
+                     ''.format(ms.basename, intent, field, spwid))
+            return None
 
         # Initialize data selection.
         data_selection = {'field': field,
