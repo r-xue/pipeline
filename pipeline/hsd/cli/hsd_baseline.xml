@@ -64,7 +64,7 @@
 	<allowed kind="enum">
 	    <value>kmean</value>
 	    <value>hierarchy</value>
-        <vlaue>both</value>
+        <value>both</value>
 	</allowed>
     </param>
 
