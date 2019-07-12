@@ -6,12 +6,14 @@
     {{#importonly}}
     <ProcessingCommand>
         <Command xmlns="">hifv_importdata</Command>
+        <ParameterSet/>
     </ProcessingCommand>
 
     <!-- If onlineflag=True, online flag shall be applied to the imported MSes. -->
     {{#onlineflag}}
     <ProcessingCommand>
         <Command xmlns="">hifv_flagdata</Command>
+        <ParameterSet/>
     </ProcessingCommand>
     {{/onlineflag}}
     {{/importonly}}
@@ -58,6 +60,7 @@
 
     <ProcessingCommand>
         <Command xmlns="">hifv_exportdata</Command>
+        <ParameterSet/>
     </ProcessingCommand>
 
 </ProcessingProcedure>
