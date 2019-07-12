@@ -32,13 +32,13 @@
         <description>Fitting order for baseline subtraction</description>
 	<value>-1</value>
     </param>
-    
+
     <param type="any" name="linewindow">
         <description>Pre-defined line window</description>
         <any type="variant"/>
 	    <value type="string"></value>
     </param>
-    
+
     <param type="string" name="linewindowmode" subparam="true">
         <description>Merge or replace given manual line window with line detection/validation result</description>
         <value>replace</value>
@@ -64,6 +64,7 @@
 	<allowed kind="enum">
 	    <value>kmean</value>
 	    <value>hierarchy</value>
+        <vlaue>both</value>
 	</allowed>
     </param>
 
@@ -176,7 +177,7 @@ By default, the task tries to find spectral line feature using
 line detection and validation algorithms. Then, the task puts a
 mask on detected lines and perform baseline subtraction. The user
 is able to turn off automatic line masking by setting linewindow
-parameter, which specifies pre-defined line window. 
+parameter, which specifies pre-defined line window.
 
 Fitting order is automatically determined by default. It can be
 disabled by specifying fitorder as non-negative value. In this case,
@@ -184,21 +185,21 @@ the value specified by fitorder will be used.
 
 ***WARNING***
 Currently, hsd_baseline overwrites the result obtained by the previous
-run. Due to this behavior, users need to be careful about an order 
-of the task execution when they run hsd_baseline multiple times with 
-different data selection. Suppose there are two spectral windows 
-(0 and 1) and hsd_baseline is executed separately for each spw as 
-below, 
+run. Due to this behavior, users need to be careful about an order
+of the task execution when they run hsd_baseline multiple times with
+different data selection. Suppose there are two spectral windows
+(0 and 1) and hsd_baseline is executed separately for each spw as
+below,
 
 hsd_baseline(pipelinemode="interactive", spw="0")
 hsd_baseline(pipelinemode="interactive", spw="1")
 hsd_blflag(pipelinemode="automatic")
 hsd_imaging(pipelinemode="automatic")
 
-Since the second run of hsd_baseline overwrites the result for spw 0 
-with the data before baseline subtraction, this will not produce 
-correct result for spw 0. Proper sequence for this use case is to 
-process each spw to the imaging stage separately, which looks like 
+Since the second run of hsd_baseline overwrites the result for spw 0
+with the data before baseline subtraction, this will not produce
+correct result for spw 0. Proper sequence for this use case is to
+process each spw to the imaging stage separately, which looks like
 as follows:
 
 hsd_baseline(pipelinemode="interactive", spw="0")
@@ -208,7 +209,7 @@ hsd_baseline(pipelinemode="interactive", spw="1")
 hsd_blflag(pipelinemode="interactive", spw="1")
 hsd_imaging(pipelinemode="interactive", spw="1")
 
-  
+
 Keyword arguments:
 
 ---- pipeline parameter arguments which can be set in any pipeline mode
@@ -221,73 +222,73 @@ fitorder -- Fitting order for polynomial. For cubic spline, it is used
    to determine the order automatically.
    default: -1 (auto determination)
 
-linewindow -- Pre-defined line window. If this is set, specified line 
-   windows are used as a line mask for baseline subtraction instead to 
-   determine masks based on line detection and validation stage. Several  
-   types of format are acceptable. One is channel-based window, 
-   
-      [min_chan, max_chan] 
-      
-   where min_chan and max_chan should be an integer. For multiple 
-   windows, nested list is also acceptable, 
-   
+linewindow -- Pre-defined line window. If this is set, specified line
+   windows are used as a line mask for baseline subtraction instead to
+   determine masks based on line detection and validation stage. Several
+   types of format are acceptable. One is channel-based window,
+
+      [min_chan, max_chan]
+
+   where min_chan and max_chan should be an integer. For multiple
+   windows, nested list is also acceptable,
+
       [[min_chan0, max_chan0], [min_chan1, max_chan1], ...]
-      
-   Another way is frequency-based window, 
-   
+
+   Another way is frequency-based window,
+
       [min_freq, max_freq]
-      
-   where min_freq and max_freq should be either a float or a string. 
-   If float value is given, it is interpreted as a frequency in Hz. 
-   String should be a quantity consisting of "value" and "unit", e.g., 
+
+   where min_freq and max_freq should be either a float or a string.
+   If float value is given, it is interpreted as a frequency in Hz.
+   String should be a quantity consisting of "value" and "unit", e.g.,
    '100GHz'. Multiple windows are also supported.
-   
+
       [[min_freq0, max_freq0], [min_freq1, max_freq1], ...]
-      
-   Note that the specified frequencies are assumed to be the value in 
-   LSRK frame. Note also that there is a limitation when multiple MSes are 
-   processed. If native frequency frame of the data is not LSRK (e.g. TOPO), 
-   frequencies need to be converted to that frame. As a result, corresponding 
-   channel range may vary between MSes. However, current implementation is 
-   not able to handle such case. Frequencies are converted to desired frame 
-   using representative MS (time, position, direction). 
-      
-   In the above cases, specified line windows are applied to all science 
-   spws. In case when line windows vary with spw, line windows can be 
+
+   Note that the specified frequencies are assumed to be the value in
+   LSRK frame. Note also that there is a limitation when multiple MSes are
+   processed. If native frequency frame of the data is not LSRK (e.g. TOPO),
+   frequencies need to be converted to that frame. As a result, corresponding
+   channel range may vary between MSes. However, current implementation is
+   not able to handle such case. Frequencies are converted to desired frame
+   using representative MS (time, position, direction).
+
+   In the above cases, specified line windows are applied to all science
+   spws. In case when line windows vary with spw, line windows can be
    specified by a dictionary whose key is spw id while value is line window.
-   For example, the following dictionary gives different line windows 
-   to spws 17 and 19. Other spws, if available, will have an empty line 
+   For example, the following dictionary gives different line windows
+   to spws 17 and 19. Other spws, if available, will have an empty line
    window.
-   
+
       {17: [[100, 200], [1200, 1400]], 19: ['112115MHz', '112116MHz']}
-      
-   Furthermore, linewindow accepts MS selection string. The following 
-   string gives [[100,200],[1200,1400]] for spw 17 while [1000,1500] 
+
+   Furthermore, linewindow accepts MS selection string. The following
+   string gives [[100,200],[1200,1400]] for spw 17 while [1000,1500]
    for spw 21.
-   
+
       "17:100~200;1200~1400,21:1000~1500"
-      
-   The string also accepts frequency with units. Note, however, that 
-   frequency reference frame in this case is not fixed to LSRK. 
-   Instead, the frame will be taken from the MS (typically TOPO for ALMA). 
-   Thus, the following two frequency-based line windows result different 
+
+   The string also accepts frequency with units. Note, however, that
+   frequency reference frame in this case is not fixed to LSRK.
+   Instead, the frame will be taken from the MS (typically TOPO for ALMA).
+   Thus, the following two frequency-based line windows result different
    channel selections.
-   
+
       {19: ['112115MHz', '112116MHz']} # frequency frame is LSRK
       "19:11215MHz~11216MHz" # frequency frame is taken from the data
                              # (TOPO for ALMA)
-   
+
    default: [] (do line detection and validation)
    example: [100,200] (channel), [115e9, 115.1e9] (frequency in Hz)
             ['115GHz', '115.1GHz'], see above for more examples
 
-linewindowmode -- Merge or replace given manual line window with line 
-   detection/validation result. If 'replace' is given, line detection 
-   and validation will not be performed. On the other hand, when 
-   'merge' is specified, line detection/validation will be performed 
-   and manually specified line windows are added to the result. 
-   Note that this has no effect when linewindow for target spw is 
-   empty. In that case, line detection/validation will be performed 
+linewindowmode -- Merge or replace given manual line window with line
+   detection/validation result. If 'replace' is given, line detection
+   and validation will not be performed. On the other hand, when
+   'merge' is specified, line detection/validation will be performed
+   and manually specified line windows are added to the result.
+   Note that this has no effect when linewindow for target spw is
+   empty. In that case, line detection/validation will be performed
    regardless of the value of linewindowmode.
    default: 'replace'
    options: 'replace', 'merge'
@@ -306,12 +307,12 @@ clusteringalgorithm -- selection of the algorithm used in the clustering
    algorithm and hierarchical clustering algorithm 'hierarchy' are so
    far implemented.
    default: 'kmean'.
-   
-deviationmask -- Apply deviation mask in addition to masks determined by 
+
+deviationmask -- Apply deviation mask in addition to masks determined by
    the automatic line detection.
    default: True
 
-pipelinemode -- The pipeline operating mode. In 'automatic' mode the 
+pipelinemode -- The pipeline operating mode. In 'automatic' mode the
    pipeline determines the values of all context defined pipeline inputs
    automatically.  In 'interactive' mode the user can set the pipeline
    context defined parameters manually.  In 'getinputs' mode the user
@@ -322,11 +323,11 @@ pipelinemode -- The pipeline operating mode. In 'automatic' mode the
 ---- pipeline context defined parameter argument which can be set only in
 'interactive mode'
 
-infiles -- List of data files. These must be a name of MeasurementSets that 
+infiles -- List of data files. These must be a name of MeasurementSets that
    are registered to context via hsd_importdata task.
    default: []
    example: vis=['X227.ms', 'X228.ms']
-   
+
 field -- Data selection by field.
    default: '' (all fields)
    example: '1' (select by FIELD_ID)
