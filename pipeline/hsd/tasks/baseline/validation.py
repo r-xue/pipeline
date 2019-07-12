@@ -4,6 +4,7 @@ import math
 import sys
 import time
 from math import sqrt
+import collections
 
 import numpy
 import numpy.linalg as LA
@@ -634,25 +635,19 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
         # validate cluster
         assert clustering_algorithm in ['kmean', 'hierarchy', 'both']
-        if clustering_algorithm == 'both':
-            # kmean + hierarchy
-            validated = [
-                self.validate_cluster(k, v,
-                                      index_list,
-                                      detect_signal,
-                                      PosList,
-                                      Region2)
-                for k, v in clustering_results.items()
-            ]
-            (RealSignal, lines, channelmap_range) = self.merge_cluster(validated)
-        else:
-            # kmean or hierarchy
-            (RealSignal, lines, channelmap_range) = self.validate_cluster(clustering_algorithm,
-                                                                          clustering_results[clustering_algorithm],
-                                                                          index_list,
-                                                                          detect_signal,
-                                                                          PosList,
-                                                                          Region2)
+        validated = [
+            self.validate_cluster(k, v,
+                                  index_list,
+                                  detect_signal,
+                                  PosList,
+                                  Region2)
+            for k, v in clustering_results.items()
+        ]
+        # Merge results from multiple clustering analysises
+        # If more than one results exist, minimum contents of RealSignal will be merged
+        # and remaining items (PolList) will be lost
+        # Original RealSignal data will be stored in validated[x][0]
+        (RealSignal, lines, channelmap_range) = self._merge_cluster_result(validated)
 
         # Merge masks if possible
         ProcStartTime = time.time()
@@ -742,6 +737,20 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                 self.cluster_info[key].extend(value)
             elif action == algorithm:
                 self.cluster_info[key] = value
+
+    def _merge_cluster_result(self, result_list):
+        if len(result_list) == 1:
+            return tuple(result_list[0])
+
+        merged_RealSignal = collections.defaultdict(lambda: [None, None, []])
+        for r in result_list:
+            RealSignal = r[0]
+            for k, v in RealSignal.items():
+                merged_RealSignal[k][2].extend(v[2])
+        merged_lines = [l for r in result_list for l in r[1]]
+        merged_channelmap_ranges = [l for r in result_list for l in r[2]]
+
+        return merged_RealSignal, merged_lines, merged_channelmap_ranges
 
     def clean_detect_signal(self, DS):
         """
