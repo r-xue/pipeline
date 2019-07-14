@@ -498,7 +498,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 if vislist_field_spw_combinations[field_intent[0]].get('spwids', None) is not None:
                                     if spwspec in map(str, vislist_field_spw_combinations[field_intent[0]]['spwids']):
                                         actual_field_intent_list.append(field_intent)
-                        synthesized_beams[spwspec], known_synthesized_beams = self.heuristics.synthesized_beam(field_intent_list=actual_field_intent_list, spwspec=spwspec, robust=robust, uvtaper=uvtaper, pixperbeam=pixperbeam, known_beams=known_synthesized_beams, force_calc=calcsb, parallel=parallel)
+                        synthesized_beams[spwspec], known_synthesized_beams = self.heuristics.synthesized_beam(field_intent_list=actual_field_intent_list, spwspec=spwspec, robust=robust, uvtaper=uvtaper, pixperbeam=pixperbeam, known_beams=known_synthesized_beams, force_calc=calcsb, parallel=parallel, shift=True)
                         if synthesized_beams[spwspec] == 'invalid':
                             LOG.error('Beam for virtual spw %s and robust value of %.1f is invalid. Cannot continue.'
                                       '' % (spwspec, robust))

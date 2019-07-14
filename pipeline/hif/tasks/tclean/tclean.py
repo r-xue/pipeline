@@ -289,7 +289,8 @@ class Tclean(cleanbase.CleanBase):
                                                        spwspec=inputs.spw,
                                                        robust=inputs.robust,
                                                        uvtaper=inputs.uvtaper,
-                                                       parallel=inputs.parallel)
+                                                       parallel=inputs.parallel,
+                                                       shift=True)
             cell = self.image_heuristics.cell(beam=synthesized_beam)
 
             if inputs.cell in (None, [], ''):
