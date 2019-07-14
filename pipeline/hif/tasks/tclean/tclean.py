@@ -589,6 +589,10 @@ class Tclean(cleanbase.CleanBase):
         result = self._do_clean(iternum=iteration, cleanmask='', niter=0, threshold='0.0mJy',
                                 sensitivity=sequence_manager.sensitivity, result=None)
 
+        # Check for bad PSF fit
+        if inputs.specmode == 'cube':
+            self.image_heuristics.check_psf(result.psf, inputs.field, inputs.spw)
+
         # Determine masking limits depending on PB
         extension = '.tt0' if result.multiterm else ''
         self.pblimit_image, self.pblimit_cleanmask = self.image_heuristics.pblimits(result.flux+extension)
@@ -621,7 +625,7 @@ class Tclean(cleanbase.CleanBase):
 
         # All continuum
         if inputs.specmode == 'cube' and inputs.spwsel_all_cont:
-            self._update_miscinfo(result.image+extension, len(self.image_heuristics.field(inputs.intent, inputs.field)), pbcor_image_min, pbcor_image_max)
+            self._update_miscinfo(result.image+extension, max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]), pbcor_image_min, pbcor_image_max)
 
             result.set_image_min(pbcor_image_min)
             result.set_image_max(pbcor_image_max)
@@ -730,7 +734,7 @@ class Tclean(cleanbase.CleanBase):
                                                   pblimit_cleanmask=self.pblimit_cleanmask,
                                                   cont_freq_ranges=self.cont_freq_ranges)
 
-            self._update_miscinfo(result.image+extension, len(self.image_heuristics.field(inputs.intent, inputs.field)), pbcor_image_min, pbcor_image_max)
+            self._update_miscinfo(result.image+extension, max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]), pbcor_image_min, pbcor_image_max)
 
             keep_iterating, hm_masking = self.image_heuristics.keep_iterating(iteration, inputs.hm_masking,
                                                                               result.tclean_stopcode,

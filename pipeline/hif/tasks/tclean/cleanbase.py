@@ -608,10 +608,6 @@ class CleanBase(basetask.StandardTaskTemplate):
             else:
                 result.set_image(iter=iter, image=image_name)
 
-        # Check for bad PSF fit
-        if iter == 0 and inputs.specmode == 'cube':
-            inputs.heuristics.check_psf(psf_name, inputs.field, inputs.spw)
-
         # Store the residual.
         set_miscinfo(name=residual_name, spw=inputs.spw, field=inputs.field,
                      type='residual', iter=iter, multiterm=result.multiterm,
@@ -747,7 +743,7 @@ def set_miscinfo(name, spw=None, field=None, type=None, iter=None, multiterm=Non
             if context is not None:
                 info['propcode'] = context.project_summary.proposal_code
                 info['group'] = 'N/A'
-                info['member'] = context.project_structure.ous_entity_id
+                info['member'] = 'N/A'
                 info['sgoal'] = 'N/A'
 
             # Some keywords should be present but are filled only

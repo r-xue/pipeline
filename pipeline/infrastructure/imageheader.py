@@ -143,7 +143,7 @@ def set_miscinfo(name, spw=None, field=None, type=None, iter=None, multiterm=Non
             if context is not None:
                 info['propcode'] = context.project_summary.proposal_code
                 info['group'] = 'N/A'
-                info['member'] = context.project_structure.ous_entity_id
+                info['member'] = 'N/A'
                 info['sgoal'] = 'N/A'
 
             # Some keywords should be present but are filled only
