@@ -346,7 +346,7 @@ class CleanBase(basetask.StandardTaskTemplate):
         if inputs.hm_masking == 'auto':
             tclean_job_parameters['usemask'] = 'auto-multithresh'
 
-            # get heuristics parameters 
+            # get heuristics parameters
             sidelobethreshold, noisethreshold, lownoisethreshold, negativethreshold, minbeamfrac, growiterations, dogrowprune, minpercentchange, fastnoise = inputs.heuristics.get_autobox_params(inputs.intent, inputs.specmode, inputs.robust)
 
             # Override individually with manual settings
@@ -743,7 +743,7 @@ def set_miscinfo(name, spw=None, field=None, type=None, iter=None, multiterm=Non
             if context is not None:
                 info['propcode'] = context.project_summary.proposal_code
                 info['group'] = 'N/A'
-                info['member'] = 'N/A'
+                info['member'] = context.project_summary.ousstatus_entity_id
                 info['sgoal'] = 'N/A'
 
             # Some keywords should be present but are filled only
