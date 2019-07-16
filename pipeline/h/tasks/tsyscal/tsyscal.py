@@ -316,7 +316,7 @@ def get_calapplications(ms, tsys_table, calfrom_defaults, origin, spw_map, is_si
 
                 for non_tsys_spw in sorted(non_tsys_spws, key=attrgetter('id')):
                     # check to see if there's data for the field/intent/spw combination
-                    scans = ms.get_scans(scan_intent=intent, spw=non_tsys_spw, field=non_tsys_field.id)
+                    scans = ms.get_scans(scan_intent=intent, spw=non_tsys_spw.id, field=non_tsys_field.id)
                     if not scans:
                         # If there's no data, there's no calibration required.
                         continue
