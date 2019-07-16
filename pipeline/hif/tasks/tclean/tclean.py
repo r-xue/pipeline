@@ -583,6 +583,8 @@ class Tclean(cleanbase.CleanBase):
 
         inputs = self.inputs
 
+        cqa = casatools.quanta
+
         # Compute the dirty image
         LOG.info('Compute the dirty image')
         iteration = 0
@@ -590,8 +592,20 @@ class Tclean(cleanbase.CleanBase):
                                 sensitivity=sequence_manager.sensitivity, result=None)
 
         # Check for bad PSF fit
+        bad_psf_channels = None
         if inputs.specmode == 'cube':
-            self.image_heuristics.check_psf(result.psf, inputs.field, inputs.spw)
+            bad_psf_fit = self.image_heuristics.check_psf(result.psf, inputs.field, inputs.spw)
+            if bad_psf_fit:
+                newcommonbeam, bad_psf_channels = self.image_heuristics.find_good_commonbeam(result.psf)
+                if newcommonbeam is None:
+                    result.error = '%s/%s/spw%s clean error: no valid beams' % (inputs.field, inputs.intent, inputs.spw)
+                    return result
+                elif bad_psf_channels.shape != (0,):
+                    newcommonbeam_major_arcsec = cqa.getvalue(cqa.convert(newcommonbeam['major'], 'arcsec'))[0]
+                    newcommonbeam_minor_arcsec = cqa.getvalue(cqa.convert(newcommonbeam['minor'], 'arcsec'))[0]
+                    newcommonbeam_pa_deg = cqa.getvalue(cqa.convert(newcommonbeam['pa'], 'deg'))[0]
+                    LOG.warn('Replacing bad PSF fit for SPW %s with new common beam %#.3g x %#.3g arcsec @ %.1f deg' % (inputs.spw, newcommonbeam_major_arcsec, newcommonbeam_minor_arcsec, newcommonbeam_pa_deg))
+                    inputs.restoringbeam = ['%#.3garcsec' % (newcommonbeam_major_arcsec), '%#.3garcsec' % (newcommonbeam_minor_arcsec), '%.1fdeg' % (newcommonbeam_pa_deg)]
 
         # Determine masking limits depending on PB
         extension = '.tt0' if result.multiterm else ''
@@ -783,6 +797,9 @@ class Tclean(cleanbase.CleanBase):
         # intensity for the line-free channels.
         if inputs.specmode == 'cube':
             self._calc_mom0_8_fc(result)
+
+        # Record any failed PSF fit channels
+        result.bad_psf_channels = bad_psf_channels
 
         return result
 
