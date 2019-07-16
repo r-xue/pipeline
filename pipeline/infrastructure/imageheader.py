@@ -57,7 +57,7 @@ def clean_extendable_keys(data, key, num_keys=None):
 
 
 # Add information to image header
-def set_miscinfo(name, spw=None, field=None, type=None, iter=None, multiterm=None, intent=None, specmode=None,
+def set_miscinfo(name, spw=None, field=None, nfield=None, type=None, iter=None, multiterm=None, intent=None, specmode=None,
                  robust=None, is_per_eb=None, context=None):
     """
     Define miscellaneous image information
@@ -107,6 +107,9 @@ def set_miscinfo(name, spw=None, field=None, type=None, iter=None, multiterm=Non
                 #       Temporarily (?) remove any '"' characters
                 tmpfield = field.split(',')[0].replace('"', '')
                 info['field'] = tmpfield
+
+            if nfield is not None:
+                info['nfield'] = nfield
 
             if context is not None:
                 # TODO: Use more generic approach like in the imaging heuristics

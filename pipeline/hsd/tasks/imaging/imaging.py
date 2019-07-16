@@ -153,6 +153,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         imageheader.set_miscinfo(name=imagename,
                                  spw=','.join(map(str, spwlist)),
                                  field=image_item.sourcename,
+                                 nfield=1,
                                  type='singledish',
                                  iter=1,  # nominal
                                  intent='TARGET',
