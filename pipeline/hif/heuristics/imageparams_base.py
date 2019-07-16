@@ -451,7 +451,7 @@ class ImageParamsHeuristics(object):
 
                         gridder = self.gridder(intent, field)
                         mosweight = self.mosweight(intent, field)
-                        field_ids = self.field(intent, field)
+                        field_ids = self.field(intent, field, vislist=valid_vis_list)
                         # Get single field imsize
                         imsize_sf = self.imsize(fields=field_ids, cell=['%.2g%s' % (cellv, cellu)], primary_beam=largest_primary_beam_size, centreonly=True)
                         # If it is a mosaic, adjust the size to be somewhat larger than one PB, but not the full
@@ -472,7 +472,7 @@ class ImageParamsHeuristics(object):
                         if self.is_eph_obj(field):
                             phasecenter = 'TRACKFIELD'
                         else:
-                            phasecenter = self.phasecenter(field_ids, shift_to_nearest_field=shift,
+                            phasecenter = self.phasecenter(field_ids, vislist=valid_vis_list, shift_to_nearest_field=shift,
                                                            primary_beam=largest_primary_beam_size, intent=intent)
                         do_parallel = mpihelpers.parse_mpi_input_parameter(parallel)
                         paramList = ImagerParameters(msname=valid_vis_list,
