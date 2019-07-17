@@ -1415,7 +1415,7 @@ class ImageParamsHeuristics(object):
                 # For multi-tuning EBs, a field may be observed in just a subset of
                 # science spws. Filter out spws not applicable to this field.
                 spw_do = ms.get_spectral_window(real_spw)
-                field_dos = ms.get_fields(field)
+                field_dos = ms.get_fields(field, intent=intent)
                 # field(s) not in MS
                 if not field_dos:
                     continue
@@ -1534,7 +1534,7 @@ class ImageParamsHeuristics(object):
 
                     # For multi-tuning EBs, a field may be observed in just a subset of
                     # science spws. Filter out spws not applicable to this field.
-                    field_dos = ms.get_fields(field)
+                    field_dos = ms.get_fields(field, intent=intent)
                     # field(s) not in MS
                     if not field_dos:
                         continue
