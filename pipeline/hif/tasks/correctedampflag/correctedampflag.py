@@ -778,7 +778,7 @@ class Correctedampflag(basetask.StandardTaskTemplate):
         relaxsig = 6.5
 
         # Get number of scans in MS for this intent.
-        nscans = len(ms.get_scans(scan_intent=intent))
+        nscans = len(ms.get_scans(scan_intent=intent, spw=spwid))
 
         # Get number of antennas.
         nants = len(ms.antennas)
