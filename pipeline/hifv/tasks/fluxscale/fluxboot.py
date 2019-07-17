@@ -399,6 +399,10 @@ class Fluxboot(basetask.StandardTaskTemplate):
                     SNR = 0.0
                     curvature = 0.0
                     curvatureerr = 0.0
+                    gamma = 0.0
+                    gammaerr = 0.0
+                    delta = 0.0
+                    deltaerr = 0.0
                 else:
                     alfds = scp.array(lfds)
                     alerrs = scp.array(lerrs)
@@ -413,6 +417,10 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
                     curvature = 0.0
                     curvatureerr = 0.0
+                    gamma = 0.0
+                    gammaerr = 0.0
+                    delta = 0.0
+                    deltaerr = 0.0
 
                     #
                     # the fit is of the form:
@@ -437,6 +445,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
                 #    
 
                 reffreq = 10.0**lfreqs[0]/1.0e9
+                bandcenterfreq = 0.0
                 fluxdensity = 10.0**(aa + bb*lfreqs[0])
                 spix = bb
                 spixerr = bberr
@@ -444,12 +453,18 @@ class Fluxboot(basetask.StandardTaskTemplate):
                 LOG.info(source + ' ' + band + ' fitted spectral index & SNR = ' + str(spix) + ' ' + str(SNR))
                 spindex_results.append({'source'      : source,
                                         'band'        : band,
+                                        'bandcenterfreq': bandcenterfreq,
                                         'spix'        : str(spix),
                                         'spixerr'     : str(spixerr),
                                         'SNR'         : str(SNR),
                                         'fitflx'      : str(fluxdensity),
+                                        'fitflxerr'   : str(0.0),
                                         'curvature'   : str(curvature),
                                         'curvatureerr': str(curvatureerr),
+                                        'gamma'       : str(gamma),
+                                        'gammaerr'    : str(gammaerr),
+                                        'delta'       : str(delta),
+                                        'deltaerr'    : str(deltaerr),
                                         'fitorder'    : str(1),
                                         'reffreq'     : str(reffreq)})
 

@@ -470,7 +470,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                     fitcoeff = fluxscale_result[fieldid]['spidx']
 
                 freqs = fluxscale_result['freq']
-                fitflx = fluxscale_result[fieldid]['fitFluxd']
+                fitflx = fluxscale_result[fieldid]['fitFluxd']   # Fiducial flux for entire fit
                 fitreff = fluxscale_result[fieldid]['fitRefFreq']
                 spidx = fluxscale_result[fieldid]['spidx']
                 reffreq = fitreff / 1.e9
@@ -485,6 +485,10 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                 SNR = 0.0
                 curvature = 0.0
                 curvatureerr = 0.0
+                gamma = 0.0
+                gammaerr = 0.0
+                delta = 0.0
+                deltaerr = 0.0
 
                 freqs = np.array(sorted(freqs[uspws]))
 
@@ -498,6 +502,23 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                 if len(logfittedfluxd) == 1:
                     fittedfluxd = np.array([fitflx])
 
+                # For this band determine a fiducial flux
+                bandfreqs = 10.0 ** np.array(lfreqs)
+                bandcenterfreq = (np.min(bandfreqs) + np.max(bandfreqs)) / 2.0
+                logfiducialflux = 0.0
+                for i in range(len(spidx)):
+                    logfiducialflux += spidx[i] * (np.log10(bandcenterfreq/fitreff)) ** i
+
+                fitflx = 10.0 ** logfiducialflux
+
+                # Compute flux errors
+                flxerrslist = [fluxscale_result[fieldid][str(spwid)]['fluxdErr'][0] for spwid in uspws]
+                fitflxerr = np.mean(flxerrslist)
+
+                # Again, single spectral window
+                if len(logfittedfluxd) == 1:
+                    fitflx = np.array([fluxscale_result[fieldid]['fitFluxd']])
+
                 LOG.info(' Source: ' + source +
                          ' Band: ' + band +
                          ' fluxscale fitted spectral index = ' + str(spix) + ' +/- ' + str(spixerr))
@@ -510,16 +531,36 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                              ' Band: ' + band +
                              ' fluxscale fitted curvature = ' + str(curvature) + ' +/- ' + str(curvatureerr))
 
+                if fitorderused > 2:
+                    gamma = fluxscale_result[fieldid]['spidx'][3]
+                    gammaerr = fluxscale_result[fieldid]['spidxerr'][3]
+                    LOG.info(' Source: ' + source +
+                             ' Band: ' + band +
+                             ' fluxscale fitted gamma = ' + str(gamma) + ' +/- ' + str(gammaerr))
+
+                if fitorderused > 3:
+                    delta = fluxscale_result[fieldid]['spidx'][4]
+                    deltaerr = fluxscale_result[fieldid]['spidxerr'][4]
+                    LOG.info(' Source: ' + source +
+                             ' Band: ' + band +
+                             ' fluxscale fitted delta = ' + str(delta) + ' +/- ' + str(deltaerr))
+
                 results.append([source, uspws, fitflx, spix, SNR, reffreq, curvature])
 
                 spindex_results.append({'source': source,
                                         'band': band,
+                                        'bandcenterfreq': bandcenterfreq,
                                         'spix': str(spix),
                                         'spixerr': str(spixerr),
                                         'SNR': SNR,
                                         'fitflx': fitflx,
+                                        'fitflxerr': fitflxerr,
                                         'curvature': str(curvature),
                                         'curvatureerr': str(curvatureerr),
+                                        'gamma': str(gamma),
+                                        'gammaerr': str(gammaerr),
+                                        'delta': str(delta),
+                                        'deltaerr': str(deltaerr),
                                         'fitorder': str(fitorderused),
                                         'reffreq': str(reffreq)})
 

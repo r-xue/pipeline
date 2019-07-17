@@ -171,23 +171,33 @@ class T2_4MDetailsfluxbootRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             spindex_results[ms] = result.spindex_results
 
             # Sort into dictionary collections and combine bands for a single source
-            FluxTR = collections.namedtuple('FluxTR', 'source band spix curvature fitorder fitflx reffreq')
+            FluxTR = collections.namedtuple('FluxTR', 'source band bandcenterfreq fitflx spix curvature gamma delta fitorder reffreq')
 
             rows = []
 
             precision = 5
             # print("{:.{}f}".format(pi, precision))
 
-            for row in result.spindex_results:
+            for row in sorted(result.spindex_results, key=lambda p: (p['source'], float(p['bandcenterfreq']))):
                 spix = "{:.{}f}".format(float(row['spix']), precision)
                 spixerr = "{:.{}f}".format(float(row['spixerr']), precision)
                 curvature = "{:.{}f}".format(float(row['curvature']), precision)
                 curvatureerr = "{:.{}f}".format(float(row['curvatureerr']), precision)
+                gamma = "{:.{}f}".format(float(row['gamma']), precision)
+                gammaerr = "{:.{}f}".format(float(row['gammaerr']), precision)
+                delta = "{:.{}f}".format(float(row['delta']), precision)
+                deltaerr = "{:.{}f}".format(float(row['deltaerr']), precision)
                 fitflx = "{:.{}f}".format(float(row['fitflx']), precision)
+                fitflxerr = "{:.{}f}".format(float(row['fitflxerr']), precision)
                 reffreq = "{:.{}f}".format(float(row['reffreq']), precision)
+                bandcenterfreq = "{:.{}f}".format(float(row['bandcenterfreq'])/1.e9, precision)
 
-                tr = FluxTR(row['source'], row['band'], spix + ' +/- ' + spixerr,
-                            curvature + ' +/- ' + curvatureerr, row['fitorder'], fitflx, reffreq)
+                tr = FluxTR(row['source'], row['band'], bandcenterfreq, fitflx + ' +/-' + fitflxerr,
+                            spix + ' +/- ' + spixerr,
+                            curvature + ' +/- ' + curvatureerr,
+                            gamma + ' +/- ' + gammaerr,
+                            delta + ' +/- ' + deltaerr,
+                            row['fitorder'], reffreq)
                 rows.append(tr)
 
             spixtable = utils.merge_td_columns(rows)

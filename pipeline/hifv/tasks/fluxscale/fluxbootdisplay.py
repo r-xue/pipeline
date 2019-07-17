@@ -140,10 +140,32 @@ class modelfitSummaryChart(object):
                     data.append(float(datadict['data']))
                     model.append(float(datadict['fitteddata']))
                     frequencies.append(float(datadict['freq']))
-                pb.plot(frequencies, data, 'o', label=source, color=colors[colorcount])
-                pb.plot(frequencies, model, '-', color=colors[colorcount])
-                pb.ylabel('Flux Density [Jy]', size=mysize)
-                pb.xlabel('Frequency [GHz]', size=mysize)
+
+                minfreq = min(frequencies)
+                maxfreq = max(frequencies)
+                m = self.context.observing_run.get_ms(self.result.inputs['vis'])
+                fieldobject = m.get_fields(source)
+                fieldid = str(fieldobject[0].id)
+                spidx = self.result.fluxscale_result[fieldid]['spidx']
+                fitreff = self.result.fluxscale_result[fieldid]['fitRefFreq']
+                reffreq = fitreff / 1.e9
+
+                freqs = np.linspace(minfreq * 1.e9, maxfreq * 1.e9, 500)
+
+                logfittedfluxd = np.zeros(len(freqs))
+                for i in range(len(spidx)):
+                    logfittedfluxd += spidx[i] * (np.log10(freqs / fitreff)) ** i
+
+                fittedfluxd = 10.0 ** logfittedfluxd
+
+                pb.plot(np.log10(np.array(frequencies) * 1.e9), np.log10(data), 'o', label=source,
+                        color=colors[colorcount])
+                # pb.plot(frequencies, model, '-', color=colors[colorcount])
+                pb.plot(np.log10(freqs), np.log10(fittedfluxd), '-', color=colors[colorcount])
+                pb.ylabel('log10 Flux Density [Jy]', size=mysize)
+                pb.xlabel('log10 Frequency [GHz]', size=mysize)
+                # pb.set_xscale('log')
+                # pb.set_yscale('log')
                 pb.legend()
                 # title = title + '   ' + str(source) + '({!s})'.format(colors[colorcount])
                 colorcount += 1
