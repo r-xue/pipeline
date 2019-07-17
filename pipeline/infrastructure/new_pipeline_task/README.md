@@ -9,18 +9,17 @@ want to create task "foo" in the package "hif", I could do one of the following.
 
     Command line:
     ```
-    casa --nogui --nologger -c $SCIPIPE_HEURISTICS/pipeline/infrastructure/new_pipeline_task/new_pipeline_task.py --package hif --task foo
+    casa --nogui --nologger -c $SCIPIPE_HEURISTICS/pipeline/infrastructure/new_pipeline_task/new_pipeline_task.py --package hif --task foo --module foo
     ```
     
     Within CASA:
     ```python
      from pipeline.infrastructure.new_pipeline_task import new_pipeline_task
        newtask = new_pipeline_task.NewTask()
-       newtask.create('hif', 'foo')
+       newtask.create('hif', 'foo', 'foo')
     ```
     
-* There is an optional "--module" parameter if you want to give the task module
-file a different name than the task itself.  For example, if task is 'foo' 
+* If you want to give the task module file a different name than the task itself, use the module parameter.  For example, if task is 'foo'
 and module is 'bar' then 'tasks/foo/bar.py' is created.
 
     Command line:

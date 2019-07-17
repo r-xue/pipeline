@@ -125,7 +125,7 @@ class NewTask():
         # -----------------------------------------------------------------------------
 
         print('''2.
-        Check infrastructure/jobrequest.py to see if it lists all CASA tasks
+        Check infrastructure/casa_tasks.py to see if it lists all CASA tasks
         needed by your new pipeline task.  If not, add them to the
         CASATaskGenerator class.
         ''')
