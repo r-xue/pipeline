@@ -13,6 +13,8 @@ class ImagePreCheckHeuristics(object):
         self.context = inputs.context
 
     # Below maxBR is the maxAllowedBeamAxialRatio that will be in the SBSummary table as of cycle 7
+    # Note that axial ratio comparisons have been disabled for Cycle 7 (see PIPE-208).
+    # We still calculate and post ratios in the weblog.
     def compare_beams(self, beam_0p0, beam_0p5, beam_1p0, beam_2p0, minAR, maxAR, maxBR):
 
         cqa = casatools.quanta
@@ -50,65 +52,33 @@ class ImagePreCheckHeuristics(object):
         elif cqa.le(minARbeamArea, beamArea_0p5) and \
              cqa.le(beamArea_0p5, maxARbeamArea):
             hm_robust = 0.5
-            # axial ratio less than max
-            if cqa.le(beamRatio_0p5, maxBR):
-                hm_robust_score_value = 1.0
-                hm_robust_score_longmsg = 'Predicted robust=0.5 beam is within the PI requested range'
-                hm_robust_score_shortmsg = 'Beam within range'
-            # axial ratio greater than max
-            else:
-                hm_robust_score_value = 0.5
-                hm_robust_score_longmsg = 'Predicted robust=0.5 beam is within the PI requested Beam Area, but the Axial Ratio exceeds the maximum allowed'
-                hm_robust_score_shortmsg = 'Beam within range, BR too large'
-                LOG.warn(hm_robust_score_longmsg)
+            hm_robust_score_value = 1.0
+            hm_robust_score_longmsg = 'Predicted robust=0.5 beam is within the PI requested range'
+            hm_robust_score_shortmsg = 'Beam within range'
 
         # robust=0.0 beam area in range
         elif cqa.le(minARbeamArea, beamArea_0p0) and \
              cqa.le(beamArea_0p0, maxARbeamArea):
             hm_robust = 0.0
-            # axial ratio less than max
-            if cqa.le(beamRatio_0p0, maxBR):
-                hm_robust_score_value = 0.85
-                hm_robust_score_longmsg = 'Predicted non-default robust=0.0 beam is within the PI requested range'
-                hm_robust_score_shortmsg = 'Beam within range using non-default robust'
-            # axial ratio greater than max
-            else:
-                hm_robust_score_value = 0.5
-                hm_robust_score_longmsg = 'Predicted non-default robust=0.0 beam is within the PI requested range, but the Axial Ratio exceeds the maximum allowed'
-                hm_robust_score_shortmsg = 'Beam within range using non-default robust, BR too large'
-            LOG.warn(hm_robust_score_longmsg)
+            hm_robust_score_value = 0.85
+            hm_robust_score_longmsg = 'Predicted non-default robust=0.0 beam is within the PI requested range'
+            hm_robust_score_shortmsg = 'Beam within range using non-default robust'
 
         # robust=1.0 beam area in range
         elif cqa.le(minARbeamArea, beamArea_1p0) and \
              cqa.le(beamArea_1p0, maxARbeamArea):
             hm_robust = 1.0
-            # axial ratio less than max
-            if cqa.le(beamRatio_1p0, maxBR):
-                hm_robust_score_value = 0.85
-                hm_robust_score_longmsg = 'Predicted non-default robust=1.0 beam is within the PI requested range'
-                hm_robust_score_shortmsg = 'Beam within range using non-default robust'
-            # axial ratio greater than max
-            else:
-                hm_robust_score_value = 0.5
-                hm_robust_score_longmsg = 'Predicted non-default robust=1.0 beam is within the PI requested range, but the Axial Ratio exceeds the maximum allowed'
-                hm_robust_score_shortmsg = 'Beam within range using non-default robust, BR too large'
-            LOG.warn(hm_robust_score_longmsg)
+            hm_robust_score_value = 0.85
+            hm_robust_score_longmsg = 'Predicted non-default robust=1.0 beam is within the PI requested range'
+            hm_robust_score_shortmsg = 'Beam within range using non-default robust'
 
         # robust=2.0 beam area in range
         elif cqa.le(minARbeamArea, beamArea_2p0) and \
              cqa.le(beamArea_2p0, maxARbeamArea):
             hm_robust = 2.0
-            # axial ratio less than max
-            if cqa.le(beamRatio_2p0, maxBR):
-                hm_robust_score_value = 0.85
-                hm_robust_score_longmsg = 'Predicted non-default robust=2.0 beam is within the PI requested range'
-                hm_robust_score_shortmsg = 'Beam within range using non-default robust'
-            # axial ratio greater than max
-            else:
-                hm_robust_score_value = 0.5
-                hm_robust_score_longmsg = 'Predicted non-default robust=2.0 beam is within the PI requested range, but the Axial Ratio exceeds the maximum allowed'
-                hm_robust_score_shortmsg = 'Beam within range using non-default robust, BR too large'
-            LOG.warn(hm_robust_score_longmsg)
+            hm_robust_score_value = 0.85
+            hm_robust_score_longmsg = 'Predicted non-default robust=2.0 beam is within the PI requested range'
+            hm_robust_score_shortmsg = 'Beam within range using non-default robust'
 
         # robust=2.0 beam area out of range
         elif cqa.lt(beamArea_2p0, minARbeamArea):

@@ -210,6 +210,8 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
                 try:
                     sensitivity, eff_ch_bw, sens_bw, known_per_spw_cont_sensitivities_all_chan = \
                         image_heuristics.calc_sensitivities(inputs.vis, repr_field, 'TARGET', str(repr_spw), nbin, {}, 'cube', gridder, cells[(robust, str(default_uvtaper), 'repBW')], imsizes[(robust, str(default_uvtaper), 'repBW')], 'briggs', robust, default_uvtaper, True, known_per_spw_cont_sensitivities_all_chan, calcsb)
+                    # Set calcsb flag to False since the first calculations of beam
+                    # and sensitivity will have already reset the dictionaries.
                     calcsb = False
                     sensitivities.append(Sensitivity(
                         array=array,
@@ -255,6 +257,8 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
             try:
                 sensitivity, eff_ch_bw, sens_bw, known_per_spw_cont_sensitivities_all_chan = \
                     image_heuristics.calc_sensitivities(inputs.vis, repr_field, 'TARGET', cont_spw, -1, {}, 'cont', gridder, cells[(robust, str(default_uvtaper), 'aggBW')], imsizes[(robust, str(default_uvtaper), 'aggBW')], 'briggs', robust, default_uvtaper, True, known_per_spw_cont_sensitivities_all_chan, calcsb)
+                # Set calcsb flag to False since the first calculations of beam
+                # and sensitivity will have already reset the dictionaries.
                 calcsb = False
                 for cont_sens_bw_mode in cont_sens_bw_modes:
                     if scale_aggBW_to_repBW and cont_sens_bw_mode == 'repBW':
