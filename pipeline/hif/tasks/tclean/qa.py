@@ -42,7 +42,10 @@ class TcleanQAHandler(pqa.QAPlugin):
         elif (result.error is not None):
             result.qa.pool[:] = [pqa.QAScore(0.0, longmsg=result.error.longmsg, shortmsg=result.error.shortmsg)]
         else:
+            # Image RMS based score
+
             qaTool = casac.quanta()
+
             try:
                 # For the score we compare the image RMS with the DR corrected
                 # sensitivity as an estimate of the expected RMS.
@@ -50,15 +53,34 @@ class TcleanQAHandler(pqa.QAPlugin):
             except Exception as e:
                 LOG.warning('Exception scoring imaging result by RMS: %s. Setting score to -0.1.' % (e))
                 rms_score = -0.1
+
             if (numpy.isnan(rms_score)):
                 result.qa.pool[:] = [pqa.QAScore(0.0, longmsg='Cleaning diverged, RMS is NaN. Field: %s Intent: %s SPW: %s' % (result.inputs['field'], result.intent, resultspw), shortmsg='RMS is NaN')]
             else:
                 if rms_score > 0.66:
-                    result.qa.pool[:] = [pqa.QAScore(rms_score, longmsg='RMS vs. DR corrected sensitivity. Field: %s Intent: %s SPW: %s' % (result.inputs['field'], result.intent, result.spw), shortmsg='RMS vs. sensitivity')]
+                    longmsg = 'RMS vs. DR corrected sensitivity. Field: %s Intent: %s SPW: %s' % (result.inputs['field'], result.intent, result.spw)
+                    shortmsg = 'RMS vs. sensitivity'
                 else:
                     # The level of 2.7 comes from the Erf scorer limits of 1 and 5.
                     # The level needs to be adjusted if these limits are modified.
-                    result.qa.pool[:] = [pqa.QAScore(rms_score, longmsg='Observed RMS noise exceeds DR corrected sensitivity by more than 2.7. Field: %s Intent: %s SPW: %s' % (result.inputs['field'], result.intent, result.spw), shortmsg='RMS vs. sensitivity')]
+                    longmsg = 'Observed RMS noise exceeds DR corrected sensitivity by more than 2.7. Field: %s Intent: %s SPW: %s' % (result.inputs['field'], result.intent, result.spw)
+                    shortmsg = 'RMS vs. sensitivity'
+
+                # Adjust RMS based score if there were PSF fit errors
+                if result.bad_psf_channels is not None:
+                    if result.bad_psf_channels.shape[0] <= 10:
+                        rms_score -= 0.11
+                        rms_score = max(0.0, rms_score)
+                        longmsg = '%s. Between 1-10 channels were masked due to significantly deviant synthesized beam(s), this is usually indicative of bad data, if at cube edge can likely be ignored.' % (longmsg)
+                        shortmsg = '%s. 1-10 channels masked.' % (shortmsg) 
+                    else:
+                        rms_score -= 0.34
+                        rms_score = max(0.0, rms_score)
+                        longmsg = '%s. More than 10 channels were masked due to significantly deviant synthesized beams, this is usually indicative of bad data, and should be investigated.' % (longmsg)
+                        shortmsg = '%s. > 10 channels masked.' % (shortmsg) 
+
+                # Add score to pool
+                result.qa.pool[:] = [pqa.QAScore(rms_score, longmsg=longmsg, shortmsg=shortmsg)]
 
             # Check source score
             #    Be careful about the source name vs field name issue
