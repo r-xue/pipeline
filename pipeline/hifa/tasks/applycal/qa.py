@@ -1,6 +1,8 @@
 from __future__ import absolute_import
 
 import operator
+import collections
+import os
 
 import pipeline.h.tasks.applycal.applycal as h_applycal
 import pipeline.hif.tasks.applycal.ifapplycal as hif_applycal
@@ -20,6 +22,18 @@ REASONS_TO_TEXT = {
     'phase.slope': ('Phase-freq', 'slope outliers')
 }
 
+PIPE356Switches = collections.namedtuple(
+    'PIPE356Switches', 'calculate_metrics export_outliers export_warnings include_scores outlier_score')
+
+PIPE356_MODES = {
+    'ON': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_warnings=False, include_scores=True,
+                          outlier_score=0.9),
+    'DEBUG': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_warnings=True, include_scores=False,
+                             outlier_score=0.5),
+    'OFF': PIPE356Switches(calculate_metrics=False, export_outliers=False, export_warnings=False, include_scores=False,
+                           outlier_score=0.5)
+}
+
 
 class ALMAApplycalQAHandler(pqa.QAPlugin):
     result_cls = h_applycal.ApplycalResults
@@ -34,17 +48,30 @@ class ALMAApplycalQAHandler(pqa.QAPlugin):
         if 'ALMA' not in ms.antenna_array.name:
             return
 
-        qa_scores = get_qa_scores(ms)
-        result.qa.pool.extend(qa_scores)
+        pipe356_mode = os.environ.get('PIPE356_QA_MODE', 'ON').upper()
+        mode_switches = PIPE356_MODES[pipe356_mode]
+
+        if mode_switches.calculate_metrics:
+            qa_scores = get_qa_scores(ms, mode_switches.export_outliers, mode_switches.outlier_score)
+        else:
+            qa_scores = []
+
+        if mode_switches.export_warnings:
+            with open('PIPE356_outliers.txt', 'a') as export_file:
+                for qa_score in qa_scores:
+                    export_file.write('{}\n'.format(qa_score.longmsg))
+
+        if mode_switches.include_scores:
+            result.qa.pool.extend(qa_scores)
 
 
-def get_qa_scores(ms):
+def get_qa_scores(ms, export_outliers, outlier_score):
     intents = ['AMPLITUDE', 'BANDPASS', 'PHASE', 'CHECK']
     all_scores = []
     for intent in intents:
-        outliers = ampphase_vs_freq_qa.score_all_scans(ms, intent)
+        outliers = ampphase_vs_freq_qa.score_all_scans(ms, intent, export_outliers)
         consolidated = ampphase_vs_freq_qa.consolidate_data_selections(outliers)
-        scores_for_intent = outliers_to_qa_scores(ms, consolidated)
+        scores_for_intent = outliers_to_qa_scores(ms, consolidated, outlier_score)
         all_scores.extend(scores_for_intent)
     return all_scores
 
@@ -91,7 +118,7 @@ class QAMessage(object):
                              '{short_message}'.format(short_message=self.short_message, **msg_args))
 
 
-def outliers_to_qa_scores(ms, outliers):
+def outliers_to_qa_scores(ms, outliers, outlier_score):
     """
     Convert a list of consolidated Outliers into a list of equivalent
     QAScores.
@@ -134,7 +161,7 @@ def outliers_to_qa_scores(ms, outliers):
         metric_axes, outlier_description = REASONS_TO_TEXT[outlier.reason]
         short_msg = '{} outliers'.format(metric_axes)
 
-        score = pqa.QAScore(0.5, longmsg=long_msg, shortmsg=short_msg)
+        score = pqa.QAScore(outlier_score, longmsg=long_msg, shortmsg=short_msg)
         score.origin = pqa.QAOrigin(metric_name='sigma_deviation',
                                     metric_score=worst_outlier.num_sigma,
                                     metric_units='Sigma deviation from reference fit')

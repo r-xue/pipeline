@@ -2,7 +2,6 @@ import collections
 import copy
 import functools
 import operator
-import os
 
 import numpy
 import scipy.optimize
@@ -29,7 +28,7 @@ PHASE_SLOPE_THRESHOLD = 6.5
 PHASE_INTERCEPT_THRESHOLD = 8.4
 
 
-def score_all_scans(ms, intent):
+def score_all_scans(ms, intent, export_outliers=False):
     """
     Calculate best fits for amplitude vs frequency and phase vs frequency
     for time-averaged visibilities, score each fit by comparison against a
@@ -39,6 +38,7 @@ def score_all_scans(ms, intent):
 
     :param ms: MeasurementSet to process
     :param intent: data intent to process
+    :param export_outliers: True if outliers should also be written to disk
     :return: outliers that deviate from a reference fit
     """
     outliers = []
@@ -54,14 +54,13 @@ def score_all_scans(ms, intent):
 
             outliers.extend(score_all(fits, outlier_fn))
 
-    if os.environ.get('DEBUG_APPLYCAL_QA', '') != '':
-        debug_path = '{}_applycal_qa.csv'.format(ms.basename)
+    if export_outliers:
+        debug_path = 'PIPE356_outliers.txt'.format(ms.basename)
         with open(debug_path, 'a') as debug_file:
             for outlier in outliers:
                 msg = '{outlier.vis} {outlier.intent} scan={outlier.scan} spw={outlier.spw} ant={outlier.ant} ' \
                       'pol={outlier.pol} reason={outlier.reason} sigma_deviation={outlier.num_sigma}' \
                       ''.format(outlier=outlier)
-                LOG.info('CASR-408: {}'.format(msg))
                 debug_file.write('{}\n'.format(msg))
 
     # collate the outlier reasons for all data. This step merges the outlier
