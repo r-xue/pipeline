@@ -36,6 +36,35 @@ class ALMAJyPerKDatabaseAccessBase(object):
         return s
 
     def __init__(self, context=None):
+        """
+        ALMAJyPerKDatabaseAccessBase is a base class for accessing Jy/K
+        DB to retrieve conversion factor for ALMA TP data.
+        ALMAJyPerKDatabaseAccessBase is kind of a template class that
+        only provides a standard workflow to get a list of conversion
+        factors. Each access class must inherit this class and
+        implement/override some methods according to the target API.
+        Subclasses must implement properties and methods listed below:
+
+            ENDPOINT_TYPE (property): Must be a string representing the API
+            access (method): Receive a list of queries as a generator,
+                             access the DB through the generator, and
+                             return the formatted response. Return value
+                             should be a dictionary with 'query', 'data',
+                             and 'total' fields. The 'query' field holds
+                             the query whil the 'data' field stores the
+                             response. The 'total' fields is the number of
+                             response. Each item of the 'data' field should
+                             consist of single conversion factor ('Factor')
+                             with the meta-data, 'MS', 'Antenna', 'Spwid',
+                             'Polarization'.
+            get_params (method): Receive a name of the MS and generate
+                                 a dictionary containing a list of query
+                                 parameters. Required parameters depend on
+                                 the API.
+
+        Keyword Arguments:
+            context {Context} -- Pipeline Context object (default: {None})
+        """
         self.context = context
 
     def _get_observing_band(self, ms):
