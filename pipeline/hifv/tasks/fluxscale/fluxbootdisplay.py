@@ -131,6 +131,10 @@ class modelfitSummaryChart(object):
         colorcount = 0
         title = ''
 
+        fig = pb.figure()
+        ax1 = fig.add_subplot(111)
+        ax2 = ax1.twiny()
+
         for source, datadicts in webdicts.iteritems():
             try:
                 frequencies = []
@@ -141,8 +145,9 @@ class modelfitSummaryChart(object):
                     model.append(float(datadict['fitteddata']))
                     frequencies.append(float(datadict['freq']))
 
-                minfreq = min(frequencies)
-                maxfreq = max(frequencies)
+                frequencies = np.array(frequencies)
+                minfreq = np.min(frequencies)
+                maxfreq = np.max(frequencies)
                 m = self.context.observing_run.get_ms(self.result.inputs['vis'])
                 fieldobject = m.get_fields(source)
                 fieldid = str(fieldobject[0].id)
@@ -158,22 +163,43 @@ class modelfitSummaryChart(object):
 
                 fittedfluxd = 10.0 ** logfittedfluxd
 
-                pb.plot(np.log10(np.array(frequencies) * 1.e9), np.log10(data), 'o', label=source,
-                        color=colors[colorcount])
+                ax1.plot(np.log10(np.array(frequencies) * 1.e9), np.log10(data), 'o', label=source,
+                         color=colors[colorcount])
                 # pb.plot(frequencies, model, '-', color=colors[colorcount])
-                pb.plot(np.log10(freqs), np.log10(fittedfluxd), '-', color=colors[colorcount])
-                pb.ylabel('log10 Flux Density [Jy]', size=mysize)
-                pb.xlabel('log10 Frequency [GHz]', size=mysize)
-                # pb.set_xscale('log')
-                # pb.set_yscale('log')
-                pb.legend()
+                ax1.plot(np.log10(freqs), np.log10(fittedfluxd), '-', color=colors[colorcount])
+
+                ax1.tick_params(axis='x', which='minor', bottom=False)
+                ax1.tick_params(bottom=True, top=False, left=True, right=False)
+                ax1.tick_params(labelbottom=True, labeltop=False, labelleft=True, labelright=False)
+                ax1.set_xlim(np.log10(np.array([1.e9 * minfreq * 0.9, 1.e9 * maxfreq * 1.1])))
+
+                locs = ax1.get_xticks()
+                locs = locs[1:-1]
+
+                precision = 2
+                # LOG.debug(locs)
+                labels = ["{:.{}f}".format(loc, precision) for loc in (10 ** locs) / 1.e9]
+                # LOG.debug(labels)
+                ax2.set_xlim(np.log10(np.array([1.e9 * minfreq * 0.9, 1.e9 * maxfreq * 1.1])))
+                ax2.set_xticks(locs)
+                ax2.set_xticklabels(labels)
+                ax2.tick_params(bottom=False, top=True, left=False, right=False)
+                ax2.tick_params(labelbottom=False, labeltop=True, labelleft=False, labelright=False)
+                # pb.xscale('log')
+                # pb.yscale('log')
+
                 # title = title + '   ' + str(source) + '({!s})'.format(colors[colorcount])
                 colorcount += 1
 
             except Exception as e:
-                continue
+                print(e)
 
-        pb.title('Flux (Data and Fit) vs. Frequency')
+        ax1.legend()
+        ax1.set_ylabel('log10 Flux Density [Jy]', size=mysize)
+        ax1.set_xlabel('log10 Frequency [Hz]', size=mysize)
+        ax2.set_xlabel('Frequency [GHz]', size=mysize)
+
+        # pb.title('Flux (Data and Fit) vs. Frequency')
         pb.savefig(figfile)
         pb.close()
 
