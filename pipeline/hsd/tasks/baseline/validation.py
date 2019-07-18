@@ -294,7 +294,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         ProcStartTime = time.time()
         LOG.info('Clustering: Detection Stage Start')
 
-        (GridCluster, GridMember) = self.detection_stage(Ncluster, nra, ndec, x0, y0, grid_ra, grid_dec, category,
+        (GridCluster, GridMember, cluster_flag) = self.detection_stage(Ncluster, nra, ndec, x0, y0, grid_ra, grid_dec, category,
                                                          Region, detect_signal)
 
         ProcEndTime = time.time()
@@ -304,7 +304,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         ProcStartTime = time.time()
         LOG.info('Clustering: Validation Stage Start')
 
-        (GridCluster, GridMember, lines) = self.validation_stage(GridCluster, GridMember, lines)
+        (GridCluster, GridMember, lines, cluster_flag) = self.validation_stage(GridCluster, GridMember, lines, cluster_flag)
 
         ProcEndTime = time.time()
         LOG.info('Clustering: Validation Stage End: Elapsed time = {} sec', (ProcEndTime - ProcStartTime))
@@ -320,7 +320,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         ProcStartTime = time.time()
         LOG.info('Clustering: Smoothing Stage Start')
 
-        (GridCluster, lines) = self.smoothing_stage(GridCluster, lines)
+        (GridCluster, lines, cluster_flag) = self.smoothing_stage(GridCluster, lines, cluster_flag)
 
         ProcEndTime = time.time()
         LOG.info('Clustering: Smoothing Stage End: Elapsed time = {} sec', (ProcEndTime - ProcStartTime))
@@ -330,15 +330,15 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         LOG.info('Clustering: Final Stage Start')
 
         # create virtual index_list
-        (RealSignal, lines, channelmap_range) = self.final_stage(GridCluster, GridMember, Region, Region2,
+        (RealSignal, lines, channelmap_range, cluster_flag) = self.final_stage(GridCluster, GridMember, Region, Region2,
                                                                  lines, category, grid_ra, grid_dec, broad_component,
                                                                  xorder, yorder, x0, y0, Grid2SpectrumID, index_list,
-                                                                 PosList)
+                                                                 PosList, cluster_flag)
 
         ProcEndTime = time.time()
         LOG.info('Clustering: Final Stage End: Elapsed time = {} sec', (ProcEndTime - ProcStartTime))
 
-        return RealSignal, lines, channelmap_range
+        return RealSignal, lines, channelmap_range, cluster_flag
 
     def prepare(self, datatable_dict=None, index_list=None, grid_table=None, detect_signal=None):
         """
@@ -647,7 +647,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         # If more than one results exist, minimum contents of RealSignal will be merged
         # and remaining items (PolList) will be lost
         # Original RealSignal data will be stored in validated[x][0]
-        (RealSignal, lines, channelmap_range) = self._merge_cluster_result(validated)
+        (RealSignal, lines, channelmap_range, cluster_flag) = self._merge_cluster_result(validated)
+        self.cluster_info['cluster_flag'] = cluster_flag
 
         # Merge masks if possible
         ProcStartTime = time.time()
@@ -749,8 +750,9 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                 merged_RealSignal[k][2].extend(v[2])
         merged_lines = [l for r in result_list for l in r[1]]
         merged_channelmap_ranges = [l for r in result_list for l in r[2]]
+        merged_flag = numpy.concatenate([r[3] for r in result_list], axis=0)
 
-        return merged_RealSignal, merged_lines, merged_channelmap_ranges
+        return merged_RealSignal, merged_lines, merged_channelmap_ranges, merged_flag
 
     def clean_detect_signal(self, DS):
         """
@@ -1285,13 +1287,14 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         #     exceeded two (out of three) thresholds in smoothing, and
         #     exceeded three (out of four) thresholds in final.
         #
-        self.cluster_info['cluster_flag'] = numpy.zeros(GridCluster.shape, dtype=numpy.uint16)
+        #self.cluster_info['cluster_flag'] = numpy.zeros(GridCluster.shape, dtype=numpy.uint16)
         threshold = [1.5, 0.5]
-        self.__update_cluster_flag('detection', GridCluster, threshold, 1)
+        cluster_flag = numpy.zeros(GridCluster.shape, dtype=numpy.uint16)
+        cluster_flag = self.__update_cluster_flag(cluster_flag, 'detection', GridCluster, threshold, 1)
 
-        return (GridCluster, GridMember)
+        return (GridCluster, GridMember, cluster_flag)
 
-    def validation_stage(self, GridCluster, GridMember, lines):
+    def validation_stage(self, GridCluster, GridMember, lines, cluster_flag):
         # Validated if number of spectrum which contains feature belongs to the cluster is greater or equal to
         # the half number of spectrum in the Grid
         # Normally, 3 spectra are created for each grid positions,
@@ -1322,14 +1325,14 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             if ((GridCluster[Nc] > self.Questionable)*1).sum() == 0: lines[Nc][2] = False
 
         threshold = [self.Valid, self.Marginal, self.Questionable]
-        self.__update_cluster_flag('validation', GridCluster, threshold, 10)
+        cluster_flag = self.__update_cluster_flag(cluster_flag, 'validation', GridCluster, threshold, 10)
         LOG.trace('GridCluster {}', GridCluster)
         LOG.trace('GridMember {}', GridMember)
         self.GridClusterValidation = GridCluster.copy()
 
-        return (GridCluster, GridMember, lines)
+        return (GridCluster, GridMember, lines, cluster_flag)
 
-    def smoothing_stage(self, GridCluster, lines):
+    def smoothing_stage(self, GridCluster, lines, cluster_flag):
         # Rating:  [0.0, 0.4, 0.5, 0.4, 0.0]
         #          [0.4, 0.7, 1.0, 0.7, 0.4]
         #          [0.5, 1.0, 6.0, 1.0, 0.5]
@@ -1397,13 +1400,13 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             if ((GridCluster[Nc] > self.Questionable)*1).sum() < 0.1: lines[Nc][2] = False
 
         threshold = [self.Valid, self.Marginal, self.Questionable]
-        self.__update_cluster_flag('smoothing', GridCluster, threshold, 100)
+        cluster_flag = self.__update_cluster_flag(cluster_flag, 'smoothing', GridCluster, threshold, 100)
         LOG.trace('threshold = {}', threshold)
         LOG.trace('GridCluster = {}', GridCluster)
 
-        return (GridCluster, lines)
+        return (GridCluster, lines, cluster_flag)
 
-    def final_stage(self, GridCluster, GridMember, Region, Region2, lines, category, grid_ra, grid_dec, broad_component, xorder, yorder, x0, y0, Grid2SpectrumID, index_list, PosList):
+    def final_stage(self, GridCluster, GridMember, Region, Region2, lines, category, grid_ra, grid_dec, broad_component, xorder, yorder, x0, y0, Grid2SpectrumID, index_list, PosList, cluster_flag):
 
         (Ncluster, nra, ndec) = GridCluster.shape
         xorder0 = xorder
@@ -1784,9 +1787,9 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                         elif GridCluster[Nc][x][y] > 0.5: GridCluster[Nc][x][y] = 1.0
 
         threshold = [1.5, 0.5, 0.5, 0.5]
-        self.__update_cluster_flag('final', GridCluster, threshold, 1000)
+        cluster_flag = self.__update_cluster_flag(cluster_flag, 'final', GridCluster, threshold, 1000)
 
-        return (RealSignal, lines, channelmap_range)
+        return (RealSignal, lines, channelmap_range, cluster_flag)
 
     def CleanIsolation(self, nra, ndec, Original, Plane, GridMember):
         """
@@ -1933,13 +1936,14 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             #dummy = (region[1:] - region[:-1]).nonzero()[0]
             #return dummy.reshape((len(dummy)/2,2)).tolist()
 
-    def __update_cluster_flag(self, stage, GridCluster, threshold, factor):
-        cluster_flag = self.cluster_info['cluster_flag']
+    def __update_cluster_flag(self, cluster_flag, stage, GridCluster, threshold, factor):
+        #cluster_flag = self.cluster_info['cluster_flag']
         for t in threshold:
             cluster_flag = cluster_flag + factor * (GridCluster > t)
-        self.cluster_info['cluster_flag'] = cluster_flag
+        #self.cluster_info['cluster_flag'] = cluster_flag
         self.cluster_info['%s_threshold'%(stage)] = threshold
-        LOG.trace('cluster_flag = {}', cluster_flag)
+        #LOG.trace('cluster_flag = {}', cluster_flag)
+        return cluster_flag
 
 
 def convolve2d(data, kernel, mode='nearest', cval=0.0):
