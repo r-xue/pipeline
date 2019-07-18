@@ -265,7 +265,7 @@
 
             cycleniter -- Controls max number of minor cycle iterations in a single major cycle.
 
-            datasolumn -- Data column to image
+            datacolumn -- Data column to image
 
             deconvolver -- Minor cycle algorithm e.g. 'multiscale' or 'mtmfs'.
             default: 'multiscale'
