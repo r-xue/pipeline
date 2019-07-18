@@ -345,7 +345,7 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
 
         return keep_iterating, hm_masking
 
-    def threshold(self, iteration, threshold, rms_threshold, nsigma, hm_masking):
+    def threshold(self, iteration, threshold, hm_masking):
 
         if iteration == 0:
             return '0.0mJy'

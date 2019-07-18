@@ -78,7 +78,7 @@ class EditimlistInputs(vdp.StandardInputs):
     start = vdp.VisDependentProperty(default='')
     stokes = vdp.VisDependentProperty(default='')
     threshold = vdp.VisDependentProperty(default='')
-    threshold_nsigma = vdp.VisDependentProperty(default=0)
+#    nsigma = vdp.VisDependentProperty(default=0)
     uvtaper = vdp.VisDependentProperty(default='')
     uvrange = vdp.VisDependentProperty(default='')
     width = vdp.VisDependentProperty(default='')
@@ -134,7 +134,7 @@ class EditimlistInputs(vdp.StandardInputs):
                  mask=None, nbin=None, nchan=None, niter=None, nterms=None,
                  parameter_file=None, phasecenter=None, reffreq=None, restfreq=None,
                  robust=None, scales=None, specmode=None, spw=None,
-                 start=None, stokes=None, threshold=None, threshold_nsigma=None,
+                 start=None, stokes=None, threshold=None, nsigma=None,
                  uvtaper=None, uvrange=None, width=None, sensitivity=None):
 
         super(EditimlistInputs, self).__init__()
@@ -171,7 +171,7 @@ class EditimlistInputs(vdp.StandardInputs):
         self.start = start
         self.stokes = stokes
         self.threshold = threshold
-        self.threshold_nsigma = threshold_nsigma
+#        self.nsigma = nsigma
         self.uvtaper = uvtaper
         self.uvrange = uvrange
         self.width = width
@@ -182,7 +182,8 @@ class EditimlistInputs(vdp.StandardInputs):
                             'start', 'width', 'nbin', 'nchan', 'uvrange', 'stokes', 'nterms',
                             'robust', 'uvtaper', 'niter', 'cyclefactor', 'cycleniter', 'mask',
                             'search_radius_arcsec', 'threshold', 'imaging_mode', 'reffreq', 'restfreq',
-                            'editmode', 'threshold_nsigma', 'sensitivity', 'conjbeams')
+                            'editmode', #'nsigma',
+                            'sensitivity', 'conjbeams')
 
         self.keys_to_change = []
         keydict = self.as_dict()
@@ -308,20 +309,11 @@ class Editimlist(basetask.StandardTaskTemplate):
                                                             imaging_params=inp.context.imaging_parameters,
                                                             imaging_mode=img_mode)
 
-        # NB: the 'threshold_nsigma' parameter in hif_editimlist translates to
-        #     the internal 'rms_sigma' in hif_makeimages
-        threshold_set_by_user = bool(inpdict['threshold'])
-        rms_nsigma_set_by_user = bool(inpdict['threshold_nsigma'])
-        if threshold_set_by_user and not rms_nsigma_set_by_user:
-            imlist_entry['threshold'] = inpdict['threshold']
-        elif rms_nsigma_set_by_user and not threshold_set_by_user:
-            imlist_entry['rms_nsigma'] = inpdict['threshold_nsigma']
-        elif rms_nsigma_set_by_user and threshold_set_by_user:
-            imlist_entry['threshold'] = inpdict['threshold']
-            imlist_entry['rms_nsigma'] = inpdict['threshold_nsigma']
-            LOG.warn("Both 'threshold' and 'threshold_nsigma' were specified.")
-        else:  # neither set by user.  Use nsigma.
-            imlist_entry['rms_nsigma'] = th.threshold_nsigma()
+        imlist_entry['threshold'] = inpdict['threshold']
+#        imlist_entry['hm_nsigma'] = None if inpdict['nsigma'] in (None, -999.0) else inpdict['nsigma']
+
+#        if inpdict['threshold'] and inpdict['nsigma']:
+#            LOG.warn("Both 'threshold' and 'nsigma' were specified.")
 
         imlist_entry['stokes'] = th.stokes() if not inpdict['stokes'] else inpdict['stokes']
         imlist_entry['conjbeams'] = th.conjbeams() if not inpdict['conjbeams'] else inpdict['conjbeams']

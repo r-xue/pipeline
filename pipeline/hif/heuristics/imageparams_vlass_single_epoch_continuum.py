@@ -24,15 +24,6 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
     def niter(self):
         return self.niter_correction(None, None, None, None, None)
 
-    def rms_threshold(self, rms, nsigma):
-        try:
-            LOG.info('Threshold nsigma multiplier: %s', nsigma)
-            threshold = rms * float(nsigma)
-            LOG.info('Setting new threshold to [robust rms * nsigma]: {th}'.format(th=threshold))
-        except TypeError:
-            threshold = None
-        return threshold
-
     def deconvolver(self, specmode, spwspec):
         return 'mtmfs'
 
@@ -47,9 +38,6 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
 
     def imsize(self, fields=None, cell=None, primary_beam=None, sfpblimit=None, max_pixels=None, centreonly=None):
         return [12150, 12150]
-
-    def threshold_nsigma(self):
-        return 4.0
 
     def reffreq(self):
         return '3.0GHz'
@@ -214,40 +202,19 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         else:
             return False, hm_masking
 
-    def _new_threshold(self, threshold, rms_threshold, nsigma):
-
-        if rms_threshold:
-            if threshold:
-                qa = casatools.quanta
-                threshold = qa.quantity(threshold)['value']
-                rms_threshold = qa.quantity(rms_threshold)['value']
-                LOG.warn("Both the 'threshold' and 'threshold_nsigma' were specified.")
-                LOG.warn('Setting new threshold to max of input threshold and scaled MAD * nsigma.')
-                LOG.info("    Input 'threshold' = {tt}".format(tt=threshold))
-                LOG.info("    Input 'threshold_nsigma' = {ns}".format(ns=nsigma))
-                LOG.info("    Scaled MAD * 'threshold_nsigma' = {ts}".format(ts=rms_threshold))
-                LOG.info('    max(threshold, scaled MAD * nsigma)= {nt}'.format(nt=max(threshold, rms_threshold)))
-                new_threshold = max(threshold, rms_threshold)
-            else:
-                new_threshold = rms_threshold
-        else:
-            new_threshold = threshold
-
-        return new_threshold
-
-    def threshold(self, iteration, threshold, rms_threshold, nsigma, hm_masking):
+    def threshold(self, iteration, threshold, hm_masking):
 
         if hm_masking == 'auto':
             return '0.0mJy'
         elif hm_masking == 'none':
             if iteration in [0, 1]:
-                return self._new_threshold(threshold, rms_threshold, nsigma)
+                return threshold
             else:
                 return '0.0mJy'
         else:
-            return self._new_threshold(threshold, rms_threshold, nsigma)
+            return threshold
 
-    def nsigma(self, iteration, hm_masking, hm_nsigma):
+    def nsigma(self, iteration, hm_nsigma):
 
         if hm_nsigma:
             return hm_nsigma

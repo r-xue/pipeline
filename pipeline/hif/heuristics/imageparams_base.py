@@ -1755,12 +1755,6 @@ class ImageParamsHeuristics(object):
 
         return threshold, DR_correction_factor, maxEDR_used
 
-    def rms_threshold(self, rms, nsigma):
-        return None
-
-    def threshold_nsigma(self):
-        return None
-
     def niter_correction(self, niter, cell, imsize, residual_max, threshold):
         return niter
 
@@ -1922,14 +1916,14 @@ class ImageParamsHeuristics(object):
         else:
             return False, hm_masking
 
-    def threshold(self, iteration, threshold, rms_threshold, nsigma, hm_masking):
+    def threshold(self, iteration, threshold, hm_masking):
 
         if iteration == 0:
             return '0.0mJy'
         else:
             return threshold
 
-    def nsigma(self, iteration, hm_masking, hm_nsigma):
+    def nsigma(self, iteration, hm_nsigma):
 
         return hm_nsigma
 

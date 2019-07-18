@@ -307,10 +307,12 @@ class CleanTaskFactory(object):
             'cleancontranges': inputs.cleancontranges,
             'calcsb': inputs.calcsb,
             'parallel': parallel,
-            'hm_nsigma': inputs.hm_nsigma,
             'hm_perchanweightdensity': inputs.hm_perchanweightdensity,
             'hm_npixels': inputs.hm_npixels,
         })
+
+        if 'hm_nsigma' not in task_args:
+            task_args['hm_nsigma'] = inputs.hm_nsigma
 
         if target['robust'] not in (None, -999.0):
             task_args['robust'] = target['robust']

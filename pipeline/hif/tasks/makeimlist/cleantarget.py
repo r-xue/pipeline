@@ -37,7 +37,6 @@ class CleanTarget(dict):
         self['reffreq'] = None         # string
         self['restfreq'] = None        # string
         self['heuristics'] = None      # object
-        self['rms_nsigma'] = None      # float
         # vis list only for special setups like CHECK source
         # imaging per EB for ALMA
         self['vis'] = None             # list of strings

@@ -31,7 +31,6 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
     masklimit = vdp.VisDependentProperty(default=4.0)
     mosweight = vdp.VisDependentProperty(default=None)
     parallel = vdp.VisDependentProperty(default='automatic')
-    rms_nsigma = vdp.VisDependentProperty(default=None)
     reffreq = vdp.VisDependentProperty(default=None)
     restfreq = vdp.VisDependentProperty(default=None)
     tlimit = vdp.VisDependentProperty(default=2.0)
@@ -108,7 +107,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
                  iter=None, mask=None, niter=None, threshold=None, tlimit=None, masklimit=None,
                  calcsb=None, cleancontranges=None, parallel=None,
                  # Extra parameters not in the CLI task interface
-                 weighting=None, robust=None, uvtaper=None, scales=None, rms_nsigma=None, cycleniter=None, cyclefactor=None,
+                 weighting=None, robust=None, uvtaper=None, scales=None, cycleniter=None, cyclefactor=None,
                  sensitivity=None, reffreq=None, restfreq=None, conjbeams=None, is_per_eb=None, antenna=None,
                  usepointing=None, mosweight=None, spwsel_all_cont=None, num_all_spws=None, num_good_spws=None,
                  # End of extra parameters
@@ -140,7 +139,6 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
         self.image_heuristics = heuristics
         self.masklimit = masklimit
         self.nbin = nbin
-        self.rms_nsigma = rms_nsigma
         self.reffreq = reffreq
         self.restfreq = restfreq
         self.spwsel_lsrk = spwsel_lsrk
@@ -700,10 +698,8 @@ class Tclean(cleanbase.CleanBase):
             else:
                 new_cleanmask = '%s.iter%s.cleanmask' % (rootname, iteration)
 
-            rms_threshold = self.image_heuristics.rms_threshold(residual_robust_rms, inputs.rms_nsigma)
-            threshold = self.image_heuristics.threshold(iteration, sequence_manager.threshold, rms_threshold,
-                                                        inputs.rms_nsigma, inputs.hm_masking)
-            nsigma = self.image_heuristics.nsigma(iteration, inputs.hm_masking, inputs.hm_nsigma)
+            threshold = self.image_heuristics.threshold(iteration, sequence_manager.threshold, inputs.hm_masking)
+            nsigma = self.image_heuristics.nsigma(iteration, inputs.hm_nsigma)
             savemodel = self.image_heuristics.savemodel(iteration)
 
             # perform an iteration.
@@ -889,7 +885,6 @@ class Tclean(cleanbase.CleanBase):
             inputs.width = self.width_as_frequency
 
         return clean_result
-
 
     # Remove pointing table.
     def _empty_pointing_table(self):

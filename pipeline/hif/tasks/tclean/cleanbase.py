@@ -488,12 +488,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             if mosweight is not None:
                 tclean_job_parameters['mosweight'] = mosweight
 
-        if inputs.hm_nsigma is not None:
-            tclean_job_parameters['nsigma'] = inputs.hm_nsigma
-        else:
-            hm_nsigma = inputs.heuristics.mosweight(inputs.intent, inputs.field)
-            if hm_nsigma is not None:
-                tclean_job_parameters['nsigma'] = hm_nsigma
+        tclean_job_parameters['nsigma'] = inputs.heuristics.nsigma(iter, inputs.hm_nsigma)
 
         # Up until CASA 5.2 it is necessary to run tclean calls with
         # restoringbeam == 'common' in two steps in HPC mode (CAS-10849).
