@@ -135,6 +135,9 @@ class modelfitSummaryChart(object):
         ax1 = fig.add_subplot(111)
         ax2 = ax1.twiny()
 
+        dataminlist = []
+        datamaxlist = []
+
         for source, datadicts in webdicts.iteritems():
             try:
                 frequencies = []
@@ -144,6 +147,9 @@ class modelfitSummaryChart(object):
                     data.append(float(datadict['data']))
                     model.append(float(datadict['fitteddata']))
                     frequencies.append(float(datadict['freq']))
+
+                dataminlist.append(np.min(np.log10(data)))
+                datamaxlist.append(np.max(np.log10(data)))
 
                 frequencies = np.array(frequencies)
                 minfreq = np.min(frequencies)
@@ -193,6 +199,13 @@ class modelfitSummaryChart(object):
 
             except Exception as e:
                 print(e)
+
+        datamin = np.min(dataminlist)
+        datamax = np.max(datamaxlist)
+
+        ylimlist = [datamin - (np.abs(datamin) * 0.2), datamax + (np.abs(datamax) * 0.2)]
+        ax1.set_ylim(ylimlist)
+        ax2.set_ylim(ylimlist)
 
         ax1.legend()
         ax1.set_ylabel('log10 Flux Density [Jy]', size=mysize)
