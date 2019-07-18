@@ -416,3 +416,6 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
 
     def datacolumn(self):
         return 'data'
+
+    def wprojplanes(self):
+        return 1

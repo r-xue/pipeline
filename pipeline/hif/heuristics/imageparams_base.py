@@ -1943,6 +1943,9 @@ class ImageParamsHeuristics(object):
     def datacolumn(self):
         return None
 
+    def wprojplanes(self):
+        return None
+
     def find_good_commonbeam(self, psf_filename):
         '''
         Find and replace outlier beams to calculate a good common beam.

@@ -235,3 +235,6 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
 
     def datacolumn(self):
         return 'data'
+
+    def wprojplanes(self):
+        return 32

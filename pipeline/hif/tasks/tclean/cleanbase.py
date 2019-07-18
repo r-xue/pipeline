@@ -73,6 +73,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     weighting = vdp.VisDependentProperty(default='briggs')
     width = vdp.VisDependentProperty(default='')
     restfreq = vdp.VisDependentProperty(default=None)
+    wprojplanes = vdp.VisDependentProperty(default=None)
 
     # properties requiring some logic ----------------------------------------------------------------------------------
 
@@ -112,7 +113,7 @@ class CleanBaseInputs(vdp.StandardInputs):
                  uvtaper=None, nterms=None, cycleniter=None, cyclefactor=None, scales=None, outframe=None, imsize=None,
                  cell=None, phasecenter=None, nchan=None, start=None, width=None, stokes=None, weighting=None,
                  robust=None, restoringbeam=None, iter=None, mask=None, savemodel=None, hm_masking=None,
-                 hm_sidelobethreshold=None, hm_noisethreshold=None, hm_lownoisethreshold=None,
+                 hm_sidelobethreshold=None, hm_noisethreshold=None, hm_lownoisethreshold=None, wprojplanes=None,
                  hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None, hm_dogrowprune=None,
                  hm_minpercentchange=None, hm_fastnoise=None, pblimit=None, niter=None, hm_nsigma=None,
                  hm_perchanweightdensity=None, hm_npixels=None, threshold=None, sensitivity=None, reffreq=None,
@@ -181,6 +182,7 @@ class CleanBaseInputs(vdp.StandardInputs):
         self.antenna = antenna
         self.usepointing = usepointing
         self.mosweight = mosweight
+        self.wprojplanes = wprojplanes
         self.heuristics = heuristics
 
 
@@ -489,6 +491,7 @@ class CleanBase(basetask.StandardTaskTemplate):
                 tclean_job_parameters['mosweight'] = mosweight
 
         tclean_job_parameters['nsigma'] = inputs.heuristics.nsigma(iter, inputs.hm_nsigma)
+        tclean_job_parameters['wprojplanes'] = inputs.heuristics.wprojplanes()
 
         # Up until CASA 5.2 it is necessary to run tclean calls with
         # restoringbeam == 'common' in two steps in HPC mode (CAS-10849).
