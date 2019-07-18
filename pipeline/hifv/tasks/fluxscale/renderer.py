@@ -192,7 +192,7 @@ class T2_4MDetailsfluxbootRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 reffreq = "{:.{}f}".format(float(row['reffreq']), precision)
                 bandcenterfreq = "{:.{}f}".format(float(row['bandcenterfreq'])/1.e9, precision)
 
-                tr = FluxTR(row['source'], row['band'], bandcenterfreq, fitflx + ' +/-' + fitflxerr,
+                tr = FluxTR(row['source'], row['band'], bandcenterfreq, fitflx + ' +/- ' + fitflxerr,
                             spix + ' +/- ' + spixerr,
                             curvature + ' +/- ' + curvatureerr,
                             gamma + ' +/- ' + gammaerr,
