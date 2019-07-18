@@ -1761,7 +1761,7 @@ class ImageParamsHeuristics(object):
     def niter(self):
         return None
 
-    def get_autobox_params(self, intent, specmode, robust):
+    def get_autobox_params(self, iteration, intent, specmode, robust):
 
         '''Default auto-boxing parameters.'''
 
@@ -1775,7 +1775,8 @@ class ImageParamsHeuristics(object):
         minpercentchange = None
         fastnoise = None
 
-        return sidelobethreshold, noisethreshold, lownoisethreshold, negativethreshold, minbeamfrac, growiterations, dogrowprune, minpercentchange, fastnoise
+        return (sidelobethreshold, noisethreshold, lownoisethreshold, negativethreshold, minbeamfrac, growiterations,
+                dogrowprune, minpercentchange, fastnoise)
 
     def nterms(self):
         return None

@@ -241,3 +241,23 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
 
     def rotatepastep(self):
         return 5.
+
+    def get_autobox_params(self, iteration, intent, specmode, robust):
+
+        '''Default auto-boxing parameters.'''
+
+        sidelobethreshold = None
+        noisethreshold = None
+        lownoisethreshold = None
+        negativethreshold = None
+        if iteration == 0:
+            minbeamfrac = 0.3
+        else:
+            minbeamfrac = 0.1
+        growiterations = None
+        dogrowprune = None
+        minpercentchange = None
+        fastnoise = None
+
+        return (sidelobethreshold, noisethreshold, lownoisethreshold, negativethreshold, minbeamfrac,
+                growiterations, dogrowprune, minpercentchange, fastnoise)

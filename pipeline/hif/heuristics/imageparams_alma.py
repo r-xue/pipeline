@@ -211,7 +211,7 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
 
         return np.median(percentileBaselineLengths), min_diameter
 
-    def get_autobox_params(self, intent, specmode, robust):
+    def get_autobox_params(self, iteration, intent, specmode, robust):
         """Default auto-boxing parameters for ALMA main array and ACA."""
 
         # Start with generic defaults

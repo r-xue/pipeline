@@ -422,3 +422,20 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
 
     def rotatepastep(self):
         return 360.
+
+    def get_autobox_params(self, iteration, intent, specmode, robust):
+
+        '''Default auto-boxing parameters.'''
+
+        sidelobethreshold = None
+        noisethreshold = None
+        lownoisethreshold = None
+        negativethreshold = None
+        minbeamfrac = 0.3
+        growiterations = None
+        dogrowprune = None
+        minpercentchange = None
+        fastnoise = None
+
+        return (sidelobethreshold, noisethreshold, lownoisethreshold, negativethreshold, minbeamfrac,
+                growiterations, dogrowprune, minpercentchange, fastnoise)
