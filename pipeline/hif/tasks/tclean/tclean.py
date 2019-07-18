@@ -27,6 +27,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
 
     calcsb = vdp.VisDependentProperty(default=False)
     cleancontranges = vdp.VisDependentProperty(default=False)
+    datacolumn = vdp.VisDependentProperty(default=None)
     hm_cleaning = vdp.VisDependentProperty(default='rms')
     masklimit = vdp.VisDependentProperty(default=4.0)
     mosweight = vdp.VisDependentProperty(default=None)
@@ -99,7 +100,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
     def __init__(self, context, output_dir=None, vis=None, imagename=None, intent=None, field=None, spw=None,
                  spwsel_lsrk=None, spwsel_topo=None, uvrange=None, specmode=None, gridder=None, deconvolver=None,
                  nterms=None, outframe=None, imsize=None, cell=None, phasecenter=None, stokes=None, nchan=None,
-                 start=None, width=None, nbin=None,
+                 start=None, width=None, nbin=None, datacolumn=None,
                  restoringbeam=None, hm_masking=None, hm_sidelobethreshold=None, hm_noisethreshold=None,
                  hm_lownoisethreshold=None, hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None,
                  hm_dogrowprune=None, hm_minpercentchange=None, hm_fastnoise=None, hm_nsigma=None,
@@ -113,7 +114,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
                  # End of extra parameters
                  heuristics=None):
         super(TcleanInputs, self).__init__(context, output_dir=output_dir, vis=vis,
-                                           imagename=imagename, antenna=antenna,
+                                           imagename=imagename, antenna=antenna, datacolumn=datacolumn,
                                            intent=intent, field=field, spw=spw, uvrange=uvrange, specmode=specmode,
                                            gridder=gridder, deconvolver=deconvolver, uvtaper=uvtaper, nterms=nterms,
                                            cycleniter=cycleniter, cyclefactor=cyclefactor, scales=scales,
@@ -156,6 +157,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
         self.antenna = antenna
         self.usepointing = usepointing
         self.mosweight = mosweight
+        self.datacolumn = datacolumn
 
 
 # tell the infrastructure to give us mstransformed data when possible by
@@ -833,6 +835,7 @@ class Tclean(cleanbase.CleanBase):
                                                   orig_specmode=inputs.orig_specmode,
                                                   specmode=inputs.specmode,
                                                   gridder=inputs.gridder,
+                                                  datacolumn=inputs.datacolumn,
                                                   deconvolver=inputs.deconvolver,
                                                   nterms=inputs.nterms,
                                                   cycleniter=inputs.cycleniter,

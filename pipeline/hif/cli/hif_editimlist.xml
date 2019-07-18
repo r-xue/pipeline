@@ -41,6 +41,11 @@
                 <value/>
             </param>
 
+            <param type="string" name="datacolumn">
+                <description>Data column to image</description>
+                <value/>
+            </param>
+
             <param type="string" name="deconvolver">
                 <description>Minor cycle algorithm (multiscale or mtmfs)</description>
                 <value/>
@@ -259,6 +264,8 @@
             cyclefactor -- Controls the depth of clean in minor cycles based on PSF.
 
             cycleniter -- Controls max number of minor cycle iterations in a single major cycle.
+
+            datasolumn -- Data column to image
 
             deconvolver -- Minor cycle algorithm e.g. 'multiscale' or 'mtmfs'.
             default: 'multiscale'

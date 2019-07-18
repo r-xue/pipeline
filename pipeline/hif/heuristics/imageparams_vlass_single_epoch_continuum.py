@@ -232,3 +232,6 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
             return 'modelcolumn'
         else:
             return None
+
+    def datacolumn(self):
+        return 'data'

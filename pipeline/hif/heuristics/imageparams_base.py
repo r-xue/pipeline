@@ -1940,6 +1940,9 @@ class ImageParamsHeuristics(object):
     def specmode(self):
         return 'mfs'
 
+    def datacolumn(self):
+        return None
+
     def find_good_commonbeam(self, psf_filename):
         '''
         Find and replace outlier beams to calculate a good common beam.

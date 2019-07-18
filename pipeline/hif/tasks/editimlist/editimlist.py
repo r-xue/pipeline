@@ -57,6 +57,7 @@ class EditimlistInputs(vdp.StandardInputs):
     conjbeams = vdp.VisDependentProperty(default=False)
     cyclefactor = vdp.VisDependentProperty(default='')
     cycleniter = vdp.VisDependentProperty(default='')
+    datacolumn = vdp.VisDependentProperty(default='')
     deconvolver = vdp.VisDependentProperty(default='')
     editmode = vdp.VisDependentProperty(default='')
     imaging_mode = vdp.VisDependentProperty(default='')
@@ -128,7 +129,7 @@ class EditimlistInputs(vdp.StandardInputs):
 
     def __init__(self, context, output_dir=None, vis=None,
                  search_radius_arcsec=None, cell=None, conjbeams=None,
-                 cyclefactor=None, cycleniter=None, deconvolver=None,
+                 cyclefactor=None, cycleniter=None, datacolumn=None, deconvolver=None,
                  editmode=None, field=None, imaging_mode=None,
                  imagename=None, imsize=None, intent=None, gridder=None,
                  mask=None, nbin=None, nchan=None, niter=None, nterms=None,
@@ -147,6 +148,7 @@ class EditimlistInputs(vdp.StandardInputs):
         self.conjbeams = conjbeams
         self.cyclefactor = cyclefactor
         self.cycleniter = cycleniter
+        self.datacolumn = datacolumn
         self.deconvolver = deconvolver
         self.editmode = editmode
         self.field = field
@@ -177,7 +179,7 @@ class EditimlistInputs(vdp.StandardInputs):
         self.width = width
         self.sensitivity = sensitivity
 
-        keys_to_consider = ('field', 'intent', 'spw', 'cell', 'deconvolver', 'imsize',
+        keys_to_consider = ('field', 'intent', 'spw', 'cell', 'datacolumn', 'deconvolver', 'imsize',
                             'phasecenter', 'specmode', 'gridder', 'imagename', 'scales',
                             'start', 'width', 'nbin', 'nchan', 'uvrange', 'stokes', 'nterms',
                             'robust', 'uvtaper', 'niter', 'cyclefactor', 'cycleniter', 'mask',
@@ -342,6 +344,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         LOG.info("{k} = {v}".format(k='search_radius', v=buffer_arcsec))
         result.capture_buffer_size(buffer_arcsec)
         imlist_entry['intent'] = th.intent() if not inpdict['intent'] else inpdict['intent']
+        imlist_entry['datacolumn'] = th.datacolumn() if not inpdict['datacolumn'] else inpdict['datacolumn']
         imlist_entry['nterms'] = th.nterms() if not inpdict['nterms'] else inpdict['nterms']
         if 'ALMA' not in img_mode:
             imlist_entry['sensitivity'] = th.get_sensitivity(ms_do=None, field=None, intent=None, spw=None, 

@@ -413,3 +413,6 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
                 return 4.5
             else:
                 return 0.0
+
+    def datacolumn(self):
+        return 'data'

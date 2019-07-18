@@ -17,6 +17,7 @@ class CleanTarget(dict):
         self['phasecenter'] = None     # string
         self['specmode'] = None        # string
         self['gridder'] = None         # string
+        self['datacolumn'] = None      # string
         self['deconvolver'] = None     # string
         self['imagename'] = None       # string
         self['start'] = None           # string
