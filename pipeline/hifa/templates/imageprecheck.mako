@@ -66,7 +66,7 @@ Min / Max Acceptable Resolution:
     ${minAR} / ${maxAR}
 %endif
 <br>
-Maximum allowed beam axial ratio:
+Maximum expected beam axial ratio (from OT):
 %if maxBR_v==0.0:
     Not available
 %else:
