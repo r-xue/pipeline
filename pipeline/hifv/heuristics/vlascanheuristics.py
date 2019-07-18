@@ -455,7 +455,6 @@ class VLAScanHeuristics(object):
         self.flagspw1  = ''
         self.flagspw1b = ''
         self.flagspw2  = ''
-        self.vlassmode = False
 
         """
         Prep string listing of correlations from dictionary created by method buildscans

@@ -108,6 +108,15 @@ class Fluxboot2(basetask.StandardTaskTemplate):
         self.flux_densities = []
         self.spws = []
 
+        # Is this a VLASS execution?
+        vlassmode = False
+        for result in context.results:
+            try:
+                resultinputs = result.read()[0].inputs
+                if 'vlass' in resultinputs['checkflagmode']:
+                    vlassmode = True
+            except:
+                continue
         try:
             self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
         except Exception as e:
@@ -217,7 +226,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                 self._do_gaincal(context, calMs, fluxflagtable, 'ap', [fluxphase],
                                  solint=gain_solint2, minsnr=5.0, refAnt=refAnt, field=field.name,
                                  solnorm=True, append=append, fluxflag=True,
-                                 vlassmode=context.evla['msinfo'][m.name].vlassmode)
+                                 vlassmode=vlassmode)
 
             # use flagdata to clip fluxflag.g outside the range 0.9-1.1
             flagjob = casa_tasks.flagdata(vis=fluxflagtable, mode='clip', correlation='ABS_ALL',
