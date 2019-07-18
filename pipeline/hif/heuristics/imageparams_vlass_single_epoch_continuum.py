@@ -238,3 +238,6 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
 
     def wprojplanes(self):
         return 32
+
+    def rotatepastep(self):
+        return 5.

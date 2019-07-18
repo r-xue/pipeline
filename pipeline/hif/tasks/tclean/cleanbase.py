@@ -74,6 +74,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     width = vdp.VisDependentProperty(default='')
     restfreq = vdp.VisDependentProperty(default=None)
     wprojplanes = vdp.VisDependentProperty(default=None)
+    rotatepastep = vdp.VisDependentProperty(default=None)
 
     # properties requiring some logic ----------------------------------------------------------------------------------
 
@@ -118,7 +119,7 @@ class CleanBaseInputs(vdp.StandardInputs):
                  hm_minpercentchange=None, hm_fastnoise=None, pblimit=None, niter=None, hm_nsigma=None,
                  hm_perchanweightdensity=None, hm_npixels=None, threshold=None, sensitivity=None, reffreq=None,
                  restfreq=None, conjbeams=None, is_per_eb=None, antenna=None, usepointing=None, mosweight=None,
-                 result=None, parallel=None, heuristics=None):
+                 result=None, parallel=None, heuristics=None, rotatepastep=None):
         self.context = context
         self.output_dir = output_dir
         self.vis = vis
@@ -183,6 +184,7 @@ class CleanBaseInputs(vdp.StandardInputs):
         self.usepointing = usepointing
         self.mosweight = mosweight
         self.wprojplanes = wprojplanes
+        self.rotatepastep = rotatepastep
         self.heuristics = heuristics
 
 
@@ -492,6 +494,7 @@ class CleanBase(basetask.StandardTaskTemplate):
 
         tclean_job_parameters['nsigma'] = inputs.heuristics.nsigma(iter, inputs.hm_nsigma)
         tclean_job_parameters['wprojplanes'] = inputs.heuristics.wprojplanes()
+        tclean_job_parameters['rotatepastep'] = inputs.heuristics.rotatepastep()
 
         # Up until CASA 5.2 it is necessary to run tclean calls with
         # restoringbeam == 'common' in two steps in HPC mode (CAS-10849).

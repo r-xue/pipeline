@@ -419,3 +419,6 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
 
     def wprojplanes(self):
         return 1
+
+    def rotatepastep(self):
+        return 360.
