@@ -55,7 +55,8 @@ class ALMAJyPerKDatabaseAccessBase(object):
                 # try opening url
                 query = '?'.join([url, encoded])
                 LOG.info('Accessing Jy/K DB: query is "{}"'.format(query))
-                response = urllib2.urlopen(query)
+                # set timeout to 3min (=180sec)
+                response = urllib2.urlopen(query, timeout=180)
                 retval = json.load(response)
                 yield ResponseStruct(response=retval, subparam=p.subparam)
         except urllib2.HTTPError as e:
