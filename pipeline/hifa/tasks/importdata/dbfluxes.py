@@ -24,8 +24,8 @@ try:
 except Exception as e:
     LOG.info('Environment variable FLUX_SERVICE_URL not defined.  Using JAO default.')
     # FLUX_SERVICE_URL = 'https://almascience.eso.org/sc/flux'
-    # FLUX_SERVICE_URL = 'https://osf-sourcecat-2019jun.asa-test.alma.cl/sc/'
-    FLUX_SERVICE_URL = 'https://2019jun.asa-test.alma.cl/sc/flux'
+    # FLUX_SERVICE_URL = 'https://osf-sourcecat-2019jul.asa-test.alma.cl/sc/'
+    FLUX_SERVICE_URL = 'https://2019jul.asa-test.alma.cl/sc/flux'
 
 LOG.info('Using ALMA flux service URL: {!s}'.format(FLUX_SERVICE_URL))
 
@@ -139,10 +139,10 @@ def fluxservice(service_url, obs_time, frequency, sourcename):
         rowdict['spectralindex'] = row[6].childNodes[0].nodeValue
         rowdict['spectralindexerror'] = row[7].childNodes[0].nodeValue
         rowdict['dataconditions'] = row[8].childNodes[0].nodeValue
-        # rowdict['notms'] = row[9].childNodes[0].nodeValue
-        rowdict['ageOfNearestMonitorPoint'] = row[9].childNodes[0].nodeValue
-        # rowdict['verbose'] = row[10].childNodes[0].nodeValue
-        rowdict['version'] = row[11].childNodes[0].nodeValue
+        rowdict['notms'] = row[9].childNodes[0].nodeValue
+        rowdict['ageOfNearestMonitorPoint'] = row[10].childNodes[0].nodeValue
+        # rowdict['verbose'] = row[11].childNodes[0].nodeValue
+        rowdict['version'] = row[12].childNodes[0].nodeValue
         rowdict['url'] = url
 
     return rowdict
@@ -215,7 +215,7 @@ def add_catalogue_fluxes(measurements, ms):
     freq_hz = '86837309056.169219970703125'
     source_name = 'J1427-4206'
     contact_fail = False
-    backup_url = 'https://2019jun.asa-test.alma.cl/sc/flux'
+    backup_url = 'https://2019jul.asa-test.alma.cl/sc/flux'
     flux_url = FLUX_SERVICE_URL
     try:
         fluxdict = fluxservice(flux_url, obs_time, freq_hz, source_name)
