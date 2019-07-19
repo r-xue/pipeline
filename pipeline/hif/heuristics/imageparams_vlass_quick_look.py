@@ -47,8 +47,11 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
     def cyclefactor(self):
         return 2.0
 
-    def cycleniter(self):
-        return 500
+    def cycleniter(self, iteration):
+        if iteration == 0:
+            return -1
+        else:
+            return 500
 
     def scales(self):
         return [0]

@@ -45,8 +45,12 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
     def cyclefactor(self):
         return 3.0
 
-    def cycleniter(self):
-        return 2000
+    def cycleniter(self, iteration):
+        if iteration == 0:
+            return 0
+        else:
+            return -1
+
 
     def scales(self):
         return [0]

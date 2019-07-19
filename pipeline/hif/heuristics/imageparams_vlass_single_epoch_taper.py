@@ -45,7 +45,7 @@ class ImageParamsHeuristicsVlassSeTaper(ImageParamsHeuristics):
     def cyclefactor(self):
         return 3.0
 
-    def cycleniter(self):
+    def cycleniter(self, iteration):
         return 2000
 
     def scales(self):

@@ -36,9 +36,9 @@
                 <value/>
             </param>
 
-            <param type="string" name="cycleniter">
+            <param type="int" name="cycleniter">
                 <description>Controls max number of minor cycle iterations in a single major cycle.</description>
-                <value/>
+                <value>-999</value>
             </param>
 
             <param type="string" name="datacolumn">
@@ -248,8 +248,7 @@
 
             Keyword Arguments
 
-            <!--TODO: add description-->
-            imagename --
+            imagename -- Prefix of output images
 
             cell -- Cell size (x, y)
             default '' Compute cell size based on the UV coverage of all the fields
@@ -270,8 +269,7 @@
             deconvolver -- Minor cycle algorithm e.g. 'multiscale' or 'mtmfs'.
             default: 'multiscale'
 
-            <!--TODO: add description-->
-            editmode --
+            editmode -- currently only add
 
             field -- Select fields to image. Use field name(s) NOT id(s). Mosaics
             are assumed to have common source / field names. If intent is specified
@@ -296,8 +294,7 @@
             default: 'TARGET'
             example: 'PHASE,BANDPASS'
 
-            <!--TODO: add description-->
-            gridder --
+            gridder -- Gridding options (standard, wproject, widefield, mosaic, awproject)
 
             mask -- Used to declare whether to use a predefined mask for tclean,
             or to use internal auto-masking, or to not mask at all.
@@ -315,20 +312,17 @@
 
             niter -- The maximum total number of minor cycle iterations allowed for tclean.
 
-            <!--TODO: add description-->
-            nterms --
+            nterms -- Number of Taylor coefficients in the spectral model
 
-            <!--TODO: add description-->
-            parameter_file --
+            parameter_file -- keyword=value text file as alternative method of input parameters
+            One key=value pair per line.
 
             phasecenter -- Direction measure or field id of the image center.
             default: '' The default phase center is set to the mean of the field
             directions of all fields that are to be image together.
             example: 0, 'J2000 19h30m00 -40d00m00'
 
-        <!-- TODO: add description-->
-        reffreq --
-
+            reffreq -- Reference frequency of the output image coordinate system
 
             robust -- Set the Briggs robustness factor for weighting. In general,
             we choose a value that gives suitable PSF size (~2.5? for the

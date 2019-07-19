@@ -1784,7 +1784,7 @@ class ImageParamsHeuristics(object):
     def cyclefactor(self):
         return None
 
-    def cycleniter(self):
+    def cycleniter(self, iteration):
         return None
 
     def scales(self):

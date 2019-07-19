@@ -28,7 +28,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     datacolumn = vdp.VisDependentProperty(default='')
     deconvolver = vdp.VisDependentProperty(default='')
     cyclefactor = vdp.VisDependentProperty(default=None)
-    cycleniter = vdp.VisDependentProperty(default=None)
+    cycleniter = vdp.VisDependentProperty(default=-999)
     field = vdp.VisDependentProperty(default='')
     gridder = vdp.VisDependentProperty(default='')
     imagename = vdp.VisDependentProperty(default='')
@@ -431,11 +431,11 @@ class CleanBase(basetask.StandardTaskTemplate):
             if cyclefactor:
                 tclean_job_parameters['cyclefactor'] = cyclefactor
 
-        if inputs.cycleniter:
+        if inputs.cycleniter not in (None, -999):
             tclean_job_parameters['cycleniter'] = inputs.cycleniter
         else:
-            cycleniter = inputs.heuristics.cycleniter()
-            if cycleniter:
+            cycleniter = inputs.heuristics.cycleniter(iter)
+            if cycleniter is not None:
                 tclean_job_parameters['cycleniter'] = cycleniter
 
         if inputs.scales:
