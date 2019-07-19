@@ -79,7 +79,7 @@ class EditimlistInputs(vdp.StandardInputs):
     start = vdp.VisDependentProperty(default='')
     stokes = vdp.VisDependentProperty(default='')
     threshold = vdp.VisDependentProperty(default='')
-#    nsigma = vdp.VisDependentProperty(default=0)
+    nsigma = vdp.VisDependentProperty(default=-999.)
     uvtaper = vdp.VisDependentProperty(default='')
     uvrange = vdp.VisDependentProperty(default='')
     width = vdp.VisDependentProperty(default='')
@@ -173,7 +173,7 @@ class EditimlistInputs(vdp.StandardInputs):
         self.start = start
         self.stokes = stokes
         self.threshold = threshold
-#        self.nsigma = nsigma
+        self.nsigma = nsigma
         self.uvtaper = uvtaper
         self.uvrange = uvrange
         self.width = width
@@ -184,7 +184,7 @@ class EditimlistInputs(vdp.StandardInputs):
                             'start', 'width', 'nbin', 'nchan', 'uvrange', 'stokes', 'nterms',
                             'robust', 'uvtaper', 'niter', 'cyclefactor', 'cycleniter', 'mask',
                             'search_radius_arcsec', 'threshold', 'imaging_mode', 'reffreq', 'restfreq',
-                            'editmode', #'nsigma',
+                            'editmode', 'nsigma',
                             'sensitivity', 'conjbeams')
 
         self.keys_to_change = []
@@ -312,10 +312,10 @@ class Editimlist(basetask.StandardTaskTemplate):
                                                             imaging_mode=img_mode)
 
         imlist_entry['threshold'] = inpdict['threshold']
-#        imlist_entry['hm_nsigma'] = None if inpdict['nsigma'] in (None, -999.0) else inpdict['nsigma']
+        imlist_entry['hm_nsigma'] = None if inpdict['nsigma'] in (None, -999.0) else float(inpdict['nsigma'])
 
-#        if inpdict['threshold'] and inpdict['nsigma']:
-#            LOG.warn("Both 'threshold' and 'nsigma' were specified.")
+        if imlist_entry['threshold'] and imlist_entry['hm_nsigma']:
+            LOG.warn("Both 'threshold' and 'nsigma' were specified.")
 
         imlist_entry['stokes'] = th.stokes() if not inpdict['stokes'] else inpdict['stokes']
         imlist_entry['conjbeams'] = th.conjbeams() if not inpdict['conjbeams'] else inpdict['conjbeams']

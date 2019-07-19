@@ -409,13 +409,13 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
 
     def nsigma(self, iteration, hm_nsigma):
 
-        if hm_nsigma is not None:
+        if hm_nsigma:
             return hm_nsigma
         else:
-            if iteration == 1:
-                return 4.5
+            if iteration == 0:
+                return 0
             else:
-                return 0.0
+                return 4.5
 
     def datacolumn(self):
         return 'data'

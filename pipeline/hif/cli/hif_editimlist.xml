@@ -178,10 +178,10 @@
             <value/>
         </param>
 
-        <!--param type="double" name="nsigma">
+        <param type="double" name="nsigma">
             <description>Multiplicative factor for rms-based threshold stopping</description>
-            <value type="double">-999</value>
-        </param-->
+            <value type="double">-999.0</value>
+        </param>
 
             <param type="string" name="uvtaper">
                 <description>Used to set a uv-taper during clean.</description>
@@ -354,6 +354,8 @@
             stokes -- Stokes Planes to make
 
             threshold -- Stopping threshold (number in units of Jy, or string)
+
+            nsigma -- Multiplicative factor for rms-based threshold stopping
 
             uvtaper -- Used to set a uv-taper during clean. At mid-declinations and
             reasonable elevations, not required for the full-resolution images

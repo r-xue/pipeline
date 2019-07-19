@@ -221,9 +221,9 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
             return hm_nsigma
 
         if iteration == 0:
-            return None
+            return 0
         elif iteration == 1:
-            return 3.0
+            return 2.0
         else:
             return 4.5
 
