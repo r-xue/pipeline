@@ -443,7 +443,7 @@ def import_flux(output_dir, observing_run, filename=None):
                 if Band3age:
                     try:
                         age = float(Band3age)
-                        LOG.info("Using Band3age value of {~s}".format(Band3age))
+                        LOG.info("Using Band3age value of {!s}".format(Band3age))
                     except ValueError:
                         age = None
 
