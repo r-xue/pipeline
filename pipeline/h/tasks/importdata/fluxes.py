@@ -375,6 +375,7 @@ def import_flux(output_dir, observing_run, filename=None):
     # regular expressions to match values from comment template
     origin_re = re.compile('(?:origin=)(?P<origin>\S+)')
     age_re = re.compile('(?:age=)(?P<age>\S+)')
+    Band3age_re = re.compile('(?:Band3age=)(?P<Band3age>\S+)')
     query_re = re.compile('(?:queried_at=)(?P<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} \w{3})')
 
     if not filename:
@@ -434,6 +435,18 @@ def import_flux(output_dir, observing_run, filename=None):
                     age = float(age)
                 except ValueError:
                     age = None
+
+            import pdb; pdb.set_trace()
+
+            # Replace age with Band3age if age not available
+            match = Band3age_re.search(comment)
+            Band3age = match.group('Band3age') if match else None
+            if age is None:
+                if Band3age:
+                    try:
+                        age = float(Band3age)
+                    except ValueError:
+                        age = None
 
             match = query_re.search(comment)
             query_date = match.group('timestamp') if match else None
