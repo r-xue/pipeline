@@ -436,8 +436,6 @@ def import_flux(output_dir, observing_run, filename=None):
                 except ValueError:
                     age = None
 
-            import pdb; pdb.set_trace()
-
             # Replace age with Band3age if age not available
             match = Band3age_re.search(comment)
             Band3age = match.group('Band3age') if match else None
