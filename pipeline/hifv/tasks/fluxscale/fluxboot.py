@@ -445,7 +445,8 @@ class Fluxboot(basetask.StandardTaskTemplate):
                 #    
 
                 reffreq = 10.0**lfreqs[0]/1.0e9
-                bandcenterfreq = 0.0
+                bandfreqs = 10.0 ** np.array(lfreqs)
+                bandcenterfreq = (np.min(bandfreqs) + np.max(bandfreqs)) / 2.0
                 fluxdensity = 10.0**(aa + bb*lfreqs[0])
                 spix = bb
                 spixerr = bberr
@@ -466,7 +467,9 @@ class Fluxboot(basetask.StandardTaskTemplate):
                                         'delta'       : str(delta),
                                         'deltaerr'    : str(deltaerr),
                                         'fitorder'    : str(1),
-                                        'reffreq'     : str(reffreq)})
+                                        'reffreq'     : str(reffreq),
+                                        'fitflxAtRefFreq': str(fluxdensity),
+                                        'fitflxAtRefFreqErr': str(0.0)})
 
                 LOG.info("Frequency, data, error, and fitted data:")
                 # Sort arrays based on frequency

@@ -171,7 +171,7 @@ class T2_4MDetailsfluxbootRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             spindex_results[ms] = result.spindex_results
 
             # Sort into dictionary collections and combine bands for a single source
-            FluxTR = collections.namedtuple('FluxTR', 'source band bandcenterfreq fitflx spix curvature gamma delta fitorder reffreq')
+            FluxTR = collections.namedtuple('FluxTR', 'source band bandcenterfreq fitflx spix curvature gamma delta fitorder reffreq fitflxAtRefFreq')
 
             rows = []
 
@@ -191,13 +191,16 @@ class T2_4MDetailsfluxbootRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 fitflxerr = "{:.{}f}".format(float(row['fitflxerr']), precision)
                 reffreq = "{:.{}f}".format(float(row['reffreq']), precision)
                 bandcenterfreq = "{:.{}f}".format(float(row['bandcenterfreq'])/1.e9, precision)
+                fitflx = "{:.{}f}".format(float(row['fitflx']), precision)
+                fitflxAtRefFreq = "{:.{}f}".format(float(row['fitflxAtRefFreq']), precision)
+                fitflxAtRefFreqErr = "{:.{}f}".format(float(row['fitflxAtRefFreqErr']), precision)
 
                 tr = FluxTR(row['source'], row['band'], bandcenterfreq, fitflx + ' +/- ' + fitflxerr,
                             spix + ' +/- ' + spixerr,
                             curvature + ' +/- ' + curvatureerr,
                             gamma + ' +/- ' + gammaerr,
                             delta + ' +/- ' + deltaerr,
-                            row['fitorder'], reffreq)
+                            row['fitorder'], reffreq, fitflxAtRefFreq + ' +/- ' + fitflxAtRefFreqErr)
                 rows.append(tr)
 
             spixtable = utils.merge_td_columns(rows)

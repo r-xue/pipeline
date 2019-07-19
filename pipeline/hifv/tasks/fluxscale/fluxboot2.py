@@ -480,6 +480,8 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
                 freqs = fluxscale_result['freq']
                 fitflx = fluxscale_result[fieldid]['fitFluxd']   # Fiducial flux for entire fit
+                fitflxAtRefFreq = fluxscale_result[fieldid]['fitFluxd']
+                fitflxAtRefFreqErr = fluxscale_result[fieldid]['fitFluxdErr']
                 fitreff = fluxscale_result[fieldid]['fitRefFreq']
                 spidx = fluxscale_result[fieldid]['spidx']
                 reffreq = fitreff / 1.e9
@@ -571,7 +573,9 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                                         'delta': str(delta),
                                         'deltaerr': str(deltaerr),
                                         'fitorder': str(fitorderused),
-                                        'reffreq': str(reffreq)})
+                                        'reffreq': str(reffreq),
+                                        'fitflxAtRefFreq': str(fitflxAtRefFreq),
+                                        'fitflxAtRefFreqErr': str(fitflxAtRefFreqErr)})
 
                 LOG.info("Frequency, data, error, and fitted data:")
 

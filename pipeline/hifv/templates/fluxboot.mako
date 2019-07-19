@@ -57,6 +57,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 		    <th scope="col" rowspan="2">4th order coeff</th>
 		    <th scope="col" rowspan="2">Fit Order</th>
 		    <th scope="col" rowspan="2">Reference Frequency [GHz]</th>
+		    <th scope="col" rowspan="2">Flux density [Jy] (at Ref. Frequency)</th>
 
 	    </tr>
 
