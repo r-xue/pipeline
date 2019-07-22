@@ -20,6 +20,19 @@ class SDK2JyCalQAHandler(pqa.QAPlugin):
         longmsg = shortmsg + (" in "+result.vis if result.vis is not None else "") + (". Those data will remain in the unit of Kelvin after applying the calibration tables." if is_missing_factor else "")
         score = 0.0 if is_missing_factor else 1.0
         scores = [ pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg) ]
+
+        # PIPE-384 lower the score to 0.8 if DB access was failed
+        if result.dbstatus is not None:
+            # the task attempted to access the DB
+            if result.dbstatus is True:
+                statusstr = 'successful'
+                score = 1.0
+            else:
+                statusstr = 'failed'
+                score = 0.8
+            shortmsg = "Accessing Jy/K DB was {}".format(statusstr)
+            longmsg = shortmsg + " for " + (result.vis if result.vis is not None else "input vis")
+            scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
         result.qa.pool.extend(scores)
         #result.qa.pool[:] = scores
 
@@ -30,5 +43,5 @@ class SDK2JyCalListQAHandler(pqa.QAPlugin):
     def handle(self, context, result):
         # collate the QAScores from each child result, pulling them into our
         # own QAscore list
-        collated = utils.flatten([r.qa.pool for r in result]) 
+        collated = utils.flatten([r.qa.pool for r in result])
         result.qa.pool[:] = collated

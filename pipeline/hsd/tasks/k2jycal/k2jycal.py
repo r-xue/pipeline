@@ -60,7 +60,7 @@ class SDK2JyCalInputs(vdp.StandardInputs):
 
 class SDK2JyCalResults(basetask.Results):
     def __init__(self, vis=None, final=[], pool=[], reffile=None, factors={},
-                 all_ok=False):
+                 all_ok=False, dbstatus=None):
         super(SDK2JyCalResults, self).__init__()
 
         self.vis = vis
@@ -70,6 +70,7 @@ class SDK2JyCalResults(basetask.Results):
         self.reffile = reffile
         self.factors = factors
         self.all_ok = all_ok
+        self.dbstatus = dbstatus
 
     def merge_with_context(self, context):
         if not self.final:
@@ -110,13 +111,23 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
         # obtain Jy/K factors
         factors_list = []
         reffile = None
+        # dbstatus represents the response from the DB as well as whether or not
+        # the task attempted to access the DB
+        #
+        #     dbstatus = None  -- not attempted to access (dbservice=False)
+        #     dbstatus = True  -- the DB returned a factor (could be incomplete)
+        #     dbstatus = False -- the DB didn't return a factor
+        dbstatus = None
         if inputs.dbservice is True:
             # Try accessing Jy/K DB if dbservice is True
             reffile = 'jyperk_query.csv'
             factors_list = self._query_factors()
             if len(factors_list) > 0:
+                dbstatus = True
                 # export factors for future reference
                 export_jyperk(reffile, factors_list)
+            else:
+                dbstatus = False
 
         if (inputs.dbservice is False) or (len(factors_list) == 0):
             # Read scaling factor file
@@ -145,7 +156,8 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
         all_factors_ok &= k2jycal_result.factors_ok
 
         return SDK2JyCalResults(vis=k2jycal_result.vis, pool=callist, reffile=reffile,
-                                factors=valid_factors, all_ok=all_factors_ok)
+                                factors=valid_factors, all_ok=all_factors_ok,
+                                dbstatus=dbstatus)
 
     def analyse(self, result):
         # With no best caltable to find, our task is simply to set the one
