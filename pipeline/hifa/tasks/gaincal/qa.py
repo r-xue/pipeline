@@ -27,11 +27,29 @@ class TimegaincalQAPool(pqa.QAScorePool):
         super(TimegaincalQAPool, self).__init__()
         self.qa_results_dict = qa_results_dict
 
+
     def update_scores(self, ms, phase_field_ids):
         try:
-            self.pool[:] = [self._get_qascore(ms, phase_field_ids, t) for t in self.score_types.iterkeys()]
+            #
+            # PIPE-365: Revise hifa_timegaincal QA scores for Cy7
+            #
+            # Remy: Remove consideration of X-Y, X1-Y1 phase vs. time metrics
+            # from QA scoring (keep evaluation for now - I will open a CASR to
+            # revise these evaluations)
+            #
+            # self.pool.extend([self._get_qascore(ms, phase_field_ids, t) for t in self.score_types.iterkeys()])
+            pass
         except Exception as e:
             LOG.error('Score calculation failed: %s' % (e))
+        else:
+            # We need to
+            long_msg = 'QA metric calculation successful for {}'.format(ms.basename)
+            short_msg = 'QA measured'
+            origin = pqa.QAOrigin(metric_name='timegaincal_qa_calculated',
+                                  metric_score=1,
+                                  metric_units='Timegaincal QA metrics calculated')
+            ms_qa_score = pqa.QAScore(score=1.0, longmsg=long_msg, shortmsg=short_msg, vis=ms.basename, origin=origin)
+            self.pool.append(ms_qa_score)
 
     def _get_qascore(self, ms, phase_field_ids, score_type):
         (total_score, table_name, field_name, ant_name, spw_name) = self._get_total(phase_field_ids,
@@ -96,15 +114,8 @@ class TimegaincalQAHandler(pqa.QAPlugin):
                     qa_results_dict[calapp.gaintable] = gpcal.gpcal(calapp.gaintable)
                     qa_results_dict[calapp.gaintable]['PHASE_FIELDS'] = phase_field_ids
 
-            #
-            # PIPE-365: Revise hifa_timegaincal QA scores for Cy7
-            #
-            # Remy: Remove consideration of X-Y, X1-Y1 phase vs. time metrics
-            # from QA scoring (keep evaluation for now - I will open a CASR to
-            # revise these evaluations)
-            #
             result.qa = TimegaincalQAPool(qa_results_dict)
-            # result.qa.update_scores(ms, phase_field_ids)
+            result.qa.update_scores(ms, phase_field_ids)
         except Exception as e:
             LOG.error('Problem occurred running QA analysis. QA results will not be available for this task')
             LOG.exception(e)
