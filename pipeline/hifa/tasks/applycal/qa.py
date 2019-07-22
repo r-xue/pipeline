@@ -67,12 +67,34 @@ class ALMAApplycalQAHandler(pqa.QAPlugin):
 
 def get_qa_scores(ms, export_outliers, outlier_score):
     intents = ['AMPLITUDE', 'BANDPASS', 'PHASE', 'CHECK']
+
+    # holds the metrics that generated an outlier
+    outlier_metrics = set()
+
     all_scores = []
     for intent in intents:
         outliers = ampphase_vs_freq_qa.score_all_scans(ms, intent, export_outliers)
         consolidated = ampphase_vs_freq_qa.consolidate_data_selections(outliers)
         scores_for_intent = outliers_to_qa_scores(ms, consolidated, outlier_score)
         all_scores.extend(scores_for_intent)
+
+        outlier_metrics.update({metric for outlier in outliers for metric in outlier.reason})
+
+    # add a 1.0 score for metrics that generated no outlier. This cannot be
+    # done in lower level stages as those stages operate on a per-spw/per-scan
+    # basis, which would give us a 1.0 entry per spw/scan.
+    all_metrics = {'amp.intercept', 'amp.slope', 'phase.intercept', 'phase.slope'}
+    metrics_with_no_outliers = all_metrics - outlier_metrics
+    for metric in metrics_with_no_outliers:
+        metric_axes, outlier_description = REASONS_TO_TEXT[metric]
+        short_msg = 'No {} outliers'.format(metric_axes)
+        long_msg = 'No {} {} detected for {}'.format(metric_axes, outlier_description, ms.basename)
+        score = pqa.QAScore(1.0, longmsg=long_msg, shortmsg=short_msg)
+        score.origin = pqa.QAOrigin(metric_name=metric,
+                                    metric_score=0,
+                                    metric_units='number of outliers')
+        all_scores.append(score)
+
     return all_scores
 
 
@@ -162,9 +184,30 @@ def outliers_to_qa_scores(ms, outliers, outlier_score):
         short_msg = '{} outliers'.format(metric_axes)
 
         score = pqa.QAScore(outlier_score, longmsg=long_msg, shortmsg=short_msg)
-        score.origin = pqa.QAOrigin(metric_name='sigma_deviation',
+        score.origin = pqa.QAOrigin(metric_name=worst_outlier.reason,
                                     metric_score=worst_outlier.num_sigma,
-                                    metric_units='Sigma deviation from reference fit')
+                                    metric_units='sigma deviation from reference fit')
         qa_scores.append(score)
 
     return qa_scores
+
+
+# def all_ok_qascore(ms, all_scores):
+#     qa_scores = []
+#     all_metrics = {'amp.intercept', 'amp.slope', 'phase.intercept', 'phase.slope'}
+#
+#     outlier_metrics = {metric for metric in qascore.}
+#
+#     outlier_metrics = {metric for outlier in outliers for metric in outlier.reason}
+#     metrics_with_no_outliers = all_metrics - outlier_metrics
+#     for metric in metrics_with_no_outliers:
+#         short_metric, long_metric = REASONS_TO_TEXT[metric]
+#         short_msg = 'No {} outliers'.format(short_metric)
+#         long_msg = 'No {} detected for {}'.format(long_metric, ms.basename)
+#         score = pqa.QAScore(1.0, longmsg=long_msg, shortmsg=short_msg)
+#         score.origin = pqa.QAOrigin(metric_name=metric,
+#                                     metric_score=0,
+#                                     metric_units='number of outliers')
+#         qa_scores.append(score)
+#
+#     return qa_scores
