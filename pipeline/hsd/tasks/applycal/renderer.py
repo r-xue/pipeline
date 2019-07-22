@@ -87,14 +87,19 @@ class T2_4MDetailsSDApplycalRenderer(T2_4MDetailsApplycalRenderer,
             # Plot for 1 science field (either 1 science target or for a mosaic 1
             # pointing). The science field that should be chosen is the one with
             # the brightest average amplitude over all spws
+            representative_source_name, _ = ms.get_representative_source_spw()
+            representative_source = {s for s in ms.sources if s.name == representative_source_name}
+            if len(representative_source) >= 1:
+                representative_source = representative_source.pop()
 
-            brightest_fields = T2_4MDetailsApplycalRenderer.get_brightest_fields(ms)
-            for source_id, brightest_field in brightest_fields.iteritems():
-                plots = self.science_plots_for_result(context,
-                                                      result,
-                                                      applycal.RealVsFrequencySummaryChart,
-                                                      [brightest_field.id], None)
-                amp_vs_freq_summary_plots[vis].extend(plots)
+            brightest_field = get_brightest_field(ms, representative_source)
+            plots = self.science_plots_for_result(context,
+                                                  result,
+                                                  applycal.RealVsFrequencySummaryChart,
+                                                  [brightest_field.id], None)
+            for plot in plots:
+                plot.parameters['source'] = representative_source
+            amp_vs_freq_summary_plots[vis].extend(plots)
 
             if pipeline.infrastructure.generate_detail_plots(result):
                 fields = set()
