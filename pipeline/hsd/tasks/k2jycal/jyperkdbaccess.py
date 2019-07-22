@@ -91,12 +91,12 @@ class ALMAJyPerKDatabaseAccessBase(object):
         except urllib2.HTTPError as e:
             msg = 'Failed to load URL: {0}\n'.format(url) \
                 + 'Error Message: HTTPError(code={0}, Reason="{1}")\n'.format(e.code, e.reason)
-            LOG.error(msg)
+            LOG.warn(msg)
             raise e
         except urllib2.URLError as e:
             msg = 'Failed to load URL: {0}\n'.format(url) \
                 + 'Error Message: URLError(Reason="{0}")\n'.format(e.reason)
-            LOG.error(msg)
+            LOG.warn(msg)
             raise e
 
     def validate(self, vis):
