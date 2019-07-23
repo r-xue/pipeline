@@ -40,6 +40,7 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_flagging_view_exists',                      # ALMA specific
            'score_checksources',                              # ALMA specific
            'score_gfluxscale_k_spw',                          # ALMA specific
+           'score_fluxservice'                                # ALMA specific
            'score_file_exists',
            'score_path_exists',
            'score_flags_exist',
@@ -894,17 +895,29 @@ def score_total_data_vla_delay(filename, m):
 
 
 @log_qa
-def score_vla_flux_residual_rms(rmsvalues):
+def score_vla_flux_residual_rms(rmsmeanvalues):
     """
     Take the RMS values of the residuals.
-
+    Input is a list of tuples with (rms, mean, count) per sources
     """
 
-    if np.mean(rmsvalues) < 0.02:
-        score = 1.0
-    else:
-        count = len([x for x in rmsvalues if x > 0.01])
-        score = 1.0 - (0.1 * count)
+    scores = []
+    rmsvalues = []
+    counts = []
+    for rms, mean, count in rmsmeanvalues:
+        sourcescore = 1.0 - (0.01 * count)
+        rmsvalues.append(rms)
+        counts.append(float(count))
+
+        if sourcescore < 0.0:
+            sourcescore = 0.0
+
+        scores.append(sourcescore)
+
+    countfractions = np.array(counts) / np.sum(counts)
+
+    # Weighted average per sources
+    score = np.average(scores, weights=countfractions)
 
     if score < 0.0:
         score = 0.0
@@ -2667,3 +2680,31 @@ def score_science_spw_names(mses, virtual_science_spw_names):
                           metric_units='spw names match virtual spw name lookup table')
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+
+
+def score_fluxservice(result):
+    """
+    If the primary FS query fails and the backup is invoked,
+    the severity level should be BLUE (below standard; numerically, on its own, 0.9).
+    If the backup FS query also fails, the warning should be YELLOW (WARNING; numerically, on its own, 0.6).
+    But it should keep running as it currently does.
+    """
+
+    if result.inputs['dbservice'] is False:
+        msg = "Flux db service not used"
+        score = 1.0
+        origin = pqa.QAOrigin(metric_name='score_fluxservice',
+                              metric_score=score,
+                              metric_units='flux service')
+        return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
+    elif result.inputs['dbservice'] is True:
+        msg = ""
+        score = 1.0
+        origin = pqa.QAOrigin(metric_name='score_fluxservice',
+                              metric_score=score,
+                              metric_units='flux service')
+        return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
+
+
+
+

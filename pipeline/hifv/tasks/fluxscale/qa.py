@@ -77,8 +77,8 @@ class Fluxboot2QAHandler(pqa.QAPlugin):
             webdicts[ms][row['source']].append({'freq': row['freq'], 'data': row['data'], 'error': row['error'],
                                                 'fitteddata': row['fitteddata']})
 
-        rmsvalues = self.computeRMS(webdicts[ms])
-        score1 = qacalc.score_vla_flux_residual_rms(rmsvalues)
+        rmsmeanvalues = self.computeRMSandMean(webdicts[ms])
+        score1 = qacalc.score_vla_flux_residual_rms(rmsmeanvalues)
         scores = [score1]
         if scores == []:
             LOG.error('Error with computing flux density bootstrapping residuals')
@@ -87,8 +87,8 @@ class Fluxboot2QAHandler(pqa.QAPlugin):
 
         result.qa.pool.extend(scores)
 
-    def computeRMS(self, webdicts):
-        rmsvalues = []
+    def computeRMSandMean(self, webdicts):
+        rmsmeanvalues = []
         for source, datadicts in webdicts.iteritems():
             try:
                 frequencies = []
@@ -96,11 +96,17 @@ class Fluxboot2QAHandler(pqa.QAPlugin):
                 for datadict in datadicts:
                     residuals.append(float(datadict['data']) - float(datadict['fitteddata']))
                     frequencies.append(float(datadict['freq']))
-                rmsvalues.append(np.std(residuals))
+                rms = np.std(residuals)
+                mean = np.mean(residuals)
+
+                # Count number of residuals outside the mean +/- rms range
+                count = len(residuals) - len([resid for resid in residuals if ((mean - rms) < resid < (mean + rms))])
+                rmsmeanvalues.append((np.std(residuals), np.mean(residuals), count))
+
             except Exception as e:
                 continue
 
-        return rmsvalues
+        return rmsmeanvalues
 
 
 class Fluxboot2ListQAHandler(pqa.QAPlugin):
