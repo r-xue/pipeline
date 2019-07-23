@@ -94,7 +94,7 @@ def __tabledescro():
     name = [
         'ROW', 'SCAN', 'IF', 'NPOL', 'BEAM', 'DATE',
         'TIME', 'ELAPSED', 'EXPOSURE', 'RA', 'DEC',
-        'SHIFT_RA', 'SHIFT_DEC', 'OFS_RA', 'OFS_DEC', 
+        'SHIFT_RA', 'SHIFT_DEC', 'OFS_RA', 'OFS_DEC',
         'AZ', 'EL', 'NCHAN', 'TSYS', 'TARGET', 'ANTENNA',
         'SRCTYPE', 'FIELD_ID'
     ]
@@ -157,7 +157,7 @@ def timetable_key(table_type, antenna, spw, polarization=None, ms=None, field_id
 
 class DataTableIndexer(object):
     """
-    DataTableIndexer is responsible for mapping between classical 
+    DataTableIndexer is responsible for mapping between classical
     (serial) row indices and per-MS row indices.
     """
     @property
@@ -175,8 +175,8 @@ class DataTableIndexer(object):
 
     def serial2perms(self, i):
         """
-        Return two indices. The former indicates a MS index while 
-        the later corresponds to the row index of the datatable for 
+        Return two indices. The former indicates a MS index while
+        the later corresponds to the row index of the datatable for
         that MS.
 
         i -- serial index
@@ -208,18 +208,18 @@ class DataTableIndexer(object):
         j = self.mses.index(ms)
         base = sum(self.nrow_per_ms[:j])
         length = self.nrow_per_ms[j]
-        perms_list = numpy.where(numpy.logical_and(index_list >= base, 
+        perms_list = numpy.where(numpy.logical_and(index_list >= base,
                                                    index_list < base + length), index_list)
         return perms_list - base
 
 
 class DataTableImpl(object):
     """
-    DataTable is an object to hold meta data of scantable on memory. 
+    DataTable is an object to hold meta data of scantable on memory.
 
     row layout: [Row, Scan, IF, Pol, Beam, Date, Time, ElapsedTime,
                    0,    1,  2,   3,    4,    5,    6,            7,
-                 Exptime, RA, DEC, Az, El, nchan, Tsys, TargetName, 
+                 Exptime, RA, DEC, Az, El, nchan, Tsys, TargetName,
                        8,  9,  10, 11, 12,    13,   14,         15,
                  Statistics, Flags, PermanentFlags, SummaryFlag, Nmask, MaskList, NoChange, Ant]
                          16,    17,             18,          19,    20,       21,       22,  23
@@ -481,16 +481,16 @@ class DataTableImpl(object):
 
     def export_rwtable_exclusive(self, dirty_rows=None, cols=None):
         """
-        Export "on-memory" RW table to the one on disk. 
+        Export "on-memory" RW table to the one on disk.
 
-        To support parallel operation, the method will acquire a lock for RW table 
-        to ensure the operation in one process doesn't overwrite the changes made by 
+        To support parallel operation, the method will acquire a lock for RW table
+        to ensure the operation in one process doesn't overwrite the changes made by
         other processes.
 
-        dirty_rows -- list of row numbers that are updated. If None, everything 
+        dirty_rows -- list of row numbers that are updated. If None, everything
                       including unchanged rows will be flushed. Default is None.
-        cols -- list of columns that are updated. If None, all rows will be flushed. 
-                default is None. 
+        cols -- list of columns that are updated. If None, all rows will be flushed.
+                default is None.
         """
         # RW table name
         rwtable = self.get_rwtable_name(self.plaintable)
@@ -562,7 +562,7 @@ class DataTableImpl(object):
                         dst.putcell(row, data)
 
             finally:
-                # the table lock must eventually be released 
+                # the table lock must eventually be released
                 LOG.info('Process {0} is going to release a lock for RW table'.format(os.getpid()))
                 tb.unlock()
 
@@ -796,7 +796,7 @@ class DataTableImpl(object):
                     for f in atm_fields:
                         r = casatools.measures.separation(origin, f.mdirection)
                         #LOG.info('before test: rmin {} r {} nearest_id {}'.format(rmin['value'], r['value'], nearest_id))
-                        # quanta.le is equivalent to <= 
+                        # quanta.le is equivalent to <=
                         if casatools.quanta.le(r, rmin):
                             rmin = r
                             nearest_id = f.id
@@ -804,7 +804,7 @@ class DataTableImpl(object):
                     if nearest_id != -1:
                         from_fields = [nearest_id]
                     else:
-                        raise RuntimeError('No nearest field for Tsys update.')                    
+                        raise RuntimeError('No nearest field for Tsys update.')
         else:
             from_fields = [fld.id for fld in msobj.get_fields(gainfield)]
         LOG.info('from_fields = {}'.format(from_fields))
@@ -849,13 +849,20 @@ class DataTableImpl(object):
         dt_antenna = _dt_antenna[field_sel]
         dt_spw = _dt_spw[field_sel]
         atm_spws = set(spws)
+        science_spws = map(lambda x: x.id, msobj.get_spectral_windows(science_windows_only=True))
         for spw_to, spw_from in enumerate(spwmap):
             # only process atm spws
             if spw_from not in atm_spws:
                 continue
 
+            # only process science spws
+            if spw_to not in science_spws:
+                continue
+
             atm_spw = msobj.get_spectral_window(spw_from)
             science_spw = msobj.get_spectral_window(spw_to)
+            science_dd = msobj.get_data_description(spw=science_spw)
+            corr_index = [science_dd.get_polarization_id(corr) for corr in science_dd.corr_axis]
             start_atmchan, end_atmchan = map_spwchans(atm_spw, science_spw)
             LOG.info('Transfer Tsys from spw {} (chans: {}~{}) to {}'.format(spw_from, start_atmchan, end_atmchan, spw_to))
             for ant_to in to_antids:
@@ -864,13 +871,13 @@ class DataTableImpl(object):
                 if len(cal_idxs) == 0:
                     continue
                 # atsys.shape = (nrow, npol)
-                atsys = numpy.asarray([tsys_masked[i][:, start_atmchan:end_atmchan+1].mean(axis=1).data
+                atsys = numpy.asarray([tsys_masked[i].take(corr_index, axis=0)[:, start_atmchan:end_atmchan+1].mean(axis=1).data
                                            for i in cal_idxs])
                 dtrows = field_sel[numpy.where(numpy.logical_and(dt_antenna == ant_to, dt_spw == spw_to))[0]]
                 #LOG.info('ant {} spw {} dtrows {}'.format(ant_to, spw_to, len(dtrows)))
                 time_sel = times.take(cal_idxs)  # in sec
                 for dt_id in dtrows:
-                    #LOG.info('ant {} spw {} field {}'.format(self.getcell('ANTENNA', dt_id), 
+                    #LOG.info('ant {} spw {} field {}'.format(self.getcell('ANTENNA', dt_id),
                     #                                         self.getcell('IF', dt_id),
                     #                                         self.getcell('FIELD_ID', dt_id)))
                     tref = self.getcell('TIME', dt_id) * 86400  # day->sec
@@ -1006,8 +1013,8 @@ class DataTableColumnMaskList(RWDataTableColumn):
 
     def getcol(self, startrow=0, nrow=-1, rowincr=1):
         """
-        Note: returned array has shape (nrow,nmask), in  
-              contrast to (nmask,nrow) for return value of 
+        Note: returned array has shape (nrow,nmask), in
+              contrast to (nmask,nrow) for return value of
               tb.getcol().
         """
         if nrow < 0:
@@ -1031,7 +1038,7 @@ class DataTableColumnMaskList(RWDataTableColumn):
 
     def putcol(self, val, startrow=0, nrow=-1, rowincr=1):
         """
-        Note: input array should have shape (nrow,nmask), in  
+        Note: input array should have shape (nrow,nmask), in
               contrast to (nmask,nrow) for tb.putcol()
         """
         if nrow < 0:
@@ -1046,7 +1053,7 @@ def _interpolate(v, t, tref):
     # bisect.bisect_left(a, x)
     # bisect_left returns an insertion point of x in a.
     # if x matches any value in a, bisect_left returns its index.
-    # (bisect_right and bisect returns index next to the matched value) 
+    # (bisect_right and bisect returns index next to the matched value)
     idx = bisect.bisect_left(t, tref)
     #LOG.info('len(t) = {}, idx = {}'.format(len(t), idx))
     if idx == 0:
