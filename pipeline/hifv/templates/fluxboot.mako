@@ -42,15 +42,16 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
 % for ms in summary_plots:
     
-<table class="table table-bordered table-striped table-condensed"
-	   summary="Spectral Indices">
-	<caption>Spectral Indices</caption>
+<table class="table table-bordered table-striped table-condensed" summary="Spectral Indices">
+	<caption>Table showing the flux density computed from the fit at each band center, the global coefficients of the fit
+	         across all bands, fit order, and flux density at the fluxscale-determined reference frequency.
+	 </caption>
         <thead>
 	    <tr>
 	        <th scope="col" rowspan="2">Source</th>
 	        <th scope="col" rowspan="2">Band</th>
 	        <th scope="col" rowspan="2">Band Center [GHz]</th>
-	        <th scope="col" rowspan="2">Flux density [Jy]</th>
+	        <th scope="col" rowspan="2">Flux density [Jy] (at Band Center)</th>
 		    <th scope="col" rowspan="2">Spectral Index</th>
 		    <th scope="col" rowspan="2">Curvature</th>
 		    <th scope="col" rowspan="2">3rd order coeff</th>
@@ -74,8 +75,8 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
     </table>
 
        <table class="table table-bordered table-striped table-condensed"
-	   summary="Fitting data with a power law">
-	<caption>Fitting data with a power law</caption>
+	   summary="Data, error, fit, and residuals">
+	<caption>Data, error, fit, and residuals</caption>
         <thead>
 	    <tr>
 	        <th scope="col" rowspan="2">Source</th>

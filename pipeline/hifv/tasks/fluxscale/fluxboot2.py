@@ -461,7 +461,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                         if spw2band[spws[indices[ii]]] == band:
                             lfreqs.append(math.log10(center_frequencies[spws[indices[ii]]]))
                             lfds.append(math.log10(flux_densities[indices[ii]][0]))
-                            lerrs.append((flux_densities[indices[ii]][1]) / (flux_densities[indices[ii]][0]) / 2.303)
+                            lerrs.append((flux_densities[indices[ii]][1]) / (flux_densities[indices[ii]][0]) / np.log(10.0))
                             uspws.append(spws[indices[ii]])
 
                 # Use frequencies for band mappings
@@ -470,7 +470,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                         if find_EVLA_band(center_frequencies[spws[indices[ii]]]) == band:
                             lfreqs.append(math.log10(center_frequencies[spws[indices[ii]]]))
                             lfds.append(math.log10(flux_densities[indices[ii]][0]))
-                            lerrs.append((flux_densities[indices[ii]][1]) / (flux_densities[indices[ii]][0]) / 2.303)
+                            lerrs.append((flux_densities[indices[ii]][1]) / (flux_densities[indices[ii]][0]) / np.log(10.0))
                             uspws.append(spws[indices[ii]])
 
                 if len(lfds) < 2:
@@ -584,7 +584,8 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                     freq = freqs[ii]/1.e9
                     data = 10.0 ** lfds[ii]
 
-                    fderr = math.log(10) * SS * fluxscale_result[fieldid]['spidxerr'][0]
+                    # fderr = lerrs.append((flux_densities[indices[ii]][1]) / (flux_densities[indices[ii]][0]) / 2.303)
+                    fderr = lerrs[ii] * (10 ** lfds[ii]) / np.log10(np.e)
 
                     LOG.info('    ' + str(freq) + '  ' + str(data) + '  ' + str(fderr) + '  ' + str(SS))
                     weblog_results.append({'source': source,
