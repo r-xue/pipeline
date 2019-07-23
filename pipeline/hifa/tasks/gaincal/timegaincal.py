@@ -96,7 +96,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         # within this task so we can calculate the residual phase offsets.
         # The solution is also eventually be applied to the AMPLITUDE and BANDPASS calibrators, 
         
-        cal_phase_result = self._do_spectralspec_calibrator_phasecal(solint=phase_calsolint, gaintype=phase_gaintype,
+        (cal_phase_result, temp_phase_result) = self._do_spectralspec_calibrator_phasecal(solint=phase_calsolint, gaintype=phase_gaintype,
                                                                      combine=phase_combine, spw_groups=per_spectralspec_spw_groups,
                                                                      low_combined_snr_spw_list = inputs.ms.low_combined_phasesnr_spws)
         #self._do_calibrator_phasecal(solint=phase_calsolint, gaintype=phase_gaintype, combine=phase_combine)
@@ -104,8 +104,10 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         # Do a local merge of this result, thus applying the phase solution to the PHASE calibrator but only in the
         # scope of this task. Then, calculate the residuals by calculating another phase solution on the 'corrected'
         # data.
-        for cpres in cal_phase_result:
-            cpres.accept(inputs.context)
+        for calphres in cal_phase_result:
+            calphres.accept(inputs.context)
+        for calphres in temp_phase_result:
+            calphres.accept(inputs.context)
         phase_residuals_result = self._do_offsets_phasecal(solint='inf', gaintype=phase_gaintype, combine='')
         result.phaseoffsetresult = phase_residuals_result
 
@@ -233,7 +235,8 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
                 snr_intents.append(intent)
             else:
                 other_intents.append(intent)
-        result_list = []
+        apply_list = []
+        temporal_list = []
         for ref_spw, spw_sel in spw_groups.items():
             extend_solint = (ref_spw in low_combined_snr_spw_list)
             if extend_solint:
@@ -241,7 +244,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
                 intent = str(',').join(all_intents)
                 interval = solint
                 result = self._do_calibrator_phasecal(interval, gaintype, combine, spw_sel, intent)
-                result_list.append(result)
+                apply_list.append(result)
             else:
                 # Combined solution meets phasesnr limit. Use separate solint by intent.
                 # For SNR_SOLINT_INTENTS (BANDPASS and AMPLUTUDE_
@@ -250,14 +253,15 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
                     intent = str(',').join(snr_intents)
                     interval = self.inputs.calsolint
                     result = self._do_calibrator_phasecal(interval, gaintype, combine, spw_sel, intent)
-                    result_list.append(result)
+                    apply_list.append(result)
                 # NON-SNR based solint for the other sources (e.g., PHASE). Always use solint = 1/4 scan time
+                # This table is used only temporary applied to generate offset caltable.
                 if len(other_intents) > 0:
                     intent = str(',').join(other_intents)
                     interval = solint
                     result = self._do_calibrator_phasecal(interval, gaintype, combine, spw_sel, intent)
-                    result_list.append(result)
-        return result_list
+                    temporal_list.append(result)
+        return (apply_list, temporal_list)
 
     # Used to calibrate "selfcaled" targets
     def _do_calibrator_phasecal(self, solint=None, gaintype=None, combine=None, spw=None, intent=None):
