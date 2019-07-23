@@ -11,14 +11,13 @@ import string
 import uuid
 import weakref
 
-import pipeline.extern  # Used to resolve import of intervaltree.
+import cachetools
 import intervaltree
 from callibrary import applycaltocallib
 
+from . import casatools
 from . import logging
 from . import utils
-
-from . import casatools
 
 LOG = logging.get_logger(__name__)
 
@@ -99,8 +98,25 @@ class CalApplication(object):
 
         calfroms = []
         for (gaintable, gainfield, interp, spwmap, calwt) in zipped:
-            with casatools.TableReader(gaintable) as caltable:
-                viscal = caltable.getkeyword('VisCal')
+            if os.path.exists(gaintable):
+                with casatools.TableReader(gaintable) as caltable:
+                    viscal = caltable.getkeyword('VisCal')
+
+            else:
+                LOG.warning('Could not access {}. Using heuristics to determine caltable type'
+                            ''.format(os.path.gaintable))
+                if 'tsys' in gaintable:
+                    viscal = 'B TSYS'
+                elif 'bcal' in gaintable:
+                    viscal = 'B JONES'
+                elif 'gpcal' in gaintable:
+                    viscal = 'G JONES'
+                elif 'gcal' in gaintable:
+                    viscal = 'G JONES'
+                elif 'gacal' in gaintable:
+                    viscal = 'G JONES'
+                else:
+                    raise ValueError(gaintable)
 
             caltype = CalFrom.get_caltype_for_viscal(viscal)
             calfrom = CalFrom(gaintable, gainfield=gainfield, interp=interp,
@@ -881,7 +897,8 @@ class DictCalLibrary(object):
                                 except ValueError:
                                     LOG.debug('%s not found in calstate', c)
 
-        LOG.trace('Calstate after _remove:\n%s', calstate.as_applycal())
+        if LOG.isEnabledFor(logging.TRACE):
+            LOG.trace('Calstate after _remove:\n%s', calstate.as_applycal())
 
     def add(self, calto, calfroms):
         # If we are adding a previously removed CalFrom back into a
@@ -1081,7 +1098,7 @@ class CalToIntervalAdapter(object):
             os.path.basename(self._calto.vis), self.field, self.intent, self.spw, self.antenna))
 
     def __repr__(self):
-        return ('CalToIntervalAdapter({!s}, {!s})'.format(self._context, self._calto))
+        return 'CalToIntervalAdapter({!s}, {!s})'.format(self._context, self._calto)
 
 
 def create_data_reducer(join):
@@ -1414,7 +1431,7 @@ def expand_calstate_to_calapps(calstate):
     return calapps
 
 
-def consolidate_calibrations(calapps):
+def consolidate_calibrations(all_my_calapps):
     """
     Consolidate a list of (CalTo, [CalFrom..]) 2-tuples into a smaller set of
     equivalent applications by consolidating their data selection arguments.
@@ -1426,70 +1443,96 @@ def consolidate_calibrations(calapps):
     :param calapps: an iterable of (CalTo, [CalFrom..]) 2-tuples
     :return: a list of (CalTo, [CalFrom..]) tuples
     """
+    # When faced with a large number of EBs, trying to merge calibrations
+    # across all MSes results in a huge number of iterations - most of them
+    # pointless as the caltables only apply to one MS. So, partition the
+    # calapps, grouping them by MS, and merge within these partitions and not
+    # across them.
+    vis_to_calapps = collections.defaultdict(list)
+    for calto, calfroms in all_my_calapps:
+        if len(calto.vis) > 1:
+            msg = 'Cannot handle calibrations that apply to multiple MSes'
+            raise ValueError(msg)
+        vis = tuple(calto.vis)[0]
+        vis_to_calapps[vis].append((calto, calfroms))
 
-    # dict mapping an object hash to the object itself:
-    #     hash([CalFrom, ...]): [CalFrom, ...]
-    hash_to_calfroms = {}
-    # dict mapping from object hash to corresponding list of CalToArgs
-    hash_to_calto_args = collections.defaultdict(list)
+    all_accepted = {}
+    for vis, calapps_for_vis in vis_to_calapps.iteritems():
+        LOG.info('Consolidating calibrations for {}'.format(os.path.basename(vis)))
 
-    # create our maps of hashes, which we need to test for overlapping data
-    # selections
-    for calto_args, calfroms in calapps:
-        # create a tuple, as lists are not hashable
-        calfrom_hash = tuple([hash(cf) for cf in calfroms])
-        hash_to_calto_args[calfrom_hash].append(calto_args)
+        # dict mapping an object hash to the object itself:
+        #     hash([CalFrom, ...]): [CalFrom, ...]
+        hash_to_calfroms = {}
+        # dict mapping from object hash to corresponding list of CalToArgs
+        hash_to_calto_args = collections.defaultdict(list)
 
-        if calfrom_hash not in hash_to_calfroms:
-            hash_to_calfroms[calfrom_hash] = calfroms
-
-    # dict that maps holds accepted data selections and their CalFroms
-    accepted = {}
-    for calfrom_hash, calto_args in hash_to_calto_args.iteritems():
-        # assemble the other data selections (the other CalToArgs) which we
-        # will use to search for conflicting data selections
-        other_data_selections = []
-        for v in [v for k, v in hash_to_calto_args.iteritems() if k != calfrom_hash]:
-            other_data_selections.extend(v)
-
-        for to_merge in calto_args:
-            if calfrom_hash not in accepted:
-                # first time round for this calibration application, therefore it can always be added
-                # as there will be nothing to merge
-                accepted[calfrom_hash] = [(copy.deepcopy(to_merge), hash_to_calfroms[calfrom_hash])]
+        # create our maps of hashes, which we need to test for overlapping data
+        # selections
+        for calto_args, calfroms in calapps_for_vis:
+            if not calfroms:
                 continue
 
-            for idx, (existing_calto, calfroms) in enumerate(accepted[calfrom_hash]):
-                proposed_calto = CalToArgs(*copy.deepcopy(existing_calto))
+            # create a tuple, as lists are not hashable
+            hashable_calfroms = tuple(hash(cf) for cf in calfroms)
+            hash_to_calto_args[hashable_calfroms].append(calto_args)
 
-                for proposed_values, to_merge_values in zip(proposed_calto, to_merge):
-                    proposed_values.update(to_merge_values)
+            if hashable_calfroms not in hash_to_calfroms:
+                hash_to_calfroms[hashable_calfroms] = calfroms
 
-                # if the merged data selection does not conflict with any of
-                # the explicitly registered data selections that require a
-                # different calibration application, then it is safe to add
-                # the merged data selection and discard the unmerged data
-                # selection
-                if not any((data_selection_contains(proposed_calto, other) for other in other_data_selections)):
-                    LOG.trace('No conflicting data selection detected')
-                    LOG.trace('Accepting merged data selection: {!s}'.format(proposed_calto))
-                    LOG.trace('Discarding unmerged data selection: {!s}'.format(to_merge))
-                    accepted[calfrom_hash][idx] = (proposed_calto, hash_to_calfroms[calfrom_hash])
-                    break
+        # dict that maps holds accepted data selections and their CalFroms
+        accepted = {}
+        for hashable_calfroms, calto_args in hash_to_calto_args.iteritems():
+            # assemble the other data selections (the other CalToArgs) which we
+            # will use to search for conflicting data selections
+            other_data_selections = []
+            for v in [v for k, v in hash_to_calto_args.iteritems() if k != hashable_calfroms]:
+                other_data_selections.extend(v)
 
-            else:
-                # we get here if all of the proposed merged data selections
-                # conflict with the data selection in hand. In this case, it
-                # should be added as it stands, completely unaltered.
-                LOG.trace('Merged data selection conflicts with other registrations')
-                LOG.trace('Abandoning proposed data selection: {!s}'.format(proposed_calto))
-                LOG.trace('Appending new unmerged data selection: {!s}'.format(to_merge))
-                unmergeable = (to_merge, hash_to_calfroms[calfrom_hash])
-                accepted[calfrom_hash].append(unmergeable)
+            for to_merge in calto_args:
+                if hashable_calfroms not in accepted:
+                    # first time round for this calibration application, therefore it can always be added
+                    # as there will be nothing to merge
+                    accepted[hashable_calfroms] = [(copy.deepcopy(to_merge), hash_to_calfroms[hashable_calfroms])]
+                    continue
+
+                for idx, (existing_calto, calfroms) in enumerate(accepted[hashable_calfroms]):
+                    if not calfroms:
+                        continue
+
+                    proposed_calto = CalToArgs(*copy.deepcopy(existing_calto))
+
+                    for proposed_values, to_merge_values in zip(proposed_calto, to_merge):
+                        proposed_values.update(to_merge_values)
+
+                    # if the merged data selection does not conflict with any of
+                    # the explicitly registered data selections that require a
+                    # different calibration application, then it is safe to add
+                    # the merged data selection and discard the unmerged data
+                    # selection
+                    if not any((data_selection_contains(proposed_calto, other) for other in other_data_selections)):
+                        if LOG.isEnabledFor(logging.TRACE):
+                            LOG.trace('No conflicting data selection detected')
+                            LOG.trace('Accepting merged data selection: {!s}'.format(proposed_calto))
+                            LOG.trace('Discarding unmerged data selection: {!s}'.format(to_merge))
+                        accepted[hashable_calfroms][idx] = (proposed_calto, hash_to_calfroms[hashable_calfroms])
+                        break
+
+                else:
+                    # we get here if all of the proposed merged data selections
+                    # conflict with the data selection in hand. In this case, it
+                    # should be added as it stands, completely unaltered.
+                    if LOG.isEnabledFor(logging.TRACE):
+                        LOG.trace('Merged data selection conflicts with other registrations')
+                        LOG.trace('Abandoning proposed data selection: {!s}'.format(proposed_calto))
+                        LOG.trace('Appending new unmerged data selection: {!s}'.format(to_merge))
+                    unmergeable = (to_merge, hash_to_calfroms[hashable_calfroms])
+                    accepted[hashable_calfroms].append(unmergeable)
+
+            all_accepted.update(accepted)
 
     # dict values are lists, which we need to flatten into a single list
     result = []
-    for l in accepted.itervalues():
+    for l in all_accepted.itervalues():
         result.extend(l)
     return result
 
@@ -1616,11 +1659,12 @@ def create_interval_tree_for_ms(ms):
     :param ms:
     :return: an IntervalTree
     """
+    id_getter = operator.attrgetter('id')
     tree_intervals = [
         [(0, len(ms.intents))],
-        [get_min_max(ms.fields, keyfunc=operator.attrgetter('id'))],
-        [get_min_max(ms.spectral_windows, keyfunc=operator.attrgetter('id'))],
-        [get_min_max(ms.antennas, keyfunc=operator.attrgetter('id'))]
+        [get_min_max(ms.fields, keyfunc=id_getter)],
+        [get_min_max(ms.spectral_windows, keyfunc=id_getter)],
+        [get_min_max(ms.antennas, keyfunc=id_getter)]
     ]
 
     return create_interval_tree_nd(tree_intervals, list)
@@ -1748,6 +1792,9 @@ class IntervalCalState(object):
 
     @staticmethod
     def create_from_context(context):
+        if LOG.isEnabledFor(logging.TRACE):
+            LOG.trace('Creating new CalLibrary from context')
+
         # holds a mapping of numeric intent ID to string intent for each ms.
         id_to_intent = {ms.name: get_intent_id_map(ms)
                         for ms in context.observing_run.measurement_sets}
@@ -1764,47 +1811,9 @@ class IntervalCalState(object):
                           for ms in context.observing_run.measurement_sets}
         calstate.data.update(interval_trees)
 
-        # create the shape of valid data selections for future trimming
-        # See CAS-9415: CalLibrary needs a way to filter out calibration
-        # applications for missing data selections
-        for vis, antenna_tree in interval_trees.iteritems():
-            # create map of observing intent to intent ID by inverting
-            # existing map
-            intent_to_id = {v: k for k, v in calstate.id_to_intent[vis].iteritems()}
-
-            ms = context.observing_run.get_ms(vis)
-            spw_shape = {}
-            for spw in ms.spectral_windows:
-                intents_for_field = {}
-                for field in ms.fields:
-                    if spw in field.valid_spws:
-                        # construct the list of observed intent IDs for this field
-                        #
-                        # we can't rely on field.intents as this property
-                        # aggregates all intents across all spws, which may
-                        # differ from the specific spw in hand
-                        #
-                        # DON'T DO THIS!
-                        # observed_intent_ids = (intent_to_id[i] for i in field.intents)
-                        scans_for_field_and_spw = ms.get_scans(spw=spw.id, field=field.id)
-                        observed_intent_ids = (intent_to_id[i] for scan in scans_for_field_and_spw
-                                               for i in scan.intents)
-
-                        # convert the intent IDs to an IntervalTree-friendly range
-                        # and record it against the field ID
-                        intents_for_field[field.id] = tuple(
-                            sequence_to_range(seq) for seq in contiguous_sequences(observed_intent_ids)
-                        )
-                # merge adjacent field intervals that have identical values
-                spw_shape[spw.id] = _merge_intervals(intents_for_field)
-            # merge adjacent spw intervals that have identical values
-            spw_shape = _merge_intervals(spw_shape)
-
-            # assume that spws are observed by all antennas. Note the trailing comma to make it a tuple!
-            # the inner tuple is needed to convert the generator comprehension to objects
-            antenna_shape = (tuple((((interval.begin, interval.end),), spw_shape) for interval in antenna_tree),)
-
-            calstate.shape[vis] = antenna_shape
+        # the shape is never modified and hence can be shared between calstates
+        for ms in context.observing_run.measurement_sets:
+            calstate.shape[ms.name] = get_calstate_shape(ms)
 
         calstate.data = trim_to_valid_data_selection(calstate)
 
@@ -1941,6 +1950,7 @@ class IntervalCalState(object):
         calstate.shape = self.shape
 
         for vis, my_root in self.data.iteritems():
+            LOG.info('Combining callibrary entries for {}'.format(os.path.basename(vis)))
             # adopt IntervalTrees present in just this object
             if vis not in other_marked.data:
                 # TODO think: does this need to be a deep copy?
@@ -2078,7 +2088,8 @@ class IntervalCalLibrary(object):
         to_add = IntervalCalState.from_calapplication(self._context, calto, calfroms)
         self._active += to_add
 
-        LOG.trace('Calstate after _add:\n%s', self._active.as_applycal())
+        if LOG.isEnabledFor(logging.TRACE):
+            LOG.trace('Calstate after _add:\n%s', self._active.as_applycal())
 
     @property
     def active(self):
@@ -2182,8 +2193,9 @@ class IntervalCalLibrary(object):
         self._active -= application
         self._applied += application
 
-        LOG.debug('New calibration state:\n%s', self.active.as_applycal())
-        LOG.debug('Applied calibration state:\n%s', self.applied.as_applycal())
+        if LOG.isEnabledFor(logging.DEBUG):
+            LOG.debug('New calibration state:\n%s', self.active.as_applycal())
+            LOG.debug('Applied calibration state:\n%s', self.applied.as_applycal())
 
 
 # CalState = DictCalState
@@ -2367,38 +2379,6 @@ def get_calto_from_inputs(inputs):
     return CalTo(vis=inputs.vis, field=inputs.field, spw=inputs.spw, intent=inputs.intent, antenna=inputs.antenna)
 
 
-def copy_calfrom(calfrom, gaintable=None, gainfield=None, interp=None, spwmap=None, caltype=None, calwt=None):
-    """
-    Return a copy of a CalFrom object, optionally overriding the copy's
-    properties with the given function arguments.
-
-    :param calfrom: the CalFrom to copy
-    :type calfrom: CalFrom
-    :param gaintable: new gaintable value, or None to adopt from the CalFrom
-    :param gainfield: new gainfield value, or None to adopt from the CalFrom
-    :param interp: new interp value, or None to adopt from the CalFrom
-    :param spwmap: new spwmap value, or None to adopt from the CalFrom
-    :param caltype: new caltype value, or None to adopt from the CalFrom
-    :param calwt: new calwt value, or None to adopt from the CalFrom
-    :return: new CalFrom object
-    :rtype: CalFrom
-    """
-    if gaintable is None:
-        gaintable = calfrom.gaintable
-    if gainfield is None:
-        gainfield = calfrom.gainfield
-    if interp is None:
-        interp = calfrom.interp
-    if spwmap is None:
-        spwmap = calfrom.spwmap
-    if caltype is None:
-        caltype = calfrom.caltype
-    if calwt is None:
-        calwt = calfrom.calwt
-
-    return CalFrom(gaintable=gaintable, gainfield=gainfield, interp=interp, spwmap=spwmap, caltype=caltype, calwt=calwt)
-
-
 def set_calstate_marker(calstate, marker):
     """
     Return a copy of a calstate, modified so that TimeStampedData objects in
@@ -2511,3 +2491,147 @@ def copy_calapplication(calapp, origin=None, **overrides):
     calfrom = [_copy_calfrom(calfrom, **calfrom_overrides) for calfrom in calapp.calfrom]
 
     return CalApplication(calto, calfrom, origin=origin)
+
+
+# def consolidate_calibrations(calapps):
+#     """
+#     Consolidate a list of (CalTo, [CalFrom..]) 2-tuples into a smaller set of
+#     equivalent applications by consolidating their data selection arguments.
+#
+#     This function works by merging the data selections of CalTo objects that
+#     have the same calibration application, as determined by the values and
+#     data selection present in the CalFroms.
+#
+#     :param calapps: an iterable of (CalTo, [CalFrom..]) 2-tuples
+#     :return: a list of (CalTo, [CalFrom..]) tuples
+#     """
+#
+#     # dict mapping an object hash to the object itself:
+#     #     hash([CalFrom, ...]): [CalFrom, ...]
+#     hash_to_calfroms = {}
+#     # dict mapping from object hash to corresponding list of CalToArgs
+#     hash_to_calto_args = collections.defaultdict(list)
+#
+#     # create our maps of hashes, which we need to test for overlapping data
+#     # selections
+#     for calto_args, calfroms in calapps:
+#         # create a tuple, as lists are not hashable
+#         calfrom_hash = tuple([hash(cf) for cf in calfroms])
+#         hash_to_calto_args[calfrom_hash].append(calto_args)
+#
+#         if calfrom_hash not in hash_to_calfroms:
+#             hash_to_calfroms[calfrom_hash] = calfroms
+#
+#     LOG.info('Consolidating calibrations')
+#     # dict that maps holds accepted data selections and their CalFroms
+#     accepted = {}
+#     for calfrom_hash, calto_args in hash_to_calto_args.iteritems():
+#         # assemble the other data selections (the other CalToArgs) which we
+#         # will use to search for conflicting data selections
+#         other_data_selections = []
+#         for v in [v for k, v in hash_to_calto_args.iteritems() if k != calfrom_hash]:
+#             other_data_selections.extend(v)
+#
+#         for to_merge in calto_args:
+#             if calfrom_hash not in accepted:
+#                 # first time round for this calibration application, therefore it can always be added
+#                 # as there will be nothing to merge
+#                 accepted[calfrom_hash] = [(copy.deepcopy(to_merge), hash_to_calfroms[calfrom_hash])]
+#                 continue
+#
+#             for idx, (existing_calto, calfroms) in enumerate(accepted[calfrom_hash]):
+#                 proposed_calto = CalToArgs(*copy.deepcopy(existing_calto))
+#
+#                 for proposed_values, to_merge_values in zip(proposed_calto, to_merge):
+#                     proposed_values.update(to_merge_values)
+#
+#                 # if the merged data selection does not conflict with any of
+#                 # the explicitly registered data selections that require a
+#                 # different calibration application, then it is safe to add
+#                 # the merged data selection and discard the unmerged data
+#                 # selection
+#                 if not any((data_selection_contains(proposed_calto, other) for other in other_data_selections)):
+#                     LOG.trace('No conflicting data selection detected')
+#                     LOG.trace('Accepting merged data selection: {!s}'.format(proposed_calto))
+#                     LOG.trace('Discarding unmerged data selection: {!s}'.format(to_merge))
+#                     accepted[calfrom_hash][idx] = (proposed_calto, hash_to_calfroms[calfrom_hash])
+#                     break
+#
+#             else:
+#                 # we get here if all of the proposed merged data selections
+#                 # conflict with the data selection in hand. In this case, it
+#                 # should be added as it stands, completely unaltered.
+#                 LOG.trace('Merged data selection conflicts with other registrations')
+#                 LOG.trace('Abandoning proposed data selection: {!s}'.format(proposed_calto))
+#                 LOG.trace('Appending new unmerged data selection: {!s}'.format(to_merge))
+#                 unmergeable = (to_merge, hash_to_calfroms[calfrom_hash])
+#                 accepted[calfrom_hash].append(unmergeable)
+#
+#     # dict values are lists, which we need to flatten into a single list
+#     result = []
+#     for l in accepted.itervalues():
+#         result.extend(l)
+#     return result
+
+
+@cachetools.cached(cachetools.LRUCache(50), key=operator.attrgetter('name'))
+def get_calstate_shape(ms):
+    """
+    Get an IntervalTree shaped to the dimensions of the given measurement set.
+
+    This function calculates the size of each metadata dimension (spw; intent;
+    field; antenna), creating and returning an IntervalTree shaped to match.
+    The output of this function is used to trim a calibration applied globally
+    in one or more dimensions to a valid data selection.
+
+    Output from this function is cached as it can take several seconds to
+    calculate the result, which is done repeatedly when importing a calstate
+    containing many entries.
+
+    Note: this assumes that shape of an MS never changes, which should be
+    true; the number of spws, fields, ants, etc. never changes.
+
+    :param ms: the MeasurementSet to analyse
+    :return: IntervalTree shaped to match valid data dimensions
+    """
+    LOG.debug('Calculating callibrary shape for {}'.format(ms.basename))
+
+    # holds a mapping of numeric intent ID to string intent
+    id_to_intent = get_intent_id_map(ms)
+    # create map of observing intent to intent ID by inverting existing map
+    intent_to_id = {v: k for k, v in id_to_intent.iteritems()}
+
+    # create interval tree. root branch is antenna
+    antenna_tree = create_interval_tree_for_ms(ms)
+
+    spw_shape = {}
+    for spw in ms.spectral_windows:
+        intents_for_field = {}
+        for field in ms.fields:
+            if spw in field.valid_spws:
+                # construct the list of observed intent IDs for this field
+                #
+                # we can't rely on field.intents as this property
+                # aggregates all intents across all spws, which may
+                # differ from the specific spw in hand
+                #
+                # DON'T DO THIS!
+                # observed_intent_ids = (intent_to_id[i] for i in field.intents)
+                scans_for_field_and_spw = ms.get_scans(spw=spw.id, field=field.id)
+                observed_intent_ids = (intent_to_id[i] for scan in scans_for_field_and_spw for i in scan.intents)
+
+                # convert the intent IDs to an IntervalTree-friendly range
+                # and record it against the field ID
+                intents_for_field[field.id] = tuple(
+                    sequence_to_range(seq) for seq in contiguous_sequences(observed_intent_ids)
+                )
+        # merge adjacent field intervals that have identical values
+        spw_shape[spw.id] = _merge_intervals(intents_for_field)
+    # merge adjacent spw intervals that have identical values
+    spw_shape = _merge_intervals(spw_shape)
+
+    # assume that spws are observed by all antennas. Note the trailing comma to make it a tuple!
+    # the inner tuple is needed to convert the generator comprehension to objects
+    antenna_shape = (tuple((((interval.begin, interval.end),), spw_shape) for interval in antenna_tree),)
+
+    return antenna_shape

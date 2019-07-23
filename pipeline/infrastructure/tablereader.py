@@ -196,7 +196,11 @@ class MeasurementSetReader(object):
         # with one scan containing many spws, many of the statesforscan
         # arguments are repeated. This cache speeds up the subsequent
         # duplicate calls.
-        cached_states = cachetools.LRUCache(maxsize=1000, missing=msmd.statesforscan)
+        class StatesCache(cachetools.LRUCache):
+            def __missing__(self, key):
+                return msmd.statesforscan(key)
+
+        cached_states = StatesCache(1000)
 
         for spw in ms.spectral_windows:
             scan_ids = scansforspws[str(spw.id)]
@@ -213,10 +217,11 @@ class MeasurementSetReader(object):
     def link_fields_to_states(msmd, ms):
         # for each field..
 
-        # SJW commented out for CASA 4.7.74
-        # scansforfields = msmd.scansforfields()
+        class StatesCache(cachetools.LRUCache):
+            def __missing__(self, key):
+                return msmd.statesforscan(key)
 
-        cached_states = cachetools.LRUCache(1000, missing=msmd.statesforscan)
+        cached_states = StatesCache(1000)
 
         for field in ms.fields:
             # Find the state IDs for the field by first identifying the scans

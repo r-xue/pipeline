@@ -217,6 +217,7 @@ def get_intervals(context, calapp, spw_ids=None):
     vis = {o.inputs['vis'] for o in calapp.origin}
     assert (len(vis) == 1)
     vis = vis.pop()
+    ms = context.observing_run.get_ms(vis)
 
     from_intent = {o.inputs['intent'] for o in calapp.origin}
     assert (len(from_intent) == 1)
@@ -226,11 +227,10 @@ def get_intervals(context, calapp, spw_ids=None):
     if not spw_ids:
         task_spw_args = {o.inputs['spw'] for o in calapp.origin}
         spw_arg = ','.join(task_spw_args)
-        spw_ids = {spw_id for (spw_id, _, _, _) in spw_arg_to_id(vis, spw_arg)}
+        spw_ids = {spw_id for (spw_id, _, _, _) in spw_arg_to_id(vis, spw_arg, ms.get_spectral_windows)}
 
     # from_intent is given in CASA intents, ie. *AMPLI*, *PHASE*
     # etc. We need this in pipeline intents.
-    ms = context.observing_run.get_ms(vis)
     pipeline_intent = to_pipeline_intent(ms, from_intent)
     scans = ms.get_scans(scan_intent=pipeline_intent)
 

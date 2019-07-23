@@ -79,7 +79,7 @@ class MeasurementSet(object):
             return self.antennas
 
         return [a for a in self.antennas
-                if a.id in utils.ant_arg_to_id(self.name, search_term)]
+                if a.id in utils.ant_arg_to_id(self.name, search_term, self.antennas)]
 
     def get_state(self, state_id=None):
         match = [state for state in self.states if state.id == state_id]
@@ -366,7 +366,7 @@ class MeasurementSet(object):
 
         if task_arg not in (None, ''):
             pool = [f for f in pool
-                    if f.id in utils.field_arg_to_id(self.name, task_arg)]
+                    if f.id in utils.field_arg_to_id(self.name, task_arg, self.fields)]
 
         if field_id is not None:
             # encase raw numbers in a tuple
@@ -449,7 +449,7 @@ class MeasurementSet(object):
 
         # expand spw tuples into a range per spw, eg. spw9 : 1,2,3,4,5
         selected = collections.defaultdict(set)
-        for (spw, start, end, step) in utils.spw_arg_to_id(self.name, task_arg):
+        for (spw, start, end, step) in utils.spw_arg_to_id(self.name, task_arg, self.spectral_windows):
             selected[spw].update(set(range(start, end+1, step))) 
 
         if not with_channels:

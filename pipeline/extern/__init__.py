@@ -5,7 +5,7 @@ import sys
 sys.path.append(pkg_resources.resource_filename(__name__, 'Mako-1.0.0-py2.7.egg'))
 import mako
 
-sys.path.append(pkg_resources.resource_filename(__name__, 'cachetools-1.0.1-py2.7.egg'))
+sys.path.append(pkg_resources.resource_filename(__name__, 'cachetools-3.1.1-py2.7.egg'))
 import cachetools
 
 sys.path.append(pkg_resources.resource_filename(__name__, 'sortedcontainers-1.4.4-py2.7.egg'))

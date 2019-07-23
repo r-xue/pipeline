@@ -3,6 +3,10 @@ import os
 import pkg_resources
 import webbrowser
 
+# required to get extern eggs on sys.path. This has to come first, before any
+# modules that depend on them.
+from . import extern
+
 from . import environment
 from . import infrastructure
 
