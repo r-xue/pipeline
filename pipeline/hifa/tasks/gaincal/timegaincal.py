@@ -245,10 +245,10 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
             else:
                 # Combined solution meets phasesnr limit. Use separate solint by intent.
                 # For SNR_SOLINT_INTENTS (BANDPASS and AMPLUTUDE_
-                # Use inputs.solint when combined SNR meets phasesnr limit.
+                # Use inputs.calsolint when combined SNR meets phasesnr limit.
                 if len(snr_intents) > 0:
                     intent = str(',').join(snr_intents)
-                    interval = self.inputs.solint
+                    interval = self.inputs.calsolint
                     result = self._do_calibrator_phasecal(interval, gaintype, combine, spw_sel, intent)
                     result_list.append(result)
                 # NON-SNR based solint for the other sources (e.g., PHASE). Always use solint = 1/4 scan time
