@@ -174,12 +174,11 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # bad antennas to be identified while keeping the overall number of
         # plots relatively unchanged.
         #
-        # Note that 'TARGET' has been removed from the intents list
         amp_vs_time_detail_plots, amp_vs_time_subpages = self.create_plots(
             context,
             result,
             applycal.CAS9154AmpVsTimeDetailChart,
-            ['AMPLITUDE', 'PHASE', 'BANDPASS', 'CHECK'],
+            ['AMPLITUDE', 'PHASE', 'BANDPASS', 'CHECK', 'TARGET'],
             ApplycalAmpVsTimePlotRenderer,
             avgchannel='9000'
         )
