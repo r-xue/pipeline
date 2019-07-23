@@ -26,7 +26,8 @@ class GaincalSummaryChart(common.PlotmsCalSpwComposite):
                     if (intent in c.intent or c.intent == '') 
                     and calmode == utils.get_origin_input_arg(c, 'calmode')]
 
-        assert len(selected) is 1, '%s %s solutions != 1' % (intent, yaxis)
+        #assert len(selected) is 1, '%s %s solutions != 1' % (intent, yaxis)
+        if len(selected) > 1: LOG.warn('Multiple calapps were found for calmode={}, intent={}. Only the first caltable will be plotted.'.format(yaxis, intent))
         calapp = selected[0]
 
         # Take ant from calapp.
@@ -56,7 +57,8 @@ class GaincalDetailChart(common.PlotmsCalSpwAntComposite):
                     if (intent in c.intent or c.intent == '') 
                     and calmode == utils.get_origin_input_arg(c, 'calmode')]
 
-        assert len(selected) is 1, '%s %s solutions != 1' % (intent, yaxis)
+#         assert len(selected) is 1, '%s %s solutions != 1' % (intent, yaxis)
+        if len(selected) > 1: LOG.warn('Multiple calapps were found for calmode={}, intent={}. Only the first caltable will be plotted.'.format(yaxis, intent))
         calapp = selected[0]
 
         # request plots per spw, overlaying all antennas, and setting same
