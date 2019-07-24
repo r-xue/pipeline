@@ -7,7 +7,7 @@ import pipeline.infrastructure.utils as utils
 LOG = infrastructure.get_logger(__name__)
 
 
-class GaincalSummaryChart(common.PlotmsCalSpwComposite):
+class GaincalSummaryChart(object):
     """
     Base class for executing plotms per spw
     """
@@ -26,19 +26,27 @@ class GaincalSummaryChart(common.PlotmsCalSpwComposite):
                     if (intent in c.intent or c.intent == '') 
                     and calmode == utils.get_origin_input_arg(c, 'calmode')]
 
-        #assert len(selected) is 1, '%s %s solutions != 1' % (intent, yaxis)
-        if len(selected) > 1: LOG.warn('Multiple calapps were found for calmode={}, intent={}. Only the first caltable will be plotted.'.format(yaxis, intent))
-        calapp = selected[0]
+        plotters = []
+        # PIPE-390: Need to handle cases when more than one caltables should be
+        # plotted to accomplish calmode and intent selection (e.g., multiple SpectralSpec)
+        for calapp in selected:
+            # Take ant from calapp.
+            ant = calapp.antenna
+            # request plots per spw, overlaying all antennas
+            plot_cls = common.PlotmsCalSpwComposite(context, result, calapp,
+                                                    xaxis=xaxis, yaxis=yaxis, ant=ant,
+                                                    plotrange=plotrange, coloraxis=coloraxis)
+            plotters.append(plot_cls)
 
-        # Take ant from calapp.
-        ant = calapp.antenna
+        self.plotters = plotters
+        
+    def plot(self):
+        plot_wrappers = []
+        for plot_cls in self.plotters:
+            plot_wrappers.extend(plot_cls.plot())
+        return plot_wrappers
 
-        # request plots per spw, overlaying all antennas
-        super(GaincalSummaryChart, self).__init__(context, result, calapp, xaxis=xaxis, yaxis=yaxis, ant=ant,
-                                                  plotrange=plotrange, coloraxis=coloraxis)
-
-
-class GaincalDetailChart(common.PlotmsCalSpwAntComposite):
+class GaincalDetailChart(object):
     """
     Base class for executing plotcal per spw and antenna
     """
@@ -57,16 +65,25 @@ class GaincalDetailChart(common.PlotmsCalSpwAntComposite):
                     if (intent in c.intent or c.intent == '') 
                     and calmode == utils.get_origin_input_arg(c, 'calmode')]
 
-#         assert len(selected) is 1, '%s %s solutions != 1' % (intent, yaxis)
-        if len(selected) > 1: LOG.warn('Multiple calapps were found for calmode={}, intent={}. Only the first caltable will be plotted.'.format(yaxis, intent))
-        calapp = selected[0]
+        plotters = []
+        # PIPE-390: Need to handle cases when more than one caltables should be
+        # plotted to accomplish calmode and intent selection (e.g., multiple SpectralSpec)
+        for calapp in selected:
+            # request plots per spw, overlaying all antennas, and setting same
+            # y-range for each spw.
+            plot_cls = common.PlotmsCalSpwAntComposite(context, result, calapp,
+                                                       xaxis=xaxis, yaxis=yaxis, 
+                                                       plotrange=plotrange, coloraxis=coloraxis,
+                                                       ysamescale=True)
+            plotters.append(plot_cls)
+            
+        self.plotters = plotters
 
-        # request plots per spw, overlaying all antennas, and setting same
-        # y-range for each spw.
-        super(GaincalDetailChart, self).__init__(
-            context, result, calapp, xaxis=xaxis, yaxis=yaxis, plotrange=plotrange, coloraxis=coloraxis,
-            ysamescale=True)
-
+    def plot(self):
+        plot_wrappers = []
+        for plot_cls in self.plotters:
+            plot_wrappers.extend(plot_cls.plot())
+        return plot_wrappers
 
 class GaincalAmpVsTimeSummaryChart(GaincalSummaryChart):
     """
