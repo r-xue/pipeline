@@ -79,11 +79,13 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         # Produce the diagnostic table for displaying amplitude vs time plots. 
         #     This table is not applied to the data
         #     No special mapping required here.
+        LOG.info('Computing amplitude gain table for displaying amplitude vs time plots')
         amp_diagnostic_result = self._do_caltarget_ampcal(solint=amp_calsolint)
         result.calampresult = amp_diagnostic_result
 
         # Compute the science target phase solution. This solution will be applied to the target, check source, and
         # phase calibrator when the result for this task is accepted.
+        LOG.info('Computing phase gain table for target, check source, and phase calibrator.')
         target_phasecal_calapp = self._do_spectralspec_target_phasecal(solint=inputs.targetsolint,
                                                                        gaintype=phase_gaintype,
                                                                        combine=phase_combine)
@@ -94,7 +96,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         # Now compute the calibrator phase solution. This solution will temporarily to the PHASE calibrator 
         # within this task so we can calculate the residual phase offsets.
         # The solution is also eventually be applied to the AMPLITUDE and BANDPASS calibrators, 
-        
+        LOG.info('Computing phase gain table for bandpass and flux calibrator.')
         (cal_phase_result, temp_phase_result) = \
             self._do_spectralspec_calibrator_phasecal(solint=phase_calsolint, gaintype=phase_gaintype,
                                                       combine=phase_combine)
@@ -107,6 +109,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
             calphres.accept(inputs.context)
         for calphres in temp_phase_result:
             calphres.accept(inputs.context)
+        LOG.info('Computing offset phase gain table.')
         phase_residuals_result = self._do_offsets_phasecal(solint='inf', gaintype=phase_gaintype, combine='')
         result.phaseoffsetresult = phase_residuals_result
 
@@ -118,6 +121,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
             result.pool.append(calphase_calapp)
 
         # Compute the amplitude calibration
+        LOG.info('Computing the final amplitude gain table.')
         amplitude_calapps = self._do_target_ampcal()
 
         # Accept the amplitude results
@@ -167,7 +171,6 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         return grouped_spw
 
     def _do_spectralspec_target_phasecal(self, solint=None, gaintype=None, combine=None):
-        LOG.info('Computing phase gain table for target, check source, and phase calibrator.')
         if 'spw' not in combine:
             return self._do_target_phasecal(solint, gaintype, combine)
         # Combined SpW solution. Need to solve per SpectralSpec
@@ -223,9 +226,10 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
 
     # Used to calibrate "selfcaled" targets
     def _do_spectralspec_calibrator_phasecal(self, solint=None, gaintype=None, combine=None):
-        LOG.info('Computing phase gain table for bandpass and flux calibrator.')
         if 'spw' not in combine:
-            return [self._do_calibrator_phasecal(solint, gaintype, combine)]
+            apply_list = [ self._do_calibrator_phasecal(solint, gaintype, combine) ]
+            temporal_list = []
+            return (apply_list, temporal_list)
         # Combined SpW solution. Need to solve per SpectralSpec
         inputs = self.inputs
         ms = inputs.ms
@@ -274,7 +278,6 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
 
     # Used to calibrate "selfcaled" targets
     def _do_calibrator_phasecal(self, solint=None, gaintype=None, combine=None, spw=None, intent=None):
-        LOG.info('Computing offset phase gain table.')
         inputs = self.inputs
         spw_sel = str(spw) if spw is not None else inputs.spw
         intent_sel = intent if intent is not None else inputs.intent
@@ -342,7 +345,6 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
 
     # Used for diagnostics not calibration
     def _do_caltarget_ampcal(self, solint):
-        LOG.info('Computing amp gain table for displaying amplitude vs time plots')
         inputs = self.inputs
 
         task_args = {
@@ -366,7 +368,6 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         return result
 
     def _do_target_ampcal(self):
-        LOG.info('Computing amplitude gain table.')
         inputs = self.inputs
 
         task_args = {
