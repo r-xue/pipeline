@@ -241,9 +241,9 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                     should be combined together.
         """
         LOG.info("Start combined SpW SNR test")
-        LOG.debug('- spwlist to analyze: %s' % spwlist)
-        LOG.debug('- per SpW SNR: %s' % perspwsnr)
-        LOG.debug('- spwmap = %s' % spwmap)
+        LOG.debug('- spwlist to analyze: {}'.format(spwlist))
+        LOG.debug('- per SpW SNR: {}'.format(perspwsnr))
+        LOG.debug('- spwmap = {}'.format(spwmap))
         nosnr = True
         combined_spwids = []
         combined_snrs = []
@@ -266,7 +266,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                     combined_idx.append(i)
             # calculate combined SNR from per spw SNR
             combined_snr = numpy.linalg.norm(snrlist)
-            LOG.info('Reference SpW ID = %s (Combined SpWs = %s) : Combined SNR = %f' % (mappedspwid, str([spwlist[j] for j in combined_idx]), combined_snr))
+            LOG.info('Reference SpW ID = {} (Combined SpWs = {}) : Combined SNR = {}'.format(mappedspwid, str([spwlist[j] for j in combined_idx]), combined_snr))
 
             if combined_snr < self.inputs.phasesnr:
                 low_snr_spwids.extend([spwlist[i] for i in combined_idx])
@@ -276,7 +276,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                     combined_goodsnrs[i] = True
             combined_spwids.append(mappedspwid)
             combined_snrs.append(combined_snr)
-        LOG.info('SpW IDs that has low combined SNR (threshold: %f) = %s' % (self.inputs.phasesnr, low_snr_spwids))
+        LOG.info('SpW IDs that has low combined SNR (threshold: {}) = {}'.format(self.inputs.phasesnr, low_snr_spwids))
         return low_snr_spwids
 
     def _do_phaseup(self):

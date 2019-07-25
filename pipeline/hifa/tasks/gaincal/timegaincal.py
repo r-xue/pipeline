@@ -167,7 +167,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
             ref_spw = { spw_map[i] for i in spws }
             assert len(ref_spw) == 1, 'A SpectralSpec is mapped to more than one SpWs'
             grouped_spw[ref_spw.pop()] = str(',').join([str(i) for i in sorted(spws)])
-        LOG.debug('SpectralSpec grouping: %s' % grouped_spw)
+        LOG.debug('SpectralSpec grouping: {}'.format(grouped_spw))
         return grouped_spw
 
     def _do_spectralspec_target_phasecal(self, solint=None, gaintype=None, combine=None):
@@ -186,7 +186,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
             LOG.info('Processing spectral spec with spws {}'.format(spw_sel))
             selected_scans = ms.get_scans(scan_intent=inputs.intent, spw=spw_sel)
             if len(selected_scans) == 0:
-                LOG.info('Skipping table generation for empty selection: spw=%s, intent=%s' % (spw_sel, inputs.intent))
+                LOG.info('Skipping table generation for empty selection: spw={}, intent={}'.format(spw_sel, inputs.intent))
                 continue
             calapps = self._do_target_phasecal(solint, gaintype, combine, spw_sel)
             calapp_list.extend(calapps)
