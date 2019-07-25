@@ -240,7 +240,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             spwmap : A spectral window map that specifies which SpW IDs
                     should be combined together.
         """
-        LOG.info("Start combined SNR test")
+        LOG.info("Start combined SpW SNR test")
         LOG.debug('- spwlist to analyze: %s' % spwlist)
         LOG.debug('- per SpW SNR: %s' % perspwsnr)
         LOG.debug('- spwmap = %s' % spwmap)
@@ -266,7 +266,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                     combined_idx.append(i)
             # calculate combined SNR from per spw SNR
             combined_snr = numpy.linalg.norm(snrlist)
-            LOG.info('Reference SpW = %s (Mapped SpWs = %s) : Combined SNR = %f' % (mappedspwid, str([spwlist[j] for j in combined_idx]), combined_snr))
+            LOG.info('Reference SpW ID = %s (Combined SpWs = %s) : Combined SNR = %f' % (mappedspwid, str([spwlist[j] for j in combined_idx]), combined_snr))
 
             if combined_snr < self.inputs.phasesnr:
                 low_snr_spwids.extend([spwlist[i] for i in combined_idx])
