@@ -115,6 +115,20 @@ class PlotmsLeaf(object):
         if self._receiver:
             del plot_args['receiver']
 
+        #
+        # PIPE-157: pipeline hif_applycal spectral plots should overlay image
+        # sideband transmission for DSB receivers (once plotms can do this)
+        #
+        # if showatm=True and spw is a DSB receiver, add showimage=True to the
+        # plotms args
+        #
+        if plot_args.get('showatm', False):
+            # use any rather than all on the basis that we'd prefer a warning
+            # if plotms doesn't like mixed DSB/non-DSB plots over not getting
+            # the sideband image at all
+            if any([spw_do.receiver == 'DSB' for spw_do in self._ms.get_spectral_windows(spw)]):
+                plot_args['showimage'] = True
+
         self._plot_args = plot_args
         self._plotfile = self._get_plotfile()
 
