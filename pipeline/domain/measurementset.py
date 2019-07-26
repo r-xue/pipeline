@@ -483,10 +483,10 @@ class MeasurementSet(object):
     @property
     def end_time(self):
         qt = casatools.quanta
-        s = sorted(self.scans, 
+        s = sorted(self.scans,
                    key=lambda scan: scan.end_time['m0'],
                    cmp=lambda x, y: 1 if qt.gt(x, y) else 0 if qt.eq(x, y) else -1)
-        return s[-1].start_time
+        return s[-1].end_time
 
     def get_vla_max_integration_time(self):
         """Get the integration time used by the original VLA scripts
