@@ -18,9 +18,6 @@ __all__ = [
     'TimeGaincal',
 ]
 
-# PIPE-163: SNR based solint for FLUX and BP cals.
-SNR_SOLINT_INTENTS = ['AMPLITUDE', 'BANDPASS']
-
 class TimeGaincalInputs(gtypegaincal.GTypeGaincalInputs):
 
     calamptable = vdp.VisDependentProperty(default=None)
@@ -233,47 +230,47 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         # Combined SpW solution. Need to solve per SpectralSpec
         inputs = self.inputs
         ms = inputs.ms
-#         spw_groups = self._group_spw_by_spwmap(ms.combine_spwmap, inputs.spw)
         spw_groups = self._group_by_spectralspec(inputs.spw)
         low_combined_snr_spw_list = ms.low_combined_phasesnr_spws
         if spw_groups is None:
             raise ValueError('Invalid SpW grouping input.')
         # Need to solve per SpectralSpec when combine = 'spw'
         all_intents = self.inputs.intent.split(',')
-        snr_intents = []
-        other_intents = []
+        calsolint_intents = []
+        snrsol_intents = []
         for intent in all_intents:
-            if intent in SNR_SOLINT_INTENTS:
-                snr_intents.append(intent)
+            if intent in ['AMPLITUDE', 'BANDPASS']:
+                calsolint_intents.append(intent)
             else:
-                other_intents.append(intent)
+                snrsol_intents.append(intent)
         apply_list = []
         temporal_list = []
         for ref_spw, spw_sel in spw_groups.items():
             LOG.info('Processing spectral spec with spws {}'.format(spw_sel))
             extend_solint = (ref_spw in low_combined_snr_spw_list)
             if extend_solint:
-                #Low SNR SpectralSpec. All intents should be solved with soilint = 1/4 scan time
-                intent = str(',').join(all_intents)
-                interval = solint
-                result = self._do_calibrator_phasecal(interval, gaintype, combine, spw_sel, intent)
-                apply_list.append(result)
-            else:
-                # Combined solution meets phasesnr limit. Use separate solint by intent.
-                # For SNR_SOLINT_INTENTS (BANDPASS and AMPLUTUDE_
-                # Use inputs.calsolint when combined SNR meets phasesnr limit.
-                if len(snr_intents) > 0:
-                    intent = str(',').join(snr_intents)
+                # Low SNR SpectralSpec. Use separate solint by intent.
+                # For BANDPASS and AMPLUTUDE always use inputs.calsolint.
+                if len(calsolint_intents) > 0:
+                    intent = str(',').join(calsolint_intents)
                     interval = self.inputs.calsolint
                     result = self._do_calibrator_phasecal(interval, gaintype, combine, spw_sel, intent)
                     apply_list.append(result)
-                # NON-SNR based solint for the other sources (e.g., PHASE). Always use solint = 1/4 scan time
+                # For the other sources (e.g., PHASE), Use solint = 1/4 scan time
                 # This table is used only temporary applied to generate offset caltable.
-                if len(other_intents) > 0:
-                    intent = str(',').join(other_intents)
+                if len(snrsol_intents) > 0:
+                    intent = str(',').join(snrsol_intents)
                     interval = solint
                     result = self._do_calibrator_phasecal(interval, gaintype, combine, spw_sel, intent)
                     temporal_list.append(result)
+            else:
+                # Combined solution meets phasesnr limit.
+                # All intents should be solved with soilint = inputs.calsolint
+                intent = str(',').join(all_intents)
+                interval = self.inputs.calsolint
+                result = self._do_calibrator_phasecal(interval, gaintype, combine, spw_sel, intent)
+                apply_list.append(result)
+
         return (apply_list, temporal_list)
 
     # Used to calibrate "selfcaled" targets
