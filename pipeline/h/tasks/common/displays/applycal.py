@@ -510,7 +510,9 @@ class AmpVsUVSummaryChart(SpwSummaryChart):
             'avgchannel': '9000',
             'plotrange': [0, 0, 0, 0],
             'coloraxis': 'corr',
-            'overwrite': True
+            'overwrite': True,
+            # PIPE-310: set yselfscale=True for amp vs UVdist plots
+            'yselfscale': True
         }
         plot_args.update(**overrides)
 
