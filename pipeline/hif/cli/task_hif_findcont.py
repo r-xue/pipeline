@@ -4,7 +4,8 @@ from taskinit import casalog
 
 import pipeline.h.cli.utils as utils
 
-def hif_findcont(vis=None, target_list=None, mosweight=None, parallel=None,
+
+def hif_findcont(vis=None, target_list=None, mosweight=None, perchanweightdensity=None, parallel=None,
                  pipelinemode=None, dryrun=None, acceptresults=None):
 
     ##########################################################################

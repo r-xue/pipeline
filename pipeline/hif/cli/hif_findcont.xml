@@ -27,6 +27,11 @@ Find continuum frequency ranges for a list of specified targets.
     <value>None</value>
   </param>
 
+    <param type="bool" name="perchanweightdensity">
+        <description>Calculate the weight density for each channel independently</description>
+        <value>False</value>
+    </param>
+
   <param type="string" name="parallel">
     <description>Compute dirty images using MPI cluster</description>
     <value>automatic</value>
@@ -119,6 +124,8 @@ target_list -- Dictionary specifying targets to be imaged; blank will read list 
 mosweight -- Mosaic weighting
              default=None
              Options: False, True
+
+perchanweightdensity -- Calculate the weight density for each channel independently
 
 parallel -- use multiple CPU nodes to compute dirty images
     default: \'automatic\'
