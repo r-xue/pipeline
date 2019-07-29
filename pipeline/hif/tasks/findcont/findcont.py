@@ -22,7 +22,7 @@ LOG = infrastructure.get_logger(__name__)
 
 class FindContInputs(vdp.StandardInputs):
     parallel = vdp.VisDependentProperty(default='automatic')
-    perchanweightdensity = vdp.VisDependentProperty(default=False)
+    hm_perchanweightdensity = vdp.VisDependentProperty(default=False)
 
     @vdp.VisDependentProperty(null_input=['', None, {}])
     def target_list(self):
@@ -32,7 +32,7 @@ class FindContInputs(vdp.StandardInputs):
         return copy.deepcopy(self.context.clean_list_pending)
 
     def __init__(self, context, output_dir=None, vis=None, target_list=None, mosweight=None,
-                 perchanweightdensity=None, parallel=None):
+                 hm_perchanweightdensity=None, parallel=None):
         super(FindContInputs, self).__init__()
         self.context = context
         self.output_dir = output_dir
@@ -40,7 +40,7 @@ class FindContInputs(vdp.StandardInputs):
 
         self.target_list = target_list
         self.mosweight = mosweight
-        self.perchanweightdensity = perchanweightdensity
+        self.hm_perchanweightdensity = hm_perchanweightdensity
         self.parallel = parallel
 
 
@@ -252,7 +252,7 @@ class FindCont(basetask.StandardTaskTemplate):
                                             intent=utils.to_CASA_intent(inputs.ms[0], target['intent']),
                                             field=target['field'], start=start, width=width, nchan=nchan,
                                             outframe='LSRK', scan=scanidlist, specmode='cube', gridder=gridder,
-                                            mosweight=mosweight, perchanweightdensity=inputs.perchanweightdensity,
+                                            mosweight=mosweight, perchanweightdensity=inputs.hm_perchanweightdensity,
                                             pblimit=0.2, niter=0, threshold='0mJy', deconvolver='hogbom',
                                             interactive=False, imsize=target['imsize'], cell=target['cell'],
                                             phasecenter=phasecenter, stokes='I', weighting='briggs',

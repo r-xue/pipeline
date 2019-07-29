@@ -27,7 +27,7 @@ Find continuum frequency ranges for a list of specified targets.
     <value>None</value>
   </param>
 
-    <param type="bool" name="perchanweightdensity">
+    <param type="bool" name="hm_perchanweightdensity">
         <description>Calculate the weight density for each channel independently</description>
         <value>False</value>
     </param>
@@ -125,7 +125,7 @@ mosweight -- Mosaic weighting
              default=None
              Options: False, True
 
-perchanweightdensity -- Calculate the weight density for each channel independently
+hm_perchanweightdensity -- Calculate the weight density for each channel independently
 
 parallel -- use multiple CPU nodes to compute dirty images
     default: \'automatic\'
