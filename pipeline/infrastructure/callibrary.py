@@ -1950,7 +1950,8 @@ class IntervalCalState(object):
         calstate.shape = self.shape
 
         for vis, my_root in self.data.iteritems():
-            LOG.info('Combining callibrary entries for {}'.format(os.path.basename(vis)))
+            if LOG.isEnabledFor(logging.TRACE):
+                LOG.trace('Combining callibrary entries for {}'.format(os.path.basename(vis)))
             # adopt IntervalTrees present in just this object
             if vis not in other_marked.data:
                 # TODO think: does this need to be a deep copy?
