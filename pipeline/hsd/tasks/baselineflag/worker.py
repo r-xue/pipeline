@@ -30,7 +30,7 @@ LOG = infrastructure.get_logger(__name__)
 class SDBLFlagWorkerInputs(vdp.StandardInputs):
     """
     Inputs for imaging worker
-    NOTE: infile should be a complete list of MSes 
+    NOTE: infile should be a complete list of MSes
     """
     userFlag = vdp.VisDependentProperty(default=[])
     edge = vdp.VisDependentProperty(default=(0, 0))
@@ -59,7 +59,7 @@ class SDBLFlagWorkerResults(common.SingleDishResults):
         super(SDBLFlagWorkerResults, self).__init__(task, success, outcome)
 
     def merge_with_context(self, context):
-        super(SDBLFlagWorkerResults, self).merge_with_context(context)       
+        super(SDBLFlagWorkerResults, self).merge_with_context(context)
 
     def _outcome_name(self):
         return ''
@@ -388,7 +388,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                 for ip, polid in enumerate(polids):
                     SpIn[ip, index] = tmpd[polid]
                     FlIn[ip, index] = tmpf[polid]
-                if is_baselined: 
+                if is_baselined:
                     data_row_out = rowmap[data_row_in]
                     tmpd = tbOut.getcell(datacolOut, data_row_out)
                     tmpf = tbOut.getcell('FLAG', data_row_out)
@@ -484,7 +484,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                                                              deviation_mask=deviation_mask)
                                 RmaskOld += mask0
                                 RdataNew0 += SpOut[ip, x]
-                                mask0 = self._get_mask_array(masklist, (edgeL, edgeR), FlOut[ip, x], 
+                                mask0 = self._get_mask_array(masklist, (edgeL, edgeR), FlOut[ip, x],
                                                              deviation_mask=deviation_mask) if is_baselined else numpy.zeros(NCHAN, dtype=numpy.int64)
                                 RmaskNew += mask0
                         elif START > (valid_nrow - Nmean):
@@ -501,7 +501,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                                                          deviation_mask=deviation_mask)
                             RmaskOld += (mask0 - mask_in)
                             RdataNew0 -= (SpOut[ip, index] - SpOut[ip, box_edge])
-                            mask0 = self._get_mask_array(masklist, (edgeL, edgeR), FlOut[ip, box_edge], 
+                            mask0 = self._get_mask_array(masklist, (edgeL, edgeR), FlOut[ip, box_edge],
                                                          deviation_mask=deviation_mask) if is_baselined else numpy.zeros(NCHAN, dtype=numpy.int64)
                             RmaskNew += (mask0 - mask_out)
                         # Mean spectra of row = row-Nmean ~ row-1
@@ -520,7 +520,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                                                          deviation_mask=deviation_mask)
                             LmaskOld += mask0
                             LdataNew0 += SpOut[ip, box_edge]
-                            mask0 = self._get_mask_array(masklist, (edgeL, edgeR), FlOut[ip, box_edge], 
+                            mask0 = self._get_mask_array(masklist, (edgeL, edgeR), FlOut[ip, box_edge],
                                                          deviation_mask=deviation_mask) if is_baselined else numpy.zeros(NCHAN, dtype=numpy.int64)
                             LmaskNew += mask0
                         else:
@@ -532,14 +532,14 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                                                          deviation_mask=deviation_mask)
                             LmaskOld += mask0
                             LdataNew0 += (SpOut[ip, box_edge_right] - SpOut[ip, box_edge_left])
-                            mask0 = self._get_mask_array(masklist, (edgeL, edgeR), FlOut[ip, box_edge_right], 
+                            mask0 = self._get_mask_array(masklist, (edgeL, edgeR), FlOut[ip, box_edge_right],
                                                          deviation_mask=deviation_mask) if is_baselined else numpy.zeros(NCHAN, dtype=numpy.int64)
                             LmaskNew += mask0
                             masklist = DataTable.getcell('MASKLIST', chunks[1][box_edge_left])
                             mask0 = self._get_mask_array(masklist, (edgeL, edgeR), FlIn[ip, box_edge_left],
                                                          deviation_mask=deviation_mask)
                             LmaskOld -= mask0
-                            mask0 = self._get_mask_array(masklist, (edgeL, edgeR), FlOut[ip, box_edge_left], 
+                            mask0 = self._get_mask_array(masklist, (edgeL, edgeR), FlOut[ip, box_edge_left],
                                                          deviation_mask=deviation_mask) if is_baselined else numpy.zeros(NCHAN, dtype=numpy.int64)
                             LmaskNew -= mask0
 
@@ -552,7 +552,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                         stats[4] = OldRMSdiff
 
                         NewRMSdiff = -1
-                        if is_baselined: 
+                        if is_baselined:
                             mask0 = (RmaskNew + LmaskNew + mask_out) / (NL + NR + 1)
                             NewRMSdiff, Nmask = self._calculate_masked_stddev(diffNew0, mask0)
                         stats[3] = NewRMSdiff
@@ -618,7 +618,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
         # convert FLAGTRA to mask (1=valid channel, 0=flagged channel)
         mask = numpy.array(sdutils.get_mask_from_flagtra(flagchan))
         # masklist
-        for [m0, m1] in masklist: 
+        for [m0, m1] in masklist:
             mask[m0:m1] = 0
 
         # deviation mask
@@ -662,9 +662,14 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                 MeanFlagged = FlaggedData.mean()
                 #LOG.debug("Ndata = %s, Unflag = %s, shape(FlaggedData) = %s, Std = %s, mean = %s" \
                 #      % (str(Ndata), str(Unflag), str(FlaggedData.shape), str(StddevFlagged), str(MeanFlagged)))
-                AVE = MeanFlagged / float(Unflag) * float(Ndata)
-                RMS = math.sqrt(abs(Ndata * StddevFlagged ** 2 / Unflag
-                                    - Ndata * (Ndata - Unflag) * MeanFlagged ** 2 / (Unflag ** 2)))
+                # PIPE-404
+                # Re-normalization of mean and stddev is no longer necessary
+                # since invalid data are excluded when we set FlaggedData (by take method)
+                #AVE = MeanFlagged / float(Unflag) * float(Ndata)
+                #RMS = math.sqrt(abs(Ndata * StddevFlagged ** 2 / Unflag
+                #                    - Ndata * (Ndata - Unflag) * MeanFlagged ** 2 / (Unflag ** 2)))
+                AVE = MeanFlagged
+                RMS = StddevFlagged
                 #print('x=%d, AVE=%f, RMS=%f, Thres=%s' % (x, AVE, RMS, str(Threshold[x])))
                 ThreP = AVE + RMS * Threshold[x]
                 if x == 4:
