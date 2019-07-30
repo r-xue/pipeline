@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 import collections
+import functools
 import itertools
 import re
 import operator
@@ -39,7 +40,7 @@ class PlotbandpassDetailBase(object):
         self._caltable = calapp.gaintable
 
         self._xaxis = xaxis
-        self._yaxis = yaxis        
+        self._yaxis = yaxis
         self._kwargs = kwargs
 
         ms = context.observing_run.get_ms(self._vis)
@@ -79,7 +80,7 @@ class PlotbandpassDetailBase(object):
         }
         png = '{caltable}-{y}_vs_{x}{overlay}.png'.format(**fileparts)
 
-        self._figroot = os.path.join(context.report_dir, 
+        self._figroot = os.path.join(context.report_dir,
                                      'stage%s' % result.stage_number,
                                      png)
 
@@ -143,12 +144,13 @@ class PlotmsCalLeaf(object):
     ant arguments through to plotms without further manipulation, creating
     exactly one plot. 
     """
+
     def __init__(self, context, result, calapp, xaxis, yaxis, spw='', ant='', pol='', plotrange=[], coloraxis=''):
         self._context = context
         self._result = result
 
         self._calapp = calapp
-        self._caltable = calapp.gaintable   
+        self._caltable = calapp.gaintable
         self._vis = calapp.vis
 
         self._xaxis = xaxis
@@ -228,7 +230,7 @@ class PlotmsCalLeaf(object):
         for attr in ['spw', 'ant', 'intent']:
             val = getattr(self, '_%s' % attr)
             if val != '':
-                parameters[attr] = val 
+                parameters[attr] = val
 
         wrapper = logger.Plot(self._figfile,
                               x_axis=self._xaxis,
@@ -239,17 +241,17 @@ class PlotmsCalLeaf(object):
         return wrapper
 
     def _create_task(self):
-        task_args = {'vis'       : self._caltable,
-                     'xaxis'     : self._xaxis,
-                     'yaxis'     : self._yaxis,
-                     'showgui'   : False,
+        task_args = {'vis': self._caltable,
+                     'xaxis': self._xaxis,
+                     'yaxis': self._yaxis,
+                     'showgui': False,
                      'clearplots': True,
-                     'spw'       : str(self._spw),
-                     'antenna'   : self._ant,
-                     'plotfile'  : self._figfile,
-                     'plotrange' : self._plotrange,
-                     'coloraxis' : self._coloraxis,
-                     'title'     : self._title}
+                     'spw': str(self._spw),
+                     'antenna': self._ant,
+                     'plotfile': self._figfile,
+                     'plotrange': self._plotrange,
+                     'coloraxis': self._coloraxis,
+                     'title': self._title}
         return casa_tasks.plotms(**task_args)
 
 
@@ -260,13 +262,14 @@ class PlotbandpassLeaf(object):
     than one plot may be created though not necessarily returned, as 
     plotbandpass may create many plots depending on the input arguments. 
     """
+
     def __init__(self, context, result, calapp, xaxis, yaxis, spw='', ant='', pol='',
                  overlay='', showatm=True):
         self._context = context
         self._result = result
 
         self._calapp = calapp
-        self._caltable = calapp.gaintable   
+        self._caltable = calapp.gaintable
         self._vis = calapp.vis
         ms = self._context.observing_run.get_ms(self._vis)
 
@@ -297,9 +300,9 @@ class PlotbandpassLeaf(object):
         if spw == '':
             with casatools.TableReader(calapp.gaintable) as tb:
                 caltable_spws = set(tb.getcol('SPECTRAL_WINDOW_ID'))
-            spw = min(caltable_spws) 
+            spw = min(caltable_spws)
 
-        self._pb_figfile = '%s%s%s.t00%s' % (root, 
+        self._pb_figfile = '%s%s%s.t00%s' % (root,
                                              '.%s' % ant if ant else '',
                                              '.spw%0.2d' % spw if spw else '',
                                              ext)
@@ -310,23 +313,23 @@ class PlotbandpassLeaf(object):
     def plot(self):
         task = self._create_task()
         plots = [self._get_plot_wrapper(task)]
-        return [p for p in plots 
+        return [p for p in plots
                 if p is not None
                 and os.path.exists(p.abspath)]
 
     def _get_figfile(self):
         fileparts = {
-            'caltable' : os.path.basename(self._calapp.gaintable),
-            'x'        : self._xaxis,
-            'y'        : self._yaxis,
-            'spw'      : '' if self._spw == '' else 'spw%s-' % self._spw,
-            'ant'      : '' if self._ant == '' else 'ant%s-' % self._ant.replace(',', '_'),
-            'intent'   : '' if self._intent == '' else '%s-' % self._intent.replace(',', '_'),
-            'pol'      : '' if self._pol == '' else '%s-' % self._pol
+            'caltable': os.path.basename(self._calapp.gaintable),
+            'x': self._xaxis,
+            'y': self._yaxis,
+            'spw': '' if self._spw == '' else 'spw%s-' % self._spw,
+            'ant': '' if self._ant == '' else 'ant%s-' % self._ant.replace(',', '_'),
+            'intent': '' if self._intent == '' else '%s-' % self._intent.replace(',', '_'),
+            'pol': '' if self._pol == '' else '%s-' % self._pol
         }
         png = '{caltable}-{spw}{pol}{ant}{intent}{y}_vs_{x}.png'.format(**fileparts)
 
-        return os.path.join(self._context.report_dir, 
+        return os.path.join(self._context.report_dir,
                             'stage%s' % self._result.stage_number,
                             png)
 
@@ -346,7 +349,7 @@ class PlotbandpassLeaf(object):
         for attr in ['spw', 'ant', 'intent', 'pol']:
             val = getattr(self, '_%s' % attr)
             if val != '':
-                parameters[attr] = val 
+                parameters[attr] = val
 
         wrapper = logger.Plot(self._pb_figfile,
                               x_axis=self._xaxis,
@@ -357,18 +360,18 @@ class PlotbandpassLeaf(object):
         return wrapper
 
     def _create_task(self):
-        task_args = {'vis'         : self._vis,
-                     'caltable'    : self._caltable,
-                     'xaxis'       : self._xaxis,
-                     'yaxis'       : self._yaxis,
-                     'antenna'     : self._ant,
-                     'spw'         : self._spw,
-                     'poln'        : self._pol,
-                     'overlay'     : self._overlay,
-                     'figfile'     : self._figfile,
-                     'showatm'     : self._showatm,
-                     'interactive' : False,
-                     'subplot'     : 11}
+        task_args = {'vis': self._vis,
+                     'caltable': self._caltable,
+                     'xaxis': self._xaxis,
+                     'yaxis': self._yaxis,
+                     'antenna': self._ant,
+                     'spw': self._spw,
+                     'poln': self._pol,
+                     'overlay': self._overlay,
+                     'figfile': self._figfile,
+                     'showatm': self._showatm,
+                     'interactive': False,
+                     'subplot': 11}
 
         return casa_tasks.plotbandpass(**task_args)
 
@@ -378,13 +381,14 @@ class LeafComposite(object):
     Base class to hold multiple PlotLeafs, thus generating multiple plots when
     plot() is called.
     """
+
     def __init__(self, children):
         self._children = children
 
     def plot(self):
         plots = []
         for child in self._children:
-            plots.extend(child.plot())        
+            plots.extend(child.plot())
         return [p for p in plots if p is not None]
 
 
@@ -592,19 +596,19 @@ class CaltableWrapperFactory(object):
     def from_caltable(filename, gaincalamp=False):
         LOG.trace('CaltableWrapperFactory.from_caltable(%r)', filename)
         with casatools.TableReader(filename) as tb:
-            viscal = tb.getkeyword('VisCal')            
-            caltype = callibrary.CalFrom.get_caltype_for_viscal(viscal) 
+            viscal = tb.getkeyword('VisCal')
+            caltype = callibrary.CalFrom.get_caltype_for_viscal(viscal)
         if caltype == 'gaincal':
             return CaltableWrapperFactory.create_gaincal_wrapper(filename, gaincalamp)
         if caltype == 'tsys':
-            return CaltableWrapperFactory.create_param_wrapper(filename, 'FPARAM')            
+            return CaltableWrapperFactory.create_param_wrapper(filename, 'FPARAM')
         if caltype == 'bandpass':
-            return CaltableWrapperFactory.create_param_wrapper(filename, 'CPARAM')   
+            return CaltableWrapperFactory.create_param_wrapper(filename, 'CPARAM')
         if caltype in ('ps', 'otf', 'otfraster',):
-            return CaltableWrapperFactory.create_param_wrapper(filename, 'FPARAM')         
+            return CaltableWrapperFactory.create_param_wrapper(filename, 'FPARAM')
         raise NotImplementedError('Unhandled caltype: %s' % viscal)
 
-    @staticmethod    
+    @staticmethod
     def create_gaincal_wrapper(path, gaincalamp=False):
         with casatools.TableReader(path) as tb:
             time_mjd = tb.getcol('TIME')
@@ -627,7 +631,7 @@ class CaltableWrapperFactory(object):
 
             return CaltableWrapper(path, data, time_matplotlib, antenna1, spw, scan)
 
-    @staticmethod    
+    @staticmethod
     def create_param_wrapper(path, param):
         with casatools.TableReader(path) as tb:
             time_mjd = tb.getcol('TIME')
@@ -646,11 +650,11 @@ class CaltableWrapperFactory(object):
             # the unnecessary dimension and swap the channel and correlation
             # axes.
             data_col = tb.getvarcol(param)
-            row_data = [data_col['r%s' % (k+1)].swapaxes(0, 1).squeeze(2)
-                       for k in range(len(data_col))]
+            row_data = [data_col['r%s' % (k + 1)].swapaxes(0, 1).squeeze(2)
+                        for k in range(len(data_col))]
 
             flag_col = tb.getvarcol('FLAG')
-            row_flag = [flag_col['r%s' % (k+1)].swapaxes(0, 1).squeeze(2)
+            row_flag = [flag_col['r%s' % (k + 1)].swapaxes(0, 1).squeeze(2)
                         for k in range(len(flag_col))]
 
             # there's a bug in numpy.ma which prevents us from creating a
@@ -667,7 +671,7 @@ class CaltableWrapperFactory(object):
 class CaltableWrapper(object):
     @staticmethod
     def from_caltable(filename):
-        return CaltableWrapperFactory.from_caltable(filename)            
+        return CaltableWrapperFactory.from_caltable(filename)
 
     def __init__(self, filename, data, time, antenna, spw, scan):
         # tag the extra metadata columns onto our data array 
@@ -688,7 +692,7 @@ class CaltableWrapper(object):
         for a in allowed:
             if a not in data:
                 raise KeyError('%s is not in caltable data' % a)
-            mask = (mask==1) | (data==a)
+            mask = (mask == 1) | (data == a)
         return mask
 
     def filter(self, spw=None, antenna=None, scan=None):
@@ -730,8 +734,8 @@ class PhaseVsBaselineData(object):
         if len(set(data.antenna)) > 1:
             raise ValueError('Data slice contains multiple antennas. Got %s' % data.antenna)
         if len(set(data.spw)) > 1:
-            raise ValueError('Data slice contains multiple spws. Got %s' % data.spw) 
-#        assert len(set(data.scan)) is 1, 'Data slice contains multiple scans'
+            raise ValueError('Data slice contains multiple spws. Got %s' % data.spw)
+        #        assert len(set(data.scan)) is 1, 'Data slice contains multiple scans'
 
         self.data = data
         self.ms = ms
@@ -767,7 +771,8 @@ class PhaseVsBaselineData(object):
         return self.__refant_id
 
     @property
-    @cachetools.cachedmethod(operator.attrgetter('_cache'))
+    @cachetools.cachedmethod(operator.attrgetter('_cache'),
+                             key=functools.partial(cachetools.keys.hashkey, 'baselines'))
     def baselines(self):
         """
         Get the baselines for the antenna in this data selection in metres.
@@ -775,12 +780,13 @@ class PhaseVsBaselineData(object):
         antenna_ids = set(self.data.antenna)
         baselines = [float(b.length.to_units(measures.DistanceUnits.METRE))
                      for b in self.ms.antenna_array.baselines
-                     if b.antenna1.id in antenna_ids 
+                     if b.antenna1.id in antenna_ids
                      or b.antenna2.id in antenna_ids]
         return baselines
 
     @property
-    @cachetools.cachedmethod(operator.attrgetter('_cache'))
+    @cachetools.cachedmethod(operator.attrgetter('_cache'),
+                             key=functools.partial(cachetools.keys.hashkey, 'distance_to_refant'))
     def distance_to_refant(self):
         """
         Return the distance between this antenna and the reference antenna in 
@@ -794,15 +800,17 @@ class PhaseVsBaselineData(object):
         return float(baseline.length.to_units(measures.DistanceUnits.METRE))
 
     @property
-    @cachetools.cachedmethod(operator.attrgetter('_cache'))
+    @cachetools.cachedmethod(operator.attrgetter('_cache'),
+                             key=functools.partial(cachetools.keys.hashkey, 'median_baseline'))
     def median_baseline(self):
         """
         Return the median baseline for this antenna in metres.
         """
         return numpy.median(self.baselines)
 
-    @property          
-    @cachetools.cachedmethod(operator.attrgetter('_cache'))
+    @property
+    @cachetools.cachedmethod(operator.attrgetter('_cache'),
+                             key=functools.partial(cachetools.keys.hashkey, 'mean_baseline'))
     def mean_baseline(self):
         """
         Return the mean baseline for this antenna in metres.
@@ -810,76 +818,83 @@ class PhaseVsBaselineData(object):
         return numpy.mean(self.baselines)
 
     @property
-    @cachetools.cachedmethod(operator.attrgetter('_cache'))
+    @cachetools.cachedmethod(operator.attrgetter('_cache'),
+                             key=functools.partial(cachetools.keys.hashkey, 'unwrapped_data'))
     def unwrapped_data(self):
         rads = numpy.deg2rad(self.data_for_corr)
         unwrapped_rads = numpy.unwrap(rads)
         unwrapped_degs = numpy.rad2deg(unwrapped_rads)
         # the operation above removed the mask, so add it back.
-        remasked = numpy.ma.MaskedArray((unwrapped_degs), 
+        remasked = numpy.ma.MaskedArray((unwrapped_degs),
                                         mask=self.data_for_corr.mask)
         return remasked
 
     @property
-    @cachetools.cachedmethod(operator.attrgetter('_cache'))
+    @cachetools.cachedmethod(operator.attrgetter('_cache'),
+                             key=functools.partial(cachetools.keys.hashkey, 'offsets_from_median'))
     def offsets_from_median(self):
         try:
             unwrapped_degs = self.unwrapped_data
             deg_offsets = unwrapped_degs - numpy.ma.median(unwrapped_degs)
             # the operation above removed the mask, so add it back.
-            remasked = numpy.ma.MaskedArray((deg_offsets), 
+            remasked = numpy.ma.MaskedArray((deg_offsets),
                                             mask=self.data_for_corr.mask)
             return remasked
         except:
             raise
 
     @property
-    @cachetools.cachedmethod(operator.attrgetter('_cache'))
+    @cachetools.cachedmethod(operator.attrgetter('_cache'),
+                             key=functools.partial(cachetools.keys.hashkey, 'rms_offset'))
     def rms_offset(self):
         saved_handler = None
         saved_err = None
         try:
-            return numpy.ma.sqrt(numpy.ma.mean(self.offsets_from_median**2))
+            return numpy.ma.sqrt(numpy.ma.mean(self.offsets_from_median ** 2))
         except FloatingPointError:
             def err_handler(t, flag):
                 ant = set(self.data.antenna).pop()
                 spw = set(self.data.spw).pop()
-                scan = set(self.data.scan).pop()                
+                scan = set(self.data.scan).pop()
                 LOG.warn('Floating point error (%s) calculating RMS offset for'
                          ' Scan %s Spw %s Ant %s.' % (t, scan, spw, ant))
+
             saved_handler = numpy.seterrcall(err_handler)
             saved_err = numpy.seterr(all='call')
-            return numpy.ma.sqrt(numpy.ma.mean(self.offsets_from_median**2))
+            return numpy.ma.sqrt(numpy.ma.mean(self.offsets_from_median ** 2))
         finally:
             if saved_handler:
                 numpy.seterrcall(saved_handler)
                 numpy.seterr(**saved_err)
 
     @property
-    @cachetools.cachedmethod(operator.attrgetter('_cache'))
+    @cachetools.cachedmethod(operator.attrgetter('_cache'),
+                             key=functools.partial(cachetools.keys.hashkey, 'unwrapped_rms'))
     def unwrapped_rms(self):
         saved_handler = None
         saved_err = None
         try:
-            return numpy.ma.sqrt(numpy.ma.mean(self.unwrapped_data**2))
+            return numpy.ma.sqrt(numpy.ma.mean(self.unwrapped_data ** 2))
         except FloatingPointError:
             def err_handler(t, flag):
                 ant = set(self.data.antenna).pop()
                 spw = set(self.data.spw).pop()
-                scan = set(self.data.scan).pop()                
+                scan = set(self.data.scan).pop()
                 LOG.warn('Floating point error (%s) calculating unwrapped RMS for'
                          ' Scan %s Spw %s Ant %s.' % (t, scan, spw, ant))
+
             saved_handler = numpy.seterrcall(err_handler)
             saved_err = numpy.seterr(all='call')
-            return numpy.ma.sqrt(numpy.ma.mean(self.unwrapped_data**2))
+            return numpy.ma.sqrt(numpy.ma.mean(self.unwrapped_data ** 2))
         finally:
             if saved_handler:
                 numpy.seterrcall(saved_handler)
                 numpy.seterr(**saved_err)
 
     @property
-    @cachetools.cachedmethod(operator.attrgetter('_cache'))
-    def median_offset(self):            
+    @cachetools.cachedmethod(operator.attrgetter('_cache'),
+                             key=functools.partial(cachetools.keys.hashkey, 'median_offset'))
+    def median_offset(self):
         abs_offset = numpy.ma.abs(self.offsets_from_median)
         return numpy.ma.median(abs_offset)
 
@@ -969,9 +984,9 @@ class DataRatio(object):
     def spws(self):
         return self.__spws
 
-    @property            
+    @property
     def x(self):
-        assert(self.__before.x == self.__after.x)
+        assert (self.__before.x == self.__after.x)
         return self.__before.x
 
     @property
@@ -1045,7 +1060,7 @@ class PlotBase(object):
 
     def _get_qa_scans(self):
         qa_intents = self._get_qa_intents()
-        return [scan for scan in self.ms.scans 
+        return [scan for scan in self.ms.scans
                 if not qa_intents.isdisjoint(scan.intents)]
 
 
@@ -1137,7 +1152,7 @@ def subplots(nrows=1, ncols=1, sharex=False, sharey=False, squeeze=True,
 
     # Create empty object array to hold all axes.  It's easiest to make it 1-d
     # so we can just append subplots upon creation, and then
-    nplots = nrows*ncols
+    nplots = nrows * ncols
     axarr = numpy.empty(nplots, dtype=object)
 
     # Create first subplot separately, so we can share it if requested
@@ -1151,7 +1166,7 @@ def subplots(nrows=1, ncols=1, sharex=False, sharey=False, squeeze=True,
     # Note off-by-one counting because add_subplot uses the MATLAB 1-based
     # convention.
     for i in range(1, nplots):
-        axarr[i] = fig.add_subplot(nrows, ncols, i+1, **subplot_kw)
+        axarr[i] = fig.add_subplot(nrows, ncols, i + 1, **subplot_kw)
 
     # returned axis array will be always 2-d, even if nrows=ncols=1
     axarr = axarr.reshape(nrows, ncols)

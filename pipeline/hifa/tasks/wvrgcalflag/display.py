@@ -1,7 +1,9 @@
 from __future__ import absolute_import
+
 import collections
-import os
+import functools
 import operator
+import os
 
 import cachetools
 import matplotlib
@@ -11,11 +13,8 @@ import numpy
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.utils as utils
-
-#from pipeline.infrastructure.displays import common
-from pipeline.h.tasks.common.displays import common as common
-#from pipeline.infrastructure.displays import phaseoffset
-from pipeline.hifa.tasks.common.displays import phaseoffset as phaseoffset
+from pipeline.h.tasks.common.displays import common
+from pipeline.hifa.tasks.common.displays import phaseoffset
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -25,7 +24,8 @@ class WVRScoreFinder(object):
         self._delegate = delegate
         self._cache = cachetools.LRUCache(maxsize=1000)
 
-    @cachetools.cachedmethod(operator.attrgetter('_cache'))    
+    @cachetools.cachedmethod(operator.attrgetter('_cache'),
+                             key=functools.partial(cachetools.keys.hashkey, 'get_score'))
     def get_score(self, spw, antenna):
         spw_id = spw.id
         antenna_id = antenna.id
@@ -73,10 +73,10 @@ class WVRPhaseVsBaselineChart(object):
         # some sanity checks, as unequal caltables have bit me before
         # TODO with- and without wvr plots have different times for X16b,
         # causing these assertions to fail. We need to understand why.
-#         assert utils.areEqual(data_before.time, data_after.time), 'Time columns are not equal'
-#         assert utils.areEqual(data_before.antenna, data_after.antenna), 'Antenna columns are not equal'
-#         assert utils.areEqual(data_before.spw, data_after.spw), 'Spw columns are not equal'
-#         assert utils.areEqual(data_before.scan, data_after.scan), 'Scan columns are not equal'
+        #         assert utils.areEqual(data_before.time, data_after.time), 'Time columns are not equal'
+        #         assert utils.areEqual(data_before.antenna, data_after.antenna), 'Antenna columns are not equal'
+        #         assert utils.areEqual(data_before.spw, data_after.spw), 'Spw columns are not equal'
+        #         assert utils.areEqual(data_before.scan, data_after.scan), 'Scan columns are not equal'
 
         self._data_before = data_before
         self._data_after = data_after
@@ -87,7 +87,7 @@ class WVRPhaseVsBaselineChart(object):
 
     def _get_plot_scans(self):
         plot_intents = self._get_plot_intents()
-        return [scan for scan in self.ms.scans 
+        return [scan for scan in self.ms.scans
                 if not plot_intents.isdisjoint(scan.intents)]
 
     def get_symbol_and_colour(self, pol, state='BEFORE'):
@@ -117,12 +117,12 @@ class WVRPhaseVsBaselineChart(object):
 
         nowvr_gaintables = {c.gaintable for c in result.dataresult.nowvr_result.pool}
         assert len(nowvr_gaintables) is 1, ('Unexpected number of pre-WVR phase-up'
-                                            'gaintables: %s' % nowvr_gaintables) 
+                                            'gaintables: %s' % nowvr_gaintables)
 
         nowvr_gaintable = nowvr_gaintables.pop()
         wvr_gaintable = result.dataresult.qa_wvr.gaintable_wvr
         LOG.debug('Gaintables for WVR plots:\n'
-                  'No WVR: %s\tWith WVR: %s' % (nowvr_gaintable, wvr_gaintable))    
+                  'No WVR: %s\tWith WVR: %s' % (nowvr_gaintable, wvr_gaintable))
 
         self._table_before = nowvr_gaintable
         self._table_after = wvr_gaintable
@@ -132,10 +132,10 @@ class WVRPhaseVsBaselineChart(object):
         self._wrappers = []
 
         refant_name = result.dataresult.nowvr_result.inputs['refant'].split(',')[0]
-        self._refant = self.ms.get_antenna(refant_name)[0]        
+        self._refant = self.ms.get_antenna(refant_name)[0]
 
     def get_data_object(self, data, corr_id):
-        delegate = common.PhaseVsBaselineData(data, self.ms, corr_id, 
+        delegate = common.PhaseVsBaselineData(data, self.ms, corr_id,
                                               self._refant.id)
         return common.XYData(delegate, 'distance_to_refant', 'median_offset')
 
@@ -160,12 +160,12 @@ class WVRPhaseVsBaselineChart(object):
             for spw in scan.spws.intersection(spws):
                 # find the data description for this scan. Just one dd 
                 # expected.
-                dds = [dd for dd in scan.data_descriptions 
+                dds = [dd for dd in scan.data_descriptions
                        if dd.spw.id == spw.id]
                 if len(dds) is not 1:
                     LOG.info('Bypassing plot generation for %s scan %s spw '
                              '%s. Expected 1 matching data description but '
-                             'got %s.', 
+                             'got %s.',
                              self.ms.basename, scan.id, spw.id, len(dds))
                     continue
 
@@ -181,19 +181,19 @@ class WVRPhaseVsBaselineChart(object):
                         if antenna.id is self._refant.id:
                             continue
 
-                        try:                        
+                        try:
                             caltable = data_before.filename
-                            selection_before = data_before.filter(scan=[scan.id], 
-                                                                  antenna=[antenna.id], 
+                            selection_before = data_before.filter(scan=[scan.id],
+                                                                  antenna=[antenna.id],
                                                                   spw=[spw.id])
-                            baseline_data_before = self.get_data_object(selection_before, 
+                            baseline_data_before = self.get_data_object(selection_before,
                                                                         corr_id)
 
                             caltable = data_after.filename
-                            selection_after = data_after.filter(scan=[scan.id], 
-                                                                antenna=[antenna.id], 
+                            selection_after = data_after.filter(scan=[scan.id],
+                                                                antenna=[antenna.id],
                                                                 spw=[spw.id])
-                            baseline_data_after = self.get_data_object(selection_after, 
+                            baseline_data_after = self.get_data_object(selection_after,
                                                                        corr_id)
 
                         except (ValueError, KeyError):
@@ -208,7 +208,7 @@ class WVRPhaseVsBaselineChart(object):
 
                             continue
 
-                        wrapper = common.DataRatio(baseline_data_before, 
+                        wrapper = common.DataRatio(baseline_data_before,
                                                    baseline_data_after)
                         self._wrappers.append(wrapper)
 
@@ -217,7 +217,7 @@ class WVRPhaseVsBaselineChart(object):
         # offsets could contain None where data was flagged, but that's ok as 
         # max ignores it.
         self._max_phase_offset = numpy.ma.max(offsets)
-        LOG.trace('Maximum phase offset for %s = %s' % (self.ms.basename, 
+        LOG.trace('Maximum phase offset for %s = %s' % (self.ms.basename,
                                                         self._max_phase_offset))
 
         # Extract ratios, excluding any that are set to None.
@@ -240,14 +240,14 @@ class WVRPhaseVsBaselineChart(object):
         self._max_ratio = ratios.max()
         self._min_ratio = ratios.min()
         self._median_ratio = numpy.ma.median(ratios)
-        LOG.trace('Maximum phase ratio for %s = %s' % (self.ms.basename, 
+        LOG.trace('Maximum phase ratio for %s = %s' % (self.ms.basename,
                                                        self._max_ratio))
-        LOG.trace('Minimum phase ratio for %s = %s' % (self.ms.basename, 
+        LOG.trace('Minimum phase ratio for %s = %s' % (self.ms.basename,
                                                        self._min_ratio))
 
         distances = [w.x for w in self._wrappers]
         self._max_distance = numpy.ma.max(distances)
-        LOG.trace('Maximum distance for %s = %s' % (self.ms.basename, 
+        LOG.trace('Maximum distance for %s = %s' % (self.ms.basename,
                                                     self._max_distance))
 
         plots = []
@@ -288,7 +288,7 @@ class WVRPhaseVsBaselineChart(object):
         ax1.set_yscale('log')
         pyplot.subplots_adjust(hspace=0.0)
 
-        trans1 = matplotlib.transforms.blended_transform_factory(ax1.transAxes, 
+        trans1 = matplotlib.transforms.blended_transform_factory(ax1.transAxes,
                                                                  ax1.transData)
         ax1.axhspan(self._min_ratio, 1, facecolor='k', linewidth=0.0, alpha=0.04)
         ax1.text(0.012, numpy.sqrt(self._min_ratio), 'No Improvement',
@@ -320,7 +320,7 @@ class WVRPhaseVsBaselineChart(object):
 
             for corr_idx, corr_axis in enumerate(corr_axes):
                 wrappers = [w for w in self._wrappers
-                            if scan.id in w.scans 
+                            if scan.id in w.scans
                             and spw.id in w.spws
                             and corr_idx in w.corr]
 
@@ -335,13 +335,13 @@ class WVRPhaseVsBaselineChart(object):
                 # lower plot: abs(median offset from median phase)
                 x = [float(w.x) for w in unflagged_wrappers]
                 y = [w.before.y for w in unflagged_wrappers]
-                (symbol, color, alpha) = self.get_symbol_and_colour(corr_axis, state='BEFORE')                    
+                (symbol, color, alpha) = self.get_symbol_and_colour(corr_axis, state='BEFORE')
                 p, = ax2.plot(x, y, symbol, color=color, alpha=alpha)
                 plots.append(p)
                 legend.append('%s %s' % (corr_axis, 'before'))
 
                 y = [w.after.y for w in unflagged_wrappers]
-                (symbol, color, alpha) = self.get_symbol_and_colour(corr_axis, state='AFTER')                    
+                (symbol, color, alpha) = self.get_symbol_and_colour(corr_axis, state='AFTER')
                 p, = ax2.plot(x, y, symbol, color=color, alpha=alpha)
                 plots.append(p)
                 legend.append('%s %s' % (corr_axis, 'after'))
@@ -387,35 +387,35 @@ class WVRPhaseVsBaselineChart(object):
                            ncol=len(legend))
             l.draw_frame(False)
 
-        spw_msg = 'SPW %s Correlation%s' % (spw.id, 
-                utils.commafy(corr_axes, quotes=False, multi_prefix='s'))
-        pyplot.text(0.0, 1.026, spw_msg, color='k', 
+        spw_msg = 'SPW %s Correlation%s' % (spw.id,
+                                            utils.commafy(corr_axes, quotes=False, multi_prefix='s'))
+        pyplot.text(0.0, 1.026, spw_msg, color='k',
                     transform=ax1.transAxes, size=10)
-        pyplot.text(0.5, 1.110, '%s (%s)' % (scan_fields, scan_intents), 
+        pyplot.text(0.5, 1.110, '%s (%s)' % (scan_fields, scan_intents),
                     color='k', transform=ax1.transAxes, ha='center', size=10)
-        pyplot.text(0.5, 1.026, 'All Antennas', color='k', 
+        pyplot.text(0.5, 1.026, 'All Antennas', color='k',
                     transform=ax1.transAxes, ha='center', size=10)
 
         scan_ids = [str(s.id) for s in scans]
         max_scans_for_msg = 8
 
-#         # print 'Scans 4, 8, 12 ... 146' if there are too many scans to 
-#         # print
+        #         # print 'Scans 4, 8, 12 ... 146' if there are too many scans to
+        #         # print
         if len(scans) > max_scans_for_msg:
-            start = ','.join(scan_ids[0:max_scans_for_msg-1])
+            start = ','.join(scan_ids[0:max_scans_for_msg - 1])
             end = scan_ids[-1]
             scan_txt = 's %s ... %s' % (start, end)
         else:
-            scan_txt = utils.commafy(scan_ids, multi_prefix='s', 
+            scan_txt = utils.commafy(scan_ids, multi_prefix='s',
                                      quotes=False, separator=',')
-        pyplot.text(1.0, 1.026, 'Scan%s' % scan_txt, color='k', ha='right', 
+        pyplot.text(1.0, 1.026, 'Scan%s' % scan_txt, color='k', ha='right',
                     transform=ax1.transAxes, size=10)
 
-        pyplot.text(0.012, 0.97, 'Median Absolute Deviation from Median Phase', 
-                    color='k', transform=ax2.transAxes, ha='left', va='top', 
+        pyplot.text(0.012, 0.97, 'Median Absolute Deviation from Median Phase',
+                    color='k', transform=ax2.transAxes, ha='left', va='top',
                     size=10)
-        pyplot.text(0.012, 0.97, 'Phase RMS without WVR / Phase RMS with WVR', 
-                    color='k', transform=ax1.transAxes, ha='left', va='top', 
+        pyplot.text(0.012, 0.97, 'Phase RMS without WVR / Phase RMS with WVR',
+                    color='k', transform=ax1.transAxes, ha='left', va='top',
                     size=10)
         if self._alt_refant_used:
             pyplot.text(0.012, 0.90, 'Warning! Use of alternate refant detected; x-axis values may be unreliable',
@@ -435,8 +435,8 @@ class WVRPhaseVsBaselineChart(object):
     def get_figfile(self, spw, scans, antennas):
         vis = os.path.basename(self.result.vis)
         scan_ids = '_'.join(['%0.2d' % scan.id for scan in scans])
-        return os.path.join(self.context.report_dir, 
-                            'stage%s' % self.result.stage_number, 
+        return os.path.join(self.context.report_dir,
+                            'stage%s' % self.result.stage_number,
                             '%s.phase_vs_baseline.spw%0.2d.scan%s.png' % (vis, spw.id, scan_ids))
 
     def get_plot_wrapper(self, spw, scans, antenna):
@@ -465,7 +465,7 @@ class WVRPhaseVsBaselineChart(object):
 
         # the plot may not be created if all data for that antenna are flagged
         if os.path.exists(figfile):
-            return wrapper            
+            return wrapper
         return None
 
 
@@ -473,18 +473,18 @@ class WVRPhaseOffsetPlotHelper(phaseoffset.PhaseOffsetPlotHelper):
     def __init__(self, context, result, plot_per_antenna=True):
         calapp = result.pool[0]
 
-        rootdir = os.path.join(context.report_dir, 
+        rootdir = os.path.join(context.report_dir,
                                'stage%s' % result.stage_number)
         prefix = '%s.phase_offset' % os.path.basename(calapp.vis)
 
         nowvr_gaintables = {c.gaintable for c in result.nowvr_result.pool}
         assert len(nowvr_gaintables) is 1, ('Unexpected number of pre-WVR phase-up'
-                                            'gaintables: %s' % nowvr_gaintables) 
+                                            'gaintables: %s' % nowvr_gaintables)
 
         nowvr_gaintable = nowvr_gaintables.pop()
         wvr_gaintable = result.qa_wvr.gaintable_wvr
         LOG.debug('Gaintables for WVR plots:\n'
-                  'No WVR: %s\tWith WVR: %s' % (nowvr_gaintable, wvr_gaintable))    
+                  'No WVR: %s\tWith WVR: %s' % (nowvr_gaintable, wvr_gaintable))
 
         caltable_map = collections.OrderedDict()
         caltable_map['BEFORE'] = nowvr_gaintable
