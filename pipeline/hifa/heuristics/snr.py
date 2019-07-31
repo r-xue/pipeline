@@ -1064,6 +1064,14 @@ def compute_bpsolint(ms, spwlist, spw_dict, reqPhaseupSnr, minBpNintervals, reqB
         else:
             relativeTsys = spw_dict[spwid]['median_tsys'] / ALMA_TSYS[bandidx]
         nbaselines = spw_dict[spwid]['num_7mantenna'] + spw_dict[spwid]['num_12mantenna'] - 1
+
+        # PIPE-408: do not continue if there are no unflagged baselines for current spw; this will cause this spw
+        # to be absent from the solution interval dictionary that is returned.
+        if nbaselines < 0:
+            LOG.warn("Cannot compute optimal bandpass frequency solution interval for spw {} in MS {}; no (unflagged)"
+                     " baselines were found".format(spwid, ms.basename))
+            continue
+
         arraySizeFactor = np.sqrt(16 * 15 / 2.0) / np.sqrt(nbaselines)
         if spw_dict[spwid]['num_7mantenna'] == 0:
             areaFactor = 1.0
