@@ -48,7 +48,7 @@ class GaincalSummaryChart(object):
 
 class GaincalDetailChart(object):
     """
-    Base class for executing plotcal per spw and antenna
+    Base class for executing plotms per spw and antenna
     """
     def __init__(self, context, result, calapps, intent, xaxis, yaxis, plotrange=None, coloraxis=''):
         if plotrange is None:
