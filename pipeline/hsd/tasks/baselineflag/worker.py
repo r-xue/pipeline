@@ -588,15 +588,17 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
         """Calculated standard deviation of data array with mask array (1=valid, 0=flagged)"""
         Ndata = len(data)
         Nmask = int(Ndata - numpy.sum(mask))
-        MaskedData = data * mask
-        StddevMasked = MaskedData.std()
-        MeanMasked = MaskedData.mean()
+        #20190726 make it simple
+        #MaskedData = data * mask
+        #StddevMasked = MaskedData.std()
+        #MeanMasked = MaskedData.mean()
         if Ndata == Nmask:
             # all channels are masked
             RMS = INVALID_STAT
         else:
-            RMS = math.sqrt(abs(Ndata * StddevMasked ** 2 / (Ndata - Nmask)
-                                - Ndata * Nmask * MeanMasked ** 2 / ((Ndata - Nmask) ** 2)))
+            RMS = data[mask==1].std()
+            #RMS = math.sqrt(abs(Ndata * StddevMasked ** 2 / (Ndata - Nmask)
+            #                    - Ndata * Nmask * MeanMasked ** 2 / ((Ndata - Nmask) ** 2)))
         return RMS, Nmask
 
     def _get_mask_array(self, masklist, edge, flagchan, flagrow=False, deviation_mask=None):
@@ -662,9 +664,10 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                 MeanFlagged = FlaggedData.mean()
                 #LOG.debug("Ndata = %s, Unflag = %s, shape(FlaggedData) = %s, Std = %s, mean = %s" \
                 #      % (str(Ndata), str(Unflag), str(FlaggedData.shape), str(StddevFlagged), str(MeanFlagged)))
-                # PIPE-404
-                # Re-normalization of mean and stddev is no longer necessary
-                # since invalid data are excluded when we set FlaggedData (by take method)
+                # 20190728 BugFix (PIPE-404):
+                # FlaggedData does not include flagged data anymore. In older history,
+                # flagged value in the FlaggedData was set to be 0, that why the following
+                # scaling was necessary
                 #AVE = MeanFlagged / float(Unflag) * float(Ndata)
                 #RMS = math.sqrt(abs(Ndata * StddevFlagged ** 2 / Unflag
                 #                    - Ndata * (Ndata - Unflag) * MeanFlagged ** 2 / (Unflag ** 2)))
