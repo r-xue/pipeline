@@ -70,6 +70,7 @@ class EditimlistInputs(vdp.StandardInputs):
     niter = vdp.VisDependentProperty(default=0)
     nterms = vdp.VisDependentProperty(default=0)
     parameter_file = vdp.VisDependentProperty(default='')
+    pblimit = vdp.VisDependentProperty(default=-999.)
     phasecenter = vdp.VisDependentProperty(default='')
     reffreq = vdp.VisDependentProperty(default='')
     restfreq = vdp.VisDependentProperty(default='')
@@ -133,7 +134,7 @@ class EditimlistInputs(vdp.StandardInputs):
                  editmode=None, field=None, imaging_mode=None,
                  imagename=None, imsize=None, intent=None, gridder=None,
                  mask=None, nbin=None, nchan=None, niter=None, nterms=None,
-                 parameter_file=None, phasecenter=None, reffreq=None, restfreq=None,
+                 parameter_file=None, pblimit=None, phasecenter=None, reffreq=None, restfreq=None,
                  robust=None, scales=None, specmode=None, spw=None,
                  start=None, stokes=None, threshold=None, nsigma=None,
                  uvtaper=None, uvrange=None, width=None, sensitivity=None):
@@ -163,6 +164,7 @@ class EditimlistInputs(vdp.StandardInputs):
         self.niter = niter
         self.nterms = nterms
         self.parameter_file = parameter_file
+        self.pblimit = pblimit
         self.phasecenter = phasecenter
         self.reffreq = reffreq
         self.restfreq = restfreq
@@ -184,7 +186,7 @@ class EditimlistInputs(vdp.StandardInputs):
                             'start', 'width', 'nbin', 'nchan', 'uvrange', 'stokes', 'nterms',
                             'robust', 'uvtaper', 'niter', 'cyclefactor', 'cycleniter', 'mask',
                             'search_radius_arcsec', 'threshold', 'imaging_mode', 'reffreq', 'restfreq',
-                            'editmode', 'nsigma',
+                            'editmode', 'nsigma', 'pblimit',
                             'sensitivity', 'conjbeams')
 
         self.keys_to_change = []
@@ -317,6 +319,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         if imlist_entry['threshold'] and imlist_entry['hm_nsigma']:
             LOG.warn("Both 'threshold' and 'nsigma' were specified.")
 
+        imlist_entry['pblimit'] = None if inpdict['pblimit'] in (None, -999.0) else inpdict['pblimit']
         imlist_entry['stokes'] = th.stokes() if not inpdict['stokes'] else inpdict['stokes']
         imlist_entry['conjbeams'] = th.conjbeams() if not inpdict['conjbeams'] else inpdict['conjbeams']
         imlist_entry['reffreq'] = th.reffreq() if not inpdict['reffreq'] else inpdict['reffreq']

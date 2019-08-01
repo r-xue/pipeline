@@ -37,6 +37,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
     tlimit = vdp.VisDependentProperty(default=2.0)
     usepointing = vdp.VisDependentProperty(default=None)
     weighting = vdp.VisDependentProperty(default='briggs')
+    pblimit = vdp.VisDependentProperty(default=None)
 
     # override CleanBaseInputs default value of 'auto'
     hm_masking = vdp.VisDependentProperty(default='centralregion')
@@ -100,7 +101,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
     def __init__(self, context, output_dir=None, vis=None, imagename=None, intent=None, field=None, spw=None,
                  spwsel_lsrk=None, spwsel_topo=None, uvrange=None, specmode=None, gridder=None, deconvolver=None,
                  nterms=None, outframe=None, imsize=None, cell=None, phasecenter=None, stokes=None, nchan=None,
-                 start=None, width=None, nbin=None, datacolumn=None,
+                 start=None, width=None, nbin=None, datacolumn=None, pblimit=None,
                  restoringbeam=None, hm_masking=None, hm_sidelobethreshold=None, hm_noisethreshold=None,
                  hm_lownoisethreshold=None, hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None,
                  hm_dogrowprune=None, hm_minpercentchange=None, hm_fastnoise=None, hm_nsigma=None,
@@ -120,7 +121,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
                                            cycleniter=cycleniter, cyclefactor=cyclefactor, scales=scales,
                                            outframe=outframe, imsize=imsize, cell=cell, phasecenter=phasecenter,
                                            nchan=nchan, start=start, width=width, stokes=stokes, weighting=weighting,
-                                           robust=robust, restoringbeam=restoringbeam,
+                                           robust=robust, restoringbeam=restoringbeam, pblimit=pblimit,
                                            iter=iter, mask=mask, hm_masking=hm_masking,
                                            hm_sidelobethreshold=hm_sidelobethreshold,
                                            hm_noisethreshold=hm_noisethreshold,
@@ -158,6 +159,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
         self.usepointing = usepointing
         self.mosweight = mosweight
         self.datacolumn = datacolumn
+        self.pblimit = pblimit
 
 
 # tell the infrastructure to give us mstransformed data when possible by
@@ -231,13 +233,13 @@ class Tclean(cleanbase.CleanBase):
             LOG.info('deleting {}*.iter*'.format(inputs.imagename))
             self.rm_stage_files(inputs.imagename)
 
-        # Set initial masking limits
-        self.pblimit_image = 0.2
-        self.pblimit_cleanmask = 0.3
-        inputs.pblimit = self.pblimit_image
-
         # Get the image parameter heuristics
         self.image_heuristics = inputs.image_heuristics
+
+        # Set initial masking limits
+        self.pblimit_image, self.pblimit_cleanmask = self.image_heuristics.pblimits(None)
+        if not inputs.pblimit:
+            inputs.pblimit = self.pblimit_image
 
         # Remove MSs that do not contain data for the given field(s)
         scanidlist, visindexlist = self.image_heuristics.get_scanidlist(inputs.vis, inputs.field, inputs.intent)

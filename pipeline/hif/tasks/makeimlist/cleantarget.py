@@ -14,6 +14,7 @@ class CleanTarget(dict):
         self['num_good_spws'] = None   # int
         self['cell'] = None            # string
         self['imsize'] = None          # string / list
+        self['pblimit'] = None         # float
         self['phasecenter'] = None     # string
         self['specmode'] = None        # string
         self['gridder'] = None         # string

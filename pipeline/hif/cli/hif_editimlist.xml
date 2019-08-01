@@ -116,8 +116,13 @@
             </param>
 
             <param type="string" name="parameter_file">
-                <description/>
+                <description>Optional parameter file as alternate input method</description>
                 <value/>
+            </param>
+
+            <param type="double" name="pblimit">
+                <description>PB gain level at which to cut off normalizations</description>
+                <value>-999.0</value>
             </param>
 
             <param type="any" name="phasecenter">
