@@ -536,10 +536,12 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             clustering_results[clustering_algorithm] = self.clustering_kmean(Region, Region2)
         elif clustering_algorithm == 'hierarchy':
             #(Ncluster, Bestlines, BestCategory, Region) = self.clustering_hierarchy(Region, Region2, nThreshold=rules.ClusterRule['ThresholdHierarchy'], method='single')
-            clustering_results[clustering_algorithm] = self.clustering_hierarchy(Region, Region2, nThreshold=rules.ClusterRule['ThresholdHierarchy'], method='single')
+            clustering_results[clustering_algorithm] = self.clustering_hierarchy(Region, Region2, nThreshold=rules.ClusterRule['ThresholdHierarchy'],
+                                                                                 nThreshold2=rules.ClusterRule['ThresholdHierarchy2'], method='single')
         elif clustering_algorithm == 'both':
             clustering_results['kmean'] = self.clustering_kmean(Region, Region2)
-            clustering_results['hierarchy'] = self.clustering_hierarchy(Region, Region2, nThreshold=rules.ClusterRule['ThresholdHierarchy'], method='single')
+            clustering_results['hierarchy'] = self.clustering_hierarchy(Region, Region2, nThreshold=rules.ClusterRule['ThresholdHierarchy'],
+                                                                        nThreshold2=rules.ClusterRule['ThresholdHierarchy2'], method='single')
         else:
             LOG.error('Invalid clustering algorithm: {}'.format(clustering_algorithm))
 
@@ -979,7 +981,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
         return (BestNcluster, Bestlines, BestCategory, BestRegion)
 
-    def clustering_hierarchy(self, Region, Region2, nThreshold=3.0, method='single'):
+    def clustering_hierarchy(self, Region, Region2, nThreshold=3.0, nThreshold2=4.5, method='single'):
     #def calc_clustering(self, nThreshold, method='ward'):
         """
         Hierarchical Clustering
@@ -990,6 +992,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                  'centroid': centroid/UPGMC linkage method
                  'median'  : median/WPGMC linkage method
         1st threshold is set to nThreshold x stddev(distance matrix)
+        2nd threshold is set to nThreshold2 x stddev of sub-cluster distance matrix
         in:
             self.Data -> Region2
             self.Ndata
@@ -1020,7 +1023,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         for i in range(Repeat):
             tmp[i] = [self.nchan/2, 0]
             tmp[Repeat+i] = [self.nchan/2, self.nchan-1]
-        LOG.debug('tmp[:10] = {}', tmp[:10])
+        #LOG.debug('tmp[:10] = {}', tmp[:10])
         tmpLinkMatrix = H_Clustering(tmp)
         MedianDistance = numpy.median(tmpLinkMatrix.T[2])
         MeanDistance = tmpLinkMatrix.T[2].mean()
@@ -1040,7 +1043,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         Threshold = MeanDistance + Nthreshold * Stddev
         Category = HIERARCHY.fcluster(LinkMatrix, Threshold, criterion='distance')
         Ncluster = Category.max()
-        LOG.debug('nThreshold = {}, method = {}', nThreshold, method)
+        LOG.debug('nThreshold = {}, nThreshold2 = {}, method = {}', nThreshold, nThreshold2, method)
         LOG.debug('Init Threshold = {}, Init Ncluster = {}', Threshold, Ncluster)
         print('Init Threshold: {}'.format(Threshold), end=' ')
         print('\tInit Ncluster: {}'.format(Ncluster))
@@ -1064,9 +1067,10 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             #NewThreshold = MedianDistance + Nthreshold ** 1.5 * Stddev
             #NewThreshold = MeanDistance + Nthreshold ** 1.5 * Stddev
             #NewThreshold = MeanDistance + Nthreshold * 2.0 * Stddev
-            NewThreshold = MeanDistance + Nthreshold * 1.5 * Stddev
+            #NewThreshold = MeanDistance + Nthreshold * 1.5 * Stddev
             #NewThreshold = MedianDistance + Nthreshold ** 1.3 * Stddev
             #NewThreshold = MedianDistance + Nthreshold * Stddev
+            NewThreshold = MeanDistance + nThreshold2 * Stddev
             LOG.debug('Threshold({}): {}', k, NewThreshold)
             print('Threshold(%d): %.1f' % (k, NewThreshold), end=' ')
             NewCategory = HIERARCHY.fcluster(LinkMatrix, NewThreshold, criterion='distance')
@@ -1083,7 +1087,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                         Category[NewIDX[i]] = C + NewCategory[i] - 1
         Ncluster = Category.max() # update Ncluster
 
-        (Region, Range, Stdev, Category) = self.clean_cluster(Data, Category, Region, Nthreshold, 2) # nThreshold, NumParam
+        #(Region, Range, Stdev, Category) = self.clean_cluster(Data, Category, Region, Nthreshold, 2) # nThreshold, NumParam
+        (Region, Range, Stdev, Category) = self.clean_cluster(Data, Category, Region, nThreshold2, 2) # nThreshold, NumParam
         # 2017/7/25 ReNumbering is done in clean_cluster
         #for i in range(len(Category)):
         #    #if Category[i] > Ncluster: Region[i][5] = 0 # flag out cleaned data
