@@ -28,6 +28,7 @@ class PolarizationPlotCalChart(object):
 
         # Create a dummy plot to release the cal table
 
+        '''
         scratchfile = 'scratchpol.g'
         shutil.copytree(self.caltable, scratchfile)
         casa.plotcal(caltable=scratchfile,
@@ -38,18 +39,24 @@ class PolarizationPlotCalChart(object):
                      showflags=False, plotsymbol='o-', plotcolor='blue',
                      markersize=5.0, fontsize=10.0, showgui=False, figfile="scratchpol.png")
         shutil.rmtree(scratchfile)
+        '''
 
         return [p for p in plots if p is not None]
 
     def create_plot(self, prefix):
         figfile = self.get_figfile(prefix)
 
-        LOG.info("Creating PlotSummary Polarization PlotCal plot")
-        casa.plotcal(caltable=self.caltable, xaxis=self.xaxis, yaxis=self.yaxis, poln='',
-                     field='', antenna=self.antenna, spw='', timerange='', subplot=111, overplot=False,
-                     clearpanel='Auto', iteration='', plotrange=[], showflags=False,
-                     plotsymbol='o', plotcolor='blue', markersize=5.0, fontsize=10.0,
-                     showgui=False, figfile=figfile)
+        LOG.info("Creating PlotSummary Polarization plot")
+        # casa.plotcal(caltable=self.caltable, xaxis=self.xaxis, yaxis=self.yaxis, poln='',
+        #             field='', antenna=self.antenna, spw='', timerange='', subplot=111, overplot=False,
+        #             clearpanel='Auto', iteration='', plotrange=[], showflags=False,
+        #             plotsymbol='o', plotcolor='blue', markersize=5.0, fontsize=10.0,
+        #             showgui=False, figfile=figfile)
+
+        casa.plotms(vis=self.caltable, xaxis=self.xaxis, yaxis=self.yaxis, field='', antenna=self.antenna,
+                    spw='', timerange='', plotrange=[], coloraxis='spw',
+                    title='{!s}  Antenna: {!s}'.format(self.caltable, self.antenna),
+                    titlefont=7, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
 
     def get_figfile(self, prefix):
         return os.path.join(self.context.report_dir,

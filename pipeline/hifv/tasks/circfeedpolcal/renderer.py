@@ -100,7 +100,7 @@ class T2_4MDetailsCircfeedpolcalRenderer(basetemplates.T2_4MDetailsDefaultRender
                 # -------------
                 plotter = polarization.PolarizationPlotCalChart(context, r,
                                                                 caltable=Dtable,
-                                                                yaxis='amp', xaxis='antenna', antenna='',
+                                                                yaxis='amp', xaxis='Antenna1', antenna='',
                                                                 caption='Inst. pol. amp vs. antenna')
                 plots.extend(plotter.plot())
                 # -------------
