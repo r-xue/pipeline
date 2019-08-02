@@ -26,6 +26,11 @@
                 <value/>
             </param>
 
+            <param type="string" name="cfcache">
+                <description>Convolution function cache directory name</description>
+                <value/>
+            </param>
+
             <param type="bool" name="conjbeams">
                 <description>Use conjugate frequency in tclean for wideband A-terms.</description>
                 <value>False</value>
@@ -261,6 +266,8 @@
             The pix per beam specification uses the above default cell size
             ('5ppb') and scales it accordingly.
             example: ['0.5arcsec', '0.5arcsec'] '3ppb'
+
+            cfcache -- Convolution function cache directory name
 
             conjbeams -- Use conjugate frequency in tclean for wideband A-terms.
             default: False

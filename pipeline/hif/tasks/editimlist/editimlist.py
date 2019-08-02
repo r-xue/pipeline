@@ -55,6 +55,7 @@ LOG = infrastructure.get_logger(__name__)
 class EditimlistInputs(vdp.StandardInputs):
     search_radius_arcsec = vdp.VisDependentProperty(default=1000.0)
     conjbeams = vdp.VisDependentProperty(default=False)
+    cfcache = vdp.VisDependentProperty(default='')
     cyclefactor = vdp.VisDependentProperty(default=-999.)
     cycleniter = vdp.VisDependentProperty(default=-999)
     datacolumn = vdp.VisDependentProperty(default='')
@@ -129,7 +130,7 @@ class EditimlistInputs(vdp.StandardInputs):
         return str(val)
 
     def __init__(self, context, output_dir=None, vis=None,
-                 search_radius_arcsec=None, cell=None, conjbeams=None,
+                 search_radius_arcsec=None, cell=None, cfcache=None, conjbeams=None,
                  cyclefactor=None, cycleniter=None, datacolumn=None, deconvolver=None,
                  editmode=None, field=None, imaging_mode=None,
                  imagename=None, imsize=None, intent=None, gridder=None,
@@ -146,6 +147,7 @@ class EditimlistInputs(vdp.StandardInputs):
 
         self.search_radius_arcsec = search_radius_arcsec
         self.cell = cell
+        self.cfcache = cfcache
         self.conjbeams = conjbeams
         self.cyclefactor = cyclefactor
         self.cycleniter = cycleniter
@@ -182,7 +184,7 @@ class EditimlistInputs(vdp.StandardInputs):
         self.sensitivity = sensitivity
 
         keys_to_consider = ('field', 'intent', 'spw', 'cell', 'datacolumn', 'deconvolver', 'imsize',
-                            'phasecenter', 'specmode', 'gridder', 'imagename', 'scales',
+                            'phasecenter', 'specmode', 'gridder', 'imagename', 'scales', 'cfcache',
                             'start', 'width', 'nbin', 'nchan', 'uvrange', 'stokes', 'nterms',
                             'robust', 'uvtaper', 'niter', 'cyclefactor', 'cycleniter', 'mask',
                             'search_radius_arcsec', 'threshold', 'imaging_mode', 'reffreq', 'restfreq',
@@ -328,6 +330,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['niter'] = th.niter() if not inpdict['niter'] else inpdict['niter']
         imlist_entry['cyclefactor'] = inpdict['cyclefactor']
         imlist_entry['cycleniter'] = inpdict['cycleniter']
+        imlist_entry['cfcache'] = inpdict['cfcache']
         imlist_entry['scales'] = th.scales() if not inpdict['scales'] else inpdict['scales']
         imlist_entry['uvtaper'] = th.uvtaper() if not inpdict['uvtaper'] else inpdict['uvtaper']
         imlist_entry['uvrange'] = th.uvrange() if not inpdict['uvrange'] else inpdict['uvrange']

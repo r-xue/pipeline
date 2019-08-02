@@ -13,6 +13,7 @@ class CleanTarget(dict):
         self['num_all_spws'] = None    # int
         self['num_good_spws'] = None   # int
         self['cell'] = None            # string
+        self['cfcache'] = None         # string
         self['imsize'] = None          # string / list
         self['pblimit'] = None         # float
         self['phasecenter'] = None     # string

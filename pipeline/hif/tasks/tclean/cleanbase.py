@@ -29,6 +29,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     deconvolver = vdp.VisDependentProperty(default='')
     cyclefactor = vdp.VisDependentProperty(default=-999.0)
     cycleniter = vdp.VisDependentProperty(default=-999)
+    cfcache = vdp.VisDependentProperty(default='')
     field = vdp.VisDependentProperty(default='')
     gridder = vdp.VisDependentProperty(default='')
     imagename = vdp.VisDependentProperty(default='')
@@ -119,7 +120,7 @@ class CleanBaseInputs(vdp.StandardInputs):
                  hm_minpercentchange=None, hm_fastnoise=None, pblimit=None, niter=None, hm_nsigma=None,
                  hm_perchanweightdensity=None, hm_npixels=None, threshold=None, sensitivity=None, reffreq=None,
                  restfreq=None, conjbeams=None, is_per_eb=None, antenna=None, usepointing=None, mosweight=None,
-                 result=None, parallel=None, heuristics=None, rotatepastep=None):
+                 result=None, parallel=None, heuristics=None, rotatepastep=None, cfcache=None):
         self.context = context
         self.output_dir = output_dir
         self.vis = vis
@@ -167,6 +168,7 @@ class CleanBaseInputs(vdp.StandardInputs):
         self.hm_minpercentchange = hm_minpercentchange
         self.hm_fastnoise = hm_fastnoise
 
+        self.cfcache = cfcache
         self.pblimit = pblimit
         self.niter = niter
         self.threshold = threshold
@@ -312,6 +314,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             'width':         inputs.width,
             'imsize':        inputs.imsize,
             'cell':          inputs.cell,
+            'cfcache':       inputs.cfcache,
             'stokes':        inputs.stokes,
             'weighting':     inputs.weighting,
             'robust':        inputs.robust,
