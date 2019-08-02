@@ -34,6 +34,7 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
     #             isActive: True/False
     #             threType: "line" or "plot" # if "plot" then thre should be a list
     #                           having the equal length of row
+    #             threDesc: description of the threshold (for legend)
     #            }
 
     if FigFileDir == False:
@@ -50,7 +51,7 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
             print('TITLE: BF_Stat', file=BrowserFile)
             print('FIELDS: Stat IF POL Iteration Page', file=BrowserFile)
             print('COMMENT: Statistics of spectra', file=BrowserFile)
-        print(FigFileRoot+'.png', file=BrowserFile) 
+        print(FigFileRoot+'.png', file=BrowserFile)
         BrowserFile.close()
 
     PL.cla()
@@ -61,16 +62,17 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
     PL.subplot(111)
     #PL.subplots_adjust(hspace=0.3)
     PL.subplots_adjust(top=0.88, left=0.1, right=0.98)
-    PL.title(PlotData['title'], size=7)
+    t = PL.title(PlotData['title'], size=7)
+    t.set_position((0.5, 1.05))
     PL.xlabel(PlotData['xlabel'], size=6)
     PL.ylabel(PlotData['ylabel'], size=7)
     PL.xticks(size=6)
     PL.yticks(size=6)
     if PlotData['isActive']:
-        PL.figtext(0.01, 0.98, "ACTIVE", horizontalalignment='left', verticalalignment='top', color='green', size=18,
+        PL.figtext(0.01, 0.99, "ACTIVE", horizontalalignment='left', verticalalignment='top', color='green', size=18,
                    style='italic', weight='bold')
     else:
-        PL.figtext(0.01, 0.98, "INACTIVE", horizontalalignment='left', verticalalignment='top', color='red', size=18,
+        PL.figtext(0.01, 0.99, "INACTIVE", horizontalalignment='left', verticalalignment='top', color='red', size=18,
                    style='italic', weight='bold')
 
     # X-scale
@@ -79,7 +81,7 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
     # For NO DATA
     if PlotData['data'] is None:
         if PlotData['isActive']:
-            raise Exception("Got no valid data for active flag type.") 
+            raise Exception("Got no valid data for active flag type.")
         PL.axis([xmin, xmax, 0.0, 1.0])
         PL.figtext(0.5, 0.5, "NO DATA", horizontalalignment='center', verticalalignment='center', color='Gray', size=24,
                    style='normal', weight='bold')
@@ -143,17 +145,17 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
         x += 1
 
     # Plot
-    PL.plot(data[4], data[5], 's', markersize=3, markeredgecolor='0.5', markerfacecolor='0.5')
-    PL.plot(data[0], data[1], 'bo', markersize=3, markeredgecolor='b', markerfacecolor='b')
-    PL.plot(data[2], data[3], 'bo', markersize=3, markeredgecolor='r', markerfacecolor='r')
-    PL.axhline(y=ScaleOut[0][0], linewidth=1, color='r')
+    PL.plot(data[4], data[5], 's', markersize=2, markeredgecolor='0.5', markerfacecolor='0.5', label='flagged (online)')
+    PL.plot(data[0], data[1], 'o', markersize=3, markeredgecolor='b', markerfacecolor='b', label='data below threshold')
+    PL.plot(data[2], data[3], 'o', markersize=3, markeredgecolor='r', markerfacecolor='r', label='deviator')
+    PL.axhline(y=ScaleOut[0][0], linewidth=1, color='r', label='vertical limit (s)')
     if PlotData['threType'] != "plot":
-        PL.axhline(y=PlotData['thre'][0], linewidth=1, color='c')
+        PL.axhline(y=PlotData['thre'][0], linewidth=1, color='c', label=PlotData['threDesc'])
         if LowRange:
             PL.axhline(y=PlotData['thre'][1], linewidth=1, color='c')
             PL.axhline(y=ScaleOut[1][0], linewidth=1, color='r')
     else:
-        PL.plot(PlotData['row'], PlotData['thre'][0], '-', linewidth=1, color='c')
+        PL.plot(PlotData['row'], PlotData['thre'][0], '-', linewidth=1, color='c', label=PlotData['threDesc'])
 
     PL.axis([xmin, xmax, ymin, ymax])
 
@@ -165,6 +167,11 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
             PL.axvline(x=row, linewidth=0.5, color='c', ymin=0.9, ymax=0.95)
 
     PL.axis([xmin, xmax, ymin, ymax])
+    PL.legend(loc='lower center', numpoints=1, ncol=5,
+              prop={'size': 7}, frameon=False,
+              bbox_to_anchor=(0.5, 0.99),
+              borderpad=0, handletextpad=0.5,
+              handlelength=1, columnspacing=1)
 
     PL.ion()
     PL.draw()
