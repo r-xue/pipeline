@@ -44,8 +44,11 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
     def reffreq(self):
         return '3.0GHz'
 
-    def cyclefactor(self):
-        return 2.0
+    def cyclefactor(self, iteration):
+        if iteration == 0:
+            return 1.
+        else:
+            return 2.
 
     def cycleniter(self, iteration):
         if iteration == 0:

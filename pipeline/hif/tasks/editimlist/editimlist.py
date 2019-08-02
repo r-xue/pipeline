@@ -55,7 +55,7 @@ LOG = infrastructure.get_logger(__name__)
 class EditimlistInputs(vdp.StandardInputs):
     search_radius_arcsec = vdp.VisDependentProperty(default=1000.0)
     conjbeams = vdp.VisDependentProperty(default=False)
-    cyclefactor = vdp.VisDependentProperty(default='')
+    cyclefactor = vdp.VisDependentProperty(default=-999.)
     cycleniter = vdp.VisDependentProperty(default=-999)
     datacolumn = vdp.VisDependentProperty(default='')
     deconvolver = vdp.VisDependentProperty(default='')
@@ -326,7 +326,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['restfreq'] = th.restfreq() if not inpdict['restfreq'] else inpdict['restfreq']
         # niter_correction is run again in tclean.py
         imlist_entry['niter'] = th.niter() if not inpdict['niter'] else inpdict['niter']
-        imlist_entry['cyclefactor'] = th.cyclefactor() if not inpdict['cyclefactor'] else inpdict['cyclefactor']
+        imlist_entry['cyclefactor'] = inpdict['cyclefactor']
         imlist_entry['cycleniter'] = inpdict['cycleniter']
         imlist_entry['scales'] = th.scales() if not inpdict['scales'] else inpdict['scales']
         imlist_entry['uvtaper'] = th.uvtaper() if not inpdict['uvtaper'] else inpdict['uvtaper']

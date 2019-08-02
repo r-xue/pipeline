@@ -42,15 +42,17 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
     def reffreq(self):
         return '3.0GHz'
 
-    def cyclefactor(self):
-        return 3.0
+    def cyclefactor(self, iteration):
+        if iteration == 0:
+            return 1.
+        else:
+            return 3.
 
     def cycleniter(self, iteration):
         if iteration == 0:
             return 0
         else:
             return -1
-
 
     def scales(self):
         return [0]

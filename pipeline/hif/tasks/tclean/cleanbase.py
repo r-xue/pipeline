@@ -27,7 +27,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     antenna = vdp.VisDependentProperty(default='')
     datacolumn = vdp.VisDependentProperty(default='')
     deconvolver = vdp.VisDependentProperty(default='')
-    cyclefactor = vdp.VisDependentProperty(default=None)
+    cyclefactor = vdp.VisDependentProperty(default=-999.0)
     cycleniter = vdp.VisDependentProperty(default=-999)
     field = vdp.VisDependentProperty(default='')
     gridder = vdp.VisDependentProperty(default='')
@@ -423,11 +423,11 @@ class CleanBase(basetask.StandardTaskTemplate):
             tclean_job_parameters['calcres'] = False
 
         # Additional heuristics or task parameters
-        if inputs.cyclefactor:
+        if inputs.cyclefactor not in (None, -999):
             tclean_job_parameters['cyclefactor'] = inputs.cyclefactor
         else:
             # Call first and assign to variable to avoid calling slow methods twice
-            cyclefactor = inputs.heuristics.cyclefactor()
+            cyclefactor = inputs.heuristics.cyclefactor(iter)
             if cyclefactor:
                 tclean_job_parameters['cyclefactor'] = cyclefactor
 

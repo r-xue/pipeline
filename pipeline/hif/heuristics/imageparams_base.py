@@ -1781,7 +1781,7 @@ class ImageParamsHeuristics(object):
     def nterms(self):
         return None
 
-    def cyclefactor(self):
+    def cyclefactor(self, iteration):
         return None
 
     def cycleniter(self, iteration):

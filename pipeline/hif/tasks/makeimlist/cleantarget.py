@@ -33,7 +33,7 @@ class CleanTarget(dict):
         self['scales'] = None          # list
         self['niter'] = None           # int
         self['cycleniter'] = None      # int
-        self['cyclefactor'] = None     # int
+        self['cyclefactor'] = None     # float
         self['sensitivity'] = None     # string
         self['threshold'] = None       # string
         self['reffreq'] = None         # string

@@ -31,9 +31,9 @@
                 <value>False</value>
             </param>
 
-            <param type="string" name="cyclefactor">
+            <param type="double" name="cyclefactor">
                 <description>Controls the depth of clean in minor cycles based on PSF. </description>
-                <value/>
+                <value>-999.0</value>
             </param>
 
             <param type="int" name="cycleniter">
