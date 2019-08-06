@@ -2614,12 +2614,24 @@ def get_calstate_shape(ms):
                 #
                 # we can't rely on field.intents as this property
                 # aggregates all intents across all spws, which may
-                # differ from the specific spw in hand
+                # differ across spws when there are multiple tunings
                 #
                 # DON'T DO THIS!
                 # observed_intent_ids = (intent_to_id[i] for i in field.intents)
                 scans_for_field_and_spw = ms.get_scans(spw=spw.id, field=field.id)
-                observed_intent_ids = (intent_to_id[i] for scan in scans_for_field_and_spw for i in scan.intents)
+                observed_intent_ids = [intent_to_id[i]
+                                       for scan in scans_for_field_and_spw
+                                       for i in scan.intents]
+
+                # SD scans can have subscans, where each subscan observes a
+                # different field with different intent, e.g., TARGET alternating
+                # with REFERENCE. Non-SD data should have a single target per
+                # scan, so the following code should be a no-op.
+                subscan_fields = {scan_field for scan in scans_for_field_and_spw for scan_field in scan.fields}
+                if len(subscan_fields) > 1:
+                    # unfortunately, we have to fall back to the field.intents
+                    # method. Expect this to break for multituning SD EBs.
+                    observed_intent_ids = (intent_to_id[i] for i in field.intents)
 
                 # convert the intent IDs to an IntervalTree-friendly range
                 # and record it against the field ID
