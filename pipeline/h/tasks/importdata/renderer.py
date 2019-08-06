@@ -98,6 +98,8 @@ def make_flux_table(context, results):
 
                 if measurement.age:
                     age = measurement.age
+                elif measurement.age == 0 or measurement.age == 0.0:
+                    age = '0'
                 else:
                     age = 'N/A'
 
