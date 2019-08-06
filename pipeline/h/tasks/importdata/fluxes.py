@@ -440,7 +440,7 @@ def import_flux(output_dir, observing_run, filename=None):
             match = Band3age_re.search(comment)
             Band3age = match.group('Band3age') if match else None
             if age is None:
-                if Band3age:
+                if Band3age is not None:
                     try:
                         age = float(Band3age)
                         LOG.info("Using Band3age value of {!s} for field {!s}, spw {!s}".format(Band3age, field_id, spw_id))
