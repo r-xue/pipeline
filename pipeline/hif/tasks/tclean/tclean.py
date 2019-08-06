@@ -609,8 +609,9 @@ class Tclean(cleanbase.CleanBase):
                     newcommonbeam_major_arcsec = cqa.getvalue(cqa.convert(newcommonbeam['major'], 'arcsec'))[0]
                     newcommonbeam_minor_arcsec = cqa.getvalue(cqa.convert(newcommonbeam['minor'], 'arcsec'))[0]
                     newcommonbeam_pa_deg = cqa.getvalue(cqa.convert(newcommonbeam['pa'], 'deg'))[0]
-                    LOG.warn('Replacing bad common beam for SPW %s with %#.3g x %#.3g arcsec @ %.1f deg' % (inputs.spw, newcommonbeam_major_arcsec, newcommonbeam_minor_arcsec, newcommonbeam_pa_deg))
-                    inputs.restoringbeam = ['%#.3garcsec' % (newcommonbeam_major_arcsec), '%#.3garcsec' % (newcommonbeam_minor_arcsec), '%.1fdeg' % (newcommonbeam_pa_deg)]
+                    # For Cycle 7 the new common beam shall not yet be used (PIPE-375).
+                    #LOG.warn('Replacing bad common beam for SPW %s with %#.3g x %#.3g arcsec @ %.1f deg' % (inputs.spw, newcommonbeam_major_arcsec, newcommonbeam_minor_arcsec, newcommonbeam_pa_deg))
+                    #inputs.restoringbeam = ['%#.3garcsec' % (newcommonbeam_major_arcsec), '%#.3garcsec' % (newcommonbeam_minor_arcsec), '%.1fdeg' % (newcommonbeam_pa_deg)]
 
         # Determine masking limits depending on PB
         extension = '.tt0' if result.multiterm else ''
