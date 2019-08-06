@@ -71,12 +71,12 @@ class TcleanQAHandler(pqa.QAPlugin):
                     if result.bad_psf_channels.shape[0] <= 10:
                         rms_score -= 0.11
                         rms_score = max(0.0, rms_score)
-                        longmsg = '%s. Between 1-10 channels were masked due to significantly deviant synthesized beam(s), this is usually indicative of bad data, if at cube edge can likely be ignored.' % (longmsg)
+                        longmsg = '%s. Between 1-10 channels show significantly deviant synthesized beam(s), this is usually indicative of bad data, if at cube edge can likely be ignored.' % (longmsg)
                         shortmsg = '%s. 1-10 channels masked.' % (shortmsg) 
                     else:
                         rms_score -= 0.34
                         rms_score = max(0.0, rms_score)
-                        longmsg = '%s. More than 10 channels were masked due to significantly deviant synthesized beams, this is usually indicative of bad data, and should be investigated.' % (longmsg)
+                        longmsg = '%s. More than 10 channels show significantly deviant synthesized beams, this is usually indicative of bad data, and should be investigated.' % (longmsg)
                         shortmsg = '%s. > 10 channels masked.' % (shortmsg) 
 
                 # Add score to pool
