@@ -171,7 +171,8 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
               prop={'size': 7}, frameon=False,
               bbox_to_anchor=(0.5, 0.99),
               borderpad=0, handletextpad=0.5,
-              handlelength=1, columnspacing=1)
+              handlelength=1, columnspacing=1,
+              markerscale=2)
 
     PL.ion()
     PL.draw()
