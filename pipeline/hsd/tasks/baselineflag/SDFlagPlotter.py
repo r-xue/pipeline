@@ -145,9 +145,9 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
         x += 1
 
     # Plot
-    PL.plot(data[4], data[5], 's', markersize=2, markeredgecolor='0.5', markerfacecolor='0.5', label='flagged (online)')
-    PL.plot(data[0], data[1], 'o', markersize=3, markeredgecolor='b', markerfacecolor='b', label='data below threshold')
-    PL.plot(data[2], data[3], 'o', markersize=3, markeredgecolor='r', markerfacecolor='r', label='deviator')
+    PL.plot(data[4], data[5], 's', markersize=1, markeredgecolor='0.5', markerfacecolor='0.5', label='flagged (online)')
+    PL.plot(data[0], data[1], 'o', markersize=1, markeredgecolor='b', markerfacecolor='b', label='data below threshold')
+    PL.plot(data[2], data[3], 'o', markersize=2, markeredgecolor='r', markerfacecolor='r', label='deviator')
     PL.axhline(y=ScaleOut[0][0], linewidth=1, color='r', label='vertical limit (s)')
     if PlotData['threType'] != "plot":
         PL.axhline(y=PlotData['thre'][0], linewidth=1, color='c', label=PlotData['threDesc'])
