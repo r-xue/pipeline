@@ -44,7 +44,6 @@ import mstransform_cli
 import partition_cli
 import plotants_cli
 import plotbandpass_cli
-import plotcal_cli
 import plotms_cli
 import plotweather_cli
 import polcal_cli
@@ -183,10 +182,6 @@ def plotants(*v, **k):
 
 def plotbandpass(*v, **k):
     return _get_job(plotbandpass_cli.plotbandpass_cli, *v, **k)
-
-
-def plotcal(*v, **k):
-    return _get_job(plotcal_cli.plotcal_cli, *v, **k)
 
 
 def plotms(*v, **k):

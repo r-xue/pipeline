@@ -50,11 +50,11 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
     %if single_result.final:
 
-    <%self:plot_group plot_dict="${polarization_plotcal_plots}"
+    <%self:plot_group plot_dict="${polarization_plots}"
                                   url_fn="${lambda ms:  'noop'}">
 
         <%def name="title()">
-            Polarization Plotcal Plots
+            Polarization Plots
         </%def>
 
         <%def name="preamble()">
@@ -94,7 +94,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 	        <p><b>${os.path.basename(single_result.final[1].gaintable)}</b></p>
         %endfor
 
-        %for ms in polarization_plotcal_plots.keys():
+        %for ms in polarization_plots.keys():
 
             <h4>
             <a class="replace" href="${os.path.relpath(os.path.join(dirname, ampfreq_subpages[ms]), pcontext.report_dir)}">Amplitude vs. Frequency (per antenna plots)</a>

@@ -10,7 +10,7 @@ import shutil
 LOG = infrastructure.get_logger(__name__)
 
 
-class PolarizationPlotCalChart(object):
+class CircFeedPolCalChart(object):
     def __init__(self, context, result, caltable='', yaxis='delay', xaxis='freq', antenna='', caption=''):
         self.context = context
         self.result = result
@@ -26,33 +26,12 @@ class PolarizationPlotCalChart(object):
     def plot(self):
         plots = [self.get_plot_wrapper('plotsummary')]
 
-        # Create a dummy plot to release the cal table
-
-        '''
-        scratchfile = 'scratchpol.g'
-        shutil.copytree(self.caltable, scratchfile)
-        casa.plotcal(caltable=scratchfile,
-                     xaxis='time', yaxis='phase', poln='', field='',
-                     antenna=str(0), spw='', timerange='',
-                     subplot=111, overplot=False, clearpanel='Auto',
-                     iteration='antenna', plotrange=[0, 0, -180, 180],
-                     showflags=False, plotsymbol='o-', plotcolor='blue',
-                     markersize=5.0, fontsize=10.0, showgui=False, figfile="scratchpol.png")
-        shutil.rmtree(scratchfile)
-        '''
-
         return [p for p in plots if p is not None]
 
     def create_plot(self, prefix):
         figfile = self.get_figfile(prefix)
 
         LOG.info("Creating PlotSummary Polarization plot")
-        # casa.plotcal(caltable=self.caltable, xaxis=self.xaxis, yaxis=self.yaxis, poln='',
-        #             field='', antenna=self.antenna, spw='', timerange='', subplot=111, overplot=False,
-        #             clearpanel='Auto', iteration='', plotrange=[], showflags=False,
-        #             plotsymbol='o', plotcolor='blue', markersize=5.0, fontsize=10.0,
-        #             showgui=False, figfile=figfile)
-
         casa.plotms(vis=self.caltable, xaxis=self.xaxis, yaxis=self.yaxis, field='', antenna=self.antenna,
                     spw='', timerange='', plotrange=[], coloraxis='spw',
                     title='{!s}  Antenna: {!s}'.format(self.caltable, self.antenna),
@@ -61,7 +40,7 @@ class PolarizationPlotCalChart(object):
     def get_figfile(self, prefix):
         return os.path.join(self.context.report_dir,
                             'stage%s' % self.result.stage_number,
-                            prefix + '_' + self.yaxis + '_vs_' + self.xaxis + '-%s-plotcal.png' % self.ms.basename)
+                            prefix + '_' + self.yaxis + '_vs_' + self.xaxis + '-%s-plotms.png' % self.ms.basename)
 
     def get_plot_wrapper(self, prefix):
         figfile = self.get_figfile(prefix)
@@ -80,7 +59,7 @@ class PolarizationPlotCalChart(object):
                                           'caption': self.caption + typeentry})
 
         if not os.path.exists(figfile):
-            LOG.trace('plotsummary Plotcal plot not found. Creating new plot.')
+            LOG.trace('plotsummary plot not found. Creating new plot.')
             try:
                 self.create_plot(prefix)
             except Exception as ex:

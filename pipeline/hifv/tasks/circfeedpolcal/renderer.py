@@ -77,7 +77,7 @@ class T2_4MDetailsCircfeedpolcalRenderer(basetemplates.T2_4MDetailsDefaultRender
         weblog_dir = os.path.join(context.report_dir,
                                   'stage%s' % result.stage_number)
 
-        polarization_plotcal_plots = {}
+        polarization_plots = {}
         ampfreq_subpages = {}
 
         for r in result:
@@ -86,19 +86,19 @@ class T2_4MDetailsCircfeedpolcalRenderer(basetemplates.T2_4MDetailsDefaultRender
                 Dtable = r.final[1].gaintable
                 Xtable = r.final[2].gaintable
 
-                plotter = polarization.PolarizationPlotCalChart(context, r,
+                plotter = polarization.CircFeedPolCalChart(context, r,
                                                                 caltable=ktable,
                                                                 yaxis='delay', xaxis='freq', antenna=r.refant,
                                                                 caption='RL delay vs. freq. ')
                 plots = plotter.plot()
                 # -------------
-                plotter = polarization.PolarizationPlotCalChart(context, r,
+                plotter = polarization.CircFeedPolCalChart(context, r,
                                                                 caltable=Xtable,
                                                                 yaxis='phase', xaxis='freq', antenna=r.refant,
                                                                 caption='RL phase offset vs. freq. ')
                 plots.extend(plotter.plot())
                 # -------------
-                plotter = polarization.PolarizationPlotCalChart(context, r,
+                plotter = polarization.CircFeedPolCalChart(context, r,
                                                                 caltable=Dtable,
                                                                 yaxis='amp', xaxis='Antenna1', antenna='',
                                                                 caption='Inst. pol. amp vs. antenna')
@@ -106,7 +106,7 @@ class T2_4MDetailsCircfeedpolcalRenderer(basetemplates.T2_4MDetailsDefaultRender
                 # -------------
 
                 ms = os.path.basename(r.inputs['vis'])
-                polarization_plotcal_plots[ms] = plots
+                polarization_plots[ms] = plots
 
                 # generate amp vs. frequency plots per antenna and JSON file
                 plotter = polarization.ampfreqPerAntennaChart(context, result, Dtable)
@@ -120,7 +120,7 @@ class T2_4MDetailsCircfeedpolcalRenderer(basetemplates.T2_4MDetailsDefaultRender
                     ampfreq_subpages[ms] = renderer.filename
 
             ctx.update({'dirname'                    : weblog_dir,
-                        'polarization_plotcal_plots' : polarization_plotcal_plots,
+                        'polarization_plots' : polarization_plots,
                         'ampfreq_subpages'           : ampfreq_subpages})
 
         return ctx
