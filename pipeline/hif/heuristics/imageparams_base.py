@@ -453,12 +453,12 @@ class ImageParamsHeuristics(object):
                         mosweight = self.mosweight(intent, field)
                         field_ids = self.field(intent, field, vislist=valid_vis_list)
                         # Get single field imsize
-                        imsize_sf = self.imsize(fields=field_ids, cell=['%.2g%s' % (cellv, cellu)], primary_beam=largest_primary_beam_size, centreonly=True)
+                        imsize_sf = self.imsize(fields=field_ids, cell=['%.2g%s' % (cellv, cellu)], primary_beam=largest_primary_beam_size, centreonly=True, vislist=valid_vis_list)
                         # If it is a mosaic, adjust the size to be somewhat larger than one PB, but not the full
                         # mosaic size to limit the makePSF run times. The resulting beam is still very close to
                         # what tclean calculates later in the full mosaic size cleaning.
                         if gridder == 'mosaic':
-                            imsize_mosaic = self.imsize(fields=field_ids, cell=['%.2g%s' % (cellv, cellu)], primary_beam=largest_primary_beam_size)
+                            imsize_mosaic = self.imsize(fields=field_ids, cell=['%.2g%s' % (cellv, cellu)], primary_beam=largest_primary_beam_size, vislist=valid_vis_list)
                             nxpix_sf, nypix_sf = imsize_sf
                             nxpix_mosaic, nypix_mosaic = imsize_mosaic
                             if nxpix_mosaic <= 2.0 * nxpix_sf and nypix_mosaic <= 2.0 * nypix_sf:
@@ -971,15 +971,18 @@ class ImageParamsHeuristics(object):
 
         return repr_target, repr_source, virtual_repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, sensitivityGoal
 
-    def imsize(self, fields, cell, primary_beam, sfpblimit=None, max_pixels=None, centreonly=False):
+    def imsize(self, fields, cell, primary_beam, sfpblimit=None, max_pixels=None, centreonly=False, vislist=None):
 
         # fields: list of comma separated strings of field IDs per MS
+
+        if vislist is None:
+            vislist = self.vislist
 
         # get spread of beams
         if centreonly:
             xspread = yspread = 0.0
         else:
-            ignore, xspread, yspread = self.phasecenter(fields, centreonly=centreonly)
+            ignore, xspread, yspread = self.phasecenter(fields, centreonly=centreonly, vislist=vislist)
 
         cqa = casatools.quanta
 

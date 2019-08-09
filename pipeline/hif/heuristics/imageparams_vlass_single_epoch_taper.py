@@ -36,7 +36,7 @@ class ImageParamsHeuristicsVlassSeTaper(ImageParamsHeuristics):
     def cell(self, beam=None, pixperbeam=None):
         return ['1.8arcsec']
 
-    def imsize(self, fields=None, cell=None, primary_beam=None, sfpblimit=None, max_pixels=None, centreonly=None):
+    def imsize(self, fields=None, cell=None, primary_beam=None, sfpblimit=None, max_pixels=None, centreonly=None, vislist=None):
         return [4050, 4050]
 
     def reffreq(self):

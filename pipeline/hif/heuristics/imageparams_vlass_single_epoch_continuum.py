@@ -36,7 +36,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
     def cell(self, beam=None, pixperbeam=None):
         return ['0.6arcsec']
 
-    def imsize(self, fields=None, cell=None, primary_beam=None, sfpblimit=None, max_pixels=None, centreonly=None):
+    def imsize(self, fields=None, cell=None, primary_beam=None, sfpblimit=None, max_pixels=None, centreonly=None, vislist=None):
         return [12150, 12150]
 
     def reffreq(self):

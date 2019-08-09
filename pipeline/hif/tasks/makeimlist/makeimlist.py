@@ -540,8 +540,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                     for field_intent in field_intent_list:
                         try:
                             gridder = self.heuristics.gridder(field_intent[1], field_intent[0])
-                            field_ids = self.heuristics.field(field_intent[1], field_intent[0])
-                            phasecenters[field_intent[0]] = self.heuristics.phasecenter(field_ids)
+                            field_ids = self.heuristics.field(field_intent[1], field_intent[0], vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'])
+                            phasecenters[field_intent[0]] = self.heuristics.phasecenter(field_ids, vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'])
                         except Exception as e:
                             # problem defining center
                             LOG.warn(e)
@@ -575,10 +575,10 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                             try:
                                 gridder = self.heuristics.gridder(field_intent[1], field_intent[0])
-                                field_ids = self.heuristics.field(field_intent[1], field_intent[0])
+                                field_ids = self.heuristics.field(field_intent[1], field_intent[0], vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'])
                                 himsize = self.heuristics.imsize(
                                     fields=field_ids, cell=cells[spwspec], primary_beam=largest_primary_beams[spwspec],
-                                    sfpblimit=sfpblimit, centreonly=False)
+                                    sfpblimit=sfpblimit, centreonly=False, vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'])
                                 if field_intent[1] in ['PHASE', 'BANDPASS', 'AMPLITUDE', 'FLUX', 'CHECK']:
                                     himsize = [min(npix, inputs.calmaxpix) for npix in himsize]
                                 imsizes[(field_intent[0], spwspec)] = himsize
