@@ -96,7 +96,7 @@ class SDBLFlagSummary(object):
                 # generate summary plot
                 FigFileRoot = ("FlagStat_%s_ant%d_field%d_spw%d_pol%d_iter%d" %
                                (asdm, antid, fieldid, spwid, polid, iteration))
-                time_gap = datatable.get_timegap(antid, spwid, None,
+                time_gap = datatable.get_timegap(antid, spwid, None, asrow=False,
                                                  ms=ms, field_id=fieldid)
                 # time_gap[0]: PosGap, time_gap[1]: TimeGap
                 for i in range(len(thresholds)):
@@ -177,9 +177,11 @@ class SDBLFlagSummary(object):
         NPpdata = numpy.zeros((7, NROW), numpy.float)
         NPpflag = numpy.zeros((7, NROW), numpy.int)
         NPprows = numpy.zeros((2, NROW), numpy.int)
+        NPptime = numpy.zeros((2, NROW), numpy.float)
         N = 0
         for ID in ids:
             row = DataTable.getcell('ROW', ID)
+            time = DataTable.getcell('TIME', ID)
             # Check every flags to create summary flag
             tFLAG = DataTable.getcell('FLAG', ID)[polid]
             tPFLAG = DataTable.getcell('FLAG_PERMANENT', ID)[polid]
@@ -197,6 +199,7 @@ class SDBLFlagSummary(object):
             NPpdata[0][N] = tTSYS
             NPpflag[0][N] = tPFLAG[1]
             NPprows[0][N] = row
+            NPptime[0][N] = time
             if FlagRule_local['TsysFlag']['isActive'] and tPFLAG[1] == 0:
                 FlaggedRowsCategory[0].append(row)
             # Weather flag
@@ -210,6 +213,7 @@ class SDBLFlagSummary(object):
                 FlaggedRowsCategory[3].append(row)
 
             NPprows[1][N] = row
+            NPptime[1][N] = time
             # RMS flag before baseline fit
             NPpdata[1][N] = tSTAT[2]
             NPpflag[1][N] = tFLAG[2]
@@ -246,13 +250,17 @@ class SDBLFlagSummary(object):
         ThreExpectedRMSPostFit = FlagRule_local['RmsExpectedPostFitFlag']['Threshold']
         plots = []
         # Tsys flag
+        timeCol = DataTable.getcol('TIME')
+        PosGapInTime = timeCol.take(PosGap)
+        TimeGapInTime = timeCol.take(TimeGap)
         PlotData = {'row': NPprows[0],
+                    'time': NPptime[0],
                     'data': NPpdata[0],
                     'flag': NPpflag[0],
                     'thre': [threshold[4][1], 0.0],
-                    'gap': [PosGap, TimeGap],
+                    'gap': [PosGapInTime, TimeGapInTime],
                     'title': "Tsys (K)",
-                    'xlabel': "row (spectrum)",
+                    'xlabel': "Time (UTC)",
                     'ylabel': "Tsys (K)",
                     'permanentflag': PermanentFlag,
                     'isActive': FlagRule_local['TsysFlag']['isActive'],
@@ -263,6 +271,7 @@ class SDBLFlagSummary(object):
 
         # RMS flag before baseline fit
         PlotData['row'] = NPprows[1]
+        PlotData['time'] = NPptime[1]
         PlotData['data'] = NPpdata[1]
         PlotData['flag'] = NPpflag[1]
         PlotData['thre'] = [threshold[1][1]]

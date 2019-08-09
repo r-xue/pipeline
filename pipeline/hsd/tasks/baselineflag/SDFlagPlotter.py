@@ -12,6 +12,7 @@ import pylab as PL
 #import math
 
 from .SDFlagRule import INVALID_STAT
+from ..common import display as sd_display
 
 ## 0:DebugPlot 1:TPlotRADEC 2:TPlotAzEl 3:TPlotCluster 4:TplotFit 5:TPlotMultiSP 6:TPlotSparseSP 7:TPlotChannelMap 8:TPlotFlag 9:TPlotIntermediate
 MATPLOTLIB_FIGURE_ID = [8904, 8905, 8906, 8907, 8908, 8909, 8910, 8911, 8912, 8913]
@@ -22,6 +23,7 @@ FIGSIZE_INCHES = (7.0, 2.8)
 def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
     # PlotData = {
     #             row:  [row], # row number of the spectrum
+    #             time: [time], # timestamp
     #             data: [data],
     #             flag: [flag], # 0: flag out, 1: normal, 2: exclude from the plot
     #             sigma: "Clipping Sigma"
@@ -61,7 +63,7 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
     #PL.subplot(211)
     PL.subplot(111)
     #PL.subplots_adjust(hspace=0.3)
-    PL.subplots_adjust(top=0.88, left=0.1, right=0.98)
+    PL.subplots_adjust(top=0.88, bottom=0.13, left=0.1, right=0.98)
     t = PL.title(PlotData['title'], size=7)
     t.set_position((0.5, 1.05))
     PL.xlabel(PlotData['xlabel'], size=6)
@@ -76,8 +78,13 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
                    style='italic', weight='bold')
 
     # X-scale
-    xmin = min(PlotData['row'])
-    xmax = max(PlotData['row'])
+    xmin = min(PlotData['time'])
+    xmax = max(PlotData['time'])
+
+    axes = PL.gcf().gca()
+    axes.xaxis.set_major_locator(sd_display.utc_locator(start_time=xmin, end_time=xmax))
+    axes.xaxis.set_major_formatter(sd_display.utc_formatter())
+
     # For NO DATA
     if PlotData['data'] is None:
         if PlotData['isActive']:
@@ -124,7 +131,7 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
 
     for Pflag in PlotData['permanentflag']:
         if Pflag == 0 or PlotData['data'][x] == INVALID_STAT:  # Flag-out case
-            data[4].append(PlotData['row'][x])
+            data[4].append(PlotData['time'][x])
             if PlotData['data'][x] > ScaleOut[0][0] or PlotData['data'][x] == INVALID_STAT:
                 data[5].append(ScaleOut[0][1])
             elif LowRange and PlotData['data'][x] < ScaleOut[1][0]:
@@ -132,7 +139,7 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
             else:
                 data[5].append(PlotData['data'][x])
         elif PlotData['flag'][x] == 0:  # Flag-out case
-            data[2].append(PlotData['row'][x])
+            data[2].append(PlotData['time'][x])
             if PlotData['data'][x] > ScaleOut[0][0]:
                 data[3].append(ScaleOut[0][1])
             elif LowRange and PlotData['data'][x] < ScaleOut[1][0]:
@@ -140,14 +147,14 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
             else:
                 data[3].append(PlotData['data'][x])
         else:  # Normal case
-            data[0].append(PlotData['row'][x])
+            data[0].append(PlotData['time'][x])
             data[1].append(PlotData['data'][x])
         x += 1
 
     # Plot
-    PL.plot(data[4], data[5], 's', markersize=1, markeredgecolor='0.5', markerfacecolor='0.5', label='flagged (online)')
-    PL.plot(data[0], data[1], 'o', markersize=1, markeredgecolor='b', markerfacecolor='b', label='data below threshold')
-    PL.plot(data[2], data[3], 'o', markersize=2, markeredgecolor='r', markerfacecolor='r', label='deviator')
+    PL.plot(sd_display.mjd_to_plotval(data[4]), data[5], 's', markersize=1, markeredgecolor='0.5', markerfacecolor='0.5', label='flagged (online)')
+    PL.plot(sd_display.mjd_to_plotval(data[0]), data[1], 'o', markersize=1, markeredgecolor='b', markerfacecolor='b', label='data below threshold')
+    PL.plot(sd_display.mjd_to_plotval(data[2]), data[3], 'o', markersize=2, markeredgecolor='r', markerfacecolor='r', label='deviator')
     PL.axhline(y=ScaleOut[0][0], linewidth=1, color='r', label='vertical limit (s)')
     if PlotData['threType'] != "plot":
         PL.axhline(y=PlotData['thre'][0], linewidth=1, color='c', label=PlotData['threDesc'])
@@ -155,15 +162,16 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
             PL.axhline(y=PlotData['thre'][1], linewidth=1, color='c')
             PL.axhline(y=ScaleOut[1][0], linewidth=1, color='r')
     else:
-        PL.plot(PlotData['row'], PlotData['thre'][0], '-', linewidth=1, color='c', label=PlotData['threDesc'])
+        PL.plot(sd_display.mjd_to_plotval(PlotData['time']), PlotData['thre'][0], '-', linewidth=1, color='c', label=PlotData['threDesc'])
 
+    xmin, xmax = sd_display.mjd_to_plotval([xmin, xmax])
     PL.axis([xmin, xmax, ymin, ymax])
 
     if len(PlotData['gap']) > 0:
-        for row in PlotData['gap'][0]:
+        for row in sd_display.mjd_to_plotval(PlotData['gap'][0]):
             PL.axvline(x=row, linewidth=0.5, color='g', ymin=0.95)
     if len(PlotData['gap']) > 1:
-        for row in PlotData['gap'][1]:
+        for row in sd_display.mjd_to_plotval(PlotData['gap'][1]):
             PL.axvline(x=row, linewidth=0.5, color='c', ymin=0.9, ymax=0.95)
 
     PL.axis([xmin, xmax, ymin, ymax])
