@@ -59,6 +59,8 @@ mjd_to_datetime_vectorized = numpy.vectorize(mjd_to_datetime)
 
 
 def mjd_to_plotval(mjd_list):
+    if len(mjd_list) == 0:
+        return []
     datetime_list = mjd_to_datetime_vectorized(mjd_list)
     return date2num(datetime_list)
 
@@ -87,7 +89,10 @@ def utc_locator(start_time=None, end_time=None):
     else:
         dt = abs(end_time - start_time) * 1440.0 # day -> minutes
         #print dt
-        tick_interval = int(dt/10) + 1
+        tick_interval = max(int(dt/10), 1)
+        tick_candidates = numpy.asarray([i for i in range(1, 61) if 60 % i == 0])
+        tick_interval = tick_candidates[numpy.argmin(abs(tick_candidates - tick_interval))]
+
         #print tick_interval
         return MinuteLocator(byminute=range(0, 60, tick_interval))
 
@@ -444,7 +449,7 @@ def get_base_frequency(table, freqid, nchan):
         refpix = tb.getcell('REFPIX', freqid)
         refval = tb.getcell('REFVAL', freqid)
         increment = tb.getcell('INCREMENT', freqid)
-        chan_freq = numpy.array([refval + (i - refpix) * increment 
+        chan_freq = numpy.array([refval + (i - refpix) * increment
                                  for i in xrange(nchan)])
     return chan_freq
 
@@ -734,9 +739,9 @@ class SDSparseMapPlotter(object):
                         yield oper(unmasked)
             ListMax = numpy.fromiter(stat_per_spectra(valid_data, numpy.max), dtype=numpy.float64)
             ListMin = numpy.fromiter(stat_per_spectra(valid_data, numpy.min), dtype=numpy.float64)
-#             ListMax = numpy.fromiter((numpy.max(v.data[v.mask == False]) for v in valid_data), 
+#             ListMax = numpy.fromiter((numpy.max(v.data[v.mask == False]) for v in valid_data),
 #                                      dtype=numpy.float64)
-#             ListMin = numpy.fromiter((numpy.min(v.data[v.mask == False]) for v in valid_data), 
+#             ListMin = numpy.fromiter((numpy.min(v.data[v.mask == False]) for v in valid_data),
 #                                      dtype=numpy.float64)
             LOG.debug('ListMax from masked_array=%s'%(ListMax))
             LOG.debug('ListMin from masked_array=%s'%(ListMin))
@@ -744,7 +749,7 @@ class SDSparseMapPlotter(object):
             ListMax = valid_data.max(axis=1)
             ListMin = valid_data.min(axis=1)
         del valid_data
-        if len(ListMax) == 0 or len(ListMin) == 0: 
+        if len(ListMax) == 0 or len(ListMin) == 0:
             return False
         #if isinstance(ListMin, numpy.ma.masked_array):
         #    ListMin = ListMin.data[ListMin.mask == False]
@@ -782,7 +787,7 @@ class SDSparseMapPlotter(object):
             amin = 1.0
             amax = 0.0
             for (t, f) in itertools.izip(self.atm_transmission, self.atm_frequency):
-                plot_helper.plot(f, t, color='m', linestyle='-', linewidth=0.4)           
+                plot_helper.plot(f, t, color='m', linestyle='-', linewidth=0.4)
                 amin = min(amin, t.min())
                 amax = max(amax, t.max())
             Y = 0.6
@@ -832,9 +837,9 @@ class SDSparseMapPlotter(object):
                     if is_valid_fit_result:
                         plot_helper.plot(frequency, fit_result[x][y], color='r', linewidth=0.4)
                     elif self.reference_level is not None and ymin < self.reference_level and self.reference_level < ymax:
-                        plot_helper.axhline(self.reference_level, color='r', linewidth=0.4) 
+                        plot_helper.axhline(self.reference_level, color='r', linewidth=0.4)
                 else:
-                    plot_helper.text((xmin+xmax)/2.0, (ymin+ymax)/2.0, 'NO DATA', ha='center', va='center', 
+                    plot_helper.text((xmin+xmax)/2.0, (ymin+ymax)/2.0, 'NO DATA', ha='center', va='center',
                                      size=(self.TickSize + 1))
                 pl.axis((xmin, xmax, ymin, ymax))
 
