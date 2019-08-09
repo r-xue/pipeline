@@ -1,7 +1,9 @@
 
 import glob
 import os
+import numpy as np
 
+import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure.casatools as casatools
@@ -316,6 +318,7 @@ class Tclean(cleanbase.CleanBase):
             # To avoid noisy edge channels, use only the frequency
             # intersection and skip one channel on either end.
             if self.image_heuristics.is_eph_obj(inputs.field):
+                # Need to use TOPO until CASA can convert to REST
                 frame = 'TOPO'
             else:
                 frame = 'LSRK'
@@ -404,6 +407,28 @@ class Tclean(cleanbase.CleanBase):
                 LOG.info('Applying binning factor %d' % inputs.nbin)
                 channel_width *= inputs.nbin
 
+            # Get spw sideband
+            ref_ms = context.observing_run.get_ms(inputs.vis[0])
+            real_spw = context.observing_run.virtual2real_spw_id(inputs.spw, ref_ms)
+            real_spw_obj = ref_ms.get_spectral_window(real_spw)
+            if real_spw_obj.sideband == '-1':
+                sideband = 'LSB'
+            else:
+                sideband = 'USB'
+
+            if self.image_heuristics.is_eph_obj(inputs.field):
+                # Determine extra channels to skip for ephemeris objects to
+                # account for fast moving objects.
+                centre_frequency_TOPO = float(real_spw_obj.centre_frequency.to_units(measures.FrequencyUnits.HERTZ))
+                channel_width_freq_TOPO = float(real_spw_obj.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ))
+                freq0 = qaTool.quantity(centre_frequency_TOPO, 'Hz')
+                freq1 = qaTool.quantity(centre_frequency_TOPO + channel_width_freq_TOPO, 'Hz')
+                channel_width_velo_TOPO = qaTool.getvalue(self._to_velocity(freq1, freq0, '0.0km/s'))[0]
+                # Skip 1 km/s or at least 4 channels
+                extra_skip_channels = max(4, int(np.ceil(1.0 / abs(channel_width_velo_TOPO))))
+            else:
+                extra_skip_channels = 0
+
             if inputs.nchan not in (None, -1):
                 if1 = if0 + channel_width * inputs.nchan
                 if if1 > if1_auto:
@@ -419,26 +444,40 @@ class Tclean(cleanbase.CleanBase):
                                                                                        inputs.intent, inputs.spw)
                     return error_result
                 LOG.info('Using supplied nchan %d' % inputs.nchan)
+            else:
+                # Skip edge channels and extra channels if no nchan is supplied
+                inputs.nchan = int(round((if1 - if0) / channel_width - 2)) - 2 * extra_skip_channels
 
-            # tclean interprets the start frequency as the center of the
-            # first channel. We have, however, an edge to edge range.
-            # Thus shift by 0.5 channels if no start is supplied.
             if inputs.start == '':
-                inputs.start = '%sGHz' % ((if0 + 1.5 * channel_width) / 1e9)
+                if self.image_heuristics.is_eph_obj(inputs.field):
+                    # For ephemeris objects we do not yet have the conversion to the
+                    # REST frame. The start of the frequency range is thus given in
+                    # channels. The offset accounts for drifts of fast moving objects.
+                    if sideband == 'LSB':
+                        inputs.start = int(round((if1 - if0) / channel_width - 2)) - 1 - extra_skip_channels
+                    else:
+                        inputs.start = extra_skip_channels
+                else:
+                    # tclean interprets the start frequency as the center of the
+                    # first channel. We have, however, an edge to edge range.
+                    # Thus shift by 0.5 channels if no start is supplied.
+                    inputs.start = '%sGHz' % ((if0 + 1.5 * channel_width) / 1e9)
 
             # Always adjust width to apply possible binning
             if self.image_heuristics.is_eph_obj(inputs.field):
-                # For ephemeris objects the frequency overlap is done in TOPO since
-                # advisechansel does not support the SOURCE frame. The resulting
-                # widths are too narrow for objects that are moving away from earth.
-                # To compensate this, the width is increased slightly (CAS-11800).
-                inputs.width = '%sMHz' % (1.0002 * channel_width / 1e6)
+                # For ephemeris objects we need to define the frequency axis in
+                # channels until CASA can convert to the REST frame.
+                if sideband == 'LSB':
+                    width_sign = -1
+                else:
+                    width_sign = 1
+
+                if inputs.nbin not in (None, -1):
+                    inputs.width = width_sign * inputs.nbin
+                else:
+                    inputs.width = width_sign
             else:
                 inputs.width = '%sMHz' % (channel_width / 1e6)
-
-            # Skip edge channels if no nchan is supplied
-            if inputs.nchan in (None, -1):
-                inputs.nchan = int(round((if1 - if0) / channel_width - 2))
 
         # Make sure there are LSRK selections if cont.dat/lines.dat exist.
         # For ALMA this is already done at the hif_makeimlist step. For VLASS
@@ -989,24 +1028,24 @@ class Tclean(cleanbase.CleanBase):
                         (self.inputs.intent, self.inputs.field, self.inputs.spw))
 
     def _to_frequency(self, velocity, restfreq):
-        # f = f_rest / (v/c + 1)
-        # https://www.iram.fr/IRAMFR/ARN/may95/node4.htm
+        # f = f_rest * (1 - v/c)
+        # https://www.iram.fr/IRAMFR/ARN/may95/node4.html
         qa = casatools.quanta
-        light_speed = qa.convert(qa.constants('c'), 'km/s')['value']
-        velocity = qa.convert(qa.quantity(velocity), 'km/s')['value']
-        val = qa.getvalue(restfreq)[0] / ((velocity / light_speed) + 1)
+        light_speed = qa.getvalue(qa.convert(qa.constants('c'), 'km/s'))[0]
+        velocity = qa.getvalue(qa.convert(qa.quantity(velocity), 'km/s'))[0]
+        val = qa.getvalue(restfreq)[0] * (1 - velocity / light_speed)
         unit = qa.getunit(restfreq)
         frequency = qa.tos(qa.quantity(val, unit))
         return frequency
 
     def _to_velocity(self, frequency, restfreq, velo):
-        # v = c * (f - f_rest) / f
-        # https://www.iram.fr/IRAMFR/ARN/may95/node4.htm
+        # v = c * (f_rest - f) / f_rest
+        # https://www.iram.fr/IRAMFR/ARN/may95/node4.html
         qa = casatools.quanta
-        light_speed = qa.convert(qa.constants('c'), 'km/s')['value']
+        light_speed = qa.getvalue(qa.convert(qa.constants('c'), 'km/s'))[0]
         restfreq = qa.getvalue(qa.convert(restfreq, 'MHz'))[0]
         freq = qa.getvalue(qa.convert(frequency, 'MHz'))[0]
-        val = light_speed * ((freq - restfreq) / freq)
+        val = light_speed * ((restfreq - freq) / restfreq)
         unit = qa.getunit(velo)
         velocity = qa.tos(qa.quantity(val, unit))
         return velocity
