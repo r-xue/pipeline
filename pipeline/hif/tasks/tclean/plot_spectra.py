@@ -634,7 +634,12 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile):
 
     qaTool = casatools.quanta
 
-    title = os.path.basename(image_robust_rms_and_spectra['nonpbcor_imagename'])
+    cube = os.path.basename(image_robust_rms_and_spectra['nonpbcor_imagename'])
+    # Get spectral frame
+    with casatools.ImageReader(cube) as image:
+        lcs = image.coordsys()
+        frame = lcs.referencecode('spectral')[0]
+        lcs.done()
 
     unmaskedPixels = image_robust_rms_and_spectra['nonpbcor_image_cleanmask_npoints']
 
@@ -695,8 +700,8 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile):
 
     # Plot horizontal dotted line at zero intensity
     pl.plot(pl.xlim(), [0,0], 'k:')
-    pl.text(0.5, 1.085, title, transform=desc.transAxes, fontsize=fontsize, ha='center')
-    addFrequencyAxisAbove(pl.gca(), freqs[0], freqs[-1], 'LSRK',
+    pl.text(0.5, 1.085, cube, transform=desc.transAxes, fontsize=fontsize, ha='center')
+    addFrequencyAxisAbove(pl.gca(), freqs[0], freqs[-1], frame,
                           twinx=True, ylimits=noiseLimits,
                           xlimits=freqLimits)
     pl.plot(freqs*1e-9, noise, 'k-')
@@ -711,7 +716,6 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile):
         pl.plot([fLowGHz, fHighGHz], [fcLevel]*2, 'c-', lw=2)
 
     # Overlay atmosphere transmission
-    cube = os.path.basename(image_robust_rms_and_spectra['nonpbcor_imagename'])
     freq, transmission = CalcAtmTransmissionForImage(cube)
     rescaledY, edgeYvalue, zeroValue, zeroYValue, otherEdgeYvalue, edgeT, otherEdgeT, edgeValueAmplitude, otherEdgeValueAmplitude, zeroValueAmplitude = RescaleTrans(transmission, pl.ylim())            
     pl.plot(freq, rescaledY, 'm-')
