@@ -75,6 +75,9 @@ class ImportDataResults(basetask.Results):
         self.setjy_results = setjy_results
         self.origin = {}
 
+        # Flux service query is None (dbservice=False), FIRSTURL, BACKUPURL, or FAIL
+        self.fluxservice = None
+
     def merge_with_context(self, context):
         target = context.observing_run
         for ms in self.mses:
@@ -229,10 +232,11 @@ class ImportData(basetask.StandardTaskTemplate):
             ms_origin = 'ASDM' if ms.name in converted_asdm_abspaths else 'MS'
             results.origin[ms.basename] = ms_origin
 
-        combined_results = self._get_fluxes(inputs.context, observing_run)
+        fluxservice, combined_results = self._get_fluxes(inputs.context, observing_run)
 
         results.mses.extend(observing_run.measurement_sets)
         results.setjy_results = combined_results
+        results.fluxservice = fluxservice
 
         return results
 
@@ -258,7 +262,8 @@ class ImportData(basetask.StandardTaskTemplate):
         # re-read from flux.csv, which will include any user-coded values
         combined_results = fluxes.import_flux(context.output_dir, observing_run)
 
-        return combined_results
+        # Flux service not used, return None by default
+        return None, combined_results
 
     def _analyse_filenames(self, filenames, vis):
         to_import = set()

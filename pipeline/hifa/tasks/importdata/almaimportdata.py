@@ -20,9 +20,14 @@ LOG = infrastructure.get_logger(__name__)
 try:
     FLUX_SERVICE_URL = os.environ['FLUX_SERVICE_URL']
 except Exception as e:
-    # FLUX_SERVICE_URL = 'https://almascience.eso.org/sc/flux'
-    # FLUX_SERVICE_URL = 'https://osf-sourcecat-2019jul.asa-test.alma.cl/sc/'
-    FLUX_SERVICE_URL = 'https://2019jul.asa-test.alma.cl/sc/flux'
+    FLUX_SERVICE_URL = ''
+    # FLUX_SERVICE_URL = 'https://2019jul.asa-test.alma.cl/sc/flux'
+
+try:
+    FLUX_SERVICE_URL_BACKUP = os.environ['FLUX_SERVICE_URL_BACKUP']
+    # 'https://2019jul.asa-test.alma.cl/sc/flux'
+except Exception as e:
+    FLUX_SERVICE_URL_BACKUP = ''
 
 
 class ALMAImportDataInputs(importdata.ImportDataInputs):
@@ -48,22 +53,44 @@ class ALMAImportData(importdata.ImportData):
 
     def _get_fluxes(self, context, observing_run):
         # get the flux measurements from Source.xml for each MS
+
         if self.inputs.dbservice:
-            # Test for service response to see if it responses
+            testquery = '?DATE=27-March-2013&FREQUENCY=86837309056.169219970703125&WEIGHTED=true&RESULT=0&NAME=J1427-4206'
+            # Test for service response
             baseurl = FLUX_SERVICE_URL
-            url = baseurl + '?DATE=27-March-2013&FREQUENCY=86837309056.169219970703125&WEIGHTED=true&RESULT=0&NAME=J1427-4206'
+            url = baseurl + testquery
+            if baseurl == '':
+                url = ''
 
             try:
                 # ignore HTTPS certificate
                 ssl_context = ssl._create_unverified_context()
                 response = urllib2.urlopen(url, context=ssl_context, timeout=60.0)
                 xml_results = dbfluxes.get_setjy_results(observing_run.measurement_sets)
-            except IOError:
-                LOG.warn('Error contacting flux service at: {!s}'.format(url))
-                LOG.warn('Proceeding without using the online flux service.')
-                xml_results = fluxes.get_setjy_results(observing_run.measurement_sets)
+                fluxservice = 'FIRSTURL'
+            except Exception as e:
+                try:
+                    LOG.warn('Unable to execute initial test query with primary flux service.')
+                    # ignore HTTPS certificate
+                    ssl_context = ssl._create_unverified_context()
+                    baseurl = FLUX_SERVICE_URL_BACKUP
+                    url = baseurl + testquery
+                    if baseurl == '':
+                        url = ''
+                    response = urllib2.urlopen(url, context=ssl_context, timeout=60.0)
+                    xml_results = dbfluxes.get_setjy_results(observing_run.measurement_sets)
+                    fluxservice='BACKUPURL'
+                except Exception as e2:
+                    if url == '':
+                        msg = 'Backup URL not defined for test query...'
+                    else:
+                        msg = 'Unable to execute backup test query with flux service.'
+                    LOG.warn(msg+'\nProceeding without using the online flux catalog service.')
+                    xml_results = fluxes.get_setjy_results(observing_run.measurement_sets)
+                    fluxservice = 'FAIL'
         else:
             xml_results = fluxes.get_setjy_results(observing_run.measurement_sets)
+            fluxservice = None
         # write/append them to flux.csv
 
         # Cycle 1 hack for exporting the field intents to the CSV file:
@@ -79,4 +106,4 @@ class ALMAImportData(importdata.ImportData):
         # re-read from flux.csv, which will include any user-coded values
         combined_results = fluxes.import_flux(context.output_dir, observing_run)
 
-        return combined_results
+        return fluxservice, combined_results

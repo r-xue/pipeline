@@ -17,8 +17,8 @@ class ALMAImportDataQAHandler(pqa.QAPlugin):
 
     def handle(self, context, result):
         # replace this with results of calls to ALMA-specific functions in qacalc
-        #score = pqa.QAScore(0.1, longmsg='Hello from ALMA-specific QA', shortmsg='ALMA QA') 
-        #scores = [score]
+        # score = pqa.QAScore(0.1, longmsg='Hello from ALMA-specific QA', shortmsg='ALMA QA')
+        # scores = [score]
 
         # Check for the presense of polarization intents
         score1 = self._check_polintents(result.mses)
@@ -32,7 +32,10 @@ class ALMAImportDataQAHandler(pqa.QAPlugin):
         # Check for science spw names matching the virtual spw ID lookup table
         score4 = self._check_science_spw_names(result.mses, context.observing_run.virtual_science_spw_names)
 
-        scores = [score1, score2, score3, score4]
+        # Flux service usage
+        score5 = self._check_fluxservice(result)
+
+        scores = [score1, score2, score3, score4, score5]
 
         result.qa.pool.extend(scores)
 
@@ -59,3 +62,10 @@ class ALMAImportDataQAHandler(pqa.QAPlugin):
         Check science spw names
         '''
         return qacalc.score_science_spw_names(mses, virtual_science_spw_names)
+
+    def _check_fluxservice(self, result):
+        '''
+        Check flux service usage
+        '''
+
+        return qacalc.score_fluxservice(result)

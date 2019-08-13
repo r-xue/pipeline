@@ -21,13 +21,26 @@ LOG = infrastructure.get_logger(__name__)
 
 try:
     FLUX_SERVICE_URL = os.environ['FLUX_SERVICE_URL']
+    if FLUX_SERVICE_URL == '':
+        LOG.info('Environment variable FLUX_SERVICE_URL not defined.  Switching to backup url.')
+    else:
+        LOG.info('Using ALMA flux service URL: {!s}'.format(FLUX_SERVICE_URL))
 except Exception as e:
-    LOG.info('Environment variable FLUX_SERVICE_URL not defined.  Using JAO default.')
+    LOG.info('Environment variable FLUX_SERVICE_URL not defined.  Switching to backup url.')
+    FLUX_SERVICE_URL = ''
     # FLUX_SERVICE_URL = 'https://almascience.eso.org/sc/flux'
     # FLUX_SERVICE_URL = 'https://osf-sourcecat-2019jul.asa-test.alma.cl/sc/'
-    FLUX_SERVICE_URL = 'https://2019jul.asa-test.alma.cl/sc/flux'
 
-LOG.info('Using ALMA flux service URL: {!s}'.format(FLUX_SERVICE_URL))
+try:
+    FLUX_SERVICE_URL_BACKUP = os.environ['FLUX_SERVICE_URL_BACKUP']
+    if FLUX_SERVICE_URL_BACKUP == '':
+        LOG.info('Environment variable FLUX_SERVICE_URL_BACKUP not defined.')
+    else:
+        LOG.info('Backup URL defined at: {!s}'.format(FLUX_SERVICE_URL_BACKUP))
+    # 'https://2019jul.asa-test.alma.cl/sc/flux'
+except Exception as e:
+    LOG.info('Environment variable FLUX_SERVICE_URL_BACKUP not defined.')
+    FLUX_SERVICE_URL_BACKUP = ''
 
 ORIGIN_DB = 'DB'
 
@@ -118,7 +131,7 @@ def fluxservice(service_url, obs_time, frequency, sourcename):
     try:
         response = urllib2.urlopen(url, context=ssl_context, timeout=60.0)
     except IOError:
-        LOG.warn('Error contacting flux service at: {!s}'.format(url))
+        LOG.warn('Problem contacting flux service at: <a href="{!s}">{!s}</a>'.format(url, url))
         raise
 
     try:
@@ -180,23 +193,20 @@ def query_online_catalogue(flux_url, ms, spw, source):
     utcnow = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
     try:
         fluxdict = fluxservice(flux_url, obs_time, freq_hz, source_name)
-    except IOError:
+    except Exception as e:
         # error contacting service
-        return fluxdict['url'], fluxdict['version'], fluxdict['statuscode'], fluxdict['dataconditions'], None
-    except ExpatError:
-        # error parsing the XML table
-        return fluxdict['url'], fluxdict['version'], fluxdict['statuscode'], fluxdict['dataconditions'], None
+        return flux_url, '0.0', '0', None, None
 
     try:
         cat_fd = float(fluxdict['fluxdensity'])
         cat_spix = float(fluxdict['spectralindex'])
-    except ValueError:
+    except Exception as e:
         # could not convert 'null' to number. Bad catalogue value.
-        return fluxdict['url'], fluxdict['version'], fluxdict['statuscode'], fluxdict['dataconditions'], None
+        return flux_url, '0.0', '0', None, None
 
     valid_catalogue_val = cat_fd > 0.0 and cat_spix != -1000
     if not valid_catalogue_val:
-        return fluxdict['url'], fluxdict['version'], fluxdict['statuscode'], fluxdict['dataconditions'], None
+        return flux_url, '0.0', '0', None, None
 
     final_I = measures.FluxDensity(cat_fd, measures.FluxDensityUnits.JANSKY)
     final_spix = decimal.Decimal('%0.3f' % cat_spix)
@@ -215,30 +225,31 @@ def add_catalogue_fluxes(measurements, ms):
     freq_hz = '86837309056.169219970703125'
     source_name = 'J1427-4206'
     contact_fail = False
-    backup_url = 'https://2019jul.asa-test.alma.cl/sc/flux'
+    backup_url = FLUX_SERVICE_URL_BACKUP
+    # 'https://2019jul.asa-test.alma.cl/sc/flux'
     flux_url = FLUX_SERVICE_URL
     try:
         fluxdict = fluxservice(flux_url, obs_time, freq_hz, source_name)
     except IOError:
         # error contacting service
-        LOG.warn("Could not contact service at {!s}".format(flux_url))
+        # LOG.warn("Could not contact the primary flux service at {!s}".format(flux_url))
         flux_url = backup_url
         contact_fail = True
     except ExpatError:
         # error parsing the XML table
         LOG.warn("Table parsing issue.")
-        LOG.warn("Could not contact service at {!s}".format(flux_url))
+        LOG.warn("Could not contact the primary flux service at {!s}".format(flux_url))
         flux_url = backup_url
         contact_fail = True
 
     if contact_fail:
         try:
             # Try the backup URL at JAO
-            LOG.warn("Switching to JAO url at: {!s}".format(flux_url))
+            LOG.warn("Switching to backup url at: {!s}".format(flux_url))
             fluxdict = fluxservice(flux_url, obs_time, freq_hz, source_name)
         except IOError:
-            LOG.error("Could not contact either flux service URL.")
-            return
+            # LOG.error("Could not contact the backup flux service URL.")
+            return results
 
     # Continue with required queries
     for source, xml_measurements in measurements.iteritems():
@@ -293,7 +304,7 @@ def log_result(source, spw, asdm_I, catalogue_I, spix, age, url, version, status
     decision = {'0': 'No', '1': 'Yes'}
 
     LOG.info('Source: {!s} spw: {!s}    ASDM flux: {!s}    Catalogue flux: {!s}'.format(source.name, spw.id,
-                                                                                           asdm_I, catalogue_I))
+                                                                                        asdm_I, catalogue_I))
     LOG.info('         Online catalog Spectral Index: {!s}'.format(spix))
     LOG.info('         ageOfNearestMonitorPoint: {!s}'.format(age))
     LOG.info('         {!s}'.format(codedict[int(status_code)]))

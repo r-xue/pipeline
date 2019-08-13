@@ -2691,15 +2691,23 @@ def score_fluxservice(result):
     """
 
     if result.inputs['dbservice'] is False:
-        msg = "Flux db service not used"
+        msg = "Flux catalog service not used."
         score = 1.0
         origin = pqa.QAOrigin(metric_name='score_fluxservice',
                               metric_score=score,
                               metric_units='flux service')
         return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
     elif result.inputs['dbservice'] is True:
-        msg = ""
-        score = 1.0
+        if result.fluxservice is 'FIRSTURL':
+            msg = "Flux catalog service used."
+            score = 1.0
+        elif result.fluxservice is 'BACKUPURL':
+            msg = 'Backup flux catalog service used.'
+            score = 0.9
+        elif result.fluxservice is 'FAIL':
+            msg = 'Neither primary or backup flux service could be queried.  ASDM values used.'
+            score = 0.6
+
         origin = pqa.QAOrigin(metric_name='score_fluxservice',
                               metric_score=score,
                               metric_units='flux service')
