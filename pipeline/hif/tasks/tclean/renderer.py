@@ -194,7 +194,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             residual_snr = (residual_peak_value / residual_robust_rms)
             row_residual_ratio = '%.2f' % residual_snr
             # preserve the sign of the largest magnitude value for printout
-            LOG.info('{field} clean absolute residual peak / scaled MAD'
+            LOG.info('{field} clean maximum residual peak / scaled MAD'
                      ' = {peak:.12f} / {rms:.12f} = {ratio:.2f} '.format(field=field,
                                                                          peak=residual_peak_value,
                                                                          rms=residual_robust_rms,
