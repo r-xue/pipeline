@@ -445,8 +445,12 @@ class Tclean(cleanbase.CleanBase):
                     return error_result
                 LOG.info('Using supplied nchan %d' % inputs.nchan)
             else:
-                # Skip edge channels and extra channels if no nchan is supplied
-                inputs.nchan = int(round((if1 - if0) / channel_width - 2)) - 2 * extra_skip_channels
+                # Skip edge channels and extra channels if no nchan is supplied.
+                # Adjust to binning since the normal nchan heuristics already includes it.
+                if inputs.nbin not in (None, -1):
+                    inputs.nchan = int(round((if1 - if0) / channel_width - 2)) - 2 * int(extra_skip_channels / inputs.nbin)
+                else:
+                    inputs.nchan = int(round((if1 - if0) / channel_width - 2)) - 2 * extra_skip_channels
 
             if inputs.start == '':
                 if self.image_heuristics.is_eph_obj(inputs.field):
@@ -454,7 +458,10 @@ class Tclean(cleanbase.CleanBase):
                     # REST frame. The start of the frequency range is thus given in
                     # channels. The offset accounts for drifts of fast moving objects.
                     if sideband == 'LSB':
-                        inputs.start = int(round((if1 - if0) / channel_width - 2)) - 1 - extra_skip_channels
+                        if inputs.nbin not in (None, -1):
+                            inputs.start = int(round((if1 - if0) / channel_width * inputs.nbin - 2)) - 1 - extra_skip_channels
+                        else:
+                            inputs.start = int(round((if1 - if0) / channel_width - 2)) - 1 - extra_skip_channels
                     else:
                         inputs.start = extra_skip_channels
                 else:
