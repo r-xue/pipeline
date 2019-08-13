@@ -32,7 +32,7 @@ except Exception as e:
 
 class ALMAImportDataInputs(importdata.ImportDataInputs):
     asis = vdp.VisDependentProperty(default='Antenna CalAtmosphere CalPointing CalWVR ExecBlock Receiver SBSummary Source Station')
-    dbservice = vdp.VisDependentProperty(default=True)
+    dbservice = vdp.VisDependentProperty(default=False)
     createmms = vdp.VisDependentProperty(default='false')
 
     def __init__(self, context, vis=None, output_dir=None, asis=None, process_caldevice=None, session=None,
