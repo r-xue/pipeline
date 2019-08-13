@@ -424,8 +424,8 @@ class Tclean(cleanbase.CleanBase):
                 freq0 = qaTool.quantity(centre_frequency_TOPO, 'Hz')
                 freq1 = qaTool.quantity(centre_frequency_TOPO + channel_width_freq_TOPO, 'Hz')
                 channel_width_velo_TOPO = qaTool.getvalue(self._to_velocity(freq1, freq0, '0.0km/s'))[0]
-                # Skip 1 km/s or at least 4 channels
-                extra_skip_channels = max(4, int(np.ceil(1.0 / abs(channel_width_velo_TOPO))))
+                # Skip 1 km/s or at least 5 channels
+                extra_skip_channels = max(5, int(np.ceil(1.0 / abs(channel_width_velo_TOPO))))
             else:
                 extra_skip_channels = 0
 
