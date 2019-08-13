@@ -138,6 +138,9 @@ class modelfitSummaryChart(object):
         dataminlist = []
         datamaxlist = []
 
+        minfreqlist = []
+        maxfreqlist = []
+
         for source, datadicts in webdicts.iteritems():
             try:
                 frequencies = []
@@ -174,25 +177,8 @@ class modelfitSummaryChart(object):
                 # pb.plot(frequencies, model, '-', color=colors[colorcount])
                 ax1.plot(np.log10(freqs), np.log10(fittedfluxd), '-', color=colors[colorcount])
 
-                ax1.tick_params(axis='x', which='minor', bottom=False)
-                ax1.tick_params(bottom=True, top=False, left=True, right=False)
-                ax1.tick_params(labelbottom=True, labeltop=False, labelleft=True, labelright=False)
-                ax1.set_xlim(np.log10(np.array([1.e9 * minfreq * 0.9, 1.e9 * maxfreq * 1.1])))
-
-                locs = ax1.get_xticks()
-                locs = locs[1:-1]
-
-                precision = 2
-                # LOG.debug(locs)
-                labels = ["{:.{}f}".format(loc, precision) for loc in (10 ** locs) / 1.e9]
-                # LOG.debug(labels)
-                ax2.set_xlim(np.log10(np.array([1.e9 * minfreq * 0.9, 1.e9 * maxfreq * 1.1])))
-                ax2.set_xticks(locs)
-                ax2.set_xticklabels(labels)
-                ax2.tick_params(bottom=False, top=True, left=False, right=False)
-                ax2.tick_params(labelbottom=False, labeltop=True, labelleft=False, labelright=False)
-                # pb.xscale('log')
-                # pb.yscale('log')
+                minfreqlist.append(minfreq)
+                maxfreqlist.append(maxfreq)
 
                 # title = title + '   ' + str(source) + '({!s})'.format(colors[colorcount])
                 colorcount += 1
@@ -203,9 +189,31 @@ class modelfitSummaryChart(object):
         datamin = np.min(dataminlist)
         datamax = np.max(datamaxlist)
 
+        # Set y-axis
         ylimlist = [datamin - (np.abs(datamin) * 0.2), datamax + (np.abs(datamax) * 0.2)]
         ax1.set_ylim(ylimlist)
         ax2.set_ylim(ylimlist)
+
+        # Set x-axis
+        ax1.tick_params(axis='x', which='minor', bottom=False)
+        ax1.tick_params(bottom=True, top=False, left=True, right=False)
+        ax1.tick_params(labelbottom=True, labeltop=False, labelleft=True, labelright=False)
+        ax1.set_xlim(np.log10(np.array([1.e9 * np.min(minfreqlist) * 0.9, 1.e9 * np.max(maxfreqlist) * 1.1])))
+
+        locs = ax1.get_xticks()
+        locs = locs[1:-1]
+
+        precision = 2
+        # LOG.debug(locs)
+        labels = ["{:.{}f}".format(loc, precision) for loc in (10 ** locs) / 1.e9]
+        # LOG.debug(labels)
+        ax2.set_xlim(np.log10(np.array([1.e9 * np.min(minfreqlist) * 0.9, 1.e9 * np.max(maxfreqlist) * 1.1])))
+        ax2.set_xticks(locs)
+        ax2.set_xticklabels(labels)
+        ax2.tick_params(bottom=False, top=True, left=False, right=False)
+        ax2.tick_params(labelbottom=False, labeltop=True, labelleft=False, labelright=False)
+        # pb.xscale('log')
+        # pb.yscale('log')
 
         ax1.legend()
         ax1.set_ylabel('log10 Flux Density [Jy]', size=mysize)
