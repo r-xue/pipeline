@@ -1462,10 +1462,10 @@ class ImageParamsHeuristics(object):
         if per_eb_freq_ranges == []:
             return -1, -1, 0
 
-        # Calculate weighted intersection with threshold of 0.5 to avoid
+        # Calculate weighted intersection with threshold of 0.6 to avoid
         # partially flagged spws of individual EBs restricting the frequency
         # axis.
-        intersect_range = utils.intersect_ranges_by_weight(per_eb_freq_ranges, max(channel_widths), 0.5)
+        intersect_range = utils.intersect_ranges_by_weight(per_eb_freq_ranges, max(channel_widths), 0.6)
         if intersect_range != ():
             if0, if1 = intersect_range
             return if0, if1, max(channel_widths)
