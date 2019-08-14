@@ -139,6 +139,10 @@ exportmses -- Export the final MeasurementSets instead of the final flags,
    default: False
    example: exportmses = True
 
+exportcalprods -- Export flags and caltables in addition to MeasurementSets.
+   this parameter is only valid when exportmses = True.
+   default: False
+
 gainmap -- The value of gainmap parameter in hifv_restoredata task put in 
    casa_piperestorescript.py 
    default: False
