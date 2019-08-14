@@ -31,7 +31,7 @@ class MakeImListQAHandler(pqa.QAPlugin):
         elif result.max_num_targets == 0:
             score = None
             longmsg = 'No clean targets expected.'
-            shortmsg = ''
+            shortmsg = 'No clean targets expected'
         else:
             score = float(result.num_targets)/float(result.max_num_targets)
             longmsg, shortmsg = ('All clean targets defined', '') if score == 1.0 else \
