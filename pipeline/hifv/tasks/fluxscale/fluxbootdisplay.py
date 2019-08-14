@@ -202,7 +202,7 @@ class modelfitSummaryChart(object):
         minxlim = 1.e9 * (np.min(minfreqlist) - rangepad)
         maxxlim = 1.e9 * (np.max(maxfreqlist) + rangepad)
         if rangepad > np.min(minfreqlist):
-            minxlim = 1.e9 * np.min(minfreqlist) * 0.92
+            minxlim = 1.e9 * np.min(minfreqlist) * 0.90
         ax1.set_xlim(np.log10(np.array([minxlim, maxxlim])))
 
         locs = ax1.get_xticks()
