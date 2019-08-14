@@ -396,11 +396,14 @@ class MakeImList(basetask.StandardTaskTemplate):
                             try:
                                 # Get a field domain object. Make sure that it has the necessary intent. Otherwise the list of spw IDs
                                 # will not match with the available science spw IDs.
-                                field_domain_obj = ms_domain_obj.get_fields(field_intent[0], intent=inputs.intent)[0]
-                                # Get all science spw IDs for this field and record the ones that are present in this MS
-                                field_science_spwids = [spw_domain_obj.id for spw_domain_obj in field_domain_obj.valid_spws if spw_domain_obj.id in ms_science_spwids]
-                                # Record the virtual spwids
-                                spwids_per_vis_and_field = [inputs.context.observing_run.real2virtual_spw_id(spwid, ms_domain_obj) for spwid in field_science_spwids if inputs.context.observing_run.real2virtual_spw_id(spwid, ms_domain_obj) in map(int, spwids)]
+                                if ms_domain_obj.get_fields(field_intent[0], intent=inputs.intent) != []:
+                                    field_domain_obj = ms_domain_obj.get_fields(field_intent[0], intent=inputs.intent)[0]
+                                    # Get all science spw IDs for this field and record the ones that are present in this MS
+                                    field_science_spwids = [spw_domain_obj.id for spw_domain_obj in field_domain_obj.valid_spws if spw_domain_obj.id in ms_science_spwids]
+                                    # Record the virtual spwids
+                                    spwids_per_vis_and_field = [inputs.context.observing_run.real2virtual_spw_id(spwid, ms_domain_obj) for spwid in field_science_spwids if inputs.context.observing_run.real2virtual_spw_id(spwid, ms_domain_obj) in map(int, spwids)]
+                                else:
+                                    spwids_per_vis_and_field = []
                             except Exception as e:
                                 LOG.error(e)
                                 spwids_per_vis_and_field = []
