@@ -198,7 +198,12 @@ class modelfitSummaryChart(object):
         ax1.tick_params(axis='x', which='minor', bottom=False)
         ax1.tick_params(bottom=True, top=False, left=True, right=False)
         ax1.tick_params(labelbottom=True, labeltop=False, labelleft=True, labelright=False)
-        ax1.set_xlim(np.log10(np.array([1.e9 * np.min(minfreqlist) * 0.9, 1.e9 * np.max(maxfreqlist) * 1.1])))
+        rangepad = (np.max(maxfreqlist) - np.min(minfreqlist)) * 0.1
+        minxlim = 1.e9 * (np.min(minfreqlist) - rangepad)
+        maxxlim = 1.e9 * (np.max(maxfreqlist) + rangepad)
+        if rangepad > np.min(minfreqlist):
+            minxlim = 1.e9 * np.min(minfreqlist) * 0.92
+        ax1.set_xlim(np.log10(np.array([minxlim, maxxlim])))
 
         locs = ax1.get_xticks()
         locs = locs[1:-1]
@@ -207,7 +212,8 @@ class modelfitSummaryChart(object):
         # LOG.debug(locs)
         labels = ["{:.{}f}".format(loc, precision) for loc in (10 ** locs) / 1.e9]
         # LOG.debug(labels)
-        ax2.set_xlim(np.log10(np.array([1.e9 * np.min(minfreqlist) * 0.9, 1.e9 * np.max(maxfreqlist) * 1.1])))
+
+        ax2.set_xlim(np.log10(np.array([minxlim, maxxlim])))
         ax2.set_xticks(locs)
         ax2.set_xticklabels(labels)
         ax2.tick_params(bottom=False, top=True, left=False, right=False)
