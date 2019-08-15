@@ -198,12 +198,14 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         '''Determine if another tclean iteration is necessary.'''
 
         if iteration == 0:
-            return True, hm_masking
+            return True, 'auto'
         elif iteration == 1:
-            LOG.info('Final VLASS single epoch tclean call with no mask')
-            return True, 'none'
+            return True, 'user'
+        elif iteration == 2:
+            LOG.info('Final VLASS single epoch tclean call')
+            return True, 'auto'
         else:
-            return False, hm_masking
+            return False, 'auto'
 
     def threshold(self, iteration, threshold, hm_masking):
 
@@ -264,3 +266,8 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
 
         return (sidelobethreshold, noisethreshold, lownoisethreshold, negativethreshold, minbeamfrac,
                 growiterations, dogrowprune, minpercentchange, fastnoise)
+
+    def usepointing(self):
+        """clean flag to use pointing table."""
+
+        return True
