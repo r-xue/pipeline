@@ -102,22 +102,25 @@ class CheckProductSizeHeuristics(object):
         # If too large, try to mitigate via channel binning
         if (self.inputs.maxcubesize != -1.0) and (maxcubesize > self.inputs.maxcubesize):
             nbins = []
+            nbin_mitigation = False
             for spw, nchan in nchans.iteritems():
                 if (nchan == 3840) or (nchan in (1920, 960, 480) and utils.equal_to_n_digits(ch_width_ratios[spw], 2.667, 4)):
                     LOG.info('Size mitigation: Setting nbin for SPW %s to 2.' % (spw))
                     nbins.append('%s:2' % (spw))
+                    nbin_mitigation = True
                 else:
                     nbins.append('%s:1' % (spw))
-            size_mitigation_parameters['nbins'] = ','.join(nbins)
+            if nbin_mitigation:
+                size_mitigation_parameters['nbins'] = ','.join(nbins)
 
-            # Recalculate sizes
-            makeimlist_inputs.nbins = size_mitigation_parameters['nbins']
-            makeimlist_inputs.known_synthesized_beams = known_synthesized_beams
-            makeimlist_result = makeimlist_task.prepare()
-            known_synthesized_beams = makeimlist_result.synthesized_beams
-            imlist = makeimlist_result.targets
-            cubesizes, maxcubesize, productsizes, total_productsize = self.calculate_sizes(imlist)
-            LOG.info('nbin mitigation leads to a maximum cube size of %s GB' % (maxcubesize))
+                # Recalculate sizes
+                makeimlist_inputs.nbins = size_mitigation_parameters['nbins']
+                makeimlist_inputs.known_synthesized_beams = known_synthesized_beams
+                makeimlist_result = makeimlist_task.prepare()
+                known_synthesized_beams = makeimlist_result.synthesized_beams
+                imlist = makeimlist_result.targets
+                cubesizes, maxcubesize, productsizes, total_productsize = self.calculate_sizes(imlist)
+                LOG.info('nbin mitigation leads to a maximum cube size of %s GB' % (maxcubesize))
 
         # If still too large, try changing the FoV (in makeimlist this is applied to single fields only)
         PB_limit = 0.2
@@ -135,17 +138,18 @@ class CheckProductSizeHeuristics(object):
 
             PB_limit = PB_mitigation
 
-            LOG.info('Size mitigation: Setting hm_imsize to %.2gpb' % (PB_mitigation))
-            size_mitigation_parameters['hm_imsize'] = '%.2gpb' % (PB_mitigation)
+            if PB_limit != 0.2:
+                LOG.info('Size mitigation: Setting hm_imsize to %.2gpb' % (PB_mitigation))
+                size_mitigation_parameters['hm_imsize'] = '%.2gpb' % (PB_mitigation)
 
-            # Recalculate sizes
-            makeimlist_inputs.hm_imsize = size_mitigation_parameters['hm_imsize']
-            makeimlist_inputs.known_synthesized_beams = known_synthesized_beams
-            makeimlist_result = makeimlist_task.prepare()
-            known_synthesized_beams = makeimlist_result.synthesized_beams
-            imlist = makeimlist_result.targets
-            cubesizes, maxcubesize, productsizes, total_productsize = self.calculate_sizes(imlist)
-            LOG.info('hm_imsize mitigation leads to a maximum cube size of %s GB' % (maxcubesize))
+                # Recalculate sizes
+                makeimlist_inputs.hm_imsize = size_mitigation_parameters['hm_imsize']
+                makeimlist_inputs.known_synthesized_beams = known_synthesized_beams
+                makeimlist_result = makeimlist_task.prepare()
+                known_synthesized_beams = makeimlist_result.synthesized_beams
+                imlist = makeimlist_result.targets
+                cubesizes, maxcubesize, productsizes, total_productsize = self.calculate_sizes(imlist)
+                LOG.info('hm_imsize mitigation leads to a maximum cube size of %s GB' % (maxcubesize))
 
         # If still too large, try changing pixperbeam setting
         if (self.inputs.maxcubesize != -1.0) and (maxcubesize > self.inputs.maxcubesize):
@@ -188,7 +192,7 @@ class CheckProductSizeHeuristics(object):
                 LOG.info('Maximum cube size cannot be mitigated. Remaining factor: %.4f. But cube size is smaller than limit of %s GB.' % (maxcubesize / self.inputs.maxcubesize, self.inputs.maxcubelimit))
 
         # If product size too large, try reducing number of fields / targets
-        if (self.inputs.maxproductsize != -1.0) and (total_productsize > self.inputs.maxproductsize):
+        if (self.inputs.maxproductsize != -1.0) and (total_productsize > self.inputs.maxproductsize) and (nfields > 1):
             nfields = int(self.inputs.maxproductsize / (total_productsize / len(fields)))
             if nfields == 0:
                 nfields = 1
@@ -221,22 +225,26 @@ class CheckProductSizeHeuristics(object):
                 LOG.info('Product size with single target is still too large. Trying nbin mitigation.')
 
                 nbins = []
+                nbin_mitigation = False
                 for spw, nchan in nchans.iteritems():
                     if (nchan == 3840) or (nchan in (1920, 960, 480) and utils.equal_to_n_digits(ch_width_ratios[spw], 2.667, 4)):
                         LOG.info('Size mitigation: Setting nbin for SPW %s to 2.' % (spw))
                         nbins.append('%s:2' % (spw))
+                        nbin_mitigation = True
                     else:
                         nbins.append('%s:1' % (spw))
-                size_mitigation_parameters['nbins'] = ','.join(nbins)
 
-                # Recalculate sizes
-                makeimlist_inputs.nbins = size_mitigation_parameters['nbins']
-                makeimlist_inputs.known_synthesized_beams = known_synthesized_beams
-                makeimlist_result = makeimlist_task.prepare()
-                known_synthesized_beams = makeimlist_result.synthesized_beams
-                imlist = makeimlist_result.targets
-                cubesizes, maxcubesize, productsizes, total_productsize = self.calculate_sizes(imlist)
-                LOG.info('nbin mitigation leads to a maximum cube size of %s GB' % (maxcubesize))
+                if nbin_mitigation:
+                    size_mitigation_parameters['nbins'] = ','.join(nbins)
+
+                    # Recalculate sizes
+                    makeimlist_inputs.nbins = size_mitigation_parameters['nbins']
+                    makeimlist_inputs.known_synthesized_beams = known_synthesized_beams
+                    makeimlist_result = makeimlist_task.prepare()
+                    known_synthesized_beams = makeimlist_result.synthesized_beams
+                    imlist = makeimlist_result.targets
+                    cubesizes, maxcubesize, productsizes, total_productsize = self.calculate_sizes(imlist)
+                    LOG.info('nbin mitigation leads to a maximum cube size of %s GB' % (maxcubesize))
 
             if (self.inputs.maxproductsize != -1.0) and (total_productsize > self.inputs.maxproductsize):
                 LOG.info('Product size with single target is still too large. Trying FoV mitigation.')
@@ -246,22 +254,23 @@ class CheckProductSizeHeuristics(object):
                 PB_mitigation = math.exp(-math.log(2.0) * 2.2064 * self.inputs.maxcubesize / maxcubesize / 1.01)
                 # Cap at PB=0.7
                 PB_mitigation = min(PB_mitigation, 0.7)
-                # Cap at PB=0.2
+                # Cap at PB=<current PB_limit from earlier mitigation>
                 PB_mitigation = max(PB_mitigation, PB_limit)
                 # Round to 2 significant digits
                 PB_mitigation = round(PB_mitigation, 2)
 
-                LOG.info('Size mitigation: Setting hm_imsize to %.2gpb' % (PB_mitigation))
-                size_mitigation_parameters['hm_imsize'] = '%.2gpb' % (PB_mitigation)
+                if PB_mitigation != 0.2:
+                    LOG.info('Size mitigation: Setting hm_imsize to %.2gpb' % (PB_mitigation))
+                    size_mitigation_parameters['hm_imsize'] = '%.2gpb' % (PB_mitigation)
 
-                # Recalculate sizes
-                makeimlist_inputs.hm_imsize = size_mitigation_parameters['hm_imsize']
-                makeimlist_inputs.known_synthesized_beams = known_synthesized_beams
-                makeimlist_result = makeimlist_task.prepare()
-                known_synthesized_beams = makeimlist_result.synthesized_beams
-                imlist = makeimlist_result.targets
-                cubesizes, maxcubesize, productsizes, total_productsize = self.calculate_sizes(imlist)
-                LOG.info('hm_imsize mitigation leads to a maximum cube size of %s GB' % (maxcubesize))
+                    # Recalculate sizes
+                    makeimlist_inputs.hm_imsize = size_mitigation_parameters['hm_imsize']
+                    makeimlist_inputs.known_synthesized_beams = known_synthesized_beams
+                    makeimlist_result = makeimlist_task.prepare()
+                    known_synthesized_beams = makeimlist_result.synthesized_beams
+                    imlist = makeimlist_result.targets
+                    cubesizes, maxcubesize, productsizes, total_productsize = self.calculate_sizes(imlist)
+                    LOG.info('hm_imsize mitigation leads to a maximum cube size of %s GB' % (maxcubesize))
 
             if (self.inputs.maxproductsize != -1.0) and (total_productsize > self.inputs.maxproductsize):
                 LOG.info('Product size with single target is still too large. Trying cell size mitigation.')
