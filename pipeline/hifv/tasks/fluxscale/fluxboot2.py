@@ -501,6 +501,9 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                 delta = 0.0
                 deltaerr = 0.0
 
+                lerrs = [x for y, x in sorted(zip(freqs[uspws], lerrs))]
+                lfds = [x for y, x in sorted(zip(freqs[uspws], lfds))]
+
                 freqs = np.array(sorted(freqs[uspws]))
 
                 logfittedfluxd = np.zeros(len(freqs))
