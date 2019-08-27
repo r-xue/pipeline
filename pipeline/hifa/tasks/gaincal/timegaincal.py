@@ -97,15 +97,14 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         (cal_phase_result, temp_phase_result) = \
             self._do_spectralspec_calibrator_phasecal(solint=phase_calsolint, gaintype=phase_gaintype,
                                                       combine=phase_combine)
-        #self._do_calibrator_phasecal(solint=phase_calsolint, gaintype=phase_gaintype, combine=phase_combine)
 
         # Do a local merge of this result, thus applying the phase solution to the PHASE calibrator but only in the
         # scope of this task. Then, calculate the residuals by calculating another phase solution on the 'corrected'
         # data.
-        for calphres in cal_phase_result:
-            calphres.accept(inputs.context)
-        for calphres in temp_phase_result:
-            calphres.accept(inputs.context)
+        for cpres in cal_phase_result:
+            cpres.accept(inputs.context)
+#         for cpres in temp_phase_result:
+#             cpres.accept(inputs.context)
         LOG.info('Computing offset phase gain table.')
         phase_residuals_result = self._do_offsets_phasecal(solint='inf', gaintype=phase_gaintype, combine='')
         result.phaseoffsetresult = phase_residuals_result
@@ -249,19 +248,24 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
             LOG.info('Processing spectral spec with spws {}'.format(spw_sel))
             extend_solint = (ref_spw in low_combined_snr_spw_list)
             if extend_solint:
+                append_caltable = None
                 # Low SNR SpectralSpec. Use separate solint by intent.
                 # For BANDPASS and AMPLUTUDE always use inputs.calsolint.
                 if len(calsolint_intents) > 0:
                     intent = str(',').join(calsolint_intents)
                     interval = self.inputs.calsolint
                     result = self._do_calibrator_phasecal(interval, gaintype, combine, spw_sel, intent)
+                    if len(snrsol_intents) > 0:
+                        # PIPE-435: force appending PHASE solution with long int to this caltable
+                        # for plotting purpose
+                        append_caltable = result.final[0].gaintable
                     apply_list.append(result)
                 # For the other sources (e.g., PHASE), Use solint = 1/4 scan time
                 # This table is used only temporary applied to generate offset caltable.
                 if len(snrsol_intents) > 0:
                     intent = str(',').join(snrsol_intents)
                     interval = solint
-                    result = self._do_calibrator_phasecal(interval, gaintype, combine, spw_sel, intent)
+                    result = self._do_calibrator_phasecal(interval, gaintype, combine, spw_sel, intent, append_caltable)
                     temporal_list.append(result)
             else:
                 # Combined solution meets phasesnr limit.
@@ -274,15 +278,17 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         return (apply_list, temporal_list)
 
     # Used to calibrate "selfcaled" targets
-    def _do_calibrator_phasecal(self, solint=None, gaintype=None, combine=None, spw=None, intent=None):
+    def _do_calibrator_phasecal(self, solint=None, gaintype=None, combine=None, spw=None, intent=None, append_caltable=None):
         inputs = self.inputs
         spw_sel = str(spw) if spw is not None else inputs.spw
         intent_sel = intent if intent is not None else inputs.intent
+        caltable = inputs.calphasetable if inputs.calphasetable is not None else append_caltable
+        force_append = append_caltable is not None
 
         task_args = {
             'output_dir': inputs.output_dir,
             'vis': inputs.vis,
-            'caltable': inputs.calphasetable,
+            'caltable': caltable,
             'field': inputs.field,
             'intent': intent_sel,
             'spw': spw_sel,
@@ -293,7 +299,8 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
             'combine': combine,
             'refant': inputs.refant,
             'minblperant': inputs.minblperant,
-            'solnorm': inputs.solnorm
+            'solnorm': inputs.solnorm,
+            'append': force_append
         }
         result = do_gtype_gaincal(inputs.context, self._executor, task_args)
 
