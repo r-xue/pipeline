@@ -89,9 +89,12 @@ def utc_locator(start_time=None, end_time=None):
     else:
         dt = abs(end_time - start_time) * 1440.0 # day -> minutes
         #print dt
-        tick_interval = max(int(dt/10), 1)
-        tick_candidates = numpy.asarray([i for i in range(1, 61) if 60 % i == 0])
-        tick_interval = tick_candidates[numpy.argmin(abs(tick_candidates - tick_interval))]
+        if dt < 2:
+            tick_interval = 1
+        else:
+            tick_interval = max(int(dt/10), 2)
+            tick_candidates = numpy.asarray([i for i in range(1, 61) if 60 % i == 0])
+            tick_interval = tick_candidates[numpy.argmin(abs(tick_candidates - tick_interval))]
 
         #print tick_interval
         return MinuteLocator(byminute=range(0, 60, tick_interval))
