@@ -203,7 +203,9 @@ def get_ant_str_for_caption_title(parameters):
 
 	<%def name="preamble()">
 		<p>These diagnostic plots show the phase solution for a calibration
-            generated using a short solution interval. This calibration is not applied
+            generated using a short solution interval. In case of very low SNR,
+            solutions averaged in time for the phase calibrator are used with
+            a solint = 1/4 the phasecal scan time. This calibration is not applied
             to the target. One plot is shown for each non-combined spectral
             window, with phase correction plotted per antenna and
             correlation as a function of time.</p>
@@ -213,8 +215,9 @@ def get_ant_str_for_caption_title(parameters):
 	</%def>
 
     <%def name="ms_preamble(ms)">
-        <p>Plots show the diagnostic phase calibration for ${ms} calculated
-            using solint='${diagnostic_solints[ms]['phase']}'.</p>
+        <p>Plots show the diagnostic phase calibration for ${ms}.
+            <!-- calculated using solint='${diagnostic_solints[ms]['phase']}'. -->
+            </p>
     </%def>
 
 	<%def name="mouseover(plot)">Click to show phase vs time for spectral window ${plot.parameters['spw']}</%def>
