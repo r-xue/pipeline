@@ -159,8 +159,8 @@ class CleanSummary(object):
                         sky.SkyDisplay().plot(self.context, iteration['mom8_fc'] + extension, reportdir=stage_dir,
                                                    intent=r.intent, **extra_args))
 
-                # cleanmask - not for iter 0
-                if i > 0:
+                # cleanmask - not for iter 0 and not for VLASS SE CONT iter3 call
+                if i > 0 and not iteration['savemodel_only']:
                     collapse_function = 'max' if (('cube' in iteration.get('cleanmask', '')) or ('repBW' in iteration.get('cleanmask', ''))) else 'mean'
                     plot_wrappers.append(
                         sky.SkyDisplay().plot(self.context, iteration.get('cleanmask', ''), reportdir=stage_dir,

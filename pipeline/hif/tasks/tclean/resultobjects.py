@@ -309,6 +309,17 @@ class TcleanResult(basetask.Results):
     def set_tclean_iterdone(self, tclean_iterdone):
         self._tclean_iterdone = tclean_iterdone
 
+    @property
+    def savemodel_only(self):
+        iters = sorted(self.iterations.keys())
+        if len(iters) > 0:
+            return self.iterations[iters[-1]].get('savemodel_only', None)
+        else:
+            return None
+
+    def set_savemodel_only(self, iteration, savemodel_only):
+        self.iterations[iteration]['savemodel_only'] = savemodel_only
+
     def __repr__(self):
         repr = 'Tclean:\n'
         if self._psf is not None:

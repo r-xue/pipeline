@@ -258,6 +258,9 @@ class CleanBase(basetask.StandardTaskTemplate):
 
         qaTool = casatools.quanta
 
+        savemodel_only = (inputs.savemodel != 'none') and (inputs.niter == 0)
+        result.set_savemodel_only(iter, savemodel_only)
+
         # Derive names of clean products for this iteration
         old_model_name = result.model
         model_name = '%s.%s.iter%s.model' % (inputs.imagename, inputs.stokes, iter)
@@ -587,7 +590,7 @@ class CleanBase(basetask.StandardTaskTemplate):
                 LOG.warning('tclean stopped to prevent divergence (stop code %d). Field: %s SPW: %s' %
                             (tclean_stopcode, inputs.field, inputs.spw))
 
-        if iter > 0 or (inputs.specmode == 'cube' and inputs.spwsel_all_cont):
+        if (not savemodel_only) and (iter > 0 or inputs.specmode == 'cube' and inputs.spwsel_all_cont):
             # Store the model.
             set_miscinfo(name=model_name, spw=inputs.spw, field=inputs.field,
                          type='model', iter=iter, multiterm=result.multiterm,

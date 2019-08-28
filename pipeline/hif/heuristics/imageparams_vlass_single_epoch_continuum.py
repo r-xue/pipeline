@@ -10,8 +10,10 @@ LOG = infrastructure.get_logger(__name__)
 
 class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
 
-    def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None, linesfile=None, imaging_params={}):
-        ImageParamsHeuristics.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
+    def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
+                 linesfile=None, imaging_params={}):
+        ImageParamsHeuristics.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params, contfile,
+                                       linesfile, imaging_params)
         self.imaging_mode = 'VLASS-SE-CONT'
 
     # niter
@@ -36,7 +38,8 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
     def cell(self, beam=None, pixperbeam=None):
         return ['0.6arcsec']
 
-    def imsize(self, fields=None, cell=None, primary_beam=None, sfpblimit=None, max_pixels=None, centreonly=None, vislist=None):
+    def imsize(self, fields=None, cell=None, primary_beam=None, sfpblimit=None, max_pixels=None, centreonly=None,
+               vislist=None):
         return [12150, 12150]
 
     def reffreq(self):
@@ -249,7 +252,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
 
     def get_autobox_params(self, iteration, intent, specmode, robust):
 
-        '''Default auto-boxing parameters.'''
+        """Default auto-boxing parameters."""
 
         sidelobethreshold = None
         noisethreshold = None
