@@ -60,10 +60,10 @@
 
     <param type="string" name="clusteringalgorithm">
 	<description>Algorithm for line validation clustering algorithm</description>
-	<value>kmean</value>
+	<value>hierarchy</value>
 	<allowed kind="enum">
-	    <value>kmean</value>
 	    <value>hierarchy</value>
+	    <value>kmean</value>
         <value>both</value>
 	</allowed>
     </param>
@@ -304,9 +304,10 @@ broadline -- Try to detect broad component of spectral line if True.
 
 clusteringalgorithm -- selection of the algorithm used in the clustering
    analysis to check the validity of detected line features. 'kmean'
-   algorithm and hierarchical clustering algorithm 'hierarchy' are so
-   far implemented.
-   default: 'kmean'.
+   algorithm and hierarchical clustering algorithm 'hierarchy', and
+   their combination ('both') are so far implemented.
+   default: 'hierarchy'
+   options: 'kmean', 'both'
 
 deviationmask -- Apply deviation mask in addition to masks determined by
    the automatic line detection.

@@ -26,7 +26,7 @@ class MaskLineInputs(vdp.StandardInputs):
     windowmode = vdp.VisDependentProperty(default='replace')
     edge = vdp.VisDependentProperty(default=(0, 0))
     broadline = vdp.VisDependentProperty(default=True)
-    clusteringalgorithm = vdp.VisDependentProperty(default='kmean')
+    clusteringalgorithm = vdp.VisDependentProperty(default='hierarchy')
 
     @property
     def group_desc(self):
@@ -73,14 +73,14 @@ class MaskLine(basetask.StandardTaskTemplate):
         iteration = self.inputs.iteration
         group_id = self.inputs.group_id
         member_list = self.inputs.member_list
-        group_desc = self.inputs.group_desc 
+        group_desc = self.inputs.group_desc
         reference_member = self.inputs.reference_member
         reference_data = reference_member.ms
         reference_antenna = reference_member.antenna_id
         reference_field = reference_member.field_id
         reference_spw = reference_member.spw_id
         mses = context.observing_run.measurement_sets
-        dt_dict = dict((ms.basename, DataTable(os.path.join(context.observing_run.ms_datatable_name, ms.basename))) 
+        dt_dict = dict((ms.basename, DataTable(os.path.join(context.observing_run.ms_datatable_name, ms.basename)))
                        for ms in mses)
         srctype = 0  # reference_data.calibration_strategy['srctype']
         t0 = time.time()
@@ -177,7 +177,7 @@ class MaskLine(basetask.StandardTaskTemplate):
         detection_inputs = detection.DetectLine.Inputs(context, group_id, parsed_window, windowmode,
                                                        edge, broadline)
         line_finder = detection.DetectLine(detection_inputs)
-        job = common.ParameterContainerJob(line_finder, datatable_dict=dt_dict, grid_table=grid_table, 
+        job = common.ParameterContainerJob(line_finder, datatable_dict=dt_dict, grid_table=grid_table,
                                            spectral_data=spectra)
         detection_result = self._executor.execute(job, merge=False)
         detect_signal = detection_result.signals
@@ -189,14 +189,14 @@ class MaskLine(basetask.StandardTaskTemplate):
         # line validation
         t0 = time.time()
         validator_cls = validation.ValidationFactory(observing_pattern)
-        validation_inputs = validator_cls.Inputs(context, group_id, member_list, 
-                                                 iteration, grid_size, 
+        validation_inputs = validator_cls.Inputs(context, group_id, member_list,
+                                                 iteration, grid_size,
                                                  grid_size, parsed_window, windowmode,
-                                                 edge, 
+                                                 edge,
                                                  clusteringalgorithm=clusteringalgorithm)
         line_validator = validator_cls(validation_inputs)
         LOG.trace('len(index_list)={}', len(index_list))
-        job = common.ParameterContainerJob(line_validator, datatable_dict=dt_dict, index_list=index_list, 
+        job = common.ParameterContainerJob(line_validator, datatable_dict=dt_dict, index_list=index_list,
                                            grid_table=grid_table, detect_signal=detect_signal)
         validation_result = self._executor.execute(job, merge=False)
         lines = validation_result.outcome['lines']
