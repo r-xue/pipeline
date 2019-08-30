@@ -159,7 +159,9 @@ class DetectLine(basetask.StandardTaskTemplate):
             raise RuntimeError(message)
 
         #2015/04/23 MaxFWHM < nchan/3.0
-        MaxFWHM = int(min(rules.LineFinderRule['MaxFWHM'], (nchan - Nedge)/3.0))
+        #MaxFWHM = int(min(rules.LineFinderRule['MaxFWHM'], (nchan - Nedge)/3.0))
+        #2019/08/16 MaxFWHM < nchan/2.0 Need wider line detection (NGC1097)
+        MaxFWHM = int((nchan - Nedge)/2.0)
         #rules.LineFinderRule['MaxFWHM'] = MaxFWHM
         MinFWHM = int(rules.LineFinderRule['MinFWHM'])
         Threshold = rules.LineFinderRule['Threshold']        
@@ -203,6 +205,12 @@ class DetectLine(basetask.StandardTaskTemplate):
                                              threshold=Thre+math.sqrt(BINN)-1.0,
                                              tweak=True,
                                              edge=(EdgeL, EdgeR))
+                    # 2019/8/16 Threshold gets too high when Binning gets large
+                    #protected = self._detect(spectrum=SP,
+                    #                         mask=MSK,
+                    #                         threshold=Thre+math.log(BINN)/math.log(4),
+                    #                         tweak=True,
+                    #                         edge=(EdgeL, EdgeR))
 
                     MaxLineWidth = MaxFWHM
                     #MaxLineWidth = int((nchan - Nedge)/3.0)
@@ -268,7 +276,9 @@ class DetectLine(basetask.StandardTaskTemplate):
         (EdgeL, EdgeR) = edge
         Nedge = EdgeR + EdgeL
         #2015/04/23 0.5 -> 1/3.0
-        MaxFWHM = int(min(rules.LineFinderRule['MaxFWHM'], (nchan - Nedge)/3.0))
+        #MaxFWHM = int(min(rules.LineFinderRule['MaxFWHM'], (nchan - Nedge)/3.0))
+        #2019/08/16 MaxFWHM < nchan/2.0 Need wider line detection (NGC1097)
+        MaxFWHM = int((nchan - Nedge)/2.0)
         MinFWHM = int(rules.LineFinderRule['MinFWHM'])
 
         LOG.trace('line detection parameters: ')
