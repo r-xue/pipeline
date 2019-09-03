@@ -168,7 +168,7 @@ class CleanSummary(object):
                                                    **{'cmap': copy.deepcopy(matplotlib.cm.YlOrRd)}))
 
                 # cube spectra for this iteration
-                if 'cube' in iteration.get('image', ''):
+                if ('cube' in iteration.get('image', '')) or ('repBW' in iteration.get('image', '')):
                     imagename = r.image_robust_rms_and_spectra['nonpbcor_imagename']
                     with casatools.ImageReader(r.image_robust_rms_and_spectra['nonpbcor_imagename']) as image:
                         miscinfo = image.miscinfo()
