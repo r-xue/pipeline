@@ -302,7 +302,17 @@ class Editimlist(basetask.StandardTaskTemplate):
                 else:
                     imlist_entry['spw'] = inpdict['spw']
         else:
-            imlist_entry['spw'] = inpdict['spw']
+            if inpdict['spw'].replace(',', '').replace(' ', '').isdigit():  # with spaces and commas removed
+                imlist_entry['spw'] = inpdict['spw']
+            else:
+                # if these are spw names, translate them to spw ids
+                spws = ms.get_spectral_windows(science_windows_only=False)
+                tmpspw_str = inpdict['spw']
+                for spw_ii in spws:
+                    if spw_ii.name in inpdict['spw']:
+                        LOG.info('Using spwd id {id} for spw name {name}'.format(id=spw_ii.id, name=spw_ii.name))
+                        tmpspw_str = tmpspw_str.replace(spw_ii.name, str(spw_ii.id))
+                imlist_entry['spw'] = tmpspw_str
 
         # phasecenter is required user input (not determined by heuristics)
         imlist_entry['phasecenter'] = inpdict['phasecenter']
