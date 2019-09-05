@@ -152,10 +152,10 @@ def fluxservice(service_url, obs_time, frequency, sourcename):
         rowdict['spectralindex'] = row[6].childNodes[0].nodeValue
         rowdict['spectralindexerror'] = row[7].childNodes[0].nodeValue
         rowdict['dataconditions'] = row[8].childNodes[0].nodeValue
-        rowdict['notms'] = row[9].childNodes[0].nodeValue
-        rowdict['ageOfNearestMonitorPoint'] = row[10].childNodes[0].nodeValue
-        # rowdict['verbose'] = row[11].childNodes[0].nodeValue
-        rowdict['version'] = row[12].childNodes[0].nodeValue
+        # rowdict['notms'] = row[9].childNodes[0].nodeValue
+        rowdict['ageOfNearestMonitorPoint'] = row[9].childNodes[0].nodeValue
+        # rowdict['verbose'] = row[10].childNodes[0].nodeValue
+        rowdict['version'] = row[11].childNodes[0].nodeValue
         rowdict['url'] = url
 
     return rowdict
@@ -166,7 +166,7 @@ def buildparams(name, date, frequency):
     Inputs are all strings with the format:
     NAME=3c279&DATE=04-Apr-2014&FREQUENCY=231.435E9&WEIGHTED=true&RESULT=1
     """
-    params = dict(NAME=name, DATE=date, FREQUENCY=frequency, WEIGHTED='true', RESULT=0)
+    params = dict(NAME=name, DATE=date, FREQUENCY=frequency, WEIGHTED='true', RESULT=1)
     return urllib.urlencode(params)
 
 
