@@ -72,6 +72,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             if r.iterations[maxiter].get('savemodel_only'):  # VLASS SE CONT uses the last iter only to save model
                 savemodel_only = True
                 maxiter -= 1
+            else:
+                savemodel_only = False
                                                 
             vis = ','.join([os.path.basename(v).strip('.ms') for v in r.vis])
 
