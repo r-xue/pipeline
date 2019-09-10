@@ -253,7 +253,7 @@ class Editimlist(basetask.StandardTaskTemplate):
 
         # Use the ms object from the context to change field ids to fieldnames, if needed
         # TODO think about how to handle multiple MSs
-        ms = inp.context.observing_run.get_ms(inp.vis[0])
+        ms = inp.context.observing_run.get_ms(inp.vis[-1])
         fieldnames = []
 
         if inpdict['field']:
@@ -302,7 +302,20 @@ class Editimlist(basetask.StandardTaskTemplate):
                 else:
                     imlist_entry['spw'] = inpdict['spw']
         else:
-            imlist_entry['spw'] = inpdict['spw']
+            if inpdict['spw'].replace(',', '').replace(' ', '').isdigit():  # with spaces and commas removed
+                imlist_entry['spw'] = inpdict['spw']
+            else:
+                # if these are spw names, translate them to spw ids
+                spws = ms.get_spectral_windows(science_windows_only=True)
+                tmpspw_str = inpdict['spw']
+                for spw_ii in spws:
+                    if spw_ii.name in inpdict['spw']:
+                        LOG.info('Using spwd id {id} for spw name {name}'.format(id=spw_ii.id, name=spw_ii.name))
+                        tmpspw_str = tmpspw_str.replace(spw_ii.name, str(spw_ii.id))
+                for spw_jj in inpdict['spw'].replace(' ', '').split(','):
+                    if spw_jj in tmpspw_str:  # if spwname hasn't been replaced with an id, then warn
+                        LOG.warning('spw name \'{name}\' was not found in {ms}'.format(name=spw_jj, ms=inp.vis[-1]))
+                imlist_entry['spw'] = tmpspw_str
 
         # phasecenter is required user input (not determined by heuristics)
         imlist_entry['phasecenter'] = inpdict['phasecenter']
