@@ -1173,7 +1173,7 @@ class T2_2_7Renderer(T2_2_XRendererBase):
                     # if the target is ephemeris, offset pointing pattern should also be plotted
                     target_field = ms.fields[target]
                     source_name = target_field.source.name
-                    if target_field.source.is_eph_obj:
+                    if target_field.source.is_eph_obj or target_field.source.is_known_eph_obj:
                         LOG.info('generating offset pointing plot for {}'.format(source_name))
                         task = pointing.SingleDishPointingChart(context, ms, antenna, 
                                                                 target_field_id=target,

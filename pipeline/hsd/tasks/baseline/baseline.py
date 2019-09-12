@@ -198,7 +198,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
                 field_id = m.field_id
                 fields = msobj.get_fields( field_id = field_id )
                 source_name = fields[0].source.name
-                if fields[0].source.is_eph_obj:
+                if fields[0].source.is_eph_obj or fields[0].source.is_known_eph_obj:
                     org_direction = fields[0].source.org_direction
                 else:
                     org_direction = None

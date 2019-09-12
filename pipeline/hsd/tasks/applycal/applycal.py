@@ -1,8 +1,10 @@
 from __future__ import absolute_import
 
 import os
+import numpy
 
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
@@ -69,7 +71,7 @@ class SDApplycal(Applycal):
 
         # Update Tsys in datatable
         context = self.inputs.context
-        # this task uses _handle_multiple_vis framework 
+        # this task uses _handle_multiple_vis framework
         msobj = self.inputs.ms
         datatable_name = os.path.join(context.observing_run.ms_datatable_name, msobj.basename)
         datatable = DataTable()
@@ -94,7 +96,53 @@ class SDApplycal(Applycal):
         if hasattr(results, 'flagsummary'):
             sdresults.flagsummary = results.flagsummary
 
+        # set unit according to applied calibration
+        set_unit(msobj, results.applied)
+
         return sdresults
+
+
+def set_unit(ms, calapp):
+    target_fields = ms.get_fields(intent='TARGET')
+    data_units = dict((f.id, '') for f in target_fields)
+    for a in calapp:
+        calto = a.calto
+        field_name = calto.field
+        if len(field_name) == 0:
+            field = ms.get_fields(intent='TARGET')
+        else:
+            field = [f for f in ms.get_fields(name=field_name) if 'TARGET' in f.intents]
+        if len(field) == 0:
+            continue
+
+        assert len(field) == 1
+        field_id = field[0].id
+        caltypes = [cf.caltype for cf in a.calfrom]
+        if ('ps' in caltypes) and ('tsys' in caltypes):
+            data_units[field_id] = 'K'
+        else:
+            LOG.warn('Calibration of {} (field {}) is not correct. Missing pscal and/or tsyscal.'.format(ms.basename, field_name))
+        if 'amp' in caltypes:
+            if data_units[field_id] == 'K':
+                data_units[field_id] = 'Jy'
+
+    unit_list = numpy.asarray(data_units.values())
+    if numpy.all(unit_list == 'K'):
+        data_unit = 'K'
+    elif numpy.all(unit_list == 'Jy'):
+        data_unit = 'Jy'
+    elif numpy.any(unit_list == 'Jy'):
+        LOG.warn('Calibration of {} is not correct. Some of calibrations (pscal, tsyscal, ampcal) are missing.'.fomrat(ms.basename))
+        data_unit = ''
+    else:
+        data_unit = ''
+
+    if data_unit != '':
+        with casatools.TableReader(ms.basename, nomodify=False) as tb:
+            colnames = tb.colnames()
+            target_columns = set(colnames) & set(['DATA', 'FLOAT_DATA', 'CORRECTED_DATA'])
+            for col in target_columns:
+                tb.putcolkeyword(col, 'UNIT', data_unit)
 
 
 # Tier-0 parallelization

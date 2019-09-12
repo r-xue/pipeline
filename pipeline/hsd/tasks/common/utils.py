@@ -989,3 +989,22 @@ class RGAccumulator(object):
             return field_id_list, antenna_id_list, spw_id_list, pol_ids_list
         else:
             return field_id_list, antenna_id_list, spw_id_list
+
+
+def get_brightness_unit(vis, defaultunit='Jy/beam'):
+    with casatools.TableReader(vis) as tb:
+        colnames = tb.colnames()
+        target_columns = ['CORRECTED_DATA', 'FLOAT_DATA', 'DATA']
+        bunit = defaultunit
+        for col in target_columns:
+            if col in colnames:
+                keys = tb.getcolkeywords(col)
+                if 'UNIT' in keys:
+                    _bunit = keys['UNIT']
+                    if len(_bunit) > 0:
+                        # should be K or Jy
+                        # update bunit only when UNIT is K
+                        if _bunit == 'K':
+                            bunit = 'K'
+                        break
+    return bunit

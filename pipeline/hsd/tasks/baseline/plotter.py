@@ -22,7 +22,8 @@ class PlotterPool(object):
         self.pool = {}
         self.figure_id = display.SparseMapAxesManager.MATPLOTLIB_FIGURE_ID()
 
-    def create_plotter(self, num_ra, num_dec, num_plane, refpix, refval, increment, direction_reference=None):
+    def create_plotter(self, num_ra, num_dec, num_plane, refpix, refval, increment,
+                       direction_reference=None, brightnessunit='Jy/beam'):
 #         key = (num_ra, num_dec)
 #         if key in self.pool:
 #             LOG.info('Reuse existing plotter: (nra, ndec) = {}', key)
@@ -32,14 +33,14 @@ class PlotterPool(object):
 #             fignums = pl.get_fignums()
 #             while self.figure_id in fignums:
 #                 self.figure_id += 1
-#             plotter = display.SDSparseMapPlotter(nh=num_ra, nv=num_dec, 
+#             plotter = display.SDSparseMapPlotter(nh=num_ra, nv=num_dec,
 #                                                    step=1, brightnessunit='Jy/beam',
 #                                                    figure_id=self.figure_id)
 #             self.pool[key] = plotter
 #         plotter.setup_labels(refpix, refval, increment)
-        plotter = display.SDSparseMapPlotter(nh=num_ra, nv=num_dec, 
-                                               step=1, brightnessunit='Jy/beam',
-                                               figure_id=self.figure_id)
+        plotter = display.SDSparseMapPlotter(nh=num_ra, nv=num_dec,
+                                             step=1, brightnessunit=brightnessunit,
+                                             figure_id=self.figure_id)
         plotter.direction_reference = direction_reference
         plotter.setup_labels(refpix, refval, increment)
         return plotter
@@ -86,8 +87,8 @@ class BaselineSubtractionPlotManager(object):
 
     @staticmethod
     def generate_plot_meta_table(spw_id, polarization_ids, grid_table):
-        new_table = list(BaselineSubtractionPlotManager._generate_plot_meta_table(spw_id, 
-                                                                                  polarization_ids, 
+        new_table = list(BaselineSubtractionPlotManager._generate_plot_meta_table(spw_id,
+                                                                                  polarization_ids,
                                                                                   grid_table))
         return new_table
 
@@ -95,16 +96,16 @@ class BaselineSubtractionPlotManager(object):
     def _generate_plot_rowlist(ms_id, antenna_id, spw_id, polarization_ids, grid_table):
         for row in grid_table:
             if row[0] == spw_id and row[1] in polarization_ids:
-                new_row_entry = numpy.fromiter((r[3] for r in row[6] if r[-1] == ms_id and r[-2] == antenna_id), 
+                new_row_entry = numpy.fromiter((r[3] for r in row[6] if r[-1] == ms_id and r[-2] == antenna_id),
                                                dtype=int)
                 yield new_row_entry
 
     @staticmethod
     def generate_plot_rowlist(ms_id, antenna_id, spw_id, polarization_ids, grid_table):
-        new_table = list(BaselineSubtractionPlotManager._generate_plot_rowlist(ms_id, 
-                                                                               antenna_id, 
-                                                                               spw_id, 
-                                                                               polarization_ids, 
+        new_table = list(BaselineSubtractionPlotManager._generate_plot_rowlist(ms_id,
+                                                                               antenna_id,
+                                                                               spw_id,
+                                                                               polarization_ids,
                                                                                grid_table))
         return new_table
 
@@ -146,7 +147,7 @@ class BaselineSubtractionPlotManager(object):
         self.prefit_storage.resize_storage(num_ra, num_dec, num_pol, num_chan)
         self.postfit_storage.resize_storage(num_ra, num_dec, num_pol, num_chan)
 
-    def plot_spectra_with_fit(self, field_id, antenna_id, spw_id, org_direction, 
+    def plot_spectra_with_fit(self, field_id, antenna_id, spw_id, org_direction,
                               grid_table=None, deviation_mask=None, channelmap_range=None,
                               showatm=True):
         """
@@ -228,7 +229,7 @@ class BaselineSubtractionPlotManager(object):
         return ret
 
     def plot_profile_map_with_fit(self, prefit_figfile_prefix, postfit_figfile_prefix, grid_table,
-                                  deviation_mask, line_range, 
+                                  deviation_mask, line_range,
                                   org_direction, atm_transmission, atm_frequency):
         """
         plot_table format:
@@ -248,17 +249,22 @@ class BaselineSubtractionPlotManager(object):
 
         dtrows = self.datatable.getcol('ROW')
 
+        # get brightnessunit from MS
+        # default is Jy/beam
+        bunit = utils.get_brightness_unit(ms.basename, defaultunit='Jy/beam')
+
         # grid_table is baseed on virtual spw id
-        num_ra, num_dec, num_plane, refpix, refval, increment, rowlist = analyze_plot_table(ms, 
+        num_ra, num_dec, num_plane, refpix, refval, increment, rowlist = analyze_plot_table(ms,
                                                                                             ms_id,
-                                                                                            antid, 
-                                                                                            virtual_spwid, 
+                                                                                            antid,
+                                                                                            virtual_spwid,
                                                                                             polids,
                                                                                             grid_table,
-                                                                                            org_direction )
+                                                                                            org_direction)
 
         plotter = self.pool.create_plotter(num_ra, num_dec, num_plane, refpix, refval, increment,
-                                           direction_reference=self.datatable.direction_ref)
+                                           direction_reference=self.datatable.direction_ref,
+                                           brightnessunit=bunit)
         LOG.debug('vis {} ant {} spw {} plotter figure id {} has {} axes',
                   ms.basename, antid, spwid, plotter.axes.figure_id, len(plotter.axes.figure.axes))
 #         LOG.info('axes list: {}', [x.__hash__()  for x in plotter.axes.figure.axes])
@@ -268,7 +274,7 @@ class BaselineSubtractionPlotManager(object):
         npol = data_desc.num_polarizations
         LOG.debug('nchan={}', nchan)
 
-        self.resize_storage(num_ra, num_dec, npol, nchan) 
+        self.resize_storage(num_ra, num_dec, npol, nchan)
 
         frequency = numpy.fromiter((spw.channels.chan_freqs[i] * 1.0e-9 for i in xrange(nchan)),
                                    dtype=numpy.float64)  # unit in GHz
@@ -277,7 +283,7 @@ class BaselineSubtractionPlotManager(object):
 
         if rowmap is None:
             rowmap = utils.make_row_map(ms, postfit_data)
-        postfit_integrated_data, postfit_map_data = get_data(postfit_data, dtrows, 
+        postfit_integrated_data, postfit_map_data = get_data(postfit_data, dtrows,
                                                              num_ra, num_dec, nchan, npol,
                                                              rowlist, rowmap=rowmap,
                                                              integrated_data_storage=self.postfit_storage.integrated_data,
@@ -304,7 +310,7 @@ class BaselineSubtractionPlotManager(object):
             else:
                 plotter.setup_lines(line_range)
             plotter.plot(postfit_map_data[:, :, ipol, :],
-                         postfit_integrated_data[ipol], 
+                         postfit_integrated_data[ipol],
                          frequency, figfile=postfit_figfile)
             #LOG.info('#TIMING# End SDSparseMapPlotter.plot(postfit,pol%s)'%(ipol))
             if os.path.exists(postfit_figfile):
@@ -312,8 +318,8 @@ class BaselineSubtractionPlotManager(object):
 
         del postfit_integrated_data
 
-        prefit_integrated_data, prefit_map_data = get_data(prefit_data, dtrows, 
-                                                           num_ra, num_dec, 
+        prefit_integrated_data, prefit_map_data = get_data(prefit_data, dtrows,
+                                                           num_ra, num_dec,
                                                            nchan, npol, rowlist,
                                                            integrated_data_storage=self.prefit_storage.integrated_data,
                                                            map_data_storage=self.prefit_storage.map_data,
@@ -333,7 +339,7 @@ class BaselineSubtractionPlotManager(object):
 
         # plot pre-fit spectra
         plot_list['pre_fit'] = {}
-        plotter.setup_reference_level(None) 
+        plotter.setup_reference_level(None)
         plotter.unset_global_scaling()
         for ipol in xrange(npol):
             prefit_figfile = prefit_figfile_prefix + '_pol%s.png'%(ipol)
@@ -343,7 +349,7 @@ class BaselineSubtractionPlotManager(object):
             else:
                 plotter.setup_lines(line_range)
             plotter.plot(prefit_map_data[:, :, ipol, :],
-                         prefit_integrated_data[ipol], 
+                         prefit_integrated_data[ipol],
                          frequency, fit_result=fit_result[:, :, ipol, :], figfile=prefit_figfile)
             #LOG.info('#TIMING# End SDSparseMapPlotter.plot(prefit,pol%s)'%(ipol))
             if os.path.exists(prefit_figfile):
@@ -352,9 +358,9 @@ class BaselineSubtractionPlotManager(object):
         del prefit_map_data, postfit_map_data, fit_result
 
 
-        prefit_averaged_data = get_averaged_data(prefit_data, dtrows, 
-                                                 num_ra, num_dec, 
-                                                 nchan, npol, rowlist, 
+        prefit_averaged_data = get_averaged_data(prefit_data, dtrows,
+                                                 num_ra, num_dec,
+                                                 nchan, npol, rowlist,
                                                  map_data_storage=self.prefit_storage.map_data,
                                                  map_mask_storage=self.prefit_storage.map_mask)
 
@@ -451,13 +457,13 @@ def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table, org_
     #  [0, 1, RA0, DEC1], <- plane 0
     #  ...
     #  [M, N, RAM, DECN]] <- plane 2
-    plot_table = BaselineSubtractionPlotManager.generate_plot_meta_table(virtual_spwid, 
-                                                                         polids, 
+    plot_table = BaselineSubtractionPlotManager.generate_plot_meta_table(virtual_spwid,
+                                                                         polids,
                                                                          grid_table)
-    grid_rowlist = BaselineSubtractionPlotManager._generate_plot_rowlist(ms_id, 
-                                                                         antid, 
-                                                                         virtual_spwid, 
-                                                                         polids, 
+    grid_rowlist = BaselineSubtractionPlotManager._generate_plot_rowlist(ms_id,
+                                                                         antid,
+                                                                         virtual_spwid,
+                                                                         polids,
                                                                          grid_table)
     num_grid_rows = len(plot_table)  # num_plane * num_grid_ra * num_grid_dec
     assert num_grid_rows > 0
@@ -473,7 +479,7 @@ def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table, org_
     num_dec = len(ypanel)
     each_grid = configure_2d_panel(xpanel, ypanel, num_grid_ra, num_grid_dec, num_plane)
     rowlist = [{} for i in xrange(num_dec * num_ra)]
- 
+
     # qa = casatools.quanta
     # if org_direction is None:
     #     ra_offset = 0
@@ -490,7 +496,7 @@ def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table, org_
                           plot_table_rowid, plot_table[plot_table_rowid][2],
                           plot_table[plot_table_rowid][3])
                 for i in plot_table_row:
-                    # MS stores multiple polarization components in one cell 
+                    # MS stores multiple polarization components in one cell
                     # so it is not necessary to check polarization id
                     LOG.trace('Adding {} to dataids', i)
                     yield i
@@ -507,7 +513,7 @@ def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table, org_
         dec = numpy.mean(declist)
         if org_direction is not None:
             ra, dec = direction_recover( ra, dec, org_direction )
-        
+
         rowlist[row_index].update(
                 {"RAID": raid, "DECID": decid, "RA": ra, "DEC": dec,
                  "IDS": dataids})
@@ -572,13 +578,13 @@ def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table, org_
     LOG.debug('refval_list={}', refval_list)
     LOG.debug('increment_list={}', increment_list)
 
-    return num_ra, num_dec, num_plane, refpix_list, refval_list, increment_list, rowlist 
+    return num_ra, num_dec, num_plane, refpix_list, refval_list, increment_list, rowlist
 
 def direction_recover( ra, dec, org_direction ):
     me = casatools.measures
     qa = casatools.quanta
 
-    direction = me.direction( org_direction['refer'], 
+    direction = me.direction( org_direction['refer'],
                               str(ra)+'deg', str(dec)+'deg' )
     zero_direction  = me.direction( org_direction['refer'], '0deg', '0deg' )
     offset = me.separation( zero_direction, direction )
@@ -595,12 +601,12 @@ def direction_recover( ra, dec, org_direction ):
 #     plotter = display.SDSparseMapPlotter(nh=num_ra, nv=num_dec, step=1, brightnessunit='Jy/beam')
 #     plotter.setup_labels(refpix, refval, increment)
 #     return plotter
-#     
+#
 
 
 #@utils.profiler
 def get_data(infile, dtrows, num_ra, num_dec, num_chan, num_pol, rowlist, rowmap=None,
-             integrated_data_storage=None, integrated_mask_storage=None, 
+             integrated_data_storage=None, integrated_mask_storage=None,
              map_data_storage=None, map_mask_storage=None):
     # default rowmap is EchoDictionary
     if rowmap is None:
@@ -666,11 +672,11 @@ def get_data(infile, dtrows, num_ra, num_dec, num_chan, num_pol, rowlist, rowmap
                         if allflagged == False:
                             idxperpol[ipol].append(idxs[isort])
                         else:
-                            LOG.debug('spectrum for pol {0} is completely flagged at {1}, {2} (row {3})', 
+                            LOG.debug('spectrum for pol {0} is completely flagged at {1}, {2} (row {3})',
                                       ipol, ix, iy, mapped_row)
                     binary_mask = numpy.asarray(numpy.logical_not(this_mask), dtype=int)
-                    integrated_data += this_data.real * binary_mask 
-                    num_accumulated += binary_mask 
+                    integrated_data += this_data.real * binary_mask
+                    num_accumulated += binary_mask
                 midxperpol = []
                 for ipol in xrange(num_pol):
                     pidxs = idxperpol[ipol]
@@ -754,7 +760,7 @@ def get_averaged_data(infile, dtrows, num_ra, num_dec, num_chan, num_pol, rowlis
                     LOG.trace('this_mask.shape={}', this_mask.shape)
                     binary_mask = numpy.asarray(numpy.logical_not(this_mask), dtype=int)
                     map_data[ix, iy] += this_data.real * binary_mask
-                    num_accumulated[ix, iy] += binary_mask 
+                    num_accumulated[ix, iy] += binary_mask
             else:
                 LOG.debug('no data is available for ({},{})', ix, iy)
     map_mask[:] = num_accumulated == 0
@@ -792,8 +798,8 @@ def get_lines2(infile, datatable, num_ra, rowlist, polids, rowmap=None):
 
     num_pol = len(polids)
     lines_map = [collections.defaultdict(dict)] * num_pol
-#     plot_table = BaselineSubtractionPlotManager.generate_plot_meta_table(spwid, 
-#                                                                          polids, 
+#     plot_table = BaselineSubtractionPlotManager.generate_plot_meta_table(spwid,
+#                                                                          polids,
 #                                                                          grid_table)
 #     num_rows = len(plot_table)  # num_plane * num_ra * num_dec
 #     num_dec = plot_table[-1][1] + 1
@@ -854,30 +860,30 @@ def get_lines2(infile, datatable, num_ra, rowlist, polids, rowmap=None):
 #     rwtablename = DataTable.get_rwtable_name(context.observing_run.ms_datatable_name)
 #     with casatools.TableReader(rotablename) as tb:
 #         dtrows = tb.getcol('ROW')
-# 
+#
 #     num_ra, num_dec, num_plane, refpix, refval, increment, rowlist = analyze_plot_table(context, dtrows, ms, antid, spwid, plot_table)
-#         
+#
 #     plotter = create_plotter(num_ra, num_dec, num_plane, refpix, refval, increment)
-#     
+#
 #     spw = ms.spectral_windows[spwid]
 #     nchan = spw.num_channels
 #     data_desc = ms.get_data_description(spw=spw)
 #     npol = data_desc.num_polarizations
 #     LOG.debug('nchan={}', nchan)
-#     
+#
 #     frequency = numpy.fromiter((spw.channels.chan_freqs[i] * 1.0e-9 for i in xrange(nchan)), dtype=numpy.float64) # unit in GHz
 #     LOG.debug('frequency={}~{} (nchan={})',
 #               frequency[0], frequency[-1], len(frequency))
-# 
+#
 #     if rowmap is None:
 #         rowmap = utils.make_row_map(ms, postfit_data)
-#     postfit_integrated_data, postfit_map_data = get_data(postfit_data, dtrows, 
+#     postfit_integrated_data, postfit_map_data = get_data(postfit_data, dtrows,
 #                                                          num_ra, num_dec, nchan, npol,
 #                                                          rowlist, rowmap=rowmap)
 #     lines_map = get_lines(rwtablename, num_ra, rowlist)
-# 
+#
 #     plot_list = {}
-# 
+#
 #     # plot post-fit spectra
 #     plot_list['post_fit'] = {}
 #     plotter.setup_lines(line_range, lines_map)
@@ -887,19 +893,19 @@ def get_lines2(infile, datatable, num_ra, rowlist, polids, rowmap=None):
 #     for ipol in xrange(npol):
 #         postfit_figfile = postfit_figfile_prefix + '_pol%s.png'%(ipol)
 #         LOG.info('#TIMING# Begin SDSparseMapPlotter.plot(postfit,pol%s)'%(ipol))
-#         plotter.plot(postfit_map_data[:,:,ipol,:], 
-#                      postfit_integrated_data[ipol], 
+#         plotter.plot(postfit_map_data[:,:,ipol,:],
+#                      postfit_integrated_data[ipol],
 #                      frequency, figfile=postfit_figfile)
 #         LOG.info('#TIMING# End SDSparseMapPlotter.plot(postfit,pol%s)'%(ipol))
 #         if os.path.exists(postfit_figfile):
 #             plot_list['post_fit'][ipol] = postfit_figfile
-# 
+#
 #     del postfit_integrated_data
-#     
-#     prefit_integrated_data, prefit_map_data = get_data(prefit_data, dtrows, 
-#                                                        num_ra, num_dec, 
+#
+#     prefit_integrated_data, prefit_map_data = get_data(prefit_data, dtrows,
+#                                                        num_ra, num_dec,
 #                                                        nchan, npol, rowlist)
-#     
+#
 #     # fit_result shares its storage with postfit_map_data to reduce memory usage
 #     fit_result = postfit_map_data
 #     for x in xrange(num_ra):
@@ -910,26 +916,26 @@ def get_lines2(infile, datatable, num_ra, rowlist, polids, rowmap=None):
 #                 fit_result[x,y] = prefit - postfit
 #             else:
 #                 fit_result[x,y,::] = display.NoDataThreshold
-#     
-#     
+#
+#
 #     # plot pre-fit spectra
 #     plot_list['pre_fit'] = {}
-#     plotter.setup_reference_level(None) 
+#     plotter.setup_reference_level(None)
 #     plotter.unset_global_scaling()
 #     for ipol in xrange(npol):
 #         prefit_figfile = prefit_figfile_prefix + '_pol%s.png'%(ipol)
 #         LOG.info('#TIMING# Begin SDSparseMapPlotter.plot(prefit,pol%s)'%(ipol))
-#         plotter.plot(prefit_map_data[:,:,ipol,:], 
-#                      prefit_integrated_data[ipol], 
+#         plotter.plot(prefit_map_data[:,:,ipol,:],
+#                      prefit_integrated_data[ipol],
 #                      frequency, fit_result=fit_result[:,:,ipol,:], figfile=prefit_figfile)
 #         LOG.info('#TIMING# End SDSparseMapPlotter.plot(prefit,pol%s)'%(ipol))
 #         if os.path.exists(prefit_figfile):
 #             plot_list['pre_fit'][ipol] = prefit_figfile
-#             
+#
 #     plotter.done()
-#     
+#
 #     del prefit_integrated_data, prefit_map_data, postfit_map_data, fit_result
-#     
+#
 #     return plot_list
 
 def median_index(arr):
