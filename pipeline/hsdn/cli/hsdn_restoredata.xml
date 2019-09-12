@@ -14,9 +14,9 @@
 	<value></value>
     </param>
 
-    <param type="string" name="scalefile" mustexist="true">
+    <param type="string" name="scalefile" mustexist="false">
         <description>File of factors to adjust scale between beams</description>
-        <value>nroscalefile.csv</value>
+        <value></value>
     </param>
 
     <param type="stringArray" name="infiles" subparam="true">
