@@ -159,7 +159,7 @@ scalefile -- Path to a file containing scaling factors between beams.
     If no file name is specified or specified file doesn't exist, 
     all the factors are set to 1.0.
 
-    default: 'nroscalefile.csv'
+    default: none
     example: scalefile='', scalefile='working/nroscalefile.csv'
 
 infiles -- List of input MeasurementSets.
