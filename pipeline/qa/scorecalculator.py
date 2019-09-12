@@ -20,6 +20,7 @@ import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.renderer.rendererutils as rutils
 import pipeline.infrastructure.utils as utils
 import pipeline.qa.checksource as checksource
+from pipeline.domain.datatable import OnlineFlagIndex
 
 __all__ = ['score_polintents',                                # ALMA specific
            'score_bands',                                     # ALMA specific
@@ -302,7 +303,7 @@ def score_vla_science_data_flagged_by_agents(ms, summaries, min_frac, max_frac, 
 
 def score_ms_model_data_column_present(all_mses, mses_with_column):
     """
-    Give a score for a group of mses based on the number with modeldata 
+    Give a score for a group of mses based on the number with modeldata
     columns present.
     None with modeldata - 100% with modeldata = 1.0 -> 0.5
     """
@@ -315,13 +316,13 @@ def score_ms_model_data_column_present(all_mses, mses_with_column):
         basenames = [ms.basename for ms in mses_with_column]
         s = utils.commafy(basenames, quotes=False)
         longmsg = 'Model data column found in %s' % s
-        shortmsg = '%s/%s have MODELDATA' % (num_with, num_all) 
+        shortmsg = '%s/%s have MODELDATA' % (num_with, num_all)
     else:
         # log a message like 'Model data column was found in a.ms and b.ms'
         basenames = [ms.basename for ms in all_mses]
         s = utils.commafy(basenames, quotes=False, conjunction='or')
-        longmsg = ('No model data column found in %s' % s)            
-        shortmsg = 'MODELDATA empty' 
+        longmsg = ('No model data column found in %s' % s)
+        shortmsg = 'MODELDATA empty'
 
     score = linear_score(f, 0.0, 1.0, 1.0, 0.5)
 
@@ -335,7 +336,7 @@ def score_ms_model_data_column_present(all_mses, mses_with_column):
 @log_qa
 def score_ms_history_entries_present(all_mses, mses_with_history):
     """
-    Give a score for a group of mses based on the number with history 
+    Give a score for a group of mses based on the number with history
     entries present.
     None with history - 100% with history = 1.0 -> 0.5
     """
@@ -343,7 +344,7 @@ def score_ms_history_entries_present(all_mses, mses_with_history):
     num_all = len(all_mses)
 
     if mses_with_history:
-        # log a message like 'Entries were found in the HISTORY table for 
+        # log a message like 'Entries were found in the HISTORY table for
         # a.ms and b.ms'
         basenames = utils.commafy([ms.basename for ms in mses_with_history], quotes=False)
         if len(mses_with_history) is 1:
@@ -352,7 +353,7 @@ def score_ms_history_entries_present(all_mses, mses_with_history):
         else:
             longmsg = ('Unexpected entries were found in the HISTORY tables of %s. '
                        'These measurement sets may already be processed.' % basenames)
-        shortmsg = '%s/%s have HISTORY' % (num_with, num_all) 
+        shortmsg = '%s/%s have HISTORY' % (num_with, num_all)
 
     else:
         # log a message like 'No history entries were found in a.ms or b.ms'
@@ -374,7 +375,7 @@ def score_ms_history_entries_present(all_mses, mses_with_history):
 @log_qa
 def score_bwswitching(mses):
     """
-    Score a MeasurementSet object based on the presence of 
+    Score a MeasurementSet object based on the presence of
     bandwidth switching observings. For bandwidth switched
     observations the TARGET and PHASE spws are different.
     """
@@ -417,7 +418,7 @@ def score_bwswitching(mses):
     if all_ok:
         longmsg = ('Phase calibrations found for all target spws in %s.' % (
                    utils.commafy([ms.basename for ms in mses], False)))
-        shortmsg = 'Phase calibrations found for all target spws' 
+        shortmsg = 'Phase calibrations found for all target spws'
     else:
         longmsg = '%s.' % utils.commafy(complaints, False)
         shortmsg = 'No phase calibrations found for target spws %s' % list(nophasecals)
@@ -432,11 +433,11 @@ def score_bwswitching(mses):
 @log_qa
 def score_bands(mses):
     """
-    Score a MeasurementSet object based on the presence of 
+    Score a MeasurementSet object based on the presence of
     ALMA bands with calibration issues.
     """
 
-    # ALMA receiver bands. Warnings will be raised for any 
+    # ALMA receiver bands. Warnings will be raised for any
     # measurement sets containing the following bands.
     score = 1.0
     score_map = {'9': -1.0,
@@ -468,7 +469,7 @@ def score_bands(mses):
     if all_ok:
         longmsg = ('No high frequency %s band data were found in %s.' % (list(unsupported),
                    utils.commafy([ms.basename for ms in mses], False)))
-        shortmsg = 'No high frequency band data found' 
+        shortmsg = 'No high frequency band data found'
     else:
         longmsg = '%s.' % utils.commafy(complaints, False)
         shortmsg = 'High frequency band data found'
@@ -484,11 +485,11 @@ def score_bands(mses):
 @log_qa
 def score_polintents(mses):
     """
-    Score a MeasurementSet object based on the presence of 
+    Score a MeasurementSet object based on the presence of
     polarization intents.
     """
 
-    # Polarization intents. Warnings will be raised for any 
+    # Polarization intents. Warnings will be raised for any
     # measurement sets containing these intents. Ignore the
     # array type for now.
     score = 1.0
@@ -539,8 +540,8 @@ def score_missing_intents(mses, array_type='ALMA_12m'):
     Score a MeasurementSet object based on the presence of certain
     observing intents.
     """
-    # Required calibration intents. Warnings will be raised for any 
-    # measurement sets missing these intents 
+    # Required calibration intents. Warnings will be raised for any
+    # measurement sets missing these intents
     score = 1.0
     if array_type == 'ALMA_TP':
         score_map = {'ATMOSPHERE': -1.0}
@@ -1045,7 +1046,7 @@ def linear_score_fraction_unflagged_newly_flagged_for_intent(ms, summaries, inte
 @log_qa
 def score_contiguous_session(mses, tolerance=datetime.timedelta(hours=1)):
     """
-    Check whether measurement sets are contiguous in time. 
+    Check whether measurement sets are contiguous in time.
     """
     # only need to check when given multiple measurement sets
     if len(mses) < 2:
@@ -1059,11 +1060,11 @@ def score_contiguous_session(mses, tolerance=datetime.timedelta(hours=1)):
                            origin=origin)
 
     # reorder MSes by start time
-    by_start = sorted(mses, 
+    by_start = sorted(mses,
                       key=lambda m: utils.get_epoch_as_datetime(m.start_time))
 
-    # create an interval for each one, including our tolerance    
-    intervals = []    
+    # create an interval for each one, including our tolerance
+    intervals = []
     for ms in by_start:
         start = utils.get_epoch_as_datetime(ms.start_time)
         end = utils.get_epoch_as_datetime(ms.end_time)
@@ -1072,7 +1073,7 @@ def score_contiguous_session(mses, tolerance=datetime.timedelta(hours=1)):
 
     # check whether the intervals overlap
     bad_mses = []
-    for i, (interval1, interval2) in enumerate(zip(intervals[0:-1], 
+    for i, (interval1, interval2) in enumerate(zip(intervals[0:-1],
                                                    intervals[1:])):
         if not interval1.overlaps(interval2):
             bad_mses.append(utils.commafy([by_start[i].basename,
@@ -1255,7 +1256,7 @@ def score_setjy_measurements(ms, reqfields, reqintents, reqspws, measurements):
 def score_number_antenna_offsets(ms, offsets):
     """
     Score is 1.0 if no antenna needed a position offset correction, and
-    set to the "suboptimal" threshold if at least one antenna needed a 
+    set to the "suboptimal" threshold if at least one antenna needed a
     correction.
     """
     nant_with_offsets = len(offsets) / 3
@@ -1266,7 +1267,7 @@ def score_number_antenna_offsets(ms, offsets):
         shortmsg = 'No antenna position offsets'
     else:
         # CAS-8877: if at least 1 antenna needed correction, then set the score
-        # to the "suboptimal" threshold. 
+        # to the "suboptimal" threshold.
         score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
         longmsg = '%d nonzero antenna position offsets for %s ' % (nant_with_offsets, ms.basename)
         shortmsg = 'Nonzero antenna position offsets'
@@ -1303,7 +1304,7 @@ def score_missing_derived_fluxes(ms, reqfields, reqintents, measurements):
         for flux in value:
             fluxjy = getattr(flux, 'I').to_units(measures.FluxDensityUnits.JANSKY)
             uncjy = getattr(flux.uncertainty, 'I').to_units(measures.FluxDensityUnits.JANSKY)
-            if fluxjy <= 0.0 or uncjy <= 0.0: 
+            if fluxjy <= 0.0 or uncjy <= 0.0:
                 continue
             nmeasured += 1
 
@@ -1357,7 +1358,7 @@ def score_refspw_mapping_fraction(ms, ref_spwmap):
 
         nunmapped = 0
         for spwid in scispws:
-            if spwid == ref_spwmap[spwid]: 
+            if spwid == ref_spwmap[spwid]:
                 nunmapped += 1
 
         if nunmapped >= nexpected:
@@ -1442,7 +1443,7 @@ def score_missing_phaseup_snrs(ms, spwids, phsolints):
     for i in range(len(spwids)):
         if not phsolints[i]:
             missing_spws.append(spwids[i])
-    nmissing = len(missing_spws) 
+    nmissing = len(missing_spws)
 
     if nexpected <= 0:
         score = 0.0
@@ -1478,7 +1479,7 @@ def score_poor_phaseup_solutions(ms, spwids, nphsolutions, min_nsolutions):
             poor_spws.append(spwids[i])
         elif nphsolutions[i] < min_nsolutions:
             poor_spws.append(spwids[i])
-    npoor = len(poor_spws) 
+    npoor = len(poor_spws)
 
     if nexpected <= 0:
         score = 0.0
@@ -1513,7 +1514,7 @@ def score_missing_bandpass_snrs(ms, spwids, bpsolints):
     for i in range(len(spwids)):
         if not bpsolints[i]:
             missing_spws.append(spwids[i])
-    nmissing = len(missing_spws) 
+    nmissing = len(missing_spws)
 
     if nexpected <= 0:
         score = 0.0
@@ -1549,7 +1550,7 @@ def score_poor_bandpass_solutions(ms, spwids, nbpsolutions, min_nsolutions):
             poor_spws.append(spwids[i])
         elif nbpsolutions[i] < min_nsolutions:
             poor_spws.append(spwids[i])
-    npoor = len(poor_spws) 
+    npoor = len(poor_spws)
 
     if nexpected <= 0:
         score = 0.0
@@ -1582,7 +1583,7 @@ def score_missing_phase_snrs(ms, spwids, snrs):
     for i in range(len(spwids)):
         if not snrs[i]:
             missing_spws.append(spwids[i])
-    nmissing = len(missing_spws) 
+    nmissing = len(missing_spws)
 
     if nexpected <= 0:
         score = 0.0
@@ -1617,7 +1618,7 @@ def score_poor_phase_snrs(ms, spwids, minsnr, snrs):
             poor_spws.append(spwids[i])
         elif snrs[i] < minsnr:
             poor_spws.append(spwids[i])
-    npoor = len(poor_spws) 
+    npoor = len(poor_spws)
 
     if nexpected <= 0:
         score = 0.0
@@ -1661,7 +1662,7 @@ def score_derived_fluxes_snr(ms, measurements):
         for flux in value:
             fluxjy = flux.I.to_units(measures.FluxDensityUnits.JANSKY)
             uncjy = flux.uncertainty.I.to_units(measures.FluxDensityUnits.JANSKY)
-            if fluxjy <= 0.0 or uncjy <= 0.0: 
+            if fluxjy <= 0.0 or uncjy <= 0.0:
                 continue
             snr = fluxjy / uncjy
             minsnr = snr if minsnr is None else min(minsnr, snr)
@@ -1753,7 +1754,7 @@ def score_file_exists(filedir, filename, filetype):
 @log_qa
 def score_mses_exist(filedir, visdict):
     """
-    Score the existence of the flagging products files 
+    Score the existence of the flagging products files
         1.0 if they all exist
         n / nexpected if some of them exist
         0.0 if none exist
@@ -1793,7 +1794,7 @@ def score_mses_exist(filedir, visdict):
 @log_qa
 def score_flags_exist(filedir, visdict):
     """
-    Score the existence of the flagging products files 
+    Score the existence of the flagging products files
         1.0 if they all exist
         n / nexpected if some of them exist
         0.0 if none exist
@@ -2071,7 +2072,7 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
     qa = casatools.quanta
     me = casatools.measures
 
-    # Get the reference direction of the check source field 
+    # Get the reference direction of the check source field
     #    There is at least one field with check source intent
     #    Protect against the same source having multiple fields
     #    with different intent.
@@ -2366,7 +2367,7 @@ def generate_metric_mask(context, result, cs, mask):
     imagename = outcome['image'].imagename
     org_direction = outcome['image'].org_direction
     imshape = mask.shape
-    
+
     file_index = np.asarray(outcome['file_index'])
     antenna_list = np.asarray(outcome['assoc_antennas'])
     field_list = np.asarray(outcome['assoc_fields'])
@@ -2381,11 +2382,13 @@ def generate_metric_mask(context, result, cs, mask):
     dec = []
     ofs_ra = []
     ofs_dec = []
+    online_flag = []
 
     for i in range(len(mses)):
         vis = mses[i].basename
         datatable_name = os.path.join(context.observing_run.ms_datatable_name, vis)
         rotable_name = os.path.join(datatable_name, 'RO')
+        rwtable_name = os.path.join(datatable_name, 'RW')
         _index = np.where(file_index == i)
         _antlist = antenna_list[_index]
         _fieldlist = field_list[_index]
@@ -2397,7 +2400,12 @@ def generate_metric_mask(context, result, cs, mask):
             tsel = tb.query('SRCTYPE==0&&ANTENNA IN {}&&FIELD_ID IN {}&&IF IN {}'.format(list(_antlist), list(_fieldlist), list(_spwlist)))
             ofs_ra.extend(tsel.getcol('OFS_RA'))
             ofs_dec.extend(tsel.getcol('OFS_DEC'))
+            rows = tsel.rownumbers()
             tsel.close()
+
+        with casatools.TableReader(rwtable_name) as tb:
+            permanent_flag = tb.getcol('FLAG_PERMANENT').take(rows, axis=2)
+            online_flag.extend(permanent_flag[0, OnlineFlagIndex])
 
     if org_direction is None:
         ra = np.asarray(ofs_ra)
@@ -2409,6 +2417,7 @@ def generate_metric_mask(context, result, cs, mask):
             dec.append(shift_dec)
         ra = np.asarray(ra)
         dec = np.asarray(dec)
+    online_flag = np.asarray(online_flag)
 
     del ofs_ra, ofs_dec
 
@@ -2420,9 +2429,9 @@ def generate_metric_mask(context, result, cs, mask):
     # template measure for world-pixel conversion
     # 2019/06/03 TN
     # Workaround for memory consumption issue (PIPE-362)
-    # cs.topixel consumes some amount of memory and it accumulates, 
-    # too many call of cs.topixel results in unexpectedly large amount of 
-    # memory usage. To avoid cs.topixel, approximate mapping to pixel 
+    # cs.topixel consumes some amount of memory and it accumulates,
+    # too many call of cs.topixel results in unexpectedly large amount of
+    # memory usage. To avoid cs.topixel, approximate mapping to pixel
     # coordinate is done manually.
     blc = cs.toworld([-0.5, -0.5, 0, 0], format='q')
     brc = cs.toworld([imshape[0] - 0.5, -0.5, 0, 0], format='q')
@@ -2448,7 +2457,11 @@ def generate_metric_mask(context, result, cs, mask):
     #world = cs.toworld([0, 0, 0, 0], format='m')
     px = np.empty_like(ra)
     py = np.empty_like(dec)
-    for i, (x, y) in enumerate(zip(ra, dec)):
+    for i, (x, y, f) in enumerate(zip(ra, dec, online_flag)):
+        if f != 1:
+            # PIPE-439 flagged pointing data are not taken into account
+            continue
+
         #world['measure']['direction']['m0']['value'] = qa.quantity(x, unit_ra)
         #world['measure']['direction']['m1']['value'] = qa.quantity(y, unit_dec)
         #p = cs.topixel(world)
@@ -2480,7 +2493,7 @@ def direction_recover( ra, dec, org_direction ):
     me = casatools.measures
     qa = casatools.quanta
 
-    direction = me.direction( org_direction['refer'], 
+    direction = me.direction( org_direction['refer'],
                               str(ra)+'deg', str(dec)+'deg' )
     zero_direction  = me.direction( org_direction['refer'], '0deg', '0deg' )
     offset = me.separation( zero_direction, direction )
@@ -2515,7 +2528,7 @@ def score_sdimage_masked_pixels(context, result):
         QAScore -- QAScore instance holding the score based on number of
                    masked pixels in image
     """
-    # metric score is a fraction of masked pixels 
+    # metric score is a fraction of masked pixels
     result_item = result.outcome
     image_item = result_item['image']
     imagename = image_item.imagename

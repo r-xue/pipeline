@@ -39,7 +39,7 @@ class SDBaselineInputs(vdp.StandardInputs):
     broadline = vdp.VisDependentProperty(default=True)
     fitorder = vdp.VisDependentProperty(default='automatic')
     fitfunc = vdp.VisDependentProperty(default='cspline')
-    clusteringalgorithm = vdp.VisDependentProperty(default='kmean')
+    clusteringalgorithm = vdp.VisDependentProperty(default='hierarchy')
     deviationmask = vdp.VisDependentProperty(default=True)
 
     # Synchronization between infiles and vis is still necessary
@@ -233,10 +233,10 @@ class SDBaseline(basetask.StandardTaskTemplate):
 
             LOG.debug('Members to be processed:')
             for (gms, gfield, gant, gspw) in utils.iterate_group_member(group_desc, member_list):
-                LOG.debug('\tMS "{}" Field ID {} Antenna ID {} Spw ID {}', 
+                LOG.debug('\tMS "{}" Field ID {} Antenna ID {} Spw ID {}',
                           gms.basename, gfield, gant, gspw)
 
-            # Deviation Mask 
+            # Deviation Mask
             # NOTE: deviation mask is evaluated per ms per field per spw
             if deviationmask:
                 LOG.info('Apply deviation mask to baseline fitting')
@@ -248,7 +248,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
                     if (fieldid, antennaid, spwid) not in ms.deviation_mask:
                         LOG.debug('Evaluating deviation mask for {} field {} antenna {} spw {}',
                                   ms.basename, fieldid, antennaid, spwid)
-                        #mask_list = self.evaluate_deviation_mask(ms.name, fieldid, antennaid, spwid, 
+                        #mask_list = self.evaluate_deviation_mask(ms.name, fieldid, antennaid, spwid,
                         #                                         consider_flag=True)
                         dvparams[ms.name][0].append(fieldid)
                         dvparams[ms.name][1].append(antennaid)
@@ -257,7 +257,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
                         deviation_mask[ms.basename][(fieldid, antennaid, spwid)] = ms.deviation_mask[(fieldid, antennaid, spwid)]
                 for (vis, params) in dvparams.iteritems():
                     field_list, antenna_list, spw_list = params
-                    dvtasks.append(deviation_mask_heuristic(vis=vis, field_list=field_list, antenna_list=antenna_list, 
+                    dvtasks.append(deviation_mask_heuristic(vis=vis, field_list=field_list, antenna_list=antenna_list,
                                                             spw_list=spw_list, consider_flag=True, parallel=self.inputs.parallel))
                 for vis, dvtask in dvtasks:
                     dvmasks = dvtask.get_result()
@@ -276,7 +276,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
 
             # Spectral Line Detection and Validation
             # MaskLine will update DataTable.MASKLIST column
-            maskline_inputs = maskline.MaskLine.Inputs(context, iteration, group_id, member_list, 
+            maskline_inputs = maskline.MaskLine.Inputs(context, iteration, group_id, member_list,
                                                        window, windowmode, edge, broadline, clusteringalgorithm)
             maskline_task = maskline.MaskLine(maskline_inputs)
             maskline_result = self._executor.execute(maskline_task, merge=False)
@@ -294,7 +294,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
             # register ids to per MS id collection
             for i in member_list:
                 member = group_desc[i]
-                registry[member.ms].append(member.field_id, member.antenna_id, member.spw_id, 
+                registry[member.ms].append(member.field_id, member.antenna_id, member.spw_id,
                                            grid_table=compressed_table, channelmap_range=channelmap_range)
 
             # add entry to outcome
@@ -319,8 +319,8 @@ class SDBaseline(basetask.StandardTaskTemplate):
         # 21/05/2018 TN temporal workaround
         # I don't know how to use vdp.ModeInputs so directly specify worker task class here
         worker_cls = worker.HpcCubicSplineBaselineSubtractionWorker
-        fitter_inputs = vdp.InputsContainer(worker_cls, context, 
-                                            vis=vislist, plan=plan, 
+        fitter_inputs = vdp.InputsContainer(worker_cls, context,
+                                            vis=vislist, plan=plan,
                                             fit_order=fitorder, edge=edge, blparam=blparam,
                                             deviationmask=deviationmask_list,
                                             parallel=self.inputs.parallel,
@@ -377,7 +377,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
         Create deviation mask using MaskDeviation heuristic
         """
         h = MaskDeviationHeuristic()
-        mask_list = h.calculate(vis=vis, field_id=field_id, antenna_id=antenna_id, spw_id=spw_id, 
+        mask_list = h.calculate(vis=vis, field_id=field_id, antenna_id=antenna_id, spw_id=spw_id,
                                 consider_flag=consider_flag)
         return mask_list
 
@@ -422,7 +422,7 @@ class DeviationMaskHeuristicsTask(HeuristicsTask):
 
 def deviation_mask_heuristic(vis, field_list, antenna_list, spw_list, consider_flag=False, parallel=None):
     #parallel_wanted = mpihelpers.parse_mpi_input_parameter(parallel)
-    mytask = DeviationMaskHeuristicsTask(MaskDeviationHeuristic, vis=vis, field_list=field_list, 
+    mytask = DeviationMaskHeuristicsTask(MaskDeviationHeuristic, vis=vis, field_list=field_list,
                             antenna_list=antenna_list, spw_list=spw_list, consider_flag=consider_flag)
     #if parallel_wanted:
     if False:
