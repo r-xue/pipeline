@@ -16,7 +16,7 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class NRORestoreDataInputs(restoredata.RestoreDataInputs):
-    scalefile = vdp.VisDependentProperty(default='')
+    scalefile = vdp.VisDependentProperty(default='nroscalefile.csv')
 
     def __init__(self, context, infiles=None, caltable=None, scalefile=None,
                  products_dir=None, rawdata_dir=None, output_dir=None,

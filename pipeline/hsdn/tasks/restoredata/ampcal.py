@@ -16,7 +16,7 @@ LOG = infrastructure.get_logger(__name__)
 
 class SDAmpCalInputs(vdp.StandardInputs):
 
-    reffile = vdp.VisDependentProperty(default='')
+    reffile = vdp.VisDependentProperty(default='nroscalefile.csv')
 
     @vdp.VisDependentProperty
     def infiles(self):
