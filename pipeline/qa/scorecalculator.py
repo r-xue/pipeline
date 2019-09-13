@@ -2457,6 +2457,8 @@ def generate_metric_mask(context, result, cs, mask):
     #world = cs.toworld([0, 0, 0, 0], format='m')
     px = np.empty_like(ra)
     py = np.empty_like(dec)
+    px[:] = -1
+    py[:] = -1
     for i, (x, y, f) in enumerate(zip(ra, dec, online_flag)):
         if f != 1:
             # PIPE-439 flagged pointing data are not taken into account
