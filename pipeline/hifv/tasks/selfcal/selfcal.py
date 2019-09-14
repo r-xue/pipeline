@@ -56,8 +56,9 @@ class Selfcal(basetask.StandardTaskTemplate):
             stage_number = self.inputs.context.results[-1].read().stage_number + 1
 
         context = self.inputs.context
-        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        refantfield = context.evla['msinfo'][m.name].calibrator_field_select_string
+        m = self.inputs.context.observing_run.measurement_sets[0]
+        mses = context.evla['msinfo'].keys()
+        refantfield = context.evla['msinfo'][mses[0]].calibrator_field_select_string
         refantobj = findrefant.RefAntHeuristics(vis=self.inputs.vis, field=refantfield,
                                                 geometry=True, flagging=True, intent='',
                                                 spw='', refantignore=self.inputs.refantignore)
