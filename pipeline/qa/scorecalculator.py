@@ -918,7 +918,10 @@ def score_vla_flux_residual_rms(rmsmeanvalues):
     countfractions = np.array(counts) / np.sum(counts)
 
     # Weighted average per sources
-    score = np.average(scores, weights=countfractions)
+    try:
+        score = np.average(scores, weights=countfractions)
+    except Exception as e:
+        score = 0.0
 
     if score < 0.0:
         score = 0.0
