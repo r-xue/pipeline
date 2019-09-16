@@ -107,9 +107,9 @@ class Selfcal(basetask.StandardTaskTemplate):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         spwsobjlist = m.get_spectral_windows(science_windows_only=True)
-        spws = [str(spw.id) for spw in spwsobjlist]
-        numspws = len(spws)
-        lowestscispwid = min(spws)  # PIPE-101
+        spws = [int(spw.id) for spw in spwsobjlist]
+        numspws = len(m.get_spectral_windows(science_windows_only=False))
+        lowestscispwid = str(min(spws))  # PIPE-101
 
         applycal_task_args = {'vis': self.inputs.vis,
                               'gaintable': self.caltable,
