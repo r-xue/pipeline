@@ -3,12 +3,10 @@ The launcher module contains classes to initialize the pipeline, potentially
 from a saved context state.
 """
 from __future__ import absolute_import
+
 import datetime
 import os
-try:
-    import cPickle as pickle
-except:
-    import pickle
+import pickle
 import pprint
 
 from . import callibrary

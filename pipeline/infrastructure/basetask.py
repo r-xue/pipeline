@@ -5,6 +5,7 @@ import collections
 import datetime
 import inspect
 import os
+import pickle
 import pprint
 import re
 import textwrap
@@ -24,15 +25,6 @@ from . import project
 from . import task_registry
 from . import utils
 from . import vdp
-
-try:
-    import cPickle as pickle
-except:
-    import pickle
-try:
-    import cStringIO as StringIO
-except:
-    import StringIO
 
 LOG = logging.get_logger(__name__)
 

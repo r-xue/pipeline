@@ -1,10 +1,6 @@
 import abc
 import os
-
-try:
-    import cPickle as pickle
-except:
-    import pickle
+import pickle
 import tempfile
 
 from casampi.MPICommandClient import MPICommandClient

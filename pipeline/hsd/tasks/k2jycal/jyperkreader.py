@@ -1,8 +1,9 @@
-import cStringIO as StringIO
-import numpy
-import csv
 import contextlib
+import csv
+import io
 import itertools
+
+import numpy
 
 import pipeline.infrastructure as infrastructure
 
@@ -145,7 +146,7 @@ def associate(context, factors):
     Convert data collected from session based jyperk csv as JyPerK object
     to MS-beased csv, i.e., a string list of ['MS,ant,spwid,polid,factor', ...]
     """
-    stream = StringIO.StringIO()
+    stream = io.StringIO()
     try:
         data = factors.data
         for ms in context.observing_run.measurement_sets:

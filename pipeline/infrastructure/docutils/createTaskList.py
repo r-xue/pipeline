@@ -16,7 +16,7 @@
 from __future__ import print_function
 
 import os
-import commands
+import subprocess
 import time
 import string
 import re
@@ -46,7 +46,7 @@ class taskutil(object):
         self.tasks = []
 
     def createtasklist(self):
-        s = commands.getoutput('ls '+self.taskdir+'/*.xml')
+        s = subprocess.getoutput('ls '+self.taskdir+'/*.xml')
         tasks = s.split('\n')
         for i in xrange(len(tasks)):
             tasks[i] = tasks[i].split('/')[-1].replace('.xml', '')
@@ -235,7 +235,7 @@ class taskutil2(taskutil):
         super(taskutil2, self).__init__(dirname=dirname, title=title, prefix=prefix)
 
     def createtasklist(self):
-        s = commands.getoutput('ls '+self.taskdir+'/*.xml')
+        s = subprocess.getoutput('ls '+self.taskdir+'/*.xml')
         tasks = s.split('\n')
         self.tasks = []
         for i in xrange(len(tasks)):

@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
 import contextlib
-import copy_reg
+import copyreg
 import datetime
 import inspect
 import operator
@@ -253,4 +253,4 @@ for tool in __tools:
     tool_type = type(globals()[tool])
     unpickler = lambda data: globals()[tool]
     pickler = lambda _: (unpickler, (tool, ))
-    copy_reg.pickle(tool_type, pickler, unpickler)
+    copyreg.pickle(tool_type, pickler, unpickler)

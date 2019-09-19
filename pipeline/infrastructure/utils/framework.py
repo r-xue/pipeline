@@ -10,9 +10,11 @@ import copy
 import errno
 import glob
 import inspect
+import io
 import itertools
 import operator
 import os
+import pickle
 import uuid
 
 from casampi.MPIEnvironment import MPIEnvironment
@@ -21,16 +23,6 @@ from .conversion import flatten, safe_split
 from .. import jobrequest
 from .. import logging
 from .. import mpihelpers
-
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
-try:
-    import cStringIO as StringIO
-except ImportError:
-    import StringIO
-
 
 LOG = logging.get_logger(__name__)
 
@@ -98,7 +90,7 @@ def get_calfroms(context, vis, caltypes=None):
 
 
 def pickle_copy(original):
-    stream = StringIO.StringIO()
+    stream = io.StringIO()
     pickle.dump(original, stream, -1)
     # rewind to the start of the 'file', allowing it to be read in its
     # entirety - otherwise we get an EOFError

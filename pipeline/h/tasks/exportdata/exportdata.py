@@ -29,7 +29,7 @@ task = pipeline.tasks.exportdata.ExportData(inputs)
 """
 from __future__ import absolute_import
 
-import StringIO
+import io
 import collections
 import copy
 import errno
@@ -901,7 +901,7 @@ class ExportData(basetask.StandardTaskTemplate):
         if not self._executor._dry_run:
             tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
             tar.add(flagsname)
-            tar.addfile(ti, StringIO.StringIO(line))
+            tar.addfile(ti, io.StringIO(line))
             tar.close()
 
         # Restore the original current working directory
