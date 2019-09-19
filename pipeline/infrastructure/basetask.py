@@ -11,7 +11,7 @@ import textwrap
 import traceback
 import uuid
 
-from mpi4casa.MPIEnvironment import MPIEnvironment
+from casampi.MPIEnvironment import MPIEnvironment
 
 from . import api
 from . import casatools

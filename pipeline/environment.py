@@ -10,7 +10,7 @@ import string
 import subprocess
 
 import pkg_resources
-from mpi4casa.MPIEnvironment import MPIEnvironment
+from casampi.MPIEnvironment import MPIEnvironment
 
 from .infrastructure import mpihelpers
 

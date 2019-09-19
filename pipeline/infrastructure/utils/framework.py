@@ -15,7 +15,7 @@ import operator
 import os
 import uuid
 
-from mpi4casa.MPIEnvironment import MPIEnvironment
+from casampi.MPIEnvironment import MPIEnvironment
 
 from .conversion import flatten, safe_split
 from .. import jobrequest

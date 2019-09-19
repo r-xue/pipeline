@@ -7,8 +7,8 @@ except:
     import pickle
 import tempfile
 
-from mpi4casa.MPICommandClient import MPICommandClient
-from mpi4casa.MPIEnvironment import MPIEnvironment
+from casampi.MPICommandClient import MPICommandClient
+from casampi.MPIEnvironment import MPIEnvironment
 
 from pipeline.infrastructure import exceptions
 from pipeline.infrastructure import logging
