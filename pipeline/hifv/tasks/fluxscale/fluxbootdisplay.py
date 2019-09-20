@@ -159,7 +159,7 @@ class modelfitSummaryChart(object):
                 maxfreq = np.max(frequencies)
                 m = self.context.observing_run.get_ms(self.result.inputs['vis'])
                 fieldobject = m.get_fields(source)
-                fieldid = str(fieldobject[0].id)
+                fieldid = str([str(f.id) for f in fieldobject if str(f.id) in self.result.fluxscale_result.keys()][0])
                 spidx = self.result.fluxscale_result[fieldid]['spidx']
                 fitreff = self.result.fluxscale_result[fieldid]['fitRefFreq']
                 reffreq = fitreff / 1.e9

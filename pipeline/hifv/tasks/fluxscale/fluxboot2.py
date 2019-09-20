@@ -313,7 +313,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         spw2bandall = m.get_vla_spw2band()
         spws = m.get_spectral_windows()
-        spwidlist = [spw.id for spw in spws]
+        spwidlist = [spw.id for spw in spws if 'AMPLITUDE' in spw.intents]
 
         spw2band = {}
         for key, value in spw2bandall.items():
@@ -447,7 +447,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
             unique_bands = list(np.unique(bands))
 
             fieldobject = m.get_fields(source)
-            fieldid = str(fieldobject[0].id)
+            fieldid = str([str(f.id) for f in fieldobject if str(f.id) in fluxscale_result.keys()][0])
 
             for band in unique_bands:
                 lfreqs = []
