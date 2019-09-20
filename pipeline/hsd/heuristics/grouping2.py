@@ -14,7 +14,7 @@ class GroupByPosition2(api.Heuristic):
     @staticmethod
     def translate_pos_dict(pos_dict, rows, ids):
         translated = {}
-        for (pos, val) in pos_dict.iteritems():
+        for pos, val in pos_dict.items():
             key = rows[pos]
             if val[0] == -1:
                 translated[key] = [[-1, rows[val[1]]], [ids[val[1]]]]
@@ -79,9 +79,9 @@ class GroupByPosition2(api.Heuristic):
         # make a list of spectra inside each lattice grid
         # store the list in PosDict[i] where 'i' is the smallest row number in the list
         # Other spectra have a reference to 'i'
-        LOG.debug('SelectDict.keys() : %s' % SelectDict.keys())
+        LOG.debug('SelectDict.keys() : %s' % list(SelectDict.keys()))
         for sRA in SelectDict:
-            LOG.debug('len(SelectDict[%s].keys()) : %s' % (sRA, len(SelectDict[sRA].keys())))
+            LOG.debug('len(SelectDict[%s].keys()) : %s' % (sRA, len(list(SelectDict[sRA].keys()))))
             for sDEC in SelectDict[sRA]:
                 PosDict[SelectDict[sRA][sDEC][0]] = SelectDict[sRA][sDEC]
                 if len(SelectDict[sRA][sDEC]) != 1:
@@ -292,7 +292,7 @@ class MergeGapTables2(api.Heuristic):
                         BeamDict[tBEAM[idx]].append(idx)
                     else:
                         BeamDict[tBEAM[idx]] = [idx]
-                BeamList = BeamDict.values()
+                BeamList = list(BeamDict.values())
                 for beam in BeamList:
                     TimeTable[i].append(beam)
 

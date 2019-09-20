@@ -43,7 +43,7 @@ class MakeImListResult(basetask.Results):
             context.clean_list_info = self.clean_list_info
         else:
             context.clean_list_pending.extend(targets_copy)
-            for key, value in self.clean_list_info.iteritems():
+            for key, value in self.clean_list_info.items():
                 if context.clean_list_info.get(key, None) is not None:
                     context.clean_list_info[key] = '%s %s' % (context.clean_list_info[key], value)
                 else:
@@ -111,17 +111,17 @@ class MakeImListResult(basetask.Results):
             imsize_width = max(imsize_width, len(str(target['imsize'])))
             imagename = os.path.basename(target['imagename'])
             imagename_width = max(imagename_width, len(imagename))
-            if 'specmode' in target.keys():
+            if 'specmode' in target:
                 specmode_width = max(specmode_width, len(str(target['specmode'])))
-            if 'start' in target.keys():
+            if 'start' in target:
                 start_width = max(start_width, len(str(target['start'])))
-            if 'width' in target.keys():
+            if 'width' in target:
                 width_width = max(width_width, len(str(target['width'])))
-            if 'nbin' in target.keys():
+            if 'nbin' in target:
                 nbin_width = max(nbin_width, len(str(target['nbin'])))
-            if 'nchan' in target.keys():
+            if 'nchan' in target:
                 nchan_width = max(nchan_width, len(str(target['nchan'])))
-            if 'uvrange' in target.keys():
+            if 'uvrange' in target:
                 uvrange_width = max(uvrange_width, len(str(target['uvrange'])))
 
         field_width += 1
@@ -146,17 +146,17 @@ class MakeImListResult(basetask.Results):
         repr += '{0:{1}}'.format('cell', cell_width)
         repr += '{0:{1}}'.format('imsize', imsize_width)
         repr += '{0:{1}}'.format('imagename', imagename_width)
-        if 'specmode' in target.keys():
+        if 'specmode' in target:
             repr += '{0:{1}}'.format('specmode', specmode_width)
-        if 'start' in target.keys():
+        if 'start' in target:
             repr += '{0:{1}}'.format('start', start_width)
-        if 'width' in target.keys():
+        if 'width' in target:
             repr += '{0:{1}}'.format('width', width_width)
-        if 'nbin' in target.keys():
+        if 'nbin' in target:
             repr += '{0:{1}}'.format('nbin', nbin_width)
-        if 'nchan' in target.keys():
+        if 'nchan' in target:
             repr += '{0:{1}}'.format('nchan', nchan_width)
-        if 'uvrange' in target.keys():
+        if 'uvrange' in target:
             repr += '{0:{1}}'.format('uvrange', uvrange_width)
 
         for target in self.targets:
@@ -170,17 +170,17 @@ class MakeImListResult(basetask.Results):
             repr += '{0:{1}}'.format(target['imsize'], imsize_width)
             repr += '{0:{1}}'.format(os.path.basename(target['imagename']),
               imagename_width)
-            if 'specmode' in target.keys():
+            if 'specmode' in target:
                 repr += '{0:{1}}'.format(target['specmode'], specmode_width)
-            if 'start' in target.keys():
+            if 'start' in target:
                 repr += '{0:{1}}'.format(str(target['start']), start_width)
-            if 'width' in target.keys():
+            if 'width' in target:
                 repr += '{0:{1}}'.format(str(target['width']), width_width)
-            if 'nbin' in target.keys():
+            if 'nbin' in target:
                 repr += '{0:{1}}'.format(str(target['nbin']), nbin_width)
-            if 'nchan' in target.keys():
+            if 'nchan' in target:
                 repr += '{0:{1}}'.format(str(target['nchan']), nchan_width)
-            if 'uvrange' in target.keys():
+            if 'uvrange' in target:
                 repr += '{0:{1}}'.format(str(target['uvrange']), uvrange_width)
 
         return repr

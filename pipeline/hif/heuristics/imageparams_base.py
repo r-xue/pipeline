@@ -147,8 +147,8 @@ class ImageParamsHeuristics(object):
             contfile_handler = contfilehandler.ContFileHandler(contfile, warn_nonexist=True)
 
             # Collect the merged the ranges
-            for field_name in cont_ranges_spwsel.iterkeys():
-                for spw_id in cont_ranges_spwsel[field_name].iterkeys():
+            for field_name in cont_ranges_spwsel:
+                for spw_id in cont_ranges_spwsel[field_name]:
                     cont_ranges_spwsel[field_name][spw_id], all_continuum_spwsel[field_name][spw_id] = contfile_handler.get_merged_selection(field_name, spw_id)
 
         # alternatively read and merge line regions and calculate continuum regions
@@ -906,7 +906,7 @@ class ImageParamsHeuristics(object):
             # Check if representative bandwidth is larger than spw bandwidth. If so, switch to fullcont.
             repr_spw_obj = repr_ms.get_spectral_window(repr_spw)
             repr_spw_bw = cqa.quantity(float(repr_spw_obj.bandwidth.convert_to(measures.FrequencyUnits.HERTZ).value), 'Hz')
-            cont_spw_ids = self.observing_run.virtual_science_spw_ids.keys()
+            cont_spw_ids = list(self.observing_run.virtual_science_spw_ids.keys())
             agg_bw = self.aggregate_bandwidth(cont_spw_ids)
             if cqa.gt(repr_target[2], cqa.mul(agg_bw, 0.9)):
                 reprBW_mode = 'all_spw'
@@ -1882,7 +1882,7 @@ class ImageParamsHeuristics(object):
         with casatools.ImageReader(psf_name) as image:
             try:
                 beams = image.restoringbeam()['beams']
-                bmaj = np.array([cqa.getvalue(cqa.convert(b['*0']['major'], 'arcsec')) for b in beams.itervalues()])
+                bmaj = np.array([cqa.getvalue(cqa.convert(b['*0']['major'], 'arcsec')) for b in beams.values()])
 
                 # Filter empty psf planes
                 bmaj = bmaj[np.where(bmaj > 1e-6)]

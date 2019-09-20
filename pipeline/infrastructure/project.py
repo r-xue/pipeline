@@ -16,7 +16,6 @@ LOG = logging.get_logger(__name__)
 
 
 # This class holds the project summary information
-
 class ProjectSummary(object):
     def __init__(self, proposal_code='', proposal_title='undefined', piname='undefined',
                  observatory='ALMA Joint Observatory', telescope='ALMA'):
@@ -28,25 +27,15 @@ class ProjectSummary(object):
         self.telescope = telescope
 
     def __iter__(self):
-        return vars(self).iteritems()
+        return iter(vars(self).items())
+
 
 # This class holds the ALMA project structure information.
-
 class ProjectStructure(object):
-    def __init__ (self,
-        ous_entity_type = 'ObsProject',
-        ous_entity_id = 'unknown',
-        ous_part_id ='unknown',
-        ous_title = 'undefined',
-        ous_type = 'Member',
-        ps_entity_type = 'ProjectStatus',
-        ps_entity_id = 'unknown',
-        ousstatus_type = 'OUSStatus',
-        ousstatus_entity_id = 'unknown',
-        ppr_type = 'SciPipeRequest',
-        ppr_entity_id = 'unknown',
-        ppr_file = '',
-        recipe_name = 'Undefined'):
+    def __init__(self, ous_entity_type='ObsProject', ous_entity_id='unknown', ous_part_id='unknown',
+                 ous_title='undefined', ous_type='Member', ps_entity_type='ProjectStatus', ps_entity_id='unknown',
+                 ousstatus_type='OUSStatus', ousstatus_entity_id='unknown', ppr_type='SciPipeRequest',
+                 ppr_entity_id='unknown', ppr_file='', recipe_name='Undefined'):
 
         self.ous_entity_type = ous_entity_type
         self.ous_entity_id = ous_entity_id
@@ -63,36 +52,27 @@ class ProjectStructure(object):
         self.recipe_name = recipe_name
 
     def __iter__(self):
-        return vars(self).iteritems()
+        return iter(vars(self).items())
+
 
 # This class holds the ALMA OUS performance parameters information.
-
 class PerformanceParameters(object):
 
     def __init__(self, desired_angular_resolution='0.0arcsec', min_angular_resolution='0.0arcsec',
-        max_angular_resolution = '0.0arcsec',
-        #desired_largest_scale = '0.0arcsec',
-        #desired_spectral_resolution = '0.0MHz',
-        desired_sensitivity = '0.0mJy',
-        desired_dynamic_range = 1.0,
-
-        # Note: Remove frequency and bandwidth settings?
-        representative_source = '',
-        representative_spwid = '',
-        representative_frequency = '0.0GHz',
-        representative_bandwidth = '0.0MHz',
-
-        max_cube_size = -1.0,
-        max_product_size = -1.0
-
-        ):
+                 max_angular_resolution='0.0arcsec',
+                 # desired_largest_scale = '0.0arcsec', desired_spectral_resolution = '0.0MHz',
+                 desired_sensitivity='0.0mJy', desired_dynamic_range=1.0,
+                 # Note: Remove frequency and bandwidth settings?
+                 representative_source='', representative_spwid='', representative_frequency='0.0GHz',
+                 representative_bandwidth='0.0MHz',
+                 max_cube_size=-1.0, max_product_size=-1.0):
 
         # QA goals
         self.desired_angular_resolution = desired_angular_resolution
         self.min_angular_resolution = min_angular_resolution
         self.max_angular_resolution = max_angular_resolution
-        #self.desired_largest_scale = desired_largest_scale
-        #self.desired_spectral_resolution = desired_spectral_resolution
+        # self.desired_largest_scale = desired_largest_scale
+        # self.desired_spectral_resolution = desired_spectral_resolution
         self.desired_sensitivity = desired_sensitivity
         self.desired_dynamic_range = desired_dynamic_range
 
@@ -108,15 +88,15 @@ class PerformanceParameters(object):
         self.max_product_size = max_product_size
 
     def __iter__(self):
-        return vars(self).iteritems()
+        return iter(vars(self).items())
 
 
 def get_state(o):
     # create a new vanilla instance so we can compare against the defaults
     defaults = o.__class__()
-    modified = {k: v for k, v in o.__dict__.iteritems() if v != getattr(defaults, k)}
+    modified = {k: v for k, v in o.__dict__.items() if v != getattr(defaults, k)}
     cls_name = o.__class__.__name__
-    return [(cls_name, k, v) for k, v in modified.iteritems()]
+    return [(cls_name, k, v) for k, v in modified.items()]
 
 
 class ModificationListener(object):

@@ -300,7 +300,7 @@ class ImageDisplay(object):
 
         # set my own colormap and normalise to plot sentinels
         cmap = _SentinelMap(plt.cm.gray, sentinels=sentinels)
-        norm = _SentinelNorm(sentinels=sentinels.keys())
+        norm = _SentinelNorm(sentinels=list(sentinels.keys()))
 
         # calculate vmin, vmax without the sentinels. Leaving norm to do
         # this is not sufficient; the standard Normalize gets called 
@@ -582,7 +582,7 @@ class _SentinelMap(Colormap):
         else:
             mult = 1
 
-        for sentinel, rgb in self.sentinels.iteritems():
+        for sentinel, rgb in self.sentinels.items():
             r, g, b = rgb
             if np.ndim(rgba) == 3:
                 rgba[:, :, 0][scaledData == sentinel] = r * mult

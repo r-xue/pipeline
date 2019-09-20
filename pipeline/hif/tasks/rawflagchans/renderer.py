@@ -43,7 +43,7 @@ class T2_4MDetailsRawflagchansRenderer(basetemplates.T2_4MDetailsDefaultRenderer
         # render plots for all EBs in one page
         plots_path = None
         if plots:
-            all_plots = list(utils.flatten([v for v in plots.itervalues()]))
+            all_plots = list(utils.flatten([v for v in plots.values()]))
             renderer = BaselineVsChannelsPlotRenderer(pipeline_context, results, all_plots)
             with renderer.get_file() as fileobj:
                 fileobj.write(renderer.render())

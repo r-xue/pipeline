@@ -207,7 +207,7 @@ class MaskLine(basetask.StandardTaskTemplate):
         cluster_info = validation_result.outcome['cluster_info']
 
         # export datatables
-        for datatable in dt_dict.itervalues():
+        for datatable in dt_dict.values():
             datatable.exportdata(minimal=True)
         t1 = time.time()
 

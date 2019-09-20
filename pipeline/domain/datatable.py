@@ -127,7 +127,7 @@ TABLEDESC_RW = __tabledescrw()
 def create_table(table, name, desc, memtype='plain', nrow=0):
     ret = table.create(name, desc, memtype=memtype, nrow=nrow)
     assert ret == True
-    for (_colname, _coldesc) in desc.iteritems():
+    for _colname, _coldesc in desc.items():
         if 'keywords' in _coldesc:
             table.putcolkeywords(_colname, _coldesc['keywords'])
 
@@ -354,7 +354,7 @@ class DataTableImpl(object):
         self.plaintable == ''
 
     def colnames(self):
-        return self.cols.keys()
+        return list(self.cols.keys())
 
     def getcol(self, name, startrow=0, nrow=-1, rowincr=1):
         return self.cols[name].getcol(startrow, nrow, rowincr)
@@ -386,7 +386,7 @@ class DataTableImpl(object):
         self.cols[name].putcellslice(rownr, value, blc, trc, incr)
 
     def getcolkeyword(self, columnname, keyword):
-        if columnname in TABLEDESC_RO.keys():
+        if columnname in TABLEDESC_RO:
             return self.tb1.getcolkeyword(columnname, keyword)
         else:
             return self.tb2.getcolkeyword(columnname, keyword)
@@ -585,9 +585,9 @@ class DataTableImpl(object):
                     'double': float,
                     'string': str}
         datatype = lambda desc: list if 'ndim' in desc and desc['ndim'] > 0 else type_map[desc['valueType']]
-        for (k, v) in TABLEDESC_RO.iteritems():
+        for k, v in TABLEDESC_RO.items():
             self.cols[k] = RO_COLUMN(self.tb1, k, datatype(v))
-        for (k, v) in TABLEDESC_RW.iteritems():
+        for k, v in TABLEDESC_RW.items():
             if k == 'MASKLIST':
                 self.cols[k] = DataTableColumnMaskList(self.tb2)
             elif k == 'NOCHANGE':
@@ -644,7 +644,7 @@ class DataTableImpl(object):
         rows = self.getcol('ROW')
         posgrp = self.getcol('POSGRP')
         posdict = {}
-        for (k, v) in posgrp_rep.iteritems():
+        for k, v in posgrp_rep.items():
             if int(k) not in mygrp:
                 continue
             key = rows[v]

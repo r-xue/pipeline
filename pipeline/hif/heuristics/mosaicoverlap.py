@@ -110,13 +110,12 @@ def mosaicOverlapFactorMS(ms, source, spw, diameter, intent='TARGET', fwhmfactor
                 # in order to avoid calculating each field separation twice.
                 smallerField = np.min([f, field])
                 largerField = np.max([f, field])
-                if (smallerField not in separationDict.keys()):
+                if smallerField not in separationDict:
                     separationDict[smallerField] = {}
-                if (largerField not in separationDict[smallerField]):
+                if largerField not in separationDict[smallerField]:
                     df = ms.get_fields(field_id=f)[0].mdirection
                     dfield = ms.get_fields(field_id=field)[0].mdirection
-                    separation = np.degrees(angularSeparationOfDirections( \
-                        df, dfield)) * 3600.0
+                    separation = np.degrees(angularSeparationOfDirections(df, dfield)) * 3600.0
                     separationDict[smallerField][largerField] = separation
                 else:
                     separation = separationDict[smallerField][largerField]
@@ -125,12 +124,11 @@ def mosaicOverlapFactorMS(ms, source, spw, diameter, intent='TARGET', fwhmfactor
                 separation = 0
 
             # Compute the fractional flux factors per field
-            if (separation < radiusFirstNull):
+            if separation < radiusFirstNull:
                 # Truncate the Gaussian at the first null of the Bessel
                 # function
-                fractionalFlux = gaussianBeamResponse(separation,
-                    frequency, diameter, taper=taper, obscuration=obscuration,
-                    fwhmfactor=fwhmfactor)
+                fractionalFlux = gaussianBeamResponse(separation, frequency, diameter, taper=taper,
+                                                      obscuration=obscuration, fwhmfactor=fwhmfactor)
                 timeOnSource[i] += fractionalFlux ** 2
 
     # Compute and return the maximum response
@@ -225,29 +223,27 @@ def mosaicOverlapFactorVIS(vis, source, spw, diameter, fwhmfactor=1.13, taper=10
     with casatools.MSMDReader(vis) as msmd:
         for i, f in enumerate(fields):
             for field in fields:
-                if (f != field):
+                if f != field:
                     # Fill the upper half of a matrix to hold separations
                     # in order to avoid calculating each field separation twice.
                     smallerField = np.min([f, field])
                     largerField = np.max([f, field])
-                    if (smallerField not in separationDict.keys()):
+                    if smallerField not in separationDict:
                         separationDict[smallerField] = {}
-                    if (largerField not in separationDict[smallerField]):
-                        separation = np.degrees(angularSeparationOfDirections( \
-                            msmd.phasecenter(f), msmd.phasecenter(field))) * \
-                            3600.0
+                    if largerField not in separationDict[smallerField]:
+                        separation = np.degrees(angularSeparationOfDirections(msmd.phasecenter(f),
+                                                                              msmd.phasecenter(field))) * 3600.0
                         separationDict[smallerField][largerField] = separation
                     else:
                         separation = separationDict[smallerField][largerField]
                     separations.append(separation)
                 else:
                     separation = 0
-                if (separation < radiusFirstNull):
+                if separation < radiusFirstNull:
                     # Truncate the Gaussian at the first null of the Bessel
                     # function
-                    fractionalFlux = gaussianBeamResponse(separation,
-                        frequency, diameter, taper=taper,
-                        obscuration=obscuration, fwhmfactor=fwhmfactor)
+                    fractionalFlux = gaussianBeamResponse(separation, frequency, diameter, taper=taper,
+                                                          obscuration=obscuration, fwhmfactor=fwhmfactor)
                     timeOnSource[i] += fractionalFlux ** 2
 
     # Compute and return the maximum response

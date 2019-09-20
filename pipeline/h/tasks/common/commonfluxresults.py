@@ -70,7 +70,7 @@ class FluxCalibrationResults(basetask.Results):
 
     def __repr__(self):
         s = 'Flux calibration results for %s:\n' % os.path.basename(self.vis)
-        for field, flux_densities in self.measurements.iteritems():
+        for field, flux_densities in self.measurements.items():
             flux_by_spw = sorted(flux_densities, key=lambda f: f.spw_id)                    
             # rather complicated string format to display something like:
             # 0841+708 spw #0: I=3.2899 Jy; Q=0 Jy; U=0 Jy; V=0 Jy

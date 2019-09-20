@@ -324,7 +324,7 @@ class RestoreData(basetask.StandardTaskTemplate):
         #   Download from the archive or products_dir to rawdata_dir.
         if pipemanifest is not None:
             inflagfiles = [os.path.join(inputs.products_dir, flagfile)
-                           for flagfile in pipemanifest.get_final_flagversions(ouss).itervalues()]
+                           for flagfile in pipemanifest.get_final_flagversions(ouss).values()]
         else:
             inflagfiles = glob.glob(os.path.join(inputs.products_dir, '*.flagversions.tgz'))
 
@@ -336,7 +336,7 @@ class RestoreData(basetask.StandardTaskTemplate):
         #   Download calibration files from the archive or products_dir to
         if pipemanifest is not None:
             incaltables = [os.path.join(inputs.products_dir, caltable)
-                           for caltable in pipemanifest.get_caltables(ouss).itervalues()]
+                           for caltable in pipemanifest.get_caltables(ouss).values()]
         else:
             incaltables = glob.glob(os.path.join(inputs.products_dir, '*.caltables.tgz'))
 
@@ -349,7 +349,7 @@ class RestoreData(basetask.StandardTaskTemplate):
         #   TBD: Currently assumed done somehow
         if pipemanifest is not None:
             inapplycals = [os.path.join(inputs.products_dir, applycals)
-                           for applycals in pipemanifest.get_applycals(ouss).itervalues()]
+                           for applycals in pipemanifest.get_applycals(ouss).values()]
         else:
             inapplycals = glob.glob(os.path.join(inputs.products_dir, '*.calapply.txt'))
 
@@ -569,7 +569,7 @@ class RestoreData(basetask.StandardTaskTemplate):
         # Initialize the output session names and visibility file lists
         session_names = []
         session_vis_list = []
-        for key, _ in sorted(session_dict.iteritems(), key=lambda k_v: (k_v[1], k_v[0])):
+        for key, _ in sorted(session_dict.items(), key=lambda k_v: (k_v[1], k_v[0])):
             session_names.append(key)
             session_vis_list.append([])
 

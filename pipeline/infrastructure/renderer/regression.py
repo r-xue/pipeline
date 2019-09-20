@@ -225,7 +225,7 @@ class GcorFluxscaleRegressionExtractor(RegressionExtractor):
         prefix = get_prefix(result)
 
         d = OrderedDict()
-        for field_id, measurements in result.measurements.iteritems():
+        for field_id, measurements in result.measurements.items():
             for m in measurements:
                 key = '{}.field_{}.spw_{}.I'.format(prefix, field_id, m.spw_id)
                 d[key] = str(m.I.to_units(FluxDensityUnits.JANSKY))
@@ -257,11 +257,11 @@ class ApplycalRegressionExtractor(RegressionExtractor):
         d['{}.num_rows_flagged.after'.format(prefix)] = int(num_flags_after)
 
         flag_summary_before = summaries_by_name['before']
-        for scan_id, v in flag_summary_before['scan'].iteritems():
+        for scan_id, v in flag_summary_before['scan'].items():
             d['{}.scan_{}.num_rows_flagged.before'.format(prefix, scan_id)] = int(v['flagged'])
 
         flag_summary_after = summaries_by_name['applycal']
-        for scan_id, v in flag_summary_after['scan'].iteritems():
+        for scan_id, v in flag_summary_after['scan'].items():
             d['{}.scan_{}.num_rows_flagged.after'.format(prefix, scan_id)] = int(v['flagged'])
 
         qa_entries = extract_qa_score_regression(prefix, result)
@@ -300,7 +300,7 @@ def extract_regression_results(context):
         unified = union(unified, registry.handle(results))
 
     # return unified
-    return ['{}={}'.format(k, v) for k, v in unified.iteritems()]
+    return ['{}={}'.format(k, v) for k, v in unified.items()]
 
 
 # TODO enable runtime comparisons?

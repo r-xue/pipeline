@@ -286,7 +286,7 @@ class Circfeedpolcal(polarization.Polarization):
         calto = callibrary.CalTo(self.inputs.vis)
         calstate = self.inputs.context.callibrary.get_calstate(calto)
         merged = calstate.merged()
-        for calto, calfroms in merged.iteritems():
+        for calto, calfroms in merged.items():
             calapp = callibrary.CalApplication(calto, calfroms)
             GainTables.append(calapp.gaintable)
             interp.append(calapp.interp)
@@ -358,7 +358,7 @@ class Circfeedpolcal(polarization.Polarization):
         calto = callibrary.CalTo(self.inputs.vis)
         calstate = self.inputs.context.callibrary.get_calstate(calto)
         merged = calstate.merged()
-        for calto, calfroms in merged.iteritems():
+        for calto, calfroms in merged.items():
             calapp = callibrary.CalApplication(calto, calfroms)
             GainTables.append(calapp.gaintable)
 
@@ -547,7 +547,7 @@ class Circfeedpolcal(polarization.Polarization):
                 spws = []
                 for spwitem in banddict[band][baseband]:
                     # TODO: review if this relies on order of keys.
-                    spws.append(spwitem.keys()[0])
+                    spws.append(list(spwitem.keys())[0])
                 vlabasebands.append(','.join(spws))
 
         return vlabasebands

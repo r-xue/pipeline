@@ -141,7 +141,7 @@ class modelfitSummaryChart(object):
         minfreqlist = []
         maxfreqlist = []
 
-        for source, datadicts in webdicts.iteritems():
+        for source, datadicts in webdicts.items():
             try:
                 frequencies = []
                 data = []
@@ -277,7 +277,7 @@ class residualsSummaryChart(object):
         colorcount = 0
         title = ''
 
-        for source, datadicts in webdicts.iteritems():
+        for source, datadicts in webdicts.items():
             try:
                 frequencies = []
                 residuals = []

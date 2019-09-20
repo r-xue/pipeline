@@ -45,7 +45,7 @@ class PlotterPool(object):
         return plotter
 
     def done(self):
-        for plotter in self.pool.itervalues():
+        for plotter in self.pool.values():
             plotter.done()
 
 
@@ -199,7 +199,7 @@ class BaselineSubtractionPlotManager(object):
                                                    org_direction,
                                                    atm_transmission, atm_freq)
         ret = []
-        for (plot_type, plots) in plot_list.iteritems():
+        for plot_type, plots in plot_list.items():
             if plot_type == 'pre_fit':
                 ptype = 'sd_sparse_map_before_subtraction_raw'
                 data = self.prefit_data
@@ -209,7 +209,7 @@ class BaselineSubtractionPlotManager(object):
             else:
                 ptype = 'sd_sparse_map_before_sutraction_avg'
                 data = self.prefit_data
-            for (pol, figfile) in plots.iteritems():
+            for pol, figfile in plots.items():
                 if os.path.exists(figfile):
                     parameters = {'intent': 'TARGET',
                                   'spw': self.virtual_spw_id, # parameter for plots are virtual spw id

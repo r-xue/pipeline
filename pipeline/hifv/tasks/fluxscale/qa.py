@@ -89,7 +89,7 @@ class Fluxboot2QAHandler(pqa.QAPlugin):
 
     def computeRMSandMean(self, webdicts):
         rmsmeanvalues = []
-        for source, datadicts in webdicts.iteritems():
+        for source, datadicts in webdicts.items():
             try:
                 frequencies = []
                 residuals = []

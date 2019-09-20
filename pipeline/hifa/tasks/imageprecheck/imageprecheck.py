@@ -179,7 +179,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
         primary_beam_size = image_heuristics.largest_primary_beam_size(spwspec=str(repr_spw), intent='TARGET')
         gridder = image_heuristics.gridder('TARGET', repr_field)
         field_ids = image_heuristics.field('TARGET', repr_field)
-        cont_spwids = sorted([s for s in context.observing_run.virtual_science_spw_ids.keys()])
+        cont_spwids = sorted(context.observing_run.virtual_science_spw_ids)
         repr_field_obj = repr_ms.get_fields(repr_field, intent='TARGET')[0]
         filtered_cont_spwids = sorted([context.observing_run.real2virtual_spw_id(s.id, repr_ms) for s in repr_field_obj.valid_spws if context.observing_run.real2virtual_spw_id(s.id, repr_ms) in map(int, cont_spwids)])
         cont_spw = ','.join(map(str, filtered_cont_spwids))

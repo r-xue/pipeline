@@ -932,7 +932,7 @@ class ExportData(basetask.StandardTaskTemplate):
 
             # Log the list in human readable form. Better way to do this ?
             nitems = 0
-            for calto, calfrom in applied_calstate.merged().iteritems():
+            for calto, calfrom in applied_calstate.merged().items():
                 LOG.info('Apply to:  Field: %s  Spw: %s  Antenna: %s',
                          calto.field, calto.spw, calto.antenna)
                 nitems = nitems + 1
@@ -985,7 +985,7 @@ class ExportData(basetask.StandardTaskTemplate):
         # Initialize the output session names and visibility file lists
         session_names = []
         session_vis_list = []
-        for key, value in sorted(session_dict.iteritems(), key=lambda k_v: (k_v[1], k_v[0])):
+        for key, value in sorted(session_dict.items(), key=lambda k_v: (k_v[1], k_v[0])):
             session_names.append(key)
             session_vis_list.append([])
 

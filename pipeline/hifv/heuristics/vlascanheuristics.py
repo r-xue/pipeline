@@ -331,7 +331,7 @@ def buildscans(msfile, scd):
     # scd = mysc['summary']
     scanlist = []
     scanindex = {}
-    scl = scd.keys()
+    scl = list(scd.keys())
     for sscan in scl:
         isc = int(sscan)
         scanlist.append(isc)
@@ -353,7 +353,7 @@ def buildscans(msfile, scd):
     for isc in scanlist:
         sscan = scanindex[isc]
         # sub-scans, differentiated by StateId
-        subs = scd[sscan].keys()
+        subs = list(scd[sscan].keys())
         scan_start = -1.
         scan_end = -1.
         for ss in subs:

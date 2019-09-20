@@ -156,7 +156,7 @@ def score_kspw(context, result):
         return []
 
     # gather spw ID for all measurements in the result
-    measurement_spw_ids = {fd.spw_id for measurements in result.measurements.itervalues() for fd in measurements}
+    measurement_spw_ids = {fd.spw_id for measurements in result.measurements.values() for fd in measurements}
     measurement_spws = {spw for spw in ms.spectral_windows if spw.id in measurement_spw_ids}
 
     # run gaincalSNR
@@ -166,7 +166,7 @@ def score_kspw(context, result):
         LOG.warning('Error calculating internal spw-spw consistency: no result from aU.gaincalSNR')
         return []
 
-    gaincalSNR_spw_ids = {k for k, v in gaincalSNR_output.iteritems() if k in measurement_spw_ids}
+    gaincalSNR_spw_ids = {k for k, v in gaincalSNR_output.items() if k in measurement_spw_ids}
     if not gaincalSNR_spw_ids.issuperset(measurement_spw_ids):
         LOG.error('Error calculating internal spw-spw consistency: could not identify highest SNR spectral window')
         return []
@@ -176,7 +176,7 @@ def score_kspw(context, result):
 
     one_ghz = Frequency(1, FrequencyUnits.GIGAHERTZ)
 
-    for field_id, measurements in result.measurements.iteritems():
+    for field_id, measurements in result.measurements.items():
         # get domain object for the field.
         fields = ms.get_fields(task_arg=field_id)
         assert len(fields) == 1
@@ -324,13 +324,13 @@ def gaincalSNR(context, ms, tsysTable, flux, field, spws, intent='PHASE', requir
     # map CALIBRATE_PHASE spw to Tsys scans for the corresponding Tsys spw
     phase_spw_to_tsys_scans = {
         phase_spw: [scan for scan in ms.scans if 'ATMOSPHERE' in scan.intents and tsys_spw in scan.spws]
-        for phase_spw, tsys_spw in phase_spw_to_tsys_spw.iteritems()
+        for phase_spw, tsys_spw in phase_spw_to_tsys_spw.items()
     }
 
     wrapper = CaltableWrapperFactory.from_caltable(tsysTable)
     # keys: CALIBRATE_PHASE spws, values: corresponding Tsys values
     median_tsys = {}
-    for phase_spw, tsys_scans in phase_spw_to_tsys_scans.iteritems():
+    for phase_spw, tsys_scans in phase_spw_to_tsys_scans.items():
         # If there are multiple scans for an spw, then simply use the Tsys of the first scan
         first_tsys_scan = min(tsys_scans, key=operator.attrgetter('id'))
         tsys_spw = phase_spw_to_tsys_spw[phase_spw]
@@ -660,7 +660,7 @@ class CaltableWrapper(object):
 
         # combine masks to create final data selection mask
         mask = numpy.ones(len(self))
-        for k, v in mask_args.iteritems():
+        for k, v in mask_args.items():
             mask = (mask == 1) & (self._get_mask(v, k) == 1)
 
         # find data for the selection mask

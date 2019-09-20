@@ -36,13 +36,13 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
         plot_cover = {}  # key is field name, subkeys are 'title', 'cover_plots'
         # Render stage details pages
         details_title = ["R.A. vs Dec."]
-        for (name, _plots) in plot_group.iteritems():
+        for name, _plots in plot_group.items():
             perfield_plots = self._plots_per_field(_plots)
             if name in details_title:
                 renderer = SingleDishClusterPlotsRenderer(context, results, name, _plots)
                 with renderer.get_file() as fileobj:
                     fileobj.write(renderer.render())
-                for (field, pfplots) in perfield_plots.iteritems():
+                for field, pfplots in perfield_plots.items():
                     group_desc = {'title': name,
                                   'html': os.path.basename(renderer.path)}
                     if field not in plot_detail:
@@ -50,7 +50,7 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
                     group_desc['cover_plots'] = self._get_a_plot_per_spw(pfplots)
                     plot_detail[field].append(group_desc)
             else:
-                for (field, pfplots) in perfield_plots.iteritems():
+                for field, pfplots in perfield_plots.items():
                     group_desc = {'title': name,
                                   'html': os.path.basename(renderer.path)}
                     if field not in plot_cover:
@@ -73,7 +73,7 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
             subpage = {}
             # flattened = [plot for inner in plot_list.values() for plot in inner]
             flattened = compress.CompressedList()
-            for inner in plot_list.itervalues():
+            for inner in plot_list.values():
                 for plot in inner:
                     flattened.append(plot)
             datatype = 'Raw' if subtype == 'raw' else 'Averaged'
@@ -144,7 +144,7 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
     @staticmethod
     def _summary_plots(plot_group):
         summary_plots = {}
-        for (field_name, plots) in plot_group.iteritems():
+        for field_name, plots in plot_group.items():
             spw_list = []
             summary_plots[field_name] = compress.CompressedList()
             for xplot in plots:

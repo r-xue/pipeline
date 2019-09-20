@@ -114,7 +114,7 @@ class T2_4MDetailsCorrectedampflagRenderer(basetemplates.T2_4MDetailsDefaultRend
         previous_summary = None
         for summary in summaries:
 
-            for intent, scan_ids in intent_scans.iteritems():
+            for intent, scan_ids in intent_scans.items():
                 flagcount = 0
                 totalcount = 0
 
@@ -142,12 +142,10 @@ class T2_4MDetailsCorrectedampflagRenderer(basetemplates.T2_4MDetailsDefaultRend
 
         previous_summary = None
         for summary in summaries:
-            tsys_spws = summary['spw'].keys()
-
             flagcount = 0
             totalcount = 0
 
-            for spw in tsys_spws:
+            for spw in summary['spw']:
                 try:
                     flagcount += int(summary['spw'][spw]['flagged'])
                     totalcount += int(summary['spw'][spw]['total'])

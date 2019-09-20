@@ -587,7 +587,7 @@ class SessionALMAPhcorBandpass(basetask.StandardTaskTemplate):
         context = self.inputs.context
 
         session_groups = sessionutils.group_into_sessions(context, assessed)
-        for session_id, session_results in session_groups.iteritems():
+        for session_id, session_results in session_groups.items():
             # get a list of MeasurementSet domain objects for all MSes
             # in this session
             session_mses = [context.observing_run.get_ms(vis_result.vis) for vis_result in session_results]

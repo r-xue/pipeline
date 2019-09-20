@@ -354,9 +354,9 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
 
             # Field loop
             flagged = False
-            for fkey, fvalue in flagstats.iteritems():
+            for fkey, fvalue in flagstats.items():
                 # Spw loop
-                for skey, svalue in fvalue.iteritems():
+                for skey, svalue in fvalue.items():
                     if skey == spw.id:
                         flagged = True
                         if svalue > threshold:
@@ -382,11 +382,11 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
 
         # For spectral windows which are completely
         # flagged find the closest unflagged window.
-        for fkey, fvalue in flaggedspws.iteritems():
+        for fkey, fvalue in flaggedspws.items():
             maxdiff = sys.float_info.max
             ctrfreq = fvalue.centre_frequency.value
             closest_spwid = None
-            for _, ufvalue in unflaggedspws.iteritems():
+            for _, ufvalue in unflaggedspws.items():
                 uctrfreq = ufvalue.centre_frequency.value
                 diff = abs(ctrfreq - uctrfreq)
                 if diff < maxdiff:

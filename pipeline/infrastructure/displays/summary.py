@@ -307,8 +307,7 @@ class FieldVsTimeChart(object):
 
         x = 0.00
         size = [0.4, 0.4, 0.6, 0.6]
-        for intent, colour in sorted(self._intent_colours.items(),
-                                     key=operator.itemgetter(0)):
+        for intent, colour in sorted(self._intent_colours.items(), key=operator.itemgetter(0)):
             if (intent in self.inputs.ms.intents) or 'UNKNOWN' in intent:
                 pylab.gca().fill([x, x+0.05, x+0.05, x], size, facecolor=colour,
                                  edgecolor=colour)
@@ -318,9 +317,7 @@ class FieldVsTimeChart(object):
         pylab.axis(lims)
 
     def _get_colours(self, user_intents):
-        colours = [colour 
-                   for (intent, colour) in sorted(self._intent_colours.items(),
-                                                  key=operator.itemgetter(0))
+        colours = [colour for intent, colour in sorted(self._intent_colours.items(), key=operator.itemgetter(0))
                    if intent in user_intents]
         if not colours:
             colours.append(self._intent_colours['UNKNOWN'])

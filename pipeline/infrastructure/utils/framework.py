@@ -65,7 +65,7 @@ def get_calfroms(context, vis, caltypes=None):
     # TODO remove circular imports. This function can live in the callibrary module itself.
     from .. import callibrary
     if caltypes is None:
-        caltypes = callibrary.CalFrom.CALTYPES.keys()
+        caltypes = list(callibrary.CalFrom.CALTYPES.keys())
 
     # check that the
     if isinstance(caltypes, str):
@@ -80,7 +80,7 @@ def get_calfroms(context, vis, caltypes=None):
 
     try:
         # old dict-based callibrary implementation
-        calfroms = (itertools.chain(*calstate.merged().values()))
+        calfroms = (itertools.chain(*list(calstate.merged().values())))
         return [cf for cf in calfroms if cf.caltype in caltypes]
     except AttributeError:
         # it's a new IntervalTree-based callibrary
@@ -118,7 +118,7 @@ def gen_hash(o):
         return hash(o)
 
     new_o = copy.deepcopy(o)
-    for k, v in new_o.iteritems():
+    for k, v in new_o.items():
         new_o[k] = gen_hash(v)
 
     return hash(tuple(frozenset(new_o.items())))
@@ -261,7 +261,7 @@ def flatten_dict(d, join=operator.add, lift=lambda x: (x,)):
     flag_first = object()
 
     def visit(subdict, results, partial_key):
-        for k, v in subdict.iteritems():
+        for k, v in subdict.items():
             new_key = lift(k) if partial_key is flag_first else join(partial_key, lift(k))
             if isinstance(v, collections.Mapping):
                 visit(v, results, new_key)

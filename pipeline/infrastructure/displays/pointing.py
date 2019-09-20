@@ -452,7 +452,7 @@ class SingleDishPointingChart(object):
         # observing_pattern is None for invalid combination.
         spw_id = None
         for s in target_spws:
-            field_patterns = ms.observing_pattern[antenna_id][s.id].values()
+            field_patterns = list(ms.observing_pattern[antenna_id][s.id].values())
             if field_patterns.count(None) < len(field_patterns):
                 # at least one valid field exists.
                 spw_id = s.id

@@ -22,7 +22,7 @@ class ObservingPattern2(api.Heuristic):
         """
         LOG.info('Analyze Scan Pattern by Positions...')
 
-        rows = pos_dict.keys()
+        rows = list(pos_dict.keys())
         nrows = len(pos_dict)
         nPos = 0
         for row in rows:

@@ -255,7 +255,7 @@ class AquaXmlGenerator(object):
         # let each generator process the QA scores it can handle, accumulating
         # the XML as we go
         elements = []
-        for metric_name, scores in metric_to_scores.iteritems():
+        for metric_name, scores in metric_to_scores.items():
             xml = [fn(scores) for fn in registry if fn.handles(metric_name)]
             elements.extend(utils.flatten(xml))
 
@@ -591,7 +591,7 @@ def sensitivity_xml_for_stages(context, results, name=''):
         # Create the generic stage element
         stage_name, stage_score = _get_pipeline_stage_and_score(stage_result)
 
-        for task_name, exporter in TASK_NAME_TO_SENSITIVITY_EXPORTER.iteritems():
+        for task_name, exporter in TASK_NAME_TO_SENSITIVITY_EXPORTER.items():
             if stage_name == task_name:
                 stage_xml = xml_for_sensitivity_stage(context, stage_result, exporter, name)
                 xml_root.append(stage_xml)

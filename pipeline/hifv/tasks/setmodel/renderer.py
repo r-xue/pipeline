@@ -31,7 +31,7 @@ class T2_4MDetailsVLASetjyRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                                       setjy_display.AmpVsUVSummaryChart, 
                                       intents, correlation='LL,RR', overplot_receivers=False)
 
-            for vis, vis_plots in plots.iteritems():
+            for vis, vis_plots in plots.items():
                 amp_vs_uv_summary_plots[vis].extend(vis_plots)
 
         table_rows = make_flux_table(context, result)
@@ -98,7 +98,7 @@ def make_flux_table(context, results):
         if len(single_result.measurements) is 0:
             continue
 
-        for field_arg, measurements in single_result.measurements.iteritems():
+        for field_arg, measurements in single_result.measurements.items():
             fields = ms_for_result.get_fields(field_arg)
             field = ms_for_result.get_fields(field_arg)[0]
             try:

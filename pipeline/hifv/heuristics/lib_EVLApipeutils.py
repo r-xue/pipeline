@@ -193,7 +193,7 @@ def getCalFlaggedSoln(calTable):
     # Initialize a list to hold the results
     # Get shape of FLAG
     #(np,nc,ni) = flagCol.shape
-    rowlist = flagVarCol.keys()
+    rowlist = list(flagVarCol.keys())
     nrows = len(rowlist)
 
     # Create the output dictionary
@@ -633,7 +633,7 @@ def buildscans(msfile):
     #scd = mysc['summary']
     scanlist = []
     scanindex = {}
-    scl = scd.keys()
+    scl = list(scd.keys())
     for sscan in scl:
         isc = int(sscan)
         scanlist.append(isc)
@@ -655,7 +655,7 @@ def buildscans(msfile):
     for isc in scanlist:
         sscan = scanindex[isc]
         # sub-scans, differentiated by StateId
-        subs = scd[sscan].keys()
+        subs = list(scd[sscan].keys())
         #
         scan_start = -1.
         scan_end = -1.
@@ -1031,7 +1031,7 @@ def getBCalStatistics(calTable,innerbuff=0.1):
 
     print('Found {} Rx bands'.format(len(rxbands)))
     for rx in rxBasebandDict:
-        bblist = rxBasebandDict[rx].keys()
+        bblist = list(rxBasebandDict[rx].keys())
         print('Rx band {} has basebands: {}'.format(rx, bblist))
 
     # Initialize a list to hold the results
@@ -1039,7 +1039,7 @@ def getBCalStatistics(calTable,innerbuff=0.1):
     #(np,nc,ni) = flagCol.shape
     # Get shape of CPARAM
     #(np,nc,ni) = dataCol.shape
-    rowlist = dataVarCol.keys()
+    rowlist = list(dataVarCol.keys())
     nrows = len(rowlist)
 
     # Populate output dictionary structure

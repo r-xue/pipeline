@@ -152,8 +152,8 @@ class PlotGroup(object):
 
         plot_groups = []        
         # create a dictonary like groups{"phase"}{"time"}=[plot1,plot2,plot3]
-        for y_axes in grouped.itervalues():
-            for plots_with_common_axes in y_axes.itervalues():
+        for y_axes in grouped.values():
+            for plots_with_common_axes in y_axes.values():
                 plot_groups.append(PlotGroup(plots_with_common_axes))
 
         return plot_groups
@@ -301,7 +301,7 @@ class Plot(object):
         """
         regex = re.compile('\W')
         css_classes = [Parameters.getCssId(parameter) + ''.join(regex.split(str(val)))
-                       for parameter, val in self.parameters.iteritems()]
+                       for parameter, val in self.parameters.items()]
         return string.join(css_classes)
 
     @property
@@ -319,7 +319,7 @@ class Plot(object):
         params = ''
         if len(self.parameters) > 0:
             params = [string.join((Parameters.getDescription(str(k)), str(v)), ' ') 
-                      for k, v in self.parameters.iteritems() if k != "field"]
+                      for k, v in self.parameters.items() if k != "field"]
             params = string.join(params, ', ').rstrip(', ')
             # eg. ' for antenna 1, spectral window 2'
             params = ' for ' + params

@@ -49,7 +49,7 @@ def convert_args(pipeline_cls, casa_args, convert_nulls=True):
     if casa_task in _altmapping:
         mapping = _altmapping[casa_task]
         remapped = {}
-        for k, v in casa_args.iteritems():
+        for k, v in casa_args.items():
             name = mapping.get(k, k)
             if k != name and name in casa_args:
                 msg = ('Remapping %s for %s inputs overwrites an argument of '
@@ -72,14 +72,14 @@ def convert_args(pipeline_cls, casa_args, convert_nulls=True):
 
     # remove any arguments that are not accepted by the input constructor
     accepted = {}
-    accepted.update((k, v) for k, v in remapped.iteritems()
+    accepted.update((k, v) for k, v in remapped.items()
                     if k in constructor_args)
 
     # convert any CASA empty string or empty lists to None, thus allowing the
     # pipeline to use its default value.
     if convert_nulls:
         converted = {}
-        converted.update((k, _convert_null(v)) for k, v in accepted.iteritems())
+        converted.update((k, _convert_null(v)) for k, v in accepted.items())
     else:
         converted = accepted
 
@@ -110,9 +110,9 @@ def task_to_casa(taskname, task_args):
 
     # If required, rename CASA pipeline arguments to their pipeline equivalent
     casa_to_task = _altmapping[taskname]
-    d = dict((v, k) for k, v in casa_to_task.iteritems())
+    d = dict((v, k) for k, v in casa_to_task.items())
     remapped = {}
-    for k, v in task_args.iteritems():
+    for k, v in task_args.items():
         name = d.get(k, k)
         remapped[name] = v
 

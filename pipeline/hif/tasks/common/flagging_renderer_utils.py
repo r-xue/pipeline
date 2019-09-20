@@ -38,7 +38,7 @@ def flags_by_intent(ms, summaries):
     previous_summary = None
     for summary in summaries:
 
-        for intent, scan_ids in intent_scans.iteritems():
+        for intent, scan_ids in intent_scans.items():
             flagcount = 0
             totalcount = 0
 
@@ -102,7 +102,7 @@ def adjust_non_science_totals(flagtotals, non_science_agents=[]):
     agents_to_copy = set(non_science_agents)
     agents_to_adjust = set(flagtotals.keys()) - agents_to_copy
     data_selections = set()
-    for result in flagtotals.itervalues():
+    for result in flagtotals.values():
         data_selections.update(set(result.keys()))
 
     # copy agents that use the total number of visibilities across to new 
@@ -115,7 +115,7 @@ def adjust_non_science_totals(flagtotals, non_science_agents=[]):
     flagged_non_science = {}
     for data_selection in data_selections:
         flagged_non_science[data_selection] = sum([v[data_selection].flagged 
-                                                   for v in adjusted_results.itervalues()])
+                                                   for v in adjusted_results.values()])
 
     # subtract this 'number of rows flagged per data selection' from the total
     # for the remaining agents

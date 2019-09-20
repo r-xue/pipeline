@@ -121,7 +121,7 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                                       applycal.VLAAmpVsFrequencyBasebandSummaryChart,
                                       intents, correlation=corrstring)
 
-            for vis, vis_plots in plots.iteritems():
+            for vis, vis_plots in plots.items():
                 vis_plots_mod = []
                 for p in vis_plots:
                     p.parameters['intent_idx'] = intent_sort_order[','.join(p.parameters['intent'])]
@@ -137,7 +137,7 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                                       applycal.PhaseVsFrequencyPerBasebandSummaryChart,
                                       intents, correlation=corrstring)
 
-            for vis, vis_plots in plots.iteritems():
+            for vis, vis_plots in plots.items():
                 vis_plots_mod = []
                 for p in vis_plots:
                     p.parameters['intent_idx'] = intent_sort_order[','.join(p.parameters['intent'])]
@@ -164,7 +164,7 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                                       avgbaseline=True, avgantenna=False, plotrange=[0, 0, -180, 180])
 
             use_pol_plots = False
-            for vis, vis_plots in plots.iteritems():
+            for vis, vis_plots in plots.items():
                 vis_plots_mod = []
                 for p in vis_plots:
                     p.parameters['intent_idx'] = pol_intent_sort_order[','.join(p.parameters['intent'])]
@@ -186,7 +186,7 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                                       avgbaseline=True, avgantenna=False, plotrange=[])
 
             use_pol_plots = False
-            for vis, vis_plots in plots.iteritems():
+            for vis, vis_plots in plots.items():
                 vis_plots_mod = []
                 for p in vis_plots:
                     p.parameters['intent_idx'] = pol_intent_sort_order[','.join(p.parameters['intent'])]
@@ -504,13 +504,11 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 average_flux[(field_id, field_name)] = float(result['CORRECTED']['mean'])
 
             LOG.debug('Mean flux for %s targets:', intent)
-            for (field_id, field_name), v in average_flux.iteritems():
+            for (field_id, field_name), v in average_flux.items():
                 LOG.debug('\t%r (%s): %s', field_name, field_id, v)
 
             # find the ID of the field with the highest average flux
-            sorted_by_flux = sorted(average_flux.iteritems(),
-                                    key=operator.itemgetter(1),
-                                    reverse=True)
+            sorted_by_flux = sorted(average_flux.items(), key=operator.itemgetter(1), reverse=True)
             (brightest_id, brightest_name), highest_flux = sorted_by_flux[0]
 
             LOG.info('%s field %r (%s) has highest mean flux (%s)', intent,
@@ -637,7 +635,7 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         previous_summary = None
         for summary in summaries:
 
-            for intent, scan_ids in intent_scans.iteritems():
+            for intent, scan_ids in intent_scans.items():
                 flagcount = 0
                 totalcount = 0
 

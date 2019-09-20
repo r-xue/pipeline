@@ -1064,7 +1064,7 @@ class Correctedampflag(basetask.StandardTaskTemplate):
 
                 # Identify "bad baselines" as those baselines whose number
                 # of timestamps with outliers exceeds the threshold.
-                bad_bls = [bl for bl, count in outlier_bl_counts.iteritems()
+                bad_bls = [bl for bl, count in outlier_bl_counts.items()
                            if count > np.max([1, bl_counts[bl] * tmint_scaled])]
 
                 # Compute for each antenna how many "bad baselines" it is

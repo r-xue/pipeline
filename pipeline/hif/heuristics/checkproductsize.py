@@ -103,7 +103,7 @@ class CheckProductSizeHeuristics(object):
         if (self.inputs.maxcubesize != -1.0) and (maxcubesize > self.inputs.maxcubesize):
             nbins = []
             nbin_mitigation = False
-            for spw, nchan in nchans.iteritems():
+            for spw, nchan in nchans.items():
                 if (nchan == 3840) or (nchan in (1920, 960, 480) and utils.equal_to_n_digits(ch_width_ratios[spw], 2.667, 4)):
                     LOG.info('Size mitigation: Setting nbin for SPW %s to 2.' % (spw))
                     nbins.append('%s:2' % (spw))
@@ -226,7 +226,7 @@ class CheckProductSizeHeuristics(object):
 
                 nbins = []
                 nbin_mitigation = False
-                for spw, nchan in nchans.iteritems():
+                for spw, nchan in nchans.items():
                     if (nchan == 3840) or (nchan in (1920, 960, 480) and utils.equal_to_n_digits(ch_width_ratios[spw], 2.667, 4)):
                         LOG.info('Size mitigation: Setting nbin for SPW %s to 2.' % (spw))
                         nbins.append('%s:2' % (spw))
@@ -305,9 +305,9 @@ class CheckProductSizeHeuristics(object):
                 if (cubesizes[i] > 0.5 * self.inputs.maxcubelimit) and (self.inputs.maxcubelimit != -1):
                     spw_oversizes[target['spw']] += 1
 
-            if ([n != 0 for n in spw_oversizes.itervalues()].count(True) > 1) or \
+            if ([n != 0 for n in spw_oversizes.values()].count(True) > 1) or \
                ((total_productsize > self.inputs.maxproductsize) and (self.inputs.maxproductsize != -1)):
-                oversize_spws = [spw for spw, n in spw_oversizes.iteritems() if n>0]
+                oversize_spws = [spw for spw, n in spw_oversizes.items() if n>0]
                 # Add one large cube if there are any and make sure the representative
                 # spw is chosen if it is among the large cubes.
                 if oversize_spws != []:
@@ -325,7 +325,7 @@ class CheckProductSizeHeuristics(object):
                     mitigated_spws.append(str(repr_spw))
                     mitigated_productsize += productsizes[str(repr_spw)]
                 # Add other small cubes
-                other_small_cube_spws = [spw for spw, n in spw_oversizes.iteritems() if n==0 and spw != str(repr_spw)]
+                other_small_cube_spws = [spw for spw, n in spw_oversizes.items() if n==0 and spw != str(repr_spw)]
                 small_cube_frequencies = [frequencies[spw] for spw in other_small_cube_spws]
                 small_cube_productsizes = [productsizes[spw] for spw in other_small_cube_spws]
                 small_cube_info = list(zip(other_small_cube_spws, small_cube_frequencies, small_cube_productsizes))
@@ -384,7 +384,7 @@ class CheckProductSizeHeuristics(object):
                    cube_mitigated_productsize, \
                    maxcubesize, total_productsize, \
                    False, \
-                   {'longmsg': 'Size had to be mitigated (%s)' % (','.join(size_mitigation_parameters.iterkeys())), \
+                   {'longmsg': 'Size had to be mitigated (%s)' % (','.join(str(x) for x in size_mitigation_parameters)), \
                     'shortmsg': 'Size was mitigated'}, \
                    known_synthesized_beams
         else:

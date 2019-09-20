@@ -491,7 +491,7 @@ class SessionGcorFluxscale(basetask.StandardTaskTemplate):
         context = self.inputs.context
 
         session_groups = sessionutils.group_into_sessions(context, assessed)
-        for session_id, session_results in session_groups.iteritems():
+        for session_id, session_results in session_groups.items():
             # we need to convert the Field ID to field name in the
             # measurements
             measurements_per_field = collect_flux_measurements(context, session_results)
@@ -517,7 +517,7 @@ class SessionGcorFluxscale(basetask.StandardTaskTemplate):
                     # these are the measurements to adopt, but the spw
                     # names still need to be remapped to spw IDs for
                     # this MS
-                    unmapped_adopted = {k: v for k, v in averaged.iteritems() if k in no_amplitude_field_names}
+                    unmapped_adopted = {k: v for k, v in averaged.items() if k in no_amplitude_field_names}
 
                     mapped_adopted = map_spw_names_to_id(context, vis, unmapped_adopted)
 
@@ -571,7 +571,7 @@ def collect_flux_measurements(context, vis_result_tuples):
 
         ms = context.observing_run.get_ms(vis)
 
-        for field_id, measurements in result.measurements.iteritems():
+        for field_id, measurements in result.measurements.items():
             field_name = get_field_name(context, vis, field_id)
 
             for m in measurements:
@@ -591,7 +591,7 @@ def calc_averages_per_field(results):
     :return:
     """
     averages = collections.defaultdict(list)
-    for field_name, measurement_structs in results.iteritems():
+    for field_name, measurement_structs in results.items():
         spw_names = {spw_name for _, spw_name, _ in measurement_structs}
         for spw_name in spw_names:
             measurements_for_spw = [measurement for _, name, measurement in measurement_structs
@@ -651,7 +651,7 @@ def map_spw_names_to_id(context, vis, field_measurements):
 
     d = {field_name: [copy_flux_measurement(m, spw_id=spw_names_to_id[spw_name])
                       for spw_name, m in measurements if spw_name in spw_names_to_id]
-         for field_name, measurements in field_measurements.iteritems()}
+         for field_name, measurements in field_measurements.items()}
 
     return d
 

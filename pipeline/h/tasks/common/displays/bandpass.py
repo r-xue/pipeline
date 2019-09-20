@@ -37,7 +37,7 @@ class BandpassDetailChart(common.PlotbandpassDetailBase):
         for spw_id in self._figfile:
             # PIPE-110: show image sideband for DSB receivers.
             showimage = self._rxmap.get(spw_id, "") == "DSB"
-            for antenna_id, figfile in self._figfile[spw_id].iteritems():
+            for antenna_id, figfile in self._figfile[spw_id].items():
                 ant_name = self._antmap[antenna_id]
                 if os.path.exists(figfile):
                     task = self.create_task(spw_id, antenna_id, showimage=showimage)
@@ -76,7 +76,7 @@ class BandpassSummaryChart(common.PlotbandpassDetailBase):
         # into joint keys, and the filenames into a list as the output could
         # be any of the filenames, depending on whether spws were flagged
         spw_ids = [spw_id for spw_id in self._figfile]
-        ant_ids = [ant_ids.keys() for _, ant_ids in self._figfile.iteritems()]
+        ant_ids = [list(ant_ids.keys()) for _, ant_ids in self._figfile.items()]
         ant_ids = set(itertools.chain(*ant_ids))
 
         self._figfile = dict((ant_id, [self._figfile[spw_id][ant_id] for spw_id in spw_ids])
@@ -102,7 +102,7 @@ class BandpassSummaryChart(common.PlotbandpassDetailBase):
                 return None
 
         wrappers = []
-        for antenna_id, figfiles in list(self._figfile.iteritems()):
+        for antenna_id, figfiles in self._figfile.items():
             for figfile in figfiles:
                 if os.path.exists(figfile):
                     task = self.create_task('', antenna_id, showimage=self._showimage)

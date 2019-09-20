@@ -241,7 +241,7 @@ class Session(object):
             d.setdefault(ms.session, []).append(ms)
 
         session_names = []
-        for session_name, session_mses in d.iteritems():
+        for session_name, session_mses in d.items():
             oldest_ms = min(session_mses, key=lambda ms: utils.get_epoch_as_datetime(ms.start_time))
             session_names.append((utils.get_epoch_as_datetime(oldest_ms.start_time), session_name, session_mses))
 
@@ -457,7 +457,7 @@ class T1_1Renderer(RendererBase):
         for k, g in itertools.groupby(data, operator.itemgetter('hostname')):
             node_environments[k] = list(g)
 
-        for node, node_envs in node_environments.iteritems():
+        for node, node_envs in node_environments.items():
             if not node_envs:
                 continue
             mpi_server_envs = [n for n in node_envs if 'MPI Server' in n['role']]
@@ -611,11 +611,12 @@ class T1_3MRenderer(RendererBase):
                                 continue
 
                             fieldtable = {}
-                            for _, v in flagsummary.iteritems():
+                            for _, v in flagsummary.items():
                                 myname = v['name']
                                 myspw = v['spw']
                                 myant = v['antenna']
-                                spwkey = myspw.keys()[0]
+                                # TODO: review if this relies on order of keys.
+                                spwkey = list(myspw.keys())[0]
 
                                 fieldtable[myname] = {spwkey: myant}
 
@@ -840,9 +841,10 @@ class T2_1DetailsRenderer(object):
                     minfreqs = []
                     maxfreqs = []
                     for spwitem in banddict[band][baseband]:
-                        spws.append(spwitem.keys()[0])
-                        minfreqs.append(spwitem[spwitem.keys()[0]][0])
-                        maxfreqs.append(spwitem[spwitem.keys()[0]][1])
+                        # TODO: review if this relies on order of keys.
+                        spws.append(list(spwitem.keys())[0])
+                        minfreqs.append(spwitem[list(spwitem.keys())[0]][0])
+                        maxfreqs.append(spwitem[list(spwitem.keys())[0]][1])
                     bbandminfreq = min(minfreqs)
                     bbandmaxfreq = max(maxfreqs)
                     vla_basebands.append(band+': '+baseband+':  '+ str(bbandminfreq)+ ' to '+ str(bbandmaxfreq)+':   ['+','.join(spws)+']   ')
@@ -854,7 +856,8 @@ class T2_1DetailsRenderer(object):
             # to get thumbnail for representative pointing plot
             antenna = ms.antennas[0]
             field_strategy = ms.calibration_strategy['field_strategy']
-            target = field_strategy.keys()[0]
+            # TODO: review if this relies on order of keys.
+            target = list(field_strategy.keys())[0]
             reference = field_strategy[target]
             LOG.debug('target field id %s / reference field id %s' % (target, reference))
             task = pointing.SingleDishPointingChart(context, ms, antenna,
@@ -1149,7 +1152,7 @@ class T2_2_7Renderer(T2_2_XRendererBase):
         offset_pointings = []
         if is_singledish_ms(context):
             for antenna in ms.antennas:
-                for (target, reference) in ms.calibration_strategy['field_strategy'].iteritems():
+                for target, reference in ms.calibration_strategy['field_strategy'].items():
                     LOG.debug('target field id %s / reference field id %s' % (target, reference))
                     # pointing pattern without OFF-SOURCE intents
                     task = pointing.SingleDishPointingChart(context, ms, antenna, 
@@ -1213,7 +1216,7 @@ class T2_3_XMBaseRenderer(RendererBase):
             scores[result.stage_number] = result.qa.representative
 
         tablerows = []
-        for list_of_results_lists in topic.results_by_type.itervalues():
+        for list_of_results_lists in topic.results_by_type.values():
             if not list_of_results_lists:
                 continue
 
@@ -1625,11 +1628,11 @@ class T2_4MDetailsRenderer(object):
 
             elif weblog.registry.render_by_session(task.__name__):
                 session_grouped = group_into_sessions(context, task_result)
-                for session_id, session_results in session_grouped.iteritems():
+                for session_id, session_results in session_grouped.items():
                     container_urls[session_id] = {}
                     ms_grouped = group_into_measurement_sets(context, session_results)
 
-                    for ms_id, ms_result in ms_grouped.iteritems():
+                    for ms_id, ms_result in ms_grouped.items():
                         cls.render_result(renderer, context, ms_result, ms_id)
 
                         ms_weblog_path = cls.get_path(context, ms_result, ms_id)

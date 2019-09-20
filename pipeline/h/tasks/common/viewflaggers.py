@@ -122,7 +122,7 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                          'bad quadrant': 8,
                          'bad antenna': 9,
                          'too many entirely flagged': 10}
-    flag_reason_key = {value: key for (key, value) in flag_reason_index.iteritems()}
+    flag_reason_key = {value: key for (key, value) in flag_reason_index.items()}
 
     # override the inherited __init__ method so that references to the
     # task objects can be kept outside self.inputs. Later on self.inputs

@@ -91,7 +91,7 @@ def alphasort(argument):
             value[start_idx:end_idx] = sorted(value[start_idx:end_idx], key=natural_sort)
 
     else:
-        for attr_name, separator in attrs_and_separators.iteritems():
+        for attr_name, separator in attrs_and_separators.items():
             if name == attr_name and isinstance(value, str) and separator in value:
                 value = separator.join(sorted(value.split(separator), key=natural_sort))
 
@@ -148,7 +148,7 @@ class JobRequest(object):
         """
         # remove any keyword arguments that have a value of None or an empty
         # string, letting CASA use the default value for that argument
-        null_keywords = [k for k, v in kw.iteritems() if v in (None, '')]
+        null_keywords = [k for k, v in kw.items() if v in (None, '')]
         for key in null_keywords:
             kw.pop(key)
 
@@ -174,7 +174,7 @@ class JobRequest(object):
 
         # remove arguments that are not expected by the function, such as
         # pipeline variables that the CASA task is not expecting.
-        unexpected_kw = [k for k, v in kw.iteritems() if k not in argnames]
+        unexpected_kw = [k for k, v in kw.items() if k not in argnames]
         if unexpected_kw:
             LOG.warning('Removing unexpected keywords from JobRequest: {!s}'.format(unexpected_kw))
             for key in unexpected_kw:
@@ -270,7 +270,7 @@ class JobRequest(object):
             return hash(o)
 
         new_o = copy.deepcopy(o)
-        for k, v in new_o.iteritems():
+        for k, v in new_o.items():
             new_o[k] = self._gen_hash(v)
 
         return hash(tuple(frozenset(new_o.items())))

@@ -90,7 +90,7 @@ class BandpassWorker(basetask.StandardTaskTemplate):
         orig_antenna = inputs.antenna
 
         jobs = []
-        for calto, calfroms in calstate.merged().iteritems():
+        for calto, calfroms in calstate.merged().items():
             # arrange a bandpass job for the data selection
             inputs.spw = calto.spw
             inputs.field = calto.field

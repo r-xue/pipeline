@@ -456,7 +456,7 @@ class MeasurementSet(object):
             return [spw for spw in self.spectral_windows if spw.id in selected]
 
         spws = []
-        for spw_id, channels in selected.iteritems():
+        for spw_id, channels in selected.items():
             spw_obj = self.get_spectral_window(spw_id)
             proxy = spectralwindow.SpectralWindowWithChannelSelection(spw_obj, 
                                                                       channels)

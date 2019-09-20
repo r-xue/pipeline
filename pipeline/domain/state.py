@@ -30,7 +30,7 @@ class State(object):
     @property
     def intents(self):
         # return all intents
-        return {intent for mode, intent in self.obs_mode_mapping.iteritems() if self.obs_mode.find(mode) != -1}
+        return {intent for mode, intent in self.obs_mode_mapping.items() if self.obs_mode.find(mode) != -1}
 
     @property
     def reduction_intents(self):
@@ -66,7 +66,7 @@ class State(object):
 
     def get_obs_mode_for_intent(self, intent):
         intents = {i.strip('*') for i in intent.split(',') if i is not None}
-        return [mode for mode, pipeline_intent in self.obs_mode_mapping.iteritems()
+        return [mode for mode, pipeline_intent in self.obs_mode_mapping.items()
                 if pipeline_intent in intents and self.obs_mode.find(mode) != -1]
 
     def __str__(self):
@@ -169,7 +169,7 @@ class StateALMACycle0(StateALMA):
 
             # .. find the obs_mode(s) responsible for the addition of the
             # phase intent..
-            phase_obs_modes = [k for k, v in self.obs_mode_mapping.iteritems() if v == 'PHASE']
+            phase_obs_modes = [k for k, v in self.obs_mode_mapping.items() if v == 'PHASE']
             # and remove them from the obsmodes we should register
             dephased_obs_modes = [m for m in obs_mode.split(',') if m not in phase_obs_modes]
 

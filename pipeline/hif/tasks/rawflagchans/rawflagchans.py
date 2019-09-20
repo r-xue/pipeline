@@ -263,7 +263,7 @@ class RawflagchansData(basetask.StandardTaskTemplate):
                 while iterating:
                     rec = openms.getdata(
                         ['data', 'flag', 'antenna1', 'antenna2'])
-                    if 'data' not in rec.keys():
+                    if 'data' not in rec:
                         break
 
                     for row in range(np.shape(rec['data'])[2]):
@@ -366,7 +366,7 @@ class RawflagchansView(object):
             # The dataresult should have stored separate results
             # for each spwid it could find data for in the MS.
             # Create a separate flagging view for each spw.
-            for spwid, spwdata in dataresult.data.iteritems():
+            for spwid, spwdata in dataresult.data.items():
 
                 LOG.info('Calculating flagging view for spw %s' % spwid)
 

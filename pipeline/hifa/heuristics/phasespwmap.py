@@ -30,7 +30,7 @@ def combine_spwmap(scispws):
 
     # For each spectral spec, map corresponding science spws to the lowest
     # spw id of the same spectral spec.
-    for spspec_spwids in spspec_to_spwid_map.itervalues():
+    for spspec_spwids in spspec_to_spwid_map.values():
         combine_spwid = min(spspec_spwids)
         for spwid in spspec_spwids:
             combinespwmap[spwid] = combine_spwid
@@ -63,7 +63,7 @@ def get_spspec_to_spwid_map(spws):
 
     # result sorted by spw number for more friendly processing when iterating downstream
     d = collections.OrderedDict()
-    for k, v in sorted(spspec_to_spwid_map.iteritems(), key=lambda (a, b): (b, a)):
+    for k, v in sorted(spspec_to_spwid_map.items(), key=lambda (a, b): (b, a)):
         d[k] = v
 
     return d

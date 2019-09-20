@@ -30,7 +30,7 @@ class WVRScoreFinder(object):
         spw_id = spw.id
         antenna_id = antenna.id
 
-        spw_viewlist = [viewlist for viewlist in self._delegate.view.itervalues()
+        spw_viewlist = [viewlist for viewlist in self._delegate.view.values()
                         if viewlist[0].spw == spw_id]
 
         if len(spw_viewlist) <= 0:

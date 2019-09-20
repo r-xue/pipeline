@@ -292,7 +292,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         append = False
         original_calapps = []
-        for spectral_spec, tuning_spw_ids in get_spspec_to_spwid_map(scan_spws).iteritems():
+        for spectral_spec, tuning_spw_ids in get_spspec_to_spwid_map(scan_spws).items():
             tuning_spw_str = ','.join([str(i) for i in sorted(tuning_spw_ids)])
             LOG.info('Processing spectral spec {}, spws {}'.format(spectral_spec, tuning_spw_str))
 

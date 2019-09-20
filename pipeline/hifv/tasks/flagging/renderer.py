@@ -41,7 +41,7 @@ class T2_4MDetailsFlagDeterVLARenderer(basetemplates.T2_4MDetailsDefaultRenderer
             toggle_to_filenames = {'online'   : 'fileonline',
                                    'template' : 'filetemplate'}
             inputs = r.inputs
-            for toggle, filenames in toggle_to_filenames.iteritems():
+            for toggle, filenames in toggle_to_filenames.items():
                 src = inputs[filenames]
                 if inputs[toggle] and os.path.exists(src):
                     LOG.trace('Copying %s to %s' % (src, weblog_dir))
@@ -114,7 +114,7 @@ class T2_4MDetailsFlagDeterVLARenderer(basetemplates.T2_4MDetailsDefaultRenderer
         previous_summary = None
         for summary in summaries:
 
-            for intent, scan_ids in intent_scans.iteritems():
+            for intent, scan_ids in intent_scans.items():
                 flagcount = 0
                 totalcount = 0
 

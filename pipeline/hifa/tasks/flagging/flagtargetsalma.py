@@ -188,7 +188,7 @@ class FlagTargetsALMA(basetask.StandardTaskTemplate):
         job = casa_tasks.flagdata(**task_args)
         summary_dict = self._executor.execute(job)
 
-        agent_summaries = dict((v['name'], v) for v in summary_dict.itervalues())
+        agent_summaries = dict((v['name'], v) for v in summary_dict.values())
 
         ordered_agents = ['before', 'template']
 

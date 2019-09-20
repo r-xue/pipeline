@@ -55,7 +55,7 @@ def get_setjy_results(mses):
         result = commonfluxresults.FluxCalibrationResults(ms.name)
         science_spw_ids = {spw.id for spw in ms.get_spectral_windows()}
 
-        for source, measurements in read_fluxes_db(ms).iteritems():
+        for source, measurements in read_fluxes_db(ms).items():
             m = [m for m in measurements if int(m.spw_id) in science_spw_ids]
 
             # import flux values for all fields and intents so that we can
@@ -252,7 +252,7 @@ def add_catalogue_fluxes(measurements, ms):
             return results
 
     # Continue with required queries
-    for source, xml_measurements in measurements.iteritems():
+    for source, xml_measurements in measurements.items():
         for xml_measurement in xml_measurements:
             spw = ms.get_spectral_window(xml_measurement.spw_id)
             # LOG.info("SPW ID: "+str(spw.id))

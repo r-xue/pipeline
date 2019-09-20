@@ -45,9 +45,9 @@ class Scan(object):
         # first subscan entry. The MS spec states that these integration 
         # values are given in seconds, which is just what we want
         int_seconds = {k: v[0][1]['value']
-                       for k, v in scan_times.iteritems()}
+                       for k, v in scan_times.items()}
         self.__mean_intervals = {k: datetime.timedelta(seconds=v)
-                                 for k, v in int_seconds.iteritems()}
+                                 for k, v in int_seconds.items()}
 
         # will hold the start and end epochs per spw
         self.__start_time = None
@@ -55,13 +55,13 @@ class Scan(object):
 
         # midpoints is a list of tuple of (midpoint epochs, integation time)            
         sorted_epochs = {spw_id: sorted(midpoints, key=lambda e: e[0]['m0']['value'])
-                         for spw_id, midpoints in scan_times.iteritems()}
+                         for spw_id, midpoints in scan_times.items()}
 
         qt = casatools.quanta
         mt = casatools.measures            
 
         self.__exposure_time = {}
-        for spw_id, epochs in sorted_epochs.iteritems():
+        for spw_id, epochs in sorted_epochs.items():
             (min_epoch, exposure) = epochs[0]
             max_epoch = epochs[-1][0]
 
@@ -97,7 +97,7 @@ class Scan(object):
         end_epoch = self.end_time
 
         scan_times = {}
-        for spw_id, interval in self.__mean_intervals.iteritems():
+        for spw_id, interval in self.__mean_intervals.items():
             interval_quanta = qt.unit('{0}s'.format(interval.total_seconds()))
             half_interval = qt.div(interval_quanta, 2)
 

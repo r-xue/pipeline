@@ -275,7 +275,7 @@ class SkyDisplay(object):
                     if 'spw' not in image_info:
                         break
 
-            if 'band' in image_info.keys():
+            if 'band' in image_info:
                 label = [TextArea('%s:%s' % (key, image_info[key]), textprops=dict(color=color))
                          for key, color in [('type', 'k'),
                                             ('display', 'r'),

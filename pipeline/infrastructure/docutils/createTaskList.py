@@ -138,10 +138,10 @@ class taskutil(object):
         childs = inputs.getElementsByTagName('param')
         for i in xrange(len(childs)):
             attr = childs[i].attributes
-            keys = attr.keys()
+            keys = list(attr.keys())
             namekey = keys.index('name')
             typekey = keys.index('type')
-            values = attr.values()
+            values = list(attr.values())
             name = values[namekey].value.encode('UTF-8')
             myproperty = {}
             ptype = values[typekey].value.encode('UTF-8')
@@ -255,8 +255,7 @@ class hetaskutil(object):
 
     @property
     def keys(self):
-        keys = sorted(self.tasks.keys()[:])
-        return keys    
+        return sorted(self.tasks)
 
     def addmodule(self, name, title, version=2):
         if version == 2:

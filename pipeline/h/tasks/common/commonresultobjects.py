@@ -175,7 +175,7 @@ class QaResult(object):
         self.view[description].append(viewresult)
 
     def descriptions(self):
-        return self.view.keys()
+        return list(self.view.keys())
 
     def first(self, description):
         return copy.deepcopy(self.view[description][0])

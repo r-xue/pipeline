@@ -64,7 +64,7 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
         stage_dir = os.path.join(context.report_dir, 'stage%s' % results.stage_number)
         # histogram plots of Jy/K factors
         hist_plots = []
-        for vspwid, valid_factors in valid_spw_factors.iteritems():
+        for vspwid, valid_factors in valid_spw_factors.items():
             if len(valid_factors) > 0:
                 task = display.K2JyHistDisplay(stage_dir, vspwid, valid_factors, spw_band[vspwid])
                 hist_plots += task.plot()
@@ -76,7 +76,7 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
             reffile_copied = os.path.join(stage_dir, os.path.basename(reffile))
         # order table rows so that spw comes first
         row_values = []
-        for factor_list in spw_factors.itervalues():
+        for factor_list in spw_factors.values():
             row_values += list(factor_list)
         ctx.update({'jyperk_rows': utils.merge_td_columns(row_values),
                     'reffile': reffile_copied,

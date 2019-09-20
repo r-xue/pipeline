@@ -86,9 +86,9 @@ class FindContResult(basetask.Results):
 
     def __repr__(self):
         repr = 'FindCont:\n'
-        for source_name in self.result_cont_ranges.iterkeys():
+        for source_name in self.result_cont_ranges:
             repr += ' Source %s\n' % (source_name)
-            for spwid in self.result_cont_ranges[source_name].iterkeys():
+            for spwid in self.result_cont_ranges[source_name]:
                 repr += '  SpW %s:' % (spwid)
                 if self.result_cont_ranges[source_name][spwid]['cont_ranges'] in (['NONE'], []):
                     repr += '   Ranges: None\n'

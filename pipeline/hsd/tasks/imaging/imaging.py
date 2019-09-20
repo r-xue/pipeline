@@ -205,7 +205,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                        for ms in ms_list)
 
         # loop over reduction group (spw and source combination)
-        for (group_id, group_desc) in reduction_group.iteritems():
+        for group_id, group_desc in reduction_group.items():
             LOG.debug('Processing Reduction Group {}'.format(group_id))
             LOG.debug('Group Summary:')
             for m in group_desc:
@@ -308,7 +308,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             tocombine_org_directions_nro = []
 
             coord_set = False
-            for (name, _members) in image_group.iteritems():
+            for name, _members in image_group.items():
                 msobjs = [x[0] for x in _members]
                 antids = [x[1] for x in _members]
                 spwids = [x[2] for x in _members]
@@ -466,7 +466,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
                     # Generate grid table for each POL in image (per ANT,
                     # FIELD, and SPW, over all MSes)
-                    for (pol, member) in grid_input_dict.iteritems():
+                    for pol, member in grid_input_dict.items():
                         _mses = member[0]
                         _antids = member[1]
                         _fieldids = member[2]
@@ -609,7 +609,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                             grid_input_dict[p][2].append(fieldid)
                             grid_input_dict[p][3].append(spwid)
 
-                for (pol, member) in grid_input_dict.iteritems():
+                for pol, member in grid_input_dict.items():
                     _mses = member[0]
                     _antids = member[1]
                     _fieldids = member[2]
@@ -646,7 +646,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                     brightnessunit = ia.brightnessunit()
                     beam = ia.restoringbeam()
                 ref_world = cs.referencevalue()['numeric']
-                qcell = cs.increment(format='q', type='direction')['quantity'].values() #cs.increment(format='s', type='direction')['string']
+                qcell = list(cs.increment(format='q', type='direction')['quantity'].values())  # cs.increment(format='s', type='direction')['string']
 #                 rms_exclude_freq = self._merge_ranges(combined_rms_exclude)
                 LOG.info("Aggregated spectral line frequency ranges of combined image = {}".format(str(combined_rms_exclude)))
                 combined_rms_exclude_chan = [] # should be list for sort

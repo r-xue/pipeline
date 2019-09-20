@@ -129,7 +129,7 @@ def cubeLSRKToTopo(img, freqrange='', prec=4, verbose=False,
         header = imheadlist(img, omitBeam=True)
     if (nchan is None or f0 is None or f1 is None or chanwidth is None):
         nchan,f0,f1,chanwidth = numberOfChannelsInCube(img, returnFreqs=True, returnChannelWidth=True)
-    if ('reffreqtype' in header.keys()):
+    if 'reffreqtype' in header:
         if (header['reffreqtype'].upper() == 'TOPO'):
             return(np.array([f0,f1]))
     if len(freqrange) == 0:
@@ -469,7 +469,7 @@ def imheadlist(vis, omitBeam=False):
             if (header is None):
                 print("No beam found.  Re-run with omitBeam=True.")
                 return -1
-            if ('perplanebeams' not in header.keys()):
+            if 'perplanebeams' not in header:
                 print("No beam found.  Re-run with omitBeam=True.")
                 return -1
             beammajor = []

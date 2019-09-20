@@ -172,7 +172,7 @@ def executeppr (pprXmlFile, importonly=True, dry_run=False, loglevel='info',
             casatools.post_to_log("    Using python class ..." + pipeline_task_name, echo_to_screen=echo_to_screen)
 
             # List parameters
-            for keyword, value in task_args.iteritems():
+            for keyword, value in task_args.items():
                 casatools.post_to_log("    Parameter: " + keyword + " = " + str(value), echo_to_screen=echo_to_screen)
             if pipeline_task_name == 'ImportData' or pipeline_task_name == 'RestoreData' \
                     or pipeline_task_name == 'ALMAImportData' or pipeline_task_name == 'VLAImportData' \
@@ -186,7 +186,7 @@ def executeppr (pprXmlFile, importonly=True, dry_run=False, loglevel='info',
             inputs = vdp.InputsContainer(pipeline_task_class, context, **remapped_args)
 
             spectral_mode = False
-            if 'SPECTRAL_MODE' in intentsDict.keys():
+            if 'SPECTRAL_MODE' in intentsDict:
                 spectral_mode = intentsDict['SPECTRAL_MODE']
 
             if pipeline_task_name == 'Hanning' and spectral_mode is True:

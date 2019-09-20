@@ -155,7 +155,7 @@ class PipelineInputsMeta(type):
     """
     def __new__(mcls, name, bases, attrs):
         cls = super(PipelineInputsMeta, mcls).__new__(mcls, name, bases, attrs)
-        for attr, obj in attrs.iteritems():
+        for attr, obj in attrs.items():
             if isinstance(obj, VisDependentProperty):
                 obj.__set_name__(cls, attr)
         return cls
@@ -448,7 +448,7 @@ class InputsContainer(object):
         self._multivis = task_cls.is_multi_vis_task and not issubclass(task_cls, sessionutils.ParallelTemplate)
         if self._multivis:
             self._cls_instances = {'all': task_cls.Inputs(**named_args)}
-            self._active_instances = self._cls_instances.values()
+            self._active_instances = list(self._cls_instances.values())
             return
 
         # assign constructor args to data sets
@@ -464,7 +464,7 @@ class InputsContainer(object):
             LOG.error('Error creating {!s}'.format(task_cls.Inputs.__name__))
             raise
 
-        self._active_instances = self._cls_instances.values()
+        self._active_instances = list(self._cls_instances.values())
 
     def _remap_constructor_args(self, **kwargs):
         # find out how many datasets are in this call. This number is used to
@@ -479,11 +479,11 @@ class InputsContainer(object):
 
         # Process each argument value. In the resulting dict, each key is an
         # argument name with values containing one value per dataset
-        processed = {k: self._process_arg_val(num_datasets, k, v) for k, v in kwargs.iteritems()}
+        processed = {k: self._process_arg_val(num_datasets, k, v) for k, v in kwargs.items()}
 
         # Split the dict so that we have n dicts for n datasets, with each
         # dict containing just the values for that data.
-        return [{k: v[i] for k, v in processed.iteritems()} for i in range(num_datasets)]
+        return [{k: v[i] for k, v in processed.items()} for i in range(num_datasets)]
 
     def _process_arg_val(self, num_datasets, name, val):
         if name == self._scope_attr:
@@ -529,7 +529,7 @@ class InputsContainer(object):
             else:
                 remapped[key] = [os.path.basename(remove_slash(v)) for v in remapped[key]]
 
-        task_args = ['%s=%r' % (k, v) for k, v in remapped.iteritems()
+        task_args = ['%s=%r' % (k, v) for k, v in remapped.items()
                      if k not in ['self', 'context']
                      and v is not None]
 
@@ -642,7 +642,7 @@ class InputsContainer(object):
         # reset to all MSes if the input arg signals a reset, which expands
         # task scope to all MSes
         if _NULL.convert(scope) == _NULL:
-            scope = self._cls_instances.keys()
+            scope = list(self._cls_instances.keys())
 
         # the key for inputs instances is the basename vis
         if isinstance(scope, str):
@@ -841,13 +841,13 @@ class ModeInputs(api.Inputs):
     def __init__(self, context, mode=None, **parameters):
         # create a dictionary of Inputs objects, one of each type
         self._delegates = {k: task_cls.Inputs(context, vis=parameters['vis'])
-                           for k, task_cls in self._modes.iteritems()}
+                           for k, task_cls in self._modes.items()}
 
         # set the mode to the requested mode, thus setting the active Inputs
         self.mode = mode
 
         # set any parameters provided by the user
-        for k, v in parameters.iteritems():
+        for k, v in parameters.items():
             setattr(self, k, v)
 
     def __getattr__(self, name):
@@ -915,7 +915,7 @@ class ModeInputs(api.Inputs):
         # otherwise, set the said attribute on all of our delegate Inputs. In
         # doing so, the user can switch mode at any time and have the new
         # Inputs present with all their previously set parameters.
-        for d in self._delegates.itervalues():
+        for d in self._delegates.values():
             if hasattr(d, name):
                 LOG.trace('Setting {!s}.{!s} = {!r}'.format(self.__class__.__name__, name, val))
                 setattr(d, name, val)
@@ -927,7 +927,7 @@ class ModeInputs(api.Inputs):
     @mode.setter
     def mode(self, value):
         if value not in self._modes:
-            keys = self._modes.keys()
+            keys = list(self._modes.keys())
             msg = 'Mode must be one of \'{0}\' but got \'{1}\''.format(
                 '\', \''.join(keys[:-1]) + '\' or \'' + keys[-1], value)
             LOG.error(msg)
@@ -967,7 +967,7 @@ class ModeInputs(api.Inputs):
         all_args.update(args)
 
         # now do the same for each inputs class we can switch between
-        for task_cls in cls._modes.itervalues():
+        for task_cls in cls._modes.values():
             # get the arguments of the task Inputs constructor
             args = inspect.getargspec(task_cls.Inputs.__init__).args
             # and add them to our set
@@ -1010,7 +1010,7 @@ def gen_hash(o):
         return hash(o)
 
     new_o = copy.deepcopy(o)
-    for k, v in new_o.iteritems():
+    for k, v in new_o.items():
         new_o[k] = gen_hash(v)
 
     return hash(tuple(frozenset(new_o.items())))

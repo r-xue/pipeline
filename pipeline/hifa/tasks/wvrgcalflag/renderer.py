@@ -130,7 +130,7 @@ class T2_4MDetailsWvrgcalflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 (metric_plots, WvrcalflagMetricPlotsRenderer, metric_subpages),
                 (flag_plots, WvrgcalflagFlagPlotRenderer, flag_subpages)):
             if d:
-                all_plots = list(utils.flatten([v for v in d.itervalues()]))
+                all_plots = list(utils.flatten([v for v in d.values()]))
                 renderer = plotter_cls(context, results, all_plots)
                 with renderer.get_file() as fileobj:
                     fileobj.write(renderer.render())

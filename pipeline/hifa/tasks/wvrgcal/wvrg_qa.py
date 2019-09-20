@@ -28,7 +28,7 @@ def calculate_qa_numbers(result):
         qa_per_view[description] = 1.0 / np.median(qa_data[qa_flag == False])
 
     result.view_score = qa_per_view
-    result.overall_score = np.median(qa_per_view.values())
+    result.overall_score = np.median(list(qa_per_view.values()))
 
 
 def calculate_view(context, nowvrtable, withwvrtable, result, qa_intent):
@@ -37,7 +37,7 @@ def calculate_view(context, nowvrtable, withwvrtable, result, qa_intent):
     nowvr_results = calculate_phase_rms(context, nowvrtable, qa_intent)
     wvr_results = calculate_phase_rms(context, withwvrtable, qa_intent)
 
-    for k, v in wvr_results.iteritems():
+    for k, v in wvr_results.items():
         result.vis = v.filename
 
         # the ratio withwvr/nowvr is the view we want

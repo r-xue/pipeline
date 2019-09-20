@@ -209,7 +209,7 @@ class MakeImages(basetask.StandardTaskTemplate):
         else: #continuum mode
             effectiveBW_of_image = result.aggregate_bw
         # antenna array (aligned definition with imageprecheck)
-        diameters = heuristics.antenna_diameters().keys()
+        diameters = list(heuristics.antenna_diameters().keys())
         array = ('%dm' % min(diameters))
 
         return Sensitivity(array=array,

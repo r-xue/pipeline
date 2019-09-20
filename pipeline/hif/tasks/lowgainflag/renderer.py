@@ -39,7 +39,7 @@ class T2_4MDetailsLowgainFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
 
         plots_path = None
         if plots:
-            all_plots = list(utils.flatten([v for v in plots.itervalues()]))
+            all_plots = list(utils.flatten([v for v in plots.values()]))
             renderer = TimeVsAntenna1PlotRenderer(pipeline_context, results,
                                                   all_plots)
             with renderer.get_file() as fileobj:

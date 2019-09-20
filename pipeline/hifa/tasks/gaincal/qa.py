@@ -72,7 +72,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
         total_ant_name = 'N/A'
         total_spw_name = 'N/A'
 
-        for table_name in self.qa_results_dict.iterkeys():
+        for table_name in self.qa_results_dict:
             qa_result = self.qa_results_dict[table_name]
             for field_id in phase_field_ids:
                 qa_context_score = qa_result['QASCORES']['SCORES'][field_id][score_key]

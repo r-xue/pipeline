@@ -276,12 +276,12 @@ class BasebandComposite(common.LeafComposite):
         is_single_receiver = len(receivers) is 1
 
         children = []
-        for receiver_id, basebands in receivers.iteritems():
+        for receiver_id, basebands in receivers.items():
             # keep receiver component out of filename if possible
             if overplot_receivers or is_single_receiver:
                 receiver_id = ''
 
-            for baseband_id, spw_ids in basebands.iteritems():
+            for baseband_id, spw_ids in basebands.items():
                 spws = ','.join([str(i) for i in spw_ids])
                 leaf_obj = self.leaf_class(context, output_dir, calto, xaxis, yaxis, spw=spws, ant=ant, field=field,
                                            intent=intent, baseband=str(baseband_id), receiver=receiver_id, **kwargs)

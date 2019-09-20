@@ -51,13 +51,13 @@ def accumulate_flag_per_source_spw(context, results):
         before, after = r.outcome['flagdata_summary']
         if not before['name'] == 'before' or not after['name'] == 'after':
             raise RuntimeError("Got unexpected flag summary")
-        for field, fieldflag in after.iteritems():
+        for field, fieldflag in after.items():
             if not isinstance(fieldflag, dict) or 'spw' not in fieldflag:
                 continue
             if field not in accum_flag:
                 accum_flag[field] = {}
             spwflag = fieldflag['spw']
-            for spw, flagval in spwflag.iteritems():
+            for spw, flagval in spwflag.items():
                 vspw = context.observing_run.real2virtual_spw_id(spw, ms)
                 if spw not in accum_flag[field]:
                     accum_flag[field][vspw] = dict(before=0, additional=0, after=0, total=0)
@@ -72,8 +72,8 @@ def accumulate_flag_per_source_spw(context, results):
 def make_summary_table(flagdict):
     # will hold all the flag summary table rows for the results
     rows = []
-    for field, flagperspw in flagdict.iteritems():
-        for spw, flagval in flagperspw.iteritems():
+    for field, flagperspw in flagdict.items():
+        for spw, flagval in flagperspw.items():
             frac_before = flagval['before']/flagval['total']
             frac_total = flagval['after']/flagval['total']
             frac_additional = (flagval['after']-flagval['before'])/flagval['total']

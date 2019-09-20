@@ -304,7 +304,7 @@ class MakeImList(basetask.StandardTaskTemplate):
             spw = inputs.spw
 
             if spw == '':
-                spwids = sorted(inputs.context.observing_run.virtual_science_spw_ids.keys(), key=int)
+                spwids = sorted(inputs.context.observing_run.virtual_science_spw_ids, key=int)
             else:
                 spwids = spw.split(',')
             spw = ','.join("'%s'" % (spwid) for spwid in spwids)
@@ -326,7 +326,7 @@ class MakeImList(basetask.StandardTaskTemplate):
             ms = inputs.context.observing_run.get_ms(inputs.vis[0])
             band = ms.get_vla_spw2band()
             band_spws = {}
-            for k, v in band.iteritems():
+            for k, v in band.items():
                 if str(k) in spwlist:
                     band_spws.setdefault(v, []).append(k)
         else:
@@ -679,7 +679,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                             spwsel_spwid_dict[spwid] = cont_ranges_spwsel_dict[spwid].get(utils.dequote(field_intent[0]), {}).get(spwid, 'NONE')
 
                         no_cont_ranges = False
-                        if field_intent[1] == 'TARGET' and specmode == 'cont' and all([v == 'NONE' for v in spwsel_spwid_dict.itervalues()]):
+                        if (field_intent[1] == 'TARGET' and specmode == 'cont' and
+                                all([v == 'NONE' for v in spwsel_spwid_dict.values()])):
                             LOG.warn('No valid continuum ranges were found for any spw. Creating an aggregate continuum'
                                      ' image from the full bandwidth from all spws, but this should be used with'
                                      ' caution.')
@@ -737,7 +738,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 key, value = nbin_item.split(':')
                                 nbins_dict[key] = int(value)
                             try:
-                                if '*' in nbins_dict.keys():
+                                if '*' in nbins_dict:
                                     nbin = nbins_dict['*']
                                 else:
                                     nbin = nbins_dict[adjusted_spwspec]
@@ -811,7 +812,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                 result.set_info({'msg': info_msg, 'intent': 'CHECK', 'specmode': inputs.specmode})
             elif inputs.per_eb and (not all(have_targets.values())):
                 info_msg = 'No check source data found in EBs %s.' % (','.join([os.path.basename(k)
-                                                                                for k, v in have_targets.iteritems()
+                                                                                for k, v in have_targets.items()
                                                                                 if not v]))
                 LOG.info(info_msg)
                 result.set_info({'msg': info_msg, 'intent': 'CHECK', 'specmode': inputs.specmode})

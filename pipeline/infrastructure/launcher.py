@@ -288,7 +288,7 @@ class Pipeline(object):
                 last_context = utils.pickle_load(context_file)
                 self.context = last_context
 
-            for k, v in path_overrides.iteritems():
+            for k, v in path_overrides.items():
                 setattr(self.context, k, v)
 
         self._link_casa_log(self.context)

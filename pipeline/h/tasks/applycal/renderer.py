@@ -95,7 +95,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 intents
             )
 
-            for vis, vis_plots in plots.iteritems():
+            for vis, vis_plots in plots.items():
                 amp_vs_freq_summary_plots[vis].extend(vis_plots)
 
         phase_vs_freq_summary_plots = utils.OrderedDefaultdict(list)
@@ -107,7 +107,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 intents
             )
 
-            for vis, vis_plots in plots.iteritems():
+            for vis, vis_plots in plots.items():
                 phase_vs_freq_summary_plots[vis].extend(vis_plots)
 
         # CAS-7659: Add plots of all calibrator calibrated amp vs uvdist to
@@ -121,7 +121,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 intents
             )
 
-            for vis, vis_plots in plots.iteritems():
+            for vis, vis_plots in plots.items():
                 amp_vs_uv_summary_plots[vis].extend(vis_plots)
 
         # CAS-5970: add science target plots to the applycal page
@@ -150,7 +150,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     uvrange=uv_cutoff
                 )
 
-                for vis, vis_plots in p.iteritems():
+                for vis, vis_plots in p.items():
                     corrected_ratio_to_antenna1_plots[vis].extend(vis_plots)
 
             p, _ = self.create_plots(
@@ -217,7 +217,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 (amp_vs_time_detail_plots, ApplycalAmpVsTimePlotRenderer, amp_vs_time_subpages),
                 (phase_vs_time_detail_plots, ApplycalPhaseVsTimePlotRenderer, phase_vs_time_subpages)):
             if d:
-                all_plots = list(utils.flatten([v for v in d.itervalues()]))
+                all_plots = list(utils.flatten([v for v in d.values()]))
                 renderer = plotter_cls(context, result, all_plots)
                 with renderer.get_file() as fileobj:
                     fileobj.write(renderer.render())
@@ -350,7 +350,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 (amp_vs_freq_detail_plots, ApplycalAmpVsFreqSciencePlotRenderer),
                 (amp_vs_uv_detail_plots, ApplycalAmpVsUVSciencePlotRenderer)):
             if d:
-                all_plots = list(utils.flatten([v for v in d.itervalues()]))
+                all_plots = list(utils.flatten([v for v in d.values()]))
                 renderer = plotter_cls(context, results, all_plots)
                 with renderer.get_file() as fileobj:
                     fileobj.write(renderer.render())
@@ -531,7 +531,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         previous_summary = None
         for summary in summaries:
 
-            for intent, scan_ids in intent_scans.iteritems():
+            for intent, scan_ids in intent_scans.items():
                 flagcount = 0
                 totalcount = 0
 
@@ -772,7 +772,7 @@ def get_brightest_field(ms, source, intent='TARGET'):
 
     # representative visstat output:
     #  'FIELD_ID=6': {'median': 2.4579226970672607}
-    for k, v in visstat_result.iteritems():
+    for k, v in visstat_result.items():
         _, field_id = k.split('=')
         measurement_field = [f for f in fields_for_source if f.id == int(field_id)][0]
         median_flux.append((measurement_field, float(v['median'])))

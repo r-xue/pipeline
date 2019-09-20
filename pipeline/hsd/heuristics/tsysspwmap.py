@@ -39,10 +39,10 @@ class TsysSpwMapHeuristics(api.Heuristic):
 
 
 def best_spwmap(scores):
-    for (spw, score_list) in scores.iteritems():
+    for spw, score_list in scores.items():
         best_score = 0.0
         best_spw = -1
-        for (atmspw, score) in score_list.iteritems():
+        for atmspw, score in score_list.items():
             if score > best_score:
                 best_spw = atmspw
                 best_score = score

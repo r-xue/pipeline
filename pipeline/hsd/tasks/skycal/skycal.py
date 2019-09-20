@@ -125,7 +125,7 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
             field_strategy = {}
             field_ids = casatools.ms.msseltoindex(vis=ms.name, field=args['field'])
             for field_id in field_ids:
-                for target_id, reference_id in default_field_strategy.iteritems():
+                for target_id, reference_id in default_field_strategy.items():
                     if field_id == target_id:
                         field_strategy[field_id] = default_field_strategy[field_id]
                         continue
@@ -138,7 +138,7 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
             args['scan'] = ''
 
         calapps = []
-        for (target_id, reference_id) in field_strategy.iteritems():
+        for target_id, reference_id in field_strategy.items():
             myargs = args.copy()
 
             # output file
@@ -211,9 +211,9 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
         context = self.inputs.context
         resultdict = compute_elevation_difference(context, result)
         ms = self.inputs.ms
-        for field_id, eldfield in resultdict.iteritems():
-            for antenna_id, eldant in eldfield.iteritems():
-                for spw_id, eld in eldant.iteritems():
+        for field_id, eldfield in resultdict.items():
+            for antenna_id, eldant in eldfield.items():
+                for spw_id, eld in eldant.items():
                     eldiff0 = eld.eldiff0
                     eldiff1 = eld.eldiff1
                     if len(eldiff0) > 0:

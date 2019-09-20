@@ -164,7 +164,6 @@ class MeasurementSetReader(object):
             observatory = string.upper(ms.antenna_array.name)
             if observatory in ('VLA', 'EVLA'):
                 spw2band = ms.get_vla_spw2band()
-                bands = spw2band.values()
 
                 try:
                     EVLA_band = spw2band[spw.id]
@@ -387,7 +386,7 @@ class MeasurementSetReader(object):
     def _get_range(filename, column):
         with casatools.MSReader(filename) as ms:
             data = ms.range([column])
-            return data.values()[0]
+            return list(data.values())[0]
 
 
 class SpectralWindowTable(object):
@@ -1101,7 +1100,7 @@ class BandDescriber(object):
         else:
             bands = BandDescriber.unknown
 
-        for rng, description in bands.iteritems():
+        for rng, description in bands.items():
             if rng.contains(f):
                 return description
 

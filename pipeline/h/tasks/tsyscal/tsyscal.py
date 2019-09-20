@@ -178,7 +178,7 @@ def get_gainfield_map(ms, is_single_dish):
 
     # Detect cases where there's no preferred or fallback gainfield mapping,
     # e.g., if there are no Tsys scans on a target or phase calibrator.
-    undefined_intents = [k for k, v in final_map.iteritems()
+    undefined_intents = [k for k, v in final_map.items()
                          if not v  # gainfield mapping is empty..
                          and k in ms.intents]  # ..for a valid intent in the MS
     if undefined_intents:
@@ -187,7 +187,7 @@ def get_gainfield_map(ms, is_single_dish):
         raise AssertionError(msg)
 
     # convert magic string back to empty string
-    converted = {k: v.replace('___EMPTY_STRING___', '') for k, v in final_map.iteritems()}
+    converted = {k: v.replace('___EMPTY_STRING___', '') for k, v in final_map.items()}
 
     return converted
 
@@ -350,9 +350,9 @@ def get_calapplications(ms, tsys_table, calfrom_defaults, origin, spw_map, is_si
                     field_to_tsys_field[non_tsys_field][non_tsys_spw.id] = closest
 
             # create a CalTo specifically for the intent fields with their selected Tsys field
-            for non_tsys_field, spw_to_tsys_field in field_to_tsys_field.iteritems():
+            for non_tsys_field, spw_to_tsys_field in field_to_tsys_field.items():
                 field_arg = field_id_to_identifier[non_tsys_field.id]
-                for spw, tsys_field in spw_to_tsys_field.iteritems():
+                for spw, tsys_field in spw_to_tsys_field.items():
                     gainfield_arg = field_id_to_identifier[tsys_field.id]
                     calto = callibrary.CalTo(vis=ms.name, intent=intent, spw=spw, field=field_arg)
                     calfrom = callibrary.CalFrom(gainfield=gainfield_arg, **calfrom_args)

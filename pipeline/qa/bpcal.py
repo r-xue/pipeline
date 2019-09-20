@@ -464,7 +464,7 @@ def bpcal_calc(in_table, logger=''):
 
             # Amplitude
             bp_data = caLoc.get(spw=spw)
-            for pol in bp_data.iterkeys():
+            for pol in bp_data:
                 amp_values = numpy.ma.array(bp_data[pol]['value'], mask=bp_data[pol]['flag'])
                 bpcal_stats['AMPLITUDE'][spwList[s]][pol] = amp_values
                 amp_mean = numpy.ma.average(bpcal_stats['AMPLITUDE'][spwList[s]][pol])
@@ -473,7 +473,7 @@ def bpcal_calc(in_table, logger=''):
 
             # Phase
             bp_data = caLoc.get(spw=spw, ap='PHASE')
-            for pol in bp_data.iterkeys():
+            for pol in bp_data:
                 phase_values = numpy.ma.array(bp_data[pol]['value'], mask=bp_data[pol]['flag'])
                 bpcal_stats['PHASE'][spwList[s]][pol] = phase_values
 
@@ -1137,11 +1137,11 @@ def bpcal_score(bpcal_stats):
     # antenna1, antenna2, and feed (hopefully, field and time have only one
     # value).
     amp = bpcal_stats['AMPLITUDE_FIT']
-    spw = amp.keys()
+    spw = list(amp.keys())
 
     for s in spw:
 
-        keys = amp[s].keys()
+        keys = list(amp[s].keys())
 
         spwNum = amp[s]['spw']
         keys.remove('spw')
@@ -1188,11 +1188,11 @@ def bpcal_score(bpcal_stats):
     # antenna1, antenna2, and feed (hopefully, field and time have only one
     # value).
     phase = bpcal_stats['PHASE_FIT']
-    spw = phase.keys()
+    spw = list(phase.keys())
 
     for s in spw:
 
-        keys = phase[s].keys()
+        keys = list(phase[s].keys())
 
         spwNum = phase[s]['spw']
         keys.remove('spw')
@@ -1241,8 +1241,8 @@ def bpcal_score(bpcal_stats):
 
         # Calculate grand total score
         bpcal_scores['TOTAL'] = \
-            numpy.median([numpy.median(bpcal_scores['AMPLITUDE_SCORE_SNR'][s].values())
-                          for s in bpcal_scores['AMPLITUDE_SCORE_SNR'].iterkeys()])
+            numpy.median([numpy.median(list(bpcal_scores['AMPLITUDE_SCORE_SNR'][s].values()))
+                          for s in bpcal_scores['AMPLITUDE_SCORE_SNR']])
 
     # Return the bandpass score dictionary
     return bpcal_scores
@@ -1720,13 +1720,13 @@ def bpcal_plot(in_table, out_dir, bpcal_stats):
     # keys are antenna1, antenna2, and feed (hopefully, field and time are
     # have only one value).
     amp = bpcal_stats['AMPLITUDE_FIT']
-    spw = amp.keys()
+    spw = list(amp.keys())
 
     bpcal_plots['AMPLITUDE_PLOT'] = dict()
 
     for s in spw:
 
-        keys = amp[s].keys()
+        keys = list(amp[s].keys())
         keys.remove('spw')
         chanRange = amp[s]['chanRange']; keys.remove('chanRange')
 
@@ -1748,12 +1748,12 @@ def bpcal_plot(in_table, out_dir, bpcal_stats):
     # keys are antenna1, antenna2, and feed (hopefully, field and time are
     # have only one value).
     phase = bpcal_stats['PHASE_FIT']
-    spw = phase.keys()
+    spw = list(phase.keys())
 
     bpcal_plots['PHASE_PLOT'] = dict()
 
     for s in spw:
-        keys = phase[s].keys()
+        keys = list(phase[s].keys())
         keys.remove('spw')
         chanRange = phase[s]['chanRange']
 

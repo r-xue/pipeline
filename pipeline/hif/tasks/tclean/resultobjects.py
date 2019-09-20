@@ -322,7 +322,7 @@ class TcleanResult(basetask.Results):
 
         items_to_print = ['image', 'residual', 'model', 'cleanmask', 'mom0_fc']
         str_len = max([len(item) for item in items_to_print])
-        for k, v in self.iterations.iteritems():
+        for k, v in self.iterations.items():
             repr += ' iteration %s:\n' % k
             for item in items_to_print:
                 if item in v:

@@ -154,7 +154,7 @@ class AtmHeuristics(object):
 
                 # Extract info from rows matching the spws and fields
                 # (intents) to consider.
-                if row_spwid in tsys_to_sci_spwmap.keys() and row.get('FIELD_ID') in fieldids:
+                if row_spwid in tsys_to_sci_spwmap and row.get('FIELD_ID') in fieldids:
                     # Get tsys spectrum and corresponding flags.
                     spec = row.get('FPARAM')
                     flag = row.get('FLAG')
@@ -255,7 +255,7 @@ class AtmHeuristics(object):
         # If no median Tsys could be calculated for any spw (e.g. due to
         # flagging, or due to science spws not being mapped to corresponding
         # Tsys spws), then return without ranked list.
-        if not np.any(np.isfinite(median_tsys.values())):
+        if not np.any(np.isfinite(list(median_tsys.values()))):
             LOG.warning("No valid median Tsys values found for spws for {} "
                         "(Too much flagging? Science spws not mapped to Tsys "
                         "spws?); cannot rank spws by Tsys and bandwidth."

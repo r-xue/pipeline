@@ -211,7 +211,7 @@ def to_pipeline_intent(ms, intents):
     state = ms.states[0]
 
     pipeline_intents = {pipeline_intent for casa_intent in casa_intents
-                        for obsmode, pipeline_intent in state.obs_mode_mapping.iteritems()
+                        for obsmode, pipeline_intent in state.obs_mode_mapping.items()
                         if casa_intent in obsmode}
 
     return ','.join(pipeline_intents)

@@ -47,7 +47,7 @@ class T2_4MDetailsGFluxscaleRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             self.sort_plots_by_baseband(plots)
 
             key = intents
-            for vis, vis_plots in plots.iteritems():
+            for vis, vis_plots in plots.items():
                 if len(vis_plots) > 0:
                     ampuv_allant_plots[vis][key] = vis_plots
 
@@ -62,7 +62,7 @@ class T2_4MDetailsGFluxscaleRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             self.sort_plots_by_baseband(plots)
 
             key = intents
-            for vis, vis_plots in plots.iteritems():
+            for vis, vis_plots in plots.items():
                 if len(vis_plots) > 0:
                     ampuv_ant_plots[vis][key] = vis_plots
 
@@ -81,7 +81,7 @@ class T2_4MDetailsGFluxscaleRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         })
 
     def sort_plots_by_baseband(self, d):
-        for vis, plots in d.iteritems():
+        for vis, plots in d.items():
             plots = sorted(plots, 
                            key=lambda plot: plot.parameters['baseband'])
             d[vis] = plots
@@ -156,7 +156,7 @@ def make_flux_table(context, results):
         if len(single_result.measurements) is 0:
             continue
 
-        for field_arg, measurements in single_result.measurements.iteritems():
+        for field_arg, measurements in single_result.measurements.items():
             field = ms_for_result.get_fields(field_arg)[0]
             intents = ' '. join(field.intents.intersection({'BANDPASS', 'PHASE', 'CHECK'}))
             field_cell = '%s (#%s) %s' % (field.name, field.id, intents)
@@ -246,8 +246,7 @@ def make_adopted_table(context, results):
     for adopted_result in [r for r in results if r.applies_adopted]:
         vis_cell = os.path.basename(adopted_result.vis)
 
-        adopted_fields = adopted_result.measurements.keys()
-        field_cell = ', '.join(adopted_fields)
+        field_cell = ', '.join(str(x) for x in adopted_result.measurements)
 
         tr = AdoptedTR(vis_cell, field_cell)
         rows.append(tr)
@@ -260,7 +259,7 @@ def create_flux_comparison_plots(context, output_dir, result):
 
     plots = []
 
-    for field_id, measurements in result.measurements.iteritems():
+    for field_id, measurements in result.measurements.items():
         fig = plt.figure()
         ax = fig.add_subplot(1, 1, 1)
 
@@ -299,7 +298,7 @@ def create_flux_comparison_plots(context, output_dir, result):
             ORIGIN_ANALYSIS_UTILS: 'analysisUtils'
         }
 
-        for origin, label in catalogue_fluxes.iteritems():
+        for origin, label in catalogue_fluxes.items():
             fluxes = [f for f in field.flux_densities if f.origin == origin]
             if not fluxes:
                 continue

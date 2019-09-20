@@ -350,7 +350,7 @@ def get_index_list_for_ms3(datatable_dict, group_desc, member_list, srctype=None
                         yield row
         arr = numpy.fromiter(_g(), dtype=numpy.int64)
         index_dict[_ms.basename].extend(arr)
-    for vis in index_dict.iterkeys():
+    for vis in index_dict:
         index_dict[vis] = numpy.asarray(index_dict[vis])
         #index_dict[vis].sort()
     return index_dict
@@ -502,12 +502,12 @@ def make_row_map(src_ms, derived_vis, src_tb=None, derived_tb=None):
     for scan in scans:
         fields[scan.id] = [f.id for f in scan.fields if 'TARGET' in f.intents]
         states[scan.id] = [s.id for s in scan.states if 'TARGET' in s.intents]
-    field_values = fields.values()
+    field_values = list(fields.values())
     is_unique_field_set = True
     for v in field_values:
         if v != field_values[0]:
             is_unique_field_set = False
-    state_values = states.values()
+    state_values = list(states.values())
     is_unique_state_set = True
     for v in state_values:
         if v != state_values[0]:
@@ -789,7 +789,7 @@ def make_spwid_map(srcvis, dstvis):
                 map_byname[src_spw].append(dst_spw)
 
     spwid_map = {}
-    for (src, dst) in map_byname.iteritems():
+    for src, dst in map_byname.items():
         LOG.trace('map_byname src spw %s: dst spws %s' % (src.id, [spw.id for spw in dst]))
         if len(dst) == 0:
             continue

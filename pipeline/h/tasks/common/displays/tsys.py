@@ -46,7 +46,7 @@ class TsysSummaryChart(object):
         self._figfile = self._get_figfile()
 
         # Get mapping from Tsys spw to receiver type.
-        self._rxmap = utils.get_receiver_type_for_spws(ms, list(self._tsysmap.iterkeys()))
+        self._rxmap = utils.get_receiver_type_for_spws(ms, list(self._tsysmap.keys()))
 
     def plot(self):
         plots = []
@@ -142,7 +142,7 @@ class TsysPerAntennaChart(common.PlotbandpassDetailBase):
                 self._tsysmap[tsys_spw].append(spw)
 
         # Get mapping from Tsys spw to receiver type.
-        self._rxmap = utils.get_receiver_type_for_spws(ms, list(self._tsysmap.iterkeys()))
+        self._rxmap = utils.get_receiver_type_for_spws(ms, list(self._tsysmap.keys()))
 
     def plot(self):
         # PIPE-110: create separate calls to plotbandpass for DSB and non-DSB
@@ -168,7 +168,7 @@ class TsysPerAntennaChart(common.PlotbandpassDetailBase):
             showimage = self._rxmap.get(tsys_spw_id, "") == "DSB"
             # some science windows may not have a Tsys window
             science_spws = self._tsysmap.get(tsys_spw_id, 'N/A')
-            for antenna_id, figfile in self._figfile[tsys_spw_id].iteritems():
+            for antenna_id, figfile in self._figfile[tsys_spw_id].items():
                 ant_name = self._antmap[antenna_id]
                 if os.path.exists(figfile):
                     task = self.create_task(tsys_spw_id, antenna_id, showimage=showimage)

@@ -107,7 +107,7 @@ class SDBaselineResults(common.SingleDishResults):
 
         # register working data that stores spectra after baseline subtraction
         if 'work_data' in self.outcome:
-            for (vis, work_data) in self.outcome['work_data'].iteritems():
+            for (vis, work_data) in self.outcome['work_data'].items():
                 ms = context.observing_run.get_ms(vis)
                 ms.work_data = work_data
 
@@ -115,7 +115,7 @@ class SDBaselineResults(common.SingleDishResults):
         for ms in context.observing_run.measurement_sets:
             ms.deviation_mask = None
         if 'deviation_mask' in self.outcome:
-            for (basename, masks) in self.outcome['deviation_mask'].iteritems():
+            for (basename, masks) in self.outcome['deviation_mask'].items():
                 ms = context.observing_run.get_ms(basename)
                 ms.deviation_mask = {}
                 for field in ms.get_fields(intent='TARGET'):
@@ -181,7 +181,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
         org_directions_dict = {}
 
         LOG.debug('Starting per reduction group processing: number of groups is {ngroup}', ngroup=len(reduction_group))
-        for (group_id, group_desc) in reduction_group.iteritems():
+        for (group_id, group_desc) in reduction_group.items():
             LOG.info('Processing Reduction Group {}', group_id)
             LOG.info('Group Summary:')
             for m in group_desc:
@@ -255,7 +255,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
                         dvparams[ms.name][2].append(spwid)
                     else:
                         deviation_mask[ms.basename][(fieldid, antennaid, spwid)] = ms.deviation_mask[(fieldid, antennaid, spwid)]
-                for (vis, params) in dvparams.iteritems():
+                for (vis, params) in dvparams.items():
                     field_list, antenna_list, spw_list = params
                     dvtasks.append(deviation_mask_heuristic(vis=vis, field_list=field_list, antenna_list=antenna_list,
                                                             spw_list=spw_list, consider_flag=True, parallel=self.inputs.parallel))

@@ -600,10 +600,10 @@ def consolidate_data_selections(outliers):
 
     # dict that maps holds accepted data selections and their reasons
     accepted = {}
-    for reason_hash, outliers in reason_hash_to_outliers.iteritems():
+    for reason_hash, outliers in reason_hash_to_outliers.items():
         # assemble the other outliers which we will compare for conflicts
         other_outliers = []
-        for v in [v for k, v in reason_hash_to_outliers.iteritems() if k != reason_hash]:
+        for v in [v for k, v in reason_hash_to_outliers.items() if k != reason_hash]:
             other_outliers.extend(v)
 
         for outlier_to_merge in outliers:
@@ -646,7 +646,7 @@ def consolidate_data_selections(outliers):
 
     # dict values are lists, which we need to flatten into a single list
     result = []
-    for l in accepted.itervalues():
+    for l in accepted.values():
         result.extend(l)
     return result
 

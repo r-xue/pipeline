@@ -174,7 +174,7 @@ def executeppr(pprXmlFile, importonly=True, breakpoint='breakpoint',
     defsession = 'session_1'
     for asdm in asdmList:
         session = defsession
-        for key, value in sessionsDict.iteritems():
+        for key, value in sessionsDict.items():
             if asdm[1] in value:
                 session = key.lower()
                 break
@@ -240,7 +240,7 @@ def executeppr(pprXmlFile, importonly=True, breakpoint='breakpoint',
             casatools.post_to_log("    Using python class ..." + pipeline_task_name, echo_to_screen=echo_to_screen)
 
             # List parameters
-            for keyword, value in task_args.iteritems():
+            for keyword, value in task_args.items():
                 casatools.post_to_log("    Parameter: " + \
                                       keyword + " = " + str(value), echo_to_screen=echo_to_screen)
 

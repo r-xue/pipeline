@@ -411,7 +411,7 @@ class Bandpassflag(basetask.StandardTaskTemplate):
         # For each combination of intent, field, and spw that were found to
         # have antennas flagged, raise a warning.
         sorted_keys = sorted(
-            sorted(ants_fully_flagged.keys(), key=lambda keys: keys[2]),
+            sorted(ants_fully_flagged, key=lambda keys: keys[2]),
             key=lambda keys: keys[0])
         for (intent, field, spwid) in sorted_keys:
             ants_flagged = ants_fully_flagged[(intent, field, spwid)]
@@ -435,7 +435,7 @@ class Bandpassflag(basetask.StandardTaskTemplate):
         # one spw, for any of the fields for any of the intents.
         ants_to_demote_as_refant = {
             antenna_id_to_name[iant]
-            for iants in ants_fully_flagged.itervalues()
+            for iants in ants_fully_flagged.values()
             for iant in iants}
 
         return ants_to_demote_as_refant, ants_fully_flagged
@@ -459,7 +459,7 @@ class Bandpassflag(basetask.StandardTaskTemplate):
 
             # Identify the unique spws for which fully flagged antennas were found (for current
             # intent and field).
-            spws_found = {key[2] for key in ants_fully_flagged.iterkeys() if key[0:2] == (intent, field)}
+            spws_found = {key[2] for key in ants_fully_flagged if key[0:2] == (intent, field)}
 
             # Only proceed if the set of spws for which flagged antennas were found
             # matches the set of spws for which correctedampflag ran.

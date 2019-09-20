@@ -146,7 +146,7 @@ def flux_xml_for_stages(context, results, accessor_dict):
 
     for result in results:
         pipeline_casa_task = result.pipeline_casa_task
-        for task_name, (flux_accessor, score_accessor) in accessor_dict.iteritems():
+        for task_name, (flux_accessor, score_accessor) in accessor_dict.items():
             # need parenthesis to distinguish between cases such as
             # hifa_gfluxscale and hifa_gfluxscaleflag
             if pipeline_casa_task.startswith(task_name + '('):
@@ -192,7 +192,7 @@ def xml_for_extracted_flux_measurements(all_measurements, ms):
     asdm = aqua.vis_to_asdm(ms.name)
 
     result = []
-    for field_id, field_measurements in all_measurements.iteritems():
+    for field_id, field_measurements in all_measurements.items():
         field = ms.get_fields(field_id)[0]
         field_name = field.name
 

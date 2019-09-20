@@ -608,8 +608,7 @@ def _get_unflagged_antennas(vis, scanidlist, ants12m, ants7m, max_fracflagged=0.
     flagged_7mantennas = []
 
     # Add up the antennas
-    antennas = flagdata_result['antenna'].keys()
-    for antenna in sorted(antennas):
+    for antenna in sorted(flagdata_result['antenna']):
         points = flagdata_result['antenna'][antenna]
         fraction = points['flagged']/points['total']
         if antenna in ants12m:

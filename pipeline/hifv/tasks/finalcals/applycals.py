@@ -104,8 +104,8 @@ class Applycals(applycal.IFApplycal):
 
         jobs = []
 
-        for gainfield, scanlist in applycalgroups.iteritems():
-            for calto, calfroms in merged.iteritems():
+        for gainfield, scanlist in applycalgroups.items():
+            for calto, calfroms in merged.items():
                 # if there's nothing to apply for this data selection, continue
                 if not calfroms:
                     continue
@@ -149,7 +149,7 @@ class Applycals(applycal.IFApplycal):
                 jobs.append(casa_tasks.applycal(**args))
 
         if inputs.gainmap:
-            for calto, calfroms in merged.iteritems():
+            for calto, calfroms in merged.items():
                 # if there's nothing to apply for this data selection, continue
                 if not calfroms:
                     continue
@@ -194,7 +194,7 @@ class Applycals(applycal.IFApplycal):
             stats_after['name'] = 'applycal'
 
         applied = [callibrary.CalApplication(calto, calfroms)
-                   for calto, calfroms in merged.iteritems()]
+                   for calto, calfroms in merged.items()]
 
         result = happlycal.ApplycalResults(applied)
 
@@ -254,13 +254,14 @@ class Applycals(applycal.IFApplycal):
                 flagdicts['report0'] = flagdictssingle
 
             for key in flagdicts:  # report level
-                fieldnames = flagdicts[key].keys()
+                fieldnames = list(flagdicts[key].keys())
                 fieldnames.remove('name')
                 fieldnames.remove('type')
                 for fieldname in fieldnames:
                     try:
                         flagsummary[fieldname][key] = flagdicts[key][fieldname]
-                        spwid = flagdicts[key][fieldname]['spw'].keys()[0]
+                        # TODO: review if this relies on order of keys.
+                        spwid = list(flagdicts[key][fieldname]['spw'].keys())[0]
                         flagsummary[fieldname][key]['name'] = 'AntSpw' + str(spwid).zfill(3) + 'Field_' + str(fieldname)
                         flagsummary[fieldname][key]['type'] = 'summary'
                     except Exception as ex:
@@ -344,7 +345,7 @@ class Applycals(applycal.IFApplycal):
                 gainfieldkey = gainfield.split(',')[0]
             applycalgroups[gainfieldkey].extend(targetscans)
 
-        for gainfield, scanlist in applycalgroups.iteritems():
+        for gainfield, scanlist in applycalgroups.items():
             print("Applycal Group")
             print("\tGainfield.... {}".format(gainfield))
             print("\t\tScanList... {}".format(','.join(scanlist)))

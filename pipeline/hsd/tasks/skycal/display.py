@@ -53,9 +53,9 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
                                                                     solutionTimeThresholdSeconds=3600.)
 
         # self._figfile structure: {spw_id: {antenna_id: filename}}
-        self.spw_ids = self._figfile.keys()
+        self.spw_ids = list(self._figfile.keys())
         # take any value from the dictionary
-        self._figfile = dict((spw_id, self._figfile[spw_id].values()[0]) for spw_id in self.spw_ids)
+        self._figfile = dict((spw_id, list(self._figfile[spw_id].values())[0]) for spw_id in self.spw_ids)
         self.init_with_field(context, result, field)
 
     def plot(self):
@@ -76,7 +76,7 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
                     return None
 
         wrappers = []
-        for spw_id, figfile in self._figfile.iteritems():
+        for spw_id, figfile in self._figfile.items():
             # PIPE-110: show image sideband for DSB receivers.
             showimage = self._rxmap.get(spw_id, "") == "DSB"
             if os.path.exists(figfile):
@@ -96,7 +96,7 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
         return wrappers
 
     def _update_figfile(self, old_prefix, new_prefix):
-        for (spw_id, figfile) in self._figfile.iteritems():
+        for spw_id, figfile in self._figfile.items():
             self._figfile[spw_id] = figfile.replace(old_prefix, new_prefix)
             spw_indicator = 'spw{}'.format(spw_id)
             pieces = self._figfile[spw_id].split('.')
@@ -125,7 +125,7 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
 
     def _update_figfile(self, old_prefix, new_prefix):
         for spw_id in self._figfile:
-            for antenna_id, figfile in self._figfile[spw_id].iteritems():
+            for antenna_id, figfile in self._figfile[spw_id].items():
                 new_figfile = figfile.replace(old_prefix, new_prefix)
                 self._figfile[spw_id][antenna_id] = new_figfile 
 
@@ -165,7 +165,7 @@ class SingleDishPlotmsLeaf(object):
         if len(self.antenna) == 0:
             self.antenna_selection = 'summary'
         else:
-            self.antenna_selection = self.antmap.values()[int(self.antenna)]
+            self.antenna_selection = list(self.antmap.values())[int(self.antenna)]
         LOG.info('antenna: ID %s Name \'%s\'' % (self.antenna, self.antenna_selection))
 #        self.antenna_selection = '*&&&'
 
@@ -274,10 +274,10 @@ def plot_elevation_difference(context, result, eldiff, threshold=3.0):
 
     figure0 = 'PERANTENNA_PLOT'
     figure1 = 'ALLANTENNA_PLOT'
-    start_time = numpy.min([numpy.min(x.timeon) for z in eldiff.itervalues() for y in z.itervalues()
-                            for x in y.itervalues() if len(x.timeon) > 0])
-    end_time = numpy.max([numpy.max(x.timeon) for z in eldiff.itervalues() for y in z.itervalues()
-                          for x in y.itervalues() if len(x.timeon) > 0])
+    start_time = numpy.min([numpy.min(x.timeon) for z in eldiff.values() for y in z.values()
+                            for x in y.values() if len(x.timeon) > 0])
+    end_time = numpy.max([numpy.max(x.timeon) for z in eldiff.values() for y in z.values()
+                          for x in y.values() if len(x.timeon) > 0])
 
     def init_figure(figure_id):
         pl.figure(figure_id)

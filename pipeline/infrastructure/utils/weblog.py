@@ -39,7 +39,7 @@ class OrderedDefaultdict(collections.OrderedDict):
 
     def __reduce__(self):  # optional, for pickle support
         args = (self.default_factory,) if self.default_factory else ()
-        return self.__class__, args, None, None, self.iteritems()
+        return self.__class__, args, None, None, iter(self.items())
 
 
 def merge_td_columns(rows, num_to_merge=None, vertical_align=False):

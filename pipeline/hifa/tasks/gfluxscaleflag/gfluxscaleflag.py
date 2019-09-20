@@ -330,7 +330,7 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
         # boil it down to just the valid spws for these fields and request
         scan_spws = {spw for scan in targeted_scans for spw in scan.spws if spw in request_spws}
 
-        for spectral_spec, tuning_spw_ids in get_spspec_to_spwid_map(scan_spws).iteritems():
+        for spectral_spec, tuning_spw_ids in get_spspec_to_spwid_map(scan_spws).items():
             tuning_spw_str = ','.join([str(i) for i in sorted(tuning_spw_ids)])
             LOG.info('Processing spectral spec {}, spws {}'.format(spectral_spec, tuning_spw_str))
 
@@ -348,7 +348,7 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
                 for field in fields_in_scans:
                     intents_to_scans = {si: ms.get_scans(scan_intent=si, field=field.id, spw=tuning_spw_str)
                                         for si in singular_intents}
-                    valid_intents = [k for k, v in intents_to_scans.iteritems() if v]
+                    valid_intents = [k for k, v in intents_to_scans.items() if v]
                     if len(valid_intents) > 1:
                         mixed_intents = True
                         break
@@ -359,7 +359,7 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
                 # Make sure data for the intent exists (PIPE-367)
                 intents_to_scans = {si: [scan for scan in scans_with_data if si in scan.intents]
                                     for si in singular_intents}
-                valid_intents = [k for k, v in intents_to_scans.iteritems() if v]
+                valid_intents = [k for k, v in intents_to_scans.items() if v]
                 task_intents = valid_intents
 
             else:

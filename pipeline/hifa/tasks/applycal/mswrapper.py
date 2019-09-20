@@ -97,7 +97,7 @@ class MSWrapper(object):
 
         # combine masks to create final data selection mask
         mask = numpy.ones(len(self))
-        for k, v in mask_args.iteritems():
+        for k, v in mask_args.items():
             mask = (mask == 1) & (self._get_mask(v, k) == 1)
 
         # find data for the selection mask
@@ -145,7 +145,7 @@ class MSWrapper(object):
 
         # combine masks to create final data selection mask
         mask = numpy.zeros(len(self))
-        for k, v in mask_args.iteritems():
+        for k, v in mask_args.items():
             mask = (mask == 1) | (self._get_mask(v, k) == 1)
 
         # remove autocorrelations

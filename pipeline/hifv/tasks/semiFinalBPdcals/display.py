@@ -235,7 +235,7 @@ class semifinalbpSolAmpPerAntennaChart(object):
             dataVarCol = tb.getvarcol('CPARAM')
             flagVarCol = tb.getvarcol('FLAG')
 
-        rowlist = dataVarCol.keys()
+        rowlist = list(dataVarCol.keys())
         maxmaxamp = 0.0
         maxmaxphase = 0.0
         for rrow in rowlist:
@@ -329,7 +329,7 @@ class semifinalbpSolPhasePerAntennaChart(object):
             dataVarCol = tb.getvarcol('CPARAM')
             flagVarCol = tb.getvarcol('FLAG')
 
-        rowlist = dataVarCol.keys()
+        rowlist = list(dataVarCol.keys())
         maxmaxamp = 0.0
         maxmaxphase = 0.0
         for rrow in rowlist:

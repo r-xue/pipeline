@@ -182,7 +182,7 @@ class SDBLFlagInputs(vdp.StandardInputs):
              'RunMeanPreFitFlag': (self.flag_prfrm, [self.prfrm_thresh, self.prfrm_nmean]),
              'RunMeanPostFitFlag': (self.flag_pofrm, [self.pofrm_thresh, self.pofrm_nmean])}
         keys = ['Threshold', 'Nmean']
-        for (k, v) in d.iteritems():
+        for k, v in d.items():
             (b, p) = v
             if b == True:
                 self.activateFlagRule(k)
@@ -195,14 +195,14 @@ class SDBLFlagInputs(vdp.StandardInputs):
 
     def activateFlagRule(self, key):
         """Activates a flag type specified by the input parameter in FlagRuleDictionary"""
-        if(key in self.FlagRuleDictionary.keys()):
+        if key in self.FlagRuleDictionary:
             self.FlagRuleDictionary[key]['isActive'] = True
         else:
             raise RuntimeError('Error: %s not in predefined Flagging Rules' % key)
 
     def deactivateFlagRule(self, key):
         """Deactivates a flag type specified by the input parameter in FlagRuleDictionary"""
-        if(key in self.FlagRuleDictionary.keys()):
+        if key in self.FlagRuleDictionary:
             self.FlagRuleDictionary[key]['isActive'] = False
         else:
             raise RuntimeError('Error: %s not in predefined Flagging Rules' % key)
@@ -276,7 +276,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
 
         # loop over reduction group (spw and source combination)
         flagResult = []
-        for (group_id, group_desc) in reduction_group.iteritems():
+        for group_id, group_desc in reduction_group.items():
             LOG.debug('Processing Reduction Group %s' % group_id)
             LOG.debug('Group Summary:')
             for m in group_desc:
@@ -329,7 +329,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
                                            pol_ids=pols_list[i])
 
         # per-MS loop
-        for msobj, accumulator in registry.iteritems():
+        for msobj, accumulator in registry.items():
             rowmap = None
             if os.path.abspath(cal_name) == os.path.abspath(bl_name):
                 LOG.warn("%s is not yet baselined. Skipping flag by post-fit statistics for the data."

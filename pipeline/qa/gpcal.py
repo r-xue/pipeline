@@ -202,7 +202,7 @@ def gpcal_score(gpcal_stats):
 
     totalXYMetrics = []
 
-    for fieldId in gpcal_stats['STATS'].iterkeys():
+    for fieldId in gpcal_stats['STATS']:
 
         fieldXYMetrics = []
 
@@ -212,12 +212,12 @@ def gpcal_score(gpcal_stats):
             gpcal_scores['SCORES'][fieldId]['X2X1_TOTAL'] = {'FIELD': 'N/A', 'SPW': 'N/A', 'ANTENNA': 'N/A', 'SCORE': 1.0}
             gpcal_scores['SCORES'][fieldId]['TOTAL'] = {'FIELD': 'N/A', 'SPW': 'N/A', 'ANTENNA': 'N/A', 'SCORE': 1.0}
 
-        for spwId in gpcal_stats['STATS'][fieldId].iterkeys():
+        for spwId in gpcal_stats['STATS'][fieldId]:
 
             if spwId not in gpcal_scores['SCORES'][fieldId]:
                 gpcal_scores['SCORES'][fieldId][spwId] = {}
 
-            for antId in gpcal_stats['STATS'][fieldId][spwId].iterkeys():
+            for antId in gpcal_stats['STATS'][fieldId][spwId]:
 
                 if antId not in gpcal_scores['SCORES'][fieldId][spwId]:
                     gpcal_scores['SCORES'][fieldId][spwId][antId] = {}

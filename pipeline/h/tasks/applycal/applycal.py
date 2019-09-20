@@ -241,7 +241,7 @@ class Applycal(basetask.StandardTaskTemplate):
         job_results = [self._executor.execute(job) for job in jobs]
         flagdata_results = [job_result for job, job_result in zip(jobs, job_results) if job.fn.__name__ == 'flagdata']
 
-        applied_calapps = [callibrary.CalApplication(calto, calfroms) for calto, calfroms in merged.iteritems()]
+        applied_calapps = [callibrary.CalApplication(calto, calfroms) for calto, calfroms in merged.items()]
         result = ApplycalResults(applied_calapps)
 
         # add and reshape the flagdata results if required
@@ -281,7 +281,7 @@ def reshape_flagdata_summary(flagdata_result):
         flagdata_result = {'report0': flagdata_result}
 
     flagsummary = collections.defaultdict(dict)
-    for report_level, report in flagdata_result.iteritems():
+    for report_level, report in flagdata_result.items():
         report_name = report['name']
         report_type = report['type']
         # report keys are all fieldnames with the exception of 'name' and
@@ -335,7 +335,7 @@ class HpcApplycal(sessionutils.ParallelTemplate):
 def jobs_without_calapply(merged, inputs, mod_fn):
     jobs = []
     # sort for a stable applycal order, to make diffs easier to parse
-    for calto, calfroms in sorted(merged.iteritems()):
+    for calto, calfroms in sorted(merged.items()):
         # if there's nothing to apply for this data selection, continue. This
         # should never be seen as merged is called with hide_empty=True
         if not calfroms:

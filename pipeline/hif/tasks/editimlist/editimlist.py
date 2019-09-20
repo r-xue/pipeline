@@ -430,7 +430,7 @@ class Editimlist(basetask.StandardTaskTemplate):
                                                  spwspec=imlist_entry['spw'], specmode=imlist_entry['specmode'],
                                                  band=None) if not inpdict['imagename'] else inpdict['imagename']
 
-        for key, value in imlist_entry.iteritems():
+        for key, value in imlist_entry.items():
             LOG.info("{k} = {v}".format(k=key, v=value))
 
         try:

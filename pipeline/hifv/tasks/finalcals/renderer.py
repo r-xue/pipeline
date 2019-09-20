@@ -507,13 +507,11 @@ class T2_4MDetailsVLAApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 average_flux[(field_id, field_name)] = float(result['CORRECTED']['mean'])
 
             LOG.debug('Mean flux for %s targets:', intent)
-            for (field_id, field_name), v in average_flux.iteritems():
+            for field_id, field_name, v in average_flux.items():
                 LOG.debug('\t%r (%s): %s', field_name, field_id, v)
 
             # find the ID of the field with the highest average flux
-            sorted_by_flux = sorted(average_flux.iteritems(),
-                                    key=operator.itemgetter(1),
-                                    reverse=True)
+            sorted_by_flux = sorted(average_flux.items(), key=operator.itemgetter(1), reverse=True)
             (brightest_id, brightest_name), highest_flux = sorted_by_flux[0]
 
             LOG.info('%s field %r (%s) has highest mean flux (%s)', intent,
@@ -523,9 +521,8 @@ class T2_4MDetailsVLAApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         return result
 
     def sort_plots_by_baseband(self, d):
-        for vis, plots in d.iteritems():
-            plots = sorted(plots, 
-                           key=lambda plot: plot.parameters['baseband'])
+        for vis, plots in d.items():
+            plots = sorted(plots, key=lambda plot: plot.parameters['baseband'])
             d[vis] = plots
 
     def create_plots(self, context, results, plotter_cls, intents, renderer_cls=None, **kwargs):
@@ -644,7 +641,7 @@ class T2_4MDetailsVLAApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         previous_summary = None
         for summary in summaries:
 
-            for intent, scan_ids in intent_scans.iteritems():
+            for intent, scan_ids in intent_scans.items():
                 flagcount = 0
                 totalcount = 0
 

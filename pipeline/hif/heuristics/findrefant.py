@@ -213,7 +213,7 @@ class RefAntHeuristics(object):
         # Calculate the final score and return the list of ranked
         # reference antennas.  NB: The best antennas have the highest
         # score, so a reverse sort is required.
-        return [k for k, _ in sorted(score.iteritems(), key=operator.itemgetter(1), reverse=True)]
+        return [k for k, _ in sorted(score.items(), key=operator.itemgetter(1), reverse=True)]
 
 # ------------------------------------------------------------------------------
 
@@ -625,30 +625,25 @@ class RefAntGeometry:
 
         # Convert the dictionaries to numpy float arrays.  The median
         # longitude is subtracted.
+        radiusValues = numpy.array(list(radii.values()))
 
-        radiusValues = numpy.array( radii.values() )
+        longValues = numpy.array(list(longs.values()))
+        longValues -= numpy.median(longValues)
 
-        longValues = numpy.array( longs.values() )
-        longValues -= numpy.median( longValues )
-
-        latValues = numpy.array( lats.values() )
-
+        latValues = numpy.array(list(lats.values()))
 
         # Calculate the x and y antenna locations.  The medians are
         # subtracted.
-
         x = longValues * numpy.cos(latValues) * radiusValues
-        x -= numpy.median( x )
+        x -= numpy.median(x)
 
         y = latValues * radiusValues
-        y -= numpy.median( y )
-
+        y -= numpy.median(y)
 
         # Calculate the antenna distances from the array reference and
         # return them
-
         distance = dict()
-        names = radii.keys()
+        names = list(radii.keys())
 
         for i, ant in enumerate(names):
             distance[ant] = numpy.sqrt(pow(x[i], 2) + pow(y[i], 2))
@@ -689,27 +684,24 @@ class RefAntGeometry:
 
 # ------------------------------------------------------------------------------
 
-    def _calc_score( self, distance ):
+    def _calc_score(self, distance):
 
         # Get the number of good data, calculate the fraction of good
         # data, and calculate the good and bad weights
-
-        far = numpy.array( distance.values(), numpy.float )
-        fFar = far / float( numpy.max(far) )
+        far = numpy.array(list(distance.values()), numpy.float)
+        fFar = far / float(numpy.max(far))
 
         wFar = fFar * len(far)
-        wClose = ( 1.0 - fFar ) * len(far)
-
+        wClose = (1.0 - fFar) * len(far)
 
         # Calculate the score for each antenna and return them
-
         score = dict()
 
-        names = distance.keys()
-        rName = range( len(wClose) )
+        names = list(distance.keys())
+        rName = range(len(wClose))
 
-        #for n in rName: score[names[n]] = wClose[n]
-        for n in rName: score[names[n]] = wClose[n][0]
+        for n in rName:
+            score[names[n]] = wClose[n][0]
 
         return score
 
@@ -971,14 +963,14 @@ class RefAntFlagging:
             # Get the number of good data, calculate the fraction of good
             # data, and calculate the good and bad weights
 
-            nGood = numpy.array(good.values(), numpy.float)
+            nGood = numpy.array(list(good.values()), numpy.float)
             fGood = nGood / float(numpy.max(nGood))
 
             wGood = fGood * len(nGood)
             wBad = (1.0 - fGood) * len(nGood)
 
             # Calculate the score for each antenna and return them
-            names = good.keys()
+            names = list(good.keys())
             rName = range(len(wGood))
 
             for n in rName:

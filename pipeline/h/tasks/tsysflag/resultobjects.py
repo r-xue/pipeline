@@ -43,7 +43,7 @@ class TsysflagResults(resultobjects.TsyscalResults):
     def __repr__(self):
         s = super(TsysflagResults, self).__repr__()
         s = 'TsysflagResults incorporating %s' % s
-        components = self.components.keys()
+        components = list(self.components.keys())
         if not components:
             s += '\n Containing no component results'
         else:

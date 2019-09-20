@@ -341,11 +341,10 @@ class Setjy(basetask.StandardTaskTemplate):
             setjy_dict.pop('format')
             for field_id in setjy_dict:
                 setjy_dict[field_id].pop('fieldName')
-                spwkeys = setjy_dict[field_id].keys()
                 field = self.inputs.ms.get_fields(field_id)[0]
 
-                if field_id not in result.measurements.keys() and field.name not in result.measurements.keys():
-                    for spw_id in spwkeys:
+                if field_id not in result.measurements and field.name not in result.measurements:
+                    for spw_id in setjy_dict[field_id]:
                         I = setjy_dict[field_id][spw_id]['fluxd'][0]
                         Q = setjy_dict[field_id][spw_id]['fluxd'][1]
                         U = setjy_dict[field_id][spw_id]['fluxd'][2]

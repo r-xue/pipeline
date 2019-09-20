@@ -158,7 +158,7 @@ class TopicRegistry(object):
         self._topics[topic_class].register_result_class(result_class)
 
     def assign_to_topics(self, results):
-        for topic in self._topics.itervalues():
+        for topic in self._topics.values():
             topic.assign_to_topics(results)
 
     def register_to_dataset_topic(self, result_class):

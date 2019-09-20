@@ -33,7 +33,7 @@ def export_flux_from_fit_result(results, context, filename, fieldids_with_spix=N
         for setjy_result in results:
             ms = context.observing_run.get_ms(setjy_result.vis)
 
-            for field_id, measurements in setjy_result.measurements.iteritems():
+            for field_id, measurements in setjy_result.measurements.items():
                 fields = ms.get_fields(field_id)
                 assert(len(fields) == 1)
                 field = fields[0]

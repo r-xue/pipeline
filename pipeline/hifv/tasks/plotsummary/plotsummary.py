@@ -25,7 +25,7 @@ class PlotSummary(basetask.StandardTaskTemplate):
         # the CalApplications for everything applied by the pipeline in this run.
         applied = self.inputs.context.callibrary.applied.merged()
 
-        calapps = [callibrary.CalApplication(calto, calfroms) for calto, calfroms in applied.iteritems()]
+        calapps = [callibrary.CalApplication(calto, calfroms) for calto, calfroms in applied.items()]
 
         result = h_applycal.ApplycalResults(applied=calapps)
 

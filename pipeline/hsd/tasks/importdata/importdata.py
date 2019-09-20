@@ -66,9 +66,9 @@ class SDImportDataResults(basetask.Results):
 
         # merge reduction group
         for reduction_group in reduction_group_list:
-            for (myid, mydesc) in reduction_group.iteritems():
+            for myid, mydesc in reduction_group.items():
                 matched_id = -1
-                for (group_id, group_desc) in observing_run.ms_reduction_group.iteritems():
+                for group_id, group_desc in observing_run.ms_reduction_group.items():
                     if group_desc == mydesc:
                         LOG.info('merge input group %s to group %s' % (myid, group_id))
                         matched_id = group_id

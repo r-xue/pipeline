@@ -365,7 +365,8 @@ class Checkflag(basetask.StandardTaskTemplate):
             for baseband in banddict[band]:
                 spws = []
                 for spwitem in banddict[band][baseband]:
-                    spws.append(spwitem.keys()[0])
+                    # TODO: review if this relies on order of keys.
+                    spws.append(list(spwitem.keys())[0])
                 vlabasebands.append(','.join(spws))
 
         return vlabasebands

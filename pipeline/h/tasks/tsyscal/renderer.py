@@ -87,12 +87,12 @@ class T2_4MDetailsTsyscalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                             and spw not in result.unmappedspws)
 
             tsys2sci = collections.defaultdict(list)
-            for sci, tsys in sci2tsys.iteritems():
+            for sci, tsys in sci2tsys.items():
                 tsys2sci[tsys].append(sci)
 
-            tsysmap = dict((k, sorted(v)) for k, v in tsys2sci.iteritems())
+            tsysmap = dict((k, sorted(v)) for k, v in tsys2sci.items())
 
-            for tsys, sci in tsysmap.iteritems():
+            for tsys, sci in tsysmap.items():
                 tr = TsysMapTR(vis, tsys, ', '.join([str(w) for w in sci]))
                 rows.append(tr)
 
@@ -153,12 +153,12 @@ class TsyscalPlotRenderer(basetemplates.JsonPlotRenderer):
         spectral window and ONE antenna only!
         """
         # get the unique timestamps from the calanalysis result
-        times = {v['time'] for v in ca_result.itervalues()}
+        times = {v['time'] for v in ca_result.values()}
         mean_tsyses = []
         for timestamp in sorted(times):
             # get the dictionary for each timestamp, giving one dictionary per
             # feed
-            vals = [v for v in ca_result.itervalues() if v['time'] is timestamp]
+            vals = [v for v in ca_result.values() if v['time'] is timestamp]
             # get the median Tsys for each feed at this timestamp 
             medians = [numpy.median(v['value']) for v in vals]
             # use the average of the medians per antenna feed as the typical

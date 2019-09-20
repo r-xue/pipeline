@@ -109,7 +109,7 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
             details_elev_diff[vis].extend(details_elev)
 
         # Sky Level vs Frequency
-        flattened = [plot for inner in details_amp_vs_freq.itervalues() for plot in inner]
+        flattened = [plot for inner in details_amp_vs_freq.values() for plot in inner]
         renderer = basetemplates.JsonPlotRenderer(uri='hsd_generic_x_vs_y_ant_field_spw_plots.mako',
                                                   context=context,
                                                   result=result,
@@ -122,7 +122,7 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
             amp_vs_freq_subpages[vis] = os.path.basename(renderer.path)        
 
         # Sky Level vs Time
-        flattened = [plot for inner in details_amp_vs_time.itervalues() for plot in inner]
+        flattened = [plot for inner in details_amp_vs_time.values() for plot in inner]
         renderer = basetemplates.JsonPlotRenderer(uri='hsd_generic_x_vs_y_ant_field_spw_plots.mako',
                                                   context=context,
                                                   result=result,
@@ -135,7 +135,7 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
             amp_vs_time_subpages[vis] = os.path.basename(renderer.path)
 
         # Elevation difference
-        flattened = [plot for inner in details_elev_diff.itervalues() for plot in inner]
+        flattened = [plot for inner in details_elev_diff.values() for plot in inner]
         renderer = basetemplates.JsonPlotRenderer(uri='generic_x_vs_y_ant_field_plots.mako',
                                                   context=context,
                                                   result=result,

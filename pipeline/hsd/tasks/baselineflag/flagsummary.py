@@ -470,7 +470,7 @@ def _format_table_row_html(label, isactive, threshold, nflag, ntotal):
 # has already been validated at upper level (baselineflag.py)
 def _get_iteration(reduction_group, msobj, antid, fieldid, spwid):
     members = []
-    for group_desc in reduction_group.itervalues():
+    for group_desc in reduction_group.values():
         #memids = common.get_valid_ms_members(group_desc, [msobj.name], antid, fieldid, spwid)
         #members.extend([group_desc[i] for i in memids])
         member_id = group_desc._search_member(msobj, antid, spwid, fieldid)

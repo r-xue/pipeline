@@ -79,8 +79,8 @@ class ContFileHandler(object):
             except:
                 pass
 
-        for fkey in cont_ranges['fields'].iterkeys():
-            for skey in cont_ranges['fields'][fkey].iterkeys():
+        for fkey in cont_ranges['fields']:
+            for skey in cont_ranges['fields'][fkey]:
                 if cont_ranges['fields'][fkey][skey] == []:
                     cont_ranges['fields'][fkey][skey] = ['NONE']
 
@@ -96,12 +96,12 @@ class ContFileHandler(object):
 
         fd = open(self.filename, 'w+')
         if cont_ranges != {}:
-            for field_name in cont_ranges['fields'].iterkeys():
+            for field_name in cont_ranges['fields']:
                 if cont_ranges['version'] == 1:
                     fd.write('%s\n\n' % (field_name.replace('"', '')))
                 elif cont_ranges['version'] == 2:
                     fd.write('Field: %s\n\n' % (field_name.replace('"', '')))
-                for spw_id in cont_ranges['fields'][field_name].iterkeys():
+                for spw_id in cont_ranges['fields'][field_name]:
                     if cont_ranges['version'] == 1:
                         fd.write('SPW%s\n' % spw_id)
                     elif cont_ranges['version'] == 2:

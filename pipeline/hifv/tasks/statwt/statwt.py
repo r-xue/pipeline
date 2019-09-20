@@ -47,7 +47,7 @@ class Statwt(basetask.StandardTaskTemplate):
     def prepare(self):
 
         fielddict = cont_file_to_CASA()
-        fields = str(',').join(fielddict.keys()) if fielddict != {} else ''
+        fields = ','.join(str(x) for x in fielddict) if fielddict != {} else ''
 
         flag_summaries = []
         # flag statistics before task

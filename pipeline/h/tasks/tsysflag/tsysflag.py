@@ -89,7 +89,7 @@ def _identify_ants_to_demote(flagging_state, ms, antenna_id_to_name):
     # Store the set of antennas that were fully flagged in at least
     # one Tsys spw, for any of the fields for any of the intents.
     ants_to_demote_as_refant = {antenna_id_to_name[iant]
-                                for iants in ants_fully_flagged.itervalues()
+                                for iants in ants_fully_flagged.values()
                                 for iant in iants}
 
     return ants_to_demote_as_refant, ants_fully_flagged
@@ -169,7 +169,7 @@ def _identify_ants_to_remove(result, ms, metric_to_test, ants_fully_flagged, ant
 def _identify_testable_metrics(result, testable_metrics):
     try:
         testable_metrics_completed = [metric for metric in result.metric_order
-                                      if metric in testable_metrics and metric in result.components.keys()]
+                                      if metric in testable_metrics and metric in result.components]
     except AttributeError:
         testable_metrics_completed = []
 
@@ -322,7 +322,7 @@ class Tsysflag(basetask.StandardTaskTemplate):
             return result
         else:
             # Store each metric result in final result.
-            for metric, metric_result in hresults.iteritems():
+            for metric, metric_result in hresults.items():
                 result.add(metric, metric_result)
             # Store order of metrics in result.
             result.metric_order.extend(metric_order)
@@ -364,7 +364,7 @@ class Tsysflag(basetask.StandardTaskTemplate):
 
         # Create list of all flagging commands.
         flagcmds = []
-        for component in components.itervalues():
+        for component in components.values():
             flagcmds.extend(component.flagging)
 
         # Create and execute flagsetter task for original caltable.
@@ -443,7 +443,7 @@ class Tsysflag(basetask.StandardTaskTemplate):
         fields = {}
         for row in tsystable.rows:
             time = row.get('TIME')
-            if time not in fields.keys():
+            if time not in fields:
                 fields[time] = row.get('FIELD_ID')
 
         # Initialize flagging state
@@ -651,7 +651,7 @@ class Tsysflag(basetask.StandardTaskTemplate):
 
         # If no reports are found, then the flagdata call went wrong somehow, e.g. due
         # to a typo in the flagtsystemplate file.
-        if not fsresult.results[0].values():
+        if not list(fsresult.results[0].values()):
             LOG.error("{} - Unexpected empty result from 'flagdata' while applying manual flags. Manual flags may not"
                       " (all) have been applied. Please check template file {} for typos."
                       "".format(os.path.basename(inputs.vis), os.path.basename(inputs.filetemplate)))
@@ -665,7 +665,7 @@ class Tsysflag(basetask.StandardTaskTemplate):
 
         # Extract "before" and/or "after" summary
         # Go through dictionary of reports...
-        for report in fsresult.results[0].itervalues():
+        for report in fsresult.results[0].values():
             if report['name'] == 'before':
                 stats_before = report
             if report['name'] == 'after':
@@ -700,17 +700,17 @@ class Tsysflag(basetask.StandardTaskTemplate):
         # If the input metric order list contains illegal values, then log
         # an error and stop further evaluation of Tsysflag.
         for metric in metric_order_as_list:
-            if metric not in metrics_from_inputs.keys():
+            if metric not in metrics_from_inputs:
                 errmsg = (
                     "Input parameter 'metric_order' contains illegal value:"
                     " '{0}'. Accepted values are: {1}.".format(
-                        metric, ', '.join(metrics_from_inputs.keys())))
+                        metric, ', '.join(metrics_from_inputs)))
                 LOG.error(errmsg)
                 return results, ordered_list_metrics_to_evaluate, errmsg
 
         # If any of the requested metrics are not defined in the metric order,
         # then log an error and stop further evaluation of Tsysflag.
-        for metric_name, metric_enabled in metrics_from_inputs.iteritems():
+        for metric_name, metric_enabled in metrics_from_inputs.items():
             if metric_enabled and metric_name not in metric_order_as_list:
                 errmsg = (
                     "Flagging metric '{0}' is enabled, but not specified in"
@@ -1075,8 +1075,8 @@ class TsysflagView(object):
 
         # Compute the flagging view for every spw and every intent
         LOG.info('Computing flagging metrics for caltable {}'.format(table))
-        for tsys_spw_id, intent_to_field_ids in tsys_spw_to_intent_to_field_ids.iteritems():
-            for intent, field_ids in intent_to_field_ids.iteritems():
+        for tsys_spw_id, intent_to_field_ids in tsys_spw_to_intent_to_field_ids.items():
+            for intent, field_ids in intent_to_field_ids.items():
                 if self.metric in ['nmedian', 'toomany']:
                     self.calculate_median_spectra_view(tsystable, tsys_spw_id, intent, field_ids,
                                                        split_by_field=self.split_by_field)
@@ -1842,7 +1842,7 @@ class TsysflagView(object):
                     if tsysspectrum.ant[0] != antenna_id:
                         continue
 
-                    if antenna_id not in ant_spectrumstack.keys():
+                    if antenna_id not in ant_spectrumstack:
                         ant_spectrumstack[antenna_id] = tsysspectrum.data
                         ant_flagstack[antenna_id] = tsysspectrum.flag
                     else:

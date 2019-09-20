@@ -219,7 +219,7 @@ class WeightMS(basetask.StandardTaskTemplate):
         with casatools.TableReader(outfile, nomodify=False) as tb:
             # The selection, tsel, contains all intents.
             # Need to match output element in selected table by rownumbers().
-            tsel = tb.query('ROWNUMBER() IN %s' % (row_map.values()), style='python')
+            tsel = tb.query('ROWNUMBER() IN %s' % (list(row_map.values())), style='python')
             ms_weights = tsel.getcol('WEIGHT')
             rownumbers = tsel.rownumbers().tolist()
             for idx in xrange(len(in_rows)):
@@ -236,7 +236,7 @@ class WeightMS(basetask.StandardTaskTemplate):
         minmaxclip = False
         if minmaxclip:
             with casatools.TableReader(outfile, nomodify=False) as tb:
-                tsel = tb.query('ROWNUMBER() IN %s' % (row_map.keys()),
+                tsel = tb.query('ROWNUMBER() IN %s' % (list(row_map.keys())),
                                 style='python')
                 if 'FLOAT_DATA' in tsel.colnames():
                     data_column = 'FLOAT_DATA'

@@ -203,7 +203,7 @@ def remove_unexpected_args(fn, fn_args):
     unexpected = [k for k in fn_args if k not in arg_names]
 
     # return the fn args purged of any unexpected items
-    x = {k: v for k, v in fn_args.iteritems() if k not in unexpected}
+    x = {k: v for k, v in fn_args.items() if k not in unexpected}
 
     # LOG.info('Arg names: {!s}'.format(arg_names))
     # LOG.info('Unexpected: {!s}'.format(unexpected))
@@ -254,7 +254,7 @@ def get_spwmap(source_ms, target_ms):
     # which have been filtered from the maps, use the original spw ID -
     # hence non-science spws are not remapped.
     return {k: name_to_id.get(v, k)
-            for k, v in id_to_name.iteritems()
+            for k, v in id_to_name.items()
             if v in name_to_id}
 
 
@@ -338,7 +338,7 @@ class ParallelTemplate(basetask.StandardTaskTemplate):
 
         context = self.inputs.context
         session_groups = group_into_sessions(context, assessed)
-        for session_id, session_results in session_groups.iteritems():
+        for session_id, session_results in session_groups.items():
             for vis, task_args, vis_result in session_results:
                 if isinstance(vis_result, Exception):
                     fake_result = self.get_result_for_exception(vis, vis_result)

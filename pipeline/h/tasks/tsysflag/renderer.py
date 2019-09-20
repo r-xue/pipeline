@@ -70,7 +70,7 @@ class T2_4MDetailsTsysflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             flag_totals[table]['before'] = self._flags_for_result(result, context, summary='first')
 
             # summarise flagging by each step
-            for component, r in result.components.iteritems():
+            for component, r in result.components.items():
                 if r is not None:
                     flag_totals[table][component] = self._flags_for_result(r, context)
                 else:
@@ -91,7 +91,7 @@ class T2_4MDetailsTsysflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
             # Generate the summary plots at end of flagging sequence,
             # beware empty sequence
-            lastflag = result.components.keys()
+            lastflag = list(result.components.keys())
             if lastflag:
                 lastflag = lastflag[-1]
             lastresult = result.components[lastflag]
@@ -248,17 +248,17 @@ class T2_4MDetailsTsysflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         previous_summary = None
         for summary in summaries:
 
-            for intent, fields in intent_fields.iteritems():
+            for intent, fields in intent_fields.items():
                 flagcount = 0
                 totalcount = 0
 
                 for field in fields:
-                    if field in summary['field'].keys():
+                    if field in summary['field']:
                         flagcount += int(summary['field'][field]['flagged'])
                         totalcount += int(summary['field'][field]['total'])
 
                     if previous_summary:
-                        if field in previous_summary['field'].keys():
+                        if field in previous_summary['field']:
                             flagcount -= int(previous_summary['field'][field]['flagged'])
 
                 ft = FlagTotal(flagcount, totalcount)
@@ -277,12 +277,10 @@ class T2_4MDetailsTsysflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         previous_summary = None
         for summary in summaries:
-            tsys_spws = summary['spw'].keys()
-
             flagcount = 0
             totalcount = 0
 
-            for spw in tsys_spws:
+            for spw in summary['spw']:
                 try:
                     flagcount += int(summary['spw'][spw]['flagged'])
                     totalcount += int(summary['spw'][spw]['total'])

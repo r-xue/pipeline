@@ -21,8 +21,8 @@ class SDBLFlagListQAHandler(pqa.QAPlugin):
         accum_flag = accumulate_flag_per_source_spw(context, result)
         # Now define score per field, spw
         scores = []
-        for field, spwflag in accum_flag.iteritems():
-            for spw, flagval in spwflag.iteritems():
+        for field, spwflag in accum_flag.items():
+            for spw, flagval in spwflag.items():
                 frac_flagged = flagval['additional']/ float(flagval['total'])
                 label = ("Field %s Spw %s" % (field, spw))
                 scores.append(qacalc.score_sdtotal_data_flagged(label, frac_flagged))
@@ -43,8 +43,8 @@ class SDBLFlagQAHandler(pqa.QAPlugin):
 
         # Now define score per field, spw
         scores = []
-        for field, spwflag in accum_flag.iteritems():
-            for spw, flagval in spwflag.iteritems():
+        for field, spwflag in accum_flag.items():
+            for spw, flagval in spwflag.items():
                 frac_flagged = flagval['additional'] / float(flagval['total'])
                 label = '{!s} Field {!s} Spw {!s}'.format(vis, field, spw)
                 scores.append(qacalc.score_sdtotal_data_flagged(label, frac_flagged))

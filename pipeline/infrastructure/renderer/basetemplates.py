@@ -91,7 +91,7 @@ def time_order_dicts(mako_context, pipeline_context):
                                key=lambda ms:ms.start_time['m0']['value'])
 
     order_mapping = {ms.name: i for i, ms in enumerate(time_ordered_data)}
-    order_mapping.update({os.path.basename(k): v for k, v in order_mapping.iteritems()})
+    order_mapping.update({os.path.basename(k): v for k, v in order_mapping.items()})
 
     return reorder_dicts(order_mapping, mako_context)
 
@@ -104,7 +104,7 @@ def reorder_dicts(order_mapping, d):
         return d
 
     # reorder any dict values first
-    for k, v in d.iteritems():
+    for k, v in d.items():
         if isinstance(v, dict):
             d[k] = reorder_dicts(order_mapping, v)
 
@@ -209,7 +209,7 @@ class JsonPlotRenderer(CommonRenderer):
             # constants (NaN, Infinity etc.), so convert them to null. We  
             # do not omit the dictionary entry so that the plot is hidden
             # by the filters.
-            for k, v in json_dict_for_plot.iteritems():
+            for k, v in json_dict_for_plot.items():
                 if isinstance(v, float):
                     if math.isnan(v) or math.isinf(v):
                         json_dict_for_plot[k] = 'null'

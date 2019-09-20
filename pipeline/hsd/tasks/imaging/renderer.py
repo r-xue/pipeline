@@ -75,7 +75,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                      'integratedmap': {'type': 'sd_integrated_map',
                                        'plot_title': 'Integrated Intensity Map'}}
 
-        for (key, value) in map_types.iteritems():
+        for key, value in map_types.items():
             plot_list = self._plots_per_field_with_type(plots, value['type'])
             LOG.debug('plot_list=%s'%((plot_list)))
 
@@ -87,7 +87,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                 continue
 
             flattened = []
-            for inner in plot_list.itervalues():
+            for inner in plot_list.values():
                 for plot in inner:
                     flattened.append(plot)
             LOG.debug('flattened=%s'%((flattened)));
@@ -107,13 +107,13 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                                                       filenamer.sanitize('%s.html' % (plot_title.lower())))
             with renderer.get_file() as fileobj:
                 fileobj.write(renderer.render())
-            for (name, _plots) in plot_list.iteritems():
+            for name, _plots in plot_list.items():
                 subpage[name] = os.path.basename(renderer.path)
             ctx.update({'%s_subpage' % key: subpage,
                         '%s_plots' % key: summary})
             if key == 'sparsemap':
                 profilemap_entries = {}
-                for (field, _plots) in plot_list.iteritems():
+                for field, _plots in plot_list.items():
                     _ap = {}
                     for p in _plots:
                         ant = p.parameters['ant']
@@ -144,7 +144,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
     @staticmethod
     def _summary_plots(plot_group):
         summary_plots = {}
-        for (field_name, plots) in plot_group.iteritems():
+        for field_name, plots in plot_group.items():
             spw_list = []
             summary_plots[field_name] = []
             for plot in plots:
@@ -166,7 +166,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
         source_names = [filenamer.sanitize(s.name) for s in ms.sources]
 
         summary_plots = {}
-        for (field_name, plots) in plot_group.iteritems():
+        for field_name, plots in plot_group.items():
             spw_list = []
             summary_plots[field_name] = []
             best_plot = {}

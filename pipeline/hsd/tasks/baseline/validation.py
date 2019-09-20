@@ -126,7 +126,8 @@ class ValidateLineSinglePointing(basetask.StandardTaskTemplate):
         if len(window) != 0 and windowmode == 'replace':
             LOG.info('Skip clustering analysis since predefined line window is set.')
             lines = _to_validated_lines(detect_signal)
-            signal = detect_signal.values()[0]
+            # TODO: review whether this relies on order of dictionary values.
+            signal = list(detect_signal.values())[0]
             for i in index_list:
                 vis, row = indexer.serial2perms(i)
                 datatable = datatable_dict[vis]
@@ -372,7 +373,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             LOG.info('Skip clustering analysis since predefined line window is set.')
             lines = _to_validated_lines(detect_signal)
             # TODO: review whether this relies on order of dictionary values.
-            signal = detect_signal.values()[0]
+            signal = list(detect_signal.values())[0]
             for i in index_list:
                 vis, row = indexer.serial2perms(i)
                 datatable = datatable_dict[vis]
@@ -772,10 +773,10 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         # grouping by position
         Gthreshold = 1.0 / 3600.
         # TODO: review whether the following relies on a specific order of keys.
-        DSkey = DS.keys()
+        DSkey = list(DS.keys())
         PosGroup = []
         # PosGroup: [[ID,ID,ID],[ID,ID,ID],...,[ID,ID,ID]]
-        for ID in DS.keys():
+        for ID in list(DS.keys()):
             if ID in DSkey:
                 del DSkey[DSkey.index(ID)]
                 DStmp = DSkey[:]
@@ -807,15 +808,15 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         """
         ret = {}
         NSP = float(len(data))
-        for ID in data.keys():
+        for ID in list(data.keys()):
             ret[ID] = []
-        for ID in data.keys():
+        for ID in list(data.keys()):
             for i in range(len(data[ID])):
                 if data[ID][i][0] != -1:
                     ref = data[ID][i][:]
                     tmp = []
                     # if binning > 1: expected number of lines in the grid doubles, i.e., two different offsets
-                    for nID in data.keys():
+                    for nID in list(data.keys()):
                         Lines = [0.0, 0.0, 0.0]
                         for j in range(len(data[nID])):
                             # check binning is the same, and overlap
@@ -830,7 +831,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                     if len(tmp) / NSP >= threshold:
                         for nID, ref in tmp:
                             ret[nID].append(ref)
-        for ID in data.keys():
+        for ID in list(data.keys()):
             if len(ret[ID]) == 0:
                 ret[ID].append([-1, -1, 1])
 
@@ -2009,7 +2010,7 @@ def _eval_poly(xorder, yorder, x, y, xcoeff, ycoeff):
 def _to_validated_lines(detect_lines):
     # conversion from [chmin, chmax] to [center, width, T/F]
     lines = []
-    for line_prop in detect_lines.itervalues():
+    for line_prop in detect_lines.values():
         for line in line_prop[2]:
             if line not in lines:
                 lines.append(line)

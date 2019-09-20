@@ -62,7 +62,7 @@ class CheckProductSizeResult(basetask.Results):
         repr += ' Predicted product size after cube size mitigation: %.3g GB\n' % (self.cube_mitigated_productsize)
         repr += ' Mitigated product size: %.3g GB\n' % (self.mitigated_productsize)
         repr += ' Mitigation parameters:\n'
-        for parameter, value in self.size_mitigation_parameters.iteritems():
+        for parameter, value in self.size_mitigation_parameters.items():
             repr += '  %s: %s\n' % (parameter, value)
 
         return repr

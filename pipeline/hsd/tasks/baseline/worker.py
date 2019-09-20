@@ -231,10 +231,11 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
                 deviationmask = None
 
             if status:
-                fields = ms.get_fields( field_id = field_id )
+                fields = ms.get_fields(field_id=field_id)
                 source_name = fields[0].source.name
-                if not source_name in org_directions_dict:
-                    raise RuntimeError( "source_name {} not found in org_directions_dict (sources found are {})".format( source_name, org_directions_dict.keys() ) )
+                if source_name not in org_directions_dict:
+                    raise RuntimeError("source_name {} not found in org_directions_dict (sources found are {})"
+                                       "".format(source_name, list(org_directions_dict.keys())))
                 org_direction = org_directions_dict[source_name]
                 plot_list.extend(plot_manager.plot_spectra_with_fit(field_id, antenna_id, spw_id, 
                                                                     org_direction,

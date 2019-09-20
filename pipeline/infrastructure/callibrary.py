@@ -497,7 +497,7 @@ class CalFrom(object):
 
             LOG.debug('Adding new CalFrom to pool: %s' % obj)
             CalFrom._CalFromPool[arg_hash] = obj
-            LOG.trace('New pool contents: %s' % CalFrom._CalFromPool.items())
+            LOG.trace('New pool contents: %s' % list(CalFrom._CalFromPool.items()))
         else:
             LOG.trace('Reusing existing CalFrom(gaintable=\'%s\', '
                       'gainfield=\'%s\', interp=\'%s\', spwmap=\'%s\', '
@@ -552,7 +552,7 @@ class CalFrom(object):
     @staticmethod
     def get_caltype_for_viscal(viscal):
         s = string.upper(viscal)
-        for caltype, viscals in CalFrom.CALTYPE_TO_VISCAL.iteritems():
+        for caltype, viscals in CalFrom.CALTYPE_TO_VISCAL.items():
             if s in viscals:
                 return caltype
         return 'unknown'
@@ -741,7 +741,7 @@ class DictCalState(collections.defaultdict):
         :rtype: set of strings
         """
         if caltypes is None:
-            caltypes = CalFrom.CALTYPES.keys()
+            caltypes = list(CalFrom.CALTYPES.keys())
 
         if isinstance(caltypes, str):
             caltypes = (caltypes,)
@@ -749,7 +749,7 @@ class DictCalState(collections.defaultdict):
         for c in caltypes:
             assert c in CalFrom.CALTYPES
 
-        calfroms = (itertools.chain(*self.merged().values()))
+        calfroms = (itertools.chain(*list(self.merged().values())))
         return {cf.gaintable for cf in calfroms if cf.caltype in caltypes}
 
     @staticmethod
@@ -777,12 +777,12 @@ class DictCalState(collections.defaultdict):
                     if new_key not in old_key:
                         old_key.append(new_key)
 
-        for calto_tup, _ in hashes.itervalues():
+        for calto_tup, _ in hashes.values():
             for l in calto_tup:
                 l.sort()
 
         result = {}
-        for calto_args, calfrom in hashes.itervalues():
+        for calto_args, calfrom in hashes.values():
             for vis in calto_args.vis:
                 calto = CalTo(vis=vis,
                               spw=self._commafy(calto_args.spw),
@@ -808,7 +808,7 @@ class DictCalState(collections.defaultdict):
 
     def as_applycal(self):
         calapps = [CalApplication(k, v)
-                   for k, v in self.merged(hide_empty=True).iteritems()]
+                   for k, v in self.merged(hide_empty=True).items()]
         return '\n'.join([str(c) for c in calapps])
 
     def __str__(self):
@@ -862,7 +862,7 @@ class DictCalLibrary(object):
     def _export(self, calstate, filename=None):
         filename = self._calc_filename(filename)
 
-        calapps = [CalApplication(k, v) for k, v in calstate.merged().iteritems()]
+        calapps = [CalApplication(k, v) for k, v in calstate.merged().items()]
 
         with open(filename, 'w') as export_file:
             for ca in calapps:
@@ -1081,7 +1081,7 @@ class CalToIntervalAdapter(object):
         self.spw = [sequence_to_range(seq) for seq in contiguous_sequences(spw_ids)]
 
         id_to_intent = get_intent_id_map(ms)
-        intent_to_id = {v: i for i, v in id_to_intent.iteritems()}
+        intent_to_id = {v: i for i, v in id_to_intent.items()}
 
         if self._calto.intent == '':
             self.intent = [(0, len(intent_to_id))]
@@ -1298,13 +1298,13 @@ def get_id_to_field_fn(ms_to_id_to_field):
     :return: set of field names (or field IDs if names are not unique)
     """
     id_to_identifier = {}
-    for ms_name, id_to_field in ms_to_id_to_field.iteritems():
+    for ms_name, id_to_field in ms_to_id_to_field.items():
         counter = collections.Counter()
-        counter.update(id_to_field.values())
+        counter.update(list(id_to_field.values()))
 
         # construct an id:name mapping using the ID for non-unique field names
         d = {field_id: field_name if counter[field_name] == 1 else field_id
-             for field_id, field_name in id_to_field.iteritems()}
+             for field_id, field_name in id_to_field.items()}
         id_to_identifier[ms_name] = d
 
     def f(vis, field_ids):
@@ -1457,7 +1457,7 @@ def consolidate_calibrations(all_my_calapps):
         vis_to_calapps[vis].append((calto, calfroms))
 
     all_accepted = {}
-    for vis, calapps_for_vis in vis_to_calapps.iteritems():
+    for vis, calapps_for_vis in vis_to_calapps.items():
         LOG.info('Consolidating calibrations for {}'.format(os.path.basename(vis)))
 
         # dict mapping an object hash to the object itself:
@@ -1481,11 +1481,11 @@ def consolidate_calibrations(all_my_calapps):
 
         # dict that maps holds accepted data selections and their CalFroms
         accepted = {}
-        for hashable_calfroms, calto_args in hash_to_calto_args.iteritems():
+        for hashable_calfroms, calto_args in hash_to_calto_args.items():
             # assemble the other data selections (the other CalToArgs) which we
             # will use to search for conflicting data selections
             other_data_selections = []
-            for v in [v for k, v in hash_to_calto_args.iteritems() if k != hashable_calfroms]:
+            for v in [v for k, v in hash_to_calto_args.items() if k != hashable_calfroms]:
                 other_data_selections.extend(v)
 
             for to_merge in calto_args:
@@ -1532,7 +1532,7 @@ def consolidate_calibrations(all_my_calapps):
 
     # dict values are lists, which we need to flatten into a single list
     result = []
-    for l in all_accepted.itervalues():
+    for l in all_accepted.values():
         result.extend(l)
     return result
 
@@ -1820,7 +1820,7 @@ class IntervalCalState(object):
         return calstate
 
     def clear(self):
-        for calstate in self.data.itervalues():
+        for calstate in self.data.values():
             calstate.clear()
         # do NOT clear the id mapping dicts as without access to the context
         # we have no way to repopulate them.
@@ -1883,7 +1883,7 @@ class IntervalCalState(object):
         :rtype: set of strings
         """
         if caltypes is None:
-            caltypes = CalFrom.CALTYPES.keys()
+            caltypes = list(CalFrom.CALTYPES.keys())
 
         if isinstance(caltypes, str):
             caltypes = (caltypes,)
@@ -1891,7 +1891,7 @@ class IntervalCalState(object):
         for c in caltypes:
             assert c in CalFrom.CALTYPES
 
-        return {calfrom.gaintable for calfroms in self.merged().itervalues()
+        return {calfrom.gaintable for calfroms in self.merged().values()
                 for calfrom in calfroms
                 if calfrom.caltype in caltypes}
 
@@ -1907,7 +1907,7 @@ class IntervalCalState(object):
 
     def export_to_casa_callibrary(self, ms, callibfile):
         calapps = (CalApplication(calto, calfroms)
-                   for calto, calfroms in self.merged(hide_empty=True).iteritems())
+                   for calto, calfroms in self.merged(hide_empty=True).items())
         append = False
         for calapp in calapps:
             casa_intents = utils.to_CASA_intent(ms, calapp.intent)
@@ -1918,7 +1918,7 @@ class IntervalCalState(object):
 
     def as_applycal(self):
         calapps = (CalApplication(calto, calfroms)
-                   for calto, calfroms in self.merged(hide_empty=True).iteritems())
+                   for calto, calfroms in self.merged(hide_empty=True).items())
 
         return '\n'.join([str(c) for c in calapps])
 
@@ -1949,7 +1949,7 @@ class IntervalCalState(object):
         calstate.id_to_field = self.id_to_field
         calstate.shape = self.shape
 
-        for vis, my_root in self.data.iteritems():
+        for vis, my_root in self.data.items():
             if LOG.isEnabledFor(logging.TRACE):
                 LOG.trace('Combining callibrary entries for {}'.format(os.path.basename(vis)))
             # adopt IntervalTrees present in just this object
@@ -1977,7 +1977,7 @@ class IntervalCalState(object):
         calstate = self._combine(other, ant_add)
 
         # also adopt IntervalTrees only present in the other object
-        for vis, other_root in other.data.iteritems():
+        for vis, other_root in other.data.items():
             if vis not in self.data:
                 calstate[vis] = other_root
                 calstate.id_to_intent[vis] = other.id_to_intent[vis]
@@ -2027,7 +2027,7 @@ def fix_cycle0_data_selection(context, calstate):
     # We can't trust Cycle 0 data intents. If this is Cycle 0 data we need
     # to resolve the intents to fields and add them to the CalTo data
     # selection to ensure that the correct data is selected.
-    for calto, calfroms in calstate.merged().iteritems():
+    for calto, calfroms in calstate.merged().items():
         vis = calto.vis
         ms = context.observing_run.get_ms(vis)
         if utils.get_epoch_as_datetime(ms.start_time) > CYCLE_0_END_DATE:
@@ -2078,7 +2078,7 @@ class IntervalCalLibrary(object):
     def _export(self, calstate, filename=None):
         filename = self._calc_filename(filename)
 
-        calapps = [CalApplication(k, v) for k, v in calstate.merged().iteritems()]
+        calapps = [CalApplication(k, v) for k, v in calstate.merged().items()]
 
         with open(filename, 'w') as export_file:
             for ca in calapps:
@@ -2180,7 +2180,7 @@ class IntervalCalLibrary(object):
                 calapps.append(calapp)
 
         if not append:
-            for _, calstate in self._active.data.iteritems():
+            for _, calstate in self._active.data.items():
                 calstate.clear()
 
         for calapp in calapps:
@@ -2305,7 +2305,7 @@ def trim_to_valid_data_selection(calstate, vis=None):
     :return: a new, shaped IntervalCalState
     """
     if vis is None:
-        vislist = calstate.data.keys()
+        vislist = list(calstate.data.keys())
     else:
         vislist = [vis] if isinstance(vis, str) else vis
 
@@ -2345,10 +2345,10 @@ def _merge_intervals(unmerged):
     :return: tuple of constructor arguments ready for create_interval_tree_nd
     """
     reversed = collections.defaultdict(set)
-    for k, v in unmerged.iteritems():
+    for k, v in unmerged.items():
         reversed[v].add(k)
     return tuple(sorted((tuple(sequence_to_range(seq) for seq in contiguous_sequences(v)), k)
-                        for k, v in reversed.iteritems()))
+                        for k, v in reversed.items()))
 
 
 def _print_dimensions(calstate):
@@ -2358,7 +2358,7 @@ def _print_dimensions(calstate):
     :param calstate: the calstate to inspect
     :return:
     """
-    for vis, antenna_tree in calstate.data.iteritems():
+    for vis, antenna_tree in calstate.data.items():
         for antenna_interval in antenna_tree.items():
             antenna_ranges = (antenna_interval.begin, antenna_interval.end)
             for spw_interval in antenna_interval.data.data:
@@ -2406,7 +2406,7 @@ def set_calstate_marker(calstate, marker):
     """
     calstate_copy = copy.deepcopy(calstate)
 
-    for vis, antenna_tree in calstate_copy.data.iteritems():
+    for vis, antenna_tree in calstate_copy.data.items():
         for antenna_interval in antenna_tree.items():
             for spw_interval in antenna_interval.data.data:
                 for field_interval in spw_interval.data.data:
@@ -2484,11 +2484,11 @@ def copy_calapplication(calapp, origin=None, **overrides):
         origin = calapp.origin
 
     calto_kw = ['vis', 'field', 'spw', 'antenna', 'intent']
-    calto_overrides = {k: v for k, v in overrides.iteritems() if k in calto_kw}
+    calto_overrides = {k: v for k, v in overrides.items() if k in calto_kw}
     calto = _copy_calto(calapp.calto, **calto_overrides)
 
     calfrom_kw = ['gaintable', 'gainfield', 'interp', 'spwmap', 'caltype', 'calwt']
-    calfrom_overrides = {k: v for k, v in overrides.iteritems() if k in calfrom_kw}
+    calfrom_overrides = {k: v for k, v in overrides.items() if k in calfrom_kw}
     calfrom = [_copy_calfrom(calfrom, **calfrom_overrides) for calfrom in calapp.calfrom]
 
     return CalApplication(calto, calfrom, origin=origin)
@@ -2600,7 +2600,7 @@ def get_calstate_shape(ms):
     # holds a mapping of numeric intent ID to string intent
     id_to_intent = get_intent_id_map(ms)
     # create map of observing intent to intent ID by inverting existing map
-    intent_to_id = {v: k for k, v in id_to_intent.iteritems()}
+    intent_to_id = {v: k for k, v in id_to_intent.items()}
 
     # create interval tree. root branch is antenna
     antenna_tree = create_interval_tree_for_ms(ms)

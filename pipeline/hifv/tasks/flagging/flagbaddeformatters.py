@@ -285,7 +285,7 @@ class FlagBadDeformatters(basetask.StandardTaskTemplate):
 
         # Get basebands matched with spws.  spws is a single element list with a single csv string
         tempDict = {}
-        for antNamekey, spws in weblogflagdict.iteritems():
+        for antNamekey, spws in weblogflagdict.items():
             basebands = []
             for spwstr in spws[0].split(','):
                 spw = m.get_spectral_window(spwstr)

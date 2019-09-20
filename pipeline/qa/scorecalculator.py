@@ -879,7 +879,7 @@ def score_total_data_vla_delay(filename, m):
     else:
         # For each antenna with a delay > 200.0 ns, deduct 0.1 from the score
         delaydict = countbaddelays(m, filename, 200.0)
-        count = len(delaydict.keys())
+        count = len(delaydict)
         score = 1.0 - (0.1 * count)
     if score < 0.0:
         score = 0.0
@@ -1222,7 +1222,7 @@ def score_setjy_measurements(ms, reqfields, reqintents, reqspws, measurements):
 
     # Loop over the measurements
     nmeasured = 0
-    for value in measurements.itervalues():
+    for value in measurements.values():
         # Loop over the flux measurements
         nmeasured += len(value)
 
@@ -1302,7 +1302,7 @@ def score_missing_derived_fluxes(ms, reqfields, reqintents, measurements):
 
     # Loop over measurements
     nmeasured = 0
-    for key, value in measurements.iteritems():
+    for key, value in measurements.items():
         # Loop over the flux measurements
         for flux in value:
             fluxjy = getattr(flux, 'I').to_units(measures.FluxDensityUnits.JANSKY)
@@ -1660,7 +1660,7 @@ def score_derived_fluxes_snr(ms, measurements):
     minscore = 1.0
     minsnr = None
 
-    for _, value in measurements.iteritems():
+    for value in measurements.values():
         # Loop over the flux measurements
         for flux in value:
             fluxjy = flux.I.to_units(measures.FluxDensityUnits.JANSKY)
@@ -1860,7 +1860,7 @@ def score_flagging_view_exists(filename, result):
     try:
         # Set score to 1 as soon as a single metric contains a
         # valid flagging view.
-        for metricresult in result.components.itervalues():
+        for metricresult in result.components.values():
             view = metricresult.view
             if view:
                 score = 1.0
@@ -2117,7 +2117,7 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
     for ms in mses:
         if not ms.derived_fluxes:
             continue
-        for field_arg, measurements in ms.derived_fluxes.iteritems():
+        for field_arg, measurements in ms.derived_fluxes.items():
             mfield = ms.get_fields(field_arg)
             chkfield = None
             for mfielditem in mfield:
@@ -2280,7 +2280,7 @@ def score_multiply(scores_list):
 def score_sd_skycal_elevation_difference(ms, resultdict, threshold=3.0):
     """
     """
-    field_ids = resultdict.keys()
+    field_ids = list(resultdict.keys())
     metric_score = []
     el_threshold = threshold
     lmsg_list = []
@@ -2291,8 +2291,8 @@ def score_sd_skycal_elevation_difference(ms, resultdict, threshold=3.0):
 
         eldiffant = resultdict[field_id]
         warned_antennas = set()
-        for antenna_id, eldiff in eldiffant.iteritems():
-            for spw_id, eld in eldiff.iteritems():
+        for antenna_id, eldiff in eldiffant.items():
+            for spw_id, eld in eldiff.items():
                 preceding = eld.eldiff0
                 subsequent = eld.eldiff1
                 # LOG.info('field {} antenna {} spw {} preceding={}'.format(field_id, antenna_id, spw_id, preceding))

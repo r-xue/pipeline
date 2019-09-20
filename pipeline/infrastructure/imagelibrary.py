@@ -88,7 +88,7 @@ class ImageItem (object):
         self.version_count = 1
 
     def __iter__(self):
-        return vars(self).iteritems()
+        return iter(vars(self).items())
 
 
 # This class defines the image meta data that will be stored for

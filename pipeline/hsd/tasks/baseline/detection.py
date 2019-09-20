@@ -482,7 +482,7 @@ class LineWindowParser(object):
         self.parsed = {}
         self._measure_init(field_id)
         try:
-            for (spwid, _window) in processed.iteritems():
+            for spwid, _window in processed.items():
                 LOG.trace('_window={0} type {1}', _window, type(_window))
                 new_window = self._freq2chan(spwid, _window)
                 if len(new_window) > 0 and not isinstance(new_window[0], list):
@@ -555,7 +555,7 @@ class LineWindowParser(object):
 
     def _dict2dict(self, window):
         # key should be an integer
-        return dict((int(spw), value) for spw, value in window.iteritems())
+        return dict((int(spw), value) for spw, value in window.items())
 
     def _exclude_non_science_spws(self, window):
         # filter non-science windows

@@ -155,12 +155,12 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         """
         ms = self.inputs.ms
         spw_map = ms.combine_spwmap
-        if len(spw_map) == 0: #No SpW combination
+        if len(spw_map) == 0:  # No SpW combination
             return None
         grouped_spw = {}
-        request_spws = set( ms.get_spectral_windows(task_arg=spw_sel) )
+        request_spws = set(ms.get_spectral_windows(task_arg=spw_sel))
         for spws in get_spspec_to_spwid_map(request_spws).values():
-            ref_spw = { spw_map[i] for i in spws }
+            ref_spw = {spw_map[i] for i in spws}
             assert len(ref_spw) == 1, 'A SpectralSpec is mapped to more than one SpWs'
             grouped_spw[ref_spw.pop()] = str(',').join([str(i) for i in sorted(spws)])
         LOG.debug('SpectralSpec grouping: {}'.format(grouped_spw))
@@ -178,11 +178,12 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
             raise ValueError('Invalid SpW grouping input.')
         # Need to solve per SpectralSpec
         calapp_list = []
-        for spw_sel in spw_groups.values():
+        for spw_sel in list(spw_groups.values()):
             LOG.info('Processing spectral spec with spws {}'.format(spw_sel))
             selected_scans = ms.get_scans(scan_intent=inputs.intent, spw=spw_sel)
             if len(selected_scans) == 0:
-                LOG.info('Skipping table generation for empty selection: spw={}, intent={}'.format(spw_sel, inputs.intent))
+                LOG.info('Skipping table generation for empty selection: spw={}, intent={}'
+                         ''.format(spw_sel, inputs.intent))
                 continue
             calapps = self._do_target_phasecal(solint, gaintype, combine, spw_sel)
             calapp_list.extend(calapps)
@@ -218,7 +219,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         cal_calapp = callibrary.copy_calapplication(result_calapp, intent='PHASE', gainfield='nearest', **overrides)
         target_calapp = callibrary.copy_calapplication(result_calapp, intent='TARGET,CHECK', gainfield='', **overrides)
 
-        return (cal_calapp, target_calapp)
+        return cal_calapp, target_calapp
 
     # Used to calibrate "selfcaled" targets
     def _do_spectralspec_calibrator_phasecal(self, solint=None, gaintype=None, combine=None):

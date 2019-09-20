@@ -122,7 +122,7 @@ class VLAImportData(importdata.ImportData):
 
         PbandWarning = ''
         for ms in myresults.mses:
-            for key, value in ms.get_vla_spw2band().iteritems():
+            for key, value in ms.get_vla_spw2band().items():
                 if 'P' in value:
                     PbandWarning = 'P-band data detected in the raw data. ' \
                                    'VLA P-band pipeline calibration has not yet been ' \

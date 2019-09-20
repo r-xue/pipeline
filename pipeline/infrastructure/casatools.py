@@ -35,7 +35,7 @@ def log_call(fn, level):
     def f(*args, **kwargs):
         # remove any keyword arguments that have a value of None or an empty
         # string, letting CASA use the default value for that argument
-        kwargs = {k: v for k, v in kwargs.iteritems() if v not in (None, '')}
+        kwargs = {k: v for k, v in kwargs.items() if v not in (None, '')}
 
         # get the argument names and default argument values for the given
         # function
@@ -50,8 +50,8 @@ def log_call(fn, level):
             return '%s=%r' % (arg, val)
 
         nameless = list(map(repr, args[argcount:]))
-        positional = list(map(format_arg_value, positional.iteritems()))
-        keyword = list(map(format_arg_value, kwargs.iteritems()))
+        positional = list(map(format_arg_value, iter(positional.items())))
+        keyword = list(map(format_arg_value, iter(kwargs.items())))
 
         # don't want self in message as it is an object memory reference
         msg_args = [v for v in positional + nameless + keyword if not v.startswith('self=')]
@@ -83,10 +83,10 @@ def create_logging_class(cls, level=logging.TRACE, methods=None):
                      if not name.startswith('__') and not name.endswith('__')}
 
     if methods:
-        bound_methods = {name: method for name, method in bound_methods.iteritems() if name in methods}
+        bound_methods = {name: method for name, method in bound_methods.items() if name in methods}
 
     logging_override_methods = {name: log_call(method, level)
-                                for name, method in bound_methods.iteritems()}
+                                for name, method in bound_methods.items()}
 
     cls_name = 'Logging{!s}'.format(cls.__name__.capitalize())
     new_cls = type(cls_name, (cls,), logging_override_methods)

@@ -1113,7 +1113,7 @@ class TemporalCollection(object):
         return self.__milestoneCache
 
     def __calculateMilestones(self):
-        self.__milestoneCache = self.__contents.keys()
+        self.__milestoneCache = list(self.__contents.keys())
         self.__milestoneCache.sort(cmp=cmp, reverse=True)
 
     def __clearMilestoneCache(self):

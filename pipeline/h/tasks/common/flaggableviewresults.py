@@ -33,7 +33,7 @@ class FlaggableViewResults(object):
               flag_reason_key
 
     def descriptions(self):
-        return self.view.keys()
+        return list(self.view.keys())
 
     def first(self, description):
         return copy.deepcopy(self.view[description][0])

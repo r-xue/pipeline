@@ -529,7 +529,6 @@ class Finalcals(basetask.StandardTaskTemplate):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         spw2band = m.get_vla_spw2band()
-        bands = spw2band.values()
 
         standard_source_names, standard_source_fields = standard_sources(calMs)
 
@@ -618,7 +617,7 @@ class Finalcals(basetask.StandardTaskTemplate):
         spws = context.evla['msinfo'][m.name].fluxscale_spws
         fluxscale_result = context.evla['msinfo'][m.name].fluxscale_result
         spw2band = m.get_vla_spw2band()
-        bands = spw2band.values()
+        bands = list(spw2band.values())
 
         # Look in spectral window domain object as this information already exists!
         with casatools.TableReader(self.inputs.vis + '/SPECTRAL_WINDOW') as table:
@@ -647,7 +646,7 @@ class Finalcals(basetask.StandardTaskTemplate):
             unique_bands = list(np.unique(bands))
 
             fieldobject = m.get_fields(source)
-            fieldid = str([str(f.id) for f in fieldobject if str(f.id) in fluxscale_result.keys()][0])
+            fieldid = str([str(f.id) for f in fieldobject if str(f.id) in fluxscale_result][0])
 
             for band in unique_bands:
                 lfreqs = []
@@ -655,8 +654,8 @@ class Finalcals(basetask.StandardTaskTemplate):
                 lerrs = []
                 uspws = []
 
-                # Use spw id to band mappings
-                if spw2band.values() != []:
+                # Use spw id to band mappings if available
+                if list(spw2band.values()):
                     for ii in range(len(indices)):
                         if spw2band[spws[indices[ii]]] == band:
                             lfreqs.append(math.log10(center_frequencies[spws[indices[ii]]]))
@@ -664,8 +663,8 @@ class Finalcals(basetask.StandardTaskTemplate):
                             lerrs.append((flux_densities[indices[ii]][1]) / (flux_densities[indices[ii]][0]) / 2.303)
                             uspws.append(spws[indices[ii]])
 
-                # Use frequencies for band mappings
-                if spw2band.values() == []:
+                # Use frequencies for band mappings if no spwid-to-band mapping is available
+                if not list(spw2band.values()):
                     for ii in range(len(indices)):
                         if find_EVLA_band(center_frequencies[spws[indices[ii]]]) == band:
                             lfreqs.append(math.log10(center_frequencies[spws[indices[ii]]]))
@@ -750,7 +749,7 @@ class Finalcals(basetask.StandardTaskTemplate):
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
 
         fluxscale_result = self.inputs.context.evla['msinfo'][m.name].fluxscale_result
-        dictkeys = fluxscale_result.keys()
+        dictkeys = list(fluxscale_result.keys())
         keys_to_remove = ['freq', 'spwName', 'spwID']
         dictkeys = [field_id for field_id in dictkeys if field_id not in keys_to_remove]
 
