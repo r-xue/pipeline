@@ -1,11 +1,12 @@
-from taskinit import casalog
 import sys
+
+from casatasks import casalog
 
 import pipeline.h.cli.utils as utils
 
-def hifa_gaincalsnr(vis=None, field=None, intent=None, spw=None, phasesnr=None,
-          bwedgefrac=None, hm_nantennas=None, maxfracflagged=None, pipelinemode=None, dryrun=None,
-          acceptresults=None):
+
+def hifa_gaincalsnr(vis=None, field=None, intent=None, spw=None, phasesnr=None, bwedgefrac=None, hm_nantennas=None,
+                    maxfracflagged=None, pipelinemode=None, dryrun=None, acceptresults=None):
 
     ##########################################################################
     #                                                                        #

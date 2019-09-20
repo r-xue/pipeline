@@ -1,12 +1,11 @@
 import sys
 
-from taskinit import casalog
+from casatasks import casalog
 
 import pipeline.h.cli.utils as utils
 
 
-def hif_setmodel(pipelinemode=None, scalebychan=None, applyresults=None, 
-                 dryrun=None):
+def hif_setmodel(pipelinemode=None, scalebychan=None, applyresults=None, dryrun=None):
 
     raise Exception('The CASA interface for hif_setmodel needs to be updated to match the task inputs')
 

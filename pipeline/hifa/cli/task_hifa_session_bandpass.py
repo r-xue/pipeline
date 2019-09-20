@@ -1,6 +1,6 @@
 import sys
 
-from taskinit import casalog
+from casatasks import casalog
 
 import pipeline.h.cli.utils as utils
 
@@ -9,7 +9,8 @@ def hifa_session_bandpass(vis=None, caltable=None, field=None, intent=None, spw=
                           phaseupsolint=None, phaseupbw=None, phaseupsnr=None, phaseupnsols=None, hm_bandpass=None,
                           solint=None, maxchannels=None, evenbpints=None, bpsnr=None, minbpsnr=None, bpnsols=None,
                           hm_bandtype=None, combine=None, refant=None, solnorm=None, minblperant=None, minsnr=None,
-                          degamp=None, degphase=None, pipelinemode=None, dryrun=None, acceptresults=None, parallel=None):
+                          degamp=None, degphase=None, pipelinemode=None, dryrun=None, acceptresults=None,
+                          parallel=None):
 
     ##########################################################################
     #                                                                        #

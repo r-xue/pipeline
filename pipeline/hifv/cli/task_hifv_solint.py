@@ -1,11 +1,12 @@
 import sys
 
-from taskinit import casalog
+from casatasks import casalog
 
 import pipeline.h.cli.utils as utils
 
 
-def hifv_solint(vis=None, pipelinemode=None, dryrun=None, acceptresults=None, limit_short_solint=None, refantignore=None):
+def hifv_solint(vis=None, pipelinemode=None, dryrun=None, acceptresults=None, limit_short_solint=None,
+                refantignore=None):
 
     ##########################################################################
     #                                                                        #

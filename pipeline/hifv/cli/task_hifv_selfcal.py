@@ -1,12 +1,12 @@
 import sys
 
-from taskinit import casalog
+from casatasks import casalog
 
 import pipeline.h.cli.utils as utils
 
 
-def hifv_selfcal(vis=None, pipelinemode=None, dryrun=None, acceptresults=None, refantignore=None,
-                 combine=None, selfcalmode=None, refantmode=None):
+def hifv_selfcal(vis=None, pipelinemode=None, dryrun=None, acceptresults=None, refantignore=None, combine=None,
+                 selfcalmode=None, refantmode=None):
 
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

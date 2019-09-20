@@ -1,7 +1,8 @@
-from taskinit import casalog
+from casatasks import casalog
 
 import pipeline
 import pipeline.h.cli.utils as utils
+
 
 def h_weblog():
     context = utils.get_context()    

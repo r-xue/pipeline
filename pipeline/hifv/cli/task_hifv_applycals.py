@@ -1,13 +1,13 @@
 import sys
 
-from taskinit import casalog
+from casatasks import casalog
 
 import pipeline.h.cli.utils as utils
 
 
-def hifv_applycals(vis=None, field=None, intent=None, spw=None, antenna=None,
-    applymode=None, flagbackup=None, flagsum=None,
-    flagdetailedsum=None, gainmap=None, pipelinemode=None, dryrun=None, acceptresults=None):
+def hifv_applycals(vis=None, field=None, intent=None, spw=None, antenna=None, applymode=None, flagbackup=None,
+                   flagsum=None, flagdetailedsum=None, gainmap=None, pipelinemode=None, dryrun=None,
+                   acceptresults=None):
 
     ##########################################################################
     #                                                                        #

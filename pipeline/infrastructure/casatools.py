@@ -10,7 +10,7 @@ import platform
 import sys
 
 import casatools
-from taskinit import casalog
+from casatasks import casalog
 
 from . import logging
 

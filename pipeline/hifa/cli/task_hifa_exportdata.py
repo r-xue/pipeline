@@ -1,13 +1,13 @@
 import sys
 
-from taskinit import casalog
+from casatasks import casalog
 
 import pipeline.h.cli.utils as utils
 
 
-def hifa_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=None,
-    pprfile=None, calintents=None, calimages=None, targetimages=None, products_dir=None, pipelinemode=None,
-    dryrun=None, acceptresults=None):
+def hifa_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=None, pprfile=None, calintents=None,
+                    calimages=None, targetimages=None, products_dir=None, pipelinemode=None, dryrun=None,
+                    acceptresults=None):
 
     ##########################################################################
     #                                                                        #

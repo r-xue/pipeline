@@ -1,13 +1,11 @@
 import sys
 
-from taskinit import casalog
+from casatasks import casalog
 
 import pipeline.h.cli.utils as utils
 
 
 def hifa_imageprecheck(vis=None, calcsb=None, parallel=None, pipelinemode=None, dryrun=None, acceptresults=None):
-    # create a dictionary containing all the arguments given in the
-    # constructor
 
     ##########################################################################
     #                                                                        #

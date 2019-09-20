@@ -1,7 +1,9 @@
-from taskinit import casalog
-
 import sys
+
+from casatasks import casalog
+
 import pipeline.h.cli.utils as utils
+
 
 def h_show_calstate():
     context = utils.get_context()  

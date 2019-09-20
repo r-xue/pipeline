@@ -1,12 +1,12 @@
 import sys
 
-from taskinit import casalog
+from casatasks import casalog
 
 import pipeline.h.cli.utils as utils
 
 
-def hif_mstransform(vis=None, outputvis=None, field=None, intent=None,
-                    spw=None, chanbin=None, timebin=None, pipelinemode=None, dryrun=None, acceptresults=None):
+def hif_mstransform(vis=None, outputvis=None, field=None, intent=None, spw=None, chanbin=None, timebin=None,
+                    pipelinemode=None, dryrun=None, acceptresults=None):
 
     ##########################################################################
     #                                                                        #

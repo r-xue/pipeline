@@ -1,14 +1,14 @@
-from taskinit import casalog
 import sys
+
+from casatasks import casalog
 
 import pipeline.h.cli.utils as utils
 
-def hifa_spwphaseup(vis=None, caltable=None, field=None, intent=None,
-                 spw=None, hm_spwmapmode=None, maxnarrowbw=None,
-                 minfracmaxbw=None, samebb=None, phasesnr=None,
-                 bwedgefrac=None, hm_nantennas=None, maxfracflagged=None,
-                 combine=None, refant=None, minblperant=None, minsnr=None,
-                 pipelinemode=None, dryrun=None, acceptresults=None):
+
+def hifa_spwphaseup(vis=None, caltable=None, field=None, intent=None, spw=None, hm_spwmapmode=None, maxnarrowbw=None,
+                    minfracmaxbw=None, samebb=None, phasesnr=None, bwedgefrac=None, hm_nantennas=None,
+                    maxfracflagged=None, combine=None, refant=None, minblperant=None, minsnr=None, pipelinemode=None,
+                    dryrun=None, acceptresults=None):
 
     ##########################################################################
     #                                                                        #

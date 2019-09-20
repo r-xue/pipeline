@@ -1,11 +1,12 @@
-from taskinit import casalog
+from casatasks import casalog
 
 import pipeline.h.cli.cli as cli
 import pipeline.infrastructure.launcher as launcher
 import pipeline.infrastructure.basetask as basetask
 
-def h_init(pipelinemode=None, loglevel=None, plotlevel=None, output_dir=None,
-           weblog=None, overwrite=None, dryrun=None, acceptresults=None):
+
+def h_init(pipelinemode=None, loglevel=None, plotlevel=None, output_dir=None, weblog=None, overwrite=None, dryrun=None,
+           acceptresults=None):
 
     # TBD: DECIDE WHETHER DRY RUN REALLY MAKES SENSE FOR THIS TASK AND IF
     # SO HOW TO IMPLEMENT IT.

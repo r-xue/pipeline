@@ -1,13 +1,12 @@
 import sys
 
-from taskinit import casalog
+from casatasks import casalog
 
 import pipeline.h.cli.utils as utils
 
 
-def h_mssplit(vis=None, outputvis=None, field=None, intent=None,
-    spw=None, datacolumn=None, chanbin=None, timebin=None, replace=None,
-    pipelinemode=None, dryrun=None, acceptresults=None):
+def h_mssplit(vis=None, outputvis=None, field=None, intent=None, spw=None, datacolumn=None, chanbin=None, timebin=None,
+              replace=None, pipelinemode=None, dryrun=None, acceptresults=None):
 
     ##########################################################################
     #                                                                        #

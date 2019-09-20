@@ -1,8 +1,9 @@
 import datetime
 
-from taskinit import casalog
+from casatasks import casalog
 
 import pipeline.h.cli.utils as utils
+
 
 def h_save(filename=None):
     context = utils.get_context()    

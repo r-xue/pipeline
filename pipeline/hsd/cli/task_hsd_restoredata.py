@@ -1,13 +1,12 @@
 import sys
 
-from taskinit import casalog
+from casatasks import casalog
 
 import pipeline.h.cli.utils as utils
 
 
-def hsd_restoredata(vis=None, session=None, products_dir=None, copytoraw=None,
-    rawdata_dir=None, lazy=None, bdfflags=None, ocorr_mode=None, asis=None,
-    pipelinemode=None, dryrun=None, acceptresults=None):
+def hsd_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, rawdata_dir=None, lazy=None,
+                    bdfflags=None, ocorr_mode=None, asis=None, pipelinemode=None, dryrun=None, acceptresults=None):
 
     ##########################################################################
     #                                                                        #

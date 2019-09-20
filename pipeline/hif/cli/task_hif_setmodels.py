@@ -1,14 +1,12 @@
 import sys
 
-from taskinit import casalog
+from casatasks import casalog
 
 import pipeline.h.cli.utils as utils
 
 
-def hif_setmodels(vis=None, reference=None, refintent=None, transfer=None,
-                 transintent=None, reffile=None, normfluxes=None,
-                 scalebychan=None, pipelinemode=None, dryrun=None,
-                 acceptresults=None):
+def hif_setmodels(vis=None, reference=None, refintent=None, transfer=None, transintent=None, reffile=None,
+                  normfluxes=None, scalebychan=None, pipelinemode=None, dryrun=None, acceptresults=None):
 
     ##########################################################################
     #                                                                        #

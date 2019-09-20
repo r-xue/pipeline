@@ -1,6 +1,7 @@
-from taskinit import casalog
+from casatasks import casalog
 
 import pipeline.h.cli.utils as utils
+
 
 def h_export_calstate(filename=None, state=None):
     context = utils.get_context()
