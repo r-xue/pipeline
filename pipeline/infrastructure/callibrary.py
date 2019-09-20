@@ -13,7 +13,7 @@ import weakref
 
 import cachetools
 import intervaltree
-from callibrary import applycaltocallib
+from casatasks.private.callibrary import applycaltocallib
 
 from . import casatools
 from . import logging
