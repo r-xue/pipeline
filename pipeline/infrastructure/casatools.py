@@ -121,7 +121,7 @@ _logging_simulator_cls = create_logging_class(casatools.simulator)
 _logging_spectralline_cls = create_logging_class(casatools.spectralline)
 _logging_table_cls = create_logging_class(casatools.table)
 _logging_tableplot_cls = create_logging_class(casatools.table)
-_logging_utils_cls = create_logging_class(casatools.utils)
+_logging_utils_cls = create_logging_class(casatools.utils.utils)
 _logging_vpmanager_cls = create_logging_class(casatools.vpmanager)
 
 agentflagger = _logging_agentflagger_cls()
