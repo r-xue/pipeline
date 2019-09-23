@@ -106,10 +106,8 @@ _logging_agentflagger_cls = create_logging_class(casatools.agentflagger)
 _logging_atmosphere_cls = create_logging_class(casatools.atmosphere)
 _logging_calanalysis_cls = create_logging_class(casatools.calanalysis)
 _logging_calibrater_cls = create_logging_class(casatools.calibrater)
-_logging_calplot_cls = create_logging_class(casatools.calplot)
 _logging_componentlist_cls = create_logging_class(casatools.componentlist)
 _logging_coordsys_cls = create_logging_class(casatools.coordsys)
-_logging_deconvolver_cls = create_logging_class(casatools.deconvolver)
 _logging_image_cls = create_logging_class(casatools.image)
 _logging_imagepol_cls = create_logging_class(casatools.imagepol)
 _logging_imager_cls = create_logging_class(casatools.imager,
@@ -117,7 +115,6 @@ _logging_imager_cls = create_logging_class(casatools.imager,
 _logging_measures_cls = create_logging_class(casatools.measures)
 _logging_ms_cls = create_logging_class(casatools.ms)
 _logging_msmd_cls = create_logging_class(casatools.msmetadata)
-_logging_msplot_cls = create_logging_class(casatools.msplot)
 _logging_quanta_cls = create_logging_class(casatools.quanta)
 _logging_regionmanager_cls = create_logging_class(casatools.regionmanager)
 _logging_simulator_cls = create_logging_class(casatools.simulator)
@@ -125,24 +122,20 @@ _logging_spectralline_cls = create_logging_class(casatools.spectralline)
 _logging_table_cls = create_logging_class(casatools.table)
 _logging_tableplot_cls = create_logging_class(casatools.table)
 _logging_utils_cls = create_logging_class(casatools.utils)
-_logging_vlafillertask_cls = create_logging_class(casatools.vlafillertask)
 _logging_vpmanager_cls = create_logging_class(casatools.vpmanager)
 
 agentflagger = _logging_agentflagger_cls()
 atmosphere = _logging_atmosphere_cls()
 calanalysis = _logging_calanalysis_cls()
 calibrater = _logging_calibrater_cls()
-calplot = _logging_calplot_cls()
 componentlist = _logging_componentlist_cls()
 coordsys = _logging_coordsys_cls()
-deconvolver = _logging_deconvolver_cls()
 image = _logging_image_cls()
 imagepol = _logging_imagepol_cls()
 imager = _logging_imager_cls()
 measures = _logging_measures_cls()
 ms = _logging_ms_cls()
 msmd = _logging_msmd_cls()
-msplot = _logging_msplot_cls()
 quanta = _logging_quanta_cls()
 regionmanager = _logging_regionmanager_cls()
 simulator = _logging_simulator_cls()
@@ -150,7 +143,6 @@ spectralline = _logging_spectralline_cls()
 table = _logging_table_cls()
 tableplot = _logging_table_cls()
 utils = _logging_utils_cls()
-vlafillertask = _logging_vlafillertask_cls()
 vpmanager = _logging_vpmanager_cls()
 
 log = casalog
@@ -243,11 +235,27 @@ AgentFlagger = context_manager_factory(_logging_agentflagger_cls)
 
 # C extensions cannot be pickled, so ignore the CASA logger on pickle and
 # replace with it with the current CASA logger on unpickle
-__tools = ['imager', 'measures', 'quanta', 'table', 'ms', 'tableplot', 
-           'calibrater', 'msplot', 'calplot', 'agentflagger',
-           'image', 'imagepol', 'simulator', 'componentlist', 'coordsys',
-           'regionmanager', 'spectralline', 'utils', 'deconvolver',
-           'vpmanager', 'vlafillertask', 'atmosphere', 'log', 'utils']
+__tools = [
+    'agentflagger',
+    'atmosphere',
+    'calibrater',
+    'componentlist',
+    'coordsys',
+    'image',
+    'imagepol',
+    'imager',
+    'log',
+    'measures',
+    'ms',
+    'quanta',
+    'regionmanager',
+    'simulator',
+    'spectralline',
+    'table',
+    'tableplot',
+    'utils',
+    'vpmanager',
+]
 
 for tool in __tools:
     tool_type = type(globals()[tool])
