@@ -378,10 +378,10 @@ class InputsContainer(object):
                 # user intends for the class to use the default mode. Inspect
                 # the constructor to find what that value is.
                 constructor = task_cls.Inputs.__init__
-                code = constructor.func_code
+                code = constructor.__code__
                 argcount = code.co_argcount
                 argnames = code.co_varnames[:argcount]
-                fn_defaults = constructor.func_defaults or list()
+                fn_defaults = constructor.__defaults__ or list()
                 argdefs = dict(zip(argnames[-len(fn_defaults):], fn_defaults))
 
                 # user intends for the class to use the default mode. Inspect

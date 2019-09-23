@@ -195,7 +195,7 @@ class VDPTaskFactory(object):
 
 def remove_unexpected_args(fn, fn_args):
     # get the argument names for the function
-    code = fn.func_code
+    code = fn.__code__
     arg_count = code.co_argcount
     arg_names = code.co_varnames[:arg_count]
 

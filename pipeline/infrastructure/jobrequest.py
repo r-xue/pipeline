@@ -166,10 +166,10 @@ class JobRequest(object):
 
         # get the argument names and default argument values for the given
         # function
-        code = fn.func_code
+        code = fn.__code__
         argcount = code.co_argcount
         argnames = code.co_varnames[:argcount]
-        fn_defaults = fn.func_defaults or list()
+        fn_defaults = fn.__defaults__ or list()
         argdefs = dict(zip(argnames[-len(fn_defaults):], fn_defaults))
 
         # remove arguments that are not expected by the function, such as

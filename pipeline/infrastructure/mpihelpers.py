@@ -187,7 +187,7 @@ class Tier0FunctionCall(object):
         self.__kwargs = kwargs
 
         # the following code is used to get a nice repr format
-        code = fn.func_code
+        code = fn.__code__
         arg_count = code.co_argcount
         arg_names = code.co_varnames[:arg_count]
 

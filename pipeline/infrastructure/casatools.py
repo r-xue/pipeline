@@ -39,7 +39,7 @@ def log_call(fn, level):
 
         # get the argument names and default argument values for the given
         # function
-        code = fn.func_code
+        code = fn.__code__
         argcount = code.co_argcount
         argnames = code.co_varnames[:argcount]
 
