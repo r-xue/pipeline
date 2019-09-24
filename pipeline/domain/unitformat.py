@@ -198,11 +198,11 @@ time.addUnitOfMagnitude(31536000, '{3:.0f} years')
 
 if __name__ == '__main__':
     # print some sample file sizes
-    x722b = 722L
-    x498kb = 509952L
-    x15mb = 15728640L
-    x300mb = 314572800L
-    x40gb = 42949672960L
+    x722b = 722
+    x498kb = 509952
+    x15mb = 15728640
+    x300mb = 314572800
+    x40gb = 42949672960
     print(file_size.format(x722b))
     print(file_size.format(x498kb))
     print(file_size.format(x498kb + x722b))
