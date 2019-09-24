@@ -5,7 +5,7 @@ import itertools
 import math
 
 import numpy
-import simutil
+from casatasks.private import simutil
 
 import pipeline.infrastructure.casatools as casatools
 from . import measures
