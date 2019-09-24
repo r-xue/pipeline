@@ -8,6 +8,7 @@ import re
 import resource
 import string
 import subprocess
+import sys
 
 import pkg_resources
 from casampi.MPIEnvironment import MPIEnvironment
@@ -26,7 +27,7 @@ def _cpu_type():
     """
     system = platform.system()
     if system == 'Linux':
-        all_info = subprocess.check_output('cat /proc/cpuinfo', shell=True).strip()
+        all_info = subprocess.check_output('cat /proc/cpuinfo', shell=True).strip().decode(sys.stdout.encoding)
         model_names = {line for line in all_info.split('\n') if line.startswith('model name')}
         if len(model_names) != 1:
             return 'N/A'
@@ -35,7 +36,7 @@ def _cpu_type():
         # replace any multispaces with one space
         return re.sub('\s+', ' ', token.strip())
     elif system == 'Darwin':
-        return subprocess.check_output(['sysctl', '-n', 'machdep.cpu.brand_string']).strip()
+        return subprocess.check_output(['sysctl', '-n', 'machdep.cpu.brand_string']).strip().decode(sys.stdout.encoding)
     else:
         raise NotImplemented('Could not get CPU type for system {!s}'.format(system))
 
