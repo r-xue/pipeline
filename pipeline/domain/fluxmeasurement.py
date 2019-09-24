@@ -42,7 +42,7 @@ class FluxMeasurement(object):
     def _to_decimal(self, arg):
         if isinstance(arg, Decimal):
             return arg
-        elif isinstance(arg, (int, float, long)):
+        elif isinstance(arg, (int, float)):
             return Decimal(list(map(str, arg)))
         else:
             raise ValueError('Could not convert {!r} to Decimal'.format(arg))
@@ -82,7 +82,7 @@ class FluxMeasurement(object):
         return self.__class__(spw_id, I, Q, U, V, spix, uvmin, uvmax)
 
     def __div__(self, other):
-        if not isinstance(other, (int, float, long, Decimal)):
+        if not isinstance(other, (int, float, Decimal)):
             raise TypeError("unsupported operand type(s) for /: '%s' and '%s'" % (self.__class__.__name__,
                                                                                   other.__class__.__name__))
 
@@ -98,7 +98,7 @@ class FluxMeasurement(object):
         return self.__class__(spw_id, I, Q, U, V, spix, uvmin, uvmax)
 
     def __mul__(self, other):
-        if not isinstance(other, (int, float, long, Decimal)):
+        if not isinstance(other, (int, float, Decimal)):
             raise TypeError("unsupported operand type(s) for *: '%s' and '%s'" % (self.__class__.__name__,
                                                                                   other.__class__.__name__))
 
@@ -114,7 +114,7 @@ class FluxMeasurement(object):
         return self.__class__(spw_id, I, Q, U, V, spix, uvmin, uvmax,)
 
     def __rmul__(self, other):
-        if not isinstance(other, (int, float, long, Decimal)):
+        if not isinstance(other, (int, float, Decimal)):
             raise TypeError("unsupported operand type(s) for *: '%s' and '%s'" % (self.__class__.__name__,
                                                                                   other.__class__.__name__))
 

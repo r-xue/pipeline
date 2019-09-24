@@ -135,7 +135,7 @@ class ComparableUnit(object):
     def __div__(self, other):
         if isinstance(other, self.__class__):
             return self.to_units() / other.to_units()
-        if not isinstance(other, (int, float, long, decimal.Decimal)):
+        if not isinstance(other, (int, float, decimal.Decimal)):
             raise TypeError("unsupported operand type(s) for /: '%s' and '%s'" % (self.__class__.__name__,
                                                                                   other.__class__.__name__))
         return self.__class__(self.value / decimal.Decimal(str(other)), self.units)
@@ -153,7 +153,7 @@ class ComparableUnit(object):
         return self.value > other.to_units(self.units)
 
     def __idiv__(self, other):
-        if not isinstance(other, (int, float, long, decimal.Decimal)):
+        if not isinstance(other, (int, float, decimal.Decimal)):
             raise TypeError("unsupported operand type(s) for /: '%s' and '%s'" % (self.__class__.__name__,
                                                                                   other.__class__.__name__))
         self.value /= other
@@ -171,13 +171,13 @@ class ComparableUnit(object):
         return self.value < other.to_units(self.units)
 
     def __mul__(self, other):
-        if not isinstance(other, (int, float, long, decimal.Decimal)):
+        if not isinstance(other, (int, float, decimal.Decimal)):
             raise TypeError("unsupported operand type(s) for *: '%s' and '%s'" % (self.__class__.__name__,
                                                                                   other.__class__.__name__))
         return self.__class__(self.value * other, self.units)
 
     def __rmul__(self, other):
-        if not isinstance(other, (int, float, long, decimal.Decimal)):
+        if not isinstance(other, (int, float, decimal.Decimal)):
             raise TypeError("unsupported operand type(s) for *: '%s' and '%s'" % (self.__class__.__name__,
                                                                                   other.__class__.__name__))
         return self.__class__(self.value * other, self.units)
@@ -205,7 +205,7 @@ class Distance(ComparableUnit):
         If no arguments are given, a new distance of 0 km is created. If no
         units are given, kilometres are assumed.
         """
-        if isinstance(value, (float, long)):
+        if isinstance(value, (float, int)):
             value = str(value)
         self.value = decimal.Decimal(value)
         self.units = units
@@ -259,7 +259,7 @@ class EquatorialArc(ComparableUnit):
         If no arguments are given, a new arc of 0 degrees is created. If no
         units are given, degrees are assumed.
         """
-        if isinstance(value, (float, long)):
+        if isinstance(value, (float, int)):
             value = str(value)
         self.value = decimal.Decimal(value)
         self.units = units
@@ -359,7 +359,7 @@ class FluxDensity(ComparableUnit):
         units
             the new units for this flux density
         """
-        if isinstance(value, (float, long)):
+        if isinstance(value, (float, int)):
             value = str(value)
         self.value = decimal.Decimal(value)
         self.units = units
@@ -418,7 +418,7 @@ class LinearVelocity(ComparableUnit):
         units
             the new units for this linear velocity
         """
-        if isinstance(value, (float, long)):
+        if isinstance(value, (float, int)):
             value = str(value)
         self.value = decimal.Decimal(value)
         self.units = units
@@ -480,7 +480,7 @@ class FileSize(ComparableUnit):
         units
             the new units for this file size
         """
-        if isinstance(value, (float, long)):
+        if isinstance(value, (float, int)):
             value = str(value)
         self.value = decimal.Decimal(value)
         self.units = units
@@ -541,7 +541,7 @@ class Frequency(ComparableUnit):
         units
             the new units for this frequency
         """
-        if isinstance(value, (float, long)):
+        if isinstance(value, (float, int)):
             value = str(value)
         self.value = decimal.Decimal(value)
         self.units = units

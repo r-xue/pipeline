@@ -82,10 +82,10 @@ def antenna(ms, refsource, refant, peak_frac=0.7):
     y = {}
     for ant in antennas:
         name = ant.name
-        long = ant.longitude['value']
+        lng = ant.longitude['value']
         lat = ant.latitude['value']
         height = ant.height['value']
-        x[name] = long * math.cos(lat) * height
+        x[name] = lng * math.cos(lat) * height
         y[name] = lat * height
 
     # Get shortest baseline to reference antenna
