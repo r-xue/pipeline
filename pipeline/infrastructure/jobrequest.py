@@ -156,8 +156,7 @@ class JobRequest(object):
 
         # CASA tasks are instances rather than functions, whose execution
         # begins at __call__
-        if isinstance(fn, types.InstanceType):
-            fn = fn.__call__
+        fn = fn.__call__
 
         # the next piece of code does some introspection on the given function
         # so that we can find out the complete invocation, adding any implicit
