@@ -2211,51 +2211,103 @@ class TimestampedData(collections.namedtuple('TimestampedDataBase', ['time', 'da
     def __new__(cls, time, data, marker=None):
         return super(TimestampedData, cls).__new__(cls, time, data, marker)
 
-    def __cmp__(self, other):
+    def __eq__(self, other):
         """
-        Tells whether other sorts before, after or equal to this
-        Interval.
-
-        Sorting is by time then by data fields.
-
-        If data fields are not both sortable types, data fields are
-        compared alphabetically by type name.
+        Equality operator.
         :param other: Interval
-        :return: -1, 0, 1
-        :rtype: int
+        :return: True or False
+        :rtype: bool
+        """
+        return (
+                self.time == other.time and
+                self.data == other.data and
+                self.marker == other.marker
+        )
+
+    def __ne__(self, other):
+        """
+        Non-equality operator.
+        :param other: Interval
+        :return: True or False
+        :rtype: bool
+        """
+        return (
+                self.time != other.time or
+                self.data != other.data or
+                self.marker != other.marker
+        )
+
+    def __lt__(self, other):
+        """
+        Less than operator.
+        :param other: Interval or point
+        :return: True or False
+        :rtype: bool
         """
         s = self[0:1]
         o = other[0:1]
         if s != o:
-            return -1 if s < o else 1
+            return s < o
         try:
-            if self.data == other.data:
-                return 0
-            return -1 if self.data < other.data else 1
+            return self.data < other.data
         except TypeError:
             s = type(self.data).__name__
             o = type(other.data).__name__
-            if s == o:
-                return 0
-            return -1 if s < o else 1
+            return s < o
 
-    def __lt__(self, other):
+    def __le__(self, other):
         """
-        Less than operator. Parrots __cmp__()
+        Less than operator.
         :param other: Interval or point
         :return: True or False
         :rtype: bool
         """
-        return self.__cmp__(other) < 0
+        s = self[0:1]
+        o = other[0:1]
+        if s != o:
+            return s <= o
+        try:
+            return self.data <= other.data
+        except TypeError:
+            s = type(self.data).__name__
+            o = type(other.data).__name__
+            return s <= o
 
     def __gt__(self, other):
         """
-        Greater than operator. Parrots __cmp__()
+        Less than operator.
         :param other: Interval or point
         :return: True or False
         :rtype: bool
         """
-        return self.__cmp__(other) > 0
+        s = self[0:1]
+        o = other[0:1]
+        if s != o:
+            return s > o
+        try:
+            return self.data > other.data
+        except TypeError:
+            s = type(self.data).__name__
+            o = type(other.data).__name__
+            return s > o
+
+    def __ge__(self, other):
+        """
+        Less than operator.
+        :param other: Interval or point
+        :return: True or False
+        :rtype: bool
+        """
+        s = self[0:1]
+        o = other[0:1]
+        if s != o:
+            return s >= o
+        try:
+            return self.data >= other.data
+        except TypeError:
+            s = type(self.data).__name__
+            o = type(other.data).__name__
+            return s >= o
 
     def __repr__(self):
         """
@@ -2274,20 +2326,6 @@ class TimestampedData(collections.namedtuple('TimestampedDataBase', ['time', 'da
         :rtype: str
         """
         return 'TSD({0})'.format(repr(self.data))
-
-    def __eq__(self, other):
-        """
-        Whether the begins equal, the ends equal, and the data fields
-        equal. Compare range_matches().
-        :param other: Interval
-        :return: True or False
-        :rtype: bool
-        """
-        return (
-                self.time == other.time and
-                self.data == other.data and
-                self.marker == other.marker
-        )
 
 
 def trim_to_valid_data_selection(calstate, vis=None):

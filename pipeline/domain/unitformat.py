@@ -11,9 +11,7 @@ import decimal
 
 
 class UnitOfMagnitude(object):
-    '''
-    Models a unit of magnitude such as 'Kilobyte', 'milimetre' or 'hectare'.
-    '''
+    """Models a unit of magnitude such as 'Kilobyte', 'milimetre' or 'hectare'."""
     def __init__(self, magnitude, format, html):
         self.magnitude = decimal.Decimal(str(magnitude))
         self.format = format
@@ -22,13 +20,23 @@ class UnitOfMagnitude(object):
     def adjust(self, number):
         return decimal.Decimal(str(number)) / self.magnitude
 
-    def __cmp__(self, otherUnit):
-        if self.magnitude < otherUnit.magnitude:
-            return -1
-        elif self.magnitude == otherUnit.magnitude:
-            return 0
-        else:
-            return 1
+    def __eq__(self, other):
+        return self.magnitude == other.magnitude
+
+    def __ne__(self, other):
+        return not self.magnitude != other.magnitude
+
+    def __lt__(self, other):
+        return self.magnitude < other.magnitude
+
+    def __le__(self, other):
+        return self.magnitude <= other.magnitude
+
+    def __gt__(self, other):
+        return self.magnitude > other.magnitude
+
+    def __ge__(self, other):
+        return self.magnitude >= other.magnitude
 
 
 class UnitFormat(object):
@@ -128,6 +136,8 @@ def get_frequency_format(precision):
     f.addUnitOfMagnitude(1000000000, s + ' GHz')
     f.addUnitOfMagnitude(1000000000000, s + ' THz')
     return f
+
+
 frequency = get_frequency_format(3)
 
 # Create a Unit for measuring flux densities
