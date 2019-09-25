@@ -1,28 +1,27 @@
 from __future__ import absolute_import
 
 import copy
+import itertools
 import math
-import numpy
 import os
 import time
-import itertools
 
-from taskinit import gentools
+import numpy
+
+import casatools
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure import casa_tasks
-import pipeline.infrastructure.casatools as casatools
+import pipeline.infrastructure.casatools as pl_casatools
 import pipeline.infrastructure.utils as utils
-from pipeline.hsd.tasks.common import utils as sdutils
+import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataTable
 from pipeline.domain.datatable import OnlineFlagIndex
-
+from pipeline.hsd.tasks.common import utils as sdutils
+from pipeline.infrastructure import casa_tasks
 from .flagsummary import _get_iteration
 from .. import common
 from .SDFlagRule import INVALID_STAT
-
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -67,7 +66,7 @@ class SDBLFlagWorkerResults(common.SingleDishResults):
 
 class BLFlagTableContainer(object):
     def __init__(self):
-        self.tb1, self.tb2 = gentools(['tb', 'tb'])
+        self.tb1, self.tb2 = casatools.table(), casatools.table()
         self._init()
 
     def __get_ms_attr(self, attr):
@@ -344,7 +343,6 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
 
         LOG.info('Standard deviation and diff calculation Start')
 
-        #tbIn, tbOut = gentools(['tb','tb'])
         tbIn = container.tb1
         tbOut = container.tb2
         #tbIn.open(DataIn)
@@ -931,10 +929,10 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                     line.append("correlation='%s'" % ','.join(flagged_pols))
                 timeval = datatable.getcell('TIME', ID)
                 tbuff = datatable.getcell('EXPOSURE', ID)*0.5/86400.0
-                qtime_s = casatools.quanta.quantity(timeval-tbuff, time_unit)
-                qtime_e = casatools.quanta.quantity(timeval+tbuff, time_unit)
-                line += ["timerange='%s~%s'" % (casatools.quanta.time(qtime_s, prec=9, form="ymd")[0],
-                                                casatools.quanta.time(qtime_e, prec=9, form="ymd")[0]),
+                qtime_s = pl_casatools.quanta.quantity(timeval-tbuff, time_unit)
+                qtime_e = pl_casatools.quanta.quantity(timeval+tbuff, time_unit)
+                line += ["timerange='%s~%s'" % (pl_casatools.quanta.time(qtime_s, prec=9, form="ymd")[0],
+                                                pl_casatools.quanta.time(qtime_e, prec=9, form="ymd")[0]),
                          "reason='blflag'"]
                 fout.write(str(" ").join(line)+"\n")
         return valid_flag_commands

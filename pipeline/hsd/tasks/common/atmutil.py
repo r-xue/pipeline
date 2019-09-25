@@ -1,12 +1,16 @@
 from __future__ import absolute_import
 
-from taskinit import gentools, casac, qa
 import math
-import numpy
-import pylab as pl
 import os
 
+import numpy
+import pylab as pl
+
+import casatools
+from taskinit import casac, qa
+
 import pipeline.extern.adopted as adopted
+
 
 class AtmType(object):
     tropical = 1
@@ -14,6 +18,7 @@ class AtmType(object):
     midLatitudeWinter = 3
     subarcticSummer = 4
     subarcticWinter = 5
+
 
 def init_at(at, humidity=20.0, temperature=270.0, pressure=560.0,
             atmtype=AtmType.midLatitudeWinter, altitude=5000.0,
@@ -46,10 +51,12 @@ def calc_airmass(elevation=45.0):
     """
     return 1.0 / math.cos((90.0 - elevation) * math.pi / 180.) 
 
+
 def calc_transmission(airmass, dry_opacity, wet_opacity):
     """
     """
     return numpy.exp(-airmass * (dry_opacity + wet_opacity))
+
 
 def get_dry_opacity(at):
     """
@@ -59,6 +66,7 @@ def get_dry_opacity(at):
     dry_opacity = numpy.asarray(dry_opacity_result[1])
     return dry_opacity
 
+
 def get_wet_opacity(at):
     """
     at: atmosphere tool
@@ -66,6 +74,7 @@ def get_wet_opacity(at):
     wet_opacity_result = at.getWetOpacitySpec(0)
     wet_opacity = numpy.asarray(wet_opacity_result[1]['value'])
     return wet_opacity
+
 
 def test(pwv=1.0, elevation=45.0):
     """
@@ -86,8 +95,8 @@ def test(pwv=1.0, elevation=45.0):
 
     return transmission
 
-def plot(frequency, dry_opacity, wet_opacity, transmission):
 
+def plot(frequency, dry_opacity, wet_opacity, transmission):
     pl.clf()
     a1 = pl.gcf().gca()
     pl.plot(frequency, dry_opacity, label='dry')
@@ -112,7 +121,7 @@ def get_spw_spec(vis, spw_id):
 
     return: center frequency [GHz], number of channels, and resolution [GHz]
     """
-    (mytb,) = gentools(['tb'])
+    mytb = casatools.table()
     mytb.open(os.path.join(vis, 'SPECTRAL_WINDOW'))
     nrow = mytb.nrows()
     if spw_id < 0 or spw_id >= nrow:
@@ -135,8 +144,9 @@ def get_spw_spec(vis, spw_id):
 
     return center_freq, nchan, resolution
 
+
 def get_median_elevation(vis, antenna_id):
-    (mytb,) = gentools(['tb'])
+    mytb = casatools.table()
     mytb.open(os.path.join(vis, 'POINTING'))
     tsel = mytb.query('ANTENNA_ID == {}'.format(antenna_id))
     # default elevation
@@ -152,6 +162,7 @@ def get_median_elevation(vis, antenna_id):
         mytb.close()
 
     return elevation        
+
 
 def get_transmission(vis, antenna_id=0, spw_id=0, doplot=False):
     """
@@ -188,5 +199,3 @@ def get_transmission(vis, antenna_id=0, spw_id=0, doplot=False):
         plot(frequency, dry_opacity, wet_opacity, transmission)
 
     return frequency, transmission
-
-

@@ -5,13 +5,16 @@ import os
 
 import numpy as np
 
+from casatools import calibrater, ms, table
 from taskinit import *
 from update_spw import *
 
 # Get the tools
 #    ms and table tools are used by the ranges to channel converter
 #    no leave in place for now
-mycb, myms, mytb = gentools(['cb', 'ms', 'tb'])
+mycb = calibrater()
+myms = ms()
+mytb = table()
 
 
 # Notes

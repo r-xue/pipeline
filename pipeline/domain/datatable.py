@@ -22,6 +22,7 @@
 # $Date: 2013/03/01 05:07:45 $
 # $Author: tnakazat $
 #
+import bisect
 import collections
 import itertools
 import os
@@ -30,12 +31,11 @@ import time
 
 # import memory_profiler
 import numpy
-import bisect
 
-from taskinit import gentools
+import casatools
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
+import pipeline.infrastructure.casatools as pl_casatools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -169,7 +169,7 @@ class DataTableIndexer(object):
         self.nrow_per_ms = []
         for ms in context.observing_run.measurement_sets:
             ro_table_name = os.path.join(context.observing_run.ms_datatable_name, ms.basename, 'RO')
-            with casatools.TableReader(ro_table_name) as tb:
+            with pl_casatools.TableReader(ro_table_name) as tb:
                 self.nrow_per_ms.append(tb.nrows())
         self.num_mses = len(self.nrow_per_ms)
 
@@ -256,7 +256,7 @@ class DataTableImpl(object):
         self.plaintable = ''
         self.cols = {}
 
-        (self.tb1, self.tb2) = gentools(['tb', 'tb'])
+        self.tb1, self.tb2 = casatools.table(), casatools.table()
         self.isopened = False
         if name is None or len(name) == 0:
             if readonly is None:
@@ -504,7 +504,7 @@ class DataTableImpl(object):
         with_nochange = 'NOCHANGE' in cols
 
         # open table
-        with casatools.TableReader(rwtable, nomodify=False, lockoptions={'option': 'user'}) as tb:
+        with pl_casatools.TableReader(rwtable, nomodify=False, lockoptions={'option': 'user'}) as tb:
             # lock table
             tb.lock()
             LOG.info('Process {0} have acquired a lock for RW table'.format(os.getpid()))
@@ -605,11 +605,11 @@ class DataTableImpl(object):
         self._close()
         abspath = absolute_path(name)
         if not minimal or abspath != self.plaintable:
-            with casatools.TableReader(os.path.join(name, 'RO')) as tb:
+            with pl_casatools.TableReader(os.path.join(name, 'RO')) as tb:
                 self.tb1 = tb.copy(self.memtable1, deep=True,
                                    valuecopy=True, memorytable=True,
                                    returnobject=True)
-        with casatools.TableReader(os.path.join(name, 'RW')) as tb:
+        with pl_casatools.TableReader(os.path.join(name, 'RW')) as tb:
             self.tb2 = tb.copy(self.memtable2, deep=True,
                                valuecopy=True, memorytable=True,
                                returnobject=True)
@@ -619,13 +619,11 @@ class DataTableImpl(object):
         self._close()
         abspath = absolute_path(name)
         if not minimal or abspath != self.plaintable:
-            with casatools.TableReader(os.path.join(name, 'RO')) as tb:
+            with pl_casatools.TableReader(os.path.join(name, 'RO')) as tb:
                 self.tb1 = tb.copy(self.memtable1, deep=True,
                                    valuecopy=True, memorytable=True,
                                    returnobject=True)
-        #             self.tb1 = casatools.casac.table()
-        #             self.tb1.open(os.path.join(name, 'RO'), nomodify=False)
-        with casatools.TableReader(os.path.join(name, 'RW')) as tb:
+        with pl_casatools.TableReader(os.path.join(name, 'RW')) as tb:
             self.tb2 = tb.copy(self.memtable2, deep=True,
                                valuecopy=True, memorytable=True,
                                returnobject=True)
@@ -790,14 +788,14 @@ class DataTableImpl(object):
                     from_fields = [atm_fields[i].id for i in nearest_id]
                 else:
                     # more generic case that requires to search nearest field by separation
-                    rmin = casatools.quanta.quantity(180.0, 'deg')
+                    rmin = pl_casatools.quanta.quantity(180.0, 'deg')
                     origin = to_field.mdirection
                     nearest_id = -1
                     for f in atm_fields:
-                        r = casatools.measures.separation(origin, f.mdirection)
+                        r = pl_casatools.measures.separation(origin, f.mdirection)
                         #LOG.info('before test: rmin {} r {} nearest_id {}'.format(rmin['value'], r['value'], nearest_id))
                         # quanta.le is equivalent to <=
-                        if casatools.quanta.le(r, rmin):
+                        if pl_casatools.quanta.le(r, rmin):
                             rmin = r
                             nearest_id = f.id
                         #LOG.info('after test: rmin {} r {} nearest_id {}'.format(rmin['value'], r['value'], nearest_id))
@@ -809,7 +807,7 @@ class DataTableImpl(object):
             from_fields = [fld.id for fld in msobj.get_fields(gainfield)]
         LOG.info('from_fields = {}'.format(from_fields))
 
-        with casatools.TableReader(tsystable) as tb:
+        with pl_casatools.TableReader(tsystable) as tb:
             tsel = tb.query('FIELD_ID IN {}'.format(list(from_fields)))
             spws = tsel.getcol('SPECTRAL_WINDOW_ID')
             times = tsel.getcol('TIME')
@@ -908,7 +906,7 @@ class DataTableImpl(object):
         # (performance degraded)
         ms_rows = self.getcol('ROW')
         tmp_array = numpy.empty((4, 1,), dtype=numpy.int32)
-        with casatools.TableReader(infile) as tb:
+        with pl_casatools.TableReader(infile) as tb:
             # for dt_row in index[0]:
             for dt_row, ms_row in enumerate(ms_rows):
                 # ms_row = rows[dt_row]
