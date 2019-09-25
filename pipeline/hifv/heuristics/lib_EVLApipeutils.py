@@ -38,7 +38,6 @@
 # 12/17/12 STM add phases to getCalStatistics
 ######################################################################
 import casatools
-from taskinit import *
 
 import pipeline.infrastructure.contfilehandler as contfilehandler
 import pipeline.infrastructure as infrastructure

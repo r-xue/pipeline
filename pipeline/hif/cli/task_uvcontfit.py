@@ -1,17 +1,12 @@
 import os
 
-# Leave in place for the channel range computation.
-# should that be needed.
-
 import numpy as np
 
+from casatasks import casalog
 from casatools import calibrater, ms, table
-from taskinit import *
-from update_spw import *
 
 # Get the tools
 #    ms and table tools are used by the ranges to channel converter
-#    no leave in place for now
 mycb = calibrater()
 myms = ms()
 mytb = table()
@@ -77,7 +72,6 @@ def _new_quantityRangesToChannels(vis, field, infitspw, excludechans):
     For excludeechans=True, it will select channels outside given by infitspw
     returns: list containing new channel ranges
     """
-
     mytb.open(vis+'/SPECTRAL_WINDOW')
     nspw = mytb.nrows()
     mytb.close()
@@ -153,7 +147,6 @@ def _new_quantityRangesToChannels(vis, field, infitspw, excludechans):
                         outloR = 0
                         outhiR = 0
 
-        #
             if (not(outloL == 0 and outhiL == 0)) and outloL <= outhiL:
                 newchanlist.append([spwid, outloL, outhiL, stp])
             if (not(outloR == 0 and outhiR == 0)) and outloR <= outhiR:
