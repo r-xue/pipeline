@@ -7,7 +7,7 @@ import numpy
 import pylab as pl
 
 import casatools
-from taskinit import casac, qa
+from taskinit import casac
 
 import pipeline.extern.adopted as adopted
 
@@ -34,16 +34,18 @@ def init_at(at, humidity=20.0, temperature=270.0, pressure=560.0,
     nchan: number of channels
     resolution: channel width [GHz]
     """
+    myqa = casatools.quanta()
     at.initAtmProfile(humidity=humidity,
-                        temperature=qa.quantity(temperature, 'K'),
-                        altitude=qa.quantity(altitude, 'm'),
-                        pressure=qa.quantity(pressure, 'mbar'),
-                        atmType=atmtype)
+                      temperature=myqa.quantity(temperature, 'K'),
+                      altitude=myqa.quantity(altitude, 'm'),
+                      pressure=myqa.quantity(pressure, 'mbar'),
+                      atmType=atmtype)
     fwidth = nchan * resolution
     at.initSpectralWindow(nbands=1,
-                          fCenter=qa.quantity(fcenter, 'GHz'),
-                          fWidth=qa.quantity(fwidth, 'GHz'),
-                          fRes=qa.quantity(resolution, 'GHz'))
+                          fCenter=myqa.quantity(fcenter, 'GHz'),
+                          fWidth=myqa.quantity(fwidth, 'GHz'),
+                          fRes=myqa.quantity(resolution, 'GHz'))
+
 
 def calc_airmass(elevation=45.0):
     """
@@ -82,8 +84,9 @@ def test(pwv=1.0, elevation=45.0):
     elevation: elevation [deg]
     """
     myat = casac.atmosphere()
+    myqa = casatools.quanta()
     init_at(myat)
-    myat.setUserWH2O(qa.quantity(pwv, 'mm'))
+    myat.setUserWH2O(myqa.quantity(pwv, 'mm'))
 
     airmass = calc_airmass(elevation)
 
@@ -184,8 +187,9 @@ def get_transmission(vis, antenna_id=0, spw_id=0, doplot=False):
     (pwv, pwvmad) = adopted.getMedianPWV(vis=vis)
 
     myat = casac.atmosphere()
+    myqa = casatools.quanta()
     init_at(myat, fcenter=center_freq, nchan=nchan, resolution=resolution)
-    myat.setUserWH2O(qa.quantity(pwv, 'mm'))
+    myat.setUserWH2O(myqa.quantity(pwv, 'mm'))
 
     airmass = calc_airmass(elevation)
 
@@ -193,7 +197,7 @@ def get_transmission(vis, antenna_id=0, spw_id=0, doplot=False):
     wet_opacity = get_wet_opacity(myat)
     transmission = calc_transmission(airmass, dry_opacity, wet_opacity)
     #frequency = numpy.fromiter((center_freq + (float(i) - 0.5 * nchan) * resolution for i in xrange(nchan)), dtype=numpy.float64)
-    frequency = qa.convert(myat.getSpectralWindow(0), "GHz")['value']
+    frequency = myqa.convert(myat.getSpectralWindow(0), "GHz")['value']
 
     if doplot:
         plot(frequency, dry_opacity, wet_opacity, transmission)

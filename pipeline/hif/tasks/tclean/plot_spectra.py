@@ -2,23 +2,26 @@
 
 # This module has been derived from Todd Hunter's plotSpectrumFromMask module.
 # It is used to create the diagnostic spectra plots for the cube imaging weblog.
-
 from __future__ import print_function  # prevents adding old-style print statements that will not work in pythone3
-from taskinit import *
-import pylab as pl
-import matplotlib.ticker 
-import numpy as np
+
 import os
 import re
+
+import matplotlib.ticker
+import numpy as np
+import pylab as pl
+
+import casatools
+from taskinit import *
 from imhead_cli import imhead_cli as imhead
 
-from pipeline.infrastructure import casatools
+from pipeline.infrastructure import casatools as pl_casatools
 import pipeline.infrastructure as infrastructure
 
 LOG = infrastructure.get_logger(__name__)
 
-ARCSEC_PER_RAD=206264.80624709636
-c_mks=2.99792458e8
+ARCSEC_PER_RAD = 206264.80624709636
+c_mks = 2.99792458e8
 
 
 def addFrequencyAxisAbove(ax1, firstFreq, lastFreq, freqType='', spw=None, 
@@ -59,7 +62,8 @@ def addFrequencyAxisAbove(ax1, firstFreq, lastFreq, freqType='', spw=None,
     ax2.xaxis.set_minor_locator(matplotlib.ticker.MultipleLocator(0.1*10**power))
     ax2.xaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter(useOffset=False))
 
-def numberOfChannelsInCube(img, returnFreqs=False, returnChannelWidth=False, 
+
+def numberOfChannelsInCube(img, returnFreqs=False, returnChannelWidth=False,
                            verbose=False):
     """
     Finds the number of channels in a CASA image cube, using the ia tool.
@@ -71,9 +75,9 @@ def numberOfChannelsInCube(img, returnFreqs=False, returnChannelWidth=False,
     -Todd Hunter
     """
 
-    lqa = casatools.quanta
+    lqa = pl_casatools.quanta
 
-    with casatools.ImageReader(img) as image:
+    with pl_casatools.ImageReader(img) as image:
         lcs = image.coordsys()
 
         try:
@@ -110,7 +114,8 @@ def numberOfChannelsInCube(img, returnFreqs=False, returnChannelWidth=False,
         else:
             return(nchan)
 
-def cubeLSRKToTopo(img, freqrange='', prec=4, verbose=False, 
+
+def cubeLSRKToTopo(img, freqrange='', prec=4, verbose=False,
                    nchan=None, f0=None, f1=None, chanwidth=None,
                    vis='', header=''):
     """
@@ -159,7 +164,8 @@ def cubeLSRKToTopo(img, freqrange='', prec=4, verbose=False,
     f1 = lsrkToTopo(stopFreq, datestring, ra, dec, equinox, observatory, prec, verbose) 
     return(np.array([f0,f1]))
 
-def lsrkToTopo(lsrkFrequency, datestring, ra, dec, equinox='J2000', observatory='ALMA', 
+
+def lsrkToTopo(lsrkFrequency, datestring, ra, dec, equinox='J2000', observatory='ALMA',
                prec=4, verbose=False):
     """
     Converts an LSRKfrequency and observing date/direction
@@ -180,7 +186,8 @@ def lsrkToTopo(lsrkFrequency, datestring, ra, dec, equinox='J2000', observatory=
                                 observatory, verbose=verbose)
     return topoFrequencyHz
 
-def restToTopo(restFrequency, velocityLSRK, datestring, ra, dec, equinox='J2000', 
+
+def restToTopo(restFrequency, velocityLSRK, datestring, ra, dec, equinox='J2000',
                observatory='ALMA', veltype='radio', verbose=False):
     """
     Converts a rest frequency, LSRK velocity, and observing date/direction
@@ -199,6 +206,7 @@ def restToTopo(restFrequency, velocityLSRK, datestring, ra, dec, equinox='J2000'
                                       observatory, verbose=verbose,
                                       restFreq=restFrequency, veltype=veltype)
     return topoFreqHz
+
 
 def frames(velocity=286.7, datestring="2005/11/01/00:00:00",
            ra="05:35:28.105", dec="-069.16.10.99", equinox="J2000", 
@@ -223,9 +231,8 @@ def frames(velocity=286.7, datestring="2005/11/01/00:00:00",
     * difference between LSRK-TOPO in Hz
     - Todd Hunter
     """
-
-    lme = casatools.measures
-    lqa = casatools.quanta
+    lme = pl_casatools.measures
+    lqa = pl_casatools.quanta
 
     if (dec.find(':') >= 0):
         dec = dec.replace(':','.')
@@ -267,6 +274,7 @@ def frames(velocity=286.7, datestring="2005/11/01/00:00:00",
     lqa.done()
 
     return(freqTop['m0']['value'], velocityDifference, frequencyDifference)
+
 
 def RescaleTrans(trans, lim):
     # Input: the array of transmission values and current y-axis limits
@@ -321,7 +329,8 @@ def RescaleTrans(trans, lim):
            otherEdgeValueTransmission, edgeValueAmplitude,
            otherEdgeValueAmplitude, y0transmissionAmplitude)
 
-def lsrkToRest(lsrkFrequency, velocityLSRK, datestring, ra, dec, 
+
+def lsrkToRest(lsrkFrequency, velocityLSRK, datestring, ra, dec,
                equinox='J2000', observatory='ALMA', prec=4, verbose=True):
     """
     Converts an LSRK frequency, LSRK velocity, and observing date/direction
@@ -341,8 +350,8 @@ def lsrkToRest(lsrkFrequency, velocityLSRK, datestring, ra, dec,
         if verbose:
             print("Warning: replacing colons with decimals in the dec field.")
     freqGHz = parseFrequencyArgumentToGHz(lsrkFrequency)
-    lqa = casatools.quanta
-    lme = casatools.measures
+    lqa = pl_casatools.quanta
+    lme = pl_casatools.measures
     velocityRadio = lqa.quantity(velocityLSRK,"km/s")
     position = lme.direction(equinox, ra, dec)
     obstime = lme.epoch('TAI', datestring)
@@ -358,6 +367,7 @@ def lsrkToRest(lsrkFrequency, velocityLSRK, datestring, ra, dec,
     lme.done()
     return freqRad['m0']['value']
 
+
 def parseFrequencyArgumentToGHz(bandwidth):
     """
     Converts a frequency string into floating point in GHz, based on the units.
@@ -369,6 +379,7 @@ def parseFrequencyArgumentToGHz(bandwidth):
     if (value > 10000 or str(bandwidth).lower().find('hz') >= 0):
         value *= 1e-9
     return(value)
+
 
 def parseFrequencyArgument(bandwidth):
     """
@@ -395,6 +406,7 @@ def parseFrequencyArgument(bandwidth):
     else:
         bandwidth = float(bandwidth)
     return(bandwidth)
+
 
 def rad2radec(ra=0,dec=0,imfitdict=None, prec=5, verbose=True, component=0,
               replaceDecDotsWithColons=True, hmsdms=False, delimiter=', ',
@@ -448,6 +460,7 @@ def rad2radec(ra=0,dec=0,imfitdict=None, prec=5, verbose=True, component=0,
     if (delimiter != ', '):
         mystring = mystring.replace(', ', delimiter)
     return(mystring)
+
 
 def imheadlist(vis, omitBeam=False):
     """
@@ -515,6 +528,7 @@ def imheadlist(vis, omitBeam=False):
             except:
                 pass
     return(header)
+
 
 def CalcAtmTransmissionForImage(img, chanInfo='', airmass=1.5, pwv=-1,
                                 spectralaxis=-1, value='transmission', P=-1, H=-1, 
@@ -585,7 +599,7 @@ def CalcAtmTransmissionForImage(img, chanInfo='', airmass=1.5, pwv=-1,
     numchanModel = numchan*1
     chansepModel = (topofreqs[-1]-topofreqs[0])/(numchanModel-1)
     nbands = 1
-    lqa = casatools.quanta
+    lqa = pl_casatools.quanta
     fCenter = lqa.quantity(reffreq, 'GHz')
     fResolution = lqa.quantity(chansepModel, 'GHz')
     fWidth = lqa.quantity(numchanModel*chansepModel, 'GHz')
@@ -622,6 +636,7 @@ def CalcAtmTransmissionForImage(img, chanInfo='', airmass=1.5, pwv=-1,
     del myat
     return(newfreqs, values)
 
+
 def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile):
     """
     Takes a pipeline-produced cube and plots the spectrum within the clean 
@@ -632,11 +647,12 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile):
     rec_info: dictionary of receiver information (type (DSB/TSB), LO1 frequency)
     """
 
-    qaTool = casatools.quanta
+    qaTool = pl_casatools.quanta
+    myqa = casatools.quanta()
 
     cube = os.path.basename(image_robust_rms_and_spectra['nonpbcor_imagename'])
     # Get spectral frame
-    with casatools.ImageReader(cube) as image:
+    with pl_casatools.ImageReader(cube) as image:
         lcs = image.coordsys()
         frame = lcs.referencecode('spectral')[0]
         lcs.done()
@@ -651,8 +667,8 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile):
     # x axes
     nchan = len(image_robust_rms_and_spectra['nonpbcor_image_cleanmask_spectrum'])
     channels = np.arange(1, nchan + 1)
-    freq_ch1 = qaTool.getvalue(qa.convert(image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz'))
-    freq_chN = qaTool.getvalue(qa.convert(image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))
+    freq_ch1 = qaTool.getvalue(myqa.convert(image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz'))
+    freq_chN = qaTool.getvalue(myqa.convert(image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))
     freqs = np.linspace(freq_ch1, freq_chN, nchan)
 
     # Flux density spectrum
@@ -721,7 +737,7 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile):
     pl.plot(freq, rescaledY, 'm-')
 
     if rec_info['type'] == 'DSB':
-        LO1 = float(qaTool.getvalue(qa.convert(rec_info['LO1'], 'GHz')))
+        LO1 = float(qaTool.getvalue(myqa.convert(rec_info['LO1'], 'GHz')))
         imageFreq0 = 2.0 * LO1 - freq[0]
         imageFreq1 = 2.0 * LO1 - freq[-1]
         chanInfo = [len(freq), imageFreq0, imageFreq1, -(freqs[1]-freqs[0])]
