@@ -1,4 +1,4 @@
-# Copyright (C) 2004-2012
+# Copyright (C) 2004-2019
 # Max-Planck-Institut fuer Radioastronomie Bonn
 #
 # Produced for the ALMA and APEX projects
@@ -28,6 +28,7 @@
 #
 # Who		   When	       What
 #
+# D.Muders, MPIfR  2019-09-25  Ported to Python 3.
 # D.Muders, MPIfR  2012-09-02  Changed boolean values to True and False instead
 #                              of 1 and 0 to avoid CASA interface errors.
 # D.Muders, MPIfR  2007-08-20  Renamed internal element name to _0elementName to
@@ -98,7 +99,7 @@ This example XML document:
 
 can then be navigated in the Python object like this:
 
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import XmlObjectifier
 
@@ -107,22 +108,20 @@ def printInfo(focusResult):
     kind = focusResult.TelCalResult.TelCalResultDetail.ResultKind.getValue()
     numAnts = focusResult.TelCalResult.TelCalResultDetail.NumAntennas.getValue()
 
-    print 'This is a %s result entity. Scan ID: %d. Number of antennas: %d' % \
-        (kind, scanID, numAnts)
-    print
+    print('This is a %s result entity. Scan ID: %d. Number of antennas: %d\n' % (kind, scanID, numAnts))
 
-    for ant in xrange(numAnts):
+    for ant in range(numAnts):
         antID = \
             focusResult.TelCalResult.TelCalResultDetail.AntennaID[ant].getValue()
         focusOffset = \
             focusResult.TelCalResult.TelCalResultDetail.FocusOffset[ant].getValue()
-        print 'Antenna #%d focus offset: %.1f' % (antID, focusOffset)
+        print('Antenna #%d focus offset: %.1f' % (antID, focusOffset))
 
 # Objectify XML
 focusResult = XmlObjectifier.XmlObject(fileName = 'FocusResult.xml')
 
 # Print object summary
-print 'Original focus result:\n'
+print('Original focus result:\n')
 printInfo(focusResult)
 
 # Optionally modify elements
@@ -133,7 +132,7 @@ focusResult.TelCalResult.TelCalResultDetail.AntennaID[1].setValue(25)
 focusResult.TelCalResult.TelCalResultDetail.FocusOffset[1].setValue(0.5)
 
 # Print object summary
-print '\n\nNew focus result:\n'
+print('\n\nNew focus result:\n')
 printInfo(focusResult)
 
 # Write XML to a new file
@@ -143,6 +142,7 @@ f.close()
 """
 
 import xml.dom.minidom as minidom
+from copy import deepcopy
 
 
 class _XmlObject:
@@ -241,18 +241,18 @@ def _createLists(xmlObject, mapNameSpaces, nameSpaceMapping, skipChars):
 
                 if not hasattr(xmlObject, element_name):
                     xml_elements_list = []
-                    setattr(xmlObject, element_name, xml_elements_list)
                     items.append(element_name)
-                    setattr(xmlObject, element_name+'_obj', _XmlObject(getattr(xmlObject, element_name)))
                 else:
                     xml_elements_list = getattr(xmlObject, element_name)
                 my_xml_element = XmlElement(element, mapNameSpaces, nameSpaceMapping, skipChars)
                 xml_elements_list.append(my_xml_element)
+                setattr(xmlObject, element_name, deepcopy(xml_elements_list))
+                setattr(xmlObject, element_name+'_obj', _XmlObject(deepcopy(xml_elements_list)))
 
         # Convert 1-item element lists to scalar elements
         for item in items:
             if eval('len(xmlObject.%s)' % item) == 1:
-                exec('tmpItem = xmlObject.%s[0]' % item)
+                tmpItem = eval('xmlObject.%s[0]' % item)
                 delattr(xmlObject, item)
                 setattr(xmlObject, item, tmpItem)
 
@@ -297,8 +297,11 @@ class XmlObject(minidom.Document):
             raise XmlObjectifierError('No XML string or filename specified')
         dom.documentElement.normalize()
         for attr in dir(dom):
-            if attr != '__init__':
-                setattr(self, attr, getattr(dom, attr))
+            if '__' not in attr:
+                try:
+                    setattr(self, attr, getattr(dom, attr))
+                except:
+                    pass
         _createLists(self, mapNameSpaces, nameSpaceMapping, skipChars)
 
 
@@ -308,8 +311,11 @@ class XmlElement(minidom.Element):
     def __init__(self, element, mapNameSpaces, nameSpaceMapping, skipChars):
         minidom.Element.__init__(self, str(element.nodeName))
         for attr in dir(element):
-            if attr != '__init__' and attr != 'getAttribute':
-                setattr(self, attr, getattr(element, attr))
+            if '__' not in attr:
+                try:
+                    setattr(self, attr, getattr(element, attr))
+                except:
+                    pass
         _createLists(self, mapNameSpaces, nameSpaceMapping, skipChars)
         self._0elementName = str(self.nodeName)
 
@@ -348,7 +354,7 @@ class XmlElement(minidom.Element):
 
         node = self.childNodes[0]
         if node.nodeType == 3:
-            node.nodeValue = unicode(value)
+            node.nodeValue = value
         else:
             msg = "Xml Element does not have any text included"
             raise XmlObjectifierError(msg)
