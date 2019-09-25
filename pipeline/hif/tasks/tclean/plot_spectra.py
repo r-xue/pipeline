@@ -603,7 +603,7 @@ def CalcAtmTransmissionForImage(img, chanInfo='', airmass=1.5, pwv=-1,
     fCenter = lqa.quantity(reffreq, 'GHz')
     fResolution = lqa.quantity(chansepModel, 'GHz')
     fWidth = lqa.quantity(numchanModel*chansepModel, 'GHz')
-    myat = casac.atmosphere()
+    myat = casatools.atmosphere()
     myat.initAtmProfile(humidity=H, temperature=lqa.quantity(T,"K"),
                         altitude=lqa.quantity(altitude,"m"),
                         pressure=lqa.quantity(P,'mbar'),atmType=midLatitudeWinter)

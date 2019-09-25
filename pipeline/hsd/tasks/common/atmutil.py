@@ -7,7 +7,6 @@ import numpy
 import pylab as pl
 
 import casatools
-from taskinit import casac
 
 import pipeline.extern.adopted as adopted
 
@@ -83,7 +82,7 @@ def test(pwv=1.0, elevation=45.0):
     pwv: water vapor content [mm]
     elevation: elevation [deg]
     """
-    myat = casac.atmosphere()
+    myat = casatools.atmosphere()
     myqa = casatools.quanta()
     init_at(myat)
     myat.setUserWH2O(myqa.quantity(pwv, 'mm'))
@@ -186,7 +185,7 @@ def get_transmission(vis, antenna_id=0, spw_id=0, doplot=False):
     # get median PWV using Todd's script
     (pwv, pwvmad) = adopted.getMedianPWV(vis=vis)
 
-    myat = casac.atmosphere()
+    myat = casatools.atmosphere()
     myqa = casatools.quanta()
     init_at(myat, fcenter=center_freq, nchan=nchan, resolution=resolution)
     myat.setUserWH2O(myqa.quantity(pwv, 'mm'))

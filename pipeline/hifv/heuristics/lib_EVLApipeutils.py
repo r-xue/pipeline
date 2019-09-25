@@ -37,7 +37,9 @@
 # 11/19/12 STM add getCalStatistics function
 # 12/17/12 STM add phases to getCalStatistics
 ######################################################################
+import casatools
 from taskinit import *
+
 import pipeline.infrastructure.contfilehandler as contfilehandler
 import pipeline.infrastructure as infrastructure
 
@@ -175,10 +177,7 @@ def getCalFlaggedSoln(calTable):
         Out: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 
     """
-
-    #from taskinit import tbtool
-    #mytb = tbtool.create()
-    mytb = casac.table()
+    mytb = casatools.table()
 
     import pylab as pl
 
@@ -458,18 +457,8 @@ def buildscans(msfile):
     # Usage: find desc for an index, e.g. cordesclist[corrtype]
     #        find index for a desc, e.g. cordesclist.index(corrdesc)
     #
-
-    #try:
-    #    import casac
-    #except ImportError, e:
-    #    print "failed to load casa:\n", e
-    #    exit(1)
-    #mstool = casac.homefinder.find_home_by_name('msHome')
-    #ms = casac.ms = mstool.create()
-    #tbtool = casac.homefinder.find_home_by_name('tableHome')
-    #tb = casac.tb = tbtool.create()
-    ms = casac.ms()
-    tb = casac.table()
+    ms = casatools.ms()
+    tb = casatools.table()
 
     # Access the MS
     try:
@@ -963,9 +952,7 @@ def getBCalStatistics(calTable,innerbuff=0.1):
     # Create the output dictionary
     outDict = {}
 
-    #from taskinit import tbtool
-    #mytb = tbtool.create()
-    mytb = casac.table()
+    mytb = casatools.table()
 
     import pylab as pl
 
