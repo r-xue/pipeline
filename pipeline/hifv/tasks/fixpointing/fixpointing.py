@@ -3,8 +3,6 @@ from __future__ import absolute_import
 import shutil
 import os
 import numpy as np
-import pylab as pl
-import dateutil
 import math
 from datetime import datetime
 
@@ -61,19 +59,19 @@ def fixpointing_offset_vlass(vis, intable='POINTING', antlist=[], timeoffset=[0.
     """
     r2d = 180.0 / np.pi
     datestring = datetime.isoformat(datetime.today())
-    if (not os.path.exists(vis + '/POINTING_ORIG')):
+    if not os.path.exists(vis + '/POINTING_ORIG'):
         shutil.copytree(vis + '/POINTING', vis + '/POINTING_ORIG')
-        print('Copying POINTING to POINTING_ORIG')
+        LOG.info('Copying POINTING to POINTING_ORIG')
     else:
         backupname = 'POINTING_BACKUP_' + datestring
         shutil.copytree(vis + '/POINTING', vis + '/' + backupname)
-        print('Copying POINTING to ' + backupname)
+        LOG.info('Copying POINTING to ' + backupname)
     if intable != 'POINTING':
         if os.path.exists(vis + '/' + intable):
             shutil.copytree(vis + '/' + intable, vis + '/POINTING')
-            print('Copying ' + intable + ' to POINTING')
+            LOG.info('Copying ' + intable + ' to POINTING')
         else:
-            print('ERROR: could not find intable = ' + vis + '/' + intable)
+            LOG.error('ERROR: could not find intable = ' + vis + '/' + intable)
             raise NameError('InTable not found')
 
     with casatools.TableReader(vis + '/POINTING') as tb:
@@ -101,18 +99,18 @@ def fixpointing_offset_vlass(vis, intable='POINTING', antlist=[], timeoffset=[0.
         integ_offset_x = int(timeoffset[0] / delta_time)
         integ_offset_y = int(timeoffset[1] / delta_time)
         if dodirectiononly:
-            print('Will correct only the DIRECTION column (based on TARGET motions)')
+            LOG.info('Will correct only the DIRECTION column (based on TARGET motions)')
         else:
-            print('Will correct both TARGET and DIRECTION columns (based on TARGET motions)')
+            LOG.info('Will correct both TARGET and DIRECTION columns (based on TARGET motions)')
         if dolookahead:
-            print('Will lookahead (%i,%i) integrations in (AZ,EL)' % (integ_offset_x, integ_offset_y))
+            LOG.info('Will lookahead (%i,%i) integrations in (AZ,EL)' % (integ_offset_x, integ_offset_y))
         #
         if len(antlist) > 0:
             # Correct for timing offsets in pointing for these antennas
             for ant in antlist:
                 st = tb.query('ANTENNA_ID==' + str(ant))
                 nrows = st.nrows()
-                print('Ant %i processing nrows = %i' % (ant, nrows))
+                LOG.info('Ant %i processing nrows = %i' % (ant, nrows))
                 # print(st.nrows())
                 ptimes = st.getcol('TIME')
                 dt = np.diff(ptimes, 1)
@@ -217,7 +215,7 @@ def fixpointing_offset_vlass(vis, intable='POINTING', antlist=[], timeoffset=[0.
                 mad_yoff = np.median(np.absolute(yoff))
                 logstr = 'AntID %i : MAD CORRECTIONS AZ=%.3f EL=%.3f arcmin' % (
                 ant, mad_xoff * r2d * 60.0, mad_yoff * r2d * 60.0)
-                print(logstr)
+                LOG.info(logstr)
                 st.close()
         #
         if dofilter:
@@ -230,7 +228,7 @@ def fixpointing_offset_vlass(vis, intable='POINTING', antlist=[], timeoffset=[0.
             for ant in ants:
                 st = tb.query('ANTENNA_ID==' + str(ant))
                 nrows = st.nrows()
-                print('Ant %i glitch filtering nrows = %i' % (ant, nrows))
+                LOG.info('Ant %i glitch filtering nrows = %i' % (ant, nrows))
                 # print(st.nrows())
                 ptimes = st.getcol('TIME')
                 dt = np.diff(ptimes, 1)
@@ -255,7 +253,7 @@ def fixpointing_offset_vlass(vis, intable='POINTING', antlist=[], timeoffset=[0.
                 mad_offy = np.median(np.absolute(offy))
                 logstr = 'AntID %i : MAD DIR-TARG AZ=%.3f EL=%.3f arcmin' % (
                 ant, mad_offx * r2d * 60.0, mad_offy * r2d * 60.0)
-                print(logstr)
+                LOG.info(logstr)
                 madrms_offx = 1.4826 * mad_offx
                 madrms_offy = 1.4826 * mad_offy
                 #
@@ -263,7 +261,7 @@ def fixpointing_offset_vlass(vis, intable='POINTING', antlist=[], timeoffset=[0.
                 doffy = np.diff(offy, 1)
                 logstr = 'AntID %i : will correct differences > AZ=%.3f EL=%.3f arcmin' % (
                 ant, mad_offx * n_sigma_thresh * r2d * 60.0, mad_offy * n_sigma_thresh * r2d * 60.0)
-                print(logstr)
+                LOG.info(logstr)
 
                 nfilter = 0
                 nxfilter = 0
@@ -391,7 +389,7 @@ def fixpointing_offset_vlass(vis, intable='POINTING', antlist=[], timeoffset=[0.
                 if ixfilter > 0 or iyfilter > 0:
                     nfilter += 1
                 #
-                print('Ant %i glitch filtering modified N events: tot=%i x=%i y=%i' % (ant, nfilter, nxfilter, nyfilter))
+                LOG.info('Ant %i glitch filtering modified N events: tot=%i x=%i y=%i' % (ant, nfilter, nxfilter, nyfilter))
                 ###
                 # Put filtered DIRECTION back in POINTING table
                 dirvx = targ[0, :] + offx
@@ -414,13 +412,13 @@ def fixpointing_offset_vlass(vis, intable='POINTING', antlist=[], timeoffset=[0.
             for ant in ants:
                 st = tb.query('ANTENNA_ID==' + str(ant))
                 nrows = st.nrows()
-                print('Ant %i replacing DIRECTION with TARGET for nrows = %i' % (ant, nrows))
+                LOG.info('Ant %i replacing DIRECTION with TARGET for nrows = %i' % (ant, nrows))
                 targ_orig = st.getcol(tcol)
                 dirv_orig = st.getcol(col)
                 st.putcol(col, targ_orig)
                 #
                 if dointerval:
-                    print('Ant %i setting interval to -1 for nrows = %i' % (ant, nrows))
+                    LOG.info('Ant %i setting interval to -1 for nrows = %i' % (ant, nrows))
                     inter = st.getcol('INTERVAL')
                     inter[:] = -1.0
                     st.putcol('INTERVAL', inter)
@@ -429,7 +427,7 @@ def fixpointing_offset_vlass(vis, intable='POINTING', antlist=[], timeoffset=[0.
             for ant in ants:
                 st = tb.query('ANTENNA_ID==' + str(ant))
                 nrows = st.nrows()
-                print('Ant %i setting interval to -1 for nrows = %i' % (ant, nrows))
+                LOG.info('Ant %i setting interval to -1 for nrows = %i' % (ant, nrows))
                 inter = st.getcol('INTERVAL')
                 inter[:] = -1.0
                 st.putcol('INTERVAL', inter)
@@ -500,8 +498,7 @@ class Fixpointing(basetask.StandardTaskTemplate):
 
             # index identifiers for VLA antennas
             antlist = [antenna.id for antenna in antobjectslist if antenna.name in antnames]
-
-        LOG.info("This Fixpointing class is running.")
+        # Example translation of antenna names to index numbers
         # antnames = ['ea03', 'ea04', 'ea05', 'ea06', 'ea09', 'ea10', 'ea11', 'ea12', 'ea13', 'ea15', 'ea16', 'ea18',
         #                'ea19', 'ea20', 'ea22', 'ea23', 'ea24', 'ea25', 'ea26', 'ea27']
         # antlist = [2,3,4,5,6,8,9,10,11,13,14,16,17,18,20,21,22,23,24,25]
@@ -511,12 +508,6 @@ class Fixpointing(basetask.StandardTaskTemplate):
 
     def analyse(self, results):
         return results
-
-    def _do_somethingfixpointing(self):
-
-        task = casa_tasks.fixpointingcal(vis=self.inputs.vis, caltable='tempcal.fixpointing')
-
-        return self._executor.execute(task)
 
 
 
