@@ -14,7 +14,6 @@ import shutil
 import mako
 import numpy
 import pkg_resources
-from casa_system import casa as casasys
 
 import pipeline as pipeline
 import pipeline.domain.measures as measures
@@ -428,7 +427,7 @@ class T1_1Renderer(RendererBase):
 
         return {
             'pcontext': context,
-            'casa_version': casasys['build']['version'],
+            'casa_version': casatools.utils.version_string(),
             'pipeline_revision': pipeline.revision,
             'pipeline_doclink': pipeline_doclink,
             'obs_start': obs_start_fmt,

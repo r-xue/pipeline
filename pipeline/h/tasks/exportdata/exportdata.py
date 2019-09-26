@@ -40,8 +40,6 @@ import shutil
 import string
 import tarfile
 
-from casa_system import casa as casasys
-
 import pipeline as pipeline
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -737,7 +735,7 @@ class ExportData(basetask.StandardTaskTemplate):
         # Initialize the manifest document and the top level ous status.
         pipemanifest = self._init_pipemanifest(oussid)
         ouss = pipemanifest.set_ous(oussid)
-        pipemanifest.add_casa_version(ouss, casasys['build']['version'].strip())
+        pipemanifest.add_casa_version(ouss, casatools.utils.version_string())
         pipemanifest.add_pipeline_version(ouss, pipeline.revision)
         pipemanifest.add_procedure_name(ouss, context.project_structure.recipe_name)
         pipemanifest.add_environment_info(ouss)

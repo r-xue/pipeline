@@ -47,20 +47,17 @@ Future Technical Solutions
 from __future__ import absolute_import
 
 import datetime
+import itertools
 import operator
 import os
 import xml.etree.cElementTree as ElementTree
 from xml.dom import minidom
-
-import itertools
-from casa_system import casa as casasys
 
 import pipeline.environment as environment
 from pipeline.infrastructure import casatools
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.qaadapter as qaadapter
 import pipeline.infrastructure.utils as utils
-
 
 LOG = logging.get_logger(__name__)
 
@@ -180,7 +177,7 @@ class AquaXmlGenerator(object):
         ElementTree.SubElement(root, 'ProcessingTime').text = str(exec_duration)
 
         # Software versions
-        ElementTree.SubElement(root, 'CasaVersion').text = casasys['build']['version'].strip()
+        ElementTree.SubElement(root, 'CasaVersion').text = casatools.utils.version_string()
         ElementTree.SubElement(root, 'PipelineVersion').text = environment.pipeline_revision
 
         # Score for the complete pipeline run
