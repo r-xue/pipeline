@@ -17,7 +17,7 @@ LOG = infrastructure.get_logger(__name__)
 
 
 def fixpointing_offset_vlass(vis, intable='POINTING', antlist=[], timeoffset=[0.45, 0.95], dofilter=True,
-                             usetarget=False, dointerval=True, dolookahead=True, dodirectiononly=False):
+                             usetarget=True, dointerval=True, dolookahead=True, dodirectiononly=False):
     """
     Version 0.0  STM 2019-02-05 from KG fixpointing
     Version 1.0  STM 2019-02-06 extrapolate using single-diff derivative on TARGET
