@@ -332,7 +332,7 @@ class Priorcals(basetask.StandardTaskTemplate):
         '''
         #print "ADDED TEST TROP VALUE"
         trdelscale = 1.23
-        tb = casatools.casac.table()
+        tb = casatools.table()
         tb.open(antpos_caltable, nomodify=False)
         tb.putkeyword('VLATrDelCorr', trdelscale)
         tb.close()

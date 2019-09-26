@@ -2,9 +2,9 @@ from __future__ import absolute_import
 
 import collections
 
-import os
 import numpy
-from casac import casac
+
+import casatools
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure.logging as logging
@@ -44,7 +44,7 @@ class TcleanQAHandler(pqa.QAPlugin):
         else:
             # Image RMS based score
 
-            qaTool = casac.quanta()
+            qaTool = casatools.quanta()
 
             try:
                 # For the score we compare the image RMS with the DR corrected

@@ -35,7 +35,7 @@
 import logging
 import time
 
-import casa
+from casatasks import casalog
 
 # ------------------------------------------------------------------------------
 
@@ -162,10 +162,7 @@ class logsCASA:
 
         # Create the instance of the CASA logger
 
-        myLog = casa.casac.homefinder.find_home_by_name( 'logsinkHome' )
-
-        self._casaLog = myLog.create()
-
+        self._casaLog = casalog
 
         # Return None
 

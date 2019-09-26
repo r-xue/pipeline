@@ -150,18 +150,8 @@ def buildscans(msfile, scd):
     #        find index for a desc, e.g. cordesclist.index(corrdesc)
     #
 
-    # try:
-    #     import casac
-    # except ImportError, e:
-    #    print "failed to load casa:\n", e
-    #    exit(1)
-    # mstool = casac.homefinder.find_home_by_name('msHome')
-    # ms = casac.ms = mstool.create()
-    # tbtool = casac.homefinder.find_home_by_name('tableHome')
-    # tb = casac.tb = tbtool.create()
-
-    # ms = casatools.casac.ms()
-    tb = casatools.casac.table()
+    # ms = casatools.ms()
+    tb = casatools.table()
 
     print('CACHE')
     print(tb.showcache())
@@ -478,8 +468,7 @@ class VLAScanHeuristics(object):
             # 2012.  So test on date:
         """
 
-        tb = casatools.casac.table()
-
+        # tb = casatools.table()
         # print 'CAL INTENT CACHE 1:'
         # print tb.showcache()
 

@@ -85,17 +85,13 @@ import math
 import os
 import string
 
+import matplotlib.pyplot as pl
 import numpy
 import numpy.ma as ma
 import scipy
 import scipy.stats.mstats
-import matplotlib.pyplot as pl
 
-try:
-    from casac import casac
-except:
-    import casa
-    import casac
+import casatools
 
 import pipeline.qa.utility.logs as logs
 
@@ -362,17 +358,14 @@ def bpcal_calc(in_table, logger=''):
     # Get the list of spw ids actually in the caltable
     #    Should be handled by calanalysis tool meta data
     #    fetchers but is not.
-    tbLoc = casac.table()
+    tbLoc = casatools.table()
     tbLoc.open(in_table)
     spwidList = numpy.unique(tbLoc.getcol('SPECTRAL_WINDOW_ID')).tolist()
     tbLoc.close()
 
     # Create the local instance of the calibration analysis tool and open
     # the bandpass caltable
-    try:
-        caLoc = casac.calanalysis()
-    except:
-        caLoc = casac.homefinder.find_home_by_name('calanalysisHome').create()
+    caLoc = casatools.calanalysis()
 
     caLoc.open(in_table)
 
@@ -532,10 +525,7 @@ def bpcal_write(bpcal_stats, out_table):
 
     # Create the local instance of the table tool, create the output main
     # table with a place holder data description, and close the table
-    try:
-        tbLoc = casac.table()
-    except:
-        tbLoc = casa.__tablehome__.create()
+    tbLoc = casatools.table()
 
     tbLoc.create(out_table, bpcal_desc())
     tbLoc.addrows()

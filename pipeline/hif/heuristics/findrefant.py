@@ -32,10 +32,10 @@ import operator
 
 import numpy
 
-from casac import casac
+import casatools
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
+import pipeline.infrastructure.casatools as pl_casatools
 from pipeline.infrastructure import casa_tasks
 import pipeline.infrastructure.vdp as vdp
 
@@ -241,7 +241,7 @@ class RefAntHeuristics(object):
 
     def _get_names(self):
         antenna_table = os.path.join(self.vis, 'ANTENNA')
-        with casatools.TableReader(antenna_table) as table:
+        with pl_casatools.TableReader(antenna_table) as table:
             names = table.getcol('NAME').tolist()
 
         # Remove ignored antennas
@@ -418,9 +418,7 @@ class RefAntGeometry:
 
         # Create the local instance of the table tool and open it with
         # the antenna subtable of the MS
-        #tbLoc = casa.__tablehome__.create()
-        tbLoc = casac.table()
-        #tbLoc.open( self.vis[0]+'/ANTENNA' ) # Take zeroth element
+        tbLoc = casatools.table()
         tbLoc.open(self.vis+'/ANTENNA')  # Take zeroth element
 
         # Get the antenna information from the antenna table
@@ -477,9 +475,9 @@ class RefAntGeometry:
         # Create the local instances of the measures and quanta tools
 
         #meLoc = casa.__measureshome__.create()
-        meLoc = casac.measures()
+        meLoc = casatools.measures()
         #qaLoc = casa.__quantahome__.create()
-        qaLoc = casac.quanta()
+        qaLoc = casatools.quanta()
 
         # Initialize the measures dictionary and the position and
         # position_keywords variables
@@ -551,7 +549,7 @@ class RefAntGeometry:
         # Create the local instance of the quanta tool
 
         #qaLoc = casa.__quantahome__.create()
-        qaLoc = casac.quanta()
+        qaLoc = casatools.quanta()
 
 
         # Get the radii, longitudes, and latitudes
@@ -862,33 +860,6 @@ class RefAntFlagging:
 # ------------------------------------------------------------------------------
 
     def _get_good(self):
-        '''
-        # Create the local version of the flag tool and open the MS
-
-        #fgLoc = casac.flagger()
-        fgLoc = casac.agentflagger()
-        fgLoc.open( self.vis )
-
-
-        # Get the flag statistics from the MS
-
-        #fgLoc.setdata( field=self.field, spw=self.spw,
-            #intent=self.intent )
-        fgLoc.selectdata( field=self.field, spw=self.spw,
-            intent=self.intent )
-
-        agents = {}
-        agents['mode'] = 'summary'
-        fgLoc.parseagentparameters(agents)
-        #fgLoc.setflagsummary()
-
-        fgLoc.init()
-        d = fgLoc.run()
-        fgLoc.done()
-
-        # Delete the local version of the flag tool
-        del fgLoc
-        '''
         # Update April 2015 to use the flagging task instead of the agent flagger
         task_args = {'vis'          : self.vis,
                      'mode'         : 'summary',

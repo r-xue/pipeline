@@ -5,7 +5,7 @@ import matplotlib
 import numpy as np
 import pylab as pb
 
-from casac import casac
+import casatools
 
 
 def plotweather(vis='', figfile='', station=[], help=False):
@@ -36,7 +36,7 @@ def plotWeather(vis='', figfile='', station=[], help=False):
     myfontsize = 8
 
     try:
-        mytb = casac.table()
+        mytb = casatools.table()
         mytb.open("%s/WEATHER" % vis)
     except:
         print("Could not open WEATHER table.  Did you importasdm with asis='*'?")
@@ -275,8 +275,8 @@ def mjdSecondsListToDateTime(mjdsecList):
     Takes a list of mjd seconds and converts it to a list of datetime structures.
     """
 
-    myqa = casac.quanta()
-    myme = casac.measures()
+    myqa = casatools.quanta()
+    myme = casatools.measures()
 
     dt = []
     typelist = type(mjdsecList)
@@ -305,8 +305,8 @@ def mjdSecondsToMJDandUT(mjdsec):
     Caveat: only works for a scalar input value
     """
 
-    myme = casac.measures()
-    myqa = casac.quanta()
+    myme = casatools.measures()
+    myqa = casatools.quanta()
 
     today = myme.epoch('utc', 'today')
     mjd = mjdsec / 86400.
@@ -324,7 +324,7 @@ def call_qa_time(arg, form='', prec=0):
     This is a wrapper for qa.time(), which in casa 3.5 returns a list of strings instead
     of just a scalar string.  
     """
-    myqa = casac.quanta()
+    myqa = casatools.quanta()
     result = myqa.time(arg, form=form, prec=prec)
     if isinstance(result, (list, np.ndarray)):
         return result[0]

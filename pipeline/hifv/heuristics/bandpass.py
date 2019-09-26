@@ -15,7 +15,7 @@ LOG = infrastructure.get_logger(__name__)
 
 
 def removeRows(caltable, spwids):
-    tb = casatools.casac.table()
+    tb = casatools.table()
     tb.open(caltable, nomodify=False)
     for spwid in spwids:
         subtb = tb.query('SPECTRAL_WINDOW_ID == '+str(spwid))
