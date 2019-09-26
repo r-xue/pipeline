@@ -174,7 +174,7 @@ class AntposInputs(vdp.StandardInputs):
             reader = csv.reader(f)
 
             # First row is header row
-            reader.next()
+            next(reader)
 
             # Loop over the rows
             for row in reader:

@@ -140,7 +140,7 @@ class VLASetjyInputs(vdp.StandardInputs):
 
                 # First row is header row
                 reader = csv.reader(f)
-                reader.next()
+                next(reader)
 
                 # Loop over rows trying the new CSV format first
                 for row in reader:

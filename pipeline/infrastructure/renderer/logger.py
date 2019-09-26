@@ -79,7 +79,7 @@ class Parameters(object):
     given as keys of the optional parameters dictionary given to Plot() should
     be interpreted.
     """
-    css_ids = collections.defaultdict(itertools.repeat('Unhandled').next,
+    css_ids = collections.defaultdict(itertools.repeat('Unhandled').__next__,
                                       { 'ant'    : 'ant',
                                         'pol'    : 'pol',
                                         'spw'    : 'spw',
@@ -92,7 +92,7 @@ class Parameters(object):
                                         'vis'    : 'vis',
                                         'file'   : 'file'    })
 
-    descriptions = collections.defaultdict(itertools.repeat('Unknown').next,
+    descriptions = collections.defaultdict(itertools.repeat('Unknown').__next__,
                                            { 'ant'    : 'Antenna',
                                              'spw'    : 'Spectral Window',
                                              'pol'    : 'Polarisation',

@@ -59,7 +59,7 @@ def read_session_based(context, reffile):
 def _read_stream(stream):
     reader = csv.reader(stream)
     # Check if first line is header or not
-    line = reader.next()
+    line = next(reader)
     if len(line) == 0 or line[0].strip().upper() == 'MS' or line[0].strip()[0] == '#':
         # must be a header, commented line, or empty line
         pass

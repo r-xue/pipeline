@@ -49,7 +49,7 @@ class CompressedIter(object):
         self.obj = obj
         self._count = 0
 
-    def next(self):
+    def __next__(self):
         if self._count < len(self.obj):
             v = self.obj[self._count]
             self._count += 1

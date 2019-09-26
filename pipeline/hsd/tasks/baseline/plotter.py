@@ -485,7 +485,7 @@ def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table, org_
     for row_index, each_plane in enumerate(each_grid):
         def g():
             for plot_table_rowid in each_plane:
-                plot_table_row = grid_rowlist.next()
+                plot_table_row = next(grid_rowlist)
                 LOG.debug('Process row {}: ra={}, dec={}',
                           plot_table_rowid, plot_table[plot_table_rowid][2],
                           plot_table[plot_table_rowid][3])

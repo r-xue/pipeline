@@ -277,7 +277,7 @@ def create_flux_comparison_plots(context, output_dir, result):
         x_max = 0
         for m in sorted(measurements, key=operator.attrgetter('spw_id')):
             # cycle colours so that windows centred on the same frequency are distinguishable
-            colour = colours.next()
+            colour = next(colours)
 
             spw = ms.get_spectral_window(m.spw_id)
             x = spw.centre_frequency.to_units(FrequencyUnits.GIGAHERTZ)
@@ -309,7 +309,7 @@ def create_flux_comparison_plots(context, output_dir, result):
             spix = [float(f.spix) for f in fluxes]
             # sort by frequency
             x, y, spix = zip(*sorted(zip(x, y, spix)))
-            colour = colours.next()
+            colour = next(colours)
             ax.plot(x, y, marker='o', color=colour, label='Data source: {}'.format(label))
 
             s_xmin = scale_flux(x[0], y[0], x_min, spix[0])
