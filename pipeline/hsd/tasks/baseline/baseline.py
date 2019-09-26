@@ -1,7 +1,6 @@
 from __future__ import absolute_import
 
 import collections
-import itertools
 import os
 
 import numpy
@@ -263,7 +262,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
                     dvmasks = dvtask.get_result()
                     field_list, antenna_list, spw_list = dvparams[vis]
                     ms = context.observing_run.get_ms(vis)
-                    for field_id, antenna_id, spw_id, mask_list in itertools.izip(field_list, antenna_list, spw_list, dvmasks):
+                    for field_id, antenna_id, spw_id, mask_list in zip(field_list, antenna_list, spw_list, dvmasks):
                         # key: (fieldid, antennaid, spwid)
                         key = (field_id, antenna_id, spw_id)
                         LOG.debug('deviation mask: key {0} {1} {2} mask {3}', field_id, antenna_id, spw_id, mask_list)
@@ -413,7 +412,7 @@ class DeviationMaskHeuristicsTask(HeuristicsTask):
             return {}
 
         result = []
-        for field_id, antenna_id, spw_id in itertools.izip(self.field_list, self.antenna_list, self.spw_list):
+        for field_id, antenna_id, spw_id in zip(self.field_list, self.antenna_list, self.spw_list):
             self.kwargs.update({'field_id': field_id, 'antenna_id': antenna_id, 'spw_id': spw_id})
             mask_list = super(DeviationMaskHeuristicsTask, self).execute(dry_run)
             result.append(mask_list)

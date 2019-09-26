@@ -1,7 +1,6 @@
 from __future__ import absolute_import
 
 import collections
-import itertools
 import os
 
 import numpy
@@ -595,9 +594,8 @@ class SDImaging(basetask.StandardTaskTemplate):
                 validsps = []
                 rmss = []
                 grid_input_dict = {}
-                for (msname, antid, spwid, fieldid, poltypes) in itertools.izip(combined_infiles, combined_antids,
-                                                                                combined_spws, combined_fieldids,
-                                                                                combined_pols):
+                for (msname, antid, spwid, fieldid, poltypes) in zip(combined_infiles, combined_antids, combined_spws,
+                                                                     combined_fieldids, combined_pols):
                     # msobj = context.observing_run.get_ms(name=common.get_parent_ms_name(context,msname)) # Use parent ms
                     # ddobj = msobj.get_data_description(spw=spwid)
                     for p in poltypes:

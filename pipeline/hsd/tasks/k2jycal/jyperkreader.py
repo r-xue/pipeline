@@ -1,7 +1,6 @@
 import contextlib
 import csv
 import io
-import itertools
 
 import numpy
 
@@ -136,7 +135,7 @@ class JyPerK(object):
     def register_data(self, content):
         assert len(self.header) > 0
         assert len(self.header) == len(content)
-        for (k, v) in itertools.izip(self.header, content):
+        for (k, v) in zip(self.header, content):
             self.data[k].append(v)
 
 

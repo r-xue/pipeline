@@ -230,7 +230,7 @@ def grouper(n, iterable, fillvalue=None):
     grouper(3, 'ABCDEFG', 'x') --> ABC DEF Gxx
     """
     args = [iter(iterable)] * n
-    return itertools.izip_longest(fillvalue=fillvalue, *args)
+    return itertools.zip_longest(fillvalue=fillvalue, *args)
 
 
 def CYCLE7_export_flux_from_result(results, context, filename='flux.csv'):

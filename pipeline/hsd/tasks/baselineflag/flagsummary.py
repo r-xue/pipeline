@@ -2,7 +2,6 @@ from __future__ import absolute_import
 from __future__ import print_function
 
 import copy
-import itertools
 import os
 import time
 
@@ -60,7 +59,7 @@ class SDBLFlagSummary(object):
         #userFlag = self.userFlag
 
         LOG.debug('Members to be processed in worker class:')
-        for (a, f, s, p) in itertools.izip(antid_list, fieldid_list, spwid_list, pols_list):
+        for (a, f, s, p) in zip(antid_list, fieldid_list, spwid_list, pols_list):
             LOG.debug('\t%s: Antenna %s Field %d Spw %d Pol %s'%(ms.basename, a, f, s, p))
 
         # output directory
@@ -73,7 +72,7 @@ class SDBLFlagSummary(object):
 
         flagSummary = []
         # loop over members (practically, per antenna loop in an MS)
-        for (antid, fieldid, spwid, pollist) in itertools.izip(antid_list, fieldid_list, spwid_list, pols_list):
+        for (antid, fieldid, spwid, pollist) in zip(antid_list, fieldid_list, spwid_list, pols_list):
             LOG.debug('Performing flagging for %s Antenna %d Field %d Spw %d' % (ms.basename, antid, fieldid, spwid))
             filename_in = ms.name
             ant_name = ms.get_antenna(antid)[0].name

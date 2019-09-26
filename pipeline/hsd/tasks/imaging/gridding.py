@@ -1,11 +1,11 @@
 from __future__ import absolute_import
 
-import os
-import math
-import numpy
-import time
-import itertools
 import collections
+import math
+import os
+import time
+
+import numpy
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -105,7 +105,7 @@ class GriddingBase(basetask.StandardTaskTemplate):
             self.spw = inputs.spwids
         # maps variety of spwid among MSes (not supposed to happen)
         self.msidxs = [common.get_parent_ms_idx(context, name) for name in self.files]
-        self.spwmap = dict([(m, s) for (m, s) in itertools.izip(self.msidxs, self.spw)])
+        self.spwmap = dict([(m, s) for (m, s) in zip(self.msidxs, self.spw)])
         if isinstance(inputs.fieldids, int):
             self.field = [inputs.fieldids]
         else:
@@ -130,7 +130,7 @@ class GriddingBase(basetask.StandardTaskTemplate):
             self.polid[msidx] = ddobj.get_polarization_id(poltype)
 
         LOG.debug('Members to be processed:')
-        for (m, a, s, p) in itertools.izip(self.files, self.antenna, self.spw, self.poltype):
+        for (m, a, s, p) in zip(self.files, self.antenna, self.spw, self.poltype):
             LOG.debug('\t%s Antenna %s Spw %s Pol %s'%(os.path.basename(m), a, s, p))
 
         reference_data = context.observing_run.get_ms(name=self.files[0])
@@ -188,7 +188,7 @@ class GriddingBase(basetask.StandardTaskTemplate):
         dt_dict = datatable_dict
         index_dict = collections.defaultdict(list)
         index_dict_key = 0
-        for msid, ant, fld, spw in itertools.izip(self.msidxs, self.antenna, self.field, self.spw):
+        for msid, ant, fld, spw in zip(self.msidxs, self.antenna, self.field, self.spw):
             basename = mses[msid].basename
             vis = mses[msid].name
             _index_list = common.get_index_list_for_ms(dt_dict[basename], [vis], [ant], [fld], [spw])

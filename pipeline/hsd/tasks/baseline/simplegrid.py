@@ -1,10 +1,10 @@
 from __future__ import absolute_import
 
-import os
-import numpy
 import collections
-import itertools
+import os
 from math import cos
+
+import numpy
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -19,6 +19,7 @@ LOG = utils.OnDemandStringParseLogger(_LOG)
 
 NoData = common.NoData
 DO_TEST = False
+
 
 class SDSimpleGriddingInputs(vdp.StandardInputs):
     nplane = vdp.VisDependentProperty(default=3)
@@ -51,6 +52,7 @@ class SDSimpleGriddingInputs(vdp.StandardInputs):
         self.window = window
         self.windowmode = windowmode
         self.nplane = nplane
+
 
 class SDSimpleGriddingResults(common.SingleDishResults):
     def __init__(self, task=None, success=None, outcome=None):
@@ -165,7 +167,7 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
 
         # Store indexes
         index = 0
-        for (ira, idec) in itertools.izip(index_ra, index_dec):
+        for (ira, idec) in zip(index_ra, index_dec):
             combine_list[counter[ira][idec] % nplane][ira][idec].append(index)
             counter[ira][idec] += 1
             index += 1
@@ -338,7 +340,7 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
                     Mask = None
                     mapped_row = rowmap[tROW]
                     LOG.debug('tROW {}: mapped_row {}', tROW, mapped_row)
-                    for (Weight, Pol, SFLAG) in itertools.izip(weights, pols, flags):
+                    for (Weight, Pol, SFLAG) in zip(weights, pols, flags):
                         if SFLAG == 1:
                             if Sp is None:
                                 Sp = tb.getcell(ms_colname, mapped_row)

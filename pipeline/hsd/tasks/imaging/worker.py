@@ -1,10 +1,10 @@
 from __future__ import absolute_import
 
 import os
-import numpy
 import math
 import shutil
-import itertools
+
+import numpy
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -79,7 +79,7 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
     dec = []
     outref = None
     org_direction = None
-    for vis, ant_id, field_id, spw_id in itertools.izip(parent_mses, ant_list, fieldid_list, spw_list):
+    for vis, ant_id, field_id, spw_id in zip(parent_mses, ant_list, fieldid_list, spw_list):
 
         # get first org_direction if source if ephemeris source
         if is_eph_obj and org_direction==None:
@@ -316,7 +316,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         ref_spwid = spwid_list[0]
 
         LOG.debug('Members to be processed:')
-        for (m, a, s, f) in itertools.izip(infiles, antid_list, spwid_list, fieldid_list):
+        for (m, a, s, f) in zip(infiles, antid_list, spwid_list, fieldid_list):
             LOG.debug('\tMS %s: Antenna %s Spw %s Field %s'%(os.path.basename(m), a, s, f))
 
         # Check for ephemeris source
@@ -438,7 +438,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         spwsel_list = []
         fieldsel_list = []
         antsel_list = []
-        for (msname, ant, spw, field) in itertools.izip(infiles, antid_list, spwid_list, fieldid_list):
+        for (msname, ant, spw, field) in zip(infiles, antid_list, spwid_list, fieldid_list):
             LOG.debug('Registering data to image: vis=\'%s\', ant=%s, spw=%s, field=%s%s'%(msname, ant, spw, field,
                                                                                            (' (ephemeris source)' if ephemsrcname!='' else '')))
             infile_list.append(msname)

@@ -19,7 +19,6 @@ from __future__ import absolute_import
 
 import collections
 import glob
-import itertools
 import os
 import shutil
 import string
@@ -259,7 +258,7 @@ class SDExportData(exportdata.ExportData):
             name = self.__get_last_baseline_table(vis)
             ms = context.observing_run.get_ms(vis)
             science_spws = ms.get_spectral_windows(science_windows_only=True)
-            spw = ','.join(itertools.imap(lambda s: str(s.id), science_spws))
+            spw = ','.join(map(lambda s: str(s.id), science_spws))
             if name is not None:
                 applied_calstate = cmd.safe_substitute(infile=vis,
                                                        bltable=name,

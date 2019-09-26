@@ -596,4 +596,4 @@ def triadwise(iterable):
     next(b, None)
     next(c, None)
     next(c, None)
-    return itertools.izip(a, b, c)
+    return zip(a, b, c)

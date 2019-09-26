@@ -2,13 +2,13 @@ from __future__ import absolute_import
 
 import abc
 import datetime
-import itertools
 import math
+import os
+import time
+
 import matplotlib.gridspec as gridspec
 import numpy
-import os
 import pylab as pl
-import time
 from matplotlib.dates import date2num, DateFormatter, MinuteLocator
 from matplotlib.ticker import FuncFormatter, MultipleLocator, AutoLocator
 
@@ -786,7 +786,7 @@ class SDSparseMapPlotter(object):
             pl.gcf().sca(self.axes.axes_atm)
             amin = 1.0
             amax = 0.0
-            for (t, f) in itertools.izip(self.atm_transmission, self.atm_frequency):
+            for (t, f) in zip(self.atm_transmission, self.atm_frequency):
                 plot_helper.plot(f, t, color='m', linestyle='-', linewidth=0.4)
                 amin = min(amin, t.min())
                 amax = max(amax, t.max())

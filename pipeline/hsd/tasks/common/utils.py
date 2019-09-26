@@ -1,13 +1,13 @@
 from __future__ import absolute_import
 
-import sys
-import os
-import numpy
-import contextlib
-import time
 import collections
+import contextlib
 import functools
-import itertools
+import os
+import sys
+import time
+
+import numpy
 
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure as infrastructure
@@ -295,7 +295,7 @@ def _get_index_list_for_ms(datatable, vis_list, antennaid_list, fieldid_list,
     # use time_table instead of data selection
     #online_flag = datatable.getcolslice('FLAG_PERMANENT', [0, OnlineFlagIndex], [-1, OnlineFlagIndex], 1)[0]
     #LOG.info('online_flag=%s'%(online_flag))
-    for (_vis, _field, _ant, _spw) in itertools.izip(vis_list, fieldid_list, antennaid_list, spwid_list):
+    for (_vis, _field, _ant, _spw) in zip(vis_list, fieldid_list, antennaid_list, spwid_list):
         try:
             time_table = datatable.get_timetable(_ant, _spw, None, os.path.basename(_vis), _field)
         except RuntimeError, e:
@@ -701,7 +701,7 @@ def make_row_map(src_ms, derived_vis, src_tb=None, derived_tb=None):
                             # assert set(tstate0) == set(states[scan_number])
                             assert set(tstate0).issubset(set(states[scan_number]))
 
-                            for (i0, i1) in itertools.izip(sort_index0, sort_index1):
+                            for (i0, i1) in zip(sort_index0, sort_index1):
                                 r0 = trow0[i0]
                                 r1 = trow1[i1]
                                 rowmap[r0] = r1
@@ -960,7 +960,7 @@ class RGAccumulator(object):
         assert len(self.field) == len(self.antenna)
         assert len(self.field) == len(self.spw)
         assert len(self.field) == len(self.pols)
-        for v in itertools.izip(self.field, self.antenna, self.spw):
+        for v in zip(self.field, self.antenna, self.spw):
             yield v
 
     def iterate_all(self):
@@ -969,8 +969,7 @@ class RGAccumulator(object):
         assert len(self.field) == len(self.pols)
         assert len(self.field) == len(self.grid_table)
         assert len(self.field) == len(self.channelmap_range)
-        for f, a, s, g, c in itertools.izip(self.field, self.antenna, self.spw,
-                                            self.grid_table, self.channelmap_range):
+        for f, a, s, g, c in zip(self.field, self.antenna, self.spw, self.grid_table, self.channelmap_range):
             _g = g.decompress()
             yield f, a, s, _g, c
             del _g

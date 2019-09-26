@@ -24,7 +24,6 @@
 #
 import bisect
 import collections
-import itertools
 import os
 import re
 import time
@@ -98,7 +97,7 @@ def __tabledescro():
         'AZ', 'EL', 'NCHAN', 'TSYS', 'TARGET', 'ANTENNA',
         'SRCTYPE', 'FIELD_ID'
     ]
-    return dict(itertools.izip(name, TD_DESC_RO))
+    return dict(zip(name, TD_DESC_RO))
 
 
 def __tabledescrw():
@@ -117,7 +116,7 @@ def __tabledescrw():
         'STATISTICS', 'FLAG', 'FLAG_PERMANENT',
         'FLAG_SUMMARY', 'NMASK', 'MASKLIST', 'NOCHANGE',
         'POSGRP']
-    return dict(itertools.izip(name, TD_DESC_RW))
+    return dict(zip(name, TD_DESC_RW))
 
 
 TABLEDESC_RO = __tabledescro()

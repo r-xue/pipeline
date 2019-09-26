@@ -1,11 +1,11 @@
 from __future__ import absolute_import
 
+import math
 import os
+import time
+
 import numpy
 import pylab as pl
-import time
-import itertools
-import math
 from matplotlib.ticker import MultipleLocator
 
 import pipeline.infrastructure as infrastructure
@@ -624,7 +624,7 @@ class SDChannelMapDisplay(SDImageDisplay):
 #         for group_desc in reduction_group.values():
         for g in group_desc:
             found = False
-            for (msid, ant, fid, spw) in itertools.izip(msid_list, ant_index, fieldid_list, spwid_list):
+            for (msid, ant, fid, spw) in zip(msid_list, ant_index, fieldid_list, spwid_list):
                 msobj_list = self.inputs.context.observing_run.measurement_sets
                 msname_list = [os.path.abspath(msobj_list[idx].name)
                                for idx in xrange(len(msobj_list))]
