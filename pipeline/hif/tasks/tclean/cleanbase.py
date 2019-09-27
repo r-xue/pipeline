@@ -5,13 +5,13 @@ import os
 import numpy as np
 
 import pipeline as pipeline
+import pipeline.environment as environment
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure.renderer.htmlrenderer import get_casa_version
 from pipeline.infrastructure import casa_tasks
 from .resultobjects import TcleanResult
 
@@ -743,7 +743,7 @@ def set_miscinfo(name, spw=None, field=None, type=None, iter=None, multiterm=Non
 
             # Pipeline / CASA information
             info['pipever'] = pipeline.revision
-            info['casaver'] = get_casa_version()
+            info['casaver'] = environment.casa_version_string
 
             # Project information
             if context is not None:

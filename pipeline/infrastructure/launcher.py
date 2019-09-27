@@ -9,6 +9,7 @@ import os
 import pickle
 import pprint
 
+import pipeline.environment as environment
 from . import callibrary
 from . import casatools
 from . import imagelibrary
@@ -20,7 +21,7 @@ LOG = logging.get_logger(__name__)
 
 
 # minimum allowed CASA revision. Set to 0 or None to disable
-MIN_CASA_REVISION = [5, 3, 0, 91]
+MIN_CASA_REVISION = [5, 9, 9, 909]
 # maximum allowed CASA revision. Set to 0 or None to disable
 MAX_CASA_REVISION = None
 
@@ -262,13 +263,13 @@ class Pipeline(object):
         # versions of CASA by comparing the CASA subversion revision against
         # our expected minimum and maximum
         if casa_version_check is True:
-            if MIN_CASA_REVISION and casatools.utils.compare_version('<', MIN_CASA_REVISION):
+            if MIN_CASA_REVISION and environment.compare_casa_version('<', MIN_CASA_REVISION):
                 msg = ('Minimum CASA revision for the pipeline is %s, '
-                       'got CASA %s.' % (MIN_CASA_REVISION, casatools.utils.version()))
+                       'got CASA %s.' % (MIN_CASA_REVISION, environment.casa_version))
                 LOG.critical(msg)
-            if MAX_CASA_REVISION and casatools.utils.compare_version('>', MAX_CASA_REVISION):
+            if MAX_CASA_REVISION and environment.compare_casa_version('>', MAX_CASA_REVISION):
                 msg = ('Maximum CASA revision for the pipeline is %s, '
-                       'got CASA %s.' % (MAX_CASA_REVISION, casatools.utils.version()))
+                       'got CASA %s.' % (MAX_CASA_REVISION, environment.casa_version))
                 LOG.critical(msg)
 
         # if no previous context was specified, create a new context for the

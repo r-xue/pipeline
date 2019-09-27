@@ -9,13 +9,13 @@ import string
 import tarfile
 
 import pipeline as pipeline
+import pipeline.environment as environment
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.common import manifest
 from pipeline.h.tasks.exportdata import exportdata
 from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import casatools
 from pipeline.infrastructure import task_registry
 
 LOG = infrastructure.get_logger(__name__)
@@ -223,7 +223,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         # Initialize the manifest document and the top level ous status.
         pipemanifest = self._init_pipemanifest(oussid)
         ouss = pipemanifest.set_ous(oussid)
-        pipemanifest.add_casa_version(ouss, casatools.utils.version_string())
+        pipemanifest.add_casa_version(ouss, environment.casa_version_string)
         pipemanifest.add_pipeline_version(ouss, pipeline.revision)
         pipemanifest.add_procedure_name(ouss, context.project_structure.recipe_name)
 

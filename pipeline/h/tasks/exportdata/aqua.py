@@ -177,7 +177,7 @@ class AquaXmlGenerator(object):
         ElementTree.SubElement(root, 'ProcessingTime').text = str(exec_duration)
 
         # Software versions
-        ElementTree.SubElement(root, 'CasaVersion').text = casatools.utils.version_string()
+        ElementTree.SubElement(root, 'CasaVersion').text = environment.casa_version_string
         ElementTree.SubElement(root, 'PipelineVersion').text = environment.pipeline_revision
 
         # Score for the complete pipeline run

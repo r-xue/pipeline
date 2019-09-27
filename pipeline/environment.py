@@ -11,12 +11,14 @@ import subprocess
 import sys
 
 import pkg_resources
+
+import casalith
 from casampi.MPIEnvironment import MPIEnvironment
 
 from .infrastructure import mpihelpers
 
-__all__ = ['cpu_type', 'hostname', 'host_distribution', 'logical_cpu_cores', 'memory_size', 'pipeline_revision', 'role',
-           'cluster_details']
+__all__ = ['casa_version', 'casa_version_string', 'compare_casa_version', 'cpu_type', 'hostname', 'host_distribution', 'logical_cpu_cores',
+           'memory_size', 'pipeline_revision', 'role', 'cluster_details']
 
 
 def _cpu_type():
@@ -187,6 +189,9 @@ def _cluster_details():
     return env_details
 
 
+casa_version = casalith.version()
+casa_version_string = casalith.version_string()
+compare_casa_version = casalith.compare_version
 cpu_type = _cpu_type()
 hostname = _hostname()
 host_distribution = _host_distribution()

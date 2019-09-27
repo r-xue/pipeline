@@ -17,6 +17,7 @@ import pkg_resources
 
 import pipeline as pipeline
 import pipeline.domain.measures as measures
+import pipeline.environment as environment
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.casatools as casatools
@@ -217,12 +218,6 @@ def is_singledish_ms(context):
 
     result_repr = str(result0)
     return result_repr.find('SDImportDataResults') != -1
-
-
-def get_casa_version():
-    casa_version = casatools.utils.version()
-    casa_version_str = "%d.%d.%d-%d" % (casa_version[0], casa_version[1], casa_version[2], casa_version[3])
-    return casa_version_str
 
 
 class Session(object):
@@ -427,7 +422,7 @@ class T1_1Renderer(RendererBase):
 
         return {
             'pcontext': context,
-            'casa_version': casatools.utils.version_string(),
+            'casa_version': environment.casa_version_string,
             'pipeline_revision': pipeline.revision,
             'pipeline_doclink': pipeline_doclink,
             'obs_start': obs_start_fmt,
