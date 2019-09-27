@@ -231,11 +231,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
             return 4.5
 
     def savemodel(self, iteration):
-
-        if iteration == 3:
-            return 'modelcolumn'
-        else:
-            return 'none'
+        return 'none'
 
     def datacolumn(self):
         return 'data'
