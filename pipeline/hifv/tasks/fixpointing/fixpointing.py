@@ -74,7 +74,7 @@ def fixpointing_offset_vlass(vis, intable='POINTING', antlist=[], timeoffset=[0.
             LOG.error('ERROR: could not find intable = ' + vis + '/' + intable)
             raise NameError('InTable not found')
 
-    with casatools.TableReader(vis + '/POINTING') as tb:
+    with casatools.TableReader(vis + '/POINTING', nomodify=False) as tb:
         # tb.open(vis + '/POINTING', nomodify=False)
         ants = tb.getcol('ANTENNA_ID')
         ants = np.unique(ants)
