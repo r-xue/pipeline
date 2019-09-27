@@ -10,10 +10,8 @@ LOG = infrastructure.get_logger(__name__)
 
 class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
 
-    def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}):
-        ImageParamsHeuristics.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params, contfile,
-                                       linesfile, imaging_params)
+    def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None, linesfile=None, imaging_params={}):
+        ImageParamsHeuristics.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
         self.imaging_mode = 'VLASS-SE-CONT'
 
     # niter
@@ -203,12 +201,10 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         if iteration == 0:
             return True, 'auto'
         elif iteration == 1:
+            LOG.info('Final VLASS single epoch tclean call with no mask')
             return True, 'user'
-        elif iteration == 2:
-            LOG.info('Final VLASS single epoch tclean call')
-            return True, 'auto'
         else:
-            return False, 'auto'
+            return False, 'user'
 
     def threshold(self, iteration, threshold, hm_masking):
 

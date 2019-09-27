@@ -6,6 +6,8 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.hifv.heuristics import cont_file_to_CASA
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
+import pipeline.infrastructure.casatools as casatools
+from pipeline.hifv.heuristics import set_add_model_column_parameters
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -45,6 +47,10 @@ class Statwt(basetask.StandardTaskTemplate):
     Inputs = StatwtInputs
 
     def prepare(self):
+
+        if self.inputs.datacolumn == 'residual_data':
+            LOG.info('Checking for model column')
+            self._check_for_modelcolumn()
 
         fielddict = cont_file_to_CASA()
         fields = str(',').join(fielddict.keys()) if fielddict != {} else ''
@@ -95,3 +101,14 @@ class Statwt(basetask.StandardTaskTemplate):
         fielddict = cont_file_to_CASA()
         job = casa_tasks.flagdata(name=name, vis = self.inputs.vis, field = field, mode='summary')
         return self._executor.execute(job)
+
+    def _check_for_modelcolumn(self):
+        ms = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        with casatools.TableReader(ms.name) as table:
+            if 'MODEL_DATA' not in table.colnames():
+                LOG.info('Model data missing from {}.  Adding it now.'.format(ms.basename))
+                imaging_parameters = set_add_model_column_parameters(self.inputs.context)
+                job = casa_tasks.tclean(**imaging_parameters)
+                tclean_result = self._executor.execute(job)
+            else:
+                LOG.info('MODEL_DATA column found in {}'.format(ms.basename))

@@ -69,12 +69,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 extension = ''
 
             maxiter = max(r.iterations.keys())
-            if r.iterations[maxiter].get('savemodel_only'):  # VLASS SE CONT uses the last iter only to save model
-                savemodel_only = True
-                maxiter -= 1
-            else:
-                savemodel_only = False
-                                                
+
             vis = ','.join([os.path.basename(v).strip('.ms') for v in r.vis])
 
             field = None
@@ -446,7 +441,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         plots = plotter.plot()
 
         plots_dict = make_plot_dict(plots)
-        
+
         # construct the renderers so we know what the back/forward links will be
         # sort the rows so the links will be in the same order as the rows
         image_rows.sort(key=lambda row: (row.image_file.split('.')[0], row.field, utils.natural_sort(row.spw), row.pol))
@@ -460,10 +455,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             prefix = row.image_file.split('.')[0]
             try:
                 final_iter = sorted(plots_dict[prefix][row.field][str(row.spw)].keys())[-1]
-                if savemodel_only:  # VLASS SE CONT uses the last iter only to save model
-                    del plots_dict[prefix][row.field][str(row.spw)][final_iter]
-                    final_iter -= 1
                 plot = get_plot(plots_dict, prefix, row.field, str(row.spw), final_iter, 'image')
+
                 renderer = TCleanPlotsRenderer(context, results, row.result,
                                                plots_dict, prefix, row.field, str(row.spw), row.pol,
                                                qa_urls, row.cube_all_cont)

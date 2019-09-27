@@ -8,6 +8,8 @@ from pipeline.infrastructure import task_registry
 import collections
 import copy
 import numpy as np
+import pipeline.infrastructure.casatools as casatools
+from pipeline.hifv.heuristics import set_add_model_column_parameters
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -59,6 +61,10 @@ class Checkflag(basetask.StandardTaskTemplate):
         freqdevscale = 4.0
 
         summaries = []  # QA statistics summaries for before and after targetflag
+
+        if self.inputs.checkflagmode == 'vlass-imaging':
+            LOG.info('Checking for model column')
+            self._check_for_modelcolumn()
 
         # get the before flag total statistics
         job = casa_tasks.flagdata(vis=self.inputs.vis, mode='summary')
@@ -602,3 +608,14 @@ class Checkflag(basetask.StandardTaskTemplate):
             return extendflag_result
         else:
             return CheckflagResults()
+
+    def _check_for_modelcolumn(self):
+        ms = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        with casatools.TableReader(ms.name) as table:
+            if 'MODEL_DATA' not in table.colnames():
+                LOG.info('Model data missing from {}.  Adding it now.'.format(ms.basename))
+                imaging_parameters = set_add_model_column_parameters(self.inputs.context)
+                job = casa_tasks.tclean(**imaging_parameters)
+                tclean_result = self._executor.execute(job)
+            else:
+                LOG.info('MODEL_DATA column found in {}'.format(ms.basename))

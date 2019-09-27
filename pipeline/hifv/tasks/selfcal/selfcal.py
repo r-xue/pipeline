@@ -6,6 +6,8 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tasks, task_registry
+import pipeline.infrastructure.casatools as casatools
+from pipeline.hifv.heuristics import set_add_model_column_parameters
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -69,6 +71,8 @@ class Selfcal(basetask.StandardTaskTemplate):
 
         self.caltable = tableprefix + str(stage_number) + '_1.' + 'phase-self-cal.tbl'
 
+        LOG.info('Checking for model column')
+        self._check_for_modelcolumn()
         self._do_gaincal()
         self._do_applycal()
 
@@ -76,6 +80,17 @@ class Selfcal(basetask.StandardTaskTemplate):
 
     def analyse(self, results):
         return results
+
+    def _check_for_modelcolumn(self):
+        ms = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        with casatools.TableReader(ms.name) as table:
+            if 'MODEL_DATA' not in table.colnames():
+                LOG.info('Model data missing from {}.  Adding it now.'.format(ms.basename))
+                imaging_parameters = set_add_model_column_parameters(self.inputs.context)
+                job = casa_tasks.tclean(**imaging_parameters)
+                tclean_result = self._executor.execute(job)
+            else:
+                LOG.info('MODEL_DATA column found in {}'.format(ms.basename))
 
     def _do_gaincal(self):
         """Run CASA task gaincal"""

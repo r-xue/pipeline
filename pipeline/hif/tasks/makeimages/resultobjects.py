@@ -37,11 +37,13 @@ class MakeImagesResult(basetask.Results):
         # add the cleaned targets to the context
         for result in self.results:
             try:
+                img_params = {kk: vv['imaging_params'] for (kk, vv) in result.iterations.items()}
                 imageitem = imagelibrary.ImageItem(
                   imagename=result.image, sourcename=result.sourcename,
                   spwlist=result.spw, specmode=result.specmode,
                   sourcetype=result.intent,
                   multiterm=result.multiterm,
+                  imaging_params=img_params,  # imaging parameters for each iteration
                   imageplot=result.imageplot)
                 if 'TARGET' in result.intent:
                     context.sciimlist.add_item(imageitem, self.overwrite)

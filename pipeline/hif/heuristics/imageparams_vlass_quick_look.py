@@ -93,10 +93,7 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
         return 0.0, None, None
 
     def savemodel(self, iteration):
-        if iteration == 1:
-            return 'modelcolumn'
-        else:
-            return 'none'
+        return 'none'
 
     def find_fields(self, distance='0deg', phase_center=None, matchregex=''):
 
