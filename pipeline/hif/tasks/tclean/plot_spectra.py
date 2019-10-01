@@ -6,13 +6,13 @@ from __future__ import print_function  # prevents adding old-style print stateme
 
 import os
 import re
+from math import degrees
 
 import matplotlib.ticker
 import numpy as np
 import pylab as pl
 
 import casatools
-from taskinit import *
 from imhead_cli import imhead_cli as imhead
 
 from pipeline.infrastructure import casatools as pl_casatools
@@ -259,12 +259,12 @@ def frames(velocity=286.7, datestring="2005/11/01/00:00:00",
     rvelRad = lme.measure(rvelOpt,'LSRK')
     doppRad = lme.todoppler("RADIO",rvelRad)       
     restFreq = parseFrequencyArgumentToGHz(restFreq)
-    freqRad = lme.tofrequency('LSRK',doppRad,me.frequency('rest',str(restFreq)+'GHz'))
+    freqRad = lme.tofrequency('LSRK', doppRad, casatools.measures.frequency('rest', str(restFreq)+'GHz'))
 
     lsrk = lqa.tos(rvelRad['m0'],prec=prec)
     rvelTop = lme.measure(rvelOpt,'TOPO')
     doppTop = lme.todoppler("RADIO",rvelTop)       
-    freqTop = lme.tofrequency('TOPO',doppTop,me.frequency('rest',str(restFreq)+'GHz'))
+    freqTop = lme.tofrequency('TOPO', doppTop, casatools.measures.frequency('rest', str(restFreq)+'GHz'))
 
     topo = lqa.tos(rvelTop['m0'],prec=prec)
     velocityDifference = 0.001*(rvelRad['m0']['value']-rvelTop['m0']['value'])
@@ -362,7 +362,7 @@ def lsrkToRest(lsrkFrequency, velocityLSRK, datestring, ra, dec,
     lme.doframe(obstime)
     rvelRad = lme.measure(radialVelocityLSRK,'LSRK')
     doppRad = lme.todoppler('RADIO', rvelRad)
-    freqRad = lme.torestfrequency(me.frequency('LSRK',str(freqGHz)+'GHz'), dopp)
+    freqRad = lme.torestfrequency(casatools.measures.frequency('LSRK', str(freqGHz)+'GHz'), dopp)
     lqa.done()
     lme.done()
     return freqRad['m0']['value']
