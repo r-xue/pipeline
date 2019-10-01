@@ -13,7 +13,7 @@ import numpy as np
 import pylab as pl
 
 import casatools
-from imhead_cli import imhead_cli as imhead
+from casatasks import imhead
 
 from pipeline.infrastructure import casatools as pl_casatools
 import pipeline.infrastructure as infrastructure
