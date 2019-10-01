@@ -41,13 +41,13 @@ import string
 import tarfile
 
 import pipeline as pipeline
-import pipeline.environment as environment
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.imagelibrary as imagelibrary
 import pipeline.infrastructure.vdp as vdp
+from pipeline import environment
 from pipeline.infrastructure.filenamer import fitsname
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry

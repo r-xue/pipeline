@@ -9,10 +9,10 @@ import string
 import tarfile
 
 import pipeline as pipeline
-import pipeline.environment as environment
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
+from pipeline import environment
 from pipeline.h.tasks.common import manifest
 from pipeline.h.tasks.exportdata import exportdata
 from pipeline.infrastructure import casa_tasks

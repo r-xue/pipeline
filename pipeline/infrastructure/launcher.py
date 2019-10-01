@@ -9,7 +9,7 @@ import os
 import pickle
 import pprint
 
-import pipeline.environment as environment
+from pipeline import environment
 from . import callibrary
 from . import casatools
 from . import imagelibrary

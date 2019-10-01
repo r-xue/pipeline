@@ -17,13 +17,13 @@ import pkg_resources
 
 import pipeline as pipeline
 import pipeline.domain.measures as measures
-import pipeline.environment as environment
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.displays.pointing as pointing
 import pipeline.infrastructure.displays.summary as summary
 import pipeline.infrastructure.logging as logging
+from pipeline import environment
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure import utils
 from pipeline.infrastructure.renderer.templates import resources

@@ -53,11 +53,11 @@ import os
 import xml.etree.cElementTree as ElementTree
 from xml.dom import minidom
 
-import pipeline.environment as environment
-from pipeline.infrastructure import casatools
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.qaadapter as qaadapter
 import pipeline.infrastructure.utils as utils
+from pipeline import environment
+from pipeline.infrastructure import casatools
 
 LOG = logging.get_logger(__name__)
 
