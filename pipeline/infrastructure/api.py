@@ -46,7 +46,7 @@ from __future__ import absolute_import
 import abc
 
 
-class Heuristic(object):
+class Heuristic(object, metaclass=abc.ABCMeta):
     """
     Heuristic is the superclass of all user-accessible heuristics code in the
     pipeline. 
@@ -61,7 +61,6 @@ class Heuristic(object):
     be ranked, or a function to calculate the optimal solution interval for a
     particular measurement set.
     """
-    __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
     def calculate(self, *args, **parameters):
@@ -107,7 +106,7 @@ class Inputs(object):
         raise NotImplementedError
 
 
-class Results(object):
+class Results(object, metaclass=abc.ABCMeta):
     """
     Results defines the interface used to hold the output of a |Task| plus
     some common parameters used by all weblog templates. This class is
@@ -141,7 +140,6 @@ class Results(object):
 .. |Results| replace:: :class:`Results`
 
     """
-    __metaclass__ = abc.ABCMeta
 
     @abc.abstractproperty
     def uuid(self):
@@ -171,7 +169,7 @@ class Results(object):
         """
 
 
-class ResultRenderer(object):
+class ResultRenderer(object, metaclass=abc.ABCMeta):
     """
     ResultRenderer is the interface for task-specific weblog renderers
     (T2-4M details pages in weblog nomenclature).
@@ -185,7 +183,6 @@ class ResultRenderer(object):
     a single task; the main renderer will select the appropriate renderer
     b ased on sort order.
     """
-    __metaclass__ = abc.ABCMeta
 
     @abc.abstractproperty
     def task(self):
@@ -199,7 +196,7 @@ class ResultRenderer(object):
         raise NotImplementedError
 
 
-class Task(object):
+class Task(object, metaclass=abc.ABCMeta):
     """
     The Runnable interface should be implemented by any class whose
     instances are intended to be executed by an Executor.
@@ -213,7 +210,6 @@ class Task(object):
     pipeline.tasks.TaskTemplate
     pipeline.infrastructure.JobRequest
     """
-    __metaclass__ = abc.ABCMeta
 
     @abc.abstractproperty
     def Inputs(self):
@@ -239,9 +235,8 @@ class Task(object):
         raise NotImplementedError
 
 
-class ImagingMeasurementSetsPreferred(object):
+class ImagingMeasurementSetsPreferred(object, metaclass=abc.ABCMeta):
     """
     Class used to register Inputs classes that prefer to see post-mstransform
     data when available.
     """
-    __metaclass__ = abc.ABCMeta

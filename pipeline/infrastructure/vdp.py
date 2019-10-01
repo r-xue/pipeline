@@ -134,13 +134,12 @@ class NullMarker(object):
 _NULL = NullMarker(null_input=[None, ''])
 
 
-class NoDefaultMarker(object):
+class NoDefaultMarker(object, metaclass=SingletonType):
     """
     NoDefaultMarker is a class that represents the null "parameter not-set" case
     for default values. It exists to distinguish between a user-provided
     default value of None, and when a default has not been set.
     """
-    __metaclass__ = SingletonType
 
     def __eq__(self, other):
         return isinstance(other, NoDefaultMarker)
@@ -702,10 +701,9 @@ def get_properties(inputs_cls):
     return props
 
 
-class StandardInputs(api.Inputs):
-    __metaclass__ = PipelineInputsMeta
+class StandardInputs(api.Inputs, metaclass=PipelineInputsMeta):
 
-    #- standard non-vis-dependent properties ---------------------------------
+    # - standard non-vis-dependent properties --------------------------------
 
     @property
     def context(self):
@@ -733,7 +731,7 @@ class StandardInputs(api.Inputs):
             raise TypeError(msg)
         self._context = value
 
-    #- vis-dependent properties ----------------------------------------------
+    # - vis-dependent properties ---------------------------------------------
 
     vis = VisDependentProperty(default='', null_input=['', None, [], ['']])
 
@@ -825,7 +823,7 @@ class StandardInputs(api.Inputs):
         return utils.collect_properties(self)
 
 
-class ModeInputs(api.Inputs):
+class ModeInputs(api.Inputs, metaclass=PipelineInputsMeta):
     """
     ModeInputs is a facade for Inputs of a common task type, allowing the user
     to switch between task implementations by changing the 'mode' parameter.
@@ -834,7 +832,6 @@ class ModeInputs(api.Inputs):
     key/value pairs, each pair mapping the mode name key to the task class
     value.
     """
-    __metaclass__ = PipelineInputsMeta
 
     _modes = {}
 

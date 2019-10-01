@@ -99,7 +99,7 @@ def get_state(o):
     return [(cls_name, k, v) for k, v in modified.items()]
 
 
-class ModificationListener(object):
+class ModificationListener(object, metaclass=abc.ABCMeta):
     """
     Interface for listener classes that want to be notified when an object
     property changes.
@@ -112,7 +112,6 @@ class ModificationListener(object):
     enumeration to emphasise that this class is deliberately tied into the
     Python data model.
     """
-    __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
     def on_delattr(self, modified_obj, attr):

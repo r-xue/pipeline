@@ -95,9 +95,7 @@ LOG = infrastructure.get_logger(__name__)
 
 # ------------------------------------------------------------------------------
 
-class RefAntHeuristics(object):
-    __metaclass__ = vdp.PipelineInputsMeta
-
+class RefAntHeuristics(object, metaclass=vdp.PipelineInputsMeta):
     refantignore = vdp.VisDependentProperty(default='')
 
 # ------------------------------------------------------------------------------

@@ -223,7 +223,7 @@ class OnTheFlyCalibrationMixin(object):
         self._opacity = value
 
 
-class StandardInputs(api.Inputs, MandatoryInputsMixin):
+class StandardInputs(api.Inputs, MandatoryInputsMixin, metaclass=abc.ABCMeta):
     """
     StandardInputsTemplate is the standard base class for task Inputs classes.
 
@@ -233,7 +233,6 @@ class StandardInputs(api.Inputs, MandatoryInputsMixin):
     demands that subclasses implement some additional methods, in return it
     allows tasks to manipulate these Inputs objects more easily.
     """
-    __metaclass__ = abc.ABCMeta
 
     def __init__(self, context, vis=None, output_dir=None):
         super(StandardInputs, self).__init__()
@@ -890,7 +889,7 @@ class ResultsList(Results):
             result.merge_with_context(context)
 
 
-class StandardTaskTemplate(api.Task):
+class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
     """
     StandardTaskTemplate is a template class for pipeline reduction tasks whose 
     execution can be described by a common four-step process:
@@ -916,9 +915,7 @@ class StandardTaskTemplate(api.Task):
 
         i = ImplementingTask.Inputs.create_from_context(context)
 
-
     """
-    __metaclass__ = abc.ABCMeta
 
     # HeadTail is an internal class used to associate properties with their
     # associated measurement sets

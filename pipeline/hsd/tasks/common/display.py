@@ -314,8 +314,7 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
         return self.result.outcome['image'].sourcename
 
 
-class SDCalibrationDisplay(object):
-    __metaclass__ = abc.ABCMeta
+class SDCalibrationDisplay(object, metaclass=abc.ABCMeta):
     Inputs = SingleDishDisplayInputs
 
     def __init__(self, inputs):
@@ -341,8 +340,7 @@ class SDCalibrationDisplay(object):
         raise NotImplementedError()
 
 
-class SDImageDisplay(object):
-    __metaclass__ = abc.ABCMeta
+class SDImageDisplay(object, metaclass=abc.ABCMeta):
     Inputs = SDImageDisplayInputs
 
     def __init__(self, inputs):

@@ -168,9 +168,7 @@ class ClusterDisplay(object):
         return plot_list
 
 
-class ClusterDisplayWorker(object):
-    __metaclass__ = abc.ABCMeta
-
+class ClusterDisplayWorker(object, metaclass=abc.ABCMeta):
     MATPLOTLIB_FIGURE_ID = 8907
 
     def __init__(self, group_id, iteration, cluster, spw, field, stage_dir):

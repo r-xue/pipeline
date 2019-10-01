@@ -41,12 +41,11 @@ from .. import logging
 LOG = logging.get_logger(__name__)
 
 
-class RegressionExtractor(object):
+class RegressionExtractor(object, metaclass=abc.ABCMeta):
     """
     RegressionExtractor is the mandatory base class for all regression test
     result extractors.
     """
-    __metaclass__ = abc.ABCMeta
 
     # the Results class this handler is expected to handle
     result_cls = None

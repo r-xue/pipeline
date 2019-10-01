@@ -95,7 +95,7 @@ class QAScorePool(object):
         self._representative = value
 
 
-class QAPlugin(object):
+class QAPlugin(object, metaclass=abc.ABCMeta):
     """
     QAPlugin is the mandatory base class for all pipeline QA handlers.
 
@@ -139,7 +139,6 @@ class QAPlugin(object):
     only Foo is registered with the QA framework. To register Bar, the class
     definition must use multiple inheritance, e.g., 'class Bar(Foo, QAPlugin):'.
     """
-    __metaclass__ = abc.ABCMeta
 
     # the Results class this handler is expected to handle
     result_cls = None
