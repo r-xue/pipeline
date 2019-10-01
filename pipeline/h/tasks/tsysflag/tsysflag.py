@@ -5,8 +5,9 @@ import os
 import re
 import string
 
-import flaghelper
 import numpy as np
+
+from casatasks.private import flaghelper
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask

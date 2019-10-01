@@ -68,7 +68,7 @@ import math
 import os
 import string
 
-import flaghelper
+from casatasks.private import flaghelper
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools

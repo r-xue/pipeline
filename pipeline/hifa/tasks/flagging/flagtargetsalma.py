@@ -3,7 +3,7 @@ from __future__ import absolute_import
 import os
 import string
 
-import flaghelper
+from casatasks.private import flaghelper
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api
