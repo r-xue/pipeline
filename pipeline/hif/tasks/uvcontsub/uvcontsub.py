@@ -1,8 +1,6 @@
 from __future__ import absolute_import
 
-import os
-
-from parallel.parallel_task_helper import ParallelTaskHelper
+from casatasks.private.parallel.parallel_task_helper import ParallelTaskHelper
 
 import pipeline.h.tasks.applycal.applycal as applycal
 import pipeline.infrastructure.basetask as basetask
@@ -24,6 +22,7 @@ class UVcontSubInputs(applycal.ApplycalInputs):
         super(UVcontSubInputs, self).__init__(context, output_dir=output_dir, vis=vis, field=field, spw=spw,
                                               antenna=antenna, intent=intent, parang=parang, applymode=applymode,
                                               flagbackup=flagbackup, flagsum=flagsum, flagdetailedsum=flagdetailedsum)
+
 
 # Register this as an imaging MS(s) preferred task
 api.ImagingMeasurementSetsPreferred.register(UVcontSubInputs)
@@ -58,6 +57,7 @@ class UVcontSub(applycal.Applycal):
                 ParallelTaskHelper.bypassParallelProcessing(0)
 
         return UVcontSubResults()
+
 
 # Simple results class to transport any mitigation error
 class UVcontSubResults(basetask.Results):
