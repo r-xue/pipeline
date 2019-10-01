@@ -11,9 +11,9 @@ import uuid
 import numpy as np
 
 from casatasks.private import cleanhelper
-from imagerhelpers.imager_base import PySynthesisImager
-from imagerhelpers.imager_parallel_continuum import PyParallelContSynthesisImager
-from imagerhelpers.input_parameters import ImagerParameters
+from casatasks.private.imagerhelpers.imager_base import PySynthesisImager
+from casatasks.private.imagerhelpers.imager_parallel_continuum import PyParallelContSynthesisImager
+from casatasks.private.imagerhelpers.input_parameters import ImagerParameters
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
