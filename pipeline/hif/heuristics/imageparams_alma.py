@@ -1,7 +1,5 @@
 import numpy as np
 
-import cleanhelper
-
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure as infrastructure
 import pipeline.domain.measures as measures

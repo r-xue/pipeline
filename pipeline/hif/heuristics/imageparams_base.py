@@ -8,8 +8,9 @@ import re
 import shutil
 import uuid
 
-import cleanhelper
 import numpy as np
+
+from casatasks.private import cleanhelper
 from imagerhelpers.imager_base import PySynthesisImager
 from imagerhelpers.imager_parallel_continuum import PyParallelContSynthesisImager
 from imagerhelpers.input_parameters import ImagerParameters
