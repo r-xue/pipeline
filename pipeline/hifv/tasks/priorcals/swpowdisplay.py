@@ -1,10 +1,10 @@
 from __future__ import absolute_import
 import os
 
+import casatasks
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
-import casa
-
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -30,11 +30,11 @@ class swpowSummaryChart(object):
         antPlot = '0~2'
 
         plotmax = 100
-        casa.plotms(vis=self.caltable, xaxis='time', yaxis='amp', field='',
-                    antenna=antPlot, spw='', timerange='',
-                    plotrange=[0, 0, 0, plotmax], coloraxis='',
-                    title='Switched Power  swpow.tbl   Antenna: {!s}'.format('0~2'),
-                    titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+        casatasks.plotms(vis=self.caltable, xaxis='time', yaxis='amp', field='',
+                         antenna=antPlot, spw='', timerange='',
+                         plotrange=[0, 0, 0, plotmax], coloraxis='',
+                         title='Switched Power  swpow.tbl   Antenna: {!s}'.format('0~2'),
+                         titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
 
     def get_figfile(self, prefix):
         return os.path.join(self.context.report_dir,
@@ -125,12 +125,12 @@ class swpowPerAntennaChart(object):
                     LOG.debug("Switched Power Plot, using antenna={!s} and spw={!s}".format(antName,
                                                                                             self.result.sw_result.spw))
 
-                    casa.plotms(vis=self.caltable, xaxis='time', yaxis=self.yaxis, field='',
-                                antenna=antPlot, spw=self.result.sw_result.spw, timerange='',
-                                plotrange=plotrange, coloraxis='',
-                                title='Switched Power  swpow.tbl   Antenna: {!s}'.format(antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
-                                xconnector='line')
+                    casatasks.plotms(vis=self.caltable, xaxis='time', yaxis=self.yaxis, field='',
+                                     antenna=antPlot, spw=self.result.sw_result.spw, timerange='',
+                                     plotrange=plotrange, coloraxis='',
+                                     title='Switched Power  swpow.tbl   Antenna: {!s}'.format(antName),
+                                     titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                     xconnector='line')
 
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename)

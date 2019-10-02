@@ -1,12 +1,14 @@
 from __future__ import absolute_import
+
 import os
+
 import numpy as np
 import pylab as pb
 
+import casatasks
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
-
-import casa
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -31,11 +33,11 @@ class fluxbootSummaryChart(object):
         calibrator_scan_select_string = context.evla['msinfo'][m.name].calibrator_scan_select_string
         ms_active = m.name
 
-        casa.plotms(vis=ms_active, xaxis='freq', yaxis='amp', ydatacolumn='model', selectdata=True,
-                    scan=calibrator_scan_select_string, correlation=corrstring, averagedata=True,
-                    avgtime='1e8', avgscan=True, transform=False,    extendflag=False, iteraxis='',
-                    coloraxis='field', plotrange=[], title='', xlabel='', ylabel='',  showmajorgrid=False,
-                    showminorgrid=False, plotfile=figfile, overwrite=True, clearplots=True, showgui=False)
+        casatasks.plotms(vis=ms_active, xaxis='freq', yaxis='amp', ydatacolumn='model', selectdata=True,
+                         scan=calibrator_scan_select_string, correlation=corrstring, averagedata=True,
+                         avgtime='1e8', avgscan=True, transform=False,    extendflag=False, iteraxis='',
+                         coloraxis='field', plotrange=[], title='', xlabel='', ylabel='',  showmajorgrid=False,
+                         showminorgrid=False, plotfile=figfile, overwrite=True, clearplots=True, showgui=False)
 
     def get_figfile(self):
         return os.path.join(self.context.report_dir, 
@@ -77,11 +79,11 @@ class fluxgaincalSummaryChart(object):
     def create_plot(self):
         figfile = self.get_figfile()
 
-        casa.plotms(vis=self.caltable, xaxis='freq', yaxis='amp', ydatacolumn='', selectdata=True,
-                    scan='', correlation='', averagedata=True,
-                    avgtime='', avgscan=False, transform=False, extendflag=False, iteraxis='',
-                    coloraxis='field', plotrange=[], title='', xlabel='', ylabel='', showmajorgrid=False,
-                    showminorgrid=False, plotfile=figfile, overwrite=True, clearplots=True, showgui=False)
+        casatasks.plotms(vis=self.caltable, xaxis='freq', yaxis='amp', ydatacolumn='', selectdata=True,
+                         scan='', correlation='', averagedata=True,
+                         avgtime='', avgscan=False, transform=False, extendflag=False, iteraxis='',
+                         coloraxis='field', plotrange=[], title='', xlabel='', ylabel='', showmajorgrid=False,
+                         showminorgrid=False, plotfile=figfile, overwrite=True, clearplots=True, showgui=False)
 
     def get_figfile(self):
         return os.path.join(self.context.report_dir,

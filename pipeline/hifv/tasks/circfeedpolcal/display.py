@@ -2,10 +2,10 @@ from __future__ import absolute_import
 
 import os
 
+import casatasks
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
-import casa
-import shutil
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -32,10 +32,10 @@ class CircFeedPolCalChart(object):
         figfile = self.get_figfile(prefix)
 
         LOG.info("Creating PlotSummary Polarization plot")
-        casa.plotms(vis=self.caltable, xaxis=self.xaxis, yaxis=self.yaxis, field='', antenna=self.antenna,
-                    spw='', timerange='', plotrange=[], coloraxis='spw',
-                    title='{!s}  Antenna: {!s}'.format(self.caltable, self.antenna),
-                    titlefont=7, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+        casatasks.plotms(vis=self.caltable, xaxis=self.xaxis, yaxis=self.yaxis, field='', antenna=self.antenna,
+                         spw='', timerange='', plotrange=[], coloraxis='spw',
+                         title='{!s}  Antenna: {!s}'.format(self.caltable, self.antenna),
+                         titlefont=7, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
 
     def get_figfile(self, prefix):
         return os.path.join(self.context.report_dir,
@@ -117,11 +117,11 @@ class ampfreqPerAntennaChart(object):
                         idents = [a.name if a.name else a.id for a in domain_antennas]
                         antName = ','.join(idents)
 
-                    casa.plotms(vis=self.caltable, xaxis='freq', yaxis='amp', field='',
-                                antenna=antPlot, spw='', timerange='', plotrange=plotrange, coloraxis='',
-                                title='POL table: {!s}   Antenna: {!s}'.format(self.caltable, antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
-                                xconnector='step')
+                    casatasks.plotms(vis=self.caltable, xaxis='freq', yaxis='amp', field='',
+                                     antenna=antPlot, spw='', timerange='', plotrange=plotrange, coloraxis='',
+                                     title='POL table: {!s}   Antenna: {!s}'.format(self.caltable, antName),
+                                     titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                     xconnector='step')
 
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename + str(ex))

@@ -1,11 +1,13 @@
 from __future__ import absolute_import
 import os
 
+import numpy as np
+
+import casatasks
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.renderer.logger as logger
-import casa
-import numpy as np
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -30,10 +32,10 @@ class testgainsSummaryChart(object):
         plotmax = 100
 
         # Dummy plot
-        casa.plotms(vis=self.result.bpdgain_touse, xaxis='time', yaxis='amp', field='',
-                    antenna=antplot, spw='', timerange='', plotrange=[0, 0, 0, plotmax], coloraxis='spw',
-                    title='testgains Temp table', titlefont=8, xaxisfont=7, yaxisfont=7,
-                    showgui=False, plotfile=figfile)
+        casatasks.plotms(vis=self.result.bpdgain_touse, xaxis='time', yaxis='amp', field='',
+                         antenna=antplot, spw='', timerange='', plotrange=[0, 0, 0, plotmax], coloraxis='spw',
+                         title='testgains Temp table', titlefont=8, xaxisfont=7, yaxisfont=7,
+                         showgui=False, plotfile=figfile)
 
     def get_figfile(self, prefix):
         return os.path.join(self.context.report_dir, 'stage%s' % self.result.stage_number,
@@ -119,11 +121,11 @@ class testgainsPerAntennaChart(object):
                         idents = [a.name if a.name else a.id for a in domain_antennas]
                         antname = ','.join(idents)
 
-                    casa.plotms(vis=self.result.bpdgain_touse, xaxis='time', yaxis=self.yaxis, field='',
-                                antenna=antPlot, spw='', timerange='', plotrange=plotrange, coloraxis='',
-                                title='G table: {!s}   Antenna: {!s}'.format(self.result.bpdgain_touse, antname),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
-                                xconnector=xconnector)
+                    casatasks.plotms(vis=self.result.bpdgain_touse, xaxis='time', yaxis=self.yaxis, field='',
+                                     antenna=antPlot, spw='', timerange='', plotrange=plotrange, coloraxis='',
+                                     title='G table: {!s}   Antenna: {!s}'.format(self.result.bpdgain_touse, antname),
+                                     titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                     xconnector=xconnector)
 
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename + str(ex))

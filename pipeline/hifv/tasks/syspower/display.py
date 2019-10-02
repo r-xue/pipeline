@@ -1,11 +1,13 @@
 from __future__ import absolute_import
 import os
+
 import numpy as np
 import pylab as pb
 
+import casatasks
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
-import casa
 
 
 LOG = infrastructure.get_logger(__name__)
@@ -190,11 +192,11 @@ class syspowerPerAntennaChart(object):
 
                     LOG.debug("Sys Power Plot, using antenna={!s}".format(antName))
 
-                    casa.plotms(vis=self.caltable, xaxis='time', yaxis=self.yaxis, field='',
-                                antenna=antPlot, spw='6,14', timerange='',
-                                plotrange=plotrange, coloraxis='spw',
-                                title='Sys Power  ' + self.tabletype + '.tbl   Antenna: {!s}'.format(antName),
-                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+                    casatasks.plotms(vis=self.caltable, xaxis='time', yaxis=self.yaxis, field='',
+                                     antenna=antPlot, spw='6,14', timerange='',
+                                     plotrange=plotrange, coloraxis='spw',
+                                     title='Sys Power  ' + self.tabletype + '.tbl   Antenna: {!s}'.format(antName),
+                                     titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
 
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename)

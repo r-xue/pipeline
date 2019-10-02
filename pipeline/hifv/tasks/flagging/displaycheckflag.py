@@ -1,10 +1,11 @@
 from __future__ import absolute_import
+
 import os
+
+import casatasks
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
-import casa
-
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -36,28 +37,29 @@ class checkflagSummaryChart(object):
 
         if self.result.inputs['checkflagmode'] == 'bpd' or self.result.inputs['checkflagmode'] == 'bpd-vlass':
             if prefix == 'BPcal':
-                casa.plotms(vis=self.ms.name, xaxis='freq', yaxis='amp', ydatacolumn='corrected', selectdata=True,
-                            field=bandpass_field_select_string, scan=bandpass_scan_select_string,
-                            correlation=corrstring, averagedata=True, avgtime='1e8', avgscan=True, transform=False,
-                            extendflag=False, iteraxis='', coloraxis='antenna2', plotrange=[], title='',
-                            xlabel='', ylabel='', showmajorgrid=False, showminorgrid=False, plotfile=figfile,
-                            overwrite=True, clearplots=True, showgui=False)
+                casatasks.plotms(vis=self.ms.name, xaxis='freq', yaxis='amp', ydatacolumn='corrected', selectdata=True,
+                                 field=bandpass_field_select_string, scan=bandpass_scan_select_string,
+                                 correlation=corrstring, averagedata=True, avgtime='1e8', avgscan=True, transform=False,
+                                 extendflag=False, iteraxis='', coloraxis='antenna2', plotrange=[], title='',
+                                 xlabel='', ylabel='', showmajorgrid=False, showminorgrid=False, plotfile=figfile,
+                                 overwrite=True, clearplots=True, showgui=False)
 
             if (delay_scan_select_string != bandpass_scan_select_string) and prefix == 'delaycal':
-                casa.plotms(vis=self.ms.name, xaxis='freq', yaxis='amp', ydatacolumn='corrected', selectdata=True,
-                            scan=delay_scan_select_string, correlation=corrstring, averagedata=True,
-                            avgtime='1e8', avgscan=True, transform=False, extendflag=False, iteraxis='',
-                            coloraxis='antenna2', plotrange=[], title='', xlabel='', ylabel='', showmajorgrid=False,
-                            showminorgrid=False, plotfile=figfile, overwrite=True, clearplots=True, showgui=False)
+                casatasks.plotms(vis=self.ms.name, xaxis='freq', yaxis='amp', ydatacolumn='corrected', selectdata=True,
+                                 scan=delay_scan_select_string, correlation=corrstring, averagedata=True,
+                                 avgtime='1e8', avgscan=True, transform=False, extendflag=False, iteraxis='',
+                                 coloraxis='antenna2', plotrange=[], title='', xlabel='', ylabel='',
+                                 showmajorgrid=False, showminorgrid=False, plotfile=figfile, overwrite=True,
+                                 clearplots=True, showgui=False)
 
         if self.result.inputs['checkflagmode'] == 'allcals' or self.result.inputs['checkflagmode'] == 'allcals-vlass':
             calibrator_scan_select_string = self.context.evla['msinfo'][self.ms.name].calibrator_scan_select_string
 
-            casa.plotms(vis=self.ms.name, xaxis='freq', yaxis='amp', ydatacolumn='corrected', selectdata=True,
-                        scan=calibrator_scan_select_string, correlation=corrstring, averagedata=True, avgtime='1e8',
-                        avgscan=False, transform=False, extendflag=False, iteraxis='', coloraxis='antenna2',
-                        plotrange=[], title='', xlabel='', ylabel='', showmajorgrid=False, showminorgrid=False,
-                        plotfile=figfile, overwrite=True, clearplots=True, showgui=False)
+            casatasks.plotms(vis=self.ms.name, xaxis='freq', yaxis='amp', ydatacolumn='corrected', selectdata=True,
+                             scan=calibrator_scan_select_string, correlation=corrstring, averagedata=True,
+                             avgtime='1e8', avgscan=False, transform=False, extendflag=False, iteraxis='',
+                             coloraxis='antenna2', plotrange=[], title='', xlabel='', ylabel='', showmajorgrid=False,
+                             showminorgrid=False, plotfile=figfile, overwrite=True, clearplots=True, showgui=False)
 
     def get_figfile(self, prefix):
         return os.path.join(self.context.report_dir,
@@ -70,8 +72,9 @@ class checkflagSummaryChart(object):
         bandpass_scan_select_string = self.context.evla['msinfo'][self.ms.name].bandpass_scan_select_string
         delay_scan_select_string = self.context.evla['msinfo'][self.ms.name].delay_scan_select_string
 
-        if (prefix == 'BPcal' or ((delay_scan_select_string != bandpass_scan_select_string) and prefix == 'delaycal')
-or prefix == 'allcals' or prefix == 'allcals-vlass'):
+        if (prefix == 'BPcal' or
+                ((delay_scan_select_string != bandpass_scan_select_string) and prefix == 'delaycal') or
+                prefix == 'allcals' or prefix == 'allcals-vlass'):
             wrapper = logger.Plot(figfile, x_axis='freq', y_axis='amp',
                                   parameters={'vis': self.ms.basename,
                                               'type': prefix,
