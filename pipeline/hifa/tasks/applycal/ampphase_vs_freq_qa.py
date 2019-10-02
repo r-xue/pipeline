@@ -541,7 +541,7 @@ def get_chi2_ang_model(angular_model, nu, omega, phi, angdata, angsigma):
 
 
 def fit_angular_model(angular_model, nu, angdata, angsigma):
-    f_aux = lambda (omega, phi): get_chi2_ang_model(angular_model, nu, omega, phi, angdata, angsigma)
+    f_aux = lambda omega_phi: get_chi2_ang_model(angular_model, nu, omega_phi[0], omega_phi[1], angdata, angsigma)
     phi_init = numpy.ma.median(numpy.ma.angle(angdata[~angdata.mask]))
     fitres = scipy.optimize.minimize(f_aux, numpy.array([0.0, phi_init]), method='L-BFGS-B')
     return fitres

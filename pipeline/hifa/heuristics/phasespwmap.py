@@ -63,7 +63,7 @@ def get_spspec_to_spwid_map(spws):
 
     # result sorted by spw number for more friendly processing when iterating downstream
     d = collections.OrderedDict()
-    for k, v in sorted(spspec_to_spwid_map.items(), key=lambda (a, b): (b, a)):
+    for k, v in sorted(spspec_to_spwid_map.items(), key=lambda a_b: (a_b[1], a_b[0])):
         d[k] = v
 
     return d
