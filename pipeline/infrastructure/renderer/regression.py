@@ -31,8 +31,8 @@ from collections import OrderedDict
 
 from pipeline.domain.measures import FluxDensityUnits
 from pipeline.h.tasks.applycal.applycal import ApplycalResults
-from pipeline.hif.tasks.applycal.ifapplycal import IFApplycal
 from pipeline.h.tasks.common.commonfluxresults import FluxCalibrationResults
+from pipeline.hif.tasks.applycal.ifapplycal import IFApplycal
 from pipeline.hifa.tasks.fluxscale.gcorfluxscale import GcorFluxscale
 from pipeline.hifa.tasks.gfluxscaleflag.resultobjects import GfluxscaleflagResults
 from ..taskregistry import task_registry
@@ -91,8 +91,6 @@ class RegressionExtractor(object, metaclass=abc.ABCMeta):
         {'applycal.new_flags.science': 0.34,
          'applycal.new_flags.bandpass': 0.53}
 
-
-        :param context:
         :param result:
         :return:
         """
@@ -156,7 +154,7 @@ def union(d1, d2):
     """
     intersection = key_intersection(d1, d2)
     if intersection:
-        raise (ValueError, 'Regression keys are duplicated: {}'.format(intersection))
+        raise ValueError('Regression keys are duplicated: {}'.format(intersection))
     # dict keys and values should be strings, so ok to shallow copy
     # OrderedDict is used to store results in processing order.
     u = OrderedDict(d1)

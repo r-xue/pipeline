@@ -1,17 +1,19 @@
 from __future__ import absolute_import
 
 import os
+
 import numpy
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.casatools as casatools
-from pipeline.infrastructure import task_registry
+import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.common import calibrationtableaccess as caltableaccess
 from pipeline.hifa.heuristics import snr as snr_heuristics
+from pipeline.infrastructure import task_registry
 
 LOG = infrastructure.get_logger(__name__)
+
 
 class BpSolintInputs(vdp.StandardInputs):
 
@@ -101,7 +103,7 @@ class BpSolint(basetask.StandardTaskTemplate):
         fieldlist = inputs.field.split(',')
         spwlist = [int(spw) for spw in inputs.spw.split(',')]
 
-        #Setup BP SNR
+        # Setup BP SNR
         bpsnr = inputs.bpsnr if not parameters.has_key('bpsnr') else parameters['bpsnr']
 
         # Log the data selection choices
@@ -245,15 +247,14 @@ class BpSolint(basetask.StandardTaskTemplate):
         result = None
         for name in caltables:
             # Get the tsys table name
-            tsystable_vis = \
-                caltableaccess.CalibrationTableDataFiller._readvis(name)
+            tsystable_vis = caltableaccess.CalibrationTableDataFiller._readvis(name)
             if tsystable_vis in vis:
                 result = name
                 break
 
         return result        
 
-# The results class
+
 class BpSolintResults(basetask.Results):
     def __init__(self, vis=None, spwids=[],
                  phsolints=[], phintsolints=[], nphsolutions=[],
@@ -306,8 +307,9 @@ class BpSolintResults(basetask.Results):
                         self.bpchansensitivities[i], self.bpchansnrs[i])
             return line
 
-def check_strong_atm_lines(ms, fieldlist, intent, spwidlist, solint_dict, tsysname,
-                           lineStrengthThreshold = 0.1, minAdjacantChannels = 3, nSigma = 8):
+
+def check_strong_atm_lines(ms, fieldlist, intent, spwidlist, solint_dict, tsysname, lineStrengthThreshold=0.1,
+                           minAdjacantChannels=3, nSigma=8):
     """
     This function tests if existence of strong atmospheric lines in Tsys spectra
     (see CAS-11951).
@@ -329,11 +331,10 @@ def check_strong_atm_lines(ms, fieldlist, intent, spwidlist, solint_dict, tsysna
     LOG.info('Check for strong atmospheric line in Tsys spectra of fields, %s, in %s' % \
              (str(fieldlist), ms.basename))
     # make sure MS and Tsys caltable corresponds
-    tsystable_vis = \
-            caltableaccess.CalibrationTableDataFiller._readvis(tsysname)
+    tsystable_vis = caltableaccess.CalibrationTableDataFiller._readvis(tsysname)
     if tsystable_vis != ms.name:
-        raise RuntimeError, 'Input MS (%s) and Tsys caltable (%s) does not correspond.' % \
-            (os.path.basename(ms.name), os.path.basename(tsysname))
+        raise RuntimeError("Input MS ({}) and Tsys caltable ({}) does not correspond."
+                           "".format(os.path.basename(ms.name), os.path.basename(tsysname)))
 
     tsys_info = snr_heuristics.get_tsysinfo(ms, fieldlist, intent, spwidlist)
 
@@ -342,29 +343,31 @@ def check_strong_atm_lines(ms, fieldlist, intent, spwidlist, solint_dict, tsysna
         if spw not in tsys_info or spw not in solint_dict:
             continue
         tsys_spw = solint_dict[spw]['tsys_spw']
-        LOG.info('Investigating Tsys spectra for spw %d (Tsys spw %d)' % \
-                 (spw, tsys_spw))
+        LOG.info('Investigating Tsys spectra for spw %d (Tsys spw %d)' % (spw, tsys_spw))
+
         # Obtain median Tsys spectrum
         scanobj = ms.get_scans(scan_id = tsys_info[spw]['tsys_scan'])[0]
         atmfields = ms.get_fields(intent='ATMOSPHERE')
         fieldids = [fobj.id for fobj in scanobj.fields.intersection(frozenset(atmfields))]
-        median_tsys = get_median_tsys_spectrum_from_caltable(tsysname,
-                                                             tsys_spw,
-                                                             fieldids[0])
+        median_tsys = get_median_tsys_spectrum_from_caltable(tsysname, tsys_spw, fieldids[0])
         if median_tsys is None:
             LOG.warn('Unable to define median Tsys spectrum for Tsys spw = %d, scan = %d' % \
                      (tsys_spw, tsys_info[spw]['tsys_scan']))
             continue
+
         # Smooth median Tsys spectrum with kernel size, # of Tsys chans /16
         kernel_width = len(median_tsys) // 16
         kernel = numpy.ones(kernel_width, dtype=float)/float(kernel_width)
         LOG.debug("Subtracting smoothed Tsys spectrum (kernel = %d channels)" % kernel_width)
         smoothed_tsys = numpy.convolve(median_tsys, kernel, mode='same')
+
         # Define an index range to avoid edge effect of smoothing
         idx_offset = kernel_width // 2
         idx_range = slice(idx_offset, idx_offset + numpy.abs(len(median_tsys)-kernel_width) + 1, 1)
+
         # Take absolute difference of median Tsys spectum w/ and w/o smoothing
         diff_tsys = numpy.abs(median_tsys - smoothed_tsys)[idx_range]
+
         # If peak is smaller than a threshold, no strong line -> continue to the next spw
         peak = numpy.max(diff_tsys)
         threshold = lineStrengthThreshold * numpy.median(median_tsys[idx_range])
@@ -372,9 +375,11 @@ def check_strong_atm_lines(ms, fieldlist, intent, spwidlist, solint_dict, tsysna
             LOG.info('No strong line is found. peak = %f, threshold = %f' % (peak, threshold))
             continue
         LOG.info('Strong line(s) are found. peak = %f, threshold = %f' % (peak, threshold))
+
         # Scaled MAD of diff_tsys
         scaled_mad = 1.4826*numpy.median(numpy.abs(diff_tsys - numpy.median(diff_tsys)))
         LOG.debug('*** Scaled MAD of diff_tsys = %f' % scaled_mad)
+
         # Check amplitude and width of diff_tsys (presumably atm lines).
         # If both exceeds thresholds -> strong line 
         LOG.info('Examining line intensities and widths ' + \
@@ -402,6 +407,7 @@ def check_strong_atm_lines(ms, fieldlist, intent, spwidlist, solint_dict, tsysna
 
     return strong_atm_lines
 
+
 def get_median_tsys_spectrum_from_caltable(tsysname, spwid, fieldid, interpolate_flagged=True):
     """
     Returns masked median Tsys spectrum of an SPW and scan combination in Tsys caltable.
@@ -415,7 +421,7 @@ def get_median_tsys_spectrum_from_caltable(tsysname, spwid, fieldid, interpolate
     Returns: masked array of median Tsys spectrum
     """
     if not os.path.exists(tsysname):
-        raise ValueError, 'Could not find Tsys caltable, %s' % tsysname
+        raise ValueError('Could not find Tsys caltable, %s' % tsysname)
     with casatools.TableReader(tsysname) as tb:
         seltb = tb.query('SPECTRAL_WINDOW_ID == %s && FIELD_ID == %s' % (spwid, fieldid))
         if seltb.nrows() == 0:
@@ -428,12 +434,12 @@ def get_median_tsys_spectrum_from_caltable(tsysname, spwid, fieldid, interpolate
         finally:
             seltb.close()
     ma_median = numpy.median(numpy.ma.masked_array(tsys, flag), axis=[0, 2])
-    if ma_median.count() == 0: #No valid channel
+    if ma_median.count() == 0:  # No valid channel
         return None
     if interpolate_flagged:
         ma_median.data[ma_median.mask] = numpy.interp(numpy.where(ma_median.mask==True)[0],
-                                                 numpy.where(ma_median.mask==False)[0],
-                                                 ma_median[~ma_median.mask])
+                                                      numpy.where(ma_median.mask==False)[0],
+                                                      ma_median[~ma_median.mask])
         # clear-up mask
         ma_median.mask = False
         return ma_median
