@@ -56,7 +56,7 @@ def log_call(fn, level):
         # don't want self in message as it is an object memory reference
         msg_args = [v for v in positional + nameless + keyword if not v.startswith('self=')]
 
-        tool_call = '{!s}.{!s}({!s})'.format(fn.im_class.__name__, fn.__name__, ', '.join(msg_args))
+        tool_call = '{!s}.{!s}({!s})'.format(fn.__self__.__class__.__name__, fn.__name__, ', '.join(msg_args))
         CASACALLS_LOG.log(level, tool_call)
 
         start_time = datetime.datetime.utcnow()
