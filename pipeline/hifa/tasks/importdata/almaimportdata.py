@@ -1,12 +1,13 @@
 from __future__ import absolute_import
 
 import os
+import ssl
+import urllib
+
 import pipeline.h.tasks.importdata.fluxes as fluxes
 import pipeline.h.tasks.importdata.importdata as importdata
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
-import urllib2
-import ssl
 from pipeline.infrastructure import task_registry
 from . import dbfluxes
 
@@ -65,7 +66,7 @@ class ALMAImportData(importdata.ImportData):
             try:
                 # ignore HTTPS certificate
                 ssl_context = ssl._create_unverified_context()
-                response = urllib2.urlopen(url, context=ssl_context, timeout=60.0)
+                response = urllib.request.urlopen(url, context=ssl_context, timeout=60.0)
                 xml_results = dbfluxes.get_setjy_results(observing_run.measurement_sets)
                 fluxservice = 'FIRSTURL'
             except Exception as e:
@@ -77,7 +78,7 @@ class ALMAImportData(importdata.ImportData):
                     url = baseurl + testquery
                     if baseurl == '':
                         url = ''
-                    response = urllib2.urlopen(url, context=ssl_context, timeout=60.0)
+                    response = urllib.request.urlopen(url, context=ssl_context, timeout=60.0)
                     xml_results = dbfluxes.get_setjy_results(observing_run.measurement_sets)
                     fluxservice='BACKUPURL'
                 except Exception as e2:

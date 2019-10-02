@@ -1,14 +1,14 @@
 from __future__ import absolute_import
 
-import urllib
-import urllib2
+import collections
+import datetime
 import json
-import numpy
 import os
 import re
 import string
-import datetime
-import collections
+import urllib
+
+import numpy
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
@@ -79,21 +79,21 @@ class ALMAJyPerKDatabaseAccessBase(object):
         try:
             for p in params:
                 # encode params
-                encoded = urllib.urlencode(p.param)
+                encoded = urllib.parse.urlencode(p.param)
 
                 # try opening url
                 query = '?'.join([url, encoded])
                 LOG.info('Accessing Jy/K DB: query is "{}"'.format(query))
                 # set timeout to 3min (=180sec)
-                response = urllib2.urlopen(query, timeout=180)
+                response = urllib.request.urlopen(query, timeout=180)
                 retval = json.load(response)
                 yield ResponseStruct(response=retval, subparam=p.subparam)
-        except urllib2.HTTPError as e:
+        except urllib.error.HTTPError as e:
             msg = 'Failed to load URL: {0}\n'.format(url) \
                 + 'Error Message: HTTPError(code={0}, Reason="{1}")\n'.format(e.code, e.reason)
             LOG.warn(msg)
             raise e
-        except urllib2.URLError as e:
+        except urllib.error.URLError as e:
             msg = 'Failed to load URL: {0}\n'.format(url) \
                 + 'Error Message: URLError(Reason="{0}")\n'.format(e.reason)
             LOG.warn(msg)

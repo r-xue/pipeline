@@ -11,7 +11,7 @@ from __future__ import absolute_import
 
 import datetime
 import os
-import urllib2
+import urllib
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -111,14 +111,14 @@ def correct_ant_posns(vis_name, print_offsets=False):
     current_year = datetime.datetime.now().year
     # first, see if the internet connection is possible
     try:
-        response = urllib2.urlopen(URL_BASE + '2010')
-    except urllib2.URLError as err:
+        response = urllib.request.urlopen(URL_BASE + '2010')
+    except urllib.error.URLError as err:
         if (print_offsets):
             LOG.warn('No internet connection to antenna position correction URL {}'.format(err.reason))
         return [2, '', []]
     response.close()
     for year in range(2010, current_year+1):
-        response = urllib2.urlopen(URL_BASE + str(year))
+        response = urllib.request.urlopen(URL_BASE + str(year))
         html = response.read()
         response.close()
         html_lines = html.split('\n')

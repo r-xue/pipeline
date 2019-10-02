@@ -6,7 +6,6 @@ import datetime
 import decimal
 import ssl
 import urllib
-import urllib2
 from xml.dom import minidom
 from xml.parsers.expat import ExpatError
 
@@ -129,7 +128,7 @@ def fluxservice(service_url, obs_time, frequency, sourcename):
     ssl_context = ssl._create_unverified_context()
 
     try:
-        response = urllib2.urlopen(url, context=ssl_context, timeout=60.0)
+        response = urllib.request.urlopen(url, context=ssl_context, timeout=60.0)
     except IOError:
         LOG.warn('Problem contacting flux service at: <a href="{!s}">{!s}</a>'.format(url, url))
         raise
@@ -167,7 +166,7 @@ def buildparams(name, date, frequency):
     NAME=3c279&DATE=04-Apr-2014&FREQUENCY=231.435E9&WEIGHTED=true&RESULT=1
     """
     params = dict(NAME=name, DATE=date, FREQUENCY=frequency, WEIGHTED='true', RESULT=1)
-    return urllib.urlencode(params)
+    return urllib.parse.urlencode(params)
 
 
 def sanitize_string(name):
