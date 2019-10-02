@@ -298,7 +298,7 @@ def _get_index_list_for_ms(datatable, vis_list, antennaid_list, fieldid_list,
     for (_vis, _field, _ant, _spw) in zip(vis_list, fieldid_list, antennaid_list, spwid_list):
         try:
             time_table = datatable.get_timetable(_ant, _spw, None, os.path.basename(_vis), _field)
-        except RuntimeError, e:
+        except RuntimeError as e:
             # data could be missing. just skip.
             LOG.warn('Exception reported from datatable.get_timetable:')
             LOG.warn(str(e))

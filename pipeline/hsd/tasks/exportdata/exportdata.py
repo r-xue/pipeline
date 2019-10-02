@@ -434,7 +434,7 @@ finally:
         try:
             report_xml = report_generator.get_report_xml(context)
             aqua_export_to_disk(report_xml, aqua_file)
-        except Exception, e:
+        except Exception as e:
             LOG.error('Error generating the pipeline AQUA report')
             LOG.info('{}'.format(e))
             return 'Undefined'
