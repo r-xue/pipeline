@@ -83,7 +83,8 @@ def plot_mosaic(ms, source, figfile):
 
             label = 'T$_{{sys}}$-only field' if is_tsys_only(field) else str(diameter)
             if label not in legend_labels:
-                legend_labels[label] = Line2D(range(1), range(1), color=colour, linewidth=2, linestyle='dotted')
+                legend_labels[label] = Line2D(list(range(1)), list(range(1)), color=colour, linewidth=2,
+                                              linestyle='dotted')
                 legend_colours[label] = colour
 
     title_string = '{}, {}, average freq.={}'.format(ms.basename, source.name,

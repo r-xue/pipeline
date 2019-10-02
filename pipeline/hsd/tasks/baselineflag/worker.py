@@ -413,7 +413,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                 valid_indices = numpy.where(numpy.any(FlIn[ip] == 0, axis=1))[0]
                 valid_nrow = len(valid_indices)
 
-                for index in xrange(len(chunks[0])):
+                for index in range(len(chunks[0])):
                     row = chunks[0][index]
                     idx = chunks[1][index]
 
@@ -638,9 +638,9 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
         Ndata = len(stat[0])
         Nflag = len(stat)
         mask = numpy.ones((Nflag, Ndata), numpy.int)
-        for cycle in xrange(clip_niteration + 1):
+        for cycle in range(clip_niteration + 1):
             threshold = []
-            for x in xrange(Nflag):
+            for x in range(Nflag):
                 if x in skip_flag:  # for not baselined data
                     threshold.append([-1, -1])
                     # Leave mask all 1 (no need to modify)
@@ -896,7 +896,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
             # NOTE Elements in FLAG and FLAG_PERMANENT have 0 (flagged) even if the
             # flag category is inactive.
             # We want avoid generating flag commands if online flag is the only reason for the flag.
-            for i in xrange(len(dt_ids)):
+            for i in range(len(dt_ids)):
                 line = [base_selection]
                 ID = dt_ids[i]
                 tSFLAG = datatable.getcell('FLAG_SUMMARY', ID)

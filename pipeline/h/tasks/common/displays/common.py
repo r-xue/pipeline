@@ -415,10 +415,9 @@ class PolComposite(LeafComposite):
         else:
             num_pols = utils.get_num_caltable_polarizations(calapp.gaintable)
 
-        pol_range = range(num_pols)
         children = [self.leaf_class(context, result, calapp, xaxis, yaxis,
                                     spw=spw, ant=ant, pol=pol, **kwargs)
-                    for pol in pol_range]
+                    for pol in range(num_pols)]
         super(PolComposite, self).__init__(children)
 
 

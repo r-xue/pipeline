@@ -76,7 +76,7 @@ def _new_quantityRangesToChannels(vis, field, infitspw, excludechans):
     nspw = mytb.nrows()
     mytb.close()
 
-    fullspwids = str(range(nspw)).strip('[,]')
+    fullspwids = ', '.join(str(x) for x in range(nspw))
     tql = {'field': field, 'spw': fullspwids}
     myms.open(vis)
     myms.msselect(tql, True)

@@ -183,7 +183,7 @@ class SDInspection(object):
         if nrow < 0:
             nrow = datatable.nrow - startrow
         LOG.debug('nrow = %s' % nrow)
-        for i in xrange(nrow):
+        for i in range(nrow):
             if srctype[i] != 0:
                 continue
 
@@ -219,7 +219,7 @@ class SDInspection(object):
         ant_offset = 0
         ms = self.ms
         nant = len(ms.antennas)
-        for a in xrange(nant):
+        for a in range(nant):
             key = a + ant_offset
             ms_ant_map[key] = ms
             id_ant_map[key] = ms.antennas[a].id

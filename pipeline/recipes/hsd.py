@@ -76,7 +76,7 @@ def hsdms(vislist, importonly=False, pipelinemode='automatic',
 
         # # Improve line mask for baseline subtraction by executing 
         # # hsd_baseline and hsd_blflag iteratively
-        for i in xrange(ITERATION):
+        for i in range(ITERATION):
 
             # Baseline subtraction with automatic line detection
             hsd_baseline(pipelinemode=pipelinemode)

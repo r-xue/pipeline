@@ -111,7 +111,7 @@ class DetectLine(basetask.StandardTaskTemplate):
             #spw = grid_table[0][0] if len(grid_table) > 0 else -1
             #predefined_window = self._get_predefined_window(spw, window)
             LOG.trace('predefined_window={0}'.format(window))
-            for row in xrange(nrow):
+            for row in range(nrow):
                 grid_info = grid_table[row]
                 ra = grid_info[4]
                 dec = grid_info[5]
@@ -177,13 +177,13 @@ class DetectLine(basetask.StandardTaskTemplate):
         Timer = common.ProgressTimer(80, nrow, LOG.logger.level)
         # 100.0: minimum number of channels for binned spectrum to detect lines
         MinChanBinSp = 50.0
-        TmpRange = [4**i for i in xrange(int(math.ceil(math.log(len(spectra[0])/MinChanBinSp)/math.log(4))))]
+        TmpRange = [4**i for i in range(int(math.ceil(math.log(len(spectra[0])/MinChanBinSp)/math.log(4))))]
         BinningRange = []
         for i in TmpRange:
             BinningRange.append([i, 0])
             if i > 1:
                 BinningRange.append([i, i/2])
-        for row in xrange(nrow):
+        for row in range(nrow):
             # Countup progress timer
             Timer.count()
 
@@ -260,13 +260,13 @@ class DetectLine(basetask.StandardTaskTemplate):
         if Bin == 1: 
             return data
         else:
-            return numpy.array([data[i:i+Bin].min() for i in xrange(offset, len(data)-Bin+1, Bin)], dtype=numpy.bool)
+            return numpy.array([data[i:i+Bin].min() for i in range(offset, len(data)-Bin+1, Bin)], dtype=numpy.bool)
 
     def SpBinning(self, data, Bin, offset=0):
         if Bin == 1: 
             return data
         else:
-            return numpy.array([data[i:i+Bin].mean() for i in xrange(offset, len(data)-Bin+1, Bin)], dtype=numpy.float)
+            return numpy.array([data[i:i+Bin].mean() for i in range(offset, len(data)-Bin+1, Bin)], dtype=numpy.float)
 
     def analyse(self, result):
         return result
@@ -297,7 +297,7 @@ class DetectLine(basetask.StandardTaskTemplate):
         #LOG.debug('ranges=%s'%(line_ranges))
 
         protected = []
-        for y in xrange(nlines):
+        for y in range(nlines):
             Width = line_ranges[y*2+1] - line_ranges[y*2] + 1
             ### 2011/05/16 allowance was moved to clustering analysis
             #allowance = int(Width/5)

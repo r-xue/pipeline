@@ -269,7 +269,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         # 2013/03/27 TN
         # Grid2SpectrumID stores index of index_list instead of row numbers
         # that are held by index_list.
-        Grid2SpectrumID = [[[] for y in xrange(ndec)] for x in xrange(nra)]
+        Grid2SpectrumID = [[[] for y in range(ndec)] for x in range(nra)]
         for i in range(len(PosList[0])):
             Grid2SpectrumID[int((PosList[0][i] - x0)/grid_ra)][int((PosList[1][i] - y0)/grid_dec)].append(i)
 
@@ -414,7 +414,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         RMS0 = 0.0
         lines = []
         self.cluster_info = {}
-        ROWS = range(len(grid_table))
 
         # RASTER CASE
         # Read data from Table to generate ID -> RA, DEC conversion table
@@ -428,7 +427,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         detect_signal = self.clean_detect_signal(detect_signal)
         LOG.trace('After: Detect_Signal = {}', detect_signal)
 
-        for row in ROWS:
+        for row in range(len(grid_table)):
             # detect_signal[row][2]: [[LineStartChannelN, LineEndChannelN, Binning],[],,,[]]
             if len(detect_signal[row][2]) != 0 and detect_signal[row][2][0][0] != -1:
                 Npos += 1
@@ -881,12 +880,12 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         #
         elapsed = 0.0
         self.DebugOutVer[1] += 1
-        for Ncluster in xrange(1, MaxCluster + 1):
+        for Ncluster in range(1, MaxCluster + 1):
             index0=len(ListScore)
             # Fix the random seed 2008/5/23
             numpy.random.seed((1234, 567))
             # Try multiple times to supress random selection effect 2007/09/04
-            for Multi in xrange(min(Ncluster+1, 10)):
+            for Multi in range(min(Ncluster+1, 10)):
                 codebook, diff = VQ.kmeans(Region2, Ncluster, iter=50)
                 # codebook = [[clstCentX, clstCentY],[clstCentX,clstCentY],,[]] len=Ncluster
                 # diff <= distortion
@@ -901,15 +900,16 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                     LOG.trace('Cluster Category&Distance {}, distance = {}', category, distance)
 
                     # remove empty line in codebook
-                    codebook = codebook.take([x for x in xrange(0, len(codebook)) if any(category==x)], axis=0)
+                    codebook = codebook.take([x for x in range(0, len(codebook)) if any(category==x)], axis=0)
                     NclusterNew = len(codebook)
 
                     # Clear Flag
-                    for i in xrange(len(Region)): Region[i][5] = 1
+                    for i in range(len(Region)):
+                        Region[i][5] = 1
 
                     Outlier = 0.0
                     lines = []
-                    for Nc in xrange(NclusterNew):
+                    for Nc in range(NclusterNew):
                         ### 2011/05/17 Strict the threshold, clean-up each cluster by nsigma clipping/flagging
                         ValueList = distance[(category == Nc).nonzero()[0]]
                         Stddev = ValueList.std()
@@ -921,8 +921,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                             Outlier += 1.0
                         # Calculate Cluster Characteristics
                         MaxDistance = max(distance * ((distance < Threshold) * (category == Nc)))
-                        indices = [x for x in xrange(len(category))
-                                if category[x] == Nc and Region[x][5] != 0]
+                        indices = [x for x in range(len(category)) if category[x] == Nc and Region[x][5] != 0]
                         properties = Region2.take(indices, axis=0)
                         median_props = numpy.median(properties, axis=0)
                         lines.append([median_props[1], median_props[0], True, MaxDistance])
@@ -1049,7 +1048,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         print('Init Threshold: {}'.format(Threshold), end=' ')
         print('\tInit Ncluster: {}'.format(Ncluster))
 
-        IDX = numpy.array([x for x in xrange(len(Data))])
+        IDX = numpy.array([x for x in range(len(Data))])
         for k in range(Ncluster):
             C = Category.max()
             NewData = Data[Category==(k+1)] # Category starts with 1 (not 0)
@@ -1130,10 +1129,11 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             OrderList = ordering
         else:
             NumParam = len(Observation[0])
-            OrderList = range(NumParam)
+            OrderList = list(range(NumParam))
         if isinstance(Observation, list):
             Obs = numpy.array(Observation, numpy.float)
-        else: Obs = Observation.copy()
+        else:
+            Obs = Observation.copy()
         if len(Obs.shape) == 2:
             Data = numpy.zeros((Obs.shape[0], NumParam), numpy.float)
             for i in range(Obs.shape[0]):
@@ -1162,7 +1162,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             Stdev: Stdev[Ncluster][5]: [ClusterStddevX, ClusterStddevY, 0, 0, 0]
             Category: renumbered category
         """
-        IDX = numpy.array([x for x in xrange(len(Data))])
+        IDX = numpy.array([x for x in range(len(Data))])
         Ncluster = Category.max()
         C = Ncluster + 1
         ValidClusterID = []
@@ -1237,10 +1237,10 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         GridMember = numpy.zeros((nra, ndec))
 
         # Set the number of spectra belong to each gridding positions
-        for row in xrange(len(detect_signal)):
+        for row in range(len(detect_signal)):
             GridMember[int((detect_signal[row][0] - ra0)/grid_ra)][int((detect_signal[row][1] - dec0)/grid_dec)] += 1
 
-        for i in xrange(len(category)):
+        for i in range(len(category)):
             if Region[i][5] == 1: # valid spectrum
                 # binning = 4**n
                 n = int(math.log(Region[i][6])/math.log(4.) + 0.1)
@@ -1355,13 +1355,13 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         GridScore = numpy.zeros((2, nra, ndec), dtype=numpy.float32)
         LOG.trace('GridCluster = {}', GridCluster)
         LOG.trace('lines = {}', lines)
-        for Nc in xrange(Ncluster):
+        for Nc in range(Ncluster):
             if lines[Nc][2] != False:
                 GridScore[:] = 0.0
-                for x in xrange(nra):
-                    range_x = range(-min(2, x), 0) + range(1, min(3, nra-x))
-                    for y in xrange(ndec):
-                        range_y = range(-min(2, y), 0) + range(1, min(3, ndec-y))
+                for x in range(nra):
+                    range_x = list(range(-min(2, x), 0)) + list(range(1, min(3, nra-x)))
+                    for y in range(ndec):
+                        range_y = list(range(-min(2, y), 0)) + list(range(1, min(3, ndec-y)))
                         # TN refactoring
                         # split smoothing loop
                         # dx = 0 and dy = 0
@@ -1436,7 +1436,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         for i in range(len(lines)):
             channelmap_range.append(lines[i][:])
 
-        for Nc in xrange(Ncluster):
+        for Nc in range(Ncluster):
             LOG.trace('------00------ Exec for Nth Cluster: Nc={}', Nc)
             LOG.trace('lines[Nc] = {}', lines[Nc])
             if lines[Nc][2] == False: continue
@@ -1456,7 +1456,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             # Blur each SubCluster with the radius of sqrt(Nmember/Pi) * ratio
             ratio = rules.ClusterRule['BlurRatio']
             # Set-up SubCluster
-            for Ns in xrange(len(MemberList)): # Ns: SubCluster number
+            for Ns in range(len(MemberList)):  # Ns: SubCluster number
                 LOG.trace('------01------ Ns={}', Ns)
                 SubPlane = numpy.zeros((nra, ndec), dtype=numpy.float32)
                 for (x, y) in MemberList[Ns]: SubPlane[x][y] = Original[x][y]
@@ -1470,7 +1470,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                 LOG.trace('BlurPlane {}', BlurPlane)
                 LOG.trace('ValidPlane {}', ValidPlane)
                 LOG.trace('GridClusterV {}', self.GridClusterValidation[Nc])
-
 
                 # 2D fit for each Plane
                 # Use the data for fit if GridCluster[Nc][x][y] > self.Valid
@@ -1486,22 +1485,23 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                 LOG.trace('(X,Y)order, order0 = ({}, {}) ({}, {})', xorder, yorder, xorder0, yorder0)
 
                 # clear Flag
-                for i in xrange(len(category)): Region[i][5] = 1
+                for i in range(len(category)):
+                    Region[i][5] = 1
 
                 #while ExceptionLinAlg:
                 FitData = []
                 LOG.trace('------02-1---- category={}, len(category)={}, ClusterNumber(Nc)={}, SubClusterNumber(Ns)={}', category, len(category), Nc, Ns)
                 #Region format:([row, line[0], line[1], RA, DEC, flag])
-                dummy = [tuple(Region[i][:5]) for i in xrange(len(category))
-                         if category[i] == Nc and Region[i][5] == 1 and \
-                            SubPlane[int((Region[i][3] - x0)/grid_ra)][int((Region[i][4] - y0)/grid_dec)] > self.Valid]
+                dummy = [tuple(Region[i][:5]) for i in range(len(category))
+                         if category[i] == Nc and Region[i][5] == 1 and
+                         SubPlane[int((Region[i][3] - x0)/grid_ra)][int((Region[i][4] - y0)/grid_dec)] > self.Valid]
                 LOG.trace('------02-2----- len(dummy)={}, dummy={}', len(dummy), dummy)
                 if len(dummy) == 0: continue
 
                 # same signal can be detected in a single row with multiple binning
                 # in that case, take maximum width as a representative width (Lmax-Lmin)
                 (Lrow, Lmin, Lmax, LRA, LDEC) = dummy[0]
-                for i in xrange(1, len(dummy)):
+                for i in range(1, len(dummy)):
                     if Lrow == dummy[i][0]:
                         Lmin, Lmax = (min(Lmin, dummy[i][1]), max(Lmax, dummy[i][2]))
                     else:
@@ -1526,10 +1526,10 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                 #if len(FitData) == 0 or SingularMatrix: break
 
                 SingularMatrix = False
-                for iteration in xrange(3): # iteration loop for 2D fit sigma flagging
+                for iteration in range(3):  # iteration loop for 2D fit sigma flagging
                     LOG.trace('------03------ iteration={}', iteration)
                     # effective components of FitData
-                    effective = [i for i in xrange(len(FitData)) if FitData[i][4] == 1]
+                    effective = [i for i in range(len(FitData)) if FitData[i][4] == 1]
 
                     # assertion
                     assert len(effective) > 0
@@ -1658,7 +1658,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                     NFlagged = 0
                     Number = len(FitData)
                     ### 2011/05/15
-                    for i in xrange(Number):
+                    for i in range(Number):
                         # Reuse Diff
                         if Diff[i] <= Threshold:
                             FitData[i][4] = 1
@@ -1696,8 +1696,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                 (MaskMin, MaskMax) = (10000.0, 0.0)
                 # Calculate Fit for each position
                 LOG.trace('------08------ Calc Fit for each pos')
-                for x in xrange(nra):
-                    for y in xrange(ndec):
+                for x in range(nra):
+                    for y in range(ndec):
                         if ValidPlane[x][y] == 1:
                             LOG.trace('------09------ in ValidPlane x={} y={}', x, y)
                             for PID in Grid2SpectrumID[x][y]:
@@ -1817,8 +1817,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         MemberList = []
         NsubCluster = 0
         # Separate cluster members into several SubClusters by spacial connection
-        for x in xrange(nra):
-            for y in xrange(ndec):
+        for x in range(nra):
+            for y in range(ndec):
                 if Plane[x][y] == 1:
                     Plane[x][y] = 2
                     SearchList = [(x, y)]
@@ -1831,9 +1831,9 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                     while(len(SearchList) != 0):
                         cx, cy = SearchList[0]
                         #for dx in [-1, 0, 1]:
-                        for dx in xrange(-min(1, cx), min(2, nra-cx)):
+                        for dx in range(-min(1, cx), min(2, nra-cx)):
                             #for dy in [-1, 0, 1]:
-                            for dy in xrange(-min(1, cy), min(2, ndec-cy)):
+                            for dy in range(-min(1, cy), min(2, ndec-cy)):
                                 (nx, ny) = (cx + dx, cy + dy)
                                 #if 0 <= nx < nra and 0 <= ny < ndec and Plane[nx][ny] == 1:
                                 if Plane[nx][ny] == 1:
@@ -1852,7 +1852,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             # Threshold is set to half the number of the largest cluster in the plane
             #Threshold = max(Nmember) / 2.0
             Threshold = min(0.5 * max(Realmember), 3)
-            for n in xrange(NsubCluster -1, -1, -1):
+            for n in range(NsubCluster - 1, -1, -1):
                 # isolated cluster made from single spectrum should be omitted
                 if Nmember[n] == 1:
                     (x, y) = MemberList[n][0]
@@ -1874,9 +1874,9 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         #  => dimension of SPC.convolve2d(Sub,kernel) gets not (nra,ndec) but (Blur*2+1,Blur*2+1)
         if nra < (Blur * 2 + 1) and ndec < (Blur * 2 + 1): Blur = int((max(nra, ndec) - 1) / 2)
         kernel = numpy.zeros((Blur * 2 + 1, Blur * 2 + 1), dtype=int)
-        for x in xrange(Blur * 2 + 1):
+        for x in range(Blur * 2 + 1):
             dx = Blur - x
-            for y in xrange(Blur * 2 + 1):
+            for y in range(Blur * 2 + 1):
                 dy = Blur - y
                 if sqrt(dx*dx + dy*dy) <= BlurF:
                     kernel[x][y] = 1
@@ -1921,7 +1921,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             flag = -1
             left_edge = flat_lines[sorted_index[0]]
             nedges = 0
-            for i in xrange(1, nlines-2):
+            for i in range(1, nlines-2):
                 if sorted_index[i] % 2 == 0:
                     flag -= 1
                 else:
@@ -1970,17 +1970,17 @@ def convolve2d(data, kernel, mode='nearest', cval=0.0):
         dummy[0:edgex, edgey+ndy:] = data[0][ndy-1]
         dummy[edgex+ndx:, 0:edgey] = data[ndx-1][0]
         dummy[edgex+ndx:, edgey+ndy:] = data[ndx-1][ndy-1]
-        for i in xrange(ndx):
+        for i in range(ndx):
             dummy[i+edgex, 0:edgey] = data[i][0]
             dummy[i+edgex, edgey+ndy:] = data[i][ndy-1]
-        for i in xrange(ndy):
+        for i in range(ndy):
             dummy[0:edgex, i+edgey] = data[0][i]
             dummy[edgex+ndx:, i+edgey] = data[ndx-1][i]
     cdata = numpy.zeros((ndx, ndy), dtype=numpy.float64)
-    for ix in xrange(ndx):
-        for iy in xrange(ndy):
-            for jx in xrange(nkx):
-                for jy in xrange(nky):
+    for ix in range(ndx):
+        for iy in range(ndy):
+            for jx in range(nkx):
+                for jy in range(nky):
                     idx = ix + jx
                     idy = iy + jy
                     val = dummy[idx][idy]
@@ -1993,9 +1993,9 @@ def _eval_poly(xorder, yorder, x, y, xcoeff, ycoeff):
     ypoly = 0.0
     yk = 1.0
     idx = 0
-    for k in xrange(yorder):
+    for k in range(yorder):
         xjyk = yk
-        for j in xrange(xorder):
+        for j in range(xorder):
             #xjyk = math.pow(x, j) * math.pow(y, k)
             #xpoly += xjyk * xcoeff[j + k * xorder]
             #ypoly += xjyk * ycoeff[j + k * xorder]
@@ -2065,11 +2065,11 @@ class SVDSolver2D(object):
         #       g8  = y^2, g9  = x y^2, g10 = x^2 y^2, g11 = x^3 y^2
         #       g12 = y^3, g13 = x y^3, g14 = x^2 y^3, g15 = x^3 y^3
         # if xorder = 3 and yorder = 3
-        for k in xrange(self.N):
+        for k in range(self.N):
             yp = 1.0
-            for i in xrange(self.yorder + 1):
+            for i in range(self.yorder + 1):
                 xp = 1.0
-                for j in xrange(self.xorder + 1):
+                for j in range(self.xorder + 1):
                     l = j + (self.xorder + 1) * i
                     self.G[k, l] = xp * yp
                     xp *= x[k]
@@ -2093,12 +2093,12 @@ class SVDSolver2D(object):
 
         assert nmask < self.L
 
-        for icol in xrange(self.L):
+        for icol in range(self.L):
             if self.L - 1 - icol < nmask:
                 sinv = 0.0
             else:
                 sinv = 1.0 / self.s[icol]
-            for irow in xrange(self.L):
+            for irow in range(self.L):
                 self.Vs[irow, icol] = self.Vh[icol, irow] * sinv
 
     def _svd_with_eps(self, eps=1.0e-7):
@@ -2112,12 +2112,12 @@ class SVDSolver2D(object):
         # in descendent order
         #threshold = self.s.max() * eps
         threshold = self.s[0] * eps
-        for icol in xrange(self.L):
+        for icol in range(self.L):
             if self.s[icol] < threshold:
                 sinv = 0.0
             else:
                 sinv = 1.0 / self.s[icol]
-            for irow in xrange(self.L):
+            for irow in range(self.L):
                 self.Vs[irow, icol] = self.Vh[icol, irow] * sinv
 
     def _svd(self, eps):
@@ -2141,20 +2141,20 @@ class SVDSolver2D(object):
 #             raise RuntimeError('singular matrix')
 
         threshold = s.max() * eps
-        for i in xrange(self.L):
+        for i in range(self.L):
             if s[i] < threshold:
                 s[i] = 0.0
             else:
                 s[i] = 1.0 / s[i]
-        for icol in xrange(self.L):
-            for irow in xrange(self.L):
+        for icol in range(self.L):
+            for irow in range(self.L):
                 self.Vs[irow, icol] = Vh[icol, irow] * s[icol]
 
     def _eval_poly_from_G(self, row, coeff):
         idx = 0
         poly = 0.0
-        for k in xrange(self.yorder + 1):
-            for j in xrange(self.xorder + 1):
+        for k in range(self.yorder + 1):
+            for j in range(self.xorder + 1):
                 poly += self.G[row, idx] * coeff[idx]
                 idx += 1
         #LOG.trace('poly=%s'%(poly))
@@ -2173,11 +2173,11 @@ class SVDSolver2D(object):
             A[:] = 0
             assert len(A) == self.L
         self.B[:] = 0
-        for i in xrange(self.L):
-            for k in xrange(self.N):
+        for i in range(self.L):
+            for k in range(self.N):
                 self.B[i] += self.U[k, i] * z[k]
-        for i in xrange(self.L):
-            for k in xrange(self.L):
+        for i in range(self.L):
+            for k in range(self.L):
                 A[i] += self.Vs[i, k] * self.B[k]
 
         #fit = numpy.fromiter((self._eval_poly_from_G(i, A) for i in xrange(self.N)), dtype=numpy.float64)
@@ -2200,11 +2200,11 @@ class SVDSolver2D(object):
             A[:] = 0
             assert len(A) == self.L
         self.B[:] = 0
-        for i in xrange(self.L):
-            for k in xrange(self.N):
+        for i in range(self.L):
+            for k in range(self.N):
                 self.B[i] += self.U[k, i] * z[k]
-        for i in xrange(self.L):
-            for k in xrange(self.L):
+        for i in range(self.L):
+            for k in range(self.L):
                 A[i] += self.Vs[i, k] * self.B[k]
 
         #fit = numpy.fromiter((self._eval_poly_from_G(i, A) for i in xrange(self.N)), dtype=numpy.float64)
@@ -2227,11 +2227,11 @@ class SVDSolver2D(object):
             A[:] = 0
             assert len(A) == self.L
         self.B[:] = 0
-        for i in xrange(self.L):
-            for k in xrange(self.N):
+        for i in range(self.L):
+            for k in range(self.N):
                 self.B[i] += self.U[k, i] * z[k]
-        for i in xrange(self.L):
-            for k in xrange(self.L):
+        for i in range(self.L):
+            for k in range(self.L):
                 A[i] += self.Vs[i, k] * self.B[k]
 
         #fit = numpy.fromiter((self._eval_poly_from_G(i, A) for i in xrange(self.N)), dtype=numpy.float64)
@@ -2241,7 +2241,7 @@ class SVDSolver2D(object):
 
     def find_good_solution(self, z, threshold=0.05):
         assert 0.0 <= threshold
-        eps_list = [10**x for x in xrange(-11, -3)]
+        eps_list = [10**x for x in range(-11, -3)]
 
         best_score = 1e30
         best_eps = eps_list[0]
@@ -2255,7 +2255,7 @@ class SVDSolver2D(object):
 
         for eps in eps_list:
             ans = self.solve_with_eps(z, out=ans, eps=eps)
-            for i in xrange(self.N):
+            for i in range(self.N):
                 fit = self._eval_poly_from_G(i, ans)
                 if z[i] != 0:
                     diff[i] = abs((fit - z[i]) / z[i])

@@ -87,7 +87,7 @@ def plotPWV(ms, figfile='', plotrange=[0, 0, 0, 0], clip=True):
         mad = MAD(water)
         median = np.median(water)
         if mad <= 0:
-            matches = range(len(water))
+            matches = list(range(len(water)))
         else:
             matches = np.where(abs(water - median) < 5 * mad)[0]
             nonmatches = np.where(abs(water - median) >= 5 * mad)[0]
@@ -150,8 +150,8 @@ def plotPWV(ms, figfile='', plotrange=[0, 0, 0, 0], clip=True):
 
     pb.title(ms)
     if len(water) > 1:
-        adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=range(0, 60, 30)))
-        adesc.xaxis.set_minor_locator(matplotlib.dates.MinuteLocator(byminute=range(0, 60, 10)))
+        adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 30))))
+        adesc.xaxis.set_minor_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 10))))
         adesc.xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%H:%M'))
         adesc.fmt_xdata = matplotlib.dates.DateFormatter('%H:%M')
         RescaleXAxisTimeTicks(pb.xlim(), adesc)
@@ -340,11 +340,11 @@ def call_qa_time(arg, form='', prec=0, showform=False):
 
 def RescaleXAxisTimeTicks(xlim, adesc):
     if xlim[1] - xlim[0] < 10/1440.:
-        adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=range(0, 60, 1)))
-        adesc.xaxis.set_minor_locator(matplotlib.dates.SecondLocator(bysecond=range(0, 60, 30)))
+        adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 1))))
+        adesc.xaxis.set_minor_locator(matplotlib.dates.SecondLocator(bysecond=list(range(0, 60, 30))))
     elif xlim[1] - xlim[0] < 0.5/24.:
-        adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=range(0, 60, 5)))
-        adesc.xaxis.set_minor_locator(matplotlib.dates.MinuteLocator(byminute=range(0, 60, 1)))
+        adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 5))))
+        adesc.xaxis.set_minor_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 1))))
     elif xlim[1] - xlim[0] < 1/24.:
-        adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=range(0, 60, 10)))
-        adesc.xaxis.set_minor_locator(matplotlib.dates.MinuteLocator(byminute=range(0, 60, 2)))
+        adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 10))))
+        adesc.xaxis.set_minor_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 2))))

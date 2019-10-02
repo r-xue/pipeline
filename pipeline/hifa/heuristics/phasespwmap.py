@@ -23,7 +23,7 @@ def combine_spwmap(scispws):
     # Identify highest science spw id, and initialize the spwmap for every
     # spectral window id through the max science spectral window id.
     max_scispwid = max([spw.id for spw in scispws])
-    combinespwmap = range(max_scispwid + 1)
+    combinespwmap = list(range(max_scispwid + 1))
 
     # Make a reference copy for comparison.
     refspwmap = list(combinespwmap)

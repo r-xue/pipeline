@@ -265,7 +265,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             if os.path.exists(old_model_name):
                 if result.multiterm:
                     rename_image(old_name=old_model_name, new_name=model_name,
-                                 extensions=['.tt%d' % nterm for nterm in xrange(result.multiterm)])
+                                 extensions=['.tt%d' % nterm for nterm in range(result.multiterm)])
                 else:
                     rename_image(old_name=old_model_name, new_name=model_name)
 
@@ -692,7 +692,7 @@ def set_miscinfo(name, spw=None, field=None, type=None, iter=None, multiterm=Non
             if imagename is not None:
                 filename_components = os.path.basename(imagename).split('.')
                 info['nfilnam'] = len(filename_components)
-                for i in xrange(len(filename_components)):
+                for i in range(len(filename_components)):
                     info['filnam%02d' % (i+1)] = filename_components[i]
             if spw is not None:
                 if context.observing_run is not None:
@@ -705,7 +705,7 @@ def set_miscinfo(name, spw=None, field=None, type=None, iter=None, multiterm=Non
                     spw_names = ['N/A']
                 info['spw'] = spw
                 info['nspwnam'] = len(spw_names)
-                for i in xrange(len(spw_names)):
+                for i in range(len(spw_names)):
                     info['spwnam%02d' % (i+1)] = spw_names[i]
             if field is not None:
                 # TODO: Find common key calculation. Long VLASS lists cause trouble downstream.

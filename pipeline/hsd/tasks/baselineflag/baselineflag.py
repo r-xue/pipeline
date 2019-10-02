@@ -186,7 +186,7 @@ class SDBLFlagInputs(vdp.StandardInputs):
             (b, p) = v
             if b == True:
                 self.activateFlagRule(k)
-                for i in xrange(len(p)):
+                for i in range(len(p)):
                     self.FlagRuleDictionary[k][keys[i]] = p[i]
             elif b == False:
                 self.deactivateFlagRule(k)
@@ -316,12 +316,12 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
             ms_list = [group_desc[i].ms for i in member_list]
             fieldid_list = [group_desc[i].field_id for i in member_list]
             temp_dd_list = [ms_list[i].get_data_description(spw=spwid_list[i])
-                            for i in xrange(len(member_list))]
+                            for i in range(len(member_list))]
             pols_list = [[corr for corr in ddobj.corr_axis if (in_pol == '' or corr in in_pol)]
                          for ddobj in temp_dd_list]
             del temp_dd_list
 
-            for i in xrange(len(member_list)):
+            for i in range(len(member_list)):
                 member = group_desc[member_list[i]]
                 registry[member.ms].append(field_id=member.field_id,
                                            antenna_id=member.antenna_id,

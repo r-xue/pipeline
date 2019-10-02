@@ -122,7 +122,7 @@ class GriddingBase(basetask.StandardTaskTemplate):
         LOG.debug('self.poltype=%s'%(self.poltype))
         # create a map of MS index in context/datatable and polid
         self.polid = {}
-        for i in xrange(len(self.files)):
+        for i in range(len(self.files)):
             msidx = self.msidxs[i]
             spwid = self.spw[i]
             poltype = self.poltype[i]
@@ -197,7 +197,7 @@ class GriddingBase(basetask.StandardTaskTemplate):
         indexer = DataTableIndexer(context)
 
         def _g():
-            for x in xrange(index_dict_key):
+            for x in range(index_dict_key):
                 msid = self.msidxs[x]
                 ms = mses[msid]
                 for i in index_dict[x]:
@@ -232,7 +232,7 @@ class GriddingBase(basetask.StandardTaskTemplate):
         #num_spectra_per_data = dict((i,len(index_dict[v])) for i,v in enumerate(vislist))
         #LOG.info('num_spectra_per_data={0}'.format(num_spectra_per_data))
         #msids = numpy.asarray([i for i in self.msidxs for j in xrange(num_spectra_per_data[i])])
-        msids = numpy.asarray([i for key, i in enumerate(self.msidxs) for j in xrange(len(index_dict[key]))])
+        msids = numpy.asarray([i for key, i in enumerate(self.msidxs) for j in range(len(index_dict[key]))])
         #LOG.info('msids={}'.format(msids))
         ras = numpy.fromiter(_g2('RA'), dtype=numpy.float64, count=num_spectra)
         decs = numpy.fromiter(_g2('DEC'), dtype=numpy.float64, count=num_spectra)
@@ -255,7 +255,7 @@ class GriddingBase(basetask.StandardTaskTemplate):
             tsys = numpy.empty(num_spectra, dtype=numpy.float32)
             net_flag = numpy.empty(num_spectra, dtype=numpy.float32)
             stats = numpy.empty(tstats.shape[1:], dtype=numpy.float32)
-            for i in xrange(len(index_list)):
+            for i in range(len(index_list)):
                 ipol = polids[i]
                 tsys[i] = ttsys[ipol, i]
                 net_flag[i] = tnet_flag[ipol, i]
@@ -267,7 +267,7 @@ class GriddingBase(basetask.StandardTaskTemplate):
             ants = numpy.fromiter(_g2('ANTENNA'), dtype=numpy.int32, count=num_spectra)
             fids = numpy.fromiter(_g2('FIELD_ID'), dtype=numpy.int32, count=num_spectra)
             ifnos = numpy.fromiter(_g2('IF'), dtype=numpy.int32, count=num_spectra)
-            for _i in xrange(len(rows)):
+            for _i in range(len(rows)):
                 _msid = msids[_i]
                 _ant = ants[_i]
                 _spw = ifnos[_i]
@@ -291,7 +291,7 @@ class GriddingBase(basetask.StandardTaskTemplate):
         # create storage
         _counter = 0
         num_spectra_per_data = dict([(i, 0) for i in self.msidxs])
-        for i in xrange(num_spectra):
+        for i in range(num_spectra):
             num_spectra_per_data[msids[i]] += 1
         LOG.trace('num_spectra_per_data=%s' % num_spectra_per_data)
 
@@ -321,7 +321,7 @@ class GriddingBase(basetask.StandardTaskTemplate):
         StorageID = 0
         for i in set(self.msidxs):
             # read data to SpStorage
-            for j in xrange(num_spectra_per_data[i]):
+            for j in range(num_spectra_per_data[i]):
                 x = index_list[StorageID]
                 IDX2StorageID[x] = StorageID
                 StorageID += 1
@@ -414,7 +414,7 @@ class RasterGridding(GriddingBase):
         MinRA = (MinRA + MaxRA) / 2.0 - (NGridRA - 1) / 2.0 * GridSpacing * DecCorrection
         MinDEC = (MinDEC + MaxDEC) / 2.0 - (NGridDEC - 1) / 2.0 * GridSpacing
 
-        for y in xrange(NGridDEC):
+        for y in range(NGridDEC):
             if NROW > 10000:
                 print('Progress: {}/{} ({}) : {}'.format(y, NGridDEC, NGridRA, time.ctime()))
             DEC = MinDEC + GridSpacing * y
@@ -429,7 +429,7 @@ class RasterGridding(GriddingBase):
             sMS = numpy.take(msids, SelectD)
             #LOG.debug('Combine Spectra: %s' % len(sRMS))
             LOG.debug('Combine Spectra: %s' % len(sRA))
-            for x in xrange(NGridRA):
+            for x in range(NGridRA):
                 RA = MinRA + GridSpacing * DecCorrection * x
                 sDeltaRA = (sRA - RA) / DecCorrection
                 Delta = sDeltaDEC * sDeltaDEC + sDeltaRA * sDeltaRA

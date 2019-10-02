@@ -35,7 +35,7 @@ def _find_spw(vis, bands, context):
 
     unique_bands_string = ','.join(unique_bands)
 
-    all_spws_list = range(numSpws)
+    all_spws_list = list(range(numSpws))
 
     all_spws = ','.join(map(str, all_spws_list))
 

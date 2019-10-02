@@ -1234,7 +1234,7 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                             # bad then any 'outlier' points found
                             # earlier will not be flagged.
                             flagcoords = []
-                            channels_to_flag = range(quadrant[iquad][0], quadrant[iquad][1])
+                            channels_to_flag = list(range(quadrant[iquad][0], quadrant[iquad][1]))
                             for chan in channels_to_flag:
                                 flagcoords.append((chan, ant))
 

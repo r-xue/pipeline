@@ -70,7 +70,6 @@ def savitzky_golay(y, window_size, order, deriv=0, rate=1):
        W.H. Press, S.A. Teukolsky, W.T. Vetterling, B.P. Flannery
        Cambridge University Press ISBN-13: 9780521880688
     """
-
     try:
         window_size = np.abs(np.int(window_size))
         order = np.abs(np.int(order))
@@ -80,14 +79,14 @@ def savitzky_golay(y, window_size, order, deriv=0, rate=1):
         raise TypeError("window_size size must be a positive odd number")
     if window_size < order + 2:
         raise TypeError("window_size is too small for the polynomials order")
-    order_range = range(order+1)
-    half_window = (window_size -1) // 2
+
+    half_window = (window_size - 1) // 2
     # precompute coefficients
-    b = np.mat([[k**i for i in order_range] for k in range(-half_window, half_window+1)])
+    b = np.mat([[k**i for i in range(order + 1)] for k in range(-half_window, half_window+1)])
     m = np.linalg.pinv(b).A[deriv] * rate**deriv * factorial(deriv)
     # pad the signal at the extremes with
     # values taken from the signal itself
-    firstvals = y[0] - np.abs( y[1:half_window+1][::-1] - y[0] )
+    firstvals = y[0] - np.abs(y[1:half_window+1][::-1] - y[0])
     lastvals = y[-1] + np.abs(y[-half_window-1:-1][::-1] - y[-1])
     y = np.concatenate((firstvals, y, lastvals))
 
@@ -247,7 +246,7 @@ class Syspower(basetask.StandardTaskTemplate):
         for i, this_ant in enumerate(antenna_ids):
             LOG.info('Creating template for antenna {0}'.format(antenna_names[this_ant]))
             for bband in [0, 1]:
-                common_indices = range(0, 8) if bband == 0 else range(8, 16)
+                common_indices = list(range(0, 8)) if bband == 0 else list(range(8, 16))
                 for pol in [0, 1]:
                     LOG.info('  processing baseband {0},  polarization {1}'.format(bband, pol))
 

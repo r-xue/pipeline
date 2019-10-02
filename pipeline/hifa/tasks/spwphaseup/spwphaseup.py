@@ -255,7 +255,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             snrlist = []
             combined_idx = []
             # only consider SpW IDs in spwlist for combination
-            for i in xrange(len(spwlist)):
+            for i in range(len(spwlist)):
                 spwid = spwlist[i]
                 if spwmap[spwid] == mappedspwid:
                     snr = perspwsnr[i]

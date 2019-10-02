@@ -65,7 +65,7 @@ class GroupByPosition2(api.Heuristic):
         MaxDEC = dec.max()
         # Calculate the lattice position (sRA, sDEC) for each pointings
         # Create list of pointings (dictionary) for each lattice position
-        for x in xrange(Nrows):
+        for x in range(Nrows):
             sRA = int((ra[x] - MinRA) / CombineDiameter)
             sDEC = int((dec[x] - MinDEC) / CombineDiameter)
             if sRA not in SelectDict:
@@ -164,7 +164,7 @@ class GroupByTime2(api.Heuristic):
         TimeGap = [[], []]
 
         # Detect small and large time gaps
-        for index in xrange(len(time_diff)):
+        for index in range(len(time_diff)):
             indexp1 = index + 1
             if time_diff[index] <= Threshold1:
                 SubTable1.append(indexp1)
@@ -247,7 +247,7 @@ class MergeGapTables2(api.Heuristic):
         LOG.info('Merging Position and Time Gap tables...')
 
         idxs = []
-        for i in xrange(len(TimeTable[0])):
+        for i in range(len(TimeTable[0])):
             idxs += TimeTable[0][i]
         IDX = list(numpy.sort(numpy.array(idxs)))
         tmpGap = list(numpy.sort(numpy.array(TimeGap[0] + PosGap)))

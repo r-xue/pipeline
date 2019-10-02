@@ -125,7 +125,7 @@ def get_parent_ms_idx(context, msname):
     """
     mslist = context.observing_run.measurement_sets
     idx_found = -1
-    for idx in xrange(len(mslist)):
+    for idx in range(len(mslist)):
         msobj = mslist[idx]
         search_list = [msobj.name, msobj.basename]
         if hasattr(msobj, "work_data"):
@@ -355,8 +355,9 @@ def get_index_list_for_ms3(datatable_dict, group_desc, member_list, srctype=None
         #index_dict[vis].sort()
     return index_dict
 
+
 def get_valid_ms_members(group_desc, msname_filter, ant_selection, field_selection, spw_selection):
-    for member_id in xrange(len(group_desc)):
+    for member_id in range(len(group_desc)):
         member = group_desc[member_id]
         spw_id = member.spw_id
         field_id = member.field_id
@@ -399,7 +400,7 @@ def get_valid_ms_members(group_desc, msname_filter, ant_selection, field_selecti
 
 
 def get_valid_ms_members2(group_desc, ms_filter, ant_selection, field_selection, spw_selection):
-    for member_id in xrange(len(group_desc)):
+    for member_id in range(len(group_desc)):
         member = group_desc[member_id]
         spw_id = member.spw_id
         field_id = member.field_id
@@ -730,7 +731,7 @@ class SpwDetailedView(object):
 
 def get_spw_names(vis):
     with casatools.TableReader(os.path.join(vis, 'SPECTRAL_WINDOW')) as tb:
-        gen = (SpwSimpleView(i, tb.getcell('NAME', i)) for i in xrange(tb.nrows()))
+        gen = (SpwSimpleView(i, tb.getcell('NAME', i)) for i in range(tb.nrows()))
         spws = list(gen)
     return spws
 
@@ -738,7 +739,7 @@ def get_spw_names(vis):
 def get_spw_properties(vis):
     with casatools.TableReader(os.path.join(vis, 'SPECTRAL_WINDOW')) as tb:
         spws = []
-        for irow in xrange(tb.nrows()):
+        for irow in range(tb.nrows()):
             name = tb.getcell('NAME', irow)
             nchan = tb.getcell('NUM_CHAN', irow)
             ref_freq = tb.getcell('REF_FREQUENCY', irow)
@@ -833,7 +834,7 @@ def make_ddid_map(vis):
         spw_ids = tb.getcol('SPECTRAL_WINDOW_ID')
         num_ddids = tb.nrows()
     ddid_map = {}
-    for ddid in xrange(num_ddids):
+    for ddid in range(num_ddids):
         ddid_map[(pol_ids[ddid], spw_ids[ddid])] = ddid
     return ddid_map
 

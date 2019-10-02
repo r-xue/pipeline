@@ -1048,7 +1048,7 @@ class TsysflagView(object):
         except IndexError:
             LOG.warning('No spwmap found for {}'.format(self.vis))
             # proceed with 1:1 mapping
-            spwmap = range(len(ms.spectral_windows))
+            spwmap = list(range(len(ms.spectral_windows)))
 
         # holds dict of Tsys spw -> intent -> field ids that use the Tsys spw
         tsys_spw_to_intent_to_field_ids = collections.defaultdict(dict)
@@ -1127,8 +1127,6 @@ class TsysflagView(object):
         else:
             datatype = 'Tsys'
 
-        pols = range(len(corr_type))
-
         # Select rows from tsystable that match the specified spw and fields,
         # store a Tsys spectrum for each polarisation in the tsysspectra results
         # and store the corresponding time.
@@ -1136,21 +1134,19 @@ class TsysflagView(object):
             if row.get('SPECTRAL_WINDOW_ID') == spwid and \
               row.get('FIELD_ID') in fieldids:
 
-                for pol in pols:
+                for pol in range(len(corr_type)):
                     tsysspectrum = commonresultobjects.SpectrumResult(
                         data=row.get('FPARAM')[pol, :, 0],
                         flag=row.get('FLAG')[pol, :, 0],
                         datatype=datatype, filename=tsystable.name,
                         field_id=row.get('FIELD_ID'),
                         spw=row.get('SPECTRAL_WINDOW_ID'),
-                        ant=(row.get('ANTENNA1'),
-                             antenna_names[row.get('ANTENNA1')]),
+                        ant=(row.get('ANTENNA1'), antenna_names[row.get('ANTENNA1')]),
                         units='K',
                         pol=corr_type[pol][0],
                         time=row.get('TIME'), normalise=normalise)
 
-                    tsysspectra[pol].addview(tsysspectrum.description,
-                                             tsysspectrum)
+                    tsysspectra[pol].addview(tsysspectrum.description, tsysspectrum)
                     times.update([row.get('TIME')])
 
         return tsysspectra, times
@@ -1181,7 +1177,7 @@ class TsysflagView(object):
 
         # Get names of polarisations, and create polarisation index 
         corr_type = commonhelpermethods.get_corr_axis(self.ms, spwid)
-        pols = range(len(corr_type))
+        pols = list(range(len(corr_type)))
 
         # If splitting views by field...
         if split_by_field:
@@ -1413,7 +1409,7 @@ class TsysflagView(object):
 
         # Get names of polarisations, and create polarisation index 
         corr_type = commonhelpermethods.get_corr_axis(self.ms, spwid)
-        pols = range(len(corr_type))
+        pols = list(range(len(corr_type)))
 
         # Select Tsysspectra and corresponding times for specified spwid and
         # fieldids
@@ -1554,7 +1550,7 @@ class TsysflagView(object):
 
         # Get names of polarisations, and create polarisation index 
         corr_type = commonhelpermethods.get_corr_axis(self.ms, spwid)
-        pols = range(len(corr_type))
+        pols = list(range(len(corr_type)))
 
         # Select Tsysspectra and corresponding times for specified spwid and
         # fieldids
@@ -1734,7 +1730,7 @@ class TsysflagView(object):
 
         # Get names of polarisations, and create polarisation index 
         corr_type = commonhelpermethods.get_corr_axis(self.ms, spwid)
-        pols = range(len(corr_type))
+        pols = list(range(len(corr_type)))
 
         # Select Tsysspectra for specified spwid and fieldids
         tsysspectra, _ = self.get_tsystable_data(
@@ -1809,7 +1805,7 @@ class TsysflagView(object):
 
         # Get names of polarisations, and create polarisation index 
         corr_type = commonhelpermethods.get_corr_axis(self.ms, spwid)
-        pols = range(len(corr_type))
+        pols = list(range(len(corr_type)))
 
         # Select Tsysspectra for specified spwid and fieldids
         tsysspectra, _ = self.get_tsystable_data(

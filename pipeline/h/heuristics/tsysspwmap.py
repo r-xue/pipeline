@@ -73,7 +73,7 @@ def areIdentical(spwInfo1, spwInfo2):
 
 
 def trimSpwmap(spwMap):
-    compare = range(len(spwMap))
+    compare = list(range(len(spwMap)))
     for i in compare:
         if compare[i:] == spwMap[i:]:
             break

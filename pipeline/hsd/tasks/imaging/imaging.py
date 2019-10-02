@@ -190,7 +190,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         getresult = lambda r: r.read() if hasattr(r, 'read') else r
         registered_results = [getresult(r) for r in context.results]
         baseline_stage = -1
-        for stage in xrange(len(registered_results) - 1, -1, -1):
+        for stage in range(len(registered_results) - 1, -1, -1):
             if isinstance(registered_results[stage], baseline.SDBaselineResults):
                 baseline_stage = stage
         if baseline_stage > 0:
@@ -246,7 +246,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             ms_list = [group_desc[i].ms for i in member_list]
             fieldid_list = [group_desc[i].field_id for i in member_list]
             temp_dd_list = [ms_list[i].get_data_description(spw=spwid_list[i])
-                            for i in xrange(len(member_list))]
+                            for i in range(len(member_list))]
             channelmap_range_list = [group_desc[i].channelmap_range for i in member_list]
             # this becomes list of list [[poltypes for ms0], [poltypes for ms1], ...]
 #             polids_list = [[ddobj.get_polarization_id(corr) for corr in ddobj.corr_axis \
@@ -266,7 +266,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 correlations = ''.join(_correlations[0])
 
             LOG.debug('Members to be processed:')
-            for i in xrange(len(member_list)):
+            for i in range(len(member_list)):
                 LOG.debug('\t{}: Antenna {} Spw {} Field {}'.format(os.path.basename(ms_list[i].work_data),
                                                                     antenna_list[i],
                                                                     spwid_list[i],
@@ -315,11 +315,11 @@ class SDImaging(basetask.StandardTaskTemplate):
                 polslist = [x[4] for x in _members]
                 chanmap_range_list = [x[5] for x in _members]
                 LOG.info("Processing image group: {}".format(name))
-                for idx in xrange(len(msobjs)):
-                    LOG.info("\t{}: Antenna {:d} ({}) Spw {} Field {:d} ({})".format(msobjs[idx].basename,
-                                                                                     antids[idx], msobjs[idx].antennas[antids[idx]].name,
-                                                                                     spwids[idx],
-                                                                                     fieldids[idx], msobjs[idx].fields[fieldids[idx]].name))
+                for idx in range(len(msobjs)):
+                    LOG.info("\t{}: Antenna {:d} ({}) Spw {} Field {:d} ({})"
+                             "".format(msobjs[idx].basename, antids[idx], msobjs[idx].antennas[antids[idx]].name,
+                                       spwids[idx], fieldids[idx], msobjs[idx].fields[fieldids[idx]].name))
+
                 # reference data is first MS
                 ref_ms = msobjs[0]
                 ant_name = ref_ms.antennas[antids[0]].name
@@ -441,7 +441,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                     imagename = imager_result.outcome['image'].imagename
                     with casatools.ImageReader(imagename) as ia:
                         cs = ia.coordsys()
-                        dircoords = [i for i in xrange(cs.naxes())
+                        dircoords = [i for i in range(cs.naxes())
                                      if cs.axiscoordinatetypes()[i] == 'Direction']
                         cs.done()
                         nx = ia.shape()[dircoords[0]]
@@ -470,7 +470,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                         _antids = member[1]
                         _fieldids = member[2]
                         _spwids = member[3]
-                        _pols = [pol for i in xrange(len(_mses))]
+                        _pols = [pol for i in range(len(_mses))]
                         gridding_inputs = grid_task_class.Inputs(context, infiles=_mses,
                                                                  antennaids=_antids,
                                                                  fieldids=_fieldids,
@@ -584,7 +584,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 org_direction = imager_result.outcome['image'].org_direction
                 with casatools.ImageReader(imagename) as ia:
                     cs = ia.coordsys()
-                    dircoords = [i for i in xrange(cs.naxes())
+                    dircoords = [i for i in range(cs.naxes())
                                  if cs.axiscoordinatetypes()[i] == 'Direction']
                     cs.done()
                     nx = ia.shape()[dircoords[0]]
@@ -612,7 +612,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                     _antids = member[1]
                     _fieldids = member[2]
                     _spwids = member[3]
-                    _pols = [pol for i in xrange(len(_mses))]
+                    _pols = [pol for i in range(len(_mses))]
                     gridding_inputs = grid_task_class.Inputs(context, infiles=_mses,
                                                              antennaids=_antids,
                                                              fieldids=_fieldids,

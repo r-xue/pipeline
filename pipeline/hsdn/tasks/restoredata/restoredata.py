@@ -21,9 +21,8 @@ class NRORestoreDataInputs(restoredata.RestoreDataInputs):
     def __init__(self, context, infiles=None, caltable=None, scalefile=None, 
                  copytoraw=None, products_dir=None, rawdata_dir=None, output_dir=None, 
                  vis=None):
-        super(NRORestoreDataInputs, self).__init__(context, products_dir=None,
-                                                  rawdata_dir=rawdata_dir, output_dir=output_dir, 
-                                                  vis=vis)
+        super(NRORestoreDataInputs, self).__init__(context, products_dir=None, rawdata_dir=rawdata_dir,
+                                                   output_dir=output_dir, vis=vis)
 
 
 class NRORestoreDataResults(restoredata.RestoreDataResults):
@@ -58,7 +57,7 @@ class NRORestoreDataResults(restoredata.RestoreDataResults):
                             antennas = tb.getcol('ANTENNA1')
                             params = tb.getcol('CPARAM').real
                             nrow = tb.nrows()
-                        for irow in xrange(nrow):
+                        for irow in range(nrow):
                             spwid = spws[irow]
                             antenna = antennas[irow]
                             param = params[:, 0, irow]
@@ -67,7 +66,7 @@ class NRORestoreDataResults(restoredata.RestoreDataResults):
                             dd = msobj.get_data_description(spw=int(spwid))
                             if dd is None:
                                 continue
-                            for ipol in xrange(npol):
+                            for ipol in range(npol):
                                 polname = dd.get_polarization_label(ipol)
                                 k2jy_factor[(spwid, antname, polname)] = 1.0 / (param[ipol] * param[ipol])
                         msobj.k2jy_factor = k2jy_factor
@@ -96,7 +95,7 @@ class NRORestoreData(restoredata.RestoreData):
         # NROImportDataInputs operate in the scope of a single measurement set.
         # To operate in the scope of multiple MSes we must use an
         # InputsContainer.
-        LOG.debug('inputs = {0}'.format(inputs));
+        LOG.debug('inputs = {0}'.format(inputs))
         container = vdp.InputsContainer(importdata.NROImportData, inputs.context, vis=vislist, 
                                         output_dir=None, overwrite=False, nocopy=False, 
                                         createmms=None)
@@ -108,7 +107,7 @@ class NRORestoreData(restoredata.RestoreData):
 
         # Sensitively correction using scalefile and k2kycal. This is unique operation
         # only for Nobeyama mesurement set data. 
-        LOG.debug('inputs = {0}'.format(inputs));
+        LOG.debug('inputs = {0}'.format(inputs))
         container = vdp.InputsContainer(k2jycal.SDK2JyCal, inputs.context, reffile=inputs.scalefile)
         k2jycal_task = k2jycal.SDK2JyCal(container)
         LOG.debug('k2jycal container = {0}'.format(container))

@@ -48,7 +48,7 @@ class taskutil(object):
     def createtasklist(self):
         s = subprocess.getoutput('ls '+self.taskdir+'/*.xml')
         tasks = s.split('\n')
-        for i in xrange(len(tasks)):
+        for i in range(len(tasks)):
             tasks[i] = tasks[i].split('/')[-1].replace('.xml', '')
         self.tasks = tasks
 
@@ -62,7 +62,7 @@ class taskutil(object):
         br = '<BR>'
         ws = '&nbsp;'
         descs = desc.split(br)
-        for i in xrange(len(descs)):
+        for i in range(len(descs)):
             if len(descs[i]) == 0:
                 continue
             pos = 0
@@ -136,7 +136,7 @@ class taskutil(object):
         rootnode = dom3.getElementsByTagName('task')[0]
         inputs = rootnode.getElementsByTagName('input')[0]
         childs = inputs.getElementsByTagName('param')
-        for i in xrange(len(childs)):
+        for i in range(len(childs)):
             attr = childs[i].attributes
             keys = list(attr.keys())
             namekey = keys.index('name')
@@ -182,7 +182,7 @@ class taskutil(object):
         print('<HTML><BODY>', file=f)
         print('<H1>Summary of {0} and parameters</H1>'.format(get_task_description(self.prefix)), file=f)
         print('<HR>', file=f)
-        for i in xrange(len(tasklist)):
+        for i in range(len(tasklist)):
             print('<H3><A NAME="%s">%s</A></H3>' % (tasklist[i], tasklist[i]), file=f)
             print('<DL>', file=f)
 
@@ -209,13 +209,13 @@ class taskutil(object):
                 print('<TABLE BORDER="1">', file=f)
                 keys = sorted(paramlist[0].keys())
                 line = ''
-                for j in xrange(len(keys)):
+                for j in range(len(keys)):
                     truekey = keys[j][2:]
                     line = line+'<TH ALIGN="left">%s</TH>' % truekey
                 print('<TR>%s</TR>' % line, file=f)
-                for j in xrange(len(paramlist)):
+                for j in range(len(paramlist)):
                     line = ''
-                    for k in xrange(len(keys)):
+                    for k in range(len(keys)):
                         line = line+'<TD ALIGN="left">%s</TD>' % paramlist[j][keys[k]]
                     print('<TR>%s</TR>' % line, file=f)
                 print('</TABLE><P>', file=f)
@@ -238,7 +238,7 @@ class taskutil2(taskutil):
         s = subprocess.getoutput('ls '+self.taskdir+'/*.xml')
         tasks = s.split('\n')
         self.tasks = []
-        for i in xrange(len(tasks)):
+        for i in range(len(tasks)):
             task = os.path.basename(tasks[i]).replace('.xml', '')
             if self.prefix is None or re.match('%s_.*' % self.prefix, task) is not None:
                 #task[:len(self.prefix)] == self.prefix:
@@ -311,7 +311,7 @@ class hetaskutil(object):
             print('%s tasks available.<BR><BR>' % len(tasklist[key]), file=f)
             print('<TABLE>', file=f)
             print('<TR><TH ALIGN="left">task name</TH><TH ALIGN="left">description</TH></TR>', file=f)
-            for i in xrange(len(tasklist[key])):
+            for i in range(len(tasklist[key])):
                 print('<TR><TD><A HREF="./%s/tasklist.html#%s">%s</A></TD><TD>%s</TD></TR>' %
                       (basedirs[key], tasklist[key][i], tasklist[key][i],
                        self.tasks[key].getshortdescription(tasklist[key][i])), file=f)

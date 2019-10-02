@@ -953,7 +953,7 @@ class Tclean(cleanbase.CleanBase):
                 LOG.debug('Making copy of POINTING table')
                 copy = table.copy('%s/POINTING_COPY' % vis, valuecopy=True)
                 LOG.debug('Removing all POINTING table rows')
-                table.removerows(range(table.nrows()))
+                table.removerows(list(range(table.nrows())))
                 copy.done()
 
     # Restore pointing table

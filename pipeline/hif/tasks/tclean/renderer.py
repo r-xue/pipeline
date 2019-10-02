@@ -99,7 +99,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             spw = info.get('spw', None)
             if spw is not None:
                 nspwnam = info.get('nspwnam', None)
-                spwnames = ','.join([info.get('spwnam%02d' % (i+1)) for i in xrange(nspwnam)])
+                spwnames = ','.join([info.get('spwnam%02d' % (i+1)) for i in range(nspwnam)])
             else:
                 spwnames = None
             if 'field' in info:

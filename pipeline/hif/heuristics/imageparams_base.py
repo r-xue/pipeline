@@ -272,7 +272,7 @@ class ImageParamsHeuristics(object):
         scanidlist = []
         visindexlist = []
 
-        for i in xrange(len(vis)):
+        for i in range(len(vis)):
             allscanids = []
             for fieldname in field.split(','):
                 re_field = utils.dequote(fieldname)
@@ -1247,7 +1247,7 @@ class ImageParamsHeuristics(object):
                         topo_freq_selections, topo_chan_selections, aggregate_spw_lsrk_bw = contfile_handler.lsrk_to_topo(inputs.spwsel_lsrk['spw%s' % (spwid)], inputs.vis, ref_field_ids, spwid, self.observing_run)
                         spw_topo_freq_param_lists.append(['%s:%s' % (spwid, topo_freq_selection.split()[0]) for topo_freq_selection in topo_freq_selections])
                         spw_topo_chan_param_lists.append(['%s:%s' % (spwid, topo_chan_selection.split()[0]) for topo_chan_selection in topo_chan_selections])
-                        for i in xrange(len(inputs.vis)):
+                        for i in range(len(inputs.vis)):
                             spw_topo_freq_param_dict[os.path.basename(inputs.vis[i])][spwid] = topo_freq_selections[i].split()[0]
                             spw_topo_chan_param_dict[os.path.basename(inputs.vis[i])][spwid] = topo_chan_selections[i].split()[0]
                         # Count only one selection !
@@ -1259,7 +1259,7 @@ class ImageParamsHeuristics(object):
                         spw_topo_freq_param_lists.append(['%s:%s' % (spwid, freq_selection)] * len(inputs.vis))
                         # TODO: Need to derive real channel ranges
                         spw_topo_chan_param_lists.append(['%s:0~%s' % (spwid, spw_info.num_channels - 1)] * len(inputs.vis))
-                        for i in xrange(len(inputs.vis)):
+                        for i in range(len(inputs.vis)):
                             spw_topo_freq_param_dict[os.path.basename(inputs.vis[i])][spwid] = freq_selection.split()[0]
                             # TODO: Need to derive real channel ranges
                             spw_topo_chan_param_dict[os.path.basename(inputs.vis[i])][spwid] = '0~%d' % (spw_info.num_channels - 1)
@@ -1356,10 +1356,10 @@ class ImageParamsHeuristics(object):
                     # Calculate averaged flagging vector keeping all unflagged
                     # channels from any baseline.
                     if flag_ants != {}:
-                        for i in xrange(flag_ants['flag'].shape[2]):
+                        for i in range(flag_ants['flag'].shape[2]):
                             # Antenna selection does not work (CAS-8757)
-                            if (flag_ants['antenna1'][i] != flag_ants['antenna2'][i]):
-                                for j in xrange(flag_ants['flag'].shape[0]):
+                            if flag_ants['antenna1'][i] != flag_ants['antenna2'][i]:
+                                for j in range(flag_ants['flag'].shape[0]):
                                     channel_flags = np.logical_and(channel_flags, flag_ants['flag'][j, :, i])
 
                     iterating = msTool.iternext()
@@ -1374,17 +1374,16 @@ class ImageParamsHeuristics(object):
         """
         Find first unflagged channel from center channel.
         """
-
         i_low = i_high = None
         num_channels = len(channel_flags)
         center_channel = int(num_channels / 2)
 
-        for i in xrange(center_channel, -1, -1):
+        for i in range(center_channel, -1, -1):
             if channel_flags[i] == False:
                 i_low = i
                 break
 
-        for i in xrange(center_channel, num_channels):
+        for i in range(center_channel, num_channels):
             if channel_flags[i] == False:
                 i_high = i
                 break

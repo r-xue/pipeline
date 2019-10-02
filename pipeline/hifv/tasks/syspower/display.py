@@ -103,7 +103,7 @@ class syspowerBarChart(object):
 
         # fraction of flagged data in Pdiff template
         percent_flagged_by_antenna = [100. * np.sum(ant_dat.mask[i]) / ant_dat.mask[i].size for i in range(dshape[0])]
-        pb.bar(range(dshape[0]), percent_flagged_by_antenna, color='red')
+        pb.bar(list(range(dshape[0])), percent_flagged_by_antenna, color='red')
         pb.xticks(rotation=45)
         pb.ylabel('Fraction of Flagged Solutions (%)')
         pb.xlabel('Antenna')

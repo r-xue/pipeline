@@ -181,7 +181,7 @@ class DataTableIndexer(object):
         i -- serial index
         """
         base = 0
-        for j in xrange(self.num_mses):
+        for j in range(self.num_mses):
             past_base = base
             base += self.nrow_per_ms[j]
             if i < base:
@@ -478,6 +478,7 @@ class DataTableImpl(object):
         tbloc.close()
         self.plaintable = abspath
 
+    # FIXME: this unused method contains bugs to fix.
     def export_rwtable_exclusive(self, dirty_rows=None, cols=None):
         """
         Export "on-memory" RW table to the one on disk.
@@ -510,7 +511,8 @@ class DataTableImpl(object):
 
             if dirty_rows is None:
                 # process all rows
-                dirty_rows = xrange(tb.nrows())
+                # FIXME: built-in range (or list) does not support .min(), .max(); should this be a numpy range?
+                dirty_rows = range(tb.nrows())
 
             try:
                 nrow_chunk = 2000
@@ -647,7 +649,7 @@ class DataTableImpl(object):
             key = rows[v]
             posdict[key] = [[], []]
 
-        for idx in xrange(len(posgrp)):
+        for idx in range(len(posgrp)):
             grp = posgrp[idx]
             if grp not in mygrp:
                 continue
@@ -707,8 +709,8 @@ class DataTableImpl(object):
         if key_small in keys and key_large in keys:
             ttdict_small = self.getkeyword(key_small)
             ttdict_large = self.getkeyword(key_large)
-            timetable_small = [ttdict_small[str(i)].tolist() for i in xrange(len(ttdict_small))]
-            timetable_large = [ttdict_large[str(i)].tolist() for i in xrange(len(ttdict_large))]
+            timetable_small = [ttdict_small[str(i)].tolist() for i in range(len(ttdict_small))]
+            timetable_large = [ttdict_large[str(i)].tolist() for i in range(len(ttdict_large))]
             timetable = [timetable_small, timetable_large]
         else:
             raise RuntimeError('time table for Antenna %s spw %s pol %s is not configured properly' % (ant, spw, pol))
@@ -813,7 +815,7 @@ class DataTableImpl(object):
             #fieldids = tsel.getcol('FIELD_ID')
             antids = tsel.getcol('ANTENNA1')
             tsys_masked = {}
-            for i in xrange(tsel.nrows()):
+            for i in range(tsel.nrows()):
                 tsys = tsel.getcell('FPARAM', i)
                 flag = tsel.getcell('FLAG', i)
                 tsys_masked[i] = numpy.ma.masked_array(tsys, mask=(flag == True))
@@ -1018,7 +1020,7 @@ class DataTableColumnMaskList(RWDataTableColumn):
             nrow = self.tb.nrows()
         ret = collections.defaultdict(list)
         idx = 0
-        for i in xrange(startrow, nrow, rowincr):
+        for i in range(startrow, nrow, rowincr):
             tMASKLIST = self.getcell(i)
             if len(tMASKLIST) == 1 and tMASKLIST[0][0] == 0 and \
                     tMASKLIST[0][1] == 0:
@@ -1041,7 +1043,7 @@ class DataTableColumnMaskList(RWDataTableColumn):
         if nrow < 0:
             nrow = min(startrow + len(val) * rowincr, self.tb.nrows())
         idx = 0
-        for i in xrange(startrow, nrow, rowincr):
+        for i in range(startrow, nrow, rowincr):
             self.putcell(i, numpy.asarray(val[idx]))
             idx += 1
 

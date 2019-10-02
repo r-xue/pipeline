@@ -1240,8 +1240,8 @@ finally:
                 version = image.get('version', 1)
                 # Image name probably includes path
                 if image['sourcetype'] in intents:
-                    if(image['multiterm']):
-                        for nt in xrange(image['multiterm']):
+                    if image['multiterm']:
+                        for nt in range(image['multiterm']):
                             imagename = image['imagename'].replace('.image', '.image.tt%d' % (nt))
                             images_list.append((imagename, version))
                             cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
@@ -1320,7 +1320,7 @@ finally:
                     images_list.append((image, 1))
             cleanlist = cleanlib.get_imlist()
             # Need to add the FITS names
-            for i in xrange(len(cleanlist)):
+            for i in range(len(cleanlist)):
                 cleanlist[i]['fitsfiles'] = [fitsname(products_dir, images_list[i][0])]
                 cleanlist[i]['auxfitsfiles'] = []
 

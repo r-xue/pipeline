@@ -94,7 +94,7 @@ def utc_locator(start_time=None, end_time=None):
         tick_interval = tick_candidates[numpy.argmin(abs(tick_candidates - tick_interval))]
 
         #print tick_interval
-        return MinuteLocator(byminute=range(0, 60, tick_interval))
+        return MinuteLocator(byminute=list(range(0, 60, tick_interval)))
 
 
 class PlotObjectHandler(object):
@@ -365,7 +365,7 @@ class SDImageDisplay(object, metaclass=abc.ABCMeta):
         self.brightnessunit = self.image.brightnessunit
         self.direction_reference = self.image.direction_reference
         (refpix, refval, increment) = self.image.spectral_axis(unit='GHz')
-        self.frequency = numpy.array([refval+increment*(i-refpix) for i in xrange(self.nchan)])
+        self.frequency = numpy.array([refval+increment*(i-refpix) for i in range(self.nchan)])
         self.velocity = self.image.to_velocity(self.frequency, freq_unit='GHz')
         self.frequency_frame = self.image.frequency_frame
         self.x_max = self.nx - 1
@@ -432,7 +432,7 @@ class SDImageDisplay(object, metaclass=abc.ABCMeta):
                 # probably one of the polarization components has no valid data
                 invalid_pols = numpy.where(each_len == 0)[0]
                 _array2d = []
-                for i in xrange(self.npol):
+                for i in range(self.npol):
                     if i in invalid_pols:
                         _array2d.append(numpy.zeros((self.ny * self.nx), dtype=dtype))
                     else:
@@ -447,8 +447,7 @@ def get_base_frequency(table, freqid, nchan):
         refpix = tb.getcell('REFPIX', freqid)
         refval = tb.getcell('REFVAL', freqid)
         increment = tb.getcell('INCREMENT', freqid)
-        chan_freq = numpy.array([refval + (i - refpix) * increment
-                                 for i in xrange(nchan)])
+        chan_freq = numpy.array([refval + (i - refpix) * increment for i in range(nchan)])
     return chan_freq
 
 
@@ -578,8 +577,8 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
         return self._axes_atm
 
     def __axes_spmap(self):
-        for x in xrange(self.nh):
-            for y in xrange(self.nv):
+        for x in range(self.nh):
+            for y in range(self.nv):
                 axes = pl.subplot(self.gs_bottom[self.nv - y - 1, self.nh - x])
                 axes.cla()
                 axes.yaxis.set_major_locator(pl.NullLocator())
@@ -592,7 +591,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             xaxislabel = pointing.DDMMSSs
         else:
             xaxislabel = pointing.HHMMSSss
-        for x in xrange(self.nh):
+        for x in range(self.nh):
             a1 = pl.subplot(self.gs_bottom[-1, self.nh - x])
             a1.set_axis_off()
             if len(a1.texts) == 0:
@@ -600,7 +599,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
                         horizontalalignment='center', verticalalignment='center', size=self.ticksize)
             else:
                 a1.texts[0].set_text(xaxislabel((label_ra[x][0]+label_ra[x][1])/2.0, 0))
-        for y in xrange(self.nv):
+        for y in range(self.nv):
             a1 = pl.subplot(self.gs_bottom[self.nv - y - 1, 0])
             a1.set_axis_off()
             if len(a1.texts) == 0:
@@ -659,7 +658,7 @@ class SDSparseMapPlotter(object):
         refval = refval_list[0]
         increment = increment_list[0]
         #LOG.debug('axis 0: refpix,refval,increment=%s,%s,%s'%(refpix,refval,increment))
-        for x in xrange(self.nh):
+        for x in range(self.nh):
             x0 = (self.nh - x - 1) * self.step
             x1 = (self.nh - x - 2) * self.step + 1
             LabelRA[x][0] = refval + (x0 - refpix) * increment
@@ -668,7 +667,7 @@ class SDSparseMapPlotter(object):
         refval = refval_list[1]
         increment = increment_list[1]
         #LOG.debug('axis 1: refpix,refval,increment=%s,%s,%s'%(refpix,refval,increment))
-        for y in xrange(self.nv):
+        for y in range(self.nv):
             y0 = y * self.step
             y1 = (y + 1) * self.step - 1
             LabelDEC[y][0] = refval + (y0 - refpix) * increment
@@ -795,8 +794,8 @@ class SDSparseMapPlotter(object):
 
         is_valid_fit_result = (fit_result is not None and fit_result.shape == map_data.shape)
 
-        for x in xrange(self.nh):
-            for y in xrange(self.nv):
+        for x in range(self.nh):
+            for y in range(self.nv):
                 if self.global_scaling is True:
                     xmin = global_xmin
                     xmax = global_xmax

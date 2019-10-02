@@ -91,7 +91,7 @@ class SingleDishBeamSize(api.Heuristic):
         if p > 0:
             dstr = '1.'
         else:
-            dstr = '.'+string.join(['0' for i in xrange(abs(p))], '')+'1'
+            dstr = '.'+string.join(['0' for i in range(abs(p))], '')+'1'
         #ret = Decimal(s).quantize(Decimal(dstr),rounding=ROUND_HALF_UP)
         ret = Decimal(s).quantize(Decimal(dstr), rounding=ROUND_UP)
         return float(ret)

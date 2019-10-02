@@ -111,7 +111,7 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
         plot_list = []
 
 #         masked_data = self.data * self.mask
-        for pol in xrange(self.npol):
+        for pol in range(self.npol):
 #             Total = masked_data.take([pol], axis=self.id_stokes).squeeze()
             Total = (self.data.take([pol], axis=self.id_stokes) * self.mask.take([pol], axis=self.id_stokes)).squeeze()
             Total = numpy.flipud(Total.transpose())
@@ -250,7 +250,7 @@ class SDMomentMapDisplay(SDImageDisplay):
 
         plot_list = []
 
-        for pol in xrange(self.npol):
+        for pol in range(self.npol):
             masked_data = (self.data.take([pol], axis=self.id_stokes) * self.mask.take([pol], axis=self.id_stokes)).squeeze()
             Total = numpy.flipud(masked_data.transpose())
             del masked_data
@@ -408,7 +408,7 @@ class ChannelMapAxesManager(ChannelAveragedAxesManager):
         return self._axes_chmap
 
     def __axes_chmap(self):
-        for i in xrange(self.nchmap):
+        for i in range(self.nchmap):
             x = i % self.nh
             y = self.nv - int(i / self.nh) - 1
             left = 1.0 / float(self.nh) * x #(x + 0.05)
@@ -523,7 +523,7 @@ class SDSparseMapDisplay(SDImageDisplay):
                 plotter.set_atm_transmission(atm_transmission, atm_freq)
 
         # loop over pol
-        for pol in xrange(self.npol):
+        for pol in range(self.npol):
             Plot = numpy.zeros((num_panel, num_panel, (chan1 - chan0)), numpy.float32) + NoData
             TotalSP = (self.data.take([pol], axis=self.id_stokes) * self.mask.take([pol], axis=self.id_stokes)).squeeze().sum(axis=(0, 1))
             isvalid = numpy.any(self.mask.take([pol], axis=self.id_stokes).squeeze(), axis=2)
@@ -533,10 +533,10 @@ class SDSparseMapDisplay(SDImageDisplay):
 
             slice_axes = (self.image.id_direction[0], self.image.id_direction[1], self.id_stokes)
 
-            for x in xrange(NH):
+            for x in range(NH):
                 x0 = x * STEP
                 x1 = (x + 1) * STEP
-                for y in xrange(NV):
+                for y in range(NV):
                     y0 = y * STEP
                     y1 = (y + 1) * STEP
                     valid_index = isvalid[x0:x1, y0:y1].nonzero()
@@ -588,7 +588,7 @@ class SDSparseMapDisplay(SDImageDisplay):
         ndim = len(array_shape)
         full_blc = numpy.zeros(ndim, dtype=int)
         full_trc = numpy.array(array_shape)
-        for i in xrange(len(axes)):
+        for i in range(len(axes)):
             iax = axes[i]
             full_blc[iax] = max(blc[i], 0)
             full_trc[iax] = min(trc[i], array_shape[iax])
@@ -626,8 +626,7 @@ class SDChannelMapDisplay(SDImageDisplay):
             found = False
             for (msid, ant, fid, spw) in zip(msid_list, ant_index, fieldid_list, spwid_list):
                 msobj_list = self.inputs.context.observing_run.measurement_sets
-                msname_list = [os.path.abspath(msobj_list[idx].name)
-                               for idx in xrange(len(msobj_list))]
+                msname_list = [os.path.abspath(msobj_list[idx].name) for idx in range(len(msobj_list))]
                 group_msid = msname_list.index(os.path.abspath(g.ms.name))
                 del msobj_list, msname_list
                 if group_msid == msid and g.antenna_id == ant and \
@@ -687,7 +686,7 @@ class SDChannelMapDisplay(SDImageDisplay):
             if len(data_weight_integ) == self.nchan:
                 sp_ave[0, :] = data_weight_integ
         else:
-            for pol in xrange(self.npol):
+            for pol in range(self.npol):
                 curr_sp = data_weight_integ.take([pol], axis=new_id_stokes).squeeze()
                 if len(curr_sp) == self.nchan:
                     sp_ave[pol, :] = curr_sp
@@ -752,7 +751,7 @@ class SDChannelMapDisplay(SDImageDisplay):
         axes_integsp1 = axes_manager.axes_integsp_full
         axes_integsp2 = axes_manager.axes_integsp_zoom
         axes_chmap = axes_manager.axes_chmap
-        chmap_colorbar = [None for v in xrange(self.NvPanel)]
+        chmap_colorbar = [None for v in range(self.NvPanel)]
 
         Sp_integ = self.__get_integrated_spectra()
         # loop over detected lines
@@ -802,7 +801,7 @@ class SDChannelMapDisplay(SDImageDisplay):
 
             # vertical lines for integrated spectrum #2
             pl.gcf().sca(axes_integsp2)
-            for i in xrange(self.NumChannelMap + 1):
+            for i in range(self.NumChannelMap + 1):
                 ChanL = int(ChanB + i*ChanW)
                 #if 0 <= ChanL and ChanL < nchan:
                 if 0 < ChanL and ChanL < self.nchan:
@@ -812,7 +811,7 @@ class SDChannelMapDisplay(SDImageDisplay):
                 #print 'DEBUG: Vel[ChanL]', i, (self.velocity[ChanL]+self.velocity[ChanL-1])/2.0 - VelC
 
             # loop over polarizations
-            for pol in xrange(self.npol):
+            for pol in range(self.npol):
                 plotted_objects = []
 
                 masked_data = (self.data.take([pol], axis=self.id_stokes) * self.mask.take([pol], axis=self.id_stokes)).squeeze()
@@ -894,12 +893,15 @@ class SDChannelMapDisplay(SDImageDisplay):
                 NMap = 0
                 Vmax0 = Vmin0 = 0
                 Title = []
-                for i in xrange(self.NumChannelMap):
-                    if Reverse: ii = i
-                    else: ii = self.NumChannelMap - i - 1
+                for i in range(self.NumChannelMap):
+                    if Reverse:
+                        ii = i
+                    else:
+                        ii = self.NumChannelMap - i - 1
                     C0 = ChanB + ChanW*ii
                     C1 = C0 + ChanW
-                    if C0 < 0 or C1 >= self.nchan - 1: continue
+                    if C0 < 0 or C1 >= self.nchan - 1:
+                        continue
                     velo = (self.velocity[C0] + self.velocity[C1-1]) / 2.0 - VelC
                     width = abs(self.velocity[C0] - self.velocity[C1])
                     Title.append('(Vel,Wid) = (%.1f, %.1f) (km/s)' % (velo, width))
@@ -922,7 +924,7 @@ class SDChannelMapDisplay(SDImageDisplay):
                     print("No data to create channel maps. Check the flagging criteria.")
                     return plot_list
 
-                for i in xrange(NMap):
+                for i in range(NMap):
                     #im = pl.imshow(Map[i], vmin=Vmin, vmax=Vmax, interpolation='bilinear', aspect='equal', extent=Extent)
                     if Vmax != Vmin:
                         #im = pl.imshow(Map[i], vmin=Vmin, vmax=Vmax, interpolation='nearest', aspect='equal', extent=ExtentCM)
@@ -1022,7 +1024,7 @@ class SDRmsMapDisplay(SDImageDisplay):
         npol_data = len(array2d)
         # retruned value will be transposed
         array3d = numpy.zeros((npol_data, self.ny, self.nx), dtype=dtype)
-        for pol in xrange(npol_data):
+        for pol in range(npol_data):
             if len(array2d[pol]) == self.nx*self.ny:
                 array3d[pol, :, :] = numpy.array(array2d[pol]).reshape((self.ny, self.nx))
         return numpy.flipud(array3d.transpose())
@@ -1057,7 +1059,7 @@ class SDRmsMapDisplay(SDImageDisplay):
         nvalid = self.__get_num_valid()
         npol_data = rms.shape[2]
 #         for pol in xrange(self.npol):
-        for pol in xrange(npol_data):
+        for pol in range(npol_data):
             rms_map = rms[:, :, pol] * (nvalid[:, :, pol] > 0)
             rms_map = numpy.flipud(rms_map.transpose())
             #LOG.debug('rms_map=%s'%(rms_map))
@@ -1140,7 +1142,7 @@ class SpectralMapAxesManager(MapAxesManagerBase):
 
     def __axes_list(self):
         npanel = self.nh * self.nv
-        for ipanel in xrange(npanel):
+        for ipanel in range(npanel):
             x = ipanel % self.nh
             y = int(ipanel / self.nh)
             #x0 = 1.0 / float(self.nh) * (x + 0.1)
@@ -1200,10 +1202,10 @@ class SDSpectralMapDisplay(SDImageDisplay):
             # an array with length of total number of spectra to be plotted (initialized by -1)
             ROWS = numpy.zeros(NH * NV * NhPanel * NvPanel, dtype=numpy.int) - 1
             # 2010/6/15 GK Change the plotting direction: UpperLeft->UpperRight->OneLineDown repeat...
-            for x in xrange(0, self.nx, STEPX):
+            for x in range(0, self.nx, STEPX):
                 posx = (self.x_max - x)/STEPX / NhPanel
                 offsetx = ( (self.x_max - x)/STEPX ) % NhPanel
-                for y in xrange(0, self.ny, STEPY):
+                for y in range(0, self.ny, STEPY):
                     posy = (self.y_max - y)/STEPY / NvPanel
                     offsety = NvPanel - 1 - (self.y_max - y)/STEPY % NvPanel
                     row = (self.nx - x - 1) * self.ny + y
@@ -1263,7 +1265,7 @@ class SDSpectralMapDisplay(SDImageDisplay):
         reference_data = self.context.observing_run.measurement_sets[self.inputs.msid_list[0]]
         is_baselined = reference_data.work_data != reference_data.name
 
-        for pol in xrange(self.npol):
+        for pol in range(self.npol):
             data = (self.data.take([pol], axis=self.id_stokes) * self.mask.take([pol], axis=self.id_stokes)).squeeze()
             Npanel = 0
 
@@ -1289,7 +1291,7 @@ class SDSpectralMapDisplay(SDImageDisplay):
             LOG.debug('ymin=%s, ymax=%s' % (ymin, ymax))
             del ListMax, ListMin
 
-            for irow in xrange(len(ROWS)):
+            for irow in range(len(ROWS)):
                 row = ROWS[irow]
 
                 _x = row / self.ny

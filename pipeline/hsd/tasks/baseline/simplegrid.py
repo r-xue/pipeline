@@ -91,9 +91,7 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
         outcome = {'spectral_data': retval[0],
                    'meta_data': retval[1],
                    'grid_table': grid_table}
-        result = SDSimpleGriddingResults(task=self.__class__,
-                                       success=True,
-                                       outcome=outcome)
+        result = SDSimpleGriddingResults(task=self.__class__, success=True, outcome=outcome)
         result.task = self.__class__
 
         return result
@@ -113,11 +111,13 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
         grid_size = casatools.quanta.convert(beam_size, 'deg')['value']
 
         indexer = DataTableIndexer(self.inputs.context)
+
         def _g(colname):
             for i in index_list:
                 vis, j = indexer.serial2perms(i)
                 datatable = datatable_dict[vis]
                 yield datatable.getcell(colname, j)
+
 #        ras = numpy.fromiter(_g('RA'), dtype=numpy.float64)
 #        decs = numpy.fromiter(_g('DEC'), dtype=numpy.float64)
 #        ras = numpy.fromiter(_g('SHIFT_RA'), dtype=numpy.float64)
@@ -251,7 +251,7 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
         # bind_to_grid = dict([(k,[]) for k in self.data_in.keys()])
         bind_to_grid = collections.defaultdict(list)
         vislist = [x.basename for x in self.inputs.context.observing_run.measurement_sets]
-        for grid_table_row in xrange(nrow):
+        for grid_table_row in range(nrow):
             [IF, POL, X, Y, RAcent, DECcent, RowDelta] = grid_table[grid_table_row]
             for [_data_row, _, _, _index, _ant, _msid] in RowDelta:
                 index = int(_index)
@@ -374,7 +374,7 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
                 #FlagOut[ROW,:] = 1
                 RMS = 0.0
             else:
-                for ichan in xrange(nchan):
+                for ichan in range(nchan):
                     if StorageWeight[ROW, ichan] == 0.0:
                         StorageOut[ROW, ichan] = NoData
                         #FlagOut[ROW,ichan] = 1

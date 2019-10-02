@@ -166,7 +166,7 @@ def range_to_list(arg):
 
     # convert '1~10' to a range
     rangeExpr = number('start') + TILDE + number('end')
-    rangeExpr.setParseAction(lambda tokens: range(tokens.start, tokens.end + 1))
+    rangeExpr.setParseAction(lambda tokens: list(range(tokens.start, tokens.end + 1)))
 
     casa_chars = ''.join([c for c in string.printable
                           if c not in ',;"/' + string.whitespace])
@@ -423,15 +423,15 @@ def _parse_spw(task_arg, all_spw_ids=None):
 
     # convert '1~10' to a range
     rangeExpr = number('start') + TILDE + number('end')
-    rangeExpr.setParseAction(lambda tokens: range(tokens.start, tokens.end + 1))
+    rangeExpr.setParseAction(lambda tokens: list(range(tokens.start, tokens.end + 1)))
 
     # convert '1~10^2' to a range with the given step size
     rangeWithStepExpr = number('start') + TILDE + number('end') + CARET + number('step')
-    rangeWithStepExpr.setParseAction(lambda tokens: range(tokens.start, tokens.end + 1, tokens.step))
+    rangeWithStepExpr.setParseAction(lambda tokens: list(range(tokens.start, tokens.end + 1, tokens.step)))
 
     # convert <10 to a range
     ltExpr = LESSTHAN + number('max')
-    ltExpr.setParseAction(lambda tokens: range(0, tokens.max))
+    ltExpr.setParseAction(lambda tokens: list(range(0, tokens.max)))
 
     # convert * to all spws
     allExpr = ASTERISK.setParseAction(lambda tokens: all_spw_ids)
@@ -479,7 +479,7 @@ def _parse_field(task_arg, fields=None):
 
     # convert '1~10' to a range
     rangeExpr = number('start') + TILDE + number('end')
-    rangeExpr.setParseAction(lambda tokens: range(tokens.start, tokens.end + 1))
+    rangeExpr.setParseAction(lambda tokens: list(range(tokens.start, tokens.end + 1)))
 
     boundary = [c for c in pyparsing.printables if c not in (' ', ',')]
     field_id = pyparsing.WordStart(boundary) + (rangeExpr | number) + pyparsing.WordEnd(boundary)
@@ -520,7 +520,7 @@ def _parse_antenna(task_arg, antennas=None):
 
     # convert '1~10' to a range
     rangeExpr = number('start') + TILDE + number('end')
-    rangeExpr.setParseAction(lambda tokens: range(tokens.start, tokens.end + 1))
+    rangeExpr.setParseAction(lambda tokens: list(range(tokens.start, tokens.end + 1)))
 
     # antenna-oriented 'by ID' expressions can be any of the above patterns
     boundary = [c for c in pyparsing.printables if c not in (' ', ',')]

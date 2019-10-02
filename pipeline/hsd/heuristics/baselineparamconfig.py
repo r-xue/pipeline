@@ -182,7 +182,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         with open(blparam, 'a') as blparamfileobj:
 
             with casatools.TableReader(vis) as tb:
-                for y in xrange(len(member_list)):
+                for y in range(len(member_list)):
                     rows = member_list[y][0]
                     idxs = member_list[y][1]
 
@@ -216,7 +216,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                     #LOG.debug('DONE {}'.format(y))
 
                     npol = spectra.shape[1]
-                    for pol in xrange(npol):
+                    for pol in range(npol):
                         # fit order determination
                         polyorder = self.fitorder_heuristic(
                             spectra[:, pol, :], [list(masklist[i]) + flaglist[i][pol] for i in range(len(idxs))], edge)
@@ -234,7 +234,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                             LOG.debug('nrow = {}'.format(nrow))
                             LOG.debug('len(idxs) = {}'.format(len(idxs)))
 
-                        for i in xrange(nrow):
+                        for i in range(nrow):
                             row = rows[i]
                             idx = idxs[i]
                             if TRACE():

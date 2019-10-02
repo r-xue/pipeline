@@ -511,24 +511,24 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
 
         if ascending:
             if iminfreq == -2:
-                for i in xrange(0, len(a)):
+                for i in range(0, len(a)):
                     if a[i] >= minfreq:
                         iminfreq = i
                         break
             if imaxfreq == -2:
-                for j in xrange(iminfreq, len(a)):
+                for j in range(iminfreq, len(a)):
                     if a[j] >= maxfreq:
                         imaxfreq = j
                         break
             rval = (iminfreq, imaxfreq)
         else:
             if iminfreq == -2:
-                for i in xrange(len(a)-1, -1, -1):
+                for i in range(len(a)-1, -1, -1):
                     if a[i] >= minfreq:
                         iminfreq = i
                         break
             if imaxfreq == -2:
-                for j in xrange(iminfreq, -1, -1):
+                for j in range(iminfreq, -1, -1):
                     if a[j] >= maxfreq:
                         imaxfreq = j
                         break

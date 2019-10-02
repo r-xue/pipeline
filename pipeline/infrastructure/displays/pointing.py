@@ -337,7 +337,7 @@ class PointingAxesManager(MapAxesManagerBase):
 def draw_beam(axes, r, aspect, x_base, y_base, offset=1.0):
     xy = numpy.array([[r * (math.sin(t * 0.13) + offset) * aspect + x_base,
                        r * (math.cos(t * 0.13) + offset) + y_base]
-                      for t in xrange(50)])
+                      for t in range(50)])
     pl.gcf().sca(axes)
     line = pl.plot(xy[:, 0], xy[:, 1], 'r-')
     return line[0]

@@ -144,7 +144,7 @@ class WeightMS(basetask.StandardTaskTemplate):
 
         row_map = {}
         # in_row: out_row
-        for index in xrange(len(in_rows)):
+        for index in range(len(in_rows)):
             row_map[in_rows[index]] = out_rows[index]
 
         return row_map
@@ -184,11 +184,11 @@ class WeightMS(basetask.StandardTaskTemplate):
         # TODO: proper handling of pols
         if weight_rms:
             stats = datatable.getcol('STATISTICS').take(index_list, axis=2)
-            for index in xrange(len(in_rows)):
+            for index in range(len(in_rows)):
                 row = in_rows[index]
                 cell_stat = stats[:, :, index]
                 weight[row] = numpy.ones(cell_stat.shape[0])
-                for ipol in xrange(weight[row].shape[0]):
+                for ipol in range(weight[row].shape[0]):
                     stat = cell_stat[ipol, 1]  # baselined RMS
                     if stat > 0.0:
                         weight[row][ipol] /= (stat * stat)
@@ -203,13 +203,13 @@ class WeightMS(basetask.StandardTaskTemplate):
         if weight_tintsys:
             exposures = datatable.getcol('EXPOSURE').take(index_list)
             tsyss = datatable.getcol('TSYS').take(index_list, axis=1)
-            for index in xrange(len(in_rows)):
+            for index in range(len(in_rows)):
                 row = in_rows[index]
                 exposure = exposures[index]
                 tsys = tsyss[:, index]
                 if row not in weight:
                     weight[row] = numpy.ones(tsys.shape[0])
-                for ipol in xrange(weight[row].shape[0]):
+                for ipol in range(weight[row].shape[0]):
                     if tsys[ipol] > 0.5:
                         weight[row][ipol] *= (exposure / (tsys[ipol] * tsys[ipol]))
                     else:
@@ -222,7 +222,7 @@ class WeightMS(basetask.StandardTaskTemplate):
             tsel = tb.query('ROWNUMBER() IN %s' % (list(row_map.values())), style='python')
             ms_weights = tsel.getcol('WEIGHT')
             rownumbers = tsel.rownumbers().tolist()
-            for idx in xrange(len(in_rows)):
+            for idx in range(len(in_rows)):
                 in_row = in_rows[idx]
                 out_row = row_map[in_row]
                 ms_weight = weight[in_row]
@@ -251,10 +251,10 @@ class WeightMS(basetask.StandardTaskTemplate):
                     print(argmax.tolist())
                     print(argmin.tolist())
                     flag = tsel.getcol('FLAG')
-                    for ipol in xrange(npol):
+                    for ipol in range(npol):
                         maxrow = argmax[ipol]
                         minrow = argmin[ipol]
-                        for ichan in xrange(nchan):
+                        for ichan in range(nchan):
                             flag[ipol, ichan, maxrow[ichan]] = True
                             flag[ipol, ichan, minrow[ichan]] = True
                     tsel.putcol('FLAG', flag)

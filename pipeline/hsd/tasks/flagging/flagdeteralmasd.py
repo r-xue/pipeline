@@ -260,7 +260,7 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
         Edit flag commands so that all summaries are based on target data instead of total.
         """
         flag_cmds = super(FlagDeterALMASingleDish, self)._get_flag_commands()
-        for i in xrange(len(flag_cmds)):
+        for i in range(len(flag_cmds)):
             if flag_cmds[i].startswith("mode='summary'"):
                 flag_cmds[i] += " intent='OBSERVE_TARGET#ON_SOURCE'"
 

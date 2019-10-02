@@ -37,9 +37,8 @@ class PlotterPool(object):
 #                                                    figure_id=self.figure_id)
 #             self.pool[key] = plotter
 #         plotter.setup_labels(refpix, refval, increment)
-        plotter = display.SDSparseMapPlotter(nh=num_ra, nv=num_dec, 
-                                               step=1, brightnessunit='Jy/beam',
-                                               figure_id=self.figure_id)
+        plotter = display.SDSparseMapPlotter(nh=num_ra, nv=num_dec, step=1, brightnessunit='Jy/beam',
+                                             figure_id=self.figure_id)
         plotter.direction_reference = direction_reference
         plotter.setup_labels(refpix, refval, increment)
         return plotter
@@ -270,7 +269,7 @@ class BaselineSubtractionPlotManager(object):
 
         self.resize_storage(num_ra, num_dec, npol, nchan) 
 
-        frequency = numpy.fromiter((spw.channels.chan_freqs[i] * 1.0e-9 for i in xrange(nchan)),
+        frequency = numpy.fromiter((spw.channels.chan_freqs[i] * 1.0e-9 for i in range(nchan)),
                                    dtype=numpy.float64)  # unit in GHz
         LOG.debug('frequency={}~{} (nchan={})',
                   frequency[0], frequency[-1], len(frequency))
@@ -296,7 +295,7 @@ class BaselineSubtractionPlotManager(object):
         plotter.set_deviation_mask(deviation_mask)
         plotter.set_atm_transmission(atm_transmission, atm_frequency)
         plotter.set_global_scaling()
-        for ipol in xrange(npol):
+        for ipol in range(npol):
             postfit_figfile = postfit_figfile_prefix + '_pol%s.png' % ipol
             #LOG.info('#TIMING# Begin SDSparseMapPlotter.plot(postfit,pol%s)'%(ipol))
             if lines_map is not None:
@@ -321,8 +320,8 @@ class BaselineSubtractionPlotManager(object):
 
         # fit_result shares its storage with postfit_map_data to reduce memory usage
         fit_result = postfit_map_data
-        for x in xrange(num_ra):
-            for y in xrange(num_dec):
+        for x in range(num_ra):
+            for y in range(num_dec):
                 prefit = prefit_map_data[x][y]
                 if not numpy.all(prefit == display.NoDataThreshold):
                     postfit = postfit_map_data[x][y]
@@ -330,12 +329,11 @@ class BaselineSubtractionPlotManager(object):
                 else:
                     fit_result[x, y, ::] = display.NoDataThreshold
 
-
         # plot pre-fit spectra
         plot_list['pre_fit'] = {}
         plotter.setup_reference_level(None) 
         plotter.unset_global_scaling()
-        for ipol in xrange(npol):
+        for ipol in range(npol):
             prefit_figfile = prefit_figfile_prefix + '_pol%s.png'%(ipol)
             #LOG.info('#TIMING# Begin SDSparseMapPlotter.plot(prefit,pol%s)'%(ipol))
             if lines_map is not None:
@@ -351,13 +349,11 @@ class BaselineSubtractionPlotManager(object):
 
         del prefit_map_data, postfit_map_data, fit_result
 
-
         prefit_averaged_data = get_averaged_data(prefit_data, dtrows, 
                                                  num_ra, num_dec, 
                                                  nchan, npol, rowlist, 
                                                  map_data_storage=self.prefit_storage.map_data,
                                                  map_mask_storage=self.prefit_storage.map_mask)
-
 
         if line_range is not None:
             lines_map_avg = get_lines2(prefit_data, self.datatable, num_ra, rowlist, polids)
@@ -367,7 +363,7 @@ class BaselineSubtractionPlotManager(object):
         plot_list['pre_fit_avg'] = {}
         plotter.setup_reference_level(None)
         plotter.unset_global_scaling()
-        for ipol in xrange(npol):
+        for ipol in range(npol):
             prefit_avg_figfile = prefit_figfile_prefix + '_avg_pol{}.png'.format(ipol)
             if lines_map_avg is not None:
                 plotter.setup_lines(line_range, lines_map_avg[ipol])
@@ -400,7 +396,8 @@ def generate_grid_panel_map(ngrid, npanel, num_plane=1):
     for i in range(npanel):
         s = e
         e = s + ng_per_panel[i]
-        yield range(s, e)
+        yield list(range(s, e))
+
 
 def configure_1d_panel(nx, ny, num_plane=1):
     max_panels = 50
@@ -426,6 +423,7 @@ def configure_1d_panel(nx, ny, num_plane=1):
 
     return xpanel, ypanel
 
+
 def configure_2d_panel(xpanel, ypanel, ngridx, ngridy, num_plane=3):
     xypanel = []
     for ygrid in ypanel:
@@ -434,9 +432,10 @@ def configure_2d_panel(xpanel, ypanel, ngridx, ngridy, num_plane=3):
             for y in ygrid:
                 for x in xgrid:
                     a = ngridx * num_plane * y + num_plane * x
-                    p.extend(range(a, a + num_plane))
+                    p.extend(list(range(a, a + num_plane)))
             xypanel.append(p)
     return xypanel
+
 
 #@utils.profiler
 def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table, org_direction):
@@ -472,7 +471,7 @@ def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table, org_
     num_ra = len(xpanel)
     num_dec = len(ypanel)
     each_grid = configure_2d_panel(xpanel, ypanel, num_grid_ra, num_grid_dec, num_plane)
-    rowlist = [{} for i in xrange(num_dec * num_ra)]
+    rowlist = [{} for i in range(num_dec * num_ra)]
  
     # qa = casatools.quanta
     # if org_direction is None:
@@ -574,6 +573,7 @@ def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table, org_
 
     return num_ra, num_dec, num_plane, refpix_list, refval_list, increment_list, rowlist 
 
+
 def direction_recover( ra, dec, org_direction ):
     me = casatools.measures
     qa = casatools.quanta
@@ -659,7 +659,7 @@ def get_data(infile, dtrows, num_ra, num_dec, num_chan, num_pol, rowlist, rowmap
                     this_data = tb.getcell(colname, mapped_row)
                     this_mask = tb.getcell('FLAG', mapped_row)
                     LOG.trace('this_mask.shape={}', this_mask.shape)
-                    for ipol in xrange(num_pol):
+                    for ipol in range(num_pol):
                         pmask = this_mask[ipol]
                         allflagged = numpy.all(pmask == True)
                         LOG.trace('all(this_mask==True) = {}', allflagged)
@@ -672,7 +672,7 @@ def get_data(infile, dtrows, num_ra, num_dec, num_chan, num_pol, rowlist, rowmap
                     integrated_data += this_data.real * binary_mask 
                     num_accumulated += binary_mask 
                 midxperpol = []
-                for ipol in xrange(num_pol):
+                for ipol in range(num_pol):
                     pidxs = idxperpol[ipol]
                     if len(pidxs) > 0:
                         midx = median_index(pidxs)
@@ -689,7 +689,7 @@ def get_data(infile, dtrows, num_ra, num_dec, num_chan, num_pol, rowlist, rowmap
                         midxperpol.append(None)
             else:
                 LOG.debug('no data is available for ({},{})', ix, iy)
-                midxperpol = [None for ipol in xrange(num_pol)]
+                midxperpol = [None for ipol in range(num_pol)]
             d['MEDIAN_INDEX'] = midxperpol
             LOG.debug('MEDIAN_INDEX for {0}, {1} is {2}', ix, iy, midxperpol)
     integrated_data_masked = numpy.ma.masked_array(integrated_data, num_accumulated == 0)
@@ -701,8 +701,9 @@ def get_data(infile, dtrows, num_ra, num_dec, num_chan, num_pol, rowlist, rowmap
 
     return integrated_data_masked, map_data_masked
 
-def get_averaged_data(infile, dtrows, num_ra, num_dec, num_chan, num_pol, rowlist, rowmap=None,
-             map_data_storage=None, map_mask_storage=None):
+
+def get_averaged_data(infile, dtrows, num_ra, num_dec, num_chan, num_pol, rowlist, rowmap=None, map_data_storage=None,
+                      map_mask_storage=None):
     # default rowmap is EchoDictionary
     if rowmap is None:
         rowmap = utils.EchoDictionary()
@@ -767,6 +768,7 @@ def get_averaged_data(infile, dtrows, num_ra, num_dec, num_chan, num_pol, rowlis
 
     return map_data_masked
 
+
 def get_lines(datatable, num_ra, num_pol, rowlist):
     lines_map = [collections.defaultdict(dict)] * num_pol
     #with casatools.TableReader(rwtablename) as tb:
@@ -775,7 +777,7 @@ def get_lines(datatable, num_ra, num_pol, rowlist):
         iy = d['DECID']
         ids = d['IDS']
         midx = d['MEDIAN_INDEX']
-        for ipol in xrange(len(midx)):
+        for ipol in range(len(midx)):
             if midx is not None:
                 if midx[ipol] is not None:
                     masklist = datatable.getcell('MASKLIST', ids[midx[ipol]])
@@ -785,6 +787,7 @@ def get_lines(datatable, num_ra, num_pol, rowlist):
             else:
                 lines_map[ipol][ix][iy] = None
     return lines_map
+
 
 def get_lines2(infile, datatable, num_ra, rowlist, polids, rowmap=None):
     if rowmap is None:
@@ -808,8 +811,8 @@ def get_lines2(infile, datatable, num_ra, rowlist, polids, rowmap=None):
             ids = d['IDS']
             ref_ra = d['RA']
             ref_dec = d['DEC']
-            rep_ids = [-1 for i in xrange(num_pol)]
-            min_distance = [1e30 for i in xrange(num_pol)]
+            rep_ids = [-1 for i in range(num_pol)]
+            min_distance = [1e30 for i in range(num_pol)]
             for dt_id in ids:
                 row = rowmap[datatable.getcell('ROW', dt_id)]
                 flag = tb.getcell('FLAG', row)
@@ -820,7 +823,7 @@ def get_lines2(infile, datatable, num_ra, rowlist, polids, rowmap=None):
                 ra = datatable.getcell('OFS_RA', dt_id)
                 dec = datatable.getcell('OFS_DEC', dt_id)
                 sqdist = (ra - ref_ra) * (ra - ref_ra) + (dec - ref_dec) * (dec - ref_dec)
-                for ipol in xrange(num_pol):
+                for ipol in range(num_pol):
                     if numpy.all(flag[ipol] == True):
                         #LOG.info('TN: ({}, {}) row {} pol {} is all flagged'.format(ix, iy, row, ipol))
                         continue
@@ -829,7 +832,7 @@ def get_lines2(infile, datatable, num_ra, rowlist, polids, rowmap=None):
                         rep_ids[ipol] = dt_id
 
             #LOG.info('TN: rep_ids for ({}, {}) is {}'.format(ix, iy, rep_ids))
-            for ipol in xrange(num_pol):
+            for ipol in range(num_pol):
                 if rep_ids[ipol] >= 0:
                     masklist = datatable.getcell('MASKLIST', rep_ids[ipol])
                     lines_map[ipol][ix][iy] = None if (len(masklist) == 0 or numpy.all(masklist == -1)) else masklist
@@ -837,7 +840,6 @@ def get_lines2(infile, datatable, num_ra, rowlist, polids, rowmap=None):
                     lines_map[ipol][ix][iy] = None
 
     return lines_map
-
 
 
 # @utils.profiler

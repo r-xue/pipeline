@@ -107,7 +107,7 @@ class MSReductionGroupDesc(list):
         member.add_linelist(linelist, channelmap_range=channelmap_range)
 
     def _search_member(self, ms, antenna_id, spw_id, field_id=None):
-        for indx in xrange(len(self)):
+        for indx in range(len(self)):
             member = self[indx]
             if member.ms.name == ms.name and member.antenna_id == antenna_id and member.spw_id == spw_id and member.field_id == field_id:
                 return indx

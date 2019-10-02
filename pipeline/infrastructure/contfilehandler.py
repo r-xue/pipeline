@@ -192,7 +192,7 @@ class ContFileHandler(object):
 
         topo_chan_selections = []
         topo_freq_selections = []
-        for i in xrange(len(msnames)):
+        for i in range(len(msnames)):
             msname = msnames[i]
             real_spw_id = observing_run.virtual2real_spw_id(spw_id, observing_run.get_ms(msname))
             field = int(fields[i])

@@ -149,7 +149,7 @@ class MetaDataReader(object):
         # ephem_tables to be "" for known_ephemeris_list and non-ephemeris sources
 
         with casatools.TableReader(os.path.join(name, 'FIELD')) as tb:
-            field_ids = range(tb.nrows())
+            field_ids = list(range(tb.nrows()))
             for field_id in list(set(field_ids)):
                 fields = ms.get_fields( field_id = field_id )
                 source_name = (fields[0].source.name) # removed upper() 2019.5.14
@@ -221,7 +221,7 @@ class MetaDataReader(object):
                         org_directions.update( {source_name:org_direction} );
             
         with casatools.TableReader( os.path.join( name, 'FIELD' )) as tb:
-            field_ids = range(tb.nrows())
+            field_ids = list(range(tb.nrows()))
             for field_id in list(set(field_ids)):
                 fields = ms.get_fields( field_id = field_id )
                 source_name = fields[0].source.name
@@ -248,7 +248,7 @@ class MetaDataReader(object):
             Tbeam = tb.getcol('FEED1')
             Tsrctype = numpy.fromiter((0 if i in target_states else 1 for i in tb.getcol('STATE_ID')), dtype=numpy.int32)
             Tflagrow = tb.getcol('FLAG_ROW')
-            Tflag = numpy.fromiter((numpy.all(tb.getcell('FLAG', i) == True) for i in xrange(nrow)), dtype=bool)
+            Tflag = numpy.fromiter((numpy.all(tb.getcell('FLAG', i) == True) for i in range(nrow)), dtype=bool)
             Tflagrow = numpy.logical_or(Tflagrow, Tflag)
             field_ids = tb.getcol('FIELD_ID')
             getsourcename = numpy.vectorize(lambda x: ms.get_fields(x)[0].source.name, otypes=['string'])
@@ -426,7 +426,7 @@ class MetaDataReader(object):
         stats_template = numpy.zeros((4, 7), dtype=numpy.int32) - 1
         flags_template = numpy.ones((4, 7), dtype=numpy.int32)
         pflags_template = numpy.ones((4, 4), dtype=numpy.int32)
-        for x in xrange(nrow):
+        for x in range(nrow):
             # FLAGROW is mapped into OnlineFlag (PermanentFlag[3])
             # NOTE: data is valid if Tflagrow is 0
             #       data is valid if pflags[3] is 1

@@ -77,7 +77,7 @@ def set_miscinfo(name, spw=None, field=None, nfield=None, type=None, iter=None, 
             if imagename is not None:
                 filename_components = os.path.basename(imagename).split('.')
                 info['nfilnam'] = len(filename_components)
-                for i in xrange(len(filename_components)):
+                for i in range(len(filename_components)):
                     info['filnam%02d' % (i+1)] = filename_components[i]
 
                 # clean up extra "filnamX" entries
@@ -95,7 +95,7 @@ def set_miscinfo(name, spw=None, field=None, nfield=None, type=None, iter=None, 
                     spw_names = ['N/A']
                 info['spw'] = unique_spws
                 info['nspwnam'] = len(spw_names)
-                for i in xrange(len(spw_names)):
+                for i in range(len(spw_names)):
                     info['spwnam%02d' % (i+1)] = spw_names[i]
 
                 # clean up extra "spwnamX" entries

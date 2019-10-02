@@ -732,7 +732,7 @@ class SBSummaryTable(object):
         try:
             with casatools.TableReader(sbsummary_table) as tb:
                 observing_mode = tb.getcol('observingMode')
-                for irow in xrange(tb.nrows()):
+                for irow in range(tb.nrows()):
                     cell = observing_mode[:, irow]
                     for mode in cell:
                         if mode not in observing_modes:
@@ -1017,7 +1017,7 @@ class FieldTable(object):
     @staticmethod
     def _read_table(msmd):
         num_fields = msmd.nfields()
-        field_ids = range(num_fields)
+        field_ids = list(range(num_fields))
         field_names = msmd.namesforfields()
         times = [msmd.timesforfield(i) for i in field_ids]
         phase_centres = [msmd.phasecenter(i) for i in field_ids]

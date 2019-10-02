@@ -59,7 +59,7 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
         return self._axes
 
     def __axes_list(self):
-        for icluster in xrange(self.ncluster):
+        for icluster in range(self.ncluster):
             x = icluster % self.nh
             y = int(icluster / self.nh)
             x1 = 1.0 / float(self.nh)
@@ -349,17 +349,17 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
         for (mode, data, threshold, description) in self.__stages():
             plot_objects = []
 
-            for icluster in xrange(num_cluster):
+            for icluster in range(num_cluster):
                 pl.gcf().sca(axes_list[icluster])
 
                 xdata = []
                 ydata = []
-                for i in xrange(len(threshold)):
+                for i in range(len(threshold)):
                     xdata.append([])
                     ydata.append([])
-                for ix in xrange(nx):
-                    for iy in xrange(ny):
-                        for i in xrange(len(threshold)):
+                for ix in range(nx):
+                    for iy in range(ny):
+                        for i in range(len(threshold)):
                             if data[icluster][ix][iy] == len(threshold) - i:
                                 xdata[i].append(xmin + (0.5 + ix) * scale_ra)
                                 ydata[i].append(ymin + (0.5 + iy) * scale_dec)
@@ -383,7 +383,7 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
                                 size=_tick_size)
                         )
                 else:
-                    for i in xrange(len(threshold)):
+                    for i in range(len(threshold)):
                         plot_objects.extend(
                             pl.plot(xdata[i], ydata[i], marks[4 - len(threshold) + i], markersize=marker_size)
                         )

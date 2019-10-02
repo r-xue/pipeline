@@ -42,7 +42,7 @@ class FitOrderHeuristics(api.Heuristic):
             mask_maker = MaskMaker(nchan, mask, edge)
         else:
             mask_maker = MaskMakerNoLine(nchan, edge)
-        for irow in xrange(nrow):
+        for irow in range(nrow):
             spectrum = data[irow]
             flag = mask_maker.get_mask(irow)
             average = (spectrum * flag).sum() / float(flag.sum())
@@ -70,7 +70,7 @@ class FitOrderHeuristics(api.Heuristic):
             poly_order = 2.0
         else:
             flag = False
-            for i in xrange(max_freq, -1, -1):
+            for i in range(max_freq, -1, -1):
                 if power2[i] > 10.0:
                     break
                 if power2[i] > 5.0:

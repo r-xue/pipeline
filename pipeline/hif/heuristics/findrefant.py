@@ -434,8 +434,8 @@ class RefAntGeometry:
         # The flag tool appears to return antenna names as upper case,
         # which seems to be different from the antenna names stored in
         # MSes.  Therefore, these names will be capitalized here.
-        rRow = range(len(info['name']))
-        #for r in rRow: info['name'][r] = info['name'][r].upper()
+        # for r in range(len(info['name'])):
+        # info['name'][r] = info['name'][r].upper()
 
         # Return the antenna information
 
@@ -694,9 +694,8 @@ class RefAntGeometry:
         score = dict()
 
         names = list(distance.keys())
-        rName = range(len(wClose))
 
-        for n in rName:
+        for n in range(len(wClose)):
             score[names[n]] = wClose[n][0]
 
         return score
@@ -940,9 +939,8 @@ class RefAntFlagging:
 
             # Calculate the score for each antenna and return them
             names = list(good.keys())
-            rName = range(len(wGood))
 
-            for n in rName:
+            for n in range(len(wGood)):
                 score[names[n]] = wGood[n]
 
         return score

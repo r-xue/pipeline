@@ -712,7 +712,7 @@ class MeasurementSet(object):
 
         with casatools.TableReader(vis+'/FIELD') as table:
             numFields = table.nrows()
-            field_ids = range(numFields)
+            field_ids = list(range(numFields))
 
         return field_ids
 

@@ -58,7 +58,7 @@ class SDRestoreDataResults(restoredata.RestoreDataResults):
                             antennas = tb.getcol('ANTENNA1')
                             params = tb.getcol('CPARAM').real
                             nrow = tb.nrows()
-                        for irow in xrange(nrow):
+                        for irow in range(nrow):
                             spwid = spws[irow]
                             antenna = antennas[irow]
                             param = params[:, 0, irow]
@@ -67,7 +67,7 @@ class SDRestoreDataResults(restoredata.RestoreDataResults):
                             dd = msobj.get_data_description(spw=int(spwid))
                             if dd is None:
                                 continue
-                            for ipol in xrange(npol):
+                            for ipol in range(npol):
                                 polname = dd.get_polarization_label(ipol)
                                 k2jy_factor[(spwid, antname, polname)] = 1.0 / (param[ipol] * param[ipol])
                         msobj.k2jy_factor = k2jy_factor
