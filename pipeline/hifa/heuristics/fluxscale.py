@@ -2,7 +2,7 @@ import math
 import numpy as np
 import scipy.special as scipy
 
-import solar_system_setjy as ss_setjy
+from casatasks.private import solar_system_setjy as ss_setjy
 
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure as infrastructure
