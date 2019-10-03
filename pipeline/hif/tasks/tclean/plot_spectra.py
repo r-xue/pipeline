@@ -140,7 +140,7 @@ def cubeLSRKToTopo(img, freqrange='', prec=4, verbose=False,
     if len(freqrange) == 0:
         startFreq = f0 
         stopFreq = f1
-    elif (type(freqrange) == str):
+    elif isinstance(freqrange, str):
         if (freqrange.find(',') > 0):
             freqrange = [parseFrequencyArgument(i) for i in freqrange.split(',')]
         elif (freqrange.find('~') > 0):
@@ -387,7 +387,7 @@ def parseFrequencyArgument(bandwidth):
     the units.  If the units are not present, then the value is simply converted to float.
     -Todd Hunter
     """
-    if (type(bandwidth) == dict):
+    if (isinstance(bandwidth, dict)):
         bandwidth = str(bandwidth['value']) + bandwidth['unit']
     else:
         bandwidth = str(bandwidth)
@@ -426,11 +426,11 @@ def rad2radec(ra=0,dec=0,imfitdict=None, prec=5, verbose=True, component=0,
     prependEquinox: if True, insert "J2000" before coordinates (i.e. for clean or simobserve)
     Todd Hunter
     """
-    if (type(imfitdict) == dict):
+    if (isinstance(imfitdict, dict)):
         comp = 'component%d' % (component)
         ra  = imfitdict['results'][comp]['shape']['direction']['m0']['value']
         dec = imfitdict['results'][comp]['shape']['direction']['m1']['value']
-    if (type(ra) == tuple or type(ra) == list or type(ra) == np.ndarray):
+    if (isinstance(ra, tuple) or isinstance(ra, list) or isinstance(ra, np.ndarray)):
         if (len(ra) == 2):
             dec = ra[1] # must come first before ra is redefined
             ra = ra[0]
@@ -513,7 +513,7 @@ def imheadlist(vis, omitBeam=False):
             mykey = key+str(axis+1)
             try:
                 result = imhead(vis, mode='get', hdkey=mykey)
-                if (type(result) == dict):
+                if (isinstance(result, dict)):
                     header[mykey] = result['value']
                 else:
                     # crval3 (pol axis) will be an array (e.g. ['I']) not a dict
