@@ -250,7 +250,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         combined_goodsnrs = [False for _ in spwlist]
         low_snr_spwids = []
         # Filter reference SpW IDs of each group.
-        unique_mappedspw = set([spwmap[spwid] for spwid in spwlist])
+        unique_mappedspw = {spwmap[spwid] for spwid in spwlist}
         for mappedspwid in unique_mappedspw:
             snrlist = []
             combined_idx = []
