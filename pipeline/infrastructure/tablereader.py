@@ -1063,32 +1063,32 @@ def _make_range(f_min, f_max):
 
 
 class BandDescriber(object):
-    alma_bands = {_make_range(31.3, 45): 'ALMA Band 1',
-                  _make_range(67, 90): 'ALMA Band 2',
-                  _make_range(84, 116): 'ALMA Band 3',
-                  _make_range(125, 163): 'ALMA Band 4',
-                  _make_range(163, 211): 'ALMA Band 5',
-                  _make_range(211, 275): 'ALMA Band 6',
-                  _make_range(275, 373): 'ALMA Band 7',
-                  _make_range(385, 500): 'ALMA Band 8',
-                  _make_range(602, 720): 'ALMA Band 9',
-                  _make_range(787, 950): 'ALMA Band 10'}
+    alma_bands = {'ALMA Band 1': _make_range(31.3, 45),
+                  'ALMA Band 2': _make_range(67, 90),
+                  'ALMA Band 3': _make_range(84, 116),
+                  'ALMA Band 4': _make_range(125, 163),
+                  'ALMA Band 5': _make_range(163, 211),
+                  'ALMA Band 6': _make_range(211, 275),
+                  'ALMA Band 7': _make_range(275, 373),
+                  'ALMA Band 8': _make_range(385, 500),
+                  'ALMA Band 9': _make_range(602, 720),
+                  'ALMA Band 10': _make_range(787, 950)}
 
     # From original EVLA pipeline script
     # FLOW = [ 0.0e6, 150.0e6, 700.0e6, 2.0e9, 4.0e9, 8.0e9, 12.0e9, 18.0e9, 26.5e9, 40.0e9 ]
     # FHIGH = [ 150.0e6, 700.0e6, 2.0e9, 4.0e9, 8.0e9, 12.0e9, 18.0e9, 26.5e9, 40.0e9, 56.0e9 ]
     # BBAND = [ '4', 'P', 'L', 'S', 'C', 'X', 'U', 'K', 'A', 'Q' ]
 
-    evla_bands = {_make_range(0.7, 2.0): '20cm (L)',
-                  _make_range(2.0, 4.0): '13cm (S)',
-                  _make_range(4, 8): '6cm (C)',
-                  _make_range(8, 12): '3cm (X)',
-                  _make_range(12, 18): '2cm (Ku)',
-                  _make_range(18, 26.5): '1.3cm (K)',
-                  _make_range(26.5, 40): '1cm (Ka)',
-                  _make_range(40, 56.0): '0.7cm (Q)'}
+    evla_bands = {'20cm (L)': _make_range(0.7, 2.0),
+                  '13cm (S)': _make_range(2.0, 4.0),
+                  '6cm (C)': _make_range(4, 8),
+                  '3cm (X)': _make_range(8, 12),
+                  '2cm (Ku)': _make_range(12, 18),
+                  '1.3cm (K)': _make_range(18, 26.5),
+                  '1cm (Ka)': _make_range(26.5, 40),
+                  '0.7cm (Q)': _make_range(40, 56.0)}
 
-    unknown = {measures.FrequencyRange(): 'Unknown'}
+    unknown = {'Unknown': measures.FrequencyRange()}
 
     @staticmethod
     def get_description(f, observatory='ALMA'):
@@ -1100,7 +1100,7 @@ class BandDescriber(object):
         else:
             bands = BandDescriber.unknown
 
-        for rng, description in bands.items():
+        for description, rng in bands.items():
             if rng.contains(f):
                 return description
 
