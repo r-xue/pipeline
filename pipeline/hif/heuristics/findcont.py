@@ -1,12 +1,16 @@
-from pipeline.extern.findContinuum import findContinuum
-from pipeline.extern.findContinuum import countChannelsInRanges
-from pipeline.extern.findContinuum import numberOfChannelsInCube
-
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.utils as utils
 
 LOG = infrastructure.get_logger(__name__)
+
+# FIXME: remove the try/except as soon as CASA6/Py3 compatible version of findContinuum is available.
+try:
+    from pipeline.extern.findContinuum import findContinuum
+    from pipeline.extern.findContinuum import countChannelsInRanges
+    from pipeline.extern.findContinuum import numberOfChannelsInCube
+except:
+    LOG.warn("Unable to import findContinuum.py; update once CASA6/Py3 version is available.")
 
 
 class FindContHeuristics(object):
