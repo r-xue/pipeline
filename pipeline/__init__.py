@@ -20,7 +20,7 @@ import pipeline.hifv
 import pipeline.hsdn
 
 from .domain import measures
-from casa_stack_manip import stack_frame_find
+from casashell.private.stack_manip import find_frame
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -57,7 +57,7 @@ def show_weblog(context):
 
 def initcli():
     LOG.info('Initializing cli...')
-    my_globals = stack_frame_find()
+    my_globals = find_frame()
     for package in ['h', 'hif', 'hifa', 'hifv', 'hsd', 'hsdn']:
         #abs_package = 'pipeline.{package}.cli.{package}'.format(package=package)
         abs_package = 'pipeline.{package}.cli'.format(package=package)
