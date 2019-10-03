@@ -104,7 +104,7 @@ class BpSolint(basetask.StandardTaskTemplate):
         spwlist = [int(spw) for spw in inputs.spw.split(',')]
 
         # Setup BP SNR
-        bpsnr = inputs.bpsnr if not parameters.has_key('bpsnr') else parameters['bpsnr']
+        bpsnr = inputs.bpsnr if 'bpsnr' not in parameters else parameters['bpsnr']
 
         # Log the data selection choices
         LOG.info('Estimating bandpass solution intervals for MS %s' % inputs.ms.basename)
