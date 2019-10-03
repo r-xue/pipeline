@@ -72,7 +72,7 @@ class SDImageCombine(basetask.StandardTaskTemplate):
         me = casatools.measures
         qa = casatools.quanta
         if len(org_directions) > 1:
-            for idx in range(1,len(org_directions)):
+            for idx in range(1, len(org_directions)):
                 if org_directions[0] is None:
                     if org_directions[idx] is not None:
                         raise RuntimeError( "inconsistent org_directions {}".org_directions )

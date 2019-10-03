@@ -34,7 +34,7 @@ class ImageLibrary(object):
             if version_count <= 1:
                 self._images.append(dict(imageitem))
             else:
-                fitsname = fn.fitsname('',imageitem.imagename)
+                fitsname = fn.fitsname('', imageitem.imagename)
                 LOG.info('Image product item {} already in image list'.format(fitsname))
                 imageitem.version = version_count
                 LOG.info('Adding new image version to list v{}: {}'.format(imageitem.version, imageitem.imagename))

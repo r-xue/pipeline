@@ -38,7 +38,7 @@ def addFrequencyAxisAbove(ax1, firstFreq, lastFreq, freqType='', spw=None,
     """
     if showlabel:
         if (spw != '' and spw is not None):
-            label = '(Spw %s) %s Frequency (GHz)' % (str(spw),freqType)
+            label = '(Spw %s) %s Frequency (GHz)' % (str(spw), freqType)
         else:
             label = '%s Frequency (GHz)' % freqType
     if twinx:
@@ -46,7 +46,7 @@ def addFrequencyAxisAbove(ax1, firstFreq, lastFreq, freqType='', spw=None,
         ax2.set_ylabel('Per-channel noise (mJy/beam)', color='k')
         ax2.set_ylim(ylimits)
         # ax2.set_xlabel does not work in this case, so use pl.text instead
-        pl.text(0.5,1.055,label,ha='center',va='center',transform=pl.gca().transAxes, size=11)
+        pl.text(0.5, 1.055, label, ha='center', va='center', transform=pl.gca().transAxes, size=11)
     else:
         ax2 = ax1.twiny()
         ax2.set_xlabel(label, size=fontsize)
@@ -103,16 +103,16 @@ def numberOfChannelsInCube(img, returnFreqs=False, returnChannelWidth=False,
         lcs.done()
 
     nchan = int(nchan)
-    if (returnFreqs):
-        if (returnChannelWidth):
-            return(nchan,firstFreq,lastFreq,cdelt)
+    if returnFreqs:
+        if returnChannelWidth:
+            return nchan, firstFreq, lastFreq, cdelt
         else:
-            return(nchan,firstFreq,lastFreq)
+            return nchan, firstFreq, lastFreq
     else:
-        if (returnChannelWidth):
-            return(nchan,cdelt)
+        if returnChannelWidth:
+            return nchan, cdelt
         else:
-            return(nchan)
+            return nchan
 
 
 def cubeLSRKToTopo(img, freqrange='', prec=4, verbose=False,
@@ -132,26 +132,25 @@ def cubeLSRKToTopo(img, freqrange='', prec=4, verbose=False,
     """
     if header == '':
         header = imheadlist(img, omitBeam=True)
-    if (nchan is None or f0 is None or f1 is None or chanwidth is None):
-        nchan,f0,f1,chanwidth = numberOfChannelsInCube(img, returnFreqs=True, returnChannelWidth=True)
+    if nchan is None or f0 is None or f1 is None or chanwidth is None:
+        nchan, f0, f1, chanwidth = numberOfChannelsInCube(img, returnFreqs=True, returnChannelWidth=True)
     if 'reffreqtype' in header:
-        if (header['reffreqtype'].upper() == 'TOPO'):
-            return(np.array([f0,f1]))
+        if header['reffreqtype'].upper() == 'TOPO':
+            return np.array([f0, f1])
     if len(freqrange) == 0:
         startFreq = f0 
         stopFreq = f1
     elif isinstance(freqrange, str):
-        if (freqrange.find(',') > 0):
+        if freqrange.find(',') > 0:
             freqrange = [parseFrequencyArgument(i) for i in freqrange.split(',')]
-        elif (freqrange.find('~') > 0):
+        elif freqrange.find('~') > 0:
             freqrange = [parseFrequencyArgument(i) for i in freqrange.split('~')]
         else:
             freqrange = [parseFrequencyArgument(i) for i in freqrange.split()]
         startFreq, stopFreq = freqrange
     else:
         startFreq, stopFreq = freqrange
-    ra,dec = rad2radec(header['crval1'], header['crval2'],
-                       delimiter=' ', verbose=False).split()
+    ra, dec = rad2radec(header['crval1'], header['crval2'], delimiter=' ', verbose=False).split()
     equinox = header['equinox']
     observatory = header['telescope']
     if vis == '':
@@ -162,11 +161,10 @@ def cubeLSRKToTopo(img, freqrange='', prec=4, verbose=False,
         datestring = mjdsecToUT(np.mean(getObservationMJDSecRange(vis)), measuresToolFormat=True)
     f0 = lsrkToTopo(startFreq, datestring, ra, dec, equinox, observatory, prec, verbose)
     f1 = lsrkToTopo(stopFreq, datestring, ra, dec, equinox, observatory, prec, verbose) 
-    return(np.array([f0,f1]))
+    return np.array([f0, f1])
 
 
-def lsrkToTopo(lsrkFrequency, datestring, ra, dec, equinox='J2000', observatory='ALMA',
-               prec=4, verbose=False):
+def lsrkToTopo(lsrkFrequency, datestring, ra, dec, equinox='J2000', observatory='ALMA', prec=4, verbose=False):
     """
     Converts an LSRKfrequency and observing date/direction
     to the corresponding frequency in the TOPO frame.
@@ -234,19 +232,19 @@ def frames(velocity=286.7, datestring="2005/11/01/00:00:00",
     lme = pl_casatools.measures
     lqa = pl_casatools.quanta
 
-    if (dec.find(':') >= 0):
-        dec = dec.replace(':','.')
+    if dec.find(':') >= 0:
+        dec = dec.replace(':', '.')
 
     position = lme.direction(equinox, ra, dec)
     obstime = lme.epoch('TAI', datestring)
 
-    if (veltype.lower().find('opt') == 0):
-        velOpt = lqa.quantity(velocity,"km/s")
-        dopp = lme.doppler("OPTICAL",velOpt)
+    if veltype.lower().find('opt') == 0:
+        velOpt = lqa.quantity(velocity, "km/s")
+        dopp = lme.doppler("OPTICAL", velOpt)
         # CASA doesn't do Helio, but difference to Bary is hopefully small
-        rvelOpt = lme.toradialvelocity("BARY",dopp)
-    elif (veltype.lower().find('rad') == 0):
-        rvelOpt = lme.radialvelocity('LSRK',str(velocity)+'km/s')
+        rvelOpt = lme.toradialvelocity("BARY", dopp)
+    elif veltype.lower().find('rad') == 0:
+        rvelOpt = lme.radialvelocity('LSRK', str(velocity)+'km/s')
     else:
         print("veltype must be 'rad'io or 'opt'ical")
         return
@@ -256,24 +254,24 @@ def frames(velocity=286.7, datestring="2005/11/01/00:00:00",
     lme.doframe(obstime)
     lme.showframe()
 
-    rvelRad = lme.measure(rvelOpt,'LSRK')
-    doppRad = lme.todoppler("RADIO",rvelRad)       
+    rvelRad = lme.measure(rvelOpt, 'LSRK')
+    doppRad = lme.todoppler("RADIO", rvelRad)       
     restFreq = parseFrequencyArgumentToGHz(restFreq)
     freqRad = lme.tofrequency('LSRK', doppRad, casatools.measures.frequency('rest', str(restFreq)+'GHz'))
 
-    lsrk = lqa.tos(rvelRad['m0'],prec=prec)
-    rvelTop = lme.measure(rvelOpt,'TOPO')
-    doppTop = lme.todoppler("RADIO",rvelTop)       
+    lsrk = lqa.tos(rvelRad['m0'], prec=prec)
+    rvelTop = lme.measure(rvelOpt, 'TOPO')
+    doppTop = lme.todoppler("RADIO", rvelTop)       
     freqTop = lme.tofrequency('TOPO', doppTop, casatools.measures.frequency('rest', str(restFreq)+'GHz'))
 
-    topo = lqa.tos(rvelTop['m0'],prec=prec)
+    topo = lqa.tos(rvelTop['m0'], prec=prec)
     velocityDifference = 0.001*(rvelRad['m0']['value']-rvelTop['m0']['value'])
     frequencyDifference = freqRad['m0']['value'] - freqTop['m0']['value']
 
     lme.done()
     lqa.done()
 
-    return(freqTop['m0']['value'], velocityDifference, frequencyDifference)
+    return freqTop['m0']['value'], velocityDifference, frequencyDifference
 
 
 def RescaleTrans(trans, lim):
@@ -345,22 +343,22 @@ def lsrkToRest(lsrkFrequency, velocityLSRK, datestring, ra, dec,
     Returns: the Rest frequency in Hz
     -Todd Hunter
     """
-    if (dec.find(':') >= 0):
-        dec = dec.replace(':','.')
+    if dec.find(':') >= 0:
+        dec = dec.replace(':', '.')
         if verbose:
             print("Warning: replacing colons with decimals in the dec field.")
     freqGHz = parseFrequencyArgumentToGHz(lsrkFrequency)
     lqa = pl_casatools.quanta
     lme = pl_casatools.measures
-    velocityRadio = lqa.quantity(velocityLSRK,"km/s")
+    velocityRadio = lqa.quantity(velocityLSRK, "km/s")
     position = lme.direction(equinox, ra, dec)
     obstime = lme.epoch('TAI', datestring)
-    dopp = lme.doppler("RADIO",velocityRadio)
-    radialVelocityLSRK = lme.toradialvelocity("LSRK",dopp)
+    dopp = lme.doppler("RADIO", velocityRadio)
+    radialVelocityLSRK = lme.toradialvelocity("LSRK", dopp)
     lme.doframe(position)
     lme.doframe(lme.observatory(observatory))
     lme.doframe(obstime)
-    rvelRad = lme.measure(radialVelocityLSRK,'LSRK')
+    rvelRad = lme.measure(radialVelocityLSRK, 'LSRK')
     doppRad = lme.todoppler('RADIO', rvelRad)
     freqRad = lme.torestfrequency(casatools.measures.frequency('LSRK', str(freqGHz)+'GHz'), dopp)
     lqa.done()
@@ -437,15 +435,15 @@ def rad2radec(ra=0,dec=0,imfitdict=None, prec=5, verbose=True, component=0,
         else:
             ra = ra[0]
             dec = dec[0]
-    if (np.shape(ra) == (2,1)):
+    if np.shape(ra) == (2, 1):
         dec = ra[1][0]
         ra = ra[0][0]
     lqa = casatools.quanta
-    myra = lqa.formxxx('%.12frad'%ra,format='hms',prec=prec+1)
-    mydec = lqa.formxxx('%.12frad'%dec,format='dms',prec=prec-1)
+    myra = lqa.formxxx('%.12frad' % ra, format='hms', prec=prec+1)
+    mydec = lqa.formxxx('%.12frad' % dec, format='dms', prec=prec-1)
     if replaceDecDotsWithColons:
-        mydec = mydec.replace('.',':',2)
-    if (len(mydec.split(':')[0]) > 3):
+        mydec = mydec.replace('.', ':', 2)
+    if len(mydec.split(':')[0]) > 3:
         mydec = mydec[0] + mydec[2:]
     mystring = '%s, %s' % (myra, mydec)
     lqa.done()
@@ -472,9 +470,9 @@ def imheadlist(vis, omitBeam=False):
         print("Could not find image.")
         return
     header = {}
-    keys = ['bunit','date-obs','equinox','imtype','masks',
-            'object','observer','projection','reffreqtype',
-            'restfreq','shape','telescope']
+    keys = ['bunit', 'date-obs', 'equinox', 'imtype', 'masks',
+            'object', 'observer', 'projection', 'reffreqtype',
+            'restfreq', 'shape', 'telescope']
     if not omitBeam:
         singleBeam = imhead(vis, mode='get', hdkey='beammajor')
         if (singleBeam == False):
@@ -502,14 +500,14 @@ def imheadlist(vis, omitBeam=False):
             header['beamminor'] = bmin
             header['beampa'] = bpa
         else:
-            keys += ['beammajor','beamminor','beampa']
+            keys += ['beammajor', 'beamminor', 'beampa']
     for key in keys:
         try:
             header[key] = imhead(vis, mode='get', hdkey=key)
         except:
             pass
     for axis in range(len(header['shape'])):
-        for key in ['cdelt','crval']:
+        for key in ['cdelt', 'crval']:
             mykey = key+str(axis+1)
             try:
                 result = imhead(vis, mode='get', hdkey=mykey)
@@ -521,7 +519,7 @@ def imheadlist(vis, omitBeam=False):
             except:
                 print("Failed to set header key: ", mykey)
                 pass
-        for key in ['crpix','ctype','cunit']:
+        for key in ['crpix', 'ctype', 'cunit']:
             mykey = key+str(axis+1)
             try:
                 header[mykey] = imhead(vis, mode='get', hdkey=mykey)
@@ -555,7 +553,7 @@ def CalcAtmTransmissionForImage(img, chanInfo='', airmass=1.5, pwv=-1,
     if chanInfo == '':
         chanInfo = numberOfChannelsInCube(img, returnChannelWidth=True, returnFreqs=True) 
 
-    freqs = np.linspace(chanInfo[1]*1e-9,chanInfo[2]*1e-9,chanInfo[0])
+    freqs = np.linspace(chanInfo[1]*1e-9, chanInfo[2]*1e-9, chanInfo[0])
     numchan = len(freqs)
     lsrkwidth = (chanInfo[2] - chanInfo[1])/(numchan-1)
     result = cubeLSRKToTopo(img, chanInfo[1:3])
@@ -604,9 +602,9 @@ def CalcAtmTransmissionForImage(img, chanInfo='', airmass=1.5, pwv=-1,
     fResolution = lqa.quantity(chansepModel, 'GHz')
     fWidth = lqa.quantity(numchanModel*chansepModel, 'GHz')
     myat = casatools.atmosphere()
-    myat.initAtmProfile(humidity=H, temperature=lqa.quantity(T,"K"),
-                        altitude=lqa.quantity(altitude,"m"),
-                        pressure=lqa.quantity(P,'mbar'),atmType=midLatitudeWinter)
+    myat.initAtmProfile(humidity=H, temperature=lqa.quantity(T, "K"),
+                        altitude=lqa.quantity(altitude, "m"),
+                        pressure=lqa.quantity(P, 'mbar'), atmType=midLatitudeWinter)
     myat.initSpectralWindow(nbands, fCenter, fWidth, fResolution)
     myat.setUserWH2O(lqa.quantity(pwv, 'mm'))
 #    myat.setAirMass()  # This does not affect the opacity, but it does effect TebbSky, so do it manually.
@@ -676,15 +674,18 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile):
     if unmaskedPixels > 0:
         mycolor = 'r'
         message = 'Red spectrum from %d pixels in flattened clean mask' % (unmaskedPixels)
-        pl.text(0.025,0.96,message,transform=desc.transAxes,ha='left',fontsize=fontsize+1, color='r')
+        pl.text(0.025, 0.96, message, transform=desc.transAxes, ha='left', fontsize=fontsize+1, color='r')
     else:
         mycolor = 'b'
         pblimit = image_robust_rms_and_spectra['nonpbcor_image_cleanmask_spectrum_pblimit']
-        pl.text(0.025, 0.96, 'Blue spectrum is mean from pixels above the pb=%.2f level (no clean mask was found)' % (pblimit),transform=desc.transAxes,ha='left',fontsize=fontsize+1, color='b')
+        pl.text(0.025, 0.96,
+                'Blue spectrum is mean from pixels above the pb=%.2f level (no clean mask was found)' % pblimit,
+                transform=desc.transAxes, ha='left', fontsize=fontsize+1, color='b')
 
     # Noise spectrum
     noise = image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_robust_rms'] * 1000.
-    pl.text(0.025, 0.93, 'Black spectrum is per-channel scaled MAD from imstat annulus and outside clean mask', transform=desc.transAxes,ha='left',fontsize=fontsize+1)
+    pl.text(0.025, 0.93, 'Black spectrum is per-channel scaled MAD from imstat annulus and outside clean mask',
+            transform=desc.transAxes, ha='left', fontsize=fontsize+1)
     # Turn off rightside y-axis ticks to make way for second y-axis
     desc.yaxis.set_ticks_position('left')
     pl.plot(channels, intensity, '-', color=mycolor) 
@@ -715,7 +716,7 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile):
     pl.ylim(ylimits)
 
     # Plot horizontal dotted line at zero intensity
-    pl.plot(pl.xlim(), [0,0], 'k:')
+    pl.plot(pl.xlim(), [0, 0], 'k:')
     pl.text(0.5, 1.085, cube, transform=desc.transAxes, fontsize=fontsize, ha='center')
     addFrequencyAxisAbove(pl.gca(), freqs[0], freqs[-1], frame,
                           twinx=True, ylimits=noiseLimits,

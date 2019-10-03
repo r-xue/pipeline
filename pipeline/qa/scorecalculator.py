@@ -2488,11 +2488,12 @@ def generate_metric_mask(context, result, cs, mask):
             metric_mask[x, y, :, :] = True
 
     # exclude edge channels
-    edge_channels = [i for i in range(imshape[3]) if np.all(mask[:,:,:,i] == False)]
+    edge_channels = [i for i in range(imshape[3]) if np.all(mask[:, :, :, i] == False)]
     LOG.debug('edge channels: {}'.format(edge_channels))
-    metric_mask[:,:,:,edge_channels] = False
+    metric_mask[:, :, :, edge_channels] = False
 
     return metric_mask
+
 
 def direction_recover( ra, dec, org_direction ):
     me = casatools.measures

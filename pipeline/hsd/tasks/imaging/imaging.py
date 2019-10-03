@@ -338,7 +338,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
                 # image name
                 # image name should be based on virtual spw id
-                v_spwids = [context.observing_run.real2virtual_spw_id(s, m) for s,m in zip(spwids, msobjs)]
+                v_spwids = [context.observing_run.real2virtual_spw_id(s, m) for s, m in zip(spwids, msobjs)]
                 v_spwids_unique = numpy.unique(v_spwids)
                 assert len(v_spwids_unique) == 1
                 imagename = self.get_imagename(source_name, v_spwids_unique, ant_name, asdm)

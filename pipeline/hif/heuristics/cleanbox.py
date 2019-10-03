@@ -165,7 +165,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                 raise 'Cannot handle clean mask name %s' % (os.path.basename(cleanmask))
 
             with casatools.ImageReader(cleanmask) as image:
-                flattened_mask_image = image.collapse(function='max', axes=[2,3], outfile=flattened_mask)
+                flattened_mask_image = image.collapse(function='max', axes=[2, 3], outfile=flattened_mask)
                 try:
                     npoints_mask = flattened_mask_image.statistics(mask='"%s" > 0.1' % (os.path.basename(flattened_mask)), robust=False)['npts']
                     if npoints_mask.shape != (0,):

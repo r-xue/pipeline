@@ -1063,7 +1063,7 @@ class TsysflagView(object):
                     # .. bearing in mind that Tsys spws map to themselves
                     science_spws = {tsys_spw}
                 else:
-                    science_spws = {science_id for science_id,mapped_tsys in enumerate(spwmap)
+                    science_spws = {science_id for science_id, mapped_tsys in enumerate(spwmap)
                                     if tsys_spw == mapped_tsys}
 
                 # now which of the fields were observed using these science

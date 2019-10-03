@@ -272,7 +272,7 @@ def get_calapplications(ms, tsys_table, calfrom_defaults, origin, spw_map, is_si
     field_id_to_identifier = utils.get_field_identifiers(ms)
 
     # create a domain object mapping of science spw to Tsys spw
-    domain_spw_map = {ms.spectral_windows[i]: ms.spectral_windows[j] for i,j in enumerate(spw_map)}
+    domain_spw_map = {ms.spectral_windows[i]: ms.spectral_windows[j] for i, j in enumerate(spw_map)}
 
     # Now loop through the MS intents, creating a specific Tsys registration for each intent.
     calapps = []

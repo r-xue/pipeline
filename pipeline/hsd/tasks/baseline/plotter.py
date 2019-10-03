@@ -378,7 +378,6 @@ class BaselineSubtractionPlotManager(object):
 
         del prefit_integrated_data, prefit_averaged_data
 
-
         plotter.done()
 
         return plot_list

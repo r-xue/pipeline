@@ -756,8 +756,8 @@ class ExportData(basetask.StandardTaskTemplate):
                     ms_file = msvisdict[vis_name]
                 if exportcalprods:
                     (flags_file, calapply_file) = calvisdict[vis_name]
-                pipemanifest.add_asdm_imlist(session, vis_name, ms_file, flags_file,
-                                             calapply_file,immatchlist, 'calibrator')
+                pipemanifest.add_asdm_imlist(session, vis_name, ms_file, flags_file, calapply_file, immatchlist,
+                                             'calibrator')
 
         # Add a tar file of the web log
         pipemanifest.add_weblog(ouss, os.path.basename(stdfproducts.weblog_file))

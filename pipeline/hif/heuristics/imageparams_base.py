@@ -1971,11 +1971,11 @@ class ImageParamsHeuristics(object):
             allbeams = image.restoringbeam()
             commonbeam = image.commonbeam()
             nchan = allbeams['nChannels']
-            areas = np.zeros(nchan,'float')
+            areas = np.zeros(nchan, 'float')
             axratio = np.zeros(nchan, 'float')
             weight = np.zeros(nchan, 'bool')
 
-            for ii in range(0,nchan):
+            for ii in range(0, nchan):
                 axmajor = cqa.convert(cqa.quantity(allbeams['beams']['*'+str(ii)]['*0']['major']), 'arcsec')['value']
                 axminor = cqa.convert(cqa.quantity(allbeams['beams']['*'+str(ii)]['*0']['minor']), 'arcsec')['value']
                 areas[ii] = axmajor * axminor
@@ -1986,7 +1986,7 @@ class ImageParamsHeuristics(object):
             ## The iterative loop is to get robust autoflagging
             ## Add a linear fit instead of just a 'mean' to account for slopes (useful for flagging on beam_area)
             local_axratio = axratio.copy()
-            for steps in range(0,2):  ### Heuristic : how many iterations here ? 
+            for steps in range(0, 2):  ### Heuristic : how many iterations here ? 
                 local_axratio[ weight==False ] = np.nan
                 mean_axrat = np.nanmean(local_axratio)
                 std_axrat = np.nanstd(local_axratio)
@@ -2004,7 +2004,7 @@ class ImageParamsHeuristics(object):
 
             ## Fill all flagged channels with the largest/first valid beam 
             dummybeam = allbeams['beams']['*'+str(chanid)]['*0']
-            for ii in range(0,nchan):
+            for ii in range(0, nchan):
                 if weight[ii]==False:
                     image.setrestoringbeam( major=dummybeam['major'], minor=dummybeam['minor'], pa=dummybeam['positionangle'], channel=ii)
 
@@ -2015,7 +2015,7 @@ class ImageParamsHeuristics(object):
 
         ## Reinstate the old beam to get back to the original iter0 product
         with casatools.ImageReader(psf_filename) as image:
-            for ii in range(0,nchan):
+            for ii in range(0, nchan):
                 if weight[ii]==False:
                     beam = allbeams['beams']['*'+str(ii)]['*0']
                     image.setrestoringbeam( major=beam['major'], minor=beam['minor'], pa=beam['positionangle'], channel=ii )

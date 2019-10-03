@@ -347,9 +347,9 @@ class Syspower(basetask.StandardTaskTemplate):
 
         with casatools.TableReader(rq_table, nomodify=False) as tb:
             rq_time = tb.getcol('TIME')
-            rq_spw  = tb.getcol('SPECTRAL_WINDOW_ID')
-            rq_par  = tb.getcol('FPARAM')
-            rq_ant  = tb.getcol('ANTENNA1')
+            rq_spw = tb.getcol('SPECTRAL_WINDOW_ID')
+            rq_par = tb.getcol('FPARAM')
+            rq_ant = tb.getcol('ANTENNA1')
             rq_flag = tb.getcol('FLAG')
 
             LOG.info('Starting RQ table')
@@ -486,7 +486,8 @@ class Syspower(basetask.StandardTaskTemplate):
 
             x = self.medfilt(x, k, threshold, fill_gaps=True)
             this_interp += 1
-            if this_interp > max_interp: break
+            if this_interp > max_interp:
+                break
         flag_percent2 = 100.0 * np.sum(x.mask) / x.size
         LOG.info('    finished interpolation with {0:.2f}% of data flagged'.format(flag_percent2))
         x.mask[x == 0] = True

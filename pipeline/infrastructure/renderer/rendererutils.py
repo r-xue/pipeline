@@ -51,7 +51,7 @@ def printTsysFlags(tsystable, htmlreport):
 
                     for pol in range(npol):
                         for t in range(len(times)):
-                            zflag=np.where(flags[pol, :, t])[0]
+                            zflag = np.where(flags[pol, :, t])[0]
 
                             if len(zflag) > 0:
                                 if len(zflag) == nchan:
