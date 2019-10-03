@@ -938,7 +938,7 @@ class SourceTable(object):
         eph_sourcenames = SourceTable._get_eph_sourcenames(msmd.name())
         is_eph_objs = [sourcename in eph_sourcenames for sourcename in sourcenames]
 
-        all_sources = zip(ids, sourcenames, directions, propermotions, is_eph_objs)
+        all_sources = list(zip(ids, sourcenames, directions, propermotions, is_eph_objs))
 
         # Only return sources for which scans are present.
         # Create a mapping of source id to a boolean of whether any
@@ -1035,7 +1035,7 @@ class FieldTable(object):
             else:
                 source_types = [None] * num_fields
 
-        all_fields = zip(field_ids, field_names, source_ids, times, source_types, phase_centres)
+        all_fields = list(zip(field_ids, field_names, source_ids, times, source_types, phase_centres))
 
         # only return sources for which scans are present
         # create a mapping of source id to a boolean of whether any scans are present for that source

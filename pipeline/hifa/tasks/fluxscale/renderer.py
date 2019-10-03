@@ -308,7 +308,7 @@ def create_flux_comparison_plots(context, output_dir, result):
             y = [f.I.to_units(FluxDensityUnits.JANSKY) for f in fluxes]
             spix = [float(f.spix) for f in fluxes]
             # sort by frequency
-            x, y, spix = zip(*sorted(zip(x, y, spix)))
+            x, y, spix = list(zip(*sorted(zip(x, y, spix))))
             colour = next(colours)
             ax.plot(x, y, marker='o', color=colour, label='Data source: {}'.format(label))
 

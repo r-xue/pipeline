@@ -93,8 +93,7 @@ class CalApplication(object):
         except IndexError:
             d['spwmap'] = [d['spwmap']]
 
-        zipped = zip(d['gaintable'], d['gainfield'], d['interp'], d['spwmap'],
-                     d['calwt'])
+        zipped = list(zip(d['gaintable'], d['gainfield'], d['interp'], d['spwmap'], d['calwt']))
 
         calfroms = []
         for (gaintable, gainfield, interp, spwmap, calwt) in zipped:

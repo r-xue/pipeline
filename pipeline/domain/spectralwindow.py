@@ -76,7 +76,7 @@ class ChannelList(object):
         self.chan_effbws = effbw
 
     def __iter__(self):
-        raw_channel_data = zip(self.chan_freqs, self.chan_widths, self.chan_effbws)
+        raw_channel_data = list(zip(self.chan_freqs, self.chan_widths, self.chan_effbws))
         for chan_centre, chan_width, chan_effective_bw in raw_channel_data:
             yield self.__create_channel(chan_centre, chan_width, chan_effective_bw)
 

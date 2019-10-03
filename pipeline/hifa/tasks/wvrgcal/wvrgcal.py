@@ -567,7 +567,7 @@ class Wvrgcal(basetask.StandardTaskTemplate):
         copied['Disc_um'] = [to_microns(v) for v in copied['Disc_um']]
 
         attrs = ['Name', 'WVR', 'Flag', 'RMS_um', 'Disc_um']
-        zipped = zip(*[copied.get(attr) for attr in attrs])
+        zipped = list(zip(*[copied.get(attr) for attr in attrs]))
         wvr_infos = [WVRInfo(*row) for row in zipped]
 
         return wvr_infos
