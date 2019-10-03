@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 # import pipeline.hif.tasks.importdata.importdata as importdata
 import pipeline.h.tasks.importdata.importdata as importdata
 import pipeline.infrastructure.logging as logging
@@ -40,32 +38,31 @@ class ALMAImportDataQAHandler(pqa.QAPlugin):
         result.qa.pool.extend(scores)
 
     def _check_polintents(self, mses):
-        '''
+        """
         Check each measurement set for polarization intents
-        '''
+        """
         return qacalc.score_polintents(mses)
 
     def _check_bands(self, mses):
-        '''
+        """
         Check each measurement set for bands with calibration issues
-        '''
+        """
         return qacalc.score_bands(mses)
 
     def _check_bwswitching(self, mses):
-        '''
+        """
         Check each measurement set for bandwidth switching calibration issues
-        '''
+        """
         return qacalc.score_bwswitching(mses)
 
     def _check_science_spw_names(self, mses, virtual_science_spw_names):
-        '''
+        """
         Check science spw names
-        '''
+        """
         return qacalc.score_science_spw_names(mses, virtual_science_spw_names)
 
     def _check_fluxservice(self, result):
-        '''
+        """
         Check flux service usage
-        '''
-
+        """
         return qacalc.score_fluxservice(result)

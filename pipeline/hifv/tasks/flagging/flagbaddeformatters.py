@@ -1,12 +1,10 @@
-from __future__ import absolute_import
-
 import collections
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hifv.heuristics import getBCalStatistics
-from pipeline.hifv.heuristics import getCalFlaggedSoln
+# from pipeline.hifv.heuristics import getCalFlaggedSoln
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 

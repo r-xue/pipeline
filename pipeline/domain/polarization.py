@@ -1,6 +1,3 @@
-from __future__ import absolute_import
-
-
 class Polarization(object):
     def __init__(self, pol_id, num_corr, corr_type, corr_product):
         # prefer standard Python integers to numpy integers

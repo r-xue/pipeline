@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import pipeline.h.tasks.restoredata.restoredata as restoredata
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
@@ -10,7 +8,8 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class ALMARestoreDataInputs(restoredata.RestoreDataInputs):
-    asis = vdp.VisDependentProperty(default='SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR CalPointing')
+    asis = vdp.VisDependentProperty(
+        default='SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR CalPointing')
 
     def __init__(self, context, copytoraw=None, products_dir=None, rawdata_dir=None, output_dir=None, session=None,
                  vis=None, bdfflags=None, lazy=None, asis=None, ocorr_mode=None):

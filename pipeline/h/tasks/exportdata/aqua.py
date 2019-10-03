@@ -44,8 +44,6 @@ Future Technical Solutions
     Add the euivalent of a  toAqua registration method similar to what is
     done with QA handlers already
 """
-from __future__ import absolute_import
-
 import datetime
 import itertools
 import operator

@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import collections
 
 import pipeline.infrastructure.logging as logging
@@ -25,8 +23,7 @@ class FlagTargetsALMAQAHandler(pqa.QAPlugin):
         try:
             scores = [qacalc.score_almatargets_agents(ms, result.summaries)]
         except:
-            scores = [pqa.QAScore(1.0, longmsg='Flag Summary off',
-                                  shortmsg='Flag Summary off')]
+            scores = [pqa.QAScore(1.0, longmsg='Flag Summary off', shortmsg='Flag Summary off')]
 
         result.qa.pool[:] = scores
 

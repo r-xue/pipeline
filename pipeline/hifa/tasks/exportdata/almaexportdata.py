@@ -1,15 +1,11 @@
-from __future__ import absolute_import
-
 import collections
 import os
 import shutil
-import tarfile
-
-from pipeline.infrastructure import task_registry
-import pipeline.infrastructure.vdp as vdp
 
 import pipeline.h.tasks.exportdata.exportdata as exportdata
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.vdp as vdp
+from pipeline.infrastructure import task_registry
 from . import almaifaqua
 
 LOG = infrastructure.get_logger(__name__)

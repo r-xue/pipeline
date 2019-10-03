@@ -2,8 +2,6 @@
 
 # This module has been derived from Todd Hunter's plotSpectrumFromMask module.
 # It is used to create the diagnostic spectra plots for the cube imaging weblog.
-from __future__ import print_function  # prevents adding old-style print statements that will not work in pythone3
-
 import os
 import re
 from math import degrees

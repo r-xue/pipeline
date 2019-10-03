@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import collections
 import os
 import shutil
@@ -119,7 +117,8 @@ class BandpassQAHandler(pqa.QAPlugin):
                     except Exception as e:
                         result.qa = pqa.QAScorePool()
                         result.qa.pool[:] = [pqa.QAScore(0.0, longmsg=str(e), shortmsg='QA exception', vis=vis)]
-                        LOG.error('Problem occurred running QA analysis. QA results will not be available for this task')
+                        LOG.error('Problem occurred running QA analysis. QA results will not be available for this'
+                                  ' task')
                         LOG.exception(e)
             finally:
                 if os.path.exists(qa_dir):

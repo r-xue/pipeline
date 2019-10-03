@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import collections
 import os
 
@@ -10,7 +8,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.mpihelpers as mpihelpers
-from pipeline.domain import DataTable
+# from pipeline.domain import DataTable
 from pipeline.hsd.heuristics import MaskDeviationHeuristic
 from pipeline.infrastructure import task_registry
 from . import maskline

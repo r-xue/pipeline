@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import pipeline.h.tasks.common.displays.common as common
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
@@ -46,6 +44,7 @@ class GaincalSummaryChart(object):
             plot_wrappers.extend(plot_cls.plot())
         return plot_wrappers
 
+
 class GaincalDetailChart(object):
     """
     Base class for executing plotms per spw and antenna
@@ -84,6 +83,7 @@ class GaincalDetailChart(object):
         for plot_cls in self.plotters:
             plot_wrappers.extend(plot_cls.plot())
         return plot_wrappers
+
 
 class GaincalAmpVsTimeSummaryChart(GaincalSummaryChart):
     """

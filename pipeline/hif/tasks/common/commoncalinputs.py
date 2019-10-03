@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import pipeline.domain as domain
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils

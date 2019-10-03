@@ -1,8 +1,7 @@
-from __future__ import absolute_import
-
-import os
-import numpy
 import collections
+import os
+
+import numpy
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -256,7 +255,7 @@ class HpcSDSkyCalInputs(SDSkyCalInputs):
         self.parallel = parallel
 
 
-#@task_registry.set_equivalent_casa_task('hpc_hsd_skycal')
+# @task_registry.set_equivalent_casa_task('hpc_hsd_skycal')
 @task_registry.set_equivalent_casa_task('hsd_skycal')
 @task_registry.set_casa_commands_comment('Generates sky calibration table according to calibration strategy.')
 class HpcSDSkyCal(sessionutils.ParallelTemplate):

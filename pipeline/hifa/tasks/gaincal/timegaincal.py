@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import os
 
 import pipeline.infrastructure as infrastructure
@@ -17,6 +15,7 @@ __all__ = [
     'TimeGaincalInputs',
     'TimeGaincal',
 ]
+
 
 class TimeGaincalInputs(gtypegaincal.GTypeGaincalInputs):
 
@@ -276,10 +275,11 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
                 result = self._do_calibrator_phasecal(interval, gaintype, combine, spw_sel, intent)
                 apply_list.append(result)
 
-        return (apply_list, temporal_list)
+        return apply_list, temporal_list
 
     # Used to calibrate "selfcaled" targets
-    def _do_calibrator_phasecal(self, solint=None, gaintype=None, combine=None, spw=None, intent=None, append_caltable=None):
+    def _do_calibrator_phasecal(self, solint=None, gaintype=None, combine=None, spw=None, intent=None,
+                                append_caltable=None):
         inputs = self.inputs
         spw_sel = str(spw) if spw is not None else inputs.spw
         intent_sel = intent if intent is not None else inputs.intent

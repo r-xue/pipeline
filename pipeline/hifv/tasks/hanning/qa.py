@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import collections
 import os
 
@@ -11,13 +9,13 @@ from . import hanning
 
 LOG = logging.get_logger(__name__)
 
+
 class HanningQAHandler(pqa.QAPlugin):
     result_cls = hanning.HanningResults
     child_cls = None
     generating_task = hanning.Hanning
 
     def handle(self, context, result):
-
         # Check for existence of the the target MS.
         score1 = self._ms_exists(os.path.dirname(result.inputs['vis']), os.path.basename(result.inputs['vis']))
         scores = [score1]
@@ -25,10 +23,11 @@ class HanningQAHandler(pqa.QAPlugin):
         result.qa.pool.extend(scores)
 
     def _ms_exists(self, output_dir, ms):
-        '''
+        """
         Check for the existence of the target MS
-        '''
+        """
         return qacalc.score_path_exists(output_dir, ms, 'Hanning smoothed ms')
+
 
 class HanningListQAHandler(pqa.QAPlugin):
     """

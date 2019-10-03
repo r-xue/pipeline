@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 polarization_map = { 'linear': { 0: ['XX',  9],
                                  1: ['YY', 12],
                                  2: ['XY', 10],

@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import pipeline.infrastructure as infrastructure
 
 LOG = infrastructure.get_logger(__name__)

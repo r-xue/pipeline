@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 from .antenna import Antenna
 from .antennaarray import AntennaArray
 from .datadescription import DataDescription

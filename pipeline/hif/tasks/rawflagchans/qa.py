@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import collections
 
 import pipeline.h.tasks.exportdata.aqua as aqua
@@ -26,9 +24,7 @@ class RawflagchansQAHandler(pqa.QAPlugin):
         # Calculate QA score from presence of flagging views and from the
         # flagging summary in the result, adopting the minimum score as the
         # representative score for this task.
-        score1 = qacalc.linear_score_fraction_newly_flagged(ms.basename,
-                                                             result.summaries,
-                                                             ms.basename)
+        score1 = qacalc.linear_score_fraction_newly_flagged(ms.basename, result.summaries, ms.basename)
         new_origin = pqa.QAOrigin(metric_name='%RawBadchansFlags',
                                   metric_score=score1.origin.metric_score,
                                   metric_units='Percentage raw bad channels data newly flagged')
@@ -60,9 +56,7 @@ class RawflagchansListQAHandler(pqa.QAPlugin):
         result.qa.pool[:] = collated
 
         vises = [r.inputs['vis'] for r in result]
-        longmsg = 'No extra data was flagged in %s' % utils.commafy(vises, 
-                                                                    quotes=False, 
-                                                                    conjunction='or')
+        longmsg = 'No extra data was flagged in %s' % utils.commafy(vises, quotes=False, conjunction='or')
         result.qa.all_unity_longmsg = longmsg
 
 

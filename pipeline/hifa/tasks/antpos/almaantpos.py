@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import pipeline.hif.tasks.antpos.antpos as antpos
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp

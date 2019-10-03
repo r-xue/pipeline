@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp

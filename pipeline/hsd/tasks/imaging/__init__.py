@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 import pipeline.infrastructure.renderer.qaadapter as qaadapter
 import pipeline.infrastructure.renderer.weblog as weblog
 
@@ -10,4 +9,5 @@ from . import qa
 
 qaadapter.registry.register_to_imaging_topic(resultobjects.SDImagingResults)
 
-weblog.add_renderer(SDImaging, renderer.T2_4MDetailsSingleDishImagingRenderer(always_rerender=False), group_by=weblog.UNGROUPED)
+weblog.add_renderer(SDImaging, renderer.T2_4MDetailsSingleDishImagingRenderer(always_rerender=False),
+                    group_by=weblog.UNGROUPED)

@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import collections
 import os
 
@@ -12,6 +10,7 @@ from . import uvcontsub
 
 LOG = logging.get_logger(__name__)
 
+
 class UVcontFitQAHandler(pqa.QAPlugin):
     result_cls = uvcontfit.UVcontFitResults
     child_cls = None
@@ -22,7 +21,8 @@ class UVcontFitQAHandler(pqa.QAPlugin):
         scores = []
 
         if result.mitigation_error:
-            scores.append(pqa.QAScore(0.0, longmsg = 'Size mitigation error. No continuum information available.', shortmsg = 'Size mitigation error'))
+            scores.append(pqa.QAScore(0.0, longmsg='Size mitigation error. No continuum information available.',
+                                      shortmsg='Size mitigation error'))
         else:
             # Check for existance of the UV continuum table
             for calapp in result.pool:
@@ -32,11 +32,11 @@ class UVcontFitQAHandler(pqa.QAPlugin):
         result.qa.pool.extend(scores)
 
     def _uvtable_exists(self, output_dir, caltable):
-        '''
+        """
         Check for the existence of the target MS
-        '''
-        return qacalc.score_path_exists(output_dir, caltable,
-            'uv continuum fit table')
+        """
+        return qacalc.score_path_exists(output_dir, caltable, 'uv continuum fit table')
+
 
 class UVcontFitListQAHandler(pqa.QAPlugin):
     """
@@ -52,10 +52,9 @@ class UVcontFitListQAHandler(pqa.QAPlugin):
         collated = utils.flatten([r.qa.pool for r in result])
         result.qa.pool[:] = collated
         mses = [r.inputs['vis'] for r in result]
-        longmsg = 'No missing target MS(s) for %s' % utils.commafy(mses,
-                                                                   quotes=False,
-                                                                   conjunction='or')
+        longmsg = 'No missing target MS(s) for %s' % utils.commafy(mses, quotes=False, conjunction='or')
         result.qa.all_unity_longmsg = longmsg
+
 
 class UVcontSubQAHandler(pqa.QAPlugin):
     result_cls = uvcontsub.UVcontSubResults
@@ -67,11 +66,13 @@ class UVcontSubQAHandler(pqa.QAPlugin):
         scores = []
 
         if result.mitigation_error:
-            scores.append(pqa.QAScore(0.0, longmsg = 'Size mitigation error. No continuum information available.', shortmsg = 'Size mitigation error'))
+            scores.append(pqa.QAScore(0.0, longmsg='Size mitigation error. No continuum information available.',
+                                      shortmsg='Size mitigation error'))
         else:
-            scores.append(pqa.QAScore(1.0, longmsg = 'Continuum subtraction cal tables applied.', shortmsg = ''))
+            scores.append(pqa.QAScore(1.0, longmsg='Continuum subtraction cal tables applied.', shortmsg=''))
 
         result.qa.pool.extend(scores)
+
 
 class UVcontSubListQAHandler(pqa.QAPlugin):
     """
@@ -87,7 +88,5 @@ class UVcontSubListQAHandler(pqa.QAPlugin):
         collated = utils.flatten([r.qa.pool for r in result])
         result.qa.pool[:] = collated
         mses = [r.inputs['vis'] for r in result]
-        longmsg = 'No missing target MS(s) for %s' % utils.commafy(mses,
-                                                                   quotes=False,
-                                                                   conjunction='or')
+        longmsg = 'No missing target MS(s) for %s' % utils.commafy(mses, quotes=False, conjunction='or')
         result.qa.all_unity_longmsg = longmsg

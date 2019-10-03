@@ -4,13 +4,10 @@ Single-Dish Exportdata task dedicated to NRO data.
 Please see hsd/tasks/exportdata/exportdata.py for generic 
 description on how Exportdata task works.
 """
-from __future__ import absolute_import
-
 import pipeline.h.tasks.exportdata.exportdata as exportdata
+import pipeline.hsd.tasks.exportdata.exportdata as sdexportdata
 import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import task_registry
-import pipeline.hsd.tasks.exportdata.exportdata as sdexportdata
-
 
 # the logger for this module
 LOG = infrastructure.get_logger(__name__)
@@ -52,4 +49,3 @@ class NROExportData(sdexportdata.SDExportData):
     Inputs = NROExportDataInputs
 
     NameBuilder = NROPipelineNameBuilder
-

@@ -7,8 +7,6 @@ result = task.exectue(dry_run=False)
 result.accept(context)
 
 """
-from __future__ import absolute_import
-
 import datetime
 import os
 import urllib

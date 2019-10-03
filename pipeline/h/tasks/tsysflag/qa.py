@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import collections
 import os
 
@@ -26,28 +24,23 @@ class TsysflagQAHandler(pqa.QAPlugin):
         ms = context.observing_run.get_ms(vis)
 
         if result.task_incomplete_reason:
-            score = pqa.QAScore(0.0, longmsg='Task ended prematurely',
-                shortmsg='Task ended prematurely', vis=vis)
-            new_origin = pqa.QAOrigin(metric_name='%TsysCaltableFlags',
-                metric_score=score.origin.metric_score,
-                metric_units='Percentage Tsys caltable newly flagged')
+            score = pqa.QAScore(0.0, longmsg='Task ended prematurely', shortmsg='Task ended prematurely', vis=vis)
+            new_origin = pqa.QAOrigin(metric_name='%TsysCaltableFlags', metric_score=score.origin.metric_score,
+                                      metric_units='Percentage Tsys caltable newly flagged')
             score.origin = new_origin
             scores = [score]
         else:
             try:
-                score = qacalc.score_fraction_newly_flagged(caltable,
-                    result.summaries, ms.basename)
-                new_origin = pqa.QAOrigin(metric_name='%TsysCaltableFlags',
-                    metric_score=score.origin.metric_score,
-                    metric_units='Percentage Tsys caltable newly flagged')
+                score = qacalc.score_fraction_newly_flagged(caltable, result.summaries, ms.basename)
+                new_origin = pqa.QAOrigin(metric_name='%TsysCaltableFlags', metric_score=score.origin.metric_score,
+                                          metric_units='Percentage Tsys caltable newly flagged')
                 score.origin = new_origin
                 scores = [score]
             except AttributeError:
-                score = pqa.QAScore(0.0, longmsg='No flagging summaries available',
-                    shortmsg='No flag summaries', vis=vis)
-                new_origin = pqa.QAOrigin(metric_name='%TsysCaltableFlags',
-                    metric_score=score.origin.metric_score,
-                    metric_units='Percentage Tsys caltable newly flagged')
+                score = pqa.QAScore(0.0, longmsg='No flagging summaries available', shortmsg='No flag summaries',
+                                    vis=vis)
+                new_origin = pqa.QAOrigin(metric_name='%TsysCaltableFlags', metric_score=score.origin.metric_score,
+                                          metric_units='Percentage Tsys caltable newly flagged')
                 score.origin = new_origin
                 scores = [score]
 

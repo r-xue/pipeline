@@ -1,6 +1,5 @@
 """The antenna module defines the Antenna class.
 """
-from __future__ import absolute_import
 import pprint
 
 import pipeline.infrastructure.casatools as casatools

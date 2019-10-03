@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import csv
 import math
 import os
@@ -443,4 +441,3 @@ class VLASetjy(basetask.StandardTaskTemplate):
 
     def analyse(self, result):
         return result
-

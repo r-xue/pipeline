@@ -1,27 +1,25 @@
-from __future__ import absolute_import
-
 import copy
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.basetask as basetask
 
-
 LOG = infrastructure.get_logger(__name__)
 
+
 class CheckProductSizeResult(basetask.Results):
-    def __init__(self, \
-                 allowed_maxcubesize, \
-                 allowed_maxcubelimit, \
-                 allowed_productsize, \
-                 original_maxcubesize, \
-                 original_productsize, \
-                 cube_mitigated_productsize, \
-                 mitigated_maxcubesize, \
-                 mitigated_productsize, \
-                 size_mitigation_parameters, \
-                 status, \
-                 reason, \
+    def __init__(self,
+                 allowed_maxcubesize,
+                 allowed_maxcubelimit,
+                 allowed_productsize,
+                 original_maxcubesize,
+                 original_productsize,
+                 cube_mitigated_productsize,
+                 mitigated_maxcubesize,
+                 mitigated_productsize,
+                 size_mitigation_parameters,
+                 status,
+                 reason,
                  synthesized_beams):
         super(CheckProductSizeResult, self).__init__()
         self.allowed_maxcubesize = allowed_maxcubesize

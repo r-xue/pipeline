@@ -1,7 +1,7 @@
-from __future__ import absolute_import
 import collections
-import os
 import copy
+import os
+
 import matplotlib
 import numpy as np
 
@@ -9,9 +9,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.utils as utils
-
 from pipeline.h.tasks.common.displays import sky as sky
-
 from .plot_spectra import plot_spectra
 
 LOG = infrastructure.get_logger(__name__)

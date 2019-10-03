@@ -1,6 +1,4 @@
-from __future__ import absolute_import
 from . import api
-#import pipeline.h.heuristics as heuristics
 from pipeline.h.heuristics import echoheuristic
 
 
@@ -12,7 +10,6 @@ class Adapter(api.Heuristic):
         # if the heuristic is not callable, such as when it's a Python
         # primitive, wrap it in an EchoHeuristic
         if not callable(heuristic):
-            #heuristic = heuristics.EchoHeuristic(heuristic)
             heuristic = echoheuristic.EchoHeuristic(heuristic)
 
         self._adaptee = heuristic 

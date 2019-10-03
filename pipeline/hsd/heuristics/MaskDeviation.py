@@ -1,6 +1,5 @@
-from __future__ import absolute_import
-
 import os
+
 import pylab as PL
 import numpy as NP
 
@@ -11,6 +10,7 @@ import pipeline.infrastructure.casatools as casatools
 
 LOG = infrastructure.get_logger(__name__)
 
+
 def _calculate(worker, consider_flag=False):
     worker.SubtractMedian(threshold=3.0, consider_flag=consider_flag)
     worker.CalcStdSpectrum(consider_flag=consider_flag)
@@ -19,6 +19,7 @@ def _calculate(worker, consider_flag=False):
     #worker.SavePlot()
     mask_list = worker.masklist
     return mask_list
+
 
 class MaskDeviationHeuristic(api.Heuristic):
     def calculate(self, vis, field_id='', antenna_id='', spw_id='', consider_flag=False):
@@ -107,7 +108,6 @@ class MaskDeviation(object):
         LOG.debug('MaskDeviation.ReadDataFromMS: %s %s'%(self.nrow, self.nchan))
 
         return r
-
 
     def SubtractMedian(self, threshold=3.0, consider_flag=False):
         """
@@ -269,4 +269,3 @@ class MaskDeviation(object):
         Save the plot in PNG format
         """
         PL.savefig(self.infile+'.png', format='png')
-

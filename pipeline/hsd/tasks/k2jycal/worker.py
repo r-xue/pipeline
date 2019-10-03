@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import os
 
 from numpy import sqrt
@@ -24,7 +22,6 @@ class SDK2JyCalWorkerInputs(vdp.StandardInputs):
         self.output_dir = output_dir
         self.caltable = caltable
         self.factors = factors
-
 
     # Convert to CASA gencal task arguments.
     def to_casa_args(self):

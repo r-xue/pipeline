@@ -1,9 +1,5 @@
-from __future__ import absolute_import
-
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.utils as utils
-#from . import applycal
 from pipeline.h.tasks.common.displays import applycal as applycal
 
 LOG = infrastructure.get_logger(__name__)
@@ -11,6 +7,7 @@ LOG = infrastructure.get_logger(__name__)
 # TODO
 # create an adapter object so that Setjy and calibration tasks can use the
 # same PlotmsLeaf and composite objects
+
 
 class BasebandComposite(applycal.BasebandComposite):
     """

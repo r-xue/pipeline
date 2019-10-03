@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import collections
 import os
 
@@ -26,7 +24,6 @@ class TimegaincalQAPool(pqa.QAScorePool):
     def __init__(self, qa_results_dict):
         super(TimegaincalQAPool, self).__init__()
         self.qa_results_dict = qa_results_dict
-
 
     def update_scores(self, ms, phase_field_ids):
         try:

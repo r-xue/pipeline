@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 # import pipeline.hif.tasks.importdata.renderer as super_renderer
 import pipeline.h.tasks.importdata.renderer as super_renderer
 import pipeline.infrastructure.renderer.weblog as weblog

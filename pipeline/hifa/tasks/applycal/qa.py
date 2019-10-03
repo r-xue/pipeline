@@ -1,7 +1,5 @@
-from __future__ import absolute_import
-
-import operator
 import collections
+import operator
 import os
 
 import pipeline.h.tasks.applycal.applycal as h_applycal

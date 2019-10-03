@@ -1,7 +1,6 @@
-from __future__ import absolute_import
-
 import os
 import time
+
 import numpy
 
 import pipeline.infrastructure as infrastructure
@@ -20,6 +19,7 @@ _LOG = infrastructure.get_logger(__name__)
 LOG = utils.OnDemandStringParseLogger(_LOG)
 
 NoData = common.NoData
+
 
 class MaskLineInputs(vdp.StandardInputs):
     window = vdp.VisDependentProperty(default=[])

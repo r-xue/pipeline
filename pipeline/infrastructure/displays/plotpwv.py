@@ -1,15 +1,12 @@
-from __future__ import absolute_import
-
-# Imports
-import os
 import datetime
 import math
+import os
+
 import numpy as np
 import matplotlib
 import pylab as pb
 from scipy.interpolate import splev, splrep
 
-# Pipeline imports
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
 

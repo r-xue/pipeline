@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 from .antpos import ALMAAntpos
 from .bandpass import ALMAPhcorBandpass, SessionALMAPhcorBandpass
 from .bandpassflag import Bandpassflag

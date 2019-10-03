@@ -1,8 +1,5 @@
-from __future__ import absolute_import
-
 import copy
 import os
-import collections
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api
@@ -47,6 +44,7 @@ class FindContInputs(vdp.StandardInputs):
 # tell the infrastructure to give us mstransformed data when possible by
 # registering our preference for imaging measurement sets
 api.ImagingMeasurementSetsPreferred.register(FindContInputs)
+
 
 @task_registry.set_equivalent_casa_task('hif_findcont')
 class FindCont(basetask.StandardTaskTemplate):

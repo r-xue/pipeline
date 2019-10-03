@@ -1,10 +1,7 @@
-from __future__ import absolute_import
+import os
 
 from . import logging
 from . import filenamer as fn
-
-import os
-import copy
 
 LOG = logging.get_logger(__name__)
 

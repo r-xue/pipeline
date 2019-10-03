@@ -3,9 +3,6 @@ Created on 01 Jun 2017
 
 @author: Vincent Geers (UKATC)
 """
-
-from __future__ import absolute_import
-
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 from pipeline.hif.tasks.correctedampflag import resultobjects

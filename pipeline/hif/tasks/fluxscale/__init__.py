@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 from .fluxscale import Fluxscale
 
 import pipeline.infrastructure.renderer.weblog as weblog

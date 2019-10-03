@@ -1,13 +1,12 @@
-from __future__ import absolute_import
 import os
 import re
 import string
 
 import matplotlib.ticker as ticker
-from matplotlib.colors import ColorConverter, Colormap, Normalize
 import numpy as np
-from numpy import ma
 import pylab as plt
+from matplotlib.colors import ColorConverter, Colormap, Normalize
+from numpy import ma
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger

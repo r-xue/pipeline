@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import os
 import shutil
 
@@ -224,6 +222,3 @@ class Transformimagedata(mssplit.MsSplit):
             self._executor.execute(task)
 
         return result
-
-
-

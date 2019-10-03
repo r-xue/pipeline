@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 from casarecipes import tec_maps
 
 import pipeline.infrastructure as infrastructure

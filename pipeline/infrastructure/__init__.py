@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import sys
 
 # this goes first so that other infrastructure modules can reference the
@@ -27,14 +25,15 @@ PLOT_LEVEL = '20'
 
 # temporary data structure to map plot level to detail plotting decision.
 # This should be replaced with a hierarchical log level.
-_PLOT_LEVELS = {'all'     : 30,
-                'default' : 20,
-                'summary' : 10}
+_PLOT_LEVELS = {'all': 30,
+                'default': 20,
+                'summary': 10}
 # detail plots will be generated if PLOT_LEVEL is greater than this
-_PLOT_DETAIL_THRESHOLDS = {'default'     :20,
-                           'hif_applycal':30,
-                           'hifv_applycals':30,
-                           'hifv_plotsummary':30}
+_PLOT_DETAIL_THRESHOLDS = {'default': 20,
+                           'hif_applycal': 30,
+                           'hifv_applycals': 30,
+                           'hifv_plotsummary': 30}
+
 
 def set_plot_level(plotlevel):
     if plotlevel not in ('all', 'summary', 'default'):

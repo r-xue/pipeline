@@ -3,8 +3,6 @@ Created on 01 Jun 2017
 
 @author: Vincent Geers (UKATC)
 """
-from __future__ import absolute_import
-
 import functools
 import os.path
 

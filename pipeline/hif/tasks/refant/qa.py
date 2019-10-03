@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import collections
 
 import pipeline.infrastructure.logging as logging
@@ -21,11 +19,11 @@ class RefantQAHandler(pqa.QAPlugin):
         if result._refant != '':
             qa_score = 1.0
             longmsg = 'Reference antenna for %s was selected successfully' % ms.basename
-            shortmsg='Refant OK'
+            shortmsg = 'Refant OK'
         else:
             qa_score = 0.0
-            longmsg='Could not select reference antenna for %s' % ms.basename
-            shortmsg='No refant'
+            longmsg = 'Could not select reference antenna for %s' % ms.basename
+            shortmsg = 'No refant'
 
         origin = pqa.QAOrigin(metric_name='RefantQAHandler',
                               metric_score=bool(qa_score),

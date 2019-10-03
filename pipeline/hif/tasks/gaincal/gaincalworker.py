@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
@@ -9,21 +7,18 @@ from . import common
 LOG = infrastructure.get_logger(__name__)
 
 
-
 class GaincalWorkerInputs(common.VdpCommonGaincalInputs):
-    def __init__(self, context, output_dir=None, vis=None, caltable=None, 
-        field=None, spw=None, antenna=None, uvrange=None, intent=None,
-        selectdata=None, gaintype=None, smodel=None, calmode=None, solint=None,
-        combine=None, refant=None, minblperant=None, minsnr=None, solnorm=None,
-        append=None, scan=None, splinetime=None, npointaver=None,
-        phasewrap=None, opacity=None, preavg=None, parang=None):
+    def __init__(self, context, output_dir=None, vis=None, caltable=None, field=None, spw=None, antenna=None,
+                 uvrange=None, intent=None, selectdata=None, gaintype=None, smodel=None, calmode=None, solint=None,
+                 combine=None, refant=None, minblperant=None, minsnr=None, solnorm=None, append=None, scan=None,
+                 splinetime=None, npointaver=None, phasewrap=None, opacity=None, preavg=None, parang=None):
 
         # Standard parameters
         self.context = context
         self.vis = vis
         self.output_dir = output_dir
 
-        # Gaincla calibration inputs parameters
+        # Gaincal calibration inputs parameters
         self.field = field
         self.spw = spw
         self.antenna = antenna

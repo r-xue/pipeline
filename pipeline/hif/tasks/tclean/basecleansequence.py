@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import pipeline.infrastructure as infrastructure
 from pipeline.hif.heuristics import cleanbox as cbheuristic
 from .resultobjects import BoxResult

@@ -21,8 +21,6 @@ given the Result for processing. In this step, the QA framework calls
 QAPlugin.handle(context, result), the method overridden by the task-specific
 QAPlugin.
 """
-from __future__ import absolute_import
-
 import abc
 import collections
 import os.path

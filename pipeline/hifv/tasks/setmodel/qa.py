@@ -1,14 +1,10 @@
-from __future__ import absolute_import
-
 import collections
 
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
-import pipeline.qa.scorecalculator as qacalc
 from pipeline.h.tasks.common import commonfluxresults
 from . import vlasetjy
-
 
 LOG = logging.get_logger(__name__)
 
@@ -34,9 +30,12 @@ class VLASetjyQAHandler(pqa.QAPlugin):
                         msg = 'Standard calibrator present.'
             score = pqa.QAScore(scorevalue, longmsg=msg, shortmsg=msg)
         else:
-            score = pqa.QAScore(0.5, longmsg='QA No VLA standard calibrator present, continuing with the FLUX calibrator assuming a flux of 1 Jy.',
+            score = pqa.QAScore(0.5,
+                                longmsg='QA No VLA standard calibrator present, continuing with the FLUX calibrator'
+                                        ' assuming a flux of 1 Jy.',
                                 shortmsg='No standard calibrator present.')
-            LOG.warn('QA No VLA standard calibrator present, continuing with the FLUX calibrator assuming a flux of 1 Jy.')
+            LOG.warn('QA No VLA standard calibrator present, continuing with the FLUX calibrator assuming a flux of 1'
+                     ' Jy.')
 
         scores = [score]
 
@@ -58,6 +57,7 @@ class VLASetjyQAHandler(pqa.QAPlugin):
         result.qa.pool[:] = scores
         result.qa.all_unity_longmsg = 'No missing flux measurements in %s' % ms.basename
         """
+
 
 class VLASetjyListQAHandler(pqa.QAPlugin):
     """

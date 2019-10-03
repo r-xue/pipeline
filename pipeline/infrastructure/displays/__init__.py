@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 #from pipeline.infrastructure.displays.bandpass import BandpassDisplay
 #from pipeline.infrastructure.displays.summary import PlotAnts
 #from pipeline.infrastructure.displays.summary import PlotXY

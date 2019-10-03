@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import os
 
 import pipeline.h.tasks.restoredata.restoredata as restoredata

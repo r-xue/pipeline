@@ -10,8 +10,6 @@ task attached to this class at runtime. The name and signature of each
 method will match those of the tasks in the CASA environment when this
 module was imported.
 """
-from __future__ import absolute_import
-
 import shutil
 
 import casatasks

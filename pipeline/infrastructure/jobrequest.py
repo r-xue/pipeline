@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import copy
 import itertools
 import operator
@@ -7,7 +5,6 @@ import os
 import platform
 import re
 import sys
-import types
 
 from . import logging
 

@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 import operator
 import os
 import xml.etree.cElementTree as ElementTree

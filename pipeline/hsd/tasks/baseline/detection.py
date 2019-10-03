@@ -1,6 +1,4 @@
-from __future__ import absolute_import
-
-import os
+# import os
 import time
 import numpy
 import math
@@ -11,8 +9,8 @@ import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 import pipeline.h.heuristics as heuristics
-import pipeline.domain.measures as measures
-from pipeline.domain.datatable import DataTableImpl as DataTable
+# import pipeline.domain.measures as measures
+# from pipeline.domain.datatable import DataTableImpl as DataTable
 from .. import common
 from ..common import utils
 from . import rules

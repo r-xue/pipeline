@@ -1,7 +1,5 @@
-from __future__ import absolute_import
-
-import os.path
 import copy
+import os.path
 
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.imagelibrary as imagelibrary
@@ -149,4 +147,3 @@ class MakeImagesResult(basetask.Results):
             repr += '{0:{1}}'.format(target['outcome'], outcome_width)
 
         return repr
-

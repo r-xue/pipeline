@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure as infrastructure
 

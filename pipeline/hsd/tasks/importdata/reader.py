@@ -1,9 +1,8 @@
-from __future__ import absolute_import
-
-import os
-import numpy
 import glob
+import os
 import shutil
+
+import numpy
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools

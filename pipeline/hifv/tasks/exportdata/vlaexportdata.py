@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import os
 import shutil
 
@@ -34,6 +32,7 @@ class VLAExportDataInputs(exportdata.ExportDataInputs):
                                                   products_dir=products_dir)
         self.gainmap = gainmap
         self.exportcalprods = exportcalprods
+
 
 @task_registry.set_equivalent_casa_task('hifv_exportdata')
 class VLAExportData(exportdata.ExportData):

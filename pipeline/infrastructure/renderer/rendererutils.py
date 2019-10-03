@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import cgi
 import itertools
 import xml.dom.minidom as minidom
@@ -11,7 +9,6 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.utils as utils
-
 
 LOG = infrastructure.get_logger(__name__)
 

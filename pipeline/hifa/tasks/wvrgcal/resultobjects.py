@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import collections
 import os
 
@@ -13,8 +11,7 @@ LOG = infrastructure.get_logger(__name__)
 
 class WvrgcalResult(basetask.Results):
 
-    def __init__(self, vis, final=None, pool=None, preceding=None,
-                 wvrflag=None):
+    def __init__(self, vis, final=None, pool=None, preceding=None, wvrflag=None):
         """
         Construct and return a new WvrgcalResult.
         """

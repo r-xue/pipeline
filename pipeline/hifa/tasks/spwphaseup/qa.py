@@ -1,15 +1,13 @@
-from __future__ import absolute_import
-
 import collections
 
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 import pipeline.qa.scorecalculator as qacalc
+from . import spwphaseup
 
 LOG = logging.get_logger(__name__)
 
-from . import spwphaseup
 
 class SpwPhaseupQAHandler(pqa.QAPlugin):
     result_cls = spwphaseup.SpwPhaseupResults
@@ -28,19 +26,17 @@ class SpwPhaseupQAHandler(pqa.QAPlugin):
         else:
             score1 = self._phaseup_mapping_fraction(ms, False, result.phaseup_spwmap)
         if not result.phaseup_result.final:
-            score2= qacalc.score_path_exists(ms.name,
-            list(result.phaseup_result.error)[0].gaintable, 'caltable')
+            score2 = qacalc.score_path_exists(ms.name, list(result.phaseup_result.error)[0].gaintable, 'caltable')
         else:
-            score2= qacalc.score_path_exists(ms.name,
-                result.phaseup_result.final[0].gaintable, 'caltable')
+            score2 = qacalc.score_path_exists(ms.name, result.phaseup_result.final[0].gaintable, 'caltable')
         scores = [score1, score2]
 
         result.qa.pool.extend(scores)
 
     def _phaseup_mapping_fraction(self, ms, fullcombine, phaseup_spwmap):
-        '''
+        """
         Check whether or not there has been spw phaseup mapping . 
-        '''
+        """
         return qacalc.score_phaseup_mapping_fraction(ms, fullcombine, phaseup_spwmap)
 
 
@@ -59,7 +55,5 @@ class SpwPhaseupListQAHandler(pqa.QAPlugin):
         result.qa.pool[:] = collated
 
         mses = [r.inputs['vis'] for r in result]
-        longmsg = 'No mapped narrow spws in %s' % utils.commafy(mses,
-                                                                quotes=False,
-                                                                conjunction='or')
+        longmsg = 'No mapped narrow spws in %s' % utils.commafy(mses, quotes=False, conjunction='or')
         result.qa.all_unity_longmsg = longmsg

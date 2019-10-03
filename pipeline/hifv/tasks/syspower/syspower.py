@@ -1,19 +1,17 @@
-from __future__ import absolute_import
+import ast
 import os
+import re
 import shutil
-import numpy as np
-from glob import glob
 from copy import deepcopy
 from math import factorial
-import json
-import re
-import ast
+
+import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure import casa_tasks, task_registry
+from pipeline.infrastructure import task_registry
 
 LOG = infrastructure.get_logger(__name__)
 

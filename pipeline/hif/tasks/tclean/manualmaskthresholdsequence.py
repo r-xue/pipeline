@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure as infrastructure
 from .basecleansequence import BaseCleanSequence

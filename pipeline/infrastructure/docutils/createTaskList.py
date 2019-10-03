@@ -13,8 +13,6 @@
 #    tasklist/index.html is top page for the task list.
 #
 ###
-from __future__ import print_function
-
 import os
 import subprocess
 import time

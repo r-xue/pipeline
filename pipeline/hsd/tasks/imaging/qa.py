@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import pipeline.infrastructure.logging as logging
 import pipeline.qa.scorecalculator as qacalc
 import pipeline.infrastructure.utils as utils
@@ -51,6 +49,7 @@ class SDImagingListQAHandler(pqa.QAPlugin):
         # own QAscore list
         collated = utils.flatten([r.qa.pool for r in result]) 
         result.qa.pool[:] = collated
+
 
 aqua_exporter = aqua.xml_generator_for_metric('SingleDishImageMaskedPixels', '{:0.3}')
 aqua.register_aqua_metric(aqua_exporter)

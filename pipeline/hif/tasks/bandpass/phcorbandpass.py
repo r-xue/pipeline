@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
@@ -21,8 +19,8 @@ class PhcorBandpassInputs(bandpassmode.BandpassModeInputs):
 
     def __init__(self, context, mode=None, phaseup=None, phaseupbw=None, phaseupsolint=None,
                  solint=None, **parameters):
-        super(PhcorBandpassInputs, self).__init__(context, mode='channel', phaseup=phaseup,
-            phaseupbw=phaseupbw, phaseupsolint=phaseupsolint, solint=solint, **parameters)
+        super(PhcorBandpassInputs, self).__init__(context, mode='channel', phaseup=phaseup, phaseupbw=phaseupbw,
+                                                  phaseupsolint=phaseupsolint, solint=solint, **parameters)
 
 
 @task_registry.set_equivalent_casa_task('hif_bandpass')

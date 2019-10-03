@@ -3,8 +3,6 @@ Created on Dec 4, 2017
 
 @author: kana
 """
-from __future__ import absolute_import
-
 import pipeline.h.tasks.importdata.importdata as importdata
 import pipeline.hsd.tasks.importdata.importdata as sd_importdata
 import pipeline.infrastructure as infrastructure

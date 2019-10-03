@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import pipeline.h.tasks.flagging.renderer as super_renderer
 import pipeline.infrastructure.renderer.qaadapter as qaadapter
 import pipeline.infrastructure.renderer.weblog as weblog

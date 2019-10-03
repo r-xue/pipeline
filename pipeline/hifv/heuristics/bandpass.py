@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import os
 
 import numpy as np
@@ -7,9 +5,8 @@ import numpy as np
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure as infrastructure
-from . import uvrange
-
 from pipeline.infrastructure import casa_tasks
+from . import uvrange
 
 LOG = infrastructure.get_logger(__name__)
 

@@ -30,10 +30,6 @@ Todo:
     of an existing context.clean_list_pending entry.
 
 """
-
-from __future__ import absolute_import
-from __future__ import print_function  # get python 3 print function
-
 import ast
 import os
 import copy

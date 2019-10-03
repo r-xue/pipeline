@@ -57,8 +57,6 @@ Examples:
             return int(user_input)
     
 """
-from __future__ import absolute_import
-
 import collections
 import copy
 import inspect

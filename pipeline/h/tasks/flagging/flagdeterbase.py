@@ -28,8 +28,6 @@ convert the class arguments to arguments to the CASA task flagdata), create
 the FlagDeterBase() instance, perform FlagDeterBase.analyse(), and execute the
 class.
 """
-from __future__ import absolute_import
-
 import os
 import string
 

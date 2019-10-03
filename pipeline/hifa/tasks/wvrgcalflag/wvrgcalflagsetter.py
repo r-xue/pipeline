@@ -1,7 +1,6 @@
-from __future__ import absolute_import
+import re
 
 import numpy as np
-import re
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask

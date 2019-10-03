@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import bz2
 import pickle
 import time

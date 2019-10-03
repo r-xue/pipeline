@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import pipeline.h.tasks.importdata.qa as importdataqa
 import pipeline.infrastructure.logging as logging
 import pipeline.qa.scorecalculator as qacalc

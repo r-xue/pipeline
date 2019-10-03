@@ -1,12 +1,10 @@
-from __future__ import absolute_import
-
-import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
 from . import common
 from . import gaincalworker
 
 LOG = infrastructure.get_logger(__name__)
+
 
 def hif_gaincal(vis=None, caltable=None, field=None, intent=None, spw=None,
                 antenna=None, hm_gaintype=None, calmode=None, solint=None,

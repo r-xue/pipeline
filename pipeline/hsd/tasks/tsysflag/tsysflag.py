@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import os
 
 import pipeline.h.tasks.tsysflag.tsysflag as tsysflag

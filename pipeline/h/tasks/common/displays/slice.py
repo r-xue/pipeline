@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import datetime
 import os
 import string
@@ -12,7 +10,6 @@ import pylab as plt
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.renderer.logger as logger
-from pipeline.infrastructure import casa_tasks
 
 LOG = infrastructure.get_logger(__name__)
 

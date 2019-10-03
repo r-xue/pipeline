@@ -1,8 +1,6 @@
 """
 The flagdatasetter module interfaces hid heuristic flaggers to CASA flagdata.
 """
-from __future__ import absolute_import
-
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp

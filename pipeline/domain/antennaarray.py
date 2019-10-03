@@ -1,10 +1,9 @@
-from __future__ import absolute_import
-
 import collections
 import itertools
 import math
 
 import numpy
+
 from casatasks.private import simutil
 
 import pipeline.infrastructure.casatools as casatools

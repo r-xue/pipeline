@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import collections
 
 import pipeline.infrastructure.logging as logging
@@ -8,7 +6,6 @@ import pipeline.infrastructure.utils as utils
 import pipeline.qa.scorecalculator as qacalc
 from . import semiFinalBPdcals
 from . import semiFinalBPdcalsResults
-
 
 LOG = logging.get_logger(__name__)
 

@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import pipeline.h.tasks.applycal.applycal as applycal
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.sessionutils as sessionutils

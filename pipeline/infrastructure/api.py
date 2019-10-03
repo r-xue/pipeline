@@ -42,7 +42,6 @@ partner class directly, eg.::
 .. |Results| replace:: :class:`Results`
 
 """
-from __future__ import absolute_import
 import abc
 
 

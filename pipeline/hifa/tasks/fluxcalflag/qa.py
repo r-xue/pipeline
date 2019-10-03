@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import collections
 
 import pipeline.h.tasks.exportdata.aqua as aqua
@@ -25,18 +23,16 @@ class FluxcalflagQAHandler(pqa.QAPlugin):
 
         # calculate QA scores from agentflagger summary dictionary, adopting
         # the minimum score as the representative score for this task
-        score1 = qacalc.score_fraction_newly_flagged(ms.basename,
-                                                      result.summaries,
-                                                      ms.basename)
-        neworigin = pqa.QAOrigin(metric_name = '%FluxcalFlags',
-                                 metric_score = score1.origin.metric_score,
-                                 metric_units = 'Percentage of flux calibrator newly flagged')
+        score1 = qacalc.score_fraction_newly_flagged(ms.basename, result.summaries, ms.basename)
+        neworigin = pqa.QAOrigin(metric_name='%FluxcalFlags',
+                                 metric_score=score1.origin.metric_score,
+                                 metric_units='Percentage of flux calibrator newly flagged')
         score1.origin = neworigin
 
         score2 = self._refspw_mapping_fraction(ms, result._refspwmap)
-        neworigin = pqa.QAOrigin(metric_name = '%ReferenceSpwmapWarning',
-                                 metric_score = score1.origin.metric_score,
-                                 metric_units = 'Reference spw map warning')
+        neworigin = pqa.QAOrigin(metric_name='%ReferenceSpwmapWarning',
+                                 metric_score=score1.origin.metric_score,
+                                 metric_units='Reference spw map warning')
         score2.origin = neworigin
 
         scores = [score1, score2]
@@ -65,9 +61,7 @@ class FluxcalflagListQAHandler(pqa.QAPlugin):
         result.qa.pool[:] = collated
 
         mses = [r.inputs['vis'] for r in result]
-        longmsg = 'No flux calibrator data was flagged in %s' % utils.commafy(mses,
-                                                                              quotes=False,
-                                                                              conjunction='or')
+        longmsg = 'No flux calibrator data was flagged in %s' % utils.commafy(mses, quotes=False, conjunction='or')
         result.qa.all_unity_longmsg = longmsg
 
 

@@ -1,10 +1,8 @@
 """
 Format values that are usually associated with a unit.
 """
-from __future__ import division
 import bisect
 import decimal
-
 
 # TODO
 # for reformatiing GHz, want to say 'print precision to nearest 10kHz'

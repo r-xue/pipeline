@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import os
 import numpy
 import collections
@@ -9,8 +7,7 @@ import pipeline.infrastructure.api as api
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.logging as logging
-
-#from pipeline.domain.datatable import DataTableImpl as DataTable
+# from pipeline.domain.datatable import DataTableImpl as DataTable
 from . import fitorder
 from . import fragmentation
 

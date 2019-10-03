@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 import os
 
 import pipeline.hif.heuristics.findrefant as findrefant
@@ -43,7 +42,6 @@ class SelfcalInputs(vdp.StandardInputs):
 
 
 @task_registry.set_equivalent_casa_task('hifv_selfcal')
-
 @task_registry.set_casa_commands_comment('hifv_selfcal task')
 class Selfcal(basetask.StandardTaskTemplate):
     Inputs = SelfcalInputs
@@ -120,4 +118,3 @@ class Selfcal(basetask.StandardTaskTemplate):
         job = casa_tasks.applycal(**applycal_task_args)
 
         return self._executor.execute(job)
-

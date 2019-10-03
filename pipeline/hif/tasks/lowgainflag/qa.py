@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import collections
 
 import pipeline.h.tasks.exportdata.aqua as aqua
@@ -24,8 +22,7 @@ class LowgainflagQAHandler(pqa.QAPlugin):
         # flagging summary in the result, adopting the minimum score as the
         # representative score for this task.
 
-        score1 = qacalc.score_fraction_newly_flagged(ms.basename,
-                     result.summaries, ms.basename)
+        score1 = qacalc.score_fraction_newly_flagged(ms.basename, result.summaries, ms.basename)
         new_origin = pqa.QAOrigin(metric_name='%HighLowGainFlags',
                                   metric_score=score1.origin.metric_score,
                                   metric_units='Percentage of high or low gain flag data newly flagged')

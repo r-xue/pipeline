@@ -1,10 +1,9 @@
-from __future__ import absolute_import
-
-import os
-import time
 import abc
 import math
+import os
 import string
+import time
+
 import pylab as pl
 
 import pipeline.infrastructure as infrastructure

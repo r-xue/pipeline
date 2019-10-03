@@ -1,11 +1,10 @@
-from __future__ import absolute_import
 import glob
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
+import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tasks, task_registry
-import pipeline.infrastructure.casatools as casatools
 
 LOG = infrastructure.get_logger(__name__)
 

@@ -8,8 +8,6 @@ renamed so that they are acceptable to the Inputs constructors, and secondly
 it converts from the CASA concept of null values ('', [], etc.) to the 
 pipeline equivalent.
 """
-from __future__ import absolute_import
-
 import inspect
 
 from . import logging

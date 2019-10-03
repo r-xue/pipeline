@@ -1,10 +1,7 @@
-from __future__ import absolute_import
-
 import abc
 import datetime
 import math
 import os
-import time
 
 import matplotlib.gridspec as gridspec
 import numpy

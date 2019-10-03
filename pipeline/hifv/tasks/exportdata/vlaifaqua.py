@@ -1,4 +1,3 @@
-from __future__ import absolute_import
 import operator
 import os
 import xml.etree.cElementTree as ElementTree
@@ -224,5 +223,6 @@ def _hifa_preimagecheck_sensitivity_exporter(stage_results):
     for result in stage_results:
         l.extend(result.sensitivities_for_aqua)
     return l
+
 
 aqua.TASK_NAME_TO_SENSITIVITY_EXPORTER['hifa_imageprecheck'] = _hifa_preimagecheck_sensitivity_exporter

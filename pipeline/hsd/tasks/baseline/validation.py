@@ -1,10 +1,7 @@
-from __future__ import absolute_import, print_function
-
+import collections
 import math
-import sys
 import time
 from math import sqrt
-import collections
 
 import numpy
 import numpy.linalg as LA

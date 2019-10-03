@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import collections
 
 import pipeline.infrastructure.pipelineqa as pqa
@@ -7,8 +5,7 @@ import pipeline.infrastructure.utils as utils
 import pipeline.qa.scorecalculator as qacalc
 from . import gaincalsnr
 
-
-#LOG = logging.get_logger(__name__)
+# LOG = logging.get_logger(__name__)
 
 
 class GaincalSnrQAHandler(pqa.QAPlugin):
@@ -17,33 +14,30 @@ class GaincalSnrQAHandler(pqa.QAPlugin):
     generating_task = gaincalsnr.GaincalSnr
 
     def handle(self, context, result):
-        vis= result.inputs['vis']
+        vis = result.inputs['vis']
         phasesnr = result.inputs['phasesnr']
         ms = context.observing_run.get_ms(vis)
 
         # Check for existance of spws combinations for which
         # SNR estimates are missing. ms argument not really
         # needed for this but include for the moment.
-        score1 = self._missing_phase_snrs(ms, result.spwids,
-            result.snrs)
-        score2 = self._poor_phase_snrs(ms, result.spwids,
-            phasesnr, result.snrs)
+        score1 = self._missing_phase_snrs(ms, result.spwids, result.snrs)
+        score2 = self._poor_phase_snrs(ms, result.spwids, phasesnr, result.snrs)
         scores = [score1, score2]
 
         result.qa.pool.extend(scores)
 
     def _missing_phase_snrs(self, ms, spwids, snrs):
-        '''
+        """
         Check whether there are missing phase snrs. 
-        '''
+        """
         return qacalc.score_missing_phase_snrs(ms, spwids, snrs)
 
     def _poor_phase_snrs(self, ms, spwids, phasesnr, snrs):
-        '''
+        """
         Check whether there are poor snrs values
-        '''
-        return qacalc.score_poor_phase_snrs(ms, spwids, phasesnr,
-            snrs)
+        """
+        return qacalc.score_poor_phase_snrs(ms, spwids, phasesnr, snrs)
 
 
 class GaincalSnrListQAHandler(pqa.QAPlugin):
@@ -61,8 +55,5 @@ class GaincalSnrListQAHandler(pqa.QAPlugin):
         result.qa.pool[:] = collated
 
         mses = [r.inputs['vis'] for r in result]
-        longmsg = 'No missing derived fluxes in %s' % utils.commafy(mses,
-                                                                    quotes=False,
-                                                                    conjunction='or')
+        longmsg = 'No missing derived fluxes in %s' % utils.commafy(mses, quotes=False, conjunction='or')
         result.qa.all_unity_longmsg = longmsg
-

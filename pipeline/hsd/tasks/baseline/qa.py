@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import numpy
 
 import pipeline.infrastructure.basetask as basetask
@@ -28,8 +26,8 @@ class SDBaselineQAHandler(pqa.QAPlugin):
             reduction_group_id = b['group_id']
             members = b['members']
             group_desc = reduction_group[reduction_group_id]
-            spw_id = numpy.fromiter((group_desc[m].spw_id for m in members), dtype=numpy.int32)#b['spw']
-            field_id = numpy.fromiter((group_desc[m].field_id for m in members), dtype=numpy.int32)#b['field']
+            spw_id = numpy.fromiter((group_desc[m].spw_id for m in members), dtype=numpy.int32)  # b['spw']
+            field_id = numpy.fromiter((group_desc[m].field_id for m in members), dtype=numpy.int32)  # b['field']
             lines = b['lines']
             lines_list.append(lines)
             group_id_list.append(reduction_group_id)

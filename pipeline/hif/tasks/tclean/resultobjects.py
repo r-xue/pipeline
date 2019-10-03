@@ -1,8 +1,6 @@
-from __future__ import absolute_import
-
 import collections
-import os.path
 import copy
+import os.path
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -29,8 +27,8 @@ class BoxResult(basetask.Results):
 
 
 class TcleanResult(basetask.Results):
-    def __init__(self, vis=None, sourcename=None, intent=None, spw=None, orig_specmode=None, specmode=None, multiterm=None, plotdir=None,
-                 imaging_mode=None):
+    def __init__(self, vis=None, sourcename=None, intent=None, spw=None, orig_specmode=None, specmode=None,
+                 multiterm=None, plotdir=None, imaging_mode=None):
         super(TcleanResult, self).__init__()
         self.vis = vis
         self.sourcename = sourcename

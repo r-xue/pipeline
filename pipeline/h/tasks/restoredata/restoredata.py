@@ -25,8 +25,6 @@ task = pipeline.tasks.RestoreData(inputs)
 results = task.execute(dry_run=False)
 results.accept(context)
 """
-from __future__ import absolute_import
-
 import glob
 import os
 import re

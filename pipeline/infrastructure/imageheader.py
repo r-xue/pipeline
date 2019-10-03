@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import os
 import re
 
@@ -7,13 +5,8 @@ import numpy as np
 
 import pipeline as pipeline
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.casatools as casatools
-import pipeline.infrastructure.mpihelpers as mpihelpers
-import pipeline.infrastructure.utils as utils
-import pipeline.infrastructure.vdp as vdp
 from pipeline import environment
-from pipeline.infrastructure import casa_tasks
 
 LOG = infrastructure.get_logger(__name__)
 

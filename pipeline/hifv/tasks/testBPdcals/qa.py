@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import collections
 
 import pipeline.infrastructure.logging as logging
@@ -55,8 +53,8 @@ class testBPdcalsQAHandler(pqa.QAPlugin):
                         spwcollect.append(str(spw))
             if len(spwcollect) > 1:
                 spwcollect = sorted(set(spwcollect))
-                LOG.warn(
-                    'Antenna {!s}, spws: {!s} have a flagging fraction of 1.0.'.format(antenna_names[antenna], ','.join(spwcollect)))
+                LOG.warn('Antenna {!s}, spws: {!s} have a flagging fraction of 1.0.'
+                         ''.format(antenna_names[antenna], ','.join(spwcollect)))
 
         return
 

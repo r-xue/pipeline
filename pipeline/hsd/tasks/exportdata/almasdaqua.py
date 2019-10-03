@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import xml.etree.cElementTree as ElementTree
 
 import pipeline.h.tasks.exportdata.aqua as aqua
@@ -48,5 +46,6 @@ def _hsd_imaging_sensitivity_exporter(stage_results):
         and result.sensitivity_info.representative:
             sensitivities.append(result.sensitivity_info.sensitivity)
     return sensitivities
+
 
 aqua.TASK_NAME_TO_SENSITIVITY_EXPORTER['hsd_imaging'] = _hsd_imaging_sensitivity_exporter

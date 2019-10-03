@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 from casatasks.private.parallel.parallel_task_helper import ParallelTaskHelper
 
 import pipeline.h.tasks.applycal.applycal as applycal

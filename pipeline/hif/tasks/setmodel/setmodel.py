@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import copy
 import os
 
@@ -131,4 +129,3 @@ class SetModels(basetask.StandardTaskTemplate):
         task = setjy.Setjy(task_inputs)
         results_list = self._executor.execute(task, merge=False)
         return results_list[0]
-

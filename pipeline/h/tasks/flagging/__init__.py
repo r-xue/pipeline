@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import pipeline.infrastructure.renderer.qaadapter as qaadapter
 from . import flagdeterbase
 from . import qa

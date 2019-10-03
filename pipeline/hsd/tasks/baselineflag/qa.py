@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import collections
 
 import pipeline.infrastructure.logging as logging
@@ -23,7 +21,7 @@ class SDBLFlagListQAHandler(pqa.QAPlugin):
         scores = []
         for field, spwflag in accum_flag.items():
             for spw, flagval in spwflag.items():
-                frac_flagged = flagval['additional']/ float(flagval['total'])
+                frac_flagged = flagval['additional'] / float(flagval['total'])
                 label = ("Field %s Spw %s" % (field, spw))
                 scores.append(qacalc.score_sdtotal_data_flagged(label, frac_flagged))
 

@@ -3,9 +3,6 @@ Created on 01 Jun 2017
 
 @author: Vincent Geers (UKATC)
 """
-
-from __future__ import absolute_import
-
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
@@ -23,7 +20,6 @@ class GfluxscaleflagQAHandler(pqa.QAPlugin):
     child_cls = None
 
     def handle(self, context, result):
-
         # Run correctedampflag QA on correctedampflag result.
         pqa.qa_registry.do_qa(context, result.cafresult)
 

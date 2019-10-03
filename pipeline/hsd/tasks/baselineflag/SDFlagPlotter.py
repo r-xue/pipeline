@@ -3,13 +3,9 @@ Created on 2013/07/02
 
 @author: kana
 """
-from __future__ import print_function
-
 import os
 
-#import numpy as NP
 import pylab as PL
-#import math
 
 from .SDFlagRule import INVALID_STAT
 from ..common import display as sd_display

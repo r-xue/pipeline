@@ -27,14 +27,12 @@ inputs = pipeline.tasks.exportdata.Exportdata.Inputs(context,
 task = pipeline.tasks.exportdata.ExportData(inputs)
   results = task.execute(dry_run = True)
 """
-from __future__ import absolute_import
-
-import io
 import collections
 import copy
 import errno
 import fnmatch
 import glob
+import io
 import os
 import shutil
 import string

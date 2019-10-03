@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 from .caltable import AntposCaltable
 from .caltable import BandpassCaltable
 from .caltable import FluxCaltable

@@ -15,8 +15,6 @@ task = pipeline.tasks.singledish.SDExportData (inputs)
 results = task.execute (dry_run = True)
 results = task.execute (dry_run = False)
 """
-from __future__ import absolute_import
-
 import collections
 import glob
 import os

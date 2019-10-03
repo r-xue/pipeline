@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 from .importdata import SDImportData
 from .flagging import FlagDeterALMASingleDish
 from .skycal import SDSkyCal

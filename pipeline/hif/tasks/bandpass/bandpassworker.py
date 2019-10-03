@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure as infrastructure

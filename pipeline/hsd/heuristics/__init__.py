@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 from .grouping2 import GroupByPosition2
 from .grouping2 import GroupByTime2
 from .grouping2 import MergeGapTables2

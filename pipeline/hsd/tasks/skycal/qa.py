@@ -1,7 +1,3 @@
-from __future__ import absolute_import
-
-import numpy
-
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
@@ -12,7 +8,8 @@ from . import skycal
 
 LOG = logging.get_logger(__name__)
 
-class SDSkyCalQAHandler(pqa.QAPlugin):    
+
+class SDSkyCalQAHandler(pqa.QAPlugin):
     result_cls = skycal.SDSkyCalResults
     child_cls = None
 
@@ -22,8 +19,7 @@ class SDSkyCalQAHandler(pqa.QAPlugin):
         vis = calapps[0].calto.vis
         ms = context.observing_run.get_ms(vis)
         threshold = skycal.SerialSDSkyCal.ElevationDifferenceThreshold
-        scores = qacalc.score_sd_skycal_elevation_difference(ms, resultdict,
-                                                             threshold=threshold)
+        scores = qacalc.score_sd_skycal_elevation_difference(ms, resultdict, threshold=threshold)
         result.qa.pool.append(scores)
 
 
@@ -36,6 +32,7 @@ class SDSkyCalListQAHandler(pqa.QAPlugin):
         # own QAscore list
         collated = utils.flatten([r.qa.pool for r in result]) 
         result.qa.pool[:] = collated
+
 
 aqua_exporter = aqua.xml_generator_for_metric('OnOffElevationDifference', '{:0.3f}deg')
 aqua.register_aqua_metric(aqua_exporter)
