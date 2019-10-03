@@ -826,8 +826,8 @@ class SDImaging(basetask.StandardTaskTemplate):
             # check the validity of channel number and fix it when out of range
             min_chan = 0
             max_chan = spwobj.num_channels - 1
-            exclude_channel_range = map(lambda x: [max(min_chan, x[0]), min(max_chan, x[1])],
-                                        self._merge_ranges(exclude_range))
+            exclude_channel_range = [[max(min_chan, x[0]), min(max_chan, x[1])]
+                                     for x in self._merge_ranges(exclude_range)]
             LOG.info("{} : channel map and deviation mask channel ranges in MS frame = {}".format(msobj.basename, str(exclude_channel_range)))
             # define frequency ranges of RMS
             exclude_freq_range = numpy.zeros(2*len(exclude_channel_range))

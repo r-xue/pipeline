@@ -139,7 +139,7 @@ def fieldname_clean(field):
     as a CASA argument, should be enclosed in quotes.
     """
     allowed = string.ascii_letters + string.digits + '+-'
-    return ''.join(map(lambda c: c if c in allowed else '_', field))
+    return ''.join([c if c in allowed else '_' for c in field])
 
 
 def get_field_accessor(ms, field):

@@ -848,7 +848,7 @@ class DataTableImpl(object):
         dt_antenna = _dt_antenna[field_sel]
         dt_spw = _dt_spw[field_sel]
         atm_spws = set(spws)
-        science_spws = map(lambda x: x.id, msobj.get_spectral_windows(science_windows_only=True))
+        science_spws = [x.id for x in msobj.get_spectral_windows(science_windows_only=True)]
         for spw_to, spw_from in enumerate(spwmap):
             # only process atm spws
             if spw_from not in atm_spws:

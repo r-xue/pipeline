@@ -90,7 +90,7 @@ def require_virtual_spw_id_handling(observing_run):
 
 def is_nro(context):
     mses = context.observing_run.measurement_sets
-    return numpy.all(map(lambda ms: ms.antenna_array.name == 'NRO', mses))
+    return numpy.all([ms.antenna_array.name == 'NRO' for ms in mses])
 
 
 def asdm_name(scantable_object):

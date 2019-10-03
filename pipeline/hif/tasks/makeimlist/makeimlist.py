@@ -401,7 +401,10 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     # Get all science spw IDs for this field and record the ones that are present in this MS
                                     field_science_spwids = [spw_domain_obj.id for spw_domain_obj in field_domain_obj.valid_spws if spw_domain_obj.id in ms_science_spwids]
                                     # Record the virtual spwids
-                                    spwids_per_vis_and_field = [inputs.context.observing_run.real2virtual_spw_id(spwid, ms_domain_obj) for spwid in field_science_spwids if inputs.context.observing_run.real2virtual_spw_id(spwid, ms_domain_obj) in map(int, spwids)]
+                                    spwids_per_vis_and_field = [
+                                        inputs.context.observing_run.real2virtual_spw_id(spwid, ms_domain_obj)
+                                        for spwid in field_science_spwids
+                                        if inputs.context.observing_run.real2virtual_spw_id(spwid, ms_domain_obj) in list(map(int, spwids))]
                                 else:
                                     spwids_per_vis_and_field = []
                             except Exception as e:
@@ -505,17 +508,23 @@ class MakeImList(basetask.StandardTaskTemplate):
                         # Use only fields that were observed in spwspec
                         actual_field_intent_list = []
                         for field_intent in field_intent_list:
-                            if vislist_field_spw_combinations.get(field_intent[0], None) is not None:
-                                if vislist_field_spw_combinations[field_intent[0]].get('spwids', None) is not None:
-                                    if spwspec in map(str, vislist_field_spw_combinations[field_intent[0]]['spwids']):
-                                        actual_field_intent_list.append(field_intent)
-                        synthesized_beams[spwspec], known_synthesized_beams = self.heuristics.synthesized_beam(field_intent_list=actual_field_intent_list, spwspec=spwspec, robust=robust, uvtaper=uvtaper, pixperbeam=pixperbeam, known_beams=known_synthesized_beams, force_calc=calcsb, parallel=parallel, shift=True)
+                            if (vislist_field_spw_combinations.get(field_intent[0], None) is not None and
+                                    vislist_field_spw_combinations[field_intent[0]].get('spwids', None) is not None and
+                                    spwspec in list(map(str, vislist_field_spw_combinations[field_intent[0]]['spwids']))):
+                                actual_field_intent_list.append(field_intent)
+
+                        synthesized_beams[spwspec], known_synthesized_beams = self.heuristics.synthesized_beam(
+                            field_intent_list=actual_field_intent_list, spwspec=spwspec, robust=robust, uvtaper=uvtaper,
+                            pixperbeam=pixperbeam, known_beams=known_synthesized_beams, force_calc=calcsb,
+                            parallel=parallel, shift=True)
+
                         if synthesized_beams[spwspec] == 'invalid':
                             LOG.error('Beam for virtual spw %s and robust value of %.1f is invalid. Cannot continue.'
                                       '' % (spwspec, robust))
                             result.error = True
                             result.error_msg = 'Invalid beam'
                             return result
+
                         # Avoid recalculating every time since the dictionary will be cleared with the first recalculation request.
                         calcsb = False
                         # the heuristic cell is always the same for x and y as

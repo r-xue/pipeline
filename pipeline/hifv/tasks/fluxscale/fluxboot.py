@@ -609,7 +609,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
                      'parang'         : True}
 
         if field == '':
-            calscanslist = map(int, calibrator_scan_select_string.split(','))
+            calscanslist = list(map(int, calibrator_scan_select_string.split(',')))
             scanobjlist = m.get_scans(scan_id=calscanslist)
             fieldidlist = []
             for scanobj in scanobjlist:

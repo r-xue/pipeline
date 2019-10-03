@@ -416,7 +416,7 @@ def _parse_spw(task_arg, all_spw_ids=None):
         all_spw_ids = []
 
     # recognise but suppress the mode-switching tokens
-    TILDE, LESSTHAN, CARET, COLON, ASTERISK = map(pyparsing.Suppress, '~<^:*')
+    TILDE, LESSTHAN, CARET, COLON, ASTERISK = list(map(pyparsing.Suppress, '~<^:*'))
 
     # recognise '123' as a number, converting to an integer
     number = pyparsing.Word(pyparsing.nums).setParseAction(lambda tokens: int(tokens[0]))
@@ -554,7 +554,8 @@ def _parse_antenna(task_arg, antennas=None):
 
     results = set()
     for atom in parse_result.result:
-        map(results.add, atom.antennas)
+        for ant in atom.antennas:
+            results.add(ant)
 
     return sorted(list(results))
 

@@ -424,7 +424,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
                               'spwmap': [],
                               'parang': self.parang}
 
-        testgainscanslist = map(int, testgainscans.split(','))
+        testgainscanslist = list(map(int, testgainscans.split(',')))
         scanobjlist = m.get_scans(scan_id=testgainscanslist)
         fieldidlist = []
         for scanobj in scanobjlist:

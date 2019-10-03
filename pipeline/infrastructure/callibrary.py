@@ -1042,7 +1042,7 @@ def contiguous_sequences(l):
     s = sorted([int(d) for d in l])
 
     for _, g in itertools.groupby(enumerate(s), lambda i_x: i_x[0] - i_x[1]):
-        rng = map(operator.itemgetter(1), g)
+        rng = list(map(operator.itemgetter(1), g))
         yield rng
 
 

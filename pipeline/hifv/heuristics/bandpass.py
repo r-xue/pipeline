@@ -151,7 +151,7 @@ def do_bandpass(vis, caltable, context=None, RefAntOutput=None, spw=None, ktypec
                           'spwmap': [],
                           'parang': True}
 
-    bpscanslist = map(int, bandpass_scan_select_string.split(','))
+    bpscanslist = list(map(int, bandpass_scan_select_string.split(',')))
     scanobjlist = m.get_scans(scan_id=bpscanslist)
     fieldidlist = []
     for scanobj in scanobjlist:

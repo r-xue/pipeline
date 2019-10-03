@@ -151,7 +151,7 @@ def _format_arg_value(arg_val):
 
 
 def _as_task_call(task_class, task_args):
-    kw_args = map(_format_arg_value, task_args.items())
+    kw_args = list(map(_format_arg_value, task_args.items()))
     return '%s(%s)' % (task_class.__name__, ', '.join(kw_args))
 
 

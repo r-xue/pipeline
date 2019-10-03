@@ -359,7 +359,7 @@ class SpectralWindow(object):
         return len(self.channels)
 
     def __str__(self):
-        args = map(str, [self.id, self.centre_frequency, self.bandwidth, self.type])
+        args = [str(x) for x in [self.id, self.centre_frequency, self.bandwidth, self.type]]
         return 'SpectralWindow({0})'.format(', '.join(args))
 
 

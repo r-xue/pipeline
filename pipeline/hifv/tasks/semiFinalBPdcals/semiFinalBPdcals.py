@@ -326,7 +326,7 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
                               'spwmap': [],
                               'parang': self.parang}
 
-        bpscanslist = map(int, bandpass_scan_select_string.split(','))
+        bpscanslist = list(map(int, bandpass_scan_select_string.split(',')))
         scanobjlist = m.get_scans(scan_id=bpscanslist)
         fieldidlist = []
         for scanobj in scanobjlist:

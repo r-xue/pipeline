@@ -193,12 +193,12 @@ class ALMAJyPerKDatabaseAccessBase(object):
         template = string.Template('$vis $Antenna $Spwid I $Factor')
         data = jyperk['data']
         basename = os.path.basename(vis.rstrip('/'))
-        factors = [map(str, template.safe_substitute(vis=basename, **d).split()) for d in data]
+        factors = [list(map(str, template.safe_substitute(vis=basename, **d).split())) for d in data]
         return factors
 
     def filter_jyperk(self, vis, factors):
         ms = self.context.observing_run.get_ms(vis)
-        science_windows = map(lambda x: x.id, ms.get_spectral_windows(science_windows_only=True))
+        science_windows = [x.id for x in ms.get_spectral_windows(science_windows_only=True)]
         filtered = [i for i in factors if (len(i) == 5) and (i[0] == ms.basename) and (int(i[2]) in science_windows)]
         return filtered
 
@@ -391,7 +391,7 @@ def translate_spw(data, ms):
         namecol = tb.getcol('name')
 
     translated = []
-    science_window_names = numpy.asarray(map(lambda x: x.name, science_windows))
+    science_window_names = numpy.asarray([x.name for x in science_windows])
     LOG.info('Translate ASDM Spws to MS Spws:')
     for d in data:
         asdm_spw_id = d['Spwid']

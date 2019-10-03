@@ -726,7 +726,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                      'parang': True}
 
         if field == '':
-            calscanslist = map(int, calibrator_scan_select_string.split(','))
+            calscanslist = list(map(int, calibrator_scan_select_string.split(',')))
             scanobjlist = m.get_scans(scan_id=calscanslist,
                                       scan_intent=['AMPLITUDE', 'BANDPASS', 'POLLEAKAGE', 'POLANGLE',
                                                    'PHASE', 'POLARIZATION', 'CHECK'])

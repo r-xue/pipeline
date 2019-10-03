@@ -368,7 +368,7 @@ class Finalcals(basetask.StandardTaskTemplate):
                               'spwmap': [],
                               'parang': self.parang}
 
-        bpscanslist = map(int, bandpass_scan_select_string.split(','))
+        bpscanslist = list(map(int, bandpass_scan_select_string.split(',')))
         scanobjlist = m.get_scans(scan_id=bpscanslist)
         fieldidlist = []
         for scanobj in scanobjlist:
@@ -428,7 +428,7 @@ class Finalcals(basetask.StandardTaskTemplate):
                                      'parang': self.parang,
                                      'refantmode': refantmode}
 
-        bpscanslist = map(int, bandpass_scan_select_string.split(','))
+        bpscanslist = list(map(int, bandpass_scan_select_string.split(',')))
         scanobjlist = m.get_scans(scan_id=bpscanslist)
         fieldidlist = []
         for scanobj in scanobjlist:
@@ -820,7 +820,7 @@ class Finalcals(basetask.StandardTaskTemplate):
                      'uvrange': '',
                      'refantmode': refantmode}
 
-        calscanslist = map(int, calibrator_scan_select_string.split(','))
+        calscanslist = list(map(int, calibrator_scan_select_string.split(',')))
         scanobjlist = m.get_scans(scan_id=calscanslist,
                                   scan_intent=['AMPLITUDE', 'BANDPASS', 'POLLEAKAGE', 'POLANGLE',
                                                'PHASE', 'POLARIZATION', 'CHECK'])

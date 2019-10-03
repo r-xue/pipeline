@@ -50,8 +50,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             p = re.compile(r"[ ,]+(\d+)")
             spwids = p.findall(' %s' % spwspec)
             spwids = list(set(spwids))
-            spwids = map(str, sorted(map(int, spwids)))
-            spw = '_'.join(spwids)
+            spw = '_'.join(map(str, sorted(map(int, spwids))))
             namer.spectral_window(spw)
         if specmode == 'cont' and band:
             namer.band('{}_band'.format(band))
