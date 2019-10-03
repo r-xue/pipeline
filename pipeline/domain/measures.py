@@ -21,9 +21,9 @@ class ArcUnits(object):
 
 
 class DistanceUnits(object):
-    ANGSTROM          = { 'name' : 'ANGSTROM'          , 'symbol' : '\u212B', 'metres' : decimal.Decimal('1e-10')              }
+    ANGSTROM          = { 'name' : 'ANGSTROM'          , 'symbol' : '\\u212B', 'metres' : decimal.Decimal('1e-10')              }
     NANOMETRE         = { 'name' : 'NANOMETRE'         , 'symbol' : 'nm'     , 'metres' : decimal.Decimal('1e-9')               }
-    MICROMETRE        = { 'name' : 'MICROMETRE'        , 'symbol' : '\u00B5m', 'metres' : decimal.Decimal('1e-6')               }
+    MICROMETRE        = { 'name' : 'MICROMETRE'        , 'symbol' : '\\u00B5m', 'metres' : decimal.Decimal('1e-6')               }
     MILLIMETRE        = { 'name' : 'MILLIMETRE'        , 'symbol' : 'mm'     , 'metres' : decimal.Decimal('0.001')              }
     CENTIMETRE        = { 'name' : 'CENTIMETRE'        , 'symbol' : 'cm'     , 'metres' : decimal.Decimal('0.01')               }
     METRE             = { 'name' : 'METRE'             , 'symbol' : 'm'      , 'metres' : decimal.Decimal(1)                    }
@@ -45,7 +45,7 @@ class FluxDensityUnits(object):
     FEMTOJANSKY = { 'name' : 'FEMTOJANSKY' , 'symbol' : 'fJy'      , 'Jy' : decimal.Decimal('1e-15') }
     PICOJANSKY  = { 'name' : 'PICOJANSKY'  , 'symbol' : 'pJy'      , 'Jy' : decimal.Decimal('1e-12') }
     NANOJANSKY  = { 'name' : 'NANOJANSKY'  , 'symbol' : 'nJy'      , 'Jy' : decimal.Decimal('1e-9')  }
-    MICROJANSKY = { 'name' : 'MICROJANSKY' , 'symbol' : '\u03BCJy' , 'Jy' : decimal.Decimal('1e-6')  }
+    MICROJANSKY = { 'name' : 'MICROJANSKY' , 'symbol' : '\\u03BCJy', 'Jy' : decimal.Decimal('1e-6')  }
     MILLIJANSKY = { 'name' : 'MILLIJANSKY' , 'symbol' : 'mJy'      , 'Jy' : decimal.Decimal('0.001') }
     CENTIJANSKY = { 'name' : 'CENTIJANSKY' , 'symbol' : 'cJy'      , 'Jy' : decimal.Decimal('0.01')  }
     DECIJANSKY  = { 'name' : 'DECIJANSKY'  , 'symbol' : 'dJy'      , 'Jy' : decimal.Decimal('0.1')   }
@@ -69,7 +69,7 @@ class FrequencyUnits(object):
     FEMTOHERTZ = { 'name' : 'FEMTOHERTZ' , 'symbol' : 'fHz'      , 'hz' : decimal.Decimal('1e-15') }
     PICOHERTZ  = { 'name' : 'PICOHERTZ'  , 'symbol' : 'pHz'      , 'hz' : decimal.Decimal('1e-12') }
     NANOHERTZ  = { 'name' : 'NANOHERTZ'  , 'symbol' : 'nHz'      , 'hz' : decimal.Decimal('1e-9')  }
-    MICROHERTZ = { 'name' : 'MICROHERTZ' , 'symbol' : '\u03BCHz' , 'hz' : decimal.Decimal('1e-6')  }
+    MICROHERTZ = { 'name' : 'MICROHERTZ' , 'symbol' : '\\u03BCHz', 'hz' : decimal.Decimal('1e-6')  }
     MILLIHERTZ = { 'name' : 'MILLIHERTZ' , 'symbol' : 'mHz'      , 'hz' : decimal.Decimal('0.001') }
     CENTIHERTZ = { 'name' : 'CENTIHERTZ' , 'symbol' : 'cHz'      , 'hz' : decimal.Decimal('0.01')  }
     DECIHERTZ  = { 'name' : 'DECIHERTZ'  , 'symbol' : 'dHz'      , 'hz' : decimal.Decimal('0.1')   }

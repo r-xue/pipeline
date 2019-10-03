@@ -303,7 +303,7 @@ class JyPerKModelFitEndPoint(JyPerKAbstractEndPoint):
     ENDPOINT_TYPE = 'model-fit'
 
     def _extract_factor(self, response):
-        return response[u'factor']
+        return response['factor']
 
 
 class JyPerKInterpolationEndPoint(JyPerKAbstractEndPoint):
@@ -313,7 +313,7 @@ class JyPerKInterpolationEndPoint(JyPerKAbstractEndPoint):
         return {'delta_days': 1000}
 
     def _extract_factor(self, response):
-        return response[u'data'][u'mean']
+        return response['data']['mean']
 
 
 def vis_to_uid(vis):

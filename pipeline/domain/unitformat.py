@@ -190,9 +190,9 @@ temperature.addUnitOfMagnitude('.001', '{0:.3f} mK')
 temperature.addUnitOfMagnitude(1, '{0:.3f} K')
 
 arc = UnitFormat()
-arc.addUnitOfMagnitude(1, '{0:.3f}\u00b0')
-arc.addUnitOfMagnitude(1/60, '{0:.3f}\u2032')
-arc.addUnitOfMagnitude(1/3600, '{0:.3f}\u2033')
+arc.addUnitOfMagnitude(1, '{0:.3f}\\u00b0')
+arc.addUnitOfMagnitude(1/60, '{0:.3f}\\u2032')
+arc.addUnitOfMagnitude(1/3600, '{0:.3f}\\u2033')
 arc.addUnitOfMagnitude(1/3600000, '{0:.3f} mas')
 arc.addUnitOfMagnitude(1/3600000000, '{0:.3f} &#181;as')
 
