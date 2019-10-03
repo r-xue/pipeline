@@ -52,7 +52,7 @@ class Topic(object):
         """
         # collect each results node matching a recognised class for this
         # topic, adding it to the list held as the dictionary value
-        in_section = filter(self.handles_result, results)
+        in_section = list(filter(self.handles_result, results))
         d = collections.defaultdict(list)
         for result in in_section:
             ref = weakref.proxy(result)

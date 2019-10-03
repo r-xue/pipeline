@@ -154,7 +154,7 @@ class Fluxscale(basetask.StandardTaskTemplate):
                              if spw.isdigit()]
 
             # filter out the [-1,-1,-1,-1] results
-            spw_flux = filter(no_result_fn, flux_for_spws)
+            spw_flux = list(filter(no_result_fn, flux_for_spws))
 
             for (spw_id, [i, q, u, v]) in spw_flux:
                 flux = domain.FluxMeasurement(spw_id, i, Q=q, U=u, V=v, origin=ORIGIN)

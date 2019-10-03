@@ -1899,7 +1899,7 @@ class IntervalCalState(object):
         calapps = expand_calstate(self)
 
         if hide_empty:
-            calapps = list(filter(lambda ca: len(ca[1]) > 0, calapps))
+            calapps = [ca for ca in calapps if len(ca[1]) > 0]
 
         # TODO dict is unnecessary. refactor all usages of this class to use
         # the tuple
