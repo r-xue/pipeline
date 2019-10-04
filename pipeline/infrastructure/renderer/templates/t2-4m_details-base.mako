@@ -319,7 +319,7 @@ ${next.body()}
         <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
             <div class="panel-body">
                 <dl class="dl-horizontal">
-                % for k, v in result.inputs.iteritems():
+                % for k, v in result.inputs.items():
                     <dt>${str(k)}</dt>
                     <dd>${str(v) if str(v) != '' else '&nbsp;'}</dd>
                 % endfor

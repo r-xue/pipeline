@@ -1,5 +1,6 @@
 <%!
 import os
+from functools import reduce
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 

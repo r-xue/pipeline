@@ -947,7 +947,7 @@ class T2_2_XRendererBase(object):
                 with cls.get_file(filename) as fileobj:
                     template = weblog.TEMPLATE_LOOKUP.get_template(cls.template)
                     display_context = cls.get_display_context(context, ms)
-                        fileobj.write(template.render(**display_context))
+                    fileobj.write(template.render(**display_context))
 
 
 class T2_2_1Renderer(T2_2_XRendererBase):
