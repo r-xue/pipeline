@@ -808,7 +808,7 @@ class ResultsProxy(object):
 
         utils.mkdir_p(os.path.dirname(path))        
         with open(path, 'wb') as outfile:
-            pickle.dump(result, outfile, -1)
+            pickle.dump(result, outfile, pickle.HIGHEST_PROTOCOL)
 
     def read(self):
         """
@@ -818,7 +818,7 @@ class ResultsProxy(object):
                             self._context.name, 
                             'saved_state',
                             self._basename)
-        with open(path) as infile:
+        with open(path, 'rb') as infile:
             return utils.pickle_load(infile)
 
     def _write_stage_logs(self, result):

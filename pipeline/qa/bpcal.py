@@ -1333,7 +1333,7 @@ def bpcal_score_RMS(RMS, RMSMax):
             # We can safely ignore the exception as it is only thrown when the
             # error function return value is so close to -1 or 1 that the lack of
             # precision makes no practical difference.
-            (_, minor_version, _) = string.split(scipy.version.short_version, '.')
+            (_, minor_version, _) = scipy.version.short_version.split('.')
             if int(minor_version) < 12:
                 under_orig = scipy.geterr()['under']
                 try:
@@ -1379,7 +1379,7 @@ def bpcal_score_SNR(SNR):
         # We can safely ignore the exception as it is only thrown when the
         # error function return value is so close to -1 or 1 that the lack of
         # precision makes no practical difference.
-        (_, minor_version, _) = string.split(scipy.version.short_version, '.')
+        (_, minor_version, _) = scipy.version.short_version.split('.')
         if int(minor_version) < 12:
             under_orig = scipy.geterr()['under']
             try:
@@ -1457,7 +1457,7 @@ def bpcal_score_flatness(values):
             # We can safely ignore the exception as it is only thrown when the
             # error function return value is so close to -1 or 1 that the lack of
             # precision makes no practical difference.
-            (_, minor_version, _) = string.split(scipy.version.short_version, '.')
+            (_, minor_version, _) = scipy.version.short_version.split('.')
             if int(minor_version) < 12:
                 under_orig = scipy.geterr()['under']
                 try:
@@ -1561,7 +1561,7 @@ def bpcal_score_derivative_deviation(values):
             try:
                 ddScore = scipy.special.erf(fractionRatio / math.sqrt(2.0))
             except FloatingPointError:
-                (_, minor_version, _) = string.split(scipy.version.short_version, '.')
+                (_, minor_version, _) = scipy.version.short_version.split('.')
                 if int(minor_version) < 12:
                     under_orig = scipy.geterr()['under']
                     try:

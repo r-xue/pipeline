@@ -534,7 +534,7 @@ class SpectralWindowTable(object):
 
             for row in root_element.findall('row'):
                 element = row.findtext('spectralWindowId')
-                _, str_id = string.split(element, '_')
+                _, str_id = element.split('_')
                 ids.append(int(str_id))
         except IOError:
             LOG.info("Could not parse XML at: {}".format(xml_path))
@@ -617,7 +617,7 @@ class ObservationTable(object):
             # ever happen?
             d = {}
             for cell in msmd.schedule(0):
-                key, val = string.split(cell)
+                key, val = cell.split()
                 d[key] = val
 
             schedblock_id = d.get('SchedulingBlock', 'N/A')
@@ -888,7 +888,7 @@ class ExecblockTable(object):
 class PolarizationTable(object):
     @staticmethod
     def get_polarizations(msmd):
-        pol_ids = sorted(set(msmd.polidfordatadesc()))
+        pol_ids = sorted({int(i) for i in msmd.polidfordatadesc()})
 
         num_corrs = [msmd.ncorrforpol(i) for i in pol_ids]
         corr_types = [msmd.corrtypesforpol(i) for i in pol_ids]

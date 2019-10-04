@@ -3,6 +3,7 @@ import contextlib
 import itertools
 import os
 import string
+import operator
 
 import numpy
 import pylab
@@ -375,7 +376,7 @@ class MeasurementSet(object):
 
         if name is not None:
             if isinstance(name, str):
-                name = string.split(name, ',')
+                name = name.split(',')
             name = set(name) 
             pool = [f for f in pool if f.name in name]
 
@@ -384,7 +385,7 @@ class MeasurementSet(object):
                 if intent in ('', '*'):
                     # empty string equals all intents for CASA
                     intent = ','.join(self.intents)
-                intent = string.split(intent, ',')
+                intent = intent.split(',')
             intent = set(intent) 
             pool = [f for f in pool if not f.intents.isdisjoint(intent)]
 
@@ -473,19 +474,15 @@ class MeasurementSet(object):
 
     @property
     def start_time(self):
-        qt = casatools.quanta
-        s = sorted(self.scans, 
-                   key=lambda scan: scan.start_time['m0'],
-                   cmp=lambda x, y: 1 if qt.gt(x, y) else 0 if qt.eq(x, y) else -1)
-        return s[0].start_time
+        earliest, _ = min([(scan, utils.get_epoch_as_datetime(scan.start_time)) for scan in self.scans],
+                          key=operator.itemgetter(1))
+        return earliest.start_time
 
     @property
     def end_time(self):
-        qt = casatools.quanta
-        s = sorted(self.scans,
-                   key=lambda scan: scan.end_time['m0'],
-                   cmp=lambda x, y: 1 if qt.gt(x, y) else 0 if qt.eq(x, y) else -1)
-        return s[-1].end_time
+        latest, _ = max([(scan, utils.get_epoch_as_datetime(scan.start_time)) for scan in self.scans],
+                        key=operator.itemgetter(1))
+        return latest.end_time
 
     def get_vla_max_integration_time(self):
         """Get the integration time used by the original VLA scripts

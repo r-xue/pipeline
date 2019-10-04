@@ -153,7 +153,7 @@ class PlotmsLeaf(object):
             fileparts['spw'] = ''
         else:
             # format spws for filename sorting
-            spws = ['%0.2d' % int(spw) for spw in string.split(str(self._spw), ',')]
+            spws = ['%0.2d' % int(spw) for spw in str(self._spw).split(',')]
             fileparts['spw'] = 'spw%s-' % '_'.join(spws)
 
         if self._baseband:

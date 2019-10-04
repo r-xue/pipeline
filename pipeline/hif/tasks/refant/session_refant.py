@@ -84,7 +84,7 @@ class RefAnt(basetask.StandardTaskTemplate):
 
         # Get the reference antenna list
         if inputs.hm_refant == 'manual':
-            refant = string.split(inputs.refant, ',')
+            refant = inputs.refant.split(',')
         elif inputs.hm_refant == 'automatic':
             heuristics = findrefant.RefAntHeuristics(vis=inputs.vis, field=inputs.field, spw=inputs.spw,
                                                      intent=inputs.intent, geometry=inputs.geometry,

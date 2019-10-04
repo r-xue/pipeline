@@ -230,7 +230,7 @@ class JobRequest(object):
             processed = [UUID_to_underscore(arg) for arg in processed]
 
         string_args = [str(arg) for arg in processed]
-        return '{!s}({!s})'.format(self.fn.__name__, ', '.join(string_args))
+        return '{!s}({!s})'.format(self.fn.__class__.__name__[1:], ', '.join(string_args))
 
     def __repr__(self):
         return 'JobRequest({!r}, {!r})'.format(self.args, self.kw)

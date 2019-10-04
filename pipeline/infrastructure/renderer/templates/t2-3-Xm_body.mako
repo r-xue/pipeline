@@ -15,7 +15,7 @@ def get_tablerow_class(row):
 
 def results_by_stage_number(d):
     all_results = []
-    for v in d.itervalues():
+    for v in d.values():
         all_results.extend(v)
     return sorted(all_results, key=operator.attrgetter('stage_number'))
 

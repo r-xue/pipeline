@@ -85,7 +85,7 @@ def read_fluxes_nodb(ms):
         # spws can overlap, so rather than looking up spw by frequency,
         # extract the spw id from the element text. I assume the format uses
         # underscores, eg. 'SpectralWindow_13'
-        _, asdm_spw_id = string.split(spw_element, '_')
+        _, asdm_spw_id = spw_element.split('_')
 
         # SCIREQ-852: MS spw IDs != ASDM spw ids
         spw_id = asdm_to_ms_spw_map.get(int(asdm_spw_id), None)
@@ -197,7 +197,7 @@ def get_atoms(text, conv_fn=lambda x: x):
     text - text from an ASDM element, with space-separated values
     fn - optional function converting a string to a user-defined type
     """
-    values = string.split(text)
+    values = text.split()
     # syntax is <num dimensions> <size dimension 1> <size dimension 2> etc.
     num_dimensions = int(values[0])
     dimension_sizes = list(map(int, values[1:num_dimensions + 1]))

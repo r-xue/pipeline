@@ -131,7 +131,7 @@ class ComparableUnit(object):
                                                                                   other.__class__.__name__))
         return self.__class__(other.to_units(self.units) + self.value, self.units)
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         if isinstance(other, self.__class__):
             return self.to_units() / other.to_units()
         if not isinstance(other, (int, float, decimal.Decimal)):

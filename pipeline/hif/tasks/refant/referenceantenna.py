@@ -125,7 +125,7 @@ class RefAnt(basetask.StandardTaskTemplate):
 
         # Get the reference antenna list
         if inputs.hm_refant == 'manual':
-            refant = string.split(inputs.refant, ',')
+            refant = inputs.refant.split(',')
 
         elif inputs.hm_refant == 'automatic':
             casa_intents = utils.to_CASA_intent(inputs.ms, inputs.intent)

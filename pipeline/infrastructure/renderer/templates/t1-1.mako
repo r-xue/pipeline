@@ -3,6 +3,7 @@ navbar_active='Home'
 
 import collections
 import datetime
+import functools
 import itertools
 import operator
 import os
@@ -205,7 +206,7 @@ $(document).ready(function() {
         </thead>
             <tbody>
                 <%
-                    ms_sorted_rows = sorted(ms_summary_rows, cmp=tablerow_cmp)
+                    ms_sorted_rows = sorted(ms_summary_rows, key=functools.cmp_to_key(tablerow_cmp))
                 %>
                 % for ouskey, ousgroup in itertools.groupby(ms_sorted_rows, key=operator.attrgetter('ousstatus_entity_id')):
                     <%

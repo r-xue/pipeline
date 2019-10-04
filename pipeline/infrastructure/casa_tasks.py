@@ -12,6 +12,7 @@ module was imported.
 """
 import shutil
 
+import casaplotms
 import casatasks
 
 from . import logging
@@ -141,7 +142,7 @@ def plotbandpass(*v, **k):
 
 
 def plotms(*v, **k):
-    return _get_job(casatasks.plotms, *v, **k)
+    return _get_job(casaplotms.plotms, *v, **k)
 
 
 def plotweather(*v, **k):

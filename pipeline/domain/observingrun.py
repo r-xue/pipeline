@@ -1,9 +1,9 @@
-import datetime
-import itertools
+import operator
 import os
 
+import itertools
+
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.utils as utils
 
 LOG = infrastructure.get_logger(__name__)
@@ -194,39 +194,29 @@ class ObservingRun(object):
     def start_time(self):
         if not self.measurement_sets:
             return None
-        qt = casatools.quanta
-        s = sorted(self.measurement_sets, 
-                   key=lambda ms: ms.start_time['m0'],
-                   cmp=lambda x, y: 1 if qt.gt(x, y) else 0 if qt.eq(x, y) else -1)
-        return s[0].start_time
+        earliest, _ = min([(ms, utils.get_epoch_as_datetime(ms.start_time)) for ms in self.measurement_sets],
+                          key=operator.itemgetter(1))
+        return earliest.start_time
 
     @property
     def start_datetime(self):
         if not self.start_time:
             return None
-        qt = casatools.quanta
-        mt = casatools.measures
-        s = qt.time(mt.getvalue(self.start_time)['m0'], form=['fits'])
-        return datetime.datetime.strptime(s[0], '%Y-%m-%dT%H:%M:%S')
+        return utils.get_epoch_as_datetime(self.start_time)
 
     @property
     def end_time(self):
         if not self.measurement_sets:
             return None
-        qt = casatools.quanta
-        s = sorted(self.measurement_sets, 
-                   key=lambda ms: ms.end_time['m0'],
-                   cmp=lambda x, y: 1 if qt.gt(x, y) else 0 if qt.eq(x, y) else -1)
-        return s[-1].end_time
+        latest, _ = max([(ms, utils.get_epoch_as_datetime(ms.start_time)) for ms in self.measurement_sets],
+                        key=operator.itemgetter(1))
+        return latest.end_time
 
     @property
     def end_datetime(self):
         if not self.end_time:
             return None
-        qt = casatools.quanta
-        mt = casatools.measures
-        s = qt.time(mt.getvalue(self.end_time)['m0'], form=['fits'])
-        return datetime.datetime.strptime(s[0], '%Y-%m-%dT%H:%M:%S')
+        return utils.get_epoch_as_datetime(self.end_time)
 
     @property
     def project_ids(self):

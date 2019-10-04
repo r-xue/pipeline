@@ -1,15 +1,16 @@
 import collections
 import contextlib
 import datetime
-import itertools
-import math
+import functools
 import operator
 import os
 import pydoc
 import re
 import shutil
 
+import itertools
 import mako
+import math
 import numpy
 import pkg_resources
 
@@ -22,11 +23,9 @@ import pipeline.infrastructure.displays.pointing as pointing
 import pipeline.infrastructure.displays.summary as summary
 import pipeline.infrastructure.logging as logging
 from pipeline import environment
-from pipeline.infrastructure import task_registry
-from pipeline.infrastructure import utils
+from pipeline.infrastructure import task_registry, utils
 from pipeline.infrastructure.renderer.templates import resources
-from . import qaadapter
-from . import weblog
+from . import qaadapter, weblog
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -248,7 +247,7 @@ class Session(object):
             else:
                 return 0
 
-        return [Session(mses, name) for _, name, mses in sorted(session_names, cmp=mycmp)]
+        return [Session(mses, name) for _, name, mses in sorted(session_names, key=functools.cmp_to_key(mycmp))]
 
 
 class RendererBase(object):
@@ -267,7 +266,7 @@ class RendererBase(object):
     @classmethod
     def get_file(cls, context):
         path = cls.get_path(context)
-        file_obj = open(path, 'w')
+        file_obj = open(path, 'wb')
         return contextlib.closing(file_obj)
 
     @classmethod
@@ -731,7 +730,7 @@ class T2_1DetailsRenderer(object):
         if not os.path.exists(ms_dir):
             os.makedirs(ms_dir)
 
-        file_obj = open(filename, 'w')
+        file_obj = open(filename, 'wb')
         return contextlib.closing(file_obj)
 
     @classmethod
@@ -927,7 +926,7 @@ class T2_2_XRendererBase(object):
         if not os.path.exists(ms_dir):
             os.makedirs(ms_dir)
 
-        file_obj = open(filename, 'w')
+        file_obj = open(filename, 'wb')
         return contextlib.closing(file_obj)
 
     @classmethod
@@ -1489,7 +1488,7 @@ class T2_4MDetailsContainerRenderer(RendererBase):
     @classmethod
     def get_file(cls, context, result):
         path = cls.get_path(context, result)
-        file_obj = open(path, 'w')
+        file_obj = open(path, 'wb')
         return contextlib.closing(file_obj)
 
     @classmethod
@@ -1544,7 +1543,7 @@ class T2_4MDetailsRenderer(object):
 
         # create a file object that writes to a file if a hard copy is 
         # requested, otherwise return a file object that flushes to stdout
-        file_obj = open(path, 'w')
+        file_obj = open(path, 'wb')
 
         # return the file object wrapped in a context manager, so we can use
         # it with the autoclosing 'with fileobj as f:' construct
@@ -2079,3 +2078,7 @@ def compute_az_el_for_ms(ms, observatory, func):
             el.append(func([el0, el1]))
 
     return func(az), func(el)
+
+
+def cmp(a, b):
+    return (a > b) - (a < b)

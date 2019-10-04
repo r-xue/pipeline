@@ -88,7 +88,7 @@ class ImageDisplay(object):
             fileparts['spw'] = ''
         else:
             # format spws for filename sorting
-            spws = ['%0.2d' % int(spw) for spw in string.split(str(result.spw), ',')]
+            spws = ['%0.2d' % int(spw) for spw in str(result.spw).split(',')]
             fileparts['spw'] = 'SpW_%s' % '_'.join(spws)
 
         if result.ant is None or result.ant == '':

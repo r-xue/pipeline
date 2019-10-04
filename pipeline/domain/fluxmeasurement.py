@@ -79,7 +79,7 @@ class FluxMeasurement(object):
 
         return self.__class__(spw_id, I, Q, U, V, spix, uvmin, uvmax)
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         if not isinstance(other, (int, float, Decimal)):
             raise TypeError("unsupported operand type(s) for /: '%s' and '%s'" % (self.__class__.__name__,
                                                                                   other.__class__.__name__))
