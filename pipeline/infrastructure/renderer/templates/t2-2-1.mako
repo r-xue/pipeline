@@ -115,7 +115,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 % if mosaics:
 <h2>Mosaic Pointings</h2>	
 <ul class="thumbnails">
-	% for (source, plot) in mosaics:
+	% for source, plot in [(s,p) for s,p in mosaics if p]:
 	<li>
 		<div class="thumbnail">
 			<a href="${os.path.relpath(plot.abspath, pcontext.report_dir)}"

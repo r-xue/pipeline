@@ -266,7 +266,7 @@ class RendererBase(object):
     @classmethod
     def get_file(cls, context):
         path = cls.get_path(context)
-        file_obj = open(path, 'wb')
+        file_obj = open(path, 'w', encoding='utf-8')
         return contextlib.closing(file_obj)
 
     @classmethod
@@ -286,7 +286,7 @@ class RendererBase(object):
             template = weblog.TEMPLATE_LOOKUP.get_template(cls.template)
             display_context = cls.get_display_context(context)
             display_context['use_minified_js'] = use_minified_js
-            fileobj.write(template.render(**display_context).encode('utf-8'))
+            fileobj.write(template.render(**display_context))
 
 
 class T1_1Renderer(RendererBase):
@@ -730,7 +730,7 @@ class T2_1DetailsRenderer(object):
         if not os.path.exists(ms_dir):
             os.makedirs(ms_dir)
 
-        file_obj = open(filename, 'wb')
+        file_obj = open(filename, 'w', encoding='utf-8')
         return contextlib.closing(file_obj)
 
     @classmethod
@@ -926,7 +926,7 @@ class T2_2_XRendererBase(object):
         if not os.path.exists(ms_dir):
             os.makedirs(ms_dir)
 
-        file_obj = open(filename, 'wb')
+        file_obj = open(filename, 'w', encoding='utf-8')
         return contextlib.closing(file_obj)
 
     @classmethod
@@ -947,7 +947,7 @@ class T2_2_XRendererBase(object):
                 with cls.get_file(filename) as fileobj:
                     template = weblog.TEMPLATE_LOOKUP.get_template(cls.template)
                     display_context = cls.get_display_context(context, ms)
-                    fileobj.write(template.render(**display_context))
+                        fileobj.write(template.render(**display_context))
 
 
 class T2_2_1Renderer(T2_2_XRendererBase):
@@ -1488,7 +1488,7 @@ class T2_4MDetailsContainerRenderer(RendererBase):
     @classmethod
     def get_file(cls, context, result):
         path = cls.get_path(context, result)
-        file_obj = open(path, 'wb')
+        file_obj = open(path, 'w', encoding='utf-8')
         return contextlib.closing(file_obj)
 
     @classmethod
@@ -1543,7 +1543,7 @@ class T2_4MDetailsRenderer(object):
 
         # create a file object that writes to a file if a hard copy is 
         # requested, otherwise return a file object that flushes to stdout
-        file_obj = open(path, 'wb')
+        file_obj = open(path, 'w', encoding='utf-8')
 
         # return the file object wrapped in a context manager, so we can use
         # it with the autoclosing 'with fileobj as f:' construct

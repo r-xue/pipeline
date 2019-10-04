@@ -188,11 +188,11 @@ def get_qascores(result, lo=None, hi=None):
     if lo is None and hi is None:
         matches = lambda score: True
     elif lo is not None and hi is None:
-        matches = lambda score: s.score > lo
+        matches = lambda score: score.score > lo
     elif lo is None and hi is not None:
-        matches = lambda score: s.score <= hi
+        matches = lambda score: score.score <= hi
     else:
-        matches = lambda score: lo < s.score <= hi
+        matches = lambda score: lo < score.score <= hi
 
     return [s for s in scores if matches(s)]
 

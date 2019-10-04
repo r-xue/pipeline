@@ -287,7 +287,7 @@ class FieldVsTimeChart(object):
         # plot key
         self._plot_key()
 
-        pylab.savefig(filename=filename)
+        pylab.savefig(filename)
         pylab.clf()
         pylab.close()
 
