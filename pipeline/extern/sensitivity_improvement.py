@@ -134,10 +134,10 @@ def windowFunction(window='', channelAveraging=1, returnValue='FWHM',
               'blackmann-harris': {'FWHM': {1: 2.666}, 'EffectiveBW': {1: 3.877}}
               }
     window = window.lower()
-    if window in mydict.keys():
+    if window in mydict:
         if returnValue == 'dictionary':
             return mydict[window]
-        if channelAveraging not in mydict[window]['FWHM'].keys() or useCAS8534:
+        if channelAveraging not in mydict[window]['FWHM'] or useCAS8534:
             if channelAveraging < 1 or window not in ['uniform', 'hanning', 'welch', 'cosine']:
                 LOG.error("Invalid choice of channelAveraging")
                 return
@@ -162,8 +162,8 @@ def windowFunction(window='', channelAveraging=1, returnValue='FWHM',
                 elif channelAveraging > 1:
                     a = 1
                     b = 2
-                myspline = scipy.interpolate.UnivariateSpline(mydict[window][returnValue].keys(),
-                                                              mydict[window][returnValue].values(),
+                myspline = scipy.interpolate.UnivariateSpline(list(mydict[window][returnValue].keys()),
+                                                              list(mydict[window][returnValue].values()),
                                                               k=splineDegree, 
                                                               s=splineSmoothing)
                 factor = float(myspline(channelAveraging))
@@ -176,7 +176,7 @@ def windowFunction(window='', channelAveraging=1, returnValue='FWHM',
                     return factor
             else:
                 return channelAveraging
-        if returnValue not in mydict[window].keys():
+        if returnValue not in mydict[window]:
             LOG.error("Invalid choice of returnValue")
             return
         if ratio:
