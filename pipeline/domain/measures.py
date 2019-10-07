@@ -1107,13 +1107,13 @@ class TemporalCollection(object):
         """A list of all the dates where the value changed, returned in order
         latest first
         """
-        if (self.__milestoneCache is None):
+        if self.__milestoneCache is None:
             self.__calculateMilestones()
         return self.__milestoneCache
 
     def __calculateMilestones(self):
         self.__milestoneCache = list(self.__contents.keys())
-        self.__milestoneCache.sort(cmp=cmp, reverse=True)
+        self.__milestoneCache.sort(reverse=True)
 
     def __clearMilestoneCache(self):
         self.__milestoneCache = None
