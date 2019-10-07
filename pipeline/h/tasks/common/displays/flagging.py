@@ -45,7 +45,7 @@ class PlotAntsChart(object):
 
         num_antennas = len(self.ms.antennas)
         threshold = 28
-        num_plots = num_antennas / threshold + 1
+        num_plots = num_antennas // threshold + 1
         multiple_plots = num_plots > 1
 
         start_idx = 0 + int(multiple_plots)
