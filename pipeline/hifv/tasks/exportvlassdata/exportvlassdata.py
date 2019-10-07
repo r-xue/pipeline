@@ -3,7 +3,6 @@ import errno
 import fnmatch
 import os
 import shutil
-import string
 import tarfile
 
 import pipeline as pipeline
@@ -143,7 +142,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         elif ps.ousstatus_entity_id == 'unknown':
             oussid = 'unknown'
         else:
-            oussid = ps.ousstatus_entity_id.translate(string.maketrans(':/', '__'))
+            oussid = ps.ousstatus_entity_id.translate(str.maketrans(':/', '__'))
 
         return oussid
 
@@ -428,7 +427,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         #     casascript_file = os.path.join(context.report_dir, casascript_name)
         #     out_casascript_file = os.path.join(products_dir, casascript_name)
         # else:
-        #     # ousid = ps.ousstatus_entity_id.translate(string.maketrans(':/', '__'))
+        #     # ousid = ps.ousstatus_entity_id.translate(str.maketrans(':/', '__'))
         #     casascript_file = os.path.join(context.report_dir, casascript_name)
         #     out_casascript_file = os.path.join(products_dir, oussid + '.' + casascript_name)
 

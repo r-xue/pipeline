@@ -13,12 +13,11 @@
 #    tasklist/index.html is top page for the task list.
 #
 ###
+import collections
 import os
+import re
 import subprocess
 import time
-import string
-import re
-import collections
 
 mapper = collections.defaultdict(lambda x: '', 
                                  h='generic',
@@ -70,7 +69,7 @@ class taskutil(object):
                 pos += 1
             tmp += descs[i][pos:]
             descs[i] = tmp
-        return string.join(descs, br)
+        return br.join(descs)
 
     def _processstring(self, desc):
         # replace '\n' with '<BR>'

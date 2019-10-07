@@ -5,7 +5,6 @@ import functools
 import itertools
 import operator
 import os
-import string
 import uuid
 import weakref
 
@@ -70,7 +69,7 @@ class CalApplication(object):
 
         :rtype: the unmarshalled :class:`CalApplication` object
         """
-        d = eval(string.replace(s, 'applycal(', 'dict('))
+        d = eval(s.replace('applycal(', 'dict('))
         calto = CalTo(vis=d['vis'], field=d['field'], spw=d['spw'],
                       antenna=d['antenna'], intent=d['intent'])
 
@@ -472,7 +471,7 @@ class CalFrom(object):
         # tuple. This also makes spwmap hashable for our hash function.
         spwmap = tuple([o for o in spwmap])
 
-        caltype = string.lower(caltype)
+        caltype = caltype.lower()
         assert caltype in CalFrom.CALTYPES
 
         arg_hash = CalFrom._calc_hash(gaintable, gainfield, interp, spwmap,
@@ -548,7 +547,7 @@ class CalFrom(object):
 
     @staticmethod
     def get_caltype_for_viscal(viscal):
-        s = string.upper(viscal)
+        s = viscal.upper()
         for caltype, viscals in CalFrom.CALTYPE_TO_VISCAL.items():
             if s in viscals:
                 return caltype

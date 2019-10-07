@@ -1,6 +1,6 @@
 import re
-import string
 from decimal import *
+
 import pipeline.infrastructure.api as api
 
 ANTENNA_LIST = { 'DV[0-6][0-9]': 12.0,
@@ -91,7 +91,7 @@ class SingleDishBeamSize(api.Heuristic):
         if p > 0:
             dstr = '1.'
         else:
-            dstr = '.'+string.join(['0' for i in range(abs(p))], '')+'1'
+            dstr = ".{}1".format(''.join(['0' for i in range(abs(p))]))
         #ret = Decimal(s).quantize(Decimal(dstr),rounding=ROUND_HALF_UP)
         ret = Decimal(s).quantize(Decimal(dstr), rounding=ROUND_UP)
         return float(ret)

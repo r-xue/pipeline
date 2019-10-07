@@ -1,7 +1,6 @@
 import contextlib
 import os
 import shutil
-import string
 import tarfile
 
 import pipeline.infrastructure as infrastructure
@@ -177,7 +176,7 @@ class ImportData(basetask.StandardTaskTemplate):
             # if the file is not in the working directory, copy it across,
             # replacing the filename with the relocated filename
             to_copy = {f for f in to_import
-                       if string.find(f, inputs.output_dir) != 0
+                       if f.find(inputs.output_dir) != 0
                        and inputs.nocopy is False}
             for src in to_copy:
                 dst = os.path.join(os.path.abspath(inputs.output_dir),

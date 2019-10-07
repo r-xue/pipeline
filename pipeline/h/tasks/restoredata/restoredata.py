@@ -29,7 +29,6 @@ import glob
 import os
 import re
 import shutil
-import string
 import tarfile
 import tempfile
 
@@ -480,7 +479,7 @@ class RestoreData(basetask.StandardTaskTemplate):
         if ps is None or ps.ousstatus_entity_id == 'unknown':
             ousid = ''
         else:
-            ousid = ps.ousstatus_entity_id.translate(string.maketrans(':/', '__')) + '.'
+            ousid = ps.ousstatus_entity_id.translate(str.maketrans(':/', '__')) + '.'
 
         # Loop over sessions
         for index, session in enumerate(session_names):

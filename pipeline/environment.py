@@ -6,7 +6,6 @@ import os
 import platform
 import re
 import resource
-import string
 import subprocess
 import sys
 
@@ -117,7 +116,7 @@ def _pipeline_revision():
         if p.returncode is not 0:
             return 'Unknown'
 
-        revision = string.strip(stdout)
+        revision = stdout.strip()
 
         # get SVN branch using svn info
         args = ['svn info .']

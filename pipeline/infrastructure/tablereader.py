@@ -5,7 +5,6 @@ import itertools
 import operator
 import os
 import re
-import string
 import xml.etree.ElementTree as ElementTree
 from bisect import bisect_left
 from functools import reduce
@@ -159,7 +158,7 @@ class MeasurementSetReader(object):
             spw.band = BandDescriber.get_description(spw.ref_frequency, observatory=ms.antenna_array.name)
 
             # Used EVLA band name from spw instead of frequency range
-            observatory = string.upper(ms.antenna_array.name)
+            observatory = ms.antenna_array.name.upper()
             if observatory in ('VLA', 'EVLA'):
                 spw2band = ms.get_vla_spw2band()
 
@@ -1090,10 +1089,9 @@ class BandDescriber(object):
 
     @staticmethod
     def get_description(f, observatory='ALMA'):
-        observatory = string.upper(observatory)
-        if observatory in ('ALMA',):
+        if observatory.upper() in ('ALMA',):
             bands = BandDescriber.alma_bands
-        elif observatory in ('VLA', 'EVLA'):
+        elif observatory.upper() in ('VLA', 'EVLA'):
             bands = BandDescriber.evla_bands
         else:
             bands = BandDescriber.unknown

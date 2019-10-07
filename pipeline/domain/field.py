@@ -1,5 +1,4 @@
 import pprint
-import string
 
 import pipeline.infrastructure.casatools as casatools
 from pipeline.infrastructure.utils import utils
@@ -97,13 +96,12 @@ class Field(object):
         return self.dec
 
     def set_source_type(self, source_type):
-        source_type = string.strip(source_type)
-        source_type = string.upper(source_type)
+        source_type = source_type.strip().upper()
 
         # replace any VLA source_type with pipeline/ALMA intents
-        source_type = string.replace(source_type, 'SOURCE', 'TARGET')
-        source_type = string.replace(source_type, 'GAIN', 'PHASE')
-        source_type = string.replace(source_type, 'FLUX', 'AMPLITUDE')
+        source_type = source_type.replace('SOURCE', 'TARGET')
+        source_type = source_type.replace('GAIN', 'PHASE')
+        source_type = source_type.replace('FLUX', 'AMPLITUDE')
 
         for intent in ['BANDPASS', 'PHASE', 'AMPLITUDE', 'TARGET', 'POINTING', 
                        'WVR', 'ATMOSPHERE', 'SIDEBAND', 'POLARIZATION',

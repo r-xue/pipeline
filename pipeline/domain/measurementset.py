@@ -2,7 +2,6 @@ import collections
 import contextlib
 import itertools
 import os
-import string
 import operator
 
 import numpy
@@ -636,7 +635,7 @@ class MeasurementSet(object):
         corrstring_list = ddindex[0]['corrdesc']
         removal_list = ['RL', 'LR', 'XY', 'YX']
         corrstring_list = list(set(corrstring_list).difference(set(removal_list)))
-        corrstring = string.join(corrstring_list, ',')
+        corrstring = ','.join(corrstring_list)
 
         return corrstring
 

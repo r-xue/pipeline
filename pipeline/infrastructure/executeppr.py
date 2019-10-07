@@ -4,10 +4,7 @@
 #
 # Turn some print statement into CASA log statements
 #
-
-import gc
 import os
-import string
 import sys
 import traceback
 
@@ -593,7 +590,7 @@ def _getSessions(intentsDict):
         if key in intentsDict:
             #asdmList = intentsDict[key].split(',')
             asdmList = intentsDict[key].split(' | ')
-            asdmList = [asdm.translate(string.maketrans(':/', '__')) for asdm in asdmList]
+            asdmList = [asdm.translate(str.maketrans(':/', '__')) for asdm in asdmList]
             sessionsDict[key] = asdmList
             ptr = ptr + 1
         else:

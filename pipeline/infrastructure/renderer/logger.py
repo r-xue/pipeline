@@ -177,9 +177,7 @@ class PlotGroup(object):
 
     @property
     def title(self):
-        title = string.join([string.capwords(self.y_axis),
-                             'vs',
-                             string.capwords(self.x_axis)])
+        title = "{} vs {}".format(string.capwords(self.y_axis), string.capwords(self.x_axis))
         if title == 'Dec Offset vs Ra Offset':
             title = 'Image Maps (Dec Offset vs RA Offset)'
 
@@ -232,7 +230,7 @@ class PlotGroup(object):
     def thumbnails(self):
         html = [plot.getThumbnailHtml() for plot in self.plots]
         html.sort(key=PlotGroup.numericalSort)
-        return string.join(html, '\n')
+        return '\n'.join(html)
 
     @property
     def buttons(self):
@@ -302,7 +300,7 @@ class Plot(object):
         regex = re.compile('\W')
         css_classes = [Parameters.getCssId(parameter) + ''.join(regex.split(str(val)))
                        for parameter, val in self.parameters.items()]
-        return string.join(css_classes)
+        return ' '.join(css_classes)
 
     @property
     def title(self):
@@ -314,13 +312,13 @@ class Plot(object):
         field = ''
         if self.field is not None and len(self.field) > 0:
             # eg. 'M31: '
-            field = string.strip(str(self.field)) + ': '
+            field = str(self.field).strip() + ': '
 
         params = ''
         if len(self.parameters) > 0:
-            params = [string.join((Parameters.getDescription(str(k)), str(v)), ' ') 
+            params = [' '.join((Parameters.getDescription(str(k)), str(v)))
                       for k, v in self.parameters.items() if k != "field"]
-            params = string.join(params, ', ').rstrip(', ')
+            params = ', '.join(params)
             # eg. ' for antenna 1, spectral window 2'
             params = ' for ' + params
 
