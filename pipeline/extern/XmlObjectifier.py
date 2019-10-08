@@ -28,6 +28,8 @@
 #
 # Who		   When	       What
 #
+# D.Muders, MPIfR  2019-10-08  Replaced deepcopy with copy to avoid recursion
+#                              limit issue.
 # D.Muders, MPIfR  2019-09-25  Ported to Python 3.
 # D.Muders, MPIfR  2012-09-02  Changed boolean values to True and False instead
 #                              of 1 and 0 to avoid CASA interface errors.
@@ -142,7 +144,7 @@ f.close()
 """
 
 import xml.dom.minidom as minidom
-from copy import deepcopy
+from copy import copy
 
 
 class _XmlObject:
@@ -246,8 +248,8 @@ def _createLists(xmlObject, mapNameSpaces, nameSpaceMapping, skipChars):
                     xml_elements_list = getattr(xmlObject, element_name)
                 my_xml_element = XmlElement(element, mapNameSpaces, nameSpaceMapping, skipChars)
                 xml_elements_list.append(my_xml_element)
-                setattr(xmlObject, element_name, deepcopy(xml_elements_list))
-                setattr(xmlObject, element_name+'_obj', _XmlObject(deepcopy(xml_elements_list)))
+                setattr(xmlObject, element_name, copy(xml_elements_list))
+                setattr(xmlObject, element_name+'_obj', _XmlObject(copy(xml_elements_list)))
 
         # Convert 1-item element lists to scalar elements
         for item in items:
