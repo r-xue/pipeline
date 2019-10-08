@@ -113,6 +113,7 @@ def numberOfChannelsInCube(img, returnFreqs=False, returnChannelWidth=False,
             return nchan
 
 
+# FIXME: function contains unresolved references, clean-up or remove if not needed by Pipeline.
 def cubeLSRKToTopo(img, freqrange='', prec=4, verbose=False,
                    nchan=None, f0=None, f1=None, chanwidth=None,
                    vis='', header=''):
@@ -156,6 +157,7 @@ def cubeLSRKToTopo(img, freqrange='', prec=4, verbose=False,
     else:
 #        datestring = getObservationStartDate(vis, measuresToolFormat=True)
         # get the datetime stamp of the middle of the measurement set
+        # FIXME: fix unresolved reference and/or clean-up/remove function if not needed by Pipeline.
         datestring = mjdsecToUT(np.mean(getObservationMJDSecRange(vis)), measuresToolFormat=True)
     f0 = lsrkToTopo(startFreq, datestring, ra, dec, equinox, observatory, prec, verbose)
     f1 = lsrkToTopo(stopFreq, datestring, ra, dec, equinox, observatory, prec, verbose) 
@@ -404,6 +406,7 @@ def parseFrequencyArgument(bandwidth):
     return(bandwidth)
 
 
+# FIXME: function contains unresolved references, clean-up or remove if not needed by Pipeline.
 def rad2radec(ra=0,dec=0,imfitdict=None, prec=5, verbose=True, component=0,
               replaceDecDotsWithColons=True, hmsdms=False, delimiter=', ',
               prependEquinox=False, hmdm=False):
@@ -446,10 +449,12 @@ def rad2radec(ra=0,dec=0,imfitdict=None, prec=5, verbose=True, component=0,
     mystring = '%s, %s' % (myra, mydec)
     lqa.done()
     if (hmsdms):
+        # FIXME: fix unresolved reference and/or clean-up/remove function if not needed by Pipeline.
         mystring = convertColonDelimitersToHMSDMS(mystring)
         if (prependEquinox):
             mystring = "J2000 " + mystring
     elif (hmdm):
+        # FIXME: fix unresolved reference and/or clean-up/remove function if not needed by Pipeline.
         mystring = convertColonDelimitersToHMSDMS(mystring, s=False)
         if (prependEquinox):
             mystring = "J2000 " + mystring
