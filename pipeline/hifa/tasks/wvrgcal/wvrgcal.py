@@ -90,8 +90,9 @@ class WvrgcalInputs(vdp.StandardInputs):
     @wvrflag.convert
     def wvrflag(self, value):
         if isinstance(value, str):
-            if value[0] == '[':
-                value = value.translate(None, '[]\'')
+            if value.startswith('['):
+                # Remove the characters [, ], and ' from the value.
+                value = value.translate(str.maketrans("[]'"))
             return value.split(',')
         else:
             return value

@@ -88,7 +88,8 @@ class CleanBaseInputs(vdp.StandardInputs):
     @imsize.convert
     def imsize(self, value):
         if isinstance(value, str) and value.startswith('['):
-            temp = value.translate(None, '[]\'')
+            # Remove the characters [, ], and ' from the value.
+            temp = value.translate(str.maketrans("[]'"))
             temp = temp.split(',')
             return list(map(int, temp))
         return value
