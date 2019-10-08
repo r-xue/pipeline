@@ -18,9 +18,9 @@ for i in ['h', 'hif', 'hsd', 'hifa', 'hifv', 'hsdn']:
     srcdir = casasrc + '/' + i + '/cli'
     destdir = casaarch + '/pipeline/' + i + '/cli'
     if srcdir == destdir:
-        command = '(cd '+casasrc+'/'+i+'/cli; buildmytasks -o='+i+'.py)'
+        command = '(cd '+casasrc+'/'+i+'/cli; buildmytasks *xml)'
     else:
-        command = '(cd '+casasrc+'/'+i+'/cli; buildmytasks -i='+casaarch+'/pipeline/'+i+'/cli -o='+i+'.py)'
+        command = '(cd '+casasrc+'/'+i+'/cli; buildmytasks --output-dir '+casaarch+'/pipeline/'+i+'/cli *xml)'
     print(command)
     os.system(command)
 
