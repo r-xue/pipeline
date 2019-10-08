@@ -1,10 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" ?>
-<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
+<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
 
-<task type="function" name="h_show_calstate" category="pipeline">
+<task category="pipeline" name="h_show_calstate" type="function">
 <shortdescription>Show the current pipeline calibration state</shortdescription>
 
 <description>
@@ -22,5 +18,5 @@ Description
 h_show_calstate displays the current on-the-fly calibration state of the 
 pipeline as a set of equivalent applycal calls.
 </example>
-</task>
+<returns>void</returns></task>
 </casaxml>

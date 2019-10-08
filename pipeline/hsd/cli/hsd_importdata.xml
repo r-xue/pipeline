@@ -1,25 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" ?>
-<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
+<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
 
-<task type="function" name="hsd_importdata" category="pipeline">
+<task category="pipeline" name="hsd_importdata" type="function">
 <shortdescription>Imports data into the single dish pipeline</shortdescription>
 <description>
 </description>
 <input>
-    <param type="stringArray" name="vis">
+    <param name="vis" type="stringVec">
     <description>List of input visibility data</description>
-    <value></value>
+    <value/>
     </param>
 
-    <param type="stringArray" name="session">
+    <param name="session" type="stringVec">
     <description>List of visibility data sessions</description>
-    <value></value>
+    <value/>
     </param>
 
-    <param type="string" name="pipelinemode">
+    <param name="pipelinemode" type="string">
     <description>The pipeline operating mode</description>
     <value>automatic</value>
     <allowed kind="enum">
@@ -29,42 +25,42 @@
     </allowed>
     </param>
 
-    <param type="string" name="asis" subparam="true">
+    <param subparam="true" name="asis" type="string">
     <description>ASDM to convert as is</description>
     <value>SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR SpectralWindow</value>
     </param>
 
-    <param type="bool" name="process_caldevice" subparam="true">
+    <param subparam="true" name="process_caldevice" type="bool">
     <description>Import the caldevice table from the ASDM</description>
     <value>False</value>
     </param>
 
-    <param type="bool" name="overwrite" subparam="true">
+    <param subparam="true" name="overwrite" type="bool">
     <description>Overwrite existing files on import</description>
     <value>False</value>
     </param>
 
-    <param type="bool" name="nocopy" subparam="true">
+    <param subparam="true" name="nocopy" type="bool">
         <description>Disable copying of MS to working directory</description>
         <value>False</value>
     </param>
 
-    <param type="bool" name="bdfflags" subparam="true">
+    <param subparam="true" name="bdfflags" type="bool">
     <description>Apply BDF flags on import</description>
     <value>True</value>
     </param>
 
-    <param type="bool" name="lazy">
+    <param name="lazy" type="bool">
     <description>Use the lazy import option</description>
     <value>False</value>
     </param>
 
-    <param type="bool" name="with_pointing_correction">
+    <param name="with_pointing_correction" type="bool">
 	<description>Apply pointing correction to DIRECTION</description>
 	<value>True</value>
     </param>
 
-    <param type="string" name="createmms">
+    <param name="createmms" type="string">
         <description>Create an MMS</description>
     <value>false</value>
         <allowed kind="enum">
@@ -74,21 +70,21 @@
         </allowed>
     </param>
 
-    <param type="bool" name="dryrun" subparam="true">
+    <param subparam="true" name="dryrun" type="bool">
     <description>Run the task (False) or display task command (True)</description>
     <value>False</value>
     </param>
 
-    <param type="bool" name="acceptresults" subparam="true">
+    <param subparam="true" name="acceptresults" type="bool">
     <description>Add the results into the pipeline context</description>
     <value>True</value>
     </param>
 
     <constraints>
     <when param="pipelinemode">
-        <equals type="string" value="automatic">
+        <equals value="automatic" type="string">
         </equals>
-        <equals type="string" value="interactive">
+        <equals value="interactive" type="string">
         <default param="asis"><value type="string">SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR</value></default>
         <default param="process_caldevice"><value type="bool">False</value></default>
         <default param="overwrite"><value type="bool">False</value></default>
@@ -97,7 +93,7 @@
         <default param="dryrun"><value type="bool">False</value></default>
         <default param="acceptresults"><value type="bool">True</value></default>
         </equals>
-        <equals type="string" value="getinputs">
+        <equals value="getinputs" type="string">
         <default param="asis"><value type="string">SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR</value></default>
         <default param="process_caldevice"><value type="bool">False</value></default>
         <default param="overwrite"><value type="bool">False</value></default>
@@ -109,14 +105,8 @@
 
 </input>
 
-<output>
-    <param type="any" name="results">
-        <description>The output results object</description>
-        <any type="variant"/>
-        <value></value>
-    </param>
-</output>
-<returns type="void"/>
+
+<returns>any</returns>
 
 
 <example>

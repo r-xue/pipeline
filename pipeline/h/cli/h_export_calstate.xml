@@ -1,10 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" ?>
-<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
+<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
 
-<task type="function" name="h_export_calstate" category="pipeline">
+<task category="pipeline" name="h_export_calstate" type="function">
 <shortdescription>Save the pipeline calibration state to disk</shortdescription>
 
 <description>
@@ -13,12 +9,12 @@ in the form of a set of equivalent applycal calls.
 </description>		
 
 <input>
-    <param type="string" name="filename">
+    <param name="filename" type="string">
         <description>Name for saved calibration state</description>
-        <value></value>
+        <value/>
     </param>
 
-  <param type="string" name="state">
+  <param name="state" type="string">
     <description>The calibration state to export</description>
     <value>active</value>
     <allowed kind="enum">
@@ -75,5 +71,5 @@ Example
    h_export_calstate(filename='applied.calstate', state='applied')
 
 </example>
-</task>
+<returns>void</returns></task>
 </casaxml>

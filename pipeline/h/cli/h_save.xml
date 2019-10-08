@@ -1,10 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" ?>
-<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
+<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
 
-<task type="function" name="h_save" category="pipeline">
+<task category="pipeline" name="h_save" type="function">
 <shortdescription>Save the pipeline state to disk</shortdescription>
 
 <description>
@@ -12,9 +8,9 @@ h_save saves the current pipeline state to disk under a unique name.
 </description>
 
 <input>
-    <param type="string" name="filename">
+    <param name="filename" type="string">
         <description>Name for saved state</description>
-        <value></value>
+        <value/>
     </param>
 </input>
 
@@ -48,5 +44,5 @@ Example
    h_save(filename='savestate_1')
 
 </example>
-</task>
+<returns>void</returns></task>
 </casaxml>

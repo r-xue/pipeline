@@ -1,38 +1,34 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" ?>
-<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
+<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
 
-<task type="function" name="hif_findcont" category="pipeline">
+<task category="pipeline" name="hif_findcont" type="function">
 <shortdescription>Find continuum frequency ranges</shortdescription>
 <description>
 Find continuum frequency ranges for a list of specified targets.  
 </description>
 <input>
 
-  <param type="stringArray" name="vis" subparam="true">
+  <param subparam="true" name="vis" type="stringVec">
     <description>List of input MeasurementSets</description>
-    <value></value>
+    <value/>
   </param>
 
-  <param type="any" name="target_list" subparam="true">
+  <param subparam="true" name="target_list" type="any">
     <any type="variant"/>
     <description>Dictionary specifying targets to be imaged; blank will read list from context</description>
     <value>{}</value>
   </param>
 
-  <param type="bool" name="mosweight">
+  <param name="mosweight" type="bool">
     <description>Mosaic weighting</description>
     <value>None</value>
   </param>
 
-    <param type="bool" name="hm_perchanweightdensity">
+    <param name="hm_perchanweightdensity" type="bool">
         <description>Calculate the weight density for each channel independently</description>
         <value>False</value>
     </param>
 
-  <param type="string" name="parallel">
+  <param name="parallel" type="string">
     <description>Compute dirty images using MPI cluster</description>
     <value>automatic</value>
     <allowed kind="enum">
@@ -42,7 +38,7 @@ Find continuum frequency ranges for a list of specified targets.
     </allowed>
   </param>
 
-  <param type="string" name="pipelinemode">
+  <param name="pipelinemode" type="string">
     <description>The pipeline operating mode</description>
     <value>automatic</value>
     <allowed kind="enum">
@@ -52,12 +48,12 @@ Find continuum frequency ranges for a list of specified targets.
     </allowed>
   </param>
 
-  <param type="bool" name="dryrun" subparam="true">
+  <param subparam="true" name="dryrun" type="bool">
     <description>Run the task (False) or display the command(True)</description>
     <value>False</value>
   </param>
 
-  <param type="bool" name="acceptresults" subparam="true">
+  <param subparam="true" name="acceptresults" type="bool">
     <description>Add the results to the pipeline context</description>
    <value>True</value>
   </param>
@@ -66,15 +62,15 @@ Find continuum frequency ranges for a list of specified targets.
   <constraints>
 
     <when param="pipelinemode">
-      <equals type="string" value="automatic"/>
-      <equals type="string" value="interactive">
-        <default param="vis"><value type="stringArray"></value></default>
+      <equals value="automatic" type="string"/>
+      <equals value="interactive" type="string">
+        <default param="vis"><value type="stringVec"/></default>
         <default param="target_list"><value>{}</value></default>
         <default param="dryrun"><value type="bool">False</value></default>
         <default param="acceptresults"><value type="bool">True</value></default>
       </equals>
-      <equals type="string" value="getinputs">
-        <default param="vis"><value type="stringArray"></value></default>
+      <equals value="getinputs" type="string">
+        <default param="vis"><value type="stringVec"/></default>
         <default param="target_list"><value>{}</value></default>
       </equals>
     </when>
@@ -83,14 +79,8 @@ Find continuum frequency ranges for a list of specified targets.
 
 </input>
 
-<output>
-    <param type="any" name="results">
-        <description>The output results object</description>
-        <any type="variant"/>
-        <value></value>
-    </param>
-</output>
-<returns type="void"/>
+
+<returns>any</returns>
 
 
 <example>

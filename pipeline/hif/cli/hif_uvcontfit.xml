@@ -1,63 +1,58 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" ?>
-<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd
-file:///opt/casa/code/xmlcasa/xml/casa.xsd">
+<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
 
-<task type="function" name="hif_uvcontfit" category="pipeline">
+<task category="pipeline" name="hif_uvcontfit" type="function">
 <shortdescription>Fit the continuum in the UV plane</shortdescription>
 <description>
 Fit the continuum in the UV plane using polynomials.
 </description>
 <input>
-  <param type="stringArray" name="vis" subparam="true">
+  <param subparam="true" name="vis" type="stringVec">
     <description>The name of the input visibility file</description>
-    <value></value>
+    <value/>
   </param>
 
-        <param type="stringArray" name="caltable" subparam="true">
+        <param subparam="true" name="caltable" type="stringVec">
                 <description>Name of output Mueller matrix calibration table</description>
-                <value></value>
+                <value/>
         </param>
 
-        <param type="string" name="contfile" subparam="true">
+        <param subparam="true" name="contfile" type="string">
                 <description>Name of the input file of per source / spw continuum regions</description>
-                <value></value>
+                <value/>
         </param>
 
-        <param type="string" name="field" subparam="true">
+        <param subparam="true" name="field" type="string">
                 <description>Select field(s) using id(s) or name(s)</description>
-                <value type="string"></value>
+                <value type="string"/>
         </param>
 
-        <param type="string" name="intent" subparam="true">
+        <param subparam="true" name="intent" type="string">
                 <description>Select intents</description>
-                <value type="string"></value>
+                <value type="string"/>
         </param>
 
-  <param type="string" name="spw" subparam="true">
+  <param subparam="true" name="spw" type="string">
     <description>Spectral window / channels for fitting the continuum</description>
-    <value></value>
+    <value/>
   </param>
 
-        <param type="string" name="combine" subparam="true">
+        <param subparam="true" name="combine" type="string">
                 <description>Data axes to combine for the continuum estimation (none, spw and/or scan)</description>
-                <value></value>
+                <value/>
         </param>
 
-  <param type="any" name="solint">
+  <param name="solint" type="any">
   <description>Time scale for the continuum fit</description>
          <any type="variant"/>
         <value type="string">int</value>
   </param>
 
-  <param type="int" name="fitorder">
+  <param name="fitorder" type="int">
   <description>Polynomial order for the continuum fits</description>
   <value>1</value>
   </param>
 
-  <param type="string" name="pipelinemode">
+  <param name="pipelinemode" type="string">
     <description>The pipeline operating mode</description>
     <value>automatic</value>
     <allowed kind="enum">
@@ -67,12 +62,12 @@ Fit the continuum in the UV plane using polynomials.
     </allowed>
   </param>
 
-  <param type="bool" name="dryrun" subparam="true">
+  <param subparam="true" name="dryrun" type="bool">
     <description>Run the task (False) or display the command(True)</description>
     <value>False</value>
   </param>
 
-  <param type="bool" name="acceptresults" subparam="true">
+  <param subparam="true" name="acceptresults" type="bool">
     <description>Add the results to the pipeline context</description>
    <value>True</value>
   </param>
@@ -81,27 +76,27 @@ Fit the continuum in the UV plane using polynomials.
   <constraints>
 
     <when param="pipelinemode">
-      <equals type="string" value="automatic">
+      <equals value="automatic" type="string">
       </equals>
-      <equals type="string" value="interactive">
-        <default param="vis"><value type="stringArray"></value></default>
-        <default param="caltable"><value type="stringArray"></value></default>
-        <default param="contfile"><value type="string"></value></default>
-        <default param="field"><value type="string"></value></default>
-        <default param="intent"><value type="string"></value></default>
-        <default param="spw"><value type="string"></value></default>
-        <default param="combine"><value type="string"></value></default>
+      <equals value="interactive" type="string">
+        <default param="vis"><value type="stringVec"/></default>
+        <default param="caltable"><value type="stringVec"/></default>
+        <default param="contfile"><value type="string"/></default>
+        <default param="field"><value type="string"/></default>
+        <default param="intent"><value type="string"/></default>
+        <default param="spw"><value type="string"/></default>
+        <default param="combine"><value type="string"/></default>
         <default param="dryrun"><value type="bool">False</value></default>
         <default param="acceptresults"><value type="bool">True</value></default>
       </equals>
-      <equals type="string" value="getinputs">
-        <default param="vis"><value type="stringArray"></value></default>
-        <default param="caltable"><value type="stringArray"></value></default>
-        <default param="contfile"><value type="string"></value></default>
-        <default param="field"><value type="string"></value></default>
-        <default param="intent"><value type="string"></value></default>
-        <default param="spw"><value type="string"></value></default>
-        <default param="combine"><value type="string"></value></default>
+      <equals value="getinputs" type="string">
+        <default param="vis"><value type="stringVec"/></default>
+        <default param="caltable"><value type="stringVec"/></default>
+        <default param="contfile"><value type="string"/></default>
+        <default param="field"><value type="string"/></default>
+        <default param="intent"><value type="string"/></default>
+        <default param="spw"><value type="string"/></default>
+        <default param="combine"><value type="string"/></default>
       </equals>
     </when>
 
@@ -111,14 +106,8 @@ Fit the continuum in the UV plane using polynomials.
 
 </input>
 
-<output>
-    <param type="any" name="results">
-        <description>The output results object</description>
-        <any type="variant"/>
-        <value></value>
-    </param>
-</output>
-<returns type="void"/>
+
+<returns>any</returns>
 
 
 

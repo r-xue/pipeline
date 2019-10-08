@@ -1,35 +1,31 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" ?>
-<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-	 	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd">
+<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
 
-<task type="function" name="hif_refant" category="pipeline">
+<task category="pipeline" name="hif_refant" type="function">
 
 <shortdescription>Select the best reference antennas</shortdescription>
 
 <input>
-	<param type="stringArray" name="vis" subparam="true">
+	<param subparam="true" name="vis" type="stringVec">
 	    <description>List of input MeasurementSets</description>
-	    <value></value>
+	    <value/>
 	</param>			
 
-	<param type="string" name="field" subparam="true">
+	<param subparam="true" name="field" type="string">
 	    <description>List of field names or ids</description>
-	    <value></value>
+	    <value/>
 	</param>
 
-	<param type="string" name="spw" subparam="true">
+	<param subparam="true" name="spw" type="string">
 	    <description>List of spectral windows ids </description>
-	    <value></value>
+	    <value/>
 	</param>
 
-	<param type="string" name="intent" subparam="true">
+	<param subparam="true" name="intent" type="string">
 	    <description>List of data selection intents</description>
 	    <value>AMPLITUDE,BANDPASS,PHASE</value>
 	</param>
 
-	<param type="string" name="hm_refant">
+	<param name="hm_refant" type="string">
 	    <description>The reference antenna heuristics mode</description>
 	    <value>automatic</value>
 	    <allowed kind="enum">
@@ -38,22 +34,22 @@
 	    </allowed>
 	</param>
 
-	<param type="string" name="refant" subparam="true">
+	<param subparam="true" name="refant" type="string">
 	    <description>List of reference antennas</description>
-	    <value></value>
+	    <value/>
 	</param>
 
-	<param type="bool" name="geometry" subparam="true">
+	<param subparam="true" name="geometry" type="bool">
 	    <description>Score by proximity to center of the array</description>
 	    <value>True</value>
 	</param>
 
-	<param type="bool" name="flagging" subparam="true">
+	<param subparam="true" name="flagging" type="bool">
 	    <description>Score by percentage of good data</description>
 	    <value>True</value>
 	</param>
 
-	<param type="string" name="pipelinemode">
+	<param name="pipelinemode" type="string">
 	    <description>The pipeline operating mode</description>
 	    <value>automatic</value>
 	    <allowed kind="enum">
@@ -63,64 +59,58 @@
 	    </allowed>
 	</param>
 
-	<param type="bool" name="dryrun" subparam="true">
+	<param subparam="true" name="dryrun" type="bool">
 	    <description>Run the task (False) or display the command (True)</description>
 	    <value>False</value>
 	</param>
 	
-	<param type="bool" name="acceptresults" subparam="true">
+	<param subparam="true" name="acceptresults" type="bool">
 	    <description>Add the results into the pipeline context</description>
 	    <value>True</value>
 	</param>
 
-	<param type="string" name="refantignore">
+	<param name="refantignore" type="string">
 	<description>String list of antennas to ignore</description>
-	<value></value>
+	<value/>
     </param>
 	
 	<constraints>
 	    <when param="pipelinemode">
-		<equals type="string" value="automatic">
+		<equals value="automatic" type="string">
 		</equals>
-		<equals type="string" value="interactive"> 
-		    <default param="vis"><value type="stringArray"></value></default>
-		    <default param="field"><value type="string"></value></default>
+		<equals value="interactive" type="string"> 
+		    <default param="vis"><value type="stringVec"/></default>
+		    <default param="field"><value type="string"/></default>
 		    <default param="intents"><value type="string">AMPLITUDE,BANDPASS,PHASE</value></default>
-		    <default param="spw"><value type="string"></value></default>
+		    <default param="spw"><value type="string"/></default>
 		    <default param="dryrun"><value type="bool">False</value></default>
 		    <default param="acceptresults"><value type="bool">True</value></default>
-			<default param="refantignore"><value type="string"></value></default>
+			<default param="refantignore"><value type="string"/></default>
 		</equals>
-		<equals type="string" value="getinputs"> 
-		    <default param="vis"><value type="stringArray"></value></default>
-		    <default param="field"><value type="string"></value></default>
+		<equals value="getinputs" type="string"> 
+		    <default param="vis"><value type="stringVec"/></default>
+		    <default param="field"><value type="string"/></default>
 		    <default param="intents"><value type="string">AMPLITUDE,BANDPASS,PHASE</value></default>
-		    <default param="spw"><value type="string"></value></default>
-			<default param="refantignore"><value type="string"></value></default>
+		    <default param="spw"><value type="string"/></default>
+			<default param="refantignore"><value type="string"/></default>
 		</equals>
 	    </when>
 
 	    <when param="hm_refant">
-		<equals type="string" value="automatic"> 
+		<equals value="automatic" type="string"> 
 		    <default param="geometry"><value type="bool">True</value></default>
 		    <default param="flagging"><value type="bool">True</value></default>
 		</equals>
-		<equals type="string" value="manual"> 
-		    <default param="refant"><value type="string"></value></default>
+		<equals value="manual" type="string"> 
+		    <default param="refant"><value type="string"/></default>
 		</equals>
 	    </when>
 
 	</constraints>
 </input>
 
-<output>
-    <param type="any" name="results">
-        <description>The output results object</description>
-        <any type="variant"/>
-        <value></value>
-    </param>
-</output>
-<returns type="void"/>
+
+<returns>any</returns>
 
 
 <example>

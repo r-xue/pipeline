@@ -1,11 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" ?>
-<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd
-file:///opt/casa/code/xmlcasa/xml/casa.xsd">
+<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
 
-<task type="function" name="hifa_bpsolint" category="pipeline">
+<task category="pipeline" name="hifa_bpsolint" type="function">
 
 <shortdescription>Compute optimal bandpass calibration solution intervals</shortdescription>
 <description>
@@ -16,57 +11,57 @@ array characteristics the meta data associated with the observation.
 
 <input>
 
-   <param type="stringArray" name="vis" subparam="true">
+   <param subparam="true" name="vis" type="stringVec">
 	<description>List of input MeasurementSets</description>
-	<value></value>
+	<value/>
    </param>
 
-   <param type="string" name="field" subparam="true">
+   <param subparam="true" name="field" type="string">
 	<description>Set of data selection field names</description>
-	<value></value>
+	<value/>
    </param>
 
-   <param type="string" name="intent" subparam="true">
+   <param subparam="true" name="intent" type="string">
 	<description>Set of data selection observing intents</description>
 	<value>BANDPASS</value>
    </param>
 
-   <param type="string" name="spw" subparam="true">
+   <param subparam="true" name="spw" type="string">
 	<description>Set of data selection spectral window ids</description>
-	<value></value>
+	<value/>
    </param>
 
-   <param type="double" name="phaseupsnr">
+   <param name="phaseupsnr" type="double">
 	<description>The required bandpass phaseup signal to noise</description>
 	<value>20.0</value>
    </param>
 
-   <param type="int" name="minphaseupints">
+   <param name="minphaseupints" type="int">
 	<description>The minimum number of phaseup intervals in the time solution</description>
 	<value>2</value>
    </param>
 
-   <param type="bool" name="evenbpints">
+   <param name="evenbpints" type="bool">
 	<description>Force the bandpass frequency solution intervals to be an even number of channels</description>
 	<value>False</value>
    </param>
 
-   <param type="double" name="bpsnr">
+   <param name="bpsnr" type="double">
 	<description>The required bandpass frequency solution signal to noise</description>
 	<value>50.0</value>
    </param>
 
-   <param type="double" name="minbpsnr">
+   <param name="minbpsnr" type="double">
 	<description>The minimum required bandpass frequency solution signal to noise when strong atmospheric lines exist in Tsys spectra</description>
 	<value>20.0</value>
    </param>
 
-    <param type="int" name="minbpnchan">
+    <param name="minbpnchan" type="int">
 	<description>The minimum number of channels in the frequency solution</description>
 	<value type="int">8</value>
     </param>
 
-   <param type="string" name="hm_nantennas">
+   <param name="hm_nantennas" type="string">
 	<description>The antenna selection heuristic (unsupported) </description>
 	<value>all</value>
 	<allowed kind="enum">
@@ -75,12 +70,12 @@ array characteristics the meta data associated with the observation.
 	</allowed>
    </param>
 
-   <param type="double" name="maxfracflagged" subparam="true">
+   <param subparam="true" name="maxfracflagged" type="double">
 	<description>The maximum fraction of data flagged per antenna (unsupported)</description>
 	<value>0.90</value>
    </param>
 
-    <param type="string" name="pipelinemode">
+    <param name="pipelinemode" type="string">
 	<description>The pipeline operating mode</description>
 	<value>automatic</value>
 	<allowed kind="enum">
@@ -90,12 +85,12 @@ array characteristics the meta data associated with the observation.
 	</allowed>
     </param>
 
-    <param type="bool" name="dryrun" subparam="true">
+    <param subparam="true" name="dryrun" type="bool">
 	<description>Run task (False) or display the command(True)</description>
 	<value type="bool">False</value>
     </param>
 
-    <param type="bool" name="acceptresults" subparam="true">
+    <param subparam="true" name="acceptresults" type="bool">
 	<description>Automatically accept results into the context</description>
 	<value type="bool">True</value>
     </param>
@@ -103,40 +98,34 @@ array characteristics the meta data associated with the observation.
     <constraints>
 
 	<when param="hm_nantennas">
-	    <equals type="string" value="all" />
-	    <equals type="string" value="unflagged">
+	    <equals value="all" type="string"/>
+	    <equals value="unflagged" type="string">
 	        <default param="maxfracflagged"><value type="double">0.90</value></default>
 	    </equals>
 	</when>
 
         <when param="pipelinemode">
-	    <equals type="string" value="automatic" />
-	    <equals type="string" value="interactive">
-	        <default param="vis"><value type="stringArray"></value></default>
-	        <default param="field"><value type="string"></value></default>
+	    <equals value="automatic" type="string"/>
+	    <equals value="interactive" type="string">
+	        <default param="vis"><value type="stringVec"/></default>
+	        <default param="field"><value type="string"/></default>
 	        <default param="intent"><value type="string">BANDPASS</value></default>
-	        <default param="spw"><value type="string"></value></default>
+	        <default param="spw"><value type="string"/></default>
 	        <default param="dryrun"><value type="bool">False</value></default>
 	        <default param="acceptresults"><value type="bool">True</value></default>
 	    </equals>
-	    <equals type="string" value="getinputs">
-	        <default param="vis"><value type="stringArray"></value></default>
-	        <default param="field"><value type="string"></value></default>
+	    <equals value="getinputs" type="string">
+	        <default param="vis"><value type="stringVec"/></default>
+	        <default param="field"><value type="string"/></default>
 	        <default param="intent"><value type="string">BANDPASS</value></default>
-	        <default param="spw"><value type="string"></value></default>
+	        <default param="spw"><value type="string"/></default>
 	    </equals>
         </when>
     </constraints>
 </input>
 
-<output>
-    <param type="any" name="results">
-        <description>The output results object</description>
-        <any type="variant"/>
-        <value></value>
-    </param>
-</output>
-<returns type="void"/>
+
+<returns>any</returns>
 
 <example>
 Compute the bandpass phaseup time solution interval and bandpass frequency

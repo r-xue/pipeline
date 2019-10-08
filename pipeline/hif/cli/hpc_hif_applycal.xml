@@ -1,45 +1,41 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" ?>
-<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
+<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
 
-    <task type="function" name="hpc_hif_applycal" category="pipeline">
+    <task category="pipeline" name="hpc_hif_applycal" type="function">
         <shortdescription>Apply the calibration(s) to the data</shortdescription>
         <description>
             Apply the calibration to the data.
         </description>
         <input>
-            <param type="stringArray" name="vis" subparam="true">
+            <param subparam="true" name="vis" type="stringVec">
                 <description>List of input MeasurementSets</description>
-                <value></value>
+                <value/>
             </param>
 
-            <param type="string" name="field" subparam="true">
+            <param subparam="true" name="field" type="string">
                 <description>Set of data selection field names or ids</description>
-                <value></value>
+                <value/>
             </param>
 
-            <param type="string" name="intent" subparam="true">
+            <param subparam="true" name="intent" type="string">
                 <description>Set of data selection observing intents</description>
-                <value></value>
+                <value/>
             </param>
 
-            <param type="string" name="spw" subparam="true">
+            <param subparam="true" name="spw" type="string">
                 <description>Set of data selection spectral window/channels</description>
-                <value></value>
+                <value/>
             </param>
 
-            <param type="string" name="antenna" subparam="true">
+            <param subparam="true" name="antenna" type="string">
                 <description>Set of data selection antenna ids</description>
-                <value></value>
+                <value/>
             </param>
 
-            <param type="string" name="applymode">
-                <description>Calibration mode: "calflagstrict","calflag","calflagstrict","trial","flagonly","flagonlystrict", or "calonly"</description>
-                <value></value>
+            <param name="applymode" type="string">
+                <description>Calibration mode: &quot;calflagstrict&quot;,&quot;calflag&quot;,&quot;calflagstrict&quot;,&quot;trial&quot;,&quot;flagonly&quot;,&quot;flagonlystrict&quot;, or &quot;calonly&quot;</description>
+                <value/>
                 <allowed kind="enum">
-                    <value></value>
+                    <value/>
                     <value>calflag</value>
                     <value>calflagstrict</value>
                     <value>trial</value>
@@ -49,27 +45,27 @@
                 </allowed>
             </param>
 
-            <param type="boolArray" name="calwt" subparam="true">
+            <param subparam="true" name="calwt" type="boolVec">
                 <description>Calibrate the weights as well as the data</description>
-                <value>True</value>
+                <value><value>True</value></value>
             </param>
 
-            <param type="bool" name="flagbackup" subparam="true">
+            <param subparam="true" name="flagbackup" type="bool">
                 <description>Backup the flags before the apply</description>
                 <value type="bool">True</value>
             </param>
 
-            <param type="bool" name="flagsum">
+            <param name="flagsum" type="bool">
                 <description>Compute before and after flagging summary statistics</description>
                 <value type="bool">True</value>
             </param>
 
-            <param type="bool" name="flagdetailedsum" subparam="true">
+            <param subparam="true" name="flagdetailedsum" type="bool">
                 <description>Compute detailed flagging statistics</description>
                 <value type="bool">True</value>
             </param>
 
-            <param type="string" name="pipelinemode">
+            <param name="pipelinemode" type="string">
                 <description>The pipeline operating mode</description>
                 <value>automatic</value>
                 <allowed kind="enum">
@@ -79,17 +75,17 @@
                 </allowed>
             </param>
 
-            <param type="bool" name="dryrun" subparam="true">
+            <param subparam="true" name="dryrun" type="bool">
                 <description>Run task (False) or display the command(True)</description>
                 <value type="bool">False</value>
             </param>
 
-            <param type="bool" name="acceptresults" subparam="true">
+            <param subparam="true" name="acceptresults" type="bool">
                 <description>Automatically accept results into the context</description>
                 <value type="bool">True</value>
             </param>
 
-            <param type="string" name="parallel" subparam="true">
+            <param subparam="true" name="parallel" type="string">
                 <description>Execute using CASA HPC functionality, if available.</description>
                 <value>automatic</value>
                 <allowed kind="enum">
@@ -102,25 +98,25 @@
 
             <constraints>
                 <when param="pipelinemode">
-                    <equals type="string" value="automatic"/>
-                    <equals type="string" value="interactive">
+                    <equals value="automatic" type="string"/>
+                    <equals value="interactive" type="string">
                         <default param="vis">
-                            <value type="stringArray"></value>
+                            <value type="stringVec"/>
                         </default>
                         <default param="field">
-                            <value type="string"></value>
+                            <value type="string"/>
                         </default>
                         <default param="intent">
-                            <value type="string"></value>
+                            <value type="string"/>
                         </default>
                         <default param="spw">
-                            <value type="string"></value>
+                            <value type="string"/>
                         </default>
                         <default param="antenna">
-                            <value type="string"></value>
+                            <value type="string"/>
                         </default>
                         <default param="calwt">
-                            <value type="boolArray">True</value>
+                            <value type="boolVec">True</value>
                         </default>
                         <default param="flagbackup">
                             <value type="bool">True</value>
@@ -135,24 +131,24 @@
                             <value type="string">automatic</value>
                         </default>
                     </equals>
-                    <equals type="string" value="getinputs">
+                    <equals value="getinputs" type="string">
                         <default param="vis">
-                            <value type="stringArray"></value>
+                            <value type="stringVec"/>
                         </default>
                         <default param="field">
-                            <value type="string"></value>
+                            <value type="string"/>
                         </default>
                         <default param="intent">
-                            <value type="string"></value>
+                            <value type="string"/>
                         </default>
                         <default param="spw">
-                            <value type="string"></value>
+                            <value type="string"/>
                         </default>
                         <default param="antenna">
-                            <value type="string"></value>
+                            <value type="string"/>
                         </default>
                         <default param="calwt">
-                            <value type="boolArray">True</value>
+                            <value type="boolVec">True</value>
                         </default>
                         <default param="flagbackup">
                             <value type="bool">True</value>
@@ -160,25 +156,19 @@
                     </equals>
                 </when>
                 <when param="flagsum">
-                    <equals type="bool" value="True">
+                    <equals value="True" type="bool">
                         <default param="flagdetailedsum">
                             <value type="bool">True</value>
                         </default>
                     </equals>
-                    <equals type="bool" value="False">
+                    <equals value="False" type="bool">
                     </equals>
                 </when>
             </constraints>
         </input>
 
-        <output>
-            <param type="any" name="results">
-                <description>The output results object</description>
-                <any type="variant"/>
-                <value></value>
-            </param>
-        </output>
-        <returns type="void"/>
+        
+        <returns>any</returns>
 
         <example>
 Apply precomputed calibrations to the data.

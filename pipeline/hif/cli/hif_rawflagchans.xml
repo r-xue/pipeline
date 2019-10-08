@@ -1,11 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" ?>
-<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd
-file:///opt/casa/code/xmlcasa/xml/casa.xsd">
+<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
 
-<task type="function" name="hif_rawflagchans" category="pipeline">
+<task category="pipeline" name="hif_rawflagchans" type="function">
 
 <shortdescription>Flag deviant baseline/channels in raw data</shortdescription>
 <description>
@@ -13,57 +8,57 @@ Flag deviant baseline/channels in raw data.
 </description>
 
 <input>
-    <param type="stringArray" name="vis" subparam="true">
+    <param subparam="true" name="vis" type="stringVec">
         <description>List of input MeasurementSets</description>
-        <value></value>
+        <value/>
     </param>
 
-    <param type="string" name="spw" subparam="true">
+    <param subparam="true" name="spw" type="string">
         <description>Set of data selection spectral windows, \'\' for all</description>
-        <value></value>
+        <value/>
     </param>
 
-    <param type="string" name="intent" subparam="true">
+    <param subparam="true" name="intent" type="string">
         <description>Data intent to use in creating flagging view</description>
-        <value></value>
+        <value/>
     </param>
 
-    <param type="bool" name="flag_hilo">
+    <param name="flag_hilo" type="bool">
         <description>True to flag outlier baseline/channels</description>
         <value>True</value>
     </param>
 
-    <param type="double" name="fhl_limit" subparam="true">
+    <param subparam="true" name="fhl_limit" type="double">
         <description>Flag baseline/channels further from median than limit * MAD</description>
         <value>20.0</value>
     </param>
 
-    <param type="double" name="fhl_minsample" subparam="true">
+    <param subparam="true" name="fhl_minsample" type="double">
         <description>Minimum number of points in sample</description>
         <value>5</value>
     </param>
 
-    <param type="bool" name="flag_bad_quadrant">
+    <param name="flag_bad_quadrant" type="bool">
         <description>True to flag bad quadrants in antennas</description>
         <value>True</value>
     </param>
 
-    <param type="double" name="fbq_hilo_limit" subparam="true">
+    <param subparam="true" name="fbq_hilo_limit" type="double">
         <description>Note as \'suspect\' baseline/channels further from median than limit * MAD</description>
         <value>8.0</value>
     </param>
 
-    <param type="double" name="fbq_antenna_frac_limit" subparam="true">
-        <description>Flag antenna quadrant if its fraction of \'suspect\' baseline/channels > limit</description>
+    <param subparam="true" name="fbq_antenna_frac_limit" type="double">
+        <description>Flag antenna quadrant if its fraction of \'suspect\' baseline/channels &gt; limit</description>
         <value>0.2</value>
     </param>
 
-    <param type="double" name="fbq_baseline_frac_limit" subparam="true">
-        <description>Flag baseline quadrant if its fraction of \'suspect\' baseline/channels > limit</description>
+    <param subparam="true" name="fbq_baseline_frac_limit" type="double">
+        <description>Flag baseline quadrant if its fraction of \'suspect\' baseline/channels &gt; limit</description>
         <value>1.0</value>
     </param>
 
-    <param type="string" name="pipelinemode">
+    <param name="pipelinemode" type="string">
         <description>The pipeline operations mode</description>
         <value>automatic</value>
         <allowed kind="enum">
@@ -73,63 +68,57 @@ Flag deviant baseline/channels in raw data.
         </allowed>
     </param>
 
-    <param type="bool" name="dryrun" subparam="true">
+    <param subparam="true" name="dryrun" type="bool">
         <description>Run the task (False) or list commands (True)</description>
        <value>False</value>
     </param>
 
-    <param type="bool" name="acceptresults" subparam="true">
+    <param subparam="true" name="acceptresults" type="bool">
         <description>Automatically apply results to context</description>
         <value>True</value>
     </param>
 
     <constraints>
         <when param="pipelinemode">
-            <equals type="string" value="automatic" />
-            <equals type="string" value="interactive">
-                <default param="vis"><value type="stringArray"></value></default>
-                <default param="intent"><value type="string"></value></default>
-                <default param="spw"><value type="string"></value></default>
+            <equals value="automatic" type="string"/>
+            <equals value="interactive" type="string">
+                <default param="vis"><value type="stringVec"/></default>
+                <default param="intent"><value type="string"/></default>
+                <default param="spw"><value type="string"/></default>
                 <default param="dryrun"><value type="bool">False</value></default>
                 <default param="acceptresults"><value type="bool">True</value></default>
             </equals>
-            <equals type="string" value="getinputs">
-                <default param="vis"><value type="stringArray"></value></default>
-                <default param="intent"><value type="string"></value></default>
-                <default param="spw"><value type="string"></value></default>
+            <equals value="getinputs" type="string">
+                <default param="vis"><value type="stringVec"/></default>
+                <default param="intent"><value type="string"/></default>
+                <default param="spw"><value type="string"/></default>
             </equals>
         </when>
 
         <when param="flag_hilo">
-            <equals type="bool" value="True">
+            <equals value="True" type="bool">
                 <default param="fhl_limit"><value>20.0</value></default>
                 <default param="fhl_minsample"><value>5</value></default>
             </equals>
-            <equals type="bool" value="False">
+            <equals value="False" type="bool">
             </equals>
         </when>
 
         <when param="flag_bad_quadrant">
-            <equals type="bool" value="True">
+            <equals value="True" type="bool">
                 <default param="fbq_hilo_limit"><value>8.0</value></default>
                 <default param="fbq_antenna_frac_limit"><value>0.2</value></default>
                 <default param="fbq_baseline_frac_limit"><value>1.0</value></default>
             </equals>
-            <equals type="bool" value="False">
+            <equals value="False" type="bool">
             </equals>
         </when>
 
     </constraints>
 </input>
 
-<output>
-    <param type="any" name="results">
-        <description>The output results object</description>
-        <any type="variant"/>
-        <value></value>
-    </param>
-</output>
-<returns type="void"/>
+
+<returns>any</returns>
 
 <example>
 hif_rawflagchans flags deviant baseline/channels in the raw data.

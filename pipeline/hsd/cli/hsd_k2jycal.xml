@@ -1,11 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" ?>
-<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd
-file:///opt/casa/code/xmlcasa/xml/casa.xsd">
+<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
 
-<task type="function" name="hsd_k2jycal" category="pipeline">
+<task category="pipeline" name="hsd_k2jycal" type="function">
 
 <shortdescription>Derive Kelvin to Jy calibration tables</shortdescription>
 <description>
@@ -13,12 +8,12 @@ Derive the Kelvin to Jy calibration for list of MeasurementSets.
 </description>
 
 <input>
-    <param type="bool" name="dbservice">
+    <param name="dbservice" type="bool">
         <description>Access Jy/K DB or not</description>
         <value>False</value>
     </param>
 
-    <param type="string" name="endpoint" subparam="true">
+    <param subparam="true" name="endpoint" type="string">
         <description>Endpoint type (asdm, model-fit, interpolation)</description>
         <value>asdm</value>
         <allowed kind="enum">
@@ -28,12 +23,12 @@ Derive the Kelvin to Jy calibration for list of MeasurementSets.
         </allowed>
     </param>
 
-    <param type="string" name="reffile">
+    <param name="reffile" type="string">
         <description>File of Jy/K conversion factor</description>
         <value>jyperk.csv</value>
     </param>
 
-    <param type="string" name="pipelinemode">
+    <param name="pipelinemode" type="string">
         <description>The pipeline operations mode</description>
         <value>automatic</value>
         <allowed kind="enum">
@@ -43,57 +38,51 @@ Derive the Kelvin to Jy calibration for list of MeasurementSets.
         </allowed>
     </param>
 
-    <param type="stringArray" name="infiles" subparam="true">
+    <param subparam="true" name="infiles" type="stringVec">
         <description>List of input MeasurementSets</description>
-        <value></value>
+        <value/>
     </param>
 
-    <param type="stringArray" name="caltable" subparam="true">
+    <param subparam="true" name="caltable" type="stringVec">
         <description>List of output caltable(s)</description>
-        <value></value>
+        <value/>
     </param>
 
-    <param type="bool" name="dryrun" subparam="true">
+    <param subparam="true" name="dryrun" type="bool">
         <description>Run the task (False) or list commands (True)</description>
         <value>False</value>
     </param>
 
-    <param type="bool" name="acceptresults" subparam="true">
+    <param subparam="true" name="acceptresults" type="bool">
         <description>Automatically apply results to context</description>
         <value>True</value>
     </param>
 
     <constraints>
         <when param="dbservice">
-            <equals type="bool" value="False" />
-            <equals type="bool" value="True">
+            <equals value="False" type="bool"/>
+            <equals value="True" type="bool">
                 <default param="endpoint"><value type="string">asdm</value></default>
             </equals>
         </when>
         <when param="pipelinemode">
-            <equals type="string" value="automatic" />
-            <equals type="string" value="interactive">
-                <default param="infiles"><value type="stringArray"></value></default>
-                <default param="caltable"><value type="stringArray"></value></default>
+            <equals value="automatic" type="string"/>
+            <equals value="interactive" type="string">
+                <default param="infiles"><value type="stringVec"/></default>
+                <default param="caltable"><value type="stringVec"/></default>
                 <default param="dryrun"><value type="bool">False</value></default>
                 <default param="acceptresults"><value type="bool">True</value></default>
             </equals>
-            <equals type="string" value="getinputs">
-                <default param="vis"><value type="stringArray"></value></default>
-                <default param="caltable"><value type="stringArray"></value></default>
+            <equals value="getinputs" type="string">
+                <default param="vis"><value type="stringVec"/></default>
+                <default param="caltable"><value type="stringVec"/></default>
             </equals>
         </when>
     </constraints>
 </input>
 
-<output>
-    <param type="any" name="results">
-        <description>The output results object</description>
-        <any type="variant"/>
-        <value></value>
-    </param>
-</output>
-<returns type="void"/>
+
+<returns>any</returns>
 
 <example>
 Derive the Kelvin to Jy calibration for list of MeasurementSets.

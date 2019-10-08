@@ -1,11 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" ?>
-<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd
-file:///opt/casa/code/xmlcasa/xml/casa.xsd">
+<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
 
-<task type="function" name="hifa_spwphaseup" category="pipeline">
+<task category="pipeline" name="hifa_spwphaseup" type="function">
 
 <shortdescription>Compute phase calibration spw map and per spw phase offsets</shortdescription>
 <description>
@@ -17,32 +12,32 @@ Previous calibrations are applied on the fly.
 
 <input>
 
-   <param type="stringArray" name="vis" subparam="true">
+   <param subparam="true" name="vis" type="stringVec">
 	<description>List of input MeasurementSets</description>
-	<value></value>
+	<value/>
    </param>
 
-   <param type="stringArray" name="caltable" subparam="true">
+   <param subparam="true" name="caltable" type="stringVec">
 	<description>List of output caltables</description>
-	<value type="string"></value>
+	<value type="string"/>
    </param>
 
-   <param type="string" name="field" subparam="true">
+   <param subparam="true" name="field" type="string">
 	<description>Set of data selection field names or ids</description>
-	<value></value>
+	<value/>
    </param>
 
-   <param type="string" name="intent" subparam="true">
+   <param subparam="true" name="intent" type="string">
 	<description>Set of data selection observing intents</description>
-	<value></value>
+	<value/>
    </param>
 
-   <param type="string" name="spw" subparam="true">
+   <param subparam="true" name="spw" type="string">
 	<description>Set of data selection spectral window/channels</description>
-	<value></value>
+	<value/>
    </param>
 
-   <param type="string" name="hm_spwmapmode">
+   <param name="hm_spwmapmode" type="string">
 	<description>The spw mapping mode</description>
 	<value>auto</value>
 	<allowed kind="enum">
@@ -53,32 +48,32 @@ Previous calibrations are applied on the fly.
 	</allowed>
    </param>
 
-   <param type="string" name="maxnarrowbw" subparam="true">
+   <param subparam="true" name="maxnarrowbw" type="string">
 	<description>The maximum bandwidth defining narrow spectral windows</description>
 	<value>300MHz</value>
    </param>
 
-   <param type="double" name="minfracmaxbw" subparam="true">
+   <param subparam="true" name="minfracmaxbw" type="double">
 	<description>The minimum fraction of the maximum bandpass for spw matching</description>
 	<value>0.8</value>
    </param>
 
-   <param type="bool" name="samebb" subparam="true">
+   <param subparam="true" name="samebb" type="bool">
 	<description>Match within the same baseband if possible</description>
 	<value>True</value>
    </param>
 
-   <param type="double" name="phasesnr" subparam="true">
+   <param subparam="true" name="phasesnr" type="double">
 	<description>The minimum snr for triggering spw combination in auto spw mapping mode</description>
 	<value>32.0</value>
    </param>
 
-   <param type="double" name="bwedgefrac" subparam="true">
+   <param subparam="true" name="bwedgefrac" type="double">
         <description>The fraction of the bandwidth edge that is flagged</description>
         <value>0.03125</value>
    </param>
 
-   <param type="string" name="hm_nantennas" subparam="true">
+   <param subparam="true" name="hm_nantennas" type="string">
         <description>The antenna selection heuristic </description>
         <value>all</value>
         <allowed kind="enum">
@@ -87,32 +82,32 @@ Previous calibrations are applied on the fly.
         </allowed>
    </param>
 
-   <param type="double" name="maxfracflagged" subparam="true">
+   <param subparam="true" name="maxfracflagged" type="double">
         <description>The maximum fraction of data flagged per antenna</description>
         <value>0.90</value>
    </param>
 
-    <param type="string" name="combine">
+    <param name="combine" type="string">
 	<description>Data axes which to combine for solve (scan, spw, and/or field)</description>
-	<value type="string"></value>
+	<value type="string"/>
     </param>
 
-    <param type="string" name="refant" subparam="true">
+    <param subparam="true" name="refant" type="string">
 	<description>Reference antenna names</description>
-	<value></value>
+	<value/>
     </param>
 
-    <param type="int" name="minblperant">
+    <param name="minblperant" type="int">
 	<description>Minimum baselines per antenna required for solve</description>
 	<value>4</value>
     </param>
 
-    <param type="double" name="minsnr">
+    <param name="minsnr" type="double">
 	<description>Reject solutions below this SNR</description>
 	<value>3.0</value>
     </param>
 
-    <param type="string" name="pipelinemode">
+    <param name="pipelinemode" type="string">
 	<description>The pipeline operating mode</description>
 	<value>automatic</value>
 	<allowed kind="enum">
@@ -122,12 +117,12 @@ Previous calibrations are applied on the fly.
 	</allowed>
     </param>
 
-    <param type="bool" name="dryrun" subparam="true">
+    <param subparam="true" name="dryrun" type="bool">
 	<description>Run task (False) or display the command(True)</description>
 	<value type="bool">False</value>
     </param>
 
-    <param type="bool" name="acceptresults" subparam="true">
+    <param subparam="true" name="acceptresults" type="bool">
 	<description>Automatically accept results into the context</description>
 	<value type="bool">True</value>
     </param>
@@ -135,57 +130,51 @@ Previous calibrations are applied on the fly.
     <constraints>
 
         <when param="hm_spwmapmode">
-	    <equals type="string" value="auto">
+	    <equals value="auto" type="string">
 	        <default param="phasesnr"><value type="double">32.0</value></default>
 	        <default param="bwedgefrac"><value type="double">0.03125</value></default>
 	        <default param="hm_nantennas"><value type="string">all</value></default>
                 <default param="maxfracflagged"><value type="double">0.90</value></default>
 	    </equals>
-	    <equals type="string" value="combine">
+	    <equals value="combine" type="string">
 	    </equals>
-	    <equals type="string" value="simple">
+	    <equals value="simple" type="string">
 	        <default param="maxnarrowbw"><value type="string">300MHz</value></default>
 	        <default param="minfracmaxbw"><value type="double">0.8</value></default>
 	        <default param="samebb"><value type="bool">True</value></default>
 	    </equals>
-	    <equals type="string" value="default">
+	    <equals value="default" type="string">
 	    </equals>
         </when>
 
         <when param="pipelinemode">
-	    <equals type="string" value="automatic" />
-	    <equals type="string" value="interactive">
-	        <default param="vis"><value type="stringArray"></value></default>
-	        <default param="caltable"><value type="stringArray"></value></default>
-	        <default param="field"><value type="string"></value></default>
-	        <default param="intent"><value type="string"></value></default>
-	        <default param="spw"><value type="string"></value></default>
-	        <default param="refant"><value type="string"></value></default>
+	    <equals value="automatic" type="string"/>
+	    <equals value="interactive" type="string">
+	        <default param="vis"><value type="stringVec"/></default>
+	        <default param="caltable"><value type="stringVec"/></default>
+	        <default param="field"><value type="string"/></default>
+	        <default param="intent"><value type="string"/></default>
+	        <default param="spw"><value type="string"/></default>
+	        <default param="refant"><value type="string"/></default>
 	        <default param="dryrun"><value type="bool">False</value></default>
 	        <default param="acceptresults"><value type="bool">True</value></default>
 	    </equals>
-	    <equals type="string" value="getinputs">
-	        <default param="vis"><value type="stringArray"></value></default>
-	        <default param="caltable"><value type="stringArray"></value></default>
-	        <default param="field"><value type="string"></value></default>
-	        <default param="intent"><value type="string"></value></default>
-	        <default param="spw"><value type="string"></value></default>
-	        <default param="antenna"><value type="string"></value></default>
-	        <default param="refant"><value type="string"></value></default>
+	    <equals value="getinputs" type="string">
+	        <default param="vis"><value type="stringVec"/></default>
+	        <default param="caltable"><value type="stringVec"/></default>
+	        <default param="field"><value type="string"/></default>
+	        <default param="intent"><value type="string"/></default>
+	        <default param="spw"><value type="string"/></default>
+	        <default param="antenna"><value type="string"/></default>
+	        <default param="refant"><value type="string"/></default>
 	    </equals>
         </when>
 
     </constraints>
 </input>
 
-<output>
-    <param type="any" name="results">
-        <description>The output results object</description>
-        <any type="variant"/>
-        <value></value>
-    </param>
-</output>
-<returns type="void"/>
+
+<returns>any</returns>
 
 <example>
 Compute the gain solutions.

@@ -1,35 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" ?>
-<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd
-file:///opt/casa/code/xmlcasa/xml/casa.xsd">
+<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
 
-<task type="function" name="hifa_wvrgcal" category="pipeline">
+<task category="pipeline" name="hifa_wvrgcal" type="function">
 
-<shortdescription></shortdescription>
+<shortdescription/>
 <description>
 Generate a gain table based on Water Vapor Radiometer data, and calculate
 a QA score based on its effect on the interferometric data.
 </description>
     
 <input>
-    <param type="stringArray" name="vis" subparam="true">
+    <param subparam="true" name="vis" type="stringVec">
         <description>List of input visibility files</description>
-        <value></value>
+        <value/>
     </param>
       
-    <param type="stringArray" name="caltable" subparam="true">
+    <param subparam="true" name="caltable" type="stringVec">
         <description>List of output gain calibration tables</description>
-	<value></value>
+	<value/>
     </param>
 
-    <param type="stringArray" name="offsetstable" subparam="true">
+    <param subparam="true" name="offsetstable" type="stringVec">
         <description>List of input temperature offsets table files</description>
-        <value></value>
+        <value/>
     </param>
 
-    <param type="string" name="hm_toffset">
+    <param name="hm_toffset" type="string">
         <description>Toffset computation heuristic method</description>
         <value>automatic</value>
         <allowed kind="enum">
@@ -38,22 +33,22 @@ a QA score based on its effect on the interferometric data.
         </allowed>
     </param>
 
-    <param type="double" name="toffset" subparam="true">
+    <param subparam="true" name="toffset" type="double">
         <description>Time offset (sec) between IF and WVR data</description>
 	<value>0</value>
     </param>
       
-    <param type="bool" name="segsource">
+    <param name="segsource" type="bool">
         <description>Compute new coefficient calculation for each source</description>
 	<value>True</value>
     </param>
       
-    <param type="stringArray" name="sourceflag" subparam="true">
+    <param subparam="true" name="sourceflag" type="stringVec">
 	<description>Flag the WVR data for these source(s)</description>
-	<value></value>
+	<value/>
    </param>
 
-   <param type="string" name="hm_tie" subparam="true">
+   <param subparam="true" name="hm_tie" type="string">
      <description>Tie computation heuristics method</description>
      <value>automatic</value>
        <allowed kind="enum">
@@ -62,27 +57,27 @@ a QA score based on its effect on the interferometric data.
        </allowed>
    </param>
 
-    <param type="stringArray" name="tie" subparam="true">
+    <param subparam="true" name="tie" type="stringVec">
         <description>Sources for which to use the same atmospheric phase correction coefficients</description>
-        <value></value>
+        <value/>
     </param>
       
-    <param type="int" name="nsol" subparam="true">
+    <param subparam="true" name="nsol" type="int">
         <description>Number of solutions for phase correction coefficients</description>
 	<value>1</value>
     </param>
             
-    <param type="bool" name="disperse">
+    <param name="disperse" type="bool">
 	<description>Apply correction for dispersion</description>
 	<value>False</value>
     </param>
             
-    <param type="stringArray" name="wvrflag" subparam="true">
+    <param subparam="true" name="wvrflag" type="stringVec">
 	<description>Flag the WVR data for these antenna(s) replace with interpolated values</description>
-	<value></value>
+	<value/>
     </param>
 
-    <param type="string" name="hm_smooth">
+    <param name="hm_smooth" type="string">
         <description>Smoothing computation heuristics method</description>
         <value>automatic</value>
         <allowed kind="enum">
@@ -91,22 +86,22 @@ a QA score based on its effect on the interferometric data.
         </allowed>
     </param>
       
-    <param type="string" name="smooth" subparam="true">
+    <param subparam="true" name="smooth" type="string">
 	<description>Smooth WVR data on the given timescale before calculating the correction</description>
-	<value></value>
+	<value/>
     </param>
       
-    <param type="double" name="scale" subparam="true">
+    <param subparam="true" name="scale" type="double">
 	<description>Scale the entire phase correction by this factor</description>
 	<value>1.</value>
     </param>
 
-    <param type="double" name="maxdistm">
+    <param name="maxdistm" type="double">
       <description>Maximum distance (m) of an antenna used for interpolation for a flagged antenna.</description>
       <value>-1</value>
     </param>
 
-    <param type="int" name="minnumants">
+    <param name="minnumants" type="int">
       <description>Minimum number of near antennas (up to 3) required for interpolation</description>
       <value>2</value>
       <allowed kind="enum">
@@ -116,37 +111,37 @@ a QA score based on its effect on the interferometric data.
       </allowed>
     </param>
 
-    <param type="double" name="mingoodfrac">
+    <param name="mingoodfrac" type="double">
       <description>Minimum fraction of good data per antenna</description>
       <value>0.8</value>
     </param>
 
-    <param type="string" name="refant" subparam="true">
+    <param subparam="true" name="refant" type="string">
       <description>Ranked list of reference antennas</description>
-      <value></value>
+      <value/>
     </param>
 
-    <param type="string" name="qa_intent">
+    <param name="qa_intent" type="string">
         <description>Data intents to use in estimating the effectiveness of the wvr correction</description>
-        <value></value>
+        <value/>
     </param>
 
-    <param type="string" name="qa_bandpass_intent">
+    <param name="qa_bandpass_intent" type="string">
         <description>Data intent to use for the bandpass calibration in the qa calculation</description>
-        <value></value>
+        <value/>
     </param>
 
-    <param type="string" name="qa_spw">
+    <param name="qa_spw" type="string">
         <description>Data SpW(s) to use in estimating the effectiveness of the wvr correction</description>
-        <value></value>
+        <value/>
     </param>
 
-    <param type="double" name="accept_threshold">
+    <param name="accept_threshold" type="double">
         <description>Improvement ratio (phase-rms without wvr / phase-rms with wvr) above which wvrg calibration file will be accepted</description>
         <value>1.0</value>
     </param>
 
-    <param type="string" name="pipelinemode">
+    <param name="pipelinemode" type="string">
         <description>The pipeline operating mode</description>
         <value>automatic</value>
         <allowed kind="enum">
@@ -156,12 +151,12 @@ a QA score based on its effect on the interferometric data.
         </allowed>
     </param>
 
-    <param type="bool" name="dryrun" subparam="true">
+    <param subparam="true" name="dryrun" type="bool">
         <description>Run the task (False) or display the command(True)</description>
         <value>False</value>
     </param>
 
-    <param type="bool" name="acceptresults" subparam="true">
+    <param subparam="true" name="acceptresults" type="bool">
        <description>Add the results to the pipeline context</description>
        <value>True</value>
     </param>
@@ -169,53 +164,51 @@ a QA score based on its effect on the interferometric data.
     <constraints>
 
         <when param="pipelinemode">
-            <equals type="string" value="automatic"/>
-            <equals type="string" value="interactive">
-                <default param="vis"><value type="stringArray"></value></default>
-                <default param="caltable"><value type="stringArray"></value></default>
-                <default param="offsetstable"><value type="stringArray"></value></default>
-                <default param="wvrflag"><value type="stringArray"></value></default>
+            <equals value="automatic" type="string"/>
+            <equals value="interactive" type="string">
+                <default param="vis"><value type="stringVec"/></default>
+                <default param="caltable"><value type="stringVec"/></default>
+                <default param="offsetstable"><value type="stringVec"/></default>
+                <default param="wvrflag"><value type="stringVec"/></default>
                 <default param="scale"><value type="double">1.0</value></default>
-                <default param="refant"><value type="string"></value></default>
+                <default param="refant"><value type="string"/></default>
                 <default param="dryrun"><value type="bool">False</value></default>
                 <default param="acceptresults"><value type="bool">True</value></default>
             </equals>
-            <equals type="string" value="getinputs">
-                <default param="vis"><value type="stringArray"></value></default>
-                <default param="caltable"><value type="stringArray"></value></default>
-                <default param="offsetstable"><value type="stringArray"></value></default>
-                <default param="wvrflag"><value type="stringArray"></value></default>
+            <equals value="getinputs" type="string">
+                <default param="vis"><value type="stringVec"/></default>
+                <default param="caltable"><value type="stringVec"/></default>
+                <default param="offsetstable"><value type="stringVec"/></default>
+                <default param="wvrflag"><value type="stringVec"/></default>
                 <default param="scale"><value type="double">1.0</value></default>
-                <default param="refant"><value type="string"></value></default>
+                <default param="refant"><value type="string"/></default>
             </equals>
         </when>
 
         <when param="hm_smooth">
-<!-- put the default clause first - in this case hm_smooth=='automatic' - as
-     currently r22208 the first clause always comes up at the interface.
--->
-	    <equals type="string" value="automatic">
+
+	    <equals value="automatic" type="string">
 	    </equals>
-	    <equals type="string" value="manual">
-	        <default param="smooth"><value type="string"></value></default>
+	    <equals value="manual" type="string">
+	        <default param="smooth"><value type="string"/></default>
 	    </equals>
         </when>
 
         <when param="hm_tie">
-            <equals type="string" value="automatic">
+            <equals value="automatic" type="string">
             </equals>
-            <equals type="string" value="manual">
-                <default param="sourceflag"><value type="stringArray"></value></default>
-                <default param="tie"><value type="stringArray"></value></default>
+            <equals value="manual" type="string">
+                <default param="sourceflag"><value type="stringVec"/></default>
+                <default param="tie"><value type="stringVec"/></default>
                 <default param="segsource"><value type="bool">False</value></default>
                 <default param="nsol"><value type="int">1</value></default>
             </equals>
         </when>
 
         <when param="hm_toffset">
-	    <equals type="string" value="automatic">
+	    <equals value="automatic" type="string">
 	    </equals>
-	    <equals type="string" value="manual">
+	    <equals value="manual" type="string">
 	        <default param="toffset"><value type="double">0</value></default>
 	    </equals>
         </when>
@@ -224,14 +217,8 @@ a QA score based on its effect on the interferometric data.
 
 </input>
 
-<output>
-    <param type="any" name="results">
-        <description>The output results object</description>
-        <any type="variant"/>
-        <value></value>
-    </param>
-</output>
-<returns type="void"/>
+
+<returns>any</returns>
 
 <example>
 Generate a gain table based on the Water Vapor Radiometer data in each vis
@@ -337,7 +324,7 @@ scale -- Scale the entire phase correction by this factor.
 maxdistm -- Maximum distance in meters of an antenna used for interpolation
     from a flagged antenna.
 
-    default: -1  (automatically set to 100m if >50% of antennas are 7m
+    default: -1  (automatically set to 100m if &gt;50% of antennas are 7m
         antennas without WVR and otherwise set to 500m)
     example: maxdistm=550
 

@@ -1,11 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" ?>
-<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd
-file:///opt/casa/code/xmlcasa/xml/casa.xsd">
+<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
 
-<task type="function" name="hifa_gfluxscaleflag" category="pipeline">
+<task category="pipeline" name="hifa_gfluxscaleflag" type="function">
 
 <shortdescription>Derive the flux density scale with flagging</shortdescription>
 
@@ -27,90 +22,90 @@ file:///opt/casa/code/xmlcasa/xml/casa.xsd">
     generated at two points in this workflow: after preliminary phase and
     amplitude calibration but before flagging heuristics are run, and after
     flagging heuristics have been run and applied. If no points were flagged,
-    the "after" plots are not generated or displayed. The score for this stage
+    the &quot;after&quot; plots are not generated or displayed. The score for this stage
     is the standard data flagging score, which depends on the fraction of data
     flagged.
 </description>
 
 <input>
-    <param type="stringArray" name="vis" subparam="true">
+    <param subparam="true" name="vis" type="stringVec">
         <description>List of input MeasurementSets</description>
-        <value></value>
+        <value/>
     </param>
 
-    <param type="string" name="intent" subparam="true">
+    <param subparam="true" name="intent" type="string">
         <description>Set of data selection intents</description>
-        <value></value>
+        <value/>
     </param>
 
-    <param type="any" name="phaseupsolint" subparam="true">
+    <param subparam="true" name="phaseupsolint" type="any">
         <description>Phaseup correction solution interval</description>
         <any type="variant"/>
         <value type="string">int</value>
     </param>
 
-    <param type="any" name="solint" subparam="true">
+    <param subparam="true" name="solint" type="any">
         <description>Solution intervals</description>
         <any type="variant"/>
         <value type="string">inf</value>
     </param>
 
-    <param type="double" name="minsnr" subparam="true">
+    <param subparam="true" name="minsnr" type="double">
         <description>Reject solutions below this SNR</description>
         <value>2.0</value>
     </param>
 
-    <param type="string" name="refant" subparam="true">
+    <param subparam="true" name="refant" type="string">
         <description>Reference antenna names</description>
-        <value></value>
+        <value/>
     </param>
 
-    <param type="double" name="antnegsig" subparam="true">
+    <param subparam="true" name="antnegsig" type="double">
         <description>Lower sigma threshold for identifying outliers as a result of bad antennas within individual timestamps</description>
         <value>4.0</value>
     </param>
 
-    <param type="double" name="antpossig" subparam="true">
+    <param subparam="true" name="antpossig" type="double">
         <description>Upper sigma threshold for identifying outliers as a result of bad antennas within individual timestamps</description>
         <value>4.6</value>
     </param>
 
-    <param type="double" name="tmantint" subparam="true">
+    <param subparam="true" name="tmantint" type="double">
         <description>Threshold for maximum fraction of timestamps that are allowed to contain outliers</description>
         <value>0.063</value>
     </param>
 
-    <param type="double" name="tmint" subparam="true">
-        <description>Initial threshold for maximum fraction of "outlier timestamps" over "total timestamps" that a baseline may be a part of</description>
+    <param subparam="true" name="tmint" type="double">
+        <description>Initial threshold for maximum fraction of &quot;outlier timestamps&quot; over &quot;total timestamps&quot; that a baseline may be a part of</description>
         <value>0.085</value>
     </param>
 
-    <param type="double" name="tmbl" subparam="true">
-        <description>Initial threshold for maximum fraction of "bad baselines" over "all baselines" that an antenna may be a part of</description>
+    <param subparam="true" name="tmbl" type="double">
+        <description>Initial threshold for maximum fraction of &quot;bad baselines&quot; over &quot;all baselines&quot; that an antenna may be a part of</description>
         <value>0.175</value>
     </param>
 
-    <param type="double" name="antblnegsig" subparam="true">
-        <description>Lower sigma threshold for identifying outliers as a result of "bad baselines" and/or "bad antennas" within baselines (across all timestamps)</description>
+    <param subparam="true" name="antblnegsig" type="double">
+        <description>Lower sigma threshold for identifying outliers as a result of &quot;bad baselines&quot; and/or &quot;bad antennas&quot; within baselines (across all timestamps)</description>
         <value>3.4</value>
     </param>
 
-    <param type="double" name="antblpossig" subparam="true">
-        <description>Upper sigma threshold for identifying outliers as a result of "bad baselines" and/or "bad antennas" within baselines (across all timestamps)</description>
+    <param subparam="true" name="antblpossig" type="double">
+        <description>Upper sigma threshold for identifying outliers as a result of &quot;bad baselines&quot; and/or &quot;bad antennas&quot; within baselines (across all timestamps)</description>
         <value>3.2</value>
     </param>
 
-    <param type="double" name="relaxed_factor" subparam="true">
+    <param subparam="true" name="relaxed_factor" type="double">
         <description>Relaxed value to set the threshold scaling factor to under certain conditions (see task description)</description>
         <value>2.0</value>
     </param>
 
-    <param type="int" name="niter" subparam="true">
+    <param subparam="true" name="niter" type="int">
         <description>Maximum number of times to iterate on evaluation of flagging heuristics.</description>
         <value>2</value>
     </param>
 
-    <param type="string" name="pipelinemode">
+    <param name="pipelinemode" type="string">
         <description>The pipeline operations mode</description>
         <value>automatic</value>
         <allowed kind="enum">
@@ -120,26 +115,26 @@ file:///opt/casa/code/xmlcasa/xml/casa.xsd">
         </allowed>
     </param>
 
-    <param type="bool" name="dryrun" subparam="true">
+    <param subparam="true" name="dryrun" type="bool">
         <description>Run the task (False) or list commands (True)</description>
        <value>False</value>
     </param>
 
-    <param type="bool" name="acceptresults" subparam="true">
+    <param subparam="true" name="acceptresults" type="bool">
         <description>Automatically apply results to context</description>
         <value>True</value>
     </param>
 
     <constraints>
         <when param="pipelinemode">
-            <equals type="string" value="automatic" />
-            <equals type="string" value="interactive">
-                <default param="vis"><value type="stringArray"></value></default>
-                <default param="intent"><value type="string"></value></default>
+            <equals value="automatic" type="string"/>
+            <equals value="interactive" type="string">
+                <default param="vis"><value type="stringVec"/></default>
+                <default param="intent"><value type="string"/></default>
                 <default param="phaseupsolint"><value type="string">int</value></default>
                 <default param="solint"><value type="string">inf</value></default>
                 <default param="minsnr"><value>2.0</value></default>
-                <default param="refant"><value type="string"></value></default>
+                <default param="refant"><value type="string"/></default>
                 <default param="antnegsig"><value type="double">4.0</value></default>
                 <default param="antpossig"><value type="double">4.6</value></default>
                 <default param="tmantint"><value type="double">0.063</value></default>
@@ -152,18 +147,18 @@ file:///opt/casa/code/xmlcasa/xml/casa.xsd">
                 <default param="dryrun"><value type="bool">False</value></default>
                 <default param="acceptresults"><value type="bool">True</value></default>
             </equals>
-            <equals type="string" value="getinputs">
-                <default param="vis"><value type="stringArray"></value></default>
+            <equals value="getinputs" type="string">
+                <default param="vis"><value type="stringVec"/></default>
             </equals>
         </when>
     </constraints>
 </input>
 
 <output>
-    <param type="any" name="results">
+    <param name="results" type="any">
         <description>The output results object</description>
         <any type="variant"/>
-        <value></value>
+        <value/>
     </param>
 </output>
 
@@ -235,24 +230,24 @@ tmantint -- Threshold for maximum fraction of timestamps that are allowed to
 
     default: 0.063
 
-tmint -- Initial threshold for maximum fraction of "outlier timestamps" over
-    "total timestamps" that a baseline may be a part of.
+tmint -- Initial threshold for maximum fraction of &quot;outlier timestamps&quot; over
+    &quot;total timestamps&quot; that a baseline may be a part of.
 
     default: 0.085
 
-tmbl -- Initial threshold for maximum fraction of "bad baselines" over "all
-    baselines" that an antenna may be a part of.
+tmbl -- Initial threshold for maximum fraction of &quot;bad baselines&quot; over &quot;all
+    baselines&quot; that an antenna may be a part of.
 
     default: 0.175
 
 antblnegsig -- Lower sigma threshold for identifying outliers as a result of
-    "bad baselines" and/or "bad antennas" within baselines, across all
+    &quot;bad baselines&quot; and/or &quot;bad antennas&quot; within baselines, across all
     timestamps.
 
     default: 3.4
 
 antblpossig -- Upper sigma threshold for identifying outliers as a result of
-    "bad baselines" and/or "bad antennas" within baselines, across all
+    &quot;bad baselines&quot; and/or &quot;bad antennas&quot; within baselines, across all
     timestamps.
 
     default: 3.2
@@ -294,5 +289,5 @@ using recommended thresholds:
 
     hifa_gfluxscaleflag()
 </example>
-</task>
+<returns>void</returns></task>
 </casaxml>

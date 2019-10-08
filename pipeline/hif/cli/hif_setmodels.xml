@@ -1,56 +1,52 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" ?>
-<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
+<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
 
-<task type="function" name="hif_setmodels" category="pipeline">
+<task category="pipeline" name="hif_setmodels" type="function">
 <shortdescription>Set calibrator source models</shortdescription>
 <description>
 Set calibrator source models
 </description>
 <input>
-    <param type="string" name="vis" subparam="true">
+    <param subparam="true" name="vis" type="string">
 	<description>List of input MeasurementSets</description>
-	<value></value>
+	<value/>
     </param>
 
-    <param type="variant" name="reference" subparam="true">
+    <param subparam="true" name="reference" type="variant">
 	<description>Reference calibrator field name(s)</description>
-	<value type="string"></value>
+	<value type="string"/>
     </param>
 
-    <param type="string" name="refintent" subparam="true">
+    <param subparam="true" name="refintent" type="string">
 	<description>Observing intent of reference fields</description>
 	<value>AMPLITUDE</value>
     </param>
 
-    <param type="variant" name="transfer" subparam="true">
+    <param subparam="true" name="transfer" type="variant">
 	<description>Transfer calibrator field name(s)</description>
-	<value type="string"></value>
+	<value type="string"/>
     </param>
 
-    <param type="string" name="transintent" subparam="true">
+    <param subparam="true" name="transintent" type="string">
 	<description>Observing intent of transfer fields</description>
 	<value>BANDPASS</value>
     </param>
 
-    <param type="string" name="reffile">
+    <param name="reffile" type="string">
         <description>Path to file with fluxes for non-solar system calibrators</description>
-        <value></value>
+        <value/>
     </param>
 
-    <param type="bool" name="normfluxes">
+    <param name="normfluxes" type="bool">
         <description>Normalize lookup fluxes</description>
         <value>True</value>
     </param>
 
-    <param type="bool" name="scalebychan">
+    <param name="scalebychan" type="bool">
         <description>Scale the flux density on a per channel basis or else on a per spw basis</description>
         <value>True</value>
     </param>
 
-    <param type="string" name="pipelinemode">
+    <param name="pipelinemode" type="string">
          <description>The pipeline operating mode</description>
 	<value>automatic</value>
 	<allowed kind="enum">
@@ -60,48 +56,42 @@ Set calibrator source models
 	</allowed>
     </param>
 
-    <param type="bool" name="dryrun" subparam="true">
+    <param subparam="true" name="dryrun" type="bool">
 	<description>Run the task (False) or display commands (True)</description>
 	<value>False</value>
     </param>
 
-    <param type="bool" name="acceptresults" subparam="true">
+    <param subparam="true" name="acceptresults" type="bool">
 	<description>Automatically accept results into context</description>
 	<value>True</value>
     </param>
 
     <constraints>
         <when param="pipelinemode">
-	   <equals type="string" value="automatic" />
-	   <equals type="string" value="interactive">
-		<default param="vis"><value type="stringArray"></value></default>
-		<default param="reference"><value type="string"></value></default>
+	   <equals value="automatic" type="string"/>
+	   <equals value="interactive" type="string">
+		<default param="vis"><value type="stringVec"/></default>
+		<default param="reference"><value type="string"/></default>
 		<default param="refintent"><value type="string">AMPLITUDE</value></default>
-		<default param="transfer"><value type="string"></value></default>
+		<default param="transfer"><value type="string"/></default>
 		<default param="transintent"><value type="string">BANDPASS,PHASE,CHECK</value></default>
 		<default param="dryrun"><value type="bool">False</value></default>
 		<default param="acceptresults"><value type="bool">True</value></default>
 	   </equals>
-	   <equals type="string" value="getinputs">
-		<default param="vis"><value type="stringArray"></value></default>
-		<default param="reference"><value type="string"></value></default>
+	   <equals value="getinputs" type="string">
+		<default param="vis"><value type="stringVec"/></default>
+		<default param="reference"><value type="string"/></default>
 		<default param="refintent"><value type="string">AMPLITUDE</value></default>
 		<default param="transfer"><value type="string">BANDPASS,PHASE,CHECK</value></default>
-		<default param="transintent"><value type="string"></value></default>
+		<default param="transintent"><value type="string"/></default>
 	   </equals>
 	</when>
     </constraints>
 
 </input>
 
-<output>
-    <param type="any" name="results">
-        <description>The output results object</description>
-        <any type="variant"/>
-        <value></value>
-    </param>
-</output>
-<returns type="void"/>
+
+<returns>any</returns>
 
 
 <example>

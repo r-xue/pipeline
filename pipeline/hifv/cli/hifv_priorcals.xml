@@ -1,32 +1,28 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" ?>
-<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
+<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
 
-<task type="function" name="hifv_priorcals" category="pipeline">
+<task category="pipeline" name="hifv_priorcals" type="function">
 <shortdescription>Runs gaincurves, opacities, requantizer gains, antenna position corrections, and tec_maps</shortdescription>
 <description>
 </description>
 <input>
-    <param type="stringArray" name="vis" subparam="true">
+    <param subparam="true" name="vis" type="stringVec">
 	<description>List of input visibility data</description>
-	<value></value>
+	<value/>
     </param>
 
-    <param type="bool" name="tecmaps">
+    <param name="tecmaps" type="bool">
 	<description>Run tecmaps priorcal</description>
 	<value type="bool">False</value>
     </param>
 
-    <param type="any" name="swpow_spw">
-        <description>Spectral-window(s) for plotting: "" ==>all, spw="6,14"</description>
-        <any type="variant" limittypes="string stringArray" />
-        <value type="string" />
+    <param name="swpow_spw" type="any">
+        <description>Spectral-window(s) for plotting: &quot;&quot; ==&gt;all, spw=&quot;6,14&quot;</description>
+        <type>string</type><type>stringVec</type>
+        <value type="string"/>
     </param>
 
 
-    <param type="string" name="pipelinemode">
+    <param name="pipelinemode" type="string">
 	<description>The pipeline operating mode</description>
 	<value>automatic</value>
 	<allowed kind="enum">
@@ -36,41 +32,35 @@
 	</allowed>
     </param>
 
-    <param type="bool" name="dryrun" subparam="true">
+    <param subparam="true" name="dryrun" type="bool">
 	<description>Run the task (False) or display task command (True)</description>
 	<value>False</value>
     </param>
 
-    <param type="bool" name="acceptresults" subparam="true">
+    <param subparam="true" name="acceptresults" type="bool">
 	<description>Add the results into the pipeline context</description>
 	<value>True</value>
     </param>
 
     <constraints>
 	<when param="pipelinemode">
-	    <equals type="string" value="automatic">
+	    <equals value="automatic" type="string">
 	    </equals>
-	    <equals type="string" value="interactive">
-        <default param="vis"><value type="stringArray"></value></default>
+	    <equals value="interactive" type="string">
+        <default param="vis"><value type="stringVec"/></default>
 		<default param="dryrun"><value type="bool">False</value></default>
 		<default param="acceptresults"><value type="bool">True</value></default>
 	    </equals>
-	    <equals type="string" value="getinputs">
-                <default param="vis"><value type="stringArray"></value></default>
+	    <equals value="getinputs" type="string">
+                <default param="vis"><value type="stringVec"/></default>
 	    </equals>
 	</when>
     </constraints>
 
 </input>
 
-<output>
-    <param type="any" name="results">
-        <description>The output results object</description>
-        <any type="variant"/>
-        <value></value>
-    </param>
-</output>
-<returns type="void"/>
+
+<returns>any</returns>
 
 
 <example>
@@ -87,7 +77,7 @@ vis -- List of visibility data files. These may be ASDMs, tar files of ASDMs,
    example: vis=['X227.ms', 'asdms.tar.gz']
 
 
-swpow_spw -- Spectral-window(s) for plotting: "" ==>all, spw="6,14"
+swpow_spw -- Spectral-window(s) for plotting: &quot;&quot; ==&gt;all, spw=&quot;6,14&quot;
 
 pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline
    determines the values of all context defined pipeline inputs

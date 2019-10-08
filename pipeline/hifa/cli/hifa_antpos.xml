@@ -1,11 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" ?>
-<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd
-file:///opt/casa/code/xmlcasa/xml/casa.xsd">
+<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
 
-<task type="function" name="hifa_antpos" category="pipeline">
+<task category="pipeline" name="hifa_antpos" type="function">
 
 <shortdescription>Derive an antenna position calibration table</shortdescription>
 <description>
@@ -13,17 +8,17 @@ Derive the antenna position calibration for list of MeasurementSets.
 </description>
 
 <input>
-    <param type="stringArray" name="vis" subparam="true">
+    <param subparam="true" name="vis" type="stringVec">
         <description>List of input MeasurementSets</description>
-        <value></value>
+        <value/>
     </param>
 
-    <param type="stringArray" name="caltable" subparam="true">
+    <param subparam="true" name="caltable" type="stringVec">
         <description>List of output caltable(s)</description>
-        <value></value>
+        <value/>
     </param>
 
-    <param type="string" name="hm_antpos">
+    <param name="hm_antpos" type="string">
         <description>The antenna position determination method</description>
         <value>file</value>
         <allowed kind="enum">
@@ -33,22 +28,22 @@ Derive the antenna position calibration for list of MeasurementSets.
         </allowed>
     </param>
 
-    <param type="string" name="antenna" subparam="true">
+    <param subparam="true" name="antenna" type="string">
         <description>List of antennas to be corrected</description>
-        <value></value>
+        <value/>
     </param>
 
-    <param type="doubleArray" name="offsets" subparam="true">
+    <param subparam="true" name="offsets" type="doubleVec">
         <description>List of position corrections one set per antenna</description>
-        <value></value>
+        <value/>
     </param>
 
-    <param type="string" name="antposfile" subparam="true">
+    <param subparam="true" name="antposfile" type="string">
         <description>File containing antenna position corrections</description>
-        <value></value>
+        <value/>
     </param>
 
-    <param type="string" name="pipelinemode">
+    <param name="pipelinemode" type="string">
         <description>The pipeline operation mode</description>
         <value>automatic</value>
         <allowed kind="enum">
@@ -58,53 +53,47 @@ Derive the antenna position calibration for list of MeasurementSets.
         </allowed>
     </param>
 
-    <param type="bool" name="dryrun" subparam="true">
+    <param subparam="true" name="dryrun" type="bool">
         <description>Run the task (False) or list commands (True)</description>
        <value>False</value>
     </param>
 
-    <param type="bool" name="acceptresults" subparam="true">
+    <param subparam="true" name="acceptresults" type="bool">
         <description>Automatically accept results into context</description>
         <value>True</value>
     </param>
 
     <constraints>
         <when param="hm_antpos">
-            <equals type="string" value="file">
-                <default param="antposfile"><value type="string"></value></default>
+            <equals value="file" type="string">
+                <default param="antposfile"><value type="string"/></default>
             </equals>
-            <equals type="string" value="manual">
-                <default param="antenna"><value type="string"></value></default>
-                <default param="offsets"><value type="string"></value></default>
+            <equals value="manual" type="string">
+                <default param="antenna"><value type="string"/></default>
+                <default param="offsets"><value type="string"/></default>
             </equals>
-            <equals type="string" value="online">
+            <equals value="online" type="string">
             </equals>
         </when>
 
         <when param="pipelinemode">
-            <equals type="string" value="automatic" />
-            <equals type="string" value="interactive">
-                <default param="vis"><value type="stringArray"></value></default>
-                <default param="caltable"><value type="stringArray"></value></default>
+            <equals value="automatic" type="string"/>
+            <equals value="interactive" type="string">
+                <default param="vis"><value type="stringVec"/></default>
+                <default param="caltable"><value type="stringVec"/></default>
                 <default param="dryrun"><value type="bool">False</value></default>
                 <default param="acceptresults"><value type="bool">True</value></default>
             </equals>
-            <equals type="string" value="getinputs">
-                <default param="vis"><value type="stringArray"></value></default>
-                <default param="caltable"><value type="stringArray"></value></default>
+            <equals value="getinputs" type="string">
+                <default param="vis"><value type="stringVec"/></default>
+                <default param="caltable"><value type="stringVec"/></default>
             </equals>
         </when>
     </constraints>
 </input>
 
-<output>
-    <param type="any" name="results">
-        <description>The output results object</description>
-        <any type="variant"/>
-        <value></value>
-    </param>
-</output>
-<returns type="void"/>
+
+<returns>any</returns>
 
 <example>
 Keyword arguments
@@ -189,8 +178,8 @@ columns as shown below. The default name of this file is 'antennapos.csv'.
 Contents of example 'antennapos.csv' file:
 
   ms,antenna,xoffset,yoffset,zoffset,comment
-  uid___A002_X30a93d_X43e.ms,DV11,0.000,0.010,0.000,"No comment"
-  uid___A002_X30a93d_X43e.dup.ms,DV11,0.000,-0.010,0.000,"No comment"
+  uid___A002_X30a93d_X43e.ms,DV11,0.000,0.010,0.000,&quot;No comment&quot;
+  uid___A002_X30a93d_X43e.dup.ms,DV11,0.000,-0.010,0.000,&quot;No comment&quot;
 
 The corrections are used to generate a calibration table which is recorded
 in the pipeline context and applied to the raw visibility data, on the fly to

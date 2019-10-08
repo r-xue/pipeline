@@ -1,11 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" ?>
-<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd
-file:///opt/casa/code/xmlcasa/xml/casa.xsd">
+<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
 
-<task type="function" name="hif_lowgainflag" category="pipeline">
+<task category="pipeline" name="hif_lowgainflag" type="function">
 
 <shortdescription>Flag antennas with low or high gain</shortdescription>
 <description>
@@ -13,42 +8,42 @@ Flag antennas with low or high gain.
 </description>
 
 <input>
-    <param type="stringArray" name="vis" subparam="true">
+    <param subparam="true" name="vis" type="stringVec">
         <description>List of input MeasurementSets</description>
-        <value></value>
+        <value/>
     </param>
 
-    <param type="string" name="intent" subparam="true">
+    <param subparam="true" name="intent" type="string">
         <description>Data intent whose gains are to checked</description>
-        <value></value>
+        <value/>
     </param>
 
-    <param type="string" name="spw" subparam="true">
+    <param subparam="true" name="spw" type="string">
         <description>Spectral window ids whose gains are to be checked</description>
-        <value></value>
+        <value/>
     </param>
 
-    <param type="string" name="refant" subparam="true">
+    <param subparam="true" name="refant" type="string">
         <description>Reference antenna names</description>
-        <value></value>
+        <value/>
     </param>
 
-    <param type="bool" name="flag_nmedian">
+    <param name="flag_nmedian" type="bool">
         <description>True to flag values outside range [fnm_lo_limit * median, fnm_hi_limit*nmedian]</description>
         <value>True</value>
     </param>
 
-    <param type="double" name="fnm_lo_limit" subparam="true">
+    <param subparam="true" name="fnm_lo_limit" type="double">
         <description>Flag values lower than fnm_lo_limit * median</description>
         <value>0.5</value>
     </param>
 
-    <param type="double" name="fnm_hi_limit" subparam="true">
+    <param subparam="true" name="fnm_hi_limit" type="double">
         <description>Flag values higher than fnm_hi_limit * median</description>
         <value>1.5</value>
     </param>
 
-    <param type="string" name="pipelinemode">
+    <param name="pipelinemode" type="string">
         <description>The pipeline operations mode</description>
         <value>automatic</value>
         <allowed kind="enum">
@@ -58,55 +53,49 @@ Flag antennas with low or high gain.
         </allowed>
     </param>
 
-    <param type="bool" name="dryrun" subparam="true">
+    <param subparam="true" name="dryrun" type="bool">
         <description>Run the task (False) or list commands (True)</description>
         <value>False</value>
     </param>
 
-    <param type="bool" name="acceptresults" subparam="true">
+    <param subparam="true" name="acceptresults" type="bool">
         <description>Automatically apply results to context</description>
         <value>True</value>
     </param>
 
     <constraints>
         <when param="pipelinemode">
-            <equals type="string" value="automatic" />
-            <equals type="string" value="interactive">
-                <default param="vis"><value type="stringArray"></value></default>
-                <default param="intent"><value type="string"></value></default>
-                <default param="spw"><value type="string"></value></default>
-                <default param="refant"><value type="string"></value></default>
+            <equals value="automatic" type="string"/>
+            <equals value="interactive" type="string">
+                <default param="vis"><value type="stringVec"/></default>
+                <default param="intent"><value type="string"/></default>
+                <default param="spw"><value type="string"/></default>
+                <default param="refant"><value type="string"/></default>
                 <default param="dryrun"><value type="bool">False</value></default>
                 <default param="acceptresults"><value type="bool">True</value></default>
             </equals>
-            <equals type="string" value="getinputs">
-                <default param="vis"><value type="stringArray"></value></default>
-                <default param="intent"><value type="string"></value></default>
-                <default param="spw"><value type="string"></value></default>
-                <default param="refant"><value type="string"></value></default>
+            <equals value="getinputs" type="string">
+                <default param="vis"><value type="stringVec"/></default>
+                <default param="intent"><value type="string"/></default>
+                <default param="spw"><value type="string"/></default>
+                <default param="refant"><value type="string"/></default>
             </equals>
         </when>
 
         <when param="flag_nmedian">
-            <equals type="bool" value="True">
+            <equals value="True" type="bool">
                 <default param="fnm_lo_limit"><value type="float">0.5</value></default>
                 <default param="fnm_hi_limit"><value type="float">1.5</value></default>
             </equals>
-            <equals type="bool" value="False">
+            <equals value="False" type="bool">
             </equals>
         </when>
 
     </constraints>
 </input>
 
-<output>
-    <param type="any" name="results">
-        <description>The output results object</description>
-        <any type="variant"/>
-        <value></value>
-    </param>
-</output>
-<returns type="void"/>
+
+<returns>any</returns>
 
 <example>
 hif_lowgainflag flags data for antennas with unusually low or high gains.

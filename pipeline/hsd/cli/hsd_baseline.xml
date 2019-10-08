@@ -1,45 +1,35 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" ?>
-<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
+<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
 
-<task type="function" name="hsd_baseline" category="pipeline">
+<task category="pipeline" name="hsd_baseline" type="function">
 <shortdescription>Detect and validate spectral lines, subtract baseline by masking detected lines</shortdescription>
 <description>
 </description>
 <input>
-    <param type="string" name="fitfunc">
+    <param name="fitfunc" type="string">
         <description>Fitting function for baseline subtraction</description>
 	<value>cspline</value>
 	<allowed kind="enum">
 	    <value>cspline</value>
 	    <value>spline</value>
-<!--
-	    <value>polynomial</value>
-	    <value>poly</value>
--->
+
 	    <value>CSPLINE</value>
 	    <value>SPLINE</value>
-<!--
-	    <value>POLYNOMIAL</value>
-	    <value>POLY</value>
--->
+
 	</allowed>
     </param>
 
-    <param type="int" name="fitorder">
+    <param name="fitorder" type="int">
         <description>Fitting order for baseline subtraction</description>
 	<value>-1</value>
     </param>
 
-    <param type="any" name="linewindow">
+    <param name="linewindow" type="any">
         <description>Pre-defined line window</description>
         <any type="variant"/>
-	    <value type="string"></value>
+	    <value type="string"/>
     </param>
 
-    <param type="string" name="linewindowmode" subparam="true">
+    <param subparam="true" name="linewindowmode" type="string">
         <description>Merge or replace given manual line window with line detection/validation result</description>
         <value>replace</value>
         <allowed kind="enum">
@@ -48,17 +38,17 @@
         </allowed>
     </param>
 
-    <param type="intArray" name="edge">
+    <param name="edge" type="intVec">
         <description>Edge channels to be dropped</description>
-	<value></value>
+	<value/>
     </param>
 
-    <param type="bool" name="broadline">
+    <param name="broadline" type="bool">
         <description>Try to detect broad component of the line</description>
 	<value>True</value>
     </param>
 
-    <param type="string" name="clusteringalgorithm">
+    <param name="clusteringalgorithm" type="string">
 	<description>Algorithm for line validation clustering algorithm</description>
 	<value>hierarchy</value>
 	<allowed kind="enum">
@@ -68,12 +58,12 @@
 	</allowed>
     </param>
 
-    <param type="bool" name="deviationmask">
+    <param name="deviationmask" type="bool">
         <description>Apply deviation mask in addition to detected line masks</description>
 	<value>True</value>
     </param>
 
-    <param type="string" name="pipelinemode">
+    <param name="pipelinemode" type="string">
 	<description>The pipeline operating mode</description>
 	<value>automatic</value>
 	<allowed kind="enum">
@@ -83,44 +73,44 @@
 	</allowed>
     </param>
 
-    <param type="stringArray" name="infiles" subparam="true">
+    <param subparam="true" name="infiles" type="stringVec">
         <description>List of input files to be calibrated (default all)</description>
-        <value></value>
+        <value/>
     </param>
 
-	<param type="string" name="field" subparam="true">
+	<param subparam="true" name="field" type="string">
 		<description>select data by field</description>
-		<value></value>
+		<value/>
 	</param>
 
-	<param type="string" name="antenna" subparam="true">
+	<param subparam="true" name="antenna" type="string">
 		<description>select data by antenna</description>
-		<value></value>
+		<value/>
 	</param>
 
-    <param type="any" name="spw" subparam="true">
+    <param subparam="true" name="spw" type="any">
             <description>select data by spw ids, e.g. \'3,5,7\' (\'\'=all)</description>
-            <any type="variant" limittypes="string stringArray"/>
-            <value type="string"></value>
+            <type>string</type><type>stringVec</type>
+            <value type="string"/>
     </param>
 
-    <param type="any" name="pol" subparam="true">
+    <param subparam="true" name="pol" type="any">
             <description>select data by polarizations, e.g. \'0~1\' (\'\'=all)</description>
-            <any type="variant" limittypes="string stringArray"/>
-            <value type="string"></value>
+            <type>string</type><type>stringVec</type>
+            <value type="string"/>
     </param>
 
-    <param type="bool" name="dryrun" subparam="true">
+    <param subparam="true" name="dryrun" type="bool">
 	<description>Run the task (False) or display task command (True)</description>
 	<value>False</value>
     </param>
 
-    <param type="bool" name="acceptresults" subparam="true">
+    <param subparam="true" name="acceptresults" type="bool">
 	<description>Add the results into the pipeline context</description>
 	<value>True</value>
     </param>
 
-    <param type="string" name="parallel" subparam="true">
+    <param subparam="true" name="parallel" type="string">
         <description>Execute using CASA HPC functionality, if available.</description>
             <value>automatic</value>
             <allowed kind="enum">
@@ -132,43 +122,37 @@
 
     <constraints>
     <when param="linewindow">
-        <notequals type="string" value="">
+        <notequals value="" type="string">
             <default param="linewindowmode"><value type="string">replace</value></default>
         </notequals>
     </when>
 	<when param="pipelinemode">
-	    <equals type="string" value="automatic">
+	    <equals value="automatic" type="string">
 	    </equals>
-	    <equals type="string" value="interactive">
-                <default param="infiles"><value type="stringArray"></value></default>
-                <default param="field"><value type="string"></value></default>
-                <default param="antenna"><value type="string"></value></default>
-                <default param="spw"><value type="string"></value></default>
-                <default param="pol"><value type="string"></value></default>
+	    <equals value="interactive" type="string">
+                <default param="infiles"><value type="stringVec"/></default>
+                <default param="field"><value type="string"/></default>
+                <default param="antenna"><value type="string"/></default>
+                <default param="spw"><value type="string"/></default>
+                <default param="pol"><value type="string"/></default>
                 <default param="parallel"><value type="string">automatic</value></default>
 		<default param="dryrun"><value type="bool">False</value></default>
 		<default param="acceptresults"><value type="bool">True</value></default>
 	    </equals>
-	    <equals type="string" value="getinputs">
-                <default param="infiles"><value type="stringArray"></value></default>
-                <default param="field"><value type="string"></value></default>
-                <default param="antenna"><value type="string"></value></default>
-                <default param="spw"><value type="string"></value></default>
-                <default param="pol"><value type="string"></value></default>
+	    <equals value="getinputs" type="string">
+                <default param="infiles"><value type="stringVec"/></default>
+                <default param="field"><value type="string"/></default>
+                <default param="antenna"><value type="string"/></default>
+                <default param="spw"><value type="string"/></default>
+                <default param="pol"><value type="string"/></default>
 	    </equals>
 	</when>
     </constraints>
 
 </input>
 
-<output>
-    <param type="any" name="results">
-        <description>The output results object</description>
-        <any type="variant"/>
-        <value></value>
-    </param>
-</output>
-<returns type="void"/>
+
+<returns>any</returns>
 
 
 <example>
@@ -191,10 +175,10 @@ different data selection. Suppose there are two spectral windows
 (0 and 1) and hsd_baseline is executed separately for each spw as
 below,
 
-hsd_baseline(pipelinemode="interactive", spw="0")
-hsd_baseline(pipelinemode="interactive", spw="1")
-hsd_blflag(pipelinemode="automatic")
-hsd_imaging(pipelinemode="automatic")
+hsd_baseline(pipelinemode=&quot;interactive&quot;, spw=&quot;0&quot;)
+hsd_baseline(pipelinemode=&quot;interactive&quot;, spw=&quot;1&quot;)
+hsd_blflag(pipelinemode=&quot;automatic&quot;)
+hsd_imaging(pipelinemode=&quot;automatic&quot;)
 
 Since the second run of hsd_baseline overwrites the result for spw 0
 with the data before baseline subtraction, this will not produce
@@ -202,12 +186,12 @@ correct result for spw 0. Proper sequence for this use case is to
 process each spw to the imaging stage separately, which looks like
 as follows:
 
-hsd_baseline(pipelinemode="interactive", spw="0")
-hsd_blflag(pipelinemode="interactive", spw="0")
-hsd_imaging(pipelinemode="interactive", spw="0"))
-hsd_baseline(pipelinemode="interactive", spw="1")
-hsd_blflag(pipelinemode="interactive", spw="1")
-hsd_imaging(pipelinemode="interactive", spw="1")
+hsd_baseline(pipelinemode=&quot;interactive&quot;, spw=&quot;0&quot;)
+hsd_blflag(pipelinemode=&quot;interactive&quot;, spw=&quot;0&quot;)
+hsd_imaging(pipelinemode=&quot;interactive&quot;, spw=&quot;0&quot;))
+hsd_baseline(pipelinemode=&quot;interactive&quot;, spw=&quot;1&quot;)
+hsd_blflag(pipelinemode=&quot;interactive&quot;, spw=&quot;1&quot;)
+hsd_imaging(pipelinemode=&quot;interactive&quot;, spw=&quot;1&quot;)
 
 
 Keyword arguments:
@@ -240,7 +224,7 @@ linewindow -- Pre-defined line window. If this is set, specified line
 
    where min_freq and max_freq should be either a float or a string.
    If float value is given, it is interpreted as a frequency in Hz.
-   String should be a quantity consisting of "value" and "unit", e.g.,
+   String should be a quantity consisting of &quot;value&quot; and &quot;unit&quot;, e.g.,
    '100GHz'. Multiple windows are also supported.
 
       [[min_freq0, max_freq0], [min_freq1, max_freq1], ...]
@@ -266,7 +250,7 @@ linewindow -- Pre-defined line window. If this is set, specified line
    string gives [[100,200],[1200,1400]] for spw 17 while [1000,1500]
    for spw 21.
 
-      "17:100~200;1200~1400,21:1000~1500"
+      &quot;17:100~200;1200~1400,21:1000~1500&quot;
 
    The string also accepts frequency with units. Note, however, that
    frequency reference frame in this case is not fixed to LSRK.
@@ -275,7 +259,7 @@ linewindow -- Pre-defined line window. If this is set, specified line
    channel selections.
 
       {19: ['112115MHz', '112116MHz']} # frequency frame is LSRK
-      "19:11215MHz~11216MHz" # frequency frame is taken from the data
+      &quot;19:11215MHz~11216MHz&quot; # frequency frame is taken from the data
                              # (TOPO for ALMA)
 
    default: [] (do line detection and validation)

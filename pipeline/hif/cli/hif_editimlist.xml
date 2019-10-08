@@ -1,10 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" ?>
-<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
+<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
 
-    <task type="function" name="hif_editimlist" category="pipeline">
+    <task category="pipeline" name="hif_editimlist" type="function">
         <shortdescription>Add to a list of images to be produced with hif_makeimages()</shortdescription>
         <description>
             Add to a list of images to be produced with hif_makeimages(), which uses hif_tclean() to invoke CASA tclean.  
@@ -12,61 +8,61 @@
         </description>
         <input>
 
-            <param type="string" name="imagename">
+            <param name="imagename" type="string">
                 <description>Prefix for output image names.</description>
                 <value/>
             </param>
 
-            <param type="double" name="search_radius_arcsec">
+            <param name="search_radius_arcsec" type="double">
                 <description>Size of the field finding beam search radius in arcsec.</description>
                 <value type="double">1000.0</value>
             </param>
-            <param type="stringArray" name="cell">
+            <param name="cell" type="stringVec">
                 <description>Image X and Y cell size(s) with units or pixels per beam, \'\' for default. Single value same for both. \'&lt;number&gt;ppb\' for pixels per beam.</description>
                 <value/>
             </param>
 
-            <param type="string" name="cfcache">
+            <param name="cfcache" type="string">
                 <description>Convolution function cache directory name</description>
                 <value/>
             </param>
 
-            <param type="bool" name="conjbeams">
+            <param name="conjbeams" type="bool">
                 <description>Use conjugate frequency in tclean for wideband A-terms.</description>
                 <value>False</value>
             </param>
 
-            <param type="double" name="cyclefactor">
+            <param name="cyclefactor" type="double">
                 <description>Controls the depth of clean in minor cycles based on PSF. </description>
                 <value>-999.0</value>
             </param>
 
-            <param type="int" name="cycleniter">
+            <param name="cycleniter" type="int">
                 <description>Controls max number of minor cycle iterations in a single major cycle.</description>
                 <value>-999</value>
             </param>
 
-            <param type="string" name="datacolumn">
+            <param name="datacolumn" type="string">
                 <description>Data column to image</description>
                 <value/>
             </param>
 
-            <param type="string" name="deconvolver">
+            <param name="deconvolver" type="string">
                 <description>Minor cycle algorithm (multiscale or mtmfs)</description>
                 <value/>
             </param>
 
-            <param type="string" name="editmode">
+            <param name="editmode" type="string">
                 <description>The edit mode of the task (e.g. add, edit)</description>
                 <value/>
             </param>
 
-            <param type="stringArray" name="field">
+            <param name="field" type="stringVec">
                 <description>Set of data selection field names or ids, \'\' for all</description>
                 <value/>
             </param>
 
-            <param type="string" name="imaging_mode">
+            <param name="imaging_mode" type="string">
                 <description>Identity of product type (e.g. VLASS quick look) desired.  This will determine the heuristics used.</description>
                 <value/>
                 <allowed kind="enum">
@@ -80,142 +76,139 @@
                 </allowed>
             </param>
 
-            <param type="stringArray" name="imsize">
+            <param name="imsize" type="stringVec">
                 <description>Image X and Y size(s) in pixels or PB level (single fields), \'\' for default. Single value same for both. \'&lt;number&gt;pb\' for PB level.</description>
                 <value/>
             </param>
 
-            <param type="string" name="intent">
+            <param name="intent" type="string">
                 <description>Set of data selection intents</description>
                 <value/>
             </param>
 
-            <param type="string" name="gridder">
+            <param name="gridder" type="string">
                 <description>Name of the gridder to use with tclean</description>
                 <value/>
             </param>
 
-            <param type="string" name="mask">
+            <param name="mask" type="string">
                 <description>Used to declare whether to use a predefined mask for tclean.</description>
                 <value/>
             </param>
 
-            <param type="int" name="nbin">
+            <param name="nbin" type="int">
                 <description>Channel binning factor.</description>
                 <value>-1</value>
             </param>
 
-            <param type="int" name="nchan">
+            <param name="nchan" type="int">
                 <description>Number of channels, -1 = all</description>
                 <value>-1</value>
             </param>
 
-            <param type="int" name="niter">
+            <param name="niter" type="int">
                 <description>Maximum number of clean iterations</description>
                 <value type="int">0</value>
             </param>
 
-            <param type="int" name="nterms">
+            <param name="nterms" type="int">
                 <description/>
                 <value type="int">0</value>
             </param>
 
-            <param type="string" name="parameter_file">
+            <param name="parameter_file" type="string">
                 <description>Optional parameter file as alternate input method</description>
                 <value/>
             </param>
 
-            <param type="double" name="pblimit">
+            <param name="pblimit" type="double">
                 <description>PB gain level at which to cut off normalizations</description>
                 <value>-999.0</value>
             </param>
 
-            <param type="any" name="phasecenter">
+            <param name="phasecenter" type="any">
                 <description>Image center (direction or field index, \'\' for default)</description>
                 <any type="variant"/>
                 <value type="string"/>
             </param>
 
-            <param type="string" name="reffreq">
+            <param name="reffreq" type="string">
                 <description/>
                 <value/>
             </param>
 
-            <param type="string" name="restfreq">
+            <param name="restfreq" type="string">
                 <description>List of rest frequencies or a rest frequency in a string for output image.</description>
                 <value/>
             </param>
 
-            <param type="double" name="robust">
+            <param name="robust" type="double">
                 <description>Briggs robustness parameter</description>
                 <value>-999.0</value>
             </param>
 
-            <param type="string" name="scales">
+            <param name="scales" type="string">
                 <description>The scales for multi-scale imaging.</description>
                 <value/>
             </param>
 
-            <param type="string" name="specmode">
+            <param name="specmode" type="string">
                 <description>Spectral gridding type (mfs, cont, cube, \'\' for default)</description>
                 <value/>
             </param>
 
-            <param type="any" name="spw">
+            <param name="spw" type="any">
                 <description>Set of data selection spectral window/channels, \'\' for all</description>
-                <any type="variant" limittypes="string int"/>
+                <type>string</type><type>int</type>
                 <value type="string"/>
             </param>
 
-            <param type="any" name="start">
+            <param name="start" type="any">
                 <description>Channel start, \'\' for default</description>
                 <any type="variant"/>
                 <value type="string"/>
             </param>
 
-            <param type="string" name="stokes">
+            <param name="stokes" type="string">
                 <description>Stokes Planes to make</description>
                 <value/>
             </param>
 
-        <param type="double" name="sensitivity">
+        <param name="sensitivity" type="double">
             <description/>
             <value type="double">0.0</value>
         </param>
 
-        <param type="string" name="threshold">
+        <param name="threshold" type="string">
             <description>Stopping threshold (number in units of Jy, or string)</description>
             <value/>
         </param>
 
-        <param type="double" name="nsigma">
+        <param name="nsigma" type="double">
             <description>Multiplicative factor for rms-based threshold stopping</description>
             <value type="double">-999.0</value>
         </param>
 
-            <param type="string" name="uvtaper">
+            <param name="uvtaper" type="string">
                 <description>Used to set a uv-taper during clean.</description>
                 <value/>
             </param>
 
-            <param type="string" name="uvrange">
+            <param name="uvrange" type="string">
                 <description>Set of data selection uv ranges, \'\' for all.</description>
-                <any type="variant" limittypes="string stringArray"/>
+                <type>string</type><type>stringVec</type>
                 <value type="string"/>
             </param>
 
-            <param type="any" name="width">
+            <param name="width" type="any">
                 <description>Channel width, \'\' for default.</description>
                 <any type="variant"/>
                 <value type="string"/>
             </param>
 
-            <!--param type="bool" name="clearlist" subparam="true">
-                <description>Clear any previous target list</description>
-                <value>False</value>
-            </param-->
+            
 
-            <param type="string" name="pipelinemode">
+            <param name="pipelinemode" type="string">
                 <description>The pipeline operating mode</description>
                 <value>automatic</value>
                 <allowed kind="enum">
@@ -225,31 +218,25 @@
                 </allowed>
             </param>
 
-            <param type="bool" name="dryrun">
+            <param name="dryrun" type="bool">
                 <description>Run the task (False) or display the command(True)</description>
                 <value>False</value>
             </param>
 
-            <param type="bool" name="acceptresults">
+            <param name="acceptresults" type="bool">
                 <description>Add the results to the pipeline context</description>
                 <value>True</value>
             </param>
 
 
             <constraints>
-                <!--TODO: add constraints-->
+                
             </constraints>
 
         </input>
 
-        <output>
-            <param type="any" name="results">
-                <description>The output results object</description>
-                <any type="variant"/>
-                <value/>
-            </param>
-        </output>
-        <returns type="void"/>
+        
+        <returns>any</returns>
 
 
         <example>
@@ -413,14 +400,13 @@
 
             Issues
 
-            <!--TODO: add issues-->
+            
 
             Examples
 
-            <!--TODO: add examples-->
+            
 
         </example>
 
     </task>
 </casaxml>
-

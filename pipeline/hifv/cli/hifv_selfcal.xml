@@ -1,21 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" ?>
-<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
+<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
 
-<task type="function" name="hifv_selfcal" category="pipeline">
+<task category="pipeline" name="hifv_selfcal" type="function">
 <shortdescription>Selfcal task executing gaincal and applycal</shortdescription>
 <description>
 </description>
 <input>
-    <param type="stringArray" name="vis" subparam="true">
+    <param subparam="true" name="vis" type="stringVec">
 	<description>List of input visibility data</description>
-	<value></value>
+	<value/>
     </param>
 
 
-    <param type="string" name="pipelinemode">
+    <param name="pipelinemode" type="string">
 	<description>The pipeline operating mode</description>
 	<value>automatic</value>
 	<allowed kind="enum">
@@ -25,48 +21,48 @@
 	</allowed>
     </param>
 
-    <param type="bool" name="dryrun" subparam="true">
+    <param subparam="true" name="dryrun" type="bool">
 	<description>Run the task (False) or display task command (True)</description>
 	<value>False</value>
     </param>
 
-    <param type="bool" name="acceptresults" subparam="true">
+    <param subparam="true" name="acceptresults" type="bool">
 	<description>Add the results into the pipeline context</description>
 	<value>True</value>
     </param>
 
-    <param type="string" name="refantignore">
+    <param name="refantignore" type="string">
 	<description>String list of antennas to ignore</description>
-	<value></value>
+	<value/>
     </param>
 
-    <param type="string" name="combine">
+    <param name="combine" type="string">
 	<description>Data axes which to combine for solve (obs, scan, spw, and/or field)</description>
 	<value>spw,field</value>
     </param>
 
-    <param type="string" name="selfcalmode">
+    <param name="selfcalmode" type="string">
 	<description>Heuristics mode selection</description>
 	<value>VLASS</value>
     </param>
 
-    <param type="string" name="refantmode">
+    <param name="refantmode" type="string">
 	<description>Reference antenna mode</description>
 	<value>strict</value>
     </param>
 
     <constraints>
 	<when param="pipelinemode">
-	    <equals type="string" value="automatic">
+	    <equals value="automatic" type="string">
 	    </equals>
-	    <equals type="string" value="interactive">
-                <default param="vis"><value type="stringArray"></value></default>
+	    <equals value="interactive" type="string">
+                <default param="vis"><value type="stringVec"/></default>
 
 		<default param="dryrun"><value type="bool">False</value></default>
 		<default param="acceptresults"><value type="bool">True</value></default>
 	    </equals>
-	    <equals type="string" value="getinputs">
-                <default param="vis"><value type="stringArray"></value></default>
+	    <equals value="getinputs" type="string">
+                <default param="vis"><value type="stringVec"/></default>
 
 	    </equals>
 	</when>
@@ -74,14 +70,8 @@
 
 </input>
 
-<output>
-    <param type="any" name="results">
-        <description>The output results object</description>
-        <any type="variant"/>
-        <value></value>
-    </param>
-</output>
-<returns type="void"/>
+
+<returns>any</returns>
 
 
 <example>

@@ -1,65 +1,61 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" ?>
-<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
+<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
 
-<task type="function" name="hifv_restoredata" category="pipeline">
+<task category="pipeline" name="hifv_restoredata" type="function">
 <shortdescription>Restore flagged and calibration interferometry data from a pipeline run</shortdescription>
 <description>
 </description>
 <input>
-    <param type="stringArray" name="vis">
+    <param name="vis" type="stringVec">
 	<description>List of input visibility data</description>
-	<value></value>
+	<value/>
     </param>
 
-    <param type="stringArray" name="session">
+    <param name="session" type="stringVec">
 	<description>List of sessions one per visibility file</description>
-	<value></value>
+	<value/>
     </param>
 
-    <param type="string" name="products_dir">
+    <param name="products_dir" type="string">
 	<description>The archived pipeline data products directory</description>
 	<value>../products</value>
     </param>
 
-    <param type="bool" name="copytoraw">
+    <param name="copytoraw" type="bool">
 	<description>Copy calibration and flagging tables to raw data directory</description>
 	<value>True</value>
     </param>
 
-    <param type="string" name="rawdata_dir">
+    <param name="rawdata_dir" type="string">
 	<description>The rawdata directory</description>
 	<value>../rawdata</value>
     </param>
 
-    <param type="bool" name="lazy">
+    <param name="lazy" type="bool">
 	<description>Use the lazy filler option</description>
 	<value>False</value>
     </param>
 
-    <param type="bool" name="bdfflags">
+    <param name="bdfflags" type="bool">
 	<description>Set the BDF flags</description>
 	<value>False</value>
     </param>
 
-    <param type="string" name="ocorr_mode">
+    <param name="ocorr_mode" type="string">
 	<description>Correlation import mode</description>
 	<value>co</value>
     </param>
 
-    <param type="bool" name="gainmap">
+    <param name="gainmap" type="bool">
 	<description>VLASS gainmap True/False</description>
 	<value>False</value>
     </param>
 
-    <param type="string" name="asis">
+    <param name="asis" type="string">
 	<description>List of tables to import asis</description>
-	<value></value>
+	<value/>
     </param>
 
-    <param type="string" name="pipelinemode">
+    <param name="pipelinemode" type="string">
 	<description>The pipeline operating mode</description>
 	<value>automatic</value>
 	<allowed kind="enum">
@@ -69,39 +65,33 @@
 	</allowed>
     </param>
 
-    <param type="bool" name="dryrun" subparam="true">
+    <param subparam="true" name="dryrun" type="bool">
 	<description>Run the task (False) or display task command (True)</description>
 	<value>False</value>
     </param>
 
-    <param type="bool" name="acceptresults" subparam="true">
+    <param subparam="true" name="acceptresults" type="bool">
 	<description>Add the results into the pipeline context</description>
 	<value>True</value>
     </param>
 
     <constraints>
 	<when param="pipelinemode">
-	    <equals type="string" value="automatic">
+	    <equals value="automatic" type="string">
 	    </equals>
-	    <equals type="string" value="interactive">
+	    <equals value="interactive" type="string">
 		<default param="dryrun"><value type="bool">False</value></default>
 		<default param="acceptresults"><value type="bool">True</value></default>
 	    </equals>
-	    <equals type="string" value="getinputs">
+	    <equals value="getinputs" type="string">
 	    </equals>
 	</when>
     </constraints>
 
 </input>
 
-<output>
-    <param type="any" name="results">
-        <description>The output results object</description>
-        <any type="variant"/>
-        <value></value>
-    </param>
-</output>
-<returns type="void"/>
+
+<returns>any</returns>
 
 
 <example>

@@ -1,71 +1,67 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" ?>
-<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
+<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
 
-<task type="function" name="hifv_vlasetjy" category="pipeline">
+<task category="pipeline" name="hifv_vlasetjy" type="function">
 <shortdescription>Does an initial setjy run on the vis</shortdescription>
 <description>
 </description>
 <input>
-    <param type="stringArray" name="vis" subparam="true">
+    <param subparam="true" name="vis" type="stringVec">
 	<description>List of input visibility data</description>
-	<value></value>
+	<value/>
     </param>
 
-    <param type="string" name="field" subparam="true">
+    <param subparam="true" name="field" type="string">
 	<description>List of field names or ids</description>
-        <value type="string"></value>
+        <value type="string"/>
     </param>
 
-    <param type="string" name="intent" subparam="true">
+    <param subparam="true" name="intent" type="string">
     	<description>Observing intent of flux calibrators</description>
-        <value></value>
+        <value/>
     </param>
 
-    <param type="string" name="spw" subparam="true">
+    <param subparam="true" name="spw" type="string">
 	<description>List of spectral window ids</description>
-	<value></value>
+	<value/>
     </param>
 
-    <param type="string" name="model" subparam="true">
+    <param subparam="true" name="model" type="string">
 	<description>File location for field model</description>
-	<value></value>
+	<value/>
     </param>
 
-    <param type="string" name="reffile" subparam="true">
+    <param subparam="true" name="reffile" type="string">
         <description>Path to file with fluxes for non-solar system calibrators</description>
-        <value></value>
+        <value/>
     </param>
 
-    <param type="any" name="fluxdensity">
-	<any type="variant" limittypes="int intArray doubleArray"/>
+    <param name="fluxdensity" type="any">
+	<type>int</type><type>intVec</type><type>doubleVec</type>
 	<description>Specified flux density [I,Q,U,V]; -1 will lookup values</description>
 	<value type="int">-1</value>
     </param>
 
-    <param type="double" name="spix" subparam="true">
+    <param subparam="true" name="spix" type="double">
         <description>Spectral index of fluxdensity</description>
         <value type="double">0.0</value>
     </param>
 
-    <param type="string" name="reffreq" subparam="true">
+    <param subparam="true" name="reffreq" type="string">
         <description>Reference frequency for spix</description>
         <value>1GHz</value>
     </param>
 
-    <param type="bool" name="scalebychan">
+    <param name="scalebychan" type="bool">
 	<description>Scale the flux density on a per channel basis or else on a per spw basis</description>
 	<value>True</value>
     </param>
 
-    <param type="variant" name="standard">
+    <param name="standard" type="variant">
 	<description>Flux density standard</description>
-	<value type="string"></value>
+	<value type="string"/>
     </param>
 
-    <param type="string" name="pipelinemode">
+    <param name="pipelinemode" type="string">
 	<description>The pipeline operating mode</description>
 	<value>automatic</value>
 	<allowed kind="enum">
@@ -75,12 +71,12 @@
 	</allowed>
     </param>
 
-    <param type="bool" name="dryrun" subparam="true">
+    <param subparam="true" name="dryrun" type="bool">
 	<description>Run the task (False) or display task command (True)</description>
 	<value>False</value>
     </param>
 
-    <param type="bool" name="acceptresults" subparam="true">
+    <param subparam="true" name="acceptresults" type="bool">
 	<description>Add the results into the pipeline context</description>
 	<value>True</value>
     </param>
@@ -88,29 +84,29 @@
     <constraints>
 
 	<when param="pipelinemode">
-	    <equals type="string" value="automatic" />
-	    <equals type="string" value="interactive">
-		<default param="vis"><value type="stringArray"></value></default>
-		<default param="field"><value type="string"></value></default>
-		<default param="intent"><value type="string"></value></default>
-		<default param="spw"><value type="string"></value></default>
-	        <default param="reffile"><value type="string"></value></default>
-		<default param="model"><value type="string"></value></default>
+	    <equals value="automatic" type="string"/>
+	    <equals value="interactive" type="string">
+		<default param="vis"><value type="stringVec"/></default>
+		<default param="field"><value type="string"/></default>
+		<default param="intent"><value type="string"/></default>
+		<default param="spw"><value type="string"/></default>
+	        <default param="reffile"><value type="string"/></default>
+		<default param="model"><value type="string"/></default>
 		<default param="dryrun"><value type="bool">False</value></default>
 		<default param="acceptresults"><value type="bool">True</value></default>
 	    </equals>
-	    <equals type="string" value="getinputs">
-		<default param="vis"><value type="stringArray"></value></default>
-		<default param="field"><value type="string"></value></default>
-		<default param="intent"><value type="string"></value></default>
-		<default param="spw"><value type="string"></value></default>
-	        <default param="reffile"><value type="string"></value></default>
-		<default param="model"><value type="string"></value></default>
+	    <equals value="getinputs" type="string">
+		<default param="vis"><value type="stringVec"/></default>
+		<default param="field"><value type="string"/></default>
+		<default param="intent"><value type="string"/></default>
+		<default param="spw"><value type="string"/></default>
+	        <default param="reffile"><value type="string"/></default>
+		<default param="model"><value type="string"/></default>
 	    </equals>
 	</when>
 
         <when param="fluxdensity">
-           <notequals type="int" value="-1">
+           <notequals value="-1" type="int">
               <default param="spix"><value type="int">0</value></default>
               <default param="reffreq"><value type="string">1GHz</value></default>
            </notequals>
@@ -121,14 +117,8 @@
 
 </input>
 
-<output>
-    <param type="any" name="results">
-        <description>The output results object</description>
-        <any type="variant"/>
-        <value></value>
-    </param>
-</output>
-<returns type="void"/>
+
+<returns>any</returns>
 
 
 <example>

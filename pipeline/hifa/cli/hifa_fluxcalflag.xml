@@ -1,11 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" ?>
-<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd
-file:///opt/casa/code/xmlcasa/xml/casa.xsd">
+<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
 
-<task type="function" name="hifa_fluxcalflag" category="pipeline">
+<task category="pipeline" name="hifa_fluxcalflag" type="function">
 
 <shortdescription>Locate and flag line regions in solar system flux calibrators</shortdescription>
 <description>
@@ -13,27 +8,27 @@ Locate and flag line regions in solar system flux calibrators.
 </description>
 
 <input>
-    <param type="stringArray" name="vis" subparam="true">
+    <param subparam="true" name="vis" type="stringVec">
 	<description>List of input MeasurementSets</description>
-	<value></value>
+	<value/>
     </param>
 
-    <param type="string" name="field" subparam="true">
+    <param subparam="true" name="field" type="string">
 	<description>List of field names or ids</description>
-        <value type="string"></value>
+        <value type="string"/>
     </param>
 
-    <param type="string" name="intent" subparam="true">
+    <param subparam="true" name="intent" type="string">
     	<description>Observing intent of flux calibrators</description>
-        <value></value>
+        <value/>
     </param>
 
-    <param type="string" name="spw" subparam="true">
+    <param subparam="true" name="spw" type="string">
 	<description>List of spectral window ids</description>
-	<value></value>
+	<value/>
     </param>
 
-    <param type="string" name="pipelinemode">
+    <param name="pipelinemode" type="string">
 	<description>The pipeline operating mode</description>
 	<value>automatic</value>
 	<allowed kind="enum">
@@ -43,32 +38,32 @@ Locate and flag line regions in solar system flux calibrators.
 	</allowed>
    </param>
 
-    <param type="double" name="threshold">
+    <param name="threshold" type="double">
         <description>Threshold for flagging the entire spw</description>
         <value type="double">0.75</value>
     </param>
 
-    <param type="bool" name="appendlines" subparam="true">
+    <param subparam="true" name="appendlines" type="bool">
         <description>Append user defined line regions to the line dictionary</description>
         <value type="bool">False</value>
     </param>
 
-    <param type="string" name="linesfile" subparam="true">
+    <param subparam="true" name="linesfile" type="string">
         <description>File containing user defined lines</description>
-        <value type="string"></value>
+        <value type="string"/>
     </param>
 
-    <param type="bool" name="applyflags" subparam="true">
+    <param subparam="true" name="applyflags" type="bool">
         <description>Apply the computed flag commands</description>
         <value type="bool">True</value>
     </param>
 
-    <param type="bool" name="dryrun" subparam="true">
+    <param subparam="true" name="dryrun" type="bool">
 	<description>Run the task (False) or display the commands (True)</description>
 	<value type="bool">False</value>
     </param>
 
-    <param type="bool" name="acceptresults" subparam="true">
+    <param subparam="true" name="acceptresults" type="bool">
 	<description>Automatically accept results into the context</description>
 	<value type="bool">True</value>
     </param>
@@ -76,25 +71,25 @@ Locate and flag line regions in solar system flux calibrators.
     <constraints>
 
 	<when param="pipelinemode">
-	    <equals type="string" value="automatic" />
-	    <equals type="string" value="interactive">
-		<default param="vis"><value type="stringArray"></value></default>
-		<default param="field"><value type="string"></value></default>
-		<default param="intent"><value type="string"></value></default>
-		<default param="spw"><value type="string"></value></default>
+	    <equals value="automatic" type="string"/>
+	    <equals value="interactive" type="string">
+		<default param="vis"><value type="stringVec"/></default>
+		<default param="field"><value type="string"/></default>
+		<default param="intent"><value type="string"/></default>
+		<default param="spw"><value type="string"/></default>
 		<default param="appendlines"><value type="bool">False</value></default>
-		<default param="linesfile"><value type="string"></value></default>
+		<default param="linesfile"><value type="string"/></default>
 		<default param="applyflags"><value type="bool">True</value></default>
 		<default param="dryrun"><value type="bool">False</value></default>
 		<default param="acceptresults"><value type="bool">True</value></default>
 	    </equals>
-	    <equals type="string" value="getinputs">
-		<default param="vis"><value type="stringArray"></value></default>
-		<default param="field"><value type="string"></value></default>
-		<default param="intent"><value type="string"></value></default>
-		<default param="spw"><value type="string"></value></default>
+	    <equals value="getinputs" type="string">
+		<default param="vis"><value type="stringVec"/></default>
+		<default param="field"><value type="string"/></default>
+		<default param="intent"><value type="string"/></default>
+		<default param="spw"><value type="string"/></default>
 		<default param="appendlines"><value type="bool">False</value></default>
-		<default param="linesfile"><value type="string"></value></default>
+		<default param="linesfile"><value type="string"/></default>
 		<default param="applyflags"><value type="bool">True</value></default>
 	    </equals>
 	</when>
@@ -103,14 +98,8 @@ Locate and flag line regions in solar system flux calibrators.
 
 </input>
 
-<output>
-    <param type="any" name="results">
-        <description>The output results object</description>
-        <any type="variant"/>
-        <value></value>
-    </param>
-</output>
-<returns type="void"/>
+
+<returns>any</returns>
 
 <example>
 Fills the model column with the model visibilities.
