@@ -19,7 +19,7 @@ try:
     # is not a use case exercised by the ALMA pipeline, but rather manual users.
     import pyfits
 except:
-    print('WARNING: pyfits not available! You will not be able to read spectra from FITS tables (an uncommon use case).')
+    pass  # print('WARNING: pyfits not available! You will not be able to read spectra from FITS tables (an uncommon use case).')
 
 import numpy as np
 import matplotlib.pyplot as pl
@@ -40,10 +40,10 @@ except:
             casaVersion = mycasa.casa['build']['version'].split()[0]
     else:
         casaVersion = casadef.casa_version
-print("casaVersion = ", casaVersion)
+# print("casaVersion = ", casaVersion)
 try:
     from taskinit import *
-    print("imported casatasks and tools using taskinit *")
+    # print("imported casatasks and tools using taskinit *")
 except:
     # The following makes CASA 6 look like CASA 5 to a script like this.
     from casatasks import casalog
@@ -63,7 +63,7 @@ except:
     from casatools import image as iatool
     from casatools import ms as mstool
     from casatools import quanta as qatool
-    print("imported casatasks and casatools individually")
+    # print("imported casatasks and casatools individually")
 
 if casaVersion < '5.9.9':
     synthesismaskhandler = casac.synthesismaskhandler
