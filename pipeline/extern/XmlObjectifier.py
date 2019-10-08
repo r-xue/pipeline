@@ -27,9 +27,10 @@
 # The Python XML Objectifier
 #
 # Who		   When	       What
-#
-# D.Muders, MPIfR  2019-10-08  Replaced deepcopy with copy to avoid recursion
-#                              limit issue.
+# ---------------  ----------  ------------------------------------------------
+# D.Muders, MPIfR  2019-10-08  - Replaced deepcopy with copy to avoid recursion
+#                                limit issue.
+#                              - Avoid overwriting locally defined methods.
 # D.Muders, MPIfR  2019-09-25  Ported to Python 3.
 # D.Muders, MPIfR  2012-09-02  Changed boolean values to True and False instead
 #                              of 1 and 0 to avoid CASA interface errors.
@@ -313,7 +314,7 @@ class XmlElement(minidom.Element):
     def __init__(self, element, mapNameSpaces, nameSpaceMapping, skipChars):
         minidom.Element.__init__(self, str(element.nodeName))
         for attr in dir(element):
-            if '__' not in attr:
+            if '__' not in attr and attr not in ('getAttribute', 'getValue', 'setValue'):
                 try:
                     setattr(self, attr, getattr(element, attr))
                 except:
