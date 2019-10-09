@@ -402,7 +402,7 @@ class Tclean(cleanbase.CleanBase):
                 LOG.info('Using supplied width %s' % inputs.width)
                 channel_width = channel_width_manual
                 if abs(channel_width) > channel_width_auto:
-                    inputs.nbin = int(round(abs(channel_width) / channel_width_auto) + 0.5)
+                    inputs.nbin = int(utils.round_half_up(abs(channel_width) / channel_width_auto) + 0.5)
             elif inputs.nbin not in (None, -1):
                 LOG.info('Applying binning factor %d' % inputs.nbin)
                 channel_width *= inputs.nbin
@@ -448,9 +448,9 @@ class Tclean(cleanbase.CleanBase):
                 # Skip edge channels and extra channels if no nchan is supplied.
                 # Adjust to binning since the normal nchan heuristics already includes it.
                 if inputs.nbin not in (None, -1):
-                    inputs.nchan = int(round((if1 - if0) / channel_width - 2)) - 2 * int(extra_skip_channels / inputs.nbin)
+                    inputs.nchan = int(utils.round_half_up((if1 - if0) / channel_width - 2)) - 2 * int(extra_skip_channels / inputs.nbin)
                 else:
-                    inputs.nchan = int(round((if1 - if0) / channel_width - 2)) - 2 * extra_skip_channels
+                    inputs.nchan = int(utils.round_half_up((if1 - if0) / channel_width - 2)) - 2 * extra_skip_channels
 
             if inputs.start == '':
                 if self.image_heuristics.is_eph_obj(inputs.field):
@@ -459,9 +459,9 @@ class Tclean(cleanbase.CleanBase):
                     # channels. The offset accounts for drifts of fast moving objects.
                     if sideband == 'LSB':
                         if inputs.nbin not in (None, -1):
-                            inputs.start = int(round((if1 - if0) / channel_width * inputs.nbin - 2)) - 1 - extra_skip_channels
+                            inputs.start = int(utils.round_half_up((if1 - if0) / channel_width * inputs.nbin - 2)) - 1 - extra_skip_channels
                         else:
-                            inputs.start = int(round((if1 - if0) / channel_width - 2)) - 1 - extra_skip_channels
+                            inputs.start = int(utils.round_half_up((if1 - if0) / channel_width - 2)) - 1 - extra_skip_channels
                     else:
                         inputs.start = extra_skip_channels
                 else:

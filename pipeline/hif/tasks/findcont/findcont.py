@@ -169,7 +169,7 @@ class FindCont(basetask.StandardTaskTemplate):
                         LOG.info('Using supplied width %s' % (target['width']))
                         channel_width = channel_width_manual
                         if channel_width > channel_width_auto:
-                            target['nbin'] = int(round(channel_width / channel_width_auto) + 0.5)
+                            target['nbin'] = int(utils.round_half_up(channel_width / channel_width_auto) + 0.5)
                     elif target['nbin'] != -1:
                         LOG.info('Applying binning factor %d' % (target['nbin']))
                         channel_width *= target['nbin']
@@ -194,7 +194,7 @@ class FindCont(basetask.StandardTaskTemplate):
 
                     # Skip edge channels if no nchan is supplied
                     if target['nchan'] in (None, -1):
-                        nchan = int(round((if1 - if0) / channel_width - 2))
+                        nchan = int(utils.round_half_up((if1 - if0) / channel_width - 2))
                     else:
                         nchan = target['nchan']
 
