@@ -4,11 +4,10 @@ from taskinit import casalog
 
 import pipeline.h.cli.utils as utils
 
-
-def hsdn_restoredata(vis=None, infiles=None, caltable=None, scalefile=None, 
+def hsdn_restoredata(vis=None, caltable=None, reffile=None, 
                      products_dir=None, copytoraw=None, rawdata_dir=None, 
-                     pipelinemode='automatic', overwrite=None, createmms=False, nocopy=None, 
-                     dryrun=False, acceptresults=None):
+                     pipelinemode='automatic', overwrite=None, nocopy=None, 
+                     createmms=False, dryrun=False, acceptresults=None):
 
     ##########################################################################
     #                                                                        #
