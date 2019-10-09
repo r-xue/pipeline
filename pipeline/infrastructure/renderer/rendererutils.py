@@ -198,6 +198,10 @@ def get_plot_command_markup(ctx, command):
 
 
 def format_shortmsg(pqascore):
+    # First check against None. Comparisons of None and float are no longer
+    # allowed in Python 3.
+    if pqascore.score is None:
+        return pqascore.shortmsg
     if pqascore.score > SCORE_THRESHOLD_SUBOPTIMAL:
         return ''
     else:
