@@ -2,6 +2,7 @@ import numpy as np
 
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.utils as utils
 import pipeline.domain.measures as measures
 from .imageparams_base import ImageParamsHeuristics
 
@@ -50,7 +51,7 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
 
             c = cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0]
             uvtaper_value = protect_long * l80 / cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0] * cqa.getvalue(cqa.convert(repr_freq, 'Hz'))[0]
-            uvtaper = ['%.2fklambda' % round(uvtaper_value/1000., 2)]
+            uvtaper = ['%.2fklambda' % utils.round_half_up(uvtaper_value/1000., 2)]
 
             return uvtaper
         else:
