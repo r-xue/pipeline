@@ -9,7 +9,7 @@ from .. import casatools
 from .. import logging
 import numpy
 
-import pipeline.infrastructure.utils as utils
+from .. import utils
 
 LOG = logging.get_logger(__name__)
 
