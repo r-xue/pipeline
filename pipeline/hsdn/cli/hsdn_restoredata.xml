@@ -14,19 +14,14 @@
 	<value></value>
     </param>
 
-    <param type="string" name="scalefile" mustexist="false">
-        <description>File of factors to adjust scale between beams</description>
-        <value></value>
-    </param>
-
-    <param type="stringArray" name="infiles" subparam="true">
-        <description>List of input MeasurementSets</description>
-        <value></value>
-    </param>
-
     <param type="stringArray" name="caltable" subparam="true">
         <description>List of output caltable(s)</description>
         <value></value>
+    </param>
+
+    <param type="string" name="reffile">
+        <description>File of factors to adjust scale between beams</description>
+        <value>nroscalefactor.csv</value>
     </param>
 
     <param type="string" name="products_dir">
@@ -133,12 +128,18 @@ vis -- List of raw visibility data files to be restored. Assumed to be
    default: None
    example: vis=['uid___A002_X30a93d_X43e']
 
-scalefile -- Path to a file containing scaling factors between beams. 
-    The format is equals to jyperk.csv with five fields: 
-    MS name, antenna name, spectral window id, polarization string, 
-    and the scaling factor. Example for the file is as follows:
+caltable -- Name of output gain calibration tables.
 
-    MS,Antenna,Spwid,Polarization,Factor
+    default: none
+    example: caltable='ngc5921.gcal'
+
+reffile -- Path to a file containing scaling factors between beams. 
+    The format is equals to jyperk.csv with five fields: 
+    MS name, beam name (instead of antenna name), spectral window id, 
+    polarization string, and the scaling factor. 
+    Example for the file is as follows:
+
+    #MS,Beam,Spwid,Polarization,Factor
     mg2-20181016165248-181017.ms,NRO-BEAM0,0,I,1.000000000
     mg2-20181016165248-181017.ms,NRO-BEAM0,1,I,1.000000000
     mg2-20181016165248-181017.ms,NRO-BEAM0,2,I,1.000000000
@@ -160,17 +161,7 @@ scalefile -- Path to a file containing scaling factors between beams.
     all the factors are set to 1.0.
 
     default: none
-    example: scalefile='', scalefile='working/nroscalefile.csv'
-
-infiles -- List of input MeasurementSets.
-
-    default: none
-    example: vis='ngc5921.ms'
-
-caltable -- Name of output gain calibration tables.
-
-    default: none
-    example: caltable='ngc5921.gcal'
+    example: reffile='', reffile='nroscalefactor.csv'
 
 products_dir -- Name of the data products directory. Currently not
    used.
@@ -237,7 +228,7 @@ Examples
 
 1. Restore the pipeline results for a single ASDM in a single session 
 
-    hsdn_restoredata (vis=['uid___A002_X30a93d_X43e'], scalefile='scalefile.csv')
+    hsdn_restoredata (vis=['mg2-20181016165248-190320.ms'], reffile='nroscalefactor.csv')
 
 </example>
 </task>
