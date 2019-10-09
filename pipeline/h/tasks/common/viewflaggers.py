@@ -1192,10 +1192,10 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                 nant = int(math.sqrt(nbaseline))
 
                 quadrant = [
-                    [0, nchan/4],
-                    [nchan/4, nchan/2],
-                    [nchan/2, nchan*3/4],
-                    [nchan*3/4, nchan],
+                    [0, nchan//4],
+                    [nchan//4, nchan//2],
+                    [nchan//2, nchan*3//4],
+                    [nchan*3//4, nchan],
                 ]
 
                 for ant in range(nant):
@@ -2125,7 +2125,7 @@ class VectorFlagger(basetask.StandardTaskTemplate):
         noise_edge = None
 
         nchan = len(mad)
-        median_mad = np.median(mad[:nchan/4][np.logical_not(flag[:nchan/4])])
+        median_mad = np.median(mad[:nchan//4][np.logical_not(flag[:nchan//4])])
         for i in range(nchan):
             if not flag[i] and mad[i] < 2.0 * median_mad:
                 noise_edge = i
@@ -2152,8 +2152,8 @@ class VectorFlagger(basetask.StandardTaskTemplate):
         result = None
 
         nchan = len(data)
-        good_data = data[:nchan/4][np.logical_not(flag[:nchan/4])]
-        good_data_index = np.arange(nchan/4)[np.logical_not(flag[:nchan/4])]
+        good_data = data[:nchan//4][np.logical_not(flag[:nchan//4])]
+        good_data_index = np.arange(nchan//4)[np.logical_not(flag[:nchan//4])]
         good_data_diff = abs(good_data[1:] - good_data[:-1])
         median_diff = np.median(good_data_diff)
 
