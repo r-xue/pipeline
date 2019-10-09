@@ -17,10 +17,10 @@ def read(context, filename):
     """
     filetype = inspect_type(filename)
     if filetype == 'MS-Based':
-        LOG.debug('MS-Based factors file is specified')
+        LOG.info('MS-Based factors file is specified')
         return read_ms_based(filename)
     else:
-        LOG.debug('Session-Based factors file is specified')
+        LOG.info('Session-Based factors file is specified')
         return read_session_based(context, filename)
 
 
@@ -35,9 +35,9 @@ def inspect_type(filename):
 
 def read_ms_based(reffile):
     #factor_list = []
-    #LOG.info('reffile: {0}'.format(reffile))
+    LOG.info('reffile: {0}'.format(reffile))
     with open(reffile, 'r') as f:
-        #LOG.info('f: {0}'.format(f))
+        LOG.info('f: {0}'.format(f))
         return list(_read_stream(f))
 
 
@@ -74,14 +74,14 @@ def _read_stream(stream):
         #factor_list.append(line)
         yield line
     else:
-        LOG.warn('The factor file {0} is invalid format'.format(filename))
+        LOG.info('The factor file {0} is invalid format'.format(filename))
     for line in reader:
         if len(line) == 0 or len(line[0]) == 0 or line[0][0] == '#':
             continue
         elif len(line) == 5:
             yield line
         else:
-            LOG.warn('The factor file {0} is invalid format'.format(filename))
+            LOG.info('The factor file {0} is invalid format'.format(filename))
 
 
 # Utility classes/functions to convert session based factors file 
@@ -158,7 +158,7 @@ def associate(context, factors):
             session_name = ms.session
             if session_name == 'Session_default':
                 # Session_default is not supported, use Session_1 instead
-                LOG.warn('Session for %s is \'Session_default\'. Use \'Session_1\' for application of factor. ' %
+                LOG.info('Session for %s is \'Session_default\'. Use \'Session_1\' for application of factor. ' %
                          ms.basename)
                 session_id = 1
             else:
@@ -212,7 +212,7 @@ def associate(context, factors):
                             _best_score = coverage
                     line = '%s,%s,%s,%s,%s' % (ms.basename, ant, spwid, data['POL'][best_index],
                                                factor_list[best_index])
-                    LOG.debug(line)
+                    LOG.info('line: {0}'.format(line))
                     stream.write(line + '\n')
 
         stream.seek(0, 0)
