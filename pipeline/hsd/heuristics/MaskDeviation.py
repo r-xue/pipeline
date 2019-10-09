@@ -42,9 +42,7 @@ class MaskDeviationHeuristic(api.Heuristic):
 
 def VarPlot(infile):
     # infile is asap format
-    import MaskDeviation
-    reload(MaskDeviation)
-    s = MaskDeviation.MaskDeviation(infile)
+    s = MaskDeviation(infile)
     s.ReadData()
     s.SubtractMedian(threshold=3.0)
     s.CalcStdSpectrum()
