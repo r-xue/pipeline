@@ -66,9 +66,9 @@ import os
 		    </tr>
         </thead>
 	    <tbody>
-	    % for vis, coords in reference_coords.iteritems():
+	    % for vis, coords in reference_coords.items():
 	        <% isfirst = True %>
-	        % for field, coord in coords.iteritems():
+	        % for field, coord in coords.items():
 	            <tr>
 	                % if isfirst:
 	                    <% isfirst = False %>

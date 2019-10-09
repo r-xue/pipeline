@@ -15,7 +15,7 @@ def get_lowest_scoring_results(topic, context):
 		
 	min_scoring_results = []
 	for l in all_results_lists:
-		no_na = filter(lambda z:z.qa.representative.score is not None, l)
+		no_na = list(filter(lambda z:z.qa.representative.score is not None, l))
 		if no_na:
 			min_result_for_task = min(no_na, 
 								      key=lambda result: result.qa.representative.score)

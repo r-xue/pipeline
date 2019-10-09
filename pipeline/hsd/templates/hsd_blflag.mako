@@ -69,9 +69,9 @@ try:
 
    flag_types = ['Total', 'Tsys', 'Weather', 'User', 'After calibration']
    fit_flags = ['Baseline RMS', 'Running mean', 'Expected RMS']
-except Exception, e:
-   print 'hsd_imaging html template exception:', e
-   raise e
+except Exception as e:
+   print('hsd_imaging html template exception:{}'.format(e))
+   raise
 %>
 
 <!-- short description of what the task does -->

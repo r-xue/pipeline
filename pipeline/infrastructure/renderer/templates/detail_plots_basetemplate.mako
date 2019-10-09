@@ -62,8 +62,8 @@ def get_options(selector, plots):
     try:
         options = format_options([p.parameters[selector] for p in plots])
     except KeyError:
-        print 'Key %s not found in %s' % (selector, plots)
-        print 'Example plot parameters:\n%s' % (plots[0].parameters)
+        print('Key %s not found in %s' % (selector, plots))
+        print('Example plot parameters:\n%s' % (plots[0].parameters))
         raise
     if selector == 'field':
         options = [cgi.escape(o, True) for o in options]
@@ -135,7 +135,7 @@ $(document).ready(function () {
 <%def name="render_selectors(selectors)">
     <%
         # remove any redundant selectors, such as MS selector when only MS was plotted
-        selectors = filter(lambda selector: len(get_options(selector, plots)) > 1, selectors)
+        selectors = list(filter(lambda selector: len(get_options(selector, plots)) > 1, selectors))
     %>
     % if len(selectors) > 0:
         <div class="row">

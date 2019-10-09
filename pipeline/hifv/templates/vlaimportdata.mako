@@ -1,5 +1,4 @@
 <%!
-import operator
 import os
 import pipeline.infrastructure.renderer.htmlrenderer as hr
 import pipeline.infrastructure.logging as logging

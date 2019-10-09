@@ -31,7 +31,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 	        <td>None</td>
 	        </tr>
 	    % else:
-	        % for key, valueDict in single_result.amp_collection.iteritems():
+	        % for key, valueDict in single_result.amp_collection.items():
 	            <tr>
 	            <td>${key}</td>
 	            <td>${','.join(valueDict['spws'])}</td>
@@ -64,7 +64,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 	        <td>None</td>
 	        </tr>
 	    % else:
-	        % for key, valueDict in single_result.phase_collection.iteritems():
+	        % for key, valueDict in single_result.phase_collection.items():
 	            <tr>
 	            <td>${key}</td>
 	            <td>${','.join(valueDict['spws'])}</td>

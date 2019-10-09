@@ -49,9 +49,9 @@ try:
         with renderer.get_file() as fileobj:
             fileobj.write(renderer.render())
 
-except Exception, e:
-    print 'hif_wvrgcal html template exception:', e
-    raise e
+except Exception as e:
+    print('hif_wvrgcal html template exception:{}'.format(e))
+    raise
 %>
  
 <ul>

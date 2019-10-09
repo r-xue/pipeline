@@ -1,9 +1,5 @@
 <%!
 rsc_path = ""
-import cgi
-import os
-import string
-
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.utils as utils
