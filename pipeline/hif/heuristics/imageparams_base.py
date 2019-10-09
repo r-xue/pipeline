@@ -357,9 +357,13 @@ class ImageParamsHeuristics(object):
                         LOG.info('Got manual request to recalculate beams.')
                         raise Exception('Got manual request to recalculate beams.')
                     if local_known_beams['robust'] != robust:
-                        LOG.info('robust value changed (old: %.1f, new: %.1f). Re-calculating beams.' % (local_known_beams['robust'], robust))
+                        if local_known_beams['robust'] is None:
+                            logMsg = 'robust value changed (old: None, new: %.1f). Re-calculating beams.' % (robust)
+                        else:
+                            logMsg = 'robust value changed (old: %.1f, new: %.1f). Re-calculating beams.' % (local_known_beams['robust'], robust)
+                        LOG.info(logMsg)
                         local_known_beams = {}
-                        raise Exception('robust value changed (old: %.1f, new: %.1f). Re-calculating beams.' % (local_known_beams['robust'], robust))
+                        raise Exception(logMsg)
                     if local_known_beams['uvtaper'] != uvtaper:
                         LOG.info('uvtaper value changed (old: %s, new: %s). Re-calculating beams.' % (str(local_known_beams['uvtaper']), str(uvtaper)))
                         local_known_beams = {}
@@ -580,8 +584,8 @@ class ImageParamsHeuristics(object):
                 width = ''
             else:
                 if (bandwidth >= min_nchan * image_chan_width):
-                    nchan = int(round(float(bandwidth.to_units(measures.FrequencyUnits.HERTZ)) /
-                                      float(image_chan_width.to_units(measures.FrequencyUnits.HERTZ))))
+                    nchan = int(utils.round_half_up(float(bandwidth.to_units(measures.FrequencyUnits.HERTZ)) /
+                                                    float(image_chan_width.to_units(measures.FrequencyUnits.HERTZ))))
                     width = str(image_chan_width)
                 else:
                     nchan = min_nchan
@@ -1015,8 +1019,8 @@ class ImageParamsHeuristics(object):
 
         if (not self._mosaic) and (sfpblimit is not None):
             beam_fwhp = 1.12 / 1.22 * beam_radius_v
-            nxpix = int(round(1.1 * beam_fwhp * math.sqrt(-math.log(sfpblimit) / math.log(2.)) / cellx_v))
-            nypix = int(round(1.1 * beam_fwhp * math.sqrt(-math.log(sfpblimit) / math.log(2.)) / celly_v))
+            nxpix = int(utils.round_half_up(1.1 * beam_fwhp * math.sqrt(-math.log(sfpblimit) / math.log(2.)) / cellx_v))
+            nypix = int(utils.round_half_up(1.1 * beam_fwhp * math.sqrt(-math.log(sfpblimit) / math.log(2.)) / celly_v))
 
         if max_pixels is not None:
             nxpix = min(nxpix, max_pixels)
