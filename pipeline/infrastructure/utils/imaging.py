@@ -9,6 +9,8 @@ from .. import casatools
 from .. import logging
 import numpy
 
+import pipeline.infrastructure.utils as utils
+
 LOG = logging.get_logger(__name__)
 
 __all__ = ['chan_selection_to_frequencies', 'freq_selection_to_channels', 'spw_intersect', 'update_sens_dict',
@@ -124,13 +126,13 @@ def freq_selection_to_channels(img, selection):
             # Avoid stepping outside possible channel range
             c0 = max(c0, 0)
             c0 = min(c0, numPix - 1)
-            c0 = int(round(c0 + 0.5))
+            c0 = int(utils.round_half_up(c0 + 0.5))
             c0 = max(c0, 0)
             c0 = min(c0, numPix - 1)
 
             c1 = max(c1, 0)
             c1 = min(c1, numPix - 1)
-            c1 = int(round(c1 - 0.5))
+            c1 = int(utils.round_half_up(c1 - 0.5))
             c1 = max(c1, 0)
             c1 = min(c1, numPix - 1)
 

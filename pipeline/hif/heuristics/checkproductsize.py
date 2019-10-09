@@ -134,7 +134,7 @@ class CheckProductSizeHeuristics(object):
             # Cap at PB=0.2
             PB_mitigation = max(PB_mitigation, 0.2)
             # Round to 2 significant digits
-            PB_mitigation = round(PB_mitigation, 2)
+            PB_mitigation = utils.round_half_up(PB_mitigation, 2)
 
             PB_limit = PB_mitigation
 
@@ -257,7 +257,7 @@ class CheckProductSizeHeuristics(object):
                 # Cap at PB=<current PB_limit from earlier mitigation>
                 PB_mitigation = max(PB_mitigation, PB_limit)
                 # Round to 2 significant digits
-                PB_mitigation = round(PB_mitigation, 2)
+                PB_mitigation = utils.round_half_up(PB_mitigation, 2)
 
                 if PB_mitigation != 0.2:
                     LOG.info('Size mitigation: Setting hm_imsize to %.2gpb' % (PB_mitigation))

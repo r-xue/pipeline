@@ -93,6 +93,7 @@ import scipy.stats.mstats
 
 import casatools
 
+import pipeline.infrastructure.utils as utils
 import pipeline.qa.utility.logs as logs
 
 
@@ -991,8 +992,8 @@ def bpcal_chanRangeList(numchan, trim=0.1):
         return []
 
     # Calculate the start and stop channels and return them
-    startChan = int(round(trim*numchan - 0.5))
-    stopChan = int(round((1.0-trim)*numchan - 0.5))
+    startChan = int(utils.round_half_up(trim*numchan - 0.5))
+    stopChan = int(utils.round_half_up((1.0-trim)*numchan - 0.5))
 
     return [startChan, stopChan]
 
