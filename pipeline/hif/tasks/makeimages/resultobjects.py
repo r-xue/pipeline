@@ -140,8 +140,8 @@ class MakeImagesResult(basetask.Results):
             repr += '{0:{1}}'.format(target['intent'], intent_width)
             repr += '{0:{1}}'.format(target['spw'], spw_width)
             repr += '{0:{1}}'.format(target['phasecenter'], phasecenter_width)
-            repr += '{0:{1}}'.format(target['cell'], cell_width)
-            repr += '{0:{1}}'.format(target['imsize'], imsize_width)
+            repr += '{0:{1}}'.format(str(target['cell']), cell_width)
+            repr += '{0:{1}}'.format(str(target['imsize']), imsize_width)
             repr += '{0:{1}}'.format(os.path.basename(target['imagename']),
               imagename_width)
             repr += '{0:{1}}'.format(target['outcome'], outcome_width)

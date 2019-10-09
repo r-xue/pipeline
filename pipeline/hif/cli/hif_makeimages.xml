@@ -124,7 +124,7 @@ Compute clean results from a list of specified targets.
 
   <param name="mosweight" type="bool">
     <description>Mosaic weighting</description>
-    <value>None</value>
+    <value>False</value>
   </param>
 
   <param name="overwrite_on_export" type="bool">
