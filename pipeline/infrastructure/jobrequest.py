@@ -5,6 +5,7 @@ import os
 import platform
 import re
 import sys
+import types
 
 from . import logging
 
@@ -153,7 +154,8 @@ class JobRequest(object):
 
         # CASA tasks are instances rather than functions, whose execution
         # begins at __call__
-        fn = fn.__call__
+        if not isinstance(fn, types.FunctionType):
+            fn = fn.__call__
 
         # the next piece of code does some introspection on the given function
         # so that we can find out the complete invocation, adding any implicit
