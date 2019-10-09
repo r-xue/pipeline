@@ -18,9 +18,10 @@ from .ppr import *
 from .sorting import *
 from .utils import *
 from .weblog import *
+from .math import *
 
 # IMPORTANT! If you import from a new submodule, please add it to the list below
-_all_modules = ['conversion', 'diagnostics', 'framework', 'imaging', 'ppr', 'sorting', 'utils', 'weblog']
+_all_modules = ['conversion', 'diagnostics', 'framework', 'imaging', 'ppr', 'sorting', 'utils', 'weblog', 'math']
 
 
 def _ensure_no_multiple_definitions(module_names):
