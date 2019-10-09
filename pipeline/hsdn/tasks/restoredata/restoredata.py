@@ -16,15 +16,16 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class NRORestoreDataInputs(restoredata.RestoreDataInputs):
-    scalefile = vdp.VisDependentProperty(default='nroscalefile.csv')
+    reffile = vdp.VisDependentProperty(default='')
+    caltable = vdp.VisDependentProperty(default='')
 
-    def __init__(self, context, infiles=None, caltable=None, scalefile=None,
-                 products_dir=None, rawdata_dir=None, output_dir=None,
-                 vis=None):
-        super(NRORestoreDataInputs, self).__init__(context, products_dir=None,
-                                                  rawdata_dir=rawdata_dir, output_dir=output_dir,
-                                                  vis=vis)
+    def __init__(self, context, vis=None, caltable=None, reffile=None,
+                 products_dir=None, rawdata_dir=None, output_dir=None):
+        super(NRORestoreDataInputs, self).__init__(context, vis=vis, products_dir=None,
+                                                  rawdata_dir=rawdata_dir, output_dir=output_dir)
 
+        self.caltable = caltable
+        self.reffile = reffile
 
 class NRORestoreDataResults(restoredata.RestoreDataResults):
 
@@ -81,6 +82,7 @@ class NRORestoreData(restoredata.RestoreData):
 
     def prepare(self):
         inputs = self.inputs
+        LOG.debug('prepare inputs = {0}'.format(inputs));
 
         # run prepare method in the parent class
         results = super(NRORestoreData, self).prepare()
@@ -100,7 +102,7 @@ class NRORestoreData(restoredata.RestoreData):
 
         LOG.debug('_do_importasdm inputs = {0}'.format(inputs));
 
-        container = vdp.InputsContainer(importdata.NROImportData, inputs.context, vis=vislist,
+        container = vdp.InputsContainer(importdata.NROImportData, inputs.context, vis=vislist, 
                                         output_dir=None)
         importdata_task = importdata.NROImportData(container)
         return self._executor.execute(importdata_task, merge=True)
@@ -110,10 +112,10 @@ class NRORestoreData(restoredata.RestoreData):
         LOG.debug('_do_applycal inputs = {0}'.format(inputs));
 
         # Before applycal, sensitively (amplitude) correction using k2jycal task and  
-        # a scalefile given by Observatory. This is the special operation for NRO data. 
+        # a scalefile (=reffile) given by Observatory. This is the special operation for NRO data. 
         # If no scalefile exists in the working directory, skip this process.
-        if os.path.exists(inputs.scalefile):
-            container = vdp.InputsContainer(ampcal.SDAmpCal, inputs.context, reffile=inputs.scalefile)
+        if os.path.exists(inputs.reffile):
+            container = vdp.InputsContainer(ampcal.SDAmpCal, inputs.context, reffile=inputs.reffile)
         else:
             LOG.info('No scale factor file exists. Skip scaling.')
             container = vdp.InputsContainer(ampcal.SDAmpCal, inputs.context)
