@@ -31,22 +31,16 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
 
     def update_mako_context(self, ctx, context, results):
 
-        LOG.debug('self = {0}'.format(self));
-        LOG.debug('results = {0}'.format(results));
-        LOG.debug('ctx = {0}'.format(ctx));
         ctx_result = ctx['result']
         ctx_result0 = ctx_result[0]
         ctx_result0_inputs = ctx_result0.inputs
         inputs = {}
         for key, value in ctx_result0_inputs.items():
-            if 'rawdata_dir' in key or 'products_dir' in key or 'vis' in key or 'output_dir' in key or 'scalefile' in key:
+            if 'rawdata_dir' in key or 'products_dir' in key or 'vis' in key or 'output_dir' in key or 'reffile' in key:
                 inputs[key] = value
         result_inputs = inputs
         LOG.debug('result_inputs = {0}'.format(result_inputs));
         ctx['result'].inputs = result_inputs
-        LOG.debug("ctx['result'].inputs = {0}".format(ctx['result'].inputs));
-
-        LOG.debug('context = {0}'.format(context));
         reffile = None
         spw_factors = collections.defaultdict(lambda: [])
         valid_spw_factors = collections.defaultdict(lambda: collections.defaultdict(lambda: []))
@@ -57,7 +51,6 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
         trfunc = trfunc_v if dovirtual else trfunc_r
 
         res0 = results[0]
-        LOG.debug('dir(res0) = {0}'.format(dir(res0)));
 
         importdata_results = res0.importdata_results
         ampcal_results = res0.ampcal_results
