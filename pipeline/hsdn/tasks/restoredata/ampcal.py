@@ -16,7 +16,7 @@ LOG = infrastructure.get_logger(__name__)
 
 class SDAmpCalInputs(vdp.StandardInputs):
 
-    reffile = vdp.VisDependentProperty(default='nroscalefile.csv')
+    reffile = vdp.VisDependentProperty(default='')
 
     @vdp.VisDependentProperty
     def infiles(self):
@@ -29,6 +29,7 @@ class SDAmpCalInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def caltable(self):
+
         """
         Get the caltable argument for these inputs.
 
@@ -56,7 +57,6 @@ class SDAmpCalInputs(vdp.StandardInputs):
         self.reffile = reffile
         self.dbservice = dbservice
         self.endpoint = endpoint
-
 
 class SDAmpCalResults(basetask.Results):
     def __init__(self, vis=None, final=[], pool=[], reffile=None, factors={},
@@ -138,7 +138,6 @@ class SDAmpCal(basetask.StandardTaskTemplate):
         if len(factors_list) == 0:
             LOG.warn('No factor file available')
             return SDAmpCalResults(vis=os.path.basename(inputs.vis), pool=[])
-#            return SDK2JyCalResults(vis=os.path.basename(inputs.vis), pool=[])
 
         # generate scaling factor dictionary
         factors = rearrange_factors_list(factors_list)
