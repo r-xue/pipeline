@@ -2,9 +2,9 @@ import datetime
 import math
 import os
 
-import numpy as np
 import matplotlib
-import pylab as pb
+import matplotlib.pyplot as plt
+import numpy as np
 from scipy.interpolate import splev, splrep
 
 import pipeline.infrastructure as infrastructure
@@ -43,13 +43,12 @@ def plotPWV(ms, figfile='', plotrange=[0, 0, 0, 0], clip=True):
 
     Arguments:
            ms: The measurement set
+      figfile: True, False, or a string
     plotrange: The ranges for the X and Y axes (default=[0,0,0,0] which is autorange)
          clip: True = do not plot outliers beyond 5 * MAD from the median.
-      figfile: True, False, or a string
 
     If figfile is not a string, the file created will be <ms>.pwv.png.
     """
-
     if not os.path.exists(ms):
         LOG.warn("Could not find  ms: %s" % ms)
         return
@@ -74,8 +73,8 @@ def plotPWV(ms, figfile='', plotrange=[0, 0, 0, 0], clip=True):
         return
 
     # Initialize plotting
-    pb.clf()
-    adesc = pb.subplot(111)
+    plt.clf()
+    adesc = plt.subplot(111)
     ms = ms.split('/')[-1]
 
     # Clip the PWV values
@@ -94,13 +93,12 @@ def plotPWV(ms, figfile='', plotrange=[0, 0, 0, 0], clip=True):
         watertime = watertime[matches]
         antennaName = antennaName[matches]
 
-    uniqueAntennas = np.unique(antennaName)
-    pb.hold(True)
+    unique_antennas = np.unique(antennaName)
     list_of_date_times = mjdSecondsListToDateTime(watertime)
-    timeplot = pb.date2num(list_of_date_times)
-    for a in range(len(uniqueAntennas)):
-        matches = np.where(uniqueAntennas[a] == np.array(antennaName))[0]
-        pb.plot_date(timeplot[matches], water[matches], '.', color=overlayColors[a % len(overlayColors)])
+    timeplot = matplotlib.dates.date2num(list_of_date_times)
+    for a in range(len(unique_antennas)):
+        matches = np.where(unique_antennas[a] == np.array(antennaName))[0]
+        plt.plot_date(timeplot[matches], water[matches], '.', color=overlayColors[a % len(overlayColors)])
 
     # Now sort to average duplicate timestamps to one value, then fit spline
     indices = np.argsort(watertime)
@@ -115,55 +113,54 @@ def plotPWV(ms, figfile='', plotrange=[0, 0, 0, 0], clip=True):
             newtime.append(watertime[w])
     watertime = newtime
     water = newwater
-    regularTime = np.linspace(watertime[0], watertime[-1], len(watertime))
-    #ius = splrep(watertime, water,s=len(watertime)-math.sqrt(2*len(watertime)))
+    regular_time = np.linspace(watertime[0], watertime[-1], len(watertime))
     order = 3
     if len(water) <= 3:
         order = 1
     if len(water) > 1:
         ius = splrep(watertime, water, s=len(watertime)-math.sqrt(2*len(watertime)), k=order)
-        water = splev(regularTime, ius, der=0)
-    list_of_date_times = mjdSecondsListToDateTime(regularTime)
-    timeplot = pb.date2num(list_of_date_times)
-    pb.plot_date(timeplot, water, 'k-')
+        water = splev(regular_time, ius, der=0)
+    list_of_date_times = mjdSecondsListToDateTime(regular_time)
+    timeplot = matplotlib.dates.date2num(list_of_date_times)
+    plt.plot_date(timeplot, water, 'k-')
 
     # Plot limits and ranges
     if plotrange[0] != 0 or plotrange[1] != 0:
-        pb.xlim([plotrange[0], plotrange[1]])
+        plt.xlim([plotrange[0], plotrange[1]])
     if plotrange[2] != 0 or plotrange[3] != 0:
-        pb.ylim([plotrange[2], plotrange[3]])
-    xlim = pb.xlim()
-    ylim = pb.ylim()
+        plt.ylim([plotrange[2], plotrange[3]])
+    xlim = plt.xlim()
+    ylim = plt.ylim()
     xrange = xlim[1]-xlim[0]
     yrange = ylim[1]-ylim[0]
 
-    for a in range(len(uniqueAntennas)):
-        pb.text(xlim[1]+0.01*xrange+0.055*xrange*(a // 48), ylim[1]-0.024*yrange*(a % 48 - 2),
-                uniqueAntennas[a], color=overlayColors[a % len(overlayColors)], size=8)
-    pb.xlabel('Universal Time (%s)' % (utdatestring(watertime[0])))
-    pb.ylabel('PWV (mm)')
+    for a in range(len(unique_antennas)):
+        plt.text(xlim[1]+0.01*xrange+0.055*xrange*(a // 48), ylim[1]-0.024*yrange*(a % 48 - 2),
+                 unique_antennas[a], color=overlayColors[a % len(overlayColors)], size=8)
+    plt.xlabel('Universal Time (%s)' % (utdatestring(watertime[0])))
+    plt.ylabel('PWV (mm)')
     adesc.xaxis.grid(True, which='major')
     adesc.yaxis.grid(True, which='major')
 
-    pb.title(ms)
+    plt.title(ms)
     if len(water) > 1:
         adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 30))))
         adesc.xaxis.set_minor_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 10))))
         adesc.xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%H:%M'))
         adesc.fmt_xdata = matplotlib.dates.DateFormatter('%H:%M')
-        RescaleXAxisTimeTicks(pb.xlim(), adesc)
-    autoFigureName = "%s.pwv.png" % ms
-    pb.draw()
+        RescaleXAxisTimeTicks(plt.xlim(), adesc)
+    auto_figure_name = "%s.pwv.png" % ms
+    plt.draw()
 
     # Save plot
-    if (figfile==True):
-        pb.savefig(autoFigureName)
-    elif (len(figfile) > 0):
-        pb.savefig(figfile)
+    if figfile==True:
+        plt.savefig(auto_figure_name)
+    elif len(figfile) > 0:
+        plt.savefig(figfile)
     else:
         LOG.warn("Failed to create PWV plot")
-    pb.clf()
-    pb.close()
+    plt.clf()
+    plt.close()
 
 
 def readPWVFromMS(vis):
@@ -171,7 +168,6 @@ def readPWVFromMS(vis):
     Reads all the PWV values from a measurement set, returning a list
     of lists:   [[mjdsec], [pwv], [antennaName]]
     """
-
     mytb = casatools.table
     if os.path.exists("%s/ASDM_CALWVR" % vis):
         mytb.open("%s/ASDM_CALWVR" % vis)
@@ -195,7 +191,6 @@ def readPWVFromASDM_CALATMOSPHERE(vis):
     """
     Reads the PWV via the water column of the ASDM_CALATMOSPHERE table.
     """
-
     if not os.path.exists(vis+'/ASDM_CALATMOSPHERE'):
         if vis.find('.ms') < 0:
             vis += '.ms'
@@ -249,7 +244,6 @@ def MAD(a, c=0.6745, axis=0):
     default
 
     """
-
     a = np.array(a)
     good = (a == a)
     a = np.asarray(a, np.float64)
@@ -269,8 +263,8 @@ def MAD(a, c=0.6745, axis=0):
 
 
 def utdatestring(mjdsec):
-    (mjd, dateTimeString) = mjdSecondsToMJDandUT(mjdsec)
-    tokens = dateTimeString.split()
+    (mjd, date_time_string) = mjdSecondsToMJDandUT(mjdsec)
+    tokens = date_time_string.split()
     return tokens[0]
 
 
@@ -281,7 +275,6 @@ def mjdSecondsToMJDandUT(mjdsec, prec=6):
     example: (56000.0, '2012-03-14 00:00:00 UT')
     Caveat: only works for a scalar input value
     """
-
     me = casatools.measures
     today = me.epoch('utc', 'today')
     mjd = np.array(mjdsec) / 86400.
@@ -301,7 +294,6 @@ def mjdSecondsListToDateTime(mjdsecList):
     Takes a list of mjd seconds and converts it to a list of datetime
     structures.
     """
-
     me = casatools.measures
     dt = []
     typelist = type(mjdsecList)
@@ -313,9 +305,9 @@ def mjdSecondsListToDateTime(mjdsecList):
         today['m0']['value'] = mjd
         hhmmss = call_qa_time(today['m0'])   # don't fully understand this
         date = casatools.quanta.splitdate(today['m0'])  # date is now a dict
-        timeString = '%d-%d-%d %d:%d:%d.%06d' % (date['monthday'], date['month'], date['year'], date['hour'],
-                                                 date['min'], date['sec'], date['usec'])
-        mydate = datetime.datetime.strptime(timeString, '%d-%m-%Y %H:%M:%S.%f')
+        time_string = '%d-%d-%d %d:%d:%d.%06d' % (date['monthday'], date['month'], date['year'], date['hour'],
+                                                  date['min'], date['sec'], date['usec'])
+        mydate = datetime.datetime.strptime(time_string, '%d-%m-%Y %H:%M:%S.%f')
         dt.append(mydate)
     me.done()
     return dt

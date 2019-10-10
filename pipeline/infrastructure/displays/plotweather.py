@@ -2,8 +2,8 @@ import datetime
 import math
 
 import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
-import pylab as pb
 
 import casatools
 
@@ -47,234 +47,217 @@ def plotWeather(vis='', figfile='', station=[], help=False):
     mjdsec1 = mjdsec
     vis = vis.split('/')[-1]
     pressure = mytb.getcol('PRESSURE')
-    relativeHumidity = mytb.getcol('REL_HUMIDITY')
+    relative_humidity = mytb.getcol('REL_HUMIDITY')
     temperature = mytb.getcol('TEMPERATURE')
     # Nobeyama does not have DEW_POINT and NS_WX_STATION_ID
-    dewPoint = mytb.getcol('DEW_POINT') if 'DEW_POINT' in available_cols else None
-    windDirection = (180 / math.pi) * mytb.getcol('WIND_DIRECTION')
-    windSpeed = mytb.getcol('WIND_SPEED')
+    dew_point = mytb.getcol('DEW_POINT') if 'DEW_POINT' in available_cols else None
+    wind_direction = (180 / math.pi) * mytb.getcol('WIND_DIRECTION')
+    wind_speed = mytb.getcol('WIND_SPEED')
     stations = mytb.getcol('NS_WX_STATION_ID') if 'NS_WX_STATION_ID' in available_cols else []
-    uniqueStations = np.unique(stations)
+    unique_stations = np.unique(stations)
 
-    if station != []:
+    if station:
         if isinstance(station, int):
-            if station not in uniqueStations:
-                print("Station %d is not in the data.  Present are: " % station, uniqueStations)
+            if station not in unique_stations:
+                print("Station %d is not in the data.  Present are: " % station, unique_stations)
                 return
-            uniqueStations = [station]
+            unique_stations = [station]
         elif isinstance(station, list):
             if len(station) > 2:
                 print("Only 2 stations can be overlaid.")
                 return
-            if station[0] not in uniqueStations:
-                print("Station %d is not in the data.  Present are: " % station[0], uniqueStations)
+            if station[0] not in unique_stations:
+                print("Station %d is not in the data.  Present are: " % station[0], unique_stations)
                 return
-            if station[1] not in uniqueStations:
-                print("Station %d is not in the data.  Present are: " % station[1], uniqueStations)
+            if station[1] not in unique_stations:
+                print("Station %d is not in the data.  Present are: " % station[1], unique_stations)
                 return
-            uniqueStations = station
+            unique_stations = station
         elif isinstance(station, str):
             if station.isdigit():
-                if int(station) not in uniqueStations:
-                    print("Station %s is not in the data.  Present are: " % station, uniqueStations)
+                if int(station) not in unique_stations:
+                    print("Station %s is not in the data.  Present are: " % station, unique_stations)
                     return
-                uniqueStations = [int(station)]
+                unique_stations = [int(station)]
             else:
                 print("Invalid station ID, it must be an integer, or list of integers.")
                 return
 
-    if len(uniqueStations) > 1:
-        firstStationRows = np.where(stations == uniqueStations[0])[0]
-        secondStationRows = np.where(stations == uniqueStations[1])[0]
+    if len(unique_stations) > 1:
+        first_station_rows = np.where(stations == unique_stations[0])[0]
+        second_station_rows = np.where(stations == unique_stations[1])[0]
 
-        pressure2 = pressure[secondStationRows]
-        relativeHumidity2 = relativeHumidity[secondStationRows]
-        temperature2 = temperature[secondStationRows]
-        dewPoint2 = dewPoint[secondStationRows] if dewPoint is not None else None
-        windDirection2 = windDirection[secondStationRows]
-        windSpeed2 = windSpeed[secondStationRows]
-        mjdsec2 = mjdsec[secondStationRows]
+        pressure2 = pressure[second_station_rows]
+        relative_humidity2 = relative_humidity[second_station_rows]
+        temperature2 = temperature[second_station_rows]
+        dew_point2 = dew_point[second_station_rows] if dew_point is not None else None
+        wind_direction2 = wind_direction[second_station_rows]
+        wind_speed2 = wind_speed[second_station_rows]
+        mjdsec2 = mjdsec[second_station_rows]
 
-        pressure = pressure[firstStationRows]
-        relativeHumidity = relativeHumidity[firstStationRows]
-        temperature = temperature[firstStationRows]
-        dewPoint = dewPoint[firstStationRows] if dewPoint is not None else None
-        windDirection = windDirection[firstStationRows]
-        windSpeed = windSpeed[firstStationRows]
-        mjdsec1 = mjdsec[firstStationRows]
-        if (np.mean(temperature2) > 100):
+        pressure = pressure[first_station_rows]
+        relative_humidity = relative_humidity[first_station_rows]
+        temperature = temperature[first_station_rows]
+        dew_point = dew_point[first_station_rows] if dew_point is not None else None
+        wind_direction = wind_direction[first_station_rows]
+        wind_speed = wind_speed[first_station_rows]
+        mjdsec1 = mjdsec[first_station_rows]
+        if np.mean(temperature2) > 100:
             # convert to Celsius
             temperature2 -= 273.15        
-        if (dewPoint2 is not None and np.mean(dewPoint2) > 100):
-            dewPoint2 -= 273.15        
+        if dew_point2 is not None and np.mean(dew_point2) > 100:
+            dew_point2 -= 273.15
 
-    if (np.mean(temperature) > 100):
+    if np.mean(temperature) > 100:
         # convert to Celsius
         temperature -= 273.15        
-    if (dewPoint is not None and np.mean(dewPoint) > 100):
-        dewPoint -= 273.15        
-    if (dewPoint is not None and np.mean(dewPoint) == 0):
+    if dew_point is not None and np.mean(dew_point) > 100:
+        dew_point -= 273.15
+    if dew_point is not None and np.mean(dew_point) == 0:
         # assume it is not measured and use NOAA formula to compute from humidity:
-        dewPoint = ComputeDewPointCFromRHAndTempC(relativeHumidity, temperature)
-    if (np.mean(relativeHumidity) < 0.001):
-        if dewPoint is None or np.count_nonzero(dewPoint) == 0:
+        dew_point = ComputeDewPointCFromRHAndTempC(relative_humidity, temperature)
+    if np.mean(relative_humidity) < 0.001:
+        if dew_point is None or np.count_nonzero(dew_point) == 0:
             # dew point is all zero so it was not measured, so cap the rH at small non-zero value
-            relativeHumidity = 0.001 * np.ones(len(relativeHumidity))
+            relative_humidity = 0.001 * np.ones(len(relative_humidity))
         else:
             print("Replacing zeros in relative humidity with value computed from dew point and temperature.")
-            dewPointWVP = computeWVP(dewPoint)
-            ambientWVP = computeWVP(temperature)
-            print("dWVP=%f, aWVP=%f" % (dewPointWVP[0], ambientWVP[0]))
-            relativeHumidity = 100*(dewPointWVP/ambientWVP)
+            dew_point_wvp = computeWVP(dew_point)
+            ambient_wvp = computeWVP(temperature)
+            print("dWVP=%f, aWVP=%f" % (dew_point_wvp[0], ambient_wvp[0]))
+            relative_humidity = 100*(dew_point_wvp/ambient_wvp)
 
     mytb.close()
 
     mysize = 'small'
-    pb.clf()
-    adesc = pb.subplot(321)
+    plt.clf()
+    adesc = plt.subplot(321)
     myhspace = 0.25
     mywspace = 0.25
     markersize = 3
-    pb.subplots_adjust(hspace=myhspace, wspace=mywspace)
-    pb.title(vis)
+    plt.subplots_adjust(hspace=myhspace, wspace=mywspace)
+    plt.title(vis)
     list_of_date_times = mjdSecondsListToDateTime(mjdsec1)
-    timeplot = pb.date2num(list_of_date_times)
-    pb.plot_date(timeplot, pressure, markersize=markersize)
-    if (len(uniqueStations) > 1):
-        pb.hold(True)
+    timeplot = matplotlib.dates.date2num(list_of_date_times)
+    plt.plot_date(timeplot, pressure, markersize=markersize)
+    if len(unique_stations) > 1:
         list_of_date_times = mjdSecondsListToDateTime(mjdsec2)
-        timeplot2 = pb.date2num(list_of_date_times)
-        pb.plot_date(timeplot2, pressure2, markersize=markersize, color='r')
+        timeplot2 = matplotlib.dates.date2num(list_of_date_times)
+        plt.plot_date(timeplot2, pressure2, markersize=markersize, color='r')
 
     resizeFonts(adesc, myfontsize)
-    #pb.xlabel('MJD - %d'%mjdOffset,size=mysize)
-    #pb.xlabel('Universal Time (%s)'%plotbp.utdatestring(mjdsec[0]),size=mysize)
-    pb.ylabel('Pressure (mb)', size=mysize)
+    plt.ylabel('Pressure (mb)', size=mysize)
     adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 30))))
     adesc.xaxis.set_minor_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 10))))
     adesc.xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%H:%M'))
     adesc.fmt_xdata = matplotlib.dates.DateFormatter('%H:%M')
-    RescaleXAxisTimeTicks(pb.xlim(), adesc)
+    RescaleXAxisTimeTicks(plt.xlim(), adesc)
     adesc.xaxis.grid(True, which='major')
     adesc.yaxis.grid(True, which='major')
 
-    adesc = pb.subplot(322)
-    pb.plot_date(timeplot, temperature, markersize=markersize)
-    if (len(uniqueStations) > 1):
-        pb.hold(True)
+    adesc = plt.subplot(322)
+    plt.plot_date(timeplot, temperature, markersize=markersize)
+    if len(unique_stations) > 1:
         list_of_date_times = mjdSecondsListToDateTime(mjdsec2)
-        timeplot2 = pb.date2num(list_of_date_times)
-        pb.plot_date(timeplot2, temperature2, markersize=markersize, color='r')
+        timeplot2 = matplotlib.dates.date2num(list_of_date_times)
+        plt.plot_date(timeplot2, temperature2, markersize=markersize, color='r')
     resizeFonts(adesc, myfontsize)
-    #pb.xlabel('MJD - %d'%mjdOffset,size=mysize)
-    #pb.xlabel('Universal Time (%s)'%plotbp.utdatestring(mjdsec[0]),size=mysize)
-    pb.ylabel('Temperature (C)', size=mysize)
+    plt.ylabel('Temperature (C)', size=mysize)
     adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 30))))
     adesc.xaxis.set_minor_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 10))))
     adesc.xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%H:%M'))
     adesc.fmt_xdata = matplotlib.dates.DateFormatter('%H:%M')
-    RescaleXAxisTimeTicks(pb.xlim(), adesc)
+    RescaleXAxisTimeTicks(plt.xlim(), adesc)
     adesc.xaxis.grid(True, which='major')
     adesc.yaxis.grid(True, which='major')
-    if (len(uniqueStations) > 1):
-        pb.title('blue = station %d,  red = station %d' % (uniqueStations[0], uniqueStations[1]))
-    elif (len(uniqueStations) > 0):
-        pb.title('blue = station %d' % uniqueStations[0])
+    if len(unique_stations) > 1:
+        plt.title('blue = station %d,  red = station %d' % (unique_stations[0], unique_stations[1]))
+    elif len(unique_stations) > 0:
+        plt.title('blue = station %d' % unique_stations[0])
 
-    adesc = pb.subplot(323)
-#    pb.plot(mjdFraction,relativeHumidity)
-    pb.plot_date(timeplot, relativeHumidity, markersize=markersize)
-    if (len(uniqueStations) > 1):
-        pb.hold(True)
+    adesc = plt.subplot(323)
+    plt.plot_date(timeplot, relative_humidity, markersize=markersize)
+    if len(unique_stations) > 1:
         list_of_date_times = mjdSecondsListToDateTime(mjdsec2)
-        timeplot2 = pb.date2num(list_of_date_times)
-        pb.plot_date(timeplot2, relativeHumidity2, markersize=markersize, color='r')
+        timeplot2 = matplotlib.dates.date2num(list_of_date_times)
+        plt.plot_date(timeplot2, relative_humidity2, markersize=markersize, color='r')
     resizeFonts(adesc, myfontsize)
-#    pb.xlabel('Universal Time (%s)'%utdatestring(mjdsec[0]),size=mysize)
-#    pb.xlabel('MJD - %d'%mjdOffset,size=mysize)
-    pb.ylabel('Relative Humidity (%)', size=mysize)
+    plt.ylabel('Relative Humidity (%)', size=mysize)
     adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 30))))
     adesc.xaxis.set_minor_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 10))))
     adesc.xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%H:%M'))
     adesc.fmt_xdata = matplotlib.dates.DateFormatter('%H:%M')
-    RescaleXAxisTimeTicks(pb.xlim(), adesc)
+    RescaleXAxisTimeTicks(plt.xlim(), adesc)
     adesc.xaxis.grid(True, which='major')
     adesc.yaxis.grid(True, which='major')
 
     pid = 4
-    if dewPoint is not None:
-        adesc = pb.subplot(3, 2, pid)
-        pb.plot_date(timeplot, dewPoint, markersize=markersize)
-        if (len(uniqueStations) > 1):
-            pb.hold(True)
+    if dew_point is not None:
+        adesc = plt.subplot(3, 2, pid)
+        plt.plot_date(timeplot, dew_point, markersize=markersize)
+        if len(unique_stations) > 1:
             list_of_date_times = mjdSecondsListToDateTime(mjdsec2)
-            timeplot2 = pb.date2num(list_of_date_times)
-            pb.plot_date(timeplot2, dewPoint2, markersize=markersize, color='r')
+            timeplot2 = matplotlib.dates.date2num(list_of_date_times)
+            plt.plot_date(timeplot2, dew_point2, markersize=markersize, color='r')
         resizeFonts(adesc, myfontsize)
-#        pb.xlabel('Universal Time (%s)'%utdatestring(mjdsec[0]),size=mysize)
-        pb.ylabel('Dew point (C)', size=mysize)
+#        plt.xlabel('Universal Time (%s)'%utdatestring(mjdsec[0]),size=mysize)
+        plt.ylabel('Dew point (C)', size=mysize)
         adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 30))))
         adesc.xaxis.set_minor_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 10))))
         adesc.xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%H:%M'))
         adesc.fmt_xdata = matplotlib.dates.DateFormatter('%H:%M')
-        RescaleXAxisTimeTicks(pb.xlim(), adesc)
+        RescaleXAxisTimeTicks(plt.xlim(), adesc)
         adesc.xaxis.grid(True, which='major')
         adesc.yaxis.grid(True, which='major')
         pid += 1
 
-    adesc = pb.subplot(3, 2, pid)
-    pb.plot_date(timeplot, windSpeed, markersize=markersize)
-    if (len(uniqueStations) > 1):
-        pb.hold(True)
+    adesc = plt.subplot(3, 2, pid)
+    plt.plot_date(timeplot, wind_speed, markersize=markersize)
+    if len(unique_stations) > 1:
         list_of_date_times = mjdSecondsListToDateTime(mjdsec2)
-        timeplot2 = pb.date2num(list_of_date_times)
-        pb.plot_date(timeplot2, windSpeed2, markersize=markersize, color='r')
+        timeplot2 = matplotlib.dates.date2num(list_of_date_times)
+        plt.plot_date(timeplot2, wind_speed2, markersize=markersize, color='r')
     resizeFonts(adesc, myfontsize)
-#    pb.xlabel('MJD - %d'%mjdOffset,size=mysize)
-    pb.xlabel('Universal Time (%s)' % utdatestring(mjdsec[0]), size=mysize)
-    pb.ylabel('Wind speed (m/s)', size=mysize)
+    plt.xlabel('Universal Time (%s)' % utdatestring(mjdsec[0]), size=mysize)
+    plt.ylabel('Wind speed (m/s)', size=mysize)
     adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 30))))
     adesc.xaxis.set_minor_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 10))))
     adesc.xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%H:%M'))
     adesc.fmt_xdata = matplotlib.dates.DateFormatter('%H:%M')
-    RescaleXAxisTimeTicks(pb.xlim(), adesc)
+    RescaleXAxisTimeTicks(plt.xlim(), adesc)
     adesc.xaxis.grid(True, which='major')
     adesc.yaxis.grid(True, which='major')
     pid += 1
 
-    adesc = pb.subplot(3, 2, pid)
-#    pb.xlabel('MJD - %d'%mjdOffset,size=mysize)
-    pb.xlabel('Universal Time (%s)' % utdatestring(mjdsec[0]), size=mysize)
-    pb.ylabel('Wind direction (deg)', size=mysize)
-#    pb.plot(mjdFraction,windDirection)
-    pb.plot_date(timeplot, windDirection, markersize=markersize)
-    if (len(uniqueStations) > 1):
-        pb.hold(True)
+    adesc = plt.subplot(3, 2, pid)
+    plt.xlabel('Universal Time (%s)' % utdatestring(mjdsec[0]), size=mysize)
+    plt.ylabel('Wind direction (deg)', size=mysize)
+    plt.plot_date(timeplot, wind_direction, markersize=markersize)
+    if len(unique_stations) > 1:
         list_of_date_times = mjdSecondsListToDateTime(mjdsec2)
-        timeplot2 = pb.date2num(list_of_date_times)
-        pb.plot_date(timeplot2, windDirection2, markersize=markersize, color='r')
+        timeplot2 = matplotlib.dates.date2num(list_of_date_times)
+        plt.plot_date(timeplot2, wind_direction2, markersize=markersize, color='r')
     resizeFonts(adesc, myfontsize)
     adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 30))))
     adesc.xaxis.set_minor_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 10))))
     adesc.xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%H:%M'))
     adesc.fmt_xdata = matplotlib.dates.DateFormatter('%H:%M')
-    RescaleXAxisTimeTicks(pb.xlim(), adesc)
+    RescaleXAxisTimeTicks(plt.xlim(), adesc)
     adesc.xaxis.grid(True, which='major')
     adesc.yaxis.grid(True, which='major')
-    if (len(figfile) < 1):
-        weatherFile = vis+'.weather.png'
+    if len(figfile) < 1:
+        weather_file = vis+'.weather.png'
     else:
-        weatherFile = figfile
-    pb.savefig(weatherFile)
-    pb.draw()
-    print("Wrote file = %s" % (weatherFile))
+        weather_file = figfile
+    plt.savefig(weather_file)
+    plt.draw()
+    print("Wrote file = %s" % weather_file)
 
 
 def mjdSecondsListToDateTime(mjdsecList):
     """
     Takes a list of mjd seconds and converts it to a list of datetime structures.
     """
-
     myqa = casatools.quanta()
     myme = casatools.measures()
 
@@ -304,7 +287,6 @@ def mjdSecondsToMJDandUT(mjdsec):
     For example:  2011-01-04 13:10:04 UT
     Caveat: only works for a scalar input value
     """
-
     myme = casatools.measures()
     myqa = casatools.quanta()
 
@@ -333,8 +315,8 @@ def call_qa_time(arg, form='', prec=0):
 
 
 def utdatestring(mjdsec):
-    (mjd, dateTimeString) = mjdSecondsToMJDandUT(mjdsec)
-    tokens = dateTimeString.split()
+    (mjd, date_time_string) = mjdSecondsToMJDandUT(mjdsec)
+    tokens = date_time_string.split()
     return tokens[0]
 
 
@@ -366,11 +348,11 @@ def resizeFonts(adesc, fontsize):
     """
     Plotting utility routine
     """
-    yFormat = matplotlib.ticker.ScalarFormatter(useOffset=False)
-    adesc.yaxis.set_major_formatter(yFormat)
-    adesc.xaxis.set_major_formatter(yFormat)
-    pb.setp(adesc.get_xticklabels(), fontsize=fontsize)
-    pb.setp(adesc.get_yticklabels(), fontsize=fontsize)
+    y_format = matplotlib.ticker.ScalarFormatter(useOffset=False)
+    adesc.yaxis.set_major_formatter(y_format)
+    adesc.xaxis.set_major_formatter(y_format)
+    plt.setp(adesc.get_xticklabels(), fontsize=fontsize)
+    plt.setp(adesc.get_yticklabels(), fontsize=fontsize)
 
 
 def RescaleXAxisTimeTicks(xlim, adesc):
