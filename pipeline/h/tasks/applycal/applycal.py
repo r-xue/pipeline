@@ -237,7 +237,7 @@ class Applycal(basetask.StandardTaskTemplate):
 
         # execute the jobs and capture the output
         job_results = [self._executor.execute(job) for job in jobs]
-        flagdata_results = [job_result for job, job_result in zip(jobs, job_results) if job.fn.__name__ == 'flagdata']
+        flagdata_results = [job_result for job, job_result in zip(jobs, job_results) if job.fn_name == 'flagdata']
 
         applied_calapps = [callibrary.CalApplication(calto, calfroms) for calto, calfroms in merged.items()]
         result = ApplycalResults(applied_calapps)

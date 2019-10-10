@@ -156,11 +156,11 @@ class JobRequest(object):
         # begins at __call__
         # FIXME: This relies on self.fn being a reference to fn. Is this
         #        always the case ?  Should self.fn be assigned afterwards ?
-        if not isinstance(fn, types.FunctionType):
-            fn = fn.__call__
-            self.isFunc = False
+        if isinstance(fn, types.FunctionType):
+            self.fn_name = self.fn.__name__
         else:
-            self.isFunc = True
+            self.fn_name = self.fn.__class__.__name__[1:]
+            fn = fn.__call__
 
         # the next piece of code does some introspection on the given function
         # so that we can find out the complete invocation, adding any implicit
@@ -237,10 +237,7 @@ class JobRequest(object):
             processed = [UUID_to_underscore(arg) for arg in processed]
 
         string_args = [str(arg) for arg in processed]
-        if self.isFunc:
-            return '{!s}({!s})'.format(self.fn.__name__, ', '.join(string_args))
-        else:
-            return '{!s}({!s})'.format(self.fn.__class__.__name__[1:], ', '.join(string_args))
+        return '{!s}({!s})'.format(self.fn_name, ', '.join(string_args))
 
     def __repr__(self):
         return 'JobRequest({!r}, {!r})'.format(self.args, self.kw)
