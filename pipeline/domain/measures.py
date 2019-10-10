@@ -139,6 +139,14 @@ class ComparableUnit(object):
                                                                                   other.__class__.__name__))
         return self.__class__(self.value / decimal.Decimal(str(other)), self.units)
 
+    def __floordiv__(self, other):
+        if isinstance(other, self.__class__):
+            return self.to_units() // other.to_units()
+        if not isinstance(other, (int, float, decimal.Decimal)):
+            raise TypeError("unsupported operand type(s) for //: '%s' and '%s'" % (self.__class__.__name__,
+                                                                                   other.__class__.__name__))
+        return self.__class__(self.value // decimal.Decimal(str(other)), self.units)
+
     def __ge__(self, other):
         if not isinstance(other, self.__class__):
             raise TypeError("unsupported operand type(s) for >=: '%s' and '%s'" % (self.__class__.__name__,
@@ -151,11 +159,19 @@ class ComparableUnit(object):
                                                                                   other.__class__.__name__))
         return self.value > other.to_units(self.units)
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         if not isinstance(other, (int, float, decimal.Decimal)):
-            raise TypeError("unsupported operand type(s) for /: '%s' and '%s'" % (self.__class__.__name__,
-                                                                                  other.__class__.__name__))
+            raise TypeError("unsupported operand type(s) for /=: '%s' and '%s'" % (self.__class__.__name__,
+                                                                                   other.__class__.__name__))
         self.value /= other
+        return self
+
+    def __ifloordiv__(self, other):
+        if not isinstance(other, (int, float, decimal.Decimal)):
+            raise TypeError("unsupported operand type(s) for //=: '%s' and '%s'" % (self.__class__.__name__,
+                                                                                   other.__class__.__name__))
+        self.value //= other
+        return self
 
     def __le__(self, other):
         if not isinstance(other, self.__class__):
