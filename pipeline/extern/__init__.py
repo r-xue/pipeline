@@ -1,7 +1,7 @@
 import pkg_resources
 import sys
 
-sys.path.append(pkg_resources.resource_filename(__name__, 'Mako-1.0.0-py3.6.egg'))
+sys.path.append(pkg_resources.resource_filename(__name__, 'Mako-1.1.0-py3.6.egg'))
 import mako
 
 sys.path.append(pkg_resources.resource_filename(__name__, 'cachetools-3.1.1-py3.6.egg'))
