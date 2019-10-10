@@ -14,12 +14,14 @@ As of March 7, 2019 (version 3.36), it is compatible with both python 2 and 3.
 from __future__ import print_function  # prevents adding old-style print statements
 
 import os
+import decimal
 try:
     # pyfits is only needed to support reading spectra from FITS tables, which 
     # is not a use case exercised by the ALMA pipeline, but rather manual users.
     import pyfits
 except:
-    pass  # print('WARNING: pyfits not available! You will not be able to read spectra from FITS tables (an uncommon use case).')
+    #print('WARNING: pyfits not available! You will not be able to read spectra from FITS tables (an uncommon use case).')
+    pass
 
 import numpy as np
 import matplotlib.pyplot as pl
@@ -40,10 +42,10 @@ except:
             casaVersion = mycasa.casa['build']['version'].split()[0]
     else:
         casaVersion = casadef.casa_version
-# print("casaVersion = ", casaVersion)
+print("casaVersion = ", casaVersion)
 try:
     from taskinit import *
-    # print("imported casatasks and tools using taskinit *")
+#    print("imported casatasks and tools using taskinit *")
 except:
     # The following makes CASA 6 look like CASA 5 to a script like this.
     from casatasks import casalog
@@ -63,7 +65,7 @@ except:
     from casatools import image as iatool
     from casatools import ms as mstool
     from casatools import quanta as qatool
-    # print("imported casatasks and casatools individually")
+#    print("imported casatasks and casatools individually")
 
 if casaVersion < '5.9.9':
     synthesismaskhandler = casac.synthesismaskhandler
@@ -114,7 +116,7 @@ def version(showfile=True):
     """
     Returns the CVS revision number.
     """
-    myversion = "$Id: findContinuumCycle8.py,v 4.4 2019/10/07 20:19:23 we Exp $" 
+    myversion = "$Id: findContinuumCycle8.py,v 4.7 2019/10/09 15:43:50 we Exp $" 
     if (showfile):
         print("Loaded from %s" % (__file__))
     return myversion
@@ -148,6 +150,9 @@ def help(match='', debug=False):
     commands.sort()
     for command in commands:
         print(command)
+
+def round_half_up(x):
+    return float(decimal.Decimal(float(x)).to_integral_value(rounding=decimal.ROUND_HALF_UP))
 
 def casalogPost(mystring, debug=True):
     """
@@ -465,9 +470,9 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
     else:
         centralArcsecValue = str(centralArcsec)
     if meanSpectrumMethod == 'mom0mom8jointMask':
-        casalogPost("\n BEGINNING: %s findContinuum.findContinuum('%s', overwriteMoments=%s, sigmaFindContinuum='%s', meanSpectrumMethod='%s', meanSpectrumFile='%s', singleContinuum=%s)" % (version().split()[2], img, overwriteMoments, str(sigmaFindContinuum), meanSpectrumMethod, meanSpectrumFile, singleContinuum))
+        casalogPost("\n BEGINNING: %s findContinuum.findContinuum('%s', overwriteMoments=%s, sigmaFindContinuum='%s', meanSpectrumMethod='%s', meanSpectrumFile='%s', singleContinuum=%s, outdir='%s')" % (version().split()[2], img, overwriteMoments, str(sigmaFindContinuum), meanSpectrumMethod, meanSpectrumFile, singleContinuum, outdir))
     else:
-        casalogPost("\n BEGINNING: %s findContinuum.findContinuum('%s', centralArcsec=%s, mask='%s', overwrite=%s, sigmaFindContinuum='%s', meanSpectrumMethod='%s', peakFilterFWHM=%.0f, meanSpectrumFile='%s', triangleFraction=%.2f, singleContinuum=%s, useIAGetProfile=%s)" % (version().split()[2], img, centralArcsecValue, mask, overwrite, str(sigmaFindContinuum), meanSpectrumMethod, peakFilterFWHM, meanSpectrumFile, triangleFraction, singleContinuum, useIAGetProfile))
+        casalogPost("\n BEGINNING: %s findContinuum.findContinuum('%s', centralArcsec=%s, mask='%s', overwrite=%s, sigmaFindContinuum='%s', meanSpectrumMethod='%s', peakFilterFWHM=%.0f, meanSpectrumFile='%s', triangleFraction=%.2f, singleContinuum=%s, useIAGetProfile=%s, outdir='%s')" % (version().split()[2], img, centralArcsecValue, mask, overwrite, str(sigmaFindContinuum), meanSpectrumMethod, peakFilterFWHM, meanSpectrumFile, triangleFraction, singleContinuum, useIAGetProfile, outdir))
     img = img.rstrip('/')
     imageInfo = [] # information returned from getImageInfo
     if (len(vis) > 0):
@@ -1782,7 +1787,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
         if len(chanInfo) >= 4:
             nchan, firstFreq, lastFreq, channelWidth = chanInfo
             channelWidth = abs(channelWidth)
-            nBaselineChannels = int(round(nBaselineChannels*nchan))
+            nBaselineChannels = int(round_half_up(nBaselineChannels*nchan))
             casalogPost("Found %d channels in the cube" % (nchan))
         
     if (nBaselineChannels < 2 and not fitsTable and len(chanInfo) >= 4):
@@ -1863,7 +1868,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
             n, firstFreq, lastFreq, channelWidth = chanInfo
             channelWidth = abs(channelWidth)
         if (fitsTable or img==''):
-            nBaselineChannels = int(round(nBaselineChannels*nchan))
+            nBaselineChannels = int(round_half_up(nBaselineChannels*nchan))
             n, firstFreq, lastFreq, channelWidth = chanInfo  # freqs are in Hz
             channelWidth = abs(channelWidth)
             print("Setting channelWidth to %g" % (channelWidth))
@@ -2045,12 +2050,16 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
             casalogPost("Not adjusting sigmaFindContinuum, because groups=%d, channelRatio=%g, firstFreq=%g, nchan=%d" % (groups,channelRatio,firstFreq,nchan),debug=True)
         else:
             # We are using either peakOverMad or mom0mom8jointMask
+            if madRatio is None:
+                madRatioCheck = True # this was python2 behavior for inequality
+            else:
+                madRatioCheck = madRatio < maxMadRatioForSFCAdjustment
             if ((groups >= minGroupsForSFCAdjustment and not tdmSpectrum(channelWidth,nchan) 
                  or (groups >= 3 and tdmSpectrum(channelWidth,nchan)))  and 
                 sigmaFindContinuumAutomatic and # added Mar 27, 2019
 #               (peakOverMad>minPeakOverMadForSFCAdjustment or 
-               ((peakOverMad>minPeakOverMadForSFCAdjustment and madRatio<maxMadRatioForSFCAdjustment) or 
-                meanSpectrumMethod.find('peakOver') >= 0)): 
+               ((peakOverMad>minPeakOverMadForSFCAdjustment and madRatioCheck) 
+                or meanSpectrumMethod.find('peakOver') >= 0)): 
                 # ***** This 'if' block will never be used when groups==1 *****
                 #18 set by 312:2016.1.01400.S spw25 not needing it with 11.7 and
                 #          431:E2E5.1.00036.S spw24 not needing it with 17.44
@@ -2180,7 +2189,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                     # Must be at least half the width of the group
                     gapMinThreshold = int(np.max([selectionWidth/2, pickNarrow(nchan)]))   # splitgaps.pdf
 
-                if checkForGaps:
+                if checkForGaps and verbose:
                     casalogPost("%s Looking for gaps in group %d/%d: %s that are %d < gap < %d" % (projectCode,i+1,len(channelSelections),ccstring,gapMinThreshold, gapMaxThreshold), debug=True)
                 theseChannels = list(range(cc[0], cc[1]+1))
                 startChan = -1
@@ -3456,8 +3465,8 @@ def roundFigures(value, digits):
         if (np.log10(np.abs(value)) % 1 < np.log10(5)):
             digits -= 1
     for r in range(-20,20):
-        if (round(value,r) != 0.0):
-            value = round(value,r+digits)
+        if (round_half_up(value,r) != 0.0):
+            value = round_half_up(value,r+digits)
             break
     return(value)
 
@@ -3511,10 +3520,10 @@ def pickNarrow(length):
     Examples: This formula results in the following values:
     length: 64,128,240,480,960,1920,3840,7680:
     return:  2,  3,  3,  3,  3,   4,   4,   4  (ceil(log10)) **** current function ****
-             2,  2,  2,  3,  3,   3,   4,   4  (round(log10))
+             2,  2,  2,  3,  3,   3,   4,   4  (round_half_up(log10))
              1,  2,  2,  2,  2,   3,   3,   3  (floor(log10))
              5,  5,  6,  7,  7,   8,   9,   9  (ceil(log))
-             4,  5,  5,  6,  7,   8,   8,   9  (round(log))
+             4,  5,  5,  6,  7,   8,   8,   9  (round_half_up(log))
              4,  4,  5,  6,  6,   7,   8,   8  (floor(log))
     """
     return(int(np.ceil(np.log10(length))))
@@ -5401,10 +5410,10 @@ def meanSpectrum(img, nBaselineChannels=16, sigmaCube=3, verbose=False,
         else:
             bmaj, bmin, bpa, cdelt1, cdelt2, naxis1, naxis2, freq, imgShape, crval1, crval2, maxBaseline = imageInfo
             nchan = chanInfo[0]
-            x0 = int(np.round(naxis1*0.5 - centralArcsec*0.5/np.abs(cdelt1)))
-            x1 = int(np.round(naxis1*0.5 + centralArcsec*0.5/np.abs(cdelt1)))
-            y0 = int(np.round(naxis2*0.5 - centralArcsec*0.5/cdelt2))
-            y1 = int(np.round(naxis2*0.5 + centralArcsec*0.5/cdelt2))
+            x0 = int(round_half_up(naxis1*0.5 - centralArcsec*0.5/np.abs(cdelt1)))
+            x1 = int(round_half_up(naxis1*0.5 + centralArcsec*0.5/np.abs(cdelt1)))
+            y0 = int(round_half_up(naxis2*0.5 - centralArcsec*0.5/cdelt2))
+            y1 = int(round_half_up(naxis2*0.5 + centralArcsec*0.5/cdelt2))
             # avoid going off the edge of non-square images
             if (x0 < 0): x0 = 0
             if (y0 < 0): y0 = 0
