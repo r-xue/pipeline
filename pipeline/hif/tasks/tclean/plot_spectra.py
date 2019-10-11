@@ -659,6 +659,8 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile):
         lcs.done()
 
     unmaskedPixels = image_robust_rms_and_spectra['nonpbcor_image_cleanmask_npoints']
+    if unmaskedPixels is None:
+        unmaskedPixels = 0
 
     pl.clf()
     desc = pl.subplot(111)
