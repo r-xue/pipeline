@@ -511,7 +511,8 @@ def get_mediantemp(ms, tsys_spwlist, scan_list, antenna='', temptype='tsys'):
             # Scan starts after end of validity interval or ends before
             # the beginning of the validity interval
             for j in range(len(uniqueScans)):
-                if beginScanTimes[j] > tend or endScanTimes[j] < tstart:
+                if (beginScanTimes[j]['m0']['value'] > tend['m0']['value'] or
+                        endScanTimes[j]['m0']['value'] < tstart['m0']['value']):
                     continue
                 if scanids[i] <= 0:
                     scanids[i] = uniqueScans[j]
