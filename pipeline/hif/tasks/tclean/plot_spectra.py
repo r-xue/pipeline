@@ -257,12 +257,12 @@ def frames(velocity=286.7, datestring="2005/11/01/00:00:00",
     rvelRad = lme.measure(rvelOpt, 'LSRK')
     doppRad = lme.todoppler("RADIO", rvelRad)       
     restFreq = parseFrequencyArgumentToGHz(restFreq)
-    freqRad = lme.tofrequency('LSRK', doppRad, casatools.measures.frequency('rest', str(restFreq)+'GHz'))
+    freqRad = lme.tofrequency('LSRK', doppRad, lme.frequency('rest', str(restFreq)+'GHz'))
 
     lsrk = lqa.tos(rvelRad['m0'], prec=prec)
     rvelTop = lme.measure(rvelOpt, 'TOPO')
     doppTop = lme.todoppler("RADIO", rvelTop)       
-    freqTop = lme.tofrequency('TOPO', doppTop, casatools.measures.frequency('rest', str(restFreq)+'GHz'))
+    freqTop = lme.tofrequency('TOPO', doppTop, lme.frequency('rest', str(restFreq)+'GHz'))
 
     topo = lqa.tos(rvelTop['m0'], prec=prec)
     velocityDifference = 0.001*(rvelRad['m0']['value']-rvelTop['m0']['value'])
@@ -360,7 +360,7 @@ def lsrkToRest(lsrkFrequency, velocityLSRK, datestring, ra, dec,
     lme.doframe(obstime)
     rvelRad = lme.measure(radialVelocityLSRK, 'LSRK')
     doppRad = lme.todoppler('RADIO', rvelRad)
-    freqRad = lme.torestfrequency(casatools.measures.frequency('LSRK', str(freqGHz)+'GHz'), dopp)
+    freqRad = lme.torestfrequency(lme.frequency('LSRK', str(freqGHz)+'GHz'), dopp)
     lqa.done()
     lme.done()
     return freqRad['m0']['value']
@@ -439,7 +439,7 @@ def rad2radec(ra=0,dec=0,imfitdict=None, prec=5, verbose=True, component=0,
     if np.shape(ra) == (2, 1):
         dec = ra[1][0]
         ra = ra[0][0]
-    lqa = casatools.quanta
+    lqa = pl_casatools.quanta
     myra = lqa.formxxx('%.12frad' % ra, format='hms', prec=prec+1)
     mydec = lqa.formxxx('%.12frad' % dec, format='dms', prec=prec-1)
     if replaceDecDotsWithColons:
@@ -548,7 +548,7 @@ def CalcAtmTransmissionForImage(img, chanInfo='', airmass=1.5, pwv=-1,
     2 arrays: frequencies (in GHz) and values (Kelvin, or transmission: 0..1)
     """
 
-    with casatools.ImageReader(img) as image:
+    with pl_casatools.ImageReader(img) as image:
         lcs = image.coordsys()
         telescopeName = lcs.telescope()
         lcs.done()
@@ -595,7 +595,7 @@ def CalcAtmTransmissionForImage(img, chanInfo='', airmass=1.5, pwv=-1,
     tropical = 1
     midLatitudeSummer = 2
     midLatitudeWinter = 3
-    reffreq = 0.5*(topofreqs[numchan/2-1]+topofreqs[numchan/2])
+    reffreq = 0.5*(topofreqs[numchan//2-1]+topofreqs[numchan//2])
 #    reffreq = np.mean(topofreqs)
     numchanModel = numchan*1
     chansepModel = (topofreqs[-1]-topofreqs[0])/(numchanModel-1)
