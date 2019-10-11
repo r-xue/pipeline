@@ -116,15 +116,15 @@ except:
                     <th>${row.frequency_label}</th>
                     <td>${row.frequency}</td>
                     % if row.plot is not None:
-                    <%
-                    fullsize_relpath = os.path.relpath(row.plot.abspath, pcontext.report_dir)
-                    thumbnail_relpath = os.path.relpath(row.plot.thumbnail, pcontext.report_dir)
-                    %>
-                    %if row.nchan == 1:
-                    <td rowspan="11">
-                    %else:
-                    <td rowspan="10">
-                    %endif
+                        <%
+                        fullsize_relpath = os.path.relpath(row.plot.abspath, pcontext.report_dir)
+                        thumbnail_relpath = os.path.relpath(row.plot.thumbnail, pcontext.report_dir)
+                        %>
+                        %if row.nchan == 1:
+                            <td rowspan="11">
+                        %else:
+                            <td rowspan="10">
+                        %endif
                         <a href="${fullsize_relpath}"
                            data-fancybox="clean-summary-images"
                            data-caption="Iteration: ${row.plot.parameters['iter']}<br>Spw: ${row.plot.parameters['spw']}<br>Field: ${cgi.escape(row.field, True)}"
