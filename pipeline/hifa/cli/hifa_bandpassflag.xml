@@ -1,6 +1,6 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-<task category="pipeline" name="hifa_bandpassflag" type="function">
+<task type="function" name="hifa_bandpassflag" category="pipeline">
 
 <shortdescription>Compute bandpass calibration with flagging</shortdescription>
 
@@ -29,37 +29,37 @@
 </description>
 
 <input>
-    <param subparam="true" name="vis" type="stringVec">
+    <param type="stringVec" name="vis" subparam="true">
         <description>List of input MeasurementSets</description>
         <value/>
     </param>
 
-    <param subparam="true" name="caltable" type="stringVec">
+    <param type="stringVec" name="caltable" subparam="true">
         <description>List of output caltables</description>
         <value/>
     </param>
 
-    <param subparam="true" name="intent" type="string">
+    <param type="string" name="intent" subparam="true">
         <description>Set of data selection intents</description>
         <value/>
     </param>
 
-    <param subparam="true" name="field" type="string">
+    <param type="string" name="field" subparam="true">
         <description>Field ids to use in data selection</description>
         <value/>
     </param>
 
-    <param subparam="true" name="spw" type="string">
+    <param type="string" name="spw" subparam="true">
         <description>Spectral windows to use in data selection, \'\' for all</description>
         <value/>
     </param>
 
-    <param subparam="true" name="antenna" type="string">
+    <param type="string" name="antenna" subparam="true">
         <description>Set of data selection antenna IDs</description>
         <value/>
     </param>
 
-    <param name="hm_phaseup" type="string">
+    <param type="string" name="hm_phaseup">
         <description>Phaseup before computing the bandpass</description>
         <value>snr</value>
         <allowed kind="enum">
@@ -69,28 +69,28 @@
         </allowed>
     </param>
 
-    <param subparam="true" name="phaseupsolint" type="any">
+    <param type="any" name="phaseupsolint" subparam="true">
         <description>Phaseup correction solution interval</description>
         <any type="variant"/>
         <value type="string">int</value>
     </param>
 
-    <param subparam="true" name="phaseupbw" type="string">
+    <param type="string" name="phaseupbw" subparam="true">
         <description>Bandwidth to use for phaseup</description>
         <value/>
     </param>
 
-    <param subparam="true" name="phaseupsnr" type="double">
+    <param type="double" name="phaseupsnr" subparam="true">
         <description>SNR for phaseup solution</description>
         <value>20.0</value>
     </param>
 
-    <param subparam="true" name="phaseupnsols" type="int">
+    <param type="int" name="phaseupnsols" subparam="true">
         <description>Minimum number of phaseup gain solutions</description>
         <value>2</value>
     </param>
 
-    <param name="hm_bandpass" type="string">
+    <param type="string" name="hm_bandpass">
         <description>Bandpass solution heuristics</description>
         <value>snr</value>
         <allowed kind="enum">
@@ -100,108 +100,108 @@
         </allowed>
     </param>
 
-    <param subparam="true" name="solint" type="any">
+    <param type="any" name="solint" subparam="true">
         <description>Solution intervals</description>
         <any type="variant"/>
         <value type="string">inf</value>
     </param>
 
-    <param subparam="true" name="maxchannels" type="int">
+    <param type="int" name="maxchannels" subparam="true">
         <description>The smoothing factor in channels</description>
         <value>240</value>
     </param>
 
-    <param subparam="true" name="evenbpints" type="bool">
+    <param type="bool" name="evenbpints" subparam="true">
         <description>Force frequency solint to even bandpass intervals</description>
         <value>True</value>
     </param>
 
-    <param subparam="true" name="bpsnr" type="double">
+    <param type="double" name="bpsnr" subparam="true">
         <description>SNR for bandpass solution</description>
         <value>50.0</value>
     </param>
 
-   <param subparam="true" name="minbpsnr" type="double">
+   <param type="double" name="minbpsnr" subparam="true">
 	<description>The minimum required bandpass frequency solution signal to noise when strong atmospheric lines exist in Tsys spectra</description>
 	<value>20.0</value>
    </param>
 
-    <param subparam="true" name="bpnsols" type="int">
+    <param type="int" name="bpnsols" subparam="true">
         <description>Minimum number of bandpass solutions</description>
         <value>8</value>
     </param>
 
-    <param name="combine" type="string">
+    <param type="string" name="combine">
         <description>Data axes which to combine for solve (scan, spw, and/or field)</description>
         <value>scan</value>
     </param>
 
-    <param subparam="true" name="refant" type="string">
+    <param type="string" name="refant" subparam="true">
         <description>Reference antenna names</description>
         <value/>
     </param>
 
-    <param name="minblperant" type="int">
+    <param type="int" name="minblperant">
         <description>Minimum baselines per antenna required for solve</description>
         <value>4</value>
     </param>
 
-    <param name="minsnr" type="double">
+    <param type="double" name="minsnr">
         <description>Reject solutions below this SNR</description>
         <value>3.0</value>
     </param>
 
-    <param subparam="true" name="solnorm" type="bool">
+    <param type="bool" name="solnorm" subparam="true">
         <description>Normalise the bandpass solution</description>
         <value type="bool">True</value>
     </param>
 
-    <param subparam="true" name="antnegsig" type="double">
+    <param type="double" name="antnegsig" subparam="true">
         <description>Lower sigma threshold for identifying outliers as a result of bad antennas within individual timestamps</description>
         <value>4.0</value>
     </param>
 
-    <param subparam="true" name="antpossig" type="double">
+    <param type="double" name="antpossig" subparam="true">
         <description>Upper sigma threshold for identifying outliers as a result of bad antennas within individual timestamps</description>
         <value>4.6</value>
     </param>
 
-    <param subparam="true" name="tmantint" type="double">
+    <param type="double" name="tmantint" subparam="true">
         <description>Threshold for maximum fraction of timestamps that are allowed to contain outliers</description>
         <value>0.063</value>
     </param>
 
-    <param subparam="true" name="tmint" type="double">
+    <param type="double" name="tmint" subparam="true">
         <description>Initial threshold for maximum fraction of &quot;outlier timestamps&quot; over &quot;total timestamps&quot; that a baseline may be a part of</description>
         <value>0.085</value>
     </param>
 
-    <param subparam="true" name="tmbl" type="double">
+    <param type="double" name="tmbl" subparam="true">
         <description>Initial threshold for maximum fraction of &quot;bad baselines&quot; over &quot;all baselines&quot; that an antenna may be a part of</description>
         <value>0.175</value>
     </param>
 
-    <param subparam="true" name="antblnegsig" type="double">
+    <param type="double" name="antblnegsig" subparam="true">
         <description>Lower sigma threshold for identifying outliers as a result of &quot;bad baselines&quot; and/or &quot;bad antennas&quot; within baselines (across all timestamps)</description>
         <value>3.4</value>
     </param>
 
-    <param subparam="true" name="antblpossig" type="double">
+    <param type="double" name="antblpossig" subparam="true">
         <description>Upper sigma threshold for identifying outliers as a result of &quot;bad baselines&quot; and/or &quot;bad antennas&quot; within baselines (across all timestamps)</description>
         <value>3.2</value>
     </param>
 
-    <param subparam="true" name="relaxed_factor" type="double">
+    <param type="double" name="relaxed_factor" subparam="true">
         <description>Relaxed value to set the threshold scaling factor to under certain conditions (see task description)</description>
         <value>2.0</value>
     </param>
 
-    <param subparam="true" name="niter" type="int">
+    <param type="int" name="niter" subparam="true">
         <description>Maximum number of times to iterate on evaluation of flagging heuristics.</description>
         <value>2</value>
     </param>
 
-    <param name="pipelinemode" type="string">
+    <param type="string" name="pipelinemode">
         <description>The pipeline operations mode</description>
         <value>automatic</value>
         <allowed kind="enum">
@@ -211,12 +211,12 @@
         </allowed>
     </param>
 
-    <param subparam="true" name="dryrun" type="bool">
+    <param type="bool" name="dryrun" subparam="true">
         <description>Run the task (False) or list commands (True)</description>
         <value>False</value>
     </param>
 
-    <param subparam="true" name="acceptresults" type="bool">
+    <param type="bool" name="acceptresults" subparam="true">
         <description>Automatically apply results to context</description>
         <value>True</value>
     </param>
@@ -224,39 +224,39 @@
     <constraints>
 
         <when param="hm_phaseup">
-            <equals value="snr" type="string">
+            <equals type="string" value="snr">
                 <default param="phaseupsolint"><value type="string">int</value></default>
                 <default param="phaseupsnr"><value type="double">20.0</value></default>
                 <default param="phaseupnsols"><value type="int">2</value></default>
             </equals>
-            <equals value="manual" type="string">
+            <equals type="string" value="manual">
                 <default param="phaseupsolint"><value type="string">int</value></default>
                 <default param="phaseupbw"><value type="string"/></default>
             </equals>
-            <equals value="" type="string">
+            <equals type="string" value="">
             </equals>
         </when>
 
         <when param="hm_bandpass">
-            <equals value="snr" type="string">
+            <equals type="string" value="snr">
                 <default param="solint"><value type="string">inf</value></default>
                 <default param="evenbpints"><value type="bool">True</value></default>
                 <default param="bpsnr"><value type="double">50.0</value></default>
                 <default param="minbpsnr"><value type="double">20.0</value></default>
                 <default param="bpnsols"><value type="int">8</value></default>
             </equals>
-            <equals value="smoothed" type="string">
+            <equals type="string" value="smoothed">
                 <default param="solint"><value type="string">inf</value></default>
                 <default param="maxchannels"><value type="int">240</value></default>
             </equals>
-            <equals value="fixed" type="string">
+            <equals type="string" value="fixed">
                 <default param="solint"><value type="string">inf,7.8125MHz</value></default>
             </equals>
         </when>
 
         <when param="pipelinemode">
-            <equals value="automatic" type="string"/>
-            <equals value="interactive" type="string">
+            <equals type="string" value="automatic"/>
+            <equals type="string" value="interactive">
                 <default param="vis"><value type="stringVec"/></default>
                 <default param="caltable"><value type="stringVec"/></default>
                 <default param="field"><value type="string"/></default>
@@ -278,20 +278,14 @@
                 <default param="dryrun"><value type="bool">False</value></default>
                 <default param="acceptresults"><value type="bool">True</value></default>
             </equals>
-            <equals value="getinputs" type="string">
+            <equals type="string" value="getinputs">
                 <default param="vis"><value type="stringVec"/></default>
             </equals>
         </when>
     </constraints>
 </input>
 
-<output>
-    <param name="results" type="any">
-        <description>The output results object</description>
-        <any type="variant"/>
-        <value/>
-    </param>
-</output>
+
 
 <example>
 Keyword arguments
@@ -516,5 +510,5 @@ using recommended thresholds:
 
     hifa_bandpassflag()
 </example>
-<returns>void</returns></task>
+<returns>any</returns></task>
 </casaxml>

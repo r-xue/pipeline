@@ -1,6 +1,6 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-<task category="pipeline" name="hsd_tsysflag" type="function">
+<task type="function" name="hsd_tsysflag" category="pipeline">
 
 <shortdescription>Flag deviant system temperature measurements</shortdescription>
 
@@ -10,107 +10,107 @@ sequence of flagging subtasks, each looking for a different type of possible err
 </description>
 
 <input>
-    <param subparam="true" name="vis" type="stringVec">
+    <param type="stringVec" name="vis" subparam="true">
         <description>List of input MeasurementSets (Not used) </description>
         <value/>
     </param>
 
-    <param subparam="true" name="caltable" type="stringVec">
+    <param type="stringVec" name="caltable" subparam="true">
         <description>List of input caltables</description>
         <value/>
     </param>
 
-    <param name="flag_nmedian" type="bool">
+    <param type="bool" name="flag_nmedian">
         <description>True to flag Tsys spectra with high median value</description>
         <value>True</value>
     </param>
 
-    <param subparam="true" name="fnm_limit" type="double">
+    <param type="double" name="fnm_limit" subparam="true">
         <description>Flag spectra with median greater than fnm_limit * median over all spectra</description>
         <value>2.0</value>
     </param>
  
-    <param subparam="true" name="fnm_byfield" type="bool">
+    <param type="bool" name="fnm_byfield" subparam="true">
         <description>Evaluate the nmedian metric separately for each field.</description>
         <value>True</value>
     </param>
 
-    <param name="flag_derivative" type="bool">
+    <param type="bool" name="flag_derivative">
         <description>True to flag Tsys spectra with high median derivative</description>
         <value>True</value>
     </param>
 
-    <param subparam="true" name="fd_max_limit" type="double">
+    <param type="double" name="fd_max_limit" subparam="true">
         <description>Flag spectra with median derivative higher than fd_max_limit * median of this measure over all spectra</description>
         <value>5.0</value>
     </param>
 
-    <param name="flag_edgechans" type="bool">
+    <param type="bool" name="flag_edgechans">
         <description>True to flag edges of Tsys spectra</description>
         <value>True</value>
     </param>
 
-    <param subparam="true" name="fe_edge_limit" type="double">
+    <param type="double" name="fe_edge_limit" subparam="true">
         <description>Flag channels whose channel to channel difference greater than fe_edge_limit * median across spectrum</description>
         <value>3.0</value>
     </param>
 
-    <param name="flag_fieldshape" type="bool">
+    <param type="bool" name="flag_fieldshape">
         <description>True to flag Tsys spectra with a radically different shape to those of the ff_refintent</description>
         <value>True</value>
     </param>
 
-    <param subparam="true" name="ff_refintent" type="string">
+    <param type="string" name="ff_refintent" subparam="true">
         <description>Data intent providing the reference shape for \'flag_fieldshape\'</description>
         <value>BANDPASS</value>
     </param>
 
-    <param subparam="true" name="ff_max_limit" type="double">
+    <param type="double" name="ff_max_limit" subparam="true">
         <description>Flag Tsys spectra with \'fieldshape\' metric greater than ff_max_limit</description>
         <value>13</value>
     </param>
 
-    <param name="flag_birdies" type="bool">
+    <param type="bool" name="flag_birdies">
         <description>True to flag channels covering sharp spectral features</description>
         <value>True</value>
     </param>
 
-    <param subparam="true" name="fb_sharps_limit" type="double">
+    <param type="double" name="fb_sharps_limit" subparam="true">
         <description>Flag channels bracketing a channel to channel difference greater than fb_sharps_limit</description>
         <value>0.05</value>
     </param>
 
-    <param name="flag_toomany" type="bool">
+    <param type="bool" name="flag_toomany">
         <description>True to flag Tsys spectra for which a proportion of timestamps or proportion of antennas that are entirely flagged exceeds their respective thresholds.</description>
         <value>True</value>
     </param>
 
-    <param subparam="true" name="tmf1_limit" type="double">
+    <param type="double" name="tmf1_limit" subparam="true">
         <description>Flag all Tsys spectra within a timestamp for an antenna if proportion flagged already exceeds tmf1_limit</description>
         <value>0.666</value>
     </param>
 
-    <param subparam="true" name="tmef1_limit" type="double">
+    <param type="double" name="tmef1_limit" subparam="true">
         <description>Flag all Tsys spectra for all antennas in a spw, if proportion of antennas that are already entirely flagged in all timestamps exceeds tmef1_limit</description>
         <value>0.666</value>
     </param>
 
-    <param name="metric_order" type="string">
+    <param type="string" name="metric_order">
         <description>Order in which to evaluate the flagging metric(s); inactive metrics are skipped.</description>
         <value>nmedian,derivative,edgechans,fieldshape,birdies,toomany</value>
     </param>
 
-    <param name="normalize_tsys" type="bool">
+    <param type="bool" name="normalize_tsys">
         <description>Normalize Tsys prior to computing the flagging metric(s)</description>
         <value>False</value>
     </param>
     
-	<param name="filetemplate" type="stringVec">
+	<param type="stringVec" name="filetemplate">
 	    <description>File containing manual Tsys flags to apply.</description>
 	    <value/>
 	</param>
 
-    <param name="pipelinemode" type="string">
+    <param type="string" name="pipelinemode">
         <description>The pipeline operations mode</description>
         <value>automatic</value>
         <allowed kind="enum">
@@ -120,90 +120,84 @@ sequence of flagging subtasks, each looking for a different type of possible err
         </allowed>
     </param>
 
-    <param subparam="true" name="dryrun" type="bool">
+    <param type="bool" name="dryrun" subparam="true">
         <description>Run the task (False) or list commands (True)</description>
         <value>False</value>
     </param>
 
-    <param subparam="true" name="acceptresults" type="bool">
+    <param type="bool" name="acceptresults" subparam="true">
         <description>Automatically apply results to context</description>
         <value>True</value>
     </param>
 
     <constraints>
         <when param="pipelinemode">
-            <equals value="automatic" type="string"/>
-            <equals value="interactive" type="string">
+            <equals type="string" value="automatic"/>
+            <equals type="string" value="interactive">
                 <default param="caltable"><value type="stringVec"/></default>
                 <default param="dryrun"><value type="bool">False</value></default>
                 <default param="acceptresults"><value type="bool">True</value></default>
             </equals>
-            <equals value="getinputs" type="string">
+            <equals type="string" value="getinputs">
                 <default param="caltable"><value type="stringVec"/></default>
             </equals>
         </when>
 
         <when param="flag_nmedian">
-            <equals value="True" type="bool">
+            <equals type="bool" value="True">
                 <default param="fnm_limit"><value>2.0</value></default>
                 <default param="fnm_byfield"><value>True</value></default>
             </equals>
-            <equals value="False" type="bool">
+            <equals type="bool" value="False">
             </equals>
         </when>
 
         <when param="flag_derivative">
-            <equals value="True" type="bool">
+            <equals type="bool" value="True">
                 <default param="fd_max_limit"><value>5.0</value></default>
             </equals>
-            <equals value="False" type="bool">
+            <equals type="bool" value="False">
             </equals>
         </when>
 
         <when param="flag_edgechans">
-            <equals value="True" type="bool">
+            <equals type="bool" value="True">
                 <default param="fe_edge_limit"><value>3.0</value></default>
             </equals>
-            <equals value="False" type="bool">
+            <equals type="bool" value="False">
             </equals>
         </when>
 
         <when param="flag_fieldshape">
-            <equals value="True" type="bool">
+            <equals type="bool" value="True">
                 <default param="ff_refintent"><value type="string">BANDPASS</value></default>
                 <default param="ff_max_limit"><value>13</value></default>
             </equals>
-            <equals value="False" type="bool">
+            <equals type="bool" value="False">
             </equals>
         </when>
 
         <when param="flag_birdies">
-            <equals value="True" type="bool">
+            <equals type="bool" value="True">
                 <default param="fb_sharps_limit"><value>0.05</value></default>
             </equals>
-            <equals value="False" type="bool">
+            <equals type="bool" value="False">
             </equals>
         </when>
 
         <when param="flag_toomany">
-            <equals value="True" type="bool">
+            <equals type="bool" value="True">
                 <default param="tmf1_limit"><value>0.666</value></default>
                 <default param="tmef1_limit"><value>0.666</value></default>
             </equals>
-            <equals value="False" type="bool">
+            <equals type="bool" value="False">
             </equals>
         </when>
 
     </constraints>
 </input>
 
-<output>
-    <param name="results" type="any">
-        <description>The output results object</description>
-        <any type="variant"/>
-        <value/>
-    </param>
-</output>
+
 
 <example>
 Flag deviant system temperatures for single dish measurements.
@@ -377,5 +371,5 @@ using the 'fieldshape' metric:
  
     hsd_tsysflag(flag_fieldshape=False)
 </example> 
-<returns>void</returns></task>
+<returns>any</returns></task>
 </casaxml>

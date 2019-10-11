@@ -1,6 +1,6 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-<task category="pipeline" name="hif_correctedampflag" type="function">
+<task type="function" name="hif_correctedampflag" category="pipeline">
 
 <shortdescription>Flag corrected - model amplitudes based on calibrators.</shortdescription>
 
@@ -9,72 +9,72 @@ Flag corrected - model amplitudes based on calibrators.
 </description>
 
 <input>
-    <param subparam="true" name="vis" type="stringVec">
+    <param type="stringVec" name="vis" subparam="true">
         <description>List of input MeasurementSets</description>
         <value/>
     </param>
 
-    <param subparam="true" name="intent" type="string">
+    <param type="string" name="intent" subparam="true">
         <description>Data intent to use in selecting data to evaluate for flagging</description>
         <value/>
     </param>
 
-    <param subparam="true" name="field" type="string">
+    <param type="string" name="field" subparam="true">
         <description>Field ids to use in selecting data to evaluate for flagging</description>
         <value/>
     </param>
 
-    <param subparam="true" name="spw" type="string">
+    <param type="string" name="spw" subparam="true">
         <description>Spectral windows to use in selecting data to evaluate for flagging, \'\' for all</description>
         <value/>
     </param>
 
-    <param subparam="true" name="antnegsig" type="double">
+    <param type="double" name="antnegsig" subparam="true">
         <description>Lower sigma threshold for identifying outliers as a result of bad antennas within individual timestamps</description>
         <value>4.0</value>
     </param>
 
-    <param subparam="true" name="antpossig" type="double">
+    <param type="double" name="antpossig" subparam="true">
         <description>Upper sigma threshold for identifying outliers as a result of bad antennas within individual timestamps</description>
         <value>4.6</value>
     </param>
 
-    <param subparam="true" name="tmantint" type="double">
+    <param type="double" name="tmantint" subparam="true">
         <description>Threshold for maximum fraction of timestamps that are allowed to contain outliers</description>
         <value>0.063</value>
     </param>
 
-    <param subparam="true" name="tmint" type="double">
+    <param type="double" name="tmint" subparam="true">
         <description>Initial threshold for maximum fraction of &quot;outlier timestamps&quot; over &quot;total timestamps&quot; that a baseline may be a part of</description>
         <value>0.085</value>
     </param>
 
-    <param subparam="true" name="tmbl" type="double">
+    <param type="double" name="tmbl" subparam="true">
         <description>Initial threshold for maximum fraction of &quot;bad baselines&quot; over &quot;all timestamps&quot; that an antenna may be a part of</description>
         <value>0.175</value>
     </param>
 
-    <param subparam="true" name="antblnegsig" type="double">
+    <param type="double" name="antblnegsig" subparam="true">
         <description>Lower sigma threshold for identifying outliers as a result of &quot;bad baselines&quot; and/or &quot;bad antennas&quot; within baselines (across all timestamps)</description>
         <value>3.4</value>
     </param>
 
-    <param subparam="true" name="antblpossig" type="double">
+    <param type="double" name="antblpossig" subparam="true">
         <description>Upper sigma threshold for identifying outliers as a result of &quot;bad baselines&quot; and/or &quot;bad antennas&quot; within baselines (across all timestamps)</description>
         <value>3.2</value>
     </param>
 
-    <param subparam="true" name="relaxed_factor" type="double">
+    <param type="double" name="relaxed_factor" subparam="true">
         <description>Relaxed value to set the threshold scaling factor to under certain conditions (see task description)</description>
         <value>2.0</value>
     </param>
 
-    <param subparam="true" name="niter" type="int">
+    <param type="int" name="niter" subparam="true">
         <description>Maximum number of times to iterate on evaluation of flagging heuristics.</description>
         <value>2</value>
     </param>
 
-    <param name="pipelinemode" type="string">
+    <param type="string" name="pipelinemode">
         <description>The pipeline operations mode</description>
         <value>automatic</value>
         <allowed kind="enum">
@@ -84,20 +84,20 @@ Flag corrected - model amplitudes based on calibrators.
         </allowed>
     </param>
 
-    <param subparam="true" name="dryrun" type="bool">
+    <param type="bool" name="dryrun" subparam="true">
         <description>Run the task (False) or list commands (True)</description>
        <value>False</value>
     </param>
 
-    <param subparam="true" name="acceptresults" type="bool">
+    <param type="bool" name="acceptresults" subparam="true">
         <description>Automatically apply results to context</description>
         <value>True</value>
     </param>
 
     <constraints>
         <when param="pipelinemode">
-            <equals value="automatic" type="string"/>
-            <equals value="interactive" type="string">
+            <equals type="string" value="automatic"/>
+            <equals type="string" value="interactive">
                 <default param="vis"><value type="stringVec"/></default>
                 <default param="intent"><value type="string"/></default>
                 <default param="field"><value type="string"/></default>
@@ -114,20 +114,14 @@ Flag corrected - model amplitudes based on calibrators.
                 <default param="dryrun"><value type="bool">False</value></default>
                 <default param="acceptresults"><value type="bool">True</value></default>
             </equals>
-            <equals value="getinputs" type="string">
+            <equals type="string" value="getinputs">
                 <default param="vis"><value type="stringVec"/></default>
             </equals>
         </when>
     </constraints>
 </input>
 
-<output>
-    <param name="results" type="any">
-        <description>The output results object</description>
-        <any type="variant"/>
-        <value/>
-    </param>
-</output>
+
 
 <example>
 Keyword arguments
@@ -244,5 +238,5 @@ Examples
 
     hif_correctedampflag()
 </example>
-<returns>void</returns></task>
+<returns>any</returns></task>
 </casaxml>
