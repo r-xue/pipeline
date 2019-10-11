@@ -21,7 +21,7 @@
 
     <param type="string" name="reffile">
         <description>File of factors to adjust scale between beams</description>
-        <value>nroscalefactor.csv</value>
+        <value></value>
     </param>
 
     <param type="string" name="products_dir">
