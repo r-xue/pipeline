@@ -7,6 +7,7 @@ import os
 import pydoc
 import re
 import shutil
+import sys
 
 import itertools
 import mako
@@ -1668,7 +1669,7 @@ class T2_4MDetailsRenderer(object):
             except:
                 LOG.warning('Template generation failed for %s', cls.__name__)
                 LOG.debug(mako.exceptions.text_error_template().render())
-                fileobj.write(mako.exceptions.html_error_template().render())
+                fileobj.write(mako.exceptions.html_error_template().render().decode(sys.stdout.encoding))
 
 
 def wrap_in_resultslist(task_result):
