@@ -72,7 +72,7 @@ class SkyDisplay(object):
             return []
 
         if vmin is not None and vmax is not None:
-            imshow_args['norm'] = plt.normalize(vmin, vmax, clip=True)
+            imshow_args['norm'] = plt.Normalize(vmin, vmax, clip=True)
 
         if isinstance(context.results[-1], MakeImagesResult):
             if (context.results[-1].results[0].imaging_mode in ('VLA', 'EVLA', 'JVLA') and
