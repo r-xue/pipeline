@@ -54,11 +54,13 @@ class TsysSummaryChart(object):
             plots.append(self._get_plot_wrapper(tsys_spw))
 
         for p in plots:
-            if not os.path.exists(p.abspath):
+            if not p:
+                LOG.info("Tsys summary plot wrappers not generated")
+            elif not os.path.exists(p.abspath):
                 LOG.info("Tsys summary plot not generated for {} spw {}"
                          "".format(p.parameters['vis'], p.parameters['tsys_spw']))
 
-        return [p for p in plots if p is not None and os.path.exists(p.abspath)]
+        return [p for p in plots if p and os.path.exists(p.abspath)]
 
     def _get_figfile(self):
         return os.path.join(self._context.report_dir,

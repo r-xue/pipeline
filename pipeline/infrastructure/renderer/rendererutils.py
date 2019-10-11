@@ -230,7 +230,7 @@ def group_plots(data, axes):
     # build primary, secondary, tertiary, etc. axis sorting functions
     def f(axis):
         def g(plot):
-            return plot.parameters.get(axis)
+            return plot.parameters.get(axis, '')
         return g
 
     keyfuncs = [f(axis) for axis in axes.split(',')]
