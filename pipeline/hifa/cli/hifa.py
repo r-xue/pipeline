@@ -3,8 +3,7 @@ from pipeline.hifa.cli.hifa_bandpassflag import hifa_bandpassflag
 from pipeline.hifa.cli.hifa_bandpass import hifa_bandpass
 from pipeline.hifa.cli.hifa_bpsolint import hifa_bpsolint
 from pipeline.hifa.cli.hifa_exportdata import hifa_exportdata
-# FIXME: Fix import error
-#from pipeline.hifa.cli.hifa_flagdata import hifa_flagdata
+from pipeline.hifa.cli.hifa_flagdata import hifa_flagdata
 from pipeline.hifa.cli.hifa_flagtargets import hifa_flagtargets
 from pipeline.hifa.cli.hifa_fluxcalflag import hifa_fluxcalflag
 from pipeline.hifa.cli.hifa_gaincalsnr import hifa_gaincalsnr

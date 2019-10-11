@@ -83,7 +83,7 @@
         <param subparam="true" name="tbuff" type="any">
             <description>List of time buffers (sec) to pad timerange in flag commands</description>
             <type>double</type><type>doubleVec</type>
-            <value type="double">[0.0,0.0]</value>
+            <value type="doubleVec">[0.0,0.0]</value>
         </param>
         
         <param name="qa0" type="bool">
@@ -175,7 +175,7 @@
             <equals value="halfint" type="string">
             </equals>
             <equals value="manual" type="string">
-                <default param="tbuff"><value type="double">[0.0,0.0]</value></default>
+                <default param="tbuff"><value type="doubleVec">[0.0,0.0]</value></default>
             </equals>
         </when>
 
