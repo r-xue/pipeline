@@ -463,7 +463,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 with renderer.get_file() as fileobj:
                     fileobj.write(renderer.render())
 
-                values = dict(row.__dict__)
+                values = row._asdict()
                 values['plot'] = plot
                 values['qa_url'] = renderer.path
                 new_row = ImageRow(**values)
