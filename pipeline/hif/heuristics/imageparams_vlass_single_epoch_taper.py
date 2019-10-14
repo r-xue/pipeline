@@ -42,7 +42,7 @@ class ImageParamsHeuristicsVlassSeTaper(ImageParamsHeuristics):
     def reffreq(self):
         return '3.0GHz'
 
-    def cyclefactor(self):
+    def cyclefactor(self, iteration):
         return 3.0
 
     def cycleniter(self, iteration):
