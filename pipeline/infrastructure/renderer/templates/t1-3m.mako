@@ -185,7 +185,7 @@ def flagcolortable(flagpct):
 		    endif
 
 		%>
-	    % for fieldkey in flagtable.keys()[0:len(flagtable.keys()):Nplots]:
+	    % for fieldkey in list(flagtable.keys())[0:len(flagtable.keys()):Nplots]:
 		    <br>
 		     <h5>Flagging percentages for  ${fieldkey} </h5>
 	        <div style="width: 1700px; height: 250px; overflow: auto;">
@@ -200,8 +200,8 @@ def flagcolortable(flagpct):
 		    <tr>
 		    <td class="rotate-45"><b>spw</b></td>
 		    <%
-		    name = flagtable[fieldkey].keys()[0]
-		    spw = flagtable[fieldkey][name].keys()[0]
+		    name = list(flagtable[fieldkey].keys())[0]
+		    spw = list(flagtable[fieldkey][name].keys())[0]
 		    antennalist = flagtable[fieldkey][name][spw].keys()
 		    %>
 		    % for antenna in sorted(antennalist):
@@ -212,7 +212,7 @@ def flagcolortable(flagpct):
 		
 		    % for name in sorted(flagtable[fieldkey].keys()):
 		        <tr>
-		        <th class="row-header">${flagtable[fieldkey][name].keys()[0]}</th>
+		        <th class="row-header">${list(flagtable[fieldkey][name].keys())[0]}</th>
 		    
 		        % for spw in flagtable[fieldkey][name].keys():
 			        % for antenna in sorted(flagtable[fieldkey][name][spw].keys()):
