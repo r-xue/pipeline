@@ -5,8 +5,7 @@ from pipeline.hifv.cli.hifv_exportdata import hifv_exportdata
 from pipeline.hifv.cli.hifv_exportvlassdata import hifv_exportvlassdata
 from pipeline.hifv.cli.hifv_finalcals import hifv_finalcals
 from pipeline.hifv.cli.hifv_flagbaddef import hifv_flagbaddef
-# FIXME: Fix import error
-#from pipeline.hifv.cli.hifv_flagcal import hifv_flagcal
+from pipeline.hifv.cli.hifv_flagcal import hifv_flagcal
 from pipeline.hifv.cli.hifv_flagdata import hifv_flagdata
 from pipeline.hifv.cli.hifv_fluxboot2 import hifv_fluxboot2
 from pipeline.hifv.cli.hifv_fluxboot import hifv_fluxboot

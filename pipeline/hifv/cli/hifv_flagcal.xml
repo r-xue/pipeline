@@ -17,7 +17,7 @@
 
     <param name="clipminmax" type="any">
         <description>Range to use for clipping</description>
-        <type>doubleVec</type><type>doubleVecVec</type>
+        <type>doubleVec</type>
         <value type="doubleVec"/>
     </param>
 
