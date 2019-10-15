@@ -232,3 +232,12 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristics):
             return 'modelcolumn'
         else:
             return None
+
+    def usepointing(self):
+        """clean flag to use pointing table."""
+
+        return True
+
+    def wprojplanes(self):
+
+        return 32
