@@ -178,7 +178,7 @@ def outliers_to_qa_scores(ms, outliers, outlier_score):
 
         worst_outlier = max(outliers_for_reason, key=operator.attrgetter('num_sigma'))
 
-        metric_axes, outlier_description = REASONS_TO_TEXT[outlier.reason]
+        metric_axes, outlier_description = REASONS_TO_TEXT[worst_outlier.reason]
         short_msg = '{} outliers'.format(metric_axes)
 
         score = pqa.QAScore(outlier_score, longmsg=long_msg, shortmsg=short_msg)
