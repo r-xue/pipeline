@@ -2,7 +2,6 @@
 rsc_path = ""
 import cgi
 import os
-import string
 
 import pipeline.infrastructure.renderer.htmlrenderer as hr
 import pipeline.infrastructure.filenamer as filenamer
@@ -121,7 +120,7 @@ def total_for_agent(agent, row, mses=flags.keys()):
 		return '%0.1f%%' % (100.0 * flagged / total)
 
 def space_comma(s):
-	return ', '.join(string.split(s, ','))
+	return ', '.join(s.split(','))
 
 %>
 
