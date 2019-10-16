@@ -3,11 +3,10 @@ import os
 
 import numpy as np
 
-import casatasks
-
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.renderer.logger as logger
+import pipeline.infrastructure.casa_tasks as casa_tasks
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -34,11 +33,13 @@ class semifinalBPdcalsSummaryChart(object):
         corrstring = m.get_vla_corrstring()
         calibrator_scan_select_string = context.evla['msinfo'][m.name].calibrator_scan_select_string
 
-        casatasks.plotms(vis=m.name, xaxis='freq', yaxis='amp', ydatacolumn='corrected', selectdata=True,
+        job = casa_tasks.plotms(vis=m.name, xaxis='freq', yaxis='amp', ydatacolumn='corrected', selectdata=True,
                          scan=calibrator_scan_select_string, correlation=corrstring, averagedata=True, avgtime='1e8',
                          avgscan=False, transform=False, extendflag=False, iteraxis='', coloraxis='antenna2',
                          plotrange=[], title='', xlabel='', ylabel='', showmajorgrid=False, showminorgrid=False,
                          plotfile=figfile, overwrite=True, clearplots=True, showgui=False)
+
+        job.execute(dry_run=False)
 
     def get_figfile(self):
         return os.path.join(self.context.report_dir,
@@ -108,12 +109,14 @@ class DelaysPerAntennaChart(object):
 
                     LOG.debug("Plotting semiFinal delays " + antName)
 
-                    casatasks.plotms(vis=self.result.ktypecaltable, xaxis='freq', yaxis='amp', field='',
+                    job = casa_tasks.plotms(vis=self.result.ktypecaltable, xaxis='freq', yaxis='amp', field='',
                                      antenna=antPlot, spw='', timerange='',
                                      plotrange=[], coloraxis='',
                                      title='K table: delay.tbl   Antenna: {!s}'.format(antName),
                                      titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                      xconnector='step')
+
+                    job.execute(dry_run=False)
 
                 except:
                     LOG.warn("Unable to plot " + filename)
@@ -180,12 +183,14 @@ class semifinalphaseGainPerAntennaChart(object):
 
                     LOG.debug("Plotting phase gain solutions " + antName)
 
-                    casatasks.plotms(vis=result.bpdgain_touse, xaxis='time', yaxis='phase', field='',
+                    job = casa_tasks.plotms(vis=result.bpdgain_touse, xaxis='time', yaxis='phase', field='',
                                      antenna=antPlot, spw='', timerange='',
                                      coloraxis='', plotrange=[0, 0, -180, 180], symbolshape='circle',
                                      title='G table: {!s}   Antenna: {!s}'.format(result.bpdgain_touse, antName),
                                      titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                      xconnector='line')
+
+                    job.execute(dry_run=False)
 
                 except:
                     LOG.warn("Unable to plot " + filename)
@@ -276,12 +281,15 @@ class semifinalbpSolAmpPerAntennaChart(object):
                         idents = [a.name if a.name else a.id for a in domain_antennas]
                         antName = ','.join(idents)
 
-                    casatasks.plotms(vis=self.result.bpcaltable, xaxis='freq', yaxis='amp', field='',
+                    job = casa_tasks.plotms(vis=self.result.bpcaltable, xaxis='freq', yaxis='amp', field='',
                                      antenna=antPlot, spw='', timerange='',
                                      coloraxis='', plotrange=[0, 0, 0, ampplotmax], symbolshape='circle',
                                      title='B table: {!s}   Antenna: {!s}'.format('BPcal.b', antName),
                                      titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                      xconnector='step')
+
+                    job.execute(dry_run=False)
+
                 except:
                     LOG.warn("Unable to plot " + filename)
             else:
@@ -370,13 +378,16 @@ class semifinalbpSolPhasePerAntennaChart(object):
                         idents = [a.name if a.name else a.id for a in domain_antennas]
                         antName = ','.join(idents)
 
-                    casatasks.plotms(vis=self.result.bpcaltable, xaxis='freq', yaxis='phase', field='',
+                    job = casa_tasks.plotms(vis=self.result.bpcaltable, xaxis='freq', yaxis='phase', field='',
                                      antenna=antPlot, spw='', timerange='',
                                      coloraxis='', plotrange=[0, 0, -phaseplotmax, phaseplotmax],
                                      symbolshape='circle',
                                      title='B table: {!s}   Antenna: {!s}'.format('BPcal.tbl', antName),
                                      titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                      xconnector='step')
+
+                    job.execute(dry_run=False)
+
                 except:
                     LOG.warn("Unable to plot " + filename)
             else:
