@@ -44,10 +44,10 @@ def estimate_gaincalsnr(ms, fieldlist, intent, spwidlist, compute_nantennas,
 
     Input Parameters
                    ms: The pipeline context ms object
-        fieldnamelist: The list of field names to be selected 
-               intent: The intent of the fields to be selected 
+        fieldnamelist: The list of field names to be selected
+               intent: The intent of the fields to be selected
             spwidlist: The list of spw ids to be selected
-    compute_nantennas: The algorithm for computing the number of unflagged antennas ('all', 'flagged') 
+    compute_nantennas: The algorithm for computing the number of unflagged antennas ('all', 'flagged')
       max_fracflagged: The maximum fraction of an antenna can be flagged, e.g. 0.90
 
     The output SNR dictionary
@@ -108,10 +108,10 @@ def estimate_bpsolint(ms, fieldlist, intent, spwidlist, compute_nantennas, max_f
 
     Input Parameters
                    ms: The pipeline context ms object
-        fieldnamelist: The list of field names to be selected 
-               intent: The intent of the fields to be selected 
+        fieldnamelist: The list of field names to be selected
+               intent: The intent of the fields to be selected
             spwidlist: The list of spw ids to be selected
-    compute_nantennas: The algorithm for computing the number of unflagged antennas ('all', 'flagged') 
+    compute_nantennas: The algorithm for computing the number of unflagged antennas ('all', 'flagged')
       max_fracflagged: The maximum fraction of an antenna can be flagged, e.g. 0.90
            phaseupsnr: The desired phaseup gain solution SNR, e.g. 20.0
        minphaseupints: The minimum number of phaseup solution intervals, e.g. 2
@@ -190,13 +190,13 @@ def get_fluxinfo(ms, fieldnamelist, intent, spwidlist):
 
     The input parameters
                ms: The pipeline context ms object
-    fieldnamelist: The list of field names to be selected 
-           intent: The intent of the fields to be selected 
+    fieldnamelist: The list of field names to be selected
+           intent: The intent of the fields to be selected
           spwlist: The list of spw ids to be selected
 
     The output flux dictionary fluxdict
 
-    The flux dictionary key and value 
+    The flux dictionary key and value
         key: The spw id      value: The source flux dictionary
 
     The source flux dictionary keys and values
@@ -254,17 +254,17 @@ def get_tsysinfo(ms, fieldnamelist, intent, spwidlist):
 
     Input parameters
                ms: The pipeline context ms object
-    fieldnamelist: The list of field names to be selected 
-           intent: The intent of the fields to be selected 
+    fieldnamelist: The list of field names to be selected
+           intent: The intent of the fields to be selected
        spwidlist: The list of spw ids to be selected
 
     The output dictionary
 
-    The tsys dictionary tsysdict keys and values 
+    The tsys dictionary tsysdict keys and values
         key: The spw id       value: The Tsys source dictionary
 
     The tsys source dictionary keys and values
-        key: 'tsys_field_name'  value: The name of the Tsys field source, e.g. '3C286' (was 'atm_field_name') 
+        key: 'tsys_field_name'  value: The name of the Tsys field source, e.g. '3C286' (was 'atm_field_name')
         key: 'intent'           value: The intent of the selected source, e.g. 'BANDPASS'
         key: 'snr_scan'         value: The scan associated with Tsys used to compute the SNR, e.g. 4
         key: 'tsys_scan'        value: The Tsys scan to be used for Tsys computation, e.g. 3
@@ -354,9 +354,9 @@ def get_tsysinfo(ms, fieldnamelist, intent, spwidlist):
                              if scanspw.num_channels not in (1, 4)]
 
             # Match the Tsys spw to the science spw
-            #   Match first by id then by frequency   
+            #   Match first by id then by frequency
             bestspwid = None
-            if spw.id in scanspwidlist: 
+            if spw.id in scanspwidlist:
                 # bestspwid = scanspw.id
                 bestspwid = spw.id
             else:
@@ -440,7 +440,7 @@ def get_mediantemp(ms, tsys_spwlist, scan_list, antenna='', temptype='tsys'):
 
     The output dictionary
 
-    The median temperature dictionary keys and values 
+    The median temperature dictionary keys and values
         key: the spw id         value: The median Tsys temperature in degrees K
     """
 
@@ -463,11 +463,11 @@ def get_mediantemp(ms, tsys_spwlist, scan_list, antenna='', temptype='tsys'):
         if not reqscan:
             LOG.warn('Cannot find observation scan %d in MS %s' % (scan, ms.basename))
             return medtempsdict
-        startTime = reqscan[0].start_time 
-        endTime = reqscan[0].end_time 
+        startTime = reqscan[0].start_time
+        endTime = reqscan[0].end_time
         beginScanTimes.append(startTime)
         endScanTimes.append(endTime)
-        LOG.debug ('scan %d start %s end %s' % (scan, startTime, endTime)) 
+        LOG.debug ('scan %d start %s end %s' % (scan, startTime, endTime))
 
     # Get the syscal table meta data.
     with casatools.TableReader(os.path.join(ms.name,  'SYSCAL')) as table:
@@ -489,7 +489,7 @@ def get_mediantemp(ms, tsys_spwlist, scan_list, antenna='', temptype='tsys'):
         tsys_start_times = table.getcol('TIME')
         tsys_intervals = table.getcol('INTERVAL')
 
-        # Compute the time range of validity for each tsys measurement 
+        # Compute the time range of validity for each tsys measurement
         #    Worry about memory efficiency later
         tsys_start_times = tsys_start_times - 0.5 * tsys_intervals
         tsys_end_times = tsys_start_times + tsys_intervals
@@ -497,7 +497,7 @@ def get_mediantemp(ms, tsys_spwlist, scan_list, antenna='', temptype='tsys'):
         # Create a scan id array and populate it with zeros
         scanids = np.zeros(len(tsys_start_times), dtype=np.int32)
 
-        # Determine if a tsys measurement matches the scan interval 
+        # Determine if a tsys measurement matches the scan interval
         #    If it does  set the scan to the scan id
         nmatch = 0
         for i in range(len(tsys_start_times)):
@@ -570,7 +570,7 @@ def get_mediantemp(ms, tsys_spwlist, scan_list, antenna='', temptype='tsys'):
             LOG.warn('    No Tsys data for spw %d scan %d in MS %s' % (spw, scan, ms.basename))
 
     # Return median temperature per spw and scan.
-    return medtempsdict 
+    return medtempsdict
 
 
 def _get_unflagged_antennas(vis, scanidlist, ants12m, ants7m, max_fracflagged=0.90):
@@ -639,8 +639,8 @@ def get_obsinfo(ms, fieldnamelist, intent, spwidlist, compute_nantennas='all', m
 
     Input parameters
                    ms: The pipeline context ms object
-        fieldnamelist: The list of field names to be selected 
-               intent: The intent of the fields to be selected 
+        fieldnamelist: The list of field names to be selected
+               intent: The intent of the fields to be selected
             spwidlist: The list of spw ids to be selected
     compute_nantennas: The algorithm for computing the number of unflagged antennas ('all', 'flagged')
                        (was 'hm_nantennas')
@@ -648,7 +648,7 @@ def get_obsinfo(ms, fieldnamelist, intent, spwidlist, compute_nantennas='all', m
 
     The output observing dictionary obsdict
 
-    The observing dictionary key and value 
+    The observing dictionary key and value
         key: the spw id         value: The observing scans dictionary
 
     The observing scans dictionary keys and values
@@ -659,7 +659,7 @@ def get_obsinfo(ms, fieldnamelist, intent, spwidlist, compute_nantennas='all', m
         key: 'integrationtime'  value: The mean integration time in minutes, e.g. 0.016
         key: 'band'             value: The ALMA receiver band, e.g. 'ALMA Band 3'
         key: 'bandcenter'       value: The receiver band center frequency in Hz, e.g. 9.6e9
-        key: 'bandwidth'        value: The band width in Hz, e.g. 2.0e9 
+        key: 'bandwidth'        value: The band width in Hz, e.g. 2.0e9
         key: 'nchan'            value: The number of channels, e.g. 28
         key: 'chanwidths'       value: The median channel width in Hz, e.g. 7.3e7
     """
@@ -722,9 +722,9 @@ def get_obsinfo(ms, fieldnamelist, intent, spwidlist, compute_nantennas='all', m
 
         # Figure out the number of 7m and 12 m antennas
         #   Note comparison of floating point numbers is tricky ...
-        #   
+        #
         if compute_nantennas == 'all':
-            # Use numbers from the scan with the minimum number of 
+            # Use numbers from the scan with the minimum number of
             # antennas
             n7mant = np.iinfo('i').max
             n12mant = np.iinfo('i').max
@@ -771,15 +771,15 @@ def get_obsinfo(ms, fieldnamelist, intent, spwidlist, compute_nantennas='all', m
         #    Receiver band, center frequency, bandwidth, number of
         #    channels, and median channel width
         #    Add to dictionary
-        obsdict[spwid]['band'] = spw.band 
-        obsdict[spwid]['bandcenter'] = float(spw.centre_frequency.value) 
-        obsdict[spwid]['bandwidth'] = float(spw.bandwidth.value) 
-        obsdict[spwid]['nchan'] = spw.num_channels 
+        obsdict[spwid]['band'] = spw.band
+        obsdict[spwid]['bandcenter'] = float(spw.centre_frequency.value)
+        obsdict[spwid]['bandwidth'] = float(spw.bandwidth.value)
+        obsdict[spwid]['nchan'] = spw.num_channels
         channels = spw.channels
         chanwidths = np.zeros(spw.num_channels)
         for i in range(spw.num_channels):
-            chanwidths[i] = (channels[i].high - channels[i].low).value 
-        obsdict[spwid]['chanwidths'] = np.median(chanwidths) 
+            chanwidths[i] = (channels[i].high - channels[i].low).value
+        obsdict[spwid]['chanwidths'] = np.median(chanwidths)
 
         LOG.info('For field %s spw %2d scans %s' % (fieldname, spwid, scanids))
         LOG.info('    %2d 12m antennas  %2d 7m antennas  exposure %0.3f minutes  interval %0.3f minutes' %
@@ -801,13 +801,13 @@ def join_dicts(spwlist, tsys_dict, flux_dict, tsystemp_dict, obs_dict):
 
     The output dictionary spw_dict
 
-    The spw dictionary spw_dict  key and value 
+    The spw dictionary spw_dict  key and value
         key: The spw id       value: The spw source dictionary
 
     The spw source dictionary keys and values
         key: 'tsys_field_name'  value: The name of the Tsys field source, e.g. '3C286'
         key: 'intent'           value: The intent of the field source, e.g. 'BANDPASS'
-        key: 'snr_scan'         value: The scan associated with Tsys used to compute the SNR, e.g. 4 
+        key: 'snr_scan'         value: The scan associated with Tsys used to compute the SNR, e.g. 4
         key: 'tsys_scan'        value: The Tsys scan to be used for Tsys computation, e.g. 3
         key: 'tsys_spw'         value: The Tsys spw associated with the science spw id, e.g. 13
 
@@ -823,7 +823,7 @@ def join_dicts(spwlist, tsys_dict, flux_dict, tsystemp_dict, obs_dict):
         key: 'integrationtime'  value: The mean integration time in minutes, e.g. 0.016
         key: 'band'             value: The ALMA receiver band, e.g. 'ALMA Band 3'
         key: 'bandcenter'       value: The receiver band center frequency in Hz, e.g. 9.6e9
-        key: 'bandwidth'        value: The band width in Hz, e.g. 2.0e9 
+        key: 'bandwidth'        value: The band width in Hz, e.g. 2.0e9
         key: 'nchan'            value: The number of channels, e.g. 28
         key: 'chanwidths'       value: The median channel width in Hz, e.g. 7.3e7
     """
@@ -1136,7 +1136,7 @@ def compute_bpsolint(ms, spwlist, spw_dict, reqPhaseupSnr, minBpNintervals, reqB
             solint_dict[spwid]['phaseup_solint'] = '%fs' % (solint_dict[spwid]['integration_minutes'] *
                                                             requiredIntegrations * 60.0)
             solint_dict[spwid]['nint_phaseup_solint'] = int(np.ceil(requiredIntegrations))
-        solInts = int(np.ceil(solint_dict[spwid]['exptime_minutes'] / solint_dict[spwid]['integration_minutes'])) / int(np.ceil(requiredIntegrations))
+        solInts = int(np.ceil(solint_dict[spwid]['exptime_minutes'] / solint_dict[spwid]['integration_minutes'])) // int(np.ceil(requiredIntegrations))
         if solInts < minBpNintervals:
             tooFewIntervals = True
             asterisks = '***'
@@ -1173,10 +1173,10 @@ def compute_bpsolint(ms, spwlist, spw_dict, reqPhaseupSnr, minBpNintervals, reqB
         # solution and the number of solutions
         if evenbpsolints:
             solint_dict[spwid]['nchan_bpsolint'] = int(np.ceil(evenChannels))
-            solChannels = solint_dict[spwid]['nchan_total'] / int(np.ceil(evenChannels))
+            solChannels = solint_dict[spwid]['nchan_total'] // int(np.ceil(evenChannels))
         else:
             solint_dict[spwid]['nchan_bpsolint'] = int(np.ceil(requiredChannels))
-            solChannels = solint_dict[spwid]['nchan_total'] / int(np.ceil(requiredChannels))
+            solChannels = solint_dict[spwid]['nchan_total'] // int(np.ceil(requiredChannels))
 
         if solChannels < minBpNchan:
             tooFewChannels = True

@@ -31,7 +31,7 @@ class FluxMeasurement(object):
         """
         if isinstance(arg, FluxDensity):
             # create defensive copies of the flux arguments so they're not
-            # shared between instances 
+            # shared between instances
             return FluxDensity(arg.value, arg.units)
 
         try:
@@ -96,6 +96,9 @@ class FluxMeasurement(object):
         uvmax = self.uvmax
 
         return self.__class__(spw_id, I, Q, U, V, spix, uvmin, uvmax)
+
+    def __truediv__(self, other):
+        return self.__div__(other)
 
     def __mul__(self, other):
         if not isinstance(other, (int, float, long, Decimal)):

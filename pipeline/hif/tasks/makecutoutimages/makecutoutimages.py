@@ -166,10 +166,10 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
         fld_subim_size_y = round(3600.0 * (image_size_y + buffer_deg) / ycellsize)   # Cutout size with buffer in pixels
 
         # equivalent blc,trc for extracting requested field, in pixels:
-        blcx = imsize[0] / 2 - (fld_subim_size_x / 2)
-        blcy = imsize[1] / 2 - (fld_subim_size_y / 2)
-        trcx = imsize[0] / 2 + (fld_subim_size_x / 2) + 1
-        trcy = imsize[1] / 2 + (fld_subim_size_y / 2) + 1
+        blcx = imsize[0] // 2 - (fld_subim_size_x / 2)
+        blcy = imsize[1] // 2 - (fld_subim_size_y / 2)
+        trcx = imsize[0] // 2 + (fld_subim_size_x / 2) + 1
+        trcy = imsize[1] // 2 + (fld_subim_size_y / 2) + 1
 
         if blcx < 0.0:
             blcx = 0
@@ -195,10 +195,10 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
             fld_subim_size_x_trc = round(3600.0 * (offsettrc[0] / 3600.0 + buffer_deg / 2.0) / xcellsize)
             fld_subim_size_y_trc = round(3600.0 * (offsettrc[1] / 3600.0 + buffer_deg / 2.0) / ycellsize)
 
-            blcx = imsize[0] / 2 - fld_subim_size_x_blc
-            blcy = imsize[1] / 2 - fld_subim_size_y_blc
-            trcx = imsize[0] / 2 + fld_subim_size_x_trc + 1
-            trcy = imsize[1] / 2 + fld_subim_size_y_trc + 1
+            blcx = imsize[0] // 2 - fld_subim_size_x_blc
+            blcy = imsize[1] // 2 - fld_subim_size_y_blc
+            trcx = imsize[0] // 2 + fld_subim_size_x_trc + 1
+            trcy = imsize[1] // 2 + fld_subim_size_y_trc + 1
 
             if blcx < 0.0:
                 blcx = 0

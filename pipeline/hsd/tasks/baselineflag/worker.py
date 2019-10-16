@@ -547,13 +547,18 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                         diffNew0 = (LdataNew0 + RdataNew0) / float(NL + NR) - SpOut[ip, index]
 
                         # Calculate Standard Deviation (NOT RMS)
-                        mask0 = (RmaskOld + LmaskOld + mask_in) / (NL + NR + 1)
+                        # 2019/10/09 TN
+                        # TODO: need to check if mask0 is assured to be binary mask (1 or 0)
+                        # since _calculate_masked_stddev requires binary mask
+                        mask0 = (RmaskOld + LmaskOld + mask_in) // (NL + NR + 1)
                         OldRMSdiff, Nmask = self._calculate_masked_stddev(diffOld0, mask0)
                         stats[4] = OldRMSdiff
 
                         NewRMSdiff = -1
                         if is_baselined:
-                            mask0 = (RmaskNew + LmaskNew + mask_out) / (NL + NR + 1)
+                            # 2019/10/09 TN
+                            # TODO: same as above
+                            mask0 = (RmaskNew + LmaskNew + mask_out) // (NL + NR + 1)
                             NewRMSdiff, Nmask = self._calculate_masked_stddev(diffNew0, mask0)
                         stats[3] = NewRMSdiff
                     else:

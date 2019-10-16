@@ -38,7 +38,7 @@ class DetectLineInputs(vdp.StandardInputs):
             raise ValueError("linewindowmode must be either 'replace' or 'merge'.")
         self._windowmode = value
 
-    def __init__(self, context, group_id=None, window=None, 
+    def __init__(self, context, group_id=None, window=None,
                  windowmode=None, edge=None, broadline=None):
         super(DetectLineInputs, self).__init__()
 
@@ -125,7 +125,7 @@ class DetectLine(basetask.StandardTaskTemplate):
                     continue
 
                 datatable = datatable_dict[ms.basename]
-                for dt_row in utils.get_index_list_for_ms(datatable, [ms.basename], [antenna_id], 
+                for dt_row in utils.get_index_list_for_ms(datatable, [ms.basename], [antenna_id],
                                                      [field_id], [spw_id]):
                     datatable.putcell('MASKLIST', dt_row, window)
 
@@ -137,7 +137,7 @@ class DetectLine(basetask.StandardTaskTemplate):
 
             return result
 
-        # move assertion for spectral_data here since spectral_data is 
+        # move assertion for spectral_data here since spectral_data is
         # not necessary when line window is specified
         assert spectral_data is not None
 
@@ -164,7 +164,7 @@ class DetectLine(basetask.StandardTaskTemplate):
         MaxFWHM = int((nchan - Nedge)/2.0)
         #rules.LineFinderRule['MaxFWHM'] = MaxFWHM
         MinFWHM = int(rules.LineFinderRule['MinFWHM'])
-        Threshold = rules.LineFinderRule['Threshold']        
+        Threshold = rules.LineFinderRule['Threshold']
         EdgeMin = int(nchan * rules.LineFinderRule['IgnoreEdge'])
         EdgeMax = int(nchan * (1.0 - rules.LineFinderRule['IgnoreEdge']) - 1)
 
@@ -182,7 +182,7 @@ class DetectLine(basetask.StandardTaskTemplate):
         for i in TmpRange:
             BinningRange.append([i, 0])
             if i > 1:
-                BinningRange.append([i, i/2])
+                BinningRange.append([i, i//2])
         for row in xrange(nrow):
             # Countup progress timer
             Timer.count()
@@ -196,7 +196,7 @@ class DetectLine(basetask.StandardTaskTemplate):
             else:
                 LOG.debug('Start Row {}', row)
                 for [BINN, offset] in BinningRange:
-                    MinNchan = (MinFWHM-2) / BINN + 2
+                    MinNchan = (MinFWHM-2) // BINN + 2
                     SP = self.SpBinning(spectra[row], BINN, offset)
                     MSK = self.MaskBinning(masks[row], BINN, offset)
 
@@ -257,13 +257,13 @@ class DetectLine(basetask.StandardTaskTemplate):
         PL.savefig(fname, format='png')
 
     def MaskBinning(self, data, Bin, offset=0):
-        if Bin == 1: 
+        if Bin == 1:
             return data
         else:
             return numpy.array([data[i:i+Bin].min() for i in xrange(offset, len(data)-Bin+1, Bin)], dtype=numpy.bool)
 
     def SpBinning(self, data, Bin, offset=0):
-        if Bin == 1: 
+        if Bin == 1:
             return data
         else:
             return numpy.array([data[i:i+Bin].mean() for i in xrange(offset, len(data)-Bin+1, Bin)], dtype=numpy.float)
@@ -282,15 +282,15 @@ class DetectLine(basetask.StandardTaskTemplate):
         MinFWHM = int(rules.LineFinderRule['MinFWHM'])
 
         LOG.trace('line detection parameters: ')
-        LOG.trace('threshold (S/N per channel)={}, channels, edges to be dropped=[{}, {}]', 
+        LOG.trace('threshold (S/N per channel)={}, channels, edges to be dropped=[{}, {}]',
                   threshold, EdgeL, EdgeR)
         line_ranges = self.line_finder(spectrum=spectrum,
-                                       threshold=threshold, 
+                                       threshold=threshold,
                                        tweak=True,
                                        mask=mask,
                                        edge=(int(EdgeL), int(EdgeR)))
         # line_ranges = [line0L, line0R, line1L, line1R, ...]
-        nlines = len(line_ranges) / 2
+        nlines = len(line_ranges) // 2
 
         ### Debug TT
         #LOG.info('NLINES=%s, EdgeL=%s, EdgeR=%s' % (nlines, EdgeL, EdgeR))
@@ -335,7 +335,7 @@ class DetectLine(basetask.StandardTaskTemplate):
     def _get_predefined_window(self, spw, window):
         # CAS-10764 flexible line masking -- supported format
         #  - integer list [chmin, chmax]
-        #  - nested integer list [[chmin, chmax], [chmin, chmax], ...] 
+        #  - nested integer list [[chmin, chmax], [chmin, chmax], ...]
         #  - float list [fmin, fmax]
         #  - nested float list [[fmin, fmax], [fmin, fmax], ...]
         #  - string list ['XGHz', 'YGHz']
@@ -350,12 +350,12 @@ class DetectLine(basetask.StandardTaskTemplate):
         new_window = parser.get_result(spw)
 
         # TODO
-        # Channel range could be specified by LSRK frequency. This means that 
-        # effective channnel range in TOPO frame may be different between MSs. 
-        # This effect is not taken into account because (1) line detection 
-        # and validation stage doesn't support frequency change over MSs 
-        # (i.e. gridding is done in TOPO frame), and (2) data format 
-        # for detected lines doesn't support per-MS line lists. This have to be 
+        # Channel range could be specified by LSRK frequency. This means that
+        # effective channnel range in TOPO frame may be different between MSs.
+        # This effect is not taken into account because (1) line detection
+        # and validation stage doesn't support frequency change over MSs
+        # (i.e. gridding is done in TOPO frame), and (2) data format
+        # for detected lines doesn't support per-MS line lists. This have to be
         # considered later.
 
         return new_window
@@ -367,16 +367,16 @@ class DetectLine(basetask.StandardTaskTemplate):
 #                 return [self._get_linerange(spw, w) for w in window]
 #             else:
 #                 return [self._get_linerange(spw, window)]
-# 
+#
 #     def _get_linerange(self, spwid, window):
 #         if spwid < 0:
 #             raise RuntimeError("Invalid spw id ({})".format(spwid))
-#         
+#
 #         ms = self.inputs.context.observing_run.measurement_sets[0]
 #         parsed_window = get_linerange(window, spwid, ms)
 #         return parsed_window
-#     
-# 
+#
+#
 # def get_linerange(window, spwid, ms):
 #     if len(window) == 2:
 #         # [chmin, chmax] form
@@ -405,7 +405,7 @@ class DetectLine(basetask.StandardTaskTemplate):
 
 class LineWindowParser(object):
     """
-    LineWindowParser is a parser for line window parameter. 
+    LineWindowParser is a parser for line window parameter.
     Supported format is as follows:
 
     [Single window list] -- apply to all spectral windows
@@ -414,7 +414,7 @@ class LineWindowParser(object):
       - string list ['XGHz', 'YGHz']
 
     [Multiple window list] -- apply to all spectral windows
-      - nested integer list [[chmin, chmax], [chmin, chmax], ...] 
+      - nested integer list [[chmin, chmax], [chmin, chmax], ...]
       - nested float list [[fmin, fmax], [fmin, fmax], ...]
       - nested string list [['XGHz', 'YGHz'], ['aMHz', 'bMHz'], ...]
 
@@ -426,8 +426,8 @@ class LineWindowParser(object):
     [MS channel selection syntax] -- apply to selected spectral windows
       - channel selection string 'A:chmin~chmax;chmin~chmax,B:fmin~fmax,...'
 
-    Note that frequencies are interpreted as the value in LSRK frame. 
-    Note also that frequencies given as a floating point number is interpreted 
+    Note that frequencies are interpreted as the value in LSRK frame.
+    Note also that frequencies given as a floating point number is interpreted
     as the value in Hz.
     """
     def __init__(self, ms, window):
@@ -609,7 +609,7 @@ class LineWindowParser(object):
         # frequency conversion from LSRK to TOPO
         new_window = self._lsrk2topo(spwid, window)
 
-        # construct ms channel selection syntax 
+        # construct ms channel selection syntax
         spwsel = self._construct_msselection(spwid, new_window)
 
         # channel mapping using ms tool
@@ -700,9 +700,9 @@ def test_parser(ms):
 
     test_cases = [
         # single global window (channel)
-        [100, 200], 
+        [100, 200],
         # multiple global window (channel)
-        [[100, 200], [500, 700]], 
+        [[100, 200], [500, 700]],
         # per spw windows (channel)
         {spwids[0]: [100, 200], spwids[-1]: [[100, 200], [500, 700]]},
         # single global window (frequency value)
@@ -728,8 +728,8 @@ def test_parser(ms):
         # MS channel selection string (channel)
         '{0}:{1}~{2},{3}:{4}~{5};{6}~{7}'.format(spwids[0], 100, 200, spwids[-1], 100, 200, 500, 700),
         # MS channel selection string (frequency)
-        '{0}:{1}~{2},{3}:{4}~{5};{6}~{7}'.format(spwids[0], f0, f1, 
-                                                 spwids[-1], f2, f3, f4, f5)        
+        '{0}:{1}~{2},{3}:{4}~{5};{6}~{7}'.format(spwids[0], f0, f1,
+                                                 spwids[-1], f2, f3, f4, f5)
         ]
 
     results = []

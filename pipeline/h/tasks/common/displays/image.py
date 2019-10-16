@@ -132,7 +132,7 @@ class ImageDisplay(object):
             return []
 
         stagenumber = context.stage
-        plots = []        
+        plots = []
 
         vis = results.vis
         flagcmds = results.flagcmds()
@@ -293,7 +293,7 @@ class ImageDisplay(object):
             sentinels[sentinelvalue] = cc.to_rgb(
                 flag_color[flag_reason_key[int(sentinelvalue)-10]])
 
-        # plot points with no data indigo. 
+        # plot points with no data indigo.
         nodata = image.nodata
         data[nodata != 0] = 5.0
         sentinels[5.0] = cc.to_rgb('indigo')
@@ -303,7 +303,7 @@ class ImageDisplay(object):
         norm = _SentinelNorm(sentinels=sentinels.keys())
 
         # calculate vmin, vmax without the sentinels. Leaving norm to do
-        # this is not sufficient; the standard Normalize gets called 
+        # this is not sufficient; the standard Normalize gets called
         # by something in matplotlib and initialises vmin and vmax incorrectly.
         sentinel_mask = np.zeros(np.shape(data), np.bool)
         for sentinel in sentinels:
@@ -338,10 +338,10 @@ class ImageDisplay(object):
                 for b in ydata:
                     ydata_numeric.append(float(b.replace('&', '.')))
 
-                # highest baseline number is am.am where 'am' is the 
-                # largest antenna id. If this 34, for example, then 
+                # highest baseline number is am.am where 'am' is the
+                # largest antenna id. If this 34, for example, then
                 # highest axis value will be 34.34 - must be changed
-                # to 34.99 otherwise scale will not look right 
+                # to 34.99 otherwise scale will not look right
                 # (think, next baseline would be 35.00).
                 am = int(ydata_numeric[-1])
                 ydata_numeric[-1] = am + 0.99
@@ -374,9 +374,9 @@ class ImageDisplay(object):
             else:
                 extent = [xdata[0], xdata[-1], ydata_numeric[0], ydata_numeric[-1]]
 
-        # If plotting by antenna, then extend limits of the axis to ensure that 
+        # If plotting by antenna, then extend limits of the axis to ensure that
         # the tick marks align correctly with the center of the antenna pixels.
-        if 'ANTENNA' in xtitle.upper(): 
+        if 'ANTENNA' in xtitle.upper():
             extent[0] -= 0.5
             extent[1] += 0.5
         if 'ANTENNA' in ytitle.upper():
@@ -439,7 +439,7 @@ class ImageDisplay(object):
 
             # Set size of x-labels based on number of antennas, with minimum
             # label size of 5.
-            xlabel_size = max(np.ceil(10 - len(xdata) / 9), 5)
+            xlabel_size = max(np.ceil(10 - len(xdata) // 9), 5)
 
             # Add labels for even-indices in antenna array.
             ax1 = plt.gca()

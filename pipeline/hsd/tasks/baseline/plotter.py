@@ -469,7 +469,7 @@ def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table, org_
     assert num_grid_rows > 0
     num_grid_dec = plot_table[-1][1] + 1
     num_grid_ra = plot_table[-1][0] + 1
-    num_plane = num_grid_rows / (num_grid_dec * num_grid_ra)
+    num_plane = num_grid_rows // (num_grid_dec * num_grid_ra)
     LOG.debug('num_grid_ra={}, num_grid_dec={}, num_plane={}, num_grid_rows={}',
               num_grid_ra, num_grid_dec, num_plane, num_grid_rows)
     #each_grid = (range(i*num_plane, (i+1)*num_plane) for i in xrange(num_grid_dec * num_grid_ra))
@@ -946,4 +946,4 @@ def median_index(arr):
         if len(arr) < 3:
             return sorted_index[0]
         else:
-            return sorted_index[len(arr) / 2]
+            return sorted_index[len(arr) // 2]

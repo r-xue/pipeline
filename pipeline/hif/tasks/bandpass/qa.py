@@ -76,7 +76,7 @@ class BandpassQAPool(pqa.QAScorePool):
         if dd is None:
             return 'unknown origin'
 
-        ant_id = int(qa_id) / self._num_pols
+        ant_id = int(qa_id) // self._num_pols
         feed_id = int(qa_id) % self._num_pols
 
         polarization = dd.get_polarization_label(feed_id)
@@ -140,5 +140,5 @@ class BandpassListQAHandler(pqa.QAPlugin):
     def handle(self, context, result):
         # collate the QAScores from each child result, pulling them into our
         # own QAscore list
-        collated = utils.flatten([r.qa.pool for r in result]) 
+        collated = utils.flatten([r.qa.pool for r in result])
         result.qa.pool[:] = collated

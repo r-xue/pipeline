@@ -131,7 +131,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
                                            hm_lownoisethreshold=hm_lownoisethreshold,
                                            hm_negativethreshold=hm_negativethreshold, hm_minbeamfrac=hm_minbeamfrac,
                                            hm_growiterations=hm_growiterations, hm_dogrowprune=hm_dogrowprune,
-                                           hm_minpercentchange=hm_minpercentchange, hm_fastnoise=hm_fastnoise, 
+                                           hm_minpercentchange=hm_minpercentchange, hm_fastnoise=hm_fastnoise,
                                            hm_nsigma=hm_nsigma, hm_perchanweightdensity=hm_perchanweightdensity,
                                            hm_npixels=hm_npixels, niter=niter, threshold=threshold,
                                            sensitivity=sensitivity, conjbeams=conjbeams, is_per_eb=is_per_eb,
@@ -448,7 +448,7 @@ class Tclean(cleanbase.CleanBase):
                 # Skip edge channels and extra channels if no nchan is supplied.
                 # Adjust to binning since the normal nchan heuristics already includes it.
                 if inputs.nbin not in (None, -1):
-                    inputs.nchan = int(round((if1 - if0) / channel_width - 2)) - 2 * int(extra_skip_channels / inputs.nbin)
+                    inputs.nchan = int(round((if1 - if0) / channel_width - 2)) - 2 * int(extra_skip_channels // inputs.nbin)
                 else:
                     inputs.nchan = int(round((if1 - if0) / channel_width - 2)) - 2 * extra_skip_channels
 
@@ -728,7 +728,7 @@ class Tclean(cleanbase.CleanBase):
         iteration = 1
         do_not_copy_mask = False
         while keep_iterating:
-            # Create the name of the next clean mask from the root of the 
+            # Create the name of the next clean mask from the root of the
             # previous residual image.
             rootname, ext = os.path.splitext(result.residual)
             rootname, ext = os.path.splitext(rootname)
@@ -943,7 +943,7 @@ class Tclean(cleanbase.CleanBase):
 
     # Remove pointing table.
     def _empty_pointing_table(self):
-        # Concerned that simply renaming things directly 
+        # Concerned that simply renaming things directly
         # will corrupt the table cache, so do things using only the
         # table tool.
         for vis in self.inputs.vis:
@@ -969,8 +969,8 @@ class Tclean(cleanbase.CleanBase):
     # Calculate a "mom0_fc" and "mom8_fc" image: this is a moment 0 and 8
     # integration over the line-free channels of the non-primary-beam
     # corrected image-cube, after continuum subtraction; where the "line-free"
-    # channels are taken from those identified as continuum channels. 
-    # This is a diagnostic plot representing the residual emission 
+    # channels are taken from those identified as continuum channels.
+    # This is a diagnostic plot representing the residual emission
     # in the line-free (aka continuum) channels. If the continuum subtraction
     # worked well, then this image should just contain noise.
     def _calc_mom0_8_fc(self, result):
@@ -980,7 +980,7 @@ class Tclean(cleanbase.CleanBase):
         # Find max iteration that was performed.
         maxiter = max(result.iterations.keys())
 
-        # Get filename of image from result, and modify to select the  
+        # Get filename of image from result, and modify to select the
         # non-PB-corrected image.
         imagename = result.iterations[maxiter]['image'].replace('.pbcor', '')
 

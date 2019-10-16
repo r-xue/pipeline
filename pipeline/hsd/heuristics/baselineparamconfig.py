@@ -40,7 +40,7 @@ class BaselineParamKeys(object):
     ORDER = 'order'
     NPIECE = 'npiece'
     NWAVE = 'nwave'
-    ORDERED_KEY = [ROW, POL, MASK, CLIPNITER, CLIPTHRESH, USELF, LFTHRESH, 
+    ORDERED_KEY = [ROW, POL, MASK, CLIPNITER, CLIPTHRESH, USELF, LFTHRESH,
                    LEDGE, REDGE, AVG_LIMIT, FUNC, ORDER, NPIECE, NWAVE]
 
 
@@ -76,7 +76,7 @@ class BaselineFitParamConfig(api.Heuristic):
         super(BaselineFitParamConfig, self).__init__()
         self.paramdict = {}
 
-    # readonly attributes    
+    # readonly attributes
     @property
     def ClipCycle(self):
         return 1
@@ -87,7 +87,7 @@ class BaselineFitParamConfig(api.Heuristic):
         colname = ''
         if isinstance(vis, str):
             with casatools.TableReader(vis) as tb:
-                candidate_names = ['CORRECTED_DATA', 
+                candidate_names = ['CORRECTED_DATA',
                                    'DATA',
                                    'FLOAT_DATA']
                 for name in candidate_names:
@@ -98,7 +98,7 @@ class BaselineFitParamConfig(api.Heuristic):
 
     def calculate(self, datatable, ms, antenna_id, field_id, spw_id, fit_order, edge, deviation_mask, blparam):
         """
-        Generate/update BLParam file, which will be an input to sdbaseline, 
+        Generate/update BLParam file, which will be an input to sdbaseline,
         according to the input parameters.
 
         Inputs:
@@ -110,7 +110,7 @@ class BaselineFitParamConfig(api.Heuristic):
             fit_order -- Fiting order ('automatic' or number)
             edge -- Number of edge channels to be excluded from the heuristics
                     (format: [L, R])
-            deviation_mask -- Deviation mask 
+            deviation_mask -- Deviation mask
             blparam -- Name of the BLParam file
                        File contents will be updated by this heuristics
 
@@ -188,7 +188,7 @@ class BaselineFitParamConfig(api.Heuristic):
                     idxs = member_list[y][1]
 
                     #spectra = numpy.fromiter((tb.getcell(colname,row)
-                    #                          for row in rows), 
+                    #                          for row in rows),
                     #                         dtype=numpy.float64)
                     #tsel = tb.query('ROWNUMBER() IN [%s]'%((','.join(map(str, rows)))), style='python')
                     #spectra = tsel.getcol()
@@ -209,7 +209,7 @@ class BaselineFitParamConfig(api.Heuristic):
                     spectra[:, nchan-edge[1]:, :] = 0.0
 
                     # here we assume that masklist is polarization-independent
-                    # (this is because that line detection/validation process accumulates 
+                    # (this is because that line detection/validation process accumulates
                     # polarization components together
                     masklist = [datatable.getcell('MASKLIST', idx) for idx in idxs]
                     #masklist = [datatable.getcell('MASKLIST',idxs[i]) + flaglist[i]
@@ -245,7 +245,7 @@ class BaselineFitParamConfig(api.Heuristic):
 
                             # mask lines
                             maxwidth = 1
-    #                       _masklist = masklist[i] 
+    #                       _masklist = masklist[i]
                             _masklist = list(masklist[i]) + flaglist[i][pol]
                             for [chan0, chan1] in _masklist:
                                 if chan1 - chan0 >= maxwidth:
@@ -253,7 +253,7 @@ class BaselineFitParamConfig(api.Heuristic):
                                     # allowance in Process3 is 1/5:
                                     #    (1 + 1/5 + 1/5)^(-1) = (5/7)^(-1)
                                     #                         = 7/5 = 1.4
-                            max_polyorder = int((nchan - sum(edge)) / maxwidth + 1)
+                            max_polyorder = int((nchan - sum(edge)) // maxwidth + 1)
                             if TRACE():
                                 LOG.trace('Masked Region from previous processes = {}'.format(
                                     _masklist))
@@ -344,7 +344,7 @@ class BaselineFitParamConfig(api.Heuristic):
     @abc.abstractmethod
     def _get_param(self, idx, pol, polyorder, nchan, mask, edge, nchan_without_edge, nchan_masked, fragment, nwindow,
                    win_polyorder, masklist):
-        raise NotImplementedError    
+        raise NotImplementedError
 
 
 class CubicSplineFitParamConfig(BaselineFitParamConfig):

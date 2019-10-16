@@ -61,7 +61,7 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
     def __axes_list(self):
         for icluster in xrange(self.ncluster):
             x = icluster % self.nh
-            y = int(icluster / self.nh)
+            y = int(icluster // self.nh)
             x1 = 1.0 / float(self.nh)
             if x == 0:
                 x0 = x1 * (x + 0.1)
@@ -127,16 +127,16 @@ class ClusterDisplay(object):
             rep_member_id = group['members'][0]
             rep_member = reduction_group[group_id][rep_member_id]
             if 'cluster_score' not in cluster or is_all_invalid_lines:
-                # it should be empty cluster (no detection) or false clusters (detected but 
+                # it should be empty cluster (no detection) or false clusters (detected but
                 # judged as an invalid clusters) so skip this cycle
                 continue
             if 'index' in group:
-                # having key 'index' indicates the result comes from old (Scantable-based) 
+                # having key 'index' indicates the result comes from old (Scantable-based)
                 # procedure
                 antenna = group['index'][0]
                 vis = None
             else:
-                # having key 'antenna' instead of 'index' indicates the result comes from 
+                # having key 'antenna' instead of 'index' indicates the result comes from
                 # new (MS-based) procedure
                 antenna = rep_member.antenna_id
                 vis = rep_member.ms.name
@@ -153,7 +153,7 @@ class ClusterDisplay(object):
             plot_property = ClusterPropertyDisplay(group_id, iteration, cluster, virtual_spw, source_name, stage_dir)
             plot_list.extend(plot_property.plot())
             t2 = time.time()
-            plot_validation = ClusterValidationDisplay(self.context, group_id, iteration, cluster, vis, 
+            plot_validation = ClusterValidationDisplay(self.context, group_id, iteration, cluster, vis,
                                                        virtual_spw, source_name, antenna, lines, stage_dir)
             plot_list.extend(plot_validation.plot())
             t3 = time.time()
@@ -175,7 +175,7 @@ class ClusterDisplayWorker(object):
 
     def __init__(self, group_id, iteration, cluster, spw, field, stage_dir):
         """
-        spw is a virtual spw id 
+        spw is a virtual spw id
         """
         self.group_id = group_id
         self.iteration = iteration
@@ -319,7 +319,9 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
         ymax = ny * scale_dec + ymin
 
         marker_size = int(300.0 / (max(nx, ny * 1.414) * num_panel_h) + 1.0)
-        tick_size = int(6 + (1 / num_panel_h) * 2)
+        # 2019/10/08 TN
+        # It seems 1/num_panel_h is almost always zero, should it be float division?
+        tick_size = int(6 + (1 // num_panel_h) * 2)
 
         # direction reference
         reference_ms = self.context.observing_run.measurement_sets[0]
@@ -422,7 +424,7 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
                 # Pick up target digit
                 _data = self.cluster['cluster_flag']
                 _digit = digits[key]
-                data = (_data / _digit) % 10
+                data = (_data // _digit) % 10
                 LOG.debug('data=%s' % data)
                 threshold = self.cluster[key+'_threshold']
                 desc = self.Description[key]
@@ -460,7 +462,7 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
                 tsel.close()
 
         # line property in channel
-        line_center = self.lines[icluster][0] 
+        line_center = self.lines[icluster][0]
         line_width = self.lines[icluster][1]
 
         center_frequency = refval + (line_center - refpix) * increment

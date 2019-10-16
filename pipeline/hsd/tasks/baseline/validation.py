@@ -225,7 +225,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         num_edge = sum(self.inputs.edge)
         spw = self.inputs.reference_member.spw
         nchan = spw.num_channels
-        return int(max(0, nchan - num_edge) / 3)
+        return int(max(0, nchan - num_edge) // 3)
 
     def validate_cluster(self, clustering_algorithm, clustering_result,
                          index_list, detect_signal, PosList, Region2):
@@ -1021,8 +1021,10 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         tmp = numpy.zeros((Data.shape[0]+Repeat*2, Data.shape[1]), numpy.float)
         tmp[Repeat*2:] = Data.copy()
         for i in range(Repeat):
-            tmp[i] = [self.nchan/2, 0]
-            tmp[Repeat+i] = [self.nchan/2, self.nchan-1]
+            # 2019/10/09 TN
+            # need to make sure the intention of the code
+            tmp[i] = [self.nchan//2, 0]
+            tmp[Repeat+i] = [self.nchan//2, self.nchan-1]
         #LOG.debug('tmp[:10] = {}', tmp[:10])
         tmpLinkMatrix = H_Clustering(tmp)
         MedianDistance = numpy.median(tmpLinkMatrix.T[2])
@@ -1575,12 +1577,14 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                                         for j in range(xorder0 + 1):
                                             B1[j + k * (xorder0 + 1)] += math.pow(x, j) * math.pow(y, k) * Width
                             # make Matrix MM0,MM1 and calculate A0,A1
+                            # 2019/10/08 TN
+                            # need to check if integer division is valid or not
                             for K in range((xorder0 + 1) * (yorder0 + 1)):
                                 k0 = K % (xorder0 + 1)
-                                k1 = int(K / (xorder0 + 1))
+                                k1 = int(K // (xorder0 + 1))
                                 for J in range((xorder0 + 1) * (yorder0 + 1)):
                                     j0 = J % (xorder0 + 1)
-                                    j1 = int(J / (xorder0 + 1))
+                                    j1 = int(J // (xorder0 + 1))
                                     MM0[J, K] = M0[j0 + k0 + (j1 + k1) * (xorder0 * 2 + 1)]
                                     MM1[J, K] = M1[j0 + k0 + (j1 + k1) * (xorder0 * 2 + 1)]
                             LOG.trace('OLD:MM0 = {}', MM0.tolist())
@@ -1871,7 +1875,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         # Set-up kernel for convolution
         # caution: if nra < (Blur*2+1) and ndec < (Blur*2+1)
         #  => dimension of SPC.convolve2d(Sub,kernel) gets not (nra,ndec) but (Blur*2+1,Blur*2+1)
-        if nra < (Blur * 2 + 1) and ndec < (Blur * 2 + 1): Blur = int((max(nra, ndec) - 1) / 2)
+        if nra < (Blur * 2 + 1) and ndec < (Blur * 2 + 1): Blur = int((max(nra, ndec) - 1) // 2)
         kernel = numpy.zeros((Blur * 2 + 1, Blur * 2 + 1), dtype=int)
         for x in xrange(Blur * 2 + 1):
             dx = Blur - x
@@ -1934,7 +1938,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             sorted_index[nedges] = left_edge
             sorted_index[nedges+1] = flat_lines[sorted_index[-1]]
             nedges += 2
-            return sorted_index[:nedges].reshape((nedges/2, 2)).tolist()
+            return sorted_index[:nedges].reshape((nedges//2, 2)).tolist()
             #region = numpy.ones(nchan + 2, dtype=int)
             #for [chan0, chan1] in lines:
             #    region[chan0 + 1:chan1 + 1] = 0

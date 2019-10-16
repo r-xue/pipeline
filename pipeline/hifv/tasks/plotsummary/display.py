@@ -58,7 +58,7 @@ class plotsummarySummaryChart(object):
 
         plotfields = calfields
 
-        nplots = (len(alltargetfields)/30)+1
+        nplots = (len(alltargetfields)//30)+1
 
         targetfields = [field for field in alltargetfields[0:len(alltargetfields):nplots]]
 

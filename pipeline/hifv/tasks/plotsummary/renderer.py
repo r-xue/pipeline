@@ -310,7 +310,7 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
 
             m = context.observing_run.measurement_sets[0]
             alltargetfields = m.get_fields(intent='TARGET')
-            Nplots = (len(alltargetfields) / 30) + 1
+            Nplots = (len(alltargetfields) // 30) + 1
 
             targetfields = [field for field in alltargetfields[0:len(alltargetfields):Nplots]]
 
