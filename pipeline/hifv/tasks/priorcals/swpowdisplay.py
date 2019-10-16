@@ -1,9 +1,8 @@
 import os
 
-import casatasks
-
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
+import pipeline.infrastructure.casa_tasks as casa_tasks
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -29,11 +28,13 @@ class swpowSummaryChart(object):
         antPlot = '0~2'
 
         plotmax = 100
-        casatasks.plotms(vis=self.caltable, xaxis='time', yaxis='amp', field='',
+        job = casa_tasks.plotms(vis=self.caltable, xaxis='time', yaxis='amp', field='',
                          antenna=antPlot, spw='', timerange='',
                          plotrange=[0, 0, 0, plotmax], coloraxis='',
                          title='Switched Power  swpow.tbl   Antenna: {!s}'.format('0~2'),
                          titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+
+        job.execute(dry_run=False)
 
     def get_figfile(self, prefix):
         return os.path.join(self.context.report_dir,
@@ -124,12 +125,14 @@ class swpowPerAntennaChart(object):
                     LOG.debug("Switched Power Plot, using antenna={!s} and spw={!s}".format(antName,
                                                                                             self.result.sw_result.spw))
 
-                    casatasks.plotms(vis=self.caltable, xaxis='time', yaxis=self.yaxis, field='',
+                    job = casa_tasks.plotms(vis=self.caltable, xaxis='time', yaxis=self.yaxis, field='',
                                      antenna=antPlot, spw=self.result.sw_result.spw, timerange='',
                                      plotrange=plotrange, coloraxis='',
                                      title='Switched Power  swpow.tbl   Antenna: {!s}'.format(antName),
                                      titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                      xconnector='line')
+
+                    job.execute(dry_run=False)
 
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename)
