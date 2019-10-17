@@ -103,7 +103,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
         # If requested, execute a phaseup job. This will add the resulting
         # caltable to the on-the-fly calibration context, so we don't need any
         # subsequent gaintable manipulation
-        if inputs.hm_phaseup != '': 
+        if inputs.hm_phaseup != '':
             # Determine the single best phaseup solution interval for the set of
             # science spws. The heuristic assumes that the inegration times
             # are the same
@@ -132,8 +132,8 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
             result = self._do_bandpass()
 
         # Attach the preparatory result to the final result so we have a
-        # complete log of all the executed tasks. 
-        if inputs.hm_phaseup != '': 
+        # complete log of all the executed tasks.
+        if inputs.hm_phaseup != '':
             result.preceding.append(phaseup_result.final)
 
         return result
@@ -194,7 +194,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
                        for scan in scans if snr_result.spwids[i] in [spw.id for spw in scan.spws]}
 
             timedelta = solints.pop()
-            timedelta_solint = '%ss' % timedelta.total_seconds() 
+            timedelta_solint = '%ss' % timedelta.total_seconds()
 
             old_solint = snr_result.phsolints[i]
 
@@ -205,9 +205,9 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
 
                 if old_solint == 'int':
                     # We expect an MS to have the same integration interval
-                    # for each spw in the phase-up scan(s). We can't rely on 
+                    # for each spw in the phase-up scan(s). We can't rely on
                     # this though, so we need to check this assumption on each
-                    # access 
+                    # access
 
                     # But if multiple solint were were used for scans with the
                     # same intent, bail out again
@@ -217,12 +217,12 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
                         tmpsolints.append(old_solint)
                         continue
 
-                    # OK. We got one solution interval for all scans of the 
+                    # OK. We got one solution interval for all scans of the
                     # desired intent. Overwrite old_solint with the equivalent
                     # time for 'int' in seconds. This wil be carried forward
                     # to the quanta tool calls.
                     # note the extra s to denote units, otherwise the quanta
-                    # tool can't make a comparison 
+                    # tool can't make a comparison
                     old_solint = timedelta_solint
 
                 newsolint = quanta.tos(quanta.mul(quanta.quantity(snr_result.exptimes[i]), quanta.quantity(factor)), 3)
@@ -318,7 +318,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
             inputs.caltable = inputs.caltable
             spwlist = inputs.ms.get_spectral_windows(orig_spw)
 
-            # will hold the CalAppOrigins that record how each CalApp was 
+            # will hold the CalAppOrigins that record how each CalApp was
             # generate. Ideally this would be a list on the CalApp itself,
             # but we don't have time to do that right now.
             calapp_origins = []
@@ -340,7 +340,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
 
                 # Smooth if FDM and if it makes sense
                 if ncorr * spw.num_channels > 256:
-                    if (spw.num_channels / inputs.maxchannels) < 1:
+                    if (spw.num_channels // inputs.maxchannels) < 1:
                         inputs.solint = orig_solint
                     else:
                         bandwidth = spw.bandwidth.to_units(
@@ -356,7 +356,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
                 result = self._executor.execute(bandpass_task)
                 if os.path.exists(self.inputs.caltable):
                     self.inputs.append = True
-                    self.inputs.caltable = result.final[-1].gaintable                
+                    self.inputs.caltable = result.final[-1].gaintable
                     calapp_origins.extend(result.final[-1].origin)
 
             # Reset the calto spw list
@@ -387,7 +387,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
             inputs.caltable = inputs.caltable
             spwlist = inputs.ms.get_spectral_windows(orig_spw)
 
-            # will hold the CalAppOrigins that record how each CalApp was 
+            # will hold the CalAppOrigins that record how each CalApp was
             # generate. Ideally this would be a list on the CalApp itself,
             # but we don't have time to do that right now.
             calapp_origins = []
@@ -433,7 +433,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
 
                 elif ncorr * spw.num_channels > 256:
 
-                    if (spw.num_channels / inputs.maxchannels) < 1:
+                    if (spw.num_channels // inputs.maxchannels) < 1:
                         inputs.solint = orig_solint
                     else:
                         bandwidth = spw.bandwidth.to_units(
@@ -451,7 +451,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
                 result = self._executor.execute(bandpass_task)
                 if os.path.exists(self.inputs.caltable):
                     self.inputs.append = True
-                    self.inputs.caltable = result.final[-1].gaintable              
+                    self.inputs.caltable = result.final[-1].gaintable
                     calapp_origins.extend(result.final[-1].origin)
 
             # Reset the calto spw list
@@ -470,7 +470,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
     # Compute spws using bandwidth parameters
     def _get_phaseup_spw(self):
         """
-                   ms -- measurement set object 
+                   ms -- measurement set object
                spwstr -- comma delimited list of spw ids
             bandwidth -- bandwidth in Hz of central channels used to
                          phaseup
@@ -485,15 +485,15 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
         # Convert bandwidth input to CASA quantity and then on to pipeline
         # domain Frequency object
         quanta = casatools.quanta
-        bw_quantity = quanta.convert(quanta.quantity(inputs.phaseupbw), 'Hz')        
-        bandwidth = measures.Frequency(quanta.getvalue(bw_quantity)[0], 
+        bw_quantity = quanta.convert(quanta.quantity(inputs.phaseupbw), 'Hz')
+        bandwidth = measures.Frequency(quanta.getvalue(bw_quantity)[0],
                                        measures.FrequencyUnits.HERTZ)
 
         # Loop over the spws creating a new list with channel ranges
         outspw = []
         for spw in self.inputs.ms.get_spectral_windows(self.inputs.spw):
-            cen_freq = spw.centre_frequency 
-            lo_freq = cen_freq - bandwidth / 2.0  
+            cen_freq = spw.centre_frequency
+            lo_freq = cen_freq - bandwidth / 2.0
             hi_freq = cen_freq + bandwidth / 2.0
             minchan, maxchan = spw.channel_range(lo_freq, hi_freq)
             cmd = '{0}:{1}~{2}'.format(spw.id, minchan, maxchan)

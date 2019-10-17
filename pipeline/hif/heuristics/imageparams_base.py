@@ -72,7 +72,7 @@ class ImageParamsHeuristics(object):
 
         self.imaging_params = imaging_params
 
-        # split spw into list of spw parameters for 'clean' 
+        # split spw into list of spw parameters for 'clean'
         spwlist = spw.replace('[', '').replace(']', '').strip()
         spwlist = spwlist.split("','")
         spwlist[0] = spwlist[0].strip("'")
@@ -318,7 +318,7 @@ class ImageParamsHeuristics(object):
         # reset state of imager
         casatools.imager.done()
 
-        # get the spwids in spwspec - imager tool likes these rather than 
+        # get the spwids in spwspec - imager tool likes these rather than
         # a string
         p = re.compile(r"[ ,]+(\d+)")
         spwids = p.findall(' %s' % spwspec)
@@ -709,12 +709,12 @@ class ImageParamsHeuristics(object):
             avg_sdirection_m0_rad = np.average(sdirection_m0_rad)
             avg_sdirection_m1_rad = np.average(sdirection_m1_rad)
             for i in range(len(mdirections)):
-                mdirections[i]['m0'] = cqa.sub(mdirections[i]['m0'], cqa.sub(sdirections[i]['m0'], cqa.quantity(avg_sdirection_m0_rad, 'rad'))) 
-                mdirections[i]['m1'] = cqa.sub(mdirections[i]['m1'], cqa.sub(sdirections[i]['m1'], cqa.quantity(avg_sdirection_m1_rad, 'rad'))) 
+                mdirections[i]['m0'] = cqa.sub(mdirections[i]['m0'], cqa.sub(sdirections[i]['m0'], cqa.quantity(avg_sdirection_m0_rad, 'rad')))
+                mdirections[i]['m1'] = cqa.sub(mdirections[i]['m1'], cqa.sub(sdirections[i]['m1'], cqa.quantity(avg_sdirection_m1_rad, 'rad')))
 
         # sanity check - for single field images the field centres from
         # different measurement sets should be coincident and can
-        # collapse the list 
+        # collapse the list
         # Set the maximum separation to 200 microarcsec and test via
         # a tolerance rather than an equality.
         max_separation = cqa.quantity('200uarcsec')
@@ -849,7 +849,7 @@ class ImageParamsHeuristics(object):
             field_string = ','.join(str(fld_id) for fld_id in field_list)
             result.append(field_string)
 
-        # this will be a mosaic if there is more than 1 field_id for any 
+        # this will be a mosaic if there is more than 1 field_id for any
         # measurement set
         self._mosaic = (np.array(nfields_list) > 1).any()
 
@@ -960,7 +960,7 @@ class ImageParamsHeuristics(object):
             repr_source = target_sources[0]
             repr_spw_obj = repr_ms.get_spectral_windows()[0]
             repr_spw = repr_spw_obj.id
-            repr_chan_obj = repr_spw_obj.channels[int(repr_spw_obj.num_channels / 2)]
+            repr_chan_obj = repr_spw_obj.channels[int(repr_spw_obj.num_channels // 2)]
             repr_freq = cqa.quantity(float(repr_chan_obj.getCentreFrequency().convert_to(measures.FrequencyUnits.HERTZ).value), 'Hz')
             repr_bw = cqa.quantity(float(repr_chan_obj.getWidth().convert_to(measures.FrequencyUnits.HERTZ).value), 'Hz')
             repr_target = (repr_source, repr_freq, repr_bw)
@@ -1063,7 +1063,7 @@ class ImageParamsHeuristics(object):
         if specmode:
             namer.specmode(specmode)
 
-        # filenamer returns a sanitized filename (i.e. one with 
+        # filenamer returns a sanitized filename (i.e. one with
         # illegal characters replace by '_'), no need to check
         # the name components individually.
         imagename = namer.get_filename()
@@ -1380,7 +1380,7 @@ class ImageParamsHeuristics(object):
         """
         i_low = i_high = None
         num_channels = len(channel_flags)
-        center_channel = int(num_channels / 2)
+        center_channel = int(num_channels // 2)
 
         for i in range(center_channel, -1, -1):
             if channel_flags[i] == False:
@@ -1990,7 +1990,7 @@ class ImageParamsHeuristics(object):
             ## The iterative loop is to get robust autoflagging
             ## Add a linear fit instead of just a 'mean' to account for slopes (useful for flagging on beam_area)
             local_axratio = axratio.copy()
-            for steps in range(0, 2):  ### Heuristic : how many iterations here ? 
+            for steps in range(0, 2):  ### Heuristic : how many iterations here ?
                 local_axratio[ weight==False ] = np.nan
                 mean_axrat = np.nanmean(local_axratio)
                 std_axrat = np.nanstd(local_axratio)
@@ -2006,7 +2006,7 @@ class ImageParamsHeuristics(object):
                 LOG.error('No valid beams in {!s}'.format(psf_filename))
                 return None, np.arange(nchan)
 
-            ## Fill all flagged channels with the largest/first valid beam 
+            ## Fill all flagged channels with the largest/first valid beam
             dummybeam = allbeams['beams']['*'+str(chanid)]['*0']
             for ii in range(0, nchan):
                 if weight[ii]==False:

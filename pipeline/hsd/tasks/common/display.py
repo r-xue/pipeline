@@ -1,3 +1,4 @@
+
 import abc
 import datetime
 import math
@@ -615,9 +616,9 @@ class SDSparseMapPlotter(object):
     def __init__(self, nh, nv, step, brightnessunit, clearpanel=True, figure_id=None):
         self.step = step
         if step > 1:
-            ticksize = 10 - int(max(nh, nv) * step / (step - 1)) / 2
+            ticksize = 10 - int(max(nh, nv) * step / (step - 1)) // 2
         elif step == 1:
-            ticksize = 10 - int(max(nh, nv)) / 2
+            ticksize = 10 - int(max(nh, nv)) // 2
         ticksize = max(ticksize, 3)
         self.axes = SparseMapAxesManager(nh, nv, brightnessunit, ticksize, clearpanel, figure_id)
         self.lines_averaged = None
@@ -751,8 +752,8 @@ class SDSparseMapPlotter(object):
         #    ListMax = ListMax.data[ListMax.mask == False]
         LOG.debug('ListMax=%s' % (list(ListMax)))
         LOG.debug('ListMin=%s' % (list(ListMin)))
-        global_ymax = numpy.sort(ListMax)[len(ListMax) - len(ListMax)/10 - 1]
-        global_ymin = numpy.sort(ListMin)[len(ListMin)/10]
+        global_ymax = numpy.sort(ListMax)[len(ListMax) - len(ListMax)//10 - 1]
+        global_ymin = numpy.sort(ListMin)[len(ListMin)//10]
         global_ymax = global_ymax + (global_ymax - global_ymin) * 0.2
         global_ymin = global_ymin - (global_ymax - global_ymin) * 0.1
         del ListMax, ListMin

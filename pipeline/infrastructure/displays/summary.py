@@ -73,8 +73,8 @@ class AzElChart(object):
         session_part = self.ms.session
         ms_part = self.ms.basename
 
-        return os.path.join(self.context.report_dir, 
-                            'session%s' % session_part, 
+        return os.path.join(self.context.report_dir,
+                            'session%s' % session_part,
                             ms_part, 'azel.png')
 
     def _get_plot_object(self, task):
@@ -116,8 +116,8 @@ class WeatherChart(object):
     def _get_figfile(self):
         session_part = self.ms.session
         ms_part = self.ms.basename
-        return os.path.join(self.context.report_dir, 
-                            'session%s' % session_part, 
+        return os.path.join(self.context.report_dir,
+                            'session%s' % session_part,
                             ms_part, 'weather.png')
 
     def _get_plot_object(self):
@@ -127,7 +127,7 @@ class WeatherChart(object):
                            parameters={'vis': self.ms.basename})
 
 
-class ElVsTimeChart(object):    
+class ElVsTimeChart(object):
     def __init__(self, context, ms):
         self.context = context
         self.ms = ms
@@ -171,8 +171,8 @@ class ElVsTimeChart(object):
     def _get_figfile(self):
         session_part = self.ms.session
         ms_part = self.ms.basename
-        return os.path.join(self.context.report_dir, 
-                            'session%s' % session_part, 
+        return os.path.join(self.context.report_dir,
+                            'session%s' % session_part,
                             ms_part, 'el_vs_time.png')
 
     def _get_plot_object(self, task):
@@ -260,9 +260,9 @@ class FieldVsTimeChart(object):
                 ys = y0
                 ye = y0 + height
                 for colour in colours:
-                    ax.fill([x0, x1, x1, x0], 
+                    ax.fill([x0, x1, x1, x0],
                             [ys, ys, ye, ye],
-                            facecolor=colour, 
+                            facecolor=colour,
                             edgecolor=colour)
                     ys += height
                     ye += height
@@ -354,7 +354,7 @@ class FieldVsTimeChart(object):
             ax.xaxis.set_major_locator(days)
             ax.xaxis.set_major_formatter(dates.DateFormatter('%Y-%m-%d:%Hh'))
             ax.xaxis.set_minor_locator(hours)
-        else:    
+        else:
             # spans more than a week
             months = dates.MonthLocator(bymonthday=1, interval=3)
             mondays = dates.WeekdayLocator(dates.MONDAY)
@@ -414,7 +414,7 @@ class IntentVsTimeChart(object):
         fig = pyplot.figure(figsize=(14, 9))
         ax = fig.add_subplot(111)
 
-        ms = self.inputs.ms        
+        ms = self.inputs.ms
         obs_start = utils.get_epoch_as_datetime(ms.start_time)
         obs_end = utils.get_epoch_as_datetime(ms.end_time)
 
@@ -425,7 +425,7 @@ class IntentVsTimeChart(object):
                 if intent not in IntentVsTimeChart._intent_colours:
                     continue
                 (colour, scan_y) = IntentVsTimeChart._intent_colours[intent]
-                ax.fill([scan_start, scan_end, scan_end, scan_start], 
+                ax.fill([scan_start, scan_end, scan_end, scan_start],
                         [scan_y, scan_y, scan_y+5, scan_y+5],
                         facecolor=colour)
 
@@ -455,7 +455,7 @@ class IntentVsTimeChart(object):
 
     @staticmethod
     def _in_minutes(dt):
-        return (dt.days * 86400 + dt.seconds + dt.microseconds * 1e-6) / 60.0 
+        return (dt.days * 86400 + dt.seconds + dt.microseconds * 1e-6) / 60.0
 
     def _get_plot_object(self):
         filename = self.inputs.output
@@ -486,8 +486,8 @@ class PWVChart(object):
     def _get_figfile(self):
         session_part = self.ms.session
         ms_part = self.ms.basename
-        return os.path.join(self.context.report_dir, 
-                            'session%s' % session_part, 
+        return os.path.join(self.context.report_dir,
+                            'session%s' % session_part,
                             ms_part, 'pwv.png')
 
     def _get_plot_object(self):
@@ -519,8 +519,8 @@ class MosaicChart(object):
     def _get_figfile(self):
         session_part = self.ms.session
         ms_part = self.ms.basename
-        return os.path.join(self.context.report_dir, 
-                            'session%s' % session_part, 
+        return os.path.join(self.context.report_dir,
+                            'session%s' % session_part,
                             ms_part, 'mosaic_source%s.png' % self.source.id)
 
     def _get_plot_object(self):
@@ -563,8 +563,8 @@ class PlotAntsChart(object):
             figfilename = 'plotants_polarlog.png'
         else:
             figfilename = 'plotants.png'
-        return os.path.join(self.context.report_dir, 
-                            'session%s' % session_part, 
+        return os.path.join(self.context.report_dir,
+                            'session%s' % session_part,
                             ms_part, figfilename)
 
     def _get_plot_object(self):
@@ -573,7 +573,7 @@ class PlotAntsChart(object):
                            y_axis='Antenna Latitude',
                            parameters={'vis': self.ms.basename})
 
-    def draw_pad_map_in_subplot(self, plf, antennas, xlimit=None, 
+    def draw_pad_map_in_subplot(self, plf, antennas, xlimit=None,
                                 ylimit=None, showemptypads=True):
         """
         Draw a map of pads and antennas on them.
@@ -726,16 +726,16 @@ class PlotAntsChart(object):
                 if cr >= 1000:
                     if np.log(cr) < rmax:
                         subpl.text(circle_label_angle, np.log(cr),
-                                   '%d km' % (cr/1000), size=8, va=va)
+                                   '%d km' % (cr//1000), size=8, va=va)
                         subpl.text(circle_label_angle + np.pi, np.log(cr),
-                                   '%d km' % (cr / 1000), size=8, va=va)
+                                   '%d km' % (cr // 1000), size=8, va=va)
                 else:
                     subpl.text(circle_label_angle, np.log(cr), '%dm' % (cr),
                                size=8, va=va)
                     subpl.text(circle_label_angle + np.pi, np.log(cr), '%dm' % (cr),
                                size=8, va=va)
 
-            # Find out if most recently drawn circle was outside all antennas, 
+            # Find out if most recently drawn circle was outside all antennas,
             # if so, no more circles will be drawn.
             if np.log(cr) > rmax:
                 show_circle = False

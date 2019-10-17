@@ -12,7 +12,7 @@ class FragmentationHeuristics(api.Heuristic):
     """
     Determine fragmentation from given total number of channels,
     edge channels to be dropped, and polynomial order for baseline
-    fit. 
+    fit.
     """
     MaxOrder = 9
     MaxFragmentation = 3
@@ -22,7 +22,7 @@ class FragmentationHeuristics(api.Heuristic):
         """
         Determine fragmentation from given total number of channels,
         edge channels to be dropped, and polynomial order for baseline
-        fit. 
+        fit.
 
         Inputs:
            polyorder -- polynomial order for baseline fit
@@ -37,10 +37,10 @@ class FragmentationHeuristics(api.Heuristic):
         """
         _polyorder = polyorder + modification
         _nchan = nchan - sum(edge)
-        fragment = int(min(_polyorder / self.MaxOrder + 1,
-                           max(_nchan / self.MinChannels, 1)))
+        fragment = int(min(_polyorder // self.MaxOrder + 1,
+                           max(_nchan // self.MinChannels, 1)))
         fragment = min(fragment, self.MaxFragmentation)
         num_segment = fragment * 2 - 1
-        segment_polyorder = min(int(_polyorder / fragment) + fragment - 1,
+        segment_polyorder = min(int(_polyorder // fragment) + fragment - 1,
                                  self.MaxOrder)
         return (fragment, num_segment, segment_polyorder)

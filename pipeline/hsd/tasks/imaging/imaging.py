@@ -869,7 +869,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         if len(image_rms_freq_range) == 0:
             return image_rms_freq_range
 
-        return self._merge_ranges(numpy.reshape(image_rms_freq_range, (len(image_rms_freq_range)/2, 2), 'C'))
+        return self._merge_ranges(numpy.reshape(image_rms_freq_range, (len(image_rms_freq_range)//2, 2), 'C'))
 
     def _merge_ranges(self, range_list):
         """

@@ -216,7 +216,7 @@ class Applycals(applycal.IFApplycal):
 
                 fields = calfields
 
-                Nplots = (len(alltargetfields) / 30) + 1
+                Nplots = (len(alltargetfields) // 30) + 1
 
                 targetfields = [field for field in alltargetfields[0:len(alltargetfields):Nplots]]
 

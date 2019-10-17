@@ -3,17 +3,17 @@
 # Copyright (c) ATC - Astronomy Technology Center - Royal Observatory Edinburgh, 2011
 # (in the framework of the ALMA collaboration).
 # All rights reserved.
-# 
+#
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
-# 
+#
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 # Lesser General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
@@ -119,7 +119,7 @@ class SkyDisplay(object):
         with casatools.ImageReader(result) as image:
             try:
                 if collapseFunction == 'center':
-                    collapsed = image.collapse(function='mean', chans=str(image.summary()['shape'][3]/2), axes=[2, 3])
+                    collapsed = image.collapse(function='mean', chans=str(image.summary()['shape'][3]//2), axes=[2, 3])
                 else:
                     if (collapseFunction == 'max') and ('image' in result) and ('pbcor' not in result):
                         collapsed = image.collapse(function=collapseFunction, axes=[2, 3], outfile=result+'.mom8')
@@ -145,7 +145,7 @@ class SkyDisplay(object):
 
             # don't replot if a file of the required name already exists
             if os.path.exists(plotfile):
-                LOG.info('plotfile already exists: %s', plotfile) 
+                LOG.info('plotfile already exists: %s', plotfile)
                 return plotfile, coord_names, miscinfo.get('field'), None
 
             # otherwise do the plot
@@ -205,7 +205,7 @@ class SkyDisplay(object):
 
             cb.set_label(brightness_unit, fontsize=fontsize)
 
-            # image reference pixel    
+            # image reference pixel
             yoff = 0.10
             yoff = self.plottext(1.05, yoff, 'Reference position:', 40)
             for i, k in enumerate(coord_refs['string']):
@@ -235,7 +235,7 @@ class SkyDisplay(object):
                 for i in range(37):
                     theta = i*10.0*np.pi / 180.0
                     xbeam.append(0.5 * (
-                      bmaj*np.sin(theta)*np.cos(bpa) + 
+                      bmaj*np.sin(theta)*np.cos(bpa) +
                       bmin*np.cos(theta)*np.sin(bpa)))
                     ybeam.append(0.5 * (
                       -bmaj*np.sin(theta)*np.sin(bpa) +

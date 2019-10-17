@@ -126,8 +126,8 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
 
             # colorbar
             #print "min=%s, max of Total=%s" % (tmin,tmax)
-            if not (tmin == tmax): 
-                #if not ((Ymax == Ymin) and (Xmax == Xmin)): 
+            if not (tmin == tmax):
+                #if not ((Ymax == Ymin) and (Xmax == Xmin)):
                 #if not all(image_shape[id_direction] <= 1):
                 if self.nx > 1 or self.ny > 1:
                     if tpmap_colorbar is None:
@@ -188,7 +188,7 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
 #         # obtain integrated image using immoments task
 #         print self.imagename
 #         #job = casa_tasks.immoments(imagename=self.imagename, moments=[0], outfile=self.momentmap_name)
-# 
+#
 #     @property
 #     def momentmap_name(self):
 #         return self.result.outcome['image'].imagename.rstrip('/') + ('.mom%d' % self.MAP_MOMENT)
@@ -265,8 +265,8 @@ class SDMomentMapDisplay(SDImageDisplay):
 
             # colorbar
             #print "min=%s, max of Total=%s" % (tmin,tmax)
-            if not (tmin == tmax): 
-                #if not ((Ymax == Ymin) and (Xmax == Xmin)): 
+            if not (tmin == tmax):
+                #if not ((Ymax == Ymin) and (Xmax == Xmin)):
                 #if not all(image_shape[id_direction] <= 1):
                 if self.nx > 1 or self.ny > 1:
                     if tpmap_colorbar is None:
@@ -408,7 +408,7 @@ class ChannelMapAxesManager(ChannelAveragedAxesManager):
     def __axes_chmap(self):
         for i in range(self.nchmap):
             x = i % self.nh
-            y = self.nv - int(i / self.nh) - 1
+            y = self.nv - int(i // self.nh) - 1
             left = 1.0 / float(self.nh) * x #(x + 0.05)
             width = 1.0 / float(self.nh) * 0.85 #0.9
             bottom = 1.0 / float((self.nv+2)) * (y + 0.05)
@@ -455,9 +455,9 @@ class SDSparseMapDisplay(SDImageDisplay):
         #if ShowPlot: pl.ioff()
 
         num_panel = min(max(self.x_max - self.x_min + 1, self.y_max - self.y_min + 1), self.MaxPanel)
-        STEP = int((max(self.x_max - self.x_min + 1, self.y_max - self.y_min + 1) - 1) / num_panel) + 1
-        NH = (self.x_max - self.x_min) / STEP + 1
-        NV = (self.y_max - self.y_min) / STEP + 1
+        STEP = int((max(self.x_max - self.x_min + 1, self.y_max - self.y_min + 1) - 1) // num_panel) + 1
+        NH = (self.x_max - self.x_min) // STEP + 1
+        NV = (self.y_max - self.y_min) // STEP + 1
 
         LOG.info('num_panel=%s, STEP=%s, NH=%s, NV=%s' % (num_panel, STEP, NH, NV))
 
@@ -499,7 +499,7 @@ class SDSparseMapDisplay(SDImageDisplay):
                     qmid_time = qa.quantity(start_time['m0'])
                     qmid_time = qa.add(qmid_time, end_time['m0'])
                     qmid_time = qa.div(qmid_time, 2.0)
-                    time_ref = me.epoch(rf=start_time['refer'], 
+                    time_ref = me.epoch(rf=start_time['refer'],
                                         v0=qmid_time)
                     position_ref = ms.antennas[antenna_id].position
 
@@ -547,7 +547,7 @@ class SDSparseMapDisplay(SDImageDisplay):
             FigFileRoot = self.inputs.imagename+'.pol%s_Sparse' % pol
             plotfile = os.path.join(self.stage_dir, FigFileRoot+'_0.png')
 
-            status = plotter.plot(Plot, TotalSP, self.frequency[chan0:chan1], 
+            status = plotter.plot(Plot, TotalSP, self.frequency[chan0:chan1],
                                   figfile=plotfile)
             del Plot, TotalSP
 
@@ -648,7 +648,7 @@ class SDChannelMapDisplay(SDImageDisplay):
         unweight_mask = unweight_ia.getchunk(getmask=True)
         if numpy.all(unweight_mask == False):
             unweight_ia.close()
-            sp_ave = numpy.ma.masked_array(numpy.zeros((self.npol, self.nchan), dtype=numpy.float32), 
+            sp_ave = numpy.ma.masked_array(numpy.zeros((self.npol, self.nchan), dtype=numpy.float32),
                                            mask=numpy.ones((self.npol, self.nchan), dtype=numpy.bool))
             return sp_ave
 
@@ -770,7 +770,7 @@ class SDChannelMapDisplay(SDImageDisplay):
             # be sure the width of one channel map is integer
             # 2014/1/12 factor 1.4 -> 1.0 since velocity structure was taken into account for the range in validation.py
             #ChanW = max(int(line_window[1] * 1.4 / self.NumChannelMap + 0.5), 1)
-            ChanW = max(int(line_window[1] / self.NumChannelMap + 0.5), 1)
+            ChanW = max(int(line_window[1] // self.NumChannelMap + 0.5), 1)
             #ChanB = int(ChanC - self.NumChannelMap / 2.0 * ChanW)
             ChanB = int(ChanC - self.NumChannelMap / 2.0 * ChanW + 0.5)
             # 2007/9/10 remedy for 'out of index' error
@@ -831,7 +831,7 @@ class SDChannelMapDisplay(SDImageDisplay):
 
                 # colorbar
                 #print "min=%s, max of Total=%s" % (Total.min(),Total.max())
-                if not (Total.min() == Total.max()): 
+                if not (Total.min() == Total.max()):
                     if not ((self.y_max == self.y_min) and (self.x_max == self.x_min)):
                         if integmap_colorbar is None:
                             integmap_colorbar = pl.colorbar(shrink=0.8)
@@ -865,7 +865,7 @@ class SDChannelMapDisplay(SDImageDisplay):
                 spmax = Sp.max()
                 dsp = spmax - spmin
                 spmin -= dsp * 0.1
-                spmax += dsp * 0.1                
+                spmax += dsp * 0.1
 
                 pl.gcf().sca(axes_integsp1)
                 plotted_objects.extend(pl.plot(self.frequency, Sp, '-b', markersize=2, markeredgecolor='b', markerfacecolor='b'))
@@ -918,7 +918,7 @@ class SDChannelMapDisplay(SDImageDisplay):
                 else:
                     Vmin = scale_min
 
-                if Vmax == 0 and Vmin == 0: 
+                if Vmax == 0 and Vmin == 0:
                     print("No data to create channel maps. Check the flagging criteria.")
                     return plot_list
 
@@ -930,7 +930,7 @@ class SDChannelMapDisplay(SDImageDisplay):
                         plotted_objects.append(pl.imshow(Map[i], vmin=Vmin, vmax=Vmax, interpolation='nearest', aspect='equal', extent=ExtentCM))
                         x = i % self.NhPanel
                         if x == (self.NhPanel - 1):
-                            y = int(i / self.NhPanel)
+                            y = int(i // self.NhPanel)
                             if chmap_colorbar[y] is None:
                                 cb = pl.colorbar()
                                 for t in cb.ax.get_yticklabels():
@@ -1069,7 +1069,7 @@ class SDRmsMapDisplay(SDImageDisplay):
             # colorbar
             rmsmin = rms_map.min()
             rmsmax = rms_map.max()
-            if not (rmsmin == rmsmax): 
+            if not (rmsmin == rmsmax):
                 if not ((self.y_max == self.y_min) and (self.x_max == self.x_min)):
                     if rms_colorbar is None:
                         rms_colorbar = pl.colorbar(shrink=0.8)
@@ -1142,7 +1142,7 @@ class SpectralMapAxesManager(MapAxesManagerBase):
         npanel = self.nh * self.nv
         for ipanel in range(npanel):
             x = ipanel % self.nh
-            y = int(ipanel / self.nh)
+            y = int(ipanel // self.nh)
             #x0 = 1.0 / float(self.nh) * (x + 0.1)
             x0 = 1.0 / float(self.nh) * (x + 0.22)
             #x1 = 1.0 / float(self.nh) * 0.8
@@ -1190,22 +1190,22 @@ class SDSpectralMapDisplay(SDImageDisplay):
         mode = 'raster'
         if mode.upper() == 'RASTER':
             # the number of panels in each page
-            NhPanel = min(max((self.x_max - self.x_min + 1)/STEPX,
-                              (self.y_max - self.y_min + 1)/STEPY), self.MaxNhPanel)
-            NvPanel = min(max((self.x_max - self.x_min + 1)/STEPX,
-                              (self.y_max - self.y_min + 1)/STEPY), self.MaxNvPanel)
+            NhPanel = min(max((self.x_max - self.x_min + 1)//STEPX,
+                              (self.y_max - self.y_min + 1)//STEPY), self.MaxNhPanel)
+            NvPanel = min(max((self.x_max - self.x_min + 1)//STEPX,
+                              (self.y_max - self.y_min + 1)//STEPY), self.MaxNvPanel)
             # total number of pages in horizontal and vertical directions
-            NH = int((self.x_max - self.x_min) / STEPX / NhPanel + 1)
-            NV = int((self.y_max - self.y_min) / STEPY / NvPanel + 1)
+            NH = int((self.x_max - self.x_min) // STEPX // NhPanel + 1)
+            NV = int((self.y_max - self.y_min) // STEPY // NvPanel + 1)
             # an array with length of total number of spectra to be plotted (initialized by -1)
             ROWS = numpy.zeros(NH * NV * NhPanel * NvPanel, dtype=numpy.int) - 1
             # 2010/6/15 GK Change the plotting direction: UpperLeft->UpperRight->OneLineDown repeat...
             for x in range(0, self.nx, STEPX):
-                posx = (self.x_max - x)/STEPX / NhPanel
-                offsetx = ( (self.x_max - x)/STEPX ) % NhPanel
+                posx = (self.x_max - x)//STEPX // NhPanel
+                offsetx = ( (self.x_max - x)//STEPX ) % NhPanel
                 for y in range(0, self.ny, STEPY):
-                    posy = (self.y_max - y)/STEPY / NvPanel
-                    offsety = NvPanel - 1 - (self.y_max - y)/STEPY % NvPanel
+                    posy = (self.y_max - y)//STEPY // NvPanel
+                    offsety = NvPanel - 1 - (self.y_max - y)//STEPY % NvPanel
                     row = (self.nx - x - 1) * self.ny + y
                     ROWS[(posy*NH+posx)*NvPanel*NhPanel + offsety*NhPanel + offsetx] = row
         else: ### This block is currently broken (2016/06/23 KS)
@@ -1279,8 +1279,8 @@ class SDSpectralMapDisplay(SDImageDisplay):
             if len(ListMax) == 0:
                 continue
             if is_baselined:
-                ymax = numpy.sort(ListMax)[len(ListMax) - len(ListMax)/10 - 1]
-                ymin = numpy.sort(ListMin)[len(ListMin)/10]
+                ymax = numpy.sort(ListMax)[len(ListMax) - len(ListMax)//10 - 1]
+                ymin = numpy.sort(ListMin)[len(ListMin)//10]
             else:
                 ymax = numpy.sort(ListMax)[-1]
                 ymin = numpy.sort(ListMin)[1]
@@ -1292,7 +1292,7 @@ class SDSpectralMapDisplay(SDImageDisplay):
             for irow in range(len(ROWS)):
                 row = ROWS[irow]
 
-                _x = row / self.ny
+                _x = row // self.ny
                 _y = row % self.ny
 
                 prefix = self.inputs.imagename+'.pol%s_Result' % pol

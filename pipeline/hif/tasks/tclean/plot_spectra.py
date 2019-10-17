@@ -22,8 +22,8 @@ ARCSEC_PER_RAD = 206264.80624709636
 c_mks = 2.99792458e8
 
 
-def addFrequencyAxisAbove(ax1, firstFreq, lastFreq, freqType='', spw=None, 
-                          fontsize=10, showlabel=True, twinx=False, 
+def addFrequencyAxisAbove(ax1, firstFreq, lastFreq, freqType='', spw=None,
+                          fontsize=10, showlabel=True, twinx=False,
                           ylimits=None, xlimits=None):
     """
     Given the descriptor returned by pl.subplot, draws a frequency
@@ -137,7 +137,7 @@ def cubeLSRKToTopo(img, freqrange='', prec=4, verbose=False,
         if header['reffreqtype'].upper() == 'TOPO':
             return np.array([f0, f1])
     if len(freqrange) == 0:
-        startFreq = f0 
+        startFreq = f0
         stopFreq = f1
     elif isinstance(freqrange, str):
         if freqrange.find(',') > 0:
@@ -160,7 +160,7 @@ def cubeLSRKToTopo(img, freqrange='', prec=4, verbose=False,
         # FIXME: fix unresolved reference and/or clean-up/remove function if not needed by Pipeline.
         datestring = mjdsecToUT(np.mean(getObservationMJDSecRange(vis)), measuresToolFormat=True)
     f0 = lsrkToTopo(startFreq, datestring, ra, dec, equinox, observatory, prec, verbose)
-    f1 = lsrkToTopo(stopFreq, datestring, ra, dec, equinox, observatory, prec, verbose) 
+    f1 = lsrkToTopo(stopFreq, datestring, ra, dec, equinox, observatory, prec, verbose)
     return np.array([f0, f1])
 
 
@@ -180,7 +180,7 @@ def lsrkToTopo(lsrkFrequency, datestring, ra, dec, equinox='J2000', observatory=
     velocityLSRK = 0  # does not matter what it is, just needs to be same in both calls
     restFreqHz = lsrkToRest(lsrkFrequency, velocityLSRK, datestring, ra, dec, equinox,
                             observatory, prec, verbose)
-    topoFrequencyHz = restToTopo(restFreqHz, velocityLSRK, datestring, ra, dec, equinox, 
+    topoFrequencyHz = restToTopo(restFreqHz, velocityLSRK, datestring, ra, dec, equinox,
                                 observatory, verbose=verbose)
     return topoFrequencyHz
 
@@ -200,14 +200,14 @@ def restToTopo(restFrequency, velocityLSRK, datestring, ra, dec, equinox='J2000'
     Returns: the TOPO frequency in Hz
     -Todd Hunter
     """
-    topoFreqHz, diff1, diff2 = frames(velocityLSRK, datestring, ra, dec, equinox, 
+    topoFreqHz, diff1, diff2 = frames(velocityLSRK, datestring, ra, dec, equinox,
                                       observatory, verbose=verbose,
                                       restFreq=restFrequency, veltype=veltype)
     return topoFreqHz
 
 
 def frames(velocity=286.7, datestring="2005/11/01/00:00:00",
-           ra="05:35:28.105", dec="-069.16.10.99", equinox="J2000", 
+           ra="05:35:28.105", dec="-069.16.10.99", equinox="J2000",
            observatory="ALMA", prec=4, verbose=True,
            restFreq=345.79599, veltype='optical'):
     """
@@ -218,12 +218,12 @@ def frames(velocity=286.7, datestring="2005/11/01/00:00:00",
     datestring:  "YYYY/MM/DD/HH:MM:SS"
     ra: "05:35:28.105"
     dec: "-069.16.10.99"
-    equinox: "J2000" 
+    equinox: "J2000"
     observatory: "ALMA"
     prec: precision to display (digits to the right of the decimal point)
     veltype: 'radio' or 'optical'
     restFreq: in Hz, GHz or a string with units
-    Returns: 
+    Returns:
     * TOPO frequency in Hz
     * difference between LSRK-TOPO in km/sec
     * difference between LSRK-TOPO in Hz
@@ -255,13 +255,13 @@ def frames(velocity=286.7, datestring="2005/11/01/00:00:00",
     lme.showframe()
 
     rvelRad = lme.measure(rvelOpt, 'LSRK')
-    doppRad = lme.todoppler("RADIO", rvelRad)       
+    doppRad = lme.todoppler("RADIO", rvelRad)
     restFreq = parseFrequencyArgumentToGHz(restFreq)
     freqRad = lme.tofrequency('LSRK', doppRad, lme.frequency('rest', str(restFreq)+'GHz'))
 
     lsrk = lqa.tos(rvelRad['m0'], prec=prec)
     rvelTop = lme.measure(rvelOpt, 'TOPO')
-    doppTop = lme.todoppler("RADIO", rvelTop)       
+    doppTop = lme.todoppler("RADIO", rvelTop)
     freqTop = lme.tofrequency('TOPO', doppTop, lme.frequency('rest', str(restFreq)+'GHz'))
 
     topo = lqa.tos(rvelTop['m0'], prec=prec)
@@ -287,7 +287,7 @@ def RescaleTrans(trans, lim):
     y1 = lim[1] - yrange*TOP_MARGIN/(1.0+TOP_MARGIN)
     transmissionRange = np.max(trans)-np.min(trans)
     if (transmissionRange < 0.05):
-        # force there to be a minimum range of transmission display 
+        # force there to be a minimum range of transmission display
         # overemphasize tiny ozone lines
         transmissionRange = 0.05
     # convert transmission to amplitude
@@ -381,7 +381,7 @@ def parseFrequencyArgumentToGHz(bandwidth):
 
 def parseFrequencyArgument(bandwidth):
     """
-    Converts a string frequency (or dictionary) into floating point in Hz, based on 
+    Converts a string frequency (or dictionary) into floating point in Hz, based on
     the units.  If the units are not present, then the value is simply converted to float.
     -Todd Hunter
     """
@@ -413,7 +413,7 @@ def rad2radec(ra=0,dec=0,imfitdict=None, prec=5, verbose=True, component=0,
     """
     Convert a position in RA/Dec from radians to sexagesimal string which
     is comma-delimited, e.g. '20:10:49.01, +057:17:44.806'.
-    The position can either be entered as scalars via the 'ra' and 'dec' 
+    The position can either be entered as scalars via the 'ra' and 'dec'
     parameters, as a tuple via the 'ra' parameter, as an array of shape (2,1)
     via the 'ra' parameter, or
     as an imfit dictionary can be passed via the 'imfitdict' argument, and the
@@ -532,7 +532,7 @@ def imheadlist(vis, omitBeam=False):
 
 
 def CalcAtmTransmissionForImage(img, chanInfo='', airmass=1.5, pwv=-1,
-                                spectralaxis=-1, value='transmission', P=-1, H=-1, 
+                                spectralaxis=-1, value='transmission', P=-1, H=-1,
                                 T=-1, altitude=-1):
     """
     This function is called by atmosphereVariation.
@@ -554,7 +554,7 @@ def CalcAtmTransmissionForImage(img, chanInfo='', airmass=1.5, pwv=-1,
         lcs.done()
 
     if chanInfo == '':
-        chanInfo = numberOfChannelsInCube(img, returnChannelWidth=True, returnFreqs=True) 
+        chanInfo = numberOfChannelsInCube(img, returnChannelWidth=True, returnFreqs=True)
 
     freqs = np.linspace(chanInfo[1]*1e-9, chanInfo[2]*1e-9, chanInfo[0])
     numchan = len(freqs)
@@ -570,17 +570,17 @@ def CalcAtmTransmissionForImage(img, chanInfo='', airmass=1.5, pwv=-1,
     H0 = 20.0   # percent
     T0 = 273.0  # Kelvin
     if (telescopeName.find('ALMA') >= 0 or telescopeName.find('ACA') >= 0):
-        pwv0 = 1.0   
+        pwv0 = 1.0
         P0 = 563.0
         H0 = 20.0
         T0 = 273.0
         altitude0 = 5059
     elif (telescopeName.find('VLA') >= 0):
         P0 = 786.0
-        pwv0 = 5.0  
+        pwv0 = 5.0
         altitude0 = 2124
     else:
-        pwv0 = 10.0  
+        pwv0 = 10.0
         altitude0 = 0
     if (pwv < 0):
         pwv = pwv0
@@ -640,9 +640,9 @@ def CalcAtmTransmissionForImage(img, chanInfo='', airmass=1.5, pwv=-1,
 
 def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile):
     """
-    Takes a pipeline-produced cube and plots the spectrum within the clean 
-    mask (pixels with value=1 in the mask), and the noise spectrum from outside 
-    the mask and within the 0.2-0.3 level (auto adjusted upward if image size 
+    Takes a pipeline-produced cube and plots the spectrum within the clean
+    mask (pixels with value=1 in the mask), and the noise spectrum from outside
+    the mask and within the 0.2-0.3 level (auto adjusted upward if image size
     has been mitigated).
     image_robust_rms_and_spectra: dictionary of spectra and metadata
     rec_info: dictionary of receiver information (type (DSB/TSB), LO1 frequency)
@@ -693,15 +693,15 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile):
             transform=desc.transAxes, ha='left', fontsize=fontsize+1)
     # Turn off rightside y-axis ticks to make way for second y-axis
     desc.yaxis.set_ticks_position('left')
-    pl.plot(channels, intensity, '-', color=mycolor) 
+    pl.plot(channels, intensity, '-', color=mycolor)
 
     pl.xlabel('%d Channels' % len(channels))
     pl.ylabel('Flux density (%s)' % units, color=mycolor)
     pl.tick_params(axis='y', labelcolor=mycolor, color=mycolor)
-    # Give a buffer between final data point and y-axes in order 
+    # Give a buffer between final data point and y-axes in order
     # to be able to see high edge channel values
-    pl.xlim([channels[0]-len(channels)/100, channels[-1]+len(channels)/100])
-    freqDelta = (freqs[1]-freqs[0])*(len(channels)/100) # in Hz
+    pl.xlim([channels[0]-len(channels)//100, channels[-1]+len(channels)//100])
+    freqDelta = (freqs[1]-freqs[0])*(len(channels)//100) # in Hz
     freqLimits = np.array([freqs[0]-freqDelta, freqs[-1]+freqDelta])  # Hz
 
     # Ignore edge channels (otherwise the first channel in ephemeris
@@ -713,7 +713,7 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile):
     yrange = ylimits[1]-ylimits[0]
     ylimits[0] -= 0.05*yrange
     ylimits[1] += 0.05*yrange
-    noiseLimits = [2*np.min(noise[1:-1])-np.max(noise[1:-1]), 
+    noiseLimits = [2*np.min(noise[1:-1])-np.max(noise[1:-1]),
                    np.max(noise[1:-1])]
     yrange = noiseLimits[1]-noiseLimits[0]
     noiseLimits[0] -= 0.1*yrange
@@ -739,7 +739,7 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile):
 
     # Overlay atmosphere transmission
     freq, transmission = CalcAtmTransmissionForImage(cube)
-    rescaledY, edgeYvalue, zeroValue, zeroYValue, otherEdgeYvalue, edgeT, otherEdgeT, edgeValueAmplitude, otherEdgeValueAmplitude, zeroValueAmplitude = RescaleTrans(transmission, pl.ylim())            
+    rescaledY, edgeYvalue, zeroValue, zeroYValue, otherEdgeYvalue, edgeT, otherEdgeT, edgeValueAmplitude, otherEdgeValueAmplitude, zeroValueAmplitude = RescaleTrans(transmission, pl.ylim())
     pl.plot(freq, rescaledY, 'm-')
 
     if rec_info['type'] == 'DSB':
@@ -748,7 +748,7 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile):
         imageFreq1 = 2.0 * LO1 - freq[-1]
         chanInfo = [len(freq), imageFreq0, imageFreq1, -(freqs[1]-freqs[0])]
         imageFreq, imageTransmission = CalcAtmTransmissionForImage(cube, chanInfo)
-        results = RescaleTrans(imageTransmission, pl.ylim())            
+        results = RescaleTrans(imageTransmission, pl.ylim())
         rescaledImage = results[0]
         # You need to keep the signal sideband frequency range so that the overlay works!
         pl.plot(freq, rescaledImage, 'm--')

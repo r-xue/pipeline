@@ -34,7 +34,7 @@ def checkimage (imagename, rms, refdirection, refflux):
 
     # Compare the reference flux to the fitted flux
     # There is a bit of a discrepancy between the ticket and the script with
-    # respect to the coherence score. Going with the script for now. 
+    # respect to the coherence score. Going with the script for now.
 
     if not refflux:
         fluxloss = None
@@ -69,16 +69,16 @@ def fitimage (imagename, rms, fitradius=15):
     '''
 
     # Open the image analysis tool
-    with casatools.ImageReader(imagename) as image: 
+    with casatools.ImageReader(imagename) as image:
 
         # Construct the regions string
         #    This is a circle centered at the center of the image with a radius of 15 pixels
         imshape=image.shape()
-        region='circle[[%dpix , %dpix], %dpix ]' % (imshape[0] / 2, imshape[1] / 2, fitradius)
+        region='circle[[%dpix , %dpix], %dpix ]' % (imshape[0] // 2, imshape[1] // 2, fitradius)
 
         # Get the restoring beam beam
         #    There are beam parameters in the imfit results as well. It is not clear if these
-        #    are the same or not so keep this log in place. 
+        #    are the same or not so keep this log in place.
         restoring_beam = image.restoringbeam()
         if 'beams' in restoring_beam:
             restoring_beam = restoring_beam['beams']['*0']['*0']
@@ -98,7 +98,7 @@ def fitimage (imagename, rms, fitradius=15):
     if not fitresults:
         return {}
 
-    fitdict = collections.OrderedDict() 
+    fitdict = collections.OrderedDict()
 
     qa = casatools.quanta
     me = casatools.measures
@@ -126,7 +126,7 @@ def fitimage (imagename, rms, fitradius=15):
 
     # Construct a proper direction measure
     fitdirection = me.direction(refer, qa.quantity(qa.getvalue(ra), qa.getunit(ra)),
-        qa.quantity(qa.getvalue(dec), qa.getunit(dec))) 
+        qa.quantity(qa.getvalue(dec), qa.getunit(dec)))
     fitdict['fitdirection'] = fitdirection
     fitdirection_err = qa.convert(qa.sqrt(qa.add(qa.pow(ra_err, 2), qa.pow(dec_err, 2))), 'arcsec')
     fitdict['fitdirection_err'] = fitdirection_err

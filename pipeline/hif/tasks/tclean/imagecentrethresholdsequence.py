@@ -40,8 +40,8 @@ class ImageCentreThresholdSequence(BaseCleanSequence):
                 cm.set(pixels='0')
                 shape = cm.shape()
                 rg = casatools.regionmanager
-                region = rg.box([shape[0]/4, shape[1]/4],
-                  [shape[0]-shape[0]/4, shape[1]-shape[1]/4])
+                region = rg.box([shape[0]//4, shape[1]//4],
+                  [shape[0]-shape[0]//4, shape[1]-shape[1]//4])
                 cm.set(pixels='1', region=region)
                 rg.done()
                 cm.done()

@@ -518,7 +518,7 @@ class DataTableImpl(object):
                 nrow_chunk = 2000
                 # compute number of chunks
                 nrow = dirty_rows.max() - dirty_rows.min() + 1
-                nchunk = nrow / nrow_chunk
+                nchunk = nrow // nrow_chunk
                 mod = nrow % nrow_chunk
                 chunks = [nrow_chunk] * nchunk + [mod]
                 # LOG.info('chunks={0} (nrow {1})'.format(chunks, nrow))

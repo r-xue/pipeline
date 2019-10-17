@@ -1262,7 +1262,7 @@ def score_number_antenna_offsets(ms, offsets):
     set to the "suboptimal" threshold if at least one antenna needed a
     correction.
     """
-    nant_with_offsets = len(offsets) / 3
+    nant_with_offsets = len(offsets) // 3
 
     if nant_with_offsets == 0:
         score = 1.0
@@ -2731,7 +2731,3 @@ def score_fluxservice(result):
                               metric_score=score,
                               metric_units='flux service')
         return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
-
-
-
-
