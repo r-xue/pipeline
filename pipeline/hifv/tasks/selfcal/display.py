@@ -1,9 +1,8 @@
 import os
 
-import casatasks
-
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
+import pipeline.infrastructure.casa_tasks as casa_tasks
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -50,12 +49,14 @@ class selfcalphaseGainPerAntennaChart(object):
                         antName = ','.join(idents)
 
                     LOG.debug("Plotting phase vs. time... {!s}".format(antName))
-                    casatasks.plotms(vis=result.caltable, xaxis='time', yaxis='phase', field='',
+                    job = casa_tasks.plotms(vis=result.caltable, xaxis='time', yaxis='phase', field='',
                                      antenna=antPlot, spw='', timerange='',
                                      coloraxis='', plotrange=[0, 0, -180, 180], symbolshape='circle',
                                      title='G table: {!s}   Antenna: {!s}'.format(result.caltable, antName),
                                      titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                      xconnector='line')
+
+                    job.execute(dry_run=False)
 
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename + str(ex))

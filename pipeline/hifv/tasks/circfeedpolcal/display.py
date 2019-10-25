@@ -1,9 +1,10 @@
 import os
 
-import casatasks
+
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
+import pipeline.infrastructure.casa_tasks as casa_tasks
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -30,10 +31,12 @@ class CircFeedPolCalChart(object):
         figfile = self.get_figfile(prefix)
 
         LOG.info("Creating PlotSummary Polarization plot")
-        casatasks.plotms(vis=self.caltable, xaxis=self.xaxis, yaxis=self.yaxis, field='', antenna=self.antenna,
+        job = casa_tasks.plotms(vis=self.caltable, xaxis=self.xaxis, yaxis=self.yaxis, field='', antenna=self.antenna,
                          spw='', timerange='', plotrange=[], coloraxis='spw',
                          title='{!s}  Antenna: {!s}'.format(self.caltable, self.antenna),
                          titlefont=7, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+
+        job.execute(dry_run=False)
 
     def get_figfile(self, prefix):
         return os.path.join(self.context.report_dir,
@@ -115,11 +118,13 @@ class ampfreqPerAntennaChart(object):
                         idents = [a.name if a.name else a.id for a in domain_antennas]
                         antName = ','.join(idents)
 
-                    casatasks.plotms(vis=self.caltable, xaxis='freq', yaxis='amp', field='',
+                    job = casa_tasks.plotms(vis=self.caltable, xaxis='freq', yaxis='amp', field='',
                                      antenna=antPlot, spw='', timerange='', plotrange=plotrange, coloraxis='',
                                      title='POL table: {!s}   Antenna: {!s}'.format(self.caltable, antName),
                                      titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                      xconnector='step')
+
+                    job.execute(dry_run=False)
 
                 except Exception as ex:
                     LOG.warn("Unable to plot " + filename + str(ex))
