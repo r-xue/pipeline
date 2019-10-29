@@ -37,6 +37,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tasks
+import pipeline.infrastructure.utils as utils
 
 __all__ = [
     'FlagDeterBase',
@@ -506,7 +507,7 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
 
             # If the twice the number of flagged channels is greater than the
             # number of channels for a given spectral window, skip it.
-            frac_chan = int(round(fracspw * spw.num_channels))
+            frac_chan = int(utils.round_half_up(fracspw * spw.num_channels))
             if 2*frac_chan >= spw.num_channels:
                 LOG.debug('Too many flagged channels %s for spw %s '
                           '' % (spw.num_channels, spw.id))

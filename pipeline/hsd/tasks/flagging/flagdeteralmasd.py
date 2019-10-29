@@ -10,6 +10,7 @@ from pipeline.domain import DataTable
 from pipeline.h.tasks.flagging import flagdeterbase
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.displays import pointing
+import pipeline.infrastructure.utils as utils
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -170,9 +171,9 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
 
             # If the twice the number of flagged channels is greater than the
             # number of channels for a given spectral window, skip it.
-            #frac_chan = int(round(fracspw * spw.num_channels + 0.5))
+            #frac_chan = int(utils.round_half_up(fracspw * spw.num_channels + 0.5))
             # Make rounding less agressive
-            frac_chan_list = [int(round(x * spw.num_channels)) for x in fracspw_list][:2]
+            frac_chan_list = [int(utils.round_half_up(x * spw.num_channels)) for x in fracspw_list][:2]
             if sum(frac_chan_list) >= spw.num_channels:
                 LOG.debug('Too many flagged channels %s for spw %s '
                           '' % (spw.num_channels, spw.id))

@@ -332,7 +332,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 except:
                     chk_frac_beam_offset = 'N/A'
                 try:
-                    chk_fitflux = '%d +/- %d' % (int(round(r.check_source_fit['fitflux'] * 1000.)), int(round(r.check_source_fit['fitflux_err'] * 1000.)))
+                    chk_fitflux = '%d +/- %d' % (int(utils.round_half_up(r.check_source_fit['fitflux'] * 1000.)), int(utils.round_half_up(r.check_source_fit['fitflux_err'] * 1000.)))
                 except:
                     chk_fitflux = 'N/A'
 

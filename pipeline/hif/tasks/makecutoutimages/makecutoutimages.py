@@ -9,6 +9,7 @@ import pipeline.infrastructure.imagelibrary as imagelibrary
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
+import pipeline.infrastructure.utils as utils
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -160,8 +161,8 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
         xcellsize = 3600.0 * (180.0 / math.pi) * math.fabs(imhead_dict['incr'][0])
         ycellsize = 3600.0 * (180.0 / math.pi) * math.fabs(imhead_dict['incr'][1])
 
-        fld_subim_size_x = round(3600.0 * (image_size_x + buffer_deg) / xcellsize)   # Cutout size with buffer in pixels
-        fld_subim_size_y = round(3600.0 * (image_size_y + buffer_deg) / ycellsize)   # Cutout size with buffer in pixels
+        fld_subim_size_x = utils.round_half_up(3600.0 * (image_size_x + buffer_deg) / xcellsize)   # Cutout size with buffer in pixels
+        fld_subim_size_y = utils.round_half_up(3600.0 * (image_size_y + buffer_deg) / ycellsize)   # Cutout size with buffer in pixels
 
         # equivalent blc,trc for extracting requested field, in pixels:
         blcx = imsize[0] // 2 - (fld_subim_size_x / 2)
@@ -188,10 +189,10 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
             if isinstance(offsettrc, str):
                 offsettrc = ast.literal_eval(offsettrc)
 
-            fld_subim_size_x_blc = round(3600.0 * (offsetblc[0] / 3600.0 + buffer_deg / 2.0) / xcellsize)
-            fld_subim_size_y_blc = round(3600.0 * (offsetblc[1] / 3600.0 + buffer_deg / 2.0) / ycellsize)
-            fld_subim_size_x_trc = round(3600.0 * (offsettrc[0] / 3600.0 + buffer_deg / 2.0) / xcellsize)
-            fld_subim_size_y_trc = round(3600.0 * (offsettrc[1] / 3600.0 + buffer_deg / 2.0) / ycellsize)
+            fld_subim_size_x_blc = utils.round_half_up(3600.0 * (offsetblc[0] / 3600.0 + buffer_deg / 2.0) / xcellsize)
+            fld_subim_size_y_blc = utils.round_half_up(3600.0 * (offsetblc[1] / 3600.0 + buffer_deg / 2.0) / ycellsize)
+            fld_subim_size_x_trc = utils.round_half_up(3600.0 * (offsettrc[0] / 3600.0 + buffer_deg / 2.0) / xcellsize)
+            fld_subim_size_y_trc = utils.round_half_up(3600.0 * (offsettrc[1] / 3600.0 + buffer_deg / 2.0) / ycellsize)
 
             blcx = imsize[0] // 2 - fld_subim_size_x_blc
             blcy = imsize[1] // 2 - fld_subim_size_y_blc
