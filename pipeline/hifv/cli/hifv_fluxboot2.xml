@@ -28,7 +28,7 @@
                      An override value of 0,1,2,3 or 4 may be specified by the user.
                      Spectral index (1) and, if applicable, curvature (2) are reported in the weblog.
                      If no determination can be made by the heuristics, a fitorder of 1 will be used.
-        <description>
+        </description>
         <value>-1</value>
     </param>
 
@@ -39,7 +39,8 @@
                      automatically.  In 'interactive' mode the user can set the pipeline
                      context defined parameters manually.  In 'getinputs' mode the user
                      can check the settings of all pipeline parameters without running
-                     the task.</description>
+                     the task.
+        </description>
         <value>automatic</value>
         <allowed kind="enum">
             <value>automatic</value>
