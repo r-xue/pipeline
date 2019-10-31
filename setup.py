@@ -11,9 +11,11 @@ from setuptools.command.build_py import build_py
 ENCODING = 'utf-8'  # locale.getpreferredencoding()
 
 try:
-    COMMIT_HASH = subprocess.check_output(["git", "describe", "--always"]).strip().decode()
+    COMMIT_HASH = subprocess.check_output(['git', 'describe', '--always']).strip().decode()
+    GIT_BRANCH = subprocess.check_output(['git', 'symbolic-ref', '--short', 'HEAD'])
 except subprocess.CalledProcessError:
     COMMIT_HASH = 'unknown'
+    GIT_BRANCH = 'unknown'
 
 
 def flatten(items):
@@ -263,7 +265,7 @@ setuptools.setup(
     setup_requires=[
         'csscompressor'  # minify CSS
     ],
-    options=dict(egg_info=dict(tag_build="-" + COMMIT_HASH)),
+    options=dict(egg_info=dict(tag_build='{}-{}'.format(GIT_BRANCH, COMMIT_HASH))),
     packages=packages,
     package_data={'': ['*.egg',
                        '*.eot',
