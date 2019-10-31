@@ -21,6 +21,7 @@ If pipeline mode is 'getinputs' then None is returned. Otherwise the results obj
       default '': Split all MeasurementSets in the context. 
       Can only use with pipelinemode='interactive'
       example: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
+    </description>
     <value/>
   </param>
 
@@ -47,6 +48,7 @@ If pipeline mode is 'getinputs' then None is returned. Otherwise the results obj
       default: '', All data is selected.
       Can only use with pipelinemode='interactive'
       example: 'TARGET'
+    </description>
     <value/>
   </param>
 
