@@ -20,14 +20,14 @@
         <description>-- blank string default use of rflag on bandpass and delay calibrators
                      -- use string 'semi' after hifv_semiFinalBPdcals() for executing rflag on calibrators
                      -- use string 'bpd', for the bandpass and delay calibrators:
-                        execute rflag on all calibrated cross-hand corrected data;
-                        extend flags to all correlations
-                        execute rflag on all calibrated parallel-hand residual data;
-                        extend flags to all correlations
-                        execute tfcrop on all calibrated cross-hand corrected data,
-                           per visibility; extend flags to all correlations
-                        execute tfcrop on all calibrated parallel-hand corrected data,
-                           per visibility; extend flags to all correlations
+                          execute rflag on all calibrated cross-hand corrected data;
+                          extend flags to all correlations
+                          execute rflag on all calibrated parallel-hand residual data;
+                          extend flags to all correlations
+                          execute tfcrop on all calibrated cross-hand corrected data,
+                            per visibility; extend flags to all correlations
+                          execute tfcrop on all calibrated parallel-hand corrected data,
+                            per visibility; extend flags to all correlations
                      -- use string 'allcals', for all the other calibrators, with delays and BPcal applied:
                            similar procedure as 'bpd' mode, but uses corrected data throughout
                      -- use string 'target', for the target data:
