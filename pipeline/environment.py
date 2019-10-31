@@ -116,7 +116,7 @@ def _pipeline_revision():
         if p.returncode is not 0:
             return 'Unknown'
 
-        revision = stdout.strip()
+        revision = stdout.strip().decode(sys.stdout.encoding)
 
         # get SVN branch using svn info
         args = ['svn info .']
@@ -131,7 +131,7 @@ def _pipeline_revision():
         if p.returncode is not 0:
             return revision
 
-        kv = [s.split(':', 1) for s in stdout.splitlines()]
+        kv = [s.split(':', 1) for s in stdout.decode(sys.stdout.encoding).splitlines()]
         # subindex kv as last item in splitlines is []
         d = {k: v.strip() for (k, v) in kv[0:-1]}
 

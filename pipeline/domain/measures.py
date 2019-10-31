@@ -4,6 +4,8 @@ import decimal
 import math
 import re
 
+import pipeline.infrastructure.utils as utils
+
 from . import unitformat
 
 
@@ -948,7 +950,7 @@ class Latitude(EquatorialArc):
         (d, m, s) = self.toDms()
         return '%+.2d%s%.2d%s%05.2f%s' % (d, ArcUnits.DEGREE['symbol'],
                                           m, ArcUnits.ARC_MINUTE['symbol'],
-                                          round(s, 2), ArcUnits.ARC_SECOND['symbol'])
+                                          utils.round_half_up(s, 2), ArcUnits.ARC_SECOND['symbol'])
 
 
 class Longitude(EquatorialArc):
@@ -1092,7 +1094,7 @@ class Longitude(EquatorialArc):
         (h, m, s) = self.toHms()
         return '%.2d%s%.2d%s%05.2f%s' % (h, ArcUnits.HOUR['symbol'],
                                          m, ArcUnits.MINUTE['symbol'],
-                                         round(s, 2), ArcUnits.SECOND['symbol'])
+                                         utils.round_half_up(s, 2), ArcUnits.SECOND['symbol'])
 
 
 class TemporalCollection(object):

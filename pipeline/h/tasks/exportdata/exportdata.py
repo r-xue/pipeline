@@ -35,6 +35,7 @@ import glob
 import io
 import os
 import shutil
+import sys
 import tarfile
 
 import pipeline as pipeline
@@ -877,19 +878,16 @@ class ExportData(basetask.StandardTaskTemplate):
         # Define the name of the output tarfile
         visname = os.path.basename(vis)
         tarfilename = visname + '.flagversions.tgz'
-        LOG.info('Storing final flags for %s in %s' %(visname, tarfilename))
+        LOG.info('Storing final flags for {} in {}'.format(visname, tarfilename))
 
         # Define the directory to be saved
-        flagsname = os.path.join(visname + '.flagversions',
-                                  'flags.' + flag_version_name)
-        LOG.info('Saving flag version %s' %(flag_version_name))
+        flagsname = os.path.join(visname + '.flagversions', 'flags.' + flag_version_name)
+        LOG.info('Saving flag version {}'.format(flag_version_name))
 
         # Define the versions list file to be saved
-        flag_version_list = os.path.join(visname + '.flagversions',
-                                          'FLAG_VERSION_LIST')
+        flag_version_list = os.path.join(visname + '.flagversions', 'FLAG_VERSION_LIST')
         ti = tarfile.TarInfo(flag_version_list)
-        #line = "Pipeline_Final : Final pipeline flags\n"
-        line = "%s : Final pipeline flags\n" % flag_version_name
+        line = "{} : Final pipeline flags\n".format(flag_version_name).encode(sys.stdout.encoding)
         ti.size = len(line)
         LOG.info('Saving flag version list')
 
@@ -897,7 +895,7 @@ class ExportData(basetask.StandardTaskTemplate):
         if not self._executor._dry_run:
             tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
             tar.add(flagsname)
-            tar.addfile(ti, io.StringIO(line))
+            tar.addfile(ti, io.BytesIO(line))
             tar.close()
 
         # Restore the original current working directory
