@@ -1,5 +1,7 @@
+import http.server
 import os
 import pkg_resources
+import threading
 import webbrowser
 
 # required to get extern eggs on sys.path. This has to come first, before any
@@ -26,12 +28,60 @@ LOG = infrastructure.get_logger(__name__)
 __pipeline_documentation_weblink_alma__ = "http://almascience.org/documents-and-tools/pipeline-documentation-archive"
 
 
-def show_weblog(context):
-    if context is None:
-        return
+WEBLOG_LOCK = threading.Lock()
+HTTP_SERVER = None
+
+
+def show_weblog(context, handler_class=http.server.SimpleHTTPRequestHandler,
+                server_class=http.server.HTTPServer,
+                protocol='HTTP/1.0', bind='127.0.0.1', port=8000):
+    """
+    This runs an HTTP server on 127.0.0.1:8000 (or the port argument).
+    """
+    global HTTP_SERVER
+
+    server_address = (bind, port)
+
+    with WEBLOG_LOCK:
+        if HTTP_SERVER is None:
+            # handler_class.protocol_version = protocol
+            httpd = server_class(server_address, handler_class)
+
+            sa = httpd.socket.getsockname()
+            serve_message = 'Serving HTTP on {host} port {port} (http://{host}:{port}/) ...'
+            LOG.info(serve_message.format(host=sa[0], port=sa[1]))
+
+            thread = threading.Thread(target=httpd.serve_forever)
+            thread.daemon = True
+            thread.start()
+
+            HTTP_SERVER = httpd
+
+        else:
+            sa = HTTP_SERVER.socket.getsockname()
+            serve_message = 'Using existing HTTP server at {host} port {port} ...'
+            LOG.info(serve_message.format(host=sa[0], port=sa[1]))
 
     index_html = os.path.join(context.report_dir, 't1-1.html')
-    webbrowser.open('file://' + index_html)
+    rel_index = os.path.relpath(index_html, context.output_dir)
+
+    url = 'http://{}:{}/{}'.format(bind, port, rel_index)
+    LOG.info('Opening {}'.format(url))
+    webbrowser.open(url)
+
+
+def stop_weblog():
+    global HTTP_SERVER
+    with WEBLOG_LOCK:
+
+        if HTTP_SERVER is not None:
+            sa = HTTP_SERVER.socket.getsockname()
+
+            HTTP_SERVER.shutdown()
+
+            serve_message = "HTTP server on {host} port {port} shut down"
+            LOG.info(serve_message.format(host=sa[0], port=sa[1]))
+            HTTP_SERVER = None
 
 
 #def initcli():
