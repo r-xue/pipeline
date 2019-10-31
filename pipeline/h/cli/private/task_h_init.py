@@ -1,6 +1,6 @@
 from casatasks import casalog
 
-import pipeline.h.cli.cli as cli
+from .. import cli
 import pipeline.infrastructure.launcher as launcher
 import pipeline.infrastructure.basetask as basetask
 

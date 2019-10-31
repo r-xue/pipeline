@@ -2,7 +2,7 @@ import sys
 
 from casatasks import casalog
 
-import pipeline.h.cli.utils as utils
+from .. import utils
 
 
 def h_applycal(vis=None, field=None, intent=None, spw=None, antenna=None, applymode=None, flagbackup=None, flagsum=None,
