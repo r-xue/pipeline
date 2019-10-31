@@ -5,33 +5,38 @@
 <description>
 </description>
 <input>
-    <param subparam="true" name="vis" type="stringVec">
-	<description>List of input visibility data</description>
-	<value/>
+    <param name="vis" type="stringVec">
+        <shortdescription>List of input visibility data</shortdescription>
+        <description>List of visibility data files. These may be ASDMs, tar files of ASDMs,
+                     MSes, or tar files of MSes, If ASDM files are specified, they will be
+                     converted  to MS format.
+                     example: vis=['X227.ms', 'asdms.tar.gz']
+       <description>
+        <value/>
     </param>
 
     <param subparam="true" name="field" type="string">
-	<description>List of field names or ids</description>
+	<description>List of field names or ids.  Only can be set in pipelinemode='interactive'.</description>
         <value type="string"/>
     </param>
 
     <param subparam="true" name="intent" type="string">
-    	<description>Observing intent of flux calibrators</description>
+    	<description>Observing intent of flux calibrators.  Only can be set in pipelinemode='interactive'.</description>
         <value/>
     </param>
 
     <param subparam="true" name="spw" type="string">
-	<description>List of spectral window ids</description>
+	<description>List of spectral window ids.  Only can be set in pipelinemode='interactive'.</description>
 	<value/>
     </param>
 
     <param subparam="true" name="model" type="string">
-	<description>File location for field model</description>
+	<description>File location for field model.  Only can be set in pipelinemode='interactive'.</description>
 	<value/>
     </param>
 
     <param subparam="true" name="reffile" type="string">
-        <description>Path to file with fluxes for non-solar system calibrators</description>
+        <description>Path to file with fluxes for non-solar system calibrators.  Only can be set in pipelinemode='interactive'</description>
         <value/>
     </param>
 
@@ -42,12 +47,12 @@
     </param>
 
     <param subparam="true" name="spix" type="double">
-        <description>Spectral index of fluxdensity</description>
+        <description>Spectral index of fluxdensity.  Can be set when fluxdensity is not -1</description>
         <value type="double">0.0</value>
     </param>
 
     <param subparam="true" name="reffreq" type="string">
-        <description>Reference frequency for spix</description>
+        <description>Reference frequency for spix.  Can be set when fluxdensity is not -1</description>
         <value>1GHz</value>
     </param>
 
@@ -62,23 +67,35 @@
     </param>
 
     <param name="pipelinemode" type="string">
-	<description>The pipeline operating mode</description>
-	<value>automatic</value>
-	<allowed kind="enum">
-	    <value>automatic</value>
-	    <value>interactive</value>
-	    <value>getinputs</value>
-	</allowed>
+        <shortdescription>The pipeline operating mode</shortdescription>
+        <description>The pipeline operating mode. In 'automatic' mode the pipeline
+                     determines the values of all context defined pipeline inputs
+                     automatically.  In 'interactive' mode the user can set the pipeline
+                     context defined parameters manually.  In 'getinputs' mode the user
+                     can check the settings of all pipeline parameters without running
+                     the task.</description>
+        <value>automatic</value>
+        <allowed kind="enum">
+            <value>automatic</value>
+            <value>interactive</value>
+            <value>getinputs</value>
+        </allowed>
     </param>
 
     <param subparam="true" name="dryrun" type="bool">
-	<description>Run the task (False) or display task command (True)</description>
-	<value>False</value>
+        <shortdescription>Run the task (False) or display task command (True)</shortdescription>
+        <description>Run the commands (True) or generate the commands to be run but
+                     do not execute (False).  This is a pipeline task execution mode.
+        </description>
+        <value>False</value>
     </param>
 
     <param subparam="true" name="acceptresults" type="bool">
-	<description>Add the results into the pipeline context</description>
-	<value>True</value>
+        <shortdescription>Add the results into the pipeline context</shortdescription>
+        <description>Add the results of the task to the pipeline context (True) or
+                     reject them (False).  This is a pipeline task execution mode.
+        </description>
+        <value>True</value>
     </param>
 
     <constraints>
@@ -124,68 +141,6 @@
 <example>
 The hifv_vlasetjy task does an initial run of setjy on the vis
 
-Keyword arguments:
-
----- pipeline parameter arguments which can be set in any pipeline mode
-
-vis -- List of visibility data files. These may be ASDMs, tar files of ASDMs,
-   MSs, or tar files of MSs, If ASDM files are specified, they will be
-   converted  to MS format.
-   default: []
-   example: vis=['X227.ms', 'asdms.tar.gz']
-
-scalebychan -- Scale the flux density on a per channel basis or else on a per spw basis
-    default: True
-
-standard -- Flux density standard
-    default: ''
-
-fluxdensity -- Specified flux density [I,Q,U,V]; -1 will lookup values
-    default: -1
-
-pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline
-   determines the values of all context defined pipeline inputs
-   automatically.  In 'interactive' mode the user can set the pipeline
-   context defined parameters manually.  In 'getinputs' mode the user
-   can check the settings of all pipeline parameters without running
-   the task.
-   default: 'automatic'.
-
----- pipeline context defined parameter argument which can be set only in
-'interactive mode'
-
-field -- List of field names or ids
-    default: ''
-
-intent -- Observing intent of flux calibrators
-    default: ''
-
-spw -- List of spectral window ids
-    default: ''
-
-model -- File location for field model
-    default: ''
-
-reffile -- Path to file with fluxes for non-solar system calibrators
-    default: ''
-
----- pipeline parameter arguments which can be set when fluxdensity is not -1
-
-spix -- Spectral index of fluxdensity
-    default: 0.0
-
-reffreq -- Reference frequency for spix
-    default: '1GHz'
-
---- pipeline task execution modes
-
-dryrun -- Run the commands (True) or generate the commands to be run but
-   do not execute (False).
-   default: True
-
-acceptresults -- Add the results of the task to the pipeline context (True) or
-   reject them (False).
-   default: True
 
 Output:
 
