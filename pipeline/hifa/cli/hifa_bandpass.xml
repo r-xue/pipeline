@@ -28,7 +28,8 @@ solutions in the phaseup may not be properly rejected.
 
 <input>
     <param subparam="true" name="vis" type="stringVec">
-        <description>List of input MeasurementSets.
+        <description>List of input MeasurementSets. Defaults to the list of
+            MeasurementSets specified in the pipeline context.
 
             Example: vis=['ngc5921.ms']
         </description>
@@ -36,7 +37,8 @@ solutions in the phaseup may not be properly rejected.
     </param>
 
     <param subparam="true" name="caltable" type="stringVec">
-        <description>List of names for the output gain calibration tables.
+        <description>List of names for the output calibration tables. Defaults
+            to the standard pipeline naming convention.
 
             Example: caltable=['ngc5921.gcal']
         </description>
@@ -44,9 +46,10 @@ solutions in the phaseup may not be properly rejected.
     </param>
 
     <param subparam="true" name="field" type="string">
-        <shortdescription>Set of data selection field names or ids</shortdescription>
+        <shortdescription>List of field names or ids to use in data selection</shortdescription>
         <description>The list of field names or field ids for which bandpasses are
-            computed. Defaults to all fields.
+            computed. Set to field='' by default, which means the task will select all
+            fields.
 
             Example: field='3C279', field='3C279,M82'
         </description>
@@ -54,10 +57,10 @@ solutions in the phaseup may not be properly rejected.
     </param>
 
     <param subparam="true" name="intent" type="string">
-        <shortdescription>Set of data selection intents</shortdescription>
+        <shortdescription>List of intents to use in data selection</shortdescription>
         <description>A string containing a comma delimited list of intents against
-            which the selected fields are matched. Defaults to all data
-            with bandpass intent.
+            which the selected fields are matched. Set to intent='' by default, which
+            means the task will select all data with the BANDPASS intent.
 
             Example: intent='*PHASE*'
         </description>
@@ -65,9 +68,10 @@ solutions in the phaseup may not be properly rejected.
     </param>
 
     <param subparam="true" name="spw" type="string">
-        <shortdescription>Set of data selection spectral window/channels</shortdescription>
+        <shortdescription>List of spectral windows to use in data selection</shortdescription>
         <description>The list of spectral windows and channels for which bandpasses are
-            computed. Defaults to all science spectral windows.
+            computed. Set to spw='' by default, which means the task will select all
+            science spectral windows.
 
             Example: spw='11,13,15,17'
         </description>
@@ -156,10 +160,11 @@ solutions in the phaseup may not be properly rejected.
     <param subparam="true" name="solint" type="any">
         <shortdescription>Solution intervals</shortdescription>
         <description>Time and channel solution intervals in CASA syntax.
-            default: 'inf' Used for hm_bandpass='fixed', and as a default
-            for the 'snr' and 'smoothed' options.
 
-            Example: solint='inf,10ch', solint='inf'
+            Default is solint='inf', which is used when hm_bandpass='fixed'.
+            If hm_bandpass is set to 'snr', then the task will attempt to compute and use
+            an optimal SNR-based solint (and warn if this solint is not good enough).
+            If hm_bandpass is set to 'smoothed', the task will use a smoothed solint.
         </description>
         <any type="variant"/>
         <value type="string">inf</value>
@@ -169,7 +174,7 @@ solutions in the phaseup may not be properly rejected.
         <shortdescription>The smoothing factor in channels</shortdescription>
         <description>The bandpass solution smoothing factor in channels. The
             solution interval is bandwidth / 240. Set to 0 for no smoothing.
-            Used if hm_bandpass='smoothed&quot;.
+            Used if hm_bandpass='smoothed'.
 
             Example: maxchannels=0
         </description>
@@ -231,7 +236,7 @@ solutions in the phaseup may not be properly rejected.
             pipeline context. If undefined in the pipeline context defaults to
             the CASA reference antenna naming scheme.
 
-            Example: refant='DV01', refant='DV06,DV07'
+            Example: refant='DV06,DV07'
         </description>
         <value/>
     </param>
@@ -271,14 +276,18 @@ solutions in the phaseup may not be properly rejected.
     </param>
 
     <param subparam="true" name="dryrun" type="bool">
-        <description>Run the task (False) or display the command(True)</description>
+        <shortdescription>Run the task (False) or list commands (True)</shortdescription>
+        <description>Run the commands (True) or generate the commands to be run but
+            do not execute (False).
+        </description>
         <value>False</value>
     </param>
 
     <param subparam="true" name="acceptresults" type="bool">
         <shortdescription>Automatically accept results into context</shortdescription>
         <description>Automatically accept the results of the task into the pipeline context (True)
-            or reject them (False)</description>
+            or reject them (False).
+        </description>
         <value>True</value>
     </param>
 
