@@ -274,15 +274,15 @@ class MeasurementSetReader(object):
             LOG.info('Populating ms.antenna_array...')
             ms.antenna_array = AntennaTable.get_antenna_array(msmd)
             LOG.info('Populating ms.spectral_windows...')
-            ms.spectral_windows = SpectralWindowTable.get_spectral_windows(msmd, ms)
+            ms.spectral_windows = RetrieveByIndexContainer(SpectralWindowTable.get_spectral_windows(msmd, ms))
             LOG.info('Populating ms.states...')
-            ms.states = StateTable.get_states(msmd)
+            ms.states = RetrieveByIndexContainer(StateTable.get_states(msmd))
             LOG.info('Populating ms.fields...')
-            ms.fields = FieldTable.get_fields(msmd)
+            ms.fields = RetrieveByIndexContainer(FieldTable.get_fields(msmd))
             LOG.info('Populating ms.sources...')
-            ms.sources = SourceTable.get_sources(msmd)
+            ms.sources = RetrieveByIndexContainer(SourceTable.get_sources(msmd))
             LOG.info('Populating ms.data_descriptions...')
-            ms.data_descriptions = DataDescriptionTable.get_descriptions(msmd, ms)
+            ms.data_descriptions = RetrieveByIndexContainer(DataDescriptionTable.get_descriptions(msmd, ms))
             LOG.info('Populating ms.polarizations...')
             ms.polarizations = PolarizationTable.get_polarizations(msmd)
             # For now the SBSummary table is ALMA specific
@@ -1101,3 +1101,53 @@ class BandDescriber(object):
                 return description
 
         return 'Unknown'
+
+
+class RetrieveByIndexContainer:
+    """
+    RetrieveByIndexContainer is a container for items whose numeric index or
+    other unique identifier is stored in an instance attribute.
+
+    Retrieving by index from this container matches and returns the item with
+    matching index attribute, which may differ from the natural position of
+    the item in the underlying list backing store. For instance, getting item
+    3 with container[3] returns the item with index attribute == 3, not the
+    item at position 3.
+    """
+
+    def __init__(self, items, index_fn=operator.attrgetter('id')):
+        """
+        Create a new RetrieveByIndexContainer.
+
+        The list of items passed as the 'items' argument is set as an instance
+        attribute (i.e., a copy or deep copy is not made). No changes should be
+        made to the list after passing it to this constructor.
+
+        :param items: the list of indexable items to wrap
+        :param index_fn: function that returns the index of an item instance
+        """
+        self.__items = items
+        self.__index_fn = index_fn
+
+    def __iter__(self):
+        return iter(self.__items)
+
+    def __len__(self):
+        return len(self.__items)
+
+    def __getitem__(self, index):
+        try:
+            index = int(index)
+        except ValueError:
+            raise TypeError(
+                'list indices must be integers, not {}'.format(index.__class__.__name__))
+
+        with_id = [i for i in self.__items if self.__index_fn(i) == index]
+        if not with_id:
+            raise IndexError('list index out of range: {}'.format(index))
+        if len(with_id) > 1:
+            raise IndexError('more than one object found with ID {}'.format(index))
+        return with_id.pop()
+
+    def __str__(self):
+        return '<RetrieveByIndexContainer({})>'.format(str(self.__items))
