@@ -12,7 +12,7 @@
                      MSes, or tar files of MSes, If ASDM files are specified, they will be
                      converted  to MS format.
                      example: vis=['X227.ms', 'asdms.tar.gz']
-       <description>
+        </description>
 	<value/>
     </param>
 
