@@ -1,17 +1,14 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://casa.nrao.edu/schema/psetTypes.html">
 
 <task category="pipeline" name="h_weblog" type="function">
 <shortdescription>Open the pipeline weblog in a browser</shortdescription>
-
-<description>
-h_weblog opens the weblog for the current pipeline session in a browser
-window.
+<description>h_weblog opens the weblog for the current pipeline session in a new browser
+             tab or window.
 </description>		
 
-<input>
-</input>
-
-<example>
-</example>
+<input />
+<example />
 <returns>void</returns></task>
 </casaxml>
