@@ -55,7 +55,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <param type="stringVec" name="caltable" subparam="true">
         <shortdescription>List of input caltables</shortdescription>
         <description>List of input Tsys calibration tables
-          
+
         default: [] - Use the table currently stored in the pipeline context.
         example: caltable=['X132.ms.tsys.s2.tbl']</description>
         <value/>
@@ -115,8 +115,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 
     <param type="string" name="ff_refintent" subparam="true">
         <shortdescription>Data intent providing the reference shape for \'flag_fieldshape\'</shortdescription>
-        <description>Data intent that provides the reference shape for
-        'flag_fieldshape'.</description>
+        <description>Data intent that provides the reference shape for 'flag_fieldshape'.</description>
         <value>BANDPASS</value>
     </param>
 
