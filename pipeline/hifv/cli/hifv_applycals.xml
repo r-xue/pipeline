@@ -21,27 +21,57 @@ hif_export_calstate and hif_import_calstate.
     </param>
 
    <param subparam="true" name="field" type="string">
-	<description>Set of data selection field names or ids</description>
+	<shortdescription>Set of data selection field names or ids</shortdescription>
+        <description>A string containing the list of field names or field ids to which
+                     the calibration will be applied. Defaults to all fields in the pipeline
+                     context.  Only can be set in pipelinemode='interactive'.
+                     example: '3C279', '3C279, M82'
+        </description>
 	<value/>
    </param>
 
    <param subparam="true" name="intent" type="string">
-	<description>Set of data selection observing intents</description>
+	<shortdescription>Set of data selection observing intents</shortdescription>
+        <description>A string containing the list of intents against which the
+                     selected fields will be matched. Defaults to all supported intents
+                     in the pipeline context.  Only can be set in pipelinemode='interactive'.
+                     example: '*TARGET*'
+        </description>
 	<value/>
    </param>
 
    <param subparam="true" name="spw" type="string">
-	<description>Set of data selection spectral window/channels</description>
+	<shortdescription>Set of data selection spectral window/channels</shortdescription>
+        <description>The list of spectral windows and channels to which the calibration
+                     will be applied. Defaults to all science windows in the pipeline.
+                     Only can be set in pipelinemode='interactive'.
+                     example: '17', '11, 15'
+        </description>
 	<value/>
    </param>
 
    <param subparam="true" name="antenna" type="string">
-	<description>Set of data selection antenna ids</description>
+	<shortdescription>Set of data selection antenna ids</shortdescription>
+        <description>The list of antennas to which the calibration will be applied.
+                     Defaults to all antennas. Not currently supported.
+                     Only can be set in pipelinemode='interactive'.
+        </description>
 	<value/>
    </param>
 
     <param name="applymode" type="string">
-        <description>Calibration mode: &quot;&quot;=&quot;calflagstrict&quot;,&quot;calflag&quot;,&quot;calflagstrict&quot;,&quot;trial&quot;,&quot;flagonly&quot;,&quot;flagonlystrict&quot;, or &quot;calonly&quot;</description>
+        <shortdescription>Calibration mode: &quot;&quot;=&quot;calflagstrict&quot;,&quot;calflag&quot;,&quot;calflagstrict&quot;,&quot;trial&quot;,&quot;flagonly&quot;,&quot;flagonlystrict&quot;, or &quot;calonly&quot;</shortdescription>
+        <description>Calibration apply mode
+                     ''='calflagstrict': calibrate data and apply flags from solutions using
+                         the strict flagging convention
+                     'trial': report on flags from solutions, dataset entirely unchanged
+                     'flagonly': apply flags from solutions only, data not calibrated
+                     'calonly': calibrate data only, flags from solutions NOT applied
+                     'calflagstrict':
+                     'flagonlystrict': same as above except flag spws for which calibration is
+                         unavailable in one or more tables (instead of allowing them to pass
+                         uncalibrated and unflagged)
+        </description>
         <value/>
         <allowed kind="enum">
             <value/>
@@ -55,7 +85,7 @@ hif_export_calstate and hif_import_calstate.
     </param>
 
     <param subparam="true" name="flagbackup" type="bool">
-	<description>Backup the flags before the apply</description>
+	<description>Backup the flags before the apply.  Only can be set in pipelinemode='interactive'.  </description>
 	<value type="bool">True</value>
     </param>
 
@@ -75,23 +105,35 @@ hif_export_calstate and hif_import_calstate.
     </param>
 
     <param name="pipelinemode" type="string">
-	<description>The pipeline operating mode</description>
-	<value>automatic</value>
-	<allowed kind="enum">
-	    <value>automatic</value>
-	    <value>interactive</value>
-	    <value>getinputs</value>
-	</allowed>
+        <shortdescription>The pipeline operating mode</shortdescription>
+        <description>The pipeline operating mode. In 'automatic' mode the pipeline
+                     determines the values of all context defined pipeline inputs
+                     automatically.  In 'interactive' mode the user can set the pipeline
+                     context defined parameters manually.  In 'getinputs' mode the user
+                     can check the settings of all pipeline parameters without running
+                     the task.</description>
+        <value>automatic</value>
+        <allowed kind="enum">
+            <value>automatic</value>
+            <value>interactive</value>
+            <value>getinputs</value>
+        </allowed>
     </param>
 
     <param subparam="true" name="dryrun" type="bool">
-	<description>Run task (False) or display the command(True)</description>
-	<value type="bool">False</value>
+        <shortdescription>Run the task (False) or display task command (True)</shortdescription>
+        <description>Run the commands (True) or generate the commands to be run but
+                     do not execute (False).  This is a pipeline task execution mode.
+        </description>
+        <value>False</value>
     </param>
 
     <param subparam="true" name="acceptresults" type="bool">
-	<description>Automatically accept results into the context</description>
-	<value type="bool">True</value>
+        <shortdescription>Add the results into the pipeline context</shortdescription>
+        <description>Add the results of the task to the pipeline context (True) or
+                     reject them (False).  This is a pipeline task execution mode.
+        </description>
+        <value>True</value>
     </param>
 
     <constraints>
