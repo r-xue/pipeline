@@ -201,6 +201,7 @@
                      manually.  In 'getinputs' mode the user can check the 
                      settings of all pipeline parameters without running the 
                      task.
+        </description>
 	<value>automatic</value>
 	<allowed kind="enum">
 	    <value>automatic</value>
@@ -257,6 +258,7 @@
                          example: '0' (generate caltable for pol 0)
                                   ['0~1','0'] (pol 0 and 1 for first data, only 0 for second)
                                   '' (all polarizations)
+            </description>
             <type>string</type><type>stringVec</type>
             <value type="string"/>
     </param>
