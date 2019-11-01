@@ -93,60 +93,26 @@ def _memory_size():
             raise NotImplemented('Could not determine memory size for system {!s}'.format(system))
 
 
-# find pipeline revision using svnversion
+# find pipeline revision for git
 def _pipeline_revision():
     """
     Get a string describing the pipeline revision and branch of the executing
     pipeline distribution.
-
-    Note: requires SVN tools to be installed on the host machine to function.
-
-    :return: SVN description
+    :return: Pipeline revision and branch in Git repo
     """
+    pl_path = pkg_resources.resource_filename(__name__, '')
     try:
-        # get SVN revision using svnversion as it gives information when the
-        # directory has been modified
-        args = ['svnversion', '.']
-
-        p = subprocess.Popen(args, stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE, shell=True,
-                             cwd=pkg_resources.resource_filename(__name__, ''))
-        (stdout, _) = p.communicate()
-
-        if p.returncode is not 0:
-            return 'Unknown'
-
-        revision = stdout.strip().decode(sys.stdout.encoding)
-
-        # get SVN branch using svn info
-        args = ['svn info .']
-        myenv = os.environ.copy()
-        myenv['LC_MESSAGES'] = 'en_US.UTF_8'
-        p = subprocess.Popen(args, stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE, shell=True,
-                             cwd=pkg_resources.resource_filename(__name__, ''),
-                             env=myenv)
-        (stdout, _) = p.communicate()
-
-        if p.returncode is not 0:
-            return revision
-
-        kv = [s.split(':', 1) for s in stdout.decode(sys.stdout.encoding).splitlines()]
-        # subindex kv as last item in splitlines is []
-        d = {k: v.strip() for (k, v) in kv[0:-1]}
-
-        url = d['URL']
-        # pipeline trunk and branches live within this common directory
-        common_svn_prefix = '/branches/project/'
-        root = d['Repository Root'] + common_svn_prefix
-
-        branch = os.path.split(os.path.relpath(url, root))[0]
-        if branch == 'pipeline':
-            branch = 'trunk'
-
-        return '%s (%s)' % (revision, branch)
-    except:
+        commit_hash = subprocess.check_output(['git', 'describe', '--always'], cwd=pl_path).decode().strip()
+        git_branch = subprocess.check_output(['git', 'symbolic-ref', '--short', 'HEAD'], cwd=pl_path).decode().strip()
+    except subprocess.CalledProcessError:
         return 'Unknown'
+
+    try:
+        subprocess.check_output(['git', 'diff-index', '--quiet', 'HEAD'], cwd=pl_path)
+    except subprocess.CalledProcessError:
+        commit_hash += ' (modified)'
+
+    return '{}:{}'.format(git_branch, commit_hash)
 
 
 def _ulimit():
