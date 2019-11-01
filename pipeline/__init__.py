@@ -58,17 +58,15 @@ def initcli():
     LOG.info('Initializing cli...')
     my_globals = find_frame()
     for package in ['h', 'hif', 'hifa', 'hifv', 'hsd', 'hsdn']:
-        #abs_package = 'pipeline.{package}.cli.{package}'.format(package=package)
-        abs_package = 'pipeline.{package}.cli'.format(package=package)
+        abs_package = 'pipeline.{package}.cli.gotasks'.format(package=package)
         try:
             # buildmytasks writes output to packagename.py
-            path_to_cli = pkg_resources.resource_filename(abs_package, '{!s}.py'.format(package))
+            path_to_cli = pkg_resources.resource_filename(abs_package, '__init__.py'.format(package))
         except ImportError as e:
-            print('IMPORT ERROR')
             LOG.debug('Import error: {!s}'.format(e))
             LOG.info('No tasks found for package: {!s}'.format(package))
         else:
-            exec(compile(open(path_to_cli).read(), path_to_cli, 'exec'), my_globals)
+            exec('from {} import *'.format(abs_package), my_globals)
             LOG.info('Loaded CASA tasks from package: {!s}'.format(package))
 
 
