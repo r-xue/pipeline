@@ -5,16 +5,62 @@
 <shortdescription>Prepare interferometry data for export</shortdescription>
 <description>
 Prepare interferometry data for export.
+
+The hifa_exportdata task for ALMA CASA pipeline exports the data defined
+in the pipeline context and exports it to the data products directory,
+converting and or packing it as necessary.
+
+The current version of the task exports the following products
+
+o an XML file containing the pipeline processing request
+o a tar file per ASDM / MS containing the final flags version
+o a text file per ASDM / MS containing the final calibration apply list
+o a FITS image for each selected calibrator source image
+o a FITS image for each selected science target source image
+o a tar file per session containing the caltables for that session
+o a tar file containing the file web log
+o a text file containing the final list of CASA commands
+
+
+Issues
+
+Support for merging the calibration state information into the pipeline
+context / results structure and retrieving it still needs to be added.
+
+Support for merging the clean results into the pipeline context / results
+structure and retrieving it still needs to be added.
+
+Support for creating the final pipeline results entity still needs to
+be added.
+
+Session information is not currently handled by the pipeline context.
+By default all ASDMs are combined into one session.
+
+
+Output
+
+results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
+   the results object for the pipeline task is returned.
+
 </description>
 
 <input>
     <param subparam="true" name="vis" type="stringVec">
-	<description>List of input visibility data</description>
+	<shortdescription>List of input visibility data</shortdescription>
+        <description>List of visibility data files for which flagging and calibration
+        information will be exported. Defaults to the list maintained in the
+        pipeline context. Not available in pipelinemode='automatic'.
+        example: vis=['X227.ms', 'X228.ms']</description>
 	<value/>
     </param>
 
     <param subparam="true" name="session" type="stringVec">
-	<description>List of sessions one per visibility file</description>
+	<shortdescription>List of sessions one per visibility file</shortdescription>
+        <description>List of sessions one per visibility file. Currently defaults
+        to a single virtual session containing all the visibility files in vis.
+        In the future, this will default to the set of observing sessions defined
+        in the context. Not available in pipelinemode='automatic'.
+        example: session=['session1', 'session2']</description>
 	<value/>
     </param>
 
@@ -24,37 +70,62 @@ Prepare interferometry data for export.
     </param>
 
     <param name="exportmses" type="bool">
-	<description>Export final MeasurementSets instead of flags and caltables</description>
+	<shortdescription>Export final MeasurementSets instead of flags and caltables</shortdescription>
+        <description>Export the final MeasurementSets instead of the final flags,
+        calibration tables, and calibration instructions.</description>
 	<value>False</value>
     </param>
 
     <param subparam="true" name="pprfile" type="string">
-	<description>The pipeline processing request file to be exported</description>
+	<shortdescription>The pipeline processing request file to be exported</shortdescription>
+        <description>Name of the pipeline processing request to be exported. Defaults
+        to a file matching the template 'PPR_*.xml'. Not available in pipelinemode='automatic'.
+        example: pprfile=['PPR_GRB021004.xml']</description>
 	<value/>
     </param>
 
     <param subparam="true" name="calintents" type="string">
-	<description>The calibrator source target intents to be exported</description>
+	<shortdescription>The calibrator source target intents to be exported</shortdescription>
+        <description>List of calibrator image types to be exported. Defaults to
+        all standard calibrator intents, 'BANDPASS', 'PHASE', 'FLUX'.
+        Not available in pipelinemode='automatic'.
+        example: 'PHASE'</description>
 	<value/>
     </param>
 
     <param subparam="true" name="calimages" type="stringVec">
-	<description>List of calibrator images to be exported</description>
+	<shortdescription>List of calibrator images to be exported</shortdescription>
+        <description>List of calibrator images to be exported. Defaults to all
+        calibrator images recorded in the pipeline context.
+        Not available in pipelinemode='automatic'.
+        example: calimages=['3C454.3.bandpass', '3C279.phase']</description>
 	<value/>
     </param>
 
     <param subparam="true" name="targetimages" type="stringVec">
-	<description>List of target images to be exported</description>
+	<shortdescription>List of target images to be exported</shortdescription>
+        <description>List of science target images to be exported. Defaults to all
+        science target images recorded in the pipeline context.
+        Not available in pipelinemode='automatic'.
+        example: targetimages=['NGC3256.band3', 'NGC3256.band6']</description>
 	<value/>
     </param>
 
     <param subparam="true" name="products_dir" type="string">
-	<description>The data products directory</description>
+	<shortdescription>The data products directory</shortdescription>
+        <description>Name of the data products subdirectory. Defaults to './'
+        Not available in pipelinemode='automatic'.
+        example: '../products'</description>
 	<value/>
     </param>
 
     <param name="pipelinemode" type="string">
-	<description>The pipeline operating mode</description>
+	<shortdescription>The pipeline operating mode</shortdescription>
+        <description>The pipeline operating mode. In 'automatic' mode the pipeline
+        determines the values of all context defined pipeline inputs automatically.
+        In 'interactive' mode the user can set the pipeline context defined
+        parameters manually. In 'getinputs' mode the user can check the settings
+        of all pipeline parameters without running the task.</description>
 	<value>automatic</value>
 	<allowed kind="enum">
 	    <value>automatic</value>
@@ -64,12 +135,16 @@ Prepare interferometry data for export.
     </param>
 
     <param subparam="true" name="dryrun" type="bool">
-	<description>Run the task (False) or display task command (True)</description>
+	<shortdescription>Run the task (False) or display task command (True)</shortdescription>
+        <description>Run the task (False) or display task command (True).
+        Only available in pipelinemode='interactive'.</description>
 	<value>False</value>
     </param>
 
     <param subparam="true" name="acceptresults" type="bool">
-	<description>Add the results into the pipeline context</description>
+	<shortdescription>Add the results into the pipeline context</shortdescription>
+        <description>Add the results of the task to the pipeline context (True) or
+        reject them (False). Only available in pipelinemode='interactive'.</description>
 	<value>True</value>
     </param>
 
@@ -106,129 +181,6 @@ Prepare interferometry data for export.
 <returns>any</returns>
 
 <example>
-The hif_exportdata task exports the data defined in the pipeline context
-and exports it to the data products directory, converting and or
-packing it as necessary.
-
-
-Keyword arguments
-
----- pipeline parameter arguments which can be set in any pipeline mode
-
-pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline
-    determines the values of all context defined pipeline inputs automatically.
-    In 'interactive' mode the user can set the pipeline context defined
-    parameters manually. In 'getinputs' mode the user can check the settings
-    of all pipeline parameters without running the task.
-
-    default: 'automatic'.
-
----- pipeline context defined parameter argument which can be set only in
-'interactive mode'
-
-vis -- List of visibility data files for which flagging and calibration
-    information will be exported. Defaults to the list maintained in the
-    pipeline context.
-
-    default: []
-    example: vis=['X227.ms', 'X228.ms']
-
-session -- List of sessions one per visibility file. Currently defaults
-    to a single virtual session containing all the visibility files in vis.
-    In the future, this will default to the set of observing sessions defined
-    in the context.
-
-    default: []
-    example: session=['session1', 'session2']
-
-exportmses -- Export the final MeasurementSets instead of the final flags,
-    calibration tables, and calibration instructions.
-
-    default: False
-    example: exportmses=True
-
-pprfile -- Name of the pipeline processing request to be exported. Defaults
-    to a file matching the template 'PPR_*.xml'.
-
-    default: []
-    example: pprfile=['PPR_GRB021004.xml']
-
-calintents -- List of calibrator image types to be exported. Defaults to
-    all standard calibrator intents 'BANDPASS', 'PHASE', 'FLUX'.
-
-    default: ''
-    example: calintents='PHASE'
-
-calimages -- List of calibrator images to be exported. Defaults to all
-    calibrator images recorded in the pipeline context.
-
-    default: []
-    example: calimages=['3C454.3.bandpass', '3C279.phase']
-
-targetimages -- List of science target images to be exported. Defaults to all
-    science target images recorded in the pipeline context.
-
-    default: []
-    example: targetimages=['NGC3256.band3', 'NGC3256.band6']
-
-products_dir -- Name of the data products subdirectory.
-
-    default: './'
-    example: products_dir='../products'
-
---- pipeline task execution modes
-
-dryrun -- Run the commands (True) or generate the commands to be run but
-    do not execute (False).
-
-    default: True
-
-acceptresults -- Add the results of the task to the pipeline context (True) or
-    reject them (False).
-
-    default: True
-
-
-Output
-
-results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-   the results object for the pipeline task is returned.
-
-
-Description
-
-The hif_exportdata task exports the data defined in the pipeline context
-and exports it to the data products directory, converting and or packing
-it as necessary.
-
-The current version of the task exports the following products
-
-o an XML file containing the pipeline processing request
-o a tar file per ASDM / MS containing the final flags version
-o a text file per ASDM / MS containing the final calibration apply list
-o a FITS image for each selected calibrator source image
-o a FITS image for each selected science target source image
-o a tar file per session containing the caltables for that session
-o a tar file containing the file web log
-o a text file containing the final list of CASA commands
-
-
-Issues
-
-Support for merging the calibration state information into the pipeline
-context / results structure and retrieving it still needs to be added.
-
-Support for merging the clean results into the pipeline context / results
-structure and retrieving it still needs to be added.
-
-Support for creating the final pipeline results entity still needs to
-be added.
-    
-Session information is not currently handled by the pipeline context.
-By default all ASDMs are combined into one session.
-
-
-Examples
 
 1. Export the pipeline results for a single session to the data products
 directory:
@@ -241,6 +193,7 @@ only the gain calibrator images be saved:
 
     !mkdir ../products
     hif_exportdata(products_dir='../products', calintents='*PHASE*')
+
 </example>
 </task>
 </casaxml>
