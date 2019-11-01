@@ -2,7 +2,7 @@ import sys
 
 from casatasks import casalog
 
-from .. import utils
+import pipeline.h.cli.utils as utils
 
 
 def h_importdata(vis=None, session=None, pipelinemode=None, asis=None, process_caldevice=None, overwrite=None,
