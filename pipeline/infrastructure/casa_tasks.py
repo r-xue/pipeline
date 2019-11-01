@@ -179,7 +179,7 @@ def visstat(*v, **k):
 
 def uvcontfit(*v, **k):
     # Note this is pipeline CASA style task not a CASA task
-    import pipeline.hif.cli.private.task_uvcontfit as task_uvcontfit
+    import pipeline.hif.cli.task_uvcontfit as task_uvcontfit
     return _get_job(task_uvcontfit.uvcontfit, *v, **k)
 
 

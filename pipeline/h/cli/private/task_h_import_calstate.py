@@ -1,6 +1,6 @@
 from casatasks import casalog
 
-from .. import utils
+import pipeline.h.cli.utils as utils
 
 
 def h_import_calstate(filename):

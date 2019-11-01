@@ -1,7 +1,7 @@
 from casatasks import casalog
 
 import pipeline
-from .. import utils
+import pipeline.h.cli.utils as utils
 
 
 def h_weblog():

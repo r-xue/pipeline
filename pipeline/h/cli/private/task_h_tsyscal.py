@@ -1,6 +1,6 @@
 import sys
 
-from .. import utils
+import pipeline.h.cli.utils as utils
 
 
 def h_tsyscal(vis=None, caltable=None, chantol=None, pipelinemode=None,
