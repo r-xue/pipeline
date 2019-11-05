@@ -10,7 +10,6 @@ import uuid
 
 import numpy as np
 
-from casatasks.private import cleanhelper
 from casatasks.private.imagerhelpers.imager_base import PySynthesisImager
 from casatasks.private.imagerhelpers.imager_parallel_continuum import PyParallelContSynthesisImager
 from casatasks.private.imagerhelpers.input_parameters import ImagerParameters
@@ -469,8 +468,10 @@ class ImageParamsHeuristics(object):
                             if nxpix_mosaic <= 2.0 * nxpix_sf and nypix_mosaic <= 2.0 * nypix_sf:
                                 imsize = imsize_mosaic
                             else:
-                                nxpix = cleanhelper.cleanhelper.getOptimumSize(int(2.0 * nxpix_sf))
-                                nypix = cleanhelper.cleanhelper.getOptimumSize(int(2.0 * nypix_sf))
+                                suTool = casatools.synthesisutils()
+                                nxpix = suTool.getOptimumSize(int(2.0 * nxpix_sf))
+                                nypix = suTool.getOptimumSize(int(2.0 * nypix_sf))
+                                suTool.done()
                                 imsize = [nxpix, nypix]
                         else:
                             imsize = imsize_sf
