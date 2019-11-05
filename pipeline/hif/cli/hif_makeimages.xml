@@ -4,6 +4,11 @@
 <shortdescription>Compute clean map</shortdescription>
 <description>
 Compute clean results from a list of specified targets.  
+
+Output:
+
+results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
+           the results object for the pipeline task is returned.
 </description>
 <input>
 
@@ -249,10 +254,6 @@ Compute clean results from a list of specified targets.
 
 
 <example>
-Output:
-
-results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-    the results object for the pipeline task is returned.
 </example>
 
 </task>
