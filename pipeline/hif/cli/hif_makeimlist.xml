@@ -49,15 +49,27 @@ Create a a list of images to be cleaned.
   </param>
 
   <param name="specmode" type="string">
-     <description>Spectral gridding type (mfs, cont, cube, repBW, \'\' for default)</description>
-     <value/>
-       <allowed kind="enum">
-         <value/>
-         <value>mfs</value>
-         <value>cont</value>
-         <value>cube</value>
-         <value>repBW</value>
-       </allowed>
+    <shortdescription>Spectral gridding type (mfs, cont, cube, repBW, \'\' for automatic defaults)</shortdescription>
+    <description>Frequency imaging mode, 'mfs', 'cont', 'cube', 'repBW'. \'\'
+                 defaults to 'cube' if intent parameter includes 'TARGET'
+                 otherwise 'mfs'.
+
+                 specmode='mfs' produce one image per source and spw
+                 specmode='cont' produce one image per source and aggregate
+                          over all specified spws
+                 specmode='cube' produce an LSRK frequency cube, channels are
+                          specified in frequency
+                 specmode='repBW' produce an LSRK frequency cube at
+                          representative channel width
+    </description>
+    <value/>
+      <allowed kind="enum">
+        <value/>
+        <value>mfs</value>
+        <value>cont</value>
+        <value>cube</value>
+        <value>repBW</value>
+      </allowed>
   </param>
 
   <param subparam="true" name="outframe" type="string">
@@ -149,7 +161,14 @@ Create a a list of images to be cleaned.
   </param>
 
   <param name="pipelinemode" type="string">
-    <description>The pipeline operating mode</description>
+    <shortdescription>The pipeline operating mode</shortdescription>
+    <description>The pipeline operating mode. In 'automatic' mode the pipeline
+                 determines the values of all context defined pipeline inputs
+                 automatically. In 'interactive' mode the user can set the
+                 pipeline context defined parameters manually.  In 'getinputs'
+                 mode the user can check the settings of all pipeline
+                 parameters without running the task.
+    </description>
     <value>automatic</value>
     <allowed kind="enum">
       <value>automatic</value>
@@ -231,32 +250,11 @@ Create a a list of images to be cleaned.
 
 
 <example>
-
 Create a list of images to be cleaned.
 
 Keyword Arguments
 
-
-pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline
-    determines the values of all context defined pipeline inputs automatically.
-    In 'interactive' mode the user can set the pipeline context defined
-    parameters manually.  In 'getinputs' mode the user can check the settings
-    of all pipeline parameters without running the task.
-    default: 'automatic'.
-
 --- pipeline parameter arguments which can be set in any pipeline mode
-
-specmode -- Frequency imaging mode, 'mfs', 'cont', 'cube', 'repBW'. \'\' defaults to
-    'cube' if intent parameter includes 'TARGET' otherwise 'mfs'.
-    default: ''
-    example: 'mfs', 'cont', 'cube', 'repBW'
-    example:
-        specmode='mfs' produce one image per source and spw
-        specmode='cont' produce one image per source and aggregate over all
-             specified spws
-        specmode='cube' produce an LSRK frequency cube, channels are specified
-             in frequency
-        specmode='repBW' produce an LSRK frequency cube at representative channel width
 
 hm_cell -- Cell size (x, y)
     default '' Compute cell size based on the UV coverage of all the fields
