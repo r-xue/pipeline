@@ -8,7 +8,12 @@ Compute clean results from a list of specified targets.
 <input>
 
   <param subparam="true" name="vis" type="stringVec">
-    <description>List of input MeasurementSets</description>
+    <shortdescription>List of input MeasurementSets</shortdescription>
+    <description>The list of input MeasurementSets. Defaults to the list of
+                 MeasurementSets specified in the h_init or hif_importdata task.
+                 \'\': use all MeasurementSets in the context
+                 Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
+    </description>
     <value/>
   </param>
 
@@ -19,7 +24,10 @@ Compute clean results from a list of specified targets.
   </param>
 
   <param name="hm_masking" type="string">
-     <description>Pipeline heuristics masking option</description>
+     <shortdescription>Pipeline heuristics masking mode</shortdescription>
+     <description>Clean masking mode. Options are 'centralregion', 'auto',
+                  'manual' and 'none'
+     </description>
        <value>auto</value>
        <allowed kind="enum">
          <value>auto</value>
@@ -128,7 +136,18 @@ Compute clean results from a list of specified targets.
   </param>
 
   <param name="overwrite_on_export" type="bool">
-    <description>Replace existing image products</description>
+    <shortdescription>Replace existing image products</shortdescription>
+    <description>Replace existing image products when h/hifa/hifv_exportdata is
+                 called.
+                 If False, images that would have the same FITS name on export,
+                 are amended to include a version number.  For example, if
+                 oussid.J1248-4559_ph.spw21.mfs.I.pbcor.fits would already be
+                 exported by a previous call to hif_makeimags, then
+                 'oussid.J1248-4559_ph.spw21.mfs.I.pbcor.v2.fits' would also be
+                 exported to the products/ directory. The first exported
+                 product retains the same name.  Additional products start
+                 counting with 'v2', 'v3', etc.
+    </description>
     <value>True</value>
   </param>
 
@@ -143,7 +162,15 @@ Compute clean results from a list of specified targets.
   </param>
 
   <param name="pipelinemode" type="string">
-    <description>The pipeline operating mode</description>
+    <shortdescription>The pipeline operating mode</shortdescription>
+    <description>The pipeline operating mode.
+                 In 'automatic' mode the pipeline determines the values of all
+                 context defined pipeline inputs automatically.
+                 In 'interactive' mode the user can set the pipeline context
+                 defined parameters manually.
+                 In 'getinputs' mode the user can check the settings of all
+                 pipeline parameters without running the task.
+    </description>
     <value>automatic</value>
     <allowed kind="enum">
       <value>automatic</value>
@@ -153,7 +180,8 @@ Compute clean results from a list of specified targets.
   </param>
 
   <param subparam="true" name="dryrun" type="bool">
-    <description>Run the task (False) or display the command(True)</description>
+    <description>Run the task (False) or just display the command (True)
+    </description>
     <value>False</value>
   </param>
 
@@ -221,102 +249,10 @@ Compute clean results from a list of specified targets.
 
 
 <example>
-
-Compute a cleaned image for a particular target source/intent and spectral
-window.
-
-Keyword arguments:
-
---- pipeline parameter arguments which can be set in any pipeline mode
-
-pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline
-       determines the values of all context defined pipeline inputs
-       automatically.  In interactive mode the user can set the pipeline
-       context defined parameters manually.  In 'getinputs' mode the user
-       can check the settings of all pipeline parameters without running
-       the task.
-       default: 'automatic'.
-
-
----- pipeline context defined parameter arguments which can be set only in
-'interactive mode'
-
-vis -- The list of input MeasurementSets. Defaults to the list of 
-    MeasurementSets specified in the h_init or hif_importdata sets.
-    example: vis='ngc5921.ms'
-             vis=['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
-    default: use all MeasurementSets in the context 
-
-hm_masking -- Clean masking mode. Options are 'centralregion',
-    'auto', 'manual' and 'none'
-    default: 'auto'
-    example: 'manual'
-
-hm_sidelobethreshold -- sidelobethreshold * the max sidelobe level
-
-hm_noisethreshold -- noisethreshold * rms in residual image
-
-hm_lownoisethreshold -- lownoisethreshold * rms in residual image
-
-hm_negativethreshold -- negativethreshold * rms in residual image
-
-hm_minbeamfrac -- negativethreshold * rms in residual image
-
-hm_growiterations -- Number of binary dilation iterations for growing the mask
-
-hm_dogrowprune -- Do pruning on the grow mask
-
-hm_minpercentchange -- Mask size change threshold
-
-hm_fastnoise -- Faster noise calucation for automask or nsigma stopping
-
-hm_nsigma -- Multiplicative factor for rms-based threshold stopping
-
-hm_perchanweightdensity -- Calculate the weight density for each channel independently
-
-hm_npixels -- Number of pixels to determine uv-cell size for super-uniform weighting
-
-cleancontranges -- Clean continuum frequency ranges in cubes
-                   default=False
-                   Options: False, True
-
-calcsb -- Force (re-)calculation of sensitivities and beams
-          default=False
-          Options: False, True
-
-mosweight -- Mosaic weighting
-             default=None
-             Options: False, True
-
-overwrite_on_export -- Replace existing image products when h/hifa/hifv_exportdata is called
-    If False, images that would have the same FITS name on export, are amended to
-    include a version number.  For example, if oussid.J1248-4559_ph.spw21.mfs.I.pbcor.fits
-    would already be exported by a previous call to hif_makeimags, then
-    'oussid.J1248-4559_ph.spw21.mfs.I.pbcor.v2.fits' would also be exported to the products/ directory.
-    The first exported product retains the same name.  Additional products
-    start counting with 'v2', 'v3', etc.
-    default: True
-
-parallel -- use multiple CPU nodes to clean images
-    default: \'automatic\'
-
---- pipeline task execution modes
-dryrun -- Run the commands (True) or generate the commands to be run but
-   do not execute (False).
-   default: False
-
-acceptresults -- Add the results of the task to the pipeline context (True) or
-   reject them (False).
-   default: True
-
 Output:
 
 results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     the results object for the pipeline task is returned.
-
-
-Examples:
-
 </example>
 
 </task>
