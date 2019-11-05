@@ -468,7 +468,7 @@ class ImageParamsHeuristics(object):
                             if nxpix_mosaic <= 2.0 * nxpix_sf and nypix_mosaic <= 2.0 * nypix_sf:
                                 imsize = imsize_mosaic
                             else:
-                                suTool = casatools.synthesisutils()
+                                suTool = casatools.synthesisutils
                                 nxpix = suTool.getOptimumSize(int(2.0 * nxpix_sf))
                                 nypix = suTool.getOptimumSize(int(2.0 * nypix_sf))
                                 suTool.done()
@@ -1028,8 +1028,10 @@ class ImageParamsHeuristics(object):
             nypix = min(nypix, max_pixels)
 
         # set nxpix, nypix to next highest 'composite number'
-        nxpix = cleanhelper.cleanhelper.getOptimumSize(nxpix)
-        nypix = cleanhelper.cleanhelper.getOptimumSize(nypix)
+        suTool = casatools.synthesisutils
+        nxpix = suTool.getOptimumSize(nxpix)
+        nypix = suTool.getOptimumSize(nypix)
+        suTool.done()
 
         return [nxpix, nypix]
 
