@@ -151,9 +151,10 @@
                 <value>-999.0</value>
             </param>
 
-            <param type="string" name="scales">
+            <param type="any" name="scales">
                 <description>The scales for multi-scale imaging.</description>
-                <value/>
+		<any type="variant" limittypes="intArray floatArray"/>
+		<value type="intArray"></value>
             </param>
 
             <param type="string" name="specmode">
