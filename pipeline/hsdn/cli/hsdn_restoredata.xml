@@ -3,56 +3,148 @@
 <task category="pipeline" name="hsdn_restoredata" type="function">
 <shortdescription>Restore flagged and calibration single dish data from a pipeline run</shortdescription>
 <description>
+The hsdn_restoredata task restores flagged and calibrated MeasurementSets
+from archived ASDMs and pipeline flagging and calibration date products.
+
+pipeline context defined parameter argument which can be set only in
+'interactive mode'
+
+The hsdn_restoredata task restores flagged and calibrated data from archived
+ASDMs and pipeline flagging and calibration data products. Pending archive
+retrieval support hsdn_restoredata assumes that the required products
+are available in the rawdata_dir in the format produced by the
+hifa_exportdata task.
+
+hsdn_restoredata assumes that the following entities are available in the raw
+data directory
+
+o the ASDMs to be restored
+o for each ASDM in the input list
+   o a compressed tar file of the final flagversions file, e.g.
+     uid___A002_X30a93d_X43e.ms.flagversions.tar.gz
+   o a text file containing the applycal instructions, e.g.
+     uid___A002_X30a93d_X43e.ms.calapply.txt
+   o a compressed tar file containing the caltables for the parent session,
+     e.g. uid___A001_X74_X29.session_3.caltables.tar.gz
+
+hsdn_restoredata performs the following operations
+
+o imports the ASDM(s))
+o removes the default MS.flagversions directory created by the filler
+o restores the final MS.flagversions directory stored by the pipeline
+o restores the final set of pipeline flags to the MS
+o restores the final calibration state of the MS
+o restores the final calibration tables for each MS
+o applies the calibration tables to each MS
+
+
+Output:
+
+results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
+   the results object for the pipeline task is returned.
 </description>
+
 <input>
     <param name="vis" type="stringVec">
-	<description>List of input visibility data</description>
-	<value/>
+        <shortdescription>List of input visibility data</shortdescription>
+        <description>List of raw visibility data files to be restored. Assumed to be
+        in the directory specified by rawdata_dir.
+
+        example: vis=['uid___A002_X30a93d_X43e']</description>
+        <value/>
     </param>
 
     <param mustexist="true" name="scalefile" type="path">
-        <description>File of factors to adjust scale between beams</description>
+        <shortdescription>File of factors to adjust scale between beams</shortdescription>
+        <description>Path to a file containing scaling factors between beams.
+        The format is equals to jyperk.csv with five fields:
+        MS name, antenna name, spectral window id, polarization string,
+        and the scaling factor. Example for the file is as follows:
+
+        MS,Antenna,Spwid,Polarization,Factor
+        mg2-20181016165248-181017.ms,NRO-BEAM0,0,I,1.000000000
+        mg2-20181016165248-181017.ms,NRO-BEAM0,1,I,1.000000000
+        mg2-20181016165248-181017.ms,NRO-BEAM0,2,I,1.000000000
+        mg2-20181016165248-181017.ms,NRO-BEAM0,3,I,1.000000000
+        mg2-20181016165248-181017.ms,NRO-BEAM1,0,I,3.000000000
+        mg2-20181016165248-181017.ms,NRO-BEAM1,1,I,3.000000000
+        mg2-20181016165248-181017.ms,NRO-BEAM1,2,I,3.000000000
+        mg2-20181016165248-181017.ms,NRO-BEAM1,3,I,3.000000000
+        mg2-20181016165248-181017.ms,NRO-BEAM2,0,I,0.500000000
+        mg2-20181016165248-181017.ms,NRO-BEAM2,1,I,0.500000000
+        mg2-20181016165248-181017.ms,NRO-BEAM2,2,I,0.500000000
+        mg2-20181016165248-181017.ms,NRO-BEAM2,3,I,0.500000000
+        mg2-20181016165248-181017.ms,NRO-BEAM3,0,I,2.000000000
+        mg2-20181016165248-181017.ms,NRO-BEAM3,1,I,2.000000000
+        mg2-20181016165248-181017.ms,NRO-BEAM3,2,I,2.000000000
+        mg2-20181016165248-181017.ms,NRO-BEAM3,3,I,2.000000000
+
+        If no file name is specified or specified file doesn't exist,
+        all the factors are set to 1.0.
+
+        example: scalefile='', scalefile='working/nroscalefile.csv'</description>
         <value>nroscalefile.csv</value>
     </param>
 
     <param subparam="true" name="infiles" type="stringVec">
-        <description>List of input MeasurementSets</description>
+        <shortdescription>List of input MeasurementSets</shortdescription>
+        <description>List of input MeasurementSets.
+
+        example: vis='ngc5921.ms'</description>
         <value/>
     </param>
 
     <param subparam="true" name="caltable" type="stringVec">
-        <description>List of output caltable(s)</description>
+        <shortdescription>List of output caltable(s)</shortdescription>
+        <description>Name of output gain calibration tables.
+
+        example: caltable='ngc5921.gcal'</description>
         <value/>
     </param>
 
     <param name="products_dir" type="string">
-	<description>The archived pipeline data products directory</description>
-	<value>../products</value>
+        <shortdescription>The archived pipeline data products directory</shortdescription>
+        <description>Name of the data products directory. Currently not
+        used.
+
+        example: products_dir='myproductspath'</description>
+        <value>../products</value>
     </param>
 
     <param name="copytoraw" type="bool">
-	<description>Copy calibration and flagging tables to raw data directory</description>
-	<value>True</value>
+        <shortdescription>Copy calibration and flagging tables to raw data directory</shortdescription>
+        <description>Copy calibration and flagging tables to raw data directory.
+
+        example: copytoraw=False</description>
+        <value>True</value>
     </param>
 
     <param name="rawdata_dir" type="string">
-	<description>The raw data directory</description>
-	<value>../rawdata</value>
+        <shortdescription>The raw data directory</shortdescription>
+        <description>Name of the raw data directory.
+
+        example: rawdata_dir='myrawdatapath'</description>
+        <value>../rawdata</value>
     </param>
 
     <param name="pipelinemode" type="string">
-	<description>The pipeline operating mode</description>
-	<value>automatic</value>
-	<allowed kind="enum">
-	    <value>automatic</value>
-	    <value>interactive</value>
-	    <value>getinputs</value>
-	</allowed>
+        <shortdescription>The pipeline operating mode</shortdescription>
+        <description>The pipeline operating mode. In 'automatic' mode the pipeline
+         determines the values of all context defined pipeline inputs automatically.
+         In 'interactive' mode the user can set the pipeline context defined
+         parameters manually.  In 'getinputs' mode the user can check the settings
+         of all pipeline parameters without running the task.</description>
+        <value>automatic</value>
+        <allowed kind="enum">
+            <value>automatic</value>
+            <value>interactive</value>
+            <value>getinputs</value>
+        </allowed>
     </param>
 
     <param subparam="true" name="overwrite" type="bool">
-    <description>Overwrite existing files on import</description>
-    <value>False</value>
+        <description>Overwrite existing files on import</description>
+        <value>False</value>
     </param>
 
     <param subparam="true" name="nocopy" type="bool">
@@ -71,164 +163,39 @@
     </param>
 
     <param subparam="true" name="dryrun" type="bool">
-	<description>Run the task (False) or display task command (True)</description>
-	<value>False</value>
+        <shortdescription>Run the task (False) or display task command (True)</shortdescription>
+        <description>Run the commands (True) or generate the commands to be run but
+        do not execute (False).</description>
+        <value>False</value>
     </param>
 
     <param subparam="true" name="acceptresults" type="bool">
-	<description>Add the results into the pipeline context</description>
-	<value>True</value>
+        <shortdescription>Add the results into the pipeline context</shortdescription>
+        <description>Add the results of the task to the pipeline context (True) or
+        reject them (False).</description>
+        <value>True</value>
     </param>
 
-    <constraints>
-	<when param="pipelinemode">
-	    <equals value="automatic" type="string">
-	    </equals>
-	    <equals value="interactive" type="string">
-		<default param="dryrun"><value type="bool">False</value></default>
-		<default param="acceptresults"><value type="bool">True</value></default>
-	    </equals>
-	    <equals value="getinputs" type="string">
-	    </equals>
-	</when>
-    </constraints>
+<constraints>
+    <when param="pipelinemode">
+          <equals value="automatic" type="string"></equals>
+          <equals value="interactive" type="string">
+              <default param="dryrun"><value type="bool">False</value></default>
+              <default param="acceptresults"><value type="bool">True</value></default>
+          </equals>
+          <equals value="getinputs" type="string"></equals>
+    </when>
+</constraints>
 
 </input>
-
 
 <returns>any</returns>
 
 
 <example>
-
-The hsdn_restoredata task restores flagged and calibrated MeasurementSets
-from archived ASDMs and pipeline flagging and calibration date products. 
-
-Keyword arguments:
-
----- pipeline parameter arguments which can be set in any pipeline mode
-
-pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline
-   determines the values of all context defined pipeline inputs automatically.
-   In 'interactive' mode the user can set the pipeline context defined
-   parameters manually.  In 'getinputs' mode the user can check the settings
-   of all pipeline parameters without running the task.
-   default: 'automatic'.
-
----- pipeline context defined parameter argument which can be set only in
-'interactive mode'
-
-vis -- List of raw visibility data files to be restored. Assumed to be
-   in the directory specified by rawdata_dir.
-   default: None
-   example: vis=['uid___A002_X30a93d_X43e']
-
-scalefile -- Path to a file containing scaling factors between beams. 
-    The format is equals to jyperk.csv with five fields: 
-    MS name, antenna name, spectral window id, polarization string, 
-    and the scaling factor. Example for the file is as follows:
-
-    MS,Antenna,Spwid,Polarization,Factor
-    mg2-20181016165248-181017.ms,NRO-BEAM0,0,I,1.000000000
-    mg2-20181016165248-181017.ms,NRO-BEAM0,1,I,1.000000000
-    mg2-20181016165248-181017.ms,NRO-BEAM0,2,I,1.000000000
-    mg2-20181016165248-181017.ms,NRO-BEAM0,3,I,1.000000000
-    mg2-20181016165248-181017.ms,NRO-BEAM1,0,I,3.000000000
-    mg2-20181016165248-181017.ms,NRO-BEAM1,1,I,3.000000000
-    mg2-20181016165248-181017.ms,NRO-BEAM1,2,I,3.000000000
-    mg2-20181016165248-181017.ms,NRO-BEAM1,3,I,3.000000000
-    mg2-20181016165248-181017.ms,NRO-BEAM2,0,I,0.500000000
-    mg2-20181016165248-181017.ms,NRO-BEAM2,1,I,0.500000000
-    mg2-20181016165248-181017.ms,NRO-BEAM2,2,I,0.500000000
-    mg2-20181016165248-181017.ms,NRO-BEAM2,3,I,0.500000000
-    mg2-20181016165248-181017.ms,NRO-BEAM3,0,I,2.000000000
-    mg2-20181016165248-181017.ms,NRO-BEAM3,1,I,2.000000000
-    mg2-20181016165248-181017.ms,NRO-BEAM3,2,I,2.000000000
-    mg2-20181016165248-181017.ms,NRO-BEAM3,3,I,2.000000000
-
-    If no file name is specified or specified file doesn't exist, 
-    all the factors are set to 1.0.
-
-    default: 'nroscalefile.csv'
-    example: scalefile='', scalefile='working/nroscalefile.csv'
-
-infiles -- List of input MeasurementSets.
-
-    default: none
-    example: vis='ngc5921.ms'
-
-caltable -- Name of output gain calibration tables.
-
-    default: none
-    example: caltable='ngc5921.gcal'
-
-products_dir -- Name of the data products directory. Currently not
-   used.
-   default: '../products'
-   example: products_dir='myproductspath'
-   
-copytoraw -- Copy calibration and flagging tables to raw data directory.
-   default: True
-   example: copytoraw=False
-
-rawdata_dir -- Name of the raw data directory. 
-   default: '../rawdata'
-   example: rawdata_dir='myrawdatapath'
-
---- pipeline task execution modes
-
-dryrun -- Run the commands (True) or generate the commands to be run but
-   do not execute (False).
-   default: True
-
-acceptresults -- Add the results of the task to the pipeline context (True) or
-   reject them (False).
-   default: True
-
-Output:
-
-results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-   the results object for the pipeline task is returned.
-
-Description
-
-The hsdn_restoredata task restores flagged and calibrated data from archived
-ASDMs and pipeline flagging and calibration data products. Pending archive
-retrieval support hsdn_restoredata assumes that the required products
-are available in the rawdata_dir in the format produced by the
-hifa_exportdata task.
-
-hsdn_restoredata assumes that the following entities are available in the raw
-data directory
-
-o the ASDMs to be restored
-o for each ASDM in the input list
-   o a compressed tar file of the final flagversions file, e.g.  
-     uid___A002_X30a93d_X43e.ms.flagversions.tar.gz
-   o a text file containing the applycal instructions, e.g.
-     uid___A002_X30a93d_X43e.ms.calapply.txt
-   o a compressed tar file containing the caltables for the parent session,
-     e.g. uid___A001_X74_X29.session_3.caltables.tar.gz
-
-hsdn_restoredata performs the following operations
-
-o imports the ASDM(s))
-o removes the default MS.flagversions directory created by the filler
-o restores the final MS.flagversions directory stored by the pipeline
-o restores the final set of pipeline flags to the MS
-o restores the final calibration state of the MS
-o restores the final calibration tables for each MS
-o applies the calibration tables to each MS
-
-
-Issues
-
-Examples
-
-1. Restore the pipeline results for a single ASDM in a single session 
+1. Restore the pipeline results for a single ASDM in a single session
 
     hsdn_restoredata (vis=['uid___A002_X30a93d_X43e'], scalefile='scalefile.csv')
-
 </example>
 </task>
 </casaxml>

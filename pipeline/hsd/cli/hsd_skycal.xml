@@ -2,11 +2,29 @@
 
 <task category="pipeline" name="hsd_skycal" type="function">
 <shortdescription>Calibrate data</shortdescription>
-<description>
+<description>The hsd_skycal generates a caltable for sky calibration that stores
+reference spectra, which is to be subtracted from on-source spectra to filter
+out non-source contribution.
+
+Output:
+
+results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
+   the results object for the pipeline task is returned.
 </description>
 <input>
     <param name="calmode" type="string">
-        <description>Calibration mode (default auto)</description>
+        <shortdescription>Calibration mode (default auto)</shortdescription>
+        <description>Calibration mode. Available options are 'auto' (default),
+        'ps', 'otf', and 'otfraster'. When 'auto' is set, the task will
+        use preset calibration mode that is determined by inspecting data.
+        'ps' mode is simple position switching using explicit reference
+        scans. Other two modes, 'otf' and 'otfraster', will generate
+        reference data from scans at the edge of the map. Those modes
+        are intended for OTF observation and the former is defined for
+        generic scanning pattern such as Lissajous, while the latter is
+        specific use for raster scan.
+
+        options: 'auto', 'ps', 'otf', 'otfraster'</description>
         <value>auto</value>
         <allowed kind="enum">
             <value>auto</value>
@@ -17,66 +35,111 @@
     </param>
 
     <param subparam="true" name="fraction" type="any">
-	    <description>fraction of the OFF data to mark</description>
-            <any limittype="string double" type="variant"/>
-            <value type="string">10%</value>
+  	    <shortdescription>fraction of the OFF data to mark</shortdescription>
+        <description>Sub-parameter for calmode. Edge marking parameter for
+        'otf' and 'otfraster' mode. It specifies a number of OFF scans
+        as a fraction of total number of data points.
+
+        options: String style like '20%', or float value less than 1.0.
+        For 'otfraster' mode, you can also specify 'auto'.</description>
+        <any limittype="string double" type="variant"/>
+        <value type="string">10%</value>
     </param>
 
     <param subparam="true" name="noff" type="int">
-	    <description>number of the OFF data to mark</description>
-            <value>-1</value>
+  	    <shortdescription>number of the OFF data to mark</shortdescription>
+        <description>Sub-parameter for calmode. Edge marking parameter for 'otfraster'
+        mode. It is used to specify a number of OFF scans near edge directly
+        instead to specify it by fractional number by 'fraction'. If it is
+        set, the value will come before setting by 'fraction'.
+
+        options: any positive integer value</description>
+        <value>-1</value>
     </param>
 
     <param subparam="true" name="width" type="double">
-	    <description>width of the pixel for edge detection</description>
-            <value>0.5</value>
+  	    <shortdescription>width of the pixel for edge detection</shortdescription>
+        <description>Sub-parameter for calmode. Edge marking parameter for 'otf'
+        mode. It specifies pixel width with respect to a median spatial
+        separation between neighboring two data in time. Default will
+        be fine in most cases.
+
+        options: any float value</description>
+        <value>0.5</value>
     </param>
 
     <param subparam="true" name="elongated" type="bool">
-	    <description>whether observed area is elongated in one direction or not</description>
-            <value>False</value>
+  	    <shortdescription>whether observed area is elongated in one direction or not</shortdescription>
+        <description>Sub-parameter for calmode. Edge marking parameter for
+        'otf' mode. Please set True only if observed area is elongated
+        in one direction.</description>
+        <value>False</value>
     </param>
 
     <param name="pipelinemode" type="string">
-	<description>The pipeline operating mode</description>
-	<value>automatic</value>
-	<allowed kind="enum">
-	    <value>automatic</value>
-	    <value>interactive</value>
-	    <value>getinputs</value>
-	</allowed>
+      	<shortdescription>The pipeline operating mode</shortdescription>
+        <description>The pipeline operating mode. In 'automatic' mode the
+        pipeline determines the values of all context defined pipeline inputs
+        automatically. In 'interactive' mode the user can set the pipeline
+        context defined parameters manually. In 'getinputs' mode the user
+        can check the settings of all pipeline parameters without running
+        the task.</description>
+      	<value>automatic</value>
+      	<allowed kind="enum">
+      	    <value>automatic</value>
+      	    <value>interactive</value>
+      	    <value>getinputs</value>
+      	</allowed>
     </param>
 
     <param subparam="true" name="infiles" type="stringVec">
-        <description>List of input files to be calibrated (default all)</description>
+        <shortdescription>List of input files to be calibrated (default all)</shortdescription>
+        <description>List of data files. These must be a name of MeasurementSets that
+        are registered to context via hsd_importdata task.
+
+        example: vis=['X227.ms', 'X228.ms']</description>
         <value/>
     </param>
 
     <param subparam="true" name="field" type="string">
-        <description>Field to be calibrated (default all)</description>
+        <shortdescription>Field to be calibrated (default all)</shortdescription>
+        <description>Data selection by field name.</description>
         <value/>
     </param>
 
     <param subparam="true" name="spw" type="any">
-            <description>select data by spw ids, e.g. \'3,5,7\' (\'\'=all)</description>
-            <type>string</type><type>stringVec</type>
-            <value type="string"/>
+        <shortdescription>select data by spw ids, e.g. \'3,5,7\' (\'\'=all)</shortdescription>
+        <description>Data selection by spw. (defalut all spws)
+
+        example: '3,4' (generate caltable for spw 3 and 4)
+                ['0','2'] (spw 0 for first data, 2 for second)</description>
+        <type>string</type>
+        <type>stringVec</type>
+        <value type="string"/>
     </param>
 
     <param subparam="true" name="scan" type="any">
-            <description>select data by scan numbers, e.g. \'21~23\' (\'\'=all)</description>
-            <type>string</type><type>stringVec</type>
-            <value type="string"/>
+        <shortdescription>select data by scan numbers, e.g. \'21~23\' (\'\'=all)</shortdescription>
+        <description>Data selection by scan number. (default all scans)
+
+        example: '22,23' (use scan 22 and 23 for calibration)
+                ['22','24'] (scan 22 for first data, 24 for second)</description>
+        <type>string</type><type>stringVec</type>
+        <value type="string"/>
     </param>
 
     <param subparam="true" name="dryrun" type="bool">
-	<description>Run the task (False) or display task command (True)</description>
-	<value>False</value>
+      	<shortdescription>Run the task (False) or display task command (True)</shortdescription>
+        <description>Run the commands (True) or generate the commands to be run but
+        do not execute (False).</description>
+      	<value>False</value>
     </param>
 
     <param subparam="true" name="acceptresults" type="bool">
-	<description>Add the results into the pipeline context</description>
-	<value>True</value>
+        <shortdescription>Add the results into the pipeline context</shortdescription>
+        <description>Add the results of the task to the pipeline context (True) or
+        reject them (False).</description>
+        <value>True</value>
     </param>
 
     <constraints>
@@ -122,109 +185,9 @@
 
 
 <example>
-The hsd_skycal generates a caltable for sky calibration that  
-stores reference spectra, which is to be subtracted from on-source 
-spectra to filter out non-source contribution.
-
-Keyword arguments:
-
----- pipeline parameter arguments which can be set in any pipeline mode
-
-calmode -- Calibration mode. Available options are 'auto' (default), 
-   'ps', 'otf', and 'otfraster'. When 'auto' is set, the task will 
-   use preset calibration mode that is determined by inspecting data.
-   'ps' mode is simple position switching using explicit reference 
-   scans. Other two modes, 'otf' and 'otfraster', will generate 
-   reference data from scans at the edge of the map. Those modes 
-   are intended for OTF observation and the former is defined for 
-   generic scanning pattern such as Lissajous, while the latter is 
-   specific use for raster scan.
-   default: 'auto'
-   options: 'auto', 'ps', 'otf', 'otfraster'
-
-fraction -- Sub-parameter for calmode. Edge marking parameter for
-   'otf' and 'otfraster' mode. It specifies a number of OFF scans
-   as a fraction of total number of data points.
-   default: '10%'
-   options: String style like '20%', or float value less than 1.0.
-            For 'otfraster' mode, you can also specify 'auto'.
-            
-noff -- Sub-parameter for calmode. Edge marking parameter for 'otfraster'
-   mode. It is used to specify a number of OFF scans near edge directly
-   instead to specify it by fractional number by 'fraction'. If it is
-   set, the value will come before setting by 'fraction'.
-   default: -1 (use setting by 'fraction')
-   options: any positive integer value
-
-width -- Sub-parameter for calmode. Edge marking parameter for 'otf'
-   mode. It specifies pixel width with respect to a median spatial
-   separation between neighboring two data in time. Default will
-   be fine in most cases.
-   default: 0.5
-   options: any float value
-
-elongated -- Sub-parameter for calmode. Edge marking parameter for
-   'otf' mode. Please set True only if observed area is elongated
-   in one direction.
-   default: False
-
-pipelinemode -- The pipeline operating mode. In 'automatic' mode the 
-   pipeline determines the values of all context defined pipeline inputs
-   automatically.  In 'interactive' mode the user can set the pipeline
-   context defined parameters manually.  In 'getinputs' mode the user
-   can check the settings of all pipeline parameters without running
-   the task.
-   default: 'automatic'.
-
----- pipeline context defined parameter argument which can be set only in
-'interactive mode'
-
-infiles -- List of data files. These must be a name of MeasurementSets that 
-   are registered to context via hsd_importdata task.
-   default: []
-   example: vis=['X227.ms', 'X228.ms']
-
-field -- Data selection by field name.
-   default: '' (all fields)
-
-spw -- Data selection by spw.
-   default: '' (all spws)
-   example: '3,4' (generate caltable for spw 3 and 4)
-            ['0','2'] (spw 0 for first data, 2 for second)
-
-scan -- Data selection by scan number.
-   default: '' (all scans)
-   example: '22,23' (use scan 22 and 23 for calibration)
-            ['22','24'] (scan 22 for first data, 24 for second)
-
-pol -- Data selection by polarizations.
-   default: '' (all polarizations)
-   example: '0' (generate caltable for pol 0)
-            ['0~1','0'] (pol 0 and 1 for first data, only 0 for second)
-
---- pipeline task execution modes
-
-dryrun -- Run the commands (True) or generate the commands to be run but
-   do not execute (False).
-   default: True
-
-acceptresults -- Add the results of the task to the pipeline context (True) or
-   reject them (False).
-   default: True
-
-Output:
-
-results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-   the results object for the pipeline task is returned.
-
-
-Examples
-
 1. Generate caltables for all data managed by context.
    default(hsd_skycal)
    hsd_skycal()
-
-
 </example>
 </task>
 </casaxml>
