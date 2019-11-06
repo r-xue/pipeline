@@ -52,7 +52,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   <param subparam="true" name="spw" type="string">
     <shortdescription>Set of data selection spectral window/channels, \'\' for automatic</shortdescription>
     <description>Select spectral windows to image.
-                 \'\': Images will be computed for all science spectral windows.
+                 '': Images will be computed for all science spectral windows.
     </description>
     <value/>
   </param>
@@ -111,7 +111,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   </param>
 
   <param subparam="true" name="hm_imsize" type="stringVec">
-    <shortdescription>Image X and Y size(s) in pixels or PB level (single fields), \'\' for automatic. Single value same for both. \'&lt;number&gt;pb\' for PB level.</shortdescription>
+    <shortdescription>Image X and Y size(s) in pixels or PB level (single fields), '' for automatic. Single value same for both. '&lt;number&gt;pb' for PB level.</shortdescription>
     <description>Image X and Y size in pixels or PB level for single fields.
                  The explicit sizes must be even and divisible by 2,3,5,7 only.
                  The default values are derived as follows:
@@ -131,11 +131,11 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   </param>
 
   <param subparam="true" name="hm_cell" type="stringVec">
-    <shortdescription>Image X and Y cell size(s) with units or pixels per beam, \'\' for automatic. Single value same for both. \'&lt;number&gt;ppb\' for pixels per beam.</shortdescription>
+    <shortdescription>Image X and Y cell size(s) with units or pixels per beam, '' for automatic. Single value same for both. '&lt;number&gt;ppb' for pixels per beam.</shortdescription>
     <description>Image X and Y cell sizes. \'\' computes the cell size based on
                  the UV coverage of all the fields to be imaged and uses a
                  5 pix per beam sampling.
-                 The pix per beam specification ('<number>ppb') uses the above
+                 The pix per beam specification ('&lt;number&gt;ppb') uses the above
                  default cell size ('5ppb') and scales it accordingly.
                  The cells can also be specified as explicit measures.
                  Examples: '3ppb', ['0.5arcsec', '0.5arcsec']
@@ -152,7 +152,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   </param>
 
   <param subparam="true" name="phasecenter" type="any">
-    <shortdescription>Image center (direction or field index, \'\' for automatic)</shortdescription>
+    <shortdescription>Image center (direction or field index, '' for automatic)</shortdescription>
     <description>Direction measure or field id of the image center.
                  The default phase center is set to the mean of the field
                  directions of all fields that are to be image together.
@@ -167,21 +167,21 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <description>Total number of channels in the output image(s)
                  -1 selects enough channels to cover the data selected by
                  spw consistent with start and width.
-    </descriprion>
+    </description>
     <value>-1</value>
   </param>
 
   <param subparam="true" name="start" type="any">
-    <shortdescription>Channel start, \'\' for automatic</shortdescription>
+    <shortdescription>Channel start, '' for automatic</shortdescription>
     <description>Start of image frequency axis as frequency or velocity.
-                 \'\' selects start frequency automatically.
+                 '' selects start frequency automatically.
     </description>
     <any type="variant"/>
     <value type="string"/>
   </param>
 
   <param subparam="true" name="width" type="any">
-    <shortdescription>Channel width, \'\' for automatic.</shortdescription>
+    <shortdescription>Channel width, '' for automatic.</shortdescription>
     <description>Output channel width.
                  Difference in frequency between 2 selected channels for
                  frequency mode images.
@@ -192,7 +192,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   </param>
 
   <param subparam="true" name="nbins" type="any">
-    <shortdescription>Channel binning factors per spw, \'\' for automatic.</shortdescription>
+    <shortdescription>Channel binning factors per spw, '' for automatic.</shortdescription>
     <description>Channel binning factors for each spw.
                  Format: 'spw1:nb1,spw2:nb2,...' with optional wildcards: '*:nb'
                  Examples: '9:2,11:4,13:2,15:8', '*:2'
