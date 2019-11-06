@@ -16,14 +16,14 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <shortdescription>List of input MeasurementSets</shortdescription>
     <description>The list of input MeasurementSets. Defaults to the list of
                  MeasurementSets specified in the h_init or hif_importdata task.
-                 \'\': use all MeasurementSets in the context
+                 '': use all MeasurementSets in the context
                  Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
     </description>
     <value/>
   </param>
 
   <param subparam="true" name="imagename" type="string">
-     <description>Prefix for output image names, \'\' for automatic.</description>
+     <description>Prefix for output image names, '' for automatic.</description>
      <value/>
   </param>
 
@@ -38,7 +38,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   </param>
 
   <param subparam="true" name="field" type="string">
-    <shortdescription>Set of data selection field names or ids, \'\' for all</shortdescription>
+    <shortdescription>Set of data selection field names or ids, '' for all</shortdescription>
     <description>Select fields to image. Use field name(s) NOT id(s). Mosaics
                  are assumed to have common source / field names.  If intent is
                  specified only fields with data matching the intent will be
@@ -50,7 +50,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   </param>
 
   <param subparam="true" name="spw" type="string">
-    <shortdescription>Set of data selection spectral window/channels, \'\' for automatic</shortdescription>
+    <shortdescription>Set of data selection spectral window/channels, '' for automatic</shortdescription>
     <description>Select spectral windows to image.
                  '': Images will be computed for all science spectral windows.
     </description>
@@ -68,9 +68,9 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   </param>
 
   <param subparam="true" name="uvrange" type="string">
-    <shortdescription>Set of data selection uv ranges, \'\' for all.</shortdescription>
+    <shortdescription>Set of data selection uv ranges, '' for all.</shortdescription>
     <description>Select a set of uv ranges to image.
-                 \'\' All uv data is included
+                 '' All uv data is included
                  Examples: '0~1000klambda', ['0~100klambda', 100~1000klambda]
     </description>
     <type>string</type><type>stringVec</type>
@@ -78,8 +78,8 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   </param>
 
   <param name="specmode" type="string">
-    <shortdescription>Spectral gridding type (mfs, cont, cube, repBW, \'\' for automatic defaults)</shortdescription>
-    <description>Frequency imaging mode, 'mfs', 'cont', 'cube', 'repBW'. \'\'
+    <shortdescription>Spectral gridding type (mfs, cont, cube, repBW, '' for automatic defaults)</shortdescription>
+    <description>Frequency imaging mode, 'mfs', 'cont', 'cube', 'repBW'. ''
                  defaults to 'cube' if intent parameter includes 'TARGET'
                  otherwise 'mfs'.
 
@@ -102,7 +102,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   </param>
 
   <param subparam="true" name="outframe" type="string">
-     <description>velocity frame of output image (LSRK, \'\' for automatic)</description>
+     <description>velocity frame of output image (LSRK, '' for automatic)</description>
      <value/>
        <allowed kind="enum">
          <value/>
@@ -132,7 +132,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 
   <param subparam="true" name="hm_cell" type="stringVec">
     <shortdescription>Image X and Y cell size(s) with units or pixels per beam, '' for automatic. Single value same for both. '&lt;number&gt;ppb' for pixels per beam.</shortdescription>
-    <description>Image X and Y cell sizes. \'\' computes the cell size based on
+    <description>Image X and Y cell sizes. '' computes the cell size based on
                  the UV coverage of all the fields to be imaged and uses a
                  5 pix per beam sampling.
                  The pix per beam specification ('&lt;number&gt;ppb') uses the above
