@@ -84,7 +84,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   </param>
 
   <param subparam="true" name="dryrun" type="bool">
-    <description>Run the task (False) or display the command(True)</description>
+    <description>Run the task (False) or just display the command (True)</description>
     <value>False</value>
   </param>
 
