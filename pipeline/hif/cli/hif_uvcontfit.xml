@@ -3,57 +3,100 @@
 <task category="pipeline" name="hif_uvcontfit" type="function">
 <shortdescription>Fit the continuum in the UV plane</shortdescription>
 <description>
-Fit the continuum in the UV plane using polynomials.
+This task estimates the continuum emission by fitting polynomials to
+the real and imaginary parts of the spectral windows and channels
+selected by spw and exclude spw. This fit represents a model of
+the continuum in all channels. Fit orders less than 2 are strongly
+recommended. Spw window combination is not currently supported.
 </description>
 <input>
   <param subparam="true" name="vis" type="stringVec">
-    <description>The name of the input visibility file</description>
+    <shortdescription>The name of the input visibility file</shortdescription>
+    <description>The list of input MeasurementSets. Defaults to the list of
+                 MeasurementSets specified in the h_init or hif_importdata task.
+                 '': use all MeasurementSets in the context
+                 Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
+    </description>
     <value/>
   </param>
 
-        <param subparam="true" name="caltable" type="stringVec">
-                <description>Name of output Mueller matrix calibration table</description>
-                <value/>
-        </param>
+  <param subparam="true" name="caltable" type="stringVec">
+    <shortdescription>The list of output Mueller matrix calibration tables</shortdescription>
+    <description>The list of output Mueller matrix calibration tables one per
+                 input MS. 
+                 '': The output names default to the standard pipeline name
+                     scheme
+    </description>
+    <value/>
+  </param>
 
-        <param subparam="true" name="contfile" type="string">
-                <description>Name of the input file of per source / spw continuum regions</description>
-                <value/>
-        </param>
+  <param subparam="true" name="contfile" type="string">
+    <shortdescription>Name of the input file of per source / spw continuum regions</shortdescription>
+    <description>Name of the input file of per source / spw continuum regions
+                 '': Defaults first to the file named in the context, next to a
+                     file called 'cont.dat' in the pipeline working directory.
+    </description>
+    <value/>
+  </param>
 
-        <param subparam="true" name="field" type="string">
-                <description>Select field(s) using id(s) or name(s)</description>
-                <value type="string"/>
-        </param>
+  <param subparam="true" name="field" type="string">
+    <shortdescription>Select field(s) using id(s) or name(s)</shortdescription>
+    <description>The list of field names or field ids for which UV continuum
+                 fits are computed. Defaults to all fields.
+                 Eexamples: '3C279', '3C279, M82'
+    </description>
+    <value type="string"/>
+  </param>
 
-        <param subparam="true" name="intent" type="string">
-                <description>Select intents</description>
-                <value type="string"/>
-        </param>
+  <param subparam="true" name="intent" type="string">
+    <shortdescription>Select intents</shortdescription>
+    <description>A string containing a comma delimited list of intents against
+                 which the selected fields are matched.
+                 '': Defaults to all data with TARGET intent.
+    </description>
+    <value type="string"/>
+  </param>
 
   <param subparam="true" name="spw" type="string">
-    <description>Spectral window / channels for fitting the continuum</description>
+    <shortdescription>Spectral window / channels for fitting the continuum</shortdescription>
+    <description>The list of spectral windows and channels for which uv
+                 continuum fits are computed.
+                 '', Defaults to all science spectral windows.
+                 Example: '11,13,15,17'
+    </description>
     <value/>
   </param>
 
-        <param subparam="true" name="combine" type="string">
-                <description>Data axes to combine for the continuum estimation (none, spw and/or scan)</description>
-                <value/>
-        </param>
+  <param subparam="true" name="combine" type="string">
+    <shortdescription>Data axes to combine for the continuum estimation (none, spw and/or scan)</shortdescription>
+    <description>Data axes to be combined for solving. Axes are 'scan', 'spw',
+                 or ''.
+                 This option is currently not supported.
+    </description>
+    <value/>
+  </param>
 
   <param name="solint" type="any">
   <description>Time scale for the continuum fit</description>
-         <any type="variant"/>
-        <value type="string">int</value>
+    <any type="variant"/>
+    <value type="string">int</value>
   </param>
 
   <param name="fitorder" type="int">
-  <description>Polynomial order for the continuum fits</description>
-  <value>1</value>
+    <description>Polynomial order for the continuum fits</description>
+    <value>1</value>
   </param>
 
   <param name="pipelinemode" type="string">
-    <description>The pipeline operating mode</description>
+    <shortdescription>The pipeline operating mode</shortdescription>
+    <description>The pipeline operating mode.
+                 In 'automatic' mode the pipeline determines the values of all
+                 context defined pipeline inputs automatically.
+                 In 'interactive' mode the user can set the pipeline context
+                 defined parameters manually.
+                 In 'getinputs' mode the user can check the settings of all
+                 pipeline parameters without running the task.
+    </description>
     <value>automatic</value>
     <allowed kind="enum">
       <value>automatic</value>
@@ -63,12 +106,15 @@ Fit the continuum in the UV plane using polynomials.
   </param>
 
   <param subparam="true" name="dryrun" type="bool">
-    <description>Run the task (False) or display the command(True)</description>
+    <description>Run the task (False) or just display the command (True)</description>
     <value>False</value>
   </param>
 
   <param subparam="true" name="acceptresults" type="bool">
-    <description>Add the results to the pipeline context</description>
+    <shortdescription>Add the results to the pipeline context</shortdescription>
+    <description>Add the results of the task to the pipeline context (True) or
+                 reject them (False).
+    </description>
    <value>True</value>
   </param>
 
@@ -102,84 +148,13 @@ Fit the continuum in the UV plane using polynomials.
 
   </constraints>
 
-
-
 </input>
 
 
 <returns>any</returns>
 
 
-
 <example>
-
-This task estimates the continuum emission by fitting polynomials to
-the real and imaginary parts of the spectral windows and channels
-selected by spw and exclude spw. This fit represents a model of
-the continuum in all channels. Fit orders less than 2 are strongly
-recommended. Spw window combination is not currently supported.
-
-
-Keyword Arguments
-
-
-pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline
-    determines the values of all context defined pipeline inputs automatically.
-    In 'interactive' mode the user can set the pipeline context defined
-    parameters manually.  In 'getinputs' mode the user can check the settings
-    of all pipeline parameters without running the task.
-    default: 'automatic'.
-
---- pipeline parameter arguments which can be set in any pipeline mode
-
-solint --
-    default: 'int'
-    example: solint='30s'
-
-fitorder -- The fit order of the polynomials.
-    default: 1
-    example: fitorder = 0
-
----- pipeline context defined parameter arguments which can be set only in
-     'interactive mode'
-
-vis -- The list of input MeasurementSets for which the UV continuum fits are
-    to be generated. Defaults to the list of imaging MeasurementSets specified
-    in the pipeline import data task.
-    default '': Compute the continuum fit for all calibration MeasurementSets in the context.
-    example: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
-
-caltable -- The list of output calibration tables one per input MS. 
-    default: '', The output name defaults to the standard pipeline name scheme
-    example: ['M51.uvcont']
-
-contfile -- The file containing the continuum frequency ranges used for the 
-    continuum fit.
-    default: '', Defaults first to the file named in the context, next to a file called
-             'cont.dat' in the pipeline working directory, or ''
-    example: contfile = 'mycontfile'
-
-field -- The list of field names or field ids for which UV continuum fits are
-    computed. Defaults to all fields.
-    default: ''
-    example: '3C279', '3C279, M82'
-
-intent -- A string containing a comma delimited list of intents against
-    which the selected fields are matched.
-    default: '', Defaults to all data with TARGET intent.
-    example: 'PHASE'
-
-spw -- The list of spectral windows and channels for which uv continuum
-    fits are computed.
-    default: '', Defaults to all science spectral windows.
-    example: '11,13,15,17'
-
-combine -- Data axes to be combined for solving. Axes are 'scan', 'spw', or ''.
-    This option is currently not supported.
-    default: '', None.
-    example: combine= 'scan'
-
-
 </example> 
 
 </task>

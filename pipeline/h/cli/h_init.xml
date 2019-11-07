@@ -62,8 +62,9 @@ the results object for the pipeline task is returned.
     <param type="string" name="output_dir" subparam="true">
 	<shortdescription>The output working directory</shortdescription>
 	<description>Working directory for pipeline processing. Some pipeline
-       			 processing products such as HTML logs and images will be directed to
-       			 subdirectories of this path. </description>
+		processing products such as HTML logs and images will be directed to
+		subdirectories of this path. 
+    </description>
 	<value>./</value>
     </param>
 

@@ -4,31 +4,56 @@
 <shortdescription>Compute list of clean images to be produced</shortdescription>
 <description>
 Create a a list of images to be cleaned.
+
+Output
+
+results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
+           the results object for the pipeline task is returned.
 </description>
 <input>
 
   <param subparam="true" name="vis" type="stringVec">
-    <description>List of input MeasurementSets</description>
+    <shortdescription>List of input MeasurementSets</shortdescription>
+    <description>The list of input MeasurementSets. Defaults to the list of
+                 MeasurementSets specified in the h_init or hif_importdata task.
+                 '': use all MeasurementSets in the context
+                 Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
+    </description>
     <value/>
   </param>
 
   <param subparam="true" name="imagename" type="string">
-     <description>Prefix for output image names, \'\' for default.</description>
+     <description>Prefix for output image names, '' for automatic.</description>
      <value/>
   </param>
 
   <param subparam="true" name="intent" type="string">
-    <description>Set of data selection intents</description>
+    <shortdescription>Set of data selection intents</shortdescription>
+    <description>Select intents for which associated fields will be imaged.
+                 Possible choices are PHASE, BANDPASS, AMPLITUDE, CHECK and
+                 TARGET or combinations thereof.
+                 Examples: 'PHASE,BANDPASS', 'TARGET'
+    </description>
     <value>TARGET</value>
   </param>
 
   <param subparam="true" name="field" type="string">
-    <description>Set of data selection field names or ids, \'\' for all</description>
+    <shortdescription>Set of data selection field names or ids, '' for all</shortdescription>
+    <description>Select fields to image. Use field name(s) NOT id(s). Mosaics
+                 are assumed to have common source / field names.  If intent is
+                 specified only fields with data matching the intent will be
+                 selected. The fields will be selected from MeasurementSets in
+                 'vis'.
+                 '' Fields matching intent, one image per target source.
+    </description>
     <value/>
   </param>
 
   <param subparam="true" name="spw" type="string">
-    <description>Set of data selection spectral window/channels, \'\' for all</description>
+    <shortdescription>Set of data selection spectral window/channels, '' for automatic</shortdescription>
+    <description>Select spectral windows to image.
+                 '': Images will be computed for all science spectral windows.
+    </description>
     <value/>
   </param>
 
@@ -43,25 +68,41 @@ Create a a list of images to be cleaned.
   </param>
 
   <param subparam="true" name="uvrange" type="string">
-      <description>Set of data selection uv ranges, \'\' for all.</description>
-      <type>string</type><type>stringVec</type>
-      <value type="string"/>
+    <shortdescription>Set of data selection uv ranges, '' for all.</shortdescription>
+    <description>Select a set of uv ranges to image.
+                 '' All uv data is included
+                 Examples: '0~1000klambda', ['0~100klambda', 100~1000klambda]
+    </description>
+    <type>string</type><type>stringVec</type>
+    <value type="string"/>
   </param>
 
   <param name="specmode" type="string">
-     <description>Spectral gridding type (mfs, cont, cube, repBW, \'\' for default)</description>
-     <value/>
-       <allowed kind="enum">
-         <value/>
-         <value>mfs</value>
-         <value>cont</value>
-         <value>cube</value>
-         <value>repBW</value>
-       </allowed>
+    <shortdescription>Spectral gridding type (mfs, cont, cube, repBW, '' for automatic defaults)</shortdescription>
+    <description>Frequency imaging mode, 'mfs', 'cont', 'cube', 'repBW'. ''
+                 defaults to 'cube' if intent parameter includes 'TARGET'
+                 otherwise 'mfs'.
+
+                 specmode='mfs' produce one image per source and spw
+                 specmode='cont' produce one image per source and aggregate
+                          over all specified spws
+                 specmode='cube' produce an LSRK frequency cube, channels are
+                          specified in frequency
+                 specmode='repBW' produce an LSRK frequency cube at
+                          representative channel width
+    </description>
+    <value/>
+      <allowed kind="enum">
+        <value/>
+        <value>mfs</value>
+        <value>cont</value>
+        <value>cube</value>
+        <value>repBW</value>
+      </allowed>
   </param>
 
   <param subparam="true" name="outframe" type="string">
-     <description>velocity frame of output image (LSRK, \'\' for default)</description>
+     <description>velocity frame of output image (LSRK, '' for automatic)</description>
      <value/>
        <allowed kind="enum">
          <value/>
@@ -70,51 +111,101 @@ Create a a list of images to be cleaned.
   </param>
 
   <param subparam="true" name="hm_imsize" type="stringVec">
-    <description>Image X and Y size(s) in pixels or PB level (single fields), \'\' for default. Single value same for both. \'&lt;number&gt;pb\' for PB level.</description>
+    <shortdescription>Image X and Y size(s) in pixels or PB level (single fields), '' for automatic. Single value same for both. '&lt;number&gt;pb' for PB level.</shortdescription>
+    <description>Image X and Y size in pixels or PB level for single fields.
+                 The explicit sizes must be even and divisible by 2,3,5,7 only.
+                 The default values are derived as follows:
+                   1. Determine phase center and spread of field centers
+                      around it.
+                   2. Set the size of the image to cover the spread of field
+                      centers plus a border of width 0.75 * beam radius, to
+                      first null.
+                   3. Divide X and Y extents by cell size to arrive at the
+                      number of pixels required.
+                 The PB level setting for single fields leads to an imsize
+                 extending to the specified level plus 5% padding in all
+                 directions.
+                 Examples: '0.3pb', [120, 120]
+    </description>
     <value/>
   </param>
 
   <param subparam="true" name="hm_cell" type="stringVec">
-    <description>Image X and Y cell size(s) with units or pixels per beam, \'\' for default. Single value same for both. \'&lt;number&gt;ppb\' for pixels per beam.</description>
+    <shortdescription>Image X and Y cell size(s) with units or pixels per beam, '' for automatic. Single value same for both. '&lt;number&gt;ppb' for pixels per beam.</shortdescription>
+    <description>Image X and Y cell sizes. '' computes the cell size based on
+                 the UV coverage of all the fields to be imaged and uses a
+                 5 pix per beam sampling.
+                 The pix per beam specification ('&lt;number&gt;ppb') uses the above
+                 default cell size ('5ppb') and scales it accordingly.
+                 The cells can also be specified as explicit measures.
+                 Examples: '3ppb', ['0.5arcsec', '0.5arcsec']
+    </description>
     <value/>
   </param>
 
   <param subparam="true" name="calmaxpix" type="int">
-    <description>Maximum X and Y size of calibrator images in pixels</description>
+    <shortdescription>Maximum X and Y size of calibrator images in pixels</shortdescription>
+    <description>Maximum image X or Y size in pixels if a calibrator is being
+                 imaged ('PHASE', 'BANDPASS', 'AMPLITUDE' or 'FLUX' intent).
+    </description>
     <value>300</value>
   </param>
 
   <param subparam="true" name="phasecenter" type="any">
-    <description>Image center (direction or field index, \'\' for default)</description>
+    <shortdescription>Image center (direction or field index, '' for automatic)</shortdescription>
+    <description>Direction measure or field id of the image center.
+                 The default phase center is set to the mean of the field
+                 directions of all fields that are to be image together.
+                 Examples: 'J2000 19h30m00 -40d00m00', 0
+    </description>
     <any type="variant"/>
     <value type="string"/>
   </param>
 
   <param subparam="true" name="nchan" type="int">
-    <description>Number of channels, -1 = all </description>
+    <shortdescription>Number of channels, -1 = all </shortdescription>
+    <description>Total number of channels in the output image(s)
+                 -1 selects enough channels to cover the data selected by
+                 spw consistent with start and width.
+    </description>
     <value>-1</value>
   </param>
 
   <param subparam="true" name="start" type="any">
-    <description>Channel start, \'\' for default</description>
+    <shortdescription>Channel start, '' for automatic</shortdescription>
+    <description>Start of image frequency axis as frequency or velocity.
+                 '' selects start frequency automatically.
+    </description>
     <any type="variant"/>
     <value type="string"/>
   </param>
 
   <param subparam="true" name="width" type="any">
-    <description>Channel width, \'\' for default.</description>
+    <shortdescription>Channel width, '' for automatic.</shortdescription>
+    <description>Output channel width.
+                 Difference in frequency between 2 selected channels for
+                 frequency mode images.
+                 'pilotimage' for 15 MHz / 8 channel heuristic
+    </description>
     <any type="variant"/>
     <value type="string"/>
   </param>
 
   <param subparam="true" name="nbins" type="any">
-    <description>Channel binning factors per spw, \'\' for default.</description>
+    <shortdescription>Channel binning factors per spw, '' for automatic.</shortdescription>
+    <description>Channel binning factors for each spw.
+                 Format: 'spw1:nb1,spw2:nb2,...' with optional wildcards: '*:nb'
+                 Examples: '9:2,11:4,13:2,15:8', '*:2'
+    </description>
     <any type="variant"/>
     <value type="string"/>
   </param>
 
   <param subparam="true" name="robust" type="double">
-    <description>Briggs robustness parameter</description>
+    <shortdescription>Briggs robustness parameter</shortdescription>
+    <description>Briggs robustness parameter
+                 Values range from -2.0 (uniform) to 2.0 (natural)
+    </description>
     <value>-999.0</value>
   </param>
 
@@ -124,7 +215,7 @@ Create a a list of images to be cleaned.
   </param>
 
   <param subparam="true" name="clearlist" type="bool">
-    <description>Clear any previous target list</description>
+    <description>Clear any existing target list</description>
     <value>True</value>
   </param>
 
@@ -149,7 +240,15 @@ Create a a list of images to be cleaned.
   </param>
 
   <param name="pipelinemode" type="string">
-    <description>The pipeline operating mode</description>
+    <shortdescription>The pipeline operating mode</shortdescription>
+    <description>The pipeline operating mode.
+                 In 'automatic' mode the pipeline determines the values of all
+                 context defined pipeline inputs automatically.
+                 In 'interactive' mode the user can set the pipeline context
+                 defined parameters manually.
+                 In 'getinputs' mode the user can check the settings of all
+                 pipeline parameters without running the task.
+    </description>
     <value>automatic</value>
     <allowed kind="enum">
       <value>automatic</value>
@@ -159,12 +258,15 @@ Create a a list of images to be cleaned.
   </param>
 
   <param subparam="true" name="dryrun" type="bool">
-    <description>Run the task (False) or display the command(True)</description>
+    <description>Run the task (False) or just display the command (True)</description>
     <value>False</value>
   </param>
 
   <param subparam="true" name="acceptresults" type="bool">
-    <description>Add the results to the pipeline context</description>
+    <shortdescription>Add the results to the pipeline context</shortdescription>
+    <description>Add the results of the task to the pipeline context (True) or
+                 reject them (False).
+    </description>
    <value>True</value>
   </param>
 
@@ -231,159 +333,6 @@ Create a a list of images to be cleaned.
 
 
 <example>
-
-Create a list of images to be cleaned.
-
-Keyword Arguments
-
-
-pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline
-    determines the values of all context defined pipeline inputs automatically.
-    In 'interactive' mode the user can set the pipeline context defined
-    parameters manually.  In 'getinputs' mode the user can check the settings
-    of all pipeline parameters without running the task.
-    default: 'automatic'.
-
---- pipeline parameter arguments which can be set in any pipeline mode
-
-specmode -- Frequency imaging mode, 'mfs', 'cont', 'cube', 'repBW'. \'\' defaults to
-    'cube' if intent parameter includes 'TARGET' otherwise 'mfs'.
-    default: ''
-    example: 'mfs', 'cont', 'cube', 'repBW'
-    example:
-        specmode='mfs' produce one image per source and spw
-        specmode='cont' produce one image per source and aggregate over all
-             specified spws
-        specmode='cube' produce an LSRK frequency cube, channels are specified
-             in frequency
-        specmode='repBW' produce an LSRK frequency cube at representative channel width
-
-hm_cell -- Cell size (x, y)
-    default '' Compute cell size based on the UV coverage of all the fields
-         to be imaged and use a 5 pix per beam sampling.
-         The pix per beam specification uses the above default cell size
-         ('5ppb') and scales it accordingly.
-    example: ['0.5arcsec', '0.5arcsec'] '3ppb'
-
-hm_imsize -- Image X and Y size in pixels or PB level for single field. The
-    explicit sizes must be even and divisible by 2,3,5,7 only.
-    default: '' The default values are derived as follows:
-         1. Determine phase center and spread of field centers around it. 
-         2. Set the size of the image to cover the spread of field centers plus
-            a border of width 0.75 * beam radius, to first null.
-         3. Divide X and Y extents by cell size to arrive at the number of
-            pixels required. 
-         The PB level setting for single fields leads to an imsize extending
-         to the specified level plus 5% padding in all directions.
-    example: [120, 120], '0.3pb'
-
-calmaxpix -- Maximum image X or Y size in pixels if a calibrator is being 
-    imaged ('PHASE', 'BANDPASS', 'AMPLITUDE' or 'FLUX').
-    default: 300
-    example: 300
-
-width -- Output channel width.
-    default: '' Difference in frequency between first 2 selected channels.
-        for frequency mode images.
-    example: '24.2kHz'
-             'pilotimage' for 15 MHz / 8 channel heuristic
-
-nbins -- Channel binning factors per spw
-    default: '' Binning factors for each spw. Format: 'spw1:nb1,spw2:nb2,...'
-             Optional wildcard: '*:nb'
-    example: '9:2,11:4,13:2,15:8'
-             '*:2'
-
-robust -- Briggs robustness parameter
-    default=-999.0; example: robust=0.7;
-    Options: -2.0 to 2.0; -2 (uniform)/+2 (natural)
-
-uvtaper -- uv-taper on outer baselines
-    default=[]
-    example: ['10arcsec']
-
----- pipeline context defined parameter arguments which can be set only in
-     'interactive mode'
-
-vis -- The list of input MeasurementSets. Defaults to the list of MeasurementSets
-    specified in the h_init or hif_importdata sets.
-    default '': use all MeasurementSets in the context 
-    example: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
-
-intent -- Select intents for which associated fields will be imaged.
-    default: 'TARGET'
-    example: 'PHASE,BANDPASS'
-
-field -- Select fields to image. Use field name(s) NOT id(s). Mosaics
-    are assumed to have common source / field names.  If intent is specified
-    only fields with data matching the intent will be selected. The fields
-    will be selected from MeasurementSets in 'vis'.
-    default: '' Fields matching intent, one image per target source.
-    example: '3C279', 'Centaurus*', '3C279,J1427-421'
-
-spw -- Select spectral window/channels to image.
-    default: '' Individual images will be computed for all science spectral
-    windows.
-    example: '9'
-
-contfile -- Name of file with frequency ranges to use for continuum images.
-    default: 'cont.dat'
-    example: 'mycont.dat'
-
-linesfile -- Name of file with line frequency ranges to exclude for continuum images.
-    default: 'lines.dat'
-    example: 'mylines.dat'
-
-uvrange -- Select a set of uv ranges to image.
-    default: '' All uv data is included
-    example: '0~1000klambda', ['0~100klambda', 100~1000klambda]
-
-phasecenter -- Direction measure or field id of the image center.
-    default: '' The default phase center is set to the mean of the field
-        directions of all fields that are to be image together.
-    example: 0, 'J2000 19h30m00 -40d00m00' 
-
-nchan -- Total number of channels in the output image(s)
-    default: -1 Selects enough channels to cover the data selected by
-        spw consistent with start and width.
-    example: 100
-
-start -- First channel for frequency mode images.
-    default '' Starts at first input channel of the spw.
-    example: '22.3GHz'
-
-clearlist -- Clear previous image target list.
-
-    default: True
-    example: False
-
-per_eb -- Make an image target per EB.
-    default False
-    example: True
-
-calcsb -- Force (re-)calculation of sensitivities and beams
-            default=False
-            Options: False, True
-
-parallel -- Use MPI cluster where possible
-    default: \'automatic\'
-
---- pipeline task execution modes
-dryrun -- Run the commands (True) or generate the commands to be run but
-   do not execute (False).
-   default: False
-
-acceptresults -- Add the results of the task to the pipeline context (True) or
-   reject them (False).
-   default: True
-
-Output
-
-results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-    the results object for the pipeline task is returned.
-
-Description
-
 Generate a list of images to be cleaned. By default the list will include
 one image per science target per spw. Calibrator targets can be selected
 by setting appropriate values for intent.
@@ -418,7 +367,6 @@ one image per science spw.
 50 pixels on a side.
 
     hif_makeimlist(intent='PHASE',spw='1',calmaxpix=50)
-
 </example>
 
 </task>

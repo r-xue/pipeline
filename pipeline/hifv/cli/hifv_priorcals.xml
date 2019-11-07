@@ -1,13 +1,18 @@
 <casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
 
 <task category="pipeline" name="hifv_priorcals" type="function">
-<shortdescription>Runs gaincurves, opacities, requantizer gains, antenna position corrections, and tec_maps</shortdescription>
+<shortdescription>Runs gaincurves, opacities, requantizer gains, antenna position corrections, tec_maps, switched power.</shortdescription>
 <description>
 </description>
 <input>
-    <param subparam="true" name="vis" type="stringVec">
-	<description>List of input visibility data</description>
-	<value/>
+    <param name="vis" type="stringVec">
+        <shortdescription>List of input visibility data</shortdescription>
+        <description>List of visibility data files. These may be ASDMs, tar files of ASDMs,
+                     MSes, or tar files of MSes, If ASDM files are specified, they will be
+                     converted  to MS format.
+                     example: vis=['X227.ms', 'asdms.tar.gz']
+        </description>
+        <value/>
     </param>
 
     <param name="tecmaps" type="bool">
@@ -23,23 +28,35 @@
 
 
     <param name="pipelinemode" type="string">
-	<description>The pipeline operating mode</description>
-	<value>automatic</value>
-	<allowed kind="enum">
-	    <value>automatic</value>
-	    <value>interactive</value>
-	    <value>getinputs</value>
-	</allowed>
+        <shortdescription>The pipeline operating mode</shortdescription>
+        <description>The pipeline operating mode. In 'automatic' mode the pipeline
+                     determines the values of all context defined pipeline inputs
+                     automatically.  In 'interactive' mode the user can set the pipeline
+                     context defined parameters manually.  In 'getinputs' mode the user
+                     can check the settings of all pipeline parameters without running
+                     the task.</description>
+        <value>automatic</value>
+        <allowed kind="enum">
+            <value>automatic</value>
+            <value>interactive</value>
+            <value>getinputs</value>
+        </allowed>
     </param>
 
     <param subparam="true" name="dryrun" type="bool">
-	<description>Run the task (False) or display task command (True)</description>
-	<value>False</value>
+        <shortdescription>Run the task (False) or display task command (True)</shortdescription>
+        <description>Run the commands (True) or generate the commands to be run but
+                     do not execute (False).  This is a pipeline task execution mode.
+        </description>
+        <value>False</value>
     </param>
 
     <param subparam="true" name="acceptresults" type="bool">
-	<description>Add the results into the pipeline context</description>
-	<value>True</value>
+        <shortdescription>Add the results into the pipeline context</shortdescription>
+        <description>Add the results of the task to the pipeline context (True) or
+                     reject them (False).  This is a pipeline task execution mode.
+        </description>
+        <value>True</value>
     </param>
 
     <constraints>
@@ -64,45 +81,6 @@
 
 
 <example>
-The hifv_priorcals runs gaincurves, opacities, requantizer gains and antenna position corrections.
-
-Keyword arguments:
-
----- pipeline parameter arguments which can be set in any pipeline mode
-
-vis -- List of visibility data files. These may be ASDMs, tar files of ASDMs,
-   MSs, or tar files of MSs, If ASDM files are specified, they will be
-   converted  to MS format.
-   default: []
-   example: vis=['X227.ms', 'asdms.tar.gz']
-
-
-swpow_spw -- Spectral-window(s) for plotting: &quot;&quot; ==&gt;all, spw=&quot;6,14&quot;
-
-pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline
-   determines the values of all context defined pipeline inputs
-   automatically.  In 'interactive' mode the user can set the pipeline
-   context defined parameters manually.  In 'getinputs' mode the user
-   can check the settings of all pipeline parameters without running
-   the task.
-   default: 'automatic'.
-
-tecmaps -- Run tecmaps priorcal.
-    default: False
-
----- pipeline context defined parameter argument which can be set only in
-'interactive mode'
-
-
---- pipeline task execution modes
-
-dryrun -- Run the commands (True) or generate the commands to be run but
-   do not execute (False).
-   default: True
-
-acceptresults -- Add the results of the task to the pipeline context (True) or
-   reject them (False).
-   default: True
 
 Output:
 

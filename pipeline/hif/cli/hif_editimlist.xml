@@ -5,6 +5,9 @@
         <description>
             Add to a list of images to be produced with hif_makeimages(), which uses hif_tclean() to invoke CASA tclean.  
             Many of the hif_editimlist() inputs map directly to tclean parameters.
+
+            If pipeline mode is 'getinputs' then None is returned. Otherwise
+            the results object for the pipeline task is returned.
         </description>
         <input>
 
@@ -18,7 +21,15 @@
                 <value type="double">1000.0</value>
             </param>
             <param name="cell" type="stringVec">
-                <description>Image X and Y cell size(s) with units or pixels per beam, \'\' for default. Single value same for both. \'&lt;number&gt;ppb\' for pixels per beam.</description>
+                <shortdescription>Image X and Y cell size(s) with units or pixels per beam</shortdescription>
+                <description>Image X and Y cell size(s) with units or pixels per beam.
+                    Single value same for both. \'&lt;number&gt;ppb\' for pixels per beam.
+                    Compute cell size based on the UV coverage of all the fields
+                    to be imaged and use a 5 pix per beam sampling.
+                    The pix per beam specification uses the above default cell size
+                    ('5ppb') and scales it accordingly.
+                    example: ['0.5arcsec', '0.5arcsec'] '3ppb'
+                </description>
                 <value/>
             </param>
 
@@ -53,12 +64,12 @@
             </param>
 
             <param name="editmode" type="string">
-                <description>The edit mode of the task (e.g. add, edit)</description>
+                <description>The edit mode of the task (e.g. add, edit). Defaults to 'add'.</description>
                 <value/>
             </param>
 
             <param name="field" type="stringVec">
-                <description>Set of data selection field names or ids, \'\' for all</description>
+                <description>Set of data selection field names or ids.</description>
                 <value/>
             </param>
 
@@ -107,17 +118,17 @@
             </param>
 
             <param name="niter" type="int">
-                <description>Maximum number of clean iterations</description>
+                <description>The max total number of minor cycle iterations allowed for tclean</description>
                 <value type="int">0</value>
             </param>
 
             <param name="nterms" type="int">
-                <description/>
+                <description>Number of Taylor coefficients in the spectral model</description>
                 <value type="int">0</value>
             </param>
 
             <param name="parameter_file" type="string">
-                <description>Optional parameter file as alternate input method</description>
+                <description>keyword=value text file as alternative method of input parameters</description>
                 <value/>
             </param>
 
@@ -127,13 +138,17 @@
             </param>
 
             <param name="phasecenter" type="any">
-                <description>Image center (direction or field index, \'\' for default)</description>
+                <shortdescription>Image center (direction or field index, \'\' for default)</shortdescription>
+                <description>The default phase center is set to the mean of the field
+                    directions of all fields that are to be image together.
+                    example: 0, 'J2000 19h30m00 -40d00m00'
+                </description>
                 <any type="variant"/>
                 <value type="string"/>
             </param>
 
             <param name="reffreq" type="string">
-                <description/>
+                <description>Reference frequency of the output image coordinate system</description>
                 <value/>
             </param>
 
@@ -143,7 +158,7 @@
             </param>
 
             <param name="robust" type="double">
-                <description>Briggs robustness parameter</description>
+                <description>Briggs robustness parameter for tclean</description>
                 <value>-999.0</value>
             </param>
 
@@ -159,12 +174,17 @@
 
             <param name="spw" type="any">
                 <description>Set of data selection spectral window/channels, \'\' for all</description>
-                <type>string</type><type>int</type>
+                <type>string</type>
+                <type>int</type>
                 <value type="string"/>
             </param>
 
             <param name="start" type="any">
-                <description>Channel start, \'\' for default</description>
+                <shortdescription>First channel for frequency mode images.</shortdescription>
+                <description>First channel for frequency mode images.
+                    Starts at first input channel of the spw.
+                    example: '22.3GHz'
+                </description>
                 <any type="variant"/>
                 <value type="string"/>
             </param>
@@ -201,7 +221,7 @@
             </param>
 
             <param name="width" type="any">
-                <description>Channel width, \'\' for default.</description>
+                <description>Channel width</description>
                 <any type="variant"/>
                 <value type="string"/>
             </param>
@@ -209,7 +229,12 @@
             
 
             <param name="pipelinemode" type="string">
-                <description>The pipeline operating mode</description>
+                <description>The pipeline operating mode. In 'automatic' mode the pipeline
+                    determines the values of all context defined pipeline inputs automatically.
+                    In 'interactive' mode the user can set the pipeline context defined
+                    parameters manually. In 'getinputs' mode the user can check the settings
+                    of all pipeline parameters without running the task.
+                </description>
                 <value>automatic</value>
                 <allowed kind="enum">
                     <value>automatic</value>
@@ -230,7 +255,6 @@
 
 
             <constraints>
-                
             </constraints>
 
         </input>
@@ -240,172 +264,6 @@
 
 
         <example>
-
-            Edit a list of images to be cleaned.
-
-            Keyword Arguments
-
-            imagename -- Prefix of output images
-
-            cell -- Cell size (x, y)
-            default '' Compute cell size based on the UV coverage of all the fields
-            to be imaged and use a 5 pix per beam sampling.
-            The pix per beam specification uses the above default cell size
-            ('5ppb') and scales it accordingly.
-            example: ['0.5arcsec', '0.5arcsec'] '3ppb'
-
-            cfcache -- Convolution function cache directory name
-
-            conjbeams -- Use conjugate frequency in tclean for wideband A-terms.
-            default: False
-
-            cyclefactor -- Controls the depth of clean in minor cycles based on PSF.
-
-            cycleniter -- Controls max number of minor cycle iterations in a single major cycle.
-
-            datacolumn -- Data column to image
-
-            deconvolver -- Minor cycle algorithm e.g. 'multiscale' or 'mtmfs'.
-            default: 'multiscale'
-
-            editmode -- currently only add
-
-            field -- Select fields to image. Use field name(s) NOT id(s). Mosaics
-            are assumed to have common source / field names. If intent is specified
-            only fields with data matching the intent will be selected. The fields
-            will be selected from MeasurementSets in 'vis'.
-            default: [''] Fields matching matching intent, one image per target source.
-            example: ['3C279'], ['Centaurus*'], ['3C279' ,'J1427-421']
-
-            imsize -- Image X and Y size in pixels or PB level for single field. The
-            explicit sizes must be even and divisible by 2,3,5,7 only.
-            default: '' The default values are derived as follows:
-            1. Determine phase center and spread of field centers around it.
-            2. Set the size of the image to cover the spread of field centers plus
-            a border of width 0.75 * beam radius, to first null.
-            3. Divide X and Y extents by cell size to arrive at the number of
-            pixels required.
-            The PB level setting for single fields leads to an imsize extending
-            to the specified level plus 5% padding in all directions.
-            example: [120, 120], '0.3pb'
-
-            intent -- Select intents for which associated fields will be imaged.
-            default: 'TARGET'
-            example: 'PHASE,BANDPASS'
-
-            gridder -- Gridding options (standard, wproject, widefield, mosaic, awproject)
-
-            mask -- Used to declare whether to use a predefined mask for tclean,
-            or to use internal auto-masking, or to not mask at all.
-
-            nbin -- Channel binning factors per spw
-            default: '' Binning factors for each spw. Format: 'spw1:nb1,spw2:nb2,...'
-            Optional wildcard: '*:nb'
-            example: '9:2,11:4,13:2,15:8'
-            '*:2'
-
-            nchan -- Total number of channels in the output image(s)
-            default: -1 Selects enough channels to cover the data selected by
-            spw consistent with start and width.
-            example: 100
-
-            niter -- The maximum total number of minor cycle iterations allowed for tclean.
-
-            nterms -- Number of Taylor coefficients in the spectral model
-
-            parameter_file -- keyword=value text file as alternative method of input parameters
-            One key=value pair per line.
-
-            phasecenter -- Direction measure or field id of the image center.
-            default: '' The default phase center is set to the mean of the field
-            directions of all fields that are to be image together.
-            example: 0, 'J2000 19h30m00 -40d00m00'
-
-            reffreq -- Reference frequency of the output image coordinate system
-
-            robust -- Set the Briggs robustness factor for weighting. In general,
-            we choose a value that gives suitable PSF size (~2.5? for the
-            untapered images) and reasonable sensitivity. Tuning might be needed
-            in certain regions.
-
-            scales -- The scales for multi-scale imaging.
-
-            specmode -- Frequency imaging mode, 'mfs', 'cont', 'cube'. \'\' defaults to
-            'cube' if intent parameter includes 'TARGET' otherwise 'mfs'.
-            default: ''
-            example: 'mfs', 'cont', 'cube'
-            example:
-            mode='mfs' produce one image per source and spw
-            mode='cont' produce one image per source and aggregate over all
-            specified spws
-            mode='cube' produce an LSRK frequency cube, channels are specified
-            in frequency
-
-            spw -- Select spectral window/channels to image.
-            default: '' Individual images will be computed for all science spectral
-            windows.
-            example: '9'
-
-            start -- First channel for frequency mode images.
-            default '' Starts at first input channel of the spw.
-            example: '22.3GHz'
-
-            stokes -- Stokes Planes to make
-
-            threshold -- Stopping threshold (number in units of Jy, or string)
-
-            nsigma -- Multiplicative factor for rms-based threshold stopping
-
-            uvtaper -- Used to set a uv-taper during clean. At mid-declinations and
-            reasonable elevations, not required for the full-resolution images
-            and in the QLIP. Needed when making the tapered Images for other BDPs
-            (SEIP, CIP). May be useful in QLIP to control PSF at low elevations
-            or in hybrid.
-
-            uvrange -- Select a set of uv ranges to image.
-            default: '' All uv data is included
-            example: '0~1000klambda', ['0~100klambda', 100~1000klambda]
-
-            width -- Output channel width.
-            default: '' Difference in frequency between first 2 selected channels.
-            for frequency mode images.
-            example: '24.2kHz'
-            'pilotimage' for 15 MHz / 8 channel heuristic
-
-            --- pipeline task execution modes
-
-            pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline
-            determines the values of all context defined pipeline inputs automatically.
-            In 'interactive' mode the user can set the pipeline context defined
-            parameters manually. In 'getinputs' mode the user can check the settings
-            of all pipeline parameters without running the task.
-            default: 'automatic'.
-
-            dryrun -- Run the commands (True) or generate the commands to be run but
-            do not execute (False).
-            default: False
-
-            acceptresults -- Add the results of the task to the pipeline context (True) or
-            reject them (False).
-            default: True
-
-            Output
-
-            results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-            the results object for the pipeline task is returned.
-
-            Description
-
-            Edit a list of images to be cleaned.
-
-            Issues
-
-            
-
-            Examples
-
-            
-
         </example>
 
     </task>

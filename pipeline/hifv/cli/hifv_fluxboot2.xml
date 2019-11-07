@@ -5,9 +5,14 @@
 <description>
 </description>
 <input>
-    <param subparam="true" name="vis" type="stringVec">
-	<description>List of input visibility data</description>
-	<value/>
+    <param name="vis" type="stringVec">
+        <shortdescription>List of input visibility data</shortdescription>
+        <description>List of visibility data files. These may be ASDMs, tar files of ASDMs,
+                     MSes, or tar files of MSes, If ASDM files are specified, they will be
+                     converted  to MS format.
+                     example: vis=['X227.ms', 'asdms.tar.gz']
+        </description>
+        <value/>
     </param>
 
     <param subparam="true" name="caltable" type="string">
@@ -16,32 +21,54 @@
     </param>
 
     <param name="fitorder" type="int">
-        <description>order of spectral fitting (default of -1 for heuristic determination)</description>
+        <shortdescription>Order of spectral fitting (default of -1 for heuristic determination)</shortdescription>
+        <description>Polynomial order of the spectral fitting for valid flux densities
+                     with multiple spws.  The default value of -1 means that the heuristics determine the fit order based on
+                     fractional bandwidth and receiver bands present in the observation.
+                     An override value of 0,1,2,3 or 4 may be specified by the user.
+                     Spectral index (1) and, if applicable, curvature (2) are reported in the weblog.
+                     If no determination can be made by the heuristics, a fitorder of 1 will be used.
+        </description>
         <value>-1</value>
     </param>
 
     <param name="pipelinemode" type="string">
-	<description>The pipeline operating mode</description>
-	<value>automatic</value>
-	<allowed kind="enum">
-	    <value>automatic</value>
-	    <value>interactive</value>
-	    <value>getinputs</value>
-	</allowed>
+        <shortdescription>The pipeline operating mode</shortdescription>
+        <description>The pipeline operating mode. In 'automatic' mode the pipeline
+                     determines the values of all context defined pipeline inputs
+                     automatically.  In 'interactive' mode the user can set the pipeline
+                     context defined parameters manually.  In 'getinputs' mode the user
+                     can check the settings of all pipeline parameters without running
+                     the task.
+        </description>
+        <value>automatic</value>
+        <allowed kind="enum">
+            <value>automatic</value>
+            <value>interactive</value>
+            <value>getinputs</value>
+        </allowed>
     </param>
 
     <param subparam="true" name="dryrun" type="bool">
-	<description>Run the task (False) or display task command (True)</description>
-	<value>False</value>
+        <shortdescription>Run the task (False) or display task command (True)</shortdescription>
+        <description>Run the commands (True) or generate the commands to be run but
+                     do not execute (False).  This is a pipeline task execution mode.
+        </description>
+        <value>False</value>
     </param>
 
     <param subparam="true" name="acceptresults" type="bool">
-	<description>Add the results into the pipeline context</description>
-	<value>True</value>
+        <shortdescription>Add the results into the pipeline context</shortdescription>
+        <description>Add the results of the task to the pipeline context (True) or
+                     reject them (False).  This is a pipeline task execution mode.
+        </description>
+        <value>True</value>
     </param>
 
     <param name="refantignore" type="string">
-	<description>String list of antennas to ignore</description>
+	<description>String list of antennas to ignore
+                     Example:  refantignore='ea02,ea03'
+        </description>
 	<value/>
     </param>
 
@@ -67,53 +94,6 @@
 
 
 <example>
-The hifv_fluxboot2 task performs the flux density bootstrapping stage of the VLA pipeline.
-
-Keyword arguments:
-
----- pipeline parameter arguments which can be set in any pipeline mode
-
-vis -- List of visibility data files. These may be ASDMs, tar files of ASDMs,
-   MSs, or tar files of MSs, If ASDM files are specified, they will be
-   converted  to MS format.
-   default: []
-   example: vis=['X227.ms', 'asdms.tar.gz']
-
-caltable -- string name of flagged caltable
-
-fitorder -- Polynomial order of the spectral fitting for valid flux densities
-               with multiple spws.  The default value of -1 means that the heuristics determine the fit order based on
-               fractional bandwidth and receiver bands present in the observation.
-               An override value of 0,1,2,3 or 4 may be specified by the user.
-               Spectral index (1) and, if applicable, curvature (2) are reported in the weblog.
-               If no determination can be made by the heuristics, a fitorder of 1 will be used.
-
-refantignore -- string list to be ignored as reference antennas.
-    default: ''
-    Example:  refantignore='ea02,ea03'
-
-pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline
-   determines the values of all context defined pipeline inputs
-   automatically.  In 'interactive' mode the user can set the pipeline
-   context defined parameters manually.  In 'getinputs' mode the user
-   can check the settings of all pipeline parameters without running
-   the task.
-   default: 'automatic'.
-
----- pipeline context defined parameter argument which can be set only in
-'interactive mode'
-
-
---- pipeline task execution modes
-
-dryrun -- Run the commands (True) or generate the commands to be run but
-   do not execute (False).
-   default: True
-
-acceptresults -- Add the results of the task to the pipeline context (True) or
-   reject them (False).
-   default: True
-
 Output:
 
 results -- If pipeline mode is 'getinputs' then None is returned. Otherwise

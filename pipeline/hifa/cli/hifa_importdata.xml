@@ -7,7 +7,13 @@
 
         <input>
             <param name="vis" type="stringVec">
-                <description>List of input visibility data</description>
+                <shortdescription>List of input visibility data</shortdescription>
+                <description>List of visibility data files.
+                    These may be ASDMs, tar files of ASDMs,
+                    MSes, or tar files of MSes. If ASDM files are specified, they will be
+                    converted to MS format.
+                    example: vis=['X227.ms', 'asdms.tar.gz']
+                </description>
                 <value/>
             </param>
 
@@ -17,7 +23,14 @@
             </param>
 
             <param name="pipelinemode" type="string">
-                <description>The pipeline operating mode</description>
+                <shortdescription>The pipeline operating mode</shortdescription>
+                <description>The pipeline operating mode.
+                    In 'automatic' mode the pipeline determines the values of all
+                    context defined pipeline inputs automatically.
+                    In 'interactive' mode the user can set the pipeline context defined
+                    parameters manually. In 'getinputs' mode the user can check the settings of
+                    all pipeline parameters without running the task.
+                </description>
                 <value>automatic</value>
                 <allowed kind="enum">
                     <value>automatic</value>
@@ -158,12 +171,6 @@ Keyword arguments
 
 ---- pipeline parameter arguments which can be set in any pipeline mode
 
-vis -- List of visibility data files. These may be ASDMs, tar files of ASDMs,
-    MSes, or tar files of MSes. If ASDM files are specified, they will be
-    converted to MS format.
-
-    default: []
-    example: vis=['X227.ms', 'asdms.tar.gz']
 
 session -- List of sessions to which the visibility files belong. Defaults
     to a single session containing all the visibility files, otherwise
@@ -172,13 +179,7 @@ session -- List of sessions to which the visibility files belong. Defaults
     default: []
     example: session=['session_1', 'session_2']
 
-pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline
-    determines the values of all context defined pipeline inputs automatically.
-    In 'interactive' mode the user can set the pipeline context defined
-    parameters manually. In 'getinputs' mode the user can check the settings of
-    all pipeline parameters without running the task.
 
-    default: 'automatic'.
 
 ---- pipeline context defined parameter argument which can be set only in
 'interactive mode'
