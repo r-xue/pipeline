@@ -98,7 +98,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     </param>
 
     <param subparam="true" name="infiles" type="stringVec">
-        <shortdescription>List of input MeasurementSets</shrotdescription>
+        <shortdescription>List of input MeasurementSets</shortdescription>
         <description>List of input MeasurementSets.
 
         example: vis='ngc5921.ms'
@@ -115,7 +115,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     </param>
 
     <param subparam="true" name="dryrun" type="bool">
-        <shortdescription>Run the task (False) or list commands (True)</shrotdescription>
+        <shortdescription>Run the task (False) or list commands (True)</shortdescription>
         <description>Run the commands (True) or generate the commands to be run but
         do not execute (False).</description>
         <value>False</value>
