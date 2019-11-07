@@ -3,25 +3,59 @@
 <task category="pipeline" name="hsd_exportdata" type="function">
 <shortdescription>Prepare single dish data for export</shortdescription>
 <description>
+The hsd_exportdata task exports the data defined in the pipeline context
+and exports it to the data products directory, converting and or packing
+it as necessary.
+
+The current version of the task exports the following products
+
+o a FITS image for each selected science target source image
+o a tar file per ASDM containing the final flags version and blparam
+o a tar file containing the file web log
+
+TBD
+o a file containing the line feature table(frequency, width, spatial distribution)
+o a file containing the list of identified transitions from line catalogs
+
+Output:
+
+results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
+   the results object for the pipeline task is returned.
 </description>
 <input>
     <param subparam="true" name="pprfile" type="string">
-    <description>The pipeline processing request (PPR) file to be exported</description>
-    <value/>
+        <shortdescription>The pipeline processing request (PPR) file to be exported</shortdescription>
+        <description>Name of the pipeline processing request to be exported. Defaults
+        to a file matching the template 'PPR_*.xml'.
+        Parameter is not available when pipelinemode='automatic'.
+        example: pprfile=['PPR_GRB021004.xml']</description>
+        <value/>
     </param>
     
     <param subparam="true" name="targetimages" type="stringVec">
-	<description>List of target CASA images to be exported</description>
+	<shortdescription>List of target CASA images to be exported</shortdescription>
+        <description>List of science target images to be exported. Defaults to all
+        science target images recorded in the pipeline context.
+        Parameter is not available when pipelinemode='automatic'.
+        example: targetimages=['r_aqr.CM02.spw5.line0.XXYY.sd.im', 'r_aqr.CM02.spw5.XXYY.sd.cont.im']</description>
 	<value/>
     </param>
     
     <param subparam="true" name="products_dir" type="string">
-    <description>The data products directory</description>
+        <shortdescription>The data products directory</shortdescription>
+        <description>Name of the data products subdirectory. Defaults to './'
+        Parameter is not available when pipelinemode='automatic'.
+        example: products_dir='../products'</description>
     <value/>
     </param>
 
     <param name="pipelinemode" type="string">
-	<description>The pipeline operating mode</description>
+	<shortdescription>The pipeline operating mode</shortdescription>
+        <description>The pipeline operating mode. In 'automatic' mode the pipeline
+        determines the values of all context defined pipeline inputs automatically.
+        In 'interactive' mode the user can set the pipeline context defined
+        parameters manually.  In 'getinputs' mode the user can check the settings
+        of all pipeline parameters without running the task.</description>
 	<value>automatic</value>
 	<allowed kind="enum">
 	    <value>automatic</value>
@@ -31,12 +65,16 @@
     </param>
 
     <param subparam="true" name="dryrun" type="bool">
-	<description>Run the task (False) or display task command (True)</description>
+	<shortdescription>Run the task (False) or display task command (True)</shortdescription>
+        <description>Run the task (False) or display task command (True).
+        Only available when pipelinemode='interactive'.</description>
 	<value>False</value>
     </param>
 
     <param subparam="true" name="acceptresults" type="bool">
-	<description>Add the results into the pipeline context</description>
+	<shortdescription>Add the results into the pipeline context</shortdescription>
+        <description>Add the results of the task to the pipeline context (True) or
+        reject them (False). Only available when pipelinemode='interactive'.</description>
 	<value>True</value>
     </param>
 
@@ -66,72 +104,6 @@
 
 
 <example>
-The hsd_exportdata task exports the data defined in the pipeline context
-and exports it to the data products directory, converting and or
-packing it as necessary.
-
-Keyword arguments:
-
----- pipeline parameter arguments which can be set in any pipeline mode
-
-pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline
-   determines the values of all context defined pipeline inputs automatically.
-   In 'interactive' mode the user can set the pipeline context defined
-   parameters manually.  In 'getinputs' mode the user can check the settings
-   of all pipeline parameters without running the task.
-   default: 'automatic'.
-
----- pipeline context defined parameter argument which can be set only in
-'interactive mode'
-
-pprfile -- Name of the pipeline processing request to be exported. Defaults
-   to a file matching the template 'PPR_*.xml'.
-   default: []
-   example: pprfile=['PPR_GRB021004.xml']
-
-targetimages -- List of science target images to be exported. Defaults to all
-   science target images recorded in the pipeline context.
-   default: []
-   example: targetimages=['r_aqr.CM02.spw5.line0.XXYY.sd.im', 'r_aqr.CM02.spw5.XXYY.sd.cont.im']
-
-products_dir -- Name of the data products subdirectory. Defaults to './'
-   default: ''
-   example: products_dir='../products'
-
-
---- pipeline task execution modes
-
-dryrun -- Run the commands (True) or generate the commands to be run but
-   do not execute (False).
-   default: True
-
-acceptresults -- Add the results of the task to the pipeline context (True) or
-   reject them (False).
-   default: True
-
-Output:
-
-results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-   the results object for the pipeline task is returned.
-
-Description
-
-The hsd_exportdata task exports the data defined in the pipeline context
-and exports it to the data products directory, converting and or packing
-it as necessary.
-
-The current version of the task exports the following products
-
-o a FITS image for each selected science target source image
-o a tar file per ASDM containing the final flags version and blparam
-o a tar file containing the file web log
-
-TBD
-o a file containing the line feature table(frequency, width, spatial distribution)
-o a file containing the list of identified transitions from line catalogs
-
-Examples
-
 1. Export the pipeline results for a single session to the data products
 directory
 

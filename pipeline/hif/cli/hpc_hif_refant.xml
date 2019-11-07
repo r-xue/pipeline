@@ -3,30 +3,67 @@
     <task category="pipeline" name="hpc_hif_refant" type="function">
 
         <shortdescription>Select the best reference antennas</shortdescription>
+        <description>
+The hpc_hif_refant task selects a list of reference antennas and stores them
+in the pipeline context in priority order.
+
+The priority order is determined by a weighted combination of scores derived
+by the antenna selection heuristics. In manual mode the reference antennas
+can be set by hand.
+
+
+Output:
+
+results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
+the results object for the pipeline task is returned.
+
+Issues
+
+        </description>
 
         <input>
             <param subparam="true" name="vis" type="stringVec">
-                <description>List of input MeasurementSets</description>
+                <shortdescription>List of input MeasurementSets</shortdescription>
+                <description>The list of input MeasurementSets. Defaults to the list of
+                MeasurementSets in the pipeline context.
+                Not available when pipelinemode='automatic'.
+                example: ['M31.ms']</description>
                 <value/>
             </param>
 
             <param subparam="true" name="field" type="string">
-                <description>List of field names or ids</description>
+                <shortdescription>List of field names or ids</shortdescription>
+                <description>The comma delimited list of field names or field ids for which flagging
+                scores are computed if hm_refant='automatic' and flagging = True.
+                Not available when pipelinemode='automatic'.
+                example: '' (Default to fields with the specified intents), '3C279', '3C279,M82'</description>
                 <value/>
             </param>
 
             <param subparam="true" name="intent" type="string">
-                <description>List of data selection intents</description>
+                <shortdescription>List of data selection intents</shortdescription>
+                <description>A string containing a comma delimited list of intents against
+                which the selected fields are matched. Defaults to all supported
+                intents. Not available when pipelinemode='automatic'.
+                example: 'BANDPASS', 'AMPLI,BANDPASS,PHASE'</description>
                 <value>AMPLITUDE,BANDPASS,PHASE</value>
             </param>
 
             <param subparam="true" name="spw" type="string">
-                <description>List of spectral windows ids</description>
+                <shortdescription>List of spectral windows ids</shortdescription>
+                <description>A string containing the comma delimited list of spectral window ids for
+                which flagging scores are computed if hm_refant='automatic' and flagging = True.
+                Not available when pipelinemode='automatic'.
+                example: '' (all spws observed with the specified intents), '11,13,15,17'</description>
                 <value/>
             </param>
 
             <param name="hm_refant" type="string">
-                <description>The reference antenna heuristics mode</description>
+                <shortdescription>The reference antenna heuristics mode</shortdescription>
+                <description>The heuristics method or mode for selection the reference
+                antenna. The options are 'manual' and 'automatic. In manual
+                mode a user supplied referenence antenna refant is supplied.
+                In 'automatic' mode the antennas are selected automatically.</description>
                 <value>automatic</value>
                 <allowed kind="enum">
                     <value>automatic</value>
@@ -35,27 +72,43 @@
             </param>
 
             <param subparam="true" name="refant" type="string">
-                <description>List of reference antennas</description>
+                <shortdescription>List of reference antennas</shortdescription>
+                <description>The user supplied reference antenna for hm_refant='manual. If
+                no antenna list is supplied an empty list is returned.
+                example: 'DV05'</description>
                 <value/>
             </param>
 
             <param subparam="true" name="refantignore" type="string">
-                <description>String list of antennas to ignore</description>
+                <shortdescription>String list of antennas to ignore</shortdescription>
+                <description>string list to be ignored as reference antennas.
+                example: refantignore='ea02,ea03'</description>
                 <value/>
             </param>
 
             <param subparam="true" name="geometry" type="bool">
-                <description>Score by proximity to center of the array</description>
+                <shortdescription>Score by proximity to center of the array</shortdescription>
+                <description>Score antenna by proximity to the center of the array. This
+                option is quick as only the ANTENNA table must be read.
+                Parameter is available when hm_refant='automatic'.</description>
                 <value>True</value>
             </param>
 
             <param subparam="true" name="flagging" type="bool">
-                <description>Score by percentage of good data</description>
+                <shortdescription>Score by percentage of good data</shortdescription>
+                <description>Score antennas by percentage of unflagged data. This option
+                requires computing flagging statistics.
+                Parameter is available when hm_refant='automatic'.</description>
                 <value>True</value>
             </param>
 
             <param name="pipelinemode" type="string">
-                <description>The pipeline operating mode</description>
+                <shortdescription>The pipeline operating mode</shortdescription>
+                <description>The pipeline operating mode. In 'automatic' mode the pipeline
+                determines the values of all context defined pipeline inputs automatically.
+                In interactive mode the user can set the pipeline context defined parameters
+                manually. In 'getinputs' mode the user can check the settings of all
+                pipeline parameters without running the task.</description>
                 <value>automatic</value>
                 <allowed kind="enum">
                     <value>automatic</value>
@@ -65,12 +118,16 @@
             </param>
 
             <param subparam="true" name="dryrun" type="bool">
-                <description>Run the task (False) or display the command (True)</description>
+                <shortdescription>Run the task (False) or display the command (True)</shortdescription>
+                <description>Run the task (False) or display the command (True).
+                Available when pipelinemode='interactive'.</description>
                 <value>False</value>
             </param>
 
             <param subparam="true" name="acceptresults" type="bool">
-                <description>Add the results into the pipeline context</description>
+                <shortdescription>Add the results into the pipeline context</shortdescription>
+                <description>Add the results of the task to the pipeline context (True) or
+                reject them (False). Available when pipelinemode='interactive'.</description>
                 <value>True</value>
             </param>
 
@@ -149,99 +206,6 @@
         <returns>any</returns>
 
         <example>
-The hif_session_refant task selects a list of reference antennas and outputs them
-in priority order. The priority order is determined by a weighted combination
-of scores derived by the antenna selection heuristics.
-
-
-Keyword arguments:
-
----- pipeline parameter arguments which can be set in any pipeline mode
-
-
-pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline
-determines the values of all context defined pipeline inputs automatically.
-In interactive mode the user can set the pipeline context defined parameters
-manually. In 'getinputs' mode the user can check the settings of all
-pipeline parameters without running the task.
-default: 'automatic'.
-
-hm_refant -- The heuristics method or mode for selection the reference
-antenna. The options are 'manual' and 'automatic. In manual
-mode a user supplied referenence antenna refant is supplied.
-In 'automatic' mode the antennas are selected automatically.
-default: 'automatic'
-
-refant -- The user supplied reference antenna for 'manual' mode. If
-no antenna list is supplied an empty list is returned.
-default: ''
-example: 'DV05'
-
-geometry -- Score antenna by proximity to the center of the array. This
-option is quick as only the ANTENNA table must be read.
-default: True
-
-flagging -- Score antennas by percentage of unflagged data. This option
-requires computing flagging statistics.
-default: True
-
-
----- pipeline context defined parameter arguments which can be set only in
-'interactive mode'
-
-vis -- The list of input MeasurementSets. Defaults to the list of
-MeasurementSets in the pipeline context.
-default: ''
-example: ['M31.ms']
-
-field -- The comma delimited list of field names or field ids for which flagging
-scores are computed if hm_refant='automatic' and flagging = True
-default: '' (Default to fields with the specified intents)
-example: '3C279', '3C279,M82'
-
-intent -- A string containing a comma delimited list of intents against
-which the selected fields are matched. Defaults to all supported
-intents.
-default: 'AMPLI,BANDPASS,PHASE'
-example: 'BANDPASS'
-
-spw -- A string containing the comma delimited list of spectral window ids for
-which flagging scores are computed if hm_refant='automatic' and flagging = True.
-default: '' (all spws observed with the specified intents)
-example: '11,13,15,17'
-
-refantignore -- string list to be ignored as reference antennas.
-default: ''
-Example: refantignore='ea02,ea03'
-
-
---- pipeline task execution modes
-dryrun -- Run the commands (True) or generate the commands to be run but
-do not execute (False).
-default: True
-
-acceptresults -- Add the results of the task to the pipeline context (True) or
-reject them (False).
-default: True
-
-Output:
-
-results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-the results object for the pipeline task is returned.
-
-Description
-
-The hif_refant task selects a list of reference antennas and stores them
-in the pipeline context in priority order.
-
-The priority order is determined by a weighted combination of scores derived
-by the antenna selection heuristics. In manual mode the reference antennas
-can be set by hand.
-
-
-Issues
-
-Examples
 
 1. Compute the references antennas to be used for bandpass and gain calibration.
 
