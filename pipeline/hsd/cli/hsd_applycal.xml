@@ -71,7 +71,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         'calflagstrict':
         'flagonlystrict': same as above except flag spws for which calibration is
             unavailable in one or more tables (instead of allowing them to pass
-            uncalibrated and unflagged)<description>
+            uncalibrated and unflagged)</description>
         <value/>
         <allowed kind="enum">
             <value/>
