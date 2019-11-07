@@ -4,126 +4,210 @@
 <shortdescription>Flag spectra based on predefined criteria of single dish pipeline</shortdescription>
 
 <description>
+Data are flagged based on several flagging rules. Available rules are: 
+expected rms, calculated rms, and running mean of both pre-fit and 
+post-fit spectra. Tsys flagging is also available. 
+
+In addition, the heuristics script creates many plots for each stage. 
+Those plots are included in the weblog.
+
+Output:
+
+results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
+       the results object for the pipeline task is returned.
+
 </description>
 <input>
     <param name="iteration" type="int">
-        <description>Number of iteration to perform sigma clipping to calculate threshold</description>
+        <shortdescription>Number of iteration to perform sigma clipping to calculate threshold</shortdescription>
+        <description>Number of iterations to perform sigma clipping to 
+                     calculate threshold value of flagging.
+        </description>
         <value>5</value>
     </param>
 
     <param name="edge" type="intVec">
-        <description>Number of edge channels to be excluded from statistic calculation to flag data</description>
+        <shortdescription>Number of edge channels to be excluded from statistic calculation to flag data</shortdescription>
+        <description>Number of channels to be dropped from the edge.
+                     The value must be a list of integer with length of one or
+		     two. If list length is one, same number will be applied 
+                     both side of the band.
+
+                     example: [10,20], [10]
+        </description>
         <value><value>0</value><value>0</value></value>
     </param>
 
 
     <param name="flag_tsys" type="bool">
-        <description>Flag data by Tsys value</description>
+        <shortdescription>Flag data by Tsys value</shortdescription>
+        <description>Activate (True) or deactivate (False) Tsys flag.
+        </description>
         <value>True</value>
     </param>
         
     <param subparam="true" name="tsys_thresh" type="double">
-        <description>Threshold for Tsys flag</description>
+        <shortdescription>Threshold for Tsys flag</shortdescription>
+        <description>Threshold value for Tsys flag.
+        </description>
         <value>3.0</value>
     </param>
         
     <param name="flag_weath" type="bool">
-        <description>Flag data by weather (not implemented yet)</description>
+        <shortdescription>Flag data by weather (not implemented yet)</shortdescription>
+        <description>Activate (True) or deactivate (False) weather flag. 
+                     Since weather flagging is not implemented yet, 
+                     setting True has no effect at the moment.
+        </description>
         <value>False</value>
     </param>
 
     <param subparam="true" name="weath_thresh" type="double">
-        <description>Threshold for weather flag</description>
+        <shortdescription>Threshold for weather flag</shortdescription>
+        <description>Threshold value for weather flag.</description>
         <value>3.0</value>
     </param>
 
     <param name="flag_prfre" type="bool">
-        <description>Flag data by EXPECTED RMS of pre-fit spectra</description>
+        <shortdescription>Flag data by EXPECTED RMS of pre-fit spectra</shortdescription>
+        <description>Activate (True) or deactivate (False) flag by expected 
+                     rms of pre-fit spectra.
+        </description>
         <value>True</value>
     </param>
 
     <param subparam="true" name="prfre_thresh" type="double">
-        <description>Threshold for EXPECTED RMS of pre-fit spectra flag</description>
+        <shortdescription>Threshold for EXPECTED RMS of pre-fit spectra flag</shortdescription>
+        <description>Threshold value for flag by expected rms of pre-fit 
+                     spectra. 
+        </description>
         <value>3.0</value>
     </param>
 
     <param name="flag_pofre" type="bool">
-        <description>Flag data by EXPECTED RMS of post-fit spectra</description>
+        <shortdescription>Flag data by EXPECTED RMS of post-fit spectra</shortdescription>
+        <description>Activate (True) or deactivate (False) flag by expected 
+                     rms of post-fit spectra.
+        </description>
         <value>True</value>
     </param>
 
     <param subparam="true" name="pofre_thresh" type="double">
-        <description>Threshold for EXPECTED RMS of post-fit spectra flag</description>
+        <shortdescription>Threshold for EXPECTED RMS of post-fit spectra flag</shortdescription>
+        <description>Threshold value for flag by expected rms of post-fit 
+                     spectra. 
+        </description>
         <value>1.3333</value>
     </param>
 
     <param name="flag_prfr" type="bool">
-        <description>Flag data by RMS of pre-fit spectra</description>
+        <shortdescription>Flag data by RMS of pre-fit spectra</shortdescription>
+        <description>Activate (True) or deactivate (False) flag by rms of 
+                    pre-fit spectra.
+        </description>
         <value>True</value>
     </param>
 
     <param subparam="true" name="prfr_thresh" type="double">
-        <description>Threshold for RMS of pre-fit flag</description>
+        <shortdescription>Threshold for RMS of pre-fit flag</shortdescription>
+        <description>Threshold value for flag by rms of pre-fit spectra.</description>
         <value>4.5</value>
     </param>
 
     <param name="flag_pofr" type="bool">
-        <description>Flag data by RMS of post-fit spectra</description>
+        <shortdescription>Flag data by RMS of post-fit spectra</shortdescription>
+        <description>Activate (True) or deactivate (False) flag by rms of
+                      post-fit spectra.
+        </description>
         <value>True</value>
     </param>
 
     <param subparam="true" name="pofr_thresh" type="double">
-        <description>Threshold for RMS of post-fit spectra flag</description>
+        <shortdescription>Threshold for RMS of post-fit spectra flag</shortdescription>
+        <description>Threshold value for flag by rms of post-fit spectra. 
+        </description>
         <value>4.0</value>
     </param>
 
     <param name="flag_prfrm" type="bool">
-        <description>Flag data by running mean of pre-fit spectra</description>
+        <shortdescription>Flag data by running mean of pre-fit spectra</shortdescription>
+        <description>Activate (True) or deactivate (False) flag by running 
+                     mean of pre-fit spectra.
+        </description>
         <value>True</value>
     </param>
 
     <param subparam="true" name="prfrm_thresh" type="double">
-        <description>Threshold for running mean of pre-fit spectra flag</description>
+        <shortdescription>Threshold for running mean of pre-fit spectra flag</shortdescription>
+        <description>Threshold value for flag by running mean of pre-fit 
+                     spectra. 
+        </description>
         <value>5.5</value>
     </param>
 
     <param subparam="true" name="prfrm_nmean" type="int">
-        <description>Number of channels for running mean of pre-fit spectra flag</description>
+        <shortdescription>Number of channels for running mean of pre-fit spectra flag</shortdescription>
+        <description>Number of channels for running mean of pre-fit spectra.
+        </description>
         <value>5</value>
     </param>
 
     <param name="flag_pofrm" type="bool">
-        <description>Flag data by running mean of post-fit spectra</description>
+        <shortdescription>Flag data by running mean of post-fit spectra</shortdescription>
+        <description>Activate (True) or deactivate (False) flag by running 
+                     mean of post-fit spectra.
+        </description>
         <value>True</value>
     </param>
 
     <param subparam="true" name="pofrm_thresh" type="double">
-        <description>Threshold for running mean of post-fit spectra flag</description>
+        <shortdescription>Threshold for running mean of post-fit spectra flag</shortdescription>
+        <description>Threshold value for flag by running mean of post-fit 
+                     spectra. 
+        </description>
         <value>5.0</value>
     </param>
 
     <param subparam="true" name="pofrm_nmean" type="int">
-        <description>Number of channels for running mean of post-fit spectra flag</description>
+        <shortdescription>Number of channels for running mean of post-fit spectra flag</shortdescription>
+        <description>Number of channels for running mean of post-fit spectra.
+        </description>
         <value>5</value>
     </param>
 
     <param name="flag_user" type="bool">
-        <description>Flag data by user flag (not implemented yet)</description>
+        <shortdescription>Flag data by user flag (not implemented yet)</shortdescription>
+        <description>Activate (True) or deactivate (False) user-defined flag. 
+                     Since user flagging is not implemented yet, setting True 
+                     has no effect at the moment.
+        </description>
         <value>False</value>
     </param>
 
     <param subparam="true" name="user_thresh" type="double">
-        <description>Threshold for user flag</description>
+        <shortdescription>Threshold for user flag</shortdescription>
+        <description>Threshold value for flag by user-defined rule.
+        </description>
         <value>5.0</value>
     </param>
 
     <param name="plotflag" type="bool">
-        <description>Create plots for flagging</description>
+        <shortdescription>Create plots for flagging</shortdescription>
+        <description>True to plot result of data flagging.
+        </description>
         <value>True</value>
     </param>
 
     <param name="pipelinemode" type="string">
-        <description>The pipeline operating  mode</description>
+        <shortdescription>The pipeline operating  mode</shortdescription>
+        <description>The pipeline operating mode. In 'automatic' mode the 
+                     pipeline determines the values of all context defined 
+                     pipeline inputs automatically.  In interactive mode 
+                     the user can set the pipeline context defined parameters 
+                     manually. In 'getinputs' mode  the user can check the 
+                     settings of all pipeline parameters without running 
+                     the task.
+        </description>
         <value>automatic</value>
         <allowed kind="enum">
             <value>automatic</value>
@@ -133,35 +217,62 @@
     </param>
 
     <param subparam="true" name="infiles" type="stringVec">
-        <description>List of input files to be flagged (\'\'=all)</description>
+        <shortdescription>List of input files to be flagged (\'\'=all)</shortdescription>
+        <description>ASDM or MS files to be processed. This parameter behaves
+                     as data selection parameter. The name specified by 
+                     infiles must be registered to context before you run
+                     hsd_blflag.
+	</description>
         <value/>
     </param>
 
     <param subparam="true" name="antenna" type="string">
-            <description>select data by antenna names or ids, e.g. \'PM03,PM04\' (\'\'=all)</description>
+            <shortdescription>select data by antenna names or ids, e.g. \'PM03,PM04\' (\'\'=all)</shortdescription>
+            <description>Data selection by antenna names or ids.
+                         example: 'PM03,PM04'
+                                  '' (all antennas)
+            </description>
             <value type="string"/>
     </param>
     <param subparam="true" name="field" type="string">
-            <description>select data by field names or ids, e.g. \'M100,Sgr*\' (\'\'=all)</description>
+            <shortdescription>select data by field names or ids, e.g. \'M100,Sgr*\' (\'\'=all)</shortdescription>
+            <description>Data selection by field names or ids.
+                         example: '*Sgr*,M100'
+                                  '' (all fields)
+            </description>
             <value type="string"/>
     </param>
     <param subparam="true" name="spw" type="string">
-            <description>select data by spectral windows, e.g. \'3,5,7\' (\'\'=all)</description>
+            <shortdescription>select data by spectral windows, e.g. \'3,5,7\' (\'\'=all)</shortdescription>
+            <description>Data selection by spw ids.
+                         example: '3,4' (spw 3 and 4)
+                                  '' (all spws)
+            </description>
             <value type="string"/>
     </param>
 
     <param subparam="true" name="pol" type="string">
-            <description>select data by polarizations, e.g. \'XX,YY\' (\'\'=all)</description>
+            <shortdescription>select data by polarizations, e.g. \'XX,YY\' (\'\'=all)</shortdescription>
+            <description>Data selection by polarizations.
+                         example: 'XX,YY' (correlation XX and YY)
+                                  '' (all polarizations)
+            </description>
             <value type="string"/>
     </param>
 
     <param subparam="true" name="dryrun" type="bool">
-        <description>Run the task (False) or display the task command (True)</description>
+        <shortdescription>Run the task (False) or display the task command (True)</shortdescription>
+        <description>Run the commands (True) or generate the commands to be
+                     run but do not execute (False).
+        </description>
         <value>False</value>
     </param>
 
     <param subparam="true" name="acceptresults" type="bool">
-        <description>Add the results into the pipeline context</description>
+        <shortdescription>Add the results into the pipeline context</shortdescription>
+        <description>Add the results of the task to the pipeline context (True)
+                     or reject them (False).
+        </description>
         <value>True</value>
     </param>
 
@@ -270,164 +381,5 @@
 <returns>any</returns>
 
 
-<example>
-
-Keyword arguments:
-
----- pipeline parameter arguments which can be set in any pipeline mode
-iteration -- Number of iterations to perform sigma clipping to calculate
-       threshold value of flagging.
-       default: 5
-
-edge -- Number of channels to be dropped from the edge.
-       The value must be a list of integer with length of one or two.
-       If list length is one, same number will be applied both side of 
-       the band.
-       default: [0,0]
-       example: [10,20], [10]
-
-flag_tsys -- Activate (True) or deactivate (False) Tsys flag.
-       default: True
-
-tsys_thresh -- Threshold value for Tsys flag.
-       default: 3.0
-
-flag_weath -- Activate (True) or deactivate (False) weather flag. 
-       Since weather flagging is not implemented yet, setting True 
-       has no effect at the moment.
-       default: False
-
-weath_thresh -- Threshold value for weather flag.
-       default: 3.0
-
-flag_prfre -- Activate (True) or deactivate (False) flag by expected rms 
-       of pre-fit spectra.
-       default: True
-
-prfre_thresh -- Threshold value for flag by expected rms of pre-fit 
-       spectra. 
-       default: 3.0 
-
-flag_pofre -- Activate (True) or deactivate (False) flag by expected rms 
-       of post-fit spectra.
-       default: True
-
-pofre_thresh -- Threshold value for flag by expected rms of post-fit 
-       spectra. 
-       default: 1.3333
-
-flag_prfr -- Activate (True) or deactivate (False) flag by rms of pre-fit 
-       spectra.
-       default: True
-
-prfr_thresh -- Threshold value for flag by rms of pre-fit spectra. 
-       default: 4.5
-
-flag_pofr -- Activate (True) or deactivate (False) flag by rms of post-fit 
-       spectra.
-       default: True
-
-pofr_thresh -- Threshold value for flag by rms of post-fit spectra. 
-       default: 4.0
-
-flag_prfrm -- Activate (True) or deactivate (False) flag by running mean 
-       of pre-fit spectra.
-       default: True
-
-prfrm_thresh -- Threshold value for flag by running mean of pre-fit 
-       spectra. 
-       default: 5.5
-
-prfrm_nmean -- Number of channels for running mean of pre-fit spectra.
-       default: 5
-
-flag_pofrm -- Activate (True) or deactivate (False) flag by running mean 
-       of post-fit spectra.
-       default: True
-
-pofrm_thresh -- Threshold value for flag by running mean of post-fit 
-       spectra. 
-       default: 5.0
-
-pofrm_nmean -- Number of channels for running mean of post-fit spectra.
-                       default: 5
-
-flag_user -- Activate (True) or deactivate (False) user-defined flag. 
-       Since user flagging is not implemented yet, setting True 
-       has no effect at the moment.
-       default: False
-
-user_thresh -- Threshold value for flag by user-defined rule.
-       default: 3.0
-
-plotflag -- True to plot result of data flagging.
-       default: True
-
-pipelinemode -- The pipeline operating mode. In 'automatic' mode the 
-       pipeline determines the values of all context defined pipeline 
-       inputs automatically.  In interactive mode the user can set the 
-       pipeline context defined parameters manually. In 'getinputs' mode 
-       the user can check the settings of all pipeline parameters without 
-       running the task.
-       default: 'automatic'.
-
----- pipeline context defined parameter argument which can be set only in
-'interactive mode' or 'getinputs' modes 
-                
-infiles -- ASDM or MS files to be processed. This parameter behaves as 
-       data selection parameter. The name specified by infiles must be 
-       registered to context before you run hsd_blflag.
-       default: [] (process all data in context)
-
-antenna -- Data selection by antenna names or ids.
-   default: '' (all antennas)
-   example: 'PM03,PM04'
-   
-field -- Data selection by field names or ids.
-   default: '' (all fields)
-   example: '*Sgr*,M100'
-   
-spw -- Data selection by spw ids.
-   default: '' (all spws)
-   example: '3,4' (spw 3 and 4)
-
-pol -- Data selection by polarizations.
-   default: '' (all polarizations)
-   example: 'XX,YY' (correlation XX and YY)
-
---- pipeline task execution modes
-dryrun -- Run the commands (True) or generate the commands to be run but
-                       do not execute (False).
-       default: True
-
-acceptresults -- Add the results of the task to the pipeline context 
-       (True) or reject them (False).
-       default: True
-
-
-Output:
-
-results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-       the results object for the pipeline task is returned.
-
-
-Description
-
-The hsd_blflag
-6. Flagging 
-Data are flagged based on several flagging rules. Available rules are: 
-expected rms, calculated rms, and running mean of both pre-fit and 
-post-fit spectra. Tsys flagging is also available. 
-
-In addition, the heuristics script creates many plots for each stage. 
-Those plots are included in the weblog.
-
-
-Issues
-
-
-Examples
-                                
-</example>
 </task>
 </casaxml>
