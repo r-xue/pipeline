@@ -1018,8 +1018,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         tmp = numpy.zeros((Data.shape[0]+Repeat*2, Data.shape[1]), numpy.float)
         tmp[Repeat*2:] = Data.copy()
         for i in range(Repeat):
-            # 2019/10/09 TN
-            # need to make sure the intention of the code
             tmp[i] = [self.nchan//2, 0]
             tmp[Repeat+i] = [self.nchan//2, self.nchan-1]
         #LOG.debug('tmp[:10] = {}', tmp[:10])
@@ -1575,8 +1573,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                                         for j in range(xorder0 + 1):
                                             B1[j + k * (xorder0 + 1)] += math.pow(x, j) * math.pow(y, k) * Width
                             # make Matrix MM0,MM1 and calculate A0,A1
-                            # 2019/10/08 TN
-                            # need to check if integer division is valid or not
                             for K in range((xorder0 + 1) * (yorder0 + 1)):
                                 k0 = K % (xorder0 + 1)
                                 k1 = int(K // (xorder0 + 1))
