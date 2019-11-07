@@ -316,8 +316,6 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
         ymax = ny * scale_dec + ymin
 
         marker_size = int(300.0 / (max(nx, ny * 1.414) * num_panel_h) + 1.0)
-        # 2019/10/08 TN
-        # It seems 1/num_panel_h is almost always zero, should it be float division?
         tick_size = int(6 + (1 // num_panel_h) * 2)
 
         # direction reference
