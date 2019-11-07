@@ -164,7 +164,6 @@ class SDBLFlagInputs(vdp.StandardInputs):
 
         ### Default Flag rule
         from . import SDFlagRule
-        reload(SDFlagRule)
         self.FlagRuleDictionary = SDFlagRule.SDFlagRule
         # MUST NOT configure FlagRuleDictionary here.
 
