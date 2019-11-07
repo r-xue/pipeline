@@ -2,7 +2,9 @@
 
 <task category="pipeline" name="hifv_selfcal" type="function">
 <shortdescription>Selfcal task executing gaincal and applycal</shortdescription>
-<description>
+<description>Output:
+             results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
+             the results object for the pipeline task is returned.
 </description>
 <input>
     <param name="vis" type="stringVec">
@@ -101,12 +103,6 @@
 
 
 <example>
-Output:
-
-results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-   the results object for the pipeline task is returned.
-
-
 Examples
 
 1. Basic selfcal task

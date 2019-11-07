@@ -3,6 +3,11 @@
 <task category="pipeline" name="hifv_fluxboot" type="function">
 <shortdescription>Fluxboot</shortdescription>
 <description>
+    The hifv_fluxboot task performs the flux density bootstrapping stage of the VLA pipeline.
+
+    Output:
+    results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
+               the results object for the pipeline task is returned.
 </description>
 <input>
     <param subparam="true" name="vis" type="stringVec">
@@ -78,12 +83,6 @@
 
 
 <example>
-Output:
-
-results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-   the results object for the pipeline task is returned.
-
-
 Examples
 
 1. VLA CASA pipeline flux density bootstrapping.

@@ -29,6 +29,11 @@
                o restores the final calibration state of the MS
                o restores the final calibration tables for each MS
                o applies the calibration tables to each MS
+
+             Output:
+
+             results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
+             the results object for the pipeline task is returned.
 </description>
 <input>
     <param name="vis" type="stringVec">
@@ -155,27 +160,6 @@
 
 
 <example>
-
-The hifv_restoredata task restores flagged and calibrated MeasurementSets
-from archived ASDMs and pipeline flagging and calibration date products.
-
-Keyword arguments:
-
----- pipeline parameter arguments which can be set in any pipeline mode
-
-
----- pipeline context defined parameter argument which can be set only in
-'interactive mode'
-
-
-
-
-Output:
-
-results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-   the results object for the pipeline task is returned.
-
-
 Examples
 
 1. Restore the pipeline results for a single ASDM in a single session

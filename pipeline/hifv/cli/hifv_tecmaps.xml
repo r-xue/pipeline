@@ -2,7 +2,9 @@
 
 <task category="pipeline" name="hifv_tecmaps" type="function">
 <shortdescription>Base tecmaps task</shortdescription>
-<description>
+<description>Output:
+             results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
+             the results object for the pipeline task is returned.
 </description>
 <input>
     <param name="vis" type="stringVec">
@@ -73,12 +75,6 @@
 
 
 <example>
-Output:
-
-results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-   the results object for the pipeline task is returned.
-
-
 Examples
 
 1. Basic tecmaps task
