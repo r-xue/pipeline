@@ -4,154 +4,6 @@
 <shortdescription>Subtract the fitted continuum from the data</shortdescription>
 <description>
 Subtract the fitted continuum in the callibrary from the data.
-</description>
-<input>
-    <param subparam="true" name="vis" type="stringVec">
-	<description>List of input MeasurementSets</description>
-	<value/>
-   </param>
-
-   <param subparam="true" name="field" type="string">
-	<description>Set of data selection field names or ids</description>
-	<value/>
-   </param>
-
-   <param subparam="true" name="intent" type="string">
-	<description>Set of data selection observing intents</description>
-	<value/>
-   </param>
-
-   <param subparam="true" name="spw" type="string">
-	<description>Set of data selection spectral window/channels</description>
-	<value/>
-   </param>
-
-    <param name="applymode" type="string">
-        <description>Calibration mode: &quot;&quot;=&quot;calflagstrict&quot;,&quot;calflag&quot;,&quot;calflagstrict&quot;,&quot;trial&quot;,&quot;flagonly&quot;,&quot;flagonlystrict&quot;, or &quot;calonly&quot;</description>
-        <value/>
-        <allowed kind="enum">
-            <value/>
-            <value>calflag</value>
-            <value>calflagstrict</value>
-            <value>trial</value>
-            <value>flagonly</value>
-            <value>flagonlystrict</value>
-            <value>calonly</value>
-        </allowed>
-    </param>
-
-    <param name="pipelinemode" type="string">
-	<description>The pipeline operating mode</description>
-	<value>automatic</value>
-	<allowed kind="enum">
-	    <value>automatic</value>
-	    <value>interactive</value>
-	    <value>getinputs</value>
-	</allowed>
-    </param>
-
-    <param subparam="true" name="dryrun" type="bool">
-	<description>Run task (False) or display the command(True)</description>
-	<value type="bool">False</value>
-    </param>
-
-    <param subparam="true" name="acceptresults" type="bool">
-	<description>Automatically accept results into the context</description>
-	<value type="bool">True</value>
-    </param>
-
-    <constraints>
-        <when param="pipelinemode">
-	    <equals value="automatic" type="string"/>
-	    <equals value="interactive" type="string">
-	        <default param="vis"><value type="stringVec"/></default>
-	        <default param="field"><value type="string"/></default>
-	        <default param="intent"><value type="string"/></default>
-	        <default param="spw"><value type="string"/></default>
-	        <default param="dryrun"><value type="bool">False</value></default>
-	        <default param="acceptresults"><value type="bool">True</value></default>
-	    </equals>
-	    <equals value="getinputs" type="string">
-	        <default param="vis"><value type="stringVec"/></default>
-	        <default param="field"><value type="string"/></default>
-	        <default param="intent"><value type="string"/></default>
-	        <default param="spw"><value type="string"/></default>
-	    </equals>
-        </when>
-    </constraints>
-</input>
-
-
-<returns>any</returns>
-
-<example>
-
-Apply the UV continuum fit stored in the callibrary to the data.
-
----- pipeline parameter arguments which can be set in any pipeline mode
-
-applymode -- Calibration apply mode 
-    ''='calflagstrict': calibrate data and apply flags from solutions using
-        the strict flagging convention
-    'trial': report on flags from solutions, dataset entirely unchanged
-    'flagonly': apply flags from solutions only, data not calibrated
-    'calonly': calibrate data only, flags from solutions NOT applied
-    'calflagstrict':
-    'flagonlystrict': same as above except flag spws for which calibration is
-        unavailable in one or more tables (instead of allowing them to pass
-        uncalibrated and unflagged)
-   default: '', defaults to 'calonly'
-
-
-pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline
-   determines the values of all context defined pipeline inputs automatically.
-   In interactive mode the user can set the pipeline context defined parameters
-   manually.  In 'getinputs' mode the user can check the settings of all
-   pipeline parameters without running the task.
-   default: 'automatic'.
-
-
----- pipeline context defined parameter arguments which can be set only in
-'interactive mode'
-
-vis -- The list of input MeasurementSets. Defaults to the list of
-    MeasurementSets in the pipeline context.
-    default: []
-    example: ['X227.ms'] 
-
-field -- A string containing the list of field names or field ids to which
-    the calibration will be applied. Defaults to all fields in the pipeline
-    context.
-    default: '' 
-    example: '3C279', '3C279, M82'
-
-intent -- A string containing the list of intents against which the
-    selected fields will be matched. Defaults to all supported intents
-    in the pipeline context.
-    default: ''
-    example: '*TARGET*'
-
-spw -- The list of spectral windows and channels to which the calibration
-    will be applied. Defaults to all science windows in the pipeline
-    context.
-    default: '' 
-    example: '17', '11, 15'
-
---- pipeline task execution modes
-dryrun -- Run the commands (True) or generate the commands to be run but
-   do not execute (False).
-   default: False
-
-acceptresults -- Add the results of the task to the pipeline context (True) or
-   reject them (False).
-   default: True
-
-Output:
-
-results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-    the results object for the pipeline task is returned
-
-Description
 
 hif_uvcontsub applies the precomputed uv continuum fit tables stored in the
 pipeline context to the set of visibility files using predetermined field and
@@ -160,15 +12,132 @@ spectral window maps and default values for the interpolation schemes.
 Users can interact with the pipeline calibration state using the tasks
 hif_export_calstate and hif_import_calstate.
 
-Issues
+results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
+           the results object for the pipeline task is returned
+</description>
+<input>
+  <param subparam="true" name="vis" type="stringVec">
+    <shortdescription>List of input MeasurementSets</shortdescription>
+    <description>The list of input MeasurementSets. Defaults to the list of
+                 MeasurementSets specified in the h_init or hif_importdata task.
+                 '': use all MeasurementSets in the context
+                 Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
+    </description>
+    <value/>
+  </param>
+
+  <param subparam="true" name="field" type="string">
+    <shortdescription>Select field(s) using id(s) or name(s)</shortdescription>
+    <description>The list of field names or field ids for which UV continuum
+                 fits are computed. Defaults to all fields.
+                 Eexamples: '3C279', '3C279, M82'
+    </description>
+    <value/>
+  </param>
+
+  <param subparam="true" name="intent" type="string">
+    <shortdescription>Select intents</shortdescription>
+    <description>A string containing a comma delimited list of intents against
+                 which the selected fields are matched.
+                 '': Defaults to all data with TARGET intent.
+    </description>
+    <value/>
+  </param>
+
+  <param subparam="true" name="spw" type="string">
+    <shortdescription>Spectral window / channels for fitting the continuum</shortdescription>
+    <description>The list of spectral windows and channels for which uv
+                 continuum fits are computed.
+                 '', Defaults to all science spectral windows.
+                 Example: '11,13,15,17'
+    </description>
+    <value/>
+  </param>
+
+  <param name="applymode" type="string">
+    <shortdescription>Calibration apply mode</shortdescription>
+    <description>Calibration apply mode 
+                 ''='calflagstrict': calibrate data and apply flags from
+                   solutions using the strict flagging convention
+                 'trial': report on flags from solutions, dataset entirely
+                   unchanged
+                 'flagonly': apply flags from solutions only, data not
+                   calibrated
+                 'calonly': calibrate data only, flags from solutions NOT
+                   applied
+                 'calflagstrict':
+                 'flagonlystrict': same as above except flag spws for which
+                   calibration is unavailable in one or more tables (instead
+                   of allowing them to pass uncalibrated and unflagged)
+    </description>
+    <value/>
+      <allowed kind="enum">
+        <value/>
+        <value>calflag</value>
+        <value>calflagstrict</value>
+        <value>trial</value>
+        <value>flagonly</value>
+        <value>flagonlystrict</value>
+        <value>calonly</value>
+      </allowed>
+    </param>
+
+  <param name="pipelinemode" type="string">
+    <shortdescription>The pipeline operating mode</shortdescription>
+    <description>The pipeline operating mode.
+                 In 'automatic' mode the pipeline determines the values of all
+                 context defined pipeline inputs automatically.
+                 In 'interactive' mode the user can set the pipeline context
+                 defined parameters manually.
+                 In 'getinputs' mode the user can check the settings of all
+                 pipeline parameters without running the task.
+    </description>
+    <value>automatic</value>
+      <allowed kind="enum">
+        <value>automatic</value>
+        <value>interactive</value>
+        <value>getinputs</value>
+      </allowed>
+  </param>
+
+  <param subparam="true" name="dryrun" type="bool">
+    <description>Run the task (False) or just display the command (True)</description>
+    <value type="bool">False</value>
+  </param>
+
+  <param subparam="true" name="acceptresults" type="bool">
+    <shortdescription>Add the results to the pipeline context</shortdescription>
+    <description>Add the results of the task to the pipeline context (True) or
+                 reject them (False).
+    </description>
+    <value type="bool">True</value>
+  </param>
+
+  <constraints>
+    <when param="pipelinemode">
+      <equals value="automatic" type="string"/>
+      <equals value="interactive" type="string">
+        <default param="vis"><value type="stringVec"/></default>
+        <default param="field"><value type="string"/></default>
+        <default param="intent"><value type="string"/></default>
+        <default param="spw"><value type="string"/></default>
+        <default param="dryrun"><value type="bool">False</value></default>
+        <default param="acceptresults"><value type="bool">True</value></default>
+      </equals>
+      <equals value="getinputs" type="string">
+        <default param="vis"><value type="stringVec"/></default>
+        <default param="field"><value type="string"/></default>
+        <default param="intent"><value type="string"/></default>
+        <default param="spw"><value type="string"/></default>
+      </equals>
+    </when>
+  </constraints>
+</input>
 
 
-Examples
+<returns>any</returns>
 
-1. Apply the calibration to the target data
-
-hif_uvcontsub() 
-
+<example>
 </example> 
 
 </task>
