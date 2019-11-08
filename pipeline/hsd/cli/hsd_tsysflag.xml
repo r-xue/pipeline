@@ -81,7 +81,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     </param>
 
     <param type="bool" name="flag_derivative">
-        <shortdescription>True to flag Tsys spectra with high median derivative</shrotdescription>
+        <shortdescription>True to flag Tsys spectra with high median derivative</shortdescription>
         <description>True to flag Tsys spectra with high median derivative.</description>
         <value>True</value>
     </param>
@@ -107,7 +107,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     </param>
 
     <param type="bool" name="flag_fieldshape">
-        <shrotdescription>True to flag Tsys spectra with a radically different shape to those of the ff_refintent</shortdescription>
+        <shortdescription>True to flag Tsys spectra with a radically different shape to those of the ff_refintent</shortdescription>
         <description>True to flag Tsys spectra with a radically different
         shape to those of the ff_refintent.</description>
         <value>True</value>
