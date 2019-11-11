@@ -1,5 +1,5 @@
 <%!
-import cgi
+import html
 rsc_path = ""
 SELECTORS = ['vis', 'spw', 'field']
 %>
@@ -9,14 +9,14 @@ SELECTORS = ['vis', 'spw', 'field']
     multi_vis = len({p.parameters['vis'] for p in plots}) > 1
 %>
 
-<%self:render_plots plots="${sorted(plots, key=lambda p: cgi.escape(p.parameters['field'], True))}">
-	<%def name="mouseover(plot)">Click to magnify plot for ${cgi.escape(plot.parameters['field'], True)} spw ${plot.parameters['spw']}</%def>
+<%self:render_plots plots="${sorted(plots, key=lambda p: html.escape(p.parameters['field'], True))}">
+	<%def name="mouseover(plot)">Click to magnify plot for ${html.escape(plot.parameters['field'], True)} spw ${plot.parameters['spw']}</%def>
 
 	<%def name="fancybox_caption(plot)">
         % if multi_vis:
         ${plot.parameters['vis']}<br>
         % endif
-		Field: ${cgi.escape(plot.parameters['field'], True)}<br>
+		Field: ${html.escape(plot.parameters['field'], True)}<br>
 		Spectral window: ${plot.parameters['spw']}
 	</%def>
 
@@ -24,7 +24,7 @@ SELECTORS = ['vis', 'spw', 'field']
         % if multi_vis:
         ${plot.parameters['vis']}<br>
         % endif
-		${cgi.escape(plot.parameters['field'], True)}<br>
+		${html.escape(plot.parameters['field'], True)}<br>
 		Spw ${plot.parameters['spw']}
 	</%def>
 </%self:render_plots>

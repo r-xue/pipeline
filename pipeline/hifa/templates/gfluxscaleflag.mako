@@ -1,6 +1,6 @@
 <%!
 rsc_path = ""
-import cgi
+import html
 import os
 import pipeline.infrastructure.utils as utils
 
@@ -71,7 +71,7 @@ def num_lines(relpath):
 %endif
     <li><a href="#flagged_data_summary">Flagged data summary table</a></li>
     <li><a href="#amp_vs_time">Amplitude vs time plots for flagging</a></li>
-    <li><a href="#amp_vs_uvdist">Amplitude vs UV distance plots for flagging</a></li>    
+    <li><a href="#amp_vs_uvdist">Amplitude vs UV distance plots for flagging</a></li>
 </ul>
 
 
@@ -158,7 +158,7 @@ def num_lines(relpath):
 		${plot.parameters['vis']}<br>
 		Spw ${plot.parameters['spw']}<br>
 		Intents: ${utils.commafy([plot.parameters['intent']], False)}<br>
-        Fields: ${cgi.escape(plot.parameters['field'], True)}
+        Fields: ${html.escape(plot.parameters['field'], True)}
 	</%def>
 
     <%def name="caption_title(plot)">
@@ -203,7 +203,7 @@ def num_lines(relpath):
 		${plot.parameters['vis']}<br>
 		Spw ${plot.parameters['spw']}<br>
 		Intents: ${utils.commafy([plot.parameters['intent']], False)}<br>
-        Fields: ${cgi.escape(plot.parameters['field'], True)}
+        Fields: ${html.escape(plot.parameters['field'], True)}
 	</%def>
 
     <%def name="caption_title(plot)">

@@ -1,6 +1,6 @@
 <%!
 rsc_path = ""
-import cgi
+import html
 import os.path
 import pipeline.infrastructure.casatools as casatools
 import pipeline.hif.tasks.tclean.renderer as clean_renderer
@@ -86,7 +86,7 @@ except:
                            data-fancybox="clean-summary-images"
                            title='<div class="pull-left">Iteration: ${row.plot.parameters['iter']}<br>
                                   Spw: ${row.plot.parameters['spw']}<br>
-                                  Field: ${cgi.escape(row.field, True)}</div><div class="pull-right"><a href="${fullsize_relpath}">Full Size</a></div>'>
+                                  Field: ${html.escape(row.field, True)}</div><div class="pull-right"><a href="${fullsize_relpath}">Full Size</a></div>'>
                           <img src="${thumbnail_relpath}"
                                title="Iteration ${row.plot.parameters['iter']}: image"
                                alt="Iteration ${row.plot.parameters['iter']}: image"

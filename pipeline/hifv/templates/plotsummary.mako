@@ -1,6 +1,6 @@
 <%!
 rsc_path = ""
-import cgi
+import html
 import os
 
 import pipeline.infrastructure.renderer.htmlrenderer as hr
@@ -144,7 +144,7 @@ def space_comma(s):
 	<%def name="fancybox_caption(plot)">
 		Receiver bands: ${utils.commafy(plot.parameters['receiver'], False)} (spw ${plot.parameters['spw']})<br>
 		Intents: ${utils.commafy(plot.parameters['intent'], False)}<br>
-		Fields: ${cgi.escape(plot.parameters['field'], True)}
+		Fields: ${html.escape(plot.parameters['field'], True)}
 	</%def>
 
 	<%def name="caption_title(plot)">
@@ -185,7 +185,7 @@ def space_comma(s):
 	<%def name="fancybox_caption(plot)">
 		Receiver bands: ${utils.commafy(plot.parameters['receiver'], False)} (spw ${plot.parameters['spw']})<br>
 		Intents: ${utils.commafy(plot.parameters['intent'], False)}<br>
-		Fields: ${cgi.escape(plot.parameters['field'], True)}
+		Fields: ${html.escape(plot.parameters['field'], True)}
 	</%def>
 
 	<%def name="caption_title(plot)">
@@ -225,7 +225,7 @@ def space_comma(s):
 	<%def name="fancybox_caption(plot)">
 		Spectral window: ${plot.parameters['spw']}<br>
 		Intents: ${utils.commafy(plot.parameters['intent'], False)}<br>
-		Fields: ${cgi.escape(plot.parameters['field'], True)}
+		Fields: ${html.escape(plot.parameters['field'], True)}
 	</%def>
 
 	<%def name="caption_title(plot)">
@@ -259,7 +259,7 @@ def space_comma(s):
 	<%def name="fancybox_caption(plot)">
 		Spectral window: ${plot.parameters['spw']}<br>
 		Intents: ${utils.commafy(plot.parameters['intent'], False)}<br>
-		Fields: ${cgi.escape(plot.parameters['field'], True)}
+		Fields: ${html.escape(plot.parameters['field'], True)}
 	</%def>
 
 	<%def name="caption_title(plot)">
@@ -289,7 +289,7 @@ def space_comma(s):
 	<%def name="fancybox_caption(plot)">
 		Spectral window: ${plot.parameters['spw']}<br>
 		Intents: ${utils.commafy(plot.parameters['intent'], False)}<br>
-		Fields: ${cgi.escape(plot.parameters['field'], True)}
+		Fields: ${html.escape(plot.parameters['field'], True)}
 	</%def>
 
 	<%def name="caption_title(plot)">
@@ -328,7 +328,7 @@ def space_comma(s):
 	<%def name="fancybox_caption(plot)">
 		Receiver bands: ${utils.commafy(plot.parameters['receiver'], False)} (spw ${plot.parameters['spw']})<br>
 		Intents: ${utils.commafy(plot.parameters['intent'], False)}<br>
-		Fields: ${cgi.escape(plot.parameters['field'], True)}
+		Fields: ${html.escape(plot.parameters['field'], True)}
 	</%def>
 
 	<%def name="caption_title(plot)">
@@ -376,7 +376,7 @@ def space_comma(s):
 	<%def name="fancybox_caption(plot)">
 		Receiver: ${utils.commafy(plot.parameters['receiver'], False)} (spw ${plot.parameters['spw']})<br>
 		Intents: ${utils.commafy(plot.parameters['intent'], False)}<br>
-		Fields: ${cgi.escape(plot.parameters['field'], True)}
+		Fields: ${html.escape(plot.parameters['field'], True)}
 	</%def>
 
 	<%def name="caption_title(plot)">
@@ -419,7 +419,7 @@ def space_comma(s):
 	<%def name="fancybox_caption(plot)">
 		Receiver bands: ${utils.commafy(plot.parameters['receiver'], False)} (spw ${plot.parameters['spw']})<br>
 		Intents: ${utils.commafy(plot.parameters['intent'], False)}<br>
-		Fields: ${cgi.escape(plot.parameters['field'], True)}
+		Fields: ${html.escape(plot.parameters['field'], True)}
 	</%def>
 
 	<%def name="caption_title(plot)">
@@ -464,7 +464,7 @@ def space_comma(s):
 	<%def name="fancybox_caption(plot)">
 		Receiver bands: ${utils.commafy(plot.parameters['receiver'], False)} (spw ${plot.parameters['spw']})<br>
 		Intents: ${utils.commafy(plot.parameters['intent'], False)}<br>
-		Fields: ${cgi.escape(plot.parameters['field'], True)}
+		Fields: ${html.escape(plot.parameters['field'], True)}
 	</%def>
 
 	<%def name="caption_title(plot)">
@@ -507,7 +507,7 @@ def space_comma(s):
 	<%def name="fancybox_caption(plot)">
 		Receiver bands: ${utils.commafy(plot.parameters['receiver'], False)} (spw ${plot.parameters['spw']})<br>
 		Intents: ${utils.commafy(plot.parameters['intent'], False)}<br>
-		Fields: ${cgi.escape(plot.parameters['field'], True)}
+		Fields: ${html.escape(plot.parameters['field'], True)}
 	</%def>
 
 	<%def name="caption_title(plot)">

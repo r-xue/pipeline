@@ -1,5 +1,5 @@
 <%!
-import cgi
+import html
 rsc_path = ""
 SELECTORS = ['vis', 'field', 'baseband']
 %>
@@ -10,13 +10,13 @@ SELECTORS = ['vis', 'field', 'baseband']
 %>
 
 <%self:render_plots plots="${sorted(plots, key=lambda p: p.parameters['baseband'])}">
-	<%def name="mouseover(plot)">Click to magnify plot for ${cgi.escape(plot.parameters['field'], True)} baseband ${plot.parameters['baseband']}</%def>
+	<%def name="mouseover(plot)">Click to magnify plot for ${html.escape(plot.parameters['field'], True)} baseband ${plot.parameters['baseband']}</%def>
 
 	<%def name="fancybox_caption(plot)">
         % if multi_vis:
         ${plot.parameters['vis']}<br>
         % endif
-		Field: ${cgi.escape(plot.parameters['field'], True)}<br>
+		Field: ${html.escape(plot.parameters['field'], True)}<br>
 		Baseband: ${plot.parameters['baseband']}
 	</%def>
 
@@ -24,7 +24,7 @@ SELECTORS = ['vis', 'field', 'baseband']
         % if multi_vis:
 		${plot.parameters['vis']}<br>
         % endif
-		${cgi.escape(plot.parameters['field'], True)}<br>
+		${html.escape(plot.parameters['field'], True)}<br>
 		Baseband ${plot.parameters['baseband']}
 	</%def>
 </%self:render_plots>

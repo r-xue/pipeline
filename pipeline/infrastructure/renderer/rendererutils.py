@@ -1,4 +1,4 @@
-import cgi
+import html
 import itertools
 import xml.dom.minidom as minidom
 import xml.etree.ElementTree as ET
@@ -140,11 +140,11 @@ def get_symbol_badge(result):
     if get_failures_badge(result):
         symbol = '<span class="glyphicon glyphicon-minus-sign alert-danger transparent-bg" aria-hidden="true"></span>'
     elif get_errors_badge(result):
-        symbol = '<span class="glyphicon glyphicon-remove-sign alert-danger transparent-bg" aria-hidden="true"></span>' 
+        symbol = '<span class="glyphicon glyphicon-remove-sign alert-danger transparent-bg" aria-hidden="true"></span>'
     elif get_warnings_badge(result):
-        symbol = '<span class="glyphicon glyphicon-exclamation-sign alert-warning transparent-bg" aria-hidden="true"></span>' 
+        symbol = '<span class="glyphicon glyphicon-exclamation-sign alert-warning transparent-bg" aria-hidden="true"></span>'
     elif get_suboptimal_badge(result):
-        symbol = '<span class="glyphicon glyphicon-question-sign alert-info transparent-bg" aria-hidden="true"></span>' 
+        symbol = '<span class="glyphicon glyphicon-question-sign alert-info transparent-bg" aria-hidden="true"></span>'
     else:
         return '<span class="glyphicon glyphicon-none" aria-hidden="true"></span>'
     return symbol
@@ -170,7 +170,7 @@ def get_warnings_badge(result):
 
 
 def get_errors_badge(result):
-    error_logrecords = utils.get_logrecords(result, logging.ERROR) 
+    error_logrecords = utils.get_logrecords(result, logging.ERROR)
     error_qascores = utils.get_qascores(result, -0.1, SCORE_THRESHOLD_ERROR)
     l = len(error_logrecords) + len(error_qascores)
     if l > 0:
@@ -193,7 +193,7 @@ def get_plot_command_markup(ctx, command):
         return ''
     stripped = command.replace('%s/' % ctx.report_dir, '')
     stripped = stripped.replace('%s/' % ctx.output_dir, '')
-    escaped = cgi.escape(stripped, True).replace('\'', '&#39;')
+    escaped = html.escape(stripped, True).replace('\'', '&#39;')
     return escaped
 
 

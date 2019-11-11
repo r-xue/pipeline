@@ -1,5 +1,5 @@
 <%!
-import cgi
+import html
 rsc_path = ""
 SELECTORS = ['vis', 'field', 'spw', 'ant']
 %>
@@ -10,13 +10,13 @@ SELECTORS = ['vis', 'field', 'spw', 'ant']
 %>
 
 <%self:render_plots plots="${sorted(plots, key=lambda p: p.parameters['ant'])}">
-	<%def name="mouseover(plot)">Click to magnify plot for ${cgi.escape(plot.parameters['field'], True)} antenna ${plot.parameters['ant']} spw ${plot.parameters['spw']}</%def>
+	<%def name="mouseover(plot)">Click to magnify plot for ${html.escape(plot.parameters['field'], True)} antenna ${plot.parameters['ant']} spw ${plot.parameters['spw']}</%def>
 
 	<%def name="fancybox_caption(plot)">
         % if multi_vis:
         ${plot.parameters['vis']}<br>
         % endif
-		Field: ${cgi.escape(plot.parameters['field'], True)}<br>
+		Field: ${html.escape(plot.parameters['field'], True)}<br>
 		Spectral window: ${plot.parameters['spw']}<br>
 		Antenna: ${plot.parameters['ant']}
 	</%def>
@@ -25,7 +25,7 @@ SELECTORS = ['vis', 'field', 'spw', 'ant']
         % if multi_vis:
 		${plot.parameters['vis']}<br>
         % endif
-		${cgi.escape(plot.parameters['field'], True)}<br>
+		${html.escape(plot.parameters['field'], True)}<br>
 		Spw ${plot.parameters['spw']}<br>
 		${plot.parameters['ant']}
 	</%def>

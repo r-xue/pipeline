@@ -1,5 +1,5 @@
 <%!
-import cgi
+import html
 import os
 import xml.sax.saxutils as saxutils
 
@@ -163,7 +163,7 @@ def format_notification(tr_class, alert, msg, icon_class=None):
                         % if subpage_exists:
                             <a href="${subpage_path}"
                             % if data_field:
-                               data-field="${cgi.escape(plot.parameters['field'], True)}"
+                               data-field="${html.escape(plot.parameters['field'], True)}"
                             % endif
                             % if data_spw:
                                data-spw="${plot.parameters['spw']}"
