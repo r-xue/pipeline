@@ -1,5 +1,5 @@
 <%!
-import cgi
+import html
 import os
 %>
 <html>
@@ -14,7 +14,7 @@ import os
 	<h1>Sky Setup Details<button class="btn btn-default pull-right" onclick="javascript:window.history.back();">Back</button></h1>
 </div>
 
-<div class="row">      
+<div class="row">
 % if azel_plot:
 	<div class="col-md-4">
 		<a href="${os.path.relpath(azel_plot.abspath, pcontext.report_dir)}" data-fancybox>
@@ -69,12 +69,12 @@ import os
                 <a href="${os.path.relpath(plot_uv.abspath, pcontext.report_dir)}" data-fancybox>
                     <img class="lazyload"
                          data-src="${os.path.relpath(plot_uv.thumbnail, pcontext.report_dir)}"
-                         title="UV coverage for ${ms.basename}, TARGET field ${cgi.escape(plot_uv.parameters['field_name'], True)} (#${plot_uv.parameters['field']}), spw ${plot_uv.parameters['spw']}."
-                         alt="UV coverage for ${ms.basename}, ${cgi.escape(plot_uv.parameters['field_name'], True)} (#${plot_uv.parameters['field']}), spw ${plot_uv.parameters['spw']}"/>
+                         title="UV coverage for ${ms.basename}, TARGET field ${html.escape(plot_uv.parameters['field_name'], True)} (#${plot_uv.parameters['field']}), spw ${plot_uv.parameters['spw']}."
+                         alt="UV coverage for ${ms.basename}, ${html.escape(plot_uv.parameters['field_name'], True)} (#${plot_uv.parameters['field']}), spw ${plot_uv.parameters['spw']}"/>
                 </a>
                 <div class="caption">
                     <h4>UV Coverage</h4>
-                    <p>UV coverage plot for TARGET field ${cgi.escape(plot_uv.parameters['field_name'], True)}
+                    <p>UV coverage plot for TARGET field ${html.escape(plot_uv.parameters['field_name'], True)}
                         (#${plot_uv.parameters['field']}), spw ${plot_uv.parameters['spw']}.</p>
                 </div>
             </div>

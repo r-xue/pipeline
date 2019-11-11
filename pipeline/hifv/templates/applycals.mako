@@ -1,6 +1,6 @@
 <%!
 rsc_path = ""
-import cgi
+import html
 import os
 
 import pipeline.infrastructure.renderer.htmlrenderer as hr
@@ -30,7 +30,7 @@ def template_agent_header2(agent):
 	if agent in ('online', 'template'):
 		return '<th>File</th><th>Number of Statements</th>'
 	else:
-		return ''		
+		return ''
 
 def get_template_agents(agents):
 	return [a for a in agents if a in ('online', 'template')]
@@ -57,7 +57,7 @@ $(document).ready(function(){
             $(element_id).select2("val", vals).trigger("change");
         };
     };
-    
+
     // create a callback function for each overview plot that will select the
     // appropriate spw once the page has loaded
     $(".thumbnail a").each(function (i, v) {
@@ -87,7 +87,7 @@ $(document).ready(function(){
 </script>
 
 <%
-# these functions are defined in template scope so we have access to the flags 
+# these functions are defined in template scope so we have access to the flags
 # and agents context objects
 
 def total_for_mses(mses, row):
@@ -112,7 +112,7 @@ def total_for_agent(agent, row, mses=flags.keys()):
 			flagged += fs.flagged
 			total += fs.total
 		else:
-			# agent was not activated for this MS. 
+			# agent was not activated for this MS.
 			total += flags[ms]['before'][row].total
 	if total is 0:
 		return 'N/A'
@@ -175,7 +175,7 @@ def space_comma(s):
 		</tr>
 		% endfor
 	% endfor
-% endfor		
+% endfor
 	</tbody>
 </table>
 
@@ -206,16 +206,16 @@ def space_comma(s):
 		</tr>
 	</thead>
 	<tbody>
-%for k in ['TOTAL', 'SCIENCE SPWS', 'BANDPASS', 'AMPLITUDE', 'PHASE', 'TARGET']: 
+%for k in ['TOTAL', 'SCIENCE SPWS', 'BANDPASS', 'AMPLITUDE', 'PHASE', 'TARGET']:
 		<tr>
-			<th>${total_keys[k]}</th>		
+			<th>${total_keys[k]}</th>
 	% for agent in agents:
 			<td>${total_for_agent(agent, k)}</td>
 	% endfor
 			<td>${total_for_mses(flags.keys(), k)}</td>
 	% for ms in flags.keys():
 			<td>${total_for_mses([ms], k)}</td>
-	% endfor		
+	% endfor
 		</tr>
 %endfor
 %for ms in flags.keys():
@@ -256,7 +256,7 @@ def space_comma(s):
 	<%def name="fancybox_caption(plot)">
 		Receiver bands: ${utils.commafy(plot.parameters['receiver'], False)} (spw ${plot.parameters['spw']})<br>
 		Intents: ${utils.commafy(plot.parameters['intent'], False)}<br>
-		Fields: ${cgi.escape(plot.parameters['field'], True)}
+		Fields: ${html.escape(plot.parameters['field'], True)}
 	</%def>
 
 	<%def name="caption_title(plot)">
@@ -267,8 +267,8 @@ def space_comma(s):
 		${spws_for_baseband(plot)}
 	</%def>
 
-	<%def name="caption_text(plot, intent)"> 
-		${intent.capitalize()} calibrator: 
+	<%def name="caption_text(plot, intent)">
+		${intent.capitalize()} calibrator:
 		${utils.commafy(utils.safe_split(plot.parameters['field']), quotes=False)}.
 	</%def>
 
@@ -296,7 +296,7 @@ def space_comma(s):
 	<%def name="fancybox_caption(plot)">
 		Receiver bands: ${utils.commafy(plot.parameters['receiver'], False)} (spw ${plot.parameters['spw']})<br>
 		Intents: ${utils.commafy(plot.parameters['intent'], False)}<br>
-		Fields: ${cgi.escape(plot.parameters['field'], True)}
+		Fields: ${html.escape(plot.parameters['field'], True)}
 	</%def>
 
 	<%def name="caption_title(plot)">
@@ -308,7 +308,7 @@ def space_comma(s):
 	</%def>
 
 	<%def name="caption_text(plot, intent)">
-		${intent.capitalize()} calibrator: 
+		${intent.capitalize()} calibrator:
 		${utils.commafy(utils.safe_split(plot.parameters['field']), quotes=False)}.
 	</%def>
 
@@ -335,14 +335,14 @@ def space_comma(s):
 	<%def name="fancybox_caption(plot)">
 		Spectral window: ${plot.parameters['spw']}<br>
 		Intents: ${utils.commafy(plot.parameters['intent'], False)}<br>
-		Fields: ${cgi.escape(plot.parameters['field'], True)}
+		Fields: ${html.escape(plot.parameters['field'], True)}
 	</%def>
 
 	<%def name="caption_title(plot)">
 		Spectral Window ${plot.parameters['spw']}
 	</%def>
 
-	<%def name="caption_text(plot, intent)"> 
+	<%def name="caption_text(plot, intent)">
 		Amplitude calibrator: ${plot.parameters['field']}
 	</%def>
 
@@ -368,7 +368,7 @@ def space_comma(s):
 	<%def name="fancybox_caption(plot)">
 		Spectral window: ${plot.parameters['spw']}<br>
 		Intents: ${utils.commafy(plot.parameters['intent'], False)}<br>
-		Fields: ${cgi.escape(plot.parameters['field'], True)}
+		Fields: ${html.escape(plot.parameters['field'], True)}
 	</%def>
 
 	<%def name="caption_title(plot)">
@@ -397,7 +397,7 @@ def space_comma(s):
 	<%def name="fancybox_caption(plot)">
 		Spectral window: ${plot.parameters['spw']}<br>
 		Intents: ${utils.commafy(plot.parameters['intent'], False)}<br>
-		Fields: ${cgi.escape(plot.parameters['field'], True)}
+		Fields: ${html.escape(plot.parameters['field'], True)}
 	</%def>
 
 	<%def name="caption_title(plot)">
@@ -435,7 +435,7 @@ def space_comma(s):
 	<%def name="fancybox_caption(plot)">
 		Receiver bands: ${utils.commafy(plot.parameters['receiver'], False)} (spw ${plot.parameters['spw']})<br>
 		Intents: ${utils.commafy(plot.parameters['intent'], False)}<br>
-		Fields: ${cgi.escape(plot.parameters['field'], True)}
+		Fields: ${html.escape(plot.parameters['field'], True)}
 	</%def>
 
 	<%def name="caption_title(plot)">
@@ -482,7 +482,7 @@ def space_comma(s):
 	<%def name="fancybox_caption(plot)">
 		Receiver: ${utils.commafy(plot.parameters['receiver'], False)} (spw ${plot.parameters['spw']})<br>
 		Intents: ${utils.commafy(plot.parameters['intent'], False)}<br>
-		Fields: ${cgi.escape(plot.parameters['field'], True)}
+		Fields: ${html.escape(plot.parameters['field'], True)}
 	</%def>
 
 	<%def name="caption_title(plot)">
@@ -512,9 +512,9 @@ def space_comma(s):
 
 	<%def name="preamble()">
 		<p>Calibrated amplitude vs UV distance plots for a representative
-		science field in each measurement set. The science field displayed 
+		science field in each measurement set. The science field displayed
 		here is the first field for the source.</p>
-		
+
 		<p>Data are plotted for all antennas and correlations, with different
 		spectral windows shown in different colours.</p>
 	</%def>
@@ -524,7 +524,7 @@ def space_comma(s):
 	<%def name="fancybox_caption(plot)">
 		Receiver bands: ${utils.commafy(plot.parameters['receiver'], False)} (spw ${plot.parameters['spw']})<br>
 		Intents: ${utils.commafy(plot.parameters['intent'], False)}<br>
-		Fields: ${cgi.escape(plot.parameters['field'], True)}
+		Fields: ${html.escape(plot.parameters['field'], True)}
 	</%def>
 
 	<%def name="caption_title(plot)">
@@ -537,7 +537,7 @@ def space_comma(s):
 
 	<%def name="caption_text(plot, source_id)">
 		Source #${source_id}
-		(${utils.commafy(utils.safe_split(plot.parameters['field']), quotes=False)}). 
+		(${utils.commafy(utils.safe_split(plot.parameters['field']), quotes=False)}).
 	</%def>
 
 </%self:plot_group>

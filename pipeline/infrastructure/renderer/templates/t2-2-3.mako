@@ -1,6 +1,6 @@
 <%!
 rsc_path = "../../"
-import cgi
+import html
 import os.path
 import pipeline.infrastructure.renderer.htmlrenderer as hr
 %>
@@ -72,13 +72,13 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
                                data-fancybox>
                                 <img class="lazyload"
                                      data-src="${os.path.relpath(plot_uv.thumbnail, pcontext.report_dir)}"
-                                     title="UV coverage for ${ms.basename}, ${cgi.escape(plot_uv.parameters['field_name'], True)} (#${plot_uv.parameters['field']}), spw ${plot_uv.parameters['spw']}"
-                                     alt="UV coverage for ${ms.basename}, ${cgi.escape(plot_uv.parameters['field_name'], True)} (#${plot_uv.parameters['field']}), spw ${plot_uv.parameters['spw']}"/>
+                                     title="UV coverage for ${ms.basename}, ${html.escape(plot_uv.parameters['field_name'], True)} (#${plot_uv.parameters['field']}), spw ${plot_uv.parameters['spw']}"
+                                     alt="UV coverage for ${ms.basename}, ${html.escape(plot_uv.parameters['field_name'], True)} (#${plot_uv.parameters['field']}), spw ${plot_uv.parameters['spw']}"/>
                             </a>
                             <div class="caption">
                                 <h4>UV Coverage</h4>
                                 <p>UV coverage plot for ${plot_uv.parameters['intent']} field
-                                    ${cgi.escape(plot_uv.parameters['field_name'], True)}
+                                    ${html.escape(plot_uv.parameters['field_name'], True)}
                                     (#${plot_uv.parameters['field']}), spw ${plot_uv.parameters['spw']}.</p>
                             </div>
                         </div>
@@ -101,7 +101,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 					        </tr>
 							<tr>
 					            <th scope="col">Longitude</th>
-					            <th scope="col">Latitude</th>			
+					            <th scope="col">Latitude</th>
 							</tr>
 					    </thead>
 						<tbody>
@@ -123,16 +123,16 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 				</div>
 			</div>
 		</div>
-		<div class="tab-pane" id="tabs-baselines">		
+		<div class="tab-pane" id="tabs-baselines">
 			<h3>Baseline Summary</h3>
-	
+
 			<%
 			baselines = sorted(ms.antenna_array.baselines, key=lambda b: b.length)
 			num_baselines = len(ms.antenna_array.baselines)
 			min_baseline = ms.antenna_array.min_baseline
 			max_baseline = ms.antenna_array.max_baseline
 			%>
-			
+
 			<table class="table table-bordered table-striped table-condensed" summary="Antenna and Baseline Summary">
 				<caption>Summary of Baselines in ${ms.basename}</caption>
 			    <thead>
@@ -142,9 +142,9 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 			        </tr>
 					<tr>
 			            <th scope="col">Length</th>
-			            <th scope="col">Antenna Pair</th>			
+			            <th scope="col">Antenna Pair</th>
 			            <th scope="col">Length</th>
-			            <th scope="col">Antenna Pair</th>			
+			            <th scope="col">Antenna Pair</th>
 					</tr>
 			    </thead>
 				<tbody>
@@ -156,10 +156,10 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 					</tr>
 				</tbody>
 			</table>
-			
+
 			<h3>Baseline Details</h3>
 			<p>In the table below, the 'percentile' column defines in which percentile the baseline length falls, where the longest baseline is 100%.</p>
-	
+
 			<table class="table table-bordered table-striped table-condensed" summary="Antenna Details for ${ms.basename}">
 				<caption>
 					Baselines for ${ms.basename}

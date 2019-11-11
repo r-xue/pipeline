@@ -4,7 +4,7 @@ Base template for detail plots.
 Override SELECTORS with the plot parameters that selectors should be created
 for, e.g.
 
-    SELECTORS = ['spw', 'ant'] 
+    SELECTORS = ['spw', 'ant']
 
 Use HISTOGRAM_LABELS and HISTOGRAM_AXES to automatically create histograms for
 your plots. The key for each tuple in HISTOGRAM_LABELS and HISTOGRAM_AXES
@@ -27,7 +27,7 @@ so that the plot panels are ordered consistently.
 
 <%!
 rsc_path = ""
-import cgi
+import html
 import os
 import pipeline.infrastructure.renderer.rendererutils as rendererutils
 import pipeline.infrastructure.utils as utils
@@ -66,7 +66,7 @@ def get_options(selector, plots):
         print('Example plot parameters:\n%s' % (plots[0].parameters))
         raise
     if selector == 'field':
-        options = [cgi.escape(o, True) for o in options]
+        options = [html.escape(o, True) for o in options]
     return options
 
 def format_options(options):
