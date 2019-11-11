@@ -1,48 +1,101 @@
 <casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
 
 <task category="pipeline" name="hif_mstransform" type="function">
-<shortdescription>Select data from calibrated MS(s) to form new MS(s) for imaging</shortdescription>
+<shortdescription>Create new MeasurementSets for science target imaging</shortdescription>
 <description>
+Create new MeasurementSets for imaging from the corrected column of the input
+MeasurementSet. By default all science target data is copied to the new MS. The
+new MeasurementSet is not re-indexed to the selected data an the new MS will
+have the same source, field, and spw names and ids as it does in the parent MS.
+
+Output
+
+results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
+    the results object for the pipeline task is returned.
 </description>
+
 <input>
 
   <param subparam="true" name="vis" type="stringVec">
-    <description>The list of input MeasurementSets</description>
+    <shortdescription>The list of input MeasurementSets</shortdescription>
+    <description>The list of input MeasurementSets. Defaults to the list of
+                 MeasurementSets specified in the h_init or hif_importdata task.
+                 '': use all MeasurementSets in the context
+
+                 Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
+    </description>
     <value/>
   </param>
 
   <param subparam="true" name="outputvis" type="stringVec">
-     <description>The list of transformed MeasurementSets to be used for imaging</description>
-     <value/>
+    <shortdescription>The list of transformed MeasurementSets to be used for imaging</shortdescription>
+    <description>The list of output transformed MeasurementSets to be used for
+                 imaging. The output list must be the same length as the input
+                 list. The default output name defaults to
+                 &lt;msrootname&gt;_target.ms
+
+                 Examples: 'ngc5921.ms',
+                           ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
+    </description>
+    <value/>
   </param>
 
   <param subparam="true" name="field" type="string">
-    <description>Set of data selection field names or ids, \'\' for all</description>
+    <shortdescription>Set of data selection field names or ids, \'\' for all</shortdescription>
+    <description>Select fields name(s) or id(s) to transform. Only fields with
+                 data matching the intent will be selected. 
+
+                 Examples: '3C279', 'Centaurus*', '3C279,J1427-421'
+    </description>
     <value/>
   </param>
 
   <param subparam="true" name="intent" type="string">
-    <description>Set of data selection intents</description>
+    <shortdescription>Set of data selection intents</shortdescription>
+    <description>Select intents for which associated fields will be imaged.
+                 By default only TARGET data is selected.
+
+                 Examples: 'PHASE,BANDPASS'
+    </description>
     <value/>
   </param>
 
   <param subparam="true" name="spw" type="string">
-    <description>Set of data selection spectral window ids \'\' for all</description>
+    <shortdescription>Set of data selection spectral window ids \'\' for all</shortdescription>
+    <description>Select spectral window/channels to image. By default all
+                 science spws for which the specified intent is valid are
+                 selected .
+    </description>
     <value/>
   </param>
 
   <param name="chanbin" type="int">
-    <description>Width (bin) of input channels to average to form an output channel.</description>
+    <shortdescription>Width (bin) of input channels to average to form an output channel.</shortdescription>
+    <description>Width (bin) of input channels to average to form an output
+                 channel. If chanbin &gt; 1 then chanaverage is automatically
+                 switched to True.
+    </description>
     <value>1</value>
   </param>
 
   <param name="timebin" type="string">
-    <description>Bin width for time averaging.</description>
+    <shortdescription>Bin width for time averaging.</shortdescription>
+    <description>Bin width for time averaging. If timebin &gt; 0s then
+                 timeaverage is automatically switched to True.
+    </description>
     <value type="string">0s</value>
   </param>
 
   <param name="pipelinemode" type="string">
     <description>The pipeline operating mode</description>
+    <description>The pipeline operating mode.
+                 In 'automatic' mode the pipeline determines the values of all
+                 context defined pipeline inputs automatically.
+                 In 'interactive' mode the user can set the pipeline context
+                 defined parameters manually.
+                 In 'getinputs' mode the user can check the settings of all
+                 pipeline parameters without running the task.
+    </description>
     <value>automatic</value>
     <allowed kind="enum">
       <value>automatic</value>
@@ -52,12 +105,15 @@
   </param>
 
   <param subparam="true" name="dryrun" type="bool">
-    <description>Run the task (False) or display the command(True)</description>
+    <description>Run the task (False) or just display the command (True)</description>
     <value>False</value>
   </param>
 
   <param subparam="true" name="acceptresults" type="bool">
-    <description>Add the results to the pipeline context</description>
+    <shortdescription>Add the results to the pipeline context</shortdescription>
+    <description>Add the results of the task to the pipeline context (True) or
+                 reject them (False).
+    </description>
    <value>True</value>
   </param>
 
@@ -95,83 +151,6 @@
 
 
 <example>
-
-Create a list of science target MS(s) for imaging 
-
-Keyword Arguments
-
-
-pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline
-    determines the values of all context defined pipeline inputs automatically.
-    In 'interactive' mode the user can set the pipeline context defined
-    parameters manually.  In 'getinputs' mode the user can check the settings
-    of all pipeline parameters without running the task.
-    default: 'automatic'.
-
---- pipeline parameter arguments which can be set in any pipeline mode
-
-
-
----- pipeline context defined parameter arguments which can be set only in
-     'interactive mode'
-
-vis -- The list of input MeasurementSets to be transformed. Defaults to the
-    list of MeasurementSets specified in the pipeline import data task.
-    default '': Transform all calibration MeasurementSets in the context. 
-    example: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
-
-outputvis -- The list of output transformed MeasurementSets to be used for imaging.
-    The output list must be the same length as the input list.
-    default '', The output name defaults to &lt;msrootname&gt;_target.ms
-    example: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
-
-field -- Select fields name(s) or id(s) to transform. Only fields with data matching
-    the intent will be selected. 
-    default: '', Fields matching intent.
-    example: '3C279', 'Centaurus*', '3C279,J1427-421'
-
-intent -- Select intents for which associated fields will be imaged.
-    default: '', Only TARGET data is selected.
-    example: 'PHASE,BANDPASS'
-
-spw -- Select spectral window/channels to image.
-    default: '', All science spws for which the specified intent is valid are selected 
-    example: '9'
-
-chanbin -- Width (bin) of input channels to average to form an output channel.
-    default: 1, if chanbin &gt; 1 then chanaverage is automatically switched to True
-    example: 2
-
-timebin -- Bin width for time averaging
-    default: '0s', if timebin &gt; 0s then timeaverage is automatically switched to True
-    example '4s'
-
---- pipeline task execution modes
-dryrun -- Run the commands (True) or generate the commands to be run but
-   do not execute (False).
-   default: False
-
-acceptresults -- Add the results of the task to the pipeline context (True) or
-   reject them (False).
-   default: True
-
-Output
-
-results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-    the results object for the pipeline task is returned.
-
-Description
-
-Create new MeasurementSets for imaging from the corrected column of the input
-MeasurementSet. By default all science target data is copied to the new MS. The new
-MeasurementSet is not re-indexed to the selected data an the new MS will have the
-same source, field, and spw names and ids as it does in the parent MS.
-
-Issues
-
-TBD
-Examples
-
 1. Create a science target MS from the corrected column in the input MS.
 
     hif_mstransform()
@@ -180,8 +159,6 @@ Examples
 column in the input MS.
 
     hif_mstransform(intent='PHASE,BANDPASS')
-
-
 </example>
 
 </task>
