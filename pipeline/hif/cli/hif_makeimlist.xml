@@ -17,6 +17,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <description>The list of input MeasurementSets. Defaults to the list of
                  MeasurementSets specified in the h_init or hif_importdata task.
                  '': use all MeasurementSets in the context
+
                  Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
     </description>
     <value/>
@@ -32,6 +33,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <description>Select intents for which associated fields will be imaged.
                  Possible choices are PHASE, BANDPASS, AMPLITUDE, CHECK and
                  TARGET or combinations thereof.
+
                  Examples: 'PHASE,BANDPASS', 'TARGET'
     </description>
     <value>TARGET</value>
@@ -71,6 +73,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <shortdescription>Set of data selection uv ranges, '' for all.</shortdescription>
     <description>Select a set of uv ranges to image.
                  '' All uv data is included
+
                  Examples: '0~1000klambda', ['0~100klambda', 100~1000klambda]
     </description>
     <type>string</type><type>stringVec</type>
@@ -125,6 +128,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
                  The PB level setting for single fields leads to an imsize
                  extending to the specified level plus 5% padding in all
                  directions.
+
                  Examples: '0.3pb', [120, 120]
     </description>
     <value/>
@@ -138,6 +142,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
                  The pix per beam specification ('&lt;number&gt;ppb') uses the above
                  default cell size ('5ppb') and scales it accordingly.
                  The cells can also be specified as explicit measures.
+
                  Examples: '3ppb', ['0.5arcsec', '0.5arcsec']
     </description>
     <value/>
@@ -156,6 +161,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <description>Direction measure or field id of the image center.
                  The default phase center is set to the mean of the field
                  directions of all fields that are to be image together.
+
                  Examples: 'J2000 19h30m00 -40d00m00', 0
     </description>
     <any type="variant"/>
@@ -195,6 +201,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <shortdescription>Channel binning factors per spw, '' for automatic.</shortdescription>
     <description>Channel binning factors for each spw.
                  Format: 'spw1:nb1,spw2:nb2,...' with optional wildcards: '*:nb'
+
                  Examples: '9:2,11:4,13:2,15:8', '*:2'
     </description>
     <any type="variant"/>

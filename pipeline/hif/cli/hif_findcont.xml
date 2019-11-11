@@ -15,6 +15,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <description>The list of input MeasurementSets. Defaults to the list of
                  MeasurementSets specified in the h_init or hif_importdata task.
                  \'\': use all MeasurementSets in the context
+
                  Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
     </description>
     <value/>

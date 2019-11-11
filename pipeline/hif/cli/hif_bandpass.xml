@@ -43,6 +43,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <description>The list of input MeasurementSets. Defaults to the list of
                  MeasurementSets specified in the h_init or hif_importdata task.
                  '': use all MeasurementSets in the context
+
                  Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
     </description>
     <value/>
@@ -70,11 +71,11 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 
   <param subparam="true" name="intent" type="string">
     <shortdescription>Set of data selection intents</shortdescription>
-    <description> A string containing a comma delimited list of intents against
-                  which the selected fields are matched.  Defaults to all data
-                  with bandpass intent.
+    <description>A string containing a comma delimited list of intents against
+                 which the selected fields are matched.  Defaults to all data
+                 with bandpass intent.
 
-                  Example: intent='*PHASE*'
+                 Example: intent='*PHASE*'
     </description>
     <value/>
   </param>
