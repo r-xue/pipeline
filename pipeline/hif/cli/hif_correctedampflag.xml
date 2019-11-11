@@ -101,6 +101,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <description>Maximum number of times to iterate on evaluation of flagging
                  heuristics. If an iteration results in no new flags, then
                  subsequent iterations are skipped.
+    </description>
     <value>2</value>
   </param>
 
