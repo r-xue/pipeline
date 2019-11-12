@@ -142,6 +142,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 	<shortdescription>Run the task (False) or display task command (True)</shortdescription>
         <description>Run the task (False) or display task command (True).
         Only available in pipelinemode='interactive'.</description>
+        <value>False</value>
     </param>
 
     <param subparam="true" name="acceptresults" type="bool">

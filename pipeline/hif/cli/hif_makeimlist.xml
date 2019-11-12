@@ -5,6 +5,21 @@
 <description>
 Create a a list of images to be cleaned.
 
+Generate a list of images to be cleaned. By default the list will include
+one image per science target per spw. Calibrator targets can be selected
+by setting appropriate values for intent.
+
+By default the output image cell size is set to the minimum cell size
+consistent with the UV coverage.
+
+By default the image size in pixels is set to values determined by the
+cell size and the single dish beam size. If a calibrator is being
+imaged (intents 'PHASE', 'BANDPASS', 'FLUX' or 'AMPLITUDE') then the
+image dimensions are limited to 'calmaxpix' pixels.
+
+By default science target images are cubes and calibrator target images
+are single channel. Science target images may be mosaics or single fields.
+
 Output
 
 results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
@@ -16,7 +31,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <shortdescription>List of input MeasurementSets</shortdescription>
     <description>The list of input MeasurementSets. Defaults to the list of
                  MeasurementSets specified in the h_init or hif_importdata task.
-                 '': use all MeasurementSets in the context
+                 &quot;&quot;: use all MeasurementSets in the context
 
                  Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
     </description>
@@ -24,7 +39,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   </param>
 
   <param subparam="true" name="imagename" type="string">
-     <description>Prefix for output image names, '' for automatic.</description>
+     <description>Prefix for output image names, &quot;&quot; for automatic.</description>
      <value/>
   </param>
 
@@ -40,21 +55,21 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   </param>
 
   <param subparam="true" name="field" type="string">
-    <shortdescription>Set of data selection field names or ids, '' for all</shortdescription>
+    <shortdescription>Set of data selection field names or ids, &quot;&quot; for all</shortdescription>
     <description>Select fields to image. Use field name(s) NOT id(s). Mosaics
                  are assumed to have common source / field names.  If intent is
                  specified only fields with data matching the intent will be
                  selected. The fields will be selected from MeasurementSets in
-                 'vis'.
-                 '' Fields matching intent, one image per target source.
+                 &quot;vis&quot;.
+                 &quot;&quot; Fields matching intent, one image per target source.
     </description>
     <value/>
   </param>
 
   <param subparam="true" name="spw" type="string">
-    <shortdescription>Set of data selection spectral window/channels, '' for automatic</shortdescription>
+    <shortdescription>Set of data selection spectral window/channels, &quot;&quot; for automatic</shortdescription>
     <description>Select spectral windows to image.
-                 '': Images will be computed for all science spectral windows.
+                 &quot;&quot;: Images will be computed for all science spectral windows.
     </description>
     <value/>
   </param>
@@ -70,9 +85,9 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   </param>
 
   <param subparam="true" name="uvrange" type="string">
-    <shortdescription>Set of data selection uv ranges, '' for all.</shortdescription>
+    <shortdescription>Set of data selection uv ranges, &quot;&quot; for all.</shortdescription>
     <description>Select a set of uv ranges to image.
-                 '' All uv data is included
+                 &quot;&quot;: All uv data is included
 
                  Examples: '0~1000klambda', ['0~100klambda', 100~1000klambda]
     </description>
@@ -114,7 +129,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   </param>
 
   <param subparam="true" name="hm_imsize" type="stringVec">
-    <shortdescription>Image X and Y size(s) in pixels or PB level (single fields), '' for automatic. Single value same for both. &quot;&lt;number&gt;pb&quot; for PB level.</shortdescription>
+    <shortdescription>Image X and Y size(s) in pixels or PB level (single fields), &quot;&quot; for automatic. Single value same for both. &quot;&lt;number&gt;pb&quot; for PB level.</shortdescription>
     <description>Image X and Y size in pixels or PB level for single fields.
                  The explicit sizes must be even and divisible by 2,3,5,7 only.
                  The default values are derived as follows:
@@ -135,8 +150,8 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   </param>
 
   <param subparam="true" name="hm_cell" type="stringVec">
-    <shortdescription>Image X and Y cell size(s) with units or pixels per beam, '' for automatic. Single value same for both. '&lt;number&gt;ppb' for pixels per beam.</shortdescription>
-    <description>Image X and Y cell sizes. '' computes the cell size based on
+    <shortdescription>Image X and Y cell size(s) with units or pixels per beam, &quot;&quot; for automatic. Single value same for both. &quot;&lt;number&gt;ppb&quot; for pixels per beam.</shortdescription>
+    <description>Image X and Y cell sizes. &quot;&quot; computes the cell size based on
                  the UV coverage of all the fields to be imaged and uses a
                  5 pix per beam sampling.
                  The pix per beam specification ('&lt;number&gt;ppb') uses the above
@@ -157,7 +172,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   </param>
 
   <param subparam="true" name="phasecenter" type="any">
-    <shortdescription>Image center (direction or field index, '' for automatic)</shortdescription>
+    <shortdescription>Image center (direction or field index, &quot;&quot; for automatic)</shortdescription>
     <description>Direction measure or field id of the image center.
                  The default phase center is set to the mean of the field
                  directions of all fields that are to be image together.
@@ -178,16 +193,16 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   </param>
 
   <param subparam="true" name="start" type="any">
-    <shortdescription>Channel start, '' for automatic</shortdescription>
+    <shortdescription>Channel start, &quot;&quot; for automatic</shortdescription>
     <description>Start of image frequency axis as frequency or velocity.
-                 '' selects start frequency automatically.
+                 &quot;&quot; selects start frequency automatically.
     </description>
     <any type="variant"/>
     <value type="string"/>
   </param>
 
   <param subparam="true" name="width" type="any">
-    <shortdescription>Channel width, '' for automatic.</shortdescription>
+    <shortdescription>Channel width, &quot;&quot; for automatic.</shortdescription>
     <description>Output channel width.
                  Difference in frequency between 2 selected channels for
                  frequency mode images.
@@ -198,7 +213,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   </param>
 
   <param subparam="true" name="nbins" type="any">
-    <shortdescription>Channel binning factors per spw, '' for automatic.</shortdescription>
+    <shortdescription>Channel binning factors per spw, &quot;&quot; for automatic.</shortdescription>
     <description>Channel binning factors for each spw.
                  Format: 'spw1:nb1,spw2:nb2,...' with optional wildcards: '*:nb'
 
@@ -340,26 +355,6 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 
 
 <example>
-Generate a list of images to be cleaned. By default the list will include
-one image per science target per spw. Calibrator targets can be selected
-by setting appropriate values for intent.
-
-By default the output image cell size is set to the minimum cell size
-consistent with the UV coverage.
-
-By default the image size in pixels is set to values determined by the
-cell size and the single dish beam size. If a calibrator is being
-imaged (intents 'PHASE', 'BANDPASS', 'FLUX' or 'AMPLITUDE') then the
-image dimensions are limited to 'calmaxpix' pixels.
-
-By default science target images are cubes and calibrator target images
-are single channel. Science target images may be mosaics or single fields.
-
-Issues
-
-TBD
-Examples
-
 1. Make a list of science target images to be cleaned, one image per science 
 spw.
 

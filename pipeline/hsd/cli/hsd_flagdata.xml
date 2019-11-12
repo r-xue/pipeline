@@ -50,7 +50,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <description>A string containing a comma delimited list of scans to be
         flagged.
         </description>
-        <value>'3,5,6'</value>
+        <value></value>
     </param>
 
     <param subparam="true" name="intents" type="string">
