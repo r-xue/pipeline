@@ -114,7 +114,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   </param>
 
   <param subparam="true" name="hm_imsize" type="stringVec">
-    <shortdescription>Image X and Y size(s) in pixels or PB level (single fields), '' for automatic. Single value same for both. '&lt;number&gt;pb' for PB level.</shortdescription>
+    <shortdescription>Image X and Y size(s) in pixels or PB level (single fields), '' for automatic. Single value same for both. &quot;&lt;number&gt;pb&quot; for PB level.</shortdescription>
     <description>Image X and Y size in pixels or PB level for single fields.
                  The explicit sizes must be even and divisible by 2,3,5,7 only.
                  The default values are derived as follows:
