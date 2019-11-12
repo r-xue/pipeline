@@ -339,7 +339,7 @@ class AquaXmlGenerator(object):
         # representative scores for each task in  that topic, which themselves
         # are the minimum of the scores for that task
         try:
-            min_score = min([r.qa.representative for r in topic_results], key=operator.attrgetter('score'))
+            min_score = min([r.qa.representative for r in topic_results if r.qa.representative.score is not None], key=operator.attrgetter('score'))
             score = str(min_score.score)
         except ValueError:
             # empty list
