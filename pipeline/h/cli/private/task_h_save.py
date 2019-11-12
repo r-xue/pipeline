@@ -2,7 +2,7 @@ import datetime
 
 from casatasks import casalog
 
-import pipeline.h.cli.utils as utils
+from .. import utils
 
 
 def h_save(filename=None):

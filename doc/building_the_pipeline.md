@@ -1,19 +1,29 @@
 # Building the pipeline
-## Check target installation directory
-First, check which CASA installation is first on your path by running
-`casa-config`.
+## Prerequisites
+The pipeline build procedure depends on Python 3, CASA buildmytasks, and Java,
+which is used by buildmytasks to process the task XML and to minify the
+Pipeline Javascript.
+
+It is recommended to put CASA `bin` directory first on your path for the
+duration of the installation procedure. 
+
+## Standard build
+The pipeline can be built and installed like any standard Python module, with
 ```
-$ casa-config --prefix
+$ python3 setup.py build
 ```
-The pipeline will be installed into the output path given by this command, so
-ensure that it points to the correct CASA installation. If not, adjust your
-PATH environment variable accordingly. Naturally, you will also need write
-permissions for the target installation directory.
+The build output will be found in the build/lib directory. This directory can
+be put on the PYTHONPATH inside CASA to make the pipeline available, e.g.,
+```python
+import sys
+sys.path.insert(0, '/path/to/pipeine/build/lib')
+```
+  
 
 ## Standard install
 The pipeline can be built and installed like any standard Python module, with
 ```
-$ casa-config --exec python setup.py install
+$ python3 setup.py install
 ```
 If a pipeline egg is already installed, this command will upgrade the 
 pipeline with the new installation. 
@@ -22,7 +32,7 @@ pipeline with the new installation.
 To build a pipeline .egg file without installing the egg and hence overwriting
 the CASA default pipeline installation, execute 
 ```
-$ casa-config --exec python setup.py bdist_egg
+$ python setup.py bdist_egg
 ```
 The resulting egg file can be found in the dist directory and added to the
 CASA sys.path in your CASA prelude, e.g.,
@@ -103,11 +113,11 @@ this mode, a pseudo installation is made which adds your source directory to
 the CASA site-packages. Hence the working version you are editing will become
 the pipeline version available to CASA.
 ```
-$ casa-config --exec python setup.py develop
+$ python3 setup.py develop
 ```
 To uninstall the developer installation, execute
 ```
-$ casa-config --exec python setup.py develop -u
+$ python3 setup.py develop -u
 ```
 
 ### Optional: CASA CLI bindings
@@ -117,7 +127,7 @@ bindings need to be written to the src directory. This can be done using the
 `buildmytasks` command, using the _-i_ option to generate the bindings 
 in-place, i.e., 
 ```
-$ casa-config --exec python setup.py buildmytasks -i
+$ python3 setup.py buildmytasks -i
 ```
 The bindings should be rebuilt whenever you change the interface XML definitions.
 

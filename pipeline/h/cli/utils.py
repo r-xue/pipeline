@@ -4,12 +4,9 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure.argmapper as argmapper
 import pipeline.infrastructure.vdp as vdp
-
-import pipeline.h.cli.cli as cli
-import pipeline.h.heuristics as heuristics
-from pipeline.infrastructure import exceptions
-from pipeline.infrastructure import task_registry
-from pipeline.infrastructure import utils
+from pipeline.infrastructure import exceptions, task_registry, utils
+from . import cli
+from .. import heuristics
 
 LOG = infrastructure.get_logger(__name__)
 

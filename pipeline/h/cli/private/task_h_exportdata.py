@@ -2,7 +2,7 @@ import sys
 
 from casatasks import casalog
 
-import pipeline.h.cli.utils as utils
+from .. import utils
 
 
 def h_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=None, pprfile=None, calintents=None,
