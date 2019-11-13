@@ -17,6 +17,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <description>The list of input MeasurementSets. Defaults to the list of
                  MeasurementSets specified in the h_init or hif_importdata task.
                  '': use all MeasurementSets in the context
+
                  Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
     </description>
     <value/>
@@ -45,32 +46,32 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 
   <param subparam="true" name="hm_sidelobethreshold" type="double">
      <description>sidelobethreshold * the max sidelobe level</description>
-       <value>-999.0</value>
+     <value>-999.0</value>
   </param>
 
   <param subparam="true" name="hm_noisethreshold" type="double">
      <description>noisethreshold * rms in residual image</description>
-       <value>-999.0</value>
+     <value>-999.0</value>
   </param>
 
   <param subparam="true" name="hm_lownoisethreshold" type="double">
      <description>lownoisethreshold * rms in residual image</description>
-       <value>-999.0</value>
+     <value>-999.0</value>
   </param>
 
   <param subparam="true" name="hm_negativethreshold" type="double">
      <description>negativethreshold * rms in residual image</description>
-       <value>-999.0</value>
+     <value>-999.0</value>
   </param>
 
   <param subparam="true" name="hm_minbeamfrac" type="double">
      <description>Minimum beam fraction for pruning</description>
-       <value>-999.0</value>
+     <value>-999.0</value>
   </param>
 
   <param subparam="true" name="hm_growiterations" type="int">
      <description>Number of binary dilation iterations for growing the mask</description>
-       <value>-999</value>
+     <value>-999</value>
   </param>
 
   <param subparam="true" name="hm_dogrowprune" type="bool">
@@ -80,13 +81,13 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 
   <param subparam="true" name="hm_minpercentchange" type="double">
      <description>Mask size change threshold</description>
-       <value>-999.0</value>
+     <value>-999.0</value>
   </param>
 
   <param name="hm_fastnoise" type="bool">
     <description>Faster noise calucation for automask or nsigma stopping</description>
     <value>True</value>
-    </param>
+  </param>
 
   <param name="hm_nsigma" type="double">
     <description>Multiplicative factor for rms-based threshold stopping</description>
@@ -104,25 +105,25 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   </param>
 
   <param name="hm_cleaning" type="string">
-     <description>Pipeline cleaning mode </description>
-       <value/>
-       <allowed kind="enum">
-         <value/>
-         <value>rms</value>
-         <value>sensitivity</value>
-         <value>timesmask</value>
-         <value>manual</value>
-       </allowed>
+    <description>Pipeline cleaning mode </description>
+    <value/>
+    <allowed kind="enum">
+      <value/>
+      <value>rms</value>
+      <value>sensitivity</value>
+      <value>timesmask</value>
+      <value>manual</value>
+    </allowed>
   </param>
 
   <param subparam="true" name="tlimit" type="double">
-       <description>Times the sensitivity limit for cleaning</description>
-       <value>2.0</value>
+    <description>Times the sensitivity limit for cleaning</description>
+    <value>2.0</value>
   </param>
 
   <param subparam="true" name="masklimit" type="int">
-       <description>Times good mask pixels for cleaning</description>
-       <value>4</value>
+    <description>Times good mask pixels for cleaning</description>
+    <value>4</value>
   </param>
 
   <param name="cleancontranges" type="bool">

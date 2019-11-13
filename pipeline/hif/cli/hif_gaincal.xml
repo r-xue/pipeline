@@ -31,6 +31,7 @@ The 'gspline' (smooth) option is still under development in CASA.
     <description>The list of input MeasurementSets. Defaults to the list of
                  MeasurementSets specified in the h_init or hif_importdata task.
                  '': use all MeasurementSets in the context
+
                  Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
     </description>
     <value/>
@@ -131,7 +132,7 @@ The 'gspline' (smooth) option is still under development in CASA.
   </param>
 
   <param subparam="true" name="refant" type="string">
-    <description>Reference antenna names</description>
+    <shortdescription>Reference antenna names</shortdescription>
     <description>Reference antenna name(s) in priority order. Defaults to most
                  recent values set in the pipeline context. If no reference
                  antenna is defined in the pipeline context use the CASA
@@ -165,7 +166,7 @@ The 'gspline' (smooth) option is still under development in CASA.
   </param>
 
   <param subparam="true" name="smodel" type="doubleVec">
-    <description>Point source Stokes parameters for source model</description>
+    <shortdescription>Point source Stokes parameters for source model</shortdescription>
     <description>Point source Stokes parameters for source model (experimental).
                  Defaults to using standard MODEL_DATA column data.
 

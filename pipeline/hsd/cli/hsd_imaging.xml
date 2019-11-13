@@ -17,9 +17,9 @@
 </description>
 <input>
     <param name="mode" type="string">
-	<shortdescription>Imaging mode [\'line\'|\'ampcal\']</shortdescription>
+	<shortdescription>Imaging mode [&quot;line&quot;|&quot;ampcal&quot;]</shortdescription>
         <description>imaging mode controls imaging parameters in the task.
-                     Accepts either 'line' (spectral line imaging) or 'ampcal'
+                     Accepts either &quot;line&quot; (spectral line imaging) or &quot;ampcal&quot;
                      (image settings for amplitude calibrator)
         </description>
 	<value>line</value>
@@ -65,18 +65,17 @@
     </param>
 
     <param subparam="true" name="field" type="string">
-        <shortdescription>Field to be imaged, e.g., \'M100,Sgr*\' (default all)
-        </shortdescription>
+        <shortdescription>Field to be imaged, e.g., &quot;M100,Sgr*&quot; (default all)</shortdescription>
         <description>Data selection by field names or ids.
-                     example: '*Sgr*,M100'
+                     example: &quot;*Sgr*,M100&quot;
         </description>
         <value/>
     </param>
 
     <param subparam="true" name="spw" type="any">
-            <shortdescription>select data by spectral window IDs, e.g. \'3,5,7\' (default all)</shortdescription>
+            <shortdescription>select data by spectral window IDs, e.g. &quot;3,5,7&quot; (default all)</shortdescription>
             <description>Data selection by spw ids.
-                         example: '3,4' (generate images for spw 3 and 4)
+                         example: &quot;3,4&quot; (generate images for spw 3 and 4)
             </description>
             <type>string</type>
             <value type="string"/>
