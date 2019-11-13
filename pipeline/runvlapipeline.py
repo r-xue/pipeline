@@ -13,5 +13,8 @@ import sys
 # Import the module which executes the pipeline processing request.
 import pipeline.infrastructure.executevlappr as eppr
 
+# Need to use casashell to get the '-c' parameter
+import casashell
+
 # Execute the request
-eppr.executeppr (sys.argv[sys.argv.index('-c')+2], importonly=False)
+eppr.executeppr (casashell.argv[casashell.argv.index('-c')+2], importonly=False)
