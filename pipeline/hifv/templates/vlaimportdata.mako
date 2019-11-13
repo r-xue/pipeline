@@ -3,6 +3,7 @@ import os
 import pipeline.infrastructure.renderer.htmlrenderer as hr
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.utils as utils
+from functools import reduce
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 
