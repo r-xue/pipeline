@@ -3,9 +3,8 @@
 This document provides notes on the conversion of the Pipeline code to become
 Python 3 compatible.
 
-Python 3 conversion is tracked in 
-[CAS-11189](https://open-jira.nrao.edu/browse/CAS-11189) and 
-[CAS-12005](https://open-jira.nrao.edu/browse/CAS-12005).
+Python 3 conversion is tracked in
+[PIPE-10](https://open-jira.nrao.edu/browse/PIPE-10) and its sub-task tickets.
 
 ## Updating code with '2to3' tool
 
@@ -23,43 +22,12 @@ nonzero, operator, paren, renames, sys_exc, throw, xreadlines
 Rules that have been applied (guard against regression):
 
 ```
-basestring, except, execfile, filter, has_key, idioms, import, map, ne, print,
-raise, reduce, repr, set_literal (optional), tuple_params, types (after
-idioms), ws_comma (optional), zip
+basestring, buffer, dict, except, exec, execfile, filter, funcattrs, future,
+has_key, idioms, import, imports, isinstance, itertools, long, map, metaclass,
+methodattrs, ne, next, numliterals, print, raise, raw_input, reduce, repr,
+set_literal (optional), standarderror, tuple_params, types (after idioms),
+unicode, urllib, ws_comma (optional), xrange, zip
 ```
-
-Rules that require updates on a Py3-only branch during C8 dev:
-
-Low risk:
-```
-funcattrs, itertools, metaclass, methodattrs, next, numliterals, xrange
-```
-
-Low risk, but review for efficiency:
-```
-dict
-```
-
-Medium risk, have to review/test
-
-```
-imports, long, unicode, urllib
-```
-
-Low risk, but run last:
-
-```
-isinstance: removes duplicates, e.g. isinstance(x, (int, int)) or isinstance(x, (str, str))
-            that may appear after evaluating the 'long' and 'unicode' rules.
-future: removes imports from __future__
-```
-
-Rules that require updates to external modules (under /extern/)
-
-```
-buffer, exec, raw_input, standarderror
-```
-
 
 ## Examples best coding practices
 Included below are a series of examples of best coding practices to use, to
@@ -189,6 +157,11 @@ After:
 spwids = list(map(int, inputs['spw'].split(',')))
 return spwids[0]
 ```
+or
+```
+spwids = [int(x) for x in inputs['spw'].split(',')]
+```
+
 
 As a side-effect of this change, one can no longer use a call to 'map' (with/without assigning result to variable)
 to run an implicit for loop. The loop has to be made explicit.
