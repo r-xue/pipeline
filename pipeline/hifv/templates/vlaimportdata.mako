@@ -56,7 +56,7 @@ are summarized below.</p>
 			<td>${len(ms.fields)}</td>
 			<!-- count the number of measurements added to the setjy result in
 				 each importdata_result -->
-			<td>${reduce(lambda x, setjy_result: x + len(reduce(list.__add__, [setjy_result.measurements[key] for key in setjy_result.measurements], [])), importdata_result.setjy_results, 0)}</td>
+			<td>${reduce(lambda x, setjy_result: x + sum(len(y) for y in setjy_result.measurements.values()), importdata_result.setjy_results, 0)}</td>
 			<td>${str(ms.filesize)}</td>
 		</tr>
 	% endfor
