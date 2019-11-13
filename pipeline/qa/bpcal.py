@@ -83,7 +83,6 @@
 # -------
 import math
 import os
-import string
 
 import matplotlib.pyplot as pl
 import numpy

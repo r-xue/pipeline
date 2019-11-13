@@ -5,7 +5,6 @@ import itertools
 import operator
 import os
 import re
-import string
 import xml.etree.ElementTree as ElementTree
 from datetime import datetime
 from functools import reduce

@@ -1,5 +1,4 @@
 import os
-import string
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
