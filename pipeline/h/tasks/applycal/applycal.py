@@ -302,7 +302,7 @@ def reshape_flagdata_summary(flagdata_result):
 #
 #     fields_to_plot = calibrator_fields + targetfields
 #
-#     return {k: v for k, v in flagsummary.iteritems() if k in fields_to_plot}
+#     return {k: v for k, v in flagsummary.items() if k in fields_to_plot}
 
 
 class HpcApplycalInputs(ApplycalInputs):

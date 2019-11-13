@@ -153,8 +153,8 @@ class ModificationPublisher(object):
         self._listeners = set()
 
     # def __iter__(self):
-    #     public = {k: v for k, v in vars(self).iteritems() if not k.startswith('_')}
-    #     return public.iteritems()
+    #     public = {k: v for k, v in vars(self).items() if not k.startswith('_')}
+    #     return public.items()
 
     def __setattr__(self, name, value):
         LOG.trace('Setting {!s}.{!s} = {!r}'.format(self.__class__.__name__, name, value))

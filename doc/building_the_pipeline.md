@@ -90,7 +90,7 @@ def get_egg(path):
         return os.path.join(dist_dir, egg)
 
 
-for k, workspace_path in workspaces.iteritems():
+for k, workspace_path in workspaces.items():
     full_path = os.path.expanduser(workspace_path)
     if '--' + k in sys.argv:
         if '--egg' in sys.argv:

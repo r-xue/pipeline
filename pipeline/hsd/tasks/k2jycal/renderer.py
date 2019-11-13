@@ -52,7 +52,7 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
                     for corr in corrs:
                         factor = self.__get_factor(r.factors, vis, spwid, ant_name, corr)
 #                         corr_collector[factor].append(corr)
-#                     for factor, corrlist in corr_collector.iteritems():
+#                     for factor, corrlist in corr_collector.items():
 #                         corr = str(', ').join(corrlist)
                         jyperk = factor if factor is not None else 'N/A (1.0)'
 #                         tr = JyperKTR(vis, spwid, ant_name, corr, jyperk)

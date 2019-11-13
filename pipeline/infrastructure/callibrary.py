@@ -2520,11 +2520,11 @@ def copy_calapplication(calapp, origin=None, **overrides):
 #     LOG.info('Consolidating calibrations')
 #     # dict that maps holds accepted data selections and their CalFroms
 #     accepted = {}
-#     for calfrom_hash, calto_args in hash_to_calto_args.iteritems():
+#     for calfrom_hash, calto_args in hash_to_calto_args.items():
 #         # assemble the other data selections (the other CalToArgs) which we
 #         # will use to search for conflicting data selections
 #         other_data_selections = []
-#         for v in [v for k, v in hash_to_calto_args.iteritems() if k != calfrom_hash]:
+#         for v in [v for k, v in hash_to_calto_args.items() if k != calfrom_hash]:
 #             other_data_selections.extend(v)
 #
 #         for to_merge in calto_args:
