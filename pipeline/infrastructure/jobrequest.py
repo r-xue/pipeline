@@ -5,7 +5,6 @@ import os
 import platform
 import re
 import sys
-import types
 
 from . import logging
 
@@ -153,14 +152,17 @@ class JobRequest(object):
         self.fn = fn
 
         # CASA tasks are instances rather than functions, whose execution
-        # begins at __call__
-        # FIXME: This relies on self.fn being a reference to fn. Is this
-        #        always the case ?  Should self.fn be assigned afterwards ?
-        if isinstance(fn, types.FunctionType):
-            self.fn_name = self.fn.__name__
-        else:
-            self.fn_name = self.fn.__class__.__name__[1:]
+        # begins at __call__. The .startswith() check tests for 'casa' in
+        # order to match both casatasks and casaplotms modules.
+        module = fn.__module__
+        if isinstance(fn, object) and module.startswith('casa'):
             fn = fn.__call__
+            # CASA task class instances are created in a submodule and pulled
+            # into the casatasks namespace. We need the name by which the task
+            # instance was imported into the casatasks module.
+            self.fn_name = module.split('.')[-1]
+        else:
+            self.fn_name = self.fn.__name__
 
         # the next piece of code does some introspection on the given function
         # so that we can find out the complete invocation, adding any implicit
@@ -277,25 +279,6 @@ class JobRequest(object):
             new_o[k] = self._gen_hash(v)
 
         return hash(tuple(frozenset(new_o.items())))
-
-    # JobRequests hold CASA functions as part of their __dict__; pickling the
-    # JobRequest thus attempts to pickle the CASA function, which essentially
-    # tries to pickle all of CASA. We circumvent this by replacing the
-    # function with the module name on serialisation, replacing the module
-    # name with the real function when the pickled state is unmarshalled.
-    def __getstate__(self):
-        odict = self.__dict__.copy()
-        fn = odict['fn']
-        module = fn.__module__
-        odict['fn'] = '{0}'.format(module)
-        return odict
-
-    def __setstate__(self, d):
-        odict = d.copy()
-        name = odict['fn']
-        module = __import__(name)
-        odict['fn'] = getattr(module, name)
-        self.__dict__.update(odict)
 
 
 def natural_sort(s, _nsre=re.compile('([0-9]+)')):
