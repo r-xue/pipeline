@@ -1,6 +1,5 @@
 import collections
 import os
-import string
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.filenamer as filenamer

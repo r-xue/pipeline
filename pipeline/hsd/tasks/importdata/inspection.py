@@ -298,7 +298,7 @@ class SDInspection(object):
                     posgrp_list[ant][spw][field_id] = []
                     timegrp_list[ant][spw][field_id] = None
 
-                    #for (pol,vpol) in self.by_pol.iteritems():
+                    #for (pol,vpol) in self.by_pol.items():
                     id_list = numpy.fromiter(vant & vspw & vfield, dtype=numpy.int32)
                     if len(id_list) == 0:
                         continue
