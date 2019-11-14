@@ -11,314 +11,7 @@ spectral window. One gain solution is computed for the calibrator source
 targets and one for the science targets.
 
 Previous calibrations are applied on the fly.
-</description>
 
-<input>
-    <param subparam="true" name="vis" type="stringVec">
-	<description>List of input MeasurementSets</description>
-	<value/>
-   </param>
-
-   <param subparam="true" name="calamptable" type="stringVec">
-	<description>List of diagnostic output amplitude caltables for calibrator targets</description>
-	<value type="string"/>
-   </param>
-
-   <param subparam="true" name="offsetstable" type="stringVec">
-	<description>List of diagnostic output phase offset caltables for calibrator targets</description>
-	<value type="string"/>
-   </param>
-
-   <param subparam="true" name="calphasetable" type="stringVec">
-	<description>List of output phase caltables for calibrator targets</description>
-	<value type="string"/>
-   </param>
-
-   <param subparam="true" name="targetphasetable" type="stringVec">
-	<description>List of output phase caltables for science targets</description>
-	<value type="string"/>
-   </param>
-
-   <param subparam="true" name="amptable" type="stringVec">
-	<description>List of output amp caltables for science targets</description>
-	<value type="string"/>
-   </param>
-
-   <param subparam="true" name="field" type="string">
-	<description>Set of data selection field names or ids</description>
-	<value/>
-   </param>
-
-   <param subparam="true" name="intent" type="string">
-	<description>Set of data selection observing intents</description>
-	<value/>
-   </param>
-
-   <param subparam="true" name="spw" type="string">
-	<description>Set of data selection spectral window/channels</description>
-	<value/>
-   </param>
-
-   <param subparam="true" name="antenna" type="string">
-	<description>Set of data selection antenna ids</description>
-	<value/>
-   </param>
-
-    <param name="calsolint" type="any">
-        <description>Phase solution interval for calibrator sources</description>
-	<any type="variant"/>
-	<value type="string">int</value>
-    </param>
-
-    <param name="targetsolint" type="any">
-        <description>Phase solution interval for science target sources</description>
-	<any type="variant"/>
-	<value type="string">inf</value>
-    </param>
-
-    <param name="combine" type="string">
-	<description>Data axes which to combine for solve (scan, spw, and/or field)</description>
-	<value type="string"/>
-    </param>
-
-    <param subparam="true" name="refant" type="string">
-	<description>Reference antenna names</description>
-	<value/>
-    </param>
-
-    <param subparam="true" name="solnorm" type="bool">
-	<description>Normalize average solution amplitudes to 1.0</description>
-	<value>False</value>
-    </param>
-
-    <param name="minblperant" type="int">
-	<description>Minimum baselines per antenna required for solve</description>
-	<value>4</value>
-    </param>
-
-    <param name="calminsnr" type="double">
-	<description>Reject solutions below this SNR for calibrator solutions</description>
-	<value>2.0</value>
-    </param>
-
-    <param name="targetminsnr" type="double">
-	<description>Reject solutions below this SNR for science solutions</description>
-	<value>3.0</value>
-    </param>
-
-    <param subparam="true" name="smodel" type="doubleVec">
-	<description>Point source Stokes parameters for source model</description>
-	<value/>
-    </param>
-
-    <param name="pipelinemode" type="string">
-	<description>The pipeline operating mode</description>
-	<value>automatic</value>
-	<allowed kind="enum">
-	    <value>automatic</value>
-	    <value>interactive</value>
-	    <value>getinputs</value>
-	</allowed>
-    </param>
-
-    <param subparam="true" name="dryrun" type="bool">
-	<description>Run task (False) or display the command(True)</description>
-	<value type="bool">False</value>
-    </param>
-
-    <param subparam="true" name="acceptresults" type="bool">
-	<description>Automatically accept results into the context</description>
-	<value type="bool">True</value>
-    </param>
-
-    <constraints>
-        <when param="pipelinemode">
-	    <equals value="automatic" type="string"/>
-	    <equals value="interactive" type="string">
-	        <default param="vis"><value type="stringVec"/></default>
-	        <default param="calamptable"><value type="stringVec"/></default>
-	        <default param="offsetstable"><value type="stringVec"/></default>
-	        <default param="calphasetable"><value type="stringVec"/></default>
-	        <default param="targetphasetable"><value type="stringVec"/></default>
-	        <default param="amptable"><value type="stringVec"/></default>
-	        <default param="field"><value type="string"/></default>
-	        <default param="intent"><value type="string"/></default>
-	        <default param="spw"><value type="string"/></default>
-	        <default param="antenna"><value type="string"/></default>
-	        <default param="smodel"><value type="doubleVec"/></default>
-	        <default param="solnorm"><value type="bool">False</value></default>
-	        <default param="refant"><value type="string"/></default>
-	        <default param="dryrun"><value type="bool">False</value></default>
-	        <default param="acceptresults"><value type="bool">True</value></default>
-	    </equals>
-	    <equals value="getinputs" type="string">
-	        <default param="vis"><value type="stringVec"/></default>
-	        <default param="calamptable"><value type="stringVec"/></default>
-	        <default param="offsetstable"><value type="stringVec"/></default>
-	        <default param="calphasetable"><value type="stringVec"/></default>
-	        <default param="targetphasetable"><value type="stringVec"/></default>
-	        <default param="amptable"><value type="stringVec"/></default>
-	        <default param="field"><value type="string"/></default>
-	        <default param="intent"><value type="string"/></default>
-	        <default param="spw"><value type="string"/></default>
-	        <default param="antenna"><value type="string"/></default>
-	        <default param="smodel"><value type="doubleVec"/></default>
-	        <default param="solnorm"><value type="bool">False</value></default>
-	        <default param="refant"><value type="string"/></default>
-	    </equals>
-        </when>
-    </constraints>
-</input>
-
-
-<returns>any</returns>
-
-<example>
-Compute the gain solutions.
-
-
-Keyword arguments
-
----- pipeline parameter arguments which can be set in any pipeline mode
-
-pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline
-    determines the values of all context defined pipeline inputs automatically.
-    In interactive mode the user can set the pipeline context defined
-    parameters manually. In 'getinputs' mode the user can check the settings of
-    all pipeline parameters without running the task.
-
-    default: 'automatic'
-
-calsolint --  Time solution interval in CASA syntax for calibrator source
-    solutions.
-
-    default: 'int'
-    example: calsolint='inf', calsolint='int', calsolint='100sec'
-
-targetsolint --  Time solution interval in CASA syntax for target source
-    solutions.
-
-    default: 'inf'
-    example: targetsolint='inf', targetsolint='int', targetsolint='100sec'
-
-combine -- Data axes to combine for solving. Options are '', 'scan', 'spw',
-    'field' or any comma-separated combination.
-
-    default: ''
-    example: combine=''
-
-minblperant -- Minimum number of baselines required per antenna for each solve.
-    Antennas with fewer baselines are excluded from solutions.
-
-    default: 4
-    example: minblperant=2
-
-calminsnr -- Solutions below this SNR are rejected for calibrator solutions. 
-
-    default: 2.0
-
-targetminsnr -- Solutions below this SNR are rejected for science target
-    solutions.
-
-    default: 3.0
-
----- pipeline context defined parameter arguments which can be set only in
-'interactive mode'
-
-vis -- The list of input MeasurementSets. Defaults to the list of
-    MeasurementSets specified in the pipeline context.
-
-    default: ''
-    example: vis=['M82A.ms', 'M82B.ms']
-
-calamptable -- The list of output diagnostic calibration amplitude tables for
-    the calibration targets. Defaults to the standard pipeline naming
-    convention.
-
-    default: ''
-    example: calamptable=['M82.gacal', 'M82B.gacal']
-
-offsetstable -- The list of output diagnostic phase offset tables for the
-    calibration targets. Defaults to the standard pipeline naming convention.
-
-    default: ''
-    example: offsetstable=['M82.offsets.gacal', 'M82B.offsets.gacal']
-
-calphasetable -- The list of output calibration phase tables for the
-    calibration targets. Defaults to the standard pipeline naming convention.
-
-    default: ''
-    example: calphasetable=['M82.gcal', 'M82B.gcal']
-
-amptable -- The list of output calibration amplitude tables for the
-    calibration and science targets.
-    Defaults to the standard pipeline naming convention.
-
-    default: ''
-    example: amptable=['M82.gcal', 'M82B.gcal']
-
-targetphasetable -- The list of output phase calibration tables for the science
-    targets. Defaults to the standard pipeline naming convention.
-
-    default: ''
-    example: targetphasetable=['M82.gcal', 'M82B.gcal']
-
-field -- The list of field names or field ids for which gain solutions are to
-    be computed. Defaults to all fields with the standard intent.
-
-    default: ''
-    example: field='3C279', field='3C279, M82'
-
-intent -- A string containing a comma delimited list of intents against which
-    the selected fields are matched. Defaults to the equivalent of
-    'AMPLITUDE,PHASE,BANDPASS'.
-
-    default: ''
-    example: intent='', intent='PHASE'
-
-spw -- The list of spectral windows and channels for which gain solutions are
-    computed. Defaults to all science spectral windows.
-
-    default: ''
-    example: spw='3C279', spw='3C279, M82'
-
-smodel -- Point source Stokes parameters for source model (experimental)
-    Defaults to using standard MODEL_DATA column data.
-
-    default: []
-    example: smodel=[1,0,0,0]  - (I=1, unpolarized)
-
-refant -- Reference antenna name(s) in priority order. Defaults to most recent
-    values set in the pipeline context.  If no reference antenna is defined in
-    the pipeline context use the CASA defaults.
-
-    default: ''
-    example: refant='DV01', refant='DV05,DV07'
-
-solnorm -- Normalise the gain solutions.
-
-    default: False
-
---- pipeline task execution modes
-
-dryrun -- Run the commands (True) or generate the commands to be run but do not
-    execute (False).
-
-    default: False
-
-acceptresults -- Add the results of the task to the pipeline context (True) or
-    reject them (False).
-
-    default: True
-
-
-Output
-
-results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-    the results object for the pipeline task is returned.
-
-
-Description
 
 The complex gains are derived from the data column (raw data) divided by the
 model column (usually set with hif_setjy). The gains are obtained for the
@@ -334,15 +27,272 @@ applied on the fly. Users can interact with these calibrations via the
 hif_export_calstate and hif_import_calstate tasks.
 
 
-Issues
+Output
+
+results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
+        the results object for the pipeline task is returned.
+</description>
+
+<input>
+    <param subparam="true" name="vis" type="stringVec">
+        <shortdescription>List of input MeasurementSets</shortdescription>
+        <description>The list of input MeasurementSets. Defaults to the list of
+            MeasurementSets specified in the pipeline context.
+
+            example: vis=['M82A.ms', 'M82B.ms']
+        </description>
+        <value/>
+    </param>
+
+    <param subparam="true" name="calamptable" type="stringVec">
+        <shortdescription>List of diagnostic output amplitude caltables for calibrator targets</shortdescription>
+        <description>The list of output diagnostic calibration amplitude tables for
+            the calibration targets. Defaults to the standard pipeline naming
+            convention.
+
+            example: calamptable=['M82.gacal', 'M82B.gacal']
+        </description>
+        <value type="string"/>
+    </param>
+
+    <param subparam="true" name="offsetstable" type="stringVec">
+        <shortdescription>List of diagnostic output phase offset caltables for calibrator targets</shortdescription>
+        <description>The list of output diagnostic phase offset tables for the
+            calibration targets. Defaults to the standard pipeline naming convention.
+
+            example: offsetstable=['M82.offsets.gacal', 'M82B.offsets.gacal']</description>
+        <value type="string"/>
+    </param>
+
+    <param subparam="true" name="calphasetable" type="stringVec">
+        <shortdescription>List of output phase caltables for calibrator targets</shortdescription>
+        <description>The list of output calibration phase tables for the
+            calibration targets. Defaults to the standard pipeline naming convention.
+
+            example: calphasetable=['M82.gcal', 'M82B.gcal']</description>
+        <value type="string"/>
+    </param>
+
+    <param subparam="true" name="targetphasetable" type="stringVec">
+        <shortdescription>List of output phase caltables for science targets</shortdescription>
+        <description>The list of output phase calibration tables for the science
+            targets. Defaults to the standard pipeline naming convention.
+
+            example: targetphasetable=['M82.gcal', 'M82B.gcal']
+        </description>
+        <value type="string"/>
+    </param>
+
+    <param subparam="true" name="amptable" type="stringVec">
+        <shortdescription>List of output amp caltables for science targets</shortdescription>
+        <description>The list of output calibration amplitude tables for the
+            calibration and science targets.
+            Defaults to the standard pipeline naming convention.
+
+            example: amptable=['M82.gcal', 'M82B.gcal']
+        </description>
+        <value type="string"/>
+    </param>
+
+    <param subparam="true" name="field" type="string">
+        <shortdescription>Set of data selection field names or ids</shortdescription>
+        <description>The list of field names or field ids for which gain solutions are to
+            be computed. Defaults to all fields with the standard intent.
+
+            example: field='3C279', field='3C279, M82'
+        </description>
+        <value/>
+    </param>
+
+    <param subparam="true" name="intent" type="string">
+        <shortdescription>Set of data selection observing intents</shortdescription>
+        <description>A string containing a comma delimited list of intents against which
+            the selected fields are matched. Defaults to the equivalent of
+            'AMPLITUDE,PHASE,BANDPASS'.
+
+            example: intent='', intent='PHASE'
+        </description>
+        <value/>
+    </param>
+
+    <param subparam="true" name="spw" type="string">
+        <shortdescription>Set of data selection spectral window/channels</shortdescription>
+        <description>The list of spectral windows and channels for which gain solutions are
+            computed. Defaults to all science spectral windows.
+
+            example: spw='3C279', spw='3C279, M82'
+        </description>
+        <value/>
+    </param>
+
+    <param subparam="true" name="antenna" type="string">
+        <shortdescription>Set of data selection antenna ids</shortdescription>
+        <description></description>
+        <value/>
+    </param>
+
+    <param name="calsolint" type="any">
+        <shortdescription>Phase solution interval for calibrator sources</shortdescription>
+        <description>Time solution interval in CASA syntax for calibrator source
+            solutions.
+
+            example: calsolint='inf', calsolint='int', calsolint='100sec'
+        </description>
+        <any type="variant"/>
+        <value type="string">int</value>
+    </param>
+
+    <param name="targetsolint" type="any">
+        <shortdescription>Phase solution interval for science target sources</shortdescription>
+        <description>Time solution interval in CASA syntax for target source
+            solutions.
+
+            example: targetsolint='inf', targetsolint='int', targetsolint='100sec'
+        </description>
+        <any type="variant"/>
+        <value type="string">inf</value>
+    </param>
+
+     <param name="combine" type="string">
+        <shortdescription>Data axes which to combine for solve (scan, spw, and/or field)</shortdescription>
+        <description>Data axes to combine for solving. Options are '', 'scan', 'spw',
+          'field' or any comma-separated combination.
+
+          default: ''
+          example: combine=''
+        </description>
+        <value type="string"/>
+     </param>
+
+    <param subparam="true" name="refant" type="string">
+        <shortdescription>Reference antenna names</shortdescription>
+        <description>Reference antenna name(s) in priority order. Defaults to most recent
+            values set in the pipeline context.  If no reference antenna is defined in
+            the pipeline context use the CASA defaults.
+
+            example: refant='DV01', refant='DV05,DV07'
+        </description>
+        <value/>
+    </param>
+
+    <param subparam="true" name="solnorm" type="bool">
+        <shortdescription>Normalize average solution amplitudes to 1.0</shortdescription>
+        <description>Normalise the gain solutions.</description>
+        <value>False</value>
+    </param>
+
+    <param name="minblperant" type="int">
+        <shortdescription>Minimum baselines per antenna required for solve</shortdescription>
+        <description>Minimum number of baselines required per antenna for each solve.
+            Antennas with fewer baselines are excluded from solutions.
+
+            example: minblperant=2</description>
+        <value>4</value>
+    </param>
+
+    <param name="calminsnr" type="double">
+        <shortdescription>Reject solutions below this SNR for calibrator solutions</shortdescription>
+        <description>Solutions below this SNR are rejected for calibrator solutions.</description>
+        <value>2.0</value>
+    </param>
+
+    <param name="targetminsnr" type="double">
+        <shortdescription>Reject solutions below this SNR for science solutions</shortdescription>
+        <description>Solutions below this SNR are rejected for science target
+            solutions.
+        </description>
+        <value>3.0</value>
+    </param>
+
+    <param subparam="true" name="smodel" type="doubleVec">
+        <shortdescription>Point source Stokes parameters for source model</shortdescription>
+        <description>Point source Stokes parameters for source model (experimental)
+            Defaults to using standard MODEL_DATA column data.
+
+            example: smodel=[1,0,0,0]  - (I=1, unpolarized)
+        </description>
+        <value/>
+    </param>
+
+    <param name="pipelinemode" type="string">
+        <shortdescription>The pipeline operating mode</shortdescription>
+        <description>The pipeline operating mode. In 'automatic' mode the pipeline
+            determines the values of all context defined pipeline inputs automatically.
+            In interactive mode the user can set the pipeline context defined
+            parameters manually. In 'getinputs' mode the user can check the settings of
+            all pipeline parameters without running the task.
+        </description>
+        <value>automatic</value>
+        <allowed kind="enum">
+            <value>automatic</value>
+            <value>interactive</value>
+            <value>getinputs</value>
+        </allowed>
+    </param>
+
+    <param subparam="true" name="dryrun" type="bool">
+        <shortdescription>Run task (False) or display the command(True)</shortdescription>
+        <description>Run the commands (True) or generate the commands to be run but do not
+            execute (False).
+        </description>
+        <value type="bool">False</value>
+    </param>
+
+    <param subparam="true" name="acceptresults" type="bool">
+        <shortdescription>Automatically accept results into the context</shortdescription>
+        <description>Add the results of the task to the pipeline context (True) or
+            reject them (False).
+        </description>
+        <value type="bool">True</value>
+    </param>
+
+    <constraints>
+        <when param="pipelinemode">
+        <equals value="automatic" type="string"/>
+        <equals value="interactive" type="string">
+            <default param="vis"><value type="stringVec"/></default>
+            <default param="calamptable"><value type="stringVec"/></default>
+            <default param="offsetstable"><value type="stringVec"/></default>
+            <default param="calphasetable"><value type="stringVec"/></default>
+            <default param="targetphasetable"><value type="stringVec"/></default>
+            <default param="amptable"><value type="stringVec"/></default>
+            <default param="field"><value type="string"/></default>
+            <default param="intent"><value type="string"/></default>
+            <default param="spw"><value type="string"/></default>
+            <default param="antenna"><value type="string"/></default>
+            <default param="smodel"><value type="doubleVec"/></default>
+            <default param="solnorm"><value type="bool">False</value></default>
+            <default param="refant"><value type="string"/></default>
+            <default param="dryrun"><value type="bool">False</value></default>
+            <default param="acceptresults"><value type="bool">True</value></default>
+        </equals>
+        <equals value="getinputs" type="string">
+            <default param="vis"><value type="stringVec"/></default>
+            <default param="calamptable"><value type="stringVec"/></default>
+            <default param="offsetstable"><value type="stringVec"/></default>
+            <default param="calphasetable"><value type="stringVec"/></default>
+            <default param="targetphasetable"><value type="stringVec"/></default>
+            <default param="amptable"><value type="stringVec"/></default>
+            <default param="field"><value type="string"/></default>
+            <default param="intent"><value type="string"/></default>
+            <default param="spw"><value type="string"/></default>
+            <default param="antenna"><value type="string"/></default>
+            <default param="smodel"><value type="doubleVec"/></default>
+            <default param="solnorm"><value type="bool">False</value></default>
+            <default param="refant"><value type="string"/></default>
+        </equals>
+        </when>
+    </constraints>
+</input>
 
 
-Examples
+<returns>any</returns>
 
+<example>
 1. Compute standard per scan gain solutions that will be used to calibrate
 the target:
 
-    hifa_timegaincal()
+        hifa_timegaincal()
 </example>
 </task>
 </casaxml>
