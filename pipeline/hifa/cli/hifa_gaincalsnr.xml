@@ -4,197 +4,6 @@
 
 <shortdescription>Compute gaincal signal to noise ratios per spw</shortdescription>
 <description>
-Compute the gain calibration signal to noise ratios required to determine which
-spectral window mapping strategy to use.
-</description>
-
-<input>
-
-   <param subparam="true" name="vis" type="stringVec">
-	<description>List of input MeasurementSets</description>
-	<value/>
-   </param>
-
-   <param subparam="true" name="field" type="string">
-	<description>Set of data selection field names</description>
-	<value/>
-   </param>
-
-   <param subparam="true" name="intent" type="string">
-	<description>Set of data selection observing intents</description>
-	<value>PHASE</value>
-   </param>
-
-   <param subparam="true" name="spw" type="string">
-	<description>Set of data selection spectral window ids</description>
-	<value/>
-   </param>
-
-   <param name="phasesnr" type="double">
-	<description>The signal to noise minimum</description>
-	<value>25.0</value>
-   </param>
-
-   <param name="bwedgefrac" type="double">
-	<description>The fraction of the bandwidth edge that is flagged</description>
-	<value>0.03125</value>
-   </param>
-
-   <param name="hm_nantennas" type="string">
-	<description>The antenna selection heuristic (unsupported) </description>
-	<value>all</value>
-	<allowed kind="enum">
-	    <value>all</value>
-	    <value>unflagged</value>
-	</allowed>
-   </param>
-
-   <param subparam="true" name="maxfracflagged" type="double">
-	<description>The maximum fraction of data flagged per antenna (unsupported)</description>
-	<value>0.90</value>
-   </param>
-
-    <param name="pipelinemode" type="string">
-	<description>The pipeline operating mode</description>
-	<value>automatic</value>
-	<allowed kind="enum">
-	    <value>automatic</value>
-	    <value>interactive</value>
-	    <value>getinputs</value>
-	</allowed>
-    </param>
-
-    <param subparam="true" name="dryrun" type="bool">
-	<description>Run task (False) or display the command(True)</description>
-	<value type="bool">False</value>
-    </param>
-
-    <param subparam="true" name="acceptresults" type="bool">
-	<description>Automatically accept results into the context</description>
-	<value type="bool">True</value>
-    </param>
-
-    <constraints>
-
-	<when param="hm_nantennas">
-	    <equals value="all" type="string"/>
-	    <equals value="unflagged" type="string">
-	        <default param="maxfracflagged"><value type="double">0.90</value></default>
-	    </equals>
-	</when>
-
-        <when param="pipelinemode">
-	    <equals value="automatic" type="string"/>
-	    <equals value="interactive" type="string">
-	        <default param="vis"><value type="stringVec"/></default>
-	        <default param="field"><value type="string"/></default>
-	        <default param="intent"><value type="string">PHASE</value></default>
-	        <default param="spw"><value type="string"/></default>
-	        <default param="dryrun"><value type="bool">False</value></default>
-	        <default param="acceptresults"><value type="bool">True</value></default>
-	    </equals>
-	    <equals value="getinputs" type="string">
-	        <default param="vis"><value type="stringVec"/></default>
-	        <default param="field"><value type="string"/></default>
-	        <default param="intent"><value type="string">PHASE</value></default>
-	        <default param="spw"><value type="string"/></default>
-	    </equals>
-        </when>
-    </constraints>
-</input>
-
-
-<returns>any</returns>
-
-<example>
-Compute the per scan gaincal solution signal to noise ratio per science spw.
-
-
-Keyword arguments
-
----- pipeline parameter arguments which can be set in any pipeline mode
-
-pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline
-    determines the values of all context defined pipeline inputs
-    automatically. In interactive mode the user can set the pipeline
-    context defined parameters manually. In 'getinputs' mode the user
-    can check the settings of all pipeline parameters without running
-    the task.
-
-    default: 'automatic'
-
-phasesnr -- The required gaincal solution signal to noise.
-
-    default: 25.0
-    example: phasesnr=20.0
-
-bwedgefrac -- The fraction of the bandwidth edges that is flagged.
-
-    default: 0.03125
-    example: bwedgefrac=0.0
-
-hm_nantennas -- The heuristics for determines the number of antennas to use
-    in the signal to noise estimate. The options are 'all' and 'unflagged'.
-    The 'unflagged' options is not currently supported.
-
-    default: 'all'
-    example: hm_nantennas='unflagged'
-
-maxfracflagged -- The maximum fraction of an antenna that can be flagged
-    before it is excluded from the signal to noise estimate.
-
-    default: 0.90
-    example: maxfracflagged=0.80
-
----- pipeline context defined parameter arguments which can be set only in
-'interactive mode'
-
-vis -- The list of input MeasurementSets. Defaults to the list of
-    MeasurementSets specified in the pipeline context.
-
-    default: ''
-    example: vis=['M82A.ms', 'M82B.ms']
-
-field -- The list of field names of sources to be used for signal to noise
-    estimation. Defaults to all fields with the standard intent.
-
-    default: ''
-    example: field='3C279'
-
-intent -- A string containing a comma delimited list of intents against which
-    the selected fields are matched. Defaults to 'PHASE'.
-
-    default: 'PHASE'
-    example: intent='BANDPASS'
-
-spw -- The list of spectral windows and channels for which gain solutions are
-    computed. Defaults to all the science spectral windows for which there are
-    both 'intent' and TARGET intents.
-
-    default: ''
-    example: spw='13,15'
-
---- pipeline task execution modes
-
-dryrun -- Run the commands (True) or generate the commands to be run but
-    do not execute (False).
-
-    default: False
-
-acceptresults -- Add the results of the task to the pipeline context (True) or
-    reject them (False).
-
-    default: True
-
-
-Output
-
-results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-    the results object for the pipeline task is returned.
-
-
-Description
-
 The gaincal solution signal to noise is determined as follows:
 
 o For each data set the list of source(s) to use for the per scan gaincal
@@ -208,7 +17,7 @@ o Source fluxes are determined for each spw and source combination.
     o If no fluxes are available the task terminates.
 
 o Atmospheric calibration and observations scans are determined for each spw
-  and source combination. 
+  and source combination.
     o If intent is set to 'PHASE' are there are no atmospheric scans
       associated with the 'PHASE' calibrator, 'TARGET' atmospheric scans
       will be used instead.
@@ -235,8 +44,164 @@ o The QA score is based on how many signal to noise estimates greater than the
   requested signal to noise ration can be computed.
 
 
-Examples
+Output
 
+results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
+    the results object for the pipeline task is returned.
+</description>
+
+<input>
+
+    <param subparam="true" name="vis" type="stringVec">
+        <shortdescription>List of input MeasurementSets</shortdescription>
+        <description>The list of input MeasurementSets. Defaults to the list of
+            MeasurementSets specified in the pipeline context.
+
+            example: vis=['M82A.ms', 'M82B.ms']
+        </description>
+        <value/>
+    </param>
+
+    <param subparam="true" name="field" type="string">
+        <shortdescription>Set of data selection field names</shortdescription>
+        <description>The list of field names of sources to be used for signal to noise
+            estimation. Defaults to all fields with the standard intent.
+
+            example: field='3C279'
+        </description>
+        <value/>
+    </param>
+
+    <param subparam="true" name="intent" type="string">
+        <shortdescription>Set of data selection observing intents</shortdescription>
+        <description>A string containing a comma delimited list of intents against which
+            the selected fields are matched. Defaults to 'PHASE'.
+
+            example: intent='BANDPASS'
+        </description>
+        <value>PHASE</value>
+    </param>
+
+    <param subparam="true" name="spw" type="string">
+        <shortdescription>Set of data selection spectral window ids</shortdescription>
+        <description>The list of spectral windows and channels for which gain solutions are
+            computed. Defaults to all the science spectral windows for which there are
+            both 'intent' and TARGET intents.
+
+            example: spw='13,15'
+        </description>
+        <value/>
+    </param>
+
+    <param name="phasesnr" type="double">
+        <shortdescription>The signal to noise minimum</shortdescription>
+        <description>The required gaincal solution signal to noise.
+
+            example: phasesnr=20.0
+        </description>
+        <value>25.0</value>
+    </param>
+
+    <param name="bwedgefrac" type="double">
+        <shortdescription>The fraction of the bandwidth edge that is flagged</shortdescription>
+        <description>The fraction of the bandwidth edges that is flagged.
+
+            example: bwedgefrac=0.0
+        </description>
+        <value>0.03125</value>
+    </param>
+
+    <param name="hm_nantennas" type="string">
+        <shortdescription>The antenna selection heuristic (unsupported) </shortdescription>
+        <description>The heuristics for determines the number of antennas to use
+            in the signal to noise estimate. The options are 'all' and 'unflagged'.
+            The 'unflagged' options is not currently supported.
+
+            example: hm_nantennas='unflagged'
+        </description>
+        <value>all</value>
+        <allowed kind="enum">
+            <value>all</value>
+            <value>unflagged</value>
+        </allowed>
+    </param>
+
+    <param subparam="true" name="maxfracflagged" type="double">
+        <shortdescription>The maximum fraction of data flagged per antenna (unsupported)</shortdescription>
+        <description>The maximum fraction of an antenna that can be flagged
+            before it is excluded from the signal to noise estimate.
+
+            example: maxfracflagged=0.80
+        </description>
+        <value>0.90</value>
+    </param>
+
+        <param name="pipelinemode" type="string">
+        <shortdescription>The pipeline operating mode</shortdescription>
+        <description>The pipeline operating mode. In 'automatic' mode the pipeline
+            determines the values of all context defined pipeline inputs
+            automatically. In interactive mode the user can set the pipeline
+            context defined parameters manually. In 'getinputs' mode the user
+            can check the settings of all pipeline parameters without running
+            the task.
+        </description>
+        <value>automatic</value>
+        <allowed kind="enum">
+            <value>automatic</value>
+            <value>interactive</value>
+            <value>getinputs</value>
+        </allowed>
+        </param>
+
+        <param subparam="true" name="dryrun" type="bool">
+        <shortdescription>Run task (False) or display the command(True)</shortdescription>
+        <description>Run the commands (True) or generate the commands to be run but
+            do not execute (False).
+        </description>
+        <value type="bool">False</value>
+        </param>
+
+        <param subparam="true" name="acceptresults" type="bool">
+        <shortdescription>Automatically accept results into the context</shortdescription>
+        <description> Add the results of the task to the pipeline context (True) or
+            reject them (False).
+        </description>
+        <value type="bool">True</value>
+        </param>
+
+    <constraints>
+
+        <when param="hm_nantennas">
+            <equals value="all" type="string"/>
+            <equals value="unflagged" type="string">
+             <default param="maxfracflagged"><value type="double">0.90</value></default>
+            </equals>
+        </when>
+
+        <when param="pipelinemode">
+            <equals value="automatic" type="string"/>
+            <equals value="interactive" type="string">
+             <default param="vis"><value type="stringVec"/></default>
+             <default param="field"><value type="string"/></default>
+             <default param="intent"><value type="string">PHASE</value></default>
+             <default param="spw"><value type="string"/></default>
+             <default param="dryrun"><value type="bool">False</value></default>
+             <default param="acceptresults"><value type="bool">True</value></default>
+            </equals>
+            <equals value="getinputs" type="string">
+             <default param="vis"><value type="stringVec"/></default>
+             <default param="field"><value type="string"/></default>
+             <default param="intent"><value type="string">PHASE</value></default>
+             <default param="spw"><value type="string"/></default>
+            </equals>
+        </when>
+    </constraints>
+</input>
+
+
+<returns>any</returns>
+
+<example>
 1. Estimate the per scan gaincal solution sensitivities and signal to noise
 ratios for all the science spectral windows:
 
