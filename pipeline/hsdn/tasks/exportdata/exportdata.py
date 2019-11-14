@@ -13,6 +13,7 @@ import pipeline.hsd.tasks.exportdata.exportdata as sdexportdata
 from . import manifest
 from . import nroscriptgenerator
 
+import collections
 import os
 
 # the logger for this module
@@ -83,3 +84,10 @@ class NROExportData(sdexportdata.SDExportData):
         if script:
             pipemanifest.add_reduction_script(ouss, script)
             pipemanifest.write(manifest_file)
+
+    def _export_casa_restore_script(self, context, script_name, products_dir, oussid, vislist, session_list):
+        tmpvislist = list(map(os.path.basename, vislist))
+        restore_task_name = 'hsdn_restoredata'
+        args = collections.OrderedDict(vis=tmpvislist, session=session_list, ocorr_mode='ao', reffile='nroscalefile.csv')
+        return self._export_casa_restore_script_template(context, script_name, products_dir, oussid,
+                                                         restore_task_name, args)
