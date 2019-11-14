@@ -150,4 +150,4 @@ tags
 [._]*.un~
 
 # VSCode
-/.vscode
+/.vscode/
