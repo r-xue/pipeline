@@ -65,8 +65,8 @@
 
     <param subparam="true" name="dryrun" type="bool">
         <shortdescription>Run the task (False) or display the command (True)</shortdescription>
-        <description>Run the commands (True) or generate the commands to be 
-                     run but do not execute (False).
+        <description>Run the commands (False) or generate the commands to be 
+                     run but do not execute (True).
         </description>
         <value>False</value>
     </param>
