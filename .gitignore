@@ -148,3 +148,15 @@ Sessionx.vim
 tags
 # Persistent undo
 [._]*.un~
+
+# ignore auto-generated files
+/pipeline/h/cli/h_*.py
+/pipeline/h/cli/hpc_*.py
+/pipeline/hif/cli/hif_*.py
+/pipeline/hif/cli/hpc_*.py
+/pipeline/hif/cli/uvcontfit.py
+/pipeline/hifa/cli/hifa_*.py
+/pipeline/hifv/cli/hifv_*.py
+/pipeline/hsd/cli/hsd_*.py
+/pipeline/hsdn/cli/hsdn_*.py
+**/gotasks/
