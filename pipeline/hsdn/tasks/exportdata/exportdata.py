@@ -12,6 +12,7 @@ from pipeline.infrastructure import task_registry
 import pipeline.hsd.tasks.exportdata.exportdata as sdexportdata
 from . import manifest
 from . import nroscriptgenerator
+from . import nrodatagenerator
 
 import os
 
@@ -102,3 +103,4 @@ class NROExportData(sdexportdata.SDExportData):
         if scalefile:
             pipemanifest.add_scalefile(ouss, script)
             pipemanifest.write(manifest_file)
+            
