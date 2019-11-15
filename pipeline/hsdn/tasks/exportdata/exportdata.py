@@ -11,7 +11,7 @@ import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import task_registry
 import pipeline.hsd.tasks.exportdata.exportdata as sdexportdata
 from . import manifest
-from . import nroscriptgenerator
+from . import nrotemplategenerator
 from . import nrodatagenerator
 
 import os
@@ -81,14 +81,14 @@ class NROExportData(sdexportdata.SDExportData):
         script_name = 'rebase_and_image.py'
         script_path = os.path.join(products_dir, script_name)
 
-        status = nroscriptgenerator.generate(self.inputs.context, script_path)
+        status = nrotemplategenerator.generate_script(self.inputs.context, script_path)
         return script_name if status is True else None
 
     def _export_nroscalefile_template(self, products_dir):
         datafile_name = 'nroscalefile.csv'
         datafile_path = os.path.join(products_dir, datafile_name)
 
-        status = nrodatagenerator.generate(self.inputs.context, datafile_path)
+        status = nrotemplategenerator.generate_csv(self.inputs.context, datafile_path)
         return datafile_name if status is True else None
 
     def _update_manifest(self, manifest_file, script=None, scalefile=None):
@@ -103,4 +103,3 @@ class NROExportData(sdexportdata.SDExportData):
         if scalefile:
             pipemanifest.add_scalefile(ouss, script)
             pipemanifest.write(manifest_file)
-            
