@@ -56,8 +56,6 @@ wvr gain table is not accepted into the context for subsequent use.
     If 'automatic', set the 'toffset' parameter according to the
     date of the MeasurementSet; toffset=-1 if before 2013-01-21T00:00:00
     toffset=0 otherwise.
-
-    default: 'automatic'
         </description>
         <value>automatic</value>
         <allowed kind="enum">
@@ -68,10 +66,7 @@ wvr gain table is not accepted into the context for subsequent use.
 
     <param subparam="true" name="toffset" type="double">
         <shortdescription>Time offset (sec) between IF and WVR data</shortdescription>
-        <description>Time offset (sec) between interferometric and WVR data.
-
-    default: 0
-        </description>
+        <description>Time offset (sec) between interferometric and WVR data.</description>
 	<value>0</value>
     </param>
       
@@ -81,8 +76,6 @@ wvr gain table is not accepted into the context for subsequent use.
     for each source, subject to the constraints of the 'tie' parameter.
     'segsource' is forced to be True if the 'tie' parameter is set to a
     non-empty value by the user or by the automatic heuristic.
-
-    default: True
         </description>
 	<value>True</value>
     </param>
@@ -92,7 +85,6 @@ wvr gain table is not accepted into the context for subsequent use.
     <description>Flag the WVR data for these source(s) as bad and do not produce
     corrections for it. Requires segsource=True.
 
-    default: []
     example: ['3C273']
     </description>
 	<value/>
@@ -104,8 +96,6 @@ wvr gain table is not accepted into the context for subsequent use.
     If 'automatic', set the 'tie' parameter to include with the
     target all calibrators that are within 15 degrees of it:
     if no calibrators are that close then 'tie' is left empty.
-
-    default: 'automatic'
      </description>
      <value>automatic</value>
        <allowed kind="enum">
@@ -121,7 +111,6 @@ wvr gain table is not accepted into the context for subsequent use.
     is not empty then 'segsource' is forced to be True. Ignored unless
     hm_tie='manual'.
 
-    default: []
     example: ['3C273,NGC253', 'IC433,3C279']
         </description>
         <value/>
@@ -134,18 +123,13 @@ wvr gain table is not accepted into the context for subsequent use.
     is used only if segsource=False because if segsource=True then the
     coefficients are recomputed whenever the telescope moves to a new source
     (within the limits imposed by 'tie').
-
-    default: 1
         </description>
 	<value>1</value>
     </param>
             
     <param name="disperse" type="bool">
 	<shortdescription>Apply correction for dispersion</shortdescription>
-    <description>Apply correction for dispersion.
-
-    default: False
-    </description>
+    <description>Apply correction for dispersion.</description>
 	<value>False</value>
     </param>
             
@@ -155,7 +139,6 @@ wvr gain table is not accepted into the context for subsequent use.
     their data with values interpolated from the 3 nearest antennas with
     unflagged data.
 
-    default: []
     example: ['DV03','DA05','PM02']
     </description>
 	<value/>
@@ -179,18 +162,13 @@ wvr gain table is not accepted into the context for subsequent use.
 	<shortdescription>Smooth WVR data on the given timescale before calculating the correction</shortdescription>
     <description>Smooth WVR data on this timescale before calculating the correction.
     Ignored unless hm_smooth='manual'.
-
-    default: ''
     </description>
 	<value/>
     </param>
       
     <param subparam="true" name="scale" type="double">
 	<shortdescription>Scale the entire phase correction by this factor</shortdescription>
-    <description>Scale the entire phase correction by this factor.
-
-    default: 1
-    </description>
+    <description>Scale the entire phase correction by this factor.</description>
 	<value>1.</value>
     </param>
 
@@ -211,7 +189,6 @@ wvr gain table is not accepted into the context for subsequent use.
       <description>Minimum number of nearby antennas (up to 3) used for
     interpolation from a flagged antenna.
 
-    default: 2
     example: minnumants=3
       </description>
       <value>2</value>
@@ -224,10 +201,7 @@ wvr gain table is not accepted into the context for subsequent use.
 
     <param name="mingoodfrac" type="double">
       <shortdescription>Minimum fraction of good data per antenna</shortdescription>
-      <description>Minimum fraction of good data per antenna.
-
-    default: 0.8
-      </description>
+      <description>Minimum fraction of good data per antenna.</description>
       <value>0.8</value>
     </param>
 
@@ -235,7 +209,6 @@ wvr gain table is not accepted into the context for subsequent use.
       <shortdescription>Ranked list of reference antennas</shortdescription>
       <description>Ranked comma delimited list of reference antennas.
 
-    default: ''
     example: refant='DV01,DV02'
       </description>
       <value/>
@@ -265,7 +238,6 @@ wvr gain table is not accepted into the context for subsequent use.
 
     If you do not want any QA calculations then set qa_intent=''.
 
-    default: ''
     example: qa_intent='PHASE'
         </description>
         <value/>
@@ -276,8 +248,6 @@ wvr gain table is not accepted into the context for subsequent use.
         <description>The data intent to use for the bandpass calibration in
     the qa calculation. The default is blank to allow the underlying bandpass
     task to select a sensible intent if the dataset lacks BANDPASS data.
-
-    default: ''
         </description>
         <value/>
     </param>
@@ -288,8 +258,6 @@ wvr gain table is not accepted into the context for subsequent use.
     should be tried. Input as a comma-separated list. The default is blank, in
     which case the task will try SpWs in order of decreasing median sky
     opacity.
-
-    default: ''
         </description>
         <value/>
     </param>
@@ -299,8 +267,6 @@ wvr gain table is not accepted into the context for subsequent use.
         <description>The phase-rms improvement ratio
     (rms without wvr / rms with wvr) above which the wrvg file will be
     accepted into the context for subsequent application.
-
-    default: 1.0
         </description>
         <value>1.0</value>
     </param>
