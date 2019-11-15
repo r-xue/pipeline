@@ -1,7 +1,6 @@
-import string
 import glob
-import numpy
-import operator
+import itertools
+import string
 import os
 
 import pipeline.infrastructure.casatools as casatools
@@ -36,41 +35,39 @@ def get_template(name):
     script_dir = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(script_dir, name)
 
-def generate_group_entries(ms, sorted_group):
-    # loop on group description list sorted by spw name
-    for group_desc in sorted_group:
 
-        # filter members by MS
-        basename = ms.basename
-        filtered_by_ms = list(filter(lambda x: x.ms.basename == basename, group_desc))
+def generate_group_entries(ms, member_list):
+    # filter members by MS
+    basename = ms.basename
+    filtered_by_ms = filter(lambda x: x.ms.basename == basename, member_list)
 
-        # after filtering by MS, spw ID must be unique
-        # unique sort by antenna ID
-        antenna_ids = numpy.asarray([m.antenna.id for m in filtered_by_ms])
-        _, sorted_indices = numpy.unique(antenna_ids, return_index=True)
+    # generate list of antenna ID and spw ID pairs
+    antenna_spw_pairs = set(((m.antenna.id, m.spw.id) for m in filtered_by_ms))
+    LOG.info('antenna_spw_pairs = {}'.format(list(antenna_spw_pairs)))
 
-        # yield entries
-        for index in sorted_indices:
-            LOG.info('index={}'.format(index))
-            group_member = filtered_by_ms[index]
-            spw = group_member.spw
-            antenna = group_member.antenna
+    # yield entries
+    for antenna, spw in itertools.product(ms.antennas, ms.get_spectral_windows(science_windows_only=True)):
+        LOG.info('antenna, spw = {}, {}'.format(antenna.id, spw.id))
+        if (antenna.id, spw.id) in antenna_spw_pairs:
+            LOG.info('generate entry')
             data_desc = ms.get_data_description(spw=spw.id)
-
-            for corr in data_desc.corr_axis:
-                yield ','.join([basename, antenna.name, str(spw.id), corr, '1.0'])
+            yield '\n'.join(
+                [','.join([basename, antenna.name, str(spw.id), corr, '1.0'])
+                 for corr in data_desc.corr_axis]
+            )
 
 
 def generate_csv_entries(context):
     # reduction group
     reduction_group = context.observing_run.ms_reduction_group
     sorted_group = list(sorted(reduction_group.values(), key=lambda x: x.spw_name))
+    member_list = [m for k, v in reduction_group.items() for m in v]
 
     # measurement sets
     mses = context.observing_run.measurement_sets
 
     for ms in mses:
-        for entry in generate_group_entries(ms, sorted_group):
+        for entry in generate_group_entries(ms, member_list):
             yield entry
 
 
