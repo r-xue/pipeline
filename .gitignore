@@ -149,6 +149,9 @@ tags
 # Persistent undo
 [._]*.un~
 
+# VSCode
+/.vscode/
+
 # ignore auto-generated files
 /pipeline/h/cli/h_*.py
 /pipeline/h/cli/hpc_*.py
