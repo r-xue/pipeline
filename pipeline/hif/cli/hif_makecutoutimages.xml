@@ -3,6 +3,12 @@
 <task category="pipeline" name="hif_makecutoutimages" type="function">
 <shortdescription>Base makecutoutimages task</shortdescription>
 <description>
+The hif_makecutoutimages task
+
+Output:
+
+results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
+   the results object for the pipeline task is returned.
 </description>
 <input>
     <param subparam="true" name="vis" type="stringVec">
@@ -95,21 +101,9 @@
 
 
 <example>
-The hif_makecutoutimages task
-
-Output:
-
-results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-   the results object for the pipeline task is returned.
-
-
-Examples
-
 1. Basic makecutoutimages task
 
    hif_makecutoutimages()
-
-
 </example>
 </task>
 </casaxml>

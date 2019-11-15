@@ -4,7 +4,49 @@
 
 <shortdescription>Restore flagged and calibration interferometry data from a pipeline run</shortdescription>
 <description>
-    Restore flagged and calibration interferometry data from a pipeline run.
+The hifa_restoredata task restores flagged and calibrated MeasurementSets
+from archived ASDMs and pipeline flagging and calibration date products. 
+
+Output
+
+results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
+   the results object for the pipeline task is returned.
+
+
+Description
+
+The hifa_restoredata restores flagged and calibrated data from archived
+ASDMs and pipeline flagging and calibration data products. Pending archive
+retrieval support hifa_restoredata assumes that the required products
+are available in the rawdata_dir in the format produced by the
+hifa_exportdata task.
+
+hifa_restoredata assumes that the following entities are available in the raw
+data directory.
+
+o the ASDMs to be restored
+o for each ASDM in the input list
+   o a compressed tar file of the final flagversions file, e.g.  
+     uid___A002_X30a93d_X43e.ms.flagversions.tar.gz
+   o a text file containing the applycal instructions, e.g.
+     uid___A002_X30a93d_X43e.ms.calapply.txt
+   o a compressed tar file containing the caltables for the parent session,
+     e.g. uid___A001_X74_X29.session_3.caltables.tar.gz
+
+hifa_restoredata performs the following operations:
+
+o imports the ASDM(s))
+o removes the default MS.flagversions directory created by the filler
+o restores the final MS.flagversions directory stored by the pipeline
+o restores the final set of pipeline flags to the MS
+o restores the final calibration state of the MS
+o restores the final calibration tables for each MS
+o applies the calibration tables to each MS
+
+
+Issues
+
+
 </description>
 
 <input>
@@ -156,51 +198,6 @@
 <returns>any</returns>
 
 <example>
-The hifa_restoredata task restores flagged and calibrated MeasurementSets
-from archived ASDMs and pipeline flagging and calibration date products. 
-
-Output
-
-results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-   the results object for the pipeline task is returned.
-
-
-Description
-
-The hifa_restoredata restores flagged and calibrated data from archived
-ASDMs and pipeline flagging and calibration data products. Pending archive
-retrieval support hifa_restoredata assumes that the required products
-are available in the rawdata_dir in the format produced by the
-hifa_exportdata task.
-
-hifa_restoredata assumes that the following entities are available in the raw
-data directory.
-
-o the ASDMs to be restored
-o for each ASDM in the input list
-   o a compressed tar file of the final flagversions file, e.g.  
-     uid___A002_X30a93d_X43e.ms.flagversions.tar.gz
-   o a text file containing the applycal instructions, e.g.
-     uid___A002_X30a93d_X43e.ms.calapply.txt
-   o a compressed tar file containing the caltables for the parent session,
-     e.g. uid___A001_X74_X29.session_3.caltables.tar.gz
-
-hifa_restoredata performs the following operations:
-
-o imports the ASDM(s))
-o removes the default MS.flagversions directory created by the filler
-o restores the final MS.flagversions directory stored by the pipeline
-o restores the final set of pipeline flags to the MS
-o restores the final calibration state of the MS
-o restores the final calibration tables for each MS
-o applies the calibration tables to each MS
-
-
-Issues
-
-
-Examples
-
 1. Restore the pipeline results for a single ASDM in a single session:
 
     hifa_restoredata(vis=['uid___A002_X30a93d_X43e'], session=['session_1'],
