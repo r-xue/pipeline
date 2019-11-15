@@ -12,7 +12,6 @@ from pipeline.infrastructure import task_registry
 import pipeline.hsd.tasks.exportdata.exportdata as sdexportdata
 from . import manifest
 from . import nrotemplategenerator
-from . import nrodatagenerator
 
 import os
 
