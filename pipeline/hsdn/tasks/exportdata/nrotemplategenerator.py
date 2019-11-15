@@ -43,15 +43,13 @@ def generate_group_entries(ms, member_list):
 
     # generate list of antenna ID and spw ID pairs
     antenna_spw_pairs = set(((m.antenna.id, m.spw.id) for m in filtered_by_ms))
-    LOG.info('antenna_spw_pairs = {}'.format(list(antenna_spw_pairs)))
 
     # yield entries
     for antenna, spw in itertools.product(ms.antennas, ms.get_spectral_windows(science_windows_only=True)):
-        LOG.info('antenna, spw = {}, {}'.format(antenna.id, spw.id))
         if (antenna.id, spw.id) in antenna_spw_pairs:
-            LOG.info('generate entry')
             data_desc = ms.get_data_description(spw=spw.id)
             yield '\n'.join(
+                # number of lines to be yielded is equal to number of correlations
                 [','.join([basename, antenna.name, str(spw.id), corr, '1.0'])
                  for corr in data_desc.corr_axis]
             )
@@ -60,7 +58,6 @@ def generate_group_entries(ms, member_list):
 def generate_csv_entries(context):
     # reduction group
     reduction_group = context.observing_run.ms_reduction_group
-    sorted_group = list(sorted(reduction_group.values(), key=lambda x: x.spw_name))
     member_list = [m for k, v in reduction_group.items() for m in v]
 
     # measurement sets
