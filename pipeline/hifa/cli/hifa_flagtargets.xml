@@ -4,28 +4,67 @@
 
 <shortdescription>Do science target flagging</shortdescription>
 <description>
-    Do meta data based science target flagging of a list of
-    MeasurementSets.
+The hifa_flagtargets task performs basic flagging operations on a list of
+science target MeasurementSets.
+
+Output
+
+results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
+    the results object for the pipeline task is returned.
+
+
+Description
+
+The hifa_flagdata data performs basic flagging operations on a list of
+measurements including:
+
+  o applying a flagging template
+
+
+Issues
+
+
 </description>
 
 <input>
     <param subparam="true" name="vis" type="stringVec">
-        <description>List of input MeasurementSets to flag</description>
+        <shortdescription>List of input MeasurementSets to flag</shortdescription>
+        <description>The list of input MeasurementSets. Defaults to the list 
+                     of MeasurementSets defined in the pipeline context.
+                     (can be set only in 'interactive mode')
+        </description>
         <value/>
     </param>
 
     <param name="template" type="bool">
-        <description>Apply a flagging template</description>
+        <shortdescription>Apply a flagging template</shortdescription>
+        <description>Apply flagging templates.
+                     (can be set in any pipeline mode)
+        </description>
         <value>True</value>
     </param>
 
     <param subparam="true" name="filetemplate" type="stringVec">
-        <description>File that contains the flagging template</description>
+        <shortdescription>File that contains the flagging template</shortdescription>
+        <description>The name of a text file that contains the flagging 
+                     template for issues with the science target data etc. 
+                     If the template flags files is undefined a name of the 
+                     form 'msname_flagtargetstemplate.txt' is assumed.
+                     (can be set in any pipeline mode)
+        </description>
         <value/>
     </param>
 
     <param name="pipelinemode" type="string">
-        <description>The pipeline operating mode</description>
+        <shortdescription>The pipeline operating mode</shortdescription>
+        <description>The pipeline operating mode. 
+                     In 'automatic' mode the pipeline determines the values
+                     of all context defined pipeline inputs automatically. 
+                     In interactive mode the user can set the pipeline 
+                     context defined parameters manually. 
+                     In 'getinputs' mode the user can check the settings of
+                     all pipeline parameters without running the task.
+        </description>
         <value>automatic</value>
         <allowed kind="enum">
             <value>automatic</value>
@@ -35,17 +74,26 @@
     </param>
 
     <param subparam="true" name="flagbackup" type="bool">
-        <description>Backup pre-existing flags before applying new ones</description>
+        <shortdescription>Backup pre-existing flags before applying new ones</shortdescription>
+        <description>Back up any pre-existing flags.
+                     (can be set only in 'interactive mode')
+        </description>
         <value type="bool">False</value>
     </param>
 
     <param subparam="true" name="dryrun" type="bool">
-        <description>Run the task (False) or display the command (True)</description>
+        <shortdescription>Run the task (False) or display the command (True)</shortdescription>
+        <description>Run the commands (False) or generate the commands to be 
+                     run but do not execute (True).
+        </description>
         <value>False</value>
     </param>
     
     <param subparam="true" name="acceptresults" type="bool">
-        <description>Add the results into the pipeline context</description>
+        <shortdescription>Add the results into the pipeline context</shortdescription>
+        <description>Add the results of the task to the pipeline context (True)
+                     or reject them (False).
+        </description>
         <value>True</value>
     </param>
     
@@ -81,76 +129,6 @@
 
 
 <example>
-The hifa_flagtargets task performs basic flagging operations on a list of
-science target MeasurementSets.
-
-
-Keyword arguments
-
-pipelinemode -- The pipeline operating mode. In 'automatic' mode the pipeline
-    determines the values of all context defined pipeline inputs automatically.
-    In interactive mode the user can set the pipeline context defined
-    parameters manually. In 'getinputs' mode the user can check the settings of
-    all pipeline parameters without running the task.
-
-    default: 'automatic'.
-
----- pipeline parameter arguments which can be set in any pipeline mode
-
-template -- Apply flagging templates.
-
-    default: True
-
-filetemplate -- The name of a text file that contains the flagging template
-    for issues with the science target data etc. If the template flags files
-    is undefined a name of the form 'msname_flagtargetstemplate.txt' is assumed.
-
-    default: ''
-
----- pipeline context defined parameter arguments which can be set only in
-'interactive mode'
-
-vis -- The list of input MeasurementSets. Defaults to the list of
-    MeasurementSets defined in the pipeline context.
-
-    default: ''
-
-flagbackup -- Back up any pre-existing flags.
-
-    default: False
-
---- pipeline task execution modes
-
-dryrun -- Run the commands (True) or generate the commands to be run but do not
-    execute (False).
-
-    default: True
-
-acceptresults -- Add the results of the task to the pipeline context (True) or
-    reject them (False).
-
-    default: True
-
-
-Output
-
-results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-    the results object for the pipeline task is returned.
-
-
-Description
-
-The hifa_flagdata data performs basic flagging operations on a list of
-measurements including:
-
-  o applying a flagging template
-
-
-Issues
-
-
-Examples
-
 1. Do basic flagging on a science target MeasurementSet:
     
     hifa_flagtargets()
