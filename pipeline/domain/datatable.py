@@ -395,13 +395,19 @@ class DataTableImpl(object):
         name -- keyword name
         val -- keyword value
         """
-        self.tb2.putkeyword(name, val)
+        if isinstance(val, str):
+            _val = '"{}"'.format(val)
+        else:
+            _val = str(val)
+        self.tb2.putkeyword(name, _val)
 
     def getkeyword(self, name):
         """
         name -- keyword name
         """
-        return self.tb2.getkeyword(name)
+        _val = self.tb2.getkeyword(name)
+        val = eval(_val)
+        return val
 
     def keywordnames(self):
         """
