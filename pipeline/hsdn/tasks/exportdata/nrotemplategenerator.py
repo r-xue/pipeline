@@ -77,6 +77,8 @@ def generate_csv(context, datafile):
     txt = txt + '\n'.join(list(csv_entries))
     export_template(datafile, txt)
 
+    return os.path.exists(datafile)
+
 
 def generate_script(context, scriptname):
     tmp = get_template('template.txt')
