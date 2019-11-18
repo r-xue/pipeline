@@ -101,7 +101,7 @@ class NROExportData(sdexportdata.SDExportData):
             pipemanifest.write(manifest_file)
 
         if scalefile:
-            pipemanifest.add_scalefile(ouss, script)
+            pipemanifest.add_scalefile(ouss, scalefile)
             pipemanifest.write(manifest_file)
 
     def _export_casa_restore_script(self, context, script_name, products_dir, oussid, vislist, session_list):
