@@ -144,6 +144,7 @@ class SingleDishDisplayInputs(object):
 
 class SpectralImage(object):
     def __init__(self, imagename):
+        qa = casatools.quanta
         # read data to storage
         with casatools.ImageReader(imagename) as ia:
             self.image_shape = ia.shape()
@@ -157,7 +158,7 @@ class SpectralImage(object):
             key = lambda x: '*%s'%(x+1)
             ra_min = bottom[key(self.id_direction[0])]
             ra_max = top[key(self.id_direction[0])]
-            if ra_min > ra_max:
+            if qa.gt(ra_min, ra_max):
                 ra_min, ra_max = ra_max, ra_min
             self.ra_min = ra_min
             self.ra_max = ra_max
