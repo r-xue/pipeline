@@ -715,8 +715,8 @@ class DataTableImpl(object):
         if key_small in keys and key_large in keys:
             ttdict_small = self.getkeyword(key_small)
             ttdict_large = self.getkeyword(key_large)
-            timetable_small = [ttdict_small[str(i)].tolist() for i in range(len(ttdict_small))]
-            timetable_large = [ttdict_large[str(i)].tolist() for i in range(len(ttdict_large))]
+            timetable_small = [ttdict_small[str(i)] for i in range(len(ttdict_small))]
+            timetable_large = [ttdict_large[str(i)] for i in range(len(ttdict_large))]
             timetable = [timetable_small, timetable_large]
         else:
             raise RuntimeError('time table for Antenna %s spw %s pol %s is not configured properly' % (ant, spw, pol))
