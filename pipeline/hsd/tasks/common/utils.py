@@ -166,7 +166,7 @@ class ProgressTimer(object):
             # should be integer
             self.LogLevel = LogLevel
         if self.LogLevel >= logging.INFO:
-            print('\n|{} 100% {}|'.format('='*((length-8)/2), '='*((length-8)/2)))
+            print('\n|{} 100% {}|'.format('=' * ((length - 8) // 2), '=' * ((length - 8) // 2)))
 
     def __del__(self):
         if self.LogLevel >= logging.INFO:
