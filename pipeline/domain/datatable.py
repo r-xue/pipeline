@@ -730,16 +730,16 @@ class DataTableImpl(object):
         timegap_l = self.getkeyword('TIMEGAP_L')
         if ms is None:
             try:
-                mygap_s = timegap_s[str(ant)][str(spw)][str(pol)]
-                mygap_l = timegap_l[str(ant)][str(spw)][str(pol)]
+                mygap_s = timegap_s[ant][spw][pol]
+                mygap_l = timegap_l[ant][spw][pol]
             except KeyError:
                 raise KeyError('ant %s spw %s pol %s not in reduction group list' % (ant, spw, pol))
             except Exception as e:
                 raise e
         else:
             try:
-                mygap_s = timegap_s[ms.basename.replace('.', '_')][str(ant)][str(spw)][str(field_id)]
-                mygap_l = timegap_l[ms.basename.replace('.', '_')][str(ant)][str(spw)][str(field_id)]
+                mygap_s = timegap_s[ms.basename.replace('.', '_')][ant][spw][field_id]
+                mygap_l = timegap_l[ms.basename.replace('.', '_')][ant][spw][field_id]
             except KeyError:
                 raise KeyError(
                     'ms %s field %s ant %s spw %s not in reduction group list' % (ms.basename, field_id, ant, spw))
