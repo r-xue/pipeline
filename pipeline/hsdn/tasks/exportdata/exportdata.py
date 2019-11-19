@@ -11,7 +11,7 @@ import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import task_registry
 import pipeline.hsd.tasks.exportdata.exportdata as sdexportdata
 from . import manifest
-from . import nroscriptgenerator
+from . import nrotemplategenerator
 
 import collections
 import os
@@ -60,12 +60,20 @@ class NROExportData(sdexportdata.SDExportData):
     def prepare(self):
         results = super(NROExportData, self).prepare()
 
+        # manifest file
+        manifest_file = os.path.join(self.inputs.context.products_dir, results.manifest)
+
         # export NRO data reduction template
         template_script = self._export_reduction_template(self.inputs.products_dir)
 
         if template_script is not None:
-            manifest_file = os.path.join(self.inputs.context.products_dir, results.manifest)
             self._update_manifest(manifest_file, script=template_script)
+
+        # export NRO scaling file template
+        template_file = self._export_nroscalefile_template(self.inputs.products_dir)
+
+        if template_file is not None:
+            self._update_manifest(manifest_file, scalefile=template_file)
 
         return results
 
@@ -73,16 +81,27 @@ class NROExportData(sdexportdata.SDExportData):
         script_name = 'rebase_and_image.py'
         script_path = os.path.join(products_dir, script_name)
 
-        status = nroscriptgenerator.generate(self.inputs.context, script_path)
+        status = nrotemplategenerator.generate_script(self.inputs.context, script_path)
         return script_name if status is True else None
 
-    def _update_manifest(self, manifest_file, script=None):
+    def _export_nroscalefile_template(self, products_dir):
+        datafile_name = 'nroscalefile.csv'
+        datafile_path = os.path.join(products_dir, datafile_name)
+
+        status = nrotemplategenerator.generate_csv(self.inputs.context, datafile_path)
+        return datafile_name if status is True else None
+
+    def _update_manifest(self, manifest_file, script=None, scalefile=None):
         pipemanifest = manifest.NROPipelineManifest('')
         pipemanifest.import_xml(manifest_file)
         ouss = pipemanifest.get_ous()
 
         if script:
             pipemanifest.add_reduction_script(ouss, script)
+            pipemanifest.write(manifest_file)
+
+        if scalefile:
+            pipemanifest.add_scalefile(ouss, scalefile)
             pipemanifest.write(manifest_file)
 
     def _export_casa_restore_script(self, context, script_name, products_dir, oussid, vislist, session_list):

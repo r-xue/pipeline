@@ -1,5 +1,6 @@
-import string
 import glob
+import itertools
+import string
 import os
 
 import pipeline.infrastructure.casatools as casatools
@@ -30,14 +31,57 @@ def space(n=0):
     return ' ' * n
 
 
-def get_template():
+def get_template(name):
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    script_name = 'template.txt'
-    return os.path.join(script_dir, script_name)
+    return os.path.join(script_dir, name)
 
 
-def generate(context, scriptname):
-    tmp = get_template()
+def generate_group_entries(ms, member_list):
+    # filter members by MS
+    basename = ms.basename
+    filtered_by_ms = filter(lambda x: x.ms.basename == basename, member_list)
+
+    # generate list of antenna ID and spw ID pairs
+    antenna_spw_pairs = set(((m.antenna.id, m.spw.id) for m in filtered_by_ms))
+
+    # yield entries
+    for antenna, spw in itertools.product(ms.antennas, ms.get_spectral_windows(science_windows_only=True)):
+        if (antenna.id, spw.id) in antenna_spw_pairs:
+            data_desc = ms.get_data_description(spw=spw.id)
+            yield '\n'.join(
+                # number of lines to be yielded is equal to number of correlations
+                [','.join([basename, antenna.name, str(spw.id), corr, '1.0'])
+                 for corr in data_desc.corr_axis]
+            )
+
+
+def generate_csv_entries(context):
+    # reduction group
+    reduction_group = context.observing_run.ms_reduction_group
+    member_list = [m for k, v in reduction_group.items() for m in v]
+
+    # measurement sets
+    mses = context.observing_run.measurement_sets
+
+    for ms in mses:
+        for entry in generate_group_entries(ms, member_list):
+            yield entry
+
+
+def generate_csv(context, datafile):
+    tmp = get_template('scalefile.txt')
+    with open(tmp, 'r') as f:
+        txt = f.read()
+
+    csv_entries = generate_csv_entries(context)
+    txt = txt + '\n'.join(list(csv_entries))
+    export_template(datafile, txt)
+
+    return os.path.exists(datafile)
+
+
+def generate_script(context, scriptname):
+    tmp = get_template('template.txt')
     template = generate_template(tmp)
 
     myms = context.observing_run.measurement_sets[0]
