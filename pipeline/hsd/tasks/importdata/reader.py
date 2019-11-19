@@ -395,7 +395,7 @@ class MetaDataReader(object):
 
         # save org_directions if exists
         if 'org_direction' in locals():
-            self.datatable.putkeyword( 'ORG_DIRECTION', value )
+            self.datatable.putkeyword( 'ORG_DIRECTION', org_direction )
 
         self.datatable.putcol('RA', Tra, startrow=ID)
         self.datatable.putcol('DEC', Tdec, startrow=ID)
