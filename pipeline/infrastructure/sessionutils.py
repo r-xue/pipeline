@@ -1,7 +1,6 @@
 import abc
 import collections
 import itertools
-import inspect
 import os
 import tempfile
 
@@ -213,7 +212,7 @@ def remove_unexpected_args(fn, fn_args):
 
 
 def validate_args(inputs_cls, task_args):
-    inputs_constructor_fn = inspect.getattr_static(inputs_cls, '__init__')
+    inputs_constructor_fn = getattr(inputs_cls, '__init__')
     valid_args = remove_unexpected_args(inputs_constructor_fn, task_args)
     return valid_args
 
