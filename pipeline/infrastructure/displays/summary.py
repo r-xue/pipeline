@@ -923,7 +923,7 @@ class UVChart(object):
         else:
             LOG.warning('No source found with an intent in {}. Using first source for UV chart.'
                         ''.format(self.preferred_intent_order))
-            src = self.ms.sources[0]
+            src = list(self.ms.sources).pop()
 
         spw = self._get_first_science_spw()
 
