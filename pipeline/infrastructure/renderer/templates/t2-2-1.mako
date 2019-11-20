@@ -27,7 +27,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
             <th scope="col" rowspan="2">Intent</th>
         </tr>
         <tr>
-		  % if ms.sources[0].frame.upper() == 'GALACTIC':
+		  % if list(ms.sources).pop().frame.upper() == 'GALACTIC':
             <th scope="col">GL</th>
             <th scope="col">GB</th>
           % else:
@@ -77,7 +77,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
             <th scope="col" rowspan="2">Source Reference</th>
         </tr>
         <tr>
-		  % if ms.fields[0].frame.upper() == 'GALACTIC':
+		  % if list(ms.fields).pop().frame.upper() == 'GALACTIC':
             <th scope="col">GL</th>
             <th scope="col">GB</th>
           % else:
