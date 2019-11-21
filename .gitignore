@@ -150,16 +150,11 @@ tags
 [._]*.un~
 
 # VSCode
-/.vscode/
+.vscode/
 
-# ignore auto-generated files
-/pipeline/h/cli/h_*.py
-/pipeline/h/cli/hpc_*.py
-/pipeline/hif/cli/hif_*.py
-/pipeline/hif/cli/hpc_*.py
-/pipeline/hif/cli/uvcontfit.py
-/pipeline/hifa/cli/hifa_*.py
-/pipeline/hifv/cli/hifv_*.py
-/pipeline/hsd/cli/hsd_*.py
-/pipeline/hsdn/cli/hsdn_*.py
-**/gotasks/
+# ignore auto-generated files and directories
+pipeline/*/cli/*.py
+pipeline/*/cli/gotasks/
+# but do not ignore cli.py or utils.py, which are required by all tasks
+!**/cli/cli.py
+!**/cli/utils.py
