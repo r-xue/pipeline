@@ -1,5 +1,3 @@
-from casatasks.private.parallel.parallel_task_helper import ParallelTaskHelper
-
 import pipeline.h.tasks.applycal.applycal as applycal
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure as infrastructure
@@ -42,18 +40,7 @@ class UVcontSub(applycal.Applycal):
                 result.mitigation_error = True
                 return result
 
-        try:
-            # Set cluster to serial mode for this applycal
-            #if infrastructure.mpihelpers.is_mpi_ready():
-            #    ParallelTaskHelper.bypassParallelProcessing(1)
-
-            return super(UVcontSub, self).prepare()
-
-        finally:
-            # Reset cluster to parallel mode
-            #if infrastructure.mpihelpers.is_mpi_ready():
-            #    ParallelTaskHelper.bypassParallelProcessing(0)
-            pass
+        return super(UVcontSub, self).prepare()
 
         return UVcontSubResults()
 
