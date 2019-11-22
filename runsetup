@@ -1,2 +1,0 @@
-#!/bin/sh
-casa-config --exec python setup.py build
