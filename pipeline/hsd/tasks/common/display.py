@@ -166,7 +166,6 @@ class SpectralImage(object):
             self.dec_max = top[key(self.id_direction[1])]
             self._brightnessunit = ia.brightnessunit()
             beam = ia.restoringbeam()
-        qa = casatools.quanta
         self._beamsize_in_deg = qa.convert(qa.sqrt(qa.mul(beam['major'], beam['minor'])), 'deg')['value']
 
     def _load_coordsys(self, coordsys):
