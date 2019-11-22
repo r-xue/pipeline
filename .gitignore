@@ -150,4 +150,11 @@ tags
 [._]*.un~
 
 # VSCode
-/.vscode/
+.vscode/
+
+# ignore auto-generated files and directories
+pipeline/*/cli/*.py
+pipeline/*/cli/gotasks/
+# but do not ignore cli.py or utils.py, which are required by all tasks
+!**/cli/cli.py
+!**/cli/utils.py

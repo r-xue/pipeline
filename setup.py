@@ -213,7 +213,7 @@ class BuildMyTasksCommand(distutils.cmd.Command):
 
                 root, _ = os.path.splitext(xml_file)
                 import_statement = 'from .{} import {}'.format(root, root)
-                with open(cli_init_py, 'r+', encoding=ENCODING) as init_file:
+                with open(cli_init_py, 'a+', encoding=ENCODING) as init_file:
                     import_exists = any(import_statement in line for line in init_file)
                     if not import_exists:
                         init_file.seek(0, os.SEEK_END)
@@ -221,7 +221,6 @@ class BuildMyTasksCommand(distutils.cmd.Command):
 
                 gotasks_dir = os.path.join(src_dir, 'gotasks')
                 gotasks_init_py = os.path.join(gotasks_dir, '__init__.py')
-                import_statement = 'from .{} import {}'.format(root, root)
 
                 with open(gotasks_init_py, 'a+', encoding=ENCODING) as init_file:
                     import_exists = any(import_statement in line for line in init_file)
