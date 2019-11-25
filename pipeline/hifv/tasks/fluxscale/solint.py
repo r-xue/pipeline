@@ -219,7 +219,8 @@ class Solint(basetask.StandardTaskTemplate):
                 short_solint = limit_short_solint
                 new_gain_solint1 = short_solint
                 LOG.warn("   Note that since 'inf' was specified then combine='' for gaincal.")
-            elif float(limit_short_solint) <= short_solint_str:
+            # This comparison needed to change for Python 3
+            elif str(limit_short_solint) <= short_solint_str:
                 short_solint = float(limit_short_solint)
                 new_gain_solint1 = str(short_solint) + 's'
                 combtime = 'scan'
