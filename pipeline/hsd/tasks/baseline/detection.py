@@ -521,7 +521,7 @@ class LineWindowParser(object):
                 ms.msselect({'spw': window})
                 idx = ms.msselectedindices()
             except RuntimeError as e:
-                msg = e.message
+                msg = str(e)
                 LOG.warn(msg)
                 if msg.startswith('No valid SPW'):
                     idx = {'channel': []}

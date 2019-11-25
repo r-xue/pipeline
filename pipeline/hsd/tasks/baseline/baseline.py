@@ -34,7 +34,7 @@ class SDBaselineInputs(vdp.StandardInputs):
     linewindowmode = vdp.VisDependentProperty(default='replace')
     edge = vdp.VisDependentProperty(default=(0, 0))
     broadline = vdp.VisDependentProperty(default=True)
-    fitorder = vdp.VisDependentProperty(default='automatic')
+    fitorder = vdp.VisDependentProperty(default=-1)
     fitfunc = vdp.VisDependentProperty(default='cspline')
     clusteringalgorithm = vdp.VisDependentProperty(default='hierarchy')
     deviationmask = vdp.VisDependentProperty(default=True)

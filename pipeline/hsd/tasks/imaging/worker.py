@@ -4,6 +4,8 @@ import shutil
 
 import numpy
 
+import casatasks.private.sdbeamutil as sdbeamutil
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
@@ -62,7 +64,6 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
         me_center = fields[0].mdirection
 
     # cellx and celly
-    import sdbeamutil
     theory_beam_arcsec = sdbeamutil.primaryBeamArcsec(freq_hz, diameter_m, obscure_alma, 10.0, fwhmfactor=fwhmfactor)
     grid_size = qa.quantity(theory_beam_arcsec, 'arcsec')
     cellx = qa.div(grid_size, grid_factor)
@@ -413,7 +414,8 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
                       'nchan': nchan,
                       'start': start,
                       'width': step,
-                      'outframe': outframe,
+                      # the task only accepts lower letter
+                      'outframe': outframe.lower(),
                       'gridfunction': gridfunction,
                       'convsupport': convsupport,
                       'truncate': truncate,

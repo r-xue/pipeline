@@ -499,7 +499,7 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
                 self.verify_spw(spw)
             except ValueError as e:
                 # this spw should not be or is incapable of being flagged
-                LOG.debug(e.message)
+                LOG.debug(str(e))
                 continue
 
             # get fraction of spw to flag from template function

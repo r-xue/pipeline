@@ -38,8 +38,8 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
         details_title = ["R.A. vs Dec."]
         for name, _plots in plot_group.items():
             perfield_plots = self._plots_per_field(_plots)
+            renderer = SingleDishClusterPlotsRenderer(context, results, name, _plots)
             if name in details_title:
-                renderer = SingleDishClusterPlotsRenderer(context, results, name, _plots)
                 with renderer.get_file() as fileobj:
                     fileobj.write(renderer.render())
                 for field, pfplots in perfield_plots.items():

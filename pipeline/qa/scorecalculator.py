@@ -2393,6 +2393,9 @@ def generate_metric_mask(context, result, cs, mask):
         rotable_name = os.path.join(datatable_name, 'RO')
         rwtable_name = os.path.join(datatable_name, 'RW')
         _index = np.where(file_index == i)
+        if len(_index[0]) == 0:
+            continue
+
         _antlist = antenna_list[_index]
         _fieldlist = field_list[_index]
         _spwlist = spw_list[_index]

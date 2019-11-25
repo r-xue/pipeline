@@ -1618,7 +1618,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                         except Exception as e:
                             LOG.trace('------04------ in exception loop SingularMatrix={}', SingularMatrix)
                             import traceback
-                            LOG.trace(traceback.format_exc(e))
+                            LOG.trace(traceback.format_exc())
                             if xorder0 != 0 or yorder0 != 0:
                                 xorder0 = max(xorder0 - 1, 0)
                                 yorder0 = max(yorder0 - 1, 0)

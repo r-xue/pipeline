@@ -1,4 +1,5 @@
 import collections
+import functools
 import os
 from math import cos
 
@@ -293,8 +294,9 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
             elif x[1] > y[1]:
                 return 1
             return 0
+        keyfunc = functools.cmp_to_key(cmp)
         for k, v in bind_to_grid.items():
-            v.sort(cmp=cmp)
+            v.sort(key=keyfunc)
         LOG.debug('sorted bind_to_grid={}', bind_to_grid)
 
         # create storage for output

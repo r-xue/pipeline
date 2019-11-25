@@ -86,10 +86,10 @@ class SDInspection(object):
                 LOG.debug('before: %s' % (datatable.getkeyword(key)))
                 current_value = datatable.getkeyword(key)
                 current_value.update(value)
-                datatable.tb2.putkeyword(key, current_value)
+                datatable.putkeyword(key, current_value)
             else:
                 LOG.debug('Adding %s' % key)
-                datatable.tb2.putkeyword(key, value)
+                datatable.putkeyword(key, value)
             LOG.debug('after: %s' % (datatable.getkeyword(key)))
         #datatable.putkeyword('POSGRP_LIST', grouping_result['POSGRP_LIST'])
         time_group = grouping_result['TIMEGRP']

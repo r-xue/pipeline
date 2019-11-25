@@ -395,13 +395,19 @@ class DataTableImpl(object):
         name -- keyword name
         val -- keyword value
         """
-        self.tb2.putkeyword(name, val)
+        if isinstance(val, str):
+            _val = '"{}"'.format(val)
+        else:
+            _val = str(val)
+        self.tb2.putkeyword(name, _val)
 
     def getkeyword(self, name):
         """
         name -- keyword name
         """
-        return self.tb2.getkeyword(name)
+        _val = self.tb2.getkeyword(name)
+        val = eval(_val)
+        return val
 
     def keywordnames(self):
         """
@@ -709,8 +715,8 @@ class DataTableImpl(object):
         if key_small in keys and key_large in keys:
             ttdict_small = self.getkeyword(key_small)
             ttdict_large = self.getkeyword(key_large)
-            timetable_small = [ttdict_small[str(i)].tolist() for i in range(len(ttdict_small))]
-            timetable_large = [ttdict_large[str(i)].tolist() for i in range(len(ttdict_large))]
+            timetable_small = [ttdict_small[str(i)] for i in range(len(ttdict_small))]
+            timetable_large = [ttdict_large[str(i)] for i in range(len(ttdict_large))]
             timetable = [timetable_small, timetable_large]
         else:
             raise RuntimeError('time table for Antenna %s spw %s pol %s is not configured properly' % (ant, spw, pol))
@@ -724,16 +730,16 @@ class DataTableImpl(object):
         timegap_l = self.getkeyword('TIMEGAP_L')
         if ms is None:
             try:
-                mygap_s = timegap_s[str(ant)][str(spw)][str(pol)]
-                mygap_l = timegap_l[str(ant)][str(spw)][str(pol)]
+                mygap_s = timegap_s[ant][spw][pol]
+                mygap_l = timegap_l[ant][spw][pol]
             except KeyError:
                 raise KeyError('ant %s spw %s pol %s not in reduction group list' % (ant, spw, pol))
             except Exception as e:
                 raise e
         else:
             try:
-                mygap_s = timegap_s[ms.basename.replace('.', '_')][str(ant)][str(spw)][str(field_id)]
-                mygap_l = timegap_l[ms.basename.replace('.', '_')][str(ant)][str(spw)][str(field_id)]
+                mygap_s = timegap_s[ms.basename.replace('.', '_')][ant][spw][field_id]
+                mygap_l = timegap_l[ms.basename.replace('.', '_')][ant][spw][field_id]
             except KeyError:
                 raise KeyError(
                     'ms %s field %s ant %s spw %s not in reduction group list' % (ms.basename, field_id, ant, spw))

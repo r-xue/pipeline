@@ -250,7 +250,7 @@ class MetaDataReader(object):
             Tflag = numpy.fromiter((numpy.all(tb.getcell('FLAG', i) == True) for i in range(nrow)), dtype=bool)
             Tflagrow = numpy.logical_or(Tflagrow, Tflag)
             field_ids = tb.getcol('FIELD_ID')
-            getsourcename = numpy.vectorize(lambda x: ms.get_fields(x)[0].source.name, otypes=['string'])
+            getsourcename = numpy.vectorize(lambda x: ms.get_fields(x)[0].source.name, otypes=['str'])
             Tsrc = getsourcename(field_ids)
             NchanArray = numpy.fromiter((nchan_map[n] for n in Tif), dtype=numpy.int)   
 

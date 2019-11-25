@@ -39,7 +39,7 @@ contents = {}
 for vis, _spwmap in spwmap.items():
     _fieldmap = fieldmap[vis]
     _spwkeys = sorted(_spwmap.keys())
-    _fieldkeys = _fieldmap.keys()
+    _fieldkeys = list(_fieldmap.keys())
     l = max(len(_spwkeys), len(_fieldkeys))
     _contents = []
     for i in range(l):
