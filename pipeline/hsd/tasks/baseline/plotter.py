@@ -302,6 +302,8 @@ class BaselineSubtractionPlotManager(object):
         plotter.set_deviation_mask(deviation_mask)
         plotter.set_atm_transmission(atm_transmission, atm_frequency)
         plotter.set_global_scaling()
+        if utils.is_nro(self.context):
+            plotter.set_channel_axis()
         for ipol in xrange(npol):
             postfit_figfile = postfit_figfile_prefix + '_pol%s.png' % ipol
             #LOG.info('#TIMING# Begin SDSparseMapPlotter.plot(postfit,pol%s)'%(ipol))
