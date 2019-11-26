@@ -12,6 +12,7 @@ module was imported.
 """
 import shutil
 
+import almatasks
 import casaplotms
 import casatasks
 
@@ -31,10 +32,6 @@ def bandpass(*v, **k):
 
 def calstat(*v, **k):
     return _get_job(casatasks.calstat, *v, **k)
-
-
-def clean(*v, **k):
-    return _get_job(casatasks.clean, *v, **k)
 
 
 def clearcal(*v, **k):
@@ -170,7 +167,7 @@ def tclean(*v, **k):
 
 
 def wvrgcal(*v, **k):
-    return _get_job(casatasks.wvrgcal, *v, **k)
+    return _get_job(almatasks.wvrgcal, *v, **k)
 
 
 def visstat(*v, **k):
