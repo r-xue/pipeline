@@ -6,6 +6,10 @@ import platform
 import re
 import sys
 
+import almatasks
+import casatasks
+import casaplotms
+
 from . import logging
 
 LOG = logging.get_logger(__name__)
@@ -151,18 +155,12 @@ class JobRequest(object):
 
         self.fn = fn
 
-        # CASA tasks are instances rather than functions, whose execution
-        # begins at __call__. The .startswith() check tests for 'casa' in
-        # order to match both casatasks and casaplotms modules.
-        module = fn.__module__
-        if isinstance(fn, object) and module.startswith('casa'):
+        fn_name, is_casa_task = get_fn_name(fn)
+        self.fn_name = fn_name
+        if is_casa_task:
+            # CASA tasks are instances rather than functions, whose execution
+            # begins at __call__.
             fn = fn.__call__
-            # CASA task class instances are created in a submodule and pulled
-            # into the casatasks namespace. We need the name by which the task
-            # instance was imported into the casatasks module.
-            self.fn_name = module.split('.')[-1]
-        else:
-            self.fn_name = self.fn.__name__
 
         # the next piece of code does some introspection on the given function
         # so that we can find out the complete invocation, adding any implicit
@@ -284,3 +282,20 @@ class JobRequest(object):
 def natural_sort(s, _nsre=re.compile('([0-9]+)')):
     return [int(text) if text.isdigit() else text.lower()
             for text in re.split(_nsre, s)]
+
+
+def get_fn_name(fn):
+    """
+    Return a tuple stating the name of the function and whether the function
+    is a CASA task.
+
+    :param fn: the function to inspect
+    :return: (function name, bool) tuple
+    """
+    module = fn.__module__
+    if isinstance(module, object):
+        for module in (almatasks, casatasks, casaplotms):
+            for k, v in module.__dict__.items():
+                if v == fn:
+                    return k, True
+    return module.__name__, False
