@@ -145,7 +145,7 @@ class JobRequest(object):
         """
         # remove any keyword arguments that have a value of None or an empty
         # string, letting CASA use the default value for that argument
-        null_keywords = [k for k, v in kw.items() if v in (None, '')]
+        null_keywords = [k for k, v in kw.items() if v is None or (isinstance(v, str) and not v)]
         for key in null_keywords:
             kw.pop(key)
 
