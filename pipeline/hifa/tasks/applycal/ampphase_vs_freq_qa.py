@@ -195,7 +195,7 @@ def get_best_fits_per_ant(wrapper):
             try:
                 (amp_fit, amp_err) = get_amp_fit(amp_model_fn, frequencies, visibilities, ta_sigma)
                 amplitude_fit = to_linear_fit_parameters(amp_fit, amp_err)
-            except TypeError:
+            except (TypeError, ValueError):
                 # Antenna probably flagged..
                 LOG.info('Could not fit amplitude vs frequency for ant {} pol {}'.format(ant, pol))
                 continue
@@ -203,7 +203,7 @@ def get_best_fits_per_ant(wrapper):
             try:
                 (phase_fit, phase_err) = get_phase_fit(amp_model_fn, ang_model_fn, frequencies, visibilities, ta_sigma)
                 phase_fit = to_linear_fit_parameters(phase_fit, phase_err)
-            except TypeError:
+            except (TypeError, ValueError):
                 # Antenna probably flagged..
                 LOG.info('Could not fit phase vs frequency for ant {} pol {}'.format(ant, pol))
                 continue
