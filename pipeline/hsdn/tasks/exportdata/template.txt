@@ -147,9 +147,12 @@ infile = '${vis}'
 # Define output filenames --
 if outputfile_prefix is None or len(outputfile_prefix) == 0:
     baseline_outputfile = infile.rstrip('/') + '_bl'
+    baseline_paramfile = infile.rstrip('/') + '_blparam.txt'
 else:
     baseline_outputfile = '{}.ms_bl'.format(outputfile_prefix)
+    baseline_paramfile = '{}_blparam.txt'.format(outputfile_prefix)
 baseline_outputfile = os.path.join(working_directory, baseline_outputfile)
+baseline_paramfile = os.path.join(working_directory, baseline_paramfile)
 
 # spw parameter
 spw = ','.join([':'.join([x for x in map(str, [i,b]) if len(x) > 0]) for i,(f,b) in enumerate(zip(SPW_IDs, baseline_ranges)) if f is True])
@@ -162,6 +165,8 @@ if Do_BaselineSubtraction:
         datacolumn='corrected',
         blmode='fit',
         dosubtract=True,
+        blformat='text',
+        bloutput=baseline_paramfile,
         outfile=baseline_outputfile,
         showprogress=True,
         overwrite=Overwrite_Products,
