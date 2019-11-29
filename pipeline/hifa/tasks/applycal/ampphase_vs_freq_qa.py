@@ -2,6 +2,7 @@ import collections
 import copy
 import functools
 import operator
+import warnings
 
 import numpy
 import scipy.optimize
@@ -191,6 +192,10 @@ def get_best_fits_per_ant(wrapper):
         for pol in range(num_pols):
             visibilities = corrected_data[ant, pol, :]
             ta_sigma = sigma[ant, pol, :]
+
+            if visibilities.count() == 0:
+                LOG.info('Could not fit ant {} pol {}: data is completely flagged'.format(ant, pol))
+                continue
 
             try:
                 (amp_fit, amp_err) = get_amp_fit(amp_model_fn, frequencies, visibilities, ta_sigma)
@@ -542,7 +547,10 @@ def get_chi2_ang_model(angular_model, nu, omega, phi, angdata, angsigma):
 
 def fit_angular_model(angular_model, nu, angdata, angsigma):
     f_aux = lambda omega_phi: get_chi2_ang_model(angular_model, nu, omega_phi[0], omega_phi[1], angdata, angsigma)
-    phi_init = numpy.ma.median(numpy.ma.angle(angdata[~angdata.mask]))
+    angle = numpy.ma.angle(angdata[~angdata.mask])
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', numpy.ComplexWarning)
+        phi_init = numpy.ma.median(angle)
     fitres = scipy.optimize.minimize(f_aux, numpy.array([0.0, phi_init]), method='L-BFGS-B')
     return fitres
 
