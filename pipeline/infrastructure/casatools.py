@@ -33,7 +33,7 @@ def log_call(fn, level):
     def f(*args, **kwargs):
         # remove any keyword arguments that have a value of None or an empty
         # string, letting CASA use the default value for that argument
-        kwargs = {k: v for k, v in kwargs.items() if v not in (None, '')}
+        kwargs = {k: v for k, v in kwargs.items() if v is None or (isinstance(v, str) and not v)}
 
         # get the argument names and default argument values for the given
         # function
