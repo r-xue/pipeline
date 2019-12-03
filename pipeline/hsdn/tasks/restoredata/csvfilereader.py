@@ -25,6 +25,7 @@ def read(context, filename):
 
 
 def inspect_type(filename):
+    return 'MS-Based'
     with open(filename, 'r') as f:
         line = f.readline()
     if len(line) > 0 and line[0] == '#':
