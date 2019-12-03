@@ -1,9 +1,8 @@
 import os
 
-import casatasks
-
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
+import pipeline.infrastructure.casa_tasks as casa_tasks
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -13,7 +12,7 @@ class targetflagSummaryChart(object):
         self.context = context
         self.result = result
         self.ms = context.observing_run.get_ms(result.inputs['vis'])
-        #self.caltable = result.final[0].gaintable
+        # self.caltable = result.final[0].gaintable
 
     def plot(self):
         plots = []
@@ -24,16 +23,16 @@ class targetflagSummaryChart(object):
         numAntenna = len(m.antennas)
         bandpass_field_select_string = context.evla['msinfo'][m.name].bandpass_field_select_string
         bandpass_scan_select_string = context.evla['msinfo'][m.name].bandpass_scan_select_string
-        #corrstring = context.evla['msinfo'][m.name].corrstring
+        # corrstring = context.evla['msinfo'][m.name].corrstring
         corrstring = m.get_vla_corrstring()
         delay_scan_select_string = context.evla['msinfo'][m.name].delay_scan_select_string
         calibrator_scan_select_string = context.evla['msinfo'][m.name].calibrator_scan_select_string
         calibrator_field_select_string = context.evla['msinfo'][m.name].calibrator_field_select_string
-        #field_ids = context.evla['msinfo'][m.name].field_ids
+        # field_ids = context.evla['msinfo'][m.name].field_ids
         field_ids = m.get_vla_field_ids()
-        #field_names = context.evla['msinfo'][m.name].field_names
+        # field_names = context.evla['msinfo'][m.name].field_names
         field_names = m.get_vla_field_names()
-        #channels = context.evla['msinfo'][m.name].channels
+        # channels = context.evla['msinfo'][m.name].channels
         channels = m.get_vla_numchan()
 
         ms_active = m.name
@@ -42,21 +41,24 @@ class targetflagSummaryChart(object):
         figfile = self.get_figfile('all_calibrators_phase_time')
 
         plot = logger.Plot(figfile, x_axis='time', y_axis='phase',
-                          parameters={'vis'      : self.ms.basename,
-                                      'type'     : 'All calibrators',
-                                      'spw'      : ''})
+                           parameters={'vis': self.ms.basename,
+                                       'type': 'All calibrators',
+                                       'spw': ''})
 
         if not os.path.exists(figfile):
             LOG.trace('Plotting phase vs. time for all calibrators. Creating new '
                       'plot.')
             try:
-                casatasks.plotms(vis=ms_active, xaxis='time', yaxis='phase', ydatacolumn='corrected', selectdata=True,
-                                 field=calibrator_field_select_string, correlation=corrstring, averagedata=True,
-                                 avgchannel=str(max(channels)), avgtime='1e8', avgscan=False, transform=False,
-                                 extendflag=False, iteraxis='', coloraxis='antenna2', plotrange=[],
-                                 title='Calibrated phase vs. time, all calibrators', xlabel='',  ylabel='',
-                                 showmajorgrid=False, showminorgrid=False, plotfile=figfile, overwrite=True,
-                                 clearplots=True, showgui=False)
+                job = casa_tasks.plotms(vis=ms_active, xaxis='time', yaxis='phase', ydatacolumn='corrected',
+                                        selectdata=True, field=calibrator_field_select_string, correlation=corrstring,
+                                        averagedata=True, avgchannel=str(max(channels)), avgtime='1e8', avgscan=False,
+                                        transform=False, extendflag=False, iteraxis='', coloraxis='antenna2',
+                                        plotrange=[], title='Calibrated phase vs. time, all calibrators',
+                                        xlabel='',  ylabel='', showmajorgrid=False, showminorgrid=False,
+                                        plotfile=figfile, overwrite=True, clearplots=True, showgui=False)
+
+                job.execute(dry_run=False)
+
             except Exception as ex:
                 LOG.error('Could not create fluxboot plot.')
                 LOG.exception(ex)
@@ -67,25 +69,29 @@ class targetflagSummaryChart(object):
         # create amp vs. UVwave plots of each field
         for ii in field_ids:
             figfile = self.get_figfile('field'+str(field_ids[ii])+'_amp_uvdist')
-            #figfile = self.get_figfile('targetflag')
+            # figfile = self.get_figfile('targetflag')
 
             plot = logger.Plot(figfile, x_axis='uvwave', y_axis='amp',
-                          parameters={'vis'      : self.ms.basename,
-                                      'type'     : 'Field '+str(field_ids[ii])+', '+field_names[ii],
-                                      'field'    : str(field_ids[ii]),
-                                      'spw'      : ''})
+                               parameters={'vis': self.ms.basename,
+                                           'type': 'Field '+str(field_ids[ii])+', '+field_names[ii],
+                                           'field': str(field_ids[ii]),
+                                           'spw': ''})
 
             if not os.path.exists(figfile):
                 LOG.trace('Plotting amp vs. uvwave for field id='+str(field_ids[ii])+'.  Creating new plot.')
 
                 try:
-                    casatasks.plotms(vis=ms_active,  xaxis='uvwave',  yaxis='amp',  ydatacolumn='corrected',
-                                     selectdata=True, field=str(field_ids[ii]), correlation=corrstring,
-                                     averagedata=True, avgchannel=str(max(channels)), avgtime='1e8', avgscan=False,
-                                     transform=False, extendflag=False, iteraxis='', coloraxis='spw', plotrange=[],
-                                     title='Field '+str(field_ids[ii])+', '+field_names[ii], xlabel='', ylabel='',
-                                     showmajorgrid=False, showminorgrid=False, plotfile=figfile, overwrite=True,
-                                     clearplots=True, showgui=False)
+                    job = casa_tasks.plotms(vis=ms_active,  xaxis='uvwave',  yaxis='amp',  ydatacolumn='corrected',
+                                            selectdata=True, field=str(field_ids[ii]), correlation=corrstring,
+                                            averagedata=True, avgchannel=str(max(channels)), avgtime='1e8',
+                                            avgscan=False, transform=False, extendflag=False, iteraxis='',
+                                            coloraxis='spw', plotrange=[],
+                                            title='Field '+str(field_ids[ii])+', '+field_names[ii],
+                                            xlabel='', ylabel='', showmajorgrid=False, showminorgrid=False,
+                                            plotfile=figfile, overwrite=True, clearplots=True, showgui=False)
+
+                    job.execute(dry_run=False)
+
                 except Exception as ex:
                     LOG.error('Could not create plot for field '+str(field_ids[ii]))
                     LOG.exception(ex)

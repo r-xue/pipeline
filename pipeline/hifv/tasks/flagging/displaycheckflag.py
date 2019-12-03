@@ -1,9 +1,9 @@
 import os
 
-import casatasks
-
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
+import pipeline.infrastructure.casa_tasks as casa_tasks
+
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -35,29 +35,35 @@ class checkflagSummaryChart(object):
 
         if self.result.inputs['checkflagmode'] == 'bpd' or self.result.inputs['checkflagmode'] == 'bpd-vlass':
             if prefix == 'BPcal':
-                casatasks.plotms(vis=self.ms.name, xaxis='freq', yaxis='amp', ydatacolumn='corrected', selectdata=True,
-                                 field=bandpass_field_select_string, scan=bandpass_scan_select_string,
-                                 correlation=corrstring, averagedata=True, avgtime='1e8', avgscan=True, transform=False,
-                                 extendflag=False, iteraxis='', coloraxis='antenna2', plotrange=[], title='',
-                                 xlabel='', ylabel='', showmajorgrid=False, showminorgrid=False, plotfile=figfile,
-                                 overwrite=True, clearplots=True, showgui=False)
+                job = casa_tasks.plotms(vis=self.ms.name, xaxis='freq', yaxis='amp', ydatacolumn='corrected',
+                                        selectdata=True, field=bandpass_field_select_string,
+                                        scan=bandpass_scan_select_string, correlation=corrstring, averagedata=True,
+                                        avgtime='1e8', avgscan=True, transform=False, extendflag=False, iteraxis='',
+                                        coloraxis='antenna2', plotrange=[], title='', xlabel='', ylabel='',
+                                        showmajorgrid=False, showminorgrid=False, plotfile=figfile,
+                                        overwrite=True, clearplots=True, showgui=False)
 
             if (delay_scan_select_string != bandpass_scan_select_string) and prefix == 'delaycal':
-                casatasks.plotms(vis=self.ms.name, xaxis='freq', yaxis='amp', ydatacolumn='corrected', selectdata=True,
-                                 scan=delay_scan_select_string, correlation=corrstring, averagedata=True,
-                                 avgtime='1e8', avgscan=True, transform=False, extendflag=False, iteraxis='',
-                                 coloraxis='antenna2', plotrange=[], title='', xlabel='', ylabel='',
-                                 showmajorgrid=False, showminorgrid=False, plotfile=figfile, overwrite=True,
-                                 clearplots=True, showgui=False)
+                job = casa_tasks.plotms(vis=self.ms.name, xaxis='freq', yaxis='amp', ydatacolumn='corrected',
+                                        selectdata=True, scan=delay_scan_select_string, correlation=corrstring,
+                                        averagedata=True, avgtime='1e8', avgscan=True, transform=False,
+                                        extendflag=False, iteraxis='', coloraxis='antenna2', plotrange=[], title='',
+                                        xlabel='', ylabel='', showmajorgrid=False, showminorgrid=False,
+                                        plotfile=figfile, overwrite=True, clearplots=True, showgui=False)
+
+            job.execute(dry_run=False)
 
         if self.result.inputs['checkflagmode'] == 'allcals' or self.result.inputs['checkflagmode'] == 'allcals-vlass':
             calibrator_scan_select_string = self.context.evla['msinfo'][self.ms.name].calibrator_scan_select_string
 
-            casatasks.plotms(vis=self.ms.name, xaxis='freq', yaxis='amp', ydatacolumn='corrected', selectdata=True,
-                             scan=calibrator_scan_select_string, correlation=corrstring, averagedata=True,
-                             avgtime='1e8', avgscan=False, transform=False, extendflag=False, iteraxis='',
-                             coloraxis='antenna2', plotrange=[], title='', xlabel='', ylabel='', showmajorgrid=False,
-                             showminorgrid=False, plotfile=figfile, overwrite=True, clearplots=True, showgui=False)
+            job = casa_tasks.plotms(vis=self.ms.name, xaxis='freq', yaxis='amp', ydatacolumn='corrected',
+                                    selectdata=True, scan=calibrator_scan_select_string, correlation=corrstring,
+                                    averagedata=True, avgtime='1e8', avgscan=False, transform=False, extendflag=False,
+                                    iteraxis='', coloraxis='antenna2', plotrange=[], title='', xlabel='', ylabel='',
+                                    showmajorgrid=False, showminorgrid=False, plotfile=figfile, overwrite=True,
+                                    clearplots=True, showgui=False)
+
+            job.execute(dry_run=False)
 
     def get_figfile(self, prefix):
         return os.path.join(self.context.report_dir,
