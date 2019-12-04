@@ -73,6 +73,17 @@ import os
 import shutil
 import casac
 
+try:
+    import inspect
+    filename = inspect.getframeinfo(inspect.currentframe()).filename
+    path = os.path.dirname(os.path.abspath(filename))
+    execfile(os.path.join(path, '${config}'))
+except IOError as e:
+    raise IOError('"${config}" is missing! Please check if config script is available!')
+except Exception as e:
+    print('Exception: {}'.format(str(e)))
+    raise
+
 # function to re-evaluate image mask for combined image
 def update_mask(image, weightimage):
     # image analysis tool

@@ -79,9 +79,11 @@ class NROExportData(sdexportdata.SDExportData):
 
     def _export_reduction_template(self, products_dir):
         script_name = 'rebase_and_image.py'
+        config_name = 'rebase_and_image_config.py'
         script_path = os.path.join(products_dir, script_name)
+        config_path = os.path.join(products_dir, config_name)
 
-        status = nrotemplategenerator.generate_script(self.inputs.context, script_path)
+        status = nrotemplategenerator.generate_script(self.inputs.context, script_path, config_path)
         return script_name if status is True else None
 
     def _export_nroscalefile_template(self, products_dir):

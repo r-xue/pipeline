@@ -80,7 +80,22 @@ def generate_csv(context, datafile):
     return os.path.exists(datafile)
 
 
-def generate_script(context, scriptname):
+def split_template(s):
+    separator = '##############################################'
+
+    lines = s.split('\n')
+
+    _lineno = [i for i, line in enumerate(lines) if line.startswith(separator)]
+    assert len(_lineno) == 1
+    lineno = _lineno[0]
+
+    config_part = '\n'.join(lines[:lineno])
+    script_part = '\n'.join(lines[lineno + 1:])
+
+    return config_part, script_part
+
+
+def generate_script(context, scriptname, configname):
     tmp = get_template('template.txt')
     template = generate_template(tmp)
 
@@ -153,8 +168,12 @@ def generate_script(context, scriptname):
                                  imsize=imsize,
                                  vis=vis,
                                  antennalist=antennalist,
-                                 source=source)
+                                 source=source,
+                                 config=os.path.basename(configname))
 
-    export_template(scriptname, s)
+    config_part, script_part = split_template(s)
 
-    return os.path.exists(scriptname)
+    export_template(scriptname, script_part)
+    export_template(configname, config_part)
+
+    return os.path.exists(scriptname) and os.path.exists(configname)
