@@ -107,6 +107,6 @@ class NROExportData(sdexportdata.SDExportData):
     def _export_casa_restore_script(self, context, script_name, products_dir, oussid, vislist, session_list):
         tmpvislist = list(map(os.path.basename, vislist))
         restore_task_name = 'hsdn_restoredata'
-        args = collections.OrderedDict(vis=tmpvislist, reffile='nroscalefile.csv')
+        args = collections.OrderedDict(vis=tmpvislist, reffile='./nroscalefile.csv')
         return self._export_casa_restore_script_template(context, script_name, products_dir, oussid,
                                                          restore_task_name, args)
