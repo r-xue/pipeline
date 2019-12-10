@@ -784,15 +784,21 @@ class SBSummaryTable(object):
                 repSources.append(repSource)
 
                 # Create frequency
-                repFrequency = qa.quantity(_get_science_goal_value(scienceGoals[0:numScienceGoals[i], i],
-                                                                   'representativeFrequency'))
+                repFrequencyGoal = _get_science_goal_value(scienceGoals[0:numScienceGoals[i], i], 'representativeFrequency')
+                if repFrequencyGoal is not None:
+                    repFrequency = qa.quantity(repFrequencyGoal)
+                else:
+                    repFrequency = qa.quantity(0.0)
                 if repFrequency['value'] <= 0.0 or repFrequency['unit'] == '':
                     repFrequency = None
                 repFrequencies.append(repFrequency)
 
                 # Create representative bandwidth
-                repBandWidth = qa.quantity(_get_science_goal_value(scienceGoals[0:numScienceGoals[i], i],
-                                                                   'representativeBandwidth'))
+                repBandWidthGoal = _get_science_goal_value(scienceGoals[0:numScienceGoals[i], i], 'representativeBandwidth')
+                if repBandWidthGoal is not None:
+                    repBandWidth = qa.quantity(repBandWidthGoal)
+                else:
+                    repBandWidth = qa.quantity(0.0)
                 if repBandWidth['value'] <= 0.0 or repBandWidth['unit'] == '':
                     repBandWidth = None
                 repBandWidths.append(repBandWidth)
@@ -804,36 +810,51 @@ class SBSummaryTable(object):
                 repWindows.append(repWindow)
 
                 # Create minimum angular resolution
-                minAngResolution = qa.quantity(_get_science_goal_value(scienceGoals[0:numScienceGoals[i], i],
-                                                                       'minAcceptableAngResolution'))
+                minAngResolutionGoal = _get_science_goal_value(scienceGoals[0:numScienceGoals[i], i], 'minAcceptableAngResolution')
+                if minAngResolutionGoal is not None:
+                    minAngResolution = qa.quantity(minAngResolutionGoal)
+                else:
+                    minAngResolution = qa.quantity(0.0)
                 if minAngResolution['value'] <= 0.0 or minAngResolution['unit'] == '':
                     minAngResolution = None
                 minAngResolutions.append(minAngResolution)
 
                 # Create maximum angular resolution
-                maxAngResolution = qa.quantity(_get_science_goal_value(scienceGoals[0:numScienceGoals[i], i],
-                                                                       'maxAcceptableAngResolution'))
+                maxAngResolutionGoal = _get_science_goal_value(scienceGoals[0:numScienceGoals[i], i], 'maxAcceptableAngResolution')
+                if maxAngResolutionGoal is not None:
+                    maxAngResolution = qa.quantity(maxAngResolutionGoal)
+                else:
+                    maxAngResolution = qa.quantity(0.0)
                 if maxAngResolution['value'] <= 0.0 or maxAngResolution['unit'] == '':
                     maxAngResolution = None
                 maxAngResolutions.append(maxAngResolution)
 
                 # Create maximum allowed beam axial ratio
-                maxAllowedBeamAxialRatio = qa.quantity(_get_science_goal_value(scienceGoals[0:numScienceGoals[i], i],
-                                                                               'maxAllowedBeamAxialRatio'))
+                maxAllowedBeamAxialRatioGoal = _get_science_goal_value(scienceGoals[0:numScienceGoals[i], i], 'maxAllowedBeamAxialRatio')
+                if maxAllowedBeamAxialRatioGoal is not None:
+                    maxAllowedBeamAxialRatio = qa.quantity(maxAllowedBeamAxialRatioGoal)
+                else:
+                    maxAllowedBeamAxialRatio = qa.quantity(0.0)
                 if maxAllowedBeamAxialRatio['value'] <= 0.0 or maxAllowedBeamAxialRatio['value'] >= 999.:
                     maxAllowedBeamAxialRatio = None
                 maxAllowedBeamAxialRatios.append(maxAllowedBeamAxialRatio)
 
                 # Create sensitivity goal
-                sensitivity = qa.quantity(_get_science_goal_value(scienceGoals[0:numScienceGoals[i], i],
-                                                                  'sensitivityGoal'))
+                sensitivityGoal = _get_science_goal_value(scienceGoals[0:numScienceGoals[i], i], 'sensitivityGoal')
+                if sensitivityGoal is not None:
+                    sensitivity = qa.quantity(sensitivityGoal)
+                else:
+                    sensitivity = qa.quantity(0.0)
                 if sensitivity['value'] <= 0.0 or sensitivity['unit'] == '':
                     sensitivity = None
                 sensitivities.append(sensitivity)
 
                 # Create dynamic range goal
-                dynamicRange = qa.quantity(_get_science_goal_value(scienceGoals[0:numScienceGoals[i], i],
-                                                                   'dynamicRange'))
+                dynamicRangeGoal = _get_science_goal_value(scienceGoals[0:numScienceGoals[i], i], 'dynamicRange')
+                if dynamicRangeGoal is not None:
+                    dynamicRange = qa.quantity(dynamicRangeGoal)
+                else:
+                    dynamicRange = qa.quantity(0.0)
                 dynamicRanges.append(dynamicRange)
 
                 sbName = _get_science_goal_value(scienceGoals[0:numScienceGoals[i], i], 'SBName')
