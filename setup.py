@@ -257,7 +257,7 @@ class VersionCommand(distutils.cmd.Command):
 
 def _get_git_version():
     try:
-        commit_hash = subprocess.check_output(['git', 'describe', '--tags', '--long', '--dirty']).decode().strip()
+        commit_hash = subprocess.check_output(['git', 'describe', '--always', '--tags', '--long', '--dirty']).decode().strip()
         git_branch = subprocess.check_output(['git', 'symbolic-ref', '--short', 'HEAD']).decode().strip()
         version = "{}-{}".format(git_branch, commit_hash)
     except subprocess.CalledProcessError:
@@ -303,7 +303,7 @@ setuptools.setup(
     setup_requires=[
         'csscompressor'  # minify CSS
     ],
-    options=dict(egg_info=dict(tag_build='{}'.format(_get_git_version()))),
+    options=dict(egg_info=dict(tag_build='_{}'.format(_get_git_version()))),
     packages=packages,
     package_data={'': ['*.egg',
                        '*.eot',
