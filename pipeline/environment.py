@@ -93,26 +93,30 @@ def _memory_size():
             raise NotImplemented('Could not determine memory size for system {!s}'.format(system))
 
 
-# find pipeline revision for git
+# Determine pipeline version from Git or package.
 def _pipeline_revision():
     """
     Get a string describing the pipeline revision and branch of the executing
-    pipeline distribution.
-    :return: Pipeline revision and branch in Git repo
+    pipeline distribution if executing from a Git repo; as a fall-back,
+    attempt to get version from built package.
+    :return: string describing pipeline version.
     """
     pl_path = pkg_resources.resource_filename(__name__, '')
     try:
-        commit_hash = subprocess.check_output(['git', 'describe', '--always'], cwd=pl_path).decode().strip()
+        # Silently test if this is a Git repo.
+        subprocess.check_output(['git', 'rev-parse'], cwd=pl_path, stderr=subprocess.DEVNULL)
+        # Continue with fetching commit and branch info.
+        commit_hash = subprocess.check_output(['git', 'describe', '--always', '--tags', '--long', '--dirty'], cwd=pl_path).decode().strip()
         git_branch = subprocess.check_output(['git', 'symbolic-ref', '--short', 'HEAD'], cwd=pl_path).decode().strip()
+        version = "{}-{}".format(git_branch, commit_hash)
     except subprocess.CalledProcessError:
-        return 'Unknown'
-
-    try:
-        subprocess.check_output(['git', 'diff-index', '--quiet', 'HEAD'], cwd=pl_path)
-    except subprocess.CalledProcessError:
-        commit_hash += ' (modified)'
-
-    return '{}:{}'.format(git_branch, commit_hash)
+        # If no Git info could be found, attempt to load version from _version
+        # module that is created when pipeline package is built.
+        try:
+            from pipeline._version import version
+        except ModuleNotFoundError:
+            version = "unknown"
+    return version
 
 
 def _ulimit():
