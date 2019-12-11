@@ -531,45 +531,47 @@ def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table, org_
     # note that ra/dec values in plot_table[][] are before direction_recover!
     if org_direction is None:
         ra0  = plot_table[0][2]
-        dec0 = plot_table[0][3]
-        ra1  = plot_table[num_plane][2]
-        dec1 = plot_table[num_plane*num_grid_ra][3]
+        if num_ra > 1:
+            ra1  = plot_table[num_plane][2]
     else:
-        ra0, dec0   = direction_recover( plot_table[0][2],
+        ra0, dummy   = direction_recover( plot_table[0][2],
+                                          plot_table[0][3],
+                                          org_direction )
+        if num_ra > 1:
+            ra1, dummy  = direction_recover( plot_table[num_plane][2],
+                                             plot_table[0][3],
+                                             org_direction ) 
+
+    if org_direction is None:
+        dec0 = plot_table[0][3]
+        if num_dec > 1:
+            dec1 = plot_table[num_plane*num_grid_ra][3]
+    else:
+        dummy, dec0 = direction_recover( plot_table[0][2],
                                          plot_table[0][3],
                                          org_direction )
-        ra1, dummy  = direction_recover( plot_table[num_plane][2],
-                                         plot_table[num_plane][3],
-                                         org_direction )
-        dummy, dec1 = direction_recover( plot_table[num_plane*num_grid_ra][2],
-                                         plot_table[num_plane*num_grid_ra][3],
-                                         org_direction )
+        if num_dec > 1:
+            dummy, dec1 = direction_recover( plot_table[0][2],
+                                             plot_table[num_plane*num_grid_ra][3],
+                                             org_direction )
 
+    # calculate increment_ra/dec
     if num_ra > 1:
-        #increment_ra = (plot_table[num_plane][2] - plot_table[0][2]) * xgrid_per_panel
         increment_ra = ( ra1 - ra0 ) * xgrid_per_panel
     else:
-        # assuming square grid, increment for ra is estimated from the one for dec
-        #dec = plot_table[0][5]
-        #dec_corr = numpy.cos(dec * casatools.quanta.constants('pi')['value'] / 180.0)
         dec_corr = numpy.cos(dec0 * casatools.quanta.constants('pi')['value'] / 180.0)
         if num_dec > 1:
-            #increment_ra = (plot_table[num_plane * num_ra][3] - plot_table[0][3] / dec_corr) * xgrid_per_panel
             increment_ra = ((dec1 - dec0) / dec_corr) * xgrid_per_panel
         else:
             reference_data = ms
-            beam_size = casatools.quanta.convert(reference_data.beam_sizes[antid][spwid], outunit='deg')['value']
+            beam_size = casatools.quanta.convert(reference_data.beam_sizes[antid][virtual_spwid], outunit='deg')['value']
             increment_ra = (beam_size / dec_corr) * xgrid_per_panel
     if num_dec > 1:
         LOG.trace('num_dec > 1 ({})', num_dec)
-        # increment_dec = (plot_table[num_plane * num_ra][3] - plot_table[0][3]) * ygrid_per_panel
-        # increment_dec = (plot_table[num_plane * num_grid_ra][3] - plot_table[0][3]) * ygrid_per_panel
         increment_dec = (dec1 - dec0) * ygrid_per_panel
     else:
         # assuming square grid, increment for dec is estimated from the one for ra
         LOG.trace('num_dec is 1')
-        #dec = plot_table[0][3]
-        #dec_corr = numpy.cos(dec * casatools.quanta.constants('pi')['value'] / 180.0)
         dec_corr = numpy.cos(dec0 * casatools.quanta.constants('pi')['value'] / 180.0)
         LOG.trace('declination correction factor is {}', dec_corr)
         increment_dec = increment_ra * dec_corr * ygrid_per_panel
