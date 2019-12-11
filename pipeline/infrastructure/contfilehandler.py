@@ -118,9 +118,9 @@ class ContFileHandler(object):
                                 fd.write('ALL\n')
                             else:
                                 if cont_ranges['version'] == 1:
-                                    fd.write('%s~%sGHz\n' % (freq_range['range'][0], freq_range['range'][1]))
+                                    fd.write('%.9f~%.9fGHz\n' % (float(freq_range['range'][0]), float(freq_range['range'][1])))
                                 elif cont_ranges['version'] == 2:
-                                    fd.write('%s~%sGHz %s\n' % (freq_range['range'][0], freq_range['range'][1],
+                                    fd.write('%.9f~%.9fGHz %s\n' % (float(freq_range['range'][0]), float(freq_range['range'][1]),
                                                                 freq_range['refer']))
                     fd.write('\n')
         fd.close()
@@ -139,7 +139,7 @@ class ContFileHandler(object):
                 if cont_ranges['fields'][field_name][spw_id] not in (['ALL'], [], ['NONE']):
                     merged_cont_ranges = utils.merge_ranges(
                         [cont_range['range'] for cont_range in cont_ranges['fields'][field_name][spw_id] if isinstance(cont_range, dict)])
-                    cont_ranges_spwsel = ';'.join(['%s~%sGHz' % (spw_sel_interval[0], spw_sel_interval[1])
+                    cont_ranges_spwsel = ';'.join(['%.9f~%.9fGHz' % (float(spw_sel_interval[0]), float(spw_sel_interval[1]))
                                                    for spw_sel_interval in merged_cont_ranges])
                     refers = np.array([cont_range['refer']
                                        for cont_range in cont_ranges['fields'][field_name][spw_id] if isinstance(cont_range, dict)])
@@ -224,7 +224,7 @@ class ContFileHandler(object):
                 LOG.info('Cannot calculate TOPO range for MS %s Field %s SPW %s' % (msname, field, real_spw_id))
 
             topo_chan_selections.append(';'.join('%d~%d' % (item[0], item[1]) for item in topo_chan_selection))
-            topo_freq_selections.append('%s TOPO' % (';'.join('%s~%sGHz' %
-                                                              (item[0], item[1]) for item in topo_freq_selection)))
+            topo_freq_selections.append('%s TOPO' % (';'.join('%.9f~%.9fGHz' %
+                                                              (float(item[0]), float(item[1])) for item in topo_freq_selection)))
 
         return topo_freq_selections, topo_chan_selections, aggregate_lsrk_bw
