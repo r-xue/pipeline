@@ -767,7 +767,7 @@ class T2_1DetailsRenderer(object):
         field_vs_time = task.plot()
 
         science_spws = ms.get_spectral_windows(science_windows_only=True)
-        all_bands = sorted({spw.band for spw in ms.spectral_windows})
+        all_bands = sorted({spw.band for spw in ms.get_all_spectral_windows()})
         science_bands = sorted({spw.band for spw in science_spws})
 
         science_sources = sorted({source.name for source in ms.sources if 'TARGET' in source.intents})
