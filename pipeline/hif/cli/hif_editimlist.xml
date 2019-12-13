@@ -87,9 +87,10 @@
                 </allowed>
             </param>
 
-            <param name="imsize" type="stringVec">
+            <param name="imsize" type="any">
+                <any type="variant" limittypes="int intArray"/>
                 <description>Image X and Y size(s) in pixels or PB level (single fields), \'\' for default. Single value same for both. \'&lt;number&gt;pb\' for PB level.</description>
-                <value/>
+                <value type="intArray"></value>
             </param>
 
             <param name="intent" type="string">
