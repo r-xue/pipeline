@@ -57,6 +57,7 @@ except:
     from casatasks import makemask
     from casatasks import imstat
     from casatasks import imsubimage
+    from casatasks import imcollapse
     # Tools
     from casatools import measures as metool
     from casatools import table as tbtool
@@ -76,6 +77,7 @@ if casaVersion < '5.9.9':
     from immoments_cli import immoments_cli as immoments
     from makemask_cli import makemask_cli as makemask
     from imsubimage_cli import imsubimage_cli as imsubimage
+    from imcollapse_cli import imcollapse_cli as imcollapse
     from imstat_cli import imstat_cli as imstat  # used by computeMadSpectrum
 else:
     from casatools import synthesismaskhandler
@@ -116,7 +118,7 @@ def version(showfile=True):
     """
     Returns the CVS revision number.
     """
-    myversion = "$Id: findContinuumCycle8.py,v 4.7 2019/10/09 15:43:50 we Exp $" 
+    myversion = "$Id: findContinuumCycle8.py,v 4.9 2019/12/10 21:26:40 we Exp $" 
     if (showfile):
         print("Loaded from %s" % (__file__))
     return myversion
@@ -470,9 +472,12 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
     else:
         centralArcsecValue = str(centralArcsec)
     if meanSpectrumMethod == 'mom0mom8jointMask':
-        casalogPost("\n BEGINNING: %s findContinuum.findContinuum('%s', overwriteMoments=%s, sigmaFindContinuum='%s', meanSpectrumMethod='%s', meanSpectrumFile='%s', singleContinuum=%s, outdir='%s')" % (version().split()[2], img, overwriteMoments, str(sigmaFindContinuum), meanSpectrumMethod, meanSpectrumFile, singleContinuum, outdir))
+        if mask != '':
+            print("The mask parameter is not relevant for meanSpectrumMethod='mom0mom8jointMask'.  Use the userJointMask parameter instead.")
+            return
+        casalogPost("\n BEGINNING: %s findContinuum.findContinuum('%s', overwriteMoments=%s, sigmaFindContinuum='%s', meanSpectrumMethod='%s', meanSpectrumFile='%s', singleContinuum=%s, outdir='%s', userJointMask='%s')" % (version().split()[2], img, overwriteMoments, str(sigmaFindContinuum), meanSpectrumMethod, meanSpectrumFile, singleContinuum, outdir, userJointMask))
     else:
-        casalogPost("\n BEGINNING: %s findContinuum.findContinuum('%s', centralArcsec=%s, mask='%s', overwrite=%s, sigmaFindContinuum='%s', meanSpectrumMethod='%s', peakFilterFWHM=%.0f, meanSpectrumFile='%s', triangleFraction=%.2f, singleContinuum=%s, useIAGetProfile=%s, outdir='%s')" % (version().split()[2], img, centralArcsecValue, mask, overwrite, str(sigmaFindContinuum), meanSpectrumMethod, peakFilterFWHM, meanSpectrumFile, triangleFraction, singleContinuum, useIAGetProfile, outdir))
+        casalogPost("\n BEGINNING: %s findContinuum.findContinuum('%s', centralArcsec=%s, mask='%s', overwrite=%s, sigmaFindContinuum='%s', meanSpectrumMethod='%s', peakFilterFWHM=%.0f, meanSpectrumFile='%s', triangleFraction=%.2f, singleContinuum=%s, useIAGetProfile=%s, outdir='%s', mask='%s')" % (version().split()[2], img, centralArcsecValue, mask, overwrite, str(sigmaFindContinuum), meanSpectrumMethod, peakFilterFWHM, meanSpectrumFile, triangleFraction, singleContinuum, useIAGetProfile, outdir, mask))
     img = img.rstrip('/')
     imageInfo = [] # information returned from getImageInfo
     if (len(vis) > 0):
@@ -1942,8 +1947,10 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                                    madRatioUpperLimit=madRatioUpperLimit, 
                                    madRatioLowerLimit=madRatioLowerLimit, 
                                    projectCode=projectCode, fCCiteration=fCCiteration,
-                                   signalRatioTier1=signalRatioTier1, signalRatioTier2=signalRatioTier2,sigmaFindContinuumAutomatic=sigmaFindContinuumAutomatic)
+                                   signalRatioTier1=signalRatioTier1, signalRatioTier2=signalRatioTier2,
+                                   sigmaFindContinuumAutomatic=sigmaFindContinuumAutomatic)
     continuumChannels,selection,threshold,median,groups,correctionFactor,medianTrue,mad,medianCorrectionFactor,negativeThreshold,lineStrengthFactor,singleChannelPeaksAboveSFC,allGroupsAboveSFC,spectralDiff, trimChannels, useLowBaseline, narrowValueModified, allBaselineChannelsXY, madRatio, useMiddleChannels, signalRatio = result
+    if verbose: print("aboveBelow run0")
     sumAboveMedian, sumBelowMedian, sumRatio, channelsAboveMedian, channelsBelowMedian, channelRatio = \
         aboveBelow(avgSpectrumNansReplaced,medianTrue)
     spwBandwidth = nchan*channelWidth  # in Hz
@@ -1982,6 +1989,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                                            signalRatioTier1=signalRatioTier1, signalRatioTier2=signalRatioTier2,sigmaFindContinuumAutomatic=sigmaFindContinuumAutomatic)
 
             continuumChannels,selection,threshold,median,groups,correctionFactor,medianTrue,mad,medianCorrectionFactor,negativeThreshold,lineStrengthFactor,singleChannelPeaksAboveSFC,allGroupsAboveSFC,spectralDiff,trimChannels,useLowBaseline, narrowValueModified, allBaselineChannelsXY, madRatio, useMiddleChannels, signalRatio = result
+            if verbose: print("aboveBelow run1")
             sumAboveMedian, sumBelowMedian, sumRatio, channelsAboveMedian, channelsBelowMedian, channelRatio = \
                 aboveBelow(avgSpectrumNansReplaced,medianTrue)
     elif ((groups > 3 or (groups > 1 and channelRatio < 1.0) or (channelRatio < 0.5) or (groups == 2 and channelRatio < 1.3)) and sigmaFindContinuumAutomatic and meanSpectrumMethod.find('peakOver') < 0 and meanSpectrumMethod.find('mom0mom8jointMask') < 0 and not singleContinuum):
@@ -2042,6 +2050,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                     signalRatioTier1=signalRatioTier1, signalRatioTier2=signalRatioTier2,sigmaFindContinuumAutomatic=sigmaFindContinuumAutomatic)
 
         continuumChannels,selection,threshold,median,groups,correctionFactor,medianTrue,mad,medianCorrectionFactor,negativeThreshold,lineStrengthFactor,singleChannelPeaksAboveSFC,allGroupsAboveSFC,spectralDiff,trimChannels,useLowBaseline, narrowValueModified, allBaselineChannelsXY, madRatio, useMiddleChannels, signalRatio = result
+        if verbose: print("aboveBelow run2")
         sumAboveMedian, sumBelowMedian, sumRatio, channelsAboveMedian, channelsBelowMedian, channelRatio = \
             aboveBelow(avgSpectrumNansReplaced,medianTrue)
     else:
@@ -2125,6 +2134,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                         signalRatioTier1=signalRatioTier1, signalRatioTier2=signalRatioTier2,sigmaFindContinuumAutomatic=sigmaFindContinuumAutomatic)
 
             continuumChannels,selection,threshold,median,groups,correctionFactor,medianTrue,mad,medianCorrectionFactor,negativeThreshold,lineStrengthFactor,singleChannelPeaksAboveSFC,allGroupsAboveSFC,spectralDiff,trimChannels, useLowBaseline, narrowValueModified, allBaselineChannelsXY, madRatio, useMiddleChannels, signalRatio = result
+            if verbose: print("aboveBelow run3")
             sumAboveMedian, sumBelowMedian, sumRatio, channelsAboveMedian, channelsBelowMedian, channelRatio = \
                 aboveBelow(avgSpectrumNansReplaced,medianTrue)
 
@@ -2835,6 +2845,12 @@ def aboveBelow(avgSpectrumNansReplaced, threshold):
            zero ---------------------------   channelsBelow = 21
      -threshold=-1 ........................   sumBelow = 21*(1-0) = 21
     """
+    y = avgSpectrumNansReplaced
+    pl.clf()
+    pl.plot(range(len(y)),y,'bo')
+    pl.plot(pl.xlim(), [threshold,threshold])
+    pl.draw()
+    pl.savefig('test.png')
     aboveMedian = np.where(avgSpectrumNansReplaced > threshold)
     belowMedian = np.where(avgSpectrumNansReplaced < threshold)
     sumAboveMedian = np.sum(-threshold+avgSpectrumNansReplaced[aboveMedian])
@@ -3179,6 +3195,9 @@ def findContinuumChannels(spectrum, nBaselineChannels=16, sigmaFindContinuum=3,
         # but not drastically either direction.  Largest change is on spw22 of uid://A001/X2f6/X265 (page 245).
         medianTrue = medianCorrected(baselineMode, percentile, median, mad, 
                                      1.0/lineStrengthFactor, useLowBaseline)
+        if medianTrue < np.min(spectrum):
+            casalogPost("**** PIPE-525: Corrected median is less than all data points.  Using true median instead.")
+            medianTrue = np.median(spectrum)
 
     peakFeatureSigma = (np.max(spectrum)-medianTrue)/mad 
     # De-sensitize the threshold in order to avoid small differences in noise levels 
@@ -3875,6 +3894,23 @@ def countPixelsAboveZero(img, useImstat=True, value=0):
         pixels = len(idx)
         return pixels
 
+def flattenMask(mask, outfile='', overwrite=True):
+    """
+    Takes a multi-channel CASA image mask and propagates all pixels to a 
+    new single plane image mask
+    outfile: default name = <mask>.flattened
+    - Todd Hunter
+    """
+    if (not os.path.exists(mask)):
+        print("Could not find mask image.")
+        return
+    if (outfile == ''):
+        outfile = mask + '.flattened'
+    axis = findSpectralAxis(mask)
+    imcollapse(mask, outfile=outfile, function='max', axes=axis, 
+               overwrite=overwrite)
+    return outfile
+
 def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcube=None, minbeamfrac=0.3, 
                                       projectCode='', overwriteMoments=False, 
                                       overwriteMasks=True, phase2=True, 
@@ -3893,7 +3929,8 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
     overwriteMasks: rebuild the mom0 and mom8 mask images even if they already exist
     phase2: if True, then run a second phase if SNR is high
     minPixelsInJointMask: if fewer than these pixels are found, then use all pixels above pb=0.3
-    userJointMask: if specified, use this joint mask instead of the one computed
+    userJointMask: if specified, use this joint mask instead of the one computed; if it is a cube mask,
+       as from tclean, then this function will form a flattened version first, and then use that
     snrThreshold: if SNR is higher than this, and phase2==True, then run a phase 2 mask calculation
     mom0minsnr: sets the threshold for the mom0 image (i.e. median + mom0minsnr*scaledMAD)
     mom8minsnr: sets the threshold for the mom8 image (i.e. median + mom8minsnr*scaledMAD)
@@ -4204,7 +4241,15 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
         mom8threshold = 0
         numberPixelsInMom8Mask = 0
     if userJointMask != '':
-        jointMask = userJointMask
+        if numberOfChannelsInCube(userJointMask) > 1:
+            jointMask = userJointMask + '.flattened'
+            if os.path.exists(jointMask):
+                print("Using existing flattened version of userJointMask")
+            else:
+                print("Running flattenMask('%s', '%s')" % (userJointMask, jointMask))
+                flattenMask(userJointMask, jointMask)
+        else:
+            jointMask = userJointMask
         if outdir == '':
             meanSpectrumFile = cube+'.meanSpectrum.userJointMask'
         else:
