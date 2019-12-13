@@ -468,7 +468,7 @@ class Tclean(cleanbase.CleanBase):
                     # tclean interprets the start frequency as the center of the
                     # first channel. We have, however, an edge to edge range.
                     # Thus shift by 0.5 channels if no start is supplied.
-                    inputs.start = '%sGHz' % ((if0 + 1.5 * channel_width) / 1e9)
+                    inputs.start = '%.9fGHz' % ((if0 + 1.5 * channel_width) / 1e9)
 
             # Always adjust width to apply possible binning
             if self.image_heuristics.is_eph_obj(inputs.field):
@@ -484,7 +484,7 @@ class Tclean(cleanbase.CleanBase):
                 else:
                     inputs.width = width_sign
             else:
-                inputs.width = '%sMHz' % (channel_width / 1e6)
+                inputs.width = '%.6fMHz' % (channel_width / 1e6)
 
         # Make sure there are LSRK selections if cont.dat/lines.dat exist.
         # For ALMA this is already done at the hif_makeimlist step. For VLASS
