@@ -553,7 +553,11 @@ def _create_value_formatter(format_spec):
     def f(val):
         try:
             return format_spec.format(val)
-        except ValueError:
+        except (ValueError, TypeError):
+            # Handle lists of metrics and other possible flavors with a string
+            # representation.
+            return str(val)
+        except:
             return UNDEFINED
 
     return f
