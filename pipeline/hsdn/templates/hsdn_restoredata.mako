@@ -1,6 +1,7 @@
 <%!
 rsc_path = "../"
 import os
+import string
 import pipeline.infrastructure.utils as utils
 %>
 <%inherit file="t2-4m_details-base.mako"/>
@@ -61,15 +62,42 @@ def id2name(spwid):
 <p>This task creates a new ampcal.tbl to correct amplitudes between beams if the scalefile.csv exists. Then the mesurement set data is updated by using these caltables.</p>
 
 <h3>Correction Factors of Amplitudes Between Beams</h3>
+
+<% def show_metadata(str):
+    key = ""
+    value = ""
+    elem = [key, value]
+    elem = str.split(':', 1)
+    key = "".join(elem[0].split())
+    key = key.strip()
+    value = "".join(elem[1].split())
+    value = value.strip()
+    if not value or len(value) == 0:
+        elem = [key, 'No Data']
+    return elem
+%>
+
 % if reffile is not None and len(reffile) > 0 and os.path.exists(os.path.join(stage_dir, os.path.basename(reffile))):
 The following table lists the correction factors of amplitudes each detector of FOREST. Input file is <a class="replace-pre" href="${os.path.relpath(reffile, pcontext.report_dir)}">${os.path.basename(reffile)}</a>.
+<h4>Meta Data for Making The Scaling Factors</h4>
+<table class="table table-bordered table-striped" summary="meta data">
+    <thead>
+        <tr><th>Key</th><th>Value</th></tr>
+    </thead>
+    <tbody>
+        % for tr in metadata:
+            <tr><td>${show_metadata(tr)[0]}</td><td>${show_metadata(tr)[1]}</td></tr>
+        %endfor
+    </tbody>
+</table>
+
 <table class="table table-bordered table-striped" summary="correction factors">
     <thead>
     % if dovirtual:
         <tr><th>Virtual Spw</th><th>MS</th><th>Real Spw</th><th>Beam</th><th>Pol</th><th>Factor</th></tr>
-        % else:
+    % else:
         <tr><th>Spw</th><th>MS</th><th>Beam</th><th>Pol</th><th>Factor</th></tr>
-        % endif
+    % endif
     </thead>
     <tbody>
         % for tr in jyperk_rows:
@@ -87,9 +115,9 @@ No correction factors file is specified. Correction of amplitude (scaling) betwe
     <thead>
     % if dovirtual:
         <tr><th>Virtual Spw</th><th>MS</th><th>Real Spw</th><th>Beam</th><th>Pol</th><th>Factor</th></tr>
-        % else:
+    % else:
         <tr><th>Spw</th><th>MS</th><th>Beam</th><th>Pol</th><th>Factor</th></tr>
-        % endif
+    % endif
     </thead>
         <tbody>
         <tr><th>No Data</th><th>No Data</th><th>No Data</th><th>No Data</th><th>No Data</th></tr>
