@@ -17,7 +17,7 @@ from .. import logging
 LOG = logging.get_logger(__name__)
 
 __all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_caltable_polarizations',
-           'flagged_intervals', 'get_field_identifiers', 'get_receiver_type_for_spws']
+           'flagged_intervals', 'get_field_identifiers', 'get_receiver_type_for_spws', 'get_casa_quantity']
 
 
 def find_ranges(data):
@@ -181,3 +181,20 @@ def get_receiver_type_for_spws(ms, spwids):
         else:
             rxmap[spwid] = spw[0].receiver
     return rxmap
+
+def get_casa_quantity(value):
+    """
+    Handles None values when calling CASA quanta.quantity() tool method
+
+    Starting with CASA 6, quanta.quantity() no longer accepts None as input.
+
+    Args:
+        value: CASA quantity, None, numeric or string to convert to quantity
+
+    Returns:
+        A CASA quanta.quantity
+    """
+    if value is not None:
+        return casatools.quanta.quantity(value)
+    else:
+        return casatools.quanta.quantity(0.0)

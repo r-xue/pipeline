@@ -224,7 +224,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             # cleaning threshold cell
             #
             if 'VLASS' in r.imaging_mode:
-                row_cleaning_threshold = '%.2g %s' % (qaTool.quantity(r.threshold)['value'], qaTool.quantity(r.threshold)['unit'])
+                threshold_quantity = utils.get_casa_quantity(r.threshold)
+                row_cleaning_threshold = '%.2g %s' % (threshold_quantity['value'], threshold_quantity['unit'])
             elif 'VLA' in r.imaging_mode:
                 row_cleaning_threshold = '-'
             else:
