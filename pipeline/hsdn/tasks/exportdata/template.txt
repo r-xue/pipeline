@@ -14,6 +14,9 @@ working_directory = '../rebase/'
 ## prefix --
 outputfile_prefix = None        # default prefix is input MS name
 
+## MS name
+ms_name = '${vis}'
+
 ## SPW_IDs --
 SPW_IDs = [
 ${processspw}
@@ -69,6 +72,17 @@ jwidth = -1
 import os
 import shutil
 import casac
+
+try:
+    import inspect
+    filename = inspect.getframeinfo(inspect.currentframe()).filename
+    path = os.path.dirname(os.path.abspath(filename))
+    execfile(os.path.join(path, '${config}'))
+except IOError as e:
+    raise IOError('"${config}" is missing! Please check if config script is available!')
+except Exception as e:
+    print('Exception: {}'.format(str(e)))
+    raise
 
 # function to re-evaluate image mask for combined image
 def update_mask(image, weightimage):
@@ -142,14 +156,17 @@ if not os.path.exists(working_directory):
     os.mkdir(working_directory)
 
 # Start post-restore processing
-infile = '${vis}'
+infile = ms_name
 
 # Define output filenames --
 if outputfile_prefix is None or len(outputfile_prefix) == 0:
     baseline_outputfile = infile.rstrip('/') + '_bl'
+    baseline_paramfile = infile.rstrip('/') + '_blparam.txt'
 else:
     baseline_outputfile = '{}.ms_bl'.format(outputfile_prefix)
+    baseline_paramfile = '{}_blparam.txt'.format(outputfile_prefix)
 baseline_outputfile = os.path.join(working_directory, baseline_outputfile)
+baseline_paramfile = os.path.join(working_directory, baseline_paramfile)
 
 # spw parameter
 spw = ','.join([':'.join([x for x in map(str, [i,b]) if len(x) > 0]) for i,(f,b) in enumerate(zip(SPW_IDs, baseline_ranges)) if f is True])
@@ -162,6 +179,8 @@ if Do_BaselineSubtraction:
         datacolumn='corrected',
         blmode='fit',
         dosubtract=True,
+        blformat='text',
+        bloutput=baseline_paramfile,
         outfile=baseline_outputfile,
         showprogress=True,
         overwrite=Overwrite_Products,

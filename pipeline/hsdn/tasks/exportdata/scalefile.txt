@@ -1,0 +1,39 @@
+# 1. General Information
+# This is a template file for scaling correction (the valiation of intensity sensitivity between beams) used in hsdn_restoredata task of CASA pipeline.
+# If this file is not input, the scaling correction is skipped.
+# The default values of scaling factor are set to 1.0, which means no correction is applied. 
+# This file consists of three parts: "1. General Information", "2. Meta Data" and "3. CSV Data".
+#
+# 2. Meta Data:
+# Meta Data is the information about the origin of the scaling factors.
+# The values filled by you are displayed in the weblog detail page of hsdn_restoredata task, however blanks are allowed.
+# Do not make new line for each. 
+# MS: The ID of measurement set data of which are used for estimating the scaling factors.
+# ObjectName: The name of object to have been observed in the MS.
+# ObservationStart: The year, month, day, hour, minutes and second of the observation start for the measurement set data.
+# Software: The software name (and the version) to have been used for the processing of the MS. ex. CASA X.Y.Z with pipeline
+# ProcessStart: The year, month, day, hour, minutes and second of the first pipeline processing start.
+# AuthorName: Your name (first and last) or the author's name who have made the meta data.
+# FreeMemo: Memo for making the scaling factors.
+#----------------------------------------------------------------------------------------------
+# MS:
+# ObjectName:
+# ObservationStart:
+# Software:
+# ProcessStart:
+# AuthorName:
+# FreeMemo:
+#----------------------------------------------------------------------------------------------
+# 3. CSV Data:
+# CSV Data is the list that you would like to apply the scaling correction to the MS data.
+# It must be CSV format and be consist of the column definition and the data.
+# The column definition must be ordered as follows: MS,Beam,Spwid,Polarization,Factor
+# MS: The ID of measurement set data.
+# Beam: The ID of beam.
+# Spwid: The ID of spectral window.
+# Polarization: The name of polarization; four cross correlation parameters, i.e., XX, YY, XY or YX.
+# Factor: The scaling factors. They are the reciprocal of the relative intensities compared to the standard value.
+# The data must be ordered the same as the column definition without the beginning "#".
+# The data are automatically filled, however you should replace the Factor values (preset:1.0) with the measured values to do the scaling correction.
+#----------------------------------------------------------------------------------------------
+#MS,Beam,Spwid,Polarization,Factor
