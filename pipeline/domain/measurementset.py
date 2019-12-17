@@ -479,7 +479,7 @@ class MeasurementSet(object):
 
     @property
     def end_time(self):
-        latest, _ = max([(scan, utils.get_epoch_as_datetime(scan.start_time)) for scan in self.scans],
+        latest, _ = max([(scan, utils.get_epoch_as_datetime(scan.end_time)) for scan in self.scans],
                         key=operator.itemgetter(1))
         return latest.end_time
 
