@@ -79,18 +79,22 @@ def score_all_scans(ms, intent, export_outliers=False):
     for reason_prefix in ['amp.', 'phase.']:
         outlier_group = [o for o in outliers if o.reason.startswith(reason_prefix)]
 
-        data_selection_to_outlier_reasons = collections.defaultdict(vis_dim)
+        data_selection_to_outliers = collections.defaultdict(vis_dim)
         for o in outlier_group:
-            data_selection_to_outlier_reasons[o.vis][o.intent][o.scan][o.spw][o.ant][o.pol].append(o.reason)
+            data_selection_to_outliers[o.vis][o.intent][o.scan][o.spw][o.ant][o.pol].append(o)
 
-        # convert back from the multi-dimensional dict into a flat tuple + reason
-        flattened = [(ds_tuple, reasons)
-                     for ds_tuple, reasons in utils.flatten_dict(data_selection_to_outlier_reasons)
-                     if reasons]
+        # convert back from the multi-dimensional dict into a flat tuple + list of applicable
+        # outliers for that data selection and group
+        flattened = [(ds_tuple, outliers)
+                     for ds_tuple, outliers in utils.flatten_dict(data_selection_to_outliers)
+                     if outliers]
 
-        # convert the anonymous tuples back into an Outlier
-        merged_outliers = [Outlier(*[{x, } for x in ds_tuple], reason=reasons, num_sigma=None)
-                              for ds_tuple, reasons in flattened]
+        # convert the anonymous tuples back into an Outlier, aggregating the reasons and deviations
+        # together for data selections that were flagged as outliers for multiple reasons
+        merged_outliers = [Outlier(*[{x, } for x in ds_tuple],
+                                   reason=[o.reason for o in outliers],
+                                   num_sigma=[o.num_sigma for o in outliers])
+                           for ds_tuple, outliers in flattened]
 
         final_outliers.extend(merged_outliers)
 

@@ -176,14 +176,20 @@ def outliers_to_qa_scores(ms, outliers, outlier_score):
         msgs = [QAMessage(ms, outlier) for outlier in outliers_for_reason]
         long_msg = combine(msgs)
 
-        worst_outlier = max(outliers_for_reason, key=operator.attrgetter('num_sigma'))
+        # for a 'joint' outlier, e.g., an outlier with reason=amp.phase,amp.slope, this identifies
+        # the worst outlier as the one with maximum deviation for *any* of its reasons. That is, an
+        # outlier may have a small amp.phase deviation and a huge amp.slope deviation, and it
+        # would be identified as the worst outlier by virtue of the amp.slope deviation. AQUA
+        # doesn't currently make use of these metrics, but if it ever does then it needs to
+        # understand this or we modify what's reported as the origin.
+        worst_outlier = max(outliers_for_reason, key=lambda outlier: max([s for s in outlier.num_sigma]))
 
-        metric_axes, outlier_description = REASONS_TO_TEXT[worst_outlier.reason]
+        metric_axes, outlier_description = REASONS_TO_TEXT[reason]
         short_msg = '{} outliers'.format(metric_axes)
 
         score = pqa.QAScore(outlier_score, longmsg=long_msg, shortmsg=short_msg)
-        score.origin = pqa.QAOrigin(metric_name=worst_outlier.reason,
-                                    metric_score=worst_outlier.num_sigma,
+        score.origin = pqa.QAOrigin(metric_name=reason,
+                                    metric_score=max(worst_outlier.num_sigma),
                                     metric_units='sigma deviation from reference fit')
         qa_scores.append(score)
 
