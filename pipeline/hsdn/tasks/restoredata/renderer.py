@@ -107,9 +107,8 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
                         check = elem.split()
                         # The lines without "#" are regarded as all FreeMemo's values.
                         if len(elem) == 0:
-                            LOG.warn('size of content = {0}'.format(len(elem)));
-                            metadata = ['No Data : No Data']
-                            break
+                            LOG.debug('Skipped the blank line of the reffile.');
+                            continue
                         else:
                             if not ":" in check[0]:
                                 key = 'FreeMemo'
@@ -120,7 +119,8 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
                                 key = "".join(onepair[0])
                                 value = "".join(onepair[1])
                                 elem = key + ':' + value
-                            metadata_tmp.append(elem)
+                        metadata_tmp.append(elem)
+
                     if len(metadata_tmp) == 0:
                         LOG.info('The factor file is invalid format. [No Data : No Data] is inserted instead of blank.')
                         metadata = ['No Data : No Data']
