@@ -586,12 +586,16 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
     @property
     def axes_chan(self):
         if self._axes_chan is None:
-            pl.figure(self.figure_id)
-            self.__adjust_integsp_for_chan()
-            self._axes_chan = self.axes_integsp.twiny()
-            self._axes_chan.set_xlabel('Channel', size=self.ticksize - 1)
-            self._axes_chan.xaxis.set_label_coords(0.5, 1.13)
-            pl.xticks(size=self.ticksize - 1)
+            active = pl.gca()
+            try:
+                pl.figure(self.figure_id)
+                self.__adjust_integsp_for_chan()
+                self._axes_chan = self.axes_integsp.twiny()
+                self._axes_chan.set_xlabel('Channel', size=self.ticksize - 1)
+                self._axes_chan.xaxis.set_label_coords(0.5, 1.13)
+                pl.xticks(size=self.ticksize - 1)
+            finally:
+                pl.sca(active)
         return self._axes_chan
 
     def __adjust_integsp_for_chan(self):
