@@ -208,7 +208,7 @@ class ObservingRun(object):
     def end_time(self):
         if not self.measurement_sets:
             return None
-        latest, _ = max([(ms, utils.get_epoch_as_datetime(ms.start_time)) for ms in self.measurement_sets],
+        latest, _ = max([(ms, utils.get_epoch_as_datetime(ms.end_time)) for ms in self.measurement_sets],
                         key=operator.itemgetter(1))
         return latest.end_time
 
