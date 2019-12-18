@@ -32,7 +32,7 @@ def plot_mosaic(ms, source, figfile):
 
     median_ref_wavelength = Distance(C_MKS / median_ref_freq, DistanceUnits.METRE)
 
-    dish_diameters = {Distance(d, DistanceUnits.METRE) for d in {a.diameter for a in ms.antennas}}
+    dish_diameters = [Distance(d, DistanceUnits.METRE) for d in {a.diameter for a in ms.antennas}]
 
     # convert radians to degrees, constrained within [0,360]
     ra_deg = numpy.array([quanta.convert(f.mdirection['m0']['value'], 'deg')['value'] % 360 for f in fields])
@@ -97,7 +97,7 @@ def plot_mosaic(ms, source, figfile):
 
     leg_lines = [legend_labels[i] for i in sorted(legend_labels)]
     leg_labels = sorted(legend_labels)
-    leg = ax.legend(leg_lines, leg_labels, prop={'size': 10})
+    leg = ax.legend(leg_lines, leg_labels, prop={'size': 10}, loc='upper right')
     leg.get_frame().set_alpha(0.8)
     for text in leg.get_texts():
         text.set_color(legend_colours[text.get_text()])
