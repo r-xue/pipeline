@@ -32,7 +32,7 @@ def plot_mosaic(ms, source, figfile):
 
     median_ref_wavelength = Distance(C_MKS / median_ref_freq, DistanceUnits.METRE)
 
-    dish_diameters = {Distance(d, DistanceUnits.METRE) for d in {a.diameter for a in ms.antennas}}
+    dish_diameters = [Distance(d, DistanceUnits.METRE) for d in {a.diameter for a in ms.antennas}]
 
     # convert radians to degrees, constrained within [0,360]
     ra_deg = numpy.array([quanta.convert(f.mdirection['m0']['value'], 'deg')['value'] % 360 for f in fields])
