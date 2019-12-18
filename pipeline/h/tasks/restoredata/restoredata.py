@@ -28,6 +28,7 @@ results.accept(context)
 import glob
 import os
 import re
+import sys
 import shutil
 import tarfile
 import tempfile
@@ -438,7 +439,7 @@ class RestoreData(basetask.StandardTaskTemplate):
                     LOG.trace('Writing converted calstate to %s'
                               '' % tmpfile.name)
                     converted = self._convert_calstate_paths(applyfile_name)
-                    tmpfile.write(converted)
+                    tmpfile.write(converted.encode(sys.stdout.encoding))
                     tmpfile.flush()
 
                     inputs.context.callibrary.import_state(tmpfile.name,
