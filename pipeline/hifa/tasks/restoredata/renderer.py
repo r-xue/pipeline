@@ -32,8 +32,8 @@ class T2_4MDetailsRestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         # Extract information for flagging summary table.
         flags = _get_flags(pipeline_context, results)
         flags_maxspw = max([len(flags[src][vis]) for src in flags for vis in flags[src]])
-
-        execution_mode = 'Parallel' if results[0].orig_mpi_servers > 0 else 'Serial'
+        execution_mode = 'Parallel' if (results[0].orig_mpi_servers is not None and
+                                        results[0].orig_mpi_servers > 0) else 'Serial'
 
         # Update weblog mako context.
         mako_context.update({
