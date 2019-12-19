@@ -190,10 +190,19 @@ class BuildMyTasksCommand(distutils.cmd.Command):
             cli_dir = os.path.join('pipeline', d, 'cli')
             cli_module = '.'.join(['pipeline', d, 'cli'])
             src_dir = os.path.join(self.build_path, cli_dir)
-            cli_init_py = os.path.join(src_dir, '__init__.py')
-
             if not os.path.exists(src_dir):
                 continue
+
+            cli_init_py = os.path.join(src_dir, '__init__.py')
+            # Remove old init module to avoid incompatible code and duplication
+            if os.path.exists(cli_init_py):
+                os.remove(cli_init_py)
+
+            gotasks_dir = os.path.join(src_dir, 'gotasks')
+            gotasks_init_py = os.path.join(gotasks_dir, '__init__.py')
+            # Remove old init module to avoid incompatible code and duplication
+            if os.path.exists(gotasks_init_py):
+                os.remove(gotasks_init_py)
 
             for xml_file in [f for f in os.listdir(src_dir) if f.endswith('.xml')]:
                 self.announce('Building task from XML: {}'.format(xml_file), level=distutils.log.INFO)
@@ -211,9 +220,6 @@ class BuildMyTasksCommand(distutils.cmd.Command):
                     if not import_exists:
                         init_file.seek(0, os.SEEK_END)
                         init_file.write('{}\n'.format(import_statement))
-
-                gotasks_dir = os.path.join(src_dir, 'gotasks')
-                gotasks_init_py = os.path.join(gotasks_dir, '__init__.py')
 
                 with open(gotasks_init_py, 'a+', encoding=ENCODING) as init_file:
                     import_exists = any(import_statement in line for line in init_file)
