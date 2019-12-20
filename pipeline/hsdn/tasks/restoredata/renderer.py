@@ -126,7 +126,7 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
                         metadata = ['No Data : No Data']
                         break
                     else:
-                        LOG.info('metadata_tmp: {0}'.format(metadata_tmp))
+                        LOG.debug('metadata_tmp: {0}'.format(metadata_tmp))
                         # Arrange "metadata_tmp" list to "metadata" list to connect FreeMemo values.
                         metadata = []
                         elem = ""
