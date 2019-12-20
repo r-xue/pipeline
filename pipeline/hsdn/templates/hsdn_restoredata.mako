@@ -72,7 +72,7 @@ def id2name(spwid):
     key = key.strip()
     value = "".join(elem[1].split())
     value = value.strip()
-    if not value or len(value) == 0:
+    if not value or len(value) == 0 or value == '<br>':
         elem = [key, 'No Data']
     return elem
 %>
