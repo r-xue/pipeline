@@ -61,7 +61,7 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
             # Read reffile and insert the elements into a list "lines".
             reffile = r.reffile
             if not os.path.exists(reffile):
-                LOG.warn('The factor file is invalid format: os.path.exists(reffile) = {0}'.format(os.path.exists(reffile)));
+                LOG.warn('The factor file is not found in current directory: os.path.exists(reffile) = {0}'.format(os.path.exists(reffile)));
                 metadata = ['No Data : No Data']
                 break
             else:
