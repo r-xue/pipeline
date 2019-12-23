@@ -8,14 +8,16 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.h.heuristics import caltable as caltable_heuristic
 from pipeline.infrastructure import task_registry
 from . import csvfilereader
-from . import worker  # instead of "from pipeline.hsd.tasks.k2jycal import worker"
-from pipeline.hsd.tasks.k2jycal import jyperkdbaccess
+from . import worker
 
 LOG = infrastructure.get_logger(__name__)
 
-
 class SDAmpCalInputs(vdp.StandardInputs):
-
+    """
+    Original is pipeline.hsd.tasks.k2jycal.k2jycal.py. 
+    This ampcal.py is modified specially for NRO data 
+    to correct scale differences between beams of FOREST. 
+    """
     reffile = vdp.VisDependentProperty(default='')
 
     @vdp.VisDependentProperty
@@ -43,7 +45,7 @@ class SDAmpCalInputs(vdp.StandardInputs):
                                stage=self.context.stage, **casa_args)
 
     def __init__(self, context, output_dir=None, infiles=None, caltable=None,
-                 reffile=None, dbservice=None, endpoint=None):
+                 reffile=None, endpoint=None):
         super(SDAmpCalInputs, self).__init__()
 
         # context and vis/infiles must be set first so that properties that require
@@ -55,12 +57,11 @@ class SDAmpCalInputs(vdp.StandardInputs):
         # set the properties to the values given as input arguments
         self.caltable = caltable
         self.reffile = reffile
-        self.dbservice = dbservice
         self.endpoint = endpoint
 
 class SDAmpCalResults(basetask.Results):
     def __init__(self, vis=None, final=[], pool=[], reffile=None, factors={},
-                 all_ok=False, dbstatus=None):
+                 all_ok=False):
         super(SDAmpCalResults, self).__init__()
 
         self.vis = vis
@@ -70,7 +71,6 @@ class SDAmpCalResults(basetask.Results):
         self.reffile = reffile
         self.factors = factors
         self.all_ok = all_ok
-        self.dbstatus = dbstatus
 
     def merge_with_context(self, context):
         if not self.final:
@@ -101,43 +101,23 @@ class SDAmpCalResults(basetask.Results):
 
 
 @task_registry.set_equivalent_casa_task('hsd_k2jycal')
-@task_registry.set_casa_commands_comment('The calibration tables of relative amplitude between beams are generated.')
+@task_registry.set_casa_commands_comment('The calibration tables to correct scale differences between beams are generated.')
 class SDAmpCal(basetask.StandardTaskTemplate):
     Inputs = SDAmpCalInputs
 
     def prepare(self):
         inputs = self.inputs
 
-        # obtain Jy/K factors
+        # obtain scaling factors
         factors_list = []
-        reffile = None
-        # dbstatus represents the response from the DB as well as whether or not
-        # the task attempted to access the DB
-        #
-        #     dbstatus = None  -- not attempted to access (dbservice=False)
-        #     dbstatus = True  -- the DB returned a factor (could be incomplete)
-        #     dbstatus = False -- the DB didn't return a factor
-        dbstatus = None
-        if inputs.dbservice is True:
-            # Try accessing Jy/K DB if dbservice is True
-            reffile = 'jyperk_query.csv'
-            factors_list = self._query_factors()
-            if len(factors_list) > 0:
-                dbstatus = True
-                # export factors for future reference
-                export_jyperk(reffile, factors_list)
-            else:
-                dbstatus = False
+        # Read factor file
+        reffile = inputs.reffile
+        factors_list = self._read_factors(reffile)
+        LOG.info('factors_list=%s' % factors_list)
 
-        if (inputs.dbservice is False) or (len(factors_list) == 0):
-            # Read amplitude factor file
-            reffile = os.path.abspath(os.path.expandvars(os.path.expanduser(inputs.reffile)))
-            factors_list = self._read_factors(reffile)
-
-        LOG.debug('factors_list=%s' % factors_list)
         if len(factors_list) == 0:
-            LOG.warn('No factor file available')
-            return SDAmpCalResults(vis=os.path.basename(inputs.vis), pool=[])
+            LOG.warn('No factor data available')
+            return SDAmpCalResults(vis=os.path.basename(inputs.vis), pool=[], reffile=inputs.reffile)
 
         # generate scaling factor dictionary
         factors = rearrange_factors_list(factors_list)
@@ -156,8 +136,7 @@ class SDAmpCal(basetask.StandardTaskTemplate):
         all_factors_ok &= ampcal_result.factors_ok
 
         return SDAmpCalResults(vis=ampcal_result.vis, pool=callist, reffile=reffile,
-                                factors=valid_factors, all_ok=all_factors_ok,
-                                dbstatus=dbstatus)
+                                factors=valid_factors, all_ok=all_factors_ok)
 
     def analyse(self, result):
         # With no best caltable to find, our task is simply to set the one
@@ -180,36 +159,8 @@ class SDAmpCal(basetask.StandardTaskTemplate):
         if not os.path.exists(inputs.reffile):
             return []
         # read scaling factor list
-        factors_list = csvfilereader.read(inputs.context, reffile)
-#        factors_list = jyperkreader.read(inputs.context, reffile)
+        factors_list = csvfilereader.read(inputs.context, inputs.reffile)
         return factors_list
-
-    def _query_factors(self):
-        vis = os.path.basename(self.inputs.vis)
-
-        # switch implementation class according to endpoint parameter
-        endpoint = self.inputs.endpoint
-        if endpoint == 'asdm':
-            impl = jyperkdbaccess.JyPerKAsdmEndPoint
-        elif endpoint == 'model-fit':
-            impl = jyperkdbaccess.JyPerKModelFitEndPoint
-        elif endpoint == 'interpolation':
-            impl = jyperkdbaccess.JyPerKInterpolationEndPoint
-        else:
-            raise RuntimeError('Invalid endpoint: {}'.format(endpoint))
-        query = impl(self.inputs.context)
-        try:
-            factors_list = query.getJyPerK(vis)
-
-            # warn if result is empty
-            if len(factors_list) == 0:
-                LOG.warn('{}: Query to Jy/K DB returned empty result. Will fallback to reading CSV file.'.format(vis))
-        except Exception as e:
-            LOG.warn('{}: Query to Jy/K DB was failed due to the following error. Will fallback to reading CSV file.'.format(vis))
-            LOG.warn(str(e))
-            factors_list = []
-        return factors_list
-
 
 def rearrange_factors_list(factors_list):
     """

@@ -67,6 +67,9 @@ def generate_csv_entries(context):
         for entry in generate_group_entries(ms, member_list):
             yield entry
 
+    # finally EOF marker is yielded
+    yield '#----------------------------------------------------------------------------------------------'
+
 
 def generate_csv(context, datafile):
     tmp = get_template('scalefile.txt')
