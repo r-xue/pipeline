@@ -64,7 +64,7 @@ def accumulate_flag_per_source_spw(context, results):
             spwflag = fieldflag['spw']
             for spw, flagval in spwflag.items():
                 vspw = context.observing_run.real2virtual_spw_id(spw, ms)
-                if spw not in accum_flag[field]:
+                if vspw not in accum_flag[field]:
                     accum_flag[field][vspw] = dict(before=0, additional=0, after=0, total=0)
                 # sum up incremental flags
                 accum_flag[field][vspw]['before'] += before[field]['spw'][spw]['flagged']
