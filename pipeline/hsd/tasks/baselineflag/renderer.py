@@ -51,11 +51,16 @@ def accumulate_flag_per_source_spw(context, results):
         before, after = r.outcome['flagdata_summary']
         if not before['name'] == 'before' or not after['name'] == 'after':
             raise RuntimeError("Got unexpected flag summary")
-        for field, fieldflag in after.items():
-            if not isinstance(fieldflag, dict) or 'spw' not in fieldflag:
-                continue
+        for fieldobj in ms.get_fields(intent='TARGET'):
+            field_candidates = filter(lambda x: x in after,
+                                      set([fieldobj.name, fieldobj.name.strip('"'), fieldobj.clean_name]))
+            try:
+                field = next(field_candidates)
+            except StopIteration:
+                raise RuntimeError('No flag summary for field "{}"'.format(fieldobj.name))
             if field not in accum_flag:
                 accum_flag[field] = {}
+            fieldflag = after[field]
             spwflag = fieldflag['spw']
             for spw, flagval in spwflag.items():
                 vspw = context.observing_run.real2virtual_spw_id(spw, ms)
