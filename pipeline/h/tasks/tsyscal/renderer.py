@@ -153,21 +153,20 @@ class TsyscalPlotRenderer(basetemplates.JsonPlotRenderer):
         spectral window and ONE antenna only!
         """
         # get the unique timestamps from the calanalysis result
-        times = {v['time'] for v in ca_result.values()}
-        mean_tsyses = []
-        for timestamp in sorted(times):
-            # get the dictionary for each timestamp, giving one dictionary per
-            # feed
-            vals = [v for v in ca_result.values() if v['time'] is timestamp]
-            # get the median Tsys for each feed at this timestamp 
-            medians = [numpy.median(v['value']) for v in vals]
+        timestamps = {v['time'] for v in ca_result.values()}
+        representative_tsys_per_timestamp = []
+        for timestamp in sorted(timestamps):
+            # get the dictionary for each timestamp, giving one dictionary per feed
+            stats_for_timestamp = [v for v in ca_result.values() if v['time'] == timestamp]
+            # get the median Tsys for each feed at this timestamp
+            median_per_feed = [numpy.median(v['value']) for v in stats_for_timestamp]
             # use the average of the medians per antenna feed as the typical
             # tsys for this antenna at this timestamp
-            mean_tsyses.append(numpy.mean(medians))
+            representative_tsys_per_timestamp.append(numpy.mean(median_per_feed))
 
-        median = numpy.median(mean_tsyses)
-        rms = numpy.std(mean_tsyses)
-        median_max = numpy.max(mean_tsyses)
+        median = numpy.median(representative_tsys_per_timestamp)
+        rms = numpy.std(representative_tsys_per_timestamp)
+        median_max = numpy.max(representative_tsys_per_timestamp)
 
         return TsysStat(median, rms, median_max)
 
