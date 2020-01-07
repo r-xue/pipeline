@@ -140,7 +140,7 @@ $(document).ready(function () {
     % if len(selectors) > 0:
         <div class="row">
         % for selector in selectors:
-            <div class="col-md-${str(12/len(selectors))}">
+            <div class="col-md-${int(12/len(selectors))}">
                 <div class="form-group">
                     <label for="select-${selector}" class="control-label">${SELECT2_LABEL[selector]}</label>
                     <select id="select-${selector}" class="form-control select2" multiple data-placeholder="${SELECT2_PLACEHOLDER[selector]}">
