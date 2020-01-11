@@ -49,18 +49,20 @@ def accumulate_flag_per_source_spw(context, results):
         vis = r.inputs['vis']
         ms = context.observing_run.get_ms(vis)
         before, after = r.outcome['flagdata_summary']
-        if not before['name'] == 'before' or not after['name'] == 'after':
-            raise RuntimeError("Got unexpected flag summary")
-        for field, fieldflag in after.items():
-            if not isinstance(fieldflag, dict) or 'spw' not in fieldflag:
-                continue
-            if field not in accum_flag:
-                accum_flag[field] = {}
+        assert before['name'] == 'before' and after['name'] == 'after', "Got unexpected flag summary"
+        for fieldobj in ms.get_fields(intent='TARGET'):
+            field_candidates = filter(lambda x: x in after,
+                                      set([fieldobj.name, fieldobj.name.strip('"'), fieldobj.clean_name]))
+            try:
+                field = next(field_candidates)
+            except StopIteration:
+                raise RuntimeError('No flag summary for field "{}"'.format(fieldobj.name))
+            accum_flag.setdefault(field, {})
+            fieldflag = after[field]
             spwflag = fieldflag['spw']
             for spw, flagval in spwflag.items():
                 vspw = context.observing_run.real2virtual_spw_id(spw, ms)
-                if spw not in accum_flag[field]:
-                    accum_flag[field][vspw] = dict(before=0, additional=0, after=0, total=0)
+                accum_flag[field].setdefault(vspw, dict(before=0, additional=0, after=0, total=0))
                 # sum up incremental flags
                 accum_flag[field][vspw]['before'] += before[field]['spw'][spw]['flagged']
                 accum_flag[field][vspw]['after'] += flagval['flagged']
