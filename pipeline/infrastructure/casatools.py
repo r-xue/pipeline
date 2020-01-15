@@ -33,7 +33,8 @@ def log_call(fn, level):
     def f(*args, **kwargs):
         # remove any keyword arguments that have a value of None or an empty
         # string, letting CASA use the default value for that argument
-        kwargs = {k: v for k, v in kwargs.items() if v is None or (isinstance(v, str) and not v)}
+        kwargs = {k: v for k, v in kwargs.items()
+                  if v is not None or (isinstance(v, str) and not v)}
 
         # get the argument names and default argument values for the given
         # function
@@ -54,7 +55,7 @@ def log_call(fn, level):
         # don't want self in message as it is an object memory reference
         msg_args = [v for v in positional + nameless + keyword if not v.startswith('self=')]
 
-        tool_call = '{!s}.{!s}({!s})'.format(fn.__self__.__class__.__name__, fn.__name__, ', '.join(msg_args))
+        tool_call = '{!s}.{!s}({!s})'.format(fn.__module__, fn.__name__, ', '.join(msg_args))
         CASACALLS_LOG.log(level, tool_call)
 
         start_time = datetime.datetime.utcnow()
@@ -68,20 +69,20 @@ def log_call(fn, level):
     return f
 
 
-def create_logging_class(cls, level=logging.TRACE, methods=None):
+def create_logging_class(cls, level=logging.TRACE, to_log=None):
     """
     Return a class with all methods decorated to log method calls.
 
     :param cls: class to wrap
     :param level: log level for emitted messages
-    :param methods: methods to log calls for, or None to log all methods
+    :param to_log: methods to log calls for, or None to log all methods
     :return: the decorated class
     """
-    bound_methods = {name: method for (name, method) in inspect.getmembers(cls, inspect.ismethod)
-                     if not name.startswith('__') and not name.endswith('__')}
+    bound_methods = {name: method
+                     for (name, method) in inspect.getmembers(cls, inspect.isfunction)}
 
-    if methods:
-        bound_methods = {name: method for name, method in bound_methods.items() if name in methods}
+    if to_log:
+        bound_methods = {name: method for name, method in bound_methods.items() if name in to_log}
 
     logging_override_methods = {name: log_call(method, level)
                                 for name, method in bound_methods.items()}
@@ -109,7 +110,7 @@ _logging_coordsys_cls = create_logging_class(casatools.coordsys)
 _logging_image_cls = create_logging_class(casatools.image)
 _logging_imagepol_cls = create_logging_class(casatools.imagepol)
 _logging_imager_cls = create_logging_class(casatools.imager,
-                                           level=logging.INFO, methods=('selectvis', 'apparentsens', 'advise'))
+                                           level=logging.INFO, to_log=('selectvis', 'apparentsens', 'advise'))
 _logging_measures_cls = create_logging_class(casatools.measures)
 _logging_ms_cls = create_logging_class(casatools.ms)
 _logging_msmd_cls = create_logging_class(casatools.msmetadata)
