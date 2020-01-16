@@ -543,29 +543,31 @@ class Finalcals(basetask.StandardTaskTemplate):
             for myfield in fields:
                 domainfield = m.get_fields(myfield)[0]
                 if 'AMPLITUDE' in domainfield.intents:
-                    spws = field_spws[myfield]
-                    # spws = [1,2,3]
                     jobs = []
-                    for myspw in spws:
-                        reference_frequency = center_frequencies[myspw]
+                    VLAspws = field_spws[myfield]
+                    strlistVLAspws = ','.join(str(spw) for spw in VLAspws)
+                    spws = [spw for spw in m.get_spectral_windows(strlistVLAspws)]
+
+                    for spw in spws:
+                        reference_frequency = center_frequencies[spw.id]
                         try:
-                            EVLA_band = spw2band[myspw]
+                            EVLA_band = spw2band[spw.id]
                         except:
                             LOG.info('Unable to get band from spw id - using reference frequency instead')
                             EVLA_band = find_EVLA_band(reference_frequency)
 
-                        LOG.info("Center freq for spw " + str(myspw) + " = " + str(
+                        LOG.info("Center freq for spw " + str(spw.id) + " = " + str(
                             reference_frequency) + ", observing band = " + EVLA_band)
 
                         model_image = standard_source_names[i] + '_' + EVLA_band + '.im'
 
                         LOG.info(
-                            "Setting model for field " + str(myfield) + " spw " + str(myspw) + " using " + model_image)
+                            "Setting model for field " + str(myfield) + " spw " + str(spw.id) + " using " + model_image)
 
                         # Double check, but the fluxdensity=-1 should not matter since
                         #  the model image take precedence
                         try:
-                            job = self._do_setjy(calMs, str(myfield), str(myspw), model_image, -1)
+                            job = self._do_setjy(calMs, str(myfield), str(spw.id), model_image, -1)
                             jobs.append(job)
                             # result.measurements.update(setjy_result.measurements)
                         except Exception:
