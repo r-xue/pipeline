@@ -118,7 +118,6 @@ class T2_4MDetailsWvrgcalflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
 
         weblog_dir = os.path.join(context.report_dir,
                                   'stage%s' % results.stage_number)
-
         # render plots for all EBs in one page
         phase_offset_subpages = {}
         baseline_summary_subpages = {}

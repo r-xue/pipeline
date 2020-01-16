@@ -2,8 +2,8 @@ import os
 from functools import reduce
 
 import matplotlib
-import matplotlib.pyplot as pyplot
 import matplotlib.gridspec as gridspec
+import matplotlib.pyplot as pyplot
 import numpy
 
 import pipeline.infrastructure as infrastructure
@@ -62,8 +62,8 @@ class PhaseOffsetPlotHelper(object):
         else:
             text = 'All Antennas'
 
-        pyplot.text(0.5, 0.911, '%s' % text, color='k', 
-                    transform=fig.transFigure, ha='center', size=10)
+        pyplot.text(0.5, 0.89, '%s' % text, color='k',
+                    transform=fig.transFigure, ha='center', size=9)
 
 
 class PhaseOffsetPlot(object):
@@ -170,19 +170,23 @@ class PhaseOffsetPlot(object):
         if not isinstance(axes, (tuple, list, numpy.ndarray)):
             axes = [axes]
 
-        for axis in axes:
-            axis.xaxis.set_ticks_position('none')
-            axis.yaxis.set_ticks_position('none')
+        for i, axis in enumerate(axes):
             axis.spines['left'].set_linestyle('dotted')
-            axis.spines['right'].set_visible(False)                
+            axis.spines['right'].set_visible(False)
+            axis.tick_params(
+                left=True if i == 0 else False,
+                right=False,
+                top=False,
+                bottom=False,
+                labelbottom=False,
+                labelright=False,
+            )
+            axis.tick_params(axis='y', labelsize=8)
+
         axes[0].spines['left'].set_visible(True)
         axes[0].spines['left'].set_linestyle('solid')
-        axes[0].yaxis.set_ticks_position('left')
-        axes[0].yaxis.tick_left()
-        axes[0].set_ylabel('Deviation from Scan Median Phase (degrees)' % scan.id, size=10)
         axes[-1].spines['right'].set_visible(True)
-        axes[-1].yaxis.set_ticks_position('right')
-        axes[-1].yaxis.tick_right()                 
+        axes[0].set_ylabel('Deviation from Scan Median Phase (degrees)' % scan.id, size=10)
 
         pyplot.subplots_adjust(wspace=0.0)
 
@@ -275,56 +279,26 @@ class PhaseOffsetPlot(object):
                         axis.set_xlim(data.time[0], data.time[-1])
                         axis.set_ylim(autoscale_yaxis_range)
 
-                # for old versions of matplotlib (CASA/Linux), we can only edit
-                # the axes after the data have been plotted, otherwise some 
-                # settings do not take effect. 
                 axis.set_xlabel('%s' % scan.id, size=8)
-                try:
-                    axis.tick_params(axis='x', labelbottom='off')
-                    axis.tick_params(axis='y', labelsize=8, labelright='off')
-                except:
-                    # CASA on Linux comes with old version matplotlib
-                    LOG.trace('matplotlib.axes.tick_params() missing. Using workaround.')
-
-                    if axis == axes[0]:
-                        matplotlib.pyplot.setp(axis.get_yticklabels(), fontsize=8)
-                    if axis == axes[-1]:
-                        # had real trouble disabling y axis labels for the last subplot
-                        # best I can do is reset the ticks
-                        axis.yaxis.set_ticks_position('default')
-
-                    axis.xaxis.set_ticks([])                        
-                    axis.xaxis.set_major_formatter(matplotlib.ticker.NullFormatter())
 
         # shrink the y height slightly to make room for the legend
         for axis in axes:
             box = axis.get_position()
-            axis.set_position([box.x0, box.y0 + box.height * 0.03,
-                               box.width, box.height * 0.97])
-
+            axis.set_position([box.x0, box.y0 + box.height * 0.04,
+                               box.width, box.height * 0.96])
 
 #         # sort legend and associated plots by legend text 
 #         legends, plots = zip(*sorted(zip(legends, plots)))
 
-        # CASA is using an old matplotlib, so we can't specify fontsize as
-        # a property
-        try:
-            axes[-1].legend(plots, legends, prop={'size':10}, numpoints=1,
-                            loc='upper center', bbox_to_anchor=(0.5, 0.07),
-                            frameon=False, ncol=len(legends), 
-                            bbox_transform = pyplot.gcf().transFigure)
-        except TypeError:
-            # old matplotlib doesn't expect frameon kwarg
-            l = axes[-1].legend(plots, legends, prop={'size':10}, numpoints=1,
-                                loc='upper center', bbox_to_anchor=(0.5, 0.07),
-                                ncol=len(legends), 
-                                bbox_transform = pyplot.gcf().transFigure)
-            l.draw_frame(False)
+        axes[-1].legend(plots, legends, prop={'size':10}, numpoints=1,
+                        loc='upper center', bbox_to_anchor=(0.5, 0.07),
+                        frameon=False, ncol=len(legends),
+                        bbox_transform=pyplot.gcf().transFigure)
 
         spw_msg = 'SPW %s Correlation%s' % (spw.id, 
                 utils.commafy(corr_axes, quotes=False, multi_prefix='s'))
         pyplot.text(0.0, 1.013, spw_msg, color='k', 
-                    transform=axes[0].transAxes, size=10)
+                    transform=axes[0].transAxes, size=9)
         pyplot.text(0.5, 0.945, '%s (%s)' % (scan_fields, scan_intents), 
                     color='k', transform=fig.transFigure, ha='center', size=10)
         plothelper.label_antenna(fig, antennas)
@@ -344,7 +318,7 @@ class PhaseOffsetPlot(object):
             scan_txt = utils.commafy(scan_ids, multi_prefix='s', 
                                      quotes=False, separator=',')
         pyplot.text(1.0, 1.013, 'Scan%s' % scan_txt, color='k', ha='right', 
-                    transform=axes[-1].transAxes, size=10)
+                    transform=axes[-1].transAxes, size=9)
 
         figfile = plothelper.get_figfile(spw, antennas)
         pyplot.savefig(figfile)
@@ -412,4 +386,4 @@ class PhaseOffsetPlot(object):
 
         if annotate:
             axis.text(start + width/2, 0.5, annotation, color='k', transform=trans,
-                      size=10, ha='center', va='center', rotation=90)                            
+                      size=9, ha='center', va='center', rotation=90)
