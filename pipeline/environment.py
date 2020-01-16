@@ -109,7 +109,10 @@ def _pipeline_revision():
         commit_hash = subprocess.check_output(['git', 'describe', '--always', '--tags', '--long', '--dirty'], cwd=pl_path).decode().strip()
         git_branch = subprocess.check_output(['git', 'symbolic-ref', '--short', 'HEAD'], cwd=pl_path).decode().strip()
         version = "{}-{}".format(git_branch, commit_hash)
-    except subprocess.CalledProcessError:
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        # FileNotFoundError: expected if git is not present in PATH.
+        # subprocess.CalledProcessError: expected if one of the git commands
+        # throws an error.
         # If no Git info could be found, attempt to load version from _version
         # module that is created when pipeline package is built.
         try:
