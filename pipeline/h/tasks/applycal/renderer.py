@@ -829,8 +829,8 @@ def get_visstat_data_selection(ms, fields_for_source, spw_ids, intent):
         num_flagged_rows = flagdata_summary['flagged']
         num_rows = flagdata_summary['total']
         if num_flagged_rows == num_rows:
-            LOG.info('Discarding field {} spw {} as a visstat candidate'.format(flagged_field, flagged_spw))
             _, flagged_field, _, flagged_spw = flagdata_summary['name'].split('_')
+            LOG.info('Discarding field {} spw {} as a visstat candidate'.format(flagged_field, flagged_spw))
             field_to_remove = ms.fields[int(flagged_field)]
             spw_to_fields_for_visstat_job[int(flagged_spw)].remove(field_to_remove)
 
