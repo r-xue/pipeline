@@ -229,7 +229,8 @@ if Do_MakeImages:
                     phasecenter=phasecenter,
                     restfreq=rest_frequencies[spwID],
                     stokes='I',
-                    overwrite=Overwrite_Products
+                    overwrite=Overwrite_Products,
+                    brightnessunit='K'
                     )
 
             weightimage = '{}.spw{}.I.sd.im.weight'.format(_prefix, spwID)
