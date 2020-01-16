@@ -282,9 +282,13 @@ class WVRPhaseVsBaselineChart(object):
 
         # create the figure: 2 rows x 1 column, sharing the X axis (baseline
         # length) 
-        fig, ((ax1, ax2)) = common.subplots(2, 1, sharex=True)
+        fig, ((ax1, ax2)) = pyplot.subplots(2, 1, sharex=True)
+        pyplot.subplots_adjust(hspace=0.0, bottom=0.16)
+
         ax1.set_yscale('log')
-        pyplot.subplots_adjust(hspace=0.0)
+        ax1.tick_params(labelsize=8, left=True, right=False, top=False, bottom=False)
+        ax2.tick_params(labelsize=8, left=True, right=False, top=False, bottom=True,
+                        labelright=False)
 
         trans1 = matplotlib.transforms.blended_transform_factory(ax1.transAxes,
                                                                  ax1.transData)
@@ -348,51 +352,24 @@ class WVRPhaseVsBaselineChart(object):
         ax1.set_ylim(self._min_ratio, self._max_ratio)
         ax2.set_ylim(0, self._max_phase_offset)
 
-        # shrink the y height slightly to make room for the legend
-        box1 = ax1.get_position()
-        ax1.set_position([box1.x0, box1.y0 + box1.height * 0.06,
-                          box1.width, box1.height * 0.94])
-        box2 = ax2.get_position()
-        ax2.set_position([box2.x0, box2.y0 + box2.height * 0.06,
-                          box2.width, box2.height])
-
         ax1.set_ylabel('ratio', size=10)
         # CAS-7955: hif_timegaincal weblog: add refant next to phase(uvdist) plot
         x_axis_title = 'Distance to Reference Antenna {!s} (m)'.format(self._refant.name)
         ax2.set_xlabel(x_axis_title, size=10)
         ax2.set_ylabel('degrees', size=10)
 
-        try:
-            ax1.tick_params(labelsize=8, labelright='off')
-            ax2.tick_params(labelsize=8, labelright='off')
-        except:
-            # CASA on Linux comes with old version of Matplotlib
-            matplotlib.pyplot.setp(ax1.get_xticklabels(), fontsize=8)
-            matplotlib.pyplot.setp(ax1.get_yticklabels(), fontsize=8)
-            matplotlib.pyplot.setp(ax2.get_xticklabels(), fontsize=8)
-            matplotlib.pyplot.setp(ax2.get_yticklabels(), fontsize=8)
-
-        # CASA is using an old matplotlib, so we can't specify fontsize as
-        # a property
-        try:
-            ax2.legend(plots, legend, prop={'size': 10}, numpoints=1,
-                       loc='upper center', bbox_to_anchor=(0.5, -0.12),
-                       frameon=False, ncol=len(legend))
-        except TypeError:
-            # old matplotlib doesn't expect frameon either
-            l = ax2.legend(plots, legend, prop={'size': 10}, numpoints=1,
-                           loc='upper center', bbox_to_anchor=(0.5, -0.12),
-                           ncol=len(legend))
-            l.draw_frame(False)
+        rax = pyplot.axes([0, 0, 1, 0.1], frame_on=False)
+        rax.legend(plots, legend, prop={'size': 10}, numpoints=1,
+                   loc='lower center', frameon=False, ncol=len(legend))
 
         spw_msg = 'SPW %s Correlation%s' % (spw.id,
                                             utils.commafy(corr_axes, quotes=False, multi_prefix='s'))
         pyplot.text(0.0, 1.026, spw_msg, color='k',
-                    transform=ax1.transAxes, size=10)
-        pyplot.text(0.5, 1.110, '%s (%s)' % (scan_fields, scan_intents),
+                    transform=ax1.transAxes, size=9)
+        pyplot.text(0.5, 1.15, '%s (%s)' % (scan_fields, scan_intents),
                     color='k', transform=ax1.transAxes, ha='center', size=10)
         pyplot.text(0.5, 1.026, 'All Antennas', color='k',
-                    transform=ax1.transAxes, ha='center', size=10)
+                    transform=ax1.transAxes, ha='center', size=9)
 
         scan_ids = [str(s.id) for s in scans]
         max_scans_for_msg = 8
@@ -407,18 +384,18 @@ class WVRPhaseVsBaselineChart(object):
             scan_txt = utils.commafy(scan_ids, multi_prefix='s',
                                      quotes=False, separator=',')
         pyplot.text(1.0, 1.026, 'Scan%s' % scan_txt, color='k', ha='right',
-                    transform=ax1.transAxes, size=10)
+                    transform=ax1.transAxes, size=9)
 
         pyplot.text(0.012, 0.97, 'Median Absolute Deviation from Median Phase',
                     color='k', transform=ax2.transAxes, ha='left', va='top',
-                    size=10)
+                    size=9)
         pyplot.text(0.012, 0.97, 'Phase RMS without WVR / Phase RMS with WVR',
                     color='k', transform=ax1.transAxes, ha='left', va='top',
-                    size=10)
+                    size=9)
         if self._alt_refant_used:
-            pyplot.text(0.012, 0.90, 'Warning! Use of alternate refant detected; x-axis values may be unreliable',
+            pyplot.text(0.012, 0.89, 'Warning! Use of alternate refant detected; x-axis values may be unreliable',
                         color='r', transform=ax1.transAxes, ha='left', va='top',
-                        size=10)
+                        size=9)
 
         # We need to draw the canvas, otherwise the labels won't be positioned and
         # won't have values yet.
