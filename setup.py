@@ -266,7 +266,9 @@ def _get_git_version():
         commit_hash = subprocess.check_output(['git', 'describe', '--always', '--tags', '--long', '--dirty']).decode().strip()
         git_branch = subprocess.check_output(['git', 'symbolic-ref', '--short', 'HEAD']).decode().strip()
         version = "{}-{}".format(git_branch, commit_hash)
-    except subprocess.CalledProcessError:
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        # FileNotFoundError: if git is not on PATH.
+        # subprocess.CalledProcessError: if git command returns error.
         version = "unknown"
     return version
 
