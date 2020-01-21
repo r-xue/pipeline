@@ -193,6 +193,9 @@ $(document).ready(function() {
                     <!-- break heading divider for subcolumns -->
             <th scope="col" colspan="3">Baseline Length</th>
             <th scope="col" rowspan="2">Size</th>
+            % if pcontext.project_summary.telescope.lower() == 'nro':
+                <th scope="col" rowspan="2">Merge2 Version</th>
+            % endif
             </tr>
             <tr>
             <th scope="col">Start</th>
@@ -223,13 +226,17 @@ $(document).ready(function() {
                                 sb_name_markup = '<b>Scheduling Block Name:</b> {}'.format(sb_name)
                             else:
                                 sb_name_markup = ''
+                            if pcontext.project_summary.telescope.lower() == 'nro':
+                                numcol = 11
+                            else:
+                                numcol = 10
                         %>
                         % for sessionkey, sessiongroup in itertools.groupby(sb_group, key=operator.attrgetter('session')):
                             <tr bgcolor="#D1E0FF">
-                                <td colspan="10">${ouslabel} ${ousid} <b>Scheduling Block ID:</b> ${sb_id} ${sb_name_markup}</td>
+                                <td colspan="${numcol}">${ouslabel} ${ousid} <b>Scheduling Block ID:</b> ${sb_id} ${sb_name_markup}</td>
                             </tr>
                             <tr bgcolor="#E8F0FF">
-                                <td colspan="10"><b>Session:</b> ${sessionkey} </td>
+                                <td colspan="${numcol}"><b>Session:</b> ${sessionkey} </td>
                             </tr>
                             % for row in sessiongroup:
                                 <tr>
@@ -242,7 +249,10 @@ $(document).ready(function() {
                                     <td>${str(row.baseline_min)}</td>
                                     <td>${str(row.baseline_max)}</td>
                                     <td>${str(row.baseline_rms)}</td>
-                                   <td>${str(row.filesize)}</td>
+                                    <td>${str(row.filesize)}</td>
+                                    % if pcontext.project_summary.telescope.lower() == 'nro':
+                                        <td>${getattr(row, 'merge2_version', 'N/A')}</td>
+                                    % endif
                                 </tr>
                             % endfor
                         <%
