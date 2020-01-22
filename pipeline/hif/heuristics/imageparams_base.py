@@ -181,10 +181,10 @@ class ImageParamsHeuristics(object):
                 min_frequency = float(spw.min_frequency.to_units(measures.FrequencyUnits.GIGAHERTZ))
                 max_frequency = float(spw.max_frequency.to_units(measures.FrequencyUnits.GIGAHERTZ))
                 spw_sel_intervals = utils.spw_intersect([min_frequency, max_frequency], merged_line_ranges_GHz)
-                spw_selection = ';'.join(['%.9f~%.9fGHz' % (float(spw_sel_interval[0]), float(spw_sel_interval[1])) for spw_sel_interval in spw_sel_intervals])
+                spw_selection = ';'.join(['%.10f~%.10fGHz' % (float(spw_sel_interval[0]), float(spw_sel_interval[1])) for spw_sel_interval in spw_sel_intervals])
 
                 # Skip selection syntax completely if the whole spw is selected
-                if (spw_selection == '%.9f~%.9fGHz' % (float(min_frequency), float(max_frequency))):
+                if (spw_selection == '%.10f~%.10fGHz' % (float(min_frequency), float(max_frequency))):
                     spw_selection = ''
 
                 for source_name in [s.name for s in ms.sources]:
@@ -1284,7 +1284,7 @@ class ImageParamsHeuristics(object):
                         spw_topo_freq_param_dict[os.path.basename(msname)][spwid] = ''
                         spw_topo_chan_param_dict[os.path.basename(msname)][spwid] = ''
                     topo_freq_ranges.append((min_frequency, max_frequency))
-                    aggregate_spw_lsrk_bw = '%.9fGHz' % (max_frequency - min_frequency)
+                    aggregate_spw_lsrk_bw = '%.10fGHz' % (max_frequency - min_frequency)
                     if (inputs.spwsel_lsrk['spw%s' % (spwid)] != 'ALL') and (inputs.intent == 'TARGET') and (inputs.specmode in ('mfs', 'cont') and self.warn_missing_cont_ranges()):
                         LOG.warning('No continuum frequency selection for Target Field %s SPW %s' % (inputs.field, spwid))
             else:
@@ -1294,7 +1294,7 @@ class ImageParamsHeuristics(object):
                     spw_topo_freq_param_dict[os.path.basename(msname)][spwid] = ''
                     spw_topo_chan_param_dict[os.path.basename(msname)][spwid] = ''
                 topo_freq_ranges.append((min_frequency, max_frequency))
-                aggregate_spw_lsrk_bw = '%.9fGHz' % (max_frequency - min_frequency)
+                aggregate_spw_lsrk_bw = '%.10fGHz' % (max_frequency - min_frequency)
                 if (inputs.intent == 'TARGET') and (inputs.specmode in ('mfs', 'cont') and self.warn_missing_cont_ranges()):
                     LOG.warning('No continuum frequency selection for Target Field %s SPW %s' % (inputs.field, spwid))
 
@@ -1306,12 +1306,12 @@ class ImageParamsHeuristics(object):
         # Calculate total bandwidth
         total_topo_bw = '0.0GHz'
         for total_topo_freq_range in utils.merge_ranges(total_topo_freq_ranges):
-            total_topo_bw = qaTool.add(total_topo_bw, qaTool.sub('%.9fGHz' % (float(total_topo_freq_range[1])), '%.9fGHz' % (float(total_topo_freq_range[0]))))
+            total_topo_bw = qaTool.add(total_topo_bw, qaTool.sub('%.10fGHz' % (float(total_topo_freq_range[1])), '%.10fGHz' % (float(total_topo_freq_range[0]))))
 
         # Calculate aggregate selected bandwidth
         aggregate_topo_bw = '0.0GHz'
         for topo_freq_range in utils.merge_ranges(topo_freq_ranges):
-            aggregate_topo_bw = qaTool.add(aggregate_topo_bw, qaTool.sub('%.9fGHz' % (float(topo_freq_range[1])), '%.9fGHz' % (float(topo_freq_range[0]))))
+            aggregate_topo_bw = qaTool.add(aggregate_topo_bw, qaTool.sub('%.10fGHz' % (float(topo_freq_range[1])), '%.10fGHz' % (float(topo_freq_range[0]))))
 
         return spw_topo_freq_param, spw_topo_chan_param, spw_topo_freq_param_dict, spw_topo_chan_param_dict, total_topo_bw, aggregate_topo_bw, aggregate_lsrk_bw
 

@@ -186,11 +186,11 @@ class FindCont(basetask.StandardTaskTemplate):
                     # first channel. We have, however, an edge to edge range.
                     # Thus shift by 0.5 channels if no start is supplied.
                     if target['start'] == '':
-                        start = '%.9fGHz' % ((if0 + 1.5 * channel_width) / 1e9)
+                        start = '%.10fGHz' % ((if0 + 1.5 * channel_width) / 1e9)
                     else:
                         start = target['start']
 
-                    width = '%.6fMHz' % (channel_width / 1e6)
+                    width = '%.7fMHz' % (channel_width / 1e6)
 
                     # Skip edge channels if no nchan is supplied
                     if target['nchan'] in (None, -1):

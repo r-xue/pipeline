@@ -49,7 +49,7 @@ class FindContResult(basetask.Results):
                             spwsel['spw%s' % (spwid)] = 'ALL'
                         else:
                             new_spwids.append(spwid)
-                            spwsel['spw%s' % (spwid)] = ';'.join(['%.9f~%.9fGHz' % (float(cont_range['range'][0]), float(cont_range['range'][1])) for cont_range in self.cont_ranges['fields'][source_name][spwid] if isinstance(cont_range, dict)])
+                            spwsel['spw%s' % (spwid)] = ';'.join(['%.10f~%.10fGHz' % (float(cont_range['range'][0]), float(cont_range['range'][1])) for cont_range in self.cont_ranges['fields'][source_name][spwid] if isinstance(cont_range, dict)])
                             refers = numpy.array([cont_range['refer'] for cont_range in self.cont_ranges['fields'][source_name][spwid] if isinstance(cont_range, dict)])
                             if (refers == 'TOPO').all():
                                 refer = 'TOPO'
@@ -93,7 +93,7 @@ class FindContResult(basetask.Results):
                 elif self.result_cont_ranges[source_name][spwid]['cont_ranges'] in (['ALL'], ):
                     repr += '   Ranges: All continuum\n'
                 else:
-                    repr += '   Ranges: %s' % (';'.join(['%.9f~%.9fGHz' % (float(cont_range['range'][0]), float(cont_range['range'][1])) for cont_range in self.result_cont_ranges[source_name][spwid]['cont_ranges'] if isinstance(cont_range, dict)]))
+                    repr += '   Ranges: %s' % (';'.join(['%.10f~%.10fGHz' % (float(cont_range['range'][0]), float(cont_range['range'][1])) for cont_range in self.result_cont_ranges[source_name][spwid]['cont_ranges'] if isinstance(cont_range, dict)]))
                     refers = numpy.array([cont_range['refer'] for cont_range in self.result_cont_ranges[source_name][spwid]['cont_ranges'] if isinstance(cont_range, dict)])
                     if (refers == 'TOPO').all():
                         refer = 'TOPO'
