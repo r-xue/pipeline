@@ -597,7 +597,11 @@ class ImageParamsHeuristics(object):
 
         return nchan, width
 
-    def has_data(self, field_intent_list, spwspec):
+    def has_data(self, field_intent_list, spwspec, vislist=None):
+
+        if vislist is None:
+            vislist = self.vislist
+
         # reset state of imager
         pl_casatools.imager.done()
 
@@ -608,7 +612,7 @@ class ImageParamsHeuristics(object):
             # select data to be imaged
             for field_intent in field_intent_list:
                 valid_data[field_intent] = False
-                for vis in self.vislist:
+                for vis in vislist:
                     ms = self.observing_run.get_ms(name=vis)
                     scanids = [str(scan.id) for scan in ms.scans if
                                field_intent[1] in scan.intents and
@@ -629,7 +633,8 @@ class ImageParamsHeuristics(object):
                                 pl_casatools.imager.done()
                                 if rtn[0]:
                                     valid_data[field_intent] = True
-                        except:
+                        except Exception as e:
+                            print('ERROR_DM:', e)
                             pass
 
                 if not valid_data[field_intent]:
