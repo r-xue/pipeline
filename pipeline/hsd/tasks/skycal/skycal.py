@@ -113,6 +113,8 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
         if args['calmode'] is None or args['calmode'].lower() == 'auto':
             args['calmode'] = calibration_strategy['calmode']
 
+        assert args['calmode'] in ['ps', 'otfraster', 'otf']
+
         # spw selection ---> task.prepare
         if args['spw'] is None or len(args['spw']) == 0:
             spw_list = ms.get_spectral_windows(science_windows_only=True)
