@@ -137,6 +137,10 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
         if args['scan'] is None:
             args['scan'] = ''
 
+        # intent
+        if args['calmode'] in ['otf', 'otfraster']:
+            args['intent'] = 'OBSERVE_TARGET#ON_SOURCE'
+
         calapps = []
         for target_id, reference_id in field_strategy.items():
             myargs = copy.deepcopy(args)
