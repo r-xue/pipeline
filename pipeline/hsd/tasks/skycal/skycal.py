@@ -1,4 +1,5 @@
 import collections
+import copy
 import os
 
 import numpy
@@ -138,7 +139,7 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
 
         calapps = []
         for target_id, reference_id in field_strategy.items():
-            myargs = args.copy()
+            myargs = copy.deepcopy(args)
 
             # output file
             reference_field_name = ms.get_fields(reference_id)[0].clean_name
