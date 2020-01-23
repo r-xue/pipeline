@@ -160,7 +160,7 @@ def make_repsource_table(context, results):
 
             # Populate the table rows
             # No source
-            if not repsource_name: 
+            if repsource_name is None: 
                 if not ms.representative_target[0]:
                     tr = RepsourceTR(vis, 'Unknown', 'Unknown', 'Unknown', 'Unknown', 'Unknown')
                 else:
@@ -169,7 +169,7 @@ def make_repsource_table(context, results):
                 continue
 
             # No spwid
-            if not repsource_spwid:
+            if repsource_spwid is None:
                 tr = RepsourceTR(vis, repsource_name, qa.tos(ms.representative_target[1], 5),
                                  qa.tos(ms.representative_target[2], 5), 'Unknown', 'Unknown')
                 rows.append(tr)
