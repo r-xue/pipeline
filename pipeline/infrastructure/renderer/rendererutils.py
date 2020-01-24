@@ -265,8 +265,11 @@ def sanitize_data_selection_string(text):
 
 
 def num_lines(abspath):
-    """Method to report number of lines in a file if it exists."""
+    """
+    Report number of non-empty non-comment lines in a file specified by
+    abspath. If the file does not exist, report N/A.
+    """
     if os.path.exists(abspath):
-        return sum(1 for line in open(abspath) if not line.startswith('#'))
+        return sum(1 for line in open(abspath) if line.strip() and not line.startswith('#'))
     else:
         return 'N/A'
