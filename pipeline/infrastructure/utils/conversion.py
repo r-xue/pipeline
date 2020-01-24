@@ -7,14 +7,15 @@ import collections
 import datetime
 import decimal
 import math
+import os
+import re
 import string
+import typing
 
-import cachetools.func
+import cachetools
 import pyparsing
 
-from .. import casatools
-from .. import logging
-from .. import pipelineqa
+from .. import casatools, logging, pipelineqa
 
 LOG = logging.get_logger(__name__)
 
@@ -28,6 +29,38 @@ __all__ = ['commafy', 'flatten', 'mjd_seconds_to_datetime', 'get_epoch_as_dateti
 # importing a remote context for debugging purposes, when we don't have access to
 # the data.
 USE_CASA_PARSING_ROUTINES = True
+
+
+class LoggingLRUCache(cachetools.LRUCache):
+    """
+    'Least recently used' cache that logs when cache entries are evicted.
+
+    Underestimating the required cache size leads to poor performance, as seen
+    in PIPE-327, where a lack of cached entries for the 33 EBs leads to
+    millions of 'unnecessary' MS tool open calls, each open() taking several
+    tens of milliseconds. Hence, we want to be notified when the cache size
+    limit is hit.
+    """
+    def __init__(self, name, *args, **kwargs):
+        self.name = name
+        super().__init__(*args, **kwargs)
+
+    def popitem(self):
+        """
+        Override popitem method to create a log entry when a cache entry is
+        evicted.
+        """
+        key, value = super().popitem()
+        LOG.info(f'Evicting cache entry for {self.name}. '
+                 f'Cache size ({self.maxsize}) is too small!')
+        LOG.trace(f'Key {key} evicted with value {value}')
+        return key, value
+
+
+# Cache for ms.msselectedindices calls. Without this cache, the MS tool would
+# open and close the measurement set on each query, which is an expensive
+# operation.
+MSTOOL_SELECTEDINDICES_CACHE: typing.Dict[str, LoggingLRUCache] = {}
 
 
 def commafy(l, quotes=True, multi_prefix='', separator=', ', conjunction='and'):
@@ -282,23 +315,46 @@ def ant_arg_to_id(ms_path, ant_arg, all_antennas):
         return _parse_antenna(ant_arg, all_antennas)
 
 
-@cachetools.func.lru_cache(maxsize=1000)
 def _convert_arg_to_id(arg_name, ms_path, arg_val):
     """
     Parse the CASA input argument and return the matching IDs.
+
+    Originally the cache was set on this function with the cache size fixed at
+    import time (originally 1000). In PIPE-327 this cache size proved too
+    small due to the number of EBs (33) and data shape and so we need a way to
+    scale the cache with the input data. Hence, a way to scale the cache at
+    runtime was created (via the MSSelectedIndicesCache class) and this
+    function delegates to the instance held in the module namespace.
 
     :param arg_name:
     :param ms_path: the path to the measurement set
     :param field_arg: the field argument formatted with CASA syntax.
     :return: a set of field IDs
     """
-    # due to memoized decorator we'll only see this log message when a new
-    # msselect is executed
-    LOG.trace('Executing msselect({%r:%r} on %s', arg_name, arg_val, ms_path)
-    taql = {arg_name: str(arg_val)}
-    with casatools.MSReader(ms_path) as ms:
-        ms.msselect(taql, onlyparse=True)
-        return ms.msselectedindices()
+    ms_basename = os.path.basename(ms_path)
+    if ms_basename not in MSTOOL_SELECTEDINDICES_CACHE:
+        # Historically, a cache size of 1000 entries per EB has been
+        # sufficient to avoid cache eviction. It would be possible to
+        # calculate a more accurate required cache size (some function of
+        # spws, fields, field combinations, etc.) but it's probably not
+        # worth the effort as cache entries left unoccupied should take
+        # minimal space.
+        MSTOOL_SELECTEDINDICES_CACHE[ms_basename] = LoggingLRUCache(ms_basename, maxsize=2000)
+
+    cache_for_ms = MSTOOL_SELECTEDINDICES_CACHE[ms_basename]
+    cache_key = (arg_name, arg_val)
+
+    try:
+        return cache_for_ms[cache_key]
+    except KeyError:
+        taql = {arg_name: str(arg_val)}
+        LOG.trace('Executing msselect({%r:%r} on %s', arg_name, arg_val, ms_path)
+        with casatools.MSReader(ms_path) as ms:
+            ms.msselect(taql, onlyparse=True)
+            result = ms.msselectedindices()
+
+        cache_for_ms[cache_key] = result
+    return result
 
 
 def safe_split(fields):
