@@ -1,5 +1,6 @@
 import html
 import itertools
+import os
 import xml.dom.minidom as minidom
 import xml.etree.ElementTree as ET
 
@@ -261,3 +262,11 @@ def sanitize_data_selection_string(text):
     split_text = utils.safe_split(text)
     sanitized_text = "[{}]".format(", ".join(["&quot;{}&quot;".format(field) for field in split_text]))
     return sanitized_text
+
+
+def num_lines(abspath):
+    """Method to report number of lines in a file if it exists."""
+    if os.path.exists(abspath):
+        return sum(1 for line in open(abspath) if not line.startswith('#'))
+    else:
+        return 'N/A'
