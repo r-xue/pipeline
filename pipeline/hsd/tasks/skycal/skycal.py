@@ -1,4 +1,5 @@
 import collections
+import copy
 import os
 
 import numpy
@@ -112,6 +113,8 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
         if args['calmode'] is None or args['calmode'].lower() == 'auto':
             args['calmode'] = calibration_strategy['calmode']
 
+        assert args['calmode'] in ['ps', 'otfraster', 'otf']
+
         # spw selection ---> task.prepare
         if args['spw'] is None or len(args['spw']) == 0:
             spw_list = ms.get_spectral_windows(science_windows_only=True)
@@ -136,9 +139,13 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
         if args['scan'] is None:
             args['scan'] = ''
 
+        # intent
+        if args['calmode'] in ['otf', 'otfraster']:
+            args['intent'] = 'OBSERVE_TARGET#ON_SOURCE'
+
         calapps = []
         for target_id, reference_id in field_strategy.items():
-            myargs = args.copy()
+            myargs = copy.deepcopy(args)
 
             # output file
             reference_field_name = ms.get_fields(reference_id)[0].clean_name
