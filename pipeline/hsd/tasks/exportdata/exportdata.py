@@ -29,6 +29,7 @@ import pipeline.h.tasks.exportdata.exportdata as exportdata
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 from pipeline.h.tasks.exportdata.aqua import export_to_disk as aqua_export_to_disk
+import pipeline.infrastructure.project as project
 from pipeline.infrastructure import task_registry
 from . import almasdaqua
 
@@ -372,6 +373,32 @@ class SDExportData(exportdata.ExportData):
         """
         Save the CASA restore scropt.
         """
+        tmpvislist = []
+        for vis in vislist:
+            filename = os.path.basename(vis)
+            if filename.endswith('.ms'):
+                filename, filext = os.path.splitext(filename)
+            tmpvislist.append(filename)
+        restore_task_name = 'hsd_restoredata'
+        args = collections.OrderedDict(vis=tmpvislist, session=session_list, ocorr_mode='ao')
+        return self._export_casa_restore_script_template(context, script_name, products_dir, oussid,
+                                                         restore_task_name, args)
+
+    def _export_casa_restore_script_template(self, context, script_name, products_dir, oussid, 
+                                             restore_task_name, restore_task_args):
+        """
+        Template method for export_casa_restore_script.
+
+        Arguments:
+            context {Context} -- Pipeline Context
+            script_name {str} -- Name of the restore script
+            products_dir {str} -- Name of the product directory
+            oussid {str} -- OUSStatus UID
+            restore_task_name {str} -- Name of the restoredata task
+            restore_task_args {dict} -- Set of the parameters for the restoredata task.
+                                        If an order of the parameter matters, it can be
+                                        collections.OrderedDict.
+        """
 
         # Generate the file list
 
@@ -392,26 +419,34 @@ class SDExportData(exportdata.ExportData):
         LOG.info('Creating casa restore script %s' % script_file)
 
         # This is hardcoded.
-        tmpvislist = []
+        #tmpvislist = []
 
         # ALMA TP default
-        ocorr_mode = 'ao'
+        #ocorr_mode = 'ao'
 
-        for vis in vislist:
-            filename = os.path.basename(vis)
-            if filename.endswith('.ms'):
-                filename, filext = os.path.splitext(filename)
-            tmpvislist.append(filename)
-        task_string = "    hsd_restoredata(vis=%s, session=%s, ocorr_mode='%s')" % (tmpvislist, session_list,
-                                                                                    ocorr_mode)
+        #for vis in vislist:
+        #    filename = os.path.basename(vis)
+        #    if filename.endswith('.ms'):
+        #        filename, filext = os.path.splitext(filename)
+        #    tmpvislist.append(filename)
+        #task_string = "    hsd_restoredata(vis=%s, session=%s, ocorr_mode='%s')" % (tmpvislist, session_list,
+        #                                                                            ocorr_mode)
+        args_string = ', '.join(['{}={!r}'.format(k, v) for k, v in restore_task_args.items()])
+        task_string = "    {}({})".format(restore_task_name, args_string)
+
+        state_commands = []
+        for o in (context.project_summary, context.project_structure, context.project_performance_parameters):
+            state_commands += ['context.set_state({!r}, {!r}, {!r})'.format(cls, name, value)
+                               for cls, name, value in project.get_state(o)]
 
         template = '''__rethrow_casa_exceptions = True
-h_init()
+context = h_init()
+%s
 try:
 %s
 finally:
     h_save()
-''' % task_string
+''' % ('\n'.join(state_commands), task_string)
 
         with open(script_file, 'w') as casa_restore_file:
             casa_restore_file.write(template)

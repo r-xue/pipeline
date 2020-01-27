@@ -515,6 +515,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
         self._axes_integsp = None
         self._axes_spmap = None
         self._axes_atm = None
+        self._axes_chan = None
 
         if figure_id is None:
             self.figure_id = self.MATPLOTLIB_FIGURE_ID()
@@ -582,6 +583,40 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
                 )
         return self._axes_atm
 
+    @property
+    def axes_chan(self):
+        if self._axes_chan is None:
+            active = pl.gca()
+            try:
+                pl.figure(self.figure_id)
+                self.__adjust_integsp_for_chan()
+                self._axes_chan = self.axes_integsp.twiny()
+                self._axes_chan.set_xlabel('Channel', size=self.ticksize - 1)
+                self._axes_chan.xaxis.set_label_coords(0.5, 1.13)
+                pl.xticks(size=self.ticksize - 1)
+            finally:
+                pl.sca(active)
+        return self._axes_chan
+
+    def __adjust_integsp_for_chan(self):
+        active = pl.gca()
+        try:
+            pl.sca(self._axes_integsp)
+            a = self._axes_integsp
+            bbox = a.get_position().get_points()
+            blc = bbox[0]
+            trc = bbox[1]
+            # gives [left, bottom, width, height]
+            left = blc[0]
+            bottom = blc[1]
+            width = trc[0] - blc[0]
+            height = trc[1] - blc[1] - 0.03
+            a.set_position((left, bottom, width, height))
+            a.title.set_position((0.5, 1.2))
+        finally:
+            pl.sca(active)
+
+
     def __axes_spmap(self):
         for x in xrange(self.nh):
             for y in xrange(self.nv):
@@ -636,6 +671,7 @@ class SDSparseMapPlotter(object):
         self.deviation_mask = None
         self.atm_transmission = None
         self.atm_frequency = None
+        self.channel_axis = False
 
     @property
     def nh(self):
@@ -708,6 +744,20 @@ class SDSparseMapPlotter(object):
         self.atm_transmission = None
         self.atm_frequency = None
 
+    def set_channel_axis(self):
+        self.channel_axis = True
+
+    def unset_channel_axis(self):
+        self.channel_axis = False
+
+    def add_channel_axis(self, frequency):
+        axes = self.axes.axes_chan
+        f = numpy.asarray(frequency)
+        active = pl.gca()
+        pl.sca(axes)
+        pl.xlim((numpy.argmin(f), numpy.argmax(f)))
+        pl.sca(active)
+
     def plot(self, map_data, averaged_data, frequency, fit_result=None, figfile=None):
         plot_helper = PlotObjectHandler()
 
@@ -770,6 +820,8 @@ class SDSparseMapPlotter(object):
 
         pl.gcf().sca(self.axes.axes_integsp)
         plot_helper.plot(frequency, averaged_data, color='b', linestyle='-', linewidth=0.4)
+        if self.channel_axis is True:
+            self.add_channel_axis(frequency)
         (_xmin, _xmax, _ymin, _ymax) = pl.axis()
         #pl.axis((_xmin,_xmax,spmin,spmax))
         pl.axis((global_xmin, global_xmax, spmin, spmax))

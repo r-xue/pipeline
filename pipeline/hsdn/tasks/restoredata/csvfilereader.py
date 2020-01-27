@@ -4,233 +4,45 @@ import csv
 import contextlib
 import itertools
 import os
-
 import pipeline.infrastructure as infrastructure
 
 LOG = infrastructure.get_logger(__name__)
 
-
 def read(context, filename):
     """
+    Original is pipeline.hsd.tasks.k2jycal.jyperkreader.py. 
+    This csvfilereader.py is simplified specially for NRO data 
+    to read reference file (reffile=nroscalefile.csv). 
     Reads factors from a file and returns a string list
     of [['MS','ant','spwid','polid','factor'], ...]
     """
-    filetype = inspect_type(filename)
-    if filetype == 'MS-Based':
-        LOG.info('MS-Based factors file is specified')
-        return read_ms_based(filename)
-    else:
-        LOG.info('Session-Based factors file is specified')
-        return read_session_based(context, filename)
-
-
-def inspect_type(filename):
-    with open(filename, 'r') as f:
-        line = f.readline()
-    if len(line) > 0 and line[0] == '#':
-        return 'Session-Based'
-    else:
-        return 'MS-Based'
-
+    return read_ms_based(filename)
 
 def read_ms_based(reffile):
-    #factor_list = []
-    LOG.info('reffile: {0}'.format(reffile))
     with open(reffile, 'r') as f:
-        LOG.info('f: {0}'.format(f))
         return list(_read_stream(f))
-
-
-def read_session_based(context, reffile):
-    parser = JyPerKDataParser
-    storage = JyPerK()
-    with open(reffile, 'r') as f:
-        for line in f:
-            if line[0] == '#':
-                # header
-                meta = parser.parse_header(line)
-                storage.register_meta(meta)
-            else:
-                # data
-                data = parser.parse_data(line)
-                storage.register_data(data)
-
-    with associate(context, storage) as f:
-        return list(_read_stream(f))
-
 
 def _read_stream(stream):
     reader = csv.reader(stream)
     # Check if first line is header or not
-    #LOG.info('stream: {0}'.format(stream))
     filename = os.path.basename(stream.name)
-    #LOG.info('filename: {0}'.format(filename))
     line = reader.next()
-    if len(line) == 0 or line[0].strip().upper() == 'MS' or line[0].strip()[0] == '#':
+    LOG.debug('first line: {0}'.format(line))
+    if len(line) == 0 or line[0].strip().upper() == 'MS' or '#' in line[0]:
         # must be a header, commented line, or empty line
         pass
     elif len(line) == 5:
         # may be a data record
-        #factor_list.append(line)
         yield line
     else:
-        LOG.info('The factor file {0} is invalid format'.format(filename))
+        pass
+        #LOG.warn('The line {0} is invalid format'.format(line))
     for line in reader:
+        LOG.debug('{0}'.format(line))
         if len(line) == 0 or len(line[0]) == 0 or line[0][0] == '#':
             continue
         elif len(line) == 5:
             yield line
         else:
-            LOG.info('The factor file {0} is invalid format'.format(filename))
-
-
-# Utility classes/functions to convert session based factors file 
-# to MS based one are defined below
-class JyPerKDataParser(object):
-    @classmethod
-    def get_content(cls, line):
-        return line.strip('# \n\t')
-
-    @classmethod
-    def parse_header(cls, line):
-        content = cls.get_content(line)
-        if content.find('=') != -1:
-            # this must be a meta data
-            return tuple(content.split('='))
-        elif content.find(',') != -1 and not content[0].isdigit():
-            # this must be a data header
-            return content.split(',')
-        else:
-            # empty line or commented data, ignored
-            return None
-
-    @classmethod
-    def parse_data(cls, line):
-        content = cls.get_content(line)
-        if content.find(',') != -1:
-            # data 
-            return content.split(',')
-        else:
-            # invalid or empty line, ignored
-            return None
-
-
-class JyPerK(object):
-    """
-    Parse session based jyperk csv and store.
-    * meta stores meta data information from the lines in the form, '#name=value',
-        as a dictionary, meta[name]=value.
-    * header stores column label from the line in the form '#header0, header1, ...'
-        as a list, header = ['header0', 'header1', ...]
-    * data stores values in csv file as a dictionary,
-        data['header0'] = [data00, data01, ...]
-    """
-    def __init__(self):
-        self.meta = dict()
-        self.header = []
-        self.data = []
-
-    def register_meta(self, content):
-        if isinstance(content, list):
-            # this should be data header
-            self.header = content
-            self.data = dict(((k, []) for k in self.header))
-        elif isinstance(content, tuple):
-            self.meta[content[0]] = content[1]
-
-    def register_data(self, content):
-        assert len(self.header) > 0
-        assert len(self.header) == len(content)
-        for (k, v) in itertools.izip(self.header, content):
-            self.data[k].append(v)
-
-
-@contextlib.contextmanager
-def associate(context, factors):
-    """
-    Convert data collected from session based jyperk csv as JyPerK object
-    to MS-beased csv, i.e., a string list of ['MS,ant,spwid,polid,factor', ...]
-    """
-    stream = StringIO.StringIO()
-    try:
-        data = factors.data
-        for ms in context.observing_run.measurement_sets:
-            session_name = ms.session
-            if session_name == 'Session_default':
-                # Session_default is not supported, use Session_1 instead
-                LOG.info('Session for %s is \'Session_default\'. Use \'Session_1\' for application of factor. ' %
-                         ms.basename)
-                session_id = 1
-            else:
-                # session_name should be 'Session_X' where X is an integer
-                session_id = int(session_name.split('_')[-1])
-            session_list = numpy.array([int(x) for x in data['sessionID']])
-            idx = numpy.where(session_list == session_id)
-
-            antennas = [x.name for x in ms.antennas]
-            antenna_list = data['Antenna']
-
-            factor_list = numpy.array([float(x) for x in data['Factor']])
-
-            spws = ms.get_spectral_windows()
-            bandcenter = numpy.array([float(x) * 1.0e6 for x in data['BandCenter(MHz)']])
-            bandwidth = numpy.array([float(x) * 1.0e6 for x in data['BandWidth(MHz)']])
-            range_min = bandcenter - 0.5 * bandwidth
-            range_max = bandcenter + 0.5 * bandwidth
-            for spw in spws:
-                max_freq = float(spw.max_frequency.value)
-                min_freq = float(spw.min_frequency.value)
-                tot_bandwidth = float(spw.bandwidth.value)
-
-                spwid = spw.id
-                d = {}
-                for i in idx[0]:
-                    #coverage = inspect_coverage(min_freq, max_freq, range_min[i], range_max[i])
-                    antenna = antenna_list[i]
-                    if antenna in d:
-                        #d[antenna].append([i, coverage, bandwidth[i]])
-                        d[antenna].append(i)
-                    else:
-                        #d[antenna] = [[i, coverage, bandwidth[i]]]
-                        d[antenna] = [i]
-
-                for ant in antennas:
-                    if ant in d:
-                        f = d[ant]
-                    else:
-                        LOG.info('%s: No factors available for spw %s antenna %s use ANONYMOUS' %
-                                 (session_name, spwid, ant))
-                        f = d['ANONYMOUS']
-                    coverage_list = [inspect_coverage(min_freq, max_freq, range_min[x], range_max[x]) for x in f]
-                    #_best_index = numpy.argmax(coverage_list)
-                    best_index = f[0]
-                    _best_score = inspect_coverage(min_freq, max_freq, range_min[f[0]], range_max[f[0]])
-                    for _i in f[1:]:
-                        coverage = inspect_coverage(min_freq, max_freq, range_min[_i], range_max[_i])
-                        if coverage > _best_score:
-                            best_index = _i
-                            _best_score = coverage
-                    line = '%s,%s,%s,%s,%s' % (ms.basename, ant, spwid, data['POL'][best_index],
-                                               factor_list[best_index])
-                    LOG.info('line: {0}'.format(line))
-                    stream.write(line + '\n')
-
-        stream.seek(0, 0)
-        yield stream
-
-    finally:
-        stream.close()
-
-
-def inspect_coverage(minval, maxval, minref, maxref):
-    if minval > maxval or minref > maxref:
-        return 0.0
-
-    coverage = (min(maxval, maxref) - max(minval, minref)) / (maxval - minval)
-
-    bandwidth_ratio = (maxref - minref) / (maxval - minval)
-
-    if coverage < 0.0 or coverage > 1.0 or bandwidth_ratio > 1.1:
-        return 0.0
-
-    return coverage
+            pass
+            #LOG.warn('The line {0} is invalid format'.format(line))

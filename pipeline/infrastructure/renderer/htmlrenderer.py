@@ -314,6 +314,15 @@ class T1_1Renderer(RendererBase):
                 'num_antennas beamsize_min beamsize_max '
                 'time_start time_end time_on_source '
                 'baseline_min baseline_max baseline_rms')
+    TableRowNRO = collections.namedtuple(
+                'TablerowNRO', 
+                'ousstatus_entity_id schedblock_id schedblock_name session '
+                'execblock_id ms href filesize ' 
+                'receivers '
+                'num_antennas beamsize_min beamsize_max '
+                'time_start time_end time_on_source '
+                'baseline_min baseline_max baseline_rms '
+                'merge2_version')
 
     EnvironmentTableRow = collections.namedtuple('EnvironmentTableRow',
                                                  'hostname num_mpi_servers num_cores cpu ram os ulimit')
@@ -403,24 +412,45 @@ class T1_1Renderer(RendererBase):
             else:
                 sb_name = None
 
-            row = T1_1Renderer.TableRow(ousstatus_entity_id=context.project_structure.ousstatus_entity_id,
-                                        schedblock_id=ms.schedblock_id,
-                                        schedblock_name=sb_name,
-                                        session=ms.session,
-                                        execblock_id=ms.execblock_id,
-                                        ms=ms.basename,
-                                        href=href,
-                                        filesize=ms.filesize,
-                                        receivers=receivers,
-                                        num_antennas=num_antennas,
-                                        beamsize_min='TODO',
-                                        beamsize_max='TODO',
-                                        time_start=time_start,
-                                        time_end=time_end,
-                                        time_on_source=time_on_source,
-                                        baseline_min=baseline_min,
-                                        baseline_max=baseline_max,
-                                        baseline_rms=baseline_rms)
+            if observatory.upper() == 'NRO':
+                row = T1_1Renderer.TableRowNRO(ousstatus_entity_id=context.project_structure.ousstatus_entity_id,
+                                            schedblock_id=ms.schedblock_id,
+                                            schedblock_name=sb_name,
+                                            session=ms.session,
+                                            execblock_id=ms.execblock_id,
+                                            ms=ms.basename,
+                                            href=href,
+                                            filesize=ms.filesize,
+                                            receivers=receivers,
+                                            num_antennas=num_antennas,
+                                            beamsize_min='TODO',
+                                            beamsize_max='TODO',
+                                            time_start=time_start,
+                                            time_end=time_end,
+                                            time_on_source=time_on_source,
+                                            baseline_min=baseline_min,
+                                            baseline_max=baseline_max,
+                                            baseline_rms=baseline_rms,
+                                            merge2_version=getattr(ms, 'merge2_version', 'N/A'))
+            else:
+                row = T1_1Renderer.TableRow(ousstatus_entity_id=context.project_structure.ousstatus_entity_id,
+                                            schedblock_id=ms.schedblock_id,
+                                            schedblock_name=sb_name,
+                                            session=ms.session,
+                                            execblock_id=ms.execblock_id,
+                                            ms=ms.basename,
+                                            href=href,
+                                            filesize=ms.filesize,
+                                            receivers=receivers,
+                                            num_antennas=num_antennas,
+                                            beamsize_min='TODO',
+                                            beamsize_max='TODO',
+                                            time_start=time_start,
+                                            time_end=time_end,
+                                            time_on_source=time_on_source,
+                                            baseline_min=baseline_min,
+                                            baseline_max=baseline_max,
+                                            baseline_rms=baseline_rms)
 
             ms_summary_rows.append(row)
 

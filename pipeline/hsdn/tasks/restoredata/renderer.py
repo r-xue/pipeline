@@ -11,6 +11,7 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.casatools as casatools
+from . import csvfilereader
 
 from pipeline.h.tasks.applycal.renderer import *
 from pipeline.h.tasks.common.displays import applycal as applycal
@@ -52,20 +53,100 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
 
         res0 = results[0]
 
-        importdata_results = res0.importdata_results
         ampcal_results = res0.ampcal_results
         applycal_results = res0.applycal_results
 
-        for r in importdata_results:
-            LOG.debug('r in importdata_results = {0}'.format(r));
+        for r in ampcal_results:
+            metadata = None
+            # Read reffile and insert the elements into a list "lines".
+            reffile = r.reffile
+            if not os.path.exists(reffile):
+                LOG.warn('The factor file is not found in current directory: os.path.exists(reffile) = {0}'.format(os.path.exists(reffile)));
+                metadata = ['No Data : No Data']
+                break
+            else:
+                LOG.info('os.path.exists(reffile) = {0}'.format(os.path.exists(reffile)));
+                with open(reffile, 'r') as f:
+                    lines = f.readlines()
+                # Count the line numbers for the beginning of metadata part and the end of it.
+                if len(lines) == 0:
+                    LOG.warn('The factor file is invalid format: size of reffile = {0}'.format(len(lines)));
+                    metadata = ['No Data : No Data']
+                    break
+                else:
+                    count = 0
+                    beginpoint = 0
+                    endpoint = 0
+                    for elem in lines:
+                        count += 1
+                        if elem.startswith('#---Fill'):
+                            beginpoint = count
+                            LOG.debug('beginpoint = {0}'.format(beginpoint))
+                        if elem.startswith('#---End'):
+                            endpoint = count
+                            LOG.debug('endpoint = {0}'.format(endpoint))
+                            continue
+                    # Insert the elements (from beginpoint to endpoint) into a list "metadata_tmp".
+                    metadata_tmp = []
+                    elem = ""
+                    key = ""
+                    value = ""
+                    multivalue = ""
+                    felem = ""
+                    count = 0
+                    for elem in lines:
+                        count += 1
+                        if count < beginpoint + 1:
+                            continue
+                        if count >= endpoint:
+                            continue
+                        elem = elem.replace('\r','')
+                        elem = elem.replace('\n','')
+                        elem = elem.replace('#','')
+                        elem = elem.lstrip()
+                        check = elem.split()
+                        # The lines without "#" are regarded as all FreeMemo's values.
+                        if len(elem) == 0:
+                            LOG.debug('Skipped the blank line of the reffile.');
+                            continue
+                        else:
+                            if not ":" in check[0]:
+                                key = 'FreeMemo'
+                                value = elem
+                                elem = key + ':' + value
+                            else:
+                                onepair = elem.split(':', 1)
+                                key = "".join(onepair[0])
+                                value = "".join(onepair[1])
+                                elem = key + ':' + value
+                        metadata_tmp.append(elem)
 
-            importdata_results_inputs_org = r.inputs
-            results[0].importdata_results.inputs = {}
+                    if len(metadata_tmp) == 0:
+                        LOG.info('The factor file is invalid format. [No Data : No Data] is inserted instead of blank.')
+                        metadata = ['No Data : No Data']
+                        break
+                    else:
+                        LOG.debug('metadata_tmp: {0}'.format(metadata_tmp))
+                        # Arrange "metadata_tmp" list to "metadata" list to connect FreeMemo values.
+                        metadata = []
+                        elem = ""
+                        for elem in metadata_tmp:
+                            onepair = elem.split(':', 1)
+                            key = "".join(onepair[0])
+                            value = "".join(onepair[1])
+                            if 'FreeMemo' in key:
+                                multivalue += value + '<br>'
+                                elem = key + ':' + multivalue
+                            else:
+                                elem = key + ':' + value
+                                metadata.append(elem)
+                        felem = 'FreeMemo:' + multivalue
+                        metadata.append(felem)
+                        LOG.info('metadata: {0}'.format(metadata))
+        ctx.update({'metadata': metadata})
 
         for r in ampcal_results:
-            LOG.debug('r in importdata_results = {0}'.format(r));
-
-            # rearrange jyperk factors
+            # rearrange scaling factors
             ms = context.observing_run.get_ms(name=r.vis)
             vis = ms.basename
             spw_band = {}
@@ -94,7 +175,6 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
                         corr = str(', ').join(corrlist)
                         jyperk = factor if factor is not None else 'N/A (1.0)'
 
-                        # tr = JyperKTR(vis, spwid, ant_name, corr, jyperk)
                         tr = trfunc(vspwid, vis, spwid, ant_name, corr, jyperk)
                         spw_factors[vspwid].append(tr)
                         if factor is not None:
@@ -112,6 +192,8 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
         row_values = []
         for factor_list in spw_factors.itervalues():
             row_values += list(factor_list)
+
+        # set context
         ctx.update({'jyperk_rows': utils.merge_td_columns(row_values),
                     'reffile': reffile_copied,
                     'dovirtual': dovirtual})

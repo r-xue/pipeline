@@ -10,3 +10,10 @@ class NROPipelineManifest(manifest.PipelineManifest):
         Add the template reduction script for restoredata workflow
         """
         eltree.SubElement(ous, "reduction_script", name=script)
+
+    @staticmethod
+    def add_scalefile(ous, filename):
+        """
+        Add the template scale file for restoredata workflow
+        """
+        eltree.SubElement(ous, "scale_file", name=filename)
