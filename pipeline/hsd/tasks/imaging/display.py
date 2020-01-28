@@ -590,7 +590,7 @@ class SDSparseMapDisplay(SDImageDisplay):
             iax = axes[i]
             full_blc[iax] = max(blc[i], 0)
             full_trc[iax] = min(trc[i], array_shape[iax])
-        return data[list(map(slice, full_blc, full_trc))]
+        return data[tuple(list(map(slice, full_blc, full_trc)))]
 
 
 class SDChannelMapDisplay(SDImageDisplay):
