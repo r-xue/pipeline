@@ -28,7 +28,7 @@ class MakeImListInputs(vdp.StandardInputs):
     uvrange = vdp.VisDependentProperty(default='')
     width = vdp.VisDependentProperty(default='')
     clearlist = vdp.VisDependentProperty(default=True)
-    pbe_eb = vdp.VisDependentProperty(default=False)
+    per_eb = vdp.VisDependentProperty(default=False)
     calcsb = vdp.VisDependentProperty(default=False)
     parallel = vdp.VisDependentProperty(default='automatic')
 
