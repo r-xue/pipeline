@@ -1,11 +1,13 @@
 import os
 import re
 import string
+import textwrap
 
+import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import numpy as np
-import pylab as plt
 from matplotlib.colors import ColorConverter, Colormap, Normalize
+from matplotlib.patches import Rectangle
 from numpy import ma
 
 import pipeline.infrastructure as infrastructure
@@ -71,7 +73,7 @@ class ImageDisplay(object):
         return chunks
 
     @staticmethod
-    def _get_plotfile(result, prefix=''):
+    def _get_plot_filename(result, prefix=''):
         fileparts = {
             'prefix': prefix,
             'datatype': result.datatype,
@@ -124,135 +126,141 @@ class ImageDisplay(object):
 
         return png
 
-    def plot(self, context, results, reportdir, prefix='',
-             change='Flagging', dpi=None):
+    def plot(self, context, results, reportdir, prefix='', change='Flagging', dpi=None):
 
         if not results:
             return []
 
-        stagenumber = context.stage
+        # Create a plot for each flagging view in the result.
         plots = []
-
-        vis = results.vis
-        flagcmds = results.flagcmds()
-        descriptionlist = sorted(results.descriptions())
-
-        for description in descriptionlist:
-            xtitle = results.first(description).axes[0].name
-            ytitle = results.first(description).axes[1].name
-            plotfile = self._get_plotfile(results.first(description), prefix)
+        for description in sorted(results.descriptions()):
+            # Derive output filename.
+            plotfile = self._get_plot_filename(results.first(description), prefix)
             plotfile = os.path.join(reportdir, plotfile)
 
-            ant = results.first(description).ant
+            # Create a plot object for the current flagging view, and store in
+            # list of plots.
             plot = logger.Plot(
                 plotfile,
-                x_axis=xtitle, y_axis=ytitle,
+                x_axis=results.first(description).axes[0].name, y_axis=results.first(description).axes[1].name,
                 field=results.first(description).fieldname,
-                parameters={'vis': os.path.basename(vis),
+                parameters={'vis': os.path.basename(results.vis),
                             'intent': results.first(description).intent,
                             'spw': results.first(description).spw,
                             'pol': results.first(description).pol,
-                            'ant': ant,
+                            'ant': results.first(description).ant,
                             'type': results.first(description).datatype,
                             'file': os.path.basename(results.first(description).filename)})
             plots.append(plot)
 
+            # If the plot figure already exists on disk, then skip to next one.
             if os.path.exists(plotfile):
                 LOG.trace('Not overwriting existing image at %s' % plotfile)
                 continue
-
-            plt.figure(num=1)
-
-            if len(flagcmds) > 0:
-                nsubplots = 3
-                self._plot_panel(nsubplots, 1, results.first(description),
-                                 'Before %s' % change)
-
-                self._plot_panel(nsubplots, 2, results.last(description),
-                                 'After')
-            else:
-                nsubplots = 2
-                self._plot_panel(nsubplots, 1, results.first(description), '')
-
-            # plot the titles and key
-            plt.subplot(1, 3, 3)
-            plt.axis('off')
-            yoff = 1.1
-            yoff = self.plottext(0.1, yoff, 'STAGE: %s' % stagenumber, 30)
-            yoff = self.plottext(0.1, yoff, description, 30)
-
-            # flaggingkey
-            yoff -= 0.1
-
-            ax = plt.gca()
-            ax.fill([0.1, 0.2, 0.2, 0.1],
-                    [yoff, yoff, yoff+1.0/80.0, yoff+1.0/80.0],
-                    facecolor='indigo', edgecolor='indigo')
-            yoff = self.plottext(0.25, yoff, 'No data', 35, mult=0.8)
-
-            ax.fill([0.1, 0.2, 0.2, 0.1],
-                    [yoff, yoff, yoff+1.0/80.0, yoff+1.0/80.0],
-                    facecolor='violet', edgecolor='violet')
-            yoff = self.plottext(0.25, yoff, 'cannot calculate', 45, mult=0.8)
-
-            # key for data flagged during this stage
-            if len(flagcmds) > 0:
-                rulesplotted = set()
-
-                yoff = self.plottext(0.1, yoff, 'Flagged here:', 35, mult=0.9)
-                yoff = self.plottext(0.1, yoff, 'rules:', 45, mult=0.8)
-                for flagcmd in flagcmds:
-                    if flagcmd.rulename == 'ignore':
-                        continue
-
-                    if (flagcmd.rulename, flagcmd.ruleaxis,
-                            flag_color[flagcmd.rulename]) not in rulesplotted:
-                        color = flag_color[flagcmd.rulename]
-                        ax.fill([0.1, 0.2, 0.2, 0.1],
-                                [yoff, yoff, yoff+1.0/80.0, yoff+1.0/80.0],
-                                facecolor=color, edgecolor=color)
-                        if flagcmd.ruleaxis is not None:
-                            yoff = self.plottext(
-                                0.25, yoff, '%s axis - %s' %
-                                (flagcmd.ruleaxis, flagcmd.rulename), 45,
-                                mult=0.8)
-                        else:
-                            yoff = self.plottext(
-                                0.25, yoff, flagcmd.rulename, 45, mult=0.8)
-                        rulesplotted.update(
-                            [(flagcmd.rulename, flagcmd.ruleaxis, color)])
-
-            yoff = 0.6
-            yoff = self.plottext(0.1, yoff, 'Antenna key:', 40)
-            yoffstart = yoff
-            xoff = 0.1
-            # Get the MS object.
-            ms = context.observing_run.get_ms(name=vis)
-            antennas = ms.antennas
-            for antenna in antennas:
-                yoff = self.plottext(
-                    xoff, yoff, '%s:%s' % (antenna.id, antenna.name), 40)
-                if yoff < 0.0:
-                    yoff = yoffstart
-                    xoff += 0.30
-
-            # reset axis limits which otherwise will have been pulled
-            # around by the plotting of the key
-            plt.axis([0.0, 1.0, 0.0, 1.0])
-
-            # save the image (remove odd characters from filename to cut
-            # down length)
-            plt.savefig(plotfile, dpi=dpi)
-            plt.clf()
-            plt.close(1)
+            # Otherwise create the plot figure.
+            self._create_plot_file(context, results, description, change, plotfile, dpi=dpi)
 
         return plots
 
-    def _plot_panel(self, nplots, plotnumber, image, subtitle):
+    def _create_plot_file(self, context, results, description, change, plotfile, dpi=None):
+        # Retrieve metadata from context and result.
+        stagenumber = context.stage
+        ms = context.observing_run.get_ms(name=results.vis)
+        antennas = ms.antennas
+        flagcmds = results.flagcmds()
+
+        # Depending on whether flagging occurred, create a 2 or 3-panel figure,
+        # and plot the flagging view data panels.
+        if len(flagcmds) > 0:
+            nsubplots = 3
+            fig, axs = plt.subplots(1, nsubplots, constrained_layout=True, gridspec_kw={'width_ratios': [3, 3, 2]})
+            self._plot_panel(fig, axs[0], nsubplots, 1, results.first(description), 'Before %s' % change)
+            self._plot_panel(fig, axs[1], nsubplots, 2, results.last(description), 'After')
+        else:
+            nsubplots = 2
+            fig, axs = plt.subplots(1, nsubplots, constrained_layout=True, gridspec_kw={'width_ratios': [3, 1]})
+            self._plot_panel(fig, axs[0], nsubplots, 1, results.first(description), '')
+
+        # Reduce the padding of the constrained layout.
+        fig.set_constrained_layout_pads(w_pad=0.02, h_pad=0.02)
+
+        # # Plot the legend panel.
+        self._plot_legend_panel(axs[-1], antennas, flagcmds)
+
+        # Set figure title.
+        figtitle = 'Stage %s - %s' % (stagenumber, description)
+        fig.suptitle("\n".join(textwrap.wrap(figtitle, 100)), size='small')
+
+        # Save the figure to file.
+        plt.savefig(plotfile, dpi=dpi)
+        plt.close(fig)
+
+    def _plot_legend_panel(self, ax, antennas, flagcmds):
+        """
+        Plot the antenna and flagging legend information into a panel.
+
+        Keyword arguments:
+        ax                 -- Matplotlib Axes object for current panel.
+        antennas           -- List of antennas.
+        flagcmds           -- List of flagging commands.
+        """
+        # Do not show axes.
+        ax.axis('off')
+
+        # Plot the antenna legend.
+        xoff = 0.
+        yoff = 1.03
+        xoffstart = xoff
+        yoff = self.plottext(ax, xoffstart, yoff, 'Antenna key:', 40, mult=0.8)
+        yoffstart = yoff
+        for idx, antenna in enumerate(antennas):
+            yoff = self.plottext(ax, xoff, yoff, '%s:%s' % (antenna.id, antenna.name), 40, mult=0.7)
+            # Go to next column after every 22 antennas.
+            if (idx + 1) % 22 == 0:
+                yoff = yoffstart
+                xoff += 0.4
+
+        # Key for masked data.
+        yoff = 0.30
+        xlen = 0.20  # length of colour block
+        ylen = 0.02  # height of colour block
+        strlen = 20  # max length of string for flag reason
+        rectyoff = -0.003  # y-off for colour block, to align with text
+
+        # Always show "no data" and "cannot calculate" in the legend.
+        yoff = self.plottext(ax, xoffstart, yoff, 'Key for masked data:', 45, mult=0.8)
+        ax.add_patch(Rectangle((xoffstart, yoff+rectyoff), xlen, ylen, facecolor='indigo', edgecolor='indigo',
+                               transform=ax.transAxes))
+        yoff = self.plottext(ax, xoffstart + 0.25, yoff, 'no data', strlen, mult=0.8)
+        ax.add_patch(Rectangle((xoffstart, yoff+rectyoff), xlen, ylen, facecolor='violet', edgecolor='violet',
+                               transform=ax.transAxes))
+        yoff = self.plottext(ax, xoffstart + 0.25, yoff, 'cannot calculate', strlen, mult=0.8)
+
+        # Add key for data flagged during this stage.
+        if len(flagcmds) > 0:
+            rulesplotted = set()
+            for flagcmd in flagcmds:
+                if flagcmd.rulename == 'ignore':
+                    continue
+                if (flagcmd.rulename, flagcmd.ruleaxis, flag_color[flagcmd.rulename]) not in rulesplotted:
+                    color = flag_color[flagcmd.rulename]
+                    ax.add_patch(Rectangle((xoffstart, yoff+rectyoff), xlen, ylen, facecolor=color, edgecolor=color,
+                                           transform=ax.transAxes))
+                    if flagcmd.ruleaxis is not None:
+                        yoff = self.plottext(ax, xoffstart + 0.25, yoff,
+                                             '%s axis - %s' % (flagcmd.ruleaxis, flagcmd.rulename),
+                                             strlen, mult=0.8)
+                    else:
+                        yoff = self.plottext(ax, xoffstart + 0.25, yoff, flagcmd.rulename, strlen, mult=0.8)
+                    rulesplotted.update([(flagcmd.rulename, flagcmd.ruleaxis, color)])
+
+    def _plot_panel(self, fig, ax, nplots, plotnumber, image, subtitle):
         """
         Plot the 2d data into one panel.
 
         Keyword arguments:
+        fig                -- Matplotlib figure object.
+        ax                 -- Matplotlib Axes object for current panel.
         nplots             -- The number of sub-plots on the page.
         plotnumber         -- The index of this sub-plot.
         image              -- The 2d data.
@@ -318,16 +326,14 @@ class ImageDisplay(object):
 
         # make antenna x antenna plots square
         aspect = 'auto'
-        shrink = 0.6
+        cb_aspect = 50
+        shrink = 0.8
         fraction = 0.15
+        pad = 0
         if ('ANTENNA' in xtitle.upper()) and ('ANTENNA' in ytitle.upper()):
             aspect = 'equal'
             shrink = 0.4
             fraction = 0.1
-
-        # plot data - data transpose to get [x,y] into [row,column] expected by
-        # matplotlib
-        plt.subplot(1, nplots, plotnumber)
 
         # look out for yaxis values that would trip up matplotlib
         if isinstance(ydata[0], str):
@@ -347,7 +353,7 @@ class ImageDisplay(object):
 
                 ydata_numeric = np.array(ydata_numeric)
                 major_formatter = ticker.FormatStrFormatter('%05.2f')
-                plt.gca().yaxis.set_major_formatter(major_formatter)
+                ax.yaxis.set_major_formatter(major_formatter)
             else:
                 # any other string just replace by index
                 ydata_numeric = np.arange(len(ydata))
@@ -358,7 +364,7 @@ class ImageDisplay(object):
         # between y tick labels for second panel with greyscale for
         # first
         if plotnumber > 1:
-            plt.gca().yaxis.set_major_formatter(ticker.NullFormatter())
+            ax.yaxis.set_major_formatter(ticker.NullFormatter())
 
         if 'ANTENNA' in xtitle.upper():
             if ydata_numeric[0] == ydata_numeric[-1]:
@@ -382,56 +388,50 @@ class ImageDisplay(object):
             extent[2] -= 0.5
             extent[3] += 0.5
 
-        # Plot the image array.
-        plt.imshow(np.transpose(data), cmap=cmap, norm=norm, vmin=vmin,
-                   vmax=vmax, interpolation='nearest', origin='lower',
-                   aspect=aspect, extent=extent)
-
-        # Store limits of current plot.
-        lims = plt.axis()
+        # Plot the image array; transpose data to get [x,y] into [row,column]
+        # expected by matplotlib
+        img = ax.imshow(np.transpose(data), cmap=cmap, norm=norm, vmin=vmin, vmax=vmax, interpolation='nearest',
+                        origin='lower', aspect=aspect, extent=extent)
 
         # Set y-axis title, only add this to the first panel.
         if plotnumber == 1:
-            plt.ylabel(ytitle, size=15)
+            ax.set_ylabel(ytitle, size='medium')
 
         # Set x-axis title, add units to title if available.
         xlabel = xtitle
         if xunits:
             xlabel = '%s [%s]' % (xlabel, xunits)
-        plt.xlabel(xlabel, size=15)
+        ax.set_xlabel(xlabel, size='medium')
 
         # Create the color-bar.
         # plot wedge, make tick numbers smaller, label with units
         if vmin == vmax:
-            cb = plt.colorbar(shrink=shrink, fraction=fraction,
-                              ticks=[-1, 0, 1])
+            cb = fig.colorbar(img, ax=ax, shrink=shrink, fraction=fraction, pad=pad, aspect=cb_aspect, ticks=[-1, 0, 1])
         else:
-            if (vmax - vmin > 0.01) and (vmax - vmin) < 1000:
-                cb = plt.colorbar(shrink=shrink, fraction=fraction)
-            else:
-                cb = plt.colorbar(shrink=shrink, fraction=fraction,
-                                  format='%.2e')
-        # Set size of labels on the color-bar.
+            cb = fig.colorbar(img, ax=ax, shrink=shrink, fraction=fraction, pad=pad, aspect=cb_aspect)
+        cb.formatter.set_scientific(True)
+        cb.formatter.set_powerlimits((-2, 2))
+        cb.ax.yaxis.set_offset_position('left')
+        cb.update_ticks()
+
+        # Set size of y-tick labels on the color-bar.
         for label in cb.ax.get_yticklabels():
-            label.set_fontsize(7)
-        # Shows labels for color-bar for right-most panel, adding units if available.
+            label.set_fontsize('small')
+
+        # Set a label for color-bar for the right-most panel, adding units if available.
         data_label = datatype if dataunits is None else '%s (%s)' % (datatype, dataunits)
         if nplots == 2 or plotnumber == 2:
-            cb.set_label(data_label, fontsize=10)
-
-        # Set size of labels on axes.
-        for label in plt.gca().get_yticklabels():
-            label.set_fontsize(10)
+            cb.set_label(data_label, fontsize='medium')
 
         # Rotate x tick labels to avoid them clashing
-        plt.xticks(rotation=35)
+        ax.tick_params(axis='x', rotation=35)
 
         # If plotting with antenna on the x-axis, then modify the tick mark
         # layout.
         if 'ANTENNA' in xtitle.upper():
             # Offset the plot title to allow space for labels above upper
             # x-axis.
-            plt.title(subtitle, fontsize='large', y=1.06)
+            ax.set_title(subtitle, fontsize='medium', y=1.06)
 
             # Set x-ticks explicitly for each antenna ID.
             xticks = np.arange(0, len(xdata), 1)
@@ -441,50 +441,49 @@ class ImageDisplay(object):
             xlabel_size = max(np.ceil(10 - len(xdata) // 9), 5)
 
             # Add labels for even-indices in antenna array.
-            ax1 = plt.gca()
-            ax1.set_xticks(xticks[::2])
-            ax1.set_xticklabels([str(x) for x in xdata[::2]], rotation=90)
-            ax1.xaxis.set_minor_locator(ticker.FixedLocator(xdata[1::2]))
+            ax.set_xticks(xticks[::2])
+            ax.set_xticklabels([str(x) for x in xdata[::2]], rotation=90)
+            ax.xaxis.set_minor_locator(ticker.FixedLocator(xdata[1::2]))
 
             # Display ticks outside the plot for both axes and both sides;
             # further rotation tick labels.
-            ax1.tick_params(axis='both', which='both', direction='out')
+            ax.tick_params(axis='both', which='both', direction='out')
 
             # Set x-label size.
-            for label in ax1.get_xticklabels():
+            for label in ax.get_xticklabels():
                 label.set_fontsize(xlabel_size)
 
             # Add labels for odd-indices in antenna array.
             if len(xdata) > 1:
-                ax2 = ax1.twiny()
-                ax2.set_xticks(xticks[1::2])
-                ax2.set_xticklabels([str(x) for x in xdata[1::2]], rotation=90)
-                ax2.xaxis.set_minor_locator(ticker.FixedLocator(xdata[::2]))
+                axt = ax.twiny()
+                axt.set_xlim(ax.get_xlim())  # copy over limits.
+                axt.set_xticks(xticks[1::2])
+                axt.set_xticklabels([str(x) for x in xdata[1::2]], rotation=90)
+                axt.xaxis.set_minor_locator(ticker.FixedLocator(xdata[::2]))
 
                 # Display ticks outside the plot for both axes and both sides;
                 # further rotation tick labels.
-                ax2.tick_params(axis='both', which='both', direction='out')
+                axt.tick_params(axis='both', which='both', direction='out')
 
                 # Set x-label size.
-                for label in ax2.get_xticklabels():
+                for label in axt.get_xticklabels():
                     label.set_fontsize(xlabel_size)
         else:
             # Set plot title.
-            plt.title(subtitle, fontsize='large')
+            ax.set_title(subtitle, fontsize='medium')
 
             # For x-axis, enable minor ticks
-            plt.gca().xaxis.set_minor_locator(ticker.AutoMinorLocator())
+            ax.xaxis.set_minor_locator(ticker.AutoMinorLocator())
 
         # If plotting by time on y-axis, then disable automatic tickmarks,
         # and add labels manually for chunks of continguous time.
         if ytitle.upper() == 'TIME':
-            plt.gca().yaxis.set_major_locator(plt.NullLocator())
+            ax.yaxis.set_major_locator(plt.NullLocator())
             if plotnumber == 1:
                 # identify chunks of contiguous time
                 chunks = self._findchunks(ydata)
                 base_time = 86400.0 * np.floor(ydata[0]/86400.0)
                 tim_plot = ydata - base_time
-                ax = plt.gca()
 
                 for chunk in chunks:
                     t = tim_plot[chunk[0]]
@@ -494,28 +493,22 @@ class ImageDisplay(object):
                     t -= m * 60.0
                     s = int(np.floor(t))
                     tstring = '%sh%sm%ss' % (h, m, s)
-                    ax.axhline(chunk[0]-0.5, color='white')
-                    ax.axhline(chunk[-1]+0.5, color='white')
-                    ax.text(lims[0]-0.25, ydata[chunk[0]], tstring,
-                            fontsize=8, ha='right', va='bottom',
+                    ax.text(ax.axis()[0]-0.25, ydata[chunk[0]], tstring, fontsize=8, ha='right', va='bottom',
                             clip_on=False)
 
         # If plotting by baseline on y-axis, add minor tick marks (should mark
         # start of each new antenna)
         if 'BASELINE' in ytitle.upper():
-            plt.gca().yaxis.set_minor_locator(ticker.AutoMinorLocator())
-
-        # reset lims to values for image, stops box being pulled off edge
-        # of image by other plotting commands.
-        plt.axis(lims)
+            ax.yaxis.set_minor_locator(ticker.AutoMinorLocator())
 
     @staticmethod
-    def plottext(xoff, yoff, text, maxchars, ny_subplot=1, mult=1):
+    def plottext(ax, xoff, yoff, text, maxchars, ny_subplot=1, mult=1):
         """
         Utility method to plot text and put line breaks in to keep the
         text within a given limit.
 
         Keyword arguments:
+        ax         -- Matplotlib Axes object for current panel.
         xoff       -- world x coord where text is to start.
         yoff       -- world y coord where text is to start.
         text       -- Text to print.
@@ -527,7 +520,6 @@ class ImageDisplay(object):
         words = text.rsplit()
         words_in_line = 0
         line = ''
-        ax = plt.gca()
         for i in range(len(words)):
             temp = line + words[i] + ' '
             words_in_line += 1
