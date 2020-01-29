@@ -1,4 +1,5 @@
 # import os
+import collections
 import time
 import numpy
 import math
@@ -94,7 +95,7 @@ class DetectLine(basetask.StandardTaskTemplate):
         edge = self.inputs.edge
         broadline = self.inputs.broadline
 
-        detect_signal = {}
+        detect_signal = collections.OrderedDict()
 
         # Pre-Defined Spectrum Window
         LOG.debug('{}: window={}, windowmode={}'.format(self.__class__.__name__, window, windowmode))

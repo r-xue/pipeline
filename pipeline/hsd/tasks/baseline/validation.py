@@ -527,7 +527,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         # Bestlines: [[center, width, T/F],[],,,[]]
         clustering_algorithm = self.inputs.clusteringalgorithm
         LOG.info('clustering algorithm is \'{}\'', clustering_algorithm)
-        clustering_results = {}
+        clustering_results = collections.OrderedDict()
         if clustering_algorithm == 'kmean':
             #(Ncluster, Bestlines, BestCategory, Region) = self.clustering_kmean(Region, Region2)
             clustering_results[clustering_algorithm] = self.clustering_kmean(Region, Region2)
@@ -784,7 +784,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         LOG.debug('clean_detect_signal: PosGroup = {}', PosGroup)
         for PList in PosGroup:
             if len(PList) > 2:
-                data = {}
+                data = collections.OrderedDict()
                 for i in PList:
                     data[i] = DS[i][2]
                 # threshold 0.7: identical line is detected in all 3 data: strict checking
@@ -1421,7 +1421,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         LOG.info('Ncluster={}', Ncluster)
 
         # Dictionary for final output
-        RealSignal = {}
+        RealSignal = collections.OrderedDict()
 
         HalfGrid = 0.5 * sqrt(grid_ra*grid_ra + grid_dec*grid_dec)
 
