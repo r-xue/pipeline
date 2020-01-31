@@ -141,7 +141,7 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
 #                         lab.set_fontsize(newfontsize)
                         tpmap_colorbar.ax.set_ylabel('[%s]' % self.image.brightnessunit, fontsize=newfontsize)
                     else:
-                        tpmap_colorbar.set_clim((tmin, tmax))
+                        tpmap_colorbar.mappable.set_clim((tmin, tmax))
                         tpmap_colorbar.draw_all()
 
             # draw beam pattern
@@ -278,7 +278,7 @@ class SDMomentMapDisplay(SDImageDisplay):
                         #if newfontsize is None: # no ticks in colorbar likely invalid TP map
                         tpmap_colorbar.ax.set_ylabel('[%s]'%(self.brightnessunit), fontsize=newfontsize)
                     else:
-                        tpmap_colorbar.set_clim((tmin, tmax))
+                        tpmap_colorbar.mappable.set_clim((tmin, tmax))
                         tpmap_colorbar.draw_all()
 
             # draw beam pattern
@@ -843,7 +843,7 @@ class SDChannelMapDisplay(SDImageDisplay):
 #                             lab.set_fontsize(newfontsize)
                             integmap_colorbar.ax.set_ylabel('[%s km/s]' % self.brightnessunit, fontsize=newfontsize)
                         else:
-                            integmap_colorbar.set_clim((Total.min(), Total.max()))
+                            integmap_colorbar.mappable.set_clim((Total.min(), Total.max()))
                             integmap_colorbar.draw_all()
 
                 # draw beam pattern
@@ -942,7 +942,7 @@ class SDChannelMapDisplay(SDImageDisplay):
                                 cb.ax.set_ylabel('[%s km/s]' % self.brightnessunit, fontsize=newfontsize)
                                 chmap_colorbar[y] = cb
                             else:
-                                chmap_colorbar[y].set_clim(Vmin, Vmax)
+                                chmap_colorbar[y].mappable.set_clim(Vmin, Vmax)
                                 chmap_colorbar[y].draw_all()
                         pl.title(Title[i], size=TickSize)
 
@@ -1080,7 +1080,7 @@ class SDRmsMapDisplay(SDImageDisplay):
 #                         lab = rms_colorbar.ax.title
                         rms_colorbar.ax.set_ylabel('[%s]' % self.brightnessunit)
                     else:
-                        rms_colorbar.set_clim((rmsmin, rmsmax))
+                        rms_colorbar.mappable.set_clim((rmsmin, rmsmax))
                         rms_colorbar.draw_all()
             del rms_map
 
