@@ -82,7 +82,7 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
         ctx.update({'detail': plot_detail,
                     'cover_only': plot_cover,
                     'dovirtual': dovirtual,
-                    'sorted_fields': [f.name for f in sorted_fields]})
+                    'sorted_fields': [f.name.replace(' ', '_') for f in sorted_fields]})
 
         # profile map before and after baseline subtracton
         maptype_list = ['before', 'after', 'before']
