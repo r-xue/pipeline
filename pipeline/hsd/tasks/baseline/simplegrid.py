@@ -274,14 +274,14 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
                         pols.append(pol)
                         flags.append(flag_summary)
                         weights.append(Weight)
-                bind_to_grid[ms].append([data_row, grid_table_row, pols, weights, flags])
+                bind_to_grid[ms.basename].append([data_row, grid_table_row, pols, weights, flags])
 #                 if tSFLAG[index] == 1:
 #                     if tTSYS[index] > 0.5 and tEXPT[index] > 0.0:
 #                         Weight = tEXPT[index] / (tTSYS[index] ** 2.0)
 #                     else: Weight = 1.0
 #                     bind_to_grid[vis].append([data_row, grid_table_row, Weight, tSFLAG[index]])
 #         del tTSYS, tEXPT, tSFLAG
-        LOG.debug('bind_to_grid.keys() = %s' % ([x.name for x in bind_to_grid]))
+        LOG.debug('bind_to_grid.keys() = %s' % ([x for x in bind_to_grid]))
         LOG.debug('bind_to_grid={}', bind_to_grid)
 
         def cmp(x, y):
@@ -323,9 +323,11 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
         #for i in xrange(len(antenna_list)):
         #query = lambda condition: 1 if condition else 0
         #vquery = numpy.vectorize(query)
-        for ms, entries in bind_to_grid.items():
+        #for basename, entries in bind_to_grid.items():
+        for ms in self.inputs.context.observing_run.measurement_sets:
             #AntID = antenna_list[i]
             #with casatools.TableReader(infiles[i]) as tb:
+            entries = bind_to_grid[ms.basename]
             vis = ms.work_data
             ms_colname = utils.get_datacolumn_name(vis)
             rowmap = utils.make_row_map_for_baselined_ms(ms)
