@@ -30,7 +30,11 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
     def update_mako_context(self, ctx, context, results):
         # whether or not virtual spw id handling is necessary
         dovirtual = sdutils.require_virtual_spw_id_handling(context.observing_run)
-        ctx.update({'dovirtual': dovirtual})
+        sorted_fields = sdutils.sort_fields(context)
+        ctx.update({
+            'dovirtual': dovirtual,
+            'sorted_fields': [f.name.replace(' ', '_') for f in sorted_fields]
+        })
 
         cqa = casatools.quanta
         plots = []

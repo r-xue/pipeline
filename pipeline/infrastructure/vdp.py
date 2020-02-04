@@ -453,8 +453,9 @@ class InputsContainer(object):
 
         try:
             # create dict of <data name>: Inputs instance
-            self._cls_instances = {os.path.basename(kw[self._scope_attr]): task_cls.Inputs(**kw)
-                                   for kw in constructor_args}
+            self._cls_instances = collections.OrderedDict(
+                (os.path.basename(kw[self._scope_attr]), task_cls.Inputs(**kw))
+                for kw in constructor_args)
         except TypeError:
             # catch TypeError exceptions from unexpected keyword arguments
             # so that we can add some more context to the debug message

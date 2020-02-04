@@ -173,7 +173,7 @@ It generates an image combined spectral data from whole antenna as well as image
 
 %if sparsemap_subpage is not None and sparsemap_subpage != {}:
 <h3 id="profilemap" class="jumptarget">Profile Map</h3>
-  % for field in sparsemap_subpage.keys():
+  % for field in sorted_fields:
     <h4><a class="replace"
            href="${os.path.join(dirname, sparsemap_subpage[field])}"
 	   data-field="${field}">
@@ -244,7 +244,7 @@ It generates an image combined spectral data from whole antenna as well as image
     % if plots['title'] == 'Channel Map':
     Click in the Field Name or Spectral Window ID to get different spectral selections.
     % endif
-    % for field in plots['subpage'].keys():
+    % for field in sorted_fields:
         <h4><a class="replace"
                href="${os.path.join(dirname, plots['subpage'][field])}"
                data-field="${field}">

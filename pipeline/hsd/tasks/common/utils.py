@@ -987,3 +987,16 @@ class RGAccumulator(object):
             return field_id_list, antenna_id_list, spw_id_list, pol_ids_list
         else:
             return field_id_list, antenna_id_list, spw_id_list
+
+
+def sort_fields(context):
+    mses = context.observing_run.measurement_sets
+    sorted_names = []
+    sorted_fields = []
+    for ms in mses:
+        fields = ms.get_fields(intent='TARGET')
+        for f in fields:
+            if f.name not in sorted_names:
+                sorted_fields.append(f)
+                sorted_names.append(f.name)
+    return sorted_fields

@@ -36,13 +36,25 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
         plot_cover = {}  # key is field name, subkeys are 'title', 'cover_plots'
         # Render stage details pages
         details_title = ["R.A. vs Dec."]
-        for name, _plots in plot_group.items():
+        name_list = ['R.A. vs Dec.', 'Line Center vs Line Width', 'Number of Clusters vs Score']
+        sorted_fields = utils.sort_fields(context)
+        #for name, _plots in plot_group.items():
+        for name in name_list:
+            _plots = plot_group[name]
             perfield_plots = self._plots_per_field(_plots)
             renderer = SingleDishClusterPlotsRenderer(context, results, name, _plots)
             if name in details_title:
                 with renderer.get_file() as fileobj:
                     fileobj.write(renderer.render())
-                for field, pfplots in perfield_plots.items():
+                #for field, pfplots in perfield_plots.items():
+                for fieldobj in sorted_fields:
+                    field_candidates = filter(lambda x: x in perfield_plots,
+                                              set([fieldobj.name, fieldobj.name.strip('"'), fieldobj.clean_name]))
+                    try:
+                        field = next(field_candidates)
+                    except StopIteration:
+                        raise RuntimeError('No plots for field "{}"'.format(fieldobj.name))
+                    pfplots = perfield_plots[field]
                     group_desc = {'title': name,
                                   'html': os.path.basename(renderer.path)}
                     if field not in plot_detail:
@@ -50,7 +62,14 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
                     group_desc['cover_plots'] = self._get_a_plot_per_spw(pfplots)
                     plot_detail[field].append(group_desc)
             else:
-                for field, pfplots in perfield_plots.items():
+                for fieldobj in sorted_fields:
+                    field_candidates = filter(lambda x: x in perfield_plots,
+                                              set([fieldobj.name, fieldobj.name.strip('"'), fieldobj.clean_name]))
+                    try:
+                        field = next(field_candidates)
+                    except StopIteration:
+                        raise RuntimeError('No plots for field "{}"'.format(fieldobj.name))
+                    pfplots = perfield_plots[field]
                     group_desc = {'title': name,
                                   'html': os.path.basename(renderer.path)}
                     if field not in plot_cover:
@@ -62,7 +81,8 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
         dovirtual = utils.require_virtual_spw_id_handling(context.observing_run)
         ctx.update({'detail': plot_detail,
                     'cover_only': plot_cover,
-                    'dovirtual': dovirtual})
+                    'dovirtual': dovirtual,
+                    'sorted_fields': [f.name.replace(' ', '_') for f in sorted_fields]})
 
         # profile map before and after baseline subtracton
         maptype_list = ['before', 'after', 'before']
