@@ -380,14 +380,14 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                 tmpd = tbIn.getcell(datacolIn, data_row_in)
                 tmpf = tbIn.getcell('FLAG', data_row_in)
                 for ip, polid in enumerate(polids):
-                    SpIn[ip, index] = tmpd[polid]
+                    SpIn[ip, index] = tmpd[polid].real
                     FlIn[ip, index] = tmpf[polid]
                 if is_baselined:
                     data_row_out = rowmap[data_row_in]
                     tmpd = tbOut.getcell(datacolOut, data_row_out)
                     tmpf = tbOut.getcell('FLAG', data_row_out)
                     for ip, polid in enumerate(polids):
-                        SpOut[ip, index] = tmpd[polid]
+                        SpOut[ip, index] = tmpd[polid].real
                         FlOut[ip, index] = tmpf[polid]
                 SpIn[:, index, :edgeL] = 0
                 SpOut[:, index, :edgeL] = 0
