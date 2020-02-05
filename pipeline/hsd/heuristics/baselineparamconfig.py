@@ -349,7 +349,7 @@ class CubicSplineFitParamConfig(BaselineFitParamConfig):
         super(CubicSplineFitParamConfig, self).__init__()
 
         # constant stuff
-        self.paramdict[BLP.FUNC] = 'cspline'
+        #self.paramdict[BLP.FUNC] = 'cspline'
         self.paramdict[BLP.CLIPNITER] = self.ClipCycle
         self.paramdict[BLP.CLIPTHRESH] = 5.0
 
@@ -363,4 +363,38 @@ class CubicSplineFitParamConfig(BaselineFitParamConfig):
         self.paramdict[BLP.POL] = pol
         self.paramdict[BLP.MASK] = masklist
         self.paramdict[BLP.NPIECE] = num_pieces
+
+        # fit function heuristics
+        # nchan: total number of channels
+        # nchan_segment: number of channels in one segment
+        # edge: number of channels from the edges to be excluded from the fit [C0, C1]
+        # mask: mask array (0->rejected, 1->adopted)
+        # masklist: list of mask ranges [[C0, C1], [C2, C3], ...]
+        # nchan_edge: max number of consecutive masked channels from edges
+        # if nchan_edge >= nchan/2:
+        #     fitfunc='poly'
+        #     order=1
+        # elif nchan_edge >= nchan_segment:
+        #     fitfunc='poly'
+        #     order=2
+        # else:
+        #     fitfunc='cspline'
+        edge_masks = list(filter(
+            lambda x: min(x) <= edge[0] or max(x) >= edge[1], 
+            masklist))
+        nchan_edge = max(map(lambda x: abs(x[1] - x[0]), edge_masks))
+        nchan_segment = int(round(float(nchan) / num_pieces))
+        nchan_half = nchan // 2 + nchan % 2
+        if nchan_edge >= nchan_half:
+            fitfunc = 'poly'
+            order = 1
+        elif nchan_edge >= nchan_segment:
+            fitfunc = 'poly'
+            order = 2
+        else:
+            fitfunc = 'cspline'
+            order = 0  # not used
+        self.paramdict[BLP.FUNC] = fitfunc
+        self.paramdict[BLP.ORDER] = order
+
         return self.paramdict
