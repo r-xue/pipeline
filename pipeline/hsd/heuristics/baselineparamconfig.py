@@ -160,6 +160,8 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
         base_mask_array = mask_array.copy()
 
+        #LOG.info('base_mask_array = {}'.format(''.join(map(str, base_mask_array))))
+
         time_table = datatable.get_timetable(antenna_id, spw_id, None, os.path.basename(vis), field_id)
         member_list = time_table[timetable_index]
 
@@ -243,6 +245,10 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                             maxwidth = 1
     #                       _masklist = masklist[i]
                             _masklist = list(masklist[i]) + flaglist[i][pol]
+                            #LOG.info('_masklist = {}'.format(_masklist))
+                            #LOG.info('masklist[{}] = {}'.format(i, masklist[i]))
+                            #LOG.info('flaglist[{}][{}] = {}'.format(i, pol, flaglist[i][pol]))
+                            #LOG.info('FLAG[{}][{}] = {}'.format(i, pol, ''.join(map(str, numpy.array(tb.getcell('FLAG', row)[pol], dtype=numpy.uint8)))))
                             for [chan0, chan1] in _masklist:
                                 if chan1 - chan0 >= maxwidth:
                                     maxwidth = int((chan1 - chan0 + 1) / 1.4)
@@ -259,6 +265,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                             # fitting
                             polyorder = min(polyorder, max_polyorder)
                             mask_array[:] = base_mask_array
+                            #LOG.info('mask_array = {}'.format(''.join(map(str, mask_array))))
                             #irow = len(row_list_total)+len(row_list)
                             #irow = len(index_list_total) + i
                             irow = row
@@ -283,13 +290,20 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                              fragment, nwindow, mask):
         # Create mask for line protection
         nchan_without_edge = nchan - sum(edge)
+        #LOG.info('__ mask (before) = {}'.format(''.join(map(str, mask))))
         if isinstance(masklist, (list, numpy.ndarray)):
             for [m0, m1] in masklist:
                 mask[m0:m1] = 0
         else:
             LOG.critical('Invalid masklist')
+        #LOG.info('__ mask (after)  = {}'.format(''.join(map(str, mask))))
         num_mask = int(nchan_without_edge - numpy.sum(mask[edge[0]:nchan-edge[1]] * 1.0))
+        # here meaning of "masklist" is changed
+        #     masklist: list of channel ranges to be *excluded* from the fit
+        # masklist_all: list of channel ranges to be *included* in the fit
         masklist_all = self.__mask_to_masklist(mask)
+        #LOG.info('__ masklist (before)= {}'.format(masklist))
+        #LOG.info('__ masklist (after) = {}'.format(masklist_all))
 
         if TRACE():
             LOG.trace('nchan_without_edge, num_mask, diff={}, {}'.format(
@@ -308,10 +322,11 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
     def __mask_to_masklist(self, mask):
         """
-        Converts mask array to masklist
+        Converts mask array to masklist 
+        Resulting masklist is a list of channel ranges whose values are 1
 
         Argument
-            mask : an array of channel mask in values 0 (rejected) or 1 (adopted)
+            mask : an array of channel mask in values 0 or 1 
         """
         # get indices of clump boundaries
         idx = (mask[1:] ^ mask[:-1]).nonzero()
@@ -369,7 +384,7 @@ class CubicSplineFitParamConfig(BaselineFitParamConfig):
         # nchan_segment: number of channels in one segment
         # edge: number of channels from the edges to be excluded from the fit [C0, C1]
         # mask: mask array (0->rejected, 1->adopted)
-        # masklist: list of mask ranges [[C0, C1], [C2, C3], ...]
+        # masklist: list of fit ranges (included in the fit) [[C0, C1], [C2, C3], ...]
         # nchan_edge: max number of consecutive masked channels from edges
         # if nchan_edge >= nchan/2:
         #     fitfunc='poly'
@@ -379,10 +394,21 @@ class CubicSplineFitParamConfig(BaselineFitParamConfig):
         #     order=2
         # else:
         #     fitfunc='cspline'
-        edge_masks = list(filter(
-            lambda x: min(x) <= edge[0] or max(x) >= edge[1], 
-            masklist))
-        nchan_edge = max(map(lambda x: abs(x[1] - x[0]), edge_masks))
+        if len(masklist) == 0:
+            # special case: all channels are excluded from the fit
+            nchan_edge0 = nchan
+            nchan_edge1 = nchan
+        else:
+            # number of masked edge channels: Left side
+            edge_mask0 = list(map(min, masklist))
+            assert edge[0] >= 0
+            nchan_edge0 = max(min(edge_mask0), edge[0]) if len(edge_mask0) > 0 else edge[0]
+            # number of masked edge channels: Right side
+            edge_mask1 = list(map(max, masklist))
+            assert edge[1] >= 0
+            nchan_edge1 = max(nchan - 1 - max(edge_mask1), edge[1]) if len(edge_mask1) > 0 else edge[1]
+            # merge result
+        nchan_edge = max(nchan_edge0, nchan_edge1)
         nchan_segment = int(round(float(nchan) / num_pieces))
         nchan_half = nchan // 2 + nchan % 2
         if nchan_edge >= nchan_half:
@@ -396,5 +422,12 @@ class CubicSplineFitParamConfig(BaselineFitParamConfig):
             order = 0  # not used
         self.paramdict[BLP.FUNC] = fitfunc
         self.paramdict[BLP.ORDER] = order
+
+        LOG.info('DEBUGGING INFORMATION:')
+        LOG.info('inclusive masklist={}'.format(masklist))
+        LOG.info('edge = {}'.format(list(edge)))
+        LOG.info('nchan_edge = {} (left {} right {})'.format(nchan_edge, nchan_edge0, nchan_edge1))
+        LOG.info('nchan = {}, num_pieces = {} => nchan_segment = {}, nchan_half = {}'.format(nchan, num_pieces, nchan_segment, nchan_half))
+        LOG.info('---> RESULT: fitfunc "{}" order "{}"'.format(fitfunc, order))
 
         return self.paramdict
