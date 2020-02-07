@@ -411,10 +411,11 @@ class CubicSplineFitParamConfig(BaselineFitParamConfig):
         nchan_edge = max(nchan_edge0, nchan_edge1)
         nchan_segment = int(round(float(nchan) / num_pieces))
         nchan_half = nchan // 2 + nchan % 2
+        nchan_quarter = nchan // 4 + (3 + nchan % 4) // 4
         if nchan_edge >= nchan_half:
             fitfunc = 'poly'
             order = 1
-        elif nchan_edge >= nchan_segment:
+        elif nchan_edge >= nchan_quarter:
             fitfunc = 'poly'
             order = 2
         else:
