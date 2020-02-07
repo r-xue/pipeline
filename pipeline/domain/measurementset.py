@@ -364,8 +364,8 @@ class MeasurementSet(object):
         pool = self.fields
 
         if task_arg not in (None, ''):
-            pool = [f for f in pool
-                    if f.id in utils.field_arg_to_id(self.name, task_arg, self.fields)]
+            field_id_for_task_arg = utils.field_arg_to_id(self.name, task_arg, self.fields)
+            pool = [f for f in pool if f.id in field_id_for_task_arg]
 
         if field_id is not None:
             # encase raw numbers in a tuple

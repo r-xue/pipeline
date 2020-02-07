@@ -1312,3 +1312,21 @@ def getBCalStatistics(calTable,innerbuff=0.1):
                         print(' %12s %12s %12s %12s  %12.4f  %12.4f ' % (ant, antName, rx, bb, xrat, yrat))
 
     return outDict
+
+
+def set_add_model_column_parameters(context):
+    # get the clean parameters used in the last iteration to create the image products
+    imlist = context.sciimlist.get_imlist()
+    all_iterations_imaging_parameters = imlist[-1]['imaging_params']
+    last_iteration = max(all_iterations_imaging_parameters.keys())
+    imaging_parameters = all_iterations_imaging_parameters[last_iteration]
+
+    # update parameter with new values to write model column
+    imaging_parameters['startmodel'] = ''
+    imaging_parameters['niter'] = 0
+    imaging_parameters['restoration'] = False
+    imaging_parameters['savemodel'] = 'modelcolumn'
+    imaging_parameters['calcres'] = False
+    imaging_parameters['calcpsf'] = False
+
+    return imaging_parameters

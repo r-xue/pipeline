@@ -163,9 +163,10 @@
                 <value>-999.0</value>
             </param>
 
-            <param name="scales" type="string">
+            <param name="scales" type="any">
                 <description>The scales for multi-scale imaging.</description>
-                <value/>
+                <any type="variant" limittypes="intArray floatArray"/>
+                <value type="intArray"></value>
             </param>
 
             <param name="specmode" type="string">
@@ -227,7 +228,7 @@
                 <value type="string"/>
             </param>
 
-            
+
 
             <param name="pipelinemode" type="string">
                 <description>The pipeline operating mode. In 'automatic' mode the pipeline
@@ -260,7 +261,7 @@
 
         </input>
 
-        
+
         <returns>any</returns>
 
 

@@ -181,12 +181,12 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
 
                 dataresult = self._executor.execute(inputs.datatask)
             else:
-                # If not iterating the datatask, the previous 
-                # data result will be re-used, but marked here as no 
+                # If not iterating the datatask, the previous
+                # data result will be re-used, but marked here as no
                 # longer new.
                 dataresult.new = False
 
-            # Create flagging view                
+            # Create flagging view
             viewresult = inputs.viewtask(dataresult)
 
             # If a view could be created, continue with flagging
@@ -263,7 +263,7 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                     stats_before, stats_after = self.set_flags(
                         flags, summarize_before=True, summarize_after=True)
 
-                # Create final post-flagging view                
+                # Create final post-flagging view
                 viewresult = inputs.viewtask(dataresult)
 
                 # Import the post-flagging view into the final result
@@ -279,7 +279,7 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                 if inputs.iter_datatask is True:
                     _, stats_after = self.set_flags([], summarize_after=True)
                 # If the datatask did not need to be iterated, then no flags
-                # were set yet and no "before" summary was performed yet, 
+                # were set yet and no "before" summary was performed yet,
                 # so set all flags and include both "before" and "after" summary.
                 else:
                     stats_before, stats_after = self.set_flags(
@@ -295,7 +295,7 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
 
         # if no flags were found at all
         else:
-            # Run a single flagging summary and use the result as both the "before" 
+            # Run a single flagging summary and use the result as both the "before"
             # and "after" summary.
             stats_before, _ = self.set_flags(flags, summarize_before=True)
             stats_after = copy.deepcopy(stats_before)
@@ -409,9 +409,9 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
         """
 
         # Construct rules from flag properties. If niter is set to curtail
-        # the flagging loop then the order that the rules are applied 
+        # the flagging loop then the order that the rules are applied
         # can be important. For example, 'too many flags' should run after
-        # the other rules, 'bad quadrant' or 'bad antenna' should be run 
+        # the other rules, 'bad quadrant' or 'bad antenna' should be run
         # before the others.
         rules = []
         if flag_bad_quadrant:
@@ -474,7 +474,7 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
         xtitle = matrix.axes[0].name
         xdata = np.array(matrix.axes[0].data)
         ytitle = matrix.axes[1].name
-        ydata = np.array(matrix.axes[1].data) 
+        ydata = np.array(matrix.axes[1].data)
         spw = matrix.spw
         table = matrix.filename
         pol = matrix.pol
@@ -1422,12 +1422,12 @@ class VectorFlagger(basetask.StandardTaskTemplate):
 
                 dataresult = self._executor.execute(inputs.datatask)
             else:
-                # If not iterating the datatask, the previous 
-                # data result will be re-used, but marked here as no 
+                # If not iterating the datatask, the previous
+                # data result will be re-used, but marked here as no
                 # longer new.
                 dataresult.new = False
 
-            # Create flagging view                
+            # Create flagging view
             viewresult = inputs.viewtask(dataresult)
 
             # If a view could be created, continue with flagging
@@ -1466,7 +1466,7 @@ class VectorFlagger(basetask.StandardTaskTemplate):
         # If flags were found...
         if len(flags) > 0:
 
-            # If newflags were found on last iteration loop, we need to still set 
+            # If newflags were found on last iteration loop, we need to still set
             # these.
             if len(newflags) > 0:
 
@@ -1496,7 +1496,7 @@ class VectorFlagger(basetask.StandardTaskTemplate):
                     stats_before, stats_after = self.set_flags(
                         flags, summarize_before=True, summarize_after=True)
 
-                # Create final post-flagging view                
+                # Create final post-flagging view
                 viewresult = inputs.viewtask(dataresult)
 
                 # Import the post-flagging view into the final result
@@ -1513,7 +1513,7 @@ class VectorFlagger(basetask.StandardTaskTemplate):
                 if inputs.iter_datatask is True:
                     _, stats_after = self.set_flags([], summarize_after=True)
                 # If the datatask did not need to be iterated, then no flags
-                # were set yet and no "before" summary was performed yet, 
+                # were set yet and no "before" summary was performed yet,
                 # so set all flags and include both "before" and "after" summary.
                 else:
                     stats_before, stats_after = self.set_flags(
@@ -1524,7 +1524,7 @@ class VectorFlagger(basetask.StandardTaskTemplate):
 
         # if no flags were found at all
         else:
-            # Run a single flagging summary and use the result as both the "before" 
+            # Run a single flagging summary and use the result as both the "before"
             # and "after" summary.
             stats_before, _ = self.set_flags(flags, summarize_before=True)
             stats_after = copy.deepcopy(stats_before)
@@ -2136,7 +2136,7 @@ class VectorFlagger(basetask.StandardTaskTemplate):
     @staticmethod
     def _find_small_diff(data, flag, limit=2.0, description='unknown'):
         """Return the index in the first quarter of the data array where the
-        point to point difference first falls below a threshold, where 
+        point to point difference first falls below a threshold, where
         the threshold is defined as the "limit" * the median point-to-point
         difference.
 

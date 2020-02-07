@@ -13,5 +13,5 @@ qaadapter.registry.register_to_dataset_topic(NROImportDataResults)
 # pipelineqa.registry.add_handler(qa.NROImportDataListQAHandler())
 
 # # use the standard ImportData renderer to render ALMAImportData results
-weblog.add_renderer(NROImportData, super_renderer.T2_4MDetailsSingleDishImportDataRenderer(uri='hsd_importdata.mako'),
+weblog.add_renderer(NROImportData, super_renderer.T2_4MDetailsSingleDishImportDataRenderer(uri='hsdn_importdata.mako'),
                     group_by=weblog.UNGROUPED)

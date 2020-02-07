@@ -122,6 +122,13 @@ class TcleanResult(basetask.Results):
         self.iterations[iter]['cleanmask'] = image
 
     @property
+    def imaging_params(self, iteration):
+        return self.iterations[iteration].get('imaging_params', None)
+
+    def set_imaging_params(self, iteration, imaging_parameters):
+        self.iterations[iteration]['imaging_params'] = imaging_parameters
+
+    @property
     def image(self):
         iters = sorted(self.iterations.keys())
         if len(iters) > 0:

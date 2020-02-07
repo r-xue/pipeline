@@ -142,9 +142,9 @@ class MetaDataReader(object):
         ephemeris_list = direction_codes['extra']
         known_ephemeris_list = numpy.delete( ephemeris_list, numpy.where(ephemeris_list=='COMET') )
         # set org_directions
-        ephemsrc_list = [] # list of ephemsrc names (unique appearance)
+        ephemsrc_list = []  # list of ephemsrc names (unique appearance)
         ephemsrc_names = {} # ephemsrc name for each field_id
-        ephem_tables = {} # epheris table name for each field_id if applicasble
+        ephem_tables = {}   # epheris table name for each field_id if applicasble
         # ephem_tables to be "" for known_ephemeris_list and non-ephemeris sources
 
         with casatools.TableReader(os.path.join(name, 'FIELD')) as tb:
@@ -156,19 +156,21 @@ class MetaDataReader(object):
                     ephemeris_ids = tb.getcol( 'EPHEMERIS_ID' )
                 else:
                     ephemeris_ids = []
-
-                if not fields[0].source.is_eph_obj: 
-                    # non-ephemeris source
-                    ephemsrc_names.update( { field_id:'' } )
-                    ephem_tables.update( {field_id:'' } )
-                    LOG.info( "FIELD_ID={} ({}) as NORMAL SOURCE".format( field_id, source_name) )
+                
+                # check if known_ephemeris_sources
+                if source_name.upper() in known_ephemeris_list and not fields[0].source.is_eph_obj:
+                    fields[0].source.is_known_eph_obj = True
                 else:
+                    fields[0].source.is_known_eph_obj = False
+
+                # ephemeris source with ephemeris table
+                if fields[0].source.is_eph_obj:
                     ephemsrc_names.update( { field_id:source_name } )
                     if source_name.upper not in ephemsrc_list:
                         # found a new ephemeris source
                         ephemsrc_list.append( source_name )
-            
-                    # pick ephemeris table name
+
+                    # pick ephemeris table name                          
                     ephem_table_files = glob.glob( ms.name+'/FIELD/EPHEM'+str(ephemeris_ids[field_id])+'_*.tab' )
                     if len(ephem_table_files) > 1:
                         raise RuntimeError( "multiple ephemeris tables found for field_id={}".format(field_id) )
@@ -182,16 +184,18 @@ class MetaDataReader(object):
                                 raise RuntimeError( "source name in ephemeris table {0} was {1}, inconsistent with {2}".format( ephem_table_file, keywords['NAME'], source_name ) )
                         ephem_tables.update( {field_id:ephem_table_file} )
                         LOG.info( "FIELD_ID={} ({}) with ephemeris table {}".format( field_id, source_name, ephem_table_file ) )
-                    else:
-                        # if ephemeris data does not exist,
-                        # try to search the source name in known_ephemeris_list
-                        # Note: this should not happen for the existing def of
-                        # source.is_eph_obj
-                        if source_name.upper() in known_ephemeris_list and 'TARGET' in fields[0].intents:
-                            ephem_tables.update( {field_id:'' } )
-                            LOG.info( "FIELD_ID={} ({}) as EPHEMERIS SOURCE".format( field_id, source_name ) )
-                        else:
-                            raise RuntimeError( "epheris data for field_id={} not found.".format(field_id) )
+
+                # known ephemeris source without ephemeirs table (not applicable for ALMA)
+                elif fields[0].source.is_known_eph_obj:
+                    ephemsrc_names.update( { field_id:source_name  } )
+                    ephem_tables.update( {field_id:'' } )
+                    LOG.info( "FIELD_ID={} ({}) as KNOWN EPHEMERIS SOURCE".format( field_id, source_name ) )
+
+                # non-ephemeris source
+                else:
+                    ephemsrc_names.update( { field_id:'' } )
+                    ephem_tables.update( {field_id:'' } )
+                    LOG.info( "FIELD_ID={} ({}) as NORMAL SOURCE".format( field_id, source_name) )
 
             
         with TableSelector(name, 'ANTENNA1 == ANTENNA2 && FEED1 == FEED2 && DATA_DESC_ID IN %s && STATE_ID IN %s'%(list(ddids), list(target_state_ids))) as tb:
@@ -216,7 +220,9 @@ class MetaDataReader(object):
                         assert len(antennas) == 1
                         antenna_domain = antennas[0]
                         mposition = antenna_domain.position
-                        org_direction = get_reference_direction( source_name, ephem_tables[field_id], mepoch, mposition, outref )
+                        fields = ms.get_fields( field_id = field_id )
+                        is_known_eph_obj = fields[0].source.is_known_eph_obj
+                        org_direction = get_reference_direction( source_name, ephem_tables[field_id], is_known_eph_obj, mepoch, mposition, outref )
                         org_directions.update( {source_name:org_direction} );
             
         with casatools.TableReader( os.path.join( name, 'FIELD' )) as tb:
@@ -374,7 +380,9 @@ class MetaDataReader(object):
                     if source_name not in org_directions:
                         raise RuntimeError( "Ephemeris source {0} does not exist in org_directions".format(source_name) )
                     org_direction = org_directions[source_name]
-                    ref_direction = get_reference_direction( source_name, ephem_tables[field_id], mepoch, mposition, outref )
+                    fields = ms.get_fields( field_id = field_id )
+                    is_known_eph_obj = fields[0].source.is_known_eph_obj
+                    ref_direction = get_reference_direction( source_name, ephem_tables[field_id], is_known_eph_obj, mepoch, mposition, outref )
                     direction2 = me.measure( pointing_direction, outref )
 
                     shift_direction = direction_shift( direction2, ref_direction, org_direction )
@@ -506,11 +514,11 @@ def direction_convert(direction, mepoch, mposition, outframe):
     return out_direction['m0'], out_direction['m1']
 
 
-def get_reference_direction( source_name, ephem_table, mepoch, mposition, outframe):
+def get_reference_direction( source_name, ephem_table, is_known_eph_obj, mepoch, mposition, outframe):
     me = casatools.measures
-    direction_codes = me.listcodes( me.direction() )
-    ephemeris_list = direction_codes['extra']
-    known_ephemeris_list = numpy.delete( ephemeris_list, numpy.where(ephemeris_list=='COMET') )
+    # direction_codes = me.listcodes( me.direction() )
+    # ephemeris_list = direction_codes['extra']
+    # known_ephemeris_list = numpy.delete( ephemeris_list, numpy.where(ephemeris_list=='COMET') )
 
     if ephem_table != "":
         me.framecomet( ephem_table )
@@ -519,7 +527,8 @@ def get_reference_direction( source_name, ephem_table, mepoch, mposition, outfra
         obj_azel = me.measure( me.direction('COMET'), 'AZELGEO' )
         ref = me.measure( obj_azel, outframe )
     else:
-        if source_name.upper() in known_ephemeris_list:
+        # if source_name.upper() in known_ephemeris_list:
+        if is_known_eph_obj:
             me.doframe(mepoch)
             me.doframe(mposition)
             obj_azel = me.measure( me.direction(source_name.upper()), 'AZELGEO' )

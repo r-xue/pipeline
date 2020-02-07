@@ -38,9 +38,10 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
     ref_fieldid = fieldid_list[0]
     ref_spw = spw_list[0]
     source_name = ref_msobj.fields[ref_fieldid].name
-#     # trim source name to workaround '"name"' type of sources
-#     trimmed_name = source_name.strip('"')
+    # trim source name to workaround '"name"' type of sources
+    # trimmed_name = source_name.strip('"')
     is_eph_obj = ref_msobj.get_fields(ref_fieldid)[0].source.is_eph_obj
+    is_known_eph_obj = ref_msobj.get_fields(ref_fieldid)[0].source.is_known_eph_obj
 
     # qa tool
     qa = casatools.quanta
@@ -74,14 +75,15 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
 
     # nx, ny and center
     parent_mses = [utils.get_parent_ms_name(context, name) for name in ms_names]
-    ra = []
-    dec = []
+    ra0 = []
+    dec0 = []
     outref = None
     org_direction = None
     for vis, ant_id, field_id, spw_id in zip(parent_mses, ant_list, fieldid_list, spw_list):
 
         # get first org_direction if source if ephemeris source
-        if is_eph_obj and org_direction==None:
+        # if is_eph_obj and org_direction==None:
+        if ( is_eph_obj or is_known_eph_obj ) and org_direction==None:
             # get org_direction
             msobj = context.observing_run.get_ms(vis)
             org_direction = msobj.get_fields(field_id)[0].source.org_direction
@@ -107,20 +109,21 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
         else:
             index_list = sorted(common.get_index_list_for_ms(datatable, [vis], [ant_id], [field_id], [spw_id]))
 
-        if is_eph_obj:
+        # if is_eph_obj:
+        if is_eph_obj or is_known_eph_obj:
             _ra = datatable.getcol('OFS_RA').take(index_list)
             _dec = datatable.getcol('OFS_DEC').take(index_list)
         else:
             _ra = datatable.getcol('RA').take(index_list)
             _dec = datatable.getcol('DEC').take(index_list)
 
-        ra.extend(_ra)
-        dec.extend(_dec)
+        ra0.extend(_ra)
+        dec0.extend(_dec)
 
         outref = datatable.direction_ref
         del datatable
 
-    if len(ra) == 0:
+    if len(ra0) == 0:
         antenna_name = ref_msobj.antennas[ant_list[0]].name
         LOG.warn('No valid data for source %s antenna %s spw %s in %s. Image will not be created.' % (
         source_name, antenna_name, ref_spw, ref_msobj.basename))
@@ -130,12 +133,26 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
         LOG.warn('No direction reference is set. Assuming ICRS')
         outref = 'ICRS'
 
-    if is_eph_obj:
-        ra_offset = qa.convert( org_direction['m0'], 'deg' )['value']
-        dec_offset = qa.convert( org_direction['m1'], 'deg' )['value']
+    # if is_eph_obj:
+    #     ra_offset = qa.convert( org_direction['m0'], 'deg' )['value']
+    #     dec_offset = qa.convert( org_direction['m1'], 'deg' )['value']
+    # else:
+    #     ra_offset = 0.0 
+    #     dec_offset = 0.0
+
+    # convert offset coordinate into shifted coordinate for ephemeris sources   
+    # to determine the image size (size, center, npix)                          
+    if is_eph_obj or is_known_eph_obj:
+        ra = []
+        dec = []
+        for ra1, dec1 in zip( ra0, dec0 ):
+            ra2, dec2 = direction_recover( ra1, dec1, org_direction )
+            ra.append(ra2)
+            dec.append(dec2)
     else:
-        ra_offset = 0.0 
-        dec_offset = 0.0
+        ra = ra0
+        dec = dec0
+    del ra0, dec0
 
     ra_min = min(ra)
     ra_max = max(ra)
@@ -189,6 +206,22 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
     LOG.info('Image pixel size: [nx, ny] = [%s, %s]' % (nx, ny))
     return phasecenter, cellx, celly, nx, ny, org_direction
 
+
+def direction_recover( ra, dec, org_direction ):
+    me = casatools.measures
+    qa = casatools.quanta
+    
+    direction = me.direction( org_direction['refer'], 
+                              str(ra)+'deg', str(dec)+'deg' )
+    zero_direction  = me.direction( org_direction['refer'], '0deg', '0deg' )
+    offset = me.separation( zero_direction, direction )
+    posang = me.posangle( zero_direction, direction )
+    new_direction = me.shift( org_direction, offset=offset, pa=posang )
+    new_ra  = qa.convert( new_direction['m0'], 'deg' )['value']
+    new_dec = qa.convert( new_direction['m1'], 'deg' )['value']
+    
+    return new_ra, new_dec
+    
 
 class SDImagingWorkerInputs(vdp.StandardInputs):
     """
@@ -326,14 +359,16 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         reference_field = reference_data.fields[fieldid_list[0]]
         source_name = reference_field.name
         is_eph_obj = reference_data.get_fields(fieldid_list[0])[0].source.is_eph_obj
+        is_known_eph_obj = reference_data.get_fields(fieldid_list[0])[0].source.is_known_eph_obj
 
         # for ephemeris sources without ephemeris data in MS (eg. not for ALMA)
-        if not is_eph_obj:
-            me = casatools.measures
-            ephemeris_list = me.listcodes(me.direction())['extra']
-            known_ephemeris_list = numpy.delete( ephemeris_list, numpy.where(ephemeris_list=='COMET') )
-            if source_name.upper() in known_ephemeris_list:
-                ephemsrcname = source_name.upper()
+        # if not is_eph_obj:
+        if is_known_eph_obj:
+            # me = casatools.measures
+            # ephemeris_list = me.listcodes(me.direction())['extra']
+            # known_ephemeris_list = numpy.delete( ephemeris_list, numpy.where(ephemeris_list=='COMET') )
+            # if source_name.upper() in known_ephemeris_list:
+            ephemsrcname = source_name.upper()
 
         # baseline
         # baseline = '0&&&'
@@ -404,6 +439,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
 #         temporary_name = imagename.rstrip('/')+'.tmp'
         cleanup_params = ['outfile', 'infiles', 'spw', 'scan']
 
+        # phasecenter=TRACKFIELD only for sources with ephemeris table
         if is_eph_obj:
             phasecenter = 'TRACKFIELD'
             LOG.info( "phasecenter is overrided with \'TRACKFIELD\'" )

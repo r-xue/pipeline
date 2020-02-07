@@ -42,7 +42,7 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristics):
     def reffreq(self):
         return '3.0GHz'
 
-    def cyclefactor(self):
+    def cyclefactor(self, iteration):
         return 3.0
 
     def cycleniter(self, iteration):
@@ -232,3 +232,12 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristics):
             return 'modelcolumn'
         else:
             return None
+
+    def usepointing(self):
+        """clean flag to use pointing table."""
+
+        return True
+
+    def wprojplanes(self):
+
+        return 32

@@ -657,6 +657,7 @@ class CleanBase(basetask.StandardTaskTemplate):
         # Keep threshold and sensitivity for QA and weblog
         result.set_threshold(inputs.threshold)
         result.set_sensitivity(inputs.sensitivity)
+        result.set_imaging_params(iter, tclean_job_parameters)
 
         return result
 

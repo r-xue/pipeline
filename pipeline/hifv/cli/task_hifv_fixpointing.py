@@ -1,20 +1,16 @@
 import sys
 
-from casatasks import casalog
+from taskinit import casalog
 
 import pipeline.h.cli.utils as utils
 
-def hsdn_restoredata(vis=None, caltable=None, reffile=None, 
-                     products_dir=None, copytoraw=None, rawdata_dir=None, 
-                     pipelinemode='automatic', overwrite=None, nocopy=None, 
-                     createmms=False, dryrun=False, acceptresults=None):
 
-    ##########################################################################
+def hifv_fixpointing(vis=None, pipelinemode=None, dryrun=None, acceptresults=None):
+
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #
     #  needed beyond this point.                                             #
     #                                                                        #
-    ##########################################################################
 
     # create a dictionary containing all the arguments given in the
     # constructor

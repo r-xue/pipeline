@@ -1,13 +1,18 @@
 """
 Single-Dish Exportdata task dedicated to NRO data.
 
-Please see hsd/tasks/exportdata/exportdata.py for generic 
+Please see hsd/tasks/exportdata/exportdata.py for generic
 description on how Exportdata task works.
 """
+import collections
+import os
+
 import pipeline.h.tasks.exportdata.exportdata as exportdata
 import pipeline.hsd.tasks.exportdata.exportdata as sdexportdata
 import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import task_registry
+from . import manifest
+from . import nrotemplategenerator
 
 # the logger for this module
 LOG = infrastructure.get_logger(__name__)
@@ -49,3 +54,59 @@ class NROExportData(sdexportdata.SDExportData):
     Inputs = NROExportDataInputs
 
     NameBuilder = NROPipelineNameBuilder
+
+    def prepare(self):
+        results = super(NROExportData, self).prepare()
+
+        # manifest file
+        manifest_file = os.path.join(self.inputs.context.products_dir, results.manifest)
+
+        # export NRO data reduction template
+        template_script = self._export_reduction_template(self.inputs.products_dir)
+
+        if template_script is not None:
+            self._update_manifest(manifest_file, script=template_script)
+
+        # export NRO scaling file template
+        template_file = self._export_nroscalefile_template(self.inputs.products_dir)
+
+        if template_file is not None:
+            self._update_manifest(manifest_file, scalefile=template_file)
+
+        return results
+
+    def _export_reduction_template(self, products_dir):
+        script_name = 'rebase_and_image.py'
+        config_name = 'rebase_and_image_config.py'
+        script_path = os.path.join(products_dir, script_name)
+        config_path = os.path.join(products_dir, config_name)
+
+        status = nrotemplategenerator.generate_script(self.inputs.context, script_path, config_path)
+        return script_name if status is True else None
+
+    def _export_nroscalefile_template(self, products_dir):
+        datafile_name = 'nroscalefile.csv'
+        datafile_path = os.path.join(products_dir, datafile_name)
+
+        status = nrotemplategenerator.generate_csv(self.inputs.context, datafile_path)
+        return datafile_name if status is True else None
+
+    def _update_manifest(self, manifest_file, script=None, scalefile=None):
+        pipemanifest = manifest.NROPipelineManifest('')
+        pipemanifest.import_xml(manifest_file)
+        ouss = pipemanifest.get_ous()
+
+        if script:
+            pipemanifest.add_reduction_script(ouss, script)
+            pipemanifest.write(manifest_file)
+
+        if scalefile:
+            pipemanifest.add_scalefile(ouss, scalefile)
+            pipemanifest.write(manifest_file)
+
+    def _export_casa_restore_script(self, context, script_name, products_dir, oussid, vislist, session_list):
+        tmpvislist = list(map(os.path.basename, vislist))
+        restore_task_name = 'hsdn_restoredata'
+        args = collections.OrderedDict(vis=tmpvislist, reffile='./nroscalefile.csv')
+        return self._export_casa_restore_script_template(context, script_name, products_dir, oussid,
+                                                         restore_task_name, args)

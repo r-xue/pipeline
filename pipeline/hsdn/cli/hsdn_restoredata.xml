@@ -54,14 +54,15 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
-    <param mustexist="true" name="scalefile" type="path">
+    <param mustexist="true" name="reffile" type="path">
         <shortdescription>File of factors to adjust scale between beams</shortdescription>
         <description>Path to a file containing scaling factors between beams.
         The format is equals to jyperk.csv with five fields:
-        MS name, antenna name, spectral window id, polarization string,
-        and the scaling factor. Example for the file is as follows:
+        MS name, beam name (instead of antenna name), spectral window id,
+        polarization string, and the scaling factor.
+        Example for the file is as follows:
 
-        MS,Antenna,Spwid,Polarization,Factor
+        #MS,Beam,Spwid,Polarization,Factor
         mg2-20181016165248-181017.ms,NRO-BEAM0,0,I,1.000000000
         mg2-20181016165248-181017.ms,NRO-BEAM0,1,I,1.000000000
         mg2-20181016165248-181017.ms,NRO-BEAM0,2,I,1.000000000
@@ -82,8 +83,8 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         If no file name is specified or specified file doesn't exist,
         all the factors are set to 1.0.
 
-        example: scalefile='', scalefile='working/nroscalefile.csv'</description>
-        <value>nroscalefile.csv</value>
+        example: reffile='', reffile='nroscalefactor.csv'</description>
+        <value/>
     </param>
 
     <param subparam="true" name="infiles" type="stringVec">
@@ -195,7 +196,8 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 <example>
 1. Restore the pipeline results for a single ASDM in a single session
 
-    hsdn_restoredata (vis=['uid___A002_X30a93d_X43e'], scalefile='scalefile.csv')
+    hsdn_restoredata (vis=['mg2-20181016165248-190320.ms'], reffile='nroscalefactor.csv')
+
 </example>
 </task>
 </casaxml>
