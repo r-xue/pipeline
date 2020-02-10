@@ -161,7 +161,6 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
                 for ant in ms.get_antenna():
                     LOG.debug('ant = {0}'.format(ant));
                     ant_name = ant.name
-                    mp = map(ddid.get_polarization_label, range(ddid.num_polarizations));
                     corrs = list(map(ddid.get_polarization_label, range(ddid.num_polarizations)))
 
                      # an attempt to collapse pol rows
@@ -171,7 +170,7 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
                         factor = self.__get_factor(r.factors, vis, spwid, ant_name, corr)
 
                         corr_collector[factor].append(corr)
-                    for factor, corrlist in corr_collector.iteritems():
+                    for factor, corrlist in corr_collector.items():
                         corr = str(', ').join(corrlist)
                         jyperk = factor if factor is not None else 'N/A (1.0)'
 
@@ -190,7 +189,7 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
             reffile_copied = os.path.join(stage_dir, os.path.basename(reffile))
         # order table rows so that spw comes first
         row_values = []
-        for factor_list in spw_factors.itervalues():
+        for factor_list in spw_factors.values():
             row_values += list(factor_list)
 
         # set context
@@ -330,7 +329,7 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
         for d, plotter_cls in (
                 (amp_vs_freq_detail_plots, ApplycalAmpVsFreqSciencePlotRenderer),):
             if d:
-                all_plots = list(utils.flatten([v for v in d.itervalues()]))
+                all_plots = list(utils.flatten([v for v in d.values()]))
                 renderer = plotter_cls(context, result, all_plots)
                 with renderer.get_file() as fileobj:
                     fileobj.write(renderer.render())
@@ -466,7 +465,7 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
         previous_summary = None
         for summary in summaries:
 
-            for intent, scan_ids in intent_scans.iteritems():
+            for intent, scan_ids in intent_scans.items():
                 flagcount = 0
                 totalcount = 0
 

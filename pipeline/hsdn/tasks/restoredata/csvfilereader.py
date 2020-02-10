@@ -1,4 +1,3 @@
-import cStringIO as StringIO
 import numpy
 import csv
 import contextlib
@@ -26,7 +25,7 @@ def _read_stream(stream):
     reader = csv.reader(stream)
     # Check if first line is header or not
     filename = os.path.basename(stream.name)
-    line = reader.next()
+    line = next(reader)
     LOG.debug('first line: {0}'.format(line))
     if len(line) == 0 or line[0].strip().upper() == 'MS' or '#' in line[0]:
         # must be a header, commented line, or empty line

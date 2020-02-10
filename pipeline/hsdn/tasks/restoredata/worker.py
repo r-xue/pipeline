@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import os
 
 from numpy import sqrt
@@ -75,12 +73,12 @@ class SDAmpCalWorker(basetask.StandardTaskTemplate):
         common_params = inputs.to_casa_args()
         factors_for_ms = factors[vis]
         factors_used = {}
-        for spw, spw_factor in factors_for_ms.iteritems():
+        for spw, spw_factor in factors_for_ms.items():
             factors_used[spw] = {}
-            for ant, ant_factor in spw_factor.iteritems():
+            for ant, ant_factor in spw_factor.items():
                 factors_used[spw][ant] = {}
                 # map polarization
-                pol_list = ant_factor.keys()
+                pol_list = list(ant_factor.keys())
                 pols = str(',').join(map(polmap.get, pol_list))
                 for pol in pol_list:
                     factors_used[spw][ant][pol] = ant_factor[pol]
@@ -152,9 +150,9 @@ class SDAmpCalWorker(basetask.StandardTaskTemplate):
         LOG.info(sep)
         LOG.info("Summary of relative amplitude factors between beams of %s" % name)
         LOG.info(sep)
-        for spw, facs in result.ms_factors.iteritems():
-            for ant, faca in facs.iteritems():
-                for pol, facp in faca.iteritems():
+        for spw, facs in result.ms_factors.items():
+            for ant, faca in facs.items():
+                for pol, facp in faca.items():
                     LOG.info("SPW %d, %s, %s: %f" % (spw, ant, pol, facp))
         return result
 

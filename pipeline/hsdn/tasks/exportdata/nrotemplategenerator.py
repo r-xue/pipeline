@@ -136,8 +136,9 @@ def generate_script(context, scriptname, configname):
                     rest_freq = coordsys.restfrequency()
                     increments = coordsys.increment()['numeric']
                     units = coordsys.units()
-                    _cell = map(lambda x: qa.convert(qa.quantity(abs(x[0]), x[1]), 'arcsec'), (x for x in zip(increments[:2], units[:2])))
-                    cell = map(lambda x: '{value}{unit}'.format(**x), _cell)
+                    _cell = [qa.convert(qa.quantity(abs(x[0]), x[1]), 'arcsec')
+                             for x in (x for x in zip(increments[:2], units[:2]))]
+                    cell = ['{value}{unit}'.format(**x) for x in _cell]
                     refcode = coordsys.referencecode()[0]
                     dummy = [0] * len(imshape)
                     dummy[0] = float(imshape[0]) / 2
