@@ -263,7 +263,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
             powerfit_results, weblog_results, spindex_results = self._do_powerfit(fluxscale_result)
             setjy_result = self._do_setjy(calMs, fluxscale_result)
         except Exception as e:
-            LOG.warning(e.message)
+            LOG.warning(str(e))
             LOG.warning("A problem was detected while running fluxscale.  Please review the CASA log.")
             powerfit_results = []
             weblog_results = []

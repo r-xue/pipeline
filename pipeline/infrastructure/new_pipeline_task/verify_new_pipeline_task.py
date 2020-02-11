@@ -67,7 +67,7 @@ class NewTask():
             eval('{area}_{task}()'.format(area=area, task=task_name))
             h_save()
         except NameError as ee:
-            print('ERROR: {msg}'.format(msg=ee.message))
+            print('ERROR: {msg}'.format(msg=str(ee)))
             print('\tTry using runsetup to register the new task with CASA first.')
 
 
