@@ -51,6 +51,7 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
                               'html': os.path.basename(renderer.path)}
                 field = self.get_field_key(perfield_plots, fieldobj)
                 if field is None:
+                    LOG.info('No "{}" plots for field "{}"'.format(name, fieldobj.name))
                     plot_detail[fieldobj.name] = []
                     plot_cover[fieldobj.name] = []
                     continue
@@ -176,7 +177,6 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
         try:
             field_key = next(field_candidates)
         except StopIteration:
-            LOG.info('No plots for field "{}"'.format(field_domain.name))
             field_key = None
         return field_key
 
