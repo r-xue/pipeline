@@ -49,28 +49,22 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
             renderer = SingleDishClusterPlotsRenderer(context, results, name, _plots)
             group_desc = {'title': name,
                           'html': os.path.basename(renderer.path)}
-            if name in details_title:
-                with renderer.get_file() as fileobj:
-                    fileobj.write(renderer.render())
-                for fieldobj in sorted_fields:
-                    field = self.get_field_key(perfield_plots, fieldobj)
-                    if field is None:
-                        raise RuntimeError('No plots for field "{}"'.format(fieldobj.name))
-                    pfplots = perfield_plots[field]
-                    if field not in plot_detail:
-                        plot_detail[field] = []
+            for fieldobj in sorted_fields:
+                field = self.get_field_key(perfield_plots, fieldobj)
+                if field is None:
+                    raise RuntimeError('No plots for field "{}"'.format(fieldobj.name))
+                pfplots = perfield_plots[field]
+                if name in details_title:
+                    with renderer.get_file() as fileobj:
+                        fileobj.write(renderer.render())
+                    _plots = plot_detail.setdefault(field, [])
                     group_desc['cover_plots'] = self._get_a_plot_per_spw(pfplots)
-                    plot_detail[field].append(group_desc)
-            else:
-                for fieldobj in sorted_fields:
-                    field = self.get_field_key(perfield_plots, fieldobj)
-                    if field is None:
-                        raise RuntimeError('No plots for field "{}"'.format(fieldobj.name))
-                    pfplots = perfield_plots[field]
-                    if field not in plot_cover:
-                        plot_cover[field] = []
+                else:
+                    _plots = plot_cover.setdefault(field, [])
                     group_desc['cover_plots'] = pfplots
-                    plot_cover[field].append(group_desc)
+                _plots.append(group_desc)
+            LOG.info('plot_detail {}'.format(plot_detail))
+            LOG.info('plot_cover {}'.format(plot_cover))
 
         # whether or not virtual spw id is effective
         dovirtual = utils.require_virtual_spw_id_handling(context.observing_run)
