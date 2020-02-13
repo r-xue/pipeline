@@ -231,10 +231,11 @@ for baseline subtraction.</p>
   <p>No Lines are detected.</p>
 % else:
 % for field in detail.keys():
+
+  <h3>${field}</h3>
+
   % if len(detail[field]) > 0 or len(cover_only[field]) > 0:
   
-    <h3>${field}</h3>
-
     <!-- Link to details page -->
     % for plots in detail[field]:
       <h4><a class="replace"
