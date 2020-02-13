@@ -1,3 +1,4 @@
+import collections
 import os
 
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
@@ -32,14 +33,17 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
             sparsemap_plots.extend(r.outcome['plots'])
 
         plot_group = self._group_by_axes(plots)
-        plot_detail = {}  # key is field name, subkeys are 'title', 'html', 'cover_plots'
-        plot_cover = {}  # key is field name, subkeys are 'title', 'cover_plots'
+        plot_detail = collections.OrderedDict()  # key is field name, subkeys are 'title', 'html', 'cover_plots'
+        plot_cover = collections.OrderedDict()  # key is field name, subkeys are 'title', 'cover_plots'
         # Render stage details pages
         details_title = ["R.A. vs Dec."]
         name_list = ['R.A. vs Dec.', 'Line Center vs Line Width', 'Number of Clusters vs Score']
         sorted_fields = utils.sort_fields(context)
-        #for name, _plots in plot_group.items():
         for name in name_list:
+            if name not in plot_group:
+                # no plots available. probably no lines are detected.
+                continue
+
             _plots = plot_group[name]
             perfield_plots = self._plots_per_field(_plots)
             renderer = SingleDishClusterPlotsRenderer(context, results, name, _plots)

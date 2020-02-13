@@ -227,7 +227,7 @@ for baseline subtraction.</p>
 
 <h2 id="clusteranalysis" class="jumptarget">Line Detection by Clustering Analysis</h2>
 
-% for field in sorted_fields:
+% for field in detail.keys():
   % if len(detail[field]) > 0 or len(cover_only[field]) > 0:
   
     <h3>${field}</h3>
