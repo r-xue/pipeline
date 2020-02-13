@@ -5,9 +5,8 @@ import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.filenamer as filenamer
 
-from . import display 
+from . import display
 
-from ..common import renderer as sdsharedrenderer
 from ..common import compress
 from ..common import utils
 
@@ -180,7 +179,6 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
             LOG.warn('No plots for field "{}"'.format(field_domain.name))
             field_key = None
         return field_key
-
 
 
 class SingleDishClusterPlotsRenderer(basetemplates.JsonPlotRenderer):
