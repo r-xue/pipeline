@@ -100,7 +100,7 @@ line detection stage.</p>
 
 <p>Red lines indicate the result of baseline fit that is subtracted from the calibrated spectra.</p>
 
-% for field in sorted_fields:
+% for field in sparsemap_subpage_before_raw:
     <h3><a class="replace"
            href="${os.path.join(dirname, sparsemap_subpage_before_raw[field])}"
            data-field="${field}">${field}</a>
@@ -144,7 +144,7 @@ line detection stage.</p>
 S/N ratio so that spectral line feature becomes more prominent and it can be easily compared with the line mask 
 for baseline subtraction.</p>
 
-% for field in sorted_fields:
+% for field in sparsemap_subpage_before_avg:
     <h3><a class="replace"
            href="${os.path.join(dirname, sparsemap_subpage_before_avg[field])}"
            data-field="${field}">${field}</a>
@@ -187,7 +187,7 @@ for baseline subtraction.</p>
 
 <p>Red lines show zero-level. Spectra that are properly subtracted should be located around red lines.</p>
 
-% for field in sorted_fields:
+% for field in sparsemap_subpage_after_raw:
     <h3><a class="replace"
            href="${os.path.join(dirname, sparsemap_subpage_after_raw[field])}"
            data-field="${field}">${field}</a>
