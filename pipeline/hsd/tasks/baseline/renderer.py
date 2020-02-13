@@ -64,8 +64,6 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
                     _plots = plot_cover.setdefault(field, [])
                     group_desc['cover_plots'] = pfplots
                 _plots.append(group_desc)
-            LOG.info('plot_detail {}'.format(plot_detail))
-            LOG.info('plot_cover {}'.format(plot_cover))
 
         # whether or not virtual spw id is effective
         dovirtual = utils.require_virtual_spw_id_handling(context.observing_run)
