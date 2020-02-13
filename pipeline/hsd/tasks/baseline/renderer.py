@@ -46,9 +46,9 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
             _plots = plot_group[name]
             perfield_plots = self._plots_per_field(_plots)
             renderer = SingleDishClusterPlotsRenderer(context, results, name, _plots)
-            group_desc = {'title': name,
-                          'html': os.path.basename(renderer.path)}
             for fieldobj in sorted_fields:
+                group_desc = {'title': name,
+                              'html': os.path.basename(renderer.path)}
                 field = self.get_field_key(perfield_plots, fieldobj)
                 if field is None:
                     raise RuntimeError('No plots for field "{}"'.format(fieldobj.name))
