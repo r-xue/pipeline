@@ -227,6 +227,9 @@ for baseline subtraction.</p>
 
 <h2 id="clusteranalysis" class="jumptarget">Line Detection by Clustering Analysis</h2>
 
+% if len(detail) == 0:
+  <p>No Lines are detected.</p>
+% else:
 % for field in detail.keys():
   % if len(detail[field]) > 0 or len(cover_only[field]) > 0:
   
@@ -292,6 +295,7 @@ for baseline subtraction.</p>
     % endfor
 
   % else:
-  <p>No Line detected</p>
+  <p>No Lines are detected for ${field}.</p>
   % endif
 % endfor
+% endif
