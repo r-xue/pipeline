@@ -100,7 +100,7 @@ line detection stage.</p>
 
 <p>Red lines indicate the result of baseline fit that is subtracted from the calibrated spectra.</p>
 
-% for field in sorted_fields:
+% for field in sparsemap_subpage_before_raw:
     <h3><a class="replace"
            href="${os.path.join(dirname, sparsemap_subpage_before_raw[field])}"
            data-field="${field}">${field}</a>
@@ -144,7 +144,7 @@ line detection stage.</p>
 S/N ratio so that spectral line feature becomes more prominent and it can be easily compared with the line mask 
 for baseline subtraction.</p>
 
-% for field in sorted_fields:
+% for field in sparsemap_subpage_before_avg:
     <h3><a class="replace"
            href="${os.path.join(dirname, sparsemap_subpage_before_avg[field])}"
            data-field="${field}">${field}</a>
@@ -187,7 +187,7 @@ for baseline subtraction.</p>
 
 <p>Red lines show zero-level. Spectra that are properly subtracted should be located around red lines.</p>
 
-% for field in sorted_fields:
+% for field in sparsemap_subpage_after_raw:
     <h3><a class="replace"
            href="${os.path.join(dirname, sparsemap_subpage_after_raw[field])}"
            data-field="${field}">${field}</a>
@@ -227,11 +227,15 @@ for baseline subtraction.</p>
 
 <h2 id="clusteranalysis" class="jumptarget">Line Detection by Clustering Analysis</h2>
 
-% for field in sorted_fields:
+% if len(detail) == 0:
+  <p>No Lines are detected.</p>
+% else:
+% for field in detail.keys():
+
+  <h3>${field}</h3>
+
   % if len(detail[field]) > 0 or len(cover_only[field]) > 0:
   
-    <h3>${field}</h3>
-
     <!-- Link to details page -->
     % for plots in detail[field]:
       <h4><a class="replace"
@@ -292,6 +296,7 @@ for baseline subtraction.</p>
     % endfor
 
   % else:
-  <p>No Line detected</p>
+  <p>No Lines are detected for ${field}.</p>
   % endif
 % endfor
+% endif
