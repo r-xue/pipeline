@@ -207,7 +207,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
             # deviation mask
             deviation_mask = ms.deviation_mask[(fieldid, antid, spwid)] \
                 if (hasattr(ms, 'deviation_mask') and (fieldid, antid, spwid) in ms.deviation_mask) else None
-            LOG.debug('deviation mask for %s antenna %d field %d spw %d is %s' %
+            LOG.info('deviation mask for %s antenna %d field %d spw %d is %s' %
                       (ms.basename, antid, fieldid, spwid, deviation_mask))
 
             time_table = datatable.get_timetable(antid, spwid, None, ms.basename, fieldid)
@@ -614,8 +614,9 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
         # convert FLAGTRA to mask (1=valid channel, 0=flagged channel)
         mask = numpy.array(sdutils.get_mask_from_flagtra(flagchan))
         # masklist
+        nchan = len(mask)
         for [m0, m1] in masklist:
-            mask[m0:m1] = 0
+            mask[max(0, m0):min(nchan, m1 + 1)] = 0
 
         # deviation mask
         if deviation_mask is not None:
@@ -624,7 +625,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
             if len(deviation_mask) > 0 and type(deviation_mask[0]) not in array_type:
                 raise Exception("deviation_mask should be an array of array or None")
             for m0, m1 in deviation_mask:
-                mask[m0:m1] = 0
+                mask[max(0, m0):min(nchan, m1 + 1)] = 0
 
         # edge channels
         mask[0:edge[0]] = 0
