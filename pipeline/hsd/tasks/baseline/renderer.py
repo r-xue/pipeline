@@ -1,12 +1,12 @@
+import collections
 import os
 
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.filenamer as filenamer
 
-from . import display 
+from . import display
 
-from ..common import renderer as sdsharedrenderer
 from ..common import compress
 from ..common import utils
 
@@ -32,57 +32,45 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
             sparsemap_plots.extend(r.outcome['plots'])
 
         plot_group = self._group_by_axes(plots)
-        plot_detail = {}  # key is field name, subkeys are 'title', 'html', 'cover_plots'
-        plot_cover = {}  # key is field name, subkeys are 'title', 'cover_plots'
+        plot_detail = collections.OrderedDict()  # key is field name, subkeys are 'title', 'html', 'cover_plots'
+        plot_cover = collections.OrderedDict()  # key is field name, subkeys are 'title', 'cover_plots'
         # Render stage details pages
         details_title = ["R.A. vs Dec."]
         name_list = ['R.A. vs Dec.', 'Line Center vs Line Width', 'Number of Clusters vs Score']
         sorted_fields = utils.sort_fields(context)
-        #for name, _plots in plot_group.items():
         for name in name_list:
+            if name not in plot_group:
+                # no plots available. probably no lines are detected.
+                continue
+
             _plots = plot_group[name]
             perfield_plots = self._plots_per_field(_plots)
             renderer = SingleDishClusterPlotsRenderer(context, results, name, _plots)
-            if name in details_title:
-                with renderer.get_file() as fileobj:
-                    fileobj.write(renderer.render())
-                #for field, pfplots in perfield_plots.items():
-                for fieldobj in sorted_fields:
-                    field_candidates = filter(lambda x: x in perfield_plots,
-                                              set([fieldobj.name, fieldobj.name.strip('"'), fieldobj.clean_name]))
-                    try:
-                        field = next(field_candidates)
-                    except StopIteration:
-                        raise RuntimeError('No plots for field "{}"'.format(fieldobj.name))
-                    pfplots = perfield_plots[field]
-                    group_desc = {'title': name,
-                                  'html': os.path.basename(renderer.path)}
-                    if field not in plot_detail:
-                        plot_detail[field] = []
+            for fieldobj in sorted_fields:
+                group_desc = {'title': name,
+                              'html': os.path.basename(renderer.path)}
+                field = self.get_field_key(perfield_plots, fieldobj)
+                if field is None:
+                    LOG.info('No "{}" plots for field "{}"'.format(name, fieldobj.name))
+                    plot_detail[fieldobj.name] = []
+                    plot_cover[fieldobj.name] = []
+                    continue
+                pfplots = perfield_plots[field]
+                if name in details_title:
+                    with renderer.get_file() as fileobj:
+                        fileobj.write(renderer.render())
+                    _plots = plot_detail.setdefault(field, [])
                     group_desc['cover_plots'] = self._get_a_plot_per_spw(pfplots)
-                    plot_detail[field].append(group_desc)
-            else:
-                for fieldobj in sorted_fields:
-                    field_candidates = filter(lambda x: x in perfield_plots,
-                                              set([fieldobj.name, fieldobj.name.strip('"'), fieldobj.clean_name]))
-                    try:
-                        field = next(field_candidates)
-                    except StopIteration:
-                        raise RuntimeError('No plots for field "{}"'.format(fieldobj.name))
-                    pfplots = perfield_plots[field]
-                    group_desc = {'title': name,
-                                  'html': os.path.basename(renderer.path)}
-                    if field not in plot_cover:
-                        plot_cover[field] = []
+                else:
+                    _plots = plot_cover.setdefault(field, [])
                     group_desc['cover_plots'] = pfplots
-                    plot_cover[field].append(group_desc)
+                _plots.append(group_desc)
 
         # whether or not virtual spw id is effective
         dovirtual = utils.require_virtual_spw_id_handling(context.observing_run)
         ctx.update({'detail': plot_detail,
                     'cover_only': plot_cover,
-                    'dovirtual': dovirtual,
-                    'sorted_fields': [f.name.replace(' ', '_') for f in sorted_fields]})
+                    'dovirtual': dovirtual})
 
         # profile map before and after baseline subtracton
         maptype_list = ['before', 'after', 'before']
@@ -90,7 +78,7 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
         for maptype, subtype in zip(maptype_list, subtype_list):
             plot_list = self._plots_per_field_with_type(sparsemap_plots, maptype, subtype)
             summary = self._summary_plots(plot_list)
-            subpage = {}
+            subpage = collections.OrderedDict()
             # flattened = [plot for inner in plot_list.values() for plot in inner]
             flattened = compress.CompressedList()
             for inner in plot_list.values():
@@ -107,7 +95,9 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
             with renderer.get_file() as fileobj:
                 fileobj.write(renderer.render())
 
-            for name in plot_list:
+            for fieldobj in sorted_fields:
+                name = self.get_field_key(plot_list, fieldobj)
+                assert name is not None
                 subpage[name] = os.path.basename(renderer.path)
             ctx.update({'sparsemap_subpage_{}_{}'.format(maptype.lower(), subtype.lower()): subpage,
                         'sparsemap_{}_{}'.format(maptype.lower(), subtype.lower()): summary})
@@ -178,6 +168,17 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
                     summary_plots[field_name].append(xplot)
                 del plot
         return summary_plots
+
+    @staticmethod
+    def get_field_key(plot_dict, field_domain):
+        field_candidates = filter(
+            lambda x: x in plot_dict,
+            set([field_domain.name, field_domain.name.strip('"'), field_domain.clean_name]))
+        try:
+            field_key = next(field_candidates)
+        except StopIteration:
+            field_key = None
+        return field_key
 
 
 class SingleDishClusterPlotsRenderer(basetemplates.JsonPlotRenderer):
