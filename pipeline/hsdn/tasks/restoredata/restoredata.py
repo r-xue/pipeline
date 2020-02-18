@@ -8,7 +8,6 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import task_registry
 from pipeline.hsd.tasks.applycal import applycal
 from . import ampcal
-from . import worker
 from ..importdata import importdata as importdata
 
 LOG = infrastructure.get_logger(__name__)
@@ -20,7 +19,7 @@ class NRORestoreDataInputs(restoredata.RestoreDataInputs):
 
     def __init__(self, context, vis=None, caltable=None, reffile=None,
                  products_dir=None, rawdata_dir=None, output_dir=None):
-        super(NRORestoreDataInputs, self).__init__(context, vis=vis, products_dir=None, rawdata_dir=rawdata_dir,
+        super(NRORestoreDataInputs, self).__init__(context, vis=vis, products_dir=products_dir, rawdata_dir=rawdata_dir,
                                                    output_dir=output_dir)
 
         self.caltable = caltable
