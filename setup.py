@@ -293,7 +293,7 @@ class PipelineBuildPyCommand(build_py):
 # finder class with more relaxed heuristics about identifying packages. Here
 # we do the latter; this might need updating to
 # setuptool.find_namespace_packages when CASA's setuptools is updated.
-packages = setuptools.PEP420PackageFinder().find()
+packages = setuptools.PEP420PackageFinder().find(exclude=['build*', 'doc*'])
 
 
 setuptools.setup(
