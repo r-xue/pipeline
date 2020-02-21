@@ -1492,7 +1492,7 @@ class ImageParamsHeuristics(object):
         # all EBs (PIPE-526).
         intersect_range_full = utils.intersect_ranges_by_weight(per_eb_full_freq_ranges, max(channel_widths), 1.0)
         if intersect_range_flagged != () and intersect_range_full != ():
-            intersect_range_final = utils.intersect_ranges_by_weight([intersect_range_flagged, intersect_range_full], max(channel_widths), 1.0))
+            intersect_range_final = utils.intersect_ranges_by_weight([intersect_range_flagged, intersect_range_full], max(channel_widths), 1.0)
             if0, if1 = intersect_range_final
             return if0, if1, max(channel_widths)
         else:
