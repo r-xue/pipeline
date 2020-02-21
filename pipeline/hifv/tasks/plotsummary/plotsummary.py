@@ -14,6 +14,23 @@ class PlotSummaryInputs(vdp.StandardInputs):
         self.vis = vis
 
 
+class PlotSummaryResults(h_applycal.ApplycalResults):
+    def merge_with_context(self, context):
+        """
+        Merges these results with the given context by examining the context
+        and marking any applied caltables, so removing them from subsequent
+        on-the-fly calibration calculations.
+
+        See :method:`~pipeline.Results.merge_with_context`
+        """
+        if not self.applied:
+            LOG.error('No results to merge')
+
+        #for calapp in self.applied:
+        #    LOG.trace('Marking %s as applied' % calapp.as_applycal())
+        #    context.callibrary.mark_as_applied(calapp.calto, calapp.calfrom)
+
+
 @task_registry.set_equivalent_casa_task('hifv_plotsummary')
 class PlotSummary(basetask.StandardTaskTemplate):
     Inputs = PlotSummaryInputs
@@ -25,7 +42,7 @@ class PlotSummary(basetask.StandardTaskTemplate):
 
         calapps = [callibrary.CalApplication(calto, calfroms) for calto, calfroms in applied.items()]
 
-        result = h_applycal.ApplycalResults(applied=calapps)
+        result = PlotSummaryResults(applied=calapps)
 
         return result
 
