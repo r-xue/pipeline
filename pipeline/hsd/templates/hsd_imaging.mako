@@ -173,9 +173,9 @@ It generates an image combined spectral data from whole antenna as well as image
 
 %if sparsemap_subpage is not None and sparsemap_subpage != {}:
 <h3 id="profilemap" class="jumptarget">Profile Map</h3>
-  % for field in sorted_fields:
+  % for field, subpage in sparsemap_subpage.items():
     <h4><a class="replace"
-           href="${os.path.join(dirname, sparsemap_subpage[field])}"
+           href="${os.path.join(dirname, subpage)}"
 	   data-field="${field}">
            ${field}
         </a>
@@ -194,7 +194,7 @@ It generates an image combined spectral data from whole antenna as well as image
 	
 	                <div class="caption">
 	                    <h4>
-	                        <a href="${os.path.join(dirname, sparsemap_subpage[field])}"
+	                        <a href="${os.path.join(dirname, subpage)}"
 	                           class="replace"
 	                           data-spw="${plot.parameters['spw']}"
 	                           data-ant="${plot.parameters['ant']}"
@@ -244,9 +244,9 @@ It generates an image combined spectral data from whole antenna as well as image
     % if plots['title'] == 'Channel Map':
     Click in the Field Name or Spectral Window ID to get different spectral selections.
     % endif
-    % for field in sorted_fields:
+    % for field, subpage in plots['subpage'].items():
         <h4><a class="replace"
-               href="${os.path.join(dirname, plots['subpage'][field])}"
+               href="${os.path.join(dirname, subpage)}"
                data-field="${field}">
                ${field}
             </a>
@@ -265,7 +265,7 @@ It generates an image combined spectral data from whole antenna as well as image
 	
 	                    <div class="caption">
 	                        <h4>
-	                            <a href="${os.path.join(dirname, plots['subpage'][field])}"
+	                            <a href="${os.path.join(dirname, subpage)}"
 	                               class="replace"
 	                               data-spw="${plot.parameters['spw']}"
 	                               data-ant="${plot.parameters['ant']}"

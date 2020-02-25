@@ -32,8 +32,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
         dovirtual = sdutils.require_virtual_spw_id_handling(context.observing_run)
         sorted_fields = sdutils.sort_fields(context)
         ctx.update({
-            'dovirtual': dovirtual,
-            'sorted_fields': [f.name.replace(' ', '_') for f in sorted_fields]
+            'dovirtual': dovirtual
         })
 
         cqa = casatools.quanta
@@ -94,15 +93,15 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
             for inner in plot_list.values():
                 for plot in inner:
                     flattened.append(plot)
-            LOG.debug('flattened=%s'%((flattened)));
+            LOG.debug('flattened=%s'%((flattened)))
             #summary = self._summary_plots(plot_list)
             if key == 'channelmap':
                 summary = self._summary_plots_channelmap(context, plot_list)
             else:
                 summary = self._summary_plots(plot_list)
-            subpage = {}
+            subpage = collections.OrderedDict()
             plot_title = value['plot_title']
-            LOG.debug('plot_title=%s'%(plot_title));
+            LOG.debug('plot_title=%s'%(plot_title))
             renderer = basetemplates.JsonPlotRenderer('generic_x_vs_y_ant_field_spw_pol_plots.mako',
                                                       context,
                                                       results,
@@ -111,8 +110,12 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                                                       filenamer.sanitize('%s.html' % (plot_title.lower())))
             with renderer.get_file() as fileobj:
                 fileobj.write(renderer.render())
-            for name, _plots in plot_list.items():
-                subpage[name] = os.path.basename(renderer.path)
+            for fieldobj in sorted_fields:
+                field = self.get_field_key(plot_list, fieldobj)
+                if field is None:
+                    LOG.info('No "{}" plots for field "{}"'.format(key, fieldobj.name))
+                    continue
+                subpage[field] = os.path.basename(renderer.path)
             ctx.update({'%s_subpage' % key: subpage,
                         '%s_plots' % key: summary})
             if key == 'sparsemap':
@@ -235,4 +238,14 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
 
         return summary_plots
 
+    @staticmethod
+    def get_field_key(plot_dict, field_domain):
+        field_candidates = filter(
+            lambda x: x in plot_dict,
+            set([field_domain.name, field_domain.name.strip('"'), field_domain.clean_name]))
+        try:
+            field_key = next(field_candidates)
+        except StopIteration:
+            field_key = None
+        return field_key
 
