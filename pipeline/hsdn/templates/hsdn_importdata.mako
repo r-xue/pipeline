@@ -1,5 +1,6 @@
 <%!
 import os
+from functools import reduce
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 <%namespace name="importdata" file="importdata.mako"/>
@@ -32,18 +33,17 @@ for ms in pcontext.observing_run.measurement_sets:
     
 fieldmap = {}
 for ms in pcontext.observing_run.measurement_sets:
-    map_as_name = dict([(ms.fields[i].name,ms.fields[j].name) for (i,j) in ms.calibration_strategy['field_strategy'].iteritems()])
+    map_as_name = dict([(ms.fields[i].name, ms.fields[j].name) for i, j in ms.calibration_strategy['field_strategy'].items()])
     fieldmap[ms.basename] = map_as_name
     
 contents = {}
-for vis, _spwmap in spwmap.iteritems():
+for vis, _spwmap in spwmap.items():
     _fieldmap = fieldmap[vis]
-    _spwkeys = _spwmap.keys()
-    _spwkeys.sort()
-    _fieldkeys = _fieldmap.keys()
+    _spwkeys = sorted(_spwmap.keys())
+    _fieldkeys = list(_fieldmap.keys())
     l = max(len(_spwkeys), len(_fieldkeys))
     _contents = []
-    for i in xrange(l):
+    for i in range(l):
         items = ['', '', '', '']
         if i < len(_spwkeys):
             key = _spwkeys[i]
@@ -105,7 +105,7 @@ ${'is' if num_mses == 1 else 'are'} summarised below.</p>
 			<td>${len(ms.fields)}</td>
 			<!-- count the number of measurements added to the setjy result in
 				 each importdata_result -->
-			<td>${reduce(lambda x, setjy_result: x + len(reduce(list.__add__, [setjy_result.measurements[key] for key in setjy_result.measurements], [])), importdata_result.setjy_results, 0)}</td>
+			<td>${reduce(lambda x, setjy_result: x + sum(len(y) for y in setjy_result.measurements.values()), importdata_result.setjy_results, 0)}</td>
 			<td>${str(ms.filesize)}</td>
 			<td><a href="${fluxcsv_files[ms.basename]}" class="replace-pre" data-title="flux.csv">View</a> or <a href="${fluxcsv_files[ms.basename]}" download="${fluxcsv_files[ms.basename]}">download</a></td>
 		</tr>
