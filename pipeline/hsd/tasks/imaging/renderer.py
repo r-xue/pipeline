@@ -33,7 +33,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
         sorted_fields = sdutils.sort_fields(context)
         ctx.update({
             'dovirtual': dovirtual,
-            'sorted_fields': [f.name.replace(' ', '_') for f in sorted_fields]
+            'sorted_fields': [f.name.strip('"').replace(' ', '_') for f in sorted_fields]
         })
 
         cqa = casatools.quanta
