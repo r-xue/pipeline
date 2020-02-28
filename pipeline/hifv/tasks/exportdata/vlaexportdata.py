@@ -118,6 +118,19 @@ class VLAExportData(exportdata.ExportData):
         task_string = "    hifv_restoredata (vis=%s, session=%s, ocorr_mode='%s', gainmap=%s)" % (
         tmpvislist, session_list, ocorr_mode, self.inputs.gainmap)
 
+        # Is this a VLASS execution?
+        vlassmode = False
+        for result in context.results:
+            try:
+                resultinputs = result.read()[0].inputs
+                if 'vlass' in resultinputs['checkflagmode']:
+                    vlassmode = True
+            except:
+                continue
+
+        if vlassmode:
+            task_string += "\n    hifv_fixpointing(pipelinemode='automatic')"
+
         task_string += "\n    hifv_statwt(pipelinemode='automatic')"
 
         template = '''__rethrow_casa_exceptions = True
