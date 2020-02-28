@@ -11,6 +11,7 @@ from pipeline.domain import DataTable
 
 from . import SDFlagPlotter as SDP
 from .. import common
+from ..common import utils as sdutils
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -37,6 +38,7 @@ class SDBLFlagSummary(object):
         self.thres_value = thresholds
         self.flagRule = flagRule
         self.userFlag = userFlag
+        self.bunit = sdutils.get_brightness_unit(self.ms.basename, defaultunit='Jy/beam')
 
     def execute(self, dry_run=True):
         """
@@ -271,8 +273,8 @@ class SDBLFlagSummary(object):
         PlotData['data'] = NPpdata[1]
         PlotData['flag'] = NPpflag[1]
         PlotData['thre'] = [threshold[1][1]]
-        PlotData['title'] = "Baseline RMS (Jy/beam) before baseline subtraction"
-        PlotData['ylabel'] = "Baseline RMS (Jy/beam)"
+        PlotData['title'] = "Baseline RMS ({}) before baseline subtraction".format(self.bunit)
+        PlotData['ylabel'] = "Baseline RMS ({})".format(self.bunit)
         PlotData['isActive'] = FlagRule_local['RmsPreFitFlag']['isActive']
         PlotData['threDesc'] = "{:.1f} sigma threshold".format(FlagRule_local['RmsPreFitFlag']['Threshold'])
         SDP.StatisticsPlot(PlotData, FigFileDir, FigFileRoot+'_1')
@@ -282,7 +284,7 @@ class SDBLFlagSummary(object):
         PlotData['data'] = NPpdata[2] if is_baselined else None
         PlotData['flag'] = NPpflag[2]
         PlotData['thre'] = [threshold[0][1]]
-        PlotData['title'] = "Baseline RMS (Jy/beam) after baseline subtraction"
+        PlotData['title'] = "Baseline RMS ({}) after baseline subtraction".format(self.bunit)
         PlotData['isActive'] = FlagRule_local['RmsPostFitFlag']['isActive']
         PlotData['threDesc'] = "{:.1f} sigma threshold".format(FlagRule_local['RmsPostFitFlag']['Threshold'])
         SDP.StatisticsPlot(PlotData, FigFileDir, FigFileRoot+'_2')
@@ -292,7 +294,7 @@ class SDBLFlagSummary(object):
         PlotData['data'] = NPpdata[3]
         PlotData['flag'] = NPpflag[3]
         PlotData['thre'] = [threshold[3][1]]
-        PlotData['title'] = "RMS (Jy/beam) for Baseline Deviation from the running mean (Nmean={:d}) before baseline subtraction".format(FlagRule_local['RunMeanPreFitFlag']['Nmean'])
+        PlotData['title'] = "RMS ({}) for Baseline Deviation from the running mean (Nmean={:d}) before baseline subtraction".format(self.bunit, FlagRule_local['RunMeanPreFitFlag']['Nmean'])
         PlotData['isActive'] = FlagRule_local['RunMeanPreFitFlag']['isActive']
         PlotData['threDesc'] = "{:.1f} sigma threshold".format(FlagRule_local['RunMeanPreFitFlag']['Threshold'])
         SDP.StatisticsPlot(PlotData, FigFileDir, FigFileRoot+'_3')
@@ -302,7 +304,7 @@ class SDBLFlagSummary(object):
         PlotData['data'] = NPpdata[4] if is_baselined else None
         PlotData['flag'] = NPpflag[4]
         PlotData['thre'] = [threshold[2][1]]
-        PlotData['title'] = "RMS (Jy/beam) for Baseline Deviation from the running mean (Nmean={:d}) after baseline subtraction".format(FlagRule_local['RunMeanPostFitFlag']['Nmean'])
+        PlotData['title'] = "RMS ({}) for Baseline Deviation from the running mean (Nmean={:d}) after baseline subtraction".format(self.bunit, FlagRule_local['RunMeanPostFitFlag']['Nmean'])
         PlotData['isActive'] = FlagRule_local['RunMeanPostFitFlag']['isActive']
         PlotData['threDesc'] = "{:.1f} sigma threshold".format(FlagRule_local['RunMeanPostFitFlag']['Threshold'])
         SDP.StatisticsPlot(PlotData, FigFileDir, FigFileRoot+'_4')
@@ -312,7 +314,7 @@ class SDBLFlagSummary(object):
         PlotData['data'] = NPpdata[1]
         PlotData['flag'] = NPpflag[5]
         PlotData['thre'] = [NPpdata[5]]
-        PlotData['title'] = "Baseline RMS (Jy/beam) compared with the expected RMS calculated from Tsys before baseline subtraction"
+        PlotData['title'] = "Baseline RMS ({}) compared with the expected RMS calculated from Tsys before baseline subtraction".format(self.bunit)
         PlotData['isActive'] = FlagRule_local['RmsExpectedPreFitFlag']['isActive']
         PlotData['threType'] = "plot"
         PlotData['threDesc'] = "threshold with the scaling factor of {:.1f}".format(ThreExpectedRMSPreFit)
@@ -323,7 +325,7 @@ class SDBLFlagSummary(object):
         PlotData['data'] = NPpdata[2] if is_baselined else None
         PlotData['flag'] = NPpflag[6]
         PlotData['thre'] = [NPpdata[6]]
-        PlotData['title'] = "Baseline RMS (Jy/beam) compared with the expected RMS calculated from Tsys after baseline subtraction"
+        PlotData['title'] = "Baseline RMS ({}) compared with the expected RMS calculated from Tsys after baseline subtraction".format(self.bunit)
         PlotData['isActive'] = FlagRule_local['RmsExpectedPostFitFlag']['isActive']
         PlotData['threType'] = "plot"
         PlotData['threDesc'] = "threshold with the scaling factor of {:.1f}".format(ThreExpectedRMSPostFit)

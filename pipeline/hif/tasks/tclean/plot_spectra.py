@@ -61,8 +61,7 @@ def addFrequencyAxisAbove(ax1, firstFreq, lastFreq, freqType='', spw=None,
     ax2.xaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter(useOffset=False))
 
 
-def numberOfChannelsInCube(img, returnFreqs=False, returnChannelWidth=False,
-                           verbose=False):
+def numberOfChannelsInCube(img, returnFreqs=False, returnChannelWidth=False, verbose=False):
     """
     Finds the number of channels in a CASA image cube, using the ia tool.
     returnFreqs: if True, then also return the frequency of the
@@ -180,8 +179,7 @@ def lsrkToTopo(lsrkFrequency, datestring, ra, dec, equinox='J2000', observatory=
     velocityLSRK = 0  # does not matter what it is, just needs to be same in both calls
     restFreqHz = lsrkToRest(lsrkFrequency, velocityLSRK, datestring, ra, dec, equinox,
                             observatory, prec, verbose)
-    topoFrequencyHz = restToTopo(restFreqHz, velocityLSRK, datestring, ra, dec, equinox,
-                                observatory, verbose=verbose)
+    topoFrequencyHz = restToTopo(restFreqHz, velocityLSRK, datestring, ra, dec, equinox, observatory, verbose=verbose)
     return topoFrequencyHz
 
 

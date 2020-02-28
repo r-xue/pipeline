@@ -421,7 +421,9 @@ class SDImaging(basetask.StandardTaskTemplate):
                     imager_task = worker.SDImagingWorker(imager_inputs)
                     _imager_result = self._executor.execute(imager_task)
                     imager_results.append(_imager_result)
+                # per-antenna image (usually Stokes I)
                 imager_result = imager_results[0]
+                # per-antenna correlation image (XXYY/RRLL)
                 imager_result_nro = imager_results[1] if is_nro else None
 
                 if imager_result.outcome is not None:
@@ -511,7 +513,9 @@ class SDImaging(basetask.StandardTaskTemplate):
 #                         # to register exported_ms to each scantable instance
 #                         outcome['export_results'] = export_results
 
-                    results.append(imager_result)
+                    # NRO doesn't need per-antenna Stokes I images
+                    if not is_nro:
+                        results.append(imager_result)
 
                 if imager_result_nro is not None and imager_result_nro.outcome is not None:
                     # Imaging was successful, proceed following steps

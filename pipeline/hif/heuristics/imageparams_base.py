@@ -1127,7 +1127,7 @@ class ImageParamsHeuristics(object):
                 # First check if the center edge is masked. If so, then the
                 # default pb level of 0.2 is fully within the image and no
                 # adjustmnt is needed.
-                if not iaTool.getchunk([nx//2, 0, 0, nf//2], [nx//2, 0, 0, nf//2], getmask=True).flatten()[0]:
+                if not iaTool.getchunk([nx // 2, 0, 0, nf // 2], [nx // 2, 0, 0, nf // 2], getmask=True).flatten()[0]:
                     return pblimit_image, pblimit_cleanmask
 
                 pb_edge = 0.0
@@ -1136,7 +1136,7 @@ class ImageParamsHeuristics(object):
                 # check for first unmasked value.
                 # Should no longer encounter the mask here due to the
                 # above check, but keep code around for now.
-                while ((pb_edge == 0.0) and (i_pb_edge < ny//2)):
+                while pb_edge == 0.0 and i_pb_edge < ny // 2:
                     i_pb_edge += 1
                     pb_edge = iaTool.getchunk([nx//2, i_pb_edge, 0, nf//2], [nx//2, i_pb_edge, 0, nf//2]).flatten()[0]
                 if (pb_edge > 0.2):

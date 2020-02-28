@@ -18,7 +18,7 @@ class ArcUnits(object):
     SECOND           = { 'name' : 'SECOND'           , 'symbol' : 's'   , 'html' : 's'        , 'units per circle' : decimal.Decimal(86400)      }
     ARC_MINUTE       = { 'name' : 'ARC_MINUTE'       , 'symbol' : "'"   , 'html' : '&#x0027;' , 'units per circle' : decimal.Decimal(21600)      }
     ARC_SECOND       = { 'name' : 'ARC_SECOND'       , 'symbol' : '"'   , 'html' : '&quot;'   , 'units per circle' : decimal.Decimal(1296000)    }
-    MILLI_ARC_SECOND = { 'name' : 'MILLI_ARC_SECOND' , 'symbol' : 'mas' , 'html' : 'mas'      , 'units per circle' : decimal.Decimal(1296000000) }    
+    MILLI_ARC_SECOND = { 'name' : 'MILLI_ARC_SECOND' , 'symbol' : 'mas' , 'html' : 'mas'      , 'units per circle' : decimal.Decimal(1296000000) }
 
 
 class DistanceUnits(object):
@@ -64,7 +64,7 @@ class FluxDensityUnits(object):
 
 
 class FrequencyUnits(object):
-    YOCTOHERTZ = { 'name' : 'YOCTOHERTZ' , 'symbol' : 'yHz'      , 'hz' : decimal.Decimal('1e-24') } 
+    YOCTOHERTZ = { 'name' : 'YOCTOHERTZ' , 'symbol' : 'yHz'      , 'hz' : decimal.Decimal('1e-24') }
     ZEPTOHERTZ = { 'name' : 'ZEPTOHERTZ' , 'symbol' : 'zHz'      , 'hz' : decimal.Decimal('1e-21') }
     ATTOHERTZ  = { 'name' : 'ATTOHERTZ'  , 'symbol' : 'aHz'      , 'hz' : decimal.Decimal('1e-18') }
     FEMTOHERTZ = { 'name' : 'FEMTOHERTZ' , 'symbol' : 'fHz'      , 'hz' : decimal.Decimal('1e-15') }
@@ -84,7 +84,7 @@ class FrequencyUnits(object):
     PETAHERTZ  = { 'name' : 'PETAHERTZ'  , 'symbol' : 'PHz'      , 'hz' : decimal.Decimal('1e15')  }
     ETAHERTZ   = { 'name' : 'ETAHERTZ'   , 'symbol' : 'EHz'      , 'hz' : decimal.Decimal('1e18')  }
     ZETTAHERTZ = { 'name' : 'ZETTAHERTZ' , 'symbol' : 'ZHz'      , 'hz' : decimal.Decimal('1e21')  }
-    YOTTAHERTZ = { 'name' : 'YOTTAHERTZ' , 'symbol' : 'YHz'      , 'hz' : decimal.Decimal('1e24')  }        
+    YOTTAHERTZ = { 'name' : 'YOTTAHERTZ' , 'symbol' : 'YHz'      , 'hz' : decimal.Decimal('1e24')  }
 
 
 class LinearVelocityUnits(object):
@@ -228,7 +228,7 @@ class Distance(ComparableUnit):
         self.units = units
 
     def convert_to(self, newUnits=DistanceUnits.METRE):
-        """Converts this measure of distance to the new units. 
+        """Converts this measure of distance to the new units.
 
         After this method is complete this distance will have units of newUnits
         and its value will have been converted accordingly.
@@ -238,7 +238,7 @@ class Distance(ComparableUnit):
 
         Returns:
             this distance. The reason for this return type is to allow code of
-            this nature: 
+            this nature:
 
             kilometers = myDistance.convert_to(DistanceUnits.KILOMETRES).value
         """
@@ -247,16 +247,16 @@ class Distance(ComparableUnit):
         return self
 
     def to_units(self, otherUnits=DistanceUnits.METRE):
-        """Returns the magnitude of this distance in otherUnits. 
+        """Returns the magnitude of this distance in otherUnits.
 
         Note that this method does not alter the state of this distance.
         Contrast this with convert_to(DistanceUnits).
 
         otherUnits
-            the units in which to express this distance's magnitude. 
+            the units in which to express this distance's magnitude.
 
         Returns:
-            this distance's value converted to otherUnits. 
+            this distance's value converted to otherUnits.
         """
         factor = self.units['metres'] / otherUnits['metres']
         return self.value * factor
@@ -282,7 +282,7 @@ class EquatorialArc(ComparableUnit):
         self.units = units
 
     def convert_to(self, newUnits=ArcUnits.DEGREE):
-        """Converts this arc to the new units. 
+        """Converts this arc to the new units.
 
         After this method is complete this arc will have units of units and its
         value will have been converted accordingly.
@@ -301,13 +301,13 @@ class EquatorialArc(ComparableUnit):
         return self
 
     def to_units(self, otherUnits=ArcUnits.DEGREE):
-        """Returns the magnitude of this arc in otherUnits. 
+        """Returns the magnitude of this arc in otherUnits.
 
         Note that this method does not alter the state of this arc. Contrast
         this with convert_to(ArcUnits).
 
         otherUnits
-            the units in which to express this arc's magnitude (default: degrees)  
+            the units in which to express this arc's magnitude (default: degrees)
 
         Returns:
             this arc's value converted to otherUnits.
@@ -317,10 +317,10 @@ class EquatorialArc(ComparableUnit):
 
     def toDms(self):
         """Returns a representation of this arc in degrees, minutes, and
-        seconds. 
+        seconds.
 
         Returns:
-            a tuple of size three in this order: 
+            a tuple of size three in this order:
                 An integer holding the number of degrees.
                 An integer holding the number of arc minutes.
                 A float holding the number of arc seconds.
@@ -348,10 +348,10 @@ class EquatorialArc(ComparableUnit):
         return dd, mm, ss
 
     def toHms(self):
-        """Returns a representation of this arc in hours, minutes, and seconds. 
+        """Returns a representation of this arc in hours, minutes, and seconds.
 
         Returns:
-            a tuple of size three in this order: 
+            a tuple of size three in this order:
                 An integer holding the number of hours.
                 An integer holding the number of minutes.
                 A float holding the number of seconds.
@@ -365,7 +365,7 @@ class EquatorialArc(ComparableUnit):
 
 class FluxDensity(ComparableUnit):
     def __init__(self, value=0, units=FluxDensityUnits.JANSKY):
-        """Create a new flux density with the given magnitude and units. 
+        """Create a new flux density with the given magnitude and units.
 
         If called without arguments, the constructor will create a
         default frequency of 0 Janskys
@@ -383,7 +383,7 @@ class FluxDensity(ComparableUnit):
 
     def convert_to(self, newUnits=FluxDensityUnits.JANSKY):
         """Converts this measure of flux density to the new units.
-        After this method is complete this flux density will have units of 
+        After this method is complete this flux density will have units of
         units and its value will have been converted accordingly.
 
         newUnits
@@ -391,7 +391,7 @@ class FluxDensity(ComparableUnit):
 
         Returns:
             this flux density. The reason for this return type is to allow code
-            of this nature: 
+            of this nature:
 
             janskies = myFluxDensity.convert_to(FluxDensityUnits.JANSKY)
         """
@@ -400,7 +400,7 @@ class FluxDensity(ComparableUnit):
         return self
 
     def to_units(self, otherUnits=FluxDensityUnits.JANSKY):
-        """Returns the magnitude of this flux density in otherUnits. 
+        """Returns the magnitude of this flux density in otherUnits.
 
         Note that this method does not alter the state of this flux density.
         Contrast this with convert_to(FluxDensityUnits).
@@ -424,7 +424,7 @@ class FluxDensity(ComparableUnit):
 
 class LinearVelocity(ComparableUnit):
     def __init__(self, value=0, units=LinearVelocityUnits.KILOMETRES_PER_SECOND):
-        """Create a new linear velocity with the given magnitude and units. 
+        """Create a new linear velocity with the given magnitude and units.
 
         If called without arguments, the constructor will create a
         default linear velocity of 0 kilometres per second.
@@ -442,7 +442,7 @@ class LinearVelocity(ComparableUnit):
 
     def convert_to(self, newUnits=LinearVelocityUnits.KILOMETRES_PER_SECOND):
         """Converts this measure of linear velocity to the new units.
-        After this method is complete this linear veloity will have units of 
+        After this method is complete this linear veloity will have units of
         units and its value will have been converted accordingly.
 
         newUnits
@@ -450,8 +450,8 @@ class LinearVelocity(ComparableUnit):
             IllegalArgumentException will be thrown.
 
         Returns:
-            this linear velocity. The reason for this return type is to allow 
-            code of this nature: 
+            this linear velocity. The reason for this return type is to allow
+            code of this nature:
 
             velocity = myLinearVelocity.convert_to(LinearVelocityUnits.Z)
         """
@@ -460,7 +460,7 @@ class LinearVelocity(ComparableUnit):
         return self
 
     def to_units(self, otherUnits=LinearVelocityUnits.KILOMETRES_PER_SECOND):
-        """Returns the magnitude of this linear velocity in otherUnits. 
+        """Returns the magnitude of this linear velocity in otherUnits.
 
         Note that this method does not alter the state of this linear velocity.
         Contrast this with convert_to(LinearVelocityUnits).
@@ -486,7 +486,7 @@ class LinearVelocity(ComparableUnit):
 
 class FileSize(ComparableUnit):
     def __init__(self, value=0, units=FileSizeUnits.MEGABYTES):
-        """Creates a new file size with the given magnitude and units. 
+        """Creates a new file size with the given magnitude and units.
 
         If called without arguments, the constructor will create a
         default size of 0 megabytes.
@@ -503,13 +503,13 @@ class FileSize(ComparableUnit):
         self.units = units
 
     def convert_to(self, newUnits=FileSizeUnits.MEGABYTES):
-        """Converts this measure of file size to the new units. 
+        """Converts this measure of file size to the new units.
 
         After this method is complete this file size will have units of
         newUnits and its value will have been converted accordingly.
 
         newUnits
-            the new units for this file size. 
+            the new units for this file size.
 
         Returns:
             this file size. The reason for this return type is to allow code of
@@ -522,14 +522,14 @@ class FileSize(ComparableUnit):
         return self
 
     def to_units(self, otherUnits=FileSizeUnits.GIGABYTES):
-        """Returns the magnitude of this file size in otherUnits. 
+        """Returns the magnitude of this file size in otherUnits.
 
         Note that this method does not alter the state of this file size.
         Contrast this with convert_to(FileSizeUnits).
 
         otherUnits
             the units in which to express this file size's magnitude. If
-            newUnits is None, it will be treated as FileSizeUnits.GIGABYTES. 
+            newUnits is None, it will be treated as FileSizeUnits.GIGABYTES.
 
         Returns:
             this file size's value converted to otherUnits.
@@ -547,7 +547,7 @@ class FileSize(ComparableUnit):
 
 class Frequency(ComparableUnit):
     def __init__(self, value=0, units=FrequencyUnits.GIGAHERTZ):
-        """Creates a new frequency with the given magnitude and units. 
+        """Creates a new frequency with the given magnitude and units.
 
         If called without arguments, the constructor will create a
         default frequency of 0 gigahertz.
@@ -564,13 +564,13 @@ class Frequency(ComparableUnit):
         self.units = units
 
     def convert_to(self, newUnits=FrequencyUnits.GIGAHERTZ):
-        """Converts this measure of frequency to the new units. 
+        """Converts this measure of frequency to the new units.
 
         After this method is complete this frequency will have units of
         newUnits and its value will have been converted accordingly.
 
         newUnits
-            the new units for this frequency. 
+            the new units for this frequency.
 
         Returns:
             this frequency. The reason for this return type is to allow code of
@@ -583,14 +583,14 @@ class Frequency(ComparableUnit):
         return self
 
     def to_units(self, otherUnits=FrequencyUnits.GIGAHERTZ):
-        """Returns the magnitude of this frequency in otherUnits. 
+        """Returns the magnitude of this frequency in otherUnits.
 
         Note that this method does not alter the state of this frequency.
         Contrast this with convert_to(FrequencyUnits).
 
         otherUnits
             the units in which to express this frequency's magnitude. If
-            newUnits is None, it will be treated as FrequencyUnits.GIGAHERTZ. 
+            newUnits is None, it will be treated as FrequencyUnits.GIGAHERTZ.
 
         Returns:
             this frequency's value converted to otherUnits.
@@ -624,7 +624,7 @@ class FrequencyRange(object):
         return self.low, self.high
 
     def __setstate__(self, state):
-        self.low, self.high = state    
+        self.low, self.high = state
 
     def __init__(self, frequency1=None, frequency2=None):
         """Creates a new instance with the given endpoints.
@@ -674,7 +674,7 @@ class FrequencyRange(object):
         B.
 
         frequency
-            the frequency or range to test for inclusion in this range. 
+            the frequency or range to test for inclusion in this range.
 
         Returns:
             True if this range contains frequency. If frequency is None, the
@@ -694,7 +694,7 @@ class FrequencyRange(object):
 
         newUnits
             the new units for the endpoints of this range. If no units are
-            specified, it will be treated as FrequencyUnits.GIGAHERTZ. 
+            specified, it will be treated as FrequencyUnits.GIGAHERTZ.
 
         Returns:
             this range.
@@ -718,10 +718,10 @@ class FrequencyRange(object):
 
     def getOverlapWith(self, other):
         """Returns a new range that represents the region of overlap between
-        this range and other. If there is no overlap, None is returned. 
+        this range and other. If there is no overlap, None is returned.
 
         other
-            another range that may overlap this one. 
+            another range that may overlap this one.
 
         Returns:
             the overlapping region of this range and other.
@@ -740,7 +740,7 @@ class FrequencyRange(object):
         None is returned.
 
         other
-            another range that might not overlap this one. 
+            another range that might not overlap this one.
 
         Returns:
             the frequency gap between this range and other.
@@ -768,12 +768,12 @@ class FrequencyRange(object):
         """Returns true if this frequency range overlaps with other.
 
         Remember that this range is a closed interval, that is, one that
-        contains both of its endpoints. 
+        contains both of its endpoints.
 
         If other is None, the return value is false.
 
         other
-            another range that may overlap this one. 
+            another range that may overlap this one.
 
         Returns:
             true if this range overlaps with other.
@@ -816,12 +816,12 @@ class FrequencyRange(object):
 
 
 class Latitude(EquatorialArc):
-    patt = re.compile('\s*' + 
-                      '(?P<degs>[-+]?\d+)' + 
+    patt = re.compile('\s*' +
+                      '(?P<degs>[-+]?\d+)' +
                       '\s*:?\s*' +
                       '(?P<mins>\d+)' +
                       '\s*:?\s*' +
-                      '(?P<secs>\d+\.?\d*)' + 
+                      '(?P<secs>\d+\.?\d*)' +
                       '\s*')
 
     def __init__(self, value=0, units=ArcUnits.DEGREE):
@@ -861,10 +861,10 @@ class Latitude(EquatorialArc):
 
     @staticmethod
     def parse(value):
-        """Returns a new Latitude based on the given text. 
+        """Returns a new Latitude based on the given text.
 
         See the parse method of Angle for information on the format of text.
-        This Latitude class offers two other formats: 
+        This Latitude class offers two other formats:
 
             dd:mm:ss.sss
             dd mm ss.sss
@@ -881,13 +881,13 @@ class Latitude(EquatorialArc):
         given units.
 
         text
-            a string that will be converted into a latitude. 
+            a string that will be converted into a latitude.
 
         Returns:
             a new Latitude. If parsing was successful, the value of the
             latitude will be based on the parameter string. If it was not, the
-            returned latitude will be of zero degrees. 
-        Throws: 
+            returned latitude will be of zero degrees.
+        Throws:
             ValueError - if text is not in the expected form.
         """
         m = Latitude.patt.match(value)
@@ -902,10 +902,10 @@ class Latitude(EquatorialArc):
         if m.group('degs').startswith('-'):
             y *= -1
 
-        return Latitude(y, ArcUnits.DEGREE)        
+        return Latitude(y, ArcUnits.DEGREE)
 
     def isNorthOfEquator(self):
-        """Returns True if this latitude is north of the equator. 
+        """Returns True if this latitude is north of the equator.
 
         Returns:
             True if this latitude is north of the equator.
@@ -913,7 +913,7 @@ class Latitude(EquatorialArc):
         return self.value > 0
 
     def isSouthOfEquator(self):
-        """Returns True if this latitude is south of the equator. 
+        """Returns True if this latitude is south of the equator.
 
         Returns:
             True if this latitude is south of the equator.
@@ -921,10 +921,10 @@ class Latitude(EquatorialArc):
         return self.value < 0
 
     def isNorthOf(self, other):
-        """Returns True if this latitude is north of other. 
+        """Returns True if this latitude is north of other.
 
         other
-            the latitude to be tested. 
+            the latitude to be tested.
 
         Returns:
             True if this latitude is north of other.
@@ -932,10 +932,10 @@ class Latitude(EquatorialArc):
         return self > other
 
     def isSouthOf(self, other):
-        """Returns True if this latitude is south of other. 
+        """Returns True if this latitude is south of other.
 
         other
-            the latitude to be tested. 
+            the latitude to be tested.
 
         Returns:
             True if this latitude is south of other.
@@ -954,12 +954,12 @@ class Latitude(EquatorialArc):
 
 
 class Longitude(EquatorialArc):
-    patt = re.compile('\s*' + 
-                      '(?P<hours>\d+)' + 
+    patt = re.compile('\s*' +
+                      '(?P<hours>\d+)' +
                       '\s*:?\s*' +
                       '(?P<mins>\d+)' +
                       '\s*:?\s*' +
-                      '(?P<secs>\d+\.?\d*)' + 
+                      '(?P<secs>\d+\.?\d*)' +
                       '\s*')
 
     def __init__(self, value=0, units=ArcUnits.DEGREE):
@@ -988,10 +988,10 @@ class Longitude(EquatorialArc):
 
     @staticmethod
     def parse(value):
-        """Returns a new longitude based on the given text. 
+        """Returns a new longitude based on the given text.
 
         See the parse method of Angle for information on the format of text.
-        This Longitude class offers two other formats: 
+        This Longitude class offers two other formats:
 
             hh:mm:ss.sss
             hh mm ss.sss
@@ -1007,14 +1007,14 @@ class Longitude(EquatorialArc):
          equal to one full circle, in the given units.
 
         text
-            a string that will be converted into a longitude. 
+            a string that will be converted into a longitude.
 
         Returns:
             a new Longitude. If parsing was successful, the value of the
             Longitude will be based on the parameter string. If it was not, the
-            returned longitude will be of zero degrees. 
+            returned longitude will be of zero degrees.
 
-        Throws: 
+        Throws:
             ValueError - if text is not in the expected form.
         """
         match = Longitude.patt.match(value)
@@ -1030,10 +1030,10 @@ class Longitude(EquatorialArc):
 
     def isOpposite(self, other):
         """Returns True if this longitude and other are separated by one half
-        circle. 
+        circle.
 
         other
-            the other longitude to be tested. 
+            the other longitude to be tested.
 
         Returns:
             True if other is separated from this longitude by one half circle.
@@ -1047,14 +1047,14 @@ class Longitude(EquatorialArc):
 
         One longitude is east of another if there are fewer lines of longitude
         to cross by travelling eastward along a given latitude than there would
-        be by travelling westward along that same latitude. 
+        be by travelling westward along that same latitude.
 
         Two special cases are worth noting. First, a longitude that is equal to
         this one is neither east nor west of this one. Second, a longitude that
         is opposite this one is both east and west of this one.
 
         other
-            the longitude to be tested. 
+            the longitude to be tested.
 
         Returns:
             True if this longitude is east of other.
@@ -1062,21 +1062,21 @@ class Longitude(EquatorialArc):
         o = other.to_units(self.units)
         # calculate opposite angle
         r = self.units['units per circle'] / 2 + self.value
-        return o < self.value or o >= r        
+        return o < self.value or o >= r
 
     def isWestOf(self, other):
         """Returns True if this longitude is west of other.
 
         One longitude is west of another if there are fewer lines of longitude
         to cross by travelling westward along a given latitude than there would
-        be by travelling eastward along that same latitude. 
+        be by travelling eastward along that same latitude.
 
         Two special cases are worth noting. First, a longitude that is equal to
         this one is neither east nor west of this one. Second, a longitude that
         is opposite this one is both east and west of this one.
 
         other
-            the longitude to be tested. 
+            the longitude to be tested.
 
         Returns:
             True if this longitude is west of other.
@@ -1159,7 +1159,7 @@ class TimeInterval(object):
 
     def __eq__(self, other):
         if not isinstance(other, self.__class__):
-            return False        
+            return False
         return other.start == self.start and other.end == self.end
 
     def __ne__(self, other):
@@ -1169,16 +1169,16 @@ class TimeInterval(object):
         return 'TimeInterval(%s, %s)' % (self.start, self.end)
 
     def contains(self, time):
-        """Returns True if time is contained in this interval. 
+        """Returns True if time is contained in this interval.
 
-        Note that this interval is half-open; it does not include its ending 
+        Note that this interval is half-open; it does not include its ending
         point. Note also that an interval that is equal to this one is not
         contained by this one. The best analogy is that of a rigid box with
         infinitely thin walls: a box that is exactly the same as another cannot
         fit inside it.
 
         time
-            the datetime or TimeInterval to be tested for containment. 
+            the datetime or TimeInterval to be tested for containment.
 
         Returns:
             True if time is contained in this interval.
@@ -1198,7 +1198,7 @@ class TimeInterval(object):
 
     def overlaps(self, ti):
         """Returns True if this interval overlaps with the given interval.
-        """ 
+        """
         if isinstance(ti, TimeInterval):
             return ti.contains(self.start) or ti.contains(self.end) or self.contains(ti)
         return False
@@ -1210,7 +1210,7 @@ class TimeInterval(object):
 
     def startingFromNow():
         """Returns an open-ended TimeInterval starting from now.
-        """ 
+        """
         return TimeInterval(datetime.datetime.utcnow(), TimeInterval.FOREVER)
 
     FOREVER = datetime.datetime(9999, 12, 31)

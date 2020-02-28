@@ -36,7 +36,8 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
     def cell(self, beam=None, pixperbeam=None):
         return ['0.6arcsec']
 
-    def imsize(self, fields=None, cell=None, primary_beam=None, sfpblimit=None, max_pixels=None, centreonly=None, vislist=None):
+    def imsize(self, fields=None, cell=None, primary_beam=None, sfpblimit=None, max_pixels=None, centreonly=None,
+               vislist=None):
         return [12150, 12150]
 
     def reffreq(self):
@@ -200,12 +201,10 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         if iteration == 0:
             return True, 'auto'
         elif iteration == 1:
+            LOG.info('Final VLASS single epoch tclean call with no mask')
             return True, 'user'
-        elif iteration == 2:
-            LOG.info('Final VLASS single epoch tclean call')
-            return True, 'auto'
         else:
-            return False, 'auto'
+            return False, 'user'
 
     def threshold(self, iteration, threshold, hm_masking):
 
@@ -232,11 +231,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
             return 4.5
 
     def savemodel(self, iteration):
-
-        if iteration == 3:
-            return 'modelcolumn'
-        else:
-            return 'none'
+        return 'none'
 
     def datacolumn(self):
         return 'data'
@@ -249,7 +244,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
 
     def get_autobox_params(self, iteration, intent, specmode, robust):
 
-        '''Default auto-boxing parameters.'''
+        """Default auto-boxing parameters."""
 
         sidelobethreshold = None
         noisethreshold = None

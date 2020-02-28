@@ -24,6 +24,7 @@ pip-wheel-metadata/
 share/python-wheels/
 *.egg-info/
 .installed.cfg
+
 # Make sure we don't pick up our own egg
 Pipeline*.egg
 MANIFEST
@@ -146,6 +147,7 @@ Sessionx.vim
 *~
 # Auto-generated tag files
 tags
+
 # Persistent undo
 [._]*.un~
 

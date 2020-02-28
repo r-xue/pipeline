@@ -163,7 +163,8 @@ class ValidateLineSinglePointing(basetask.StandardTaskTemplate):
                 mask_list = datatable.getcell('MASKLIST', row)
                 no_change = datatable.getcell('NOCHANGE', row)
                 #LOG.debug('DataTable = %s, detect_signal = %s, OldFlag = %s' % (mask_list, detect_signal[row][2], no_change))
-                datatable.putcell('MASKLIST', row, detect_signal[row][2])
+                # datatable.putcell('MASKLIST', row, detect_signal[row][2])
+                datatable.putcell('MASKLIST', row, detect_signal[0][2])
                 datatable.putcell('NOCHANGE', row, False)
 
         # Iteration case

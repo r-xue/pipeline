@@ -927,7 +927,10 @@ def score_vla_flux_residual_rms(rmsmeanvalues):
         score = 0.0
 
     # Set score message and origin
-    longmsg = 'Max rms of the residuals is {!s}'.format(np.max(rmsvalues))
+    try:
+        longmsg = 'Max rms of the residuals is {!s}'.format(np.max(rmsvalues))
+    except Exception as e:
+        longmsg = 'No max rms.'
     shortmsg = longmsg
 
     origin = pqa.QAOrigin(metric_name='score_vla_flux_residual_rms',

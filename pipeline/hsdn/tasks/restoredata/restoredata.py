@@ -7,40 +7,45 @@ import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import task_registry
 from pipeline.hsd.tasks.applycal import applycal
-from pipeline.hsd.tasks.k2jycal import k2jycal
+from . import ampcal
 from ..importdata import importdata as importdata
 
 LOG = infrastructure.get_logger(__name__)
 
 
 class NRORestoreDataInputs(restoredata.RestoreDataInputs):
-    scalefile = vdp.VisDependentProperty(default='nroscalefile.csv')
+    reffile = vdp.VisDependentProperty(default='')
+    caltable = vdp.VisDependentProperty(default='')
 
-    def __init__(self, context, infiles=None, caltable=None, scalefile=None, 
-                 copytoraw=None, products_dir=None, rawdata_dir=None, output_dir=None, 
-                 vis=None):
-        super(NRORestoreDataInputs, self).__init__(context, products_dir=None, rawdata_dir=rawdata_dir,
-                                                   output_dir=output_dir, vis=vis)
+    def __init__(self, context, vis=None, caltable=None, reffile=None,
+                 products_dir=None, rawdata_dir=None, output_dir=None):
+        super(NRORestoreDataInputs, self).__init__(context, vis=vis, products_dir=products_dir, rawdata_dir=rawdata_dir,
+                                                   output_dir=output_dir)
+
+        self.caltable = caltable
+        self.reffile = reffile
 
 
 class NRORestoreDataResults(restoredata.RestoreDataResults):
-    def __init__(self, importdata_results=None, applycal_results=None):
+
+    def __init__(self, importdata_results=None, applycal_results=None, ampcal_results=None):
         """
         Initialise the results objects.
         """
         super(NRORestoreDataResults, self).__init__(importdata_results, applycal_results)
+        self.ampcal_results = ampcal_results
 
     def merge_with_context(self, context):
         super(NRORestoreDataResults, self).merge_with_context(context)
 
-        # set k2jy factor to ms domain objects
+        # set amplitude scaling factor to ms domain objects
         if isinstance(self.applycal_results, basetask.ResultsList):
             for result in self.applycal_results:
-                self._merge_k2jycal(context, result)
+                self._merge_ampcal(context, result)
         else:
-            self._merge_k2jycal(context, self.applycal_results)
+            self._merge_ampcal(context, self.applycal_results)
 
-    def _merge_k2jycal(self, context, applycal_results):
+    def _merge_ampcal(self, context, applycal_results):
         for calapp in applycal_results.applied:
             msobj = context.observing_run.get_ms(name=os.path.basename(calapp.vis))
             if not hasattr(msobj, 'k2jy_factor'):
@@ -76,40 +81,47 @@ class NRORestoreData(restoredata.RestoreData):
     Inputs = NRORestoreDataInputs
 
     def prepare(self):
+        inputs = self.inputs
+        LOG.debug('prepare inputs = {0}'.format(inputs))
+
         # run prepare method in the parent class
         results = super(NRORestoreData, self).prepare()
+        ampcal_results = self.ampcal_results
 
         # apply baseline table and produce baseline-subtracted MSs
-
         # apply final flags for baseline-subtracted MSs
 
-        sdresults = NRORestoreDataResults(results.importdata_results, 
-                                          results.applycal_results)
-
-        return sdresults
+        results = NRORestoreDataResults(results.importdata_results, results.applycal_results, ampcal_results)
+        return results
 
     def _do_importasdm(self, sessionlist, vislist):
         inputs = self.inputs
         # NROImportDataInputs operate in the scope of a single measurement set.
         # To operate in the scope of multiple MSes we must use an
         # InputsContainer.
-        LOG.debug('inputs = {0}'.format(inputs))
+
+        LOG.debug('_do_importasdm inputs = {0}'.format(inputs))
+
         container = vdp.InputsContainer(importdata.NROImportData, inputs.context, vis=vislist, 
-                                        output_dir=None, overwrite=False, nocopy=False, 
-                                        createmms=None)
+                                        output_dir=None)
         importdata_task = importdata.NROImportData(container)
         return self._executor.execute(importdata_task, merge=True)
 
     def _do_applycal(self):
         inputs = self.inputs
+        LOG.debug('_do_applycal inputs = {0}'.format(inputs))
 
-        # Sensitively correction using scalefile and k2kycal. This is unique operation
-        # only for Nobeyama mesurement set data. 
-        LOG.debug('inputs = {0}'.format(inputs))
-        container = vdp.InputsContainer(k2jycal.SDK2JyCal, inputs.context, reffile=inputs.scalefile)
-        k2jycal_task = k2jycal.SDK2JyCal(container)
-        LOG.debug('k2jycal container = {0}'.format(container))
-        self._executor.execute(k2jycal_task, merge=True)
+        # Before applycal, sensitively (amplitude) correction using k2jycal task and
+        # a scalefile (=reffile) given by Observatory. This is the special operation for NRO data.
+        # If no scalefile exists in the working directory, skip this process.
+        if os.path.exists(inputs.reffile):
+            container = vdp.InputsContainer(ampcal.SDAmpCal, inputs.context, reffile=inputs.reffile)
+        else:
+            LOG.info('No scale factor file exists. Skip scaling.')
+            container = vdp.InputsContainer(ampcal.SDAmpCal, inputs.context)
+        LOG.debug('ampcal container = {0}'.format(container))
+        ampcal_task = ampcal.SDAmpCal(container)
+        self.ampcal_results = self._executor.execute(ampcal_task, merge=True)
 
         # SDApplyCalInputs operates in the scope of a single measurement set.
         # To operate in the scope of multiple MSes we must use an

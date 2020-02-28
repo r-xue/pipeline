@@ -3,6 +3,8 @@
 <task category="pipeline" name="hifv_solint" type="function">
 <shortdescription>Determines different solution intervals</shortdescription>
 <description>
+The hifv_solint task determines different solution intervals. Note that the short solint value is switched to 'int' when
+the minimum solution interval corresponds to one integration.
 </description>
 <input>
     <param name="vis" type="stringVec">
