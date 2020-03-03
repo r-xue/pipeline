@@ -315,7 +315,7 @@ def num_lines(relpath):
                                     <h4 class="modal-title">Plot Command</h4>
                                 </div>
                                 <div class="modal-body" data-selectable="true">
-                                    <p>${rendererutils.get_plot_command_markup(pcontext, plot.command)}</p>
+                                    <p>${rendererutils.get_command_markup(pcontext, plot.command)}</p>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-fancybox-close>Close</button>
@@ -373,7 +373,7 @@ def num_lines(relpath):
                                     <h4 class="modal-title">Plot Command</h4>
                                 </div>
                                 <div class="modal-body" data-selectable="true">
-                                    <p>${rendererutils.get_plot_command_markup(pcontext, plot.command)}</p>
+                                    <p>${rendererutils.get_command_markup(pcontext, plot.command)}</p>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-fancybox-close>Close</button>
@@ -449,7 +449,7 @@ def num_lines(relpath):
                                     <h4 class="modal-title">Plot Command</h4>
                                 </div>
                                 <div class="modal-body" data-selectable="true">
-                                    <p>${rendererutils.get_plot_command_markup(pcontext, plot.command)}</p>
+                                    <p>${rendererutils.get_command_markup(pcontext, plot.command)}</p>
                                 </div>
                                 <div class="modal-footer">
                                      <button type="button" class="btn btn-default" data-fancybox-close>Close</button>

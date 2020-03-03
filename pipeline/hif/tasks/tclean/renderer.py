@@ -29,7 +29,7 @@ ImageRow = collections.namedtuple('ImageInfo', (
     'fractional_bw_label fractional_bw aggregate_bw_label aggregate_bw aggregate_bw_num '
     'image_file nchan plot qa_url iterdone stopcode stopreason '
     'chk_pos_offset chk_frac_beam_offset chk_fitflux chk_fitpeak_fitflux_ratio img_snr '
-    'chk_gfluxscale chk_gfluxscale_snr chk_fitflux_gfluxscale_ratio cube_all_cont result'))
+    'chk_gfluxscale chk_gfluxscale_snr chk_fitflux_gfluxscale_ratio cube_all_cont tclean_command result'))
 
 
 class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -390,6 +390,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
             cube_all_cont = r.cube_all_cont
 
+            tclean_command = r.tclean_command
+
             # create our table row for this image.
             # Plot is set to None as we have a circular dependency: the row
             # needs the plot, but the plot generator needs the image_stats
@@ -434,6 +436,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 chk_gfluxscale_snr=chk_gfluxscale_snr,
                 chk_fitflux_gfluxscale_ratio=chk_fitflux_gfluxscale_ratio,
                 cube_all_cont=cube_all_cont,
+                tclean_command=tclean_command,
                 result=r
             )
             image_rows.append(row)

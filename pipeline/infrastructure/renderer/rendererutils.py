@@ -188,7 +188,7 @@ def get_suboptimal_badge(result):
         return ''
 
 
-def get_plot_command_markup(ctx, command):
+def get_command_markup(ctx, command):
     if not command:
         return ''
     stripped = command.replace('%s/' % ctx.report_dir, '')

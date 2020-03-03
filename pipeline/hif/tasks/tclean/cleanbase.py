@@ -526,6 +526,9 @@ class CleanBase(basetask.StandardTaskTemplate):
             job = casa_tasks.tclean(**tclean_job_parameters)
             tclean_result = self._executor.execute(job)
 
+        # Record last tclean command for weblog
+        result.set_tclean_command(str(job))
+
         pbcor_image_name = '%s.%s.iter%s.image.pbcor' % (inputs.imagename, inputs.stokes, iter)
 
         if inputs.niter > 0:

@@ -127,6 +127,7 @@ except:
                         %endif
                         <a href="${fullsize_relpath}"
                            data-fancybox="clean-summary-images"
+                           data-plotCommandTarget="#tcleancmd-${hash(row.plot.abspath)}"
                            data-caption="Iteration: ${row.plot.parameters['iter']}<br>Spw: ${row.plot.parameters['spw']}<br>Field: ${html.escape(row.field, True)}"
                            title='<div class="pull-left">Iteration: ${row.plot.parameters['iter']}<br>
                                   Spw: ${row.plot.parameters["spw"]}<br>
@@ -146,6 +147,20 @@ except:
                                 </a>
                             </p>
                         </div>
+                <div id="tcleancmd-${hash(row.plot.abspath)}" class="modal-content pipeline-tcleancommand" style="display:none;">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-fancybox-close aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Tclean Command</h4>
+                    </div>
+                    <div class="modal-body" data-selectable="true">
+                        <p>${rendererutils.get_command_markup(pcontext, row.tclean_command)}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-fancybox-close>Close</button>
+                    </div>
+                </div>
                     </td>
                     % else:
                     <td>No image available</td>

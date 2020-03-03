@@ -63,6 +63,8 @@ class TcleanResult(basetask.Results):
         self._tclean_iterdone = 0
         # This should be automatic, but it does not yet work
         self.pipeline_casa_task = 'Tclean'
+        # The tclean command for the weblog renderer
+        self._tclean_command = 'tclean()'
         # Dummy settings for the weblog renderer
         self.results = [self]
         self.targets = ['']
@@ -282,6 +284,13 @@ class TcleanResult(basetask.Results):
 
     def set_image_robust_rms_and_spectra(self, image_robust_rms_and_spectra):
         self._image_robust_rms_and_spectra = image_robust_rms_and_spectra
+
+    @property
+    def tclean_command(self):
+        return self._tclean_command
+
+    def set_tclean_command(self, tclean_command):
+        self._tclean_command = tclean_command
 
     @property
     def tclean_stopcode(self):
