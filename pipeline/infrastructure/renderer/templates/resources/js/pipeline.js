@@ -237,6 +237,7 @@ pipeline.pages = pipeline.pages || function() {
             $.fancybox.defaults.buttons = [
                 'slideShow',
                 'plotCommand',
+                'tcleanCommand',
                 'fullScreen',
                 // 'thumbs',
                 // 'share',

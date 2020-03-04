@@ -127,7 +127,7 @@ except:
                         %endif
                         <a href="${fullsize_relpath}"
                            data-fancybox="clean-summary-images"
-                           data-plotCommandTarget="#tcleancmd-${hash(row.plot.abspath)}"
+                           data-tcleanCommandTarget="#tcleancmd-${hash(row.plot.abspath)}"
                            data-caption="Iteration: ${row.plot.parameters['iter']}<br>Spw: ${row.plot.parameters['spw']}<br>Field: ${html.escape(row.field, True)}"
                            title='<div class="pull-left">Iteration: ${row.plot.parameters['iter']}<br>
                                   Spw: ${row.plot.parameters["spw"]}<br>
