@@ -207,7 +207,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
             # deviation mask
             deviation_mask = ms.deviation_mask[(fieldid, antid, spwid)] \
                 if (hasattr(ms, 'deviation_mask') and (fieldid, antid, spwid) in ms.deviation_mask) else None
-            LOG.info('deviation mask for %s antenna %d field %d spw %d is %s' %
+            LOG.debug('deviation mask for %s antenna %d field %d spw %d is %s' %
                       (ms.basename, antid, fieldid, spwid, deviation_mask))
 
             time_table = datatable.get_timetable(antid, spwid, None, ms.basename, fieldid)
