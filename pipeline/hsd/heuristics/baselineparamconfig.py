@@ -156,7 +156,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                 field_id, antenna_id, spw_id, deviation_mask))
         if deviation_mask is not None:
             for mask_range in deviation_mask:
-                mask_array[mask_range[0]:mask_range[1]] = 0
+                mask_array[max(0, mask_range[0]):min(nchan, mask_range[1] + 1)] = 0
 
         base_mask_array = mask_array.copy()
 
