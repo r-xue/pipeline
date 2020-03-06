@@ -122,6 +122,18 @@ except:
                     <td>${row.cleaning_threshold}</td>
                 </tr>
 
+                ## added for PIPE-488
+                <tr>
+                    <th>n-sigma * initial scaled MAD of residual</th>
+                    <td>${row.initial_nsigma_mad}</td>
+                </tr>
+
+                ## added for PIPE-488
+                <tr>
+                    <th>n-sigma * final scaled MAD of residual</th>
+                    <td>${row.final_nsigma_mad}</td>
+                </tr>
+
                 <tr>
                     <th>clean residual peak / scaled MAD</th>
                     <td>${row.residual_ratio}</td>
