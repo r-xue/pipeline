@@ -3,6 +3,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.flagging import flagdeterbase
 from pipeline.infrastructure import task_registry
+from pipeline.infrastructure.utils import utils
 
 __all__ = [
     'FlagDeterALMA',
@@ -49,8 +50,32 @@ class FlagDeterALMAInputs(flagdeterbase.FlagDeterBaseInputs):
 class FlagDeterALMA(flagdeterbase.FlagDeterBase):
     Inputs = FlagDeterALMAInputs
 
+    # PIPE-425: define allowed bandwidths of ACA spectral windows for which to
+    # perform the ACA FDM edge channel flagging heuristic, and define
+    # corresponding thresholds.
+    #
+    # Note: at present, February 2020, ALMA correlators produce
+    # spectral windows whose bandwidths are quantized:
+    #
+    #   Baseline correlator (BLC) widths:
+    #     1875, 937.5, 468.75, 234.375, 117.1875, 58.5375 MHz
+    #   ACA correlator widths:
+    #     2000, 1000, 500, 250, 125, 62.5 MHz
+    #
+    # This edge channel heuristic is defined for all ACA correlator widths
+    # except the 2000 MHz, where the latter is already covered by the heuristic
+    # covering bandwidths > 1875 MHz, introduced in CAS-5231.
+    _aca_edge_flag_thresholds = {
+        # spw bandwidth (MHz): threshold frequency
+        62.5: measures.Frequency(5.0, measures.FrequencyUnits.MEGAHERTZ),
+        125: measures.Frequency(10.0, measures.FrequencyUnits.MEGAHERTZ),
+        250: measures.Frequency(20.0, measures.FrequencyUnits.MEGAHERTZ),
+        500: measures.Frequency(40.0, measures.FrequencyUnits.MEGAHERTZ),
+        1000: measures.Frequency(62.5, measures.FrequencyUnits.MEGAHERTZ),
+    }
+
     def get_fracspw(self, spw):    
-        # From T. HUnter on PIPE-425: in early ALMA Cycles, the ACA
+        # From T. Hunter on PIPE-425: in early ALMA Cycles, the ACA
         # correlator's frequency profile synthesis (fps) algorithm produced TDM
         # spws that had 64 channels in full-polarisation, 124 channels in dual
         # pol, and 248 channels in single-pol.
@@ -115,6 +140,20 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
                 if spw.bandwidth > threshold:
                     to_flag.extend(self._get_fdm_edgespw_cmds(spw, threshold))
 
+                # PIPE-425: run a separate edge channel flagging heuristic for
+                # ACA spectral windows with shorter bandwidth (defined above),
+                # to ensure that channels tuned too close to the edge of the
+                # baseband are flagged. Assume that the ACA spw bandwidths are
+                # stored in MHz.
+                #
+                # TODO: in CASA 6.1, the correlator type should start to be
+                # propagated from ASDM to MS. Once available, this test could
+                # be future-proofed (w.r.t. possible new correlators) by
+                # explicitly checking whether the spw is an ACA spw.
+                spw_bw_in_mhz = spw.bandwidth.to_units(otherUnits=measures.FrequencyUnits.MEGAHERTZ)
+                if spw_bw_in_mhz in self._aca_edge_flag_thresholds.keys():
+                    to_flag.extend(self._get_aca_edgespw_cmds(spw, self._aca_edge_flag_thresholds[spw_bw_in_mhz]))
+
         return to_flag
 
     def _get_fdm_edgespw_cmds(self, spw, threshold):
@@ -154,5 +193,59 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
         chans = sorted([chan1, chan2])
         cmd = '{0}:{1};{2}'.format(spw.id, chans[0], chans[1])
         to_flag = [cmd]
+
+        return to_flag
+
+    def _get_aca_edgespw_cmds(self, spw, threshold):
+        """
+        ACA FDM spectral window edge flagging heuristic.
+
+        Return a list containing a flagging command that will flag all channels
+        that lie too close to the edge of the baseband.
+
+        :param spw: spectral window to evaluate
+        :param threshold: threshold frequency range used to determine whether
+        spectral window channels are too close to edge of baseband
+        :return: list containing flagging command as string
+        :rtype: list[str]
+        """
+        LOG.debug('Spectral window {} is an ACA FDM spectral window. Proceeding with flagging channels'
+                  ' that are too close to the baseband edge.'.format(spw.id))
+
+        # For the given spectral window, identify the corresponding SQLD
+        # spectral window with TARGET intent, which is representative of the
+        # baseband.
+        bb_spw = [s for s in self.inputs.ms.get_spectral_windows(science_windows_only=False)
+                  if s.baseband == spw.baseband and s.type == 'SQLD' and 'TARGET' in s.intents]
+
+        # If no baseband spw could be identified, log warning and return
+        # with no new flagging commands.
+        if not bb_spw:
+            LOG.warning("Unable to determine baseband range for spw {}, skipping ACA FDM edge flagging."
+                        "".format(spw.id))
+            return []
+
+        # Compute frequency ranges for which any channel that falls within the
+        # range should be flagged; these ranges are set by the baseband edges
+        # and the provided threshold.
+        bb_edges = [measures.FrequencyRange(bb_spw[0].min_frequency, bb_spw[0].min_frequency + threshold),
+                    measures.FrequencyRange(bb_spw[0].max_frequency - threshold, bb_spw[0].max_frequency)]
+
+        # Compute list of channels to flag as those channels that have an
+        # overlap with either edge range of the baseband.
+        to_flag = [str(i) for i, ch in enumerate(spw.channels)
+                   if ch.frequency_range.overlaps(other=bb_edges[0])
+                   or ch.frequency_range.overlaps(other=bb_edges[1])]
+
+        # If flagging is needed, turn the list of channels into a list of
+        # a flagging command with spectral window id, and consolidated channel
+        # ranges. utils.find_ranges returns comma separated ranges, but for
+        # multiple channel ranges within a single spw, CASA's flagdata expects
+        # these to be separated by semi-colon.
+        if to_flag:
+            chan_to_flag = utils.find_ranges(to_flag).replace(',', ';')
+            LOG.warning('Flagging edge channels for ACA spectral window {}, channel(s) {}, due to proximity'
+                        ' to edge of baseband.'.format(spw.id, chan_to_flag))
+            to_flag = ['{}:{}'.format(spw.id, chan_to_flag)]
 
         return to_flag
