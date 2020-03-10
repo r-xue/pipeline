@@ -44,17 +44,15 @@ class T2_4MDetailsImportDataRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         repsource_table_rows, repsource_name_is_none = make_repsource_table(pipeline_context, result)
         repsource_defined = not any('N/A' in td for tr in repsource_table_rows for td in tr[1:])
 
-        fluxcsv_files = {}
-        for r in result:
+        # copy flux.csv file across to weblog directory
+        fluxcsv_filename = 'flux.csv'
+        if os.path.exists(fluxcsv_filename):
+            LOG.trace('Copying %s to %s' % (fluxcsv_filename, weblog_dir))
+            shutil.copy(fluxcsv_filename, weblog_dir)
 
-            # copy flux.csv file across to weblog directory
-            fluxcsv_filename = 'flux.csv'
-            ms = pipeline_context.observing_run.get_ms(os.path.basename(r.inputs['vis'].rstrip('/')))
-            if os.path.exists(fluxcsv_filename):
-                LOG.trace('Copying %s to %s' % (fluxcsv_filename, weblog_dir))
-                shutil.copy(fluxcsv_filename, weblog_dir)
-
-            fluxcsv_files[ms.basename] = os.path.join('stage%s' % result.stage_number, fluxcsv_filename)
+        fluxcsv_files = {ms.basename: os.path.join('stage%s' % result.stage_number, fluxcsv_filename)
+                         for r in result
+                         for ms in r.mses}
 
         mako_context.update({
             'flux_imported': True if measurements else False,
