@@ -3,8 +3,18 @@ import os
 import pickle
 import tempfile
 
-from casampi.MPICommandClient import MPICommandClient
-from casampi.MPIEnvironment import MPIEnvironment
+try:
+    from casampi.MPIEnvironment import MPIEnvironment
+    from casampi.MPICommandClient import MPICommandClient
+except ImportError:
+    # MPI not available on MacOS
+    class DummyMPIEnvironment:
+        is_mpi_enabled = False
+        is_mpi_client = False
+    MPIEnvironment = DummyMPIEnvironment()
+    # stub MPICommandClient too to keep IDE happy
+    MPICommandClient = object
+
 
 from pipeline.infrastructure import exceptions
 from pipeline.infrastructure import logging
