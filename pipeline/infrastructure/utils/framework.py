@@ -17,8 +17,6 @@ import os
 import pickle
 import uuid
 
-from casampi.MPIEnvironment import MPIEnvironment
-
 from .conversion import flatten, safe_split
 from .. import jobrequest
 from .. import logging
@@ -51,8 +49,8 @@ def is_top_level_task():
     # from a sub-task running on an MPI server, which itself must have been
     # called from a pipeline task running on the MPI client. In this case, we
     # know this is not a top-level task without examining the stack.
-    if all((MPIEnvironment.is_mpi_enabled,  # running on MPI cluster
-            not MPIEnvironment.is_mpi_client)):  # running as MPI server
+    if all((mpihelpers.MPIEnvironment.is_mpi_enabled,       # running on MPI cluster
+            not mpihelpers.MPIEnvironment.is_mpi_client)):  # running as MPI server
         return False
 
     return task_depth() is 1
