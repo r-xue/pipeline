@@ -47,6 +47,11 @@ class TransformimagedataResults(basetask.Results):
                 LOG.info('Adding {} to context'.format(self.ms.name))
                 target.add_measurement_set(self.ms)
 
+        # Update context.evla['msinfo'] key, needed for PIPE-592
+        if 'VLA' in self.ms.antenna_array.name:
+            context.evla['msinfo'][self.ms.name] = context.evla['msinfo'][self.vis]
+            del context.evla['msinfo'][self.vis]
+
         # Remove original measurement set from context
         context.observing_run.measurement_sets.pop(0)
 
