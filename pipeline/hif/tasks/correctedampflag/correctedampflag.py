@@ -960,31 +960,34 @@ class Correctedampflag(basetask.StandardTaskTemplate):
                 # outlier timestamps used in flagging heuristic.
                 n_time_with_veryhighsig_max = n_time_with_highsig_max
 
-                # If all outliers were concentrated within a small number of
-                # timestamps set by a threshold, then evaluate the antenna
-                # based heuristics for those timestamps.
-                if 0 < len(time_sel_highsig_uniq) <= n_time_with_highsig_max:
-                    new_antbased_flags = self._evaluate_antbased_heuristics(
-                        ms, spwid, intent, icorr, field,
-                        ants_in_outlier_baseline_scans_thresh,
-                        ants_in_outlier_baseline_scans_partial_thresh,
-                        max_frac_outlier_scans,
-                        antenna_id_to_name, ant1_sel, ant2_sel, nants,
-                        id_highsig, time_sel_highsig, time_sel_highsig_uniq)
-                    newflags.extend(new_antbased_flags)
+                # The antenna based heuristics shall be done for calibrators
+                # only (PIPE-337).
+                if intent != 'TARGET':
+                    # If all outliers were concentrated within a small number of
+                    # timestamps set by a threshold, then evaluate the antenna
+                    # based heuristics for those timestamps.
+                    if 0 < len(time_sel_highsig_uniq) <= n_time_with_highsig_max:
+                        new_antbased_flags = self._evaluate_antbased_heuristics(
+                            ms, spwid, intent, icorr, field,
+                            ants_in_outlier_baseline_scans_thresh,
+                            ants_in_outlier_baseline_scans_partial_thresh,
+                            max_frac_outlier_scans,
+                            antenna_id_to_name, ant1_sel, ant2_sel, nants,
+                            id_highsig, time_sel_highsig, time_sel_highsig_uniq)
+                        newflags.extend(new_antbased_flags)
 
-                # If all very high outliers were concentrated within a small
-                # number of timestamps set by a threshold, then evaluate the
-                # antenna based heuristics for those timestamps.
-                elif 0 < len(time_sel_veryhighsig_uniq) <= n_time_with_veryhighsig_max:
-                    new_antbased_flags = self._evaluate_antbased_heuristics(
-                        ms, spwid, intent, icorr, field,
-                        ants_in_outlier_baseline_scans_thresh,
-                        ants_in_outlier_baseline_scans_partial_thresh,
-                        max_frac_outlier_scans,
-                        antenna_id_to_name, ant1_sel, ant2_sel, nants,
-                        id_veryhighsig, time_sel_veryhighsig, time_sel_veryhighsig_uniq)
-                    newflags.extend(new_antbased_flags)
+                    # If all very high outliers were concentrated within a small
+                    # number of timestamps set by a threshold, then evaluate the
+                    # antenna based heuristics for those timestamps.
+                    elif 0 < len(time_sel_veryhighsig_uniq) <= n_time_with_veryhighsig_max:
+                        new_antbased_flags = self._evaluate_antbased_heuristics(
+                            ms, spwid, intent, icorr, field,
+                            ants_in_outlier_baseline_scans_thresh,
+                            ants_in_outlier_baseline_scans_partial_thresh,
+                            max_frac_outlier_scans,
+                            antenna_id_to_name, ant1_sel, ant2_sel, nants,
+                            id_veryhighsig, time_sel_veryhighsig, time_sel_veryhighsig_uniq)
+                        newflags.extend(new_antbased_flags)
 
                 # Flag any ultra high outliers for corresponding baseline/timestamp.
                 if len(id_ultrahighsig) > 0:
