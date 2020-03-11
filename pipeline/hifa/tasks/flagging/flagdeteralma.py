@@ -221,8 +221,8 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
         # If no baseband spw could be identified, log warning and return
         # with no new flagging commands.
         if not bb_spw:
-            LOG.warning("Unable to determine baseband range for spw {}, skipping ACA FDM edge flagging."
-                        "".format(spw.id))
+            LOG.warning("{} - Unable to determine baseband range for spw {}, skipping ACA FDM edge flagging."
+                        "".format(self.inputs.ms.basename, spw.id))
             return []
 
         # Compute frequency ranges for which any channel that falls within the
@@ -244,8 +244,8 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
         # these to be separated by semi-colon.
         if to_flag:
             chan_to_flag = utils.find_ranges(to_flag).replace(',', ';')
-            LOG.warning('Flagging edge channels for ACA spectral window {}, channel(s) {}, due to proximity'
-                        ' to edge of baseband.'.format(spw.id, chan_to_flag))
+            LOG.warning('{} - Flagging edge channels for ACA spectral window {}, channel(s) {}, due to proximity'
+                        ' to edge of baseband.'.format(self.inputs.ms.basename, spw.id, chan_to_flag))
             to_flag = ['{}:{}'.format(spw.id, chan_to_flag)]
 
         return to_flag
