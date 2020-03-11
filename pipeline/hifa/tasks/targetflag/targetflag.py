@@ -4,6 +4,8 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tasks, task_registry
+from pipeline.hif.tasks import applycal
+from pipeline.hif.tasks import correctedampflag
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -34,7 +36,19 @@ class TargetFlag(basetask.StandardTaskTemplate):
 
     def prepare(self):
 
-        return TargetFlagResults()
+        inputs = self.inputs
+
+        # Initialize results.
+        result = TargetFlagResults()
+
+        # Find amplitude outliers and flag data
+        LOG.info('Running correctedampflag to identify outliers to flag.')
+        cafinputs = correctedampflag.Correctedampflag.Inputs(
+            context=inputs.context, vis=inputs.vis, intent='TARGET')
+        caftask = correctedampflag.Correctedampflag(cafinputs)
+        cafresult = self._executor.execute(caftask)
+
+        return result
 
     def analyse(self, results):
         return results
