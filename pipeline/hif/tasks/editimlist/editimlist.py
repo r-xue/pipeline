@@ -71,7 +71,7 @@ class EditimlistInputs(vdp.StandardInputs):
     phasecenter = vdp.VisDependentProperty(default='')
     reffreq = vdp.VisDependentProperty(default='')
     restfreq = vdp.VisDependentProperty(default='')
-    robust = vdp.VisDependentProperty(default=0)
+    robust = vdp.VisDependentProperty(default=-999.)
     scales = vdp.VisDependentProperty(default='')
     specmode = vdp.VisDependentProperty(default='')
     start = vdp.VisDependentProperty(default='')
