@@ -336,7 +336,7 @@ class MeasurementSet(object):
         # with the greatest bandwidth.
         bestspw = None
         target_spwid = None
-        for spw in target_spws_freq:
+        for spw in sorted(target_spws_freq, key=lambda x: x.id):
             if not bestspw:
                 bestspw = spw
             elif spw.bandwidth.value > bestspw.bandwidth.value: 
