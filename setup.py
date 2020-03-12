@@ -263,14 +263,35 @@ class VersionCommand(distutils.cmd.Command):
 
 
 def _get_git_version():
+    # Retrieve info about current commit.
     try:
-        commit_hash = subprocess.check_output(['git', 'describe', '--always', '--tags', '--long', '--dirty']).decode().strip()
-        git_branch = subprocess.check_output(['git', 'symbolic-ref', '--short', 'HEAD']).decode().strip()
-        version = "{}-{}".format(git_branch, commit_hash)
+        # Set version to latest tag, number of commits since tag, and latest
+        # commit hash.
+        commit_hash = subprocess.check_output(['git', 'describe', '--always', '--tags', '--long', '--dirty'],
+                                              stderr=subprocess.DEVNULL).decode().strip()
     except (FileNotFoundError, subprocess.CalledProcessError):
         # FileNotFoundError: if git is not on PATH.
         # subprocess.CalledProcessError: if git command returns error.
+        commit_hash = None
+
+    # Retrieve info about current branch.
+    try:
+        git_branch = subprocess.check_output(['git', 'symbolic-ref', '--short', 'HEAD'],
+                                             stderr=subprocess.DEVNULL).decode().strip()
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        # FileNotFoundError: if git is not on PATH.
+        # subprocess.CalledProcessError: if git command returns error; for example, current checkout
+        #   may have a detached HEAD pointing at a specific tag (not pointing to a branch).
+        git_branch = None
+
+    # Consolidate into single version string.
+    if commit_hash is None:
         version = "unknown"
+    elif git_branch is None:
+        version = commit_hash
+    else:
+        version = "{}-{}".format(git_branch, commit_hash)
+
     return version
 
 
