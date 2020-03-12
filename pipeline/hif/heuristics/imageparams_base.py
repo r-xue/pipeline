@@ -633,8 +633,7 @@ class ImageParamsHeuristics(object):
                                 pl_casatools.imager.done()
                                 if rtn[0]:
                                     valid_data[field_intent] = True
-                        except Exception as e:
-                            print('ERROR_DM:', e)
+                        except:
                             pass
 
                 if not valid_data[field_intent]:
