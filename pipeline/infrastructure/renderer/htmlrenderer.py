@@ -673,8 +673,12 @@ class T1_3MRenderer(RendererBase):
     @classmethod
     def _qascores_to_tablerows(cls, qascores, results, msgtype='ERROR'):
         def get_target(qascore):
-            vis = qascore.target.get('vis', None)
-            return '&ms=%s' % vis if vis else ''
+            target_mses = qascore.applies_to.vis
+            if len(target_mses) == 1:
+                ms = list(target_mses)[0]
+                return f'&ms={ms}'
+            else:
+                return '&ms='
 
         return [cls._create_tablerow(results, qascore.longmsg, msgtype, 
                                      get_target(qascore))
@@ -1280,8 +1284,12 @@ class T2_3_XMBaseRenderer(RendererBase):
     @classmethod
     def _qascores_to_tablerows(cls, qascores, results, msgtype='ERROR'):
         def get_target(qascore):
-            vis = qascore.target.get('vis', None)
-            return '&ms=%s' % vis if vis else ''
+            target_mses = qascore.applies_to.vis
+            if len(target_mses) == 1:
+                ms = list(target_mses)[0]
+                return f'&ms={ms}'
+            else:
+                return '&ms='
 
         return [cls._create_tablerow(results, qascore.longmsg, msgtype, get_target(qascore))
                 for qascore in qascores]

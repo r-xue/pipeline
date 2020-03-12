@@ -3,12 +3,12 @@ import copy
 import functools
 import operator
 import warnings
+from typing import List
 
 import numpy
 import scipy.optimize
 
 import pipeline.infrastructure.logging as logging
-import pipeline.infrastructure.utils as utils
 from . import mswrapper
 
 LOG = logging.get_logger(__name__)
@@ -29,7 +29,7 @@ PHASE_SLOPE_THRESHOLD = 6.5
 PHASE_INTERCEPT_THRESHOLD = 8.4
 
 
-def score_all_scans(ms, intent, export_outliers=False):
+def score_all_scans(ms, intent: str) -> List[Outlier]:
     """
     Calculate best fits for amplitude vs frequency and phase vs frequency
     for time-averaged visibilities, score each fit by comparison against a
@@ -51,54 +51,15 @@ def score_all_scans(ms, intent, export_outliers=False):
             wrapper = mswrapper.MSWrapper.create_from_ms(ms.name, scan=scan.id, spw=spw.id)
             fits = get_best_fits_per_ant(wrapper)
 
-            outlier_fn = functools.partial(Outlier, vis=ms.basename, intent=intent, spw=spw.id, scan=scan.id)
+            outlier_fn = functools.partial(Outlier,
+                                           vis={ms.basename, },
+                                           intent={intent, },
+                                           spw={spw.id, },
+                                           scan={scan.id, })
 
             outliers.extend(score_all(fits, outlier_fn))
 
-    if export_outliers:
-        debug_path = 'PIPE356_outliers.txt'.format(ms.basename)
-        with open(debug_path, 'a') as debug_file:
-            for outlier in outliers:
-                msg = '{outlier.vis} {outlier.intent} scan={outlier.scan} spw={outlier.spw} ant={outlier.ant} ' \
-                      'pol={outlier.pol} reason={outlier.reason} sigma_deviation={outlier.num_sigma}' \
-                      ''.format(outlier=outlier)
-                debug_file.write('{}\n'.format(msg))
-
-    # collate the outlier reasons for all data. This step merges the outlier
-    # reasons, leaving the endpoint array with a list of outlier reasons for
-    # that data selection
-    pol_dim = list
-    ant_dim = lambda: collections.defaultdict(pol_dim)
-    spw_dim = lambda: collections.defaultdict(ant_dim)
-    scan_dim = lambda: collections.defaultdict(spw_dim)
-    intent_dim = lambda: collections.defaultdict(scan_dim)
-    vis_dim = lambda: collections.defaultdict(intent_dim)
-
-    final_outliers = []
-    # we shouldn't mix amplitude and phase fits, so process them separately
-    for reason_prefix in ['amp.', 'phase.']:
-        outlier_group = [o for o in outliers if o.reason.startswith(reason_prefix)]
-
-        data_selection_to_outliers = collections.defaultdict(vis_dim)
-        for o in outlier_group:
-            data_selection_to_outliers[o.vis][o.intent][o.scan][o.spw][o.ant][o.pol].append(o)
-
-        # convert back from the multi-dimensional dict into a flat tuple + list of applicable
-        # outliers for that data selection and group
-        flattened = [(ds_tuple, outliers)
-                     for ds_tuple, outliers in utils.flatten_dict(data_selection_to_outliers)
-                     if outliers]
-
-        # convert the anonymous tuples back into an Outlier, aggregating the reasons and deviations
-        # together for data selections that were flagged as outliers for multiple reasons
-        merged_outliers = [Outlier(*[{x, } for x in ds_tuple],
-                                   reason=[o.reason for o in outliers],
-                                   num_sigma=[o.num_sigma for o in outliers])
-                           for ds_tuple, outliers in flattened]
-
-        final_outliers.extend(merged_outliers)
-
-    return final_outliers
+    return outliers
 
 
 def calc_vk(wrapper):
@@ -361,7 +322,7 @@ def score_X_vs_freq_fits(all_fits, attr, ref_value_fn, outlier_fn, sigma_thresho
     :return: list of Outlier objects
     """
     accessor = operator.attrgetter(attr)
-    outlier_fn = functools.partial(outlier_fn, reason=attr)
+    outlier_fn = functools.partial(outlier_fn, reason={attr, })
     return score_fits(all_fits, ref_value_fn, accessor, outlier_fn, sigma_threshold)
 
 
@@ -397,7 +358,7 @@ def score_fits(all_fits, reference_value_fn, accessor, outlier_fn, sigma_thresho
             num_sigma = numpy.abs((value - reference_val) / this_sigma)
 
             if num_sigma > sigma_threshold:
-                outlier = outlier_fn(ant=ant, pol=pol, num_sigma=num_sigma)
+                outlier = outlier_fn(ant={ant, }, pol={pol, }, num_sigma=num_sigma)
                 outliers.append(outlier)
 
     return outliers
@@ -680,29 +641,7 @@ def data_selection_contains(proposed, ds_args):
 
 
 # The function used to create the reference value for phase vs frequency best fits
+# Select this to compare fits against the median
 PHASE_REF_FN = get_median_fit
+# Select this to compare fits against zero
 # PHASE_REF_FN = lambda _, __: ValueAndUncertainty(0, 0)
-
-
-# def get_median_visibilities(corrected_data):
-#     # Equation 3: V_{med}(\nu_{i}) = <V_{k}(\nu_{i})>_{k}
-#     median_real = numpy.ma.median(corrected_data.real, axis=0)
-#     median_imag = numpy.ma.median(corrected_data.imag, axis=0)
-#     V_med = median_real + 1j * median_imag
-#
-#     # estimate standard deviation using median statistics
-#     # Fitting parameters for sample size correction factor b(n)
-#     num_antennas, _, _ = corrected_data.shape
-#     if num_antennas % 2 == 0:
-#         alpha = 1.32
-#         beta = -1.5
-#     else:
-#         alpha = 1.32
-#         beta = -0.9
-#     bn = 1.0 - 1.0 / (alpha * num_antennas + beta)
-#
-#     stddev_real = numpy.ma.median(numpy.ma.absolute(numpy.ma.subtract(corrected_data.real, median_real)), axis=0)
-#     stddev_imag = numpy.ma.median(numpy.ma.absolute(numpy.ma.subtract(corrected_data.imag, median_imag)), axis=0)
-#     stddev_median = (1.0 / bn) * (stddev_real + 1j * stddev_imag) / 0.6745
-#
-#     return V_med, stddev_median
