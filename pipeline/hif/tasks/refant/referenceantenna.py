@@ -38,7 +38,7 @@ class RefAntInputs(vdp.StandardInputs):
 
     flagging = vdp.VisDependentProperty(default=True)
     geometry = vdp.VisDependentProperty(default=True)
-    intent = vdp.VisDependentProperty(default='AMPLITUDE,BANDPASS,PHASE')
+    intent = vdp.VisDependentProperty(default='AMPLITUDE,BANDPASS,PHASE,POLARIZATION')
     refant = vdp.VisDependentProperty(default='')
     refantignore = vdp.VisDependentProperty(default='')
     spw = vdp.VisDependentProperty(default='')
@@ -51,7 +51,7 @@ class RefAntInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def spw(self):
-        intents = {'PHASE', 'BANDPASS', 'AMPLITUDE'}
+        intents = {'PHASE', 'BANDPASS', 'AMPLITUDE', 'POLARIZATION'}
         spws = [spw for spw in self.ms.get_spectral_windows() if not intents.isdisjoint(spw.intents)]
         return ','.join([str(spw.id) for spw in spws])
 

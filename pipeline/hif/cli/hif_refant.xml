@@ -52,8 +52,8 @@ Issues
             <description>A string containing a comma delimited list of intents against
             which the selected fields are matched. Defaults to all supported
             intents. Not available when pipelinemode='automatic'.
-            example: 'BANDPASS', 'AMPLI,BANDPASS,PHASE'</description>
-	    <value>AMPLITUDE,BANDPASS,PHASE</value>
+            example: 'BANDPASS', 'AMPLITUDE,BANDPASS,PHASE,POLARIZATION'</description>
+	    <value>AMPLITUDE,BANDPASS,PHASE,POLARIZATION</value>
 	</param>
 
 	<param name="hm_refant" type="string">
@@ -136,7 +136,7 @@ Issues
 		<equals value="interactive" type="string"> 
 		    <default param="vis"><value type="stringVec"/></default>
 		    <default param="field"><value type="string"/></default>
-		    <default param="intents"><value type="string">AMPLITUDE,BANDPASS,PHASE</value></default>
+		    <default param="intents"><value type="string">AMPLITUDE,BANDPASS,PHASE,POLARIZATION</value></default>
 		    <default param="spw"><value type="string"/></default>
 		    <default param="dryrun"><value type="bool">False</value></default>
 		    <default param="acceptresults"><value type="bool">True</value></default>
@@ -145,7 +145,7 @@ Issues
 		<equals value="getinputs" type="string"> 
 		    <default param="vis"><value type="stringVec"/></default>
 		    <default param="field"><value type="string"/></default>
-		    <default param="intents"><value type="string">AMPLITUDE,BANDPASS,PHASE</value></default>
+		    <default param="intents"><value type="string">AMPLITUDE,BANDPASS,PHASE,POLARIZATION</value></default>
 		    <default param="spw"><value type="string"/></default>
 			<default param="refantignore"><value type="string"/></default>
 		</equals>
