@@ -134,7 +134,7 @@ class modelfitSummaryChart(object):
         colorcount = 0
         title = ''
 
-        fig = pb.figure()
+        fig = pb.figure(figsize=(10, 6))
         ax1 = fig.add_subplot(111)
         ax2 = ax1.twiny()
 
@@ -224,7 +224,11 @@ class modelfitSummaryChart(object):
         # pb.xscale('log')
         # pb.yscale('log')
 
-        ax1.legend()
+        # ax1.legend()
+        # ax1.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05), shadow = True, ncol = 2)
+        chartBox = ax1.get_position()
+        ax1.set_position([chartBox.x0, chartBox.y0, chartBox.width * 0.6, chartBox.height])
+        ax1.legend(loc='upper center', bbox_to_anchor=(1.45, 0.8), shadow=True, ncol=1)
         ax1.set_ylabel('log10 Flux Density [Jy]', size=mysize)
         ax1.set_xlabel('log10 Frequency [Hz]', size=mysize)
         ax2.set_xlabel('Frequency [GHz]', size=mysize)
@@ -273,7 +277,11 @@ class residualsSummaryChart(object):
         figfile = self.get_figfile()
 
         webdicts = self.webdicts
-        pb.clf()
+
+        #pb.clf()
+
+        fig = pb.figure(figsize=(10, 6))
+        ax1 = fig.add_subplot(111)
 
         mysize = 'small'
         colors = ['red', 'blue', 'green', 'cyan', 'yellow', 'orange', 'purple']
@@ -287,14 +295,16 @@ class residualsSummaryChart(object):
                 for datadict in datadicts:
                     residuals.append(float(datadict['data']) - float(datadict['fitteddata']))
                     frequencies.append(float(datadict['freq']))
-                pb.plot(frequencies, residuals, 'o', label=source, color=colors[colorcount])
-                pb.plot(np.linspace(np.min(frequencies),
-                                    np.max(frequencies),
-                                    10),
-                        np.zeros(10) + np.mean(residuals), linestyle='--', label='Mean', color=colors[colorcount])
+                ax1.plot(frequencies, residuals, 'o', label=source, color=colors[colorcount])
+                ax1.plot(np.linspace(np.min(frequencies), np.max(frequencies), 10),
+                         np.zeros(10) + np.mean(residuals), linestyle='--', label='Mean', color=colors[colorcount])
                 pb.ylabel('Residuals (data - fit) [Jy]', size=mysize)
                 pb.xlabel('Frequency [GHz]', size=mysize)
-                pb.legend()
+                # pb.legend()
+                # pb.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05), shadow=True, ncol=2)
+                chartBox = ax1.get_position()
+                ax1.set_position([chartBox.x0, chartBox.y0, chartBox.width * 0.8, chartBox.height])
+                ax1.legend(loc='upper center', bbox_to_anchor=(1.45, 0.8), shadow=True, ncol=1)
                 # title = title + '   ' + str(source) + '({!s})'.format(colors[colorcount])
                 colorcount += 1
 

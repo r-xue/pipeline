@@ -43,22 +43,21 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 % for ms in summary_plots:
     
 <table class="table table-bordered table-striped table-condensed" summary="Spectral Indices">
-	<caption>Table showing the flux density computed from the fit at each band center, the global coefficients of the fit
-	         across all bands, fit order, and flux density at the fluxscale-determined reference frequency.
+	<caption>Table showing the flux density and spectral properties computed at each band center, based
+on the global coefficients of the fit across all bands.
 	 </caption>
         <thead>
 	    <tr>
 	        <th scope="col" rowspan="2">Source</th>
+	        <th scope="col" rowspan="2">Fit Order</th>
 	        <th scope="col" rowspan="2">Band</th>
 	        <th scope="col" rowspan="2">Band Center [GHz]</th>
 	        <th scope="col" rowspan="2">Flux density [Jy] (at Band Center)</th>
 		    <th scope="col" rowspan="2">Spectral Index</th>
-		    <th scope="col" rowspan="2">Curvature</th>
+		    <th scope="col" rowspan="2">2nd order coeff</th>
 		    <th scope="col" rowspan="2">3rd order coeff</th>
 		    <th scope="col" rowspan="2">4th order coeff</th>
-		    <th scope="col" rowspan="2">Fit Order</th>
-		    <th scope="col" rowspan="2">Reference Frequency [GHz]</th>
-		    <th scope="col" rowspan="2">Flux density [Jy] (at Ref. Frequency)</th>
+
 
 	    </tr>
 
