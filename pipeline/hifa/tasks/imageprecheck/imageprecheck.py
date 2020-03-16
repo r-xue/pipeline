@@ -156,8 +156,10 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
         diameter = min([a.diameter for a in repr_ms.antennas])
         if diameter == 7.0:
             array = '7m'
+            robust_values_to_check = [0.5]
         else:
             array = '12m'
+            robust_values_to_check = [0.0, 0.5, 1.0, 2.0]
 
         # Approximate reprBW with nbin
         if reprBW_mode in ['nbin', 'repr_spw']:
@@ -185,14 +187,21 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
         cont_spw = ','.join(map(str, filtered_cont_spwids))
         num_cont_spw = len(filtered_cont_spwids)
 
-        beams = {}
+        # Get default heuristics uvtaper value
+        default_uvtaper = image_heuristics.uvtaper()
+        beams = {(0.0, str(default_uvtaper), 'repBW'): None, \
+                 (0.5, str(default_uvtaper), 'repBW'): None, \
+                 (1.0, str(default_uvtaper), 'repBW'): None, \
+                 (2.0, str(default_uvtaper), 'repBW'): None, \
+                 (0.0, str(default_uvtaper), 'aggBW'): None, \
+                 (0.5, str(default_uvtaper), 'aggBW'): None, \
+                 (1.0, str(default_uvtaper), 'aggBW'): None, \
+                 (2.0, str(default_uvtaper), 'aggBW'): None}
         cells = {}
         imsizes = {}
         sensitivities = []
         sensitivity_bandwidth = None
-        # Get default heuristics uvtaper value
-        default_uvtaper = image_heuristics.uvtaper()
-        for robust in [0.0, 0.5, 1.0, 2.0]:
+        for robust in robust_values_to_check:
             # Calculate nbin / reprBW sensitivity if necessary
             if reprBW_mode in ['nbin', 'repr_spw']:
 
@@ -300,7 +309,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
             if sensitivity_bandwidth is None:
                 sensitivity_bandwidth = cqa.quantity(_bandwidth, 'Hz')
 
-        # Apply robust heuristic based on beam sizes for robust=(0.0, 0.5, 1.0, 2.0)
+        # Apply robust heuristic based on beam sizes for the used robust values.
         if reprBW_mode in ['nbin', 'repr_spw']:
             hm_robust, hm_robust_score, beamRatio_0p0, beamRatio_0p5, beamRatio_1p0, beamRatio_2p0 = \
                 imageprecheck_heuristics.compare_beams( \

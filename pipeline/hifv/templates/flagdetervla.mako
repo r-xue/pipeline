@@ -2,8 +2,9 @@
 rsc_path = ""
 import os
 
-import pipeline.infrastructure.renderer.htmlrenderer as hr
 import pipeline.infrastructure.logging as logging
+import pipeline.infrastructure.renderer.htmlrenderer as hr
+import pipeline.infrastructure.renderer.rendererutils as rendererutils
 
 agent_description = {
 	'before'   : 'Before Task',
@@ -118,7 +119,7 @@ def agent_data(agent, ms):
 		relpath = os.path.join('stage%s' % result.stage_number, flagfile)
 		abspath = os.path.join(pcontext.report_dir, relpath)
 		if os.path.exists(abspath):
-			num_lines = sum(1 for line in open(abspath) if not line.startswith('#'))
+			num_lines = rendererutils.num_lines(abspath)
 			return ('<td><a class="replace-pre" href="%s">%s</a></td>'
 					'<td>%s</td>' % (relpath, flagfile, num_lines))
 		else:

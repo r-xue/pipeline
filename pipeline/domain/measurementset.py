@@ -174,21 +174,30 @@ class MeasurementSet(object):
             else:
                 LOG.warning('Representative target source %s not found in data set %s' % \
                     (self.representative_target[0], self.basename))
-                target_source = None
+                # Try to fall back first target source
+                target_sources = [source for source in self.sources
+                                  if 'TARGET' in source.intents] 
+                if len(target_sources) > 0:
+                    target_source = target_sources[0]
+                    LOG.info('Falling back to first target source (%s) for data set %s' % \
+                        (target_source.name, self.basename))
+                else:
+                    LOG.warning('No target sources observed for data set %s' % (self.basename))
+                    target_source = None
         else:
             # Use first target source no matter what it is
             target_sources = [source for source in self.sources
                               if 'TARGET' in source.intents] 
             if len(target_sources) > 0:
                 target_source = target_sources[0]
-                LOG.info('Undefined representative target source, defaulting to source %s for data set %s' % \
+                LOG.info('Undefined representative target source, defaulting to first target source (%s) for data set %s' % \
                     (target_source.name, self.basename))
             else:
                 LOG.warning('No target sources observed for data set %s' % (self.basename))
                 target_source = None
 
         # Target source not found
-        if not target_source:
+        if target_source is None:
             return (None, None)
 
         # Target source name
@@ -336,7 +345,7 @@ class MeasurementSet(object):
         # with the greatest bandwidth.
         bestspw = None
         target_spwid = None
-        for spw in target_spws_freq:
+        for spw in sorted(target_spws_freq, key=lambda x: x.id):
             if not bestspw:
                 bestspw = spw
             elif spw.bandwidth.value > bestspw.bandwidth.value: 

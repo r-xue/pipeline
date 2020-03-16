@@ -1,5 +1,6 @@
 import html
 import itertools
+import os
 from typing import List, Optional
 
 import numpy as np
@@ -261,6 +262,17 @@ def sanitize_data_selection_string(text):
     split_text = utils.safe_split(text)
     sanitized_text = "[{}]".format(", ".join(["&quot;{}&quot;".format(field) for field in split_text]))
     return sanitized_text
+
+
+def num_lines(abspath):
+    """
+    Report number of non-empty non-comment lines in a file specified by
+    abspath. If the file does not exist, report N/A.
+    """
+    if os.path.exists(abspath):
+        return sum(1 for line in open(abspath) if line.strip() and not line.startswith('#'))
+    else:
+        return 'N/A'
 
 
 def scores_in_range(pool: List[QAScore], lo: float, hi: float) -> List[QAScore]:

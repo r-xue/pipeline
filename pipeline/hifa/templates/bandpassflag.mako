@@ -24,16 +24,6 @@ def plot_type(plot):
 
 %>
 
-<%
-# these functions are defined in template scope.
-def num_lines(relpath):
-	abspath = os.path.join(pcontext.report_dir, relpath)
-	if os.path.exists(abspath):
-		return sum(1 for line in open(abspath) if not line.startswith('#'))
-	else:
-		return 'N/A'
-%>
-
 <%inherit file="t2-4m_details-base.mako"/>
 
 <%block name="header" />
@@ -130,7 +120,7 @@ def num_lines(relpath):
             <tr>
                 <td>${msname}</td>
                 <td><a class="replace-pre" href="${relpath}">${os.path.basename(relpath)}</a></td>
-                <td>${num_lines(relpath)}</td>
+                <td>${rendererutils.num_lines(os.path.join(pcontext.report_dir, relpath))}</td>
             </tr>
         % endfor
         </tbody>
