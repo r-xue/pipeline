@@ -352,6 +352,7 @@ setuptools.setup(
                        '*.png',
                        '*.svg',
                        '*.ttf',
+                       '*.txt',
                        '*.woff',
                        '*.woff2',
                        '*.xml']},
