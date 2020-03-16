@@ -2,6 +2,7 @@
 rsc_path = ""
 import os
 import pipeline.infrastructure.utils as utils
+import pipeline.infrastructure.renderer.rendererutils as rendererutils
 
 # method to output flagging percentages neatly
 def percent_flagged(flagsummary):
@@ -14,17 +15,8 @@ def percent_flagged(flagsummary):
         return '%0.1f%%' % (100.0 * flagged / total)
 %>
 
-<%
-# these functions are defined in template scope.
-def num_lines(relpath):
-	abspath = os.path.join(pcontext.report_dir, relpath)
-	if os.path.exists(abspath):
-		return sum(1 for line in open(abspath) if not line.startswith('#'))
-	else:
-		return 'N/A'
-%>
-
 <%inherit file="t2-4m_details-base.mako"/>
+
 <%block name="header" />
 
 <%block name="title">Flag corrected-model amplitudes for calibrator</%block>
@@ -50,7 +42,7 @@ This task identifies baselines and antennas with a significant fraction of
             <tr>
                 <td>${msname}</td>
                 <td><a class="replace-pre" href="${relpath}">${os.path.basename(relpath)}</a></td>
-                <td>${num_lines(relpath)}</td>
+                <td>${rendererutils.num_lines(os.path.join(pcontext.report_dir, relpath))}</td>
             </tr>
         % endfor
         </tbody>

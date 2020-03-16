@@ -1,13 +1,8 @@
 <%!
 import os.path
-
-def num_lines(report_dir, relpath):
-	abspath = os.path.join(report_dir, relpath)
-	if os.path.exists(abspath):
-		return sum(1 for line in open(abspath) if not line.startswith('#'))
-	else:
-		return 'N/A'
+import pipeline.infrastructure.renderer.rendererutils as rendererutils
 %>
+
 <%inherit file="t2-4m_details-base.mako"/>
 
 <%block name="title">Flag antennas with low gain</%block>
@@ -72,7 +67,7 @@ def num_lines(report_dir, relpath):
 		<tr>
 			<td>${msname}</td>
 			<td><a class="replace-pre" href="${relpath}">${os.path.basename(relpath)}</a></td>
-			<td>${num_lines(pcontext.report_dir, relpath)}</td>
+			<td>${rendererutils.num_lines(os.path.join(pcontext.report_dir, relpath))}</td>
             % if plots_path:
                 <td><a class="replace" data-vis="${msname}" href="${plots_path}">Display</a></td>
             % else:
