@@ -72,27 +72,31 @@ class TargetFlag(basetask.StandardTaskTemplate):
             # Find amplitude outliers and flag data. This needs to be done
             # per source / per field ID / per spw basis.
             LOG.info('Running correctedampflag to identify target source outliers to flag.')
-            # Loop over EBs, sources, field IDs and spws and collect the
-            # flags per data selection.
-            for msname in [inputs.vis]:
-                ms_do = inputs.context.observing_run.get_ms(msname)
-                # Target source names (assumes ALMA setup)
-                field_names = set([f.name for f in ms_do.fields if 'TARGET' in f.intents])
-                # Real science spw IDs
-                spw_ids = [s.id for s in ms_do.get_spectral_windows()]
-                for field_name in field_names:
-                    for spw_id in spw_ids:
-                        # Do not stop on individual issues for a data selection
-                        try:
-                            cafinputs = correctedampflag.Correctedampflag.Inputs(
-                            context=inputs.context, vis=inputs.vis, intent='TARGET',
-                                field=field_name, spw=str(spw_id))
-                            caftask = correctedampflag.Correctedampflag(cafinputs)
-                            cafresult = self._executor.execute(caftask)
-                            # Save any new flags
-                            cafflags.extend(cafresult.flagcmds())
-                        except Exception as e:
-                            LOG.warning(f'{e}')
+            # This task is called by the framework for each EB in the vis list.
+            # Loop here over sources, field names and spws and collect the
+            # flags per data selection. The result objects are collected in
+            # in a list.
+            ms_do = inputs.context.observing_run.get_ms(inputs.vis)
+            # Target source names (assumes ALMA setup)
+            field_names = set([f.name for f in ms_do.fields if 'TARGET' in f.intents])
+            # Real science spw IDs
+            spw_ids = [s.id for s in ms_do.get_spectral_windows()]
+            for field_name in field_names:
+                for spw_id in spw_ids:
+                    # Do not stop on individual issues for a data selection
+                    try:
+                        # Call correctedampflag per field name. Inside that
+                        # task there is a loop over field IDs to inspect the
+                        # flags individually per mosaic pointing.
+                        cafinputs = correctedampflag.Correctedampflag.Inputs(
+                        context=inputs.context, vis=inputs.vis, intent='TARGET',
+                            field=field_name, spw=str(spw_id))
+                        caftask = correctedampflag.Correctedampflag(cafinputs)
+                        cafresult = self._executor.execute(caftask)
+                        # Save any new flags
+                        cafflags.extend(cafresult.flagcmds())
+                    except Exception as e:
+                        LOG.warning(f'{e}')
 
         finally:
             # Restore the calibration state
