@@ -2,6 +2,7 @@
 rsc_path = ""
 import os
 import pipeline.infrastructure.utils as utils
+import pipeline.infrastructure.renderer.rendererutils as rendererutils
 
 # method to output a cell for percentage flagged in flagging summary table
 def get_td_for_percent_flagged(flagsummary, step):
@@ -16,14 +17,6 @@ def get_td_for_percent_flagged(flagsummary, step):
         return '<td class="warning">{:.1f}%</td>'.format(pflagged)
 
     return '<td>{:.1f}%</td>'.format(pflagged)
-
-# method to report number of lines in a file.
-def num_lines(report_dir, relpath):
-	abspath = os.path.join(report_dir, relpath)
-	if os.path.exists(abspath):
-		return sum(1 for line in open(abspath) if not line.startswith('#'))
-	else:
-		return 'N/A'
 
 comp_descriptions = {'nmedian'    : 'Flag T<sub>sys</sub> spectra with high median values.',
                  	 'derivative' : 'Flag T<sub>sys</sub> spectra with high median derivative (ringing).',
@@ -57,7 +50,7 @@ def flagcmd_file_data(caltable, flagcmd_file):
                '<td><a class="replace-pre" href="{}" data-title="Flagging Commands">{}</a></td>'
                '<td>{}</td>'
                ''.format(caltable, flagcmd_file, os.path.basename(flagcmd_file),
-                         num_lines(pcontext.report_dir, flagcmd_file)))
+                         rendererutils.num_lines(os.path.join(pcontext.report_dir, flagcmd_file))))
     else:
         row = '<td>{}</td><td>N/A</td><td>N/A</td>'.format(caltable)
     return row
@@ -302,7 +295,7 @@ def flagcmd_file_data(caltable, flagcmd_file):
 	    	<td>${file}</td>
 	        <td><a class="replace-pre" href="${relpath_reports[0]}" 
                    data-title="Flagging Commands">Flag commands file</a></td>
-            <td>${num_lines(pcontext.report_dir, relpath_reports[0])}</td>
+            <td>${rendererutils.num_lines(os.path.join(pcontext.report_dir, relpath_reports[0]))}</td>
 	        <td><a class="replace-pre"
                    href="${relpath_reports[1]}" data-title="Flagging report">
                    Flagging report</a></td>

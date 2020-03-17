@@ -809,24 +809,26 @@ class SBSummaryTable(object):
                     repWindow = None
                 repWindows.append(repWindow)
 
-                # Create minimum angular resolution
+                # Create minimum and maximum angular resolution
                 minAngResolutionGoal = _get_science_goal_value(scienceGoals[0:numScienceGoals[i], i], 'minAcceptableAngResolution')
+                maxAngResolutionGoal = _get_science_goal_value(scienceGoals[0:numScienceGoals[i], i], 'maxAcceptableAngResolution')
                 if minAngResolutionGoal is not None:
                     minAngResolution = qa.quantity(minAngResolutionGoal)
                 else:
                     minAngResolution = qa.quantity(0.0)
-                if minAngResolution['value'] <= 0.0 or minAngResolution['unit'] == '':
-                    minAngResolution = None
-                minAngResolutions.append(minAngResolution)
-
-                # Create maximum angular resolution
-                maxAngResolutionGoal = _get_science_goal_value(scienceGoals[0:numScienceGoals[i], i], 'maxAcceptableAngResolution')
                 if maxAngResolutionGoal is not None:
                     maxAngResolution = qa.quantity(maxAngResolutionGoal)
                 else:
                     maxAngResolution = qa.quantity(0.0)
+
+                # There are cases with minAngResolutionGoal being set to 0 arcsec
+                # while maxAngResolutionGoal has a non-zero value (PIPE-593).
+                if (minAngResolution['value'] <= 0.0 and maxAngResolution['value'] <= 0.0) or minAngResolution['unit'] == '':
+                    minAngResolution = None
                 if maxAngResolution['value'] <= 0.0 or maxAngResolution['unit'] == '':
                     maxAngResolution = None
+
+                minAngResolutions.append(minAngResolution)
                 maxAngResolutions.append(maxAngResolution)
 
                 # Create maximum allowed beam axial ratio

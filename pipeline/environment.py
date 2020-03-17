@@ -12,9 +12,8 @@ import sys
 import pkg_resources
 
 import casalith
-from casampi.MPIEnvironment import MPIEnvironment
-
 from .infrastructure import mpihelpers
+from .infrastructure.mpihelpers import MPIEnvironment
 
 __all__ = ['casa_version', 'casa_version_string', 'compare_casa_version', 'cpu_type', 'hostname', 'host_distribution', 'logical_cpu_cores',
            'memory_size', 'pipeline_revision', 'role', 'cluster_details']
@@ -102,23 +101,45 @@ def _pipeline_revision():
     :return: string describing pipeline version.
     """
     pl_path = pkg_resources.resource_filename(__name__, '')
+
+    # Retrieve info about current commit.
     try:
         # Silently test if this is a Git repo.
         subprocess.check_output(['git', 'rev-parse'], cwd=pl_path, stderr=subprocess.DEVNULL)
         # Continue with fetching commit and branch info.
-        commit_hash = subprocess.check_output(['git', 'describe', '--always', '--tags', '--long', '--dirty'], cwd=pl_path).decode().strip()
-        git_branch = subprocess.check_output(['git', 'symbolic-ref', '--short', 'HEAD'], cwd=pl_path).decode().strip()
-        version = "{}-{}".format(git_branch, commit_hash)
+        commit_hash = subprocess.check_output(['git', 'describe', '--always', '--tags', '--long', '--dirty'],
+                                              cwd=pl_path, stderr=subprocess.DEVNULL).decode().strip()
     except (FileNotFoundError, subprocess.CalledProcessError):
         # FileNotFoundError: expected if git is not present in PATH.
         # subprocess.CalledProcessError: expected if one of the git commands
         # throws an error.
-        # If no Git info could be found, attempt to load version from _version
-        # module that is created when pipeline package is built.
+        commit_hash = None
+
+    # Retrieve info about current branch.
+    try:
+        git_branch = subprocess.check_output(['git', 'symbolic-ref', '--short', 'HEAD'], cwd=pl_path,
+                                             stderr=subprocess.DEVNULL).decode().strip()
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        git_branch = None
+
+    # Consolidate into single version string.
+    if commit_hash is None:
+        # If no Git commit info could be found, then attempt to load version
+        # from the _version module that is created when pipeline package is
+        # built.
         try:
             from pipeline._version import version
         except ModuleNotFoundError:
             version = "unknown"
+    elif git_branch is None:
+        # If info on Git commit is available, but no info on Git branch, then
+        # this checkout may have a detached HEAD pointing at a specific tag, so
+        # just report the Git commit/tag info.
+        version = commit_hash
+    else:
+        # If both Git commit and branch info are available, then use both.
+        version = "{}-{}".format(git_branch, commit_hash)
+
     return version
 
 
