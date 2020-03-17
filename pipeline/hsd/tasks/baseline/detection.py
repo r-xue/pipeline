@@ -219,7 +219,7 @@ class DetectLine(basetask.StandardTaskTemplate):
                             Chan0 = protected[i][0]*BINN+offset
                             Chan1 = protected[i][1]*BINN-1+offset
                             ChanW = Chan1 - Chan0
-                            if(EdgeMin < Chan0) and (Chan1 < EdgeMax) and (MinLineWidth <= ChanW) and (ChanW <= MaxLineWidth):
+                            if (MinLineWidth <= ChanW) and (ChanW <= MaxLineWidth):
                                 Protected.append([Chan0, Chan1, BINN])
                         else:
                             Protected.append([-1, -1, BINN])
