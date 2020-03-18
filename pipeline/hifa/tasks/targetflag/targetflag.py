@@ -14,6 +14,7 @@ LOG = infrastructure.get_logger(__name__)
 class TargetFlagResults(basetask.Results):
     def __init__(self):
         super(TargetFlagResults, self).__init__()
+        self.cafresults = []
 
     def merge_with_context(self, context):
         """
@@ -41,9 +42,6 @@ class TargetFlag(basetask.StandardTaskTemplate):
 
         # Initialize results.
         result = TargetFlagResults()
-
-        cafresult = None
-        cafflags = []
 
         # Create back-up of current calibration state.
         LOG.info('Creating back-up of calibration state')
@@ -89,12 +87,13 @@ class TargetFlag(basetask.StandardTaskTemplate):
                         # task there is a loop over field IDs to inspect the
                         # flags individually per mosaic pointing.
                         cafinputs = correctedampflag.Correctedampflag.Inputs(
-                        context=inputs.context, vis=inputs.vis, intent='TARGET',
-                            field=field_name, spw=str(spw_id))
+                                    context=inputs.context,
+                                    vis=inputs.vis, intent='TARGET',
+                                    field=field_name, spw=str(spw_id))
                         caftask = correctedampflag.Correctedampflag(cafinputs)
                         cafresult = self._executor.execute(caftask)
-                        # Save any new flags
-                        cafflags.extend(cafresult.flagcmds())
+                        # Save result
+                        result.cafresults.append(cafresult)
                     except Exception as e:
                         LOG.warning(f'{e}')
 
@@ -108,9 +107,6 @@ class TargetFlag(basetask.StandardTaskTemplate):
             task = casa_tasks.flagmanager(
                 vis=inputs.vis, mode='restore', versionname=flag_backup_name_pretgtf)
             self._executor.execute(task)
-
-        # Store flagging task result.
-        result.cafresult = cafresult
 
         # If new outliers were identified...
         if cafflags != []:
