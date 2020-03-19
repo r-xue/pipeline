@@ -19,8 +19,8 @@ About the spectral window edge channel flagging:
 
 o For TDM spectral windows, a number of edge channels are always flagged,
   according to the fracspw and fracspwfps parameters (the latter operates only
-  on spectral windows with 124 or 248 channels). With the default setting of
-  fracspw, the number of channels flagged on each edge is 2, 4 or 8 for 64,
+  on spectral windows with 62, 124 or 248 channels). With the default setting
+  of fracspw, the number of channels flagged on each edge is 2, 4 or 8 for 64,
   128, or 256-channel spectral windows, respectively.
 
 o For most FDM spectral windows, no edge flagging is done. The only exceptions
