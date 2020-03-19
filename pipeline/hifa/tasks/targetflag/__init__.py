@@ -1,13 +1,17 @@
-import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.renderer.qaadapter as qaadapter
 import pipeline.infrastructure.renderer.weblog as weblog
 
-from .targetflag import TargetFlag
+#from . import qa
+from . import renderer
 from . import targetflag
+from .targetflag import Targetflag
 
-#qaadapter.registry.register_to_dataset_topic(targetflag.TargetflagResults)
+__all__ = [
+    'Targetflag'
+]
 
-weblog.add_renderer(TargetFlag,
-                    basetemplates.T2_4MDetailsDefaultRenderer(uri='targetflag.mako',
-                                                              description='TargetFlag'),
+qaadapter.registry.register_to_calibration_topic(targetflag.TargetflagResults)
+
+weblog.add_renderer(Targetflag,
+                    renderer.T2_4MDetailsTargetflagRenderer(),
                     group_by=weblog.UNGROUPED)

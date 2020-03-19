@@ -11,9 +11,9 @@ from pipeline.hif.tasks import correctedampflag
 LOG = infrastructure.get_logger(__name__)
 
 
-class TargetFlagResults(basetask.Results):
+class TargetflagResults(basetask.Results):
     def __init__(self):
-        super(TargetFlagResults, self).__init__()
+        super(TargetflagResults, self).__init__()
         self.cafresults = []
 
     def merge_with_context(self, context):
@@ -23,25 +23,28 @@ class TargetFlagResults(basetask.Results):
         return
 
     def __repr__(self):
-        return 'TargetFlagResults:'
+        return 'TargetflagResults:'
 
 
-class TargetFlagInputs(vdp.StandardInputs):
+class TargetflagInputs(vdp.StandardInputs):
     def __init__(self, context, vis=None):
         self.context = context
         self.vis = vis
 
 @task_registry.set_equivalent_casa_task('hifa_targetflag')
 @task_registry.set_casa_commands_comment('Flag target source outliers.')
-class TargetFlag(basetask.StandardTaskTemplate):
-    Inputs = TargetFlagInputs
+class Targetflag(basetask.StandardTaskTemplate):
+    Inputs = TargetflagInputs
 
     def prepare(self):
 
         inputs = self.inputs
 
         # Initialize results.
-        result = TargetFlagResults()
+        result = TargetflagResults()
+
+        # Initialize correctedampflag result dictionaries
+        cafresults = {}
 
         # Create back-up of current calibration state.
         LOG.info('Creating back-up of calibration state')
@@ -74,14 +77,18 @@ class TargetFlag(basetask.StandardTaskTemplate):
             # Loop here over sources, field names and spws and collect the
             # flags per data selection. The result objects are collected in
             # in a list.
+
+            # MS domain object
             ms_do = inputs.context.observing_run.get_ms(inputs.vis)
+
             # Target source names (assumes ALMA setup)
             field_names = set([f.name for f in ms_do.fields if 'TARGET' in f.intents])
             # Real science spw IDs
             spw_ids = [s.id for s in ms_do.get_spectral_windows()]
+
             for field_name in field_names:
                 for spw_id in spw_ids:
-                    # Do not stop on individual issues for a data selection
+                    # Do not stop on individual issues for a data selection (?)
                     try:
                         # Call correctedampflag per field name. Inside that
                         # task there is a loop over field IDs to inspect the
@@ -93,7 +100,7 @@ class TargetFlag(basetask.StandardTaskTemplate):
                         caftask = correctedampflag.Correctedampflag(cafinputs)
                         cafresult = self._executor.execute(caftask)
                         # Save result
-                        result.cafresults.append(cafresult)
+                        cafresults[(field_name, spw_id)] = cafresult
                     except Exception as e:
                         LOG.warning(f'{e}')
 
@@ -107,6 +114,15 @@ class TargetFlag(basetask.StandardTaskTemplate):
             task = casa_tasks.flagmanager(
                 vis=inputs.vis, mode='restore', versionname=flag_backup_name_pretgtf)
             self._executor.execute(task)
+
+        # Store all correctedampflag results
+        result.cafresults = cafresults
+
+        # Collect all new flag commands
+        cafflags = []
+        for field_name in field_names:
+            for spw_id in spw_ids:
+                cafflags.extend(cafresults[(field_name, spw_id)].flagcmds())
 
         # If new outliers were identified...
         if cafflags != []:
