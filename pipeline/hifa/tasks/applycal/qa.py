@@ -37,17 +37,19 @@ REASONS_TO_TEXT = {
 # PIPE356Switches is a struct used to hold various options for outlier
 # detection and reporting
 PIPE356Switches = collections.namedtuple(
-    'PIPE356Switches', 'calculate_metrics export_outliers export_messages include_scores outlier_score'
+    'PIPE356Switches', 'calculate_metrics export_outliers export_messages include_scores outlier_score flag_all'
 )
 
 # PIPE356_MODES defines some preset modes for outlier detection and reporting
 PIPE356_MODES = {
+    'TEST': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=True, include_scores=True,
+                            outlier_score=0.5, flag_all=True),
     'ON': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=False, include_scores=True,
-                          outlier_score=0.9),
+                          outlier_score=0.9, flag_all=False),
     'DEBUG': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=True, include_scores=False,
-                             outlier_score=0.5),
+                             outlier_score=0.5, flag_all=False),
     'OFF': PIPE356Switches(calculate_metrics=False, export_outliers=False, export_messages=False, include_scores=False,
-                           outlier_score=0.5)
+                           outlier_score=0.5, flag_all=False)
 }
 
 
@@ -119,7 +121,9 @@ class ALMAApplycalQAHandler(pqa.QAPlugin):
         # calculate the outliers and convert to scores
         if mode_switches.calculate_metrics:
             # calculate the raw QA scores
-            raw_qa_scores = get_qa_scores(ms, mode_switches.export_outliers, mode_switches.outlier_score)
+            raw_qa_scores = get_qa_scores(
+                ms, mode_switches.export_outliers, mode_switches.outlier_score, mode_switches.flag_all
+            )
             # group and summarise as required by PIPE-477
             qa_scores = summarise_scores(raw_qa_scores, ms)
 
@@ -145,7 +149,7 @@ class ALMAApplycalQAHandler(pqa.QAPlugin):
                 result.qa.representative = representative
 
 
-def get_qa_scores(ms: MeasurementSet, export_outliers: bool, outlier_score: float):
+def get_qa_scores(ms: MeasurementSet, export_outliers: bool, outlier_score: float, flag_all: bool):
     """
     Calculate amp/phase vs freq outliers for an EB and convert to QA scores.
 
@@ -159,7 +163,7 @@ def get_qa_scores(ms: MeasurementSet, export_outliers: bool, outlier_score: floa
     all_scores = []
     for intent in intents:
         # delegate to dedicated module for outlier detection
-        outliers = ampphase_vs_freq_qa.score_all_scans(ms, intent)
+        outliers = ampphase_vs_freq_qa.score_all_scans(ms, intent, flag_all)
 
         # if requested, export outlier descriptions to a file
         if export_outliers:

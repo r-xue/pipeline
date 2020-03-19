@@ -29,7 +29,7 @@ PHASE_SLOPE_THRESHOLD = 6.5
 PHASE_INTERCEPT_THRESHOLD = 8.4
 
 
-def score_all_scans(ms, intent: str) -> List[Outlier]:
+def score_all_scans(ms, intent: str, flag_all: bool = False) -> List[Outlier]:
     """
     Calculate best fits for amplitude vs frequency and phase vs frequency
     for time-averaged visibilities, score each fit by comparison against a
@@ -37,9 +37,14 @@ def score_all_scans(ms, intent: str) -> List[Outlier]:
 
     Outliers are returned as a list of Outlier objects.
 
+    By default, outliers are measured against a PWG-defined threshold for
+    each fit type. Set flag_all to True to make classify all fits as outliers.
+    This is useful when testing QA plugin score roll-up functionality.
+
     :param ms: MeasurementSet to process
     :param intent: data intent to process
-    :param export_outliers: True if outliers should also be written to disk
+    :param flag_all: (optional) True if all fits should be classified as
+        outliers
     :return: outliers that deviate from a reference fit
     """
     outliers = []
@@ -57,7 +62,7 @@ def score_all_scans(ms, intent: str) -> List[Outlier]:
                                            spw={spw.id, },
                                            scan={scan.id, })
 
-            outliers.extend(score_all(fits, outlier_fn))
+            outliers.extend(score_all(fits, outlier_fn, flag_all))
 
     return outliers
 
@@ -184,20 +189,30 @@ def get_best_fits_per_ant(wrapper):
     return all_fits
 
 
-def score_all(all_fits, outlier_fn):
+def score_all(all_fits, outlier_fn, flag_all: bool = False):
     """
     Compare and score the calculated best fits based on how they deviate from
     a reference value.
 
+    Setting the test argument flag_all to True sets all fits as outliers. This
+    is useful for testing the QA score roll-up and summary functions in the QA
+    plugin.
+
     :param all_fits:
     :param outlier_fn:
+    :param flag_all: True if all fits should be classed as outliers
     :return:
     """
+    amp_slope_threshold = 0.0 if flag_all else AMPLITUDE_SLOPE_THRESHOLD
+    amp_intercept_threshold = 0.0 if flag_all else AMPLITUDE_INTERCEPT_THRESHOLD
+    phase_slope_threshold = 0.0 if flag_all else PHASE_SLOPE_THRESHOLD
+    phase_intercept_threshold = 0.0 if flag_all else PHASE_INTERCEPT_THRESHOLD
+
     outliers = []
-    outliers.extend(score_amp_slope(all_fits, outlier_fn, AMPLITUDE_SLOPE_THRESHOLD))
-    outliers.extend(score_amp_intercept(all_fits, outlier_fn, AMPLITUDE_INTERCEPT_THRESHOLD))
-    outliers.extend(score_phase_slope(all_fits, outlier_fn, PHASE_SLOPE_THRESHOLD))
-    outliers.extend(score_phase_intercept(all_fits, outlier_fn, PHASE_INTERCEPT_THRESHOLD))
+    outliers.extend(score_amp_slope(all_fits, outlier_fn, amp_slope_threshold))
+    outliers.extend(score_amp_intercept(all_fits, outlier_fn, amp_intercept_threshold))
+    outliers.extend(score_phase_slope(all_fits, outlier_fn, phase_slope_threshold))
+    outliers.extend(score_phase_intercept(all_fits, outlier_fn, phase_intercept_threshold))
 
     return outliers
 
