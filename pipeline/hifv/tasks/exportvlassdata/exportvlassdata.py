@@ -98,16 +98,12 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
         imlist = self.inputs.context.subimlist.get_imlist()
 
-        # PIPE-592: find out imaging mode (stored here by hif_editimlist, only for VLA)
-        img_mode = ''
-        try:
-            m = self.inputs.context.observing_run.measurement_sets[0]
-            img_mode = self.inputs.context.evla['msinfo'][m.name].img_mode
-        except KeyError:
-            LOG.error("No key found for MS {:s} in context.evla.".format(m.name))
-        except AttributeError:
-            LOG.warn("Imaging mode can not be determined, alpha images will not be written.")
-            img_mode = ''
+        # PIPE-592: find out imaging mode (stored in context by hif_editimlist)
+        if hasattr(self.inputs.context, 'imaging_mode'):
+            img_mode = self.inputs.context.imaging_mode
+        else:
+            LOG.warn("imaging_mode property does not exist in context, alpha images will not be written.")
+            img_mode = None
 
         images_list = []
         for imageitem in imlist:

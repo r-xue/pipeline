@@ -22,10 +22,10 @@ class EditimlistResult(basetask.Results):
         for new_target in self.targets:
             context.clean_list_pending.append(new_target)
 
-        # PIPE-592: store img_mode in context, only for VLA
-        m = context.observing_run.measurement_sets[0]
-        if 'VLA' in m.antenna_array.name:
-            context.evla['msinfo'][m.name].img_mode = self.img_mode
+        # PIPE-592: store img_mode in context
+        if not hasattr(context, 'imaging_mode'):
+            LOG.warn('imaging_mode property does not exist in context, adding it now.')
+        context.imaging_mode = self.img_mode
 
     @property
     def num_targets(self):
