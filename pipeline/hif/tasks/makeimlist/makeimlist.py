@@ -381,7 +381,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                 else:
                     spwids = spwlist
 
-                # Generate list of possible vis/field/spw combinations
+                # Generate list of observed vis/field/spw combinations
                 vislist_field_spw_combinations = {}
                 for field_intent in field_intent_list:
                     vislist_for_field = []
@@ -424,37 +424,51 @@ class MakeImList(basetask.StandardTaskTemplate):
                         else:
                             max_num_targets += len(spwids_for_field)
 
-                # Remove bad spws
+                # Remove bad spws and record actual vis/field/spw combinations containing data
                 if field_intent_list != set([]):
                     valid_data = {}
-                    # Check only possible field/spw combinations to speed up
                     filtered_spwlist = []
-                    for field_intent in field_intent_list:
-                        if vislist_field_spw_combinations.get(field_intent[0], None) is not None:
-                            spwids_list = vislist_field_spw_combinations.get(field_intent[0], None).get('spwids', None)
-                            if spwids_list is not None:
-                                for spw in map(str, spwids_list):
-                                    valid_data[str(spw)] = self.heuristics.has_data(field_intent_list=[field_intent], spwspec=spw)
-                                    if valid_data[str(spw)][field_intent]:
-                                        filtered_spwlist.append(spw)
+                    valid_data[str(vislist)] = {}
+                    for vis in vislist:
+                        valid_data[vis] = {}
+                        for field_intent in field_intent_list:
+                            valid_data[vis][field_intent] = {}
+                            if field_intent not in valid_data[str(vislist)]:
+                                valid_data[str(vislist)][field_intent] = {}
+                            # Check only possible field/spw combinations to speed up
+                            if vislist_field_spw_combinations.get(field_intent[0], None) is not None:
+                                observed_vis_list = vislist_field_spw_combinations.get(field_intent[0], None).get('vislist', None)
+                                observed_spwids_list = vislist_field_spw_combinations.get(field_intent[0], None).get('spwids', None)
+                                if observed_vis_list is not None and observed_spwids_list is not None:
+                                    for spw in map(str, observed_spwids_list):
+                                        valid_data[vis][field_intent][str(spw)] = self.heuristics.has_data(field_intent_list=[field_intent], spwspec=spw, vislist=[vis])[field_intent]
+                                        if not valid_data[vis][field_intent][str(spw)] and vis in observed_vis_list:
+                                            LOG.warn('Data for EB {}, field {}, spw {} is completely flagged.'.format(os.path.basename(vis), field_intent[0], spw))
+                                        # Aggregated value per vislist (replace with lookup pattern later)
+                                        if str(spw) not in valid_data[str(vislist)][field_intent]:
+                                            valid_data[str(vislist)][field_intent][str(spw)] = valid_data[vis][field_intent][str(spw)]
+                                        else:
+                                            valid_data[str(vislist)][field_intent][str(spw)] = valid_data[str(vislist)][field_intent][str(spw)] or valid_data[vis][field_intent][str(spw)]
+                                        if valid_data[vis][field_intent][str(spw)]:
+                                            filtered_spwlist.append(spw)
                     filtered_spwlist = sorted(list(set(filtered_spwlist)), key=int)
                 else:
                     continue
 
                 # Collapse cont spws
                 if inputs.specmode == 'cont':
-                    spwlist = [','.join(filtered_spwlist)]
+                    spwlist_local = [','.join(filtered_spwlist)]
                 else:
-                    spwlist = filtered_spwlist
+                    spwlist_local = filtered_spwlist
 
                 # Need all spw keys (individual and cont) to distribute the
                 # cell and imsize heuristic results which work on the
                 # highest/lowest frequency spw only.
-                # The deep copy is necessary to avoid modifying filtered_spwlist
-                all_spw_keys = copy.deepcopy(filtered_spwlist)
-                all_spw_keys.append(','.join(filtered_spwlist))
+                # The deep copy is necessary to avoid modifying observed_spwids_list
+                all_spw_keys = list(map(str, copy.deepcopy(observed_spwids_list)))
+                all_spw_keys.append(','.join(map(str, copy.deepcopy(observed_spwids_list))))
                 # Add actual cont spw combinations to be able to properly populate the lookup tables later on
-                all_spw_keys.extend([','.join(map(str, vislist_field_spw_combinations[field_intent[0]]['spwids'])) for field_intent in field_intent_list if vislist_field_spw_combinations[field_intent[0]]['spwids'] is not None])
+                #all_spw_keys.extend([','.join(map(str, vislist_field_spw_combinations[field_intent[0]]['spwids'])) for field_intent in field_intent_list if vislist_field_spw_combinations[field_intent[0]]['spwids'] is not None])
 
                 # Select only the lowest / highest frequency spw to get the smallest (for cell size)
                 # and largest beam (for imsize)
@@ -474,7 +488,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                         max_freq_spwid = spwid
 
                 if min_freq_spwid == -1 or max_freq_spwid == -1:
-                    LOG.error('Could not determine min/max frequency spw IDs for %s.' % (str(spwlist)))
+                    LOG.error('Could not determine min/max frequency spw IDs for %s.' % (str(spwlist_local)))
                     continue
 
                 min_freq_spwlist = [str(min_freq_spwid)]
@@ -625,7 +639,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                 widths = {}
                 if specmode not in ('mfs', 'cont') and width == 'pilotimage':
                     for field_intent in field_intent_list:
-                        for spwspec in spwlist:
+                        for spwspec in spwlist_local:
                             try:
                                 nchans[(field_intent[0], spwspec)], widths[(field_intent[0], spwspec)] = \
                                   self.heuristics.nchan_and_width(field_intent=field_intent[1], spwspec=spwspec)
@@ -650,14 +664,18 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                 for field_intent in field_intent_list:
                     mosweight = self.heuristics.mosweight(field_intent[1], field_intent[0])
-                    for spwspec in spwlist:
+                    for spwspec in spwlist_local:
                         # The field/intent and spwspec loops still cover the full parameter
                         # space. Here we filter the actual combinations.
                         valid_field_spwspec_combination = False
-                        for spwid in spwspec.split(','):
-                            if vislist_field_spw_combinations[field_intent[0]].get('spwids', None) is not None:
-                                if int(spwid) in vislist_field_spw_combinations[field_intent[0]]['spwids']:
-                                    valid_field_spwspec_combination = True
+                        actual_spwids = []
+                        if vislist_field_spw_combinations[field_intent[0]].get('spwids', None) is not None:
+                            for spwid in spwspec.split(','):
+                                if valid_data[str(vislist)].get(field_intent, None):
+                                    if valid_data[str(vislist)][field_intent].get(str(spwid), None):
+                                        if int(spwid) in vislist_field_spw_combinations[field_intent[0]]['spwids']:
+                                            valid_field_spwspec_combination = True
+                                            actual_spwids.append(spwid)
                         if not valid_field_spwspec_combination:
                             continue
 
@@ -668,10 +686,7 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                         # For 'cont' mode we still need to restrict the virtual spw ID list to just
                         # the ones that were actually observed for this field.
-                        if inputs.specmode == 'cont':
-                            adjusted_spwspec = ','.join(map(str, vislist_field_spw_combinations[field_intent[0]]['spwids']))
-                        else:
-                            adjusted_spwspec = spwspec
+                        adjusted_spwspec = ','.join(map(str, actual_spwids))
 
                         spwspec_ok = True
                         actual_spwspec_list = []
@@ -748,7 +763,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 if '*' in nbins_dict:
                                     nbin = nbins_dict['*']
                                 else:
-                                    nbin = nbins_dict[adjusted_spwspec]
+                                    nbin = nbins_dict[spwspec]
                             except:
                                 LOG.warn('Could not determine binning factor for spw %s. Using default channel width.'
                                          '' % adjusted_spwspec)
@@ -756,17 +771,23 @@ class MakeImList(basetask.StandardTaskTemplate):
                         else:
                             nbin = -1
 
-                        if spwspec_ok and (field_intent[0], adjusted_spwspec) in imsizes and ('invalid' not in cells[adjusted_spwspec]):
+                        if spwspec_ok and (field_intent[0], spwspec) in imsizes and ('invalid' not in cells[spwspec]):
                             LOG.debug(
                               'field:%s intent:%s spw:%s cell:%s imsize:%s phasecenter:%s' %
                               (field_intent[0], field_intent[1], adjusted_spwspec,
-                               cells[adjusted_spwspec], imsizes[(field_intent[0], adjusted_spwspec)],
+                               cells[spwspec], imsizes[(field_intent[0], spwspec)],
                                phasecenters[field_intent[0]]))
 
                             # Remove MSs that do not contain data for the given field/intent combination
+                            # FIXME: This should already have been filtered above. This filter is just from the domain objects.
                             scanidlist, visindexlist = target_heuristics.get_scanidlist(vislist_field_spw_combinations[field_intent[0]]['vislist'],
                                                                                         field_intent[0], field_intent[1])
-                            filtered_vislist = [vislist_field_spw_combinations[field_intent[0]]['vislist'][i] for i in visindexlist]
+                            domain_filtered_vislist = [vislist_field_spw_combinations[field_intent[0]]['vislist'][i] for i in visindexlist]
+                            if inputs.specmode == 'cont':
+                                filtered_vislist = domain_filtered_vislist
+                            else:
+                                # Filter MSs with fully flagged field/spw selections
+                                filtered_vislist = [v for v in domain_filtered_vislist if valid_data[v][field_intent][str(adjusted_spwspec)]]
 
                             # Save the filtered vislist
                             target_heuristics.vislist = filtered_vislist
@@ -788,23 +809,22 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 spwsel_all_cont=all_continuum,
                                 num_all_spws=num_all_spws,
                                 num_good_spws=num_good_spws,
-                                cell=cells[adjusted_spwspec],
-                                imsize=imsizes[(field_intent[0], adjusted_spwspec)],
+                                cell=cells[spwspec],
+                                imsize=imsizes[(field_intent[0], spwspec)],
                                 phasecenter=phasecenters[field_intent[0]],
                                 specmode=inputs.specmode,
                                 gridder=target_heuristics.gridder(field_intent[1], field_intent[0]),
                                 imagename=imagename,
                                 start=inputs.start,
-                                width=widths[(field_intent[0], adjusted_spwspec)],
+                                width=widths[(field_intent[0], spwspec)],
                                 nbin=nbin,
-                                nchan=nchans[(field_intent[0], adjusted_spwspec)],
+                                nchan=nchans[(field_intent[0], spwspec)],
                                 robust=robust,
                                 uvrange=inputs.uvrange,
                                 uvtaper=uvtaper,
                                 stokes='I',
                                 heuristics=target_heuristics,
-                                # TODO: should one always use the filtered vis list to cope with sparse field/spw setups ?
-                                vis=filtered_vislist if inputs.per_eb or any_non_imaging_ms else None,
+                                vis=filtered_vislist,
                                 is_per_eb=inputs.per_eb if inputs.per_eb else None,
                                 usepointing=usepointing,
                                 mosweight=mosweight
