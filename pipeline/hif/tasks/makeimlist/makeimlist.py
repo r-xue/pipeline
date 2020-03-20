@@ -437,10 +437,13 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 valid_data[str(vislist)][field_intent] = {}
                             # Check only possible field/spw combinations to speed up
                             if vislist_field_spw_combinations.get(field_intent[0], None) is not None:
-                                spwids_list = vislist_field_spw_combinations.get(field_intent[0], None).get('spwids', None)
-                                if spwids_list is not None:
-                                    for spw in map(str, spwids_list):
+                                observed_vis_list = vislist_field_spw_combinations.get(field_intent[0], None).get('vislist', None)
+                                observed_spwids_list = vislist_field_spw_combinations.get(field_intent[0], None).get('spwids', None)
+                                if observed_vis_list is not None and observed_spwids_list is not None:
+                                    for spw in map(str, observed_spwids_list):
                                         valid_data[vis][field_intent][str(spw)] = self.heuristics.has_data(field_intent_list=[field_intent], spwspec=spw, vislist=[vis])[field_intent]
+                                        if not valid_data[vis][field_intent][str(spw)] and vis in observed_vis_list:
+                                            LOG.warn('Data for EB {}, field {}, spw {} is completely flagged.'.format(os.path.basename(vis), field_intent[0], spw))
                                         # Aggregated value per vislist (replace with lookup pattern later)
                                         if str(spw) not in valid_data[str(vislist)][field_intent]:
                                             valid_data[str(vislist)][field_intent][str(spw)] = valid_data[vis][field_intent][str(spw)]
@@ -461,9 +464,9 @@ class MakeImList(basetask.StandardTaskTemplate):
                 # Need all spw keys (individual and cont) to distribute the
                 # cell and imsize heuristic results which work on the
                 # highest/lowest frequency spw only.
-                # The deep copy is necessary to avoid modifying spwids_list
-                all_spw_keys = list(map(str, copy.deepcopy(spwids_list)))
-                all_spw_keys.append(','.join(map(str, copy.deepcopy(spwids_list))))
+                # The deep copy is necessary to avoid modifying observed_spwids_list
+                all_spw_keys = list(map(str, copy.deepcopy(observed_spwids_list)))
+                all_spw_keys.append(','.join(map(str, copy.deepcopy(observed_spwids_list))))
                 # Add actual cont spw combinations to be able to properly populate the lookup tables later on
                 #all_spw_keys.extend([','.join(map(str, vislist_field_spw_combinations[field_intent[0]]['spwids'])) for field_intent in field_intent_list if vislist_field_spw_combinations[field_intent[0]]['spwids'] is not None])
 
@@ -668,7 +671,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                         actual_spwids = []
                         if vislist_field_spw_combinations[field_intent[0]].get('spwids', None) is not None:
                             for spwid in spwspec.split(','):
-                                if valid_data[str(vislist)].get(field_intent, None) is not None:
+                                if valid_data[str(vislist)].get(field_intent, None):
                                     if valid_data[str(vislist)][field_intent].get(str(spwid), None):
                                         if int(spwid) in vislist_field_spw_combinations[field_intent[0]]['spwids']:
                                             valid_field_spwspec_combination = True
