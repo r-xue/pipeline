@@ -10,46 +10,7 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.htmlrenderer as hr
 import pipeline.infrastructure.renderer.rendererutils as rendererutils
 import pipeline.infrastructure.utils as utils
-
-
-def get_qascores(pool, lo, hi):
-    with_score = [s for s in pool if s.score not in ('', 'N/A', None)]
-    return [s for s in with_score if s.score > lo and s.score <= hi]
-
-
-def get_notification_trs(result, alerts_info, alerts_success):
-    notifications = []
-    if result.qa.pool:
-        for qascore in get_qascores(result.qa.pool, -0.1, rendererutils.SCORE_THRESHOLD_ERROR):
-            n = format_notification('danger alert-danger', 'QA', qascore.longmsg, 'glyphicon glyphicon-remove-sign')
-            notifications.append(n)
-        for qascore in get_qascores(result.qa.pool, rendererutils.SCORE_THRESHOLD_ERROR, rendererutils.SCORE_THRESHOLD_WARNING):
-            n = format_notification('warning alert-warning', 'QA', qascore.longmsg, 'glyphicon glyphicon-exclamation-sign')
-            notifications.append(n)
-    for logrecord in utils.get_logrecords(result, logging.ERROR):
-        n = format_notification('danger alert-danger', 'Error!', logrecord.msg)
-        notifications.append(n)
-    for logrecord in utils.get_logrecords(result, logging.WARNING):
-        n = format_notification('warning alert-warning', 'Warning!', logrecord.msg)
-        notifications.append(n)
-    if alerts_info is not UNDEFINED:
-        for msg in alerts_info:
-            n = format_notification('info alert-info', '', msg)
-            notifications.append(n)
-    if alerts_success is not UNDEFINED:
-        for msg in alerts_success:
-            n = format_notification('success alert-success', '', msg)
-            notifications.append(n)
-
-    return notifications
-
-
-def format_notification(tr_class, alert, msg, icon_class=None):
-    if icon_class:
-        icon = '<span class="%s"></span> ' % icon_class
-    else:
-        icon = ''
-    return '<tr class="%s"><td>%s<strong>%s</strong> %s</td></tr>' % (tr_class, icon, alert, msg)
+from pipeline.infrastructure.pipelineqa import WebLogLocation
 %>
 <html>
 <head>
@@ -213,7 +174,7 @@ def format_notification(tr_class, alert, msg, icon_class=None):
 </div>
 
 <%
-    notification_trs = get_notification_trs(result, alerts_info, alerts_success)
+    notification_trs = rendererutils.get_notification_trs(result, alerts_info, alerts_success)
 %>
 % if notification_trs:
 <table class="table table-bordered">
@@ -275,25 +236,28 @@ ${next.body()}
                         </tr>
                     </thead>
                     <tbody>
-                    % for qascore in get_qascores(result.qa.pool, -0.1, rendererutils.SCORE_THRESHOLD_ERROR):
+                    <%
+                    accordion_scores = rendererutils.scores_with_location(result.qa.pool, [WebLogLocation.ACCORDION, WebLogLocation.UNSET])
+                    %>
+                    % for qascore in rendererutils.scores_in_range(accordion_scores, -0.1, rendererutils.SCORE_THRESHOLD_ERROR):
                     <tr class="danger alert-danger">
                         <td>${'%0.2f' % qascore.score}</td>
                         <td>${qascore.longmsg}</td>
                     </tr>
                     % endfor
-                    % for qascore in get_qascores(result.qa.pool, rendererutils.SCORE_THRESHOLD_ERROR, rendererutils.SCORE_THRESHOLD_WARNING):
+                    % for qascore in rendererutils.scores_in_range(accordion_scores, rendererutils.SCORE_THRESHOLD_ERROR, rendererutils.SCORE_THRESHOLD_WARNING):
                     <tr class="warning alert-warning">
                         <td>${'%0.2f' % qascore.score}</td>
                         <td>${qascore.longmsg}</td>
                     </tr>
                     % endfor
-                    % for qascore in get_qascores(result.qa.pool, rendererutils.SCORE_THRESHOLD_WARNING, rendererutils.SCORE_THRESHOLD_SUBOPTIMAL):
+                    % for qascore in rendererutils.scores_in_range(accordion_scores, rendererutils.SCORE_THRESHOLD_WARNING, rendererutils.SCORE_THRESHOLD_SUBOPTIMAL):
                     <tr class="info alert-info">
                         <td>${'%0.2f' % qascore.score}</td>
                         <td>${qascore.longmsg}</td>
                     </tr>
                     % endfor
-                    % for qascore in get_qascores(result.qa.pool, rendererutils.SCORE_THRESHOLD_SUBOPTIMAL, 1.0):
+                    % for qascore in rendererutils.scores_in_range(accordion_scores, rendererutils.SCORE_THRESHOLD_SUBOPTIMAL, 1.0):
                     <tr class="success alert-success">
                         <td>${'%0.2f' % qascore.score}</td>
                         <td>${qascore.longmsg}</td>

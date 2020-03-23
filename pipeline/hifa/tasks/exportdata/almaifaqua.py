@@ -171,6 +171,9 @@ def xml_for_flux_stage(context, stage_results, origin, accessor, score_accessor)
 
     for result in stage_results:
         vis = os.path.basename(result.inputs['vis'])
+        # data might have been imported from ASDM, .tar, .tgz file
+        if 'hifa_importdata(' in stage_results.pipeline_casa_task and not vis.endswith('.ms'):
+            vis = result.mses[0].basename
         ms_for_result = context.observing_run.get_ms(vis)
         measurements = accessor(result)
         ms_xml = xml_for_extracted_flux_measurements(measurements, ms_for_result)
