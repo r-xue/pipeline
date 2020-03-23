@@ -290,7 +290,7 @@ def _get_git_version():
     elif git_branch is None:
         version = commit_hash
     else:
-        version = "{}-{}".format(git_branch, commit_hash)
+        version = "{}-{}".format(commit_hash, git_branch)
 
     return version
 
