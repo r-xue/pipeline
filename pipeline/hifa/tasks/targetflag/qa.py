@@ -20,12 +20,12 @@ class TargetflagQAHandler(pqa.QAPlugin):
         ms = context.observing_run.get_ms(vis)
 
         # Run correctedampflag QA on correctedampflag results.
-        for cafresult in result.cafresults.values():
-            pqa.qa_registry.do_qa(context, cafresult)
+        cafresult = result.cafresult
+        pqa.qa_registry.do_qa(context, cafresult)
 
-            # Gather scores, store in result.
-            scores = cafresult.qa.pool
-            result.qa.pool.extend(scores)
+        # Gather scores, store in result.
+        scores = cafresult.qa.pool
+        result.qa.pool[:] = scores
 
 
 class TargetflagListQAHandler(pqa.QAPlugin):

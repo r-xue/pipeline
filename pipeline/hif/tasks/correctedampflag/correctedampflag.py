@@ -629,9 +629,17 @@ class Correctedampflag(basetask.StandardTaskTemplate):
         for intent in inputs.intent.split(','):
 
             # For current intent, identify which fields from inputs are valid.
-            valid_fields = [field.name
-                            for field in ms.get_fields(intent=intent)
-                            if field.name in list(utils.safe_split(inputs.field))]
+            if intent == 'TARGET':
+                # Use field IDs to loop over individual mosaic pointings for
+                # science targets (PIPE-337).
+                valid_fields = [str(field.id)
+                                for field in ms.get_fields(intent=intent)
+                                if field.name in list(utils.safe_split(inputs.field))]
+            else:
+                # Use field names for calibrators.
+                valid_fields = [field.name
+                                for field in ms.get_fields(intent=intent)
+                                if field.name in list(utils.safe_split(inputs.field))]
 
             # If no valid fields were found, raise warning, and continue to
             # next intent. PIPE-281: CHECK intent is optional and does not
