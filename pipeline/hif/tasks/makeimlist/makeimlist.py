@@ -468,7 +468,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                 all_spw_keys = list(map(str, copy.deepcopy(observed_spwids_list)))
                 all_spw_keys.append(','.join(map(str, copy.deepcopy(observed_spwids_list))))
                 # Add actual cont spw combinations to be able to properly populate the lookup tables later on
-                #all_spw_keys.extend([','.join(map(str, vislist_field_spw_combinations[field_intent[0]]['spwids'])) for field_intent in field_intent_list if vislist_field_spw_combinations[field_intent[0]]['spwids'] is not None])
+                if inputs.specmode == 'cont':
+                    all_spw_keys.append(','.join(filtered_spwlist))
 
                 # Select only the lowest / highest frequency spw to get the smallest (for cell size)
                 # and largest beam (for imsize)
