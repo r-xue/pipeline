@@ -167,11 +167,6 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
         result.vis = inputs.vis
         result.plots = dict()
 
-        # Create back-up of current calibration state.
-        LOG.info('Creating back-up of calibration state')
-        calstate_backup_name = 'before_gfsflag.calstate'
-        inputs.context.callibrary.export(calstate_backup_name)
-
         # create a shortcut to the plotting function that pre-supplies the inputs and context
         plot_fn = functools.partial(create_plots, inputs, inputs.context)
 
@@ -182,67 +177,50 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
             vis=inputs.vis, mode='save', versionname=flag_backup_name_pregfsf)
         self._executor.execute(task)
 
-        # Ensure that any flagging applied to the MS by this or the next
-        # applycal are reverted at the end, even in the case of exceptions.
-        try:
-            # Run applycal to apply pre-existing caltables and propagate their
-            # corresponding flags (should typically include Tsys, WVR, antpos).
-            LOG.info('Applying pre-existing cal tables.')
-            self._do_applycal(merge=True)
+        # Determine the parameters to use for the gaincal to create the
+        # phase-only caltable.
+        if inputs.ms.combine_spwmap:
+            phase_combine = 'spw'
+            phaseup_spwmap = inputs.ms.combine_spwmap
+            phase_interp = 'linearPD,linear'
+            # Note: at present, phaseupsolint is specified as a fixed
+            # value, defined in inputs. In the future, phaseupsolint may
+            # need to be set based on exposure times; if so, see discussion
+            # in CAS-10158 and logic in hifa.tasks.fluxscale.GcorFluxscale.
+        else:
+            phase_combine = ''
+            phaseup_spwmap = inputs.ms.phaseup_spwmap
+            phase_interp = None
 
-            # Create back-up of "after pre-calibration" state of flags.
-            LOG.info('Creating back-up of "pre-calibrated" flagging state')
-            flag_backup_name_after_precal = 'after_precal'
-            task = casa_tasks.flagmanager(
-                vis=inputs.vis, mode='save', versionname=flag_backup_name_after_precal)
-            self._executor.execute(task)
+        # Create phase caltable and merge it into the local context.
+        LOG.info('Compute phase gaincal table.')
+        self._do_gaincal(
+            intent=inputs.intent, gaintype='G', calmode='p',
+            combine=phase_combine, solint=inputs.phaseupsolint,
+            minsnr=inputs.minsnr, refant=inputs.refant,
+            spwmap=phaseup_spwmap, interp=phase_interp,
+            merge=True)
 
-            # Restore the calibration state to ensure the "apriori" cal tables
-            # are included in pre-apply during creation of new caltables.
-            LOG.info('Restoring back-up of calibration state.')
-            inputs.context.callibrary.import_state(calstate_backup_name)
-
-            # Determine the parameters to use for the gaincal to create the
-            # phase-only caltable.
-            if inputs.ms.combine_spwmap:
-                phase_combine = 'spw'
-                phaseup_spwmap = inputs.ms.combine_spwmap
-                phase_interp = 'linearPD,linear'
-                # Note: at present, phaseupsolint is specified as a fixed
-                # value, defined in inputs. In the future, phaseupsolint may
-                # need to be set based on exposure times; if so, see discussion
-                # in CAS-10158 and logic in hifa.tasks.fluxscale.GcorFluxscale.
-            else:
-                phase_combine = ''
-                phaseup_spwmap = inputs.ms.phaseup_spwmap
-                phase_interp = None
-
-            # Create phase caltable.
-            LOG.info('Compute phase gaincal table.')
+        # Create amplitude caltable and merge it into the local context.
+        # CAS-10491: for scan-based (solint='inf') amplitude solves that
+        # will be applied to the calibrator, set interp to 'nearest'.
+        LOG.info('Compute amplitude gaincal table.')
+        if inputs.solint == 'inf':
             self._do_gaincal(
-                intent=inputs.intent, gaintype='G', calmode='p',
-                combine=phase_combine, solint=inputs.phaseupsolint,
+                intent=inputs.intent, gaintype='T', calmode='a',
+                combine='', solint=inputs.solint,
                 minsnr=inputs.minsnr, refant=inputs.refant,
-                spwmap=phaseup_spwmap, interp=phase_interp,
-                merge=True)
+                interp='nearest,linear', merge=True)
+        else:
+            self._do_gaincal(
+                intent=inputs.intent, gaintype='T', calmode='a',
+                combine='', solint=inputs.solint,
+                minsnr=inputs.minsnr, refant=inputs.refant,
+                interp='linear,linear', merge=True)
 
-            # Create amplitude caltable.
-            # CAS-10491: for scan-based (solint='inf') amplitude solves that
-            # will be applied to the calibrator, set interp to 'nearest'.
-            LOG.info('Compute amplitude gaincal table.')
-            if inputs.solint == 'inf':
-                self._do_gaincal(
-                    intent=inputs.intent, gaintype='T', calmode='a',
-                    combine='', solint=inputs.solint,
-                    minsnr=inputs.minsnr, refant=inputs.refant,
-                    interp='nearest,linear', merge=True)
-            else:
-                self._do_gaincal(
-                    intent=inputs.intent, gaintype='T', calmode='a',
-                    combine='', solint=inputs.solint,
-                    minsnr=inputs.minsnr, refant=inputs.refant,
-                    interp='linear,linear', merge=True)
-
+        # Ensure that any flagging applied to the MS by this applycal are
+        # reverted at the end, even in the case of exceptions.
+        try:
             # Apply the new caltables to the MS.
             LOG.info('Applying phase-up, bandpass, and amplitude cal tables.')
             # Apply the calibrations.
@@ -273,7 +251,9 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
                 result.plots['after'] = plot_fn(inputs.intent, suffix='after')
 
         finally:
-            # Restore the "pre-gfluxscaleflag" backup of the flagging state.
+            # Restore the "pre-gfluxscaleflag" backup of the flagging state, to
+            # undo any flags that were propagated from caltables to the MS by
+            # the applycal call.
             LOG.info('Restoring back-up of "pre-gfluxscaleflag" flagging state.')
             task = casa_tasks.flagmanager(
                 vis=inputs.vis, mode='restore', versionname=flag_backup_name_pregfsf)
@@ -302,7 +282,7 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
         inputs = self.inputs
 
         # SJW - always just one job
-        ac_intents = [ inputs.intent ]
+        ac_intents = [inputs.intent]
 
         applycal_tasks = []
         for intent in ac_intents:
