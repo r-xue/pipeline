@@ -2,7 +2,6 @@
 
 <task category="pipeline" name="hifa_flagdata" type="function">
 
-<shortdescription>Do basic flagging</shortdescription>
 <shortdescription>Do meta data based flagging of a list of MeasurementSets.</shortdescription>
 <description>
 The hifa_flagdata data performs basic flagging operations on a list of
