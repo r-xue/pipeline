@@ -145,76 +145,59 @@ class Bandpassflag(basetask.StandardTaskTemplate):
             vis=inputs.vis, mode='save', versionname=flag_backup_name_prebpf)
         self._executor.execute(task)
 
-        # Ensure that any flagging applied to the MS by this or the next
-        # applycal are reverted at the end, even in the case of exceptions.
+        # Do standard phaseup and bandpass calibration.
+        LOG.info('Creating initial phased-up bandpass calibration.')
+        bpinputs = bandpass.ALMAPhcorBandpass.Inputs(
+            context=inputs.context, vis=inputs.vis, caltable=inputs.caltable,
+            field=inputs.field, intent=inputs.intent, spw=inputs.spw,
+            antenna=inputs.antenna, hm_phaseup=inputs.hm_phaseup,
+            phaseupbw=inputs.phaseupbw, phaseupsnr=inputs.phaseupsnr,
+            phaseupnsols=inputs.phaseupnsols,
+            phaseupsolint=inputs.phaseupsolint, hm_bandpass=inputs.hm_bandpass,
+            solint=inputs.solint, maxchannels=inputs.maxchannels,
+            evenbpints=inputs.evenbpints, bpsnr=inputs.bpsnr, minbpsnr=inputs.minbpsnr,
+            bpnsols=inputs.bpnsols, combine=inputs.combine,
+            refant=inputs.refant, solnorm=inputs.solnorm,
+            minblperant=inputs.minblperant, minsnr=inputs.minsnr)
+        # Modify output table filename to append "prelim".
+        if bpinputs.caltable.endswith('.tbl'):
+            bpinputs.caltable = bpinputs.caltable[:-4] + '.prelim.tbl'
+        else:
+            bpinputs.caltable += '.prelim'
+
+        # Create and execute task.
+        bptask = bandpass.ALMAPhcorBandpass(bpinputs)
+        bpresult = self._executor.execute(bptask)
+
+        # Add the phase-up table produced by the bandpass task to the
+        # callibrary in the local context.
+        LOG.debug('Adding phase-up and bandpass table to temporary context.')
+        for prev_result in bpresult.preceding:
+            for calapp in prev_result:
+                inputs.context.callibrary.add(calapp.calto, calapp.calfrom)
+
+        # Accept the bandpass result into the local context so as to add the
+        # bandpass table to the callibrary.
+        bpresult.accept(inputs.context)
+
+        # Do amplitude solve on scan interval.
+        LOG.info('Create amplitude gaincal table.')
+        gacalinputs = gaincal.GTypeGaincal.Inputs(
+            context=inputs.context, vis=inputs.vis, intent=inputs.intent,
+            gaintype='T', antenna='', calmode='a', solint='inf')
+        gacaltask = gaincal.GTypeGaincal(gacalinputs)
+        gacalresult = self._executor.execute(gacaltask)
+
+        # CAS-10491: for scan-based amplitude solves that will be applied
+        # to the calibrator, set interp to 'nearest' => modify result from
+        # gaincal to update interp before merging into the local context.
+        self._mod_last_interp(gacalresult.pool[0], 'nearest,linear')
+        self._mod_last_interp(gacalresult.final[0], 'nearest,linear')
+        gacalresult.accept(inputs.context)
+
+        # Ensure that any flagging applied to the MS by applycal are reverted
+        # at the end, even in the case of exceptions.
         try:
-            # Run applycal to apply pre-existing caltables and propagate their
-            # corresponding flags (should typically include Tsys, WVR, antpos).
-            LOG.info('Applying pre-existing cal tables.')
-            acinputs = applycal.IFApplycalInputs(
-                context=inputs.context, vis=inputs.vis, field=inputs.field,
-                intent=inputs.intent, flagsum=False, flagbackup=False)
-            actask = applycal.IFApplycal(acinputs)
-            acresult = self._executor.execute(actask, merge=True)
-
-            # Create back-up of "after pre-calibration" state of flags.
-            LOG.info('Creating back-up of "pre-calibrated" flagging state')
-            flag_backup_name_after_precal = 'after_precal'
-            task = casa_tasks.flagmanager(
-                vis=inputs.vis, mode='save', versionname=flag_backup_name_after_precal)
-            self._executor.execute(task)
-
-            # Restore the calibration state to ensure the "apriori" cal tables
-            # are included in pre-apply during creation of new caltables.
-            LOG.info('Restoring back-up of calibration state.')
-            inputs.context.callibrary.import_state(calstate_backup_name)
-
-            # Do standard phaseup and bandpass calibration.
-            LOG.info('Creating initial phased-up bandpass calibration.')
-            bpinputs = bandpass.ALMAPhcorBandpass.Inputs(
-                context=inputs.context, vis=inputs.vis, caltable=inputs.caltable,
-                field=inputs.field, intent=inputs.intent, spw=inputs.spw,
-                antenna=inputs.antenna, hm_phaseup=inputs.hm_phaseup,
-                phaseupbw=inputs.phaseupbw, phaseupsnr=inputs.phaseupsnr,
-                phaseupnsols=inputs.phaseupnsols,
-                phaseupsolint=inputs.phaseupsolint, hm_bandpass=inputs.hm_bandpass,
-                solint=inputs.solint, maxchannels=inputs.maxchannels,
-                evenbpints=inputs.evenbpints, bpsnr=inputs.bpsnr, minbpsnr=inputs.minbpsnr,
-                bpnsols=inputs.bpnsols, combine=inputs.combine,
-                refant=inputs.refant, solnorm=inputs.solnorm,
-                minblperant=inputs.minblperant, minsnr=inputs.minsnr)
-            # Modify output table filename to append "prelim".
-            if bpinputs.caltable.endswith('.tbl'):
-                bpinputs.caltable = bpinputs.caltable[:-4] + '.prelim.tbl'
-            else:
-                bpinputs.caltable += '.prelim'
-            # Create and execute task.
-            bptask = bandpass.ALMAPhcorBandpass(bpinputs)
-            bpresult = self._executor.execute(bptask)
-
-            # Add the phase-up table produced by the bandpass task to the callibrary.
-            LOG.debug('Adding phase-up and bandpass table to temporary context.')
-            for prev_result in bpresult.preceding:
-                for calapp in prev_result:
-                    inputs.context.callibrary.add(calapp.calto, calapp.calfrom)
-            # Accept the bandpass result to add the bandpass table to the callibrary.
-            bpresult.accept(inputs.context)
-
-            # Do amplitude solve on scan interval.
-            LOG.info('Create amplitude gaincal table.')
-            gacalinputs = gaincal.GTypeGaincal.Inputs(
-                context=inputs.context, vis=inputs.vis, intent=inputs.intent,
-                gaintype='T', antenna='', calmode='a', solint='inf')
-            gacaltask = gaincal.GTypeGaincal(gacalinputs)
-            gacalresult = self._executor.execute(gacaltask)
-
-            # CAS-10491: for scan-based amplitude solves that will be applied
-            # to the calibrator, set interp to 'nearest' => modify result from
-            # gaincal to update interp before merging into context.
-            self._mod_last_interp(gacalresult.pool[0], 'nearest,linear')
-            self._mod_last_interp(gacalresult.final[0], 'nearest,linear')
-            gacalresult.accept(inputs.context)
-
             # Apply the new caltables to the MS.
             LOG.info('Applying phase-up, bandpass, and amplitude cal tables.')
             # Apply the calibrations.
@@ -249,7 +232,9 @@ class Bandpassflag(basetask.StandardTaskTemplate):
                 result.plots['after'] = plot_fn(suffix='after')
 
         finally:
-            # Restore the "pre-bandpassflag" backup of the flagging state.
+            # Restore the "pre-bandpassflag" backup of the flagging state, to
+            # undo any flags that were propagated from caltables to the MS by
+            # the applycal call.
             LOG.info('Restoring back-up of "pre-bandpassflag" flagging state.')
             task = casa_tasks.flagmanager(
                 vis=inputs.vis, mode='restore', versionname=flag_backup_name_prebpf)
@@ -269,7 +254,13 @@ class Bandpassflag(basetask.StandardTaskTemplate):
             fstask.flags_to_set(cafflags)
             fsresult = self._executor.execute(fstask)
 
-            # Import the calstate before BPFLAG
+            # Update callibrary in local context to restore the calibration
+            # state to what it was at the start of this task. This is needed
+            # because the call to applycal will have marked any pre-existing
+            # caltables (from earlier stages) as having been applied. By
+            # restoring the calstate, we ensure that those pre-existing
+            # caltables are once again included as part of pre-apply during the
+            # creation of the final phased-up bandpass solution.
             LOG.info('Restoring back-up of calibration state.')
             inputs.context.callibrary.import_state(calstate_backup_name)
 
@@ -397,9 +388,8 @@ class Bandpassflag(basetask.StandardTaskTemplate):
         # Create a summary of the flagging state by going through each flagging
         # command.
         for flag in flags:
-
-        # Only consider flagging commands with a specified antenna and
-        # without a specified timestamp.
+            # Only consider flagging commands with a specified antenna and
+            # without a specified timestamp.
             if flag.antenna is not None and flag.time is None:
                 # Skip flagging commands for baselines.
                 if '&' in str(flag.antenna):
