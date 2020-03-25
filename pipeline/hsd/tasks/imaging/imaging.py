@@ -147,16 +147,17 @@ class SDImaging(basetask.StandardTaskTemplate):
         # set some information to image header
         image_item = result.outcome['image']
         imagename = image_item.imagename
-        imageheader.set_miscinfo(name=imagename,
-                                 spw=','.join(map(str, spwlist)),
-                                 field=image_item.sourcename,
-                                 nfield=1,
-                                 type='singledish',
-                                 iter=1,  # nominal
-                                 intent='TARGET',
-                                 specmode='cube',
-                                 is_per_eb=False,
-                                 context=context)
+        for name in (imagename, imagename+'.weight'):
+            imageheader.set_miscinfo(name=name,
+                                     spw=','.join(map(str, spwlist)),
+                                     field=image_item.sourcename,
+                                     nfield=1,
+                                     type='singledish',
+                                     iter=1,  # nominal
+                                     intent='TARGET',
+                                     specmode='cube',
+                                     is_per_eb=False,
+                                     context=context)
 
         # finally replace task attribute with the top-level one
         result.task = cls
