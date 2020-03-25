@@ -10,17 +10,17 @@ LOG = infrastructure.get_logger(__name__)
 
 class BandpassflagResults(basetask.Results):
 
-    def __init__(self):
+    def __init__(self, vis):
         super(BandpassflagResults, self).__init__()
         self.bpresult = common.BandpassResults()
         self.cafresult = resultobjects.CorrectedampflagResults()
         self.plots = {}
+        self.vis = vis
 
-        # list of antennas that should be moved to the end
-        # of the refant list
+        # Set of antennas that should be moved to the end of the refant list.
         self.refants_to_demote = set()
 
-        # list of entirely flagged antennas that should be removed from refants
+        # Set of entirely flagged antennas that should be removed from refants.
         self.refants_to_remove = set()
 
     def merge_with_context(self, context):
