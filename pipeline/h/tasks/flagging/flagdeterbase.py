@@ -484,6 +484,15 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
                              '' % (ncorr, spw.id))
 
     def _get_edgespw_cmds(self):
+        """
+        Return flagging commands to flag the outermost X channels on each side
+        of each science spectral window, where X is computed from the total
+        number of channels in the spw, and the "fraction of channels to flag"
+        as returned by the "get_fracspw" function.
+
+        :return: list of flagging commands as strings.
+        :rtype: list[str]
+        """
         inputs = self.inputs
 
         # to_flag is the list to which flagging commands will be appended
@@ -498,25 +507,35 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
                 # correlations, TDM/FDM mode etc.
                 self.verify_spw(spw)
             except ValueError as e:
-                # this spw should not be or is incapable of being flagged
+                # This spw should not be or is incapable of being flagged by the
+                # fraction based TDM spw flagging heuristic in this method.
                 LOG.debug(str(e))
                 continue
 
-            # get fraction of spw to flag from template function
+            LOG.debug('Spectral window {} is a TDM spectral window, proceeding with TDM spw edge flagging heuristics.'
+                      ''.format(spw.id))
+
+            # Get fraction of total number of spw channels that are to be
+            # flagged on each side of the spw.
+            # Note: this function is presently only implemented in subclasses
+            # FlagDeterALMA and FlagDeterALMASingleDish.
             fracspw = self.get_fracspw(spw)
 
-            # If the twice the number of flagged channels is greater than the
-            # number of channels for a given spectral window, skip it.
-            frac_chan = int(utils.round_half_up(fracspw * spw.num_channels))
-            if 2*frac_chan >= spw.num_channels:
-                LOG.debug('Too many flagged channels %s for spw %s '
-                          '' % (spw.num_channels, spw.id))
+            # Check whether the fraction is too high, such that flagging the
+            # corresponding number of channels on each side of the spw would
+            # result in a fully flagged spw. If so, then skip this spw, and log
+            # a debug message.
+            nchan_for_frac = int(utils.round_half_up(fracspw * spw.num_channels))
+            if 2 * nchan_for_frac >= spw.num_channels:
+                LOG.debug('Skipping fraction-based TDM edge channel flagging heuristic for spw %s, since the specified'
+                          'fraction %s would have resulted in flagging all %s channels of the spw.'
+                          '' % (spw.id, fracspw, spw.num_channels))
                 continue
 
             # calculate the channel ranges to flag. No need to calculate the
             # left minimum as it is always channel 0.
-            l_max = frac_chan - 1
-            r_min = spw.num_channels - frac_chan
+            l_max = nchan_for_frac - 1
+            r_min = spw.num_channels - nchan_for_frac
             r_max = spw.num_channels - 1
 
             # state the spw and channels to flag in flagdata format, adding

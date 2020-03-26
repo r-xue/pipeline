@@ -81,7 +81,7 @@ class NewTask():
         # -----------------------------------------------------------------------------
         module_file = '{tdir}/{task}.py'.format(tdir=task_dir, task=module_name)
         init_file = '{tdir}/__init__.py'.format(tdir=task_dir)
-        cli_file = '{cdir}/task_{area}_{task}.py'.format(cdir=cli_dir, area=area, task=task_name)
+        cli_file = '{cdir}/private/task_{area}_{task}.py'.format(cdir=cli_dir, area=area, task=task_name)
         cli_xml = '{cdir}/{area}_{task}.xml'.format(cdir=cli_dir, area=area, task=task_name)
         weblog_mako = '{repo}/pipeline/{area}/templates/{task}.mako'.format(repo=self.repository_path, area=area, task=task_name)
 

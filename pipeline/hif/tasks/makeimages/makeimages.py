@@ -154,7 +154,7 @@ class MakeImages(basetask.StandardTaskTemplate):
             _get_description_map(target['intent']).get(target['specmode'], 'Calculate clean products')
             for target in target_list
         }
-        result.metadata['long description'] = ' / '.join(description)
+        result.metadata['long description'] = ' / '.join(sorted(description))
 
         sidebar = {
             # map specmode to description for every clean target

@@ -93,7 +93,12 @@ class Context(object):
     .. py:attribute:: name
 
         name of the context; also forms the root of the filename used for the
-        pickled state 
+        pickled state
+
+    .. py:attribute:: imaging_mode
+
+        imaging mode string; may be used to switch between imaging parameter
+        heuristics; currently only used for deciding what products to export
 
     """
     def __init__(self, output_dir=None, name=None):
@@ -132,6 +137,7 @@ class Context(object):
         self.sensitivities = []
         self.per_spw_cont_sensitivities_all_chan = {'robust': None, 'uvtaper': None}
         self.synthesized_beams = {'robust': None, 'uvtaper': None}
+        self.imaging_mode = None
 
         LOG.trace('Creating report directory \'%s\'' % self.report_dir)
         utils.mkdir_p(self.report_dir)

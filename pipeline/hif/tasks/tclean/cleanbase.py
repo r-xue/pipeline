@@ -526,6 +526,9 @@ class CleanBase(basetask.StandardTaskTemplate):
             job = casa_tasks.tclean(**tclean_job_parameters)
             tclean_result = self._executor.execute(job)
 
+        # Record last tclean command for weblog
+        result.set_tclean_command(str(job))
+
         pbcor_image_name = '%s.%s.iter%s.image.pbcor' % (inputs.imagename, inputs.stokes, iter)
 
         if inputs.niter > 0:
@@ -742,7 +745,11 @@ def set_miscinfo(name, spw=None, field=None, type=None, iter=None, multiterm=Non
                 info['per_eb'] = is_per_eb
 
             # Pipeline / CASA information
-            info['pipever'] = pipeline.revision
+            pipever = pipeline.revision
+            if len(pipever) > 68:
+                pipever = pipever[0:67]
+                LOG.info(f'Truncated pipeline revision to 68 characters: was "{pipeline.revision}"; now "{pipever}"')
+            info['pipever'] = pipever
             info['casaver'] = environment.casa_version_string
 
             # Project information
