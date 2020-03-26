@@ -8,7 +8,6 @@ import collections
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 from pipeline.hif.tasks.correctedampflag.renderer import T2_4MDetailsCorrectedampflagRenderer
-from pipeline.hifa.tasks.bandpass.renderer import T2_4MDetailsBandpassRenderer
 from pipeline.infrastructure import basetask
 from pipeline.hifa.tasks.gfluxscaleflag.renderer import get_plot_dicts
 
@@ -26,10 +25,6 @@ class T2_4MDetailsBandpassflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer
                  always_rerender=False):
         super(T2_4MDetailsBandpassflagRenderer, self).__init__(uri=uri, description=description,
                                                                always_rerender=always_rerender)
-
-        # Attach bandpass renderer.
-        self.bprenderer = T2_4MDetailsBandpassRenderer(uri=uri, description=description,
-                                                       always_rerender=always_rerender)
 
         # Attach correctedampflag renderer.
         self.cafrenderer = T2_4MDetailsCorrectedampflagRenderer(uri=uri, description=description,
@@ -49,18 +44,6 @@ class T2_4MDetailsBandpassflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer
             cafresults.append(result.cafresult)
         cafresults.stage_number = results.stage_number
         self.cafrenderer.update_mako_context(mako_context, pipeline_context, cafresults)
-
-        #
-        # Render the bandpass results
-        #
-
-        # Collect bandpass task results, and run those through
-        # standard hifa bandpass mako context update.
-        bpresults = basetask.ResultsList()
-        for result in results:
-            bpresults.append(result.bpresult)
-        bpresults.stage_number = results.stage_number
-        self.bprenderer.update_mako_context(mako_context, pipeline_context, bpresults)
 
         #
         # Get diagnostic plots.

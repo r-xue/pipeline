@@ -1,6 +1,5 @@
 import collections
 import functools
-import shutil
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -111,11 +110,11 @@ class BandpassflagInputs(ALMAPhcorBandpassInputs):
 
 @task_registry.set_equivalent_casa_task('hifa_bandpassflag')
 @task_registry.set_casa_commands_comment(
-    'This task performs a preliminary bandpass solution and applies it, then calls hif_correctedampflag to evaluate the'
-    ' flagging heuristics, looking for outlier visibility points by statistically examining the scalar difference of '
-    'the corrected amplitudes minus model amplitudes, flagging those outliers, and then deriving a final bandpass '
-    'solution (if any flags were generated). The philosophy is that only outlier data points that have remained '
-    'outliers after calibration will be flagged. Note that the phase of the data is not assessed.'
+    'This task performs a preliminary bandpass solution and temporarily applies it, then calls hif_correctedampflag to'
+    ' evaluate the flagging heuristics, looking for outlier visibility points by statistically examining the scalar'
+    ' difference of the corrected amplitudes minus model amplitudes, and then flagging those outliers. The philosophy'
+    ' is that only outlier data points that have remained outliers after calibration will be flagged. Note that the'
+    ' phase of the data is not assessed.'
 )
 class Bandpassflag(basetask.StandardTaskTemplate):
     Inputs = BandpassflagInputs
@@ -128,11 +127,6 @@ class Bandpassflag(basetask.StandardTaskTemplate):
 
         # Create a shortcut to the plotting function that pre-supplies the inputs and context.
         plot_fn = functools.partial(create_plots, inputs, inputs.context)
-
-        # Create back-up of current calibration state.
-        LOG.info('Creating back-up of calibration state')
-        calstate_backup_name = 'before_bpflag.calstate'
-        inputs.context.callibrary.export(calstate_backup_name)
 
         # Create back-up of flags.
         LOG.info('Creating back-up of "pre-bandpassflag" flagging state')
@@ -155,12 +149,6 @@ class Bandpassflag(basetask.StandardTaskTemplate):
             bpnsols=inputs.bpnsols, combine=inputs.combine,
             refant=inputs.refant, solnorm=inputs.solnorm,
             minblperant=inputs.minblperant, minsnr=inputs.minsnr)
-        # Modify output table filename to append "prelim".
-        if bpinputs.caltable.endswith('.tbl'):
-            bpinputs.caltable = bpinputs.caltable[:-4] + '.prelim.tbl'
-        else:
-            bpinputs.caltable += '.prelim'
-
         # Create and execute bandpass task.
         bptask = bandpass.ALMAPhcorBandpass(bpinputs)
         bpresult = self._executor.execute(bptask)
@@ -196,7 +184,7 @@ class Bandpassflag(basetask.StandardTaskTemplate):
         try:
             # Apply all caltables registered in the callibrary in the local
             # context to the MS.
-            LOG.info('Applying both pre-existing and newly generated preliminary caltables.')
+            LOG.info('Applying pre-existing caltables and preliminary phase-up, bandpass, and amplitude caltables.')
             acinputs = applycal.IFApplycalInputs(context=inputs.context, vis=inputs.vis, field=inputs.field,
                                                  intent=inputs.intent, flagsum=False, flagbackup=False)
             actask = applycal.IFApplycal(acinputs)
@@ -246,72 +234,12 @@ class Bandpassflag(basetask.StandardTaskTemplate):
             fstask.flags_to_set(cafflags)
             fsresult = self._executor.execute(fstask)
 
-            # Update callibrary in local context to restore the calibration
-            # state to what it was at the start of this task. This is needed
-            # because the call to applycal will have marked any pre-existing
-            # caltables (from earlier stages) as having been applied. By
-            # restoring the calstate, we ensure that those pre-existing
-            # caltables are once again included as part of pre-apply during the
-            # creation of the final phased-up bandpass solution.
-            LOG.info('Restoring back-up of calibration state.')
-            inputs.context.callibrary.import_state(calstate_backup_name)
-
             # Check for need to update reference antennas, and apply to local
             # copy of the MS.
             result = self._identify_refants_to_update(result)
             ms = inputs.context.observing_run.get_ms(name=inputs.vis)
             ms.update_reference_antennas(ants_to_demote=result.refants_to_demote,
                                          ants_to_remove=result.refants_to_remove)
-
-            # If flags were found in the bandpass calibrator,
-            # recompute the phase-up and bandpass calibration table.
-            LOG.info('Creating final phased-up bandpass calibration.')
-            bpinputs = bandpass.ALMAPhcorBandpass.Inputs(
-                context=inputs.context, vis=inputs.vis, caltable=inputs.caltable,
-                field=inputs.field, intent=inputs.intent, spw=inputs.spw,
-                antenna=inputs.antenna, hm_phaseup=inputs.hm_phaseup,
-                phaseupbw=inputs.phaseupbw, phaseupsnr=inputs.phaseupsnr,
-                phaseupnsols=inputs.phaseupnsols,
-                phaseupsolint=inputs.phaseupsolint, hm_bandpass=inputs.hm_bandpass,
-                solint=inputs.solint, maxchannels=inputs.maxchannels,
-                evenbpints=inputs.evenbpints, bpsnr=inputs.bpsnr, minbpsnr=inputs.minbpsnr,
-                bpnsols=inputs.bpnsols, combine=inputs.combine,
-                refant=inputs.refant, solnorm=inputs.solnorm,
-                minblperant=inputs.minblperant, minsnr=inputs.minsnr)
-            # Modify output table filename to append "prelim".
-            if bpinputs.caltable.endswith('.tbl'):
-                bpinputs.caltable = bpinputs.caltable[:-4] + '.final.tbl'
-            else:
-                bpinputs.caltable += '.final'
-            # Create and execute task.
-            bptask = bandpass.ALMAPhcorBandpass(bpinputs)
-            bpresult = self._executor.execute(bptask)
-
-        # If no flags were found in the bandpass calibrator, and a
-        # preliminary bandpass table was created, then create a copy and
-        # label it as the final table.
-        elif bpresult.final:
-            fn_bp_prelim = bpresult.final[0].gaintable
-            if '.prelim' in fn_bp_prelim:
-                fn_bp_final = '.final'.join(fn_bp_prelim.rpartition('.prelim')[0::2])
-            else:
-                fn_bp_final = fn_bp_prelim + '.final'
-            shutil.copytree(fn_bp_prelim, fn_bp_final)
-            LOG.info('No new flags found, created copy of preliminary '
-                     'phased-up bandpass table as final version: '
-                     '{0}'.format(fn_bp_final))
-
-            # Update CalApplication in bandpass result with a new CalFrom
-            # that points to the final bp table. It is assumed here that
-            # hifa_bandpass returns a single CalApplication containing a single
-            # CalFrom caltable.
-            bpresult.final[0].calfrom[0] = self._copy_calfrom_with_gaintable(
-                bpresult.final[0].calfrom[0], fn_bp_final)
-        else:
-            LOG.warning('No bandpass table could be created.')
-
-        # Store bandpass task result.
-        result.bpresult = bpresult
 
         return result
 
