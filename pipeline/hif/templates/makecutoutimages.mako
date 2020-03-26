@@ -181,7 +181,7 @@ $(document).ready(function() {
 
 <div style="clear:both;"></div>
 
-<%self:plot_group plot_dict="${subplots}" url_fn="${lambda ms:  'noop'}">
+<%self:plot_group plot_dict="${subplots}" url_fn="${lambda ms:  'noop'}" sort_row_by="isalpha">
 
         <%def name="title()">
             Cutout images

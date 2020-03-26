@@ -4899,6 +4899,7 @@ a.thumbnail.active {
 .thumbnail .caption {
   padding: 9px;
   color: #333333;
+  word-wrap: break-word;
 }
 .alert {
   padding: 15px;
