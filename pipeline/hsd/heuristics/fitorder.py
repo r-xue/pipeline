@@ -112,7 +112,7 @@ class MaskMaker(MaskMakerNoLine):
 
 
 class SwitchPolynomialWhenLargeMaskAtEdgeHeuristic(api.Heuristic):
-    def calculate(self, nchan, edge, masklist):
+    def calculate(self, nchan, edge, num_pieces, masklist):
         # fit function heuristics
         # nchan: total number of channels
         # nchan_segment: number of channels in one segment
@@ -143,7 +143,7 @@ class SwitchPolynomialWhenLargeMaskAtEdgeHeuristic(api.Heuristic):
             nchan_edge1 = max(nchan - 1 - max(edge_mask1), edge[1]) if len(edge_mask1) > 0 else edge[1]
             # merge result
         nchan_edge = max(nchan_edge0, nchan_edge1)
-        #nchan_segment = int(round(float(nchan) / num_pieces))
+        nchan_segment = int(round(float(nchan) / num_pieces))
         nchan_half = nchan // 2 + nchan % 2
         nchan_quarter = nchan // 4 + (3 + nchan % 4) // 4
         if nchan_edge >= nchan_half:

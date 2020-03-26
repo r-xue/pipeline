@@ -59,12 +59,12 @@ def as_maskstring(masklist):
     return ';'.join(['%s~%s' % (x[0], x[1]) for x in masklist])
 
 
-def no_switching(engine, nchan, edge, masklist):
+def no_switching(engine, nchan, edge, num_pieces, masklist):
     return 'cspline', 0
 
 
-def do_switching(engine, nchan, edge, masklist):
-    return engine(nchan, edge, masklist)
+def do_switching(engine, nchan, edge, num_pieces, masklist):
+    return engine(nchan, edge, num_pieces, masklist)
 
 
 class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
@@ -438,6 +438,7 @@ class CubicSplineFitParamConfig(BaselineFitParamConfig):
             self.heuristics_engine,
             nchan,
             edge,
+            num_pieces,
             masklist
         )
         self.paramdict[BLP.FUNC] = fitfunc
