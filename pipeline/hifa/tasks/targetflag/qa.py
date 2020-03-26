@@ -16,9 +16,6 @@ class TargetflagQAHandler(pqa.QAPlugin):
     child_cls = None
 
     def handle(self, context, result):
-        vis = result.inputs['vis']
-        ms = context.observing_run.get_ms(vis)
-
         # Run correctedampflag QA on correctedampflag results.
         cafresult = result.cafresult
         pqa.qa_registry.do_qa(context, cafresult)

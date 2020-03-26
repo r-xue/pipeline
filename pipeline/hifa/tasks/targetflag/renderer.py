@@ -5,7 +5,6 @@ Created on 18 Mar 2020
 """
 import collections
 
-
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 from pipeline.hif.tasks.correctedampflag.renderer import T2_4MDetailsCorrectedampflagRenderer
@@ -26,7 +25,6 @@ class T2_4MDetailsTargetflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         super(T2_4MDetailsTargetflagRenderer, self).__init__(uri=uri, description=description,
                                                              always_rerender=always_rerender)
 
-
         # Attach correctedampflag renderer.
         self.cafrenderer = T2_4MDetailsCorrectedampflagRenderer(uri=uri, description=description,
                                                                 always_rerender=always_rerender)
@@ -38,6 +36,6 @@ class T2_4MDetailsTargetflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         #
         cafresults = basetask.ResultsList()
         for result in results:
-               cafresults.append(result.cafresult)
+            cafresults.append(result.cafresult)
         cafresults.stage_number = results.stage_number
         self.cafrenderer.update_mako_context(mako_context, pipeline_context, cafresults)
