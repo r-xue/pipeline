@@ -59,6 +59,14 @@ def as_maskstring(masklist):
     return ';'.join(['%s~%s' % (x[0], x[1]) for x in masklist])
 
 
+def no_switching(engine, nchan, edge, masklist):
+    return 'cspline', 0
+
+
+def do_switching(engine, nchan, edge, masklist):
+    return engine(nchan, edge, masklist)
+
+
 class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
     """
     Generate/update BLParam file according to the input parameters.
@@ -68,9 +76,14 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
     MaxPolynomialOrder = 'none'  # 'none', 0, 1, 2,...
     PolynomialOrder = 'automatic'  # 'automatic', 0, 1, 2, ...
 
-    def __init__(self):
+    def __init__(self, switchpoly=True):
         super(BaselineFitParamConfig, self).__init__()
         self.paramdict = {}
+        self.heuristics_engine = fitorder.SwitchPolynomialWhenLargeMaskAtEdgeHeuristic()
+        if switchpoly == True:
+            self.switching_heuristic = do_switching
+        else:
+            self.switching_heuristic = no_switching
 
     # readonly attributes
     @property
@@ -322,11 +335,11 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
     def __mask_to_masklist(self, mask):
         """
-        Converts mask array to masklist 
+        Converts mask array to masklist
         Resulting masklist is a list of channel ranges whose values are 1
 
         Argument
-            mask : an array of channel mask in values 0 or 1 
+            mask : an array of channel mask in values 0 or 1
         """
         # get indices of clump boundaries
         idx = (mask[1:] ^ mask[:-1]).nonzero()
@@ -360,8 +373,8 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
 class CubicSplineFitParamConfig(BaselineFitParamConfig):
 
-    def __init__(self):
-        super(CubicSplineFitParamConfig, self).__init__()
+    def __init__(self, switchpoly=True):
+        super(CubicSplineFitParamConfig, self).__init__(switchpoly)
 
         # constant stuff
         #self.paramdict[BLP.FUNC] = 'cspline'
@@ -379,56 +392,55 @@ class CubicSplineFitParamConfig(BaselineFitParamConfig):
         self.paramdict[BLP.MASK] = masklist
         self.paramdict[BLP.NPIECE] = num_pieces
 
-        # fit function heuristics
-        # nchan: total number of channels
-        # nchan_segment: number of channels in one segment
-        # edge: number of channels from the edges to be excluded from the fit [C0, C1]
-        # mask: mask array (0->rejected, 1->adopted)
-        # masklist: list of fit ranges (included in the fit) [[C0, C1], [C2, C3], ...]
-        # nchan_edge: max number of consecutive masked channels from edges
-        # if nchan_edge >= nchan/2:
-        #     fitfunc='poly'
-        #     order=1
-        # elif nchan_edge >= nchan_segment:
-        #     fitfunc='poly'
-        #     order=2
+        # # fit function heuristics
+        # # nchan: total number of channels
+        # # nchan_segment: number of channels in one segment
+        # # edge: number of channels from the edges to be excluded from the fit [C0, C1]
+        # # mask: mask array (0->rejected, 1->adopted)
+        # # masklist: list of fit ranges (included in the fit) [[C0, C1], [C2, C3], ...]
+        # # nchan_edge: max number of consecutive masked channels from edges
+        # # if nchan_edge >= nchan/2:
+        # #     fitfunc='poly'
+        # #     order=1
+        # # elif nchan_edge >= nchan_segment:
+        # #     fitfunc='poly'
+        # #     order=2
+        # # else:
+        # #     fitfunc='cspline'
+        # if len(masklist) == 0:
+        #     # special case: all channels are excluded from the fit
+        #     nchan_edge0 = nchan
+        #     nchan_edge1 = nchan
         # else:
-        #     fitfunc='cspline'
-        if len(masklist) == 0:
-            # special case: all channels are excluded from the fit
-            nchan_edge0 = nchan
-            nchan_edge1 = nchan
-        else:
-            # number of masked edge channels: Left side
-            edge_mask0 = list(map(min, masklist))
-            assert edge[0] >= 0
-            nchan_edge0 = max(min(edge_mask0), edge[0]) if len(edge_mask0) > 0 else edge[0]
-            # number of masked edge channels: Right side
-            edge_mask1 = list(map(max, masklist))
-            assert edge[1] >= 0
-            nchan_edge1 = max(nchan - 1 - max(edge_mask1), edge[1]) if len(edge_mask1) > 0 else edge[1]
-            # merge result
-        nchan_edge = max(nchan_edge0, nchan_edge1)
-        nchan_segment = int(round(float(nchan) / num_pieces))
-        nchan_half = nchan // 2 + nchan % 2
-        nchan_quarter = nchan // 4 + (3 + nchan % 4) // 4
-        if nchan_edge >= nchan_half:
-            fitfunc = 'poly'
-            order = 1
-        elif nchan_edge >= nchan_quarter:
-            fitfunc = 'poly'
-            order = 2
-        else:
-            fitfunc = 'cspline'
-            order = 0  # not used
+        #     # number of masked edge channels: Left side
+        #     edge_mask0 = list(map(min, masklist))
+        #     assert edge[0] >= 0
+        #     nchan_edge0 = max(min(edge_mask0), edge[0]) if len(edge_mask0) > 0 else edge[0]
+        #     # number of masked edge channels: Right side
+        #     edge_mask1 = list(map(max, masklist))
+        #     assert edge[1] >= 0
+        #     nchan_edge1 = max(nchan - 1 - max(edge_mask1), edge[1]) if len(edge_mask1) > 0 else edge[1]
+        #     # merge result
+        # nchan_edge = max(nchan_edge0, nchan_edge1)
+        # nchan_segment = int(round(float(nchan) / num_pieces))
+        # nchan_half = nchan // 2 + nchan % 2
+        # nchan_quarter = nchan // 4 + (3 + nchan % 4) // 4
+        # if nchan_edge >= nchan_half:
+        #     fitfunc = 'poly'
+        #     order = 1
+        # elif nchan_edge >= nchan_quarter:
+        #     fitfunc = 'poly'
+        #     order = 2
+        # else:
+        #     fitfunc = 'cspline'
+        #     order = 0  # not used
+        fitfunc, order = self.switching_heuristic(
+            self.heuristics_engine,
+            nchan,
+            edge,
+            masklist
+        )
         self.paramdict[BLP.FUNC] = fitfunc
         self.paramdict[BLP.ORDER] = order
-
-        LOG.info('DEBUGGING INFORMATION:')
-        LOG.info('inclusive masklist={}'.format(masklist))
-        LOG.info('edge = {}'.format(list(edge)))
-        LOG.info('nchan_edge = {} (left {} right {})'.format(nchan_edge, nchan_edge0, nchan_edge1))
-        LOG.info('nchan = {}, num_pieces = {} => nchan_segment = {}, nchan_half = {}'.format(nchan, num_pieces, nchan_segment, nchan_half))
-        LOG.info('---> RESULT: fitfunc "{}" order "{}"'.format(fitfunc, order))
 
         return self.paramdict
