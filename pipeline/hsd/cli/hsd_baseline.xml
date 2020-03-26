@@ -3,20 +3,20 @@
 <task category="pipeline" name="hsd_baseline" type="function">
 <shortdescription>Detect and validate spectral lines, subtract baseline by masking detected lines</shortdescription>
 <description>The hsd_baseline task subtracts baseline from calibrated spectra.
-             By default, the task tries to find spectral line feature using 
-             line detection and validation algorithms. Then, the task puts a 
-             mask on detected lines and perform baseline subtraction. 
-             The user is able to turn off automatic line masking by setting 
+             By default, the task tries to find spectral line feature using
+             line detection and validation algorithms. Then, the task puts a
+             mask on detected lines and perform baseline subtraction.
+             The user is able to turn off automatic line masking by setting
              linewindow parameter, which specifies pre-defined line window.
 
              Fitting order is automatically determined by default. It can be
-             disabled by specifying fitorder as non-negative value. In this 
+             disabled by specifying fitorder as non-negative value. In this
              case, the value specified by fitorder will be used.
 
              ***WARNING***
-             Currently, hsd_baseline overwrites the result obtained by the 
-             previous run. Due to this behavior, users need to be careful 
-             about an order of the task execution when they run hsd_baseline 
+             Currently, hsd_baseline overwrites the result obtained by the
+             previous run. Due to this behavior, users need to be careful
+             about an order of the task execution when they run hsd_baseline
              multiple times with different data selection. Suppose there are
              two spectral windows (0 and 1) and hsd_baseline is executed
              separately for each spw as below,
@@ -29,7 +29,7 @@
              Since the second run of hsd_baseline overwrites the result for
              spw 0 with the data before baseline subtraction, this will not
              produce correct result for spw 0. Proper sequence for this use
-             case is to process each spw to the imaging stage separately, 
+             case is to process each spw to the imaging stage separately,
              which looks like as follows:
 
              hsd_baseline(pipelinemode=&quot;interactive&quot;, spw=&quot;0&quot;)
@@ -47,7 +47,7 @@
 <input>
     <param name="fitfunc" type="string">
         <shortdescription>Fitting function for baseline subtraction</shortdescription>
-        <description>fitting function for baseline subtraction. You can only 
+        <description>fitting function for baseline subtraction. You can only
                      choose cubic spline ('spline' or 'cspline')
         </description>
 	<value>cspline</value>
@@ -64,21 +64,36 @@
     <param name="fitorder" type="int">
         <shortdescription>Fitting order for baseline subtraction</shortdescription>
         <description>Fitting order for polynomial. For cubic spline, it is used
-                     to determine how much the spectrum is segmented into. 
+                     to determine how much the spectrum is segmented into.
                      Default (-1) is to determine the order automatically.
         </description>
 	<value>-1</value>
+    </param>
+
+    <param name="switchpoly" type="bool">
+        <shortdescription>Switch to polynomial fit when large mask exists at edge</shortdescription>
+        <description>If True, switch to 1st or 2nd order polynomial fit when
+                     large mask exists at edge regardless of whatever fitfunc
+                     or fitorder are specified. Condition for switching is as
+                     follows:
+                         if nmask > nchan/2      => 1st order polynomial
+                         else if nmask > nchan/4 => 2nd order polynomial
+                         else                    => use fitfunc and fitorder
+                     where nmask is a number of channels for mask at edge while
+                     nchan is a number of channels of entire spectral window.
+        </description>
+	<value>True</value>
     </param>
 
     <param name="linewindow" type="any">
         <shortdescription>Pre-defined line window</shortdescription>
         <description>Pre-defined line window. If this is set, specified line
                      windows are used as a line mask for baseline subtraction
-                      instead to determine masks based on line detection and 
+                      instead to determine masks based on line detection and
                       validation stage. Several types of format are acceptable.
                       One is channel-based window,
                           [min_chan, max_chan]
-                      where min_chan and max_chan should be an integer. For 
+                      where min_chan and max_chan should be an integer. For
                       multiple  windows, nested list is also acceptable,
                           [[min_chan0, max_chan0], [min_chan1, max_chan1], ...]
                       Another way is frequency-based window,
@@ -86,18 +101,18 @@
                       where min_freq and max_freq should be either a float or
                       a string. If float value is given, it is interpreted as
                       a frequency in Hz. String should be a quantity consisting
-                      of &quot;value&quot; and &quot;unit&quot;, 
+                      of &quot;value&quot; and &quot;unit&quot;,
                       e.g., '100GHz'. Multiple windows are also supported.
                           [[min_freq0, max_freq0], [min_freq1, max_freq1], ...]
                       Note that the specified frequencies are assumed to be
                       the value in LSRK frame. Note also that there is a
-                      limitation when multiple MSes are processed. 
-                      If native frequency frame of the data is not LSRK 
-                      (e.g. TOPO), frequencies need to be converted to that 
+                      limitation when multiple MSes are processed.
+                      If native frequency frame of the data is not LSRK
+                      (e.g. TOPO), frequencies need to be converted to that
                       frame. As a result, corresponding channel range may vary
-                      between MSes. However, current implementation is not 
-                      able to handle such case. Frequencies are converted to 
-                      desired frame using representative MS (time, position, 
+                      between MSes. However, current implementation is not
+                      able to handle such case. Frequencies are converted to
+                      desired frame using representative MS (time, position,
                       direction).
 
                       In the above cases, specified line windows are applied
@@ -108,15 +123,15 @@
                       line windows to spws 17 and 19. Other spws, if available,
                       will have an empty line window.
                           {17: [[100, 200], [1200, 1400]], 19: ['112115MHz', '112116MHz']}
-                      Furthermore, linewindow accepts MS selection string. 
+                      Furthermore, linewindow accepts MS selection string.
                       The following string gives [[100,200],[1200,1400]] for
                       spw 17 while [1000,1500] for spw 21.
                           &quot;17:100~200;1200~1400,21:1000~1500&quot;
-                      The string also accepts frequency with units. Note, 
+                      The string also accepts frequency with units. Note,
                       however, that frequency reference frame in this case is
                       not fixed to LSRK. Instead, the frame will be taken from
                       the MS (typically TOPO for ALMA).
-                      Thus, the following two frequency-based line windows 
+                      Thus, the following two frequency-based line windows
                       result different channel selections.
                           {19: ['112115MHz', '112116MHz']} # frequency frame is LSRK
                           &quot;19:11215MHz~11216MHz&quot; # frequency frame is taken from the data
@@ -131,15 +146,15 @@
 
     <param subparam="true" name="linewindowmode" type="string">
         <shortdescription>Merge or replace given manual line window with line detection/validation result</shortdescription>
-        <description>Merge or replace given manual line window with line 
-                     detection/validation result. If 'replace' is given, line 
-                     detection and validation will not be performed. 
-                     On the other hand, when 'merge' is specified, line 
-                     detection/validation will be performed and manually 
+        <description>Merge or replace given manual line window with line
+                     detection/validation result. If 'replace' is given, line
+                     detection and validation will not be performed.
+                     On the other hand, when 'merge' is specified, line
+                     detection/validation will be performed and manually
                      specified line windows are added to the result.
-                     Note that this has no effect when linewindow for target 
-                     spw is empty. In that case, line detection/validation 
-                     will be performed regardless of the value of 
+                     Note that this has no effect when linewindow for target
+                     spw is empty. In that case, line detection/validation
+                     will be performed regardless of the value of
                      linewindowmode.
         </description>
         <value>replace</value>
@@ -152,7 +167,7 @@
     <param name="edge" type="intVec">
         <shortdescription>Edge channels to be dropped</shortdescription>
         <description>Number of edge channels to be dropped from baseline
-                     subtraction. The value must be a list with length of 2, 
+                     subtraction. The value must be a list with length of 2,
                      whose values specify left and right edge channels,
                      respectively.
 
@@ -172,8 +187,8 @@
 	<shortdescription>Algorithm for line validation clustering algorithm</shortdescription>
         <description>Selection of the algorithm used in the clustering
                      analysis to check the validity of detected line features.
-                    'kmean' algorithm and hierarchical clustering algorithm 
-                    'hierarchy', and their combination ('both') are so far 
+                    'kmean' algorithm and hierarchical clustering algorithm
+                    'hierarchy', and their combination ('both') are so far
                     implemented.
         </description>
 	<value>hierarchy</value>
@@ -196,10 +211,10 @@
 	<shortdescription>The pipeline operating mode</shortdescription>
         <description>The pipeline operating mode. In 'automatic' mode the
                      pipeline determines the values of all context defined
-                     pipeline inputs  automatically.  In 'interactive' mode 
-                     the user can set the pipeline context defined parameters 
-                     manually.  In 'getinputs' mode the user can check the 
-                     settings of all pipeline parameters without running the 
+                     pipeline inputs  automatically.  In 'interactive' mode
+                     the user can set the pipeline context defined parameters
+                     manually.  In 'getinputs' mode the user can check the
+                     settings of all pipeline parameters without running the
                      task.
         </description>
 	<value>automatic</value>
@@ -212,8 +227,8 @@
 
     <param subparam="true" name="infiles" type="stringVec">
         <shortdescription>List of input files to be calibrated (default all)</shortdescription>
-        <description>List of data files. These must be a name of 
-                     MeasurementSets that are registered to context via 
+        <description>List of data files. These must be a name of
+                     MeasurementSets that are registered to context via
                      hsd_importdata task.
 
                      example: vis=['X227.ms', 'X228.ms']
@@ -265,7 +280,7 @@
 
     <param subparam="true" name="dryrun" type="bool">
 	<shortdescription>Run the task (False) or display task command (True)</shortdescription>
-        <description>Run the commands (True) or generate the commands to be 
+        <description>Run the commands (True) or generate the commands to be
                      run but do not execute (False).
         </description>
 	<value>False</value>
