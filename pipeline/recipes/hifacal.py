@@ -30,6 +30,7 @@ from hifa_antpos_cli import hifa_antpos_cli as hifa_antpos
 from hifa_wvrgcalflag_cli import hifa_wvrgcalflag_cli as hifa_wvrgcalflag
 from hif_lowgainflag_cli import hif_lowgainflag_cli as hif_lowgainflag
 from hif_setmodels_cli import hif_setmodels_cli as hif_setmodels
+from hifa_bandpass_cli import hifa_bandpass_cli as hifa_bandpass
 from hifa_bandpassflag_cli import hifa_bandpassflag_cli as hifa_bandpassflag
 from hifa_spwphaseup_cli import hifa_spwphaseup_cli as hifa_spwphaseup
 from hifa_gfluxscaleflag_cli import hifa_gfluxscaleflag_cli as hifa_gfluxscaleflag
@@ -100,8 +101,11 @@ def hifacal(vislist, importonly=True, dbservice=False, pipelinemode='automatic',
 
         # Derive and temporarily apply a preliminary bandpass calibration,
         # and flag outliers in corrected - model amplitudes for bandpass
-        # calibrator; compute final bandpass calibration
+        # calibrator.
         hifa_bandpassflag(pipelinemode=pipelinemode)
+
+        # Compute the bandpass calibration.
+        hifa_bandpass(pipelinemode=pipelinemode)
 
         # Compute phase calibration spw map and per spw phase offsets.
         hifa_spwphaseup(pipelinemode=pipelinemode)
