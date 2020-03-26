@@ -83,6 +83,7 @@ class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
     vis = vdp.VisDependentProperty(default='', null_input=['', None, [], ['']])
     plan = vdp.VisDependentProperty(default=None)
     fit_order = vdp.VisDependentProperty(default='automatic')
+    switchpoly = vdp.VisDependentProperty(default=True)
     edge = vdp.VisDependentProperty(default=(0, 0))
     deviationmask = vdp.VisDependentProperty(default={})
     bloutput = vdp.VisDependentProperty(default=None)
