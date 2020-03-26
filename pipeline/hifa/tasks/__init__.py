@@ -10,12 +10,13 @@ from .fluxscale import GcorFluxscale, SessionGcorFluxscale
 from .gaincal import TimeGaincal
 from .gaincalsnr import GaincalSnr
 from .gfluxscaleflag import Gfluxscaleflag
+from .imageprecheck import ImagePreCheck
 from .importdata import ALMAImportData
+from .polcalflag import Polcalflag
 from .restoredata import ALMARestoreData
 from .spwphaseup import SpwPhaseup
 from .tsysflag import Tsysflag as ALMATsysflag
 from .wvrgcal import Wvrgcal
 from .wvrgcalflag import Wvrgcalflag
-from .imageprecheck import ImagePreCheck
 # required to load ALMA-specific QA
 from . import applycal
