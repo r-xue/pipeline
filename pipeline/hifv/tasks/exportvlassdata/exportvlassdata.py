@@ -13,7 +13,9 @@ from pipeline import environment
 from pipeline.h.tasks.common import manifest
 from pipeline.h.tasks.exportdata import exportdata
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casatools
 from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import utils
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -46,7 +48,6 @@ class ExportvlassdataInputs(exportdata.ExportDataInputs):
 
 @task_registry.set_equivalent_casa_task('hifv_exportvlassdata')
 class Exportvlassdata(basetask.StandardTaskTemplate):
-
     Inputs = ExportvlassdataInputs
 
     NameBuilder = exportdata.PipelineProductNameBuiler
@@ -130,6 +131,22 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             self._executor.execute(task)
             LOG.info('Wrote {ff}'.format(ff=fitsfile))
             fits_list.append(fitsfile)
+
+            # Apply position corrections to VLASS-QL product images (PIPE-587)
+            if img_mode == 'VLASS-QL':
+                # Mean antenna geographic coordinates
+                # TODO: use antanna_array or observatory coordinates?
+                ms = self.inputs.context.observing_run.measurement_sets[0]
+                obs_long = ms.antenna_array.longitude
+                obs_lat = ms.antenna_array.latitude
+                # Mean observing date
+                start_time = self.inputs.context.observing_run.start_datetime
+                end_time = self.inputs.context.observing_run.end_datetime
+                mid_time = start_time + (end_time - start_time) / 2
+                mid_time = casatools.measures.epoch('utc', mid_time.isoformat())
+                # Correction
+                utils.positioncorrection.do_wide_field_pos_cor(fitsfile, date_time=mid_time, obs_long=obs_long,
+                                                           obs_lat=obs_lat)
 
         # Export the pipeline manifest file
         #    TBD Remove support for auxiliary data products to the individual pipelines
@@ -430,7 +447,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
         ps = context.project_structure
         casascript_file = os.path.join(context.report_dir, casascript_name)
-        out_casascript_file = self.NameBuilder.casa_script(casascript_name, 
+        out_casascript_file = self.NameBuilder.casa_script(casascript_name,
                                                            project_structure=ps,
                                                            ousstatus_entity_id=oussid,
                                                            output_dir=products_dir)
