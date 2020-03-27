@@ -42,6 +42,12 @@ class Targetflag(basetask.StandardTaskTemplate):
         # Initialize results.
         result = TargetflagResults()
 
+        # Check for any polarization intents
+        eb_intents = inputs.context.observing_run.get_ms(inputs.vis).intents
+        if 'TARGET' not in eb_intents:
+            LOG.info('No target intents found.')
+            return result
+
         # Create back-up of flags.
         LOG.info('Creating back-up of "pre-targetflag" flagging state')
         flag_backup_name_pretgtf = 'before_tgtflag'

@@ -36,6 +36,7 @@ class T2_4MDetailsTargetflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         #
         cafresults = basetask.ResultsList()
         for result in results:
-            cafresults.append(result.cafresult)
+            if result.cafresult:
+                cafresults.append(result.cafresult)
         cafresults.stage_number = results.stage_number
         self.cafrenderer.update_mako_context(mako_context, pipeline_context, cafresults)

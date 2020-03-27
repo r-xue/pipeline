@@ -18,11 +18,12 @@ class TargetflagQAHandler(pqa.QAPlugin):
     def handle(self, context, result):
         # Run correctedampflag QA on correctedampflag results.
         cafresult = result.cafresult
-        pqa.qa_registry.do_qa(context, cafresult)
+        if cafresult:
+            pqa.qa_registry.do_qa(context, cafresult)
 
-        # Gather scores, store in result.
-        scores = cafresult.qa.pool
-        result.qa.pool[:] = scores
+            # Gather scores, store in result.
+            scores = cafresult.qa.pool
+            result.qa.pool[:] = scores
 
 
 class TargetflagListQAHandler(pqa.QAPlugin):
