@@ -123,11 +123,11 @@ class FindCont(basetask.StandardTaskTemplate):
                         mosweight = image_heuristics.mosweight(target['intent'], target['field'])
 
                     # Usually the inputs value takes precedence over the one from the target list.
-                    # For PIPE-557 it was necessary to fill target['vis'] hif_makeimlist to filter
-                    # out fully flagged selections. One would have to re-determine all dependendent
-                    # parameters such as "antenna", etc. Most likely the use case of defining an explicit
-                    # vis list for hif_findcont will happen very rarely if at all. Thus changing
-                    # the paradigm here.
+                    # For PIPE-557 it was necessary to fill target['vis'] in hif_makeimlist to filter
+                    # out fully flagged selections. Using the default vislist one would have to
+                    # re-determine all dependendent parameters such as "antenna", etc. here. Most
+                    # likely the use case of defining an explicit vislist for hif_findcont will
+                    # happen very rarely if at all. Thus changing the paradigm here for now.
                     if target['vis']:
                         vislist = target['vis']
                         scanidlist, _ = image_heuristics.get_scanidlist(target['vis'], target['field'],
