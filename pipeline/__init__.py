@@ -1,3 +1,4 @@
+import atexit
 import http.server
 import os
 import pkg_resources
@@ -64,6 +65,8 @@ def show_weblog(context, handler_class=http.server.SimpleHTTPRequestHandler,
 
     index_html = os.path.join(context.report_dir, 't1-1.html')
     rel_index = os.path.relpath(index_html, context.output_dir)
+
+    atexit.register(stop_weblog)
 
     url = 'http://{}:{}/{}'.format(bind, port, rel_index)
     LOG.info('Opening {}'.format(url))
