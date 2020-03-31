@@ -14,16 +14,18 @@ generated). The philosophy is that only outlier data points that have
 remained outliers after calibration will be flagged. Note that the phase of
 the data is not assessed.
 
-In further detail, the workflow is as follows: an a priori calibration is
-applied using pre-existing caltables in the calibration state, a
-preliminary bandpass solution and amplitude gaincal solution is solved and
-applied, the flagging heuristics are run and any outliers are flagged, a
-final bandpass solution is solved (if necessary) and the name &quot;final&quot; is
-appended to this caltable. Plots are generated at two points in this
-workflow: after bandpass calibration but before flagging heuristics are
-run, and after flagging heuristics have been run and applied. If no points
-were flagged, the &quot;after&quot; plots are not generated or displayed. The score
-for this stage is a simple combination (multiplication) of the standard
+In further detail, the workflow is as follows: a snapshot of the calibration
+and flagging state is preserved at the start, a preliminary bandpass solution
+and amplitude gaincal solution is solved and applied, the flagging heuristics
+are run and any outliers are marked for flagging, the calibration and flagging
+state are restored from the snapshot. If any outliers were found, then these
+are flagged, and a final bandpass solution is solved; otherwise, the final
+bandpass table is copied over from the preliminary one. The final bandpass
+solution has 'final' appended to the caltable filename. Plots are generated at
+two points in this workflow: after bandpass calibration but before flagging
+heuristics are run, and after flagging heuristics have been run and applied. If
+no points were flagged, the 'after' plots are not generated or displayed. The
+score for this stage is a simple combination (multiplication) of the standard
 data flagging score (depending on the fraction of data flagged) and the
 score for the bandpass solution.
 

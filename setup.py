@@ -9,7 +9,7 @@ import setuptools
 from setuptools.command.build_py import build_py
 
 ENCODING = 'utf-8'  # locale.getpreferredencoding()
-PIPELINE_PACKAGES = ['h', 'hco', 'hif', 'hifa', 'hifv', 'hsd', 'hsdn']
+PIPELINE_PACKAGES = ['h', 'hif', 'hifa', 'hifv', 'hsd', 'hsdn']
 
 
 def flatten(items):
@@ -290,7 +290,7 @@ def _get_git_version():
     elif git_branch is None:
         version = commit_hash
     else:
-        version = "{}-{}".format(git_branch, commit_hash)
+        version = "{}-{}".format(commit_hash, git_branch)
 
     return version
 
