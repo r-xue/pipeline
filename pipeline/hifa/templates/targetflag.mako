@@ -117,7 +117,7 @@ def plot_type(plot):
         and 2, where flagging was applied, the calibrated data after application of flags.</p>
 
                 <p>Data are plotted for all antennas and correlations, with different
-                correlations shown in different colours.</p>
+                fields shown in different colours.</p>
         </%def>
 
         <%def name="mouseover(plot)">Click to show amplitude vs time for spw ${plot.parameters['spw']}</%def>
