@@ -138,7 +138,7 @@ def create_plots(inputs, context, suffix=''):
     if basetask.DISABLE_WEBLOG:
         return [], []
 
-    calto = callibrary.CalTo(vis=inputs.vis) #, spw=inputs.spw)
+    calto = callibrary.CalTo(vis=inputs.vis)
     output_dir = context.output_dir
 
     amp_time_plots = AmpVsXChart('time', context, output_dir, calto, suffix=suffix).plot()
@@ -158,7 +158,7 @@ class AmpVsXChart(applycal_displays.SpwSummaryChart):
             'avgscan': False,
             'avgbaseline': False,
             'avgchannel': '9000',
-            'coloraxis': 'corr',
+            'coloraxis': 'field',
             'overwrite': True,
             'plotrange': [0, 0, 0, 0]
         }
