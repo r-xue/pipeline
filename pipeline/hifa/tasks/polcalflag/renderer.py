@@ -9,6 +9,7 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 from pipeline.hif.tasks.correctedampflag.renderer import T2_4MDetailsCorrectedampflagRenderer
 from pipeline.infrastructure import basetask
+from pipeline.hifa.tasks.gfluxscaleflag.renderer import get_plot_dicts
 
 LOG = logging.get_logger(__name__)
 
@@ -40,3 +41,13 @@ class T2_4MDetailsPolcalflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 cafresults.append(result.cafresult)
         cafresults.stage_number = results.stage_number
         self.cafrenderer.update_mako_context(mako_context, pipeline_context, cafresults)
+
+        #
+        # Get diagnostic plots.
+        #
+        time_plots = get_plot_dicts(pipeline_context, results, 'time')
+
+        # Update the mako context.
+        mako_context.update({
+            'time_plots': time_plots,
+        })

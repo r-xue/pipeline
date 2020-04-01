@@ -1,9 +1,12 @@
 import os
+import functools
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
+import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tasks, task_registry
+from pipeline.h.tasks.common.displays import applycal as applycal_displays
 from pipeline.h.tasks.flagging.flagdatasetter import FlagdataSetter
 from pipeline.hif.tasks import applycal
 from pipeline.hif.tasks import correctedampflag
@@ -15,6 +18,7 @@ class PolcalflagResults(basetask.Results):
     def __init__(self):
         super(PolcalflagResults, self).__init__()
         self.cafresult = None
+        self.plots = dict()
 
     def merge_with_context(self, context):
         """
@@ -42,6 +46,9 @@ class Polcalflag(basetask.StandardTaskTemplate):
 
         # Initialize results.
         result = PolcalflagResults()
+
+        # Create a shortcut to the plotting function that pre-supplies the inputs and context
+        plot_fn = functools.partial(create_plots, inputs, inputs.context)
 
         # Check for any polarization intents
         eb_intents = inputs.context.observing_run.get_ms(inputs.vis).intents
@@ -94,6 +101,10 @@ class Polcalflag(basetask.StandardTaskTemplate):
 
         # If new outliers were identified...
         if cafflags:
+            # Make "after calibration, before flagging" plots for the weblog
+            LOG.info('Creating "after calibration, before flagging" plots')
+            result.plots['before'] = plot_fn(suffix='before')
+
             # Re-apply the newly found flags from correctedampflag.
             LOG.info('Re-applying flags from correctedampflag.')
             fsinputs = FlagdataSetter.Inputs(
@@ -103,7 +114,52 @@ class Polcalflag(basetask.StandardTaskTemplate):
             fstask.flags_to_set(cafflags)
             fsresult = self._executor.execute(fstask)
 
+            # Make "after calibration, after flagging" plots for the weblog
+            LOG.info('Creating "after calibration, after flagging" plots')
+            result.plots['after'] = plot_fn(suffix='after')
+
         return result
 
     def analyse(self, results):
         return results
+
+def create_plots(inputs, context, suffix=''):
+    """
+    Return amplitude vs time plots for the given data column.
+
+    :param inputs: pipeline inputs
+    :param context: pipeline context
+    :param suffix: optional component to add to the plot filenames
+    :return: dict of (x axis type => str, [plots,...])
+    """
+    # Exit early if weblog generation has been disabled
+    if basetask.DISABLE_WEBLOG:
+        return [], []
+
+    calto = callibrary.CalTo(vis=inputs.vis)
+    output_dir = context.output_dir
+
+    amp_time_plots = AmpVsXChart('time', context, output_dir, calto, suffix=suffix).plot()
+
+    return {'time': amp_time_plots}
+
+class AmpVsXChart(applycal_displays.SpwSummaryChart):
+    """
+    Plotting class that creates an amplitude vs X plot for each spw, where X
+    is given as a constructor argument.
+    """
+    def __init__(self, xaxis, context, output_dir, calto, **overrides):
+        plot_args = {
+            'ydatacolumn': 'corrected',
+            'avgtime': '',
+            'avgscan': False,
+            'avgbaseline': False,
+            'avgchannel': '9000',
+            'coloraxis': 'corr',
+            'overwrite': True,
+            'plotrange': [0, 0, 0, 0]
+        }
+        plot_args.update(**overrides)
+
+        super(AmpVsXChart, self).__init__(context, output_dir, calto, xaxis=xaxis, yaxis='amp', intent='POLARIZATION,POLANGLE,POLLEAKAGE',
+                                          **plot_args)
