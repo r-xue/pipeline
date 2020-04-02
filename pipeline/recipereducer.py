@@ -38,7 +38,6 @@ Example #5: process uid123.tar.gz with a log level of TRACE
 """
 import ast
 import collections
-import gc
 import os
 import traceback
 import xml.etree.ElementTree as ElementTree
@@ -48,19 +47,17 @@ import pkg_resources
 import pipeline.infrastructure.launcher as launcher
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure import exceptions
-from pipeline.infrastructure import task_registry
-from pipeline.infrastructure import utils
+from pipeline.infrastructure import exceptions, task_registry, utils
 
 LOG = logging.get_logger(__name__)
 
-recipes_dir = pkg_resources.resource_filename(__name__, 'recipes')
+RECIPES_DIR = pkg_resources.resource_filename(__name__, 'recipes')
 
 TaskArgs = collections.namedtuple('TaskArgs', 'vis infiles session')
 
 
 def _create_context(loglevel, plotlevel, name):
-    return launcher.Pipeline(loglevel=loglevel, plotlevel=plotlevel, 
+    return launcher.Pipeline(loglevel=loglevel, plotlevel=plotlevel,
                              name=name).context
 
 
@@ -69,22 +66,39 @@ def _get_context_name(procedure):
     return 'pipeline-%s' % root
 
 
-def _get_tasks(context, args, procedure):
+def _get_processing_procedure(procedure: str) -> ElementTree:
     # find the procedure file on disk, then fall back to the standard recipes
     if os.path.exists(procedure):
         procedure_file = os.path.abspath(procedure)
     else:
-        procedure_file = os.path.join(recipes_dir, procedure)
+        procedure_file = os.path.join(RECIPES_DIR, procedure)
     if os.path.exists(procedure_file):
         LOG.info('Using procedure file: %s' % procedure_file)
+    else:
+        msg = f'Procedure not found:: {procedure}'
+        LOG.error(msg)
+        raise IOError(msg)
 
-    processingprocedure = ElementTree.parse(procedure_file)
-    if not processingprocedure:
-        LOG.error('Could not parse procedure file at %s.\n'
-                  'Execution halted' % procedure_file)
+    procedure_xml = ElementTree.parse(procedure_file)
+    if not procedure_xml:
+        msg = f'Could not parse procedure file at {procedure_file}'
+        LOG.error(msg)
+        raise IOError(msg)
+
+    return procedure_xml
+
+
+def _get_procedure_title(procedure):
+    procedure_xml = _get_processing_procedure(procedure)
+    procedure_title = procedure_xml.findtext('ProcedureTitle')
+    return procedure_title
+
+
+def _get_tasks(context, args, procedure):
+    procedure_xml = _get_processing_procedure(procedure)
 
     commands_seen = []
-    for processingcommand in processingprocedure.findall('ProcessingCommand'):
+    for processingcommand in procedure_xml.findall('ProcessingCommand'):
         cli_command = processingcommand.findtext('Command')
         commands_seen.append(cli_command)
 
@@ -160,11 +174,16 @@ def reduce(vis=None, infiles=None, procedure='procedure_hifa_calimage.xml',
            session=None, exitstage=None):
     if vis is None:
         vis = []
+
     if infiles is None:
         infiles = []
+
     if context is None:
         name = name if name else _get_context_name(procedure)
         context = _create_context(loglevel, plotlevel, name)
+        procedure_title = _get_procedure_title(procedure)
+        context.set_state('ProjectStructure', 'recipe_name', procedure_title)
+
     if session is None:
         session = ['default'] * len(vis)
 
