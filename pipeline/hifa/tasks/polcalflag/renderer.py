@@ -32,6 +32,10 @@ class T2_4MDetailsPolcalflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
     def update_mako_context(self, mako_context, pipeline_context, results):
 
+        # Initialize items that are to be exported to the
+        # mako context
+        updated_refants = {}
+
         #
         # Get flagging reports, summaries
         #
@@ -47,7 +51,19 @@ class T2_4MDetailsPolcalflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         #
         time_plots = get_plot_dicts(pipeline_context, results, 'time')
 
+        #
+        # Check for updated reference antenna lists.
+        #
+        for result in results:
+            vis = result.vis
+            # If the reference antenna list was updated, retrieve new refant
+            # list.
+            if result.refants_to_remove or result.refants_to_demote:
+                ms = pipeline_context.observing_run.get_ms(name=vis)
+                updated_refants[vis] = ms.reference_antenna
+
         # Update the mako context.
         mako_context.update({
             'time_plots': time_plots,
+            'updated_refants': updated_refants
         })
