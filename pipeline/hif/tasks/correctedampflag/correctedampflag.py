@@ -827,7 +827,7 @@ class Correctedampflag(basetask.StandardTaskTemplate):
         if nscans > 1:
             if ncorrs == 2:
                 cmetric_all = np.sum(cmetric_all, axis=0, keepdims=True)
-                flag_all = np.sum(flag_all, axis=0, keepdims=True)
+                flag_all = np.sum(flag_all, axis=0, keepdims=True) // 2
                 ncorrs = 1
             elif ncorrs == 4 and set(corr_type) == {'XX', 'XY', 'YX', 'YY'}:
                 # Create sum of XX and YY polarization.
