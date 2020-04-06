@@ -114,8 +114,8 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                 image_bundle = [pbcor_image_name, rms_image_name]
                 # PIPE-592: save VLASS SE alpha and alpha error images
                 if img_mode == 'VLASS-SE-CONT':
-                    alpha_image_name = imageitem['imagename'].replace('.image.subim', '.alpha')
-                    alpha_image_error_name = imageitem['imagename'].replace('.image.subim', '.alpha.error')
+                    alpha_image_name = imageitem['imagename'].replace('.image.subim', '.alpha.subim')
+                    alpha_image_error_name = imageitem['imagename'].replace('.image.subim', '.alpha.error.subim')
                     image_bundle.extend([alpha_image_name, alpha_image_error_name])
             else:
                 pbcor_image_name = imageitem['imagename'].replace('subim', 'pbcor.subim')
