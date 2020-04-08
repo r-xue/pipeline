@@ -226,7 +226,10 @@ def detect_contamination(context, imagename):
     #output_name = str(project_name) + "." + str(fitsimage) + ".png"
     # TODO: adapt output_name for pipeline naming scheme
     stage_number = context.task_counter
-    output_name = os.path.join(context.report_dir, f'stage{stage_number}', imagename.rstrip('/') + '.contamination.png')
+    stage_dir = os.path.join(context.report_dir, f'stage{stage_number}')
+    if not os.path.exists(stage_dir):
+        os.mkdir(stage_dir)
+    output_name = os.path.join(stage_dir, imagename.rstrip('/') + '.contamination.png')
     LOG.info(output_name)
     #number_of_spw = number_of_spw + 1
     # Read FITS and its header
