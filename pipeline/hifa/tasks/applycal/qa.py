@@ -42,8 +42,10 @@ PIPE356Switches = collections.namedtuple(
 
 # PIPE356_MODES defines some preset modes for outlier detection and reporting
 PIPE356_MODES = {
-    'TEST': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=True, include_scores=True,
-                            outlier_score=0.5, flag_all=True),
+    'TEST_REAL_OUTLIERS': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=True,
+                                          include_scores=True, outlier_score=0.5, flag_all=False),
+    'TEST_FAKE_OUTLIERS': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=True,
+                                          include_scores=True, outlier_score=0.5, flag_all=True),
     'ON': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=False, include_scores=True,
                           outlier_score=0.9, flag_all=False),
     'DEBUG': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=True, include_scores=False,
