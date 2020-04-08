@@ -314,6 +314,10 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
     def source(self):
         return self.result.outcome['image'].sourcename
 
+    @property
+    def contamination_plot(self):
+        return self.imagename.rstrip('/') + '.contamination.png'
+
 
 class SDCalibrationDisplay(object, metaclass=abc.ABCMeta):
     Inputs = SingleDishDisplayInputs
