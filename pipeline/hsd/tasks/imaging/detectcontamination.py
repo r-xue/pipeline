@@ -11,7 +11,7 @@
 
 #from astropy.io import fits
 #import pandas as pd
-#import os
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 #get_ipython().run_line_magic('matplotlib', 'inline')
@@ -219,13 +219,14 @@ def read_fits(input):
 #     for fits_loop in range(len(fits_list)):
 
 
-def detect_contamination(imagename):
+def detect_contamination(context, imagename):
     LOG.info("=================")
     #input = "./" + project_name + "/" + fitsimage
     #fitsimage = os.path.basename(imagename.rstrip('/'))
     #output_name = str(project_name) + "." + str(fitsimage) + ".png"
     # TODO: adapt output_name for pipeline naming scheme
-    output_name = imagename.rstrip('/') + '.contamination.png'
+    stage_number = context.task_counter
+    output_name = os.path.join(context.report_dir, f'stage{stage_number}', imagename.rstrip('/') + '.contamination.png')
     LOG.info(output_name)
     #number_of_spw = number_of_spw + 1
     # Read FITS and its header

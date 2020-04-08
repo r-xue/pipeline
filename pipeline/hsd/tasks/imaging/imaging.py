@@ -744,7 +744,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                                              sensitivity_info=sensitivity_info)
 
                 # PIPE-251: detect contamination
-                detectcontamination.detect_contamination(imagename)
+                detectcontamination.detect_contamination(context, imagename)
 
                 results.append(imager_result)
 
