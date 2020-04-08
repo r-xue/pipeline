@@ -127,7 +127,7 @@ def make_figures(peak_sn, mask_map, rms_threshold, rms_map,
     plt.colorbar(shrink=0.9)
     plt.scatter(idx, idy, s=300, marker="o", facecolors='none', edgecolors='grey', linewidth=5)
     plt.subplot(1, 3, 2)
-    plt.title("Masl map (1: SN<" + str(peak_sn_threshold) + ")")
+    plt.title("Mask map (1: SN<" + str(peak_sn_threshold) + ")")
     plt.xlabel("RA [pixel]")
     plt.ylabel("DEC [pixel]")
     plt.imshow(mask_map, vmin=0, vmax=1, cmap="rainbow")
