@@ -20,17 +20,29 @@ def do_wide_field_pos_cor(fitsname, date_time=None, obs_long=None, obs_lat=None)
     The correction is intended for VLASS-QL images. It is performed as part of the hifv_exportvlassdata task call in
     the VLASS-QL pipeline run and can also be executed outside of the pipeline.
 
-    CRVAL1, CUNIT1, CRVAL2, CUNIT2 and HISTORY keywords are updated in the input FITS image header.
+    CRVAL1, CUNIT1, CRVAL2, CUNIT2 and HISTORY keywords are updated *in place* in the input FITS image header.
 
+    Parameters
+    ----------
     :param fitsname: name (and path) of FITS file to be processed.
     :type fitsname: string
     :param data_time: Mean date and time of observation, e.g. {'m0': {'unit': 'd', 'value': 58089.83550347222},
                                                               'refer': 'UTC', 'type': 'epoch'}
     :type data_time: dict, casatools.measure.epoch
-    :param obs_long: Geographic longitude of observatory, e.g. {'value': -107.6, unit: 'deg'}.
+    :param obs_long: Geographic longitude of observatory, e.g. {'value': -107.6, 'unit': 'deg'}.
     :type obs_long: dict, casatools.quanta.quantity
     :param obs_lat: Geographic latitude of observatory, e.g. {'value': 34.1, 'unit': 'deg'}.
     :type obs_lat: dict, casatools.quanta.quantity
+
+    Example
+    -------
+    file = "VLASS1.1.ql.T19t20.J155950+333000.10.2048.v1.I.iter1.image.pbcor.tt0.subim.fits"
+    # Mean time of observation
+    date_time = pipeline.infrastructure.casatools.measures.epoch('utc', '2017-12-02T20:03:07.500')
+    # VLA coordinates
+    obs_long = {'unit':'deg','value':-107.6}
+    obs_lat = {'unit':'deg','value':34.1}
+    do_wide_field_pos_cor(file, date_time=date_time, obs_long=obs_long, obs_lat=obs_lat)
     """
     # Obtain observatory geographic coordinates
     if (obs_long is None) or (obs_lat is None):
@@ -78,7 +90,7 @@ def do_wide_field_pos_cor(fitsname, date_time=None, obs_long=None, obs_lat=None)
             LST_rad = np.deg2rad(LST * 15)  # in radians
 
             # Hour angle (in radians)
-            ha_rad = LST_rad - np.deg2rad(234.0)  # ra_rad
+            ha_rad = LST_rad - ra_rad
             if ha_rad < 0.0:
                 ha_rad = ha_rad + 2.0 * np.pi
 
@@ -90,11 +102,11 @@ def do_wide_field_pos_cor(fitsname, date_time=None, obs_long=None, obs_lat=None)
             chi = np.arctan(np.sin(ha_rad) / (np.cos(dec_rad) * np.tan(obs_lat_rad) - np.sin(dec_rad) *
                                               np.cos(ha_rad)))
             deltatot = amp * np.tan(zd)
-            offset[0] = deltatot * np.sin(chi) / np.cos(dec_rad)
+            offset[0] = deltatot * np.sin(chi)
             offset[1] = deltatot * np.cos(chi)
 
             # Apply corrections
-            ra_rad_fixed = ra_rad - offset[0]
+            ra_rad_fixed = ra_rad - offset[0] / np.cos(dec_rad)
             dec_rad_fixed = dec_rad - offset[1]
 
             # Update FITS image header
@@ -103,17 +115,21 @@ def do_wide_field_pos_cor(fitsname, date_time=None, obs_long=None, obs_lat=None)
             header['crval2'] = np.rad2deg(dec_rad_fixed)
             header['cunit2'] = 'deg'
 
-            # Update header
-            message = 'Position correction ({:.3E}, {:.3E}) arcsec applied'.format(np.rad2deg(offset[0]) * 3600.,
-                                                                                   np.rad2deg(offset[1]) * 3600.)
-            header.add_history(message)
+            # Update history, "Position correction..." message should remain the last record in list.
+            messages = ['Uncorrected CRVAL1 = {:.12E} deg'.format(np.rad2deg(ra_rad)),
+                        'Uncorrected CRVAL2 = {:.12E} deg'.format(np.rad2deg(dec_rad)),
+                        'Position correction ({:.3E}/cos(CRVAL2), {:.3E}) arcsec applied'.format(
+                            np.rad2deg(offset[0]) * -3600.0,
+                            np.rad2deg(offset[1]) * -3600.0)]
+            for m in messages:
+                header.add_history(m)
 
             # Save changes and inform log
             hdulist.flush()
             try:
-                LOG.info("{} to {}".format(message, fitsname))
+                LOG.info("{} to {}".format(messages[-1], fitsname))
             except NameError:
-                print("{} to {}".format(message, fitsname))
+                print("{} to {}".format(messages[-1], fitsname))
 
         # Close FITS file
         hdulist.close()
