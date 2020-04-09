@@ -385,6 +385,19 @@ def summarise_scores(all_scores: List[pqa.QAScore], ms: MeasurementSet) -> Dict[
         banner_scores.extend(msgs)
     final_scores[pqa.WebLogLocation.BANNER] = banner_scores
 
+    # JH request from 8/4/20:
+    #
+    # The one thing I'd like to ask is to list the accordion messages ordered
+    # by {ms; intent; spw} so that they appear in "figure order" (currently
+    # they seem to be ordered by {ms; intent; scan}
+    #
+    for destination, unsorted_scores in final_scores.items():
+        sorted_scores = sorted(unsorted_scores, key=lambda score: (sorted(score.applies_to.vis),
+                                                                   sorted(score.applies_to.intent),
+                                                                   sorted(score.applies_to.spw),
+                                                                   sorted(score.applies_to.scan)))
+        final_scores[destination] = sorted_scores
+
     return final_scores
 
 
