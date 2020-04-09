@@ -103,8 +103,6 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                 summary = self._summary_plots(plot_list)
 
             # contamination plots
-            LOG.info(f'key = {key}')
-            LOG.info(f'summary = {summary}')
             if key == 'contaminationmap':
                 ctx.update({f'{key}_subpage': None,
                             f'{key}_plots': summary})
