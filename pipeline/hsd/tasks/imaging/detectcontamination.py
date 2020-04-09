@@ -28,6 +28,10 @@ import pipeline.infrastructure.casatools as casatools
 LOG = infrastructure.get_logger(__name__)
 
 
+# global parameters
+MATPLOTLIB_FIGURE_NUM = 6666
+std_threshold = 4.
+
 #Project = ["2019.2.00052.Sa", "2019.2.00052.S", "2019.1.00915.S", "2019.2.00037.S"]
 
 # def read_input(project_name):
@@ -118,7 +122,7 @@ def make_figures(peak_sn, mask_map, rms_threshold, rms_map,
                  idy, idx, output_name):
 
     std_value = np.nanstd(masked_average_spectrum)
-    plt.figure(figsize=(20, 5))
+    plt.figure(MATPLOTLIB_FIGURE_NUM, figsize=(20, 5))
     plt.subplot(1, 3, 1)
     plt.title("Peak SN map")
     plt.xlabel("RA [pixel]")
@@ -150,19 +154,30 @@ def make_figures(peak_sn, mask_map, rms_threshold, rms_map,
     plt.text(naxis3 * 0.1, np.nanmean(rms_map) * (-1.), "-1.0 x rms", fontsize=18, color="blue")
     plt.text(naxis3 * 0.6, -4. * std_value, "-4.0 x std", fontsize=18, color="red")
     plt.legend()
-    std_threshold = 4.
     if np.nanmin(masked_average_spectrum) <= (-1) * std_value * std_threshold:
         plt.text(naxis3 * 2. / 5., -5. * std_value, "Warning!!", fontsize=25, color="Orange")
     plt.savefig(output_name, bbox_inches="tight")
-    plt.show()
-    if np.nanmin(masked_average_spectrum) <= (-1) * std_value * std_threshold:
-        warning_sentence = '#### Warning ####'
-        warning_sentence_mark = '###############'
-        LOG.warn(warning_sentence_mark)
-        LOG.warn(warning_sentence)
-        LOG.warn(warning_sentence_mark)
+    plt.clf()
+
+    # warn if deep absorption feature is found
+    warn_deep_absorption_feature(masked_average_spectrum)
+
     return
 
+
+def warn_deep_absorption_feature(masked_average_spectrum, imageitem=None):
+    std_value = np.nanstd(masked_average_spectrum)
+    if np.nanmin(masked_average_spectrum) <= (-1) * std_value * std_threshold:
+        warning_sentence = '#### Warning ####'
+        if imageitem is not None:
+            field = imageitem.sourcename
+            spw = ','.join(map(str, np.unique(imageitem.spwlist)))
+            warning_detail = f' Field {field} Spw {spw}: ' \
+                              'Absorption feature is detected ' \
+                              'in the emission-free area. ' \
+                              'Please check calibration result in detail.'
+            warning_sentence = f'{warning_sentence} {warning_detail}'
+        LOG.warn(warning_sentence)
 
 # # 5. Function for reading fits
 
@@ -287,6 +302,9 @@ def detect_contamination(context, imageitem):
     make_figures(peak_sn, mask_map, rms_threshold, rms_map,
                  masked_average_spectrum, all_average_spectrum,
                  naxis3, peak_sn_threshold, spectrum_at_peak, idy, idx, output_name)
+
+    # warn if absorption feature is detected
+    warn_deep_absorption_feature(masked_average_spectrum, imageitem)
 
 #LOG.info("Total spw:", number_of_spw)
 
