@@ -91,12 +91,16 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
         # Per VLASS Tech Specs page 22
         for imageitem in imlist:
             if imageitem['multiterm']:
+                imagenames.extend(glob.glob(imageitem['imagename'] + '.tt0'))  # non-pbcor
+                imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.residual') + '*.tt0'))  # non-pbcor
                 imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.image.pbcor') + '*.tt0'))
                 imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.image.pbcor') + '*.tt0.rms'))
                 imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.psf') + '*.tt0'))
                 imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.image.residual.pbcor') + '*.tt0'))
                 imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.pb') + '*.tt0'))
             else:
+                imagenames.extend(glob.glob(imageitem['imagename']))  # non-pbcor
+                imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.residual')))  # non-pbcor
                 imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.image.pbcor')))
                 imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.image.pbcor.rms')))
                 imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.psf')))
