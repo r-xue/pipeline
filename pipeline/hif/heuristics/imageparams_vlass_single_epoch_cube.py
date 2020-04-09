@@ -63,9 +63,6 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristics):
     def buffer_radius(self):
         return 1000.
 
-    def field(self, intent, field, exclude_intent=None, vislist=None):
-        return None
-
     def specmode(self):
         return 'mfs'
 
@@ -227,11 +224,7 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristics):
             return 4.5
 
     def savemodel(self, iteration):
-
-        if iteration == 2:
-            return 'modelcolumn'
-        else:
-            return None
+        return None
 
     def usepointing(self):
         """clean flag to use pointing table."""
