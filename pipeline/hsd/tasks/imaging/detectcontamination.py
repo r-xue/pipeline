@@ -13,6 +13,7 @@
 #import pandas as pd
 import os
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 #get_ipython().run_line_magic('matplotlib', 'inline')
 #import time
@@ -128,6 +129,8 @@ def make_figures(peak_sn, mask_map, rms_threshold, rms_map,
     plt.xlabel("RA [pixel]")
     plt.ylabel("DEC [pixel]")
     plt.imshow(peak_sn, cmap="rainbow")
+    ylim = plt.ylim()
+    plt.ylim([ylim[1], ylim[0]])
     plt.colorbar(shrink=0.9)
     plt.scatter(idx, idy, s=300, marker="o", facecolors='none', edgecolors='grey', linewidth=5)
     plt.subplot(1, 3, 2)
@@ -135,7 +138,10 @@ def make_figures(peak_sn, mask_map, rms_threshold, rms_map,
     plt.xlabel("RA [pixel]")
     plt.ylabel("DEC [pixel]")
     plt.imshow(mask_map, vmin=0, vmax=1, cmap="rainbow")
-    plt.colorbar(shrink=0.9)
+    ylim = plt.ylim()
+    plt.ylim([ylim[1], ylim[0]])
+    formatter = matplotlib.ticker.FixedFormatter(['Masked', 'Unmasked'])
+    plt.colorbar(shrink=0.9, ticks=[0, 1], format=formatter)
     plt.subplot(1, 3, 3)
     plt.title("Masked-averaged spectrum")
     plt.xlabel("Channel")
@@ -158,9 +164,6 @@ def make_figures(peak_sn, mask_map, rms_threshold, rms_map,
         plt.text(naxis3 * 2. / 5., -5. * std_value, "Warning!!", fontsize=25, color="Orange")
     plt.savefig(output_name, bbox_inches="tight")
     plt.clf()
-
-    # warn if deep absorption feature is found
-    warn_deep_absorption_feature(masked_average_spectrum)
 
     return
 
