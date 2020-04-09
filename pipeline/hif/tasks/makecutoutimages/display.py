@@ -51,15 +51,16 @@ class CutoutimagesSummary(object):
                     self.result.rms_stats = image.statistics(robust=True)
                     self.result.RMSmedian = self.result.rms_stats.get('median')[0]
                     arr = image.getchunk()
+                    # PIPE-489 changed denominators to unmasked (non-zero) pixels
                     # get fraction of pixels <= 120 micro Jy VLASS technical goal.  ignore 0 (masked) values.
                     self.result.RMSfraction120 = (np.count_nonzero((arr != 0) & (arr <= 120e-6)) /
-                                                  float(arr.size)) * 100
+                                                  float(np.count_nonzero(arr != 0))) * 100
                     # get fraction of pixels <= 168 micro Jy VLASS SE goal.  ignore 0 (masked) values.
                     self.result.RMSfraction168 = (np.count_nonzero((arr != 0) & (arr <= 168e-6)) /
-                                                  float(arr.size)) * 100
+                                                  float(np.count_nonzero(arr != 0))) * 100
                     # get fraction of pixels <= 200 micro Jy VLASS technical requirement.  ignore 0 (masked) values.
                     self.result.RMSfraction200 = (np.count_nonzero((arr != 0) & (arr <= 200e-6)) /
-                                                  float(arr.size)) * 100
+                                                  float(np.count_nonzero(arr != 0))) * 100
             elif '.residual.pbcor.' in subimagename and not subimagename.endswith('.rms'):
                 plot_wrappers.append(sky.SkyDisplay().plot(self.context, subimagename,
                                                            reportdir=stage_dir, intent='',
