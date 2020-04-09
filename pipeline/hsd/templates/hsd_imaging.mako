@@ -334,5 +334,6 @@ It generates an image combined spectral data from whole antenna as well as image
 			</div>
         % endif
 	  %endfor
+	  <div class="clearfix"></div><!--  flush plots, break to next row -->
     %endfor
 %endif
