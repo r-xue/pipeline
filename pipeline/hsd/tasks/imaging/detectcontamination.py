@@ -219,7 +219,8 @@ def read_fits(input):
 #     for fits_loop in range(len(fits_list)):
 
 
-def detect_contamination(context, imagename):
+def detect_contamination(context, imageitem):
+    imagename = imageitem.imagename
     LOG.info("=================")
     #input = "./" + project_name + "/" + fitsimage
     #fitsimage = os.path.basename(imagename.rstrip('/'))
