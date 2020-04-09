@@ -324,7 +324,7 @@ It generates an image combined spectral data from whole antenna as well as image
                        data-fancybox="thumbs">
                        <img class="lazyload"
                             data-src="${os.path.relpath(plot.thumbnail, pcontext.report_dir)}"
-                            title="Contamination Plot for Field ${field} ${get_spw_inline_desc(plot.parameters['spw'])}s">
+                            title="Contamination Plot for Field ${field} ${get_spw_inline_desc(plot.parameters['spw'])}">
                     </a>
 					<div class="caption">
 						<h4>${get_spw_exp(plot.parameters['spw'])}</h4>
