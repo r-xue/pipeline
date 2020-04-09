@@ -48,12 +48,6 @@ $(document).ready(function() {
     pbcor_madRMS = plotter.result.pbcor_stats.get('medabsdevmed')[0] * 1.4826  # see CAS-9631
     pbcor_unit = 'Jy/beam'
 
-    residual_min = plotter.result.residual_stats.get('min')[0]
-    residual_max = plotter.result.residual_stats.get('max')[0]
-    residual_sigma = plotter.result.residual_stats.get('sigma')[0]
-    residual_madRMS = plotter.result.residual_stats.get('medabsdevmed')[0] * 1.4826  # see CAS-9631 
-    residual_unit = 'Jy/beam'
-
     pbcor_residual_min = plotter.result.pbcor_residual_stats.get('min')[0]
     pbcor_residual_max = plotter.result.pbcor_residual_stats.get('max')[0]
     pbcor_residual_sigma = plotter.result.pbcor_residual_stats.get('sigma')[0]
