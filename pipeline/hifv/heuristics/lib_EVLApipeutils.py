@@ -1328,5 +1328,6 @@ def set_add_model_column_parameters(context):
     imaging_parameters['savemodel'] = 'modelcolumn'
     imaging_parameters['calcres'] = False
     imaging_parameters['calcpsf'] = False
+    imaging_parameters['parallel'] = False
 
     return imaging_parameters
