@@ -34,6 +34,16 @@ class CutoutimagesSummary(object):
                                                            reportdir=stage_dir, intent='',
                                                            collapseFunction='mean',
                                                            vmin=-0.1, vmax=0.3))
+            elif '.image.' in subimagename and '.pbcor' not in subimagename:
+                # PIPE-491 report non-pbcor stats and don't display images
+                with casatools.ImageReader(subimagename) as image:
+                    self.result.image_stats = image.statistics(robust=True)
+
+            elif '.residual.' in subimagename and '.pbcor.' not in subimagename:
+                # PIPE-491 report non-pbcor stats and don't display images
+                with casatools.ImageReader(subimagename) as image:
+                    self.result.residual_stats = image.statistics(robust=True)
+
             elif '.image.pbcor.' in subimagename and '.rms.' not in subimagename:
                 plot_wrappers.append(sky.SkyDisplay().plot(self.context, subimagename,
                                                            reportdir=stage_dir, intent='',
@@ -66,7 +76,7 @@ class CutoutimagesSummary(object):
                                                            reportdir=stage_dir, intent='',
                                                            collapseFunction='mean'))
                 with casatools.ImageReader(subimagename) as image:
-                    self.result.residual_stats = image.statistics(robust=True)
+                    self.result.pbcor_residual_stats = image.statistics(robust=True)
 
             elif '.pb.' in subimagename:
                 plot_wrappers.append(sky.SkyDisplay().plot(self.context, subimagename,
