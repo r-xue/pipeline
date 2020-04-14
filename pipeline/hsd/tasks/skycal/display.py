@@ -4,6 +4,7 @@ import numpy
 
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.logger as logger
+import pipeline.infrastructure.casatools as casatools
 from pipeline.h.tasks.common.displays import common as common
 from pipeline.h.tasks.common.displays import bandpass as bandpass
 from ..common import display as sd_display
@@ -246,7 +247,86 @@ class SingleDishSkyCalAmpVsTimeDetailChart(SingleDishPlotmsAntSpwComposite):
         super(SingleDishSkyCalAmpVsTimeDetailChart, self).__init__(context, result, calapp, 
                                                                    xaxis='time', yaxis='amp',
                                                                    coloraxis='corr')
+       
+def plot_interval_time(context, result, gaintable):
+    # get ms domain object
+    vis = os.path.basename(result.inputs['vis'])
+    ms = context.observing_run.get_ms(vis)
 
+    plot = None
+    plots = []
+    pl.cla()
+    pl.clf()
+
+    antennas = ms.antennas
+    antenna_ids = [ant.id for ant in antennas]
+    fields = ms.fields
+    field_ids = [v.id for v in fields]
+    science_spw = ms.get_spectral_windows(science_windows_only=True)
+
+    for antenna_id in antenna_ids:
+        LOG.debug('antenna_id={0}'.format(antenna_id))
+
+        for spw in science_spw:
+            spw_id = spw.id
+            LOG.debug('spw_id={0}'.format(spw_id))
+
+            for field_id in field_ids:
+                field = fields[field_id]
+                LOG.debug('field = {0}'.format(field))
+
+               # make plots for the interval ratio (off-source/on-source) vs time;
+                with casatools.TableReader(gaintable) as tb:
+                    t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}&&FIELD_ID=={}'.format(spw_id, antenna_id, field_id), sortlist='TIME', columns='TIME, SPECTRAL_WINDOW_ID, INTERVAL')
+                    mjd = t.getcol('TIME')
+                    ms_target = ms.get_scans(scan_intent='TARGET', field=1)
+                    ms_target0 = ms_target[0]
+                    interval_unit = ms_target0.mean_interval(spw_id=spw_id)
+                    interval_unit = interval_unit.total_seconds()
+                    interval = t.getcol('INTERVAL') / interval_unit
+                    t.close()
+
+                    if len(mjd) == 0:
+                        pass
+                    else:
+                        mjd_list = mjd.tolist()
+                        mjd_list = [v/86400.0 for v in mjd_list]
+                        mjd_list = sd_display.mjd_to_plotval(mjd_list)
+                        start_time = numpy.min([numpy.min(x) for x in mjd_list if len(mjd_list) > 0])
+                        end_time = numpy.max([numpy.max(x) for x in mjd_list if len(mjd_list) > 0])
+
+                        fig = pl.figure()
+                        ax = fig.add_subplot(1,1,1)
+                        ax.xaxis.set_major_locator(sd_display.utc_locator(start_time=start_time, end_time=end_time))
+                        ax.xaxis.set_major_formatter(sd_display.utc_formatter())
+                        pl.ylabel("Interval Ratio (Off-Source / On-Source)")
+                        pl.xlabel("UTC")
+                        ax.plot(mjd_list, interval, linestyle='None', marker=".")
+                        #pl.show()
+                        antenna_name = antennas[antenna_id].name
+                        field_name = field.clean_name
+                        prefix = vis + "_" + '{}'.format(antenna_name)+ "_" + '{}'.format(field_name) + "_spw" + '{}'.format(spw_id) + "_hsd_skycal_offinterval"
+                        figroot = os.path.join(context.report_dir, 'stage%s' % result.stage_number)
+                        figpath = os.path.join(figroot, '{prefix}.png'.format(prefix=prefix))
+                        LOG.debug('figpath = {0}'.format(figpath))
+                        pl.savefig(figpath)
+
+                        if os.path.exists(figpath):
+                            parameters = {'intent': 'TARGET',
+                              'spw': spw_id,
+                              'pol': '',
+                              'ant': antenna_name,
+                              'field': field_name,
+                              'vis': vis,
+                              'type': 'Interval Ratio (off-source/on-source) vs. Time',
+                              'file': vis}
+                            plot = logger.Plot(figpath,
+                               x_axis='Time',
+                               y_axis='Interval Ratio (off-source/on-source)',
+                               field=field_name,
+                               parameters=parameters)
+                        plots.append(plot)
+    return plots
 
 def plot_elevation_difference(context, result, eldiff, threshold=3.0):
     """
