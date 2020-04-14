@@ -34,10 +34,13 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
         details_amp_vs_freq = collections.defaultdict(list)
         summary_amp_vs_time = collections.defaultdict(list)
         details_amp_vs_time = collections.defaultdict(list)
+        summary_interval_vs_time = collections.defaultdict(list)
+        details_interval_vs_time = collections.defaultdict(list)
         summary_elev_diff = collections.defaultdict(list)
         details_elev_diff = collections.defaultdict(list)
         amp_vs_freq_subpages = {}
         amp_vs_time_subpages = {}
+        interval_vs_time_subpages = {}
         elev_diff_subpages = {}
         reference_coords = collections.defaultdict(dict)
         for result in results:
@@ -61,6 +64,8 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
             details_time = []
             summaries_elev = []
             details_elev = []
+            summaries_interval = []
+            details_interval = []
             for calapp in final_original:
                 result.final = [calapp]
                 gainfield = calapp.calfrom[0].gainfield
@@ -80,6 +85,18 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
                 # Amp vs. Time: detail plots
                 detail_plotter = skycal_display.SingleDishSkyCalAmpVsTimeDetailChart(context, result, calapp)
                 details_time.extend(detail_plotter.plot())
+
+                # Interval vs. Time: summary plots
+                #skycal_display.SingleDishSkyCalIntervalVsTimeDisplayBase(context, result, calapp)
+                summary_plotter = skycal_display.plot_interval_time(context, result, calapp)
+                summaries_interval.extend(summary_plotter)
+                LOG.debug('summaries_interval = {0}'.format(summaries_interval))
+
+                # Interval vs. Time: detail plots
+                #skycal_display.SingleDishSkyCalIntervalVsTimeDisplayBase(context, result, calapp)
+                detail_plotter = skycal_display.plot_interval_time(context, result, calapp)
+                details_interval.extend(detail_plotter)
+                LOG.debug('details_interval = {0}'.format(details_interval))
 
                 # reference coordinates
                 #LOG.debug('calapp=%s'%(calapp))
@@ -107,6 +124,8 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
             details_amp_vs_time[vis].extend(details_time)
             summary_elev_diff[vis].extend(summaries_elev)
             details_elev_diff[vis].extend(details_elev)
+            summary_interval_vs_time[vis].extend(summaries_interval)
+            details_interval_vs_time[vis].extend(details_interval)
 
         # Sky Level vs Frequency
         flattened = [plot for inner in details_amp_vs_freq.values() for plot in inner]
@@ -134,6 +153,19 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
         for vis in details_amp_vs_time:
             amp_vs_time_subpages[vis] = os.path.basename(renderer.path)
 
+        # Interval Ratio (Off-source/On-source) vs Time
+        flattened = [plot for inner in details_interval_vs_time.values() for plot in inner]
+        renderer = basetemplates.JsonPlotRenderer(uri='hsd_generic_x_vs_y_ant_field_spw_plots.mako',
+                                                  context=context,
+                                                  result=result,
+                                                  plots=flattened,
+                                                  title ='Interval Ratio (Off-source/On-source) vs Time',
+                                                  outfile='interval_ratio_vs_time.html')
+        with renderer.get_file() as fileobj:
+            fileobj.write(renderer.render())
+        for vis in details_interval_vs_time:
+            interval_vs_time_subpages[vis] = os.path.basename(renderer.path)
+
         # Elevation difference
         flattened = [plot for inner in details_elev_diff.values() for plot in inner]
         renderer = basetemplates.JsonPlotRenderer(uri='generic_x_vs_y_ant_field_plots.mako',
@@ -155,6 +187,8 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
                     'amp_vs_freq_subpages': amp_vs_freq_subpages,
                     'summary_amp_vs_time': summary_amp_vs_time,
                     'amp_vs_time_subpages': amp_vs_time_subpages,
+                    'summary_interval_vs_time': summary_interval_vs_time,
+                    'interval_vs_time_subpages': interval_vs_time_subpages,
                     'summary_elev_diff': summary_elev_diff,
                     'elev_diff_subpages': elev_diff_subpages,
                     'reference_coords': reference_coords})
@@ -175,7 +209,6 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
             if antenna == '':
                 antenna = ', '.join([a.name for a in ms.antennas])
             field = ms.get_fields(calapp.field)[0].name
-
             applications.append({'ms': ms.basename,
                                  'gaintable': gaintable,
                                  'spw': spw,
