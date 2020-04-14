@@ -47,6 +47,8 @@ class Targetflag(basetask.StandardTaskTemplate):
         # Initialize results.
         result = TargetflagResults()
 
+        cafflags = []
+
         # create a shortcut to the plotting function that pre-supplies the inputs and context
         plot_fn = functools.partial(create_plots, inputs, inputs.context)
 
@@ -75,6 +77,12 @@ class Targetflag(basetask.StandardTaskTemplate):
             actask = applycal.IFApplycal(acinputs)
             acresult = self._executor.execute(actask, merge=True)
 
+            # Create back-up of flags after applycal but before correctedampflag.
+            LOG.info('Creating back-up of "after_tgtflag_applycal" flagging state')
+            flag_backup_name_after_tgtflag_applycal = 'after_tgtflag_applycal'
+            task = casa_tasks.flagmanager(vis=inputs.vis, mode='save', versionname=flag_backup_name_after_tgtflag_applycal)
+            self._executor.execute(task)
+
             # Find amplitude outliers and flag data. This needs to be done
             # per source / per field ID / per spw basis.
             LOG.info('Running correctedampflag to identify target source outliers to flag.')
@@ -89,7 +97,31 @@ class Targetflag(basetask.StandardTaskTemplate):
             caftask = correctedampflag.Correctedampflag(cafinputs)
             cafresult = self._executor.execute(caftask)
 
+            # Store correctedampflag result
+            result.cafresult = cafresult
+
+            # Get new flag commands
+            cafflags = cafresult.flagcmds()
+
+            # If new outliers were identified...make "after flagging" plots that
+            # include both applycal flags and correctedampflag flags
+            if cafflags:
+                # Make "after calibration, after flagging" plots for the weblog
+                LOG.info('Creating "after calibration, after flagging" plots')
+                result.plots['after'] = plot_fn(suffix='after')
+
         finally:
+            if cafflags:
+                # Restore the "after_tgtflag_applycal" backup of the flagging
+                # state, so that the "before plots" only show things needing
+                # to be flagged by correctedampflag
+                LOG.info('Restoring back-up of "after_tgtflag_applycal" flagging state.')
+                task = casa_tasks.flagmanager(vis=inputs.vis, mode='restore', versionname=flag_backup_name_after_tgtflag_applycal)
+                self._executor.execute(task)
+                # Make "after calibration, before flagging" plots for the weblog
+                LOG.info('Creating "after calibration, before flagging" plots')
+                result.plots['before'] = plot_fn(suffix='before')
+
             # Restore the "pre-targetflag" backup of the flagging state, to
             # undo any flags that were propagated from caltables to the MS by
             # the applycal call.
@@ -97,28 +129,13 @@ class Targetflag(basetask.StandardTaskTemplate):
             task = casa_tasks.flagmanager(vis=inputs.vis, mode='restore', versionname=flag_backup_name_pretgtf)
             self._executor.execute(task)
 
-        # Store correctedampflag result
-        result.cafresult = cafresult
-
-        # Get new flag commands
-        cafflags = cafresult.flagcmds()
-
-        # If new outliers were identified...
-        if cafflags:
-            # Make "after calibration, before flagging" plots for the weblog
-            LOG.info('Creating "after calibration, before flagging" plots')
-            result.plots['before'] = plot_fn(suffix='before')
-
-            # Re-apply the newly found flags from correctedampflag.
-            LOG.info('Re-applying flags from correctedampflag.')
-            fsinputs = FlagdataSetter.Inputs(context=inputs.context, vis=inputs.vis, table=inputs.vis, inpfile=[])
-            fstask = FlagdataSetter(fsinputs)
-            fstask.flags_to_set(cafflags)
-            fsresult = self._executor.execute(fstask)
-
-            # Make "after calibration, after flagging" plots for the weblog
-            LOG.info('Creating "after calibration, after flagging" plots')
-            result.plots['after'] = plot_fn(suffix='after')
+            if cafflags:
+                # Re-apply the newly found flags from correctedampflag.
+                LOG.info('Re-applying flags from correctedampflag.')
+                fsinputs = FlagdataSetter.Inputs(context=inputs.context, vis=inputs.vis, table=inputs.vis, inpfile=[])
+                fstask = FlagdataSetter(fsinputs)
+                fstask.flags_to_set(cafflags)
+                fsresult = self._executor.execute(fstask)
 
         return result
 
