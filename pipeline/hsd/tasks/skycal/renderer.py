@@ -209,6 +209,7 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
             if antenna == '':
                 antenna = ', '.join([a.name for a in ms.antennas])
             field = ms.get_fields(calapp.field)[0].name
+
             applications.append({'ms': ms.basename,
                                  'gaintable': gaintable,
                                  'spw': spw,
