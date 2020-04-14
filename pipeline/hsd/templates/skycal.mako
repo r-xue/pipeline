@@ -18,6 +18,7 @@ import os
 % endif
 <li><a href="#ampfreqplots">Amp vs. Frequency Plots</a></li>
 <li><a href="#amptimeplots">Amp vs. Time Plots</a></li>
+<li><a href="#intervaltimeplots">Interval vs. Time Plots</a></li>
 <li><a href="#eldiffplots">Elevation Difference vs. Time Plots</a></li>
 </ul>
 
@@ -153,6 +154,46 @@ import os
 	                    </h4>
 	
 	                    <p>Plot of sky level vs time for field ${field}, spw ${spw}.</p>
+	                </div>
+	            </div>
+	        </div>
+        % endif
+    % endfor
+	<div class="clearfix"></div><!--  flush plots, break to next row -->
+% endfor
+
+<h2 id="intervaltimeplots" class="jumptarget">Interval vs. Time Plots</h2>
+% for ms in pcontext.observing_run.measurement_sets:
+    <% 
+        vis = ms.basename 
+        subpage = os.path.join(dirname, interval_vs_time_subpages[vis])
+    %>
+    <h4><a class="replace" href="${subpage}" data-vis="${vis}">${vis}</a></h4>
+    % for plot in summary_interval_vs_time[vis]:
+        % if os.path.exists(plot.thumbnail):
+            <% 
+                img_path = os.path.relpath(plot.abspath, pcontext.report_dir)
+                thumbnail_path = os.path.relpath(plot.thumbnail, pcontext.report_dir)
+                spw = plot.parameters['spw']
+                ant = plot.parameters['ant']
+                field = plot.parameters['field']
+            %>
+ 	        <div class="col-md-3">
+	            <div class="thumbnail">
+	                <a href="${img_path}" data-fancybox="thumbs">
+	                    <img class="lazyload"
+                             data-src="${thumbnail_path}"
+	                         title="Interval Ratio (off-source/on-source) summary for Field ${field}, Ant ${ant}, SPW ${spw}">
+	                </a>
+	                <div class="caption">
+	                    <h4>
+	                        <a href="${subpage}" class="replace" 
+	                           data-vis="${vis}" data-field="${field}" data-ant="${ant} data-spw="${spw}">
+	                           Field ${field} Antenna ${ant} SPW ${spw}
+	                        </a>
+	                    </h4>
+	
+	                    <p>Plot of interval ratio (off-source/on-source) vs time for field ${field}, antenna ${ant}, spw ${spw}.</p>
 	                </div>
 	            </div>
 	        </div>
