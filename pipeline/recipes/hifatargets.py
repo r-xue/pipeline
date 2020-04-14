@@ -16,22 +16,6 @@ except:
 
 __rethrow_casa_exceptions = True
 
-# CASA imports
-#     Clunky but import casa does not work for pipeline tasks
-from h_init_cli import h_init_cli as h_init
-from hifa_importdata_cli import hifa_importdata_cli as hifa_importdata
-from hifa_imageprecheck_cli import hifa_imageprecheck_cli as hifa_imageprecheck
-from hif_checkproductsize_cli import hif_checkproductsize_cli as hif_checkproductsize
-from hif_mstransform_cli import hif_mstransform_cli as hif_mstransform
-from hifa_flagtargets_cli import hifa_flagtargets_cli as hifa_flagtargets
-from hif_findcont_cli import hif_findcont_cli as hif_findcont
-from hif_uvcontfit_cli import hif_uvcontfit_cli as hif_uvcontfit
-from hif_uvcontsub_cli import hif_uvcontsub_cli as hif_uvcontsub
-from hif_makeimlist_cli import hif_makeimlist_cli as hif_makeimlist
-from hif_makeimages_cli import hif_makeimages_cli as hif_makeimages
-from hifa_exportdata_cli import hifa_exportdata_cli as hifa_exportdata
-from h_save_cli import h_save_cli as h_save
-
 # Pipeline imports
 import pipeline.infrastructure.casatools as casatools
 
