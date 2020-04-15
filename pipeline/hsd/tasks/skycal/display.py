@@ -255,8 +255,6 @@ def plot_interval_time(context, result, calapp):
 
     plot = None
     plots = []
-    pl.cla()
-    pl.clf()
 
     antennas = ms.antennas
     antenna_ids = [ant.id for ant in antennas]
@@ -301,16 +299,20 @@ def plot_interval_time(context, result, calapp):
                         ax.xaxis.set_major_formatter(sd_display.utc_formatter())
                         pl.ylabel("Interval Ratio (Off-Source / On-Source)")
                         pl.xlabel("UTC")
-                        ax.plot(mjd_list, interval, linestyle='None', marker=".")
+                        ax.plot(mjd_list, interval, linestyle='None', marker=".", label="Interval of Off-Source / Interval of On-Source")
+                        min_interval = numpy.min(interval)
+                        max_interval = numpy.max(interval)
+                        ax.set_ylim([min_interval-3.0, max_interval+3.0])
+                        pl.legend(bbox_to_anchor=(1, 1), loc='upper right', borderaxespad=1, fontsize=10)
                         #pl.show()
                         antenna_name = antennas[antenna_id].name
                         field_name = field.clean_name
                         prefix = vis + "_" + '{}'.format(antenna_name)+ "_" + '{}'.format(field_name) + "_spw" + '{}'.format(spw_id) + "_hsd_skycal_offinterval"
                         figroot = os.path.join(context.report_dir, 'stage%s' % result.stage_number)
                         figpath = os.path.join(figroot, '{prefix}.png'.format(prefix=prefix))
-                        LOG.debug('figpath = {0}'.format(figpath))
+                        LOG.info('Plot of Interval vs Time: figpath = {0}'.format(figpath))
                         pl.savefig(figpath)
-
+                        pl.close()
                         if os.path.exists(figpath):
                             parameters = {'intent': 'TARGET',
                               'spw': spw_id,
@@ -318,11 +320,11 @@ def plot_interval_time(context, result, calapp):
                               'ant': antenna_name,
                               'field': field_name,
                               'vis': vis,
-                              'type': 'Interval Ratio (off-source/on-source) vs. Time',
+                              'type': 'Plot of Interval vs. Time',
                               'file': vis}
                             plot = logger.Plot(figpath,
                                x_axis='Time',
-                               y_axis='Interval Ratio (off-source/on-source)',
+                               y_axis='Off-Source Interval / On-Source Interval',
                                field=field_name,
                                parameters=parameters)
                         plots.append(plot)
