@@ -93,7 +93,7 @@ class Targetflag(basetask.StandardTaskTemplate):
             # will loop over spw and field IDs to inspect the flags individually
             # per mosaic pointing.
             cafinputs = correctedampflag.Correctedampflag.Inputs(
-                context=inputs.context, vis=inputs.vis, intent='TARGET')
+                context=inputs.context, vis=inputs.vis, intent='TARGET', niter=1)
             caftask = correctedampflag.Correctedampflag(cafinputs)
             cafresult = self._executor.execute(caftask)
 
