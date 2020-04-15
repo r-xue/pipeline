@@ -248,7 +248,7 @@ class SingleDishSkyCalAmpVsTimeDetailChart(SingleDishPlotmsAntSpwComposite):
                                                                    xaxis='time', yaxis='amp',
                                                                    coloraxis='corr')
        
-def plot_interval_time(context, result, gaintable):
+def plot_interval_time(context, result, calapp):
     # get ms domain object
     vis = os.path.basename(result.inputs['vis'])
     ms = context.observing_run.get_ms(vis)
@@ -276,7 +276,7 @@ def plot_interval_time(context, result, gaintable):
                 LOG.debug('field = {0}'.format(field))
 
                # make plots for the interval ratio (off-source/on-source) vs time;
-                with casatools.TableReader(gaintable) as tb:
+                with casatools.TableReader(calapp.gaintable) as tb:
                     t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}&&FIELD_ID=={}'.format(spw_id, antenna_id, field_id), sortlist='TIME', columns='TIME, SPECTRAL_WINDOW_ID, INTERVAL')
                     mjd = t.getcol('TIME')
                     ms_target = ms.get_scans(scan_intent='TARGET', field=1)
