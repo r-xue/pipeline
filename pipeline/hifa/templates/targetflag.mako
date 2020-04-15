@@ -27,17 +27,31 @@ def plot_type(plot):
 
 <%inherit file="t2-4m_details-base.mako"/>
 
-<%block name="title">Target Flag</%block>
+<%block name="title">Target Flagging</%block>
 
-<p>Targetflag</p>
+<p>
+    This task computes the ultra high baseline flagging heuristics for TARGET
+    intents by calling hif_correctedampflag which looks for outlier visibility
+    points by statistically examining the scalar difference of the corrected
+    amplitude minus model amplitudes and flags those outliers.
+</p>
+<p>
+    In further detail, the workflow is as follows: an a priori calibration is
+    applied using pre-existing caltables in the calibration state, the flagging
+    heuristics are run and any outliers are flagged. The score for this stage
+    is the standard data flagging score (depending on the fraction of data
+    flagged).
+</p>
 
 <h2>Contents</h2>
 <ul>
 % if htmlreports:
     <li><a href="#flagging_commands">Flagging commands</a></li>
-%endif
+% endif
     <li><a href="#flagged_data_summary">Flagged data summary table</a></li>
+% if any(v != [] for v in time_plots.values()):
     <li><a href="#amp_vs_time">Amplitude vs time plots for flagging</a></li>
+% endif
 </ul>
 
 % if htmlreports:
@@ -102,9 +116,9 @@ def plot_type(plot):
 <h2 id="per_ms_plots" class="jumptarget">Plots</h2>
 
 <%self:plot_group plot_dict="${time_plots}"
-                                  url_fn="${lambda x: 'junk'}"
+                  url_fn="${lambda x: 'junk'}"
                   rel_fn="${lambda plot: 'amp_vs_time_%s_%s' % (plot.parameters['vis'], plot.parameters['spw'])}"
-                                  title_id="amp_vs_time"
+                  title_id="amp_vs_time"
                   break_rows_by="intent,field,type_idx"
                   sort_row_by="spw">
 
@@ -114,7 +128,7 @@ def plot_type(plot):
 
         <%def name="preamble()">
                 <p>These plots show amplitude vs time for two cases: 1, the calibrated data before application of any flags;
-        and 2, where flagging was applied, the calibrated data after application of flags.</p>
+                and 2, where flagging was applied, the calibrated data after application of flags.</p>
 
                 <p>Data are plotted for all antennas and correlations, with different
                 fields shown in different colours.</p>
@@ -129,7 +143,7 @@ def plot_type(plot):
                 Intents: ${utils.commafy([plot.parameters['intent']], False)}
         </%def>
 
-    <%def name="caption_title(plot)">
+        <%def name="caption_title(plot)">
                 Spectral Window ${plot.parameters['spw']}<br>
         </%def>
 
@@ -137,7 +151,7 @@ def plot_type(plot):
                 Intents: ${utils.commafy([plot.parameters['intent']], False)}
         </%def>
 
-    <%def name="caption_text(plot, ptype)">
+        <%def name="caption_text(plot, ptype)">
                 ${plot_type(plot)}.
         </%def>
 
