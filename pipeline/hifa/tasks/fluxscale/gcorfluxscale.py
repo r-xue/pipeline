@@ -65,7 +65,7 @@ class GcorFluxscaleInputs(fluxscale.FluxscaleInputs):
 
     solint = vdp.VisDependentProperty(default='inf')
     # adds polarisation intent to transfer intent as required by PIPE-599
-    transintent = vdp.VisDependentProperty(default='PHASE,BANDPASS,CHECK,POLARISATION')
+    transintent = vdp.VisDependentProperty(default='PHASE,BANDPASS,CHECK,POLARIZATION')
     uvrange = vdp.VisDependentProperty(default='')
 
     def __init__(self, context, output_dir=None, vis=None, caltable=None, fluxtable=None, reffile=None, reference=None,
@@ -289,7 +289,7 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
             except Exception as e:
                 # Something has gone wrong, return an empty result
                 LOG.error('Unable to complete flux scaling operation for MS %s' % (os.path.basename(inputs.vis)))
-                LOG.exception('Flux scaling error:')
+                LOG.exception('Flux scaling error', exc_info=e)
                 return result
 
             finally:
