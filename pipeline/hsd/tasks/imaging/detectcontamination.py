@@ -1,27 +1,12 @@
-#!/usr/bin/env python
 # coding: utf-8
 #
 # This code is originally provided by Yoshito Shimajiri.
 # See PIPE-251 for detail about this.
 
-# # 1. Import modules
-
-# In[ ]:
-
-
-#from astropy.io import fits
-#import pandas as pd
 import os
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
-#get_ipython().run_line_magic('matplotlib', 'inline')
-#import time
-#import termcolor
-
-# # 2. Function for getting fits file names
-
-# In[ ]:
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
@@ -32,39 +17,6 @@ LOG = infrastructure.get_logger(__name__)
 # global parameters
 MATPLOTLIB_FIGURE_NUM = 6666
 std_threshold = 4.
-
-#Project = ["2019.2.00052.Sa", "2019.2.00052.S", "2019.1.00915.S", "2019.2.00037.S"]
-
-# def read_input(project_name):
-#     if project_name == "2019.1.00915.S":
-#         fits_list = ["uid___A001_X1465_X1ffd.s12_57.Ridge-N4_sci.spw23.cube.I.iter0.image.sd.fits",
-#                      "uid___A001_X1465_X1ffd.s12_27.Ridge-N4_sci.spw19.cube.I.iter0.image.sd.fits",
-#                      "uid___A001_X1465_X1ffd.s12_42.Ridge-N4_sci.spw21.cube.I.iter0.image.sd.fits",
-#                      "uid___A001_X1465_X1ffd.s12_12.Ridge-N4_sci.spw17.cube.I.iter0.image.sd.fits"]
-
-#     if project_name == "2019.2.00037.S":
-#         fits_list=["uid___A001_X14c3_X1dc.s12_16.NGC_1365_sci.spw17.cube.I.iter0.image.sd.fits",
-#                    "uid___A001_X14c3_X1dc.s12_35.NGC_1365_sci.spw19.cube.I.iter0.image.sd.fits",
-#                    "uid___A001_X14c3_X1dc.s12_54.NGC_1365_sci.spw21.cube.I.iter0.image.sd.fits",
-#                    "uid___A001_X14c3_X1dc.s12_73.NGC_1365_sci.spw23.cube.I.iter0.image.sd.fits"]
-
-#     if project_name == "2019.2.00052.S":
-#         fits_list=["uid___A001_X14c3_X2f4.s12_12.NGC4725_sci.spw17.cube.I.iter0.image.sd.fits",
-#                    "uid___A001_X14c3_X2f4.s12_27.NGC4725_sci.spw19.cube.I.iter0.image.sd.fits",
-#                    "uid___A001_X14c3_X2f4.s12_42.NGC4725_sci.spw21.cube.I.iter0.image.sd.fits",
-#                    "uid___A001_X14c3_X2f4.s12_57.NGC4725_sci.spw23.cube.I.iter0.image.sd.fits"]
-
-#     if project_name == "2019.2.00052.Sa":
-#         fits_list=["uid___A001_X14d8_X309.s12_12.NGC3384_sci.spw17.cube.I.iter0.image.sd.fits",
-#                    "uid___A001_X14d8_X309.s12_27.NGC3384_sci.spw19.cube.I.iter0.image.sd.fits",
-#                    "uid___A001_X14d8_X309.s12_42.NGC3384_sci.spw21.cube.I.iter0.image.sd.fits",
-#                    "uid___A001_X14d8_X309.s12_57.NGC3384_sci.spw23.cube.I.iter0.image.sd.fits"]
-#     return fits_list
-
-
-# # 3. Function for finding the emission free channels rougly
-
-# In[ ]:
 
 
 # To find the emission free channels roughly for estimating RMS
@@ -109,11 +61,6 @@ def decide_rms(naxis3, cube_regrid):
         start_rms_ch, end_rms_ch = int(naxis3 * 7 / 10), int(naxis3 * 8 / 10)
     LOG.info("RMS: {}".format(np.nanmean(rms_map)))
     return rms_map
-
-
-# # 4. Function for making figures
-
-# In[ ]:
 
 
 # Function for making fiures
@@ -182,28 +129,6 @@ def warn_deep_absorption_feature(masked_average_spectrum, imageitem=None):
             warning_sentence = f'{warning_sentence} {warning_detail}'
         LOG.warn(warning_sentence)
 
-# # 5. Function for reading fits
-
-# In[ ]:
-
-
-# Function for reading FITS and its header
-# def read_fits(input):
-#         print("FITS:", input)
-#         hdu          =  fits.open(input)[0]
-#         cube        = hdu.data
-#         naxis1     = hdu.header['NAXIS1']
-#         naxis2     = hdu.header['NAXIS2']
-#         naxis3     = hdu.header['NAXIS4']
-#         cdelt2     = hdu.header['CDELT2']
-#         cdelt3     = abs(hdu.header['CDELT4'])
-#         cube_regrid = cube[:,0,:,:]
-#         return cube_regrid, naxis1, naxis2, naxis3,cdelt2, cdelt3
-# print("END")
-
-
-# In[ ]:
-
 
 # Function for reading FITS and its header (CASA version)
 def read_fits(input):
@@ -224,33 +149,15 @@ def read_fits(input):
     return cube_regrid, naxis1, naxis2, naxis3, cdelt2, cdelt3
 
 
-# # 6. Main part
-
-# In[ ]:
-
-
-# number_of_spw = 0
-# for project_loop in range(len(Project)):
-#     project_name = Project[project_loop]
-#     fits_list = read_input(project_name)
-
-#     for fits_loop in range(len(fits_list)):
-
-
 def detect_contamination(context, imageitem):
     imagename = imageitem.imagename
     LOG.info("=================")
-    #input = "./" + project_name + "/" + fitsimage
-    #fitsimage = os.path.basename(imagename.rstrip('/'))
-    #output_name = str(project_name) + "." + str(fitsimage) + ".png"
-    # TODO: adapt output_name for pipeline naming scheme
     stage_number = context.task_counter
     stage_dir = os.path.join(context.report_dir, f'stage{stage_number}')
     if not os.path.exists(stage_dir):
         os.mkdir(stage_dir)
     output_name = os.path.join(stage_dir, imagename.rstrip('/') + '.contamination.png')
     LOG.info(output_name)
-    #number_of_spw = number_of_spw + 1
     # Read FITS and its header
     cube_regrid, naxis1, naxis2, naxis3, cdelt2, cdelt3 = read_fits(imagename)
 
@@ -308,12 +215,3 @@ def detect_contamination(context, imageitem):
 
     # warn if absorption feature is detected
     warn_deep_absorption_feature(masked_average_spectrum, imageitem)
-
-#LOG.info("Total spw:", number_of_spw)
-
-
-# In[ ]:
-
-
-
-
