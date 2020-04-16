@@ -64,6 +64,8 @@ class GcorFluxscaleInputs(fluxscale.FluxscaleInputs):
         return []
 
     solint = vdp.VisDependentProperty(default='inf')
+    # adds polarisation intent to transfer intent as required by PIPE-599
+    transintent = vdp.VisDependentProperty(default='PHASE,BANDPASS,CHECK,POLARISATION')
     uvrange = vdp.VisDependentProperty(default='')
 
     def __init__(self, context, output_dir=None, vis=None, caltable=None, fluxtable=None, reffile=None, reference=None,
