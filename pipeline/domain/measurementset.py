@@ -334,8 +334,8 @@ class MeasurementSet(object):
                 if (max_chanwidth is None) or (chanwidth > max_chanwidth):
                 #if not_max_chanwidth or chanwidth > max_chanwidth:
                     target_spwid = spw.id
-            LOG.info('Selecting widest channel width spw id %s with channel width <= rerpesentative bandwidth in data set %s' % \
-                (str(target_spwid), self.basename))
+            LOG.info('Selecting widest channel width spw id {} with channel width <= representative bandwidth in data'
+                     ' set {}'.format(str(target_spwid), self.basename))
 
             return (target_source_name, target_spwid)
 

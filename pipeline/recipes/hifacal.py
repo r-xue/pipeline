@@ -69,10 +69,15 @@ def hifacal(vislist, importonly=True, dbservice=False, pipelinemode='automatic',
         # Set the flux calibrator model
         hif_setmodels(pipelinemode=pipelinemode)
 
-        # Compute the bandpass calibration
+        # Derive and temporarily apply a preliminary bandpass calibration,
+        # and flag outliers in corrected - model amplitudes for bandpass
+        # calibrator.
         hifa_bandpassflag(pipelinemode=pipelinemode)
 
-        # Compute the bandpass calibration
+        # Compute the bandpass calibration.
+        hifa_bandpass(pipelinemode=pipelinemode)
+
+        # Compute phase calibration spw map and per spw phase offsets.
         hifa_spwphaseup(pipelinemode=pipelinemode)
 
         # Derive the flux density scale from standard calibrators, and flag

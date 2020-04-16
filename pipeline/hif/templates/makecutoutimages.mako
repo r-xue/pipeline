@@ -36,17 +36,29 @@ $(document).ready(function() {
 <p>Make cutouts of requested imaging products.</p>
 
 <%
+    image_min = plotter.result.image_stats.get('min')[0]
+    image_max = plotter.result.image_stats.get('max')[0]
+    image_sigma = plotter.result.image_stats.get('sigma')[0]
+    image_madRMS = plotter.result.image_stats.get('medabsdevmed')[0] * 1.4826  # see CAS-9631
+    image_unit = 'Jy/beam'
+
     pbcor_min = plotter.result.pbcor_stats.get('min')[0]
     pbcor_max = plotter.result.pbcor_stats.get('max')[0]
     pbcor_sigma = plotter.result.pbcor_stats.get('sigma')[0]
     pbcor_madRMS = plotter.result.pbcor_stats.get('medabsdevmed')[0] * 1.4826  # see CAS-9631
     pbcor_unit = 'Jy/beam'
 
-    residual_min = plotter.result.residual_stats.get('min')[0]
-    residual_max = plotter.result.residual_stats.get('max')[0]
-    residual_sigma = plotter.result.residual_stats.get('sigma')[0]
-    residual_madRMS = plotter.result.residual_stats.get('medabsdevmed')[0] * 1.4826  # see CAS-9631 
-    residual_unit = 'Jy/beam'
+    pbcor_residual_min = plotter.result.pbcor_residual_stats.get('min')[0]
+    pbcor_residual_max = plotter.result.pbcor_residual_stats.get('max')[0]
+    pbcor_residual_sigma = plotter.result.pbcor_residual_stats.get('sigma')[0]
+    pbcor_residual_madRMS = plotter.result.pbcor_residual_stats.get('medabsdevmed')[0] * 1.4826  # see CAS-9631
+    pbcor_residual_unit = 'Jy/beam'
+
+    image_residual_min = plotter.result.residual_stats.get('min')[0]
+    image_residual_max = plotter.result.residual_stats.get('max')[0]
+    image_residual_sigma = plotter.result.residual_stats.get('sigma')[0]
+    image_residual_madRMS = plotter.result.residual_stats.get('medabsdevmed')[0] * 1.4826  # see CAS-9631
+    image_residual_unit = 'Jy/beam'
 
     rms_min = plotter.result.rms_stats.get('min')[0]
     rms_max = plotter.result.rms_stats.get('max')[0]
@@ -76,34 +88,73 @@ $(document).ready(function() {
   <tr>
     <td style="font-weight:bold; background-color:#ccffff">max</td>
     <td>${'{:.4e}'.format(pbcor_max)} ${pbcor_unit}</td>
-    <td>${'{:.4e}'.format(residual_max)} ${residual_unit}</td>
+    <td>${'{:.4e}'.format(pbcor_residual_max)} ${pbcor_residual_unit}</td>
   </tr>
   <tr>
     <td style="font-weight:bold; background-color:#ccffff">min</td>
     <td>${'{:.4e}'.format(pbcor_min)} ${pbcor_unit}</td>
-    <td>${'{:.4e}'.format(residual_min)} ${residual_unit}</td>
+    <td>${'{:.4e}'.format(pbcor_residual_min)} ${pbcor_residual_unit}</td>
   </tr>
   <tr>
     <td style="font-weight:bold; background-color:#ccffff">sigma</td>
     <td>${'{:.4e}'.format(pbcor_sigma)} ${pbcor_unit}</td>
-    <td>${'{:.4e}'.format(residual_sigma)} ${residual_unit}</td>
+    <td>${'{:.4e}'.format(pbcor_residual_sigma)} ${pbcor_residual_unit}</td>
   </tr>
   <tr>
     <td style="font-weight:bold; background-color:#ccffff">MADrms</td>
     <td>${'{:.4e}'.format(pbcor_madRMS)} ${pbcor_unit}</td>
-    <td>${'{:.4e}'.format(residual_madRMS)} ${residual_unit}</td>
+    <td>${'{:.4e}'.format(pbcor_residual_madRMS)} ${pbcor_residual_unit}</td>
   </tr>
   <tr>
     <td style="font-weight:bold; background-color:#ccffff">max/MADrms</td>
     <td>${'{:.4f}'.format(pbcor_max / pbcor_madRMS)}</td>
-    <td>${'{:.4f}'.format(residual_max / residual_madRMS)}</td>
+    <td>${'{:.4f}'.format(pbcor_residual_max / pbcor_residual_madRMS)}</td>
   </tr>
   <tr>
     <td style="font-weight:bold; background-color:#ccffff">max/sigma</td>
     <td>${'{:.4f}'.format(pbcor_max / pbcor_sigma)}</td>
-    <td>${'{:.4f}'.format(residual_max / residual_sigma)}</td>
+    <td>${'{:.4f}'.format(pbcor_residual_max / pbcor_residual_sigma)}</td>
   </tr>
 </table>
+
+<table style="float: left; margin:0 10px; width: auto;" class="table table-condensed table-bordered table-striped">
+  <tr style="font-weight:bold;background-color:#ffd9b3">
+    <td></td>
+    <td>non-pbcor restored</td>
+    <td>non-pbcor residual</td>
+  </tr>
+  <tr>
+    <td style="font-weight:bold; background-color:#ffd9b3">max</td>
+    <td>${'{:.4e}'.format(image_max)} ${image_unit}</td>
+    <td>${'{:.4e}'.format(image_residual_max)} ${image_residual_unit}</td>
+  </tr>
+  <tr>
+    <td style="font-weight:bold; background-color:#ffd9b3">min</td>
+    <td>${'{:.4e}'.format(image_min)} ${image_unit}</td>
+    <td>${'{:.4e}'.format(image_residual_min)} ${image_residual_unit}</td>
+  </tr>
+  <tr>
+    <td style="font-weight:bold; background-color:#ffd9b3">sigma</td>
+    <td>${'{:.4e}'.format(image_sigma)} ${image_unit}</td>
+    <td>${'{:.4e}'.format(image_residual_sigma)} ${image_residual_unit}</td>
+  </tr>
+  <tr>
+    <td style="font-weight:bold; background-color:#ffd9b3">MADrms</td>
+    <td>${'{:.4e}'.format(image_madRMS)} ${image_unit}</td>
+    <td>${'{:.4e}'.format(image_residual_madRMS)} ${image_residual_unit}</td>
+  </tr>
+  <tr>
+    <td style="font-weight:bold; background-color:#ffd9b3">max/MADrms</td>
+    <td>${'{:.4f}'.format(image_max / image_madRMS)}</td>
+    <td>${'{:.4f}'.format(image_residual_max / image_residual_madRMS)}</td>
+  </tr>
+  <tr>
+    <td style="font-weight:bold; background-color:#ffd9b3">max/sigma</td>
+    <td>${'{:.4f}'.format(image_max / image_sigma)}</td>
+    <td>${'{:.4f}'.format(image_residual_max / image_residual_sigma)}</td>
+  </tr>
+</table>
+
 <table style="float: left; margin:0 10px; width: auto;" class="table table-condensed table-bordered table-striped">
   <tr style="font-weight:bold; background-color:#ffff99">
     <td></td>
@@ -134,6 +185,7 @@ $(document).ready(function() {
     <td>${'{:.4e}'.format(rms_madRMS)} ${rms_unit}</td>
   </tr>
 </table>
+
 <table style="float: left; margin:0 10px; width: auto;" class="table table-condensed table-bordered table-striped">
   <tr style="font-weight:bold; background-color:#ffcccc">
     <td></td>
@@ -156,6 +208,7 @@ $(document).ready(function() {
     <td>${'{:.4e}'.format(pb_median)}</td>
   </tr>
 </table>
+
 <table style="margin:0 10px; width: auto;" class="table table-condensed table-bordered table-striped">
     <tr>
         <td style="font-weight:bold; background-color:#ccffcc">Fraction of pixels with <= 120 &mu;Jy RMS</td>
@@ -181,7 +234,7 @@ $(document).ready(function() {
 
 <div style="clear:both;"></div>
 
-<%self:plot_group plot_dict="${subplots}" url_fn="${lambda ms:  'noop'}">
+<%self:plot_group plot_dict="${subplots}" url_fn="${lambda ms:  'noop'}" sort_row_by="isalpha">
 
         <%def name="title()">
             Cutout images

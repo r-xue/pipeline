@@ -28,31 +28,22 @@ def plot_type(plot):
 
 <%block name="header" />
 
-<%block name="title">Bandpass Calibration and Flagging</%block>
+<%block name="title">Bandpass Calibration Flagging</%block>
 
 <p>
-    This task performs a preliminary bandpass solution and applies it, then
-    computes the flagging heuristics by calling hif_correctedampflag which
-    looks for outlier visibility points by statistically examining the scalar
-    difference of the corrected amplitude minus model amplitudes, flags those
-    outliers, then derives a final bandpass solution (if any flags were
-    generated). The philosophy is that only outlier data points that have
-    remained outliers after calibration will be flagged. Note that the phase of
-    the data is not assessed.
+    This task performs a preliminary phased-up bandpass solution and
+    temporarily applies it, then computes the flagging heuristics by calling
+    hif_correctedampflag which looks for outlier visibility points by
+    statistically examining the scalar difference of the corrected amplitude
+    minus model amplitudes, and then flags those outliers. The philosophy is
+    that only outlier data points that have remained outliers after calibration
+    will be flagged. Note that the phase of the data is not assessed.
 </p>
 <p>
-    In further detail, the workflow is as follows: an a priori calibration is
-    applied using pre-existing caltables in the calibration state, a
-    preliminary bandpass solution and amplitude gaincal solution is solved and
-    applied, the flagging heuristics are run and any outliers are flagged, a
-    final bandpass solution is solved (if necessary) and the name "final" is
-    appended to this caltable. Plots are generated at two points in this
-    workflow: after bandpass calibration but before flagging heuristics are
-    run, and after flagging heuristics have been run and applied. If no points
-    were flagged, the "after" plots are not generated or displayed. The score
-    for this stage is a simple combination (multiplication) of the standard
-    data flagging score (depending on the fraction of data flagged) and the
-    score for the bandpass solution.
+    Plots are generated at two points in this workflow: after bandpass
+    calibration but before flagging heuristics are run, and after flagging
+    heuristics have been run and applied. If no points were flagged, the
+    "after" plots are not generated or displayed.
 </p>
 
 <h2>Contents</h2>
@@ -64,10 +55,6 @@ def plot_type(plot):
     <li><a href="#flagging_commands">Flagging commands</a></li>
 %endif
     <li><a href="#flagged_data_summary">Flagged data summary table</a></li>
-    <li><a href="#bandpass_results">Bandpass results tables</a></li>
-% if amp_refant or amp_mode:
-    <li><a href="#per_ms_plots">Amplitude/Phase vs frequency plots (per EB)</a></li>
-%endif
     <li><a href="#amp_vs_time">Amplitude vs time plots for flagging</a></li>
     <li><a href="#amp_vs_uvdist">Amplitude vs UV distance plots for flagging</a></li>    
 </ul>
@@ -161,299 +148,6 @@ def plot_type(plot):
 </table>
 
 % endfor
-
-
-<h2 id="bandpass_results" class="jumptarget">Bandpass results</h2>
-
-% if phaseup_applications:
-    <h4>Phase-up on bandpass calibrator</h4>
-    <table class="table table-bordered" summary="Application Results">
-        <caption>Applied calibrations and parameters used for phase-up calibration</caption>
-        <thead>
-            <tr>
-                <th scope="col" rowspan="2">Measurement Set</th>
-                <th scope="col" colspan="5">Phase-up Solution Parameters</th>
-            </tr>
-            <tr>
-                <th>Type</th>
-                <th>Interval</th>
-                <th>Min Baselines per Antenna</th>
-                <th>Min SNR</th>
-                <th>Phase-up Bandwidth</th>
-            </tr>
-        </thead>
-        <tbody>
-    % for application in phaseup_applications:
-            <tr>
-                <td>${application.ms}</td>
-                <td>${application.calmode}</td>
-                <td>${application.solint}</td>
-                <td>${application.minblperant}</td>
-                <td>${application.minsnr}</td>
-                <td>${application.phaseupbw}</td>
-            </tr>
-    % endfor
-        </tbody>
-    </table>
-% endif
-
-<h4>Bandpass calibration</h4>
-
-<table class="table table-bordered" summary="Application Results">
-	<caption>Parameters used for bandpass calibration</caption>
-    <thead>
-        <tr>
-            <th scope="col" rowspan="2">Measurement Set</th>
-			<th scope="col" colspan="2">Solution Parameters</th>
-			<th scope="col" colspan="2">Applied To</th>
-            <th scope="col" rowspan="2">Calibration Table</th>
-		</tr>
-		<tr>
-			<th>Type</th>
-            <th>Interval</th>
-			<th>Scan Intent</th>
-			<th>Spectral Windows</th>
-        </tr>
-    </thead>
-	<tbody>
-	% for tr in bandpass_table_rows:
-		<tr>
-		% for td in tr:
-			${td}
-		% endfor
-		</tr>
-	%endfor
-	</tbody>
-</table>
-
-% if amp_refant or amp_mode:
-    <h2 id="per_ms_plots" class="jumptarget">Plots</h2>
-
-    <p>Plots show the bandpass correction applied to the target source.
-    The first two plots show amplitude vs frequency; one for the reference antenna
-    and one for a typical antenna, identified the antenna with mode score.
-    The third plot shows phase vs frequency for the typical antenna.
-    </p>
-
-    <p>Click the summary plots to enlarge them, or the plot title to see
-    see detailed plots per spectral window and antenna.</p>
-
-    % for ms in amp_refant:
-
-        <h4>${ms}</h4>
-        % if amp_refant[ms] or amp_mode[ms]:
-        <div class="row">
-            <div class="col-md-8">
-                <div class="thumbnail">
-                    <div class="caption">
-                        <%
-                            plot = amp_refant[ms]
-                        %>
-                        <h4>Amplitude vs frequency
-                            (<a class="replace"
-                                data-vis="${ms}"
-                                href="${os.path.relpath(os.path.join(dirname, amp_subpages[ms]), pcontext.report_dir)}">show ${ms}</a>)
-                        </h4>
-                        <p>The plots below show amplitude vs frequency for the
-                        bandpass correction, overlayed for all spectral windows
-                        and correlations. Click on the link above to show
-                        show detailed plots for all antennas, or on the links
-                        below to show plots with specific antennas preselected.</p>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            % if plot is None or not os.path.exists(plot.thumbnail):
-                            <a href="${os.path.relpath(os.path.join(dirname, amp_subpages[ms]), pcontext.report_dir)}"
-         	                    data-fancybox="plots-${ms}">
-                               <img data-src="holder.js/255x188/text:Not Available">
-                            </a>
-                            <div class="caption">
-                                <h5>Reference antenna
-                                     (<a href="${os.path.relpath(os.path.join(dirname, amp_subpages[ms]), pcontext.report_dir)}"
-                                        class="replace"
-                                        data-vis="${ms}">
-                                        show all detail plots</a>)
-                                </h5>
-                                <p>The amplitude vs frequency plot for the reference antenna
-                                is not available.</p>
-                            </div>
-                            % else:
-                            <a href="${os.path.relpath(plot.abspath, pcontext.report_dir)}"
-        	                   data-fancybox="plots-${ms}"
-                               data-plotCommandTarget="#plotcmd-${hash(plot.abspath)}">
-                                <img class="lazyload"
-                                     data-src="${os.path.relpath(plot.thumbnail, pcontext.report_dir)}"
-                                     title="Click to show amplitude vs time plot">
-                            </a>
-                            <div class="caption">
-                                <h5>Reference antenna (${plot.parameters['ant']})
-                                    (<a href="${os.path.relpath(os.path.join(dirname, amp_subpages[ms]), pcontext.report_dir)}"
-                                       class="replace"
-                                       data-ant="${plot.parameters['ant']}"
-                                       data-vis="${plot.parameters['vis']}">
-                                       show ${plot.parameters['ant']}</a>)
-                                </h5>
-                                <p>Amplitude vs frequency for the reference antenna
-                                (${plot.parameters['ant']}). Click the link above to show
-                                detailed plots for ${plot.parameters['ant']}.</p>
-                            </div>
-                            <div id="plotcmd-${hash(plot.abspath)}" class="modal-content pipeline-plotcommand" style="display:none;">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-fancybox-close aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                    <h4 class="modal-title">Plot Command</h4>
-                                </div>
-                                <div class="modal-body" data-selectable="true">
-                                    <p>${rendererutils.get_command_markup(pcontext, plot.command)}</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-fancybox-close>Close</button>
-                                </div>
-                            </div>
-                            % endif
-                        </div>
-
-                        <%
-                            plot = amp_mode[ms]
-                        %>
-                        <div class="col-md-6">
-                            % if plot is None or not os.path.exists(plot.thumbnail):
-                            <a href="${os.path.relpath(os.path.join(dirname, amp_subpages[ms]), pcontext.report_dir)}"
-        	                   data-fancybox="plots-${ms}">
-                                <img data-src="holder.js/255x188/text:Not Available">
-                            </a>
-                            <div class="caption">
-                                <h5>Typical antenna
-                                    (<a href="${os.path.relpath(os.path.join(dirname, amp_subpages[ms]), pcontext.report_dir)}"
-                                        class="replace"
-                                        data-vis="${ms}">
-                                        show all detail plots</a>)
-                                </h5>
-                                <p>The amplitude vs frequency plot for a typical antenna
-                                is not available.</p>
-                            </div>
-                            % else:
-                            <a href="${os.path.relpath(plot.abspath, pcontext.report_dir)}"
-                               data-fancybox="plots-${ms}"
-                               data-plotCommandTarget="#plotcmd-${hash(plot.abspath)}">
-                                <img class="lazyload"
-                                     data-src="${os.path.relpath(plot.thumbnail, pcontext.report_dir)}"
-                                     title="Click to show amplitude vs time plot">
-                            </a>
-                            <div class="caption">
-                                <h5>Typical antenna (${plot.parameters['ant']})
-                                    (<a href="${os.path.relpath(os.path.join(dirname, amp_subpages[ms]), pcontext.report_dir)}"
-                                       class="replace"
-                                       data-ant="${plot.parameters['ant']}"
-                                       data-vis="${plot.parameters['vis']}">
-                                       show ${plot.parameters['ant']}
-                                    </a>)
-                                </h5>
-                                <p>Amplitude vs frequency for a typical antenna
-                                (${plot.parameters['ant']}). Click the link above to show
-                                detailed plots for ${plot.parameters['ant']}.</p>
-                                <p>NB. random antenna until scores are working</p>
-                            </div>
-                            <div id="plotcmd-${hash(plot.abspath)}" class="modal-content pipeline-plotcommand" style="display:none;">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-fancybox-close aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                    <h4 class="modal-title">Plot Command</h4>
-                                </div>
-                                <div class="modal-body" data-selectable="true">
-                                    <p>${rendererutils.get_command_markup(pcontext, plot.command)}</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-fancybox-close>Close</button>
-                                </div>
-                            </div>
-                            % endif
-                        </div>
-                    </div>
-                </div>
-            </div>
-            % endif
-    
-            % if phase_mode[ms]:
-            <div class="col-md-4">
-                <div class="thumbnail">
-                    <div class="caption">
-                        <%
-                            plot = phase_mode[ms]
-                        %>
-                        <h4>Phase vs frequency
-                            (<a class="replace"
-                                data-vis="${ms}"
-                                href="${os.path.relpath(os.path.join(dirname, phase_subpages[ms]), pcontext.report_dir)}">show ${ms}</a>)
-                        </h4>
-                        <p>The plot below shows phase vs frequency for the
-                        bandpass correction, overlayed for all spectral windows
-                        and correlations. Click on the link above to show
-                        show phase vs frequency plots for all antennas, or on the
-                        link for just the typical antenna.</p>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            % if plot is None or not os.path.exists(plot.thumbnail):
-                            <a href="${os.path.relpath(os.path.join(dirname, phase_subpages[ms]), pcontext.report_dir)}"
-                               data-fancybox="plots-${ms}">
-                                <img data-src="holder.js/255x188/text:Not Available">
-                            </a>
-                            <div class="caption">
-                                <h5>Typical antenna
-                                    (<a href="${os.path.relpath(os.path.join(dirname, phase_subpages[ms]), pcontext.report_dir)}"
-                                        class="replace"
-                                        data-vis="${ms}">
-                                        show all detail plots</a>)
-                                </h5>
-                                <p>The phase vs frequency plot is not available.</p>
-                            </div>
-                            % else:
-                            <a href="${os.path.relpath(plot.abspath, pcontext.report_dir)}"
-        	                   data-fancybox="plots-${ms}"
-                               data-plotCommandTarget="#plotcmd-${hash(plot.abspath)}">
-                                <img class="lazyload"
-                                     data-src="${os.path.relpath(plot.thumbnail, pcontext.report_dir)}"
-                                     title="Click to show phase vs frequency plot">
-                            </a>
-                            <div class="caption">
-                                <h5>Typical antenna (${plot.parameters['ant']})
-                                    (<a href="${os.path.relpath(os.path.join(dirname, phase_subpages[ms]), pcontext.report_dir)}"
-                                       class="replace"
-                                       data-ant="${plot.parameters['ant']}"
-                                       data-vis="${plot.parameters['vis']}">
-                                       show ${plot.parameters['ant']}
-                                    </a>)
-                                </h5>
-                                <p>Phase vs frequency for a typical antenna
-                                (${plot.parameters['ant']}). Click the link above to show
-                                detailed plots for ${plot.parameters['ant']}.</p>
-                            </div>
-                            <div id="plotcmd-${hash(plot.abspath)}" class="modal-content pipeline-plotcommand" style="display:none;">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-fancybox-close aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                    <h4 class="modal-title">Plot Command</h4>
-                                </div>
-                                <div class="modal-body" data-selectable="true">
-                                    <p>${rendererutils.get_command_markup(pcontext, plot.command)}</p>
-                                </div>
-                                <div class="modal-footer">
-                                     <button type="button" class="btn btn-default" data-fancybox-close>Close</button>
-                                </div>
-                            </div>
-                            % endif
-                        </div>
-                    </div>
-                </div>
-            </div>
-        % endif
-        </div>
-    % endfor
-% endif
 
 <p>
 <%self:plot_group plot_dict="${time_plots}"
