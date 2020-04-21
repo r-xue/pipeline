@@ -11,6 +11,7 @@ import collections
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
+import pipeline.infrastructure.displays.pointing as pointing
 from ..common import display as sd_display
 
 LOG = infrastructure.get_logger(__name__)
@@ -23,6 +24,10 @@ std_threshold = 4.
 
 # Frequency Spec
 FrequencySpec = collections.namedtuple('FrequencySpec', ['unit', 'data'])
+
+
+# Direction Spec
+DirectionSpec = collections.namedtuple('DirectionSpec', ['ref', 'minra', 'maxra', 'mindec', 'maxdec', 'resolution'])
 
 
 # To find the emission free channels roughly for estimating RMS
@@ -73,34 +78,77 @@ def decide_rms(naxis3, cube_regrid):
 def make_figures(peak_sn, mask_map, rms_threshold, rms_map,
                  masked_average_spectrum, all_average_spectrum,
                  naxis3, peak_sn_threshold, spectrum_at_peak,
-                 idy, idx, output_name, frequency=None):
+                 idy, idx, output_name, fspec=None, dspec=None):
 
     std_value = np.nanstd(masked_average_spectrum)
     plt.figure(MATPLOTLIB_FIGURE_NUM, figsize=(20, 5))
-    plt.subplot(1, 3, 1)
+    a1 = plt.subplot(1, 3, 1)
+    a2 = plt.subplot(1, 3, 2)
+    kw = {}
+    #dspec = None
+    if dspec is not None:
+        Extent = (dspec.maxra + dspec.resolution / 2, dspec.minra - dspec.resolution / 2,
+                  dspec.mindec - dspec.resolution / 2, dspec.maxdec + dspec.resolution / 2)
+        span = max(dspec.maxra - dspec.minra + dspec.resolution, dspec.maxdec - dspec.mindec + dspec.resolution)
+        (RAlocator, DEClocator, RAformatter, DECformatter) = pointing.XYlabel(span, dspec.ref)
+        for a in [a1, a2]:
+            a.xaxis.set_major_formatter(RAformatter)
+            a.yaxis.set_major_formatter(DECformatter)
+            a.xaxis.set_major_locator(RAlocator)
+            a.yaxis.set_major_locator(DEClocator)
+            xlabels = a.get_xticklabels()
+            plt.setp(xlabels, 'rotation', pointing.RArotation)
+            ylabels = a.get_yticklabels()
+            plt.setp(ylabels, 'rotation', pointing.DECrotation)
+        kw['extent'] = Extent
+        dunit = dspec.ref
+        mdec = (dspec.mindec + dspec.maxdec) / 2 * np.pi / 180
+        dx = (Extent[0] - Extent[1]) / peak_sn.shape[1]
+        dy = (Extent[3] - Extent[2]) / peak_sn.shape[0]
+        #scx = dspec.minra + idx * dx #* np.cos(mdec)
+        #scy = dspec.maxdec - (peak_sn.shape[0] - 1 - idy) * dy
+        scx = (idx + 0.5) / peak_sn.shape[1]
+        #scy = (peak_sn.shape[0] - 1 - idy - 0.5) / peak_sn.shape[0]
+        scy = (idy + 0.5) / peak_sn.shape[0]
+        aspect = 1.0 / np.cos((dspec.mindec + dspec.maxdec) / 2 / 180 * np.pi)
+        kw['aspect'] = aspect
+    else:
+        dunit = 'pixel'
+        scx = idx
+        scy = peak_sn.shape[0] - 1 - idy
+    LOG.info(f'scx = {scx}, scy = {scy}')
+    plt.sca(a1)
     plt.title("Peak SN map")
-    plt.xlabel("RA [pixel]")
-    plt.ylabel("DEC [pixel]")
-    plt.imshow(peak_sn, cmap="rainbow")
+    plt.xlabel(f"RA [{dunit}]")
+    plt.ylabel(f"DEC [{dunit}]")
+    LOG.info('peak_sn.shape = {}'.format(peak_sn.shape))
+    plt.imshow(np.flipud(peak_sn), cmap="rainbow", **kw)
     ylim = plt.ylim()
-    plt.ylim([ylim[1], ylim[0]])
+    LOG.info('ylim = {}'.format(list(ylim)))
+    #plt.ylim([ylim[1], ylim[0]])
     plt.colorbar(shrink=0.9)
-    plt.scatter(idx, idy, s=300, marker="o", facecolors='none', edgecolors='grey', linewidth=5)
-    plt.subplot(1, 3, 2)
+    #plt.scatter(scx, scy, s=300, marker="o", facecolors='none', edgecolors='grey', linewidth=5)
+    trans = plt.gca().transAxes if dspec is not None else None
+    plt.scatter(scx, scy, s=300, marker="o", facecolors='none', edgecolors='grey', linewidth=5,
+                transform=trans)
+    #l = plt.plot(scx, scy, markersize=20, marker="o", markerfacecolor='none', markeredgecolor='grey', #markeredgewidth=5,
+    #            transform=plt.gca().transAxes)
+    #LOG.info(l[0].get_data())
+    plt.sca(a2)
     plt.title("Mask map (1: SN<" + str(peak_sn_threshold) + ")")
-    plt.xlabel("RA [pixel]")
-    plt.ylabel("DEC [pixel]")
-    plt.imshow(mask_map, vmin=0, vmax=1, cmap="rainbow")
-    ylim = plt.ylim()
-    plt.ylim([ylim[1], ylim[0]])
+    plt.xlabel(f"RA [{dunit}]")
+    plt.ylabel(f"DEC [{dunit}]")
+    plt.imshow(np.flipud(mask_map), vmin=0, vmax=1, cmap="rainbow", **kw)
+    #ylim = plt.ylim()
+    #plt.ylim([ylim[1], ylim[0]])
     formatter = matplotlib.ticker.FixedFormatter(['Masked', 'Unmasked'])
     plt.colorbar(shrink=0.9, ticks=[0, 1], format=formatter)
     plt.subplot(1, 3, 3)
     plt.title("Masked-averaged spectrum")
-    if frequency is not None:
-        abc = frequency.data
+    if fspec is not None:
+        abc = fspec.data
         assert len(abc) == len(spectrum_at_peak)
-        plt.xlabel('Frequency [{}]'.format(frequency.unit))
+        plt.xlabel('Frequency [{}]'.format(fspec.unit))
     else:
         abc = np.arange(len(spectrum_at_peak), dtype=int)
         plt.xlabel("Channel")
@@ -177,11 +225,21 @@ def detect_contamination(context, imageitem):
     (refpix, refval, increment) = image_obj.spectral_axis(unit='GHz')
     frequency = np.array([refval + increment * (i - refpix) for i in range(naxis3)])
     fspec = FrequencySpec(unit='GHz', data=frequency)
+    qa = casatools.quanta
+    minra = qa.convert(image_obj.ra_min, 'deg')['value']
+    maxra = qa.convert(image_obj.ra_max, 'deg')['value']
+    mindec = qa.convert(image_obj.dec_min, 'deg')['value']
+    maxdec = qa.convert(image_obj.dec_max, 'deg')['value']
+    grid_size = image_obj.beam_size / 3
+    dirref = image_obj.direction_reference
+    dspec = DirectionSpec(ref=dirref, minra=minra, maxra=maxra, mindec=mindec, maxdec=maxdec,
+                          resolution=grid_size)
 
     # Making rms 　& Peak SN maps
     rms_map = decide_rms(naxis3, cube_regrid)
     peak_sn = (np.nanmax(cube_regrid, axis=0)) / rms_map
     idy, idx = np.unravel_index(np.argmax(peak_sn), peak_sn.shape)
+    LOG.info(f'idx {idx}, idy {idy}')
     spectrum_at_peak = cube_regrid[:, idy, idx]
 
     # Making averaged spectra and masked average spectrum
@@ -229,7 +287,7 @@ def detect_contamination(context, imageitem):
     make_figures(peak_sn, mask_map, rms_threshold, rms_map,
                  masked_average_spectrum, all_average_spectrum,
                  naxis3, peak_sn_threshold, spectrum_at_peak, idy, idx, output_name,
-                 fspec)
+                 fspec, dspec)
 
     # warn if absorption feature is detected
     warn_deep_absorption_feature(masked_average_spectrum, imageitem)
