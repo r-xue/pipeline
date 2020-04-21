@@ -7,9 +7,11 @@ import os
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
+import collections
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
+from ..common import display as sd_display
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -17,6 +19,10 @@ LOG = infrastructure.get_logger(__name__)
 # global parameters
 MATPLOTLIB_FIGURE_NUM = 6666
 std_threshold = 4.
+
+
+# Frequency Spec
+FrequencySpec = collections.namedtuple('FrequencySpec', ['unit', 'data'])
 
 
 # To find the emission free channels roughly for estimating RMS
@@ -67,7 +73,7 @@ def decide_rms(naxis3, cube_regrid):
 def make_figures(peak_sn, mask_map, rms_threshold, rms_map,
                  masked_average_spectrum, all_average_spectrum,
                  naxis3, peak_sn_threshold, spectrum_at_peak,
-                 idy, idx, output_name):
+                 idy, idx, output_name, frequency=None):
 
     std_value = np.nanstd(masked_average_spectrum)
     plt.figure(MATPLOTLIB_FIGURE_NUM, figsize=(20, 5))
@@ -91,24 +97,31 @@ def make_figures(peak_sn, mask_map, rms_threshold, rms_map,
     plt.colorbar(shrink=0.9, ticks=[0, 1], format=formatter)
     plt.subplot(1, 3, 3)
     plt.title("Masked-averaged spectrum")
-    plt.xlabel("Channel")
+    if frequency is not None:
+        abc = frequency.data
+        assert len(abc) == len(spectrum_at_peak)
+        plt.xlabel('Frequency [{}]'.format(frequency.unit))
+    else:
+        abc = np.arange(len(spectrum_at_peak), dtype=int)
+        plt.xlabel("Channel")
+    w = abc[-1] - abc[0]
     plt.ylabel("Intensity [K]")
     plt.ylim(std_value * (-7.), std_value * 7.)
-    plt.plot(spectrum_at_peak, "-", color="grey", label="spectrum at peak", alpha=0.5)
-    plt.plot(masked_average_spectrum, "-", color="red", label="masked averaged")
-    plt.plot([0, naxis3], [0, 0], "-", color="black")
-    plt.plot([0, naxis3], [-4. * std_value, -4. * std_value], "--", color="red")
-    plt.plot([0, naxis3], [np.nanmean(rms_map) * 1., np.nanmean(rms_map) * 1], "--", color="blue")
-    plt.plot([0, naxis3], [np.nanmean(rms_map) * (-1.), np.nanmean(rms_map) * (-1.)], "--", color="blue")
+    plt.plot(abc, spectrum_at_peak, "-", color="grey", label="spectrum at peak", alpha=0.5)
+    plt.plot(abc, masked_average_spectrum, "-", color="red", label="masked averaged")
+    plt.plot([abc[0], abc[-1]], [0, 0], "-", color="black")
+    plt.plot([abc[0], abc[-1]], [-4. * std_value, -4. * std_value], "--", color="red")
+    plt.plot([abc[0], abc[-1]], [np.nanmean(rms_map) * 1., np.nanmean(rms_map) * 1], "--", color="blue")
+    plt.plot([abc[0], abc[-1]], [np.nanmean(rms_map) * (-1.), np.nanmean(rms_map) * (-1.)], "--", color="blue")
     if std_value * (7.) >= np.nanmean(rms_map) * peak_sn_threshold:
-        plt.plot([0, naxis3], [np.nanmean(rms_map) * peak_sn_threshold, np.nanmean(rms_map) * peak_sn_threshold], "--", color="green")
-        plt.text(naxis3 * 0.5, np.nanmean(rms_map) * peak_sn_threshold, "lower 10% level", fontsize=18, color="green")
-    plt.text(naxis3 * 0.1, np.nanmean(rms_map) * 1., "1.0 x rms", fontsize=18, color="blue")
-    plt.text(naxis3 * 0.1, np.nanmean(rms_map) * (-1.), "-1.0 x rms", fontsize=18, color="blue")
-    plt.text(naxis3 * 0.6, -4. * std_value, "-4.0 x std", fontsize=18, color="red")
+        plt.plot([abc[0], abc[-1]], [np.nanmean(rms_map) * peak_sn_threshold, np.nanmean(rms_map) * peak_sn_threshold], "--", color="green")
+        plt.text(abc[0] + w * 0.5, np.nanmean(rms_map) * peak_sn_threshold, "lower 10% level", fontsize=18, color="green")
+    plt.text(abc[0] + w * 0.1, np.nanmean(rms_map) * 1., "1.0 x rms", fontsize=18, color="blue")
+    plt.text(abc[0] + w * 0.1, np.nanmean(rms_map) * (-1.), "-1.0 x rms", fontsize=18, color="blue")
+    plt.text(abc[0] + w * 0.6, -4. * std_value, "-4.0 x std", fontsize=18, color="red")
     plt.legend()
     if np.nanmin(masked_average_spectrum) <= (-1) * std_value * std_threshold:
-        plt.text(naxis3 * 2. / 5., -5. * std_value, "Warning!!", fontsize=25, color="Orange")
+        plt.text(abc[0] + w * 2. / 5., -5. * std_value, "Warning!!", fontsize=25, color="Orange")
     plt.savefig(output_name, bbox_inches="tight")
     plt.clf()
 
@@ -160,6 +173,10 @@ def detect_contamination(context, imageitem):
     LOG.info(output_name)
     # Read FITS and its header
     cube_regrid, naxis1, naxis2, naxis3, cdelt2, cdelt3 = read_fits(imagename)
+    image_obj = sd_display.SpectralImage(imagename)
+    (refpix, refval, increment) = image_obj.spectral_axis(unit='GHz')
+    frequency = np.array([refval + increment * (i - refpix) for i in range(naxis3)])
+    fspec = FrequencySpec(unit='GHz', data=frequency)
 
     # Making rms 　& Peak SN maps
     rms_map = decide_rms(naxis3, cube_regrid)
@@ -211,7 +228,8 @@ def detect_contamination(context, imageitem):
     # Make figures
     make_figures(peak_sn, mask_map, rms_threshold, rms_map,
                  masked_average_spectrum, all_average_spectrum,
-                 naxis3, peak_sn_threshold, spectrum_at_peak, idy, idx, output_name)
+                 naxis3, peak_sn_threshold, spectrum_at_peak, idy, idx, output_name,
+                 fspec)
 
     # warn if absorption feature is detected
     warn_deep_absorption_feature(masked_average_spectrum, imageitem)
