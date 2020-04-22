@@ -163,6 +163,10 @@ def make_figures(peak_sn, mask_map, rms_threshold, rms_map,
     plt.legend()
     if np.nanmin(masked_average_spectrum) <= (-1) * std_value * std_threshold:
         plt.text(minabc + w * 2. / 5., -5. * std_value, "Warning!!", fontsize=25, color="Orange")
+
+    # disable use of offset on xaxis label
+    plt.gca().get_xaxis().get_major_formatter().set_useOffset(False)
+
     plt.savefig(output_name, bbox_inches="tight")
     plt.clf()
 
