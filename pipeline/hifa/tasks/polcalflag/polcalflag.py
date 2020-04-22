@@ -94,6 +94,12 @@ class Polcalflag(basetask.StandardTaskTemplate):
             actask = applycal.IFApplycal(acinputs)
             acresult = self._executor.execute(actask, merge=True)
 
+            # Create back-up of flags after applycal but before correctedampflag.
+            LOG.info('Creating back-up of "after_pcflag_applycal" flagging state')
+            flag_backup_name_after_pcflag_applycal = 'after_pcflag_applycal'
+            task = casa_tasks.flagmanager(vis=inputs.vis, mode='save', versionname=flag_backup_name_after_pcflag_applycal)
+            self._executor.execute(task)
+
             # Find amplitude outliers and flag data. This needs to be done
             # per source / per field ID / per spw basis.
             LOG.info('Running correctedampflag to identify polarization calibrator outliers to flag.')
@@ -106,44 +112,58 @@ class Polcalflag(basetask.StandardTaskTemplate):
             caftask = correctedampflag.Correctedampflag(cafinputs)
             cafresult = self._executor.execute(caftask)
 
+            # Store correctedampflag result
+            result.cafresult = cafresult
+
+            # Get new flag commands
+            cafflags = cafresult.flagcmds()
+
+            # If new outliers were identified...make "after flagging" plots that
+            # include both applycal flags and correctedampflag flags
+            if cafflags:
+                # Make "after calibration, after flagging" plots for the weblog
+                LOG.info('Creating "after calibration, after flagging" plots')
+                result.plots['after'] = plot_fn(suffix='after')
+
         finally:
+            if cafflags:
+                # Restore the "after_pcflag_applycal" backup of the flagging
+                # state, so that the "before plots" only show things needing
+                # to be flagged by correctedampflag
+                LOG.info('Restoring back-up of "after_pcflag_applycal" flagging state.')
+                task = casa_tasks.flagmanager(vis=inputs.vis, mode='restore', versionname=flag_backup_name_after_pcflag_applycal)
+                self._executor.execute(task)
+                # Make "after calibration, before flagging" plots for the weblog
+                LOG.info('Creating "after calibration, before flagging" plots')
+                result.plots['before'] = plot_fn(suffix='before')
+
             # Restore the "pre-polcalflag" backup of the flagging state.
             LOG.info('Restoring back-up of "pre-polcalflag" flagging state.')
             task = casa_tasks.flagmanager(
                 vis=inputs.vis, mode='restore', versionname=flag_backup_name_prepcf)
             self._executor.execute(task)
 
-        # Store correctedampflag result
-        result.cafresult = cafresult
+            # If new outliers were identified...
+            if cafflags:
+                # Make "after calibration, before flagging" plots for the weblog
+                LOG.info('Creating "after calibration, before flagging" plots')
+                result.plots['before'] = plot_fn(suffix='before')
 
-        # Get new flag commands
-        cafflags = cafresult.flagcmds()
+                # Re-apply the newly found flags from correctedampflag.
+                LOG.info('Re-applying flags from correctedampflag.')
+                fsinputs = FlagdataSetter.Inputs(
+                    context=inputs.context, vis=inputs.vis, table=inputs.vis,
+                    inpfile=[])
+                fstask = FlagdataSetter(fsinputs)
+                fstask.flags_to_set(cafflags)
+                fsresult = self._executor.execute(fstask)
 
-        # If new outliers were identified...
-        if cafflags:
-            # Make "after calibration, before flagging" plots for the weblog
-            LOG.info('Creating "after calibration, before flagging" plots')
-            result.plots['before'] = plot_fn(suffix='before')
-
-            # Re-apply the newly found flags from correctedampflag.
-            LOG.info('Re-applying flags from correctedampflag.')
-            fsinputs = FlagdataSetter.Inputs(
-                context=inputs.context, vis=inputs.vis, table=inputs.vis,
-                inpfile=[])
-            fstask = FlagdataSetter(fsinputs)
-            fstask.flags_to_set(cafflags)
-            fsresult = self._executor.execute(fstask)
-
-            # Make "after calibration, after flagging" plots for the weblog
-            LOG.info('Creating "after calibration, after flagging" plots')
-            result.plots['after'] = plot_fn(suffix='after')
-
-            # Check for need to update reference antennas, and apply to local
-            # copy of the MS.
-            result = self._identify_refants_to_update(result)
-            ms = inputs.context.observing_run.get_ms(name=inputs.vis)
-            ms.update_reference_antennas(ants_to_demote=result.refants_to_demote,
-                                         ants_to_remove=result.refants_to_remove)
+                # Check for need to update reference antennas, and apply to local
+                # copy of the MS.
+                result = self._identify_refants_to_update(result)
+                ms = inputs.context.observing_run.get_ms(name=inputs.vis)
+                ms.update_reference_antennas(ants_to_demote=result.refants_to_demote,
+                                             ants_to_remove=result.refants_to_remove)
 
         return result
 

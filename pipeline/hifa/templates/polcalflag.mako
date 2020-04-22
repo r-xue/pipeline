@@ -26,9 +26,22 @@ def plot_type(plot):
 
 <%inherit file="t2-4m_details-base.mako"/>
 
-<%block name="title">Polcal Flag</%block>
+<%block name="title">Polarization Calibrator Flagging</%block>
 
-<p>Polcalflag</p>
+<p>
+    This task computes the flagging heuristics for polarization
+    intents by calling hif_correctedampflag which looks for outlier visibility
+    points by statistically examining the scalar difference of the corrected
+    amplitude minus model amplitudes and flags those outliers.
+</p>
+<p>
+    In further detail, the workflow is as follows: an a priori calibration is
+    applied using pre-existing caltables in the calibration state, the flagging
+    heuristics are run and any outliers are flagged. The list of reference
+    antennas is updated to account for the new flagging state. The score for
+    this stage is the standard data flagging score (depending on the fraction
+    of data flagged).
+</p>
 
 <h2>Contents</h2>
 <ul>
@@ -39,6 +52,9 @@ def plot_type(plot):
     <li><a href="#flagging_commands">Flagging commands</a></li>
 %endif
     <li><a href="#flagged_data_summary">Flagged data summary table</a></li>
+% if any(v != [] for v in time_plots.values()):
+    <li><a href="#amp_vs_time">Amplitude vs time plots for flagging</a></li>
+% endif
 </ul>
 
 % if updated_refants:
@@ -135,43 +151,43 @@ def plot_type(plot):
 <h2 id="per_ms_plots" class="jumptarget">Plots</h2>
 
 <%self:plot_group plot_dict="${time_plots}"
-                                  url_fn="${lambda x: 'junk'}"
+                  url_fn="${lambda x: 'junk'}"
                   rel_fn="${lambda plot: 'amp_vs_time_%s_%s' % (plot.parameters['vis'], plot.parameters['spw'])}"
-                                  title_id="amp_vs_time"
+                  title_id="amp_vs_time"
                   break_rows_by="intent,field,type_idx"
                   sort_row_by="spw">
 
         <%def name="title()">
-                Amplitude vs time
+              Amplitude vs time
         </%def>
 
         <%def name="preamble()">
                 <p>These plots show amplitude vs time for two cases: 1, the calibrated data before application of any flags;
-        and 2, where flagging was applied, the calibrated data after application of flags.</p>
+                   and 2, where flagging was applied, the calibrated data after application of flags.</p>
 
                 <p>Data are plotted for all antennas and correlations, with different
-                correlations shown in different colours.</p>
+                   correlations shown in different colours.</p>
         </%def>
 
         <%def name="mouseover(plot)">Click to show amplitude vs time for spw ${plot.parameters['spw']}</%def>
 
         <%def name="fancybox_caption(plot)">
-                ${plot_type(plot)}<br>
-                ${plot.parameters['vis']}<br>
-                Spw ${plot.parameters['spw']}<br>
-                Intents: ${utils.commafy([plot.parameters['intent']], False)}
+              ${plot_type(plot)}<br>
+              ${plot.parameters['vis']}<br>
+              Spw ${plot.parameters['spw']}<br>
+              Intents: ${utils.commafy([plot.parameters['intent']], False)}
         </%def>
 
-    <%def name="caption_title(plot)">
-                Spectral Window ${plot.parameters['spw']}<br>
+        <%def name="caption_title(plot)">
+              Spectral Window ${plot.parameters['spw']}<br>
         </%def>
 
         <%def name="caption_subtitle(plot)">
-                Intents: ${utils.commafy([plot.parameters['intent']], False)}
+              Intents: ${utils.commafy([plot.parameters['intent']], False)}
         </%def>
 
-    <%def name="caption_text(plot, ptype)">
-                ${plot_type(plot)}.
+        <%def name="caption_text(plot, ptype)">
+              ${plot_type(plot)}.
         </%def>
 
 </%self:plot_group>
