@@ -115,15 +115,15 @@ def make_figures(peak_sn, mask_map, rms_threshold, rms_map,
         dunit = 'pixel'
         scx = idx
         scy = peak_sn.shape[0] - 1 - idy
-    LOG.info(f'scx = {scx}, scy = {scy}')
+    LOG.debug(f'scx = {scx}, scy = {scy}')
     plt.sca(a1)
     plt.title("Peak SN map")
     plt.xlabel(f"RA [{dunit}]")
     plt.ylabel(f"DEC [{dunit}]")
-    LOG.info('peak_sn.shape = {}'.format(peak_sn.shape))
+    LOG.debug('peak_sn.shape = {}'.format(peak_sn.shape))
     plt.imshow(np.flipud(peak_sn), cmap="rainbow", **kw)
     ylim = plt.ylim()
-    LOG.info('ylim = {}'.format(list(ylim)))
+    LOG.debug('ylim = {}'.format(list(ylim)))
     plt.colorbar(shrink=0.9)
     trans = plt.gca().transAxes if dspec is not None else None
     plt.scatter(scx, scy, s=300, marker="o", facecolors='none', edgecolors='grey', linewidth=5,
@@ -236,7 +236,7 @@ def detect_contamination(context, imageitem):
     rms_map = decide_rms(naxis3, cube_regrid)
     peak_sn = (np.nanmax(cube_regrid, axis=0)) / rms_map
     idy, idx = np.unravel_index(np.argmax(peak_sn), peak_sn.shape)
-    LOG.info(f'idx {idx}, idy {idy}')
+    LOG.debug(f'idx {idx}, idy {idy}')
     spectrum_at_peak = cube_regrid[:, idy, idx]
 
     # Making averaged spectra and masked average spectrum
