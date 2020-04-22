@@ -2,30 +2,21 @@
 
 <task type="function" name="hifa_bandpassflag" category="pipeline">
 
-<shortdescription>Compute bandpass calibration with flagging</shortdescription>
+<shortdescription>Bandpass calibration flagging</shortdescription>
 
 <description>
-This task performs a preliminary bandpass solution and applies it, then
-computes the flagging heuristics by calling hif_correctedampflag which
-looks for outlier visibility points by statistically examining the scalar
-difference of the corrected amplitudes minus model amplitudes, flags those
-outliers, then derives a final bandpass solution (if any flags were
-generated). The philosophy is that only outlier data points that have
-remained outliers after calibration will be flagged. Note that the phase of
-the data is not assessed.
+This task performs a preliminary phased-up bandpass solution and temporarily
+applies it, then computes the flagging heuristics by calling
+hif_correctedampflag which looks for outlier visibility points by statistically
+examining the scalar difference of the corrected amplitudes minus model
+amplitudes, and then flags those outliers. The philosophy is that only outlier
+data points that have remained outliers after calibration will be flagged. Note
+that the phase of the data is not assessed.
 
-In further detail, the workflow is as follows: an a priori calibration is
-applied using pre-existing caltables in the calibration state, a
-preliminary bandpass solution and amplitude gaincal solution is solved and
-applied, the flagging heuristics are run and any outliers are flagged, a
-final bandpass solution is solved (if necessary) and the name &quot;final&quot; is
-appended to this caltable. Plots are generated at two points in this
-workflow: after bandpass calibration but before flagging heuristics are
-run, and after flagging heuristics have been run and applied. If no points
-were flagged, the &quot;after&quot; plots are not generated or displayed. The score
-for this stage is a simple combination (multiplication) of the standard
-data flagging score (depending on the fraction of data flagged) and the
-score for the bandpass solution.
+Plots are generated at two points in this workflow: after bandpass calibration
+but before flagging heuristics are run, and after flagging heuristics have been
+run and applied. If no points were flagged, the 'after' plots are not generated
+or displayed.
 
 If pipeline mode is 'getinputs' then None is returned. Otherwise the
 results object for the pipeline task is returned.

@@ -13,28 +13,18 @@ except:
 
 __rethrow_casa_exceptions = False
 
-# CASA imports
-from h_init_cli import h_init_cli as h_init
-from hifv_importdata_cli import hifv_importdata_cli as hifv_importdata
-from hif_editimlist_cli import hif_editimlist_cli as hif_editimlist
-from hif_transformimagedata import hif_transformimagedata as hif_transformimagedata
-from hif_makeimages_cli import hif_makeimages_cli as hif_makeimages
-from hifv_pbcor_cli import hifv_pbcor_cli as hifv_pbcor
-from hif_makermsimages_cli import hif_makermsimages_cli as hif_makermsimages
-from hif_makecutoutimages_cli import hif_makecutoutimages_cli as hif_makecutoutimages
-from hifv_exportdata_cli import hifv_exportdata_cli as hifv_exportdata
-from hifv_exportvlassdata_cli import hifv_exportvlassdata_cli as hifv_exportvlassdata
-from h_save_cli import h_save_cli as h_save
-
-# Pipeline imports
-import pipeline.infrastructure.casatools as casatools
-
 # IMPORT_ONLY = 'Import only'
 IMPORT_ONLY = ''
 
 
 # Run the procedure
 def vlassQLIP(vislist, editimlist_infile, importonly=False, pipelinemode='automatic', interactive=True):
+    import pipeline
+
+    # Pipeline imports
+    import pipeline.infrastructure.casatools as casatools
+    pipeline.initcli()
+
     echo_to_screen = interactive
     casatools.post_to_log("Beginning VLA Sky Survey quick look imaging pipeline run ...")
 
@@ -65,8 +55,8 @@ def vlassQLIP(vislist, editimlist_infile, importonly=False, pipelinemode='automa
         # make sub-images of final, primary beam, rms and psf images.
         hif_makecutoutimages(pipelinemode=pipelinemode)
 
-        # Export the data to products directory
-        hifv_exportdata(pipelinemode=pipelinemode)
+        # Measure of flagged data in the imaging run.
+        hifv_flagdata(quack=False, edgespw=False, clip=False, scan=False, autocorr=False, hm_tbuff='manual', template=False, online=False, baseband=False)
 
         # Export FITS images of primary beam corrected tt0 and RMS cutout images
         hifv_exportvlassdata(pipelinemode=pipelinemode)

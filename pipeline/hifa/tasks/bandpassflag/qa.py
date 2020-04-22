@@ -2,7 +2,6 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
-import pipeline.qa.scorecalculator as qacalc
 from . import resultobjects
 
 LOG = logging.get_logger(__name__)
@@ -16,40 +15,11 @@ class BandpassflagQAHandler(pqa.QAPlugin):
     child_cls = None
 
     def handle(self, context, result):
-        vis = result.inputs['vis']
-        ms = context.observing_run.get_ms(vis)
-
         # Run correctedampflag QA on correctedampflag result.
         pqa.qa_registry.do_qa(context, result.cafresult)
 
-        # Run bandpass QA on bandpass result.
-        pqa.qa_registry.do_qa(context, result.bpresult)
-
-        # Create bandpassflag specific score, set to a multiplication of
-        # the representative score in correctedampflag QA pool and the
-        # representative score in the bandpass QA pool.
-        score = qacalc.score_multiply(
-            [result.cafresult.qa.representative.score,
-             result.bpresult.qa.representative.score])
-
-        # Update score.
-        longmsg = 'Combined score for {}: multiplication of flagging score '\
-                  '{:0.2f} and bandpass score '\
-                  '{:0.2f}.'.format(ms.basename,
-                                    result.cafresult.qa.representative.score,
-                                    result.bpresult.qa.representative.score)
-        shortmsg = 'Combined flagging and bandpass score'
-        new_origin = pqa.QAOrigin(
-            metric_name='BandpassflagQAHandler',
-            metric_score=bool(score),
-            metric_units='Presence of combined score.')
-        score.longmsg = longmsg
-        score.shortmsg = shortmsg
-        score.origin = new_origin
-
-        # Gather scores, store in result.
-        scores = [score] + result.bpresult.qa.pool + result.cafresult.qa.pool
-        result.qa.pool[:] = scores
+        # Store flagging score into result.
+        result.qa.pool[:] = result.cafresult.qa.pool
 
 
 class BandpassflagListQAHandler(pqa.QAPlugin):

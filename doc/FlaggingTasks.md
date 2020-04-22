@@ -7,7 +7,7 @@ common flagging framework, and an in-depth explanation of individual flagging ta
 
 ## Summary current pipeline tasks
 
-Status as of February 2019:
+Status as of March 2020:
 
 The following pipeline tasks make use of the flagging framework and are part of (at least) one of the standard pipeline recipes:
 - hif_rawflagchans: flags raw data in MS.
@@ -19,6 +19,7 @@ The following pipeline tasks perform flagging but do not make use of the common 
 - hif_correctedampflag: Flag corrected - model amplitudes based on calibrators.
 - hifa_bandpassflag: uses hif_correctedampflag to flag corrected-model amplitude outliers for the bandpass calibrator.
 - hifa_gfluxscaleflag: uses hif_correctedampflag to flag corrected-model amplitude outliers for the phase and flux calibrators.
+- hifa_targetflag: uses hif_correctedampflag to flag corrected-model amplitude outliers for the target source.
 - hifa_flagdata: performs basic deterministic flagging on MS (e.g. shadowed antennas, online flags, autocorrelations, etc)
 - hifa_fluxcalflag: locates and flags line regions in solar-system flux calibrators.
 

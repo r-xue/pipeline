@@ -1,8 +1,7 @@
 import html
 import itertools
 import os
-import xml.dom.minidom as minidom
-import xml.etree.ElementTree as ET
+from typing import List, Optional
 
 import numpy as np
 
@@ -10,6 +9,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure.pipelineqa import QAScore, WebLogLocation
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -189,7 +189,7 @@ def get_suboptimal_badge(result):
         return ''
 
 
-def get_plot_command_markup(ctx, command):
+def get_command_markup(ctx, command):
     if not command:
         return ''
     stripped = command.replace('%s/' % ctx.report_dir, '')
@@ -273,3 +273,67 @@ def num_lines(abspath):
         return sum(1 for line in open(abspath) if line.strip() and not line.startswith('#'))
     else:
         return 'N/A'
+
+
+def scores_in_range(pool: List[QAScore], lo: float, hi: float) -> List[QAScore]:
+    """
+    Filter QA scores by range.
+    """
+    return [score for score in pool
+            if score.score not in ('', 'N/A', None)
+            and lo < score.score <= hi]
+
+
+def scores_with_location(pool: List[QAScore],
+                         locations: Optional[List[WebLogLocation]] = None) -> List[QAScore]:
+    """
+    Filter QA scores by web log location.
+    """
+    if not locations:
+        locations = list(WebLogLocation)
+
+    return [score for score in pool if score.weblog_location in locations]
+
+
+def get_notification_trs(result, alerts_info, alerts_success):
+    # suppress scores not intended for the banner, taking care not to suppress
+    # legacy scores with a default message destination (=UNSET) so that old
+    # tasks continue to render as before
+    all_scores: List[QAScore] = result.qa.pool
+    banner_scores = scores_with_location(all_scores, [WebLogLocation.BANNER, WebLogLocation.UNSET])
+
+    notifications = []
+
+    if banner_scores:
+        for qa_score in scores_in_range(banner_scores, -0.1, SCORE_THRESHOLD_ERROR):
+            n = format_notification('danger alert-danger', 'QA', qa_score.longmsg, 'glyphicon glyphicon-remove-sign')
+            notifications.append(n)
+        for qa_score in scores_in_range(banner_scores, SCORE_THRESHOLD_ERROR, SCORE_THRESHOLD_WARNING):
+            n = format_notification('warning alert-warning', 'QA', qa_score.longmsg, 'glyphicon glyphicon-exclamation-sign')
+            notifications.append(n)
+
+    for logrecord in utils.get_logrecords(result, logging.ERROR):
+        n = format_notification('danger alert-danger', 'Error!', logrecord.msg)
+        notifications.append(n)
+    for logrecord in utils.get_logrecords(result, logging.WARNING):
+        n = format_notification('warning alert-warning', 'Warning!', logrecord.msg)
+        notifications.append(n)
+
+    if alerts_info:
+        for msg in alerts_info:
+            n = format_notification('info alert-info', '', msg)
+            notifications.append(n)
+    if alerts_success:
+        for msg in alerts_success:
+            n = format_notification('success alert-success', '', msg)
+            notifications.append(n)
+
+    return notifications
+
+
+def format_notification(tr_class, alert, msg, icon_class=None):
+    if icon_class:
+        icon = '<span class="%s"></span> ' % icon_class
+    else:
+        icon = ''
+    return '<tr class="%s"><td>%s<strong>%s</strong> %s</td></tr>' % (tr_class, icon, alert, msg)

@@ -13,7 +13,9 @@ from pipeline import environment
 from pipeline.h.tasks.common import manifest
 from pipeline.h.tasks.exportdata import exportdata
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casatools
 from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import utils
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -46,7 +48,6 @@ class ExportvlassdataInputs(exportdata.ExportDataInputs):
 
 @task_registry.set_equivalent_casa_task('hifv_exportvlassdata')
 class Exportvlassdata(basetask.StandardTaskTemplate):
-
     Inputs = ExportvlassdataInputs
 
     NameBuilder = exportdata.PipelineProductNameBuiler
@@ -98,16 +99,30 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
         imlist = self.inputs.context.subimlist.get_imlist()
 
+        # PIPE-592: find out imaging mode (stored in context by hif_editimlist)
+        if hasattr(self.inputs.context, 'imaging_mode'):
+            img_mode = self.inputs.context.imaging_mode
+        else:
+            LOG.warn("imaging_mode property does not exist in context, alpha images will not be written.")
+            img_mode = None
+
         images_list = []
         for imageitem in imlist:
 
             if imageitem['multiterm']:
                 pbcor_image_name = imageitem['imagename'].replace('subim', 'pbcor.tt0.subim')
                 rms_image_name = imageitem['imagename'].replace('subim', 'pbcor.tt0.rms.subim')
+                image_bundle = [pbcor_image_name, rms_image_name]
+                # PIPE-592: save VLASS SE alpha and alpha error images
+                if img_mode == 'VLASS-SE-CONT':
+                    alpha_image_name = imageitem['imagename'].replace('.image.subim', '.alpha.subim')
+                    alpha_image_error_name = imageitem['imagename'].replace('.image.subim', '.alpha.error.subim')
+                    image_bundle.extend([alpha_image_name, alpha_image_error_name])
             else:
                 pbcor_image_name = imageitem['imagename'].replace('subim', 'pbcor.subim')
                 rms_image_name = imageitem['imagename'].replace('subim', 'pbcor.rms.subim')
-            images_list.extend([pbcor_image_name, rms_image_name])
+                image_bundle = [pbcor_image_name, rms_image_name]
+            images_list.extend(image_bundle)
 
         fits_list = []
         for image in images_list:
@@ -116,6 +131,19 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             self._executor.execute(task)
             LOG.info('Wrote {ff}'.format(ff=fitsfile))
             fits_list.append(fitsfile)
+
+            # Apply position corrections to VLASS-QL product images (PIPE-587)
+            if img_mode == 'VLASS-QL':
+                # Mean antenna geographic coordinates
+                observatory = casatools.measures.observatory(self.inputs.context.project_summary.telescope)
+                # Mean observing date
+                start_time = self.inputs.context.observing_run.start_datetime
+                end_time = self.inputs.context.observing_run.end_datetime
+                mid_time = start_time + (end_time - start_time) / 2
+                mid_time = casatools.measures.epoch('utc', mid_time.isoformat())
+                # Correction
+                utils.positioncorrection.do_wide_field_pos_cor(fitsfile, date_time=mid_time, obs_long=observatory['m0'],
+                                                               obs_lat=observatory['m1'])
 
         # Export the pipeline manifest file
         #    TBD Remove support for auxiliary data products to the individual pipelines
@@ -416,7 +444,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
         ps = context.project_structure
         casascript_file = os.path.join(context.report_dir, casascript_name)
-        out_casascript_file = self.NameBuilder.casa_script(casascript_name, 
+        out_casascript_file = self.NameBuilder.casa_script(casascript_name,
                                                            project_structure=ps,
                                                            ousstatus_entity_id=oussid,
                                                            output_dir=products_dir)

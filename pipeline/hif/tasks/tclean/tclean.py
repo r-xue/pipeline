@@ -11,6 +11,7 @@ import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.pipelineqa as pipelineqa
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+import pipeline.infrastructure.imageheader as imageheader
 from pipeline.hif.heuristics import imageparams_factory
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
@@ -1008,10 +1009,10 @@ class Tclean(cleanbase.CleanBase):
             assert os.path.exists(mom0_name)
 
             # Update the metadata in the MOM0_FC image.
-            cleanbase.set_miscinfo(name=mom0_name, spw=self.inputs.spw,
-                                   field=self.inputs.field, iter=maxiter, type='mom0_fc',
-                                   intent=self.inputs.intent, specmode=self.inputs.specmode,
-                                   context=context)
+            imageheader.set_miscinfo(name=mom0_name, spw=self.inputs.spw,
+                                     field=self.inputs.field, iter=maxiter, type='mom0_fc',
+                                     intent=self.inputs.intent, specmode=self.inputs.specmode,
+                                     context=context)
 
             # Update the result.
             result.set_mom0_fc(maxiter, mom0_name)
@@ -1022,10 +1023,10 @@ class Tclean(cleanbase.CleanBase):
             assert os.path.exists(mom8_name)
 
             # Update the metadata in the MOM8_FC image.
-            cleanbase.set_miscinfo(name=mom8_name, spw=self.inputs.spw,
-                                   field=self.inputs.field, iter=maxiter, type='mom8_fc',
-                                   intent=self.inputs.intent, specmode=self.inputs.specmode,
-                                   context=context)
+            imageheader.set_miscinfo(name=mom8_name, spw=self.inputs.spw,
+                                     field=self.inputs.field, iter=maxiter, type='mom8_fc',
+                                     intent=self.inputs.intent, specmode=self.inputs.specmode,
+                                     context=context)
 
             # Update the result.
             result.set_mom8_fc(maxiter, mom8_name)

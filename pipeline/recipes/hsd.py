@@ -16,22 +16,6 @@ except:
 
 __rethrow_casa_exceptions = True
 
-# CASA imports
-from h_init_cli import h_init_cli as h_init
-from hsd_importdata_cli import hsd_importdata_cli as hsd_importdata
-from hsd_flagdata_cli import hsd_flagdata_cli as hsd_flagdata
-from h_tsyscal_cli import h_tsyscal_cli as h_tsyscal
-from hsd_tsysflag_cli import hsd_tsysflag_cli as hsd_tsysflag
-from hsd_skycal_cli import hsd_skycal_cli as hsd_skycal
-from hsd_k2jycal_cli import hsd_k2jycal_cli as hsd_k2jycal
-from hsd_applycal_cli import hsd_applycal_cli as hsd_applycal
-from hsd_baseline_cli import hsd_baseline_cli as hsd_baseline
-from hsd_blflag_cli import hsd_blflag_cli as hsd_blflag
-from hsd_imaging_cli import hsd_imaging_cli as hsd_imaging
-from hsd_exportdata_cli import hsd_exportdata_cli as hsd_exportdata
-from h_save_cli import h_save_cli as h_save
-
-
 # Pipeline imports
 import pipeline.infrastructure.casatools as casatools
 

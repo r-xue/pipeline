@@ -25,11 +25,11 @@ LOG = logging.get_logger(__name__)
 
 ImageRow = collections.namedtuple('ImageInfo', (
     'vis field fieldname intent spw spwnames pol frequency_label frequency beam beam_pa sensitivity '
-    'cleaning_threshold residual_ratio non_pbcor_label non_pbcor pbcor score '
-    'fractional_bw_label fractional_bw aggregate_bw_label aggregate_bw aggregate_bw_num '
+    'cleaning_threshold initial_nsigma_mad final_nsigma_mad residual_ratio non_pbcor_label non_pbcor '
+    'pbcor score fractional_bw_label fractional_bw aggregate_bw_label aggregate_bw aggregate_bw_num '
     'image_file nchan plot qa_url iterdone stopcode stopreason '
     'chk_pos_offset chk_frac_beam_offset chk_fitflux chk_fitpeak_fitflux_ratio img_snr '
-    'chk_gfluxscale chk_gfluxscale_snr chk_fitflux_gfluxscale_ratio cube_all_cont result'))
+    'chk_gfluxscale chk_gfluxscale_snr chk_fitflux_gfluxscale_ratio cube_all_cont tclean_command result'))
 
 
 class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -224,8 +224,11 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             # cleaning threshold cell
             #
             if 'VLASS' in r.imaging_mode:
-                threshold_quantity = utils.get_casa_quantity(r.threshold)
-                row_cleaning_threshold = '%.2g %s' % (threshold_quantity['value'], threshold_quantity['unit'])
+                if r.threshold:
+                    threshold_quantity = utils.get_casa_quantity(r.threshold)
+                    row_cleaning_threshold = '%.2g %s' % (threshold_quantity['value'], threshold_quantity['unit'])
+                else:
+                    row_cleaning_threshold = '-'
             elif 'VLA' in r.imaging_mode:
                 row_cleaning_threshold = '-'
             else:
@@ -238,6 +241,33 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         row_cleaning_threshold += '<br>No DR information'
                 else:
                     row_cleaning_threshold = '-'
+
+            #
+            # nsigma * initial and final scaled MAD for residual image, See PIPE-488
+            #
+            nsigma_final = r.iterations[maxiter]['imaging_params']['nsigma']
+
+            # dirty image statistics (iter 0)
+            with casatools.ImageReader(r.iterations[0]['residual'] + extension) as residual:
+                initial_residual_stats = residual.statistics(robust=True)
+
+            initial_nsigma_mad = nsigma_final * initial_residual_stats.get('medabsdevmed')[0] * 1.4826
+            final_nsigma_mad = nsigma_final * residual_stats.get('medabsdevmed')[0] * 1.4826
+
+            if (nsigma_final != 0.0):
+                row_initial_nsigma_mad = '%#.3g %s' % (initial_nsigma_mad, brightness_unit)
+                row_final_nsigma_mad = '%#.3g %s' % (final_nsigma_mad, brightness_unit)
+            else:
+                row_initial_nsigma_mad = '-'
+                row_final_nsigma_mad = '-'
+
+            # store values in log file
+            LOG.info('n-sigma * initial scaled MAD of residual: %s %s' % (("%.12f" % initial_nsigma_mad, brightness_unit)
+                                                                           if row_initial_nsigma_mad != '-'
+                                                                           else (row_initial_nsigma_mad,"")))
+            LOG.info('n-sigma * final scaled MAD of residual: %s %s' % (("%.12f" % final_nsigma_mad, brightness_unit)
+                                                                           if row_final_nsigma_mad != '-'
+                                                                           else (row_final_nsigma_mad,"")))
 
             #
             # heading for non-pbcor RMS cell
@@ -390,6 +420,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
             cube_all_cont = r.cube_all_cont
 
+            tclean_command = r.tclean_command
+
             # create our table row for this image.
             # Plot is set to None as we have a circular dependency: the row
             # needs the plot, but the plot generator needs the image_stats
@@ -408,6 +440,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 beam_pa=row_beam_pa,
                 sensitivity=row_sensitivity,
                 cleaning_threshold=row_cleaning_threshold,
+                initial_nsigma_mad=row_initial_nsigma_mad,
+                final_nsigma_mad=row_final_nsigma_mad,
                 residual_ratio=row_residual_ratio,
                 non_pbcor_label=non_pbcor_label,
                 non_pbcor=row_non_pbcor,
@@ -434,6 +468,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 chk_gfluxscale_snr=chk_gfluxscale_snr,
                 chk_fitflux_gfluxscale_ratio=chk_fitflux_gfluxscale_ratio,
                 cube_all_cont=cube_all_cont,
+                tclean_command=tclean_command,
                 result=r
             )
             image_rows.append(row)

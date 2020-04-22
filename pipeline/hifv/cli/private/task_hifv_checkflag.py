@@ -5,7 +5,8 @@ from casatasks import casalog
 import pipeline.h.cli.utils as utils
 
 
-def hifv_checkflag(vis=None, checkflagmode=None, pipelinemode=None, dryrun=None, acceptresults=None):
+def hifv_checkflag(vis=None, checkflagmode=None, pipelinemode=None, overwrite_modelcol=None,
+                   dryrun=None, acceptresults=None):
 
     ##########################################################################
     #                                                                        #
