@@ -105,11 +105,10 @@ def make_figures(peak_sn, mask_map, rms_threshold, rms_map,
         mdec = (dspec.mindec + dspec.maxdec) / 2 * np.pi / 180
         dx = (Extent[0] - Extent[1]) / peak_sn.shape[1]
         dy = (Extent[3] - Extent[2]) / peak_sn.shape[0]
-        #scx = dspec.minra + idx * dx #* np.cos(mdec)
-        #scy = dspec.maxdec - (peak_sn.shape[0] - 1 - idy) * dy
+        # Pixel coordinate -> Axes coordinate
         scx = (idx + 0.5) / peak_sn.shape[1]
-        #scy = (peak_sn.shape[0] - 1 - idy - 0.5) / peak_sn.shape[0]
         scy = (idy + 0.5) / peak_sn.shape[0]
+        # aspect ratio based on DEC correction factor
         aspect = 1.0 / np.cos((dspec.mindec + dspec.maxdec) / 2 / 180 * np.pi)
         kw['aspect'] = aspect
     else:
@@ -125,22 +124,15 @@ def make_figures(peak_sn, mask_map, rms_threshold, rms_map,
     plt.imshow(np.flipud(peak_sn), cmap="rainbow", **kw)
     ylim = plt.ylim()
     LOG.info('ylim = {}'.format(list(ylim)))
-    #plt.ylim([ylim[1], ylim[0]])
     plt.colorbar(shrink=0.9)
-    #plt.scatter(scx, scy, s=300, marker="o", facecolors='none', edgecolors='grey', linewidth=5)
     trans = plt.gca().transAxes if dspec is not None else None
     plt.scatter(scx, scy, s=300, marker="o", facecolors='none', edgecolors='grey', linewidth=5,
                 transform=trans)
-    #l = plt.plot(scx, scy, markersize=20, marker="o", markerfacecolor='none', markeredgecolor='grey', #markeredgewidth=5,
-    #            transform=plt.gca().transAxes)
-    #LOG.info(l[0].get_data())
     plt.sca(a2)
     plt.title("Mask map (1: SN<" + str(peak_sn_threshold) + ")")
     plt.xlabel(f"RA [{dunit}]")
     plt.ylabel(f"DEC [{dunit}]")
     plt.imshow(np.flipud(mask_map), vmin=0, vmax=1, cmap="rainbow", **kw)
-    #ylim = plt.ylim()
-    #plt.ylim([ylim[1], ylim[0]])
     formatter = matplotlib.ticker.FixedFormatter(['Masked', 'Unmasked'])
     plt.colorbar(shrink=0.9, ticks=[0, 1], format=formatter)
     plt.subplot(1, 3, 3)
@@ -152,7 +144,8 @@ def make_figures(peak_sn, mask_map, rms_threshold, rms_map,
     else:
         abc = np.arange(len(spectrum_at_peak), dtype=int)
         plt.xlabel("Channel")
-    w = abc[-1] - abc[0]
+    w = np.abs(abc[-1] - abc[0])
+    minabc = np.min(abc)
     plt.ylabel("Intensity [K]")
     plt.ylim(std_value * (-7.), std_value * 7.)
     plt.plot(abc, spectrum_at_peak, "-", color="grey", label="spectrum at peak", alpha=0.5)
@@ -164,12 +157,12 @@ def make_figures(peak_sn, mask_map, rms_threshold, rms_map,
     if std_value * (7.) >= np.nanmean(rms_map) * peak_sn_threshold:
         plt.plot([abc[0], abc[-1]], [np.nanmean(rms_map) * peak_sn_threshold, np.nanmean(rms_map) * peak_sn_threshold], "--", color="green")
         plt.text(abc[0] + w * 0.5, np.nanmean(rms_map) * peak_sn_threshold, "lower 10% level", fontsize=18, color="green")
-    plt.text(abc[0] + w * 0.1, np.nanmean(rms_map) * 1., "1.0 x rms", fontsize=18, color="blue")
-    plt.text(abc[0] + w * 0.1, np.nanmean(rms_map) * (-1.), "-1.0 x rms", fontsize=18, color="blue")
-    plt.text(abc[0] + w * 0.6, -4. * std_value, "-4.0 x std", fontsize=18, color="red")
+    plt.text(minabc + w * 0.1, np.nanmean(rms_map) * 1., "1.0 x rms", fontsize=18, color="blue")
+    plt.text(minabc + w * 0.1, np.nanmean(rms_map) * (-1.), "-1.0 x rms", fontsize=18, color="blue")
+    plt.text(minabc + w * 0.6, -4. * std_value, "-4.0 x std", fontsize=18, color="red")
     plt.legend()
     if np.nanmin(masked_average_spectrum) <= (-1) * std_value * std_threshold:
-        plt.text(abc[0] + w * 2. / 5., -5. * std_value, "Warning!!", fontsize=25, color="Orange")
+        plt.text(minabc + w * 2. / 5., -5. * std_value, "Warning!!", fontsize=25, color="Orange")
     plt.savefig(output_name, bbox_inches="tight")
     plt.clf()
 
