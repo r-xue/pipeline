@@ -52,7 +52,7 @@ class Targetflag(basetask.StandardTaskTemplate):
         # create a shortcut to the plotting function that pre-supplies the inputs and context
         plot_fn = functools.partial(create_plots, inputs, inputs.context)
 
-        # Check for any polarization intents
+        # Check for any target intents
         eb_intents = inputs.context.observing_run.get_ms(inputs.vis).intents
         if 'TARGET' not in eb_intents:
             LOG.info('No target intents found.')
