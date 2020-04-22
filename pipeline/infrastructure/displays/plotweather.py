@@ -10,7 +10,7 @@ import casatools
 
 def plotweather(vis='', figfile='', station=[], help=False):
     """
-    Compiles and plots the major weather parameters for the specified ms. 
+    Compiles and plots the major weather parameters for the specified ms.
     Station can be a single integer or integer string, or a list of two integers.
     The default empty list means to plot all data from up to 2 of the stations
     present in the data.  The default plot file name will be 'vis'.weather.png.
@@ -104,13 +104,13 @@ def plotWeather(vis='', figfile='', station=[], help=False):
         mjdsec1 = mjdsec[first_station_rows]
         if np.mean(temperature2) > 100:
             # convert to Celsius
-            temperature2 -= 273.15        
+            temperature2 -= 273.15
         if dew_point2 is not None and np.mean(dew_point2) > 100:
             dew_point2 -= 273.15
 
     if np.mean(temperature) > 100:
         # convert to Celsius
-        temperature -= 273.15        
+        temperature -= 273.15
     if dew_point is not None and np.mean(dew_point) > 100:
         dew_point -= 273.15
     if dew_point is not None and np.mean(dew_point) == 0:
@@ -129,6 +129,17 @@ def plotWeather(vis='', figfile='', station=[], help=False):
 
     mytb.close()
 
+    # take timerange from OBSERVATION table if there is only one unique timestamp
+    if len(np.unique(mjdsec)) == 1:
+        mytb.open("%s/OBSERVATION" % vis)
+        obs_timerange = mytb.getcell('TIME_RANGE', 0)
+        mytb.close()
+        manual_xlim = matplotlib.dates.date2num(mjdSecondsListToDateTime(obs_timerange))
+        do_manual_xlim = True
+    else:
+        manual_xlim = None
+        do_manual_xlim = False
+
     mysize = 'small'
     plt.clf()
     adesc = plt.subplot(321)
@@ -144,6 +155,9 @@ def plotWeather(vis='', figfile='', station=[], help=False):
         list_of_date_times = mjdSecondsListToDateTime(mjdsec2)
         timeplot2 = matplotlib.dates.date2num(list_of_date_times)
         plt.plot_date(timeplot2, pressure2, markersize=markersize, color='r')
+
+    if do_manual_xlim is True:
+        plt.xlim(manual_xlim)
 
     resizeFonts(adesc, myfontsize)
     plt.ylabel('Pressure (mb)', size=mysize)
@@ -161,6 +175,10 @@ def plotWeather(vis='', figfile='', station=[], help=False):
         list_of_date_times = mjdSecondsListToDateTime(mjdsec2)
         timeplot2 = matplotlib.dates.date2num(list_of_date_times)
         plt.plot_date(timeplot2, temperature2, markersize=markersize, color='r')
+
+    if do_manual_xlim is True:
+        plt.xlim(manual_xlim)
+
     resizeFonts(adesc, myfontsize)
     plt.ylabel('Temperature (C)', size=mysize)
     adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 30))))
@@ -181,6 +199,10 @@ def plotWeather(vis='', figfile='', station=[], help=False):
         list_of_date_times = mjdSecondsListToDateTime(mjdsec2)
         timeplot2 = matplotlib.dates.date2num(list_of_date_times)
         plt.plot_date(timeplot2, relative_humidity2, markersize=markersize, color='r')
+
+    if do_manual_xlim is True:
+        plt.xlim(manual_xlim)
+
     resizeFonts(adesc, myfontsize)
     plt.ylabel('Relative Humidity (%)', size=mysize)
     adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 30))))
@@ -199,6 +221,10 @@ def plotWeather(vis='', figfile='', station=[], help=False):
             list_of_date_times = mjdSecondsListToDateTime(mjdsec2)
             timeplot2 = matplotlib.dates.date2num(list_of_date_times)
             plt.plot_date(timeplot2, dew_point2, markersize=markersize, color='r')
+
+        if do_manual_xlim is True:
+            plt.xlim(manual_xlim)
+
         resizeFonts(adesc, myfontsize)
 #        plt.xlabel('Universal Time (%s)'%utdatestring(mjdsec[0]),size=mysize)
         plt.ylabel('Dew point (C)', size=mysize)
@@ -217,6 +243,10 @@ def plotWeather(vis='', figfile='', station=[], help=False):
         list_of_date_times = mjdSecondsListToDateTime(mjdsec2)
         timeplot2 = matplotlib.dates.date2num(list_of_date_times)
         plt.plot_date(timeplot2, wind_speed2, markersize=markersize, color='r')
+
+    if do_manual_xlim is True:
+        plt.xlim(manual_xlim)
+
     resizeFonts(adesc, myfontsize)
     plt.xlabel('Universal Time (%s)' % utdatestring(mjdsec[0]), size=mysize)
     plt.ylabel('Wind speed (m/s)', size=mysize)
@@ -237,6 +267,10 @@ def plotWeather(vis='', figfile='', station=[], help=False):
         list_of_date_times = mjdSecondsListToDateTime(mjdsec2)
         timeplot2 = matplotlib.dates.date2num(list_of_date_times)
         plt.plot_date(timeplot2, wind_direction2, markersize=markersize, color='r')
+
+    if do_manual_xlim is True:
+        plt.xlim(manual_xlim)
+
     resizeFonts(adesc, myfontsize)
     adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 30))))
     adesc.xaxis.set_minor_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 10))))
@@ -304,7 +338,7 @@ def mjdSecondsToMJDandUT(mjdsec):
 def call_qa_time(arg, form='', prec=0):
     """
     This is a wrapper for qa.time(), which in casa 3.5 returns a list of strings instead
-    of just a scalar string.  
+    of just a scalar string.
     """
     myqa = casatools.quanta()
     result = myqa.time(arg, form=form, prec=prec)
