@@ -130,15 +130,10 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             fitsfile = os.path.join(inputs.products_dir, image + '.fits')
             task = casa_tasks.exportfits(imagename=image, fitsimage=fitsfile)
             self._executor.execute(task)
-
-            # PIPE-641: update FITS header for VLASS-QL
-            if img_mode == 'VLASS-QL':
-                self._fix_vlass_fits_header(self.inputs.context, fitsfile)
-
             LOG.info('Wrote {ff}'.format(ff=fitsfile))
             fits_list.append(fitsfile)
 
-            # Apply position corrections to VLASS-QL product images (PIPE-587)
+            # Apply position corrections to VLASS-QL product images (PIPE-587) and fix FITS header (PIPE-641)
             if img_mode == 'VLASS-QL':
                 # Mean antenna geographic coordinates
                 observatory = casatools.measures.observatory(self.inputs.context.project_summary.telescope)
@@ -150,6 +145,8 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                 # Correction
                 utils.positioncorrection.do_wide_field_pos_cor(fitsfile, date_time=mid_time, obs_long=observatory['m0'],
                                                                obs_lat=observatory['m1'])
+                # PIPE-641: update FITS header for VLASS-QL
+                self._fix_vlass_fits_header(self.inputs.context, fitsfile)
 
         # Export the pipeline manifest file
         #    TBD Remove support for auxiliary data products to the individual pipelines
