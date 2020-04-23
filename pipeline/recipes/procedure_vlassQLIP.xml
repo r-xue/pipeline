@@ -71,6 +71,48 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
+        <Command xmlns="">hifv_flagdata</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">quack</Keyword>
+                <Value xmlns="">False</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">edgespw</Keyword>
+                <Value xmlns="">False</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">clip</Keyword>
+                <Value xmlns="">False</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">scan</Keyword>
+                <Value xmlns="">False</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">autocorr</Keyword>
+                <Value xmlns="">False</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">hm_tbuff</Keyword>
+                <Value xmlns="">manual</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">template</Keyword>
+                <Value xmlns="">False</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">online</Keyword>
+                <Value xmlns="">False</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">baseband</Keyword>
+                <Value xmlns="">False</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
         <Command xmlns="">hifv_exportvlassdata</Command>
         <ParameterSet>
         </ParameterSet>

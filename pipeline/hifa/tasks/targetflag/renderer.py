@@ -1,7 +1,7 @@
 """
-Created on 28 Apr 2017
+Created on 18 Mar 2020
 
-@author: Vincent Geers (UKATC)
+@author: Dirk Muders (MPIfR)
 """
 import collections
 
@@ -16,15 +16,15 @@ LOG = logging.get_logger(__name__)
 FlagTotal = collections.namedtuple('FlagSummary', 'flagged total')
 
 
-class T2_4MDetailsBandpassflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
+class T2_4MDetailsTargetflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     """
-    Renders detailed HTML output for the Bandpassflag task.
+    Renders detailed HTML output for the TargetFlag task.
     """
-    def __init__(self, uri='bandpassflag.mako',
-                 description='Phase-up bandpass calibration and flagging',
+    def __init__(self, uri='targetflag.mako',
+                 description='Target outlier flagging',
                  always_rerender=False):
-        super(T2_4MDetailsBandpassflagRenderer, self).__init__(uri=uri, description=description,
-                                                               always_rerender=always_rerender)
+        super(T2_4MDetailsTargetflagRenderer, self).__init__(uri=uri, description=description,
+                                                             always_rerender=always_rerender)
 
         # Attach correctedampflag renderer.
         self.cafrenderer = T2_4MDetailsCorrectedampflagRenderer(uri=uri, description=description,
@@ -32,16 +32,13 @@ class T2_4MDetailsBandpassflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer
 
     def update_mako_context(self, mako_context, pipeline_context, results):
 
-        # Initialize items that are to be exported to the
-        # mako context
-        updated_refants = {}
-
         #
         # Get flagging reports, summaries
         #
         cafresults = basetask.ResultsList()
         for result in results:
-            cafresults.append(result.cafresult)
+            if result.cafresult:
+                cafresults.append(result.cafresult)
         cafresults.stage_number = results.stage_number
         self.cafrenderer.update_mako_context(mako_context, pipeline_context, cafresults)
 
@@ -49,22 +46,8 @@ class T2_4MDetailsBandpassflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer
         # Get diagnostic plots.
         #
         time_plots = get_plot_dicts(pipeline_context, results, 'time')
-        uvdist_plots = get_plot_dicts(pipeline_context, results, 'uvdist')
-
-        #
-        # Check for updated reference antenna lists.
-        #
-        for result in results:
-            vis = result.vis
-            # If the reference antenna list was updated, retrieve new refant
-            # list.
-            if result.refants_to_remove or result.refants_to_demote:
-                ms = pipeline_context.observing_run.get_ms(name=vis)
-                updated_refants[vis] = ms.reference_antenna
 
         # Update the mako context.
         mako_context.update({
             'time_plots': time_plots,
-            'uvdist_plots': uvdist_plots,
-            'updated_refants': updated_refants
         })

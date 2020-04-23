@@ -42,8 +42,10 @@ PIPE356Switches = collections.namedtuple(
 
 # PIPE356_MODES defines some preset modes for outlier detection and reporting
 PIPE356_MODES = {
-    'TEST': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=True, include_scores=True,
-                            outlier_score=0.5, flag_all=True),
+    'TEST_REAL_OUTLIERS': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=True,
+                                          include_scores=True, outlier_score=0.5, flag_all=False),
+    'TEST_FAKE_OUTLIERS': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=True,
+                                          include_scores=True, outlier_score=0.5, flag_all=True),
     'ON': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=False, include_scores=True,
                           outlier_score=0.9, flag_all=False),
     'DEBUG': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=True, include_scores=False,
@@ -382,6 +384,19 @@ def summarise_scores(all_scores: List[pqa.QAScore], ms: MeasurementSet) -> Dict[
         msgs = combine_scores(all_scores, hierarchy_root, ['pol', 'ant', 'scan'], ms, pqa.WebLogLocation.BANNER)
         banner_scores.extend(msgs)
     final_scores[pqa.WebLogLocation.BANNER] = banner_scores
+
+    # JH request from 8/4/20:
+    #
+    # The one thing I'd like to ask is to list the accordion messages ordered
+    # by {ms; intent; spw} so that they appear in "figure order" (currently
+    # they seem to be ordered by {ms; intent; scan}
+    #
+    for destination, unsorted_scores in final_scores.items():
+        sorted_scores = sorted(unsorted_scores, key=lambda score: (sorted(score.applies_to.vis),
+                                                                   sorted(score.applies_to.intent),
+                                                                   sorted(score.applies_to.spw),
+                                                                   sorted(score.applies_to.scan)))
+        final_scores[destination] = sorted_scores
 
     return final_scores
 
