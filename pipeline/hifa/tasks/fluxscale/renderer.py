@@ -152,13 +152,16 @@ def make_flux_table(context, results):
         ms_for_result = context.observing_run.get_ms(single_result.vis)
         vis_cell = os.path.basename(single_result.vis)
 
+        transintent = set(single_result.inputs['transintent'].split(','))
+        
         # measurements will be empty if fluxscale derivation failed
         if len(single_result.measurements) is 0:
             continue
 
         for field_arg, measurements in single_result.measurements.items():
             field = ms_for_result.get_fields(field_arg)[0]
-            intents = ' '. join(field.intents.intersection({'BANDPASS', 'PHASE', 'CHECK'}))
+
+            intents = ' '. join(field.intents.intersection(transintent))
             field_cell = '%s (#%s) %s' % (field.name, field.id, intents)
 
             for measurement in sorted(measurements, key=lambda m: int(m.spw_id)):
