@@ -4,6 +4,7 @@ import fnmatch
 import os
 import shutil
 import tarfile
+import pyfits
 
 import pipeline as pipeline
 import pipeline.infrastructure as infrastructure
@@ -129,6 +130,11 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             fitsfile = os.path.join(inputs.products_dir, image + '.fits')
             task = casa_tasks.exportfits(imagename=image, fitsimage=fitsfile)
             self._executor.execute(task)
+
+            # PIPE-641: update FITS header for VLASS-QL
+            if img_mode == 'VLASS-QL':
+                self._fix_vlass_fits_header(self.inputs.context, fitsfile)
+
             LOG.info('Wrote {ff}'.format(ff=fitsfile))
             fits_list.append(fitsfile)
 
@@ -476,3 +482,49 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             pipemanifest.write(out_manifest_file)
 
         return out_manifest_file
+
+    def _fix_vlass_fits_header(self, context, fitsname):
+        """
+        Update VLASS FITS product header according to PIPE-641.
+        Should be called in VLASS-QL imaging mode.
+
+        The following keywords are changed: DATE-OBS, DATE-END, RADESYS, OBJECT.
+        """
+
+        if os.path.exists(fitsname):
+            # Open FITS image and obtain header
+            hdulist = pyfits.open(fitsname, mode='update')
+            header = hdulist[0].header
+
+            # DATE-OBS and DATE-END keywords
+            # Note: the new DATE-OBS value (first scan start time) might differ from the original value
+            # (first un-flagged scan start time).
+            header['date-obs'] = (infrastructure.utils.get_epoch_as_datetime(
+                context.observing_run.start_time).isoformat(), 'First scan started')
+            date_end = ('date-end', infrastructure.utils.get_epoch_as_datetime(
+                context.observing_run.end_time).isoformat(), 'Last scan finished')
+            if 'date-end' in [k.lower() for k in header.keys()]:
+                header['date-end'] = date_end[1:]
+            else:
+                pos = header.index('date-obs')
+                header.insert(pos, date_end, after=True)
+
+            # RADESYS
+            if header['radesys'].upper() == 'FK5':
+                header['radesys'] = 'ICRS'
+
+            # Object keyword
+            if header['object'].upper() != header['filnam05'].upper():
+                header['object'] = header['filnam05']
+
+            # Save changes and inform log
+            hdulist.flush()
+            LOG.info("Header updated in {}".format(fitsname))
+
+            # Close FITS file
+            hdulist.close()
+
+        else:
+            LOG.warn('FITS header cannot be updated: image {} does not exist.'.format(fitsname))
+
+        return
