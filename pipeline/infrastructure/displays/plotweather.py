@@ -132,7 +132,8 @@ def plotWeather(vis='', figfile='', station=[], help=False):
     # take timerange from OBSERVATION table if there is only one unique timestamp
     if len(np.unique(mjdsec)) == 1:
         mytb.open("%s/OBSERVATION" % vis)
-        obs_timerange = mytb.getcell('TIME_RANGE', 0)
+        timerange = mytb.getcol('TIME_RANGE')
+        obs_timerange = [np.min(timerange), np.max(timerange)]
         mytb.close()
         manual_xlim = matplotlib.dates.date2num(mjdSecondsListToDateTime(obs_timerange))
         do_manual_xlim = True
