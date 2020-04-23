@@ -528,10 +528,12 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                     logfiducialflux += spidx[i] * (np.log10(bandcenterfreq/fitreff)) ** i
 
                 fitflx = 10.0 ** logfiducialflux
+                fitflx = fluxscale_result[fieldid]['fitFluxd']
 
                 # Compute flux errors
                 flxerrslist = [fluxscale_result[fieldid][str(spwid)]['fluxdErr'][0] for spwid in uspws]
                 fitflxerr = np.mean(flxerrslist)
+                fitflxerr = fitflxAtRefFreqErr
 
                 # Again, single spectral window
                 if len(logfittedfluxd) == 1:
