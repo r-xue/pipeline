@@ -201,7 +201,7 @@ $(document).ready(function() {
             <tr>
             <th scope="col">Start</th>
             <th scope="col">End</th>
-            <th scope="col">On Source</th>
+            <th scope="col">On Target</th>
             <th scope="col">Min</th>
             <th scope="col">Max</th>
             <th scope="col">RMS</th>
