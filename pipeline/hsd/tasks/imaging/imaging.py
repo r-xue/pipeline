@@ -21,6 +21,7 @@ from . import sdcombine
 from . import weighting
 from . import worker
 from . import resultobjects
+from . import detectcontamination
 from .. import common
 from ..baseline import baseline
 from ..common import compress
@@ -741,6 +742,9 @@ class SDImaging(basetask.StandardTaskTemplate):
                                              reduction_group_id=group_id, file_index=file_index,
                                              assoc_antennas=combined_antids, assoc_fields=combined_fieldids, assoc_spws=combined_v_spws,  #, assoc_pols=pols,
                                              sensitivity_info=sensitivity_info)
+
+                # PIPE-251: detect contamination
+                detectcontamination.detect_contamination(context, imager_result.outcome['image'])
 
                 results.append(imager_result)
 
