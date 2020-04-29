@@ -830,7 +830,8 @@ class Correctedampflag(basetask.StandardTaskTemplate):
         # correlations are marked as flagged (by floor-dividing by 2).
         if nscans > 1:
             if ncorrs == 2:
-                cmetric_all = np.sum(cmetric_all, axis=0, keepdims=True)
+                cmetric_mask = np.ma.array(cmetric_all, mask=flag_all)
+                cmetric_all = np.ma.mean(cmetric_mask, axis=0, keepdims=True)
                 flag_all = np.sum(flag_all, axis=0, keepdims=True) // 2
                 ncorrs = 1
             elif ncorrs == 4 and set(corr_type) == {'XX', 'XY', 'YX', 'YY'}:
