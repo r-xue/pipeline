@@ -230,6 +230,14 @@ $(document).ready(function() {
         <td style="font-weight:bold; background-color:#ccffcc">Image size (RA, DEC)</td>
         <td>${'{:.2f}", {:.2f}"'.format(x_arcsec, y_arcsec)}</td>
     </tr>
+    <tr>
+        <td style="font-weight:bold; background-color:#ccffcc">Masked pixel count</td>
+        <td>${'{}'.format(plotter.result.n_masked)}</td>
+    </tr>
+    <tr>
+        <td style="font-weight:bold; background-color:#ccffcc">Fraction masked</td>
+        <td>${'{:.2f} %'.format(plotter.result.pct_masked)}</td>
+    </tr>
 </table>
 
 <div style="clear:both;"></div>
