@@ -71,6 +71,10 @@ class CutoutimagesSummary(object):
                     # get fraction of pixels <= 200 micro Jy VLASS technical requirement.  ignore 0 (masked) values.
                     self.result.RMSfraction200 = (np.count_nonzero((arr != 0) & (arr <= 200e-6)) /
                                                   float(np.count_nonzero(arr != 0))) * 100
+                    # PIPE-642: include the number and percentage of masked pixels in weblog
+                    self.result.n_masked = np.count_nonzero(arr == 0)
+                    self.result.pct_masked = (np.count_nonzero(arr == 0) / float(arr.size)) * 100
+
             elif '.residual.pbcor.' in subimagename and not subimagename.endswith('.rms'):
                 plot_wrappers.append(sky.SkyDisplay().plot(self.context, subimagename,
                                                            reportdir=stage_dir, intent='',
