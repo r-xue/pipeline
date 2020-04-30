@@ -604,7 +604,16 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 himsize = self.heuristics.imsize(
                                     fields=field_ids, cell=cells[spwspec], primary_beam=largest_primary_beams[spwspec],
                                     sfpblimit=sfpblimit, centreonly=False, vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'])
-                                if field_intent[1] in ['PHASE', 'BANDPASS', 'AMPLITUDE', 'FLUX', 'CHECK']:
+                                if field_intent[1] in [
+                                        'PHASE',
+                                        'BANDPASS',
+                                        'AMPLITUDE',
+                                        'FLUX',
+                                        'CHECK',
+                                        'POLARIZATION',
+                                        'POLANGLE',
+                                        'POLLEAKAGE'
+                                        ]:
                                     himsize = [min(npix, inputs.calmaxpix) for npix in himsize]
                                 imsizes[(field_intent[0], spwspec)] = himsize
                                 if imsizes[(field_intent[0], spwspec)][0] > max_x_size:
@@ -866,20 +875,26 @@ _DESCRIPTIONS = {
     ('PHASE', 'mfs'): 'phase calibrator',
     ('BANDPASS', 'mfs'): 'bandpass calibrator',
     ('AMPLITUDE', 'mfs'): 'flux calibrator',
+    ('POLARIZATION', 'mfs'): 'polarization calibrator',
+    ('POLANGLE', 'mfs'): 'polarization angle calibrator',
+    ('POLLEAKAGE', 'mfs'): 'polarization leakage calibrator',
     ('CHECK', 'mfs'): 'check source',
     ('TARGET', 'mfs'): 'target per-spw continuum',
     ('TARGET', 'cont'): 'target aggregate continuum',
     ('TARGET', 'cube'): 'target cube',
-    ('TARGET', 'repBW'): 'representative bandwidth target cube',
+    ('TARGET', 'repBW'): 'representative bandwidth target cube'
 }
 
 _SIDEBAR_SUFFIX = {
     ('PHASE', 'mfs'): 'cals',
     ('BANDPASS', 'mfs'): 'cals',
     ('AMPLITUDE', 'mfs'): 'cals',
+    ('POLARIZATION', 'mfs'): 'cals',
+    ('POLANGLE', 'mfs'): 'cals',
+    ('POLLEAKAGE', 'mfs'): 'cals',
     ('CHECK', 'mfs'): 'checksrc',
     ('TARGET', 'mfs'): 'mfs',
     ('TARGET', 'cont'): 'cont',
     ('TARGET', 'cube'): 'cube',
-    ('TARGET', 'repBW'): 'cube_repBW',
+    ('TARGET', 'repBW'): 'cube_repBW'
 }

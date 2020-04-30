@@ -12,7 +12,10 @@ _known_intents = {
     'AMPLITUDE': 'flux',
     'PHASE': 'ph',
     'TARGET': 'sci',
-    'CHECK': 'chk'
+    'CHECK': 'chk',
+    'POLARIZATION': 'pol',
+    'POLANGLE': 'pang',
+    'POLLEAKAGE': 'plk'
 }
 
 
