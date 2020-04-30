@@ -618,8 +618,14 @@ class T1_3MRenderer(RendererBase):
                         ms = context.observing_run.get_ms(vis)
                         flagtable = collections.OrderedDict()
                         for field in resultitem.flagsummary:
-                            intents = ','.join([f.intents for f in ms.get_fields(intent='BANDPASS,PHASE,AMPLITUDE,CHECK,TARGET')
-                                                if field in f.name][0])
+                            # Get the field intents, but only for those that
+                            # the pipeline processes. This can be an empty
+                            # list (PIPE-394: POINTING, WVR intents).
+                            intents_list = [f.intents for f in ms.get_fields(intent='BANDPASS,PHASE,AMPLITUDE,POLARIZATION,POLANGLE,POLLEAKAGE,CHECK,TARGET')
+                                            if field in f.name]
+                            if len(intents_list) == 0:
+                                continue
+                            intents = ','.join(intents_list[0])
 
                             flagsummary = resultitem.flagsummary[field]
 
