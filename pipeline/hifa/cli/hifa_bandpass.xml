@@ -259,6 +259,14 @@ solutions in the phaseup may not be properly rejected.
         <value>3.0</value>
     </param>
 
+    <param name="unregister_existing" type="bool">
+        <shortdescription>Unregister previous bandpass calibrations</shortdescription>
+        <description>Unregister all bandpass calibrations from the pipeline context
+            before registering the new bandpass calibrations from this task.
+        </description>
+        <value>False</value>
+    </param>
+
     <param name="pipelinemode" type="string">
         <shortdescription>The pipeline operation mode</shortdescription>
         <description>The pipeline operating mode. In 'automatic' mode the pipeline
