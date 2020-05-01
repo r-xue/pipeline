@@ -219,6 +219,12 @@ def is_singledish_ms(context):
     result_repr = str(result0)
     return result_repr.find('SDImportDataResults') != -1
 
+def scan_has_intent(scans, intent):
+    """Returns True if the list of scans includes a specified intent"""
+    for s in scans:
+        if intent in s.intents:
+            return True
+    return False
 
 class Session(object):
     def __init__(self, mses=None, name='Unnamed Session'):
@@ -371,14 +377,8 @@ class T1_1Renderer(RendererBase):
             time_end = utils.get_epoch_as_datetime(ms.end_time)
 
             target_scans = [s for s in ms.scans if 'TARGET' in s.intents]
-            # check for REFERENCE (OFF-source) in TARGET scans
-            has_reference_scan = False
-            for s in target_scans:
-                if 'REFERENCE' in s.intents:
-                    has_reference_scan = True
-                    break
-            if has_reference_scan:
-                # target scan has OFF-source need to go harder way
+            if scan_has_intent(target_scans, 'REFERENCE'):
+                # target scans have OFF-source integrations. Need to do harder way.
                 autocorr_only = is_singledish_ms(context)
                 time_on_source =  utils.total_time_on_target_on_source(ms, autocorr_only)
             else:
@@ -775,7 +775,12 @@ class T2_1DetailsRenderer(object):
 
         time_on_source = utils.total_time_on_source(ms.scans) 
         science_scans = [scan for scan in ms.scans if 'TARGET' in scan.intents]
-        time_on_science = utils.total_time_on_source(science_scans)
+        if scan_has_intent(science_scans, 'REFERENCE'):
+            # target scans have OFF-source integrations. Need to do harder way.
+            autocorr_only = is_singledish_ms(context)
+            time_on_science =  utils.total_time_on_target_on_source(ms, autocorr_only)
+        else:
+            time_on_science = utils.total_time_on_source(science_scans)
 
 #         dirname = os.path.join(context.report_dir, 
 #                                'session%s' % ms.session,
