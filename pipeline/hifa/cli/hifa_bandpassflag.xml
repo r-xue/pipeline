@@ -218,7 +218,7 @@ results object for the pipeline task is returned.
         <value>8</value>
     </param>
 
-    <param name="combine" type="string">
+    <param subparam="true" name="combine" type="string">
         <shortdescription>Data axes which to combine for solve (scan, spw, and/or field)</shortdescription>
         <description>Data axes to combine for solving. Axes are '', 'scan', 'spw',
             'field' or any comma-separated combination.
@@ -239,7 +239,7 @@ results object for the pipeline task is returned.
         <value/>
     </param>
 
-    <param name="minblperant" type="int">
+    <param subparam="true" name="minblperant" type="int">
         <shortdescription>Minimum baselines per antenna required for solve</shortdescription>
         <description>Minimum number of baselines required per antenna for each solve.
             Antennas with fewer baselines are excluded from solutions.
@@ -247,7 +247,7 @@ results object for the pipeline task is returned.
         <value>4</value>
     </param>
 
-    <param name="minsnr" type="double">
+    <param subparam="true" name="minsnr" type="double">
         <description>Solutions below this SNR are rejected</description>
         <value>3.0</value>
     </param>
@@ -397,7 +397,10 @@ results object for the pipeline task is returned.
                 <default param="intent"><value type="string"/></default>
                 <default param="spw"><value type="string"/></default>
                 <default param="antenna"><value type="string"/></default>
+                <default param="combine"><value type="string">scan</value></default>
                 <default param="refant"><value type="string"/></default>
+                <default param="minblperant"><value type="int">4</value></default>
+                <default param="minsnr"><value type="double">3.0</value></default>
                 <default param="solnorm"><value type="bool">True</value></default>
                 <default param="antnegsig"><value type="double">4.0</value></default>
                 <default param="antpossig"><value type="double">4.6</value></default>
@@ -418,7 +421,10 @@ results object for the pipeline task is returned.
                 <default param="intent"><value type="string"/></default>
                 <default param="spw"><value type="string"/></default>
                 <default param="antenna"><value type="string"/></default>
+                <default param="combine"><value type="string">scan</value></default>
                 <default param="refant"><value type="string"/></default>
+                <default param="minblperant"><value type="int">4</value></default>
+                <default param="minsnr"><value type="double">3.0</value></default>
                 <default param="solnorm"><value type="bool">True</value></default>
                 <default param="antnegsig"><value type="double">4.0</value></default>
                 <default param="antpossig"><value type="double">4.6</value></default>
