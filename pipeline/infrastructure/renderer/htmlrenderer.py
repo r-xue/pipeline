@@ -221,7 +221,6 @@ def is_singledish_ms(context):
 
 def scan_has_intent(scans, intent):
     """Returns True if the list of scans includes a specified intent"""
-    has_intent = False
     for s in scans:
         if intent in s.intents:
             return True
