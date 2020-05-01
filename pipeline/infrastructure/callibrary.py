@@ -2204,7 +2204,7 @@ class IntervalCalLibrary(object):
         Delete active calibrations that match the input predicate function.
 
         :param predicate_fn: function that returns True if a calibration
-            pshould be unregistered
+            should be unregistered
         """
         to_remove = get_matching_calstate(self._context, self.active, predicate_fn)
         self._active -= to_remove
