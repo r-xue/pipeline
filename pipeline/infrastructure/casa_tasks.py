@@ -59,7 +59,8 @@ def flagdata(*v, **k):
 
 
 def flagmanager(*v, **k):
-    return _get_job(casatasks.flagmanager, *v, **k)
+    from casatasks import flagmanager
+    return _get_job(flagmanager, *v, **k)
 
 
 def fluxscale(*v, **k):
