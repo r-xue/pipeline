@@ -87,16 +87,12 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
                 details_time.extend(detail_plotter.plot())
 
                 # Interval vs. Time: summary plots
-                #skycal_display.SingleDishSkyCalIntervalVsTimeDisplayBase(context, result, calapp)
-                summary_plotter = skycal_display.plot_interval_time(context, result, calapp)
-                summaries_interval.extend(summary_plotter)
-                LOG.debug('summaries_interval = {0}'.format(summaries_interval))
+                summary_plotter = skycal_display.SingleDishSkyCalIntervalVsTimeDisplay(context, result, calapp, figtype='summary')
+                summaries_interval.extend(summary_plotter.plot())
 
                 # Interval vs. Time: detail plots
-                #skycal_display.SingleDishSkyCalIntervalVsTimeDisplayBase(context, result, calapp)
-                detail_plotter = skycal_display.plot_interval_time(context, result, calapp)
-                details_interval.extend(detail_plotter)
-                LOG.debug('details_interval = {0}'.format(details_interval))
+                detail_plotter = skycal_display.SingleDishSkyCalIntervalVsTimeDisplay(context, result, calapp, figtype='detail')
+                details_interval.extend(detail_plotter.plot())
 
                 # reference coordinates
                 #LOG.debug('calapp=%s'%(calapp))
