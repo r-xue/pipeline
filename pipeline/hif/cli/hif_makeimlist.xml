@@ -150,7 +150,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value type="string"/>
   </param>
 
-  <param subparam="true" name="hm_cell" type="any">
+  <param subparam="true" name="hm_cell" type="stringVec">
     <shortdescription>Image X and Y cell size(s) with units or pixels per beam, &quot;&quot; for automatic. Single value same for both. &quot;&lt;number&gt;ppb&quot; for pixels per beam.</shortdescription>
     <description>Image X and Y cell sizes. &quot;&quot; computes the cell size based on
                  the UV coverage of all the fields to be imaged and uses a
@@ -161,8 +161,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 
                  Examples: '3ppb', ['0.5arcsec', '0.5arcsec']
     </description>
-    <any type="variant"/>
-    <value type="string"/>
+    <value/>
   </param>
 
   <param subparam="true" name="calmaxpix" type="int">
