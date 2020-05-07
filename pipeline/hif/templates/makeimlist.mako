@@ -92,9 +92,6 @@ This task had an error!
 	    %if 'restoringbeam' in target.keys():
 	            <th>restoringbeam</th>
 	    %endif
-	    %if 'nterms' in target.keys():
-	            <th>nterms</th>
-	    %endif
 	    %if 'uvrange' in target.keys():
 	            <th>uvrange</th>
 	    %endif
