@@ -16,6 +16,7 @@ from pipeline.domain import DataTable
 from . import resultobjects
 from .. import common
 from ..common import utils
+from ..common import utils as sdutils
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -340,6 +341,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
     def _do_imaging(self, infiles, antid_list, spwid_list, fieldid_list, imagename, imagemode, edge, phasecenter, cellx,
                     celly, nx, ny):
         context = self.inputs.context
+        is_nro = sdutils.is_nro(context)
         idx = utils.get_parent_ms_idx(context, infiles[0])
         if idx >= 0 and idx < len(context.observing_run.measurement_sets):
             reference_data = context.observing_run.measurement_sets[idx]
@@ -434,7 +436,12 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
 
         # truncate, gwidth, jwidth, and convsupport
         truncate = gwidth = jwidth = -1  # defaults (not used)
-        convsupport = 6
+
+        # PIPE-689: convsupport should be 3 for NRO Pipeline
+        if is_nro:
+            convsupport = 3
+        else:
+            convsupport = 6
 
 #         temporary_name = imagename.rstrip('/')+'.tmp'
         cleanup_params = ['outfile', 'infiles', 'spw', 'scan']
