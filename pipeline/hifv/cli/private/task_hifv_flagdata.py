@@ -2,7 +2,7 @@ import sys
 
 import pipeline.h.cli.utils as utils
 
-def hifv_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
+def hifv_flagdata(vis=None, autocorr=None, shadow=None, tolerance=None, scan=None,
                   scannumber=None, quack=None, clip=None, baseband=None,
                   intents=None, edgespw=None, fracspw=None,
                   online=None, fileonline=None, template=None,

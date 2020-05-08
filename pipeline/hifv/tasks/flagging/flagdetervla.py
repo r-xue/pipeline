@@ -24,11 +24,11 @@
 # vis = [ '<MS name>' ]
 # context = pipeline.Pipeline( vis ).context
 #
-# inputs = pipeline.tasks.flagging.FlagDeterVLA.Inputs( context, vis=vis,
+# inputs = pipeline.hifv.tasks.flagging.FlagDeterVLA.Inputs( context, vis=vis,
 #   output_dir='.', autocorr=True, shadow=True, scan=True, scannumber='4,5,8',
 #   intents='*AMPLI*', edgespw=True, fracspw=0.1, fracspwfps=0.1 )
 #
-# task = pipeline.tasks.flagging.FlagDeterVLA( inputs )
+# task = pipeline.hifv.tasks.flagging.FlagDeterVLA( inputs )
 # jobs = task.analyse()
 #
 # status = task.execute(dry_run=False)
@@ -161,6 +161,8 @@ class FlagDeterVLAInputs(flagdeterbase.FlagDeterBaseInputs):
     #
     # shadow       - This python boolean determines whether shadowed antennas are
     #                flagged or not.
+    # tolerance    - This python float sets the tolerated projected antenna shadowing in
+    #                meter. Positive value allows overlap, negative value forces separation.
     #
     # scan         - This python boolean determines whether scan flagging is
     #                performed.
@@ -215,6 +217,7 @@ class FlagDeterVLAInputs(flagdeterbase.FlagDeterBaseInputs):
     fracspw = vdp.VisDependentProperty(default=0.05)
     # fracspwfps = vdp.VisDependentProperty(default=0.04837)
     template = vdp.VisDependentProperty(default=True)
+    tolerance = vdp.VisDependentProperty(default=0.0)
 
     @vdp.VisDependentProperty
     def intents(self):
@@ -227,15 +230,15 @@ class FlagDeterVLAInputs(flagdeterbase.FlagDeterBaseInputs):
 
     quack = vdp.VisDependentProperty(default=True)
 
-    def __init__(self, context, vis=None, output_dir=None, flagbackup=None, autocorr=None, shadow=None, scan=None,
-                 scannumber=None, quack=None, clip=None, baseband=None, intents=None, edgespw=None, fracspw=None,
-                 fracspwfps=None, online=None, fileonline=None, template=None, filetemplate=None, hm_tbuff=None,
-                 tbuff=None):
+    def __init__(self, context, vis=None, output_dir=None, flagbackup=None, autocorr=None, shadow=None, tolerance=None,
+                 scan=None, scannumber=None, quack=None, clip=None, baseband=None, intents=None, edgespw=None,
+                 fracspw=None, fracspwfps=None, online=None, fileonline=None, template=None, filetemplate=None,
+                 hm_tbuff=None, tbuff=None):
         super(FlagDeterVLAInputs, self).__init__(
             context, vis=vis, output_dir=output_dir, flagbackup=flagbackup, autocorr=autocorr, shadow=shadow,
-            scan=scan, scannumber=scannumber, intents=intents, edgespw=edgespw, fracspw=fracspw, fracspwfps=fracspwfps,
-            online=online, fileonline=fileonline, template=template, filetemplate=filetemplate, hm_tbuff=hm_tbuff,
-            tbuff=tbuff)
+            tolerance=tolerance, scan=scan, scannumber=scannumber, intents=intents, edgespw=edgespw, fracspw=fracspw,
+            fracspwfps=fracspwfps, online=online, fileonline=fileonline, template=template, filetemplate=filetemplate,
+            hm_tbuff=hm_tbuff, tbuff=tbuff)
 
         # VLA-specific parameters
         self.quack = quack
@@ -433,7 +436,7 @@ class FlagDeterVLA(flagdeterbase.FlagDeterBase):
 
         # Flag shadowed antennas?
         if inputs.shadow:
-            flag_cmds.append('mode=\'shadow\' reason=\'shadow\'')
+            flag_cmds.append("mode='shadow' tolerance=%s reason='shadow'" % inputs.tolerance)
             flag_cmds.append('mode=\'summary\' name=\'shadow\'')
 
         # These must be separated due to the way agent flagging works
