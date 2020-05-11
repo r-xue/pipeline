@@ -823,19 +823,18 @@ class Correctedampflag(basetask.StandardTaskTemplate):
         corr_type = commonhelpermethods.get_corr_products(ms, spwid)
         ncorrs = len(corr_type)
 
-        # CAS-12011: For multi-scan observations, analyze the sum of the metric
-        # for XX and YY, and for XY and YX (if ncorrs = 4). Combine the
+        # CAS-12011: For multi-scan observations, analyze the mean of the
+        # metric for XX and YY, and for XY and YX (if ncorrs = 4). Combine the
         # flagging state of the individual correlations by only marking the
-        # summed metric as flagged where both individual contributing
+        # mean metric as flagged where both individual contributing
         # correlations are marked as flagged (by floor-dividing by 2).
         if nscans > 1:
+            cmetric_mask = np.ma.array(cmetric_all, mask=flag_all)
             if ncorrs == 2:
-                cmetric_mask = np.ma.array(cmetric_all, mask=flag_all)
                 cmetric_all = np.ma.mean(cmetric_mask, axis=0, keepdims=True)
                 flag_all = np.sum(flag_all, axis=0, keepdims=True) // 2
                 ncorrs = 1
             elif ncorrs == 4 and set(corr_type) == {'XX', 'XY', 'YX', 'YY'}:
-                cmetric_mask = np.ma.array(cmetric_all, mask=flag_all)
                 # Create mean of XX and YY polarization, and combine flags.
                 col_sel = [corr_type.index('XX'), corr_type.index('YY')]
                 cmetric_copol = np.ma.mean(cmetric_mask[col_sel, :], axis=0, keepdims=True)
@@ -844,7 +843,7 @@ class Correctedampflag(basetask.StandardTaskTemplate):
                 col_sel = [corr_type.index('XY'), corr_type.index('YX')]
                 cmetric_crosspol = np.ma.mean(cmetric_mask[col_sel, :], axis=0, keepdims=True)
                 flag_crosspol = np.sum(flag_all[col_sel, :], axis=0, keepdims=True) // 2
-                # Create new scalar difference array with the summed data, and
+                # Create new scalar difference array with the mean data, and
                 # corresponding flagging array.
                 cmetric_all = np.concatenate((cmetric_copol, cmetric_crosspol), axis=0)
                 flag_all = np.concatenate((flag_copol, flag_crosspol), axis=0)
