@@ -145,10 +145,6 @@ class Polcalflag(basetask.StandardTaskTemplate):
 
             # If new outliers were identified...
             if cafflags:
-                # Make "after calibration, before flagging" plots for the weblog
-                LOG.info('Creating "after calibration, before flagging" plots')
-                result.plots['before'] = plot_fn(suffix='before')
-
                 # Re-apply the newly found flags from correctedampflag.
                 LOG.info('Re-applying flags from correctedampflag.')
                 fsinputs = FlagdataSetter.Inputs(
