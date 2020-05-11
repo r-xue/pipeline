@@ -75,6 +75,12 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
+        <Command xmlns="">hifa_bandpass</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
         <Command xmlns="">hifa_spwphaseup</Command>
         <ParameterSet>
         </ParameterSet>
