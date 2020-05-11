@@ -1,6 +1,5 @@
-import os
-import functools
 import collections
+import functools
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -41,8 +40,6 @@ class PolcalflagResults(basetask.Results):
         ms.update_reference_antennas(ants_to_demote=self.refants_to_demote,
                                      ants_to_remove=self.refants_to_remove)
 
-        return
-
     def __repr__(self):
         return 'PolcalflagResults'
 
@@ -51,6 +48,7 @@ class PolcalflagInputs(vdp.StandardInputs):
     def __init__(self, context, vis=None):
         self.context = context
         self.vis = vis
+
 
 @task_registry.set_equivalent_casa_task('hifa_polcalflag')
 @task_registry.set_casa_commands_comment('Flag polarization calibrator outliers.')
@@ -90,14 +88,16 @@ class Polcalflag(basetask.StandardTaskTemplate):
             # corresponding flags
             LOG.info('Applying pre-existing cal tables.')
             acinputs = applycal.IFApplycalInputs(
-                context=inputs.context, vis=inputs.vis, intent='POLARIZATION,POLANGLE,POLLEAKAGE', flagsum=False, flagbackup=False)
+                context=inputs.context, vis=inputs.vis, intent='POLARIZATION,POLANGLE,POLLEAKAGE', flagsum=False,
+                flagbackup=False)
             actask = applycal.IFApplycal(acinputs)
             acresult = self._executor.execute(actask, merge=True)
 
             # Create back-up of flags after applycal but before correctedampflag.
             LOG.info('Creating back-up of "after_pcflag_applycal" flagging state')
             flag_backup_name_after_pcflag_applycal = 'after_pcflag_applycal'
-            task = casa_tasks.flagmanager(vis=inputs.vis, mode='save', versionname=flag_backup_name_after_pcflag_applycal)
+            task = casa_tasks.flagmanager(vis=inputs.vis, mode='save',
+                                          versionname=flag_backup_name_after_pcflag_applycal)
             self._executor.execute(task)
 
             # Find amplitude outliers and flag data. This needs to be done
@@ -108,7 +108,7 @@ class Polcalflag(basetask.StandardTaskTemplate):
 
             # Call correctedampflag for the polarization calibrator intent.
             cafinputs = correctedampflag.Correctedampflag.Inputs(
-                        context=inputs.context, vis=inputs.vis, intent='POLARIZATION,POLANGLE,POLLEAKAGE')
+                context=inputs.context, vis=inputs.vis, intent='POLARIZATION,POLANGLE,POLLEAKAGE')
             caftask = correctedampflag.Correctedampflag(cafinputs)
             cafresult = self._executor.execute(caftask)
 
@@ -131,7 +131,8 @@ class Polcalflag(basetask.StandardTaskTemplate):
                 # state, so that the "before plots" only show things needing
                 # to be flagged by correctedampflag
                 LOG.info('Restoring back-up of "after_pcflag_applycal" flagging state.')
-                task = casa_tasks.flagmanager(vis=inputs.vis, mode='restore', versionname=flag_backup_name_after_pcflag_applycal)
+                task = casa_tasks.flagmanager(vis=inputs.vis, mode='restore',
+                                              versionname=flag_backup_name_after_pcflag_applycal)
                 self._executor.execute(task)
                 # Make "after calibration, before flagging" plots for the weblog
                 LOG.info('Creating "after calibration, before flagging" plots')
@@ -139,8 +140,7 @@ class Polcalflag(basetask.StandardTaskTemplate):
 
             # Restore the "pre-polcalflag" backup of the flagging state.
             LOG.info('Restoring back-up of "pre-polcalflag" flagging state.')
-            task = casa_tasks.flagmanager(
-                vis=inputs.vis, mode='restore', versionname=flag_backup_name_prepcf)
+            task = casa_tasks.flagmanager(vis=inputs.vis, mode='restore', versionname=flag_backup_name_prepcf)
             self._executor.execute(task)
 
             # If new outliers were identified...
@@ -152,8 +152,7 @@ class Polcalflag(basetask.StandardTaskTemplate):
                 # Re-apply the newly found flags from correctedampflag.
                 LOG.info('Re-applying flags from correctedampflag.')
                 fsinputs = FlagdataSetter.Inputs(
-                    context=inputs.context, vis=inputs.vis, table=inputs.vis,
-                    inpfile=[])
+                    context=inputs.context, vis=inputs.vis, table=inputs.vis, inpfile=[])
                 fstask = FlagdataSetter(fsinputs)
                 fstask.flags_to_set(cafflags)
                 fsresult = self._executor.execute(fstask)
@@ -171,7 +170,7 @@ class Polcalflag(basetask.StandardTaskTemplate):
         return results
 
     def _identify_refants_to_update(self, result):
-        """Updates the Targetflag result with lists of "bad" and "poor"
+        """Updates the Polcalflag result with lists of "bad" and "poor"
         antennas, for reference antenna update.
 
         Identifies "bad" antennas as those that got flagged in all spws
@@ -182,8 +181,8 @@ class Polcalflag(basetask.StandardTaskTemplate):
         one spw, but not all, which are to be moved to the end of the reference
         antenna list.
 
-        :param result: TargetflagResults object
-        :return: TargetflagResults object
+        :param result: PolcalflagResults object
+        :return: PolcalflagResults object
         """
         # Identify bad antennas to demote/remove from refant list.
         ants_to_demote, ants_to_remove = self._identify_bad_refants(result)
@@ -220,9 +219,8 @@ class Polcalflag(basetask.StandardTaskTemplate):
         # Create a summary of the flagging state by going through each flagging
         # command.
         for flag in flags:
-
-        # Only consider flagging commands with a specified antenna and
-        # without a specified timestamp.
+            # Only consider flagging commands with a specified antenna and
+            # without a specified timestamp.
             if flag.antenna is not None and flag.time is None:
                 # Skip flagging commands for baselines.
                 if '&' in str(flag.antenna):
@@ -479,6 +477,7 @@ def create_plots(inputs, context, suffix=''):
 
     return {'time': amp_time_plots}
 
+
 class AmpVsXChart(applycal_displays.SpwSummaryChart):
     """
     Plotting class that creates an amplitude vs X plot for each spw, where X
@@ -497,5 +496,5 @@ class AmpVsXChart(applycal_displays.SpwSummaryChart):
         }
         plot_args.update(**overrides)
 
-        super(AmpVsXChart, self).__init__(context, output_dir, calto, xaxis=xaxis, yaxis='amp', intent='POLARIZATION,POLANGLE,POLLEAKAGE',
-                                          **plot_args)
+        super(AmpVsXChart, self).__init__(context, output_dir, calto, xaxis=xaxis, yaxis='amp',
+                                          intent='POLARIZATION,POLANGLE,POLLEAKAGE', **plot_args)
