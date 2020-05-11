@@ -68,24 +68,24 @@ def plot_type(plot):
 
 <table class="table table-bordered table-striped"
            summary="Reference Antennas">
-        <caption>Updated reference antenna selection per measurement set. Antennas are
-        listed in order of highest to lowest priority.</caption>
-        <thead>
-                <tr>
-                        <th>Measurement Set</th>
-                        <th>Reference Antennas (Highest to Lowest)</th>
-                </tr>
-        </thead>
-        <tbody>
+    <caption>Updated reference antenna selection per measurement set. Antennas are
+    listed in order of highest to lowest priority.</caption>
+    <thead>
+        <tr>
+            <th>Measurement Set</th>
+            <th>Reference Antennas (Highest to Lowest)</th>
+        </tr>
+    </thead>
+    <tbody>
 %for vis in updated_refants:
-                <tr>
-                        <td>${os.path.basename(vis)}</td>
-                        ## insert spaces in refant list to allow browser to break string
-                        ## if it wants
-                        <td>${updated_refants[vis].replace(',', ', ')}</td>
-                </tr>
+        <tr>
+            <td>${os.path.basename(vis)}</td>
+            ## insert spaces in refant list to allow browser to break string
+            ## if it wants
+            <td>${updated_refants[vis].replace(',', ', ')}</td>
+        </tr>
 %endfor
-        </tbody>
+    </tbody>
 </table>
 % endif
 
@@ -117,31 +117,31 @@ def plot_type(plot):
 % for ms in flags.keys():
 <h4>Measurement Set: ${os.path.basename(ms)}</h4>
 <table class="table table-bordered table-striped ">
-        <caption>Summary of flagged data. Each cell states the amount of data
-                flagged as a fraction of the specified data selection.
-        </caption>
-        <thead>
-                <tr>
-                        <th rowspan="2">Data Selection</th>
-                        <!-- flags before task is always first agent -->
-                        <th rowspan="2">flagged before</th>
-                        <th rowspan="2">flagged after</th>
-                </tr>
-        </thead>
-        <tbody>
-                % for k in ['TOTAL', 'BANDPASS', 'AMPLITUDE', 'PHASE', 'POLARIZATION', 'TARGET']:
-                <tr>
-                        <th>${k}</th>
-                        % for step in ['before','after']:
-                        % if flags[ms].get(step) is not None:
-                                <td>${percent_flagged(flags[ms][step]['Summary'][k])}</td>
-                        % else:
-                                <td>0.0%</td>
-                        % endif
-                        % endfor
-                </tr>
-                % endfor
-        </tbody>
+    <caption>Summary of flagged data. Each cell states the amount of data
+        flagged as a fraction of the specified data selection.
+    </caption>
+    <thead>
+        <tr>
+            <th rowspan="2">Data Selection</th>
+            <!-- flags before task is always first agent -->
+            <th rowspan="2">flagged before</th>
+            <th rowspan="2">flagged after</th>
+        </tr>
+    </thead>
+    <tbody>
+    % for k in ['TOTAL', 'BANDPASS', 'AMPLITUDE', 'PHASE', 'POLARIZATION', 'TARGET']:
+        <tr>
+            <th>${k}</th>
+        % for step in ['before','after']:
+            % if flags[ms].get(step) is not None:
+            <td>${percent_flagged(flags[ms][step]['Summary'][k])}</td>
+            % else:
+           <td>0.0%</td>
+            % endif
+        % endfor
+        </tr>
+    % endfor
+    </tbody>
 </table>
 
 % endfor
@@ -157,38 +157,38 @@ def plot_type(plot):
                   break_rows_by="intent,field,type_idx"
                   sort_row_by="spw">
 
-        <%def name="title()">
-              Amplitude vs time
-        </%def>
+    <%def name="title()">
+        Amplitude vs time
+    </%def>
 
-        <%def name="preamble()">
-                <p>These plots show amplitude vs time for two cases: 1, the calibrated data before application of any flags;
-                   and 2, where flagging was applied, the calibrated data after application of flags.</p>
+    <%def name="preamble()">
+        <p>These plots show amplitude vs time for two cases: 1, the calibrated data before application of any flags;
+        and 2, where flagging was applied, the calibrated data after application of flags.</p>
 
-                <p>Data are plotted for all antennas and correlations, with different
-                   correlations shown in different colours.</p>
-        </%def>
+        <p>Data are plotted for all antennas and correlations, with different
+        correlations shown in different colours.</p>
+    </%def>
 
-        <%def name="mouseover(plot)">Click to show amplitude vs time for spw ${plot.parameters['spw']}</%def>
+    <%def name="mouseover(plot)">Click to show amplitude vs time for spw ${plot.parameters['spw']}</%def>
 
-        <%def name="fancybox_caption(plot)">
-              ${plot_type(plot)}<br>
-              ${plot.parameters['vis']}<br>
-              Spw ${plot.parameters['spw']}<br>
-              Intents: ${utils.commafy([plot.parameters['intent']], False)}
-        </%def>
+    <%def name="fancybox_caption(plot)">
+        ${plot_type(plot)}<br>
+        ${plot.parameters['vis']}<br>
+        Spw ${plot.parameters['spw']}<br>
+        Intents: ${utils.commafy([plot.parameters['intent']], False)}
+    </%def>
 
-        <%def name="caption_title(plot)">
-              Spectral Window ${plot.parameters['spw']}<br>
-        </%def>
+    <%def name="caption_title(plot)">
+        Spectral Window ${plot.parameters['spw']}<br>
+    </%def>
 
-        <%def name="caption_subtitle(plot)">
-              Intents: ${utils.commafy([plot.parameters['intent']], False)}
-        </%def>
+    <%def name="caption_subtitle(plot)">
+        Intents: ${utils.commafy([plot.parameters['intent']], False)}
+    </%def>
 
-        <%def name="caption_text(plot, ptype)">
-              ${plot_type(plot)}.
-        </%def>
+    <%def name="caption_text(plot, ptype)">
+        ${plot_type(plot)}.
+    </%def>
 
 </%self:plot_group>
 
