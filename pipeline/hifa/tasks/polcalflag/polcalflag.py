@@ -104,8 +104,6 @@ class Polcalflag(basetask.StandardTaskTemplate):
             # per source / per field ID / per spw basis.
             LOG.info('Running correctedampflag to identify polarization calibrator outliers to flag.')
 
-            # This task is called by the framework for each EB in the vis list.
-
             # Call correctedampflag for the polarization calibrator intent.
             cafinputs = correctedampflag.Correctedampflag.Inputs(
                         context=inputs.context, vis=inputs.vis, intent='POLARIZATION,POLANGLE,POLLEAKAGE')
