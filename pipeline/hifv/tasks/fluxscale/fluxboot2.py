@@ -260,7 +260,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
         try:
             fluxscale_result = self._do_fluxscale(context, calMs, caltable)
             LOG.info("Using fit from fluxscale.")
-            powerfit_results, weblog_results, spindex_results = self._do_powerfit(fluxscale_result)
+            powerfit_results, weblog_results, spindex_results, fluxscale_result = self._do_powerfit(fluxscale_result)
             setjy_result = self._do_setjy(calMs, fluxscale_result)
         except Exception as e:
             LOG.warning(str(e))
@@ -428,6 +428,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
         results = []
         weblog_results = []
         spindex_results = []
+        spindex_results_global = []
 
         for source in unique_sources:
             indices = []
@@ -511,6 +512,8 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                 for i in range(len(spidx)):
                     logfittedfluxd += spidx[i] * (np.log10(freqs/fitreff)) ** i
 
+                # import pdb; pdb.set_trace()
+
                 fittedfluxd = 10.0 ** logfittedfluxd
 
                 # Single spectral window
@@ -525,46 +528,122 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                     logfiducialflux += spidx[i] * (np.log10(bandcenterfreq/fitreff)) ** i
 
                 fitflx = 10.0 ** logfiducialflux
+                fitflx = fluxscale_result[fieldid]['fitFluxd']
 
                 # Compute flux errors
                 flxerrslist = [fluxscale_result[fieldid][str(spwid)]['fluxdErr'][0] for spwid in uspws]
                 fitflxerr = np.mean(flxerrslist)
+                fitflxerr = fitflxAtRefFreqErr
 
                 # Again, single spectral window
                 if len(logfittedfluxd) == 1:
                     fitflx = np.array([fluxscale_result[fieldid]['fitFluxd']])
 
-                LOG.info(' Source: ' + source +
-                         ' Band: ' + band +
-                         ' fluxscale fitted spectral index = ' + str(spix) + ' +/- ' + str(spixerr))
-
                 fitorderused = len(spidx) - 1
                 if fitorderused > 1:
                     curvature = fluxscale_result[fieldid]['spidx'][2]
                     curvatureerr = fluxscale_result[fieldid]['spidxerr'][2]
-                    LOG.info(' Source: ' + source +
-                             ' Band: ' + band +
-                             ' fluxscale fitted curvature = ' + str(curvature) + ' +/- ' + str(curvatureerr))
 
                 if fitorderused > 2:
                     gamma = fluxscale_result[fieldid]['spidx'][3]
                     gammaerr = fluxscale_result[fieldid]['spidxerr'][3]
-                    LOG.info(' Source: ' + source +
-                             ' Band: ' + band +
-                             ' fluxscale fitted gamma = ' + str(gamma) + ' +/- ' + str(gammaerr))
 
                 if fitorderused > 3:
                     delta = fluxscale_result[fieldid]['spidx'][4]
                     deltaerr = fluxscale_result[fieldid]['spidxerr'][4]
+
+                # ------------------------------------------------------------------------
+                # Re-calculating a new reference frequency for a power-law SED
+                if len(logfittedfluxd) > 1:
+                    coef = [fitflx, spix, curvature, gamma, delta]
+                    coef_errors = [fitflxerr, spixerr, curvatureerr, gammaerr, deltaerr]
+                    ref_freq = reffreq
+
+                    # first coefficient is log S
+                    coef[0] = np.log10(coef[0])
+
+                    # first coefficient error in log flux
+                    coef_errors[0] = np.log10(10 ** coef[0] + coef_errors[0]) - coef[0]
+
+                    print('\nOriginal coefficients for band {0}:'.format(band))
+                    for j in range(len(coef)):
+                        if j == 0:
+                            print('  {0:.4f} +/- {1:.4f}'.format(10 ** coef[j],
+                                                                 10 ** (coef[j] + coef_errors[j]) - 10 ** (
+                                                                     coef[j])))
+                        else:
+                            print('  {0:.4f} +/- {1:.4f}'.format(coef[j], coef_errors[j]))
+                    print('------------------------------------------------------')
+                    print('Old reffreq: {0:.6f}      New reffreq: {1:.6f}'.format(ref_freq, bandcenterfreq/1.e9))
+                    new_coef = self.re_reference_polynomial(coef, ref_freq, bandcenterfreq/1.e9)
+
+                    # bootstrap new coefficient errors
+                    new_bootstrap_coeffs = []
+                    ntrials = 2000
+                    for j in range(ntrials):
+                        noisy_coef = np.array(coef) + np.random.randn(len(coef)) * np.array(coef_errors)
+                        new_bootstrap_coef = self.re_reference_polynomial(noisy_coef, ref_freq, bandcenterfreq/1.e9)
+                        new_bootstrap_coeffs.append(new_bootstrap_coef)
+
+                    bootstrapped_coef_errors = np.std(np.array(new_bootstrap_coeffs), axis=0)
+
+                    print('\nNew coefficients for band {0}:'.format(band))
+                    print('\nThese new values will be used in subsequent setjy executions.')
+                    for j in range(len(new_coef)):
+                        if j == 0:
+                            print('  {0:.4f} +/- {1:.4f}'.format(10 ** new_coef[j],
+                                                                 10 ** (new_coef[j] + bootstrapped_coef_errors[j]) - 10 ** (
+                                                                 new_coef[j])))
+                        else:
+                            print('  {0:.4f} +/- {1:.4f}'.format(new_coef[j], bootstrapped_coef_errors[j]))
+
+                    # Replace old values with new values for weblog presentation
+                    if fitorderused > 0:
+                        spix = new_coef[1]
+                        spixerr = bootstrapped_coef_errors[1]
+
+                    if fitorderused > 1:
+                        curvature = new_coef[2]
+                        curvatureerr = bootstrapped_coef_errors[2]
+
+                    if fitorderused > 2:
+                        gamma = new_coef[3]
+                        gammaerr = bootstrapped_coef_errors[3]
+
+                    if fitorderused > 3:
+                        delta = new_coef[4]
+                        deltaerr = bootstrapped_coef_errors[4]
+
+                    fitflx = 10 ** new_coef[0]
+                    fitflxerr = 10 ** (new_coef[0] + bootstrapped_coef_errors[0]) - 10 ** (new_coef[0])
+
+                # ------------------------------------------------------------------------
+
+                LOG.info(' Source: ' + source +
+                         ' Band: ' + band +
+                         ' fluxscale fitted spectral index = ' + str(spix) + ' +/- ' + str(spixerr))
+
+                if fitorderused > 1:
                     LOG.info(' Source: ' + source +
                              ' Band: ' + band +
-                             ' fluxscale fitted delta = ' + str(delta) + ' +/- ' + str(deltaerr))
+                             ' fluxscale fitted 2nd order coeff = ' + str(curvature) + ' +/- ' + str(curvatureerr))
+
+                if fitorderused > 2:
+                    LOG.info(' Source: ' + source +
+                             ' Band: ' + band +
+                             ' fluxscale fitted 3rd order coeff = ' + str(gamma) + ' +/- ' + str(gammaerr))
+
+                if fitorderused > 3:
+                    LOG.info(' Source: ' + source +
+                             ' Band: ' + band +
+                             ' fluxscale fitted 4th order coeff = ' + str(delta) + ' +/- ' + str(deltaerr))
 
                 results.append([source, uspws, fitflx, spix, SNR, reffreq, curvature])
 
                 spindex_results.append({'source': source,
                                         'band': band,
                                         'bandcenterfreq': bandcenterfreq,
+                                        'sortingfreq': bandcenterfreq,
                                         'spix': str(spix),
                                         'spixerr': str(spixerr),
                                         'SNR': SNR,
@@ -598,6 +677,64 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                                            'error': str(fderr),
                                            'fitteddata': str(SS)})
 
+            # If multiple bands, then add another a special entry with the global fit
+            freqs = fluxscale_result['freq']
+            fitflx = fluxscale_result[fieldid]['fitFluxd']  # Fiducial flux for entire fit
+            fitflxAtRefFreq = fluxscale_result[fieldid]['fitFluxd']
+            fitflxAtRefFreqErr = fluxscale_result[fieldid]['fitFluxdErr']
+            fitreff = fluxscale_result[fieldid]['fitRefFreq']
+            spidx = fluxscale_result[fieldid]['spidx']
+            reffreq = fitreff / 1.e9
+
+            if len(spidx) > 1:
+                spix = fluxscale_result[fieldid]['spidx'][1]
+                spixerr = fluxscale_result[fieldid]['spidxerr'][1]
+            else:
+                # Fit order = 0
+                spix = 0.0
+                spixerr = 0.0
+            SNR = 0.0
+            curvature = 0.0
+            curvatureerr = 0.0
+            gamma = 0.0
+            gammaerr = 0.0
+            delta = 0.0
+            deltaerr = 0.0
+
+            fitorderused = len(spidx) - 1
+            if fitorderused > 1:
+                curvature = fluxscale_result[fieldid]['spidx'][2]
+                curvatureerr = fluxscale_result[fieldid]['spidxerr'][2]
+
+            if fitorderused > 2:
+                gamma = fluxscale_result[fieldid]['spidx'][3]
+                gammaerr = fluxscale_result[fieldid]['spidxerr'][3]
+
+            if fitorderused > 3:
+                delta = fluxscale_result[fieldid]['spidx'][4]
+                deltaerr = fluxscale_result[fieldid]['spidxerr'][4]
+
+            if len(unique_bands) > 1:
+                spindex_results.append({'source': source,
+                                               'band': 'Multi',
+                                               'bandcenterfreq': fluxscale_result[fieldid]['fitRefFreq'],
+                                               'sortingfreq': 0.0,
+                                               'spix': str(spix),
+                                               'spixerr': str(spixerr),
+                                               'SNR': SNR,
+                                               'fitflx': fitflxAtRefFreq,
+                                               'fitflxerr': fitflxAtRefFreqErr,
+                                               'curvature': str(curvature),
+                                               'curvatureerr': str(curvatureerr),
+                                               'gamma': str(gamma),
+                                               'gammaerr': str(gammaerr),
+                                               'delta': str(delta),
+                                               'deltaerr': str(deltaerr),
+                                               'fitorder': str(fitorderused),
+                                               'reffreq': str(reffreq),
+                                               'fitflxAtRefFreq': str(fitflxAtRefFreq),
+                                               'fitflxAtRefFreqErr': str(fitflxAtRefFreqErr)})
+
         self.spix = spix
         self.curvature = curvature
 
@@ -606,7 +743,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
         # Sort weblog results by frequency
         weblog_results = sorted(weblog_results, key=lambda k: (k['source'], k['freq']))
 
-        return results, weblog_results, spindex_results
+        return results, weblog_results, spindex_results, fluxscale_result
 
     def _do_setjy(self, calMs, fluxscale_result):
 
@@ -776,3 +913,13 @@ class Fluxboot2(basetask.StandardTaskTemplate):
             job = casa_tasks.gaincal(**task_args)
 
             return self._executor.execute(job)
+
+    def re_reference_polynomial(self, c1, original_ref_freq, new_ref_freq):
+        shift = np.log10(new_ref_freq / original_ref_freq)
+        p1 = np.poly1d(c1[::-1])
+        r2 = np.roots(p1) - shift
+        c2 = np.poly(r2)
+        c2 = c2 * p1(shift) / c2[-1]
+        # c2 = c2 * p1(shift) / np.asarray(c2)[-1]
+        p2 = np.poly1d(c2)
+        return p2.coefficients[::-1]

@@ -1,14 +1,13 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
 def hifa_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, antenna=None, hm_phaseup=None,
                   phaseupsolint=None, phaseupbw=None, phaseupsnr=None, phaseupnsols=None, hm_bandpass=None, solint=None,
                   maxchannels=None, evenbpints=None, bpsnr=None, minbpsnr=None, bpnsols=None, combine=None, refant=None,
-                  solnorm=None, minblperant=None, minsnr=None, pipelinemode=None, dryrun=None, acceptresults=None):
+                  solnorm=None, minblperant=None, minsnr=None, unregister_existing=None, pipelinemode=None, dryrun=None, 
+                  acceptresults=None):
 
     ##########################################################################
     #                                                                        #

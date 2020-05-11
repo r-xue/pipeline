@@ -124,7 +124,7 @@ def set_unit(ms, calapp):
             if data_units[field_id] == 'K':
                 data_units[field_id] = 'Jy'
 
-    unit_list = numpy.asarray(data_units.values())
+    unit_list = numpy.asarray(list(data_units.values()))
     if numpy.all(unit_list == 'K'):
         data_unit = 'K'
     elif numpy.all(unit_list == 'Jy'):

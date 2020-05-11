@@ -86,17 +86,30 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
 
     def prepare(self):
 
+        # PIPE-631: make alpha image cutouts in VLASS-SE-CONT mode
+        if hasattr(self.inputs.context, 'imaging_mode'):
+            img_mode = self.inputs.context.imaging_mode
+        else:
+            img_mode = None
+
         imlist = self.inputs.context.sciimlist.get_imlist()
         imagenames = []
         # Per VLASS Tech Specs page 22
         for imageitem in imlist:
             if imageitem['multiterm']:
+                imagenames.extend(glob.glob(imageitem['imagename'] + '.tt0'))  # non-pbcor
+                imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.residual') + '*.tt0'))  # non-pbcor
                 imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.image.pbcor') + '*.tt0'))
                 imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.image.pbcor') + '*.tt0.rms'))
                 imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.psf') + '*.tt0'))
                 imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.image.residual.pbcor') + '*.tt0'))
                 imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.pb') + '*.tt0'))
+                if img_mode == 'VLASS-SE-CONT':
+                    imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.alpha')))
+                    imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.alpha.error')))
             else:
+                imagenames.extend(glob.glob(imageitem['imagename']))  # non-pbcor
+                imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.residual')))  # non-pbcor
                 imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.image.pbcor')))
                 imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.image.pbcor.rms')))
                 imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.psf')))

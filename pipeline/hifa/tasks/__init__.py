@@ -15,6 +15,7 @@ from .importdata import ALMAImportData
 from .polcalflag import Polcalflag
 from .restoredata import ALMARestoreData
 from .spwphaseup import SpwPhaseup
+from .targetflag import Targetflag
 from .tsysflag import Tsysflag as ALMATsysflag
 from .wvrgcal import Wvrgcal
 from .wvrgcalflag import Wvrgcalflag

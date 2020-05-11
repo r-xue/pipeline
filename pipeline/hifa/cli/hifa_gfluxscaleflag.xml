@@ -15,14 +15,15 @@ resolved calibrators and point sources because it is not performing a
 vector difference, and thus is not sensitive to nulls in the flux density
 vs. uvdistance domain. Note that the phase of the data is not assessed.
 
-In further detail, the workflow is as follows: an a priori calibration is
-applied using pre-existing caltables in the calibration state, a
-preliminary phase and amplitude gaincal solution is solved and applied, the
-flagging heuristics are run, and any outliers are flagged. Plots are
+In further detail, the workflow is as follows: a snapshot of the flagging
+state is preserved at the start, a preliminary phase and amplitude gaincal
+solution is solved and applied, the flagging heuristics are run and
+any outliers are marked for flagging, the flagging state is restored from the
+snapshot. If any outliers were found, then these are flagged. Plots are
 generated at two points in this workflow: after preliminary phase and
 amplitude calibration but before flagging heuristics are run, and after
 flagging heuristics have been run and applied. If no points were flagged,
-the &quot;after&quot; plots are not generated or displayed. The score for this stage
+the 'after' plots are not generated or displayed. The score for this stage
 is the standard data flagging score, which depends on the fraction of data
 flagged.
 

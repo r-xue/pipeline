@@ -63,6 +63,11 @@
         </allowed>
     </param>
 
+    <param type="bool" name="overwrite_modelcol">
+        <description>Always write the model column, even if it already exists</description>
+        <value>False</value>
+    </param>
+
     <param subparam="true" name="dryrun" type="bool">
         <shortdescription>Run the task (False) or display task command (True)</shortdescription>
         <description>Run the commands (True) or generate the commands to be run but

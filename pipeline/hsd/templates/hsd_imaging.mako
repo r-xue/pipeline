@@ -51,7 +51,7 @@ $(document).ready(function() {
         };
     };
 
-    // 
+    //
     var createMixedSetter = function(spw, ant, field, pol) {
         return function() {
             // trigger a change event, otherwise the filters are not changed
@@ -68,7 +68,7 @@ $(document).ready(function() {
 	            $("#select-pol").select2("val", [pol]).trigger("change");
         	}
         };
-    };    
+    };
 
     // create a callback function for each overview plot that will select the
     // appropriate spw once the page has loaded
@@ -87,15 +87,15 @@ $(document).ready(function() {
 def get_spw_short_exp(spw):
     spw_exp = 'SPW {}'.format(spw)
     if dovirtual:
-        spw_exp = 'V' + spw_exp 
-    return spw_exp 
-    
+        spw_exp = 'V' + spw_exp
+    return spw_exp
+
 def get_spw_exp(spw):
     spw_exp = 'Spectral Window {}'.format(spw)
     if dovirtual:
-        spw_exp = 'Virtual ' + spw_exp 
-    return spw_exp 
-    
+        spw_exp = 'Virtual ' + spw_exp
+    return spw_exp
+
 def get_spw_desc(spw):
     spw_exp = get_spw_exp(spw).replace('Window', 'Window:')
     if dovirtual:
@@ -103,7 +103,7 @@ def get_spw_desc(spw):
         spw_short_name = pcontext.observing_run.virtual_science_spw_shortnames[spw_name]
         spw_exp += '<br>({})'.format(spw_short_name)
     return spw_exp
-        
+
 def get_spw_inline_desc(spw):
     spw_exp = get_spw_exp(spw).lower()
     if dovirtual:
@@ -111,7 +111,7 @@ def get_spw_inline_desc(spw):
         spw_short_name = pcontext.observing_run.virtual_science_spw_shortnames[spw_name]
         spw_exp += ' ({})'.format(spw_short_name)
     return spw_exp
-    
+
 stage_dir = os.path.join(pcontext.report_dir, 'stage%s'%(result.stage_number))
 plots_list = [{'title': 'Channel Map',
                'subpage': channelmap_subpage,
@@ -127,7 +127,31 @@ plots_list = [{'title': 'Channel Map',
                'plot': integratedmap_plots}]
 %>
 
-<p>This task generates single dish images per source per spectral window. 
+<%
+def get_spw_exp(spw):
+    spw_exp = 'Spectral Window {}'.format(spw)
+    if dovirtual:
+        spw_exp = 'Virtual ' + spw_exp
+    return spw_exp
+
+def get_spw_desc(spw):
+    spw_exp = get_spw_exp(spw).replace('Window', 'Window:')
+    if dovirtual:
+        spw_name = pcontext.observing_run.virtual_science_spw_ids[spw]
+        spw_short_name = pcontext.observing_run.virtual_science_spw_shortnames[spw_name]
+        spw_exp += '<br>({})'.format(spw_short_name)
+    return spw_exp
+
+def get_spw_inline_desc(spw):
+    spw_exp = get_spw_exp(spw).lower()
+    if dovirtual:
+        spw_name = pcontext.observing_run.virtual_science_spw_ids[spw]
+        spw_short_name = pcontext.observing_run.virtual_science_spw_shortnames[spw_name]
+        spw_exp += ' ({})'.format(spw_short_name)
+    return spw_exp
+%>
+
+<p>This task generates single dish images per source per spectral window.
 It generates an image combined spectral data from whole antenna as well as images per antenna.</p>
 
 <h3>Contents</h3>
@@ -139,10 +163,13 @@ It generates an image combined spectral data from whole antenna as well as image
     <li><a href="#profilemap">Profile Map</a></li>
 %endif
 % for plots in plots_list:
-    % if plots['subpage'] is not None and plots['subpage'] != {}: 
+    % if plots['subpage'] is not None and plots['subpage'] != {}:
         <li><a href="#${plots['title'].replace(" ", "")}">${plots['title']}</a></li>
     %endif
 % endfor
+%if contaminationmap_plots is not None:
+    <li><a href="#contaminationplot">Contamination Plots</a></li>
+%endif
 </ul>
 
 %if rms_table is not None and len(rms_table) > 0:
@@ -191,7 +218,7 @@ It generates an image combined spectral data from whole antenna as well as image
                              data-src="${os.path.relpath(plot.thumbnail, pcontext.report_dir)}"
 	                         title="Profile map summary for ${get_spw_exp(plot.parameters['spw'])}">
 	                </a>
-	
+
 	                <div class="caption">
 	                    <h4>
 	                        <a href="${os.path.join(dirname, subpage)}"
@@ -202,9 +229,9 @@ It generates an image combined spectral data from whole antenna as well as image
 	                           ${get_spw_exp(plot.parameters['spw'])}
 	                        </a>
 	                    </h4>
-	
+
 	                    <p>Profile map for ${get_spw_inline_desc(plot.parameters['spw'])}.</p>
-	                    
+
 	                    % if profilemap_subpage is not None:
 	                      <h4>Detailed profile map</h4>
 	                      <table border width="100%">
@@ -262,7 +289,7 @@ It generates an image combined spectral data from whole antenna as well as image
                                  data-src="${os.path.relpath(plot.thumbnail, pcontext.report_dir)}"
 	                             title="${plots['title']} for ${get_spw_exp(plot.parameters['spw'])}">
 	                    </a>
-	
+
 	                    <div class="caption">
 	                        <h4>
 	                            <a href="${os.path.join(dirname, subpage)}"
@@ -273,7 +300,7 @@ It generates an image combined spectral data from whole antenna as well as image
 	                               ${get_spw_exp(plot.parameters['spw'])}
 	                            </a>
 	                        </h4>
-	
+
 	                        <p>${plots['title']} for ${get_spw_inline_desc(plot.parameters['spw'])}.</p>
 	                    </div>
 	                </div>
@@ -285,3 +312,28 @@ It generates an image combined spectral data from whole antenna as well as image
 	<div class="clearfix"></div><!--  flush plots, break to next row -->
 % endfor
 
+%if contaminationmap_plots is not None:
+<h3 id="contaminationplot" class="jumptarget">Contamination Plots</h3>
+    % for field, plot_list in contaminationmap_plots.items():
+      <h4>${field}</h4>
+	  % for plot in plot_list:
+		% if os.path.exists(plot.thumbnail):
+			<div class="col-md-3">
+			  	<div class="thumbnail">
+                    <a href="${os.path.relpath(plot.abspath, pcontext.report_dir)}"
+                       data-fancybox="thumbs">
+                       <img class="lazyload"
+                            data-src="${os.path.relpath(plot.thumbnail, pcontext.report_dir)}"
+                            title="Contamination Plot for Field ${field} ${get_spw_inline_desc(plot.parameters['spw'])}">
+                    </a>
+					<div class="caption">
+						<h4>${get_spw_exp(plot.parameters['spw'])}</h4>
+						<p>Contamination Plot for Field ${field} ${get_spw_inline_desc(plot.parameters['spw'])}.</p>
+					</div>
+				</div>
+			</div>
+        % endif
+	  %endfor
+	  <div class="clearfix"></div><!--  flush plots, break to next row -->
+    %endfor
+%endif

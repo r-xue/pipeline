@@ -32,15 +32,18 @@ class SelfcalInputs(vdp.StandardInputs):
     refantignore = vdp.VisDependentProperty(default='')
     combine = vdp.VisDependentProperty(default='spw,field')
     selfcalmode = vdp.VisDependentProperty(default='VLASS')
+    overwrite_modelcol = vdp.VisDependentProperty(default=False)
     refantmode = 'strict'
 
-    def __init__(self, context, vis=None, refantignore=None, combine=None, selfcalmode=None, refantmode=None):
+    def __init__(self, context, vis=None, refantignore=None, combine=None, selfcalmode=None, refantmode=None,
+                 overwrite_modelcol=None):
         self.context = context
         self.vis = vis
         self.refantignore = refantignore
         self.combine = combine
         self.selfcalmode = selfcalmode
         self.refantmode = refantmode
+        self.overwrite_modelcol = overwrite_modelcol
 
 
 @task_registry.set_equivalent_casa_task('hifv_selfcal')
@@ -82,13 +85,13 @@ class Selfcal(basetask.StandardTaskTemplate):
     def _check_for_modelcolumn(self):
         ms = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         with casatools.TableReader(ms.name) as table:
-            if 'MODEL_DATA' not in table.colnames():
-                LOG.info('Model data missing from {}.  Adding it now.'.format(ms.basename))
+            if 'MODEL_DATA' not in table.colnames() or self.inputs.overwrite_modelcol:
+                LOG.info('Writing model data to {}'.format(ms.basename))
                 imaging_parameters = set_add_model_column_parameters(self.inputs.context)
                 job = casa_tasks.tclean(**imaging_parameters)
                 tclean_result = self._executor.execute(job)
             else:
-                LOG.info('MODEL_DATA column found in {}'.format(ms.basename))
+                LOG.info('Using existing MODEL_DATA column found in {}'.format(ms.basename))
 
     def _do_gaincal(self):
         """Run CASA task gaincal"""

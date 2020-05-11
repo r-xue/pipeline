@@ -79,6 +79,11 @@
 	<value>strict</value>
     </param>
 
+    <param type="bool" name="overwrite_modelcol">
+        <description>Always write the model column, even if it already exists</description>
+        <value>False</value>
+    </param>
+
     <constraints>
 	<when param="pipelinemode">
 	    <equals value="automatic" type="string">
