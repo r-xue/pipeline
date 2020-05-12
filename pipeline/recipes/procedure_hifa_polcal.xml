@@ -93,6 +93,12 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
+        <Command xmlns="">hifa_polcalflag</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
         <Command xmlns="">hifa_gfluxscale</Command>
         <ParameterSet>
         </ParameterSet>
