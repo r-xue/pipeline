@@ -396,12 +396,13 @@ class IntentVsTimeChart(object):
                        'CHECK': ('purple', 10),
                        'PHASE': ('cyan', 5),
                        'POINTING': ('yellow', 30),
+                       'REFERENCE': ('deepskyblue', 45),
                        'SIDEBAND': ('orange', 35),
                        'TARGET': ('blue', 0),
                        'WVR': ('lime', 40),
-                       'POLARIZATION': ('navy', 45),
-                       'POLANGLE': ('mediumslateblue', 50),
-                       'POLLEAKAGE': ('plum', 55),
+                       'POLARIZATION': ('navy', 50),
+                       'POLANGLE': ('mediumslateblue', 55),
+                       'POLLEAKAGE': ('plum', 60),
                        }
 
     def __init__(self, inputs):
@@ -431,11 +432,11 @@ class IntentVsTimeChart(object):
 
                 ax.annotate('%s' % scan.id, (scan_start, scan_y+6))
 
-        ax.set_ylim(0, 57.5)
-        ax.set_yticks([2.5, 7.5, 12.5, 17.5, 22.5, 27.5, 32.5, 37.5, 42.5, 47.5, 52.5, 57.5])
+        ax.set_ylim(0, 62.5)
+        ax.set_yticks([2.5, 7.5, 12.5, 17.5, 22.5, 27.5, 32.5, 37.5, 42.5, 47.5, 52.5, 57.5, 62.5])
         ax.set_yticklabels(['SCIENCE', 'PHASE', 'CHECK', 'BANDPASS',
                             'AMPLITUDE', 'ATMOSPHERE', 'POINTING', 'SIDEBAND',
-                            'WVR', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'])
+                            'WVR', 'REFERENCE', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'])
 
         # set the labelling of the time axis
         FieldVsTimeChart._set_time_axis(
