@@ -15,7 +15,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 
 Description
 
-The hifa_flagdata data performs basic flagging operations on a list of
+The hifa_flagtargets task performs basic flagging operations on a list of
 measurements including:
 
   o applying a flagging template

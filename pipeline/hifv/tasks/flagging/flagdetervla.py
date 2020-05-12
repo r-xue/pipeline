@@ -24,11 +24,11 @@
 # vis = [ '<MS name>' ]
 # context = pipeline.Pipeline( vis ).context
 #
-# inputs = pipeline.tasks.flagging.FlagDeterVLA.Inputs( context, vis=vis,
+# inputs = pipeline.hifv.tasks.flagging.FlagDeterVLA.Inputs( context, vis=vis,
 #   output_dir='.', autocorr=True, shadow=True, scan=True, scannumber='4,5,8',
 #   intents='*AMPLI*', edgespw=True, fracspw=0.1, fracspwfps=0.1 )
 #
-# task = pipeline.tasks.flagging.FlagDeterVLA( inputs )
+# task = pipeline.hifv.tasks.flagging.FlagDeterVLA( inputs )
 # jobs = task.analyse()
 #
 # status = task.execute(dry_run=False)
