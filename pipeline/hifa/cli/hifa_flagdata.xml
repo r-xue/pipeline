@@ -237,6 +237,14 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
             </equals>
         </when>
 
+        <when param="shadow">
+            <equals value="True" type="bool">
+                 <default param="tolerance"><value type="double"/></default>
+            </equals>
+            <equals value="False" type="bool">
+            </equals>
+        </when>
+
         <when param="scan">
             <equals value="True" type="bool">
                 <default param="scannumber"><value type="string"/></default>
