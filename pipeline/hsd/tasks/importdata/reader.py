@@ -93,6 +93,10 @@ class MetaDataReader(object):
         self.invalid_pointing_data[antenna_id].append(row)
 
     def generate_flagcmd_for_invalid_pointing_data(self):
+        # do nothing if no registered rows
+        if len(self.invalid_pointing_data) == 0:
+            return
+
         LOG.warn('{}: There are rows without corresponding POINTING data'.format(self.ms.basename))
         LOG.warn('The following rows will be flagged in the subsequent stage:')
         for k, v in self.invalid_pointing_data.items():
