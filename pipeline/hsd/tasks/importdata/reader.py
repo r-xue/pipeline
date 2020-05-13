@@ -53,7 +53,7 @@ def merge_timerange(timerange_list):
 
 def write_flagcmd(flagtemplate, antenna_id, timerange_list):
     qa = casatools.quanta
-    template = string.Template(f"mode='manual' antenna='{antenna_id}' timerange='$timerange' reason='SDPL:missing_pointing_data'\n")
+    template = string.Template(f"mode='manual' antenna='{antenna_id}&&&' timerange='$timerange' reason='SDPL:missing_pointing_data'\n")
 
     with open(flagtemplate, 'w') as f:
         for timerange in timerange_list:
