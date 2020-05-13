@@ -1,3 +1,4 @@
+import collections
 import glob
 import os
 import shutil
@@ -34,7 +35,7 @@ def get_state_id(ms, spw, intent):
             # Need to reset explicitly after CASA 5.3. See CAS-11088 for detail.
             msreader.selectinit(reset=True)
     return numpy.fromiter(state_ids, dtype=numpy.int32)
-        
+
 
 class MetaDataReader(object):
     def __init__(self, ms, table_name):
@@ -51,22 +52,30 @@ class MetaDataReader(object):
         self.datatable = DataTable(name=self.table_name, readonly=False)
         self.vAnt = 0
         self.appended_row = 0
-        
+
+        # invalid_pointing_data is dictionary (collections.defaultdict)
+        # it stores an information of the data that caused
+        # msmd.pointingdirection to fail due to the lack of
+        # pointing data in POINTING table
+        # key: antenna id
+        # value: list of invalid rows
+        self.invalid_pointing_data = collections.defaultdict(list)
+
     @property
     def name(self):
         return self.ms.name
-        
+
     def get_datatable(self):
         return self.datatable
 
     def detect_target_spw(self):
         if not hasattr(self, 'name'):
             return []
-        
+
         ms = self.ms
         spws = ms.get_spectral_windows(science_windows_only=True)
         return [x.id for x in spws]
-    
+
     def detect_target_data_desc(self):
         science_windows = self.detect_target_spw()
         ms = self.ms
@@ -79,27 +88,36 @@ class MetaDataReader(object):
 
         dds = numpy.fromiter(_g(), dtype=numpy.int32)
         return dds
-                
+
+    def register_invalid_pointing_data(self, antenna_id, row):
+        self.invalid_pointing_data[antenna_id].append(row)
+
+    def generate_flagcmd_for_invalid_pointing_data(self):
+        LOG.warn('{}: There are rows without corresponding POINTING data'.format(self.ms.basename))
+        LOG.warn('The following rows will be flagged in the subsequent stage:')
+        for k, v in self.invalid_pointing_data.items():
+            LOG.warn(f'  antenna {k}: rows {v}')
+
     def execute(self, dry_run=True):
         if dry_run:
             return
-        
+
         # name of the MS
         name = self.name
         spwids = self.detect_target_spw()
         nchan_map = dict([(spwid, self.ms.get_spectral_window(spwid).num_channels) for spwid in spwids])
         ddids = self.detect_target_data_desc()
-        
+
         #Rad2Deg = 180. / 3.141592653
-        
+
         # FILENAME keyword stores name of the MS
         LOG.info('name=%s' % name)
         self.datatable.putkeyword('FILENAME', name)
 
         # 2018/04/18 TN
         # CAS-10874 single dish pipeline should use ICRS instead of J2000
-        # For consistency throuout the single dish pipeline, direction 
-        # reference frame is stored in the DataTable 
+        # For consistency throuout the single dish pipeline, direction
+        # reference frame is stored in the DataTable
         outref = self._get_outref()
         # register direction reference to datatable
         self.datatable.direction_ref = outref
@@ -156,7 +174,7 @@ class MetaDataReader(object):
                     ephemeris_ids = tb.getcol( 'EPHEMERIS_ID' )
                 else:
                     ephemeris_ids = []
-                
+
                 # check if known_ephemeris_sources
                 if source_name.upper() in known_ephemeris_list and not fields[0].source.is_eph_obj:
                     fields[0].source.is_known_eph_obj = True
@@ -170,7 +188,7 @@ class MetaDataReader(object):
                         # found a new ephemeris source
                         ephemsrc_list.append( source_name )
 
-                    # pick ephemeris table name                          
+                    # pick ephemeris table name
                     ephem_table_files = glob.glob( ms.name+'/FIELD/EPHEM'+str(ephemeris_ids[field_id])+'_*.tab' )
                     if len(ephem_table_files) > 1:
                         raise RuntimeError( "multiple ephemeris tables found for field_id={}".format(field_id) )
@@ -197,7 +215,7 @@ class MetaDataReader(object):
                     ephem_tables.update( {field_id:'' } )
                     LOG.info( "FIELD_ID={} ({}) as NORMAL SOURCE".format( field_id, source_name) )
 
-            
+
         with TableSelector(name, 'ANTENNA1 == ANTENNA2 && FEED1 == FEED2 && DATA_DESC_ID IN %s && STATE_ID IN %s'%(list(ddids), list(target_state_ids))) as tb:
             # find the first onsrc for each ephemeris source and pack org_directions
             org_directions = {}
@@ -224,7 +242,7 @@ class MetaDataReader(object):
                         is_known_eph_obj = fields[0].source.is_known_eph_obj
                         org_direction = get_reference_direction( source_name, ephem_tables[field_id], is_known_eph_obj, mepoch, mposition, outref )
                         org_directions.update( {source_name:org_direction} );
-            
+
         with casatools.TableReader( os.path.join( name, 'FIELD' )) as tb:
             field_ids = list(range(tb.nrows()))
             for field_id in list(set(field_ids)):
@@ -258,7 +276,7 @@ class MetaDataReader(object):
             field_ids = tb.getcol('FIELD_ID')
             getsourcename = numpy.vectorize(lambda x: ms.get_fields(x)[0].source.name, otypes=['str'])
             Tsrc = getsourcename(field_ids)
-            NchanArray = numpy.fromiter((nchan_map[n] for n in Tif), dtype=numpy.int)   
+            NchanArray = numpy.fromiter((nchan_map[n] for n in Tif), dtype=numpy.int)
 
         ID = len(self.datatable)
         LOG.info('ID=%s' % ID)
@@ -293,7 +311,7 @@ class MetaDataReader(object):
             last_antenna = None
             last_result = None
             ref_direction = None
-            
+
             for irow in index:
                 iprogress += 1
                 if iprogress >= nprogress and iprogress % nprogress == 0:
@@ -320,42 +338,75 @@ class MetaDataReader(object):
                 # assert len(antennas) == 1
                 # antenna_domain = antennas[0]
                 # mposition = antenna_domain.position
-                mposition = mpositions[antenna_id]   
-                pointing_directions = msmd.pointingdirection(row, interpolate=True)
+                mposition = mpositions[antenna_id]
+                # CASR-494
+                try:
+                    pointing_directions = msmd.pointingdirection(row, interpolate=True)
+                except RuntimeError as e:
+                    LOG.warn(e)
+                    if str(e).find('SSMIndex::getIndex - access to non-existing row') != -1:
+                        LOG.warn('Missing pointing data for row {} (antenna {} time {})'.format(rows[irow], Tant[irow], Tmjd[irow]))
+
+                        # register row to self.invalid_pointing_data
+                        self.register_invalid_pointing_data(antenna_id, row)
+
+                        if mjd_in_sec == last_mjd and antenna_id == last_antenna:
+                            Taz[irow] = last_result[0]
+                            Tel[irow] = last_result[1]
+                            Tra[irow] = last_result[2]
+                            Tdec[irow] = last_result[3]
+                            Tshift_ra[irow] = last_result[4]
+                            Tshift_dec[irow] = last_result[5]
+                            Tofs_ra[irow] = last_result[6]
+                            Tofs_dec[irow] = last_result[7]
+                        else:
+                            Taz[irow] = 0.0
+                            Tel[irow] = 0.0
+                            Tra[irow] = 0.0
+                            Tdec[irow] = 0.0
+                            Tshift_ra[irow] = 0.0
+                            Tshift_dec[irow] = 0.0
+                            Tofs_ra[irow] = 0.0
+                            Tofs_dec[irow] = 0.0
+                        Tflagrow[irow] = True
+                        continue
+                    else:
+                        raise e
+
                 pointing_direction = pointing_directions['antenna1']['pointingdirection']  # antenna2 should be the same
                 lon = pointing_direction['m0']
                 lat = pointing_direction['m1']
                 ref = pointing_direction['refer']
-                
+
                 # 2018/04/18 TN
                 # CAS-10874 single dish pipeline should use ICRS instead of J2000
                 if ref in [azelref]:
                     if irow == 0:
                         LOG.info('Require direction conversion from {0} to {1}'.format(ref, outref))
-                        
+
                     Taz[irow] = get_value_in_deg(lon)
                     Tel[irow] = get_value_in_deg(lat)
-                    
+
                     # conversion to J2000
-                    ra, dec = direction_convert(pointing_direction, mepoch, mposition, outframe=outref)                    
+                    ra, dec = direction_convert(pointing_direction, mepoch, mposition, outframe=outref)
                     Tra[irow] = get_value_in_deg(ra)
                     Tdec[irow] = get_value_in_deg(dec)
                 elif ref in [outref]:
                     if irow == 0:
                         LOG.info('Require direction conversion from {0} to {1}'.format(ref, azelref))
-                        
+
                     Tra[irow] = get_value_in_deg(lon)
                     Tdec[irow] = get_value_in_deg(lat)
-                    
+
                     # conversion to AZELGEO
-                    az, el = direction_convert(pointing_direction, mepoch, mposition, outframe=azelref)                  
+                    az, el = direction_convert(pointing_direction, mepoch, mposition, outframe=azelref)
                     Taz[irow] = get_value_in_deg(az)
                     Tel[irow] = get_value_in_deg(el)
                 else:
                     if irow == 0:
                         LOG.info('Require direction conversion from {0} to {1} as well as to {2}'.format(ref, outref,
                                                                                                          azelref))
-                        
+
                     # conversion to J2000
                     ra, dec = direction_convert(pointing_direction, mepoch, mposition, outframe=outref)
                     Tra[irow] = get_value_in_deg(ra)
@@ -370,7 +421,7 @@ class MetaDataReader(object):
                 field_id = field_ids[irow]
                 if field_id not in ephemsrc_names:
                     raise RuntimeError("ephemsrc_name for field_id={0} does not exist".format(field_id) )
-                if ephemsrc_names[field_id] == "": 
+                if ephemsrc_names[field_id] == "":
                     Tshift_ra[irow] = Tra[irow]
                     Tshift_dec[irow] = Tdec[irow]
                     Tofs_ra[irow] = Tra[irow]
@@ -422,13 +473,13 @@ class MetaDataReader(object):
         self.datatable.putcol('POSGRP', intArr, startrow=ID)
         self.datatable.putcol('ANTENNA', Tant, startrow=ID)
         self.datatable.putcol('SRCTYPE', Tsrctype, startrow=ID)
-        
+
         # row base storing
         masklist = ColMaskList.NoMask
-        
+
         # Tsys will be overwritten in applycal stage
         tsys_template = numpy.ones(4, dtype=numpy.float32)
-        
+
         flag_summary_template = numpy.ones(4, dtype=numpy.int32)
         stats_template = numpy.zeros((4, 7), dtype=numpy.int32) - 1
         flags_template = numpy.ones((4, 7), dtype=numpy.int32)
@@ -454,11 +505,16 @@ class MetaDataReader(object):
         num_antenna = len(self.ms.antennas)
         self.vAnt += num_antenna
         self.appended_row = nrow
+
+        # convert row list for the data without pointing data
+        # into flag commands
+        self.generate_flagcmd_for_invalid_pointing_data()
+
         return org_directions
-        
+
     def _get_outref(self):
         outref = None
-        
+
         if self.ms.representative_target[0] is not None:
             # if ms has representative target, take reference from that
             LOG.info(
@@ -477,7 +533,7 @@ class MetaDataReader(object):
         if len(dirrefs) == 1:
             outref = dirrefs[0]
         else:
-            # direction reference is not unique, search desired ref 
+            # direction reference is not unique, search desired ref
             if 'ICRS' in dirrefs:
                 outref = 'ICRS'
             elif 'J2000' in dirrefs:
@@ -487,9 +543,9 @@ class MetaDataReader(object):
                 outref = dirrefs[0]
         if outref is None:
             raise RuntimeError('Failed to get direction reference for TARGET.')
-        
+
         return outref
-        
+
     @staticmethod
     def _get_azelref():
         return 'AZELGEO'
@@ -499,13 +555,13 @@ def direction_convert(direction, mepoch, mposition, outframe):
     direction_type = direction['type']
     assert direction_type == 'direction'
     inframe = direction['refer']
-    
-    # if outframe is same as input direction reference, just return 
+
+    # if outframe is same as input direction reference, just return
     # direction as it is
     if outframe == inframe:
         # return direction
         return direction['m0'], direction['m1']
-   
+
     # conversion using measures tool
     me = casatools.measures
     me.doframe(mepoch)
