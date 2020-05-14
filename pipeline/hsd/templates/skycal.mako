@@ -188,7 +188,7 @@ import os
 	                <div class="caption">
 	                    <h4>
 	                        <a href="${subpage}" class="replace" 
-	                           data-vis="${vis}" data-field="${field}" data-ant="${ant} data-spw="${spw}">
+	                           data-vis="${vis}" data-field="${field}" data-ant="${ant}" data-spw="${spw}">
 	                           Field ${field} Antenna ${ant} SPW ${spw}
 	                        </a>
 	                    </h4>
