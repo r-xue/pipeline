@@ -36,7 +36,7 @@ class SDInspection(object):
         # generate MS-based DataTable
         LOG.debug('register meta data to DataTable')
         table_name = self.table_name
-        worker = reader.MetaDataReader(context=context, ms=self.ms, table_name=table_name)
+        worker = reader.MetaDataReader(context=self.context, ms=self.ms, table_name=table_name)
         LOG.debug('table_name=%s' % table_name)
 
         dry_run = not os.path.exists(self.ms.name)
