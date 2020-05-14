@@ -158,6 +158,10 @@ class TcleanResult(basetask.Results):
         return self.iterations[iters[-1]].get('mom0_fc')
 
     def set_mom0_fc(self, iter, image):
+        '''
+        Sets name of moment 0 image computed from line-free channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
         self.iterations[iter]['mom0_fc'] = image
 
     @property
@@ -166,7 +170,35 @@ class TcleanResult(basetask.Results):
         return self.iterations[iters[-1]].get('mom8_fc')
 
     def set_mom8_fc(self, iter, image):
+        '''
+        Sets name of moment 8 image computed from line-free channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
         self.iterations[iter]['mom8_fc'] = image
+
+    @property
+    def mom0(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom0')
+
+    def set_mom0(self, iter, image):
+        '''
+        Sets name of moment 0 image computed from all channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
+        self.iterations[iter]['mom0'] = image
+
+    @property
+    def mom8(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom8')
+
+    def set_mom8(self, iter, image):
+        '''
+        Sets name of moment 8 image computed from all channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
+        self.iterations[iter]['mom8'] = image
 
     @property
     def psf(self):

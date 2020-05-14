@@ -847,7 +847,10 @@ class Tclean(cleanbase.CleanBase):
         # after continuum subtraction an image of the moment 0 / 8 integrated
         # intensity for the line-free channels.
         if inputs.specmode == 'cube':
+            # Moment maps of line-free channels
             self._calc_mom0_8_fc(result)
+            # Moment maps of all channels
+            self._calc_mom0_8(result)
 
         # Record any failed PSF fit channels
         result.bad_psf_channels = bad_psf_channels
@@ -1034,6 +1037,56 @@ class Tclean(cleanbase.CleanBase):
             LOG.warning('Cannot create MOM0_FC / MOM8_FC images for intent "%s", '
                         'field %s, spw %s, no continuum ranges found.' %
                         (self.inputs.intent, self.inputs.field, self.inputs.spw))
+
+    def _calc_mom0_8(self, result):
+        '''
+        Creates moment 0 (integrated flux) and 8 (peak flux) maps for non--primary-beam corrected
+        images after continuum subtraction, using *all channels* (may include channels with lines).
+
+        See PIPE-558 (https://open-jira.nrao.edu/browse/PIPE-558).
+        '''
+        context = self.inputs.context
+
+        # Find max iteration that was performed.
+        maxiter = max(result.iterations.keys())
+
+        # Get filename of image from result, and modify to select the
+        # non-PB-corrected image.
+        imagename = result.iterations[maxiter]['image'].replace('.pbcor', '')
+
+        # Set output filename for MOM0 all channel image.
+        mom0_name = '%s.mom0' % imagename
+
+        # Set output filename for MOM8 all channel image.
+        mom8_name = '%s.mom8' % imagename
+
+        # Execute job to create the MOM0 all channel image.
+        job = casa_tasks.immoments(imagename=imagename, moments=[0], outfile=mom0_name, chans='ALL')
+        job.execute(dry_run=False)
+        assert os.path.exists(mom0_name)
+
+        # Update the metadata in the MOM0_FC image.
+        imageheader.set_miscinfo(name=mom0_name, spw=self.inputs.spw,
+                                 field=self.inputs.field, iter=maxiter, type='mom0',
+                                 intent=self.inputs.intent, specmode=self.inputs.specmode,
+                                 context=context)
+
+        # Update the result.
+        result.set_mom0(maxiter, mom0_name)
+
+        # Execute job to create the MOM8_FC image.
+        job = casa_tasks.immoments(imagename=imagename, moments=[8], outfile=mom8_name, chans='ALL')
+        job.execute(dry_run=False)
+        assert os.path.exists(mom8_name)
+
+        # Update the metadata in the MOM8_FC image.
+        imageheader.set_miscinfo(name=mom8_name, spw=self.inputs.spw,
+                                 field=self.inputs.field, iter=maxiter, type='mom8',
+                                 intent=self.inputs.intent, specmode=self.inputs.specmode,
+                                 context=context)
+
+        # Update the result.
+        result.set_mom8(maxiter, mom8_name)
 
     def _to_frequency(self, velocity, restfreq):
         # f = f_rest * (1 - v/c)
