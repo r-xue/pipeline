@@ -25,6 +25,11 @@ class FlagDeterALMASingleDishInputs(flagdeterbase.FlagDeterBaseInputs):
     fracspwfps = vdp.VisDependentProperty(default=0.048387)
 
     @vdp.VisDependentProperty
+    def filepointing(self):
+        vis_root = os.path.splitext(self.vis)[0]
+        return vis_root + '.flagpointing.txt'
+
+    @vdp.VisDependentProperty
     def intents(self):
         # return just the unwanted intents that are present in the MS
         intents_to_flag = {'POINTING', 'FOCUS', 'ATMOSPHERE', 'SIDEBAND',
@@ -259,6 +264,16 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
         Edit flag commands so that all summaries are based on target data instead of total.
         """
         flag_cmds = super(FlagDeterALMASingleDish, self)._get_flag_commands()
+
+        # PIPE-646
+        # apply flag commands in flagpointing.txt
+        if os.path.exists(self.inputs.filepointing):
+            LOG.info('{} exists. Applying flag commands due to missing pointing data'.format(
+                os.path.basename(self.inputs.filepointing)
+            ))
+            flag_cmds.extend(self._read_flagfile(self.inputs.filepointing))
+            flag_cmds.append("mode='summary' name='SDPL:missing_pointing_data'")
+
         for i in range(len(flag_cmds)):
             if flag_cmds[i].startswith("mode='summary'"):
                 flag_cmds[i] += " intent='OBSERVE_TARGET#ON_SOURCE'"
