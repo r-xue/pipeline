@@ -970,6 +970,34 @@ class Tclean(cleanbase.CleanBase):
                 original = table.copy('%s/POINTING' % vis, valuecopy=True)
                 original.done()
 
+    def _calc_moment_image(self, imagename=None, moments=None, outfile=None, chans=None, iter=None):
+        '''
+        Computes moment image, writes it to disk and updates moment image metadata.
+
+        This method is used in _calc_mom0_8() and _calc_mom0_8_fc().
+        '''
+        context = self.inputs.context
+
+        # Determine moment image type.
+        mom_type = ""
+        if ".mom0" in outfile:
+            mom_type += "mom0"
+        elif ".mom8" in outfile:
+            mom_type += "mom8"
+        if "_fc" in outfile:
+            mom_type += "_fc"
+
+        # Execute job to create the MOM8_FC image.
+        job = casa_tasks.immoments(imagename=imagename, moments=moments, outfile=outfile, chans=chans)
+        job.execute(dry_run=False)
+        assert os.path.exists(outfile)
+
+        # Update the metadata in the MOM8_FC image.
+        imageheader.set_miscinfo(name=outfile, spw=self.inputs.spw,
+                                 field=self.inputs.field, iter=iter, type=mom_type,
+                                 intent=self.inputs.intent, specmode=self.inputs.specmode,
+                                 context=context)
+
     # Calculate a "mom0_fc" and "mom8_fc" image: this is a moment 0 and 8
     # integration over the line-free channels of the non-primary-beam
     # corrected image-cube, after continuum subtraction; where the "line-free"
@@ -1006,33 +1034,18 @@ class Tclean(cleanbase.CleanBase):
             else:
                 cont_chan_ranges_str = ";".join(["%s~%s" % (ch0, ch1) for ch0, ch1 in cont_chan_ranges])
 
-            # Execute job to create the MOM0_FC image.
-            job = casa_tasks.immoments(imagename=imagename, moments=[0], outfile=mom0_name, chans=cont_chan_ranges_str)
-            job.execute(dry_run=False)
-            assert os.path.exists(mom0_name)
-
-            # Update the metadata in the MOM0_FC image.
-            imageheader.set_miscinfo(name=mom0_name, spw=self.inputs.spw,
-                                     field=self.inputs.field, iter=maxiter, type='mom0_fc',
-                                     intent=self.inputs.intent, specmode=self.inputs.specmode,
-                                     context=context)
-
+            # Calculate MOM0_FC image
+            self._calc_moment_image(imagename=imagename, moments=[0], outfile=mom0_name, chans=cont_chan_ranges_str,
+                                    iter=maxiter)
             # Update the result.
             result.set_mom0_fc(maxiter, mom0_name)
 
-            # Execute job to create the MOM8_FC image.
-            job = casa_tasks.immoments(imagename=imagename, moments=[8], outfile=mom8_name, chans=cont_chan_ranges_str)
-            job.execute(dry_run=False)
-            assert os.path.exists(mom8_name)
-
-            # Update the metadata in the MOM8_FC image.
-            imageheader.set_miscinfo(name=mom8_name, spw=self.inputs.spw,
-                                     field=self.inputs.field, iter=maxiter, type='mom8_fc',
-                                     intent=self.inputs.intent, specmode=self.inputs.specmode,
-                                     context=context)
-
+            # Calculate MOM8_FC image
+            self._calc_moment_image(imagename=imagename, moments=[8], outfile=mom8_name, chans=cont_chan_ranges_str,
+                                    iter=maxiter)
             # Update the result.
             result.set_mom8_fc(maxiter, mom8_name)
+
         else:
             LOG.warning('Cannot create MOM0_FC / MOM8_FC images for intent "%s", '
                         'field %s, spw %s, no continuum ranges found.' %
@@ -1056,35 +1069,15 @@ class Tclean(cleanbase.CleanBase):
 
         # Set output filename for MOM0 all channel image.
         mom0_name = '%s.mom0' % imagename
-
-        # Set output filename for MOM8 all channel image.
-        mom8_name = '%s.mom8' % imagename
-
-        # Execute job to create the MOM0 all channel image.
-        job = casa_tasks.immoments(imagename=imagename, moments=[0], outfile=mom0_name, chans='ALL')
-        job.execute(dry_run=False)
-        assert os.path.exists(mom0_name)
-
-        # Update the metadata in the MOM0_FC image.
-        imageheader.set_miscinfo(name=mom0_name, spw=self.inputs.spw,
-                                 field=self.inputs.field, iter=maxiter, type='mom0',
-                                 intent=self.inputs.intent, specmode=self.inputs.specmode,
-                                 context=context)
-
+        # Calculate moment image
+        self._calc_moment_image(imagename=imagename, moments=[0], outfile=mom0_name, chans='ALL', iter=maxiter)
         # Update the result.
         result.set_mom0(maxiter, mom0_name)
 
-        # Execute job to create the MOM8_FC image.
-        job = casa_tasks.immoments(imagename=imagename, moments=[8], outfile=mom8_name, chans='ALL')
-        job.execute(dry_run=False)
-        assert os.path.exists(mom8_name)
-
-        # Update the metadata in the MOM8_FC image.
-        imageheader.set_miscinfo(name=mom8_name, spw=self.inputs.spw,
-                                 field=self.inputs.field, iter=maxiter, type='mom8',
-                                 intent=self.inputs.intent, specmode=self.inputs.specmode,
-                                 context=context)
-
+        # Set output filename for MOM8 all channel image.
+        mom8_name = '%s.mom8' % imagename
+        # Calculate moment image
+        self._calc_moment_image(imagename=imagename, moments=[8], outfile=mom8_name, chans='ALL', iter=maxiter)
         # Update the result.
         result.set_mom8(maxiter, mom8_name)
 
