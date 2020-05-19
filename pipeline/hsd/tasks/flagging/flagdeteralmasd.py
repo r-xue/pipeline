@@ -272,7 +272,7 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
                 os.path.basename(self.inputs.filepointing)
             ))
             flag_cmds.extend(self._read_flagfile(self.inputs.filepointing))
-            flag_cmds.append("mode='summary' name='SDPL:missing_pointing_data'")
+            flag_cmds.append("mode='summary' name='pointing' reason='SDPL:missing_pointing_data'")
 
         for i in range(len(flag_cmds)):
             if flag_cmds[i].startswith("mode='summary'"):
