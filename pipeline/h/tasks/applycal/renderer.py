@@ -73,7 +73,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             context,
             result,
             applycal.AmpVsTimeSummaryChart,
-            ['PHASE', 'BANDPASS', 'AMPLITUDE', 'CHECK', 'TARGET', 'POLARIZATION']
+            ['PHASE', 'BANDPASS', 'AMPLITUDE', 'CHECK', 'TARGET', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE']
         )
 
         phase_vs_time_summary_plots, phase_vs_time_subpages = self.create_plots(
@@ -84,7 +84,8 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         )
 
         amp_vs_freq_summary_plots = utils.OrderedDefaultdict(list)
-        for intents in [['PHASE'], ['BANDPASS'], ['CHECK'], ['AMPLITUDE'], ['POLARIZATION']]:
+        for intents in [['PHASE'], ['BANDPASS'], ['CHECK'], ['AMPLITUDE'],
+                        ['POLARIZATION'], ['POLANGLE'], ['POLLEAKAGE']]:
             # it doesn't matter that the subpages dict is repeatedly redefined.
             # The only purpose of the returned dict is to map the vis to a
             # non-existing page, which will disable the link.
@@ -99,7 +100,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 amp_vs_freq_summary_plots[vis].extend(vis_plots)
 
         phase_vs_freq_summary_plots = utils.OrderedDefaultdict(list)
-        for intents in [['PHASE'], ['BANDPASS'], ['CHECK'], ['POLARIZATION']]:
+        for intents in [['PHASE'], ['BANDPASS'], ['CHECK'], ['POLARIZATION'], ['POLANGLE'], ['POLLEAKAGE']]:
             plots, phase_vs_freq_subpages = self.create_plots(
                 context,
                 result,
@@ -113,7 +114,8 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # CAS-7659: Add plots of all calibrator calibrated amp vs uvdist to
         # the WebLog applycal page
         amp_vs_uv_summary_plots = utils.OrderedDefaultdict(list)
-        for intents in [['AMPLITUDE'], ['PHASE'], ['BANDPASS'], ['CHECK'], ['POLARIZATION']]:
+        for intents in [['AMPLITUDE'], ['PHASE'], ['BANDPASS'], ['CHECK'],
+                        ['POLARIZATION'], ['POLANGLE'], ['POLLEAKAGE']]:
             plots, amp_vs_uv_subpages = self.create_plots(
                 context,
                 result,
@@ -142,7 +144,9 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                                        (['PHASE'], ''),
                                        (['BANDPASS'], ''),
                                        (['CHECK'], ''),
-                                       (['POLARIZATION'], '')]:
+                                       (['POLARIZATION'], ''),
+                                       (['POLANGLE'], ''),
+                                       (['POLLEAKAGE'], '')]:
                 p, _ = self.create_plots(
                     context,
                     [r],
@@ -191,7 +195,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 context,
                 result,
                 applycal.AmpVsFrequencyDetailChart,
-                ['BANDPASS', 'PHASE', 'CHECK', 'AMPLITUDE', 'POLARIZATION'],
+                ['BANDPASS', 'PHASE', 'CHECK', 'AMPLITUDE', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'],
                 ApplycalAmpVsFreqPlotRenderer
             )
 
@@ -199,7 +203,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 context,
                 result,
                 applycal.PhaseVsFrequencyDetailChart,
-                ['BANDPASS', 'PHASE', 'CHECK', 'POLARIZATION'],
+                ['BANDPASS', 'PHASE', 'CHECK', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'],
                 ApplycalPhaseVsFreqPlotRenderer
             )
 
@@ -207,7 +211,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 context,
                 result,
                 applycal.PhaseVsTimeDetailChart,
-                ['AMPLITUDE', 'PHASE', 'BANDPASS', 'CHECK', 'POLARIZATION'],
+                ['AMPLITUDE', 'PHASE', 'BANDPASS', 'CHECK', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'],
                 ApplycalPhaseVsTimePlotRenderer
             )
 

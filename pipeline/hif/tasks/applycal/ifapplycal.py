@@ -17,7 +17,7 @@ class IFApplycalInputs(applycal.ApplycalInputs):
 
     # PIPE-600: Overrides h_applycal default, adding polarisation to
     # calibrated intents
-    intent = vdp.VisDependentProperty(default='TARGET,PHASE,BANDPASS,AMPLITUDE,CHECK,POLARIZATION')
+    intent = vdp.VisDependentProperty(default='TARGET,PHASE,BANDPASS,AMPLITUDE,CHECK,POLARIZATION,POLANGLE,POLLEAKAGE')
 
     def __init__(self, context, output_dir=None, vis=None, field=None, spw=None, antenna=None, intent=None, parang=None,
                  applymode=None, flagbackup=None, flagsum=None, flagdetailedsum=None):
