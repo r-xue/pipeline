@@ -1070,14 +1070,14 @@ class Tclean(cleanbase.CleanBase):
         # Set output filename for MOM0 all channel image.
         mom0_name = '%s.mom0' % imagename
         # Calculate moment image
-        self._calc_moment_image(imagename=imagename, moments=[0], outfile=mom0_name, chans='ALL', iter=maxiter)
+        self._calc_moment_image(imagename=imagename, moments=[0], outfile=mom0_name, chans='', iter=maxiter)
         # Update the result.
         result.set_mom0(maxiter, mom0_name)
 
         # Set output filename for MOM8 all channel image.
         mom8_name = '%s.mom8' % imagename
         # Calculate moment image
-        self._calc_moment_image(imagename=imagename, moments=[8], outfile=mom8_name, chans='ALL', iter=maxiter)
+        self._calc_moment_image(imagename=imagename, moments=[8], outfile=mom8_name, chans='', iter=maxiter)
         # Update the result.
         result.set_mom8(maxiter, mom8_name)
 
