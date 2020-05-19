@@ -116,9 +116,9 @@ class FlagDeterBaseInputs(vdp.StandardInputs):
 
     .. py:attribute:: filetemplate
 
-        The filename of the ASCII file that has the flagging template (for 
-        RFI, birdies, telluric lines, etc.).    
-    """    
+        The filename of the ASCII file that has the flagging template (for
+        RFI, birdies, telluric lines, etc.).
+    """
 
     autocorr = vdp.VisDependentProperty(default=True)
     edgespw = vdp.VisDependentProperty(default=False)
@@ -221,11 +221,11 @@ class FlagDeterBaseInputs(vdp.StandardInputs):
 
     def to_casa_args(self):
         """
-        Translate the input parameters of this class to task parameters 
-        required by the CASA task flagdata. The returned object is a 
+        Translate the input parameters of this class to task parameters
+        required by the CASA task flagdata. The returned object is a
         dictionary of flagdata arguments as keyword/value pairs.
 
-        :rtype: dict        
+        :rtype: dict
         """
         return {'vis': self.vis,
                 'mode': 'list',
@@ -283,11 +283,11 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
     - Online flags
     - Template flags
 
-    FlagDeterBase outputs flagdata flagging commands to a temporary ASCII 
+    FlagDeterBase outputs flagdata flagging commands to a temporary ASCII
     file located in the pipeline working directory; flagdata is then invoked
     using this command file as input.
     """
-    # link the accompanying inputs to this task 
+    # link the accompanying inputs to this task
     Inputs = FlagDeterBaseInputs
 
     def prepare(self):
@@ -295,9 +295,9 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
         Prepare and execute a flagdata flagging job appropriate to the
         task inputs.
 
-        This method generates, overwriting if necessary, an ASCII file 
+        This method generates, overwriting if necessary, an ASCII file
         containing flagdata flagging commands. A flagdata task is then
-        executed, using this ASCII file as inputs. 
+        executed, using this ASCII file as inputs.
         """
         # create a local alias for inputs, so we're not saying 'self.inputs'
         # everywhere
@@ -314,7 +314,7 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
         # to save inspecting the file, also log the flag commands
         LOG.debug('Flag commands for %s:\n%s', inputs.vis, flag_str)
 
-        # Map the pipeline inputs to a dictionary of CASA task arguments 
+        # Map the pipeline inputs to a dictionary of CASA task arguments
         task_args = inputs.to_casa_args()
 
         # create and execute a flagdata job using these task arguments
@@ -323,12 +323,12 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
 
         agent_summaries = dict((v['name'], v) for v in summary_dict.values())
 
-        ordered_agents = ['before', 'anos', 'intents', 'qa0', 'qa2', 'online',  'template', 'autocorr',
+        ordered_agents = ['before', 'anos', 'intents', 'qa0', 'qa2', 'online', 'pointing', 'template', 'autocorr',
                           'shadow', 'edgespw', 'clip', 'quack',
                           'baseband']
 
-        summary_reps = [agent_summaries[agent] 
-                        for agent in ordered_agents 
+        summary_reps = [agent_summaries[agent]
+                        for agent in ordered_agents
                         if agent in agent_summaries]
 
         # return the results object, which will be used for the weblog
@@ -343,7 +343,7 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
         added. If additional statistics needed to be calculated based on the
         post-flagging state, this would be a good place to do it.
 
-        :rtype: :class:~`FlagDeterBaseResults`        
+        :rtype: :class:~`FlagDeterBaseResults`
         """
         return results
 
@@ -352,9 +352,9 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
         Get the flagging commands as a string suitable for flagdata.
 
         This method analyses the inputs associated with this instance, parsing
-        the input parameters and converting them into a list of matching 
+        the input parameters and converting them into a list of matching
         flagdata flagging commands. This list of commands is then converted
-        to one unified string, which can be written to a file and used as 
+        to one unified string, which can be written to a file and used as
         input for flagdata.
 
         :rtype: a string
@@ -363,14 +363,14 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
         inputs = self.inputs
 
         # the empty list which will hold the flagging commands
-        flag_cmds = []        
+        flag_cmds = []
 
         # flag online?
         '''
         if inputs.online:
             if not os.path.exists(inputs.fileonline):
                 LOG.warning('Online flag file \'%s\' was not found. Online '
-                            'flagging for %s disabled.' % (inputs.fileonline, 
+                            'flagging for %s disabled.' % (inputs.fileonline,
                                                            inputs.ms.basename))
             else:
                 flag_cmds.extend(self._read_flagfile(inputs.fileonline))
@@ -395,7 +395,7 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
         if inputs.online:
             if not os.path.exists(inputs.fileonline):
                 LOG.warning('Online flag file \'%s\' was not found. Online '
-                            'flagging for %s disabled.' % (inputs.fileonline, 
+                            'flagging for %s disabled.' % (inputs.fileonline,
                                                            inputs.ms.basename))
             else:
                 # QA0 / QA2 flag
@@ -446,7 +446,7 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
             flag_cmds.append("mode='summary' name='scans'")
 
         # Flag spectral window edge channels?
-        if inputs.edgespw: 
+        if inputs.edgespw:
             to_flag = self._get_edgespw_cmds()
             if to_flag:
                 spw_arg = ','.join(to_flag)
@@ -566,6 +566,6 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
         # strip out comments and empty lines to leave the real commands.
         # This is so we can compare the number of valid commands to the number
         # of commands specified in the file and complain if they differ
-        return [cmd for cmd in flaghelper.readFile(filename) 
+        return [cmd for cmd in flaghelper.readFile(filename)
                 if not cmd.strip().startswith('#')
                 and not all(c in string.whitespace for c in cmd)]
