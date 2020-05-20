@@ -1,4 +1,5 @@
 import collections
+import re
 import os
 
 import pipeline.infrastructure as infrastructure
@@ -271,8 +272,14 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
             LOG.info('{} exists. Applying flag commands due to missing pointing data'.format(
                 os.path.basename(self.inputs.filepointing)
             ))
-            flag_cmds.extend(self._read_flagfile(self.inputs.filepointing))
-            flag_cmds.append("mode='summary' name='pointing' reason='SDPL:missing_pointing_data'")
+            pointing_cmds = self._read_flagfile(self.inputs.filepointing)
+            pointing_cmds.append("mode='summary' name='pointing' reason='SDPL:missing_pointing_data'")
+
+            # insert flag commands between shadow and edgespw
+            idx = [i for i, c in enumerate(flag_cmds) if re.search("(mode|name)='shadow'", c)]
+            assert len(idx) > 0
+            sep = idx[-1] + 1
+            flag_cmds = flag_cmds[:sep] + pointing_cmds + flag_cmds[sep:]
 
         for i in range(len(flag_cmds)):
             if flag_cmds[i].startswith("mode='summary'"):

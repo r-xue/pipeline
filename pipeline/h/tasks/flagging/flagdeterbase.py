@@ -324,8 +324,8 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
         agent_summaries = dict((v['name'], v) for v in summary_dict.values())
 
         ordered_agents = ['before', 'anos', 'intents', 'qa0', 'qa2', 'online', 'template', 'autocorr',
-                          'shadow', 'edgespw', 'clip', 'quack',
-                          'baseband', 'pointing']
+                          'shadow', 'pointing', 'edgespw', 'clip', 'quack',
+                          'baseband']
 
         summary_reps = [agent_summaries[agent]
                         for agent in ordered_agents
