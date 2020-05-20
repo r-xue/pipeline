@@ -164,10 +164,12 @@ class MetaDataReader(object):
             return
 
         LOG.warn('{}: There are rows without corresponding POINTING data'.format(self.ms.basename))
-        LOG.warn('The following rows will be flagged in the subsequent stage:')
-        for k, v in self.invalid_pointing_data.items():
-            rows = [self.datatable.getcell('ROW', _v) for _v in v]
-            LOG.warn(f'  antenna {k}: rows {rows}')
+        LOG.warn('Affected antennas are: {}'.format(
+            [self.ms.antennas[k].name for k in self.invalid_pointing_data]))
+        #LOG.warn('The following rows will be flagged in the subsequent stage:')
+        #for k, v in self.invalid_pointing_data.items():
+        #    rows = [self.datatable.getcell('ROW', _v) for _v in v]
+        #    LOG.warn(f'  antenna {k}: rows {rows}')
 
         ms_prefix = os.path.splitext(self.ms.basename)[0]
         flagtemplate = os.path.join(self.context.output_dir, f'{ms_prefix}.flagpointing.txt')
