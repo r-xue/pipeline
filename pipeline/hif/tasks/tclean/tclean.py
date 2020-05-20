@@ -989,7 +989,7 @@ class Tclean(cleanbase.CleanBase):
 
         # Execute job to create the MOM8_FC image.
         job = casa_tasks.immoments(imagename=imagename, moments=moments, outfile=outfile, chans=chans)
-        job.execute(dry_run=False)
+        self._executor.execute(job)
         assert os.path.exists(outfile)
 
         # Update the metadata in the MOM8_FC image.
