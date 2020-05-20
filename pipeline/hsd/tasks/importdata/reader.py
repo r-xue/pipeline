@@ -444,7 +444,7 @@ class MetaDataReader(object):
                 except RuntimeError as e:
                     LOG.warn(e)
                     if str(e).find('SSMIndex::getIndex - access to non-existing row') != -1:
-                        LOG.warn('Missing pointing data for row {} (antenna {} time {})'.format(rows[irow], Tant[irow], Tmjd[irow]))
+                        LOG.warn('{}: Missing pointing data for row {} (antenna {} time {})'.format(ms.basename, rows[irow], Tant[irow], Tmjd[irow]))
 
                         # register DataTable row to self.invalid_pointing_data
                         dt_row = ID + irow
