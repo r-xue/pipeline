@@ -73,33 +73,37 @@ def write_flagcmd(flagtemplate, antenna_id, timerange_list):
             f.write(template.safe_substitute(timerange=rangestr))
 
 
-def get_dummy_direction(datatable, start_row=0, nrow=-1, antenna_id=0, field_id=-1):
+def get_fallback_index(antenna, srctype, field, start_row=0, nrow=-1, antenna_id=0, field_id=-1):
     if nrow == -1:
-        nrow = datatable.nrow - start_row
+        nrow = len(antenna) #datatable.nrow - start_row
 
-    antenna = datatable.getcol('ANTENNA', start_row, nrow)
-    srctype = datatable.getcol('SRCTYPE', start_row, nrow)
-    field = datatable.getcol('FIELD_ID', start_row, nrow)
+    #antenna = datatable.getcol('ANTENNA', start_row, nrow)
+    #srctype = datatable.getcol('SRCTYPE', start_row, nrow)
+    #field = datatable.getcol('FIELD_ID', start_row, nrow)
     mask = numpy.logical_and(antenna == antenna_id, srctype == 0)
     if field_id != -1:
         mask = numpy.logical_and(mask, field == field_id)
     if all(mask == False):
+        print('no appropriate dummy value for field_id. checking other antennas...')
         mask = srctype == 0
         if field_id != -1:
             mask = numpy.logical_and(mask, field == field_id)
         if all(mask == False):
-            return [0] * 8
+            print('no appropriate dummy value. returning 0.')
+            return None
 
-    idx = numpy.where(mask)[0][-1] + start_row
-    az = datatable.getcell('AZ', idx)
-    el = datatable.getcell('EL', idx)
-    ra = datatable.getcell('RA', idx)
-    dec = datatable.getcell('DEC', idx)
-    shift_ra = datatable.getcell('SHIFT_RA', idx)
-    shift_dec = datatable.getcell('SHIFT_DEC', idx)
-    ofs_ra = datatable.getcell('OFS_RA', idx)
-    ofs_dec = datatable.getcell('OFS_DEC', idx)
-    return az, el, ra, dec, shift_ra, shift_dec, ofs_ra, ofs_dec
+    idx = numpy.where(mask[start_row:start_row + nrow])[0][-1] + start_row
+    print(f'found idx {idx}')
+    return idx
+    # az = datatable.getcell('AZ', idx)
+    # el = datatable.getcell('EL', idx)
+    # ra = datatable.getcell('RA', idx)
+    # dec = datatable.getcell('DEC', idx)
+    # shift_ra = datatable.getcell('SHIFT_RA', idx)
+    # shift_dec = datatable.getcell('SHIFT_DEC', idx)
+    # ofs_ra = datatable.getcell('OFS_RA', idx)
+    # ofs_dec = datatable.getcell('OFS_DEC', idx)
+    # return az, el, ra, dec, shift_ra, shift_dec, ofs_ra, ofs_dec
 
 class MetaDataReader(object):
     def __init__(self, context, ms, table_name):
@@ -452,16 +456,6 @@ class MetaDataReader(object):
                         dt_row = ID + irow
                         self.register_invalid_pointing_data(antenna_id, dt_row)
 
-                        last_result = get_dummy_direction(
-                            self.datatable, start_row=ID, nrow=irow - 1, antenna_id=antenna_id, field_id=field_ids[irow])
-                        Taz[irow] = last_result[0]
-                        Tel[irow] = last_result[1]
-                        Tra[irow] = last_result[2]
-                        Tdec[irow] = last_result[3]
-                        Tshift_ra[irow] = last_result[4]
-                        Tshift_dec[irow] = last_result[5]
-                        Tofs_ra[irow] = last_result[6]
-                        Tofs_dec[irow] = last_result[7]
                         # if mjd_in_sec == last_mjd and antenna_id == last_antenna:
                         #     Taz[irow] = last_result[0]
                         #     Tel[irow] = last_result[1]
@@ -471,15 +465,27 @@ class MetaDataReader(object):
                         #     Tshift_dec[irow] = last_result[5]
                         #     Tofs_ra[irow] = last_result[6]
                         #     Tofs_dec[irow] = last_result[7]
-                        # else:
-                        #     Taz[irow] = 0.0
-                        #     Tel[irow] = 0.0
-                        #     Tra[irow] = 0.0
-                        #     Tdec[irow] = 0.0
-                        #     Tshift_ra[irow] = 0.0
-                        #     Tshift_dec[irow] = 0.0
-                        #     Tofs_ra[irow] = 0.0
-                        #     Tofs_dec[irow] = 0.0
+                        LOG.debug(f'get_fallback_index with start row {ID}, nrow {irow}')
+                        _idx = get_fallback_index(
+                            Tant, Tsrctype, field_ids, start_row=ID, nrow=irow - 1, antenna_id=antenna_id, field_id=field_ids[irow])
+                        if _idx is not None:
+                            Taz[irow] = Taz[_idx]
+                            Tel[irow] = Tel[_idx]
+                            Tra[irow] = Tra[_idx]
+                            Tdec[irow] = Tdec[_idx]
+                            Tshift_ra[irow] = Tshift_ra[_idx]
+                            Tshift_dec[irow] = Tshift_dec[_idx]
+                            Tofs_ra[irow] = Tofs_ra[_idx]
+                            Tofs_dec[irow] = Tofs_dec[_idx]
+                        else:
+                            Taz[irow] = 0.0
+                            Tel[irow] = 0.0
+                            Tra[irow] = 0.0
+                            Tdec[irow] = 0.0
+                            Tshift_ra[irow] = 0.0
+                            Tshift_dec[irow] = 0.0
+                            Tofs_ra[irow] = 0.0
+                            Tofs_dec[irow] = 0.0
                         Tflagrow[irow] = True
                         continue
                     else:
