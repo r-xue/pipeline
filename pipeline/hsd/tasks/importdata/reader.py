@@ -164,8 +164,8 @@ class MetaDataReader(object):
             return
 
         LOG.warn('{}: There are rows without corresponding POINTING data'.format(self.ms.basename))
-        LOG.warn('Affected antennas are: {}'.format(
-            [self.ms.antennas[k].name for k in self.invalid_pointing_data]))
+        LOG.warn('Affected antennas are: {}'.format(' '.join(
+            [self.ms.antennas[k].name for k in self.invalid_pointing_data])))
         #LOG.warn('The following rows will be flagged in the subsequent stage:')
         #for k, v in self.invalid_pointing_data.items():
         #    rows = [self.datatable.getcell('ROW', _v) for _v in v]
