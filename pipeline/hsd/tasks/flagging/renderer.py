@@ -32,6 +32,21 @@ class T2_4MDetailsFlagDeterAlmaSdRenderer(super_renderer.T2_4MDetailsFlagDeterBa
                 LOG.trace('Copying %s to %s' % (src, weblog_dir))
                 shutil.copy(src, weblog_dir)
 
+            try:
+                idx = list(map(lambda x: x['name'], r.summaries)).index('pointing')
+                assert idx > 0
+                previous_summary = r.summaries[idx - 1]
+                pointing_summary = r.summaries[idx]
+                flagged = pointing_summary['flagged'] - previous_summary['flagged']
+                total = pointing_summary['flagged']
+                LOG.info('{}: Flagged fraction for missing pointing data {:.4f}%'.format(
+                    os.path.basename(r.inputs['vis']),
+                    flagged / total * 100
+                ))
+            except IndexError:
+                pass
+
+
         # insert pointing agent
         agent = mako_context['agents']
         pos = agent.index('online')
