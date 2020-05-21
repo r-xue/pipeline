@@ -1,5 +1,6 @@
 import collections
 import glob
+import itertools
 import os
 import shutil
 import string
@@ -73,37 +74,57 @@ def write_flagcmd(flagtemplate, antenna_id, timerange_list):
             f.write(template.safe_substitute(timerange=rangestr))
 
 
-def get_fallback_index(antenna, srctype, field, start_row=0, nrow=-1, antenna_id=0, field_id=-1):
-    if nrow == -1:
-        nrow = len(antenna) #datatable.nrow - start_row
+def set_nominal_direction(ant, srctype, az, el, ra, dec,
+                          shift_ra, shift_dec, offset_ra, offset_dec):
+    # check if there are NaN's
+    isvalid = numpy.logical_not(numpy.isnan(az))
+    if numpy.all(isvalid):
+        # no NaN's so exit this loop
+        print('no NaN')
+        return
 
-    #antenna = datatable.getcol('ANTENNA', start_row, nrow)
-    #srctype = datatable.getcol('SRCTYPE', start_row, nrow)
-    #field = datatable.getcol('FIELD_ID', start_row, nrow)
-    mask = numpy.logical_and(antenna == antenna_id, srctype == 0)
-    if field_id != -1:
-        mask = numpy.logical_and(mask, field == field_id)
-    if all(mask == False):
-        print('no appropriate dummy value for field_id. checking other antennas...')
-        mask = srctype == 0
-        if field_id != -1:
-            mask = numpy.logical_and(mask, field == field_id)
-        if all(mask == False):
-            print('no appropriate dummy value. returning 0.')
-            return None
+    for _a, _s in itertools.product(set(ant), set(srctype)):
+        # select data
+        print(f'ant {_a} src {_s}')
+        sel = numpy.logical_and(ant == _a, srctype == _s)
+        if numpy.all(numpy.logical_not(sel)):
+            # no data for this selection
+            print('no data')
+            continue
 
-    idx = numpy.where(mask[start_row:start_row + nrow])[0][-1] + start_row
-    print(f'found idx {idx}')
-    return idx
-    # az = datatable.getcell('AZ', idx)
-    # el = datatable.getcell('EL', idx)
-    # ra = datatable.getcell('RA', idx)
-    # dec = datatable.getcell('DEC', idx)
-    # shift_ra = datatable.getcell('SHIFT_RA', idx)
-    # shift_dec = datatable.getcell('SHIFT_DEC', idx)
-    # ofs_ra = datatable.getcell('OFS_RA', idx)
-    # ofs_dec = datatable.getcell('OFS_DEC', idx)
-    # return az, el, ra, dec, shift_ra, shift_dec, ofs_ra, ofs_dec
+        # separate NaN's
+        mask = numpy.logical_and(isvalid, sel)
+        if numpy.all(mask[sel]):
+            # no NaN's for this selection
+            print('no NaN for this selection')
+            continue
+
+        nanmask = numpy.logical_and(numpy.logical_not(isvalid), sel)
+        _az = numpy.median(az[mask])
+        print('nominal az {}'.format(_az))
+        _el = numpy.median(el[mask])
+        print('nominal el {}'.format(_el))
+        _ra = numpy.median(ra[mask])
+        print('nominal ra {}'.format(_ra))
+        _dec = numpy.median(dec[mask])
+        print('nominal dec {}'.format(_dec))
+        _shift_ra = numpy.median(shift_ra[mask])
+        print('nominal shift_ra {}'.format(_shift_ra))
+        _shift_dec = numpy.median(shift_dec[mask])
+        print('nominal shift_dec {}'.format(_shift_dec))
+        _offset_ra = numpy.median(offset_ra[mask])
+        print('nominal offset_ra {}'.format(_offset_ra))
+        _offset_dec = numpy.median(offset_dec[mask])
+        print('nominal offset_dec {}'.format(_offset_dec))
+        az[nanmask] = _az
+        el[nanmask] = _el
+        ra[nanmask] = _ra
+        dec[nanmask] = _dec
+        shift_ra[nanmask] = _shift_ra
+        shift_dec[nanmask] = _shift_dec
+        offset_ra[nanmask] = _offset_ra
+        offset_dec[nanmask] = _offset_dec
+
 
 class MetaDataReader(object):
     def __init__(self, context, ms, table_name):
@@ -456,36 +477,15 @@ class MetaDataReader(object):
                         dt_row = ID + irow
                         self.register_invalid_pointing_data(antenna_id, dt_row)
 
-                        # if mjd_in_sec == last_mjd and antenna_id == last_antenna:
-                        #     Taz[irow] = last_result[0]
-                        #     Tel[irow] = last_result[1]
-                        #     Tra[irow] = last_result[2]
-                        #     Tdec[irow] = last_result[3]
-                        #     Tshift_ra[irow] = last_result[4]
-                        #     Tshift_dec[irow] = last_result[5]
-                        #     Tofs_ra[irow] = last_result[6]
-                        #     Tofs_dec[irow] = last_result[7]
-                        LOG.debug(f'get_fallback_index with start row {ID}, nrow {irow}')
-                        _idx = get_fallback_index(
-                            Tant, Tsrctype, field_ids, start_row=ID, nrow=irow - 1, antenna_id=antenna_id, field_id=field_ids[irow])
-                        if _idx is not None:
-                            Taz[irow] = Taz[_idx]
-                            Tel[irow] = Tel[_idx]
-                            Tra[irow] = Tra[_idx]
-                            Tdec[irow] = Tdec[_idx]
-                            Tshift_ra[irow] = Tshift_ra[_idx]
-                            Tshift_dec[irow] = Tshift_dec[_idx]
-                            Tofs_ra[irow] = Tofs_ra[_idx]
-                            Tofs_dec[irow] = Tofs_dec[_idx]
-                        else:
-                            Taz[irow] = 0.0
-                            Tel[irow] = 0.0
-                            Tra[irow] = 0.0
-                            Tdec[irow] = 0.0
-                            Tshift_ra[irow] = 0.0
-                            Tshift_dec[irow] = 0.0
-                            Tofs_ra[irow] = 0.0
-                            Tofs_dec[irow] = 0.0
+                        NAN = numpy.nan
+                        Taz[irow] = NAN
+                        Tel[irow] = NAN
+                        Tra[irow] = NAN
+                        Tdec[irow] = NAN
+                        Tshift_ra[irow] = NAN
+                        Tshift_dec[irow] = NAN
+                        Tofs_ra[irow] = NAN
+                        Tofs_dec[irow] = NAN
                         Tflagrow[irow] = True
                         continue
                     else:
@@ -567,6 +567,18 @@ class MetaDataReader(object):
                 last_mjd = mjd_in_sec
                 last_antenna = antenna_id
                 last_result = (Taz[irow], Tel[irow], Tra[irow], Tdec[irow], Tshift_ra[irow], Tshift_dec[irow], Tofs_ra[irow], Tofs_dec[irow])
+
+        # PIPE-646 replace NaN's with nominal value
+        set_nominal_direction(Tant, Tsrctype, Taz, Tel, Tra, Tdec, Tshift_ra, Tshift_dec, Tofs_ra, Tofs_dec)
+
+        assert numpy.all(numpy.isfinite(Taz))
+        assert numpy.all(numpy.isfinite(Tel))
+        assert numpy.all(numpy.isfinite(Tra))
+        assert numpy.all(numpy.isfinite(Tdec))
+        assert numpy.all(numpy.isfinite(Tshift_ra))
+        assert numpy.all(numpy.isfinite(Tshift_dec))
+        assert numpy.all(numpy.isfinite(Tofs_ra))
+        assert numpy.all(numpy.isfinite(Tofs_dec))
 
         LOG.info('Done reading direction (convert if necessary).')
 
