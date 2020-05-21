@@ -43,7 +43,7 @@ class T2_4MDetailsFlagDeterAlmaSdRenderer(super_renderer.T2_4MDetailsFlagDeterBa
                     os.path.basename(r.inputs['vis']),
                     flagged / total * 100
                 ))
-            except IndexError:
+            except ValueError:
                 pass
 
 
