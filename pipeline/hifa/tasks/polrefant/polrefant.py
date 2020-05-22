@@ -17,10 +17,17 @@ class PolRefAntInputs(vdp.StandardInputs):
     """
     PolRefAntInputs defines the inputs for the PolRefAnt pipeline task.
     """
-    def __init__(self, context, vis=None, output_dir=None):
+    # Threshold for detecting "non-zero" phase outliers that imply that
+    # during a CASA gaincal the specified reference antenna was overridden.
+    phase_threshold = vdp.VisDependentProperty(default=0.005)
+
+    def __init__(self, context, output_dir=None, vis=None, phase_threshold=None):
         self.context = context
-        self.vis = vis
         self.output_dir = output_dir
+        self.vis = vis
+
+        # Task specific input parameters.
+        self.phase_threshold = phase_threshold
 
 
 @task_registry.set_equivalent_casa_task('hifa_polrefant')

@@ -24,6 +24,16 @@ results object for the pipeline task is returned.
         <value/>
     </param>
 
+    <param subparam="true" name="phase_threshold" type="double">
+        <shortdescription>Phase threshold</shortdescription>
+        <description>Threshold (in degrees) used to identify absolute phase
+            solution outliers in caltables.
+
+            Example: phase_threshold=0.005
+        </description>
+        <value>0.005</value>
+    </param>
+
     <param name="pipelinemode" type="string">
         <shortdescription>The pipeline operation mode</shortdescription>
         <description>The pipeline operating mode. In 'automatic' mode the pipeline
@@ -61,6 +71,7 @@ results object for the pipeline task is returned.
             <equals value="automatic" type="string"/>
             <equals value="interactive" type="string">
                 <default param="vis"><value type="stringVec"/></default>
+                <default param="phase_threshold"><value type="double">0.005</value></default>
                 <default param="dryrun"><value type="bool">False</value></default>
                 <default param="acceptresults"><value type="bool">True</value></default>
             </equals>
