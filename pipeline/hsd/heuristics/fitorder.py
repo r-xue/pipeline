@@ -156,11 +156,11 @@ class SwitchPolynomialWhenLargeMaskAtEdgeHeuristic(api.Heuristic):
             fitfunc = 'cspline'
             order = 0  # not used
 
-        LOG.info('DEBUGGING INFORMATION:')
-        LOG.info('inclusive masklist={}'.format(masklist))
-        LOG.info('edge = {}'.format(list(edge)))
-        LOG.info('nchan_edge = {} (left {} right {})'.format(nchan_edge, nchan_edge0, nchan_edge1))
-        LOG.info('nchan = {}, num_pieces = {} => nchan_segment = {}, nchan_half = {}'.format(nchan, num_pieces, nchan_segment, nchan_half))
-        LOG.info('---> RESULT: fitfunc "{}" order "{}"'.format(fitfunc, order))
+        LOG.debug('DEBUGGING INFORMATION:')
+        LOG.debug('inclusive masklist={}'.format(masklist))
+        LOG.debug('edge = {}'.format(list(edge)))
+        LOG.debug('nchan_edge = {} (left {} right {})'.format(nchan_edge, nchan_edge0, nchan_edge1))
+        LOG.debug('nchan = {}, num_pieces = {} => nchan_segment = {}, nchan_half = {}'.format(nchan, num_pieces, nchan_segment, nchan_half))
+        LOG.debug('---> RESULT: fitfunc "{}" order "{}"'.format(fitfunc, order))
 
         return fitfunc, order
