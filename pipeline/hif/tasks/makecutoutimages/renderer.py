@@ -63,6 +63,12 @@ class T2_4MDetailsMakecutoutimagesRenderer(basetemplates.T2_4MDetailsDefaultRend
             # Make the plots of the rms images
             plotter = display.CutoutimagesSummary(context, r)
             plots = plotter.plot()
+            # PIPE-631: Weblog thumbnails are sorted according 'isalpha' parameter.
+            for p in plots:
+                if ".alpha" in p.basename:
+                    p.parameters['isalpha'] = 1
+                else:
+                    p.parameters['isalpha'] = 0
             ms = os.path.basename(r.inputs['vis'])
             subplots[ms] = plots
 

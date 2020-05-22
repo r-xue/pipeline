@@ -1403,7 +1403,35 @@ class SDSpectralImageDisplay(SDImageDisplay):
         LOG.debug('spectral_map: elapsed time %s sec'%(t3-t2))
         LOG.debug('rms_map: elapsed time %s sec'%(t4-t3))
         LOG.debug('moment_map: elapsed time %s sec'%(t5-t4))
+
+        # contamination plots
+        plot_list.extend(self.add_contamination_plot())
+
         return plot_list
+
+    def add_contamination_plot(self):
+        context = self.inputs.context
+        plotfile = os.path.join(self.stage_dir, self.inputs.contamination_plot)
+        if self.inputs.antenna == 'COMBINED' and os.path.exists(plotfile):
+            parameters = {}
+            parameters['intent'] = 'TARGET'
+            parameters['spw'] = self.inputs.spw
+            parameters['pol'] = 'I'
+            parameters['ant'] = 'COMBINED'
+            parameters['type'] = 'sd_contamination_map'
+            parameters['file'] = self.inputs.imagename
+            parameters['field'] = self.inputs.source
+            parameters['vis'] = 'ALL'
+
+            plot = logger.Plot(plotfile,
+                               x_axis='Frequency',
+                               y_axis='Intensity',
+                               field=self.inputs.source,
+                               parameters=parameters)
+
+            return [plot]
+        else:
+            return []
 
 
 def SDImageDisplayFactory(mode):

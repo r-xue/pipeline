@@ -65,7 +65,7 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
     def uvrange(self):
         return None
 
-    def mask(self):
+    def mask(self, hm_masking=None, rootname=None, iteration=None, mask=None):
         return ''
 
     def buffer_radius(self):

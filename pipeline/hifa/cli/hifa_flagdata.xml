@@ -2,18 +2,36 @@
 
 <task category="pipeline" name="hifa_flagdata" type="function">
 
-<shortdescription>Do basic flagging</shortdescription>
 <shortdescription>Do meta data based flagging of a list of MeasurementSets.</shortdescription>
 <description>
-The hifa_flagdata data performs basic flagging operations on a list of measurements including:
+The hifa_flagdata data performs basic flagging operations on a list of
+measurements including:
 
 o applying online flags
 o applying a flagging template
 o autocorrelation data flagging
 o shadowed antenna data flagging
 o scan-based flagging by intent or scan number
-o edge channel flagging
+o edge channel flagging, as needed
 
+About the spectral window edge channel flagging:
+
+o For TDM spectral windows, a number of edge channels are always flagged,
+  according to the fracspw and fracspwfps parameters (the latter operates only
+  on spectral windows with 62, 124, or 248 channels). With the default setting
+  of fracspw, the number of channels flagged on each edge is 2, 4, or 8 for 64,
+  128, or 256-channel spectral windows, respectively.
+
+o For most FDM spectral windows, no edge flagging is done. The only exceptions
+  are ACA spectral windows that encroach too close to the baseband edge.
+  Channels that lie closer to the baseband edge than the following values are
+  flagged: 62.5, 40, 20, 10, and 5 MHz for spectral windows with bandwidths of
+  1000, 500, 250, 125, and 62.5 MHz, respectively. A warning is generated in
+  the weblog if flagging occurs due to proximity to the baseband edge.
+  By definition, 2000 MHz spectral windows always encroach the baseband edge on
+  both sides of the spectral window, and thus are always flagged on both sides
+  in order to achieve 1875 MHz bandwidth (in effect, they are flagged by
+  62.5 MHz on each side), and thus no warning is generated.
 
 Output
 
@@ -40,6 +58,16 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <shortdescription>Flag shadowed antennas</shortdescription>
         <description>Flag shadowed antennas.</description>
         <value type="bool">True</value>
+    </param>
+
+    <param subparam="true" name="tolerance" type="double">
+        <shortdescription>Amount of antenna shadowing tolerated</shortdescription>
+        <description>Amount of antenna shadowing tolerated, in meters. A positive number
+            allows antennas to overlap in projection. A negative number forces antennas
+            apart in projection. Zero implies a distance of radius_1+radius_2 between
+            antenna centers.
+        </description>
+        <value>0.0</value>
     </param>
 
     <param name="scan" type="bool">
@@ -75,14 +103,16 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     </param>
 
     <param subparam="true" name="fracspw" type="double">
-        <shortdescription>Fraction of baseline correlator edge channels to be flagged</shortdescription>
-        <description>Fraction of the baseline correlator TDM edge channels to be flagged.</description>
+        <shortdescription>Fraction of channels to flag at edges of TDM spectral windows</shortdescription>
+        <description>Fraction of channels to flag at both edges of TDM spectral windows.</description>
         <value>0.03125</value>
     </param>
 
     <param subparam="true" name="fracspwfps" type="double">
-        <shortdescription>Fraction of ACA correlator edge channels to be flagged</shortdescription>
-        <description>Fraction of the ACA correlator TDM edge channels to be flagged.</description>
+        <shortdescription>Fraction of channels to flag at edges of ACA FPS TDM spectral windows</shortdescription>
+        <description>Fraction of channels to flag at both edges of ACA TDM
+            spectral windows that were created with the earlier (original)
+            implementation of the frequency profile synthesis (FPS) algorithm.</description>
         <value>0.048387</value>
     </param>
 
@@ -204,6 +234,14 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
             <equals value="getinputs" type="string">
                 <default param="vis"><value type="stringVec"/></default>
                 <default param="flagbackup"><value type="bool">True</value></default>
+            </equals>
+        </when>
+
+        <when param="shadow">
+            <equals value="True" type="bool">
+                 <default param="tolerance"><value type="double"/></default>
+            </equals>
+            <equals value="False" type="bool">
             </equals>
         </when>
 

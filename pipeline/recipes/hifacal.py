@@ -16,35 +16,6 @@ except:
 
 __rethrow_casa_exceptions = True
 
-# CASA imports
-#     Clunky but import casa does not work for pipeline tasks
-from h_init_cli import h_init_cli as h_init
-from hifa_importdata_cli import hifa_importdata_cli as hifa_importdata
-from hifa_flagdata_cli import hifa_flagdata_cli as hifa_flagdata
-from hifa_fluxcalflag_cli import hifa_fluxcalflag_cli as hifa_fluxcalflag
-from hif_rawflagchans_cli import hif_rawflagchans_cli as hif_rawflagchans
-from hif_refant_cli import hif_refant_cli as hif_refant
-from h_tsyscal_cli import h_tsyscal_cli as h_tsyscal
-from hifa_tsysflag_cli import hifa_tsysflag_cli as hifa_tsysflag
-from hifa_antpos_cli import hifa_antpos_cli as hifa_antpos
-from hifa_wvrgcalflag_cli import hifa_wvrgcalflag_cli as hifa_wvrgcalflag
-from hif_lowgainflag_cli import hif_lowgainflag_cli as hif_lowgainflag
-from hif_setmodels_cli import hif_setmodels_cli as hif_setmodels
-from hifa_bandpassflag_cli import hifa_bandpassflag_cli as hifa_bandpassflag
-from hifa_spwphaseup_cli import hifa_spwphaseup_cli as hifa_spwphaseup
-from hifa_gfluxscaleflag_cli import hifa_gfluxscaleflag_cli as hifa_gfluxscaleflag
-from hifa_gfluxscale_cli import hifa_gfluxscale_cli as hifa_gfluxscale
-from hifa_timegaincal_cli import hifa_timegaincal_cli as hifa_timegaincal
-from hif_applycal_cli import hif_applycal_cli as hif_applycal
-from hifa_imageprecheck_cli import hifa_imageprecheck_cli as hifa_imageprecheck
-from hif_checkproductsize_cli import hif_checkproductsize_cli as hif_checkproductsize
-# from hif_makecleanlist_cli import hif_makecleanlist_cli as hif_makecleanlist
-from hif_makeimlist_cli import hif_makeimlist_cli as hif_makeimlist
-# from hif_cleanlist_cli import hif_cleanlist_cli as hif_cleanlist
-from hif_makeimages_cli import hif_makeimages_cli as hif_makeimages
-from hifa_exportdata_cli import hifa_exportdata_cli as hifa_exportdata
-from h_save_cli import h_save_cli as h_save
-
 # Pipeline imports
 import pipeline.infrastructure.casatools as casatools
 
@@ -56,7 +27,7 @@ def hifacal(vislist, importonly=True, dbservice=False, pipelinemode='automatic',
             interactive=True):
 
     echo_to_screen = interactive
-    casatools.post_to_log("Beginning pipeline run ...")
+    casatools.post_to_log("Beginning ALMA calibration pipeline run ...")
 
     try:
         # Initialize the pipeline
@@ -98,10 +69,15 @@ def hifacal(vislist, importonly=True, dbservice=False, pipelinemode='automatic',
         # Set the flux calibrator model
         hif_setmodels(pipelinemode=pipelinemode)
 
-        # Compute the bandpass calibration
+        # Derive and temporarily apply a preliminary bandpass calibration,
+        # and flag outliers in corrected - model amplitudes for bandpass
+        # calibrator.
         hifa_bandpassflag(pipelinemode=pipelinemode)
 
-        # Compute the bandpass calibration
+        # Compute the bandpass calibration.
+        hifa_bandpass(pipelinemode=pipelinemode)
+
+        # Compute phase calibration spw map and per spw phase offsets.
         hifa_spwphaseup(pipelinemode=pipelinemode)
 
         # Derive the flux density scale from standard calibrators, and flag
@@ -115,6 +91,9 @@ def hifacal(vislist, importonly=True, dbservice=False, pipelinemode='automatic',
 
         # Compute the time dependent gain calibration
         hifa_timegaincal(pipelinemode=pipelinemode)
+
+        # Flag ultrahigh calibrated target data
+        hifa_targetflag(pipelinemode=pipelinemode)
 
         # Apply the calibrations
         hif_applycal(pipelinemode=pipelinemode)

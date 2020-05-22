@@ -1,10 +1,14 @@
+import copy
 import os
+from typing import List
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.heuristics import caltable as bcaltable
 from pipeline.hif.tasks.common import commoncalinputs as commoncalinputs
+from pipeline.infrastructure.callibrary import CalApplication, CalFrom, CalToArgs
+from pipeline.infrastructure.launcher import Context
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -72,22 +76,32 @@ class BandpassResults(basetask.Results):
     calibration tasks.
     """
 
-    def __init__(self, final=None, pool=None, preceding=None, applies_adopted=False):
+    def __init__(self, 
+                 final: List[CalApplication]=None, 
+                 pool: List[CalApplication]=None, 
+                 # TODO preceding was intended to hold child results but it
+                 # does not appear to be used anywhere. I suspect it can be
+                 # removed.
+                 preceding: List[basetask.Results]=None,
+                 applies_adopted: bool=False,
+                 unregister_existing: bool=False):
         """
         Construct and return a new BandpassResults.
 
-        The resulting object can optionally be initialized with lists of
-        CalibrationTables referring to all caltables created by this task
-        (caltables), those caltables deemed the best results for this task
-        (best), and those caltables which this task analysed in order to 
-        find the best parameters (basis).
+        Set applies_adopted to True if the bandpass calibration is adopted
+        from another measurement set. This can be the case for sessions,
+        where a bandpass calibrator is shared between multiple EBs. This
+        flag is for presentation logic and does not affect the calibration
+        itself.
 
-        :param best: the best caltables
-        :type best: list of :class:`~pipeline.domain.caltable.CalibrationTable`
-        :param candidates: all caltables considered by this task
-        :type candidates: list of :class:`~pipeline.domain.caltable.CalibrationTable`
-        :param tasks: the caltables on which the parameters were determined
-        :type tasks: list of :class:`~pipeline.domain.caltable.CalibrationTable`
+        :param final: calibrations to be applied by this task (optional)
+        :param pool: calibrations assessed by this task (optional)
+        :param preceding: DEPRECATED results from worker tasks executed by
+            this task (optional)
+        :param applies_adopted: True if this Results applies a bandpass
+            caltable generated from another measurement set
+        :param unregister_existing: True if existing bandpass calibrations
+            should be unregistered before registering new calibration
         """
         if final is None:
             final = []
@@ -97,14 +111,22 @@ class BandpassResults(basetask.Results):
             preceding = []
 
         super(BandpassResults, self).__init__()
-        self.pool = pool[:]
-        self.final = final[:]
-        self.preceding = preceding[:]
+        self.pool: List[CalApplication] = []
+        self.final: List[CalApplication] = []
+        self.preceding: List[basetask.Results] = []
         self.error = set()
         self.qa = {}
-        self.applies_adopted = applies_adopted
+        self.applies_adopted: bool = applies_adopted
+        self.unregister_existing: bool = unregister_existing
 
-    def merge_with_context(self, context):
+        # defensive programming: deepcopy the CalApplications as they're
+        # adopted just in case the caller updates them after this object is
+        # constructed.
+        self.pool.extend(copy.deepcopy(pool))
+        self.final.extend(copy.deepcopy(final))
+        self.preceding.extend(copy.deepcopy(preceding))
+
+    def merge_with_context(self, context: Context):
         """
         See :method:`~pipeline.api.Results.merge_with_context`
         """
@@ -112,15 +134,26 @@ class BandpassResults(basetask.Results):
             LOG.error('No results to merge')
             return
 
+        # If requested, unregister old bandpass calibrations before 
+        # registering this one
+        if self.unregister_existing:
+            # predicate function to match bandpass caltables
+            def bandpass_matcher(_: CalToArgs, calfrom: CalFrom) -> bool:
+                # Standard caltable filenames contain task identifiers,
+                # caltable type identifiers, etc. We can use this to identify
+                # caltables created by this task. As an extra check we also 
+                # check the caltable type
+                return 'bandpass' in calfrom.gaintable and 'bandpass' in calfrom.caltype
+
+            LOG.debug('Unregistering previous bandpass calibrations')
+            context.callibrary.unregister_calibrations(bandpass_matcher)
+
         for calapp in self.final:
-            LOG.debug('Adding calibration to callibrary:\n'
-                      '%s\n%s' % (calapp.calto, calapp.calfrom))
+            LOG.debug(f'Adding calibration to callibrary:\n{calapp.calto}\n{calapp.calfrom}')
             context.callibrary.add(calapp.calto, calapp.calfrom)
 
-    def __repr__(self):
+    def __str__(self):
         s = 'BandpassResults:\n'
-        for calapplication in self.final:
-            s += '\tBest caltable for spw #{spw} in {vis} is {name}\n'.format(
-                spw=calapplication.spw, vis=os.path.basename(calapplication.vis),
-                name=calapplication.gaintable)
+        for calapp in self.final:
+            s += f'\tBest caltable for spw #{calapp.spw} in {os.path.basename(calapp.vis)} is {calapp.gaintable}\n'
         return s

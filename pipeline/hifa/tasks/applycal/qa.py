@@ -42,8 +42,10 @@ PIPE356Switches = collections.namedtuple(
 
 # PIPE356_MODES defines some preset modes for outlier detection and reporting
 PIPE356_MODES = {
-    'TEST': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=True, include_scores=True,
-                            outlier_score=0.5, flag_all=True),
+    'TEST_REAL_OUTLIERS': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=True,
+                                          include_scores=True, outlier_score=0.5, flag_all=False),
+    'TEST_FAKE_OUTLIERS': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=True,
+                                          include_scores=True, outlier_score=0.5, flag_all=True),
     'ON': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=False, include_scores=True,
                           outlier_score=0.9, flag_all=False),
     'DEBUG': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=True, include_scores=False,
@@ -383,6 +385,19 @@ def summarise_scores(all_scores: List[pqa.QAScore], ms: MeasurementSet) -> Dict[
         banner_scores.extend(msgs)
     final_scores[pqa.WebLogLocation.BANNER] = banner_scores
 
+    # JH request from 8/4/20:
+    #
+    # The one thing I'd like to ask is to list the accordion messages ordered
+    # by {ms; intent; spw} so that they appear in "figure order" (currently
+    # they seem to be ordered by {ms; intent; scan}
+    #
+    for destination, unsorted_scores in final_scores.items():
+        sorted_scores = sorted(unsorted_scores, key=lambda score: (sorted(score.applies_to.vis),
+                                                                   sorted(score.applies_to.intent),
+                                                                   sorted(score.applies_to.spw),
+                                                                   sorted(score.applies_to.scan)))
+        final_scores[destination] = sorted_scores
+
     return final_scores
 
 
@@ -466,7 +481,20 @@ def take_min_as_representative(to_merge: DataSelectionToScores) -> DataSelection
     for ds, all_scores_for_ds in to_merge.items():
         # get score with worst metric
         scores_and_metrics = [(1-o.score, o.origin.metric_score, o) for o in all_scores_for_ds]
-        worst_score = max(scores_and_metrics)[2]
+
+        # PIPE-634: hif_applycal crashes with TypeError: '>' not supported
+        # between instances of 'QAScore' and 'QAScore'
+        #
+        # When the score and metric score are equal, max starts comparing the
+        # QAScores themselves, which fails as the comparison operators are
+        # not implemented. From the perspective of a 'worst score' calculation
+        # the scores are equal so it doesn't matter which one we take. Hence,
+        # we can supply an ordering function which simply excludes the QAScore
+        # object from the calculation.
+        def omit_qascore_instance(t):
+            return t[0], t[1]
+
+        worst_score = max(scores_and_metrics, key=omit_qascore_instance)[2]
 
         c = copy.deepcopy(worst_score)
         c.applies_to = pqa.TargetDataSelection(**ds._asdict())

@@ -65,7 +65,7 @@ class FindCont(basetask.StandardTaskTemplate):
 
         qa_tool = casatools.quanta
 
-        # make sure inputs.vis is a list, even it is one that contains a
+        # make sure inputs.vis is a list, even if it is one that contains a
         # single measurement set
         if not isinstance(inputs.vis, list):
             inputs.vis = [inputs.vis]
@@ -122,10 +122,21 @@ class FindCont(basetask.StandardTaskTemplate):
                     else:
                         mosweight = image_heuristics.mosweight(target['intent'], target['field'])
 
-                    # Remove MSs that do not contain data for the given field(s)
-                    scanidlist, visindexlist = image_heuristics.get_scanidlist(inputs.vis, target['field'],
-                                                                               target['intent'])
-                    vislist = [inputs.vis[i] for i in visindexlist]
+                    # Usually the inputs value takes precedence over the one from the target list.
+                    # For PIPE-557 it was necessary to fill target['vis'] in hif_makeimlist to filter
+                    # out fully flagged selections. Using the default vislist one would have to
+                    # re-determine all dependendent parameters such as "antenna", etc. here. Most
+                    # likely the use case of defining an explicit vislist for hif_findcont will
+                    # happen very rarely if at all. Thus changing the paradigm here for now.
+                    if target['vis']:
+                        vislist = target['vis']
+                        scanidlist, _ = image_heuristics.get_scanidlist(target['vis'], target['field'],
+                                                                        target['intent'])
+                    else:
+                        scanidlist, visindexlist = image_heuristics.get_scanidlist(inputs.vis, target['field'],
+                                                                                   target['intent'])
+                        # Remove MSs that do not contain data for the given field(s)
+                        vislist = [inputs.vis[i] for i in visindexlist]
 
                     # To avoid noisy edge channels, use only the LSRK frequency
                     # intersection and skip one channel on either end.

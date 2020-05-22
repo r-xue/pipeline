@@ -21,6 +21,7 @@ from . import sdcombine
 from . import weighting
 from . import worker
 from . import resultobjects
+from . import detectcontamination
 from .. import common
 from ..baseline import baseline
 from ..common import compress
@@ -147,16 +148,17 @@ class SDImaging(basetask.StandardTaskTemplate):
         # set some information to image header
         image_item = result.outcome['image']
         imagename = image_item.imagename
-        imageheader.set_miscinfo(name=imagename,
-                                 spw=','.join(map(str, spwlist)),
-                                 field=image_item.sourcename,
-                                 nfield=1,
-                                 type='singledish',
-                                 iter=1,  # nominal
-                                 intent='TARGET',
-                                 specmode='cube',
-                                 is_per_eb=False,
-                                 context=context)
+        for name in (imagename, imagename+'.weight'):
+            imageheader.set_miscinfo(name=name,
+                                     spw=','.join(map(str, spwlist)),
+                                     field=image_item.sourcename,
+                                     nfield=1,
+                                     type='singledish',
+                                     iter=1,  # nominal
+                                     intent='TARGET',
+                                     specmode='cube',
+                                     is_per_eb=False,
+                                     context=context)
 
         # finally replace task attribute with the top-level one
         result.task = cls
@@ -741,6 +743,9 @@ class SDImaging(basetask.StandardTaskTemplate):
                                              reduction_group_id=group_id, file_index=file_index,
                                              assoc_antennas=combined_antids, assoc_fields=combined_fieldids, assoc_spws=combined_v_spws,  #, assoc_pols=pols,
                                              sensitivity_info=sensitivity_info)
+
+                # PIPE-251: detect contamination
+                detectcontamination.detect_contamination(context, imager_result.outcome['image'])
 
                 results.append(imager_result)
 

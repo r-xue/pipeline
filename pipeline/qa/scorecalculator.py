@@ -9,9 +9,11 @@ import functools
 import math
 import operator
 import os
+from typing import List
 
 import numpy as np
 
+import pipeline.domain as domain
 import pipeline.domain.measures as measures
 import pipeline.infrastructure.basetask
 import pipeline.infrastructure.casatools as casatools
@@ -483,56 +485,109 @@ def score_bands(mses):
 
 
 @log_qa
-def score_polintents(mses):
+def score_polintents(recipe_name: str, mses: List[domain.MeasurementSet]) -> List[pqa.QAScore]:
     """
     Score a MeasurementSet object based on the presence of
     polarization intents.
     """
+    pol_intents = {'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'}
+    # these recipes are allowed to process polarisation data
+    pol_recipes = {'hifa_polcal', 'hifa_polcalimage'}
 
-    # Polarization intents. Warnings will be raised for any
-    # measurement sets containing these intents. Ignore the
-    # array type for now.
-    score = 1.0
-    score_map = {
-        'POLARIZATION': -1.0,
-        'POLANGLE': -1.0,
-        'POLLEAKAGE': -1.0
-    }
+    # Sort to ensure presentation consistency
+    mses = sorted(mses, key=lambda ms: ms.basename)
 
-    unsupported = set(score_map.keys())
+    # are polarisation intents expected? true if pol recipe, false if not
+    pol_intents_expected = recipe_name in pol_recipes
 
-    num_mses = len(mses)
-    all_ok = True
-    complaints = []
+    # holds the final list of QA scores
+    scores: List[pqa.QAScore] = []
 
-    # analyse each MS
+    # Spec from PIPE-606:
+    #
+    # Currently, hifa_importdata sets the score of that stage to 0 if a
+    # polarization calibrator is found (in qa/scorecalculator.py). This score
+    # should now become 1 if one of these recipes is being run, or 0.5 if any
+    # other recipe is being run.
+
+    # analyse each MS, recording an accordion warning if there's an unexpected
+    # pol calibrator
+
+    if pol_intents_expected:
+        pol_intents_present = any([pol_intents.intersection(ms.intents) for ms in mses])
+
+        ms_names = {ms.basename for ms in mses}
+        mses_for_msg = utils.commafy(sorted(ms_names), False)
+
+        # and an 'all OK' accordion message if pol scans were expected and found
+        if pol_intents_present:
+            longmsg = f'Polarization calibrations expected and found: {mses_for_msg}'
+            shortmsg = 'Polarization calibrators'
+            origin = pqa.QAOrigin(metric_name='score_polintents',
+                                  metric_score=1.0,
+                                  metric_units='MS score based on presence of polarisation data')
+            score = pqa.QAScore(1.0, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
+                                weblog_location=pqa.WebLogLocation.ACCORDION,
+                                applies_to=pqa.TargetDataSelection(vis=ms_names))
+            scores.append(score)
+
+        # and complain with a banner message if they weren't. Perhaps this
+        # should be part of score_missing_intents?
+        else:
+            longmsg = f'Expected polarization calibrations not found in {mses_for_msg}'
+            shortmsg = 'Polarization calibrators'
+            origin = pqa.QAOrigin(metric_name='score_polintents',
+                                  metric_score=0.5,
+                                  metric_units='MS score based on presence of polarisation data')
+            score = pqa.QAScore(0.5, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
+                                weblog_location=pqa.WebLogLocation.BANNER,
+                                applies_to=pqa.TargetDataSelection(vis=ms_names))
+            scores.append(score)
+
+        return scores
+
+    # so, pol data not expected. Find any problem scans and record an accordion warning
     for ms in mses:
-        # are these intents present in the ms
-        overlap = unsupported.intersection(ms.intents)
-        if not overlap:
-            continue
-        all_ok = False
-        for m in overlap:
-            score += (score_map[m] / num_mses)
+        pol_intents_in_ms = sorted(pol_intents.intersection(ms.intents))
 
-        longmsg = ('%s contains %s polarization calibration intents'
-                   '' % (ms.basename, utils.commafy(overlap, False)))
-        complaints.append(longmsg)
+        if pol_intents_in_ms:
+            longmsg = f'{ms.basename} contains polarization calibrations: {utils.commafy(pol_intents_in_ms, False)}'
+            shortmsg = 'Polarization intents'
+            origin = pqa.QAOrigin(metric_name='score_polintents',
+                                  metric_score=0.5,
+                                  metric_units='MS score based on presence of polarisation data')
+            score = pqa.QAScore(0.5, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
+                                weblog_location=pqa.WebLogLocation.ACCORDION,
+                                applies_to=pqa.TargetDataSelection(vis=ms.basename))
+            scores.append(score)
 
-    if all_ok:
-        longmsg = ('No polarization calibration intents were found in '
-                   '%s.' % utils.commafy([ms.basename for ms in mses], False))
-        shortmsg = 'No polarization calibrators found'
-    else:
-        longmsg = '%s.' % utils.commafy(complaints, False)
-        shortmsg = 'Polarization calibrators found'
+    # if there are accordion warnings, summarise them in a banner warning too
+    if scores:
+        affected_mses = {score.applies_to.vis for score in scores}
+        longmsg = f'Unexpected polarization calibrations in {utils.commafy(affected_mses, False)}'
+        shortmsg = 'Polarization intents'
+        origin = pqa.QAOrigin(metric_name='score_polintents',
+                              metric_score=0.5,
+                              metric_units='MS score based on presence of polarisation data')
+        score = pqa.QAScore(0.5, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
+                            weblog_location=pqa.WebLogLocation.BANNER,
+                            applies_to=pqa.TargetDataSelection(vis=affected_mses))
+        scores.append(score)
 
-    origin = pqa.QAOrigin(metric_name='score_polintents',
-                          metric_score=score,
-                          metric_units='MS score based on presence of polarisation data')
+    # Add an 'all OK' accordion message if no unexpected intents detected
+    if not scores and not pol_intents_expected:
+        ms_names = {ms.basename for ms in mses}
+        longmsg = f'No polarization calibrations found: {utils.commafy(sorted(ms_names), False)}'
+        shortmsg = 'No polarization calibrators'
+        origin = pqa.QAOrigin(metric_name='score_polintents',
+                              metric_score=1.0,
+                              metric_units='MS score based on presence of polarisation data')
+        score = pqa.QAScore(1.0, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
+                            weblog_location=pqa.WebLogLocation.ACCORDION,
+                            applies_to=pqa.TargetDataSelection(vis=ms_names))
+        scores.append(score)
 
-    return pqa.QAScore(max(0.0, score), longmsg=longmsg, shortmsg=shortmsg, origin=origin)
-
+    return scores
 
 @log_qa
 def score_missing_intents(mses, array_type='ALMA_12m'):
