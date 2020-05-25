@@ -1,15 +1,9 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
-def hifa_timegaincal(vis=None, calamptable=None, calphasetable=None, offsetstable=None, targetphasetable=None,
-                     amptable=None, field=None, intent=None, spw=None, antenna=None, calsolint=None, targetsolint=None,
-                     combine=None, refant=None, refantmode=None, solnorm=None, minblperant=None, calminsnr=None,
-                     targetminsnr=None, smodel=None, pipelinemode=None, dryrun=None, acceptresults=None):
-
+def hifa_unlock_refant():
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

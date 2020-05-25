@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
 
 <task category="pipeline" name="hifa_timegaincal" type="function">
 
@@ -175,6 +175,23 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
+    <param subparam="true" name="refantmode" type="string">
+        <shortdescription>Reference antenna selection mode</shortdescription>
+        <description>Controls how the refant is applied. Currently available
+                     choices are 'flex', 'strict', and the default value of ''.
+                     Setting to '' allows the pipeline to select the appropriate
+                     mode based on the state of the reference antenna list.
+
+                     Examples: refantmode='strict', refantmode=''
+        </description>
+        <value></value>
+        <allowed kind="enum">
+            <value></value>
+            <value>flex</value>
+            <value>strict</value>
+        </allowed>
+    </param>
+
     <param subparam="true" name="solnorm" type="bool">
         <shortdescription>Normalize average solution amplitudes to 1.0</shortdescription>
         <description>Normalise the gain solutions.</description>
@@ -263,6 +280,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
             <default param="smodel"><value type="doubleVec"/></default>
             <default param="solnorm"><value type="bool">False</value></default>
             <default param="refant"><value type="string"/></default>
+            <default param="refantmode"><value type="string"/></default>
             <default param="dryrun"><value type="bool">False</value></default>
             <default param="acceptresults"><value type="bool">True</value></default>
         </equals>
@@ -280,6 +298,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
             <default param="smodel"><value type="doubleVec"/></default>
             <default param="solnorm"><value type="bool">False</value></default>
             <default param="refant"><value type="string"/></default>
+            <default param="refantmode"><value type="string"/></default>
         </equals>
         </when>
     </constraints>
