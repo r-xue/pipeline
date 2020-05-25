@@ -99,6 +99,32 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
+        <Command xmlns="">hifa_lock_refant</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hifa_bandpass</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">unregister_existing</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hifa_spwphaseup</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">unregister_existing</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
         <Command xmlns="">hifa_gfluxscale</Command>
         <ParameterSet>
         </ParameterSet>
