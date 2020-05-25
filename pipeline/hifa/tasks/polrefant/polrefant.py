@@ -69,6 +69,7 @@ class PolRefAnt(basetask.StandardTaskTemplate):
             LOG.info("Evaluating reference antennas for session \"{}\" with measurement set(s): {}."
                      "".format(session_name, ', '.join([os.path.basename(vis) for vis in vislist])))
             refant = self._identify_best_refant(session_name, vislist)
+            LOG.info("Final choice of reference antenna for session \"{}\": {}".format(session_name, refant))
             result.refant[session_name] = {'vislist': vislist, 'refant': refant}
 
         return result
@@ -138,21 +139,27 @@ class PolRefAnt(basetask.StandardTaskTemplate):
         # Run phase evaluation for specified nr. of antennas or nr. of
         # antennas in common, whichever is lowest.
         for iant in range(min(nant, nrefants)):
-            # Run a gaincal for each vis with refant set to the current ant.
-            gcal_result = self._create_phase_caltables(vislist, refants[iant][0])
+            ant = refants[iant][0]
+            LOG.info("Session \"{}\": running phase evaluation heuristics for candidate antenna {}"
+                     "".format(session_name, ant))
 
-            # Evaluate caltables to detect if refant changed (cf. au.nonzeroGainPhase()).
-            n_nonzero_phase = self._evaluate_phase_caltables(gcal_result, refants[iant][0], self.inputs.phase_threshold)
+            # Run a gaincal for each vis with refant set to the current ant.
+            gcal_result = self._create_phase_caltables(vislist, ant)
+
+            # Evaluate caltables to detect if refant changed.
+            n_nonzero_phase = self._evaluate_phase_caltables(gcal_result, ant, self.inputs.phase_threshold)
 
             # In the (unlikely) case that no refant changes (i.e. no non-zero
             # phases) were detected for any MS, then this ant is the highest
             # ranking "perfect" reference antenna, and there is no need to
             # evaluate any further down the list.
             if not any(n_nonzero_phase.values()):
-                return refants[iant][0]
+                return ant
 
             # Store total nr. of non-zero phases for this antenna.
-            n_nonzero[refants[iant][0]] = sum(n_nonzero_phase.values())
+            n_nonzero[ant] = sum(n_nonzero_phase.values())
+            LOG.info("Session \"{}\": number of phase outlier rows found for candidate antenna {}: {}"
+                     "".format(session_name, ant, n_nonzero[ant]))
 
         # From evaluated antennas, pick the one with the lowest total number of non-zero phase values;
         return sorted(n_nonzero, key=n_nonzero.get)[0]
