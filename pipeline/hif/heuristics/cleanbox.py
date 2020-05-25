@@ -219,6 +219,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                 nonpbcor_image_non_cleanmask_freq_frame = 'LSRK'
 
             # define mask outside the cleaned area
+            image_stats = None
             if pb is not None and os.path.exists(pb+extension) and cleanmask is not None and os.path.exists(cleanmask):
                 have_mask = True
                 # Annulus without clean mask
@@ -226,6 +227,21 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                             (os.path.basename(flattened_mask), \
                              os.path.basename(pb)+extension, pblimit_image, \
                              os.path.basename(pb)+extension, pblimit_cleanmask)
+                # Check for number of points per channel (PIPE-541):
+                try:
+                    image_stats = image.statistics(mask=statsmask, robust=True, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5)
+                    if image_stats['npts'].shape == (0,) or np.median(image_stats['npts']) < 10.0:
+                        # Switch to full annulus to avoid zero noise spectrum due to voluminous mask
+                        LOG.warn('Using full annulus for noise spectrum due to voluminous mask.')
+                        statsmask = '("%s" > %f) && ("%s" < %f)' % (os.path.basename(pb)+extension, pblimit_image,
+                                                                    os.path.basename(pb)+extension, pblimit_cleanmask)
+                        image_stats = None
+                except Exception as e:
+                    # Try full annulus as a fallback
+                    LOG.error('Exception: %s. Using full annulus for noise spectrum due to voluminous mask.' % (e))
+                    statsmask = '("%s" > %f) && ("%s" < %f)' % (os.path.basename(pb)+extension, pblimit_image,
+                                                                os.path.basename(pb)+extension, pblimit_cleanmask)
+                    image_stats = None
             elif pb is not None and os.path.exists(pb+extension):
                 have_mask = True
                 # Full annulus
@@ -242,7 +258,9 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
 
             try:
                 # Get image RMS for all channels (this is for the weblog)
-                image_stats = image.statistics(mask=statsmask, robust=True, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5)
+                # Avoid repeat if the check for npts was done and is OK.
+                if image_stats is None:
+                    image_stats = image.statistics(mask=statsmask, robust=True, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5)
                 nonpbcor_image_statsmask = statsmask
 
                 # Filter continuum frequency ranges if given
