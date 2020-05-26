@@ -129,8 +129,8 @@ class PolRefAnt(basetask.StandardTaskTemplate):
             return ''
         elif nrefants == 1:
             LOG.warning("Measurement sets for session \"{}\" have only one reference antennas in common ({}), which"
-                        " will be set as the final best reference antenna.".format(session_name, refants[0][0]))
-            return refants[0][0]
+                        " will be set as the final best reference antenna.".format(session_name, refants[0]))
+            return refants[0]
 
         # If there are multiple candidate refants in common, then continue with
         # evaluating the ranked list of refants based on non-zero phases.
@@ -139,7 +139,7 @@ class PolRefAnt(basetask.StandardTaskTemplate):
         # Run phase evaluation for specified nr. of antennas or nr. of
         # antennas in common, whichever is lowest.
         for iant in range(min(nant, nrefants)):
-            ant = refants[iant][0]
+            ant = refants[iant]
             LOG.info("Session \"{}\": running phase evaluation heuristics for candidate antenna {}"
                      "".format(session_name, ant))
 
@@ -175,14 +175,14 @@ class PolRefAnt(basetask.StandardTaskTemplate):
         :param vislist: list of measurement sets
         :type vislist: list [vis, vis, ...]
         :return: list of reference antennas
-        :rtype: list
+        :rtype: list[str]
         """
         # If there is just one MS, then return its reference antenna list.
         nvis = len(vislist)
         if nvis == 1:
             LOG.info("Session \"{}\" has only one measurement set ({}), continuing with its reference antenna list for"
                      " evaluation of best reference antenna.".format(session_name, os.path.basename(vislist[0])))
-            return self.inputs.context.observing_run.get_ms(vislist[0]).reference_antenna
+            return self.inputs.context.observing_run.get_ms(vislist[0]).reference_antenna.split(',')
 
         # Otherwise, continue with combining the multiple refant lists.
 
@@ -222,7 +222,8 @@ class PolRefAnt(basetask.StandardTaskTemplate):
         LOG.info("Ranked antenna list for session \"{}\", listed as 'antenna (cross-product of per-MS ranking, stdev"
                  " of per-MS ranks, ranking for first observed MS)': {}".format(session_name, ', '.join(refant_str)))
 
-        return refants_ranked
+        # Return a list of just the antenna names.
+        return [ant[0] for ant in refants_ranked]
 
     def _create_phase_caltables(self, vislist, refant):
         """
