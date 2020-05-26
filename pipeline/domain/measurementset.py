@@ -174,21 +174,30 @@ class MeasurementSet(object):
             else:
                 LOG.warning('Representative target source %s not found in data set %s' % \
                     (self.representative_target[0], self.basename))
-                target_source = None
+                # Try to fall back first target source
+                target_sources = [source for source in self.sources
+                                  if 'TARGET' in source.intents] 
+                if len(target_sources) > 0:
+                    target_source = target_sources[0]
+                    LOG.info('Falling back to first target source (%s) for data set %s' % \
+                        (target_source.name, self.basename))
+                else:
+                    LOG.warning('No target sources observed for data set %s' % (self.basename))
+                    target_source = None
         else:
             # Use first target source no matter what it is
             target_sources = [source for source in self.sources
                               if 'TARGET' in source.intents] 
             if len(target_sources) > 0:
                 target_source = target_sources[0]
-                LOG.info('Undefined representative target source, defaulting to source %s for data set %s' % \
+                LOG.info('Undefined representative target source, defaulting to first target source (%s) for data set %s' % \
                     (target_source.name, self.basename))
             else:
                 LOG.warning('No target sources observed for data set %s' % (self.basename))
                 target_source = None
 
         # Target source not found
-        if not target_source:
+        if target_source is None:
             return (None, None)
 
         # Target source name
@@ -325,8 +334,8 @@ class MeasurementSet(object):
                 if (max_chanwidth is None) or (chanwidth > max_chanwidth):
                 #if not_max_chanwidth or chanwidth > max_chanwidth:
                     target_spwid = spw.id
-            LOG.info('Selecting widest channel width spw id %s with channel width <= rerpesentative bandwidth in data set %s' % \
-                (str(target_spwid), self.basename))
+            LOG.info('Selecting widest channel width spw id {} with channel width <= representative bandwidth in data'
+                     ' set {}'.format(str(target_spwid), self.basename))
 
             return (target_source_name, target_spwid)
 

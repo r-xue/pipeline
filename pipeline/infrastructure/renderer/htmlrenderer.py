@@ -2,16 +2,17 @@ import collections
 import contextlib
 import datetime
 import functools
+import itertools
+import math
 import operator
 import os
 import pydoc
 import re
 import shutil
 import sys
+from typing import List
 
-import itertools
 import mako
-import math
 import numpy
 import pkg_resources
 
@@ -26,7 +27,8 @@ import pipeline.infrastructure.logging as logging
 from pipeline import environment
 from pipeline.infrastructure import task_registry, utils
 from pipeline.infrastructure.renderer.templates import resources
-from . import qaadapter, weblog
+from . import qaadapter, rendererutils, weblog
+from .. import pipelineqa
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -217,6 +219,12 @@ def is_singledish_ms(context):
     result_repr = str(result0)
     return result_repr.find('SDImportDataResults') != -1
 
+def scan_has_intent(scans, intent):
+    """Returns True if the list of scans includes a specified intent"""
+    for s in scans:
+        if intent in s.intents:
+            return True
+    return False
 
 class Session(object):
     def __init__(self, mses=None, name='Unnamed Session'):
@@ -369,14 +377,8 @@ class T1_1Renderer(RendererBase):
             time_end = utils.get_epoch_as_datetime(ms.end_time)
 
             target_scans = [s for s in ms.scans if 'TARGET' in s.intents]
-            # check for REFERENCE (OFF-source) in TARGET scans
-            has_reference_scan = False
-            for s in target_scans:
-                if 'REFERENCE' in s.intents:
-                    has_reference_scan = True
-                    break
-            if has_reference_scan:
-                # target scan has OFF-source need to go harder way
+            if scan_has_intent(target_scans, 'REFERENCE'):
+                # target scans have OFF-source integrations. Need to do harder way.
                 autocorr_only = is_singledish_ms(context)
                 time_on_source =  utils.total_time_on_target_on_source(ms, autocorr_only)
             else:
@@ -597,25 +599,17 @@ class T1_3MRenderer(RendererBase):
             scores[result.stage_number] = result.qa.representative
             results_list = get_results_by_time(context, result)
 
-            qa_errors = cls._filter_qascores(results_list, -0.1, 0.33)
-            tablerows.extend(cls._qascores_to_tablerows(qa_errors,
-                                                        results_list,
-                                                        'QA Error'))
+            qa_errors = filter_qascores(results_list, -0.1, rendererutils.SCORE_THRESHOLD_ERROR)
+            tablerows.extend(qascores_to_tablerows(qa_errors, results_list, 'QA Error'))
 
-            qa_warnings = cls._filter_qascores(results_list, 0.33, 0.66)
-            tablerows.extend(cls._qascores_to_tablerows(qa_warnings,
-                                                        results_list,
-                                                        'QA Warning'))
+            qa_warnings = filter_qascores(results_list, rendererutils.SCORE_THRESHOLD_ERROR, rendererutils.SCORE_THRESHOLD_WARNING)
+            tablerows.extend(qascores_to_tablerows(qa_warnings, results_list, 'QA Warning'))
 
             error_msgs = utils.get_logrecords(results_list, logging.ERROR)
-            tablerows.extend(cls._logrecords_to_tablerows(error_msgs,
-                                                          results_list,
-                                                          'Error'))
+            tablerows.extend(logrecords_to_tablerows(error_msgs, results_list, 'Error'))
 
             warning_msgs = utils.get_logrecords(results_list, logging.WARNING)
-            tablerows.extend(cls._logrecords_to_tablerows(warning_msgs,
-                                                          results_list,
-                                                          'Warning'))
+            tablerows.extend(logrecords_to_tablerows(warning_msgs, results_list, 'Warning'))
 
             if 'applycal' in get_task_description(result, context):
                 try:
@@ -624,8 +618,14 @@ class T1_3MRenderer(RendererBase):
                         ms = context.observing_run.get_ms(vis)
                         flagtable = collections.OrderedDict()
                         for field in resultitem.flagsummary:
-                            intents = ','.join([f.intents for f in ms.get_fields(intent='BANDPASS,PHASE,AMPLITUDE,CHECK,TARGET')
-                                                if field in f.name][0])
+                            # Get the field intents, but only for those that
+                            # the pipeline processes. This can be an empty
+                            # list (PIPE-394: POINTING, WVR intents).
+                            intents_list = [f.intents for f in ms.get_fields(intent='BANDPASS,PHASE,AMPLITUDE,POLARIZATION,POLANGLE,POLLEAKAGE,CHECK,TARGET')
+                                            if field in f.name]
+                            if len(intents_list) == 0:
+                                continue
+                            intents = ','.join(intents_list[0])
 
                             flagsummary = resultitem.flagsummary[field]
 
@@ -654,46 +654,6 @@ class T1_3MRenderer(RendererBase):
                 'scores': scores,
                 'tablerows': tablerows,
                 'flagtables': flagtables}
-
-    @classmethod
-    def _filter_qascores(cls, results_list, lo, hi):
-        qa_pool = results_list.qa.pool
-        #print qa_pool
-        with_score = [s for s in qa_pool if s.score not in ('', 'N/A', None)]
-        return [s for s in with_score if s.score > lo and s.score <= hi]
-
-    @classmethod
-    def _create_tablerow(cls, results, message, msgtype, target=''):
-        return cls.MsgTableRow(stage=results.stage_number,
-                               task=get_task_name(results, False),
-                               type=msgtype,
-                               message=message,
-                               target=target)
-
-    @classmethod
-    def _qascores_to_tablerows(cls, qascores, results, msgtype='ERROR'):
-        def get_target(qascore):
-            vis = qascore.target.get('vis', None)
-            return '&ms=%s' % vis if vis else ''
-
-        return [cls._create_tablerow(results, qascore.longmsg, msgtype, 
-                                     get_target(qascore))
-                for qascore in qascores]
-
-    @classmethod
-    def _logrecords_to_tablerows(cls, records, results, msgtype='ERROR'):
-        def get_target(logrecord):
-            try:
-                vis = logrecord.target['vis']
-                return '&ms=%s' % vis if vis else ''
-            except AttributeError:
-                return ''
-            except KeyError:
-                return ''
-
-        return [cls._create_tablerow(results, record.msg, msgtype,
-                                     get_target(record))
-                for record in records]
 
 
 class T1_4MRenderer(RendererBase):
@@ -815,7 +775,12 @@ class T2_1DetailsRenderer(object):
 
         time_on_source = utils.total_time_on_source(ms.scans) 
         science_scans = [scan for scan in ms.scans if 'TARGET' in scan.intents]
-        time_on_science = utils.total_time_on_source(science_scans)
+        if scan_has_intent(science_scans, 'REFERENCE'):
+            # target scans have OFF-source integrations. Need to do harder way.
+            autocorr_only = is_singledish_ms(context)
+            time_on_science =  utils.total_time_on_target_on_source(ms, autocorr_only)
+        else:
+            time_on_science = utils.total_time_on_source(science_scans)
 
 #         dirname = os.path.join(context.report_dir, 
 #                                'session%s' % ms.session,
@@ -1227,8 +1192,6 @@ class T2_3_XMBaseRenderer(RendererBase):
     # the template file for this renderer
     template = 'overrideme'
 
-    MsgTableRow = collections.namedtuple('MsgTableRow', 'stage task type message target')
-
     @classmethod
     def get_display_context(cls, context):
         topic = cls.get_topic()
@@ -1244,17 +1207,17 @@ class T2_3_XMBaseRenderer(RendererBase):
 
             # CAS-11344: present results ordered by stage number
             for results_list in sorted(list_of_results_lists, key=operator.attrgetter('stage_number')):
-                qa_errors = cls._filter_qascores(results_list, -0.1, 0.33)
-                tablerows.extend(cls._qascores_to_tablerows(qa_errors, results_list, 'QA Error'))
+                qa_errors = filter_qascores(results_list, -0.1, rendererutils.SCORE_THRESHOLD_ERROR)
+                tablerows.extend(qascores_to_tablerows(qa_errors, results_list, 'QA Error'))
 
-                qa_warnings = cls._filter_qascores(results_list, 0.33, 0.66)
-                tablerows.extend(cls._qascores_to_tablerows(qa_warnings, results_list, 'QA Warning'))
+                qa_warnings = filter_qascores(results_list, rendererutils.SCORE_THRESHOLD_ERROR, rendererutils.SCORE_THRESHOLD_WARNING)
+                tablerows.extend(qascores_to_tablerows(qa_warnings, results_list, 'QA Warning'))
 
                 error_msgs = utils.get_logrecords(results_list, logging.ERROR)
-                tablerows.extend(cls._logrecords_to_tablerows(error_msgs, results_list, 'Error'))
+                tablerows.extend(logrecords_to_tablerows(error_msgs, results_list, 'Error'))
 
                 warning_msgs = utils.get_logrecords(results_list, logging.WARNING)
-                tablerows.extend(cls._logrecords_to_tablerows(warning_msgs, results_list, 'Warning'))
+                tablerows.extend(logrecords_to_tablerows(warning_msgs, results_list, 'Warning'))
 
         return {
             'pcontext': context,
@@ -1262,44 +1225,6 @@ class T2_3_XMBaseRenderer(RendererBase):
             'tablerows': tablerows,
             'topic': topic
         }
-
-    @classmethod
-    def _filter_qascores(cls, results_list, lo, hi):
-        qa_pool = results_list.qa.pool
-        with_score = [s for s in qa_pool if s.score not in ('', 'N/A', None)]
-        return [s for s in with_score if s.score > lo and s.score <= hi]
-
-    @classmethod
-    def _create_tablerow(cls, results, message, msgtype, target=''):
-        return cls.MsgTableRow(stage=results.stage_number,
-                               task=get_task_name(results, False),
-                               type=msgtype,
-                               message=message,
-                               target=target)
-
-    @classmethod
-    def _qascores_to_tablerows(cls, qascores, results, msgtype='ERROR'):
-        def get_target(qascore):
-            vis = qascore.target.get('vis', None)
-            return '&ms=%s' % vis if vis else ''
-
-        return [cls._create_tablerow(results, qascore.longmsg, msgtype, get_target(qascore))
-                for qascore in qascores]
-
-    @classmethod
-    def _logrecords_to_tablerows(cls, records, results, msgtype='ERROR'):
-        def get_target(logrecord):
-            try:
-                vis = logrecord.target['vis']
-                return '&ms=%s' % vis if vis else ''
-            except AttributeError:
-                return ''
-            except KeyError:
-                return ''
-
-        return [cls._create_tablerow(results, record.msg, msgtype,
-                                     get_target(record))
-                for record in records]
 
 
 class T2_3_1MRenderer(T2_3_XMBaseRenderer):
@@ -2113,3 +2038,77 @@ def compute_az_el_for_ms(ms, observatory, func):
 
 def cmp(a, b):
     return (a > b) - (a < b)
+
+
+# The four methods below were previously duplicated as class methods on
+# T1_3Renderer and T2_3_XMBaseRenderer. I've factored this out into a common
+# function for now so at least the implementation is shared, but it is ripe
+# for further refactoring. The functions are:
+#
+#   filter_qascores
+#   create_tablerow
+#   qascores_to_tablerow
+#   logrecords_to_tablerows
+#
+def filter_qascores(results_list, lo:float, hi:float) -> List[pipelineqa.QAScore]:
+    all_scores: List[pipelineqa.QAScore] = results_list.qa.pool
+    # suppress scores not intended for the banner, taking care not to suppress
+    # legacy scores with a default message destination (=UNSET) so that old
+    # tasks continue to render as before
+    banner_scores = rendererutils.scores_with_location(
+        all_scores, [pipelineqa.WebLogLocation.BANNER, pipelineqa.WebLogLocation.UNSET]
+    )
+    with_score = [s for s in banner_scores if s.score not in ('', 'N/A', None)]
+    return [s for s in with_score if lo < s.score <= hi]
+
+
+# struct used to summarise task warnings and errors in a table
+MsgTableRow = collections.namedtuple('MsgTableRow', 'stage task type message target')
+
+
+def create_tablerow(results, message: str, msgtype: str, target='') -> MsgTableRow:
+    """
+    Create a table entry struct from a web log message.
+    """
+    return MsgTableRow(stage=results.stage_number,
+                       task=get_task_name(results, False),
+                       type=msgtype,
+                       message=message,
+                       target=target)
+
+
+def qascores_to_tablerows(qascores: List[pipelineqa.QAScore],
+                          results,
+                          msgtype: str = 'ERROR') -> List[MsgTableRow]:
+    """
+    Convert a list of QAScores to a list of table entries, ready for
+    insertion into a Mako template.
+    """
+    def get_target(qascore):
+        target_mses = qascore.applies_to.vis
+        if len(target_mses) == 1:
+            ms = list(target_mses)[0]
+            return f'&ms={ms}'
+        else:
+            return '&ms='
+
+    return [create_tablerow(results, qascore.longmsg, msgtype, get_target(qascore))
+            for qascore in qascores]
+
+
+def logrecords_to_tablerows(records, results, msgtype='ERROR') -> List[MsgTableRow]:
+    """
+    Convert a list of LogRecords to a list of table entries, ready for
+    insertion into a Mako template.
+    """
+    def get_target(logrecord):
+        try:
+            vis = logrecord.target['vis']
+            return '&ms=%s' % vis if vis else ''
+        except AttributeError:
+            return ''
+        except KeyError:
+            return ''
+
+    return [create_tablerow(results, record.msg, msgtype,get_target(record))
+            for record in records]

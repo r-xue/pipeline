@@ -79,6 +79,11 @@ class FlagDeterBaseInputs(vdp.StandardInputs):
 
         a boolean indicating whether shadowed antennas are to be flagged.
 
+    .. py:attribute:: tolerance
+
+        a float sets the tolerated projected antenna shadowing in meter.
+        Positive value allows overlap, negative value forces separation.
+
     .. py:attribute:: scan
 
         a boolean indicating whether scan flagging is to be performed.
@@ -164,6 +169,7 @@ class FlagDeterBaseInputs(vdp.StandardInputs):
     scan = vdp.VisDependentProperty(default=True)
     scannumber = vdp.VisDependentProperty(default='')
     shadow = vdp.VisDependentProperty(default=True)
+    tolerance = vdp.VisDependentProperty(default=0.0)
 
     tbuff = vdp.VisDependentProperty(default=[0.0, 0.0])
 
@@ -191,8 +197,8 @@ class FlagDeterBaseInputs(vdp.StandardInputs):
 
     template = vdp.VisDependentProperty(default=False)
 
-    def __init__(self, context, vis=None, output_dir=None, flagbackup=None, autocorr=None, shadow=None, scan=None,
-                 scannumber=None, intents=None, edgespw=None, fracspw=None, fracspwfps=None, online=None,
+    def __init__(self, context, vis=None, output_dir=None, flagbackup=None, autocorr=None, shadow=None, tolerance=None,
+                 scan=None, scannumber=None, intents=None, edgespw=None, fracspw=None, fracspwfps=None, online=None,
                  fileonline=None, template=None, filetemplate=None, hm_tbuff=None, tbuff=None):
         super(FlagDeterBaseInputs, self).__init__()
 
@@ -206,6 +212,7 @@ class FlagDeterBaseInputs(vdp.StandardInputs):
         self.flagbackup = flagbackup
         self.autocorr = autocorr
         self.shadow = shadow
+        self.tolerance = tolerance
         self.scan = scan
         self.scannumber = scannumber
         self.intents = intents
@@ -365,7 +372,7 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
         # the empty list which will hold the flagging commands
         flag_cmds = []        
 
-        # flag online?
+        # flag online? TODO: clean this section?
         '''
         if inputs.online:
             if not os.path.exists(inputs.fileonline):
@@ -437,7 +444,7 @@ class FlagDeterBase(basetask.StandardTaskTemplate):
 
         # Flag shadowed antennas?
         if inputs.shadow:
-            flag_cmds.append("mode='shadow' reason='shadow'")
+            flag_cmds.append("mode='shadow' tolerance=%s reason='shadow'" % inputs.tolerance)
             flag_cmds.append("mode='summary' name='shadow'")
 
         # Flag according to scan numbers and intents?

@@ -138,7 +138,7 @@ def _pipeline_revision():
         version = commit_hash
     else:
         # If both Git commit and branch info are available, then use both.
-        version = "{}-{}".format(git_branch, commit_hash)
+        version = "{}-{}".format(commit_hash, git_branch)
 
     return version
 

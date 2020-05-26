@@ -31,6 +31,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
                   media="screen"/>
             <script src="${self.attr.rsc_path}resources/js/jquery.fancybox.js"></script>
             <script src="${self.attr.rsc_path}resources/js/plotcmd.js"></script>
+            <script src="${self.attr.rsc_path}resources/js/tcleancmd.js"></script>
 
             <!--  Add image holder library for missing plots -->
             <script src="${self.attr.rsc_path}resources/js/holder.js"></script>

@@ -314,6 +314,10 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
     def source(self):
         return self.result.outcome['image'].sourcename
 
+    @property
+    def contamination_plot(self):
+        return self.imagename.rstrip('/') + '.contamination.png'
+
 
 class SDCalibrationDisplay(object, metaclass=abc.ABCMeta):
     Inputs = SingleDishDisplayInputs
@@ -877,13 +881,13 @@ class SDSparseMapPlotter(object):
                             fmax = ch_to_freq(chmax, frequency)
                             LOG.debug('plotting line range for %s, %s: [%s, %s]' % (x, y, chmin, chmax))
                             plot_helper.axvspan(fmin, fmax, color='cyan')
-                    elif self.lines_averaged is not None:
-                        for chmin, chmax in self.lines_averaged:
-                            fmin = ch_to_freq(chmin, frequency)
-                            fmax = ch_to_freq(chmax, frequency)
-                            LOG.debug('plotting line range for %s, %s (reuse lines_averaged): [%s, %s]' %
-                                      (x, y, chmin, chmax))
-                            plot_helper.axvspan(fmin, fmax, color='cyan')
+                    # elif self.lines_averaged is not None:
+                    #     for chmin, chmax in self.lines_averaged:
+                    #         fmin = ch_to_freq(chmin, frequency)
+                    #         fmax = ch_to_freq(chmax, frequency)
+                    #         LOG.debug('plotting line range for %s, %s (reuse lines_averaged): [%s, %s]' %
+                    #                   (x, y, chmin, chmax))
+                    #        plot_helper.axvspan(fmin, fmax, color='cyan')
                     if is_valid_fit_result:
                         plot_helper.plot(frequency, fit_result[x][y], color='r', linewidth=0.4)
                     elif self.reference_level is not None and ymin < self.reference_level and self.reference_level < ymax:

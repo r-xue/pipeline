@@ -224,8 +224,9 @@ class Solint(basetask.StandardTaskTemplate):
                 short_solint = float(limit_short_solint)
                 new_gain_solint1 = str(short_solint) + 's'
                 combtime = 'scan'
-                # PIPE-460.  Use solint='int' when the minimum solution interval corresponds to one integration
-        if short_solint == m.get_vla_max_integration_time():
+        # PIPE-460.  Use solint='int' when the minimum solution interval corresponds to one integration
+        # PIPE-696.  Need to compare short solint with int time and limit the precision.
+        if short_solint == float("{:.6f}".format(m.get_vla_max_integration_time())):
             new_gain_solint1 = 'int'
             LOG.info('The short solution interval used is: {!s} ({!s}).'.format(new_gain_solint1,str(short_solint)+'s'))
 

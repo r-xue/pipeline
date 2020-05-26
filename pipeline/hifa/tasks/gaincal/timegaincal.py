@@ -43,6 +43,10 @@ class TimeGaincalInputs(gtypegaincal.GTypeGaincalInputs):
         self.targetsolint = targetsolint
         self.targetminsnr = targetminsnr
 
+    # Override default base class intents for ALMA.
+    @vdp.VisDependentProperty
+    def intent(self):
+        return 'PHASE,AMPLITUDE,BANDPASS,POLARIZATION,POLANGLE,POLLEAKAGE'
 
 @task_registry.set_equivalent_casa_task('hifa_timegaincal')
 @task_registry.set_casa_commands_comment('Time dependent gain calibrations are computed.')
@@ -91,8 +95,8 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
 
         # Now compute the calibrator phase solution. This solution will temporarily to the PHASE calibrator 
         # within this task so we can calculate the residual phase offsets.
-        # The solution is also eventually be applied to the AMPLITUDE and BANDPASS calibrators, 
-        LOG.info('Computing phase gain table for bandpass and flux calibrator.')
+        # The solution is also eventually be applied to the AMPLITUDE, BANDPASS and POL* calibrators, 
+        LOG.info('Computing phase gain table for bandpass, flux and polarization calibrator.')
         (cal_phase_result, temp_phase_result) = \
             self._do_spectralspec_calibrator_phasecal(solint=phase_calsolint, gaintype=phase_gaintype,
                                                       combine=phase_combine)
@@ -108,10 +112,10 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         phase_residuals_result = self._do_offsets_phasecal(solint='inf', gaintype=phase_gaintype, combine='')
         result.phaseoffsetresult = phase_residuals_result
 
-        # Direct the initial calibrator phase solution for application to the AMPLTIUDE and BANDPASS calibrators
+        # Direct the initial calibrator phase solution for application to the AMPLTIUDE, BANDPASS and POL* calibrators
         for cpres in cal_phase_result:
             calphaseresult_calapp = cpres.final[0]
-            calphase_calapp = callibrary.copy_calapplication(calphaseresult_calapp, intent='AMPLITUDE,BANDPASS')
+            calphase_calapp = callibrary.copy_calapplication(calphaseresult_calapp, intent='AMPLITUDE,BANDPASS,POLARIZATION,POLANGLE,POLLEAKAGE')
             result.final.append(calphase_calapp)
             result.pool.append(calphase_calapp)
 
@@ -238,7 +242,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         calsolint_intents = []
         snrsol_intents = []
         for intent in all_intents:
-            if intent in ['AMPLITUDE', 'BANDPASS']:
+            if intent in ['AMPLITUDE', 'BANDPASS', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE']:
                 calsolint_intents.append(intent)
             else:
                 snrsol_intents.append(intent)
@@ -250,7 +254,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
             if extend_solint:
                 append_caltable = None
                 # Low SNR SpectralSpec. Use separate solint by intent.
-                # For BANDPASS and AMPLUTUDE always use inputs.calsolint.
+                # For BANDPASS, AMPLITUDE and POL* always use inputs.calsolint.
                 if len(calsolint_intents) > 0:
                     intent = str(',').join(calsolint_intents)
                     interval = self.inputs.calsolint
@@ -411,7 +415,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         #    case where the interpolated solution between two complex gain
         #    calibrators needs to be used.
         result_calapp = result.final[0]
-        cal_calapp = callibrary.copy_calapplication(result_calapp, intent='AMPLITUDE,BANDPASS,PHASE',
+        cal_calapp = callibrary.copy_calapplication(result_calapp, intent='AMPLITUDE,BANDPASS,PHASE,POLARIZATION,POLANGLE,POLLEAKAGE',
                                                     gainfield='nearest', interp='nearest,linear')
         target_calapp = callibrary.copy_calapplication(result_calapp, intent='TARGET,CHECK', gainfield='')
 

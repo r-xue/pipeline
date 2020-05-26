@@ -1,5 +1,6 @@
 <%!
 import os
+import pipeline.infrastructure.renderer.rendererutils as rendererutils
 
 agent_description = {
 	'before'   : 'Before Task',
@@ -82,21 +83,13 @@ def agent_data(agent, ms):
 		relpath = os.path.join('stage%s' % result.stage_number, flagfile)
 		abspath = os.path.join(pcontext.report_dir, relpath)
 		if os.path.exists(abspath):
-			num_lines = sum(1 for line in open(abspath) if not line.startswith('#'))
+			num_lines = rendererutils.num_lines(abspath)
 			return ('<td><a class="replace-pre" href="%s">%s</a></td>'
 					'<td>%s</td>' % (relpath, flagfile, num_lines))
 		else:
 			return '<td>%s</td><td>N/A</td>' % flagfile
 	else:
 		return '<td><span class="glyphicon glyphicon-ok"></span></td>'
-
-def num_lines(relpath):
-	abspath = os.path.join(pcontext.report_dir, relpath)
-	if os.path.exists(abspath):
-		return sum(1 for line in open(abspath) if not line.startswith('#'))
-	else:
-		return 'N/A'
-		
 %>
 
 <script>
@@ -127,7 +120,7 @@ def num_lines(relpath):
 		<tr>
 			<td>${msname}</td>
 			<td><a class="replace-pre" href="${relpath}">${os.path.basename(relpath)}</a></td>
-			<td>${num_lines(relpath)}</td>
+			<td>${rendererutils.num_lines(os.path.join(pcontext.report_dir, relpath))}</td>
             <td><a class="replace" data-vis="${msname}" href="${plots_path}">Display</a></td>
         </tr>
 	% endfor

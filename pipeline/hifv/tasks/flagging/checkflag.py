@@ -17,12 +17,14 @@ LOG = infrastructure.get_logger(__name__)
 
 class CheckflagInputs(vdp.StandardInputs):
     checkflagmode = vdp.VisDependentProperty(default='')
+    overwrite_modelcol = vdp.VisDependentProperty(default=False)
 
-    def __init__(self, context, vis=None, checkflagmode=None):
+    def __init__(self, context, vis=None, checkflagmode=None, overwrite_modelcol=None):
         super(CheckflagInputs, self).__init__()
         self.context = context
         self.vis = vis
         self.checkflagmode = checkflagmode
+        self.overwrite_modelcol = overwrite_modelcol
 
 
 class CheckflagResults(basetask.Results):
@@ -611,10 +613,10 @@ class Checkflag(basetask.StandardTaskTemplate):
     def _check_for_modelcolumn(self):
         ms = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         with casatools.TableReader(ms.name) as table:
-            if 'MODEL_DATA' not in table.colnames():
-                LOG.info('Model data missing from {}.  Adding it now.'.format(ms.basename))
+            if 'MODEL_DATA' not in table.colnames() or self.inputs.overwrite_modelcol:
+                LOG.info('Writing model data to {}'.format(ms.basename))
                 imaging_parameters = set_add_model_column_parameters(self.inputs.context)
                 job = casa_tasks.tclean(**imaging_parameters)
                 tclean_result = self._executor.execute(job)
             else:
-                LOG.info('MODEL_DATA column found in {}'.format(ms.basename))
+                LOG.info('Using existing MODEL_DATA column found in {}'.format(ms.basename))

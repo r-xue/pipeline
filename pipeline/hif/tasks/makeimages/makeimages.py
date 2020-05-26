@@ -154,7 +154,7 @@ class MakeImages(basetask.StandardTaskTemplate):
             _get_description_map(target['intent']).get(target['specmode'], 'Calculate clean products')
             for target in target_list
         }
-        result.metadata['long description'] = ' / '.join(description)
+        result.metadata['long description'] = ' / '.join(sorted(description))
 
         sidebar = {
             # map specmode to description for every clean target
@@ -371,7 +371,7 @@ class CleanTaskFactory(object):
 
 
 def _get_description_map(intent):
-    if intent in ('PHASE', 'BANDPASS'):
+    if intent in ('PHASE', 'BANDPASS', 'AMPLITUDE', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'):
         return {
             'mfs': 'Make calibrator images'
         }
@@ -391,7 +391,7 @@ def _get_description_map(intent):
         return {}
 
 def _get_sidebar_map(intent):
-    if intent in ('PHASE', 'BANDPASS', 'AMPLITUDE'):
+    if intent in ('PHASE', 'BANDPASS', 'AMPLITUDE', 'AMPLITUDE', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'):
         return {
             'mfs': 'cals'
         }

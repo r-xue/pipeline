@@ -9,6 +9,7 @@ import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+import pipeline.infrastructure.imageheader as imageheader
 from pipeline import environment
 from pipeline.infrastructure import casa_tasks
 from .resultobjects import TcleanResult
@@ -526,6 +527,9 @@ class CleanBase(basetask.StandardTaskTemplate):
             job = casa_tasks.tclean(**tclean_job_parameters)
             tclean_result = self._executor.execute(job)
 
+        # Record last tclean command for weblog
+        result.set_tclean_command(str(job))
+
         pbcor_image_name = '%s.%s.iter%s.image.pbcor' % (inputs.imagename, inputs.stokes, iter)
 
         if inputs.niter > 0:
@@ -588,70 +592,70 @@ class CleanBase(basetask.StandardTaskTemplate):
 
         if iter > 0 or (inputs.specmode == 'cube' and inputs.spwsel_all_cont):
             # Store the model.
-            set_miscinfo(name=model_name, spw=inputs.spw, field=inputs.field,
-                         type='model', iter=iter, multiterm=result.multiterm,
-                         intent=inputs.intent, specmode=inputs.specmode,
-                         is_per_eb=inputs.is_per_eb,
-                         context=context)
+            imageheader.set_miscinfo(name=model_name, spw=inputs.spw, field=inputs.field,
+                                     type='model', iter=iter, multiterm=result.multiterm,
+                                     intent=inputs.intent, specmode=inputs.specmode,
+                                     is_per_eb=inputs.is_per_eb,
+                                     context=context)
             result.set_model(iter=iter, image=model_name)
 
             # Always set info on the uncorrected image for plotting
-            set_miscinfo(name=image_name, spw=inputs.spw, field=inputs.field,
-                         type='image', iter=iter, multiterm=result.multiterm,
-                         intent=inputs.intent, specmode=inputs.specmode, robust=inputs.robust,
-                         is_per_eb=inputs.is_per_eb,
-                         context=context)
+            imageheader.set_miscinfo(name=image_name, spw=inputs.spw, field=inputs.field,
+                                     type='image', iter=iter, multiterm=result.multiterm,
+                                     intent=inputs.intent, specmode=inputs.specmode, robust=inputs.robust,
+                                     is_per_eb=inputs.is_per_eb,
+                                     context=context)
 
             # Store the PB corrected image.
             if os.path.exists('%s' % (pbcor_image_name.replace('.image.pbcor', '.image.tt0.pbcor' if result.multiterm else '.image.pbcor'))):
-                set_miscinfo(name=pbcor_image_name, spw=inputs.spw, field=inputs.field,
-                             type='pbcorimage', iter=iter, multiterm=result.multiterm,
-                             intent=inputs.intent, specmode=inputs.specmode, robust=inputs.robust,
-                             is_per_eb=inputs.is_per_eb,
-                             context=context)
+                imageheader.set_miscinfo(name=pbcor_image_name, spw=inputs.spw, field=inputs.field,
+                                         type='pbcorimage', iter=iter, multiterm=result.multiterm,
+                                         intent=inputs.intent, specmode=inputs.specmode, robust=inputs.robust,
+                                         is_per_eb=inputs.is_per_eb,
+                                         context=context)
                 result.set_image(iter=iter, image=pbcor_image_name)
             else:
                 result.set_image(iter=iter, image=image_name)
 
         # Store the residual.
-        set_miscinfo(name=residual_name, spw=inputs.spw, field=inputs.field,
-                     type='residual', iter=iter, multiterm=result.multiterm,
-                     intent=inputs.intent, specmode=inputs.specmode,
-                     is_per_eb=inputs.is_per_eb,
-                     context=context)
+        imageheader.set_miscinfo(name=residual_name, spw=inputs.spw, field=inputs.field,
+                                 type='residual', iter=iter, multiterm=result.multiterm,
+                                 intent=inputs.intent, specmode=inputs.specmode,
+                                 is_per_eb=inputs.is_per_eb,
+                                 context=context)
         result.set_residual(iter=iter, image=residual_name)
 
         # Store the PSF.
-        set_miscinfo(name=psf_name, spw=inputs.spw, field=inputs.field,
-                     type='psf', iter=iter, multiterm=result.multiterm,
-                     intent=inputs.intent, specmode=inputs.specmode,
-                     is_per_eb=inputs.is_per_eb,
-                     context=context)
+        imageheader.set_miscinfo(name=psf_name, spw=inputs.spw, field=inputs.field,
+                                 type='psf', iter=iter, multiterm=result.multiterm,
+                                 intent=inputs.intent, specmode=inputs.specmode,
+                                 is_per_eb=inputs.is_per_eb,
+                                 context=context)
         result.set_psf(image=psf_name)
 
         # Store the flux image.
-        set_miscinfo(name=flux_name, spw=inputs.spw, field=inputs.field,
-                     type='flux', iter=iter, multiterm=result.multiterm,
-                     intent=inputs.intent, specmode=inputs.specmode,
-                     is_per_eb=inputs.is_per_eb,
-                     context=context)
+        imageheader.set_miscinfo(name=flux_name, spw=inputs.spw, field=inputs.field,
+                                 type='flux', iter=iter, multiterm=result.multiterm,
+                                 intent=inputs.intent, specmode=inputs.specmode,
+                                 is_per_eb=inputs.is_per_eb,
+                                 context=context)
         result.set_flux(image=flux_name)
 
         # Make sure mask has path name
         if os.path.exists(inputs.mask):
-            set_miscinfo(name=inputs.mask, spw=inputs.spw, field=inputs.field,
-                         type='cleanmask', iter=iter,
-                         intent=inputs.intent, specmode=inputs.specmode,
-                         is_per_eb=inputs.is_per_eb,
-                         context=context)
+            imageheader.set_miscinfo(name=inputs.mask, spw=inputs.spw, field=inputs.field,
+                                     type='cleanmask', iter=iter,
+                                     intent=inputs.intent, specmode=inputs.specmode,
+                                     is_per_eb=inputs.is_per_eb,
+                                     context=context)
             result.set_cleanmask(iter=iter, image=inputs.mask)
         elif os.path.exists(mask_name):
             # Use mask made by tclean
-            set_miscinfo(name=mask_name, spw=inputs.spw, field=inputs.field,
-                         type='cleanmask', iter=iter,
-                         intent=inputs.intent, specmode=inputs.specmode,
-                         is_per_eb=inputs.is_per_eb,
-                         context=context)
+            imageheader.set_miscinfo(name=mask_name, spw=inputs.spw, field=inputs.field,
+                                     type='cleanmask', iter=iter,
+                                     intent=inputs.intent, specmode=inputs.specmode,
+                                     is_per_eb=inputs.is_per_eb,
+                                     context=context)
             result.set_cleanmask(iter=iter, image=mask_name)
 
         # Keep threshold and sensitivity for QA and weblog
@@ -670,94 +674,6 @@ def rename_image(old_name, new_name, extensions=['']):
         for extension in extensions:
             with casatools.ImageReader('%s%s' % (old_name, extension)) as image:
                 image.rename(name=new_name, overwrite=True)
-
-
-def set_miscinfo(name, spw=None, field=None, type=None, iter=None, multiterm=None, intent=None, specmode=None,
-                 robust=None, is_per_eb=None, context=None):
-    """
-    Define miscellaneous image information
-    """
-    if name != '':
-        # Image name
-        if multiterm:
-            if name.find('.image.pbcor') != -1 and type == 'pbcorimage':
-                imagename = name.replace('.image.pbcor', '.image.tt0.pbcor')
-            else:
-                imagename = '%s.tt0' % name
-        else:
-            imagename = name
-
-        with casatools.ImageReader(imagename) as image:
-            info = image.miscinfo()
-            if imagename is not None:
-                filename_components = os.path.basename(imagename).split('.')
-                info['nfilnam'] = len(filename_components)
-                for i in range(len(filename_components)):
-                    info['filnam%02d' % (i+1)] = filename_components[i]
-            if spw is not None:
-                if context.observing_run is not None:
-                    spw_names = [
-                        context.observing_run.virtual_science_spw_shortnames.get(
-                            context.observing_run.virtual_science_spw_ids.get(int(spw_id), 'N/A'), 'N/A')
-                        for spw_id in spw.split(',')
-                    ]
-                else:
-                    spw_names = ['N/A']
-                info['spw'] = spw
-                info['nspwnam'] = len(spw_names)
-                for i in range(len(spw_names)):
-                    info['spwnam%02d' % (i+1)] = spw_names[i]
-            if field is not None:
-                # TODO: Find common key calculation. Long VLASS lists cause trouble downstream.
-                #       Truncated list may cause duplicates.
-                #       Temporarily (?) remove any '"' characters
-                tmpfield = field.split(',')[0].replace('"', '')
-                info['field'] = tmpfield
-
-            if context is not None:
-                # TODO: Use more generic approach like in the imaging heuristics
-                if context.project_summary.telescope == 'ALMA':
-                    info['npol'] = len(context.observing_run.measurement_sets[0].get_alma_corrstring().split(','))
-                elif context.project_summary.telescope in ('VLA', 'EVLA'):
-                    info['npol'] = len(context.observing_run.measurement_sets[0].get_vla_corrstring().split(','))
-                else:
-                    info['npol'] = -999
-
-            if type is not None:
-                info['type'] = type
-
-            if iter is not None:
-                info['iter'] = iter
-
-            if intent is not None:
-                info['intent'] = intent
-
-            if specmode is not None:
-                info['specmode'] = specmode
-
-            if robust is not None:
-                info['robust'] = robust
-
-            if is_per_eb is not None:
-                info['per_eb'] = is_per_eb
-
-            # Pipeline / CASA information
-            info['pipever'] = pipeline.revision
-            info['casaver'] = environment.casa_version_string
-
-            # Project information
-            if context is not None:
-                info['propcode'] = context.project_summary.proposal_code
-                info['group'] = 'N/A'
-                info['member'] = context.project_structure.ousstatus_entity_id
-                info['sgoal'] = 'N/A'
-
-            # Some keywords should be present but are filled only
-            # for other modes (e.g. single dish).
-            info['offra'] = -999.0
-            info['offdec'] = -999.0
-
-            image.setmiscinfo(info)
 
 
 class CleanBaseError(object):

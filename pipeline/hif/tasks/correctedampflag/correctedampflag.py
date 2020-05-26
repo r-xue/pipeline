@@ -629,15 +629,24 @@ class Correctedampflag(basetask.StandardTaskTemplate):
         for intent in inputs.intent.split(','):
 
             # For current intent, identify which fields from inputs are valid.
-            valid_fields = [field.name
-                            for field in ms.get_fields(intent=intent)
-                            if field.name in list(utils.safe_split(inputs.field))]
+            if intent == 'TARGET':
+                # Use field IDs to loop over individual mosaic pointings for
+                # science targets (PIPE-337).
+                valid_fields = [str(field.id)
+                                for field in ms.get_fields(intent=intent)
+                                if field.name in list(utils.safe_split(inputs.field))]
+            else:
+                # Use field names for calibrators.
+                valid_fields = [field.name
+                                for field in ms.get_fields(intent=intent)
+                                if field.name in list(utils.safe_split(inputs.field))]
 
             # If no valid fields were found, raise warning, and continue to
-            # next intent. PIPE-281: CHECK intent is optional and does not
-            # require a warning.
+            # next intent.
+            # PIPE-281: CHECK intent is optional and does not require a warning.
+            # PIPE-607: POLANGLE and POLLEAKAGE are also optional.
             if not valid_fields:
-                if intent != "CHECK":
+                if not intent in ['CHECK', 'POLANGLE', 'POLLEAKAGE']:
                     LOG.warning("Invalid data selection for given intent(s) and field(s): fields {} do not include"
                                 " intent \'{}\'.".format(utils.commafy(utils.safe_split(inputs.field)), intent))
                 continue
@@ -815,21 +824,30 @@ class Correctedampflag(basetask.StandardTaskTemplate):
         corr_type = commonhelpermethods.get_corr_products(ms, spwid)
         ncorrs = len(corr_type)
 
-        # For multi-scan observations, analyze the sum of the metric for XX and YY (CAS-12011).
+        # CAS-12011: For multi-scan observations, analyze the mean of the
+        # metric for XX and YY, and for XY and YX (if ncorrs = 4). Combine the
+        # flagging state of the individual correlations by only marking the
+        # mean metric as flagged where both individual contributing
+        # correlations are marked as flagged (by floor-dividing by 2).
         if nscans > 1:
+            cmetric_mask = np.ma.array(cmetric_all, mask=flag_all)
             if ncorrs == 2:
-                cmetric_all = np.sum(cmetric_all, axis=0, keepdims=True)
-                flag_all = np.sum(flag_all, axis=0, keepdims=True)
+                cmetric_all = np.ma.mean(cmetric_mask, axis=0, keepdims=True)
+                flag_all = np.sum(flag_all, axis=0, keepdims=True) // 2
                 ncorrs = 1
             elif ncorrs == 4 and set(corr_type) == {'XX', 'XY', 'YX', 'YY'}:
-                # Create sum of XX and YY polarization.
+                # Create mean of XX and YY polarization, and combine flags.
                 col_sel = [corr_type.index('XX'), corr_type.index('YY')]
-                cmetric_copol = np.sum(cmetric_all[col_sel, :], axis=0, keepdims=True)
-                # Create sum of XY and YX polarization.
+                cmetric_copol = np.ma.mean(cmetric_mask[col_sel, :], axis=0, keepdims=True)
+                flag_copol = np.sum(flag_all[col_sel, :], axis=0, keepdims=True) // 2
+                # Create mean of XY and YX polarization, and combine flags.
                 col_sel = [corr_type.index('XY'), corr_type.index('YX')]
-                cmetric_crosspol = np.sum(cmetric_all[col_sel, :], axis=0, keepdims=True)
-                # Create new scalar difference array with the summed data.
+                cmetric_crosspol = np.ma.mean(cmetric_mask[col_sel, :], axis=0, keepdims=True)
+                flag_crosspol = np.sum(flag_all[col_sel, :], axis=0, keepdims=True) // 2
+                # Create new scalar difference array with the mean data, and
+                # corresponding flagging array.
                 cmetric_all = np.concatenate((cmetric_copol, cmetric_crosspol), axis=0)
+                flag_all = np.concatenate((flag_copol, flag_crosspol), axis=0)
                 ncorrs = 2
 
         # Evaluate flagging heuristics separately for each polarisation.
@@ -960,31 +978,34 @@ class Correctedampflag(basetask.StandardTaskTemplate):
                 # outlier timestamps used in flagging heuristic.
                 n_time_with_veryhighsig_max = n_time_with_highsig_max
 
-                # If all outliers were concentrated within a small number of
-                # timestamps set by a threshold, then evaluate the antenna
-                # based heuristics for those timestamps.
-                if 0 < len(time_sel_highsig_uniq) <= n_time_with_highsig_max:
-                    new_antbased_flags = self._evaluate_antbased_heuristics(
-                        ms, spwid, intent, icorr, field,
-                        ants_in_outlier_baseline_scans_thresh,
-                        ants_in_outlier_baseline_scans_partial_thresh,
-                        max_frac_outlier_scans,
-                        antenna_id_to_name, ant1_sel, ant2_sel, nants,
-                        id_highsig, time_sel_highsig, time_sel_highsig_uniq)
-                    newflags.extend(new_antbased_flags)
+                # The antenna based heuristics shall be done for calibrators
+                # only (PIPE-337).
+                if intent != 'TARGET':
+                    # If all outliers were concentrated within a small number of
+                    # timestamps set by a threshold, then evaluate the antenna
+                    # based heuristics for those timestamps.
+                    if 0 < len(time_sel_highsig_uniq) <= n_time_with_highsig_max:
+                        new_antbased_flags = self._evaluate_antbased_heuristics(
+                            ms, spwid, intent, icorr, field,
+                            ants_in_outlier_baseline_scans_thresh,
+                            ants_in_outlier_baseline_scans_partial_thresh,
+                            max_frac_outlier_scans,
+                            antenna_id_to_name, ant1_sel, ant2_sel, nants,
+                            id_highsig, time_sel_highsig, time_sel_highsig_uniq)
+                        newflags.extend(new_antbased_flags)
 
-                # If all very high outliers were concentrated within a small
-                # number of timestamps set by a threshold, then evaluate the
-                # antenna based heuristics for those timestamps.
-                elif 0 < len(time_sel_veryhighsig_uniq) <= n_time_with_veryhighsig_max:
-                    new_antbased_flags = self._evaluate_antbased_heuristics(
-                        ms, spwid, intent, icorr, field,
-                        ants_in_outlier_baseline_scans_thresh,
-                        ants_in_outlier_baseline_scans_partial_thresh,
-                        max_frac_outlier_scans,
-                        antenna_id_to_name, ant1_sel, ant2_sel, nants,
-                        id_veryhighsig, time_sel_veryhighsig, time_sel_veryhighsig_uniq)
-                    newflags.extend(new_antbased_flags)
+                    # If all very high outliers were concentrated within a small
+                    # number of timestamps set by a threshold, then evaluate the
+                    # antenna based heuristics for those timestamps.
+                    elif 0 < len(time_sel_veryhighsig_uniq) <= n_time_with_veryhighsig_max:
+                        new_antbased_flags = self._evaluate_antbased_heuristics(
+                            ms, spwid, intent, icorr, field,
+                            ants_in_outlier_baseline_scans_thresh,
+                            ants_in_outlier_baseline_scans_partial_thresh,
+                            max_frac_outlier_scans,
+                            antenna_id_to_name, ant1_sel, ant2_sel, nants,
+                            id_veryhighsig, time_sel_veryhighsig, time_sel_veryhighsig_uniq)
+                        newflags.extend(new_antbased_flags)
 
                 # Flag any ultra high outliers for corresponding baseline/timestamp.
                 if len(id_ultrahighsig) > 0:
@@ -1012,124 +1033,125 @@ class Correctedampflag(basetask.StandardTaskTemplate):
             #  the maximum threshold set by the relaxed scale factor.
             #  Each of these baselines are flagged for all timestamps.
             #
+            # This heuristic shall be done for calibrators only (PIPE-337).
+            if intent != 'TARGET':
+                # If requested, identify both positive and negative
+                # outliers, otherwise just identify positive outliers; also
+                # select for non-flagged and non-NaN data.
+                if inputs.antblnegsig > 0:
+                    id_flagsig = np.where(
+                        np.all((np.logical_not(flag),
+                                np.isfinite(cmetric),
+                                np.logical_or(
+                                    cmetric < (med - mad * inputs.antblnegsig),
+                                    cmetric > (med + mad * inputs.antblpossig))), axis=0))[0]
+                else:
+                    id_flagsig = np.where(
+                        np.all((np.logical_not(flag),
+                                np.isfinite(cmetric),
+                                cmetric > (med + mad * inputs.antblpossig)), axis=0))[0]
 
-            # If requested, identify both positive and negative
-            # outliers, otherwise just identify positive outliers; also
-            # select for non-flagged and non-NaN data.
-            if inputs.antblnegsig > 0:
-                id_flagsig = np.where(
-                    np.all((np.logical_not(flag),
-                            np.isfinite(cmetric),
-                            np.logical_or(
-                                cmetric < (med - mad * inputs.antblnegsig),
-                                cmetric > (med + mad * inputs.antblpossig))), axis=0))[0]
-            else:
-                id_flagsig = np.where(
-                    np.all((np.logical_not(flag),
-                            np.isfinite(cmetric),
-                            cmetric > (med + mad * inputs.antblpossig)), axis=0))[0]
+                # Proceed if outliers were found...
+                if len(id_flagsig) > 0:
+                    # Identify baselines involved in each baseline/timestamp
+                    # outlier; this list may contain multiples of the same
+                    # baseline when it was an outlier in more than one
+                    # timestamp.
+                    outlier_ant1 = ant1[id_flagsig]
+                    outlier_ant2 = ant2[id_flagsig]
+                    outlier_bl = list(zip(outlier_ant1, outlier_ant2))
 
-            # Proceed if outliers were found...
-            if len(id_flagsig) > 0:
-                # Identify baselines involved in each baseline/timestamp
-                # outlier; this list may contain multiples of the same
-                # baseline when it was an outlier in more than one
-                # timestamp.
-                outlier_ant1 = ant1[id_flagsig]
-                outlier_ant2 = ant2[id_flagsig]
-                outlier_bl = list(zip(outlier_ant1, outlier_ant2))
+                    # Compute for each baseline how many outlier timestamps
+                    # it is a part of. This creates a dictionary with
+                    # baselines as keys, and number of outlier timestamps
+                    # as values.
+                    outlier_bl_counts = collections.Counter(outlier_bl)
 
-                # Compute for each baseline how many outlier timestamps
-                # it is a part of. This creates a dictionary with
-                # baselines as keys, and number of outlier timestamps
-                # as values.
-                outlier_bl_counts = collections.Counter(outlier_bl)
+                    # Compute for each baseline how many timestamps
+                    # it is a part of. This creates a dictionary with
+                    # baselines as keys, and number of timestamps
+                    # as values.
+                    baselines = list(zip(ant1, ant2))
+                    bl_counts = collections.Counter(baselines)
 
-                # Compute for each baseline how many timestamps
-                # it is a part of. This creates a dictionary with
-                # baselines as keys, and number of timestamps
-                # as values.
-                baselines = list(zip(ant1, ant2))
-                bl_counts = collections.Counter(baselines)
+                    # Compute final threshold for maximum fraction of "outlier
+                    # timestamps" over "total timestamps" that a baseline can
+                    # be a part of. Scale up the threshold for multi-scan
+                    # observations.
+                    tmint_scaled = inputs.tmint * thresh_scale_factor
+                    if nscans > 1:
+                        tmint_scaled = tmint_scaled * 2**0.5
 
-                # Compute final threshold for maximum fraction of "outlier
-                # timestamps" over "total timestamps" that a baseline can
-                # be a part of. Scale up the threshold for multi-scan
-                # observations.
-                tmint_scaled = inputs.tmint * thresh_scale_factor
-                if nscans > 1:
-                    tmint_scaled = tmint_scaled * 2**0.5
+                    # Identify "bad baselines" as those baselines whose number
+                    # of timestamps with outliers exceeds the threshold.
+                    bad_bls = [bl for bl, count in outlier_bl_counts.items()
+                               if count > np.max([1, bl_counts[bl] * tmint_scaled])]
 
-                # Identify "bad baselines" as those baselines whose number
-                # of timestamps with outliers exceeds the threshold.
-                bad_bls = [bl for bl, count in outlier_bl_counts.items()
-                           if count > np.max([1, bl_counts[bl] * tmint_scaled])]
+                    # Compute for each antenna how many "bad baselines" it is
+                    # a part of.
+                    ant_in_bad_bl_count = np.bincount(sum(bad_bls, ()),
+                                                      minlength=nants)
 
-                # Compute for each antenna how many "bad baselines" it is
-                # a part of.
-                ant_in_bad_bl_count = np.bincount(sum(bad_bls, ()),
-                                                  minlength=nants)
+                    # Compute final threshold for maximum number of "bad
+                    # baselines" that an antenna may be a part of:
+                    # this is based on the scaled fractional threshold
+                    # times the number of baselines that the antenna is
+                    # part of, with a minimum number threshold set by
+                    # "tmbl_minbadnr".
+                    tmbl_nr_thresh = max(
+                        tmbl_minbadnr,
+                        inputs.tmbl * thresh_scale_factor * (nants - 1))
 
-                # Compute final threshold for maximum number of "bad
-                # baselines" that an antenna may be a part of:
-                # this is based on the scaled fractional threshold
-                # times the number of baselines that the antenna is
-                # part of, with a minimum number threshold set by
-                # "tmbl_minbadnr".
-                tmbl_nr_thresh = max(
-                    tmbl_minbadnr,
-                    inputs.tmbl * thresh_scale_factor * (nants - 1))
+                    # Identify "bad antennas" as those antennas involved in a number of
+                    # "bad baselines" that exceeds the threshold.
+                    bad_ants = [ant for ant, count in enumerate(ant_in_bad_bl_count)
+                                if count > tmbl_nr_thresh]
 
-                # Identify "bad antennas" as those antennas involved in a number of
-                # "bad baselines" that exceeds the threshold.
-                bad_ants = [ant for ant, count in enumerate(ant_in_bad_bl_count)
-                            if count > tmbl_nr_thresh]
-
-                # Create flagging command for each identified bad antenna.
-                for bad_ant in bad_ants:
-                    newflags.append(
-                        FlagCmd(
-                            filename=ms.name,
-                            spw=spwid,
-                            antenna=bad_ant,
-                            intent=utils.to_CASA_intent(ms, intent),
-                            pol=icorr,
-                            field=field,
-                            reason='bad antenna',
-                            antenna_id_to_name=antenna_id_to_name))
-
-                # Compute final outlier timestamps per baseline threshold,
-                # forcibly always using the relaxed threshold scale factor,
-                # and setting the minimum fraction to 1, such that a
-                # baseline with 100% outlier timestamps will get flagged
-                # (even if dynamic threshold exceeded beyond 1.0).
-                tmint_relaxed = np.min(
-                    [1.0,
-                     inputs.tmint * inputs.relaxed_factor])
-
-                # Compute fraction of outlier timestamps for each bad baseline.
-                bad_bls_timestamp_fraction = {
-                    bl: float(outlier_bl_counts[bl]) / bl_counts[bl]
-                    for bl in bad_bls}
-
-                # For each bad baseline, check if it was already covered by
-                # one of the bad antennas, and otherwise flag it explicitly
-                # if the fraction of outlier timestamps for this baseline
-                # equals-or-exceeds the threshold.
-                for bl in bad_bls:
-                    if (bl[0] not in bad_ants
-                            and bl[1] not in bad_ants
-                            and bad_bls_timestamp_fraction[bl] >= tmint_relaxed):
+                    # Create flagging command for each identified bad antenna.
+                    for bad_ant in bad_ants:
                         newflags.append(
                             FlagCmd(
                                 filename=ms.name,
                                 spw=spwid,
-                                antenna="%s&%s" % bl,
+                                antenna=bad_ant,
                                 intent=utils.to_CASA_intent(ms, intent),
                                 pol=icorr,
                                 field=field,
-                                reason='bad baseline',
+                                reason='bad antenna',
                                 antenna_id_to_name=antenna_id_to_name))
+
+                    # Compute final outlier timestamps per baseline threshold,
+                    # forcibly always using the relaxed threshold scale factor,
+                    # and setting the minimum fraction to 1, such that a
+                    # baseline with 100% outlier timestamps will get flagged
+                    # (even if dynamic threshold exceeded beyond 1.0).
+                    tmint_relaxed = np.min(
+                        [1.0,
+                         inputs.tmint * inputs.relaxed_factor])
+
+                    # Compute fraction of outlier timestamps for each bad baseline.
+                    bad_bls_timestamp_fraction = {
+                        bl: float(outlier_bl_counts[bl]) / bl_counts[bl]
+                        for bl in bad_bls}
+
+                    # For each bad baseline, check if it was already covered by
+                    # one of the bad antennas, and otherwise flag it explicitly
+                    # if the fraction of outlier timestamps for this baseline
+                    # equals-or-exceeds the threshold.
+                    for bl in bad_bls:
+                        if (bl[0] not in bad_ants
+                                and bl[1] not in bad_ants
+                                and bad_bls_timestamp_fraction[bl] >= tmint_relaxed):
+                            newflags.append(
+                                FlagCmd(
+                                    filename=ms.name,
+                                    spw=spwid,
+                                    antenna="%s&%s" % bl,
+                                    intent=utils.to_CASA_intent(ms, intent),
+                                    pol=icorr,
+                                    field=field,
+                                    reason='bad baseline',
+                                    antenna_id_to_name=antenna_id_to_name))
 
         return newflags
 

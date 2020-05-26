@@ -3,6 +3,7 @@ rsc_path = ""
 import html
 import os
 import pipeline.infrastructure.utils as utils
+import pipeline.infrastructure.renderer.rendererutils as rendererutils
 
 # method to output flagging percentages neatly
 def percent_flagged(flagsummary):
@@ -22,16 +23,6 @@ _types = {
 def plot_type(plot):
     return _types[plot.parameters['type']]
 
-%>
-
-<%
-# these functions are defined in template scope.
-def num_lines(relpath):
-	abspath = os.path.join(pcontext.report_dir, relpath)
-	if os.path.exists(abspath):
-		return sum(1 for line in open(abspath) if not line.startswith('#'))
-	else:
-		return 'N/A'
 %>
 
 <%inherit file="t2-4m_details-base.mako"/>
@@ -91,7 +82,7 @@ def num_lines(relpath):
             <tr>
                 <td>${msname}</td>
                 <td><a class="replace-pre" href="${relpath}">${os.path.basename(relpath)}</a></td>
-                <td>${num_lines(relpath)}</td>
+                <td>${rendererutils.num_lines(os.path.join(pcontext.report_dir, relpath))}</td>
             </tr>
         % endfor
         </tbody>

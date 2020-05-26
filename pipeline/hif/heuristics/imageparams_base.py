@@ -597,7 +597,11 @@ class ImageParamsHeuristics(object):
 
         return nchan, width
 
-    def has_data(self, field_intent_list, spwspec):
+    def has_data(self, field_intent_list, spwspec, vislist=None):
+
+        if vislist is None:
+            vislist = self.vislist
+
         # reset state of imager
         pl_casatools.imager.done()
 
@@ -608,7 +612,7 @@ class ImageParamsHeuristics(object):
             # select data to be imaged
             for field_intent in field_intent_list:
                 valid_data[field_intent] = False
-                for vis in self.vislist:
+                for vis in vislist:
                     ms = self.observing_run.get_ms(name=vis)
                     scanids = [str(scan.id) for scan in ms.scans if
                                field_intent[1] in scan.intents and
@@ -1412,7 +1416,8 @@ class ImageParamsHeuristics(object):
         Calculate LSRK frequency intersection of a list of MSs for a
         given field and spw. Exclude flagged channels.
         """
-        per_eb_freq_ranges = []
+        per_eb_flagged_freq_ranges = []
+        per_eb_full_freq_ranges = []
         channel_widths = []
 
         for msname in vis:
@@ -1422,7 +1427,8 @@ class ImageParamsHeuristics(object):
             # Loop over mosaic fields and determine the channel flags per field.
             # Skip channels that have only partial pointing coverage.
             field_ids = self.field(intent=intent, field=field, vislist=[msname])[0].split(',')
-            per_field_freq_ranges = []
+            per_field_flagged_freq_ranges = []
+            per_field_full_freq_ranges = []
             for field_id in field_ids:
 
                 # For multi-tuning EBs, a field may be observed in just a subset of
@@ -1446,35 +1452,52 @@ class ImageParamsHeuristics(object):
                 if nfi.shape != (0,):
                     # Use the edges. Another heuristic will skip one extra channel later in the final frequency range.
                     with pl_casatools.SelectvisReader(msname, field=field_id,
-                                                   spw='%s:%d~%d' % (real_spw, nfi[0], nfi[-1])) as imager:
+                                                      spw='%s:%d~%d' % (real_spw, nfi[0], nfi[-1])) as imager:
                         result = imager.advisechansel(getfreqrange=True, freqframe=frame)
 
-                    f0 = result['freqstart']
-                    f1 = result['freqend']
+                    f0_flagged = result['freqstart']
+                    f1_flagged = result['freqend']
 
-                    per_field_freq_ranges.append((f0, f1))
+                    per_field_flagged_freq_ranges.append((f0_flagged, f1_flagged))
                     # The frequency range from advisechansel is from channel edge
                     # to channel edge. To get the width, one needs to divide by the
                     # number of channels in the selection.
-                    channel_widths.append((f1 - f0) / (nfi[-1] - nfi[0] + 1))
+                    channel_widths.append((f1_flagged - f0_flagged) / (nfi[-1] - nfi[0] + 1))
+
+                    # Also get the full ranges to trim the final LSRK range for
+                    # odd tunings near the LO range edges (PIPE-526).
+                    with pl_casatools.SelectvisReader(msname, field=field_id, spw='%s' % (real_spw)) as imager:
+                        result = imager.advisechansel(getfreqrange=True, freqframe=frame)
+
+                    f0_full = result['freqstart']
+                    f1_full = result['freqend']
+
+                    per_field_full_freq_ranges.append((f0_full, f1_full))
 
             # Calculate weighted intersection with threshold of 1.0 to avoid
             # edge channels that have drifted too much in LSRK or REST during
             # the EB.
-            if per_field_freq_ranges != []:
-                intersect_range = utils.intersect_ranges_by_weight(per_field_freq_ranges, max(channel_widths), 1.0)
-                if intersect_range != ():
-                    per_eb_freq_ranges.append(intersect_range)
+            if per_field_flagged_freq_ranges != []:
+                per_eb_flagged_intersect_range = utils.intersect_ranges_by_weight(per_field_flagged_freq_ranges, max(channel_widths), 1.0)
+                per_eb_full_intersect_range = utils.intersect_ranges_by_weight(per_field_full_freq_ranges, max(channel_widths), 1.0)
+                if per_eb_flagged_intersect_range != () and per_eb_full_intersect_range != ():
+                    per_eb_flagged_freq_ranges.append(per_eb_flagged_intersect_range)
+                    per_eb_full_freq_ranges.append(per_eb_full_intersect_range)
 
-        if per_eb_freq_ranges == []:
+        if per_eb_flagged_freq_ranges == []:
             return -1, -1, 0
 
         # Calculate weighted intersection with threshold of 0.6 to avoid
         # partially flagged spws of individual EBs restricting the frequency
-        # axis.
-        intersect_range = utils.intersect_ranges_by_weight(per_eb_freq_ranges, max(channel_widths), 0.6)
-        if intersect_range != ():
-            if0, if1 = intersect_range
+        # axis (PIPE-180).
+        intersect_range_flagged = utils.intersect_ranges_by_weight(per_eb_flagged_freq_ranges, max(channel_widths), 0.6)
+        # Calculate the weighted intersection of all ranges with threshold
+        # of 1.0 to get the maximum possible range with contributions from
+        # all EBs (PIPE-526).
+        intersect_range_full = utils.intersect_ranges_by_weight(per_eb_full_freq_ranges, max(channel_widths), 1.0)
+        if intersect_range_flagged != () and intersect_range_full != ():
+            intersect_range_final = utils.intersect_ranges_by_weight([intersect_range_flagged, intersect_range_full], max(channel_widths), 1.0)
+            if0, if1 = intersect_range_final
             return if0, if1, max(channel_widths)
         else:
             return -1, -1, 0

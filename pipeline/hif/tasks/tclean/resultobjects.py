@@ -63,6 +63,8 @@ class TcleanResult(basetask.Results):
         self._tclean_iterdone = 0
         # This should be automatic, but it does not yet work
         self.pipeline_casa_task = 'Tclean'
+        # The tclean command for the weblog renderer
+        self._tclean_command = 'tclean()'
         # Dummy settings for the weblog renderer
         self.results = [self]
         self.targets = ['']
@@ -156,6 +158,10 @@ class TcleanResult(basetask.Results):
         return self.iterations[iters[-1]].get('mom0_fc')
 
     def set_mom0_fc(self, iter, image):
+        '''
+        Sets name of moment 0 image computed from line-free channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
         self.iterations[iter]['mom0_fc'] = image
 
     @property
@@ -164,7 +170,35 @@ class TcleanResult(basetask.Results):
         return self.iterations[iters[-1]].get('mom8_fc')
 
     def set_mom8_fc(self, iter, image):
+        '''
+        Sets name of moment 8 image computed from line-free channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
         self.iterations[iter]['mom8_fc'] = image
+
+    @property
+    def mom0(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom0')
+
+    def set_mom0(self, iter, image):
+        '''
+        Sets name of moment 0 image computed from all channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
+        self.iterations[iter]['mom0'] = image
+
+    @property
+    def mom8(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom8')
+
+    def set_mom8(self, iter, image):
+        '''
+        Sets name of moment 8 image computed from all channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
+        self.iterations[iter]['mom8'] = image
 
     @property
     def psf(self):
@@ -282,6 +316,13 @@ class TcleanResult(basetask.Results):
 
     def set_image_robust_rms_and_spectra(self, image_robust_rms_and_spectra):
         self._image_robust_rms_and_spectra = image_robust_rms_and_spectra
+
+    @property
+    def tclean_command(self):
+        return self._tclean_command
+
+    def set_tclean_command(self, tclean_command):
+        self._tclean_command = tclean_command
 
     @property
     def tclean_stopcode(self):

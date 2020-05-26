@@ -123,7 +123,6 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
     if restored not in [None, '']:
         # get min and max of the pb-corrected cleaned result
         with casatools.ImageReader(restored.replace('.image', '.image%s' % extension)) as image:
-            # define mask outside the cleaned area
             if pb is not None and os.path.exists(pb+extension):
                 have_mask = True
                 # Default is area pb > 0.3
@@ -136,7 +135,17 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                 have_mask = False
                 statsmask = ''
 
-            image_stats = image.statistics(mask=statsmask)
+            if 'TARGET' in image.miscinfo().get('intent', None):
+                image_stats = image.statistics(mask=statsmask)
+            else:
+                # Restrict region to inner 25% x 25% of the image for calibrators to
+                # avoid picking up sidelobes (PIPE-611)
+                shape = image.shape()
+                rgTool = casatools.regionmanager
+                nPixels = max(shape[0], shape[1])
+                region = rgTool.box([nPixels*0.375-1, nPixels*0.375-1, 0, 0], [nPixels*0.625-1, nPixels*0.625-1, shape[1]-1, shape[2]-1])
+                image_stats = image.statistics(mask=statsmask, region=region)
+                rgTool.done()
 
             pbcor_image_min = image_stats['min'][0]
             pbcor_image_max = image_stats['max'][0]

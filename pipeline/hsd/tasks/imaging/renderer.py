@@ -21,7 +21,7 @@ ImageRMSTR = collections.namedtuple('ImageRMSTR', 'name estimate range width rms
 
 
 class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
-    def __init__(self, uri='hsd_imaging.mako', 
+    def __init__(self, uri='hsd_imaging.mako',
                  description='Image single dish data',
                  always_rerender=False):
         super(T2_4MDetailsSingleDishImagingRenderer, self).__init__(
@@ -58,7 +58,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                     rms_info = r.sensitivity_info
                     sensitivity = rms_info.sensitivity
                     icon = '<span class="glyphicon glyphicon-ok"></span>' if rms_info.representative else ''
-                    tr = ImageRMSTR(image_item.imagename, icon, rms_info.frequency_range, 
+                    tr = ImageRMSTR(image_item.imagename, icon, rms_info.frequency_range,
                                     cqa.getvalue(cqa.convert(sensitivity['bandwidth'], 'kHz'))[0],
                                     cqa.getvalue(sensitivity['sensitivity'])[0])
                     image_rms.append(tr)
@@ -76,7 +76,9 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                      'momentmap': {'type': 'sd_moment_map',
                                    'plot_title': 'Maximum Intensity Map'},
                      'integratedmap': {'type': 'sd_integrated_map',
-                                       'plot_title': 'Integrated Intensity Map'}}
+                                       'plot_title': 'Integrated Intensity Map'},
+                     'contaminationmap': {'type': 'sd_contamination_map',
+                                          'plot_title': 'Contamination Plots'}}
 
         for key, value in map_types.items():
             plot_list = self._plots_per_field_with_type(plots, value['type'])
@@ -99,6 +101,13 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                 summary = self._summary_plots_channelmap(context, plot_list)
             else:
                 summary = self._summary_plots(plot_list)
+
+            # contamination plots
+            if key == 'contaminationmap':
+                ctx.update({f'{key}_subpage': None,
+                            f'{key}_plots': summary})
+                continue
+
             subpage = collections.OrderedDict()
             plot_title = value['plot_title']
             LOG.debug('plot_title=%s'%(plot_title))
@@ -218,9 +227,9 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                 else:
                     # add penalty term to the separation
                     separation = penalty + abs(line_center - rest_frequency)
-                    LOG.debug('FIELD {} SPW {} rest frequency {} separation {} (w/o penalty {})'.format(field_name, 
-                                                                                                        spw_id, 
-                                                                                                        rest_frequency, 
+                    LOG.debug('FIELD {} SPW {} rest frequency {} separation {} (w/o penalty {})'.format(field_name,
+                                                                                                        spw_id,
+                                                                                                        rest_frequency,
                                                                                                         separation,
                                                                                                         separation - penalty))
 
