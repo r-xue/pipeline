@@ -13,6 +13,7 @@ from .gfluxscaleflag import Gfluxscaleflag
 from .imageprecheck import ImagePreCheck
 from .importdata import ALMAImportData
 from .polcalflag import Polcalflag
+from .polrefant import PolRefAnt
 from .restoredata import ALMARestoreData
 from .spwphaseup import SpwPhaseup
 from .targetflag import Targetflag
