@@ -129,6 +129,9 @@ class ClusterDisplay(object):
                 # it should be empty cluster (no detection) or false clusters (detected but
                 # judged as an invalid clusters) so skip this cycle
                 continue
+            # avoid plotting empty clusters
+            if ((cluster['cluster_flag'] // 1000) % 10 == 0).all():
+                continue
             if 'index' in group:
                 # having key 'index' indicates the result comes from old (Scantable-based)
                 # procedure
