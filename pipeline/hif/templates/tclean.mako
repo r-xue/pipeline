@@ -132,7 +132,7 @@ except:
         <tbody>
         %for i in range(len(field_block_indices)-1):
             %if len(field_block_indices) > 2:
-                <h3 id="field_block_${field_block_indices[i]}" class="jumptarget"></h3>
+                <tr id="field_block_${field_block_indices[i]}" class="jumptarget" style="border-bottom:2px solid black"><td colspan="5"></td></tr>
             %endif
             %for j in range(field_block_indices[i], field_block_indices[i+1], 4):
                 <tr>
@@ -271,7 +271,6 @@ except:
                     %endfor
                 </tr>
             %endfor
-            <tr><td colspan="5"><hr></td></tr>
         %endfor
         </tbody>
     </table>
