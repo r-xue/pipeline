@@ -1,17 +1,18 @@
 import collections
 import contextlib
 import itertools
-import os
 import operator
+import os
+from typing import Optional
 
 import numpy
 import pylab
 
-from . import spectralwindow
-from . import measures
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.casatools as casatools
+import pipeline.infrastructure.utils as utils
+from . import measures
+from . import spectralwindow
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -28,7 +29,6 @@ class MeasurementSet(object):
         self.spectral_windows = []
         self.fields = []
         self.states = []
-        self.reference_antenna = None
         self.reference_spwmap = None
         self.phaseup_spwmap = None
         self.combine_spwmap = None
@@ -38,6 +38,22 @@ class MeasurementSet(object):
         self.filesize = self._calc_filesize() 
         self.is_imaging_ms = False
         self.work_data = name
+
+        # Polarisation calibration requires the refant list be frozen, after
+        # which subsequent gaincal calls are executed with
+        # refantmode='strict'.
+        #
+        # To meet this requirement we make the MS refant list lockable. When
+        # locked, the refant list cannot be changed. Additionally, gaincal
+        # checks the lock status to know whether to set refantmode to strict.
+        #
+        # The backing property for the refant list.
+        self._reference_antenna: Optional[str] = None
+        # The refant lock. Setting reference_antenna_locked to True prevents
+        # the reference antenna list from being modified. I would have liked
+        # to put the lock on a custom refant list class, but some tasks check
+        # the type of reference_antenna directly which prevents that approach.
+        self.reference_antenna_locked: bool = False
 
     def _calc_filesize(self):
         """
@@ -994,6 +1010,30 @@ class MeasurementSet(object):
             with contextlib.closing(table.query(taql)) as subtable:
                 integration = subtable.getcol('INTERVAL')          
             return numpy.median(integration)
+
+    @property
+    def reference_antenna(self):
+        """
+        Get the reference antenna list for this MS. The refant value is
+        a comma-separated string.
+
+        Example: 'DV01,DV02,DV03'
+        """
+        return self._reference_antenna
+
+    @reference_antenna.setter
+    def reference_antenna(self, value):
+        """
+        Set the reference antenna list for this MS.
+
+        If this property is in R/O mode, signified by reference_antenna_locked
+        being set True, an AttributeError will be raised.
+        """
+        if self.reference_antenna_locked:
+            # AttributeError is raised for R/O properties, which seems
+            # appropriate for this scenario
+            raise AttributeError(f'Refant list for {self.basename} is locked')
+        self._reference_antenna = value
 
     def update_reference_antennas(self, ants_to_demote=None, ants_to_remove=None):
         """Update the reference antenna list by demoting and/or removing
