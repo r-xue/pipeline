@@ -4,18 +4,18 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 from . import resultobjects
-from . import polrefant
+from . import sessionrefant
 
 LOG = logging.get_logger(__name__)
 
 
-class PolRefAntListQAHandler(pqa.QAPlugin):
+class SessionRefAntListQAHandler(pqa.QAPlugin):
     """
-    QA plugin to process lists of PolRefAntResults.
+    QA plugin to process lists of SessionRefAntResults.
     """
     result_cls = collections.Iterable
-    child_cls = resultobjects.PolRefAntResults
-    generating_task = polrefant.PolRefAnt
+    child_cls = resultobjects.SessionRefAntResults
+    generating_task = sessionrefant.SessionRefAnt
 
     def handle(self, context, result):
         # collate the QAScores from each child result, pulling them into our
@@ -24,20 +24,20 @@ class PolRefAntListQAHandler(pqa.QAPlugin):
         result.qa.pool[:] = collated
 
 
-class PolRefAntQAHandler(pqa.QAPlugin):
+class SessionRefAntQAHandler(pqa.QAPlugin):
     """
-    QA plugin to handle a singular PolRefAntResults.
+    QA plugin to handle a singular SessionRefAntResults.
 
     This plugin creates a score for each session in the results, based on
     whether a final best reference antenna was found for the session.
     """
-    # Register this QAPlugin as handling singular PolRefAntResults object
-    # returned by PolRefAnt only.
-    result_cls = resultobjects.PolRefAntResults
+    # Register this QAPlugin as handling singular SessionRefAntResults object
+    # returned by SessionRefAnt only.
+    result_cls = resultobjects.SessionRefAntResults
     child_cls = None
-    generating_task = polrefant.PolRefAnt
+    generating_task = sessionrefant.SessionRefAnt
 
-    def handle(self, context, result: resultobjects.PolRefAntResults):
+    def handle(self, context, result: resultobjects.SessionRefAntResults):
 
         scores = []
         # If sessions were identified, check for presence of final refant.
@@ -52,14 +52,14 @@ class PolRefAntQAHandler(pqa.QAPlugin):
                     longmsg = "Could not select reference antenna for session {}".format(session_name)
                     shortmsg = "No refant"
 
-                origin = pqa.QAOrigin(metric_name='PolRefAntQAHandler',
+                origin = pqa.QAOrigin(metric_name='SessionRefAntQAHandler',
                                       metric_score=bool(qa_score),
                                       metric_units='Reference antenna was identified for session')
 
                 scores.append(pqa.QAScore(qa_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
         # Otherwise, the lack of identifiable sessions results in a score of 0.
         else:
-            origin = pqa.QAOrigin(metric_name='PolRefAntQAHandler',
+            origin = pqa.QAOrigin(metric_name='SessionRefAntQAHandler',
                                   metric_score=False,
                                   metric_units='Sessions were identified')
 
