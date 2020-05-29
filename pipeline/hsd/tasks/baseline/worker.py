@@ -28,7 +28,7 @@ class BaselineSubtractionInputsBase(vdp.StandardInputs):
         colname = ''
         if isinstance(self.vis, str):
             with casatools.TableReader(self.vis) as tb:
-                candidate_names = ['CORRECTED_DATA', 
+                candidate_names = ['CORRECTED_DATA',
                                    'DATA',
                                    'FLOAT_DATA']
                 for name in candidate_names:
@@ -41,7 +41,7 @@ class BaselineSubtractionInputsBase(vdp.StandardInputs):
         args = super(BaselineSubtractionInputsBase, self).to_casa_args()  # {'vis': self.vis}
         prefix = os.path.basename(self.vis.rstrip('/'))
 
-        # blparam 
+        # blparam
         if self.blparam is None or len(self.blparam) == 0:
             args['blparam'] = prefix + '_blparam.txt'
         else:
@@ -83,6 +83,7 @@ class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
     vis = vdp.VisDependentProperty(default='', null_input=['', None, [], ['']])
     plan = vdp.VisDependentProperty(default=None)
     fit_order = vdp.VisDependentProperty(default='automatic')
+    switchpoly = vdp.VisDependentProperty(default=True)
     edge = vdp.VisDependentProperty(default=(0, 0))
     deviationmask = vdp.VisDependentProperty(default={})
     bloutput = vdp.VisDependentProperty(default=None)
@@ -117,13 +118,15 @@ class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
         return self.plan.get_channelmap_range_list()
 
     def __init__(self, context, vis=None, plan=None,
-                 fit_order=None, edge=None, deviationmask=None, blparam=None, bloutput=None, org_directions_dict=None):
+                 fit_order=None, switchpoly=None,
+                 edge=None, deviationmask=None, blparam=None, bloutput=None, org_directions_dict=None):
         super(BaselineSubtractionWorkerInputs, self).__init__()
 
         self.context = context
         self.vis = vis
         self.plan = plan
         self.fit_order = fit_order
+        self.switchpoly = switchpoly
         self.edge = edge
         self.deviationmask = deviationmask
         self.blparam = blparam
@@ -163,7 +166,7 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
 
         process_list = self.inputs.plan
         deviationmask_list = self.inputs.deviationmask
-        LOG.info('deviationmask_list={}'.format(deviationmask_list))      
+        LOG.info('deviationmask_list={}'.format(deviationmask_list))
 
         field_id_list = self.inputs.field
         antenna_id_list = self.inputs.antenna
@@ -175,11 +178,11 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
                   spw=spw_id_list)
 
         # initialization of blparam file
-        # blparam file needs to be removed before starting iteration through 
+        # blparam file needs to be removed before starting iteration through
         # reduction group
         if os.path.exists(blparam):
             LOG.debug('Cleaning up blparam file for {vis}', vis=vis)
-            os.remove(blparam)        
+            os.remove(blparam)
 
         #datatable = DataTable(context.observing_run.ms_datatable_name)
 
@@ -188,9 +191,9 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
                 deviationmask = deviationmask_list[(field_id, antenna_id, spw_id)]
             else:
                 deviationmask = None
-            blparam_heuristic = self.Heuristics()
+            blparam_heuristic = self.Heuristics(switchpoly=self.inputs.switchpoly)
             formatted_edge = list(common.parseEdge(edge))
-            out_blparam = blparam_heuristic(self.datatable, ms, antenna_id, field_id, spw_id, 
+            out_blparam = blparam_heuristic(self.datatable, ms, antenna_id, field_id, spw_id,
                                             fit_order, formatted_edge, deviationmask, blparam)
             assert out_blparam == blparam
 
@@ -209,15 +212,15 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         return results
 
     def analyse(self, results):
-        # plot             
+        # plot
         # initialize plot manager
-        plot_manager = plotter.BaselineSubtractionPlotManager(self.inputs.context, self.datatable) 
+        plot_manager = plotter.BaselineSubtractionPlotManager(self.inputs.context, self.datatable)
         outfile = results.outcome['outfile']
         ms = self.inputs.ms
         org_directions_dict = self.inputs.org_directions_dict
         accum = self.inputs.plan
-        deviationmask_list = self.inputs.deviationmask 
-        LOG.info('deviationmask_list={}'.format(deviationmask_list))      
+        deviationmask_list = self.inputs.deviationmask
+        LOG.info('deviationmask_list={}'.format(deviationmask_list))
         status = plot_manager.initialize(ms, outfile)
         plot_list = []
         for (field_id, antenna_id, spw_id, grid_table, channelmap_range) in accum.iterate_all():
@@ -235,9 +238,9 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
                     raise RuntimeError("source_name {} not found in org_directions_dict (sources found are {})"
                                        "".format(source_name, list(org_directions_dict.keys())))
                 org_direction = org_directions_dict[source_name]
-                plot_list.extend(plot_manager.plot_spectra_with_fit(field_id, antenna_id, spw_id, 
+                plot_list.extend(plot_manager.plot_spectra_with_fit(field_id, antenna_id, spw_id,
                                                                     org_direction,
-                                                                    grid_table, 
+                                                                    grid_table,
                                                                     deviationmask, channelmap_range))
         plot_manager.finalize()
 
@@ -257,15 +260,16 @@ class HpcBaselineSubtractionWorkerInputs(BaselineSubtractionWorkerInputs):
     parallel = sessionutils.parallel_inputs_impl()
 
     def __init__(self, context, vis=None, plan=None,
-                 fit_order=None, edge=None, deviationmask=None, blparam=None, bloutput=None,
+                 fit_order=None, switchpoly=None,
+                 edge=None, deviationmask=None, blparam=None, bloutput=None,
                  parallel=None, org_directions_dict=None):
-        super(HpcBaselineSubtractionWorkerInputs, self).__init__(context, vis=vis, plan=plan, 
-                                                                 fit_order=fit_order, edge=edge,
-                                                                 deviationmask=deviationmask, 
+        super(HpcBaselineSubtractionWorkerInputs, self).__init__(context, vis=vis, plan=plan,
+                                                                 fit_order=fit_order, switchpoly=switchpoly,
+                                                                 edge=edge, deviationmask=deviationmask,
                                                                  blparam=blparam, bloutput=bloutput,
                                                                  org_directions_dict=org_directions_dict)
         self.parallel = parallel
-        
+
 
 # This is abstract class since Task is not specified yet
 class HpcBaselineSubtractionWorker(sessionutils.ParallelTemplate):
@@ -296,10 +300,10 @@ class HpcCubicSplineBaselineSubtractionWorker(HpcBaselineSubtractionWorker):
 # class BaselineSubtractionInputs(vdp.ModeInputs):
 #     _modes = {'spline': CubicSplineBaselineSubtractionWorker,
 #               'cspline': CubicSplineBaselineSubtractionWorker}
-# 
+#
 #     def __init__(self, context, fitfunc, **parameters):
 #         super(BaselineSubtractionInputs, self).__init__(context=context, mode=fitfunc, **parameters)
-#     
-# 
+#
+#
 # class BaselineSubtractionTask(basetask.ModeTask):
 #     Inputs = BaselineSubtractionInputs

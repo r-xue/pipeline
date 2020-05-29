@@ -15,6 +15,7 @@ from .importdata import ALMAImportData
 from .lock_refant import LockRefAnt
 from .polcalflag import Polcalflag
 from .restoredata import ALMARestoreData
+from .sessionrefant import SessionRefAnt
 from .spwphaseup import SpwPhaseup
 from .targetflag import Targetflag
 from .tsysflag import Tsysflag as ALMATsysflag

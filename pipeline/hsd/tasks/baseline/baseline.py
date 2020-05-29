@@ -36,6 +36,7 @@ class SDBaselineInputs(vdp.StandardInputs):
     broadline = vdp.VisDependentProperty(default=True)
     fitorder = vdp.VisDependentProperty(default=-1)
     fitfunc = vdp.VisDependentProperty(default='cspline')
+    switchpoly = vdp.VisDependentProperty(default=True)
     clusteringalgorithm = vdp.VisDependentProperty(default='hierarchy')
     deviationmask = vdp.VisDependentProperty(default=True)
 
@@ -44,12 +45,27 @@ class SDBaselineInputs(vdp.StandardInputs):
     def vis(self):
         return self.infiles
 
+    # handle conversion from string to bool
+    @switchpoly.convert
+    def switchpoly(self, value):
+        converted = None
+        if isinstance(value, bool):
+            converted = value
+        elif isinstance(value, str):
+            for b in (True, False):
+                s = str(b)
+                if value in (s.lower(), s.upper(), s.capitalize()):
+                    converted = b
+                    break
+        assert converted is not None
+        return converted
+
     # use common implementation for parallel inputs argument
     parallel = sessionutils.parallel_inputs_impl()
 
     def __init__(self, context, infiles=None, antenna=None, spw=None, pol=None, field=None,
                  linewindow=None, linewindowmode=None, edge=None, broadline=None, fitorder=None,
-                 fitfunc=None, clusteringalgorithm=None, deviationmask=None, parallel=None):
+                 fitfunc=None, switchpoly=None, clusteringalgorithm=None, deviationmask=None, parallel=None):
         super(SDBaselineInputs, self).__init__()
 
         self.context = context
@@ -64,6 +80,7 @@ class SDBaselineInputs(vdp.StandardInputs):
         self.broadline = broadline
         self.fitorder = fitorder
         self.fitfunc = fitfunc
+        self.switchpoly = switchpoly
         self.clusteringalgorithm = clusteringalgorithm
         self.deviationmask = deviationmask
         self.parallel = parallel
@@ -154,6 +171,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
         broadline = inputs.broadline
         fitorder = 'automatic' if inputs.fitorder is None or inputs.fitorder < 0 else inputs.fitorder
         fitfunc = inputs.fitfunc
+        switchpoly = inputs.switchpoly
         clusteringalgorithm = inputs.clusteringalgorithm
         deviationmask = inputs.deviationmask
 
@@ -318,10 +336,11 @@ class SDBaseline(basetask.StandardTaskTemplate):
         worker_cls = worker.HpcCubicSplineBaselineSubtractionWorker
         fitter_inputs = vdp.InputsContainer(worker_cls, context,
                                             vis=vislist, plan=plan,
-                                            fit_order=fitorder, edge=edge, blparam=blparam,
+                                            fit_order=fitorder, switchpoly=switchpoly,
+                                            edge=edge, blparam=blparam,
                                             deviationmask=deviationmask_list,
                                             parallel=self.inputs.parallel,
-                                            org_directions_dict=org_directions_dict )
+                                            org_directions_dict=org_directions_dict)
         fitter_task = worker_cls(fitter_inputs)
         fitter_results = self._executor.execute(fitter_task, merge=False)
 

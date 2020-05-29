@@ -59,6 +59,14 @@ def as_maskstring(masklist):
     return ';'.join(['%s~%s' % (x[0], x[1]) for x in masklist])
 
 
+def no_switching(engine, nchan, edge, num_pieces, masklist):
+    return 'cspline', 0
+
+
+def do_switching(engine, nchan, edge, num_pieces, masklist):
+    return engine(nchan, edge, num_pieces, masklist)
+
+
 class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
     """
     Generate/update BLParam file according to the input parameters.
@@ -68,9 +76,14 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
     MaxPolynomialOrder = 'none'  # 'none', 0, 1, 2,...
     PolynomialOrder = 'automatic'  # 'automatic', 0, 1, 2, ...
 
-    def __init__(self):
+    def __init__(self, switchpoly=True):
         super(BaselineFitParamConfig, self).__init__()
         self.paramdict = {}
+        self.heuristics_engine = fitorder.SwitchPolynomialWhenLargeMaskAtEdgeHeuristic()
+        if switchpoly == True:
+            self.switching_heuristic = do_switching
+        else:
+            self.switching_heuristic = no_switching
 
     # readonly attributes
     @property
@@ -160,6 +173,8 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
         base_mask_array = mask_array.copy()
 
+        #LOG.info('base_mask_array = {}'.format(''.join(map(str, base_mask_array))))
+
         time_table = datatable.get_timetable(antenna_id, spw_id, None, os.path.basename(vis), field_id)
         member_list = time_table[timetable_index]
 
@@ -243,6 +258,10 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                             maxwidth = 1
     #                       _masklist = masklist[i]
                             _masklist = list(masklist[i]) + flaglist[i][pol]
+                            #LOG.info('_masklist = {}'.format(_masklist))
+                            #LOG.info('masklist[{}] = {}'.format(i, masklist[i]))
+                            #LOG.info('flaglist[{}][{}] = {}'.format(i, pol, flaglist[i][pol]))
+                            #LOG.info('FLAG[{}][{}] = {}'.format(i, pol, ''.join(map(str, numpy.array(tb.getcell('FLAG', row)[pol], dtype=numpy.uint8)))))
                             for [chan0, chan1] in _masklist:
                                 if chan1 - chan0 >= maxwidth:
                                     maxwidth = int((chan1 - chan0 + 1) / 1.4)
@@ -259,6 +278,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                             # fitting
                             polyorder = min(polyorder, max_polyorder)
                             mask_array[:] = base_mask_array
+                            #LOG.info('mask_array = {}'.format(''.join(map(str, mask_array))))
                             #irow = len(row_list_total)+len(row_list)
                             #irow = len(index_list_total) + i
                             irow = row
@@ -283,13 +303,20 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                              fragment, nwindow, mask):
         # Create mask for line protection
         nchan_without_edge = nchan - sum(edge)
+        #LOG.info('__ mask (before) = {}'.format(''.join(map(str, mask))))
         if isinstance(masklist, (list, numpy.ndarray)):
             for [m0, m1] in masklist:
                 mask[max(0, m0):min(nchan, m1 + 1)] = 0
         else:
             LOG.critical('Invalid masklist')
+        #LOG.info('__ mask (after)  = {}'.format(''.join(map(str, mask))))
         num_mask = int(nchan_without_edge - numpy.sum(mask[edge[0]:nchan-edge[1]] * 1.0))
+        # here meaning of "masklist" is changed
+        #     masklist: list of channel ranges to be *excluded* from the fit
+        # masklist_all: list of channel ranges to be *included* in the fit
         masklist_all = self.__mask_to_masklist(mask)
+        #LOG.info('__ masklist (before)= {}'.format(masklist))
+        #LOG.info('__ masklist (after) = {}'.format(masklist_all))
 
         if TRACE():
             LOG.trace('nchan_without_edge, num_mask, diff={}, {}'.format(
@@ -309,9 +336,10 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
     def __mask_to_masklist(self, mask):
         """
         Converts mask array to masklist
+        Resulting masklist is a list of channel ranges whose values are 1
 
         Argument
-            mask : an array of channel mask in values 0 (rejected) or 1 (adopted)
+            mask : an array of channel mask in values 0 or 1
         """
         # get indices of clump boundaries
         idx = (mask[1:] ^ mask[:-1]).nonzero()
@@ -345,11 +373,11 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
 class CubicSplineFitParamConfig(BaselineFitParamConfig):
 
-    def __init__(self):
-        super(CubicSplineFitParamConfig, self).__init__()
+    def __init__(self, switchpoly=True):
+        super(CubicSplineFitParamConfig, self).__init__(switchpoly)
 
         # constant stuff
-        self.paramdict[BLP.FUNC] = 'cspline'
+        #self.paramdict[BLP.FUNC] = 'cspline'
         self.paramdict[BLP.CLIPNITER] = self.ClipCycle
         self.paramdict[BLP.CLIPTHRESH] = 5.0
 
@@ -363,4 +391,15 @@ class CubicSplineFitParamConfig(BaselineFitParamConfig):
         self.paramdict[BLP.POL] = pol
         self.paramdict[BLP.MASK] = masklist
         self.paramdict[BLP.NPIECE] = num_pieces
+
+        fitfunc, order = self.switching_heuristic(
+            self.heuristics_engine,
+            nchan,
+            edge,
+            num_pieces,
+            masklist
+        )
+        self.paramdict[BLP.FUNC] = fitfunc
+        self.paramdict[BLP.ORDER] = order
+
         return self.paramdict

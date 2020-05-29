@@ -3,11 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
-def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
-                 linewindow=None, linewindowmode=None, edge=None, broadline=None,
-                 clusteringalgorithm=None, deviationmask=None, pipelinemode=None,
-                 infiles=None, field=None, antenna=None, spw=None, pol=None,
-                 dryrun=None, acceptresults=None, parallel=None):
+def hifa_session_refant(vis=None, phase_threshold=None, pipelinemode=None, dryrun=None, acceptresults=None):
 
     ##########################################################################
     #                                                                        #
