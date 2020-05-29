@@ -3,7 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
-def hifa_polrefant(vis=None, phase_threshold=None, pipelinemode=None, dryrun=None, acceptresults=None):
+def hifa_session_refant(vis=None, phase_threshold=None, pipelinemode=None, dryrun=None, acceptresults=None):
 
     ##########################################################################
     #                                                                        #

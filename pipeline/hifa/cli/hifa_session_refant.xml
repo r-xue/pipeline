@@ -1,13 +1,13 @@
 <casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-<task category="pipeline" name="hifa_polrefant" type="function">
+<task category="pipeline" name="hifa_session_refant" type="function">
 
-<shortdescription>Select best reference antennas for polarisation session</shortdescription>
+<shortdescription>Select best reference antenna for session(s)</shortdescription>
 
 <description>
 This task re-evaluates the reference antenna lists from all measurement sets
-within a polarisation session and combines these into a single common reference
-antenna list, that is to be used by any subsequent pipeline stages.
+within a session and combines these to select a single common reference
+antenna (per session) that is to be used by any subsequent pipeline stages.
 
 If pipeline mode is 'getinputs' then None is returned. Otherwise the
 results object for the pipeline task is returned.
@@ -85,10 +85,9 @@ results object for the pipeline task is returned.
 <returns>any</returns>
 
 <example>
-1. Compute a single common reference antenna list for all measurement sets
-in a polarisation session:
+1. Compute a single common reference antenna per session:
 
-    hifa_polrefant()
+    hifa_session_refant()
 </example>
 </task>
 </casaxml>

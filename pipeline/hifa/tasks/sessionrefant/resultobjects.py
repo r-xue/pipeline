@@ -6,10 +6,10 @@ import pipeline.infrastructure.basetask as basetask
 LOG = infrastructure.get_logger(__name__)
 
 
-class PolRefAntResults(basetask.Results):
+class SessionRefAntResults(basetask.Results):
 
     def __init__(self):
-        super(PolRefAntResults, self).__init__()
+        super(SessionRefAntResults, self).__init__()
 
         # Initialize dictionary of sessions, mapping each session to list of
         # evaluated MSes and final refant chosen for that session.
@@ -32,4 +32,4 @@ class PolRefAntResults(basetask.Results):
                     ms.reference_antenna = self.refant[session_name]['refant']
 
     def __repr__(self):
-        return 'PolRefAntResults'
+        return 'SessionRefAntResults'

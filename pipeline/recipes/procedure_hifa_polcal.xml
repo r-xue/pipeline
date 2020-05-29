@@ -99,7 +99,7 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
-        <Command xmlns="">hifa_polrefant</Command>
+        <Command xmlns="">hifa_session_refant</Command>
         <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>
