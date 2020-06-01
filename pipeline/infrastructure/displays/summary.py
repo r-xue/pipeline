@@ -390,19 +390,24 @@ class IntentVsTimeChart(object):
     Inputs = IntentVsTimeChartInputs
 
     # http://matplotlib.org/examples/color/named_colors.html
-    _intent_colours = {'AMPLITUDE': ('green', 20),
-                       'ATMOSPHERE': ('magenta', 25),
-                       'BANDPASS': ('red', 15),
-                       'CHECK': ('purple', 10),
-                       'PHASE': ('cyan', 5),
-                       'POINTING': ('yellow', 30),
-                       'SIDEBAND': ('orange', 35),
+    _intent_colours = {'AMPLITUDE': ('green', 25),
+                       'ATMOSPHERE': ('magenta', 30),
+                       'BANDPASS': ('red', 20),
+                       'CHECK': ('purple', 15),
+                       'PHASE': ('cyan', 10),
+                       'POINTING': ('yellow', 35),
+                       'REFERENCE': ('deepskyblue', 5),
+                       'SIDEBAND': ('orange', 40),
                        'TARGET': ('blue', 0),
-                       'WVR': ('lime', 40),
-                       'POLARIZATION': ('navy', 45),
-                       'POLANGLE': ('mediumslateblue', 50),
-                       'POLLEAKAGE': ('plum', 55),
+                       'WVR': ('lime', 45),
+                       'POLARIZATION': ('navy', 50),
+                       'POLANGLE': ('mediumslateblue', 55),
+                       'POLLEAKAGE': ('plum', 60),
                        }
+
+    # list of intents that shares a same scan but segregated by subscan
+    # (To dustinguish ON and OFF source subscans in ALMA-TP)
+    _subscan_intents = ('TARGET', 'REFERENCE')
 
     def __init__(self, inputs):
         self.inputs = inputs
@@ -425,15 +430,22 @@ class IntentVsTimeChart(object):
                 if intent not in IntentVsTimeChart._intent_colours:
                     continue
                 (colour, scan_y) = IntentVsTimeChart._intent_colours[intent]
-                ax.fill([scan_start, scan_end, scan_end, scan_start],
-                        [scan_y, scan_y, scan_y+5, scan_y+5],
-                        facecolor=colour)
+                if intent in IntentVsTimeChart._subscan_intents and \
+                    len(np.intersect1d(tuple(scan.intents), IntentVsTimeChart._subscan_intents)) > 1:
+                    time_ranges = [tuple(map(utils.get_epoch_as_datetime, o)) \
+                                   for o in get_intent_subscan_time_ranges(ms.name, utils.to_CASA_intent(ms, intent), scan.id) ]
+                else:
+                    time_ranges = ((scan_start, scan_end),)
+                for (time_start, time_end) in time_ranges:
+                    ax.fill([time_start, time_end, time_end, time_start],
+                            [scan_y, scan_y, scan_y+5, scan_y+5],
+                            facecolor=colour)
 
                 ax.annotate('%s' % scan.id, (scan_start, scan_y+6))
 
-        ax.set_ylim(0, 57.5)
-        ax.set_yticks([2.5, 7.5, 12.5, 17.5, 22.5, 27.5, 32.5, 37.5, 42.5, 47.5, 52.5, 57.5])
-        ax.set_yticklabels(['SCIENCE', 'PHASE', 'CHECK', 'BANDPASS',
+        ax.set_ylim(0, 62.5)
+        ax.set_yticks([2.5, 7.5, 12.5, 17.5, 22.5, 27.5, 32.5, 37.5, 42.5, 47.5, 52.5, 57.5, 62.5])
+        ax.set_yticklabels(['SCIENCE', 'REFERENCE', 'PHASE', 'CHECK', 'BANDPASS',
                             'AMPLITUDE', 'ATMOSPHERE', 'POINTING', 'SIDEBAND',
                             'WVR', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'])
 
@@ -964,3 +976,74 @@ class UVChart(object):
         spw = self.ms.get_spectral_window(int(spwid))
         nchan = str(len(spw.channels))
         return nchan
+
+def get_intent_subscan_time_ranges(msname, casa_intent, scanid):
+    """
+    This function returns a list of start/end epoch pair of 
+    consequtive integrations (a subscan) with a selected intent 
+    in a selected scan. It can be used to filter subscans with
+    an intent in a mixed intents scans, e.g., an ALMA TP
+    scan that has both 'TARGET' and 'REFERENCE' subscans.
+
+    Parameters
+        msname: (string) the name of MeasurementSet
+        casa_intent: (string) CASA intent to filter
+        scanid: (int) a Scan ID to search. Must be 
+    Returns
+        a list of start/end epoch tuple, e.g.,
+        [(start_epoch, end_epoch), (start_epoch, end_epoch), ....]
+    """
+    if not os.path.exists(msname):
+        raise ValueError('Could not find: {}'.format(msname))
+
+    qt = casatools.quanta
+    mt = casatools.measures            
+
+    with casatools.MSMDReader(msname) as msmd:
+        LOG.info('obtaining subscan start/end time of {} in scan {}'.format(casa_intent, scanid))
+        # Define a reference SpW ID that matches a selected scan and intent
+        # the first spw tend to be WVR in ALMA. Pick the last one instead.
+        intent_scan_spw = np.intersect1d(msmd.spwsforintent(intent=casa_intent),
+                                            msmd.spwsforscan(scan=scanid))
+        if len(intent_scan_spw) == 0:
+            raise ValueError('No Spw match for a selected scan and intent')
+        ref_spw = intent_scan_spw[-1]
+        scan_times = msmd.timesforscan(scan=scanid, perspw=True)[str(ref_spw)]
+        qhalf_exposure = qt.div(msmd.exposuretime(scan=scanid, spwid=ref_spw), 2.0)
+        intent_times = msmd.timesforintent(casa_intent)
+
+    # obtain time unit and ref from MS.
+    # msmd returns raw TIME values but not unit and reference.
+    with casatools.TableReader(msname) as tb:
+        time_colkeywords = tb.getcolkeywords('TIME')
+
+    time_unit = time_colkeywords['QuantumUnits'][0]
+    time_ref = time_colkeywords['MEASINFO']['Ref']
+    # sort scan_times to make sure it is in time order
+    scan_times.sort()
+    # obtain indices in scan_times array that has the selected intent
+    scan_intent_idx = np.intersect1d(scan_times, intent_times, return_indices=True)[1]
+    if len(scan_intent_idx) == 0: # No integration with the intent
+        LOG.info('No match found for scan {} and intent {}'.format(scanid, casa_intent))
+        return ()
+    
+    # obtain subscan start/end indices
+    if len(scan_intent_idx) == 1: # only one integration matches
+        split_scan_intent_idx = np.array([scan_intent_idx])
+    else: #split an array by consecutive idx
+        split_scan_intent_idx = np.split(scan_intent_idx, np.where(np.diff(scan_intent_idx) != 1)[0]+1)
+
+    LOG.info('Identified {} subscans'.format(len(split_scan_intent_idx)))
+
+    subscan_time_ranges = []
+    LOG.trace('subscan time ranges:')
+    for subscan_idx in split_scan_intent_idx:
+        start_time = qt.sub(qt.quantity(scan_times[subscan_idx[0]], time_unit),
+                            qhalf_exposure)
+        end_time = qt.add(qt.quantity(scan_times[subscan_idx[-1]],  time_unit),
+                          qhalf_exposure)
+        epoch_range = (mt.epoch(time_ref, start_time),
+                       mt.epoch(time_ref, end_time))
+        subscan_time_ranges.append(epoch_range)
+        LOG.trace('* {} (id={}) - {} (id={})'.format(utils.get_epoch_as_datetime(epoch_range[0]), subscan_idx[0], utils.get_epoch_as_datetime(epoch_range[1]), subscan_idx[-1]))
+    return subscan_time_ranges
