@@ -9,7 +9,7 @@
 <h2>Results</h2>
 
 <p>The reference antenna list is now frozen. The reference antenna list cannot be modified by any subsequent task unless
-    the list is frozen with hifa_unlock_refant. The frozen reference antenna list for each measurement set is listed
+    the list is unfrozen with hifa_unlock_refant. The frozen reference antenna list for each measurement set is listed
     below</p>
 <p>All subsequent gaincal calls will be executed with refantmode='strict' unless an override refantmode parameter is
     provided.</p>

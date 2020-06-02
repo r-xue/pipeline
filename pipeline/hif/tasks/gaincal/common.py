@@ -49,7 +49,7 @@ class VdpCommonGaincalInputs(commoncalinputs.VdpCommonCalibrationInputs):
         pol_recipes = {'hifa_polcal', 'hifa_polcalimage'}
 
         # are polarisation intents expected? true if pol recipe, false if not
-        is_pol_recipe = True  # recipe_name in pol_recipes
+        is_pol_recipe = recipe_name in pol_recipes
 
         refant_is_locked = False
         if self.ms is not None and self.ms.reference_antenna_locked:
