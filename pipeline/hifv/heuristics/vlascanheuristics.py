@@ -435,6 +435,7 @@ class VLAScanHeuristics(object):
         self.longsolint = 0.0
         self.short_solint = 0.0
         self.new_gain_solint1 = '1.0s'
+        self.ignorerefant = []
 
         self.fluxscale_sources = []
         self.fluxscale_flux_densities = []

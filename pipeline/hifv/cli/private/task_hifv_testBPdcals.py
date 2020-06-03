@@ -5,7 +5,7 @@ from casatasks import casalog
 import pipeline.h.cli.utils as utils
 
 
-def hifv_testBPdcals(vis=None, pipelinemode=None, dryrun=None, acceptresults=None, weakbp=None, refantignore=None):
+def hifv_testBPdcals(vis=None, pipelinemode=None, dryrun=None, acceptresults=None, weakbp=None, refantignore=None, doflagundernspwlimit=None):
 
     ##########################################################################
     #                                                                        #

@@ -45,13 +45,6 @@
     </ProcessingCommand>
     
     <ProcessingCommand>
-        <Command xmlns="">hifv_flagbaddef</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-    
-    
-    <ProcessingCommand>
         <Command xmlns="">hifv_checkflag</Command>
         <ParameterSet>
         </ParameterSet>

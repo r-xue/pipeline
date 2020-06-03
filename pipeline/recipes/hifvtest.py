@@ -89,7 +89,7 @@ def hifvtest(vislist, importonly=False, pipelinemode='automatic', interactive=Tr
 
         # Identify and flag basebands with bad deformatters or rfi based on
         # bp table amps and phases
-        hifv_flagbaddef(pipelinemode=pipelinemode)
+        # hifv_flagbaddef(pipelinemode=pipelinemode)
 
         # Flag spws that have no calibration at this point
         # hifv_uncalspw(pipelinemode=pipelinemode, delaycaltable='testdelay.k', bpcaltable='testBPcal.b')

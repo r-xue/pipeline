@@ -63,7 +63,7 @@ def hifvcalvlass(vislist, importonly=False, pipelinemode='automatic', interactiv
 
         # Identify and flag basebands with bad deformatters or rfi based on
         # bp table amps and phases
-        hifv_flagbaddef(doflagundernspwlimit=False)
+        # hifv_flagbaddef(doflagundernspwlimit=False)
 
         # Flag possible RFI on BP calibrator using rflag with mode=bpd
         hifv_checkflag(checkflagmode='bpd-vlass')

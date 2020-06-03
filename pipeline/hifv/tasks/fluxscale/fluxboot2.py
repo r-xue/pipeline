@@ -194,10 +194,15 @@ class Fluxboot2(basetask.StandardTaskTemplate):
             LOG.info("Short solint = " + new_gain_solint1)
             LOG.info("Long solint = " + gain_solint2)
 
+            self.ignorerefant = self.inputs.context.evla['msinfo'][m.name].ignorerefant
+
+            context = self.inputs.context
+            refantignore = self.inputs.refantignore + ','.join(self.ignorerefant)
+
             refantfield = context.evla['msinfo'][m.name].calibrator_field_select_string
             refantobj = findrefant.RefAntHeuristics(vis=calMs, field=refantfield,
                                                     geometry=True, flagging=True, intent='',
-                                                    spw='', refantignore=self.inputs.refantignore)
+                                                    spw='', refantignore=refantignore)
 
             RefAntOutput = refantobj.calculate()
 
