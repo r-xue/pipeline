@@ -2,6 +2,7 @@
 rsc_path = ""
 import html
 import os.path
+import numpy as np
 import pipeline.infrastructure.casatools as casatools
 import pipeline.hif.tasks.tclean.renderer as clean_renderer
 import pipeline.infrastructure.utils as utils
@@ -100,6 +101,7 @@ except:
             field_block_indices.append(i)
             field_vis = (row.field, row.vis)
     field_block_indices.append(len(image_info))
+    max_num_columns = min(max(np.array(field_block_indices[1:])-np.array(field_block_indices[:-1])) + 1, 5)
     %>
 
     %if len(field_block_indices) > 2:
@@ -132,18 +134,22 @@ except:
         <tbody>
         %for i in range(len(field_block_indices)-1):
             %if len(field_block_indices) > 2:
-                <tr id="field_block_${field_block_indices[i]}" class="jumptarget" style="border-bottom:2px solid black"><td colspan="5"></td></tr>
+                <tr id="field_block_${field_block_indices[i]}" class="jumptarget" style="border-bottom:2px solid black"><td colspan="${max_num_columns}"></td></tr>
             %endif
             %for j in range(field_block_indices[i], field_block_indices[i+1], 4):
                 <tr>
-                    <td rowspan="2" style="width:8%;">${image_info[j].field}</td>
+                    <td rowspan="2" style="width:150px;">${image_info[j].field}</td>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
-                        <td style="width:23%;">${'%s / %s' % (image_info[k].spw.replace(',',', '), image_info[k].spwnames.replace(',',', '))}</td>
+                        <td style="width:250px;">
+                            <div style="word-wrap:break-word;width:250px;">
+                                ${'%s / %s' % (image_info[k].spw.replace(',',', '), image_info[k].spwnames.replace(',',', '))}
+                            </div>
+                        </td>
                     %endfor
                 </tr>
                 <tr>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
-                        <td style="width:23%;">
+                        <td style="width:250px;">
                             %if image_info[k].plot is not None:
                                 <%
                                 fullsize_relpath = os.path.relpath(image_info[k].plot.abspath, pcontext.report_dir)
@@ -194,25 +200,25 @@ except:
                 <tr>
                     <th>${image_info[j].frequency_label}</th>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
-                        <td style="width:23%;">${image_info[k].frequency}</td>
+                        <td style="width:250px;">${image_info[k].frequency}</td>
                     %endfor
                 </tr>
                 <tr>
                     <th>beam</th>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
-                        <td style="width:23%;">${image_info[k].beam}</td>
+                        <td style="width:250px;">${image_info[k].beam}</td>
                     %endfor
                 </tr>
                 <tr>
                     <th>beam p.a.</th>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
-                        <td style="width:23%;">${image_info[k].beam_pa}</td>
+                        <td style="width:250px;">${image_info[k].beam_pa}</td>
                     %endfor
                 </tr>
                 <tr>
                     <th>final theoretical sensitivity</th>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
-                        <td style="width:23%;">${image_info[k].sensitivity}</td>
+                        <td style="width:250px;">${image_info[k].sensitivity}</td>
                     %endfor
                 </tr>
                 <tr>
@@ -223,51 +229,55 @@ except:
                         %endif
                     </th>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
-                        <td style="width:23%;">${image_info[k].cleaning_threshold}</td>
+                        <td style="width:250px;">${image_info[k].cleaning_threshold}</td>
                     %endfor
                 </tr>
                 <tr>
                     <th>clean residual peak / scaled MAD</th>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
-                        <td style="width:23%;">${image_info[k].residual_ratio}</td>
+                        <td style="width:250px;">${image_info[k].residual_ratio}</td>
                     %endfor
                 </tr>
                 <tr>
                     <th>${image_info[k].non_pbcor_label}</th>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
-                        <td style="width:23%;">${image_info[k].non_pbcor}</td>
+                        <td style="width:250px;">${image_info[k].non_pbcor}</td>
                     %endfor
                 </tr>
                 <tr>
                     <th>pbcor image max / min</th>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
-                        <td style="width:23%;">${image_info[k].pbcor}</td>
+                        <td style="width:250px;">${image_info[k].pbcor}</td>
                     %endfor
                 </tr>
                 <tr>
                     <th>${image_info[k].fractional_bw_label}</th>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
-                        <td style="width:23%;">${image_info[k].fractional_bw}</td>
+                        <td style="width:250px;">${image_info[k].fractional_bw}</td>
                     %endfor
                 </tr>
                 %if image_info[k].aggregate_bw_label is not None:
                     <tr>
                         <th>${image_info[k].aggregate_bw_label}</th>
                         %for k in range(j, min(j+4, field_block_indices[i+1])):
-                            <td style="width:23%;">${image_info[k].aggregate_bw}</td>
+                            <td style="width:250px;">${image_info[k].aggregate_bw}</td>
                         %endfor
                     </tr>
                 %endif
                 <tr>
                     <th>score</th>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
-                        <td style="width:23%;">${image_info[k].score}</td>
+                        <td style="width:250px;">${image_info[k].score}</td>
                     %endfor
                 </tr>
                 <tr>
                     <th>image file</th>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
-                        <td style="width:23%;">${image_info[k].image_file}</td>
+                        <td style="width:250px;">
+                            <div style="word-wrap:break-word;width:250px;">
+                                ${image_info[k].image_file}
+                            </div>
+                        </td>
                     %endfor
                 </tr>
             %endfor
