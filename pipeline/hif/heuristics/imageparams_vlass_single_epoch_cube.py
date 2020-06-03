@@ -69,7 +69,7 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristics):
     def intent(self):
         return 'TARGET'
 
-    def nterms(self):
+    def nterms(self, spwspec):
         return 2
 
     def stokes(self):

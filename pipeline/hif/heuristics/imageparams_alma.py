@@ -295,7 +295,7 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
 
         return True
 
-    def nterms(self):
+    def nterms(self, spwspec):
 
         return 2
 

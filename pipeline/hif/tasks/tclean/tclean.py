@@ -271,7 +271,7 @@ class Tclean(cleanbase.CleanBase):
 
         # Determine nterms
         if (inputs.nterms in ('', None)) and (inputs.deconvolver == 'mtmfs'):
-            inputs.nterms = self.image_heuristics.nterms()
+            inputs.nterms = self.image_heuristics.nterms(inputs.spw)
 
         # Determine antennas to be used
         if inputs.antenna in (None, [], ''):
