@@ -31,22 +31,9 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         """
         if spwspec is None:
             return None
-        # Determine min and max frequency of selected spectral windows.
-        abs_min_frequency = 1.0e15
-        abs_max_frequency = 0.0
-        msname = self.vislist[0]
-        ms = self.observing_run.get_ms(name=msname)
-        for spwid in spwspec.split(','):
-            real_spwid = self.observing_run.virtual2real_spw_id(spwid, self.observing_run.get_ms(msname))
-            spw = ms.get_spectral_window(real_spwid)
-            min_frequency = float(spw.min_frequency.to_units(measures.FrequencyUnits.HERTZ))
-            if (min_frequency < abs_min_frequency):
-                abs_min_frequency = min_frequency
-            max_frequency = float(spw.max_frequency.to_units(measures.FrequencyUnits.HERTZ))
-            if (max_frequency > abs_max_frequency):
-                abs_max_frequency = max_frequency
         # Fractional bandwidth
-        if (2.0 * (abs_max_frequency - abs_min_frequency) / (abs_min_frequency + abs_max_frequency) > 0.1):
+        fr_bandwidth = self.get_fractional_bandwidth(spwspec)
+        if (fr_bandwidth >= 0.1):
             return 2
         else:
             return 1
