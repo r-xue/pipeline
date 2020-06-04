@@ -173,8 +173,8 @@ def ous_parallactic_range(mses: List[MeasurementSet], field_name: str, intent: s
     if not angles:
         return
 
-    signed_range = range(angles, to_signed)
-    pd_range = range(angles, to_positive_definite)
+    signed_range = range_after_processing(angles, to_signed)
+    pd_range = range_after_processing(angles, to_positive_definite)
 
     return min((signed_range, pd_range))
 
@@ -238,7 +238,7 @@ def parallactic_angle_at_epoch(f: Field, e: dict) -> float:
         me.done()
 
 
-def range(fs: List[float], g: Callable[[float], float]):
+def range_after_processing(fs: List[float], g: Callable[[float], float]):
     """
     Get the range of a list of floats (fs) once processed by function g.
     """
