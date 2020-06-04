@@ -1,4 +1,5 @@
 import collections
+from itertools import chain
 from typing import List, Tuple, Callable
 
 import pipeline.h.tasks.importdata.importdata as importdata
@@ -14,6 +15,24 @@ from . import almaimportdata
 LOG = logging.get_logger(__name__)
 
 
+class ALMAImportDataListQAHandler(pqa.QAPlugin):
+    result_cls = collections.Iterable
+    child_cls = importdata.ImportDataResults
+    generating_task = almaimportdata.ALMAImportData
+
+    def handle(self, context, result):
+        super().handle(context, result)
+
+        # Check per-session parallactic angle coverage of polarisation calibration
+        recipe_name = context.project_structure.recipe_name
+        parallactic_threshold = result.inputs['minparang']
+        # gather mses into a flat list
+        mses = list(chain(*(r.mses for r in result)))
+        parang_scores = _check_parallactic_angle_range(recipe_name, mses, parallactic_threshold)
+
+        result.qa.pool.extend(parang_scores)
+
+
 class ALMAImportDataQAHandler(pqa.QAPlugin):
     result_cls = importdata.ImportDataResults
     child_cls = None
@@ -23,10 +42,6 @@ class ALMAImportDataQAHandler(pqa.QAPlugin):
         # Check for the presense of polarization intents
         recipe_name = context.project_structure.recipe_name
         polcal_scores = _check_polintents(recipe_name, result.mses)
-
-        # Check per-session parallactic angle coverage of polarisation calibration
-        parallactic_threshold = result.inputs['minparang']
-        parang_scores = _check_parallactic_angle_range(recipe_name, result.mses, parallactic_threshold)
 
         # Check for the presence of receiver bands with calibration issues
         score2 = _check_bands(result.mses)
@@ -41,9 +56,7 @@ class ALMAImportDataQAHandler(pqa.QAPlugin):
         # Flux service usage
         score5 = _check_fluxservice(result)
 
-
         result.qa.pool.extend(polcal_scores)
-        result.qa.pool.extend(parang_scores)
         result.qa.pool.extend([score2, score3, score4, score5])
 
 
