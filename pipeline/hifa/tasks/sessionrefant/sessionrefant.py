@@ -255,7 +255,7 @@ class SessionRefAnt(basetask.StandardTaskTemplate):
         :return: the Results returned by the gaincal.GTypeGaincal task
         """
         container = vdp.InputsContainer(gaincal.GTypeGaincal, self.inputs.context, vis=vislist, intent="PHASE",
-                                        gaintype='G', calmode='p', solint='int', refant=refant)
+                                        calmode='p', solint='int', refant=refant, minsnr=3, gaintype='G')
         gaincal_task = gaincal.GTypeGaincal(container)
         return self._executor.execute(gaincal_task)
 
