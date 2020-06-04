@@ -61,6 +61,9 @@ class SessionRefAnt(basetask.StandardTaskTemplate):
         # Initialize results.
         result = SessionRefAntResults()
 
+        # Define maximum number of antennas to evaluate phases for.
+        nant = 3
+
         # Inspect the vis list to identify sessions and corresponding MSes.
         vislist_for_session = sessionutils.group_vislist_into_sessions(self.inputs.context, self.inputs.vis)
 
@@ -68,7 +71,7 @@ class SessionRefAnt(basetask.StandardTaskTemplate):
         for session_name, vislist in vislist_for_session.items():
             LOG.info("Evaluating reference antennas for session \"{}\" with measurement set(s): {}."
                      "".format(session_name, ', '.join([os.path.basename(vis) for vis in vislist])))
-            refant = self._identify_best_refant(session_name, vislist)
+            refant = self._identify_best_refant(session_name, vislist, nant=nant)
             LOG.info("Final choice of reference antenna for session \"{}\": {}".format(session_name, refant))
             result.refant[session_name] = {'vislist': vislist, 'refant': refant}
 
@@ -77,7 +80,7 @@ class SessionRefAnt(basetask.StandardTaskTemplate):
     def analyse(self, result):
         return result
 
-    def _identify_best_refant(self, session_name, vislist, nant=2):
+    def _identify_best_refant(self, session_name, vislist, nant):
         """
         Identify best reference antenna for specified list of measurement sets.
 
