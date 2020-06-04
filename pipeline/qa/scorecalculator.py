@@ -486,7 +486,8 @@ def score_bands(mses):
 
 @log_qa
 def score_parallactic_range(
-        recipe_name: str, session_name: str, field_name: str, coverage: float, threshold: float) -> List[pqa.QAScore]:
+        pol_intents_present: bool, session_name: str, field_name: str, coverage: float, threshold: float
+        ) -> List[pqa.QAScore]:
     """
     Score a session based on parallactic angle coverage.
 
@@ -496,17 +497,12 @@ def score_parallactic_range(
     # holds the final list of QA scores
     scores: List[pqa.QAScore] = []
 
-    # these recipes are expected to have polarisation calibrator scans
-    pol_recipes = {'hifa_polcal', 'hifa_polcalimage'}
-
     # are polarisation intents expected? true if pol recipe, false if not
-    pol_intents_expected = recipe_name in pol_recipes
-
     # Polcal detected in session (this function was called!) but this is not a
     # polcal recipe, hence nothing to check
-    if not pol_intents_expected:
-        longmsg = (f'Active pipeline recipe is not a polarisation recipe. No parallactic angle coverage check '
-                   f'required for session {session_name}.')
+    if not pol_intents_present:
+        longmsg = (f'No polarisation intents detected. No parallactic angle coverage check required for session '
+                   f'{session_name}.')
         shortmsg = 'Parallactic angle'
         origin = pqa.QAOrigin(
             metric_name='score_parallactic_angle',
@@ -518,14 +514,16 @@ def score_parallactic_range(
                             applies_to=pqa.TargetDataSelection(session={session_name}))
         return [score]
 
-    # accordion messgage if coverage is adequate
+    # accordion message if coverage is adequate
     if coverage >= threshold:
         longmsg = (f'Sufficient parallactic angle coverage ({coverage:.2f}\u00B0) for polarisation calibrator '
                    f'{field_name} in session {session_name}')
         shortmsg = 'Parallactic angle'
-        origin = pqa.QAOrigin(metric_name='score_parallactic_angle',
-                              metric_score=1.0,
-                              metric_units='Session score based on parallactic angle coverage of polarisation calibrator')
+        origin = pqa.QAOrigin(
+            metric_name='score_parallactic_angle',
+            metric_score=1.0,
+            metric_units='Session score based on parallactic angle coverage of polarisation calibrator'
+        )
         score = pqa.QAScore(1.0, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
                             weblog_location=pqa.WebLogLocation.ACCORDION,
                             applies_to=pqa.TargetDataSelection(session={session_name}))
@@ -536,9 +534,11 @@ def score_parallactic_range(
         longmsg = (f'Insufficient parallactic angle coverage ({coverage:.2f}\u00B0) for polarisation calibrator '
                    f'{field_name} in session {session_name}')
         shortmsg = 'Parallactic angle'
-        origin = pqa.QAOrigin(metric_name='score_parallactic_angle',
-                              metric_score=0.0,
-                              metric_units='Session score based on parallactic angle coverage of polarisation calibrator')
+        origin = pqa.QAOrigin(
+            metric_name='score_parallactic_angle',
+            metric_score=0.0,
+            metric_units='Session score based on parallactic angle coverage of polarisation calibrator'
+        )
         score = pqa.QAScore(0.0, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
                             weblog_location=pqa.WebLogLocation.BANNER,
                             applies_to=pqa.TargetDataSelection(session={session_name}))

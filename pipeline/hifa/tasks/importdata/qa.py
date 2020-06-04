@@ -1,6 +1,6 @@
 import collections
 from itertools import chain
-from typing import List, Tuple, Callable
+from typing import List, Tuple, Callable, Set
 
 import pipeline.h.tasks.importdata.importdata as importdata
 import pipeline.infrastructure.casatools as casatools
@@ -24,11 +24,13 @@ class ALMAImportDataListQAHandler(pqa.QAPlugin):
         super().handle(context, result)
 
         # Check per-session parallactic angle coverage of polarisation calibration
-        recipe_name = context.project_structure.recipe_name
         parallactic_threshold = result.inputs['minparang']
         # gather mses into a flat list
         mses = list(chain(*(r.mses for r in result)))
-        parang_scores = _check_parallactic_angle_range(recipe_name, mses, parallactic_threshold)
+
+        # PIPE-597 spec states to test POLARIZATION intent
+        intents_to_test = {'POLARIZATION'}
+        parang_scores = _check_parallactic_angle_range(mses, intents_to_test, parallactic_threshold)
 
         result.qa.pool.extend(parang_scores)
 
@@ -67,20 +69,22 @@ def _check_polintents(recipe_name: str, mses: List[MeasurementSet]) -> List[pqa.
     return qacalc.score_polintents(recipe_name, mses)
 
 
-def _check_parallactic_angle_range(recipe_name: str, mses: List[MeasurementSet], threshold: float) -> List[pqa.QAScore]:
+def _check_parallactic_angle_range(mses: List[MeasurementSet], intents: Set[str], threshold: float) -> List[pqa.QAScore]:
     """
     Check that the parallactic angle coverage of the polarisation calibrator
     meets the required threshold.
 
     See PIPE-597 for full spec.
 
-    :param recipe_name: name of pipeline recipe
     :param mses: MeasurementSets to check
+    :param intents: intents to measure
     :param threshold: minimum parallactic angle coverage
     :return: list of QAScores
     """
     # holds list of all QA scores for this metric
     all_scores: List[pqa.QAScore] = []
+
+    intents_present = any([intents.intersection(ms.intents) for ms in mses])
 
     # group MSes per sessions, adding to default 'Shared' session if not
     # defined
@@ -88,20 +92,20 @@ def _check_parallactic_angle_range(recipe_name: str, mses: List[MeasurementSet],
     for ms in mses:
         session_to_mses[getattr(ms, 'session', 'Shared')].append(ms)
 
-    intent = 'POLARIZATION'
-
     # Check parallactic angle for each polcal in each session
     for session_name, session_mses in session_to_mses.items():
-        polcal_names = {polcal.name
-                        for ms in session_mses
-                        for polcal in ms.get_fields(intent=intent)}
-        for polcal_name in polcal_names:
-            parallactic_range = ous_parallactic_range(session_mses, polcal_name, intent)
-            LOG.info(f'Parallactic angle range for {polcal_name} in session {session_name}: {parallactic_range}')
-            session_scores = qacalc.score_parallactic_range(
-                recipe_name, session_name, polcal_name, parallactic_range, threshold
-            )
-            all_scores.extend(session_scores)
+        for intent in intents:
+            polcal_names = {polcal.name
+                            for ms in session_mses
+                            for polcal in ms.get_fields(intent=intent)}
+            for polcal_name in polcal_names:
+                parallactic_range = ous_parallactic_range(session_mses, polcal_name, intent)
+                LOG.info(f'Parallactic angle range for {polcal_name} ({intent}) in session {session_name}: '
+                         f'{parallactic_range}')
+                session_scores = qacalc.score_parallactic_range(
+                    intents_present, session_name, polcal_name, parallactic_range, threshold
+                )
+                all_scores.extend(session_scores)
 
     return all_scores
 
