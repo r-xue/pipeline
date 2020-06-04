@@ -139,6 +139,13 @@ class SessionRefAnt(basetask.StandardTaskTemplate):
         # evaluating the ranked list of refants based on non-zero phases.
         n_nonzero = collections.defaultdict(int)
 
+        # If the maximum number of antennas to evaluate phases for is less than
+        # one, then no best refant can be found.
+        if nant < 1:
+            LOG.warning("Unable to find best reference antenna, maximum number of antennas to evaluate phases for is"
+                        " set too low: {}".format(nant))
+            return ''
+
         # Run phase evaluation for specified nr. of antennas or nr. of
         # antennas in common, whichever is lowest.
         for iant in range(min(nant, nrefants)):
@@ -165,7 +172,15 @@ class SessionRefAnt(basetask.StandardTaskTemplate):
                      "".format(session_name, ant, n_nonzero[ant]))
 
         # From evaluated antennas, pick the one with the lowest total number of non-zero phase values;
-        return sorted(n_nonzero, key=n_nonzero.get)[0]
+        best_refant = sorted(n_nonzero, key=n_nonzero.get)[0]
+
+        # If the best choice of reference antenna still resulted in non-zero
+        # phases, then log a warning.
+        if n_nonzero[best_refant] != 0:
+            LOG.warning("Session \"{}\": final choice of best reference antenna ({}) resulted in {} phase outliers."
+                        "".format(session_name, best_refant, n_nonzero[best_refant]))
+
+        return best_refant
 
     def _create_combined_refant_list(self, session_name, vislist):
         """
