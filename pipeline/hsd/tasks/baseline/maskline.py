@@ -107,6 +107,7 @@ class MaskLine(basetask.StandardTaskTemplate):
             # No valid data
             outcome = {'detected_lines': [],
                        'cluster_info': {},
+                       'flag_digits': {},
                        'grid_table': None}
             result = MaskLineResults(task=self.__class__,
                                      success=True,
@@ -160,6 +161,7 @@ class MaskLine(basetask.StandardTaskTemplate):
             LOG.warn('Line detection/validation will not be done since grid table is empty. Maybe all the data are flagged out in the previous step.')
             outcome = {'detected_lines': [],
                        'cluster_info': {},
+                       'flag_digits': {},
                        'grid_table': None}
             result = MaskLineResults(task=self.__class__,
                                      success=True,
@@ -205,6 +207,7 @@ class MaskLine(basetask.StandardTaskTemplate):
         else:
             channelmap_range = validation_result.outcome['lines']
         cluster_info = validation_result.outcome['cluster_info']
+        flag_digits = validation_result.outcome['flag_digits']
 
         # export datatables
         for datatable in dt_dict.values():
@@ -222,6 +225,7 @@ class MaskLine(basetask.StandardTaskTemplate):
         outcome = {'detected_lines': lines,
                    'channelmap_range': channelmap_range,
                    'cluster_info': cluster_info,
+                   'flag_digits': flag_digits,
                    'grid_table': grid_table}
         result = MaskLineResults(task=self.__class__,
                                  success=True,

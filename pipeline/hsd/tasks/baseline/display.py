@@ -121,17 +121,23 @@ class ClusterDisplay(object):
         for group in self.__baselined():
             group_id = group['group_id']
             cluster = group['clusters']
+            flag_digits = group['flag_digits']
             lines = group['lines']
             is_all_invalid_lines = all([l[2] == False for l in lines])
             rep_member_id = group['members'][0]
             rep_member = reduction_group[group_id][rep_member_id]
+
             if 'cluster_score' not in cluster or is_all_invalid_lines:
                 # it should be empty cluster (no detection) or false clusters (detected but
                 # judged as an invalid clusters) so skip this cycle
                 continue
-            # avoid plotting empty clusters
-            if ((cluster['cluster_flag'] // 1000) % 10 == 0).all():
+
+            # skip the cycle for cluster with no lines validated at final stage
+            flags = cluster['cluster_flag']
+            final_flags = ( flags // flag_digits['final'] ) % 10
+            if ( final_flags == 0 ).all():
                 continue
+
             if 'index' in group:
                 # having key 'index' indicates the result comes from old (Scantable-based)
                 # procedure
@@ -155,7 +161,8 @@ class ClusterDisplay(object):
             plot_property = ClusterPropertyDisplay(group_id, iteration, cluster, virtual_spw, source_name, stage_dir)
             plot_list.extend(plot_property.plot())
             t2 = time.time()
-            plot_validation = ClusterValidationDisplay(self.context, group_id, iteration, cluster, vis,
+            plot_validation = ClusterValidationDisplay(self.context, group_id, iteration, cluster, 
+                                                       flag_digits, vis,
                                                        virtual_spw, source_name, antenna, lines, stage_dir)
             plot_list.extend(plot_validation.plot())
             t3 = time.time()
@@ -274,7 +281,7 @@ class ClusterPropertyDisplay(ClusterDisplayWorker):
         plot = self._create_plot(plotfile, 'line_property',
                                  'Line Center', 'Line Width')
         yield plot
-
+        
 
 class ClusterValidationDisplay(ClusterDisplayWorker):
     Description = {
@@ -284,11 +291,12 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
         'final': 'Clustering Analysis at Final stage\n\nGreen Square: Final Grid where the line protection channels are calculated and applied to the baseline subtraction\nBlue Square: Final Grid where the calculated line protection channels are applied to the baseline subtraction\n\nIsolated Grids are eliminated.\n'
     }
 
-    def __init__(self, context, group_id, iteration, cluster, vis, spw, field, antenna, lines, stage_dir):
+    def __init__( self, context, group_id, iteration, cluster, flag_digits, vis, spw, field, antenna, lines, stage_dir ):
         super(ClusterValidationDisplay, self).__init__(group_id, iteration, cluster, spw, field, stage_dir)
         self.context = context
         self.antenna = antenna
         self.lines = lines
+        self.flag_digits = flag_digits
         self.vis = vis
 
     def _plot(self):
@@ -415,15 +423,13 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
             yield plot
 
     def __stages(self):
-        digits = {'detection': 1, 'validation': 10,
-                  'smoothing': 100, 'final': 1000}
-        for key in ['detection', 'validation', 'smoothing', 'final']:
+        for key in self.flag_digits.keys():
             if 'cluster_flag' in self.cluster:
                 # Pick up target digit
-                _data = self.cluster['cluster_flag']
-                _digit = digits[key]
-                data = (_data // _digit) % 10
-                LOG.debug('data=%s' % data)
+                _flag = self.cluster['cluster_flag']
+                _digit = self.flag_digits[key]
+                flag = ( _flag // _digit) % 10
+                LOG.debug('flag=%s' % flag)
                 threshold = self.cluster[key+'_threshold']
                 desc = self.Description[key]
                 if key == 'validation':
@@ -434,7 +440,7 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
                     desc = template.safe_substitute(valid=valid,
                                                     marginal=marginal,
                                                     questionable=questionable)
-                yield (key, data, threshold, desc)
+                yield (key, flag, threshold, desc)
 
     def __line_property(self, icluster):
         reduction_group = self.context.observing_run.ms_reduction_group[self.group_id]
