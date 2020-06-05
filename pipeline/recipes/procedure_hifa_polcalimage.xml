@@ -5,6 +5,10 @@
     <ProcessingCommand>
         <Command xmlns="">hifa_importdata</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">minparang</Keyword>
+                <Value xmlns="">60.0</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
