@@ -61,6 +61,9 @@ class SessionRefAnt(basetask.StandardTaskTemplate):
         # Initialize results.
         result = SessionRefAntResults()
 
+        # Define maximum number of antennas to evaluate phases for.
+        nant = 3
+
         # Inspect the vis list to identify sessions and corresponding MSes.
         vislist_for_session = sessionutils.group_vislist_into_sessions(self.inputs.context, self.inputs.vis)
 
@@ -68,7 +71,7 @@ class SessionRefAnt(basetask.StandardTaskTemplate):
         for session_name, vislist in vislist_for_session.items():
             LOG.info("Evaluating reference antennas for session \"{}\" with measurement set(s): {}."
                      "".format(session_name, ', '.join([os.path.basename(vis) for vis in vislist])))
-            refant = self._identify_best_refant(session_name, vislist)
+            refant = self._identify_best_refant(session_name, vislist, nant=nant)
             LOG.info("Final choice of reference antenna for session \"{}\": {}".format(session_name, refant))
             result.refant[session_name] = {'vislist': vislist, 'refant': refant}
 
@@ -77,7 +80,7 @@ class SessionRefAnt(basetask.StandardTaskTemplate):
     def analyse(self, result):
         return result
 
-    def _identify_best_refant(self, session_name, vislist, nant=2):
+    def _identify_best_refant(self, session_name, vislist, nant):
         """
         Identify best reference antenna for specified list of measurement sets.
 
@@ -136,6 +139,13 @@ class SessionRefAnt(basetask.StandardTaskTemplate):
         # evaluating the ranked list of refants based on non-zero phases.
         n_nonzero = collections.defaultdict(int)
 
+        # If the maximum number of antennas to evaluate phases for is less than
+        # one, then no best refant can be found.
+        if nant < 1:
+            LOG.warning("Unable to find best reference antenna, maximum number of antennas to evaluate phases for is"
+                        " set too low: {}".format(nant))
+            return ''
+
         # Run phase evaluation for specified nr. of antennas or nr. of
         # antennas in common, whichever is lowest.
         for iant in range(min(nant, nrefants)):
@@ -154,6 +164,8 @@ class SessionRefAnt(basetask.StandardTaskTemplate):
             # ranking "perfect" reference antenna, and there is no need to
             # evaluate any further down the list.
             if not any(n_nonzero_phase.values()):
+                LOG.info("Session \"{}\": no phase outlier rows found for candidate antenna {}, so will select"
+                         " this as the highest ranking best reference antenna.".format(session_name, ant))
                 return ant
 
             # Store total nr. of non-zero phases for this antenna.
@@ -162,7 +174,15 @@ class SessionRefAnt(basetask.StandardTaskTemplate):
                      "".format(session_name, ant, n_nonzero[ant]))
 
         # From evaluated antennas, pick the one with the lowest total number of non-zero phase values;
-        return sorted(n_nonzero, key=n_nonzero.get)[0]
+        best_refant = sorted(n_nonzero, key=n_nonzero.get)[0]
+
+        # If the best choice of reference antenna still resulted in non-zero
+        # phases, then log a warning.
+        if n_nonzero[best_refant] != 0:
+            LOG.warning("Session \"{}\": final choice of best reference antenna ({}) resulted in {} phase outliers."
+                        "".format(session_name, best_refant, n_nonzero[best_refant]))
+
+        return best_refant
 
     def _create_combined_refant_list(self, session_name, vislist):
         """
@@ -237,7 +257,7 @@ class SessionRefAnt(basetask.StandardTaskTemplate):
         :return: the Results returned by the gaincal.GTypeGaincal task
         """
         container = vdp.InputsContainer(gaincal.GTypeGaincal, self.inputs.context, vis=vislist, intent="PHASE",
-                                        gaintype='G', calmode='p', solint='int', refant=refant)
+                                        calmode='p', solint='int', refant=refant, minsnr=3, gaintype='G')
         gaincal_task = gaincal.GTypeGaincal(container)
         return self._executor.execute(gaincal_task)
 
