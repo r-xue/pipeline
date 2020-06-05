@@ -164,6 +164,8 @@ class SessionRefAnt(basetask.StandardTaskTemplate):
             # ranking "perfect" reference antenna, and there is no need to
             # evaluate any further down the list.
             if not any(n_nonzero_phase.values()):
+                LOG.info("Session \"{}\": no phase outlier rows found for candidate antenna {}, so will select"
+                         " this as the highest ranking best reference antenna.".format(session_name, ant))
                 return ant
 
             # Store total nr. of non-zero phases for this antenna.
