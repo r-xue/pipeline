@@ -386,7 +386,11 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['imsize'] = th.imsize(fields=fieldids, cell=imlist_entry['cell'],
                                            primary_beam=largest_primary_beam,
                                            sfpblimit=0.2) if not inpdict['imsize'] else inpdict['imsize']
-
+        # ---------------------------------------------------------------------------------- set imsize (VLA)
+        if img_mode == 'VLA' and imlist_entry['specmode'] == 'cont':
+            imlist_entry['imsize'] = th.imsize(fields=fieldids, cell=imlist_entry['cell'],
+                                               primary_beam=largest_primary_beam,
+                                               spwspec=imlist_entry['spw']) if not inpdict['imsize'] else inpdict['imsize']
         # ------------------------------
         imlist_entry['nchan'] = inpdict['nchan']
         imlist_entry['nbin'] = inpdict['nbin']

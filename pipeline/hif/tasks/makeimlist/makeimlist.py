@@ -473,6 +473,7 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                 # Select only the lowest / highest frequency spw to get the smallest (for cell size)
                 # and largest beam (for imsize)
+                # TODO: substitute with heuristics get_min_max_freq() method, note centre_frequency vs. min/max_frequency
                 ref_ms = inputs.context.observing_run.get_ms(vislist[0])
                 min_freq = 1e15
                 max_freq = 0.0
@@ -601,9 +602,14 @@ class MakeImList(basetask.StandardTaskTemplate):
                             try:
                                 gridder = self.heuristics.gridder(field_intent[1], field_intent[0])
                                 field_ids = self.heuristics.field(field_intent[1], field_intent[0], vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'])
+                                # Image size (FOV) may be determined depending on the fractional bandwidth of the
+                                # selected spectral windows. In continuum spectral mode pass the spw list string
+                                # to imsize heuristics (used only for VLA), otherwise pass None to disable the feature.
+                                imsize_spwlist = spwlist_local if inputs.specmode == 'cont' else None
                                 himsize = self.heuristics.imsize(
                                     fields=field_ids, cell=cells[spwspec], primary_beam=largest_primary_beams[spwspec],
-                                    sfpblimit=sfpblimit, centreonly=False, vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'])
+                                    sfpblimit=sfpblimit, centreonly=False, vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'],
+                                    spwspec=imsize_spwlist)
                                 if field_intent[1] in [
                                         'PHASE',
                                         'BANDPASS',
