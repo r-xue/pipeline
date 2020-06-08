@@ -15,7 +15,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         self.imaging_mode = 'VLASS-SE-CONT'
 
     # niter
-    def niter_correction(self, niter, cell, imsize, residual_max, threshold):
+    def niter_correction(self, niter, cell, imsize, beam, residual_max, threshold, mask_frac_rad=0.0):
         if niter:
             return int(niter)
         else:

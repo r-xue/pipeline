@@ -170,31 +170,15 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
 
         return '%.3gJy' % (new_threshold), DR_correction_factor, maxEDR_used
 
-    def niter_correction(self, niter, cell, imsize, residual_max, threshold):
-        """Adjustment of number of cleaning iterations due to mask size."""
+    def niter_correction(self, niter, cell, imsize, synthesized_beam, residual_max, threshold, mask_frac_rad=0.0):
+        """Adjustment of number of cleaning iterations due to mask size.
 
-        qaTool = casatools.quanta
+        See base class method for parameter description."""
+        if mask_frac_rad == 0.0:
+            mask_frac_rad = 0.45    # ALMA specific parameter
 
-        threshold_value = qaTool.convert(threshold, 'Jy')['value']
-
-        # Compute automatic niter estimate
-        old_niter = niter
-        kappa = 5
-        loop_gain = 0.1
-        # TODO: Replace with actual pixel counting rather than assumption about geometry
-        r_mask = 0.45 * max(imsize[0], imsize[1]) * qaTool.convert(cell[0], 'arcsec')['value']
-        # TODO: Pass synthesized beam size explicitly rather than assuming a
-        #       certain ratio of beam to cell size (which can be different
-        #       if the product size is being mitigated or if a different
-        #       imaging_mode uses different heuristics).
-        beam = qaTool.convert(cell[0], 'arcsec')['value'] * 5.0
-        new_niter_f = int(kappa / loop_gain * (r_mask / beam) ** 2 * residual_max / threshold_value)
-        new_niter = int(utils.round_half_up(new_niter_f, -int(np.log10(new_niter_f))))
-        if new_niter != old_niter:
-            LOG.info('niter heuristic: Modified niter from %d to %d based on mask vs. beam size heuristic'
-                     '' % (old_niter, new_niter))
-
-        return new_niter
+        return super().niter_correction(niter, cell, imsize, synthesized_beam, residual_max,
+                                        threshold, mask_frac_rad=mask_frac_rad)
 
     def calc_percentile_baseline_length(self, percentile):
         """Calculate percentile baseline length for the vis list used in this heuristics instance."""

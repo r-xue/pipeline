@@ -42,6 +42,16 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         """See PIPE-679 and CASR-543"""
         return 'mtmfs'
 
+    def niter_correction(self, niter, cell, imsize, synthesized_beam, residual_max, threshold, mask_frac_rad=0.0):
+        """Adjustment of number of cleaning iterations due to mask size.
+
+        See PIPE-682 and CASR-543 and base class method for parameter description."""
+        if mask_frac_rad == 0.0:
+            mask_frac_rad = 0.25    # VLA specific parameter
+
+        return super().niter_correction(niter, cell, imsize, synthesized_beam, residual_max,
+                                        threshold, mask_frac_rad=mask_frac_rad)
+
     def imagename(self, output_dir=None, intent=None, field=None, spwspec=None, specmode=None, band=None):
         try:
             nameroot = self.imagename_prefix

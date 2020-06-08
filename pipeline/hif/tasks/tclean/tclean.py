@@ -158,6 +158,9 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
         # various places
         self.cont_freq_ranges = ''
 
+        # Store smallest beam size (not to be confused with self.image_heuristics.synthesized_beam method)
+        self.synthesized_beam = None
+
         self.is_per_eb = is_per_eb
         self.antenna = antenna
         self.usepointing = usepointing
@@ -283,6 +286,15 @@ class Tclean(cleanbase.CleanBase):
             field_id = self.image_heuristics.field(inputs.intent, inputs.field)
             inputs.phasecenter = self.image_heuristics.phasecenter(field_id)
 
+        # Determine and store synthesized beam size
+        self.synthesized_beam, known_synthesized_beams = \
+            self.image_heuristics.synthesized_beam(field_intent_list=[(inputs.field, inputs.intent)],
+                                                    spwspec=inputs.spw,
+                                                    robust=inputs.robust,
+                                                    uvtaper=inputs.uvtaper,
+                                                    parallel=inputs.parallel,
+                                                    shift=True)
+
         # If imsize not set then use heuristic code to calculate the
         # centers for each field  / spw
         imsize = inputs.imsize
@@ -291,14 +303,7 @@ class Tclean(cleanbase.CleanBase):
 
             # The heuristics cell size  is always the same for x and y as
             # the value derives from a single value returned by imager.advise
-            synthesized_beam, known_synthesized_beams = \
-                self.image_heuristics.synthesized_beam(field_intent_list=[(inputs.field, inputs.intent)],
-                                                       spwspec=inputs.spw,
-                                                       robust=inputs.robust,
-                                                       uvtaper=inputs.uvtaper,
-                                                       parallel=inputs.parallel,
-                                                       shift=True)
-            cell = self.image_heuristics.cell(beam=synthesized_beam)
+            cell = self.image_heuristics.cell(beam=self.synthesized_beam)
 
             if inputs.cell in (None, [], ''):
                 inputs.cell = cell
@@ -715,7 +720,7 @@ class Tclean(cleanbase.CleanBase):
 
         # Adjust niter based on the dirty image statistics
         new_niter = self.image_heuristics.niter_correction(sequence_manager.niter, inputs.cell, inputs.imsize,
-                                                           residual_max, new_threshold)
+                                                           self.synthesized_beam, residual_max, new_threshold)
         sequence_manager.niter = new_niter
 
         # Save corrected sensitivity in iter0 result object for 'cube' and
