@@ -45,8 +45,10 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
     def imsize(self, fields, cell, primary_beam, sfpblimit=None, max_pixels=None,
                centreonly=False, vislist=None, spwspec=None):
         """
-        Frequency dependent image size heuristics for VLA. The method computes the image pixel dimensions,
-        given the pixel cell and primary beam sizes.
+        Image size heuristics for single fields and mosaics. The pixel count along x and y image dimensions
+        is determined by the cell size, primary beam size and the spread of phase centers in case of mosaics.
+
+        Frequency dependent image size may be computed for VLA imaging.
 
         For single fields, 18 GHz and above FOV extends to the first minimum of the primary beam Airy pattern.
         Below 18 GHz, FOV extends to the second minimum (incorporating the first sidelobes).

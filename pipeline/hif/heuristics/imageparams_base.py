@@ -984,8 +984,8 @@ class ImageParamsHeuristics(object):
     def imsize(self, fields, cell, primary_beam, sfpblimit=None, max_pixels=None,
                centreonly=False, vislist=None, spwspec=None):
         """
-        Frequency dependent image size heuristics for VLA. The method computes the image pixel dimensions,
-        given the pixel cell and primary beam sizes.
+        Image size heuristics for single fields and mosaics. The pixel count along x and y image dimensions
+        is determined by the cell size, primary beam size and the spread of phase centers in case of mosaics.
 
         :param fields: list of comma separated strings of field IDs per MS.
         :param cell: pixel (cell) size in arcsec.
@@ -997,7 +997,7 @@ class ImageParamsHeuristics(object):
         :param vislist: list of visibility path string to be used for imaging. If not set then use all visibilities
             in the context.
         :param spwspec: ID list of spectral windows used to create image product. List or string containing comma
-            separated spw IDs list. Used only in VLA image heuristics.
+            separated spw IDs list. Not used in the base method.
         :return: two element list of pixel count along x and y image axes.
         """
 
