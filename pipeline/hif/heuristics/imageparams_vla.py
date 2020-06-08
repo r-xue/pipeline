@@ -47,7 +47,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
         See PIPE-682 and CASR-543 and base class method for parameter description."""
         if mask_frac_rad == 0.0:
-            mask_frac_rad = 0.25    # VLA specific parameter
+            mask_frac_rad = 0.45
 
         return super().niter_correction(niter, cell, imsize, synthesized_beam, residual_max,
                                         threshold, mask_frac_rad=mask_frac_rad)
