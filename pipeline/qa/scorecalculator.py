@@ -516,8 +516,8 @@ def score_parallactic_range(
 
     # accordion message if coverage is adequate
     if coverage >= threshold:
-        longmsg = (f'Sufficient parallactic angle coverage ({coverage:.2f}\u00B0) for polarisation calibrator '
-                   f'{field_name} in session {session_name}')
+        longmsg = (f'Sufficient parallactic angle coverage ({coverage:.2f}\u00B0 > {threshold:.2f}\u00B0) for '
+                   f'polarisation calibrator {field_name} in session {session_name}')
         shortmsg = 'Parallactic angle'
         origin = pqa.QAOrigin(
             metric_name='score_parallactic_angle',
@@ -531,8 +531,8 @@ def score_parallactic_range(
 
     # complain with a banner message if coverage is insufficient
     else:
-        longmsg = (f'Insufficient parallactic angle coverage ({coverage:.2f}\u00B0) for polarisation calibrator '
-                   f'{field_name} in session {session_name}')
+        longmsg = (f'Insufficient parallactic angle coverage ({coverage:.2f}\u00B0 < {threshold:.2f}\u00B0) for '
+                   f'polarisation calibrator {field_name} in session {session_name}')
         shortmsg = 'Parallactic angle'
         origin = pqa.QAOrigin(
             metric_name='score_parallactic_angle',
