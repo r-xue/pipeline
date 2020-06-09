@@ -1303,7 +1303,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         threshold = [1.5, 0.5]
         cluster_flag = numpy.zeros(GridCluster.shape, dtype=numpy.uint16)
         flag_digit = self.flag_digits['detection']
-        LOG.info( "baseline/validation.py detection flag_digit={}".format(flag_digit))
         cluster_flag = self.__update_cluster_flag(cluster_flag, 'detection', GridCluster, threshold, flag_digit)
 
         return (GridCluster, GridMember, cluster_flag)
@@ -1340,7 +1339,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
         threshold = [self.Valid, self.Marginal, self.Questionable]
         flag_digit = self.flag_digits['validation']
-        LOG.info( "baseline/validation.py validation flag_digit={}".format(flag_digit))
         cluster_flag = self.__update_cluster_flag(cluster_flag, 'validation', GridCluster, threshold, flag_digit)
         LOG.trace('GridCluster {}', GridCluster)
         LOG.trace('GridMember {}', GridMember)
@@ -1417,7 +1415,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
         threshold = [self.Valid, self.Marginal, self.Questionable]
         flag_digit = self.flag_digits['smoothing']
-        LOG.info( "baseline/validation.py smoothing flag_digit={}".format(flag_digit))
         cluster_flag = self.__update_cluster_flag(cluster_flag, 'smoothing', GridCluster, threshold, flag_digit)
         LOG.trace('threshold = {}', threshold)
         LOG.trace('GridCluster = {}', GridCluster)
@@ -1806,7 +1803,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
         threshold = [1.5, 0.5, 0.5, 0.5]
         flag_digit = self.flag_digits['final']
-        LOG.info( "baseline/validation.py final flag_digit={}".format(flag_digit))
         cluster_flag = self.__update_cluster_flag(cluster_flag, 'final', GridCluster, threshold, flag_digit)
 
         return (RealSignal, lines, channelmap_range, cluster_flag)

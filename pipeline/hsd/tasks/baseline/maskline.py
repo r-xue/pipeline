@@ -207,7 +207,7 @@ class MaskLine(basetask.StandardTaskTemplate):
         else:
             channelmap_range = validation_result.outcome['lines']
         cluster_info = validation_result.outcome['cluster_info']
-        flag_digits = validation_result.outcome['flag_digits']
+        flag_digits  = validation_result.outcome['flag_digits']
 
         # export datatables
         for datatable in dt_dict.values():
