@@ -221,32 +221,33 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
             # define mask outside the cleaned area
             image_stats = None
             if pb is not None and os.path.exists(pb+extension) and cleanmask is not None and os.path.exists(cleanmask):
+                pb_name = os.path.basename(pb)+extension
                 have_mask = True
                 # Annulus without clean mask
                 statsmask = '("%s" < 0.1) && ("%s" > %f) && ("%s" < %f)' % \
                             (os.path.basename(flattened_mask), \
-                             os.path.basename(pb)+extension, pblimit_image, \
-                             os.path.basename(pb)+extension, pblimit_cleanmask)
+                             pb_name, pblimit_image, \
+                             pb_name, pblimit_cleanmask)
                 # Check for number of points per channel (PIPE-541):
                 try:
                     image_stats = image.statistics(mask=statsmask, robust=True, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5)
                     if image_stats['npts'].shape == (0,) or np.median(image_stats['npts']) < 10.0:
                         # Switch to full annulus to avoid zero noise spectrum due to voluminous mask
                         LOG.warn('Using full annulus for noise spectrum due to voluminous mask.')
-                        statsmask = '("%s" > %f) && ("%s" < %f)' % (os.path.basename(pb)+extension, pblimit_image,
-                                                                    os.path.basename(pb)+extension, pblimit_cleanmask)
+                        statsmask = '("%s" > %f) && ("%s" < %f)' % (pb_name, pblimit_image,
+                                                                    pb_name, pblimit_cleanmask)
                         image_stats = None
                 except Exception as e:
                     # Try full annulus as a fallback
-                    LOG.error('Exception: %s. Using full annulus for noise spectrum due to voluminous mask.' % (e))
-                    statsmask = '("%s" > %f) && ("%s" < %f)' % (os.path.basename(pb)+extension, pblimit_image,
-                                                                os.path.basename(pb)+extension, pblimit_cleanmask)
+                    LOG.exception('Using full annulus for noise spectrum due to voluminous mask.', exc_info=e)
+                    statsmask = '("%s" > %f) && ("%s" < %f)' % (pb_name, pblimit_image,
+                                                                pb_name, pblimit_cleanmask)
                     image_stats = None
             elif pb is not None and os.path.exists(pb+extension):
                 have_mask = True
                 # Full annulus
-                statsmask = '("%s" > %f) && ("%s" < %f)' % (os.path.basename(pb)+extension, pblimit_image,
-                                                            os.path.basename(pb)+extension, pblimit_cleanmask)
+                statsmask = '("%s" > %f) && ("%s" < %f)' % (pb_name, pblimit_image,
+                                                            pb_name, pblimit_cleanmask)
             elif cleanmask is not None and os.path.exists(cleanmask):
                 have_mask = True
                 # Area outside clean mask
