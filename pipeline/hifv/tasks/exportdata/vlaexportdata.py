@@ -150,8 +150,8 @@ finally:
         try:
             report_xml = report_generator.get_report_xml(context)
             vlaifaqua.export_to_disk(report_xml, aqua_file)
-        except:
-            LOG.error('Error generating the pipeline AQUA report')
+        except Exception as e:
+            LOG.exception('Error generating the pipeline AQUA report', exc_info=e)
             return 'Undefined'
 
         ps = context.project_structure
