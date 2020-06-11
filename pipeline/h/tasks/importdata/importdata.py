@@ -124,6 +124,8 @@ class ImportData(basetask.StandardTaskTemplate):
 
     def prepare(self, **parameters):
         inputs = self.inputs
+        output_dir = inputs.context.output_dir
+
         vis = inputs.vis
 
         if vis is None:
@@ -146,13 +148,10 @@ class ImportData(basetask.StandardTaskTemplate):
             with contextlib.closing(tarfile.open(vis)) as tar:
                 filenames = tar.getnames()
 
-                (to_import, to_convert) = self._analyse_filenames(filenames,
-                                                                  vis)
+                (to_import, to_convert) = self._analyse_filenames(filenames, vis)
 
-                to_convert = [os.path.join(inputs.output_dir, asdm)
-                              for asdm in to_convert]
-                to_import = [os.path.join(inputs.output_dir, ms)
-                             for ms in to_import]
+                to_convert = [os.path.join(inputs.output_dir, asdm) for asdm in to_convert]
+                to_import = [os.path.join(inputs.output_dir, ms) for ms in to_import]
 
                 if not self._executor._dry_run:
                     LOG.info('Extracting %s to %s' % (vis, inputs.output_dir))
@@ -164,14 +163,13 @@ class ImportData(basetask.StandardTaskTemplate):
             # get a list of all the files in the given directory
             filenames = [os.path.join(vis, f) for f in os.listdir(vis)]
 
-            (to_import, to_convert) = self._analyse_filenames(filenames,
-                                                              vis)
+            (to_import, to_convert) = self._analyse_filenames(filenames, vis)
 
             if not to_import and not to_convert:
                 raise TypeError('{!s} is of unhandled type'.format(vis))
 
             # convert all paths to absolute paths for the next sequence
-            to_import = list(map(os.path.abspath, to_import))
+            to_import = [os.path.abspath(f) for f in to_import]
 
             # if the file is not in the working directory, copy it across,
             # replacing the filename with the relocated filename
@@ -215,7 +213,7 @@ class ImportData(basetask.StandardTaskTemplate):
 
         ms_reader = tablereader.ObservingRunReader
 
-        to_import = [os.path.abspath(f) for f in to_import]
+        # to_import = [os.path.relpathabspath(f) for f in to_import]
         observing_run = ms_reader.get_observing_run(to_import)
         for ms in observing_run.measurement_sets:
             LOG.debug('Setting session to %s for %s' % (inputs.session,
