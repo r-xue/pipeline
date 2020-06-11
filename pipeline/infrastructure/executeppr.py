@@ -68,8 +68,7 @@ def executeppr(pprXmlFile, importonly=True, breakpoint='breakpoint',
             casatools.post_to_log("    Resuming from last context",
                                   echo_to_screen=echo_to_screen)
         else:
-            context = pipeline.Pipeline(loglevel=loglevel, plotlevel=plotlevel,
-                                        output_dir=workingDir).context
+            context = pipeline.Pipeline(loglevel=loglevel, plotlevel=plotlevel).context
             casatools.post_to_log("    Creating new pipeline context",
                                   echo_to_screen=echo_to_screen)
 

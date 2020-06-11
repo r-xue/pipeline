@@ -51,8 +51,7 @@ def executeppr (pprXmlFile, importonly=True, dry_run=False, loglevel='info',
             relativePath, "rawdata")
 
         # Get the pipeline context 
-        context = pipeline.Pipeline(loglevel=loglevel, plotlevel=plotlevel,
-            output_dir=workingDir).context
+        context = pipeline.Pipeline(loglevel=loglevel, plotlevel=plotlevel).context
 
     except Exception:
         casatools.post_to_log ("Beginning pipeline run ...", 
