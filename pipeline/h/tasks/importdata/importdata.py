@@ -213,7 +213,6 @@ class ImportData(basetask.StandardTaskTemplate):
 
         ms_reader = tablereader.ObservingRunReader
 
-        # to_import = [os.path.relpathabspath(f) for f in to_import]
         observing_run = ms_reader.get_observing_run(to_import)
         for ms in observing_run.measurement_sets:
             LOG.debug('Setting session to %s for %s' % (inputs.session,
