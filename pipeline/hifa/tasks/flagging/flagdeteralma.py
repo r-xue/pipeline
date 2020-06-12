@@ -17,6 +17,7 @@ class FlagDeterALMAInputs(flagdeterbase.FlagDeterBaseInputs):
     """
     FlagDeterALMAInputs defines the inputs for the FlagDeterALMA pipeline task.
     """
+    tolerance = vdp.VisDependentProperty(default=0.0)
     edgespw = vdp.VisDependentProperty(default=True)
     flagbackup = vdp.VisDependentProperty(default=True)
     fracspw = vdp.VisDependentProperty(default=0.03125)
@@ -29,14 +30,14 @@ class FlagDeterALMAInputs(flagdeterbase.FlagDeterBaseInputs):
     qa0 = vdp.VisDependentProperty(default=True)
     qa2 = vdp.VisDependentProperty(default=True)
 
-    def __init__(self, context, vis=None, output_dir=None, flagbackup=None, autocorr=None, shadow=None, scan=None,
-                 scannumber=None, intents=None, edgespw=None, fracspw=None, fracspwfps=None, online=None,
+    def __init__(self, context, vis=None, output_dir=None, flagbackup=None, autocorr=None, shadow=None, tolerance=None,
+                 scan=None, scannumber=None, intents=None, edgespw=None, fracspw=None, fracspwfps=None, online=None,
                  fileonline=None, template=None, filetemplate=None, hm_tbuff=None, tbuff=None, qa0=None, qa2=None):
         super(FlagDeterALMAInputs, self).__init__(
-            context, vis=vis, output_dir=output_dir, flagbackup=flagbackup, autocorr=autocorr, shadow=shadow, scan=scan,
-            scannumber=scannumber, intents=intents, edgespw=edgespw, fracspw=fracspw, fracspwfps=fracspwfps,
-            online=online, fileonline=fileonline, template=template, filetemplate=filetemplate, hm_tbuff=hm_tbuff,
-            tbuff=tbuff)
+            context, vis=vis, output_dir=output_dir, flagbackup=flagbackup, autocorr=autocorr, shadow=shadow,
+            tolerance=tolerance, scan=scan, scannumber=scannumber, intents=intents, edgespw=edgespw, fracspw=fracspw,
+            fracspwfps=fracspwfps, online=online, fileonline=fileonline, template=template, filetemplate=filetemplate,
+            hm_tbuff=hm_tbuff, tbuff=tbuff)
 
         # solution parameters
         self.qa0 = qa0

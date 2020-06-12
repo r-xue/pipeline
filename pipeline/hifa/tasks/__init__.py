@@ -12,10 +12,14 @@ from .gaincalsnr import GaincalSnr
 from .gfluxscaleflag import Gfluxscaleflag
 from .imageprecheck import ImagePreCheck
 from .importdata import ALMAImportData
+from .lock_refant import LockRefAnt
+from .polcalflag import Polcalflag
 from .restoredata import ALMARestoreData
+from .sessionrefant import SessionRefAnt
 from .spwphaseup import SpwPhaseup
 from .targetflag import Targetflag
 from .tsysflag import Tsysflag as ALMATsysflag
+from .unlock_refant import UnlockRefAnt
 from .wvrgcal import Wvrgcal
 from .wvrgcalflag import Wvrgcalflag
 # required to load ALMA-specific QA

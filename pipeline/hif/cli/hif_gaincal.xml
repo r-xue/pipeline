@@ -143,6 +143,23 @@ The 'gspline' (smooth) option is still under development in CASA.
     <value/>
   </param>
 
+  <param subparam="true" name="refantmode" type="string">
+    <shortdescription>Reference antenna selection mode</shortdescription>
+    <description>Controls how the refant is applied. Currently available
+                 choices are 'flex', 'strict', and the default value of ''.
+                 Setting to '' allows the pipeline to select the appropriate
+                 mode based on the state of the reference antenna list.
+
+                 Examples: refantmode='strict', refantmode=''
+    </description>
+    <value></value>
+    <allowed kind="enum">
+      <value></value>
+      <value>flex</value>
+      <value>strict</value>
+    </allowed>
+  </param>
+
   <param subparam="true" name="solnorm" type="bool">
     <description>Normalize average solution amplitudes to 1.0</description>
     <value>False</value>
@@ -257,6 +274,7 @@ The 'gspline' (smooth) option is still under development in CASA.
         <default param="smodel"><value type="doubleVec"/></default>
         <default param="solnorm"><value type="bool">False</value></default>
         <default param="refant"><value type="string"/></default>
+        <default param="refantmode"><value type="string"/></default>
         <default param="dryrun"><value type="bool">False</value></default>
         <default param="acceptresults"><value type="bool">True</value></default>
       </equals>
@@ -270,6 +288,7 @@ The 'gspline' (smooth) option is still under development in CASA.
         <default param="smodel"><value type="doubleVec"/></default>
         <default param="solnorm"><value type="bool">False</value></default>
         <default param="refant"><value type="string"/></default>
+        <default param="refantmode"><value type="string"/></default>
       </equals>
     </when>
   </constraints>

@@ -1254,6 +1254,13 @@ finally:
                             imagename = '%s.error' % (image['imagename'].replace('.image', '.alpha'))
                             images_list.append((imagename, version))
                             cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
+                    elif (image['imagename'].find('image.sd') != -1): # single dish
+                        imagename = image['imagename']
+                        images_list.append((imagename, version))
+                        cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
+                        imagename = image['imagename'].replace('image.sd', 'image.sd.weight')
+                        images_list.append((imagename, version))
+                        cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
                     else:
                         imagename = image['imagename']
                         images_list.append((imagename, version))

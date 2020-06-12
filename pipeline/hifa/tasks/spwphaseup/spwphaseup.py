@@ -1,3 +1,6 @@
+import os
+from typing import Optional
+
 import numpy
 
 import pipeline.infrastructure as infrastructure
@@ -22,7 +25,6 @@ __all__ = [
 
 
 class SpwPhaseupInputs(gtypegaincal.GTypeGaincalInputs):
-
     intent = vdp.VisDependentProperty(default='BANDPASS')
 
     # Spw mapping mode heuristics, options are 'auto', 'combine', 'simple', and 'default'
@@ -55,10 +57,12 @@ class SpwPhaseupInputs(gtypegaincal.GTypeGaincalInputs):
     minfracmaxbw = vdp.VisDependentProperty(default=0.8)
     samebb = vdp.VisDependentProperty(default=True)
     caltable = vdp.VisDependentProperty(default=None)
+    # PIPE-629: new parameter to unregister existing phaseup tables before appending to callibrary
+    unregister_existing = vdp.VisDependentProperty(default=False)
 
     def __init__(self, context, vis=None, output_dir=None, caltable=None, intent=None, hm_spwmapmode=None,
                  phasesnr=None, bwedgefrac=None, hm_nantennas=None, maxfracflagged=None,
-                 maxnarrowbw=None, minfracmaxbw=None, samebb=None, **parameters):
+                 maxnarrowbw=None, minfracmaxbw=None, samebb=None, unregister_existing=None, **parameters):
         super(SpwPhaseupInputs, self).__init__(context, vis=vis, output_dir=output_dir, **parameters)
         self.caltable = caltable
         self.intent = intent
@@ -70,6 +74,7 @@ class SpwPhaseupInputs(gtypegaincal.GTypeGaincalInputs):
         self.maxnarrowbw = maxnarrowbw
         self.minfracmaxbw = minfracmaxbw
         self.samebb = samebb
+        self.unregister_existing = unregister_existing
 
 
 @task_registry.set_equivalent_casa_task('hifa_spwphaseup')
@@ -78,7 +83,24 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
     def prepare(self, **parameters):
         # Simplify the inputs
-        inputs = self.inputs
+        inputs: SpwPhaseupInputs = self.inputs
+
+        if inputs.unregister_existing:
+            # Unregister old spwphaseup calibrations to stop them from being preapplied
+
+            # predicate function that triggers when the spwphaseup caltable is detected
+            def spwphaseup_matcher(_: callibrary.CalToArgs, calfrom: callibrary.CalFrom) -> bool:
+                return 'hifa_spwphaseup' in calfrom.gaintable
+
+            LOG.info('Temporarily unregistering previous spwphaseup tables while task executes')
+            inputs.context.callibrary.unregister_calibrations(spwphaseup_matcher)
+
+            # Reset the spwmaps. The will be restored if the result is not accepted
+            ms = inputs.ms
+            LOG.info('Temporarily resetting spwmaps for %s', ms.basename)
+            ms.phaseup_spwmap = []
+            ms.combine_spwmap = []
+            ms.low_combined_phasesnr_spws = []
 
         # Get a list of all the spws and a list of the science spws
         allspws = inputs.ms.get_spectral_windows(task_arg=inputs.spw, science_windows_only=False)
@@ -161,7 +183,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         # Create the results object.
         result = SpwPhaseupResults(vis=inputs.vis, phaseup_result=phaseupresult, combine_spwmap=combinespwmap,
-                                   phaseup_spwmap=phaseupspwmap, low_combined_phasesnr_spws=low_combined_phasesnr_spws)
+                                   phaseup_spwmap=phaseupspwmap, low_combined_phasesnr_spws=low_combined_phasesnr_spws,
+                                   unregister_existing=inputs.unregister_existing)
 
         return result
 
@@ -189,14 +212,14 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         inputs = self.inputs
 
         task_args = {
-          'output_dir': inputs.output_dir,
-          'vis': inputs.vis,
-          'intent': 'PHASE',
-          'phasesnr': inputs.phasesnr,
-          'bwedgefrac': inputs.bwedgefrac,
-          'hm_nantennas': inputs.hm_nantennas,
-          'maxfracflagged': inputs.maxfracflagged,
-          'spw': inputs.spw
+            'output_dir': inputs.output_dir,
+            'vis': inputs.vis,
+            'intent': 'PHASE',
+            'phasesnr': inputs.phasesnr,
+            'bwedgefrac': inputs.bwedgefrac,
+            'hm_nantennas': inputs.hm_nantennas,
+            'maxfracflagged': inputs.maxfracflagged,
+            'spw': inputs.spw
         }
         task_inputs = gaincalsnr.GaincalSnrInputs(inputs.context, **task_args)
         gaincalsnr_task = gaincalsnr.GaincalSnr(task_inputs)
@@ -264,7 +287,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                     combined_idx.append(i)
             # calculate combined SNR from per spw SNR
             combined_snr = numpy.linalg.norm(snrlist)
-            LOG.info('Reference SpW ID = {} (Combined SpWs = {}) : Combined SNR = {}'.format(mappedspwid, str([spwlist[j] for j in combined_idx]), combined_snr))
+            LOG.info('Reference SpW ID = {} (Combined SpWs = {}) : Combined SNR = {}'.format(mappedspwid, str(
+                [spwlist[j] for j in combined_idx]), combined_snr))
 
             if combined_snr < self.inputs.phasesnr:
                 low_snr_spwids.extend([spwlist[i] for i in combined_idx])
@@ -330,7 +354,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
 class SpwPhaseupResults(basetask.Results):
     def __init__(self, vis=None, phaseup_result=None, combine_spwmap=None, phaseup_spwmap=None,
-                 low_combined_phasesnr_spws=None):
+                 low_combined_phasesnr_spws=None, unregister_existing: Optional[bool] = False):
         """
         Initialise the phaseup spw mapping results object.
         """
@@ -347,6 +371,7 @@ class SpwPhaseupResults(basetask.Results):
         self.combine_spwmap = combine_spwmap
         self.phaseup_spwmap = phaseup_spwmap
         self.low_combined_phasesnr_spws = low_combined_phasesnr_spws
+        self.unregister_existing = unregister_existing
 
     def merge_with_context(self, context):
         if self.vis is None:
@@ -356,6 +381,21 @@ class SpwPhaseupResults(basetask.Results):
         if not self.phaseup_result.final:
             LOG.error(' No results to merge ')
             return
+
+        if self.unregister_existing:
+            # Identify the MS to process
+            vis: str = os.path.basename(self.inputs['vis'])
+
+            # predicate function that triggers when the spwphaseup caltable is
+            # detected for this MS
+            def spwphaseup_matcher(calto: callibrary.CalToArgs, calfrom: callibrary.CalFrom) -> bool:
+                calto_vis = {os.path.basename(v) for v in calto.vis}
+                do_delete = 'hifa_spwphaseup' in calfrom.gaintable and vis in calto_vis
+                if do_delete:
+                    LOG.info(f'Unregistering previous spwphaseup tables for {vis}')
+                return do_delete
+
+            context.callibrary.unregister_calibrations(spwphaseup_matcher)
 
         # Merge the spw phaseup offset table
         self.phaseup_result.merge_with_context(context)
@@ -369,8 +409,8 @@ class SpwPhaseupResults(basetask.Results):
 
     def __repr__(self):
         if self.vis is None or not self.phaseup_result:
-            return('SpwPhaseupResults:\n'
-                   '\tNo spw phaseup table computed')
+            return ('SpwPhaseupResults:\n'
+                    '\tNo spw phaseup table computed')
         else:
             spwmap = 'SpwPhaseupResults:\nCombine spwmap = {}\nNarrow to wide spwmap = {}\n' \
                      ''.format(self.combine_spwmap, self.phaseup_spwmap)

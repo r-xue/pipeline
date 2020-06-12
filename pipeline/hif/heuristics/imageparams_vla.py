@@ -10,8 +10,10 @@ LOG = infrastructure.get_logger(__name__)
 
 class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
-    def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None, linesfile=None, imaging_params={}):
-        ImageParamsHeuristics.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
+    def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
+                 linesfile=None, imaging_params={}):
+        ImageParamsHeuristics.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params, contfile,
+                                       linesfile, imaging_params)
         self.imaging_mode = 'VLA'
 
     def robust(self):
@@ -20,8 +22,25 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
     def uvtaper(self, beam_natural=None, protect_long=None):
         return []
 
-    def nterms(self):
-        return 2
+    def nterms(self, spwspec):
+        """
+        Determine nterms depending on the fractional bandwidth.
+        Returns 1 if the fractional bandwidth is < 10 per cent, 2 otherwise.
+
+        See PIPE-679 and CASR-543
+        """
+        if spwspec is None:
+            return None
+        # Fractional bandwidth
+        fr_bandwidth = self.get_fractional_bandwidth(spwspec)
+        if (fr_bandwidth >= 0.1):
+            return 2
+        else:
+            return 1
+
+    def deconvolver(self, specmode, spwspec):
+        """See PIPE-679 and CASR-543"""
+        return 'mtmfs'
 
     def imagename(self, output_dir=None, intent=None, field=None, spwspec=None, specmode=None, band=None):
         try:

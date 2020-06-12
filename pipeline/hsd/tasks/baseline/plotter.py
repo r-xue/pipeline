@@ -2,6 +2,7 @@ import collections
 import os
 
 import numpy
+import itertools
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
@@ -93,21 +94,25 @@ class BaselineSubtractionPlotManager(object):
         return new_table
 
     @staticmethod
-    def _generate_plot_rowlist(ms_id, antenna_id, spw_id, polarization_ids, grid_table):
+    def _generate_plot_rowlist(ms_id, antenna_id, spw_id, polarization_ids, grid_table, grid_list):
         for row in grid_table:
-            if row[0] == spw_id and row[1] in polarization_ids:
+            if row[0] == spw_id and row[1] in polarization_ids and (row[2], row[3]) in grid_list:
                 new_row_entry = numpy.fromiter((r[3] for r in row[6] if r[-1] == ms_id and r[-2] == antenna_id),
                                                dtype=int)
                 yield new_row_entry
 
     @staticmethod
-    def generate_plot_rowlist(ms_id, antenna_id, spw_id, polarization_ids, grid_table):
+    def generate_plot_rowlist(ms_id, antenna_id, spw_id, polarization_ids, grid_table, plot_table, each_plane):
+        xlist = [ plot_table[idx][0] for idx in each_plane ]
+        ylist = [ plot_table[idx][1] for idx in each_plane ]
+        grid_list = list(zip( xlist, ylist ))
         new_table = list(BaselineSubtractionPlotManager._generate_plot_rowlist(ms_id,
                                                                                antenna_id,
                                                                                spw_id,
                                                                                polarization_ids,
-                                                                               grid_table))
-        return new_table
+                                                                               grid_table,
+                                                                               grid_list))
+        return list(itertools.chain.from_iterable(new_table))
 
     def __init__(self, context, datatable):
         self.context = context
@@ -461,11 +466,11 @@ def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table, org_
     plot_table = BaselineSubtractionPlotManager.generate_plot_meta_table(virtual_spwid,
                                                                          polids,
                                                                          grid_table)
-    grid_rowlist = BaselineSubtractionPlotManager._generate_plot_rowlist(ms_id,
-                                                                         antid,
-                                                                         virtual_spwid,
-                                                                         polids,
-                                                                         grid_table)
+    # grid_rowlist = BaselineSubtractionPlotManager._generate_plot_rowlist(ms_id,
+    #                                                                      antid,
+    #                                                                      virtual_spwid,
+    #                                                                      polids,
+    #                                                                      grid_table)
     num_grid_rows = len(plot_table)  # num_plane * num_grid_ra * num_grid_dec
     assert num_grid_rows > 0
     num_grid_dec = plot_table[-1][1] + 1
@@ -490,18 +495,25 @@ def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table, org_
     #     dec_offset = qa.convert( org_direction['m1'], 'deg' )['value']
 
     for row_index, each_plane in enumerate(each_grid):
-        def g():
-            for plot_table_rowid in each_plane:
-                plot_table_row = next(grid_rowlist)
-                LOG.debug('Process row {}: ra={}, dec={}',
-                          plot_table_rowid, plot_table[plot_table_rowid][2],
-                          plot_table[plot_table_rowid][3])
-                for i in plot_table_row:
-                    # MS stores multiple polarization components in one cell
-                    # so it is not necessary to check polarization id
-                    LOG.trace('Adding {} to dataids', i)
-                    yield i
-        dataids = numpy.fromiter(g(), dtype=numpy.int64)
+        # def g():
+        #     for plot_table_rowid in each_plane:
+        #         plot_table_row = next(grid_rowlist)
+        #         LOG.debug('Process row {}: ra={}, dec={}',
+        #                   plot_table_rowid, plot_table[plot_table_rowid][2],
+        #                   plot_table[plot_table_rowid][3])
+        #         for i in plot_table_row:
+        #             # MS stores multiple polarization components in one cell
+        #             # so it is not necessary to check polarization id
+        #             LOG.trace('Adding {} to dataids', i)
+        #             yield i
+        # dataids = numpy.fromiter(g(), dtype=numpy.int64)
+        dataids = BaselineSubtractionPlotManager.generate_plot_rowlist( ms_id, 
+                                                                        antid, 
+                                                                        virtual_spwid, 
+                                                                        polids, 
+                                                                        grid_table, 
+                                                                        plot_table, 
+                                                                        each_plane )
         #raid = plot_table[each_plane[0]][0]
         #decid = plot_table[each_plane[0]][1]
         raid = row_index % num_ra

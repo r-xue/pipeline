@@ -95,19 +95,7 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
-        <Command xmlns="">hifv_syspower</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
         <Command xmlns="">hifv_testBPdcals</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hifv_flagbaddef</Command>
         <ParameterSet>
             <Parameter>
                 <Keyword xmlns="">doflagundernspwlimit</Keyword>
@@ -115,7 +103,6 @@
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
-
 
     <ProcessingCommand>
         <Command xmlns="">hifv_checkflag</Command>

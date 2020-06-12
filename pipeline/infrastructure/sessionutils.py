@@ -85,6 +85,39 @@ def group_into_sessions(context, all_results):
             for session_id, results_for_session in itertools.groupby(results_by_session, get_session)}
 
 
+def group_vislist_into_sessions(context, vislist):
+    """
+    Group the specified list of measurement sets 'vislist' by their session,
+    and return a dictionary that maps a session name to the corresponding list
+    of measurement sets.
+
+    :param context: pipeline context
+    :type context: :class:`~pipeline.infrastructure.launcher.Context`
+    :param vislist: list of vis to be grouped
+    :type vislist: list
+    :return: dictionary of sessions to vislist for that session
+    :rtype: dict {session name: [vis, vis, ...]}
+    """
+    sessions = collections.defaultdict(list)
+    for vis in vislist:
+        sessions[getattr(context.observing_run.get_ms(vis), 'session', 'Shared')].append(vis)
+    return sessions
+
+
+def get_vislist_for_session(context, session):
+    """
+    Return list of measurement sets for specified session name.
+
+    :param context: pipeline context
+    :type context: :class:`~pipeline.infrastructure.launcher.Context`
+    :param session: name of session for which to retrieve list of vis
+    :type session: str
+    :return: list of vis for session
+    :rtype: list [vis, vis, ...]
+    """
+    return [ms.name for ms in context.observing_run.get_measurement_sets() if ms.session == session]
+
+
 class VDPTaskFactory(object):
     """
     VDPTaskFactory is a class that implements the Factory design

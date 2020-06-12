@@ -27,7 +27,7 @@ def hifacal(vislist, importonly=True, dbservice=False, pipelinemode='automatic',
             interactive=True):
 
     echo_to_screen = interactive
-    casatools.post_to_log("Beginning pipeline run ...")
+    casatools.post_to_log("Beginning ALMA calibration pipeline run ...")
 
     try:
         # Initialize the pipeline

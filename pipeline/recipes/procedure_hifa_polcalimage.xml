@@ -5,6 +5,10 @@
     <ProcessingCommand>
         <Command xmlns="">hifa_importdata</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">minparang</Keyword>
+                <Value xmlns="">60.0</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -75,6 +79,12 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
+        <Command xmlns="">hifa_bandpass</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
         <Command xmlns="">hifa_spwphaseup</Command>
         <ParameterSet>
         </ParameterSet>
@@ -83,6 +93,44 @@
     <ProcessingCommand>
         <Command xmlns="">hifa_gfluxscaleflag</Command>
         <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hifa_polcalflag</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hifa_session_refant</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hifa_lock_refant</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hifa_bandpass</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">unregister_existing</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hifa_spwphaseup</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">unregister_existing</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -115,7 +163,7 @@
         <ParameterSet>
             <Parameter>
                 <Keyword xmlns="">intent</Keyword>
-                <Value xmlns="">PHASE,BANDPASS,AMPLITUDE</Value>
+                <Value xmlns="">PHASE,BANDPASS,AMPLITUDE,POLARIZATION,POLANGLE,POLLEAKAGE</Value>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>

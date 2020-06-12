@@ -13,52 +13,20 @@ except:
 
 __rethrow_casa_exceptions = False
 
-# Setup paths
-# Should no longer be needed
-# sys.path.insert (0, os.path.expandvars("$SCIPIPE_HEURISTICS"))
-# execfile(os.path.join( os.path.expandvars("$SCIPIPE_HEURISTICS"), "pipeline/h/cli/h.py"))
-# execfile(os.path.join( os.path.expandvars("$SCIPIPE_HEURISTICS"), "pipeline/hif/cli/hif.py"))
-# execfile(os.path.join( os.path.expandvars("$SCIPIPE_HEURISTICS"), "pipeline/hifa/cli/hifa.py"))
-# execfile(os.path.join( os.path.expandvars("$SCIPIPE_HEURISTICS"), "pipeline/hifv/cli/hifv.py"))
-
-# CASA imports
-from h_init_cli import h_init_cli as h_init
-from hifv_importdata_cli import hifv_importdata_cli as hifv_importdata
-from hifv_hanning_cli import hifv_hanning_cli as hifv_hanning
-from hifv_flagdata_cli import hifv_flagdata_cli as hifv_flagdata
-from hifv_vlasetjy_cli import hifv_vlasetjy_cli as hifv_vlasetjy
-from hifv_priorcals_cli import hifv_priorcals_cli as hifv_priorcals
-from hifv_syspower_cli import hifv_syspower_cli as hifv_syspower
-from hifv_testBPdcals_cli import hifv_testBPdcals_cli as hifv_testBPdcals
-from hifv_flagbaddef_cli import hifv_flagbaddef_cli as hifv_flagbaddef
-from hifv_checkflag_cli import hifv_checkflag_cli as hifv_checkflag
-from hifv_semiFinalBPdcals_cli import hifv_semiFinalBPdcals_cli as hifv_semiFinalBPdcals
-from hifv_solint_cli import hifv_solint_cli as hifv_solint
-from hifv_fluxboot_cli import hifv_fluxboot_cli as hifv_fluxboot
-from hifv_fluxboot2_cli import hifv_fluxboot2_cli as hifv_fluxboot2
-from hifv_finalcals_cli import hifv_finalcals_cli as hifv_finalcals
-from hifv_flagcal_cli import hifv_flagcal_cli as hifv_flagcal
-from hifv_circfeedpolcal_cli import hifv_circfeedpolcal_cli as hifv_circfeedpolcal
-from hifv_applycals_cli import hifv_applycals_cli as hifv_applycals
-from hifv_targetflag_cli import hifv_targetflag_cli as hifv_targetflag
-from hifv_statwt_cli import hifv_statwt_cli as hifv_statwt
-from hifv_plotsummary_cli import hifv_plotsummary_cli as hifv_plotsummary
-from hif_makeimlist_cli import hif_makeimlist_cli as hif_makeimlist
-from hif_makeimages_cli import hif_makeimages_cli as hif_makeimages
-from hifv_exportdata_cli import hifv_exportdata_cli as hifv_exportdata
-from h_save_cli import h_save_cli as h_save
-
-# Pipeline imports
-import pipeline.infrastructure.casatools as casatools
-
 # IMPORT_ONLY = 'Import only'
 IMPORT_ONLY = ''
 
 
 # Run the procedure
 def hifvcalvlass(vislist, importonly=False, pipelinemode='automatic', interactive=True):
+    import pipeline
+
+    # Pipeline imports
+    import pipeline.infrastructure.casatools as casatools
+    pipeline.initcli()
+
     echo_to_screen = interactive
-    casatools.post_to_log("Beginning VLA Sky Survey pipeline run ...")
+    casatools.post_to_log("Beginning VLA Sky Survey pipeline calibration run ...")
 
     try:
         # Initialize the pipeline
@@ -88,14 +56,14 @@ def hifvcalvlass(vislist, importonly=False, pipelinemode='automatic', interactiv
         hifv_priorcals(tecmaps=False, swpow_spw='6,14')
 
         # Syspower task
-        hifv_syspower(pipelinemode=pipelinemode)
+        # hifv_syspower(pipelinemode=pipelinemode)
 
         # Initial test calibrations using bandpass and delay calibrators
         hifv_testBPdcals(pipelinemode=pipelinemode)
 
         # Identify and flag basebands with bad deformatters or rfi based on
         # bp table amps and phases
-        hifv_flagbaddef(doflagundernspwlimit=False)
+        # hifv_flagbaddef(doflagundernspwlimit=False)
 
         # Flag possible RFI on BP calibrator using rflag with mode=bpd
         hifv_checkflag(checkflagmode='bpd-vlass')

@@ -1076,7 +1076,13 @@ class TsysflagView(object):
         LOG.info('Computing flagging metrics for caltable {}'.format(table))
         for tsys_spw_id, intent_to_field_ids in tsys_spw_to_intent_to_field_ids.items():
             for intent, field_ids in intent_to_field_ids.items():
-                if self.metric in ['nmedian', 'toomany']:
+                # Warn if no fields were found for this Tsys spw and intent.
+                if not field_ids:
+                    LOG.warning("{} - no valid fields found for Tsys spw {} and intent {}, unable to create"
+                                " corresponding flagging views.".format(ms.basename, tsys_spw_id, intent))
+
+                # Otherwise, continue with calculating the flagging view.
+                elif self.metric in ['nmedian', 'toomany']:
                     self.calculate_median_spectra_view(tsystable, tsys_spw_id, intent, field_ids,
                                                        split_by_field=self.split_by_field)
 

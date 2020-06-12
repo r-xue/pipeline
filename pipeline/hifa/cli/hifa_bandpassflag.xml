@@ -1,6 +1,6 @@
 <casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-<task type="function" name="hifa_bandpassflag" category="pipeline">
+<task category="pipeline" name="hifa_bandpassflag" type="function">
 
 <shortdescription>Bandpass calibration flagging</shortdescription>
 
@@ -23,7 +23,7 @@ results object for the pipeline task is returned.
 </description>
 
 <input>
-    <param type="stringVec" name="vis" subparam="true">
+    <param subparam="true" name="vis" type="stringVec">
         <shortdescription>List of input MeasurementSets</shortdescription>
         <description>List of input MeasurementSets. Defaults to the list of
             MeasurementSets specified in the pipeline context.
@@ -33,7 +33,7 @@ results object for the pipeline task is returned.
         <value/>
     </param>
 
-    <param type="stringVec" name="caltable" subparam="true">
+    <param subparam="true" name="caltable" type="stringVec">
         <shortdescription>List of output caltable(s)</shortdescription>
         <description>List of names for the output calibration tables. Defaults
             to the standard pipeline naming convention.
@@ -43,7 +43,7 @@ results object for the pipeline task is returned.
         <value/>
     </param>
 
-    <param type="string" name="intent" subparam="true">
+    <param subparam="true" name="intent" type="string">
         <shortdescription>List of intents to use in data selection</shortdescription>
         <description>A string containing a comma delimited list of intents against
             which the selected fields are matched. Set to intent='' by default, which
@@ -54,7 +54,7 @@ results object for the pipeline task is returned.
         <value/>
     </param>
 
-    <param type="string" name="field" subparam="true">
+    <param subparam="true" name="field" type="string">
         <shortdescription>List of field names or ids to use in data selection</shortdescription>
         <description>The list of field names or field ids for which bandpasses are
             computed. Set to field='' by default, which means the task will select all
@@ -65,7 +65,7 @@ results object for the pipeline task is returned.
         <value/>
     </param>
 
-    <param type="string" name="spw" subparam="true">
+    <param subparam="true" name="spw" type="string">
         <shortdescription>List of spectral windows to use in data selection</shortdescription>
         <description>The list of spectral windows and channels for which bandpasses are
             computed. Set to spw='' by default, which means the task will select all
@@ -76,17 +76,17 @@ results object for the pipeline task is returned.
         <value/>
     </param>
 
-    <param type="string" name="antenna" subparam="true">
+    <param subparam="true" name="antenna" type="string">
         <description>Set of data selection antenna IDs</description>
         <value/>
     </param>
 
-    <param type="string" name="hm_phaseup">
+    <param name="hm_phaseup" type="string">
         <shortdescription>Phaseup before computing the bandpass</shortdescription>
         <description>The pre-bandpass solution phaseup gain heuristics. The options are:
             'snr': compute solution required to achieve the specified SNR
             'manual': use manual solution parameters
-            '': none
+            '': skip phaseup
 
             Example: hm_phaseup='manual'
         </description>
@@ -98,7 +98,7 @@ results object for the pipeline task is returned.
         </allowed>
     </param>
 
-    <param type="any" name="phaseupsolint" subparam="true">
+    <param subparam="true" name="phaseupsolint" type="any">
         <shortdescription>Phaseup correction solution interval</shortdescription>
         <description>The phase correction solution interval in CASA syntax.
             Used when hm_phaseup='manual' or as a default if the hm_phaseup='snr'
@@ -110,7 +110,7 @@ results object for the pipeline task is returned.
         <value type="string">int</value>
     </param>
 
-    <param type="string" name="phaseupbw" subparam="true">
+    <param subparam="true" name="phaseupbw" type="string">
         <shortdescription>Bandwidth to use for phaseup</shortdescription>
         <description>Bandwidth to be used for phaseup. Used when hm_phaseup='manual'.
 
@@ -120,7 +120,7 @@ results object for the pipeline task is returned.
         <value/>
     </param>
 
-    <param type="double" name="phaseupsnr" subparam="true">
+    <param subparam="true" name="phaseupsnr" type="double">
         <shortdescription>SNR for phaseup solution</shortdescription>
         <description>The required SNR for the phaseup solution. Used only if
             hm_phaseup='snr'.
@@ -130,7 +130,7 @@ results object for the pipeline task is returned.
         <value>20.0</value>
     </param>
 
-    <param type="int" name="phaseupnsols" subparam="true">
+    <param subparam="true" name="phaseupnsols" type="int">
        <shortdescription>Minimum number of phaseup gain solutions</shortdescription>
         <description>The minimum number of phaseup gain solutions. Used only if
             hm_phaseup='snr'.
@@ -140,7 +140,7 @@ results object for the pipeline task is returned.
          <value>2</value>
     </param>
 
-    <param type="string" name="hm_bandpass">
+    <param name="hm_bandpass" type="string">
         <shortdescription>Bandpass solution heuristics</shortdescription>
         <description>The bandpass solution heuristics. The options are:
               'snr': compute the solution required to achieve the specified SNR
@@ -155,7 +155,7 @@ results object for the pipeline task is returned.
         </allowed>
     </param>
 
-    <param type="any" name="solint" subparam="true">
+    <param subparam="true" name="solint" type="any">
         <shortdescription>Solution intervals</shortdescription>
         <description>Time and channel solution intervals in CASA syntax.
 
@@ -168,7 +168,7 @@ results object for the pipeline task is returned.
         <value type="string">inf</value>
     </param>
 
-    <param type="int" name="maxchannels" subparam="true">
+    <param subparam="true" name="maxchannels" type="int">
         <shortdescription>The smoothing factor in channels</shortdescription>
         <description>The bandpass solution smoothing factor in channels. The
             solution interval is bandwidth / 240. Set to 0 for no smoothing.
@@ -179,7 +179,7 @@ results object for the pipeline task is returned.
         <value>240</value>
     </param>
 
-    <param type="bool" name="evenbpints" subparam="true">
+    <param subparam="true" name="evenbpints" type="bool">
         <shortdescription>Force frequency solint to even bandpass intervals</shortdescription>
         <description>Force the per spw frequency solint to be evenly divisible
             into the spw bandpass if hm_bandpass='snr'.
@@ -189,7 +189,7 @@ results object for the pipeline task is returned.
         <value>True</value>
     </param>
 
-    <param type="double" name="bpsnr" subparam="true">
+    <param subparam="true" name="bpsnr" type="double">
         <shortdescription>SNR for bandpass solution</shortdescription>
         <description>The required SNR for the bandpass solution. Used only if
             hm_bandpass='snr'.
@@ -199,7 +199,7 @@ results object for the pipeline task is returned.
         <value>50.0</value>
     </param>
 
-   <param type="double" name="minbpsnr" subparam="true">
+   <param subparam="true" name="minbpsnr" type="double">
        <shortdescription>Minimum SNR for bandpass frequency solution when strong atmospheric lines exist in Tsys spectra</shortdescription>
 	   <description>The minimum required SNR for the bandpass solution
            when strong atmospheric lines exist in Tsys spectra.
@@ -210,7 +210,7 @@ results object for the pipeline task is returned.
        <value>20.0</value>
    </param>
 
-    <param type="int" name="bpnsols" subparam="true">
+    <param subparam="true" name="bpnsols" type="int">
         <shortdescription>Minimum number of bandpass solutions</shortdescription>
         <description>The minimum number of bandpass solutions. Used only if
             hm_bandpass='snr'.
@@ -218,7 +218,7 @@ results object for the pipeline task is returned.
         <value>8</value>
     </param>
 
-    <param type="string" name="combine">
+    <param subparam="true" name="combine" type="string">
         <shortdescription>Data axes which to combine for solve (scan, spw, and/or field)</shortdescription>
         <description>Data axes to combine for solving. Axes are '', 'scan', 'spw',
             'field' or any comma-separated combination.
@@ -228,7 +228,7 @@ results object for the pipeline task is returned.
         <value>scan</value>
     </param>
 
-    <param type="string" name="refant" subparam="true">
+    <param subparam="true" name="refant" type="string">
         <shortdescription>List of reference antenna names</shortdescription>
         <description>List of reference antenna names. Defaults to the value(s) stored in the
             pipeline context. If undefined in the pipeline context defaults to
@@ -239,7 +239,7 @@ results object for the pipeline task is returned.
         <value/>
     </param>
 
-    <param type="int" name="minblperant">
+    <param subparam="true" name="minblperant" type="int">
         <shortdescription>Minimum baselines per antenna required for solve</shortdescription>
         <description>Minimum number of baselines required per antenna for each solve.
             Antennas with fewer baselines are excluded from solutions.
@@ -247,52 +247,52 @@ results object for the pipeline task is returned.
         <value>4</value>
     </param>
 
-    <param type="double" name="minsnr">
+    <param subparam="true" name="minsnr" type="double">
         <description>Solutions below this SNR are rejected</description>
         <value>3.0</value>
     </param>
 
-    <param type="bool" name="solnorm" subparam="true">
+    <param subparam="true" name="solnorm" type="bool">
         <description>Normalise the bandpass solution</description>
         <value type="bool">True</value>
     </param>
 
-    <param type="double" name="antnegsig" subparam="true">
+    <param subparam="true" name="antnegsig" type="double">
         <description>Lower sigma threshold for identifying outliers as a result of bad
             antennas within individual timestamps.
         </description>
         <value>4.0</value>
     </param>
 
-    <param type="double" name="antpossig" subparam="true">
+    <param subparam="true" name="antpossig" type="double">
         <description>Upper sigma threshold for identifying outliers as a result of bad
             antennas within individual timestamps.
         </description>
         <value>4.6</value>
     </param>
 
-    <param type="double" name="tmantint" subparam="true">
+    <param subparam="true" name="tmantint" type="double">
         <description>Threshold for maximum fraction of timestamps that are allowed to
             contain outliers.
         </description>
         <value>0.063</value>
     </param>
 
-    <param type="double" name="tmint" subparam="true">
+    <param subparam="true" name="tmint" type="double">
         <description>Initial threshold for maximum fraction of 'outlier timestamps'
             over 'total timestamps' that a baseline may be a part of.
         </description>
         <value>0.085</value>
     </param>
 
-    <param type="double" name="tmbl" subparam="true">
+    <param subparam="true" name="tmbl" type="double">
         <description>Initial threshold for maximum fraction of 'bad baselines' over
             'all baselines' that an antenna may be a part of.
         </description>
         <value>0.175</value>
     </param>
 
-    <param type="double" name="antblnegsig" subparam="true">
+    <param subparam="true" name="antblnegsig" type="double">
         <description>Lower sigma threshold for identifying outliers as a result of
             'bad baselines' and/or 'bad antennas' within baselines (across all
             timestamps).
@@ -300,7 +300,7 @@ results object for the pipeline task is returned.
         <value>3.4</value>
     </param>
 
-    <param type="double" name="antblpossig" subparam="true">
+    <param subparam="true" name="antblpossig" type="double">
         <description>Upper sigma threshold for identifying outliers as a result of
             'bad baselines' and/or 'bad antennas' within baselines (across all
             timestamps).
@@ -308,14 +308,14 @@ results object for the pipeline task is returned.
         <value>3.2</value>
     </param>
 
-    <param type="double" name="relaxed_factor" subparam="true">
+    <param subparam="true" name="relaxed_factor" type="double">
         <description>Relaxed value to set the threshold scaling factor to under
             certain conditions (see task description).
         </description>
         <value>2.0</value>
     </param>
 
-    <param type="int" name="niter" subparam="true">
+    <param subparam="true" name="niter" type="int">
         <shortdescription>Maximum number of times to iterate on evaluation of flagging heuristics.</shortdescription>
         <description>Maximum number of times to iterate on evaluation of flagging
             heuristics. If an iteration results in no new flags, then subsequent
@@ -324,7 +324,7 @@ results object for the pipeline task is returned.
         <value>2</value>
     </param>
 
-    <param type="string" name="pipelinemode">
+    <param name="pipelinemode" type="string">
         <shortdescription>The pipeline operation mode</shortdescription>
         <description>The pipeline operating mode. In 'automatic' mode the pipeline
             determines the values of all context defined pipeline inputs automatically.
@@ -340,7 +340,7 @@ results object for the pipeline task is returned.
         </allowed>
     </param>
 
-    <param type="bool" name="dryrun" subparam="true">
+    <param subparam="true" name="dryrun" type="bool">
         <shortdescription>Run the task (False) or list commands (True)</shortdescription>
         <description>Run the commands (True) or generate the commands to be run but
             do not execute (False).
@@ -348,7 +348,7 @@ results object for the pipeline task is returned.
         <value>False</value>
     </param>
 
-    <param type="bool" name="acceptresults" subparam="true">
+    <param subparam="true" name="acceptresults" type="bool">
         <shortdescription>Automatically accept results into context</shortdescription>
         <description>Automatically accept the results of the task into the pipeline context (True)
             or reject them (False).
@@ -357,49 +357,50 @@ results object for the pipeline task is returned.
     </param>
 
     <constraints>
-
         <when param="hm_phaseup">
-            <equals type="string" value="snr">
+            <equals value="snr" type="string">
                 <default param="phaseupsolint"><value type="string">int</value></default>
                 <default param="phaseupsnr"><value type="double">20.0</value></default>
                 <default param="phaseupnsols"><value type="int">2</value></default>
             </equals>
-            <equals type="string" value="manual">
+            <equals value="manual" type="string">
                 <default param="phaseupsolint"><value type="string">int</value></default>
                 <default param="phaseupbw"><value type="string"/></default>
             </equals>
-            <equals type="string" value="">
+            <equals value="" type="string">
             </equals>
         </when>
 
         <when param="hm_bandpass">
-            <equals type="string" value="snr">
+            <equals value="snr" type="string">
                 <default param="solint"><value type="string">inf</value></default>
                 <default param="evenbpints"><value type="bool">True</value></default>
                 <default param="bpsnr"><value type="double">50.0</value></default>
                 <default param="minbpsnr"><value type="double">20.0</value></default>
                 <default param="bpnsols"><value type="int">8</value></default>
             </equals>
-            <equals type="string" value="smoothed">
+            <equals value="smoothed" type="string">
                 <default param="solint"><value type="string">inf</value></default>
                 <default param="maxchannels"><value type="int">240</value></default>
             </equals>
-            <equals type="string" value="fixed">
+            <equals value="fixed" type="string">
                 <default param="solint"><value type="string">inf,7.8125MHz</value></default>
             </equals>
         </when>
 
         <when param="pipelinemode">
-            <equals type="string" value="automatic"/>
-            <equals type="string" value="interactive">
+            <equals value="automatic" type="string"/>
+            <equals value="interactive" type="string">
                 <default param="vis"><value type="stringVec"/></default>
                 <default param="caltable"><value type="stringVec"/></default>
                 <default param="field"><value type="string"/></default>
                 <default param="intent"><value type="string"/></default>
                 <default param="spw"><value type="string"/></default>
                 <default param="antenna"><value type="string"/></default>
-                <default param="combine"><value type="string"/>scan</default>
+                <default param="combine"><value type="string">scan</value></default>
                 <default param="refant"><value type="string"/></default>
+                <default param="minblperant"><value type="int">4</value></default>
+                <default param="minsnr"><value type="double">3.0</value></default>
                 <default param="solnorm"><value type="bool">True</value></default>
                 <default param="antnegsig"><value type="double">4.0</value></default>
                 <default param="antpossig"><value type="double">4.6</value></default>
@@ -413,8 +414,27 @@ results object for the pipeline task is returned.
                 <default param="dryrun"><value type="bool">False</value></default>
                 <default param="acceptresults"><value type="bool">True</value></default>
             </equals>
-            <equals type="string" value="getinputs">
+            <equals value="getinputs" type="string">
                 <default param="vis"><value type="stringVec"/></default>
+                <default param="caltable"><value type="stringVec"/></default>
+                <default param="field"><value type="string"/></default>
+                <default param="intent"><value type="string"/></default>
+                <default param="spw"><value type="string"/></default>
+                <default param="antenna"><value type="string"/></default>
+                <default param="combine"><value type="string">scan</value></default>
+                <default param="refant"><value type="string"/></default>
+                <default param="minblperant"><value type="int">4</value></default>
+                <default param="minsnr"><value type="double">3.0</value></default>
+                <default param="solnorm"><value type="bool">True</value></default>
+                <default param="antnegsig"><value type="double">4.0</value></default>
+                <default param="antpossig"><value type="double">4.6</value></default>
+                <default param="tmantint"><value type="double">0.063</value></default>
+                <default param="tmint"><value type="double">0.085</value></default>
+                <default param="tmbl"><value type="double">0.175</value></default>
+                <default param="antblnegsig"><value type="double">3.4</value></default>
+                <default param="antblpossig"><value type="double">3.2</value></default>
+                <default param="relaxed_factor"><value type="double">2.0</value></default>
+                <default param="niter"><value type="int">2</value></default>
             </equals>
         </when>
     </constraints>
