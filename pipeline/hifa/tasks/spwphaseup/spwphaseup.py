@@ -1,3 +1,4 @@
+import os
 from typing import Optional
 
 import numpy
@@ -382,11 +383,18 @@ class SpwPhaseupResults(basetask.Results):
             return
 
         if self.unregister_existing:
-            # predicate function that triggers when the spwphaseup caltable is detected
-            def spwphaseup_matcher(_: callibrary.CalToArgs, calfrom: callibrary.CalFrom) -> bool:
-                return 'hifa_spwphaseup' in calfrom.gaintable
+            # Identify the MS to process
+            vis: str = os.path.basename(self.inputs['vis'])
 
-            LOG.info('Unregistering previous spwphaseup tables')
+            # predicate function that triggers when the spwphaseup caltable is
+            # detected for this MS
+            def spwphaseup_matcher(calto: callibrary.CalToArgs, calfrom: callibrary.CalFrom) -> bool:
+                calto_vis = {os.path.basename(v) for v in calto.vis}
+                do_delete = 'hifa_spwphaseup' in calfrom.gaintable and vis in calto_vis
+                if do_delete:
+                    LOG.info(f'Unregistering previous spwphaseup tables for {vis}')
+                return do_delete
+
             context.callibrary.unregister_calibrations(spwphaseup_matcher)
 
         # Merge the spw phaseup offset table

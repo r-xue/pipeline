@@ -103,9 +103,13 @@ class Solint(basetask.StandardTaskTemplate):
         combtime = 'scan'
 
         refantfield = context.evla['msinfo'][m.name].calibrator_field_select_string
+
+        self.ignorerefant = self.inputs.context.evla['msinfo'][m.name].ignorerefant
+        refantignore = self.inputs.refantignore + ','.join(self.ignorerefant)
+
         refantobj = findrefant.RefAntHeuristics(vis=calMs, field=refantfield,
                                                 geometry=True, flagging=True, intent='',
-                                                spw='', refantignore=self.inputs.refantignore)
+                                                spw='', refantignore=refantignore)
 
         RefAntOutput = refantobj.calculate()
 

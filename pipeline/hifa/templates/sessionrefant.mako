@@ -32,7 +32,9 @@ import os
         </tr>
         % if len(session_info['vislist']) > 1:
             % for vis in session_info['vislist'][1:]:
-            <td>${os.path.basename(vis)}</td>
+            <tr>
+                <td>${os.path.basename(vis)}</td>
+            </tr>
             % endfor
         % endif
     % endfor
