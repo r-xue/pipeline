@@ -1013,7 +1013,7 @@ class Correctedampflag(basetask.StandardTaskTemplate):
                     uvbins2.append([uv0,uv1])
                 LOG.info('%s: Defined %d offset uvbins for field %s spw %d: %s' % (ms, len(uvbins),str(field),spwid,str(uvbins2)))
                 uvbinsets = [uvbins, uvbins2]
-                id_ultraHighSig = {0: [], 1: []}
+                id_ultrahighsig_dict = {0: [], 1: []}
                 minimumPoints = 22  # for an accurate median/MAD. Note: a single integration of a 7-antenna array would produce only 6 points per field
                 npts = minimumPoints + 1 # establish this count to set the initial uvstart
                 for v,uvbins in enumerate(uvbinsets):
@@ -1068,25 +1068,25 @@ class Correctedampflag(basetask.StandardTaskTemplate):
                             mad = bufferFactor*np.median(np.abs(cmetric_sel[id_uvbin] - med)) * 1.4826
                             LOG.info('uv%dbin%d) using median=%f & %.2f*MAD=%f (npts=%d, maxInThisBin=%f)'% (v,u,med,bufferFactor,mad,npts,maxInThisBin))
                         if tmantint > 0:
-                            id_ultraHighSig[v] += list(id_uvbin[np.where(
+                            id_ultrahighsig_dict[v] += list(id_uvbin[np.where(
                                 np.logical_or(
                                     cmetric_sel[id_uvbin] < (med - mad * antultralowsig),
                                     cmetric_sel[id_uvbin] > (med + mad * antultrahighsig)))[0]])
                         else:
-                            id_ultraHighSig[v] += list(id_uvbin[np.where(
+                            id_ultrahighsig_dict[v] += list(id_uvbin[np.where(
                                 cmetric_sel[id_uvbin] < (med - mad * antultrahighsig))[0]])
-                        if len(id_ultraHighSig[v]) > previousLength:
-                            LOG.info('spw %d: Found %d outliers out of %d points in uvbin %d' % (spwid,len(id_ultraHighSig[v])-previousLength,npts,u))
-                        previousLength = len(id_ultraHighSig[v])
+                        if len(id_ultrahighsig_dict[v]) > previousLength:
+                            LOG.info('spw %d: Found %d outliers out of %d points in uvbin %d' % (spwid,len(id_ultrahighsig_dict[v])-previousLength,npts,u))
+                        previousLength = len(id_ultrahighsig_dict[v])
                     # end loop over this uvbin set
                 # end loop over uvbinsets
-                LOG.info('spw %d: found %d outliers in uvbinset0 and %d in uvbinset1' % (spwid,len(id_ultraHighSig[0]), len(id_ultraHighSig[1])))
+                LOG.info('spw %d: found %d outliers in uvbinset0 and %d in uvbinset1' % (spwid,len(id_ultrahighsig_dict[0]), len(id_ultrahighsig_dict[1])))
                 id_uvbin_firsthalf_firstbin = np.where(
                     np.logical_and(
                         uvdist_sel >= uvbinsets[0][0][0],  # start of first bin of first group
                         uvdist_sel < uvbinsets[1][0][0]))[0]  # start of first bin of second group
-                id_ultrahighsig = np.intersect1d(id_ultraHighSig[0], id_ultraHighSig[1])
-                firsthalf_firstbin_flags = np.intersect1d(id_ultraHighSig[0], id_uvbin_firsthalf_firstbin)
+                id_ultrahighsig = np.intersect1d(id_ultrahighsig_dict[0], id_ultrahighsig_dict[1])
+                firsthalf_firstbin_flags = np.intersect1d(id_ultrahighsig_dict[0], id_uvbin_firsthalf_firstbin)
                 LOG.info('spw %d: %d outliers are in common and will be flagged, along with %d outliers from the first half of the first bin' % (spwid,len(id_ultrahighsig),len(firsthalf_firstbin_flags)))
                 id_ultrahighsig = np.union1d(id_ultrahighsig, firsthalf_firstbin_flags)
                 id_ultrahighsig = np.array(id_ultrahighsig, dtype=int)
