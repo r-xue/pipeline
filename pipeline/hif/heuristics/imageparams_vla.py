@@ -17,10 +17,22 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         self.imaging_mode = 'VLA'
 
     def robust(self):
+        """See PIPE-680 and CASR-543"""
         return 0.5
 
     def uvtaper(self, beam_natural=None, protect_long=None):
         return []
+
+    def pblimits(self, pb):
+        """
+        PB gain level at which to cut off normalizations (tclean parameter).
+
+        See PIPE-674 and CASR-543
+        """
+        pblimit_image = -0.1
+        pblimit_cleanmask = -0.1    # not used at the moment, negative values are untested (see PIPE-674)
+
+        return pblimit_image, pblimit_cleanmask
 
     def nterms(self, spwspec):
         """
@@ -41,6 +53,24 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
     def deconvolver(self, specmode, spwspec):
         """See PIPE-679 and CASR-543"""
         return 'mtmfs'
+
+    def specmode(self):
+        """See PIPE-683 and CASR-543"""
+        return 'cont'
+
+    def nsigma(self, iteration, hm_nsigma):
+        """See PIPE-678 and CASR-543"""
+        if hm_nsigma:
+            return hm_nsigma
+        else:
+            return 5.0
+
+    def threshold(self, iteration, threshold, hm_masking):
+        """See PIPE-678 and CASR-543"""
+        if hm_masking in ['auto', 'none']:
+            return '0.0mJy'
+        else:
+            return threshold
 
     def imagename(self, output_dir=None, intent=None, field=None, spwspec=None, specmode=None, band=None):
         try:
