@@ -768,8 +768,12 @@ class Correctedampflag(basetask.StandardTaskTemplate):
                 factor = 1.2
             else:
                 factor = 1.26
-        else:
+        elif totalpts > 500:
             factor = np.sqrt(2)
+            LOG.info('Using uvbinFactor=%.2f' % (factor))
+        else:
+            factor = 1.6
+            LOG.info('Using uvbinFactor=%.2f' % (factor))
         return factor
         
     def _evaluate_heuristic_for_baseline_set(self, ms, intent, field, spwid, antenna_id_to_name, baseline_set=None):
@@ -984,6 +988,8 @@ class Correctedampflag(basetask.StandardTaskTemplate):
             if intent == 'TARGET':
                 uvdist = uvdist_all[id_nonac]
                 uvdist_sel = uvdist[id_nonbad]
+                if uvdist_sel.shape == (0,):
+                    continue # go on to the next polarization
                 uvmin = np.min(uvdist_sel)
                 uvmax = np.max(uvdist_sel)
                 uvbins = []
@@ -993,69 +999,99 @@ class Correctedampflag(basetask.StandardTaskTemplate):
                     uv1 *= self._uvbinFactor(uv0, len(uvdist_sel))
                     uvbins.append([uv0,uv1])
                 LOG.info('%s: Defined %d uvbins for field %s spw %d: %s' % (ms, len(uvbins),str(field),spwid,str(uvbins)))
-                id_ultrahighsig = []
-                minimumPoints = 6  # for an accurate median/MAD. Note: a single integration of a 7-antenna array would produce only 6 points per field
+                # Build another set of uvbins, shifted by 1/2 bin from the original set
+                # Any visibilities in the first half of the original bin will be ignored by
+                # the second set of bins, while the final bin will be half the width of the 
+                # original final bin.
+                uvbins2 = []
+                uv1 = np.mean(uvbins[0])
+                while uv1 < uvbins[-1][1]:
+                    uv0 = uv1
+                    i = len(uvbins2)
+                    if i < len(uvbins)-1:
+                        uv1 = np.mean([uvbins[i+1][0],uvbins[i+1][1]])
+                    else:
+                        uv1 = uvbins[i][1]
+                    uvbins2.append([uv0,uv1])
+                LOG.info('%s: Defined %d offset uvbins for field %s spw %d: %s' % (ms, len(uvbins),str(field),spwid,str(uvbins2)))
+                uvbinsets = [uvbins, uvbins2]
+                id_ultrahighsig_dict = {0: [], 1: []}
+                minimumPoints = 22  # for an accurate median/MAD. Note: a single integration of a 7-antenna array would produce only 6 points per field
                 npts = minimumPoints + 1 # establish this count to set the initial uvstart
-                previousLength = 0 # only used for LOG message
-                prior_uvstart = uvbins[0][0]
-                for u,uvbin in enumerate(uvbins):
-                    # Advance uvstart, but only if prior bin contained enough points to be evaluated.
-                    # (This avoids leaving a small number of orphaned points unevaluated.)
-                    if npts >= minimumPoints: 
-                        uvstart = uvbin[0]
-                    id_uvbin = np.where(
-                        np.logical_and(
-                            uvdist_sel >= uvstart,
-                            uvdist_sel < uvbin[1]))[0]
-                    npts = len(id_uvbin)
-                    if npts < minimumPoints and u+1 == len(uvbins) and u > 0:
-                        LOG.info('Final bin (%d) has too few points (%d), including them into prior successful bin with uvstart=%f.' % (u,npts,prior_uvstart))
+                for v,uvbins in enumerate(uvbinsets):
+                    previousLength = 0 # only used for LOG message
+                    prior_uvstart = uvbins[0][0]
+                    for u,uvbin in enumerate(uvbins):
+                        # Advance uvstart, but only if prior bin contained enough points to be evaluated.
+                        # (This avoids leaving a small number of orphaned points unevaluated.)
+                        if npts >= minimumPoints: 
+                            uvstart = uvbin[0]
                         id_uvbin = np.where(
                             np.logical_and(
-                                uvdist_sel >= prior_uvstart,
+                                uvdist_sel >= uvstart,
                                 uvdist_sel < uvbin[1]))[0]
-                    npts = len(id_uvbin)
-                    if npts < minimumPoints: 
-                        # If the logic is correct above, we should never arrive here while in the final bin, 
-                        # and thus we will never leave any data uninspected.
-                        LOG.info('uvbin%d) has too few points (%d), including them into next bin.' % (u,npts))
-                        continue
-                    # It is now safe to set prior_uvstart because this is a "successful" bin.
-                    prior_uvstart = uvstart
-                    maxInThisBin = np.max(cmetric_sel[id_uvbin])
-                    if len(uvdist_sel) > 1000:
-                        Q1 = np.percentile(cmetric_sel[id_uvbin], 25, interpolation='midpoint')
-                        Q3 = np.percentile(cmetric_sel[id_uvbin], 75, interpolation='midpoint')
-                        if npts >= 20:
-                            D1 = np.percentile(cmetric_sel[id_uvbin], 10, interpolation='midpoint')
-                            D9 = np.percentile(cmetric_sel[id_uvbin], 90, interpolation='midpoint')
-                            IQR = 0.5*(Q3-Q1)
-                            IDR = 0.5*(D9-D1)/1.9004
-                            mad = np.max([IQR,np.min([2*IQR,IDR])])
-                            if IQR > IDR:
-                                LOG.info('uvbin%d) using interquartile range %f>%f (npts=%d, max=%f)' % (u,IQR,IDR,npts,maxInThisBin))
+                        npts = len(id_uvbin)
+                        if npts < minimumPoints and u+1 == len(uvbins) and u > 0:
+                            LOG.info('Final bin (%d) has too few points (%d), including them into prior successful bin with uvstart=%f.' % (u,npts,prior_uvstart))
+                            id_uvbin = np.where(
+                                np.logical_and(
+                                    uvdist_sel >= prior_uvstart,
+                                    uvdist_sel < uvbin[1]))[0]
+                        npts = len(id_uvbin)
+                        if npts < minimumPoints: 
+                            # If the logic is correct above, we should never arrive here while in the final bin, 
+                            # and thus we will never leave any data uninspected.
+                            LOG.info('uvbin%d) has too few points (%d), including them into next bin.' % (u,npts))
+                            continue
+                        # It is now safe to set prior_uvstart because this is a "successful" bin.
+                        prior_uvstart = uvstart
+                        maxInThisBin = np.max(cmetric_sel[id_uvbin])
+                        if len(uvdist_sel) > 1000:
+                            Q1 = np.percentile(cmetric_sel[id_uvbin], 25, interpolation='midpoint')
+                            Q3 = np.percentile(cmetric_sel[id_uvbin], 75, interpolation='midpoint')
+                            if npts >= 20:
+                                D1 = np.percentile(cmetric_sel[id_uvbin], 10, interpolation='midpoint')
+                                D9 = np.percentile(cmetric_sel[id_uvbin], 90, interpolation='midpoint')
+                                IQR = 0.5*(Q3-Q1)
+                                IDR = 0.5*(D9-D1)/1.9004
+                                mad = np.max([IQR,np.min([2*IQR,IDR])])
+                                if IQR > IDR:
+                                    LOG.info('uvbin%d) using interquartile range %f>%f (npts=%d, max=%f)' % (u,IQR,IDR,npts,maxInThisBin))
+                                else:
+                                    LOG.info('uvbin%d) using scaled interdecile range %f>%f (npts=%d, max=%f)' % (u,IDR,IQR,npts,maxInThisBin))
                             else:
-                                LOG.info('uvbin%d) using scaled interdecile range %f>%f (npts=%d, max=%f)' % (u,IDR,IQR,npts,maxInThisBin))
+                                LOG.info('uvbin%d) using IQR npts=%d<20, max=%f' % (u,npts,maxInThisBin))
+                                mad = 0.5*(Q3-Q1) # use half the interquartile spread instead of MAD
+                            med = np.mean([Q1,Q3]) # use midpoint of interquartile spread (the "midhinge") instead of median
                         else:
-                            LOG.info('uvbin%d) using IQR npts=%d<20, max=%f' % (u,npts,maxInThisBin))
-                            mad = 0.5*(Q3-Q1) # use half the interquartile spread instead of MAD
-                        med = np.mean([Q1,Q3]) # use midpoint of interquartile spread (the "midhinge") instead of median
-                    else:
-                        LOG.info('uvbin%d) using median & MAD (npts=%d, max=%f)'% (u,npts,maxInThisBin))
-                        med = np.median(cmetric_sel[id_uvbin])
-                        mad = np.median(np.abs(cmetric_sel[id_uvbin] - med)) * 1.4826
-                    if tmantint > 0:
-                        id_ultrahighsig += list(id_uvbin[np.where(
-                            np.logical_or(
-                                cmetric_sel[id_uvbin] < (med - mad * antultralowsig),
-                                cmetric_sel[id_uvbin] > (med + mad * antultrahighsig)))[0]])
-                    else:
-                        id_ultrahighsig += list(id_uvbin[np.where(
-                            cmetric_sel[id_uvbin] < (med - mad * antultrahighsig))[0]])
-                    if len(id_ultrahighsig) > previousLength:
-                        LOG.info('spw %d: Found %d outliers out of %d points in uvbin %d' % (spwid,len(id_ultrahighsig)-previousLength,npts,u))
-                    previousLength = len(id_ultrahighsig)
-                id_ultrahighsig = np.array(id_ultrahighsig)
+                            LOG.info('uvbin%d) using median & MAD (npts=%d, max=%f)'% (u,npts,maxInThisBin))
+                            med = np.median(cmetric_sel[id_uvbin])
+                            bufferFactor = 2
+                            mad = bufferFactor*np.median(np.abs(cmetric_sel[id_uvbin] - med)) * 1.4826
+                            LOG.info('uv%dbin%d) using median=%f & %.2f*MAD=%f (npts=%d, maxInThisBin=%f)'% (v,u,med,bufferFactor,mad,npts,maxInThisBin))
+                        if tmantint > 0:
+                            id_ultrahighsig_dict[v] += list(id_uvbin[np.where(
+                                np.logical_or(
+                                    cmetric_sel[id_uvbin] < (med - mad * antultralowsig),
+                                    cmetric_sel[id_uvbin] > (med + mad * antultrahighsig)))[0]])
+                        else:
+                            id_ultrahighsig_dict[v] += list(id_uvbin[np.where(
+                                cmetric_sel[id_uvbin] < (med - mad * antultrahighsig))[0]])
+                        if len(id_ultrahighsig_dict[v]) > previousLength:
+                            LOG.info('spw %d: Found %d outliers out of %d points in uvbin %d' % (spwid,len(id_ultrahighsig_dict[v])-previousLength,npts,u))
+                        previousLength = len(id_ultrahighsig_dict[v])
+                    # end loop over this uvbin set
+                # end loop over uvbinsets
+                LOG.info('spw %d: found %d outliers in uvbinset0 and %d in uvbinset1' % (spwid,len(id_ultrahighsig_dict[0]), len(id_ultrahighsig_dict[1])))
+                id_uvbin_firsthalf_firstbin = np.where(
+                    np.logical_and(
+                        uvdist_sel >= uvbinsets[0][0][0],  # start of first bin of first group
+                        uvdist_sel < uvbinsets[1][0][0]))[0]  # start of first bin of second group
+                id_ultrahighsig = np.intersect1d(id_ultrahighsig_dict[0], id_ultrahighsig_dict[1])
+                firsthalf_firstbin_flags = np.intersect1d(id_ultrahighsig_dict[0], id_uvbin_firsthalf_firstbin)
+                LOG.info('spw %d: %d outliers are in common and will be flagged, along with %d outliers from the first half of the first bin' % (spwid,len(id_ultrahighsig),len(firsthalf_firstbin_flags)))
+                id_ultrahighsig = np.union1d(id_ultrahighsig, firsthalf_firstbin_flags)
+                id_ultrahighsig = np.array(id_ultrahighsig, dtype=int)
             else:
                 id_ultrahighsig = np.where(
                     np.logical_or(
@@ -1108,13 +1144,13 @@ class Correctedampflag(basetask.StandardTaskTemplate):
                             id_veryhighsig, time_sel_veryhighsig, time_sel_veryhighsig_uniq)
                         newflags.extend(new_antbased_flags)
 
-                # Flag any ultra high outliers for corresponding baseline/timestamp.
-                if len(id_ultrahighsig) > 0:
-                    bad_timestamps = time_sel[id_ultrahighsig]
-                    bad_bls = list(zip(ant1_sel[id_ultrahighsig], ant2_sel[id_ultrahighsig]))
-                    newflags.extend(
-                        self._create_flags_for_ultrahigh_baselines_timestamps(
-                            ms, spwid, intent, icorr, field, bad_timestamps, bad_bls, antenna_id_to_name))
+            # Flag any ultra high outliers for corresponding baseline/timestamp.
+            if len(id_ultrahighsig) > 0:
+                bad_timestamps = time_sel[id_ultrahighsig]
+                bad_bls = list(zip(ant1_sel[id_ultrahighsig], ant2_sel[id_ultrahighsig]))
+                newflags.extend(
+                    self._create_flags_for_ultrahigh_baselines_timestamps(
+                        ms, spwid, intent, icorr, field, bad_timestamps, bad_bls, antenna_id_to_name))
 
             #
             # The following part considers all timestamps at once, and

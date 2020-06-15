@@ -312,9 +312,12 @@ class Tclean(cleanbase.CleanBase):
             field_ids = self.image_heuristics.field(inputs.intent, inputs.field)
             largest_primary_beam = self.image_heuristics.largest_primary_beam_size(spwspec=inputs.spw,
                                                                                    intent=inputs.intent)
+            # spw dependent imsize (FOV) in continuum spectral mode
+            imsize_spwlist = inputs.spw if inputs.specmode == 'cont' else None
             imsize = self.image_heuristics.imsize(fields=field_ids,
                                                   cell=inputs.cell,
-                                                  primary_beam=largest_primary_beam)
+                                                  primary_beam=largest_primary_beam,
+                                                  spwspec=imsize_spwlist)
 
             if inputs.imsize in (None, [], ''):
                 inputs.imsize = imsize
