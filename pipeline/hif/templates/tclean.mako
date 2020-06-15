@@ -140,8 +140,8 @@ except:
                 <tr>
                     <td rowspan="2" style="width:150px;">${image_info[j].field}</td>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
-                        <td style="width:250px;height:100px;">
-                            <div style="word-wrap:break-word;overflow-y:scroll;width:250px;height:100px;">
+                        <td style="width:250px;height:50px;">
+                            <div style="word-wrap:break-word;overflow-y:scroll;width:250px;height:50px;">
                                 ${'%s / %s' % (image_info[k].spw.replace(',',', '), image_info[k].spwnames.replace(',',', '))}
                             </div>
                         </td>
