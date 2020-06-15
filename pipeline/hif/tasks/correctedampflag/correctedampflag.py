@@ -988,6 +988,8 @@ class Correctedampflag(basetask.StandardTaskTemplate):
             if intent == 'TARGET':
                 uvdist = uvdist_all[id_nonac]
                 uvdist_sel = uvdist[id_nonbad]
+                if uvdist_sel.shape == (0,):
+                    continue # go on to the next polarization
                 uvmin = np.min(uvdist_sel)
                 uvmax = np.max(uvdist_sel)
                 uvbins = []
