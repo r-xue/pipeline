@@ -42,6 +42,24 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         """See PIPE-679 and CASR-543"""
         return 'mtmfs'
 
+    def specmode(self):
+        """See PIPE-683 and CASR-543"""
+        return 'cont'
+
+    def nsigma(self, iteration, hm_nsigma):
+        """See PIPE-678 and CASR-543"""
+        if hm_nsigma:
+            return hm_nsigma
+        else:
+            return 5.0
+
+    def threshold(self, iteration, threshold, hm_masking):
+        """See PIPE-678 and CASR-543"""
+        if hm_masking in ['auto', 'none']:
+            return '0.0mJy'
+        else:
+            return threshold
+
     def imsize(self, fields, cell, primary_beam, sfpblimit=None, max_pixels=None,
                centreonly=False, vislist=None, spwspec=None):
         """
