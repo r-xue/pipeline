@@ -17,10 +17,22 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         self.imaging_mode = 'VLA'
 
     def robust(self):
+        """See PIPE-680 and CASR-543"""
         return 0.5
 
     def uvtaper(self, beam_natural=None, protect_long=None):
         return []
+
+    def pblimits(self, pb):
+        """
+        PB gain level at which to cut off normalizations (tclean parameter).
+
+        See PIPE-674 and CASR-543
+        """
+        pblimit_image = -0.1
+        pblimit_cleanmask = -0.1    # not used at the moment, negative values are untested (see PIPE-674)
+
+        return pblimit_image, pblimit_cleanmask
 
     def nterms(self, spwspec):
         """
