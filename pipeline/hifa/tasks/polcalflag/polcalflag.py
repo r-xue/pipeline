@@ -146,11 +146,7 @@ class Polcalflag(basetask.StandardTaskTemplate):
             # Run applycal to apply pre-existing caltables and propagate their
             # corresponding flags
             LOG.info('Applying pre-existing cal tables.')
-            acinputs = applycal.IFApplycalInputs(
-                context=inputs.context, vis=inputs.vis, intent=inputs.intent, flagsum=False,
-                flagbackup=False)
-            actask = applycal.IFApplycal(acinputs)
-            acresult = self._executor.execute(actask, merge=True)
+            self._do_applycal(merge=False)
 
             # Create back-up of flags after applycal but before correctedampflag.
             LOG.info('Creating back-up of "after_pcflag_applycal" flagging state')
@@ -220,6 +216,22 @@ class Polcalflag(basetask.StandardTaskTemplate):
 
     def analyse(self, results):
         return results
+
+    def _do_applycal(self, merge):
+        inputs = self.inputs
+
+        # SJW - always just one job
+        ac_intents = [inputs.intent]
+
+        applycal_tasks = []
+        for intent in ac_intents:
+            task_inputs = applycal.IFApplycalInputs(inputs.context, vis=inputs.vis, intent=intent, flagsum=False,
+                                                    flagbackup=False)
+            task = applycal.IFApplycal(task_inputs)
+            applycal_tasks.append(task)
+
+        for task in applycal_tasks:
+            self._executor.execute(task, merge=merge)
 
     def _do_gaincal(self, caltable=None, intent=None, gaintype='G',
                     calmode=None, combine=None, solint=None, antenna=None,
