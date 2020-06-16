@@ -1,5 +1,6 @@
 import collections
 import functools
+import os
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -123,6 +124,8 @@ class Polcalflag(basetask.StandardTaskTemplate):
             merge=True)
 
         # Create amplitude caltable and merge it into the local context.
+        # CAS-10491: for scan-based (solint='inf') amplitude solves that
+        # will be applied to the calibrator, set interp to 'nearest'.
         LOG.info('Compute amplitude gaincal table.')
         if inputs.solint == 'inf':
             self._do_gaincal(
@@ -179,8 +182,6 @@ class Polcalflag(basetask.StandardTaskTemplate):
                 LOG.info('Creating "after calibration, after flagging" plots')
                 result.plots['after'] = plot_fn(suffix='after')
 
-        finally:
-            if cafflags:
                 # Restore the "after_pcflag_applycal" backup of the flagging
                 # state, so that the "before plots" only show things needing
                 # to be flagged by correctedampflag
@@ -192,27 +193,28 @@ class Polcalflag(basetask.StandardTaskTemplate):
                 LOG.info('Creating "after calibration, before flagging" plots')
                 result.plots['before'] = plot_fn(suffix='before')
 
+        finally:
             # Restore the "pre-polcalflag" backup of the flagging state.
             LOG.info('Restoring back-up of "pre-polcalflag" flagging state.')
             task = casa_tasks.flagmanager(vis=inputs.vis, mode='restore', versionname=flag_backup_name_prepcf)
             self._executor.execute(task)
 
-            # If new outliers were identified...
-            if cafflags:
-                # Re-apply the newly found flags from correctedampflag.
-                LOG.info('Re-applying flags from correctedampflag.')
-                fsinputs = FlagdataSetter.Inputs(
-                    context=inputs.context, vis=inputs.vis, table=inputs.vis, inpfile=[])
-                fstask = FlagdataSetter(fsinputs)
-                fstask.flags_to_set(cafflags)
-                fsresult = self._executor.execute(fstask)
+        # If new outliers were identified...
+        if cafflags:
+            # Re-apply the newly found flags from correctedampflag.
+            LOG.info('Re-applying flags from correctedampflag.')
+            fsinputs = FlagdataSetter.Inputs(
+                context=inputs.context, vis=inputs.vis, table=inputs.vis, inpfile=[])
+            fstask = FlagdataSetter(fsinputs)
+            fstask.flags_to_set(cafflags)
+            _ = self._executor.execute(fstask)
 
-                # Check for need to update reference antennas, and apply to local
-                # copy of the MS.
-                result = self._identify_refants_to_update(result)
-                ms = inputs.context.observing_run.get_ms(name=inputs.vis)
-                ms.update_reference_antennas(ants_to_demote=result.refants_to_demote,
-                                             ants_to_remove=result.refants_to_remove)
+            # Check for need to update reference antennas, and apply to local
+            # copy of the MS.
+            result = self._identify_refants_to_update(result)
+            ms = inputs.context.observing_run.get_ms(name=inputs.vis)
+            ms.update_reference_antennas(ants_to_demote=result.refants_to_demote,
+                                         ants_to_remove=result.refants_to_remove)
 
         return result
 
