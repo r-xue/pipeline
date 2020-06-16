@@ -2322,7 +2322,7 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
         else:
             offset_score = max(0.0, 1.0 - min(1.0, beams))
             offset_metric = beams
-            if beams > 0.15:
+            if beams > 0.30:
                 warnings.append('large fitted offset of %.2f marcsec and %.2f synth beam' % (offset, beams))
 
         fitflux_score = 0.0
