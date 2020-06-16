@@ -76,7 +76,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
 
         amp_calsolint = phase_calsolint
 
-        # Produce the diagnostic table for displaying amplitude vs time plots. 
+        # Produce the diagnostic table for displaying amplitude vs time plots.
         #     This table is not applied to the data
         #     No special mapping required here.
         LOG.info('Computing amplitude gain table for displaying amplitude vs time plots')
@@ -112,10 +112,11 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         phase_residuals_result = self._do_offsets_phasecal(solint='inf', gaintype=phase_gaintype, combine='')
         result.phaseoffsetresult = phase_residuals_result
 
-        # Direct the initial calibrator phase solution for application to the AMPLTIUDE, BANDPASS and POL* calibrators
+        # Direct the initial calibrator phase solution for application to the AMPLITUDE, BANDPASS and POL* calibrators
         for cpres in cal_phase_result:
             calphaseresult_calapp = cpres.final[0]
-            calphase_calapp = callibrary.copy_calapplication(calphaseresult_calapp, intent='AMPLITUDE,BANDPASS,POLARIZATION,POLANGLE,POLLEAKAGE')
+            calphase_calapp = callibrary.copy_calapplication(
+                calphaseresult_calapp, intent='AMPLITUDE,BANDPASS,POLARIZATION,POLANGLE,POLLEAKAGE')
             result.final.append(calphase_calapp)
             result.pool.append(calphase_calapp)
 
@@ -225,68 +226,88 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         return cal_calapp, target_calapp
 
     # Used to calibrate "selfcaled" targets
-    def _do_spectralspec_calibrator_phasecal(self, solint=None, gaintype=None, combine=None):
-        if 'spw' not in combine:
-            apply_list = [ self._do_calibrator_phasecal(solint, gaintype, combine) ]
-            temporal_list = []
-            return (apply_list, temporal_list)
-        # Combined SpW solution. Need to solve per SpectralSpec
+    def _do_spectralspec_calibrator_phasecal(self, solint, gaintype, combine):
         inputs = self.inputs
         ms = inputs.ms
-        spw_groups = self._group_by_spectralspec(inputs.spw)
-        low_combined_snr_spw_list = ms.low_combined_phasesnr_spws
-        if spw_groups is None:
-            raise ValueError('Invalid SpW grouping input.')
-        # Need to solve per SpectralSpec when combine = 'spw'
-        all_intents = self.inputs.intent.split(',')
-        calsolint_intents = []
-        snrsol_intents = []
-        for intent in all_intents:
-            if intent in ['AMPLITUDE', 'BANDPASS', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE']:
-                calsolint_intents.append(intent)
-            else:
-                snrsol_intents.append(intent)
+
+        # Initialize output lists of gaincal results.
         apply_list = []
         temporal_list = []
+
+        # If not combining across spw, then no need to deal with SpectralSpec,
+        # so create a gaincal solution for all intents, and all spws, using
+        # solint provided by solint parameter.
+        if 'spw' not in combine:
+            apply_list = [self._do_calibrator_phasecal(solint, gaintype, combine, inputs.spw, inputs.intent)]
+            return apply_list, temporal_list
+
+        # Otherwise, a combined SpW solution is expected, and we need to solve
+        # per SpectralSpec.
+
+        # Group the input SpWs by SpectralSpec.
+        spw_groups = self._group_by_spectralspec(inputs.spw)
+        if spw_groups is None:
+            raise ValueError('Invalid SpW grouping input.')
+
+        # Low SNR heuristics require separate solutions with different values
+        # for solint for amplitude, bandpass, and polarisation intents,
+        # compared to any other intent. To prepare for this case, split the
+        # input intents here into two separate lists.
+        all_intents = inputs.intent.split(',')
+        cal_solint_intents = []
+        snr_solint_intents = []
+        for intent in all_intents:
+            if intent in ['AMPLITUDE', 'BANDPASS', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE']:
+                cal_solint_intents.append(intent)
+            else:
+                snr_solint_intents.append(intent)
+
+        # Create separate solutions for each SpectralSpec grouping of SpWs.
         for ref_spw, spw_sel in spw_groups.items():
             LOG.info('Processing spectral spec with spws {}'.format(spw_sel))
-            extend_solint = (ref_spw in low_combined_snr_spw_list)
-            if extend_solint:
+
+            # If the current reference SpW appears on the list of low SNR SpWs
+            # for this MS, then execute the low SNR heuristics:
+            if ref_spw in ms.low_combined_phasesnr_spws:
                 append_caltable = None
                 # Low SNR SpectralSpec. Use separate solint by intent.
                 # For BANDPASS, AMPLITUDE and POL* always use inputs.calsolint.
-                if len(calsolint_intents) > 0:
-                    intent = str(',').join(calsolint_intents)
-                    interval = self.inputs.calsolint
-                    result = self._do_calibrator_phasecal(interval, gaintype, combine, spw_sel, intent)
-                    if len(snrsol_intents) > 0:
+                if len(cal_solint_intents) > 0:
+                    intent = str(',').join(cal_solint_intents)
+                    result = self._do_calibrator_phasecal(inputs.calsolint, gaintype, combine, spw_sel, intent)
+                    if len(snr_solint_intents) > 0:
                         # PIPE-435: force appending PHASE solution with long int to this caltable
                         # for plotting purpose
                         append_caltable = result.final[0].gaintable
                     apply_list.append(result)
                 # For the other sources (e.g., PHASE), Use solint = 1/4 scan time
                 # This table is used only temporary applied to generate offset caltable.
-                if len(snrsol_intents) > 0:
-                    intent = str(',').join(snrsol_intents)
-                    interval = solint
-                    result = self._do_calibrator_phasecal(interval, gaintype, combine, spw_sel, intent, append_caltable)
+                if len(snr_solint_intents) > 0:
+                    intent = str(',').join(snr_solint_intents)
+                    result = self._do_calibrator_phasecal(solint, gaintype, combine, spw_sel, intent, append_caltable)
                     temporal_list.append(result)
+
+            # If the reference SpW is not a low SNR SpW...
             else:
-                # Combined solution meets phasesnr limit.
-                # All intents should be solved with soilint = inputs.calsolint
+                # Combined solution meets phasesnr limit, so create a single
+                # solution for current SpW group, where all intents should be
+                # solved with solint = inputs.calsolint.
                 intent = str(',').join(all_intents)
-                interval = self.inputs.calsolint
-                result = self._do_calibrator_phasecal(interval, gaintype, combine, spw_sel, intent)
+                result = self._do_calibrator_phasecal(inputs.calsolint, gaintype, combine, spw_sel, intent)
                 apply_list.append(result)
 
         return apply_list, temporal_list
 
     # Used to calibrate "selfcaled" targets
-    def _do_calibrator_phasecal(self, solint=None, gaintype=None, combine=None, spw=None, intent=None,
-                                append_caltable=None):
+    def _do_calibrator_phasecal(self, solint, gaintype, combine, spw, intent, append_caltable=None):
         inputs = self.inputs
-        spw_sel = str(spw) if spw is not None else inputs.spw
-        intent_sel = intent if intent is not None else inputs.intent
+
+        # Set output caltable name to "calphasetable" if this was explicitly
+        # provided to top-level task inputs. Otherwise, set the caltable name
+        # to "append_caltable", for in case this needs to be appended to. If
+        # through either option, caltable still remains set to None, then the
+        # Gtype-gaincal task will, as usual, generate a name for the caltable
+        # output based on its input parameters.
         caltable = inputs.calphasetable if inputs.calphasetable is not None else append_caltable
         force_append = append_caltable is not None
 
@@ -295,8 +316,8 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
             'vis': inputs.vis,
             'caltable': caltable,
             'field': inputs.field,
-            'intent': intent_sel,
-            'spw': spw_sel,
+            'intent': intent,
+            'spw': spw,
             'solint': solint,
             'gaintype': gaintype,
             'calmode': 'p',
