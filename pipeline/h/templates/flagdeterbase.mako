@@ -154,9 +154,6 @@ mses = [m for m in flags.keys() if 'online' in flags[m] or 'template' in flags[m
 <table class="table table-bordered table-striped">
 	<caption>
 	Files used for template flagging steps.
-	% if any(['pointing' in v for v in flags.values()]):
-	<BR><B>NOTE:</B> *.flagpointing.txt template file was auto-generated in hsd_importdata stage.
-	% endif
 	</caption>
 	<thead>
 		<tr>
