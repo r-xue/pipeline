@@ -191,6 +191,8 @@ class MetaDataReader(object):
         self.invalid_pointing_data[antenna_id].append(row)
 
     def generate_flagcmd_for_invalid_pointing_data(self):
+        initialize_template(self.flagtemplate)
+
         # do nothing if no registered rows
         if len(self.invalid_pointing_data) == 0:
             return
@@ -205,8 +207,6 @@ class MetaDataReader(object):
 
         #ms_prefix = os.path.splitext(self.ms.basename)[0]
         #flagtemplate = os.path.join(self.context.output_dir, f'{ms_prefix}.flagpointing.txt')
-
-        initialize_template(self.flagtemplate)
 
         datatable = self.datatable
         for antenna_id, rowlist in self.invalid_pointing_data.items():
