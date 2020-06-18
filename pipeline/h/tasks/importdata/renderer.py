@@ -54,6 +54,10 @@ class T2_4MDetailsImportDataRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                          for r in result
                          for ms in r.mses}
 
+        minparang = result.inputs['minparang']
+        parang_ranges = result.parang_ranges
+        pol_intents_found = len(parang_ranges) > 1
+
         mako_context.update({
             'flux_imported': True if measurements else False,
             'flux_table_rows': flux_table_rows,
@@ -62,6 +66,9 @@ class T2_4MDetailsImportDataRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'repsource_table_rows': repsource_table_rows,
             'num_mses': num_mses,
             'fluxcsv_files': fluxcsv_files,
+            'pol_intents_found': pol_intents_found,
+            'minparang': minparang,
+            'parang_ranges': parang_ranges,
             'weblog_dir': weblog_dir
         })
 

@@ -71,6 +71,7 @@ class ImportDataResults(basetask.Results):
         self.mses = [] if mses is None else mses
         self.setjy_results = setjy_results
         self.origin = {}
+        self.parang_ranges = {}
 
         # Flux service query is None (dbservice=False), FIRSTURL, BACKUPURL, or FAIL
         self.fluxservice = None

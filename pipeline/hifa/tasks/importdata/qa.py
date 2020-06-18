@@ -1,6 +1,6 @@
 import collections
 from itertools import chain
-from typing import List, Tuple, Callable, Set
+from typing import List, Tuple, Dict, Callable, Set
 
 import pipeline.h.tasks.importdata.importdata as importdata
 import pipeline.infrastructure.casatools as casatools
@@ -30,9 +30,10 @@ class ALMAImportDataListQAHandler(pqa.QAPlugin):
 
         # PIPE-597 spec states to test POLARIZATION intent
         intents_to_test = {'POLARIZATION'}
-        parang_scores = _check_parallactic_angle_range(mses, intents_to_test, parallactic_threshold)
+        parang_scores, parang_ranges = _check_parallactic_angle_range(mses, intents_to_test, parallactic_threshold)
 
         result.qa.pool.extend(parang_scores)
+        result.parang_ranges = parang_ranges
 
 
 class ALMAImportDataQAHandler(pqa.QAPlugin):
@@ -79,10 +80,13 @@ def _check_parallactic_angle_range(mses: List[MeasurementSet], intents: Set[str]
     :param mses: MeasurementSets to check
     :param intents: intents to measure
     :param threshold: minimum parallactic angle coverage
-    :return: list of QAScores
+    :return: list of QAScores and dictionary of metrics
     """
     # holds list of all QA scores for this metric
     all_scores: List[pqa.QAScore] = []
+    # holds all parallactic angle ranges for all
+    # session names, intents and pol cal names
+    all_metrics: Dict[str, Dict[str, Dict[str, float]]] = {}
 
     intents_present = any([intents.intersection(ms.intents) for ms in mses])
 
@@ -94,12 +98,16 @@ def _check_parallactic_angle_range(mses: List[MeasurementSet], intents: Set[str]
 
     # Check parallactic angle for each polcal in each session
     for session_name, session_mses in session_to_mses.items():
+        all_metrics[session_name] = {'min_parang_range': 360.0}
         for intent in intents:
+            all_metrics[session_name][intent] = {}
             polcal_names = {polcal.name
                             for ms in session_mses
                             for polcal in ms.get_fields(intent=intent)}
             for polcal_name in polcal_names:
                 parallactic_range = ous_parallactic_range(session_mses, polcal_name, intent)
+                all_metrics[session_name][intent][polcal_name] = parallactic_range
+                all_metrics[session_name]['min_parang_range'] = min(all_metrics[session_name]['min_parang_range'], parallactic_range)
                 LOG.info(f'Parallactic angle range for {polcal_name} ({intent}) in session {session_name}: '
                          f'{parallactic_range}')
                 session_scores = qacalc.score_parallactic_range(
@@ -107,7 +115,7 @@ def _check_parallactic_angle_range(mses: List[MeasurementSet], intents: Set[str]
                 )
                 all_scores.extend(session_scores)
 
-    return all_scores
+    return all_scores, all_metrics
 
 
 def _check_bands(mses) -> pqa.QAScore:
