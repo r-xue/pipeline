@@ -172,7 +172,8 @@ def executeppr(pprXmlFile, importonly=True, breakpoint='breakpoint',
     for asdm in asdmList:
         session = defsession
         for key, value in sessionsDict.items():
-            if asdm[1] in value:
+            # Allow _target.ms or .ms endings: needed to import Measurement Sets (see PIPE-579)
+            if asdm[1].rstrip('_target.ms') in value:
                 session = key.lower()
                 break
         sessions.append(session)

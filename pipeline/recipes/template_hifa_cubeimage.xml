@@ -1,6 +1,15 @@
 <ProcessingProcedure>
 	<ProcedureTitle>hifa_cubeimage</ProcedureTitle>
 
+    {{#importonly}}
+    <!-- import MS: if importonly=True, no calibration shall be performed -->
+    <ProcessingCommand>
+        <Command xmlns="">hifa_importdata</Command>
+        <ParameterSet/>
+    </ProcessingCommand>
+    {{/importonly}}
+    {{^importonly}}
+     <!-- Restore MS: if importonly!=True, restore ASDM and call hif_mstransform -->
     <ProcessingCommand>
         <Command xmlns="">hifa_restoredata</Command>
         <ParameterSet>
@@ -16,7 +25,8 @@
         <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>
-    
+    {{/importonly}}
+
     <ProcessingCommand>
         <Command xmlns="">hifa_imageprecheck</Command>
         <ParameterSet>
