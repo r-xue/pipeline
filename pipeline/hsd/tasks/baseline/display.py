@@ -314,6 +314,9 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
 
         marks = ['gs', 'bs', 'cs', 'ys']
 
+        if 'cluster_flag' not in self.cluster:
+            return None
+
         # list up iclusters of clusters to plot
         clusters_to_plot = []
         flags = self.cluster['cluster_flag']
@@ -323,10 +326,12 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
                 clusters_to_plot.append(icluster)
 
         num_cluster = len(clusters_to_plot)
+        # num_cluster = len(self.cluster['cluster_property'])
+
+        # no clusters to plot
         if num_cluster == 0:
             return None
 
-        # num_cluster = len(self.cluster['cluster_property'])
         num_panel_h = int(math.sqrt(num_cluster - 0.1)) + 1
         num_panel_v = num_panel_h
         ra0 = self.cluster['grid']['ra_min']
