@@ -1,6 +1,7 @@
 import collections
-import re
 import os
+import re
+import shutil
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -26,11 +27,6 @@ class FlagDeterALMASingleDishInputs(flagdeterbase.FlagDeterBaseInputs):
     fracspwfps = vdp.VisDependentProperty(default=0.048387)
 
     @vdp.VisDependentProperty
-    def filepointing(self):
-        vis_root = os.path.splitext(self.vis)[0]
-        return vis_root + '.flagpointing.txt'
-
-    @vdp.VisDependentProperty
     def intents(self):
         # return just the unwanted intents that are present in the MS
         intents_to_flag = {'POINTING', 'FOCUS', 'ATMOSPHERE', 'SIDEBAND',
@@ -47,13 +43,22 @@ class FlagDeterALMASingleDishInputs(flagdeterbase.FlagDeterBaseInputs):
             value = unprocessed
         return value
 
+    pointing = vdp.VisDependentProperty(default=True)
+    incompleteraster = vdp.VisDependentProperty(default=True)
+
+    @vdp.VisDependentProperty
+    def filepointing(self):
+        vis_root = os.path.splitext(self.vis)[0]
+        return vis_root + '.flagpointing.txt'
+
     # New property for QA0 / QA2 flags
     qa0 = vdp.VisDependentProperty(default=True)
     qa2 = vdp.VisDependentProperty(default=True)
 
     def __init__(self, context, vis=None, output_dir=None, flagbackup=None, autocorr=None, shadow=None, scan=None,
                  scannumber=None, intents=None, edgespw=None, fracspw=None, fracspwfps=None, online=None,
-                 fileonline=None, template=None, filetemplate=None, hm_tbuff=None, tbuff=None, qa0=None, qa2=None):
+                 fileonline=None, template=None, filetemplate=None, pointing=None, filepointing=None,
+                 incompleteraster=None, hm_tbuff=None, tbuff=None, qa0=None, qa2=None):
         super(FlagDeterALMASingleDishInputs, self).__init__(
             context, vis=vis, output_dir=output_dir, flagbackup=flagbackup, autocorr=autocorr, shadow=shadow, scan=scan,
             scannumber=scannumber, intents=intents, edgespw=edgespw, fracspw=fracspw, fracspwfps=fracspwfps,
@@ -63,6 +68,11 @@ class FlagDeterALMASingleDishInputs(flagdeterbase.FlagDeterBaseInputs):
         # solution parameters
         self.qa0 = qa0
         self.qa2 = qa2
+
+        # pointing flag
+        self.pointing = pointing
+        self.filepointing = filepointing
+        self.incompleteraster = incompleteraster
 
     def to_casa_args(self):
         # Initialize the arguments from the inherited
@@ -111,6 +121,38 @@ class FlagDeterALMASingleDishResults(flagdeterbase.FlagDeterBaseResults):
                         plotres = task.plot(revise_plot=True)
                         if plotres is not None:
                             offset_pointings.append(plotres)
+
+
+def update_flag_pointing(filename, flag_incomplete_raster):
+    tmpfile = filename + '.bak'
+    try:
+        shutil.copy(filename, tmpfile)
+        reason = "reason='SDPL:uniform_image_rms'"
+        with open(filename, 'r') as f:
+
+            if flag_incomplete_raster is True:
+                # uncomment commands
+                gen = map(
+                    lambda x: x.lstrip('#') if x.find(reason) != -1 and x.startswith('#') else x, f
+                )
+            else:
+                LOG.info(f'Disabling flag commands for reason "{reason}')
+                # comment out commands
+                gen = map(
+                    lambda x: f'#{x}' if x.find(reason) != -1 and not x.startswith('#') else x, f
+                )
+
+            lines = list(gen)
+
+        with open(filename, 'w') as f:
+            f.writelines(lines)
+
+    except Exception:
+        shutil.copy(tmpfile, filename)
+
+    finally:
+        if os.path.exists(tmpfile):
+            os.remove(tmpfile)
 
 
 #@task_registry.set_equivalent_casa_task('hsd_flagdata')
@@ -266,20 +308,25 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
         """
         flag_cmds = super(FlagDeterALMASingleDish, self)._get_flag_commands()
 
-        # PIPE-646
+        # PIPE-646 & PIPE-647
         # apply flag commands in flagpointing.txt
-        if os.path.exists(self.inputs.filepointing):
-            LOG.info('{} exists. Applying flag commands due to missing pointing data'.format(
-                os.path.basename(self.inputs.filepointing)
-            ))
-            pointing_cmds = self._read_flagfile(self.inputs.filepointing)
-            pointing_cmds.append("mode='summary' name='pointing' reason='SDPL:missing_pointing_data'")
+        if self.inputs.pointing:
+            if not os.path.exists(self.inputs.filepointing):
+                LOG.warn(
+                    'Pointing flag file \'{}\' was not found. Pointing '
+                    'flagging for {} disabled.'
+                    .format(self.inputs.filepointing, self.inputs.ms.basename)
+                )
+            else:
+                update_flag_pointing(self.inputs.filepointing, self.inputs.incompleteraster)
+                pointing_cmds = self._read_flagfile(self.inputs.filepointing)
+                pointing_cmds.append("mode='summary' name='pointing' reason='SDPL:missing_pointing_data'")
 
-            # insert flag commands between shadow and edgespw
-            idx = [i for i, c in enumerate(flag_cmds) if re.search("(mode|name)='shadow'", c)]
-            assert len(idx) > 0
-            sep = idx[-1] + 1
-            flag_cmds = flag_cmds[:sep] + pointing_cmds + flag_cmds[sep:]
+                # insert flag commands between shadow and edgespw
+                idx = [i for i, c in enumerate(flag_cmds) if re.search("(mode|name)='shadow'", c)]
+                assert len(idx) > 0
+                sep = idx[-1] + 1
+                flag_cmds = flag_cmds[:sep] + pointing_cmds + flag_cmds[sep:]
 
         for i in range(len(flag_cmds)):
             if flag_cmds[i].startswith("mode='summary'"):
@@ -295,12 +342,14 @@ class HpcFlagDeterALMASingleDishInputs(FlagDeterALMASingleDishInputs):
 
     def __init__(self, context, vis=None, output_dir=None, flagbackup=None, autocorr=None, shadow=None, scan=None,
                  scannumber=None, intents=None, edgespw=None, fracspw=None, fracspwfps=None, online=None,
-                 fileonline=None, template=None, filetemplate=None, hm_tbuff=None, tbuff=None, qa0=None, qa2=None,
+                 fileonline=None, template=None, filetemplate=None, pointing=None, filepointing=None,
+                 incompleteraster=None, hm_tbuff=None, tbuff=None, qa0=None, qa2=None,
                  parallel=None):
         super(HpcFlagDeterALMASingleDishInputs, self).__init__(
             context, vis=vis, output_dir=output_dir, flagbackup=flagbackup, autocorr=autocorr, shadow=shadow, scan=scan,
             scannumber=scannumber, intents=intents, edgespw=edgespw, fracspw=fracspw, fracspwfps=fracspwfps,
-            online=online, fileonline=fileonline, template=template, filetemplate=filetemplate, hm_tbuff=hm_tbuff,
+            online=online, fileonline=fileonline, template=template, filetemplate=filetemplate,
+            pointing=pointing, filepointing=filepointing, incompleteraster=incompleteraster, hm_tbuff=hm_tbuff,
             tbuff=tbuff, qa0=qa0, qa2=qa2)
         self.parallel = parallel
 

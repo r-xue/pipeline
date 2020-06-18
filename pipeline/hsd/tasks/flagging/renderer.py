@@ -1,14 +1,11 @@
 import os
 import shutil
 
-import pipeline.h.tasks.common.displays.flagging as flagging
 import pipeline.infrastructure.logging as logging
-import pipeline.infrastructure.renderer.basetemplates as basetemplates
-import pipeline.infrastructure.utils as utils
 import pipeline.h.tasks.flagging.renderer as super_renderer
-from pipeline.hif.tasks.common import flagging_renderer_utils as flagutils
 
 LOG = logging.get_logger(__name__)
+
 
 class T2_4MDetailsFlagDeterAlmaSdRenderer(super_renderer.T2_4MDetailsFlagDeterBaseRenderer):
     def __init__(self, uri='flagdeterbase.mako',
@@ -38,8 +35,8 @@ class T2_4MDetailsFlagDeterAlmaSdRenderer(super_renderer.T2_4MDetailsFlagDeterBa
                 previous_summary = r.summaries[idx - 1]
                 pointing_summary = r.summaries[idx]
                 flagged = pointing_summary['flagged'] - previous_summary['flagged']
-                total = pointing_summary['flagged']
-                LOG.info('{}: Flagged fraction for missing pointing data {:.4f}%'.format(
+                total = pointing_summary['total']
+                LOG.info('{}: Flagged fraction for pointing flags {:.4f}%'.format(
                     os.path.basename(r.inputs['vis']),
                     flagged / total * 100
                 ))
