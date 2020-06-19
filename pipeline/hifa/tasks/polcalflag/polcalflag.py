@@ -1,5 +1,6 @@
 import collections
 import functools
+import os
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -11,6 +12,8 @@ from pipeline.h.tasks.common.displays import applycal as applycal_displays
 from pipeline.h.tasks.flagging.flagdatasetter import FlagdataSetter
 from pipeline.hif.tasks import applycal
 from pipeline.hif.tasks import correctedampflag
+from pipeline.hif.tasks import gaincal
+from pipeline.hifa.heuristics.phasespwmap import get_spspec_to_spwid_map
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -45,6 +48,18 @@ class PolcalflagResults(basetask.Results):
 
 
 class PolcalflagInputs(vdp.StandardInputs):
+
+    minsnr = vdp.VisDependentProperty(default=3.0)
+    phaseupsolint = vdp.VisDependentProperty(default='int')
+    refant = vdp.VisDependentProperty(default='')
+    solint = vdp.VisDependentProperty(default='inf')
+
+    @vdp.VisDependentProperty
+    def intent(self):
+        # By default, this task will run for POLARIZATION, POLANGLE, and POLLEAKAGE
+        # intents.
+        return 'POLARIZATION,POLANGLE,POLLEAKAGE'
+
     def __init__(self, context, vis=None):
         self.context = context
         self.vis = vis
@@ -81,17 +96,57 @@ class Polcalflag(basetask.StandardTaskTemplate):
             vis=inputs.vis, mode='save', versionname=flag_backup_name_prepcf)
         self._executor.execute(task)
 
+        # Since this task is run before hifa_timegaincal, we need to compute local
+        # phase and amplitude cal tables for the polarization intents.
+
+        # Determine the parameters to use for the gaincal to create the
+        # phase-only caltable.
+        if inputs.ms.combine_spwmap:
+            phase_combine = 'spw'
+            phaseup_spwmap = inputs.ms.combine_spwmap
+            phase_interp = 'linearPD,linear'
+            # Note: at present, phaseupsolint is specified as a fixed
+            # value, defined in inputs. In the future, phaseupsolint may
+            # need to be set based on exposure times; if so, see discussion
+            # in CAS-10158 and logic in hifa.tasks.fluxscale.GcorFluxscale.
+        else:
+            phase_combine = ''
+            phaseup_spwmap = inputs.ms.phaseup_spwmap
+            phase_interp = None
+
+        # Create phase caltable and merge it into the local context.
+        LOG.info('Compute phase gaincal table.')
+        self._do_gaincal(
+            intent=inputs.intent, gaintype='G', calmode='p',
+            combine=phase_combine, solint=inputs.phaseupsolint,
+            minsnr=inputs.minsnr, refant=inputs.refant,
+            spwmap=phaseup_spwmap, interp=phase_interp,
+            merge=True)
+
+        # Create amplitude caltable and merge it into the local context.
+        # CAS-10491: for scan-based (solint='inf') amplitude solves that
+        # will be applied to the calibrator, set interp to 'nearest'.
+        LOG.info('Compute amplitude gaincal table.')
+        if inputs.solint == 'inf':
+            self._do_gaincal(
+                intent=inputs.intent, gaintype='T', calmode='a',
+                combine='', solint=inputs.solint,
+                minsnr=inputs.minsnr, refant=inputs.refant,
+                interp='nearest,linear', merge=True)
+        else:
+            self._do_gaincal(
+                intent=inputs.intent, gaintype='T', calmode='a',
+                combine='', solint=inputs.solint,
+                minsnr=inputs.minsnr, refant=inputs.refant,
+                interp='linear,linear', merge=True)
+
         # Ensure that any flagging applied to the MS by this applycal is
         # reverted at the end, even in the case of exceptions.
         try:
             # Run applycal to apply pre-existing caltables and propagate their
             # corresponding flags
             LOG.info('Applying pre-existing cal tables.')
-            acinputs = applycal.IFApplycalInputs(
-                context=inputs.context, vis=inputs.vis, intent='POLARIZATION,POLANGLE,POLLEAKAGE', flagsum=False,
-                flagbackup=False)
-            actask = applycal.IFApplycal(acinputs)
-            acresult = self._executor.execute(actask, merge=True)
+            self._do_applycal(merge=False)
 
             # Create back-up of flags after applycal but before correctedampflag.
             LOG.info('Creating back-up of "after_pcflag_applycal" flagging state')
@@ -106,7 +161,7 @@ class Polcalflag(basetask.StandardTaskTemplate):
 
             # Call correctedampflag for the polarization calibrator intent.
             cafinputs = correctedampflag.Correctedampflag.Inputs(
-                context=inputs.context, vis=inputs.vis, intent='POLARIZATION,POLANGLE,POLLEAKAGE')
+                context=inputs.context, vis=inputs.vis, intent=inputs.intent)
             caftask = correctedampflag.Correctedampflag(cafinputs)
             cafresult = self._executor.execute(caftask)
 
@@ -123,8 +178,6 @@ class Polcalflag(basetask.StandardTaskTemplate):
                 LOG.info('Creating "after calibration, after flagging" plots')
                 result.plots['after'] = plot_fn(suffix='after')
 
-        finally:
-            if cafflags:
                 # Restore the "after_pcflag_applycal" backup of the flagging
                 # state, so that the "before plots" only show things needing
                 # to be flagged by correctedampflag
@@ -136,32 +189,165 @@ class Polcalflag(basetask.StandardTaskTemplate):
                 LOG.info('Creating "after calibration, before flagging" plots')
                 result.plots['before'] = plot_fn(suffix='before')
 
+        finally:
             # Restore the "pre-polcalflag" backup of the flagging state.
             LOG.info('Restoring back-up of "pre-polcalflag" flagging state.')
             task = casa_tasks.flagmanager(vis=inputs.vis, mode='restore', versionname=flag_backup_name_prepcf)
             self._executor.execute(task)
 
-            # If new outliers were identified...
-            if cafflags:
-                # Re-apply the newly found flags from correctedampflag.
-                LOG.info('Re-applying flags from correctedampflag.')
-                fsinputs = FlagdataSetter.Inputs(
-                    context=inputs.context, vis=inputs.vis, table=inputs.vis, inpfile=[])
-                fstask = FlagdataSetter(fsinputs)
-                fstask.flags_to_set(cafflags)
-                fsresult = self._executor.execute(fstask)
+        # If new outliers were identified...
+        if cafflags:
+            # Re-apply the newly found flags from correctedampflag.
+            LOG.info('Re-applying flags from correctedampflag.')
+            fsinputs = FlagdataSetter.Inputs(
+                context=inputs.context, vis=inputs.vis, table=inputs.vis, inpfile=[])
+            fstask = FlagdataSetter(fsinputs)
+            fstask.flags_to_set(cafflags)
+            _ = self._executor.execute(fstask)
 
-                # Check for need to update reference antennas, and apply to local
-                # copy of the MS.
-                result = self._identify_refants_to_update(result)
-                ms = inputs.context.observing_run.get_ms(name=inputs.vis)
-                ms.update_reference_antennas(ants_to_demote=result.refants_to_demote,
-                                             ants_to_remove=result.refants_to_remove)
+            # Check for need to update reference antennas, and apply to local
+            # copy of the MS.
+            result = self._identify_refants_to_update(result)
+            ms = inputs.context.observing_run.get_ms(name=inputs.vis)
+            ms.update_reference_antennas(ants_to_demote=result.refants_to_demote,
+                                         ants_to_remove=result.refants_to_remove)
 
         return result
 
     def analyse(self, results):
         return results
+
+    def _do_applycal(self, merge):
+        inputs = self.inputs
+
+        # SJW - always just one job
+        ac_intents = [inputs.intent]
+
+        applycal_tasks = []
+        for intent in ac_intents:
+            task_inputs = applycal.IFApplycalInputs(inputs.context, vis=inputs.vis, intent=intent, flagsum=False,
+                                                    flagbackup=False)
+            task = applycal.IFApplycal(task_inputs)
+            applycal_tasks.append(task)
+
+        for task in applycal_tasks:
+            self._executor.execute(task, merge=merge)
+
+    def _do_gaincal(self, caltable=None, intent=None, gaintype='G',
+                    calmode=None, combine=None, solint=None, antenna=None,
+                    uvrange='', minsnr=None, refant=None, minblperant=None,
+                    spwmap=None, interp=None, append=None, merge=True):
+        inputs = self.inputs
+        ms = inputs.ms
+
+        # Get the science spws
+        request_spws = ms.get_spectral_windows()
+        targeted_scans = ms.get_scans(scan_intent=intent)
+
+        # boil it down to just the valid spws for these fields and request
+        scan_spws = {spw for scan in targeted_scans for spw in scan.spws if spw in request_spws}
+
+        for spectral_spec, tuning_spw_ids in get_spspec_to_spwid_map(scan_spws).items():
+            tuning_spw_str = ','.join([str(i) for i in sorted(tuning_spw_ids)])
+            LOG.info('Processing spectral spec {}, spws {}'.format(spectral_spec, tuning_spw_str))
+
+            scans_with_data = ms.get_scans(spw=tuning_spw_str, scan_intent=intent)
+            if not scans_with_data:
+                LOG.info('No data to process for spectral spec {}. Continuing...'.format(spectral_spec))
+                continue
+
+            # of the fields that we are about to process, does any field have
+            # multiple intents?
+            mixed_intents = False
+            fields_in_scans = {fld for scan in scans_with_data for fld in scan.fields}
+            singular_intents = frozenset(intent.split(','))
+            if len(singular_intents) > 1:
+                for field in fields_in_scans:
+                    intents_to_scans = {si: ms.get_scans(scan_intent=si, field=field.id, spw=tuning_spw_str)
+                                        for si in singular_intents}
+                    valid_intents = [k for k, v in intents_to_scans.items() if v]
+                    if len(valid_intents) > 1:
+                        mixed_intents = True
+                        break
+
+            if mixed_intents and solint == 'inf':
+                # multiple items, one for each intent. Each intent will result
+                # in a separate job.
+                # Make sure data for the intent exists (PIPE-367)
+                intents_to_scans = {si: [scan for scan in scans_with_data if si in scan.intents]
+                                    for si in singular_intents}
+                valid_intents = [k for k, v in intents_to_scans.items() if v]
+                task_intents = valid_intents
+
+            else:
+                # one item, and hence one job, with 'PHASE,BANDPASS,...'
+                task_intents = [','.join(singular_intents)]
+
+            for intent in task_intents:
+                # Initialize gaincal inputs.
+                task_inputs = gaincal.GTypeGaincal.Inputs(
+                    inputs.context,
+                    vis=inputs.vis,
+                    caltable=caltable,
+                    intent=intent,
+                    spw=tuning_spw_str,
+                    solint=solint,
+                    gaintype=gaintype,
+                    calmode=calmode,
+                    minsnr=minsnr,
+                    combine=combine,
+                    refant=refant,
+                    antenna=antenna,
+                    uvrange=uvrange,
+                    minblperant=minblperant,
+                    solnorm=False,
+                    append=append)
+
+                # if we need to generate multiple caltables, make the caltable
+                # names unique by inserting the intent to prevent them overwriting
+                # each other
+                if len(task_intents) > 1:
+                    root, ext = os.path.splitext(task_inputs.caltable)
+                    task_inputs.caltable = '{!s}.{!s}{!s}'.format(root, intent, ext)
+
+                # Modify output table filename to append "prelim".
+                if task_inputs.caltable.endswith('.tbl'):
+                    task_inputs.caltable = task_inputs.caltable[:-4] + '.prelim.tbl'
+                else:
+                    task_inputs.caltable += '.prelim'
+
+                # Initialize and execute gaincal task.
+                task = gaincal.GTypeGaincal(task_inputs)
+                result = self._executor.execute(task)
+
+                # modify the result so that this caltable is only applied to
+                # the intent from which the calibration was derived
+                calapp_overrides = dict(intent=intent)
+
+                # Adjust the spw map if provided.
+                if spwmap:
+                    calapp_overrides['spwmap'] = spwmap
+
+                # https://open-jira.nrao.edu/browse/PIPE-367?focusedCommentId=141097&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-141097
+                #
+                # '... then to apply this table you need the same spw map that
+                # is printed in the spwphaseup stage'
+                if combine == 'spw':
+                    calapp_overrides['spwmap'] = ms.combine_spwmap
+
+                # Adjust the interp if provided.
+                if interp:
+                    calapp_overrides['interp'] = interp
+
+                calapp = result.final[0]
+                modified = callibrary.copy_calapplication(calapp, **calapp_overrides)
+                result.pool[0] = modified
+                result.final[0] = modified
+
+                # If requested, merge the result...
+                if merge:
+                    # Merge result to the local context
+                    result.accept(inputs.context)
 
     def _identify_refants_to_update(self, result):
         """Updates the Polcalflag result with lists of "bad" and "poor"

@@ -76,13 +76,6 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
 
         amp_calsolint = phase_calsolint
 
-        # Produce the diagnostic table for displaying amplitude vs time plots.
-        #     This table is not applied to the data
-        #     No special mapping required here.
-        LOG.info('Computing amplitude gain table for displaying amplitude vs time plots')
-        amp_diagnostic_result = self._do_caltarget_ampcal(solint=amp_calsolint)
-        result.calampresult = amp_diagnostic_result
-
         # Compute the science target phase solution. This solution will be applied to the target, check source, and
         # phase calibrator when the result for this task is accepted.
         LOG.info('Computing phase gain table for target, check source, and phase calibrator.')
@@ -119,6 +112,13 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
                 calphaseresult_calapp, intent='AMPLITUDE,BANDPASS,POLARIZATION,POLANGLE,POLLEAKAGE')
             result.final.append(calphase_calapp)
             result.pool.append(calphase_calapp)
+
+        # Produce the diagnostic table for displaying amplitude vs time plots.
+        #     This table is not applied to the data
+        #     No special mapping required here.
+        LOG.info('Computing amplitude gain table for displaying amplitude vs time plots')
+        amp_diagnostic_result = self._do_caltarget_ampcal(solint=amp_calsolint)
+        result.calampresult = amp_diagnostic_result
 
         # Compute the amplitude calibration
         LOG.info('Computing the final amplitude gain table.')
