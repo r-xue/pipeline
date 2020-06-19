@@ -1187,10 +1187,12 @@ class ImageParamsHeuristics(object):
         frequencies in spectral window list and the corresponding spectral window indexes.
 
         :param spwspec: comma separated string list of spectral windows.
-        :return: tuple min. and max. frequencies (in Hz) and corresponding spw indexes.
+        :return: dictionary min. and max. frequencies (in Hz) and corresponding spw indexes.
         """
         abs_min_frequency = 1.0e15
         abs_max_frequency = 0.0
+        min_freq_spwid = -1
+        max_freq_spwid = -1
         msname = self.vislist[0]
         ms = self.observing_run.get_ms(name=msname)
         for spwid in spwspec.split(','):
@@ -1199,17 +1201,21 @@ class ImageParamsHeuristics(object):
             min_frequency = float(spw.min_frequency.to_units(measures.FrequencyUnits.HERTZ))
             if (min_frequency < abs_min_frequency):
                 abs_min_frequency = min_frequency
+                min_freq_spwid = spwid
             max_frequency = float(spw.max_frequency.to_units(measures.FrequencyUnits.HERTZ))
             if (max_frequency > abs_max_frequency):
                 abs_max_frequency = max_frequency
-        return (abs_min_frequency, abs_max_frequency)
+                max_freq_spwid = spwid
+        return {'abs_min_freq': abs_min_frequency, 'abs_max_freq': abs_max_frequency,
+                'min_freq_spwid': min_freq_spwid, 'max_freq_spwid': max_freq_spwid}
 
     def get_fractional_bandwidth(self, spwspec):
 
         """Returns fractional bandwidth for selected spectral windows"""
 
-        abs_min_frequency, abs_max_frequency = self.get_min_max_freq(spwspec)
-        return 2.0 * (abs_max_frequency - abs_min_frequency) / (abs_min_frequency + abs_max_frequency)
+        freq_limits = self.get_min_max_freq(spwspec)
+        return 2.0 * (freq_limits['abs_max_freq'] - freq_limits['abs_min_freq']) / \
+               (freq_limits['abs_min_freq'] + freq_limits['abs_max_freq'])
 
     def robust(self):
 

@@ -217,6 +217,7 @@ class Tclean(cleanbase.CleanBase):
     def prepare(self):
         inputs = self.inputs
         context = self.inputs.context
+        known_synthesized_beams = self.inputs.context.synthesized_beams
 
         LOG.info('\nCleaning for intent "%s", field %s, spw %s\n',
                  inputs.intent, inputs.field, inputs.spw)
@@ -286,13 +287,18 @@ class Tclean(cleanbase.CleanBase):
             field_id = self.image_heuristics.field(inputs.intent, inputs.field)
             inputs.phasecenter = self.image_heuristics.phasecenter(field_id)
 
-        # Determine and store synthesized beam size
+        # Select highest frequency spw for computing the smallest beam
+        max_freq_spwid = self.image_heuristics.get_min_max_freq(inputs.spw)['max_freq_spwid']
+        # Determine and store smallest synthesized beam size
+        # known_synthesized_beams should already contain this information (from hif_makeimlist, hif_checkproductsize or
+        # hifa_imageprecheck)
         self.synthesized_beam, known_synthesized_beams = \
             self.image_heuristics.synthesized_beam(field_intent_list=[(inputs.field, inputs.intent)],
-                                                    spwspec=inputs.spw,
+                                                    spwspec=max_freq_spwid,
                                                     robust=inputs.robust,
                                                     uvtaper=inputs.uvtaper,
                                                     parallel=inputs.parallel,
+                                                    known_beams=known_synthesized_beams,
                                                     shift=True)
 
         # If imsize not set then use heuristic code to calculate the
