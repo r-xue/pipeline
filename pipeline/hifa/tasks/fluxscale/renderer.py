@@ -33,44 +33,33 @@ class T2_4MDetailsGFluxscaleRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def __init__(self, uri='gfluxscale.mako', 
                  description='Transfer fluxscale from amplitude calibrator',
                  always_rerender=False):
-        super(T2_4MDetailsGFluxscaleRenderer, self).__init__(uri=uri,
-                description=description, always_rerender=always_rerender)
+        super(T2_4MDetailsGFluxscaleRenderer, self).__init__(
+            uri=uri, description=description, always_rerender=always_rerender)
 
     def update_mako_context(self, mako_context, pipeline_context, results):
-        #All antenna, sort by baseband
+        # All antenna, sort by baseband
         ampuv_allant_plots = collections.defaultdict(dict)
         for intents in ['AMPLITUDE']:
-            plots = self.create_plots(pipeline_context, 
-                                      results, 
-                                      gfluxscale.GFluxscaleSummaryChart, 
-                                      intents)
+            plots = self.create_plots(pipeline_context, results, gfluxscale.GFluxscaleSummaryChart, intents)
             self.sort_plots_by_baseband(plots)
-
-            key = intents
             for vis, vis_plots in plots.items():
                 if len(vis_plots) > 0:
-                    ampuv_allant_plots[vis][key] = vis_plots
+                    ampuv_allant_plots[vis][intents] = vis_plots
 
-        #List of antenna for the fluxscale result, sorted by baseband
+        # List of antenna for the fluxscale result, sorted by baseband
         ampuv_ant_plots = collections.defaultdict(dict)
-
         for intents in ['AMPLITUDE']:
-            plots = self.create_plots_ants(pipeline_context, 
-                                      results, 
-                                      gfluxscale.GFluxscaleSummaryChart, 
-                                      intents)
+            plots = self.create_plots_ants(pipeline_context, results, gfluxscale.GFluxscaleSummaryChart, intents)
             self.sort_plots_by_baseband(plots)
-
-            key = intents
             for vis, vis_plots in plots.items():
                 if len(vis_plots) > 0:
-                    ampuv_ant_plots[vis][key] = vis_plots
+                    ampuv_ant_plots[vis][intents] = vis_plots
 
         flux_comparison_plots = self.create_flux_comparison_plots(pipeline_context, results)
 
         table_rows = make_flux_table(pipeline_context, results)
 
-        adopted_rows = make_adopted_table(pipeline_context, results)
+        adopted_rows = make_adopted_table(results)
 
         mako_context.update({
             'adopted_table': adopted_rows,
@@ -80,13 +69,14 @@ class T2_4MDetailsGFluxscaleRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'table_rows': table_rows
         })
 
-    def sort_plots_by_baseband(self, d):
+    @staticmethod
+    def sort_plots_by_baseband(d):
         for vis, plots in d.items():
-            plots = sorted(plots, 
-                           key=lambda plot: plot.parameters['baseband'])
+            plots = sorted(plots, key=lambda plot: plot.parameters['baseband'])
             d[vis] = plots
 
-    def create_flux_comparison_plots(self, context, results):
+    @staticmethod
+    def create_flux_comparison_plots(context, results):
         output_dir = os.path.join(context.report_dir, 'stage%s' % results.stage_number)
         d = {}
 
@@ -109,17 +99,18 @@ class T2_4MDetailsGFluxscaleRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
     def create_plots_ants(self, context, results, plotter_cls, intents, renderer_cls=None):
         """
-        Create plots and return a dictionary of vis:[Plots].  Antenna and UVrange selection
-                                                              determined by heuristics.
+        Create plots and return a dictionary of vis:[Plots].
+        Antenna and UVrange selection determined by heuristics.
         """
         d = {}
         for result in results:
-            plots = self.plots_for_result(context, result, plotter_cls,
-                    intents, renderer_cls, ant=result.resantenna, uvrange=result.uvrange)
+            plots = self.plots_for_result(context, result, plotter_cls, intents, renderer_cls, ant=result.resantenna,
+                                          uvrange=result.uvrange)
             d = utils.dict_merge(d, plots)
         return d
 
-    def plots_for_result(self, context, result, plotter_cls, intents, renderer_cls=None, ant='', uvrange=''):
+    @staticmethod
+    def plots_for_result(context, result, plotter_cls, intents, renderer_cls=None, ant='', uvrange=''):
         vis = os.path.basename(result.inputs['vis'])
 
         output_dir = os.path.join(context.report_dir, 'stage%s' % result.stage_number)
@@ -143,6 +134,7 @@ class T2_4MDetailsGFluxscaleRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
 
 FluxTR = collections.namedtuple('FluxTR', 'vis field spw freqbw i q u v fluxratio spix')
+
 
 def make_flux_table(context, results):
     # will hold all the flux stat table rows for the results
@@ -242,7 +234,7 @@ def make_flux_table(context, results):
 AdoptedTR = collections.namedtuple('AdoptedTR', 'vis fields')
 
 
-def make_adopted_table(context, results):
+def make_adopted_table(results):
     # will hold all the flux stat table rows for the results
     rows = []
 

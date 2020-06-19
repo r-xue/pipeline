@@ -67,17 +67,19 @@ class GcorFluxscaleQAHandler(pqa.QAPlugin):
 
         result.qa.pool.extend(scores)
 
-    def _missing_derived_fluxes(self, ms, field, intent, measurements):
+    @staticmethod
+    def _missing_derived_fluxes(ms, field, intent, measurements):
         """
         Check whether there are missing derived fluxes. 
         """
         return qacalc.score_missing_derived_fluxes(ms, field, intent, measurements)
 
-    def _low_snr_fluxes(self, ms, measurements):
+    @staticmethod
+    def _low_snr_fluxes(ms, measurements):
         """
         Check whether there are low SNR derived fluxes. 
         """
-        return qacalc.score_derived_fluxes_snr(ms,  measurements)
+        return qacalc.score_derived_fluxes_snr(ms, measurements)
 
 
 class GcorFluxscaleListQAHandler(pqa.QAPlugin):
@@ -95,9 +97,7 @@ class GcorFluxscaleListQAHandler(pqa.QAPlugin):
         result.qa.pool[:] = collated
 
         mses = [r.inputs['vis'] for r in result]
-        longmsg = 'No missing derived fluxes in %s' % utils.commafy(mses,
-                                                                    quotes=False,
-                                                                    conjunction='or')
+        longmsg = 'No missing derived fluxes in %s' % utils.commafy(mses, quotes=False, conjunction='or')
         result.qa.all_unity_longmsg = longmsg
 
 
@@ -204,37 +204,37 @@ def score_kspw(context, result):
             spw_snr_candidates = [spw for spw in measurement_spws if spw.bandwidth >= median_bandwidth]
 
         # find the spw with the highest SNR
-        highest_SNR_spw = max(spw_snr_candidates, key=lambda spw: gaincalSNR_output[spw.id]['snr'])
+        highest_snr_spw = max(spw_snr_candidates, key=lambda spw: gaincalSNR_output[spw.id]['snr'])
 
         # now find the measurement for that spw
-        highest_SNR_measurement = [m for m in measurements if m.spw_id == highest_SNR_spw.id]
-        assert (len(highest_SNR_measurement) == 1)
-        highest_SNR_measurement = highest_SNR_measurement[0]
-        highest_SNR_I = highest_SNR_measurement.I
+        highest_snr_measurement = [m for m in measurements if m.spw_id == highest_snr_spw.id]
+        assert (len(highest_snr_measurement) == 1)
+        highest_snr_measurement = highest_snr_measurement[0]
+        highest_snr_i = highest_snr_measurement.I
 
         # find the catalogue flux for the highest SNR spw
         catalogue_fluxes = [f for f in field.flux_densities
                             if f.origin in EXTERNAL_SOURCES
-                            and f.spw_id == highest_SNR_measurement.spw_id]
+                            and f.spw_id == highest_snr_measurement.spw_id]
         if not catalogue_fluxes:
             LOG.warning('Cannot calculate internal spw-spw consistency for {} ({}): no catalogue measurement for '
-                        'highest SNR spw ({})'.format(msg_fieldname, msg_intents, highest_SNR_measurement.spw_id))
+                        'highest SNR spw ({})'.format(msg_fieldname, msg_intents, highest_snr_measurement.spw_id))
             continue
         assert (len(catalogue_fluxes) is 1)
         catalogue_flux = catalogue_fluxes[0]
 
         # r_snr = ratio of derived flux to catalogue flux for highest SNR spw
-        r_snr = highest_SNR_I.to_units(FluxDensityUnits.JANSKY) / catalogue_flux.I.to_units(FluxDensityUnits.JANSKY)
+        r_snr = highest_snr_i.to_units(FluxDensityUnits.JANSKY) / catalogue_flux.I.to_units(FluxDensityUnits.JANSKY)
 
         # now calculate r for remaining measurements in other spws
-        other_measurements = [m for m in measurements if m is not highest_SNR_measurement]
+        other_measurements = [m for m in measurements if m is not highest_snr_measurement]
         # note that we do not include r_snr, as by definition it is the ratio
         # to which all other spws are compared, and hence has a QA score of 1.0
         k_spws = []
         for m in other_measurements:
             catalogue_fluxes = [f for f in field.flux_densities
                                 if f.origin in EXTERNAL_SOURCES
-                                and f.spw_id == highest_SNR_measurement.spw_id]
+                                and f.spw_id == highest_snr_measurement.spw_id]
             if not catalogue_fluxes:
                 LOG.info('No catalogue measurement for {} ({}) spw {}'.format(msg_fieldname, msg_intents, m.spw_id))
                 continue
@@ -246,7 +246,7 @@ def score_kspw(context, result):
 
         # sort QA scores by spw
         k_spws.sort(key=operator.itemgetter(0))
-        field_qa_scores = [qacalc.score_gfluxscale_k_spw(ms.basename, field, spw_id, k_spw, highest_SNR_spw.id)
+        field_qa_scores = [qacalc.score_gfluxscale_k_spw(ms.basename, field, spw_id, k_spw, highest_snr_spw.id)
                            for spw_id, k_spw in k_spws]
         all_scores.extend(field_qa_scores)
 
@@ -478,11 +478,11 @@ def median(data, start):
     if even:
         slice_start = (num_elements // 2) - 1
         slice_end = (num_elements // 2) + 1
-        median = sum(data[slice_start:slice_end], start) / 2
+        med = sum(data[slice_start:slice_end], start) / 2
     else:
-        median = data[num_elements // 2]
+        med = data[num_elements // 2]
 
-    return median
+    return med
 
 
 def median_channel_width(spw):
@@ -491,6 +491,7 @@ def median_channel_width(spw):
     if isinstance(channel_widths, spectralwindow.ArithmeticProgression):
         median_width = abs(channel_widths.start)
     else:
+        # FIXME: function call is missing parameter
         median_width = median(channel_widths)
 
     return Frequency(median_width, FrequencyUnits.HERTZ)
@@ -498,6 +499,7 @@ def median_channel_width(spw):
 
 def median_scan_duration(scans):
     durations = [scan.time_on_source for scan in scans]
+    # FIXME: function call is missing parameter
     return median(durations)
 
 
@@ -642,6 +644,7 @@ class CaltableWrapper(object):
 
     def filter(self, spw=None, antenna=None, scan=None, field=None, **kwargs):
         mask_args = dict(kwargs)
+
         # create a mask that lets all data through for columns that are not
         # specified as arguments, or just the specified values through for
         # columns that are specified as arguments
