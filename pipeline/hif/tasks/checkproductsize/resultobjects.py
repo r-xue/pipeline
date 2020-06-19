@@ -17,6 +17,9 @@ class CheckProductSizeResult(basetask.Results):
                  cube_mitigated_productsize,
                  mitigated_maxcubesize,
                  mitigated_productsize,
+                 allowed_maximsize,
+                 original_maximsize,
+                 mitigated_maximsize,
                  size_mitigation_parameters,
                  status,
                  reason,
@@ -30,6 +33,9 @@ class CheckProductSizeResult(basetask.Results):
         self.cube_mitigated_productsize = cube_mitigated_productsize
         self.mitigated_maxcubesize = mitigated_maxcubesize
         self.mitigated_productsize = mitigated_productsize
+        self.allowed_maximsize = allowed_maximsize
+        self.original_maximsize = original_maximsize
+        self.mitigated_maximsize = mitigated_maximsize
         self.size_mitigation_parameters = size_mitigation_parameters
         self.status = status
         self.reason = reason
@@ -59,6 +65,10 @@ class CheckProductSizeResult(basetask.Results):
         repr += ' Initial predicted product size: %.3g GB\n' % (self.original_productsize)
         repr += ' Predicted product size after cube size mitigation: %.3g GB\n' % (self.cube_mitigated_productsize)
         repr += ' Mitigated product size: %.3g GB\n' % (self.mitigated_productsize)
+        # PIPE-676: mitigate imsize
+        repr += ' Allowed maximum image pixel count: %s\n' % (self.allowed_maximsize)
+        repr += ' Predicted image pixel count: %s\n' % (self.original_maximsize)
+        repr += ' Mitigated image pixel count: %s\n' % (self.mitigated_maximsize)
         repr += ' Mitigation parameters:\n'
         for parameter, value in self.size_mitigation_parameters.items():
             repr += '  %s: %s\n' % (parameter, value)

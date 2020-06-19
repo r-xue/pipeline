@@ -25,8 +25,12 @@ class CheckProductSizeInputs(vdp.StandardInputs):
     def maxproductsize(self):
         return project.PerformanceParameters().max_product_size
 
+    @vdp.VisDependentProperty(null_input=[None, '', -1, -1.0])
+    def maximsize(self):
+        return -1
+
     def __init__(self, context, output_dir=None, vis=None, maxcubesize=None, maxcubelimit=None, maxproductsize=None,
-                 calcsb=None, parallel=None):
+                 calcsb=None, parallel=None, maximsize=None):
         super(CheckProductSizeInputs, self).__init__()
 
         self.context = context
@@ -36,6 +40,7 @@ class CheckProductSizeInputs(vdp.StandardInputs):
         self.maxcubesize = maxcubesize
         self.maxcubelimit = maxcubelimit
         self.maxproductsize = maxproductsize
+        self.maximsize = maximsize
         self.calcsb = calcsb
         self.parallel = parallel
 
@@ -55,7 +60,7 @@ class CheckProductSize(basetask.StandardTaskTemplate):
         # Check parameter settings
         if (self.inputs.maxcubesize == -1) and \
            (self.inputs.maxcubelimit == -1) and \
-           (self.inputs.maxcubesize == -1):
+           (self.inputs.maxproductsize == -1) and (self.inputs.maximsize == -1):
             LOG.info('No size limits given.')
             result = CheckProductSizeResult(self.inputs.maxcubesize, \
                                             self.inputs.maxcubelimit, \
@@ -65,9 +70,35 @@ class CheckProductSize(basetask.StandardTaskTemplate):
                                             -1, \
                                             -1, \
                                             -1, \
+                                            self.inputs.maximsize, \
+                                            -1, \
+                                            -1, \
                                             {}, \
                                             'OK', \
                                             {'longmsg': 'No size limits given', 'shortmsg': 'No size limits'}, \
+                                            None)
+            # Log summary information
+            LOG.info(str(result))
+            return result
+
+        # Mitigate either product byte size or image pixel count.
+        if ((self.inputs.maxcubesize != -1) or (self.inputs.maxcubelimit != -1) or (self.inputs.maxproductsize != -1)) \
+                and (self.inputs.maximsize != -1):
+            result = CheckProductSizeResult(self.inputs.maxcubesize, \
+                                            self.inputs.maxcubelimit, \
+                                            self.inputs.maxproductsize, \
+                                            -1, \
+                                            -1, \
+                                            -1, \
+                                            -1, \
+                                            -1, \
+                                            self.inputs.maximsize, \
+                                            -1, \
+                                            -1, \
+                                            {}, \
+                                            'ERROR', \
+                                            {'longmsg': 'Parameter error: cannot mitigate product byte size and image pixel count at the same time.',\
+                                             'shortmsg': 'Parameter error'},\
                                             None)
             # Log summary information
             LOG.info(str(result))
@@ -82,6 +113,9 @@ class CheckProductSize(basetask.StandardTaskTemplate):
                                             -1, \
                                             -1, \
                                             -1, \
+                                            -1, \
+                                            -1, \
+                                            self.inputs.maximsize, \
                                             -1, \
                                             -1, \
                                             {}, \
@@ -101,6 +135,9 @@ class CheckProductSize(basetask.StandardTaskTemplate):
                                             -1, \
                                             -1, \
                                             -1, \
+                                            -1, \
+                                            -1, \
+                                            self.inputs.maximsize, \
                                             -1, \
                                             -1, \
                                             {}, \
@@ -123,6 +160,9 @@ class CheckProductSize(basetask.StandardTaskTemplate):
                                             -1, \
                                             -1, \
                                             {}, \
+                                            self.inputs.maximsize, \
+                                            -1, \
+                                            -1, \
                                             'ERROR', \
                                             {'longmsg': 'Parameter error: maxproductsize must be > maxcubelimit', 'shortmsg': 'Parameter error'}, \
                                             None)
@@ -135,12 +175,26 @@ class CheckProductSize(basetask.StandardTaskTemplate):
         # Clear any previous size mitigation parameters
         self.inputs.context.size_mitigation_parameters = {}
 
-        size_mitigation_parameters, \
-        original_maxcubesize, original_productsize, \
-        cube_mitigated_productsize, \
-        maxcubesize, productsize, error, reason, \
-        known_synthesized_beams = \
-            checkproductsize_heuristics.mitigate_sizes()
+        # Mitigate image pixel count (currently used for VLA, see PIPE-676)
+        if self.inputs.maximsize != -1:
+            size_mitigation_parameters, \
+            original_maxcubesize, original_productsize, \
+            cube_mitigated_productsize, \
+            maxcubesize, productsize, \
+            original_imsize, mitigated_imsize, \
+            error, reason, \
+            known_synthesized_beams = \
+                checkproductsize_heuristics.mitigate_imsize()
+        # Mitigate data product byte size (currently used for ALMA)
+        else:
+            size_mitigation_parameters, \
+            original_maxcubesize, original_productsize, \
+            cube_mitigated_productsize, \
+            maxcubesize, productsize, \
+            original_imsize, mitigated_imsize, \
+            error, reason, \
+            known_synthesized_beams = \
+                checkproductsize_heuristics.mitigate_sizes()
 
         if error:
             status = 'ERROR'
@@ -159,6 +213,9 @@ class CheckProductSize(basetask.StandardTaskTemplate):
                                         cube_mitigated_productsize,
                                         maxcubesize,
                                         productsize,
+                                        self.inputs.maximsize, \
+                                        original_imsize, \
+                                        mitigated_imsize, \
                                         size_mitigation_parameters,
                                         status,
                                         reason,

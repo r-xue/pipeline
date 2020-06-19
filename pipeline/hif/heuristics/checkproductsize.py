@@ -1,5 +1,6 @@
 import math
 import operator
+import copy
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
@@ -21,14 +22,19 @@ class CheckProductSizeHeuristics(object):
         ref_ms = self.context.observing_run.measurement_sets[0]
         for target in imlist:
             nx, ny = target['imsize']
-            real_spw = self.context.observing_run.virtual2real_spw_id(int(target['spw']), ref_ms)
-            nchan = ref_ms.get_spectral_window(real_spw).num_channels
             if target['nbin'] != -1:
                 nbin = target['nbin']
             else:
                 nbin = 1
+            if target['specmode'] == 'cube':
+                real_spw = self.context.observing_run.virtual2real_spw_id(int(target['spw']), ref_ms)
+                nchan = ref_ms.get_spectral_window(real_spw).num_channels
+                cubesize = 4. * nx * ny * nchan / nbin / 1e9
+            # Handle the 'cont' specmode case
+            else:
+                nchan = 1
+                cubesize = 0.0
             mfssize = 4. * nx * ny / 1e9 # Should include nterms, though overall size is dominated by cube mode which is currently always nterms=1
-            cubesize = 4. * nx * ny * nchan / nbin / 1e9
             cubesizes.append(cubesize)
             productsize = 2.0 * (mfssize + cubesize)
             productsizes[target['spw']] = productsize
@@ -96,6 +102,9 @@ class CheckProductSizeHeuristics(object):
         cubesizes, maxcubesize, productsizes, total_productsize = self.calculate_sizes(imlist)
         original_maxcubesize = maxcubesize
         original_productsize = total_productsize
+        # Requested image size
+        original_imsize = imlist[0]['imsize']
+        mitigated_imsize = original_imsize
         LOG.info('Default imaging leads to a maximum cube size of %s GB and a product size of %s GB' % (maxcubesize, total_productsize))
         LOG.info('Allowed maximum cube size: %s GB. Allowed cube size limit: %s GB. Allowed maximum product size: %s GB.' % (self.inputs.maxcubesize, self.inputs.maxcubelimit, self.inputs.maxproductsize))
 
@@ -120,6 +129,7 @@ class CheckProductSizeHeuristics(object):
                 known_synthesized_beams = makeimlist_result.synthesized_beams
                 imlist = makeimlist_result.targets
                 cubesizes, maxcubesize, productsizes, total_productsize = self.calculate_sizes(imlist)
+                mitigated_imsize = imlist[0]['imsize']
                 LOG.info('nbin mitigation leads to a maximum cube size of %s GB' % (maxcubesize))
 
         # If still too large, try changing the FoV (in makeimlist this is applied to single fields only)
@@ -149,6 +159,7 @@ class CheckProductSizeHeuristics(object):
                 known_synthesized_beams = makeimlist_result.synthesized_beams
                 imlist = makeimlist_result.targets
                 cubesizes, maxcubesize, productsizes, total_productsize = self.calculate_sizes(imlist)
+                mitigated_imsize = imlist[0]['imsize']
                 LOG.info('hm_imsize mitigation leads to a maximum cube size of %s GB' % (maxcubesize))
 
         # If still too large, try changing pixperbeam setting
@@ -171,6 +182,7 @@ class CheckProductSizeHeuristics(object):
             known_synthesized_beams = makeimlist_result.synthesized_beams
             imlist = makeimlist_result.targets
             cubesizes, maxcubesize, productsizes, total_productsize = self.calculate_sizes(imlist)
+            mitigated_imsize = imlist[0]['imsize']
             LOG.info('hm_cell mitigation leads to a maximum cube size of %s GB' % (maxcubesize))
 
         # Save cube mitigated product size for logs
@@ -184,6 +196,7 @@ class CheckProductSizeHeuristics(object):
                        original_maxcubesize, original_productsize, \
                        cube_mitigated_productsize, \
                        maxcubesize, total_productsize, \
+                       original_imsize, mitigated_imsize, \
                        True, \
                        {'longmsg': 'Cube size could not be mitigated. Remaining factor: %.4f and cube size larger than limit of %s GB.' % (maxcubesize / self.inputs.maxcubesize, self.inputs.maxcubelimit), \
                         'shortmsg': 'Cube size could not be mitigated'}, \
@@ -367,6 +380,7 @@ class CheckProductSizeHeuristics(object):
                    original_maxcubesize, original_productsize, \
                    cube_mitigated_productsize, \
                    maxcubesize, total_productsize, \
+                   original_imsize, mitigated_imsize, \
                    True, \
                    {'longmsg': 'Product size could not be mitigated. Remaining factor: %.4f.' % (total_productsize / self.inputs.maxproductsize / nfields), \
                     'shortmsg': 'Product size could not be mitigated'}, \
@@ -383,6 +397,7 @@ class CheckProductSizeHeuristics(object):
                    original_maxcubesize, original_productsize, \
                    cube_mitigated_productsize, \
                    maxcubesize, total_productsize, \
+                   original_imsize, mitigated_imsize, \
                    False, \
                    {'longmsg': 'Size had to be mitigated (%s)' % (','.join(str(x) for x in size_mitigation_parameters)), \
                     'shortmsg': 'Size was mitigated'}, \
@@ -392,6 +407,161 @@ class CheckProductSizeHeuristics(object):
                    original_maxcubesize, original_productsize, \
                    cube_mitigated_productsize, \
                    maxcubesize, total_productsize, \
+                   original_imsize, mitigated_imsize, \
+                   False, \
+                   {'longmsg': 'No size mitigation needed', \
+                    'shortmsg': 'No size mitigation'}, \
+                   known_synthesized_beams
+
+
+    def mitigate_imsize(self):
+        '''
+        Mitigate product size by adjusting ppb and imsize only. This is used in the VLA imaging heuristic, see
+        PIPE-676.
+
+        Uses the size_mitigation_parameters dictionary similarly to mitigate_sizes() method.
+        '''
+        # TODO: note that it always assumes continuum imaging mode
+        maximsize = self.inputs.maximsize
+        if type(maximsize) is not int:
+            try:
+                maximsize = int(maximsize)
+            except ValueError:
+                raise ValueError('Argument maximsize has type %s, but integer is expected' % type(maximsize))
+        known_synthesized_beams = self.context.synthesized_beams
+
+        # Initialize mitigation parameter dictionary
+        # Possible keys:
+        # 'nbins', 'hm_imsize', 'hm_cell', 'field'
+        size_mitigation_parameters = {}
+        multi_target_size_mitigation = {}
+        is_mitigated = False
+        original_imsize = []
+        mitigated_imsize = []
+
+        # Initialize cube specific variables for compatibility with mitigate_sizes
+        original_maxcubesize = -1.0
+        original_productsize = 0.0
+        cube_mitigated_productsize = -1.0
+        mitigated_maxcubesize = -1.0
+        total_productsize = 0.0
+
+        # Create makeimlist inputs
+        makeimlist_inputs = makeimlist.MakeImListInputs(self.context, vis=self.inputs.vis)
+        makeimlist_inputs.intent = 'TARGET'
+        makeimlist_inputs.specmode = 'cont'
+        makeimlist_inputs.clearlist = True
+        # calcsb         Force (re-)calculation of sensitivities and beams (Default None)
+        makeimlist_inputs.calcsb = None
+
+        # Create makeimlist task for size calculations
+        makeimlist_task = makeimlist.MakeImList(makeimlist_inputs)
+
+        # Get default target setup
+        makeimlist_inputs.known_synthesized_beams = known_synthesized_beams
+        makeimlist_result = makeimlist_task.prepare()
+        known_synthesized_beams = makeimlist_result.synthesized_beams
+        imlist = makeimlist_result.targets  # at this stage the expected image size is known
+
+        # Loop over imaging targets
+        for im in imlist:
+            # Mitigation parameters
+            im_specific_mitigation = {}
+            # Local makeimlist inputs copy for recomputing image size for current (field, intent, spw) combination
+            local_makeimlist_inputs = copy.deepcopy(makeimlist_inputs)
+            local_makeimlist_inputs.field = im['field']
+            local_makeimlist_inputs.spw = im['spw']
+            # Requested image size
+            imsize_request = im['imsize']
+            if len(imlist) == 1:
+                original_imsize = imsize_request
+            else:
+                original_imsize.append(imsize_request)
+
+            # Get original maximum cube and product sizes for compatibility
+            cubesizes, maxcubesize, productsizes, im_productsize = self.calculate_sizes([im])
+            original_productsize += im_productsize
+
+            LOG.info('Default imaging leads to image pixel count of %s for target %s' % (imsize_request, im['field']))
+            LOG.info('Allowed maximum image pixel count: %s.' % ([maximsize, maximsize]))
+
+            if max(imsize_request) > maximsize:
+                # If too large, try changing pixperbeam setting
+                im_specific_mitigation['hm_cell'] = '4ppb'
+                LOG.info('Size mitigation: Setting hm_cell to %s for target %s' % (im_specific_mitigation['hm_cell'],
+                                                                                   im['field']))
+
+                # Recalculate sizes with mitigation
+                local_makeimlist_inputs.hm_cell = im_specific_mitigation['hm_cell']
+                local_makeimlist_inputs.known_synthesized_beams = known_synthesized_beams
+                local_makeimlist_task = makeimlist.MakeImList(local_makeimlist_inputs)
+                local_makeimlist_result = local_makeimlist_task.prepare()
+                known_synthesized_beams = local_makeimlist_result.synthesized_beams
+                local_imlist = local_makeimlist_result.targets
+                # New sizes
+                cubesizes, maxcubesize, productsizes, im_productsize = self.calculate_sizes(local_imlist)
+
+                # Compute current sizes
+                imsize_request = local_imlist[0]['imsize']
+                LOG.info('hm_cell mitigation leads to image pixel count of %s for target %s' % (imsize_request,
+                                                                                                im['field']))
+
+            if max(imsize_request) > maximsize:
+                # If still too large, try changing pixperbeam setting
+                imsize_request = [maximsize, maximsize]
+                im_specific_mitigation['hm_cell'] = '4ppb'
+                im_specific_mitigation['hm_imsize'] = imsize_request
+
+                # Recalculate sizes with mitigation
+                local_makeimlist_inputs.hm_cell = im_specific_mitigation['hm_cell']
+                local_makeimlist_inputs.hm_imsize = im_specific_mitigation['hm_imsize']
+                makeimlist_inputs.known_synthesized_beams = known_synthesized_beams
+                makeimlist_task = makeimlist.MakeImList(makeimlist_inputs)
+                makeimlist_result = makeimlist_task.prepare()
+                known_synthesized_beams = makeimlist_result.synthesized_beams
+                local_imlist = makeimlist_result.targets
+                # New sizes
+                cubesizes, maxcubesize, productsizes, im_productsize = self.calculate_sizes(local_imlist)
+
+                LOG.info('Size mitigation: image pixel count is still larger than allowed for target %s. Truncating '
+                         'image.' % (im['field']))
+                LOG.info('Size mitigation: Setting hm_cell to %s for target %s' % (im_specific_mitigation['hm_cell'],
+                                                                                   im['field']))
+                LOG.info('Size mitigation: Setting hm_imsize to %s for target %s' % (im_specific_mitigation['hm_imsize'],
+                                                                                     im['field']))
+
+            # Save cube mitigated product size for logs
+            total_productsize += im_productsize
+            if len(imlist) == 1:
+                mitigated_imsize = imsize_request
+            else:
+                mitigated_imsize.append(imsize_request)
+
+            # Store mitigation parameters per spw list
+            multi_target_size_mitigation[im['spw']] = im_specific_mitigation
+            if im_specific_mitigation != {}:
+                is_mitigated = True
+
+        # Store imaging target specific parameters in mitigation dictionary only if imsize is mitigated
+        if is_mitigated:
+            size_mitigation_parameters['multi_target_size_mitigation'] = multi_target_size_mitigation
+
+        if is_mitigated:
+            return size_mitigation_parameters, \
+                   original_maxcubesize, original_productsize, \
+                   cube_mitigated_productsize, \
+                   mitigated_maxcubesize, total_productsize, \
+                   original_imsize, mitigated_imsize, \
+                   False, \
+                   {'longmsg': 'Size had to be mitigated (%s)' % (','.join(str(x) for x in size_mitigation_parameters)), \
+                    'shortmsg': 'Size was mitigated'}, \
+                   known_synthesized_beams
+        else:
+            return size_mitigation_parameters, \
+                   original_maxcubesize, original_productsize, \
+                   cube_mitigated_productsize, \
+                   mitigated_maxcubesize, total_productsize, \
+                   original_imsize, mitigated_imsize, \
                    False, \
                    {'longmsg': 'No size mitigation needed', \
                     'shortmsg': 'No size mitigation'}, \
