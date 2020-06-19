@@ -244,6 +244,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                                                                 pb_name, pblimit_cleanmask)
                     image_stats = None
             elif pb is not None and os.path.exists(pb+extension):
+                pb_name = os.path.basename(pb)+extension
                 have_mask = True
                 # Full annulus
                 statsmask = '("%s" > %f) && ("%s" < %f)' % (pb_name, pblimit_image,
