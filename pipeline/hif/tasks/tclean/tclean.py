@@ -158,9 +158,6 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
         # various places
         self.cont_freq_ranges = ''
 
-        # Store smallest beam size (not to be confused with self.image_heuristics.synthesized_beam method)
-        self.synthesized_beam = None
-
         self.is_per_eb = is_per_eb
         self.antenna = antenna
         self.usepointing = usepointing
@@ -217,7 +214,7 @@ class Tclean(cleanbase.CleanBase):
     def prepare(self):
         inputs = self.inputs
         context = self.inputs.context
-        known_synthesized_beams = self.inputs.context.synthesized_beams
+        self.known_synthesized_beams = self.inputs.context.synthesized_beams
 
         LOG.info('\nCleaning for intent "%s", field %s, spw %s\n',
                  inputs.intent, inputs.field, inputs.spw)
@@ -287,29 +284,24 @@ class Tclean(cleanbase.CleanBase):
             field_id = self.image_heuristics.field(inputs.intent, inputs.field)
             inputs.phasecenter = self.image_heuristics.phasecenter(field_id)
 
-        # Select highest frequency spw for computing the smallest beam
-        max_freq_spwid = self.image_heuristics.get_min_max_freq(inputs.spw)['max_freq_spwid']
-        # Determine and store smallest synthesized beam size
-        # known_synthesized_beams should already contain this information (from hif_makeimlist, hif_checkproductsize or
-        # hifa_imageprecheck)
-        self.synthesized_beam, known_synthesized_beams = \
-            self.image_heuristics.synthesized_beam(field_intent_list=[(inputs.field, inputs.intent)],
-                                                    spwspec=max_freq_spwid,
-                                                    robust=inputs.robust,
-                                                    uvtaper=inputs.uvtaper,
-                                                    parallel=inputs.parallel,
-                                                    known_beams=known_synthesized_beams,
-                                                    shift=True)
-
         # If imsize not set then use heuristic code to calculate the
         # centers for each field  / spw
         imsize = inputs.imsize
         cell = inputs.cell
         if imsize in (None, [], '') or cell in (None, [], ''):
 
-            # The heuristics cell size  is always the same for x and y as
+            # The heuristics cell size is always the same for x and y as
             # the value derives from a single value returned by imager.advise
-            cell = self.image_heuristics.cell(beam=self.synthesized_beam)
+            synthesized_beam, self.known_synthesized_beams = \
+                self.image_heuristics.synthesized_beam(field_intent_list=[(inputs.field, inputs.intent)],
+                                                       spwspec=inputs.spw,
+                                                       robust=inputs.robust,
+                                                       uvtaper=inputs.uvtaper,
+                                                       parallel=inputs.parallel,
+                                                       known_beams=self.known_synthesized_beams,
+                                                       force_calc=inputs.calcsb,
+                                                       shift=True)
+            cell = self.image_heuristics.cell(beam=synthesized_beam)
 
             if inputs.cell in (None, [], ''):
                 inputs.cell = cell
@@ -635,6 +627,8 @@ class Tclean(cleanbase.CleanBase):
         result.set_aggregate_bw(aggregate_lsrk_bw)
         result.set_eff_ch_bw(eff_ch_bw)
 
+        result.synthesized_beams = self.known_synthesized_beams
+
         return result
 
     def analyse(self, result):
@@ -728,8 +722,17 @@ class Tclean(cleanbase.CleanBase):
         sequence_manager.dr_corrected_sensitivity = sequence_manager.sensitivity * DR_correction_factor
 
         # Adjust niter based on the dirty image statistics
+        synthesized_beam, self.known_synthesized_beams = \
+            self.image_heuristics.synthesized_beam(field_intent_list=[(inputs.field, inputs.intent)],
+                                                   spwspec=inputs.spw,
+                                                   robust=inputs.robust,
+                                                   uvtaper=inputs.uvtaper,
+                                                   parallel=inputs.parallel,
+                                                   known_beams=self.known_synthesized_beams,
+                                                   force_calc=inputs.calcsb,
+                                                   shift=True)
         new_niter = self.image_heuristics.niter_correction(sequence_manager.niter, inputs.cell, inputs.imsize,
-                                                           self.synthesized_beam, residual_max, new_threshold)
+                                                           synthesized_beam, residual_max, new_threshold)
         sequence_manager.niter = new_niter
 
         # Save corrected sensitivity in iter0 result object for 'cube' and

@@ -76,8 +76,17 @@ class TcleanResult(basetask.Results):
         self.check_source_fit = None
         self.cube_all_cont = False
         self.bad_psf_channels = None
+        self.synthesized_beams = None
 
     def merge_with_context(self, context):
+        # Calculated beams for later stages
+        if self.synthesized_beams is not None:
+            if 'recalc' in self.synthesized_beams:
+                context.synthesized_beams = copy.deepcopy(self.synthesized_beams)
+                del context.synthesized_beams['recalc']
+            else:
+                utils.update_beams_dict(context.synthesized_beams, self.synthesized_beams)
+
         # Calculated sensitivities for later stages
         if self.per_spw_cont_sensitivities_all_chan is not None:
             if 'recalc' in result.per_spw_cont_sensitivities_all_chan:

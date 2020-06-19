@@ -67,6 +67,15 @@ class MakeImagesResult(basetask.Results):
         # Calculated sensitivities for later stages
         skip_recalc = False
         for result in self.results:
+            # Calculated beams for later stages
+            if result.synthesized_beams is not None:
+                if 'recalc' in result.synthesized_beams:
+                    context.synthesized_beams = copy.deepcopy(result.synthesized_beams)
+                    del context.synthesized_beams['recalc']
+                else:
+                    utils.update_beams_dict(context.synthesized_beams, result.synthesized_beams)
+
+            # Calculated sensitivities for later stages
             if result.per_spw_cont_sensitivities_all_chan is not None:
                 if 'recalc' in result.per_spw_cont_sensitivities_all_chan and not skip_recalc:
                     context.per_spw_cont_sensitivities_all_chan = copy.deepcopy(result.per_spw_cont_sensitivities_all_chan)

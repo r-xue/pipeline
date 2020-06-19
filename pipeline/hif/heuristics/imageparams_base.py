@@ -1851,7 +1851,7 @@ class ImageParamsHeuristics(object):
             return niter
 
         # Estimate new niter based on circular mask
-        qaTool = casatools.quanta
+        qaTool = pl_casatools.quanta
 
         threshold_value = qaTool.convert(threshold, 'Jy')['value']
 
