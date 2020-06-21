@@ -10,8 +10,8 @@ LOG = infrastructure.get_logger(__name__)
 class GaincalWorkerInputs(common.VdpCommonGaincalInputs):
     def __init__(self, context, output_dir=None, vis=None, caltable=None, field=None, spw=None, antenna=None,
                  uvrange=None, intent=None, selectdata=None, gaintype=None, smodel=None, calmode=None, solint=None,
-                 combine=None, refant=None, minblperant=None, minsnr=None, solnorm=None, append=None, scan=None,
-                 splinetime=None, npointaver=None, phasewrap=None, opacity=None, preavg=None, parang=None):
+                 combine=None, refant=None, refantmode=None, minblperant=None, minsnr=None, solnorm=None, append=None,
+                 scan=None, splinetime=None, npointaver=None, phasewrap=None, opacity=None, preavg=None, parang=None):
 
         # Standard parameters
         self.context = context
@@ -26,6 +26,7 @@ class GaincalWorkerInputs(common.VdpCommonGaincalInputs):
         self.intent = intent
         self.selectdata = selectdata
         self.refant = refant
+        self.refantmode = refantmode
         self.minblperant = minblperant
         self.opacity = opacity
         self.calmode = calmode

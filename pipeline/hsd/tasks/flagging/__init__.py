@@ -1,12 +1,13 @@
 import pipeline.h.tasks.flagging.renderer as super_renderer
 import pipeline.infrastructure.renderer.weblog as weblog
 from .flagdeteralmasd import FlagDeterALMASingleDish, HpcFlagDeterALMASingleDish
+from . import renderer
 
 # Use generic deterministic flagging renderer for ALMA SD
 # deterministic flagging.
 weblog.add_renderer(FlagDeterALMASingleDish,
-                    super_renderer.T2_4MDetailsFlagDeterBaseRenderer(description='ALMA SD deterministic flagging'),
+                    renderer.T2_4MDetailsFlagDeterAlmaSdRenderer(description='ALMA SD deterministic flagging', always_rerender=False),
                     group_by=weblog.UNGROUPED)
 weblog.add_renderer(HpcFlagDeterALMASingleDish,
-                    super_renderer.T2_4MDetailsFlagDeterBaseRenderer(description='ALMA SD deterministic flagging'),
+                    renderer.T2_4MDetailsFlagDeterAlmaSdRenderer(description='ALMA SD deterministic flagging', always_rerender=False),
                     group_by=weblog.UNGROUPED)

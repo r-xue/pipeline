@@ -60,7 +60,7 @@ class CleanSummary(object):
             for i, iteration in [(k, r.iterations[k]) for k in sorted(r.iterations)]:
                 # process image for this iteration
                 if 'image' in iteration:
-                    collapse_function = 'max' if (('cube' in iteration.get('image', '')) or ('repBW' in iteration.get('cleanmask', ''))) else 'mean'
+                    collapse_function = 'max' if (('cube' in iteration.get('image', '')) or ('repBW' in iteration.get('image', ''))) else 'mean'
 
                     # PB corrected
                     image_path = iteration['image'].replace('.image', '.image%s' % (extension))

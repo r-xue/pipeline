@@ -10,18 +10,108 @@ LOG = infrastructure.get_logger(__name__)
 
 class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
-    def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None, linesfile=None, imaging_params={}):
-        ImageParamsHeuristics.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
+    def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
+                 linesfile=None, imaging_params={}):
+        ImageParamsHeuristics.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params, contfile,
+                                       linesfile, imaging_params)
         self.imaging_mode = 'VLA'
 
     def robust(self):
+        """See PIPE-680 and CASR-543"""
         return 0.5
 
     def uvtaper(self, beam_natural=None, protect_long=None):
         return []
 
-    def nterms(self):
-        return 2
+    def pblimits(self, pb):
+        """
+        PB gain level at which to cut off normalizations (tclean parameter).
+
+        See PIPE-674 and CASR-543
+        """
+        pblimit_image = -0.1
+        pblimit_cleanmask = -0.1    # not used at the moment, negative values are untested (see PIPE-674)
+
+        return pblimit_image, pblimit_cleanmask
+
+    def nterms(self, spwspec):
+        """
+        Determine nterms depending on the fractional bandwidth.
+        Returns 1 if the fractional bandwidth is < 10 per cent, 2 otherwise.
+
+        See PIPE-679 and CASR-543
+        """
+        if spwspec is None:
+            return None
+        # Fractional bandwidth
+        fr_bandwidth = self.get_fractional_bandwidth(spwspec)
+        if (fr_bandwidth >= 0.1):
+            return 2
+        else:
+            return 1
+
+    def deconvolver(self, specmode, spwspec):
+        """See PIPE-679 and CASR-543"""
+        return 'mtmfs'
+
+    def specmode(self):
+        """See PIPE-683 and CASR-543"""
+        return 'cont'
+
+    def nsigma(self, iteration, hm_nsigma):
+        """See PIPE-678 and CASR-543"""
+        if hm_nsigma:
+            return hm_nsigma
+        else:
+            return 5.0
+
+    def threshold(self, iteration, threshold, hm_masking):
+        """See PIPE-678 and CASR-543"""
+        if hm_masking in ['auto', 'none']:
+            return '0.0mJy'
+        else:
+            return threshold
+
+    def imsize(self, fields, cell, primary_beam, sfpblimit=None, max_pixels=None,
+               centreonly=False, vislist=None, spwspec=None):
+        """
+        Image size heuristics for single fields and mosaics. The pixel count along x and y image dimensions
+        is determined by the cell size, primary beam size and the spread of phase centers in case of mosaics.
+
+        Frequency dependent image size may be computed for VLA imaging.
+
+        For single fields, 18 GHz and above FOV extends to the first minimum of the primary beam Airy pattern.
+        Below 18 GHz, FOV extends to the second minimum (incorporating the first sidelobes).
+
+        See PIPE-675 and CASR-543
+
+        :param fields: list of comma separated strings of field IDs per MS.
+        :param cell: pixel (cell) size in arcsec.
+        :param primary_beam: primary beam width in arcsec.
+        :param sfpblimit: single field primary beam response. If provided then imsize is chosen such that the image
+            edge is at normalised primary beam level equals to sfpblimit.
+        :param max_pixels: maximum allowed pixel count, integer. The same limit is applied along both image axes.
+        :param centreonly: if True, then ignore the spread of field centers.
+        :param vislist: list of visibility path string to be used for imaging. If not set then use all visibilities
+            in the context.
+        :param spwspec: ID list of spectral windows used to create image product. List or string containing comma
+            separated spw IDs list.
+        :return: two element list of pixel count along x and y image axes.
+        """
+        if spwspec is not None:
+            if type(spwspec) is not str:
+                spwspec = ",".join(spwspec)
+            abs_min_frequency, abs_max_frequency = self.get_min_max_freq(spwspec)
+            # 18 GHz and above (Ku, K, Ka, Q VLA bands)
+            if abs_min_frequency >= 1.8e10:
+                # equivalent to first minimum of the Airy diffraction pattern; m = 1.22.
+                sfpblimit = 0.294
+            else:
+                # equivalent to second minimum of the Airy diffraction pattern; m = 2.233 in theta = m*lambda/D
+                sfpblimit = 0.016
+
+        return super().imsize(fields, cell, primary_beam, sfpblimit=sfpblimit, max_pixels=max_pixels,
+                              centreonly=centreonly, vislist=vislist)
 
     def imagename(self, output_dir=None, intent=None, field=None, spwspec=None, specmode=None, band=None):
         try:

@@ -99,7 +99,7 @@ class SDImportData(importdata.ImportData):
         for ms in results.mses:
             LOG.debug('Start inspection for %s' % (ms.basename))
             table_name = os.path.join(table_prefix, ms.basename)
-            inspector = inspection.SDInspection(table_name, ms=ms)
+            inspector = inspection.SDInspection(self.inputs.context, table_name, ms=ms)
             reduction_group, org_directions = self._executor.execute(inspector, merge=False)
             reduction_group_list.append(reduction_group)
 

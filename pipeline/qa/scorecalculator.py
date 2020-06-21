@@ -485,6 +485,69 @@ def score_bands(mses):
 
 
 @log_qa
+def score_parallactic_range(
+        pol_intents_present: bool, session_name: str, field_name: str, coverage: float, threshold: float
+        ) -> List[pqa.QAScore]:
+    """
+    Score a session based on parallactic angle coverage.
+
+    Issues a warning if the parallactic coverage < threshold. See PIPE-597
+    for full spec.
+    """
+    # holds the final list of QA scores
+    scores: List[pqa.QAScore] = []
+
+    # are polarisation intents expected? true if pol recipe, false if not
+    # Polcal detected in session (this function was called!) but this is not a
+    # polcal recipe, hence nothing to check
+    if not pol_intents_present:
+        longmsg = (f'No polarisation intents detected. No parallactic angle coverage check required for session '
+                   f'{session_name}.')
+        shortmsg = 'Parallactic angle'
+        origin = pqa.QAOrigin(
+            metric_name='score_parallactic_angle',
+            metric_score=1.0,
+            metric_units='Session score based on parallactic angle coverage of polarisation calibrator'
+        )
+        score = pqa.QAScore(1.0, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
+                            weblog_location=pqa.WebLogLocation.ACCORDION,
+                            applies_to=pqa.TargetDataSelection(session={session_name}))
+        return [score]
+
+    # accordion message if coverage is adequate
+    if coverage >= threshold:
+        longmsg = (f'Sufficient parallactic angle coverage ({coverage:.2f}\u00B0) for polarisation calibrator '
+                   f'{field_name} in session {session_name}')
+        shortmsg = 'Parallactic angle'
+        origin = pqa.QAOrigin(
+            metric_name='score_parallactic_angle',
+            metric_score=1.0,
+            metric_units='Session score based on parallactic angle coverage of polarisation calibrator'
+        )
+        score = pqa.QAScore(1.0, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
+                            weblog_location=pqa.WebLogLocation.ACCORDION,
+                            applies_to=pqa.TargetDataSelection(session={session_name}))
+        scores.append(score)
+
+    # complain with a banner message if coverage is insufficient
+    else:
+        longmsg = (f'Insufficient parallactic angle coverage ({coverage:.2f}\u00B0) for polarisation calibrator '
+                   f'{field_name} in session {session_name}')
+        shortmsg = 'Parallactic angle'
+        origin = pqa.QAOrigin(
+            metric_name='score_parallactic_angle',
+            metric_score=0.0,
+            metric_units='Session score based on parallactic angle coverage of polarisation calibrator'
+        )
+        score = pqa.QAScore(0.0, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
+                            weblog_location=pqa.WebLogLocation.BANNER,
+                            applies_to=pqa.TargetDataSelection(session={session_name}))
+        scores.append(score)
+
+    return scores
+
+
+@log_qa
 def score_polintents(recipe_name: str, mses: List[domain.MeasurementSet]) -> List[pqa.QAScore]:
     """
     Score a MeasurementSet object based on the presence of
@@ -2259,7 +2322,7 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
         else:
             offset_score = max(0.0, 1.0 - min(1.0, beams))
             offset_metric = beams
-            if beams > 0.15:
+            if beams > 0.30:
                 warnings.append('large fitted offset of %.2f marcsec and %.2f synth beam' % (offset, beams))
 
         fitflux_score = 0.0

@@ -373,11 +373,13 @@ class CleanTaskFactory(object):
 def _get_description_map(intent):
     if intent in ('PHASE', 'BANDPASS', 'AMPLITUDE', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'):
         return {
-            'mfs': 'Make calibrator images'
+            'mfs': 'Make calibrator images',
+            'cont': 'Make calibrator images'
         }
     elif intent == 'CHECK':
         return {
-            'mfs': 'Make check source images'
+            'mfs': 'Make check source images',
+            'cont': 'Make check source images'
         }
     elif intent == 'TARGET':
         return {
@@ -393,11 +395,13 @@ def _get_description_map(intent):
 def _get_sidebar_map(intent):
     if intent in ('PHASE', 'BANDPASS', 'AMPLITUDE', 'AMPLITUDE', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'):
         return {
-            'mfs': 'cals'
+            'mfs': 'cals',
+            'cont': 'cals'
         }
     elif intent == 'CHECK':
         return {
-            'mfs': 'checksrc'
+            'mfs': 'checksrc',
+            'cont': 'checksrc'
         }
     elif intent == 'TARGET':
         return {

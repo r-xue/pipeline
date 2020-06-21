@@ -295,7 +295,7 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
 
         return True
 
-    def nterms(self):
+    def nterms(self, spwspec):
 
         return 2
 
@@ -317,7 +317,7 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
             keep_iterating = False
             # Check for zero automask
             if (hm_masking == 'auto') and (tclean_stopcode == 7):
-                if intent in ('BANDPASS', 'PHASE'):
+                if intent in ('BANDPASS', 'PHASE', 'AMPLITUDE', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'):
                     if residual_max / residual_robust_rms > 10.0:
                         LOG.warn('No automatic clean mask was found despite clean residual peak / scaled MAD > 10, '
                                  'switched to pb-based mask and tlimit=4. '

@@ -123,7 +123,6 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
     if restored not in [None, '']:
         # get min and max of the pb-corrected cleaned result
         with casatools.ImageReader(restored.replace('.image', '.image%s' % extension)) as image:
-            # define mask outside the cleaned area
             if pb is not None and os.path.exists(pb+extension):
                 have_mask = True
                 # Default is area pb > 0.3
@@ -136,7 +135,17 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                 have_mask = False
                 statsmask = ''
 
-            image_stats = image.statistics(mask=statsmask)
+            if 'TARGET' in image.miscinfo().get('intent', None):
+                image_stats = image.statistics(mask=statsmask)
+            else:
+                # Restrict region to inner 25% x 25% of the image for calibrators to
+                # avoid picking up sidelobes (PIPE-611)
+                shape = image.shape()
+                rgTool = casatools.regionmanager
+                nPixels = max(shape[0], shape[1])
+                region = rgTool.box([nPixels*0.375-1, nPixels*0.375-1, 0, 0], [nPixels*0.625-1, nPixels*0.625-1, shape[1]-1, shape[2]-1])
+                image_stats = image.statistics(mask=statsmask, region=region)
+                rgTool.done()
 
             pbcor_image_min = image_stats['min'][0]
             pbcor_image_max = image_stats['max'][0]
@@ -210,18 +219,36 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                 nonpbcor_image_non_cleanmask_freq_frame = 'LSRK'
 
             # define mask outside the cleaned area
+            image_stats = None
             if pb is not None and os.path.exists(pb+extension) and cleanmask is not None and os.path.exists(cleanmask):
+                pb_name = os.path.basename(pb)+extension
                 have_mask = True
                 # Annulus without clean mask
                 statsmask = '("%s" < 0.1) && ("%s" > %f) && ("%s" < %f)' % \
                             (os.path.basename(flattened_mask), \
-                             os.path.basename(pb)+extension, pblimit_image, \
-                             os.path.basename(pb)+extension, pblimit_cleanmask)
+                             pb_name, pblimit_image, \
+                             pb_name, pblimit_cleanmask)
+                # Check for number of points per channel (PIPE-541):
+                try:
+                    image_stats = image.statistics(mask=statsmask, robust=True, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5)
+                    if image_stats['npts'].shape == (0,) or np.median(image_stats['npts']) < 10.0:
+                        # Switch to full annulus to avoid zero noise spectrum due to voluminous mask
+                        LOG.warn('Using full annulus for noise spectrum due to voluminous mask.')
+                        statsmask = '("%s" > %f) && ("%s" < %f)' % (pb_name, pblimit_image,
+                                                                    pb_name, pblimit_cleanmask)
+                        image_stats = None
+                except Exception as e:
+                    # Try full annulus as a fallback
+                    LOG.exception('Using full annulus for noise spectrum due to voluminous mask.', exc_info=e)
+                    statsmask = '("%s" > %f) && ("%s" < %f)' % (pb_name, pblimit_image,
+                                                                pb_name, pblimit_cleanmask)
+                    image_stats = None
             elif pb is not None and os.path.exists(pb+extension):
+                pb_name = os.path.basename(pb)+extension
                 have_mask = True
                 # Full annulus
-                statsmask = '("%s" > %f) && ("%s" < %f)' % (os.path.basename(pb)+extension, pblimit_image,
-                                                            os.path.basename(pb)+extension, pblimit_cleanmask)
+                statsmask = '("%s" > %f) && ("%s" < %f)' % (pb_name, pblimit_image,
+                                                            pb_name, pblimit_cleanmask)
             elif cleanmask is not None and os.path.exists(cleanmask):
                 have_mask = True
                 # Area outside clean mask
@@ -233,7 +260,9 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
 
             try:
                 # Get image RMS for all channels (this is for the weblog)
-                image_stats = image.statistics(mask=statsmask, robust=True, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5)
+                # Avoid repeat if the check for npts was done and is OK.
+                if image_stats is None:
+                    image_stats = image.statistics(mask=statsmask, robust=True, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5)
                 nonpbcor_image_statsmask = statsmask
 
                 # Filter continuum frequency ranges if given
