@@ -135,7 +135,7 @@ ${'is' if num_mses == 1 else 'are'} summarised below.</p>
 % endif
 
 <h3>Parallactic Angle Ranges</h3>
-% if pol_intents_found:
+% if parang_ranges['pol_intents_found']:
 <p>The following table and plots show the ranges of parallactic angles of the polarization calibrator(s) per session.</p>
 <table class="table table-bordered table-striped table-condensed"
            summary="Parallactic angle information">
@@ -147,19 +147,19 @@ ${'is' if num_mses == 1 else 'are'} summarised below.</p>
         </tr>
     </thead>
     <tbody>
-        % for session_name in parang_ranges:
+        % for session_name in parang_ranges['sessions']:
             <tr>
                 <td>${session_name}</td>
                 <td>
-                    ${'%.1f' % (parang_ranges[session_name]['min_parang_range'])}&deg;
-                    % if parang_ranges[session_name]['min_parang_range'] >= minparang:
+                    ${'%.1f' % (parang_ranges['sessions'][session_name]['min_parang_range'])}&deg;
+                    % if parang_ranges['sessions'][session_name]['min_parang_range'] >= minparang:
                         &ge;
                     % else:
                         &lt;
                     % endif
                     min. parallactic angle (${'%.1f' % (minparang)}&deg;)
                 </td>
-                <td>Plot for ${session_name}</td>
+                <td><img src=${parang_plots[session_name]}></td>
             </tr>
         % endfor
     </tbody>

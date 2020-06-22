@@ -10,9 +10,11 @@ import shutil
 from functools import reduce
 
 import pipeline.infrastructure.casatools as casatools
+from pipeline.infrastructure import casa_tasks
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure.basetask import Executor as Executor
 from pipeline.domain.measures import FrequencyUnits
 
 LOG = logging.get_logger(__name__)
@@ -56,7 +58,10 @@ class T2_4MDetailsImportDataRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         minparang = result.inputs['minparang']
         parang_ranges = result.parang_ranges
-        pol_intents_found = len(parang_ranges) > 1
+        if parang_ranges['pol_intents_found']:
+            parang_plots = make_parang_plots(pipeline_context, result)
+        else:
+            parang_plots = {}
 
         mako_context.update({
             'flux_imported': True if measurements else False,
@@ -66,9 +71,9 @@ class T2_4MDetailsImportDataRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'repsource_table_rows': repsource_table_rows,
             'num_mses': num_mses,
             'fluxcsv_files': fluxcsv_files,
-            'pol_intents_found': pol_intents_found,
             'minparang': minparang,
             'parang_ranges': parang_ranges,
+            'parang_plots': parang_plots,
             'weblog_dir': weblog_dir
         })
 
@@ -191,3 +196,55 @@ def make_repsource_table(context, results):
             rows.append(tr)
 
     return utils.merge_td_columns(rows), repsource_name_is_none
+
+
+def make_parang_plots(context, result):
+
+    """Create parallactic angle plots for each session."""
+
+    plot_colors = ['0000ff', '007f00', 'ff0000', '00bfbf', 'bf00bf', '3f3f3f',
+                   'bf3f3f', '3f3fbf', 'ffbfbf', '00ff00', 'c1912b', '89a038',
+                   '5691ea', 'ff1999', 'b2ffb2', '197c77', 'a856a5', 'fc683a']
+
+    intent_to_plot = 'CALIBRATE_POLARIZATION#ON_SOURCE'
+    parang_plots = {}
+    stage_id = 'stage{}'.format(result.stage_number)
+    ous_id = context.project_structure.ous_entity_id
+    sessions = result.parang_ranges['sessions']
+    for session_name in sessions:
+        plot_name = os.path.join(context.report_dir, stage_id, '{}_{}_parallactic_angle.png'.format(ous_id, session_name))
+        plot_title = 'MOUS {}, session {}'.format(ous_id, session_name)
+        num_ms = len(sessions[session_name]['vis'])
+        clearplots = True
+        for i, msname in enumerate(sessions[session_name]['vis']):
+            symbolcolor = plot_colors[i % len(plot_colors)]
+            science_spws = context.observing_run.get_ms(msname).get_spectral_windows()
+            # Specify center channels of science spws
+            spwspec = ','.join('{}:{}'.format(s.id, s.num_channels//2) for s in science_spws)
+            task_args = {
+                'vis': msname,
+                'plotfile': '',
+                'xaxis': 'time',
+                'yaxis': 'parang',
+                'customsymbol': True,
+                'symbolcolor': symbolcolor,
+                'title': plot_title,
+                'spw': spwspec,
+                'plotrange': [0, 0, 0, 360],
+                'plotindex': i,
+                'clearplots': clearplots,
+                'intent': intent_to_plot,
+                'showgui': False
+                }
+
+            if i == num_ms-1:
+                task_args['plotfile'] = plot_name
+
+            task = casa_tasks.plotms(**task_args)
+            Executor(context, False).execute(task)
+
+            clearplots = False
+
+        parang_plots[session_name] = os.path.join(stage_id, '{}_{}_parallactic_angle.png'.format(ous_id, session_name))
+
+    return parang_plots
