@@ -159,7 +159,7 @@ ${'is' if num_mses == 1 else 'are'} summarised below.</p>
                     % endif
                     min. parallactic angle (${'%.1f' % (minparang)}&deg;)
                 </td>
-                <td><img src=${parang_plots[session_name]}></td>
+                <td>${parang_plots[session_name]['html']}</td>
             </tr>
         % endfor
     </tbody>

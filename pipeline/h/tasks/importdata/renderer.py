@@ -14,6 +14,7 @@ from pipeline.infrastructure import casa_tasks
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
+import pipeline.infrastructure.renderer.logger as logger
 from pipeline.infrastructure.basetask import Executor as Executor
 from pipeline.domain.measures import FrequencyUnits
 
@@ -245,6 +246,36 @@ def make_parang_plots(context, result):
 
             clearplots = False
 
-        parang_plots[session_name] = os.path.join(stage_id, '{}_{}_parallactic_angle.png'.format(ous_id, session_name))
+        parang_plots[session_name] = {}
+        parang_plots[session_name]['name'] = plot_name
+
+        dst = os.path.join(context.report_dir, stage_id, plot_name)
+
+        # create a plot object so we can access (thus generate) the thumbnail
+        plot_obj = logger.Plot(dst)
+
+        fullsize_relpath = os.path.relpath(dst, context.report_dir)
+        thumbnail_relpath = os.path.relpath(plot_obj.thumbnail, context.report_dir)
+        title = 'Parallactic angle coverage for session {}'.format(session_name)
+
+        html_args = {
+            'fullsize': fullsize_relpath,
+            'thumbnail': thumbnail_relpath,
+            'title': title,
+            'alt': title,
+            'rel': 'parallactic-angle-plots'
+        }
+
+        html = ('<a href="{fullsize}"'
+                '   title="{title}"'
+                '   data-fancybox="{rel}"'
+                '   data-caption="{title}">'
+                '    <img data-src="{thumbnail}"'
+                '         title="{title}"'
+                '         alt="{alt}"'
+                '         class="lazyload img-responsive">'
+                '</a>'.format(**html_args))
+
+        parang_plots[session_name]['html'] = html
 
     return parang_plots
