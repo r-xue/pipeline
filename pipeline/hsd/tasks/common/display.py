@@ -692,7 +692,7 @@ class SDSparseMapPlotter(object):
     def direction_reference(self, value):
         self.axes.direction_reference = value
 
-    def setup_labels(self, refpix_list, refval_list, increment_list):
+    def setup_labels_relative(self, refpix_list, refval_list, increment_list):
         LabelRA = numpy.zeros((self.nh, 2), numpy.float32) + NoData
         LabelDEC = numpy.zeros((self.nv, 2), numpy.float32) + NoData
         refpix = refpix_list[0]
@@ -713,6 +713,12 @@ class SDSparseMapPlotter(object):
             y1 = (y + 1) * self.step - 1
             LabelDEC[y][0] = refval + (y0 - refpix) * increment
             LabelDEC[y][1] = refval + (y1 - refpix) * increment
+        self.axes.setup_labels(LabelRA, LabelDEC)
+        
+    def setup_labels_absolute( self, ralist, declist ):
+        assert self.step == 1  # this function is used only for step=1
+        LabelRA  = [[x,x] for x in ralist]
+        LabelDEC = [[y,y] for y in declist]
         self.axes.setup_labels(LabelRA, LabelDEC)
 
     def setup_lines(self, lines_averaged, lines_map=None):
