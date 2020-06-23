@@ -210,7 +210,7 @@ def make_parang_plots(context, result):
     intent_to_plot = 'CALIBRATE_POLARIZATION#ON_SOURCE'
     parang_plots = {}
     stage_id = 'stage{}'.format(result.stage_number)
-    ous_id = context.project_structure.ous_entity_id
+    ous_id = context.project_structure.ousstatus_entity_id
     sessions = result.parang_ranges['sessions']
     for session_name in sessions:
         plot_name = os.path.join(context.report_dir, stage_id, '{}_{}_parallactic_angle.png'.format(ous_id, session_name))
