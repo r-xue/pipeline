@@ -181,6 +181,9 @@ def plot_type(plot):
 
                 <p>Data are plotted for all antennas and correlations, with different
                 correlations shown in different colours.</p>
+
+                <p>The plots of amplitude vs UV distance show only the target fields for which new flags were found, and are
+                only produced for spws with new flags.</p>
         </%def>
 
         <%def name="mouseover(plot)">Click to show amplitude vs UV distance for spw ${plot.parameters['spw']}</%def>
