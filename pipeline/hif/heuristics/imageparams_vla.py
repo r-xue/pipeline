@@ -54,15 +54,17 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         """See PIPE-679 and CASR-543"""
         return 'mtmfs'
 
-    def niter_correction(self, niter, cell, imsize, synthesized_beam, residual_max, threshold, mask_frac_rad=0.0):
+    def niter_correction(self, niter, cell, imsize, residual_max, threshold, mask_frac_rad=0.0):
         """Adjustment of number of cleaning iterations due to mask size.
 
         See PIPE-682 and CASR-543 and base class method for parameter description."""
         if mask_frac_rad == 0.0:
-            mask_frac_rad = 0.45
+            # Assume at most 25% of pixels are within the (circular) mask (PIPE-682).
+            # 0.25 = mask_frac_rad**2 * pi / 4
+            mask_frac_rad = 0.56
 
-        return super().niter_correction(niter, cell, imsize, synthesized_beam, residual_max,
-                                        threshold, mask_frac_rad=mask_frac_rad)
+        return super().niter_correction(niter, cell, imsize, residual_max, threshold,
+                                        mask_frac_rad=mask_frac_rad)
 
     def specmode(self):
         """See PIPE-683 and CASR-543"""

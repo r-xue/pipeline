@@ -170,15 +170,15 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
 
         return '%.3gJy' % (new_threshold), DR_correction_factor, maxEDR_used
 
-    def niter_correction(self, niter, cell, imsize, synthesized_beam, residual_max, threshold, mask_frac_rad=0.0):
+    def niter_correction(self, niter, cell, imsize, residual_max, threshold, mask_frac_rad=0.0):
         """Adjustment of number of cleaning iterations due to mask size.
 
         See base class method for parameter description."""
         if mask_frac_rad == 0.0:
             mask_frac_rad = 0.45    # ALMA specific parameter
 
-        return super().niter_correction(niter, cell, imsize, synthesized_beam, residual_max,
-                                        threshold, mask_frac_rad=mask_frac_rad)
+        return super().niter_correction(niter, cell, imsize, residual_max, threshold,
+                                        mask_frac_rad=mask_frac_rad)
 
     def calc_percentile_baseline_length(self, percentile):
         """Calculate percentile baseline length for the vis list used in this heuristics instance."""

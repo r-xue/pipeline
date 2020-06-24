@@ -1830,17 +1830,20 @@ class ImageParamsHeuristics(object):
 
         return threshold, DR_correction_factor, maxEDR_used
 
-    def niter_correction(self, niter, cell, imsize, beam, residual_max, threshold, mask_frac_rad=0.0):
+    def niter_correction(self, niter, cell, imsize, residual_max, threshold, mask_frac_rad=0.0):
         """Adjustment of number of cleaning iterations due to mask size.
 
         Circular mask is assumed with a radius equal to mask_frac_rad times the longest image dimension
         in arcsec. If mask_frac_rad=0.0, then no new cleaning iteration step number is estimate and the
         input niter value is returned.
 
+        Note that the method assumes synthesized_beam = 5 * cell. This might lead to underestimated new
+        niter value if the beam is sampled by less than 5 pixels (e.g. when hif_checkproductsize() task
+        was called earlier.
+
         :param niter: User or heuristics set number of cleaning iterations
         :param cell: Image cell size in arcsec
         :param imsize: Two element list or array of image pixel count along x and y axis
-        :param beam: Smallest synthesized beam. If None then assume that beam = 5.0 * cell [arcsec].
         :param residual_max: Dirty image residual maximum [Jy].
         :param threshold: Cleaning threshold value [Jy].
         :param mask_frac_rad: Mask radius is given by mask_frac_rad * max(imsize) * cell [arcsec]
@@ -1862,11 +1865,8 @@ class ImageParamsHeuristics(object):
         # TODO: Replace with actual pixel counting rather than assumption about geometry
         r_mask = mask_frac_rad * max(imsize[0], imsize[1]) * qaTool.convert(cell[0], 'arcsec')['value']
 
-        # Assume that the beam is 5 pixels wide if synthesized_beam is not provided
-        if beam is None:
-            beam = qaTool.convert(cell[0], 'arcsec')['value'] * 5.0
-        else:
-            beam = qaTool.convert(beam['minor'], 'arcsec')['value']
+        # Assume that the beam is 5 pixels wide, this might be incorrect in some cases (see docstring).
+        beam = qaTool.convert(cell[0], 'arcsec')['value'] * 5.0
 
         new_niter_f = int(kappa / loop_gain * (r_mask / beam) ** 2 * residual_max / threshold_value)
         new_niter = int(utils.round_half_up(new_niter_f, -int(np.log10(new_niter_f))))

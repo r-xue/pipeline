@@ -722,17 +722,8 @@ class Tclean(cleanbase.CleanBase):
         sequence_manager.dr_corrected_sensitivity = sequence_manager.sensitivity * DR_correction_factor
 
         # Adjust niter based on the dirty image statistics
-        synthesized_beam, self.known_synthesized_beams = \
-            self.image_heuristics.synthesized_beam(field_intent_list=[(inputs.field, inputs.intent)],
-                                                   spwspec=inputs.spw,
-                                                   robust=inputs.robust,
-                                                   uvtaper=inputs.uvtaper,
-                                                   parallel=inputs.parallel,
-                                                   known_beams=self.known_synthesized_beams,
-                                                   force_calc=inputs.calcsb,
-                                                   shift=True)
         new_niter = self.image_heuristics.niter_correction(sequence_manager.niter, inputs.cell, inputs.imsize,
-                                                           synthesized_beam, residual_max, new_threshold)
+                                                           residual_max, new_threshold)
         sequence_manager.niter = new_niter
 
         # Save corrected sensitivity in iter0 result object for 'cube' and
