@@ -98,7 +98,7 @@
                 <shortdescription>Parallactic angle threshold</shortdescription>
                 <description>Minimum required parallactic angle range for polarisation calibrator,
                              in degrees. This QA check is only activated for polarisation recipes.</description>
-                <value>60.0</value>
+                <value>0.0</value>
             </param>
 
             <param subparam="true" name="dryrun" type="bool">

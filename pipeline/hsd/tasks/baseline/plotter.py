@@ -23,7 +23,7 @@ class PlotterPool(object):
         self.pool = {}
         self.figure_id = display.SparseMapAxesManager.MATPLOTLIB_FIGURE_ID()
 
-    def create_plotter(self, num_ra, num_dec, num_plane, refpix, refval, increment,
+    def create_plotter(self, num_ra, num_dec, num_plane, ralist, declist, 
                        direction_reference=None, brightnessunit='Jy/beam'):
 #         key = (num_ra, num_dec)
 #         if key in self.pool:
@@ -39,11 +39,12 @@ class PlotterPool(object):
 #                                                    figure_id=self.figure_id)
 #             self.pool[key] = plotter
 #         plotter.setup_labels(refpix, refval, increment)
+
         plotter = display.SDSparseMapPlotter(nh=num_ra, nv=num_dec,
                                              step=1, brightnessunit=brightnessunit,
                                              figure_id=self.figure_id)
         plotter.direction_reference = direction_reference
-        plotter.setup_labels(refpix, refval, increment)
+        plotter.setup_labels_absolute( ralist, declist )
         return plotter
 
     def done(self):
@@ -259,15 +260,19 @@ class BaselineSubtractionPlotManager(object):
         bunit = utils.get_brightness_unit(ms.basename, defaultunit='Jy/beam')
 
         # grid_table is baseed on virtual spw id
-        num_ra, num_dec, num_plane, refpix, refval, increment, rowlist = analyze_plot_table(ms,
-                                                                                            ms_id,
-                                                                                            antid,
-                                                                                            virtual_spwid,
-                                                                                            polids,
-                                                                                            grid_table,
-                                                                                            org_direction)
+        num_ra, num_dec, num_plane, rowlist = analyze_plot_table(ms,
+                                                                 ms_id,
+                                                                 antid,
+                                                                 virtual_spwid,
+                                                                 polids,
+                                                                 grid_table,
+                                                                 org_direction)
 
-        plotter = self.pool.create_plotter(num_ra, num_dec, num_plane, refpix, refval, increment,
+        # ralist/declist holds coordinates for axis labels (center of each panel)
+        ralist  = [ r.get('RA')  for r in rowlist if r['DECID']==0 ]
+        declist = [ r.get('DEC') for r in rowlist if r['RAID'] ==0 ]
+
+        plotter = self.pool.create_plotter(num_ra, num_dec, num_plane, ralist, declist,
                                            direction_reference=self.datatable.direction_ref,
                                            brightnessunit=bunit)
         LOG.debug('vis {} ant {} spw {} plotter figure id {} has {} axes',
@@ -533,67 +538,7 @@ def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table, org_
         LOG.trace('RA {} DEC {}: dataids={}',
                   raid, decid, dataids)
 
-    refpix_list = [0, 0]
-    refval_list = [rowlist[num_ra - 1]['RA'], rowlist[0]['DEC']]#plot_table[num_ra * num_plane -1][2:4]
-    # each panel contains several grid pixels
-    # note that number of grid pixels per panel may not be identical
-    xgrid_per_panel = len(xpanel[0])
-    ygrid_per_panel = len(ypanel[0])
-
-    # pick ra0, ra1, dec0, dec1 to calculate increments
-    # note that ra/dec values in plot_table[][] are before direction_recover!
-    if org_direction is None:
-        ra0  = plot_table[0][2]
-        if num_ra > 1:
-            ra1  = plot_table[num_plane][2]
-    else:
-        ra0, dummy   = direction_recover( plot_table[0][2],
-                                          plot_table[0][3],
-                                          org_direction )
-        if num_ra > 1:
-            ra1, dummy  = direction_recover( plot_table[num_plane][2],
-                                             plot_table[0][3],
-                                             org_direction )
-
-    if org_direction is None:
-        dec0 = plot_table[0][3]
-        if num_dec > 1:
-            dec1 = plot_table[num_plane*num_grid_ra][3]
-    else:
-        dummy, dec0 = direction_recover( plot_table[0][2],
-                                         plot_table[0][3],
-                                         org_direction )
-        if num_dec > 1:
-            dummy, dec1 = direction_recover( plot_table[0][2],
-                                             plot_table[num_plane*num_grid_ra][3],
-                                             org_direction )
-
-    # calculate increment_ra/dec
-    if num_ra > 1:
-        increment_ra = ( ra1 - ra0 ) * xgrid_per_panel
-    else:
-        dec_corr = numpy.cos(dec0 * casatools.quanta.constants('pi')['value'] / 180.0)
-        if num_dec > 1:
-            increment_ra = ((dec1 - dec0) / dec_corr) * xgrid_per_panel
-        else:
-            reference_data = ms
-            beam_size = casatools.quanta.convert(reference_data.beam_sizes[antid][virtual_spwid], outunit='deg')['value']
-            increment_ra = (beam_size / dec_corr) * xgrid_per_panel
-    if num_dec > 1:
-        LOG.trace('num_dec > 1 ({})', num_dec)
-        increment_dec = (dec1 - dec0) * ygrid_per_panel
-    else:
-        # assuming square grid, increment for dec is estimated from the one for ra
-        LOG.trace('num_dec is 1')
-        dec_corr = numpy.cos(dec0 * casatools.quanta.constants('pi')['value'] / 180.0)
-        LOG.trace('declination correction factor is {}', dec_corr)
-        increment_dec = increment_ra * dec_corr * ygrid_per_panel
-    increment_list = [-increment_ra, increment_dec]
-    LOG.debug('refpix_list={}', refpix_list)
-    LOG.debug('refval_list={}', refval_list)
-    LOG.debug('increment_list={}', increment_list)
-
-    return num_ra, num_dec, num_plane, refpix_list, refval_list, increment_list, rowlist
+    return num_ra, num_dec, num_plane, rowlist
 
 
 def direction_recover( ra, dec, org_direction ):

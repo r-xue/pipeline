@@ -1,4 +1,5 @@
 import collections
+import re
 import os
 
 import pipeline.infrastructure as infrastructure
@@ -23,6 +24,11 @@ class FlagDeterALMASingleDishInputs(flagdeterbase.FlagDeterBaseInputs):
     edgespw = vdp.VisDependentProperty(default=True)
     fracspw = vdp.VisDependentProperty(default='1.875GHz')
     fracspwfps = vdp.VisDependentProperty(default=0.048387)
+
+    @vdp.VisDependentProperty
+    def filepointing(self):
+        vis_root = os.path.splitext(self.vis)[0]
+        return vis_root + '.flagpointing.txt'
 
     @vdp.VisDependentProperty
     def intents(self):
@@ -81,12 +87,12 @@ class FlagDeterALMASingleDishResults(flagdeterbase.FlagDeterBaseResults):
             for antenna in msobj.antennas:
                 for target, reference in msobj.calibration_strategy['field_strategy'].items():
                     LOG.debug('target field id %s / reference field id %s' % (target, reference))
-                    task = pointing.SingleDishPointingChart(context, msobj, antenna, 
+                    task = pointing.SingleDishPointingChart(context, msobj, antenna,
                                                             target_field_id=target,
                                                             reference_field_id=reference,
                                                             target_only=True)
                     task.plot(revise_plot=True)
-                    task = pointing.SingleDishPointingChart(context, msobj, antenna, 
+                    task = pointing.SingleDishPointingChart(context, msobj, antenna,
                                                             target_field_id=target,
                                                             reference_field_id=reference,
                                                             target_only=False)
@@ -97,9 +103,9 @@ class FlagDeterALMASingleDishResults(flagdeterbase.FlagDeterBaseResults):
                     source_name = target_field.source.name
                     offset_pointings = []
                     if source_name.upper() in valid_ephem_names:
-                        task = pointing.SingleDishPointingChart(context, msobj, antenna, 
+                        task = pointing.SingleDishPointingChart(context, msobj, antenna,
                                                                 target_field_id=target,
-                                                                reference_field_id=reference, 
+                                                                reference_field_id=reference,
                                                                 target_only=True,
                                                                 ofs_coord=True)
                         plotres = task.plot(revise_plot=True)
@@ -118,8 +124,8 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
     Inputs = FlagDeterALMASingleDishInputs
 
     # Flag edge channels if bandwidth exceeds bandwidth_limit
-    # Currently, default bandwidth limit is set to 1.875GHz but it is 
-    # controllable via parameter 'fracspw' 
+    # Currently, default bandwidth limit is set to 1.875GHz but it is
+    # controllable via parameter 'fracspw'
     @property
     def bandwidth_limit(self):
         if isinstance(self.inputs.fracspw, str):
@@ -131,7 +137,7 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
         results = super(FlagDeterALMASingleDish, self).prepare()
 
         # update datatable
-        # this task uses _handle_multiple_vis framework 
+        # this task uses _handle_multiple_vis framework
         msobj = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         table_name = os.path.join(self.inputs.context.observing_run.ms_datatable_name, msobj.basename)
         datatable = DataTable(name=table_name, readonly=False)
@@ -183,7 +189,7 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
             # left minimum as it is always channel 0.
             l_max = frac_chan_list[0] - 1
             #r_min = spw.num_channels - frac_chan - 1
-            # Fix asymmetry 
+            # Fix asymmetry
             r_min = spw.num_channels - frac_chan_list[1]
             r_max = spw.num_channels - 1
 
@@ -212,8 +218,8 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
         if isinstance(inputs.fracspw, float) or isinstance(inputs.fracspw, str):
             to_flag = super(FlagDeterALMASingleDish, self)._get_edgespw_cmds()
         elif isinstance(inputs.fracspw, collections.Iterable):
-            # inputs.fracspw is iterable indicating that the user want to flag 
-            # edge channels with different fractions/number of channels for 
+            # inputs.fracspw is iterable indicating that the user want to flag
+            # edge channels with different fractions/number of channels for
             # left and right edges
 
 
@@ -222,7 +228,7 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
 
         return to_flag
 
-    def get_fracspw(self, spw):    
+    def get_fracspw(self, spw):
         # override the default fracspw getter with our ACA-aware code
         #if spw.num_channels in (62, 124, 248):
         #    return self.inputs.fracspwfps
@@ -242,14 +248,14 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
         # override the default verifier, adding bandwidth check
         super(FlagDeterALMASingleDish, self).verify_spw(spw)
 
-        # Skip if TDM mode where TDM modes are defined to be modes with 
+        # Skip if TDM mode where TDM modes are defined to be modes with
         # <= 256 channels per correlation
         #dd = self.inputs.ms.get_data_description(spw=spw)
         #ncorr = len(dd.corr_axis)
         #if ncorr * spw.num_channels > 256:
         #    raise ValueError('Skipping edge flagging for FDM spw %s' % spw.id)
 
-        # Skip if edge channel flagging is based on bandwidth limit, and 
+        # Skip if edge channel flagging is based on bandwidth limit, and
         # bandwidth is less than bandwidth limit
         if isinstance(self.inputs.fracspw, str) and spw.bandwidth.value <= self.bandwidth_limit:
             raise ValueError('Skipping edge flagging for spw %s' % spw.id)
@@ -259,6 +265,22 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
         Edit flag commands so that all summaries are based on target data instead of total.
         """
         flag_cmds = super(FlagDeterALMASingleDish, self)._get_flag_commands()
+
+        # PIPE-646
+        # apply flag commands in flagpointing.txt
+        if os.path.exists(self.inputs.filepointing):
+            LOG.info('{} exists. Applying flag commands due to missing pointing data'.format(
+                os.path.basename(self.inputs.filepointing)
+            ))
+            pointing_cmds = self._read_flagfile(self.inputs.filepointing)
+            pointing_cmds.append("mode='summary' name='pointing' reason='SDPL:missing_pointing_data'")
+
+            # insert flag commands between shadow and edgespw
+            idx = [i for i, c in enumerate(flag_cmds) if re.search("(mode|name)='shadow'", c)]
+            assert len(idx) > 0
+            sep = idx[-1] + 1
+            flag_cmds = flag_cmds[:sep] + pointing_cmds + flag_cmds[sep:]
+
         for i in range(len(flag_cmds)):
             if flag_cmds[i].startswith("mode='summary'"):
                 flag_cmds[i] += " intent='OBSERVE_TARGET#ON_SOURCE'"
@@ -273,7 +295,7 @@ class HpcFlagDeterALMASingleDishInputs(FlagDeterALMASingleDishInputs):
 
     def __init__(self, context, vis=None, output_dir=None, flagbackup=None, autocorr=None, shadow=None, scan=None,
                  scannumber=None, intents=None, edgespw=None, fracspw=None, fracspwfps=None, online=None,
-                 fileonline=None, template=None, filetemplate=None, hm_tbuff=None, tbuff=None, qa0=None, qa2=None, 
+                 fileonline=None, template=None, filetemplate=None, hm_tbuff=None, tbuff=None, qa0=None, qa2=None,
                  parallel=None):
         super(HpcFlagDeterALMASingleDishInputs, self).__init__(
             context, vis=vis, output_dir=output_dir, flagbackup=flagbackup, autocorr=autocorr, shadow=shadow, scan=scan,

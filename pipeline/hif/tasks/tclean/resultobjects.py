@@ -28,7 +28,7 @@ class BoxResult(basetask.Results):
 
 class TcleanResult(basetask.Results):
     def __init__(self, vis=None, sourcename=None, intent=None, spw=None, orig_specmode=None, specmode=None,
-                 multiterm=None, plotdir=None, imaging_mode=None):
+                 multiterm=None, plotdir=None, imaging_mode=None, is_per_eb=None):
         super(TcleanResult, self).__init__()
         self.vis = vis
         self.sourcename = sourcename
@@ -76,6 +76,8 @@ class TcleanResult(basetask.Results):
         self.check_source_fit = None
         self.cube_all_cont = False
         self.bad_psf_channels = None
+        self.is_per_eb = is_per_eb
+        # Store computed synthesized beams
         self.synthesized_beams = None
 
     def merge_with_context(self, context):

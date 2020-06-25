@@ -14,9 +14,10 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class SDInspection(object):
-    def __init__(self, table_name, ms=None):
-        self.ms = ms
+    def __init__(self, context, table_name, ms=None):
+        self.context = context
         self.table_name = table_name
+        self.ms = ms
 
     def execute(self, dry_run=True):
         if dry_run:
@@ -35,7 +36,7 @@ class SDInspection(object):
         # generate MS-based DataTable
         LOG.debug('register meta data to DataTable')
         table_name = self.table_name
-        worker = reader.MetaDataReader(ms=self.ms, table_name=table_name)
+        worker = reader.MetaDataReader(context=self.context, ms=self.ms, table_name=table_name)
         LOG.debug('table_name=%s' % table_name)
 
         dry_run = not os.path.exists(self.ms.name)
@@ -528,7 +529,7 @@ def match_field_name(name1, name2):
     pos2 = name2.find(name1)
     # extract suffix part of field name
     if pos1 == 0 and len(name1) > len(name2):
-        # name1 looks like name2 + suffix, try pattern matching for suffix 
+        # name1 looks like name2 + suffix, try pattern matching for suffix
         suffix = name1[len(name2):]
     elif pos2 == 0 and len(name1) < len(name2):
         # name2 looks like name1 + suffix, try pattern matching for suffix
