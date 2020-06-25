@@ -10,12 +10,9 @@ import shutil
 from functools import reduce
 
 import pipeline.infrastructure.casatools as casatools
-from pipeline.infrastructure import casa_tasks
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
-import pipeline.infrastructure.renderer.logger as logger
-from pipeline.infrastructure.basetask import Executor as Executor
 from pipeline.domain.measures import FrequencyUnits
 
 LOG = logging.get_logger(__name__)
@@ -57,13 +54,6 @@ class T2_4MDetailsImportDataRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                          for r in result
                          for ms in r.mses}
 
-        minparang = result.inputs['minparang']
-        parang_ranges = result.parang_ranges
-        if parang_ranges['pol_intents_found']:
-            parang_plots = make_parang_plots(pipeline_context, result)
-        else:
-            parang_plots = {}
-
         mako_context.update({
             'flux_imported': True if measurements else False,
             'flux_table_rows': flux_table_rows,
@@ -72,9 +62,6 @@ class T2_4MDetailsImportDataRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'repsource_table_rows': repsource_table_rows,
             'num_mses': num_mses,
             'fluxcsv_files': fluxcsv_files,
-            'minparang': minparang,
-            'parang_ranges': parang_ranges,
-            'parang_plots': parang_plots,
             'weblog_dir': weblog_dir
         })
 
@@ -197,85 +184,3 @@ def make_repsource_table(context, results):
             rows.append(tr)
 
     return utils.merge_td_columns(rows), repsource_name_is_none
-
-
-def make_parang_plots(context, result):
-
-    """Create parallactic angle plots for each session."""
-
-    plot_colors = ['0000ff', '007f00', 'ff0000', '00bfbf', 'bf00bf', '3f3f3f',
-                   'bf3f3f', '3f3fbf', 'ffbfbf', '00ff00', 'c1912b', '89a038',
-                   '5691ea', 'ff1999', 'b2ffb2', '197c77', 'a856a5', 'fc683a']
-
-    intent_to_plot = 'CALIBRATE_POLARIZATION#ON_SOURCE'
-    parang_plots = {}
-    stage_id = 'stage{}'.format(result.stage_number)
-    ous_id = context.project_structure.ousstatus_entity_id
-    sessions = result.parang_ranges['sessions']
-    for session_name in sessions:
-        plot_name = os.path.join(context.report_dir, stage_id, '{}_{}_parallactic_angle.png'.format(ous_id, session_name))
-        plot_title = 'MOUS {}, session {}'.format(ous_id, session_name)
-        num_ms = len(sessions[session_name]['vis'])
-        clearplots = True
-        for i, msname in enumerate(sessions[session_name]['vis']):
-            symbolcolor = plot_colors[i % len(plot_colors)]
-            science_spws = context.observing_run.get_ms(msname).get_spectral_windows()
-            # Specify center channels of science spws
-            spwspec = ','.join('{}:{}'.format(s.id, s.num_channels//2) for s in science_spws)
-            task_args = {
-                'vis': msname,
-                'plotfile': '',
-                'xaxis': 'time',
-                'yaxis': 'parang',
-                'customsymbol': True,
-                'symbolcolor': symbolcolor,
-                'title': plot_title,
-                'spw': spwspec,
-                'plotrange': [0, 0, 0, 360],
-                'plotindex': i,
-                'clearplots': clearplots,
-                'intent': intent_to_plot,
-                'showgui': False
-                }
-
-            if i == num_ms-1:
-                task_args['plotfile'] = plot_name
-
-            task = casa_tasks.plotms(**task_args)
-            Executor(context, False).execute(task)
-
-            clearplots = False
-
-        parang_plots[session_name] = {}
-        parang_plots[session_name]['name'] = plot_name
-
-        dst = os.path.join(context.report_dir, stage_id, plot_name)
-
-        # create a plot object so we can access (thus generate) the thumbnail
-        plot_obj = logger.Plot(dst)
-
-        fullsize_relpath = os.path.relpath(dst, context.report_dir)
-        thumbnail_relpath = os.path.relpath(plot_obj.thumbnail, context.report_dir)
-        title = 'Parallactic angle coverage for session {}'.format(session_name)
-
-        html_args = {
-            'fullsize': fullsize_relpath,
-            'thumbnail': thumbnail_relpath,
-            'title': title,
-            'alt': title,
-            'rel': 'parallactic-angle-plots'
-        }
-
-        html = ('<a href="{fullsize}"'
-                '   title="{title}"'
-                '   data-fancybox="{rel}"'
-                '   data-caption="{title}">'
-                '    <img data-src="{thumbnail}"'
-                '         title="{title}"'
-                '         alt="{alt}"'
-                '         class="lazyload img-responsive">'
-                '</a>'.format(**html_args))
-
-        parang_plots[session_name]['html'] = html
-
-    return parang_plots
