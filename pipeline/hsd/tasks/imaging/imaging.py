@@ -735,7 +735,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                                           bandwidth=cqa.quantity(chan_width, 'Hz'),
                                           bwmode='repBW',
                                           beam=beam, cell=qcell,
-                                          sensitivity=cqa.quantity(image_rms, 'Jy/beam'))
+                                          sensitivity=cqa.quantity(image_rms, brightnessunit))
                 sensitivity_info = SensitivityInfo(sensitivity, is_representative_spw, stat_freqs)
                 self._finalize_worker_result(context, imager_result,
                                              sourcename=source_name, spwlist=combined_v_spws, antenna='COMBINED',  #specmode='cube', sourcetype='TARGET',
