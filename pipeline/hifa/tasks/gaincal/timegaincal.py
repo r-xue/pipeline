@@ -48,33 +48,34 @@ class TimeGaincalInputs(gtypegaincal.GTypeGaincalInputs):
     def intent(self):
         return 'PHASE,AMPLITUDE,BANDPASS,POLARIZATION,POLANGLE,POLLEAKAGE'
 
+
 @task_registry.set_equivalent_casa_task('hifa_timegaincal')
 @task_registry.set_casa_commands_comment('Time dependent gain calibrations are computed.')
 class TimeGaincal(gtypegaincal.GTypeGaincal):
     Inputs = TimeGaincalInputs
 
     def prepare(self, **parameters):
-        # Simplify
         inputs = self.inputs
 
         # Create a results object.
         result = common.GaincalResults()
 
-        # Get the spw mapping mode
+        # Based on the SpW mapping mode declared in the MeasurementSet, set
+        # default values for key parameters for phase calibrations (solint,
+        # gaintype, combine).
         if inputs.ms.combine_spwmap:
+            phase_gaintype = 'T'
+            phase_combine = 'spw'
+            # CAS-9264: when combine='spw', set the default solint to a quarter of the
+            # shortest scan time for PHASE scans.
             spw_ids = [spw.id for spw in inputs.ms.get_spectral_windows(task_arg=inputs.spw, science_windows_only=True)]
             field_names = [field.name for field in inputs.ms.get_fields(task_arg=inputs.field, intent='PHASE')]
             exptimes = gexptimes.get_scan_exptimes(inputs.ms, field_names, 'PHASE', spw_ids)
-            # Always, increase phase gaincal solint for PHASE when combine='spw'
-            phase_calsolint = '%0.3fs' % (min([exptime[1] for exptime in exptimes]) / 4.0)
-            phase_gaintype = 'T'
-            phase_combine = 'spw'
+            phase_solint = '%0.3fs' % (min([exptime[1] for exptime in exptimes]) / 4.0)
         else:
-            phase_calsolint = inputs.calsolint
             phase_gaintype = 'G'
             phase_combine = inputs.combine
-
-        amp_calsolint = phase_calsolint
+            phase_solint = inputs.calsolint
 
         # Compute the science target phase solution. This solution will be applied to the target, check source, and
         # phase calibrator when the result for this task is accepted.
@@ -82,42 +83,59 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         target_phasecal_calapp = self._do_spectralspec_target_phasecal(solint=inputs.targetsolint,
                                                                        gaintype=phase_gaintype,
                                                                        combine=phase_combine)
-        # Adopt the solutions, but don't apply them yet.
+        # Add the solutions to final task result, for adopting into context
+        # callibrary, but do not merge them into local task context, so they
+        # are not used in pre-apply of subsequent gaincal calls.
         result.pool.extend(target_phasecal_calapp)
         result.final.extend(target_phasecal_calapp)
 
-        # Now compute the calibrator phase solution. This solution will temporarily to the PHASE calibrator 
-        # within this task so we can calculate the residual phase offsets.
-        # The solution is also eventually be applied to the AMPLITUDE, BANDPASS and POL* calibrators, 
+        # Compute the phase solutions for all calibrators in inputs.intents.
+        # While the caltable may include solutions for the PHASE calibrator
+        # (if inputs.intent includes 'PHASE'), report the table as only
+        # applicable for bandpass, flux, and polarization, as that is how the
+        # caltable will be later added to the final task result.
         LOG.info('Computing phase gain table for bandpass, flux and polarization calibrator.')
-        (cal_phase_result, temp_phase_result) = \
-            self._do_spectralspec_calibrator_phasecal(solint=phase_calsolint, gaintype=phase_gaintype,
-                                                      combine=phase_combine)
+        cal_phase_results = self._do_spectralspec_calibrator_phasecal(solint=phase_solint, gaintype=phase_gaintype,
+                                                                      combine=phase_combine)
 
-        # Do a local merge of this result, thus applying the phase solution to the PHASE calibrator but only in the
-        # scope of this task. Then, calculate the residuals by calculating another phase solution on the 'corrected'
-        # data.
-        for cpres in cal_phase_result:
+        # Merge the phase solutions for the calibrators into the local task
+        # context so that it is marked for inclusion in pre-apply (gaintable)
+        # in subsequent gaincal calls.
+        for cpres in cal_phase_results:
             cpres.accept(inputs.context)
-#         for cpres in temp_phase_result:
-#             cpres.accept(inputs.context)
+
+        # Compute a second phase solutions caltable. Assuming that
+        # inputs.intent included 'PHASE' (true by default, but can be
+        # overridden by user), then the merger of the previous phase
+        # solutions result into the local task context will mean that an
+        # initial phase correction will be included in pre-apply during this
+        # gaincal, and thus this new caltable will represent the residual phase
+        # offsets.
         LOG.info('Computing offset phase gain table.')
         phase_residuals_result = self._do_offsets_phasecal(solint='inf', gaintype=phase_gaintype, combine='')
         result.phaseoffsetresult = phase_residuals_result
 
-        # Direct the initial calibrator phase solution for application to the AMPLITUDE, BANDPASS and POL* calibrators
-        for cpres in cal_phase_result:
-            calphaseresult_calapp = cpres.final[0]
-            calphase_calapp = callibrary.copy_calapplication(
-                calphaseresult_calapp, intent='AMPLITUDE,BANDPASS,POLARIZATION,POLANGLE,POLLEAKAGE')
-            result.final.append(calphase_calapp)
-            result.pool.append(calphase_calapp)
+        # Create a new CalApplication to mark the initial phase solutions for
+        # calibrators as only-to-be-applied-to AMPLITUDE, BANDPASS, and POL*
+        # calibrators. Add this new CalApp to the final task result, to be
+        # merged into the context / callibrary.
+        for cpres in cal_phase_results:
+            cp_calapp = cpres.final[0]
+            new_cp_calapp = callibrary.copy_calapplication(
+                cp_calapp, intent='AMPLITUDE,BANDPASS,POLARIZATION,POLANGLE,POLLEAKAGE')
+            result.final.append(new_cp_calapp)
+            result.pool.append(new_cp_calapp)
 
         # Produce the diagnostic table for displaying amplitude vs time plots.
+        # Use the same SpW-mapping-mode-based solint derived for phase
+        # calibrations, which is used earlier for the phase solutions for
+        # calibrators (used for diagnostic phase vs. time plots), and the
+        # "phase offset" caltable (used for the diagnostic "phase offsets vs.
+        # time" plots).
         #     This table is not applied to the data
         #     No special mapping required here.
         LOG.info('Computing amplitude gain table for displaying amplitude vs time plots')
-        amp_diagnostic_result = self._do_caltarget_ampcal(solint=amp_calsolint)
+        amp_diagnostic_result = self._do_caltarget_ampcal(solint=phase_solint)
         result.calampresult = amp_diagnostic_result
 
         # Compute the amplitude calibration
@@ -171,16 +189,24 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         return grouped_spw
 
     def _do_spectralspec_target_phasecal(self, solint=None, gaintype=None, combine=None):
-        if 'spw' not in combine:
-            return self._do_target_phasecal(solint, gaintype, combine)
-        # Combined SpW solution. Need to solve per SpectralSpec
         inputs = self.inputs
         ms = inputs.ms
-#         spw_groups = self._group_spw_by_spwmap(ms.combine_spwmap, inputs.spw)
+
+        # PIPE-390: if not combining across spw, then no need to deal with
+        # SpectralSpec: proceed with target phasecal without restrictions
+        # on SpW.
+        if 'spw' not in combine:
+            return self._do_target_phasecal(solint, gaintype, combine)
+
+        # PIPE-390: in case of combined SpW solution: need to solve per
+        # SpectralSpec.
+
+        # Group the input SpWs by SpectralSpec.
         spw_groups = self._group_by_spectralspec(inputs.spw)
         if spw_groups is None:
             raise ValueError('Invalid SpW grouping input.')
-        # Need to solve per SpectralSpec
+
+        # Create separate solutions for each SpectralSpec grouping of SpWs.
         calapp_list = []
         for spw_sel in list(spw_groups.values()):
             LOG.info('Processing spectral spec with spws {}'.format(spw_sel))
@@ -230,16 +256,15 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         inputs = self.inputs
         ms = inputs.ms
 
-        # Initialize output lists of gaincal results.
-        apply_list = []
-        temporal_list = []
+        # Initialize output list of phase gaincal results.
+        phasecal_results = []
 
-        # If not combining across spw, then no need to deal with SpectralSpec,
-        # so create a gaincal solution for all intents, and all spws, using
-        # solint provided by solint parameter.
+        # PIPE-390: if not combining across spw, then no need to deal with
+        # SpectralSpec, so create a gaincal solution for all intents, and all
+        # SpWs, using provided solint, gaintype, and combine.
         if 'spw' not in combine:
-            apply_list = [self._do_calibrator_phasecal(solint, gaintype, combine, inputs.spw, inputs.intent)]
-            return apply_list, temporal_list
+            phasecal_results = [self._do_calibrator_phasecal(solint, gaintype, combine, inputs.spw, inputs.intent)]
+            return phasecal_results
 
         # Otherwise, a combined SpW solution is expected, and we need to solve
         # per SpectralSpec.
@@ -270,22 +295,36 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
             # for this MS, then execute the low SNR heuristics:
             if ref_spw in ms.low_combined_phasesnr_spws:
                 append_caltable = None
-                # Low SNR SpectralSpec. Use separate solint by intent.
-                # For BANDPASS, AMPLITUDE and POL* always use inputs.calsolint.
+
+                # Low SNR Spectralspec: use separate solint for PHASE vs. other
+                # calibrator intents.
+                #
+                # For BANDPASS, AMPLITUDE and POL*, override the provided
+                # solint (which is normally based on SpW mapping mode), and
+                # instead always use inputs.calsolint.
                 if len(cal_solint_intents) > 0:
                     intent = str(',').join(cal_solint_intents)
                     result = self._do_calibrator_phasecal(inputs.calsolint, gaintype, combine, spw_sel, intent)
+                    phasecal_results.append(result)
+                    # PIPE-435: force appending PHASE solution with long int to
+                    # this caltable for plotting purpose
                     if len(snr_solint_intents) > 0:
-                        # PIPE-435: force appending PHASE solution with long int to this caltable
-                        # for plotting purpose
                         append_caltable = result.final[0].gaintable
-                    apply_list.append(result)
-                # For the other sources (e.g., PHASE), Use solint = 1/4 scan time
-                # This table is used only temporary applied to generate offset caltable.
+
+                # For the other intents (i.e. other calibrators, typically this
+                # will be PHASE), use the provided input solint (which is
+                # normally based on SpW mapping mode). These solutions are
+                # intended to be used as a temporary pre-apply when generating
+                # the phase offsets caltable.
                 if len(snr_solint_intents) > 0:
                     intent = str(',').join(snr_solint_intents)
                     result = self._do_calibrator_phasecal(solint, gaintype, combine, spw_sel, intent, append_caltable)
-                    temporal_list.append(result)
+                    # If the solutions were not appended to the caltable for
+                    # the other calibrators (whose result is already appended
+                    # to the output result list), then attach this result
+                    # for the phase calibrator separately.
+                    if not append_caltable:
+                        phasecal_results.append(result)
 
             # If the reference SpW is not a low SNR SpW...
             else:
@@ -294,9 +333,9 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
                 # solved with solint = inputs.calsolint.
                 intent = str(',').join(all_intents)
                 result = self._do_calibrator_phasecal(inputs.calsolint, gaintype, combine, spw_sel, intent)
-                apply_list.append(result)
+                phasecal_results.append(result)
 
-        return apply_list, temporal_list
+        return phasecal_results
 
     # Used to calibrate "selfcaled" targets
     def _do_calibrator_phasecal(self, solint, gaintype, combine, spw, intent, append_caltable=None):
@@ -436,7 +475,8 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         #    case where the interpolated solution between two complex gain
         #    calibrators needs to be used.
         result_calapp = result.final[0]
-        cal_calapp = callibrary.copy_calapplication(result_calapp, intent='AMPLITUDE,BANDPASS,PHASE,POLARIZATION,POLANGLE,POLLEAKAGE',
+        cal_calapp = callibrary.copy_calapplication(result_calapp,
+                                                    intent='AMPLITUDE,BANDPASS,PHASE,POLARIZATION,POLANGLE,POLLEAKAGE',
                                                     gainfield='nearest', interp='nearest,linear')
         target_calapp = callibrary.copy_calapplication(result_calapp, intent='TARGET,CHECK', gainfield='')
 
