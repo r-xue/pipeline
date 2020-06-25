@@ -254,91 +254,120 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
     # Used to calibrate "selfcaled" targets
     def _do_spectralspec_calibrator_phasecal(self, solint, gaintype, combine):
         inputs = self.inputs
-        ms = inputs.ms
 
         # Initialize output list of phase gaincal results.
         phasecal_results = []
 
         # PIPE-390: if not combining across spw, then no need to deal with
-        # SpectralSpec, so create a gaincal solution for all intents, and all
-        # SpWs, using provided solint, gaintype, and combine.
+        # SpectralSpec, so create a gaincal solution for all SpWs, using
+        # provided solint, gaintype, and combine.
         if 'spw' not in combine:
-            phasecal_results = [self._do_calibrator_phasecal(solint, gaintype, combine, inputs.spw, inputs.intent)]
+            phasecal_results.extend(self._do_calibrator_phasecal_for_spw_sel(solint, gaintype, combine, inputs.spw))
             return phasecal_results
 
         # Otherwise, a combined SpW solution is expected, and we need to solve
         # per SpectralSpec.
-
-        # Group the input SpWs by SpectralSpec.
+        #
+        # First group the input SpWs by SpectralSpec.
         spw_groups = self._group_by_spectralspec(inputs.spw)
         if spw_groups is None:
             raise ValueError('Invalid SpW grouping input.')
 
-        # Low SNR heuristics require separate solutions with different values
-        # for solint for amplitude, bandpass, and polarisation intents,
-        # compared to any other intent. To prepare for this case, split the
-        # input intents here into two separate lists.
-        all_intents = inputs.intent.split(',')
-        cal_solint_intents = []
-        snr_solint_intents = []
-        for intent in all_intents:
-            if intent in ['AMPLITUDE', 'BANDPASS', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE']:
-                cal_solint_intents.append(intent)
-            else:
-                snr_solint_intents.append(intent)
-
         # Create separate solutions for each SpectralSpec grouping of SpWs.
         for ref_spw, spw_sel in spw_groups.items():
             LOG.info('Processing spectral spec with spws {}'.format(spw_sel))
+            phasecal_results.extend(self._do_calibrator_phasecal_for_spw_sel(solint, gaintype, combine, spw_sel,
+                                                                             ref_spw=ref_spw))
 
-            # If the current reference SpW appears on the list of low SNR SpWs
-            # for this MS, then execute the low SNR heuristics:
-            if ref_spw in ms.low_combined_phasesnr_spws:
-                append_caltable = None
+        return phasecal_results
 
-                # Low SNR Spectralspec: use separate solint for PHASE vs. other
-                # calibrator intents.
-                #
-                # For BANDPASS, AMPLITUDE and POL*, override the provided
-                # solint (which is normally based on SpW mapping mode), and
-                # instead always use inputs.calsolint.
-                if len(cal_solint_intents) > 0:
-                    intent = str(',').join(cal_solint_intents)
-                    result = self._do_calibrator_phasecal(inputs.calsolint, gaintype, combine, spw_sel, intent)
-                    phasecal_results.append(result)
-                    # PIPE-435: force appending PHASE solution with long int to
-                    # this caltable for plotting purpose
-                    if len(snr_solint_intents) > 0:
-                        append_caltable = result.final[0].gaintable
+    # Used to calibrate calibrator targets for selection of SpWs.
+    def _do_calibrator_phasecal_for_spw_sel(self, solint, gaintype, combine, spw_sel, ref_spw=None):
+        inputs = self.inputs
+        ms = inputs.ms
 
-                # For the other intents (i.e. other calibrators, typically this
-                # will be PHASE), use the provided input solint (which is
-                # normally based on SpW mapping mode). These solutions are
-                # intended to be used as a temporary pre-apply when generating
-                # the phase offsets caltable.
-                if len(snr_solint_intents) > 0:
-                    intent = str(',').join(snr_solint_intents)
-                    result = self._do_calibrator_phasecal(solint, gaintype, combine, spw_sel, intent, append_caltable)
-                    # If the solutions were not appended to the caltable for
-                    # the other calibrators (whose result is already appended
-                    # to the output result list), then attach this result
-                    # for the phase calibrator separately.
-                    if not append_caltable:
-                        phasecal_results.append(result)
+        # Initialize output list of phase gaincal results.
+        phasecal_results = []
 
-            # If the reference SpW is not a low SNR SpW...
+        # The phase calibration of the calibrators require different values
+        # for certain parameters, depending on intent. To handle this case,
+        # split the input intents here into two separate lists.
+        all_intents = inputs.intent.split(',')
+        amp_bp_pol_intents = []
+        other_intents = []
+        for intent in all_intents:
+            if intent in ['AMPLITUDE', 'BANDPASS', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE']:
+                amp_bp_pol_intents.append(intent)
             else:
-                # Combined solution meets phasesnr limit, so create a single
-                # solution for current SpW group, where all intents should be
-                # solved with solint = inputs.calsolint.
-                intent = str(',').join(all_intents)
-                result = self._do_calibrator_phasecal(inputs.calsolint, gaintype, combine, spw_sel, intent)
-                phasecal_results.append(result)
+                other_intents.append(intent)
+
+        # Set default values for the two different groups of intents.
+        # PIPE-645: for bandpass, amplitude, and polarisation intents, override
+        # minsnr to set it to 3; for other intents (typically PHASE), use
+        # inputs.calminsnr.
+        amp_bp_pol_minsnr = 3.0
+        other_minsnr = inputs.calminsnr
+
+        # By default, use the provided solint for both groups of intent (which
+        # is normally based on SpW mapping mode), e.g. applicable to the
+        # non-SpectralSpec case.
+        amp_bp_pol_solint = solint
+        other_solint = solint
+
+        # If a reference SpW is provided, then we are handling a SpectralSpec:
+        if ref_spw:
+            # When handling a SpectralSpec, then for BANDPASS, AMPLITUDE and
+            # POL* intents, override the provided solint (which is normally
+            # based on SpW mapping mode) to instead use inputs.calsolint.
+            amp_bp_pol_solint = inputs.calsolint
+
+            # PIPE-163: low/high SNR heuristic choice for the other
+            # calibrators, typically PHASE:
+            #
+            # Check if the reference SpW appears on the list of low SNR SpWs
+            # in the MS:
+            #  * if so, then as per low-SNR heuristics request, keep using the
+            #  provided solint (which is normally based on SpW mapping mode).
+            #  * if not, then override the provided solint to instead use
+            #  inputs.calsolint, just like for the "amp_bp_sol" intents.
+            if ref_spw not in ms.low_combined_phasesnr_spws:
+                other_solint = inputs.calsolint
+
+        # Run phase calibrations for BANDPASS, AMPLITUDE, and POL* calibrators.
+        if amp_bp_pol_intents:
+            intent = str(',').join(amp_bp_pol_intents)
+            phasecal_result = self._do_calibrator_phasecal(amp_bp_pol_solint, gaintype, combine, spw_sel, intent,
+                                                           amp_bp_pol_minsnr)
+            phasecal_results.append(phasecal_result)
+
+            # PIPE-435: for plotting purposes, force appending the phase
+            # solution for the other intents (typically PHASE calibrator)
+            # to the caltable produced for bandpass, amplitude, and pol*.
+            append_caltable = phasecal_result.final[0].gaintable
+        else:
+            append_caltable = None
+
+        # Run phase calibrations for other intents (i.e. other calibrators,
+        # typically this will be PHASE). These solutions are intended to be
+        # used as a temporary pre-apply when generating the phase offsets
+        # caltable.
+        if other_intents:
+            intent = str(',').join(other_intents)
+            snr_result = self._do_calibrator_phasecal(other_solint, gaintype, combine, spw_sel, intent, other_minsnr,
+                                                      append_caltable=append_caltable)
+            # If no solutions were produced for the bandpass, amplitude, and
+            # pol* calibrators (presumably because they were not in
+            # inputs.intent), then these phase solutions for other intents
+            # will not have been appended to the previous caltable, but instead
+            # have been saved to a new caltable. In this case, append
+            # snr_result to the results instead.
+            if not phasecal_results:
+                phasecal_results.append(snr_result)
 
         return phasecal_results
 
     # Used to calibrate "selfcaled" targets
-    def _do_calibrator_phasecal(self, solint, gaintype, combine, spw, intent, append_caltable=None):
+    def _do_calibrator_phasecal(self, solint, gaintype, combine, spw, intent, minsnr, append_caltable=None):
         inputs = self.inputs
 
         # Set output caltable name to "calphasetable" if this was explicitly
@@ -360,7 +389,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
             'solint': solint,
             'gaintype': gaintype,
             'calmode': 'p',
-            'minsnr': inputs.calminsnr,
+            'minsnr': minsnr,
             'combine': combine,
             'refant': inputs.refant,
             'minblperant': inputs.minblperant,
