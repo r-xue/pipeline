@@ -71,7 +71,6 @@ class ImportDataResults(basetask.Results):
         self.mses = [] if mses is None else mses
         self.setjy_results = setjy_results
         self.origin = {}
-        self.parang_ranges = {}
 
         # Flux service query is None (dbservice=False), FIRSTURL, BACKUPURL, or FAIL
         self.fluxservice = None
@@ -95,6 +94,7 @@ class ImportDataResults(basetask.Results):
 @task_registry.set_casa_commands_comment('If required, ASDMs are converted to MeasurementSets.')
 class ImportData(basetask.StandardTaskTemplate):
     Inputs = ImportDataInputs
+    Results = ImportDataResults
 
     @staticmethod
     def _ms_directories(names):
@@ -137,7 +137,7 @@ class ImportData(basetask.StandardTaskTemplate):
             LOG.error(msg)
             raise IOError(msg)
 
-        results = ImportDataResults()
+        results = self.Results()
 
         # if this is a tar, get the names of the files and directories inside
         # the tar and calculate which can be directly imported (filenames with

@@ -2,7 +2,6 @@ import collections
 from itertools import chain
 from typing import List, Tuple, Dict, Callable, Set
 
-import pipeline.h.tasks.importdata.importdata as importdata
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
@@ -10,15 +9,14 @@ import pipeline.infrastructure.utils as utils
 import pipeline.qa.scorecalculator as qacalc
 from pipeline.domain.field import Field
 from pipeline.domain.measurementset import MeasurementSet
-from . import almaimportdata
+from .almaimportdata import ALMAImportDataResults
 
 LOG = logging.get_logger(__name__)
 
 
 class ALMAImportDataListQAHandler(pqa.QAPlugin):
     result_cls = collections.Iterable
-    child_cls = importdata.ImportDataResults
-    generating_task = almaimportdata.ALMAImportData
+    child_cls = ALMAImportDataResults
 
     def handle(self, context, result):
         super().handle(context, result)
@@ -37,9 +35,8 @@ class ALMAImportDataListQAHandler(pqa.QAPlugin):
 
 
 class ALMAImportDataQAHandler(pqa.QAPlugin):
-    result_cls = importdata.ImportDataResults
+    result_cls = ALMAImportDataResults
     child_cls = None
-    generating_task = almaimportdata.ALMAImportData
 
     def handle(self, context, result):
         # Check for the presense of polarization intents
