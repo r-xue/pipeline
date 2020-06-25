@@ -1,5 +1,4 @@
 import functools
-import re
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -109,7 +108,7 @@ class Targetflag(basetask.StandardTaskTemplate):
             if cafflags:
                 # Make "after calibration, after flagging" plots for the weblog
                 LOG.info('Creating "after calibration, after flagging" plots')
-                result.plots['after'] = plot_fn(suffix='after', flagcmds=cafflags)
+                result.plots['after'] = plot_fn(flagcmds=cafflags, suffix='after')
 
                 # Restore the "after_tgtflag_applycal" backup of the flagging
                 # state, so that the "before plots" only show things needing
@@ -119,7 +118,7 @@ class Targetflag(basetask.StandardTaskTemplate):
                 self._executor.execute(task)
                 # Make "after calibration, before flagging" plots for the weblog
                 LOG.info('Creating "after calibration, before flagging" plots')
-                result.plots['before'] = plot_fn(suffix='before', flagcmds=cafflags)
+                result.plots['before'] = plot_fn(flagcmds=cafflags, suffix='before')
 
         finally:
             # Restore the "pre-targetflag" backup of the flagging state, to
@@ -142,12 +141,13 @@ class Targetflag(basetask.StandardTaskTemplate):
     def analyse(self, results):
         return results
 
-def create_plots(inputs, context, suffix='', flagcmds=[]):
+def create_plots(inputs, context, flagcmds, suffix=''):
     """
     Return amplitude vs time plots for the given data column.
 
     :param inputs: pipeline inputs
     :param context: pipeline context
+    :param flagcmds: list of FlagCmd objects
     :param suffix: optional component to add to the plot filenames
     :return: dict of (x axis type => str, [plots,...])
     """
@@ -158,27 +158,12 @@ def create_plots(inputs, context, suffix='', flagcmds=[]):
     calto = callibrary.CalTo(vis=inputs.vis)
     output_dir = context.output_dir
 
+    # Amplitude vs time plots
     amp_time_plots = AmpVsXChart('time', context, output_dir, calto, suffix=suffix).plot()
 
-    # Amplitude vs. UV distance plots shall contain only the fields that were flagged
-
-    flagcmd_items_dicts = []
-    for flagcmd in flagcmds:
-        flagcmd_text = flagcmd.flagcmd
-        if len(flagcmd_text) > 0 and flagcmd_text[0] != '#':
-            flagcmd_items = re.findall("[0-z,&,+,-,/,:,.,~,#]*='[0-z,&,+,-,/,:,.,~,#]*'", flagcmd_text)
-            flagcmd_items_dict = {}
-            for item in flagcmd_items:
-                k, v = item.split('=')
-                flagcmd_items_dict['%s'%k] = v.replace("'","").replace('"','')
-            flagcmd_items_dicts.append(flagcmd_items_dict)
-
-    flagged_spws = list(set(flagcmd_items_dict['spw'] for flagcmd_items_dict in flagcmd_items_dicts))
-
-    spw_field_dict = {}
-    for spw in flagged_spws:
-        spw_field_dict[int(spw)] = ','.join(set(flagcmd_items_dict['field'] for flagcmd_items_dict in flagcmd_items_dicts if flagcmd_items_dict['spw'] == spw))
-
+    # Amplitude vs UV distance plots shall contain only the fields that were flagged
+    flagged_spws = {flagcmd.spw for flagcmd in flagcmds}
+    spw_field_dict = {int(spw): ','.join(sorted({flagcmd.field for flagcmd in flagcmds if flagcmd.spw==spw})) for spw in flagged_spws}
     amp_uvdist_plots = AmpVsXChart('uvdist', context, output_dir, calto, suffix=suffix, field=spw_field_dict).plot()
 
     return {'time': amp_time_plots, 'uvdist': amp_uvdist_plots}
