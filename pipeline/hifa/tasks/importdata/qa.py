@@ -70,12 +70,14 @@ def _check_polintents(recipe_name: str, mses: List[MeasurementSet]) -> List[pqa.
     return qacalc.score_polintents(recipe_name, mses)
 
 
-def _check_parallactic_angle_range(mses: List[MeasurementSet], intents: Set[str], threshold: float) -> List[pqa.QAScore]:
+def _check_parallactic_angle_range(mses: List[MeasurementSet],
+                                   intents: Set[str],
+                                   threshold: float) -> Tuple[List[pqa.QAScore], Dict]:
     """
     Check that the parallactic angle coverage of the polarisation calibrator
     meets the required threshold.
 
-    See PIPE-597 for full spec.
+    See PIPE-597 and PIPE-598 for full spec.
 
     :param mses: MeasurementSets to check
     :param intents: intents to measure
