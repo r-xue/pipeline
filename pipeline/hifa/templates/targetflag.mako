@@ -85,31 +85,31 @@ def plot_type(plot):
 % for ms in flags.keys():
 <h4>Measurement Set: ${os.path.basename(ms)}</h4>
 <table class="table table-bordered table-striped ">
-        <caption>Summary of flagged data. Each cell states the amount of data
-                flagged as a fraction of the specified data selection.
-        </caption>
-        <thead>
-                <tr>
-                        <th rowspan="2">Data Selection</th>
-                        <!-- flags before task is always first agent -->
-                        <th rowspan="2">flagged before</th>
-                        <th rowspan="2">flagged after</th>
-                </tr>
-        </thead>
-        <tbody>
-                % for k in ['TOTAL', 'BANDPASS', 'AMPLITUDE', 'PHASE', 'TARGET']:
-                <tr>
-                        <th>${k}</th>
-                        % for step in ['before','after']:
-                        % if flags[ms].get(step) is not None:
-                                <td>${percent_flagged(flags[ms][step]['Summary'][k])}</td>
-                        % else:
-                                <td>0.0%</td>
-                        % endif
-                        % endfor
-                </tr>
-                % endfor
-        </tbody>
+    <caption>Summary of flagged data. Each cell states the amount of data
+        flagged as a fraction of the specified data selection.
+    </caption>
+    <thead>
+        <tr>
+            <th rowspan="2">Data Selection</th>
+            <!-- flags before task is always first agent -->
+            <th rowspan="2">flagged before</th>
+            <th rowspan="2">flagged after</th>
+        </tr>
+    </thead>
+    <tbody>
+    % for k in ['TOTAL', 'BANDPASS', 'AMPLITUDE', 'PHASE', 'TARGET']:
+        <tr>
+            <th>${k}</th>
+            % for step in ['before','after']:
+                % if flags[ms].get(step) is not None:
+                    <td>${percent_flagged(flags[ms][step]['Summary'][k])}</td>
+                % else:
+                    <td>0.0%</td>
+                % endif
+            % endfor
+        </tr>
+    % endfor
+    </tbody>
 </table>
 
 % endfor
@@ -125,38 +125,38 @@ def plot_type(plot):
                   break_rows_by="intent,field,type_idx"
                   sort_row_by="spw">
 
-        <%def name="title()">
-                Amplitude vs time
-        </%def>
+    <%def name="title()">
+        Amplitude vs time
+    </%def>
 
-        <%def name="preamble()">
-                <p>These plots show amplitude vs time for two cases: 1, the calibrated data before application of any flags;
-                and 2, where flagging was applied, the calibrated data after application of flags.</p>
+    <%def name="preamble()">
+        <p>These plots show amplitude vs time for two cases: 1, the calibrated data before application of any flags;
+        and 2, where flagging was applied, the calibrated data after application of flags.</p>
 
-                <p>Data are plotted for all antennas and correlations, with different
-                fields shown in different colours.</p>
-        </%def>
+        <p>Data are plotted for all antennas and correlations, with different
+        fields shown in different colours.</p>
+    </%def>
 
-        <%def name="mouseover(plot)">Click to show amplitude vs time for spw ${plot.parameters['spw']}</%def>
+    <%def name="mouseover(plot)">Click to show amplitude vs time for spw ${plot.parameters['spw']}</%def>
 
-        <%def name="fancybox_caption(plot)">
-                ${plot_type(plot)}<br>
-                ${plot.parameters['vis']}<br>
-                Spw ${plot.parameters['spw']}<br>
-                Intents: ${utils.commafy([plot.parameters['intent']], False)}
-        </%def>
+    <%def name="fancybox_caption(plot)">
+        ${plot_type(plot)}<br>
+        ${plot.parameters['vis']}<br>
+        Spw ${plot.parameters['spw']}<br>
+        Intents: ${utils.commafy([plot.parameters['intent']], False)}
+    </%def>
 
-        <%def name="caption_title(plot)">
-                Spectral Window ${plot.parameters['spw']}<br>
-        </%def>
+    <%def name="caption_title(plot)">
+        Spectral Window ${plot.parameters['spw']}<br>
+    </%def>
 
-        <%def name="caption_subtitle(plot)">
-                Intents: ${utils.commafy([plot.parameters['intent']], False)}
-        </%def>
+    <%def name="caption_subtitle(plot)">
+        Intents: ${utils.commafy([plot.parameters['intent']], False)}
+    </%def>
 
-        <%def name="caption_text(plot, ptype)">
-                ${plot_type(plot)}.
-        </%def>
+    <%def name="caption_text(plot, ptype)">
+        ${plot_type(plot)}.
+    </%def>
 
 </%self:plot_group>
 
@@ -165,47 +165,47 @@ def plot_type(plot):
 % if any(v != [] for v in uvdist_plots.values()):
 
 <%self:plot_group plot_dict="${uvdist_plots}"
-                                  url_fn="${lambda x: 'junk'}"
+                  url_fn="${lambda x: 'junk'}"
                   rel_fn="${lambda plot: 'amp_vs_uvdist_%s_%s' % (plot.parameters['vis'], plot.parameters['spw'])}"
-                                  title_id="amp_vs_uvdist"
+                  title_id="amp_vs_uvdist"
                   break_rows_by="intent,field,type_idx"
                   sort_row_by="spw">
 
-        <%def name="title()">
-                Amplitude vs UV distance
-        </%def>
+    <%def name="title()">
+        Amplitude vs UV distance
+    </%def>
 
-        <%def name="preamble()">
-                <p>These plots show amplitude vs UV distance for two cases: 1, the calibrated data before application of any
+    <%def name="preamble()">
+        <p>These plots show amplitude vs UV distance for two cases: 1, the calibrated data before application of any
         flags; and 2, where flagging was applied, the calibrated data after application of flags.</p>
 
-                <p>Data are plotted for all antennas and correlations, with different
-                correlations shown in different colours.</p>
+        <p>Data are plotted for all antennas and correlations, with different
+        correlations shown in different colours.</p>
 
-                <p>The plots of amplitude vs UV distance show only the target fields for which new flags were found, and are
-                only produced for spws with new flags.</p>
-        </%def>
+        <p>The plots of amplitude vs UV distance show only the target fields for which new flags were found, and are
+        only produced for spws with new flags.</p>
+    </%def>
 
-        <%def name="mouseover(plot)">Click to show amplitude vs UV distance for spw ${plot.parameters['spw']}</%def>
+    <%def name="mouseover(plot)">Click to show amplitude vs UV distance for spw ${plot.parameters['spw']}</%def>
 
-        <%def name="fancybox_caption(plot)">
-                ${plot_type(plot)}<br>
-                ${plot.parameters['vis']}<br>
-                Spw ${plot.parameters['spw']}<br>
-                Intents: ${utils.commafy([plot.parameters['intent']], False)}
-        </%def>
+    <%def name="fancybox_caption(plot)">
+        ${plot_type(plot)}<br>
+        ${plot.parameters['vis']}<br>
+        Spw ${plot.parameters['spw']}<br>
+        Intents: ${utils.commafy([plot.parameters['intent']], False)}
+    </%def>
 
     <%def name="caption_title(plot)">
-                Spectral Window ${plot.parameters['spw']}<br>
-        </%def>
+        Spectral Window ${plot.parameters['spw']}<br>
+    </%def>
 
-        <%def name="caption_subtitle(plot)">
-                Intents: ${utils.commafy([plot.parameters['intent']], False)}
-        </%def>
+    <%def name="caption_subtitle(plot)">
+        Intents: ${utils.commafy([plot.parameters['intent']], False)}
+    </%def>
 
     <%def name="caption_text(plot, ptype)">
-                ${plot_type(plot)}.
-        </%def>
+        ${plot_type(plot)}.
+    </%def>
 
 </%self:plot_group>
 
