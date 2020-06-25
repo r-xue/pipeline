@@ -97,7 +97,7 @@
             <param name="minparang" type="double">
                 <shortdescription>Parallactic angle threshold</shortdescription>
                 <description>Minimum required parallactic angle range for polarisation calibrator,
-                             in degrees. This QA check is only activated for polarisation recipes.</description>
+                             in degrees. The default of 0.0 is used for non-polarisation processing.</description>
                 <value>0.0</value>
             </param>
 
