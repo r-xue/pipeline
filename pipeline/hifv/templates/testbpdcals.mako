@@ -58,69 +58,75 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
 
         % for single_result in result:
+
             <h3>BP Table Amps</h3>
-            <table class="table table-bordered table-striped table-condensed"
-	       summary="Deformatter Flagging Amp">
-	    <caption></caption>
-	    <thead>
-		<tr>
-			<th>Antenna</th>
-			<th>SPWs</th>
-			<th>Band / Basebands</th>
-		</tr>
-	    </thead>
-	    <tbody>
+            <table class="table table-bordered table-striped table-condensed" summary="Deformatter Flagging Amp">
+	        <caption></caption>
+	        <thead>
+		    <tr>
+			    <th>Antenna</th>
+			    <th>SPWs</th>
+			    <th>Band / Basebands</th>
+		    </tr>
+	        </thead>
 
-	    % if single_result.result_amp == []:
-	        <tr>
-	        <td>None</td>
-	        <td>None</td>
-	        <td>None</td>
-	        </tr>
-	    % else:
-	        % for key, valueDict in single_result.amp_collection.items():
+	        <tbody>
+
+            % for bandname, result_amp_perband in single_result.result_amp.items():
+	            % if result_amp_perband == []:
 	            <tr>
-	            <td>${key}</td>
-	            <td>${','.join(valueDict['spws'])}</td>
-	            <td>${','.join(valueDict['basebands'])}</td>
+	            <td>None</td>
+	            <td>None</td>
+	            <td>${bandname}</td>
 	            </tr>
+	            % else:
+	                % for key, valueDict in single_result.amp_collection[bandname].items():
+	                <tr>
+	                <td>${key}</td>
+	                <td>${','.join(valueDict['spws'])}</td>
+	                <td>${','.join(valueDict['basebands'])}</td>
+	                </tr>
+	                % endfor
+	            % endif
 	        % endfor
-	    % endif
 
-	    </tbody>
+	        </tbody>
             </table>
+
             <br>
 
             <h3>BP Table Phases</h3>
-            <table class="table table-bordered table-striped table-condensed"
-	       summary="Deformatter Flagging Phase">
-	    <caption></caption>
-	    <thead>
-		<tr>
-			<th>Antenna</th>
-			<th>SPWs</th>
-			<th>Band / Basebands</th>
-		</tr>
-	    </thead>
-	    <tbody>
+            <table class="table table-bordered table-striped table-condensed" summary="Deformatter Flagging Phase">
+	        <caption></caption>
+	        <thead>
+		    <tr>
+			    <th>Antenna</th>
+			    <th>SPWs</th>
+			    <th>Band / Basebands</th>
+		    </tr>
+	        </thead>
 
-	    % if single_result.result_phase == []:
-	        <tr>
-	        <td>None</td>
-	        <td>None</td>
-	        <td>None</td>
-	        </tr>
-	    % else:
-	        % for key, valueDict in single_result.phase_collection.items():
-	            <tr>
-	            <td>${key}</td>
-	            <td>${','.join(valueDict['spws'])}</td>
-	            <td>${','.join(valueDict['basebands'])}</td>
-	            </tr>
+	        <tbody>
+
+            % for bandname, result_phase_perband in single_result.result_phase.items():
+	            % if result_phase_perband == []:
+	                <tr>
+	                <td>None</td>
+	                <td>None</td>
+	                <td>${bandname}</td>
+	                </tr>
+	            % else:
+	                % for key, valueDict in single_result.phase_collection[bandname].items():
+	                    <tr>
+	                    <td>${key}</td>
+	                    <td>${','.join(valueDict['spws'])}</td>
+	                    <td>${','.join(valueDict['basebands'])}</td>
+	                    </tr>
+	                % endfor
+	            % endif
 	        % endfor
-	    % endif
 
-	    </tbody>
+	        </tbody>
             </table>
 
         % endfor

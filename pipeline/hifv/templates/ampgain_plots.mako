@@ -30,13 +30,13 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 	<div class="thumbnail">
 		<a data-fancybox="allplots"
 		   href="${os.path.relpath(plot.abspath, pcontext.report_dir)}"
-		   title="Antenna ${plot.parameters['ant']} ">
+		   title="Antenna ${plot.parameters['ant']}   Band ${plot.parameters['bandname']}">
 			<img   src="${os.path.relpath(plot.thumbnail, pcontext.report_dir)}"
-				 title="Antenna ${plot.parameters['ant']} "
+				 title="Antenna ${plot.parameters['ant']}   Band ${plot.parameters['bandname']}"
 				   alt="">
 		</a>
 		<div class="caption">
-			<span class="text-center">Antenna ${plot.parameters['ant']}</span>
+			<span class="text-center">Antenna ${plot.parameters['ant']}  Band ${plot.parameters['bandname']}</span>
 		</div>
 	</div>
 </div>

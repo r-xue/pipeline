@@ -24,18 +24,23 @@ class testBPdcalsQAHandler(pqa.QAPlugin):
 
         m = context.observing_run.get_ms(result.inputs['vis'])
 
-        if result.flaggedSolnApplycalbandpass and result.flaggedSolnApplycaldelay:
-            self._checkKandBsolution(result.flaggedSolnApplycaldelay, m)
-            self._checkKandBsolution(result.flaggedSolnApplycalbandpass, m)
+        scores = []
 
-            score1 = qacalc.score_total_data_flagged_vla_bandpass(
-                result.bpdgain_touse, result.flaggedSolnApplycalbandpass['antmedian']['fraction'])
-            score2 = qacalc.score_total_data_vla_delay(result.ktypecaltable, m)
-            scores = [score1, score2]
-        else:
-            LOG.error('Error with bandpass and/or delay table.')
-            scores = [pqa.QAScore(0.0, longmsg='No flagging stats about the bandpass table or info in delay table.',
-                                  shortmsg='Bandpass or delay table problem.')]
+        for bandname, bpdgain_touse in result.bpdgain_touse.items():
+            if result.flaggedSolnApplycalbandpass[bandname] and result.flaggedSolnApplycaldelay[bandname]:
+                self._checkKandBsolution(result.flaggedSolnApplycaldelay[bandname], m)
+                self._checkKandBsolution(result.flaggedSolnApplycalbandpass[bandname], m)
+
+                score1 = qacalc.score_total_data_flagged_vla_bandpass(
+                    result.bpdgain_touse[bandname], result.flaggedSolnApplycalbandpass[bandname]['antmedian']['fraction'])
+                score2 = qacalc.score_total_data_vla_delay(result.ktypecaltable[bandname], m)
+                scores.append(score1)
+                scores.append(score2)
+            else:
+                LOG.error('Error with bandpass and/or delay table for band {!s}.'.format(bandname))
+                scores.append(pqa.QAScore(0.0,
+                                          longmsg='No flagging stats about the bandpass table or info in delay table.',
+                                          shortmsg='Bandpass or delay table problem.'))
 
         result.qa.pool.extend(scores)
 

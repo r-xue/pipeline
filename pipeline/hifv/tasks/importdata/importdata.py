@@ -61,6 +61,21 @@ class VLAImportDataResults(basetask.Results):
                 context.project_summary.observatory = 'Karl G. Jansky Very Large Array'
                 # context.evla['msinfo'] = { m.name : msinfo }
 
+                # Dictionaries for per band solution intervals
+                m = context.observing_run.get_ms(ms.name)
+                spw2band = m.get_vla_spw2band()
+
+                uniqueBands = set(spw2band.values())
+
+                for bandname in uniqueBands:
+                    context.evla['msinfo'][m.name].gain_solint1[bandname] = 'int'
+                    context.evla['msinfo'][m.name].gain_solint2[bandname] = 'int'
+                    context.evla['msinfo'][m.name].shortsol1[bandname] = 0.0
+                    context.evla['msinfo'][m.name].shortsol2[bandname] = 0.0
+                    context.evla['msinfo'][m.name].longsolint[bandname] = 0.0
+                    context.evla['msinfo'][m.name].short_solint[bandname] = 0.0
+                    context.evla['msinfo'][m.name].new_gain_solint1[bandname] = '1.0s'
+
         if self.setjy_results:
             for result in self.setjy_results:
                 result.merge_with_context(context)
