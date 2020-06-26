@@ -89,7 +89,7 @@ class fluxgaincalSummaryChart(object):
     def get_figfile(self):
         return os.path.join(self.context.report_dir,
                             'stage%s' % self.result.stage_number,
-                            'fluxgaincalFluxDensities-%s-summary.png' % self.ms.basename)
+                            'fluxgaincalFluxDensities-{!s}-summary_{!s}.png'.format(self.ms.basename, self.caltable))
 
     def get_plot_wrapper(self):
         figfile = self.get_figfile()
@@ -98,6 +98,7 @@ class fluxgaincalSummaryChart(object):
                               parameters={'vis': self.ms.basename,
                                           'type': 'fluxgaincal',
                                           'spw': '',
+                                          'caltable': self.caltable,
                                           'figurecaption': 'Caltable: {!s}. Plot of amp vs. freq.'.format(self.caltable)})
 
         if not os.path.exists(figfile):
@@ -162,23 +163,27 @@ class modelfitSummaryChart(object):
                 maxfreq = np.max(frequencies)
                 m = self.context.observing_run.get_ms(self.result.inputs['vis'])
                 fieldobject = m.get_fields(source)
-                fieldid = str([str(f.id) for f in fieldobject if str(f.id) in self.result.fluxscale_result.keys()][0])
-                spidx = self.result.fluxscale_result[fieldid]['spidx']
-                fitreff = self.result.fluxscale_result[fieldid]['fitRefFreq']
-                reffreq = fitreff / 1.e9
-
-                freqs = np.linspace(minfreq * 1.e9, maxfreq * 1.e9, 500)
-
-                logfittedfluxd = np.zeros(len(freqs))
-                for i in range(len(spidx)):
-                    logfittedfluxd += spidx[i] * (np.log10(freqs / fitreff)) ** i
-
-                fittedfluxd = 10.0 ** logfittedfluxd
 
                 ax1.plot(np.log10(np.array(frequencies) * 1.e9), np.log10(data), 'o', label=source,
                          color=colors[colorcount])
                 # pb.plot(frequencies, model, '-', color=colors[colorcount])
-                ax1.plot(np.log10(freqs), np.log10(fittedfluxd), '-', color=colors[colorcount])
+
+                for band, fresult_perband in self.result.fluxscale_result.items():
+
+                    fieldid = str([str(f.id) for f in fieldobject if str(f.id) in fresult_perband.keys()][0])
+                    spidx = fresult_perband[fieldid]['spidx']
+                    fitreff = fresult_perband[fieldid]['fitRefFreq']
+                    reffreq = fitreff / 1.e9
+
+                    freqs = np.linspace(minfreq * 1.e9, maxfreq * 1.e9, 500)
+
+                    logfittedfluxd = np.zeros(len(freqs))
+                    for i in range(len(spidx)):
+                        logfittedfluxd += spidx[i] * (np.log10(freqs / fitreff)) ** i
+
+                    fittedfluxd = 10.0 ** logfittedfluxd
+
+                    ax1.plot(np.log10(freqs), np.log10(fittedfluxd), '-', color=colors[colorcount])
 
                 minfreqlist.append(minfreq)
                 maxfreqlist.append(maxfreq)

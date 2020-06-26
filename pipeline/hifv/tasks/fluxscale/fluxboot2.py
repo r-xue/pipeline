@@ -1,5 +1,6 @@
 import math
 import os
+import collections
 
 import numpy as np
 
@@ -54,6 +55,7 @@ class Fluxboot2Results(basetask.Results):
             pool = []
         if preceding is None:
             preceding = []
+        '''
         if flux_densities is None:
             flux_densities = []
         if spws is None:
@@ -66,6 +68,7 @@ class Fluxboot2Results(basetask.Results):
             caltable = ''
         if fluxscale_result is None:
             fluxscale_result = {}
+        '''
 
         super(Fluxboot2Results, self).__init__()
         self.vis = vis
@@ -99,7 +102,46 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
     def prepare(self):
 
-        calMs = 'calibrators.ms'
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        spw2band = m.get_vla_spw2band()
+        band2spw = collections.defaultdict(list)
+        spwobjlist = m.get_spectral_windows(science_windows_only=True)
+        listspws = [spw.id for spw in spwobjlist]
+        for spw, band in spw2band.items():
+            if spw in listspws:  # Science intents only
+                band2spw[band].append(str(spw))
+
+        sources = {}
+        flux_densities = {}
+        spws = {}
+        weblog_results = {}
+        spindex_results = {}
+        caltable = {}
+        fluxscale_result = {}
+
+        for band, spwlist in band2spw.items():
+            sources_perband, flux_densities_perband, spws_perband, weblog_results_perband,\
+            spindex_results_perband, caltable_perband, fluxscale_result_perband = self._do_fluxboot2(band, spwlist)
+
+            sources[band] = sources_perband
+            flux_densities[band] = flux_densities_perband
+            spws[band] = spws_perband
+            weblog_results[band] = weblog_results_perband
+            spindex_results[band] = spindex_results_perband
+            caltable[band] = caltable_perband
+            fluxscale_result[band] = fluxscale_result_perband
+
+        return Fluxboot2Results(sources=sources, flux_densities=flux_densities,
+                                spws=spws, weblog_results=weblog_results,
+                                spindex_results=spindex_results, vis=self.inputs.vis, caltable=caltable,
+                                fluxscale_result=fluxscale_result)
+
+    def analyse(self, results):
+        return results
+
+    def _do_fluxboot2(self, band, spwlist):
+
+        calMs = 'calibrators_{!s}.ms'.format(band)
         context = self.inputs.context
 
         self.sources = []
@@ -123,16 +165,16 @@ class Fluxboot2(basetask.StandardTaskTemplate):
         if self.inputs.caltable is None:
             # Original Fluxgain stage
 
-            caltable = 'fluxgaincal.g'
+            caltable = 'fluxgaincal_{!s}.g'.format(band)
 
             LOG.info("Setting models for standard primary calibrators")
 
             standard_source_names, standard_source_fields = standard_sources(calMs)
 
             m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-            field_spws = m.get_vla_field_spws()
-            new_gain_solint1 = context.evla['msinfo'][m.name].new_gain_solint1
-            gain_solint2 = context.evla['msinfo'][m.name].gain_solint2
+            field_spws = m.get_vla_field_spws(spwlist=spwlist)
+            new_gain_solint1 = context.evla['msinfo'][m.name].new_gain_solint1[band]
+            gain_solint2 = context.evla['msinfo'][m.name].gain_solint2[band]
             spw2band = m.get_vla_spw2band()
 
             # Look in spectral window domain object as this information already exists!
@@ -141,6 +183,9 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                 reference_frequencies = table.getcol('REF_FREQUENCY')
 
             center_frequencies = [rf + spwbw / 2 for rf, spwbw in zip(reference_frequencies, spw_bandwidths)]
+
+            intspwlist = [int(spw) for spw in spwlist]
+            spwshift = min(intspwlist)
 
             for i, fields in enumerate(standard_source_fields):
                 for myfield in fields:
@@ -170,7 +215,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                             # Double check, but the fluxdensity=-1 should not matter since
                             #  the model image take precedence
                             try:
-                                job = self._fluxgains_setjy(calMs, str(m.get_fields()[myfield].id), str(spw.id),
+                                job = self._fluxgains_setjy(calMs, str(m.get_fields()[myfield].id), str(spw.id-spwshift),
                                                             model_image, -1)
                                 jobs.append(job)
 
@@ -210,7 +255,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
             LOG.info("The pipeline will use antenna(s) " + refAnt + " as the reference")
 
-            fluxphase = 'fluxphaseshortgaincal.g'
+            fluxphase = 'fluxphaseshortgaincal_{!s}.g'.format(band)
 
             self._do_gaincal(context, calMs, fluxphase, 'p', [''],
                              solint=new_gain_solint1, minsnr=3.0, refAnt=refAnt)
@@ -223,7 +268,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
             # short-solint phase solution and setting append=True for all fields
             # after the first, to obtain (temporary) scan-averaged, normalized
             # amps for flagging, fluxflag.g
-            fluxflagtable = 'fluxflag.g'
+            fluxflagtable = 'fluxflag_{!s}.g'.format(band)
 
             for i, field in enumerate(field_objects):
                 append = False
@@ -240,7 +285,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                                           action='apply', flagbackup=False, savepars=False)
             self._executor.execute(flagjob)
 
-            # use applycal to apply fluxflag.g to calibrators.ms, applymode='flagonlystrict'
+            # use applycal to apply fluxflag_band.g to calibrators_band.ms, applymode='flagonlystrict'
             applycaljob = casa_tasks.applycal(vis=calMs, field="", spw="", intent="",
                                               selectdata=False, docallib=False, gaintable=[fluxflagtable],
                                               gainfield=[''], interp=[''], spwmap=[], calwt=[False], parang=False,
@@ -251,39 +296,34 @@ class Fluxboot2(basetask.StandardTaskTemplate):
             # -------------------------------------------------------------------------------
 
             self._do_gaincal(context, calMs, caltable, 'ap', [fluxphase],
-                                              solint=gain_solint2, minsnr=5.0, refAnt=refAnt)
+                             solint=gain_solint2, minsnr=5.0, refAnt=refAnt)
 
-            LOG.info("Gain table " + caltable + " is ready for flagging.")
+            LOG.info("Gain table for band " + band + "   " + caltable + " is ready for flagging.")
         else:
             caltable = self.inputs.caltable
-            LOG.warn("Caltable " + caltable + " has been flagged and will be used in the flux density bootstrapping.")
+            LOG.warn("Caltable " + caltable + "(band {!s} has been flagged and will be used in the flux density bootstrapping.".format(band))
 
         # ---------------------------------------------------------------------
         # Fluxboot stage
 
-        LOG.info("Doing flux density bootstrapping using caltable " + caltable)
+        LOG.info("Doing flux density bootstrapping using caltable {!s} for band {!s}".format(caltable, band))
         try:
-            fluxscale_result = self._do_fluxscale(context, calMs, caltable)
+            fluxscale_result = self._do_fluxscale(context, calMs, caltable, band, spwlist)
             LOG.info("Using fit from fluxscale.")
-            powerfit_results, weblog_results, spindex_results, fluxscale_result = self._do_powerfit(fluxscale_result)
-            setjy_result = self._do_setjy(calMs, fluxscale_result)
+            powerfit_results, weblog_results, spindex_results, fluxscale_result = self._do_powerfit(fluxscale_result, band, spwlist)
+            setjy_result = self._do_setjy(calMs, fluxscale_result, spwlist)
         except Exception as e:
             LOG.warning(str(e))
-            LOG.warning("A problem was detected while running fluxscale.  Please review the CASA log.")
+            LOG.warning("A problem was detected while running fluxscale for band {!s}.  Please review the CASA log.".format(band))
             powerfit_results = []
             weblog_results = []
             spindex_results = []
             fluxscale_result = {}
 
-        return Fluxboot2Results(sources=self.sources, flux_densities=self.flux_densities,
-                                spws=self.spws, weblog_results=weblog_results,
-                                spindex_results=spindex_results, vis=self.inputs.vis, caltable=caltable,
-                                fluxscale_result=fluxscale_result)
+        return self.sources, self.flux_densities, spwlist, weblog_results,\
+               spindex_results, caltable, fluxscale_result
 
-    def analyse(self, results):
-        return results
-
-    def _do_fluxscale(self, context, calMs, caltable):
+    def _do_fluxscale(self, context, calMs, caltable, band, spwlist):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         flux_field_select_string = context.evla['msinfo'][m.name].flux_field_select_string
@@ -291,7 +331,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
         fitorder = self.inputs.fitorder
         if self.inputs.fitorder == -1:
-            fitorder = self.find_fitorder()
+            fitorder = self.find_fitorder(spwlist)
         elif self.inputs.fitorder > -1:
             LOG.info("Keyword override:  Using input fitorder={!s}".format(fitorder))
         elif self.inputs.fitorder < -1:
@@ -299,7 +339,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
         task_args = {'vis': calMs,
                      'caltable': caltable,
-                     'fluxtable': 'fluxgaincalFcal.g',
+                     'fluxtable': 'fluxgaincalFcal_{!s}.g'.format(band),
                      'reference': [fluxcalfields],
                      'transfer': [''],
                      'append': False,
@@ -310,7 +350,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
         return self._executor.execute(job)
 
-    def find_fitorder(self):
+    def find_fitorder(self, spwlist):
 
         # if self.inputs.fitorder > -1:
         #     LOG.info("User defined fitorder for fluxscale will be fitorder={!s}.".format(self.inputs.fitorder))
@@ -318,7 +358,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         spw2bandall = m.get_vla_spw2band()
-        spws = m.get_spectral_windows()
+        spws = m.get_spectral_windows(','.join(spwlist))   #List is done per band
         spwidlist = [spw.id for spw in spws if 'AMPLITUDE' in spw.intents]
 
         spw2band = {}
@@ -368,19 +408,22 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
         LOG.info('Displaying fit order heuristics...')
         LOG.info('  Number of spws: {!s}'.format(str(len(spws))))
-        LOG.info('  Bands: {!s}'.format(','.join(unique_bands)))
-        LOG.info('  Max frequency: {!s}'.format(str(maxfreq)))
+        LOG.info('  Band: {!s}'.format(','.join(unique_bands)))
         LOG.info('  Min frequency: {!s}'.format(str(minfreq)))
+        LOG.info('  Max frequency: {!s}'.format(str(maxfreq)))
         LOG.info('  delta nu / nu: {!s}'.format(fractional_bandwidth))
         LOG.info('  Fit order: {!s}'.format(fitorder))
 
         return fitorder
 
-    def _do_powerfit(self, fluxscale_result):
+    def _do_powerfit(self, fluxscale_result, inputsband, inputspwlist):
+
+        intspwlist = [int(spw) for spw in inputspwlist]
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         spw2band = m.get_vla_spw2band()
-        bands = list(spw2band.values())
+        # bands = list(spw2band.values())
+        bands = [inputsband]
 
         # Look in spectral window domain object as this information already exists!
         with casatools.TableReader(self.inputs.vis + '/SPECTRAL_WINDOW') as table:
@@ -408,7 +451,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                                         'fitFluxdErr', 'covarMat']
             spwkeys = [int(spw_id) for spw_id in secondary_keys if spw_id not in secondary_keys_to_remove]
 
-            # fluxscale results  give all spectral windows
+            # fluxscale results  give all spectral windows of a single caltable, but indexed starting from zero
             # Take the intersection of the domain object spws and fluxscale results to match the earlier setjy execution
             # in this task
 
@@ -441,8 +484,10 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                 if sources[ii] == source:
                     indices.append(ii)
 
-            bands_from_spw = []
 
+
+            '''
+            bands_from_spw = []
             if bands == []:
                 for ii in range(len(indices)):
                     bands.append(find_EVLA_band(center_frequencies[spws[indices[ii]]]))
@@ -450,6 +495,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                 for ii in range(len(indices)):
                     bands_from_spw.append(spw2band[spws[indices[ii]]])
                 bands = bands_from_spw
+            '''
 
             unique_bands = list(np.unique(bands))
 
@@ -463,10 +509,14 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                 uspws = []
 
                 # Use spw id to band mappings if available
+
+                # Compute spw shift to get the correct spw
+                spwshift = min(intspwlist)
+
                 if list(spw2band.values()):
                     for ii in range(len(indices)):
-                        if spw2band[spws[indices[ii]]] == band:
-                            lfreqs.append(math.log10(center_frequencies[spws[indices[ii]]]))
+                        if spw2band[spwshift+spws[indices[ii]]] == band:
+                            lfreqs.append(math.log10(center_frequencies[spwshift+spws[indices[ii]]]))
                             lfds.append(math.log10(flux_densities[indices[ii]][0]))
                             lerrs.append((flux_densities[indices[ii]][1]) / (flux_densities[indices[ii]][0]) / np.log(10.0))
                             uspws.append(spws[indices[ii]])
@@ -474,8 +524,8 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                 # Use frequencies for band mappings if no spwid-to-band mapping is available
                 if not list(spw2band.values()):
                     for ii in range(len(indices)):
-                        if find_EVLA_band(center_frequencies[spws[indices[ii]]]) == band:
-                            lfreqs.append(math.log10(center_frequencies[spws[indices[ii]]]))
+                        if find_EVLA_band(center_frequencies[spwshift+spws[indices[ii]]]) == band:
+                            lfreqs.append(math.log10(center_frequencies[spwshift+spws[indices[ii]]]))
                             lfds.append(math.log10(flux_densities[indices[ii]][0]))
                             lerrs.append((flux_densities[indices[ii]][1]) / (flux_densities[indices[ii]][0]) / np.log(10.0))
                             uspws.append(spws[indices[ii]])
@@ -516,8 +566,6 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                 logfittedfluxd = np.zeros(len(freqs))
                 for i in range(len(spidx)):
                     logfittedfluxd += spidx[i] * (np.log10(freqs/fitreff)) ** i
-
-                # import pdb; pdb.set_trace()
 
                 fittedfluxd = 10.0 ** logfittedfluxd
 
@@ -750,7 +798,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
         return results, weblog_results, spindex_results, fluxscale_result
 
-    def _do_setjy(self, calMs, fluxscale_result):
+    def _do_setjy(self, calMs, fluxscale_result, spwlist):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         dictkeys = list(fluxscale_result.keys())
@@ -765,6 +813,9 @@ class Fluxboot2(basetask.StandardTaskTemplate):
             spws = list(fluxscale_result['spwID'])
             scispws = [spw.id for spw in m.get_spectral_windows(science_windows_only=True)]
             newspws = [str(spwint) for spwint in list(set(scispws) & set(spws))]
+
+            # For use on main MS
+            spw = ','.join(spwlist)
 
             LOG.info('Running setjy for field ' + str(fieldid) + ': ' + str(fluxscale_result[fieldid]['fieldName']))
             task_args = {'vis': calMs,
@@ -787,6 +838,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
             # Run on the ms
             task_args['vis'] = self.inputs.vis
+            task_args['spw'] = spw
             jobs_vis.append(casa_tasks.setjy(**task_args))
             # job = casa_tasks.setjy(**task_args)
             # self._executor.execute(job)

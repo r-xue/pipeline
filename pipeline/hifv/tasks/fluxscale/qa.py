@@ -68,10 +68,12 @@ class Fluxboot2QAHandler(pqa.QAPlugin):
         weblog_results[ms] = result.weblog_results
 
         # Sort into dictionary collections to prep for table
+
         webdicts[ms] = collections.defaultdict(list)
-        for row in sorted(weblog_results[ms], key=lambda p: (p['source'], float(p['freq']))):
-            webdicts[ms][row['source']].append({'freq': row['freq'], 'data': row['data'], 'error': row['error'],
-                                                'fitteddata': row['fitteddata']})
+        for band, weblog_result_row in weblog_results[ms].items():
+            for row in sorted(weblog_result_row, key=lambda p: (p['source'], float(p['freq']))):
+                webdicts[ms][row['source']].append({'freq': row['freq'], 'data': row['data'], 'error': row['error'],
+                                                    'fitteddata': row['fitteddata']})
 
         rmsmeanvalues = self.computeRMSandMean(webdicts[ms])
         score1 = qacalc.score_vla_flux_residual_rms(rmsmeanvalues)
