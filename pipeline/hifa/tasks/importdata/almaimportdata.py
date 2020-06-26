@@ -11,7 +11,8 @@ from . import dbfluxes
 
 __all__ = [
     'ALMAImportData',
-    'ALMAImportDataInputs'
+    'ALMAImportDataInputs',
+    'ALMAImportDataResults'
 ]
 
 LOG = infrastructure.get_logger(__name__)
@@ -48,10 +49,21 @@ class ALMAImportDataInputs(importdata.ImportDataInputs):
         self.minparang = minparang
 
 
+class ALMAImportDataResults(importdata.ImportDataResults):
+    def __init__(self, mses=None, setjy_results=None):
+        super().__init__(mses=mses, setjy_results=setjy_results)
+        self.parang_ranges = {}
+
+    def __repr__(self):
+        return 'ALMAImportDataResults:\n\t{0}'.format(
+            '\n\t'.join([ms.name for ms in self.mses]))
+
+
 @task_registry.set_equivalent_casa_task('hifa_importdata')
 @task_registry.set_casa_commands_comment('If required, ASDMs are converted to MeasurementSets.')
 class ALMAImportData(importdata.ImportData):
     Inputs = ALMAImportDataInputs
+    Results = ALMAImportDataResults
 
     def _get_fluxes(self, context, observing_run):
         # get the flux measurements from Source.xml for each MS

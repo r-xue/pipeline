@@ -305,6 +305,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
             detected_lines = maskline_result.outcome['detected_lines']
             channelmap_range = maskline_result.outcome['channelmap_range']
             cluster_info = maskline_result.outcome['cluster_info']
+            flag_digits  = maskline_result.outcome['flag_digits']
 
             # register ids to per MS id collection
             for i in member_list:
@@ -317,7 +318,9 @@ class SDBaseline(basetask.StandardTaskTemplate):
                               'members': member_list,
                               'lines': detected_lines,
                               'channelmap_range': channelmap_range,
-                              'clusters': cluster_info})
+                              'clusters': cluster_info,
+                              'flag_digits': flag_digits })
+        
         # - end of the loop over reduction group
 
         blparam_file = lambda ms: ms.basename.rstrip('/') \
