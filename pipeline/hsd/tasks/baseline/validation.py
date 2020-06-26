@@ -132,7 +132,8 @@ class ValidateLineSinglePointing(basetask.StandardTaskTemplate):
                 datatable.putcell('NOCHANGE', row, False)
             outcome = {'lines': lines,
                        'channelmap_range': lines,
-                       'cluster_info': {}}
+                       'cluster_info': {},
+                       'flag_digits': {} }
             result = ValidateLineResults(task=self.__class__,
                                          success=True,
                                          outcome=outcome)
@@ -189,7 +190,8 @@ class ValidateLineSinglePointing(basetask.StandardTaskTemplate):
                     datatable.putcell('NOCHANGE', row, False)
         outcome = {'lines': lines,
                    'channelmap_range': lines,
-                   'cluster_info': {}}
+                   'cluster_info': {},
+                   'flag_digits': {} }
         result = ValidateLineResults(task=self.__class__,
                                      success=True,
                                      outcome=outcome)
@@ -379,7 +381,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                 datatable.putcell('NOCHANGE', row, False)
             outcome = {'lines': lines,
                        'channelmap_range': lines,
-                       'cluster_info': {}}
+                       'cluster_info': {},
+                       'flag_digits': {} }
             result = ValidateLineResults(task=self.__class__,
                                          success=True,
                                          outcome=outcome)
@@ -412,6 +415,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         RMS0 = 0.0
         lines = []
         self.cluster_info = {}
+        self.flag_digits = {'detection': 1, 'validation': 10,
+                            'smoothing': 100, 'final': 1000}
 
         # RASTER CASE
         # Read data from Table to generate ID -> RA, DEC conversion table
@@ -464,7 +469,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                 datatable.putcell('NOCHANGE', row, False)
             outcome = {'lines': manual_window,
                        'channelmap_range': manual_window,
-                       'cluster_info': {}}
+                       'cluster_info': {},
+                       'flag_digits': {} }
             result = ValidateLineResults(task=self.__class__,
                                          success=True,
                                          outcome=outcome)
@@ -559,7 +565,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                 datatable.putcell('NOCHANGE', row, False)
             outcome = {'lines': manual_window,
                        'channelmap_range': manual_window,
-                       'cluster_info': {}}
+                       'cluster_info': {},
+                       'flag_digits': {} }
             result = ValidateLineResults(task=self.__class__,
                                          success=True,
                                          outcome=outcome)
@@ -712,7 +719,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
         outcome = {'lines': lines,
                    'channelmap_range': channelmap_range,
-                   'cluster_info': self.cluster_info}
+                   'cluster_info': self.cluster_info,
+                   'flag_digits': self.flag_digits }
         result = ValidateLineResults(task=self.__class__,
                                      success=True,
                                      outcome=outcome)
@@ -1294,7 +1302,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         #self.cluster_info['cluster_flag'] = numpy.zeros(GridCluster.shape, dtype=numpy.uint16)
         threshold = [1.5, 0.5]
         cluster_flag = numpy.zeros(GridCluster.shape, dtype=numpy.uint16)
-        cluster_flag = self.__update_cluster_flag(cluster_flag, 'detection', GridCluster, threshold, 1)
+        flag_digit = self.flag_digits['detection']
+        cluster_flag = self.__update_cluster_flag(cluster_flag, 'detection', GridCluster, threshold, flag_digit)
 
         return (GridCluster, GridMember, cluster_flag)
 
@@ -1329,7 +1338,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             if ((GridCluster[Nc] > self.Questionable)*1).sum() == 0: lines[Nc][2] = False
 
         threshold = [self.Valid, self.Marginal, self.Questionable]
-        cluster_flag = self.__update_cluster_flag(cluster_flag, 'validation', GridCluster, threshold, 10)
+        flag_digit = self.flag_digits['validation']
+        cluster_flag = self.__update_cluster_flag(cluster_flag, 'validation', GridCluster, threshold, flag_digit)
         LOG.trace('GridCluster {}', GridCluster)
         LOG.trace('GridMember {}', GridMember)
         self.GridClusterValidation = GridCluster.copy()
@@ -1404,7 +1414,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             if ((GridCluster[Nc] > self.Questionable)*1).sum() < 0.1: lines[Nc][2] = False
 
         threshold = [self.Valid, self.Marginal, self.Questionable]
-        cluster_flag = self.__update_cluster_flag(cluster_flag, 'smoothing', GridCluster, threshold, 100)
+        flag_digit = self.flag_digits['smoothing']
+        cluster_flag = self.__update_cluster_flag(cluster_flag, 'smoothing', GridCluster, threshold, flag_digit)
         LOG.trace('threshold = {}', threshold)
         LOG.trace('GridCluster = {}', GridCluster)
 
@@ -1791,7 +1802,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                         elif GridCluster[Nc][x][y] > 0.5: GridCluster[Nc][x][y] = 1.0
 
         threshold = [1.5, 0.5, 0.5, 0.5]
-        cluster_flag = self.__update_cluster_flag(cluster_flag, 'final', GridCluster, threshold, 1000)
+        flag_digit = self.flag_digits['final']
+        cluster_flag = self.__update_cluster_flag(cluster_flag, 'final', GridCluster, threshold, flag_digit)
 
         return (RealSignal, lines, channelmap_range, cluster_flag)
 
