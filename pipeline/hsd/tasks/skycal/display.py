@@ -280,25 +280,22 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
         plot = None
         plots = []
         antenna_ids = [ant.id for ant in antennas]
-        field_ids = [v.id for v in fields]
         field_strategy = ms.calibration_strategy['field_strategy']
-        LOG.debug('field_strategy = {0}'.format(field_strategy))
-        field_id_target = field_strategy.keys()
-        field_id_reference = field_strategy.values()
 
         for spw in spw_ids:
             spw_id = spw
             LOG.debug('spw_id={0}'.format(spw_id))
             for antenna_id in antenna_ids:
                 LOG.debug('antenna_id={0}'.format(antenna_id))
-                for field_id in field_id_reference:
-                    field = fields[field_id]
-                    LOG.debug('field_id = {0}'.format(field_id))
+                n = 0
+                for field_id_target, field_id_reference in field_strategy.items():
+                    LOG.debug('field_id_target = {0}, field_id_reference = {1}'.format(field_id_target, field_id_reference))
+                    field = fields[field_id_target]
                     # make plots for the interval ratio (off-source/on-source) vs time;
                     with casatools.TableReader(calapp.gaintable) as tb:
-                        t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}&&FIELD_ID=={}'.format(spw_id, antenna_id, field_id), sortlist='TIME', columns='TIME, SPECTRAL_WINDOW_ID, INTERVAL')
+                        t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}&&FIELD_ID=={}'.format(spw_id, antenna_id, field_id_reference), sortlist='TIME', columns='TIME, SPECTRAL_WINDOW_ID, INTERVAL')
                         mjd = t.getcol('TIME')
-                        ms_target = ms.get_scans(scan_intent='TARGET', field=field_id)
+                        ms_target = ms.get_scans(scan_intent='TARGET', field=field_id_target)
                         ms_target0 = ms_target[0]
                         interval_unit = ms_target0.mean_interval(spw_id=spw_id)
                         interval_unit = interval_unit.total_seconds()
@@ -348,6 +345,7 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
                                     field=field_name,
                                     parameters=parameters)
                                 plots.append(plot)
+                    n += 1
         return plots
 
 
