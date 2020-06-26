@@ -80,7 +80,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             context,
             result,
             applycal.PhaseVsTimeSummaryChart,
-            ['PHASE', 'BANDPASS', 'AMPLITUDE', 'CHECK', 'POLARIZATION']
+            ['PHASE', 'BANDPASS', 'AMPLITUDE', 'CHECK', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE']
         )
 
         amp_vs_freq_summary_plots = utils.OrderedDefaultdict(list)
@@ -521,14 +521,17 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         return {ms.basename: utils.dict_merge(by_intent, by_spw)}
 
     def flags_by_intent(self, ms, summaries):
-        # create a dictionary of scans per observing intent, eg. 'PHASE':[1,2,7]
-        intent_scans = {}
-        for intent in ('BANDPASS', 'PHASE', 'AMPLITUDE', 'CHECK', 'TARGET'):
-            # convert IDs to strings as they're used as summary dictionary keys
-            intent_scans[intent] = [str(s.id) for s in ms.scans
-                                    if intent in s.intents]
+        science_intents = {
+            'AMPLITUDE', 'BANDPASS', 'CHECK', 'PHASE', 'POLANGLE', 'POLARIZATION', 'POLLEAKAGE', 'TARGET'
+        }
 
-        # while we're looping, get the total flagged by looking in all scans 
+        # create a dictionary of scans per observing intent, eg. 'PHASE':['1','2','7']
+        intent_scans = {
+            # convert IDs to strings as they're used as summary dictionary keys
+            intent: [str(scan.id) for scan in ms.scans if intent in scan.intents] for intent in science_intents
+        }
+
+        # while we're looping, get the total flagged by looking in all scans
         intent_scans['TOTAL'] = [str(s.id) for s in ms.scans]
 
         total = collections.defaultdict(dict)
