@@ -9,7 +9,8 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.logger as logger
 from pipeline.h.tasks.importdata.renderer import T2_4MDetailsImportDataRenderer
 from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure.basetask import Executor as Executor
+from pipeline.infrastructure.basetask import Executor
+from pipeline.infrastructure.filenamer import sanitize
 
 LOG = logging.get_logger(__name__)
 
@@ -41,7 +42,6 @@ def make_parang_plots(context, result):
     """
     Create parallactic angle plots for each session.
     """
-
     plot_colors = ['0000ff', '007f00', 'ff0000', '00bfbf', 'bf00bf', '3f3f3f',
                    'bf3f3f', '3f3fbf', 'ffbfbf', '00ff00', 'c1912b', '89a038',
                    '5691ea', 'ff1999', 'b2ffb2', '197c77', 'a856a5', 'fc683a']
@@ -52,7 +52,9 @@ def make_parang_plots(context, result):
     ous_id = context.project_structure.ousstatus_entity_id
     sessions = result.parang_ranges['sessions']
     for session_name in sessions:
-        plot_name = os.path.join(context.report_dir, stage_id, '{}_{}_parallactic_angle.png'.format(ous_id, session_name))
+        plot_name = os.path.join(context.report_dir, stage_id, f'{ous_id}_{session_name}_parallactic_angle.png')
+        # translate uid://A123/X12... to uid___A123_X12
+        plot_name = sanitize(plot_name)
         plot_title = 'MOUS {}, session {}'.format(ous_id, session_name)
         num_ms = len(sessions[session_name]['vis'])
         clearplots = True
