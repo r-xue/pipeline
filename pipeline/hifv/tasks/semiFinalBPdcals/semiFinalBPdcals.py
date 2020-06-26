@@ -1,4 +1,5 @@
 import os
+import collections
 
 import numpy as np
 
@@ -59,6 +60,45 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
 
     def prepare(self):
 
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        spw2band = m.get_vla_spw2band()
+        band2spw = collections.defaultdict(list)
+        spwobjlist = m.get_spectral_windows(science_windows_only=True)
+        listspws = [spw.id for spw in spwobjlist]
+        for spw, band in spw2band.items():
+            if spw in listspws:  # Science intents only
+                band2spw[band].append(str(spw))
+
+        gtypecaltable = {}
+        ktypecaltable = {}
+        bpcaltable = {}
+        bpdgain_touse = {}
+        flaggedSolnApplycalbandpass = {}
+        flaggedSolnApplycaldelay = {}
+
+        for band, spwlist in band2spw.items():
+
+            bpdgain_tousename, gtypecaltablename, ktypecaltablename, bpcaltablename, \
+            flaggedSolnApplycalbandpassperband, flaggedSolnApplycaldelayperband = self._do_semifinal(band, spwlist)
+
+            gtypecaltable[band] = gtypecaltablename
+            ktypecaltable[band] = ktypecaltablename
+            bpcaltable[band] = bpcaltablename
+            bpdgain_touse[band] = bpdgain_tousename
+            flaggedSolnApplycalbandpass[band] = flaggedSolnApplycalbandpassperband
+            flaggedSolnApplycaldelay[band] = flaggedSolnApplycaldelayperband
+
+        return semiFinalBPdcalsResults(bpdgain_touse=bpdgain_touse, gtypecaltable=gtypecaltable,
+                                       ktypecaltable=ktypecaltable, bpcaltable=bpcaltable,
+                                       flaggedSolnApplycalbandpass=flaggedSolnApplycalbandpass,
+                                       flaggedSolnApplycaldelay=flaggedSolnApplycaldelay)
+
+    def analyse(self, results):
+        return results
+
+    def _do_semifinal(self, band, spwlist):
+
+        LOG.info("EXECUTING FOR BAND {!s}  spws: {!s}".format(band, ','.join(spwlist)))
         self.parang = True
         try:
             self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
@@ -72,12 +112,12 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
 
         tableprefix = os.path.basename(self.inputs.vis) + '.' + 'hifv_semiFinalBPdcals.s'
 
-        gtypecaltable = tableprefix + str(stage_number) + '_1.' + 'semiFinaldelayinitialgain.tbl'
-        ktypecaltable = tableprefix + str(stage_number) + '_2.' + 'delay.tbl'
-        bpcaltable    = tableprefix + str(stage_number) + '_4.' + 'BPcal.tbl'
-        tablebase     = tableprefix + str(stage_number) + '_3.' + 'BPinitialgain'
+        gtypecaltable = tableprefix + str(stage_number) + '_1.' + 'semiFinaldelayinitialgain_{!s}.tbl'.format(band)
+        ktypecaltable = tableprefix + str(stage_number) + '_2.' + 'delay_{!s}.tbl'.format(band)
+        bpcaltable = tableprefix + str(stage_number) + '_4.' + 'BPcal_{!s}.tbl'.format(band)
+        tablebase = tableprefix + str(stage_number) + '_3.' + 'BPinitialgain'
 
-        table_suffix = ['.tbl', '3.tbl', '10.tbl']
+        table_suffix = ['_{!s}.tbl'.format(band), '3_{!s}.tbl'.format(band), '10_{!s}.tbl'.format(band)]
         soltimes = [1.0, 3.0, 10.0]
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         soltimes = [m.get_vla_max_integration_time() * x for x in soltimes]
@@ -95,7 +135,7 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
 
         RefAntOutput = refantobj.calculate()
 
-        self._do_gtype_delaycal(caltable=gtypecaltable, context=context, RefAntOutput=RefAntOutput)
+        self._do_gtype_delaycal(caltable=gtypecaltable, context=context, RefAntOutput=RefAntOutput, spwlist=spwlist)
 
         fracFlaggedSolns = 1.0
 
@@ -104,9 +144,8 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
         # Iterate and check the fraciton of Flagged solutions, each time running gaincal in 'K' mode
         flagcount = 0
         while fracFlaggedSolns > critfrac and flagcount < 4:
-
             self._do_ktype_delaycal(caltable=ktypecaltable, addcaltable=gtypecaltable,
-                                    context=context, RefAntOutput=RefAntOutput)
+                                    context=context, RefAntOutput=RefAntOutput, spw=','.join(spwlist))
             flaggedSolnResult = getCalFlaggedSoln(ktypecaltable)
             fracFlaggedSolns = self._check_flagSolns(flaggedSolnResult, RefAntOutput)
 
@@ -115,27 +154,27 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
                      str(flaggedSolnResult['antmedian']['fraction']))
             flagcount += 1
 
-        LOG.info("Delay calibration complete")
+        LOG.info("Delay calibration complete for band {!s}".format(band))
 
         # Do initial gaincal on BP calibrator then semi-final BP calibration
-        gain_solint1 = context.evla['msinfo'][m.name].gain_solint1
+        gain_solint1 = context.evla['msinfo'][m.name].gain_solint1[band]
         self._do_gtype_bpdgains(tablebase + table_suffix[0], addcaltable=ktypecaltable,
-                                solint=gain_solint1, context=context, RefAntOutput=RefAntOutput)
+                                solint=gain_solint1, context=context, RefAntOutput=RefAntOutput, spwlist=spwlist)
 
         bpdgain_touse = tablebase + table_suffix[0]
 
-        LOG.debug("WEAKBP: "+str(self.inputs.weakbp))
+        LOG.debug("WEAKBP: " + str(self.inputs.weakbp))
 
         if self.inputs.weakbp:
             LOG.debug("USING WEAKBP HEURISTICS")
             interp = weakbp(self.inputs.vis, bpcaltable, context=context, RefAntOutput=RefAntOutput,
                             ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse, solint='inf', append=False,
-                            executor=self._executor)
+                            executor=self._executor, spw=','.join(spwlist))
         else:
             LOG.debug("Using REGULAR heuristics")
             interp = ''
             do_bandpass(self.inputs.vis, bpcaltable, context=context, RefAntOutput=RefAntOutput,
-                        spw='', ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse,
+                        spw=','.join(spwlist), ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse,
                         solint='inf', append=False, executor=self._executor)
 
             AllCalTables = sorted(self.inputs.context.callibrary.active.get_caltable())
@@ -148,24 +187,19 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
             interp[-1] = 'linear,linearflag'
 
         self._do_applycal(context=context, ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse,
-                                            bpcaltable=bpcaltable, interp=interp)
+                          bpcaltable=bpcaltable, interp=interp, spw=','.join(spwlist))
 
         flaggedSolnApplycalbandpass = getCalFlaggedSoln(bpdgain_touse)
         flaggedSolnApplycaldelay = getCalFlaggedSoln(ktypecaltable)
 
-        return semiFinalBPdcalsResults(bpdgain_touse=bpdgain_touse, gtypecaltable=gtypecaltable,
-                                       ktypecaltable=ktypecaltable, bpcaltable=bpcaltable,
-                                       flaggedSolnApplycalbandpass=flaggedSolnApplycalbandpass,
-                                       flaggedSolnApplycaldelay=flaggedSolnApplycaldelay)
+        return bpdgain_touse, gtypecaltable, ktypecaltable, bpcaltable, flaggedSolnApplycalbandpass, \
+               flaggedSolnApplycaldelay
 
-    def analyse(self, results):
-        return results
-
-    def _do_gtype_delaycal(self, caltable=None, context=None, RefAntOutput=None):
+    def _do_gtype_delaycal(self, caltable=None, context=None, RefAntOutput=None, spwlist=[]):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         delay_field_select_string = context.evla['msinfo'][m.name].delay_field_select_string
-        tst_delay_spw = m.get_vla_tst_delay_spw()
+        tst_delay_spw = m.get_vla_tst_delay_spw(spwlist=spwlist)
         delay_scan_select_string = context.evla['msinfo'][m.name].delay_scan_select_string
         minBL_for_cal = m.vla_minbaselineforcal()
 
@@ -212,7 +246,7 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
 
         return True
 
-    def _do_ktype_delaycal(self, caltable=None, addcaltable=None, context=None, RefAntOutput=None):
+    def _do_ktype_delaycal(self, caltable=None, addcaltable=None, context=None, RefAntOutput=None, spw=''):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         delay_field_select_string = context.evla['msinfo'][m.name].delay_field_select_string
@@ -228,7 +262,7 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
         delaycal_task_args = {'vis': self.inputs.vis,
                               'caltable': caltable,
                               'field': '',
-                              'spw': '',
+                              'spw': spw,
                               'intent': '',
                               'selectdata': True,
                               'uvrange': '',
@@ -288,10 +322,10 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
 
         return fracFlaggedSolns
 
-    def _do_gtype_bpdgains(self, caltable, addcaltable=None, solint='int', context=None, RefAntOutput=None):
+    def _do_gtype_bpdgains(self, caltable, addcaltable=None, solint='int', context=None, RefAntOutput=None, spwlist=[]):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        tst_bpass_spw = m.get_vla_tst_bpass_spw()
+        tst_bpass_spw = m.get_vla_tst_bpass_spw(spwlist=spwlist)
         bandpass_scan_select_string = context.evla['msinfo'][m.name].bandpass_scan_select_string
         minBL_for_cal = m.vla_minbaselineforcal()
 
@@ -349,7 +383,7 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
 
         return True
 
-    def _do_applycal(self, context=None, ktypecaltable=None, bpdgain_touse=None, bpcaltable=None, interp=None):
+    def _do_applycal(self, context=None, ktypecaltable=None, bpdgain_touse=None, bpcaltable=None, interp=None, spw=''):
         """Run CASA task applycal"""
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
@@ -366,7 +400,7 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
 
         applycal_task_args = {'vis': self.inputs.vis,
                               'field': '',
-                              'spw': '',
+                              'spw': spw,
                               'intent': '',
                               'selectdata': True,
                               'scan': calibrator_scan_select_string,
