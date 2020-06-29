@@ -1,5 +1,8 @@
 <%inherit file="importdata.mako"/>
 
+<%block name="title">ALMA Import Data</%block>
+
+<%block name="addendum">
 <h3>Parallactic Angle Ranges</h3>
 % if parang_ranges['pol_intents_found']:
 <p>The following table and plots show the ranges of parallactic angles of the polarization calibrator(s) per session.</p>
@@ -33,3 +36,4 @@
 % else:
 <p>No polarization intents found.</p>
 % endif
+</%block>

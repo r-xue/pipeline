@@ -52,9 +52,9 @@ def make_parang_plots(context, result):
     ous_id = context.project_structure.ousstatus_entity_id
     sessions = result.parang_ranges['sessions']
     for session_name in sessions:
-        plot_name = os.path.join(context.report_dir, stage_id, f'{ous_id}_{session_name}_parallactic_angle.png')
+        sanitised_filename_component = sanitize(f'{ous_id}_{session_name}')
+        plot_name = os.path.join(context.report_dir, stage_id, f'{sanitised_filename_component}_parallactic_angle.png')
         # translate uid://A123/X12... to uid___A123_X12
-        plot_name = sanitize(plot_name)
         plot_title = 'MOUS {}, session {}'.format(ous_id, session_name)
         num_ms = len(sessions[session_name]['vis'])
         clearplots = True
