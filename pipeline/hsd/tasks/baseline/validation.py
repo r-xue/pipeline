@@ -1784,9 +1784,10 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                 GridCluster[Nc] += BlurPlane
                 #if not SingularMatrix: GridCluster[Nc] += BlurPlane
 
-                if ((GridCluster[Nc] > 0.5)*1).sum() < self.Questionable or MaskMax == 0.0:
-                    lines[Nc][2] = False
-                    channelmap_range[Nc][2] = False
+            if ((GridCluster[Nc] > 0.5)*1).sum() < self.Questionable or MaskMax == 0.0:
+                lines[Nc][2] = False
+                channelmap_range[Nc][2] = False
+            else:
                 # for Channel map velocity range determination 2014/1/12 arbitrary factor 0.8
                 #channelmap_range[Nc][1] = (MaskMax - MaskMin - 10) * 0.8
                 #channelmap_range[Nc][1] = MaskMax - MaskMin + lines[Nc][1] / 2.0
@@ -1796,10 +1797,10 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                 LOG.info('channelmap_range[Nc]: {}', channelmap_range[Nc])
                 LOG.info('lines[Nc]: {}', lines[Nc])
 
-                for x in range(nra):
-                    for y in range(ndec):
-                        if Original[x][y] > self.Valid: GridCluster[Nc][x][y] = 2.0
-                        elif GridCluster[Nc][x][y] > 0.5: GridCluster[Nc][x][y] = 1.0
+            for x in range(nra):
+                for y in range(ndec):
+                    if Original[x][y] > self.Valid: GridCluster[Nc][x][y] = 2.0
+                    elif GridCluster[Nc][x][y] > 0.5: GridCluster[Nc][x][y] = 1.0
 
         threshold = [1.5, 0.5, 0.5, 0.5]
         flag_digit = self.flag_digits['final']
