@@ -6,6 +6,9 @@ Created on 24 Oct 2014
 import collections
 import operator
 import os
+from typing import Dict
+import shutil
+
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure
@@ -17,6 +20,8 @@ import pipeline.infrastructure.utils as utils
 from pipeline.h.tasks.common.displays import applycal as applycal
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure.displays.summary import UVChart
+from .applycal import ApplycalResults
+from pipeline.infrastructure.basetask import ResultsList
 
 LOG = logging.get_logger(__name__)
 
@@ -80,7 +85,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             context,
             result,
             applycal.PhaseVsTimeSummaryChart,
-            ['PHASE', 'BANDPASS', 'AMPLITUDE', 'CHECK', 'POLARIZATION']
+            ['PHASE', 'BANDPASS', 'AMPLITUDE', 'CHECK', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE']
         )
 
         amp_vs_freq_summary_plots = utils.OrderedDefaultdict(list)
@@ -236,6 +241,11 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         else:
             uv_plots = self.create_uv_plots(context, result, weblog_dir)
 
+        # PIPE-615: Add links to the hif_applycal weblog for viewing each
+        # callibrary table (and store all callibrary tables in the weblog
+        # directory)
+        callib_map = copy_callibrary(result, context.report_dir)
+
         ctx.update({
             'amp_vs_freq_plots': amp_vs_freq_summary_plots,
             'phase_vs_freq_plots': phase_vs_freq_summary_plots,
@@ -253,6 +263,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'amp_vs_time_subpages': amp_vs_time_subpages,
             'amp_vs_uv_subpages': amp_vs_uv_subpages,
             'phase_vs_time_subpages': phase_vs_time_subpages,
+            'callib_map': callib_map
         })
 
     @staticmethod
@@ -521,14 +532,17 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         return {ms.basename: utils.dict_merge(by_intent, by_spw)}
 
     def flags_by_intent(self, ms, summaries):
-        # create a dictionary of scans per observing intent, eg. 'PHASE':[1,2,7]
-        intent_scans = {}
-        for intent in ('BANDPASS', 'PHASE', 'AMPLITUDE', 'CHECK', 'TARGET'):
-            # convert IDs to strings as they're used as summary dictionary keys
-            intent_scans[intent] = [str(s.id) for s in ms.scans
-                                    if intent in s.intents]
+        science_intents = {
+            'AMPLITUDE', 'BANDPASS', 'CHECK', 'PHASE', 'POLANGLE', 'POLARIZATION', 'POLLEAKAGE', 'TARGET'
+        }
 
-        # while we're looping, get the total flagged by looking in all scans 
+        # create a dictionary of scans per observing intent, eg. 'PHASE':['1','2','7']
+        intent_scans = {
+            # convert IDs to strings as they're used as summary dictionary keys
+            intent: [str(scan.id) for scan in ms.scans if intent in scan.intents] for intent in science_intents
+        }
+
+        # while we're looping, get the total flagged by looking in all scans
         intent_scans['TOTAL'] = [str(s.id) for s in ms.scans]
 
         total = collections.defaultdict(dict)
@@ -852,3 +866,28 @@ def get_visstat_data_selection(ms, fields_for_source, spw_ids, intent):
                            if fields_for_job.issubset(fields_for_spw)}
 
     return fields_for_job, spws_for_job_fields
+
+
+def copy_callibrary(results: ResultsList, report_dir: str) -> Dict[str, str]:
+    """
+    Copy callibrary files across to the weblog stage directory, returning a
+    Dict mapping MS name to the callibrary location on disk.
+    """
+    stage_dir = os.path.join(report_dir, f'stage{results.stage_number}')
+
+    vis_to_callib = {}
+
+    for result in results:
+        if not result.callib_map:
+            continue
+
+        for vis, callib_src in result.callib_map.items():
+            # copy callib file across to weblog directory
+            callib_basename = os.path.basename(callib_src)
+            callib_dst = os.path.join(stage_dir, os.path.basename(callib_basename))
+            LOG.debug('Copying callibrary: src={} dst={}', callib_src, callib_dst)
+            shutil.copyfile(callib_src, callib_dst)
+
+            vis_to_callib[os.path.basename(vis)] = callib_dst
+
+    return vis_to_callib

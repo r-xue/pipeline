@@ -19,7 +19,10 @@ total_keys = {
 	'BANDPASS'     : 'Bandpass',
 	'AMPLITUDE'    : 'Flux',
 	'PHASE'        : 'Phase',
-	'TARGET'       : 'Target (science spws)'
+	'TARGET'       : 'Target (science spws)',
+    'POLARIZATION' : 'Polarization',
+    'POLANGLE'     : 'Polarization angle',
+    'POLLEAKAGE'   : 'Polarization leakage'
 }
 
 def template_agent_header1(agent):
@@ -199,10 +202,24 @@ def format_spwmap(spwmap, scispws):
 	</thead>
 	<tbody>
 % for vis in calapps:
+    <%
+        vis_basename = os.path.basename(vis)
+
+        if vis_basename in callib_map:
+            callib_abspath = os.path.abspath(callib_map[vis_basename])
+            callib_relpath = os.path.relpath(callib_abspath, pcontext.report_dir)
+            callib_exists = os.path.exists(callib_abspath)
+        else:
+            callib_exists = False
+    %>
 	% for calapp in calapps[vis]:
 		<% ca_rowspan = len(calapp.calfrom) %>
 		<tr>
+            % if callib_exists:
+			<td rowspan="${ca_rowspan}">${vis}<br>(callibrary: <a href="${callib_relpath}" class="replace-pre" data-title="CASA CalLibrary for ${vis_basename}">view</a> / <a href="${callib_relpath}" download="${callib_relpath}">download</a>)</td>
+            % else:
 			<td rowspan="${ca_rowspan}">${vis}</td>
+            % endif
 			<td rowspan="${ca_rowspan}">${filesizes[vis]}</td>
 			<td rowspan="${ca_rowspan}">${space_comma(calapp.calto.intent)}</td>
 			<td rowspan="${ca_rowspan}">${space_comma(calapp.calto.field)}</td>

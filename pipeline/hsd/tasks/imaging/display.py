@@ -474,7 +474,7 @@ class SDSparseMapDisplay(SDImageDisplay):
         increment = [0, 0]
         refpix[0], refval[0], increment[0] = self.image.direction_axis(0, unit='deg')
         refpix[1], refval[1], increment[1] = self.image.direction_axis(1, unit='deg')
-        plotter.setup_labels(refpix, refval, increment)
+        plotter.setup_labels_relative(refpix, refval, increment)
 
         if hasattr(self, 'showatm') and self.showatm is True:
             msid_list = numpy.unique(self.inputs.msid_list)

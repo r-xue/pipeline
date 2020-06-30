@@ -94,6 +94,7 @@ class ImportDataResults(basetask.Results):
 @task_registry.set_casa_commands_comment('If required, ASDMs are converted to MeasurementSets.')
 class ImportData(basetask.StandardTaskTemplate):
     Inputs = ImportDataInputs
+    Results = ImportDataResults
 
     @staticmethod
     def _ms_directories(names):
@@ -136,7 +137,7 @@ class ImportData(basetask.StandardTaskTemplate):
             LOG.error(msg)
             raise IOError(msg)
 
-        results = ImportDataResults()
+        results = self.Results()
 
         # if this is a tar, get the names of the files and directories inside
         # the tar and calculate which can be directly imported (filenames with

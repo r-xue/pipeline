@@ -23,11 +23,11 @@ HHMMSSss = pointing.HHMMSSss
 
 
 class ClusterValidationAxesManager(MapAxesManagerBase):
-    def __init__(self, ncluster, nh, nv, aspect_ratio,
+    def __init__(self, clusters_to_plot, nh, nv, aspect_ratio,
                  xformatter, yformatter, xlocator, ylocator,
                  xrotation, yrotation, ticksize):
         super(ClusterValidationAxesManager, self).__init__()
-        self.ncluster = ncluster
+        self.clusters_to_plot = clusters_to_plot
         self.nh = nh
         self.nv = nv
         self.aspect_ratio = aspect_ratio
@@ -58,9 +58,10 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
         return self._axes
 
     def __axes_list(self):
-        for icluster in range(self.ncluster):
-            x = icluster % self.nh
-            y = int(icluster // self.nh)
+        for icluster in self.clusters_to_plot:
+            loc = self.clusters_to_plot.index(icluster)
+            x = loc % self.nh
+            y = int(loc // self.nh)
             x1 = 1.0 / float(self.nh)
             if x == 0:
                 x0 = x1 * (x + 0.1)
@@ -93,7 +94,7 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
             pl.xticks(size=self.ticksize)
             pl.yticks(size=self.ticksize)
 
-            yield axes
+            yield icluster, axes
 
 
 class ClusterDisplay(object):
@@ -121,14 +122,25 @@ class ClusterDisplay(object):
         for group in self.__baselined():
             group_id = group['group_id']
             cluster = group['clusters']
+            flag_digits = group['flag_digits']
             lines = group['lines']
             is_all_invalid_lines = all([l[2] == False for l in lines])
             rep_member_id = group['members'][0]
             rep_member = reduction_group[group_id][rep_member_id]
-            if 'cluster_score' not in cluster or is_all_invalid_lines:
-                # it should be empty cluster (no detection) or false clusters (detected but
-                # judged as an invalid clusters) so skip this cycle
-                continue
+
+            ## now judgement to plot is done exclusively in ClusterValidationDisplay._plot()
+            #
+            # if 'cluster_score' not in cluster or is_all_invalid_lines:
+            #     # it should be empty cluster (no detection) or false clusters (detected but
+            #     # judged as an invalid clusters) so skip this cycle
+            #     continue
+            # 
+            # # skip the cycle for cluster with no lines validated at final stage
+            # flags = cluster['cluster_flag']
+            # final_flags = ( flags // flag_digits['final'] ) % 10
+            # if ( final_flags == 0 ).all():
+            #    continue
+
             if 'index' in group:
                 # having key 'index' indicates the result comes from old (Scantable-based)
                 # procedure
@@ -145,21 +157,29 @@ class ClusterDisplay(object):
             virtual_spw = self.context.observing_run.real2virtual_spw_id(spw, ms)
             source_name = ms.fields[field].source.name.replace(' ', '_').replace('/', '_')
             iteration = group['iteration']
+
             t0 = time.time()
+            plot_validation = ClusterValidationDisplay(self.context, group_id, iteration, cluster, 
+                                                       flag_digits, vis,
+                                                       virtual_spw, source_name, antenna, lines, stage_dir)
+            validation_plot = plot_validation.plot()
+            # if there are no validated lines, then skip all the plots
+            if len(validation_plot) == 0:
+                continue
+            plot_list.extend(validation_plot)
+            t1 = time.time()
+
             plot_score = ClusterScoreDisplay(group_id, iteration, cluster, virtual_spw, source_name, stage_dir)
             plot_list.extend(plot_score.plot())
-            t1 = time.time()
+            t2 = time.time()
+
             plot_property = ClusterPropertyDisplay(group_id, iteration, cluster, virtual_spw, source_name, stage_dir)
             plot_list.extend(plot_property.plot())
-            t2 = time.time()
-            plot_validation = ClusterValidationDisplay(self.context, group_id, iteration, cluster, vis,
-                                                       virtual_spw, source_name, antenna, lines, stage_dir)
-            plot_list.extend(plot_validation.plot())
             t3 = time.time()
 
-            LOG.debug('PROFILE: ClusterScoreDisplay elapsed time is %s sec' % (t1-t0))
-            LOG.debug('PROFILE: ClusterPropertyDisplay elapsed time is %s sec' % (t2-t1))
-            LOG.debug('PROFILE: ClusterValidationDisplay elapsed time is %s sec' % (t3-t2))
+            LOG.debug('PROFILE: ClusterScoreDisplay elapsed time is %s sec' % (t2-t1))
+            LOG.debug('PROFILE: ClusterPropertyDisplay elapsed time is %s sec' % (t3-t2))
+            LOG.debug('PROFILE: ClusterValidationDisplay elapsed time is %s sec' % (t1-t0))
 
         end_time = time.time()
         LOG.debug('PROFILE: plot elapsed time is %s sec'%(end_time-start_time))
@@ -271,7 +291,7 @@ class ClusterPropertyDisplay(ClusterDisplayWorker):
         plot = self._create_plot(plotfile, 'line_property',
                                  'Line Center', 'Line Width')
         yield plot
-
+        
 
 class ClusterValidationDisplay(ClusterDisplayWorker):
     Description = {
@@ -281,11 +301,12 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
         'final': 'Clustering Analysis at Final stage\n\nGreen Square: Final Grid where the line protection channels are calculated and applied to the baseline subtraction\nBlue Square: Final Grid where the calculated line protection channels are applied to the baseline subtraction\n\nIsolated Grids are eliminated.\n'
     }
 
-    def __init__(self, context, group_id, iteration, cluster, vis, spw, field, antenna, lines, stage_dir):
+    def __init__( self, context, group_id, iteration, cluster, flag_digits, vis, spw, field, antenna, lines, stage_dir ):
         super(ClusterValidationDisplay, self).__init__(group_id, iteration, cluster, spw, field, stage_dir)
         self.context = context
         self.antenna = antenna
         self.lines = lines
+        self.flag_digits = flag_digits
         self.vis = vis
 
     def _plot(self):
@@ -293,7 +314,24 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
 
         marks = ['gs', 'bs', 'cs', 'ys']
 
-        num_cluster = len(self.cluster['cluster_property'])
+        if 'cluster_flag' not in self.cluster:
+            return None
+
+        # list up iclusters of clusters to plot
+        clusters_to_plot = []
+        flags = self.cluster['cluster_flag']
+        final_flags = ( flags // self.flag_digits['final'] ) % 10
+        for icluster in range(len(final_flags)):
+            if not( self.lines[icluster][2] == False or (final_flags[icluster]==0).all() ):
+                clusters_to_plot.append(icluster)
+
+        num_cluster = len(clusters_to_plot)
+        # num_cluster = len(self.cluster['cluster_property'])
+
+        # no clusters to plot
+        if num_cluster == 0:
+            return None
+
         num_panel_h = int(math.sqrt(num_cluster - 0.1)) + 1
         num_panel_v = num_panel_h
         ra0 = self.cluster['grid']['ra_min']
@@ -330,7 +368,7 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
         (RAlocator, DEClocator, RAformatter, DECformatter) = pointing.XYlabel(span,
                                                                               direction_reference)
 
-        axes_manager = ClusterValidationAxesManager(num_cluster,
+        axes_manager = ClusterValidationAxesManager(clusters_to_plot,
                                                     num_panel_h,
                                                     num_panel_v,
                                                     aspect_ratio,
@@ -342,13 +380,13 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
                                                     DECrotation,
                                                     tick_size)
         axes_manager.direction_reference = direction_reference
-        axes_list = axes_manager.axes_list
+        axes_list = dict(axes_manager.axes_list)
         axes_legend = axes_manager.axes_legend
 
         for (mode, data, threshold, description) in self.__stages():
             plot_objects = []
 
-            for icluster in range(num_cluster):
+            for icluster in clusters_to_plot:
                 pl.gcf().sca(axes_list[icluster])
 
                 xdata = []
@@ -412,15 +450,13 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
             yield plot
 
     def __stages(self):
-        digits = {'detection': 1, 'validation': 10,
-                  'smoothing': 100, 'final': 1000}
-        for key in ['detection', 'validation', 'smoothing', 'final']:
+        for key in self.flag_digits.keys():
             if 'cluster_flag' in self.cluster:
                 # Pick up target digit
-                _data = self.cluster['cluster_flag']
-                _digit = digits[key]
-                data = (_data // _digit) % 10
-                LOG.debug('data=%s' % data)
+                _flag = self.cluster['cluster_flag']
+                _digit = self.flag_digits[key]
+                flag = ( _flag // _digit) % 10
+                LOG.debug('flag=%s' % flag)
                 threshold = self.cluster[key+'_threshold']
                 desc = self.Description[key]
                 if key == 'validation':
@@ -431,7 +467,7 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
                     desc = template.safe_substitute(valid=valid,
                                                     marginal=marginal,
                                                     questionable=questionable)
-                yield (key, data, threshold, desc)
+                yield (key, flag, threshold, desc)
 
     def __line_property(self, icluster):
         reduction_group = self.context.observing_run.ms_reduction_group[self.group_id]
