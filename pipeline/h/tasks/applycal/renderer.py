@@ -4,6 +4,7 @@ Created on 24 Oct 2014
 @author: sjw
 """
 import collections
+import functools
 import operator
 import os
 from typing import Dict
@@ -38,10 +39,23 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def update_mako_context(self, ctx, context, result):
         weblog_dir = os.path.join(context.report_dir, 'stage%s' % result.stage_number)
 
+        # Find out which intents to list in the flagging table
+        # First get all intents across all MSes in context
+        context_intents = functools.reduce(lambda x, m: x.union(m.intents), context.observing_run.measurement_sets, set())
+        # then match intents against those we want in the table, removing those not
+        # present. List order is preserved in the table.
+        all_flag_summary_intents = [
+            'AMPLITUDE', 'BANDPASS', 'CHECK', 'PHASE', 'POLANGLE', 'POLARIZATION', 'POLLEAKAGE', 'TARGET'
+        ]
+        intents_to_summarise_flags = [i for i in all_flag_summary_intents 
+                                      if i in context_intents.intersection(set(all_flag_summary_intents))]
+        flag_table_intents = ['TOTAL', 'SCIENCE SPWS']
+        flag_table_intents.extend(intents_to_summarise_flags)
+
         flag_totals = {}
         for r in result:
             if r.inputs['flagsum'] is True:
-                flag_totals = utils.dict_merge(flag_totals, self.flags_for_result(r, context))
+                flag_totals = utils.dict_merge(flag_totals, flags_for_result(r, context, intents_to_summarise_flags))
 
         calapps = {}
         for r in result:
@@ -263,7 +277,8 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'amp_vs_time_subpages': amp_vs_time_subpages,
             'amp_vs_uv_subpages': amp_vs_uv_subpages,
             'phase_vs_time_subpages': phase_vs_time_subpages,
-            'callib_map': callib_map
+            'callib_map': callib_map,
+            'flag_table_intents': flag_table_intents
         })
 
     @staticmethod
@@ -522,82 +537,82 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             return ' (phase only)'
         return ''
 
-    def flags_for_result(self, result, context):
-        ms = context.observing_run.get_ms(result.inputs['vis'])
-        summaries = result.summaries
 
-        by_intent = self.flags_by_intent(ms, summaries)
-        by_spw = self.flags_by_science_spws(ms, summaries)
+def flags_for_result(result, context, intents):
+    ms = context.observing_run.get_ms(result.inputs['vis'])
+    summaries = result.summaries
 
-        return {ms.basename: utils.dict_merge(by_intent, by_spw)}
+    by_intent = flags_by_intent(ms, summaries, intents)
+    by_spw = flags_by_science_spws(ms, summaries)
 
-    def flags_by_intent(self, ms, summaries):
-        science_intents = {
-            'AMPLITUDE', 'BANDPASS', 'CHECK', 'PHASE', 'POLANGLE', 'POLARIZATION', 'POLLEAKAGE', 'TARGET'
-        }
+    return {ms.basename: utils.dict_merge(by_intent, by_spw)}
 
-        # create a dictionary of scans per observing intent, eg. 'PHASE':['1','2','7']
-        intent_scans = {
-            # convert IDs to strings as they're used as summary dictionary keys
-            intent: [str(scan.id) for scan in ms.scans if intent in scan.intents] for intent in science_intents
-        }
 
-        # while we're looping, get the total flagged by looking in all scans
-        intent_scans['TOTAL'] = [str(s.id) for s in ms.scans]
+def flags_by_intent(ms, summaries, intents):
+    # create a dictionary of scans per observing intent, eg. 'PHASE':['1','2','7']
+    intent_scans = {
+        # convert IDs to strings as they're used as summary dictionary keys
+        intent: [str(scan.id) for scan in ms.scans if intent in scan.intents] 
+        for intent in intents
+    }
 
-        total = collections.defaultdict(dict)
+    # while we're looping, get the total flagged by looking in all scans
+    intent_scans['TOTAL'] = [str(s.id) for s in ms.scans]
 
-        previous_summary = None
-        for summary in summaries:
+    total = collections.defaultdict(dict)
 
-            for intent, scan_ids in intent_scans.items():
-                flagcount = 0
-                totalcount = 0
+    previous_summary = None
+    for summary in summaries:
 
-                for i in scan_ids:
-                    # workaround for KeyError exception when summary 
-                    # dictionary doesn't contain the scan
-                    if i not in summary['scan']:
-                        continue
-
-                    flagcount += int(summary['scan'][i]['flagged'])
-                    totalcount += int(summary['scan'][i]['total'])
-
-                    if previous_summary:
-                        flagcount -= int(previous_summary['scan'][i]['flagged'])
-
-                ft = FlagTotal(flagcount, totalcount)
-                total[summary['name']][intent] = ft
-
-            previous_summary = summary
-
-        return total 
-
-    def flags_by_science_spws(self, ms, summaries):
-        science_spws = ms.get_spectral_windows(science_windows_only=True)
-
-        total = collections.defaultdict(dict)
-
-        previous_summary = None
-        for summary in summaries:
-
+        for intent, scan_ids in intent_scans.items():
             flagcount = 0
             totalcount = 0
 
-            for spw in science_spws:
-                spw_id = str(spw.id)
-                flagcount += int(summary['spw'][spw_id]['flagged'])
-                totalcount += int(summary['spw'][spw_id]['total'])
+            for i in scan_ids:
+                # workaround for KeyError exception when summary 
+                # dictionary doesn't contain the scan
+                if i not in summary['scan']:
+                    continue
+
+                flagcount += int(summary['scan'][i]['flagged'])
+                totalcount += int(summary['scan'][i]['total'])
 
                 if previous_summary:
-                    flagcount -= int(previous_summary['spw'][spw_id]['flagged'])
+                    flagcount -= int(previous_summary['scan'][i]['flagged'])
 
             ft = FlagTotal(flagcount, totalcount)
-            total[summary['name']]['SCIENCE SPWS'] = ft
+            total[summary['name']][intent] = ft
 
-            previous_summary = summary
+        previous_summary = summary
 
-        return total
+    return total 
+
+
+def flags_by_science_spws(ms, summaries):
+    science_spws = ms.get_spectral_windows(science_windows_only=True)
+
+    total = collections.defaultdict(dict)
+
+    previous_summary = None
+    for summary in summaries:
+
+        flagcount = 0
+        totalcount = 0
+
+        for spw in science_spws:
+            spw_id = str(spw.id)
+            flagcount += int(summary['spw'][spw_id]['flagged'])
+            totalcount += int(summary['spw'][spw_id]['total'])
+
+            if previous_summary:
+                flagcount -= int(previous_summary['spw'][spw_id]['flagged'])
+
+        ft = FlagTotal(flagcount, totalcount)
+        total[summary['name']]['SCIENCE SPWS'] = ft
+
+        previous_summary = summary
+
+    return total
 
 
 class ApplycalAmpVsFreqPlotRenderer(basetemplates.JsonPlotRenderer):
@@ -766,8 +781,7 @@ def get_brightest_field(ms, source, intent='TARGET'):
 
     # give the sole science target name if there's only one science target in this ms.
     if len(fields_for_source) == 1:
-        LOG.info('Only one {} target for Source #{}. '
-                 'Bypassing brightest target selection.'.format(intent, source.id))
+        LOG.info('Only one %s target for Source #%s. Bypassing brightest target selection.', intent, source.id)
         return fields_for_source[0]
 
     visstat_fields, visstat_spws = get_visstat_data_selection(ms, fields_for_source, spw_ids, intent)
@@ -791,7 +805,7 @@ def get_brightest_field(ms, source, intent='TARGET'):
     }
 
     # run visstat for each scan selection for the target
-    LOG.info('Calculating which {} field has the highest median flux for Source #{}'.format(intent, source.id))
+    LOG.info('Calculating which %s field has the highest median flux for Source #%s', intent, source.id)
     job = casa_tasks.visstat(**job_params)
     visstat_result = job.execute(dry_run=False)
 
@@ -802,7 +816,7 @@ def get_brightest_field(ms, source, intent='TARGET'):
         measurement_field = [f for f in fields_for_source if f.id == int(field_id)][0]
         median_flux.append((measurement_field, float(v['median'])))
 
-    LOG.debug('Median flux for {} targets:'.format(intent))
+    LOG.debug('Median flux for %s targets:', intent)
     for field, field_flux in median_flux:
         LOG.debug('\t{!r} ({}): {}'.format(field.name, field.id, field_flux))
 
@@ -849,7 +863,7 @@ def get_visstat_data_selection(ms, fields_for_source, spw_ids, intent):
         num_rows = flagdata_summary['total']
         if num_flagged_rows == num_rows:
             _, flagged_field, _, flagged_spw = flagdata_summary['name'].split('_')
-            LOG.info('Discarding field {} spw {} as a visstat candidate'.format(flagged_field, flagged_spw))
+            LOG.info('Discarding field %s spw %s as a visstat candidate', flagged_field, flagged_spw)
             field_to_remove = ms.fields[int(flagged_field)]
             spw_to_fields_for_visstat_job[int(flagged_spw)].remove(field_to_remove)
 
@@ -885,7 +899,7 @@ def copy_callibrary(results: ResultsList, report_dir: str) -> Dict[str, str]:
             # copy callib file across to weblog directory
             callib_basename = os.path.basename(callib_src)
             callib_dst = os.path.join(stage_dir, os.path.basename(callib_basename))
-            LOG.debug('Copying callibrary: src={} dst={}', callib_src, callib_dst)
+            LOG.debug('Copying callibrary: src=%s dst=%s', callib_src, callib_dst)
             shutil.copyfile(callib_src, callib_dst)
 
             vis_to_callib[os.path.basename(vis)] = callib_dst

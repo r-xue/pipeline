@@ -22,7 +22,8 @@ total_keys = {
 	'TARGET'       : 'Target (science spws)',
     'POLARIZATION' : 'Polarization',
     'POLANGLE'     : 'Polarization angle',
-    'POLLEAKAGE'   : 'Polarization leakage'
+    'POLLEAKAGE'   : 'Polarization leakage',
+	'CHECK'		   : 'Check',
 }
 
 def template_agent_header1(agent):
@@ -266,7 +267,7 @@ def format_spwmap(spwmap, scispws):
 		</tr>
 	</thead>
 	<tbody>
-%for k in ['TOTAL', 'SCIENCE SPWS', 'BANDPASS', 'AMPLITUDE', 'PHASE', 'TARGET']:
+%for k in flag_table_intents:
 		<tr>
 			<th>${total_keys[k]}</th>
 	% for agent in agents:
