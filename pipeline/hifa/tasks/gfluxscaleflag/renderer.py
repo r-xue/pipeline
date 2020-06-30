@@ -10,12 +10,11 @@ import os
 
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
+from pipeline.h.tasks.applycal.renderer import copy_callibrary
 from pipeline.hif.tasks.correctedampflag.renderer import T2_4MDetailsCorrectedampflagRenderer
 from pipeline.infrastructure import basetask
 
 LOG = logging.get_logger(__name__)
-
-FlagTotal = collections.namedtuple('FlagSummary', 'flagged total')
 
 
 class T2_4MDetailsGfluxscaleflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -33,7 +32,6 @@ class T2_4MDetailsGfluxscaleflagRenderer(basetemplates.T2_4MDetailsDefaultRender
             uri=uri, description=description, always_rerender=always_rerender)
 
     def update_mako_context(self, mako_context, pipeline_context, results):
-
         #
         # Get flagging reports, summaries
         #
@@ -52,6 +50,9 @@ class T2_4MDetailsGfluxscaleflagRenderer(basetemplates.T2_4MDetailsDefaultRender
             'uvdist_plots': get_plot_dicts(pipeline_context, results, 'uvdist')
         }
         mako_context.update(plot_dict)
+
+        # PIPE-615: store callibrary tables in the weblog directory
+        copy_callibrary(results, pipeline_context.report_dir)
 
 
 def get_plot_dicts(pipeline_context, results, plot_type):

@@ -17,7 +17,8 @@ class TargetflagResults(basetask.Results):
     def __init__(self):
         super(TargetflagResults, self).__init__()
         self.cafresult = None
-        self.plots = dict()
+        self.plots = {}
+        self.callib_map = {}
 
     def merge_with_context(self, context):
         """
@@ -76,6 +77,10 @@ class Targetflag(basetask.StandardTaskTemplate):
                 context=inputs.context, vis=inputs.vis, intent='TARGET', flagsum=False, flagbackup=False)
             actask = applycal.IFApplycal(acinputs)
             acresult = self._executor.execute(actask, merge=True)
+            # copy across the vis:callibrary dict to our result. This dict 
+            # will be inspected by the renderer to know if/which callibrary
+            # files should be copied across to the weblog stage directory
+            result.callib_map.update(acresult.callib_map)
 
             # Create back-up of flags after applycal but before correctedampflag.
             LOG.info('Creating back-up of "after_tgtflag_applycal" flagging state')
