@@ -224,7 +224,11 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
             # Apply the new caltables to the MS.
             LOG.info('Applying phase-up, bandpass, and amplitude cal tables.')
             # Apply the calibrations.
-            self._do_applycal(merge=False)
+            callib_map = self._do_applycal(merge=False)
+            # copy across the vis:callibrary dict to our result. This dict 
+            # will be inspected by the renderer to know if/which callibrary
+            # files should be copied across to the weblog stage directory
+            result.callib_map.update(callib_map)
 
             # Make "after calibration, before flagging" plots for the weblog
             LOG.info('Creating "after calibration, before flagging" plots')
@@ -291,8 +295,12 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
             task = applycal.IFApplycal(task_inputs)
             applycal_tasks.append(task)
 
+        callib_map = {}
         for task in applycal_tasks:
-            self._executor.execute(task, merge=merge)
+            applycal_result = self._executor.execute(task, merge=merge)
+            callib_map.update(applycal_result.callib_map)
+
+        return callib_map
 
     def _do_gaincal(self, caltable=None, intent=None, gaintype='G',
                     calmode=None, combine=None, solint=None, antenna=None,

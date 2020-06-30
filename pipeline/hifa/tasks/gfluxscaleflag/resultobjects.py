@@ -13,8 +13,11 @@ LOG = infrastructure.get_logger(__name__)
 class GfluxscaleflagResults(basetask.Results):
 
     def __init__(self):
-        super(GfluxscaleflagResults, self).__init__()
+        super().__init__()
         self.cafresult = resultobjects.CorrectedampflagResults()
+
+        # records callibrary files used in applycal calls
+        self.callib_map = {} 
 
     def merge_with_context(self, context):
         """
