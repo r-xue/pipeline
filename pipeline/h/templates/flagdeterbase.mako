@@ -9,7 +9,7 @@ agent_description = {
 	'qa0'      : 'QA0',
 	'qa2'      : 'QA2',
 	'online'   : 'Online Flags',
-	'pointing' : 'Missing Pointing',
+	'pointing' : 'Pointing Flags',
 	'template' : 'Flagging Template',
 	'autocorr' : 'Autocorrelations',
 	'shadow'   : 'Shadowed Antennas',
