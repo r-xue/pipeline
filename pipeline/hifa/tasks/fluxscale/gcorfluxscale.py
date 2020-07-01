@@ -4,14 +4,17 @@ import os
 import uuid
 from functools import reduce
 
+import numpy as np
 import scipy.stats as stats
 
+import pipeline.domain as domain
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.sessionutils as sessionutils
+import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import FluxMeasurement
 from pipeline.h.tasks.common import commonfluxresults
@@ -37,12 +40,20 @@ ORIGIN = 'gcorfluxscale'
 
 
 class GcorFluxscaleResults(commonfluxresults.FluxCalibrationResults):
-    def __init__(self, vis, resantenna=None, uvrange=None, measurements=None, applies_adopted=False):
+    def __init__(self, vis, resantenna=None, uvrange=None, measurements=None, fluxscale_measurements=None,
+                 applies_adopted=False):
         super(GcorFluxscaleResults, self).__init__(vis, resantenna=resantenna, uvrange=uvrange,
                                                    measurements=measurements)
         self.applies_adopted = applies_adopted
 
+        # To store the fluxscale derived flux measurements:
+        if fluxscale_measurements is None:
+            fluxscale_measurements = collections.defaultdict(list)
+        self.fluxscale_measurements = fluxscale_measurements
+
     def merge_with_context(self, context):
+        # Update the measurement set with the calibrated visibility based flux
+        # measurements for later use in imaging (PIPE-644, PIPE-660).
         ms = context.observing_run.get_ms(self.vis)
         ms.derived_fluxes = self.measurements
 
@@ -211,7 +222,9 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
             LOG.warn('Cannot compute phase solution table %s for the flux calibrator' % (os.path.basename(caltable)))
 
         # Do a phase-only gaincal on the remaining calibrators using the full
-        # set of antennas
+        # set of antennas; append this to the phase solutions caltable produced
+        # for the flux calibrator; merge result into local task context so that
+        # the caltable is included in pre-apply for subsequent gaincal.
         append = os.path.exists(caltable)
         r = self._do_gaincal(caltable=caltable, field=inputs.transfer, intent=inputs.transintent,
                              gaintype=phase_gaintype, calmode='p', combine=phase_combine, solint=phaseup_solint,
@@ -250,52 +263,30 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
                      'and bandpass calibrator' % (os.path.basename(caltable)))
             check_ok = False
 
-        if check_ok:
-            # Schedule a fluxscale job using this caltable. This is the result
-            # that contains the flux measurements for the context.
-
-            # We need to write the fluxscale-derived flux densities to a file,
-            # which can then be used as input for the subsequent setjy task.
-            # This is the name of that file.
-            # use UUID so that parallel MPI processes do not unlink the same file
-            reffile = os.path.join(inputs.context.output_dir, 'fluxscale_{!s}.csv'.format(uuid.uuid4()))
-
-            try:
-                fluxscale_result = self._do_fluxscale(caltable, refspwmap=refspwmap)
-
-                # Determine fields ids for which a model spix should be
-                # set along with the derived flux. For now this is
-                # restricted to BANDPASS fields
-                fieldids_with_spix = [str(f.id) for f in inputs.ms.get_fields(task_arg=inputs.transfer,
-                                                                              intent='BANDPASS')]
-
-                # Store the results in a temporary file.
-                fluxes.export_flux_from_fit_result(fluxscale_result, inputs.context, reffile,
-                                                   fieldids_with_spix=fieldids_with_spix)
-
-                # Finally, do a setjy, add its setjy_settings
-                # to the main result
-                self._do_setjy(reffile=reffile, field=inputs.transfer)
-
-                # Use the fluxscale measurements to get the uncertainties too.
-                # This makes the (big) assumption that setjy executed exactly
-                # what we passed in as arguments
-                result.measurements.update(fluxscale_result.measurements)
-
-            except Exception as e:
-                # Something has gone wrong, return an empty result
-                LOG.error('Unable to complete flux scaling operation for MS %s' % (os.path.basename(inputs.vis)))
-                LOG.exception('Flux scaling error', exc_info=e)
-                return result
-
-            finally:
-                # clean up temporary file
-                if os.path.exists(reffile):
-                    os.remove(reffile)
-
-        else:
+        # If no valid amplitude caltable is available to analyse, then log an
+        # error and return early.
+        if not check_ok:
             LOG.error('Unable to complete flux scaling operation for MS %s' % (os.path.basename(inputs.vis)))
             return result
+
+        # Otherwise, continue with derivation of flux densities.
+        try:
+            # PIPE-644: derive fluxscale-based flux measurements, and store in
+            # the result for reporting in weblog.
+            fluxscale_result = self._derive_fluxscale_flux(caltable, refspwmap)
+            result.fluxscale_measurements.update(fluxscale_result.measurements)
+
+            # PIPE-644: derive calibrated visibility based flux measurements
+            # and store in result for reporting in weblog and merging into
+            # context (into measurement set).
+            # FIXME: check with PWG about first running a temporary applycal
+            #  including backup/restore of flagging state.
+            calvis_fluxes = self._derive_calvis_flux()
+            result.measurements.update(calvis_fluxes.measurements)
+        except Exception as e:
+            # Something has gone wrong, return an empty result
+            LOG.error('Unable to complete flux scaling operation for MS {}'.format(inputs.ms.basename))
+            LOG.exception('Flux scaling error', exc_info=e)
 
         return result
 
@@ -326,6 +317,110 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
             LOG.warning('%s does not contain results for all transfer calibrators' % os.path.basename(caltable))
 
         return True
+
+    def _compute_mean_vis(self, fieldid, spwid):
+
+        # Read in data from the MS, for specified field, spw, and all transfer
+        # intents.
+        data = self._read_data_from_ms(self.inputs.ms, fieldid, spwid, self.inputs.transintent)
+
+        # Return if no valid data were read.
+        if not data:
+            return
+
+        # Get number of polarisations.
+        npol = len(data['weight'])
+
+        # Derive mean flux and mean stdev for each polarisation.
+        mean_fluxes = []
+        mean_stds = []
+        for pol in range(npol):
+            # Select data for current polarisation.
+            ampdata = np.squeeze(data['corrected_data'], axis=1)[pol]
+            flagdata = np.squeeze(data['flag'], axis=1)[pol]
+            weightdata = data['weight'][pol]
+
+            # Select for non-flagged data and non-NaN data.
+            id_nonbad = np.where(np.logical_and(np.logical_not(flagdata), np.isfinite(ampdata)))
+            amplitudes = ampdata[id_nonbad]
+            weights = weightdata[id_nonbad]
+
+            # Compute mean flux and stdev for current polarisation.
+            mean_flux = np.abs(np.average(amplitudes, weights=weights))
+            mean_std = np.average((amplitudes - mean_flux)**2, weights=weights)
+
+            # Store for this polarisation.
+            mean_fluxes.append(mean_flux)
+            mean_stds.append(mean_std)
+
+        # Combine mean fluxes for all polarisations.
+        mean_flux = np.mean(mean_fluxes)
+        # FIXME: check np.abs with PWG
+        mean_std = np.abs(np.sqrt(np.mean(mean_stds)))
+
+        # Combine into single flux measurement object.
+        flux = domain.FluxMeasurement(spwid, mean_flux, origin="gcorfluxscale")
+        flux.uncertainty = domain.FluxMeasurement(spwid, mean_std, origin="gcorfluxscale")
+
+        return flux
+
+    def _derive_calvis_flux(self):
+        inputs = self.inputs
+
+        # Initialize result.
+        result = commonfluxresults.FluxCalibrationResults(inputs.vis)
+
+        # Identify fields and spws to derive calibrated vis for.
+        transfer_fields = inputs.ms.get_fields(task_arg=inputs.transfer)
+        sci_spws = set(inputs.ms.get_spectral_windows(science_windows_only=True))
+        transfer_fieldids = {str(field.id) for field in transfer_fields}
+        spw_ids = {str(spw.id) for field in transfer_fields for spw in field.valid_spws.intersection(sci_spws)}
+
+        # Compute the mean calibrated visibility flux for each field and spw
+        # and add as flux measurement to the final result.
+        for fieldid in transfer_fieldids:
+            for spwid in spw_ids:
+                fluxes_for_field_and_spw = self._compute_mean_vis(fieldid, spwid)
+                if fluxes_for_field_and_spw:
+                    result.measurements[fieldid].append(fluxes_for_field_and_spw)
+
+        return result
+
+    def _derive_fluxscale_flux(self, caltable, refspwmap):
+        inputs = self.inputs
+
+        # Schedule a fluxscale job using this caltable. This is the result
+        # that contains the flux measurements for the context.
+        # We need to write the fluxscale-derived flux densities to a file,
+        # which can then be used as input for the subsequent setjy task.
+        # This is the name of that file.
+        # use UUID so that parallel MPI processes do not unlink the same file
+        reffile = os.path.join(inputs.context.output_dir, 'fluxscale_{!s}.csv'.format(uuid.uuid4()))
+        try:
+            fluxscale_result = self._do_fluxscale(caltable, refspwmap=refspwmap)
+
+            # Determine fields ids for which a model spix should be
+            # set along with the derived flux. For now this is
+            # restricted to BANDPASS fields
+            fieldids_with_spix = [str(f.id) for f in inputs.ms.get_fields(task_arg=inputs.transfer, intent='BANDPASS')]
+
+            # Store the results in a temporary file.
+            fluxes.export_flux_from_fit_result(fluxscale_result, inputs.context, reffile,
+                                               fieldids_with_spix=fieldids_with_spix)
+
+            # Finally, do a setjy, add its setjy_settings
+            # to the main result
+            self._do_setjy(reffile=reffile, field=inputs.transfer)
+
+            # Use the fluxscale measurements to get the uncertainties too.
+            # This makes the (big) assumption that setjy executed exactly
+            # what we passed in as arguments.
+        finally:
+            # clean up temporary file
+            if os.path.exists(reffile):
+                os.remove(reffile)
+
+        return fluxscale_result
 
     def _do_gaincal(self, caltable=None, field=None, intent=None, gaintype='G', calmode=None, combine=None, solint=None,
                     antenna=None, uvrange='', refant=None, minblperant=None, phaseup_spwmap=None, phase_interp=None,
@@ -421,6 +516,43 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         task = setjy.Setjy(task_inputs)
 
         return self._executor.execute(task, merge=True)
+
+    @staticmethod
+    def _read_data_from_ms(ms, fieldid, spwid, intent):
+
+        # Initialize data selection.
+        data_selection = {'field': fieldid,
+                          'scanintent': '*%s*' % utils.to_CASA_intent(ms, intent),
+                          'spw': spwid}
+
+        # Get number of channels for this spw.
+        nchans = ms.get_spectral_windows(spwid)[0].num_channels
+
+        # Read in data from MS.
+        with casatools.MSReader(ms.name) as openms:
+            try:
+                # Apply data selection.
+                openms.msselect(data_selection)
+
+                # Read in the weights from MS separately, prior to channel
+                # averaging.
+                weights = openms.getdata(['weight'])
+
+                # Set channel selection to take the average of all channels.
+                openms.selectchannel(1, 0, nchans, 1)
+
+                # Extract data from MS.
+                data = openms.getdata(['corrected_data', 'flag'])
+            except:
+                # Log a warning and return without data.
+                LOG.warning('Unable to compute mean vis for intent(s) {}, field {}, spw {}'
+                            ''.format(intent, fieldid, spwid))
+                return
+
+        # Combine the two dictionaries.
+        data = {**data, **weights}
+
+        return data
 
 
 class SessionGcorFluxscaleInputs(GcorFluxscaleInputs):
