@@ -146,8 +146,8 @@ def make_flux_table(context, results):
 
         transintent = set(single_result.inputs['transintent'].split(','))
         
-        # measurements will be empty if fluxscale derivation failed
-        if len(single_result.measurements) is 0:
+        # measurements will be empty if calibrated visibility flux derivation failed
+        if len(single_result.measurements) == 0:
             continue
 
         for field_arg, measurements in single_result.measurements.items():
@@ -210,6 +210,39 @@ def make_flux_table(context, results):
                         flux_ratio = '%0.3f' % (float(flux_jy_I) / float(catflux_jy_I))
                     break
 
+                # Get the corresponding fluxscale derived fluxes.
+                fsfluxes = collections.defaultdict(lambda: 'N/A')
+                fs_measurements = single_result.fluxscale_measurements
+
+                if str(field.id) in fs_measurements:
+                    for fs_measurement in fs_measurements[str(field.id)]:
+                        if fs_measurement.spw_id != int(measurement.spw_id):
+                            continue
+
+                        for stokes in ['I', 'Q', 'U', 'V']:
+                            try:
+                                fsflux = getattr(fs_measurement, stokes)
+                                fsunc = getattr(fs_measurement.uncertainty, stokes)
+
+                                fsflux_jy = fsflux.to_units(measures.FluxDensityUnits.JANSKY)
+                                fsunc_jy = fsunc.to_units(measures.FluxDensityUnits.JANSKY)
+
+                                if fsflux_jy != 0 and fsunc_jy != 0:
+                                    fsunc_ratio = decimal.Decimal('100') * (fsunc_jy / fsflux_jy)
+                                    fsunc_str = ' &#177; %s (%0.1f%%)' % (str(fsunc), fsunc_ratio)
+                                else:
+                                    fsunc_str = ''
+
+                                fsfluxes[stokes] = '%s%s' % (fsflux, fsunc_str)
+                            except:
+                                pass
+                        try:
+                            fsfluxes['spix'] = '%s' % getattr(fs_measurement, 'spix')
+                        except:
+                            fsfluxes['spix'] = '0.0'
+                        break
+
+                # Create the table row for current result (vis), field, and spw.
                 tr = FluxTR(vis_cell, field_cell, measurement.spw_id, freqbw, 
                             fluxes['I'],
                             fluxes['Q'],
@@ -219,7 +252,16 @@ def make_flux_table(context, results):
                             fluxes['spix'])
                 rows.append(tr)
 
-                tr = FluxTR(vis_cell, field_cell, measurement.spw_id, freqbw, 
+                tr = FluxTR(vis_cell, field_cell, measurement.spw_id, freqbw,
+                            fsfluxes['I'],
+                            fsfluxes['Q'],
+                            fsfluxes['U'],
+                            fsfluxes['V'],
+                            flux_ratio,
+                            fluxes['spix'])
+                rows.append(tr)
+
+                tr = FluxTR(vis_cell, field_cell, measurement.spw_id, freqbw,
                             catfluxes['I'],
                             catfluxes['Q'],
                             catfluxes['U'],

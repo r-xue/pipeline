@@ -133,8 +133,8 @@ def rx_for_plot(plot):
 % for single_result in [r for r in result if not r.applies_adopted]:
 		<tr>
 			<td>${os.path.basename(single_result.vis)}</td>
-                	<td>${single_result.uvrange}</td>
-                	<td>${single_result.resantenna.replace(',', ', ').replace('&', '')}</td>
+            <td>${single_result.uvrange}</td>
+            <td>${single_result.resantenna.replace(',', ', ').replace('&', '')}</td>
 		</tr>
 % endfor
 	</tbody>
@@ -149,17 +149,20 @@ def rx_for_plot(plot):
 	<caption>Phased-up Fluxscale Results</caption>
     <thead>
 	    <tr>
-	        <th scope="col" rowspan="3">Measurement Set</th>
-	        <th scope="col" rowspan="3">Field</th>
-	        <th scope="col" rowspan="3">Spw</th>
-	        <th scope="col" rowspan="3">Frequency Bandwidth (TOPO)</th>
-	        <th scope="col" colspan="4">Derived Flux Density</th>
-	        <th scope="col" rowspan="3">Flux Ratio (Derived / Catalog)</th>
-	        <th scope="col" rowspan="3">Spix</th>
+	        <th scope="col" rowspan="4">Measurement Set</th>
+	        <th scope="col" rowspan="4">Field</th>
+	        <th scope="col" rowspan="4">Spw</th>
+	        <th scope="col" rowspan="4">Frequency Bandwidth (TOPO)</th>
+	        <th scope="col" colspan="4">Derived Scaling Factor</th>
+	        <th scope="col" rowspan="4">Flux Ratio (Calibrated / Catalog)</th>
+	        <th scope="col" rowspan="4">Spix</th>
 		</tr>
 		<tr>
+	        <th scope="col" colspan="4">Calibrated Visibility Flux Density</th>
+        </tr>
+		<tr>
 	        <th scope="col" colspan="4">Catalog Flux Density</th>
-	        </tr>
+        </tr>
 		<tr>
 	        <th scope="col">I</th>
 	        <th scope="col">Q</th>
