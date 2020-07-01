@@ -240,7 +240,7 @@ class MetaDataReader(object):
         # apply flagging heuristics
         flag_list = rasterutil.flag_raster_map(metadata)
 
-        # generate flagcmd
+        # generate dictionary
         flag_dict = dict(enumerate(flag_list))
 
         return flag_dict
