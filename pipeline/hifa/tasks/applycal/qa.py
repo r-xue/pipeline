@@ -24,14 +24,14 @@ LOG = logging.get_logger(__name__)
 
 # Maps outlier reasons to a text snippet that can be used in a QAScore message
 REASONS_TO_TEXT = {
-    'amp.intercept,amp.slope': ('Amp-freq', 'zero point and slope outliers'),
-    'amp.intercept': ('Amp-freq', 'zero point outliers'),
-    'amp.slope': ('Amp-freq', 'slope outliers'),
-    'amp': ('Amp', 'outliers'),
-    'phase.intercept,phase.slope': ('Phase-freq', 'zero point and slope outliers'),
-    'phase.intercept': ('Phase-freq', 'zero point outliers'),
-    'phase.slope': ('Phase-freq', 'slope outliers'),
-    'phase': ('Phase', 'outliers'),
+    'amp_vs_freq.intercept,amp.slope': ('Amp vs frequency', 'zero point and slope outliers'),
+    'amp_vs_freq.intercept': ('Amp vs frequency', 'zero point outliers'),
+    'amp_vs_freq.slope': ('Amp vs frequency', 'slope outliers'),
+    'amp_vs_freq': ('Amp vs frequency', 'outliers'),
+    'phase_vs_freq.intercept,phase_vs_freq.slope': ('Phase vs frequency', 'zero point and slope outliers'),
+    'phase_vs_freq.intercept': ('Phase vs frequency', 'zero point outliers'),
+    'phase_vs_freq.slope': ('Phase vs frequency', 'slope outliers'),
+    'phase_vs_freq': ('Phase vs frequency', 'outliers'),
 }
 
 # PIPE356Switches is a struct used to hold various options for outlier
@@ -169,7 +169,7 @@ def get_qa_scores(ms: MeasurementSet, export_outliers: bool, outlier_score: floa
 
         # if requested, export outlier descriptions to a file
         if export_outliers:
-            debug_path = 'PIPE356_outliers.txt'.format(ms.basename)
+            debug_path = 'PIPE356_outliers.txt'
             with open(debug_path, 'a') as debug_file:
                 for o in outliers:
                     msg = (f'{o.vis} {o.intent} scan={o.scan} spw={o.spw} ant={o.ant} '
@@ -349,7 +349,7 @@ def summarise_scores(all_scores: List[pqa.QAScore], ms: MeasurementSet) -> Dict[
     # messages down. I have changed the example in the description accordingly.
 
     accordion_scores = []
-    for hierarchy_root in ['amp', 'phase']:
+    for hierarchy_root in ['amp_vs_freq', 'phase_vs_freq']:
         # erase just the polarisation dimension for accordion messages,
         # leaving the messages specific enough to identify the plot that
         # caused the problem
@@ -377,7 +377,7 @@ def summarise_scores(all_scores: List[pqa.QAScore], ms: MeasurementSet) -> Dict[
     final_scores[pqa.WebLogLocation.ACCORDION] = accordion_scores
 
     banner_scores = []
-    for hierarchy_root in ['amp', 'phase']:
+    for hierarchy_root in ['amp_vs_freq', 'phase_vs_freq']:
         # erase several dimensions for banner messages. These messages outline
         # just the vis, spw, and intent. For specific info, people should look
         # at the accordion messages.

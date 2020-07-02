@@ -336,8 +336,14 @@ def score_X_vs_freq_fits(all_fits, attr, ref_value_fn, outlier_fn, sigma_thresho
     :param sigma_threshold: the nsigma threshold to be considered an outlier
     :return: list of Outlier objects
     """
+    # convert linear fit metadata to a reason that identifies this fit as
+    # originating from this metric in a wider context, e.g., from 'amp.slope'
+    # to 'amp_vs_freq.slope'
+    y_axis, fit_parameter = attr.split('.')
+    reason = f'{y_axis}_vs_freq.{fit_parameter}'
+    outlier_fn = functools.partial(outlier_fn, reason={reason, })
+
     accessor = operator.attrgetter(attr)
-    outlier_fn = functools.partial(outlier_fn, reason={attr, })
     return score_fits(all_fits, ref_value_fn, accessor, outlier_fn, sigma_threshold)
 
 
