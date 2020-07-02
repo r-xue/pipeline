@@ -335,8 +335,6 @@ class ChannelMapAxesManager(ChannelAveragedAxesManager):
         self.bottom = 2.0 / 3.0 + 0.2 / 3.0
         self.height = 1.0 / 3.0 * 0.7
 
-#        self.numeric_formatter = pl.FormatStrFormatter('%.2f')
-
         self._axes_integmap = None
         self._axes_integsp_full = None
         self._axes_integsp_zoom = None
@@ -372,7 +370,6 @@ class ChannelMapAxesManager(ChannelAveragedAxesManager):
         if self._axes_integsp_full is None:
             left = 1.0 / 3.0 + 0.1 / 3.0
             axes = pl.axes([left, self.bottom, self.width, self.height])
-#            axes.xaxis.set_major_formatter(self.numeric_formatter)
             axes.xaxis.get_major_formatter().set_useOffset(False)
             pl.xticks(size=self.ticksize)
             pl.yticks(size=self.ticksize)
@@ -1127,7 +1124,6 @@ class SpectralMapAxesManager(MapAxesManagerBase):
         self.nh = nh
         self.nv = nv
         self.brightnessunit = brightnessunit
-        self.formatter = formatter
         self.locator = locator
         self.ticksize = ticksize
 
@@ -1153,7 +1149,6 @@ class SpectralMapAxesManager(MapAxesManagerBase):
             #y1 = 1.0 / float(self.nv) * 0.7
             y1 = 1.0 / float(self.nv) * 0.65
             a = pl.axes([x0, y0, x1, y1])
-#            a.xaxis.set_major_formatter(self.formatter)
             a.xaxis.get_major_formatter().set_useOffset(False)
             a.xaxis.set_major_locator(self.locator)
             a.yaxis.set_label_coords(-0.22, 0.5)
