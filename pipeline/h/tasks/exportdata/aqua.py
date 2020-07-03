@@ -48,6 +48,7 @@ import datetime
 import itertools
 import operator
 import os
+from typing import List
 import xml.etree.cElementTree as ElementTree
 from xml.dom import minidom
 
@@ -56,6 +57,7 @@ import pipeline.infrastructure.renderer.qaadapter as qaadapter
 import pipeline.infrastructure.utils as utils
 from pipeline import environment
 from pipeline.infrastructure import casatools
+from pipeline.infrastructure.pipelineqa import QAScore
 
 LOG = logging.get_logger(__name__)
 
@@ -205,16 +207,13 @@ class AquaXmlGenerator(object):
                                                 Name=stage_name,
                                                 Score=str(stage_score))
 
-            # create a list of (vis, qa score) tuples for this metric
-            vis_qa_scores = [(ms_result.inputs['vis'], qa_score)
-                             for ms_result in stage_result
-                             for qa_score in ms_result.qa.pool]
+            all_scores = stage_result.qa.pool
 
             # calculate which items have specific renderers and which require
             # procesing by the generic renderer
-            needs_specific = [(vis, qa_score) for vis, qa_score in vis_qa_scores
+            needs_specific = [qa_score for qa_score in all_scores
                               if any([fn.handles(qa_score.origin.metric_name) for fn in _AQUA_REGISTRY])]
-            needs_generic = [(vis, qa_score) for vis, qa_score in vis_qa_scores
+            needs_generic = [qa_score for qa_score in all_scores
                              if not any([fn.handles(qa_score.origin.metric_name) for fn in _AQUA_REGISTRY])]
 
             # create a pseudo registry for the generic XML generator
@@ -235,14 +234,14 @@ class AquaXmlGenerator(object):
         """
         Generate the XML elements for a list of QA scores.
 
-        :param items: list of (vis, QAScore) tuples
+        :param items: list of QAScores
         :param registry: list of XML generator functions
         :return: list of XML elements
         :rtype: list of xml.etree.ElementTree
         """
         # group scores into a {<metric name>: [<QAScore, ...>]} dict
         metric_to_scores = {}
-        keyfunc = lambda vis_qa_score: vis_qa_score[1].origin.metric_name
+        keyfunc = operator.attrgetter('origin.metric_name')
         s = sorted(list(items), key=keyfunc)
         for k, g in itertools.groupby(s, keyfunc):
             metric_to_scores[k] = list(g)
@@ -425,15 +424,16 @@ class MetricXmlGenerator(object):
             'Value': str,
             'Asdm': vis_to_asdm,
             'QaScore': str,
+            'Session': str,
         }
         if formatters:
             self.attr_formatters.update(formatters)
 
-    def __call__(self, vis_qa_scores):
-        scores_to_process = self.filter(vis_qa_scores)
-        return [self.to_xml(vis, score) for vis, score in scores_to_process]
+    def __call__(self, qa_scores: List[QAScore]) -> List[ElementTree.ElementTree]:
+        scores_to_process = self.filter(qa_scores)
+        return [self.to_xml(score) for score in scores_to_process]
 
-    def handles(self, metric_name):
+    def handles(self, metric_name: str) -> bool:
         """
         Returns True if this class can generate XML for the given metric.
 
@@ -442,20 +442,19 @@ class MetricXmlGenerator(object):
         """
         return metric_name == self.metric_name
 
-    def filter(self, qa_scores):
+    def filter(self, qa_scores: List[QAScore]) -> List[QAScore]:
         """
         Reduce a list of entries to those entries that require XML to be generated.
 
-        :param qa_scores: list of (vis, QAScore)
-        :return: list of (vis, QAScore)
+        :param qa_scores: list of QAScores
+        :return: list of QAScores
         """
         return qa_scores
 
-    def to_xml(self, vis, qa_score):
+    def to_xml(self, qa_score: QAScore) -> ElementTree.ElementTree:
         """
         Return the XML representation of a QA score and associated metric.
 
-        :param vis: name of MS
         :param qa_score: QA score to convert
         :return: XML element
         :rtype: xml.etree.ElementTree.Element
@@ -463,21 +462,24 @@ class MetricXmlGenerator(object):
         if not qa_score:
             return None
 
-        metric = qa_score.origin
-        qa_score = str(qa_score.score)
+        origin = qa_score.origin
+        score_value = str(qa_score.score)
 
-        if isinstance(vis, list):
-            asdm = ','.join([self.attr_formatters['Asdm'](v) for v in vis])
-        else:
-            asdm = self.attr_formatters['Asdm'](vis)
-
-        return ElementTree.Element(
-            'Metric',
-            Name=self.attr_formatters['Name'](metric.metric_name),
-            Value=self.attr_formatters['Value'](metric.metric_score),
-            Asdm=asdm,
-            QaScore=self.attr_formatters['QaScore'](qa_score)
+        init_args = dict(
+            Name=self.attr_formatters['Name'](origin.metric_name),
+            Value=self.attr_formatters['Value'](origin.metric_score),
+            QaScore=self.attr_formatters['QaScore'](score_value)
         )
+
+        target_asdms = qa_score.applies_to.vis
+        if target_asdms:
+            init_args['Asdm'] = ','.join([self.attr_formatters['Asdm'](a) for a in target_asdms])
+
+        target_session = qa_score.applies_to.session
+        if target_session:
+            init_args['Session'] = ','.join([self.attr_formatters['Session'](s) for s in target_session])
+
+        return ElementTree.Element('Metric', **init_args)
 
 
 class LowestScoreMetricXmlGenerator(MetricXmlGenerator):
