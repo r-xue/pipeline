@@ -33,6 +33,9 @@ class PolcalflagResults(basetask.Results):
         # list of entirely flagged antennas that should be removed from refants
         self.refants_to_remove = set()
 
+        # records callibrary files used in applycal calls
+        self.callib_map = {}
+
     def merge_with_context(self, context):
         """
         See :method:`~pipeline.infrastructure.api.Results.merge_with_context`
@@ -146,7 +149,11 @@ class Polcalflag(basetask.StandardTaskTemplate):
             # Run applycal to apply pre-existing caltables and propagate their
             # corresponding flags
             LOG.info('Applying pre-existing cal tables.')
-            self._do_applycal(merge=False)
+            callib_map = self._do_applycal(merge=False)
+            # copy across the vis:callibrary dict to our result. This dict 
+            # will be inspected by the renderer to know if/which callibrary
+            # files should be copied across to the weblog stage directory
+            result.callib_map.update(callib_map)
 
             # Create back-up of flags after applycal but before correctedampflag.
             LOG.info('Creating back-up of "after_pcflag_applycal" flagging state')
@@ -230,8 +237,13 @@ class Polcalflag(basetask.StandardTaskTemplate):
             task = applycal.IFApplycal(task_inputs)
             applycal_tasks.append(task)
 
+        # as there's just one job
+        callib_map = {}
         for task in applycal_tasks:
-            self._executor.execute(task, merge=merge)
+            applycal_result = self._executor.execute(task, merge=merge)
+            callib_map.update(applycal_result.callib_map)
+
+        return callib_map
 
     def _do_gaincal(self, caltable=None, intent=None, gaintype='G',
                     calmode=None, combine=None, solint=None, antenna=None,
