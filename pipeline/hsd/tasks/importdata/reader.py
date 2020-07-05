@@ -15,7 +15,7 @@ from pipeline.domain.datatable import DataTableColumnMaskList as ColMaskList
 from pipeline.domain.datatable import OnlineFlagIndex
 from pipeline.hsd.tasks.common import mjd_to_datestring, TableSelector
 
-from . import rasterutil
+from ..common import rasterutil
 
 LOG = infrastructure.get_logger(__name__)
 
