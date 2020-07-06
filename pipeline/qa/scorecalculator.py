@@ -683,6 +683,9 @@ def score_missing_intents(mses, array_type='ALMA_12m'):
     all_ok = True
     complaints = []
 
+    # hold names of MSes this QA will be applicable to 
+    applies_to = set()
+
     # analyse each MS
     for ms in mses:
         # do we have the necessary calibrators?
@@ -696,10 +699,13 @@ def score_missing_intents(mses, array_type='ALMA_12m'):
                        '' % (ms.basename, utils.commafy(missing, False)))
             complaints.append(longmsg)
 
+            applies_to.add(ms.basename)
+
     if all_ok:
         longmsg = ('All required calibration intents were found in '
                    '%s.' % utils.commafy([ms.basename for ms in mses], False))
         shortmsg = 'All calibrators found'
+        applies_to = {ms.basename for ms in mses}
     else:
         longmsg = '%s.' % utils.commafy(complaints, False)
         shortmsg = 'Calibrators missing'
@@ -709,7 +715,8 @@ def score_missing_intents(mses, array_type='ALMA_12m'):
                           metric_units='Score based on missing calibration intents')
 
     return pqa.QAScore(
-        max(0.0, score), longmsg=longmsg, shortmsg=shortmsg, origin=origin
+        max(0.0, score), longmsg=longmsg, shortmsg=shortmsg, origin=origin, 
+        applies_to=pqa.TargetDataSelection(vis=applies_to)
     )
 
 
@@ -730,6 +737,8 @@ def score_ephemeris_coordinates(mses):
     zero_ra = casatools.quanta.formxxx(zero_direction['m0'], format='hms', prec=3)
     zero_dec = casatools.quanta.formxxx(zero_direction['m1'], format='dms', prec=2)
 
+    applies_to = set()
+
     # analyse each MS
     for ms in mses:
         # Examine each source
@@ -740,12 +749,13 @@ def score_ephemeris_coordinates(mses):
                 longmsg = ('Suspicious source coordinates for  %s in %s. Check whether position of '
                            '00:00:00.0+00:00:00.0 is valid.' % (source.name, ms.basename))
                 complaints.append(longmsg)
+                applies_to.add(ms.basename)
 
     if all_ok:
         longmsg = ('All source coordinates OK in '
                    '%s.' % utils.commafy([ms.basename for ms in mses], False))
         shortmsg = 'All source coordinates OK'
-        applies_to = pqa.TargetDataSelection(vis={ms.basename for ms in mses})
+        applies_to = {ms.basename for ms in mses}
     else:
         longmsg = '%s.' % utils.commafy(complaints, False)
         shortmsg = 'Suspicious source coordinates'
@@ -754,8 +764,10 @@ def score_ephemeris_coordinates(mses):
                           metric_score=score,
                           metric_units='Score based on presence of ephemeris coordinates')
 
-    return pqa.QAScore(max(0.0, score), longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to)
-
+    return pqa.QAScore(
+        max(0.0, score), longmsg=longmsg, shortmsg=shortmsg, origin=origin,
+        applies_to=pqa.TargetDataSelection(vis=applies_to)
+    )
 
 @log_qa
 def score_online_shadow_template_agents(ms, summaries):
