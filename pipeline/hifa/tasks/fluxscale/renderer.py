@@ -244,19 +244,19 @@ def make_flux_table(context, results):
 
                 # Create the table row for current result (vis), field, and spw.
                 tr = FluxTR(vis_cell, field_cell, measurement.spw_id, freqbw, 
-                            fluxes['I'],
-                            fluxes['Q'],
-                            fluxes['U'],
-                            fluxes['V'],
+                            fsfluxes['I'],
+                            fsfluxes['Q'],
+                            fsfluxes['U'],
+                            fsfluxes['V'],
                             flux_ratio,
                             fluxes['spix'])
                 rows.append(tr)
 
                 tr = FluxTR(vis_cell, field_cell, measurement.spw_id, freqbw,
-                            fsfluxes['I'],
-                            fsfluxes['Q'],
-                            fsfluxes['U'],
-                            fsfluxes['V'],
+                            fluxes['I'],
+                            fluxes['Q'],
+                            fluxes['U'],
+                            fluxes['V'],
                             flux_ratio,
                             fluxes['spix'])
                 rows.append(tr)
