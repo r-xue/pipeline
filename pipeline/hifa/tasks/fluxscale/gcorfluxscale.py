@@ -331,9 +331,9 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         # Get number of polarisations.
         npol = len(data['weight'])
 
-        # Derive mean flux and mean stdev for each polarisation.
+        # Derive mean flux and variance for each polarisation.
         mean_fluxes = []
-        mean_stds = []
+        variances = []
         for pol in range(npol):
             # Select data for current polarisation.
             ampdata = np.squeeze(data['corrected_data'], axis=1)[pol]
@@ -347,20 +347,19 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
 
             # Compute mean flux and stdev for current polarisation.
             mean_flux = np.abs(np.average(amplitudes, weights=weights))
-            mean_std = np.average((amplitudes - mean_flux)**2, weights=weights)
+            variance = np.average((np.abs(amplitudes) - mean_flux)**2, weights=weights)
 
             # Store for this polarisation.
             mean_fluxes.append(mean_flux)
-            mean_stds.append(mean_std)
+            variances.append(variance)
 
-        # Combine mean fluxes for all polarisations.
+        # Compute mean flux and mean stdev for all polarisations.
         mean_flux = np.mean(mean_fluxes)
-        # FIXME: check np.abs with PWG
-        mean_std = np.abs(np.sqrt(np.mean(mean_stds)))
+        mean_std = np.sqrt(np.mean(variances))
 
         # Combine into single flux measurement object.
-        flux = domain.FluxMeasurement(spwid, mean_flux, origin="gcorfluxscale")
-        flux.uncertainty = domain.FluxMeasurement(spwid, mean_std, origin="gcorfluxscale")
+        flux = domain.FluxMeasurement(spwid, mean_flux, origin=ORIGIN)
+        flux.uncertainty = domain.FluxMeasurement(spwid, mean_std, origin=ORIGIN)
 
         return flux
 
