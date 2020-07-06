@@ -7,6 +7,7 @@ import numpy
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
+import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.imageheader as imageheader
@@ -1054,14 +1055,25 @@ class SDImaging(basetask.StandardTaskTemplate):
             LOG.info('The actual on source time = {} {}'.format(t_on_act, time_unit))
             LOG.info('- total time on source = {} {}'.format(t_on_tot, time_unit))
             LOG.info('- flagged Fraction = {} %'.format(100*frac_flagged))
+            # obtain calibration tables applied
+            calto = callibrary.CalTo(vis=msobj.name, field=str(fieldid))
+            calst = context.callibrary.get_calstate(calto)
             # obtain T_sub,on, T_sub,off
             t_sub_on = cqa.getvalue(cqa.convert(raster_info.row_duration, time_unit))[0]
             sky_field = msobj.calibration_strategy['field_strategy'][fieldid]
             try:
-                skytab = context.callibrary.applied.get_caltable('ps').pop()
+                caltabs = context.callibrary.applied.get_caltable('ps')
+                ### For some reasons, sky caltable is not registered to calstate
+                for cto, cfrom in context.callibrary.applied.merged().items():
+                    if cto.vis == msobj.name and (cto.field == '' or fieldid in [f.id for f in msobj.get_fields(name=cto.field)]):
+                        for cf in cfrom:
+                            if cf.gaintable in caltabs:
+                                skytab=cf.gaintable
+                                break
             except:
                 LOG.error('Could not obtain skycal table applied')
                 raise
+            LOG.info('Searching OFF scans in {}'.format(os.path.basename(skytab)))
             with casatools.TableReader(skytab) as tb:
                 t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}&&FIELD_ID=={}'.format(spwid, antid, sky_field), columns='INTERVAL')
                 if t.nrows == 0:
@@ -1080,7 +1092,11 @@ class SDImaging(basetask.StandardTaskTemplate):
             else:
                 # obtain Jy/k factor
                 try:
-                    k2jytab = context.callibrary.applied.get_caltable('amp').pop()
+                    caltabs = context.callibrary.applied.get_caltable('amp')
+                    found = caltabs.intersection(calst.get_caltable('amp'))
+                    assert len(found) == 1
+                    k2jytab = found.pop()
+                    LOG.info('Searching Jy/K factor in {}'.format(os.path.basename(k2jytab)))
                 except:
                     LOG.error('Could not find a Jy/K caltable applied')
                     raise
@@ -1124,6 +1140,7 @@ def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
     ra = datatable.getcol('OFS_RA').take(_index_list, axis=-1)
     dec = datatable.getcol('OFS_DEC').take(_index_list, axis=-1)
     exposure = datatable.getcol('EXPOSURE').take(_index_list, axis=-1)
+    map_center_dec = datatable.getcol('DEC').take(_index_list, axis=-1).mean()
     radec_unit = datatable.getcolkeyword('OFS_RA', 'UNIT')
     assert radec_unit == datatable.getcolkeyword('OFS_DEC', 'UNIT')
     exp_unit = datatable.getcolkeyword('EXPOSURE', 'UNIT')
@@ -1140,11 +1157,13 @@ def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
     first_row = None # RA and Dec of the first raster row
     
     cqa = casatools.quanta
+    map_center_dec = cqa.getvalue(cqa.convert(cqa.quantity(map_center_dec, datatable.getcolkeyword('DEC', 'UNIT')),'rad'))[0]
+    dec_factor = numpy.abs(numpy.cos(map_center_dec))
     # loop over raster rows
     for end_idx in gap_s:
         duration.append(numpy.sum(exposure[start_idx:end_idx+1]))
         num_integration.append(end_idx-start_idx+1)
-        delta_ra.append(ra[end_idx]-ra[start_idx])
+        delta_ra.append((ra[end_idx]-ra[start_idx])*dec_factor)
         delta_dec.append(dec[end_idx]-dec[start_idx])
         cra = ra[start_idx:end_idx+1].mean()
         cdec = dec[start_idx:end_idx+1].mean()
@@ -1152,14 +1171,14 @@ def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
         center_dec.append(cdec)
         if first_row is None: first_row = (cra, cdec)
         if end_idx in gap_r:
-            height_list.append( numpy.hypot(first_row[0]-cra, first_row[1]-cdec) )
+            height_list.append( numpy.hypot((first_row[0]-cra)*dec_factor, first_row[1]-cdec) )
             first_row = None
         start_idx = end_idx +1
     if len(height_list) == 0: # only one iteration of map
-        height_list.append( numpy.hypot(first_row[0]-center_ra[-1], first_row[1]-center_dec[-1]) )
+        height_list.append( numpy.hypot((first_row[0]-center_ra[-1])*dec_factor, first_row[1]-center_dec[-1]) )
     center_ra = numpy.array(center_ra)
     center_dec = numpy.array(center_dec)
-    row_sep_ra = center_ra[1:]-center_ra[:-1]
+    row_sep_ra = (center_ra[1:]-center_ra[:-1])*dec_factor
     row_sep_dec = center_dec[1:]-center_dec[:-1]
     row_separation = numpy.median(numpy.hypot(row_sep_ra, row_sep_dec))
     # find complate raster
