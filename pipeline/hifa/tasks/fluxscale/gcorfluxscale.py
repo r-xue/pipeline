@@ -18,9 +18,11 @@ import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import FluxMeasurement
 from pipeline.h.tasks.common import commonfluxresults
+from pipeline.hif.tasks import applycal
 from pipeline.hif.tasks import gaincal
 from pipeline.hif.tasks.fluxscale import fluxscale
 from pipeline.hif.tasks.setmodel import setjy
+from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import exceptions
 from pipeline.infrastructure import task_registry
 from . import fluxes
@@ -279,8 +281,6 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
             # PIPE-644: derive calibrated visibility based flux measurements
             # and store in result for reporting in weblog and merging into
             # context (into measurement set).
-            # FIXME: check with PWG about first running a temporary applycal
-            #  including backup/restore of flagging state.
             calvis_fluxes = self._derive_calvis_flux()
             result.measurements.update(calvis_fluxes.measurements)
         except Exception as e:
@@ -318,7 +318,7 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
 
         return True
 
-    def _compute_mean_vis(self, fieldid, spwid):
+    def _compute_calvis_flux(self, fieldid, spwid):
 
         # Read in data from the MS, for specified field, spw, and all transfer
         # intents.
@@ -364,10 +364,23 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         return flux
 
     def _derive_calvis_flux(self):
-        inputs = self.inputs
+        """
+        Derive calibrated visibility fluxes.
 
-        # Initialize result.
-        result = commonfluxresults.FluxCalibrationResults(inputs.vis)
+        To compute the "calibrated" fluxes, this method will "temporarily"
+        apply the existing calibration tables, including the the new phase and
+        amplitude caltables created earlier during the hifa_gfluxscale task.
+
+        First, create a back-up of the MS flagging state, then run an applycal
+        for the necessary intents and fields. Next, compute the calibrated
+        visibility fluxes. Finally, always restore the back-up of the MS
+        flagging state, to undo any flags that were propagated from the applied
+        caltables.
+
+        :return: commonfluxresults.FluxCalibrationResults containing the
+        calibrated visibility fluxes and uncertainties.
+        """
+        inputs = self.inputs
 
         # Identify fields and spws to derive calibrated vis for.
         transfer_fields = inputs.ms.get_fields(task_arg=inputs.transfer)
@@ -375,13 +388,38 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         transfer_fieldids = {str(field.id) for field in transfer_fields}
         spw_ids = {str(spw.id) for field in transfer_fields for spw in field.valid_spws.intersection(sci_spws)}
 
-        # Compute the mean calibrated visibility flux for each field and spw
-        # and add as flux measurement to the final result.
-        for fieldid in transfer_fieldids:
-            for spwid in spw_ids:
-                fluxes_for_field_and_spw = self._compute_mean_vis(fieldid, spwid)
-                if fluxes_for_field_and_spw:
-                    result.measurements[fieldid].append(fluxes_for_field_and_spw)
+        # Create back-up of MS flagging state.
+        LOG.info('Creating back-up of flagging state')
+        flag_backup_name = 'before_gfluxscale_calvis'
+        task = casa_tasks.flagmanager(vis=inputs.vis, mode='save', versionname=flag_backup_name)
+        self._executor.execute(task)
+
+        # Run computation of calibrated visibility fluxes in try/finally to
+        # ensure that the MS are always restored, even in case of an exception.
+        try:
+            # Apply all caltables registered in the callibrary in the local
+            # context to the MS.
+            LOG.info('Applying pre-existing caltables and preliminary phase-up and amplitude caltables.')
+            acinputs = applycal.IFApplycalInputs(context=inputs.context, vis=inputs.vis, field=inputs.transfer,
+                                                 intent=inputs.transintent, flagsum=False, flagbackup=False)
+            actask = applycal.IFApplycal(acinputs)
+            self._executor.execute(actask)
+
+            # Initialize result.
+            result = commonfluxresults.FluxCalibrationResults(inputs.vis)
+
+            # Compute the mean calibrated visibility flux for each field and
+            # spw and add as flux measurement to the final result.
+            for fieldid in transfer_fieldids:
+                for spwid in spw_ids:
+                    fluxes_for_field_and_spw = self._compute_calvis_flux(fieldid, spwid)
+                    if fluxes_for_field_and_spw:
+                        result.measurements[fieldid].append(fluxes_for_field_and_spw)
+        finally:
+            # Restore the MS flagging state.
+            LOG.info('Restoring back-up of flagging state.')
+            task = casa_tasks.flagmanager(vis=inputs.vis, mode='restore', versionname=flag_backup_name)
+            self._executor.execute(task)
 
         return result
 
