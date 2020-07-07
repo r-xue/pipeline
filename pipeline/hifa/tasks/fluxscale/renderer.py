@@ -304,6 +304,9 @@ def create_flux_comparison_plots(context, output_dir, result):
         assert len(fields) == 1
         field = fields[0]
 
+        # Fetch fluxscale derived scaling factors for same field, if they exist.
+        fluxscale_measurements = result.fluxscale_measurements.get(field_id)
+
         ax.set_title('Flux calibration: {}'.format(field.name))
         ax.set_xlabel('Frequency (GHz)')
         ax.set_ylabel('Flux Density (Jy)')
@@ -320,10 +323,23 @@ def create_flux_comparison_plots(context, output_dir, result):
             x = spw.centre_frequency.to_units(FrequencyUnits.GIGAHERTZ)
             x_unc = decimal.Decimal('0.5') * spw.bandwidth.to_units(FrequencyUnits.GIGAHERTZ)
 
+            # Add fluxscale derived scaling factor for spw as slightly smaller
+            # black open circles.
+            if fluxscale_measurements:
+                fs_m = [n for n in fluxscale_measurements if n.spw_id == m.spw_id]
+                if fs_m:
+                    fs_y = fs_m[0].I.to_units(FluxDensityUnits.JANSKY)
+                    fs_y_unc = fs_m[0].uncertainty.I.to_units(FluxDensityUnits.JANSKY)
+
+                    label = 'Scaling factor for spw {}'.format(spw.id)
+                    ax.errorbar(x, fs_y, xerr=x_unc, yerr=fs_y_unc, fmt='k-o'.format(colour), label=label,
+                                fillstyle='none', markersize=5)
+
+            # Plot calibrated fluxes.
             y = m.I.to_units(FluxDensityUnits.JANSKY)
             y_unc = m.uncertainty.I.to_units(FluxDensityUnits.JANSKY)
 
-            label = 'Derived flux for spw {}'.format(spw.id)
+            label = 'Calibrated flux for spw {}'.format(spw.id)
             ax.errorbar(x, y, xerr=x_unc, yerr=y_unc, fmt='{!s}-o'.format(colour), label=label)
 
             x_min = min(x_min, x - x_unc)
