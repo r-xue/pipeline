@@ -1010,6 +1010,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         ang_unit = cqa.getunit(cell[0])
         cx_val = cqa.getvalue(cell[0])[0]
         cy_val = cqa.getvalue(cqa.convert(cell[1], ang_unit))[0]
+        bandwidth = numpy.abs(bandwidth)
         context = self.inputs.context
         is_nro = sdutils.is_nro(context)
         for (infile, antid, fieldid, spwid, pol_names) in zip(infiles, antids, fieldids, spwids, pols):
@@ -1030,6 +1031,25 @@ class SDImaging(basetask.StandardTaskTemplate):
             if len(_index_list) == 0:
                 LOG.info('No unflagged row in DataTable. Skipping further calculation.')
                 continue
+            # effective BW
+            with casatools.MSMDReader(infile) as msmd:
+                ms_chanwidth = numpy.abs(msmd.chanwidths(spwid).mean())
+                ms_effbw = msmd.chaneffbws(spwid).mean()
+                ms_nchan = msmd.nchan(spwid)
+                nchan_avg = sensitivity_improvement.onlineChannelAveraging(infile, spwid, msmd)
+            if bandwidth/ms_chanwidth < 1.1: # imaging by the original channel
+                effBW = ms_effbw
+                LOG.info('Using an MS effective bandwidth, {} kHz'.format(effBW*0.001))
+                #else: # pre-Cycle 3 alma data
+                #    effBW = ms_chanwidth * sensitivity_improvement.windowFunction('hanning', channelAveraging=nchan_avg,
+                #                                                                  returnValue='EffectiveBW')
+                #    LOG.info('Using an estimated effective bandwidth {} kHz'.format(effBW*0.001))
+            else:
+                image_map_chan = bandwidth/ms_chanwidth
+                effBW = ms_chanwidth * sensitivity_improvement.windowFunction('hanning', channelAveraging=nchan_avg,
+                                                                              returnValue='EffectiveBW', useCAS8534=True,
+                                                                              spwchan=ms_nchan, nchan=image_map_chan)
+                LOG.info('Using an adjusted effective bandwidth for image, {} kHz'.format(effBW*0.001))
             # obtain average Tsys
             mean_tsys_per_pol = dt.getcol('TSYS').take(_index_list, axis=-1).mean(axis=-1)
             LOG.info('Mean Tsys = {} K'.format(str(mean_tsys_per_pol)))
@@ -1110,15 +1130,15 @@ class SDImaging(basetask.StandardTaskTemplate):
                     LOG.info('Jy/K factor = {}'.format(jy_per_k))
             ang = cqa.getvalue(cqa.convert(raster_info.scan_angle, 'rad'))[0] + 0.5*numpy.pi
             c_proj = numpy.sqrt( (cy_val* numpy.sin(ang))**2 + (cx_val*numpy.cos(ang))**2)
-            inv_variant_on = numpy.abs(bandwidth * cx_val * cy_val) * t_on_act / width / height
-            inv_variant_off = numpy.abs(bandwidth) * c_proj * t_sub_off * t_on_act / t_sub_on / height
+            inv_variant_on = effBW * numpy.abs(cx_val * cy_val) * t_on_act / width / height
+            inv_variant_off = effBW * c_proj * t_sub_off * t_on_act / t_sub_on / height
             
             for ipol in polids:
                 sq_rms += (jy_per_k*mean_tsys_per_pol[ipol])**2 * (conv2d**2/inv_variant_on + conv1d**2/inv_variant_off) 
                 N += 1.0
 
         theoretical_rms = numpy.sqrt(sq_rms)/N
-        LOG.info('Theoretical RMS = {} {}'.format(theoretical_rms, imageunit))
+        LOG.info('Theoretical RMS of image = {} {}'.format(theoretical_rms, imageunit))
         return theoretical_rms
     
 
