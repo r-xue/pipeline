@@ -9,9 +9,13 @@ import pipeline.infrastructure.utils as utils
 import pipeline.qa.scorecalculator as qacalc
 from pipeline.domain.field import Field
 from pipeline.domain.measurementset import MeasurementSet
+from pipeline.h.tasks.exportdata import aqua
 from .almaimportdata import ALMAImportDataResults
 
 LOG = logging.get_logger(__name__)
+
+aqua_exporter = aqua.xml_generator_for_metric('ScoreParallacticAngle', '{:0.3f}')
+aqua.register_aqua_metric(aqua_exporter)
 
 
 class ALMAImportDataListQAHandler(pqa.QAPlugin):
