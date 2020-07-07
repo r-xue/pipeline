@@ -210,7 +210,7 @@ def xml_for_extracted_flux_measurements(all_measurements, ms):
                 try:
                     flux = getattr(measurement, stokes)
                     flux_jy = flux.to_units(measures.FluxDensityUnits.JANSKY)
-                    flux_jy = '{:.3f}'.format(flux_jy)
+                    flux_jy = '{:.6f}'.format(flux_jy)
                 except:
                     continue
 
