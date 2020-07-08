@@ -1786,9 +1786,17 @@ def score_poor_phase_snrs(ms, spwids, minsnr, snrs):
 def score_derived_fluxes_snr(ms, measurements):
     """
     Score the SNR of the derived flux measurements.
-        1.0 if SNR > 20.0
-        0.0 if SNR < 5.0
-        linear scale between 0.0 and 1.0 in between
+
+    See PIPE-644 for latest description.
+
+    Linearly scale QA score based on SNR value, where
+      QA = 1.0 if SNR >= 26.25
+      QA = 0.66 if SNR < 5.0
+    and QA linearly scales from 0.66 to 1.0 between SNR 5 to 26.25.
+
+    These QA and SNR threshold were chosen such that SNR values in the range of
+    5-20 should map to QA scores in the range that will show as a blue
+    "suboptimal" level QA message.
     """
     # Loop over measurements
     nmeasured = 0
@@ -1806,7 +1814,7 @@ def score_derived_fluxes_snr(ms, measurements):
             snr = fluxjy / uncjy
             minsnr = snr if minsnr is None else min(minsnr, snr)
             nmeasured += 1
-            score1 = linear_score(float(snr), 5.0, 20.0, 0.0, 1.0)
+            score1 = linear_score(float(snr), 5.0, 26.25, 0.66, 1.0)
             minscore = min(minscore, score1)
             score += score1
 
@@ -2766,14 +2774,25 @@ def score_sdimage_masked_pixels(context, result):
                        shortmsg=smsg,
                        origin=origin)
 
+
 @log_qa
 def score_gfluxscale_k_spw(vis, field, spw_id, k_spw, ref_spw):
     """ Convert internal spw_id-spw_id consistency ratio to a QA score.
 
-    k_spw is equal to the ratio of the derived flux:catalogue flux divided by
-    the ratio of derived flux:catalogue flux for the highest SNR window.
-
     See CAS-10792 for full specification.
+    See PIPE-644 for update to restrict range of scores.
+
+    k_spw is equal to the ratio:
+
+                       calibrated visibility flux / catalogue flux
+    k_spw = --------------------------------------------------------------------
+            (calibrated visibility flux / catalogue flux) for highest SNR window
+
+    Q_spw = abs(1 - k_spw)
+
+    If        Q_spw < 0.1 then QA score = 1.0  (green)
+    If 0.1 <= Q_spw < 0.2 then QA score = 0.75 (Blue/below standard)
+    If 0.2 <= Q_spw       then QA score = 0.5  (Yellow/warning)
 
     :param k_spw: numeric k_spw ratio, as per spec
     :param vis: name of measurement set to which k_spw applies
@@ -2781,20 +2800,13 @@ def score_gfluxscale_k_spw(vis, field, spw_id, k_spw, ref_spw):
     :param spw_id: name of spectral window to which k_spw applies
     :return: QA score
     """
-
-    #     if Q_total < 0.1, QA score 1 = 1.0
-    #     if 0.1 <= Q_total < 0.2, QA score 1 = 0.75 (Blue/below standard)
-    #     if 0.2 <= Q_total < 0.3, QA score 1 = 0.5 (Yellow/warning)
-    #     if Q_total >= 0.3, QA score 1 = 0.2 (Red/Error)
     q_spw = abs(1-k_spw)
     if q_spw < 0.1:
         score = 1.0
     elif q_spw < 0.2:
         score = 0.75
-    elif q_spw < 0.3:
-        score = 0.5
     else:
-        score = 0.2
+        score = 0.5
 
     longmsg = ('Ratio of <i>S</i><sub>derived</sub>/<i>S</i><sub>catalogue</sub> for {} ({}) spw {} in {} differs by '
                '{:.0%} from the ratio for the highest SNR spw ({})'
