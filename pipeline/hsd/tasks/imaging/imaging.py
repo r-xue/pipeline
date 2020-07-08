@@ -726,7 +726,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                         LOG.info("Image RMS improvement of factor {:f} estimated. {:f} => {:f} {}".format(factor, image_rms, image_rms/factor, brightnessunit))
                         image_rms = image_rms/factor
                         chan_width = numpy.abs(cqa.getvalue(cqa.convert(cqa.quantity(rep_bw), 'Hz'))[0])
-                        theoretical_rms = theoretical_rms/factor
+                        theoretical_rms['value'] = theoretical_rms['value']/factor
                 elif rep_bw is None:
                     LOG.warn("Representative bandwidth is not available. Skipping estimate of sensitivity in representative band width.")
                 elif rep_spwid is None:
@@ -752,13 +752,20 @@ class SDImaging(basetask.StandardTaskTemplate):
                                           bwmode='repBW',
                                           beam=beam, cell=qcell,
                                           sensitivity=cqa.quantity(image_rms, brightnessunit))
+                theoretical_noise = Sensitivity(array='TP',
+                                          field=source_name,
+                                          spw=str(combined_spws[0]),
+                                          bandwidth=cqa.quantity(chan_width, 'Hz'),
+                                          bwmode='repBW',
+                                          beam=beam, cell=qcell,
+                                          sensitivity=theoretical_rms)
                 sensitivity_info = SensitivityInfo(sensitivity, is_representative_spw, stat_freqs)
                 self._finalize_worker_result(context, imager_result,
                                              sourcename=source_name, spwlist=combined_v_spws, antenna='COMBINED',  #specmode='cube', sourcetype='TARGET',
                                              imagemode=imagemode, stokes=self.stokes, validsp=validsps, rms=rmss, edge=edge,
                                              reduction_group_id=group_id, file_index=file_index,
                                              assoc_antennas=combined_antids, assoc_fields=combined_fieldids, assoc_spws=combined_v_spws,  #, assoc_pols=pols,
-                                             sensitivity_info=sensitivity_info, theoretical_rms=cqa.quantity(theoretical_rms, brightnessunit))
+                                             sensitivity_info=sensitivity_info, theoretical_rms=theoretical_noise)
 
                 # PIPE-251: detect contamination
                 detectcontamination.detect_contamination(context, imager_result.outcome['image'])
@@ -995,11 +1002,15 @@ class SDImaging(basetask.StandardTaskTemplate):
             bandwidth: channel width of an image
             imageunit: the brightness unit of image. If unit is not 'K', Jy/K factor is used to convert unit (need Jy/K factor applied in a previous stage)
         Note: the number of elements in antids, fieldids, spws, and pols should be equal to that of infiles
+        Retruns:
+            A quantum value of theoretical image RMS.
+            The value of quantity will be negative when calculation is aborted, i.e., -1.0 Jy/beam
         """
         cqa = casatools.quanta
+        failed_rms = cqa.quantity(-1, imageunit)
         if len(infiles) == 0:
-            LOG.error('No MS given to calculate a theoretical RMS')
-            return cqa.quantity(-1, imageunit)
+            LOG.error('No MS given to calculate a theoretical RMS. Aborting calculation of theoretical thermal noise.')
+            return failed_rms
         assert len(infiles) == len(antids)
         assert len(infiles) == len(fieldids)
         assert len(infiles) == len(spwids)
@@ -1017,18 +1028,20 @@ class SDImaging(basetask.StandardTaskTemplate):
             msobj = context.observing_run.get_ms(sdutils.get_parent_ms_name(context, infile))
             dd_corrs = msobj.get_data_description(spw=spwid).corr_axis
             polids = [dd_corrs.index(p) for p in pol_names if p in dd_corrs]
+            field_name = msobj.get_fields(field_id=fieldid)[0].name
+            error_msg = 'Aborting calculation of theoretical thermal noise of Field {} and SpW {}'.format(field_name, spwid)
             if msobj.observing_pattern[antid][spwid][fieldid] != 'RASTER':
-                LOG.error('Unable to calculate RMS of non-Raster map')
-                return cqa.quantity(-1, imageunit)
+                LOG.warn('Unable to calculate RMS of non-Raster map. '+error_msg)
+                return failed_rms
             LOG.info('Processing MS {}, Field {}, SpW {}, Antenna {}, Pol {}'.format(os.path.basename(infile),
-                                                                                     msobj.get_fields(field_id=fieldid)[0].name,
+                                                                                     field_name,
                                                                                      spwid,
                                                                                      msobj.get_antenna(antid)[0].name,
                                                                                      str(pol_names)))
             dt = datatable_dict[msobj.basename]
             _index_list = common.get_index_list_for_ms(dt, [msobj.basename], [antid], [fieldid],
                                                        [spwid], srctype=0)
-            if len(_index_list) == 0:
+            if len(_index_list) == 0: #this happens when permanent flag is set to all selection.
                 LOG.info('No unflagged row in DataTable. Skipping further calculation.')
                 continue
             # effective BW
@@ -1049,7 +1062,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 effBW = ms_chanwidth * sensitivity_improvement.windowFunction('hanning', channelAveraging=nchan_avg,
                                                                               returnValue='EffectiveBW', useCAS8534=True,
                                                                               spwchan=ms_nchan, nchan=image_map_chan)
-                LOG.info('Using an adjusted effective bandwidth for image, {} kHz'.format(effBW*0.001))
+                LOG.info('Using an adjusted effective bandwidth of image, {} kHz'.format(effBW*0.001))
             # obtain average Tsys
             mean_tsys_per_pol = dt.getcol('TSYS').take(_index_list, axis=-1).mean(axis=-1)
             LOG.info('Mean Tsys = {} K'.format(str(mean_tsys_per_pol)))
@@ -1082,6 +1095,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             t_sub_on = cqa.getvalue(cqa.convert(raster_info.row_duration, time_unit))[0]
             sky_field = msobj.calibration_strategy['field_strategy'][fieldid]
             try:
+                skytab = ''
                 caltabs = context.callibrary.applied.get_caltable('ps')
                 ### For some reasons, sky caltable is not registered to calstate
                 for cto, cfrom in context.callibrary.applied.merged().items():
@@ -1091,14 +1105,17 @@ class SDImaging(basetask.StandardTaskTemplate):
                                 skytab=cf.gaintable
                                 break
             except:
-                LOG.error('Could not obtain skycal table applied')
+                LOG.error('Could not find a sky caltable applied. '+error_msg)
                 raise
+            if not os.path.exists(skytab):
+                LOG.warn('Could not find a sky caltable applied. '+error_msg)
+                return failed_rms
             LOG.info('Searching OFF scans in {}'.format(os.path.basename(skytab)))
             with casatools.TableReader(skytab) as tb:
                 t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}&&FIELD_ID=={}'.format(spwid, antid, sky_field), columns='INTERVAL')
                 if t.nrows == 0:
-                    LOG.warn('No sky caltable row found for spw {}, antenna {}, field {} in {}'.format(spwid, antid, sky_field, os.path.basename(skytab)))
-                    continue
+                    LOG.warn('No sky caltable row found for spw {}, antenna {}, field {} in {}. {}'.format(spwid, antid, sky_field, os.path.basename(skytab), error_msg))
+                    return failed_rms
                 unit = t.getcolkeyword('INTERVAL', 'QuantumUnits')[0]
                 t_sub_off = cqa.getvalue(cqa.convert(cqa.quantity(t.getcol('INTERVAL').mean(), unit), time_unit))[0]
             LOG.info('Subscan Time ON = {} {}, OFF = {} {}'.format(t_sub_on, time_unit, t_sub_off, time_unit))
@@ -1112,19 +1129,27 @@ class SDImaging(basetask.StandardTaskTemplate):
             else:
                 # obtain Jy/k factor
                 try:
+                    k2jytab = ''
                     caltabs = context.callibrary.applied.get_caltable('amp')
                     found = caltabs.intersection(calst.get_caltable('amp'))
-                    assert len(found) == 1
+                    if len(found) == 0:
+                        LOG.warn('Could not find a Jy/K caltable applied. '+error_msg)
+                        return failed_rms
+                    if len(found) > 1:
+                        LOG.warn('More than one Jy/K caltables are found.')
                     k2jytab = found.pop()
                     LOG.info('Searching Jy/K factor in {}'.format(os.path.basename(k2jytab)))
                 except:
-                    LOG.error('Could not find a Jy/K caltable applied')
+                    LOG.error('Could not find a Jy/K caltable applied. '+error_msg)
                     raise
+                if not os.path.exists(k2jytab):
+                    LOG.warn('Could not find a Jy/K caltable applied. '+error_msg)
+                    return failed_rms
                 with casatools.TableReader(k2jytab) as tb:
                     t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}'.format(spwid, antid), columns='CPARAM')
                     if t.nrows == 0:
-                        LOG.warn('No Jy/K caltable row found for spw {}, antenna {} in {}'.format(spwid, antid, os.path.basename(k2jytab)))
-                        continue
+                        LOG.warn('No Jy/K caltable row found for spw {}, antenna {} in {}. {}'.format(spwid, antid, os.path.basename(k2jytab), error_msg))
+                        return failed_rms
                     tc = t.getcol('CPARAM')
                     jy_per_k = (1./tc.mean(axis=-1).real**2).mean()
                     LOG.info('Jy/K factor = {}'.format(jy_per_k))
@@ -1139,7 +1164,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
         theoretical_rms = numpy.sqrt(sq_rms)/N
         LOG.info('Theoretical RMS of image = {} {}'.format(theoretical_rms, imageunit))
-        return theoretical_rms
+        return cqa.quantity(theoretical_rms, imageunit)
     
 
 def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
