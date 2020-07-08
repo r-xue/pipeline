@@ -19,6 +19,7 @@ from pipeline.infrastructure import casa_tasks
 from . import plotmosaic
 from . import plotpwv
 from . import plotweather
+from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 
 LOG = infrastructure.get_logger(__name__)
 DISABLE_PLOTMS = False
@@ -225,6 +226,7 @@ class FieldVsTimeChart(object):
     def __init__(self, inputs):
         self.inputs = inputs
 
+    @casa5style_plot
     def plot(self):
         ms = self.inputs.ms
 
