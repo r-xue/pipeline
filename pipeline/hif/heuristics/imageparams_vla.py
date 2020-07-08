@@ -1,7 +1,11 @@
 import re
+import pdb
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.filenamer as filenamer
+import pipeline.infrastructure.casatools as casatools
+from pipeline.infrastructure import casa_tasks
+import pipeline.domain.measures as measures
 
 from .imageparams_base import ImageParamsHeuristics
 
@@ -22,6 +26,75 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
     def uvtaper(self, beam_natural=None, protect_long=None):
         return []
+
+    def uvrange(self):
+        """
+        Restrict uvrange in case of very extended emission.
+
+        If the amplitude of the shortest 5 per cent of the covered baselines
+        is more than 2 times that of the 50-55 per cent baselines, then exclude
+        the shortest 5 per cent of the baselines.
+
+        See PIPE-681 and CASR-543.
+
+        :return: None or string in the form of '> {x}klambda', where
+            {x}=0.05*max(baseline)
+        """
+        def get_mean_amplitude(vis, uvrange=None, axis='amplitude', spw=None):
+            stat_arg = {'vis': vis, 'uvrange': uvrange, 'axis': axis,
+                        'useflags': True, 'spw': spw}
+            job = casa_tasks.visstat(**stat_arg)
+            stats = job.execute(dry_run=False)  # returns stat in meter
+
+            # loop through keys to determine average from all spws
+            mean = 0.0
+            for k, v in stats.items():
+                mean = mean + v['mean']
+
+            return mean / float(len(stats))
+        #
+        qa = casatools.quanta
+
+        # Can it be that more than one visibility (ms file) is used?
+        vis = self.vislist[0]
+        ms = self.observing_run.get_ms(vis)
+        spw_str = ','.join([str(spw) for spw in self.spwids])
+
+        # Determine the largest covered baseline in klambda. Generally this
+        # is the maximum baseline at the highest frequency.
+        light_speed = qa.getvalue(qa.convert(qa.constants('c'), 'm/s'))[0]
+        max_bl = 0.0
+        for spwid in self.spwids:
+            real_spwid = self.observing_run.virtual2real_spw_id(spwid, ms)
+            spw = ms.get_spectral_window(real_spwid)
+            mean_freq_Hz = spw.mean_frequency.to_units(measures.FrequencyUnits.HERTZ)
+            mean_wave_m = light_speed / float(mean_freq_Hz)  # in meter
+            # Get max baseline
+            job = casa_tasks.visstat(vis=vis, spw=str(spwid), axis='uvrange', useflags=True)
+            uv_stat = job.execute(dry_run=False) # returns stat in meter
+            max_bl = max(max_bl, uv_stat['DATA_DESC_ID=%s' % spwid]['max'] / mean_wave_m)
+
+        # Define bin for lowest 5% of baselines (in wavelength units)
+        uvll = 0.0
+        uvul = 0.05 * max_bl
+
+        uvrange = '{:0.1f}~{:0.1f}klambda'.format(uvll / 1000.0, uvul / 1000.0)
+        mean_SBL = get_mean_amplitude(vis=vis, uvrange=uvrange, spw=spw_str)
+
+        # Range for  50-55% bin
+        uvll = 0.5 * max_bl
+        uvul = 0.5 * max_bl + 0.05 * max_bl
+        uvrange = '{:0.1f}~{:0.1f}klambda'.format(uvll / 1000.0, uvul / 1000.0)
+        mean_MBL = get_mean_amplitude(vis=vis, uvrange=uvrange, spw=spw_str)
+
+        # Compare amplitudes and decide on return value
+        meanratio = mean_SBL / mean_MBL
+
+        if meanratio > 2.0:
+            LOG.info('Selecting uvrange>{:0.1f}klambda to avoid very extended emission.'.format(0.05 * max_bl / 1000.0))
+            return ">{:0.1f}klambda".format(0.05 * max_bl / 1000.0)
+        else:
+            return None
 
     def pblimits(self, pb):
         """
