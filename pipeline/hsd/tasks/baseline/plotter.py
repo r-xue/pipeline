@@ -13,6 +13,7 @@ from ..common import compress
 from ..common import atmutil
 from ..common import display
 from ..common.display import sd_polmap
+from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 
 _LOG = infrastructure.get_logger(__name__)
 LOG = utils.OnDemandStringParseLogger(_LOG)
@@ -153,6 +154,7 @@ class BaselineSubtractionPlotManager(object):
         self.prefit_storage.resize_storage(num_ra, num_dec, num_pol, num_chan)
         self.postfit_storage.resize_storage(num_ra, num_dec, num_pol, num_chan)
 
+    @casa5style_plot
     def plot_spectra_with_fit(self, field_id, antenna_id, spw_id, org_direction,
                               grid_table=None, deviation_mask=None, channelmap_range=None,
                               showatm=True):

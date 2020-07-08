@@ -9,6 +9,7 @@ from pipeline.h.tasks.common.displays import common as common
 from pipeline.h.tasks.common.displays import bandpass as bandpass
 from ..common import display as sd_display
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 
 LOG = logging.get_logger(__name__)
 
@@ -261,6 +262,7 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
         self.figtype = str(figtype)
         LOG.info('figtype = {0}'.format(self.figtype))
 
+    @casa5style_plot
     def plot(self):
         context = self.context
         result = self.result
@@ -349,6 +351,7 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
         return plots
 
 
+@casa5style_plot
 def plot_elevation_difference(context, result, eldiff, threshold=3.0):
     """
     context 

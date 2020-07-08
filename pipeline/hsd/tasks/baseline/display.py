@@ -13,6 +13,7 @@ import pipeline.infrastructure.displays.pointing as pointing
 from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.hsd.tasks.common.display import DPISummary, DPIDetail, SingleDishDisplayInputs, ShowPlot, LightSpeed
 from pipeline.infrastructure.displays.pointing import MapAxesManagerBase
+from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -112,6 +113,7 @@ class ClusterDisplay(object):
             if 'clusters' in group and 'lines' in group:
                 yield group
 
+    @casa5style_plot
     def plot(self):
         plot_list = []
 
