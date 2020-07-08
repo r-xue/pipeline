@@ -315,11 +315,12 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
                             ax = fig.add_subplot(1,1,1)
                             ax.xaxis.set_major_locator(sd_display.utc_locator(start_time=start_time, end_time=end_time))
                             ax.xaxis.set_major_formatter(sd_display.utc_formatter())
+                            ax.tick_params( axis='both', labelsize=10 )
                             antenna_name = antennas[antenna_id].name
                             field_name = field.clean_name
-                            pl.title('Interval vs. Time Plot\n{} Field:{} Antenna:{} Spw:{}'.format(vis, field_name, antenna_name, spw_id))
-                            pl.ylabel('Interval of Off-Source / Interval of On-Source')
-                            pl.xlabel("UTC")
+                            pl.title('Interval vs. Time Plot\n{} Field:{} Antenna:{} Spw:{}'.format(vis, field_name, antenna_name, spw_id), fontsize=12)
+                            pl.ylabel('Interval of Off-Source / Interval of On-Source', fontsize=10)
+                            pl.xlabel("UTC", fontsize=10)
                             ax.plot(mjd_list, interval, linestyle='None', marker=".", label="Interval of Off-Source\nUnit: {} seconds (Interval of On-Source)".format(interval_unit))
                             min_interval = numpy.min(interval)
                             max_interval = numpy.max(interval)
@@ -389,12 +390,15 @@ def plot_elevation_difference(context, result, eldiff, threshold=3.0):
         a0 = pl.axes([0.125, 0.51, 0.775, 0.39])
         a0.xaxis.set_major_locator(sd_display.utc_locator(start_time=start_time, end_time=end_time))
         a0.xaxis.set_major_formatter(pl.NullFormatter())
-        pl.ylabel('Elevation [deg]')
+        a0.tick_params( axis='both', labelsize=10 )
+        pl.ylabel('Elevation [deg]', fontsize=10 )
+
         a1 = pl.axes([0.125, 0.11, 0.775, 0.39])
         a1.xaxis.set_major_locator(sd_display.utc_locator(start_time=start_time, end_time=end_time))
         a1.xaxis.set_major_formatter(sd_display.utc_formatter())
-        pl.ylabel('Elevation Difference [deg]')
-        pl.xlabel('UTC')
+        a1.tick_params( axis='both', labelsize=10 )
+        pl.ylabel('Elevation Difference [deg]', fontsize=10 )
+        pl.xlabel('UTC', fontsize=10 )
         return a0, a1
 
     def finalize_figure(figure_id, vis, field_name, antenna_name):
@@ -430,7 +434,8 @@ def plot_elevation_difference(context, result, eldiff, threshold=3.0):
         pl.legend(loc='best', numpoints=1, prop={'size': 'small'})
         pl.title('Elevation Difference between ON and OFF\n{} Field {} Antenna {}'.format(vis, 
                                                                                           field_name, 
-                                                                                          antenna_name))
+                                                                                          antenna_name),
+                 fontsize=12)
 
     def generate_plot(figure_id, vis, field_name, antenna_name):
         pl.figure(figure_id)
