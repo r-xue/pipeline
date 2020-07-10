@@ -23,7 +23,11 @@ total_keys = {
 	'BANDPASS'     : 'Bandpass',
 	'AMPLITUDE'    : 'Flux',
 	'PHASE'        : 'Phase',
-	'TARGET'       : 'Target (science spws)'
+	'TARGET'       : 'Target (science spws)',
+    'POLARIZATION' : 'Polarization',
+    'POLANGLE'     : 'Polarization angle',
+    'POLLEAKAGE'   : 'Polarization leakage',
+	'CHECK'		   : 'Check',
 }
 
 def template_agent_header1(agent):
@@ -208,7 +212,7 @@ mses = [m for m in flags.keys() if 'online' in flags[m] or 'template' in flags[m
 		</tr>
 	</thead>
 	<tbody>
-%for k in ['TOTAL', 'SCIENCE SPWS', 'BANDPASS', 'AMPLITUDE', 'PHASE', 'TARGET']:
+%for k in flag_table_intents:
 		<tr>
 			<th>${total_keys[k]}</th>
 	% for agent in agents:

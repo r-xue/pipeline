@@ -4,12 +4,10 @@ Created on 24 Oct 2014
 @author: sjw
 """
 import collections
-import functools
 import operator
 import os
-from typing import Dict
 import shutil
-
+from typing import Dict
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure
@@ -18,11 +16,11 @@ import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
-from pipeline.h.tasks.common.displays import applycal as applycal
 from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure.displays.summary import UVChart
-from .applycal import ApplycalResults
 from pipeline.infrastructure.basetask import ResultsList
+from pipeline.infrastructure.displays.summary import UVChart
+from ..common import flagging_renderer_utils as flagutils
+from ..common.displays import applycal as applycal
 
 LOG = logging.get_logger(__name__)
 
@@ -39,23 +37,16 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def update_mako_context(self, ctx, context, result):
         weblog_dir = os.path.join(context.report_dir, 'stage%s' % result.stage_number)
 
-        # Find out which intents to list in the flagging table
-        # First get all intents across all MSes in context
-        context_intents = functools.reduce(lambda x, m: x.union(m.intents), context.observing_run.measurement_sets, set())
-        # then match intents against those we want in the table, removing those not
-        # present. List order is preserved in the table.
-        all_flag_summary_intents = [
-            'AMPLITUDE', 'BANDPASS', 'CHECK', 'PHASE', 'POLANGLE', 'POLARIZATION', 'POLLEAKAGE', 'TARGET'
-        ]
-        intents_to_summarise_flags = [i for i in all_flag_summary_intents 
-                                      if i in context_intents.intersection(set(all_flag_summary_intents))]
+        # calculate which intents to display in the flagging statistics table
+        intents_to_summarise = flagutils.intents_to_summarise(context)
         flag_table_intents = ['TOTAL', 'SCIENCE SPWS']
-        flag_table_intents.extend(intents_to_summarise_flags)
+        flag_table_intents.extend(intents_to_summarise)
 
         flag_totals = {}
         for r in result:
             if r.inputs['flagsum'] is True:
-                flag_totals = utils.dict_merge(flag_totals, flags_for_result(r, context, intents_to_summarise_flags))
+                flag_totals = utils.dict_merge(flag_totals,
+                                               flagutils.flags_for_result(r, context, intents_to_summarise=intents_to_summarise))
 
         calapps = {}
         for r in result:
@@ -536,83 +527,6 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         if no_amp_soln and not no_phase_soln:
             return ' (phase only)'
         return ''
-
-
-def flags_for_result(result, context, intents):
-    ms = context.observing_run.get_ms(result.inputs['vis'])
-    summaries = result.summaries
-
-    by_intent = flags_by_intent(ms, summaries, intents)
-    by_spw = flags_by_science_spws(ms, summaries)
-
-    return {ms.basename: utils.dict_merge(by_intent, by_spw)}
-
-
-def flags_by_intent(ms, summaries, intents):
-    # create a dictionary of scans per observing intent, eg. 'PHASE':['1','2','7']
-    intent_scans = {
-        # convert IDs to strings as they're used as summary dictionary keys
-        intent: [str(scan.id) for scan in ms.scans if intent in scan.intents] 
-        for intent in intents
-    }
-
-    # while we're looping, get the total flagged by looking in all scans
-    intent_scans['TOTAL'] = [str(s.id) for s in ms.scans]
-
-    total = collections.defaultdict(dict)
-
-    previous_summary = None
-    for summary in summaries:
-
-        for intent, scan_ids in intent_scans.items():
-            flagcount = 0
-            totalcount = 0
-
-            for i in scan_ids:
-                # workaround for KeyError exception when summary 
-                # dictionary doesn't contain the scan
-                if i not in summary['scan']:
-                    continue
-
-                flagcount += int(summary['scan'][i]['flagged'])
-                totalcount += int(summary['scan'][i]['total'])
-
-                if previous_summary:
-                    flagcount -= int(previous_summary['scan'][i]['flagged'])
-
-            ft = FlagTotal(flagcount, totalcount)
-            total[summary['name']][intent] = ft
-
-        previous_summary = summary
-
-    return total 
-
-
-def flags_by_science_spws(ms, summaries):
-    science_spws = ms.get_spectral_windows(science_windows_only=True)
-
-    total = collections.defaultdict(dict)
-
-    previous_summary = None
-    for summary in summaries:
-
-        flagcount = 0
-        totalcount = 0
-
-        for spw in science_spws:
-            spw_id = str(spw.id)
-            flagcount += int(summary['spw'][spw_id]['flagged'])
-            totalcount += int(summary['spw'][spw_id]['total'])
-
-            if previous_summary:
-                flagcount -= int(previous_summary['spw'][spw_id]['flagged'])
-
-        ft = FlagTotal(flagcount, totalcount)
-        total[summary['name']]['SCIENCE SPWS'] = ft
-
-        previous_summary = summary
-
-    return total
 
 
 class ApplycalAmpVsFreqPlotRenderer(basetemplates.JsonPlotRenderer):

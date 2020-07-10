@@ -4,16 +4,32 @@ Created on 25 Nov 2014
 @author: sjw
 """
 import collections
+import functools
+from typing import Optional, List
+
+import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure.launcher import Context
+
+LOG = logging.get_logger(__name__)
 
 FlagTotal = collections.namedtuple('FlagSummary', 'flagged total')
 
 
-def flags_for_result(result, context, non_science_agents=[]):
+def flags_for_result(result,
+                     context: Context,
+                     intents_to_summarise: Optional[List[str]] = None,
+                     non_science_agents: Optional[List[str]] = None):
+    if intents_to_summarise is None:
+        intents_to_summarise = ['BANDPASS', 'PHASE', 'AMPLITUDE', 'TARGET']
+
+    if non_science_agents is None:
+        non_science_agents = []
+
     ms = context.observing_run.get_ms(result.inputs['vis'])
     summaries = result.summaries
 
-    by_intent = flags_by_intent(ms, summaries)
+    by_intent = flags_by_intent(ms, summaries, intents_to_summarise)
     by_spw = flags_by_science_spws(ms, summaries)
     merged = utils.dict_merge(by_intent, by_spw)
 
@@ -22,15 +38,15 @@ def flags_for_result(result, context, non_science_agents=[]):
     return {ms.basename: adjusted}
 
 
-def flags_by_intent(ms, summaries):
-    # create a dictionary of scans per observing intent, eg. 'PHASE':[1,2,7]
-    intent_scans = {}
-    for intent in ('BANDPASS', 'PHASE', 'AMPLITUDE', 'TARGET'):
+def flags_by_intent(ms, summaries, intents=None):
+    # create a dictionary of scans per observing intent, eg. 'PHASE':['1','2','7']
+    intent_scans = {
         # convert IDs to strings as they're used as summary dictionary keys
-        intent_scans[intent] = [str(s.id) for s in ms.scans
-                                if intent in s.intents]
+        intent: [str(scan.id) for scan in ms.scans if intent in scan.intents]
+        for intent in intents
+    }
 
-    # while we're looping, get the total flagged by looking in all scans 
+    # while we're looping, get the total flagged by looking in all scans
     intent_scans['TOTAL'] = [str(s.id) for s in ms.scans]
 
     total = collections.defaultdict(dict)
@@ -87,7 +103,7 @@ def flags_by_science_spws(ms, summaries):
     return total
 
 
-def adjust_non_science_totals(flagtotals, non_science_agents=[]):
+def adjust_non_science_totals(flagtotals, non_science_agents=None):
     """
     Return a copy of the FlagSummary dictionaries, with totals reduced to
     account for flagging performed by non-science flagging agents.
@@ -99,6 +115,9 @@ def adjust_non_science_totals(flagtotals, non_science_agents=[]):
     flagged due to non-science agents is calculated and subtracted from the 
     total for each of the remainder agents.     
     """
+    if not non_science_agents:
+        return flagtotals
+
     agents_to_copy = set(non_science_agents)
     agents_to_adjust = set(flagtotals.keys()) - agents_to_copy
     data_selections = set()
@@ -129,3 +148,19 @@ def adjust_non_science_totals(flagtotals, non_science_agents=[]):
             adjusted_results[agent][data_selection] = adjusted
 
     return adjusted_results
+
+
+def intents_to_summarise(context: Context) -> List[str]:
+    # Find out which intents to list in the flagging table
+    # First get all intents across all MSes in context
+    context_intents = functools.reduce(lambda x, m: x.union(m.intents),
+                                       context.observing_run.measurement_sets,
+                                       set())
+    # then match intents against those we want in the table, removing those not
+    # present. List order is preserved in the table.
+    all_flag_summary_intents = [
+        'AMPLITUDE', 'BANDPASS', 'CHECK', 'PHASE', 'POLANGLE', 'POLARIZATION', 'POLLEAKAGE', 'TARGET'
+    ]
+    intents_to_summarise = [i for i in all_flag_summary_intents
+                            if i in context_intents.intersection(set(all_flag_summary_intents))]
+    return intents_to_summarise
