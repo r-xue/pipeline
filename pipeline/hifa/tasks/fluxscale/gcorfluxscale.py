@@ -272,13 +272,23 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
             return result
 
         # Otherwise, continue with derivation of flux densities.
+        # PIPE-644: derive both fluxscale-based scaling factors, as well as
+        # calibrated visibility fluxes.
         try:
-            # PIPE-644: derive fluxscale-based flux measurements, and store in
-            # the result for reporting in weblog.
+            # Derive fluxscale-based flux measurements, and store in the result
+            # for reporting in weblog.
             fluxscale_result = self._derive_fluxscale_flux(caltable, refspwmap)
             result.fluxscale_measurements.update(fluxscale_result.measurements)
 
-            # PIPE-644: derive calibrated visibility based flux measurements
+            # Computing calibrated visibility fluxes requires a temporary
+            # applycal. To prepare for this temporary applycal, first update
+            # the callibrary in the local context to replace the amplitude
+            # caltable produced earlier (which used a default flux density of
+            # 1.0 Jy) with the caltable produced by fluxscale, which contains
+            # amplitudes set according to the derived flux values.
+            self._replace_amplitude_caltable(r, fluxscale_result)
+
+            # Derive calibrated visibility based flux measurements
             # and store in result for reporting in weblog and merging into
             # context (into measurement set).
             calvis_fluxes = self._derive_calvis_flux()
@@ -292,6 +302,35 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
 
     def analyse(self, result):
         return result
+
+    def _replace_amplitude_caltable(self, ampresult, fsresult):
+        inputs = self.inputs
+
+        # Identify the MS to process.
+        vis = os.path.basename(inputs.vis)
+
+        # predicate function to match hifa_gfluxscale amplitude caltable for this MS
+        def gfluxscale_amp_matcher(calto: callibrary.CalToArgs, calfrom: callibrary.CalFrom) -> bool:
+            calto_vis = {os.path.basename(v) for v in calto.vis}
+
+            # Standard caltable filenames contain task identifiers,
+            # caltable type identifiers, etc. We can use this to identify
+            # caltables created by this task. As an extra check we also
+            # check the caltable type.
+            do_delete = 'hifa_gfluxscale' in calfrom.gaintable and 'gaincal' in calfrom.caltype and vis in calto_vis \
+                and 'gacal' in calfrom.gaintable
+
+            if do_delete:
+                LOG.debug(f'Unregistering previous amplitude calibrations for {vis}')
+            return do_delete
+
+        inputs.context.callibrary.unregister_calibrations(gfluxscale_amp_matcher)
+
+        # Add caltable from fluxscale result to local context callibrary.
+        orig_calapp = ampresult.pool[0]
+        new_calapp = callibrary.copy_calapplication(orig_calapp, gaintable=fsresult.inputs['fluxtable'])
+        LOG.debug(f'Adding calibration to callibrary:\n{new_calapp.calto}\n{new_calapp.calfrom}')
+        inputs.context.callibrary.add(new_calapp.calto, new_calapp.calfrom)
 
     @staticmethod
     def _check_caltable(caltable, ms, reference, transfer):
