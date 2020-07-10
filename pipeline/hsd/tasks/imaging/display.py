@@ -10,7 +10,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.displays.pointing as pointing
 import pipeline.infrastructure.renderer.logger as logger
-from pipeline.hsd.tasks.common import atmutil
+from pipeline.h.tasks.common import atmutil
 from pipeline.hsd.tasks.common.display import DPIDetail, DPISummary, SDImageDisplay, SDImageDisplayInputs, ShowPlot
 from pipeline.hsd.tasks.common.display import sd_polmap as polmap
 from pipeline.hsd.tasks.common.display import SDSparseMapPlotter

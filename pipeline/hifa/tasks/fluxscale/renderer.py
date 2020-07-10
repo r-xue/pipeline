@@ -18,6 +18,7 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
 from pipeline.domain.measures import FluxDensityUnits, FrequencyUnits
+from pipeline.h.tasks.common import atmutil
 from pipeline.h.tasks.importdata.fluxes import ORIGIN_XML, ORIGIN_ANALYSIS_UTILS
 from pipeline.infrastructure.renderer import logger
 from . import display as gfluxscale
@@ -291,7 +292,7 @@ def make_adopted_table(results):
     return utils.merge_td_columns(rows)
 
 
-def create_flux_comparison_plots(context, output_dir, result):
+def create_flux_comparison_plots(context, output_dir, result, showatm=True):
     ms = context.observing_run.get_ms(result.vis)
 
     plots = []
@@ -345,6 +346,7 @@ def create_flux_comparison_plots(context, output_dir, result):
             x_min = min(x_min, x - x_unc)
             x_max = max(x_max, x + x_unc)
 
+        # Plot fluxes from ASDM, catalog, and/or analysisUtils.
         catalogue_fluxes = {
             ORIGIN_XML: 'ASDM',
             ORIGIN_DB: 'online catalogue',
@@ -371,13 +373,42 @@ def create_flux_comparison_plots(context, output_dir, result):
                     linestyle='dotted')
             ax.plot([x[-1], x_max], [y[-1], s_xmax], color=colour, label='_nolegend_', linestyle='dotted')
 
+        # Plot atmospheric transmission.
+        if showatm:
+            atm_color = 'm'
+
+            # Create 2nd axis for atmospheric transmission.
+            axes_atm = ax.twinx()
+            axes_atm.set_ylabel('ATM Transmission', color=atm_color, labelpad=2)
+            axes_atm.set_ylim(0, 1.05)
+            axes_atm.tick_params(direction='out', colors=atm_color)
+            axes_atm.yaxis.set_major_formatter(plt.FuncFormatter(lambda t, pos: '{}%'.format(int(t * 100))))
+            axes_atm.yaxis.tick_right()
+
+            # Select antenna to use for determining atmospheric transmission:
+            # Preferably use highest ranked reference antenna, otherwise
+            # use antenna ID = 0.
+            ant_id = 0
+            if hasattr(ms, 'reference_antenna') and isinstance(ms.reference_antenna, str):
+                ant_id = ms.get_antenna(search_term=ms.reference_antenna.split(',')[0])[0].id
+
+            # For each spw in the flux measurements, compute and plot the
+            # atmospheric transmission vs. frequency.
+            spw_ids = sorted([m.spw_id for m in measurements])
+            for spw_id in spw_ids:
+                atm_freq, atm_transmission = atmutil.get_transmission(vis=result.vis, spw_id=spw_id, antenna_id=ant_id)
+                axes_atm.plot(atm_freq, atm_transmission, color=atm_color, linestyle='-', linewidth=0.4)
+
+        # Include plot legend.
         leg = ax.legend(loc='best', numpoints=1, prop={'size': 8})
         leg.get_frame().set_alpha(0.5)
         figfile = '{}-field{}-flux_calibration.png'.format(ms.basename, field_id)
 
+        # Save figure to file.
         full_path = os.path.join(output_dir, figfile)
         fig.savefig(full_path)
 
+        # Create a wrapper for current plot, and append to list of plots.
         parameters = {
             'vis': ms.basename,
             'field': field.name,
