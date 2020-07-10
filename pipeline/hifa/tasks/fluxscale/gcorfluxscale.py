@@ -236,17 +236,18 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         # Now do the amplitude-only gaincal. This will produce the caltable
         # that fluxscale will analyse
         try:
-            r = self._do_gaincal(field=inputs.transfer + ',' + inputs.reference,
-                                 intent=inputs.transintent + ',' + inputs.refintent, gaintype='T', calmode='a',
-                                 combine='', solint=inputs.solint, antenna=allantenna, uvrange='',
-                                 refant=filtered_refant, minblperant=minblperant, phaseup_spwmap=None,
-                                 phase_interp=None, append=False, merge=True)
+            ampcal_result = self._do_gaincal(
+                field=inputs.transfer + ',' + inputs.reference,
+                intent=inputs.transintent + ',' + inputs.refintent, gaintype='T', calmode='a',
+                combine='', solint=inputs.solint, antenna=allantenna, uvrange='',
+                refant=filtered_refant, minblperant=minblperant, phaseup_spwmap=None,
+                phase_interp=None, append=False, merge=True)
 
             # Get the gaincal caltable from the results
             try:
-                caltable = r.final.pop().gaintable
+                caltable = ampcal_result.final.pop().gaintable
             except:
-                caltable = ' %s' % r.error.pop().gaintable if r.error else ''
+                caltable = ' %s' % ampcal_result.error.pop().gaintable if ampcal_result.error else ''
                 LOG.warn('Cannot compute compute the flux scaling table%s' % (os.path.basename(caltable)))
 
             # To make the following fluxscale reliable the caltable
@@ -260,7 +261,7 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
                 check_ok = False
 
         except:
-            caltable = ' %s' % r.error.pop().gaintable if r.error else ''
+            caltable = ' %s' % ampcal_result.error.pop().gaintable if ampcal_result.error else ''
             LOG.warn('Cannot compute phase solution table%s for the phase '
                      'and bandpass calibrator' % (os.path.basename(caltable)))
             check_ok = False
@@ -272,13 +273,24 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
             return result
 
         # Otherwise, continue with derivation of flux densities.
+        # PIPE-644: derive both fluxscale-based scaling factors, as well as
+        # calibrated visibility fluxes.
         try:
-            # PIPE-644: derive fluxscale-based flux measurements, and store in
-            # the result for reporting in weblog.
+            # Derive fluxscale-based flux measurements, and store in the result
+            # for reporting in weblog.
             fluxscale_result = self._derive_fluxscale_flux(caltable, refspwmap)
             result.fluxscale_measurements.update(fluxscale_result.measurements)
 
-            # PIPE-644: derive calibrated visibility based flux measurements
+            # Computing calibrated visibility fluxes will require a temporary
+            # applycal, which is performed as part of "_derive_calvis_flux()"
+            # below. To prepare for this temporary applycal, first update the
+            # callibrary in the local context to replace the amplitude caltable
+            # produced earlier (which used a default flux density of 1.0 Jy)
+            # with the caltable produced by fluxscale, which contains
+            # amplitudes set according to the derived flux values.
+            self._replace_amplitude_caltable(ampcal_result, fluxscale_result)
+
+            # Derive calibrated visibility based flux measurements
             # and store in result for reporting in weblog and merging into
             # context (into measurement set).
             calvis_fluxes = self._derive_calvis_flux()
@@ -590,6 +602,35 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         data = {**data, **weights}
 
         return data
+
+    def _replace_amplitude_caltable(self, ampresult, fsresult):
+        inputs = self.inputs
+
+        # Identify the MS to process.
+        vis = os.path.basename(inputs.vis)
+
+        # predicate function to match hifa_gfluxscale amplitude caltable for this MS
+        def gfluxscale_amp_matcher(calto: callibrary.CalToArgs, calfrom: callibrary.CalFrom) -> bool:
+            calto_vis = {os.path.basename(v) for v in calto.vis}
+
+            # Standard caltable filenames contain task identifiers,
+            # caltable type identifiers, etc. We can use this to identify
+            # caltables created by this task. As an extra check we also
+            # check the caltable type.
+            do_delete = 'hifa_gfluxscale' in calfrom.gaintable and 'gaincal' in calfrom.caltype and vis in calto_vis \
+                and 'gacal' in calfrom.gaintable
+
+            if do_delete:
+                LOG.debug(f'Unregistering previous amplitude calibrations for {vis}')
+            return do_delete
+
+        inputs.context.callibrary.unregister_calibrations(gfluxscale_amp_matcher)
+
+        # Add caltable from fluxscale result to local context callibrary.
+        orig_calapp = ampresult.pool[0]
+        new_calapp = callibrary.copy_calapplication(orig_calapp, gaintable=fsresult.inputs['fluxtable'])
+        LOG.debug(f'Adding calibration to callibrary:\n{new_calapp.calto}\n{new_calapp.calfrom}')
+        inputs.context.callibrary.add(new_calapp.calto, new_calapp.calfrom)
 
 
 class SessionGcorFluxscaleInputs(GcorFluxscaleInputs):
