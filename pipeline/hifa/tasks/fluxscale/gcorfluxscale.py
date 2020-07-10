@@ -357,9 +357,20 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
             amplitudes = ampdata[id_nonbad]
             weights = weightdata[id_nonbad]
 
+            # Determine number of non-flagged antennas, baselines, and
+            # integrations.
+            ant1 = data['antenna1'][id_nonbad]
+            ant2 = data['antenna2'][id_nonbad]
+            n_ants = len(set(ant1) | set(ant2))
+            n_baselines = n_ants * (n_ants - 1) // 2
+            n_ints = len(amplitudes) // n_baselines
+
+            # PIPE-644: Determine scale factor for variance.
+            var_scale = np.mean([len(amplitudes), n_ints * n_ants])
+
             # Compute mean flux and stdev for current polarisation.
             mean_flux = np.abs(np.average(amplitudes, weights=weights))
-            variance = np.average((np.abs(amplitudes) - mean_flux)**2, weights=weights)
+            variance = np.average((np.abs(amplitudes) - mean_flux)**2, weights=weights) / var_scale
 
             # Store for this polarisation.
             mean_fluxes.append(mean_flux)
@@ -591,7 +602,7 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
                 openms.selectchannel(1, 0, nchans, 1)
 
                 # Extract data from MS.
-                data = openms.getdata(['corrected_data', 'flag'])
+                data = openms.getdata(['corrected_data', 'flag', 'antenna1', 'antenna2'])
             except:
                 # Log a warning and return without data.
                 LOG.warning('Unable to compute mean vis for intent(s) {}, field {}, spw {}'
