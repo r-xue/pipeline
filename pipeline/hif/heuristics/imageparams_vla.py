@@ -1,5 +1,4 @@
 import re
-import pdb
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.filenamer as filenamer
@@ -58,34 +57,46 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         # Can it be that more than one visibility (ms file) is used?
         vis = self.vislist[0]
         ms = self.observing_run.get_ms(vis)
-        spw_str = ','.join([str(spw) for spw in self.spwids])
 
-        # Determine the largest covered baseline in klambda. Generally this
-        # is the maximum baseline at the highest frequency.
+        # Determine the largest covered baseline in klambda. Assume that
+        # the maximum baseline is associated with the highest frequency spw.
         light_speed = qa.getvalue(qa.convert(qa.constants('c'), 'm/s'))[0]
-        max_bl = 0.0
+        max_mean_freq_Hz = 0.0   # spw mean frequency in the highest frequency spw
+        real_spwids = []
         for spwid in self.spwids:
             real_spwid = self.observing_run.virtual2real_spw_id(spwid, ms)
             spw = ms.get_spectral_window(real_spwid)
+            real_spwids.append(real_spwid)
             mean_freq_Hz = spw.mean_frequency.to_units(measures.FrequencyUnits.HERTZ)
-            mean_wave_m = light_speed / float(mean_freq_Hz)  # in meter
-            # Get max baseline
-            job = casa_tasks.visstat(vis=vis, spw=str(spwid), axis='uvrange', useflags=True)
-            uv_stat = job.execute(dry_run=False) # returns stat in meter
-            max_bl = max(max_bl, uv_stat['DATA_DESC_ID=%s' % spwid]['max'] / mean_wave_m)
+            if float(mean_freq_Hz) > max_mean_freq_Hz:
+                max_mean_freq_Hz = float(mean_freq_Hz)
+                max_freq_spw = real_spwid
+        # List of real spws
+        real_spwids_str = ','.join([str(spw) for spw in real_spwids])
+
+        # Check for maximum frequency
+        if max_mean_freq_Hz == 0.0:
+            LOG.warn("Highest frequency spw and largest baseline cannot be determined for spwids={}, using all "
+                     "baselines." % self.spwids)
+            return None
+        # Get max baseline
+        mean_wave_m = light_speed / max_mean_freq_Hz  # in meter
+        job = casa_tasks.visstat(vis=vis, spw=str(max_freq_spw), axis='uvrange', useflags=True)
+        uv_stat = job.execute(dry_run=False) # returns stat in meter
+        max_bl = uv_stat['DATA_DESC_ID=%s' % max_freq_spw]['max'] / mean_wave_m
 
         # Define bin for lowest 5% of baselines (in wavelength units)
         uvll = 0.0
         uvul = 0.05 * max_bl
 
         uvrange = '{:0.1f}~{:0.1f}klambda'.format(uvll / 1000.0, uvul / 1000.0)
-        mean_SBL = get_mean_amplitude(vis=vis, uvrange=uvrange, spw=spw_str)
+        mean_SBL = get_mean_amplitude(vis=vis, uvrange=uvrange, spw=real_spwids_str)
 
         # Range for  50-55% bin
         uvll = 0.5 * max_bl
         uvul = 0.5 * max_bl + 0.05 * max_bl
         uvrange = '{:0.1f}~{:0.1f}klambda'.format(uvll / 1000.0, uvul / 1000.0)
-        mean_MBL = get_mean_amplitude(vis=vis, uvrange=uvrange, spw=spw_str)
+        mean_MBL = get_mean_amplitude(vis=vis, uvrange=uvrange, spw=real_spwids_str)
 
         # Compare amplitudes and decide on return value
         meanratio = mean_SBL / mean_MBL
