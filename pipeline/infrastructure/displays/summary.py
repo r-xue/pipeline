@@ -213,6 +213,7 @@ class FieldVsTimeChart(object):
                        'CHECK': 'purple',
                        'PHASE': 'cyan',
                        'POINTING': 'yellow',
+                       'REFERENCE': 'deepskyblue',
                        'SIDEBAND': 'orange',
                        'TARGET': 'blue',
                        'WVR': 'lime',
@@ -221,6 +222,10 @@ class FieldVsTimeChart(object):
                        'POLLEAKAGE': 'plum',
                        'UNKNOWN': 'grey',
                        }
+
+    # list of intents that shares a same scan but segregated by subscan
+    # (To distinguish ON and OFF source subscans in ALMA-TP)
+    _subscan_intents = ('TARGET', 'REFERENCE')
 
     def __init__(self, inputs):
         self.inputs = inputs
@@ -244,26 +249,37 @@ class FieldVsTimeChart(object):
         pylab.axes([0.1, 0.15, 0.8, 0.7])
         ax = pylab.gca()
 
-        for nfield, field in enumerate(ms.fields):
+        nfield = len(ms.fields)
+        for field in ms.fields:
+            ifield = field.id
             for scan in [scan for scan in ms.scans
                          if field in scan.fields]:
-                colours = self._get_colours(scan.intents)
+                intents_to_plot = self._get_intents_to_plot(field.intents.intersection(scan.intents))
 
-                # all 'datetime' objects are in UTC.
-                x0 = utils.get_epoch_as_datetime(scan.start_time)
-                x1 = utils.get_epoch_as_datetime(scan.end_time)
+                # vertical position to plot
+                y0 = ifield-0.5
+                y1 = ifield+0.5
 
-                y0 = nfield-0.5
-                y1 = nfield+0.5
-
-                height = (y1 - y0) / float(len(colours))
+                height = (y1 - y0) / float(len(intents_to_plot))
                 ys = y0
                 ye = y0 + height
-                for colour in colours:
-                    ax.fill([x0, x1, x1, x0],
-                            [ys, ys, ye, ye],
-                            facecolor=colour,
-                            edgecolor=colour)
+                for intent in intents_to_plot:
+                    colour = FieldVsTimeChart._intent_colours[intent]
+                    if intent in FieldVsTimeChart._subscan_intents and \
+                            len(scan.intents.intersection(FieldVsTimeChart._subscan_intents)) > 1:
+                        time_ranges = [tuple(map(utils.get_epoch_as_datetime, o)) \
+                                       for o in get_intent_subscan_time_ranges(ms.name, utils.to_CASA_intent(ms, intent), scan.id) ]
+                    else:
+                        # all 'datetime' objects are in UTC.
+                        start = utils.get_epoch_as_datetime(scan.start_time)
+                        end = utils.get_epoch_as_datetime(scan.end_time)
+                        time_ranges = ((start, end), )
+
+                    for (x0, x1) in time_ranges:
+                        ax.fill([x0, x1, x1, x0],
+                                [ys, ys, ye, ye],
+                                facecolor=colour,
+                                edgecolor=colour)
                     ys += height
                     ye += height
 
@@ -313,6 +329,12 @@ class FieldVsTimeChart(object):
                 x += 0.12
 
         pylab.axis(lims)
+
+    def _get_intents_to_plot(self, user_intents):
+        intents = [intent for intent in sorted(self._intent_colours.keys(), key=operator.itemgetter(0))
+                   if intent in user_intents]
+        return intents
+
 
     def _get_colours(self, user_intents):
         colours = [colour for intent, colour in sorted(self._intent_colours.items(), key=operator.itemgetter(0))
@@ -431,7 +453,7 @@ class IntentVsTimeChart(object):
                     continue
                 (colour, scan_y) = IntentVsTimeChart._intent_colours[intent]
                 if intent in IntentVsTimeChart._subscan_intents and \
-                    len(np.intersect1d(tuple(scan.intents), IntentVsTimeChart._subscan_intents)) > 1:
+                        len(scan.intents.intersection(FieldVsTimeChart._subscan_intents)) > 1:
                     time_ranges = [tuple(map(utils.get_epoch_as_datetime, o)) \
                                    for o in get_intent_subscan_time_ranges(ms.name, utils.to_CASA_intent(ms, intent), scan.id) ]
                 else:
