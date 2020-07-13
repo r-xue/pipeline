@@ -224,7 +224,7 @@ class FieldVsTimeChart(object):
                        }
 
     # list of intents that shares a same scan but segregated by subscan
-    # (To dustinguish ON and OFF source subscans in ALMA-TP)
+    # (To distinguish ON and OFF source subscans in ALMA-TP)
     _subscan_intents = ('TARGET', 'REFERENCE')
 
     def __init__(self, inputs):
@@ -266,7 +266,7 @@ class FieldVsTimeChart(object):
                 for intent in intents_to_plot:
                     colour = FieldVsTimeChart._intent_colours[intent]
                     if intent in FieldVsTimeChart._subscan_intents and \
-                        len(np.intersect1d(tuple(scan.intents), FieldVsTimeChart._subscan_intents)) > 1:
+                            len(scan.intents.intersection(FieldVsTimeChart._subscan_intents)) > 1:
                         time_ranges = [tuple(map(utils.get_epoch_as_datetime, o)) \
                                        for o in get_intent_subscan_time_ranges(ms.name, utils.to_CASA_intent(ms, intent), scan.id) ]
                     else:
@@ -453,7 +453,7 @@ class IntentVsTimeChart(object):
                     continue
                 (colour, scan_y) = IntentVsTimeChart._intent_colours[intent]
                 if intent in IntentVsTimeChart._subscan_intents and \
-                    len(np.intersect1d(tuple(scan.intents), IntentVsTimeChart._subscan_intents)) > 1:
+                        len(scan.intents.intersection(FieldVsTimeChart._subscan_intents)) > 1:
                     time_ranges = [tuple(map(utils.get_epoch_as_datetime, o)) \
                                    for o in get_intent_subscan_time_ranges(ms.name, utils.to_CASA_intent(ms, intent), scan.id) ]
                 else:
