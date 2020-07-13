@@ -14,7 +14,6 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.displays.pointing as pointing
 import pipeline.infrastructure.renderer.logger as logger
-from . import atmutil
 
 LOG = infrastructure.get_logger(__name__)
 

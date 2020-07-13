@@ -8,9 +8,9 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.renderer.logger as logger
+from pipeline.h.tasks.common import atmutil
 from ..common import utils
 from ..common import compress
-from ..common import atmutil
 from ..common import display
 from ..common.display import sd_polmap
 
