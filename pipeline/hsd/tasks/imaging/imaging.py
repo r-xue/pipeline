@@ -1190,8 +1190,7 @@ def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
     assert radec_unit == datatable.getcolkeyword('OFS_DEC', 'UNIT')
     exp_unit = datatable.getcolkeyword('EXPOSURE', 'UNIT')
     gap_s, gap_l = rasterutil.find_time_gap(timestamp) #gap_s stores the last index in a raster row.
-    gap_r = rasterutil.find_raster_gap(timestamp, ra, dec, gap_s)
-    start_idx = 0
+    gap_r = rasterutil.find_raster_gap(timestamp, ra, dec, gap_s) #gap_r stores the last index in a raster iteration.
     duration = []
     num_integration = []
     delta_ra = []
@@ -1204,21 +1203,21 @@ def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
     cqa = casatools.quanta
     map_center_dec = cqa.getvalue(cqa.convert(cqa.quantity(map_center_dec, datatable.getcolkeyword('DEC', 'UNIT')),'rad'))[0]
     dec_factor = numpy.abs(numpy.cos(map_center_dec))
-    # loop over raster rows
-    for end_idx in gap_s:
-        duration.append(numpy.sum(exposure[start_idx:end_idx+1]))
-        num_integration.append(end_idx-start_idx+1)
-        delta_ra.append((ra[end_idx]-ra[start_idx])*dec_factor)
-        delta_dec.append(dec[end_idx]-dec[start_idx])
-        cra = ra[start_idx:end_idx+1].mean()
-        cdec = dec[start_idx:end_idx+1].mean()
+    # loop over raster rows.
+    # rasterutil.gap_gen returns 'start index' and 'end index+1' of each raster row
+    for start_idx, end_idx in rasterutil.gap_gen(gap_s):
+        duration.append(numpy.sum(exposure[start_idx:end_idx]))
+        num_integration.append(end_idx-start_idx)
+        delta_ra.append((ra[end_idx-1]-ra[start_idx])*dec_factor)
+        delta_dec.append(dec[end_idx-1]-dec[start_idx])
+        cra = ra[start_idx:end_idx].mean()
+        cdec = dec[start_idx:end_idx].mean()
         center_ra.append(cra)
         center_dec.append(cdec)
         if first_row is None: first_row = (cra, cdec)
-        if end_idx in gap_r:
+        if end_idx-1 in gap_r:
             height_list.append( numpy.hypot((first_row[0]-cra)*dec_factor, first_row[1]-cdec) )
             first_row = None
-        start_idx = end_idx +1
     if len(height_list) == 0: # only one iteration of map
         height_list.append( numpy.hypot((first_row[0]-center_ra[-1])*dec_factor, first_row[1]-center_dec[-1]) )
     center_ra = numpy.array(center_ra)
