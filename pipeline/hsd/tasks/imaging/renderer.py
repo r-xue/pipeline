@@ -17,7 +17,7 @@ from . import display
 
 LOG = logging.get_logger(__name__)
 
-ImageRMSTR = collections.namedtuple('ImageRMSTR', 'name estimate range width rms')
+ImageRMSTR = collections.namedtuple('ImageRMSTR', 'name estimate range width theoretical_rms observed_rms')
 
 
 class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -57,10 +57,12 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                 if r.sensitivity_info is not None:
                     rms_info = r.sensitivity_info
                     sensitivity = rms_info.sensitivity
+                    theoretical_rms = r.theoretical_rms['sensitivity']
+                    trms = cqa.tos(theoretical_rms) if theoretical_rms['value'] >= 0 else 'n/a'
                     icon = '<span class="glyphicon glyphicon-ok"></span>' if rms_info.representative else ''
                     tr = ImageRMSTR(image_item.imagename, icon, rms_info.frequency_range,
                                     cqa.getvalue(cqa.convert(sensitivity['bandwidth'], 'kHz'))[0],
-                                    cqa.tos(sensitivity['sensitivity']))
+                                    trms, cqa.tos(sensitivity['sensitivity']))
                     image_rms.append(tr)
 
         rms_table = utils.merge_td_columns(image_rms, num_to_merge=0)
