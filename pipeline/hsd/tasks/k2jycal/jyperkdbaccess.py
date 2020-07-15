@@ -20,7 +20,8 @@ ResponseStruct = collections.namedtuple('ResponseStruct', ['response', 'subparam
 
 
 class ALMAJyPerKDatabaseAccessBase(object):
-    BASE_URL = 'https://asa.alma.cl/science/jy-kelvins'
+    #BASE_URL = 'https://asa.alma.cl/science/jy-kelvins'
+    BASE_URL = 'https://2020jul.asa-test.alma.cl/science/jy-kelvins' ### TEMPORAL URL OF TEST ARCHIVE
     ENDPOINT_TYPE = None
 
     @property
@@ -83,8 +84,12 @@ class ALMAJyPerKDatabaseAccessBase(object):
                 query = '?'.join([url, encoded])
                 LOG.info('Accessing Jy/K DB: query is "{}"'.format(query))
                 # set timeout to 3min (=180sec)
-                response = urllib.request.urlopen(query, timeout=180)
+                response = urllib.request.urlopen(query, timeout=400)#180)
                 retval = json.load(response)
+                if not retval['success']:
+                    msg = 'Failed to get a Jy/K factor from DB: {}'.format(retval['error'])
+                    LOG.warn(msg)
+                    raise RuntimeError(msg)
                 yield ResponseStruct(response=retval, subparam=p.subparam)
         except urllib.error.HTTPError as e:
             msg = 'Failed to load URL: {0}\n'.format(url) \
@@ -188,7 +193,7 @@ class ALMAJyPerKDatabaseAccessBase(object):
         Returns:
             [list] -- Formatted list of Jy/K factors
         """
-        template = string.Template('$vis $Antenna $Spwid I $Factor')
+        template = string.Template('$vis $Antenna $Spwid I $factor')
         data = jyperk['data']
         basename = os.path.basename(vis.rstrip('/'))
         factors = [list(map(str, template.safe_substitute(vis=basename, **d).split())) for d in data]
@@ -260,7 +265,7 @@ class JyPerKAbstractEndPoint(ALMAJyPerKDatabaseAccessBase):
             polarization = 'I'
             antenna = response['query']['antenna']
             data.append({'MS': basename, 'Antenna': antenna, 'Spwid': spwid,
-                         'Polarization': polarization, 'Factor': factor})
+                         'Polarization': polarization, 'factor': factor})
 
         return {'query': '', 'data': data, 'total': len(data)}
 
@@ -284,16 +289,9 @@ class JyPerKAsdmEndPoint(ALMAJyPerKDatabaseAccessBase):
         # there should be only one query
         assert len(responses) == 1
 
-        # expand response struct
-        # subparam is vis
         response = responses[0].response
-        vis = responses[0].subparam
-        ms = self.context.observing_run.get_ms(vis)
-
-        # translate spw id
-        data = translate_spw(response['data'], ms)
-        response['data'] = data
-        response['total'] = len(data)
+        response['total'] = response['data']['length']
+        response['data'] = response['data']['factors']
         return response
 
 
@@ -301,7 +299,7 @@ class JyPerKModelFitEndPoint(JyPerKAbstractEndPoint):
     ENDPOINT_TYPE = 'model-fit'
 
     def _extract_factor(self, response):
-        return response['factor']
+        return response['data']['factor']
 
 
 class JyPerKInterpolationEndPoint(JyPerKAbstractEndPoint):
@@ -311,7 +309,7 @@ class JyPerKInterpolationEndPoint(JyPerKAbstractEndPoint):
         return {'delta_days': 1000}
 
     def _extract_factor(self, response):
-        return response['data']['mean']
+        return response['data']['factor']['mean']
 
 
 def vis_to_uid(vis):
