@@ -15,9 +15,7 @@ class T2_4MDetailsFlagDeterAlmaSdRenderer(super_renderer.T2_4MDetailsFlagDeterBa
             uri=uri, description=description, always_rerender=always_rerender)
 
     def update_mako_context(self, mako_context, pipeline_context, result):
-        super(T2_4MDetailsFlagDeterAlmaSdRenderer, self).update_mako_context(
-            mako_context, pipeline_context, result
-        )
+        super().update_mako_context(mako_context, pipeline_context, result)
 
         weblog_dir = os.path.join(pipeline_context.report_dir,
                                   'stage%s' % result.stage_number)
