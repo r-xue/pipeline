@@ -15,7 +15,7 @@ __all__ = ['do_wide_field_pos_cor']
 def do_wide_field_pos_cor(fitsname, date_time=None, obs_long=None, obs_lat=None):
     """
     Calculate and apply a mean correction to the central position as a function of mean hour
-    angle of observation and mean declination (see PIPE-578, SRDP-412, and VLASS Memo #14).
+    angle of observation and mean declination (see PIPE-587, PIPE-700, SRDP-412, and VLASS Memo #14).
 
     The correction is intended for VLASS-QL images. It is performed as part of the hifv_exportvlassdata task call in
     the VLASS-QL pipeline run and can also be executed outside of the pipeline.
@@ -102,6 +102,19 @@ def do_wide_field_pos_cor(fitsname, date_time=None, obs_long=None, obs_lat=None)
             chi = np.arctan(np.sin(ha_rad) / (np.cos(dec_rad) * np.tan(obs_lat_rad) - np.sin(dec_rad) *
                                               np.cos(ha_rad)))
             deltatot = amp * np.tan(zd)
+
+            # Restrict ha_rad to the -np.pi to +np.pi range in order to deal with denominator of parallactic
+            # angle term going to zero at declination of arctan(cos(obs_lat_rad)/cos(ha_rad)) and flipping
+            # sign of chi: for positive ha_rad, maintain chi positive by adding np.pi if needed, and for
+            # negative ha_rad, subtract np.pi to keep chi negative.
+            if ha_rad > np.pi:
+                ha_rad = ha_rad - 2.0 * np.pi
+            if (ha_rad < 0.0) and (chi > 0.0):
+                chi = chi - np.pi
+            elif (ha_rad > 0.0) and (chi < 0.0):
+                chi = chi + np.pi
+
+            # Offset values
             offset[0] = deltatot * np.sin(chi)
             offset[1] = deltatot * np.cos(chi)
 

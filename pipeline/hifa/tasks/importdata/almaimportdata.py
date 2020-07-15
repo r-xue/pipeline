@@ -11,7 +11,8 @@ from . import dbfluxes
 
 __all__ = [
     'ALMAImportData',
-    'ALMAImportDataInputs'
+    'ALMAImportDataInputs',
+    'ALMAImportDataResults'
 ]
 
 LOG = infrastructure.get_logger(__name__)
@@ -33,22 +34,36 @@ class ALMAImportDataInputs(importdata.ImportDataInputs):
     asis = vdp.VisDependentProperty(default='Antenna CalAtmosphere CalPointing CalWVR ExecBlock Receiver SBSummary Source Station')
     dbservice = vdp.VisDependentProperty(default=False)
     createmms = vdp.VisDependentProperty(default='false')
+    # sets threshold for polcal parallactic angle coverage. See PIPE-597
+    minparang = vdp.VisDependentProperty(default=0.0)
 
     def __init__(self, context, vis=None, output_dir=None, asis=None, process_caldevice=None, session=None,
                  overwrite=None, nocopy=None, bdfflags=None, lazy=None, save_flagonline=None, dbservice=None,
-                 createmms=None, ocorr_mode=None, asimaging=None):
+                 createmms=None, ocorr_mode=None, asimaging=None, minparang=None):
         super(ALMAImportDataInputs, self).__init__(context, vis=vis, output_dir=output_dir, asis=asis,
                                                    process_caldevice=process_caldevice, session=session,
                                                    overwrite=overwrite, nocopy=nocopy, bdfflags=bdfflags, lazy=lazy,
                                                    save_flagonline=save_flagonline, createmms=createmms,
                                                    ocorr_mode=ocorr_mode, asimaging=asimaging)
         self.dbservice = dbservice
+        self.minparang = minparang
+
+
+class ALMAImportDataResults(importdata.ImportDataResults):
+    def __init__(self, mses=None, setjy_results=None):
+        super().__init__(mses=mses, setjy_results=setjy_results)
+        self.parang_ranges = {}
+
+    def __repr__(self):
+        return 'ALMAImportDataResults:\n\t{0}'.format(
+            '\n\t'.join([ms.name for ms in self.mses]))
 
 
 @task_registry.set_equivalent_casa_task('hifa_importdata')
 @task_registry.set_casa_commands_comment('If required, ASDMs are converted to MeasurementSets.')
 class ALMAImportData(importdata.ImportData):
     Inputs = ALMAImportDataInputs
+    Results = ALMAImportDataResults
 
     def _get_fluxes(self, context, observing_run):
         # get the flux measurements from Source.xml for each MS

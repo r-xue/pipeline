@@ -67,6 +67,11 @@ def correct_ant_posns(vis_name, print_offsets=False):
     bjb
     nrao
     spring 2012
+
+    Update:
+    BJB
+    NRAO
+    Spring 2020 (fixed version)
     """
 
     MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
@@ -85,8 +90,8 @@ def correct_ant_posns(vis_name, print_offsets=False):
     date_time = casatools.quanta.time(q1, form='ymd')
     # date_time looks like: '2011/08/10/06:56:49'
     [obs_year, obs_month, obs_day, obs_time_string] = date_time[0].split('/')
-    if (int(obs_year) < 2010):
-        if (print_offsets):
+    if int(obs_year) < 2010:
+        if print_offsets:
             LOG.warn('Does not work for VLA observations')
         return [1, '', []]
     [obs_hour, obs_minute, obs_second] = obs_time_string.split(':')
@@ -98,7 +103,7 @@ def correct_ant_posns(vis_name, print_offsets=False):
     # get antenna to station mappings
     #
     with casatools.TableReader(vis_name+'/ANTENNA') as table:
-        #observation = tb.open(vis_name+'/ANTENNA')
+        # observation = tb.open(vis_name+'/ANTENNA')
         ant_names = table.getcol('NAME')
         ant_stations = table.getcol('STATION')
     ant_num_stas = []
@@ -111,14 +116,15 @@ def correct_ant_posns(vis_name, print_offsets=False):
     try:
         response = urllib.request.urlopen(URL_BASE + '2010')
     except urllib.error.URLError as err:
-        if (print_offsets):
+        if print_offsets:
             LOG.warn('No internet connection to antenna position correction URL {}'.format(err.reason))
         return [2, '', []]
     response.close()
     for year in range(2010, current_year+1):
         response = urllib.request.urlopen(URL_BASE + str(year))
-        html = response.read()
+        htmlresponse = response.read()
         response.close()
+        html = htmlresponse.decode()
         html_lines = html.split('\n')
 
         for correction_line in html_lines:
@@ -131,12 +137,12 @@ def correct_ant_posns(vis_name, print_offsets=False):
     corrections_list = []
     for correction_line in correction_lines:
         correction_line_fields = correction_line.split()
-        if (len(correction_line_fields) > 9):
+        if len(correction_line_fields) > 9:
             [c_year, moved_date, obs_date, put_date, put_time_str, ant, pad, Bx, By, Bz] = correction_line_fields
             s_moved = moved_date[:3]
             i_month = 1
             for month in MONTHS:
-                if (moved_date.find(month) >= 0):
+                if moved_date.find(month) >= 0:
                     break
                 i_month = i_month + 1
             moved_time = 10000 * int(c_year) + 100 * i_month + \
@@ -148,14 +154,14 @@ def correct_ant_posns(vis_name, print_offsets=False):
         s_obs = obs_date[:3]
         i_month = 1
         for month in MONTHS:
-            if (s_obs.find(month) >= 0):
+            if s_obs.find(month) >= 0:
                 break
             i_month = i_month + 1
         obs_time_2 = 10000 * int(c_year) + 100 * i_month + int(obs_date[3:])
         s_put = put_date[:3]
         i_month = 1
         for month in MONTHS:
-            if (s_put.find(month) >= 0):
+            if s_put.find(month) >= 0:
                 break
             i_month = i_month + 1
         put_time = 10000 * int(c_year) + 100 * i_month + int(put_date[3:])
@@ -168,44 +174,41 @@ def correct_ant_posns(vis_name, print_offsets=False):
         [c_year, moved_date, moved_time, obs_date, obs_time_2, put_date, put_time, ant, pad, Bx, By, Bz] = correction_list
         ant_ind = -1
         for ii in range(len(ant_num_stas)):
-            ant_num_sta = ant_num_stas[ii]
-            if (ant == ant_num_sta[0]):
+            if ant_num_stas[ii][0] == ant:
                 ant_ind = ii
                 break
-        if ((ant_ind == -1) or (ant_num_sta[6])):
-            # the antenna in this correction isn't in the observation, or is done,
-            # so skip it
-            pass
-        ant_num_sta = ant_num_stas[ant_ind]
-        if (moved_time):
-            # the antenna moved
-            if (moved_time > obs_time):
-                # we are done considering this antenna
-                ant_num_sta[6] = True
-            else:
-                # otherwise, it moved, so the offsets should be reset
-                ant_num_sta[3] = 0.0
-                ant_num_sta[4] = 0.0
-                ant_num_sta[5] = 0.0
-        if ((put_time > obs_time) and (not ant_num_sta[6]) and (pad == ant_num_sta[2])):
-            # it's the right antenna/pad; add the offsets to those already accumulated
-            ant_num_sta[3] += Bx
-            ant_num_sta[4] += By
-            ant_num_sta[5] += Bz
+        # make sure the antenna in this correction is in the observation,
+        # and is not done
+        if ant_ind != -1 and not ant_num_stas[ant_ind][6]:
+            ant_num_sta = ant_num_stas[ant_ind]
+            if moved_time:
+                # the antenna moved
+                if moved_time > obs_time:
+                    # we are done considering this antenna
+                    ant_num_stas[ant_ind][6] = True
+                else:
+                    # otherwise, it moved, so the offsets should be reset
+                    ant_num_stas[ant_ind][3] = 0.0
+                    ant_num_stas[ant_ind][4] = 0.0
+                    ant_num_stas[ant_ind][5] = 0.0
+            if put_time > obs_time and not ant_num_stas[ant_ind][6] and pad == ant_num_stas[ant_ind][2]:
+                # it's the right antenna/pad; add the offsets to those already accumulated
+                ant_num_stas[ant_ind][3] += Bx
+                ant_num_stas[ant_ind][4] += By
+                ant_num_stas[ant_ind][5] += Bz
 
     ants = []
     parms = []
-    for ii in range(len(ant_num_stas)):
-        ant_num_sta = ant_num_stas[ii]
-        if ((ant_num_sta[3] != 0.0) or (ant_num_sta[4] != 0.0) or (ant_num_sta[3] != 0.0)):
-            if (print_offsets):
-                LOG.info("offsets for antenna %4s : %8.5f  %8.5f  %8.5f" %
-                         (ant_num_sta[1], ant_num_sta[3], ant_num_sta[4], ant_num_sta[5]))
+    for ant_num_sta in ant_num_stas:
+        if ant_num_sta[3] != 0.0 or ant_num_sta[4] != 0.0 or ant_num_sta[3] != 0.0:
+            if print_offsets:
+                LOG.info("Offsets for antenna %4s on pad %3s: %8.5f  %8.5f  %8.5f" %
+                         (ant_num_sta[1], ant_num_sta[2], ant_num_sta[3], ant_num_sta[4], ant_num_sta[5]))
             ants.append(ant_num_sta[1])
             parms.append(ant_num_sta[3])
             parms.append(ant_num_sta[4])
             parms.append(ant_num_sta[5])
-    if ((len(parms) == 0) and print_offsets):
+    if len(parms) == 0 and print_offsets:
         LOG.info("No offsets found for this MS")
     ant_string = ','.join(["%s" % ii for ii in ants])
     return [0, ant_string, parms]

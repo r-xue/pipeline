@@ -18,6 +18,7 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
 from pipeline.domain.measures import FluxDensityUnits, FrequencyUnits
+from pipeline.h.tasks.common import atmutil
 from pipeline.h.tasks.importdata.fluxes import ORIGIN_XML, ORIGIN_ANALYSIS_UTILS
 from pipeline.infrastructure.renderer import logger
 from . import display as gfluxscale
@@ -33,44 +34,33 @@ class T2_4MDetailsGFluxscaleRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def __init__(self, uri='gfluxscale.mako', 
                  description='Transfer fluxscale from amplitude calibrator',
                  always_rerender=False):
-        super(T2_4MDetailsGFluxscaleRenderer, self).__init__(uri=uri,
-                description=description, always_rerender=always_rerender)
+        super(T2_4MDetailsGFluxscaleRenderer, self).__init__(
+            uri=uri, description=description, always_rerender=always_rerender)
 
     def update_mako_context(self, mako_context, pipeline_context, results):
-        #All antenna, sort by baseband
+        # All antenna, sort by baseband
         ampuv_allant_plots = collections.defaultdict(dict)
         for intents in ['AMPLITUDE']:
-            plots = self.create_plots(pipeline_context, 
-                                      results, 
-                                      gfluxscale.GFluxscaleSummaryChart, 
-                                      intents)
+            plots = self.create_plots(pipeline_context, results, gfluxscale.GFluxscaleSummaryChart, intents)
             self.sort_plots_by_baseband(plots)
-
-            key = intents
             for vis, vis_plots in plots.items():
                 if len(vis_plots) > 0:
-                    ampuv_allant_plots[vis][key] = vis_plots
+                    ampuv_allant_plots[vis][intents] = vis_plots
 
-        #List of antenna for the fluxscale result, sorted by baseband
+        # List of antenna for the fluxscale result, sorted by baseband
         ampuv_ant_plots = collections.defaultdict(dict)
-
         for intents in ['AMPLITUDE']:
-            plots = self.create_plots_ants(pipeline_context, 
-                                      results, 
-                                      gfluxscale.GFluxscaleSummaryChart, 
-                                      intents)
+            plots = self.create_plots_ants(pipeline_context, results, gfluxscale.GFluxscaleSummaryChart, intents)
             self.sort_plots_by_baseband(plots)
-
-            key = intents
             for vis, vis_plots in plots.items():
                 if len(vis_plots) > 0:
-                    ampuv_ant_plots[vis][key] = vis_plots
+                    ampuv_ant_plots[vis][intents] = vis_plots
 
         flux_comparison_plots = self.create_flux_comparison_plots(pipeline_context, results)
 
         table_rows = make_flux_table(pipeline_context, results)
 
-        adopted_rows = make_adopted_table(pipeline_context, results)
+        adopted_rows = make_adopted_table(results)
 
         mako_context.update({
             'adopted_table': adopted_rows,
@@ -80,13 +70,14 @@ class T2_4MDetailsGFluxscaleRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'table_rows': table_rows
         })
 
-    def sort_plots_by_baseband(self, d):
+    @staticmethod
+    def sort_plots_by_baseband(d):
         for vis, plots in d.items():
-            plots = sorted(plots, 
-                           key=lambda plot: plot.parameters['baseband'])
+            plots = sorted(plots, key=lambda plot: plot.parameters['baseband'])
             d[vis] = plots
 
-    def create_flux_comparison_plots(self, context, results):
+    @staticmethod
+    def create_flux_comparison_plots(context, results):
         output_dir = os.path.join(context.report_dir, 'stage%s' % results.stage_number)
         d = {}
 
@@ -109,17 +100,18 @@ class T2_4MDetailsGFluxscaleRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
     def create_plots_ants(self, context, results, plotter_cls, intents, renderer_cls=None):
         """
-        Create plots and return a dictionary of vis:[Plots].  Antenna and UVrange selection
-                                                              determined by heuristics.
+        Create plots and return a dictionary of vis:[Plots].
+        Antenna and UVrange selection determined by heuristics.
         """
         d = {}
         for result in results:
-            plots = self.plots_for_result(context, result, plotter_cls,
-                    intents, renderer_cls, ant=result.resantenna, uvrange=result.uvrange)
+            plots = self.plots_for_result(context, result, plotter_cls, intents, renderer_cls, ant=result.resantenna,
+                                          uvrange=result.uvrange)
             d = utils.dict_merge(d, plots)
         return d
 
-    def plots_for_result(self, context, result, plotter_cls, intents, renderer_cls=None, ant='', uvrange=''):
+    @staticmethod
+    def plots_for_result(context, result, plotter_cls, intents, renderer_cls=None, ant='', uvrange=''):
         vis = os.path.basename(result.inputs['vis'])
 
         output_dir = os.path.join(context.report_dir, 'stage%s' % result.stage_number)
@@ -144,6 +136,7 @@ class T2_4MDetailsGFluxscaleRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
 FluxTR = collections.namedtuple('FluxTR', 'vis field spw freqbw i q u v fluxratio spix')
 
+
 def make_flux_table(context, results):
     # will hold all the flux stat table rows for the results
     rows = []
@@ -154,8 +147,8 @@ def make_flux_table(context, results):
 
         transintent = set(single_result.inputs['transintent'].split(','))
         
-        # measurements will be empty if fluxscale derivation failed
-        if len(single_result.measurements) is 0:
+        # measurements will be empty if calibrated visibility flux derivation failed
+        if len(single_result.measurements) == 0:
             continue
 
         for field_arg, measurements in single_result.measurements.items():
@@ -218,7 +211,49 @@ def make_flux_table(context, results):
                         flux_ratio = '%0.3f' % (float(flux_jy_I) / float(catflux_jy_I))
                     break
 
+                # Get the corresponding fluxscale derived fluxes.
+                fsfluxes = collections.defaultdict(lambda: 'N/A')
+                fs_measurements = single_result.fluxscale_measurements
+
+                if str(field.id) in fs_measurements:
+                    for fs_measurement in fs_measurements[str(field.id)]:
+                        if fs_measurement.spw_id != int(measurement.spw_id):
+                            continue
+
+                        for stokes in ['I', 'Q', 'U', 'V']:
+                            try:
+                                fsflux = getattr(fs_measurement, stokes)
+                                fsunc = getattr(fs_measurement.uncertainty, stokes)
+
+                                fsflux_jy = fsflux.to_units(measures.FluxDensityUnits.JANSKY)
+                                fsunc_jy = fsunc.to_units(measures.FluxDensityUnits.JANSKY)
+
+                                if fsflux_jy != 0 and fsunc_jy != 0:
+                                    fsunc_ratio = decimal.Decimal('100') * (fsunc_jy / fsflux_jy)
+                                    fsunc_str = ' &#177; %s (%0.1f%%)' % (str(fsunc), fsunc_ratio)
+                                else:
+                                    fsunc_str = ''
+
+                                fsfluxes[stokes] = '%s%s' % (fsflux, fsunc_str)
+                            except:
+                                pass
+                        try:
+                            fsfluxes['spix'] = '%s' % getattr(fs_measurement, 'spix')
+                        except:
+                            fsfluxes['spix'] = '0.0'
+                        break
+
+                # Create the table row for current result (vis), field, and spw.
                 tr = FluxTR(vis_cell, field_cell, measurement.spw_id, freqbw, 
+                            fsfluxes['I'],
+                            fsfluxes['Q'],
+                            fsfluxes['U'],
+                            fsfluxes['V'],
+                            flux_ratio,
+                            fluxes['spix'])
+                rows.append(tr)
+
+                tr = FluxTR(vis_cell, field_cell, measurement.spw_id, freqbw,
                             fluxes['I'],
                             fluxes['Q'],
                             fluxes['U'],
@@ -227,7 +262,7 @@ def make_flux_table(context, results):
                             fluxes['spix'])
                 rows.append(tr)
 
-                tr = FluxTR(vis_cell, field_cell, measurement.spw_id, freqbw, 
+                tr = FluxTR(vis_cell, field_cell, measurement.spw_id, freqbw,
                             catfluxes['I'],
                             catfluxes['Q'],
                             catfluxes['U'],
@@ -242,7 +277,7 @@ def make_flux_table(context, results):
 AdoptedTR = collections.namedtuple('AdoptedTR', 'vis fields')
 
 
-def make_adopted_table(context, results):
+def make_adopted_table(results):
     # will hold all the flux stat table rows for the results
     rows = []
 
@@ -257,7 +292,7 @@ def make_adopted_table(context, results):
     return utils.merge_td_columns(rows)
 
 
-def create_flux_comparison_plots(context, output_dir, result):
+def create_flux_comparison_plots(context, output_dir, result, showatm=True):
     ms = context.observing_run.get_ms(result.vis)
 
     plots = []
@@ -269,6 +304,9 @@ def create_flux_comparison_plots(context, output_dir, result):
         fields = ms.get_fields(task_arg=field_id)
         assert len(fields) == 1
         field = fields[0]
+
+        # Fetch fluxscale derived scaling factors for same field, if they exist.
+        fluxscale_measurements = result.fluxscale_measurements.get(field_id)
 
         ax.set_title('Flux calibration: {}'.format(field.name))
         ax.set_xlabel('Frequency (GHz)')
@@ -286,15 +324,29 @@ def create_flux_comparison_plots(context, output_dir, result):
             x = spw.centre_frequency.to_units(FrequencyUnits.GIGAHERTZ)
             x_unc = decimal.Decimal('0.5') * spw.bandwidth.to_units(FrequencyUnits.GIGAHERTZ)
 
+            # Add fluxscale derived scaling factor for spw as slightly smaller
+            # black open circles.
+            if fluxscale_measurements:
+                fs_m = [n for n in fluxscale_measurements if n.spw_id == m.spw_id]
+                if fs_m:
+                    fs_y = fs_m[0].I.to_units(FluxDensityUnits.JANSKY)
+                    fs_y_unc = fs_m[0].uncertainty.I.to_units(FluxDensityUnits.JANSKY)
+
+                    label = 'Scaling factor for spw {}'.format(spw.id)
+                    ax.errorbar(x, fs_y, xerr=x_unc, yerr=fs_y_unc, fmt='k-o'.format(colour), label=label,
+                                fillstyle='none', markersize=5)
+
+            # Plot calibrated fluxes.
             y = m.I.to_units(FluxDensityUnits.JANSKY)
             y_unc = m.uncertainty.I.to_units(FluxDensityUnits.JANSKY)
 
-            label = 'Derived flux for spw {}'.format(spw.id)
+            label = 'Calibrated flux for spw {}'.format(spw.id)
             ax.errorbar(x, y, xerr=x_unc, yerr=y_unc, fmt='{!s}-o'.format(colour), label=label)
 
             x_min = min(x_min, x - x_unc)
             x_max = max(x_max, x + x_unc)
 
+        # Plot fluxes from ASDM, catalog, and/or analysisUtils.
         catalogue_fluxes = {
             ORIGIN_XML: 'ASDM',
             ORIGIN_DB: 'online catalogue',
@@ -321,13 +373,42 @@ def create_flux_comparison_plots(context, output_dir, result):
                     linestyle='dotted')
             ax.plot([x[-1], x_max], [y[-1], s_xmax], color=colour, label='_nolegend_', linestyle='dotted')
 
+        # Plot atmospheric transmission.
+        if showatm:
+            atm_color = 'm'
+
+            # Create 2nd axis for atmospheric transmission.
+            axes_atm = ax.twinx()
+            axes_atm.set_ylabel('ATM Transmission', color=atm_color, labelpad=2)
+            axes_atm.set_ylim(0, 1.05)
+            axes_atm.tick_params(direction='out', colors=atm_color)
+            axes_atm.yaxis.set_major_formatter(plt.FuncFormatter(lambda t, pos: '{}%'.format(int(t * 100))))
+            axes_atm.yaxis.tick_right()
+
+            # Select antenna to use for determining atmospheric transmission:
+            # Preferably use highest ranked reference antenna, otherwise
+            # use antenna ID = 0.
+            ant_id = 0
+            if hasattr(ms, 'reference_antenna') and isinstance(ms.reference_antenna, str):
+                ant_id = ms.get_antenna(search_term=ms.reference_antenna.split(',')[0])[0].id
+
+            # For each spw in the flux measurements, compute and plot the
+            # atmospheric transmission vs. frequency.
+            spw_ids = sorted([m.spw_id for m in measurements])
+            for spw_id in spw_ids:
+                atm_freq, atm_transmission = atmutil.get_transmission(vis=result.vis, spw_id=spw_id, antenna_id=ant_id)
+                axes_atm.plot(atm_freq, atm_transmission, color=atm_color, linestyle='-', linewidth=0.4)
+
+        # Include plot legend.
         leg = ax.legend(loc='best', numpoints=1, prop={'size': 8})
         leg.get_frame().set_alpha(0.5)
         figfile = '{}-field{}-flux_calibration.png'.format(ms.basename, field_id)
 
+        # Save figure to file.
         full_path = os.path.join(output_dir, figfile)
         fig.savefig(full_path)
 
+        # Create a wrapper for current plot, and append to list of plots.
         parameters = {
             'vis': ms.basename,
             'field': field.name,

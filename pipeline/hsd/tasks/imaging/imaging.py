@@ -1,11 +1,13 @@
 import collections
 import os
 
+import math
 import numpy
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
+import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.imageheader as imageheader
@@ -25,11 +27,15 @@ from . import detectcontamination
 from .. import common
 from ..baseline import baseline
 from ..common import compress
+from ..common import rasterutil
 from ..common import utils as sdutils
 
 LOG = infrastructure.get_logger(__name__)
 
 SensitivityInfo = collections.namedtuple('SensitivityInfo', 'sensitivity representative frequency_range')
+# RasterInfo: width=map extent along scan, height=map extent perpendicular to scan
+#             angle=scan direction w.r.t. horizontal coordinate, row_separation=separation between raster rows.
+RasterInfo = collections.namedtuple('RasterInfo', 'width height scan_angle row_separation row_duration') 
 
 
 class SDImagingInputs(vdp.StandardInputs):
@@ -123,7 +129,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                                 imagemode, stokes, validsp, rms, edge,
                                 reduction_group_id, file_index,
                                 assoc_antennas, assoc_fields, assoc_spws, # , assoc_pols=pols,
-                                sensitivity_info=None):
+                                sensitivity_info=None, theoretical_rms=None):
         # override attributes for image item
         # the following two attributes are currently hard-coded
         specmode = 'cube'
@@ -144,6 +150,9 @@ class SDImaging(basetask.StandardTaskTemplate):
         # attach sensitivity_info if available
         if sensitivity_info is not None:
             result.sensitivity_info = sensitivity_info
+        # attach theoretical RMS if available
+        if theoretical_rms is not None:
+            result.theoretical_rms = theoretical_rms
 
         # set some information to image header
         image_item = result.outcome['image']
@@ -686,11 +695,17 @@ class SDImaging(basetask.StandardTaskTemplate):
                 LOG.info("Line free channel ranges of image to calculate RMS = {}".format(str(include_channel_range)))
 
                 stat_chans = str(';').join([ '{:d}~{:d}'.format(include_channel_range[iseg], include_channel_range[iseg+1]) for iseg in range(0, len(include_channel_range), 2) ])
-                # statistics
+                # Image statistics
                 imstat_job = casa_tasks.imstat(imagename=imagename, chans=stat_chans)
                 statval = self._executor.execute(imstat_job)
                 image_rms = statval['rms'][0]
                 LOG.info("Statistics of line free channels ({}): RMS = {:f} {}, Stddev = {:f} {}, Mean = {:f} {}".format(stat_chans, statval['rms'][0], brightnessunit, statval['sigma'][0], brightnessunit, statval['mean'][0], brightnessunit))
+                # Theoretical RMS
+                LOG.info('Calculating theoretical RMS of image, {}'.format(imagename))
+                theoretical_rms = self.calculate_theoretical_image_rms(combined_infiles, combined_antids,
+                                                                       combined_fieldids, combined_spws,
+                                                                       combined_pols, qcell, chan_width, brightnessunit,
+                                                                       dt_dict)
 
                 # estimate
                 if is_representative_spw:
@@ -708,9 +723,10 @@ class SDImaging(basetask.StandardTaskTemplate):
                         if factor is None:
                             LOG.warn('No image RMS improvement because representative bandwidth is narrower than native width')
                             factor = 1.0
-                        LOG.info("Image RMS improvement of factor {:f} estimated. {:f} => {:f} [Jy/beam]".format(factor, image_rms, image_rms/factor))
+                        LOG.info("Image RMS improvement of factor {:f} estimated. {:f} => {:f} {}".format(factor, image_rms, image_rms/factor, brightnessunit))
                         image_rms = image_rms/factor
                         chan_width = numpy.abs(cqa.getvalue(cqa.convert(cqa.quantity(rep_bw), 'Hz'))[0])
+                        theoretical_rms['value'] = theoretical_rms['value']/factor
                 elif rep_bw is None:
                     LOG.warn("Representative bandwidth is not available. Skipping estimate of sensitivity in representative band width.")
                 elif rep_spwid is None:
@@ -735,14 +751,21 @@ class SDImaging(basetask.StandardTaskTemplate):
                                           bandwidth=cqa.quantity(chan_width, 'Hz'),
                                           bwmode='repBW',
                                           beam=beam, cell=qcell,
-                                          sensitivity=cqa.quantity(image_rms, 'Jy/beam'))
+                                          sensitivity=cqa.quantity(image_rms, brightnessunit))
+                theoretical_noise = Sensitivity(array='TP',
+                                          field=source_name,
+                                          spw=str(combined_spws[0]),
+                                          bandwidth=cqa.quantity(chan_width, 'Hz'),
+                                          bwmode='repBW',
+                                          beam=beam, cell=qcell,
+                                          sensitivity=theoretical_rms)
                 sensitivity_info = SensitivityInfo(sensitivity, is_representative_spw, stat_freqs)
                 self._finalize_worker_result(context, imager_result,
                                              sourcename=source_name, spwlist=combined_v_spws, antenna='COMBINED',  #specmode='cube', sourcetype='TARGET',
                                              imagemode=imagemode, stokes=self.stokes, validsp=validsps, rms=rmss, edge=edge,
                                              reduction_group_id=group_id, file_index=file_index,
                                              assoc_antennas=combined_antids, assoc_fields=combined_fieldids, assoc_spws=combined_v_spws,  #, assoc_pols=pols,
-                                             sensitivity_info=sensitivity_info)
+                                             sensitivity_info=sensitivity_info, theoretical_rms=theoretical_noise)
 
                 # PIPE-251: detect contamination
                 detectcontamination.detect_contamination(context, imager_result.outcome['image'])
@@ -963,3 +986,266 @@ class SDImaging(basetask.StandardTaskTemplate):
         namer.iteration(0)
         imagename = namer.get_filename()
         return imagename
+
+    def calculate_theoretical_image_rms(self, infiles, antids, fieldids, spwids,
+                                        pols, cell, bandwidth, imageunit, datatable_dict):
+        """
+        Calculate theoretical RMS of an image (PIPE-657).
+        
+        Parameters:
+            infiles: a list of MS names
+            antids: a list of antenna IDs, e.g., [3, 3]
+            fieldids: a list of field IDs, e.g., [1, 1]
+            spwids: a list of SpW IDs, e.g., [17, 17]
+            pols: a list of polarization strings, e.g., [['XX', 'YY'], ['XX', 'YY']]
+            cell: cell size of an image
+            bandwidth: channel width of an image
+            imageunit: the brightness unit of image. If unit is not 'K', Jy/K factor is used to convert unit (need Jy/K factor applied in a previous stage)
+        Note: the number of elements in antids, fieldids, spws, and pols should be equal to that of infiles
+        Retruns:
+            A quantum value of theoretical image RMS.
+            The value of quantity will be negative when calculation is aborted, i.e., -1.0 Jy/beam
+        """
+        cqa = casatools.quanta
+        failed_rms = cqa.quantity(-1, imageunit)
+        if len(infiles) == 0:
+            LOG.error('No MS given to calculate a theoretical RMS. Aborting calculation of theoretical thermal noise.')
+            return failed_rms
+        assert len(infiles) == len(antids)
+        assert len(infiles) == len(fieldids)
+        assert len(infiles) == len(spwids)
+        assert len(infiles) == len(pols)
+        sq_rms = 0.0
+        N = 0.0
+        time_unit = 's'
+        ang_unit = cqa.getunit(cell[0])
+        cx_val = cqa.getvalue(cell[0])[0]
+        cy_val = cqa.getvalue(cqa.convert(cell[1], ang_unit))[0]
+        bandwidth = numpy.abs(bandwidth)
+        context = self.inputs.context
+        is_nro = sdutils.is_nro(context)
+        for (infile, antid, fieldid, spwid, pol_names) in zip(infiles, antids, fieldids, spwids, pols):
+            msobj = context.observing_run.get_ms(sdutils.get_parent_ms_name(context, infile))
+            dd_corrs = msobj.get_data_description(spw=spwid).corr_axis
+            polids = [dd_corrs.index(p) for p in pol_names if p in dd_corrs]
+            field_name = msobj.get_fields(field_id=fieldid)[0].name
+            error_msg = 'Aborting calculation of theoretical thermal noise of Field {} and SpW {}'.format(field_name, spwid)
+            if msobj.observing_pattern[antid][spwid][fieldid] != 'RASTER':
+                LOG.warn('Unable to calculate RMS of non-Raster map. '+error_msg)
+                return failed_rms
+            LOG.info('Processing MS {}, Field {}, SpW {}, Antenna {}, Pol {}'.format(os.path.basename(infile),
+                                                                                     field_name,
+                                                                                     spwid,
+                                                                                     msobj.get_antenna(antid)[0].name,
+                                                                                     str(pol_names)))
+            dt = datatable_dict[msobj.basename]
+            _index_list = common.get_index_list_for_ms(dt, [msobj.basename], [antid], [fieldid],
+                                                       [spwid], srctype=0)
+            if len(_index_list) == 0: #this happens when permanent flag is set to all selection.
+                LOG.info('No unflagged row in DataTable. Skipping further calculation.')
+                continue
+            # effective BW
+            with casatools.MSMDReader(infile) as msmd:
+                ms_chanwidth = numpy.abs(msmd.chanwidths(spwid).mean())
+                ms_effbw = msmd.chaneffbws(spwid).mean()
+                ms_nchan = msmd.nchan(spwid)
+                nchan_avg = sensitivity_improvement.onlineChannelAveraging(infile, spwid, msmd)
+            if bandwidth/ms_chanwidth < 1.1: # imaging by the original channel
+                effBW = ms_effbw
+                LOG.info('Using an MS effective bandwidth, {} kHz'.format(effBW*0.001))
+                #else: # pre-Cycle 3 alma data
+                #    effBW = ms_chanwidth * sensitivity_improvement.windowFunction('hanning', channelAveraging=nchan_avg,
+                #                                                                  returnValue='EffectiveBW')
+                #    LOG.info('Using an estimated effective bandwidth {} kHz'.format(effBW*0.001))
+            else:
+                image_map_chan = bandwidth/ms_chanwidth
+                effBW = ms_chanwidth * sensitivity_improvement.windowFunction('hanning', channelAveraging=nchan_avg,
+                                                                              returnValue='EffectiveBW', useCAS8534=True,
+                                                                              spwchan=ms_nchan, nchan=image_map_chan)
+                LOG.info('Using an adjusted effective bandwidth of image, {} kHz'.format(effBW*0.001))
+            # obtain average Tsys
+            mean_tsys_per_pol = dt.getcol('TSYS').take(_index_list, axis=-1).mean(axis=-1)
+            LOG.info('Mean Tsys = {} K'.format(str(mean_tsys_per_pol)))
+            # obtain Wx, and Wy
+            raster_info = _analyze_raster_pattern(dt, msobj, fieldid, spwid, antid, polids[0])
+            width = cqa.getvalue(cqa.convert(raster_info.width, ang_unit))[0]
+            height = cqa.getvalue(cqa.convert(raster_info.height, ang_unit))[0]
+            # obtain T_OS,f
+            unit = dt.getcolkeyword('EXPOSURE', 'UNIT')
+            t_on_tot = cqa.getvalue(cqa.convert(cqa.quantity(dt.getcol('EXPOSURE').take(_index_list, axis=-1).sum(), unit), time_unit))[0]
+            # flagged fraction
+            full_intent = utils.to_CASA_intent(msobj, 'TARGET')
+            flagdata_summary_job = casa_tasks.flagdata(vis=infile, mode='summary',
+                                                       antenna='{}&&&'.format(antid),
+                                                       field=str(fieldid),
+                                                       spw=str(spwid), intent=full_intent,
+                                                       spwcorr=False, fieldcnt=False,
+                                                       name='summary')
+            flag_stats = self._executor.execute(flagdata_summary_job)
+            frac_flagged = flag_stats['spw'][str(spwid)]['flagged']/flag_stats['spw'][str(spwid)]['total']
+            # the actual time on source
+            t_on_act = t_on_tot * (1.0-frac_flagged)
+            LOG.info('The actual on source time = {} {}'.format(t_on_act, time_unit))
+            LOG.info('- total time on source = {} {}'.format(t_on_tot, time_unit))
+            LOG.info('- flagged Fraction = {} %'.format(100*frac_flagged))
+            # obtain calibration tables applied
+            calto = callibrary.CalTo(vis=msobj.name, field=str(fieldid))
+            calst = context.callibrary.get_calstate(calto)
+            # obtain T_sub,on, T_sub,off
+            t_sub_on = cqa.getvalue(cqa.convert(raster_info.row_duration, time_unit))[0]
+            sky_field = msobj.calibration_strategy['field_strategy'][fieldid]
+            try:
+                skytab = ''
+                caltabs = context.callibrary.applied.get_caltable('ps')
+                ### For some reasons, sky caltable is not registered to calstate
+                for cto, cfrom in context.callibrary.applied.merged().items():
+                    if cto.vis == msobj.name and (cto.field == '' or fieldid in [f.id for f in msobj.get_fields(name=cto.field)]):
+                        for cf in cfrom:
+                            if cf.gaintable in caltabs:
+                                skytab=cf.gaintable
+                                break
+            except:
+                LOG.error('Could not find a sky caltable applied. '+error_msg)
+                raise
+            if not os.path.exists(skytab):
+                LOG.warn('Could not find a sky caltable applied. '+error_msg)
+                return failed_rms
+            LOG.info('Searching OFF scans in {}'.format(os.path.basename(skytab)))
+            with casatools.TableReader(skytab) as tb:
+                t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}&&FIELD_ID=={}'.format(spwid, antid, sky_field), columns='INTERVAL')
+                if t.nrows == 0:
+                    LOG.warn('No sky caltable row found for spw {}, antenna {}, field {} in {}. {}'.format(spwid, antid, sky_field, os.path.basename(skytab), error_msg))
+                    return failed_rms
+                unit = t.getcolkeyword('INTERVAL', 'QuantumUnits')[0]
+                t_sub_off = cqa.getvalue(cqa.convert(cqa.quantity(t.getcol('INTERVAL').mean(), unit), time_unit))[0]
+            LOG.info('Subscan Time ON = {} {}, OFF = {} {}'.format(t_sub_on, time_unit, t_sub_off, time_unit))
+            # obtain factors by convolution function (THIS ASSUMES SF kernel with either convsupport = 6 (ALMA) or 3 (NRO)
+            # TODO: Ggeneralize factor for SF, and Gaussian convolution function
+            conv2d = 0.3193 if is_nro else 0.1597
+            conv1d = 0.5592 if is_nro else 0.3954
+            if imageunit == 'K':
+                jy_per_k = 1.0
+                LOG.info('No Kelvin to Jansky conversion was performed to the image.')
+            else:
+                # obtain Jy/k factor
+                try:
+                    k2jytab = ''
+                    caltabs = context.callibrary.applied.get_caltable('amp')
+                    found = caltabs.intersection(calst.get_caltable('amp'))
+                    if len(found) == 0:
+                        LOG.warn('Could not find a Jy/K caltable applied. '+error_msg)
+                        return failed_rms
+                    if len(found) > 1:
+                        LOG.warn('More than one Jy/K caltables are found.')
+                    k2jytab = found.pop()
+                    LOG.info('Searching Jy/K factor in {}'.format(os.path.basename(k2jytab)))
+                except:
+                    LOG.error('Could not find a Jy/K caltable applied. '+error_msg)
+                    raise
+                if not os.path.exists(k2jytab):
+                    LOG.warn('Could not find a Jy/K caltable applied. '+error_msg)
+                    return failed_rms
+                with casatools.TableReader(k2jytab) as tb:
+                    t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}'.format(spwid, antid), columns='CPARAM')
+                    if t.nrows == 0:
+                        LOG.warn('No Jy/K caltable row found for spw {}, antenna {} in {}. {}'.format(spwid, antid, os.path.basename(k2jytab), error_msg))
+                        return failed_rms
+                    tc = t.getcol('CPARAM')
+                    jy_per_k = (1./tc.mean(axis=-1).real**2).mean()
+                    LOG.info('Jy/K factor = {}'.format(jy_per_k))
+            ang = cqa.getvalue(cqa.convert(raster_info.scan_angle, 'rad'))[0] + 0.5*numpy.pi
+            c_proj = numpy.sqrt( (cy_val* numpy.sin(ang))**2 + (cx_val*numpy.cos(ang))**2)
+            inv_variant_on = effBW * numpy.abs(cx_val * cy_val) * t_on_act / width / height
+            inv_variant_off = effBW * c_proj * t_sub_off * t_on_act / t_sub_on / height
+            
+            for ipol in polids:
+                sq_rms += (jy_per_k*mean_tsys_per_pol[ipol])**2 * (conv2d**2/inv_variant_on + conv1d**2/inv_variant_off) 
+                N += 1.0
+
+        theoretical_rms = numpy.sqrt(sq_rms)/N
+        LOG.info('Theoretical RMS of image = {} {}'.format(theoretical_rms, imageunit))
+        return cqa.quantity(theoretical_rms, imageunit)
+    
+
+def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
+    """
+    Analyze raster scan pattern from pointing in DataTable
+    Parameters:
+        datatable: DataTable instance
+        msobj: MS class instance to process
+        fieldid: a field ID to process
+        spwid: an SpW ID to process
+        antid: an antenna ID to process
+        polid: a polarization ID to process
+    Returns a named Tuple
+    """
+    _index_list = common.get_index_list_for_ms(datatable, [msobj.name], [antid], [fieldid],
+                                                       [spwid], srctype=0)
+    timestamp = datatable.getcol('TIME').take(_index_list, axis=-1)
+    ra = datatable.getcol('OFS_RA').take(_index_list, axis=-1)
+    dec = datatable.getcol('OFS_DEC').take(_index_list, axis=-1)
+    exposure = datatable.getcol('EXPOSURE').take(_index_list, axis=-1)
+    map_center_dec = datatable.getcol('DEC').take(_index_list, axis=-1).mean()
+    radec_unit = datatable.getcolkeyword('OFS_RA', 'UNIT')
+    assert radec_unit == datatable.getcolkeyword('OFS_DEC', 'UNIT')
+    exp_unit = datatable.getcolkeyword('EXPOSURE', 'UNIT')
+    gap_s, gap_l = rasterutil.find_time_gap(timestamp) #gap_s stores the last index in a raster row.
+    gap_r = rasterutil.find_raster_gap(timestamp, ra, dec, gap_s) #gap_r stores the last index in a raster iteration.
+    duration = []
+    num_integration = []
+    delta_ra = []
+    delta_dec = []
+    center_ra = []
+    center_dec = []
+    height_list = []
+    first_row = None # RA and Dec of the first raster row
+    
+    cqa = casatools.quanta
+    map_center_dec = cqa.getvalue(cqa.convert(cqa.quantity(map_center_dec, datatable.getcolkeyword('DEC', 'UNIT')),'rad'))[0]
+    dec_factor = numpy.abs(numpy.cos(map_center_dec))
+    # loop over raster rows.
+    # rasterutil.gap_gen returns 'start index' and 'end index+1' of each raster row
+    for start_idx, end_idx in rasterutil.gap_gen(gap_s):
+        duration.append(numpy.sum(exposure[start_idx:end_idx]))
+        num_integration.append(end_idx-start_idx)
+        delta_ra.append((ra[end_idx-1]-ra[start_idx])*dec_factor)
+        delta_dec.append(dec[end_idx-1]-dec[start_idx])
+        cra = ra[start_idx:end_idx].mean()
+        cdec = dec[start_idx:end_idx].mean()
+        center_ra.append(cra)
+        center_dec.append(cdec)
+        if first_row is None: first_row = (cra, cdec)
+        if end_idx-1 in gap_r:
+            height_list.append( numpy.hypot((first_row[0]-cra)*dec_factor, first_row[1]-cdec) )
+            first_row = None
+    if len(height_list) == 0: # only one iteration of map
+        height_list.append( numpy.hypot((first_row[0]-center_ra[-1])*dec_factor, first_row[1]-center_dec[-1]) )
+    center_ra = numpy.array(center_ra)
+    center_dec = numpy.array(center_dec)
+    row_sep_ra = (center_ra[1:]-center_ra[:-1])*dec_factor
+    row_sep_dec = center_dec[1:]-center_dec[:-1]
+    row_separation = numpy.median(numpy.hypot(row_sep_ra, row_sep_dec))
+    # find complate raster
+    num_row_int = rasterutil.find_most_frequent(num_integration)
+    complete_idx = numpy.where(num_integration >= num_row_int)
+    # raster scan parameters (TODO: projection?)
+    row_duration = numpy.array(duration)[complete_idx].mean()
+    row_delta_ra = numpy.abs(delta_ra)[complete_idx].mean()
+    row_delta_dec = numpy.abs(delta_dec)[complete_idx].mean()
+    width = numpy.hypot(row_delta_ra, row_delta_dec)
+    sign_ra = +1.0 if delta_ra[complete_idx[0][0]] >= 0 else -1.0
+    sign_dec = +1.0 if delta_dec[complete_idx[0][0]] >= 0 else -1.0
+    scan_angle = math.atan2(sign_dec*row_delta_dec, sign_ra*row_delta_ra)
+    hight = numpy.max(height_list)
+    raster_info = RasterInfo(cqa.quantity(width, radec_unit), cqa.quantity(hight, radec_unit),
+                             cqa.quantity(scan_angle, 'rad'), cqa.quantity(row_separation, radec_unit),
+                             cqa.quantity(row_duration, exp_unit))
+    LOG.info('Raster Information')
+    LOG.info('- Scan Extent: [{}, {}] (scan direction: {})'.format(cqa.tos(raster_info.width),
+                                                                   cqa.tos(raster_info.height),
+                                                                   cqa.tos(raster_info.scan_angle)))
+    LOG.info('- Raster row separation = {}'.format(cqa.tos(raster_info.row_separation)))
+    LOG.info('- Raster row scan duration = {}'.format(cqa.tos(cqa.convert(raster_info.row_duration, 's'))))
+    return raster_info
+        
+    

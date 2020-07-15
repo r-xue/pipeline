@@ -116,10 +116,13 @@ class Circfeedpolcal(polarization.Polarization):
     def do_prepare(self):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        self.ignorerefant = self.inputs.context.evla['msinfo'][m.name].ignorerefant
+        refantignore = self.inputs.refantignore + ','.join(self.ignorerefant)
+
         refantfield = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
         refantobj = findrefant.RefAntHeuristics(vis=self.inputs.vis, field=refantfield,
                                                 geometry=True, flagging=True, intent='', spw='',
-                                                refantignore=self.inputs.refantignore)
+                                                refantignore=refantignore)
         self.RefAntOutput = refantobj.calculate()
 
         # setjy for amplitude/flux calibrator (VLASS 3C286 or 3C48)

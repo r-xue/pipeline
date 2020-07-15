@@ -234,15 +234,24 @@ class SpwComposite(common.LeafComposite):
 
         children = []
         for spw in ms.get_spectral_windows(calto.spw):
+            # For PIPE-690 it was requested to create plots only for a certain spw/field
+            # selection. This is accomplished by passing a dictionary to the field
+            # override parameter.
+            if isinstance(field, dict):
+                field_spec = field.get(spw.id, None)
+                if field_spec is None:
+                    continue
+            else:
+                field_spec = field
             # only create plots for scans with data
-            scans = ms.get_scans(spw=spw.id, field=field, scan_intent=intent)
+            scans = ms.get_scans(spw=spw.id, field=field_spec, scan_intent=intent)
             if not scans:
                 continue
 
             kwargs_copy = dict(kwargs)
             kwargs_copy['avgchannel'] = kwargs.get('avgchannel', str(spw.num_channels))
 
-            leaf_obj = self.leaf_class(context, output_dir, calto, xaxis, yaxis, spw=spw.id, ant=ant, field=field,
+            leaf_obj = self.leaf_class(context, output_dir, calto, xaxis, yaxis, spw=spw.id, ant=ant, field=field_spec,
                                        intent=intent, **kwargs_copy)
             children.append(leaf_obj)
 

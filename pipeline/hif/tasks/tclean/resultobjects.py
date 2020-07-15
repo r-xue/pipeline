@@ -28,7 +28,7 @@ class BoxResult(basetask.Results):
 
 class TcleanResult(basetask.Results):
     def __init__(self, vis=None, sourcename=None, intent=None, spw=None, orig_specmode=None, specmode=None,
-                 multiterm=None, plotdir=None, imaging_mode=None):
+                 multiterm=None, plotdir=None, imaging_mode=None, is_per_eb=None):
         super(TcleanResult, self).__init__()
         self.vis = vis
         self.sourcename = sourcename
@@ -76,6 +76,7 @@ class TcleanResult(basetask.Results):
         self.check_source_fit = None
         self.cube_all_cont = False
         self.bad_psf_channels = None
+        self.is_per_eb = is_per_eb
 
     def merge_with_context(self, context):
         # Calculated sensitivities for later stages
@@ -158,6 +159,10 @@ class TcleanResult(basetask.Results):
         return self.iterations[iters[-1]].get('mom0_fc')
 
     def set_mom0_fc(self, iter, image):
+        '''
+        Sets name of moment 0 image computed from line-free channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
         self.iterations[iter]['mom0_fc'] = image
 
     @property
@@ -166,7 +171,35 @@ class TcleanResult(basetask.Results):
         return self.iterations[iters[-1]].get('mom8_fc')
 
     def set_mom8_fc(self, iter, image):
+        '''
+        Sets name of moment 8 image computed from line-free channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
         self.iterations[iter]['mom8_fc'] = image
+
+    @property
+    def mom0(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom0')
+
+    def set_mom0(self, iter, image):
+        '''
+        Sets name of moment 0 image computed from all channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
+        self.iterations[iter]['mom0'] = image
+
+    @property
+    def mom8(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom8')
+
+    def set_mom8(self, iter, image):
+        '''
+        Sets name of moment 8 image computed from all channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
+        self.iterations[iter]['mom8'] = image
 
     @property
     def psf(self):

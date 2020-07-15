@@ -552,7 +552,7 @@ class ImageParamsHeuristics(object):
 
     def cell(self, beam, pixperbeam=5.0):
 
-        '''Calculate cell size.'''
+        """Calculate cell size."""
 
         cqa = pl_casatools.quanta
         try:
@@ -734,7 +734,7 @@ class ImageParamsHeuristics(object):
 
         # it should be easy to calculate some 'average' direction
         # from the contributing fields but it doesn't seem to be
-        # at the moment - no conversion beween direction measures,
+        # at the moment - no conversion between direction measures,
         # no calculation of a direction from a direction and an
         # offset. Consequently, what follows is a bit crude.
 
@@ -981,9 +981,25 @@ class ImageParamsHeuristics(object):
 
         return repr_target, repr_source, virtual_repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, sensitivityGoal
 
-    def imsize(self, fields, cell, primary_beam, sfpblimit=None, max_pixels=None, centreonly=False, vislist=None):
+    def imsize(self, fields, cell, primary_beam, sfpblimit=None, max_pixels=None,
+               centreonly=False, vislist=None, spwspec=None):
+        """
+        Image size heuristics for single fields and mosaics. The pixel count along x and y image dimensions
+        is determined by the cell size, primary beam size and the spread of phase centers in case of mosaics.
 
-        # fields: list of comma separated strings of field IDs per MS
+        :param fields: list of comma separated strings of field IDs per MS.
+        :param cell: pixel (cell) size in arcsec.
+        :param primary_beam: primary beam width in arcsec.
+        :param sfpblimit: single field primary beam response. If provided then imsize is chosen such that the image
+            edge is at normalised primary beam level equals to sfpblimit.
+        :param max_pixels: maximum allowed pixel count, integer. The same limit is applied along both image axes.
+        :param centreonly: if True, then ignore the spread of field centers.
+        :param vislist: list of visibility path string to be used for imaging. If not set then use all visibilities
+            in the context.
+        :param spwspec: ID list of spectral windows used to create image product. List or string containing comma
+            separated spw IDs list. Not used in the base method.
+        :return: two element list of pixel count along x and y image axes.
+        """
 
         if vislist is None:
             vislist = self.vislist
@@ -1130,7 +1146,7 @@ class ImageParamsHeuristics(object):
 
                 # First check if the center edge is masked. If so, then the
                 # default pb level of 0.2 is fully within the image and no
-                # adjustmnt is needed.
+                # adjustment is needed.
                 if not iaTool.getchunk([nx // 2, 0, 0, nf // 2], [nx // 2, 0, 0, nf // 2], getmask=True).flatten()[0]:
                     return pblimit_image, pblimit_cleanmask
 
@@ -1157,36 +1173,53 @@ class ImageParamsHeuristics(object):
 
     def deconvolver(self, specmode, spwspec):
         if (specmode == 'cont'):
-            abs_min_frequency = 1.0e15
-            abs_max_frequency = 0.0
-            ms = self.observing_run.get_ms(name=self.vislist[0])
-            msname = self.vislist[0]
-            ms = self.observing_run.get_ms(name=msname)
-            for spwid in spwspec.split(','):
-                real_spwid = self.observing_run.virtual2real_spw_id(spwid, self.observing_run.get_ms(msname))
-                spw = ms.get_spectral_window(real_spwid)
-                min_frequency = float(spw.min_frequency.to_units(measures.FrequencyUnits.HERTZ))
-                if (min_frequency < abs_min_frequency):
-                    abs_min_frequency = min_frequency
-                max_frequency = float(spw.max_frequency.to_units(measures.FrequencyUnits.HERTZ))
-                if (max_frequency > abs_max_frequency):
-                    abs_max_frequency = max_frequency
-            if (2.0 * (abs_max_frequency - abs_min_frequency) / (abs_min_frequency + abs_max_frequency) > 0.1):
+            fr_bandwidth = self.get_fractional_bandwidth(spwspec)
+            if (fr_bandwidth > 0.1):
                 return 'mtmfs'
             else:
                 return 'hogbom'
         else:
             return 'hogbom'
 
+    def get_min_max_freq(self, spwspec):
+        """
+        Given a comma separated string list of spectral windows, determines the minimum and maximum
+        frequencies in spectral window list and the corresponding spectral window indexes.
+
+        :param spwspec: comma separated string list of spectral windows.
+        :return: tuple min. and max. frequencies (in Hz) and corresponding spw indexes.
+        """
+        abs_min_frequency = 1.0e15
+        abs_max_frequency = 0.0
+        msname = self.vislist[0]
+        ms = self.observing_run.get_ms(name=msname)
+        for spwid in spwspec.split(','):
+            real_spwid = self.observing_run.virtual2real_spw_id(spwid, self.observing_run.get_ms(msname))
+            spw = ms.get_spectral_window(real_spwid)
+            min_frequency = float(spw.min_frequency.to_units(measures.FrequencyUnits.HERTZ))
+            if (min_frequency < abs_min_frequency):
+                abs_min_frequency = min_frequency
+            max_frequency = float(spw.max_frequency.to_units(measures.FrequencyUnits.HERTZ))
+            if (max_frequency > abs_max_frequency):
+                abs_max_frequency = max_frequency
+        return (abs_min_frequency, abs_max_frequency)
+
+    def get_fractional_bandwidth(self, spwspec):
+
+        """Returns fractional bandwidth for selected spectral windows"""
+
+        abs_min_frequency, abs_max_frequency = self.get_min_max_freq(spwspec)
+        return 2.0 * (abs_max_frequency - abs_min_frequency) / (abs_min_frequency + abs_max_frequency)
+
     def robust(self):
 
-        '''Default robust value.'''
+        """Default robust value."""
 
         return 0.5
 
     def center_field_ids(self, msnames, field, intent, phasecenter, exclude_intent=None):
 
-        '''Get per-MS IDs of field closest to the phase center.'''
+        """Get per-MS IDs of field closest to the phase center."""
 
         meTool = pl_casatools.measures
         qaTool = pl_casatools.quanta
@@ -1211,7 +1244,7 @@ class ImageParamsHeuristics(object):
 
     def calc_topo_ranges(self, inputs):
 
-        '''Calculate TOPO ranges for hif_tclean inputs.'''
+        """Calculate TOPO ranges for hif_tclean inputs."""
 
         spw_topo_freq_param_lists = []
         spw_topo_chan_param_lists = []
@@ -1784,7 +1817,7 @@ class ImageParamsHeuristics(object):
 
     def dr_correction(self, threshold, dirty_dynamic_range, residual_max, intent, tlimit):
 
-        '''Adjustment of cleaning threshold due to dynamic range limitations.'''
+        """Adjustment of cleaning threshold due to dynamic range limitations."""
 
         DR_correction_factor = 1.0
         maxEDR_used = False
@@ -1799,7 +1832,7 @@ class ImageParamsHeuristics(object):
 
     def get_autobox_params(self, iteration, intent, specmode, robust):
 
-        '''Default auto-boxing parameters.'''
+        """Default auto-boxing parameters."""
 
         sidelobethreshold = None
         noisethreshold = None
@@ -1814,7 +1847,7 @@ class ImageParamsHeuristics(object):
         return (sidelobethreshold, noisethreshold, lownoisethreshold, negativethreshold, minbeamfrac, growiterations,
                 dogrowprune, minpercentchange, fastnoise)
 
-    def nterms(self):
+    def nterms(self, spwspec):
         return None
 
     def cyclefactor(self, iteration):
@@ -1846,7 +1879,7 @@ class ImageParamsHeuristics(object):
 
     def antenna_diameters(self, vislist=None):
 
-        '''Count the antennas of given diameters per MS.'''
+        """Count the antennas of given diameters per MS."""
 
         if vislist is None:
             local_vislist = self.vislist
@@ -1864,7 +1897,7 @@ class ImageParamsHeuristics(object):
 
     def majority_antenna_ids(self, vislist=None):
 
-        '''Get the IDs of the majority (by diameter) antennas per MS.'''
+        """Get the IDs of the majority (by diameter) antennas per MS."""
 
         if vislist is None:
             local_vislist = self.vislist
@@ -1885,7 +1918,7 @@ class ImageParamsHeuristics(object):
 
     def antenna_ids(self, intent, vislist=None):
 
-        '''Get the antenna IDs to be used for imaging.'''
+        """Get the antenna IDs to be used for imaging."""
 
         if vislist is None:
             local_vislist = self.vislist
@@ -1904,7 +1937,7 @@ class ImageParamsHeuristics(object):
 
     def check_psf(self, psf_name, field, spw):
 
-        '''Check for bad psf fits.'''
+        """Check for bad psf fits."""
 
         cqa = pl_casatools.quanta
 
@@ -1931,14 +1964,14 @@ class ImageParamsHeuristics(object):
 
     def usepointing(self):
 
-        '''tclean flag to use pointing table.'''
+        """tclean flag to use pointing table."""
 
         # Currently ALMA and VLA do not want to use the table (CAS-11840).
         return False
 
     def mosweight(self, intent, field):
 
-        '''tclean flag to use mosaic weighting.'''
+        """tclean flag to use mosaic weighting."""
 
         # Currently only ALMA has decided to use this flag (CAS-11840). So
         # the default is set to False here.
@@ -1946,7 +1979,7 @@ class ImageParamsHeuristics(object):
 
     def keep_iterating(self, iteration, hm_masking, tclean_stopcode, dirty_dynamic_range, residual_max, residual_robust_rms, field, intent, spw, specmode):
 
-        '''Determine if another tclean iteration is necessary.'''
+        """Determine if another tclean iteration is necessary."""
 
         if iteration == 0:
             return True, hm_masking
@@ -1987,13 +2020,13 @@ class ImageParamsHeuristics(object):
         return None
 
     def find_good_commonbeam(self, psf_filename):
-        '''
+        """
         Find and replace outlier beams to calculate a good common beam.
         Method from Urvashi Rao.
 
         Returns new common beam and array of channel numbers with invalid beams.
         Leaves old beams in the PSF as is.
-        '''
+        """
 
         cqa = pl_casatools.quanta
 

@@ -137,15 +137,22 @@ class BandpassResults(basetask.Results):
         # If requested, unregister old bandpass calibrations before 
         # registering this one
         if self.unregister_existing:
-            # predicate function to match bandpass caltables
-            def bandpass_matcher(_: CalToArgs, calfrom: CalFrom) -> bool:
+            # Identify the MS to process.
+            vis: str = os.path.basename(self.inputs['vis'])
+
+            # predicate function to match bandpass caltables for this MS
+            def bandpass_matcher(calto: CalToArgs, calfrom: CalFrom) -> bool:
+                calto_vis = {os.path.basename(v) for v in calto.vis}
+
                 # Standard caltable filenames contain task identifiers,
                 # caltable type identifiers, etc. We can use this to identify
                 # caltables created by this task. As an extra check we also 
                 # check the caltable type
-                return 'bandpass' in calfrom.gaintable and 'bandpass' in calfrom.caltype
+                do_delete = 'bandpass' in calfrom.gaintable and 'bandpass' in calfrom.caltype and vis in calto_vis
+                if do_delete:
+                    LOG.info(f'Unregistering previous bandpass calibrations for {vis}')
+                return do_delete
 
-            LOG.debug('Unregistering previous bandpass calibrations')
             context.callibrary.unregister_calibrations(bandpass_matcher)
 
         for calapp in self.final:

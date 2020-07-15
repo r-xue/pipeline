@@ -94,6 +94,13 @@
                 </allowed>
             </param>
 
+            <param name="minparang" type="double">
+                <shortdescription>Parallactic angle threshold</shortdescription>
+                <description>Minimum required parallactic angle range for polarisation calibrator,
+                             in degrees. The default of 0.0 is used for non-polarisation processing.</description>
+                <value>0.0</value>
+            </param>
+
             <param subparam="true" name="dryrun" type="bool">
                 <description>Run the task (False) or display task command (True)</description>
                 <value>False</value>

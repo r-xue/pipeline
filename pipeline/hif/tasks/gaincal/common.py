@@ -41,15 +41,33 @@ class VdpCommonGaincalInputs(commoncalinputs.VdpCommonCalibrationInputs):
             value = value.replace('*', '')
         return value
 
+    # new param exposed for PIPE-594. Set to 'strict' for after locking refant.
+    @vdp.VisDependentProperty
+    def refantmode(self):
+        refant_is_locked = False
+        if self.ms is not None and self.ms.reference_antenna_locked:
+            refant_is_locked = True
+
+        return 'strict' if refant_is_locked else 'flex'
+
+    @refantmode.convert
+    def refantmode(self, value):
+        if value in ('', None):
+            value = 'flex'
+        if value not in ['flex', 'strict']:
+            raise ValueError(f'Invalid value for refantmode: {value}')
+        return value
+
     def __init__(self, context, output_dir=None, vis=None, caltable=None, intent=None, field=None, spw=None,
                  refant=None, antenna=None, minblperant=None, opacity=None, selectdata=None, uvrange=None,
-                 calmode=None):
+                 calmode=None, refantmode=None):
         super(VdpCommonGaincalInputs, self).__init__(context, output_dir=output_dir, vis=vis, intent=intent,
                                                      field=field, spw=spw, refant=refant, antenna=antenna,
                                                      minblperant=minblperant, opacity=opacity, selectdata=selectdata,
                                                      uvrange=uvrange)
         self.calmode = calmode
         self.caltable = caltable
+        self.refantmode = refantmode
 
 
 class GaincalResults(basetask.Results):

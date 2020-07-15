@@ -36,7 +36,8 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristics):
     def cell(self, beam=None, pixperbeam=None):
         return ['0.6arcsec']
 
-    def imsize(self, fields=None, cell=None, primary_beam=None, sfpblimit=None, max_pixels=None, centreonly=None, vislist=None):
+    def imsize(self, fields=None, cell=None, primary_beam=None, sfpblimit=None, max_pixels=None, centreonly=None,
+               vislist=None, spwspec=None):
         return [12150, 12150]
 
     def reffreq(self):
@@ -69,7 +70,7 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristics):
     def intent(self):
         return 'TARGET'
 
-    def nterms(self):
+    def nterms(self, spwspec):
         return 2
 
     def stokes(self):

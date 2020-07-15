@@ -84,12 +84,14 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
         solints = ['int', '3.0s', '10.0s']
         soltime = soltimes[0]
         solint = solints[0]
+        self.ignorerefant = self.inputs.context.evla['msinfo'][m.name].ignorerefant
 
         context = self.inputs.context
-        refantfield = context.evla['msinfo'][m.name].calibrator_field_select_string
+        refantignore = self.inputs.refantignore + ','.join(self.ignorerefant)
+        refantfield = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
         refantobj = findrefant.RefAntHeuristics(vis=self.inputs.vis, field=refantfield,
                                                 geometry=True, flagging=True, intent='',
-                                                spw='', refantignore=self.inputs.refantignore)
+                                                spw='', refantignore=refantignore)
 
         RefAntOutput = refantobj.calculate()
 

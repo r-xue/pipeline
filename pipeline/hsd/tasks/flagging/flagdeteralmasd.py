@@ -1,5 +1,7 @@
 import collections
 import os
+import re
+import shutil
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -41,13 +43,22 @@ class FlagDeterALMASingleDishInputs(flagdeterbase.FlagDeterBaseInputs):
             value = unprocessed
         return value
 
+    pointing = vdp.VisDependentProperty(default=True)
+    incompleteraster = vdp.VisDependentProperty(default=True)
+
+    @vdp.VisDependentProperty
+    def filepointing(self):
+        vis_root = os.path.splitext(self.vis)[0]
+        return vis_root + '.flagpointing.txt'
+
     # New property for QA0 / QA2 flags
     qa0 = vdp.VisDependentProperty(default=True)
     qa2 = vdp.VisDependentProperty(default=True)
 
     def __init__(self, context, vis=None, output_dir=None, flagbackup=None, autocorr=None, shadow=None, scan=None,
                  scannumber=None, intents=None, edgespw=None, fracspw=None, fracspwfps=None, online=None,
-                 fileonline=None, template=None, filetemplate=None, hm_tbuff=None, tbuff=None, qa0=None, qa2=None):
+                 fileonline=None, template=None, filetemplate=None, pointing=None, filepointing=None,
+                 incompleteraster=None, hm_tbuff=None, tbuff=None, qa0=None, qa2=None):
         super(FlagDeterALMASingleDishInputs, self).__init__(
             context, vis=vis, output_dir=output_dir, flagbackup=flagbackup, autocorr=autocorr, shadow=shadow, scan=scan,
             scannumber=scannumber, intents=intents, edgespw=edgespw, fracspw=fracspw, fracspwfps=fracspwfps,
@@ -57,6 +68,11 @@ class FlagDeterALMASingleDishInputs(flagdeterbase.FlagDeterBaseInputs):
         # solution parameters
         self.qa0 = qa0
         self.qa2 = qa2
+
+        # pointing flag
+        self.pointing = pointing
+        self.filepointing = filepointing
+        self.incompleteraster = incompleteraster
 
     def to_casa_args(self):
         # Initialize the arguments from the inherited
@@ -81,12 +97,12 @@ class FlagDeterALMASingleDishResults(flagdeterbase.FlagDeterBaseResults):
             for antenna in msobj.antennas:
                 for target, reference in msobj.calibration_strategy['field_strategy'].items():
                     LOG.debug('target field id %s / reference field id %s' % (target, reference))
-                    task = pointing.SingleDishPointingChart(context, msobj, antenna, 
+                    task = pointing.SingleDishPointingChart(context, msobj, antenna,
                                                             target_field_id=target,
                                                             reference_field_id=reference,
                                                             target_only=True)
                     task.plot(revise_plot=True)
-                    task = pointing.SingleDishPointingChart(context, msobj, antenna, 
+                    task = pointing.SingleDishPointingChart(context, msobj, antenna,
                                                             target_field_id=target,
                                                             reference_field_id=reference,
                                                             target_only=False)
@@ -97,14 +113,46 @@ class FlagDeterALMASingleDishResults(flagdeterbase.FlagDeterBaseResults):
                     source_name = target_field.source.name
                     offset_pointings = []
                     if source_name.upper() in valid_ephem_names:
-                        task = pointing.SingleDishPointingChart(context, msobj, antenna, 
+                        task = pointing.SingleDishPointingChart(context, msobj, antenna,
                                                                 target_field_id=target,
-                                                                reference_field_id=reference, 
+                                                                reference_field_id=reference,
                                                                 target_only=True,
                                                                 ofs_coord=True)
                         plotres = task.plot(revise_plot=True)
                         if plotres is not None:
                             offset_pointings.append(plotres)
+
+
+def update_flag_pointing(filename, flag_incomplete_raster):
+    tmpfile = filename + '.bak'
+    try:
+        shutil.copy(filename, tmpfile)
+        reason = "reason='SDPL:uniform_image_rms'"
+        with open(filename, 'r') as f:
+
+            if flag_incomplete_raster is True:
+                # uncomment commands
+                gen = map(
+                    lambda x: x.lstrip('#') if x.find(reason) != -1 and x.startswith('#') else x, f
+                )
+            else:
+                LOG.info(f'Disabling flag commands for reason "{reason}')
+                # comment out commands
+                gen = map(
+                    lambda x: f'#{x}' if x.find(reason) != -1 and not x.startswith('#') else x, f
+                )
+
+            lines = list(gen)
+
+        with open(filename, 'w') as f:
+            f.writelines(lines)
+
+    except Exception:
+        shutil.copy(tmpfile, filename)
+
+    finally:
+        if os.path.exists(tmpfile):
+            os.remove(tmpfile)
 
 
 #@task_registry.set_equivalent_casa_task('hsd_flagdata')
@@ -118,8 +166,8 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
     Inputs = FlagDeterALMASingleDishInputs
 
     # Flag edge channels if bandwidth exceeds bandwidth_limit
-    # Currently, default bandwidth limit is set to 1.875GHz but it is 
-    # controllable via parameter 'fracspw' 
+    # Currently, default bandwidth limit is set to 1.875GHz but it is
+    # controllable via parameter 'fracspw'
     @property
     def bandwidth_limit(self):
         if isinstance(self.inputs.fracspw, str):
@@ -131,7 +179,7 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
         results = super(FlagDeterALMASingleDish, self).prepare()
 
         # update datatable
-        # this task uses _handle_multiple_vis framework 
+        # this task uses _handle_multiple_vis framework
         msobj = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         table_name = os.path.join(self.inputs.context.observing_run.ms_datatable_name, msobj.basename)
         datatable = DataTable(name=table_name, readonly=False)
@@ -183,7 +231,7 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
             # left minimum as it is always channel 0.
             l_max = frac_chan_list[0] - 1
             #r_min = spw.num_channels - frac_chan - 1
-            # Fix asymmetry 
+            # Fix asymmetry
             r_min = spw.num_channels - frac_chan_list[1]
             r_max = spw.num_channels - 1
 
@@ -212,8 +260,8 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
         if isinstance(inputs.fracspw, float) or isinstance(inputs.fracspw, str):
             to_flag = super(FlagDeterALMASingleDish, self)._get_edgespw_cmds()
         elif isinstance(inputs.fracspw, collections.Iterable):
-            # inputs.fracspw is iterable indicating that the user want to flag 
-            # edge channels with different fractions/number of channels for 
+            # inputs.fracspw is iterable indicating that the user want to flag
+            # edge channels with different fractions/number of channels for
             # left and right edges
 
 
@@ -222,7 +270,7 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
 
         return to_flag
 
-    def get_fracspw(self, spw):    
+    def get_fracspw(self, spw):
         # override the default fracspw getter with our ACA-aware code
         #if spw.num_channels in (62, 124, 248):
         #    return self.inputs.fracspwfps
@@ -242,14 +290,14 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
         # override the default verifier, adding bandwidth check
         super(FlagDeterALMASingleDish, self).verify_spw(spw)
 
-        # Skip if TDM mode where TDM modes are defined to be modes with 
+        # Skip if TDM mode where TDM modes are defined to be modes with
         # <= 256 channels per correlation
         #dd = self.inputs.ms.get_data_description(spw=spw)
         #ncorr = len(dd.corr_axis)
         #if ncorr * spw.num_channels > 256:
         #    raise ValueError('Skipping edge flagging for FDM spw %s' % spw.id)
 
-        # Skip if edge channel flagging is based on bandwidth limit, and 
+        # Skip if edge channel flagging is based on bandwidth limit, and
         # bandwidth is less than bandwidth limit
         if isinstance(self.inputs.fracspw, str) and spw.bandwidth.value <= self.bandwidth_limit:
             raise ValueError('Skipping edge flagging for spw %s' % spw.id)
@@ -259,6 +307,27 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
         Edit flag commands so that all summaries are based on target data instead of total.
         """
         flag_cmds = super(FlagDeterALMASingleDish, self)._get_flag_commands()
+
+        # PIPE-646 & PIPE-647
+        # apply flag commands in flagpointing.txt
+        if self.inputs.pointing:
+            if not os.path.exists(self.inputs.filepointing):
+                LOG.warn(
+                    'Pointing flag file \'{}\' was not found. Pointing '
+                    'flagging for {} disabled.'
+                    .format(self.inputs.filepointing, self.inputs.ms.basename)
+                )
+            else:
+                update_flag_pointing(self.inputs.filepointing, self.inputs.incompleteraster)
+                pointing_cmds = self._read_flagfile(self.inputs.filepointing)
+                pointing_cmds.append("mode='summary' name='pointing' reason='SDPL:missing_pointing_data'")
+
+                # insert flag commands between shadow and edgespw
+                idx = [i for i, c in enumerate(flag_cmds) if re.search("(mode|name)='shadow'", c)]
+                assert len(idx) > 0
+                sep = idx[-1] + 1
+                flag_cmds = flag_cmds[:sep] + pointing_cmds + flag_cmds[sep:]
+
         for i in range(len(flag_cmds)):
             if flag_cmds[i].startswith("mode='summary'"):
                 flag_cmds[i] += " intent='OBSERVE_TARGET#ON_SOURCE'"
@@ -273,12 +342,14 @@ class HpcFlagDeterALMASingleDishInputs(FlagDeterALMASingleDishInputs):
 
     def __init__(self, context, vis=None, output_dir=None, flagbackup=None, autocorr=None, shadow=None, scan=None,
                  scannumber=None, intents=None, edgespw=None, fracspw=None, fracspwfps=None, online=None,
-                 fileonline=None, template=None, filetemplate=None, hm_tbuff=None, tbuff=None, qa0=None, qa2=None, 
+                 fileonline=None, template=None, filetemplate=None, pointing=None, filepointing=None,
+                 incompleteraster=None, hm_tbuff=None, tbuff=None, qa0=None, qa2=None,
                  parallel=None):
         super(HpcFlagDeterALMASingleDishInputs, self).__init__(
             context, vis=vis, output_dir=output_dir, flagbackup=flagbackup, autocorr=autocorr, shadow=shadow, scan=scan,
             scannumber=scannumber, intents=intents, edgespw=edgespw, fracspw=fracspw, fracspwfps=fracspwfps,
-            online=online, fileonline=fileonline, template=template, filetemplate=filetemplate, hm_tbuff=hm_tbuff,
+            online=online, fileonline=fileonline, template=template, filetemplate=filetemplate,
+            pointing=pointing, filepointing=filepointing, incompleteraster=incompleteraster, hm_tbuff=hm_tbuff,
             tbuff=tbuff, qa0=qa0, qa2=qa2)
         self.parallel = parallel
 

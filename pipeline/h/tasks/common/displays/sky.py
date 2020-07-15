@@ -121,11 +121,9 @@ class SkyDisplay(object):
                 if collapseFunction == 'center':
                     collapsed = image.collapse(function='mean', chans=str(image.summary()['shape'][3]//2), axes=[2, 3])
                 else:
-                    if (collapseFunction == 'max') and ('image' in result) and ('pbcor' not in result):
-                        collapsed = image.collapse(function=collapseFunction, axes=[2, 3], outfile=result+'.mom8')
-                        LOG.info('generated peak line intensity (moment 8) image of %s' % (os.path.basename(result)))
-                    else:
-                        collapsed = image.collapse(function=collapseFunction, axes=[2, 3])
+                    # Note: in case 'max' and non-pbcor image a moment 0 map was written to disk
+                    # in the past. With PIPE-558 this is done in hif/tasks/tclean.py tclean._calc_mom0_8()
+                    collapsed = image.collapse(function=collapseFunction, axes=[2, 3])
             except:
                 # All channels flagged or some other error. Make collapsed zero image.
                 collapsed_new = image.newimagefromimage(infile=result)

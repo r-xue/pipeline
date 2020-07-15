@@ -60,6 +60,16 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value type="bool">True</value>
     </param>
 
+    <param subparam="true" name="tolerance" type="double">
+        <shortdescription>Amount of antenna shadowing tolerated</shortdescription>
+        <description>Amount of antenna shadowing tolerated, in meters. A positive number
+            allows antennas to overlap in projection. A negative number forces antennas
+            apart in projection. Zero implies a distance of radius_1+radius_2 between
+            antenna centers.
+        </description>
+        <value>0.0</value>
+    </param>
+
     <param name="scan" type="bool">
         <shortdescription>Flag specified scans</shortdescription>
         <description>Flag a list of specified scans.</description>
@@ -224,6 +234,14 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
             <equals value="getinputs" type="string">
                 <default param="vis"><value type="stringVec"/></default>
                 <default param="flagbackup"><value type="bool">True</value></default>
+            </equals>
+        </when>
+
+        <when param="shadow">
+            <equals value="True" type="bool">
+                 <default param="tolerance"><value type="double"/></default>
+            </equals>
+            <equals value="False" type="bool">
             </equals>
         </when>
 
