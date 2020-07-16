@@ -138,6 +138,18 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         """See PIPE-679 and CASR-543"""
         return 'mtmfs'
 
+    def niter_correction(self, niter, cell, imsize, residual_max, threshold, mask_frac_rad=0.0):
+        """Adjustment of number of cleaning iterations due to mask size.
+
+        See PIPE-682 and CASR-543 and base class method for parameter description."""
+        if mask_frac_rad == 0.0:
+            # Assume at most 25% of pixels are within the (circular) mask (PIPE-682).
+            # 0.25 = mask_frac_rad**2 * pi / 4
+            mask_frac_rad = 0.56
+
+        return super().niter_correction(niter, cell, imsize, residual_max, threshold,
+                                        mask_frac_rad=mask_frac_rad)
+
     def specmode(self):
         """See PIPE-683 and CASR-543"""
         return 'cont'
@@ -185,9 +197,9 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         if spwspec is not None:
             if type(spwspec) is not str:
                 spwspec = ",".join(spwspec)
-            abs_min_frequency, abs_max_frequency = self.get_min_max_freq(spwspec)
+            freq_limits = self.get_min_max_freq(spwspec)
             # 18 GHz and above (Ku, K, Ka, Q VLA bands)
-            if abs_min_frequency >= 1.8e10:
+            if freq_limits['abs_min_freq'] >= 1.8e10:
                 # equivalent to first minimum of the Airy diffraction pattern; m = 1.22.
                 sfpblimit = 0.294
             else:

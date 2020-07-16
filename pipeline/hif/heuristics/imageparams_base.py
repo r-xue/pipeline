@@ -1187,10 +1187,12 @@ class ImageParamsHeuristics(object):
         frequencies in spectral window list and the corresponding spectral window indexes.
 
         :param spwspec: comma separated string list of spectral windows.
-        :return: tuple min. and max. frequencies (in Hz) and corresponding spw indexes.
+        :return: dictionary min. and max. frequencies (in Hz) and corresponding spw indexes.
         """
         abs_min_frequency = 1.0e15
         abs_max_frequency = 0.0
+        min_freq_spwid = -1
+        max_freq_spwid = -1
         msname = self.vislist[0]
         ms = self.observing_run.get_ms(name=msname)
         for spwid in spwspec.split(','):
@@ -1199,17 +1201,21 @@ class ImageParamsHeuristics(object):
             min_frequency = float(spw.min_frequency.to_units(measures.FrequencyUnits.HERTZ))
             if (min_frequency < abs_min_frequency):
                 abs_min_frequency = min_frequency
+                min_freq_spwid = spwid
             max_frequency = float(spw.max_frequency.to_units(measures.FrequencyUnits.HERTZ))
             if (max_frequency > abs_max_frequency):
                 abs_max_frequency = max_frequency
-        return (abs_min_frequency, abs_max_frequency)
+                max_freq_spwid = spwid
+        return {'abs_min_freq': abs_min_frequency, 'abs_max_freq': abs_max_frequency,
+                'min_freq_spwid': min_freq_spwid, 'max_freq_spwid': max_freq_spwid}
 
     def get_fractional_bandwidth(self, spwspec):
 
         """Returns fractional bandwidth for selected spectral windows"""
 
-        abs_min_frequency, abs_max_frequency = self.get_min_max_freq(spwspec)
-        return 2.0 * (abs_max_frequency - abs_min_frequency) / (abs_min_frequency + abs_max_frequency)
+        freq_limits = self.get_min_max_freq(spwspec)
+        return 2.0 * (freq_limits['abs_max_freq'] - freq_limits['abs_min_freq']) / \
+               (freq_limits['abs_min_freq'] + freq_limits['abs_max_freq'])
 
     def robust(self):
 
@@ -1824,8 +1830,54 @@ class ImageParamsHeuristics(object):
 
         return threshold, DR_correction_factor, maxEDR_used
 
-    def niter_correction(self, niter, cell, imsize, residual_max, threshold):
-        return niter
+    def niter_correction(self, niter, cell, imsize, residual_max, threshold, mask_frac_rad=0.0):
+        """Adjustment of number of cleaning iterations due to mask size.
+
+        Circular mask is assumed with a radius equal to mask_frac_rad times the longest image dimension
+        in arcsec. If mask_frac_rad=0.0, then no new cleaning iteration step number is estimate and the
+        input niter value is returned.
+
+        Note that the method assumes synthesized_beam = 5 * cell. This might lead to underestimated new
+        niter value if the beam is sampled by less than 5 pixels (e.g. when hif_checkproductsize() task
+        was called earlier.
+
+        :param niter: User or heuristics set number of cleaning iterations
+        :param cell: Image cell size in arcsec
+        :param imsize: Two element list or array of image pixel count along x and y axis
+        :param residual_max: Dirty image residual maximum [Jy].
+        :param threshold: Cleaning threshold value [Jy].
+        :param mask_frac_rad: Mask radius is given by mask_frac_rad * max(imsize) * cell [arcsec]
+        :return: Modified niter value based on mask and beam size heuristic.
+        """
+        # Default case: do not estimate new niter
+        if mask_frac_rad == 0.0:
+            return niter
+
+        # Estimate new niter based on circular mask
+        qaTool = pl_casatools.quanta
+
+        threshold_value = qaTool.convert(threshold, 'Jy')['value']
+
+        # Compute automatic niter estimate
+        old_niter = niter
+        kappa = 5
+        loop_gain = 0.1
+        # TODO: Replace with actual pixel counting rather than assumption about geometry
+        r_mask = mask_frac_rad * max(imsize[0], imsize[1]) * qaTool.convert(cell[0], 'arcsec')['value']
+
+        # Assume that the beam is 5 pixels wide, this might be incorrect in some cases (see docstring).
+        beam = qaTool.convert(cell[0], 'arcsec')['value'] * 5.0
+
+        new_niter_f = int(kappa / loop_gain * (r_mask / beam) ** 2 * residual_max / threshold_value)
+        new_niter = int(utils.round_half_up(new_niter_f, -int(np.log10(new_niter_f))))
+        # Prevent 32 bit unsigned int overflow
+        new_niter = min(new_niter, 2 ** 32 - 1)
+
+        if new_niter != old_niter:
+            LOG.info('niter heuristic: Modified niter from %d to %d based on mask vs. beam size heuristic'
+                     '' % (old_niter, new_niter))
+
+        return new_niter
 
     def niter(self):
         return None

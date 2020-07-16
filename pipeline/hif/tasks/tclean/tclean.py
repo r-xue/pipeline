@@ -214,6 +214,7 @@ class Tclean(cleanbase.CleanBase):
     def prepare(self):
         inputs = self.inputs
         context = self.inputs.context
+        self.known_synthesized_beams = self.inputs.context.synthesized_beams
 
         LOG.info('\nCleaning for intent "%s", field %s, spw %s\n',
                  inputs.intent, inputs.field, inputs.spw)
@@ -289,14 +290,16 @@ class Tclean(cleanbase.CleanBase):
         cell = inputs.cell
         if imsize in (None, [], '') or cell in (None, [], ''):
 
-            # The heuristics cell size  is always the same for x and y as
+            # The heuristics cell size is always the same for x and y as
             # the value derives from a single value returned by imager.advise
-            synthesized_beam, known_synthesized_beams = \
+            synthesized_beam, self.known_synthesized_beams = \
                 self.image_heuristics.synthesized_beam(field_intent_list=[(inputs.field, inputs.intent)],
                                                        spwspec=inputs.spw,
                                                        robust=inputs.robust,
                                                        uvtaper=inputs.uvtaper,
                                                        parallel=inputs.parallel,
+                                                       known_beams=self.known_synthesized_beams,
+                                                       force_calc=inputs.calcsb,
                                                        shift=True)
             cell = self.image_heuristics.cell(beam=synthesized_beam)
 
@@ -623,6 +626,8 @@ class Tclean(cleanbase.CleanBase):
         #       Save channel selection in result for weblog.
         result.set_aggregate_bw(aggregate_lsrk_bw)
         result.set_eff_ch_bw(eff_ch_bw)
+
+        result.synthesized_beams = self.known_synthesized_beams
 
         return result
 
