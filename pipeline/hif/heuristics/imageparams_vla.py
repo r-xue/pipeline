@@ -30,7 +30,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         See PIPE-674 and CASR-543
         """
         pblimit_image = -0.1
-        pblimit_cleanmask = -0.1    # not used at the moment, negative values are untested (see PIPE-674)
+        pblimit_cleanmask = 0.3   # default value from base class in case pb=None
 
         return pblimit_image, pblimit_cleanmask
 
