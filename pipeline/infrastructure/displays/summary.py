@@ -255,12 +255,14 @@ class FieldVsTimeChart(object):
             for scan in [scan for scan in ms.scans
                          if field in scan.fields]:
                 intents_to_plot = self._get_intents_to_plot(field.intents.intersection(scan.intents))
+                num_intents = len(intents_to_plot)
+                assert num_intents > 0
 
                 # vertical position to plot
                 y0 = ifield-0.5
                 y1 = ifield+0.5
 
-                height = (y1 - y0) / float(len(intents_to_plot))
+                height = (y1 - y0) / float(num_intents)
                 ys = y0
                 ye = y0 + height
                 for intent in intents_to_plot:
@@ -333,15 +335,9 @@ class FieldVsTimeChart(object):
     def _get_intents_to_plot(self, user_intents):
         intents = [intent for intent in sorted(self._intent_colours.keys(), key=operator.itemgetter(0))
                    if intent in user_intents]
+        if not intents:
+            intents.append('UNKNOWN')
         return intents
-
-
-    def _get_colours(self, user_intents):
-        colours = [colour for intent, colour in sorted(self._intent_colours.items(), key=operator.itemgetter(0))
-                   if intent in user_intents]
-        if not colours:
-            colours.append(self._intent_colours['UNKNOWN'])
-        return colours
 
     @staticmethod
     def _set_time_axis(figure, ax, datemin, datemax):
