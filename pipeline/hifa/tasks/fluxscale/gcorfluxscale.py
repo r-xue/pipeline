@@ -18,6 +18,7 @@ import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import FluxMeasurement
 from pipeline.h.tasks.common import commonfluxresults
+from pipeline.h.tasks.common import commonhelpermethods
 from pipeline.hif.tasks import applycal
 from pipeline.hif.tasks import gaincal
 from pipeline.hif.tasks.fluxscale import fluxscale
@@ -340,17 +341,34 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         if not data:
             return
 
-        # Get number of polarisations.
-        npol = len(data['weight'])
+        # Get number of correlations for this spw.
+        corr_type = commonhelpermethods.get_corr_products(self.inputs.ms, int(spwid))
+        ncorrs = len(corr_type)
+
+        # Select which correlations to consider for computing the mean
+        # visibility flux:
+        #  - for single and dual pol, consider all correlations.
+        #  - for ncorr == 4 with linear correlation products (XX, XY, etc)
+        #    select the XX and YY columns.
+        #  - for other values of ncorrs, or e.g. circular correlation (LL, RL)
+        #    raise a warning that these are not handled.
+        if ncorrs in [1, 2]:
+            columns_to_select = range(ncorrs)
+        elif ncorrs == 4 and set(corr_type) == {'XX', 'XY', 'YX', 'YY'}:
+            columns_to_select = [corr_type.index('XX'), corr_type.index('YY')]
+        else:
+            LOG.warning("Unexpected polarisations found for MS {}, unable to compute mean visibility fluxes."
+                        "".format(self.inputs.ms.basename))
+            columns_to_select = []
 
         # Derive mean flux and variance for each polarisation.
         mean_fluxes = []
         variances = []
-        for pol in range(npol):
+        for col in columns_to_select:
             # Select data for current polarisation.
-            ampdata = np.squeeze(data['corrected_data'], axis=1)[pol]
-            flagdata = np.squeeze(data['flag'], axis=1)[pol]
-            weightdata = data['weight'][pol]
+            ampdata = np.squeeze(data['corrected_data'], axis=1)[col]
+            flagdata = np.squeeze(data['flag'], axis=1)[col]
+            weightdata = data['weight'][col]
 
             # Select for non-flagged data and non-NaN data.
             id_nonbad = np.where(np.logical_and(np.logical_not(flagdata), np.isfinite(ampdata)))
