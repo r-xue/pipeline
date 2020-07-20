@@ -138,16 +138,12 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
         # Expand flag commands to larger scope, if requested, by removing
         # selection in specified fields
         if inputs.extendfields:
-            LOG.info(
-                '{0} flagcmds will be extended by removing selection in'
-                'following fields: {1}'.format(inputs.prepend,
-                                               inputs.extendfields))
+            LOG.info("{} flagcmds will be extended by removing selection in following fields: {}"
+                     "".format(inputs.prepend, inputs.extendfields))
 
         # Expand flag commands to include all spws in a baseband, if requested
-        if inputs.extendfields:
-            LOG.info(
-                '{0} flagcmds will be extended to include all spws within'
-                'baseband.'.format(inputs.prepend))
+        if inputs.extendbaseband:
+            LOG.info("{} flagcmds will be extended to include all spws within baseband.".format(inputs.prepend))
 
         # Initialize flags, flag_reason, and iteration counter
         flags = []
