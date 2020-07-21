@@ -256,7 +256,7 @@ class FieldVsTimeChart(object):
                          if field in scan.fields]:
                 intents_to_plot = self._get_intents_to_plot(field.intents.intersection(scan.intents))
                 num_intents = len(intents_to_plot)
-                assert num_intents > 0
+                assert num_intents > 0, "number of intents to plot is not larger than 0"
 
                 # vertical position to plot
                 y0 = ifield-0.5
