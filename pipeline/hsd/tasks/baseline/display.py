@@ -322,7 +322,9 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
         flags = self.cluster['cluster_flag']
         final_flags = ( flags // self.flag_digits['final'] ) % 10
         for icluster in range(len(final_flags)):
-            if not( self.lines[icluster][2] == False or (final_flags[icluster]==0).all() ):
+            ## (final_flags[icluster]==0).all() is no longer necessary since validation.py is revised.
+            # if not( self.lines[icluster][2] == False or (final_flags[icluster]==0).all() ):
+            if self.lines[icluster][2] == True:
                 clusters_to_plot.append(icluster)
 
         num_cluster = len(clusters_to_plot)
