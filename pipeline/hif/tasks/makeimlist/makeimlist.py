@@ -120,6 +120,24 @@ class MakeImListInputs(vdp.StandardInputs):
             return 'cube'
         return 'mfs'
 
+    def get_spw_hm_cell(self, spwlist):
+        """If possible obtain spwlist specific hm_cell, otherwise return generic
+        value."""
+        mitigated_hm_imsize = self.context.size_mitigation_parameters.get('multi_target_size_mitigation', {}).get(spwlist,{}).get('hm_cell')
+        if mitigated_hm_imsize not in [None, {}]:
+            return mitigated_hm_imsize
+        else:
+            return self.hm_cell
+
+    def get_spw_hm_imsize(self, spwlist):
+        """If possible obtain spwlist specific hm_imsize, otherwise return generic
+        value."""
+        mitigated_hm_imsize = self.context.size_mitigation_parameters.get('multi_target_size_mitigation', {}).get(spwlist,{}).get('hm_imsize')
+        if mitigated_hm_imsize not in [None, {}]:
+            return mitigated_hm_imsize
+        else:
+            return self.hm_imsize
+
     def __init__(self, context, output_dir=None, vis=None, imagename=None, intent=None, field=None, spw=None,
                  contfile=None, linesfile=None, uvrange=None, specmode=None, outframe=None, hm_imsize=None,
                  hm_cell=None, calmaxpix=None, phasecenter=None, nchan=None, start=None, width=None, nbins=None,
@@ -367,14 +385,6 @@ class MakeImList(basetask.StandardTaskTemplate):
                 else:
                     continue
 
-                # Parse hm_cell to get optional pixperbeam setting
-                cell = inputs.hm_cell
-                if isinstance(cell, str):
-                    pixperbeam = float(cell.split('ppb')[0])
-                    cell = []
-                else:
-                    pixperbeam = 5.0
-
                 # Expand cont spws
                 if inputs.specmode == 'cont':
                     spwids = spwlist[0].split(',')
@@ -470,6 +480,14 @@ class MakeImList(basetask.StandardTaskTemplate):
                 else:
                     spwlist_local = filtered_spwlist
 
+                # Parse hm_cell to get optional pixperbeam setting
+                cell = inputs.get_spw_hm_cell(spwlist_local[0])
+                if isinstance(cell, str):
+                    pixperbeam = float(cell.split('ppb')[0])
+                    cell = []
+                else:
+                    pixperbeam = 5.0
+
                 # Add actual, possibly reduced cont spw combination to be able to properly populate the lookup tables later on
                 if inputs.specmode == 'cont':
                     all_spw_keys.append(','.join(filtered_spwlist))
@@ -478,7 +496,6 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                 # Select only the lowest / highest frequency spw to get the smallest (for cell size)
                 # and largest beam (for imsize)
-                # TODO: substitute with heuristics get_min_max_freq() method, note centre_frequency vs. min/max_frequency
                 ref_ms = inputs.context.observing_run.get_ms(vislist[0])
                 min_freq = 1e15
                 max_freq = 0.0
@@ -583,7 +600,7 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                 # if imsize not set then use heuristic code to calculate the
                 # centers for each field/spwspec
-                imsize = inputs.hm_imsize
+                imsize = inputs.get_spw_hm_imsize(spwlist_local[0])
                 if isinstance(imsize, str):
                     sfpblimit = float(imsize.split('pb')[0])
                     imsize = []
