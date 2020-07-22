@@ -1870,8 +1870,8 @@ class ImageParamsHeuristics(object):
 
         new_niter_f = int(kappa / loop_gain * (r_mask / beam) ** 2 * residual_max / threshold_value)
         new_niter = int(utils.round_half_up(new_niter_f, -int(np.log10(new_niter_f))))
-        # Prevent 32 bit unsigned int overflow
-        new_niter = min(new_niter, 2 ** 32 - 1)
+        # Prevent int overflow in tclean CASA task (see CAS-11847)
+        new_niter = min(new_niter, 2 ** 31 - 1)
 
         if new_niter != old_niter:
             LOG.info('niter heuristic: Modified niter from %d to %d based on mask vs. beam size heuristic'
