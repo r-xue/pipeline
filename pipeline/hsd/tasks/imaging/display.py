@@ -1119,7 +1119,7 @@ class SDRmsMapDisplay(SDImageDisplay):
 
 
 class SpectralMapAxesManager(MapAxesManagerBase):
-    def __init__(self, nh, nv, brightnessunit, formatter, locator, ticksize):
+    def __init__(self, nh, nv, brightnessunit, locator, ticksize):
         super(SpectralMapAxesManager, self).__init__()
         self.nh = nh
         self.nv = nv
@@ -1242,9 +1242,6 @@ class SDSpectralMapDisplay(SDImageDisplay):
         Order = int(math.floor(math.log10(xtick)))
         NewTick = int(xtick / (10**Order) + 1) * (10**Order)
         FreqLocator = MultipleLocator(NewTick)
-        if Order < 0: FMT = '%%.%dfG' % (-Order)
-        else: FMT = '%.2fG'
-        Format = pl.FormatStrFormatter(FMT)
 
         (xrp, xrv, xic) = self.image.direction_axis(0)
         (yrp, yrv, yic) = self.image.direction_axis(1)
@@ -1252,7 +1249,7 @@ class SDSpectralMapDisplay(SDImageDisplay):
         plot_list = []
 
         axes_manager = SpectralMapAxesManager(NhPanel, NvPanel, self.brightnessunit,
-                                              Format, FreqLocator,
+                                              FreqLocator,
                                               TickSize)
         axes_list = axes_manager.axes_list
         plot_objects = []
