@@ -53,6 +53,8 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             return mean / float(len(stats))
         #
         qa = casatools.quanta
+        #
+        LOG.info('Computing uvrange heuristics for spwsids={:s}'.format(','.join([str(spw) for spw in self.spwids])))
 
         # Can it be that more than one visibility (ms file) is used?
         vis = self.vislist[0]
@@ -76,8 +78,8 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
         # Check for maximum frequency
         if max_mean_freq_Hz == 0.0:
-            LOG.warn("Highest frequency spw and largest baseline cannot be determined for spwids={}, using all "
-                     "baselines." % self.spwids)
+            LOG.warn("Highest frequency spw and largest baseline cannot be determined for spwids={:s}. "
+                     "Using default uvrange.".format(','.join([str(spw) for spw in self.spwids])))
             return None
         # Get max baseline
         mean_wave_m = light_speed / max_mean_freq_Hz  # in meter
@@ -89,23 +91,27 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         uvll = 0.0
         uvul = 0.05 * max_bl
 
-        uvrange = '{:0.1f}~{:0.1f}klambda'.format(uvll / 1000.0, uvul / 1000.0)
-        mean_SBL = get_mean_amplitude(vis=vis, uvrange=uvrange, spw=real_spwids_str)
+        uvrange_SBL = '{:0.1f}~{:0.1f}klambda'.format(uvll / 1000.0, uvul / 1000.0)
+        mean_SBL = get_mean_amplitude(vis=vis, uvrange=uvrange_SBL, spw=real_spwids_str)
 
         # Range for  50-55% bin
         uvll = 0.5 * max_bl
         uvul = 0.5 * max_bl + 0.05 * max_bl
-        uvrange = '{:0.1f}~{:0.1f}klambda'.format(uvll / 1000.0, uvul / 1000.0)
-        mean_MBL = get_mean_amplitude(vis=vis, uvrange=uvrange, spw=real_spwids_str)
+        uvrange_MBL = '{:0.1f}~{:0.1f}klambda'.format(uvll / 1000.0, uvul / 1000.0)
+        mean_MBL = get_mean_amplitude(vis=vis, uvrange=uvrange_MBL, spw=real_spwids_str)
 
         # Compare amplitudes and decide on return value
         meanratio = mean_SBL / mean_MBL
 
+        # Report results
+        LOG.info('Mean amplitude in uvrange bins: {:s} is {:0.2E}Jy, '
+                 '{:s} is {:0.2E}Jy, ratio={:0.2E}'.format(uvrange_SBL, mean_SBL, uvrange_MBL, mean_MBL, meanratio))
         if meanratio > 2.0:
             LOG.info('Selecting uvrange>{:0.1f}klambda to avoid very extended emission.'.format(0.05 * max_bl / 1000.0))
             return ">{:0.1f}klambda".format(0.05 * max_bl / 1000.0)
         else:
-            return None
+            # Use complete uvrange
+            return '>0.0klambda'
 
     def pblimits(self, pb):
         """

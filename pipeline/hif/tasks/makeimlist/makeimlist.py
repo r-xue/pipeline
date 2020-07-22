@@ -516,6 +516,12 @@ class MakeImList(basetask.StandardTaskTemplate):
                 else:
                     uvtaper = self.heuristics.uvtaper()
 
+                # Get uvrange value
+                if inputs.uvrange not in (None, [], ''):
+                    uvrange = inputs.uvrange
+                else:
+                    uvrange = self.heuristics.uvrange()
+
                 # cell is a list of form [cellx, celly]. If the list has form [cell]
                 # then that means the cell is the same size in x and y. If cell is
                 # empty then fill it with a heuristic result
@@ -841,7 +847,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 nbin=nbin,
                                 nchan=nchans[(field_intent[0], spwspec)],
                                 robust=robust,
-                                uvrange=inputs.uvrange,
+                                uvrange=uvrange,
                                 uvtaper=uvtaper,
                                 stokes='I',
                                 heuristics=target_heuristics,
