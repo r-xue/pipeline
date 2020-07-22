@@ -198,8 +198,8 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             if type(spwspec) is not str:
                 spwspec = ",".join(spwspec)
             freq_limits = self.get_min_max_freq(spwspec)
-            # 18 GHz and above (Ku, K, Ka, Q VLA bands)
-            if freq_limits['abs_min_freq'] >= 1.8e10:
+            # 18 GHz and above (K, Ka, Q VLA bands)
+            if freq_limits['abs_min_freq'] >= 1.79e10:
                 # equivalent to first minimum of the Airy diffraction pattern; m = 1.22.
                 sfpblimit = 0.294
             else:
