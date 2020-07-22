@@ -123,20 +123,20 @@ class MakeImListInputs(vdp.StandardInputs):
     def get_spw_hm_cell(self, spwlist):
         """If possible obtain spwlist specific hm_cell, otherwise return generic
         value."""
-        if 'multi_target_size_mitigation' in self.context.size_mitigation_parameters:
-            if spwlist in self.context.size_mitigation_parameters['multi_target_size_mitigation']:
-                if 'hm_cell' in self.context.size_mitigation_parameters['multi_target_size_mitigation'][spwlist]:
-                    return self.context.size_mitigation_parameters['multi_target_size_mitigation'][spwlist]['hm_cell']
-        return self.hm_cell
+        mitigated_hm_imsize = self.context.size_mitigation_parameters.get('multi_target_size_mitigation', {}).get(spwlist,{}).get('hm_cell')
+        if mitigated_hm_imsize not in [None, {}]:
+            return mitigated_hm_imsize
+        else:
+            return self.hm_cell
 
     def get_spw_hm_imsize(self, spwlist):
         """If possible obtain spwlist specific hm_imsize, otherwise return generic
         value."""
-        if 'multi_target_size_mitigation' in self.context.size_mitigation_parameters:
-            if spwlist in self.context.size_mitigation_parameters['multi_target_size_mitigation']:
-                if 'hm_imsize' in self.context.size_mitigation_parameters['multi_target_size_mitigation'][spwlist]:
-                    return self.context.size_mitigation_parameters['multi_target_size_mitigation'][spwlist]['hm_imsize']
-        return self.hm_imsize
+        mitigated_hm_imsize = self.context.size_mitigation_parameters.get('multi_target_size_mitigation', {}).get(spwlist,{}).get('hm_imsize')
+        if mitigated_hm_imsize not in [None, {}]:
+            return mitigated_hm_imsize
+        else:
+            return self.hm_imsize
 
     def __init__(self, context, output_dir=None, vis=None, imagename=None, intent=None, field=None, spw=None,
                  contfile=None, linesfile=None, uvrange=None, specmode=None, outframe=None, hm_imsize=None,
