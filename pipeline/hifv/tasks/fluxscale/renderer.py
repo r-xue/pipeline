@@ -159,10 +159,8 @@ class T2_4MDetailsfluxbootRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         for result in results:
 
-            plots = []
-            for band, caltable in result.caltable.items():
-                plotter = fluxbootdisplay.fluxgaincalSummaryChart(context, result, caltable)
-                plots.extend(plotter.plot())
+            plotter = fluxbootdisplay.fluxgaincalSummaryChart(context, result, result.caltable)
+            plots = plotter.plot()
 
             plotter = fluxbootdisplay.fluxbootSummaryChart(context, result)
             plots.extend(plotter.plot())
@@ -178,50 +176,49 @@ class T2_4MDetailsfluxbootRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
             precision = 5
             # print("{:.{}f}".format(pi, precision))
-            for band, spindex_result in result.spindex_results.items():
-                for row in sorted(spindex_result, key=lambda p: (p['source'], float(p['sortingfreq']))):
-                    spix = "{:.{}f}".format(float(row['spix']), precision)
-                    spixerr = "{:.{}f}".format(float(row['spixerr']), precision)
-                    curvature = "{:.{}f}".format(float(row['curvature']), precision)
-                    curvatureerr = "{:.{}f}".format(float(row['curvatureerr']), precision)
-                    gamma = "{:.{}f}".format(float(row['gamma']), precision)
-                    gammaerr = "{:.{}f}".format(float(row['gammaerr']), precision)
-                    delta = "{:.{}f}".format(float(row['delta']), precision)
-                    deltaerr = "{:.{}f}".format(float(row['deltaerr']), precision)
-                    fitflx = "{:.{}f}".format(float(row['fitflx']), precision)
-                    fitflxerr = "{:.{}f}".format(float(row['fitflxerr']), precision)
-                    reffreq = "{:.{}f}".format(float(row['reffreq']), precision)
-                    bandcenterfreq = "{:.{}f}".format(float(row['bandcenterfreq'])/1.e9, precision)
-                    # fitflxAtRefFreq = "{:.{}f}".format(float(row['fitflxAtRefFreq']), precision)
-                    # fitflxAtRefFreqErr = "{:.{}f}".format(float(row['fitflxAtRefFreqErr']), precision)
 
-                    curvval = curvature + ' +/- ' + curvatureerr
-                    gammaval = gamma + ' +/- ' + gammaerr
-                    deltaval = delta + ' +/- ' + deltaerr
+            for row in sorted(result.spindex_results, key=lambda p: (p['source'], float(p['sortingfreq']))):
+                spix = "{:.{}f}".format(float(row['spix']), precision)
+                spixerr = "{:.{}f}".format(float(row['spixerr']), precision)
+                curvature = "{:.{}f}".format(float(row['curvature']), precision)
+                curvatureerr = "{:.{}f}".format(float(row['curvatureerr']), precision)
+                gamma = "{:.{}f}".format(float(row['gamma']), precision)
+                gammaerr = "{:.{}f}".format(float(row['gammaerr']), precision)
+                delta = "{:.{}f}".format(float(row['delta']), precision)
+                deltaerr = "{:.{}f}".format(float(row['deltaerr']), precision)
+                fitflx = "{:.{}f}".format(float(row['fitflx']), precision)
+                fitflxerr = "{:.{}f}".format(float(row['fitflxerr']), precision)
+                reffreq = "{:.{}f}".format(float(row['reffreq']), precision)
+                bandcenterfreq = "{:.{}f}".format(float(row['bandcenterfreq'])/1.e9, precision)
+                # fitflxAtRefFreq = "{:.{}f}".format(float(row['fitflxAtRefFreq']), precision)
+                # fitflxAtRefFreqErr = "{:.{}f}".format(float(row['fitflxAtRefFreqErr']), precision)
 
-                    if float(row['curvature']) == 0.0:
-                        curvval = '----'
-                    if float(row['gamma']) == 0.0:
-                        gammaval = '----'
-                    if float(row['delta']) == 0.0:
-                        deltaval = '----'
+                curvval = curvature + ' +/- ' + curvatureerr
+                gammaval = gamma + ' +/- ' + gammaerr
+                deltaval = delta + ' +/- ' + deltaerr
 
-                    tr = FluxTR(row['source'], row['fitorder'], row['band'], bandcenterfreq, fitflx + ' +/- ' + fitflxerr,
-                                spix + ' +/- ' + spixerr,
-                                curvval,
-                                gammaval,
-                                deltaval)
-                                # reffreq, fitflxAtRefFreq + ' +/- ' + fitflxAtRefFreqErr)
-                    rows.append(tr)
+                if float(row['curvature']) == 0.0:
+                    curvval = '----'
+                if float(row['gamma']) == 0.0:
+                    gammaval = '----'
+                if float(row['delta']) == 0.0:
+                    deltaval = '----'
+
+                tr = FluxTR(row['source'], row['fitorder'], row['band'], bandcenterfreq, fitflx + ' +/- ' + fitflxerr,
+                            spix + ' +/- ' + spixerr,
+                            curvval,
+                            gammaval,
+                            deltaval)
+                            # reffreq, fitflxAtRefFreq + ' +/- ' + fitflxAtRefFreqErr)
+                rows.append(tr)
 
             spixtable = utils.merge_td_columns(rows)
 
             # Sort into dictionary collections to prep for weblog table
             webdicts[ms] = collections.defaultdict(list)
-            for band, weblog_result in result.weblog_results.items():
-                for row in sorted(weblog_result, key=lambda p: (p['source'], float(p['freq']))):
-                    webdicts[ms][row['source']].append({'freq': row['freq'], 'data': row['data'], 'error': row['error'],
-                                                        'fitteddata': row['fitteddata']})
+            for row in sorted(weblog_results[ms], key=lambda p: (p['source'], float(p['freq']))):
+                webdicts[ms][row['source']].append({'freq': row['freq'], 'data': row['data'], 'error': row['error'],
+                                                    'fitteddata': row['fitteddata']})
 
             plotter = fluxbootdisplay.residualsSummaryChart(context, result, webdicts[ms])
             plots.extend(plotter.plot())
@@ -240,3 +237,4 @@ class T2_4MDetailsfluxbootRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     'dirname': weblog_dir})
 
         return ctx
+

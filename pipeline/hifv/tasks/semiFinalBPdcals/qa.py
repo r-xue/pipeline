@@ -25,6 +25,8 @@ class semiFinalBPdcalsQAHandler(pqa.QAPlugin):
 
         scores = []
 
+        self.antspw = collections.defaultdict(list)
+
         for bandname, bpdgain_touse in result.bpdgain_touse.items():
             if result.flaggedSolnApplycalbandpass[bandname] and result.flaggedSolnApplycaldelay[bandname]:
                 self._checkKandBsolution(result.flaggedSolnApplycaldelay[bandname], m)
@@ -40,10 +42,13 @@ class semiFinalBPdcalsQAHandler(pqa.QAPlugin):
                 scores = [pqa.QAScore(0.0, longmsg='No flagging stats about the bandpass table or info in delay table.',
                                       shortmsg='Bandpass or delay table problem.')]
 
+        for antenna, spwlist in self.antspw.items():
+            LOG.warn('Antenna {!s}, spws: {!s} have a flagging fraction of 1.0.'
+                     ''.format(antenna, ','.join(spwlist)))
+
         result.qa.pool.extend(scores)
 
-    @staticmethod
-    def _checkKandBsolution(table, m):
+    def _checkKandBsolution(self, table, m):
 
         antenna_names = [a.name for a in m.antennas]
 
@@ -53,11 +58,13 @@ class semiFinalBPdcalsQAHandler(pqa.QAPlugin):
                 for pol in table['antspw'][antenna][spw]:
                     frac = table['antspw'][antenna][spw][pol]['fraction']
                     if frac == 1.0:
-                        spwcollect.append(str(spw))
+                        spwcollect.append(int(spw))
             if len(spwcollect) > 1:
                 spwcollect = sorted(set(spwcollect))
-                LOG.warn('Antenna {!s}, spws: {!s} have a flagging fraction of 1.0.'
-                         ''.format(antenna_names[antenna], ','.join(spwcollect)))
+                spwcollect = [str(spw) for spw in spwcollect]
+                self.antspw[antenna_names[antenna]].extend(spwcollect)
+                # LOG.warn('Antenna {!s}, spws: {!s} have a flagging fraction of 1.0.'
+                #          ''.format(antenna_names[antenna], ','.join(spwcollect)))
 
         return
 

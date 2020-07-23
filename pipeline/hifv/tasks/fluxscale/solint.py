@@ -88,9 +88,10 @@ class Solint(basetask.StandardTaskTemplate):
         new_gain_solint1 = {}
         bpdgain_touse = {}
 
+        calMs = 'calibrators.ms'
+        split_result = self._do_split(calMs)
+
         for band, spwlist in band2spw.items():
-            calMs = 'calibrators_{!s}.ms'.format(band)
-            split_result = self._do_split(calMs, ','.join(spwlist))
             longsolint_band, gain_solint2_band, shortsol2_band, short_solint_band, \
             new_gain_solint1_band, vis, bpdgain_touse_band = self._do_solint(band, spwlist, calMs)
 
@@ -285,13 +286,10 @@ class Solint(basetask.StandardTaskTemplate):
 
         return longsolint, gain_solint2, shortsol2, short_solint, new_gain_solint1, self.inputs.vis, bpdgain_touse
 
-    def _do_split(self, calMs, spw=''):
+    def _do_split(self, calMs):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         calibrator_scan_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_scan_select_string
-
-        scanlist = [int(scan) for scan in calibrator_scan_select_string.split(',')]
-        scanids_perband = ','.join([str(scan.id) for scan in m.get_scans(scan_id=scanlist, spw=spw)])
 
         LOG.info("Splitting out calibrators into " + calMs)
 
@@ -300,13 +298,13 @@ class Solint(basetask.StandardTaskTemplate):
                      'datacolumn': 'corrected',
                      'keepmms': True,
                      'field': '',
-                     'spw': spw,
+                     'spw': '',
                      # 'width'        : int(max(channels)),
                      'width': 1,
                      'antenna': '',
                      'timebin': '0s',
                      'timerange': '',
-                     'scan': scanids_perband,
+                     'scan': calibrator_scan_select_string,
                      'intent': '',
                      'array': '',
                      'uvrange': '',
@@ -386,7 +384,7 @@ class Solint(basetask.StandardTaskTemplate):
         task_args = {'vis': calMs,
                      'caltable': caltable,
                      'field': '',
-                     'spw': '',
+                     'spw': spw,
                      'intent': '',
                      'selectdata': True,
                      'scan': scanids_perband,
