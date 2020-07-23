@@ -237,3 +237,4 @@ class T2_4MDetailsfluxbootRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     'dirname': weblog_dir})
 
         return ctx
+

@@ -428,13 +428,13 @@ class VLAScanHeuristics(object):
         #     self.scanNums = sorted(numpy.unique(table.getcol('SCAN_NUMBER')))
 
         # These will be needed later in the pipeline
-        self.gain_solint1 = 'int'
-        self.gain_solint2 = 'int'
-        self.shortsol1 = 0.0
-        self.shortsol2 = 0.0
-        self.longsolint = 0.0
-        self.short_solint = 0.0
-        self.new_gain_solint1 = '1.0s'
+        self.gain_solint1 = {}
+        self.gain_solint2 = {}
+        self.shortsol1 = {}
+        self.shortsol2 = {}
+        self.longsolint = {}
+        self.short_solint = {}
+        self.new_gain_solint1 = {}
         self.ignorerefant = []
 
         self.fluxscale_sources = []

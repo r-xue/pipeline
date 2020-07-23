@@ -24,23 +24,33 @@ class testBPdcalsQAHandler(pqa.QAPlugin):
 
         m = context.observing_run.get_ms(result.inputs['vis'])
 
-        if result.flaggedSolnApplycalbandpass and result.flaggedSolnApplycaldelay:
-            self._checkKandBsolution(result.flaggedSolnApplycaldelay, m)
-            self._checkKandBsolution(result.flaggedSolnApplycalbandpass, m)
+        scores = []
 
-            score1 = qacalc.score_total_data_flagged_vla_bandpass(
-                result.bpdgain_touse, result.flaggedSolnApplycalbandpass['antmedian']['fraction'])
-            score2 = qacalc.score_total_data_vla_delay(result.ktypecaltable, m)
-            scores = [score1, score2]
-        else:
-            LOG.error('Error with bandpass and/or delay table.')
-            scores = [pqa.QAScore(0.0, longmsg='No flagging stats about the bandpass table or info in delay table.',
-                                  shortmsg='Bandpass or delay table problem.')]
+        self.antspw = collections.defaultdict(list)
+
+        for bandname, bpdgain_touse in result.bpdgain_touse.items():
+            if result.flaggedSolnApplycalbandpass[bandname] and result.flaggedSolnApplycaldelay[bandname]:
+                self._checkKandBsolution(result.flaggedSolnApplycaldelay[bandname], m)
+                self._checkKandBsolution(result.flaggedSolnApplycalbandpass[bandname], m)
+
+                score1 = qacalc.score_total_data_flagged_vla_bandpass(
+                    result.bpdgain_touse[bandname], result.flaggedSolnApplycalbandpass[bandname]['antmedian']['fraction'])
+                score2 = qacalc.score_total_data_vla_delay(result.ktypecaltable[bandname], m)
+                scores.append(score1)
+                scores.append(score2)
+            else:
+                LOG.error('Error with bandpass and/or delay table for band {!s}.'.format(bandname))
+                scores.append(pqa.QAScore(0.0,
+                                          longmsg='No flagging stats about the bandpass table or info in delay table.',
+                                          shortmsg='Bandpass or delay table problem.'))
+
+        for antenna, spwlist in self.antspw.items():
+            LOG.warn('Antenna {!s}, spws: {!s} have a flagging fraction of 1.0.'
+                     ''.format(antenna, ','.join(spwlist)))
 
         result.qa.pool.extend(scores)
 
-    @staticmethod
-    def _checkKandBsolution(table, m):
+    def _checkKandBsolution(self, table, m):
 
         antenna_names = [a.name for a in m.antennas]
 
@@ -50,11 +60,13 @@ class testBPdcalsQAHandler(pqa.QAPlugin):
                 for pol in table['antspw'][antenna][spw]:
                     frac = table['antspw'][antenna][spw][pol]['fraction']
                     if frac == 1.0:
-                        spwcollect.append(str(spw))
+                        spwcollect.append(int(spw))
             if len(spwcollect) > 1:
                 spwcollect = sorted(set(spwcollect))
-                LOG.warn('Antenna {!s}, spws: {!s} have a flagging fraction of 1.0.'
-                         ''.format(antenna_names[antenna], ','.join(spwcollect)))
+                spwcollect = [str(spw) for spw in spwcollect]
+                self.antspw[antenna_names[antenna]].extend(spwcollect)
+                # LOG.warn('Antenna {!s}, spws: {!s} have a flagging fraction of 1.0.'
+                #         ''.format(antenna_names[antenna], ','.join(spwcollect)))
 
         return
 

@@ -98,6 +98,7 @@ class fluxgaincalSummaryChart(object):
                               parameters={'vis': self.ms.basename,
                                           'type': 'fluxgaincal',
                                           'spw': '',
+                                          'caltable': self.caltable,
                                           'figurecaption': 'Caltable: {!s}. Plot of amp vs. freq.'.format(self.caltable)})
 
         if not os.path.exists(figfile):

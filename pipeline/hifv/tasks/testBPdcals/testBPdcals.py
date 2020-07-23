@@ -87,21 +87,22 @@ class testBPdcalsResults(basetask.Results):
         context.evla['msinfo'][m.name].shortsol1 = self.shortsol1
         context.evla['msinfo'][m.name].ignorerefant = self.ignorerefant
 
+
 class FlagBadDeformattersResults(basetask.Results):
     def __init__(self, jobs=None, result_amp=None, result_phase=None,
                  amp_collection=None, phase_collection=None,
                  num_antennas=None):
 
         if amp_collection is None:
-            amp_collection = collections.defaultdict(list)
+            amp_collection = {}
         if phase_collection is None:
-            phase_collection = collections.defaultdict(list)
+            phase_collection = {}
         if jobs is None:
             jobs = []
         if result_amp is None:
-            result_amp = []
+            result_amp = {}
         if result_phase is None:
-            result_phase = []
+            result_phase = {}
 
         super(FlagBadDeformattersResults, self).__init__()
 
@@ -126,42 +127,86 @@ class testBPdcals(basetask.StandardTaskTemplate):
     def prepare(self):
         self.ignorerefant = []
 
-        for i in [0, 1, 2]:
-            LOG.debug("    RUNNNING FIRST PART TESTBPDCALS    ")
-            gain_solint1, shortsol1, vis, bpdgain_touse, gtypecaltable, ktypecaltable, bpcaltable, \
-            flaggedSolnApplycalbandpass, flaggedSolnApplycaldelay, refant = self._do_testBPdcals()
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        spw2band = m.get_vla_spw2band()
+        band2spw = collections.defaultdict(list)
+        spwobjlist = m.get_spectral_windows(science_windows_only=True)
+        listspws = [spw.id for spw in spwobjlist]
+        for spw, band in spw2band.items():
+            if spw in listspws:  # Science intents only
+                band2spw[band].append(str(spw))
 
-            # If an entire baseband is determined to be bad for >50% of antennas, the pipeline should do the following:
-            '''
-            1.  Do not flag any data due to bad deformatters.
-            2.  Remove the first reference antenna from the refant list and ignore that antenna in refant calculations
-                    for the **entire pipeline run**
-            3.  Recalculate the reference antenna list
-            4.  Re-run hifv_testbpdcals and hifv_flagbaddef
-            5.  Repeat up to three times and then just drive ahead.
-            '''
+        gtypecaltable = {}
+        ktypecaltable = {}
+        bpcaltable = {}
+        bpdgain_touse = {}
+        flaggedSolnApplycalbandpass = {}
+        flaggedSolnApplycaldelay = {}
+        gain_solint1 = {}
+        shortsol1 = {}
 
-            LOG.debug("    RUNNING SECOND PART BADDEFORMATTERS    ")
-            result_amp, result_phase, amp_collection, phase_collection, \
-            num_antennas, amp_job, phase_job = self._run_baddeformatters(bpcaltable)
+        result_amp = {}
+        result_phase = {}
+        amp_collection = {}
+        phase_collection = {}
+        num_antennas = {}
 
-            pct_amp_ant = len(result_amp) / num_antennas
-            pct_phase_ant = len(result_phase) / num_antennas
-            ant_threshold = 0.5
+        for band, spwlist in band2spw.items():
 
-            if (pct_amp_ant < ant_threshold and pct_phase_ant < ant_threshold) or i == 2:
-                if amp_job:
-                    LOG.info("Executing bad deformatters amp flag commands...")
-                    self._executor.execute(amp_job)
-                if phase_job:
-                    LOG.info("Executing bad deformatters phase flag commands...")
-                    self._executor.execute(phase_job)
-                break
-            else:
-                # Criteria to finish not met - remove the first reference antenna from consideration
-                self.ignorerefant.append(refant)
-                LOG.warn("A baseband is determined to be bad for >50% of antennas.  "
-                         "Removing reference antenna(s) {!s} and rerunning the test calibration.".format(','.join(self.ignorerefant)))
+            for i in [0, 1, 2]:
+                LOG.debug("    RUNNNING FIRST PART TESTBPDCALS    ")
+                gain_solint1perband, shortsol1perband, vis, bpdgain_tousename, gtypecaltablename, ktypecaltablename, bpcaltablename, \
+                flaggedSolnApplycalbandpassperband, flaggedSolnApplycaldelayperband, refant = self._do_testBPdcals(band, spwlist)
+
+                #import pdb; pdb.set_trace()
+
+                # If an entire baseband is determined to be bad for >50% of antennas,
+                # the pipeline should do the following:
+                '''
+                1.  Do not flag any data due to bad deformatters.
+                2.  Remove the first reference antenna from the refant list and ignore that antenna in refant calculations
+                        for the **entire pipeline run**
+                3.  Recalculate the reference antenna list
+                4.  Re-run hifv_testbpdcals and hifv_flagbaddef
+                5.  Repeat up to three times and then just drive ahead.
+                '''
+
+                LOG.debug("    RUNNING SECOND PART BADDEFORMATTERS    ")
+                result_amp_perband, result_phase_perband, amp_collection_perband, phase_collection_perband, \
+                num_antennas_perband, amp_job, phase_job = self._run_baddeformatters(bpcaltablename)
+
+                pct_amp_ant = len(result_amp_perband) / num_antennas_perband
+                pct_phase_ant = len(result_phase_perband) / num_antennas_perband
+                ant_threshold = 0.5
+
+                if (pct_amp_ant < ant_threshold and pct_phase_ant < ant_threshold) or i == 2:
+                    if amp_job:
+                        LOG.info("Executing bad deformatters amp flag commands for band {!s}...".format(band))
+                        self._executor.execute(amp_job)
+                    if phase_job:
+                        LOG.info("Executing bad deformatters phase flag commands for band {!s}...".format(band))
+                        self._executor.execute(phase_job)
+                    break
+                else:
+                    # Criteria to finish not met - remove the first reference antenna from consideration
+                    self.ignorerefant.append(refant)
+                    LOG.warn("A baseband is determined to be bad for >50% of antennas.  "
+                             "Removing reference antenna(s) {!s} and rerunning the test calibration.".format(','.join(self.ignorerefant)))
+
+            gtypecaltable[band] = gtypecaltablename
+            ktypecaltable[band] = ktypecaltablename
+            bpcaltable[band] = bpcaltablename
+            bpdgain_touse[band] = bpdgain_tousename
+            flaggedSolnApplycalbandpass[band] = flaggedSolnApplycalbandpassperband
+            flaggedSolnApplycaldelay[band] = flaggedSolnApplycaldelayperband
+            gain_solint1[band] = gain_solint1perband
+            shortsol1[band] = shortsol1perband
+
+            result_amp[band] = result_amp_perband
+            result_phase[band] = result_phase_perband
+            amp_collection[band] = amp_collection_perband
+            phase_collection[band] = phase_collection_perband
+            num_antennas[band] = num_antennas_perband
 
         return testBPdcalsResults(gain_solint1=gain_solint1, shortsol1=shortsol1, vis=vis,
                                   bpdgain_touse=bpdgain_touse, gtypecaltable=gtypecaltable,
@@ -175,7 +220,9 @@ class testBPdcals(basetask.StandardTaskTemplate):
     def analyse(self, results):
         return results
 
-    def _do_testBPdcals(self):
+    def _do_testBPdcals(self, band, spwlist):
+
+        LOG.info("EXECUTING FOR BAND {!s}  spws: {!s}".format(band, ','.join(spwlist)))
         self.parang = True
         try:
             self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
@@ -189,11 +236,11 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
         tableprefix = os.path.basename(self.inputs.vis) + '.' + 'hifv_testBPdcals.s'
 
-        gtypecaltable = tableprefix + str(stage_number) + '_1.' + 'testdelayinitialgain.tbl'
-        ktypecaltable = tableprefix + str(stage_number) + '_2.' + 'testdelay.tbl'
-        bpcaltable = tableprefix + str(stage_number) + '_4.' + 'testBPcal.tbl'
+        gtypecaltable = tableprefix + str(stage_number) + '_1.' + 'testdelayinitialgain_{!s}.tbl'.format(band)
+        ktypecaltable = tableprefix + str(stage_number) + '_2.' + 'testdelay_{!s}.tbl'.format(band)
+        bpcaltable = tableprefix + str(stage_number) + '_4.' + 'testBPcal_{!s}.tbl'.format(band)
         tablebase = tableprefix + str(stage_number) + '_3.' + 'testBPdinitialgain'
-        table_suffix = ['.tbl', '3.tbl', '10.tbl']
+        table_suffix = ['_{!s}.tbl'.format(band), '3_{!s}.tbl'.format(band), '10_{!s}.tbl'.format(band)]
         soltimes = [1.0, 3.0, 10.0]
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         soltimes = [m.get_vla_max_integration_time() * x for x in soltimes]
@@ -218,9 +265,9 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
         LOG.info("RefAntOutput: {}".format(RefAntOutput))
 
-        self._do_gtype_delaycal(caltable=gtypecaltable, context=context, RefAntOutput=RefAntOutput)
+        self._do_gtype_delaycal(caltable=gtypecaltable, context=context, RefAntOutput=RefAntOutput, spwlist=spwlist)
 
-        LOG.info("Initial phase calibration on delay calibrator complete")
+        LOG.info("Initial phase calibration on delay calibrator complete for band {!s}".format(band))
 
         fracFlaggedSolns = 1.0
 
@@ -230,7 +277,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
         flagcount = 0
         while fracFlaggedSolns > critfrac and flagcount < 4:
             self._do_ktype_delaycal(caltable=ktypecaltable, addcaltable=gtypecaltable,
-                                    context=context, RefAntOutput=RefAntOutput)
+                                    context=context, RefAntOutput=RefAntOutput, spw=','.join(spwlist))
             flaggedSolnResult = getCalFlaggedSoln(ktypecaltable)
             (fracFlaggedSolns, RefAntOutput) = self._check_flagSolns(flaggedSolnResult, RefAntOutput)
             LOG.info("Fraction of flagged solutions = " + str(flaggedSolnResult['all']['fraction']))
@@ -254,7 +301,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
         bpdgain_touse = tablebase + table_suffix[0]
 
         self._do_gtype_bpdgains(tablebase + table_suffix[0], addcaltable=ktypecaltable,
-                                solint=solint, context=context, RefAntOutput=RefAntOutput)
+                                solint=solint, context=context, RefAntOutput=RefAntOutput, spwlist=spwlist)
 
         flaggedSolnResult1 = getCalFlaggedSoln(tablebase + table_suffix[0])
         LOG.info("For solint = " + solint + " fraction of flagged solutions = " +
@@ -277,7 +324,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
             context = self.inputs.context
 
             self._do_gtype_bpdgains(tablebase + table_suffix[1], addcaltable=ktypecaltable,
-                                    solint=solint, context=context, RefAntOutput=RefAntOutput)
+                                    solint=solint, context=context, RefAntOutput=RefAntOutput, spwlist=spwlist)
 
             flaggedSolnResult3 = getCalFlaggedSoln(tablebase + table_suffix[1])
             LOG.info("For solint = " + solint + " fraction of flagged solutions = " +
@@ -303,7 +350,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
                     context = self.inputs.context
 
                     self._do_gtype_bpdgains(tablebase + table_suffix[2], addcaltable=ktypecaltable, solint=solint,
-                                            context=context, RefAntOutput=RefAntOutput)
+                                            context=context, RefAntOutput=RefAntOutput, spwlist=spwlist)
                     flaggedSolnResult10 = getCalFlaggedSoln(tablebase + table_suffix[2])
                     LOG.info("For solint = " + solint + " fraction of flagged solutions = " +
                              str(flaggedSolnResult10['all']['fraction']))
@@ -325,21 +372,21 @@ class testBPdcals(basetask.StandardTaskTemplate):
                                      "there might be something wrong with your data.  " +
                                      "The fraction of flagged solutions is " + str(fracFlaggedSolns10))
 
-        LOG.info("Test amp and phase calibration on delay and bandpass calibrators complete")
-        LOG.info("Using short solint = {!s}".format(str(gain_solint1)))
+        LOG.info("Test amp and phase calibration on delay and bandpass calibrators complete for band {!s}".format(band))
+        LOG.info("Using short solint = {!s} for band {!s}".format(str(gain_solint1), band))
 
-        LOG.info("Doing test bandpass calibration")
+        LOG.info("Doing test bandpass calibration for band {!s}".format(band))
 
         if self.inputs.weakbp:
             # LOG.info("USING WEAKBP HEURISTICS")
             interp = weakbp(self.inputs.vis, bpcaltable, context=context, RefAntOutput=RefAntOutput,
                             ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse, solint='inf', append=False,
-                            executor=self._executor)
+                            executor=self._executor, spw=','.join(spwlist))
         else:
             # LOG.info("Using REGULAR heuristics")
             interp = ''
             do_bandpass(self.inputs.vis, bpcaltable, context=context, RefAntOutput=RefAntOutput,
-                        spw='', ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse,
+                        spw=','.join(spwlist), ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse,
                         solint='inf', append=False, executor=self._executor)
 
             AllCalTables = sorted(self.inputs.context.callibrary.active.get_caltable())
@@ -359,10 +406,10 @@ class testBPdcals(basetask.StandardTaskTemplate):
         LOG.info("Executing flagdata in clip mode.")
         self._do_clipflag(bpcaltable)
 
-        LOG.info("Applying test calibrations to BP and delay calibrators")
+        LOG.info("Applying test calibrations to BP and delay calibrators for band {!s}".format(band))
 
         self._do_applycal(context=context, ktypecaltable=ktypecaltable, bpdgain_touse=bpdgain_touse,
-                          bpcaltable=bpcaltable, interp=interp)
+                          bpcaltable=bpcaltable, interp=interp, spw=','.join(spwlist))
 
         flaggedSolnApplycalbandpass = getCalFlaggedSoln(bpdgain_touse)
         flaggedSolnApplycaldelay = getCalFlaggedSoln(ktypecaltable)
@@ -370,11 +417,11 @@ class testBPdcals(basetask.StandardTaskTemplate):
         return gain_solint1, shortsol1, self.inputs.vis, bpdgain_touse, gtypecaltable,\
                ktypecaltable, bpcaltable, flaggedSolnApplycalbandpass, flaggedSolnApplycaldelay, RefAntOutput[0]
 
-    def _do_gtype_delaycal(self, caltable=None, context=None, RefAntOutput=None):
+    def _do_gtype_delaycal(self, caltable=None, context=None, RefAntOutput=None, spwlist=[]):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         delay_field_select_string = context.evla['msinfo'][m.name].delay_field_select_string
-        tst_delay_spw = m.get_vla_tst_delay_spw()
+        tst_delay_spw = m.get_vla_tst_delay_spw(spwlist=spwlist)
         delay_scan_select_string = context.evla['msinfo'][m.name].delay_scan_select_string
         minBL_for_cal = m.vla_minbaselineforcal()
 
@@ -419,7 +466,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
         return True
 
-    def _do_ktype_delaycal(self, caltable=None, addcaltable=None, context=None, RefAntOutput=None):
+    def _do_ktype_delaycal(self, caltable=None, addcaltable=None, context=None, RefAntOutput=None, spw=''):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         delay_field_select_string = context.evla['msinfo'][m.name].delay_field_select_string
@@ -432,7 +479,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
         delaycal_task_args = {'vis': self.inputs.vis,
                               'caltable': caltable,
                               'field': '',
-                              'spw': '',
+                              'spw': spw,
                               'intent': '',
                               'selectdata': True,
                               'uvrange': '',
@@ -487,10 +534,11 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
         return fracFlaggedSolns, RefAntOutput
 
-    def _do_gtype_bpdgains(self, caltable, addcaltable=None, solint='int', context=None, RefAntOutput=None):
+    def _do_gtype_bpdgains(self, caltable, addcaltable=None, solint='int', context=None, RefAntOutput=None,
+                           spwlist=[]):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        tst_bpass_spw = m.get_vla_tst_bpass_spw()
+        tst_bpass_spw = m.get_vla_tst_bpass_spw(spwlist=spwlist)
         delay_scan_select_string = context.evla['msinfo'][m.name].delay_scan_select_string
         bandpass_scan_select_string = context.evla['msinfo'][m.name].bandpass_scan_select_string
         minBL_for_cal = m.vla_minbaselineforcal()
@@ -567,7 +615,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
         return self._executor.execute(job)
 
-    def _do_applycal(self, context=None, ktypecaltable=None, bpdgain_touse=None, bpcaltable=None, interp=None):
+    def _do_applycal(self, context=None, ktypecaltable=None, bpdgain_touse=None, bpcaltable=None, interp=None, spw=''):
         """Run CASA task applycal"""
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
@@ -582,7 +630,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
         applycal_task_args = {'vis': self.inputs.vis,
                               'field': '',
-                              'spw': '',
+                              'spw': spw,
                               'intent': '',
                               'selectdata': True,
                               'scan': testgainscans,

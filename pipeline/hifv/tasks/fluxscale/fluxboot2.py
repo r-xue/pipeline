@@ -1,5 +1,6 @@
 import math
 import os
+import collections
 
 import numpy as np
 
@@ -99,6 +100,28 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
     def prepare(self):
 
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        spw2band = m.get_vla_spw2band()
+        band2spw = collections.defaultdict(list)
+        spwobjlist = m.get_spectral_windows(science_windows_only=True)
+        listspws = [spw.id for spw in spwobjlist]
+        for spw, band in spw2band.items():
+            if spw in listspws:  # Science intents only
+                band2spw[band].append(str(spw))
+
+        sources, flux_densities, spws, weblog_results,\
+        spindex_results, caltable, fluxscale_result = self._do_fluxboot2(band2spw)
+
+        return Fluxboot2Results(sources=sources, flux_densities=flux_densities, spws=spws,
+                                weblog_results=weblog_results,
+                                spindex_results=spindex_results, vis=self.inputs.vis, caltable=caltable,
+                                fluxscale_result=fluxscale_result)
+
+    def analyse(self, results):
+        return results
+
+    def _do_fluxboot2(self, band2spw):
+
         calMs = 'calibrators.ms'
         context = self.inputs.context
 
@@ -131,8 +154,6 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
             m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
             field_spws = m.get_vla_field_spws()
-            new_gain_solint1 = context.evla['msinfo'][m.name].new_gain_solint1
-            gain_solint2 = context.evla['msinfo'][m.name].gain_solint2
             spw2band = m.get_vla_spw2band()
 
             # Look in spectral window domain object as this information already exists!
@@ -190,10 +211,6 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                                 LOG.warn("SetJy issue with field id=" + str(job.kw['field']) + " and spw=" + str(
                                     job.kw['spw']))
 
-            LOG.info("Making gain tables for flux density bootstrapping")
-            LOG.info("Short solint = " + new_gain_solint1)
-            LOG.info("Long solint = " + gain_solint2)
-
             self.ignorerefant = self.inputs.context.evla['msinfo'][m.name].ignorerefant
 
             context = self.inputs.context
@@ -212,8 +229,21 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
             fluxphase = 'fluxphaseshortgaincal.g'
 
-            self._do_gaincal(context, calMs, fluxphase, 'p', [''],
-                             solint=new_gain_solint1, minsnr=3.0, refAnt=refAnt)
+            for band, spwlist in band2spw.items():
+                append = False
+                isdir = os.path.isdir(fluxphase)
+                if isdir:
+                    append = True
+                    LOG.info("Appending to existing table: {!s}".format(fluxphase))
+
+                new_gain_solint1 = context.evla['msinfo'][m.name].new_gain_solint1[band]
+
+                LOG.info("Making gain tables for flux density bootstrapping")
+                LOG.info("Short solint = " + new_gain_solint1 + " for band {!s}".format(band))
+
+                self._do_gaincal(context, calMs, fluxphase, 'p', [''],
+                                 solint=new_gain_solint1, minsnr=3.0, refAnt=refAnt,
+                                 spw=','.join(spwlist), append=append)
 
             # ----------------------------------------------------------------------------
             # New Heuristics, CAS-9186
@@ -226,13 +256,20 @@ class Fluxboot2(basetask.StandardTaskTemplate):
             fluxflagtable = 'fluxflag.g'
 
             for i, field in enumerate(field_objects):
-                append = False
-                if i > 0:
-                    append = True
-                self._do_gaincal(context, calMs, fluxflagtable, 'ap', [fluxphase],
-                                 solint=gain_solint2, minsnr=5.0, refAnt=refAnt, field=field.name,
-                                 solnorm=True, append=append, fluxflag=True,
-                                 vlassmode=vlassmode)
+                for band, spwlist in band2spw.items():
+                    append = False
+                    isdir = os.path.isdir(fluxflagtable)
+                    if isdir:
+                        append = True
+                        LOG.info("Appending to existing table: {!s}".format(fluxflagtable))
+
+                    gain_solint2 = context.evla['msinfo'][m.name].gain_solint2[band]
+                    LOG.info("Long solint = " + gain_solint2 + " for band {!s}".format(band))
+
+                    self._do_gaincal(context, calMs, fluxflagtable, 'ap', [fluxphase],
+                                     solint=gain_solint2, minsnr=5.0, refAnt=refAnt, field=field.name,
+                                     solnorm=True, append=append, fluxflag=True,
+                                     vlassmode=vlassmode, spw=','.join(spwlist))
 
             # use flagdata to clip fluxflag.g outside the range 0.9-1.1
             flagjob = casa_tasks.flagdata(vis=fluxflagtable, mode='clip', correlation='ABS_ALL',
@@ -240,7 +277,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                                           action='apply', flagbackup=False, savepars=False)
             self._executor.execute(flagjob)
 
-            # use applycal to apply fluxflag.g to calibrators.ms, applymode='flagonlystrict'
+            # use applycal to apply fluxflag.g to calibrators_band.ms, applymode='flagonlystrict'
             applycaljob = casa_tasks.applycal(vis=calMs, field="", spw="", intent="",
                                               selectdata=False, docallib=False, gaintable=[fluxflagtable],
                                               gainfield=[''], interp=[''], spwmap=[], calwt=[False], parang=False,
@@ -250,18 +287,27 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
             # -------------------------------------------------------------------------------
 
-            self._do_gaincal(context, calMs, caltable, 'ap', [fluxphase],
-                                              solint=gain_solint2, minsnr=5.0, refAnt=refAnt)
+            for band, spwlist in band2spw.items():
+                append = False
+                isdir = os.path.isdir(caltable)
+                if isdir:
+                    append = True
+                    LOG.info("Appending to existing table: {!s}".format(caltable))
+
+                gain_solint2 = context.evla['msinfo'][m.name].gain_solint2[band]
+
+                self._do_gaincal(context, calMs, caltable, 'ap', [fluxphase],
+                                 solint=gain_solint2, minsnr=5.0, refAnt=refAnt, append=append, spw=','.join(spwlist))
 
             LOG.info("Gain table " + caltable + " is ready for flagging.")
         else:
             caltable = self.inputs.caltable
-            LOG.warn("Caltable " + caltable + " has been flagged and will be used in the flux density bootstrapping.")
+            LOG.warn("Caltable " + caltable + "has been flagged and will be used in the flux density bootstrapping.")
 
         # ---------------------------------------------------------------------
         # Fluxboot stage
 
-        LOG.info("Doing flux density bootstrapping using caltable " + caltable)
+        LOG.info("Doing flux density bootstrapping using caltable {!s}.".format(caltable))
         try:
             fluxscale_result = self._do_fluxscale(context, calMs, caltable)
             LOG.info("Using fit from fluxscale.")
@@ -275,13 +321,8 @@ class Fluxboot2(basetask.StandardTaskTemplate):
             spindex_results = []
             fluxscale_result = {}
 
-        return Fluxboot2Results(sources=self.sources, flux_densities=self.flux_densities,
-                                spws=self.spws, weblog_results=weblog_results,
-                                spindex_results=spindex_results, vis=self.inputs.vis, caltable=caltable,
-                                fluxscale_result=fluxscale_result)
-
-    def analyse(self, results):
-        return results
+        return self.sources, self.flux_densities, self.spws, weblog_results,\
+               spindex_results, caltable, fluxscale_result
 
     def _do_fluxscale(self, context, calMs, caltable):
 
@@ -318,7 +359,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         spw2bandall = m.get_vla_spw2band()
-        spws = m.get_spectral_windows()
+        spws = m.get_spectral_windows()   #List is done per band
         spwidlist = [spw.id for spw in spws if 'AMPLITUDE' in spw.intents]
 
         spw2band = {}
@@ -368,9 +409,9 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
         LOG.info('Displaying fit order heuristics...')
         LOG.info('  Number of spws: {!s}'.format(str(len(spws))))
-        LOG.info('  Bands: {!s}'.format(','.join(unique_bands)))
-        LOG.info('  Max frequency: {!s}'.format(str(maxfreq)))
+        LOG.info('  Band: {!s}'.format(','.join(unique_bands)))
         LOG.info('  Min frequency: {!s}'.format(str(minfreq)))
+        LOG.info('  Max frequency: {!s}'.format(str(maxfreq)))
         LOG.info('  delta nu / nu: {!s}'.format(fractional_bandwidth))
         LOG.info('  Fit order: {!s}'.format(fitorder))
 
@@ -832,7 +873,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
     def _do_gaincal(self, context, calMs, caltable, calmode, gaintablelist,
                     solint='int', minsnr=3.0, refAnt=None, field='', solnorm=False, append=False,
-                    fluxflag=False, vlassmode=False):
+                    fluxflag=False, vlassmode=False, spw=''):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         # minBL_for_cal = context.evla['msinfo'][m.name].minBL_for_cal
@@ -847,7 +888,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
         task_args = {'vis': calMs,
                      'caltable': caltable,
                      'field': field,
-                     'spw': '',
+                     'spw': spw,
                      'intent': '',
                      'selectdata': False,
                      'solint': solint,
