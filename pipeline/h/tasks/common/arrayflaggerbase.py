@@ -187,10 +187,23 @@ class FlagCmd(object):
             ax_antenna = None
             for k, name in enumerate(axisnames):
                 if 'ANTENNA' in name.upper():
-                    if antenna is None or antenna == flagcoords[k]:
+                    # If the view is not specific to any antenna,
+                    # then just use the antenna ID from the view axis.
+                    if antenna is None:
                         ax_antenna = flagcoords[k]
                     else:
-                        ax_antenna = '%s&%s' % (antenna, flagcoords[k])
+                        # Get list of antennas for which the view is valid.
+                        ant_list = antenna.split(',')
+
+                        # If the view is specific to one antenna, and that is
+                        # not the the same antenna as in the flag coordinate,
+                        # then turn this into a baseline flagging command.
+                        if len(ant_list) == 1 and ant_list[0] and int(ant_list[0]) != flagcoords[k]:
+                            ax_antenna = '%s&%s' % (ant_list[0], flagcoords[k])
+                        # Otherwise, keep this as flagging command for the ant
+                        # at the flagging coordinate.
+                        else:
+                            ax_antenna = flagcoords[k]
                 elif name.upper() == 'BASELINE':
                     ax_antenna = flagcoords[k]
             if ax_antenna is not None:
@@ -204,8 +217,6 @@ class FlagCmd(object):
                     flagcmd += " antenna='%s'" % ax_antenna_name
                 else:
                     flagcmd += " antenna='%s'" % ax_antenna
-
-#                self.antenna = ax_antenna
 
             flag_time = None
             for k, name in enumerate(axisnames):
@@ -230,8 +241,9 @@ class FlagCmd(object):
             # to antenna names, then use antenna names in the 
             # flagging commands.
             if antenna_id_to_name:
-                # Antenna axis can be either single antenna or a
-                # baseline.
+                # TODO: this cannot yet handle comma separated list of multiple
+                #  antennas and/or baselines. Antenna is assumed to be either a
+                #  single antenna or a single baseline.
                 antenna_name = '&'.join([antenna_id_to_name[int(ant)] for ant in str(self.antenna).split('&')])
                 flagcmd += " antenna='%s'" % antenna_name
             else:

@@ -475,9 +475,6 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
         table = matrix.filename
         pol = matrix.pol
         antenna = matrix.ant
-        if antenna is not None:
-            # deal with antenna id not name
-            antenna = antenna[0]
 
         # Initialize flags
         newflags = []
