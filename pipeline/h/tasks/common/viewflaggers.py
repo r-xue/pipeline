@@ -60,11 +60,12 @@ def _log_outlier(msg):
 
 class MatrixFlaggerInputs(vdp.StandardInputs):
     prepend = vdp.VisDependentProperty(default='')
+    skip_fully_flagged = vdp.VisDependentProperty(default=True)
     use_antenna_names = vdp.VisDependentProperty(default=True)
 
     def __init__(self, context, output_dir=None, vis=None, datatask=None, viewtask=None, flagsettertask=None,
                  rules=None, niter=None, extendfields=None, extendbaseband=None, iter_datatask=None,
-                 use_antenna_names=None, prepend=None):
+                 use_antenna_names=None, prepend=None, skip_fully_flagged=None):
         super(MatrixFlaggerInputs, self).__init__()
 
         # pipeline inputs
@@ -82,6 +83,7 @@ class MatrixFlaggerInputs(vdp.StandardInputs):
         self.niter = niter
         self.prepend = prepend
         self.rules = rules
+        self.skip_fully_flagged = skip_fully_flagged
         self.use_antenna_names = use_antenna_names
         self.viewtask = viewtask
 
@@ -481,7 +483,7 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
         flag_reason = np.zeros(np.shape(flag), np.int)
 
         # If there is no valid (non-flagged) data, then return early.
-        if np.all(flag):
+        if np.all(flag) and self.inputs.skip_fully_flagged:
             return newflags, flag_reason
 
         # If requested to use antenna names instead of IDs antenna,
@@ -906,8 +908,9 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
 
             elif rulename == 'too many entirely flagged':
 
-                # Stop evaluating rule if all data is flagged.
-                if np.all(flag):
+                # Stop evaluating rule if all data is flagged, unless
+                # explicitly overridden.
+                if np.all(flag) and self.inputs.skip_fully_flagged:
                     continue
 
                 maxfraction = rule['limit']
@@ -922,17 +925,28 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
 
                     # If the fraction of "entirely flagged" columns exceeds the limit, then
                     # all non-flagged data will need to be flagged.
-                    if frac_ef > maxfraction:
+                    if frac_ef >= maxfraction:
 
                         # Indices to flag are all those that are currently not flagged
                         i2flag = i[np.logical_not(flag)]
                         j2flag = j[np.logical_not(flag)]
 
+                        # PIPE-566: if the entire view was already flagged,
+                        # potentially because no valid data were available in
+                        # caltable, then create an explicit flagging command
+                        # for the flagged columns; depending on "table" input
+                        # parameter of the flagsetter task, this will either
+                        # re-flag the same data (unnecessary, but harmless), or
+                        # it may be used to flag the underlying data in the MS.
+                        if frac_ef == 1.0:
+                            i2flag = i[flag]
+                            j2flag = j[flag]
+
                         # Log a debug message about outliers.
                         msg = ("Outliers found with flagging rule '{}' for {}, spw {}, pol {}.\n"
                                "Threshold for entirely flagged columns: {}.\n"
-                               "Number of entirely flagged columns {} exceeded threshold, entire view will be"
-                               " flagged.".format(rulename, os.path.basename(table), spw, pol, maxfraction, frac_ef))
+                               "Fraction of entirely flagged columns {} reached or exceeded threshold, entire view will"
+                               " be flagged.".format(rulename, os.path.basename(table), spw, pol, maxfraction, frac_ef))
                         _log_outlier(msg)
 
                         # Add new flag commands to flag data underlying
