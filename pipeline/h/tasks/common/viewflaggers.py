@@ -60,11 +60,12 @@ def _log_outlier(msg):
 
 class MatrixFlaggerInputs(vdp.StandardInputs):
     prepend = vdp.VisDependentProperty(default='')
+    skip_fully_flagged = vdp.VisDependentProperty(default=True)
     use_antenna_names = vdp.VisDependentProperty(default=True)
 
     def __init__(self, context, output_dir=None, vis=None, datatask=None, viewtask=None, flagsettertask=None,
                  rules=None, niter=None, extendfields=None, extendbaseband=None, iter_datatask=None,
-                 use_antenna_names=None, prepend=None):
+                 use_antenna_names=None, prepend=None, skip_fully_flagged=None):
         super(MatrixFlaggerInputs, self).__init__()
 
         # pipeline inputs
@@ -82,6 +83,7 @@ class MatrixFlaggerInputs(vdp.StandardInputs):
         self.niter = niter
         self.prepend = prepend
         self.rules = rules
+        self.skip_fully_flagged = skip_fully_flagged
         self.use_antenna_names = use_antenna_names
         self.viewtask = viewtask
 
@@ -138,16 +140,12 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
         # Expand flag commands to larger scope, if requested, by removing
         # selection in specified fields
         if inputs.extendfields:
-            LOG.info(
-                '{0} flagcmds will be extended by removing selection in'
-                'following fields: {1}'.format(inputs.prepend,
-                                               inputs.extendfields))
+            LOG.info("{} flagcmds will be extended by removing selection in following fields: {}"
+                     "".format(inputs.prepend, inputs.extendfields))
 
         # Expand flag commands to include all spws in a baseband, if requested
-        if inputs.extendfields:
-            LOG.info(
-                '{0} flagcmds will be extended to include all spws within'
-                'baseband.'.format(inputs.prepend))
+        if inputs.extendbaseband:
+            LOG.info("{} flagcmds will be extended to include all spws within baseband.".format(inputs.prepend))
 
         # Initialize flags, flag_reason, and iteration counter
         flags = []
@@ -479,16 +477,13 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
         table = matrix.filename
         pol = matrix.pol
         antenna = matrix.ant
-        if antenna is not None:
-            # deal with antenna id not name
-            antenna = antenna[0]
 
         # Initialize flags
         newflags = []
         flag_reason = np.zeros(np.shape(flag), np.int)
 
         # If there is no valid (non-flagged) data, then return early.
-        if np.all(flag):
+        if np.all(flag) and self.inputs.skip_fully_flagged:
             return newflags, flag_reason
 
         # If requested to use antenna names instead of IDs antenna,
@@ -573,7 +568,7 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                     newflags.append(arrayflaggerbase.FlagCmd(
                         reason='outlier', filename=table, rulename=rulename, spw=spw, antenna=antenna,
                         axisnames=[xtitle, ytitle], flagcoords=flagcoord, pol=pol,
-                        antenna_id_to_name=antenna_id_to_name))
+                        extendfields=self.inputs.extendfields, antenna_id_to_name=antenna_id_to_name))
 
                 # Flag the view, for any subsequent rules being evaluated.
                 flag[i2flag, j2flag] = True
@@ -623,8 +618,9 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                 # view.
                 for flagcoord in zip(xdata[i2flag], ydata[j2flag]):
                     newflags.append(arrayflaggerbase.FlagCmd(
-                        reason='low_outlier', filename=table, rulename=rulename, spw=spw, axisnames=[xtitle, ytitle],
-                        flagcoords=flagcoord, pol=pol, antenna_id_to_name=antenna_id_to_name))
+                        reason='low_outlier', filename=table, rulename=rulename, spw=spw, antenna=antenna,
+                        axisnames=[xtitle, ytitle], flagcoords=flagcoord, pol=pol,
+                        extendfields=self.inputs.extendfields, antenna_id_to_name=antenna_id_to_name))
 
                 # Flag the view, for any subsequent rules being evaluated.
                 flag[i2flag, j2flag] = True
@@ -673,8 +669,9 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                 # view.
                 for flagcoord in zip(xdata[i2flag], ydata[j2flag]):
                     newflags.append(arrayflaggerbase.FlagCmd(
-                      reason='high_outlier', filename=table, rulename=rulename, spw=spw, axisnames=[xtitle, ytitle],
-                      flagcoords=flagcoord, pol=pol, antenna_id_to_name=antenna_id_to_name))
+                        reason='high_outlier', filename=table, rulename=rulename, spw=spw, antenna=antenna,
+                        axisnames=[xtitle, ytitle], flagcoords=flagcoord, pol=pol,
+                        extendfields=self.inputs.extendfields, antenna_id_to_name=antenna_id_to_name))
 
                 # Flag the view, for any subsequent rules being evaluated.
                 flag[i2flag, j2flag] = True
@@ -723,8 +720,9 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                 # view.
                 for flagcoord in zip(xdata[i2flag], ydata[j2flag]):
                     newflags.append(arrayflaggerbase.FlagCmd(
-                        reason='min_abs', filename=table, rulename=rulename, spw=spw, axisnames=[xtitle, ytitle],
-                        flagcoords=flagcoord, pol=pol, antenna_id_to_name=antenna_id_to_name))
+                        reason='min_abs', filename=table, rulename=rulename, spw=spw, antenna=antenna,
+                        axisnames=[xtitle, ytitle], flagcoords=flagcoord, pol=pol,
+                        extendfields=self.inputs.extendfields, antenna_id_to_name=antenna_id_to_name))
 
                 # Flag the view, for any subsequent rules being evaluated.
                 flag[i2flag, j2flag] = True
@@ -773,9 +771,9 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                 # view.
                 for flagcoord in zip(xdata[i2flag], ydata[j2flag]):
                     newflags.append(arrayflaggerbase.FlagCmd(
-                        reason='max_abs', filename=table, rulename=rulename,  spw=spw, axisnames=[xtitle, ytitle],
-                        flagcoords=flagcoord, pol=pol, extendfields=self.inputs.extendfields,
-                        antenna_id_to_name=antenna_id_to_name))
+                        reason='max_abs', filename=table, rulename=rulename,  spw=spw, antenna=antenna,
+                        axisnames=[xtitle, ytitle], flagcoords=flagcoord, pol=pol,
+                        extendfields=self.inputs.extendfields, antenna_id_to_name=antenna_id_to_name))
 
                 # Flag the view, for any subsequent rules being evaluated.
                 flag[i2flag, j2flag] = True
@@ -844,7 +842,7 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                             newflags.append(arrayflaggerbase.FlagCmd(
                                 reason='too_many_flags', filename=table, rulename=rulename, spw=spw, antenna=antenna,
                                 axisnames=[xtitle, ytitle], flagcoords=flagcoord, pol=pol,
-                                antenna_id_to_name=antenna_id_to_name))
+                                extendfields=self.inputs.extendfields, antenna_id_to_name=antenna_id_to_name))
 
                         # Flag the view, for any subsequent rules being evaluated.
                         flag[i2flag, j2flag] = True
@@ -900,9 +898,9 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                         # the view.
                         for flagcoord in zip(xdata[i2flag], ydata[j2flag]):
                             newflags.append(arrayflaggerbase.FlagCmd(
-                                reason='too_many_flags', filename=table, rulename=rulename, spw=spw,
+                                reason='too_many_flags', filename=table, rulename=rulename, spw=spw, antenna=antenna,
                                 axisnames=[xtitle, ytitle], flagcoords=flagcoord, pol=pol,
-                                antenna_id_to_name=antenna_id_to_name))
+                                extendfields=self.inputs.extendfields, antenna_id_to_name=antenna_id_to_name))
 
                         # Flag the view, for any subsequent rules being evaluated.
                         flag[i2flag, j2flag] = True
@@ -910,8 +908,9 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
 
             elif rulename == 'too many entirely flagged':
 
-                # Stop evaluating rule if all data is flagged.
-                if np.all(flag):
+                # Stop evaluating rule if all data is flagged, unless
+                # explicitly overridden.
+                if np.all(flag) and self.inputs.skip_fully_flagged:
                     continue
 
                 maxfraction = rule['limit']
@@ -926,26 +925,37 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
 
                     # If the fraction of "entirely flagged" columns exceeds the limit, then
                     # all non-flagged data will need to be flagged.
-                    if frac_ef > maxfraction:
+                    if frac_ef >= maxfraction:
 
                         # Indices to flag are all those that are currently not flagged
                         i2flag = i[np.logical_not(flag)]
                         j2flag = j[np.logical_not(flag)]
 
+                        # PIPE-566: if the entire view was already flagged,
+                        # potentially because no valid data were available in
+                        # caltable, then create an explicit flagging command
+                        # for the flagged columns; depending on "table" input
+                        # parameter of the flagsetter task, this will either
+                        # re-flag the same data (unnecessary, but harmless), or
+                        # it may be used to flag the underlying data in the MS.
+                        if frac_ef == 1.0:
+                            i2flag = i[flag]
+                            j2flag = j[flag]
+
                         # Log a debug message about outliers.
                         msg = ("Outliers found with flagging rule '{}' for {}, spw {}, pol {}.\n"
                                "Threshold for entirely flagged columns: {}.\n"
-                               "Number of entirely flagged columns {} exceeded threshold, entire view will be"
-                               " flagged.".format(rulename, os.path.basename(table), spw, pol, maxfraction, frac_ef))
+                               "Fraction of entirely flagged columns {} reached or exceeded threshold, entire view will"
+                               " be flagged.".format(rulename, os.path.basename(table), spw, pol, maxfraction, frac_ef))
                         _log_outlier(msg)
 
                         # Add new flag commands to flag data underlying
                         # the view.
                         for flagcoord in zip(xdata[i2flag], ydata[j2flag]):
                             newflags.append(arrayflaggerbase.FlagCmd(
-                                reason='too_many_flags', filename=table, rulename=rulename,  spw=spw,
-                                antenna=antenna, axisnames=[xtitle, ytitle], flagcoords=flagcoord, pol=pol,
-                                antenna_id_to_name=antenna_id_to_name))
+                                reason='too_many_flags', filename=table, rulename=rulename,  spw=spw, antenna=antenna,
+                                axisnames=[xtitle, ytitle], flagcoords=flagcoord, pol=pol,
+                                extendfields=self.inputs.extendfields, antenna_id_to_name=antenna_id_to_name))
 
                         # Flag the view, for any subsequent rules being evaluated.
                         flag[i2flag, j2flag] = True
@@ -999,9 +1009,9 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                 # the view.
                 for flagcoord in zip(xdata[i2flag], ydata[j2flag]):
                     newflags.append(arrayflaggerbase.FlagCmd(
-                        reason='nmedian', filename=table, rulename=rulename, spw=spw, axisnames=[xtitle, ytitle],
-                        flagcoords=flagcoord, pol=pol, extendfields=self.inputs.extendfields,
-                        antenna_id_to_name=antenna_id_to_name))
+                        reason='nmedian', filename=table, rulename=rulename, spw=spw, antenna=antenna,
+                        axisnames=[xtitle, ytitle], flagcoords=flagcoord, pol=pol,
+                        extendfields=self.inputs.extendfields, antenna_id_to_name=antenna_id_to_name))
 
                 # Flag the view, for any subsequent rules being evaluated.
                 flag[i2flag, j2flag] = True
@@ -1107,9 +1117,9 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                         # low outliers in the data.
                         for flagcoord in zip(xdata[[iant]], ydata[j2flag_lo]):
                             newflags.append(arrayflaggerbase.FlagCmd(
-                                reason='low outlier', filename=table, rulename='low outlier', spw=spw, pol=pol,
-                                axisnames=[xtitle, ytitle], flagcoords=flagcoord,
-                                antenna_id_to_name=antenna_id_to_name))
+                                reason='low outlier', filename=table, rulename='low outlier', spw=spw, antenna=antenna,
+                                axisnames=[xtitle, ytitle], flagcoords=flagcoord, pol=pol,
+                                extendfields=self.inputs.extendfields, antenna_id_to_name=antenna_id_to_name))
 
                         # For current antenna data selection, identify the
                         # remaining non-flagged data points.
@@ -1128,9 +1138,9 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                         # data points as "bad antenna".
                         for flagcoord in zip(xdata[[iant]], ydata[j2flag_bad]):
                             newflags.append(arrayflaggerbase.FlagCmd(
-                                reason='bad antenna', filename=table, rulename='bad antenna', spw=spw, pol=pol,
-                                axisnames=[xtitle, ytitle], flagcoords=flagcoord,
-                                antenna_id_to_name=antenna_id_to_name))
+                                reason='bad antenna', filename=table, rulename='bad antenna', spw=spw, antenna=antenna,
+                                axisnames=[xtitle, ytitle], flagcoords=flagcoord, pol=pol,
+                                extendfields=self.inputs.extendfields, antenna_id_to_name=antenna_id_to_name))
 
             elif rulename == 'bad quadrant':
                 # this test should be run before the others as it depends on no other
@@ -1247,10 +1257,9 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
 
                             for flagcoord in flagcoords:
                                 newflags.append(arrayflaggerbase.FlagCmd(
-                                    reason='bad quadrant', filename=table, rulename=rulename,  spw=spw,
-                                    axisnames=[xtitle, ytitle], flagcoords=flagcoord, pol=pol,
-                                    extendfields=self.inputs.extendfields,
-                                    antenna_id_to_name=antenna_id_to_name))
+                                    reason='bad quadrant', filename=table, rulename=rulename, spw=spw,
+                                    antenna=antenna, axisnames=[xtitle, ytitle], flagcoords=flagcoord, pol=pol,
+                                    extendfields=self.inputs.extendfields, antenna_id_to_name=antenna_id_to_name))
 
                             # update working copy view with 'bad quadrant' flags
                             i2flag = i[quad_slice, baselines][np.logical_not(working_copy_flag[quad_slice, baselines])]
@@ -1304,7 +1313,7 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                                 for flagcoord in flagcoords:
                                     newflags.append(arrayflaggerbase.FlagCmd(
                                         reason='bad quadrant', filename=table, rulename=rulename, spw=spw,
-                                        axisnames=[xtitle, ytitle], flagcoords=flagcoord, pol=pol,
+                                        antenna=antenna, axisnames=[xtitle, ytitle], flagcoords=flagcoord, pol=pol,
                                         extendfields=self.inputs.extendfields, antenna_id_to_name=antenna_id_to_name))
 
                                 # update working copy view with 'bad quadrant' flags
