@@ -7,8 +7,8 @@ import re
 import sys
 
 import almatasks
-import casatasks
 import casaplotms
+import casatasks
 
 from . import logging
 
@@ -294,8 +294,19 @@ def get_fn_name(fn):
     """
     module = fn.__module__
     if isinstance(module, object):
-        for module in (almatasks, casatasks, casaplotms):
-            for k, v in module.__dict__.items():
+
+        #
+        # PIPE-697: uvcontfit and copytree commands now appear erroneously as
+        # casaplotms in casa_commands.log
+        #
+        # The pipeline has a handful of shutil file operations wrapped up in
+        # JobRequests and exposed on the casatasks module so that they can be
+        # called and logged in the same manner as CASA operations. The check
+        # below distinguishes CASA tasks/functions from non-CASA code.
+        #
+        for m in (almatasks, casatasks, casaplotms):
+            for k, v in m.__dict__.items():
                 if v == fn:
                     return k, True
-    return module.__name__, False
+
+    return fn.__name__, False
