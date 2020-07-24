@@ -832,6 +832,9 @@ class Tclean(cleanbase.CleanBase):
             result.set_maxEDR_used(maxEDR_used)
             result.set_dr_corrected_sensitivity(sequence_manager.dr_corrected_sensitivity)
 
+            # Keep pblimit for mom8_fc QA statistics and score (PIPE-704)
+            result.set_pblimit_image(self.pblimit_image)
+
             LOG.info('Clean image iter %s stats' % iteration)
             LOG.info('    Clean image annulus area rms: %s', nonpbcor_image_non_cleanmask_rms)
             LOG.info('    Clean image min: %s', pbcor_image_min)

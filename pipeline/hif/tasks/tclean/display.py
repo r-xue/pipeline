@@ -115,6 +115,12 @@ class CleanSummary(object):
 
                 # MOM8_FC for this iteration (currently only last but allow for others in future).
                 if 'mom8_fc' in iteration and os.path.exists(iteration['mom8_fc'] + extension):
+                    # Created flattend PB
+                    flattened_pb_name = r.flux + extension + '.flattened'
+                    with casatools.ImageReader(r.flux + extension) as image:
+                        flattened_pb = image.collapse(function='mean', axes=[2, 3], outfile=flattened_pb_name)
+                        flattened_pb.done()
+
                     # PIPE-197: For MOM8_FC image displayed in the weblog set the color range
                     # from (median-MAD) to 10 * sigma, where sigma is from the annulus minus cleanmask
                     # masked mom8_fc image and median,MAD are from the unmasked mom8_fc image
@@ -124,6 +130,10 @@ class CleanSummary(object):
                         image_median = stats.get('median')[0]
                         image_mad = stats.get('medabsdevmed')[0]
                         image_min = stats.get('min')[0]
+
+                        # Get the maximum from the area excluding the cleaned area edges (PIPE-704)
+                        statsmask = '"{:s}" > {:f}'.format(flattened_pb_name, r.pblimit_image*1.05)
+                        stats = image.statistics(mask=statsmask, robust=True)
                         image_max = stats.get('max')[0]
 
                     if os.path.exists(iteration.get('cleanmask', '')):
@@ -168,7 +178,7 @@ class CleanSummary(object):
                 # cube spectra for this iteration
                 if ('cube' in iteration.get('image', '')) or ('repBW' in iteration.get('image', '')):
                     imagename = r.image_robust_rms_and_spectra['nonpbcor_imagename']
-                    with casatools.ImageReader(r.image_robust_rms_and_spectra['nonpbcor_imagename']) as image:
+                    with casatools.ImageReader(imagename) as image:
                         miscinfo = image.miscinfo()
 
                     parameters = {k: miscinfo[k] for k in ['spw', 'iter'] if k in miscinfo}
