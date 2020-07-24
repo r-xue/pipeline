@@ -47,7 +47,7 @@ except:
                             <th>Fitted Flux Density (mJy)</th>
                             <th>Image S/N</th>
                             <th>Fitted [Peak Intensity / Flux Density] Ratio</th>
-                            <th>gfluxscale Derived Flux</th>
+                            <th>gfluxscale mean visibility</th>
                             <th>gfluxscale S/N</th>
                             <th>[Fitted / gfluxscale] Flux Density Ratio</th>
                         </tr>
