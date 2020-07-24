@@ -169,7 +169,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
     def threshold(self, iteration, threshold, hm_masking):
         """See PIPE-678 and CASR-543"""
-        if hm_masking in ['auto', 'none']:
+        if iteration == 0 or hm_masking in ['none']:
             return '0.0mJy'
         else:
             return threshold
