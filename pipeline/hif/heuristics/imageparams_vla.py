@@ -113,8 +113,14 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
         See PIPE-674 and CASR-543
         """
-        pblimit_image = -0.1
-        pblimit_cleanmask = 0.3   # default value from base class in case pb=None
+        # pblimits used in pipeline tclean._do_iterative_imaging() method (eventually in cleanbox.py) for
+        # computing statistics on residual image products.
+        if (pb not in [None, '']):
+            pblimit_image, pblimit_cleanmask = super().pblimits(pb)
+        # used for setting CASA tclean task pblimit parameter in pipeline tclean.prepare() method
+        else:
+            pblimit_image = -0.1
+            pblimit_cleanmask = 0.3
 
         return pblimit_image, pblimit_cleanmask
 
