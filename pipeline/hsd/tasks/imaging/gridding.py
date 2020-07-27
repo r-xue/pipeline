@@ -133,6 +133,7 @@ class GriddingBase(basetask.StandardTaskTemplate):
 
         reference_data = context.observing_run.get_ms(name=self.files[0])
         reference_spw = reference_data.spectral_windows[self.spw[0]]
+        is_eph_obj = reference_data.get_fields(self.field[0])[0].source.is_eph_obj
         self.nchan = reference_spw.num_channels
         # beam size
         grid_size = casatools.quanta.convert(reference_data.beam_sizes[self.antenna[0]][self.spw[0]], 'deg')['value']
@@ -145,7 +146,7 @@ class GriddingBase(basetask.StandardTaskTemplate):
         spacing = self.grid_ra / 9.0
         DataIn = self.files
         LOG.info('DataIn=%s'%(DataIn))
-        grid_table = self.dogrid(DataIn, kernel_width, combine_radius, allowance, spacing, datatable_dict=datatable_dict)
+        grid_table = self.dogrid(DataIn, kernel_width, combine_radius, allowance, spacing, is_eph_obj, datatable_dict=datatable_dict)
         end = time.time()
         LOG.info('execute: elapsed time %s sec'%(end-start))
         result = GriddingResults(task=self.__class__,
@@ -159,7 +160,7 @@ class GriddingBase(basetask.StandardTaskTemplate):
     def analyse(self, result):
         return result
 
-    def dogrid(self, DataIn, kernel_width, combine_radius, allowance_radius, grid_spacing, loglevel=2, datatable_dict=None):
+    def dogrid(self, DataIn, kernel_width, combine_radius, allowance_radius, grid_spacing, is_eph_obj=False, loglevel=2, datatable_dict=None):
         """
         The process does re-map and combine spectrum for each position
         GridTable format:
@@ -232,8 +233,14 @@ class GriddingBase(basetask.StandardTaskTemplate):
         #msids = numpy.asarray([i for i in self.msidxs for j in xrange(num_spectra_per_data[i])])
         msids = numpy.asarray([i for key, i in enumerate(self.msidxs) for j in range(len(index_dict[key]))])
         #LOG.info('msids={}'.format(msids))
-        ras = numpy.fromiter(_g2('RA'), dtype=numpy.float64, count=num_spectra)
-        decs = numpy.fromiter(_g2('DEC'), dtype=numpy.float64, count=num_spectra)
+        if is_eph_obj is True:
+            racol = 'OFS_RA'
+            deccol = 'OFS_DEC'
+        else:
+            racol = 'RA'
+            deccol = 'DEC'
+        ras = numpy.fromiter(_g2(racol), dtype=numpy.float64, count=num_spectra)
+        decs = numpy.fromiter(_g2(deccol), dtype=numpy.float64, count=num_spectra)
         exposure = numpy.fromiter(_g2('EXPOSURE'), dtype=numpy.float64, count=num_spectra)
         polids = numpy.array([self.polid[i] for i in msids])
         # TSYS and FLAG_SUMMARY cols have NPOL x nrow elements
