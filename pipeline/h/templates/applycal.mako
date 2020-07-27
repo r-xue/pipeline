@@ -550,7 +550,7 @@ def format_spwmap(spwmap, scispws):
 
 
 <%self:plot_group plot_dict="${corrected_to_model_vs_uvdist_plots}"
-				  url_fn="${lambda x: 'junk'}"
+				  url_fn="${lambda x: 'foo'}"
 				  title_id="corrampvsuvdist"
                   break_rows_by="intent,field"
                   sort_row_by="baseband,spw">
