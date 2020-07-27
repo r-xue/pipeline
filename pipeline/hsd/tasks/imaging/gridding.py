@@ -10,7 +10,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.casatools as casatools
 from pipeline.domain.datatable import DataTableIndexer
-from .. import common 
+from .. import common
 from ..common import compress
 
 from .accumulator import Accumulator
@@ -79,7 +79,7 @@ class GriddingBase(basetask.StandardTaskTemplate):
     Rule = {'WeightDistance': 'Gauss', \
             'Clipping': 'MinMaxReject', \
             'WeightRMS': True, \
-            'WeightTsysExptime': False} 
+            'WeightTsysExptime': False}
 
     is_multi_vis_task = True
 
@@ -171,7 +171,7 @@ class GriddingBase(basetask.StandardTaskTemplate):
          where row0,row1,...,rowN should be combined to one for better S/N spectra
                'r' is a distance from grid position
         'weight' can be 'CONST', 'GAUSS', or 'LINEAR'
-        'clip' can be 'none' or 'minmaxreject' 
+        'clip' can be 'none' or 'minmaxreject'
         'rms_weight' is either True or False. If True, NewRMS is used for additional weight
           Number of spectra output is len(GridTable)
         OutputTable format:
