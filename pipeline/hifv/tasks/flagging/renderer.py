@@ -163,7 +163,7 @@ class T2_4MDetailsFlagDeterVLARenderer(basetemplates.T2_4MDetailsDefaultRenderer
 
 # not used in 4.5.2+ and C3R4+
 class T2_4MDetailstargetflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
-    def __init__(self, uri='targetflag.mako', 
+    def __init__(self, uri='vlatargetflag.mako',
                  description='Targetflag (All targets through RFLAG)', always_rerender=False):
         super(T2_4MDetailstargetflagRenderer, self).__init__(
             uri=uri, description=description, always_rerender=always_rerender)
