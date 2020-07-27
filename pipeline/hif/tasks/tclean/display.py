@@ -115,53 +115,21 @@ class CleanSummary(object):
 
                 # MOM8_FC for this iteration (currently only last but allow for others in future).
                 if 'mom8_fc' in iteration and os.path.exists(iteration['mom8_fc'] + extension):
-                    # Created flattend PB
-                    flattened_pb_name = r.flux + extension + '.flattened'
-                    with casatools.ImageReader(r.flux + extension) as image:
-                        flattened_pb = image.collapse(function='mean', axes=[2, 3], outfile=flattened_pb_name)
-                        flattened_pb.done()
-
                     # PIPE-197: For MOM8_FC image displayed in the weblog set the color range
                     # from (median-MAD) to 10 * sigma, where sigma is from the annulus minus cleanmask
-                    # masked mom8_fc image and median,MAD are from the unmasked mom8_fc image
-                    extra_args = {}
-                    with casatools.ImageReader(iteration['mom8_fc'] + extension) as image:
-                        stats = image.statistics(robust=True)
-                        image_median = stats.get('median')[0]
-                        image_mad = stats.get('medabsdevmed')[0]
-                        image_min = stats.get('min')[0]
-
-                        # Get the maximum from the area excluding the cleaned area edges (PIPE-704)
-                        statsmask = '"{:s}" > {:f}'.format(flattened_pb_name, r.pblimit_image*1.05)
-                        stats = image.statistics(mask=statsmask, robust=True)
-                        image_max = stats.get('max')[0]
-
-                    if os.path.exists(iteration.get('cleanmask', '')):
-                        # Mask should include annulus with with clean mask regions removed
-                        # Continuum channel selection was already applied when mom8_fc was created in tclean.py
-                        # PB corrected
-                        image_path = iteration['image'].replace('.image', '.image%s' % (extension))
-                        image_path = image_path.replace('.pbcor', '')  # Non PB corrected
-                        with casatools.ImageReader(image_path) as image:
-                            stats_masked = image.statistics(mask=r.image_robust_rms_and_spectra['nonpbcor_image_statsmask'],
-                                                            robust=False, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5)
-                        cont_chan_ranges = utils.freq_selection_to_channels(image_path,
-                                                                            r.image_robust_rms_and_spectra['cont_freq_ranges'])
-                        cont_chan_indices = np.hstack([np.arange(start, stop + 1) for start, stop in cont_chan_ranges])
-
-                        image_sigma = np.median(stats_masked.get('sigma')[cont_chan_indices])
+                    # masked mom8_fc image and median, MAD are from the unmasked mom8_fc image
+                    if iteration['mom8_fc_image_sigma'] is not None:
                         extra_args = {
-                            'vmin': image_median - image_mad,
-                            'vmax': 10 * image_sigma
+                            'vmin': iteration['mom8_fc_image_median'] - iteration['mom8_fc_image_mad'],
+                            'vmax': 10 * iteration['mom8_fc_image_sigma'],
+                            'mom8_fc_peak_snr': iteration['mom8_fc_peak_snr']
                         }
                         # in case min >= max, set min=image_min and max=image_max
                         if extra_args['vmin'] >= extra_args['vmax']:
-                            extra_args['vmin'] = image_min
-                            extra_args['vmax'] = image_max
-
-                        self.context.peak_snr = image_max / image_sigma
+                            extra_args['vmin'] = iteration['mom8_fc_image_min']
+                            extra_args['vmax'] = iteration['mom8_fc_image_max']
                     else:
-                        LOG.info('No cleanmask available to exclude from RMS calculation.')
+                        extra_args = {}
 
                     plot_wrappers.append(
                         sky.SkyDisplay().plot(self.context, iteration['mom8_fc'] + extension, reportdir=stage_dir,

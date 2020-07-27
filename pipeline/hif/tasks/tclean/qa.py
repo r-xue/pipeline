@@ -80,6 +80,8 @@ class TcleanQAHandler(pqa.QAPlugin):
                 # Add score to pool
                 result.qa.pool[:] = [pqa.QAScore(rms_score, longmsg=longmsg, shortmsg=shortmsg)]
 
+            # MOM8_FC based score
+
             # Check source score
             #    Be careful about the source name vs field name issue
             if result.intent == 'CHECK' and result.inputs['specmode'] == 'mfs':

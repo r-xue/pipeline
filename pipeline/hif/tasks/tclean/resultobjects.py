@@ -189,6 +189,78 @@ class TcleanResult(basetask.Results):
         self.iterations[iter]['mom8_fc'] = image
 
     @property
+    def mom8_fc_image_min(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom8_fc_image_min')
+
+    def set_mom8_fc_image_min(self, iter, image_min):
+        '''
+        Sets image minimum of moment 8 image computed from line-free channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
+        self.iterations[iter]['mom8_fc_image_min'] = image_min
+
+    @property
+    def mom8_fc_image_max(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom8_fc_image_max')
+
+    def set_mom8_fc_image_max(self, iter, image_max):
+        '''
+        Sets image maximum of moment 8 image computed from line-free channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
+        self.iterations[iter]['mom8_fc_image_max'] = image_max
+
+    @property
+    def mom8_fc_image_median(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom8_fc_image_median')
+
+    def set_mom8_fc_image_median(self, iter, image_median):
+        '''
+        Sets image median of moment 8 image computed from line-free channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
+        self.iterations[iter]['mom8_fc_image_median'] = image_median
+
+    @property
+    def mom8_fc_image_mad(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom8_fc_image_mad')
+
+    def set_mom8_fc_image_mad(self, iter, image_mad):
+        '''
+        Sets image MAD of moment 8 image computed from line-free channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
+        self.iterations[iter]['mom8_fc_image_mad'] = image_mad
+
+    @property
+    def mom8_fc_image_sigma(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom8_fc_image_sigma')
+
+    def set_mom8_fc_image_sigma(self, iter, image_sigma):
+        '''
+        Sets image sigma of moment 8 image computed from line-free channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
+        self.iterations[iter]['mom8_fc_image_sigma'] = image_sigma
+
+    @property
+    def mom8_fc_peak_snr(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom8_fc_peak_snr')
+
+    def set_mom8_fc_peak_snr(self, iter, peak_snr):
+        '''
+        Sets peak SNR of moment 8 image computed from line-free channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
+        self.iterations[iter]['mom8_fc_peak_snr'] = peak_snr
+
+    @property
     def mom0(self):
         iters = sorted(self.iterations.keys())
         return self.iterations[iters[-1]].get('mom0')
