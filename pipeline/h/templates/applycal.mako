@@ -334,8 +334,8 @@ def format_spwmap(spwmap, scispws):
 	</%def>
 
 	<%def name="caption_text(plot, intent)">
-		${'%s %s' % (intent.capitalize(), 'source' if intent.upper() == 'CHECK' else 'calibrator')}:
-		${utils.commafy(utils.safe_split(plot.parameters['field']), quotes=False)}.
+		Intents: ${utils.commafy(plot.parameters['intent'], False)}<br>
+		Fields: ${html.escape(plot.parameters['field'], True)}
 	</%def>
 
 </%self:plot_group>
@@ -378,8 +378,8 @@ def format_spwmap(spwmap, scispws):
 	</%def>
 
 	<%def name="caption_text(plot, intent)">
-		${'%s %s' % (intent.capitalize(), 'source' if intent.upper() == 'CHECK' else 'calibrator')}:
-		${utils.commafy(utils.safe_split(plot.parameters['field']), quotes=False)}.
+		Intents: ${utils.commafy(plot.parameters['intent'], False)}<br>
+		Fields: ${html.escape(plot.parameters['field'], True)}
 	</%def>
 
 </%self:plot_group>
@@ -422,8 +422,8 @@ def format_spwmap(spwmap, scispws):
 	</%def>
 
 	<%def name="caption_text(plot, intent)">
-        ${utils.commafy(plot.parameters['intent'], False).capitalize()} ${'source' if intent.upper() == 'CHECK' else 'calibrator'}:
-        ${plot.parameters['field']}
+		Intents: ${utils.commafy(plot.parameters['intent'], False)}<br>
+		Fields: ${html.escape(plot.parameters['field'], True)}
 	</%def>
 
 </%self:plot_group>
@@ -550,7 +550,7 @@ def format_spwmap(spwmap, scispws):
 
 
 <%self:plot_group plot_dict="${corrected_to_model_vs_uvdist_plots}"
-				  url_fn="${lambda x: 'junk'}"
+				  url_fn="${lambda x: 'foo'}"
 				  title_id="corrampvsuvdist"
                   break_rows_by="intent,field"
                   sort_row_by="baseband,spw">
