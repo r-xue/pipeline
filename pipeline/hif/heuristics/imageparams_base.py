@@ -1830,7 +1830,7 @@ class ImageParamsHeuristics(object):
 
         return threshold, DR_correction_factor, maxEDR_used
 
-    def niter_correction(self, niter, cell, imsize, residual_max, threshold, mask_frac_rad=0.0):
+    def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0):
         """Adjustment of number of cleaning iterations due to mask size.
 
         Circular mask is assumed with a radius equal to mask_frac_rad times the longest image dimension
@@ -1846,6 +1846,7 @@ class ImageParamsHeuristics(object):
         :param imsize: Two element list or array of image pixel count along x and y axis
         :param residual_max: Dirty image residual maximum [Jy].
         :param threshold: Cleaning threshold value [Jy].
+        :param residual_robust_rms: Residual scaled MAD [Jy] (not used in base method).
         :param mask_frac_rad: Mask radius is given by mask_frac_rad * max(imsize) * cell [arcsec]
         :return: Modified niter value based on mask and beam size heuristic.
         """
@@ -1866,6 +1867,10 @@ class ImageParamsHeuristics(object):
         r_mask = mask_frac_rad * max(imsize[0], imsize[1]) * qaTool.convert(cell[0], 'arcsec')['value']
 
         # Assume that the beam is 5 pixels wide, this might be incorrect in some cases (see docstring).
+        # TODO: Pass synthesized beam size explicitly rather than assuming a
+        #       certain ratio of beam to cell size (which can be different
+        #       if the product size is being mitigated or if a different
+        #       imaging_mode uses different heuristics).
         beam = qaTool.convert(cell[0], 'arcsec')['value'] * 5.0
 
         new_niter_f = int(kappa / loop_gain * (r_mask / beam) ** 2 * residual_max / threshold_value)

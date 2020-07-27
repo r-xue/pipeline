@@ -17,14 +17,14 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
         self.imaging_mode = 'VLASS-QL'
 
     # niter
-    def niter_correction(self, niter, cell, imsize, residual_max, threshold, mask_frac_rad=0.0):
+    def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0):
         if niter:
             return int(niter)
         else:
             return 20000
 
     def niter(self):
-        return self.niter_correction(None, None, None, None, None)
+        return self.niter_correction(None, None, None, None, None, None)
 
     def deconvolver(self, specmode, spwspec):
         return 'mtmfs'

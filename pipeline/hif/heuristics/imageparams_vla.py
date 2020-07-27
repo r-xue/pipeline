@@ -10,7 +10,6 @@ from .imageparams_base import ImageParamsHeuristics
 
 LOG = infrastructure.get_logger(__name__)
 
-
 class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
@@ -144,17 +143,31 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         """See PIPE-679 and CASR-543"""
         return 'mtmfs'
 
-    def niter_correction(self, niter, cell, imsize, residual_max, threshold, mask_frac_rad=0.0):
+    def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0):
         """Adjustment of number of cleaning iterations due to mask size.
+
+        Uses residual_robust_rms instead threshold to compute the new niter value.
 
         See PIPE-682 and CASR-543 and base class method for parameter description."""
         if mask_frac_rad == 0.0:
             # Assume at most 25% of pixels are within the (circular) mask (PIPE-682).
-            # 0.25 = mask_frac_rad**2 * pi / 4
-            mask_frac_rad = 0.56
+            # 0.25 = mask_frac_rad**2
+            # The motivation here is that while EVLA images can be large, only a small fraction of pixels
+            # will typically have emission (for continuum images).
+            mask_frac_rad = 0.5
 
-        return super().niter_correction(niter, cell, imsize, residual_max, threshold,
+        # VLA specific threshold
+        qaTool = pl_casatools.quanta
+        threshold_vla = qaTool.quantity(self.nsigma(0, None) * residual_robust_rms, 'Jy')
+
+        # Set largest allowed niter
+        max_niter = 1000000
+
+        # Compute new niter
+        new_niter = super().niter_correction(niter, cell, imsize, residual_max, threshold_vla, residual_robust_rms,
                                         mask_frac_rad=mask_frac_rad)
+
+        return min(new_niter, max_niter)
 
     def specmode(self):
         """See PIPE-683 and CASR-543"""
