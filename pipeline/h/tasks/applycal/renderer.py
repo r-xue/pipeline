@@ -4,10 +4,11 @@ Created on 24 Oct 2014
 @author: sjw
 """
 import collections
+import itertools
 import operator
 import os
 import shutil
-from typing import Dict
+from typing import Dict, Iterable, List
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure
@@ -16,9 +17,12 @@ import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
+from pipeline.domain.measurementset import MeasurementSet
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure.basetask import ResultsList
 from pipeline.infrastructure.displays.summary import UVChart
+from pipeline.infrastructure.launcher import Context
+from pipeline.infrastructure.renderer.logger import Plot
 from ..common import flagging_renderer_utils as flagutils
 from ..common.displays import applycal as applycal
 
@@ -250,6 +254,11 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # callibrary table (and store all callibrary tables in the weblog
         # directory)
         callib_map = copy_callibrary(result, context.report_dir)
+
+        # PIPE-396: Suppress redundant plots from hifa_applycal
+        amp_vs_freq_summary_plots = deduplicate(context, amp_vs_freq_summary_plots)
+        amp_vs_uv_summary_plots = deduplicate(context, amp_vs_uv_summary_plots)
+        corrected_ratio_to_antenna1_plots = deduplicate(context, corrected_ratio_to_antenna1_plots)
 
         ctx.update({
             'amp_vs_freq_plots': amp_vs_freq_summary_plots,
@@ -819,3 +828,80 @@ def copy_callibrary(results: ResultsList, report_dir: str) -> Dict[str, str]:
             vis_to_callib[os.path.basename(vis)] = callib_dst
 
     return vis_to_callib
+
+
+def deduplicate(context: Context, all_plots: Dict[str, List[Plot]]) -> Dict[str, List[Plot]]:
+    """
+    Process a dict mapping vis to plots, deduplicating the plot list for
+    each MS.
+    """
+    result = {}
+    for vis, vis_plots in all_plots.items():
+        ms = context.observing_run.get_ms(name=vis)
+        deduplicated = _deduplicate_plots(ms, vis_plots)
+        result[vis] = deduplicated
+    return result
+
+
+def _deduplicate_plots(ms: MeasurementSet, plots: List[Plot]) -> List[Plot]:
+    """
+    Deduplicate plots by discarding extra plots created for the same scan.
+    The remaining plot is relabelled as applicable to the discarded intents.
+    """
+    # holds the final deduplicated list of plots
+    deduplicated: List[Plot] = []
+
+    # General algorithm is 'what scan does this spw and intent correspond to? 
+    # Has this scan already been plotted? If so, discard the plot.'
+    #
+    # Plots are made per spw, per intent. Duplicate plots should be removed by
+    # navigating down to the spw and filtering per spw. Just because spw 16 
+    # BANDPASS cal is also spw 16 AMPLITUDE cal doesn't mean the same holds
+    # for other spectral windows.
+
+    # define functions to get spw and intent for a plot. These are used to
+    # sort and group the plots.
+    spw_fn = lambda plot: plot.parameters['spw']
+    intent_fn = lambda plot: plot.parameters['intent']
+
+    # First, group plots by spw
+    plots_by_spw = sorted(plots, key=spw_fn)
+    for spw, spw_plots in itertools.groupby(plots_by_spw, spw_fn):
+        # Store group iterator as a list
+        spw_plots = list(spw_plots)
+
+        # dict to map scan ID to plots for that scan.
+        plots_for_scan = {}
+
+        # now group these plots by intent. The intent ordering used here will
+        # be reflected in the order of the relabelled intents.
+        spw_plots_by_intent = sorted(spw_plots, key=intent_fn)
+        for intent, spw_intent_plots in itertools.groupby(spw_plots_by_intent, intent_fn):
+            # Store group iterator as a list
+            spw_intent_plots = list(spw_intent_plots)  
+
+            # This should result in a single plot. If not, bail. Failsafe
+            # behaviour is to return original list of plots. It's better to
+            # have duplicates present than exceptions.
+            if len(spw_intent_plots) != 1:
+                LOG.warning('Plot deduplication cancelled. '
+                            'Could not process ambiguous plot for spw %s intent %s', spw, intent)
+                return plots
+            plot = spw_intent_plots[0]
+
+            scan_ids = sorted({(scan.id) for scan in ms.get_scans(scan_intent=intent, spw=spw)})
+            scan_ids = ','.join(str(s) for s in scan_ids)
+            if scan_ids not in plots_for_scan:
+                LOG.debug('Retaining plot for scan %s (spw=%s intent=%s)', scan_ids, spw, intent)
+                plots_for_scan[scan_ids] = plot
+            else:
+                LOG.debug('Discarding duplicate plot for scan %s (spw=%s intent=%s)', scan_ids, spw, intent)
+                # intents are strings inside lists, e.g., ['BANDPASS']
+                old_intent = intent_fn(plots_for_scan[scan_ids])
+                new_intent = [','.join(sorted(set(old_intent).union(set(intent))))]
+                LOG.info('Deduplicating plot: spw %s %s -> %s', spw, old_intent, new_intent)
+                plots_for_scan[scan_ids].parameters['intent'] = new_intent
+
+        deduplicated.extend(plots_for_scan.values())
+
+    return deduplicated
