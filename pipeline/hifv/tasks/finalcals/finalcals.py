@@ -874,6 +874,10 @@ class Finalcals(basetask.StandardTaskTemplate):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         calibrator_scan_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_scan_select_string
+
+        scanlist = [int(scan) for scan in calibrator_scan_select_string.split(',')]
+        scanids_perband = ','.join([str(scan.id) for scan in m.get_scans(scan_id=scanlist, spw=spw)])
+
         minBL_for_cal = m.vla_minbaselineforcal()
 
         task_args = {'vis': calMs,
@@ -901,7 +905,7 @@ class Finalcals(basetask.StandardTaskTemplate):
                      'uvrange': '',
                      'refantmode': refantmode}
 
-        calscanslist = list(map(int, calibrator_scan_select_string.split(',')))
+        calscanslist = list(map(int, scanids_perband.split(',')))
         scanobjlist = m.get_scans(scan_id=calscanslist,
                                   scan_intent=['AMPLITUDE', 'BANDPASS', 'POLLEAKAGE', 'POLANGLE',
                                                'PHASE', 'POLARIZATION', 'CHECK'])

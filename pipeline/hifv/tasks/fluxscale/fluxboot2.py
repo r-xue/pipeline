@@ -257,19 +257,34 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
             for i, field in enumerate(field_objects):
                 for band, spwlist in band2spw.items():
-                    append = False
-                    isdir = os.path.isdir(fluxflagtable)
-                    if isdir:
-                        append = True
-                        LOG.info("Appending to existing table: {!s}".format(fluxflagtable))
+                    calibrator_scan_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_scan_select_string
 
-                    gain_solint2 = context.evla['msinfo'][m.name].gain_solint2[band]
-                    LOG.info("Long solint = " + gain_solint2 + " for band {!s}".format(band))
+                    scanlist = [int(scan) for scan in calibrator_scan_select_string.split(',')]
+                    scanids_perband = ','.join([str(scan.id) for scan in m.get_scans(scan_id=scanlist, spw=','.join(spwlist))])
 
-                    self._do_gaincal(context, calMs, fluxflagtable, 'ap', [fluxphase],
-                                     solint=gain_solint2, minsnr=5.0, refAnt=refAnt, field=field.name,
-                                     solnorm=True, append=append, fluxflag=True,
-                                     vlassmode=vlassmode, spw=','.join(spwlist))
+                    calscanslist = list(map(int, scanids_perband.split(',')))
+                    scanobjlist = m.get_scans(scan_id=calscanslist,
+                                              scan_intent=['AMPLITUDE', 'BANDPASS', 'PHASE'])
+                    fieldidlist = []
+                    for scanobj in scanobjlist:
+                        fieldobj, = scanobj.fields
+                        if str(fieldobj.id) not in fieldidlist:
+                            fieldidlist.append(str(fieldobj.id))
+
+                    if str(field.id) in fieldidlist:
+                        append = False
+                        isdir = os.path.isdir(fluxflagtable)
+                        if isdir:
+                            append = True
+                            LOG.info("Appending to existing table: {!s}".format(fluxflagtable))
+
+                        gain_solint2 = context.evla['msinfo'][m.name].gain_solint2[band]
+                        LOG.info("Long solint = " + gain_solint2 + " for band {!s}".format(band))
+
+                        self._do_gaincal(context, calMs, fluxflagtable, 'ap', [fluxphase],
+                                         solint=gain_solint2, minsnr=5.0, refAnt=refAnt, field=field.name,
+                                         solnorm=True, append=append, fluxflag=True,
+                                         vlassmode=vlassmode, spw=','.join(spwlist))
 
             # use flagdata to clip fluxflag.g outside the range 0.9-1.1
             flagjob = casa_tasks.flagdata(vis=fluxflagtable, mode='clip', correlation='ABS_ALL',
@@ -885,6 +900,9 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
         calibrator_scan_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_scan_select_string
 
+        scanlist = [int(scan) for scan in calibrator_scan_select_string.split(',')]
+        scanids_perband = ','.join([str(scan.id) for scan in m.get_scans(scan_id=scanlist, spw=spw)])
+
         task_args = {'vis': calMs,
                      'caltable': caltable,
                      'field': field,
@@ -910,7 +928,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                      'parang': True}
 
         if field == '':
-            calscanslist = list(map(int, calibrator_scan_select_string.split(',')))
+            calscanslist = list(map(int, scanids_perband.split(',')))
             scanobjlist = m.get_scans(scan_id=calscanslist,
                                       scan_intent=['AMPLITUDE', 'BANDPASS', 'POLLEAKAGE', 'POLANGLE',
                                                    'PHASE', 'POLARIZATION', 'CHECK'])
