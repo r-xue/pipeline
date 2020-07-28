@@ -949,8 +949,11 @@ class TsysflagView(object):
         self.refintent = refintent
         self.split_by_field = split_by_field
 
-        # Set group of intents-of-interest based on metric:
-        if self.metric == 'edgechans':
+        # Set intents-of-interest based on flagging metric:
+        #  - for all metrics, always include ATMOSPHERE
+        #  - PIPE-760: for the edge-channel flagging metric, when the dataset
+        #    is not single-dish, include AMPLITUDE and BANDPASS intents.
+        if self.metric == 'edgechans' and not utils.contains_single_dish(context):
             self.intentgroup = ['ATMOSPHERE', 'BANDPASS', 'AMPLITUDE']
         else:
             self.intentgroup = ['ATMOSPHERE']
