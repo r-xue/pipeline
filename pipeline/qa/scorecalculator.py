@@ -43,7 +43,7 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_flagging_view_exists',                      # ALMA specific
            'score_checksources',                              # ALMA specific
            'score_gfluxscale_k_spw',                          # ALMA specific
-           'score_fluxservice'                                # ALMA specific
+           'score_fluxservice',                               # ALMA specific
            'score_file_exists',
            'score_path_exists',
            'score_flags_exist',
@@ -65,7 +65,8 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_ms_model_data_column_present',
            'score_ms_history_entries_present',
            'score_contiguous_session',
-           'score_multiply']
+           'score_multiply',
+           'score_mom8_fc_image']
 
 LOG = logging.get_logger(__name__)
 
@@ -2882,3 +2883,29 @@ def score_fluxservice(result):
                               metric_score=score,
                               metric_units='flux service')
         return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
+
+
+def score_mom8_fc_image(peak_snr, image_chanScaled_MAD, outlier_threshold, n_pixels, n_outlier_pixels):
+    """
+    Check the MOM8 FC image for outliers above a given SNR threshold. The score
+    can vary between 0.33 and 1.0 depending on the fraction of outlier pixels.
+    """
+
+    outlier_fraction = n_outlier_pixels / n_pixels
+
+    if peak_snr <= outlier_threshold:
+        score = 1.0
+        longmsg = 'All MOM8 FC pixels below threshold.'
+        shortmsg = 'No MOM8 FC outliers.'
+        weblog_location = pqa.WebLogLocation.ACCORDION
+    else:
+        score = 0.65
+        longmsg = 'MOM8 FC outliers detected.'
+        shortmsg = 'MOM8 FC outliers.'
+        weblog_location = pqa.WebLogLocation.BANNER
+
+    origin = pqa.QAOrigin(metric_name='score_mom8_fc_image',
+                          metric_score=outlier_fraction,
+                          metric_units='Outlier fraction')
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, weblog_location=weblog_location)

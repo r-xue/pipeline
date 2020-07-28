@@ -1054,7 +1054,9 @@ class Tclean(cleanbase.CleanBase):
             # Calculate MOM8_FC image
             self._calc_moment_image(imagename=imagename, moments=[8], outfile=mom8_name, chans=cont_chan_ranges_str,
                                     iter=maxiter)
+
             # Calculate the MOM8_FC peak SNR for the QA
+
             # Created flattend PB
             extension = '.tt0' if result.multiterm else ''
             flattened_pb_name = result.flux + extension + '.flattened'
@@ -1062,6 +1064,9 @@ class Tclean(cleanbase.CleanBase):
                 flattened_pb = image.collapse(function='mean', axes=[2, 3], outfile=flattened_pb_name)
                 flattened_pb.done()
 
+            outlier_threshold = 5.0
+
+            # Calculate statistics
             with casatools.ImageReader(mom8_name) as image:
                 stats = image.statistics(robust=True)
                 image_median = stats.get('median')[0]
@@ -1069,9 +1074,10 @@ class Tclean(cleanbase.CleanBase):
                 image_min = stats.get('min')[0]
 
                 # Get the maximum from the area excluding the cleaned area edges (PIPE-704)
-                statsmask = '"{:s}" > {:f}'.format(flattened_pb_name, result.pblimit_image*1.05)
+                statsmask = '"{:s}" > {:f}'.format(flattened_pb_name, result.pblimit_image * 1.05)
                 stats = image.statistics(mask=statsmask, robust=True)
                 image_max = stats.get('max')[0]
+                n_pixels = int(stats.get('npts')[0])
 
             if os.path.exists(result.iterations[maxiter].get('cleanmask', '')):
                 # Mask should include annulus with with clean mask regions removed
@@ -1090,10 +1096,22 @@ class Tclean(cleanbase.CleanBase):
                 image_chanScaledMAD = np.median(stats_masked.get('medabsdevmed')[cont_chan_indices]) / 0.6745
                 peak_snr = (image_max - image_median) / image_chanScaledMAD
                 LOG.info('Image {:s} has a maximum of {:#.5g}, median of {:#.5g} resulting in a Peak SNR of {:#.5g} times the channel scaled MAD of {:#.5g}.'.format(os.path.basename(mom8_name), image_max, image_median, peak_snr, image_chanScaledMAD))
+
+                # Calculate outlier fraction for QA scoring
+                with casatools.ImageReader(mom8_name) as image:
+                    statsmask = '"{:s}" > {:f} && "{:s}" > {:f}'.format(flattened_pb_name, result.pblimit_image * 1.05, mom8_name, outlier_threshold * image_chanScaledMAD + image_median)
+                    stats_outliers = image.statistics(mask=statsmask, robust=True)
+                    npts = stats_outliers.get('npts')
+                    if npts.shape != (0,):
+                        n_outlier_pixels = int(npts[0])
+                    else:
+                        n_outlier_pixels = 0
             else:
                 LOG.info('No cleanmask available to exclude for MOM8_FC RMS and peak SNR calculation.')
                 image_sigma = None
+                image_chanScaledMAD = None
                 peak_snr = None
+                n_outlier_pixels = None
 
             # Update the result.
             result.set_mom8_fc(maxiter, mom8_name)
@@ -1102,7 +1120,11 @@ class Tclean(cleanbase.CleanBase):
             result.set_mom8_fc_image_median(maxiter, image_median)
             result.set_mom8_fc_image_mad(maxiter, image_mad)
             result.set_mom8_fc_image_sigma(maxiter, image_sigma)
+            result.set_mom8_fc_image_chanScaledMAD(maxiter, image_chanScaledMAD)
             result.set_mom8_fc_peak_snr(maxiter, peak_snr)
+            result.set_mom8_fc_outlier_threshold(maxiter, outlier_threshold)
+            result.set_mom8_fc_n_pixels(maxiter, n_pixels)
+            result.set_mom8_fc_n_outlier_pixels(maxiter, n_outlier_pixels)
 
         else:
             LOG.warning('Cannot create MOM0_FC / MOM8_FC images for intent "%s", '

@@ -249,6 +249,18 @@ class TcleanResult(basetask.Results):
         self.iterations[iter]['mom8_fc_image_sigma'] = image_sigma
 
     @property
+    def mom8_fc_image_chanScaledMAD(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom8_fc_image_chanScaledMAD')
+
+    def set_mom8_fc_image_chanScaledMAD(self, iter, image_chanScaledMAD):
+        '''
+        Sets image channel scaled MAD of moment 8 image computed from line-free channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
+        self.iterations[iter]['mom8_fc_image_chanScaledMAD'] = image_chanScaledMAD
+
+    @property
     def mom8_fc_peak_snr(self):
         iters = sorted(self.iterations.keys())
         return self.iterations[iters[-1]].get('mom8_fc_peak_snr')
@@ -259,6 +271,42 @@ class TcleanResult(basetask.Results):
         image for iter iteration step.
         '''
         self.iterations[iter]['mom8_fc_peak_snr'] = peak_snr
+
+    @property
+    def mom8_fc_outlier_threshold(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom8_fc_outlier_threshold')
+
+    def set_mom8_fc_outlier_threshold(self, iter, outlier_threshold):
+        '''
+        Sets outlier threshold of moment 8 image computed from line-free channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
+        self.iterations[iter]['mom8_fc_outlier_threshold'] = outlier_threshold
+
+    @property
+    def mom8_fc_n_pixels(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom8_fc_n_pixels')
+
+    def set_mom8_fc_n_pixels(self, iter, n_pixels):
+        '''
+        Sets number of unmasked pixels of moment 8 image computed from line-free channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
+        self.iterations[iter]['mom8_fc_n_pixels'] = n_pixels
+
+    @property
+    def mom8_fc_n_outlier_pixels(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom8_fc_n_outlier_pixels')
+
+    def set_mom8_fc_n_outlier_pixels(self, iter, n_outlier_pixels):
+        '''
+        Sets number of unmasked outlier pixels of moment 8 image computed from line-free channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
+        self.iterations[iter]['mom8_fc_n_outlier_pixels'] = n_outlier_pixels
 
     @property
     def mom0(self):
