@@ -158,14 +158,15 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         qaTool = pl_casatools.quanta
         threshold_vla = qaTool.quantity(self.nsigma(0, None) * residual_robust_rms, 'Jy')
 
-        # Set largest allowed niter
+        # Set allowed niter range
         max_niter = 1000000
+        min_niter = 10000
 
         # Compute new niter
         new_niter = super().niter_correction(niter, cell, imsize, residual_max, threshold_vla, residual_robust_rms,
                                         mask_frac_rad=mask_frac_rad)
 
-        return min(new_niter, max_niter)
+        return max(min(new_niter, max_niter), niter_min)
 
     def specmode(self):
         """See PIPE-683 and CASR-543"""
