@@ -4,15 +4,15 @@ Created on 24 Oct 2014
 @author: sjw
 """
 import collections
-import functools
 import os.path
 
 import pipeline.domain.measures as measures
+import pipeline.h.tasks.applycal.renderer as super_renderer
 import pipeline.infrastructure
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.utils as utils
-import pipeline.h.tasks.applycal.renderer as super_renderer
+from pipeline.h.tasks.common import flagging_renderer_utils as flagutils
 from pipeline.h.tasks.common.displays import applycal as applycal
 
 LOG = logging.get_logger(__name__)
@@ -31,22 +31,16 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
         weblog_dir = os.path.join(context.report_dir,
                                   'stage%s' % result.stage_number)
 
-        # Find out which intents to list in the flagging table
-        # First get all intents across all MSes in context
-        context_intents = functools.reduce(lambda x, m: x.union(m.intents), context.observing_run.measurement_sets, set())
-        # then match intents against those we want in the table, removing those not
-        # present. List order is preserved in the table.
-        # hsd_applycal only cares about target intent
-        all_flag_summary_intents = ['TARGET']
-        intents_to_summarise_flags = [i for i in all_flag_summary_intents
-                                      if i in context_intents.intersection(set(all_flag_summary_intents))]
+        # calculate which intents to display in the flagging statistics table
+        intents_to_summarise = ['TARGET']  # flagutils.intents_to_summarise(context)
         flag_table_intents = ['TOTAL', 'SCIENCE SPWS']
-        flag_table_intents.extend(intents_to_summarise_flags)
+        flag_table_intents.extend(intents_to_summarise)
 
         flag_totals = {}
         for r in result:
-            if r.inputs['flagsum'] == True:
-                flag_totals = utils.dict_merge(flag_totals, super_renderer.flags_for_result(r, context, intents_to_summarise_flags))
+            if r.inputs['flagsum'] is True:
+                flag_totals = utils.dict_merge(flag_totals,
+                                               flagutils.flags_for_result(r, context, intents_to_summarise=intents_to_summarise))
 
         calapps = {}
         for r in result:
