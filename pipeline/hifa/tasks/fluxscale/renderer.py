@@ -336,12 +336,14 @@ def create_flux_comparison_plots(context, output_dir, result, showatm=True):
                     ax.errorbar(x, fs_y, xerr=x_unc, yerr=fs_y_unc, fmt='k-o'.format(colour), label=label,
                                 fillstyle='none', markersize=5)
 
-            # Plot calibrated fluxes.
+            # Plot calibrated fluxes. PIPE-566: if both flux and uncertainty
+            # are zero, then do not plot the value to avoid affecting the
+            # automatic y-range.
             y = m.I.to_units(FluxDensityUnits.JANSKY)
             y_unc = m.uncertainty.I.to_units(FluxDensityUnits.JANSKY)
-
-            label = 'Calibrated flux for spw {}'.format(spw.id)
-            ax.errorbar(x, y, xerr=x_unc, yerr=y_unc, fmt='{!s}-o'.format(colour), label=label)
+            if not (y == 0 and y_unc == 0):
+                label = 'Calibrated flux for spw {}'.format(spw.id)
+                ax.errorbar(x, y, xerr=x_unc, yerr=y_unc, fmt='{!s}-o'.format(colour), label=label)
 
             x_min = min(x_min, x - x_unc)
             x_max = max(x_max, x + x_unc)

@@ -375,6 +375,10 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
             amplitudes = ampdata[id_nonbad]
             weights = weightdata[id_nonbad]
 
+            # If no valid data are available, skip to the next polarisation.
+            if len(amplitudes) == 0:
+                continue
+
             # Determine number of non-flagged antennas, baselines, and
             # integrations.
             ant1 = data['antenna1'][id_nonbad]
@@ -395,8 +399,16 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
             variances.append(variance)
 
         # Compute mean flux and mean stdev for all polarisations.
-        mean_flux = np.mean(mean_fluxes)
-        mean_std = np.sqrt(np.mean(variances))
+        if mean_fluxes:
+            mean_flux = np.mean(mean_fluxes)
+            mean_std = np.sqrt(np.mean(variances))
+        # If no valid data was found for any polarisation, then set flux and
+        # uncertainty to zero.
+        else:
+            mean_flux = 0
+            mean_std = 0
+            LOG.debug("No valid data found for MS {}, field {}, spw {}, unable to compute mean visibility flux; flux"
+                      " and uncertainty will be set to zero.".format(self.inputs.ms.basename, fieldid, spwid))
 
         # Combine into single flux measurement object.
         flux = domain.FluxMeasurement(spwid, mean_flux, origin=ORIGIN)
