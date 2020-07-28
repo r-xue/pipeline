@@ -17,6 +17,7 @@ from pipeline.hsd.tasks.common.display import SDSparseMapPlotter
 from pipeline.hsd.tasks.common.display import NoData, NoDataThreshold
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure.displays.pointing import MapAxesManagerBase
+from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 
 # NoData = -32767.0
 # NoDataThreshold = NoData + 10000.0
@@ -1370,6 +1371,7 @@ class SDSpectralMapDisplay(SDImageDisplay):
 class SDSpectralImageDisplay(SDImageDisplay):
     MATPLOTLIB_FIGURE_ID = 8910
 
+    @casa5style_plot
     def plot(self):
         if ShowPlot: pl.ion()
         else: pl.ioff()

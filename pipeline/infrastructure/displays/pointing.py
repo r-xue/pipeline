@@ -10,6 +10,7 @@ import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.renderer.logger as logger
 from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.domain.datatable import OnlineFlagIndex
+from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -434,6 +435,7 @@ class SingleDishPointingChart(object):
         else:
             return None
 
+    @casa5style_plot
     def plot(self, revise_plot=False):
         if revise_plot == False and os.path.exists(self.figfile):
             return self._get_plot_object()
