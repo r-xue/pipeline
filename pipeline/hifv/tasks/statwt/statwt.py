@@ -52,7 +52,7 @@ class Statwt(basetask.StandardTaskTemplate):
             LOG.info('Checking for model column')
             self._check_for_modelcolumn()
 
-        fielddict = cont_file_to_CASA()
+        fielddict = cont_file_to_CASA(self.inputs.vis, self.inputs.context)
         fields = ','.join(str(x) for x in fielddict) if fielddict != {} else ''
 
         flag_summaries = []
