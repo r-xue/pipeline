@@ -14,7 +14,12 @@
 
     <ProcessingCommand>
         <Command xmlns="">hif_checkproductsize</Command>
-        <ParameterSet/>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">maximsize</Keyword>
+                <Value xmlns="">16384</Value>
+            </Parameter>
+        </ParameterSet>
     </ProcessingCommand>
 
     <ProcessingCommand>
@@ -23,14 +28,6 @@
             <Parameter>
                 <Keyword xmlns="">specmode</Keyword>
                 <Value xmlns="">cont</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">spw</Keyword>
-                <Value xmlns=""/>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">field</Keyword>
-                <Value xmlns=""/>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
@@ -42,20 +39,16 @@
                 <Keyword xmlns="">hm_masking</Keyword>
                 <Value xmlns="">none</Value>
             </Parameter>
-            <Parameter>
-                <Keyword xmlns="">hm_cleaning</Keyword>
-                <Value xmlns="">rms</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">hm_sigma</Keyword>
-                <Value xmlns="">5.0</Value>
-            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hifv_exportdata</Command>
         <ParameterSet>
+          <Parameter>
+            <Keyword xmlns="">imaging_products_only</Keyword>
+            <Value xmlns="">True</Value>
+          </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 

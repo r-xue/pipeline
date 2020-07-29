@@ -25,11 +25,12 @@ class VLAExportDataInputs(exportdata.ExportDataInputs):
         else: return value
 
     def __init__(self, context, output_dir=None, session=None, vis=None, exportmses=None, exportcalprods=None, 
-                 pprfile=None, calintents=None, calimages=None, targetimages=None, products_dir=None, gainmap=None):
+                 pprfile=None, calintents=None, calimages=None, targetimages=None, products_dir=None, gainmap=None,
+                 imaging_products_only=None):
         super(VLAExportDataInputs, self).__init__(context, output_dir=output_dir, session=session, vis=vis,
                                                   exportmses=exportmses, pprfile=pprfile, calintents=calintents,
                                                   calimages=calimages, targetimages=targetimages,
-                                                  products_dir=products_dir)
+                                                  products_dir=products_dir, imaging_products_only=imaging_products_only)
         self.gainmap = gainmap
         self.exportcalprods = exportcalprods
 
