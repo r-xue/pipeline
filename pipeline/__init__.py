@@ -3,7 +3,6 @@ import http.server
 import os
 import pathlib
 import pkg_resources
-import random
 import threading
 import webbrowser
 
@@ -35,7 +34,7 @@ WEBLOG_LOCK = threading.Lock()
 HTTP_SERVER = None
 
 
-def show_weblog(index_html=None,
+def show_weblog(index_path=None,
                 handler_class=http.server.SimpleHTTPRequestHandler,
                 server_class=http.server.HTTPServer,
                 bind='127.0.0.1'):
@@ -55,42 +54,46 @@ def show_weblog(index_html=None,
     """
     global HTTP_SERVER
 
-    if index_html is None:
+    if index_path is None:
         # find all t1-1.html files
         index_files = {p.name: p for p in pathlib.Path('.').rglob('t1-1.html')}
+
+        # No web log, bail.
         if len(index_files) == 0:
             LOG.info('No weblog detected')
-            return None
+            return
 
         # sort files by date, newest first
         by_date = sorted(pathlib.Path('.').rglob('t1-1.html'),
                          key=os.path.getmtime,
                          reverse=True)
-
         LOG.info('Found weblogs at:%s', ''.join([f'\n\t{p}' for p in by_date]))
 
         if len(index_files) > 1:
             LOG.info('Multiple web logs detected. Selecting most recent version')
 
-        index_html = by_date[0]
+        index_path = by_date[0]
 
     with WEBLOG_LOCK:
         if HTTP_SERVER is None:
             httpd = None
-            while httpd is None:
-                # multiple users concurrently viewing the weblog will each
-                # need a different weblog port.
-                # create a HTTP server on a port between 30000-32768
-                port = random.randrange(30000, 32768)
+            # find first available port in range 30000-32768
+            port = 30000
+            while httpd is None and port < 32768:
                 server_address = (bind, port)
                 try:
                     httpd = server_class(server_address, handler_class)
                 except OSError as e:
-                    # Errno 48 port already taken
+                    # Errno 48 = port already taken
                     if e.errno == 48:
-                        LOG.info('Port %s already in use. Selecting a different port...', port)
+                        LOG.debug('Port %s already in use. Selecting a different port...', port)
+                        port += 1
                     else:
                         raise
+
+            if httpd is None:
+                LOG.error('Could not start web server. All ports in use')
+                return
 
             sa = httpd.socket.getsockname()
             serve_message = 'Serving web log on {host} port {port} (http://{host}:{port}/) ...'
@@ -104,14 +107,14 @@ def show_weblog(index_html=None,
 
         else:
             sa = HTTP_SERVER.socket.getsockname()
-            serve_message = 'Using existing HTTP server at {host} port {port} ...'
-            LOG.info(serve_message.format(host=sa[0], port=sa[1]))
+            LOG.info('Using existing HTTP server at %s port %s ...', sa[0], sa[1])
 
-    server_root, _ = os.path.split(index_html)
+    server_root, _ = os.path.split(index_path)
 
     atexit.register(stop_weblog)
 
-    url = 'http://{}:{}/{}'.format(bind, port, index_html)
+    sa = HTTP_SERVER.socket.getsockname()
+    url = 'http://{}:{}/{}'.format(sa[0], sa[1], index_path)
     LOG.info('Opening {}'.format(url))
     webbrowser.open(url)
 
