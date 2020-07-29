@@ -305,10 +305,6 @@ def create_flux_comparison_plots(context, output_dir, result, showatm=True):
         assert len(fields) == 1
         field = fields[0]
 
-        # Fetch fluxscale derived scaling factors for same field, if they exist.
-        fluxscale_measurements = result.fluxscale_measurements.get(field_id)
-
-        ax.set_title('Flux calibration: {}'.format(field.name))
         ax.set_xlabel('Frequency (GHz)')
         ax.set_ylabel('Flux Density (Jy)')
 
@@ -324,25 +320,13 @@ def create_flux_comparison_plots(context, output_dir, result, showatm=True):
             x = spw.centre_frequency.to_units(FrequencyUnits.GIGAHERTZ)
             x_unc = decimal.Decimal('0.5') * spw.bandwidth.to_units(FrequencyUnits.GIGAHERTZ)
 
-            # Add fluxscale derived scaling factor for spw as slightly smaller
-            # black open circles.
-            if fluxscale_measurements:
-                fs_m = [n for n in fluxscale_measurements if n.spw_id == m.spw_id]
-                if fs_m:
-                    fs_y = fs_m[0].I.to_units(FluxDensityUnits.JANSKY)
-                    fs_y_unc = fs_m[0].uncertainty.I.to_units(FluxDensityUnits.JANSKY)
-
-                    label = 'Scaling factor for spw {}'.format(spw.id)
-                    ax.errorbar(x, fs_y, xerr=x_unc, yerr=fs_y_unc, fmt='k-o'.format(colour), label=label,
-                                fillstyle='none', markersize=5)
-
             # Plot calibrated fluxes. PIPE-566: if both flux and uncertainty
             # are zero, then do not plot the value to avoid affecting the
             # automatic y-range.
             y = m.I.to_units(FluxDensityUnits.JANSKY)
             y_unc = m.uncertainty.I.to_units(FluxDensityUnits.JANSKY)
             if not (y == 0 and y_unc == 0):
-                label = 'Calibrated flux for spw {}'.format(spw.id)
+                label = 'Calibrated data flux for spw {}'.format(spw.id)
                 ax.errorbar(x, y, xerr=x_unc, yerr=y_unc, fmt='{!s}-o'.format(colour), label=label)
 
             x_min = min(x_min, x - x_unc)
@@ -355,18 +339,21 @@ def create_flux_comparison_plots(context, output_dir, result, showatm=True):
             ORIGIN_ANALYSIS_UTILS: 'analysisUtils'
         }
 
+        ages = []
         for origin, label in catalogue_fluxes.items():
             fluxes = [f for f in field.flux_densities if f.origin == origin]
             if not fluxes:
                 continue
 
+            ages.extend([f.age for f in fluxes])
             spws = [ms.get_spectral_window(f.spw_id) for f in fluxes]
             x = [spw.centre_frequency.to_units(FrequencyUnits.GIGAHERTZ) for spw in spws]
             y = [f.I.to_units(FluxDensityUnits.JANSKY) for f in fluxes]
             spix = [float(f.spix) for f in fluxes]
             # sort by frequency
             x, y, spix = list(zip(*sorted(zip(x, y, spix))))
-            colour = next(colours)
+            # PIPE-644: always plot catalog fluxes in black.
+            colour = "k"
             ax.plot(x, y, marker='o', color=colour, label='Data source: {}'.format(label))
 
             s_xmin = scale_flux(x[0], y[0], x_min, spix[0])
@@ -374,6 +361,19 @@ def create_flux_comparison_plots(context, output_dir, result, showatm=True):
             ax.plot([x[0], x_min], [y[0], s_xmin], color=colour, label='Spectral index extrapolation',
                     linestyle='dotted')
             ax.plot([x[-1], x_max], [y[-1], s_xmax], color=colour, label='_nolegend_', linestyle='dotted')
+
+        # Check if catalog fluxes share a single age that is not None, and take
+        # this to represent to catalog flux age; otherwise set age to N/A.
+        uniq_ages = set([age for age in ages if age is not None])
+        if len(uniq_ages) == 1:
+            age = uniq_ages.pop()
+        else:
+            age = 'N/A'
+
+        # Add plot title.
+        # PIPE-644: include age of catalog fluxes in title.
+        title_str = "Flux calibration: {} (age = {} days)".format(field.name, age)
+        ax.set_title(title_str)
 
         # Plot atmospheric transmission.
         if showatm:
@@ -399,7 +399,7 @@ def create_flux_comparison_plots(context, output_dir, result, showatm=True):
             spw_ids = sorted([m.spw_id for m in measurements])
             for spw_id in spw_ids:
                 atm_freq, atm_transmission = atmutil.get_transmission(vis=result.vis, spw_id=spw_id, antenna_id=ant_id)
-                axes_atm.plot(atm_freq, atm_transmission, color=atm_color, linestyle='-', linewidth=0.4)
+                axes_atm.plot(atm_freq, atm_transmission, color=atm_color, linestyle='-')
 
         # Include plot legend.
         leg = ax.legend(loc='best', numpoints=1, prop={'size': 8})
