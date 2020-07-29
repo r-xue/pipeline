@@ -1,7 +1,9 @@
 import atexit
 import http.server
 import os
+import pathlib
 import pkg_resources
+import random
 import threading
 import webbrowser
 
@@ -33,23 +35,58 @@ WEBLOG_LOCK = threading.Lock()
 HTTP_SERVER = None
 
 
-def show_weblog(context, handler_class=http.server.SimpleHTTPRequestHandler,
+def show_weblog(index_html=None,
+                handler_class=http.server.SimpleHTTPRequestHandler,
                 server_class=http.server.HTTPServer,
-                protocol='HTTP/1.0', bind='127.0.0.1', port=8000):
+                bind='127.0.0.1'):
     """
-    This runs an HTTP server on 127.0.0.1:8000 (or the port argument).
+    Locate the most recent web log and serve it via a HTTP server running on
+    127.0.0.1 using a random port 30000-32768.
+
+    The function arguments are not exposed in the CASA CLI interface, but are
+    made available in case that becomes necessary.
     """
     global HTTP_SERVER
 
-    server_address = (bind, port)
+    if index_html is None:
+        # find all t1-1.html files
+        index_files = {p.name: p for p in pathlib.Path('.').rglob('t1-1.html')}
+        if len(index_files) == 0:
+            LOG.info('No weblog detected')
+            return None
+
+        # sort files by date, newest first
+        by_date = sorted(pathlib.Path('.').rglob('t1-1.html'),
+                         key=os.path.getmtime,
+                         reverse=True)
+
+        LOG.info('Found weblogs at:%s', ''.join([f'\n\t{p.name}' for p in by_date]))
+
+        if len(index_files) > 1:
+            LOG.info('Multiple web logs detected. Selecting most recent version')
+
+        index_html = by_date[0]
 
     with WEBLOG_LOCK:
         if HTTP_SERVER is None:
-            # handler_class.protocol_version = protocol
-            httpd = server_class(server_address, handler_class)
+            httpd = None
+            while httpd is None:
+                # multiple users concurrently viewing the weblog will each
+                # need a different weblog port.
+                # create a HTTP server on a port between 30000-32768
+                port = random.randrange(30000, 32768)
+                server_address = (bind, port)
+                try:
+                    httpd = server_class(server_address, handler_class)
+                except OSError as e:
+                    # Errno 48 port already taken
+                    if e.errno == 48:
+                        LOG.info('Port %s already in use. Selecting a different port...', port)
+                    else:
+                        raise
 
             sa = httpd.socket.getsockname()
-            serve_message = 'Serving HTTP on {host} port {port} (http://{host}:{port}/) ...'
+            serve_message = 'Serving web log on {host} port {port} (http://{host}:{port}/) ...'
             LOG.info(serve_message.format(host=sa[0], port=sa[1]))
 
             thread = threading.Thread(target=httpd.serve_forever)
@@ -63,12 +100,11 @@ def show_weblog(context, handler_class=http.server.SimpleHTTPRequestHandler,
             serve_message = 'Using existing HTTP server at {host} port {port} ...'
             LOG.info(serve_message.format(host=sa[0], port=sa[1]))
 
-    index_html = os.path.join(context.report_dir, 't1-1.html')
-    rel_index = os.path.relpath(index_html, context.output_dir)
+    server_root, _ = os.path.split(index_html)
 
     atexit.register(stop_weblog)
 
-    url = 'http://{}:{}/{}'.format(bind, port, rel_index)
+    url = 'http://{}:{}/{}'.format(bind, port, index_html)
     LOG.info('Opening {}'.format(url))
     webbrowser.open(url)
 
