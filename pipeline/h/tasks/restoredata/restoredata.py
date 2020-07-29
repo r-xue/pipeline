@@ -408,6 +408,7 @@ class RestoreData(basetask.StandardTaskTemplate):
                     self._executor.execute(task)
                 except Exception:
                     LOG.error("Application of final flags failed for %s" % ms.basename)
+                    raise
 
             flagversionlist.append(flagversionpath)
 
