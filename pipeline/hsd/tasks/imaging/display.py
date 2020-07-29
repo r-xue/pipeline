@@ -3,6 +3,7 @@ import os
 import time
 
 import numpy
+#TODO: pylab should be replaced by pyplot
 import pylab as pl
 from matplotlib.ticker import MultipleLocator
 
@@ -844,15 +845,13 @@ class SDChannelMapDisplay(SDImageDisplay):
                         if integmap_colorbar is None:
                             integmap_colorbar = pl.colorbar(shrink=0.8)
                             for t in integmap_colorbar.ax.get_yticklabels():
-                                newfontsize = t.get_fontsize()*0.5
-                                t.set_fontsize(newfontsize)
-#                             integmap_colorbar.ax.set_title('[%s km/s]'%(self.brightnessunit))
-#                             lab = integmap_colorbar.ax.title
-#                             lab.set_fontsize(newfontsize)
-                            integmap_colorbar.ax.set_ylabel('[%s km/s]' % self.brightnessunit, fontsize=newfontsize)
+                                newfontsize_integ = t.get_fontsize()*0.5
+                                t.set_fontsize(newfontsize_integ)
                         else:
                             integmap_colorbar.mappable.set_clim((Total.min(), Total.max()))
                             integmap_colorbar.draw_all()
+                        # set_clim and draw_all clears y-label
+                        integmap_colorbar.ax.set_ylabel('[%s km/s]' % self.brightnessunit, fontsize=newfontsize_integ)
 
                 # draw beam pattern
                 if beam_circle is None:
@@ -942,16 +941,14 @@ class SDChannelMapDisplay(SDImageDisplay):
                             if chmap_colorbar[y] is None:
                                 cb = pl.colorbar()
                                 for t in cb.ax.get_yticklabels():
-                                    newfontsize = t.get_fontsize()*0.5
-                                    t.set_fontsize(newfontsize)
-#                                 cb.ax.set_title('[%s km/s]'%(self.brightnessunit))
-#                                 lab=cb.ax.title
-#                                 lab.set_fontsize(newfontsize)
-                                cb.ax.set_ylabel('[%s km/s]' % self.brightnessunit, fontsize=newfontsize)
+                                    newfontsize_cmap = t.get_fontsize()*0.5
+                                    t.set_fontsize(newfontsize_cmap)
                                 chmap_colorbar[y] = cb
                             else:
                                 chmap_colorbar[y].mappable.set_clim(Vmin, Vmax)
                                 chmap_colorbar[y].draw_all()
+                            # set_clim and draw_all clears y-label
+                            chmap_colorbar[y].ax.set_ylabel('[%s km/s]' % self.brightnessunit, fontsize=newfontsize_cmap)
                         pl.title(Title[i], size=TickSize)
 
                 t4 = time.time()
