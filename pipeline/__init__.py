@@ -45,6 +45,13 @@ def show_weblog(index_html=None,
 
     The function arguments are not exposed in the CASA CLI interface, but are
     made available in case that becomes necessary.
+
+    TODO:
+    Ideally we'd serve just the html directory, but that breaks the weblog for
+    reasons I don't have time to investigate right now. See
+    https://gist.github.com/diegosorrilha/812787c01b65fde6dec870ab97212abd ,
+    which is easily convertible to Python 3. These classes can be passed in as
+    handler_class and server_class arguments.
     """
     global HTTP_SERVER
 
@@ -60,7 +67,7 @@ def show_weblog(index_html=None,
                          key=os.path.getmtime,
                          reverse=True)
 
-        LOG.info('Found weblogs at:%s', ''.join([f'\n\t{p.name}' for p in by_date]))
+        LOG.info('Found weblogs at:%s', ''.join([f'\n\t{p}' for p in by_date]))
 
         if len(index_files) > 1:
             LOG.info('Multiple web logs detected. Selecting most recent version')
