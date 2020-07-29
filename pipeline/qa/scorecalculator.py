@@ -10,6 +10,7 @@ import math
 import operator
 import os
 from typing import List
+from scipy.special import erf
 
 import numpy as np
 
@@ -2885,27 +2886,49 @@ def score_fluxservice(result):
         return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
 
 
-def score_mom8_fc_image(peak_snr, image_chanScaled_MAD, outlier_threshold, n_pixels, n_outlier_pixels):
+def score_mom8_fc_image(mom8_fc_name, peak_snr, image_chanScaled_MAD, outlier_threshold, n_pixels, n_outlier_pixels):
     """
     Check the MOM8 FC image for outliers above a given SNR threshold. The score
     can vary between 0.33 and 1.0 depending on the fraction of outlier pixels.
     """
 
     outlier_fraction = n_outlier_pixels / n_pixels
+    with casatools.ImageReader(mom8_fc_name) as image:
+        info = image.miscinfo()
+        field = info.get('field')
+        spw = info.get('spw')
 
     if peak_snr <= outlier_threshold:
         score = 1.0
-        longmsg = 'All MOM8 FC pixels below threshold.'
-        shortmsg = 'No MOM8 FC outliers.'
+        longmsg = 'MOM8 FC image for field {:s} spw {:s} has a peak SNR that is below the QA threshold.'.format(field, spw)
+        shortmsg = 'MOM8 FC peak SNR below QA threshold.'
         weblog_location = pqa.WebLogLocation.ACCORDION
     else:
-        score = 0.65
-        longmsg = 'MOM8 FC outliers detected.'
-        shortmsg = 'MOM8 FC outliers.'
-        weblog_location = pqa.WebLogLocation.BANNER
+        LOG.info('Image {:s} has {:d} pixels ({:.2f}%) above a threshold of {:.1f} x channel scaled MAD = {:#.5g}.'.format(os.path.basename(mom8_fc_name),
+                                          n_outlier_pixels,
+                                          outlier_fraction * 100.0,
+                                          outlier_threshold,
+                                          outlier_threshold * image_chanScaled_MAD))
+
+        m8fc_score_min = 0.33
+        m8fc_score_max = 0.90
+        m8fc_metric_scale = 300.0
+        score = m8fc_score_min + 0.5 * (m8fc_score_max - m8fc_score_min) * (1.0 + erf(-np.log(m8fc_metric_scale * outlier_fraction)))
+        if 0.66 <= score <= 0.9 and peak_snr > 1.3 * outlier_threshold and n_outlier_pixels > 9:
+            LOG.info('Modifying MOM8 FC score from {:.2f} to 0.65 due to peak SNR > 6.5 x channel scaled MAD and > 9 outlier pixels.'.format(score))
+            score = 0.65
+
+        if 0.33 <= score < 0.66:
+            longmsg = 'MOM8 FC image for field {:s} spw {:s} indicates that there may be residual line emission in the findcont channels.'.format(field, spw)
+            shortmsg = 'MOM8 FC image indicates residual line emission.'
+            weblog_location = pqa.WebLogLocation.BANNER
+        else:
+            longmsg = 'MOM8 FC image for field {:s} spw {:s} has a peak SNR that is above the QA threshold.'.format(field, spw)
+            shortmsg = 'MOM8 FC peak SNR above QA threshold.'
+            weblog_location = pqa.WebLogLocation.ACCORDION
 
     origin = pqa.QAOrigin(metric_name='score_mom8_fc_image',
-                          metric_score=outlier_fraction,
-                          metric_units='Outlier fraction')
+                          metric_score=(peak_snr, outlier_fraction),
+                          metric_units='Peak SNR / Outlier fraction')
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, weblog_location=weblog_location)

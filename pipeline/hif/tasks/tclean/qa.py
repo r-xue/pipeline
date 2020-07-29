@@ -82,9 +82,10 @@ class TcleanQAHandler(pqa.QAPlugin):
 
             # MOM8_FC based score
             if result.mom8_fc is not None and result.mom8_fc_peak_snr is not None:
-                mom8_fc_score = scorecalc.score_mom8_fc_image(result.mom8_fc_peak_snr,
-                                result.mom8_fc_image_chanScaledMAD, result.mom8_fc_outlier_threshold,
-                                result.mom8_fc_n_pixels, result.mom8_fc_n_outlier_pixels)
+                mom8_fc_score = scorecalc.score_mom8_fc_image(result.mom8_fc,
+                                result.mom8_fc_peak_snr, result.mom8_fc_image_chanScaledMAD,
+                                result.mom8_fc_outlier_threshold, result.mom8_fc_n_pixels,
+                                result.mom8_fc_n_outlier_pixels)
                 result.qa.pool.append(mom8_fc_score)
 
             # Check source score
