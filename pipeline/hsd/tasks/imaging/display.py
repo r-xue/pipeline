@@ -3,6 +3,7 @@ import os
 import time
 
 import numpy
+#TODO: pylab should be replaced by pyplot
 import pylab as pl
 from matplotlib.ticker import MultipleLocator
 
@@ -331,8 +332,8 @@ class ChannelMapAxesManager(ChannelAveragedAxesManager):
         self.nv = nv
         self.brightnessunit = brightnessunit
         self.nchmap = nh * nv
-        self.left = 2.15 / 3.0
-        self.width = 1.0 / 3.0 * 0.8
+        self.left = 2.10 / 3.0
+        self.width = 1.0 / 3.0 * 0.75
         self.bottom = 2.0 / 3.0 + 0.2 / 3.0
         self.height = 1.0 / 3.0 * 0.7
 
@@ -346,7 +347,7 @@ class ChannelMapAxesManager(ChannelAveragedAxesManager):
     @property
     def axes_integmap(self):
         if self._axes_integmap is None:
-            axes = pl.axes([self.left, self.bottom, self.width, self.height])
+            axes = pl.axes([self.left, self.bottom, 0.98-self.left, self.height])
 
             axes.xaxis.set_major_formatter(self.xformatter)
             axes.yaxis.set_major_formatter(self.yformatter)
@@ -371,7 +372,7 @@ class ChannelMapAxesManager(ChannelAveragedAxesManager):
     @property
     def axes_integsp_full(self):
         if self._axes_integsp_full is None:
-            left = 1.0 / 3.0 + 0.1 / 3.0
+            left = 0.6-self.width
             axes = pl.axes([left, self.bottom, self.width, self.height])
             axes.xaxis.set_major_formatter(self.numeric_formatter)
             pl.xticks(size=self.ticksize)
@@ -387,7 +388,7 @@ class ChannelMapAxesManager(ChannelAveragedAxesManager):
     @property
     def axes_integsp_zoom(self):
         if self._axes_integsp_zoom is None:
-            left = 0.1 / 3.0
+            left = 0.3-self.width
             axes = pl.axes([left, self.bottom, self.width, self.height])
             pl.xticks(size=self.ticksize)
             pl.yticks(size=self.ticksize)
@@ -407,11 +408,18 @@ class ChannelMapAxesManager(ChannelAveragedAxesManager):
         return self._axes_chmap
 
     def __axes_chmap(self):
+#         chmap_hfrac = 0.92 # leave some room for colorbar
+#         offset = 0.01
         for i in range(self.nchmap):
             x = i % self.nh
             y = self.nv - int(i // self.nh) - 1
             left = 1.0 / float(self.nh) * x #(x + 0.05)
             width = 1.0 / float(self.nh) * 0.85 #0.9
+#             # an attempt to mitigate uneven plot size of panels in the right most column.
+#             left = chmap_hfrac / float(self.nh) * x + offset
+#             width = chmap_hfrac / float(self.nh)-offset
+#             if x==self.nh-1: # add width for colorbar to panels in the right most column
+#                 width = min(width*1.25, 1-offset-left)
             bottom = 1.0 / float((self.nv+2)) * (y + 0.05)
             height = 1.0 / float((self.nv+2)) * 0.85
             a = pl.axes([left, bottom, width, height])
@@ -837,15 +845,13 @@ class SDChannelMapDisplay(SDImageDisplay):
                         if integmap_colorbar is None:
                             integmap_colorbar = pl.colorbar(shrink=0.8)
                             for t in integmap_colorbar.ax.get_yticklabels():
-                                newfontsize = t.get_fontsize()*0.5
-                                t.set_fontsize(newfontsize)
-#                             integmap_colorbar.ax.set_title('[%s km/s]'%(self.brightnessunit))
-#                             lab = integmap_colorbar.ax.title
-#                             lab.set_fontsize(newfontsize)
-                            integmap_colorbar.ax.set_ylabel('[%s km/s]' % self.brightnessunit, fontsize=newfontsize)
+                                newfontsize_integ = t.get_fontsize()*0.5
+                                t.set_fontsize(newfontsize_integ)
                         else:
                             integmap_colorbar.mappable.set_clim((Total.min(), Total.max()))
                             integmap_colorbar.draw_all()
+                        # set_clim and draw_all clears y-label
+                        integmap_colorbar.ax.set_ylabel('[%s km/s]' % self.brightnessunit, fontsize=newfontsize_integ)
 
                 # draw beam pattern
                 if beam_circle is None:
@@ -935,16 +941,14 @@ class SDChannelMapDisplay(SDImageDisplay):
                             if chmap_colorbar[y] is None:
                                 cb = pl.colorbar()
                                 for t in cb.ax.get_yticklabels():
-                                    newfontsize = t.get_fontsize()*0.5
-                                    t.set_fontsize(newfontsize)
-#                                 cb.ax.set_title('[%s km/s]'%(self.brightnessunit))
-#                                 lab=cb.ax.title
-#                                 lab.set_fontsize(newfontsize)
-                                cb.ax.set_ylabel('[%s km/s]' % self.brightnessunit, fontsize=newfontsize)
+                                    newfontsize_cmap = t.get_fontsize()*0.5
+                                    t.set_fontsize(newfontsize_cmap)
                                 chmap_colorbar[y] = cb
                             else:
                                 chmap_colorbar[y].mappable.set_clim(Vmin, Vmax)
                                 chmap_colorbar[y].draw_all()
+                            # set_clim and draw_all clears y-label
+                            chmap_colorbar[y].ax.set_ylabel('[%s km/s]' % self.brightnessunit, fontsize=newfontsize_cmap)
                         pl.title(Title[i], size=TickSize)
 
                 t4 = time.time()
