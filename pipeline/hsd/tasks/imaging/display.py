@@ -136,14 +136,11 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
                         for t in tpmap_colorbar.ax.get_yticklabels():
                             newfontsize = t.get_fontsize()*0.5
                             t.set_fontsize(newfontsize)
-#                         #tpmap_colorbar.ax.set_title('[K km/s]')
-#                         tpmap_colorbar.ax.set_title('[%s]'%(self.image.brightnessunit))
-#                         lab = tpmap_colorbar.ax.title
-#                         lab.set_fontsize(newfontsize)
-                        tpmap_colorbar.ax.set_ylabel('[%s]' % self.image.brightnessunit, fontsize=newfontsize)
                     else:
                         tpmap_colorbar.mappable.set_clim((tmin, tmax))
                         tpmap_colorbar.draw_all()
+                    # set_clim and draw_all clears y-label
+                    tpmap_colorbar.ax.set_ylabel('[%s]' % self.image.brightnessunit, fontsize=newfontsize)
 
             # draw beam pattern
             if beam_circle is None:
@@ -276,11 +273,12 @@ class SDMomentMapDisplay(SDImageDisplay):
                         for t in tpmap_colorbar.ax.get_yticklabels():
                             newfontsize = t.get_fontsize()*0.5
                             t.set_fontsize(newfontsize)
-                        #if newfontsize is None: # no ticks in colorbar likely invalid TP map
-                        tpmap_colorbar.ax.set_ylabel('[%s]'%(self.brightnessunit), fontsize=newfontsize)
                     else:
                         tpmap_colorbar.mappable.set_clim((tmin, tmax))
                         tpmap_colorbar.draw_all()
+                    #if newfontsize is None: # no ticks in colorbar likely invalid TP map
+                    # set_clim and draw_all clears y-label
+                    tpmap_colorbar.ax.set_ylabel('[%s]'%(self.brightnessunit), fontsize=newfontsize)
 
             # draw beam pattern
             if beam_circle is None:
@@ -1077,12 +1075,11 @@ class SDRmsMapDisplay(SDImageDisplay):
                         for t in rms_colorbar.ax.get_yticklabels():
                             newfontsize = t.get_fontsize()*0.5
                             t.set_fontsize(newfontsize)
-#                         rms_colorbar.ax.set_title('[%s]' % self.brightnessunit)
-#                         lab = rms_colorbar.ax.title
-                        rms_colorbar.ax.set_ylabel('[%s]' % self.brightnessunit)
                     else:
                         rms_colorbar.mappable.set_clim((rmsmin, rmsmax))
                         rms_colorbar.draw_all()
+                    # set_clim and draw_all clears y-label
+                    rms_colorbar.ax.set_ylabel('[%s]' % self.brightnessunit)
             del rms_map
 
             # draw beam pattern
