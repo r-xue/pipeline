@@ -23,15 +23,6 @@ dsyb = '$^\circ$'
 hsyb = ':'
 msyb = ':'
 
-def oDeg2HMS(x, allowance):
-    # Transform degree to HHMMSS.sss format
-    print('invoking old Deg2HMS')
-    xx = x % 360 + allowance
-    h = int(xx / 15)
-    m = int((xx % 15) * 4)
-    s = ((xx % 15) * 4 - m) * 60.0
-    return (h, m, s)
-
 def Deg2HMS(x, allowance, prec=0):
     """
     Converts an angle in degree to hour angle and returns a list of
@@ -52,9 +43,6 @@ def Deg2HMS(x, allowance, prec=0):
 # see also: https://matplotlib.org/3.3.0/api/ticker_api.html#matplotlib.ticker.FuncFormatter
 def HHMM(x, pos=None):
     # HHMM format
-    if pos == -999:
-        (h, m, s) = oDeg2HMS(x, 1/8.0)
-        return '%02d%s%02d' % (h, hsyb, m)
     (h, m, s) = Deg2HMS(x, 1/8.0, prec=6)
     return '%s%s%s' % (h, hsyb, m)
 
@@ -66,48 +54,23 @@ def __format_hms(x, allowance, prec=0):
 
 def HHMMSS(x, pos=None):
     # HHMMSS format
-    if pos == -999:
-        (h, m, s) = oDeg2HMS(x, 1/480.0)
-        return '%02d%s%02d%s%02d' % (h, hsyb, m, msyb, s)
     return __format_hms(x, 1/480.0, prec=6)
 
 
 def HHMMSSs(x, pos=None):
     # HHMMSS.s format
-    if pos == -999:
-        (h, m, s) = oDeg2HMS(x, 1/4800.0)
-        return '%02d%s%02d%s%04.1f' % (h, hsyb, m, msyb, s)
     return __format_hms(x, 1/4800.0, prec=7)
 
 
 def HHMMSSss(x, pos=None):
     # HHMMSS.ss format
-    if pos == -999:
-        (h, m, s) = oDeg2HMS(x, 1/48000.0)
-        return '%02d%s%02d%s%05.2f' % (h, hsyb, m, msyb, s)
     return __format_hms(x, 1/48000.0, prec=8)
 
 
 def HHMMSSsss(x, pos=None):
     # HHMMSS.sss format
-    if pos == -999:
-        (h, m, s) = oDeg2HMS(x, 1/480000.0)
-        return '%02d%s%02d%s%06.3f' % (h, hsyb, m, msyb, s)
     return __format_hms(x, 1/480000.0, prec=9)
 
-
-def oDeg2DMS(x, allowance):
-    # Transform degree to +ddmmss.ss format
-    print('invoking old Deg2DMS')
-    xxx = (x + 90) % 180 - 90
-    xx = abs(xxx) + allowance
-    if xxx < 0: sign = -1
-    else: sign = 1
-    d = int(xx)
-    m = int((xx % 1) * 60)
-    s = ((xx % 1) * 60 - m) * 60.0
-    ss = '-' if sign == -1 else '+'
-    return (ss, d, m, s)
 
 def Deg2DMS(x, allowance, prec=0):
     """
@@ -134,9 +97,6 @@ def Deg2DMS(x, allowance, prec=0):
 
 def DDMM(x, pos=None):
     # +DDMM format
-    if pos == -999:
-        (sign, d, m, s) = oDeg2DMS(x, 1/120.0)
-        return '%s%02d%s%02d\'' % (sign, d, dsyb, m)
     (d, m, s) = Deg2DMS(x, 1/120.0, prec=6)
     return '%s%s%s\'' % (d, dsyb, m)
 
@@ -152,9 +112,6 @@ def __format_dms(x, allowance, prec=0):
 
 def DDMMSS(x, pos=None):
     # +DDMMSS format
-    if pos == -999:
-        (sign, d, m, s) = oDeg2DMS(x, 1/7200.0)
-        return '%s%02d%s%02d\'%02d\"' % (sign, d, dsyb, m, s)
     return __format_dms(x, 1/7200.0, prec=6)
 
 
@@ -163,11 +120,6 @@ def DDMMSSs(x, pos=None):
     # NOTE: 
     # s will automatically be rounded off when sstr is 
     # formed below. Thus no allowance is needed.
-    if pos == -999:
-        (sign, d, m, s) = oDeg2DMS(x, 0)
-        sint = int(s)
-        sstr = ('%3.1f'%(s-int(s))).lstrip('0')
-        return '%s%02d%s%02d\'%02d\"%s' % (sign, d, dsyb, m, sint, sstr)
     return __format_dms(x, 0, prec=7)
 
 
@@ -176,11 +128,6 @@ def DDMMSSss(x, pos=None):
     # NOTE: 
     # s will automatically be rounded off when sstr is 
     # formed below. Thus no allowance is needed.
-    if pos == -999:
-        (sign, d, m, s) = oDeg2DMS(x, 0)
-        sint = int(s)
-        sstr = ('%4.2f'%(s-int(s))).lstrip('0')
-        return '%s%02d%s%02d\'%02d\"%s' % (sign, d, dsyb, m, sint, sstr)
     return __format_dms(x, 0, prec=8)
 
 
