@@ -13,6 +13,12 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
+        <Command xmlns="">hif_mstransform</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
         <Command xmlns="">hif_checkproductsize</Command>
         <ParameterSet>
             <Parameter>
@@ -28,6 +34,14 @@
             <Parameter>
                 <Keyword xmlns="">specmode</Keyword>
                 <Value xmlns="">cont</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">field</Keyword>
+                <Value xmlns="">{{field}}</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">spw</Keyword>
+                <Value xmlns="">{{spw}}</Value>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
