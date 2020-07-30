@@ -34,7 +34,7 @@ WEBLOG_LOCK = threading.Lock()
 HTTP_SERVER = None
 
 
-def show_weblog(index_path=None,
+def show_weblog(index_path='',
                 handler_class=http.server.SimpleHTTPRequestHandler,
                 server_class=http.server.HTTPServer,
                 bind='127.0.0.1'):
@@ -54,7 +54,7 @@ def show_weblog(index_path=None,
     """
     global HTTP_SERVER
 
-    if index_path is None:
+    if index_path in (None, ''):
         # find all t1-1.html files
         index_files = {p.name: p for p in pathlib.Path('.').rglob('t1-1.html')}
 
@@ -73,6 +73,9 @@ def show_weblog(index_path=None,
             LOG.info('Multiple web logs detected. Selecting most recent version')
 
         index_path = by_date[0]
+
+    if isinstance(index_path, str):
+        index_path = pathlib.Path(index_path)
 
     with WEBLOG_LOCK:
         if HTTP_SERVER is None:
@@ -108,8 +111,6 @@ def show_weblog(index_path=None,
         else:
             sa = HTTP_SERVER.socket.getsockname()
             LOG.info('Using existing HTTP server at %s port %s ...', sa[0], sa[1])
-
-    server_root, _ = os.path.split(index_path)
 
     atexit.register(stop_weblog)
 
