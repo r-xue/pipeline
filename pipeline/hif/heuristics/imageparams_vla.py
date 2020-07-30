@@ -10,7 +10,6 @@ from .imageparams_base import ImageParamsHeuristics
 
 LOG = infrastructure.get_logger(__name__)
 
-
 class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
@@ -53,6 +52,8 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             return mean / float(len(stats))
         #
         qa = casatools.quanta
+        #
+        LOG.info('Computing uvrange heuristics for spwsids={:s}'.format(','.join([str(spw) for spw in self.spwids])))
 
         # Can it be that more than one visibility (ms file) is used?
         vis = self.vislist[0]
@@ -76,8 +77,8 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
         # Check for maximum frequency
         if max_mean_freq_Hz == 0.0:
-            LOG.warn("Highest frequency spw and largest baseline cannot be determined for spwids={}, using all "
-                     "baselines." % self.spwids)
+            LOG.warn("Highest frequency spw and largest baseline cannot be determined for spwids={:s}. "
+                     "Using default uvrange.".format(','.join([str(spw) for spw in self.spwids])))
             return None
         # Get max baseline
         mean_wave_m = light_speed / max_mean_freq_Hz  # in meter
@@ -89,23 +90,27 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         uvll = 0.0
         uvul = 0.05 * max_bl
 
-        uvrange = '{:0.1f}~{:0.1f}klambda'.format(uvll / 1000.0, uvul / 1000.0)
-        mean_SBL = get_mean_amplitude(vis=vis, uvrange=uvrange, spw=real_spwids_str)
+        uvrange_SBL = '{:0.1f}~{:0.1f}klambda'.format(uvll / 1000.0, uvul / 1000.0)
+        mean_SBL = get_mean_amplitude(vis=vis, uvrange=uvrange_SBL, spw=real_spwids_str)
 
         # Range for  50-55% bin
         uvll = 0.5 * max_bl
         uvul = 0.5 * max_bl + 0.05 * max_bl
-        uvrange = '{:0.1f}~{:0.1f}klambda'.format(uvll / 1000.0, uvul / 1000.0)
-        mean_MBL = get_mean_amplitude(vis=vis, uvrange=uvrange, spw=real_spwids_str)
+        uvrange_MBL = '{:0.1f}~{:0.1f}klambda'.format(uvll / 1000.0, uvul / 1000.0)
+        mean_MBL = get_mean_amplitude(vis=vis, uvrange=uvrange_MBL, spw=real_spwids_str)
 
         # Compare amplitudes and decide on return value
         meanratio = mean_SBL / mean_MBL
 
+        # Report results
+        LOG.info('Mean amplitude in uvrange bins: {:s} is {:0.2E}Jy, '
+                 '{:s} is {:0.2E}Jy, ratio={:0.2E}'.format(uvrange_SBL, mean_SBL, uvrange_MBL, mean_MBL, meanratio))
         if meanratio > 2.0:
             LOG.info('Selecting uvrange>{:0.1f}klambda to avoid very extended emission.'.format(0.05 * max_bl / 1000.0))
             return ">{:0.1f}klambda".format(0.05 * max_bl / 1000.0)
         else:
-            return None
+            # Use complete uvrange
+            return '>0.0klambda'
 
     def pblimits(self, pb):
         """
@@ -144,17 +149,29 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         """See PIPE-679 and CASR-543"""
         return 'mtmfs'
 
-    def niter_correction(self, niter, cell, imsize, residual_max, threshold, mask_frac_rad=0.0):
+    def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0):
         """Adjustment of number of cleaning iterations due to mask size.
+
+        Uses residual_robust_rms instead threshold to compute the new niter value.
 
         See PIPE-682 and CASR-543 and base class method for parameter description."""
         if mask_frac_rad == 0.0:
-            # Assume at most 25% of pixels are within the (circular) mask (PIPE-682).
-            # 0.25 = mask_frac_rad**2 * pi / 4
-            mask_frac_rad = 0.56
+            # The motivation here is that while EVLA images can be large, only a small fraction of pixels
+            # will typically have emission (for continuum images).
+            mask_frac_rad = 0.05
 
-        return super().niter_correction(niter, cell, imsize, residual_max, threshold,
+        # VLA specific threshold
+        threshold_vla = casatools.quanta.quantity(self.nsigma(0, None) * residual_robust_rms, 'Jy')
+
+        # Set allowed niter range
+        max_niter = 1000000
+        min_niter = 10000
+
+        # Compute new niter
+        new_niter = super().niter_correction(niter, cell, imsize, residual_max, threshold_vla, residual_robust_rms,
                                         mask_frac_rad=mask_frac_rad)
+
+        return max(min(new_niter, max_niter), min_niter)
 
     def specmode(self):
         """See PIPE-683 and CASR-543"""
@@ -169,7 +186,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
     def threshold(self, iteration, threshold, hm_masking):
         """See PIPE-678 and CASR-543"""
-        if hm_masking in ['auto', 'none']:
+        if iteration == 0 or hm_masking in ['none']:
             return '0.0mJy'
         else:
             return threshold
@@ -204,8 +221,8 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             if type(spwspec) is not str:
                 spwspec = ",".join(spwspec)
             freq_limits = self.get_min_max_freq(spwspec)
-            # 18 GHz and above (Ku, K, Ka, Q VLA bands)
-            if freq_limits['abs_min_freq'] >= 1.8e10:
+            # 18 GHz and above (K, Ka, Q VLA bands)
+            if freq_limits['abs_min_freq'] >= 1.79e10:
                 # equivalent to first minimum of the Airy diffraction pattern; m = 1.22.
                 sfpblimit = 0.294
             else:
