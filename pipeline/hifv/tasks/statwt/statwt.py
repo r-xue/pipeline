@@ -98,7 +98,7 @@ class Statwt(basetask.StandardTaskTemplate):
             return statwt_result
 
     def _do_flagsummary(self, name, field = ''):
-        fielddict = cont_file_to_CASA()
+        fielddict = cont_file_to_CASA(self.inputs.vis, self.inputs.context)
         job = casa_tasks.flagdata(name=name, vis = self.inputs.vis, field = field, mode='summary')
         return self._executor.execute(job)
 
