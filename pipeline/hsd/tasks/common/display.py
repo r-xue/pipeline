@@ -572,6 +572,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
         if self._axes_atm is None:
             pl.figure(self.figure_id)
             self._axes_atm = self.axes_integsp.twinx()
+            self._axes_atm.set_position(self.axes_integsp.get_position())
             ylabel = self._axes_atm.set_ylabel('ATM Transmission', size=self.ticksize)
             ylabel.set_color('m')
             self._axes_atm.yaxis.set_tick_params(colors='m', labelsize=self.ticksize-1)
@@ -589,8 +590,12 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
                 pl.figure(self.figure_id)
                 self.__adjust_integsp_for_chan()
                 self._axes_chan = self.axes_integsp.twiny()
+                self._axes_chan.set_position(self.axes_integsp.get_position())
+                if self._axes_atm is not None:
+                    self._axes_atm.set_position(self.axes_integsp.get_position())
                 self._axes_chan.set_xlabel('Channel', size=self.ticksize - 1)
-                self._axes_chan.xaxis.set_label_coords(0.5, 1.13)
+                self._axes_chan.xaxis.set_label_coords(0.5, 1.11)
+                self._axes_chan.tick_params(axis='x', pad=0)
                 pl.xticks(size=self.ticksize - 1)
             finally:
                 pl.sca(active)
@@ -613,7 +618,6 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             a.title.set_position((0.5, 1.2))
         finally:
             pl.sca(active)
-
 
     def __axes_spmap(self):
         for x in range(self.nh):
@@ -713,7 +717,7 @@ class SDSparseMapPlotter(object):
             LabelDEC[y][0] = refval + (y0 - refpix) * increment
             LabelDEC[y][1] = refval + (y1 - refpix) * increment
         self.axes.setup_labels(LabelRA, LabelDEC)
-        
+
     def setup_labels_absolute( self, ralist, declist ):
         assert self.step == 1  # this function is used only for step=1
         LabelRA  = [[x,x] for x in ralist]
