@@ -634,18 +634,18 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             a1 = pl.subplot(self.gs_bottom[-1, self.nh - x])
             a1.set_axis_off()
             if len(a1.texts) == 0:
-                pl.text(0.5, 0.5, xaxislabel((label_ra[x][0]+label_ra[x][1])/2.0, 0),
+                pl.text(0.5, 0.5, xaxislabel((label_ra[x][0]+label_ra[x][1])/2.0),
                         horizontalalignment='center', verticalalignment='center', size=self.ticksize)
             else:
-                a1.texts[0].set_text(xaxislabel((label_ra[x][0]+label_ra[x][1])/2.0, 0))
+                a1.texts[0].set_text(xaxislabel((label_ra[x][0]+label_ra[x][1])/2.0))
         for y in range(self.nv):
             a1 = pl.subplot(self.gs_bottom[self.nv - y - 1, 0])
             a1.set_axis_off()
             if len(a1.texts) == 0:
-                pl.text(0.5, 0.5, pointing.DDMMSSs((label_dec[y][0]+label_dec[y][1])/2.0, 0),
+                pl.text(0.5, 0.5, pointing.DDMMSSs((label_dec[y][0]+label_dec[y][1])/2.0),
                         horizontalalignment='center', verticalalignment='center', size=self.ticksize)
             else:
-                a1.texts[0].set_text(pointing.DDMMSSs((label_dec[y][0]+label_dec[y][1])/2.0, 0))
+                a1.texts[0].set_text(pointing.DDMMSSs((label_dec[y][0]+label_dec[y][1])/2.0))
         a1 = pl.subplot(self.gs_bottom[-1, 0])
         a1.set_axis_off()
         ralabel, declabel = self.get_axes_labels()

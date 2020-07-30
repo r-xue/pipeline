@@ -1306,7 +1306,7 @@ class SDSpectralMapDisplay(SDImageDisplay):
                         pl.gcf().sca(a)
                         world_x = xrv + (_x - xrp) * xic
                         world_y = yrv + (_y - yrp) * yic
-                        title = '(IF, POL, X, Y) = (%s, %s, %s, %s)\n%s %s' % (self.spw, pol, _x, _y, HHMMSSss(world_x, 0), DDMMSSs(world_y, 0))
+                        title = '(IF, POL, X, Y) = (%s, %s, %s, %s)\n%s %s' % (self.spw, pol, _x, _y, HHMMSSss(world_x), DDMMSSs(world_y))
 #                         if self.num_valid_spectrum[_x][_y][pol] > 0:
                         if mask2d[_x][_y]:
                             plot_objects.extend(

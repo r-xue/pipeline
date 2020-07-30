@@ -19,9 +19,6 @@ LOG = infrastructure.get_logger(__name__)
 
 RArotation = pointing.RArotation
 DECrotation = pointing.DECrotation
-DDMMSSs = pointing.DDMMSSs
-HHMMSSss = pointing.HHMMSSss
-
 
 class ClusterValidationAxesManager(MapAxesManagerBase):
     def __init__(self, clusters_to_plot, nh, nv, aspect_ratio,
