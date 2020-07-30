@@ -102,7 +102,7 @@ def cont_file_to_CASA(vis, context, contfile='cont.dat'):
                 spwstring = spwstring[:-1]
                 spwstring = spwstring + ','
 
-            if contdict['fields'][field][spw]['refer'] == 'TOPO':
+            if contdict['fields'][field][spw][0]['refer'] == 'TOPO':
                 LOG.info("Using TOPO frequency specified in {!s}".format(contfile))
                 spwstring = spwstring + spw + ':'
                 for freqrange in contdict['fields'][field][spw]:
