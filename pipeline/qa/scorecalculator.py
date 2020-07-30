@@ -2900,8 +2900,8 @@ def score_mom8_fc_image(mom8_fc_name, peak_snr, image_chanScaled_MAD, outlier_th
 
     if peak_snr <= outlier_threshold:
         score = 1.0
-        longmsg = 'MOM8 FC image for field {:s} spw {:s} has a peak SNR that is below the QA threshold.'.format(field, spw)
-        shortmsg = 'MOM8 FC peak SNR below QA threshold.'
+        longmsg = 'MOM8 FC image for field {:s} spw {:s} has a peak SNR that is below the QA threshold'.format(field, spw)
+        shortmsg = 'MOM8 FC peak SNR below QA threshold'
         weblog_location = pqa.WebLogLocation.ACCORDION
     else:
         LOG.info('Image {:s} has {:d} pixels ({:.2f}%) above a threshold of {:.1f} x channel scaled MAD = {:#.5g}.'.format(os.path.basename(mom8_fc_name),
@@ -2919,12 +2919,12 @@ def score_mom8_fc_image(mom8_fc_name, peak_snr, image_chanScaled_MAD, outlier_th
             score = 0.65
 
         if 0.33 <= score < 0.66:
-            longmsg = 'MOM8 FC image for field {:s} spw {:s} indicates that there may be residual line emission in the findcont channels.'.format(field, spw)
-            shortmsg = 'MOM8 FC image indicates residual line emission.'
+            longmsg = 'MOM8 FC image for field {:s} spw {:s} indicates that there may be residual line emission in the findcont channels'.format(field, spw)
+            shortmsg = 'MOM8 FC image indicates residual line emission'
             weblog_location = pqa.WebLogLocation.BANNER
         else:
-            longmsg = 'MOM8 FC image for field {:s} spw {:s} has a peak SNR that is above the QA threshold.'.format(field, spw)
-            shortmsg = 'MOM8 FC peak SNR above QA threshold.'
+            longmsg = 'MOM8 FC image for field {:s} spw {:s} has a peak SNR that is above the QA threshold'.format(field, spw)
+            shortmsg = 'MOM8 FC peak SNR above QA threshold'
             weblog_location = pqa.WebLogLocation.ACCORDION
 
     origin = pqa.QAOrigin(metric_name='score_mom8_fc_image',
