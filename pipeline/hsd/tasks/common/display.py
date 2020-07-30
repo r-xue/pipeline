@@ -508,7 +508,6 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
         self.nv = nv
         self.ticksize = ticksize
         self.brightnessunit = brightnessunit
-        self.numeric_formatter = pl.FormatStrFormatter('%.2f')
 
         self._axes_integsp = None
         self._axes_spmap = None
@@ -548,7 +547,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             pl.figure(self.figure_id)
             axes = pl.subplot(self.gs_top[:,:])
             axes.cla()
-            axes.xaxis.set_major_formatter(self.numeric_formatter)
+            axes.xaxis.get_major_formatter().set_useOffset(False)
             pl.xlabel('Frequency(GHz)', size=(self.ticksize+1))
             pl.ylabel('Intensity(%s)'%(self.brightnessunit), size=(self.ticksize+1))
             pl.xticks(size=self.ticksize)
@@ -572,12 +571,15 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
         if self._axes_atm is None:
             pl.figure(self.figure_id)
             self._axes_atm = self.axes_integsp.twinx()
+            self._axes_atm.set_position(self.axes_integsp.get_position())
             ylabel = self._axes_atm.set_ylabel('ATM Transmission', size=self.ticksize)
             ylabel.set_color('m')
             self._axes_atm.yaxis.set_tick_params(colors='m', labelsize=self.ticksize-1)
-            self._axes_atm.yaxis.set_ticks([0.5, 0.8, 0.9, 0.95, 0.98, 1.0])
+            self._axes_atm.yaxis.set_major_locator(
+                pl.MaxNLocator(nbins=4, integer=True, min_n_ticks=2)
+            )
             self._axes_atm.yaxis.set_major_formatter(
-                pl.FuncFormatter(lambda x, pos: '{}%'.format(int(x*100)))
+                pl.FuncFormatter(lambda x, pos: '{}%'.format(int(x)))
                 )
         return self._axes_atm
 
@@ -589,8 +591,12 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
                 pl.figure(self.figure_id)
                 self.__adjust_integsp_for_chan()
                 self._axes_chan = self.axes_integsp.twiny()
+                self._axes_chan.set_position(self.axes_integsp.get_position())
+                if self._axes_atm is not None:
+                    self._axes_atm.set_position(self.axes_integsp.get_position())
                 self._axes_chan.set_xlabel('Channel', size=self.ticksize - 1)
-                self._axes_chan.xaxis.set_label_coords(0.5, 1.13)
+                self._axes_chan.xaxis.set_label_coords(0.5, 1.11)
+                self._axes_chan.tick_params(axis='x', pad=0)
                 pl.xticks(size=self.ticksize - 1)
             finally:
                 pl.sca(active)
@@ -613,7 +619,6 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             a.title.set_position((0.5, 1.2))
         finally:
             pl.sca(active)
-
 
     def __axes_spmap(self):
         for x in range(self.nh):
@@ -713,7 +718,7 @@ class SDSparseMapPlotter(object):
             LabelDEC[y][0] = refval + (y0 - refpix) * increment
             LabelDEC[y][1] = refval + (y1 - refpix) * increment
         self.axes.setup_labels(LabelRA, LabelDEC)
-        
+
     def setup_labels_absolute( self, ralist, declist ):
         assert self.step == 1  # this function is used only for step=1
         LabelRA  = [[x,x] for x in ralist]
@@ -843,15 +848,27 @@ class SDSparseMapPlotter(object):
                 plot_helper.axvspan(fmin, fmax, ymin=0.95, ymax=1, color='red')
         if overlay_atm_transmission:
             pl.gcf().sca(self.axes.axes_atm)
-            amin = 1.0
-            amax = 0.0
-            for (t, f) in zip(self.atm_transmission, self.atm_frequency):
+            amin = 100
+            amax = 0
+            for (_t, f) in zip(self.atm_transmission, self.atm_frequency):
+                # fraction -> percentage
+                t = _t * 100
                 plot_helper.plot(f, t, color='m', linestyle='-', linewidth=0.4)
                 amin = min(amin, t.min())
                 amax = max(amax, t.max())
-            Y = 0.6
-            ymin = (amin - Y) / (1.0 - Y)
-            ymax = amax + (1.0 - amax) * 0.1
+
+            # trick to make transmission curve is shown in the upper part
+            Y = 60
+            ymin = max(0, (amin - Y) / (100 - Y) * 100)
+            ymax = amax + (100 - amax) * 0.1
+
+            # to make sure y-range is more than 2 (for MaxNLocator)
+            if ymax - ymin < 2:
+                if ymin > 2:
+                    ymin -= 2
+                elif ymax < 98:
+                    ymax += 2
+
             pl.axis((global_xmin, global_xmax, ymin, ymax))
 
         is_valid_fit_result = (fit_result is not None and fit_result.shape == map_data.shape)

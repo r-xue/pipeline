@@ -224,12 +224,14 @@ except:
                 <tr>
                     <th>
                         cleaning threshold
-                        %if image_info[k].cube_all_cont:
-                            <br>findCont=AllCont<br>no cleaning
-                        %endif
                     </th>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
-                        <td style="width:250px;">${image_info[k].cleaning_threshold}</td>
+                        <td style="width:250px;">
+                            %if image_info[k].cube_all_cont:
+                                <b>findCont=AllCont, no cleaning</b><br>
+                            %endif
+                            ${image_info[k].cleaning_threshold}
+                        </td>
                     %endfor
                 </tr>
                 <tr>

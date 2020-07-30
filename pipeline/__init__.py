@@ -1,5 +1,9 @@
+import atexit
+import http.server
 import os
+import pathlib
 import pkg_resources
+import threading
 import webbrowser
 
 # required to get extern eggs on sys.path. This has to come first, before any
@@ -26,12 +30,108 @@ LOG = infrastructure.get_logger(__name__)
 __pipeline_documentation_weblink_alma__ = "http://almascience.org/documents-and-tools/pipeline-documentation-archive"
 
 
-def show_weblog(context):
-    if context is None:
-        return
+WEBLOG_LOCK = threading.Lock()
+HTTP_SERVER = None
 
-    index_html = os.path.join(context.report_dir, 't1-1.html')
-    webbrowser.open('file://' + index_html)
+
+def show_weblog(index_path='',
+                handler_class=http.server.SimpleHTTPRequestHandler,
+                server_class=http.server.HTTPServer,
+                bind='127.0.0.1'):
+    """
+    Locate the most recent web log and serve it via a HTTP server running on
+    127.0.0.1 using a random port 30000-32768.
+
+    The function arguments are not exposed in the CASA CLI interface, but are
+    made available in case that becomes necessary.
+
+    TODO:
+    Ideally we'd serve just the html directory, but that breaks the weblog for
+    reasons I don't have time to investigate right now. See
+    https://gist.github.com/diegosorrilha/812787c01b65fde6dec870ab97212abd ,
+    which is easily convertible to Python 3. These classes can be passed in as
+    handler_class and server_class arguments.
+    """
+    global HTTP_SERVER
+
+    if index_path in (None, ''):
+        # find all t1-1.html files
+        index_files = {p.name: p for p in pathlib.Path('.').rglob('t1-1.html')}
+
+        # No web log, bail.
+        if len(index_files) == 0:
+            LOG.info('No weblog detected')
+            return
+
+        # sort files by date, newest first
+        by_date = sorted(pathlib.Path('.').rglob('t1-1.html'),
+                         key=os.path.getmtime,
+                         reverse=True)
+        LOG.info('Found weblogs at:%s', ''.join([f'\n\t{p}' for p in by_date]))
+
+        if len(index_files) > 1:
+            LOG.info('Multiple web logs detected. Selecting most recent version')
+
+        index_path = by_date[0]
+
+    if isinstance(index_path, str):
+        index_path = pathlib.Path(index_path)
+
+    with WEBLOG_LOCK:
+        if HTTP_SERVER is None:
+            httpd = None
+            # find first available port in range 30000-32768
+            port = 30000
+            while httpd is None and port < 32768:
+                server_address = (bind, port)
+                try:
+                    httpd = server_class(server_address, handler_class)
+                except OSError as e:
+                    # Errno 48 = port already taken
+                    if e.errno == 48:
+                        LOG.debug('Port %s already in use. Selecting a different port...', port)
+                        port += 1
+                    else:
+                        raise
+
+            if httpd is None:
+                LOG.error('Could not start web server. All ports in use')
+                return
+
+            sa = httpd.socket.getsockname()
+            serve_message = 'Serving web log on {host} port {port} (http://{host}:{port}/) ...'
+            LOG.info(serve_message.format(host=sa[0], port=sa[1]))
+
+            thread = threading.Thread(target=httpd.serve_forever)
+            thread.daemon = True
+            thread.start()
+
+            HTTP_SERVER = httpd
+
+        else:
+            sa = HTTP_SERVER.socket.getsockname()
+            LOG.info('Using existing HTTP server at %s port %s ...', sa[0], sa[1])
+
+    atexit.register(stop_weblog)
+
+    sa = HTTP_SERVER.socket.getsockname()
+    url = 'http://{}:{}/{}'.format(sa[0], sa[1], index_path)
+    LOG.info('Opening {}'.format(url))
+    webbrowser.open(url)
+
+
+def stop_weblog():
+    global HTTP_SERVER
+    with WEBLOG_LOCK:
+
+        if HTTP_SERVER is not None:
+            sa = HTTP_SERVER.socket.getsockname()
+
+            HTTP_SERVER.shutdown()
+
+            serve_message = "HTTP server on {host} port {port} shut down"
+            LOG.info(serve_message.format(host=sa[0], port=sa[1]))
+            HTTP_SERVER = None
 
 
 #def initcli():
