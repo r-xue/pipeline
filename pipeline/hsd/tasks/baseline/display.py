@@ -357,7 +357,8 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
         ymin = dec0
         ymax = ny * scale_dec + ymin
 
-        marker_size = int(300.0 / (max(nx, ny * 1.414) * num_panel_h) + 1.0)
+        # marker size will be calculated after axes is defined
+        # marker_size = int(300.0 / (max(nx, ny * 1.414) * num_panel_h) + 1.0)
         tick_size = int(6 + (1 // num_panel_h) * 2)
 
         # direction reference
@@ -392,6 +393,9 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
 
             for icluster in clusters_to_plot:
                 pl.gcf().sca(axes_list[icluster])
+
+                # calculate the optimum marker_size for axes
+                marker_size = self.__marker_size( axes_list[icluster], nx, ny )
 
                 xdata = []
                 ydata = []
@@ -452,6 +456,15 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
             plot = self._create_plot(plotfile, 'clustering_%s'%(mode),
                                      'R.A.', 'Dec.')
             yield plot
+
+    def __marker_size( self, axes, nx, ny, tile_gap=0.0 ):
+        axes_bbox = axes.get_position()
+        fig_width = pl.gcf().get_figwidth()
+        ppi = 72 # constant for "Points per Inch"
+        axes_width = (axes_bbox.x1 - axes_bbox.x0 ) * fig_width * ppi
+        marker_size = axes_width / (max(nx, ny)*(1.0+tile_gap))
+
+        return marker_size
 
     def __stages(self):
         for key in self.flag_digits.keys():
