@@ -209,13 +209,56 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
         repBaselineLength, min_diameter = self.calc_percentile_baseline_length(75.)
         LOG.info('autobox heuristic: Representative baseline length is %.1f meter' % repBaselineLength)
 
+        baselineThreshold = 400
+
         # PIPE-307
-        if min_diameter == 12.0 and repBaselineLength > 300:
+        if min_diameter == 12.0 and repBaselineLength > baselineThreshold:
             fastnoise = True
         else:
             fastnoise = False
 
-        if ('TARGET' in intent) or ('CHECK' in intent):
+        if 'TARGET' in intent:
+            if min_diameter == 12.0:
+                if repBaselineLength < 300:
+                    sidelobethreshold = 2.0
+                    noisethreshold = 4.25
+                    lownoisethreshold = 1.5
+                    minbeamfrac = 0.3
+                    dogrowprune = True
+                    minpercentchange = 1.0
+
+                    if specmode == 'cube':
+                        negativethreshold = 15.0
+                        growiterations = 50
+                    else:
+                        negativethreshold = 0.0
+                        growiterations = 75
+                else:
+                    if repBaselineLength < baselineThreshold:
+                        sidelobethreshold = 2.0
+                    else:
+                        sidelobethreshold = 2.5  # was 3.0
+                    noisethreshold = 5.0
+                    lownoisethreshold = 1.5
+                    minbeamfrac = 0.3
+                    dogrowprune = True
+                    minpercentchange = 1.0
+                    if specmode == 'cube':
+                        negativethreshold = 7.0
+                        growiterations = 50
+                    else:
+                        negativethreshold = 0.0
+                        growiterations = 75
+            elif min_diameter == 7.0:
+                sidelobethreshold = 1.25
+                noisethreshold = 5.0
+                lownoisethreshold = 2.0
+                minbeamfrac = 0.1
+                growiterations = 75
+                negativethreshold = 0.0
+                dogrowprune = True
+                minpercentchange = 1.0
+        elif 'CHECK' in intent:
             if min_diameter == 12.0:
                 if repBaselineLength < 300:
                     sidelobethreshold = 2.0
