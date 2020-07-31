@@ -548,6 +548,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             axes = pl.subplot(self.gs_top[:,:])
             axes.cla()
             axes.xaxis.get_major_formatter().set_useOffset(False)
+            axes.yaxis.get_major_formatter().set_useOffset(False)
             pl.xlabel('Frequency(GHz)', size=(self.ticksize+1))
             pl.ylabel('Intensity(%s)'%(self.brightnessunit), size=(self.ticksize+1))
             pl.xticks(size=self.ticksize)

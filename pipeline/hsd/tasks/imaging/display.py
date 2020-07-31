@@ -1154,6 +1154,7 @@ class SpectralMapAxesManager(MapAxesManagerBase):
             a.xaxis.get_major_formatter().set_useOffset(False)
             a.xaxis.set_major_locator(self.locator)
             a.yaxis.set_label_coords(-0.22, 0.5)
+            a.yaxis.get_major_formatter().set_useOffset(False)
             a.title.set_y(0.95)
             a.title.set_size(self.ticksize)
             pl.ylabel('Intensity (%s)'%(self.brightnessunit), size=self.ticksize)
