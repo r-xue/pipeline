@@ -39,14 +39,14 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
         self.xrotation = xrotation
         self.yrotation = yrotation
         self.ticksize = ticksize
-
         self._legend = None
         self._axes = None
-
+        self.legend_y = 0.85
     @property
     def axes_legend(self):
         if self._legend is None:
-            self._legend = pl.axes([0.0, 0.85, 1.0, 0.15])
+            # self._legend = pl.axes([0.0, 0.85, 1.0, 0.15])
+            self._legend = pl.axes([0.0, self.legend_y, 1.0, 1.0-self.legend_y])
             self._legend.set_axis_off()
 
         return self._legend
@@ -61,41 +61,99 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
     def __axes_list(self):
         for icluster in self.clusters_to_plot:
             loc = self.clusters_to_plot.index(icluster)
-            x = loc % self.nh
-            y = int(loc // self.nh)
-            x1 = 1.0 / float(self.nh)
-            if x == 0:
-                x0 = x1 * (x + 0.1)
+            ix = loc % self.nh
+            iy = int(loc // self.nh)
+            if self.nv > 3:
+                labelsize = self.ticksize - 1
+                titlesize = self.ticksize  
+            elif self.nh > 3:
+                labelsize = self.ticksize
+                titlesize = self.ticksize  
             else:
-                #x0 = x1 * (x + 0.15)
-                x0 = x1 * (x + 0.1)
-            x1 *= 0.8
-            y1 = 0.8 / float(self.nv)
-            y0 = y1 * (self.nv - y - 1 + 0.3)
-            if self.nv > 2:
-                y1 *= 0.5
-            else:
-                y1 *= 0.6
+                labelsize = self.ticksize
+                titlesize = self.ticksize + 1 
 
+            ( x0, y0, x1, y1, tpos_x, tpos_y ) = self.__calc_axes( pl.gcf(), labelsize, titlesize, ix, iy )
             axes = pl.axes([x0, y0, x1, y1])
+
             # 2008/9/20 DEC Effect
             axes.set_aspect(self.aspect_ratio)
             #axes.set_aspect('equal')
             xlabel, ylabel = self.get_axes_labels()
-            pl.xlabel(xlabel, size=self.ticksize)
-            pl.ylabel(ylabel, size=self.ticksize)
+            # fold ylabel if there are many panels
+            if self.nv > 3:
+                ylabel = ylabel.replace( '(', '\n(', 1 )
+
+            axes.set_xlabel( xlabel, size=labelsize, labelpad=2)
+            axes.set_ylabel( ylabel, size=labelsize, labelpad=2)
             axes.xaxis.set_major_formatter(self.xformatter)
             axes.yaxis.set_major_formatter(self.yformatter)
             axes.xaxis.set_major_locator(self.xlocator)
             axes.yaxis.set_major_locator(self.ylocator)
+            axes.tick_params( axis='x', pad=1, labelrotation=self.xrotation, labelsize=labelsize, length=self.ticksize/2 )
+            axes.tick_params( axis='y', pad=1, labelrotation=self.yrotation, labelsize=labelsize, length=self.ticksize/2 )
             xlabels = axes.get_xticklabels()
-            pl.setp(xlabels, 'rotation', self.xrotation, fontsize=self.ticksize)
             ylabels = axes.get_yticklabels()
-            pl.setp(ylabels, 'rotation', self.yrotation, fontsize=self.ticksize)
-            pl.xticks(size=self.ticksize)
-            pl.yticks(size=self.ticksize)
 
-            yield icluster, axes
+            yield icluster, axes, tpos_x, tpos_y
+
+    def __calc_axes( self, fig, labelsize, titlesize, ix, iy ):
+        # unit conversion constant for points->inch
+        ppi = 72
+        # padding between panels (unit: points)
+        ( px, py ) = ( 7, 14 )
+
+        # label extent 
+        label_extent = 0.015
+
+        # axes size limit (unit: points)
+        limit = 200
+           
+        # figure size (unit: points)
+        fx = fig.get_figwidth() * ppi
+        fy = fig.get_figheight() * ppi
+        
+        # margins at figure edge
+        mx = fx * 0.01
+        my1 = fy * 0.00
+        my2 = fy * 0.08
+        
+        # label extents (unit: points)
+        lx = fx * label_extent * labelsize
+        ly = fy * label_extent * labelsize
+        
+        # panel boundary max including ticks and labels
+        max_x = ( fx - mx*2 - px*(self.nh-1) ) / self.nh 
+        max_y = ( fy * self.legend_y - my1-my2 - py*(self.nv-1)) / self.nv
+        
+        # limit the size
+        if max_x > limit and max_y - ly*2 > limit:
+            max_x = limit
+            max_y = limit
+                
+        # extent and offset of plot area
+        extent_x = max_x * self.nh + px * (self.nh - 1)
+        extent_y = max_y * self.nv + py * (self.nv - 1)
+        offset_x = ( fx - extent_x ) / 2
+        offset_y = ( fy*self.legend_y - extent_y ) / 2
+        
+        # calculate axes parameters
+        ax = max_x - lx
+        ay = max_y - 1.5*titlesize - ly
+        
+        x0 = ((max_x+px) * ix + lx + mx +offset_x) / fx
+        x1 = ax / fx
+        y0 = ((max_y+py) * (self.nv-iy-1) + ly + my1 + offset_y) / fy 
+        y1 = ay / fy 
+        
+        # kind of fudge to shift everything a bit to the left
+        x0 = x0 - ax*0.15/fx
+        
+        # relative position of the title
+        tpos_x = (ax-lx)/(2*ax)
+        tpos_y = titlesize*2/ay
+        
+        return x0, y0, x1, y1, tpos_x, tpos_y
 
 
 class ClusterDisplay(object):
@@ -296,11 +354,17 @@ class ClusterPropertyDisplay(ClusterDisplayWorker):
         
 
 class ClusterValidationDisplay(ClusterDisplayWorker):
-    Description = {
-        'detection': 'Clustering Analysis at Detection stage\n\nYellow Square: Single spectrum is detected in the grid\nCyan Square: More than one spectra are detected in the grid\n',
-        'validation': 'Clustering Analysis at Validation stage\n\nValidation by the rate (Number of clustering member [Nmember] v.s. Number of total spectra belong to the Grid [Nspectra])\n Blue Square: Validated: Nmember > ${valid} x Nspectra\nCyan Square: Marginally validated: Nmember > ${marginal} x Nspectra\nYellow Square: Questionable: Nmember > ${questionable} x Nspectrum\n',
-        'smoothing': 'Clustering Analysis at Smoothing stage\n\nBlue Square: Passed continuity check\nCyan Square: Border\nYellow Square: Questionable\n',
-        'final': 'Clustering Analysis at Final stage\n\nGreen Square: Final Grid where the line protection channels are calculated and applied to the baseline subtraction\nBlue Square: Final Grid where the calculated line protection channels are applied to the baseline subtraction\n\nIsolated Grids are eliminated.\n'
+    Description1 = {
+        'detection': 'Clustering Analysis at Detection stage',
+        'validation': 'Clustering Analysis at Validation stage',
+        'smoothing': 'Clustering Analysis at Smoothing stage',
+        'final': 'Clustering Analysis at Final stage'
+    }
+    Description2 = {
+        'detection': 'Single spectrum is detected in the grid\nCyan Square: More than one spectra are detected in the grid\n',
+        'validation': 'Validation by the rate (Number of clustering member [Nmember] v.s. Number of total spectra belong to the Grid [Nspectra])\n Blue Square: Validated: Nmember > ${valid} x Nspectra\nCyan Square: Marginally validated: Nmember > ${marginal} x Nspectra\nYellow Square: Questionable: Nmember > ${questionable} x Nspectrum\n',
+        'smoothing': 'Blue Square: Passed continuity check\nCyan Square: Border\nYellow Square: Questionable\n',
+        'final': 'Green Square: Final Grid where the line protection channels are calculated and applied to the baseline subtraction\nBlue Square: Final Grid where the calculated line protection channels are applied to the baseline subtraction\n\nIsolated Grids are eliminated.\n'
     }
 
     def __init__( self, context, group_id, iteration, cluster, flag_digits, vis, spw, field, antenna, lines, stage_dir ):
@@ -337,7 +401,9 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
             return None
 
         num_panel_h = int(math.sqrt(num_cluster - 0.1)) + 1
-        num_panel_v = num_panel_h
+        num_panel_v = int((num_cluster-0.1) // num_panel_h) + 1
+
+        # num_panel_v = num_panel_h
         ra0 = self.cluster['grid']['ra_min']
         dec0 = self.cluster['grid']['dec_min']
         scale_ra = self.cluster['grid']['grid_ra']
@@ -359,7 +425,8 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
 
         # marker size will be calculated after axes is defined
         # marker_size = int(300.0 / (max(nx, ny * 1.414) * num_panel_h) + 1.0)
-        tick_size = int(6 + (1 // num_panel_h) * 2)
+        tick_size = 6 + (1 // num_panel_h) * 2
+        # tick_size = int(6 + (1 // num_panel_h) * 2)
 
         # direction reference
         reference_ms = self.context.observing_run.measurement_sets[0]
@@ -385,10 +452,13 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
                                                     DECrotation,
                                                     tick_size)
         axes_manager.direction_reference = direction_reference
-        axes_list = dict(axes_manager.axes_list)
+        #axes_list = dict(axes_manager.axes_list)
+        axes_db = axes_manager.axes_list
+        axes_list = { k: v for ( k, v, x, y ) in axes_db }
+        title_pos = { k: [x, y] for ( k, v, x, y ) in axes_db }
         axes_legend = axes_manager.axes_legend
 
-        for (mode, data, threshold, description) in self.__stages():
+        for (mode, data, threshold, description1, description2) in self.__stages():
             plot_objects = []
 
             for icluster in clusters_to_plot:
@@ -413,8 +483,24 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
                 # Convert Channel to Frequency and Velocity
                 #ichan = self.lines[icluster][0] + 0.5
                 (frequency, width) = self.__line_property(icluster)
-                pl.title('Cluster%s: Center=%.4f GHz Width=%.1f km/s' %
-                         (icluster, frequency, width), fontsize=tick_size+1)
+                
+                # title_x = xmin + ( xmax-xmin ) * title_pos[icluster][0]
+                title_x = xmax - ( xmax-xmin ) * title_pos[icluster][0]
+                title_y = ymax + ( ymax-ymin ) * title_pos[icluster][1]
+
+                axes_list[icluster].text( title_x, title_y, 
+                                          r"$f_\mathrm{{center}}$={:.4f} GHz $\Delta v$={:.1f} km/s".format(frequency, width), 
+                                          fontsize=tick_size+1,
+                                          horizontalalignment='center',
+                         verticalalignment='top' )
+                axes_list[icluster].text( title_x, title_y, 
+                                          "Cluster {}".format(icluster),
+                                          fontsize=tick_size+1,
+                                          horizontalalignment='center',
+                                          verticalalignment='bottom' )
+
+                #pl.title('Cluster%s: Center=%.4f GHz Width=%.1f km/s' %
+                #         (icluster, frequency, width), fontsize=tick_size+1)
                 if self.lines[icluster][2] == False and mode == 'final':
                     if num_panel_h > 2:
                         _tick_size = tick_size
@@ -437,11 +523,17 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
 
                 # Legends
                 pl.gcf().sca(axes_legend)
-                msg = description + scale_msg
-                plot_objects.append(
-                    pl.text(0.5, 0.5, msg, horizontalalignment='center', verticalalignment='center', size=8)
-                    )
-
+                #msg = description + scale_msg
+                plot_objects.append( 
+                    pl.text( 0.5, 0.85, description1, 
+                             horizontalalignment='center', 
+                             verticalalignment='baseline', size=8 )
+                )
+                plot_objects.append( 
+                    pl.text( 0.5, 0.0, description2+scale_msg, 
+                             horizontalalignment='center', 
+                             verticalalignment='baseline', size=8 )
+                )
             if ShowPlot:
                 pl.draw()
 
@@ -475,16 +567,17 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
                 flag = ( _flag // _digit) % 10
                 LOG.debug('flag=%s' % flag)
                 threshold = self.cluster[key+'_threshold']
-                desc = self.Description[key]
+                desc1 = self.Description1[key]
+                desc2 = self.Description2[key]
                 if key == 'validation':
-                    template = string.Template(desc)
+                    template = string.Template(desc2)
                     valid = '%.1f' % (threshold[0])
                     marginal = '%.1f' % (threshold[1])
                     questionable = '%.1f' % (threshold[2])
-                    desc = template.safe_substitute(valid=valid,
+                    desc2 = template.safe_substitute(valid=valid,
                                                     marginal=marginal,
                                                     questionable=questionable)
-                yield (key, flag, threshold, desc)
+                yield (key, flag, threshold, desc1, desc2)
 
     def __line_property(self, icluster):
         reduction_group = self.context.observing_run.ms_reduction_group[self.group_id]
