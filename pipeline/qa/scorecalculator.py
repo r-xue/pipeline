@@ -2886,7 +2886,7 @@ def score_fluxservice(result):
         return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
 
 
-def score_mom8_fc_image(mom8_fc_name, peak_snr, image_chanScaled_MAD, outlier_threshold, n_pixels, n_outlier_pixels):
+def score_mom8_fc_image(mom8_fc_name, peak_snr, image_chanScaled_MAD, outlier_threshold, n_pixels, n_outlier_pixels, is_eph_obj=False):
     """
     Check the MOM8 FC image for outliers above a given SNR threshold. The score
     can vary between 0.33 and 1.0 depending on the fraction of outlier pixels.
@@ -2897,6 +2897,22 @@ def score_mom8_fc_image(mom8_fc_name, peak_snr, image_chanScaled_MAD, outlier_th
         info = image.miscinfo()
         field = info.get('field')
         spw = info.get('spw')
+
+    # Do not yet analyze the MOM8 FC image for ephemeris sources due to
+    # missing LSRK to REST frame conversion. Set the score to a fixed value
+    # of 0.89 (PIPE-704). To be revised when CAS-12012 is implemented.
+    if is_eph_obj:
+        LOG.info('The MOM0 FC and MOM8 FC images for ephemeris source {:s} may be in error due to LSRK to REST translation issues for the Findcont Channels. If the source has real line emission check results carefully. The MOM8 FC score has been fixed to 0.89 without analyzing the actual image.'.format(field))
+        score = 0.89
+        longmsg = 'MOM8 FC score fixed to 0.89 due to LSRK to REST translation issues for the Findcont Channels.'
+        shortmsg = 'MOM8 FC score fixed to 0.89'
+        weblog_location = pqa.WebLogLocation.ACCORDION
+
+        origin = pqa.QAOrigin(metric_name='score_mom8_fc_image',
+                              metric_score='Manually fixed value',
+                              metric_units='None')
+
+        return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, weblog_location=weblog_location)
 
     if peak_snr <= outlier_threshold:
         score = 1.0
