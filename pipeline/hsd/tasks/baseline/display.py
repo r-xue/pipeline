@@ -102,12 +102,14 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
         ppi = 72
         # padding between panels (unit: points)
         ( px, py ) = ( 7, 14 )
+        # title vertical position
+        title_v = 1.7
 
         # label extent 
         label_extent = 0.015
 
         # axes size limit (unit: points)
-        limit = 200
+        limit = 240
            
         # figure size (unit: points)
         fx = fig.get_figwidth() * ppi
@@ -139,7 +141,7 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
         
         # calculate axes parameters
         ax = max_x - lx
-        ay = max_y - 1.5*titlesize - ly
+        ay = max_y - title_v*titlesize - ly
         
         x0 = ((max_x+px) * ix + lx + mx +offset_x) / fx
         x1 = ax / fx
@@ -148,10 +150,17 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
         
         # kind of fudge to shift everything a bit to the left
         x0 = x0 - ax*0.15/fx
-        
+
+        # override the horizontal position if only one cluster
+        if self.nh == 1:
+            x0 = 0.5 - x1/2.0
+
         # relative position of the title
-        tpos_x = (ax-lx)/(2*ax)
-        tpos_y = titlesize*2/ay
+        if self.nh < 3:
+            tpos_x = 0.5            # title at axes center
+        else:
+            tpos_x = (ax-lx)/(2*ax) # title at panel center
+        tpos_y = titlesize * title_v / ay
         
         return x0, y0, x1, y1, tpos_x, tpos_y
 
@@ -489,15 +498,15 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
                 title_y = ymax + ( ymax-ymin ) * title_pos[icluster][1]
 
                 axes_list[icluster].text( title_x, title_y, 
-                                          r"$f_\mathrm{{center}}$={:.4f} GHz $\Delta v$={:.1f} km/s".format(frequency, width), 
-                                          fontsize=tick_size+1,
-                                          horizontalalignment='center',
-                         verticalalignment='top' )
-                axes_list[icluster].text( title_x, title_y, 
                                           "Cluster {}".format(icluster),
                                           fontsize=tick_size+1,
                                           horizontalalignment='center',
                                           verticalalignment='bottom' )
+                axes_list[icluster].text( title_x, title_y, 
+                                          r"$f_\mathrm{{center}}$={:.4f} GHz $\Delta v$={:.1f} km/s".format(frequency, width), 
+                                          fontsize=tick_size+1,
+                                          horizontalalignment='center',
+                                          verticalalignment='top' )
 
                 #pl.title('Cluster%s: Center=%.4f GHz Width=%.1f km/s' %
                 #         (icluster, frequency, width), fontsize=tick_size+1)
@@ -552,10 +561,17 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
     def __marker_size( self, axes, nx, ny, tile_gap=0.0 ):
         axes_bbox = axes.get_position()
         fig_width = pl.gcf().get_figwidth()
+        fig_height = pl.gcf().get_figheight()
         ppi = 72 # constant for "Points per Inch"
-        axes_width = (axes_bbox.x1 - axes_bbox.x0 ) * fig_width * ppi
-        marker_size = axes_width / (max(nx, ny)*(1.0+tile_gap))
 
+        axes_width = (axes_bbox.x1 - axes_bbox.x0 ) * fig_width * ppi
+        axes_height = (axes_bbox.y1 - axes_bbox.y0 ) * fig_height * ppi
+
+        size_h = axes_width  / (nx*(1.0+tile_gap))
+        size_v = axes_height / (ny*(1.0+tile_gap))
+
+        marker_size = min( size_h, size_v ) 
+       
         return marker_size
 
     def __stages(self):
