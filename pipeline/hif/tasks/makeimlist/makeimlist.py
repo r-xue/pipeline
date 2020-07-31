@@ -121,18 +121,38 @@ class MakeImListInputs(vdp.StandardInputs):
         return 'mfs'
 
     def get_spw_hm_cell(self, spwlist):
-        """If possible obtain spwlist specific hm_cell, otherwise return generic
-        value."""
-        mitigated_hm_imsize = self.context.size_mitigation_parameters.get('multi_target_size_mitigation', {}).get(spwlist,{}).get('hm_cell')
-        if mitigated_hm_imsize not in [None, {}]:
-            return mitigated_hm_imsize
+        """If possible obtain spwlist specific hm_cell, otherwise return generic value.
+
+        hif_checkproductsize() task determines the mitigation parameters. It does not know, however, about the
+        set spwlist in the hif_makeimlist call and determines mitigation parameters per band (complete spw set).
+        The band containing the set spwlist is determined by checking whether spwlist is a subset of the band
+        spw list. The mitigation parameters found for the matching band are applied to the set spwlist.
+
+        If no singluar band (spw set) is found that would contain spwlist, then the default hm_cell heuristics is
+        returned.
+
+        TODO: refactor and make hif_checkproductsize() (or a new task) spwlist aware."""
+        mitigated_hm_cell = None
+        multi_target_size_mitigation = self.context.size_mitigation_parameters.get('multi_target_size_mitigation', {})
+        if multi_target_size_mitigation:
+            multi_target_spwlist = [spws for spws in multi_target_size_mitigation.keys() if set(spwlist.split(',')).issubset(set(spws.split(',')))]
+            if len(multi_target_spwlist) == 1:
+                mitigated_hm_cell = multi_target_size_mitigation.get(multi_target_spwlist[0], {}).get('hm_cell')
+        if mitigated_hm_cell not in [None, {}]:
+            return mitigated_hm_cell
         else:
             return self.hm_cell
 
     def get_spw_hm_imsize(self, spwlist):
-        """If possible obtain spwlist specific hm_imsize, otherwise return generic
-        value."""
-        mitigated_hm_imsize = self.context.size_mitigation_parameters.get('multi_target_size_mitigation', {}).get(spwlist,{}).get('hm_imsize')
+        """If possible obtain spwlist specific hm_imsize, otherwise return generic value.
+
+        TODO: refactor and make hif_checkproductsize() (or a new task) spwlist aware."""
+        mitigated_hm_imsize = None
+        multi_target_size_mitigation = self.context.size_mitigation_parameters.get('multi_target_size_mitigation', {})
+        if multi_target_size_mitigation:
+            multi_target_spwlist = [spws for spws in multi_target_size_mitigation.keys() if set(spwlist.split(',')).issubset(set(spws.split(',')))]
+            if len(multi_target_spwlist) == 1:
+                mitigated_hm_imsize = multi_target_size_mitigation.get(multi_target_spwlist[0], {}).get('hm_imsize')
         if mitigated_hm_imsize not in [None, {}]:
             return mitigated_hm_imsize
         else:
