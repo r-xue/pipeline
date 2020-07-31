@@ -20,8 +20,7 @@ ResponseStruct = collections.namedtuple('ResponseStruct', ['response', 'subparam
 
 
 class ALMAJyPerKDatabaseAccessBase(object):
-    #BASE_URL = 'https://asa.alma.cl/science/jy-kelvins'
-    BASE_URL = 'https://2020jul.asa-test.alma.cl/science/jy-kelvins' ### TEMPORAL URL OF TEST ARCHIVE
+    BASE_URL = 'https://asa.alma.cl/science/jy-kelvins'
     ENDPOINT_TYPE = None
 
     @property
