@@ -23,14 +23,14 @@ dsyb = '$^\circ$'
 hsyb = ':'
 msyb = ':'
 
-def Deg2HMS(x, allowance, prec=0):
+def Deg2HMS(x, prec=0):
     """
     Converts an angle in degree to hour angle and returns a list of
     strings of hour, minute, and second values in a specified precision,
     e.g., ['01', '02', '23.4'] for '01:02:23.4'
     """
     # Transform degree to HHMMSS.sss format
-    xx = x % 360 + allowance
+    xx = x % 360
     cqa = casatools.quanta
     angle = cqa.angle(cqa.quantity(xx, 'deg'), prec=prec, form=['time'])[0]
     return angle.split(':')
@@ -43,36 +43,36 @@ def Deg2HMS(x, allowance, prec=0):
 # see also: https://matplotlib.org/3.3.0/api/ticker_api.html#matplotlib.ticker.FuncFormatter
 def HHMM(x, pos=None):
     # HHMM format
-    (h, m, s) = Deg2HMS(x, 1/8.0, prec=6)
+    (h, m, s) = Deg2HMS(x, prec=6)
     return '%s%s%s' % (h, hsyb, m)
 
 
-def __format_hms(x, allowance, prec=0):
-    (h, m, s) = Deg2HMS(x, allowance, prec)
+def __format_hms(x, prec=0):
+    (h, m, s) = Deg2HMS(x, prec)
     return '%s%s%s%s%s' % (h, hsyb, m, msyb, s)
 
 
 def HHMMSS(x, pos=None):
     # HHMMSS format
-    return __format_hms(x, 1/480.0, prec=6)
+    return __format_hms(x, prec=6)
 
 
 def HHMMSSs(x, pos=None):
     # HHMMSS.s format
-    return __format_hms(x, 1/4800.0, prec=7)
+    return __format_hms(x, prec=7)
 
 
 def HHMMSSss(x, pos=None):
     # HHMMSS.ss format
-    return __format_hms(x, 1/48000.0, prec=8)
+    return __format_hms(x, prec=8)
 
 
 def HHMMSSsss(x, pos=None):
     # HHMMSS.sss format
-    return __format_hms(x, 1/480000.0, prec=9)
+    return __format_hms(x, prec=9)
 
 
-def Deg2DMS(x, allowance, prec=0):
+def Deg2DMS(x, prec=0):
     """
     Converts an angle in degree to dms angle (ddmmss.s) and returns a list of
     strings of degree, arcminute, and arcsecond values in a specified precision,
@@ -81,7 +81,7 @@ def Deg2DMS(x, allowance, prec=0):
     """
     # Transform degree to +ddmmss.ss format
     xxx = (x + 90) % 180 - 90
-    xx = abs(xxx) + allowance
+    xx = abs(xxx)
     sign = '-' if xxx < 0 else '+'
     cqa = casatools.quanta
     dms_angle = cqa.angle(cqa.quantity(xx, 'deg'), prec=prec)[0]
@@ -97,12 +97,12 @@ def Deg2DMS(x, allowance, prec=0):
 
 def DDMM(x, pos=None):
     # +DDMM format
-    (d, m, s) = Deg2DMS(x, 1/120.0, prec=6)
+    (d, m, s) = Deg2DMS(x, prec=6)
     return '%s%s%s\'' % (d, dsyb, m)
 
 
-def __format_dms(x, allowance, prec=0):
-    (d, m, s) = Deg2DMS(x, allowance, prec)
+def __format_dms(x, prec=0):
+    (d, m, s) = Deg2DMS(x, prec)
     # format desimal part of arcsec value separately
     xx = s.split('.')
     s = xx[0]
@@ -112,23 +112,16 @@ def __format_dms(x, allowance, prec=0):
 
 def DDMMSS(x, pos=None):
     # +DDMMSS format
-    return __format_dms(x, 1/7200.0, prec=6)
-
+    return __format_dms(x, prec=6)
 
 def DDMMSSs(x, pos=None):
     # +DDMMSS.s format
-    # NOTE: 
-    # s will automatically be rounded off when sstr is 
-    # formed below. Thus no allowance is needed.
-    return __format_dms(x, 0, prec=7)
+    return __format_dms(x, prec=7)
 
 
 def DDMMSSss(x, pos=None):
     # +DDMMSS.ss format
-    # NOTE: 
-    # s will automatically be rounded off when sstr is 
-    # formed below. Thus no allowance is needed.
-    return __format_dms(x, 0, prec=8)
+    return __format_dms(x, prec=8)
 
 
 def XYlabel(span, direction_reference, ofs_coord=False):
