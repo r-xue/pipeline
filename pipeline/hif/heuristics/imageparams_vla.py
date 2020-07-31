@@ -25,7 +25,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
     def uvtaper(self, beam_natural=None, protect_long=None):
         return []
 
-    def uvrange(self):
+    def uvrange(self, field=None, spwspec=None):
         """
         Restrict uvrange in case of very extended emission.
 
@@ -35,25 +35,36 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
         See PIPE-681 and CASR-543.
 
+        :param field:
+        :param spwspec:
         :return: None or string in the form of '> {x}klambda', where
             {x}=0.05*max(baseline)
         """
-        def get_mean_amplitude(vis, uvrange=None, axis='amplitude', spw=None):
+        def get_mean_amplitude(vis, uvrange=None, axis='amplitude', field='', spw=None):
             stat_arg = {'vis': vis, 'uvrange': uvrange, 'axis': axis,
-                        'useflags': True, 'spw': spw}
+                        'useflags': True, 'field':field, 'spw': spw}
             job = casa_tasks.visstat(**stat_arg)
             stats = job.execute(dry_run=False)  # returns stat in meter
 
             # loop through keys to determine average from all spws
-            mean = 0.0
+            mean, n_avg = 0.0, 0.0
             for k, v in stats.items():
-                mean = mean + v['mean']
-
-            return mean / float(len(stats))
+                # Avoid spws with nan mean value (with no data in selected uvrange)
+                if v['mean'] == v['mean']:
+                    mean = mean + v['mean']
+                    n_avg += 1
+            return mean / n_avg
+        #
+        if not field:
+            field = ''
+        if spwspec:
+            spwids = sorted(set(spwspec.split(',')), key=int) # list
+        else:
+            spwids = self.spwids # set
         #
         qa = casatools.quanta
         #
-        LOG.info('Computing uvrange heuristics for spwsids={:s}'.format(','.join([str(spw) for spw in self.spwids])))
+        LOG.info('Computing uvrange heuristics for field="{:s}", spwsids={:s}'.format(field, ','.join([str(spw) for spw in spwids])))
 
         # Can it be that more than one visibility (ms file) is used?
         vis = self.vislist[0]
@@ -64,7 +75,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         light_speed = qa.getvalue(qa.convert(qa.constants('c'), 'm/s'))[0]
         max_mean_freq_Hz = 0.0   # spw mean frequency in the highest frequency spw
         real_spwids = []
-        for spwid in self.spwids:
+        for spwid in spwids:
             real_spwid = self.observing_run.virtual2real_spw_id(spwid, ms)
             spw = ms.get_spectral_window(real_spwid)
             real_spwids.append(real_spwid)
@@ -78,11 +89,11 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         # Check for maximum frequency
         if max_mean_freq_Hz == 0.0:
             LOG.warn("Highest frequency spw and largest baseline cannot be determined for spwids={:s}. "
-                     "Using default uvrange.".format(','.join([str(spw) for spw in self.spwids])))
+                     "Using default uvrange.".format(','.join([str(spw) for spw in spwids])))
             return None
         # Get max baseline
         mean_wave_m = light_speed / max_mean_freq_Hz  # in meter
-        job = casa_tasks.visstat(vis=vis, spw=str(max_freq_spw), axis='uvrange', useflags=True)
+        job = casa_tasks.visstat(vis=vis, field=field, spw=str(max_freq_spw), axis='uvrange', useflags=True)
         uv_stat = job.execute(dry_run=False) # returns stat in meter
         max_bl = uv_stat['DATA_DESC_ID=%s' % max_freq_spw]['max'] / mean_wave_m
 
@@ -91,13 +102,13 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         uvul = 0.05 * max_bl
 
         uvrange_SBL = '{:0.1f}~{:0.1f}klambda'.format(uvll / 1000.0, uvul / 1000.0)
-        mean_SBL = get_mean_amplitude(vis=vis, uvrange=uvrange_SBL, spw=real_spwids_str)
+        mean_SBL = get_mean_amplitude(vis=vis, uvrange=uvrange_SBL, field=field, spw=real_spwids_str)
 
         # Range for  50-55% bin
         uvll = 0.5 * max_bl
         uvul = 0.5 * max_bl + 0.05 * max_bl
         uvrange_MBL = '{:0.1f}~{:0.1f}klambda'.format(uvll / 1000.0, uvul / 1000.0)
-        mean_MBL = get_mean_amplitude(vis=vis, uvrange=uvrange_MBL, spw=real_spwids_str)
+        mean_MBL = get_mean_amplitude(vis=vis, uvrange=uvrange_MBL, field=field, spw=real_spwids_str)
 
         # Compare amplitudes and decide on return value
         meanratio = mean_SBL / mean_MBL
