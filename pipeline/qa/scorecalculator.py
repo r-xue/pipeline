@@ -10,6 +10,7 @@ import math
 import operator
 import os
 from typing import List
+from scipy.special import erf
 
 import numpy as np
 
@@ -43,7 +44,7 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_flagging_view_exists',                      # ALMA specific
            'score_checksources',                              # ALMA specific
            'score_gfluxscale_k_spw',                          # ALMA specific
-           'score_fluxservice'                                # ALMA specific
+           'score_fluxservice',                               # ALMA specific
            'score_file_exists',
            'score_path_exists',
            'score_flags_exist',
@@ -65,7 +66,8 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_ms_model_data_column_present',
            'score_ms_history_entries_present',
            'score_contiguous_session',
-           'score_multiply']
+           'score_multiply',
+           'score_mom8_fc_image']
 
 LOG = logging.get_logger(__name__)
 
@@ -2882,3 +2884,67 @@ def score_fluxservice(result):
                               metric_score=score,
                               metric_units='flux service')
         return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
+
+
+def score_mom8_fc_image(mom8_fc_name, peak_snr, image_chanScaled_MAD, outlier_threshold, n_pixels, n_outlier_pixels, is_eph_obj=False):
+    """
+    Check the MOM8 FC image for outliers above a given SNR threshold. The score
+    can vary between 0.33 and 1.0 depending on the fraction of outlier pixels.
+    """
+
+    outlier_fraction = n_outlier_pixels / n_pixels
+    with casatools.ImageReader(mom8_fc_name) as image:
+        info = image.miscinfo()
+        field = info.get('field')
+        spw = info.get('spw')
+
+    # Do not yet analyze the MOM8 FC image for ephemeris sources due to
+    # missing LSRK to REST frame conversion. Set the score to a fixed value
+    # of 0.89 (PIPE-704). To be revised when CAS-12012 is implemented.
+    if is_eph_obj:
+        LOG.info('The MOM0 FC and MOM8 FC images for ephemeris source {:s} may be in error due to LSRK to REST translation issues for the Findcont Channels. If the source has real line emission check results carefully. The MOM8 FC score has been fixed to 0.89 without analyzing the actual image.'.format(field))
+        score = 0.89
+        longmsg = 'MOM8 FC score fixed to 0.89 due to LSRK to REST translation issues for the Findcont Channels.'
+        shortmsg = 'MOM8 FC score fixed to 0.89'
+        weblog_location = pqa.WebLogLocation.ACCORDION
+
+        origin = pqa.QAOrigin(metric_name='score_mom8_fc_image',
+                              metric_score='Manually fixed value',
+                              metric_units='None')
+
+        return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, weblog_location=weblog_location)
+
+    if peak_snr <= outlier_threshold:
+        score = 1.0
+        longmsg = 'MOM8 FC image for field {:s} spw {:s} has a peak SNR that is below the QA threshold'.format(field, spw)
+        shortmsg = 'MOM8 FC peak SNR below QA threshold'
+        weblog_location = pqa.WebLogLocation.ACCORDION
+    else:
+        LOG.info('Image {:s} has {:d} pixels ({:.2f}%) above a threshold of {:.1f} x channel scaled MAD = {:#.5g}.'.format(os.path.basename(mom8_fc_name),
+                                          n_outlier_pixels,
+                                          outlier_fraction * 100.0,
+                                          outlier_threshold,
+                                          outlier_threshold * image_chanScaled_MAD))
+
+        m8fc_score_min = 0.33
+        m8fc_score_max = 0.90
+        m8fc_metric_scale = 300.0
+        score = m8fc_score_min + 0.5 * (m8fc_score_max - m8fc_score_min) * (1.0 + erf(-np.log(m8fc_metric_scale * outlier_fraction)))
+        if 0.66 <= score <= 0.9 and peak_snr > 1.2 * outlier_threshold and n_outlier_pixels > 8:
+            LOG.info('Modifying MOM8 FC score from {:.2f} to 0.65 due to peak SNR > 6.0 x channel scaled MAD and > 8 outlier pixels.'.format(score))
+            score = 0.65
+
+        if 0.33 <= score < 0.66:
+            longmsg = 'MOM8 FC image for field {:s} spw {:s} indicates that there may be residual line emission in the findcont channels'.format(field, spw)
+            shortmsg = 'MOM8 FC image indicates residual line emission'
+            weblog_location = pqa.WebLogLocation.BANNER
+        else:
+            longmsg = 'MOM8 FC image for field {:s} spw {:s} has a peak SNR that is above the QA threshold'.format(field, spw)
+            shortmsg = 'MOM8 FC peak SNR above QA threshold'
+            weblog_location = pqa.WebLogLocation.ACCORDION
+
+    origin = pqa.QAOrigin(metric_name='score_mom8_fc_image',
+                          metric_score=(peak_snr, outlier_fraction),
+                          metric_units='Peak SNR / Outlier fraction')
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, weblog_location=weblog_location)

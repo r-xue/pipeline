@@ -66,7 +66,7 @@ def plotfilename(image, reportdir):
 class SkyDisplay(object):
     """Class to plot sky images."""
 
-    def plot(self, context, result, reportdir, intent=None, collapseFunction='mean', vmin=None, vmax=None,
+    def plot(self, context, result, reportdir, intent=None, collapseFunction='mean', vmin=None, vmax=None, mom8_fc_peak_snr=None,
              **imshow_args):
         if not result:
             return []
@@ -84,7 +84,7 @@ class SkyDisplay(object):
             ms = None
 
         plotfile, coord_names, field, band = self._plot_panel(context, reportdir, result, collapseFunction=collapseFunction, ms=ms,
-                                                              **imshow_args)
+                                                              mom8_fc_peak_snr=mom8_fc_peak_snr, **imshow_args)
 
         # field names may not be unique, which leads to incorrectly merged
         # plots in the weblog output. As a temporary fix, change to field +
@@ -109,7 +109,7 @@ class SkyDisplay(object):
 
         return plot
 
-    def _plot_panel(self, context, reportdir, result, collapseFunction='mean', ms=None, **imshow_args):
+    def _plot_panel(self, context, reportdir, result, collapseFunction='mean', ms=None, mom8_fc_peak_snr=None, **imshow_args):
         """Method to plot a map."""
 
         plotfile = plotfilename(image=os.path.basename(result), reportdir=reportdir)
@@ -210,9 +210,9 @@ class SkyDisplay(object):
                 yoff = self.plottext(1.05, yoff, '%s: %s' % (coord_names[i], k), 40, mult=0.8)
 
             # if peaksnr is available for the mom8_fc image, include it in the plot
-            if 'mom8_fc' in result and hasattr(context, 'peak_snr'):
+            if 'mom8_fc' in result and mom8_fc_peak_snr is not None:
                 yoff = 0.90
-                self.plottext(1.05, yoff, 'Peak SNR: {:.5f}'.format(context.peak_snr), 40)
+                self.plottext(1.05, yoff, 'Peak SNR: {:.5f}'.format(mom8_fc_peak_snr), 40)
 
             # plot beam
             cqa = casatools.quanta

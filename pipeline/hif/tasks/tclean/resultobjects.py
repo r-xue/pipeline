@@ -28,7 +28,7 @@ class BoxResult(basetask.Results):
 
 class TcleanResult(basetask.Results):
     def __init__(self, vis=None, sourcename=None, intent=None, spw=None, orig_specmode=None, specmode=None,
-                 multiterm=None, plotdir=None, imaging_mode=None, is_per_eb=None):
+                 multiterm=None, plotdir=None, imaging_mode=None, is_per_eb=None, is_eph_obj=None):
         super(TcleanResult, self).__init__()
         self.vis = vis
         self.sourcename = sourcename
@@ -42,6 +42,7 @@ class TcleanResult(basetask.Results):
         self._model = None
         self._flux = None
         self.iterations = collections.defaultdict(dict)
+        self._pblimit_image = 0.2
         self._aggregate_bw = 0.0
         self._eff_ch_bw = 0.0
         self._sensitivity = 0.0
@@ -77,6 +78,7 @@ class TcleanResult(basetask.Results):
         self.cube_all_cont = False
         self.bad_psf_channels = None
         self.is_per_eb = is_per_eb
+        self.is_eph_obj = is_eph_obj
         # Store computed synthesized beams
         self.synthesized_beams = None
 
@@ -188,6 +190,126 @@ class TcleanResult(basetask.Results):
         self.iterations[iter]['mom8_fc'] = image
 
     @property
+    def mom8_fc_image_min(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom8_fc_image_min')
+
+    def set_mom8_fc_image_min(self, iter, image_min):
+        '''
+        Sets image minimum of moment 8 image computed from line-free channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
+        self.iterations[iter]['mom8_fc_image_min'] = image_min
+
+    @property
+    def mom8_fc_image_max(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom8_fc_image_max')
+
+    def set_mom8_fc_image_max(self, iter, image_max):
+        '''
+        Sets image maximum of moment 8 image computed from line-free channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
+        self.iterations[iter]['mom8_fc_image_max'] = image_max
+
+    @property
+    def mom8_fc_image_median(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom8_fc_image_median')
+
+    def set_mom8_fc_image_median(self, iter, image_median):
+        '''
+        Sets image median of moment 8 image computed from line-free channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
+        self.iterations[iter]['mom8_fc_image_median'] = image_median
+
+    @property
+    def mom8_fc_image_mad(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom8_fc_image_mad')
+
+    def set_mom8_fc_image_mad(self, iter, image_mad):
+        '''
+        Sets image MAD of moment 8 image computed from line-free channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
+        self.iterations[iter]['mom8_fc_image_mad'] = image_mad
+
+    @property
+    def mom8_fc_image_sigma(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom8_fc_image_sigma')
+
+    def set_mom8_fc_image_sigma(self, iter, image_sigma):
+        '''
+        Sets image sigma of moment 8 image computed from line-free channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
+        self.iterations[iter]['mom8_fc_image_sigma'] = image_sigma
+
+    @property
+    def mom8_fc_image_chanScaledMAD(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom8_fc_image_chanScaledMAD')
+
+    def set_mom8_fc_image_chanScaledMAD(self, iter, image_chanScaledMAD):
+        '''
+        Sets image channel scaled MAD of moment 8 image computed from line-free channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
+        self.iterations[iter]['mom8_fc_image_chanScaledMAD'] = image_chanScaledMAD
+
+    @property
+    def mom8_fc_peak_snr(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom8_fc_peak_snr')
+
+    def set_mom8_fc_peak_snr(self, iter, peak_snr):
+        '''
+        Sets peak SNR of moment 8 image computed from line-free channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
+        self.iterations[iter]['mom8_fc_peak_snr'] = peak_snr
+
+    @property
+    def mom8_fc_outlier_threshold(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom8_fc_outlier_threshold')
+
+    def set_mom8_fc_outlier_threshold(self, iter, outlier_threshold):
+        '''
+        Sets outlier threshold of moment 8 image computed from line-free channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
+        self.iterations[iter]['mom8_fc_outlier_threshold'] = outlier_threshold
+
+    @property
+    def mom8_fc_n_pixels(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom8_fc_n_pixels')
+
+    def set_mom8_fc_n_pixels(self, iter, n_pixels):
+        '''
+        Sets number of unmasked pixels of moment 8 image computed from line-free channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
+        self.iterations[iter]['mom8_fc_n_pixels'] = n_pixels
+
+    @property
+    def mom8_fc_n_outlier_pixels(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom8_fc_n_outlier_pixels')
+
+    def set_mom8_fc_n_outlier_pixels(self, iter, n_outlier_pixels):
+        '''
+        Sets number of unmasked outlier pixels of moment 8 image computed from line-free channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
+        self.iterations[iter]['mom8_fc_n_outlier_pixels'] = n_outlier_pixels
+
+    @property
     def mom0(self):
         iters = sorted(self.iterations.keys())
         return self.iterations[iters[-1]].get('mom0')
@@ -229,6 +351,13 @@ class TcleanResult(basetask.Results):
 
     def set_residual(self, iter, image):
         self.iterations[iter]['residual'] = image
+
+    @property
+    def pblimit_image(self):
+        return self._pblimit_image
+
+    def set_pblimit_image(self, pblimit_image):
+        self._pblimit_image = pblimit_image
 
     @property
     def aggregate_bw(self):

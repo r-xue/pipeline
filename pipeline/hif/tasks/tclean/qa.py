@@ -80,6 +80,14 @@ class TcleanQAHandler(pqa.QAPlugin):
                 # Add score to pool
                 result.qa.pool[:] = [pqa.QAScore(rms_score, longmsg=longmsg, shortmsg=shortmsg)]
 
+            # MOM8_FC based score
+            if result.mom8_fc is not None and result.mom8_fc_peak_snr is not None:
+                mom8_fc_score = scorecalc.score_mom8_fc_image(result.mom8_fc,
+                                result.mom8_fc_peak_snr, result.mom8_fc_image_chanScaledMAD,
+                                result.mom8_fc_outlier_threshold, result.mom8_fc_n_pixels,
+                                result.mom8_fc_n_outlier_pixels, result.is_eph_obj)
+                result.qa.pool.append(mom8_fc_score)
+
             # Check source score
             #    Be careful about the source name vs field name issue
             if result.intent == 'CHECK' and result.inputs['specmode'] == 'mfs':
@@ -107,7 +115,7 @@ class TcleanQAHandler(pqa.QAPlugin):
                         gfluxscale_err = None
 
                     checkscore, offset, offset_err, beams, beams_err, fitflux, fitflux_err, fitpeak = scorecalc.score_checksources (mses, fieldname, spwid, imagename, rms, gfluxscale, gfluxscale_err)
-                    result.qa.pool.append (checkscore)
+                    result.qa.pool.append(checkscore)
 
                     result.check_source_fit = {'offset': offset, 'offset_err': offset_err, 'beams': beams, 'beams_err': beams_err, 'fitflux': fitflux, 'fitflux_err': fitflux_err, 'fitpeak': fitpeak, 'gfluxscale': gfluxscale, 'gfluxscale_err': gfluxscale_err}
                 except Exception as e:
