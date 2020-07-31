@@ -15,6 +15,14 @@
     <ProcessingCommand>
         <Command xmlns="">hif_mstransform</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">field</Keyword>
+                <Value xmlns="">{{field}}</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">spw</Keyword>
+                <Value xmlns="">{{spw}}</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -34,14 +42,6 @@
             <Parameter>
                 <Keyword xmlns="">specmode</Keyword>
                 <Value xmlns="">cont</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">field</Keyword>
-                <Value xmlns="">{{field}}</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">spw</Keyword>
-                <Value xmlns="">{{spw}}</Value>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
