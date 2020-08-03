@@ -105,6 +105,10 @@ class T2_4MDetailsGFluxscaleRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         """
         d = {}
         for result in results:
+            # PIPE-33: when all antennas are selected on the ampcal, suppress the second set of amp(uvdist;model) plot
+            if result.resantenna == '':
+                continue
+
             plots = self.plots_for_result(context, result, plotter_cls, intents, renderer_cls, ant=result.resantenna,
                                           uvrange=result.uvrange)
             d = utils.dict_merge(d, plots)
