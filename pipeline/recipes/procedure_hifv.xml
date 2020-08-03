@@ -1,5 +1,7 @@
 <ProcessingProcedure>
 
+    <ProcedureTitle>hifv_cal</ProcedureTitle>
+
     <ProcessingCommand>
         <Command xmlns="">hifv_importdata</Command>
         <ParameterSet>

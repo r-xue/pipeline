@@ -1,5 +1,7 @@
 <ProcessingProcedure>
 
+    <ProcedureTitle>hifv_vlassQLIP</ProcedureTitle>
+
     <ProcessingCommand>
         <Command xmlns="">hifv_importdata</Command>
         <ParameterSet>
