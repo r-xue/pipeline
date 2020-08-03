@@ -12,7 +12,7 @@ my $gitbranch=`git rev-parse --abbrev-ref HEAD`;
 chomp($gitbranch);
 my $last_branch_tag="";
 my $last_release_tag="";
-if ($gitbranch eq "master" || $gitbranch =~ "release/"){
+if ($gitbranch eq "main" || $gitbranch eq "master" || $gitbranch =~ "release/"){
     $last_release_tag=get_last_release_tag ($gitbranch);
     $last_branch_tag=$last_release_tag;
 } else {
@@ -88,11 +88,12 @@ sub get_last_tag () {
         # Found one or more matching master/release tags
         last if (scalar @versions >= 1);
     }
+    # There might be more than one matching tag per commit.
+    # This returns whichever is the "greatest".
     my @sorted =
         map { $_->[0] }
         sort { $a->[1] cmp $b->[1] }
         map { [$_, join '', map { sprintf "%8d", $_ } split $delim, $_] }
         @versions;
-
     return($sorted[$#sorted]);
 }
