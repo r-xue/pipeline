@@ -291,12 +291,12 @@ def _get_git_version():
         #print(out)
         releasetag = out.split(" ")[1].strip()
         dirty=""
+        version = releasetag
         if (len(out.split(" ")) == 3):
             #print("Latest commit doesn't have a tag. Adding -dirty flag to version string.")
             dirty="+" + out.split(" ")[2].strip() # "+" denotes local version identifier as described in PEP440
-        print(releasetag)
-       
-        return (releasetag + dirty)
+            version = version + dirty
+        return version
     else: 
         # Retrieve info about current commit.
         try:
@@ -317,7 +317,7 @@ def _get_git_version():
         else:
             version = "{}-{}".format(commit_hash, git_branch)
 
-    return version
+        return version
 
 
 class PipelineBuildPyCommand(build_py):
@@ -362,7 +362,7 @@ setuptools.setup(
     setup_requires=[
         'csscompressor'  # minify CSS
     ],
-    options=dict(egg_info=dict(tag_build='_{}'.format(_get_git_version()))),
+    #options=dict(egg_info=dict(tag_build='_{}'.format(_get_git_version()))),
     packages=packages,
     package_data={'': ['*.css',
                        '*.egg',
