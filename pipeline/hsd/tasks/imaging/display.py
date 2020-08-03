@@ -137,14 +137,11 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
                         for t in tpmap_colorbar.ax.get_yticklabels():
                             newfontsize = t.get_fontsize()*0.5
                             t.set_fontsize(newfontsize)
-#                         #tpmap_colorbar.ax.set_title('[K km/s]')
-#                         tpmap_colorbar.ax.set_title('[%s]'%(self.image.brightnessunit))
-#                         lab = tpmap_colorbar.ax.title
-#                         lab.set_fontsize(newfontsize)
-                        tpmap_colorbar.ax.set_ylabel('[%s]' % self.image.brightnessunit, fontsize=newfontsize)
                     else:
                         tpmap_colorbar.mappable.set_clim((tmin, tmax))
                         tpmap_colorbar.draw_all()
+                    # set_clim and draw_all clears y-label
+                    tpmap_colorbar.ax.set_ylabel('[%s]' % self.image.brightnessunit, fontsize=newfontsize)
 
             # draw beam pattern
             if beam_circle is None:
@@ -277,11 +274,12 @@ class SDMomentMapDisplay(SDImageDisplay):
                         for t in tpmap_colorbar.ax.get_yticklabels():
                             newfontsize = t.get_fontsize()*0.5
                             t.set_fontsize(newfontsize)
-                        #if newfontsize is None: # no ticks in colorbar likely invalid TP map
-                        tpmap_colorbar.ax.set_ylabel('[%s]'%(self.brightnessunit), fontsize=newfontsize)
                     else:
                         tpmap_colorbar.mappable.set_clim((tmin, tmax))
                         tpmap_colorbar.draw_all()
+                    #if newfontsize is None: # no ticks in colorbar likely invalid TP map
+                    # set_clim and draw_all clears y-label
+                    tpmap_colorbar.ax.set_ylabel('[%s]'%(self.brightnessunit), fontsize=newfontsize)
 
             # draw beam pattern
             if beam_circle is None:
@@ -1080,12 +1078,11 @@ class SDRmsMapDisplay(SDImageDisplay):
                         for t in rms_colorbar.ax.get_yticklabels():
                             newfontsize = t.get_fontsize()*0.5
                             t.set_fontsize(newfontsize)
-#                         rms_colorbar.ax.set_title('[%s]' % self.brightnessunit)
-#                         lab = rms_colorbar.ax.title
-                        rms_colorbar.ax.set_ylabel('[%s]' % self.brightnessunit)
                     else:
                         rms_colorbar.mappable.set_clim((rmsmin, rmsmax))
                         rms_colorbar.draw_all()
+                    # set_clim and draw_all clears y-label
+                    rms_colorbar.ax.set_ylabel('[%s]' % self.brightnessunit)
             del rms_map
 
             # draw beam pattern
@@ -1157,6 +1154,7 @@ class SpectralMapAxesManager(MapAxesManagerBase):
             a.xaxis.get_major_formatter().set_useOffset(False)
             a.xaxis.set_major_locator(self.locator)
             a.yaxis.set_label_coords(-0.22, 0.5)
+            a.yaxis.get_major_formatter().set_useOffset(False)
             a.title.set_y(0.95)
             a.title.set_size(self.ticksize)
             pl.ylabel('Intensity (%s)'%(self.brightnessunit), size=self.ticksize)
@@ -1305,7 +1303,7 @@ class SDSpectralMapDisplay(SDImageDisplay):
                         pl.gcf().sca(a)
                         world_x = xrv + (_x - xrp) * xic
                         world_y = yrv + (_y - yrp) * yic
-                        title = '(IF, POL, X, Y) = (%s, %s, %s, %s)\n%s %s' % (self.spw, pol, _x, _y, HHMMSSss(world_x, 0), DDMMSSs(world_y, 0))
+                        title = '(IF, POL, X, Y) = (%s, %s, %s, %s)\n%s %s' % (self.spw, pol, _x, _y, HHMMSSss(world_x), DDMMSSs(world_y))
 #                         if self.num_valid_spectrum[_x][_y][pol] > 0:
                         if mask2d[_x][_y]:
                             plot_objects.extend(
