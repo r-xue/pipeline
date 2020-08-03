@@ -2904,7 +2904,7 @@ def score_mom8_fc_image(mom8_fc_name, peak_snr, image_chanScaled_MAD, outlier_th
     if is_eph_obj:
         LOG.info('The MOM0 FC and MOM8 FC images for ephemeris source {:s} may be in error due to LSRK to REST translation issues for the Findcont Channels. If the source has real line emission check results carefully. The MOM8 FC score has been fixed to 0.89 without analyzing the actual image.'.format(field))
         score = 0.89
-        longmsg = 'MOM8 FC score fixed to 0.89 due to LSRK to REST translation issues for the Findcont Channels.'
+        longmsg = 'MOM8 FC score for field {:s} spw {:s} was fixed to 0.89 due to LSRK to REST translation issues for the Findcont Channels. The peak SNR is {:#.5g}.'.format(field, spw, peak_snr)
         shortmsg = 'MOM8 FC score fixed to 0.89'
         weblog_location = pqa.WebLogLocation.ACCORDION
 
@@ -2916,7 +2916,7 @@ def score_mom8_fc_image(mom8_fc_name, peak_snr, image_chanScaled_MAD, outlier_th
 
     if peak_snr <= outlier_threshold:
         score = 1.0
-        longmsg = 'MOM8 FC image for field {:s} spw {:s} has a peak SNR that is below the QA threshold'.format(field, spw)
+        longmsg = 'MOM8 FC image for field {:s} spw {:s} has a peak SNR of {:#.5g} which is below the QA threshold.'.format(field, spw, peak_snr)
         shortmsg = 'MOM8 FC peak SNR below QA threshold'
         weblog_location = pqa.WebLogLocation.ACCORDION
     else:
@@ -2935,11 +2935,11 @@ def score_mom8_fc_image(mom8_fc_name, peak_snr, image_chanScaled_MAD, outlier_th
             score = 0.65
 
         if 0.33 <= score < 0.66:
-            longmsg = 'MOM8 FC image for field {:s} spw {:s} indicates that there may be residual line emission in the findcont channels'.format(field, spw)
+            longmsg = 'MOM8 FC image for field {:s} spw {:s} with a peak SNR of {:#.5g} indicates that there may be residual line emission in the findcont channels.'.format(field, spw, peak_snr)
             shortmsg = 'MOM8 FC image indicates residual line emission'
-            weblog_location = pqa.WebLogLocation.BANNER
+            weblog_location = pqa.WebLogLocation.UNSET
         else:
-            longmsg = 'MOM8 FC image for field {:s} spw {:s} has a peak SNR that is above the QA threshold'.format(field, spw)
+            longmsg = 'MOM8 FC image for field {:s} spw {:s} has a peak SNR of {:#.5g} which is above the QA threshold.'.format(field, spw, peak_snr)
             shortmsg = 'MOM8 FC peak SNR above QA threshold'
             weblog_location = pqa.WebLogLocation.ACCORDION
 
