@@ -1066,8 +1066,59 @@ var UTILS = (function() {
         $(target).html("<div class=\"page-header\"><h1><span class=\"glyphicon glyphicon-refresh spinning\" style=\"vertical-align:top\"></span> Loading...</h1></div>");
         $(target).load(href, function(response, status, xhr) {
             if (status === "error") {
-                var msg = "Error loading " + href + ":\n";
-                $(target).html(msg + xhr.status + " " + xhr.statusText);
+                let msg =`<h1>Error: cannot load content</h1>
+<p class="lead">Browser security prevents the weblog from displaying the requested content.</p>
+<p>Viewing the web log locally is not possible with your web browser security settings. To view the web log you must
+    serve the web log via HTTP by using <code>h_weblog</code> from inside a CASA session, or relax your web browser 
+    security.</p>
+<h2>Solutions</h2>
+<h3>Recommended: use <code>h_weblog()</code></h3>
+<p>From inside a CASA session, navigate to the root of the untarred weblog directory, <em>e.g.</em>,
+    pipeline-procedure_hifa_calimage, and run <code>h_weblog</code>. This command will serve the web log via HTTP and
+    launch a browser connecting to the web log. The web log URL is also printed to the CASA logger, should you need to
+    navigate to the web log manually. The URL to access is highlighted in the example CASA logger output below.</p>
+<samp>
+<pre>
+CASA <5>: h_weblog()
+2020-07-30 12:57:20     INFO    h_weblog::::casa        ##########################################
+2020-07-30 12:57:20     INFO    h_weblog::::casa        ##### Begin Task: h_weblog           #####
+2020-07-30 12:57:20     INFO    h_weblog::::casa        h_weblog( pipelinemode='automatic', relpath='' )
+2020-07-30 12:57:20     INFO    h_weblog::pipeline::casa        Found weblogs at:
+2020-07-30 12:57:20     INFO    h_weblog::pipeline::casa+               main/pipeline-procedure_hifa_calimage/html/t1-1.html
+2020-07-30 12:57:20     INFO    h_weblog::pipeline::casa        Using existing HTTP server at 127.0.0.1 port 30000 ...
+2020-07-30 12:57:20     INFO    h_weblog::pipeline::casa        Opening <mark>http://127.0.0.1:30000/main/pipeline-procedure_hifa_calimage/html/t1-1.html</mark>
+2020-07-30 12:57:20     INFO    h_weblog::::casa        Result h_weblog: None
+2020-07-30 12:57:20     INFO    h_weblog::::casa        Task h_weblog complete. Start time: 2020-07-30 08:57:19.880720 End time: 2020-07-30 08:57:20.064263
+2020-07-30 12:57:20     INFO    h_weblog::::casa        ##### End Task: h_weblog             #####
+2020-07-30 12:57:20     INFO    h_weblog::::casa        ##########################################
+</pre>
+</samp>
+<p>For security, the web log HTTP server is only accessible from the same computer as the CASA session. To view the web 
+    log from another  computer, forward the port using SSH. For example, to access the web log hosted on a remote
+    machine called <em>remotepc</em>, where the CASA log reports the web log is available at port 30000, execute:</p>
+<samp>
+<pre>
+ssh -L 30000:localhost:30000 remotepc</name>
+</pre>
+</samp>     
+<h3>Alternative: lower browser security</h3>
+<p><strong>These modification lowers your browser security and should be reverted after viewing the weblog!</strong></p>
+<h4>Firefox</h4>
+<p>Navigate to <code>about:config</code> and search for the <code>privacy.file_unique_origin</code> preference. Change
+    the preference value to false.</p>
+<h4>Safari</h4>
+<p>Open Safari preferences, navigate to <em>Advanced</em> tab and check the <em>Show Develop in menu bar</em> option. 
+    From the new <em>Develop</em> menu option now visible at the top of the screen, select <em>Disable Local File 
+    Restriction</em>.</p>
+<h4>Chrome</h4>
+<p>The <code>--disable-web-security</code> and <code>--user-data-dir</code> command line arguments must passed to 
+    Chrome via the command line. For example, on MacOS start Chrome like this:</p>
+<samp>
+<pre>
+/Applications/Chrome.app/Contents/MacOS/Chrome --disable-web-security --user-data-dir=~/tmp
+</pre>
+</samp>`;
+                $(target).html(msg);// + xhr.status + " " + xhr.statusText);
             }
 
             if (status === "success") {
