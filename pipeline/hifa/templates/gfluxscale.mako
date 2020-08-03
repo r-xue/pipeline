@@ -234,7 +234,11 @@ def rx_for_plot(plot):
 		        % for i, plot in enumerate(ampuv_allant_plots[ms][intent]):
 		        	<!--  Select on antenna -->
 		            <%
-		              antplot = ampuv_ant_plots[ms][intent][i]
+                        try:
+                            antplot = ampuv_ant_plots[ms][intent][i]
+                        except KeyError:
+                            # antplot may be skipped if identical to plot. See PIPE-33.
+                            antplot = None
 		            %>
 		            <div class="col-md-3">
 			            % if os.path.exists(plot.thumbnail):
@@ -266,7 +270,7 @@ def rx_for_plot(plot):
 							</div>
 			            % endif
 
-			            % if os.path.exists(antplot.thumbnail):
+			            % if antplot is not None and os.path.exists(antplot.thumbnail):
 			                <div class="thumbnail">
 			                    <a href="${os.path.relpath(antplot.abspath, pcontext.report_dir)}"
 								   title='<div class="pull-left">Baseband ${antplot.parameters["baseband"]} (spw ${antplot.parameters["spw"]}).<br>
