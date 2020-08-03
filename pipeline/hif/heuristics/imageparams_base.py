@@ -1919,7 +1919,7 @@ class ImageParamsHeuristics(object):
     def uvtaper(self, beam_natural=None, protect_long=None):
         return None
 
-    def uvrange(self):
+    def uvrange(self, field=None, spwspec=None):
         return None
 
     def reffreq(self):
