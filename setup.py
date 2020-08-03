@@ -4,6 +4,7 @@ import distutils.log
 import os
 import shutil
 import subprocess
+import sys
 
 import setuptools
 from setuptools.command.build_py import build_py
@@ -20,6 +21,18 @@ def flatten(items):
                 yield sub_x
         else:
             yield x
+
+def str_encode(s):
+    return bytes(s,sys.getdefaultencoding())
+def str_decode(bs):
+    return bs.decode(sys.getdefaultencoding(),"strict")
+def pipe_decode(output):
+    if isinstance(output,bytes) or isinstance(output,bytearray):
+        return str_decode(output)
+    elif isinstance(output,tuple):
+        return (str_decode(output[0]),str_decode(output[1]))
+    else:
+        return ("","")
 
 class MinifyJSCommand(distutils.cmd.Command):
     description = 'Minify the pipeline javascript'
@@ -282,8 +295,8 @@ def _get_git_version():
             #print("Latest commit doesn't have a tag. Adding -dirty flag to version string.")
             dirty="+" + out.split(" ")[2].strip() # "+" denotes local version identifier as described in PEP440
         print(releasetag)
-        (major, minor, patch, feature) = releasetag.split(".")
-        return(int(major), int(minor), int(patch), int(feature), dirty)
+       
+        return (releasetag + dirty)
     else: 
         # Retrieve info about current commit.
         try:
