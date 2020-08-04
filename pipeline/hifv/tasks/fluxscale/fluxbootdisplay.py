@@ -163,9 +163,18 @@ class modelfitSummaryChart(object):
                 maxfreq = np.max(frequencies)
                 m = self.context.observing_run.get_ms(self.result.inputs['vis'])
                 fieldobject = m.get_fields(source)
-                fieldid = str([str(f.id) for f in fieldobject if str(f.id) in self.result.fluxscale_result.keys()][0])
-                spidx = self.result.fluxscale_result[fieldid]['spidx']
-                fitreff = self.result.fluxscale_result[fieldid]['fitRefFreq']
+                if len(self.result.fluxscale_result) == 1:
+                    fieldid = str([str(f.id) for f in fieldobject if str(f.id) in self.result.fluxscale_result[0].keys()][0])
+                    spidx = self.result.fluxscale_result[0][fieldid]['spidx']
+                    fitreff = self.result.fluxscale_result[0][fieldid]['fitRefFreq']
+                else:
+                    for single_fs_result in self.result.fluxscale_result:
+                        try:
+                            fieldid = str([str(f.id) for f in fieldobject if str(f.id) in single_fs_result.keys()][0])
+                            spidx = single_fs_result[fieldid]['spidx']
+                            fitreff = single_fs_result[fieldid]['fitRefFreq']
+                        except Exception as e:
+                            LOG.debug("Field error.")
                 reffreq = fitreff / 1.e9
 
                 freqs = np.linspace(minfreq * 1.e9, maxfreq * 1.e9, 500)

@@ -234,7 +234,8 @@ class Finalcals(basetask.StandardTaskTemplate):
             powerfit_setjy = self._do_powerfitsetjy1(calMs, powerfit_results)
         if self.inputs.context.evla['msinfo'][m.name].fbversion == 'fb2':
             LOG.info("Using power-law fits results from fluxscale and the hifv_fluxboot2 task.")
-            powerfit_setjy = self._do_powerfitsetjy2(calMs)
+            for fs_result in self.inputs.context.evla['msinfo'][m.name].fluxscale_result:
+                powerfit_setjy = self._do_powerfitsetjy2(calMs, fs_result)
 
         phaseshortgaincaltable = tableprefix + str(stage_number) + '_6.' + 'phaseshortgaincal.tbl'
         finalampgaincaltable = tableprefix + str(stage_number) + '_7.' + 'finalampgaincal.tbl'
@@ -817,13 +818,13 @@ class Finalcals(basetask.StandardTaskTemplate):
 
         return True
 
-    def _do_powerfitsetjy2(self, calMs):
+    def _do_powerfitsetjy2(self, calMs, fluxscale_result):
 
         LOG.info("Setting power-law fit in the model column")
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
 
-        fluxscale_result = self.inputs.context.evla['msinfo'][m.name].fluxscale_result
+        # fluxscale_result = self.inputs.context.evla['msinfo'][m.name].fluxscale_result
         dictkeys = list(fluxscale_result.keys())
         keys_to_remove = ['freq', 'spwName', 'spwID']
         dictkeys = [field_id for field_id in dictkeys if field_id not in keys_to_remove]
