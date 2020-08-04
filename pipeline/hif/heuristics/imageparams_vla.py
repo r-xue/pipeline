@@ -1,4 +1,5 @@
 import re
+import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.filenamer as filenamer
@@ -42,19 +43,20 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         """
         def get_mean_amplitude(vis, uvrange=None, axis='amplitude', field='', spw=None):
             stat_arg = {'vis': vis, 'uvrange': uvrange, 'axis': axis,
-                        'useflags': True, 'field':field, 'spw': spw}
+                        'useflags': True, 'field':field, 'spw': spw,
+                        'correlation': 'LL,RR'}
             job = casa_tasks.visstat(**stat_arg)
             stats = job.execute(dry_run=False)  # returns stat in meter
 
-            # loop through keys to determine average from all spws
-            mean, n_avg = 0.0, 0.0
-            for k, v in stats.items():
-                # Avoid spws with nan mean value (with no data in selected uvrange)
-                if v['mean'] == v['mean']:
-                    mean = mean + v['mean']
-                    n_avg += 1
-            return mean / n_avg
-        #
+            # Get means of spectral windows with data in the selected uvrange
+            spws_means = [v['mean'] for (k,v) in stats.items() if np.isfinite(v['mean'])]
+
+            # Determine mean and 95% percentile
+            mean = np.mean(spws_means)
+            percentile_95 = np.percentile(spws_means, 95)
+
+            return (mean, percentile_95)
+
         if not field:
             field = ''
         if spwspec:
@@ -102,21 +104,25 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         uvul = 0.05 * max_bl
 
         uvrange_SBL = '{:0.1f}~{:0.1f}klambda'.format(uvll / 1000.0, uvul / 1000.0)
-        mean_SBL = get_mean_amplitude(vis=vis, uvrange=uvrange_SBL, field=field, spw=real_spwids_str)
+        mean_SBL, p95_SBL = get_mean_amplitude(vis=vis, uvrange=uvrange_SBL, field=field, spw=real_spwids_str)
 
         # Range for  50-55% bin
         uvll = 0.5 * max_bl
         uvul = 0.5 * max_bl + 0.05 * max_bl
         uvrange_MBL = '{:0.1f}~{:0.1f}klambda'.format(uvll / 1000.0, uvul / 1000.0)
-        mean_MBL = get_mean_amplitude(vis=vis, uvrange=uvrange_MBL, field=field, spw=real_spwids_str)
+        mean_MBL, p95_MBL = get_mean_amplitude(vis=vis, uvrange=uvrange_MBL, field=field, spw=real_spwids_str)
 
         # Compare amplitudes and decide on return value
-        meanratio = mean_SBL / mean_MBL
+        ratio = p95_SBL / mean_MBL
 
         # Report results
         LOG.info('Mean amplitude in uvrange bins: {:s} is {:0.2E}Jy, '
-                 '{:s} is {:0.2E}Jy, ratio={:0.2E}'.format(uvrange_SBL, mean_SBL, uvrange_MBL, mean_MBL, meanratio))
-        if meanratio > 2.0:
+                 '{:s} is {:0.2E}Jy'.format(uvrange_SBL, mean_SBL, uvrange_MBL, mean_MBL))
+        LOG.info('95 percentile in uvrange bins: {:s} is {:0.2E}Jy, '
+                 '{:s} is {:0.2E}Jy'.format(uvrange_SBL, p95_SBL, uvrange_MBL, p95_MBL))
+        LOG.info('Ratio between 95 percentile small baseline bin '
+                 'and mean of middle baseline bin is {:0.2E}'.format(ratio))
+        if ratio > 2.0:
             LOG.info('Selecting uvrange>{:0.1f}klambda to avoid very extended emission.'.format(0.05 * max_bl / 1000.0))
             return ">{:0.1f}klambda".format(0.05 * max_bl / 1000.0)
         else:
