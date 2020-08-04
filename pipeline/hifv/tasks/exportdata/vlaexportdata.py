@@ -13,6 +13,7 @@ LOG = infrastructure.get_logger(__name__)
 class VLAExportDataInputs(exportdata.ExportDataInputs):
     gainmap = vdp.VisDependentProperty(default=False)
     exportcalprods = vdp.VisDependentProperty(default=False)
+    imaging_products_only = vdp.VisDependentProperty(default=False)
 
     @exportcalprods.postprocess
     def exportcalprods(self, value):
