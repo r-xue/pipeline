@@ -124,13 +124,13 @@ except:
 
                 ## added for PIPE-488
                 <tr>
-                    <th>n-sigma * initial scaled MAD of residual</th>
+                    <th>${row.initial_nsigma_mad_label}</th>
                     <td>${row.initial_nsigma_mad}</td>
                 </tr>
 
                 ## added for PIPE-488
                 <tr>
-                    <th>n-sigma * final scaled MAD of residual</th>
+                    <th>${row.final_nsigma_mad_label}</th>
                     <td>${row.final_nsigma_mad}</td>
                 </tr>
 

@@ -266,7 +266,38 @@ except:
                         %endfor
                     </tr>
                 %endif
-                <tr>
+                %if image_info[k].nsigma_label is not None:
+                    <tr>
+                        <th>${image_info[k].nsigma_label}</th>
+                        %for k in range(j, min(j+4, field_block_indices[i+1])):
+                            <td style="width:250px;">${image_info[k].nsigma}</td>
+                        %endfor
+                    </tr>
+                %endif
+                %if image_info[k].initial_nsigma_mad_label is not None:
+                    <tr>
+                        <th>${image_info[k].initial_nsigma_mad_label}</th>
+                        %for k in range(j, min(j+4, field_block_indices[i+1])):
+                            <td style="width:250px;">${image_info[k].initial_nsigma_mad}</td>
+                        %endfor
+                    </tr>
+                %endif
+                %if image_info[k].final_nsigma_mad_label is not None:
+                    <tr>
+                        <th>${image_info[k].final_nsigma_mad_label}</th>
+                        %for k in range(j, min(j+4, field_block_indices[i+1])):
+                            <td style="width:250px;">${image_info[k].final_nsigma_mad}</td>
+                        %endfor
+                    </tr>
+                %endif
+                %if image_info[k].vis_amp_ratio_label is not None:
+                    <tr>
+                        <th>${image_info[k].vis_amp_ratio_label}</th>
+                        %for k in range(j, min(j+4, field_block_indices[i+1])):
+                            <td style="width:250px;">${image_info[k].vis_amp_ratio}</td>
+                        %endfor
+                    </tr>
+                %endif                <tr>
                     <th>score</th>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
                         <td style="width:250px;">${image_info[k].score}</td>
