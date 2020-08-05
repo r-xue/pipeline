@@ -42,7 +42,8 @@ class TcleanResult(basetask.Results):
         self._model = None
         self._flux = None
         self.iterations = collections.defaultdict(dict)
-        self._pblimit_image = 0.2
+        #self._pblimit_image = 0.2
+        #self._pblimit_cleanmask = 0.3
         self._aggregate_bw = 0.0
         self._eff_ch_bw = 0.0
         self._sensitivity = 0.0
@@ -358,6 +359,13 @@ class TcleanResult(basetask.Results):
 
     def set_pblimit_image(self, pblimit_image):
         self._pblimit_image = pblimit_image
+
+    @property
+    def pblimit_cleanmask(self):
+        return self._pblimit_cleanmask
+
+    def set_pblimit_cleanmask(self, pblimit_cleanmask):
+        self._pblimit_cleanmask = pblimit_cleanmask
 
     @property
     def aggregate_bw(self):
