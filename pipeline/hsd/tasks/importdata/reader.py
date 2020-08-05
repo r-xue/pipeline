@@ -16,6 +16,7 @@ from pipeline.domain.datatable import OnlineFlagIndex
 from pipeline.hsd.tasks.common import mjd_to_datestring, TableSelector
 
 from ..common import rasterutil
+from ..common import direction_utils as dirutil
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -411,7 +412,7 @@ class MetaDataReader(object):
                         mposition = antenna_domain.position
                         fields = ms.get_fields( field_id = field_id )
                         is_known_eph_obj = fields[0].source.is_known_eph_obj
-                        org_direction = get_reference_direction( source_name, ephem_tables[field_id], is_known_eph_obj, mepoch, mposition, outref )
+                        org_direction = self.get_reference_direction( source_name, ephem_tables[field_id], is_known_eph_obj, mepoch, mposition, outref )
                         org_directions.update( {source_name:org_direction} );
 
         with casatools.TableReader( os.path.join( name, 'FIELD' )) as tb:
@@ -551,7 +552,7 @@ class MetaDataReader(object):
                     Tel[irow] = get_value_in_deg(lat)
 
                     # conversion to J2000
-                    ra, dec = direction_convert(pointing_direction, mepoch, mposition, outframe=outref)
+                    ra, dec = dirutil.direction_convert(pointing_direction, mepoch, mposition, outframe=outref)
                     Tra[irow] = get_value_in_deg(ra)
                     Tdec[irow] = get_value_in_deg(dec)
                 elif ref in [outref]:
@@ -562,7 +563,7 @@ class MetaDataReader(object):
                     Tdec[irow] = get_value_in_deg(lat)
 
                     # conversion to AZELGEO
-                    az, el = direction_convert(pointing_direction, mepoch, mposition, outframe=azelref)
+                    az, el = dirutil.direction_convert(pointing_direction, mepoch, mposition, outframe=azelref)
                     Taz[irow] = get_value_in_deg(az)
                     Tel[irow] = get_value_in_deg(el)
                 else:
@@ -571,12 +572,12 @@ class MetaDataReader(object):
                                                                                                          azelref))
 
                     # conversion to J2000
-                    ra, dec = direction_convert(pointing_direction, mepoch, mposition, outframe=outref)
+                    ra, dec = dirutil.direction_convert(pointing_direction, mepoch, mposition, outframe=outref)
                     Tra[irow] = get_value_in_deg(ra)
                     Tdec[irow] = get_value_in_deg(dec)
 
                     # conversion to AZELGEO
-                    az, el = direction_convert(pointing_direction, mepoch, mposition, outframe=azelref)
+                    az, el = dirutil.direction_convert(pointing_direction, mepoch, mposition, outframe=azelref)
                     Taz[irow] = get_value_in_deg(az)
                     Tel[irow] = get_value_in_deg(el)
 
@@ -596,16 +597,16 @@ class MetaDataReader(object):
                     org_direction = org_directions[source_name]
                     fields = ms.get_fields( field_id = field_id )
                     is_known_eph_obj = fields[0].source.is_known_eph_obj
-                    ref_direction = get_reference_direction( source_name, ephem_tables[field_id], is_known_eph_obj, mepoch, mposition, outref )
+                    ref_direction = self.get_reference_direction( source_name, ephem_tables[field_id], is_known_eph_obj, mepoch, mposition, outref )
                     direction2 = me.measure( pointing_direction, outref )
 
-                    shift_direction = direction_shift( direction2, ref_direction, org_direction )
-                    shift_ra, shift_dec = direction_convert( shift_direction, mepoch, mposition, outframe=outref )
+                    shift_direction = dirutil.direction_shift( direction2, ref_direction, org_direction )
+                    shift_ra, shift_dec = dirutil.direction_convert( shift_direction, mepoch, mposition, outframe=outref )
                     Tshift_ra[irow]  = get_value_in_deg(shift_ra)
                     Tshift_dec[irow] = get_value_in_deg(shift_dec)
 
-                    ofs_direction = direction_offset( direction2, ref_direction )
-                    ofs_ra, ofs_dec = direction_convert( ofs_direction, mepoch, mposition, outframe=outref )
+                    ofs_direction = dirutil.direction_offset( direction2, ref_direction )
+                    ofs_ra, ofs_dec = dirutil.direction_convert( ofs_direction, mepoch, mposition, outframe=outref )
                     Tofs_ra[irow]  = get_value_in_deg(ofs_ra)
                     Tofs_dec[irow] = get_value_in_deg(ofs_dec)
 
@@ -726,82 +727,23 @@ class MetaDataReader(object):
         return 'AZELGEO'
 
 
-def direction_convert(direction, mepoch, mposition, outframe):
-    direction_type = direction['type']
-    assert direction_type == 'direction'
-    inframe = direction['refer']
+    def get_reference_direction( self, source_name, ephem_table, is_known_eph_obj, mepoch, mposition, outframe):
+        me = casatools.measures
 
-    # if outframe is same as input direction reference, just return
-    # direction as it is
-    if outframe == inframe:
-        # return direction
-        return direction['m0'], direction['m1']
-
-    # conversion using measures tool
-    me = casatools.measures
-    me.doframe(mepoch)
-    me.doframe(mposition)
-    out_direction = me.measure(direction, outframe)
-    return out_direction['m0'], out_direction['m1']
-
-
-def get_reference_direction( source_name, ephem_table, is_known_eph_obj, mepoch, mposition, outframe):
-    me = casatools.measures
-    # direction_codes = me.listcodes( me.direction() )
-    # ephemeris_list = direction_codes['extra']
-    # known_ephemeris_list = numpy.delete( ephemeris_list, numpy.where(ephemeris_list=='COMET') )
-
-    if ephem_table != "":
-        me.framecomet( ephem_table )
-        me.doframe(mepoch)
-        me.doframe(mposition)
-        obj_azel = me.measure( me.direction('COMET'), 'AZELGEO' )
-        ref = me.measure( obj_azel, outframe )
-    else:
-        # if source_name.upper() in known_ephemeris_list:
-        if is_known_eph_obj:
+        if ephem_table != "":
+            me.framecomet( ephem_table )
             me.doframe(mepoch)
             me.doframe(mposition)
-            obj_azel = me.measure( me.direction(source_name.upper()), 'AZELGEO' )
+            obj_azel = me.measure( me.direction('COMET'), 'AZELGEO' )
             ref = me.measure( obj_azel, outframe )
         else:
-            raise RuntimeError( "{0} is not registered in known_ephemeris_list".format(source_name) )
+            # if source_name.upper() in known_ephemeris_list:
+            if is_known_eph_obj:
+                me.doframe(mepoch)
+                me.doframe(mposition)
+                obj_azel = me.measure( me.direction(source_name.upper()), 'AZELGEO' )
+                ref = me.measure( obj_azel, outframe )
+            else:
+                raise RuntimeError( "{0} is not registered in known_ephemeris_list".format(source_name) )
 
-    return ref
-
-
-def direction_shift( direction, reference, origin ):
-#def direction_shift( direction, mepoch, mposition, reference, origin ):
-    # check if 'refer's are all identical for each directions
-    if origin['refer'] != reference['refer']:
-        raise RuntimeError( "'refer' of reference and origin should be identical" )
-    if direction['refer'] != reference['refer']:
-        raise RuntimeError( "'refer' of reference and direction should be identical" )
-
-    me = casatools.measures
-    # me.doframe(mepoch)
-    # me.doframe(mposition)
-    offset = me.separation( reference, origin )
-    posang = me.posangle( reference, origin )
-    new_direction = me.shift( direction, offset=offset, pa=posang )
-
-    return new_direction
-
-def direction_offset( direction, reference ):
-#def direction_offset( direction, mepoch, mposition, reference ):
-    # check if 'refer's are all identical for each directions
-    if direction['refer'] != reference['refer']:
-        raise RuntimeError( "'refer' of reference and direction should be identical" )
-
-    me = casatools.measures
-    # me.doframe(mepoch)
-    # me.doframe(mposition)
-    offset = me.separation( reference, direction )
-    posang = me.posangle( reference, direction )
-
-    outref = direction['refer']
-    zero_direction = me.direction( outref, '0.0deg', '0.0deg' )
-    new_direction = me.shift( zero_direction, offset=offset, pa=posang )
-
-    return new_direction
-
+        return ref

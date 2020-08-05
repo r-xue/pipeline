@@ -13,6 +13,7 @@ from ..common import utils
 from ..common import compress
 from ..common import display
 from ..common.display import sd_polmap
+from ..common import direction_utils as dirutil
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 
 _LOG = infrastructure.get_logger(__name__)
@@ -532,7 +533,7 @@ def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table, org_
         ra = numpy.mean(ralist)
         dec = numpy.mean(declist)
         if org_direction is not None:
-            ra, dec = direction_recover( ra, dec, org_direction )
+            ra, dec = dirutil.direction_recover( ra, dec, org_direction )
 
         rowlist[row_index].update(
                 {"RAID": raid, "DECID": decid, "RA": ra, "DEC": dec,
@@ -541,22 +542,6 @@ def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table, org_
                   raid, decid, dataids)
 
     return num_ra, num_dec, num_plane, rowlist
-
-
-def direction_recover( ra, dec, org_direction ):
-    me = casatools.measures
-    qa = casatools.quanta
-
-    direction = me.direction( org_direction['refer'],
-                              str(ra)+'deg', str(dec)+'deg' )
-    zero_direction  = me.direction( org_direction['refer'], '0deg', '0deg' )
-    offset = me.separation( zero_direction, direction )
-    posang = me.posangle( zero_direction, direction )
-    new_direction = me.shift( org_direction, offset=offset, pa=posang )
-    new_ra  = qa.convert( new_direction['m0'], 'deg' )['value']
-    new_dec = qa.convert( new_direction['m1'], 'deg' )['value']
-
-    return new_ra, new_dec
 
 
 # #@utils.profiler

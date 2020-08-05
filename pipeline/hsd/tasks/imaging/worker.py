@@ -17,6 +17,7 @@ from . import resultobjects
 from .. import common
 from ..common import utils
 from ..common import utils as sdutils
+from ..common import direction_utils as dirutil
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -147,7 +148,7 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
         ra = []
         dec = []
         for ra1, dec1 in zip( ra0, dec0 ):
-            ra2, dec2 = direction_recover( ra1, dec1, org_direction )
+            ra2, dec2 = dirutil.direction_recover( ra1, dec1, org_direction )
             ra.append(ra2)
             dec.append(dec2)
     else:
@@ -206,22 +207,6 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
 
     LOG.info('Image pixel size: [nx, ny] = [%s, %s]' % (nx, ny))
     return phasecenter, cellx, celly, nx, ny, org_direction
-
-
-def direction_recover( ra, dec, org_direction ):
-    me = casatools.measures
-    qa = casatools.quanta
-
-    direction = me.direction( org_direction['refer'],
-                              str(ra)+'deg', str(dec)+'deg' )
-    zero_direction  = me.direction( org_direction['refer'], '0deg', '0deg' )
-    offset = me.separation( zero_direction, direction )
-    posang = me.posangle( zero_direction, direction )
-    new_direction = me.shift( org_direction, offset=offset, pa=posang )
-    new_ra  = qa.convert( new_direction['m0'], 'deg' )['value']
-    new_dec = qa.convert( new_direction['m1'], 'deg' )['value']
-
-    return new_ra, new_dec
 
 
 class SDImagingWorkerInputs(vdp.StandardInputs):

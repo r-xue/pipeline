@@ -213,11 +213,11 @@ class SDBaseline(basetask.StandardTaskTemplate):
                 field_id = m.field_id
                 fields = msobj.get_fields( field_id = field_id )
                 source_name = fields[0].source.name
-                if fields[0].source.is_eph_obj or fields[0].source.is_known_eph_obj:
-                    org_direction = fields[0].source.org_direction
-                else:
-                    org_direction = None
                 if source_name not in org_directions_dict:
+                    if fields[0].source.is_eph_obj or fields[0].source.is_known_eph_obj:
+                        org_direction = fields[0].source.org_direction
+                    else:
+                        org_direction = None
                     org_directions_dict.update( {source_name:org_direction} )
                     LOG.info( "registered org_direction[{}]={}".format( source_name, org_direction ) )
 
@@ -319,7 +319,8 @@ class SDBaseline(basetask.StandardTaskTemplate):
                               'lines': detected_lines,
                               'channelmap_range': channelmap_range,
                               'clusters': cluster_info,
-                              'flag_digits': flag_digits })
+                              'flag_digits': flag_digits,
+                              'org_direction': org_direction })
         
         # - end of the loop over reduction group
 
