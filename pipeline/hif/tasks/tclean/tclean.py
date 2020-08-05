@@ -1083,7 +1083,6 @@ class Tclean(cleanbase.CleanBase):
                 flattened_mask_name = None
 
             outlier_threshold = 5.0
-            outlier_threshold = 1.2
 
             # Calculate statistics
             with casatools.ImageReader(mom8fc_name) as image:
