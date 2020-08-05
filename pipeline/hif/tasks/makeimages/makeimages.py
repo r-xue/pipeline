@@ -22,12 +22,15 @@ class MakeImagesInputs(vdp.StandardInputs):
     calcsb = vdp.VisDependentProperty(default=False)
     cleancontranges = vdp.VisDependentProperty(default=False)
     hm_cleaning = vdp.VisDependentProperty(default='rms')
+    hm_cyclefactor = vdp.VisDependentProperty(default=-999.0)
     hm_dogrowprune = vdp.VisDependentProperty(default=True)
     hm_growiterations = vdp.VisDependentProperty(default=-999)
     hm_lownoisethreshold = vdp.VisDependentProperty(default=-999.0)
     hm_masking = vdp.VisDependentProperty(default='auto')
     hm_minbeamfrac = vdp.VisDependentProperty(default=-999.0)
     hm_minpercentchange = vdp.VisDependentProperty(default=-999.0)
+    hm_minpsffraction = vdp.VisDependentProperty(default=-999.0)
+    hm_maxpsffraction = vdp.VisDependentProperty(default=-999.0)
     hm_fastnoise = vdp.VisDependentProperty(default=True)
     hm_nsigma = vdp.VisDependentProperty(default=0.0)
     hm_perchanweightdensity = vdp.VisDependentProperty(default=False)
@@ -56,7 +59,8 @@ class MakeImagesInputs(vdp.StandardInputs):
                  hm_masking=None, hm_sidelobethreshold=None, hm_noisethreshold=None,
                  hm_lownoisethreshold=None, hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None,
                  hm_dogrowprune=None, hm_minpercentchange=None, hm_fastnoise=None, hm_nsigma=None,
-                 hm_perchanweightdensity=None, hm_npixels=None, hm_cleaning=None, tlimit=None, masklimit=None,
+                 hm_perchanweightdensity=None, hm_npixels=None, hm_cyclefactor=None, hm_minpsffraction=None,
+                 hm_maxpsffraction=None, hm_cleaning=None, tlimit=None, masklimit=None,
                  cleancontranges=None, calcsb=None, mosweight=None, overwrite_on_export=None,
                  parallel=None,
                  # Extra parameters
@@ -81,6 +85,9 @@ class MakeImagesInputs(vdp.StandardInputs):
         self.hm_perchanweightdensity = hm_perchanweightdensity
         self.hm_npixels = hm_npixels
         self.hm_cleaning = hm_cleaning
+        self.hm_cyclefactor = hm_cyclefactor
+        self.hm_minpsffraction = hm_minpsffraction
+        self.hm_maxpsffraction = hm_maxpsffraction
         self.tlimit = tlimit
         self.masklimit = masklimit
         self.cleancontranges = cleancontranges
@@ -366,6 +373,19 @@ class CleanTaskFactory(object):
             task_args['mosweight'] = target['mosweight']
         else:
             task_args['mosweight'] = inputs.mosweight
+
+        if inputs.hm_cyclefactor not in (None, -999.0):
+            # The tclean task argument was already called "cyclefactor"
+            # before hm_cyclefactor was exposed in hif_makeimages. To
+            # keep compatibility with hif_editimlist and cleantarget.py
+            # we keep the name now. Could be refactored later.
+            task_args['cyclefactor'] = inputs.hm_cyclefactor
+
+        if inputs.hm_minpsffraction not in (None, -999.0):
+            task_args['hm_minpsffraction'] = inputs.hm_minpsffraction
+
+        if inputs.hm_maxpsffraction not in (None, -999.0):
+            task_args['hm_maxpsffraction'] = inputs.hm_maxpsffraction
 
         return task_args
 
