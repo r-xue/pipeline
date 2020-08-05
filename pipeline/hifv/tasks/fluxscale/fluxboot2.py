@@ -66,7 +66,7 @@ class Fluxboot2Results(basetask.Results):
         if caltable is None:
             caltable = ''
         if fluxscale_result is None:
-            fluxscale_result = {}
+            fluxscale_result = []
 
         super(Fluxboot2Results, self).__init__()
         self.vis = vis
@@ -257,19 +257,34 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
             for i, field in enumerate(field_objects):
                 for band, spwlist in band2spw.items():
-                    append = False
-                    isdir = os.path.isdir(fluxflagtable)
-                    if isdir:
-                        append = True
-                        LOG.info("Appending to existing table: {!s}".format(fluxflagtable))
+                    calibrator_scan_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_scan_select_string
 
-                    gain_solint2 = context.evla['msinfo'][m.name].gain_solint2[band]
-                    LOG.info("Long solint = " + gain_solint2 + " for band {!s}".format(band))
+                    scanlist = [int(scan) for scan in calibrator_scan_select_string.split(',')]
+                    scanids_perband = ','.join([str(scan.id) for scan in m.get_scans(scan_id=scanlist, spw=','.join(spwlist))])
 
-                    self._do_gaincal(context, calMs, fluxflagtable, 'ap', [fluxphase],
-                                     solint=gain_solint2, minsnr=5.0, refAnt=refAnt, field=field.name,
-                                     solnorm=True, append=append, fluxflag=True,
-                                     vlassmode=vlassmode, spw=','.join(spwlist))
+                    calscanslist = list(map(int, scanids_perband.split(',')))
+                    scanobjlist = m.get_scans(scan_id=calscanslist,
+                                              scan_intent=['AMPLITUDE', 'BANDPASS', 'PHASE'])
+                    fieldidlist = []
+                    for scanobj in scanobjlist:
+                        fieldobj, = scanobj.fields
+                        if str(fieldobj.id) not in fieldidlist:
+                            fieldidlist.append(str(fieldobj.id))
+
+                    if str(field.id) in fieldidlist:
+                        append = False
+                        isdir = os.path.isdir(fluxflagtable)
+                        if isdir:
+                            append = True
+                            LOG.info("Appending to existing table: {!s}".format(fluxflagtable))
+
+                        gain_solint2 = context.evla['msinfo'][m.name].gain_solint2[band]
+                        LOG.info("Long solint = " + gain_solint2 + " for band {!s}".format(band))
+
+                        self._do_gaincal(context, calMs, fluxflagtable, 'ap', [fluxphase],
+                                         solint=gain_solint2, minsnr=5.0, refAnt=refAnt, field=field.name,
+                                         solnorm=True, append=append, fluxflag=True,
+                                         vlassmode=vlassmode, spw=','.join(spwlist))
 
             # use flagdata to clip fluxflag.g outside the range 0.9-1.1
             flagjob = casa_tasks.flagdata(vis=fluxflagtable, mode='clip', correlation='ABS_ALL',
@@ -309,17 +324,26 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
         LOG.info("Doing flux density bootstrapping using caltable {!s}.".format(caltable))
         try:
-            fluxscale_result = self._do_fluxscale(context, calMs, caltable)
+            # The fluxscale_result is a list
+            powerfit_results = []
+            weblog_results = []
+            spindex_results = []
+            fluxscale_result = []
+            fluxscale_result_list = self._do_fluxscale(context, calMs, caltable)
             LOG.info("Using fit from fluxscale.")
-            powerfit_results, weblog_results, spindex_results, fluxscale_result = self._do_powerfit(fluxscale_result)
-            setjy_result = self._do_setjy(calMs, fluxscale_result)
+            for single_fs_result in fluxscale_result_list:
+                powerfit_results_single, weblog_results_single, spindex_results_single, single_fs_result = self._do_powerfit(single_fs_result)
+                weblog_results.extend(weblog_results_single)
+                spindex_results.extend(spindex_results_single)
+                fluxscale_result.append(single_fs_result)
+                setjy_result = self._do_setjy(calMs, single_fs_result)
         except Exception as e:
             LOG.warning(str(e))
             LOG.warning("A problem was detected while running fluxscale.  Please review the CASA log.")
             powerfit_results = []
             weblog_results = []
             spindex_results = []
-            fluxscale_result = {}
+            fluxscale_result = []
 
         return self.sources, self.flux_densities, self.spws, weblog_results,\
                spindex_results, caltable, fluxscale_result
@@ -329,29 +353,57 @@ class Fluxboot2(basetask.StandardTaskTemplate):
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         flux_field_select_string = context.evla['msinfo'][m.name].flux_field_select_string
         fluxcalfields = flux_field_select_string
+        fluxcalfieldlist = str.split(fluxcalfields, ',')
 
-        fitorder = self.inputs.fitorder
-        if self.inputs.fitorder == -1:
-            fitorder = self.find_fitorder()
-        elif self.inputs.fitorder > -1:
-            LOG.info("Keyword override:  Using input fitorder={!s}".format(fitorder))
-        elif self.inputs.fitorder < -1:
-            raise Exception
+        phase_field_select_string = context.evla['msinfo'][m.name].phase_field_select_string
+        phasecalfieldlist = str.split(phase_field_select_string, ',')
 
-        task_args = {'vis': calMs,
-                     'caltable': caltable,
-                     'fluxtable': 'fluxgaincalFcal.g',
-                     'reference': [fluxcalfields],
-                     'transfer': [''],
-                     'append': False,
-                     'refspwmap': [-1],
-                     'fitorder': fitorder}
+        calibrator_field_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
+        calfieldlist = str.split(calibrator_field_select_string, ',')
 
-        job = casa_tasks.fluxscale(**task_args)
+        fluxscale_result = []
 
-        return self._executor.execute(job)
+        for field in calfieldlist:
+            fitorder = self.inputs.fitorder
+            spwlist = []
+            if self.inputs.fitorder == -1 and field not in fluxcalfieldlist:
+                for scan in m.get_scans(field=field):
+                    for spw in list(scan.spws):
+                        spwlist.append(spw.id)
 
-    def find_fitorder(self):
+                spwlist = list(np.unique(spwlist))
+                spwlist.sort()
+                spwlist = [str(spwid) for spwid in spwlist]
+
+                fitorder = self.find_fitorder(spwlist)
+            elif self.inputs.fitorder > -1:
+                LOG.info("Keyword override:  Using input fitorder={!s}".format(fitorder))
+            elif self.inputs.fitorder < -1:
+                raise Exception
+
+            if field not in fluxcalfieldlist:
+                task_args = {'vis': calMs,
+                             'caltable': caltable,
+                             'fluxtable': 'fluxgaincalFcal_{!s}.g'.format(field),
+                             'reference': [fluxcalfields],
+                             'transfer': [field],
+                             'append': False,
+                             'refspwmap': [-1],
+                             'fitorder': fitorder}
+
+                job = casa_tasks.fluxscale(**task_args)
+
+                fs_result = self._executor.execute(job)
+
+                fluxscale_result.append(fs_result)
+
+        return fluxscale_result
+
+    def find_fitorder(self, spwlist=[]):
+        """
+        :param spwlist: list of string values for spw ids
+        :return: fitorder
+        """
 
         # if self.inputs.fitorder > -1:
         #     LOG.info("User defined fitorder for fluxscale will be fitorder={!s}.".format(self.inputs.fitorder))
@@ -359,8 +411,12 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         spw2bandall = m.get_vla_spw2band()
-        spws = m.get_spectral_windows()   #List is done per band
-        spwidlist = [spw.id for spw in spws if 'AMPLITUDE' in spw.intents]
+        if spwlist == []:
+            spws = m.get_spectral_windows()   # List is done per band
+            spwidlist = [spw.id for spw in spws if 'AMPLITUDE' in spw.intents]
+        else:
+            spws = m.get_spectral_windows(task_arg=','.join(spwlist))
+            spwidlist = [int(spw) for spw in spwlist]
 
         spw2band = {}
         for key, value in spw2bandall.items():
@@ -557,8 +613,6 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                 logfittedfluxd = np.zeros(len(freqs))
                 for i in range(len(spidx)):
                     logfittedfluxd += spidx[i] * (np.log10(freqs/fitreff)) ** i
-
-                # import pdb; pdb.set_trace()
 
                 fittedfluxd = 10.0 ** logfittedfluxd
 
@@ -885,6 +939,9 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
         calibrator_scan_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_scan_select_string
 
+        scanlist = [int(scan) for scan in calibrator_scan_select_string.split(',')]
+        scanids_perband = ','.join([str(scan.id) for scan in m.get_scans(scan_id=scanlist, spw=spw)])
+
         task_args = {'vis': calMs,
                      'caltable': caltable,
                      'field': field,
@@ -910,7 +967,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
                      'parang': True}
 
         if field == '':
-            calscanslist = list(map(int, calibrator_scan_select_string.split(',')))
+            calscanslist = list(map(int, scanids_perband.split(',')))
             scanobjlist = m.get_scans(scan_id=calscanslist,
                                       scan_intent=['AMPLITUDE', 'BANDPASS', 'POLLEAKAGE', 'POLANGLE',
                                                    'PHASE', 'POLARIZATION', 'CHECK'])
