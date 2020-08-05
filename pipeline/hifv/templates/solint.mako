@@ -12,7 +12,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 % for ms in summary_plots:
 
     <ul>
-        <li>The long solution intervals per band are: <b> ${longsolint[ms]}s</b>.</li>
+        <li>The long solution intervals per band are: <b> ${longsolint[ms]}</b>.</li>
         <li>The short solution intervals per band that are used: <b>${new_gain_solint1[ms]}</b>.</li>
     </ul>
 
