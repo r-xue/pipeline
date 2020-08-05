@@ -59,6 +59,11 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 	<value/>
     </param>
 
+    <param name="imaging_products_only" type="bool">
+	<description>Export science target imaging products only</description>
+	<value>False</value>
+    </param>
+
     <param name="exportmses" type="bool">
 	<shortdescription>Export MeasurementSets</shortdescription>
         <description>Export the final MeasurementSets instead of the final flags,
