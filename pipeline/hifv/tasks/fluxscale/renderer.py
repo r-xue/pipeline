@@ -133,6 +133,10 @@ class T2_4MDetailsSolintRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             for band, value in result.longsolint.items():
                 longsolint_string += '{!s} band: {:6.2f}s    '.format(band, float(value))
 
+            # String type
+            new_gain_solint1[ms] = new_gain_solint1_string
+            longsolint[ms] = longsolint_string
+
         ctx.update({'summary_plots': summary_plots,
                     'testgainsamp_subpages': testgainsamp_subpages,
                     'testgainsphase_subpages': testgainsphase_subpages,
