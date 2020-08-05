@@ -361,7 +361,7 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
         'final': 'Clustering Analysis at Final stage'
     }
     Description2 = {
-        'detection': 'Single spectrum is detected in the grid\nCyan Square: More than one spectra are detected in the grid\n',
+        'detection': 'Yellow Square: Single spectrum is detected in the grid\nCyan Square: More than one spectra are detected in the grid\n',
         'validation': 'Validation by the rate (Number of clustering member [Nmember] v.s. Number of total spectra belong to the Grid [Nspectra])\n Blue Square: Validated: Nmember > ${valid} x Nspectra\nCyan Square: Marginally validated: Nmember > ${marginal} x Nspectra\nYellow Square: Questionable: Nmember > ${questionable} x Nspectrum\n',
         'smoothing': 'Blue Square: Passed continuity check\nCyan Square: Border\nYellow Square: Questionable\n',
         'final': 'Green Square: Final Grid where the line protection channels are calculated and applied to the baseline subtraction\nBlue Square: Final Grid where the calculated line protection channels are applied to the baseline subtraction\n\nIsolated Grids are eliminated.\n'
