@@ -59,7 +59,7 @@ class Targetflag(basetask.StandardTaskTemplate):
         # corrstring = self.inputs.context.evla['msinfo'][m.name].corrstring
         corrstring = m.get_vla_corrstring()
 
-        fielddict = cont_file_to_CASA()
+        fielddict = cont_file_to_CASA(self.inputs.vis, self.inputs.context)
 
         if fielddict != {}:
             LOG.info('cont.dat file present.  Using VLA Spectral Line Heuristics for task targetflag.')
