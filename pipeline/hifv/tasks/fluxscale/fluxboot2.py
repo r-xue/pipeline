@@ -359,7 +359,14 @@ class Fluxboot2(basetask.StandardTaskTemplate):
         phasecalfieldlist = str.split(phase_field_select_string, ',')
 
         calibrator_field_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
-        calfieldlist = str.split(calibrator_field_select_string, ',')
+        calfieldliststrings = str.split(calibrator_field_select_string, ',')
+        calfieldlist = []
+        for field in calfieldliststrings:
+            fieldobj = m.get_fields(field_id=int(field))
+            if 'POINTING' in fieldobj[0].intents or 'SYSTEM_CONFIGURATION' in fieldobj[0].intents:
+                LOG.debug("INTENT not included")
+            else:
+                calfieldlist.append(field)
 
         fluxscale_result = []
 
