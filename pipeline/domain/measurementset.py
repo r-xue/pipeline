@@ -454,7 +454,7 @@ class MeasurementSet(object):
                                'POLARIZATION', 'POLANGLE', 'POLLEAKAGE',
                                'CHECK'}
             return [w for w in spws if w.num_channels not in (1, 4)
-                    and not science_intents.isdisjoint(w.intents)]
+                    and not science_intents.isdisjoint(w.intents) and 'POINTING' not in w.intents]
 
         if self.antenna_array.name == 'NRO':
             science_intents = {'TARGET'}
