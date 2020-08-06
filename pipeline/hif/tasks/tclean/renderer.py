@@ -353,8 +353,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             if 'VLA' == r.imaging_mode:
                 nsigma_label = 'nsigma'
                 row_nsigma = nsigma_final
-                vis_amp_ratio_label = 'vis. amp. ratio 0-5%/50-55%'
-                row_vis_amp_ratio = 12345.  # TODO fill in with a real value
+                vis_amp_ratio_label = 'vis. amp. ratio'
+                _, row_vis_amp_ratio = r.bl_ratio[(field, spw)]
             elif 'ALMA' == r.imaging_mode:
                 nsigma_label = None
                 row_nsigma = None

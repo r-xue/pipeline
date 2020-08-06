@@ -30,6 +30,7 @@ class CleanTarget(dict):
         self['nterms'] = None          # int
         self['robust'] = None          # float
         self['uvrange'] = None         # string / list
+        self['bl_ratio'] = None        # float
         self['uvtaper'] = None         # list
         self['scales'] = None          # list
         self['niter'] = None           # int

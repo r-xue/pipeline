@@ -62,7 +62,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         return []
 
     def uvrange(self, field=None, spwspec=None):
-        return None
+        return None, None
 
     def mask(self):
         return ''

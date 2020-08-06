@@ -555,18 +555,20 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                 # Get field specific uvrange value
                 uvrange = {}
+                bl_ratio = {}
                 for field_intent in field_intent_list:
                     for spwspec in spwlist_local:
                         if inputs.uvrange not in (None, [], ''):
                             uvrange[(field_intent[0], spwspec)] = inputs.uvrange
                         else:
                             try:
-                                uvrange[(field_intent[0], spwspec)] = self.heuristics.uvrange(field=field_intent[0],
-                                                                                              spwspec=spwspec)
+                                (uvrange[(field_intent[0], spwspec)], bl_ratio[(field_intent[0], spwspec)]) = \
+                                    self.heuristics.uvrange(field=field_intent[0], spwspec=spwspec)
                             except Exception as e:
                                 # problem defining uvrange
                                 LOG.warn(e)
                                 pass
+                result.bl_ratio = bl_ratio
 
                 # cell is a list of form [cellx, celly]. If the list has form [cell]
                 # then that means the cell is the same size in x and y. If cell is
@@ -894,6 +896,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 nchan=nchans[(field_intent[0], spwspec)],
                                 robust=robust,
                                 uvrange=uvrange[(field_intent[0], spwspec)],
+                                bl_ratio=bl_ratio[(field_intent[0], spwspec)],
                                 uvtaper=uvtaper,
                                 stokes='I',
                                 heuristics=target_heuristics,
