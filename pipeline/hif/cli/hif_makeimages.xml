@@ -104,6 +104,21 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value>0</value>
   </param>
 
+  <param name="hm_cyclefactor" type="double">
+    <description>Scaling on PSF sidelobe level to compute the minor-cycle stopping threshold</description>
+    <value>-999.0</value>
+  </param>
+
+  <param name="hm_minpsffraction" type="double">
+    <description>PSF fraction that marks the max depth of cleaning in the minor cycle</description>
+    <value>-999.0</value>
+  </param>
+
+  <param name="hm_maxpsffraction" type="double">
+    <description>PSF fraction that marks the minimum depth of cleaning in the minor cycle</description>
+    <value>-999.0</value>
+  </param>
+
   <param name="hm_cleaning" type="string">
     <description>Pipeline cleaning mode </description>
     <value/>

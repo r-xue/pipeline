@@ -114,6 +114,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
                  calcsb=None, cleancontranges=None, parallel=None,
                  # Extra parameters not in the CLI task interface
                  weighting=None, robust=None, uvtaper=None, scales=None, cycleniter=None, cyclefactor=None,
+                 hm_minpsffraction=None, hm_maxpsffraction=None,
                  sensitivity=None, reffreq=None, restfreq=None, conjbeams=None, is_per_eb=None, antenna=None,
                  usepointing=None, mosweight=None, spwsel_all_cont=None, num_all_spws=None, num_good_spws=None,
                  # End of extra parameters
@@ -122,8 +123,9 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
                                            imagename=imagename, antenna=antenna, datacolumn=datacolumn,
                                            intent=intent, field=field, spw=spw, uvrange=uvrange, specmode=specmode,
                                            gridder=gridder, deconvolver=deconvolver, uvtaper=uvtaper, nterms=nterms,
-                                           cycleniter=cycleniter, cyclefactor=cyclefactor, scales=scales,
-                                           outframe=outframe, imsize=imsize, cell=cell, phasecenter=phasecenter,
+                                           cycleniter=cycleniter, cyclefactor=cyclefactor,
+                                           hm_minpsffraction=hm_minpsffraction, hm_maxpsffraction=hm_maxpsffraction,
+                                           scales=scales, outframe=outframe, imsize=imsize, cell=cell, phasecenter=phasecenter,
                                            nchan=nchan, start=start, width=width, stokes=stokes, weighting=weighting,
                                            robust=robust, restoringbeam=restoringbeam, pblimit=pblimit,
                                            iter=iter, mask=mask, hm_masking=hm_masking, cfcache=cfcache,
@@ -906,6 +908,8 @@ class Tclean(cleanbase.CleanBase):
                                                   nterms=inputs.nterms,
                                                   cycleniter=inputs.cycleniter,
                                                   cyclefactor=inputs.cyclefactor,
+                                                  hm_minpsffraction=inputs.hm_minpsffraction,
+                                                  hm_maxpsffraction=inputs.hm_maxpsffraction,
                                                   scales=inputs.scales,
                                                   outframe=inputs.outframe,
                                                   imsize=inputs.imsize,
