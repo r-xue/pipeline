@@ -2886,7 +2886,7 @@ def score_fluxservice(result):
         return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
 
 
-def score_mom8_fc_image(mom8_fc_name, peak_snr, image_chanScaled_MAD, outlier_threshold, n_pixels, n_outlier_pixels, is_eph_obj=False):
+def score_mom8_fc_image(mom8_fc_name, peak_snr, cube_chanScaled_MAD, outlier_threshold, n_pixels, n_outlier_pixels, is_eph_obj=False):
     """
     Check the MOM8 FC image for outliers above a given SNR threshold. The score
     can vary between 0.33 and 1.0 depending on the fraction of outlier pixels.
@@ -2924,12 +2924,12 @@ def score_mom8_fc_image(mom8_fc_name, peak_snr, image_chanScaled_MAD, outlier_th
                                           n_outlier_pixels,
                                           outlier_fraction * 100.0,
                                           outlier_threshold,
-                                          outlier_threshold * image_chanScaled_MAD))
+                                          outlier_threshold * cube_chanScaled_MAD))
 
         m8fc_score_min = 0.33
         m8fc_score_max = 0.90
         m8fc_metric_scale = 300.0
-        score = m8fc_score_min + 0.5 * (m8fc_score_max - m8fc_score_min) * (1.0 + erf(-np.log(m8fc_metric_scale * outlier_fraction)))
+        score = m8fc_score_min + 0.5 * (m8fc_score_max - m8fc_score_min) * (1.0 + erf(-np.log10(m8fc_metric_scale * outlier_fraction)))
         if 0.66 <= score <= 0.9 and peak_snr > 1.2 * outlier_threshold and n_outlier_pixels > 8:
             LOG.info('Modifying MOM8 FC score from {:.2f} to 0.65 due to peak SNR > 6.0 x channel scaled MAD and > 8 outlier pixels.'.format(score))
             score = 0.65
