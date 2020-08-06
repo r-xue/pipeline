@@ -568,7 +568,6 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 # problem defining uvrange
                                 LOG.warn(e)
                                 pass
-                result.bl_ratio = bl_ratio
 
                 # cell is a list of form [cellx, celly]. If the list has form [cell]
                 # then that means the cell is the same size in x and y. If cell is
