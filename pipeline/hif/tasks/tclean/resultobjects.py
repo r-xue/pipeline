@@ -43,6 +43,7 @@ class TcleanResult(basetask.Results):
         self._flux = None
         self.iterations = collections.defaultdict(dict)
         self._pblimit_image = 0.2
+        self._pblimit_cleanmask = 0.3
         self._aggregate_bw = 0.0
         self._eff_ch_bw = 0.0
         self._sensitivity = 0.0
@@ -214,16 +215,28 @@ class TcleanResult(basetask.Results):
         self.iterations[iter]['mom8_fc_image_max'] = image_max
 
     @property
-    def mom8_fc_image_median(self):
+    def mom8_fc_image_median_all(self):
         iters = sorted(self.iterations.keys())
-        return self.iterations[iters[-1]].get('mom8_fc_image_median')
+        return self.iterations[iters[-1]].get('mom8_fc_image_median_all')
 
-    def set_mom8_fc_image_median(self, iter, image_median):
+    def set_mom8_fc_image_median_all(self, iter, image_median_all):
         '''
         Sets image median of moment 8 image computed from line-free channels of non-primary beam corrected cube
         image for iter iteration step.
         '''
-        self.iterations[iter]['mom8_fc_image_median'] = image_median
+        self.iterations[iter]['mom8_fc_image_median_all'] = image_median_all
+
+    @property
+    def mom8_fc_image_median_annulus(self):
+        iters = sorted(self.iterations.keys())
+        return self.iterations[iters[-1]].get('mom8_fc_image_median_annulus')
+
+    def set_mom8_fc_image_median_annulus(self, iter, image_median_annulus):
+        '''
+        Sets image annulus median of moment 8 image computed from line-free channels of non-primary beam corrected cube
+        image for iter iteration step.
+        '''
+        self.iterations[iter]['mom8_fc_image_median_annulus'] = image_median_annulus
 
     @property
     def mom8_fc_image_mad(self):
@@ -238,28 +251,28 @@ class TcleanResult(basetask.Results):
         self.iterations[iter]['mom8_fc_image_mad'] = image_mad
 
     @property
-    def mom8_fc_image_sigma(self):
+    def mom8_fc_cube_sigma(self):
         iters = sorted(self.iterations.keys())
-        return self.iterations[iters[-1]].get('mom8_fc_image_sigma')
+        return self.iterations[iters[-1]].get('mom8_fc_cube_sigma')
 
-    def set_mom8_fc_image_sigma(self, iter, image_sigma):
+    def set_mom8_fc_cube_sigma(self, iter, cube_sigma):
         '''
-        Sets image sigma of moment 8 image computed from line-free channels of non-primary beam corrected cube
+        Sets sigma of cube computed from line-free channels of non-primary beam corrected cube
         image for iter iteration step.
         '''
-        self.iterations[iter]['mom8_fc_image_sigma'] = image_sigma
+        self.iterations[iter]['mom8_fc_cube_sigma'] = cube_sigma
 
     @property
-    def mom8_fc_image_chanScaledMAD(self):
+    def mom8_fc_cube_chanScaledMAD(self):
         iters = sorted(self.iterations.keys())
-        return self.iterations[iters[-1]].get('mom8_fc_image_chanScaledMAD')
+        return self.iterations[iters[-1]].get('mom8_fc_cube_chanScaledMAD')
 
-    def set_mom8_fc_image_chanScaledMAD(self, iter, image_chanScaledMAD):
+    def set_mom8_fc_cube_chanScaledMAD(self, iter, cube_chanScaledMAD):
         '''
-        Sets image channel scaled MAD of moment 8 image computed from line-free channels of non-primary beam corrected cube
+        Sets channel scaled MAD of cube computed from line-free channels of non-primary beam corrected cube
         image for iter iteration step.
         '''
-        self.iterations[iter]['mom8_fc_image_chanScaledMAD'] = image_chanScaledMAD
+        self.iterations[iter]['mom8_fc_cube_chanScaledMAD'] = cube_chanScaledMAD
 
     @property
     def mom8_fc_peak_snr(self):
@@ -358,6 +371,13 @@ class TcleanResult(basetask.Results):
 
     def set_pblimit_image(self, pblimit_image):
         self._pblimit_image = pblimit_image
+
+    @property
+    def pblimit_cleanmask(self):
+        return self._pblimit_cleanmask
+
+    def set_pblimit_cleanmask(self, pblimit_cleanmask):
+        self._pblimit_cleanmask = pblimit_cleanmask
 
     @property
     def aggregate_bw(self):
