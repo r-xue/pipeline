@@ -14,6 +14,7 @@ from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.hsd.tasks.common.display import DPISummary, DPIDetail, SingleDishDisplayInputs, ShowPlot, LightSpeed
 from pipeline.infrastructure.displays.pointing import MapAxesManagerBase
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
+from ..common import direction_utils as dirutil
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -180,6 +181,7 @@ class ClusterDisplay(object):
             group_id = group['group_id']
             cluster = group['clusters']
             flag_digits = group['flag_digits']
+            org_direction = group['org_direction']
             lines = group['lines']
             is_all_invalid_lines = all([l[2] == False for l in lines])
             rep_member_id = group['members'][0]
@@ -218,7 +220,8 @@ class ClusterDisplay(object):
             t0 = time.time()
             plot_validation = ClusterValidationDisplay(self.context, group_id, iteration, cluster, 
                                                        flag_digits, vis,
-                                                       virtual_spw, source_name, antenna, lines, stage_dir)
+                                                       virtual_spw, source_name, antenna, lines, stage_dir,
+                                                       org_direction )
             validation_plot = plot_validation.plot()
             # if there are no validated lines, then skip all the plots
             if len(validation_plot) == 0:
@@ -364,13 +367,14 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
         'final': 'Green Square: Final Grid where the line protection channels are calculated and applied to the baseline subtraction\nBlue Square: Final Grid where the calculated line protection channels are applied to the baseline subtraction\n\nIsolated Grids are eliminated.\n'
     }
 
-    def __init__( self, context, group_id, iteration, cluster, flag_digits, vis, spw, field, antenna, lines, stage_dir ):
+    def __init__( self, context, group_id, iteration, cluster, flag_digits, vis, spw, field, antenna, lines, stage_dir, org_direction ):
         super(ClusterValidationDisplay, self).__init__(group_id, iteration, cluster, spw, field, stage_dir)
         self.context = context
         self.antenna = antenna
         self.lines = lines
         self.flag_digits = flag_digits
         self.vis = vis
+        self.org_direction = org_direction
 
     def _plot(self):
         pl.clf()
@@ -405,6 +409,13 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
         dec0 = self.cluster['grid']['dec_min']
         scale_ra = self.cluster['grid']['grid_ra']
         scale_dec = self.cluster['grid']['grid_dec']
+
+        # convert ra0/dec0 to SHIFT_RA/DEC and adjust scale_ra for Ephemeris sources
+        if self.org_direction is not None:
+            ra1, dec1 = dirutil.direction_recover( ra0, dec0, self.org_direction )
+            ra2, dec2 = dirutil.direction_recover( ra0+scale_ra, dec0, self.org_direction )
+            scale_ra = ra2 - ra1
+            ra0, dec0 = ra1, dec1
 
         # 2008/9/20 DEC Effect
         aspect_ratio = 1.0 / math.cos(dec0 / 180.0 * 3.141592653)
