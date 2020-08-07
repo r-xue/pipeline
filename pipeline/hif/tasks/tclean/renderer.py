@@ -343,27 +343,26 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             row_aggregate_bw = '%.3g GHz (LSRK)' % aggregate_bw_GHz
             row_aggregate_bw_num = '%.4g' % aggregate_bw_GHz
 
-            if 'VLA' in r.imaging_mode:   # standard VLA and VLASS
-                initial_nsigma_mad_label = 'n-sigma * initial scaled MAD of residual'
-                final_nsigma_mad_label = 'n-sigma * final scaled MAD of residual'
-
             #
             # VLA statistics (PIPE-764)
             #
-            if 'VLA' == r.imaging_mode:
+            initial_nsigma_mad_label = None
+            final_nsigma_mad_label = None
+
+            if 'VLA' in r.imaging_mode:   # VLA and VLASS
+                initial_nsigma_mad_label = 'n-sigma * initial scaled MAD of residual'
+                final_nsigma_mad_label = 'n-sigma * final scaled MAD of residual'
+
+            nsigma_label = None
+            row_nsigma = None
+            vis_amp_ratio_label = None
+            row_vis_amp_ratio = None
+
+            if 'VLA' == r.imaging_mode:  # VLA only
                 nsigma_label = 'nsigma'
                 row_nsigma = nsigma_final
                 vis_amp_ratio_label = 'vis. amp. ratio'
                 row_vis_amp_ratio = r.bl_ratio
-            elif 'ALMA' == r.imaging_mode:
-                nsigma_label = None
-                row_nsigma = None
-                initial_nsigma_mad_label = None
-                row_initial_nsigma_mad = None
-                final_nsigma_mad_label = None
-                row_final_nsigma_mad = None
-                vis_amp_ratio_label = None
-                row_vis_amp_ratio = None
 
             #
             #  score value
