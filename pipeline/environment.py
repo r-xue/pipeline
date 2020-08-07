@@ -136,7 +136,7 @@ def _pipeline_revision():
         pass
 
     if git_branch != None and (git_branch == "main" or git_branch.startswith("release/")):
-        proc = subprocess.Popen( [ "pipeline/infrastructure/version" ], stdout=subprocess.PIPE, stderr=subprocess.PIPE )
+        proc = subprocess.Popen( [ pl_path + "/infrastructure/version" ], stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=pl_path )
         out,err = pipe_decode(proc.communicate( ))
         #print(out)
         releasetag = out.split(" ")[1].strip()
