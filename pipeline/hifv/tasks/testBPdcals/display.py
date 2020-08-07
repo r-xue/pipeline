@@ -168,6 +168,13 @@ class ampGainPerAntennaChart(object):
         nplots = len(self.ms.antennas)
         plots = []
 
+        times = []
+        for bandname, bpdgain_touse in self.result.bpdgain_touse.items():
+            with casatools.TableReader(bpdgain_touse) as tb:
+                times.extend(tb.getcol('TIME'))
+        mintime = np.min(times)
+        maxtime = np.max(times)
+
         for bandname, bpdgain_touse in self.result.bpdgain_touse.items():
 
             with casatools.TableReader(bpdgain_touse) as tb:
@@ -205,7 +212,7 @@ class ampGainPerAntennaChart(object):
 
                         job = casa_tasks.plotms(vis=bpdgain_touse, xaxis='time', yaxis='amp', field='',
                                          antenna=antPlot, spw='', timerange='',
-                                         plotrange=[0.0, 0.0, 0.0, plotmax], coloraxis='',
+                                         plotrange=[mintime, maxtime, 0.0, plotmax], coloraxis='',
                                          title='G table: {!s}   Antenna: {!s}  Band: {!s}'.format(bpdgain_touse, antName, bandname),
                                          titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                          xconnector='line')
@@ -252,6 +259,13 @@ class phaseGainPerAntennaChart(object):
         nplots = len(self.ms.antennas)
         plots = []
 
+        times = []
+        for bandname, bpdgain_touse in self.result.bpdgain_touse.items():
+            with casatools.TableReader(bpdgain_touse) as tb:
+                times.extend(tb.getcol('TIME'))
+        mintime = np.min(times)
+        maxtime = np.max(times)
+
         for bandname, bpdgain_touse in self.result.bpdgain_touse.items():
 
             with casatools.TableReader(bpdgain_touse) as tb:
@@ -289,7 +303,7 @@ class phaseGainPerAntennaChart(object):
 
                         job = casa_tasks.plotms(vis=bpdgain_touse, xaxis='time', yaxis='phase', field='',
                                          antenna=antPlot, spw='', timerange='',
-                                         coloraxis='', plotrange=[0, 0, -180, 180], symbolshape='circle',
+                                         coloraxis='', plotrange=[mintime, maxtime, -180, 180], symbolshape='circle',
                                          title='G table: {!s}   Antenna: {!s}  Band: {!s}'.format(bpdgain_touse, antName, bandname),
                                          titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                          xconnector='line')
