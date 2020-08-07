@@ -128,3 +128,20 @@ def get_plot(plots, prefix, field, spw, i, colname):
 	</tbody>
 </table>
 </div>
+
+
+The Line-free Moment 0 and Moment 8 images are created from the line-free
+(continuum) channels identified in the hif_findcont stage. In the absence of
+line contamination these moment images (known as the mom0fc and mom8fc images)
+will be noise like. A QA score is generated (in part) from the "mom8fc Peak SNR"
+defined as [ mom8fc['max'] - median ] / noise from the continuum channels of
+the cube, its value is printed on the mom8fc thumbnail.
+<br>
+The Spectral plot shows the integrated spectrum of the cube, if there is a
+clean mask the spectrum is red and is taken from inside the clean mask, if not
+the spectrum is blue and is taken from the whole image. The black spectrum
+shows the noise level per channel. Additionally, the atmospheric transmission
+is shown by a magenta line and the hif_findcont channel ranges by cyan lines.
+<br>
+More details about all these plots can be found in the ALMA Pipeline User Guide.
+
