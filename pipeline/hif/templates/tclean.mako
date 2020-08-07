@@ -294,7 +294,7 @@ except:
                     <tr>
                         <th>${image_info[k].vis_amp_ratio_label}</th>
                         %for k in range(j, min(j+4, field_block_indices[i+1])):
-                            <td style="width:250px;">${image_info[k].vis_amp_ratio}</td>
+                            <td style="width:250px;">${'{:.4}'.format(image_info[k].vis_amp_ratio)}</td>
                         %endfor
                     </tr>
                 %endif                <tr>
