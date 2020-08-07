@@ -37,56 +37,72 @@ class TcleanQAHandler(pqa.QAPlugin):
             longmsg = ('{} pbcor image max / non-pbcor image RMS = {:0.2f}'.format(result.sourcename, snr))
             shortmsg = 'snr = {:0.2f}'.format(snr)
             result.qa.pool[:] = [pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg)]
-        elif (result.error is not None):
-            result.qa.pool[:] = [pqa.QAScore(0.0, longmsg=result.error.longmsg, shortmsg=result.error.shortmsg)]
         else:
-            # Image RMS based score
+            # Check for any cleaning errors and render a zero score
+            if (result.error is not None):
+                result.qa.pool.append(pqa.QAScore(0.0, longmsg=result.error.longmsg, shortmsg=result.error.shortmsg, weblog_location=pqa.WebLogLocation.UNSET))
 
+            # Image RMS based score
             qaTool = casatools.quanta()
 
             try:
                 # For the score we compare the image RMS with the DR corrected
                 # sensitivity as an estimate of the expected RMS.
                 rms_score = imageScorer(result.image_rms / result.dr_corrected_sensitivity)
+
+                if (numpy.isnan(rms_score)):
+                    rms_score = 0.0
+                    longmsg='Cleaning diverged, RMS is NaN. Field: %s Intent: %s SPW: %s' % (result.inputs['field'], result.intent, resultspw)
+                    shortmsg='RMS is NaN'
+                else:
+                    if rms_score > 0.66:
+                        longmsg = 'RMS vs. DR corrected sensitivity. Field: %s Intent: %s SPW: %s' % (result.inputs['field'], result.intent, result.spw)
+                        shortmsg = 'RMS vs. sensitivity'
+                    else:
+                        # The level of 2.7 comes from the Erf scorer limits of 1 and 5.
+                        # The level needs to be adjusted if these limits are modified.
+                        longmsg = 'Observed RMS noise exceeds DR corrected sensitivity by more than 2.7. Field: %s Intent: %s SPW: %s' % (result.inputs['field'], result.intent, result.spw)
+                        shortmsg = 'RMS vs. sensitivity'
+
+                    # Adjust RMS based score if there were PSF fit errors
+                    if result.bad_psf_channels is not None:
+                        if result.bad_psf_channels.shape[0] <= 10:
+                            rms_score -= 0.11
+                            rms_score = max(0.0, rms_score)
+                            longmsg = '%s. Between 1-10 channels show significantly deviant synthesized beam(s), this is usually indicative of bad data, if at cube edge can likely be ignored.' % (longmsg)
+                            shortmsg = '%s. 1-10 channels masked.' % (shortmsg) 
+                        else:
+                            rms_score -= 0.34
+                            rms_score = max(0.0, rms_score)
+                            longmsg = '%s. More than 10 channels show significantly deviant synthesized beams, this is usually indicative of bad data, and should be investigated.' % (longmsg)
+                            shortmsg = '%s. > 10 channels masked.' % (shortmsg) 
+
+                origin = pqa.QAOrigin(metric_name='image rms / sensitivity',
+                                      metric_score=(result.image_rms, result.dr_corrected_sensitivity),
+                                      metric_units='Jy / beam')
+                weblog_location = pqa.WebLogLocation.UNSET
             except Exception as e:
                 LOG.warning('Exception scoring imaging result by RMS: %s. Setting score to -0.1.' % (e))
                 rms_score = -0.1
+                longmsg = 'Exception scoring imaging result by RMS: %s. Setting score to -0.1.' % (e)
+                shortmsg = 'Exception scoring imaging result by RMS'
+                origin = pqa.QAOrigin(metric_name='N/A', metric_score='N/A', metric_units='N/A')
+                weblog_location = pqa.WebLogLocation.UNSET
 
-            if (numpy.isnan(rms_score)):
-                result.qa.pool[:] = [pqa.QAScore(0.0, longmsg='Cleaning diverged, RMS is NaN. Field: %s Intent: %s SPW: %s' % (result.inputs['field'], result.intent, resultspw), shortmsg='RMS is NaN')]
-            else:
-                if rms_score > 0.66:
-                    longmsg = 'RMS vs. DR corrected sensitivity. Field: %s Intent: %s SPW: %s' % (result.inputs['field'], result.intent, result.spw)
-                    shortmsg = 'RMS vs. sensitivity'
-                else:
-                    # The level of 2.7 comes from the Erf scorer limits of 1 and 5.
-                    # The level needs to be adjusted if these limits are modified.
-                    longmsg = 'Observed RMS noise exceeds DR corrected sensitivity by more than 2.7. Field: %s Intent: %s SPW: %s' % (result.inputs['field'], result.intent, result.spw)
-                    shortmsg = 'RMS vs. sensitivity'
-
-                # Adjust RMS based score if there were PSF fit errors
-                if result.bad_psf_channels is not None:
-                    if result.bad_psf_channels.shape[0] <= 10:
-                        rms_score -= 0.11
-                        rms_score = max(0.0, rms_score)
-                        longmsg = '%s. Between 1-10 channels show significantly deviant synthesized beam(s), this is usually indicative of bad data, if at cube edge can likely be ignored.' % (longmsg)
-                        shortmsg = '%s. 1-10 channels masked.' % (shortmsg) 
-                    else:
-                        rms_score -= 0.34
-                        rms_score = max(0.0, rms_score)
-                        longmsg = '%s. More than 10 channels show significantly deviant synthesized beams, this is usually indicative of bad data, and should be investigated.' % (longmsg)
-                        shortmsg = '%s. > 10 channels masked.' % (shortmsg) 
-
-                # Add score to pool
-                result.qa.pool[:] = [pqa.QAScore(rms_score, longmsg=longmsg, shortmsg=shortmsg)]
+            # Add score to pool
+            result.qa.pool.append(pqa.QAScore(rms_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
 
             # MOM8_FC based score
             if result.mom8_fc is not None and result.mom8_fc_peak_snr is not None:
-                mom8_fc_score = scorecalc.score_mom8_fc_image(result.mom8_fc,
-                                result.mom8_fc_peak_snr, result.mom8_fc_cube_chanScaledMAD,
-                                result.mom8_fc_outlier_threshold, result.mom8_fc_n_pixels,
-                                result.mom8_fc_n_outlier_pixels, result.is_eph_obj)
-                result.qa.pool.append(mom8_fc_score)
+                try:
+                    mom8_fc_score = scorecalc.score_mom8_fc_image(result.mom8_fc,
+                                    result.mom8_fc_peak_snr, result.mom8_fc_cube_chanScaledMAD,
+                                    result.mom8_fc_outlier_threshold, result.mom8_fc_n_pixels,
+                                    result.mom8_fc_n_outlier_pixels, result.is_eph_obj)
+                    result.qa.pool.append(mom8_fc_score)
+                except Exception as e:
+                    LOG.warning('Exception scoring MOM8 FC image result: %s. Setting score to -0.1.' % (e))
+                    result.qa.pool.append(pqa.QAScore(-0.1, longmsg='Exception scoring MOM8 FC image result: %s' % (e), shortmsg='Exception scoring MOM8 FC image result'), weblog_location=pqa.WebLogLocation.UNSET)
 
             # Check source score
             #    Be careful about the source name vs field name issue
@@ -120,6 +136,8 @@ class TcleanQAHandler(pqa.QAPlugin):
                     result.check_source_fit = {'offset': offset, 'offset_err': offset_err, 'beams': beams, 'beams_err': beams_err, 'fitflux': fitflux, 'fitflux_err': fitflux_err, 'fitpeak': fitpeak, 'gfluxscale': gfluxscale, 'gfluxscale_err': gfluxscale_err}
                 except Exception as e:
                     result.check_source_fit = {'offset': 'N/A', 'offset_err': 'N/A', 'beams': 'N/A', 'beams_err': 'N/A', 'fitflux': 'N/A', 'fitflux_err': 'N/A', 'fitpeak': 'N/A', 'gfluxscale': 'N/A', 'gfluxscale_err': 'N/A'}
+                    LOG.warning('Exception scoring check source fit: %s. Setting score to -0.1.' % (e))
+                    result.qa.pool.append(-0.1, longmsg='Exception scoring check source fit: %s' % (e), shortmsg='Exception scoring check source fit')
 
 
 class TcleanListQAHandler(pqa.QAPlugin):
