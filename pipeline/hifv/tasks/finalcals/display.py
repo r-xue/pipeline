@@ -172,6 +172,11 @@ class finalphaseGainPerAntennaChart(object):
             if spw in listspws:  # Science intents only
                 band2spw[band].append(str(spw))
 
+        with casatools.TableReader(result.bpdgain_touse) as tb:
+            times = tb.getcol('TIME')
+        mintime = np.min(times)
+        maxtime = np.max(times)
+
         for bandname, spwlist in band2spw.items():
             for ii in range(nplots):
 
@@ -196,7 +201,7 @@ class finalphaseGainPerAntennaChart(object):
                         LOG.debug("Plotting final phase gain solutions " + antName)
                         job = casa_tasks.plotms(vis=result.bpdgain_touse, xaxis='time', yaxis='phase', field='',
                                          antenna=antPlot, spw=','.join(spwlist), timerange='',
-                                         coloraxis='', plotrange=[0, 0, -180, 180], symbolshape='circle',
+                                         coloraxis='', plotrange=[mintime, maxtime, -180, 180], symbolshape='circle',
                                          title='G table: finalBPinitialgain.tbl   Antenna: {!s}  Band: {!s}'.format(antName, bandname),
                                          titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                          xconnector='line')
@@ -475,6 +480,11 @@ class finalbpSolPhaseShortPerAntennaChart(object):
             if spw in listspws:  # Science intents only
                 band2spw[band].append(str(spw))
 
+        with casatools.TableReader(self.result.phaseshortgaincaltable) as tb:
+            times = tb.getcol('TIME')
+        mintime = np.min(times)
+        maxtime = np.max(times)
+
         for bandname, spwlist in band2spw.items():
 
             for ii in range(nplots):
@@ -500,7 +510,7 @@ class finalbpSolPhaseShortPerAntennaChart(object):
                         LOG.debug("Plotting phase short gaincal " + antName)
                         job = casa_tasks.plotms(vis=self.result.phaseshortgaincaltable, xaxis='time', yaxis='phase', field='',
                                          antenna=antPlot, spw=','.join(spwlist), timerange='',
-                                         coloraxis='', plotrange=[0, 0, -180, 180], symbolshape='circle',
+                                         coloraxis='', plotrange=[mintime, maxtime, -180, 180], symbolshape='circle',
                                          title='G table: phaseshortgaincal.tbl   Antenna: {!s}  Band: {!s}'.format(antName, bandname),
                                          titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                          xconnector='line')
@@ -557,6 +567,11 @@ class finalAmpTimeCalPerAntennaChart(object):
             if spw in listspws:  # Science intents only
                 band2spw[band].append(str(spw))
 
+        with casatools.TableReader(self.result.finalampgaincaltable) as tb:
+            times = tb.getcol('TIME')
+        mintime = np.min(times)
+        maxtime = np.max(times)
+
         for bandname, spwlist in band2spw.items():
 
             with casatools.TableReader(self.result.finalampgaincaltable) as tb:
@@ -592,7 +607,7 @@ class finalAmpTimeCalPerAntennaChart(object):
                         LOG.debug("Plotting final amp timecal " + antName)
                         job = casa_tasks.plotms(vis=self.result.finalampgaincaltable, xaxis='time', yaxis='amp', field='',
                                          antenna=antPlot, spw=','.join(spwlist), timerange='',
-                                         coloraxis='', plotrange=[0, 0, 0, plotmax], symbolshape='circle',
+                                         coloraxis='', plotrange=[mintime, maxtime, 0, plotmax], symbolshape='circle',
                                          title='G table: finalampgaincal.tbl   Antenna: {!s}  Band: {!s}'.format(antName, bandname),
                                          titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                          xconnector='line')
@@ -743,6 +758,11 @@ class finalPhaseGainCalPerAntennaChart(object):
             if spw in listspws:  # Science intents only
                 band2spw[band].append(str(spw))
 
+        with casatools.TableReader(self.result.finalphasegaincaltable) as tb:
+            times = tb.getcol('TIME')
+        mintime = np.min(times)
+        maxtime = np.max(times)
+
         for bandname, spwlist in band2spw.items():
 
             for ii in range(nplots):
@@ -768,7 +788,7 @@ class finalPhaseGainCalPerAntennaChart(object):
                         LOG.debug("Plotting final phase freqcal " + antName)
                         job = casa_tasks.plotms(vis=self.result.finalphasegaincaltable, xaxis='time', yaxis='phase', field='',
                                          antenna=antPlot, spw=','.join(spwlist), timerange='',
-                                         coloraxis='', plotrange=[0, 0, -180, 180], symbolshape='circle',
+                                         coloraxis='', plotrange=[mintime, maxtime, -180, 180], symbolshape='circle',
                                          title='G table: finalphasegaincal.tbl   Antenna: {!s}  Band: {!s}'.format(antName, bandname),
                                          titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                          xconnector='line')

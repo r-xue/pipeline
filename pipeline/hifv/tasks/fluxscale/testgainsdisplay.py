@@ -79,6 +79,13 @@ class testgainsPerAntennaChart(object):
 
         LOG.info("Plotting testgain solutions")
 
+        times = []
+        for bandname, bpdgain_touse in self.result.bpdgain_touse.items():
+            with casatools.TableReader(bpdgain_touse) as tb:
+                times.extend(tb.getcol('TIME'))
+        mintime = np.min(times)
+        maxtime = np.max(times)
+
         for bandname, bpdgain_tousename in self.result.bpdgain_touse.items():
 
             with casatools.TableReader(bpdgain_tousename) as tb:
@@ -105,12 +112,12 @@ class testgainsPerAntennaChart(object):
                 xconnector = 'step'
 
                 if self.yaxis == 'amp':
-                    plotrange = [0, 0, 0, plotmax]
+                    plotrange = [mintime, maxtime, 0, plotmax]
                     plotsymbol = 'o'
                     xconnector = 'line'
 
                 if self.yaxis == 'phase':
-                    plotrange = [0, 0, -180, 180]
+                    plotrange = [mintime, maxtime, -180, 180]
                     plotsymbol = 'o-'
                     xconnector = 'line'
 
