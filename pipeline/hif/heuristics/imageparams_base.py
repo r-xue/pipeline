@@ -1920,7 +1920,7 @@ class ImageParamsHeuristics(object):
         return None
 
     def uvrange(self, field=None, spwspec=None):
-        return None
+        return None, None
 
     def reffreq(self):
         return None

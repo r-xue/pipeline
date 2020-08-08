@@ -56,7 +56,7 @@ class ImageParamsHeuristicsVlassSeTaper(ImageParamsHeuristics):
         return ['7.0arcsec']
 
     def uvrange(self, field=None, spwspec=None):
-        return None
+        return None, None
 
     def mask(self, hm_masking=None, rootname=None, iteration=None, mask=None):
         return ''

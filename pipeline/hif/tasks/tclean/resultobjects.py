@@ -82,6 +82,8 @@ class TcleanResult(basetask.Results):
         self.is_eph_obj = is_eph_obj
         # Store computed synthesized beams
         self.synthesized_beams = None
+        # Store visibility amplitude ratio for VLA
+        self.bl_ratio = None
 
     def merge_with_context(self, context):
         # Calculated beams for later stages

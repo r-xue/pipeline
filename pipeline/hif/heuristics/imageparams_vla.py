@@ -38,8 +38,8 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
         :param field:
         :param spwspec:
-        :return: None or string in the form of '> {x}klambda', where
-            {x}=0.05*max(baseline)
+        :return: (None or string in the form of '> {x}klambda', where
+            {x}=0.05*max(baseline), baseline ratio)
         """
         def get_mean_amplitude(vis, uvrange=None, axis='amplitude', field='', spw=None):
             stat_arg = {'vis': vis, 'uvrange': uvrange, 'axis': axis,
@@ -92,7 +92,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         if max_mean_freq_Hz == 0.0:
             LOG.warn("Highest frequency spw and largest baseline cannot be determined for spwids={:s}. "
                      "Using default uvrange.".format(','.join([str(spw) for spw in spwids])))
-            return None
+            return None, None
         # Get max baseline
         mean_wave_m = light_speed / max_mean_freq_Hz  # in meter
         job = casa_tasks.visstat(vis=vis, field=field, spw=str(max_freq_spw), axis='uvrange', useflags=True)
@@ -124,10 +124,10 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
                  'and mean of middle baseline bin is {:0.2E}'.format(ratio))
         if ratio > 2.0:
             LOG.info('Selecting uvrange>{:0.1f}klambda to avoid very extended emission.'.format(0.05 * max_bl / 1000.0))
-            return ">{:0.1f}klambda".format(0.05 * max_bl / 1000.0)
+            return ">{:0.1f}klambda".format(0.05 * max_bl / 1000.0), ratio
         else:
             # Use complete uvrange
-            return '>0.0klambda'
+            return '>0.0klambda', ratio
 
     def pblimits(self, pb):
         """

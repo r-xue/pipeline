@@ -117,6 +117,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
                  hm_minpsffraction=None, hm_maxpsffraction=None,
                  sensitivity=None, reffreq=None, restfreq=None, conjbeams=None, is_per_eb=None, antenna=None,
                  usepointing=None, mosweight=None, spwsel_all_cont=None, num_all_spws=None, num_good_spws=None,
+                 bl_ratio=None,
                  # End of extra parameters
                  heuristics=None):
         super(TcleanInputs, self).__init__(context, output_dir=output_dir, vis=vis,
@@ -154,6 +155,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
         self.spwsel_all_cont = spwsel_all_cont
         self.num_all_spws = num_all_spws
         self.num_good_spws = num_good_spws
+        self.bl_ratio = bl_ratio
         self.tlimit = tlimit
 
         # For MOM0/8_FC and cube RMS we need the LSRK frequency ranges in
@@ -631,6 +633,7 @@ class Tclean(cleanbase.CleanBase):
 
         result.synthesized_beams = self.known_synthesized_beams
 
+        result.bl_ratio = inputs.bl_ratio
         return result
 
     def analyse(self, result):
