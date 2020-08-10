@@ -9,7 +9,7 @@
     </ProcessingCommand>
     {{/importonly}}
     {{^importonly}}
-     <!-- Restore MS: if importonly!=True, restore ASDM and call hif_mstransform -->
+     <!-- Restore MS: if importonly!=True, restore ASDM -->
     <ProcessingCommand>
         <Command xmlns="">hifa_restoredata</Command>
         <ParameterSet>
@@ -19,13 +19,13 @@
           </Parameter>
         </ParameterSet>
     </ProcessingCommand>
+    {{/importonly}}
 
     <ProcessingCommand>
         <Command xmlns="">hif_mstransform</Command>
         <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>
-    {{/importonly}}
 
     <ProcessingCommand>
         <Command xmlns="">hifa_imageprecheck</Command>
