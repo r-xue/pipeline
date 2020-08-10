@@ -1,6 +1,6 @@
 <ProcessingProcedure>
 
-    <ProcedureTitle>hifv_image</ProcedureTitle>
+    <ProcedureTitle>hifv_contimage</ProcedureTitle>
 
     <ProcessingCommand>
         <Command xmlns="">hifv_restoredata</Command>
@@ -52,6 +52,10 @@
             <Parameter>
                 <Keyword xmlns="">hm_masking</Keyword>
                 <Value xmlns="">none</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">hm_cyclefactor</Keyword>
+                <Value xmlns="">3.0</Value>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
