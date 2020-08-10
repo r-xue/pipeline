@@ -1068,10 +1068,14 @@ var UTILS = (function() {
             if (status === "error") {
                 let msg =`<h1>Error: cannot load content</h1>
 <p class="lead">Browser security prevents the weblog from displaying the requested content.</p>
-<p>Viewing the web log locally is not possible with your web browser security settings. To view the web log you must
-    serve the web log via HTTP by using <code>h_weblog</code> from inside a CASA session, or relax your web browser 
-    security.</p>
+<p>Your browser cannot display the requested web log page. This error can occur when attempting to view the web log
+    while the pipeline is running and web log content is still being generated. If the pipeline is not running yet
+    the problem perists, the error is most likely to be caused by your web browser security settings preventing 
+    viewing the web log as flat files. In this case, to view the web log you must serve the web log via HTTP by using 
+    <code>h_weblog</code> from inside a CASA session, or relax your web browser security.</p>
 <h2>Solutions</h2>
+<p>First, ensure that pipeline is not currently running. If the problem persists, follow one of the approaches 
+    described below.</p>
 <h3>Recommended: use <code>h_weblog()</code></h3>
 <p>From inside a CASA session, navigate to the root of the untarred weblog directory, <em>e.g.</em>,
     pipeline-procedure_hifa_calimage, and run <code>h_weblog</code>. This command will serve the web log via HTTP and
