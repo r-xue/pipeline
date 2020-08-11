@@ -23,6 +23,16 @@ _types = {
 def plot_type(plot):
     return _types[plot.parameters['type']]
 
+def summarise_fields(fields):
+    field_list = utils.numeric_sort(fields.split(','))
+
+    max_fields = 10
+    num_fields = len(field_list)
+    if num_fields <= max_fields:
+        return ', '.join([str(f) for f in field_list])
+
+    field_str = '{field_list[0]}, {field_list[1]}, {field_list[2]}, ..., {field_list[-1]}'
+    return field_str
 %>
 
 <%inherit file="t2-4m_details-base.mako"/>
@@ -168,7 +178,7 @@ def plot_type(plot):
                   url_fn="${lambda x: 'junk'}"
                   rel_fn="${lambda plot: 'amp_vs_uvdist_%s_%s' % (plot.parameters['vis'], plot.parameters['spw'])}"
                   title_id="amp_vs_uvdist"
-                  break_rows_by="intent,field,type_idx"
+                  break_rows_by="field"
                   sort_row_by="spw">
 
     <%def name="title()">
@@ -200,7 +210,8 @@ def plot_type(plot):
     </%def>
 
     <%def name="caption_subtitle(plot)">
-        Intents: ${utils.commafy([plot.parameters['intent']], False)}
+        Intents: ${utils.commafy([plot.parameters['intent']], False)}<br>
+        Fields: ${summarise_fields(plot.parameters['field'])}
     </%def>
 
     <%def name="caption_text(plot, ptype)">
