@@ -312,6 +312,9 @@ def create_flux_comparison_plots(context, output_dir, result, showatm=True):
         ax.set_xlabel('Frequency (GHz)')
         ax.set_ylabel('Flux Density (Jy)')
 
+        # Avoid offset values (PIPE-644)
+        ax.yaxis.set_major_formatter(plt.ScalarFormatter(useOffset=False))
+
         colours = itertools.cycle('bgrcmyk')
 
         x_min = 1e99
