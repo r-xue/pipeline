@@ -150,11 +150,14 @@ def do_bandpass(vis, caltable, context=None, RefAntOutput=None, spw=None, ktypec
 
     bpscanslist = list(map(int, bandpass_scan_select_string.split(',')))
     scanobjlist = m.get_scans(scan_id=bpscanslist)
-    fieldidlist = []
+    allfieldidlist = []
     for scanobj in scanobjlist:
         fieldobj, = scanobj.fields
-        if str(fieldobj.id) not in fieldidlist:
-            fieldidlist.append(str(fieldobj.id))
+        if str(fieldobj.id) not in allfieldidlist:
+            allfieldidlist.append(str(fieldobj.id))
+
+    # See vlascanheuristics - only use the first bandpass calibrator
+    fieldidlist = [fieldid for fieldid in allfieldidlist if fieldid in bandpass_field_select_string]
 
     for fieldidstring in fieldidlist:
         fieldid = int(fieldidstring)
