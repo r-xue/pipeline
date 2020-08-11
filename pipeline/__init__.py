@@ -120,8 +120,9 @@ def show_weblog(index_path='',
 
     # Get controller for Firefox if possible, otherwise use whatever the
     # webbrowser module determines to be best
-    browser = webbrowser.get('firefox')
-    if browser is None:
+    try:
+        browser = webbrowser.get('firefox')
+    except webbrowser.Error:
         browser = webbrowser.get()
     browser.open(url)
 
