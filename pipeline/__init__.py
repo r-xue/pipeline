@@ -117,7 +117,13 @@ def show_weblog(index_path='',
     sa = HTTP_SERVER.socket.getsockname()
     url = 'http://{}:{}/{}'.format(sa[0], sa[1], index_path)
     LOG.info('Opening {}'.format(url))
-    webbrowser.open(url)
+
+    # Get controller for Firefox if possible, otherwise use whatever the
+    # webbrowser module determines to be best
+    browser = webbrowser.get('firefox')
+    if browser is None:
+        browser = webbrowser.get()
+    browser.open(url)
 
 
 def stop_weblog():
