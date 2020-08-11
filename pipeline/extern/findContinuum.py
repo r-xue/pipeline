@@ -10,7 +10,7 @@ This file can be found in a typical pipeline distribution directory, e.g.:
 /lustre/naasc/sciops/comm/rindebet/pipeline/branches/trunk/pipeline/extern
 As of March 7, 2019 (version 3.36), it is compatible with both python 2 and 3.
 
-Code changes for Pipeline2020: (as of July 29, 2020)
+Code changes for Pipeline2020: (as of August 9, 2020)
 0) fix for PIPE-554 (bug found in cube imaging of calibrators by ARI-L project)
 1) fix for PIPE-525 (divide by zero in a 130-target MOUS)
 2) new feature PIPE-702 (expand mask if mom8fc image has emission outside it)
@@ -29,7 +29,7 @@ Code changes for Pipeline2020: (as of July 29, 2020)
 15) Insure that channel ranges are in increasing order if a second range is added to a solo range
 16) add imstatListit=False to all imstat calls
 17) add minor ticks to lower x-axis (channel number) of the plot
-18) added 19 new control parameters to findContinuum (default values listed):
+18) added 21 new control parameters to findContinuum (default values listed) for a total of 98:
    * returnWarnings=False (PL 2020 might set this to True if Dirk has time)
    * sigmaFindContinuumMode='auto' (split from sigmaFindContinuum)
    * returnSigmaFindContinuum=False 
@@ -49,6 +49,8 @@ Code changes for Pipeline2020: (as of July 29, 2020)
    * smallSpreadFraction=0.33
    * skipAmendMask=False (for manual usage)
    * useAnnulus=True
+   * cubeSigmaThreshold=7.5
+   * npixThreshold=7 (for onlyExtraMask)
 19) Added 27 new functions:
    * round_half_up (to support the same rounding in python 3 as 2)
    * byteDecode (to convert bytes to string for python 3)
@@ -174,7 +176,7 @@ def version(showfile=True):
     """
     Returns the CVS revision number.
     """
-    myversion = "$Id: findContinuumCycle8.py,v 4.90 2020/07/30 14:50:09 we Exp $" 
+    myversion = "$Id: findContinuumCycle8.py,v 4.94 2020/08/10 17:08:17 we Exp $" 
     if (showfile):
         print("Loaded from %s" % (__file__))
     return myversion
@@ -315,7 +317,8 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                   checkIfMaskWouldHaveBeenAmended=False, fontsize=10, thresholdForSame=0.01, # 88
                   keepIntermediatePngs=True, returnWarnings=False, enableOnlyExtraMask=True,
                   useMomentDiff=True, smallBandwidthFraction=0.05, smallSpreadFraction=0.33,
-                  skipAmendMask=False, useAnnulus=True):  # 96
+                  skipAmendMask=False, useAnnulus=True, cubeSigmaThreshold=7.5, 
+                  npixThreshold=7):  # 98
     """
     This function calls functions to:
     1) compute a representative 'mean' spectrum of a dirty cube
@@ -535,6 +538,8 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
              the final one is returned
         * thresholdForSame: fractional value used to determine if the residual in the mom8fc image
              improved ('L'), worsened ('H') or stayed the same ('S')
+        * cubeSigmaThreshold: minimum cube SNR for onlyExtraMask to trigger
+        * npixThreshold: minimum momDiff pixels for onlyExtraMask to trigger
 
     Parameters for function findContinuumChannels (which is called by all meanSpectrum heuristics):
     -----------------------------------------------------------------------------------------------
@@ -936,13 +941,15 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
     if (amendMask or checkIfMaskWouldHaveBeenAmended):
         momDiffLevel = 8.0 # 8.0 is what we want in general (for 16293 maser: 8 gives 6 pix, while 7.5 gives 13 pix)
         #  momDiffLevel gets modified further down by -0.5 if mom8fc is more diagnostic (as it is for that maser)
-        momDiffLevelBadAtm = 11.5
+        momDiffLevelBadAtm = 11.5  # for amendMask and extraMask
+        momDiffLevelBadAtmOnlyExtraMask = 11.0
         mom8level = 8.5
         mom8levelBadAtm = 12
         cubeLevel = 7.5
         cubeLevel2 = 7.25  # needs to be somewhat smaller than cubeLevel
         momDiffCode = None
         mom8code = None # mom8code
+        momDiffPeak0 = None # necessary in case neither AmendMask or ExtraMask is invoked but LowBW+LowSpread triggers a new range
     storeExtraMask = False # if True, the write the extraMask as a mask image, otherwise just write it to userJointMask
     for amendMaskIteration in range(amendMaskIterations+1):
         # On subsequent iterations, the amendMaskIterationName (and hence heuristics to follow)
@@ -1453,14 +1460,15 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                         casalogPost('channel selection: %s' % (selection))
                         casalogPost("cube peak anywhere = %f, medianOutside = %f, scaledMADoutside = %f,  (peak-medianOutside)/scaledMADoutside=%f" % (cubePeak,cubeMedian,MADCubeOutside,(cubePeak-cubeMedian)/MADCubeOutside))
                         NpixMomDiff = computeNpixMom8Median(momDiffMedian, momDiffLevel, momDiffMAD, mymomDiff, '')
-                        NpixMomDiffBadAtm = computeNpixMom8MedianBadAtm(momDiffMedian, momDiffLevelBadAtm, momDiffMAD, mymomDiff, '')
+                        NpixMomDiffBadAtm = computeNpixMom8MedianBadAtm(momDiffMedian, momDiffLevelBadAtmOnlyExtraMask, momDiffMAD, mymomDiff, '')
                         NpixCubeDiffMedian = computeNpixCubeMedian(momDiffMedian, cubeLevel, MADCubeOutside, mymomDiff, '') # unused now
                         # This is the one of the remaining places where the choice of useMomentDiff is assumed to be True.
                         extraMaskDecision, ExtraMaskLevel, extraMaskSigmaUsed = onlyExtraMaskYesOrNo(badAtmosphere, momDiffMedian, momDiffSNR, 
                                                                                                      momDiffSNRCube, NpixMomDiff, NpixMomDiffBadAtm,
                                                                                                      NpixCubeDiffMedian, TenEventSigma, momDiffMAD, 
                                                                                                      MADCubeOutside, cubePeak, cubeMedian, 
-                                                                                                     momDiffLevel, momDiffLevelBadAtm, cubeLevel)
+                                                                                                     momDiffLevel, momDiffLevelBadAtmOnlyExtraMask, cubeLevel,
+                     cubeSigmaThreshold, npixThreshold)
                     warning = tooLittleBandwidth(selection, chanInfo, smallBandwidthFraction)
                     if warning is not None:
                         casalogPost('Current fractional bandwidth is too small to allow Extra Mask.')
@@ -2050,6 +2058,13 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                     elif amendMaskIterationName == '.autoLower':
                         autoLowerDecision = 'NoImprovement'
                     casalogPost('No change in channel list')
+                elif len(channelList) == 1 and nchan > 500:
+                    # disallow first and final channel if either is the adjacent channel
+                    casalogPost('intersected channel list: %s' % (selection))
+                    channelList = range(np.max([1,channelList-1]),np.min([channelList+2,nchan-1]))
+                    casalogPost('Forcing single channel to include the adjacent channels because nchan>500')
+                    selection = convertChannelListIntoSelection(channelList)
+                                   
 #                else:  # process new channel selection (even if it is the same, because we want to produce the autoLowerIntersect momDiff)
                 casalogPost('intersected channel list: %s' % (selection))
                 ##########################################
@@ -2255,13 +2270,28 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                             # add to beginning of string (to maintain increasing order)
                             selection = secondSelectionAdded + separator + selection
                     casalogPost('  %s ****** Added a second selection in wider side of the spectrum: %s' % (projectCode,secondSelectionAdded))
+                    if momDiffPeak0 is None:
+                        # No AmendMask nor ExtraMask was done, so we need to store the original values.
+                        # These *0's will be used to compute the MomDiff 4-letter code generation
+                        momDiffPeak0 = momDiffPeak
+                        momDiffPeakOutside0 = momDiffPeakOutside
+                        momDiffMAD0 = momDiffMAD
+                        momDiffSum0 = momDiffSum
+                        mom8fcPeak0 = mom8fcPeak
+                        mom8fcPeakOutside0 = mom8fcPeakOutside
+                        mom8fcMAD0 = mom8fcMAD
+                        mom8fcSum0 = mom8fcSum
+                        removeRanges = True
+                    else:
+                        removeRanges = False
+                    
                     # update the plot again
                     casalogPost('B) calling updateChannelRangesOnPlot')
                     aggregateBandwidth = updateChannelRangesOnPlot(labelDescs, selection, ax1, separator, 
                                                                    avgspectrumAboveThreshold, skipchan, 
                                                                    medianTrue, positiveThreshold, 
                                                                    upperXlabel, ax2, channelWidth, fontsize,
-                                                                   remove=False)
+                                                                   remove=removeRanges)
                     warnings = gatherWarnings(selection, chanInfo, smallBandwidthFraction, smallSpreadFraction)
                     # recompute a new mom8fc, mom0fc, momDiff, mom8fc.minus.mom0fcScaled
                     ##################################
@@ -2331,23 +2361,26 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                         labelDescs, areaString, mom8code = compute4LetterCodeAndUpdateLegend(mom8fcPeak, 
                                                           mom8fcPeak0, mom8fcPeakOutside, 
                                                           mom8fcPeakOutside0, mom8fcSum, mom8fcSum0, 
-                                                          mom8fcMAD, mom8fcMAD0, thresholdForSame, 
+                                                          mom8fcMAD, mom8fcMAD0, thresholdForSame*5,  # use looser definition of Same
                                                           areaString, labelDescs, fontsize, ax1,
                                                           amendMaskDecision, extraMaskDecision, 
                                                           extraMaskDecision2, autoLowerDecision,
                                                           intersectionOfSelections, useMomentDiff, 
-                                                          warnings, channelRanges, sigmaUsedToAmendMask, replace=True)
+                                                          warnings, channelRanges, sigmaUsedToAmendMask, 
+                                                          replace=True, addedSelection=True)
                     else:
                         # Needs momDiff 4-letter code
                         labelDescs, areaString, momDiffCode = compute4LetterCodeAndUpdateLegend(momDiffPeak, 
                                                       momDiffPeak0, momDiffPeakOutside, 
                                                       momDiffPeakOutside0, momDiffSum, momDiffSum0, 
-                                                      momDiffMAD, momDiffMAD0, thresholdForSame, 
+                                                      momDiffMAD, momDiffMAD0, thresholdForSame*5,  # use looser definition of Same
                                                       areaString, labelDescs, fontsize, ax1,
                                                       amendMaskDecision, extraMaskDecision, 
                                                       extraMaskDecision2, autoLowerDecision,
                                                       intersectionOfSelections, useMomentDiff, 
-                                                      warnings, channelRanges, sigmaUsedToAmendMask, replace=True)
+                                                      warnings, channelRanges, sigmaUsedToAmendMask, replace=True, addedSelection=True)
+                    if png == originalPng:
+                        png = originalPng.replace('.png','_addedRange.png')
                     pl.savefig(png, dpi=dpi)
                     # but we *might* have made it worse, so check again
                     if momDiffCode is None:
@@ -2370,6 +2403,8 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
             aggregateBandwidth = computeBandwidth(selection, channelWidth, 0)
             if originalPng != png:
                 png = revertedPng
+                # update the modification time to current time (like Unix 'touch') so that it appears to be most recent
+                os.utime(png,None) 
         else:
             os.remove(revertedPng)
     ##########################################################################################
@@ -2549,7 +2584,7 @@ def compute4LetterCodeAndUpdateLegend(mom8fcPeak, mom8fcPeak0, mom8fcPeakOutside
                                       extraMaskDecision, extraMaskDecision2, autoLowerDecision,
                                       intersectionOfSelections, 
                                       useMomentDiff, warnings, channelRanges, sigmaUsedToAmendMask,
-                                      skipDecisionCode=False, replace=False):
+                                      skipDecisionCode=False, replace=False, addedSelection=False):
     """
     Used in Pipeline2020 going forward.
     Add a variable length code and a 4-letter code to the end of the last line of the upper legend.
@@ -2608,6 +2643,8 @@ def compute4LetterCodeAndUpdateLegend(mom8fcPeak, mom8fcPeak0, mom8fcPeakOutside
             decisionCode += 'x'
         elif autoLowerDecision not in ['No',False]:
             decisionCode += '?'
+        if addedSelection:
+            decisionCode += '+' # added a selection of channels at the end due to LowBW/LowSpread
         areaString += decisionCode
         casalogPost('Decision code: %s' % (decisionCode.split(',')[1]))
     mycode = compute4LetterCode(mom8fcPeak, mom8fcPeak0, mom8fcPeakOutside, 
@@ -3024,9 +3061,12 @@ def extraMaskYesOrNo(badAtmosphere, median, momSNR, momSNRCube, NpixMom, NpixMom
             casalogPost('%s.  YesMom was not triggered because momSNR=%f < momDiffLevel=%f.' % (decision,momSNR,momDiffLevel))
     return decision, ExtraMaskLevel, sigmaUsed
 
-def onlyExtraMaskYesOrNo(badAtmosphere, median, momDiffSNR, momDiffSNRCube, NpixMomDiff, NpixMomDiffBadAtm, 
-                         NpixCubeAnywhere, TenEventSigma, momDiffMAD, MADCubeOutside, cubePeak, cubeMedian,
-                         momDiffLevel, momDiffLevelBadAtm, cubeLevel, verbose=True):
+def onlyExtraMaskYesOrNo(badAtmosphere, median, momDiffSNR, momDiffSNRCube, 
+                         NpixMomDiff, NpixMomDiffBadAtm, 
+                         NpixCubeAnywhere, TenEventSigma, momDiffMAD, 
+                         MADCubeOutside, cubePeak, cubeMedian,
+                         momDiffLevel, momDiffLevelBadAtm, cubeLevel, 
+                         sigmaThreshold=7.5, npixThreshold=7, verbose=True):
     """
     Used in Pipeline2020 going forward.
     badAtmosphere: either a boolean or a string ('goodAtm' or 'badAtm')
@@ -3044,8 +3084,6 @@ def onlyExtraMaskYesOrNo(badAtmosphere, median, momDiffSNR, momDiffSNRCube, Npix
     decision = 'No'
     onlyExtraMaskLevel = 0.0
     sigmaUsed = 0
-    sigmaThreshold = 7.5 # test on Nessie_F1, refine based on Crystal's findings
-    npixThreshold = 7 # 9
     casalogPost('*******************************************')
     casalogPost('npixThreshold = %d' % (npixThreshold))
     casalogPost('*******************************************')
@@ -4251,7 +4289,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
             else:
                 # i.e. FDM spw with no (or little) channel averaging
                 if peakOverMad > 6:
-                    sigmaFindContinuum = 2.6 # was 3.0 on Apr2, was 3.5 on Mar29
+                    sigmaFindContinuum = 2.5 # was 2.6 in v4.90;  was 3.0 on Apr2, was 3.5 on Mar29
                 else:
                     sigmaFindContinuum = 3.2 # was 3.0 on Apr2, was 3.5 on Mar29
             casalogPost("Setting sigmaFindContinuum = %.1f since we are using mom0mom8jointMask" % (sigmaFindContinuum))
@@ -5296,7 +5334,7 @@ def findWidestContiguousListInChannelRange(channels, channelRange, continuumChan
     continuumChannels: current selection of continuuum channels
     """
     contiguousLists = splitListIntoContiguousLists(sorted(channels))
-    currentRange = continuumChannels[-1]-continuumChannels[0]
+    currentRange = continuumChannels[-1]-continuumChannels[0] + 1
     mylengths = []
     widestList = None
     widestListLength = 0
@@ -5304,7 +5342,7 @@ def findWidestContiguousListInChannelRange(channels, channelRange, continuumChan
     for j,contiguousList in enumerate(contiguousLists):
         mylengths.append(0)
         if (contiguousList[0] >= startchan) and (contiguousList[-1] < endchan):
-            spreadFactor = np.max([contiguousList[-1]-continuumChannels[0],continuumChannels[-1]-contiguousList[0]])/currentRange
+            spreadFactor = np.max([contiguousList[-1]-continuumChannels[0]+1,continuumChannels[-1]-contiguousList[0]+1])/currentRange
             mylengths[j] = len(contiguousList) * spreadFactor
             casalogPost('Possible region: %s, %d*%f = %f' % (contiguousList, len(contiguousList), spreadFactor, mylengths[j]))
         if mylengths[j] > widestListLength:
