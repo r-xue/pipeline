@@ -26,6 +26,7 @@ import collections
 import os.path
 import re
 from collections import OrderedDict
+from typing import Dict
 
 from pipeline.domain.measures import FluxDensityUnits
 from pipeline.h.tasks.applycal.applycal import ApplycalResults
@@ -82,7 +83,7 @@ class RegressionExtractor(object, metaclass=abc.ABCMeta):
             return False
 
     @abc.abstractmethod
-    def handle(self, result):
+    def handle(self, result) -> Dict[str, float]:
         """
         This method should return a dict of
 
@@ -145,7 +146,7 @@ class RegressionExtractorRegistry(object):
         return extracted
 
 
-def union(d1, d2):
+def union(d1: dict, d2: dict):
     """
     Return the union of two dicts, raising an exception if duplicate keys are
     detected in the input dicts.
@@ -160,7 +161,7 @@ def union(d1, d2):
     return u
 
 
-def key_intersection(d1, d2):
+def key_intersection(d1: dict, d2: dict):
     """
     Compare keys of two dicts, returning duplicate keys.
     """
