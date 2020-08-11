@@ -171,6 +171,9 @@ def create_plots(inputs, context, flagcmds, suffix=''):
     spw_field_dict = {int(spw): ','.join(sorted({flagcmd.field for flagcmd in flagcmds if flagcmd.spw==spw})) for spw in flagged_spws}
     amp_uvdist_plots = AmpVsXChart('uvdist', context, output_dir, calto, suffix=suffix, field=spw_field_dict).plot()
 
+    for spw, field in spw_field_dict.items():
+        LOG.info(f'Fields flagged for {inputs.vis} spw {spw}: {field}')
+
     return {'time': amp_time_plots, 'uvdist': amp_uvdist_plots}
 
 
