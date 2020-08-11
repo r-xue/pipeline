@@ -94,6 +94,18 @@ def _memory_size():
 
 # Determine pipeline version from Git or package.
 def _pipeline_revision():
+
+    def str_encode(s):
+        return bytes(s,sys.getdefaultencoding())
+    def str_decode(bs):
+        return bs.decode(sys.getdefaultencoding(),"strict")
+    def pipe_decode(output):
+        if isinstance(output,bytes) or isinstance(output,bytearray):
+            return str_decode(output)
+        elif isinstance(output,tuple):
+            return (str_decode(output[0]),str_decode(output[1]))
+        else:
+            return ("","")
     """
     Get a string describing the pipeline revision and branch of the executing
     pipeline distribution if executing from a Git repo; as a fall-back,
@@ -116,31 +128,45 @@ def _pipeline_revision():
         commit_hash = None
 
     # Retrieve info about current branch.
+    git_branch = None
     try:
         git_branch = subprocess.check_output(['git', 'symbolic-ref', '--short', 'HEAD'], cwd=pl_path,
                                              stderr=subprocess.DEVNULL).decode().strip()
     except (FileNotFoundError, subprocess.CalledProcessError):
-        git_branch = None
+        pass
 
-    # Consolidate into single version string.
-    if commit_hash is None:
-        # If no Git commit info could be found, then attempt to load version
-        # from the _version module that is created when pipeline package is
-        # built.
-        try:
-            from pipeline._version import version
-        except ModuleNotFoundError:
-            version = "unknown"
-    elif git_branch is None:
-        # If info on Git commit is available, but no info on Git branch, then
-        # this checkout may have a detached HEAD pointing at a specific tag, so
-        # just report the Git commit/tag info.
-        version = commit_hash
-    else:
-        # If both Git commit and branch info are available, then use both.
-        version = "{}-{}".format(commit_hash, git_branch)
+    if git_branch != None and (git_branch == "main" or git_branch.startswith("release/")):
+        proc = subprocess.Popen( [ pl_path + "/infrastructure/version" ], stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=pl_path )
+        out,err = pipe_decode(proc.communicate( ))
+        #print(out)
+        releasetag = out.split(" ")[1].strip()
+        dirty=""
+        version = releasetag
+        if (len(out.split(" ")) == 3):
+            #print("Latest commit doesn't have a tag. Adding -dirty flag to version string.")
+            dirty="+" + out.split(" ")[2].strip() # "+" denotes local version identifier as described in PEP440
+            version = version + dirty
+        return version
+    else: 
+        # Consolidate into single version string.
+        if commit_hash is None:
+            # If no Git commit info could be found, then attempt to load version
+            # from the _version module that is created when pipeline package is
+            # built.
+            try:
+                from pipeline._version import version
+            except ModuleNotFoundError:
+                version = "unknown"
+        elif git_branch is None:
+            # If info on Git commit is available, but no info on Git branch, then
+            # this checkout may have a detached HEAD pointing at a specific tag, so
+            # just report the Git commit/tag info.
+            version = commit_hash
+        else:
+            # If both Git commit and branch info are available, then use both.
+            version = "{}-{}".format(commit_hash, git_branch)
 
-    return version
+        return version
 
 
 def _ulimit():
