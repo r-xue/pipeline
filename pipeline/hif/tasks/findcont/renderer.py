@@ -40,9 +40,9 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # as a multi-vis task, there's only one result for FindCont
         result = results[0]
 
-        table_rows = self._get_table_rows(pipeline_context, result)
+        table_rows, raw_rows = self._get_table_rows(pipeline_context, result)
 
-        mako_context.update({'table_rows': table_rows})
+        mako_context.update({'table_rows': table_rows, 'raw_rows': raw_rows})
 
         weblog_dir = os.path.join(pipeline_context.report_dir,
                                   'stage%s' % results[0].stage_number)
@@ -99,7 +99,7 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         rows.append(TR(field=field, spw=spw, min=min_freq, max=max_freq, frame=refer, status=status,
                                        spectrum=plotfile, jointmask=jointmaskplot))
 
-        return utils.merge_td_columns(rows)
+        return utils.merge_td_columns(rows), rows
 
     def _get_plotfile(self, context, result, field, spw):
         ranges_dict = result.result_cont_ranges
