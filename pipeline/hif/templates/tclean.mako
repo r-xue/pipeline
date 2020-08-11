@@ -221,9 +221,10 @@ except:
                         <td style="width:250px;">${image_info[k].sensitivity}</td>
                     %endfor
                 </tr>
+                %if image_info[k].cleaning_threshold_label is not None:
                 <tr>
                     <th>
-                        cleaning threshold
+                        ${image_info[k].cleaning_threshold_label}
                     </th>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
                         <td style="width:250px;">
@@ -234,6 +235,7 @@ except:
                         </td>
                     %endfor
                 </tr>
+                %endif
                 <tr>
                     <th>clean residual peak / scaled MAD</th>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):

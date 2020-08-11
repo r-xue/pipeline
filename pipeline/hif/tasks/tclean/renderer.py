@@ -25,8 +25,8 @@ LOG = logging.get_logger(__name__)
 
 ImageRow = collections.namedtuple('ImageInfo', (
     'vis field fieldname intent spw spwnames pol frequency_label frequency beam beam_pa sensitivity '
-    'cleaning_threshold initial_nsigma_mad_label initial_nsigma_mad final_nsigma_mad_label final_nsigma_mad '
-    'residual_ratio non_pbcor_label non_pbcor '
+    'cleaning_threshold_label cleaning_threshold initial_nsigma_mad_label initial_nsigma_mad '
+    'final_nsigma_mad_label final_nsigma_mad residual_ratio non_pbcor_label non_pbcor '
     'pbcor score fractional_bw_label fractional_bw aggregate_bw_label aggregate_bw aggregate_bw_num '
     'nsigma_label nsigma vis_amp_ratio_label vis_amp_ratio  '
     'image_file nchan plot qa_url iterdone stopcode stopreason '
@@ -225,6 +225,9 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             #
             # cleaning threshold cell
             #
+
+            cleaning_threshold_label = 'cleaning threshold'
+
             if 'VLASS' in r.imaging_mode:
                 if r.threshold:
                     threshold_quantity = utils.get_casa_quantity(r.threshold)
@@ -232,6 +235,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 else:
                     row_cleaning_threshold = '-'
             elif 'VLA' in r.imaging_mode:
+                cleaning_threshold_label = None
                 row_cleaning_threshold = '-'
             else:
                 if r.threshold:
@@ -462,6 +466,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 beam=row_beam,
                 beam_pa=row_beam_pa,
                 sensitivity=row_sensitivity,
+                cleaning_threshold_label=cleaning_threshold_label,
                 cleaning_threshold=row_cleaning_threshold,
                 initial_nsigma_mad_label=initial_nsigma_mad_label,
                 initial_nsigma_mad=row_initial_nsigma_mad,
