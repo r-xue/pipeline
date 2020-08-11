@@ -192,9 +192,10 @@ class Polcalflag(basetask.StandardTaskTemplate):
                 task = casa_tasks.flagmanager(vis=inputs.vis, mode='restore',
                                               versionname=flag_backup_name_after_pcflag_applycal)
                 self._executor.execute(task)
-                # Make "after calibration, before flagging" plots for the weblog
-                LOG.info('Creating "after calibration, before flagging" plots')
-                result.plots['before'] = plot_fn(suffix='before')
+
+            # Make "after calibration, before flagging" plots for the weblog
+            LOG.info('Creating "after calibration, before flagging" plots')
+            result.plots['before'] = plot_fn(suffix='before')
 
         finally:
             # Restore the "pre-polcalflag" backup of the flagging state.
