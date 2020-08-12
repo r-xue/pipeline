@@ -3,12 +3,8 @@
     <ProcedureTitle>hifv_contimage</ProcedureTitle>
 
     <ProcessingCommand>
-        <Command xmlns="">hifv_restoredata</Command>
+        <Command xmlns="">hifv_importdata</Command>
         <ParameterSet>
-          <Parameter>
-            <Keyword xmlns="">copytoraw</Keyword>
-            <Value xmlns="">False</Value>
-          </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
