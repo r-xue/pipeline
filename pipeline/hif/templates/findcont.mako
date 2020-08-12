@@ -51,17 +51,17 @@
             field_block = 0
             %>
             %for i, tr in enumerate(table_rows):
-                %if len(field_block_indices) > 2 and field_block_indices[field_block] == i:
-                    <tr id="field_block_${field_block_indices[field_block]}" class="jumptarget" style="border-bottom:2px solid black">
-                        <td colspan="8"></td>
-                    </tr>
-                    <%
-                    field_block += 1
-                    %>
-                %endif
                 <tr>
-                    %for td in tr:
-                        ${td}
+                    %for j, td in enumerate(tr):
+                        %if len(field_block_indices) > 2 and field_block_indices[field_block] == i and j == 0:
+                            <%
+                            td_jumptarget = td.replace('>', ' id="field_block_{:d}" class="jumptarget">'.format(field_block_indices[field_block]), 1)
+                            field_block += 1
+                            %>
+                            ${td_jumptarget}
+                        %else:
+                            ${td}
+                        %endif
                     %endfor
                 </tr>
             %endfor

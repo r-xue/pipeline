@@ -77,7 +77,7 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 ranges_for_spw = ranges_dict[field][spw].get('cont_ranges', ['NONE'])
 
                 if ranges_for_spw in non_detection:
-                    rows.append(TR(field=field, spw=spw, min='None', max='',
+                    rows.append(TR(field='<b>{:s}</b>'.format(field), spw=spw, min='None', max='',
                                    frame='None', status=status, spectrum=plotfile, jointmask=jointmaskplot))
                 else:
                     raw_ranges_for_spw = [item['range'] for item in ranges_for_spw if isinstance(item, dict)]
@@ -96,7 +96,7 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         # units of cont_ranges values
                         min_freq = measures.Frequency(range_min).str_to_precision(5)
                         max_freq = measures.Frequency(range_max).str_to_precision(5)
-                        rows.append(TR(field=field, spw=spw, min=min_freq, max=max_freq, frame=refer, status=status,
+                        rows.append(TR(field='<b>{:s}</b>'.format(field), spw=spw, min=min_freq, max=max_freq, frame=refer, status=status,
                                        spectrum=plotfile, jointmask=jointmaskplot))
 
         return utils.merge_td_columns(rows), rows
