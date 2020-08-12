@@ -60,7 +60,8 @@ class ImagePreCheckResults(hifa_task_imageprecheck.ImagePreCheckResults):
         See :method:`~pipeline.infrastructure.api.Results.merge_with_context`
         """
         # Store uvtaper parameter in context
-        context.imaging_parameters['uvtaper'] = self.hm_uvtaper
+        if self.hm_uvtaper != []:
+            context.imaging_parameters['uvtaper'] = self.hm_uvtaper
 
         # Call base method
         super().merge_with_context(context)
@@ -347,8 +348,8 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
             (2.0, str(default_uvtaper)): beamRatio_2p0
             }
 
-        if real_repr_target:
-            # Determine heuristic UV taper value
+        if real_repr_target and cqa.getvalue(userAngResolution)[0] != 0.0:
+            # Determine heuristic UV taper value for representative targets and if user set angular resolution goal
             #
             # Re-enable uvtaper for ALMA SRDP task hifas_imageprecheck() but not for the ALMA operations task (PIPE-708)
             if hm_robust == 2.0:
@@ -520,7 +521,7 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
         des_bminor = 1.0 / cqa.getvalue(cqa.convert(beam_user['minor'], 'arcsec'))
 
         if (des_bmajor > bmajor) or (des_bminor > bminor):
-            LOG.warn('uvtaper cannot be calculated for beam_user (%.2farcsec) smaller than beam_natural (%.2farcsec)' % (1.0 / des_bmajor, 1.0 / bmajor))
+            LOG.warn('uvtaper cannot be calculated for beam_user (%.2farcsec) larger than beam_natural (%.2farcsec)' % (1.0 / des_bmajor, 1.0 / bmajor))
             return []
 
         tap_bmajor = 1.0 / (bmajor * des_bmajor / (math.sqrt(bmajor ** 2 - des_bmajor ** 2)))

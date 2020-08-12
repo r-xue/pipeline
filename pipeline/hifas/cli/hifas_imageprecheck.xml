@@ -31,12 +31,14 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value/>
   </param>
 
-  <param name="desired_angular_resolution" type="double">
-    <shortdescription>User specified angular resolution goal in arcsec</shortdescription>
-    <description>User specified angular resolution goal in arcsec
-         -1: automatic from performance parameters
+  <param name="desired_angular_resolution" type="string">
+     <shortdescription>User specified angular resolution goal</shortdescription>
+     <description>User specified angular resolution goal string.
+                  '': automatic from performance parameters (default)
+
+                  Example: '1.0arcsec'
      </description>
-    <value>-1.0</value>
+     <value>''</value>
   </param>
 
   <param name="calcsb" type="bool">
