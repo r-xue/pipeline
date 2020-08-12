@@ -202,7 +202,8 @@ def summarise_fields(fields):
         ${plot_type(plot)}<br>
         ${plot.parameters['vis']}<br>
         Spw ${plot.parameters['spw']}<br>
-        Intents: ${utils.commafy([plot.parameters['intent']], False)}
+        Intents: ${utils.commafy([plot.parameters['intent']], False)}<br>
+        Fields: ${summarise_fields(plot.parameters['field'])}
     </%def>
 
     <%def name="caption_title(plot)">
