@@ -21,12 +21,16 @@ def hifv_contimage(vislist, importonly=False, pipelinemode='automatic', interact
         if importonly:
             raise Exception(IMPORT_ONLY)
 
+        # Split out the target data
         hif_mstransform(pipelinemode=pipelinemode)
 
+        # Check product size limits and mitigate image size
         hif_checkproductsize(maximsize=16384, pipelinemode=pipelinemode)
 
+        # Make a list of expected targets to be cleaned in cont (aggregate over all spws) mode
         hif_makeimlist(specmode='cont', pipelinemode=pipelinemode)
 
+        # Make clean cont images for the selected targets
         hif_makeimages(hm_masking='none', hm_cyclefactor=3.0)
 
         # Export the data
