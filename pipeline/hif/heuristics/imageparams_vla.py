@@ -189,11 +189,11 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
                                         mask_frac_rad=mask_frac_rad)
         # Apply limits
         if new_niter < min_niter:
-            new_niter = min_niter
             LOG.info('niter heuristic: Modified niter %d is smaller than lower limit (%d)' % (new_niter, min_niter))
+            new_niter = min_niter
         elif new_niter > max_niter:
-            new_niter = max_niter
             LOG.info('niter heuristic: Modified niter %d is larger than upper limit (%d)' % (new_niter, max_niter))
+            new_niter = max_niter
         return new_niter
 
     def specmode(self):
