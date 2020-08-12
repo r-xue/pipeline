@@ -13,6 +13,11 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
+        <Command xmlns="">hifv_statwt</Command>
+        <ParameterSet/>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
         <Command xmlns="">hif_mstransform</Command>
         <ParameterSet>
             <Parameter>
