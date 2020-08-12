@@ -69,7 +69,7 @@ class ImagePreCheckResults(hifa_task_imageprecheck.ImagePreCheckResults):
 class ImagePreCheckInputs(vdp.StandardInputs):
     calcsb = vdp.VisDependentProperty(default=False)
     parallel = vdp.VisDependentProperty(default='automatic')
-    desired_angular_resolution = vdp.VisDependentProperty(default=-1.0)
+    desired_angular_resolution = vdp.VisDependentProperty(default='')
     def __init__(self, context, vis=None, desired_angular_resolution=None, calcsb=None, parallel=None):
         self.context = context
         self.vis = vis
@@ -119,23 +119,39 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
         repr_target, repr_source, repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, sensitivityGoal = image_heuristics.representative_target()
 
         # PIPE-708, used only for SRDP, see hifas_imageprecheck task
-        if inputs.desired_angular_resolution not in [None, -1.0]:
+        if inputs.desired_angular_resolution not in [None, '']:
+            # Parse user angular resolution goal
+            if type(inputs.desired_angular_resolution) == str:
+                userAngResolution = cqa.quantity(inputs.desired_angular_resolution)
+            else:
+                userAngResolution = cqa.quantity('%.3garcsec' % inputs.desired_angular_resolution)
             # Assume symmetric beam for now
-            user_desired_beam = {'minor': cqa.quantity('%.3garcsec' % inputs.desired_angular_resolution),
-                                 'major': cqa.quantity('%.3garcsec' % inputs.desired_angular_resolution),
+            user_desired_beam = {'minor': cqa.convert(userAngResolution, 'arcsec'),
+                                 'major': cqa.convert(userAngResolution, 'arcsec'),
                                  'positionangle': '0.0deg'}
-            userAngResolution = cqa.convert(cqa.sqrt(cqa.div(cqa.add(cqa.pow(user_desired_beam['minor'],2),
-                                                                     cqa.pow(user_desired_beam['major'],2)),
-                                                                     2.0)), 'arcsec')
+            # Determine
+            userAngResolution = cqa.sqrt(cqa.div(cqa.add(cqa.pow(user_desired_beam['minor'],2),
+                                                         cqa.pow(user_desired_beam['major'],2)),
+                                                 2.0))
             LOG.info('Setting user specified desired angular resolution to %s' % cqa.tos(userAngResolution))
+        else:
+            userAngResolution = cqa.quantity('%.3garcsec' % 0.0)
 
-            if cqa.getvalue(userAngResolution)[0] != 0.0:
-                # Store PI selected angular resolution
-                pi_minAcceptableAngResolution = minAcceptableAngResolution
-                pi_maxAcceptableAngResolution = maxAcceptableAngResolution
-                # Substitute user selected angular resolution
-                minAcceptableAngResolution = cqa.mul(userAngResolution, 0.8)
-                maxAcceptableAngResolution = cqa.mul(userAngResolution, 1.2)
+        # Store PI selected angular resolution
+        pi_minAcceptableAngResolution = minAcceptableAngResolution
+        pi_maxAcceptableAngResolution = maxAcceptableAngResolution
+        pi_maxAllowedBeamAxialRatio = maxAllowedBeamAxialRatio
+
+        # Store user selected angular resolution
+        user_minAcceptableAngResolution = cqa.mul(userAngResolution, 0.8)
+        user_maxAcceptableAngResolution = cqa.mul(userAngResolution, 1.2)
+        user_maxAllowedBeamAxialRatio = maxAllowedBeamAxialRatio
+
+        # Use user selected angular resolution for calculation, if specified
+        if cqa.getvalue(userAngResolution)[0] != 0.0:
+            minAcceptableAngResolution = user_minAcceptableAngResolution
+            maxAcceptableAngResolution = user_maxAcceptableAngResolution
+            maxAllowedBeamAxialRatio = user_maxAllowedBeamAxialRatio
 
         repr_field = list(image_heuristics.field_intent_list('TARGET', repr_source))[0][0]
 
@@ -441,8 +457,6 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
         else:
             hm_robust = 0.5
             hm_uvtaper = default_uvtaper
-            minAcceptableAngResolution = cqa.quantity(0.0, 'arcsec')
-            maxAcceptableAngResolution = cqa.quantity(0.0, 'arcsec')
 
         return ImagePreCheckResults(
             real_repr_target,
@@ -453,10 +467,10 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
             nbin,
             minAcceptableAngResolution=pi_minAcceptableAngResolution,
             maxAcceptableAngResolution=pi_maxAcceptableAngResolution,
-            maxAllowedBeamAxialRatio=maxAllowedBeamAxialRatio,
-            user_minAcceptableAngResolution=minAcceptableAngResolution,
-            user_maxAcceptableAngResolution=maxAcceptableAngResolution,
-            user_maxAllowedBeamAxialRatio=maxAllowedBeamAxialRatio,
+            maxAllowedBeamAxialRatio=pi_maxAllowedBeamAxialRatio,
+            user_minAcceptableAngResolution=user_minAcceptableAngResolution,
+            user_maxAcceptableAngResolution=user_maxAcceptableAngResolution,
+            user_maxAllowedBeamAxialRatio=user_maxAllowedBeamAxialRatio,
             sensitivityGoal=sensitivityGoal,
             hm_robust=hm_robust,
             hm_uvtaper=hm_uvtaper,
