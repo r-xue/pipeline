@@ -118,7 +118,7 @@ except:
                 </tr>
 
                 <tr>
-                    <th>cleaning threshold</th>
+                    <th>${row.cleaning_threshold_label}</th>
                     <td>${row.cleaning_threshold}</td>
                 </tr>
 
