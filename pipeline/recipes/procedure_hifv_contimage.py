@@ -3,7 +3,7 @@ import traceback
 IMPORT_ONLY = 'Import only'
 
 # Run the procedure
-def hifv (vislist, importonly=False, pipelinemode='automatic', interactive=True):
+def hifv_contimage(vislist, importonly=False, pipelinemode='automatic', interactive=True):
     import pipeline
 
     import pipeline.infrastructure.casatools as casatools
