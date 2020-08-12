@@ -26,8 +26,8 @@ class NewTask():
                 script_args = argv[idx + 1:]
 
         parser = argparse.ArgumentParser(prog="new_pipeline_task", add_help=False)
-        parser.add_argument('--package', help="Pipeline package.  One of 'h', 'hif', 'hifa', 'hifa', 'hifv', or 'hsd'.",
-                            type=str, choices=['h', 'hif', 'hifa', 'hifa', 'hifv', 'hsd'], required=True)
+        parser.add_argument('--package', help="Pipeline package.  One of 'h', 'hif', 'hifa', 'hifas', 'hifv', or 'hsd'.",
+                            type=str, choices=['h', 'hif', 'hifa', 'hifas', 'hifv', 'hsd'], required=True)
         parser.add_argument('--task', help='New task name', type=str, required=True)
         parser.add_argument('--module',
                             help="Optional module name.  e.g. if task is 'foo' "

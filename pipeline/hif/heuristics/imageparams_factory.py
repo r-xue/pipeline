@@ -1,4 +1,5 @@
 from .imageparams_alma import ImageParamsHeuristicsALMA
+from .imageparams_alma_srdp import ImageParamsHeuristicsALMASRDP
 from .imageparams_vlass_quick_look import ImageParamsHeuristicsVlassQl
 from .imageparams_vlass_single_epoch_continuum import ImageParamsHeuristicsVlassSeCont
 from .imageparams_vlass_single_epoch_taper import ImageParamsHeuristicsVlassSeTaper
@@ -14,6 +15,8 @@ class ImageParamsHeuristicsFactory(object):
     def getHeuristics(vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None, linesfile=None, imaging_params={}, imaging_mode='ALMA'):
         if imaging_mode == 'ALMA':
             return ImageParamsHeuristicsALMA(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
+        elif imaging_mode == 'ALMA-SRDP':
+            return ImageParamsHeuristicsALMASRDP(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
         elif imaging_mode == 'VLASS-QL':  # quick look
             return ImageParamsHeuristicsVlassQl(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
         elif imaging_mode == 'VLASS-SE-CONT':  # single epoch continuum
