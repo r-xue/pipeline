@@ -176,7 +176,7 @@ def version(showfile=True):
     """
     Returns the CVS revision number.
     """
-    myversion = "$Id: findContinuumCycle8.py,v 4.94 2020/08/10 17:08:17 we Exp $" 
+    myversion = "$Id: findContinuumCycle8.py,v 4.96 2020/08/11 13:23:15 we Exp $" 
     if (showfile):
         print("Loaded from %s" % (__file__))
     return myversion
@@ -2061,7 +2061,8 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                 elif len(channelList) == 1 and nchan > 500:
                     # disallow first and final channel if either is the adjacent channel
                     casalogPost('intersected channel list: %s' % (selection))
-                    channelList = range(np.max([1,channelList-1]),np.min([channelList+2,nchan-1]))
+                    onlyChannel = channelList[0]
+                    channelList = range(np.max([1,onlyChannel-1]),np.min([onlyChannel+1,nchan-2])+1)
                     casalogPost('Forcing single channel to include the adjacent channels because nchan>500')
                     selection = convertChannelListIntoSelection(channelList)
                                    
