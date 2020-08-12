@@ -453,6 +453,21 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
                                 robust=robust,
                                 uvtaper=hm_uvtaper,
                                 sensitivity=cqa.quantity(0.0, 'Jy/beam')))
+
+                    # Update beamRatios
+                    if reprBW_mode in ['nbin', 'repr_spw']:
+                        beamRatios[(hm_robust, str(hm_uvtaper))] = cqa.tos(cqa.div(beams[(hm_robust, str(hm_uvtaper),
+                                                                                          'repBW')]['major'],
+                                                                                   beams[(hm_robust, str(hm_uvtaper),
+                                                                                          'repBW')]['minor']),
+                                                                           2)
+                    else:
+                        beamRatios[(hm_robust, str(hm_uvtaper))] = cqa.tos(cqa.div(beams[(hm_robust, str(hm_uvtaper),
+                                                                                          'aggBW')]['major'],
+                                                                                   beams[(hm_robust, str(hm_uvtaper),
+                                                                                          'aggBW')]['minor']),
+                                                                           2)
+
             else:
                 hm_uvtaper = default_uvtaper
         else:

@@ -38,7 +38,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 
                   Example: '1.0arcsec'
      </description>
-     <value>''</value>
+     <value></value>
   </param>
 
   <param name="calcsb" type="bool">
