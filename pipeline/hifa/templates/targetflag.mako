@@ -31,7 +31,7 @@ def summarise_fields(fields):
     if num_fields <= max_fields:
         return ', '.join([str(f) for f in field_list])
 
-    field_str = '{field_list[0]}, {field_list[1]}, {field_list[2]}, ..., {field_list[-1]}'
+    field_str = f'{field_list[0]}, {field_list[1]}, {field_list[2]}, ..., {field_list[-1]}'
     return field_str
 %>
 
@@ -202,7 +202,8 @@ def summarise_fields(fields):
         ${plot_type(plot)}<br>
         ${plot.parameters['vis']}<br>
         Spw ${plot.parameters['spw']}<br>
-        Intents: ${utils.commafy([plot.parameters['intent']], False)}
+        Intents: ${utils.commafy([plot.parameters['intent']], False)}<br>
+        Fields: ${summarise_fields(plot.parameters['field'])}
     </%def>
 
     <%def name="caption_title(plot)">
