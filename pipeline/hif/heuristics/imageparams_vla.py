@@ -187,8 +187,14 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         # Compute new niter
         new_niter = super().niter_correction(niter, cell, imsize, residual_max, threshold_vla, residual_robust_rms,
                                         mask_frac_rad=mask_frac_rad)
-
-        return max(min(new_niter, max_niter), min_niter)
+        # Apply limits
+        if new_niter < min_niter:
+            LOG.info('niter heuristic: Modified niter %d is smaller than lower limit (%d)' % (new_niter, min_niter))
+            new_niter = min_niter
+        elif new_niter > max_niter:
+            LOG.info('niter heuristic: Modified niter %d is larger than upper limit (%d)' % (new_niter, max_niter))
+            new_niter = max_niter
+        return new_niter
 
     def specmode(self):
         """See PIPE-683 and CASR-543"""
