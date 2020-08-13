@@ -21,12 +21,16 @@ class FindContHeuristics(object):
             return ['NONE'], 'none'
 
         # Run continuum finder on cube
-        channel_selection, png_name, aggregate_bw, all_continuum = \
+        channel_selection, png_name, aggregate_bw, all_continuum, warning_strings = \
             findContinuum(img=dirty_cube,
                           pbcube=pb_cube,
                           psfcube=psf_cube,
                           singleContinuum=single_continuum,
-                          returnAllContinuumBoolean=True)
+                          returnAllContinuumBoolean=True,
+                          returnWarnings=True)
+
+        for warning_msg in warning_strings:
+            LOG.warning(warning_msg)
 
         # PIPE-74
         channel_counts = countChannelsInRanges(channel_selection)
