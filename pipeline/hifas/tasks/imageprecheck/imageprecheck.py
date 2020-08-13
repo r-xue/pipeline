@@ -558,9 +558,9 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
                         cqa.getvalue(cqa.convert(repr_freq, 'Hz'))[0]
 
         # Limit uvtaper
-        if uvtaper_value > uvtaper_limit:
+        if uvtaper_value < uvtaper_limit:
             uvtaper_value = uvtaper_limit
-            LOG.warn('uvtaper is larger than allowed upper limit of %.2fklambda (80 percentile baseline), using the limit value' %
+            LOG.warn('uvtaper is smaller than allowed upper limit of %.2fklambda (80 percentile baseline), using the limit value' %
                     utils.round_half_up(uvtaper_limit / 1000., 2))
 
         return ['%.2fklambda' % utils.round_half_up(uvtaper_value / 1000., 2)]
