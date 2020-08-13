@@ -60,6 +60,8 @@ class ImagePreCheckResults(hifa_task_imageprecheck.ImagePreCheckResults):
         See :method:`~pipeline.infrastructure.api.Results.merge_with_context`
         """
         # Store uvtaper parameter in context
+        if 'uvtaper' in context.imaging_parameters.keys():
+            del(context.imaging_parameters['uvtaper'])
         if self.hm_uvtaper != []:
             context.imaging_parameters['uvtaper'] = self.hm_uvtaper
 
@@ -114,7 +116,7 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
             contfile=context.contfile,
             linesfile=context.linesfile,
             imaging_params=context.imaging_parameters,
-            imaging_mode='ALMA-SRDP'
+            imaging_mode='ALMA'
         )
 
         repr_target, repr_source, repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, sensitivityGoal = image_heuristics.representative_target()
@@ -546,7 +548,6 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
         tap_angle = math.sqrt( (tap_bmajor ** 2 + tap_bminor ** 2) / 2.0 )
 
         # Convert angle to baseline, the on-sky FWHM in arcsec is roughly  the uv taper/200 (klambda).
-        # TODO: refine computation
         uvtaper_value = tap_angle * 200.0 * 1000.0 # lambda
         LOG.info('uvtaper needed to achive user specified angular resolution is %.2fklambda' %
                  utils.round_half_up(uvtaper_value / 1000., 2))

@@ -341,7 +341,8 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['cycleniter'] = inpdict['cycleniter']
         imlist_entry['cfcache'] = inpdict['cfcache']
         imlist_entry['scales'] = th.scales() if not inpdict['scales'] else inpdict['scales']
-        imlist_entry['uvtaper'] = th.uvtaper() if not inpdict['uvtaper'] else inpdict['uvtaper']
+        imlist_entry['uvtaper'] = (th.uvtaper() if not 'uvtaper' in inp.context.imaging_parameters
+                                   else inp.context.imaging_parameters['uvtaper']) if not inpdict['uvtaper'] else inpdict['uvtaper']
         imlist_entry['uvrange'], _ = th.uvrange(field=fieldnames[0] if fieldnames else None,
                                                 spwspec=imlist_entry['spw']) if not inpdict['uvrange'] else inpdict['uvrange']
         imlist_entry['deconvolver'] = th.deconvolver(None, None) if not inpdict['deconvolver'] else inpdict['deconvolver']
