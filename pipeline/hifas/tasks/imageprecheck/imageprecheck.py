@@ -93,6 +93,14 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
     is_multi_vis_task = True
 
     def prepare(self):
+        '''
+        Differences compared to base task (hifa_task_imageprecheck.ImagePreCheck) prepare method:
+
+        - user speciefed angular resultion goal can be set via inputs.desired_angular_resolution
+        - uvtaper is computed if the best robust is 2.0 and inputs.desired_angular_resolution was set
+        - return best robust if repr_target=False, base method returns robust=0.5 in this case
+        - if repr_target=False and best robust value is 2.0, then compute and return uvtaper
+        '''
         inputs = self.inputs
         context = self.inputs.context
 
@@ -350,130 +358,131 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
             (2.0, str(default_uvtaper)): beamRatio_2p0
             }
 
-        if real_repr_target and cqa.getvalue(userAngResolution)[0] != 0.0:
-            # Determine heuristic UV taper value for representative targets and if user set angular resolution goal
-            #
-            # Re-enable uvtaper for ALMA SRDP task hifas_imageprecheck() but not for the ALMA operations task (PIPE-708)
-            if hm_robust == 2.0:
-                # Calculate 80th percentile baseline, used to set an uper limit on uvtaper
-                l80, min_diameter = image_heuristics.calc_percentile_baseline_length(80.)
-                reprBW_mode_string = ['repBW' if reprBW_mode in ['nbin', 'repr_spw'] else 'aggBW']
-                # self.calc_uvtaper method is only available in hifas_imageprecheck
-                try:
-                    hm_uvtaper = self.calc_uvtaper(beam_natural=beams[(2.0, str(default_uvtaper), reprBW_mode_string[0])],
-                                                   beam_user=user_desired_beam,
-                                                   l80=l80, repr_freq=repr_freq)
-                except:
-                    hm_uvtaper = []
-                if hm_uvtaper != []:
-                    # Add sensitivity entries with actual tapering
-                    beams[(hm_robust, str(hm_uvtaper), 'repBW')], known_synthesized_beams = image_heuristics.synthesized_beam(
-                        [(repr_field, 'TARGET')], str(repr_spw), robust=hm_robust, uvtaper=hm_uvtaper,
-                        known_beams=known_synthesized_beams, force_calc=calcsb, parallel=parallel, shift=True)
+        # Determine non-default UV taper value if the best robust is 2.0 and the user requested resolution parameter
+        # (desired_angular_resolution) is set. (PIPE-708)
+        #
+        # Compute uvtaper for representative targets and also if representative target cannot be determined
+        # (real_repr_target = False) for representative targets and if user set angular resolution goal.
+        #
+        # Note that uvtaper is not computed for the ACA (7m) array, because robust of 2.0 is not in the checked range
+        # (see robust_values_to_check).
+        if hm_robust == 2.0 and cqa.getvalue(userAngResolution)[0] != 0.0:
+            # Calculate 80th percentile baseline, used to set an uper limit on uvtaper
+            l80, min_diameter = image_heuristics.calc_percentile_baseline_length(80.)
+            reprBW_mode_string = ['repBW' if reprBW_mode in ['nbin', 'repr_spw'] else 'aggBW']
+            # self.calc_uvtaper method is only available in hifas_imageprecheck
+            try:
+                hm_uvtaper = self.calc_uvtaper(beam_natural=beams[(2.0, str(default_uvtaper), reprBW_mode_string[0])],
+                                               beam_user=user_desired_beam,
+                                               l80=l80, repr_freq=repr_freq)
+            except:
+                hm_uvtaper = []
+            if hm_uvtaper != []:
+                # Add sensitivity entries with actual tapering
+                beams[(hm_robust, str(hm_uvtaper), 'repBW')], known_synthesized_beams = image_heuristics.synthesized_beam(
+                    [(repr_field, 'TARGET')], str(repr_spw), robust=hm_robust, uvtaper=hm_uvtaper,
+                    known_beams=known_synthesized_beams, force_calc=calcsb, parallel=parallel, shift=True)
 
-                    # If the beam is invalid, error and return.
-                    if beams[(hm_robust, str(hm_uvtaper), 'repBW')] == 'invalid':
-                        LOG.error('Beam for uvtaper repBW is invalid. Cannot continue.')
-                        return ImagePreCheckResults(error=True, error_msg='Invalid beam')
+                # If the beam is invalid, error and return.
+                if beams[(hm_robust, str(hm_uvtaper), 'repBW')] == 'invalid':
+                    LOG.error('Beam for uvtaper repBW is invalid. Cannot continue.')
+                    return ImagePreCheckResults(error=True, error_msg='Invalid beam')
 
-                    cells[(hm_robust, str(hm_uvtaper), 'repBW')] = image_heuristics.cell(beams[(hm_robust, str(hm_uvtaper), 'repBW')])
-                    imsizes[(hm_robust, str(hm_uvtaper), 'repBW')] = image_heuristics.imsize(field_ids, cells[(hm_robust, str(hm_uvtaper), 'repBW')], primary_beam_size, centreonly=False)
-                    if reprBW_mode in ['nbin', 'repr_spw']:
-                        try:
-                            sensitivity, eff_ch_bw, sens_bw, known_per_spw_cont_sensitivities_all_chan = \
-                                image_heuristics.calc_sensitivities(inputs.vis, repr_field, 'TARGET', str(repr_spw), nbin, {}, 'cube', gridder, cells[(hm_robust, str(hm_uvtaper), 'repBW')], imsizes[(hm_robust, str(hm_uvtaper), 'repBW')], 'briggs', hm_robust, hm_uvtaper, True, known_per_spw_cont_sensitivities_all_chan, calcsb)
-                            sensitivities.append(Sensitivity(
-                                array=array,
-                                field=repr_field,
-                                spw=str(repr_spw),
-                                bandwidth=cqa.quantity(sens_bw, 'Hz'),
-                                bwmode='repBW',
-                                beam=beams[(hm_robust, str(hm_uvtaper), 'repBW')],
-                                cell=[cqa.convert(cells[(hm_robust, str(hm_uvtaper), 'repBW')][0], 'arcsec'),
-                                      cqa.convert(cells[(hm_robust, str(hm_uvtaper), 'repBW')][0], 'arcsec')],
-                                robust=hm_robust,
-                                uvtaper=hm_uvtaper,
-                                sensitivity=cqa.quantity(sensitivity, 'Jy/beam')))
-                        except Exception as e:
-                            sensitivities.append(Sensitivity(
-                                array=array,
-                                field=repr_field,
-                                spw=str(repr_spw),
-                                bandwidth=cqa.quantity(0.0, 'Hz'),
-                                bwmode='repBW',
-                                beam=beams[(hm_robust, str(hm_uvtaper), 'repBW')],
-                                cell=['0.0 arcsec', '0.0 arcsec'],
-                                robust=robust,
-                                uvtaper=hm_uvtaper,
-                                sensitivity=cqa.quantity(0.0, 'Jy/beam')))
-
-                    beams[(hm_robust, str(hm_uvtaper), 'aggBW')], known_synthesized_beams = image_heuristics.synthesized_beam(
-                        [(repr_field, 'TARGET')], cont_spw, robust=hm_robust, uvtaper=hm_uvtaper,
-                        known_beams=known_synthesized_beams, force_calc=calcsb, parallel=parallel, shift=True)
-
-                    # If the beam is invalid, error and return.
-                    if beams[(hm_robust, str(hm_uvtaper), 'aggBW')] == 'invalid':
-                        LOG.error('Beam for uvtaper aggBW is invalid. Cannot continue.')
-                        return ImagePreCheckResults(error=True, error_msg='Invalid beam')
-
-                    cells[(hm_robust, str(hm_uvtaper), 'aggBW')] = image_heuristics.cell(beams[(hm_robust, str(hm_uvtaper), 'aggBW')])
-                    imsizes[(hm_robust, str(hm_uvtaper), 'aggBW')] = image_heuristics.imsize(field_ids, cells[(hm_robust, str(hm_uvtaper), 'aggBW')], primary_beam_size, centreonly=False)
+                cells[(hm_robust, str(hm_uvtaper), 'repBW')] = image_heuristics.cell(beams[(hm_robust, str(hm_uvtaper), 'repBW')])
+                imsizes[(hm_robust, str(hm_uvtaper), 'repBW')] = image_heuristics.imsize(field_ids, cells[(hm_robust, str(hm_uvtaper), 'repBW')], primary_beam_size, centreonly=False)
+                if reprBW_mode in ['nbin', 'repr_spw']:
                     try:
                         sensitivity, eff_ch_bw, sens_bw, known_per_spw_cont_sensitivities_all_chan = \
-                            image_heuristics.calc_sensitivities(inputs.vis, repr_field, 'TARGET', cont_spw, -1, {}, 'cont', gridder, cells[(hm_robust, str(hm_uvtaper), 'aggBW')], imsizes[(hm_robust, str(hm_uvtaper), 'aggBW')], 'briggs', hm_robust, hm_uvtaper, True, known_per_spw_cont_sensitivities_all_chan, calcsb)
-                        if scale_aggBW_to_repBW and cont_sens_bw_mode == 'repBW':
-                            # Handle scaling to repSPW_BW < repBW <= 0.9 * aggBW case
-                            _bandwidth = repr_target[2]
-                            _sensitivity = cqa.mul(cqa.quantity(sensitivity, 'Jy/beam'), cqa.sqrt(cqa.div(cqa.quantity(sens_bw, 'Hz'), repr_target[2])))
-                        else:
-                            _bandwidth = cqa.quantity(min(sens_bw, num_cont_spw * 1.875e9), 'Hz')
-                            _sensitivity = cqa.quantity(sensitivity, 'Jy/beam')
+                            image_heuristics.calc_sensitivities(inputs.vis, repr_field, 'TARGET', str(repr_spw), nbin, {}, 'cube', gridder, cells[(hm_robust, str(hm_uvtaper), 'repBW')], imsizes[(hm_robust, str(hm_uvtaper), 'repBW')], 'briggs', hm_robust, hm_uvtaper, True, known_per_spw_cont_sensitivities_all_chan, calcsb)
+                        sensitivities.append(Sensitivity(
+                            array=array,
+                            field=repr_field,
+                            spw=str(repr_spw),
+                            bandwidth=cqa.quantity(sens_bw, 'Hz'),
+                            bwmode='repBW',
+                            beam=beams[(hm_robust, str(hm_uvtaper), 'repBW')],
+                            cell=[cqa.convert(cells[(hm_robust, str(hm_uvtaper), 'repBW')][0], 'arcsec'),
+                                  cqa.convert(cells[(hm_robust, str(hm_uvtaper), 'repBW')][0], 'arcsec')],
+                            robust=hm_robust,
+                            uvtaper=hm_uvtaper,
+                            sensitivity=cqa.quantity(sensitivity, 'Jy/beam')))
+                    except Exception as e:
+                        sensitivities.append(Sensitivity(
+                            array=array,
+                            field=repr_field,
+                            spw=str(repr_spw),
+                            bandwidth=cqa.quantity(0.0, 'Hz'),
+                            bwmode='repBW',
+                            beam=beams[(hm_robust, str(hm_uvtaper), 'repBW')],
+                            cell=['0.0 arcsec', '0.0 arcsec'],
+                            robust=robust,
+                            uvtaper=hm_uvtaper,
+                            sensitivity=cqa.quantity(0.0, 'Jy/beam')))
 
-                        for cont_sens_bw_mode in cont_sens_bw_modes:
-                            sensitivities.append(Sensitivity(
-                                array=array,
-                                field=repr_field,
-                                spw=str(repr_spw),
-                                bandwidth=_bandwidth,
-                                bwmode=cont_sens_bw_mode,
-                                beam=beams[(hm_robust, str(hm_uvtaper), 'aggBW')],
-                                cell=[cqa.convert(cells[(hm_robust, str(hm_uvtaper), 'aggBW')][0], 'arcsec'),
-                                      cqa.convert(cells[(hm_robust, str(hm_uvtaper), 'aggBW')][0], 'arcsec')],
-                                robust=hm_robust,
-                                uvtaper=hm_uvtaper,
-                                sensitivity=_sensitivity))
-                    except:
-                        for _ in cont_sens_bw_modes:
-                            sensitivities.append(Sensitivity(
-                                array=array,
-                                field=repr_field,
-                                spw=str(repr_spw),
-                                bandwidth=cqa.quantity(0.0, 'Hz'),
-                                bwmode='repBW',
-                                beam=beams[(hm_robust, str(hm_uvtaper), 'aggBW')],
-                                cell=['0.0 arcsec', '0.0 arcsec'],
-                                robust=robust,
-                                uvtaper=hm_uvtaper,
-                                sensitivity=cqa.quantity(0.0, 'Jy/beam')))
+                beams[(hm_robust, str(hm_uvtaper), 'aggBW')], known_synthesized_beams = image_heuristics.synthesized_beam(
+                    [(repr_field, 'TARGET')], cont_spw, robust=hm_robust, uvtaper=hm_uvtaper,
+                    known_beams=known_synthesized_beams, force_calc=calcsb, parallel=parallel, shift=True)
 
-                    # Update beamRatios
-                    if reprBW_mode in ['nbin', 'repr_spw']:
-                        beamRatios[(hm_robust, str(hm_uvtaper))] = cqa.tos(cqa.div(beams[(hm_robust, str(hm_uvtaper),
-                                                                                          'repBW')]['major'],
-                                                                                   beams[(hm_robust, str(hm_uvtaper),
-                                                                                          'repBW')]['minor']),
-                                                                           2)
+                # If the beam is invalid, error and return.
+                if beams[(hm_robust, str(hm_uvtaper), 'aggBW')] == 'invalid':
+                    LOG.error('Beam for uvtaper aggBW is invalid. Cannot continue.')
+                    return ImagePreCheckResults(error=True, error_msg='Invalid beam')
+
+                cells[(hm_robust, str(hm_uvtaper), 'aggBW')] = image_heuristics.cell(beams[(hm_robust, str(hm_uvtaper), 'aggBW')])
+                imsizes[(hm_robust, str(hm_uvtaper), 'aggBW')] = image_heuristics.imsize(field_ids, cells[(hm_robust, str(hm_uvtaper), 'aggBW')], primary_beam_size, centreonly=False)
+                try:
+                    sensitivity, eff_ch_bw, sens_bw, known_per_spw_cont_sensitivities_all_chan = \
+                        image_heuristics.calc_sensitivities(inputs.vis, repr_field, 'TARGET', cont_spw, -1, {}, 'cont', gridder, cells[(hm_robust, str(hm_uvtaper), 'aggBW')], imsizes[(hm_robust, str(hm_uvtaper), 'aggBW')], 'briggs', hm_robust, hm_uvtaper, True, known_per_spw_cont_sensitivities_all_chan, calcsb)
+                    if scale_aggBW_to_repBW and cont_sens_bw_mode == 'repBW':
+                        # Handle scaling to repSPW_BW < repBW <= 0.9 * aggBW case
+                        _bandwidth = repr_target[2]
+                        _sensitivity = cqa.mul(cqa.quantity(sensitivity, 'Jy/beam'), cqa.sqrt(cqa.div(cqa.quantity(sens_bw, 'Hz'), repr_target[2])))
                     else:
-                        beamRatios[(hm_robust, str(hm_uvtaper))] = cqa.tos(cqa.div(beams[(hm_robust, str(hm_uvtaper),
-                                                                                          'aggBW')]['major'],
-                                                                                   beams[(hm_robust, str(hm_uvtaper),
-                                                                                          'aggBW')]['minor']),
-                                                                           2)
+                        _bandwidth = cqa.quantity(min(sens_bw, num_cont_spw * 1.875e9), 'Hz')
+                        _sensitivity = cqa.quantity(sensitivity, 'Jy/beam')
 
-            else:
-                hm_uvtaper = default_uvtaper
+                    for cont_sens_bw_mode in cont_sens_bw_modes:
+                        sensitivities.append(Sensitivity(
+                            array=array,
+                            field=repr_field,
+                            spw=str(repr_spw),
+                            bandwidth=_bandwidth,
+                            bwmode=cont_sens_bw_mode,
+                            beam=beams[(hm_robust, str(hm_uvtaper), 'aggBW')],
+                            cell=[cqa.convert(cells[(hm_robust, str(hm_uvtaper), 'aggBW')][0], 'arcsec'),
+                                  cqa.convert(cells[(hm_robust, str(hm_uvtaper), 'aggBW')][0], 'arcsec')],
+                            robust=hm_robust,
+                            uvtaper=hm_uvtaper,
+                            sensitivity=_sensitivity))
+                except:
+                    for _ in cont_sens_bw_modes:
+                        sensitivities.append(Sensitivity(
+                            array=array,
+                            field=repr_field,
+                            spw=str(repr_spw),
+                            bandwidth=cqa.quantity(0.0, 'Hz'),
+                            bwmode='repBW',
+                            beam=beams[(hm_robust, str(hm_uvtaper), 'aggBW')],
+                            cell=['0.0 arcsec', '0.0 arcsec'],
+                            robust=robust,
+                            uvtaper=hm_uvtaper,
+                            sensitivity=cqa.quantity(0.0, 'Jy/beam')))
+
+                # Update beamRatios
+                if reprBW_mode in ['nbin', 'repr_spw']:
+                    beamRatios[(hm_robust, str(hm_uvtaper))] = cqa.tos(cqa.div(beams[(hm_robust, str(hm_uvtaper),
+                                                                                      'repBW')]['major'],
+                                                                               beams[(hm_robust, str(hm_uvtaper),
+                                                                                      'repBW')]['minor']),
+                                                                       2)
+                else:
+                    beamRatios[(hm_robust, str(hm_uvtaper))] = cqa.tos(cqa.div(beams[(hm_robust, str(hm_uvtaper),
+                                                                                      'aggBW')]['major'],
+                                                                               beams[(hm_robust, str(hm_uvtaper),
+                                                                                      'aggBW')]['minor']),
+                                                                       2)
+
         else:
-            hm_robust = 0.5
             hm_uvtaper = default_uvtaper
 
         return ImagePreCheckResults(
