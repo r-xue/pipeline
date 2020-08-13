@@ -59,4 +59,14 @@ class T2_4MDetailsCheckProductSizeRenderer(basetemplates.T2_4MDetailsDefaultRend
 
         rows = [TR(nbins=nbins, hm_imsize=hm_imsize, hm_cell=hm_cell, field=field, spw=spw)]
 
+        # imsize mitigation may have spwspec (band) dependent mitigation parameters (see PIPE-676)
+        if 'multi_target_size_mitigation' in result.size_mitigation_parameters:
+            # overwriting rows is acceptable because byte size (content of rows above) and imsize mitigation with
+            # potentially multiple targets and/or bands are mutually exclusive.
+            rows = []
+            for spwspec, smp in result.size_mitigation_parameters['multi_target_size_mitigation'].items():
+                hm_imsize = [str(smp['hm_imsize']) if 'hm_imsize' in smp.keys() else 'default'][0]
+                hm_cell = [str(smp['hm_cell']) if 'hm_cell' in smp.keys() else 'default'][0]
+                rows.append(TR(spw=spwspec, nbins='default', hm_imsize=hm_imsize, hm_cell=hm_cell, field='default'))
+
         return utils.merge_td_columns(rows)
