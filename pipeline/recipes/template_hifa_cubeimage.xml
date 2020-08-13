@@ -28,8 +28,12 @@
     {{/importonly}}
 
     <ProcessingCommand>
-        <Command xmlns="">hifa_imageprecheck</Command>
+        <Command xmlns="">hifas_imageprecheck</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">desired_angular_resolution</Keyword>
+                <Value xmlns="">{{desired_angular_resolution}}</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
