@@ -279,7 +279,7 @@ class FindCont(basetask.StandardTaskTemplate):
                     real_spwid = inputs.context.observing_run.virtual2real_spw_id(int(spwid), ref_ms)
                     spw_transitions = ref_ms.get_spectral_window(spwid).transitions
                     single_continuum = any(['Single_Continuum' in t for t in spw_transitions])
-                    (cont_range, png, single_range_channel_fraction) = \
+                    (cont_range, png, single_range_channel_fraction, warning_strings) = \
                         findcont_heuristics.find_continuum(dirty_cube='%s.residual' % findcont_basename,
                                                            pb_cube='%s.pb' % findcont_basename,
                                                            psf_cube='%s.psf' % findcont_basename,
@@ -289,6 +289,10 @@ class FindCont(basetask.StandardTaskTemplate):
                         LOG.warning('Only a single narrow range of channels was found for continuum in '
                                     '{field} in spw {spw}, so the continuum subtraction '
                                     'may be poor for that spw.'.format(field=target['field'], spw=spwid))
+
+                    # Internal findContinuum warnings
+                    for warning_msg in warning_strings:
+                        LOG.warning('Field {field}, spw {spw}: {warning_msg}'.format(field=target['field'], spw=spwid, warning_msg=warning_msg))
 
                     is_repsource = (repsource_name == target['field']) and (repsource_spwid == spwid)
                     chanfrac = {'fraction'    : single_range_channel_fraction,

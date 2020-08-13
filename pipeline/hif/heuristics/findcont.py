@@ -29,9 +29,6 @@ class FindContHeuristics(object):
                           returnAllContinuumBoolean=True,
                           returnWarnings=True)
 
-        for warning_msg in warning_strings:
-            LOG.warning(warning_msg)
-
         # PIPE-74
         channel_counts = countChannelsInRanges(channel_selection)
         if 1 == len(channel_counts):
@@ -49,4 +46,4 @@ class FindContHeuristics(object):
 
             frequency_ranges_GHz.extend([{'range': item, 'refer': 'LSRK'} for item in utils.chan_selection_to_frequencies(dirty_cube, channel_selection, 'GHz')])
 
-        return frequency_ranges_GHz, png_name, single_range_channel_fraction
+        return frequency_ranges_GHz, png_name, single_range_channel_fraction, warning_strings
