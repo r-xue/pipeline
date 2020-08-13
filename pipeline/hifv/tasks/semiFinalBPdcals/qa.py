@@ -43,8 +43,12 @@ class semiFinalBPdcalsQAHandler(pqa.QAPlugin):
                                       shortmsg='Bandpass or delay table problem.')]
 
         for antenna, spwlist in self.antspw.items():
+            uniquespw = list(set(spwlist))
+            uniquespwlist = [int(spw) for spw in uniquespw]
+            uniquespwlist.sort()
+            uniquespwlist = [str(spw) for spw in uniquespwlist]
             LOG.warn('Antenna {!s}, spws: {!s} have a flagging fraction of 1.0.'
-                     ''.format(antenna, ','.join(spwlist)))
+                     ''.format(antenna, ','.join(uniquespwlist)))
 
         result.qa.pool.extend(scores)
 

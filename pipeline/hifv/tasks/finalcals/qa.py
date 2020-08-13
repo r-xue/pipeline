@@ -53,6 +53,9 @@ class FinalcalsQAHandler(pqa.QAPlugin):
                         spwcollect.append(str(spw))
             if len(spwcollect) > 1:
                 spwcollect = sorted(set(spwcollect))
+                spwcollect = [int(spw) for spw in spwcollect]
+                spwcollect.sort()
+                spwcollect = [str(spw) for spw in spwcollect]
                 LOG.warn('Antenna {!s}, spws: {!s} have a flagging fraction of 1.0.'
                          ''.format(antenna_names[antenna], ','.join(spwcollect)))
 
