@@ -547,8 +547,9 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
         # Assume symmetric beam
         tap_angle = math.sqrt( (tap_bmajor ** 2 + tap_bminor ** 2) / 2.0 )
 
-        # Convert angle to baseline, the on-sky FWHM in arcsec is roughly  the uv taper/200 (klambda).
-        uvtaper_value = tap_angle * 200.0 * 1000.0 # lambda
+        # Convert angle to baseline
+        ARCSEC_PER_RAD = 206264.80624709636
+        uvtaper_value = ARCSEC_PER_RAD / tap_angle
         LOG.info('uvtaper needed to achive user specified angular resolution is %.2fklambda' %
                  utils.round_half_up(uvtaper_value / 1000., 2))
 
