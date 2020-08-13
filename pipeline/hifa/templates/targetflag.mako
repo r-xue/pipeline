@@ -178,7 +178,7 @@ def summarise_fields(fields):
                   url_fn="${lambda x: 'junk'}"
                   rel_fn="${lambda plot: 'amp_vs_uvdist_%s_%s' % (plot.parameters['vis'], plot.parameters['spw'])}"
                   title_id="amp_vs_uvdist"
-                  break_rows_by="field"
+                  break_rows_by="type_idx"
                   sort_row_by="spw">
 
     <%def name="title()">
