@@ -165,7 +165,7 @@ def initcli():
     LOG.info('Initializing cli...')
     my_globals = find_frame()
     exec('from casashell import extra_task_modules', my_globals)
-    for package in ['h', 'hif', 'hifa', 'hifv', 'hsd', 'hsdn']:
+    for package in ['h', 'hif', 'hifa', 'hifas', 'hifv', 'hsd', 'hsdn']:
         abs_cli_package = 'pipeline.{package}.cli'.format(package=package)
         abs_gotasks_package = 'pipeline.{package}.cli.gotasks'.format(package=package)
         try:
