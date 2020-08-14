@@ -364,7 +364,13 @@ class Fluxboot2(basetask.StandardTaskTemplate):
         for field in calfieldliststrings:
             fieldobj = m.get_fields(field_id=int(field))
             if (len(fieldobj[0].intents) == 1 and 'POINTING' in fieldobj[0].intents) or \
-                    (len(fieldobj[0].intents) == 1 and 'SYSTEM_CONFIGURATION' in fieldobj[0].intents):
+                    (len(fieldobj[0].intents) == 1 and 'SYSTEM_CONFIGURATION' in fieldobj[0].intents) or \
+                    (len(fieldobj[0].intents) == 1 and 'UNSPECIFIED#UNSPECIFIED' in fieldobj[0].intents) or \
+                    (len(fieldobj[0].intents) == 2 and 'POINTING' in fieldobj[0].intents and 'SYSTEM_CONFIGURATION' in fieldobj[0].intents) or \
+                    (len(fieldobj[0].intents) == 2 and 'POINTING' in fieldobj[0].intents and 'UNSPECIFIED#UNSPECIFIED' in fieldobj[0].intents) or \
+                    (len(fieldobj[0].intents) == 2 and 'SYSTEM_CONFIGURATION' in fieldobj[0].intents and 'UNSPECIFIED#UNSPECIFIED' in fieldobj[0].intents) or \
+                    (len(fieldobj[0].intents) == 3 and 'POINTING' in fieldobj[0].intents and 'SYSTEM_CONFIGURATION' in fieldobj[0].intents and 'UNSPECIFIED#UNSPECIFIED' in fieldobj[0].intents):
+
                 LOG.debug("Single INTENT not included")
             else:
                 calfieldlist.append(field)
