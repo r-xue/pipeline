@@ -64,13 +64,18 @@
 
                  Example: combine='scan,spw' - Extend solutions
                  over scan boundaries (up to the solint), and
-                 combine spws for solving
+                 combine spws for solving.
+
+                 In selfcalmode='VLASS-SE' use the default value.
     </description>
 	<value>spw,field</value>
     </param>
 
     <param name="selfcalmode" type="string">
-	<description>Heuristics mode selection</description>
+    <shortdescription>Heuristics mode selection</shortdescription>
+	<description>Heuristics mode selection. Known modes are 'VLASS' and 'VLASS-SE'.
+                 Default value is 'VLASS'.
+    </description>
 	<value>VLASS</value>
     </param>
 
@@ -114,6 +119,9 @@ Examples
 
    hifv_selfcal()
 
+2. VLASS-SE selfcal usage
+
+    hifv_selfcal(selfcalmode='VLASS-SE', combine='field,spw')
 
 </example>
 </task>
