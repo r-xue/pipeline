@@ -291,7 +291,8 @@ class residualsSummaryChart(object):
         #pb.clf()
 
         fig = pb.figure(figsize=(10, 6))
-        ax1 = fig.add_subplot(111)
+        # ax1 = fig.add_subplot(111)
+        ax1 = fig.add_axes([0.1, 0.1, 0.5, 0.8])
 
         mysize = 'small'
         colors = ['red', 'blue', 'green', 'cyan', 'yellow', 'orange', 'purple']
@@ -313,7 +314,7 @@ class residualsSummaryChart(object):
                 # pb.legend()
                 # pb.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05), shadow=True, ncol=2)
                 chartBox = ax1.get_position()
-                ax1.set_position([chartBox.x0, chartBox.y0, chartBox.width * 0.8, chartBox.height])
+                # ax1.set_position([chartBox.x0, chartBox.y0, chartBox.width * 0.8, chartBox.height])
                 ax1.legend(loc='upper center', bbox_to_anchor=(1.45, 0.8), shadow=True, ncol=1)
                 # title = title + '   ' + str(source) + '({!s})'.format(colors[colorcount])
                 colorcount += 1
