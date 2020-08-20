@@ -377,6 +377,9 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
         fluxscale_result = []
 
+        # Filter down to only science spectral windows
+        scispws = [spw.id for spw in m.get_spectral_windows(science_windows_only=True)]
+
         for field in calfieldlist:
             fitorder = self.inputs.fitorder
             spwlist = []
@@ -387,7 +390,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
                 spwlist = list(np.unique(spwlist))
                 spwlist.sort()
-                spwlist = [str(spwid) for spwid in spwlist]
+                spwlist = [str(spwid) for spwid in spwlist if spwid in scispws]
 
                 fitorder = self.find_fitorder(spwlist)
             elif self.inputs.fitorder > -1:
