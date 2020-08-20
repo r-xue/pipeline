@@ -129,7 +129,7 @@ class BaselineSubtractionPlotManager(object):
             self.postfit_storage = None
         else:
             if not os.path.exists(self.stage_dir):
-                os.makedirs(self.stage_dir)
+                os.makedirs(self.stage_dir, exist_ok=True)   #handle race condition in Tier-0 operation gracefully
 
             self.pool = PlotterPool()
             self.prefit_storage = PlotDataStorage()
