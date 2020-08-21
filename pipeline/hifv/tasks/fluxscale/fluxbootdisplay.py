@@ -291,6 +291,7 @@ class residualsSummaryChart(object):
         #pb.clf()
 
         fig = pb.figure(figsize=(10, 6))
+        # ax1 = fig.add_subplot(111)
         ax1 = fig.add_axes([0.1, 0.1, 0.5, 0.8])
 
         mysize = 'small'
