@@ -306,11 +306,11 @@ class residualsSummaryChart(object):
                 for datadict in datadicts:
                     residuals.append(float(datadict['data']) - float(datadict['fitteddata']))
                     frequencies.append(float(datadict['freq']))
-                ax1.plot(frequencies, residuals, 'o', label=source, color=colors[colorcount])
-                ax1.plot(np.linspace(np.min(frequencies), np.max(frequencies), 10),
+                ax1.plot(np.log10(np.array(frequencies) * 1.e9), residuals, 'o', label=source, color=colors[colorcount])
+                ax1.plot(np.linspace(np.min(np.log10(np.array(frequencies) * 1.e9)), np.max(np.log10(np.array(frequencies) * 1.e9)), 10),
                          np.zeros(10) + np.mean(residuals), linestyle='--', label='Mean', color=colors[colorcount])
                 pb.ylabel('Residuals (data - fit) [Jy]', size=mysize)
-                pb.xlabel('Frequency [GHz]', size=mysize)
+                pb.xlabel('log10 Frequency [Hz]', size=mysize)
                 # pb.legend()
                 # pb.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05), shadow=True, ncol=2)
                 chartBox = ax1.get_position()
