@@ -2,6 +2,7 @@ import abc
 import collections
 import datetime
 import inspect
+import matplotlib
 import os
 import pickle
 import pprint
@@ -105,6 +106,19 @@ def capture_log(method):
 
         return result
     return capture
+
+
+def matplotlibrc_handler(method):
+    def handle_matplotlibrc(self, *args, **kwargs):
+        # execute method within dedicated matplotlib context to pipeline
+        # currently default rcParams is used
+        with matplotlib.rc_context(rc=matplotlib.rcParamsDefault):
+            # execute method
+            result = method(self, *args, **kwargs)
+
+        return result
+
+    return handle_matplotlibrc
 
 
 class MandatoryInputsMixin(object):
@@ -971,6 +985,7 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     @timestamp
+    @matplotlibrc_handler
     @capture_log
     @result_finaliser
     def execute(self, dry_run=True, **parameters):
