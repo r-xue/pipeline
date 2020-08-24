@@ -87,7 +87,7 @@ class taskutil(object):
         if len(childs) > 0:
             child = childs[0]
             if child.hasChildNodes():
-                s = child.lastChild.data.encode('UTF-8')
+                s = str(child.lastChild.data.encode('UTF-8'), 'UTF-8')
         return s
 
     def getshortdescription(self, task):
