@@ -140,14 +140,14 @@ class taskutil(object):
             namekey = keys.index('name')
             typekey = keys.index('type')
             values = list(attr.values())
-            name = values[namekey].value.encode('UTF-8')
+            name = str(values[namekey].value.encode('UTF-8'), 'UTF-8')
             myproperty = {}
-            ptype = values[typekey].value.encode('UTF-8')
+            ptype = str(values[typekey].value.encode('UTF-8'), 'UTF-8')
             defaults = childs[i].getElementsByTagName('value')[0]
             if defaults.hasChildNodes():
                 if defaults.lastChild.hasChildNodes():
                     defaults = defaults.lastChild
-                defaultvalue = defaults.lastChild.data.encode('UTF-8')
+                defaultvalue = str(defaults.lastChild.data.encode('UTF-8'), 'UTF-8')
                 if len(defaultvalue) == 0:
                     defaultvalue = 'None'
             else:
@@ -156,7 +156,7 @@ class taskutil(object):
             if len(descs) != 0:
                 descs = descs[0]
                 if descs.hasChildNodes():
-                    description = descs.lastChild.data.encode('UTF-8')
+                    description = str(descs.lastChild.data.encode('UTF-8'), 'UTF-8')
                     if len(description) == 0:
                         description = 'None'
                 else:
