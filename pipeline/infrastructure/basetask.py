@@ -1,6 +1,7 @@
 import abc
 import collections
 import datetime
+import functools
 import inspect
 import matplotlib
 import os
@@ -53,7 +54,7 @@ def result_finaliser(method):
     returned from a number of places but we don't want to set the properties
     in each location.
 
-    TODO: refactor so this is done as part of execute!  
+    TODO: refactor so this is done as part of execute!
     """
     def finalise_pipeline_result(self, *args, **kw):
         result = method(self, *args, **kw)
@@ -85,7 +86,7 @@ def capture_log(method):
         # execute the task
         result = method(self, *args, **kw)
 
-        # copy the CASA log entries written since task execution to the result 
+        # copy the CASA log entries written since task execution to the result
         with open(logfile, 'r') as casalog:
             casalog.seek(size_before)
 
@@ -109,6 +110,7 @@ def capture_log(method):
 
 
 def matplotlibrc_handler(method):
+    @functools.wraps(method)
     def handle_matplotlibrc(self, *args, **kwargs):
         # execute method within dedicated matplotlib context to pipeline
         # currently default rcParams is used
@@ -131,15 +133,15 @@ class MandatoryInputsMixin(object):
         if not isinstance(self._context, launcher.Context):
             msg = (self.__class__.__name__ + ' did not set the pipeline '
                    'context')
-            raise TypeError(msg)  
+            raise TypeError(msg)
         return self._context
 
     @context.setter
     def context(self, value):
         if not isinstance(value, launcher.Context):
-            msg = ('context must be a pipeline context. Got ' + 
+            msg = ('context must be a pipeline context. Got ' +
                    value.__class__.__name__ + '.')
-            raise TypeError(msg)  
+            raise TypeError(msg)
         self._context = value
 
     @property
@@ -167,14 +169,14 @@ class MandatoryInputsMixin(object):
 
         If vis is not set, this defaults to all measurement sets registered
         with the context.
-        """ 
+        """
         if self._vis is not None:
             return self._vis
 
         imaging_preferred = get_imaging_preferred(self.__class__)
         return [ms.name for ms in self.context.observing_run.get_measurement_sets(imaging_preferred=imaging_preferred)]
 
-    @vis.setter    
+    @vis.setter
     def vis(self, value):
         if value is None:
             imaging_preferred = get_imaging_preferred(self.__class__)
@@ -185,7 +187,7 @@ class MandatoryInputsMixin(object):
 
             # check that the context holds each vis specified by the user
             for vis in vislist:
-                # get_ms throws a KeyError if the ms is not in the context 
+                # get_ms throws a KeyError if the ms is not in the context
                 self.context.observing_run.get_ms(name=vis)
 
         # VISLIST_RESET_KEY is present when vis is set by handle_multivis.
@@ -195,7 +197,7 @@ class MandatoryInputsMixin(object):
             LOG.trace('Setting Inputs._my_vislist to %s' % vislist)
             self._my_vislist = vislist
         else:
-            LOG.trace('Leaving Inputs._my_vislist at current value of %s' 
+            LOG.trace('Leaving Inputs._my_vislist at current value of %s'
                       % self._my_vislist)
 
         self._vis = value
@@ -204,7 +206,7 @@ class MandatoryInputsMixin(object):
     def output_dir(self):
         if self._output_dir is None:
             return self.context.output_dir
-        return self._output_dir        
+        return self._output_dir
 
     @output_dir.setter
     def output_dir(self, value):
@@ -224,7 +226,7 @@ class OnTheFlyCalibrationMixin(object):
     As a mixin, this class is not intended to be instantiated; rather, it is
     inherited by an Inputs that specifies on-the-fly calibration parameters.
     Getting and setting any of these on-the-fly parameters will then use the
-    shared functionality defined here. 
+    shared functionality defined here.
     """
     @property
     def opacity(self):
@@ -241,7 +243,7 @@ class StandardInputs(api.Inputs, MandatoryInputsMixin, metaclass=abc.ABCMeta):
 
     StandardInputs provides a standard implementation for the the api.Inputs
     interface. Inputs class with a
-    common implementation pattern and some common functionality. While it 
+    common implementation pattern and some common functionality. While it
     demands that subclasses implement some additional methods, in return it
     allows tasks to manipulate these Inputs objects more easily.
     """
@@ -280,14 +282,14 @@ class StandardInputs(api.Inputs, MandatoryInputsMixin, metaclass=abc.ABCMeta):
     def _get_task_args(self, ignore=()):
         """
         Express this class as a dictionary of CASA arguments, listing all
-        inputs except those named in ignore. 
+        inputs except those named in ignore.
 
         The main purpose of the ignore argument is used to prevent an infinite
         loop in :meth:`~CommonCalibrationInputs.caltable`, which determines the
         value of caltable based on the value of the other CASA task arguments.
         """
-        # get the signature of this Inputs class. We want to return a 
-        # of dictionary of all kw argument names except self, the 
+        # get the signature of this Inputs class. We want to return a
+        # of dictionary of all kw argument names except self, the
         # pipeline-specific arguments (context, output_dir, etc.) and
         # caltable.
         skip = ['self', 'context', 'output_dir', 'ms', 'calto', 'calstate']
@@ -326,7 +328,7 @@ class StandardInputs(api.Inputs, MandatoryInputsMixin, metaclass=abc.ABCMeta):
         setattr(self, VISLIST_RESET_KEY, True)
         try:
             result = []
-            for vis in original: 
+            for vis in original:
                 self.vis = vis
                 result.append(getattr(self, property_name))
             return result
@@ -338,11 +340,11 @@ class StandardInputs(api.Inputs, MandatoryInputsMixin, metaclass=abc.ABCMeta):
     def to_casa_args(self):
         """
         Express these inputs as a dictionary of CASA arguments. The values
-        in the dictionary are in a format suitable for CASA and can be 
+        in the dictionary are in a format suitable for CASA and can be
         directly passed to the CASA task.
 
         :rtype: a dictionary of string/??? kw/val pairs
-        """        
+        """
         args = self._get_task_args()
 
         # spw needs to be a string and not a number
@@ -361,7 +363,7 @@ class StandardInputs(api.Inputs, MandatoryInputsMixin, metaclass=abc.ABCMeta):
 
         for k, v in args.items():
             if v is None:
-                del args[k]        
+                del args[k]
         return args
 
     def __repr__(self):
@@ -376,7 +378,7 @@ class ModeInputs(api.Inputs):
     ModeInputs is a facade for Inputs of a common task type, allowing the user
     to switch between task implementations by changing the 'mode' parameter.
 
-    Extending classes should override the _modes dictionary with a set of 
+    Extending classes should override the _modes dictionary with a set of
     key/value pairs, each pair mapping the mode name key to the task class
     value.
     """
@@ -405,16 +407,16 @@ class ModeInputs(api.Inputs):
         will be returned containing a list of property values, one for each
         measurement set specified in the inputs.
         """
-        # _handle_multiple_vis must be present on the ModeInputs to allow 
+        # _handle_multiple_vis must be present on the ModeInputs to allow
         # multi-vis properties on the top-level ModeInputs class. Failure to do
         # so results in delegation to active._handle_multiple_vis for the
         # multi-vis property, which then raises an AttributeError as the
         # named top-level attribute does not exist in the lower-level delegate
-        # class.  
+        # class.
         original = self.vis
         try:
             result = []
-            for vis in original: 
+            for vis in original:
                 self.vis = vis
                 result.append(getattr(self, property_name))
             return result
@@ -424,8 +426,8 @@ class ModeInputs(api.Inputs):
     def __getattr__(self, name):
         # __getattr__ is only called when this object's __dict__ does not
         # contain the requested property. When this happens, we delegate to
-        # the currently selected Inputs. First, however, we check whether 
-        # the requested property is one of the Python magic methods. If so, 
+        # the currently selected Inputs. First, however, we check whether
+        # the requested property is one of the Python magic methods. If so,
         # we return the standard implementation. This is necessary for
         # pickle, which checks for __getnewargs__ and __getstate__.
         if name.startswith('__') and name.endswith('__'):
@@ -439,7 +441,7 @@ class ModeInputs(api.Inputs):
         # If the property we're trying to set is one of this base class's
         # private variables, add it to our __dict__ using the standard
         # __setattr__ method
-        if name in ('_active', '_delegates', '_pipeline_casa_task', 
+        if name in ('_active', '_delegates', '_pipeline_casa_task',
                     VISLIST_RESET_KEY):
             LOG.trace('Setting \'{0}\' attribute to \'{1}\' on \'{2}'
                       '\' object'.format(name, val, self.__class__.__name__))
@@ -447,10 +449,10 @@ class ModeInputs(api.Inputs):
 
         # check whether this class has a getter/setter by this name. If so,
         # allow the write to __dict__
-        for (fn_name, _) in inspect.getmembers(self.__class__, 
+        for (fn_name, _) in inspect.getmembers(self.__class__,
                                                inspect.isdatadescriptor):
-            # our convention is to prefix the data variable for a 
-            # getter/setter with an underscore. 
+            # our convention is to prefix the data variable for a
+            # getter/setter with an underscore.
             if name in (fn_name, '_' + fn_name):
                 LOG.trace('Getter/setter found on {0}. Setting \'{1}\' '
                           'attribute to \'{2}\''.format(self.__class__.__name__,
@@ -458,7 +460,7 @@ class ModeInputs(api.Inputs):
                 super(ModeInputs, self).__setattr__(name, val)
 
                 # overriding defaults of wrapped classes requires us to re-get
-                # the value after setting it, as the property setter of this 
+                # the value after setting it, as the property setter of this
                 # superclass has probably transformed it, eg. None => 'inf'.
                 # Furthermore, we do not return early, giving this function a
                 # chance to set the parameter - with this new value - on the
@@ -504,7 +506,7 @@ class ModeInputs(api.Inputs):
     def as_dict(self):
         props = utils.collect_properties(self._active)
         props.update(utils.collect_properties(self))
-        return props  
+        return props
 
     def __repr__(self):
         # get the arguments for this class's contructor
@@ -520,20 +522,20 @@ class ModeInputs(api.Inputs):
         # get the arguments for this class's contructor
         args = inspect.getargspec(cls.__init__).args
         # and add them to our collection
-        all_args.update(args)        
+        all_args.update(args)
 
-        # now do the same for each inputs class we can switch between         
+        # now do the same for each inputs class we can switch between
         for task_cls in cls._modes.values():
             # get the arguments of the task Inputs constructor
-            args = inspect.getargspec(task_cls.Inputs.__init__).args 
+            args = inspect.getargspec(task_cls.Inputs.__init__).args
             # and add them to our set
-            all_args.update(args)        
+            all_args.update(args)
 
         if ignore is not None:
             for i in ignore:
                 all_args.discard(i)
 
-        return all_args 
+        return all_args
 
 
 class ModeTask(api.Task):
@@ -568,15 +570,15 @@ class ModeTask(api.Task):
         Update, if necessary, the delegate task so that it matches the
         mode specified in the Inputs.
 
-        This function is necessary as the value of Inputs.mode can change 
-        after the task has been constructed. Therefore, we cannot rely on any 
+        This function is necessary as the value of Inputs.mode can change
+        after the task has been constructed. Therefore, we cannot rely on any
         delegate set at construction time. Instead, the delegate must be
-        updated on every execution. 
+        updated on every execution.
         """
         # given two modes, A and B, it's possible that A is a subclass of B,
         # eg. PhcorChannelBandpass extends ChannelBandpass, therefore we
         # cannot test whether the current instance is the correct type using
-        # isinstance. Instead, we need to compare class names.        
+        # isinstance. Instead, we need to compare class names.
         mode = self.inputs.mode
         mode_cls = self.inputs._modes[mode]
         mode_cls_name = mode_cls.__name__
@@ -587,23 +589,23 @@ class ModeTask(api.Task):
             self._delegate = self.inputs.get_task()
 
 
-# A simple named tuple to hold the start and end timestamps 
+# A simple named tuple to hold the start and end timestamps
 Timestamps = collections.namedtuple('Timestamps', ['start', 'end'])
 
 
 class Results(api.Results):
     """
-    Results is the base implementation of the Results API. 
+    Results is the base implementation of the Results API.
 
-    In practice, all results objects should subclass this object to take 
+    In practice, all results objects should subclass this object to take
     advantage of the shared functionality.
-    """    
+    """
     def __init__(self):
         super(Results, self).__init__()
 
         # set the value used to uniquely identify this object. This value will
-        # be used to determine whether this results has already been merged 
-        # with the context 
+        # be used to determine whether this results has already been merged
+        # with the context
         self._uuid = uuid.uuid4()
 
         # property used to hold pipeline QA values
@@ -631,12 +633,12 @@ class Results(api.Results):
         """
         Merge these results with the given context.
 
-        This method will be called during the execution of accept(). For 
+        This method will be called during the execution of accept(). For
         calibration tasks, a typical implementation will register caltables
-        with the pipeline callibrary.  
+        with the pipeline callibrary.
 
         At this point the result is deemed safe to merge, so no further checks
-        on the context need be performed. 
+        on the context need be performed.
 
         :param context: the target
             :class:`~pipeline.infrastructure.launcher.Context`
@@ -645,13 +647,14 @@ class Results(api.Results):
         LOG.debug('Null implementation of merge_with_context used for %s'
                   '' % self.__class__.__name__)
 
+    @matplotlibrc_handler
     def accept(self, context=None):
         """
         Accept these results, registering objects with the context and incrementing
         stage counters as necessary in preparation for the next task.
         """
         if context is None:
-            # context will be none when called from a CASA interactive 
+            # context will be none when called from a CASA interactive
             # session. When this happens, we need to locate the global context
             # from the stack
             import pipeline.h.cli.utils
@@ -754,13 +757,13 @@ class Results(api.Results):
 
     def _check_for_remerge(self, context):
         """
-        Check whether this result has already been added to the given context. 
+        Check whether this result has already been added to the given context.
         """
-        # context.results contains the list of results that have been merged 
+        # context.results contains the list of results that have been merged
         # with the context. Check whether the UUID of any result or sub-result
         # in that list matches the UUID of this result.
         for result in context.results:
-            if self._is_uuid_in_result(result):    
+            if self._is_uuid_in_result(result):
                 msg = 'This result has already been added to the context'
                 LOG.error(msg)
                 raise ValueError(msg)
@@ -768,7 +771,7 @@ class Results(api.Results):
     def _is_uuid_in_result(self, result):
         """
         Return True if the UUID of this result matches the UUID of the given
-        result or any sub-result contained within. 
+        result or any sub-result contained within.
         """
         for subtask_result in getattr(result, 'subtask_results', ()):
             if self._is_uuid_in_result(subtask_result):
@@ -814,13 +817,13 @@ class ResultsProxy(object):
 
         # only store the basename to allow for relocation between save and
         # restore
-        self._basename = 'result-stage%s.pickle' % result.stage_number        
+        self._basename = 'result-stage%s.pickle' % result.stage_number
         path = os.path.join(self._context.output_dir,
                             self._context.name,
                             'saved_state',
                             self._basename)
 
-        utils.mkdir_p(os.path.dirname(path))        
+        utils.mkdir_p(os.path.dirname(path))
         with open(path, 'wb') as outfile:
             pickle.dump(result, outfile, pickle.HIGHEST_PROTOCOL)
 
@@ -829,7 +832,7 @@ class ResultsProxy(object):
         Read the pickle from disk, returning the unpickled object.
         """
         path = os.path.join(self._context.output_dir,
-                            self._context.name, 
+                            self._context.name,
                             'saved_state',
                             self._basename)
         with open(path, 'rb') as infile:
@@ -839,14 +842,14 @@ class ResultsProxy(object):
         """
         Take the CASA log snippets attached to each result and write them to
         the appropriate weblog directory. The log snippet is deleted from the
-        result after a successful write to keep the pickle size down. 
+        result after a successful write to keep the pickle size down.
         """
         if not hasattr(result, 'casalog'):
             return
 
         stage_dir = os.path.join(self._context.report_dir,
                                  'stage%s' % result.stage_number)
-        if not os.path.exists(stage_dir):                
+        if not os.path.exists(stage_dir):
             os.makedirs(stage_dir)
 
         stagelog_entries = result.casalog
@@ -856,10 +859,10 @@ class ResultsProxy(object):
         stagelog_path = os.path.join(stage_dir, 'casapy.log')
         with open(stagelog_path, 'w') as stagelog:
             LOG.debug('Writing CASA log entries for stage %s (%s -> %s)' %
-                      (result.stage_number, start, end))                          
+                      (result.stage_number, start, end))
             stagelog.write(stagelog_entries)
 
-        # having written the log entries, the CASA log entries have no 
+        # having written the log entries, the CASA log entries have no
         # further use. Remove them to keep the size of the pickle small
         delattr(result, 'casalog')
 
@@ -903,7 +906,7 @@ class ResultsList(Results):
 
 class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
     """
-    StandardTaskTemplate is a template class for pipeline reduction tasks whose 
+    StandardTaskTemplate is a template class for pipeline reduction tasks whose
     execution can be described by a common four-step process:
 
     #. prepare(): examine the measurement set and prepare a list of\
@@ -917,10 +920,10 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
 
     Simpletask implements the :class:`Task` interface and steps 2 and 4 in the
     above process, leaving subclasses to implement
-    :func:`~SimpleTask.prepare` and :func:`~SimpleTask.analyse`.    
+    :func:`~SimpleTask.prepare` and :func:`~SimpleTask.analyse`.
 
 
-    A Task and its :class:`Inputs` are closely aligned. It is anticipated that 
+    A Task and its :class:`Inputs` are closely aligned. It is anticipated that
     the Inputs for a Task will be created using the :attr:`Task.Inputs`
     reference rather than locating and instantiating the partner class
     directly, eg.::
@@ -965,8 +968,8 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
 
         :param parameters: the parameters to pass through to the subclass.
             Refer to the implementing subclass for specific information on
-            what these parameters are.            
-        :rtype: a class implementing :class:`~pipeline.api.Result`        
+            what these parameters are.
+        :rtype: a class implementing :class:`~pipeline.api.Result`
         """
         raise NotImplementedError
 
@@ -977,7 +980,7 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
         returning any final jobs to execute.
 
         :param jobs: the job requests generated by :func:`~SimpleTask.prepare`
-        :type jobs: a list of\ 
+        :type jobs: a list of\
             :class:`~pipeline.infrastructure.jobrequest.JobRequest`
         :rtype: \
             :class:`~pipeline.api.Result`
@@ -991,12 +994,12 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
     def execute(self, dry_run=True, **parameters):
         # The filenamer deletes any identically named file when constructing
         # the filename, which is desired when really executing a task but not
-        # when performing a dry run. This line disables the 
+        # when performing a dry run. This line disables the
         # 'delete-on-generate' behaviour.
         filenamer.NamingTemplate.dry_run = dry_run
 
         if utils.is_top_level_task():
-            # Set the task name, but only if this is a top-level task. This 
+            # Set the task name, but only if this is a top-level task. This
             # name will be prepended to every data product name as a sign of
             # their origin
             try:
@@ -1005,14 +1008,14 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
                 name = self.__class__.__name__
             filenamer.NamingTemplate.task = name
 
-            # initialise the subtask counter, which will be subsequently 
-            # incremented for every execute within this top-level task  
+            # initialise the subtask counter, which will be subsequently
+            # incremented for every execute within this top-level task
             self.inputs.context.task_counter += 1
-            LOG.info('Starting execution for stage %s', 
+            LOG.info('Starting execution for stage %s',
                      self.inputs.context.task_counter)
             self.inputs.context.subtask_counter = 0
 
-            # log the invoked pipeline task and its comment to 
+            # log the invoked pipeline task and its comment to
             # casa_commands.log
             _log_task(self, dry_run)
 
@@ -1033,7 +1036,7 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
         handler = logging.CapturingHandler(logging.WARNING)
 
         try:
-            # if this task does not handle multiple input mses but was 
+            # if this task does not handle multiple input mses but was
             # invoked with multiple mses in its inputs, call our utility
             # function to invoke the task once per ms.
             if not self.is_multi_vis_task:
@@ -1127,7 +1130,7 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
         Handle a single task invoked for multiple measurement sets.
 
         This function handles the case when the vis parameter on the Inputs
-        specifies multiple measurement sets. In this situation, we want to 
+        specifies multiple measurement sets. In this situation, we want to
         invoke the task for each individual MS. We could do this by having
         each task iterate over the measurement sets involved, but in order to
         keep the task implementations as simple as possible, that complexity
@@ -1136,12 +1139,12 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
         If the task wants to handle the multiple measurement sets
         itself it should override is_multi_vis_task.
         """
-        # The following code loops through the MSes specified in vis, 
+        # The following code loops through the MSes specified in vis,
         # executing the task for the first value (head) and then appending the
         # results of executing the remainder of the MS list (tail).
         if len(self.inputs.vis) is 0:
             # we don't return an empty list as the timestamp decorator wants
-            # to set attributes on this value, which it can't on a built-in 
+            # to set attributes on this value, which it can't on a built-in
             # list
             return ResultsList()
 
@@ -1210,7 +1213,7 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
 
         for name in names:
             if hasattr(self.inputs, name):
-                property_value = getattr(self.inputs, name)            
+                property_value = getattr(self.inputs, name)
 
                 head = property_value[0]
                 tail = property_value[1:]
@@ -1231,7 +1234,7 @@ class Executor(object):
     def __init__(self, context, dry_run=True):
         self._dry_run = dry_run
         self._context = context
-        self._cmdfile = os.path.join(context.report_dir, 
+        self._cmdfile = os.path.join(context.report_dir,
                                      context.logs['casa_commands'])
 
     @capture_log
@@ -1245,7 +1248,7 @@ class Executor(object):
 
         :rtype: :class:`~pipeline.api.Result`
         """
-        # execute the job, capturing its results object                
+        # execute the job, capturing its results object
         result = job.execute(dry_run=self._dry_run, *kwargs)
 
         if self._dry_run:
@@ -1295,7 +1298,7 @@ def _log_task(task, dry_run):
         return
 
     context = task.inputs.context
-    filename = os.path.join(context.report_dir, 
+    filename = os.path.join(context.report_dir,
                             context.logs['casa_commands'])
     comment = ''
 
@@ -1321,9 +1324,9 @@ def property_with_default(name, default, doc=None):
     Return a property whose value is reset to a default value when setting the
     property value to None.
     """
-    # our standard name for the private property backing the public property 
+    # our standard name for the private property backing the public property
     # is a prefix of one underscore
-    varname = '_' + name 
+    varname = '_' + name
 
     def getx(self):
         return object.__getattribute__(self, varname)
@@ -1371,7 +1374,7 @@ finally:
 ''' % ('\n'.join(state_commands), task_string)
 
     f = os.path.join(context.report_dir, context.logs['pipeline_script'])
-    with open(f, 'w') as casatask_file: 
+    with open(f, 'w') as casatask_file:
         casatask_file.write(template)
 
 
