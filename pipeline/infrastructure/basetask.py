@@ -860,7 +860,13 @@ class ResultsProxy(object):
         with open(stagelog_path, 'w') as stagelog:
             LOG.debug('Writing CASA log entries for stage %s (%s -> %s)' %
                       (result.stage_number, start, end))
-            stagelog.write(stagelog_entries)
+            # Enclose the log in a comment tag to be able to escape
+            # any markup characters in the weblog rendering (PIPE-792).
+            # Replace any parts of the CASA log that may be interpreted
+            # as HTML comment tags so that only the main comment tag remains.
+            stagelog.write('<!-- CASALOG\n');
+            stagelog.write(stagelog_entries.replace('<!--', '<!==').replace('-->', '==>'))
+            stagelog.write('CASALOG -->\n');
 
         # having written the log entries, the CASA log entries have no
         # further use. Remove them to keep the size of the pickle small
