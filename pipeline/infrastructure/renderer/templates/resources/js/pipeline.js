@@ -808,8 +808,6 @@ pipeline.detailsframe = pipeline.detailsframe || (function() {
 
     module.addPreMarkup = function(pageTitle) {
         var target = $(module.getSelector());
-        if (target.html().includes("<!-- CASALOG"))
-            target.html(escapeCasalogHtml(target.html()));
         target.wrapInner("<code />");
         target.wrapInner("<pre />");
         target.prepend('<div class="page-header">' +
@@ -1791,14 +1789,3 @@ var ALL_IN_ONE = function() {
 
     return module;
 }();
-
-function escapeCasalogHtml(unsafe) {
-    return unsafe
-         .replace(/<!-- CASALOG/g, "")
-         .replace(/CASALOG -->/g, "")
-         .replace(/&/g, "&amp;")
-         .replace(/</g, "&lt;")
-         .replace(/>/g, "&gt;")
-         .replace(/"/g, "&quot;")
-         .replace(/'/g, "&#039;");
-}
