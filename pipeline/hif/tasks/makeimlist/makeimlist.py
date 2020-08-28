@@ -120,6 +120,44 @@ class MakeImListInputs(vdp.StandardInputs):
             return 'cube'
         return 'mfs'
 
+    def get_spw_hm_cell(self, spwlist):
+        """If possible obtain spwlist specific hm_cell, otherwise return generic value.
+
+        hif_checkproductsize() task determines the mitigation parameters. It does not know, however, about the
+        set spwlist in the hif_makeimlist call and determines mitigation parameters per band (complete spw set).
+        The band containing the set spwlist is determined by checking whether spwlist is a subset of the band
+        spw list. The mitigation parameters found for the matching band are applied to the set spwlist.
+
+        If no singluar band (spw set) is found that would contain spwlist, then the default hm_cell heuristics is
+        returned.
+
+        TODO: refactor and make hif_checkproductsize() (or a new task) spwlist aware."""
+        mitigated_hm_cell = None
+        multi_target_size_mitigation = self.context.size_mitigation_parameters.get('multi_target_size_mitigation', {})
+        if multi_target_size_mitigation:
+            multi_target_spwlist = [spws for spws in multi_target_size_mitigation.keys() if set(spwlist.split(',')).issubset(set(spws.split(',')))]
+            if len(multi_target_spwlist) == 1:
+                mitigated_hm_cell = multi_target_size_mitigation.get(multi_target_spwlist[0], {}).get('hm_cell')
+        if mitigated_hm_cell not in [None, {}]:
+            return mitigated_hm_cell
+        else:
+            return self.hm_cell
+
+    def get_spw_hm_imsize(self, spwlist):
+        """If possible obtain spwlist specific hm_imsize, otherwise return generic value.
+
+        TODO: refactor and make hif_checkproductsize() (or a new task) spwlist aware."""
+        mitigated_hm_imsize = None
+        multi_target_size_mitigation = self.context.size_mitigation_parameters.get('multi_target_size_mitigation', {})
+        if multi_target_size_mitigation:
+            multi_target_spwlist = [spws for spws in multi_target_size_mitigation.keys() if set(spwlist.split(',')).issubset(set(spws.split(',')))]
+            if len(multi_target_spwlist) == 1:
+                mitigated_hm_imsize = multi_target_size_mitigation.get(multi_target_spwlist[0], {}).get('hm_imsize')
+        if mitigated_hm_imsize not in [None, {}]:
+            return mitigated_hm_imsize
+        else:
+            return self.hm_imsize
+
     def __init__(self, context, output_dir=None, vis=None, imagename=None, intent=None, field=None, spw=None,
                  contfile=None, linesfile=None, uvrange=None, specmode=None, outframe=None, hm_imsize=None,
                  hm_cell=None, calmaxpix=None, phasecenter=None, nchan=None, start=None, width=None, nbins=None,
@@ -367,14 +405,6 @@ class MakeImList(basetask.StandardTaskTemplate):
                 else:
                     continue
 
-                # Parse hm_cell to get optional pixperbeam setting
-                cell = inputs.hm_cell
-                if isinstance(cell, str):
-                    pixperbeam = float(cell.split('ppb')[0])
-                    cell = []
-                else:
-                    pixperbeam = 5.0
-
                 # Expand cont spws
                 if inputs.specmode == 'cont':
                     spwids = spwlist[0].split(',')
@@ -424,7 +454,12 @@ class MakeImList(basetask.StandardTaskTemplate):
                         else:
                             max_num_targets += len(spwids_for_field)
 
-                # Remove bad spws and record actual vis/field/spw combinations containing data
+                # Remove bad spws and record actual vis/field/spw combinations containing data.
+                # Record all spws with actual data in a global list.
+                # Need all spw keys (individual and cont) to distribute the
+                # cell and imsize heuristic results which work on the
+                # highest/lowest frequency spw only.
+                all_spw_keys = []
                 if field_intent_list != set([]):
                     valid_data = {}
                     filtered_spwlist = []
@@ -440,6 +475,10 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 observed_vis_list = vislist_field_spw_combinations.get(field_intent[0], None).get('vislist', None)
                                 observed_spwids_list = vislist_field_spw_combinations.get(field_intent[0], None).get('spwids', None)
                                 if observed_vis_list is not None and observed_spwids_list is not None:
+                                    # Save spws in main list
+                                    all_spw_keys.extend(map(str, observed_spwids_list))
+                                    # Also save cont selection
+                                    all_spw_keys.append(','.join(map(str, observed_spwids_list)))
                                     for spw in map(str, observed_spwids_list):
                                         valid_data[vis][field_intent][str(spw)] = self.heuristics.has_data(field_intent_list=[field_intent], spwspec=spw, vislist=[vis])[field_intent]
                                         if not valid_data[vis][field_intent][str(spw)] and vis in observed_vis_list:
@@ -461,15 +500,19 @@ class MakeImList(basetask.StandardTaskTemplate):
                 else:
                     spwlist_local = filtered_spwlist
 
-                # Need all spw keys (individual and cont) to distribute the
-                # cell and imsize heuristic results which work on the
-                # highest/lowest frequency spw only.
-                # The deep copy is necessary to avoid modifying observed_spwids_list
-                all_spw_keys = list(map(str, copy.deepcopy(observed_spwids_list)))
-                all_spw_keys.append(','.join(map(str, copy.deepcopy(observed_spwids_list))))
-                # Add actual cont spw combinations to be able to properly populate the lookup tables later on
+                # Parse hm_cell to get optional pixperbeam setting
+                cell = inputs.get_spw_hm_cell(spwlist_local[0])
+                if isinstance(cell, str):
+                    pixperbeam = float(cell.split('ppb')[0])
+                    cell = []
+                else:
+                    pixperbeam = 5.0
+
+                # Add actual, possibly reduced cont spw combination to be able to properly populate the lookup tables later on
                 if inputs.specmode == 'cont':
                     all_spw_keys.append(','.join(filtered_spwlist))
+                # Keep only unique entries
+                all_spw_keys = list(set(all_spw_keys))
 
                 # Select only the lowest / highest frequency spw to get the smallest (for cell size)
                 # and largest beam (for imsize)
@@ -509,6 +552,22 @@ class MakeImList(basetask.StandardTaskTemplate):
                     uvtaper = inputs.context.imaging_parameters['uvtaper']
                 else:
                     uvtaper = self.heuristics.uvtaper()
+
+                # Get field specific uvrange value
+                uvrange = {}
+                bl_ratio = {}
+                for field_intent in field_intent_list:
+                    for spwspec in spwlist_local:
+                        if inputs.uvrange not in (None, [], ''):
+                            uvrange[(field_intent[0], spwspec)] = inputs.uvrange
+                        else:
+                            try:
+                                (uvrange[(field_intent[0], spwspec)], bl_ratio[(field_intent[0], spwspec)]) = \
+                                    self.heuristics.uvrange(field=field_intent[0], spwspec=spwspec)
+                            except Exception as e:
+                                # problem defining uvrange
+                                LOG.warn(e)
+                                pass
 
                 # cell is a list of form [cellx, celly]. If the list has form [cell]
                 # then that means the cell is the same size in x and y. If cell is
@@ -577,7 +636,7 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                 # if imsize not set then use heuristic code to calculate the
                 # centers for each field/spwspec
-                imsize = inputs.hm_imsize
+                imsize = inputs.get_spw_hm_imsize(spwlist_local[0])
                 if isinstance(imsize, str):
                     sfpblimit = float(imsize.split('pb')[0])
                     imsize = []
@@ -601,9 +660,14 @@ class MakeImList(basetask.StandardTaskTemplate):
                             try:
                                 gridder = self.heuristics.gridder(field_intent[1], field_intent[0])
                                 field_ids = self.heuristics.field(field_intent[1], field_intent[0], vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'])
+                                # Image size (FOV) may be determined depending on the fractional bandwidth of the
+                                # selected spectral windows. In continuum spectral mode pass the spw list string
+                                # to imsize heuristics (used only for VLA), otherwise pass None to disable the feature.
+                                imsize_spwlist = spwlist_local if inputs.specmode == 'cont' else None
                                 himsize = self.heuristics.imsize(
                                     fields=field_ids, cell=cells[spwspec], primary_beam=largest_primary_beams[spwspec],
-                                    sfpblimit=sfpblimit, centreonly=False, vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'])
+                                    sfpblimit=sfpblimit, centreonly=False, vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'],
+                                    spwspec=imsize_spwlist)
                                 if field_intent[1] in [
                                         'PHASE',
                                         'BANDPASS',
@@ -626,7 +690,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 pass
 
                         if max_x_size == 1 or max_y_size == 1:
-                            LOG.error('imsize of [{:d}, {:d}] for field {!s} intent {!s} spw {!s} is degenerate.'.format(max_x_size, max_y_size), field_intent[0], field_intent[1], min_freq_spwlist)
+                            LOG.error('imsize of [{:d}, {:d}] for field {!s} intent {!s} spw {!s} is degenerate.'.format(max_x_size, max_y_size, field_intent[0], field_intent[1], min_freq_spwlist))
                         else:
                             # Use same size for all spws (in a band (TODO))
                             # Need to populate all spw keys because the imsize for the cont
@@ -830,7 +894,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 nbin=nbin,
                                 nchan=nchans[(field_intent[0], spwspec)],
                                 robust=robust,
-                                uvrange=inputs.uvrange,
+                                uvrange=uvrange[(field_intent[0], spwspec)],
+                                bl_ratio=bl_ratio[(field_intent[0], spwspec)],
                                 uvtaper=uvtaper,
                                 stokes='I',
                                 heuristics=target_heuristics,
@@ -873,12 +938,19 @@ class MakeImList(basetask.StandardTaskTemplate):
 # maps intent and specmode Inputs parameters to textual description of execution context.
 _DESCRIPTIONS = {
     ('PHASE', 'mfs'): 'phase calibrator',
+    ('PHASE', 'cont'): 'phase calibrator',
     ('BANDPASS', 'mfs'): 'bandpass calibrator',
+    ('BANDPASS', 'cont'): 'bandpass calibrator',
     ('AMPLITUDE', 'mfs'): 'flux calibrator',
+    ('AMPLITUDE', 'cont'): 'flux calibrator',
     ('POLARIZATION', 'mfs'): 'polarization calibrator',
-    ('POLANGLE', 'mfs'): 'polarization angle calibrator',
-    ('POLLEAKAGE', 'mfs'): 'polarization leakage calibrator',
+    ('POLARIZATION', 'cont'): 'polarization calibrator',
+    ('POLANGLE', 'mfs'): 'polarization calibrator',
+    ('POLANGLE', 'cont'): 'polarization calibrator',
+    ('POLLEAKAGE', 'mfs'): 'polarization calibrator',
+    ('POLLEAKAGE', 'cont'): 'polarization calibrator',
     ('CHECK', 'mfs'): 'check source',
+    ('CHECK', 'cont'): 'check source',
     ('TARGET', 'mfs'): 'target per-spw continuum',
     ('TARGET', 'cont'): 'target aggregate continuum',
     ('TARGET', 'cube'): 'target cube',
@@ -887,12 +959,19 @@ _DESCRIPTIONS = {
 
 _SIDEBAR_SUFFIX = {
     ('PHASE', 'mfs'): 'cals',
+    ('PHASE', 'cont'): 'cals',
     ('BANDPASS', 'mfs'): 'cals',
+    ('BANDPASS', 'cont'): 'cals',
     ('AMPLITUDE', 'mfs'): 'cals',
+    ('AMPLITUDE', 'cont'): 'cals',
     ('POLARIZATION', 'mfs'): 'cals',
+    ('POLARIZATION', 'cont'): 'cals',
     ('POLANGLE', 'mfs'): 'cals',
+    ('POLANGLE', 'cont'): 'cals',
     ('POLLEAKAGE', 'mfs'): 'cals',
+    ('POLLEAKAGE', 'cont'): 'cals',
     ('CHECK', 'mfs'): 'checksrc',
+    ('CHECK', 'cont'): 'checksrc',
     ('TARGET', 'mfs'): 'mfs',
     ('TARGET', 'cont'): 'cont',
     ('TARGET', 'cube'): 'cube',

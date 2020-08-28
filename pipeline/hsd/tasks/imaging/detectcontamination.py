@@ -135,6 +135,7 @@ def make_figures(peak_sn, mask_map, rms_threshold, rms_map,
     plt.imshow(np.flipud(mask_map), vmin=0, vmax=1, cmap="rainbow", **kw)
     formatter = matplotlib.ticker.FixedFormatter(['Masked', 'Unmasked'])
     plt.colorbar(shrink=0.9, ticks=[0, 1], format=formatter)
+
     plt.subplot(1, 3, 3)
     plt.title("Masked-averaged spectrum")
     if fspec is not None:
@@ -164,8 +165,9 @@ def make_figures(peak_sn, mask_map, rms_threshold, rms_map,
     if np.nanmin(masked_average_spectrum) <= (-1) * std_value * std_threshold:
         plt.text(minabc + w * 2. / 5., -5. * std_value, "Warning!!", fontsize=25, color="Orange")
 
-    # disable use of offset on xaxis label
+    # disable use of offset on axis label
     plt.gca().get_xaxis().get_major_formatter().set_useOffset(False)
+    plt.gca().get_yaxis().get_major_formatter().set_useOffset(False)
 
     plt.savefig(output_name, bbox_inches="tight")
     plt.clf()

@@ -8,7 +8,7 @@ LOG = infrastructure.get_logger(__name__)
 class BandpassflagResults(basetask.Results):
 
     def __init__(self, vis):
-        super(BandpassflagResults, self).__init__()
+        super().__init__()
         self.cafresult = resultobjects.CorrectedampflagResults()
         self.plots = {}
         self.vis = vis
@@ -18,6 +18,9 @@ class BandpassflagResults(basetask.Results):
 
         # Set of entirely flagged antennas that should be removed from refants.
         self.refants_to_remove = set()
+
+        # records callibrary files used in applycal calls
+        self.callib_map = {} 
 
     def merge_with_context(self, context):
         """

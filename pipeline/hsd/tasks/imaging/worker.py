@@ -16,6 +16,8 @@ from pipeline.domain import DataTable
 from . import resultobjects
 from .. import common
 from ..common import utils
+from ..common import utils as sdutils
+from ..common import direction_utils as dirutil
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -137,16 +139,16 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
     #     ra_offset = qa.convert( org_direction['m0'], 'deg' )['value']
     #     dec_offset = qa.convert( org_direction['m1'], 'deg' )['value']
     # else:
-    #     ra_offset = 0.0 
+    #     ra_offset = 0.0
     #     dec_offset = 0.0
 
-    # convert offset coordinate into shifted coordinate for ephemeris sources   
-    # to determine the image size (size, center, npix)                          
+    # convert offset coordinate into shifted coordinate for ephemeris sources
+    # to determine the image size (size, center, npix)
     if is_eph_obj or is_known_eph_obj:
         ra = []
         dec = []
         for ra1, dec1 in zip( ra0, dec0 ):
-            ra2, dec2 = direction_recover( ra1, dec1, org_direction )
+            ra2, dec2 = dirutil.direction_recover( ra1, dec1, org_direction )
             ra.append(ra2)
             dec.append(dec2)
     else:
@@ -207,26 +209,10 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
     return phasecenter, cellx, celly, nx, ny, org_direction
 
 
-def direction_recover( ra, dec, org_direction ):
-    me = casatools.measures
-    qa = casatools.quanta
-    
-    direction = me.direction( org_direction['refer'], 
-                              str(ra)+'deg', str(dec)+'deg' )
-    zero_direction  = me.direction( org_direction['refer'], '0deg', '0deg' )
-    offset = me.separation( zero_direction, direction )
-    posang = me.posangle( zero_direction, direction )
-    new_direction = me.shift( org_direction, offset=offset, pa=posang )
-    new_ra  = qa.convert( new_direction['m0'], 'deg' )['value']
-    new_dec = qa.convert( new_direction['m1'], 'deg' )['value']
-    
-    return new_ra, new_dec
-    
-
 class SDImagingWorkerInputs(vdp.StandardInputs):
     """
     Inputs for imaging worker
-    NOTE: infile should be a complete list of MSes 
+    NOTE: infile should be a complete list of MSes
     """
     infiles = vdp.VisDependentProperty(default='', null_input=['', None, [], ['']])
     outfile = vdp.VisDependentProperty(default='')
@@ -301,7 +287,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
                                   cellx, celly, nx, ny)
 
         if status is True:
-            # missing attributes in result instance will be filled in by the 
+            # missing attributes in result instance will be filled in by the
             # parent class
             image_item = imagelibrary.ImageItem(imagename=outfile,
                                                 sourcename=source_name,
@@ -340,6 +326,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
     def _do_imaging(self, infiles, antid_list, spwid_list, fieldid_list, imagename, imagemode, edge, phasecenter, cellx,
                     celly, nx, ny):
         context = self.inputs.context
+        is_nro = sdutils.is_nro(context)
         idx = utils.get_parent_ms_idx(context, infiles[0])
         if idx >= 0 and idx < len(context.observing_run.measurement_sets):
             reference_data = context.observing_run.measurement_sets[idx]
@@ -422,7 +409,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
             x = qa.quantity(restfreq)
             if x['value'] <= 0:
                 raise RuntimeError("Invalid restfreq '{0}' (must be positive)".format(restfreq))
-            x = qa.convert(x, 'Hz') 
+            x = qa.convert(x, 'Hz')
             if qa.getunit(x) != 'Hz':
                 raise RuntimeError("Invalid restfreq '{0}' (inappropriate unit)".format(restfreq))
 
@@ -434,7 +421,12 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
 
         # truncate, gwidth, jwidth, and convsupport
         truncate = gwidth = jwidth = -1  # defaults (not used)
-        convsupport = 6
+
+        # PIPE-689: convsupport should be 3 for NRO Pipeline
+        if is_nro:
+            convsupport = 3
+        else:
+            convsupport = 6
 
 #         temporary_name = imagename.rstrip('/')+'.tmp'
         cleanup_params = ['outfile', 'infiles', 'spw', 'scan']

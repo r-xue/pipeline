@@ -109,6 +109,28 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
+    <param name="pointing" type="bool">
+        <shortdescription>Apply a flagging template for pointing flag</shortdescription>
+        <description>Apply a flagging template for pointing flag.</description>
+        <value>True</value>
+    </param>
+
+    <param subparam="true" name="filepointing" type="stringVec">
+        <shortdescription>File that contains the flagging template for pointing flag</shortdescription>
+        <description>The name of a text file that contains the flagging template
+        for pointing flag. If the template flags files is undefined a name of
+        the form 'msname.flagpointing.txt' is assumed.</description>
+        <value/>
+    </param>
+
+    <param subparam="true" name="incompleteraster" type="bool">
+        <shortdescription>Apply commands to flag incomplete raster sequence</shortdescription>
+        <description>Apply commands to flag incomplete raster sequence.
+        If this is False, relevant commands in filepointing are
+        simply commented out.</description>
+        <value>True</value>
+    </param>
+
     <param name="hm_tbuff" type="string">
         <shortdescription>The time buffer computation heuristic</shortdescription>
         <description>The heuristic for computing the default time interval padding parameter.
@@ -220,6 +242,15 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <when param="template">
             <equals value="True" type="bool">
                 <default param="filetemplate"><value type="stringVec"/></default>
+            </equals>
+            <equals value="False" type="bool">
+            </equals>
+        </when>
+
+        <when param="pointing">
+            <equals value="True" type="bool">
+                <default param="filepointing"><value type="stringVec"/></default>
+                <default param="incompleteraster"><value type="bool">True</value></default>
             </equals>
             <equals value="False" type="bool">
             </equals>

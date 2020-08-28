@@ -341,8 +341,10 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['cycleniter'] = inpdict['cycleniter']
         imlist_entry['cfcache'] = inpdict['cfcache']
         imlist_entry['scales'] = th.scales() if not inpdict['scales'] else inpdict['scales']
-        imlist_entry['uvtaper'] = th.uvtaper() if not inpdict['uvtaper'] else inpdict['uvtaper']
-        imlist_entry['uvrange'] = th.uvrange() if not inpdict['uvrange'] else inpdict['uvrange']
+        imlist_entry['uvtaper'] = (th.uvtaper() if not 'uvtaper' in inp.context.imaging_parameters
+                                   else inp.context.imaging_parameters['uvtaper']) if not inpdict['uvtaper'] else inpdict['uvtaper']
+        imlist_entry['uvrange'], _ = th.uvrange(field=fieldnames[0] if fieldnames else None,
+                                                spwspec=imlist_entry['spw']) if not inpdict['uvrange'] else inpdict['uvrange']
         imlist_entry['deconvolver'] = th.deconvolver(None, None) if not inpdict['deconvolver'] else inpdict['deconvolver']
         imlist_entry['robust'] = th.robust() if inpdict['robust'] in (None, -999.0) else inpdict['robust']
         imlist_entry['mask'] = th.mask() if not inpdict['mask'] else inpdict['mask']
@@ -386,7 +388,11 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['imsize'] = th.imsize(fields=fieldids, cell=imlist_entry['cell'],
                                            primary_beam=largest_primary_beam,
                                            sfpblimit=0.2) if not inpdict['imsize'] else inpdict['imsize']
-
+        # ---------------------------------------------------------------------------------- set imsize (VLA)
+        if img_mode == 'VLA' and imlist_entry['specmode'] == 'cont':
+            imlist_entry['imsize'] = th.imsize(fields=fieldids, cell=imlist_entry['cell'],
+                                               primary_beam=largest_primary_beam,
+                                               spwspec=imlist_entry['spw']) if not inpdict['imsize'] else inpdict['imsize']
         # ------------------------------
         imlist_entry['nchan'] = inpdict['nchan']
         imlist_entry['nbin'] = inpdict['nbin']

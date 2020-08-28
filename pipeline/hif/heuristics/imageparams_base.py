@@ -981,9 +981,25 @@ class ImageParamsHeuristics(object):
 
         return repr_target, repr_source, virtual_repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, sensitivityGoal
 
-    def imsize(self, fields, cell, primary_beam, sfpblimit=None, max_pixels=None, centreonly=False, vislist=None):
+    def imsize(self, fields, cell, primary_beam, sfpblimit=None, max_pixels=None,
+               centreonly=False, vislist=None, spwspec=None):
+        """
+        Image size heuristics for single fields and mosaics. The pixel count along x and y image dimensions
+        is determined by the cell size, primary beam size and the spread of phase centers in case of mosaics.
 
-        # fields: list of comma separated strings of field IDs per MS
+        :param fields: list of comma separated strings of field IDs per MS.
+        :param cell: pixel (cell) size in arcsec.
+        :param primary_beam: primary beam width in arcsec.
+        :param sfpblimit: single field primary beam response. If provided then imsize is chosen such that the image
+            edge is at normalised primary beam level equals to sfpblimit.
+        :param max_pixels: maximum allowed pixel count, integer. The same limit is applied along both image axes.
+        :param centreonly: if True, then ignore the spread of field centers.
+        :param vislist: list of visibility path string to be used for imaging. If not set then use all visibilities
+            in the context.
+        :param spwspec: ID list of spectral windows used to create image product. List or string containing comma
+            separated spw IDs list. Not used in the base method.
+        :return: two element list of pixel count along x and y image axes.
+        """
 
         if vislist is None:
             vislist = self.vislist
@@ -1165,10 +1181,18 @@ class ImageParamsHeuristics(object):
         else:
             return 'hogbom'
 
-    def get_fractional_bandwidth(self, spwspec):
-        """Returns fractional bandwidth for selected spectral windows"""
+    def get_min_max_freq(self, spwspec):
+        """
+        Given a comma separated string list of spectral windows, determines the minimum and maximum
+        frequencies in spectral window list and the corresponding spectral window indexes.
+
+        :param spwspec: comma separated string list of spectral windows.
+        :return: dictionary min. and max. frequencies (in Hz) and corresponding spw indexes.
+        """
         abs_min_frequency = 1.0e15
         abs_max_frequency = 0.0
+        min_freq_spwid = -1
+        max_freq_spwid = -1
         msname = self.vislist[0]
         ms = self.observing_run.get_ms(name=msname)
         for spwid in spwspec.split(','):
@@ -1177,10 +1201,21 @@ class ImageParamsHeuristics(object):
             min_frequency = float(spw.min_frequency.to_units(measures.FrequencyUnits.HERTZ))
             if (min_frequency < abs_min_frequency):
                 abs_min_frequency = min_frequency
+                min_freq_spwid = spwid
             max_frequency = float(spw.max_frequency.to_units(measures.FrequencyUnits.HERTZ))
             if (max_frequency > abs_max_frequency):
                 abs_max_frequency = max_frequency
-        return 2.0 * (abs_max_frequency - abs_min_frequency) / (abs_min_frequency + abs_max_frequency)
+                max_freq_spwid = spwid
+        return {'abs_min_freq': abs_min_frequency, 'abs_max_freq': abs_max_frequency,
+                'min_freq_spwid': min_freq_spwid, 'max_freq_spwid': max_freq_spwid}
+
+    def get_fractional_bandwidth(self, spwspec):
+
+        """Returns fractional bandwidth for selected spectral windows"""
+
+        freq_limits = self.get_min_max_freq(spwspec)
+        return 2.0 * (freq_limits['abs_max_freq'] - freq_limits['abs_min_freq']) / \
+               (freq_limits['abs_min_freq'] + freq_limits['abs_max_freq'])
 
     def robust(self):
 
@@ -1795,8 +1830,59 @@ class ImageParamsHeuristics(object):
 
         return threshold, DR_correction_factor, maxEDR_used
 
-    def niter_correction(self, niter, cell, imsize, residual_max, threshold):
-        return niter
+    def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0):
+        """Adjustment of number of cleaning iterations due to mask size.
+
+        Circular mask is assumed with a radius equal to mask_frac_rad times the longest image dimension
+        in arcsec. If mask_frac_rad=0.0, then no new cleaning iteration step number is estimate and the
+        input niter value is returned.
+
+        Note that the method assumes synthesized_beam = 5 * cell. This might lead to underestimated new
+        niter value if the beam is sampled by less than 5 pixels (e.g. when hif_checkproductsize() task
+        was called earlier.
+
+        :param niter: User or heuristics set number of cleaning iterations
+        :param cell: Image cell size in arcsec
+        :param imsize: Two element list or array of image pixel count along x and y axis
+        :param residual_max: Dirty image residual maximum [Jy].
+        :param threshold: Cleaning threshold value [Jy].
+        :param residual_robust_rms: Residual scaled MAD [Jy] (not used in base method).
+        :param mask_frac_rad: Mask radius is given by mask_frac_rad * max(imsize) * cell [arcsec]
+        :return: Modified niter value based on mask and beam size heuristic.
+        """
+        # Default case: do not estimate new niter
+        if mask_frac_rad == 0.0:
+            return niter
+
+        # Estimate new niter based on circular mask
+        qaTool = pl_casatools.quanta
+
+        threshold_value = qaTool.convert(threshold, 'Jy')['value']
+
+        # Compute automatic niter estimate
+        old_niter = niter
+        kappa = 5
+        loop_gain = 0.1
+        # TODO: Replace with actual pixel counting rather than assumption about geometry
+        r_mask = mask_frac_rad * max(imsize[0], imsize[1]) * qaTool.convert(cell[0], 'arcsec')['value']
+
+        # Assume that the beam is 5 pixels wide, this might be incorrect in some cases (see docstring).
+        # TODO: Pass synthesized beam size explicitly rather than assuming a
+        #       certain ratio of beam to cell size (which can be different
+        #       if the product size is being mitigated or if a different
+        #       imaging_mode uses different heuristics).
+        beam = qaTool.convert(cell[0], 'arcsec')['value'] * 5.0
+
+        new_niter_f = int(kappa / loop_gain * (r_mask / beam) ** 2 * residual_max / threshold_value)
+        new_niter = int(utils.round_half_up(new_niter_f, -int(np.log10(new_niter_f))))
+        # Prevent int overflow in tclean CASA task (see CAS-11847)
+        new_niter = min(new_niter, 2 ** 31 - 1)
+
+        if new_niter != old_niter:
+            LOG.info('niter heuristic: Modified niter from %d to %d based on mask vs. beam size heuristic'
+                     '' % (old_niter, new_niter))
+
+        return new_niter
 
     def niter(self):
         return None
@@ -1833,8 +1919,8 @@ class ImageParamsHeuristics(object):
     def uvtaper(self, beam_natural=None, protect_long=None):
         return None
 
-    def uvrange(self):
-        return None
+    def uvrange(self, field=None, spwspec=None):
+        return None, None
 
     def reffreq(self):
         return None

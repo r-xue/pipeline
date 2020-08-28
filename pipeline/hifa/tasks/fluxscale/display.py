@@ -11,8 +11,6 @@ class GFluxscaleSummaryChart(setjy.BasebandSummaryChart):
     """
     def __init__(self, context, output_dir, calto, intent='', ydatacolumn='model', ant='', uvrange='', **overrides):
         # Get uvdist min/max  for horizontal axis
-        uvrangeplot = {}
-
         try:
             with casatools.MSReader(calto.vis) as msfile:
                 # Numpy arrays must be converted to standard Python primitives, otherwise

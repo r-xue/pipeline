@@ -10,6 +10,7 @@ import math
 import operator
 import os
 from typing import List
+from scipy.special import erf
 
 import numpy as np
 
@@ -43,7 +44,7 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_flagging_view_exists',                      # ALMA specific
            'score_checksources',                              # ALMA specific
            'score_gfluxscale_k_spw',                          # ALMA specific
-           'score_fluxservice'                                # ALMA specific
+           'score_fluxservice',                               # ALMA specific
            'score_file_exists',
            'score_path_exists',
            'score_flags_exist',
@@ -65,7 +66,8 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_ms_model_data_column_present',
            'score_ms_history_entries_present',
            'score_contiguous_session',
-           'score_multiply']
+           'score_multiply',
+           'score_mom8_fc_image']
 
 LOG = logging.get_logger(__name__)
 
@@ -505,9 +507,9 @@ def score_parallactic_range(
                    f'{session_name}.')
         shortmsg = 'Parallactic angle'
         origin = pqa.QAOrigin(
-            metric_name='score_parallactic_angle',
-            metric_score=1.0,
-            metric_units='Session score based on parallactic angle coverage of polarisation calibrator'
+            metric_name='ScoreParallacticAngle',
+            metric_score=0.0,
+            metric_units='degrees'
         )
         score = pqa.QAScore(1.0, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
                             weblog_location=pqa.WebLogLocation.ACCORDION,
@@ -516,13 +518,13 @@ def score_parallactic_range(
 
     # accordion message if coverage is adequate
     if coverage >= threshold:
-        longmsg = (f'Sufficient parallactic angle coverage ({coverage:.2f}\u00B0) for polarisation calibrator '
-                   f'{field_name} in session {session_name}')
+        longmsg = (f'Sufficient parallactic angle coverage ({coverage:.2f}\u00B0 > {threshold:.2f}\u00B0) for '
+                   f'polarisation calibrator {field_name} in session {session_name}')
         shortmsg = 'Parallactic angle'
         origin = pqa.QAOrigin(
-            metric_name='score_parallactic_angle',
-            metric_score=1.0,
-            metric_units='Session score based on parallactic angle coverage of polarisation calibrator'
+            metric_name='ScoreParallacticAngle',
+            metric_score=coverage,
+            metric_units='degrees'
         )
         score = pqa.QAScore(1.0, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
                             weblog_location=pqa.WebLogLocation.ACCORDION,
@@ -531,13 +533,13 @@ def score_parallactic_range(
 
     # complain with a banner message if coverage is insufficient
     else:
-        longmsg = (f'Insufficient parallactic angle coverage ({coverage:.2f}\u00B0) for polarisation calibrator '
-                   f'{field_name} in session {session_name}')
+        longmsg = (f'Insufficient parallactic angle coverage ({coverage:.2f}\u00B0 < {threshold:.2f}\u00B0) for '
+                   f'polarisation calibrator {field_name} in session {session_name}')
         shortmsg = 'Parallactic angle'
         origin = pqa.QAOrigin(
-            metric_name='score_parallactic_angle',
-            metric_score=0.0,
-            metric_units='Session score based on parallactic angle coverage of polarisation calibrator'
+            metric_name='ScoreParallacticAngle',
+            metric_score=coverage,
+            metric_units='degrees'
         )
         score = pqa.QAScore(0.0, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
                             weblog_location=pqa.WebLogLocation.BANNER,
@@ -683,6 +685,9 @@ def score_missing_intents(mses, array_type='ALMA_12m'):
     all_ok = True
     complaints = []
 
+    # hold names of MSes this QA will be applicable to 
+    applies_to = set()
+
     # analyse each MS
     for ms in mses:
         # do we have the necessary calibrators?
@@ -696,10 +701,13 @@ def score_missing_intents(mses, array_type='ALMA_12m'):
                        '' % (ms.basename, utils.commafy(missing, False)))
             complaints.append(longmsg)
 
+            applies_to.add(ms.basename)
+
     if all_ok:
         longmsg = ('All required calibration intents were found in '
                    '%s.' % utils.commafy([ms.basename for ms in mses], False))
         shortmsg = 'All calibrators found'
+        applies_to = {ms.basename for ms in mses}
     else:
         longmsg = '%s.' % utils.commafy(complaints, False)
         shortmsg = 'Calibrators missing'
@@ -708,7 +716,10 @@ def score_missing_intents(mses, array_type='ALMA_12m'):
                           metric_score=score,
                           metric_units='Score based on missing calibration intents')
 
-    return pqa.QAScore(max(0.0, score), longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+    return pqa.QAScore(
+        max(0.0, score), longmsg=longmsg, shortmsg=shortmsg, origin=origin, 
+        applies_to=pqa.TargetDataSelection(vis=applies_to)
+    )
 
 
 @log_qa
@@ -728,6 +739,8 @@ def score_ephemeris_coordinates(mses):
     zero_ra = casatools.quanta.formxxx(zero_direction['m0'], format='hms', prec=3)
     zero_dec = casatools.quanta.formxxx(zero_direction['m1'], format='dms', prec=2)
 
+    applies_to = set()
+
     # analyse each MS
     for ms in mses:
         # Examine each source
@@ -738,11 +751,13 @@ def score_ephemeris_coordinates(mses):
                 longmsg = ('Suspicious source coordinates for  %s in %s. Check whether position of '
                            '00:00:00.0+00:00:00.0 is valid.' % (source.name, ms.basename))
                 complaints.append(longmsg)
+                applies_to.add(ms.basename)
 
     if all_ok:
         longmsg = ('All source coordinates OK in '
                    '%s.' % utils.commafy([ms.basename for ms in mses], False))
         shortmsg = 'All source coordinates OK'
+        applies_to = {ms.basename for ms in mses}
     else:
         longmsg = '%s.' % utils.commafy(complaints, False)
         shortmsg = 'Suspicious source coordinates'
@@ -751,8 +766,10 @@ def score_ephemeris_coordinates(mses):
                           metric_score=score,
                           metric_units='Score based on presence of ephemeris coordinates')
 
-    return pqa.QAScore(max(0.0, score), longmsg=longmsg, shortmsg=shortmsg, origin=origin)
-
+    return pqa.QAScore(
+        max(0.0, score), longmsg=longmsg, shortmsg=shortmsg, origin=origin,
+        applies_to=pqa.TargetDataSelection(vis=applies_to)
+    )
 
 @log_qa
 def score_online_shadow_template_agents(ms, summaries):
@@ -1771,9 +1788,17 @@ def score_poor_phase_snrs(ms, spwids, minsnr, snrs):
 def score_derived_fluxes_snr(ms, measurements):
     """
     Score the SNR of the derived flux measurements.
-        1.0 if SNR > 20.0
-        0.0 if SNR < 5.0
-        linear scale between 0.0 and 1.0 in between
+
+    See PIPE-644 for latest description.
+
+    Linearly scale QA score based on SNR value, where
+      QA = 1.0 if SNR >= 26.25
+      QA = 0.66 if SNR < 5.0
+    and QA linearly scales from 0.66 to 1.0 between SNR 5 to 26.25.
+
+    These QA and SNR threshold were chosen such that SNR values in the range of
+    5-20 should map to QA scores in the range that will show as a blue
+    "suboptimal" level QA message.
     """
     # Loop over measurements
     nmeasured = 0
@@ -1791,7 +1816,7 @@ def score_derived_fluxes_snr(ms, measurements):
             snr = fluxjy / uncjy
             minsnr = snr if minsnr is None else min(minsnr, snr)
             nmeasured += 1
-            score1 = linear_score(float(snr), 5.0, 20.0, 0.0, 1.0)
+            score1 = linear_score(float(snr), 5.0, 26.25, 0.66, 1.0)
             minscore = min(minscore, score1)
             score += score1
 
@@ -2322,7 +2347,7 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
         else:
             offset_score = max(0.0, 1.0 - min(1.0, beams))
             offset_metric = beams
-            if beams > 0.15:
+            if beams > 0.30:
                 warnings.append('large fitted offset of %.2f marcsec and %.2f synth beam' % (offset, beams))
 
         fitflux_score = 0.0
@@ -2751,14 +2776,25 @@ def score_sdimage_masked_pixels(context, result):
                        shortmsg=smsg,
                        origin=origin)
 
+
 @log_qa
 def score_gfluxscale_k_spw(vis, field, spw_id, k_spw, ref_spw):
     """ Convert internal spw_id-spw_id consistency ratio to a QA score.
 
-    k_spw is equal to the ratio of the derived flux:catalogue flux divided by
-    the ratio of derived flux:catalogue flux for the highest SNR window.
-
     See CAS-10792 for full specification.
+    See PIPE-644 for update to restrict range of scores.
+
+    k_spw is equal to the ratio:
+
+                       calibrated visibility flux / catalogue flux
+    k_spw = --------------------------------------------------------------------
+            (calibrated visibility flux / catalogue flux) for highest SNR window
+
+    Q_spw = abs(1 - k_spw)
+
+    If        Q_spw < 0.1 then QA score = 1.0  (green)
+    If 0.1 <= Q_spw < 0.2 then QA score = 0.75 (Blue/below standard)
+    If 0.2 <= Q_spw       then QA score = 0.5  (Yellow/warning)
 
     :param k_spw: numeric k_spw ratio, as per spec
     :param vis: name of measurement set to which k_spw applies
@@ -2766,23 +2802,16 @@ def score_gfluxscale_k_spw(vis, field, spw_id, k_spw, ref_spw):
     :param spw_id: name of spectral window to which k_spw applies
     :return: QA score
     """
-
-    #     if Q_total < 0.1, QA score 1 = 1.0
-    #     if 0.1 <= Q_total < 0.2, QA score 1 = 0.75 (Blue/below standard)
-    #     if 0.2 <= Q_total < 0.3, QA score 1 = 0.5 (Yellow/warning)
-    #     if Q_total >= 0.3, QA score 1 = 0.2 (Red/Error)
     q_spw = abs(1-k_spw)
     if q_spw < 0.1:
         score = 1.0
     elif q_spw < 0.2:
         score = 0.75
-    elif q_spw < 0.3:
-        score = 0.5
     else:
-        score = 0.2
+        score = 0.5
 
-    longmsg = ('Ratio of <i>S</i><sub>derived</sub>/<i>S</i><sub>catalogue</sub> for {} ({}) spw {} in {} differs by '
-               '{:.0%} from the ratio for the highest SNR spw ({})'
+    longmsg = ('Ratio of <i>S</i><sub>calibrated</sub>/<i>S</i><sub>catalogue</sub> for {} ({}) spw {} in {} differs by'
+               ' {:.0%} from the ratio for the highest SNR spw ({})'
                ''.format(utils.dequote(field.name), ','.join(field.intents), spw_id, vis, q_spw, ref_spw))
     shortmsg = 'Internal spw-spw consistency'
 
@@ -2855,3 +2884,67 @@ def score_fluxservice(result):
                               metric_score=score,
                               metric_units='flux service')
         return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
+
+
+def score_mom8_fc_image(mom8_fc_name, peak_snr, cube_chanScaled_MAD, outlier_threshold, n_pixels, n_outlier_pixels, is_eph_obj=False):
+    """
+    Check the MOM8 FC image for outliers above a given SNR threshold. The score
+    can vary between 0.33 and 1.0 depending on the fraction of outlier pixels.
+    """
+
+    outlier_fraction = n_outlier_pixels / n_pixels
+    with casatools.ImageReader(mom8_fc_name) as image:
+        info = image.miscinfo()
+        field = info.get('field')
+        spw = info.get('spw')
+
+    # Do not yet analyze the MOM8 FC image for ephemeris sources due to
+    # missing LSRK to REST frame conversion. Set the score to a fixed value
+    # of 0.89 (PIPE-704). To be revised when CAS-12012 is implemented.
+    if is_eph_obj:
+        LOG.info('The MOM0 FC and MOM8 FC images for ephemeris source {:s} may be in error due to LSRK to REST translation issues for the Findcont Channels. If the source has real line emission check results carefully. The MOM8 FC score has been fixed to 0.89 without analyzing the actual image.'.format(field))
+        score = 0.89
+        longmsg = 'MOM8 FC score for field {:s} spw {:s} was fixed to 0.89 due to LSRK to REST translation issues for the Findcont Channels. The peak SNR is {:#.5g}.'.format(field, spw, peak_snr)
+        shortmsg = 'MOM8 FC score fixed to 0.89'
+        weblog_location = pqa.WebLogLocation.ACCORDION
+
+        origin = pqa.QAOrigin(metric_name='score_mom8_fc_image',
+                              metric_score='Manually fixed value',
+                              metric_units='None')
+
+        return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, weblog_location=weblog_location)
+
+    if peak_snr <= outlier_threshold:
+        score = 1.0
+        longmsg = 'MOM8 FC image for field {:s} spw {:s} has a peak SNR of {:#.5g} which is below the QA threshold.'.format(field, spw, peak_snr)
+        shortmsg = 'MOM8 FC peak SNR below QA threshold'
+        weblog_location = pqa.WebLogLocation.ACCORDION
+    else:
+        LOG.info('Image {:s} has {:d} pixels ({:.2f}%) above a threshold of {:.1f} x channel scaled MAD = {:#.5g}.'.format(os.path.basename(mom8_fc_name),
+                                          n_outlier_pixels,
+                                          outlier_fraction * 100.0,
+                                          outlier_threshold,
+                                          outlier_threshold * cube_chanScaled_MAD))
+
+        m8fc_score_min = 0.33
+        m8fc_score_max = 0.90
+        m8fc_metric_scale = 300.0
+        score = m8fc_score_min + 0.5 * (m8fc_score_max - m8fc_score_min) * (1.0 + erf(-np.log10(m8fc_metric_scale * outlier_fraction)))
+        if 0.66 <= score <= 0.9 and peak_snr > 1.2 * outlier_threshold and n_outlier_pixels > 8:
+            LOG.info('Modifying MOM8 FC score from {:.2f} to 0.65 due to peak SNR > 6.0 x channel scaled MAD and > 8 outlier pixels.'.format(score))
+            score = 0.65
+
+        if 0.33 <= score < 0.66:
+            longmsg = 'MOM8 FC image for field {:s} spw {:s} with a peak SNR of {:#.5g} indicates that there may be residual line emission in the findcont channels.'.format(field, spw, peak_snr)
+            shortmsg = 'MOM8 FC image indicates residual line emission'
+            weblog_location = pqa.WebLogLocation.UNSET
+        else:
+            longmsg = 'MOM8 FC image for field {:s} spw {:s} has a peak SNR of {:#.5g} which is above the QA threshold.'.format(field, spw, peak_snr)
+            shortmsg = 'MOM8 FC peak SNR above QA threshold'
+            weblog_location = pqa.WebLogLocation.ACCORDION
+
+    origin = pqa.QAOrigin(metric_name='score_mom8_fc_image',
+                          metric_score=(peak_snr, outlier_fraction),
+                          metric_units='Peak SNR / Outlier fraction')
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, weblog_location=weblog_location)

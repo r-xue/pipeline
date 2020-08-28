@@ -2,7 +2,7 @@ import collections
 import os
 import shutil
 
-import pipeline.hif.tasks.common.flagging_renderer_utils as fru
+import pipeline.h.tasks.common.flagging_renderer_utils as fru
 import pipeline.h.tasks.common.displays.flagging as flagging
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
@@ -35,7 +35,7 @@ class T2_4MDetailsFlagDeterVLARenderer(basetemplates.T2_4MDetailsDefaultRenderer
         # Note that the call to common.flagging_renderer_utils.flags_for_result
         for r in result:
             flag_totals = utils.dict_merge(flag_totals, 
-                                           fru.flags_for_result(r, context, non_science_agents))
+                                           fru.flags_for_result(r, context, non_science_agents=non_science_agents))
 
             # copy template files across to weblog directory
             toggle_to_filenames = {'online'   : 'fileonline',
@@ -163,7 +163,7 @@ class T2_4MDetailsFlagDeterVLARenderer(basetemplates.T2_4MDetailsDefaultRenderer
 
 # not used in 4.5.2+ and C3R4+
 class T2_4MDetailstargetflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
-    def __init__(self, uri='targetflag.mako', 
+    def __init__(self, uri='vlatargetflag.mako',
                  description='Targetflag (All targets through RFLAG)', always_rerender=False):
         super(T2_4MDetailstargetflagRenderer, self).__init__(
             uri=uri, description=description, always_rerender=always_rerender)

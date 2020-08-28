@@ -454,7 +454,7 @@ class MeasurementSet(object):
                                'POLARIZATION', 'POLANGLE', 'POLLEAKAGE',
                                'CHECK'}
             return [w for w in spws if w.num_channels not in (1, 4)
-                    and not science_intents.isdisjoint(w.intents)]
+                    and not science_intents.isdisjoint(w.intents) and 'POINTING' not in w.intents]
 
         if self.antenna_array.name == 'NRO':
             science_intents = {'TARGET'}
@@ -746,7 +746,7 @@ class MeasurementSet(object):
 
         return field_names
 
-    def get_vla_field_spws(self):
+    def get_vla_field_spws(self, spwlist=[]):
         """Find field spws for VLA"""
 
         vis = self.name
@@ -759,8 +759,18 @@ class MeasurementSet(object):
         # for ii in range(numFields):
         #     field_spws.append(self.vla_spws_for_field(ii))
 
+        spwlistint = [int(spw) for spw in spwlist]
+
         with casatools.MSMDReader(vis) as msmd:
-            spwsforfields = msmd.spwsforfields()
+            spwsforfieldsall = msmd.spwsforfields()
+
+            if spwlist != []:
+                spwsforfields = {}
+                for field, spws in spwsforfieldsall.items():
+                    spwsforfields[field] = [spw for spw in spws if spw in spwlistint]
+            else:
+                spwsforfields = spwsforfieldsall
+
             spwfieldkeys = sorted([int(i) for i in spwsforfields])
             spwfieldkeys = [str(i) for i in spwfieldkeys]
 
@@ -779,7 +789,7 @@ class MeasurementSet(object):
 
         return channels
 
-    def get_vla_tst_bpass_spw(self):
+    def get_vla_tst_bpass_spw(self, spwlist=[]):
         """Get VLA test bandpass spws"""
 
         vis = self.name
@@ -790,10 +800,13 @@ class MeasurementSet(object):
 
         numSpws = len(channels)
 
-        for ispw in range(numSpws):
+        ispwlist = [int(spw) for spw in spwlist]
+        #for ispw in range(numSpws):
+        for ispw in ispwlist:
             endch1 = int(channels[ispw]/3.0)
             endch2 = int(2.0*channels[ispw]/3.0)+1
-            if ispw < max(range(numSpws)):
+            #if ispw < max(range(numSpws)):
+            if ispw < max(ispwlist):
                 tst_delay_spw = tst_delay_spw+str(ispw)+':'+str(endch1)+'~'+str(endch2)+','
                 # all_spw=all_spw+str(ispw)+','
             else:
@@ -804,7 +817,7 @@ class MeasurementSet(object):
 
         return tst_bpass_spw
 
-    def get_vla_tst_delay_spw(self):
+    def get_vla_tst_delay_spw(self, spwlist=[]):
         """Get VLA test bandpass spws"""
 
         vis = self.name
@@ -815,10 +828,13 @@ class MeasurementSet(object):
 
         numSpws = len(channels)
 
-        for ispw in range(numSpws):
+        ispwlist = [int(spw) for spw in spwlist]
+        # for ispw in range(numSpws):
+        for ispw in ispwlist:
             endch1 = int(channels[ispw]/3.0)
             endch2 = int(2.0*channels[ispw]/3.0)+1
-            if ispw < max(range(numSpws)):
+            #if ispw < max(range(numSpws)):
+            if ispw < max(ispwlist):
                 tst_delay_spw = tst_delay_spw+str(ispw)+':'+str(endch1)+'~'+str(endch2)+','
                 # all_spw=all_spw+str(ispw)+','
             else:

@@ -26,8 +26,8 @@ class CleanBaseInputs(vdp.StandardInputs):
     antenna = vdp.VisDependentProperty(default='')
     datacolumn = vdp.VisDependentProperty(default='')
     deconvolver = vdp.VisDependentProperty(default='')
-    cyclefactor = vdp.VisDependentProperty(default=-999.0)
     cycleniter = vdp.VisDependentProperty(default=-999)
+    cyclefactor = vdp.VisDependentProperty(default=-999.0)
     cfcache = vdp.VisDependentProperty(default='')
     field = vdp.VisDependentProperty(default='')
     gridder = vdp.VisDependentProperty(default='')
@@ -41,6 +41,8 @@ class CleanBaseInputs(vdp.StandardInputs):
     hm_masking = vdp.VisDependentProperty(default='auto')
     hm_minbeamfrac = vdp.VisDependentProperty(default=-999.0)
     hm_minpercentchange = vdp.VisDependentProperty(default=-999.0)
+    hm_minpsffraction = vdp.VisDependentProperty(default=-999.0)
+    hm_maxpsffraction = vdp.VisDependentProperty(default=-999.0)
     hm_fastnoise = vdp.VisDependentProperty(default=True)
     hm_negativethreshold = vdp.VisDependentProperty(default=-999.0)
     hm_noisethreshold = vdp.VisDependentProperty(default=-999.0)
@@ -112,7 +114,8 @@ class CleanBaseInputs(vdp.StandardInputs):
 
     def __init__(self, context, output_dir=None, vis=None, imagename=None, datacolumn=None, intent=None, field=None,
                  spw=None, spwsel=None, spwsel_all_cont=None, uvrange=None, orig_specmode=None, specmode=None, gridder=None, deconvolver=None,
-                 uvtaper=None, nterms=None, cycleniter=None, cyclefactor=None, scales=None, outframe=None, imsize=None,
+                 uvtaper=None, nterms=None, cycleniter=None, cyclefactor=None, hm_minpsffraction=None,
+                 hm_maxpsffraction=None, scales=None, outframe=None, imsize=None,
                  cell=None, phasecenter=None, nchan=None, start=None, width=None, stokes=None, weighting=None,
                  robust=None, restoringbeam=None, iter=None, mask=None, savemodel=None, hm_masking=None,
                  hm_sidelobethreshold=None, hm_noisethreshold=None, hm_lownoisethreshold=None, wprojplanes=None,
@@ -142,6 +145,8 @@ class CleanBaseInputs(vdp.StandardInputs):
         self.nterms = nterms
         self.cycleniter = cycleniter
         self.cyclefactor = cyclefactor
+        self.hm_minpsffraction = hm_minpsffraction
+        self.hm_maxpsffraction = hm_maxpsffraction
         self.scales = scales
         self.outframe = outframe
         self.imsize = imsize
@@ -231,7 +236,9 @@ class CleanBase(basetask.StandardTaskTemplate):
                                   orig_specmode=inputs.orig_specmode,
                                   specmode=inputs.specmode,
                                   multiterm=inputs.nterms if inputs.deconvolver == 'mtmfs' else None,
-                                  plotdir=plotdir, imaging_mode=inputs.heuristics.imaging_mode)
+                                  plotdir=plotdir, imaging_mode=inputs.heuristics.imaging_mode,
+                                  is_per_eb=inputs.is_per_eb,
+                                  is_eph_obj=inputs.heuristics.is_eph_obj(inputs.field))
         else:
             result = inputs.result
 
@@ -434,6 +441,12 @@ class CleanBase(basetask.StandardTaskTemplate):
             if cyclefactor:
                 tclean_job_parameters['cyclefactor'] = cyclefactor
 
+        if inputs.hm_minpsffraction not in (None, -999):
+            tclean_job_parameters['minpsffraction'] = inputs.hm_minpsffraction
+
+        if inputs.hm_maxpsffraction not in (None, -999):
+            tclean_job_parameters['maxpsffraction'] = inputs.hm_maxpsffraction
+
         if inputs.cycleniter not in (None, -999):
             tclean_job_parameters['cycleniter'] = inputs.cycleniter
         else:
@@ -451,7 +464,7 @@ class CleanBase(basetask.StandardTaskTemplate):
         if inputs.uvrange:
             tclean_job_parameters['uvrange'] = inputs.uvrange
         else:
-            uvrange = inputs.heuristics.uvrange()
+            uvrange, _ = inputs.heuristics.uvrange(field=inputs.field, spwspec=inputs.spw)
             if uvrange:
                 tclean_job_parameters['uvrange'] = uvrange
 

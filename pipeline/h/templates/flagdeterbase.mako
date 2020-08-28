@@ -9,6 +9,7 @@ agent_description = {
 	'qa0'      : 'QA0',
 	'qa2'      : 'QA2',
 	'online'   : 'Online Flags',
+	'pointing' : 'Pointing Flags',
 	'template' : 'Flagging Template',
 	'autocorr' : 'Autocorrelations',
 	'shadow'   : 'Shadowed Antennas',
@@ -22,21 +23,25 @@ total_keys = {
 	'BANDPASS'     : 'Bandpass',
 	'AMPLITUDE'    : 'Flux',
 	'PHASE'        : 'Phase',
-	'TARGET'       : 'Target (science spws)'
+	'TARGET'       : 'Target (science spws)',
+    'POLARIZATION' : 'Polarization',
+    'POLANGLE'     : 'Polarization angle',
+    'POLLEAKAGE'   : 'Polarization leakage',
+	'CHECK'		   : 'Check',
 }
 
 def template_agent_header1(agent):
-	span = 'col' if agent in ('online','template') else 'row'
+	span = 'col' if agent in ('online','template', 'pointing') else 'row'
 	return '<th %sspan="2">%s</th>' % (span, agent_description[agent])
 
 def template_agent_header2(agent):
-	if agent in ('online', 'template'):
+	if agent in ('online', 'template', 'pointing'):
 		return '<th>File</th><th>Number of Statements</th>'
 	else:
-		return ''		
+		return ''
 
 def get_template_agents(agents):
-	return [a for a in agents if a in ('online', 'template')]
+	return [a for a in agents if a in ('online', 'template', 'pointing')]
 
 
 %>
@@ -49,7 +54,7 @@ $(document).ready(function(){
 </script>
 
 <%
-# these functions are defined in template scope so we have access to the flags 
+# these functions are defined in template scope so we have access to the flags
 # and agents context objects
 
 def total_for_mses(mses, row):
@@ -74,7 +79,7 @@ def total_for_agent(agent, row, mses=flags.keys()):
 			flagged += fs.flagged
 			total += fs.total
 		else:
-			# agent was not activated for this MS. 
+			# agent was not activated for this MS.
 			total += flags[ms]['before'][row].total
 	if total is 0:
 		return 'N/A'
@@ -83,14 +88,14 @@ def total_for_agent(agent, row, mses=flags.keys()):
 
 def agent_data(agent, ms):
 	if agent not in flags[ms]:
-		if agent in ('online', 'template'):
+		if agent in ('online', 'template', 'pointing'):
 			return '<td></td><td></td>'
 		else:
 			return '<td></td>'
 
-	if agent in ('online', 'template'):
+	if agent in ('online', 'template', 'pointing'):
 		if isinstance(result.inputs['vis'], str):
-			flagfile = os.path.basename(result.inputs['file%s' % agent])			
+			flagfile = os.path.basename(result.inputs['file%s' % agent])
 		elif isinstance(result.inputs['vis'], list):
 			for v in result.inputs['vis']:
 				if os.path.basename(v) == ms:
@@ -120,7 +125,7 @@ def agent_td(agent, ms):
 
 <h2>Flagging agents</h2>
 <table class="table table-bordered table-striped">
-	<caption>Flagging agent status per measurement set.</caption>	   
+	<caption>Flagging agent status per measurement set.</caption>
 	<thead>
 		<tr>
 			<th>Measurement Set</th>
@@ -128,7 +133,7 @@ def agent_td(agent, ms):
 			<th>${agent_description[agent]}</th>
 			% endfor
 			<th>Agent Commands</th>
-		</tr>				
+		</tr>
 	</thead>
 	<tbody>
 	% for ms in flags.keys():
@@ -151,19 +156,21 @@ mses = [m for m in flags.keys() if 'online' in flags[m] or 'template' in flags[m
 % if mses:
 <h2>Template Files</h2>
 <table class="table table-bordered table-striped">
-	<caption>Files used for template flagging steps.</caption>	   
+	<caption>
+	Files used for template flagging steps.
+	</caption>
 	<thead>
 		<tr>
 			<th rowspan="2">Measurement Set</th>
 % for agent in flagging_agents:
 			${template_agent_header1(agent)}
 % endfor
-		</tr>	
+		</tr>
 		<tr>
 % for agent in flagging_agents:
 			${template_agent_header2(agent)}
 % endfor
-		</tr>			
+		</tr>
 	</thead>
 	<tbody>
 % for ms in mses:
@@ -181,7 +188,7 @@ mses = [m for m in flags.keys() if 'online' in flags[m] or 'template' in flags[m
 <h2>Flagged data summary</h2>
 <table class="table table-bordered table-striped"
 	   summary="Flagged Data">
-	<caption>Summary of flagged data. Each cell states the amount of data 
+	<caption>Summary of flagged data. Each cell states the amount of data
 	flagged as a fraction of the spec ified data selection, with the
 	<em>Flagging Agent</em> columns giving this information per flagging agent.
 	<br>The percentages in each successive column represent the additional data flagged by applying that column's agent (after the previous agents have been applied).
@@ -205,16 +212,16 @@ mses = [m for m in flags.keys() if 'online' in flags[m] or 'template' in flags[m
 		</tr>
 	</thead>
 	<tbody>
-%for k in ['TOTAL', 'SCIENCE SPWS', 'BANDPASS', 'AMPLITUDE', 'PHASE', 'TARGET']: 
+%for k in flag_table_intents:
 		<tr>
-			<th>${total_keys[k]}</th>		
+			<th>${total_keys[k]}</th>
 	% for agent in agents:
 			<td>${total_for_agent(agent, k)}</td>
 	% endfor
 			<td>${total_for_mses(flags.keys(), k)}</td>
 	% for ms in flags.keys():
 			<td>${total_for_mses([ms], k)}</td>
-	% endfor		
+	% endfor
 		</tr>
 %endfor
 %for ms in flags.keys():

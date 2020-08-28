@@ -90,7 +90,7 @@ def _get_processing_procedure(procedure: str) -> ElementTree:
 
 def _get_procedure_title(procedure):
     procedure_xml = _get_processing_procedure(procedure)
-    procedure_title = procedure_xml.findtext('ProcedureTitle')
+    procedure_title = procedure_xml.findtext('ProcedureTitle', default='Undefined')
     return procedure_title
 
 

@@ -4,12 +4,13 @@ import distutils.log
 import os
 import shutil
 import subprocess
+import sys
 
 import setuptools
 from setuptools.command.build_py import build_py
 
 ENCODING = 'utf-8'  # locale.getpreferredencoding()
-PIPELINE_PACKAGES = ['h', 'hif', 'hifa', 'hifv', 'hsd', 'hsdn']
+PIPELINE_PACKAGES = ['h', 'hif', 'hifa', 'hifas', 'hifv', 'hsd', 'hsdn']
 
 
 def flatten(items):
@@ -21,6 +22,17 @@ def flatten(items):
         else:
             yield x
 
+def str_encode(s):
+    return bytes(s,sys.getdefaultencoding())
+def str_decode(bs):
+    return bs.decode(sys.getdefaultencoding(),"strict")
+def pipe_decode(output):
+    if isinstance(output,bytes) or isinstance(output,bytearray):
+        return str_decode(output)
+    elif isinstance(output,tuple):
+        return (str_decode(output[0]),str_decode(output[1]))
+    else:
+        return ("","")
 
 class MinifyJSCommand(distutils.cmd.Command):
     description = 'Minify the pipeline javascript'
@@ -57,7 +69,8 @@ class MinifyJSCommand(distutils.cmd.Command):
                 'holder.js',                                # placeholders for missing images
                 'lazyload.js',                              # only load images when they become visible
                 'jquery.fancybox.js',                       # fancybox
-                'plotcmd.js',                               # pipeline plugin for fancybox
+                'plotcmd.js',                               # fancybox plugin to show originating plot command
+                'tcleancmd.js',                             # fancybox plugin to show originating tclean command
                 'purl.js',                                  # URL inspection
                 'bootstrap.js',                             # bootstrap
                 'pipeline.js',                              # pipeline
@@ -263,36 +276,49 @@ class VersionCommand(distutils.cmd.Command):
 
 
 def _get_git_version():
-    # Retrieve info about current commit.
-    try:
-        # Set version to latest tag, number of commits since tag, and latest
-        # commit hash.
-        commit_hash = subprocess.check_output(['git', 'describe', '--always', '--tags', '--long', '--dirty'],
-                                              stderr=subprocess.DEVNULL).decode().strip()
-    except (FileNotFoundError, subprocess.CalledProcessError):
-        # FileNotFoundError: if git is not on PATH.
-        # subprocess.CalledProcessError: if git command returns error.
-        commit_hash = None
-
     # Retrieve info about current branch.
+    git_branch = None
     try:
         git_branch = subprocess.check_output(['git', 'symbolic-ref', '--short', 'HEAD'],
-                                             stderr=subprocess.DEVNULL).decode().strip()
+                                            stderr=subprocess.DEVNULL).decode().strip()
     except (FileNotFoundError, subprocess.CalledProcessError):
         # FileNotFoundError: if git is not on PATH.
         # subprocess.CalledProcessError: if git command returns error; for example, current checkout
         #   may have a detached HEAD pointing at a specific tag (not pointing to a branch).
-        git_branch = None
+        pass
+    if git_branch !=None and (git_branch == "main" or git_branch.startswith("release/")):
+        proc = subprocess.Popen( [ "pipeline/infrastructure/version" ], stdout=subprocess.PIPE, stderr=subprocess.PIPE )
+        out,err = pipe_decode(proc.communicate( ))
+        #print(out)
+        releasetag = out.split(" ")[1].strip()
+        dirty=""
+        version = releasetag
+        if (len(out.split(" ")) == 3):
+            #print("Latest commit doesn't have a tag. Adding -dirty flag to version string.")
+            dirty="+" + out.split(" ")[2].strip() # "+" denotes local version identifier as described in PEP440
+            version = version + dirty
+        return version
+    else: 
+        # Retrieve info about current commit.
+        try:
+            # Set version to latest tag, number of commits since tag, and latest
+            # commit hash.
+            commit_hash = subprocess.check_output(['git', 'describe', '--always', '--tags', '--long', '--dirty'],
+                                                stderr=subprocess.DEVNULL).decode().strip()
+            print(commit_hash)
+        except (FileNotFoundError, subprocess.CalledProcessError):
+            # FileNotFoundError: if git is not on PATH.
+            # subprocess.CalledProcessError: if git command returns error.
+            commit_hash = None
+        # Consolidate into single version string.
+        if commit_hash is None:
+            version = "unknown"
+        elif git_branch is None:
+            version = commit_hash
+        else:
+            version = "{}-{}".format(commit_hash, git_branch)
 
-    # Consolidate into single version string.
-    if commit_hash is None:
-        version = "unknown"
-    elif git_branch is None:
-        version = commit_hash
-    else:
-        version = "{}-{}".format(commit_hash, git_branch)
-
-    return version
+        return version
 
 
 class PipelineBuildPyCommand(build_py):
@@ -319,7 +345,7 @@ packages = setuptools.PEP420PackageFinder().find(exclude=['build*', 'doc*'])
 
 setuptools.setup(
     name='Pipeline',
-    version='8.0.0',
+    version=_get_git_version(),
     description='CASA pipeline',
     cmdclass={
         'buildmytasks': BuildMyTasksCommand,
@@ -337,7 +363,7 @@ setuptools.setup(
     setup_requires=[
         'csscompressor'  # minify CSS
     ],
-    options=dict(egg_info=dict(tag_build='_{}'.format(_get_git_version()))),
+    #options=dict(egg_info=dict(tag_build='_{}'.format(_get_git_version()))),
     packages=packages,
     package_data={'': ['*.css',
                        '*.egg',

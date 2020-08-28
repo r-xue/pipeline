@@ -4,8 +4,11 @@ Created on 24 Oct 2014
 @author: sjw
 """
 import collections
+import itertools
 import operator
 import os
+import shutil
+from typing import Dict, Iterable, List
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure
@@ -14,9 +17,14 @@ import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
-from pipeline.h.tasks.common.displays import applycal as applycal
+from pipeline.domain.measurementset import MeasurementSet
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure.basetask import ResultsList
 from pipeline.infrastructure.displays.summary import UVChart
+from pipeline.infrastructure.launcher import Context
+from pipeline.infrastructure.renderer.logger import Plot
+from ..common import flagging_renderer_utils as flagutils
+from ..common.displays import applycal as applycal
 
 LOG = logging.get_logger(__name__)
 
@@ -33,10 +41,16 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def update_mako_context(self, ctx, context, result):
         weblog_dir = os.path.join(context.report_dir, 'stage%s' % result.stage_number)
 
+        # calculate which intents to display in the flagging statistics table
+        intents_to_summarise = flagutils.intents_to_summarise(context)
+        flag_table_intents = ['TOTAL', 'SCIENCE SPWS']
+        flag_table_intents.extend(intents_to_summarise)
+
         flag_totals = {}
         for r in result:
             if r.inputs['flagsum'] is True:
-                flag_totals = utils.dict_merge(flag_totals, self.flags_for_result(r, context))
+                flag_totals = utils.dict_merge(flag_totals,
+                                               flagutils.flags_for_result(r, context, intents_to_summarise=intents_to_summarise))
 
         calapps = {}
         for r in result:
@@ -80,7 +94,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             context,
             result,
             applycal.PhaseVsTimeSummaryChart,
-            ['PHASE', 'BANDPASS', 'AMPLITUDE', 'CHECK', 'POLARIZATION']
+            ['PHASE', 'BANDPASS', 'AMPLITUDE', 'CHECK', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE']
         )
 
         amp_vs_freq_summary_plots = utils.OrderedDefaultdict(list)
@@ -236,6 +250,16 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         else:
             uv_plots = self.create_uv_plots(context, result, weblog_dir)
 
+        # PIPE-615: Add links to the hif_applycal weblog for viewing each
+        # callibrary table (and store all callibrary tables in the weblog
+        # directory)
+        callib_map = copy_callibrary(result, context.report_dir)
+
+        # PIPE-396: Suppress redundant plots from hifa_applycal
+        amp_vs_freq_summary_plots = deduplicate(context, amp_vs_freq_summary_plots)
+        amp_vs_uv_summary_plots = deduplicate(context, amp_vs_uv_summary_plots)
+        corrected_ratio_to_antenna1_plots = deduplicate(context, corrected_ratio_to_antenna1_plots)
+
         ctx.update({
             'amp_vs_freq_plots': amp_vs_freq_summary_plots,
             'phase_vs_freq_plots': phase_vs_freq_summary_plots,
@@ -253,6 +277,8 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'amp_vs_time_subpages': amp_vs_time_subpages,
             'amp_vs_uv_subpages': amp_vs_uv_subpages,
             'phase_vs_time_subpages': phase_vs_time_subpages,
+            'callib_map': callib_map,
+            'flag_table_intents': flag_table_intents
         })
 
     @staticmethod
@@ -511,80 +537,6 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             return ' (phase only)'
         return ''
 
-    def flags_for_result(self, result, context):
-        ms = context.observing_run.get_ms(result.inputs['vis'])
-        summaries = result.summaries
-
-        by_intent = self.flags_by_intent(ms, summaries)
-        by_spw = self.flags_by_science_spws(ms, summaries)
-
-        return {ms.basename: utils.dict_merge(by_intent, by_spw)}
-
-    def flags_by_intent(self, ms, summaries):
-        # create a dictionary of scans per observing intent, eg. 'PHASE':[1,2,7]
-        intent_scans = {}
-        for intent in ('BANDPASS', 'PHASE', 'AMPLITUDE', 'CHECK', 'TARGET'):
-            # convert IDs to strings as they're used as summary dictionary keys
-            intent_scans[intent] = [str(s.id) for s in ms.scans
-                                    if intent in s.intents]
-
-        # while we're looping, get the total flagged by looking in all scans 
-        intent_scans['TOTAL'] = [str(s.id) for s in ms.scans]
-
-        total = collections.defaultdict(dict)
-
-        previous_summary = None
-        for summary in summaries:
-
-            for intent, scan_ids in intent_scans.items():
-                flagcount = 0
-                totalcount = 0
-
-                for i in scan_ids:
-                    # workaround for KeyError exception when summary 
-                    # dictionary doesn't contain the scan
-                    if i not in summary['scan']:
-                        continue
-
-                    flagcount += int(summary['scan'][i]['flagged'])
-                    totalcount += int(summary['scan'][i]['total'])
-
-                    if previous_summary:
-                        flagcount -= int(previous_summary['scan'][i]['flagged'])
-
-                ft = FlagTotal(flagcount, totalcount)
-                total[summary['name']][intent] = ft
-
-            previous_summary = summary
-
-        return total 
-
-    def flags_by_science_spws(self, ms, summaries):
-        science_spws = ms.get_spectral_windows(science_windows_only=True)
-
-        total = collections.defaultdict(dict)
-
-        previous_summary = None
-        for summary in summaries:
-
-            flagcount = 0
-            totalcount = 0
-
-            for spw in science_spws:
-                spw_id = str(spw.id)
-                flagcount += int(summary['spw'][spw_id]['flagged'])
-                totalcount += int(summary['spw'][spw_id]['total'])
-
-                if previous_summary:
-                    flagcount -= int(previous_summary['spw'][spw_id]['flagged'])
-
-            ft = FlagTotal(flagcount, totalcount)
-            total[summary['name']]['SCIENCE SPWS'] = ft
-
-            previous_summary = summary
-
-        return total
-
 
 class ApplycalAmpVsFreqPlotRenderer(basetemplates.JsonPlotRenderer):
     def __init__(self, context, result, plots):
@@ -752,8 +704,7 @@ def get_brightest_field(ms, source, intent='TARGET'):
 
     # give the sole science target name if there's only one science target in this ms.
     if len(fields_for_source) == 1:
-        LOG.info('Only one {} target for Source #{}. '
-                 'Bypassing brightest target selection.'.format(intent, source.id))
+        LOG.info('Only one %s target for Source #%s. Bypassing brightest target selection.', intent, source.id)
         return fields_for_source[0]
 
     visstat_fields, visstat_spws = get_visstat_data_selection(ms, fields_for_source, spw_ids, intent)
@@ -777,7 +728,7 @@ def get_brightest_field(ms, source, intent='TARGET'):
     }
 
     # run visstat for each scan selection for the target
-    LOG.info('Calculating which {} field has the highest median flux for Source #{}'.format(intent, source.id))
+    LOG.info('Calculating which %s field has the highest median flux for Source #%s', intent, source.id)
     job = casa_tasks.visstat(**job_params)
     visstat_result = job.execute(dry_run=False)
 
@@ -788,7 +739,7 @@ def get_brightest_field(ms, source, intent='TARGET'):
         measurement_field = [f for f in fields_for_source if f.id == int(field_id)][0]
         median_flux.append((measurement_field, float(v['median'])))
 
-    LOG.debug('Median flux for {} targets:'.format(intent))
+    LOG.debug('Median flux for %s targets:', intent)
     for field, field_flux in median_flux:
         LOG.debug('\t{!r} ({}): {}'.format(field.name, field.id, field_flux))
 
@@ -835,7 +786,7 @@ def get_visstat_data_selection(ms, fields_for_source, spw_ids, intent):
         num_rows = flagdata_summary['total']
         if num_flagged_rows == num_rows:
             _, flagged_field, _, flagged_spw = flagdata_summary['name'].split('_')
-            LOG.info('Discarding field {} spw {} as a visstat candidate'.format(flagged_field, flagged_spw))
+            LOG.info('Discarding field %s spw %s as a visstat candidate', flagged_field, flagged_spw)
             field_to_remove = ms.fields[int(flagged_field)]
             spw_to_fields_for_visstat_job[int(flagged_spw)].remove(field_to_remove)
 
@@ -852,3 +803,105 @@ def get_visstat_data_selection(ms, fields_for_source, spw_ids, intent):
                            if fields_for_job.issubset(fields_for_spw)}
 
     return fields_for_job, spws_for_job_fields
+
+
+def copy_callibrary(results: ResultsList, report_dir: str) -> Dict[str, str]:
+    """
+    Copy callibrary files across to the weblog stage directory, returning a
+    Dict mapping MS name to the callibrary location on disk.
+    """
+    stage_dir = os.path.join(report_dir, f'stage{results.stage_number}')
+
+    vis_to_callib = {}
+
+    for result in results:
+        if not result.callib_map:
+            continue
+
+        for vis, callib_src in result.callib_map.items():
+            # copy callib file across to weblog directory
+            callib_basename = os.path.basename(callib_src)
+            callib_dst = os.path.join(stage_dir, os.path.basename(callib_basename))
+            LOG.debug('Copying callibrary: src=%s dst=%s', callib_src, callib_dst)
+            shutil.copyfile(callib_src, callib_dst)
+
+            vis_to_callib[os.path.basename(vis)] = callib_dst
+
+    return vis_to_callib
+
+
+def deduplicate(context: Context, all_plots: Dict[str, List[Plot]]) -> Dict[str, List[Plot]]:
+    """
+    Process a dict mapping vis to plots, deduplicating the plot list for
+    each MS.
+    """
+    result = {}
+    for vis, vis_plots in all_plots.items():
+        ms = context.observing_run.get_ms(name=vis)
+        deduplicated = _deduplicate_plots(ms, vis_plots)
+        result[vis] = deduplicated
+    return result
+
+
+def _deduplicate_plots(ms: MeasurementSet, plots: List[Plot]) -> List[Plot]:
+    """
+    Deduplicate plots by discarding extra plots created for the same scan.
+    The remaining plot is relabelled as applicable to the discarded intents.
+    """
+    # holds the final deduplicated list of plots
+    deduplicated: List[Plot] = []
+
+    # General algorithm is 'what scan does this spw and intent correspond to? 
+    # Has this scan already been plotted? If so, discard the plot.'
+    #
+    # Plots are made per spw, per intent. Duplicate plots should be removed by
+    # navigating down to the spw and filtering per spw. Just because spw 16 
+    # BANDPASS cal is also spw 16 AMPLITUDE cal doesn't mean the same holds
+    # for other spectral windows.
+
+    # define functions to get spw and intent for a plot. These are used to
+    # sort and group the plots.
+    spw_fn = lambda plot: plot.parameters['spw']
+    intent_fn = lambda plot: plot.parameters['intent']
+
+    # First, group plots by spw
+    plots_by_spw = sorted(plots, key=spw_fn)
+    for spw, spw_plots in itertools.groupby(plots_by_spw, spw_fn):
+        # Store group iterator as a list
+        spw_plots = list(spw_plots)
+
+        # dict to map scan ID to plots for that scan.
+        plots_for_scan = {}
+
+        # now group these plots by intent. The intent ordering used here will
+        # be reflected in the order of the relabelled intents.
+        spw_plots_by_intent = sorted(spw_plots, key=intent_fn)
+        for intent, spw_intent_plots in itertools.groupby(spw_plots_by_intent, intent_fn):
+            # Store group iterator as a list
+            spw_intent_plots = list(spw_intent_plots)  
+
+            # This should result in a single plot. If not, bail. Failsafe
+            # behaviour is to return original list of plots. It's better to
+            # have duplicates present than exceptions.
+            if len(spw_intent_plots) != 1:
+                LOG.warning('Plot deduplication cancelled. '
+                            'Could not process ambiguous plot for spw %s intent %s', spw, intent)
+                return plots
+            plot = spw_intent_plots[0]
+
+            scan_ids = sorted({(scan.id) for scan in ms.get_scans(scan_intent=intent, spw=spw)})
+            scan_ids = ','.join(str(s) for s in scan_ids)
+            if scan_ids not in plots_for_scan:
+                LOG.debug('Retaining plot for scan %s (spw=%s intent=%s)', scan_ids, spw, intent)
+                plots_for_scan[scan_ids] = plot
+            else:
+                LOG.debug('Discarding duplicate plot for scan %s (spw=%s intent=%s)', scan_ids, spw, intent)
+                # intents are strings inside lists, e.g., ['BANDPASS']
+                old_intent = intent_fn(plots_for_scan[scan_ids])
+                new_intent = [','.join(sorted(set(old_intent).union(set(intent))))]
+                LOG.info('Deduplicating plot: spw %s %s -> %s', spw, old_intent, new_intent)
+                plots_for_scan[scan_ids].parameters['intent'] = new_intent
+
+        deduplicated.extend(plots_for_scan.values())
+
+    return deduplicated

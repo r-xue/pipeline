@@ -1,6 +1,6 @@
 <ProcessingProcedure>
 
-    <ProcedureTitle>hifvcalvlass_compression</ProcedureTitle>
+    <ProcedureTitle>hifv_calvlass_compression</ProcedureTitle>
 
     <ProcessingCommand>
         <Command xmlns="">hifv_importdata</Command>

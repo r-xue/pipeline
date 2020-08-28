@@ -98,6 +98,7 @@ class fluxgaincalSummaryChart(object):
                               parameters={'vis': self.ms.basename,
                                           'type': 'fluxgaincal',
                                           'spw': '',
+                                          'caltable': self.caltable,
                                           'figurecaption': 'Caltable: {!s}. Plot of amp vs. freq.'.format(self.caltable)})
 
         if not os.path.exists(figfile):
@@ -162,9 +163,18 @@ class modelfitSummaryChart(object):
                 maxfreq = np.max(frequencies)
                 m = self.context.observing_run.get_ms(self.result.inputs['vis'])
                 fieldobject = m.get_fields(source)
-                fieldid = str([str(f.id) for f in fieldobject if str(f.id) in self.result.fluxscale_result.keys()][0])
-                spidx = self.result.fluxscale_result[fieldid]['spidx']
-                fitreff = self.result.fluxscale_result[fieldid]['fitRefFreq']
+                if len(self.result.fluxscale_result) == 1:
+                    fieldid = str([str(f.id) for f in fieldobject if str(f.id) in self.result.fluxscale_result[0].keys()][0])
+                    spidx = self.result.fluxscale_result[0][fieldid]['spidx']
+                    fitreff = self.result.fluxscale_result[0][fieldid]['fitRefFreq']
+                else:
+                    for single_fs_result in self.result.fluxscale_result:
+                        try:
+                            fieldid = str([str(f.id) for f in fieldobject if str(f.id) in single_fs_result.keys()][0])
+                            spidx = single_fs_result[fieldid]['spidx']
+                            fitreff = single_fs_result[fieldid]['fitRefFreq']
+                        except Exception as e:
+                            LOG.debug("Field error.")
                 reffreq = fitreff / 1.e9
 
                 freqs = np.linspace(minfreq * 1.e9, maxfreq * 1.e9, 500)
@@ -281,7 +291,8 @@ class residualsSummaryChart(object):
         #pb.clf()
 
         fig = pb.figure(figsize=(10, 6))
-        ax1 = fig.add_subplot(111)
+        # ax1 = fig.add_subplot(111)
+        ax1 = fig.add_axes([0.1, 0.1, 0.5, 0.8])
 
         mysize = 'small'
         colors = ['red', 'blue', 'green', 'cyan', 'yellow', 'orange', 'purple']
@@ -295,15 +306,15 @@ class residualsSummaryChart(object):
                 for datadict in datadicts:
                     residuals.append(float(datadict['data']) - float(datadict['fitteddata']))
                     frequencies.append(float(datadict['freq']))
-                ax1.plot(frequencies, residuals, 'o', label=source, color=colors[colorcount])
-                ax1.plot(np.linspace(np.min(frequencies), np.max(frequencies), 10),
+                ax1.plot(np.log10(np.array(frequencies) * 1.e9), residuals, 'o', label=source, color=colors[colorcount])
+                ax1.plot(np.linspace(np.min(np.log10(np.array(frequencies) * 1.e9)), np.max(np.log10(np.array(frequencies) * 1.e9)), 10),
                          np.zeros(10) + np.mean(residuals), linestyle='--', label='Mean', color=colors[colorcount])
                 pb.ylabel('Residuals (data - fit) [Jy]', size=mysize)
-                pb.xlabel('Frequency [GHz]', size=mysize)
+                pb.xlabel('log10 Frequency [Hz]', size=mysize)
                 # pb.legend()
                 # pb.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05), shadow=True, ncol=2)
                 chartBox = ax1.get_position()
-                ax1.set_position([chartBox.x0, chartBox.y0, chartBox.width * 0.8, chartBox.height])
+                # ax1.set_position([chartBox.x0, chartBox.y0, chartBox.width * 0.8, chartBox.height])
                 ax1.legend(loc='upper center', bbox_to_anchor=(1.45, 0.8), shadow=True, ncol=1)
                 # title = title + '   ' + str(source) + '({!s})'.format(colors[colorcount])
                 colorcount += 1

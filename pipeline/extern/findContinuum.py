@@ -9,6 +9,76 @@ Simple usage:
 This file can be found in a typical pipeline distribution directory, e.g.:
 /lustre/naasc/sciops/comm/rindebet/pipeline/branches/trunk/pipeline/extern
 As of March 7, 2019 (version 3.36), it is compatible with both python 2 and 3.
+
+Code changes for Pipeline2020: (as of August 9, 2020)
+0) fix for PIPE-554 (bug found in cube imaging of calibrators by ARI-L project)
+1) fix for PIPE-525 (divide by zero in a 130-target MOUS)
+2) new feature PIPE-702 (expand mask if mom8fc image has emission outside it)
+3) Add warning messages for too little bandwidth or too little spread.
+4) if outdir is specified and does not exist, stop and print error message.
+5) Modified the is_binary() function to work in both python 2 and 3.
+6) Add LSRK frequency ranges in a new final line of the .dat file
+7) Increase to 2 significant digits on sigmaFC in the png name
+8) Allow manually specified narrow value to be used everywhere instead of 'auto'
+9) Print Final selection message to casa log
+10) fix bug in convertSelectionIntoChannelList (only relevant if avoidance used)
+11) allow single value in convertSelection
+12) fix bug in avoidance range when gaps were trimmed (not relevant to PL)
+13) remove warning about no beam in cube header
+14) Add totalChannels & medianWidthOfRanges parameters+logic to pickAutoTrimChannels()
+15) Insure that channel ranges are in increasing order if a second range is added to a solo range
+16) add imstatListit=False to all imstat calls
+17) add minor ticks to lower x-axis (channel number) of the plot
+18) added 21 new control parameters to findContinuum (default values listed) for a total of 98:
+   * returnWarnings=False (PL 2020 might set this to True if Dirk has time)
+   * sigmaFindContinuumMode='auto' (split from sigmaFindContinuum)
+   * returnSigmaFindContinuum=False 
+   * enableRejectNarrowInnerWindows=True (to be able to disable it manually)
+   * avoidExtremaInNoiseCalcForJointMask=False
+   * buildMom8fc=True
+   * momentdir=''
+   * amendMaskIterations='auto'
+   * skipchan=1
+   * checkIfMaskWouldHaveBeenAmended=False
+   * fontsize=10
+   * thresholdForSame=0.01 (to control the new 4-letter codes)
+   * keepIntermediatePngs=True
+   * enableOnlyExtraMask=True
+   * useMomentDiff=True
+   * smallBandwidthFraction=0.05
+   * smallSpreadFraction=0.33
+   * skipAmendMask=False (for manual usage)
+   * useAnnulus=True
+   * cubeSigmaThreshold=7.5
+   * npixThreshold=7 (for onlyExtraMask)
+19) Added 27 new functions:
+   * round_half_up (to support the same rounding in python 3 as 2)
+   * byteDecode (to convert bytes to string for python 3)
+   * imageSNR
+   * imageSNRAnnulus
+   * plotChannelSelections
+   * compute4LetterCodeAndUpdateLegend
+   * compute4LetterCode
+   * cubeNoiseLevel
+   * updateChannelRangesOnPlot
+   * computeNpixCubeMedian
+   * computeNpixMom8Median
+   * computeNpixMom8MedianBadAtm
+   * replaceLineFullRangesWithNoise
+   * gatherWarnings
+   * tooLittleBandwidth
+   * tooLittleSpread
+   * computeSpread
+   * amendMaskYesOrNo
+   * extraMaskYesOrNo
+   * onlyExtraMaskYesOrNo
+   * invertChannelRanges
+   * robustMADofContinuumRanges
+   * findWidestContiguousListInChannelRange
+   * imagePercentileNoMask (not used by PL because avoidExtremaInNoiseCalcForJointMask=False)
+   * combineContDat (not used by pipeline)
+   * getSpwFromPipelineImageName (not used by pipeline)
+   * getFieldnameFromPipelineImageName (not used by pipeline)
 -Todd Hunter
 """
 from __future__ import print_function  # prevents adding old-style print statements
@@ -24,7 +94,8 @@ except:
     pass
 
 import numpy as np
-import matplotlib.pyplot as pl
+#import matplotlib.pyplot as pl  # used through Cycle 7
+import pylab as pl
 import matplotlib.ticker
 import time as timeUtilities
 # Check if this is CASA6  CASA 6
@@ -82,13 +153,12 @@ if casaVersion < '5.9.9':
 else:
     from casatools import synthesismaskhandler
 
-
 import warnings
 import subprocess
 import scipy
 import glob
 import shutil
-import random # for test purposes only
+import random
 from scipy.stats import scoreatpercentile, percentileofscore
 from scipy.ndimage.filters import gaussian_filter
 
@@ -102,10 +172,34 @@ else:
     # scipy.nanmean still exists, but is deprecated in favor of numpy's version
     from numpy import nanmean as scipy_nanmean
 
+def version(showfile=True):
+    """
+    Returns the CVS revision number.
+    """
+    myversion = "$Id: findContinuumCycle8.py,v 4.96 2020/08/11 13:23:15 we Exp $" 
+    if (showfile):
+        print("Loaded from %s" % (__file__))
+    return myversion
+
+def casalogPost(mystring, debug=True):
+    """
+    Generates an INFO message prepended with the version number of findContinuum.
+    """
+    if (debug): print(mystring)
+    token = version(False).split()
+    origin = token[1].replace(',','_') + token[2]
+    casalog.post(mystring.replace('\n',''), origin=origin)
+    
+#if casaVersion >= '5.9' and pl.get_backend()=='TkAgg':
+#    casalogPost('Setting classic style matplotlib due to TkAgg')
+#    pl.style.use('classic')  # it is supposed to preserve ratio of fontsize to plot size
+
 SFC_FACTOR_WHEN_MOM8MASK_EXISTS = 0.8  # was 0.6 on Jan 26; 0.5 was too low on 2015.1.00131.S G09_0847+0045 spw 17
                                         # 0.8 was too high on 2018.1.00828.S
 ALL_CONTINUUM_CRITERION = 0.925 # was 0.94 for 2019 Jan 17 test  
 DYNAMIC_RANGE_LIMIT_PLOT = 800
+AMENDMASK_PIXEL_RATIO_EXCEEDED = -1
+AMENDMASK_PIXELS_ABOVE_THRESHOLD_EXCEEDED = -2
 maxTrimDefault = 20
 dpiDefault = 150
 imstatListit = False
@@ -113,15 +207,6 @@ imstatVerbose = False
 meanSpectrumMethods = ['mom0mom8jointMask', 'peakOverMad', 'peakOverRms', 
                        'meanAboveThreshold', 'meanAboveThresholdOverRms', 
                        'meanAboveThresholdOverMad', 'auto'] 
-
-def version(showfile=True):
-    """
-    Returns the CVS revision number.
-    """
-    myversion = "$Id: findContinuumCycle8.py,v 4.9 2019/12/10 21:26:40 we Exp $" 
-    if (showfile):
-        print("Loaded from %s" % (__file__))
-    return myversion
 
 def help(match='', debug=False):
     """
@@ -156,28 +241,28 @@ def help(match='', debug=False):
 def round_half_up(x):
     return float(decimal.Decimal(float(x)).to_integral_value(rounding=decimal.ROUND_HALF_UP))
 
-def casalogPost(mystring, debug=True):
-    """
-    Generates an INFO message prepended with the version number of findContinuum.
-    """
-    if (debug): print(mystring)
-    token = version(False).split()
-    origin = token[1].replace(',','_') + token[2]
-    casalog.post(mystring.replace('\n',''), origin=origin)
-    
 def is_binary(filename):
     """
     This function is called by runFindContinuum.
     Return true if the given filename appears to be binary.
-    File is considered to be binary if it contains a NULL byte.
-    This approach returns True for .fits files, but
-    incorrectly reports UTF-16 as binary.
+    Works in python 2.7 and 3
     """
-    with open(filename, 'rb') as f:
-        for block in f:
-            if '\0' in block:
-                return True
-    return False
+    f = os.popen('file %s'%filename, 'r')
+    result = f.read().find('text')
+    if result == -1:
+        return True
+    else:
+        return False
+
+# Old method: fails in python 3
+#    File is considered to be binary if it contains a NULL byte.
+#    This approach returns True for .fits files, but
+#    incorrectly reports UTF-16 as binary.
+#    with open(filename, 'rb') as f:
+#        for block in f:
+#            if '\0' in block:
+#                return True
+#    return False
 
 def getMemorySize():
     """
@@ -192,34 +277,48 @@ def getMemorySize():
 MOM8MINSNR_DEFAULT = 4
 MOM0MINSNR_DEFAULT = 5
 
+def removeIfNecessary(imgname):
+    if os.path.exists(imgname):
+        shutil.rmtree(imgname)
+        if os.path.exists(imgname): 
+            print("WARNING:  shutil.rmtree failed for %s" % imgname)
+
 def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', transition='', 
                   baselineModeA='min', baselineModeB='min', sigmaCube=3, 
-                  nBaselineChannels=0.19, sigmaFindContinuum='auto',
+                  nBaselineChannels=0.19, sigmaFindContinuum='auto', sigmaFindContinuumMode='auto',
                   verbose=False, png='', pngBasename=False, nanBufferChannels=1, 
                   source='', useAbsoluteValue=True, trimChannels='auto', 
                   percentile=20, continuumThreshold=None, narrow='auto', 
-                  separator=';', overwrite=True, titleText='', 
+                  separator=';', overwrite=True, titleText='', # 25
                   maxTrim=maxTrimDefault, maxTrimFraction=1.0,
                   meanSpectrumFile='', centralArcsec='auto', alternateDirectory='.',
                   plotAtmosphere='transmission', airmass=1.5, pwv=1.0,
                   channelFractionForSlopeRemoval=0.75, mask='', 
-                  invert=False, meanSpectrumMethod='mom0mom8jointMask',peakFilterFWHM=10,
+                  invert=False, meanSpectrumMethod='mom0mom8jointMask', peakFilterFWHM=10,  # 38
                   skyTempThreshold=1.2, # was 1.5 in C4R2, reduced after slope removal added
                   skyTransmissionThreshold=0.08, maxGroupsForSkyThreshold=5,
                   minBandwidthFractionForSkyThreshold=0.2, regressionTest=False,
-                  quadraticFit=True, triangleFraction=0.83, maxMemory=-1, 
+                  quadraticFit=True, triangleFraction=0.83, maxMemory=-1, # 46
                   tdmSkyTempThreshold=0.65, negativeThresholdFactor=1.15,
                   vis='', singleContinuum=False, applyMaskToMask=False, 
                   plotBaselinePoints=True, dropBaselineChannels=2.0,
                   madRatioUpperLimit=1.5, madRatioLowerLimit=1.15,
                   projectCode='', useIAGetProfile=True, useThresholdWithMask=False, 
-                  dpi=dpiDefault, normalizeByMAD='auto', returnSnrs=False,
+                  dpi=dpiDefault, normalizeByMAD='auto', returnSnrs=False, # 61
                   overwriteMoments=False,minPeakOverMadForSFCAdjustment=[19,19],
                   minPixelsInJointMask=3, userJointMask='', signalRatioTier1=0.967, 
                   snrThreshold=23, mom0minsnr=MOM0MINSNR_DEFAULT, mom8minsnr=MOM8MINSNR_DEFAULT, overwriteMasks=True, 
                   rmStatContQuadratic=False, quadraticNsigma=1.8, bidirectionalMaskPhase2=False,
-                  makeMovie=False, returnAllContinuumBoolean=False, outdir='', allowBluePruning=True,
-                  avoidance=''): 
+                  makeMovie=False, returnAllContinuumBoolean=True, outdir='', allowBluePruning=True,
+                  avoidance='', returnSigmaFindContinuum=False, 
+                  enableRejectNarrowInnerWindows=True, avoidExtremaInNoiseCalcForJointMask=False,  # 81
+                  buildMom8fc=True, momentdir='',
+                  amendMaskIterations='auto', skipchan=1,  # 85
+                  checkIfMaskWouldHaveBeenAmended=False, fontsize=10, thresholdForSame=0.01, # 88
+                  keepIntermediatePngs=True, returnWarnings=False, enableOnlyExtraMask=True,
+                  useMomentDiff=True, smallBandwidthFraction=0.05, smallSpreadFraction=0.33,
+                  skipAmendMask=False, useAnnulus=True, cubeSigmaThreshold=7.5, 
+                  npixThreshold=7):  # 98
     """
     This function calls functions to:
     1) compute a representative 'mean' spectrum of a dirty cube
@@ -245,8 +344,21 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
     If returnAllContinuumBoolean = True, then it also returns a Boolean desribing
       if it thinks the whole spectrum is continuum (True) or not (False)
       Cycle 7 pipeline usage should set returnAllContinuumBoolean = True
+    If returnWarnings = True, then it also returns a list of warning strings,
+       which may be empty [], for tooLittleBandwidth and/or tooLittleSpread
     If returnSnrs = True, then it also returns two more lists: mom0snrs and mom8snrs,
           and the max baseline (floating point meters) inferred from the psf image
+    if returnSigmaFindContinuum = True (new in PL2020), then it also returns 7 more things:
+       1) the final value used for sigmaFindContinuum 
+       2) the Boolean intersectionOfSelections 
+       3) number of central ranges that were (or would have been) dropped, summed
+          over all runs of findContinuumChannels by the final run of runFindContinuum.
+       4) the result of amendMaskYesOrNo (if it was run;  False otherwise)
+       5) the result of extraMaskYesOrNo (if it was run;  False otherwise)
+       6) the result of extraMaskYesOrNo test 2 (if it was run;  False otherwise)
+       7) the name of the finalMomDiff image (if amendMask=True) else the final mom8fc image
+       8) the path code (for amendMask)
+       9) the 4-letter code (for amendMask)
 
     Required Inputs:
     ----------------
@@ -254,14 +366,14 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
          pre-existing meanSpectrumFile from a previous run)
      --or--
     meanSpectrumFile: an alternative pre-existing ASCII text file to use
-         for the mean spectrum, instead of operating on the img.  
+         for the mean spectrum, instead of operating on the img to create one.  
     Note: if you specify meanSpectrumFile and vis, you must also specify img, but
           only its metadata will be used.
       Parameters relevant only to meanSpectrumFile:
       * invert: if True, then invert the sign of intensity and add the minimum
 
-    Optional inputs:
-    ----------------
+    Optional inputs (see also General Parameters below):
+    ---------------------------------------------------
     spw: the spw name or number (integer or string integer) to put in the x-axis label;
          also, it will be used to select the spw for which to generate topo channels for the 
          *.dat file if vis is also specified; if vis is specified and spw is 
@@ -289,14 +401,15 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
             it will be searched for by changing file suffix from .residual to .psf,
             if still not found, then pruneMask will default to 6 pixels
         * minbeamfrac: only used if psfcube is specified and meanSpectrumMethod='mom0mom8jointMask'
-             set to zero to prevent pruning of the joint mask entirely; otherwise pruneMask
+             floating point value or 'auto' for 0.3 for 12m and 0.1 for 7m (maxBaseline<60m)
+             Set to zero to prevent pruning of the joint mask entirely; otherwise pruneMask
              will use np.max([4,minbeamfrac*pixelsPerBeam])
         * minPixelsInJointMask: if fewer than these pixels are found (after pruning), then
             use all pixels above pb=0.3 (or equivalent higher value on mitigated images).
             This option was essentially obseleted by the addition of pruneMask with the
             knowledge of beamsize from psfcube.  To avoid having any effect, it should be set 
             to < minbeamfrac*minPixelsPerBeam, which is typically 0.5*7=3.5; so use 3 or less.
-        * userJointMask: if specified, use this joint mask instead of the one computed
+        * userJointMask: if specified, use this joint mask instead of computing one
                          (this option is meant for test purposes only, typically *.mask2_bi)
         * normalizeByMAD: can be True, False or 'auto' (default); 
             if 'auto', then if atmospheric transmission varies enough across the spw, 
@@ -319,6 +432,27 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
             fitting the quadratic (in the rmStatContQuadratic option). Tto more quickly test 
             different values, be sure to set the meanSpectrumFile option and overwrite=False)
         * allowBluePruning: use continuum range pruning heuristic added in Cycle 6 (default=True)
+        * amendMaskIterations (new in PL2020): if 'auto', then choose 0 for TDM and 3 for FDM;
+            if 0, then do not attempt any amendMask (i.e. mimic the Cycle 7 pipeline release)
+            if >=1, then when finished the initial findContinuum trial, create a mom8fc image and
+            mom0fc image scaled by nchan and chanwidth in kms, and subtract them to create momDiff 
+            image. If the momDiff image has sufficient signal remaining in it, then expand the
+            joint mask, and repeat the findContinuum process with this expanded mask as the
+            userJointMask;  if >=2, and there is still sufficient signal in the new momDiff image from
+            the second run of findContinuum, then check if further analysis of the extra portion of the 
+            mask is necessary. If so, first check if intersecting the ranges of the first two rounds
+            eliminates the excess, otherwise create a new spectrum from it and pass it into a third
+            round of findContinuum with this as the meanSpectrum file.  If >=3, and there is stil
+            sufficient signal in the new momDiff, image then set sigmaFindContinuumMode='autolower'
+            and sigmaFindContinuum=most recent value, and run a final round of findContinuum.
+        * skipAmendMask: if True, then skip the test for amend mask, and move on to onlyExtraMask
+        * useAnnulus: if amendMaskIterations>0, sets whether median/MAD in imageSNR be assessed in 
+               annulus but outside the jointmask (True) or simply outside the joint mask (False)
+        * enableOnlyExtraMask: if False, then do not do the extraMask or onlyExtraMask iterations
+        * useMomentDiff: if False, use the mom8fc image to assess AmendMask decision instead of momDiff
+        * checkIfMaskWouldHaveBeenAmended (new in PL2020): if True, then if amendMaskIterations=0, 
+              then it will still check to see if the mask would have been amended and return the 
+              result (assuming that returnSigmaFindContinuum==True) -- for test purposes only
         
         Parameters relevant only to 'auto' and 'mom0mom8jointMask':
         -----------------------------------------------------------
@@ -336,6 +470,8 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
         * rmStatContQuadratic: if True, then fit and remove quadratic after removing outliers
         * outdir: directory to write the .mom0 and .mom8 images, .png, .dat and meanSpectrum
               (default is same directory as the cube)
+        * avoidExtremaInNoiseCalcForJointMask (new in PL2020): experimental Boolean to avoid 
+             pixels <5%ile and >95%ile in the chauvenet imstat of mom0 and mom8 images
 
         Parameters relevant only to 'auto':
         -----------------------------------
@@ -396,6 +532,15 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                  if float, then the fraction of channels to use (i.e. the percentile)
                  default = 0.19, which is 24 channels (i.e. 12 on each side) of a TDM window
 
+        Parameters relevant only when amendMaskIterations > 0 (new for PL2020)
+        ----------------------------------------------------------------------
+        * keepIntermediatePngs: if True, keep changing the png name to avoid overwriting them; only
+             the final one is returned
+        * thresholdForSame: fractional value used to determine if the residual in the mom8fc image
+             improved ('L'), worsened ('H') or stayed the same ('S')
+        * cubeSigmaThreshold: minimum cube SNR for onlyExtraMask to trigger
+        * npixThreshold: minimum momDiff pixels for onlyExtraMask to trigger
+
     Parameters for function findContinuumChannels (which is called by all meanSpectrum heuristics):
     -----------------------------------------------------------------------------------------------
     baselineModeB: 'min' (default) or 'edge', method to define the baseline 
@@ -404,13 +549,15 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
     nBaselineChannels: if integer, then the number of channels to use in computing
          standard deviation/MAD of the baseline channels (i.e. the blue points in the plot)
          if float, then it is the fraction of channels to use (i.e. the percentile)
-    sigmaFindContinuum: passed to findContinuumChannels, 'auto' starts with value:
+    sigmaFindContinuum: starting value for sigmaFindContinuum; passed to findContinuumChannels, 
+        'auto' starts with value:
         TDM: singleContinuum: 9, meanAboveThreshold: 4.5, peakOverMAD: 6.5,
              mom0mom8jointMask: 7.2
         FDM: meanAboveThreshold: 3.5, peakOverMAD: 6.0, 
              mom0mom8jointMask: nchan<750: 4.2 (strong lines) or 4.5 (weak lines) 
                                 nchan>=759: 2.6 (strong lines or 3.2 (weak lines)
         and adjusts it depending on results
+    sigmaFindContinuumMode (new in PL2020): 'auto', 'autolower', 'fixed'
     trimChannels: after doing best job of finding continuum, remove this many 
          channels from each edge of each block of channels found (for margin of safety)
          If it is a float between 0..1, then trim this fraction of channels in each 
@@ -431,10 +578,13 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
         consider line emission in order to avoid small differences in noise levels from 
         affecting the result (e.g. that occur between serial and parallel tclean cubes)
         signalRatio=1 means: no lines seen, while closer to zero: more lines seen
+    enableRejectNarrowInnerWindows (new in PL2020): if True, then remove any inner groups 
+        of channels that are narrower than both edge windows (when there are 3-15 groups)
 
     General parameters:
     -------------------
     verbose: if True, then print additional information during processing
+    momentdir (new in PL2020): alternative directory to look for (and write) the moment 0&8 images
     png: the name of the png to produce ('' yields default name)
     pngBasename: if True, then remove the directory from img name before generating png name
     source: the name of the source, to be shown in the title of the spectrum.
@@ -446,14 +596,21 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
     titleText: default is img name and transition and the control parameter values
     plotAtmosphere: '', 'tsky', or 'transmission'
     airmass: for plot of atmospheric transmission
+    skipchan (newly-exposed in PL2020): used in making the spectral plot, the number of highest 
+         and lowest intensity channels to avoid when constructing the y-axis range
     pwv: in mm (for plot of atmospheric transmission)
     vis: comma-delimited list or python list of measurement sets to use to convert channel
          ranges to topocentric frequency ranges (for use in uvcontfit or uvcontsub)
     plotBaselinePoints: if True, then plot the baseline-defining points as black dots
+    fontsize (newly-exposed in PL2020): size to use for channel ranges, axis labels and plot legend
     dpi: dots per inch to use in writing the png (106 produces 861x649 pixels)
             150 produces 1218x918
     projectCode: a string to prepend to the title of the plot (useful for regression testing
         where you can put the page number from the full PDF when running only a subset)
+    buildMom8fc (new in PL2020): if True, then when finished, generate "mom8fc" and "mom0fc"
+              images using selected channels
+    smallBandwidthFraction: threshold for returning a warning for too little bandwidth found
+    smallSpreadFraction: threshold for returning a warning for too little bandwidth spread found
     """
     executionTimeSeconds = timeUtilities.time()
     if meanSpectrumMethod not in meanSpectrumMethods:
@@ -463,6 +620,10 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
     if img == '' and meanSpectrumFile != '' and vis != '':
         print("If you specify meanSpectrumFile and vis, then you must also specify img (needed only to retrieve the osbserving date and direction).")
         return
+    if userJointMask != '' and amendMaskIterations > 0:
+        print("You cannot set userJointMask at the same time as amendMaskIterations>0")
+        return
+    img = img.rstrip('/')
     if type(centralArcsec) == str:
         if centralArcsec.isdigit():
             centralArcsecValue = centralArcsec
@@ -471,13 +632,17 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
             centralArcsecValue = "'"+centralArcsec+"'"
     else:
         centralArcsecValue = str(centralArcsec)
+    if len(outdir) > 0:
+        if not os.path.exists(outdir):
+            print("Requested outdir does not exist.")
+            return
     if meanSpectrumMethod == 'mom0mom8jointMask':
         if mask != '':
             print("The mask parameter is not relevant for meanSpectrumMethod='mom0mom8jointMask'.  Use the userJointMask parameter instead.")
             return
-        casalogPost("\n BEGINNING: %s findContinuum.findContinuum('%s', overwriteMoments=%s, sigmaFindContinuum='%s', meanSpectrumMethod='%s', meanSpectrumFile='%s', singleContinuum=%s, outdir='%s', userJointMask='%s')" % (version().split()[2], img, overwriteMoments, str(sigmaFindContinuum), meanSpectrumMethod, meanSpectrumFile, singleContinuum, outdir, userJointMask))
+        casalogPost("\n BEGINNING: %s findContinuum.findContinuum('%s', overwriteMoments=%s, sigmaFindContinuum='%s', sigmaFindContinuumMode='%s', meanSpectrumMethod='%s', meanSpectrumFile='%s', singleContinuum=%s, outdir='%s', userJointMask='%s', momentdir='%s', amendMaskIterations=%s)" % (version().split()[2], img, overwriteMoments, str(sigmaFindContinuum), sigmaFindContinuumMode, meanSpectrumMethod, meanSpectrumFile, singleContinuum, outdir, userJointMask, momentdir, str(amendMaskIterations)))
     else:
-        casalogPost("\n BEGINNING: %s findContinuum.findContinuum('%s', centralArcsec=%s, mask='%s', overwrite=%s, sigmaFindContinuum='%s', meanSpectrumMethod='%s', peakFilterFWHM=%.0f, meanSpectrumFile='%s', triangleFraction=%.2f, singleContinuum=%s, useIAGetProfile=%s, outdir='%s', mask='%s')" % (version().split()[2], img, centralArcsecValue, mask, overwrite, str(sigmaFindContinuum), meanSpectrumMethod, peakFilterFWHM, meanSpectrumFile, triangleFraction, singleContinuum, useIAGetProfile, outdir, mask))
+        casalogPost("\n BEGINNING: %s findContinuum.findContinuum('%s', centralArcsec=%s, mask='%s', overwrite=%s, sigmaFindContinuum='%s', sigmaFindContinuumMode='%s', meanSpectrumMethod='%s', peakFilterFWHM=%.0f, meanSpectrumFile='%s', triangleFraction=%.2f, singleContinuum=%s, useIAGetProfile=%s, outdir='%s', mask='%s')" % (version().split()[2], img, centralArcsecValue, mask, overwrite, str(sigmaFindContinuum), sigmaFindContinuumMode, meanSpectrumMethod, peakFilterFWHM, meanSpectrumFile, triangleFraction, singleContinuum, useIAGetProfile, outdir, mask))
     img = img.rstrip('/')
     imageInfo = [] # information returned from getImageInfo
     if (len(vis) > 0):
@@ -508,10 +673,22 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
             return
         channelWidth = abs(channelWidth)
     else:
-        chanInfo = []
-        channelWidth = 0
-        firstFreq = 0
-        lastFreq = 0
+        # we need to define chanInfo for the tooLittleBandwidth function to work later
+        avgspectrum, avgSpectrumNansReplaced, threshold, edgesUsed, nchan, nanmin, firstFreq, lastFreq, centralArcsec, mask, percentagePixelsNotMasked = readPreviousMeanSpectrum(meanSpectrumFile)
+        channelWidth = (lastFreq-firstFreq)/(nchan-1)
+        chanInfo = [nchan,firstFreq,lastFreq,channelWidth] 
+        print("Set chanInfo to ", chanInfo)
+
+    meanFreqHz = np.mean([firstFreq,lastFreq])
+    # Look for the .pb image if it was not specified
+    if pbcube == '' or pbcube is None:
+        pbcube = locatePBCube(img)
+        if pbcube is not None:
+            if os.path.exists(pbcube):
+                casalogPost("Found PB cube: %s" % (pbcube))
+        elif amendMaskIterations > 0:
+            casalogPost("No PB cube found, cannot use amendMask option.")
+            return
     # Look for the .psf image if it was not specified
     if psfcube == '' or psfcube is None:
         if img.find('.residual') >= 0: 
@@ -521,12 +698,29 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                 psfcube = img.replace('.residual','.psf')
             if not os.path.exists(psfcube):
                 psfcube = None
+            else:
+                casalogPost("Found PSF cube: %s" % (psfcube))
     if psfcube == '' or psfcube is None:
         maxBaseline = 0 # i.e. it is not known if no image is passed
     else:
         maxBaseline = getImageInfo(psfcube)[11]
+        casalogPost('Inferred max baseline = %f m' % (maxBaseline))
         # copy to the dirty cube for later use in the plot legend in runFindContinuum
         imageInfo[11] = maxBaseline
+
+    # channelWidth, nchan, and maxBaseline are now defined, so we can define amendMaskIterations
+    if amendMaskIterations == 'auto':
+        if tdmSpectrum(channelWidth,nchan):
+            if maxBaseline > 400:
+                amendMaskIterations = 0
+                casalogPost('TDM spectrum detected with maxBaseline>400m detected: setting amendMaskIterations=%d' % (amendMaskIterations))
+            else:
+                amendMaskIterations = 3
+                casalogPost('TDM spectrum detected with maxBaseline<=400m: setting amendMaskIterations=%d' % (amendMaskIterations))
+        else:
+            amendMaskIterations = 3
+            casalogPost('FDM spectrum detected: setting amendMaskIterations=%d' % (amendMaskIterations))
+
     if (mask == 'auto'):
         mask = img.rstrip('.image') + '.mask'
         if (not os.path.exists(mask)):
@@ -598,18 +792,22 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
     else:
         npixels = 1
     triangularPatternSeen = False
+    badAtmosphere = None
     if (meanSpectrumMethod.find('auto') >= 0):
         # Cycle 4+5 Heuristic
         meanSpectrumMethod = 'meanAboveThreshold'
         if (img != ''):
-            a,b,c,d,e = atmosphereVariation(img, imageInfo, chanInfo, airmass=airmass, pwv=pwv)
+            a,b,c,d,e = atmosphereVariation(img, imageInfo, chanInfo, airmass, pwv)
             if (b > skyTransmissionThreshold or e > skyTempThreshold):
                 meanSpectrumMethod = 'peakOverMad'
+                badAtmosphere = True
                 meanSpectrumMethodMessage = "Set meanSpectrumMethod='%s' since atmos. variation %.2f>%.2f or %.3f>%.1fK." % (meanSpectrumMethod,b,skyTransmissionThreshold,e,skyTempThreshold)
             elif (e > tdmSkyTempThreshold and abs(channelWidth*nchan) > 1e9): # tdmSpectrum(channelWidth,nchan)):
                 meanSpectrumMethod = 'peakOverMad'
                 meanSpectrumMethodMessage = "Set meanSpectrumMethod='%s' since atmos. variation %.2f>%.2f or %.3f>%.2fK." % (meanSpectrumMethod,b,skyTransmissionThreshold,e,tdmSkyTempThreshold)
+                badAtmosphere = True
             else:
+                badAtmosphere = False
                 # Maybe comment this out once thresholds are stable
                 if abs(channelWidth*nchan > 1e9): # tdmSpectrum(channelWidth,nchan):
                     myThreshold = tdmSkyTempThreshold
@@ -638,10 +836,13 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
             if (b > skyTransmissionThreshold or e > skyTempThreshold):
                 normalizeByMAD = True
                 meanSpectrumMethodMessage = "will potentially normalize by MAD since atmospheric variation %.2f>%.2f or %.3f>%.1fK." % (b,skyTransmissionThreshold,e,skyTempThreshold)
+                badAtmosphere = True
             elif (e > tdmSkyTempThreshold and abs(channelWidth*nchan) > 1e9): # tdmSpectrum(channelWidth,nchan)):
                 normalizeByMAD = True
                 meanSpectrumMethodMessage = "will potentially normalize by MAD since atmospheric variation %.2f>%.2f or %.3f>%.2fK." % (b,skyTransmissionThreshold,e,tdmSkyTempThreshold)
+                badAtmosphere = True
             else:
+                badAtmosphere = False
                 normalizeByMAD = False
                 meanSpectrumMethodMessage = "normalizeByMAD was 'auto' but atmospheric variation is considered too small to use it"
             casalogPost(meanSpectrumMethodMessage)
@@ -690,267 +891,2259 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
             centralArcsecField = centralArcsec
             if img != '':
                 npixels = float(nchan)*(centralArcsec**2/abs(cdelt2)/abs(cdelt1))
+    if amendMaskIterations > 0:
+        # 0=normal run, 1=after amending mask (if necessary), 2=extraMask or onlyExtraMask (if necessary) 
+        # 3=lower sigmaFindContinuum (if necessary)
+        selection = ''
+        aggregateBandwidth = 0
+        amendMask = True
+    else:
+        amendMask = False
+    intersectionOfSelections = False
+    better = ''
+    amendMaskDecision = False  # result from amendMaskYesOrNo (need to initialize it here in case it never gets run)
+    extraMaskDecision = False  # result from extraMaskYesOrNo (need to initialize it here in case it never gets run)
+    extraMaskDecision2 = False  # result from second extraMaskYesOrNo (need to initialize it here in case it never gets run)
+    autoLowerDecision = False  # result from third extraMaskYesOrNo (need to initialize it here in case it never gets run)
+    finalMom8fc = ''
+    finalMom0fc = ''
+    if checkIfMaskWouldHaveBeenAmended:
+        buildMom8fc = True # this option needs to be True for this to work
 
-    iteration = 0
-    fullLegend = False
-    if meanSpectrumMethod != 'mom0mom8jointMask':
-        # There can be multiple iterations, so highlight the first one in the log.
-        casalogPost('---------- runFindContinuum iteration 0')
-    if vis != '':
-        singleContinuum = isSingleContinuum(vis, spw)
-    result = runFindContinuum(img, pbcube, psfcube, minbeamfrac, spw, transition, 
-                              baselineModeA,baselineModeB,
-                              sigmaCube, nBaselineChannels, sigmaFindContinuum,
-                              verbose, png, pngBasename, nanBufferChannels, 
-                              source, useAbsoluteValue, trimChannels, 
-                              percentile, continuumThreshold, narrow, 
-                              separator, overwrite, titleText, 
-                              maxTrim, maxTrimFraction,
-                              meanSpectrumFile, centralArcsecField, 
-                              channelWidth,
-                              alternateDirectory, imageInfo, chanInfo, 
-                              plotAtmosphere, airmass, pwv, 
-                              channelFractionForSlopeRemoval, mask, 
-                              invert, meanSpectrumMethod, peakFilterFWHM, 
-                              fullLegend, iteration, meanSpectrumMethodMessage,
-                              minGroupsForSFCAdjustment=minGroupsForSFCAdjustment,
-                              regressionTest=regressionTest, quadraticFit=quadraticFit,
-                              megapixels=npixels*1e-6, triangularPatternSeen=triangularPatternSeen,
-                              maxMemory=maxMemory, negativeThresholdFactor=negativeThresholdFactor,
-                              byteLimit=bytes, singleContinuum=singleContinuum,
-                              applyMaskToMask=applyMaskToMask, plotBaselinePoints=plotBaselinePoints,
-                              dropBaselineChannels=dropBaselineChannels,
-                              madRatioUpperLimit=madRatioUpperLimit, 
-                              madRatioLowerLimit=madRatioLowerLimit, projectCode=projectCode,
-                              useIAGetProfile=useIAGetProfile,useThresholdWithMask=useThresholdWithMask,
-                              dpi=dpi, normalizeByMAD=normalizeByMAD,
-                              overwriteMoments=overwriteMoments,
-                              minPeakOverMadForSFCAdjustment=minPeakOverMadForSFCAdjustment,
-                              minPixelsInJointMask=minPixelsInJointMask, userJointMask=userJointMask,
-                              signalRatioTier1=signalRatioTier1, snrThreshold=snrThreshold, 
-                              mom0minsnr=mom0minsnr, mom8minsnr=mom8minsnr, overwriteMasks=overwriteMasks,
-                              rmStatContQuadratic=rmStatContQuadratic, quadraticNsigma=quadraticNsigma, 
-                              bidirectionalMaskPhase2=bidirectionalMaskPhase2, makeMovie=makeMovie, 
-                              outdir=outdir, allowBluePruning=allowBluePruning, avoidance=avoidance)
+    ##############################################################################################
+    # Each iteration is associated with a name, which corresponds to the heuristic that shall be
+    # followed.  The name for the next iteration is set before the prior iteration concludes.
+    # This name is appended to all output files produced during this iteration to avoid confusion.
+    ##############################################################################################
+    if amendMaskIterations == 0:
+        amendMaskIterationNames = ['']  
+    else:
+        # Start with just the original loop, additional names will be added later
+        amendMaskIterationNames = ['.original'] + ['']*amendMaskIterations
+        # other possible names are:  '.amendedMask', '.extraMask', '.onlyExtraMask', '.autoLower'
+    mom8fc = {}  # dictionary of image names, keyed by amendMaskIterationName
+    mom0fc = {}  # dictionary of image names, keyed by amendMaskIterationName
+    momDiff = {} # dictionary of image names, keyed by amendMaskIterationName
 
+    # Define the default name (used if amendMaskIterations==0), so that we can also use it to create 
+    # the longer names generated when amendMaskIterations > 0
+    if outdir == '':
+        # img is guaranteed to not end in a '/' since img.rstrip('/') is called above
+        mom8fc[''] = img + '.mom8fc'
+        mom0fc[''] = img + '.mom0fc'
+        # Make sure that we write the pbmom to the local directory that contains mom8fc and mom0fc
+        pbmom = mom0fc[''].replace('.residual.mom0fc','.pbmom')
+    else:
+        mom8fc[''] = os.path.join(outdir,os.path.basename(img)) + '.mom8fc'
+        mom0fc[''] = os.path.join(outdir,os.path.basename(img)) + '.mom0fc'
+        pbmom = os.path.join(outdir,os.path.basename(pbcube)) + 'mom'
 
-    if result is None:
-        return
-    selection, mypng, slope, channelWidth, nchan, useLowBaseline, mom0snrs, mom8snrs, useMiddleChannels, selectionPreBluePruning = result
-    if png == '':
-        png = mypng
-    mytest = False
-    if meanSpectrumMethod != 'mom0mom8jointMask':
-        # Cycle 4+5 Heuristic
-        if (centralArcsec == 'auto' and img != '' and len(selection.split(separator)) < 2):
-            # Only one range was found, so look closer into the center for a line
-            casalogPost("Only one range of channels was found")
-            myselection = selection.split(separator)[0]
-            if (myselection.find('~') > 0):
-                a,b = [int(i) for i in myselection.split('~')]
-                print("Comparing range of %d~%d to %d/2" % (a,b,nchan))
-                mytest = b-a+1 > nchan/2
-            else:
-                mytest = True
-            if (mytest):
-                reductionFactor = 10.0
-                if (naxis1 > 1*6*reductionFactor): # reduced field must be at least 1 beam across (assuming 6 pix per beam)
-                    # reduce the field size to one tenth of the previous
-                    bmaj, bmin, bpa, cdelt1, cdelt2, naxis1, naxis2, freq, imgShape, crval1, crval2, maxBaselineIgnore = imageInfo 
-                    imageWidthArcsec = 0.5*(np.abs(naxis2*cdelt2) + np.abs(naxis1*cdelt1))
-                    npixels /= reductionFactor**2
-                    centralArcsecField = imageWidthArcsec/reductionFactor
-                    casalogPost("Reducing the field size to 1/10 of previous (%f arcsec to %f arcsec) (%d to %d pixels)" % (imageWidthArcsec,centralArcsecField,naxis1,naxis1/10))
-                    # could change the 128 to tdmSpectrum(channelWidth,nchan), but this heuristic may also help
-                    # for excerpts of larger cubes with narrower channel widths.
-                    if (nBaselineChannels < 1 and nchan <= 128):  
-                        nBaselineChannels = float(np.min([0.5, nBaselineChannels*1.5]))
-                    overwrite = True
-                    casalogPost("Re-running findContinuum over central %.1f arcsec with nBaselineChannels=%g" % (centralArcsecField,nBaselineChannels))
-                    iteration += 1
-                    result = runFindContinuum(img, pbcube, psfcube, minbeamfrac, spw, transition, baselineModeA, baselineModeB,
-                                              sigmaCube, nBaselineChannels, sigmaFindContinuum,
-                                              verbose, png, pngBasename, nanBufferChannels, 
-                                              source, useAbsoluteValue, trimChannels, 
-                                              percentile, continuumThreshold, narrow, 
-                                              separator, overwrite, titleText, 
-                                              maxTrim, maxTrimFraction,
-                                              meanSpectrumFile, centralArcsecField, channelWidth,
-                                              alternateDirectory, imageInfo, chanInfo, 
-                                              plotAtmosphere, airmass, pwv, 
-                                              channelFractionForSlopeRemoval, mask, 
-                                              invert, meanSpectrumMethod, peakFilterFWHM, 
-                                              fullLegend,iteration,meanSpectrumMethodMessage,
-                                              minGroupsForSFCAdjustment=minGroupsForSFCAdjustment,
-                                              regressionTest=regressionTest, quadraticFit=quadraticFit,
-                                              megapixels=npixels*1e-6, triangularPatternSeen=triangularPatternSeen,
-                                              maxMemory=maxMemory, negativeThresholdFactor=negativeThresholdFactor,
-                                              byteLimit=bytes, singleContinuum=singleContinuum,
-                                              applyMaskToMask=applyMaskToMask, plotBaselinePoints=plotBaselinePoints,
-                                              dropBaselineChannels=dropBaselineChannels,
-                                              madRatioUpperLimit=madRatioUpperLimit, 
-                                              madRatioLowerLimit=madRatioLowerLimit, projectCode=projectCode,
-                                              useIAGetProfile=useIAGetProfile,useThresholdWithMask=useThresholdWithMask,
-                                              dpi=dpi, overwriteMoments=overwriteMoments,
-                                              minPeakOverMadForSFCAdjustment=minPeakOverMadForSFCAdjustment,
-                                              minPixelsInJointMask=minPixelsInJointMask, userJointMask=userJointMask,
-                                              signalRatioTier1=signalRatioTier1, snrThreshold=snrThreshold, 
-                                              mom0minsnr=mom0minsnr, mom8minsnr=mom8minsnr, 
-                                              overwriteMasks=overwriteMasks, rmStatContQuadratic=rmStatContQuadratic, 
-                                              quadraticNsigma=quadraticNsigma, bidirectionalMaskPhase2=bidirectionalMaskPhase2, 
-                                              makeMovie=makeMovie, outdir=outdir, allowBluePruning=allowBluePruning, avoidance=avoidance)
-                    if result is None:
-                        return
-                    selection, mypng, slope, channelWidth, nchan, useLowBaseline, mom0snrs, mom8snrs, useMiddleChannels, selectionPreBluePruning = result
-                    if png == '':
-                        png = mypng
-                        print("************ b) png passed into initial call was blank")
-                else:
-                    casalogPost("*** Not reducing field size since it would be less than 1 beam across")
+    if (amendMask or checkIfMaskWouldHaveBeenAmended):
+        momDiffLevel = 8.0 # 8.0 is what we want in general (for 16293 maser: 8 gives 6 pix, while 7.5 gives 13 pix)
+        #  momDiffLevel gets modified further down by -0.5 if mom8fc is more diagnostic (as it is for that maser)
+        momDiffLevelBadAtm = 11.5  # for amendMask and extraMask
+        momDiffLevelBadAtmOnlyExtraMask = 11.0
+        mom8level = 8.5
+        mom8levelBadAtm = 12
+        cubeLevel = 7.5
+        cubeLevel2 = 7.25  # needs to be somewhat smaller than cubeLevel
+        momDiffCode = None
+        mom8code = None # mom8code
+        momDiffPeak0 = None # necessary in case neither AmendMask or ExtraMask is invoked but LowBW+LowSpread triggers a new range
+    storeExtraMask = False # if True, the write the extraMask as a mask image, otherwise just write it to userJointMask
+    for amendMaskIteration in range(amendMaskIterations+1):
+        # On subsequent iterations, the amendMaskIterationName (and hence heuristics to follow)
+        # will change based on decisions made from each new .mom8fc image results.
+        amendMaskIterationName = amendMaskIterationNames[amendMaskIteration]
+        if amendMask:
+            casalogPost("====================================================================")
+            casalogPost("---------- amendMaskIteration %d (%s) ---------------------" % (amendMaskIteration, amendMaskIterationName))
+            casalogPost("====================================================================")
+            previousPng = png
+            previousSelection = selection
+            previousAggregateBandwidth = aggregateBandwidth
+        iteration = 0
+        fullLegend = False
+        if meanSpectrumMethod != 'mom0mom8jointMask':
+            # There can be multiple iterations, so highlight the first one in the log.
+            casalogPost('---------- runFindContinuum iteration 0')
+        if vis != '':
+            singleContinuum = isSingleContinuum(vis, spw)
+        print("amendMaskIteration%d (%s) runFindContinuum:" % (amendMaskIteration, amendMaskIterationName))
+        if False:
+            # dump all parameter values to casa log (for debugging purposes)
+            for v,variable in enumerate([img, pbcube, psfcube, minbeamfrac, spw, transition,
+                         baselineModeA,baselineModeB, sigmaCube, nBaselineChannels, sigmaFindContinuum,
+                         sigmaFindContinuumMode, verbose, png, pngBasename, nanBufferChannels, 
+                         source, useAbsoluteValue, trimChannels, percentile, continuumThreshold, narrow, 
+                         separator, overwrite, titleText, maxTrim, maxTrimFraction,
+                         meanSpectrumFile, centralArcsecField, 
+                         channelWidth, alternateDirectory, imageInfo, chanInfo, 
+                         plotAtmosphere, airmass, pwv, channelFractionForSlopeRemoval, mask, 
+                         invert, meanSpectrumMethod, peakFilterFWHM, 
+                         fullLegend, iteration, meanSpectrumMethodMessage,
+                         minGroupsForSFCAdjustment, regressionTest, quadraticFit,
+                         npixels*1e-6, triangularPatternSeen, maxMemory, negativeThresholdFactor,
+                         bytes, singleContinuum, applyMaskToMask, plotBaselinePoints,
+                         dropBaselineChannels, madRatioUpperLimit, madRatioLowerLimit, projectCode,
+                         useIAGetProfile,useThresholdWithMask, dpi, normalizeByMAD, overwriteMoments,
+                         minPeakOverMadForSFCAdjustment, minPixelsInJointMask, userJointMask,
+                         signalRatioTier1, snrThreshold, mom0minsnr, mom8minsnr, overwriteMasks,
+                         rmStatContQuadratic, quadraticNsigma, 
+                         bidirectionalMaskPhase2, makeMovie, outdir, allowBluePruning,
+                         avoidance, enableRejectNarrowInnerWindows, 
+                         avoidExtremaInNoiseCalcForJointMask, amendMask, momentdir]):
+                casalogPost('%d) %s.'%(v,str(variable)))
+            
+        result = runFindContinuum(img, pbcube, psfcube, minbeamfrac, spw, transition, 
+                                  baselineModeA,baselineModeB,
+                                  sigmaCube, nBaselineChannels, sigmaFindContinuum, sigmaFindContinuumMode,
+                                  verbose, png, pngBasename, nanBufferChannels, 
+                                  source, useAbsoluteValue, trimChannels, 
+                                  percentile, continuumThreshold, narrow, 
+                                  separator, overwrite, titleText, 
+                                  maxTrim, maxTrimFraction,
+                                  meanSpectrumFile, centralArcsecField, 
+                                  channelWidth,
+                                  alternateDirectory, imageInfo, chanInfo, 
+                                  plotAtmosphere, airmass, pwv, 
+                                  channelFractionForSlopeRemoval, mask, 
+                                  invert, meanSpectrumMethod, peakFilterFWHM, 
+                                  fullLegend, iteration, meanSpectrumMethodMessage,
+                                  minGroupsForSFCAdjustment=minGroupsForSFCAdjustment,
+                                  regressionTest=regressionTest, quadraticFit=quadraticFit,
+                                  megapixels=npixels*1e-6, triangularPatternSeen=triangularPatternSeen,
+                                  maxMemory=maxMemory, negativeThresholdFactor=negativeThresholdFactor,
+                                  byteLimit=bytes, singleContinuum=singleContinuum,
+                                  applyMaskToMask=applyMaskToMask, plotBaselinePoints=plotBaselinePoints,
+                                  dropBaselineChannels=dropBaselineChannels,
+                                  madRatioUpperLimit=madRatioUpperLimit, 
+                                  madRatioLowerLimit=madRatioLowerLimit, projectCode=projectCode,
+                                  useIAGetProfile=useIAGetProfile,useThresholdWithMask=useThresholdWithMask,
+                                  dpi=dpi, normalizeByMAD=normalizeByMAD,
+                                  overwriteMoments=overwriteMoments,
+                                  minPeakOverMadForSFCAdjustment=minPeakOverMadForSFCAdjustment,
+                                  minPixelsInJointMask=minPixelsInJointMask, userJointMask=userJointMask,
+                                  signalRatioTier1=signalRatioTier1, snrThreshold=snrThreshold, 
+                                  mom0minsnr=mom0minsnr, mom8minsnr=mom8minsnr, overwriteMasks=overwriteMasks,
+                                  rmStatContQuadratic=rmStatContQuadratic, quadraticNsigma=quadraticNsigma, 
+                                  bidirectionalMaskPhase2=bidirectionalMaskPhase2, 
+                                  makeMovie=makeMovie, 
+                                  outdir=outdir, allowBluePruning=allowBluePruning,
+                                  avoidance=avoidance, 
+                                  enableRejectNarrowInnerWindows=enableRejectNarrowInnerWindows, 
+                                  avoidExtremaInNoiseCalcForJointMask=avoidExtremaInNoiseCalcForJointMask,
+                                  amendMask=amendMask, momentdir=momentdir, skipchan=skipchan, 
+                                  amendMaskIterationName=amendMaskIterationName, fontsize=fontsize)
+        if result is None:
+            return
+        if amendMaskIterationName in ['.extraMask','.onlyExtraMask','.autoLower']:
+            # We only want to keep the new selection, not the other info
+            selection = result[0]
         else:
-            casalogPost("*** Not reducing field size since more than 1 range found")
-    aggregateBandwidth = computeBandwidth(selection, channelWidth, 0)
-    if (meanSpectrumMethodRequested == 'auto'):
-        # Cycle 4+5 Heuristic
-        # Here we check to see if we need to switch the method of computing the mean spectrum
-        # based on any undesirable characteristics of the results, and if so, re-run it.
-        groups = len(selection.split(separator))
-        if (aggregateBandwidth <= 0.00001 or 
-              # the following line was an attempt to solve CAS-9269 case reported by Ilsang Yoon for SCOPS-2571
-  #            (mytest and meanSpectrumMethod!='peakOverMad' and groups < 2) or
-              (not useLowBaseline and meanSpectrumMethod=='peakOverMad' and not tdmSpectrum(channelWidth,nchan)) or
-              (meanSpectrumMethod=='peakOverMad' and meanSpectrumMethodMessage != ''
-               and groups > maxGroupsForSkyThreshold
-               # the following line maintains peakOverMad for dataset in CAS-8908 (and also OMC1_NW spw39 in CAS-8720)
-               and aggregateBandwidth < minBandwidthFractionForSkyThreshold*nchan*channelWidth*1e-9
-               and not tdmSpectrum(channelWidth,nchan))):
-            # If less than 10 kHz is found (or two other situations), then try the other approach.
-            if (meanSpectrumMethod == 'peakOverMad'):
-                meanSpectrumMethod = 'meanAboveThreshold'
-                if (aggregateBandwidth <= 0.00001):
-                    meanSpectrumMethodMessage = "Reverted to meanSpectrumMethod='%s' because no continuum found." % (meanSpectrumMethod)
-                    casalogPost("Re-running findContinuum with the other meanSpectrumMethod: %s (because aggregateBW=%eGHz is less than 10kHz)" % (meanSpectrumMethod,aggregateBandwidth))
-                elif (not useLowBaseline and meanSpectrumMethod=='peakOverMad' and not tdmSpectrum(channelWidth,nchan)):
-                    meanSpectrumMethodMessage = "Reverted to meanSpectrumMethod='%s' because useLowBaseline=F." % (meanSpectrumMethod)
-                    casalogPost("Re-running findContinuum with the other meanSpectrumMethod: %s (because useLowBaseline=False)" % (meanSpectrumMethod))
-                elif (aggregateBandwidth < minBandwidthFractionForSkyThreshold*nchan*channelWidth*1e-9 and groups>maxGroupsForSkyThreshold):
-                    meanSpectrumMethodMessage = "Reverted to meanSpectrumMethod='%s' because groups=%d>%d and not TDM." % (meanSpectrumMethod,groups,maxGroupsForSkyThreshold)
-                    casalogPost("Re-running findContinuum with the other meanSpectrumMethod: %s because it is an FDM spectrum with many groups (%d>%d) and aggregate bandwidth (%f GHz) < %.2f of total bandwidth." % (meanSpectrumMethod,groups,maxGroupsForSkyThreshold,aggregateBandwidth,minBandwidthFractionForSkyThreshold))
+            selection, mypng, slope, channelWidth, nchan, useLowBaseline, mom0snrs, mom8snrs, useMiddleChannels, selectionPreBluePruning, finalSigmaFindContinuum, jointMask, avgspectrumAboveThreshold, medianTrue, labelDescs, ax1, ax2, positiveThreshold, areaString, rangesDropped, effectiveSigma, baselineMAD, upperXlabel, allBaselineChannelsXY = result
+        if png == '':
+            png = mypng
+        mytest = False
+        if meanSpectrumMethod != 'mom0mom8jointMask':
+            # Cycle 4+5 Heuristic
+            if (centralArcsec == 'auto' and img != '' and len(selection.split(separator)) < 2):
+                # Only one range was found, so look closer into the center for a line
+                casalogPost("Only one range of channels was found")
+                myselection = selection.split(separator)[0]
+                if (myselection.find('~') > 0):
+                    a,b = [int(i) for i in myselection.split('~')]
+                    print("Comparing range of %d~%d to %d/2" % (a,b,nchan))
+                    mytest = b-a+1 > nchan/2
                 else:
-                    if groups < 2:
-                        if sigmaFindContinuum == 'auto':
-                            # Fix for CAS-9639: strong line near band edge and odd noise characteristic
-                            sigmaFindContinuum = 6.5
-                            casalogPost('Setting sigmaFindContinuum = %.1f since groups < 2' % sigmaFindContinuum)
-                        else:
-                            sigmaFindContinuum += 3.0
-                        meanSpectrumMethodMessage = "Increasing sigmaFindContinuum to %.1f because groups=%d<2 and not TDM." % (sigmaFindContinuum,groups)
-                        casalogPost("Re-running findContinuum with meanSpectrumMethod: %s because groups=%d<2. Increasing sigmaFindContinuum to %.1f." % (meanSpectrumMethod,groups,sigmaFindContinuum))
-                    elif groups > maxGroupsForSkyThreshold:
-                        # hot core FDM case
-                        meanSpectrumMethodMessage = "Reverted to meanSpectrumMethod='%s' because groups=%d>%d and not TDM." % (meanSpectrumMethod,groups,maxGroupsForSkyThreshold)
-                        casalogPost("Re-running findContinuum with meanSpectrumMethod: %s." % (meanSpectrumMethod))
+                    mytest = True
+                if (mytest):
+                    reductionFactor = 10.0
+                    if (naxis1 > 1*6*reductionFactor): # reduced field must be at least 1 beam across (assuming 6 pix per beam)
+                        # reduce the field size to one tenth of the previous
+                        bmaj, bmin, bpa, cdelt1, cdelt2, naxis1, naxis2, freq, imgShape, crval1, crval2, maxBaselineIgnore = imageInfo 
+                        imageWidthArcsec = 0.5*(np.abs(naxis2*cdelt2) + np.abs(naxis1*cdelt1))
+                        npixels /= reductionFactor**2
+                        centralArcsecField = imageWidthArcsec/reductionFactor
+                        casalogPost("Reducing the field size to 1/10 of previous (%f arcsec to %f arcsec) (%d to %d pixels)" % (imageWidthArcsec,centralArcsecField,naxis1,naxis1/10))
+                        # could change the 128 to tdmSpectrum(channelWidth,nchan), but this heuristic may also help
+                        # for excerpts of larger cubes with narrower channel widths.
+                        if (nBaselineChannels < 1 and nchan <= 128):  
+                            nBaselineChannels = float(np.min([0.5, nBaselineChannels*1.5]))
+                        overwrite = True
+                        casalogPost("Re-running findContinuum over central %.1f arcsec with nBaselineChannels=%g" % (centralArcsecField,nBaselineChannels))
+                        iteration += 1
+                        result = runFindContinuum(img, pbcube, psfcube, minbeamfrac, spw, transition, baselineModeA, baselineModeB,
+                                                  sigmaCube, nBaselineChannels, sigmaFindContinuum, sigmaFindContinuumMode,
+                                                  verbose, png, pngBasename, nanBufferChannels, 
+                                                  source, useAbsoluteValue, trimChannels, 
+                                                  percentile, continuumThreshold, narrow, 
+                                                  separator, overwrite, titleText, 
+                                                  maxTrim, maxTrimFraction,
+                                                  meanSpectrumFile, centralArcsecField, channelWidth,
+                                                  alternateDirectory, imageInfo, chanInfo, 
+                                                  plotAtmosphere, airmass, pwv, 
+                                                  channelFractionForSlopeRemoval, mask, 
+                                                  invert, meanSpectrumMethod, peakFilterFWHM, 
+                                                  fullLegend,iteration,meanSpectrumMethodMessage,
+                                                  minGroupsForSFCAdjustment=minGroupsForSFCAdjustment,
+                                                  regressionTest=regressionTest, quadraticFit=quadraticFit,
+                                                  megapixels=npixels*1e-6, triangularPatternSeen=triangularPatternSeen,
+                                                  maxMemory=maxMemory, negativeThresholdFactor=negativeThresholdFactor,
+                                                  byteLimit=bytes, singleContinuum=singleContinuum,
+                                                  applyMaskToMask=applyMaskToMask, plotBaselinePoints=plotBaselinePoints,
+                                                  dropBaselineChannels=dropBaselineChannels,
+                                                  madRatioUpperLimit=madRatioUpperLimit, 
+                                                  madRatioLowerLimit=madRatioLowerLimit, projectCode=projectCode,
+                                                  useIAGetProfile=useIAGetProfile,useThresholdWithMask=useThresholdWithMask,
+                                                  dpi=dpi, overwriteMoments=overwriteMoments,
+                                                  minPeakOverMadForSFCAdjustment=minPeakOverMadForSFCAdjustment,
+                                                  minPixelsInJointMask=minPixelsInJointMask, userJointMask=userJointMask,
+                                                  signalRatioTier1=signalRatioTier1, snrThreshold=snrThreshold, 
+                                                  mom0minsnr=mom0minsnr, mom8minsnr=mom8minsnr, 
+                                                  overwriteMasks=overwriteMasks, rmStatContQuadratic=rmStatContQuadratic, 
+                                                  quadraticNsigma=quadraticNsigma, bidirectionalMaskPhase2=bidirectionalMaskPhase2, 
+                                                  makeMovie=makeMovie, outdir=outdir, allowBluePruning=allowBluePruning, avoidance=avoidance, 
+                                                  enableRejectNarrowInnerWindows=enableRejectNarrowInnerWindows, 
+                                                  avoidExtremaInNoiseCalcForJointMask=avoidExtremaInNoiseCalcForJointMask, 
+                                                  amendMask=amendMask, momentdir=momentdir, skipchan=skipchan,
+                                                  amendMaskIterationName=amendMaskIterationName, fontsize=fontsize)
+
+                        if result is None:
+                            return
+                        selection, mypng, slope, channelWidth, nchan, useLowBaseline, mom0snrs, mom8snrs, useMiddleChannels, selectionPreBluePruning, finalSigmaFindContinuum, jointMask, avgspectrumAboveThreshold, medianTrue, labelDescs, ax1, ax2, positiveThreshold, areaString, rangesDropped, effectiveSigma, baselineMAD, upperXlabel, allBaselineChannelsXY = result
+                        if png == '':
+                            png = mypng
+                            print("************ b) png passed into initial call was blank")
                     else:
-                        meanSpectrumMethodMessage = "Reverted to meanSpectrumMethod='%s' because groups=%d and not TDM." % (meanSpectrumMethod,groups)
-                        casalogPost("Re-running findContinuum with meanSpectrumMethod: %s." % (meanSpectrumMethod))
-                if (centralArcsecLimitedField > 0):
-                    # Re-establish the previous limit
-                    centralArcsecField = centralArcsecLimitedField
-                    casalogPost("Re-establishing the limit on field width determined earlier: %f arcsec" %(centralArcsecField)) 
+                        casalogPost("*** Not reducing field size since it would be less than 1 beam across")
             else:
-                meanSpectrumMethod = 'peakOverMad'
-                if (mytest and groups < 2):
-                    centralArcsecField = -1
-                    casalogPost("Re-running findContinuum with meanSpectrumMethod: %s (because still only 1 group found after zoom)" % (meanSpectrumMethod))
+                casalogPost("*** Not reducing field size since more than 1 range found")
+        aggregateBandwidth = computeBandwidth(selection, channelWidth, 0)
+        if (meanSpectrumMethodRequested == 'auto'):
+            # Cycle 4+5 Heuristic
+            # Here we check to see if we need to switch the method of computing the mean spectrum
+            # based on any undesirable characteristics of the results, and if so, re-run it.
+            groups = len(selection.split(separator))
+            if (aggregateBandwidth <= 0.00001 or 
+                  # the following line was an attempt to solve CAS-9269 case reported by Ilsang Yoon for SCOPS-2571
+      #            (mytest and meanSpectrumMethod!='peakOverMad' and groups < 2) or
+                  (not useLowBaseline and meanSpectrumMethod=='peakOverMad' and not tdmSpectrum(channelWidth,nchan)) or
+                  (meanSpectrumMethod=='peakOverMad' and meanSpectrumMethodMessage != ''
+                   and groups > maxGroupsForSkyThreshold
+                   # the following line maintains peakOverMad for dataset in CAS-8908 (and also OMC1_NW spw39 in CAS-8720)
+                   and aggregateBandwidth < minBandwidthFractionForSkyThreshold*nchan*channelWidth*1e-9
+                   and not tdmSpectrum(channelWidth,nchan))):
+                # If less than 10 kHz is found (or two other situations), then try the other approach.
+                if (meanSpectrumMethod == 'peakOverMad'):
+                    meanSpectrumMethod = 'meanAboveThreshold'
+                    if (aggregateBandwidth <= 0.00001):
+                        meanSpectrumMethodMessage = "Reverted to meanSpectrumMethod='%s' because no continuum found." % (meanSpectrumMethod)
+                        casalogPost("Re-running findContinuum with the other meanSpectrumMethod: %s (because aggregateBW=%eGHz is less than 10kHz)" % (meanSpectrumMethod,aggregateBandwidth))
+                    elif (not useLowBaseline and meanSpectrumMethod=='peakOverMad' and not tdmSpectrum(channelWidth,nchan)):
+                        meanSpectrumMethodMessage = "Reverted to meanSpectrumMethod='%s' because useLowBaseline=F." % (meanSpectrumMethod)
+                        casalogPost("Re-running findContinuum with the other meanSpectrumMethod: %s (because useLowBaseline=False)" % (meanSpectrumMethod))
+                    elif (aggregateBandwidth < minBandwidthFractionForSkyThreshold*nchan*channelWidth*1e-9 and groups>maxGroupsForSkyThreshold):
+                        meanSpectrumMethodMessage = "Reverted to meanSpectrumMethod='%s' because groups=%d>%d and not TDM." % (meanSpectrumMethod,groups,maxGroupsForSkyThreshold)
+                        casalogPost("Re-running findContinuum with the other meanSpectrumMethod: %s because it is an FDM spectrum with many groups (%d>%d) and aggregate bandwidth (%f GHz) < %.2f of total bandwidth." % (meanSpectrumMethod,groups,maxGroupsForSkyThreshold,aggregateBandwidth,minBandwidthFractionForSkyThreshold))
+                    else:
+                        if groups < 2:
+                            if sigmaFindContinuum == 'auto':
+                                # Fix for CAS-9639: strong line near band edge and odd noise characteristic
+                                sigmaFindContinuum = 6.5
+                                casalogPost('Setting sigmaFindContinuum = %.1f since groups < 2' % sigmaFindContinuum)
+                                casalogPost("Re-running findContinuum with meanSpectrumMethod: %s because groups=%d<2." % (meanSpectrumMethod,groups))
+                            else: # a value was specified for sigmaFindContinuum
+                                if sigmaFindContinuumMode == 'auto':
+                                    sigmaFindContinuum += 3.0
+                                    meanSpectrumMethodMessage = "Increasing sigmaFindContinuum by 3 to %.1f because groups=%d<2 and not TDM." % (sigmaFindContinuum,groups)
+                                    casalogPost("Re-running findContinuum with meanSpectrumMethod: %s because groups=%d<2." % (meanSpectrumMethod,groups))
+                                else:
+                                    meanSpectrumMethodMessage = ''
+                        elif groups > maxGroupsForSkyThreshold:
+                            # hot core FDM case
+                            meanSpectrumMethodMessage = "Reverted to meanSpectrumMethod='%s' because groups=%d>%d and not TDM." % (meanSpectrumMethod,groups,maxGroupsForSkyThreshold)
+                            casalogPost("Re-running findContinuum with meanSpectrumMethod: %s." % (meanSpectrumMethod))
+                        else:
+                            meanSpectrumMethodMessage = "Reverted to meanSpectrumMethod='%s' because groups=%d and not TDM." % (meanSpectrumMethod,groups)
+                            casalogPost("Re-running findContinuum with meanSpectrumMethod: %s." % (meanSpectrumMethod))
+                    if (centralArcsecLimitedField > 0):
+                        # Re-establish the previous limit
+                        centralArcsecField = centralArcsecLimitedField
+                        casalogPost("Re-establishing the limit on field width determined earlier: %f arcsec" %(centralArcsecField)) 
                 else:
-                    casalogPost("Re-running findContinuum with the other meanSpectrumMethod: %s (because aggregateBW=%eGHz is less than 10kHz)" % (meanSpectrumMethod,aggregateBandwidth))
+                    meanSpectrumMethod = 'peakOverMad'
+                    if (mytest and groups < 2):
+                        centralArcsecField = -1
+                        casalogPost("Re-running findContinuum with meanSpectrumMethod: %s (because still only 1 group found after zoom)" % (meanSpectrumMethod))
+                    else:
+                        casalogPost("Re-running findContinuum with the other meanSpectrumMethod: %s (because aggregateBW=%eGHz is less than 10kHz)" % (meanSpectrumMethod,aggregateBandwidth))
+                    
+                iteration += 1
+                if os.path.exists(png):
+                    os.remove(png)
+                result = runFindContinuum(img, pbcube, psfcube, minbeamfrac, spw, transition, baselineModeA, baselineModeB,
+                                          sigmaCube, nBaselineChannels, sigmaFindContinuum, sigmaFindContinuumMode,
+                                          verbose, png, pngBasename, nanBufferChannels, 
+                                          source, useAbsoluteValue, trimChannels, 
+                                          percentile, continuumThreshold, narrow, 
+                                          separator, overwrite, titleText, 
+                                          maxTrim, maxTrimFraction,
+                                          meanSpectrumFile, centralArcsecField, channelWidth,
+                                          alternateDirectory, imageInfo, chanInfo, 
+                                          plotAtmosphere, airmass, pwv, 
+                                          channelFractionForSlopeRemoval, mask, 
+                                          invert, meanSpectrumMethod, peakFilterFWHM, 
+                                          fullLegend, iteration, 
+                                          meanSpectrumMethodMessage,
+                                          minGroupsForSFCAdjustment=minGroupsForSFCAdjustment,
+                                          regressionTest=regressionTest, quadraticFit=quadraticFit,
+                                          megapixels=npixels*1e-6, triangularPatternSeen=triangularPatternSeen,
+                                          maxMemory=maxMemory, negativeThresholdFactor=negativeThresholdFactor,
+                                          byteLimit=bytes, singleContinuum=singleContinuum, 
+                                          applyMaskToMask=applyMaskToMask, plotBaselinePoints=plotBaselinePoints,
+                                          dropBaselineChannels=dropBaselineChannels,
+                                          madRatioUpperLimit=madRatioUpperLimit, 
+                                          madRatioLowerLimit=madRatioLowerLimit, projectCode=projectCode,
+                                          useIAGetProfile=useIAGetProfile,useThresholdWithMask=useThresholdWithMask,
+                                          dpi=dpi, overwriteMoments=overwriteMoments,
+                                          minPeakOverMadForSFCAdjustment=minPeakOverMadForSFCAdjustment, 
+                                          minPixelsInJointMask=minPixelsInJointMask, userJointMask=userJointMask, 
+                                          signalRatioTier1=signalRatioTier1, snrThreshold=snrThreshold, 
+                                          mom0minsnr=mom0minsnr, mom8minsnr=mom8minsnr, 
+                                          overwriteMasks=overwriteMasks, rmStatContQuadratic=rmStatContQuadratic, 
+                                          quadraticNsigma=quadraticNsigma, bidirectionalMaskPhase2=bidirectionalMaskPhase2, 
+                                          makeMovie=makeMovie, outdir=outdir, allowBluePruning=allowBluePruning, 
+                                          avoidance=avoidance, enableRejectNarrowInnerWindows=enableRejectNarrowInnerWindows, 
+                                          avoidExtremaInNoiseCalcForJointMask=avoidExtremaInNoiseCalcForJointMask, 
+                                          amendMask=amendMask, momentdir=momentdir, skipchan=skipchan,
+                                          amendMaskIterationName=amendMaskIterationName, fontsize=fontsize)
+
+                selection, mypng, slope, channelWidth, nchan, useLowBaseline, mom0snrs, mom8snrs, useMiddleChannels, selectionPreBlueTruncation, finalSigmaFindContinuum, jointMask, avgspectrumAboveThreshold, medianTrue, labelDescs, ax1, ax2, positiveThreshold, areaString, rangesDropped, effectiveSigma, baselineMAD, upperXlabel, allBaselineChannelsXY = result
+                if png == '' or amendMask:
+                    if png == '':
+                        print("************ c) png passed into initial call was blank")
+                    png = mypng  # update to the latest png name
+            else:
+                casalogPost("Not re-running findContinuum with the other method because the results are deemed acceptable.")
+
+        if amendMaskIteration == 0:
+            originalWarnings = gatherWarnings(selection, chanInfo, smallBandwidthFraction, smallSpreadFraction) # only used to prevent reversion
+            originalSelection = selection  # only used in the final reversion based on 4-letter code
+            originalPng = png  # only used in the final reversion based on 4-letter code
+        # At this point, we are done the (potentially multiple) run(s) of runFindContinuum for this amendMaskIteration
+        if (amendMask or buildMom8fc) and img != '':
+            if amendMaskIteration == 0:
+                if pbcube is not None:
+                    # create a mean pb image on the first iteration
+                    removeIfNecessary(pbmom)  # in case there was a prior run of findContinuum
+                    casalogPost("Running immoments('%s', moments=[-1], outfile='%s')" % (pbcube,pbmom))
+                    immoments(pbcube, moments=[-1], outfile=pbmom)
+                # This mask test should remain as the original joint mask throughout the 
+                # process, not change to the amended mask, which is what happens to jointMask 
+                # in the return call from runFindContinuum(userJointMask=amendedMask).
+                jointMaskTest = '"' + jointMask + '"==0'
+                if useAnnulus and pbcube is not None:
+                    lowerAnnulusLevel, higherAnnulusLevel = findOuterAnnulusForPBCube(pbcube, False, False)
+                    jointMaskTestAnnulus = jointMaskTest + ' && "%s">%f && "%s"<%f' % (pbmom,lowerAnnulusLevel,pbmom,higherAnnulusLevel)
+                else:
+                    jointMaskTestAnnulus = ''
+                # save the first png again, with the tag "reverted" added, in case we need it later
+                labelDescs[-1].remove()
+                revertedAreaString = areaString + ', reverted'
+                casalogPost("Drawing new areaString: %s" % (revertedAreaString))
+                labelDesc = ax1.text(0.5,0.99-3*0.03, revertedAreaString, transform=ax1.transAxes, ha='center', size=fontsize-1)
+                labelDescs.append(labelDesc)
+                revertedPng = png.replace('.png','.reverted.png')
+                pl.savefig(revertedPng, dpi=dpi)
+                # put back the original label
+                labelDescs[-1].remove()
+                labelDesc = ax1.text(0.5,0.99-3*0.03, areaString, transform=ax1.transAxes, ha='center', size=fontsize-1)
+                labelDescs.append(labelDesc)
+                pl.draw()
+                # Write out the original _findContinuum.dat file, for testing future improvements of heuristics
+                if (meanSpectrumFile == ''): 
+                    meanSpectrumFile = buildMeanSpectrumFilename(img, meanSpectrumMethod, peakFilterFWHM, amendMaskIterationName)
+                    if outdir != '':
+                        meanSpectrumFile = os.path.join(outdir, os.path.basename(meanSpectrumFile))
+                if spw == '':
+                    # Try to find the name of the spw from the image name
+                    if os.path.basename(img).find('spw') > 0:
+                        spw = os.path.basename(img).split('spw')[1].split('.')[0]
+                # only the base name of the meanSpectrumFile is used by writeContDat, not the contents
+                writeContDat(meanSpectrumFile, selection, png, aggregateBandwidth,
+                             firstFreq, lastFreq, channelWidth, img, imageInfo, vis, spw=spw)
+
+            #######################################
+            # build a new mom8fc on every iteration
+            #######################################
+            mom8fc[amendMaskIterationName] = mom8fc[''] + amendMaskIterationName   # here is where .original is appended on the first round
+            mymom8fc = mom8fc[amendMaskIterationName]  # just a short-hand notation for easier use
+            removeIfNecessary(mymom8fc)  # in case there was a prior run of findContinuum
+            if not os.path.exists(mymom8fc):  # save time during development phase
+                print("Running immoments('%s', moments=[8], chans='%s', outfile='%s')" % (img,selection,mymom8fc))
+                immoments(img, moments=[8], chans=selection, outfile=mymom8fc)
+
+            #######################################
+            # build a new mom0fc on every iteration
+            #######################################
+            mom0fc[amendMaskIterationName] = mom0fc[''] + amendMaskIterationName   # here is where .original is appended on the first round
+            mymom0fc = mom0fc[amendMaskIterationName]  # just a short-hand notation for easier use
+            removeIfNecessary(mymom0fc)  # in case there was a prior run of findContinuum
+#            if not os.path.exists(mymom0fc):  # save time during development phase
+            print("Running immoments('%s', moments=[0], chans='%s', outfile='%s')" % (img,selection,mymom0fc))
+            immoments(img, moments=[0], chans=selection, outfile=mymom0fc)
+            #######################
+            # create scaled version
+            #######################
+            mom0fcScaled = mymom0fc+'.scaled'
+            removeIfNecessary(mom0fcScaled)  # in case there was a prior run of findContinuum
+            chanWidthKms = 299792.458*channelWidth/meanFreqHz 
+            fcChannels = len(convertSelectionIntoChannelList(selection))
+            factor = 1.0/chanWidthKms/fcChannels
+            immath([mymom0fc], mode='evalexpr', expr='IM0*%f'%(factor), outfile=mom0fcScaled)
+            ##########################################
+            # Create a new momDiff on every iteration 
+            ##########################################
+            momDiff[amendMaskIterationName] = mymom8fc + '.minus.mom0fcScaled' 
+            mymomDiff = momDiff[amendMaskIterationName]
+            removeIfNecessary(mymomDiff)  # in case there was a prior run of findContinuum
+            if pbcube is None:
+                mymask = ''
+            else:
+                mymask = '"%s">0.23' % (pbmom)
+            print("immath(['%s','%s'], mode='evalexpr', expr='IM0-IM1', mask='%s', outfile='%s')" % (mymom8fc,mom0fcScaled,mymask,mymomDiff))
+            immath([mymom8fc, mom0fcScaled], mode='evalexpr', expr='IM0-IM1', mask=mymask, 
+                   outfile=mymomDiff)
+            finalMom8fc = mymom8fc
+            finalMom0fc = mymom0fc
+            finalMomDiff = mymomDiff
+            print("Wrote %s" % (mymom8fc))
+            useTrimmedMADIfNeeded = False # experimental method that was abandonded
+            ##############################################
+            # Recalculate stats for mom8fc every iteration
+            ##############################################
+            casalogPost("%d) Running imageSNR('%s',mask='%s',applyMaskToAll=False)" % (amendMaskIteration, mymom8fc, jointMaskTest))
+            # This is the SNR with peak measured over the whole image; but median and MAD from outside mask (and in annulus if useAnnulus=True)
+            mom8fcSNR, mom8fcPeak, mom8fcMedian, mom8fcMAD = imageSNR(mymom8fc, mask=jointMaskTest, maskWithAnnulus=jointMaskTestAnnulus, 
+                                                                      useAnnulus=useAnnulus, returnAllStats=True, applyMaskToAll=False)
+            casalogPost("%d) Running imageSNR('%s',mask='%s',applyMaskToAll=True)" % (amendMaskIteration, mymom8fc,jointMaskTestAnnulus))
+            # This is the SNR outside the mask
+            if useAnnulus:
+                mom8fcSNRMom8, mom8fcPeakOutside = imageSNRAnnulus(mymom8fc, jointMaskTest, jointMaskTestAnnulus)
+            else:
+                mom8fcSNRMom8, mom8fcPeakOutside, ignore0, ignore1 = imageSNR(mymom8fc, mask=jointMaskTest, returnAllStats=True, 
+                                                                              applyMaskToAll=True)
+            mom8fcSum = imstat(mymom8fc, listit=imstatListit)['sum'][0]
+            casalogPost("%d) mom8fcMedian = %f, mom8fcScaledMAD = %f,  mom8fcSNRinside = %f, mom8fcSNROutside=%f, mom8fcSum = %f, mom8fcPeak=%f, mom8fcPeakOutside=%f" % (amendMaskIteration, mom8fcMedian, mom8fcMAD, mom8fcSNR, mom8fcSNRMom8, mom8fcSum, mom8fcPeak, mom8fcPeakOutside))
+
+            ###############################################
+            # Recalculate stats for momDiff every iteration
+            ###############################################
+            momDiffSNR, momDiffPeak, momDiffMedian, momDiffMAD = imageSNR(mymomDiff, mask=jointMaskTest, maskWithAnnulus=jointMaskTestAnnulus, 
+                                                                          useAnnulus=useAnnulus, returnAllStats=True, applyMaskToAll=False)
+            if amendMaskIterationName in ['.extraMask','.onlyExtraMask','.autoLower']:
+                prefix = amendMaskIterationName + ': '
+            else:
+                prefix = ''
+            casalogPost('%smomDiff: %s' % (prefix,mymomDiff))
+            casalogPost('%smomDiffSNR: %f  peakAnywhere: %f  median: %f  scaledMAD: %f' % (prefix,momDiffSNR,momDiffPeak, momDiffMedian, momDiffMAD))
+            # This is the SNR outside the mask
+            if useAnnulus:
+                momDiffSNROutside, momDiffPeakOutside = imageSNRAnnulus(mymomDiff, jointMaskTest, jointMaskTestAnnulus)
+            else:
+                momDiffSNROutside, momDiffPeakOutside, ignore0, ignore1 = imageSNR(mymomDiff, mask=jointMaskTest, returnAllStats=True, 
+                                                                                   applyMaskToAll=True)
+            momDiffSum = imstat(mymomDiff, listit=imstatListit)['sum'][0]
+
+        if meanSpectrumMethod == 'mom0mom8jointMask' and (amendMask or checkIfMaskWouldHaveBeenAmended):
+            if amendMaskIterationName == '.original':
+                if badAtmosphere is None:
+                    # in case this was not established above (i.e. someone ran it with normalizeByMAD=False)
+                    a,b,c,d,e = fc.atmosphereVariation(cube, imageInfo, chanInfo, airmass=airmass, pwv=pwv)
+                    badAtmosphere = False
+                    if (b > skyTransmissionThreshold or e > skyTempThreshold):
+                        badAtmosphere = True
+                    elif (e > tdmSkyTempThreshold and abs(channelWidth*nchan) > 1e9): 
+                        badAtmosphere = True
+                # Moment8 image: Set levels and count number of pixels above each level (and outside the joint mask)
+                NpixMom8Median = computeNpixMom8Median(mom8fcMedian, mom8level, mom8fcMAD, mymom8fc, jointMaskTest)
+                NpixMom8MedianBadAtm = computeNpixMom8MedianBadAtm(mom8fcMedian, mom8levelBadAtm, mom8fcMAD, mymom8fc, jointMaskTest)
+                if badAtmosphere:
+                    casalogPost("NpixMom8MedianBadAtm = %d" % (NpixMom8MedianBadAtm))
+                else:
+                    casalogPost("NpixMom8Median = %d" % (NpixMom8Median))
+                casalogPost("Running fc.cubeNoiseLevel('%s', pbcube='%s', mask='%s', chans='%s')" % (img, pbmom, jointMaskTest, selection))
+                MADCubeOutside, cubeMedian = cubeNoiseLevel(img, pbcube=pbmom, mask=jointMaskTest, chans=selection) # no need for jointMaskTestAnnulus since pbmom is passed already
+                mom8fcSNRCube = (mom8fcPeakOutside-mom8fcMedian)/MADCubeOutside
+                npix = imstat(img, listit=imstatListit)['npts']
+                TenEventSigma = oneEvent(npix, 10)
+                casalogPost("%d pixels yields 10-event sigma = %f,  MAD of cube outside joint mask = %f" % (npix, TenEventSigma, MADCubeOutside))
+                NpixCubeMedian = computeNpixCubeMedian(mom8fcMedian, cubeLevel, MADCubeOutside, mymom8fc, jointMaskTest)
+                NpixCubeMedian2 = computeNpixCubeMedian(mom8fcMedian, cubeLevel2, MADCubeOutside, mymom8fc, jointMaskTest)
+
+                # MomentDiff image: Set levels and count number of pixels above each level (and outside the joint mask)
+                # This is the SNR with peak measured over the whole image.
+                momDiffSNR, momDiffPeak, momDiffMedian, momDiffMAD = imageSNR(mymomDiff, mask=jointMaskTest, maskWithAnnulus=jointMaskTestAnnulus, 
+                                                                              useAnnulus=useAnnulus, returnAllStats=True, applyMaskToAll=False)
+                casalogPost('momDiff: %s' % (momDiff))
+                casalogPost('momDiffSNR: %f  peakAnywhere: %f  median: %f  scaledMAD: %f' % (momDiffSNR,momDiffPeak, momDiffMedian, momDiffMAD))
+                # This is the SNR outside the mask
+                if useAnnulus:
+                    # Need 2 calls to get peak anywhere outside the joint mask, but median and MAD from the annulus
+                    momDiffSNROutside, momDiffPeakOutside = imageSNRAnnulus(mymomDiff, jointMaskTest, jointMaskTestAnnulus)
+                else:
+                    momDiffSNROutside, momDiffPeakOutside, ignore0, ignore1 = imageSNR(mymomDiff, mask=jointMaskTest, returnAllStats=True, 
+                                                                                       applyMaskToAll=True)
+
+                momDiffSNRCube = (momDiffPeakOutside-momDiffMedian)/MADCubeOutside
+                casalogPost('momDiffSNRCube: %f  peakOutside: %f  median: %f  cubeScaledMAD: %f' % (momDiffSNRCube, momDiffPeakOutside, momDiffMedian, MADCubeOutside))
+                momDiffSum = imstat(mymomDiff, listit=imstatListit)['sum'][0]
+                if mom8fcSNRMom8 > 0:
+                    momDiffRatio = momDiffSNR/mom8fcSNRMom8
+                    casalogPost('Test for reducing momDiffLevel: momDiffSNR/mom8fcSNRMom8 = %f < 0.3?' % (momDiffRatio))
+                    if momDiffRatio < 0.3:
+                        momDiffLevel -= 0.5
+                        casalogPost('Reducing momDiffLevel by 0.5 to %f' % (momDiffLevel))
+
+                NpixMomDiff = computeNpixMom8Median(momDiffMedian, momDiffLevel, momDiffMAD, mymomDiff, jointMaskTest)
+                NpixMomDiff2 = computeNpixMom8Median(momDiffMedian, momDiffLevel+0.5, momDiffMAD, mymomDiff, jointMaskTest)
+                NpixMomDiffBadAtm = computeNpixMom8MedianBadAtm(momDiffMedian, momDiffLevelBadAtm, momDiffMAD, mymomDiff, jointMaskTest)
+                NpixMomDiff2BadAtm = computeNpixMom8MedianBadAtm(momDiffMedian, momDiffLevelBadAtm+0.5, momDiffMAD, mymomDiff, jointMaskTest)
+                if badAtmosphere:
+                    casalogPost("NpixMomDiffBadAtm = %d" % (NpixMomDiffBadAtm))
+                    casalogPost("NpixMomDiff2BadAtm = %d" % (NpixMomDiff2BadAtm))
+                else:
+                    casalogPost("NpixMomDiff = %d" % (NpixMomDiff))
+                    casalogPost("NpixMomDiff2 = %d" % (NpixMomDiff2))
+                NpixDiffCubeMedian = computeNpixCubeMedian(momDiffMedian, cubeLevel, MADCubeOutside, mymomDiff, jointMaskTest) # used by amendMaskYesOrNo
+                NpixDiffCubeMedian2 = computeNpixCubeMedian(momDiffMedian, cubeLevel2, MADCubeOutside, mymomDiff, jointMaskTest) # used by amendMaskYesOrNo
+                if skipAmendMask:
+                    casalogPost('Skipping amendMask due to skipAmendMask request')
+                    amendMaskDecision = 'No'
+                    sigmaUsedToAmendMask = 0
+                else:
+                    npixels = imstat(mymom8fc, listit=imstatListit)['npts'][0]
+                    mymask = '%s && "%s"<0' % (jointMaskTest,mymom8fc)
+                    print("Calling imstat('%s', mask='%s')" % (mymom8fc,mymask))
+                    mystats = imstat(mymom8fc, mask=mymask, listit=imstatListit)['npts']
+                    if len(mystats) == 0:
+                        negativePixels = 0
+                    else: 
+                        negativePixels = mystats[0]
+                    fractionNegativePixels = float(negativePixels)/npixels
+                    casalogPost('Fraction of negative pixels: %f' % (fractionNegativePixels))
+                    if useMomentDiff:
+                        # MomDiff Decision
+                        casalogPost('------------Assessing moment difference image first--------------')
+                        amendMaskDecision, AmendMaskLevel, sigmaUsedToAmendMask = amendMaskYesOrNo(badAtmosphere, momDiffMedian, momDiffSNROutside, momDiffSNRCube, 
+                                                                                                   NpixMomDiff, NpixMomDiffBadAtm, NpixDiffCubeMedian, 
+                                                                                                   TenEventSigma, momDiffMAD, MADCubeOutside, momDiffLevel, 
+                                                                                                   momDiffLevelBadAtm, cubeLevel, NpixDiffCubeMedian2,
+                                                                                                   fractionNegativePixels, NpixMomDiff2, NpixMomDiff2BadAtm)
+                    else:
+                        # Moment8 decision
+                        casalogPost('----------------Assessing moment8 image first------------------')
+                        amendMaskDecision, AmendMaskLevel, sigmaUsedToAmendMask = amendMaskYesOrNo(badAtmosphere, mom8fcMedian, mom8fcSNRMom8, mom8fcSNRCube, 
+                                                                                                   NpixMom8Median, NpixMom8MedianBadAtm, NpixCubeMedian, 
+                                                                                                   TenEventSigma, mom8fcMAD, MADCubeOutside, mom8level, 
+                                                                                                   mom8levelBadAtm, cubeLevel, NpixCubeMedian2,
+                                                                                                   fractionNegativePixels)
+                if amendMaskDecision == 'No' or not amendMask: 
+                    # Normally, the decision is all we need, but we also check the directive amendMask, because it 
+                    # could be False if the user set the parameter checkIfMaskWouldHaveBeenAmended=True.
+                    casalogPost("Not amending mask")
+                    if amendMask and enableOnlyExtraMask and sigmaUsedToAmendMask >= -1: # sigmaUsedToAmendMask=-1 means PixelRatio, -2 means PixelsAboveThreshold are too high, and we want to exit on that
+                        # Assess whether onlyExtraMask should be run
+                        result = imstat(img, chans=selection, listit=imstatListit)
+                        cubePeak = result['max'][0]  # in whole cube (not merely outside the mask), so we need a fresh call
+                        casalogPost('channel selection: %s' % (selection))
+                        casalogPost("cube peak anywhere = %f, medianOutside = %f, scaledMADoutside = %f,  (peak-medianOutside)/scaledMADoutside=%f" % (cubePeak,cubeMedian,MADCubeOutside,(cubePeak-cubeMedian)/MADCubeOutside))
+                        NpixMomDiff = computeNpixMom8Median(momDiffMedian, momDiffLevel, momDiffMAD, mymomDiff, '')
+                        NpixMomDiffBadAtm = computeNpixMom8MedianBadAtm(momDiffMedian, momDiffLevelBadAtmOnlyExtraMask, momDiffMAD, mymomDiff, '')
+                        NpixCubeDiffMedian = computeNpixCubeMedian(momDiffMedian, cubeLevel, MADCubeOutside, mymomDiff, '') # unused now
+                        # This is the one of the remaining places where the choice of useMomentDiff is assumed to be True.
+                        extraMaskDecision, ExtraMaskLevel, extraMaskSigmaUsed = onlyExtraMaskYesOrNo(badAtmosphere, momDiffMedian, momDiffSNR, 
+                                                                                                     momDiffSNRCube, NpixMomDiff, NpixMomDiffBadAtm,
+                                                                                                     NpixCubeDiffMedian, TenEventSigma, momDiffMAD, 
+                                                                                                     MADCubeOutside, cubePeak, cubeMedian, 
+                                                                                                     momDiffLevel, momDiffLevelBadAtmOnlyExtraMask, cubeLevel,
+                     cubeSigmaThreshold, npixThreshold)
+                    warning = tooLittleBandwidth(selection, chanInfo, smallBandwidthFraction)
+                    if warning is not None:
+                        casalogPost('Current fractional bandwidth is too small to allow Extra Mask.')
+                        extraMaskDecision = False
+                    else:
+                        casalogPost('Current fractional bandwidth is large enough to allow Extra Mask.')
+                    if extraMaskDecision in [False,'No']:
+                        casalogPost("Only Extra Mask will not be tried")
+                        if amendMask:
+                            #########################################################
+                            # Result0: No Amend Mask, no Extra Mask ---------------------
+                            #########################################################
+                            # write an 'S' after the number of pixels in the legend (remove the zeros since they are not
+                            # yet calculated and will not be used anyway)
+                            warnings = gatherWarnings(selection, chanInfo, smallBandwidthFraction, smallSpreadFraction)
+                            channelRanges = len(selection.split(separator))
+                            if not useMomentDiff:
+                                labelDescs, areaString, mom8code = compute4LetterCodeAndUpdateLegend(mom8fcPeak, 
+                                                              mom8fcPeak, mom8fcPeakOutside, 
+                                                              mom8fcPeakOutside, mom8fcSum, mom8fcSum, # there is no difference between mom8fcSum,mom8fcSum0
+                                                              mom8fcMAD, mom8fcMAD, thresholdForSame, 
+                                                              areaString, labelDescs, fontsize, ax1,
+                                                              amendMaskDecision, extraMaskDecision, extraMaskDecision2, autoLowerDecision,
+                                                              intersectionOfSelections, useMomentDiff, 
+                                                              warnings, channelRanges, sigmaUsedToAmendMask)
+                            else:
+                                labelDescs, areaString, momDiffCode = compute4LetterCodeAndUpdateLegend(momDiffPeak, 
+                                                      momDiffPeak, momDiffPeakOutside, 
+                                                      momDiffPeakOutside, momDiffSum, momDiffSum, 
+                                                      momDiffMAD, momDiffMAD, thresholdForSame, 
+                                                      areaString, labelDescs, fontsize, ax1,
+                                                      amendMaskDecision, extraMaskDecision, 
+                                                      extraMaskDecision2, autoLowerDecision,
+                                                      intersectionOfSelections, useMomentDiff, 
+                                                      warnings, channelRanges, sigmaUsedToAmendMask)
+                            pl.savefig(png, dpi=dpi)
+                        break # do not run a second round
+                    else:
+                        # The following step is needed, e.g. for Nessie_F1 spw 18 and 24
+                        casalogPost("Extra Mask will be tried")
+                        # remember the previous values in case the extra mask is indeed used
+                        mom8fcPeak0 = mom8fcPeak
+                        mom8fcPeakOutside0 = mom8fcPeakOutside
+                        mom8fcMAD0 = mom8fcMAD
+                        mom8fcSum0 = mom8fcSum
+                        momDiffPeak0 = momDiffPeak
+                        momDiffPeakOutside0 = momDiffPeakOutside
+                        momDiffMAD0 = momDiffMAD
+                        momDiffSum0 = momDiffSum
+                        print("extraMaskSigmaUsed = %f, ExtraMaskLevel = %f" % (extraMaskSigmaUsed,ExtraMaskLevel))
+                        print("--------------------------------------------------------------------------")
+                        print("momDiff = ", mymomDiff)
+                        print("pbmom = ", pbmom)
+                        print("--------------------------------------------------------------------------")
+                        channels, frequency, intensity, normalized = computeStatisticalSpectrumFromMask(img, '"%s">%f' % (mymomDiff,ExtraMaskLevel), '"%s">0.23'%(pbmom), imageInfo, 'mean', normalizeByMAD, outdir=outdir, jointMaskForNormalize=userJointMask)
+                        lineFullSelection = invertChannelRanges(selection, nchan)  # selection = line-free ranges
+                        myChannelList = convertSelectionIntoChannelList(selection) # myChannelList = list of line-free channels
+                        casalogPost('Continuum channels so far: %s' % (selection))
+                        casalogPost('Line-full channels so far: %s' % (lineFullSelection))
+                        scaledMADFCSubset, medianFCSubset = robustMADofContinuumRanges(myChannelList, intensity)
+                        edgesUsed = 0
+                        meanSpectrumFile = mymom8fc + '.meanSpectrumFile_fromOnlyExtraMask_beforeNoiseReplacement'
+                        writeMeanSpectrum(meanSpectrumFile, frequency, intensity, intensity, ExtraMaskLevel, 
+                                          nchan, edgesUsed, centralArcsec='mom0mom8jointMask')
+                        intensity = replaceLineFullRangesWithNoise(intensity, lineFullSelection, medianFCSubset, scaledMADFCSubset)
+                        meanSpectrumFile = mymom8fc + '.meanSpectrumFile_fromOnlyExtraMask'
+                        writeMeanSpectrum(meanSpectrumFile, frequency, intensity, 
+                                          intensity, ExtraMaskLevel, nchan, 
+                                          edgesUsed, centralArcsec='mom0mom8jointMask')
+                        # update selection0 to hold the amendMask selection
+                        selection0 = selection 
+                        if keepIntermediatePngs:
+                            png = '' # reset name so that new name will be chosen and prior plot not overwritten
+                        amendMaskIterationNames[amendMaskIteration+1] = '.onlyExtraMask'
+                        signalRatioTier1 = 1.0
+                        if False:
+                            sigmaFindContinuumMode = 'autolower'
+                            sigmaFindContinuum = finalSigmaFindContinuum
+                            casalogPost("Using sigmaFindContinuumMode='autolower' with sigmaFindContinuum=%f" % (sigmaFindContinuum))
+                        overwrite = False  # do not overwrite the spectrum we just wrote when runFindContinuum runs again!
+                        continue  # from  .original iteration to .onlyExtraMask iteration
+                # endif amendMaskDecision=='No'
+
+                # Remember the previous values if we are proceeding with amending the mask.
+                # These *0's will be used to compute the mom8fc 4-letter code generation
+                selection0 = selection 
+                mom8fcPeak0 = mom8fcPeak
+                mom8fcPeakOutside0 = mom8fcPeakOutside
+                mom8fcMAD0 = mom8fcMAD
+                mom8fcSum0 = mom8fcSum
+                # These *0's will be used to compute the MomDiff 4-letter code generation
+                momDiffPeak0 = momDiffPeak
+                momDiffPeakOutside0 = momDiffPeakOutside
+                momDiffMAD0 = momDiffMAD
+                momDiffSum0 = momDiffSum
+                if outdir == '':
+                    userJointMask =  img + '.amendedJointMask' + amendMaskIterationName
+                    if storeExtraMask:
+                        addedMask = img + '.addedMask' + amendMaskIterationName
+                else:
+                    userJointMask = os.path.join(outdir, os.path.basename(img) + '.amendedJointMask' + amendMaskIterationName)
+                    if storeExtraMask:
+                        addedMask = os.path.join(outdir, os.path.basename(img) + '.addedMask' + amendMaskIterationName)
+                removeIfNecessary(userJointMask)
+                casalogPost("Amending the mask with new fluxThreshold = %f" % (AmendMaskLevel))
+                expression = 'iif((IM0==1)||(IM1>%f), 1, 0)' % (AmendMaskLevel)
+                print("Running immath(imagename=['%s','%s'], outfile='%s', mode='evalexpr', expr='%s'" % (jointMask,mymom8fc,userJointMask,expression))
+                immath(imagename=[jointMask,mymom8fc], outfile=userJointMask, mode='evalexpr', 
+                       expr=expression)
+                if storeExtraMask:
+                    # Make spectrum of the newly-added portion of the amendedJointMask
+                    expression = 'iif((IM0==0)&&(IM1==1), 1, 0)'
+                    removeIfNecessary(addedMask)
+                    print("Running immath(imagename=['%s','%s'], mode='evalexpr', outfile='%s', expr='%s')" % (jointMask,userJointMask,addedMask,expression))
+                    immath(imagename=[jointMask,userJointMask], mode='evalexpr', outfile=addedMask, expr=expression)
+                    plotStatisticalSpectrumFromMask(img, addedMask, pbcube, statistic='mean', normalizeByMAD=normalizeByMAD)
                 
-            iteration += 1
-            if os.path.exists(png):
-                os.remove(png)
-            result = runFindContinuum(img, pbcube, psfcube, minbeamfrac, spw, transition, baselineModeA, baselineModeB,
-                                      sigmaCube, nBaselineChannels, sigmaFindContinuum,
-                                      verbose, png, pngBasename, nanBufferChannels, 
-                                      source, useAbsoluteValue, trimChannels, 
-                                      percentile, continuumThreshold, narrow, 
-                                      separator, overwrite, titleText, 
-                                      maxTrim, maxTrimFraction,
-                                      meanSpectrumFile, centralArcsecField, channelWidth,
-                                      alternateDirectory, imageInfo, chanInfo, 
-                                      plotAtmosphere, airmass, pwv, 
-                                      channelFractionForSlopeRemoval, mask, 
-                                      invert, meanSpectrumMethod, peakFilterFWHM, 
-                                      fullLegend, iteration, 
-                                      meanSpectrumMethodMessage,
-                                      minGroupsForSFCAdjustment=minGroupsForSFCAdjustment,
-                                      regressionTest=regressionTest, quadraticFit=quadraticFit,
-                                      megapixels=npixels*1e-6, triangularPatternSeen=triangularPatternSeen,
-                                      maxMemory=maxMemory, negativeThresholdFactor=negativeThresholdFactor,
-                                      byteLimit=bytes, singleContinuum=singleContinuum, 
-                                      applyMaskToMask=applyMaskToMask, plotBaselinePoints=plotBaselinePoints,
-                                      dropBaselineChannels=dropBaselineChannels,
-                                      madRatioUpperLimit=madRatioUpperLimit, 
-                                      madRatioLowerLimit=madRatioLowerLimit, projectCode=projectCode,
-                                      useIAGetProfile=useIAGetProfile,useThresholdWithMask=useThresholdWithMask,
-                                      dpi=dpi, overwriteMoments=overwriteMoments,
-                                      minPeakOverMadForSFCAdjustment=minPeakOverMadForSFCAdjustment, 
-                                      minPixelsInJointMask=minPixelsInJointMask, userJointMask=userJointMask, 
-                                      signalRatioTier1=signalRatioTier1, snrThreshold=snrThreshold, 
-                                      mom0minsnr=mom0minsnr, mom8minsnr=mom8minsnr, 
-                                      overwriteMasks=overwriteMasks, rmStatContQuadratic=rmStatContQuadratic, 
-                                      quadraticNsigma=quadraticNsigma, bidirectionalMaskPhase2=bidirectionalMaskPhase2, 
-                                      makeMovie=makeMovie, outdir=outdir, allowBluePruning=allowBluePruning, avoidance=avoidance)
+                maskedPixelsBefore = countPixelsAboveZero(jointMask)
+                maskedPixelsAfter = countPixelsAboveZero(userJointMask) 
+                newPixels = maskedPixelsAfter - maskedPixelsBefore
+                print("---------------------------------------------------------------------")
+                casalogPost("amending mask %s into %s, adding %d-%d=%d pixels" % (jointMask,userJointMask,maskedPixelsAfter,maskedPixelsBefore,newPixels))
+                if maskedPixelsBefore > 0:
+                    # protect against divide by zero
+                    if (float(maskedPixelsAfter)/maskedPixelsBefore) < 2:
+                        sigmaFindContinuumMode = 'autolower'
+                        sigmaFindContinuum = finalSigmaFindContinuum
+                        casalogPost("Setting sigmaFindContinuumMode = %s" % (sigmaFindContinuumMode))
+                        casalogPost("Setting sigmaFindContinuum = finalSigmaFindContinuum = %f" % (finalSigmaFindContinuum))
+                    else:
+                        casalogPost("Not changing sigmaFindContinuumMode for the next run.")
+                if keepIntermediatePngs:
+                    png = '' # reset name so that new name will be chosen and prior plot not overwritten
+                # Set the name/heuristic of the next iteration
+                amendMaskIterationNames[amendMaskIteration+1] = '.amendedMask'
+                continue  # from  .original iteration to .amendedMask iteration
+            # endif amendMaskIterationName == '.original' 
+            if amendMaskIterationName == '.amendedMask':  
+                print("---------------------------------------------------------------------")
+                # mom8fcSNRMom8 (outside) is already calculated fresh (above) on the latest .mom8fc on every iteration
+                mom8fcSNRCube = (mom8fcPeakOutside-mom8fcMedian)/MADCubeOutside
+                NpixMom8Median = computeNpixMom8Median(mom8fcMedian, np.max([5.5,TenEventSigma]), mom8fcMAD, mymom8fc, jointMaskTest)
+                NpixMom8MedianBadAtm = computeNpixMom8MedianBadAtm(mom8fcMedian, 8, mom8fcMAD, mymom8fc, jointMaskTest)
+                # use mom8fc image
+                NpixCubeMedian = computeNpixMom8Median(mom8fcMedian, np.max([5.0,TenEventSigma]), mom8fcMAD, mymom8fc, jointMaskTest) # unused now
+                if useMomentDiff:
+                    # These values are no longer used in extraMaskYesOrNo, so could probably not bother calculating them now.
+                    NpixMomDiff = computeNpixMom8Median(momDiffMedian, momDiffLevel, momDiffMAD, mymomDiff, '')
+                    NpixMomDiffBadAtm = computeNpixMom8MedianBadAtm(momDiffMedian, momDiffLevelBadAtm, momDiffMAD, mymomDiff, '')
+                    NpixCubeDiffMedian = computeNpixCubeMedian(momDiffMedian, cubeLevel, MADCubeOutside, mymomDiff, '')  # unused now
+                    extraMaskDecision, ExtraMaskLevel, extraMaskSigmaUsed = extraMaskYesOrNo(badAtmosphere, momDiffMedian, momDiffSNR, 
+                                                                                             momDiffSNRCube, NpixMomDiff, NpixMomDiffBadAtm, 
+                                                                                             NpixCubeDiffMedian, TenEventSigma, momDiffMAD, 
+                                                                                             MADCubeOutside, momDiffLevel, momDiffLevelBadAtm,
+                                                                                             cubeLevel)
+                else:
+                    extraMaskDecision, ExtraMaskLevel, extraMaskSigmaUsed = extraMaskYesOrNo(badAtmosphere, mom8fcMedian, mom8fcSNRMom8, 
+                                                                                             mom8fcSNRCube, NpixMom8Median, NpixMom8MedianBadAtm, 
+                                                                                             NpixCubeMedian, TenEventSigma, mom8fcMAD, 
+                                                                                             MADCubeOutside, mom8level, mom8levelBadAtm,
+                                                                                             cubeLevel)
+                casalogPost('momDiff: %s' % (mymomDiff))
+                casalogPost('momDiffSNR: %f  peakAnywhere: %f  median: %f  scaledMAD: %f' % (momDiffSNR,momDiffPeak, momDiffMedian, momDiffMAD))
+                casalogPost('momDiffSNRCube: %f  scaledMAD: %f' % (momDiffSNRCube, MADCubeOutside))
+                warning = tooLittleBandwidth(selection, chanInfo, smallBandwidthFraction)
+                if warning is not None:
+                    casalogPost('Current fractional bandwidth is too small to allow Extra Mask.')
+                    extraMaskDecision = False
+                else:
+                    casalogPost('Current fractional bandwidth is enough to allow Extra Mask.')
+                if extraMaskDecision == 'No':   
+                    # If No, we are done
+                    ########################################
+                    # Result1: Amended Mask but no Extra Mask
+                    ########################################
+                    if warning is None:
+                        casalogPost("Extra Mask not deemed necessary, so we are done.")
+                    # derive 4-letter codes and update the final line of plot legend
+                    warnings = gatherWarnings(selection, chanInfo, smallBandwidthFraction, smallSpreadFraction)
+                    channelRanges = len(selection.split(separator))
+                    if not useMomentDiff:
+                        labelDescs, areaString, mom8code = compute4LetterCodeAndUpdateLegend(mom8fcPeak, mom8fcPeak0, mom8fcPeakOutside, 
+                                                      mom8fcPeakOutside0, mom8fcSum, mom8fcSum0, 
+                                                      mom8fcMAD, mom8fcMAD0, thresholdForSame, 
+                                                      areaString, labelDescs, fontsize, ax1,
+                                                      amendMaskDecision, extraMaskDecision, extraMaskDecision2, autoLowerDecision,
+                                                      intersectionOfSelections, useMomentDiff, 
+                                                      warnings, channelRanges, sigmaUsedToAmendMask)
+                    else:
+                        # Needs momDiff 4-letter code
+                        labelDescs, areaString, momDiffCode = compute4LetterCodeAndUpdateLegend(momDiffPeak, 
+                                                      momDiffPeak0, momDiffPeakOutside, 
+                                                      momDiffPeakOutside0, momDiffSum, momDiffSum0, 
+                                                      momDiffMAD, momDiffMAD0, thresholdForSame, 
+                                                      areaString, labelDescs, fontsize, ax1,
+                                                      amendMaskDecision, extraMaskDecision, 
+                                                      extraMaskDecision2, autoLowerDecision,
+                                                      intersectionOfSelections, useMomentDiff, 
+                                                      warnings, channelRanges, sigmaUsedToAmendMask)
+                    pl.savefig(png, dpi=dpi)
+                    break
+                else:
+                    casalogPost("Extra Mask is needed")
+                #################################################################
+                # There is still excess emission.
+                # Can intersect help?  build mom8fc.amendedMask - mom8fc.original
+                #################################################################
+                if useMomentDiff:
+                    momDiff['.diff'] = momDiff['.amendedMask'] + '.diff'
+                    removeIfNecessary(momDiff['.diff'])
+                    immath([momDiff['.original'], momDiff['.amendedMask']], expr='IM1-IM0', outfile=momDiff['.diff'])
+                    if useAnnulus:
+                        casalogPost("Running fc.imageSNRAnnulus('%s', '%s', '%s', applyMaskToAll=False)" % (momDiff['.diff'], jointMaskTest, jointMaskTestAnnulus))
+#                        diffStats = imageSNRAnnulus(momDiff['.diff'], jointMaskTest, jointMaskTestAnnulus) # this is what we used on July 30
+                        diffStats = imageSNRAnnulus(momDiff['.diff'], jointMaskTest, jointMaskTestAnnulus, applyMaskToAll=False) 
+                    else:
+                        diffStats = imageSNR(momDiff['.diff'], returnAllStats=True, mask=jointMaskTest) 
+                else:
+                    mom8fc['.diff'] = mom8fc['.amendedMask'] + '.diff'
+                    removeIfNecessary(mom8fc['.diff'])
+                    immath([mom8fc['.original'], mom8fc['.amendedMask']], expr='IM1-IM0', outfile=mom8fc['.diff'])
+                    if useAnnulus:
+                        casalogPost("Running fc.imageSNRAnnulus('%s', '%s', '%s', applyMaskToAll=False)" % (mom8fc['.diff'], jointMaskTest, jointMaskTestAnnulus))
+                        diffStats = imageSNRAnnulus(mom8fc['.diff'], jointMaskTest, jointMaskTestAnnulus, applyMaskToAll=False) 
+                    else:
+                        diffStats = imageSNR(mom8fc['.diff'], returnAllStats=True, mask=jointMaskTest)
+                if badAtmosphere:
+                    testDiffLev = mom8levelBadAtm * np.sqrt(2)
+                else:
+                    testDiffLev = mom8level * np.sqrt(2)
+                if diffStats[0] > testDiffLev:
+                    casalogPost('**************************************************************')
+                    casalogPost('There is significant emission in difference image (%f > %f):  Needs intersection of ranges.' % (diffStats[0], testDiffLev))
+                    casalogPost('**************************************************************')
+                    channelList0 = convertSelectionIntoChannelList(selection0)
+                    channelList1 = convertSelectionIntoChannelList(selection)
+                    channelList = np.intersect1d(channelList0,channelList1)
+                    casalogPost("Taking intersection of %d channels with %d channels, to get %d channels" % (len(channelList0), len(channelList1), len(channelList)))
+                    casalogPost("first channel list = %s" % (selection0))
+                    casalogPost("second channel list = %s" % (selection))
+                    if len(channelList) == 0:
+                        casalogPost("No intersecting ranges found: Reverting to first channel selection and stopping.")
+                        channelList = channelList0  # reverting
+                        selection = convertChannelListIntoSelection(channelList)
+                        ##########################################################################################
+                        # Result2: Amended Mask and Extra Mask was tried but reverted due to no remaining channels
+                        ##########################################################################################
+                        # derive 4-letter codes and update the final line of the plot legend
+                        warnings = gatherWarnings(selection, chanInfo, smallBandwidthFraction, smallSpreadFraction)
+                        channelRanges = len(selection.split(separator))
+                        if not useMomentDiff:
+                            labelDescs, areaString, mom8code = compute4LetterCodeAndUpdateLegend(mom8fcPeak, mom8fcPeak0, mom8fcPeakOutside, 
+                                                          mom8fcPeakOutside0, mom8fcSum, mom8fcSum0, 
+                                                          mom8fcMAD, mom8fcMAD0, thresholdForSame, 
+                                                          areaString, labelDescs, fontsize, ax1,
+                                                          amendMaskDecision, extraMaskDecision, extraMaskDecision2, autoLowerDecision,
+                                                          intersectionOfSelections, useMomentDiff, 
+                                                          warnings, channelRanges, sigmaUsedToAmendMask)
+                        else:
+                            # Needs momDiff 4-letter code
+                            labelDescs, areaString, momDiffCode = compute4LetterCodeAndUpdateLegend(momDiffPeak, 
+                                                      momDiffPeak0, momDiffPeakOutside, 
+                                                      momDiffPeakOutside0, momDiffSum, momDiffSum0, 
+                                                      momDiffMAD, momDiffMAD0, thresholdForSame, 
+                                                      areaString, labelDescs, fontsize, ax1,
+                                                      amendMaskDecision, extraMaskDecision, 
+                                                      extraMaskDecision2, autoLowerDecision,
+                                                      intersectionOfSelections, useMomentDiff, 
+                                                      warnings, channelRanges, sigmaUsedToAmendMask)
+                        pl.savefig(png, dpi=dpi)
+                        break
+                    intersectionOfSelections = True
+                    ###############################################################
+                    # create mom8fcIntersect from original and amendedMask regions
+                    ###############################################################
+                    selection = convertChannelListIntoSelection(channelList)
+                    casalogPost("Building new mom8fc with chans='%s'" % (selection))
+                    mom8fc['.intersect'] = mom8fc[''] + '.intersectChannelRanges'
+                    mom8fcIntersect = mom8fc['.intersect']
+                    removeIfNecessary(mom8fcIntersect)
+                    immoments(img, moments=[8], chans=selection, outfile=mom8fcIntersect)
+                    finalMom8fc = mom8fcIntersect
 
+                    # Compute statistics of mom8fcIntersect image
+                    # Assess mom8fc.intersect using original mask
+                    mom8fcSNR, mom8fcPeak, mom8fcMedian, mom8fcMAD = imageSNR(mom8fcIntersect, mask=jointMaskTest, maskWithAnnulus=jointMaskTestAnnulus,
+                                                                              useAnnulus=useAnnulus, returnAllStats=True, applyMaskToAll=False)
+                    if useAnnulus:
+                        # Need 2 calls to get peak anywhere outside the joint mask, but median and MAD from the annulus
+                        mom8fcSNROutside, mom8fcPeakOutside = imageSNRAnnulus(mom8fcIntersect, jointMaskTest, jointMaskTestAnnulus)
+                    else:
+                        mom8fcSNROutside, mom8fcPeakOutside, ignore0, ignore1 = imageSNR(mom8fcIntersect, mask=jointMaskTest, returnAllStats=True, 
+                                                                                         applyMaskToAll=True)
+                    mom8fcSNRCube = (mom8fcPeakOutside-mom8fcMedian)/MADCubeOutside
+                    mom8fcSum = imstat(mom8fcIntersect, listit=imstatListit)['sum'][0]
+                    casalogPost("new  mom8fcMedian = %f, mom8fcScaledMAD = %f,  mom8fcSNR = %f, mom8fcSNROutside = %f, mom8fcSum = %f" % (mom8fcMedian, mom8fcMAD, mom8fcSNR, mom8fcSNROutside, mom8fcSum))
+                    NpixMom8Median = computeNpixMom8Median(mom8fcMedian, np.max([5.5,TenEventSigma]), mom8fcMAD, mom8fcIntersect, jointMaskTest)
+                    NpixMom8MedianBadAtm = computeNpixMom8MedianBadAtm(mom8fcMedian, 8, mom8fcMAD, mom8fcIntersect, jointMaskTest)
+                    NpixCubeMedian = computeNpixMom8Median(mom8fcMedian, np.max([5.0,TenEventSigma]), mom8fcMAD, mom8fcIntersect, jointMaskTest)
 
-            selection, mypng, slope, channelWidth, nchan, useLowBaseline, mom0snrs, mom8snrs, useMiddleChannels, selectionPreBlueTruncation  = result
-            if png == '':
-                png = mypng
-                print("************ c) png passed into initial call was blank")
+                    ########################################################################
+                    # Need to build a new mom0fc image to match the new mom8fcIntersect
+                    ########################################################################
+                    mom0fc['.intersect'] = mom0fc[''] + '.intersectChannelRanges'
+                    mom0fcIntersect = mom0fc['.intersect']
+                    removeIfNecessary(mom0fcIntersect)  # in case there was a prior run of findContinuum
+                    print("Running immoments('%s', moments=[0], chans='%s', outfile='%s')" % (img,selection,mom0fcIntersect))
+                    immoments(img, moments=[0], chans=selection, outfile=mom0fcIntersect)
+                    finalMom0fc = mom0fcIntersect
+
+                    # create scaled version
+                    mom0fcIntersectScaled = mom0fcIntersect + '.scaled'
+                    removeIfNecessary(mom0fcIntersectScaled)  # in case there was a prior run of findContinuum
+                    chanWidthKms = 299792.458*channelWidth/meanFreqHz 
+                    fcChannels = len(convertSelectionIntoChannelList(selection))
+                    factor = 1.0/chanWidthKms/fcChannels
+                    immath([mom0fcIntersect], mode='evalexpr', expr='IM0*%f'%(factor), outfile=mom0fcIntersectScaled)
+
+                    # Need to build a new momDiff image
+                    momDiff['.intersect'] = mom8fcIntersect + '.minus.mom0fcScaled'
+                    momDiffIntersect = momDiff['.intersect']
+                    removeIfNecessary(momDiffIntersect)  # in case there was a prior run of findContinuum
+                    mymask = '"%s">0.3' % (pbmom)
+                    print("immath(['%s','%s'], mode='evalexpr', expr='IM0-IM1', mask='%s', outfile='%s')" % (mom8fcIntersect,mom0fcIntersectScaled,mymask,momDiffIntersect))
+                    immath([mom8fcIntersect, mom0fcIntersectScaled], mode='evalexpr', expr='IM0-IM1', mask='"%s">0.23'%(pbmom), outfile=momDiffIntersect)
+                    mymomDiff = momDiffIntersect
+                    finalMomDiff = momDiffIntersect
+
+                    ###########################################################################################
+                    # Recalculate momDiff stats for purposes of extraMaskYesOrNo, and the second 4-letter code
+                    ###########################################################################################
+                    #  momDiffSNR, momDiffPeak = peak anywhere in image
+                    momDiffSNR, momDiffPeak, momDiffMedian, momDiffMAD = imageSNR(mymomDiff, mask=jointMaskTest, maskWithAnnulus=jointMaskTestAnnulus, 
+                                                                                  useAnnulus=useAnnulus, returnAllStats=True, applyMaskToAll=False)
+                    casalogPost('momDiff: %s' % (mymomDiff))
+                    casalogPost('momDiffSNR: %f  peakAnywhere: %f  median: %f  scaledMAD: %f' % (momDiffSNR, momDiffPeak, momDiffMedian, momDiffMAD))
+                    # This is the SNR outside the mask
+                    if useAnnulus:
+                        # Need 2 calls to get peak anywhere outside the joint mask, but median and MAD from the annulus
+                        momDiffSNROutside, momDiffPeakOutside = imageSNRAnnulus(mymomDiff, jointMaskTest, jointMaskTestAnnulus)
+                    else:
+                        momDiffSNROutside, momDiffPeakOutside, ignore0, ignore1 = imageSNR(mymomDiff, mask=jointMaskTest, returnAllStats=True, 
+                                                                                           applyMaskToAll=True)
+                    momDiffSNRCube = (momDiffPeakOutside-momDiffMedian)/MADCubeOutside
+                    casalogPost('momDiffSNRCube: %f  scaledMAD: %f' % (momDiffSNRCube, MADCubeOutside))
+                    momDiffSum = imstat(mymomDiff, listit=imstatListit)['sum'][0]
+                    if useMomentDiff:
+                        # These values are no longer used in extraMaskYesOrNo, so could probably not bother calculating them now.
+                        NpixMomDiff = computeNpixMom8Median(momDiffMedian, momDiffLevel, momDiffMAD, mymomDiff, '')
+                        NpixMomDiffBadAtm = computeNpixMom8MedianBadAtm(momDiffMedian, momDiffLevelBadAtm, momDiffMAD, mymomDiff, '')
+                        NpixCubeDiffMedian = computeNpixCubeMedian(momDiffMedian, cubeLevel, MADCubeOutside, mymomDiff, '') # unused now
+                        extraMaskDecision2, ExtraMaskLevel, extraMaskSigmaUsed = extraMaskYesOrNo(badAtmosphere, momDiffMedian, momDiffSNR, 
+                                                                                                  momDiffSNRCube, NpixMomDiff, NpixMomDiffBadAtm, 
+                                                                                                  NpixCubeDiffMedian, TenEventSigma, momDiffMAD, 
+                                                                                                  MADCubeOutside, momDiffLevel, momDiffLevelBadAtm,
+                                                                                                  cubeLevel)
+                    else:
+                        # NpixMom8Median used here was defined above as max([5.5,TenEventSigma])
+                        extraMaskDecision2, ExtraMaskLevel, extraMaskSigmaUsed = extraMaskYesOrNo(badAtmosphere, mom8fcMedian, mom8fcSNRMom8, 
+                                                                                                  mom8fcSNRCube, NpixMom8Median, NpixMom8MedianBadAtm, 
+                                                                                                  NpixCubeMedian, TenEventSigma, mom8fcMAD, 
+                                                                                                  MADCubeOutside, mom8level, mom8levelBadAtm, cubeLevel)
+
+                    if extraMaskDecision2 == 'No': 
+                        casalogPost('Extra Mask is no longer deemed necessary. Stopping.')
+                        # If No, stop: because Taking intersection was enough, so do not proceed with extraMask.
+                        ###################################################
+                        # Result3: Amended Mask and Intersection was enough
+                        ###################################################
+                        # Derive 4-letter codes and update the plot (channel ranges and legend)
+                        aggregateBandwidth = updateChannelRangesOnPlot(labelDescs, selection, ax1, separator, 
+                                                                       avgspectrumAboveThreshold, skipchan, 
+                                                                       medianTrue, positiveThreshold, 
+                                                                       upperXlabel, ax2, channelWidth, fontsize)
+                        warnings = gatherWarnings(selection, chanInfo, smallBandwidthFraction, smallSpreadFraction)
+                        channelRanges = len(selection.split(separator))
+                        if not useMomentDiff:
+                            labelDescs, areaString, mom8code = compute4LetterCodeAndUpdateLegend(mom8fcPeak, 
+                                                          mom8fcPeak0, mom8fcPeakOutside, 
+                                                          mom8fcPeakOutside0, mom8fcSum, mom8fcSum0, 
+                                                          mom8fcMAD, mom8fcMAD0, thresholdForSame, 
+                                                          areaString, labelDescs, fontsize, ax1,
+                                                          amendMaskDecision, extraMaskDecision, 
+                                                          extraMaskDecision2, autoLowerDecision,
+                                                          intersectionOfSelections, useMomentDiff, 
+                                                          warnings, channelRanges, sigmaUsedToAmendMask)
+                        else:
+                            # Needs momDiff 4-letter code
+                            labelDescs, areaString, momDiffCode = compute4LetterCodeAndUpdateLegend(momDiffPeak, 
+                                                      momDiffPeak0, momDiffPeakOutside, 
+                                                      momDiffPeakOutside0, momDiffSum, momDiffSum0, 
+                                                      momDiffMAD, momDiffMAD0, thresholdForSame, 
+                                                      areaString, labelDescs, fontsize, ax1,
+                                                      amendMaskDecision, extraMaskDecision, 
+                                                      extraMaskDecision2, autoLowerDecision,
+                                                      intersectionOfSelections, useMomentDiff, 
+                                                      warnings, channelRanges, sigmaUsedToAmendMask)
+                        # give the modified figure a new name so that it does not overwrite the pre-extraMask png
+                        png = png.replace('.amendedMask.meanSpectrum','.amendedMaskIntersect.meanSpectrum')
+                        pl.savefig(png, dpi=dpi)
+                        break
+                    if len(amendMaskIterationNames) <= amendMaskIteration+1: # len will be 2 if amendMaskIterations was 1
+                        extraMaskDecision = 'No'
+                        #############################################################
+                        # Result4: amendMaskIterations was set to only 1 (not 2 or 3)
+                        #############################################################
+                        aggregateBandwidth = updateChannelRangesOnPlot(labelDescs, selection, ax1, separator, 
+                                                                       avgspectrumAboveThreshold, skipchan, 
+                                                                       medianTrue, positiveThreshold, 
+                                                                       upperXlabel, ax2, channelWidth, fontsize)
+                        warnings = gatherWarnings(selection, chanInfo, smallBandwidthFraction, smallSpreadFraction)
+                        channelRanges = len(selection.split(separator))
+                        if not useMomentDiff:
+                            labelDescs, areaString, mom8code = compute4LetterCodeAndUpdateLegend(mom8fcPeak, mom8fcPeak0, mom8fcPeakOutside, 
+                                                          mom8fcPeakOutside0, mom8fcSum, mom8fcSum0, 
+                                                          mom8fcMAD, mom8fcMAD0, thresholdForSame, 
+                                                          areaString, labelDescs, fontsize, ax1,
+                                                          amendMaskDecision, extraMaskDecision, extraMaskDecision2, autoLowerDecision,
+                                                          intersectionOfSelections, useMomentDiff, 
+                                                          warnings, channelRanges, sigmaUsedToAmendMask)
+                        else:
+                            labelDescs, areaString, momDiffCode = compute4LetterCodeAndUpdateLegend(momDiffPeak, 
+                                                      momDiffPeak0, momDiffPeakOutside, 
+                                                      momDiffPeakOutside0, momDiffSum, momDiffSum0, 
+                                                      momDiffMAD, momDiffMAD0, thresholdForSame, 
+                                                      areaString, labelDescs, fontsize, ax1,
+                                                      amendMaskDecision, extraMaskDecision, 
+                                                      extraMaskDecision2, autoLowerDecision,
+                                                      intersectionOfSelections, useMomentDiff, 
+                                                      warnings, channelRanges, sigmaUsedToAmendMask)
+                        casalogPost('Stopping because amendMaskIterations was set less than 2')
+                        pl.savefig(png, dpi=dpi)
+                        break
+                    # If Yes, do the extraMask procedure:
+                    print("extraMaskSigmaUsed = %f, ExtraMaskLevel = %f" % (extraMaskSigmaUsed,ExtraMaskLevel))
+                    if useMomentDiff:
+                        channels, frequency, intensity, normalized = computeStatisticalSpectrumFromMask(img, '"%s">%f' % (momDiffIntersect,ExtraMaskLevel), pbcube, imageInfo, 'mean', normalizeByMAD, outdir=outdir, jointMaskForNormalize=userJointMask)
+                    else:
+                        # use mom8fc.intersect to set the mask level from fc.imageSNR calcs  (using original mask)
+                        channels, frequency, intensity, normalized = computeStatisticalSpectrumFromMask(img, '"%s">%f' % (mom8fcIntersect,ExtraMaskLevel), pbcube, imageInfo, 'mean', normalizeByMAD, outdir=outdir, jointMaskForNormalize=userJointMask)
+                    lineFullSelection = invertChannelRanges(selection, nchan)  # converts a string to a string
+                    myChannelList = convertSelectionIntoChannelList(selection)
+                    casalogPost('Continuum channels so far: %s' % (selection))
+                    casalogPost('Line-full channels so far: %s' % (lineFullSelection))
+                    scaledMADFCSubset, medianFCSubset = robustMADofContinuumRanges(myChannelList, intensity)
+                    edgesUsed = 0
+                    meanSpectrumFile = mymom8fc + '.meanSpectrumFile_fromExtraMask_beforeNoiseReplacement'
+                    writeMeanSpectrum(meanSpectrumFile, frequency, intensity, intensity, ExtraMaskLevel, 
+                                      nchan, edgesUsed, centralArcsec='mom0mom8jointMask')
+                    intensity = replaceLineFullRangesWithNoise(intensity, lineFullSelection, medianFCSubset, scaledMADFCSubset)
+                    meanSpectrumFile = mymom8fc + '.meanSpectrumFile_fromExtraMask'
+                    writeMeanSpectrum(meanSpectrumFile, frequency, intensity, intensity, ExtraMaskLevel, 
+                                      nchan, edgesUsed, centralArcsec='mom0mom8jointMask')
+                    # update selection0 to hold the amendMask/intersect selection
+                    selection0 = selection 
+                    if keepIntermediatePngs:
+                        png = '' # reset name so that new name will be chosen and prior plot not overwritten
+                    if False:
+                        sigmaFindContinuumMode = 'autolower'
+                        sigmaFindContinuum = finalSigmaFindContinuum
+                        casalogPost("Using sigmaFindContinuumMode='autolower' with sigmaFindContinuum=%f" % (sigmaFindContinuum))
+                    amendMaskIterationNames[amendMaskIteration+1] = '.extraMask'
+                    signalRatioTier1 = 1.0
+                    overwrite = False  # do not overwrite the spectrum we just wrote when runFindContinuum runs again!
+                    continue  # from  .amendedMask iteration to .extraMask iteration
+                else:
+                    casalogPost('**************************************************************')
+                    casalogPost('There is no significant emission in difference image (%f < %f).' % (diffStats[0], testDiffLev))
+                    casalogPost('**************************************************************')
+                    if len(amendMaskIterationNames) <= amendMaskIteration+1:
+                        ####################################################
+                        # Result5: amendMaskIterations was to only 1 (not 2)
+                        ####################################################
+                        extraMaskDecision = 'No'
+                        aggregateBandwidth = updateChannelRangesOnPlot(labelDescs, selection, ax1, separator, 
+                                                                       avgspectrumAboveThreshold, skipchan, 
+                                                                       medianTrue, positiveThreshold, 
+                                                                       upperXlabel, ax2, channelWidth, fontsize)
+                        warnings = gatherWarnings(selection, chanInfo, smallBandwidthFraction, smallSpreadFraction)
+                        channelRanges = len(selection.split(separator))
+                        if not useMomentDiff:
+                            labelDescs, areaString, mom8code = compute4LetterCodeAndUpdateLegend(mom8fcPeak, mom8fcPeak0, mom8fcPeakOutside, 
+                                                          mom8fcPeakOutside0, mom8fcSum, mom8fcSum0, 
+                                                          mom8fcMAD, mom8fcMAD0, thresholdForSame, 
+                                                          areaString, labelDescs, fontsize, ax1,
+                                                          amendMaskDecision, extraMaskDecision, extraMaskDecision2, autoLowerDecision,
+                                                          intersectionOfSelections, useMomentDiff, 
+                                                          warnings, channelRanges, sigmaUsedToAmendMask)
+                        else:
+                            labelDescs, areaString, momDiffCode = compute4LetterCodeAndUpdateLegend(momDiffPeak, 
+                                                      momDiffPeak0, momDiffPeakOutside, 
+                                                      momDiffPeakOutside0, momDiffSum, momDiffSum0, 
+                                                      momDiffMAD, momDiffMAD0, thresholdForSame, 
+                                                      areaString, labelDescs, fontsize, ax1,
+                                                      amendMaskDecision, extraMaskDecision, 
+                                                      extraMaskDecision2, autoLowerDecision,
+                                                      intersectionOfSelections, useMomentDiff, 
+                                                      warnings, channelRanges, sigmaUsedToAmendMask)
+                        casalogPost('Stopping because amendMaskIterations was set less than 2')
+                        pl.savefig(png, dpi=dpi)
+                        break
+                    # do the extraMaskProcedure:
+                    # jointMaskTest will be the original mask, unless I take action here
+                    casalogPost("sigmaUsed to set level = %f, computing spectrum from pixels > %f" % (extraMaskSigmaUsed,ExtraMaskLevel))
+                    if useMomentDiff:
+                        channels, frequency, intensity, normalized = computeStatisticalSpectrumFromMask(img, '"%s">%f' % (mymomDiff,ExtraMaskLevel), pbcube, imageInfo, 'mean', normalizeByMAD, outdir=outdir, jointMaskForNormalize=userJointMask)
+                    else:
+                        channels, frequency, intensity, normalized = computeStatisticalSpectrumFromMask(img, '"%s">%f' % (mymom8fc,ExtraMaskLevel), pbcube, imageInfo, 'mean', normalizeByMAD, outdir=outdir, jointMaskForNormalize=userJointMask)
+                    lineFullSelection = invertChannelRanges(selection, nchan) # converts a string to a string
+                    myChannelList = convertSelectionIntoChannelList(selection)
+                    casalogPost('Continuum channels so far: %s' % (selection))
+                    casalogPost('Line-full channels so far: %s' % (lineFullSelection))
+                    scaledMADFCSubset, medianFCSubset = robustMADofContinuumRanges(myChannelList, intensity)
+                    edgesUsed = 0
+                    meanSpectrumFile = mymom8fc + '.meanSpectrumFile_fromExtraMask_beforeNoiseReplacement'
+                    writeMeanSpectrum(meanSpectrumFile, frequency, intensity, intensity, ExtraMaskLevel, 
+                                      nchan, edgesUsed, centralArcsec='mom0mom8jointMask')
+                    intensity = replaceLineFullRangesWithNoise(intensity, lineFullSelection, medianFCSubset, scaledMADFCSubset)
+                    meanSpectrumFile = mymom8fc + '.meanSpectrumFile_fromExtraMask'
+                    writeMeanSpectrum(meanSpectrumFile, frequency, intensity, 
+                                      intensity, ExtraMaskLevel, nchan, 
+                                      edgesUsed, centralArcsec='mom0mom8jointMask')
+                    # update selection0 to hold the amendMask/intersect selection
+                    selection0 = selection 
+                    if keepIntermediatePngs:
+                        png = '' # reset name so that new name will be chosen and prior plot not overwritten
+                    amendMaskIterationNames[amendMaskIteration+1] = '.extraMask'
+                    signalRatioTier1 = 1.0
+                    if False:
+                        sigmaFindContinuumMode = 'autolower'
+                        sigmaFindContinuum = finalSigmaFindContinuum
+                        casalogPost("Using sigmaFindContinuumMode='autolower' with sigmaFindContinuum=%f" % (sigmaFindContinuum))
+                    overwrite = False  # do not overwrite the spectrum we just wrote when runFindContinuum runs again!
+                    continue  # from .amendedMask iteration to .extraMask iteration
+                # end if diffStats[0] > testDiffLev  else:
+            # end if amendMaskIterationName == '.amendedMask'
+            if amendMaskIterationName in ['.extraMask','.onlyExtraMask','.autoLower']:
+                # Intersect extraMask spectral (cyan) ranges with amendMask spectral (cyan) ranges
+                # selection0 will hold the amendMask selection if .extraMask was run
+                channelList0 = convertSelectionIntoChannelList(selection0)
+                channelList1 = convertSelectionIntoChannelList(selection)
+                channelList = np.intersect1d(channelList0,channelList1)
+                casalogPost("Taking intersection of %d channels with %d channels, to get %d channels" % (len(channelList0), len(channelList1), len(channelList)))
+                casalogPost("first channel list = %s" % (selection0))
+                casalogPost("second channel list = %s" % (selection))
+                if len(channelList) == 0:
+                    ###########################################################################################
+                    # Result6: ExtraMask or onlyExtraMask was used but no channels were left after intersection
+                    ###########################################################################################
+                    casalogPost("No intersection: Reverting to first channel selection")
+                    channelList = channelList0  # reverting
+                    # derive 4-letter codes and update the final line of the plot legend
+                    warnings = gatherWarnings(selection, chanInfo, smallBandwidthFraction, smallSpreadFraction)
+                    channelRanges = len(selection.split(separator))
+                    if not useMomentDiff:
+                        labelDescs, areaString, mom8code = compute4LetterCodeAndUpdateLegend(mom8fcPeak, 
+                                                          mom8fcPeak0, mom8fcPeakOutside, 
+                                                          mom8fcPeakOutside0, mom8fcSum, mom8fcSum0, 
+                                                          mom8fcMAD, mom8fcMAD0, thresholdForSame, 
+                                                          areaString, labelDescs, fontsize, ax1,
+                                                          amendMaskDecision, extraMaskDecision, 
+                                                          extraMaskDecision2, autoLowerDecision,
+                                                          intersectionOfSelections, useMomentDiff, 
+                                                          warnings, channelRanges, sigmaUsedToAmendMask)
+                    else:
+                        # Needs momDiff 4-letter code, but only if it was .extraMask 
+                        labelDescs, areaString, momDiffCode = compute4LetterCodeAndUpdateLegend(momDiffPeak, 
+                                                      momDiffPeak0, momDiffPeakOutside, 
+                                                      momDiffPeakOutside0, momDiffSum, momDiffSum0, 
+                                                      momDiffMAD, momDiffMAD0, thresholdForSame, 
+                                                      areaString, labelDescs, fontsize, ax1,
+                                                      amendMaskDecision, extraMaskDecision, 
+                                                      extraMaskDecision2, autoLowerDecision,
+                                                      intersectionOfSelections, useMomentDiff, 
+                                                      warnings, channelRanges, sigmaUsedToAmendMask)
+                    pl.savefig(png, dpi=dpi)
+                    break
+                if amendMaskIterationName in ['.onlyExtraMask']: # ,'.autoLower']: 
+                    # save the .original.meanSpectrum.*.png before modifying the channel ranges and legend below
+                    # save the .amendedMask.meanSpectrum.*.png before modifying the channel ranges and legend below
+                    casalogPost("Saving %s" % (png))
+                    pl.savefig(png, dpi=dpi)
+                selection = convertChannelListIntoSelection(channelList)
+                if list(channelList) == list(channelList0):
+                    if amendMaskIterationName == '.extraMask':
+                        extraMaskDecision = 'NoImprovement'
+                    elif amendMaskIterationName == '.autoLower':
+                        autoLowerDecision = 'NoImprovement'
+                    casalogPost('No change in channel list')
+                elif len(channelList) == 1 and nchan > 500:
+                    # disallow first and final channel if either is the adjacent channel
+                    casalogPost('intersected channel list: %s' % (selection))
+                    onlyChannel = channelList[0]
+                    channelList = range(np.max([1,onlyChannel-1]),np.min([onlyChannel+1,nchan-2])+1)
+                    casalogPost('Forcing single channel to include the adjacent channels because nchan>500')
+                    selection = convertChannelListIntoSelection(channelList)
+                                   
+#                else:  # process new channel selection (even if it is the same, because we want to produce the autoLowerIntersect momDiff)
+                casalogPost('intersected channel list: %s' % (selection))
+                ##########################################
+                # Build a (potentially) final mom8fc image
+                ##########################################
+                myIntersectName = amendMaskIterationName+'Intersect'
+                mom8fc[myIntersectName] = mom8fc[amendMaskIterationName] + 'Intersect'
+                removeIfNecessary(mom8fc[myIntersectName])
+                casalogPost("Running immoments('%s', moments=[8], chans='%s', outfile='%s')" % (img,selection, mom8fc[myIntersectName]))
+                immoments(img, moments=[8], chans=selection, outfile=mom8fc[myIntersectName])
+                finalMom8fc = mom8fc[myIntersectName]
+
+                # compute final 4-letter code and update the final line of the plot legend
+                mom8fcSNR, mom8fcPeak, mom8fcMedian, mom8fcMAD = imageSNR(mom8fc[myIntersectName], mask=jointMaskTest, maskWithAnnulus=jointMaskTestAnnulus, 
+                                                                          useAnnulus=useAnnulus, returnAllStats=True, applyMaskToAll=False)
+                if useAnnulus:
+                    # Need 2 calls to get peak anywhere outside the joint mask, but median and MAD from the annulus
+                    mom8fcSNROutside, mom8fcPeakOutside = imageSNRAnnulus(mom8fc[myIntersectName], jointMaskTest, jointMaskTestAnnulus)
+                else:
+                    mom8fcSNROutside, mom8fcPeakOutside, ignore0, ignore1 = imageSNR(mom8fc[myIntersectName], mask=jointMaskTest, 
+                                                                                     returnAllStats=True, applyMaskToAll=True)
+                # need to recalculate mom8fcSNRCube because the numerator has changed
+                mom8fcSNRCube = (mom8fcPeakOutside-mom8fcMedian)/MADCubeOutside
+                mom8fcSum = imstat(mom8fc[myIntersectName], listit=imstatListit)['sum'][0]
+
+                ##########################################
+                # Build a (potentially) final mom0fc image
+                ##########################################
+                mom0fc[myIntersectName] = mom0fc[amendMaskIterationName] + 'Intersect'
+                removeIfNecessary(mom0fc[myIntersectName])
+                casalogPost("Running immoments('%s', moments=[0], chans='%s', outfile='%s')" % (img, selection, mom0fc[myIntersectName]))
+                immoments(img, moments=[0], chans=selection, outfile=mom0fc[myIntersectName])
+                finalMom0fc = mom0fc[myIntersectName]
+
+                # create scaled version
+                mom0fcIntersectScaled = mom0fc[myIntersectName] + '.scaled'
+                removeIfNecessary(mom0fcIntersectScaled)  # in case there was a prior run of findContinuum
+                chanWidthKms = 299792.458*channelWidth/meanFreqHz 
+                fcChannels = len(convertSelectionIntoChannelList(selection))
+                factor = 1.0/chanWidthKms/fcChannels
+                immath(mom0fc[myIntersectName], mode='evalexpr', expr='IM0*%f'%(factor), outfile=mom0fcIntersectScaled)
+
+                # Need to build a new momDiff image since we have a new mom8fc[myIntersectName]
+                momDiff[myIntersectName] = mom8fc[myIntersectName] + '.minus.mom0fcScaled'
+                removeIfNecessary(momDiff[myIntersectName])  # in case there was a prior run of findContinuum
+                mymask = '"%s">0.3' % (pbmom)
+                print("immath(['%s','%s'], mode='evalexpr', expr='IM0-IM1', mask='%s', outfile='%s')" % (mom8fc[myIntersectName],mom0fcIntersectScaled,mymask,momDiff[myIntersectName]))
+                immath([mom8fc[myIntersectName], mom0fcIntersectScaled], mode='evalexpr', expr='IM0-IM1', mask='"%s">0.23'%(pbmom), outfile=momDiff[myIntersectName])
+                finalMomDiff = momDiff[myIntersectName]
+
+                # Recalculate for purposes of second 4-letter code
+                momDiffSNR, momDiffPeak, momDiffMedian, momDiffMAD = imageSNR(momDiff[myIntersectName], mask=jointMaskTest, 
+                                                                              maskWithAnnulus=jointMaskTestAnnulus, useAnnulus=useAnnulus,
+                                                                              returnAllStats=True, applyMaskToAll=False)
+                casalogPost('momDiff: %s' % (momDiff[myIntersectName]))
+                casalogPost('momDiffSNR: %f  peakAnywhere: %f  median: %f  scaledMAD: %f' % (momDiffSNR, momDiffPeak, momDiffMedian, momDiffMAD))
+                # This is the SNR outside the mask
+                if useAnnulus:
+                    # Need 2 calls to get peak anywhere outside the joint mask, but median and MAD from the annulus
+                    momDiffSNROutside, momDiffPeakOutside = imageSNRAnnulus(momDiff[myIntersectName], jointMaskTest, jointMaskTestAnnulus)
+                else:
+                    momDiffSNROutside, momDiffPeakOutside, ignore0, ignore1 = imageSNR(momDiff[myIntersectName], mask=jointMaskTest, 
+                                                                                       returnAllStats=True, applyMaskToAll=True)
+                momDiffSum = imstat(momDiff[myIntersectName], listit=imstatListit)['sum'][0]
+                momDiffSNRCube = (momDiffPeakOutside-momDiffMedian)/MADCubeOutside
+                casalogPost('momDiffSNRCube: %f  scaledMAD: %f' % (momDiffSNRCube, MADCubeOutside))
+                if (amendMaskIterationName == '.extraMask' and amendMaskIterations > 2) or (amendMaskIterationName == '.onlyExtraMask' and amendMaskIterations > 1):
+                    warnings = gatherWarnings(selection, chanInfo, smallBandwidthFraction, smallSpreadFraction)
+                    if len(warnings) == 0:
+#                        These values are no longer used in extraMaskYesOrNo(), so no need to compute them
+#                        NpixMomDiff = computeNpixMom8Median(momDiffMedian, momDiffLevel, momDiffMAD, momDiff[myIntersectName], '')
+#                        NpixMomDiffBadAtm = computeNpixMom8MedianBadAtm(momDiffMedian, momDiffLevelBadAtm, momDiffMAD, momDiff[myIntersectName], '')
+                        # NpixCubeDiffMedian is unused now
+                        autoLowerDecision, autoLowerLevel, autoLowerSigmaUsed = extraMaskYesOrNo(badAtmosphere, 
+                                                                                                 momDiffMedian, momDiffSNR, 
+                                                                                                 momDiffSNRCube, NpixMomDiff, NpixMomDiffBadAtm, 
+                                                                                                 NpixCubeDiffMedian, TenEventSigma, momDiffMAD, 
+                                                                                                 MADCubeOutside, momDiffLevel, momDiffLevelBadAtm, cubeLevel)
+                        casalogPost('autoLowerDecision = %s, autoLowerLevel = %f' % (autoLowerDecision, autoLowerLevel))
+                        if autoLowerDecision in ['YesMom','YesCube']:
+                            if keepIntermediatePngs:
+                                png = '' # reset name so that new name will be chosen and prior plot not overwritten
+                            amendMaskIterationNames[amendMaskIteration+1] = '.autoLower'
+                            signalRatioTier1 = 1.0
+                            sigmaFindContinuumMode = 'autolower'
+                            sigmaFindContinuum = finalSigmaFindContinuum
+                            selection0 = selection # be sure we intersect against this latest channel selection
+                            casalogPost("Using sigmaFindContinuumMode='autolower' with sigmaFindContinuum=%f" % (sigmaFindContinuum))
+                            continue # from .extraMask/.onlyExtraMask to .autoLower
+                    else:
+                        casalogPost("Not trying .autoLower because we have %d bandwidth warning(s)" % (len(warnings)))
+                else:
+                    if amendMaskIterationName != '.autoLower':
+                        casalogPost("Not trying autoLower because amendMaskIterations=%d" % (amendMaskIterations))
+                # was: endif list(channelList) == list(channelList0)  else:
+                warnings = gatherWarnings(selection, chanInfo, smallBandwidthFraction, smallSpreadFraction)
+                channelRanges = len(selection.split(separator))
+                # update the plot channel ranges 
+                casalogPost('A) calling updateChannelRangesOnPlot')
+                aggregateBandwidth = updateChannelRangesOnPlot(labelDescs, selection, ax1, separator, 
+                                                               avgspectrumAboveThreshold, skipchan, 
+                                                               medianTrue, positiveThreshold, 
+                                                               upperXlabel, ax2, channelWidth, fontsize)
+                ########################################################################
+                # Result7: ExtraMask or onlyExtraMask, and possibly autoLower were used 
+                ########################################################################
+                if not useMomentDiff:
+                    labelDescs, areaString, mom8code = compute4LetterCodeAndUpdateLegend(mom8fcPeak, 
+                                                      mom8fcPeak0, mom8fcPeakOutside, 
+                                                      mom8fcPeakOutside0, mom8fcSum, mom8fcSum0, 
+                                                      mom8fcMAD, mom8fcMAD0, thresholdForSame, 
+                                                      areaString, labelDescs, fontsize, ax1,
+                                                      amendMaskDecision, extraMaskDecision, 
+                                                      extraMaskDecision2, autoLowerDecision,
+                                                      intersectionOfSelections, useMomentDiff, 
+                                                      warnings, channelRanges, sigmaUsedToAmendMask)
+                else:
+                    # Needs momDiff 4-letter code
+                    labelDescs, areaString, momDiffCode = compute4LetterCodeAndUpdateLegend(momDiffPeak, 
+                                                  momDiffPeak0, momDiffPeakOutside, 
+                                                  momDiffPeakOutside0, momDiffSum, momDiffSum0, 
+                                                  momDiffMAD, momDiffMAD0, thresholdForSame, 
+                                                  areaString, labelDescs, fontsize, ax1,
+                                                  amendMaskDecision, extraMaskDecision, 
+                                                  extraMaskDecision2, autoLowerDecision,
+                                                  intersectionOfSelections, useMomentDiff, 
+                                                  warnings, channelRanges, sigmaUsedToAmendMask)
+                # give the modified figure a new name so that it does not overwrite the pre-extraMask png
+                if amendMaskIterationName == '.onlyExtraMask': 
+                    print("onlyExtraMask) Changing name of png: ", png)
+                    png = png.replace('.original.meanSpectrum','.onlyExtraMaskIntersect.meanSpectrum')
+                    casalogPost("Saving %s" % png)
+                    pl.savefig(png, dpi=dpi)
+                    # do not allow it to try a 3rd iteration, since we are done
+                    break 
+                elif amendMaskIterationName == '.extraMask':  # new
+                    print("extraMask) Changing name of png: ", png)
+                    png = png.replace('.extraMask.meanSpectrum','.extraMaskIntersect.meanSpectrum')
+                    png = png.replace('.amendedMask.meanSpectrum','.extraMaskIntersect.meanSpectrum')
+                    casalogPost("Saving %s" % png)
+                    pl.savefig(png, dpi=dpi)
+                    break # not needed if amendMaskIterations=2, but needed if it is 3
+                elif amendMaskIterationName == '.autoLower':  # new
+                    print("autoLower) Changing name of png: ", png)
+                    png = png.replace('.amendedMask.meanSpectrum','.autoLowerIntersect.meanSpectrum')
+                    png = png.replace('.original.meanSpectrum','.autoLowerIntersect.meanSpectrum')
+                    casalogPost("%s) Saving %s" % (amendMaskIterationName,png))
+                    pl.savefig(png, dpi=dpi)
+                    break # needed if amendMaskIterations == 3 and we did not amendMask
+            # endif amendMaskIterationName in ['.extraMask','.onlyExtraMask','.autoLower']
+        # endif meanSpectrumMethod=='mom0mom8jointMask' and (amendMask or checkIfMaskWouldHaveBeenAmended):
+    # end 'for' loop over amendMaskIterations
+
+    if selection == '' and amendMask:
+        # I think this should never happen due to protection above, but I leave this code here, just in case.
+        casalogPost("Blank selection found: Reverting to prior iteration with selection: %s" % (selection))
+        selection = previousSelection
+        png = previousPng
+        aggregateBandwidth = previousAggregateBandwidth
+
+    ##########################################################################################
+    # At this point, all of the images and pngs have been saved with the correct names.
+    # Now compare the 4-letter 'code' to see if we need to revert the channel range results,
+    # the png returned, and the final image returned to the .original versions of these files.
+    ##########################################################################################
+    if amendMask:
+        reversionCodes = ['HHHH','HHHS']
+        revert = False
+        if momDiffCode is None:
+            code = mom8code
+            if mom8code in reversionCodes:
+                revert = True
+                casalogPost('This mom8fc code triggers reversion to original result.')
+        else: 
+            code = momDiffCode
+            if momDiffCode in reversionCodes:
+                revert = True
+                casalogPost('This momDiff code triggers reversion to original result.')
+        if not revert:
+            warnings = gatherWarnings(selection, chanInfo, smallBandwidthFraction, smallSpreadFraction)
+            if len(warnings) == 2:
+                # do our addition
+                continuumChannels = convertSelectionIntoChannelList(selection)
+                if continuumChannels[0] > (nchan-continuumChannels[-1]):
+                    endchan = continuumChannels[-1] - nchan*smallSpreadFraction - 1
+                    channelRange = [0,endchan]
+                else:
+                    startchan = continuumChannels[0] + nchan*smallSpreadFraction + 1
+                    channelRange = [startchan,nchan]
+                mylist = findWidestContiguousListInChannelRange(allBaselineChannelsXY[0], channelRange, continuumChannels)
+                if mylist is None:
+                    casalogPost('  %s ****** No blue points found in the wider side of the spectrum' % (projectCode))
+                else:
+                    # we added a new selection, so need to update everything
+                    secondSelectionAdded = '%d~%d' % (mylist[0],mylist[-1])
+                    if selection == '':
+                        selection = secondSelectionAdded
+                    else:
+                        if mylist[0] > continuumChannels[-1]:
+                            # add to end of string (to maintain increasing order)
+                            selection += separator + secondSelectionAdded
+                        else:
+                            # add to beginning of string (to maintain increasing order)
+                            selection = secondSelectionAdded + separator + selection
+                    casalogPost('  %s ****** Added a second selection in wider side of the spectrum: %s' % (projectCode,secondSelectionAdded))
+                    if momDiffPeak0 is None:
+                        # No AmendMask nor ExtraMask was done, so we need to store the original values.
+                        # These *0's will be used to compute the MomDiff 4-letter code generation
+                        momDiffPeak0 = momDiffPeak
+                        momDiffPeakOutside0 = momDiffPeakOutside
+                        momDiffMAD0 = momDiffMAD
+                        momDiffSum0 = momDiffSum
+                        mom8fcPeak0 = mom8fcPeak
+                        mom8fcPeakOutside0 = mom8fcPeakOutside
+                        mom8fcMAD0 = mom8fcMAD
+                        mom8fcSum0 = mom8fcSum
+                        removeRanges = True
+                    else:
+                        removeRanges = False
+                    
+                    # update the plot again
+                    casalogPost('B) calling updateChannelRangesOnPlot')
+                    aggregateBandwidth = updateChannelRangesOnPlot(labelDescs, selection, ax1, separator, 
+                                                                   avgspectrumAboveThreshold, skipchan, 
+                                                                   medianTrue, positiveThreshold, 
+                                                                   upperXlabel, ax2, channelWidth, fontsize,
+                                                                   remove=removeRanges)
+                    warnings = gatherWarnings(selection, chanInfo, smallBandwidthFraction, smallSpreadFraction)
+                    # recompute a new mom8fc, mom0fc, momDiff, mom8fc.minus.mom0fcScaled
+                    ##################################
+                    # Build a final mom8fc image
+                    ##################################
+                    myIntersectName = amendMaskIterationName+'Intersect'
+                    mom8fc[myIntersectName] = mom8fc[amendMaskIterationName] + 'Intersect'
+                    removeIfNecessary(mom8fc[myIntersectName])
+                    casalogPost("Running immoments('%s', moments=[8], chans='%s', outfile='%s')" % (img,selection, mom8fc[myIntersectName]))
+                    immoments(img, moments=[8], chans=selection, outfile=mom8fc[myIntersectName])
+                    finalMom8fc = mom8fc[myIntersectName]
+                    mom8fcSNR, mom8fcPeak, mom8fcMedian, mom8fcMAD = imageSNR(mom8fc[myIntersectName], mask=jointMaskTest, 
+                                                                              maskWithAnnulus=jointMaskTestAnnulus, useAnnulus=useAnnulus,
+                                                                              returnAllStats=True, applyMaskToAll=False)
+                    if useAnnulus:
+                        # Need 2 calls to get peak anywhere outside the joint mask, but median and MAD from the annulus
+                        mom8fcSNROutside, mom8fcPeakOutside = imageSNRAnnulus(mom8fc[myIntersectName], jointMaskTest, jointMaskTestAnnulus)
+                    else:
+                        mom8fcSNROutside, mom8fcPeakOutside, ignore0, ignore1 = imageSNR(mom8fc[myIntersectName], mask=jointMaskTest, 
+                                                                                         returnAllStats=True, applyMaskToAll=True)
+                    # need to recalculate mom8fcSNRCube because the numerator has changed
+                    mom8fcSNRCube = (mom8fcPeakOutside-mom8fcMedian)/MADCubeOutside
+                    mom8fcSum = imstat(mom8fc[myIntersectName], listit=imstatListit)['sum'][0]
+
+                    ##################################
+                    # Build a final mom0fc image
+                    ##################################
+                    mom0fc[myIntersectName] = mom0fc[amendMaskIterationName] + 'Intersect'
+                    removeIfNecessary(mom0fc[myIntersectName])
+                    casalogPost("Running immoments('%s', moments=[0], chans='%s', outfile='%s')" % (img, selection, mom0fc[myIntersectName]))
+                    immoments(img, moments=[0], chans=selection, outfile=mom0fc[myIntersectName])
+                    finalMom0fc = mom0fc[myIntersectName]
+
+                    # create scaled version
+                    mom0fcIntersectScaled = mom0fc[myIntersectName] + '.scaled'
+                    removeIfNecessary(mom0fcIntersectScaled)  # in case there was a prior run of findContinuum
+                    chanWidthKms = 299792.458*channelWidth/meanFreqHz 
+                    fcChannels = len(convertSelectionIntoChannelList(selection))
+                    factor = 1.0/chanWidthKms/fcChannels
+                    immath(mom0fc[myIntersectName], mode='evalexpr', expr='IM0*%f'%(factor), outfile=mom0fcIntersectScaled)
+
+                    # Need to build a new momDiff image since we have a new mom8fc[myIntersectName]
+                    momDiff[myIntersectName] = mom8fc[myIntersectName] + '.minus.mom0fcScaled'
+                    removeIfNecessary(momDiff[myIntersectName])  # in case there was a prior run of findContinuum
+                    mymask = '"%s">0.3' % (pbmom)
+                    print("immath(['%s','%s'], mode='evalexpr', expr='IM0-IM1', mask='%s', outfile='%s')" % (mom8fc[myIntersectName],mom0fcIntersectScaled,mymask,momDiff[myIntersectName]))
+                    immath([mom8fc[myIntersectName], mom0fcIntersectScaled], mode='evalexpr', expr='IM0-IM1', mask='"%s">0.23'%(pbmom), outfile=momDiff[myIntersectName])
+                    finalMomDiff = momDiff[myIntersectName]
+
+                    # Recalculate for purposes of second 4-letter code
+                    momDiffSNR, momDiffPeak, momDiffMedian, momDiffMAD = imageSNR(momDiff[myIntersectName], mask=jointMaskTest,
+                                                                                  maskWithAnnulus=jointMaskTestAnnulus, useAnnulus=useAnnulus,
+                                                                                  returnAllStats=True, applyMaskToAll=False)
+                    casalogPost('momDiff: %s' % (momDiff[myIntersectName]))
+                    casalogPost('momDiffSNR: %f  peakAnywhere: %f  median: %f  scaledMAD: %f' % (momDiffSNR, momDiffPeak, momDiffMedian, momDiffMAD))
+                    # This is the SNR outside the mask
+                    if useAnnulus:
+                        # Need 2 calls to get peak anywhere outside the joint mask, but median and MAD from the annulus
+                        momDiffSNROutside, momDiffPeakOutside = imageSNRAnnulus(momDiff[myIntersectName], jointMaskTest, jointMaskTestAnnulus)
+                    else:
+                        momDiffSNROutside, momDiffPeakOutside, ignore0, ignore1 = imageSNR(momDiff[myIntersectName], mask=jointMaskTest, 
+                                                                                           returnAllStats=True, applyMaskToAll=True)
+                    momDiffSum = imstat(momDiff[myIntersectName], listit=imstatListit)['sum'][0]
+                    momDiffSNRCube = (momDiffPeakOutside-momDiffMedian)/MADCubeOutside
+                    casalogPost('momDiffSNRCube: %f  scaledMAD: %f' % (momDiffSNRCube, MADCubeOutside))
+                    if not useMomentDiff:
+                        labelDescs, areaString, mom8code = compute4LetterCodeAndUpdateLegend(mom8fcPeak, 
+                                                          mom8fcPeak0, mom8fcPeakOutside, 
+                                                          mom8fcPeakOutside0, mom8fcSum, mom8fcSum0, 
+                                                          mom8fcMAD, mom8fcMAD0, thresholdForSame*5,  # use looser definition of Same
+                                                          areaString, labelDescs, fontsize, ax1,
+                                                          amendMaskDecision, extraMaskDecision, 
+                                                          extraMaskDecision2, autoLowerDecision,
+                                                          intersectionOfSelections, useMomentDiff, 
+                                                          warnings, channelRanges, sigmaUsedToAmendMask, 
+                                                          replace=True, addedSelection=True)
+                    else:
+                        # Needs momDiff 4-letter code
+                        labelDescs, areaString, momDiffCode = compute4LetterCodeAndUpdateLegend(momDiffPeak, 
+                                                      momDiffPeak0, momDiffPeakOutside, 
+                                                      momDiffPeakOutside0, momDiffSum, momDiffSum0, 
+                                                      momDiffMAD, momDiffMAD0, thresholdForSame*5,  # use looser definition of Same
+                                                      areaString, labelDescs, fontsize, ax1,
+                                                      amendMaskDecision, extraMaskDecision, 
+                                                      extraMaskDecision2, autoLowerDecision,
+                                                      intersectionOfSelections, useMomentDiff, 
+                                                      warnings, channelRanges, sigmaUsedToAmendMask, replace=True, addedSelection=True)
+                    if png == originalPng:
+                        png = originalPng.replace('.png','_addedRange.png')
+                    pl.savefig(png, dpi=dpi)
+                    # but we *might* have made it worse, so check again
+                    if momDiffCode is None:
+                        code = mom8code
+                        if mom8code in reversionCodes:
+                            revert = True
+                            casalogPost('This mom8fc code triggers reversion to original result.')
+                    else: 
+                        code = momDiffCode
+                        if momDiffCode in reversionCodes:
+                            revert = True
+                            casalogPost('This momDiff code triggers reversion to original result.')
+                if len(warnings) == 2:
+                    revert = True
+                    casalogPost('This combination of bandwidth warnings triggers reversion to original result, which had only %d warning(s).' % (len(originalWarnings)))
+        if revert:
+            finalMomDiff = momDiff['.original']
+            selection = originalSelection
+            casalogPost('code=%s: Reverting to original selection: %s' % (code,selection))
+            aggregateBandwidth = computeBandwidth(selection, channelWidth, 0)
+            if originalPng != png:
+                png = revertedPng
+                # update the modification time to current time (like Unix 'touch') so that it appears to be most recent
+                os.utime(png,None) 
         else:
-            casalogPost("Not re-running findContinuum with the other method because the results are deemed acceptable.")
-    # Write summary of results to text file
+            os.remove(revertedPng)
+    ##########################################################################################
+    # Determine the name of the finalImageToReturn, in case it was requested
+    ##########################################################################################
+    if useMomentDiff:
+        finalImageToReturn = finalMomDiff
+    else:
+        finalImageToReturn = finalMom8fc
+    casalogPost('finalImageToReturn = %s' % (finalImageToReturn))
+    pathCode = ''
+    if amendMask:
+        momDiffSNR = imageSNR(finalImageToReturn, returnAllStats=False, applyMaskToAll=False, 
+                              mask=jointMaskTest, maskWithAnnulus=jointMaskTestAnnulus, useAnnulus=useAnnulus)
+        casalogPost('********************************************')
+        casalogPost('***** SNR in final momDiff image: %.1f *****' % (momDiffSNR))
+        casalogPost('********************************************')
+        if areaString.find(',') > 0:
+            pathCode = areaString.split(',')[1].strip()
+        casalogPost('***** pathCode: %s   momDiffCode: %s *****' % (pathCode,momDiffCode))
+    else:
+        momDiffCode = ''
+
+    ##########################################################################
+    # Finish up by generating warnings (if necessary), checking for AllCont, 
+    # and writing summary of results to the _findContinuum.dat file
+    ##########################################################################
     if (meanSpectrumFile == ''): 
-        meanSpectrumFile = buildMeanSpectrumFilename(img, meanSpectrumMethod, peakFilterFWHM)
+        meanSpectrumFile = buildMeanSpectrumFilename(img, meanSpectrumMethod, peakFilterFWHM, amendMaskIterationName)
         if outdir != '':
             meanSpectrumFile = os.path.join(outdir, os.path.basename(meanSpectrumFile))
     if spw == '':
         # Try to find the name of the spw from the image name
-        if os.path.basename(img).find('spw') >0:
+        if os.path.basename(img).find('spw') > 0:
             spw = os.path.basename(img).split('spw')[1].split('.')[0]
+    # only the base name of the meanSpectrumFile is used by writeContDat, not the contents
     writeContDat(meanSpectrumFile, selection, png, aggregateBandwidth,
                  firstFreq, lastFreq, channelWidth, img, imageInfo, vis, spw=spw)
     executionTimeSeconds = timeUtilities.time() - executionTimeSeconds
-    casalogPost("Finished findContinuum.py. Execution time: %.1f seconds" % (executionTimeSeconds))
-    # may need to fractional bandwidth>50% selected after blue pruning:  so that page 272 can be False
-    # page 303: pre-blue prune was 3-105
+    casalogPost("Final selection: %s" % (selection))
+    #####################################################################################
+    # Post Final warnings to the log (as they might have changed due to reversion above)
+    #####################################################################################
+    warningStrings = gatherWarnings(selection, chanInfo, smallBandwidthFraction, smallSpreadFraction)
+    warningStrings = [w.split()[-1] for w in warningStrings]  # picks out LowBW and/or LowSpread at end of string
+    casalogPost("Final warnings: %s" % (str(warningStrings)))
     if selection.find(';') > 0 or aggregateBandwidth*1e9 < 0.5*np.abs(channelWidth*nchan):
         # There is more than 1 group after blue pruning, page 258, so there might be a line in that gap
         # or less than half was selected for continuum, so this is dubious enough that we should clean it
         allContinuum = False
     else:
         allContinuum = allContinuumSelected(selectionPreBluePruning, nchan)
+    casalogPost("final png: %s" % (png))
+    casalogPost("Finished findContinuum.py. Execution time: %.1f seconds" % (executionTimeSeconds))
+    ########################################################################
+    # There are 16 possible return lists, based on control parameters.
+    # The pipeline use case (which has changed with release) is noted below.
+    ########################################################################
     if returnSnrs:
         if returnAllContinuumBoolean:
-            return(selection, png, aggregateBandwidth, allContinuum, mom0snrs, mom8snrs, maxBaseline)
+            if returnSigmaFindContinuum:
+                if returnWarnings:
+                    return(selection, png, aggregateBandwidth, allContinuum, warningStrings, mom0snrs, mom8snrs, maxBaseline, finalSigmaFindContinuum, intersectionOfSelections, rangesDropped, amendMaskDecision, extraMaskDecision, extraMaskDecision2, autoLowerDecision, finalImageToReturn, pathCode, momDiffCode)
+                else:
+                    return(selection, png, aggregateBandwidth, allContinuum, mom0snrs, mom8snrs, maxBaseline, finalSigmaFindContinuum, intersectionOfSelections, rangesDropped, amendMaskDecision, extraMaskDecision, extraMaskDecision2, autoLowerDecision, finalImageToReturn, pathCode, momDiffCode)
+            else:
+                if returnWarnings:
+                    return(selection, png, aggregateBandwidth, allContinuum, warningStrings, mom0snrs, mom8snrs, maxBaseline)
+                else:
+                    return(selection, png, aggregateBandwidth, allContinuum, mom0snrs, mom8snrs, maxBaseline)
         else:
-            return(selection, png, aggregateBandwidth, mom0snrs, mom8snrs, maxBaseline)
+            if returnSigmaFindContinuum:
+                if returnWarnings:
+                    return(selection, png, aggregateBandwidth, warningStrings, mom0snrs, mom8snrs, maxBaseline, finalSigmaFindContinuum, intersectionOfSelections, rangesDropped, amendMaskDecision, extraMaskDecision, extraMaskDecision2, autoLowerDecision, finalImageToReturn, pathCode, momDiffCode)
+                else:
+                    return(selection, png, aggregateBandwidth, mom0snrs, mom8snrs, maxBaseline, finalSigmaFindContinuum, intersectionOfSelections, rangesDropped, amendMaskDecision, extraMaskDecision, extraMaskDecision2, autoLowerDecision, finalImageToReturn, pathCode, momDiffCode)
+            else:
+                if returnWarnings:
+                    return(selection, png, aggregateBandwidth, warningStrings, mom0snrs, mom8snrs, maxBaseline)
+                else:
+                    return(selection, png, aggregateBandwidth, mom0snrs, mom8snrs, maxBaseline)
     else:
         if returnAllContinuumBoolean:
-            # cycle 7
-            return(selection, png, aggregateBandwidth, allContinuum)
+            if returnSigmaFindContinuum:
+                if returnWarnings:
+                    return(selection, png, aggregateBandwidth, allContinuum, warningStrings, finalSigmaFindContinuum, intersectionOfSelections, rangesDropped, amendMaskDecision, extraMaskDecision, extraMaskDecision2, autoLowerDecision, finalImageToReturn, pathCode, momDiffCode)
+                else:
+                    return(selection, png, aggregateBandwidth, allContinuum, finalSigmaFindContinuum, intersectionOfSelections, rangesDropped, amendMaskDecision, extraMaskDecision, extraMaskDecision2, autoLowerDecision, finalImageToReturn, pathCode, momDiffCode)
+            else:
+                if returnWarnings:
+                    # Pipeline 2020 use case
+                    return(selection, png, aggregateBandwidth, allContinuum, warningStrings)
+                else:
+                    # Pipeline Cycle 7 use case
+                    return(selection, png, aggregateBandwidth, allContinuum)
         else:
-            # cycle 6 and prior
-            return(selection, png, aggregateBandwidth)
+            if returnSigmaFindContinuum:
+                if returnWarnings:
+                    return(selection, png, aggregateBandwidth, warningStrings, finalSigmaFindContinuum, intersectionOfSelections, rangesDropped, amendMaskDecision, extraMaskDecision, extraMaskDecision2, autoLowerDecision, finalImageToReturn, pathCode, momDiffCode)
+                else:
+                    return(selection, png, aggregateBandwidth, finalSigmaFindContinuum, intersectionOfSelections, rangesDropped, amendMaskDecision, extraMaskDecision, extraMaskDecision2, autoLowerDecision, finalImageToReturn, pathCode, momDiffCode)
+            else:
+                if returnWarnings:
+                    return(selection, png, aggregateBandwidth, returnWarningStrings)
+                else:
+                    # Pipeline Cycle 6 (and prior) use case
+                    return(selection, png, aggregateBandwidth)
+# end of findContinuum   
+
+def robustMADofContinuumRanges(myChannelList, intensity):
+    """
+    Used in Pipeline2020 going forward.
+    myChannelList: subset of channels that are currently the continuum selection
+    intensity: list of intensities in *all* channels of the spectrum
+    """
+    totalChannels = len(intensity)
+    intensityInFCSubset = intensity[myChannelList]
+    medianFCSubset = np.median(intensityInFCSubset)
+    casalogPost('Median of the %d continuum channels: %f' % (len(myChannelList), medianFCSubset))
+    if len(myChannelList) >= 10:
+#        Original simpler method:        
+#        scaledMADFCSubset = MAD(intensityInFCSubset)
+#        casalogPost('using MAD of the %d continuum channels: %f' % (len(myChannelList),scaledMADFCSubset))
+        # This method removes the effect of a slope in the baseline on the MAD
+        myChannelLists = splitListIntoContiguousLists(myChannelList)
+        MADs = []
+        for mylist in myChannelLists:
+            MADs.append(MAD(intensity[mylist]))
+        scaledMADFCSubset = np.median(MADs) / np.sqrt(2)
+        casalogPost('using (median of the MADs)/sqrt(2) of the %d ranges: %f' % (len(myChannelLists),scaledMADFCSubset))
+        snr = (np.max(intensityInFCSubset)-medianFCSubset) / scaledMADFCSubset
+        casalogPost('SNR = (peak-median)/medianMAD = %f' % (snr))
+        casalogPost('   (MAD of all channels together = %f)' % (MAD(intensityInFCSubset)))
+        idx = np.argsort(intensityInFCSubset)
+        npts = len(myChannelList)
+        nBaselineChannels = int(np.ceil(0.19 * npts))
+        # If there are strong lines in the "continuum" regions, then the MAD can be not representative
+        # So we examine the 19% lowest channels instead
+        if nBaselineChannels > 35 and snr > 4:  # put the cutoff between TDM and FDM240 (35/.19=184chan)
+            mad = MAD(intensityInFCSubset[idx][:nBaselineChannels])
+#            percentile = 100.0*nBaselineChannels / totalChannels
+            correctionFactor = 1.0 # sigmaCorrectionFactor('min', npts, percentile)
+            newMAD = mad * correctionFactor
+            casalogPost('Because there is significant signal in the continuum-free ranges, computing the MAD inferred from the lowest %d channels: %f (using correctionFactor=%f)' % (nBaselineChannels, newMAD, correctionFactor))
+            if newMAD < scaledMADFCSubset:
+                newMedianFCSubset = np.median(intensityInFCSubset[idx][:nBaselineChannels])
+                casalogPost('Because the MAD is lower, computing the MAD and median (%f) of the baseline channels.' % (newMedianFCSubset))
+                scaledMADFCSubset = np.mean([scaledMADFCSubset, newMAD])
+                medianFCSubset = np.mean([medianFCSubset, newMedianFCSubset])
+                casalogPost('Using the mean of the two methods: median=%f MAD=%f' % (medianFCSubset, scaledMADFCSubset))
+#            medianFCSubset = medianCorrected('min', percentile, np.median(intensityInFCSubset[idx][:nBaselineChannels]), 
+#                                             scaledMADFCSubset, 1, True)
+#            casalogPost('Inferred median = %f' % (medianFCSubset))
+    else:  # there are too few channels to compute a reliable MAD
+        casalogPost('using MAD of all channels because there are too few channels in line-free regions (%d)' % (len(myChannelList)))
+        scaledMADFCSubset = MAD(intensity)
+    return scaledMADFCSubset, medianFCSubset
+
+def gatherWarnings(selection, chanInfo, smallBandwidthFraction, smallSpreadFraction):
+    """
+    Used in Pipeline2020 going forward.
+    Return list of warning strings (often empty).
+    """
+    warningStrings = []
+    warning = tooLittleBandwidth(selection, chanInfo, smallBandwidthFraction)
+    if warning is not None:
+        warningStrings.append(warning)
+    warning = tooLittleSpread(selection, chanInfo, smallSpreadFraction)
+    if warning is not None:
+        warningStrings.append(warning)
+    return warningStrings
+
+def compute4LetterCodeAndUpdateLegend(mom8fcPeak, mom8fcPeak0, mom8fcPeakOutside, 
+                                      mom8fcPeakOutside0, mom8fcSum, mom8fcSum0, 
+                                      mom8fcMAD, mom8fcMAD0, thresholdForSame, areaString, 
+                                      labelDescs, fontsize, ax1, amendMaskDecision, 
+                                      extraMaskDecision, extraMaskDecision2, autoLowerDecision,
+                                      intersectionOfSelections, 
+                                      useMomentDiff, warnings, channelRanges, sigmaUsedToAmendMask,
+                                      skipDecisionCode=False, replace=False, addedSelection=False):
+    """
+    Used in Pipeline2020 going forward.
+    Add a variable length code and a 4-letter code to the end of the last line of the upper legend.
+    useMomentDiff: specified in the call to findContinuum()
+    Returns:  labelDescs, areaString, mycode
+    """
+    if replace:
+        areaString = areaString.split(',')[0]
+    if not skipDecisionCode:
+        decisionCode = ''
+        print("amend=%s, extra=%s, extra2=%s, autoLower=%s" % (amendMaskDecision, extraMaskDecision, extraMaskDecision2, autoLowerDecision))
+        if amendMaskDecision in ['No',False]:
+            if extraMaskDecision in ['No',False]:
+                if sigmaUsedToAmendMask == AMENDMASK_PIXEL_RATIO_EXCEEDED:
+                    casalogPost("Adding ', PR' to the plot legend")
+                    decisionCode += ', PR'
+                elif sigmaUsedToAmendMask == AMENDMASK_PIXELS_ABOVE_THRESHOLD_EXCEEDED:
+                    casalogPost("Adding ', P#' to the plot legend")
+                    decisionCode += ', P#'
+                else:
+                    casalogPost("Adding ', S' to the plot legend")
+                    decisionCode += ', S'
+            elif extraMaskDecision == 'NoImprovement':
+                casalogPost("Adding ', Se' to the plot legend")
+                decisionCode += ", Se"
+            elif extraMaskDecision == 'YesMom':
+                casalogPost("Adding ', ED' to the plot legend")
+                decisionCode += ', ED'
+            elif extraMaskDecision == 'YesCube':
+                casalogPost("Adding ', EC' to the plot legend")
+                decisionCode += ', EC'
+        else:
+            decisionCode += ', A'
+            if amendMaskDecision == 'YesMom':
+                if useMomentDiff:
+                    decisionCode += 'D'
+                else:
+                    decisionCode += '8'
+            elif amendMaskDecision == 'YesCube':
+                decisionCode += 'C'
+            if extraMaskDecision in ['YesMom','YesCube'] or extraMaskDecision2 in ['YesMom','YesCube']:
+#                if extraMaskDecision in ['YesMom','YesCube']:
+#                    decisionCode += 'E'
+                if intersectionOfSelections:
+                    decisionCode += 'I'
+                    if extraMaskDecision2 in ['YesMom','YesCube']:
+                        decisionCode += 'E'
+                else:
+                    decisionCode += 'E'
+            elif intersectionOfSelections:
+                # this will only happen if findContinuum was run with amendMaskIterations=1 instead of 2
+                decisionCode += 'I'
+        if autoLowerDecision in ['YesMom','YesCube']:
+            decisionCode += 'X'
+        elif autoLowerDecision == 'NoImprovement':
+            decisionCode += 'x'
+        elif autoLowerDecision not in ['No',False]:
+            decisionCode += '?'
+        if addedSelection:
+            decisionCode += '+' # added a selection of channels at the end due to LowBW/LowSpread
+        areaString += decisionCode
+        casalogPost('Decision code: %s' % (decisionCode.split(',')[1]))
+    mycode = compute4LetterCode(mom8fcPeak, mom8fcPeak0, mom8fcPeakOutside, 
+                                mom8fcPeakOutside0, mom8fcSum, mom8fcSum0, 
+                                mom8fcMAD, mom8fcMAD0, thresholdForSame)
+    areaString += ', ' + mycode 
+    if not skipDecisionCode:
+        for warning in warnings:
+            if warning.find('amount') > 0:
+                areaString += ', LowBW'
+            if warning.find('spread') > 0:
+                areaString += ', LowSpread'
+    labelDescs[-1].remove()
+    token = areaString.split(';')
+    areaString = ';'.join([token[0], ' %d ranges'%(channelRanges), token[2]])
+    casalogPost("Drawing new areaString: %s" % (areaString))
+    labelDesc = ax1.text(0.5,0.99-3*0.03, areaString, transform=ax1.transAxes, ha='center', size=fontsize-1)
+    labelDescs.append(labelDesc)
+    pl.draw()
+    return labelDescs, areaString, mycode
+
+def updateChannelRangesOnPlot(labelDescs, selection, ax1, separator, avgspectrumAboveThreshold, 
+                              skipchan, medianTrue, positiveThreshold, upperXlabel, ax2, 
+                              channelWidth, fontsize=10, remove=True):
+    """
+    Used in Pipeline2020 going forward.
+    channelWidth: in Hz
+    Returns: new aggregate bandwidth in GHz
+    """
+    if remove:
+        # exclude final item, which is the 3rd line of the legend
+#        print("labelDescs: ", labelDescs)
+        for ld,labelDesc in enumerate(labelDescs[:-1]): 
+#            print("type(labelDesc) = ", type(labelDesc))
+            if type(labelDesc) == list:  # plot artists (i.e., the cyan lines)
+                labelDesc.pop(0).remove()
+            else: # text artists (i.e., the chan0~chan1 labels above the cyan lines)
+                try:
+                    labelDesc.remove()
+                except:
+                    # prevent a crash; not sure why this happens sometimes on the first call
+                    pass
+    print("Calling plotChannelSelections: ", selection)
+    labelDescs = plotChannelSelections(ax1, selection, separator, 
+                          avgspectrumAboveThreshold, skipchan, medianTrue, 
+                          positiveThreshold)
+    loc = upperXlabel.find('contBW')
+    aggregateBandwidth = computeBandwidth(selection, channelWidth, 0)
+    if loc > 0:
+        upperXlabel = upperXlabel[:loc] + 'contBW: %.4f MHz' % (aggregateBandwidth * 1000)
+        casalogPost("Setting new upper x-axis label: %s"  % (upperXlabel))
+        ax2.set_xlabel(upperXlabel, size=fontsize) # this artist cannot be removed in CASA 5.6, so just overwrite it
+    return aggregateBandwidth # , labelDescs
+
+def computeNpixCubeMedian(mom8fcMedian, cubeLevel, MADCubeOutside, mom8fc, jointMaskTest):
+    """
+    Used in Pipeline2020 going forward.
+    jointMaskTest: can be a mask, a mask statement or compound mask statement
+    """
+    threshold = mom8fcMedian + cubeLevel*MADCubeOutside
+    if jointMaskTest == '':
+        npixels = imstat(mom8fc, listit=imstatListit, mask='"%s" > %f'%(mom8fc, threshold))['npts']
+    else:
+        npixels = imstat(mom8fc, listit=imstatListit, mask='"%s" > %f && %s'%(mom8fc, threshold, jointMaskTest))['npts']
+    if len(npixels) == 0:
+        NpixCubeMedian = 0
+    else:
+        NpixCubeMedian = npixels[0]
+    return NpixCubeMedian
+
+def computeNpixMom8MedianBadAtm(mom8fcMedian, mom8levelBadAtm, mom8fcMAD, mom8fc, jointMaskTest):
+    """
+    Used in Pipeline2020 going forward.
+    jointMaskTest: can be a mask, a mask statement or compound mask statement
+    """
+    threshold = mom8fcMedian + mom8levelBadAtm*mom8fcMAD
+    if jointMaskTest == '':
+        npixels = imstat(mom8fc, listit=imstatListit, mask='"%s" > %f'%(mom8fc, threshold))['npts']
+    else:
+        npixels = imstat(mom8fc, listit=imstatListit, mask='"%s" > %f && %s'%(mom8fc, threshold, jointMaskTest))['npts']
+    if len(npixels) == 0:
+        NpixMom8MedianBadAtm = 0
+    else:
+        NpixMom8MedianBadAtm = npixels[0]
+    return NpixMom8MedianBadAtm
+
+def computeNpixMom8Median(mom8fcMedian, mom8level, mom8fcMAD, mom8fc, jointMaskTest, verbose=True):
+    """
+    Used in Pipeline2020 going forward.
+    mom8fcMedian: the median of the moment8 image being used 
+    mom8level: a sigma value to use
+    mom8fcMAD: a scaled MAD
+    jointMaskTest: can be a mask, a mask statement or compound mask statement
+    """
+    threshold = mom8fcMedian + mom8level*mom8fcMAD
+    if jointMaskTest == '':
+        results = imstat(mom8fc, listit=imstatListit, mask='"%s" > %f'%(mom8fc, threshold))
+        npixels = results['npts']
+    else:
+        mymask = '"%s" > %f && %s' % (mom8fc, threshold, jointMaskTest)
+        casalogPost("Running imstat('%s', mask='%s')" % (mom8fc,mymask))
+        results = imstat(mom8fc, mask=mymask, listit=imstatListit)
+        npixels = results['npts']
+    if len(npixels) == 0:
+        NpixMom8Median = 0
+        peak = 0
+    else:
+        peak = results['max'][0]
+        NpixMom8Median = npixels[0]
+    if verbose:
+        casalogPost("computeNpixMom8Median(): momMedian=%f, momlevel=%f, momMAD=%f, peak=%f, jointMaskTest=%s" % (mom8fcMedian, mom8level, mom8fcMAD, peak, jointMaskTest))
+        casalogPost("                         threshold=%f, NpixMom=%d" % (threshold,NpixMom8Median))
+    return NpixMom8Median
+
+def replaceLineFullRangesWithNoise(intensity, selection, median, scaledMAD):
+    """
+    Used in Pipeline2020 going forward.
+    intensity: an array of intensity values of *all* channels in the spectrum
+    selection: a channel selection string in CASA format, whose intensities should be replaced
+    median: of the channels *not* in the selection string (for the noise generation)
+    scaledMAD: of the channels *not* in the selection string (for the noise generation)
+    Returns: a new intensity array, of the same dimension as the input array
+    """
+    ranges = selection.split(';')
+    random.seed(2001)  # A Space Odyssey (guarantees that .onlyExtraMask will get same result everytime)
+    for myrange in ranges:
+        c0,c1 = [int(i) for i in myrange.split('~')]
+        peakSNR = (np.max(intensity[c0:c1+1]) - median) / scaledMAD
+        if peakSNR > 15:
+            # Note because the continuum is still in this spectrum, it can have a slope which
+            # will make the MAD higher than normal, so we may need to account for this he scaledMAD 
+            # somewhat.
+            intensity[c0:c1+1] = median + pickRandomErrors(c1-c0+1) * scaledMAD
+            casalogPost("Replacing channel range %d:%d (peakSNR=%f) with median=%f +- randomNumber*scaledMAD=%f" % (c0,c1,peakSNR,median,scaledMAD))
+        else:
+            casalogPost("Not replacing channel range %d:%d (peakSNR=%f)" % (c0,c1,peakSNR))
+    return intensity
+
+def compute4LetterCode(mom8fcPeak, mom8fcPeak0, mom8fcPeakOutside, mom8fcPeakOutside0, mom8fcSum, 
+                       mom8fcSum0, mom8fcMAD, mom8fcMAD0, threshold=0.01, returnRatios=False):
+    """
+    Used in Pipeline2020 going forward.
+    threshold: to use for Peak, PeakOutside, and Sum;  double this value is used for MAD (i.e. 2%)
+    """
+    better = ''
+    changeInPeakInside = (mom8fcPeak-mom8fcPeak0)/mom8fcPeak0
+    ratios = [] # these will be negative values when the quantity improved
+    ratios.append(changeInPeakInside)
+    if changeInPeakInside > threshold:
+        casalogPost('peak inside = H because (%f-%f)/%f=%f is > %f' % (mom8fcPeak,mom8fcPeak0,mom8fcPeak0,changeInPeakInside,threshold))
+        better += 'H'
+    elif changeInPeakInside < -threshold:
+        casalogPost('peak inside = L because (%f-%f)/%f=%f is < -%f' % (mom8fcPeak,mom8fcPeak0,mom8fcPeak0,changeInPeakInside,threshold))
+        better += 'L'
+    else:
+        casalogPost('peak inside = S because (%f-%f)/%f=%f is between -%f and +%f' % (mom8fcPeak,mom8fcPeak0,mom8fcPeak0,changeInPeakInside,threshold,threshold))
+        better += 'S'
+    changeInPeakOutside = (mom8fcPeakOutside-mom8fcPeakOutside0)/mom8fcPeakOutside0
+    ratios.append(changeInPeakOutside)
+    if changeInPeakOutside > threshold:
+        casalogPost('peak outside = H because (%f-%f)/%f=%f is > %f' % (mom8fcPeakOutside,mom8fcPeakOutside0,mom8fcPeakOutside0,changeInPeakOutside,threshold))
+        better += 'H'
+    elif changeInPeakOutside < -threshold:
+        casalogPost('peak outside = L because (%f-%f)/%f=%f is < -%f' % (mom8fcPeakOutside,mom8fcPeakOutside0,mom8fcPeakOutside0,changeInPeakOutside,threshold))
+        better += 'L'
+    else:
+        casalogPost('peak outside = S because (%f-%f)/%f=%f is between -%f and +%f' % (mom8fcPeakOutside,mom8fcPeakOutside0,mom8fcPeakOutside0,changeInPeakOutside,threshold,threshold))
+        better += 'S'
+    changeInSum = (mom8fcSum-mom8fcSum0)/mom8fcSum0
+    ratios.append(changeInSum)
+    if changeInSum > threshold:
+        casalogPost('sum = H because (%f-%f)/%f=%f is > %f ' % (mom8fcSum,mom8fcSum0,mom8fcSum0,changeInSum,threshold))
+        better += 'H'
+    elif changeInSum < -threshold:
+        casalogPost('sum = L because (%f-%f)/%f=%f is < -%f ' % (mom8fcSum,mom8fcSum0,mom8fcSum0,changeInSum,threshold))
+        better += 'L'
+    else:
+        casalogPost('sum = S because (%f-%f)/%f=%f is between -%f and +%f ' % (mom8fcSum,mom8fcSum0,mom8fcSum0,changeInSum,threshold,threshold))
+        better += 'S'
+    changeInMad = (mom8fcMAD-mom8fcMAD0)/mom8fcMAD0
+    ratios.append(changeInMad)
+    madThreshold = 2*threshold
+    if changeInMad > madThreshold:
+        casalogPost('MAD = H because (%f-%f)/%f=%f is > %f ' % (mom8fcMAD,mom8fcMAD0,mom8fcMAD0,changeInMad,madThreshold))
+        better += 'H'
+    elif changeInMad < -madThreshold:
+        casalogPost('MAD = L because (%f-%f)/%f=%f is < -%f ' % (mom8fcMAD,mom8fcMAD0,mom8fcMAD0,changeInMad,madThreshold))
+        better += 'L'
+    else:
+        casalogPost('MAD = S because (%f-%f)/%f=%f is between -%f and +%f' % (mom8fcMAD,mom8fcMAD0,mom8fcMAD0,changeInMad,madThreshold,madThreshold))
+        better += 'S'
+    casalogPost("4-letter code: %s" % (better))
+    if returnRatios:
+        return better, ratios
+    else:
+        return better
+
+def cubeNoiseLevel(cube, pbcube='', mask='', percentile=50, chans=''):
+    """
+    Used in Pipeline2020 going forward.
+    Computes median of the per-channel scaled MAD within the standard noise annulus
+    and outside the specified mask
+    chans: channel selection string (passed to imstat)
+    mask: either mask image to use (e.g. the string passed to imstat will be '"mask" == 0')
+          or a proper mask string containing >, < or ==
+    percentile: compute this percentile value of the per-channel scaled MAD
+          (examples: 50 = median,  90 = close to the highest value)
+          if it is a list, then a list of values is returned
+    Returns: median of MAD, median
+          or [list of MADs], median
+    """
+    if not os.path.exists(cube):
+        print("Could not find the cube")
+        return
+    if pbcube == '':
+        pbcube = cube.replace('.image','.pb').replace('.residual','.pb')
+        if not os.path.exists(pbcube):
+            casalogPost("Could not find the corresponding pbcube: %s" % (pbcube))
+            casalogPost("Will use the whole image (or the specified mask) to compute the MAD.")
+    if mask == '':
+        mask = cube.replace('.image','.mask').replace('.residual','.mask')
+        if not os.path.exists(mask):
+            mask = cube + '.joint.mask2'
+            if not os.path.exists(mask):
+                mask = cube + '.joint.mask'
+                if not os.path.exists(mask):
+                    print("Could not find any corresponding clean mask or findContinuum jointmask")
+                    mask = ''
+    if os.path.exists(pbcube):
+        lowerAnnulusLevel, higherAnnulusLevel = findOuterAnnulusForPBCube(pbcube, False, False)
+        if mask != '':
+            if mask.find("==") < 0 and mask.find(">") < 0 and mask.find("<") < 0:
+                mask = '"'+mask+'"==0'
+            print("    Using mask: ", mask)
+            mymask = '"%s">%f && "%s"<%f && %s' % (pbcube, lowerAnnulusLevel, pbcube, higherAnnulusLevel, mask)
+        else:
+            mymask = '"%s">%f && "%s"<%f' % (pbcube, lowerAnnulusLevel, pbcube, higherAnnulusLevel)
+    else:
+        mymask = ''
+    print("    mymask expression = ", mymask)
+    results = imstat(cube, axes=[0,1,2], chans=chans, mask=mymask, stretch=True, listit=imstatListit)
+    cubeMedian = results['median'][0]
+    result = results['medabsdevmed']
+    if type(percentile) != list and type(percentile) != np.ndarray:
+        percentile = [percentile]
+    cubeScaledMAD = []
+    for p in percentile:
+        cubeScaledMAD.append(scoreatpercentile(result,p) / 0.6745)
+    if len(cubeScaledMAD) > 1:
+        return cubeScaledMAD, cubeMedian
+    else:
+        return cubeScaledMAD[0], cubeMedian
+
+def tooLittleBandwidth(selection, chanInfo, fraction=0.05):
+    """
+    Used in Pipeline2020 going forward.
+    Returns: a string if there is a warning, or None if not
+    """
+    nchan, firstFreq, lastFreq, channelWidth = chanInfo
+    aggBandwidthHz = computeBandwidth(selection, channelWidth, 1) * 1e9
+    myfraction = aggBandwidthHz/float(channelWidth*nchan)
+    if myfraction < fraction: # compute4LetterCodeAndUpdateLegend() keys on the presence of the word 'amount'
+        warning = 'WARNING: Small amount of fractional bandwidth found (%.3f < %.3f) = LowBW' % (myfraction,fraction)
+        casalogPost(warning)
+        return warning
+    else:
+        casalogPost('Current fractional bandwidth is %.3f' % (myfraction))
+    return None
+
+def computeSpread(selection, channelWidth):
+    """
+    Used in Pipeline2020 going forward.
+    """
+    ranges = selection.split(';')
+    for i,r in enumerate(ranges):
+        result = r.split('~')
+        if (len(result) == 2):
+            a,b = result
+            if i == 0:
+                startchan = int(a)
+            # keep extending the endchan where there is more than 1 group
+            endchan = int(b)
+    return (endchan-startchan+1)*channelWidth
+
+def tooLittleSpread(selection, chanInfo, fraction=0.33):
+    """
+    Used in Pipeline2020 going forward.
+    Returns: a string if there is a warning, or None if not
+    """
+    nchan, firstFreq, lastFreq, channelWidth = chanInfo
+    spread = computeSpread(selection, channelWidth)
+    myfraction = spread/float(nchan*channelWidth)
+    if myfraction < fraction:  # compute4LetterCodeAndUpdateLegend() keys on the presence of the word 'spread'
+        warning = 'WARNING: Fractional spread of frequency coverage is small (%.3f < %.3f) = LowSpread' % (myfraction,fraction)
+        casalogPost(warning)
+        return warning
+    return None
+
+def amendMaskYesOrNo(badAtmosphere, median, momSNR, momSNRCube, Npix, NpixBadAtm, NpixCube, 
+                     TenEventSigma, MADMomOutside, MADCubeOutside, momLevel, 
+                     momLevelBadAtm, cubeLevel, NpixCube2, fractionNegativePixels,
+                     Npix2=None, Npix2BadAtm=None, verbose=True):
+    """
+    Used in Pipeline2020 going forward.
+    median: meidan of mom8fc img if fc(useMomentDiff=False), or momDiff (mom8-mom0scaled) if useMomentDiff=True
+    momSNR: SNR of mom8fc img if fc(useMomentDiff=False), or momDiff (mom8-mom0scaled) if useMomentDiff=True
+    etc.
+    badAtmosphere: either a boolean or a string ('goodAtm' or 'badAtm')
+    """
+    AMENDMASK_PIXEL_RATIO_EXCEEDED = -1
+    AMENDMASK_PIXELS_ABOVE_THRESHOLD_EXCEEDED = -2
+    decision = 'No'
+    AmendMaskLevel = 0.0
+    sigmaUsed = AMENDMASK_PIXEL_RATIO_EXCEEDED
+    if Npix2 is not None:
+        if Npix2 > 0:
+            pixelRatio = float(Npix)/Npix2
+            if pixelRatio > 2.2:  # IRAS16293 maser gives 2.1667, NGC6334I spw16 gives 2.333
+                casalogPost('Pixel ratio is too high to trigger AmendMask: %f > 2.2' % (pixelRatio))
+                return decision, AmendMaskLevel, sigmaUsed
+    if badAtmosphere in ['badAtm',True]:
+        badAtmosphere = True
+        if fractionNegativePixels > 0.1 and NpixBadAtm > 850:
+            sigmaUsed = AMENDMASK_PIXELS_ABOVE_THRESHOLD_EXCEEDED
+            casalogPost('Fraction of negative pixels (%f) > 0.1 and too many pixels (%d) above threshold to trigger AmendMask' % (fractionNegativePixels,NpixBadAtm))
+            return decision, AmendMaskLevel, sigmaUsed
+    elif badAtmosphere in ['goodAtm',False]:
+        badAtmosphere = False
+        if fractionNegativePixels > 0.1 and Npix > 850:
+            sigmaUsed = AMENDMASK_PIXELS_ABOVE_THRESHOLD_EXCEEDED
+            casalogPost('Fraction of negative pixels (%f) > 0.1 and too many pixels (%d) above threshold to trigger AmendMask' % (fractionNegativePixels,Npix))
+            return decision, AmendMaskLevel, sigmaUsed
+        else:
+            casalogPost('fractionNegativePixels = %f, Npix = %d, allows it to trigger AmendMask' % (fractionNegativePixels,Npix))
+    else:
+        casalogPost('badAtmosphere has unrecognized value = %s' % (badAtmosphere))
+    sigmaUsed = 0 # this is the value that will be returned if threshold are not met
+    if badAtmosphere:
+        casalogPost("Using badAtmosphere thresholds: momLevelBadAtm=%f" % (momLevelBadAtm))
+        if momSNR >= momLevelBadAtm and NpixBadAtm >= 9:
+            decision = 'YesMom'
+            sigmaUsed = 8
+            AmendMaskLevel = median + sigmaUsed*MADMomOutside
+            casalogPost('Found YesMom (BadAtm) with sigma=%g yielding AmendMaskLevel = %f' % (sigmaUsed,AmendMaskLevel))
+    else:
+        if verbose:
+            print("-------------------------------------")
+            print("amendMaskYesOrNo(): median=%f, MADMomOutside=%f, momSNR=%f, Npix=%.f" % (median, MADMomOutside, momSNR, Npix))
+            print("amendMaskYesOrNo(): momSNRCube=%f, MADCubeOutside=%f, NpixCube=%.1f" % (momSNRCube, MADCubeOutside, NpixCube))
+            print("-------------------------------------")
+        if momSNR >= momLevel and Npix >= 9:
+            decision = 'YesMom'
+            AmendMaskLevel = median + np.max([5.5,TenEventSigma]) * MADMomOutside
+            sigmaUsed = np.max([5.5,TenEventSigma])
+            casalogPost('Found YesMom with sigma=%g (because momSNR=%f >= momLevel=%f) yielding AmendMaskLevel = %f' % (sigmaUsed,momSNR,momLevel,AmendMaskLevel))
+        elif momSNRCube >= cubeLevel and NpixCube >= 9:
+            # Need to guard against divide by zero below, so we only assess the
+            # ratio if we know that NpixCube > 0, rather than making it
+            # a 3-term 'elif' clause above.
+            # The float() below is to insure real arithmetic in CASA < 6.
+            if float(NpixCube2)/NpixCube < 2.0:
+                decision = 'YesCube'
+                AmendMaskLevel = median + np.max([5.0,TenEventSigma]) * MADCubeOutside
+                sigmaUsed = np.max([5.0,TenEventSigma])
+                casalogPost('YesCube: sigmaUsed = %f' % (sigmaUsed))
+    return decision, AmendMaskLevel, sigmaUsed
+
+def extraMaskYesOrNo(badAtmosphere, median, momSNR, momSNRCube, NpixMom, NpixMomBadAtm, NpixCubeAnywhere, 
+                     TenEventSigma, MADMomOutside, MADCubeOutside, momDiffLevel, momDiffLevelBadAtm, 
+                     cubeLevel, verbose=True):
+    """
+    Used in Pipeline2020 going forward.  Also used for autoLower decision logic.
+    badAtmosphere: either a boolean or a string ('goodAtm' or 'badAtm')
+    momSNR: SNR outside the mask
+    NpixMom: unused now
+    NpixMomBadAtm: unused now
+    NpixCubeAnywhere: unused now
+    """
+    decision = 'No'
+    ExtraMaskLevel = 0.0
+    sigmaUsed = 0
+    if badAtmosphere == 'badAtm':
+        badAtmosphere = True
+    elif badAtmosphere == 'goodAtm':
+        badAtmosphere = False
+    if badAtmosphere:
+        sigmaUsed = 8
+#        if momSNR >= sigmaUsed and NpixMomBadAtm >= 9:
+        if momSNR >= momDiffLevelBadAtm: # and NpixMomBadAtm >= 9:
+            decision = 'YesMom'
+            ExtraMaskLevel = median + sigmaUsed*MADMomOutside
+            casalogPost('Found YesMom (BadAtm) with sigma=%g yielding ExtraMaskLevel = %f' % (sigmaUsed,ExtraMaskLevel))
+    else:
+        if verbose:
+            print("-------------------------------------")
+            print("extraMaskYesOrNo(): median=%f, MADMomOutside=%f, momSNR=%f, NpixMom=%.1f (unused here)" % (median, MADMomOutside, momSNR, NpixMom))
+            print("extraMaskYesOrNo(): momSNRCube=%f, NpixCubeAnywhere=%.1f (unused here)" % (momSNRCube, NpixCubeAnywhere))
+            print("-------------------------------------")
+        sigmaUsed = np.max([5.5,TenEventSigma])
+        cubeSigmaUsed = np.max([5.0,TenEventSigma])
+#        if momSNR >= sigmaUsed and NpixMom >= 9:
+        if momSNR >= momDiffLevel: # and NpixMom >= 9:
+            decision = 'YesMom'
+            ExtraMaskLevel = median + sigmaUsed * MADMomOutside
+            casalogPost('YesMom: sigmaUsed = %f because momSNR=%f >= sigma=%f' % (sigmaUsed,momSNR,sigmaUsed))
+#        elif momSNRCube >= cubeSigmaUsed and NpixCubeAnywhere >= 9:
+#        elif momSNRCube >= cubeLevel:  # and NpixCubeAnywhere >= 9:
+#            decision = 'YesCube'
+#            ExtraMaskLevel = median + cubeSigmaUsed * MADCubeOutside
+#            sigmaUsed = cubeSigmaUsed
+#            casalogPost('YesCube: sigmaUsed = %f' % (sigmaUsed))
+        else:
+#            casalogPost('%s.  Neither YesMom nor YesCube was triggered.' % (decision))
+            casalogPost('%s.  YesMom was not triggered because momSNR=%f < momDiffLevel=%f.' % (decision,momSNR,momDiffLevel))
+    return decision, ExtraMaskLevel, sigmaUsed
+
+def onlyExtraMaskYesOrNo(badAtmosphere, median, momDiffSNR, momDiffSNRCube, 
+                         NpixMomDiff, NpixMomDiffBadAtm, 
+                         NpixCubeAnywhere, TenEventSigma, momDiffMAD, 
+                         MADCubeOutside, cubePeak, cubeMedian,
+                         momDiffLevel, momDiffLevelBadAtm, cubeLevel, 
+                         sigmaThreshold=7.5, npixThreshold=7, verbose=True):
+    """
+    Used in Pipeline2020 going forward.
+    badAtmosphere: either a boolean or a string ('goodAtm' or 'badAtm')
+    momDiffSNR: SNR where peak is measured over whole image (instead of outside mask), 
+                   (mom scaledMAD is in denominator)
+    momDiffSNRCube: SNR where peak is measured over whole image (instead of outside mask), 
+                   (cube scaledMAD is in denominator)
+    NpixCubeAnywhere: unused now
+    """
+    if False:
+        print("***** arguments:", badAtmosphere, median, momDiffSNR, momDiffSNRCube, 
+                         NpixMomDiff, NpixMomDiffBadAtm, NpixCubeAnywhere, 
+                         TenEventSigma, momDiffMAD, MADCubeOutside, cubePeak,
+                         cubeMedian)
+    decision = 'No'
+    onlyExtraMaskLevel = 0.0
+    sigmaUsed = 0
+    casalogPost('*******************************************')
+    casalogPost('npixThreshold = %d' % (npixThreshold))
+    casalogPost('*******************************************')
+    if badAtmosphere == 'badAtm':
+        badAtmosphere = True
+    elif badAtmosphere == 'goodAtm':
+        badAtmosphere = False
+    if badAtmosphere:
+        sigmaUsed = 8 # to set the mask level
+        if momDiffSNR >= momDiffLevelBadAtm and NpixMomDiffBadAtm >= npixThreshold and (cubePeak-cubeMedian)>sigmaThreshold*MADCubeOutside:
+            decision = 'YesMom'
+            onlyExtraMaskLevel = median + sigmaUsed*momDiffMAD
+            casalogPost('Found YesMom (BadAtm) with sigma=%g yielding onlyExtraMaskLevel = %f' % (sigmaUsed,onlyExtraMaskLevel))
+        else:
+            casalogPost('No onlyExtraMask: momSNR=%f,NpixMomBadAtm=%.1f '%(momDiffSNR,NpixMomDiffBadAtm))
+    else:
+        if verbose:
+            print("-------------------------------------")
+            print("onlyExtraMaskYesOrNo(): median=%f, momDiffMAD=%f, momSNRMom=%f, NpixMom=%.1f" % (median, momDiffMAD, momDiffSNR, NpixMomDiff))
+            print("onlyExtraMaskYesOrNo(): momSNRCube=%f, (cubePeak=%f - cubeMedian=%f) = %f, %g*MADCubeOutside=%f" % (momDiffSNRCube, cubePeak, cubeMedian, cubePeak-cubeMedian, sigmaThreshold, sigmaThreshold*MADCubeOutside))
+            print("-------------------------------------")
+        sigmaUsed = np.max([5.5,TenEventSigma])  # to set the mask level (when YesMom is triggered)
+        cubeSigmaUsed = np.max([5.0,TenEventSigma])  # to set the mask level (when YesCube is triggered)
+        if momDiffSNR >= momDiffLevel and NpixMomDiff >= npixThreshold and (cubePeak-cubeMedian)>sigmaThreshold*MADCubeOutside:
+            decision = 'YesMom'
+            onlyExtraMaskLevel = median + sigmaUsed * momDiffMAD
+            casalogPost('YesMom: sigmaUsed = %f because momDiffSNR=%f >= momDiffLevel=%f' % (sigmaUsed,momDiffSNR,momDiffLevel))
+#        elif momDiffSNRCube >= cubeLevel and NpixCubeAnywhere >= 9  and (cubePeak-cubeMedian)>sigmaThreshold*MADCubeOutside:
+#            decision = 'YesCube'
+#            onlyExtraMaskLevel = median + cubeSigmaUsed * MADCubeOutside
+#            sigmaUsed = cubeSigmaUsed
+#            casalogPost('YesCube: sigmaUsed = %f' % (sigmaUsed))
+        else:
+#            casalogPost('%s.  Neither YesMom nor YesCube was triggered. ' % (decision))
+            casalogPost('%s.  YesMom was not triggered. ' % (decision))
+            if momDiffSNR < momDiffLevel:
+                casalogPost('  because momDiffSNR=%f < momDiffLevel=%f' % (momDiffSNR, momDiffLevel))
+            if NpixMomDiff < npixThreshold:
+                casalogPost('  because NpixMomDiff=%d < npixThreshold=%d' % (NpixMomDiff, npixThreshold))
+            if (cubePeak-cubeMedian) <= sigmaThreshold*MADCubeOutside:
+                casalogPost('  because (cubePeak-cubeMedian)=%f <= (sigmaThreshold*MADCubeOutside)=%f' % (cubePeak-cubeMedian, sigmaThreshold*MADCubeOutside))
+    return decision, onlyExtraMaskLevel, sigmaUsed
 
 def allContinuumSelected(selection, nchan, fraction=ALL_CONTINUUM_CRITERION):
     """
     Returns True if only one range is selected and that range covers sufficient
-    bandwidth (default = 93%)
+    bandwidth (default fraction = 92.5%)
     nchan: number of channels in the spectrum
+    fraction: default = 0.925 which is 92.5%
     """
     ranges = selection.split(';')
     if len(ranges) == 1:
-        c0,c1 = [int(i) for i in ranges[0].split('~')]
+        if ranges[0].find('~') > 0:
+            c0,c1 = [int(i) for i in ranges[0].split('~')]
+        elif ranges[0] == '':
+            c0 = 1
+            c1 = 0
+        else: # in case a single channel is selected
+            c0,c1 = [int(ranges[0]),int(ranges[0])]
 #       Require this single range to be centered:
 #        if c0 <= fraction*nchan and c1 >= (1-fraction)*(nchan-1):
 #       Range is not required to be centered:
@@ -962,6 +3155,12 @@ def allContinuumSelected(selection, nchan, fraction=ALL_CONTINUUM_CRITERION):
             casalogPost("continuum fraction: %d-%d: %f < %f" % (c0,c1,myfraction, fraction))
     return False
 
+def byteDecode(buffer):
+      if casaVersion >= '5.9.9':
+          return buffer.decode('utf-8')
+      else:
+          return buffer
+
 def maskArgumentMismatch(mask, meanSpectrumFile, useThresholdWithMask):
     """
     This function is called by checkForMismatch.
@@ -969,21 +3168,31 @@ def maskArgumentMismatch(mask, meanSpectrumFile, useThresholdWithMask):
     the specified meanSpectrumFile.
     Returns: True or False
     """
+    casalogPost('Entered maskArgumentMismatch()')
+    grepResult = byteDecode(grep(meanSpectrumFile,'mask')[0])
     if (mask == '' or mask == False):
-        if (grep(meanSpectrumFile,'mask')[0] != ''): 
+        if (grepResult != ''): 
+            casalogPost('Mismatch: mask was used previously, but we did not request one this time')
             # mask was used previously, but we did not request one this time
             return True
         else:
             # mask was not used previously and we are not requesting one this time
+            casalogPost('No mismatch: mask was not used previously and we are not requesting one this time')
             False
-    elif (grep(meanSpectrumFile,mask)[0] == ''):
+    elif (grepResult == ''):
         # requested mask was not used previously
+        casalogPost('Mismatch: requested mask was not used previously')
         return True
     else:
         # requested mask was used previously.  Except if the new mask is a subset 
         # of the old name, so check for that possibility.
         tokens = grep(meanSpectrumFile,mask)[0].split()
+        newtoken = []
+        for token in tokens:
+            newtoken.append(byteDecode(token))
+        tokens = newtoken
         if mask not in tokens:
+            casalogPost('Mismatch: mask name not in meanSpectrumFile')
             return True
         else:
             # check if threshold was 0.00 before and we are using one now
@@ -993,7 +3202,9 @@ def maskArgumentMismatch(mask, meanSpectrumFile, useThresholdWithMask):
             token = lines[1].split()
             threshold = float(token[0])
             if (useThresholdWithMask and threshold == 0.0) or (not useThresholdWithMask and threshold != 0.0):
+                casalogPost('Mismatch in threshold: useThresholdWithMask=%s, threshold=%f' % (useThresholdWithMask, threshold))
                 return True
+            casalogPost('No mismatch in threshold')
             return False
 
 def centralArcsecArgumentMismatch(centralArcsec, meanSpectrumFile, iteration):
@@ -1034,6 +3245,8 @@ def centralArcsecArgumentMismatch(centralArcsec, meanSpectrumFile, iteration):
             return True
         value = token[1].replace('auto ','').split()[0]
         print("              value = ", value)
+        if value.find('mom0mom8jointMask') == 0:
+            return False
         try:
             previousRequest = float(value)
             centralArcsecThresholdPercent = 2
@@ -1050,10 +3263,11 @@ def centralArcsecArgumentMismatch(centralArcsec, meanSpectrumFile, iteration):
     else:
         return False
 
-def plotMeanSpectrum(meanSpectrumFile, plotfile=''):
+def plotMeanSpectrum(meanSpectrumFile, plotfile='', selection=''):
     """
     Reads a *.findcont.residual.meanSpectrum.<method> file and plots it as
     intensity vs. channel.
+    selection: channel selection string to draw in cyan horizontal lines
     """
     if not os.path.exists(meanSpectrumFile):
         print("Could not find file: ", meanSpectrumFile)
@@ -1071,6 +3285,10 @@ def plotMeanSpectrum(meanSpectrumFile, plotfile=''):
     pl.plot(channel,intensity,'k-')
     pl.xlabel('Channel')
     pl.ylabel('Intensity')
+    if selection != '':
+        myChannelLists = splitListIntoContiguousLists(convertSelectionIntoChannelList(selection))
+        for myChannelList in myChannelLists:
+            pl.plot(myChannelList,[0]*len(myChannelList),'c-',lw=2)
     pl.draw()
     if plotfile != '':
         if plotfile == True:
@@ -1110,12 +3328,15 @@ def writeContDat(meanSpectrumFile, selection, png, aggregateBandwidth,
     Returns: None
     meanSpectrumFile: only used to generate the name of the .dat file, unless
        firstFreq <= 0, in which case the readPreviousMeanSpectrum is called on it
+       (It splits off name before '.meanSpectrum' and appends _findContinuum.dat)
     vis: if specified, then also write a line with the topocentric velocity ranges
     spw: integer or string ID number; if specified (along with vis), then also write 
          a final line with the topocentric channel ranges for this spw
     """
-    if (meanSpectrumFile.find('.meanSpectrum') > 0):
-        contDat = meanSpectrumFile.split('.meanSpectrum')[0] + '_findContinuum.dat'
+    if (meanSpectrumFile.find('.meanSpectrumFile') > 0):
+#        contDat = meanSpectrumFile.split('.meanSpectrum')[0] + '_findContinuum.dat'
+        # remove meanSpectrum from the name to avoid confusion that this is not a mean spectrum file
+        contDat = meanSpectrumFile.replace('.meanSpectrumFile','') + '_findContinuum.dat'
     else:
         contDat = meanSpectrumFile + '_findContinuum.dat'
     contDatDir = os.path.dirname(contDat)
@@ -1138,7 +3359,16 @@ def writeContDat(meanSpectrumFile, selection, png, aggregateBandwidth,
 #    try:
     if True:
         f = open(contDat, 'w')
+        casalogPost('aggregateBandwidth = %s' % (aggregateBandwidth))
         f.write('%s %s %g\n' % (selection, png, aggregateBandwidth))
+        # Now write the LSRK frequency ranges on a new line
+        freqRange = ''
+        for i,s in enumerate(selection.split(';')):
+            c0,c1 = [int(j) for j in s.split('~')]
+            minFreq = np.min([lsrkfreqs[c0],lsrkfreqs[c1]])-0.5*abs(channelWidth*1e-9)
+            maxFreq = np.max([lsrkfreqs[c0],lsrkfreqs[c1]])+0.5*abs(channelWidth*1e-9)
+            freqRange += '%.9fGHz~%.9fGHz LSRK ' % (minFreq,maxFreq)
+        f.write(freqRange+'\n')
         if (len(vis) > 0):
             # vis is a non-blank list or non-blank string
             if (type(vis) == str):
@@ -1173,6 +3403,99 @@ def writeContDat(meanSpectrumFile, selection, png, aggregateBandwidth,
         casalogPost("Wrote %s" % (contDat))
 #    except:
 #        casalogPost("Failed to write %s" % (contDat))
+
+def getFieldnameFromPipelineImageName(img, verbose=False):
+    """
+    Extracts the field name from the pipeline image file name.
+    -Todd Hunter
+    """
+    basename = os.path.basename(img)
+    fieldname = ''
+    styles = ['sci','chk','bp','ph','flux','pol'] # I am anticpating that polcal will be called pol.
+    for style in styles:
+        if basename.find('_'+style) > 0:
+            fieldname = basename.split('_'+style)[0]
+    if fieldname == '': 
+        print("No image found of these styles: ", styels)
+        return fieldname
+    # this will now be: a_Xb.s35_0.NGC300
+    fieldname = fieldname.split('_0.')[1]
+    fieldname = fieldname.strip('_')
+    return fieldname
+
+def getSpwFromPipelineImageName(img, verbose=False):
+    """
+    Extracts the spw ID from the pipeline image file name.
+    -Todd Hunter
+    """
+    sourceName = os.path.basename(img.rstrip('/'))
+    if (sourceName.find('.mfs.') < 0):
+        if (sourceName.find('.cube.') < 0):
+            return 'sourcename'
+        else:
+            sourceName = sourceName.split('.cube.')[0]
+    else:
+        sourceName = sourceName.split('.mfs.')[0]
+    sourceName = sourceName.split('.spw')[1]
+    if sourceName.isdigit():
+        return int(sourceName)
+    else:
+        return None
+
+def combineContDat(contdatlist, outputfile='cont.dat', fieldname='', spw=''):
+    """
+    Takes a list of *.dat files created by findContinuum for a single field/spw
+    and pulls the line that contains LSRK frequency ranges from each one, and 
+    writes it to a new cont.dat file suitable for the pipeline that contains an
+    entry for each spw of that field.  
+    contdatlist: a list or comma-delimited string of the .dat files, or of
+          the cube names (to which '_findContinuum.dat' will be appended)
+    fieldname: use this value if specified, otherwise parse from filename
+    spw: integer or string integer, use this value if specified, otherwise parse
+         from the filename
+    Note: It assumes that none of the files originate from an ALLcont spw, so it will
+    never write the "ALL" line that the pipeline triggers on.  But this feature could be
+    added by calling the following function if there is only one range of channels read:
+       allContinuumSelected(selection, nchan, fraction=ALL_CONTINUUM_CRITERION)
+    We would only need to know nchan.
+    """
+    if type(contdatlist) == str:
+        contdatlist = contdatlist.split(',')
+    for c,contdat in enumerate(contdatlist):
+        if not os.path.exists(contdat) or os.path.isdir(contdat):
+            if contdat.find('.dat') < 0:
+                contdatlist[c] = contdat + '_findContinuum.dat'
+    for c,contdat in enumerate(contdatlist):
+        if not os.path.exists(contdat):
+            print("Could not find file: ", contdat)
+            return
+    o = open(outputfile,'w')
+    previousFieldname = ''
+    for contdat in contdatlist:
+        cube = contdat.split('_findContinuum.dat')[0]
+        if fieldname == '':
+            fieldname = getFieldnameFromPipelineImageName(cube)
+        if spw == '':
+            spw = getSpwFromPipelineImageName(cube)
+        f = open(contdat,'r')
+        lines = f.readlines()
+        f.close()
+        ranges = lines[1].split('LSRK')
+        if fieldname != previousFieldname:
+            o.write('Field: %s\n\n' % (fieldname))
+        o.write('SpectralWindow: %s\n' % (str(spw)))
+        for myrange in ranges:
+            myrange = myrange.strip()
+            if len(myrange) > 2: # could be a line with only a few blanks
+                if myrange.count('GHz') > 1:
+                    # remove GHz from the first frequency (if it is present on both)
+                    myrange = myrange.replace('GHz', '', 1)
+                o.write('%s LSRK\n' % (myrange))
+        o.write('\n')
+        o.flush()
+        previousFieldname = fieldname
+        spw = ''
+    o.close()
 
 def drawYlabel(img, typeOfMeanSpectrum, meanSpectrumMethod, meanSpectrumThreshold,
                peakFilterFWHM, fontsize, mask, useThresholdWithMask, normalized=False):
@@ -1230,19 +3553,19 @@ def computeBandwidth(selection, channelWidth, loc=-1):
     aggregateBW = channels * abs(channelWidth) * 1e-9
     return(aggregateBW)
 
-def buildMeanSpectrumFilename(img, meanSpectrumMethod, peakFilterFWHM):
+def buildMeanSpectrumFilename(img, meanSpectrumMethod, peakFilterFWHM, amendMaskIterationName=''):
     """
     This function is called by findContinuum and runFindContinuum.
     Creates the name of the meanSpectrumFile to search for and/or create.
     Returns: a string
     """
     if (meanSpectrumMethod.find('peak')>=0):
-        return(img + '.meanSpectrum.'+meanSpectrumMethod+'_%d'%peakFilterFWHM)
+        return(img + '.meanSpectrum.'+meanSpectrumMethod+'_%d'%peakFilterFWHM+amendMaskIterationName)
     else:
         if (meanSpectrumMethod == 'meanAboveThreshold'):
-            return(img + '.meanSpectrum')
+            return(img + '.meanSpectrum'+amendMaskIterationName)
         else:
-            return(img + '.meanSpectrum.'+meanSpectrumMethod)
+            return(img + '.meanSpectrum.'+meanSpectrumMethod+amendMaskIterationName)
 
 def tdmSpectrum(channelWidth, nchan):
     """
@@ -1300,6 +3623,7 @@ def casaVersionCompare(comparitor, versionString):
     """
     This function is called by meanSpectrum.
     Uses cu.compare_version in CASA >=5, otherwise uses string comparison
+    No longer works in CASA 6.
     """
     if casaMajorVersion < 5:
         if comparitor == '>=':
@@ -1421,7 +3745,7 @@ def checkForMismatch(meanSpectrumFile, img, mask, useThresholdWithMask,
     overwrite = False
     if (os.path.exists(meanSpectrumFile) and img != ''):
         if (maskArgumentMismatch(mask, meanSpectrumFile, useThresholdWithMask) and not fitsTable):
-            casalogPost("Regenerating the meanSpectrum since there is a mismatch in the mask or useThresholdWithMask parameters.")
+            casalogPost("Regenerating the meanSpectrum since there is a mismatch in the mask or useThresholdWithMask parameters. (fitsTable=%s)" % (fitsTable))
             overwrite = True
         else:
             casalogPost("No mismatch in the mask argument vs. the meanSpectrum file.")
@@ -1429,7 +3753,7 @@ def checkForMismatch(meanSpectrumFile, img, mask, useThresholdWithMask,
             casalogPost("Regenerating the meanSpectrum since there is a mismatch in the centralArcsec argument (%s)." % (str(centralArcsec)))
             overwrite = True
         else:
-            casalogPost("No mismatch in the centralArcsec argument vs. the meanSpectrum file.")
+            casalogPost("No mismatch in the centralArcsec argument vs. the meanSpectrum file. Setting overwrite=%s" % (overwrite))
     elif (img != ''):
         casalogPost("Did not find mean spectrum file = %s" % (meanSpectrumFile))
     return overwrite
@@ -1468,11 +3792,14 @@ def setYLimitsAvoidingEdgeChannels(avgspectrumAboveThreshold, mad, chan=1):
     mymin = np.min(avgspectrumAboveThreshold[chan:-chan]) - y0naturalBuffer
     mymax = np.max(avgspectrumAboveThreshold[chan:-chan]) + y1naturalBuffer
     mymedian = np.median(avgspectrumAboveThreshold)
+    highDynamicRange = False
     dynamicRange = (mymax-mymedian)/mad
     if dynamicRange > DYNAMIC_RANGE_LIMIT_PLOT:
         casalogPost('Spectral dynamic range exceeds %d, limiting maximum y-axis value' % (DYNAMIC_RANGE_LIMIT_PLOT))
         mymax = DYNAMIC_RANGE_LIMIT_PLOT*mad + mymedian 
+        highDynamicRange = True
     pl.ylim([mymin, mymax]) 
+    return highDynamicRange
 
 def ExpandYLimitsForLegend():
     """
@@ -1611,10 +3938,11 @@ def removeStatContQuadratic(y, nsigma=2.0, returnExtra=False, minPercentage=50, 
     else:
         return y
 
-def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', transition='', 
+def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, 
+                     spw='', transition='', 
                      baselineModeA='min', baselineModeB='min',
                      sigmaCube=3, nBaselineChannels=0.19, 
-                     sigmaFindContinuum='auto',
+                     sigmaFindContinuum='auto', sigmaFindContinuumMode='auto',
                      verbose=False, png='', pngBasename=False, 
                      nanBufferChannels=2, 
                      source='', useAbsoluteValue=True, trimChannels='auto', 
@@ -1643,28 +3971,48 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                      maxMadRatioForSFCAdjustment=1.20, 
                      minPixelsInJointMask=3, userJointMask='',
                      signalRatioTier1=0.965, signalRatioTier2=0.94, 
-                     snrThreshold=23, mom0minsnr=MOM0MINSNR_DEFAULT, mom8minsnr=MOM8MINSNR_DEFAULT, 
+                     snrThreshold=23, mom0minsnr=MOM0MINSNR_DEFAULT, 
+                     mom8minsnr=MOM8MINSNR_DEFAULT, 
                      overwriteMasks=True, rmStatContQuadratic=True, 
                      quadraticNsigma=2, bidirectionalMaskPhase2=False, 
                      plotQuadraticPoints=True, makeMovie=True, outdir='', 
-                     allowBluePruning=True, avoidance=''):
+                     allowBluePruning=True, avoidance='',
+                     enableRejectNarrowInnerWindows=True, 
+                     avoidExtremaInNoiseCalcForJointMask=False, 
+                     amendMask=False, momentdir='', skipchan=1, 
+                     amendMaskIterationName='', fontsize=10):
     """
     This function is called by findContinuum.  It calls functions that:
     1) compute the mean spectrum of a dirty cube
     2) find the continuum channels 
     3) plot the results
     Inputs: channelWidth: in Hz
-    Returns: 6 items
-    * A channel selection string suitable for the spw parameter of clean.
-    * The name of the png produced.
-    * The slope of the linear fit (or None if no fit attempted).
-    * The channel width in Hz (only necessary for the fitsTable option).
-    * nchan in the cube (only necessary to return this for the fitsTable option, will be computed otherwise).
-    * Boolean: True if it used low values as the baseline (as opposed to high values)
-    * SNRs in the moment0 image (raw, outside mask, outside phase2 mask)
-    * SNRs in the moment8 image (raw, outside mask, outside phase2 mask)
-    * Boolean: True if the middle-valued channels were used as the baseline (as opposed to low or high)
-
+    Returns: 23 items
+    *1 A channel selection string suitable for the spw parameter of clean.
+    *2 The name of the png produced.
+    *3 The slope of the linear fit (or None if no fit attempted).
+    *4 The channel width in Hz (only necessary for the fitsTable option).
+    *5 nchan in the cube (only necessary to return this for the fitsTable option, will be computed otherwise).
+    *6 Boolean: True if it used low values as the baseline (as opposed to high values)
+    *7 SNRs in the moment0 image (raw, outside mask, outside phase2 mask)
+    *8 SNRs in the moment8 image (raw, outside mask, outside phase2 mask)
+    *9 Boolean: True if the middle-valued channels were used as the baseline (as opposed to low or high)
+    *10 list: selectionPreBluePruning
+    *11 float: finalSigmaFindContinuum
+    *12 string: name of jointMask
+    *13 float array: avgspectrumAboveThreshold
+    *14 float: the true median of the spectrum
+    *15 list: of plot artist descriptors (things to potentially remove and replot)
+    *16 axis instance: ax1 (lower x-axis)
+    *17 axis instance: ax2 (upper x-axis)
+    *18 float: threshold (the positive threshold for line detection)
+    *19 string: final line of upper text legend
+    *20 int: number of narrow central groups that were dropped (or would have been dropped
+           if enableRejectNarrowWindows had been True, but wasn't), summed over all runs
+           of findContinuumChannels() 
+    *21 float: effectiveSigma (product of finalSigmaFindContinuum*correctionFactor)
+    *22 float: baselineMAD
+    *23 string: upper x-axis label
     Inputs:
     img: the image cube to operate upon
     spw: the spw name or number to put in the x-axis label
@@ -1678,6 +4026,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
           if float, then the fraction of channels to use (i.e. the percentile)
           default = 0.19, which is 24 channels (i.e. 12 on each side) of a TDM window
     sigmaFindContinuum: passed to findContinuumChannels, 'auto' starts with 3.5
+    sigmaFindContinuumMode: 'auto', 'autolower', or 'fixed'
     verbose: if True, then print additional information during processing
     png: the name of the png to produce ('' yields default name)
     pngBasename: if True, then remove the directory from img name before generating png name
@@ -1747,7 +4096,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
           (when meanSpectrumMethod = 'mom0mom8jointMask')
     overwriteMoments: if True, then overwrite any existing moment0 or moment8 image 
     overwriteMasks: if True, then overwrite any existing moment0 or moment8 mask image 
-    rmStatContQuadratic: if True fit and remove a quadratic after to subset of channels that lack signal
+    rmStatContQuadratic: if True, then fit&remove a quadratic to subset of channels that lack signal
     quadraticNsigma: the stopping threshold to use when ignoring outliers prior to fitting quadratic
     bidirectionalMaskPhase2: True=extend mask to negative values beyond threshold; False=Cycle6 behavior
     makeMovie: if True, then make a png for each quadratic fit as channels are removed one-by-one
@@ -1777,12 +4126,23 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
     fitsTable = False
     typeOfMeanSpectrum = 'Existing'
     narrowValueModified = None
+    RangesDropped = 0
     mom0snrs = None
     mom8snrs = None
     if img == '':
         maxBaseline = 0  # added March 22, 2019
+        if minbeamfrac == 'auto':
+            minbeamfrac = 0.3
+            casalogPost("minbeamfrac = 'auto': using %.2f since no image was passed" % (minbeamfrac))
     else:
         maxBaseline = imageInfo[11]
+        if minbeamfrac == 'auto':
+            if maxBaseline < 60:
+                minbeamfrac = 0.1
+                casalogPost("minbeamfrac = 'auto': using %.2f since maxBaseline < 60m" % (minbeamfrac))
+            else:
+                minbeamfrac = 0.3
+                casalogPost("minbeamfrac = 'auto': using %.2f since maxBaseline >= 60m" % (minbeamfrac))
     if (meanSpectrumFile != '' and os.path.exists(meanSpectrumFile)):
         casalogPost("Using existing meanSpectrumFile = %s" % (meanSpectrumFile))
         if (is_binary(meanSpectrumFile)):
@@ -1799,27 +4159,30 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
         casalogPost("You must have at least 2 edge channels (nBaselineChannels = %d)" % (nBaselineChannels))
         return
     if (meanSpectrumFile == ''):
-        meanSpectrumFile = buildMeanSpectrumFilename(img, meanSpectrumMethod, peakFilterFWHM)
+        meanSpectrumFile = buildMeanSpectrumFilename(img, meanSpectrumMethod, peakFilterFWHM, amendMaskIterationName)
     elif (not os.path.exists(meanSpectrumFile)):
         if (len(os.path.dirname(img)) > 0):
             meanSpectrumFile = os.path.join(os.path.dirname(img),os.path.basename(meanSpectrumFile))
-    if not overwrite:
+    if not overwrite and amendMaskIterationName not in ['.extraMask','.onlyExtraMask']: 
+        # do not allow overwrite to be changed from False to True if we are in the extraMaskStage
         overwrite = checkForMismatch(meanSpectrumFile, img, mask, 
                                      useThresholdWithMask, fitsTable, 
                                      iteration, centralArcsec)
     initialQuadraticRemoved = False
     pbBasedMask = False
-    numberPixelsInMom8Mask = 0  # added March 22, 2019
+    numberPixelsInMom8Mask = 0  # added March 22, 2019  
+    jointMask = None # will only become populated if meanSpectrumMethod == 'mom0mom8jointMask'
     if (((overwrite or not os.path.exists(meanSpectrumFile)) and img != '') and not fitsTable):
         typeOfMeanSpectrum = 'Computed'
         if meanSpectrumMethod == 'mom0mom8jointMask':
             # There should be no Nans that were replaced, but keep this name 
             # for the spectrum for consistency with the older methods.
             if (overwrite):
-                casalogPost("Regenerating the mean spectrum file with method='%s'." % (meanSpectrumMethod))
+                casalogPost("Regenerating the mean spectrum file with method='%s' (momentdir='%s', numberPixelsInMom8Mask=%s)." % (meanSpectrumMethod,momentdir,numberPixelsInMom8Mask))
             else:
                 casalogPost("Generating the mean spectrum file with method='%s'." % (meanSpectrumMethod))
-            avgSpectrumNansReplaced, normalized, numberPixelsInJointMask, pbBasedMask, initialQuadraticRemoved, initialQuadraticImprovementRatio, mom0snrs, mom8snrs, regionsPruned, numberPixelsInMom8Mask, mom0peak, mom8peak = meanSpectrumFromMom0Mom8JointMask(img, imageInfo, nchan, pbcube, psfcube, minbeamfrac, projectCode, overwriteMoments, overwriteMasks, normalizeByMAD=normalizeByMAD, minPixelsInJointMask=minPixelsInJointMask, userJointMask=userJointMask, snrThreshold=snrThreshold, mom0minsnr=mom0minsnr, mom8minsnr=mom8minsnr, rmStatContQuadratic=rmStatContQuadratic, bidirectionalMaskPhase2=bidirectionalMaskPhase2, outdir=outdir)
+            avgSpectrumNansReplaced, normalized, numberPixelsInJointMask, pbBasedMask, initialQuadraticRemoved, initialQuadraticImprovementRatio, mom0snrs, mom8snrs, regionsPruned, numberPixelsInMom8Mask, mom0peak, mom8peak, jointMask = meanSpectrumFromMom0Mom8JointMask(img, imageInfo, nchan, pbcube, psfcube, minbeamfrac, projectCode, overwriteMoments, overwriteMasks, normalizeByMAD=normalizeByMAD, minPixelsInJointMask=minPixelsInJointMask, userJointMask=userJointMask, snrThreshold=snrThreshold, mom0minsnr=mom0minsnr, mom8minsnr=mom8minsnr, rmStatContQuadratic=rmStatContQuadratic, bidirectionalMaskPhase2=bidirectionalMaskPhase2, outdir=outdir, avoidExtremaInNoiseCalcForJointMask=avoidExtremaInNoiseCalcForJointMask, momentdir=momentdir)
+            print("returned from meanSpectrumFromMom0Mom8JointMask: numberPixelsInMom8Mask = ", numberPixelsInMom8Mask)
             nanmin = None
             edgesUsed = None
             meanSpectrumThreshold = None
@@ -1873,7 +4236,9 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
             n, firstFreq, lastFreq, channelWidth = chanInfo
             channelWidth = abs(channelWidth)
         if (fitsTable or img==''):
-            nBaselineChannels = int(round_half_up(nBaselineChannels*nchan))
+            if ((type(nBaselineChannels) == float or type(nBaselineChannels) == np.float64) and not fitsTable):
+                print("nBaselineChannels=%d, nchan=%d" % (nBaselineChannels, nchan))
+                nBaselineChannels = int(round_half_up(nBaselineChannels*nchan))
             n, firstFreq, lastFreq, channelWidth = chanInfo  # freqs are in Hz
             channelWidth = abs(channelWidth)
             print("Setting channelWidth to %g" % (channelWidth))
@@ -1881,19 +4246,24 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                 casalogPost("You must have at least 2 edge channels")
                 return
     # By this point, nchan is guaranteed to be defined, in case it is needed.
+    if narrow == 'auto':
+        narrow = pickNarrow(nchan)  # May 6, 2020 for ALMAGAL manual usage of narrow
     minPeakOverMadForSFCAdjustment = 19
     donetime = timeUtilities.time()
     casalogPost("%.1f sec elapsed in meanSpectrum()" % (donetime-startTime))
-    casalogPost("Iteration %d" % (iteration))
+    casalogPost("Iteration %d (sigmaFindContinuumMode='%s')" % (iteration,sigmaFindContinuumMode))
     sFC_TDM = pick_sFC_TDM(meanSpectrumMethod, singleContinuum)
     # This definition of peakOverMad will be high if there is strong continuum
     # or if there is a strong line. However, removing the median from the peak 
     # would eliminate the sensitivity to continuum emission, which we found to
     # be a bad idea.
     peakOverMad = np.max(avgSpectrumNansReplaced) / MAD(avgSpectrumNansReplaced)
+    # But for purposes of deciding when to not trigger amend mask (i.e. strong
+    # continuum) then we do want to discriminate, and removing the median is 
+    # good for that. Here we ignore the edge channels to calculate the peak.
+    peakMinusMedianOverMad = (np.max(avgSpectrumNansReplaced[1:-1]) - np.median(avgSpectrumNansReplaced)) / MAD(avgSpectrumNansReplaced)
 
-    if (sigmaFindContinuum == 'auto' or sigmaFindContinuum == -1):
-        sigmaFindContinuumAutomatic = True
+    if (sigmaFindContinuum in ['auto','autolower',-1]):
         # Choose the starting value for sigmaFindContinuum if automatic mode is selected.  
         # Here we could consider adding a dependency on whether numberPixelsInMom8Mask > 0
         # or not, but let's first try only adjusting this before the second run. 06 Jan 2019.
@@ -1920,24 +4290,26 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
             else:
                 # i.e. FDM spw with no (or little) channel averaging
                 if peakOverMad > 6:
-                    sigmaFindContinuum = 2.6 # was 3.0 on Apr2, was 3.5 on Mar29
+                    sigmaFindContinuum = 2.5 # was 2.6 in v4.90;  was 3.0 on Apr2, was 3.5 on Mar29
                 else:
                     sigmaFindContinuum = 3.2 # was 3.0 on Apr2, was 3.5 on Mar29
             casalogPost("Setting sigmaFindContinuum = %.1f since we are using mom0mom8jointMask" % (sigmaFindContinuum))
         else:
             sigmaFindContinuum = 3.0
             print("Unknown method")
-        if triangularPatternSeen:  # this cannot happen with mom0mom8jointMask because we don't check for it (because it doesn't happen in that method of constructing a mean spectrum)
+        if triangularPatternSeen and sigmaFindContinuumMode == 'auto':  
+            # this cannot happen with mom0mom8jointMask because we don't check for it 
+            # (because it doesn't happen in that method of constructing a mean spectrum)
             sigmaFindContinuum += 0.5
             casalogPost("Adding 0.5 to sigmaFindContinuum due to triangularPattern seen")
-    else:
-        sigmaFindContinuumAutomatic = False
+
     fCCiteration = 0
     if (meanSpectrumMethod == 'mom0mom8jointMask' and rmStatContQuadratic):
         # We remove the quadratic from the stored mean spectrum, that way the stored spectrum still
         # contains the curved baseline, which may be useful for future reference.
         avgSpectrumNansReplaced, channelsFit, yfit = removeStatContQuadratic(avgSpectrumNansReplaced, quadraticNsigma, returnExtra=True, makeMovie=makeMovie, img=img)
         casalogPost("Removed quadratic computed from %d/%d channels" % (len(channelsFit),len(avgSpectrumNansReplaced)))
+    print("Calling findContinuumChannels with nBaselineChannels = %d" % (nBaselineChannels))
     result = findContinuumChannels(avgSpectrumNansReplaced, nBaselineChannels, 
                                    sigmaFindContinuum, nanmin, baselineModeB, 
                                    trimChannels, narrow, verbose, maxTrim, 
@@ -1948,8 +4320,11 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                                    madRatioLowerLimit=madRatioLowerLimit, 
                                    projectCode=projectCode, fCCiteration=fCCiteration,
                                    signalRatioTier1=signalRatioTier1, signalRatioTier2=signalRatioTier2,
-                                   sigmaFindContinuumAutomatic=sigmaFindContinuumAutomatic)
-    continuumChannels,selection,threshold,median,groups,correctionFactor,medianTrue,mad,medianCorrectionFactor,negativeThreshold,lineStrengthFactor,singleChannelPeaksAboveSFC,allGroupsAboveSFC,spectralDiff, trimChannels, useLowBaseline, narrowValueModified, allBaselineChannelsXY, madRatio, useMiddleChannels, signalRatio = result
+                                   sigmaFindContinuumMode=sigmaFindContinuumMode,
+                                   enableRejectNarrowInnerWindows=enableRejectNarrowInnerWindows)
+    
+    continuumChannels,selection,threshold,median,groups,correctionFactor,medianTrue,mad,medianCorrectionFactor,negativeThreshold,lineStrengthFactor,singleChannelPeaksAboveSFC,allGroupsAboveSFC,spectralDiff, trimChannels, useLowBaseline, narrowValueModified, allBaselineChannelsXY, madRatio, useMiddleChannels, signalRatio, rangesDropped = result
+    RangesDropped += rangesDropped
     if verbose: print("aboveBelow run0")
     sumAboveMedian, sumBelowMedian, sumRatio, channelsAboveMedian, channelsBelowMedian, channelRatio = \
         aboveBelow(avgSpectrumNansReplaced,medianTrue)
@@ -1959,6 +4334,8 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
     sFC_factor = 1.0
     newMaxTrim = 0
     sFC_adjusted = False
+    # Due to the following code block, rejectNarrowInnerWindowsChannels() can (by reducing groups from >2 to 2)
+    # can lead to a different value of maxTrim for FDM datasets.
     if (groups <= 2 and not tdmSpectrum(channelWidth, nchan) and 
         maxTrim==maxTrimDefault and trimChannels=='auto'):
         # CAS-8822
@@ -1972,27 +4349,32 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
         # than one of them, then they may be noise spikes, so raise the threshold a bit
         # This 'if' block CAN sometimes be used by meanSpectrumMethod='mom0mom8jointMask'.
         if (sigmaFindContinuum < sFC_TDM):  
-            # raise the threshold a bit since all the peaks look like all noise spikes
-            sFC_factor = 1.5
-            sigmaFindContinuum *= sFC_factor
-            casalogPost("Scaling the threshold upward by a factor of %.2f to avoid apparent noise spikes (%d==%d)." % (sFC_factor, singleChannelPeaksAboveSFC,allGroupsAboveSFC))
-            fCCiteration += 1
-            result = findContinuumChannels(avgSpectrumNansReplaced, 
-                                           nBaselineChannels, sigmaFindContinuum, nanmin, 
-                                           baselineModeB, trimChannels, narrow, verbose, 
-                                           maxTrim, maxTrimFraction, separator, peakOverMad,
-                                           negativeThresholdFactor=negativeThresholdFactor,
-                                           dropBaselineChannels=dropBaselineChannels,
-                                           madRatioUpperLimit=madRatioUpperLimit, 
-                                           madRatioLowerLimit=madRatioLowerLimit, 
-                                           projectCode=projectCode, fCCiteration=fCCiteration,
-                                           signalRatioTier1=signalRatioTier1, signalRatioTier2=signalRatioTier2,sigmaFindContinuumAutomatic=sigmaFindContinuumAutomatic)
+            if sigmaFindContinuumMode == 'autolower':
+                casalogPost("Because we are in autolower, not scaling the threshold upward by a factor of %.2f to avoid apparent noise spikes (%d==%d)." % (sFC_factor, singleChannelPeaksAboveSFC,allGroupsAboveSFC))
+            elif sigmaFindContinuumMode == 'auto':
+                # raise the threshold a bit since all the peaks look like all noise spikes
+                sFC_factor = 1.5
+                sigmaFindContinuum *= sFC_factor
+                casalogPost("Scaling the threshold upward by a factor of %.2f to avoid apparent noise spikes (%d==%d)." % (sFC_factor, singleChannelPeaksAboveSFC,allGroupsAboveSFC))
+                fCCiteration += 1
+                result = findContinuumChannels(avgSpectrumNansReplaced, 
+                                               nBaselineChannels, sigmaFindContinuum, nanmin, 
+                                               baselineModeB, trimChannels, narrow, verbose, 
+                                               maxTrim, maxTrimFraction, separator, peakOverMad,
+                                               negativeThresholdFactor=negativeThresholdFactor,
+                                               dropBaselineChannels=dropBaselineChannels,
+                                               madRatioUpperLimit=madRatioUpperLimit, 
+                                               madRatioLowerLimit=madRatioLowerLimit, 
+                                               projectCode=projectCode, fCCiteration=fCCiteration,
+                                               signalRatioTier1=signalRatioTier1, signalRatioTier2=signalRatioTier2,sigmaFindContinuumMode=sigmaFindContinuumMode,                                    
+                                               enableRejectNarrowInnerWindows=enableRejectNarrowInnerWindows)
 
-            continuumChannels,selection,threshold,median,groups,correctionFactor,medianTrue,mad,medianCorrectionFactor,negativeThreshold,lineStrengthFactor,singleChannelPeaksAboveSFC,allGroupsAboveSFC,spectralDiff,trimChannels,useLowBaseline, narrowValueModified, allBaselineChannelsXY, madRatio, useMiddleChannels, signalRatio = result
+            continuumChannels,selection,threshold,median,groups,correctionFactor,medianTrue,mad,medianCorrectionFactor,negativeThreshold,lineStrengthFactor,singleChannelPeaksAboveSFC,allGroupsAboveSFC,spectralDiff,trimChannels,useLowBaseline, narrowValueModified, allBaselineChannelsXY, madRatio, useMiddleChannels, signalRatio, rangesDropped = result
+            RangesDropped += rangesDropped
             if verbose: print("aboveBelow run1")
             sumAboveMedian, sumBelowMedian, sumRatio, channelsAboveMedian, channelsBelowMedian, channelRatio = \
                 aboveBelow(avgSpectrumNansReplaced,medianTrue)
-    elif ((groups > 3 or (groups > 1 and channelRatio < 1.0) or (channelRatio < 0.5) or (groups == 2 and channelRatio < 1.3)) and sigmaFindContinuumAutomatic and meanSpectrumMethod.find('peakOver') < 0 and meanSpectrumMethod.find('mom0mom8jointMask') < 0 and not singleContinuum):
+    elif ((groups > 3 or (groups > 1 and channelRatio < 1.0) or (channelRatio < 0.5) or (groups == 2 and channelRatio < 1.3)) and sigmaFindContinuumMode in ['auto','autolower'] and meanSpectrumMethod.find('peakOver') < 0 and meanSpectrumMethod.find('mom0mom8jointMask') < 0 and not singleContinuum):
         # If there are a lot of groups, or a lot of flux in channels above the median 
         # compared to channels below the median (i.e. the channelRatio), then lower the 
         # sigma in order to push the threshold for real lines (or line emission wings) lower.
@@ -2047,9 +4429,12 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                     madRatioUpperLimit=madRatioUpperLimit, 
                     madRatioLowerLimit=madRatioLowerLimit, 
                     projectCode=projectCode, fCCiteration=fCCiteration,
-                    signalRatioTier1=signalRatioTier1, signalRatioTier2=signalRatioTier2,sigmaFindContinuumAutomatic=sigmaFindContinuumAutomatic)
+                    signalRatioTier1=signalRatioTier1, signalRatioTier2=signalRatioTier2,
+                    sigmaFindContinuumMode=sigmaFindContinuumMode,
+                    enableRejectNarrowInnerWindows=enableRejectNarrowInnerWindows)
 
-        continuumChannels,selection,threshold,median,groups,correctionFactor,medianTrue,mad,medianCorrectionFactor,negativeThreshold,lineStrengthFactor,singleChannelPeaksAboveSFC,allGroupsAboveSFC,spectralDiff,trimChannels,useLowBaseline, narrowValueModified, allBaselineChannelsXY, madRatio, useMiddleChannels, signalRatio = result
+        continuumChannels,selection,threshold,median,groups,correctionFactor,medianTrue,mad,medianCorrectionFactor,negativeThreshold,lineStrengthFactor,singleChannelPeaksAboveSFC,allGroupsAboveSFC,spectralDiff,trimChannels,useLowBaseline, narrowValueModified, allBaselineChannelsXY, madRatio, useMiddleChannels, signalRatio, rangesDropped = result
+        RangesDropped += rangesDropped
         if verbose: print("aboveBelow run2")
         sumAboveMedian, sumBelowMedian, sumRatio, channelsAboveMedian, channelsBelowMedian, channelRatio = \
             aboveBelow(avgSpectrumNansReplaced,medianTrue)
@@ -2063,9 +4448,10 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                 madRatioCheck = True # this was python2 behavior for inequality
             else:
                 madRatioCheck = madRatio < maxMadRatioForSFCAdjustment
+            casalogPost("numberPixelsInMom8Mask=%d, allContinuumSelected('%s',%d)=%s" % (numberPixelsInMom8Mask,selection,nchan,allContinuumSelected(selection,nchan)))
             if ((groups >= minGroupsForSFCAdjustment and not tdmSpectrum(channelWidth,nchan) 
                  or (groups >= 3 and tdmSpectrum(channelWidth,nchan)))  and 
-                sigmaFindContinuumAutomatic and # added Mar 27, 2019
+                sigmaFindContinuumMode in ['auto','autolower'] and # added Mar 27, 2019
 #               (peakOverMad>minPeakOverMadForSFCAdjustment or 
                ((peakOverMad>minPeakOverMadForSFCAdjustment and madRatioCheck) 
                 or meanSpectrumMethod.find('peakOver') >= 0)): 
@@ -2131,9 +4517,12 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                         madRatioUpperLimit=madRatioUpperLimit, 
                         madRatioLowerLimit=madRatioLowerLimit, 
                         projectCode=projectCode, fCCiteration=fCCiteration,
-                        signalRatioTier1=signalRatioTier1, signalRatioTier2=signalRatioTier2,sigmaFindContinuumAutomatic=sigmaFindContinuumAutomatic)
+                        signalRatioTier1=signalRatioTier1, signalRatioTier2=signalRatioTier2,
+                        sigmaFindContinuumMode=sigmaFindContinuumMode,
+                        enableRejectNarrowInnerWindows=enableRejectNarrowInnerWindows)
 
-            continuumChannels,selection,threshold,median,groups,correctionFactor,medianTrue,mad,medianCorrectionFactor,negativeThreshold,lineStrengthFactor,singleChannelPeaksAboveSFC,allGroupsAboveSFC,spectralDiff,trimChannels, useLowBaseline, narrowValueModified, allBaselineChannelsXY, madRatio, useMiddleChannels, signalRatio = result
+            continuumChannels,selection,threshold,median,groups,correctionFactor,medianTrue,mad,medianCorrectionFactor,negativeThreshold,lineStrengthFactor,singleChannelPeaksAboveSFC,allGroupsAboveSFC,spectralDiff,trimChannels, useLowBaseline, narrowValueModified, allBaselineChannelsXY, madRatio, useMiddleChannels, signalRatio, rangesDropped = result
+            RangesDropped += rangesDropped
             if verbose: print("aboveBelow run3")
             sumAboveMedian, sumBelowMedian, sumRatio, channelsAboveMedian, channelsBelowMedian, channelRatio = \
                 aboveBelow(avgSpectrumNansReplaced,medianTrue)
@@ -2197,7 +4586,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                             gapMinThreshold = gapMaxThreshold-10
                 else:
                     # Must be at least half the width of the group
-                    gapMinThreshold = int(np.max([selectionWidth/2, pickNarrow(nchan)]))   # splitgaps.pdf
+                    gapMinThreshold = int(np.max([selectionWidth/2, narrow]))   # splitgaps.pdf
 
                 if checkForGaps and verbose:
                     casalogPost("%s Looking for gaps in group %d/%d: %s that are %d < gap < %d" % (projectCode,i+1,len(channelSelections),ccstring,gapMinThreshold, gapMaxThreshold), debug=True)
@@ -2227,7 +4616,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                         gaps = []
                 tooNarrow = False
                 if validSelection:
-                    if (stopChan - startChan) < pickNarrow(nchan)-1:
+                    if (stopChan - startChan) < narrow-1:
                         tooNarrow = True
                         validSelection = False
                 if len(gaps) == 0:
@@ -2238,9 +4627,9 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                     if validSelection:
                         newGroups += 1
                         validSelections.append(ccstring)
-                        newContinuumChannels += theseChannels
+                        newContinuumChannels += list(range(startChan,stopChan+1)) # theseChannels (bug fix May 14, 2020)
                     elif tooNarrow:
-                        casalogPost('%s Dropping trimmed channel range %s because it is too narrow (<%d).' % (projectCode,ccstring,pickNarrow(nchan)),debug=True)
+                        casalogPost('%s Dropping trimmed channel range %s because it is too narrow (<%d).' % (projectCode,ccstring,narrow),debug=True)
                     else:
                         ccstring = '%d~%d' % (cc[0],cc[1])
                         casalogPost('%s Dropping channel range %s because not enough baseline channels are contained and sFC was previously adjusted downwards.' % (projectCode,ccstring),debug=True)
@@ -2252,23 +4641,23 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                         else:
                             firstChan = gaps[ngap-1][1]+1
                         ccstring = '%d~%d' % (firstChan,gap[0]-1)
-                        if gap[0]-firstChan >= pickNarrow(nchan):
+                        if gap[0]-firstChan >= narrow:
                             # The split piece of the range is wide enough to keep it.
                             newGroups += 1
                             validSelections.append(ccstring)
                             newContinuumChannels += list(range(firstChan, gap[0]))
                             casalogPost('  %s Defining range %s' % (projectCode,ccstring), debug=True)
                         else:
-                            casalogPost('  %s Skipping range %s because it is too narrow (<%d)' % (projectCode,ccstring,pickNarrow(nchan)), debug=True)
+                            casalogPost('  %s Skipping range %s because it is too narrow (<%d)' % (projectCode,ccstring,narrow), debug=True)
                     # Process the final piece
                     ccstring = '%d~%d' % (gaps[len(gaps)-1][1]+1,stopChan)
-                    if stopChan - gaps[len(gaps)-1][1] >= pickNarrow(nchan):
+                    if stopChan - gaps[len(gaps)-1][1] >= narrow:
                         newGroups += 1
                         validSelections.append(ccstring)
                         newContinuumChannels += list(range(gaps[len(gaps)-1][1]+1, stopChan+1))
                         casalogPost('  %s Defining range %s' % (projectCode,ccstring), debug=True)
                     else:
-                        casalogPost('  %s Skipping range %s because it is too narrow (<%d)' % (projectCode,ccstring,pickNarrow(nchan)), debug=True)
+                        casalogPost('  %s Skipping range %s because it is too narrow (<%d)' % (projectCode,ccstring,narrow), debug=True)
             # end for i,ccstring in enumerate(channelSelections)
             if newGroups > 0:
                 selection = separator.join(validSelections)
@@ -2281,11 +4670,14 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                 casalogPost("Not examining blue dots (at user request)")
             else:
                 casalogPost("Not examining blue dots because: sFC_adjusted=%s is False or (peakOverMad=%.2f <= 6 and len(chans)=%d <= 4*nchan/5=%d) or it's TDM" % (sFC_adjusted,peakOverMad,len(continuumChannels), 4*nchan/5))
-        # check if only 1 narrow group found (to activate a fix for CAS-11720)
+        # check if only 1 narrow group found (to activate a fix for CAS-11720 == PIPE-183)
         if groups == 1:
             if selection == '':
                 print("This should not happen since PIPE-359 was fixed.")
-                return
+                if not amendMask:
+                    return
+                channelsInSingleGroup = 0
+                group0 = [-1,-1]
             else:
                 group0 = [int(j) for j in selection.split(',')[0].split('~')]
                 channelsInSingleGroup = np.abs(np.diff(group0)) + 1
@@ -2298,7 +4690,15 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                 if mylist is not None:
                     groups += 1
                     secondSelectionAdded = '%d~%d' % (mylist[0],mylist[-1])
-                    selection += separator + secondSelectionAdded
+                    if selection == '':
+                        selection = secondSelectionAdded
+                    else:
+                        if mylist[0] > allBaselineChannelsXY[0][-1]:
+                            # add to end of string (to maintain increasing order)
+                            selection += separator + secondSelectionAdded
+                        else:
+                            # add to beginning of string (to maintain increasing order)
+                            selection = secondSelectionAdded + separator + selection
                     casalogPost('  %s ****** Added a second selection in the other half of the spectrum: %s' % (projectCode,secondSelectionAdded))
                 else:
                     casalogPost('  %s ****** No blue points found in the other half of the spectrum' % (projectCode))
@@ -2380,7 +4780,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                 slopeRemoved = True
                 rerun = True
                 if lineStrengthFactor < 1.2:
-                    if sigmaFindContinuumAutomatic:
+                    if sigmaFindContinuumMode == 'auto':
                         if tdmSpectrum(channelWidth,nchan) or sigmaFindContinuum < 3.5:  # was 4
                             sigmaFindContinuum += 0.5
                             casalogPost("lineStrengthFactor = %f < 1.2 (increasing sigmaFindContinuum by 0.5 to %.1f)" % (lineStrengthFactor,sigmaFindContinuum)) 
@@ -2412,9 +4812,13 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                               madRatioUpperLimit=madRatioUpperLimit, 
                               madRatioLowerLimit=madRatioLowerLimit, 
                               projectCode=projectCode, fCCiteration=fCCiteration,
-                              signalRatioTier1=signalRatioTier1, signalRatioTier2=signalRatioTier2,sigmaFindContinuumAutomatic=sigmaFindContinuumAutomatic)
+                              signalRatioTier1=signalRatioTier1, 
+                              signalRatioTier2=signalRatioTier2,
+                              sigmaFindContinuumMode=sigmaFindContinuumMode,
+                              enableRejectNarrowInnerWindows=enableRejectNarrowInnerWindows)
 
-                continuumChannels,selection,threshold,median,groups,correctionFactor,medianTrue,mad,medianCorrectionFactor,negativeThreshold,lineStrengthFactor,singleChannelPeaksAboveSFC,allGroupsAboveSFC,spectralDiff,trimChannels,useLowBaseline, narrowValueModified, allBaselineChannelsXY, madRatio, useMiddleChannels, signalRatio = result
+                continuumChannels,selection,threshold,median,groups,correctionFactor,medianTrue,mad,medianCorrectionFactor,negativeThreshold,lineStrengthFactor,singleChannelPeaksAboveSFC,allGroupsAboveSFC,spectralDiff,trimChannels,useLowBaseline, narrowValueModified, allBaselineChannelsXY, madRatio, useMiddleChannels, signalRatio, rangesDropped = result
+                RangesDropped += rangesDropped
 
                 # If we had only one group and only added one or two more group after removing slope, and the
                 # smallest is small compared to the original group, then discard the new solution.
@@ -2434,6 +4838,11 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
     madOfPointsBelowThreshold = MAD(avgSpectrumNansReplaced[idx])
 
     if avoidance != '':
+        # Here we are relying on continuumChannels to match the selection string, so double-check to be sure
+        if selection != convertChannelListIntoSelection(continuumChannels):
+            casalogPost('THERE IS A MISMATCH BETWEEN selection AND continuumChannels!!!')
+            print("selection: ", selection)
+            print("continuumChannels: ", convertChannelListIntoSelection(continuumChannels))
         avoidChannels = convertSelectionIntoChannelList(avoidance)
         newContinuumChannels = sorted(list(set(continuumChannels) - set(avoidChannels)))
         print("Removing %d channels from list due to avoidance regions" % (len(continuumChannels)-len(newContinuumChannels)))
@@ -2442,16 +4851,19 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
         groups = selection.count(';')+1
     
     #########################################
-    # Plot the results
+    # Plot the results (before returning)
     #########################################
+    labelDescs = []
+    if amendMaskIterationName in ['.extraMask','.onlyExtraMask','.autoLower']:
+        pl.figure(2)
     pl.clf()
-    fig = pl.gcf()
-    fig.set_size_inches(8.125, 6.12)  # 150dpi makes this 1218x918
+    if casaVersion >= '5.9' and pl.get_backend()=='TkAgg':
+        fig = pl.gcf()
+        casalogPost('Scaling figsize by 1.4 due to TkAgg')
+        fig.set_size_inches(8.125*1.4, 6.12*1.4)  # 150dpi makes this 1218x918
     rows = 1
     cols = 1
-    fontsize = 10
     ax1 = pl.subplot(rows,cols,1)
-    skipchan = 1 # was 2
     if replaceNans:
         avgspectrumAboveThreshold = avgSpectrumNansReplaced
     else:
@@ -2485,7 +4897,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
         drawYlabel(img, typeOfMeanSpectrum,meanSpectrumMethod, meanSpectrumThreshold, 
                    peakFilterFWHM, fontsize, mask, useThresholdWithMask)
 
-    setYLimitsAvoidingEdgeChannels(avgspectrumAboveThreshold, mad)
+    highDynamicRange = setYLimitsAvoidingEdgeChannels(avgspectrumAboveThreshold, mad)
     if (baselineModeA == 'edge'):
         nEdgeChannels = nBaselineChannels/2
         if (edgesUsed == 0 or edgesUsed == 2):
@@ -2496,7 +4908,8 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
         pl.plot(allBaselineChannelsXY[0], allBaselineChannelsXY[1], 'b.', ms=3, mec='b')
     if plotQuadraticPoints and rmStatContQuadratic:
         pl.plot(channelsFit, avgspectrumAboveThreshold[channelsFit], 'g.', ms=3, mec='g')
-    channelSelections = []
+#    channelSelections = []
+    channelSelections = selection.split(separator)
     casalogPost('Drawing positive threshold at %g' % (threshold))
     pl.plot(pl.xlim(), [threshold,threshold], 'k:')
     ylims = pl.ylim()
@@ -2514,25 +4927,9 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
         pl.plot([nEdgeChannels, nEdgeChannels], pl.ylim(), 'k:')
         pl.plot([nchan-nEdgeChannels, nchan-nEdgeChannels], pl.ylim(), 'k:')
     if (len(continuumChannels) > 0):
-        channelSelections = selection.split(separator)
-#        ylevel = np.mean(avgspectrumAboveThreshold) # Cycle 0-5 heuristic
-        peak = np.max(avgspectrumAboveThreshold[skipchan:-skipchan])
-        if (peak-medianTrue) > 1.5*(threshold-medianTrue):
-            print("Setting cyan level to just above the positive threshold dotted line")
-            ylevel = threshold + (threshold-medianTrue)*np.log10((peak-medianTrue)/(threshold-medianTrue))
-        else:
-            print("Setting cyan level to half the positive threshold dotted line")
-            ylevel = threshold - 0.5*(threshold-medianTrue)
-        yoffset = ylevel + 0.04*(pl.ylim()[1]-pl.ylim()[0])
-        for i,ccstring in enumerate(channelSelections): 
-            cc = [int(j) for j in ccstring.split('~')]
-            pl.plot(cc, np.ones(len(cc))*ylevel, 'c-', lw=2)
-            mystring = ccstring
-            if i==1 and secondSelectionAdded != '':
-                # indicate if the heuristic for CAS-11720 was activated to ensure a second region
-                mystring += ' added'
-            pl.text(np.mean(cc), yoffset, mystring, va='bottom', ha='center',size=8,rotation=90)
-
+        labelDescs = plotChannelSelections(ax1, selection, separator, 
+                           avgspectrumAboveThreshold, skipchan, medianTrue, 
+                           threshold, secondSelectionAdded)
     if (fitsTable or img==''):
         img = meanSpectrumFile
         freqType = ''
@@ -2544,7 +4941,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
             source = source.split('_')[0]
     if (titleText == ''):
         narrowString = pickNarrowString(narrow, len(avgSpectrumNansReplaced), narrowValueModified) 
-        trimString = pickTrimString(trimChannels, len(avgSpectrumNansReplaced), maxTrim)
+        trimString = pickTrimString(len(avgSpectrumNansReplaced), trimChannels, len(avgSpectrumNansReplaced), maxTrim, selection)
         if len(projectCode) > 0: 
             projectCode += ', '
         titleText = projectCode + os.path.basename(img) + ' ' + transition
@@ -2565,6 +4962,16 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
         if singleContinuum:
             label = '(SingleContinuum) ' + label
     ax1.set_xlabel(label, size=fontsize)
+    if nchan < 300:
+        ax1.xaxis.set_minor_locator(matplotlib.ticker.MultipleLocator(10))
+    elif nchan < 750:
+        ax1.xaxis.set_minor_locator(matplotlib.ticker.MultipleLocator(25))
+    elif nchan < 1500:
+        ax1.xaxis.set_minor_locator(matplotlib.ticker.MultipleLocator(50))
+    elif nchan < 3000:
+        ax1.xaxis.set_minor_locator(matplotlib.ticker.MultipleLocator(100))
+    else:
+        ax1.xaxis.set_minor_locator(matplotlib.ticker.MultipleLocator(200))
     if casaVersion >= '5.9.9':
         titleYoffset = 1.10
     else:
@@ -2591,10 +4998,10 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
     else:
         channelWidthString = ''
     if (spw != ''):
-        label = r'(Spw %s) $\bf{%s\/Frequency\/(GHz)}$' % (str(spw), freqType) + channelWidthString
+        upperXlabel = r'(Spw %s) $\bf{%s\/Frequency\/(GHz)}$' % (str(spw), freqType) + channelWidthString
     else:
-        label = r'$\bf{%s\/Frequency\/(GHz)}$' % freqType + channelWidthString
-    ax2.set_xlabel(label, size=fontsize)
+        upperXlabel = r'$\bf{%s\/Frequency\/(GHz)}$' % freqType + channelWidthString
+    ax2.set_xlabel(upperXlabel, size=fontsize) # this artist cannot be removed in CASA 5.6
     inc = 0.03
     i = 1
     if (meanSpectrumMethod == 'mom0mom8jointMask' and rmStatContQuadratic):
@@ -2604,11 +5011,11 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
     else:
         bottomLegend = ''
     if madRatio is not None:
-        bottomLegend += "peak/MAD: %.2f, signalRatio: %.3f, madRatio: %.3f" % (peakOverMad,signalRatio,madRatio)
+        bottomLegend += "peak/MAD: %.2f, %.2f, signalRatio: %.3f, madRatio: %.3f" % (peakOverMad,peakMinusMedianOverMad,signalRatio,madRatio)
     elif useMiddleChannels:
-        bottomLegend += "peak/MAD: %.2f, signalRatio: %.3f, middle chans used" % (peakOverMad,signalRatio)
+        bottomLegend += "peak/MAD: %.2f, %.2f, signalRatio: %.3f, middle chans used" % (peakOverMad,peakMinusMedianOverMad,signalRatio)
     else:
-        bottomLegend += "peak/MAD: %.2f, signalRatio: %.3f, madRatio not computed" % (peakOverMad,signalRatio)
+        bottomLegend += "peak/MAD: %.2f, %.2f, signalRatio: %.3f, madRatio not computed" % (peakOverMad,peakMinusMedianOverMad,signalRatio)
     if meanSpectrumMethod == 'mom0mom8jointMask':
         bottomLegend += ', pixMom8=%d' % (numberPixelsInMom8Mask)
     if bottomLegend != '':
@@ -2631,10 +5038,10 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
         mad *= peakFeatureSigma/maxPeakFeatureSigma
         casalogPost('Limiting peakFeatureSigma from %f to %f, reset MAD to %f' % (peakFeatureSigma,maxPeakFeatureSigma,mad))
         peakFeatureSigma = maxPeakFeatureSigma
-        areaString = 'limited max: %.1f*mad=%g; maxTrimFrac=%g; %d ranges; ' % (peakFeatureSigma, peak, maxTrimFraction, len(channelSelections))
+        areaString = 'limited max: %.1f*mad=%.4f; %d ranges; ' % (peakFeatureSigma, peak, len(channelSelections))
     else:
         casalogPost("maxPeakFeatureSigma=%f" % (maxPeakFeatureSigma))
-        areaString = 'max: %.1f*mad=%g; maxTrimFrac=%g; %d ranges; ' % (peakFeatureSigma, peak, maxTrimFraction, len(channelSelections))
+        areaString = 'max: %.1f*mad=%.4f; %d ranges; ' % (peakFeatureSigma, peak, len(channelSelections))
     if (fullLegend):
         pl.text(0.5,0.99-i*inc,'rms=MAD*1.4826: of baseline chans = %f, scaled by %.1f for all chans = %f'%(mad,correctionFactor,mad*correctionFactor), 
                 transform=ax1.transAxes, ha='center',size=fontsize)
@@ -2661,7 +5068,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
         else:
             if regionsPruned > 0:
                 # some regions were pruned
-                areaString += 'pixels in pruned joint mask: %g' % (numberPixelsInJointMask)
+                areaString += 'pixels in pruned mask: %g' % (numberPixelsInJointMask)
             else:
                 areaString += 'pixels in joint mask: %g' % (numberPixelsInJointMask)
             casalogPost('%s pixels in joint mask: %g' % (projectCode, numberPixelsInJointMask))
@@ -2671,7 +5078,8 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
         areaString += 'mean over area: whole field (%.2fMpix)' % (megapixels)
     else:
         areaString += 'mean over: central box of radius %.1f" (%.2fMpix)' % (centralArcsec,megapixels)
-    pl.text(0.5,0.99-i*inc,areaString, transform=ax1.transAxes, ha='center', size=fontsize-1)
+    labelDesc = pl.text(0.5,0.99-i*inc,areaString, transform=ax1.transAxes, ha='center', size=fontsize-1)
+    labelDescs.append(labelDesc)
     if (meanSpectrumMethodMessage != ''):
         if casaVersion >= '5.9.9':
             msmm_ylabel = -0.12
@@ -2767,20 +5175,22 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
     pl.draw()
     if (png == ''):
         if pngBasename:
-            png = os.path.basename(img)
+            png = os.path.basename(img) + amendMaskIterationName
         else:
-            png = img
+            png = img + amendMaskIterationName
         if outdir != '':
             png = os.path.join(outdir,os.path.basename(png))
         transition = transition.replace('(','_').replace(')','_').replace(' ','_').replace(',','')
         if (len(transition) > 0):
             transition = '.' + transition
         narrowString = pickNarrowString(narrow, len(avgSpectrumNansReplaced), narrowValueModified) # this is used later
-        trimString = pickTrimString(trimChannels, len(avgSpectrumNansReplaced), maxTrim)
+        trimString = pickTrimString(len(avgSpectrumNansReplaced), trimChannels, len(avgSpectrumNansReplaced), maxTrim, selection)
         if userJointMask == '':
-            png += '.meanSpectrum.%s.%s.%s.%.1fsigma.narrow%s.trim%s%s' % (meanSpectrumMethod, baselineModeA, baselineModeB, sigmaFindContinuum, narrowString, trimString, transition)
+            png += '.meanSpectrum.%s.%s.%s.%.2fsigma.narrow%s.trim%s%s' % (meanSpectrumMethod, baselineModeA, baselineModeB, sigmaFindContinuum, narrowString, trimString, transition)
+        elif userJointMask.find('.amendedJointMask') > 0:
+            png += '.meanSpectrum.amendedJointMask.%s.%s.%.2fsigma.narrow%s.trim%s%s' % (baselineModeA, baselineModeB, sigmaFindContinuum, narrowString, trimString, transition)
         else:
-            png += '.meanSpectrum.userJointMask.%s.%s.%.1fsigma.narrow%s.trim%s%s' % (baselineModeA, baselineModeB, sigmaFindContinuum, narrowString, trimString, transition)
+            png += '.meanSpectrum.userJointMask.%s.%s.%.2fsigma.narrow%s.trim%s%s' % (baselineModeA, baselineModeB, sigmaFindContinuum, narrowString, trimString, transition)
         if maxMemory > 0:
             png += '.%.0fGB' % (maxMemory)
         if overwrite:
@@ -2804,8 +5214,92 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
         casalogPost("Wrote png = %s" % (png))
     donetime = timeUtilities.time()
     casalogPost("%.1f sec elapsed in runFindContinuum" % (donetime-startTime))
-    return(selection, png, slope, channelWidth, nchan, useLowBaseline, mom0snrs, mom8snrs, useMiddleChannels, selectionPreBluePruning)
-# end of runFindContinuum
+    baselineMAD = mad
+    if amendMaskIterationName in ['.extraMask','.onlyExtraMask','.autoLower']:
+        # go back to original figure now
+        pl.close(2)
+        pl.figure(1)
+    return(selection, png, slope, channelWidth, nchan, useLowBaseline, mom0snrs, mom8snrs, useMiddleChannels, 
+           selectionPreBluePruning, sigmaFindContinuum, jointMask, avgspectrumAboveThreshold, medianTrue, 
+           labelDescs, ax1, ax2, threshold, areaString, RangesDropped, effectiveSigma, baselineMAD, upperXlabel,
+           allBaselineChannelsXY)
+# end of runFindContinuum    
+
+def invertChannelRanges(invertstring, nchan=0, startchan=0, vis='', spw='', 
+                        separator=';'):
+    """
+    Takes a CASA channel selection string and inverts it.
+    -Todd Hunter
+    """
+    myspw = spw
+    checkForMultipleSpw = invertstring.split(',')
+    mystring = ''
+    if (vis != ''):
+        mymsmd = createCasaTool(msmdtool)
+        mymsmd.open(vis)
+    for c in range(len(checkForMultipleSpw)):
+      checkspw = checkForMultipleSpw[c].split(':')
+      if (len(checkspw) > 1 and spw==''):
+          spw = checkspw[0]
+          checkForMultipleSpw[c] = checkspw[1]
+      if (vis != ''):
+          nchan = mymsmd.nchan(int(spw))
+#          print "Setting nchan = %d for spw %s" % (nchan,str(spw))
+      goodstring = checkForMultipleSpw[c]
+      goodranges = goodstring.split(separator)
+      if (str(spw) != ''):
+          mystring += str(spw) + ':'
+      if (int(goodranges[0].split('~')[0]) > startchan):
+          mystring += '%d~%d%s' % (startchan,int(goodranges[0].split('~')[0])-1, separator)
+      multiWindows = False
+      for g in range(len(goodranges)-1):
+          r = goodranges[g]
+          s = goodranges[g+1]
+          mystring += '%d~%d' % (int(r.split('~')[1])+1, int(s.split('~')[0])-1)
+          multiWindows = True
+          if (g < len(goodranges)-2):
+              mystring += separator
+      if (int(goodranges[-1].split('~')[-1]) < startchan+nchan-1):
+          if (multiWindows):
+              mystring += separator
+          mystring += '%d~%d' % (int(goodranges[-1].split('~')[-1])+1, startchan+nchan-1)
+      if (c < len(checkForMultipleSpw)-1):
+          mystring += ','
+      spw = myspw  # reset to the initial value
+    if (vis != ''):
+        mymsmd.close()
+    return(mystring)
+
+def plotChannelSelections(ax1, selection, separator, avgspectrumAboveThreshold, 
+                          skipchan, medianTrue, 
+                          threshold, secondSelectionAdded='', lineColor='c'):
+    """
+    avgspectrumAboveThreshold: computed in runFindContinuum
+    medianTrue, threshold: computed by findContinuumChannels
+    Returns labelDescs: list of plot artists that may be removed and replaced later
+    """
+    labelDescs = []
+    channelSelections = selection.split(separator)
+#    ylevel = np.mean(avgspectrumAboveThreshold) # Cycle 0-5 heuristic
+    peak = np.max(avgspectrumAboveThreshold[skipchan:-skipchan])
+    if (peak-medianTrue) > 1.5*(threshold-medianTrue):
+        ylevel = threshold + (threshold-medianTrue)*np.log10((peak-medianTrue)/(threshold-medianTrue))
+        print("Setting cyan level (%f) to just above the positive threshold dotted line" % (ylevel))
+    else:
+        ylevel = threshold - 0.5*(threshold-medianTrue)
+        print("Setting cyan level to half the positive threshold dotted line")
+    yoffset = ylevel + 0.04*(pl.ylim()[1]-pl.ylim()[0])
+    for i,ccstring in enumerate(channelSelections): 
+        cc = [int(j) for j in ccstring.split('~')]
+        labelDesc = ax1.plot(cc, np.ones(len(cc))*ylevel, '-', color=lineColor, lw=2)
+        labelDescs.append(labelDesc)
+        mystring = ccstring
+        if i==1 and secondSelectionAdded != '':
+            # indicate if the heuristic for CAS-11720 was activated to ensure a second region
+            mystring += ' added'
+        labelDesc = ax1.text(np.mean(cc), yoffset, mystring, va='bottom', ha='center',size=8,rotation=90)
+        labelDescs.append(labelDesc)
+    return labelDescs
 
 def findWidestContiguousListInOtherHalf(channels, lowerHalf, nchan):
     """
@@ -2813,6 +5307,9 @@ def findWidestContiguousListInOtherHalf(channels, lowerHalf, nchan):
     example:
     CASA <43>: fc.findWidestContiguousListInOtherHalf([2,3,7,8,9,12,13,14,15], True, 20)
     Out[43]: [12, 13, 14, 15]
+    channels: list of blue points channel numbers
+    lowerHalf: a Boolean (True for lower half, False for upper half)
+    nchan: total channels in spectrum
     """
     contiguousLists = splitListIntoContiguousLists(sorted(channels))
     mylengths = []
@@ -2822,6 +5319,33 @@ def findWidestContiguousListInOtherHalf(channels, lowerHalf, nchan):
         mylengths.append(0)
         if (lowerHalf and contiguousList[0] >= nchan/2) or (not lowerHalf and contiguousList[0] < nchan/2):
             mylengths[j] = len(contiguousList)
+        if mylengths[j] > widestListLength:
+            widestListLength = mylengths[j]
+            widestList = contiguousList
+    return widestList
+
+def findWidestContiguousListInChannelRange(channels, channelRange, continuumChannels):
+    """
+    Given a list of channels, find the longest contiguous list in the first half or second half
+    example:
+    CASA <43>: fc.findWidestContiguousListInOtherHalf([2,3,7,8,9,12,13,14,15], True, 20)
+    Out[43]: [12, 13, 14, 15]
+    channels: list of blue points channel numbers
+    channelRange: range of channels to look for widest set of blue points
+    continuumChannels: current selection of continuuum channels
+    """
+    contiguousLists = splitListIntoContiguousLists(sorted(channels))
+    currentRange = continuumChannels[-1]-continuumChannels[0] + 1
+    mylengths = []
+    widestList = None
+    widestListLength = 0
+    startchan, endchan = channelRange
+    for j,contiguousList in enumerate(contiguousLists):
+        mylengths.append(0)
+        if (contiguousList[0] >= startchan) and (contiguousList[-1] < endchan):
+            spreadFactor = np.max([contiguousList[-1]-continuumChannels[0]+1,continuumChannels[-1]-contiguousList[0]+1])/currentRange
+            mylengths[j] = len(contiguousList) * spreadFactor
+            casalogPost('Possible region: %s, %d*%f = %f' % (contiguousList, len(contiguousList), spreadFactor, mylengths[j]))
         if mylengths[j] > widestListLength:
             widestListLength = mylengths[j]
             widestList = contiguousList
@@ -2846,11 +5370,6 @@ def aboveBelow(avgSpectrumNansReplaced, threshold):
      -threshold=-1 ........................   sumBelow = 21*(1-0) = 21
     """
     y = avgSpectrumNansReplaced
-    pl.clf()
-    pl.plot(range(len(y)),y,'bo')
-    pl.plot(pl.xlim(), [threshold,threshold])
-    pl.draw()
-    pl.savefig('test.png')
     aboveMedian = np.where(avgSpectrumNansReplaced > threshold)
     belowMedian = np.where(avgSpectrumNansReplaced < threshold)
     sumAboveMedian = np.sum(-threshold+avgSpectrumNansReplaced[aboveMedian])
@@ -2863,9 +5382,8 @@ def aboveBelow(avgSpectrumNansReplaced, threshold):
            channelsAboveMedian, channelsBelowMedian, channelRatio)
 
 def writeMeanSpectrum(meanSpectrumFile, frequency, avgspectrum, 
-                      avgSpectrumNansReplaced, threshold, edgesUsed, 
-                      nchan, nanmin, centralArcsec='auto', 
-                      mask='', iteration=0):
+                      avgSpectrumNansReplaced, threshold, nchan, edgesUsed=0,
+                      nanmin=0, centralArcsec='auto', mask='', iteration=0):
     """
     This function is called by meanSpectrum.
     Writes out the mean spectrum (and the key parameters used to create it), 
@@ -2873,6 +5391,11 @@ def writeMeanSpectrum(meanSpectrumFile, frequency, avgspectrum,
     experiment with different parameters of findContinuumChannels applied to 
     the same mean spectrum.
     Units are Hz and Jy/beam.
+    meanSpectrumFile: name of file to create
+    threshold: this is interpreted as mom0threshold for meanSpectrumMethod='mom0mom8jointMask'
+    edgesUsed: this is interpreted as numberPixelsInMask for meanSpectrumMethod='mom0mom8jointMask'
+    nanmin:    this is interpreted as mom8threshold for meanSpectrumMethod='mom0mom8jointMask'
+    frequency: list or array of frequencies
     Returns: None
     """
     if len(meanSpectrumFile) == 0:
@@ -2891,7 +5414,8 @@ def writeMeanSpectrum(meanSpectrumFile, frequency, avgspectrum,
         f.write('#%s %s nchan %s centralArcsec=%s %s\n' % (field1,field2,field4,str(centralArcsec),mask))
     else:
         f.write('#threshold edgesUsed nchan nanmin centralArcsec=auto %s %s\n' % (str(centralArcsec),mask))
-    f.write('%.10f %d %d %.10f\n' % (threshold, edgesUsed, nchan, nanmin))
+    #                                field1      field2           field4
+    f.write('%.10f %g %g %.10f\n' % (threshold, edgesUsed, nchan, nanmin))
     f.write('#chan freq(Hz) avgSpectrum avgSpectrumNansReplaced\n')
     for i in range(len(avgspectrum)):
         f.write('%d %.1f %.10f %.10f\n' % (i, frequency[i], avgspectrum[i], avgSpectrumNansReplaced[i]))
@@ -2906,7 +5430,8 @@ def findContinuumChannels(spectrum, nBaselineChannels=16, sigmaFindContinuum=3,
                           lineSNRThreshold=20, negativeThresholdFactor=1.15, 
                           dropBaselineChannels=2.0, madRatioUpperLimit=1.5, 
                           madRatioLowerLimit=1.15, projectCode='', fCCiteration=0,
-                          signalRatioTier1=0.965, signalRatioTier2=0.94, sigmaFindContinuumAutomatic=True):
+                          signalRatioTier1=0.965, signalRatioTier2=0.94, sigmaFindContinuumMode='auto', 
+                          enableRejectNarrowInnerWindows=True):
     """
     This function is called by runFindContinuum.
     Trys to find continuum channels in a spectrum, based on a threshold or
@@ -2942,7 +5467,7 @@ def findContinuumChannels(spectrum, nBaselineChannels=16, sigmaFindContinuum=3,
         signalRatio=1 means: no lines seen, while closer to zero: more lines seen
     signalRatioTier2: second threshold for signalRatio, used for FDM spws (nchan>192) and
         for cases of peakOverMad < 5.  Should be < signalRatioTier1.
-    sigmaFindContinuumAutomatic: if True, then do not desensitize with signalRatioTier1
+    sigmaFindContinuumMode: if 'auto', then do not desensitize with signalRatioTier1
 
     Returns:
     1  list of channels to use (separated by the specified separator)
@@ -2965,6 +5490,7 @@ def findContinuumChannels(spectrum, nBaselineChannels=16, sigmaFindContinuum=3,
     18 tuple containing the channel numbers of the baseline channels, and their respective y-axis values
     19 value of madRatio: MAD/MAD_after_dropping_extreme_channels
          This value will be larger if there are many tall single channel peaks.
+    20 number of ranges it dropped (or would have dropped if it was enabled)
     """
     if (fitResult is not None):
         myx = np.arange(len(spectrum), dtype=np.float64)
@@ -2992,7 +5518,7 @@ def findContinuumChannels(spectrum, nBaselineChannels=16, sigmaFindContinuum=3,
         else:
             casalogPost("****** starting findContinuumChannels (%d) (slope=%g) ***********" % (fCCiteration, fitResult[0]))
     else:
-        casalogPost("****** starting findContinuumChannels (%d) ***********" % (fCCiteration))
+        casalogPost("****** starting findContinuumChannels (%d) with nBaselineChannels=%d ***********" % (fCCiteration,nBaselineChannels))
     casalogPost("Using sigmaFindContinuum=%.2f, sigmaEffective=%.1f, percentile=%.0f for mode=%s, channels=%d/%d" % (sigmaFindContinuum, sigmaEffective, percentile, baselineMode, nBaselineChannels, len(spectrum)))
     if (baselineMode == 'edge'):
         # pick n channels on both edges
@@ -3203,7 +5729,7 @@ def findContinuumChannels(spectrum, nBaselineChannels=16, sigmaFindContinuum=3,
     # De-sensitize the threshold in order to avoid small differences in noise levels 
     # (e.g. that occur between serial and parallel tclean cubes)
     # from producing drastically different continuum selections.
-    if ((signalRatio > signalRatioTier1) or (signalRatio > signalRatioTier2 and peakOverMad < 5)) and sigmaFindContinuumAutomatic:
+    if ((signalRatio > signalRatioTier1) or (signalRatio > signalRatioTier2 and peakOverMad < 5)) and (sigmaFindContinuumMode in ['auto','autolower']):
         casalogPost('findContinuumChannels: desensitizing because %f>%f or (%f>%f and %f<5)' % (signalRatio,signalRatioTier1,signalRatio,signalRatioTier2,peakOverMad))
         maxPeakFeatureSigma = (np.max(spectrum) - np.min(spectrum))/MAD(spectrum)
         if peakFeatureSigma > maxPeakFeatureSigma:
@@ -3293,18 +5819,15 @@ def findContinuumChannels(spectrum, nBaselineChannels=16, sigmaFindContinuum=3,
         if (len(channels) == 0):
             selection = ''
         else:
-            if verbose:
-                casalogPost("Calling splitListIntoContiguousListsAndTrim(channels=%s, trimChannels=%s, maxTrim=%d, maxTrimFraction=%f)" % (str(channels), str(trimChannels), maxTrim, maxTrimFraction))
-            else:
-                casalogPost("Calling splitListIntoContiguousListsAndTrim(trimChannels=%s, maxTrim=%d, maxTrimFraction=%f)" % (str(trimChannels), maxTrim, maxTrimFraction))
+#            casalogPost("Calling splitListIntoContiguousListsAndTrim(totalChannels=%s, channels=%s, trimChannels=%s, maxTrim=%d, maxTrimFraction=%f)" % (str(npts), str(channels), str(trimChannels), maxTrim, maxTrimFraction))
             originalChannels = channels[:]
-            channels = splitListIntoContiguousListsAndTrim(channels, 
+            channels = splitListIntoContiguousListsAndTrim(npts, channels, 
                          trimChannels, maxTrim, maxTrimFraction, verbose)
             selection = convertChannelListIntoSelection(channels)
             if selection == '':  # fix for PIPE-359
                 casalogPost("WARNING: all channels trimmed, which is quite rare.  Reverting to maxTrim=0.1.")
                 maxTrim = 0.1
-                channels = splitListIntoContiguousListsAndTrim(originalChannels, 
+                channels = splitListIntoContiguousListsAndTrim(npts, originalChannels, 
                               trimChannels, maxTrim, maxTrimFraction, verbose)
                 selection = convertChannelListIntoSelection(channels)
             groups = len(selection.split(separator))
@@ -3312,9 +5835,9 @@ def findContinuumChannels(spectrum, nBaselineChannels=16, sigmaFindContinuum=3,
                 and maxTrim>maxTrimDefault):
                 maxTrim = maxTrimDefault
                 casalogPost("Restoring maxTrim=%d because groups now > %d" % (maxTrim,maxGroupsForMaxTrimAdjustment))
-                if verbose:
-                    casalogPost("Calling splitListIntoContiguousListsAndTrim(channels=%s, trimChannels=%s, maxTrim=%d, maxTrimFraction=%f)" % (str(channels), str(trimChannels), maxTrim, maxTrimFraction))
-                trialChannels = splitListIntoContiguousListsAndTrim(channels, 
+#                if verbose:
+#                    casalogPost("Calling splitListIntoContiguousListsAndTrim(totalChannels=%s, channels=%s, trimChannels=%s, maxTrim=%d, maxTrimFraction=%f)" % (str(npts), str(channels), str(trimChannels), maxTrim, maxTrimFraction))
+                trialChannels = splitListIntoContiguousListsAndTrim(npts, channels, 
                              trimChannels, maxTrim, maxTrimFraction, verbose)
                 if len(trialChannels) == 0:
                     casalogPost("Zero channels left after trimming. Reverting to prior selection.")
@@ -3328,10 +5851,10 @@ def findContinuumChannels(spectrum, nBaselineChannels=16, sigmaFindContinuum=3,
             if verbose:
                 print("Found %d groups of channels = " % (groups), channels)
             if (groups > 1):
-                if verbose:
-                    casalogPost("Calling splitListIntoContiguousListsAndRejectNarrow(channels=%s, narrow=%s)" % (str(channels), str(narrow)))
-                else:
-                    casalogPost("Calling splitListIntoContiguousListsAndRejectNarrow(narrow=%s)" % (str(narrow)))
+#                if verbose:
+#                    casalogPost("Calling splitListIntoContiguousListsAndRejectNarrow(channels=%s, narrow=%s)" % (str(channels), str(narrow)))
+#                else:
+#                    casalogPost("Calling splitListIntoContiguousListsAndRejectNarrow(narrow=%s)" % (str(narrow)))
                 trialChannels = splitListIntoContiguousListsAndRejectNarrow(channels, narrow)
                 if (len(trialChannels) > 0):
                     channels = trialChannels
@@ -3341,7 +5864,14 @@ def findContinuumChannels(spectrum, nBaselineChannels=16, sigmaFindContinuum=3,
             else:
                 casalogPost("Not rejecting narrow groups since there is only %d group!" % (groups))
     casalogPost("Found %d continuum channels in %d groups: %s" % (len(channels), groups, selection))
-    channels = rejectNarrowInnerWindowsChannels(channels)
+    potentialChannels, messages, rangesDropped = rejectNarrowInnerWindowsChannels(channels, fCCiteration)
+    if enableRejectNarrowInnerWindows:
+        channels = potentialChannels
+        for message in messages:
+            casalogPost(message)
+    else:
+        if rangesDropped > 0:
+            casalogPost("rejectNarrowInnerWindows wanted to remove %d ranges, but it was not enabled" % (rangesDropped))
     selection = convertChannelListIntoSelection(channels)
     groups = len(selection.split(separator))
     casalogPost("Final: found %d continuum channels (sFC=%.2f) in %d groups: %s" % (len(channels), sigmaFindContinuum, groups, selection))
@@ -3350,9 +5880,9 @@ def findContinuumChannels(spectrum, nBaselineChannels=16, sigmaFindContinuum=3,
            negativeThreshold, lineStrengthFactor, singleChannelPeaksAboveSFC, 
            allGroupsAboveSFC, [spectralDiff, spectralDiff2], trimChannels, 
            useLowBaseline, narrow, [allBaselineXChannels,intensityAllBaselineChannels], 
-           madRatio, useMiddleChannels, signalRatio)
+           madRatio, useMiddleChannels, signalRatio, rangesDropped)
 
-def rejectNarrowInnerWindowsChannels(channels):
+def rejectNarrowInnerWindowsChannels(channels, fCCiteration=0):
     """
     This function is called by findContinuumChannels.
     If there are 3-15 groups of channels, then remove any inner window 
@@ -3361,22 +5891,37 @@ def rejectNarrowInnerWindowsChannels(channels):
     """
     mylists = splitListIntoContiguousLists(channels)
     groups = len(mylists)
+    messages = []
+    rangesDropped = 0
 #    if (groups > 2 and groups < 8):  C4R2 heuristic
     if (groups > 2 and groups < 16):  # Cycle 5 onward
         channels = []
         lenFirstGroup = len(mylists[0])
         lenLastGroup = len(mylists[-1])
-        channels += mylists[0]
+        channels += mylists[0]  # start with the first window
         if (groups < 8):
             widthFactor = 1
         else:
             # this is to prevent unnecessarily trimming narrow windows, e.g. in a hot core case
             widthFactor = 0.2
-        for group in range(1,groups):
+        # The final group needs to be included in the output channels list, and it is safe to
+        # simply included it in the loop because it will always pass the test.
+        for group in range(1,groups): 
 #            if (len(mylists[group]) >= np.mean([lenFirstGroup,lenLastGroup])*widthFactor): #  or len(mylists[group]) >= lenLastGroup*widthFactor):
-            if (len(mylists[group]) >= np.min([lenFirstGroup,lenLastGroup])*widthFactor): 
+            widthThreshold = np.min([lenFirstGroup,lenLastGroup])
+            if (len(mylists[group]) >= (widthThreshold*widthFactor)): 
                 channels += mylists[group]
-    return(channels)
+                if group < groups-1:
+                    # Don't report the final group because it is not really under consideration here
+                    messages.append('fCCiter%d:  Keeping channel group %d because it is wider than %.1f*width of both edge groups' % (fCCiteration,group,widthFactor))
+            else:
+                rangesDropped += 1
+                messages.append('fCCiter%d: Dropping channel group %d because it is narrower (%d) than %.1f*width (%d) of both edge groups' % (fCCiteration, group, len(mylists[group]), widthFactor, widthThreshold*widthFactor))
+        if rangesDropped == 0:
+            messages.append('fCCiter%d: No channel groups dropped by rejectNarrowInnerWindowsChannels' % (fCCiteration))
+    else:
+        messages.append('fCCiter%d: Number of channel groups (%d) disqualifies it for rejectNarrowInnerWindowsChannels' % (fCCiteration,groups))
+    return(channels, messages, rangesDropped)
 
 def splitListIntoContiguousListsAndRejectNarrow(channels, narrow=3):
     """
@@ -3402,13 +5947,14 @@ def splitListIntoContiguousListsAndRejectNarrow(channels, narrow=3):
         channels += mylist
     return(np.array(channels))
 
-def splitListIntoContiguousListsAndTrim(channels, trimChannels=0.1, 
+def splitListIntoContiguousListsAndTrim(totalChannels, channels, trimChannels=0.1, 
                                         maxTrim=maxTrimDefault, 
                                         maxTrimFraction=1.0, verbose=False):
     """
     This function is called by findContinuumChannels.
     Split a list of channels into contiguous lists, and trim some number
     of channels from each edge.
+    totalChannels: number of channels in the spectrum
     channels: a list of channels selected for potential continuum
     trimChannels: if integer, use that number of channels.  If float between
         0 and 1, then use that fraction of channels in each contiguous list
@@ -3422,8 +5968,9 @@ def splitListIntoContiguousListsAndTrim(channels, trimChannels=0.1,
             return(np.array(channels))
     length = len(channels)
     trimChannelsMode = trimChannels
+    medianWidthOfRanges = np.median(countChannelsInRanges(convertChannelListIntoSelection(channels)))
     if (trimChannels == 'auto'):
-        trimChannels = pickAutoTrimChannels(length, maxTrim)
+        trimChannels = pickAutoTrimChannels(totalChannels, length, maxTrim, medianWidthOfRanges)
     mylists = splitListIntoContiguousLists(channels)
     channels = []
     trimLimitForEdgeRegion = 3
@@ -3489,27 +6036,38 @@ def roundFigures(value, digits):
             break
     return(value)
 
-def pickAutoTrimChannels(length, maxTrim):
+def pickAutoTrimChannels(totalChannels, length, maxTrim, medianWidthOfRanges):
     """
     This function is called by splitListIntoContiguousListsAndTrim and pickTrimString.
     Automatic choice of number of trimChannels as a function of the number 
-    of channels in an spw.
-    Returns: an integer
+    of potential continuum channels in an spw.
+    length: number of channels in the list of potential continuum channels
+    Returns: an integer or floating point value
     """
     trimChannels = 0.1
-    if (length*trimChannels > maxTrim):
-        casalogPost("pickAutoTrimChannels(): set trimChannels = %d because %.0f > %d" % (maxTrim,length*trimChannels,maxTrim))
+    casalogPost('median width of potential continuum ranges = %.1f' % (medianWidthOfRanges))
+    if (length*trimChannels > maxTrim and medianWidthOfRanges > maxTrim*1.5 and totalChannels > 256):
+        casalogPost("pickAutoTrimChannels(): set trimChannels = %d because %.0f > %d and totalChannels=%d>256" % (maxTrim,length*trimChannels,maxTrim,totalChannels))
         trimChannels = maxTrim
+    else:
+        casalogPost("pickAutoTrimChannels(): set trimChannels = %.1f because %.0f <= %d or %.1f <= %f or totalChannels=%d <= 256" % (trimChannels,length*trimChannels,maxTrim,medianWidthOfRanges,maxTrim*1.5,totalChannels))
     return(trimChannels)
 
-def pickTrimString(trimChannels, length, maxTrim):
+def pickTrimString(totalChannels, trimChannels, length, maxTrim, selection):
     """
     This function is called by runFindContinuum.
     Generate a string describing the setting of the trimChannels parameter.
+    totalChannels: total number of points in spectrum
+    trimChannels: string (e.g. 'auto') or integer (e.g. 20) or float (e.g. 0.1)
+    length: number of channels in the spectrum  (now unused)
+    selection: continuum channel selection string
     Returns: a string
     """
     if (trimChannels=='auto'):
-        trimString = 'auto_max=%g' % pickAutoTrimChannels(length, maxTrim)
+        contSelectionLength = np.sum(countChannelsInRanges(selection))
+        medianWidthOfRanges = np.median(countChannelsInRanges(selection))
+#        trimString = 'auto_max=%g' % pickAutoTrimChannels(length, maxTrim, medianWidthOfRanges)
+        trimString = 'auto_max=%g' % pickAutoTrimChannels(totalChannels, contSelectionLength, maxTrim, medianWidthOfRanges)
     else:
         trimString = '%g' % trimChannels
     return(trimString)
@@ -3644,8 +6202,8 @@ def getImageInfo(img, returnBeamAreaPerChannel=False):
         bmaj = 0
         bmin = 0
         bpa = 0
-        if 'mask' not in img:
-            print("Warning: No beam found in header.")
+#        if 'mask' not in img:
+#            print("Warning: No beam found in header.")
     naxis1 = myia.shape()[0]
     naxis2 = myia.shape()[1]
     axis = findSpectralAxis(myia)
@@ -3911,6 +6469,24 @@ def flattenMask(mask, outfile='', overwrite=True):
                overwrite=overwrite)
     return outfile
 
+def imagePercentileNoMask(img, percentiles):
+    """
+    percentiles: a single value or a list
+    Returns: a single value or a list
+    """
+    myia = iatool()
+    myia.open(img)
+    mymask = myia.getregion(getmask=True)
+    pixels = myia.getregion(getmask=False)
+    myia.close()
+    if type(percentiles) != list and type(percentiles) != np.ndarray:
+        value = scoreatpercentile(pixels[np.where(mymask > 0.5)], percentile)
+        return value
+    value = []
+    for percentile in percentiles:
+        value.append(scoreatpercentile(pixels[np.where(mymask > 0.5)], percentile))
+    return value
+
 def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcube=None, minbeamfrac=0.3, 
                                       projectCode='', overwriteMoments=False, 
                                       overwriteMasks=True, phase2=True, 
@@ -3918,7 +6494,9 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
                                       initialQuadraticImprovementThreshold=1.6, userJointMask='', 
                                       snrThreshold=23, mom0minsnr=MOM0MINSNR_DEFAULT, 
                                       mom8minsnr=MOM8MINSNR_DEFAULT, rmStatContQuadratic=True,
-                                      bidirectionalMaskPhase2=False, outdir=''):
+                                      bidirectionalMaskPhase2=False, outdir='', 
+                                      avoidExtremaInNoiseCalcForJointMask=False, momentdir='',
+                                      statistic='mean'):
     """
     This function is called by runFindContinuum when meanSpectrumMethod='mom0mom8jointMask'.
     This is the new heuristic for Cycle 6 which creates the moment 0 and moment 8 images
@@ -3929,38 +6507,38 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
     overwriteMasks: rebuild the mom0 and mom8 mask images even if they already exist
     phase2: if True, then run a second phase if SNR is high
     minPixelsInJointMask: if fewer than these pixels are found, then use all pixels above pb=0.3
-    userJointMask: if specified, use this joint mask instead of the one computed; if it is a cube mask,
+    userJointMask: if specified, use this joint mask instead of computing one; if it is a cube mask,
        as from tclean, then this function will form a flattened version first, and then use that
     snrThreshold: if SNR is higher than this, and phase2==True, then run a phase 2 mask calculation
-    mom0minsnr: sets the threshold for the mom0 image (i.e. median + mom0minsnr*scaledMAD)
-    mom8minsnr: sets the threshold for the mom8 image (i.e. median + mom8minsnr*scaledMAD)
+    mom0minsnr: sets the threshold for the mom0 image (i.e. median + mom0minsnr*scaledMAD of the whole image)
+    mom8minsnr: sets the threshold for the mom8 image (i.e. median + mom8minsnr*scaledMAD of thw whole image)
     rmStatContQuadratic: if True, then do not remove the old-style quadratic in this function in
          favor of the new-style removal elsewhere
     bidirectionalMaskPhase2: True=extend mask to negative values beyond threshold; False=Cycle6 behavior
     outdir: directory to write the mom0, mom8, masks, .dat and mean spectrum text files
-    Returns: 11 things: 
-       * the meanSpectrum
-       * a Boolean which states whether normalization was applied
-       * the number of pixels in the mask
-       * a Boolean for whether the mask reverted to pb-based
-       * a Boolean for whether a quadratic was removed
-       * the initialQuadraticImprovementRatio
-       * the list of 3 mom0snrs
-       * the list of 3 mom8snrs 
-       * the number of pixels pruned
-       * mom0peak (Jy*km/s)
-       * mom8peak (Jy)
+    avoidExtremaInNoiseCalcForJointMask: experimental Boolean to avoid pixels <5%ile and >95%ile
+             in the chauvenet imstat of mom0 and mom8 images
+    momentdir: alternate directory to look for existing mom0 and mom8 images
+    Returns: 13 things: 
+       * 1) the meanSpectrum
+       * 2) a Boolean which states whether normalization was applied
+       * 3) the number of pixels in the mask
+       * 4) a Boolean for whether the mask reverted to pb-based
+       * 5) a Boolean for whether a quadratic was removed
+       * 6) the initialQuadraticImprovementRatio
+       * 7) the list of 3 mom0snrs
+       * 8) the list of 3 mom8snrs 
+       * 9) the number of regions pruned
+       * 10) number of pixels in moment 8 mask
+       * 11) mom0peak (Jy*km/s)
+       * 12) mom8peak (Jy)
+       * 13) name of jointMask file
     """
+    print("momentdir = ", momentdir)
     overwritePhase2 = True
     # Look for the .pb image if it was not specified
     if pbcube is None:
-        if cube.find('.residual') >= 0: 
-            if os.path.islink(cube):
-                pbcube = os.readlink(cube).replace('.residual','.pb')
-            else:
-                pbcube = cube.replace('.residual','.pb')
-            if not os.path.exists(pbcube):
-                pbcube = None
+        pbcube = locatePBCube(cube)
     # Look for the .psf image if it was not specified
     if psfcube is None:
         if cube.find('.residual') >= 0: 
@@ -3971,28 +6549,60 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
             if not os.path.exists(psfcube):
                 psfcube = None
     casalogPost('psfcube = %s' % (psfcube))
-    if outdir == '':
-        mom0 = cube+'.mom0'
-        mom8 = cube+'.mom8'
+    if momentdir == '':
+        if outdir == '':
+            mom0 = cube+'.mom0'
+            mom8 = cube+'.mom8'
+        else:
+            mom0 = os.path.join(outdir,os.path.basename(cube)+'.mom0')
+            mom8 = os.path.join(outdir,os.path.basename(cube)+'.mom8')
     else:
         mom0 = os.path.join(outdir,os.path.basename(cube)+'.mom0')
         mom8 = os.path.join(outdir,os.path.basename(cube)+'.mom8')
+        if not os.path.exists(mom0):
+            firstParentDir = os.path.dirname(cube).split()[-1]
+            if momentdir[0] == '.':
+                momentdir = os.path.join(os.getcwd(),momentdir)
+            mom0src = os.path.join(momentdir, outdir, os.path.basename(cube)+'.mom0')
+            print("Looking for mom0 at: ", mom0src)
+            if os.path.exists(mom0src):
+                casalogPost('Creating symlink to moment 0')
+                os.symlink(mom0src, mom0)
+        if not os.path.exists(mom8):
+            mom8src = os.path.join(momentdir, outdir, os.path.basename(cube)+'.mom8')
+            if os.path.exists(mom8src):
+                casalogPost('Creating symlink to moment 8')
+                os.symlink(mom8src, mom8)
     if os.path.exists(mom0):
         if overwriteMoments:
             os.system('rm -rf ' + mom0)
         else:
-            print("Re-using existing moment0 image")
+            mom0info = getImageInfo(mom0)
+            # check if RA/Dec images sizes match
+            if imageInfo[5] == mom0info[5] and imageInfo[6] == mom0info[6]:
+                print("Re-using existing moment0 image at %s" % (mom0))
+            else:
+                print("Mismatch between cube and mom0 image, rebuilding mom0")
+                os.system('rm -rf ' + mom0)
     if not os.path.exists(mom0):
+        print("Could not find: ", mom0)
         casalogPost("Running immoments('%s', moments=[0], outfile='%s')" % (cube, mom0))
         immoments(cube, moments=[0], outfile=mom0)
     if os.path.exists(mom8):
         if overwriteMoments:
             os.system('rm -rf ' + mom8)
         else:
-            print("Re-using existing moment8 image")
+            mom8info = getImageInfo(mom8)
+            # check if RA/Dec images sizes match
+            if imageInfo[5] == mom8info[5] and imageInfo[6] == mom8info[6]:
+                print("Re-using existing moment8 image at %s" % (mom8))
+            else:
+                print("Mismatch between cube and mom8 image, rebuilding mom8")
+                os.system('rm -rf ' + mom8)
     if not os.path.exists(mom8):
         casalogPost("Running immoments('%s', moments=[8], outfile='%s')" % (cube, mom8))
-        immoments(cube, moments=[8], outfile=mom8)
+#        immoments(cube, moments=[8], outfile=mom8)
+        immoments(cube, moments=[8], outfile=mom8, mask='"%s"!=0'%(cube))
 
     pbBasedMask = False
     mom0mask = mom0+'.mask_bi'
@@ -4024,15 +6634,25 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
         print("running: %s" % cmd)
         os.system(cmd)
         classicResult = imstat(mom0, listit=imstatListit, verbose=imstatVerbose)
-        print("running imstat('%s', algorithm='chauvenet', maxiter=5)" % (mom0))
-        result = imstat(mom0, algorithm='chauvenet', maxiter=5, listit=imstatListit, verbose=imstatVerbose)
+        if avoidExtremaInNoiseCalcForJointMask:
+            avoidLow, avoidHigh = imagePercentileNoMask(mom0, [5,95])
+            mask = '"%s" > %.9f && "%s" < %.9f' % (mom0, avoidLow, mom0, avoidHigh)
+            print("running imstat('%s', algorithm='chauvenet', maxiter=5, mask='%s')" % (mom0,mask))
+            result = imstat(mom0, algorithm='chauvenet', maxiter=5, listit=imstatListit, verbose=imstatVerbose,
+                            mask=mask)
+        else:
+            print("running imstat('%s', algorithm='chauvenet', maxiter=5)" % (mom0))
+            result = imstat(mom0, algorithm='chauvenet', maxiter=5, listit=imstatListit, verbose=imstatVerbose)
         mom0peak = classicResult['max'][0]
         mom0snr = classicResult['max'][0]/result['medabsdevmed'][0]
         scaledMAD = result['medabsdevmed'][0]*1.4826
-        if mom0minsnr == MOM0MINSNR_DEFAULT:
-            mom0sigma = np.max([mom0minsnr,oneEvent(nptsInCube,1)])
-        else:
+        if False:
             mom0sigma = mom0minsnr
+        else:
+            if mom0minsnr == MOM0MINSNR_DEFAULT:
+                mom0sigma = np.max([mom0minsnr,oneEvent(nptsInCube,1)])
+            else:
+                mom0sigma = mom0minsnr
         casalogPost("+++ nptsInCube=%d, initial mom0sigma=%f, scaledMAD=%f,  mom0median=%f" % (nptsInCube, mom0sigma, scaledMAD, result['median'][0]))
         mom0threshold = mom0sigma*scaledMAD + result['median'][0]
         mom0min = classicResult['min'][0]
@@ -4041,7 +6661,7 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
         while (mom0min >= mom0threshold and mom0threshold < mom0max):
             # Then there will be no points that satisfy subsequent mask, so raise the threshold so that at least some points are considered to be signal-free
             mom0sigma += 1
-            print("   %f < %f: increasing mom0sigma to %d = %f" % (mom0min,mom0threshold,mom0sigma,mom0sigma*scaledMAD))
+            print("   %e < %e: increasing mom0sigma to %d = %f" % (mom0min,mom0threshold,mom0sigma,mom0sigma*scaledMAD))
             mom0threshold = mom0sigma*scaledMAD + result['median'][0]
 
         mask = '"%s" > %.9f || "%s" < -%.9f' % (mom0, mom0threshold, mom0, mom0threshold)
@@ -4059,25 +6679,48 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
         print("running: %s" % cmd)
         os.system(cmd)
         classicResult = imstat(mom8, listit=imstatListit, verbose=imstatVerbose)
-        result = imstat(mom8, algorithm='chauvenet', maxiter=5, listit=imstatListit, verbose=imstatVerbose)
-        mom8peak = classicResult['max'][0]
-        mom8snr = classicResult['max'][0]/result['medabsdevmed'][0]
-        scaledMAD = result['medabsdevmed'][0]*1.4826
-        if mom8minsnr == MOM8MINSNR_DEFAULT:
-            mom8sigma = np.max([mom8minsnr,oneEvent(nptsInCube,1)])
+        if avoidExtremaInNoiseCalcForJointMask:
+            avoidLow8, avoidHigh8 = imagePercentileNoMask(mom8, [5,95])
+            mask = '"%s" > %.9f && "%s" < %.9f' % (mom8, avoidLow8, mom8, avoidHigh8)
+            print("running imstat('%s', algorithm='chauvenet', maxiter=5, mask='%s')" % (mom8,mask))
+            result = imstat(mom8, algorithm='chauvenet', maxiter=5, listit=imstatListit, verbose=imstatVerbose,
+                            mask=mask)
         else:
-            mom8sigma = mom8minsnr
-        casalogPost("Choosing %f from mom8minsnr=%f, oneEvent=%f" % (mom8sigma, mom8minsnr, oneEvent(nptsInCube,1)))
+            result = imstat(mom8, algorithm='chauvenet', maxiter=5, listit=imstatListit, verbose=imstatVerbose)
+        mom8peak = classicResult['max'][0]
+        myMAD8 = result['medabsdevmed'][0]
+        scaledMAD = result['medabsdevmed'][0]*1.4826
+        print("+++mom8 scaled MAD = %f" % (scaledMAD))
+        if scaledMAD <= 0:
+            scaledMAD = result['sigma'][0]
+            myMAD8 = scaledMAD / 1.4826
+            casalogPost("Using sigma = %g instead of scaled MAD, which was zero." % (scaledMAD))
+        mom8snr = classicResult['max'][0]/myMAD8
+        if False:
+            oneEventPoints = 0.05
+            if mom8minsnr == MOM8MINSNR_DEFAULT:
+                mom8sigma = np.max([mom8minsnr,oneEvent(nptsInCube//nchan,oneEventPoints)])
+            else:
+                mom8sigma = mom8minsnr
+            casalogPost("Choosing %f from mom8minsnr=%f, oneEvent=%f" % (mom8sigma, mom8minsnr, oneEvent(nptsInCube//nchan,oneEventPoints)))
+        else:
+            # Cycle 7
+            oneEventPoints = 1
+            if mom8minsnr == MOM8MINSNR_DEFAULT:
+                mom8sigma = np.max([mom8minsnr,oneEvent(nptsInCube,oneEventPoints)])
+            else:
+                mom8sigma = mom8minsnr
+            casalogPost("Choosing %f from mom8minsnr=%f, oneEvent=%f" % (mom8sigma, mom8minsnr, oneEvent(nptsInCube,oneEventPoints)))
         mom8min = classicResult['min'][0]
         mom8max = classicResult['max'][0]
         mom8threshold = mom8sigma*scaledMAD + result['median'][0]
         # the test against mom8max is to prevent infinite loop
-        casalogPost('++++++ Initial mom8sigma = %f, scaledMAD=%f,  mom8median=%f' % (mom8sigma, scaledMAD, result['median'][0]))
+        casalogPost('++++++ Initial mom8sigma = %f, scaledMAD=%f,  mom8median=%f, mom8min=%g, mom8max=%g, mom8threshold=%g' % (mom8sigma, scaledMAD, result['median'][0], mom8min, mom8max, mom8threshold))
         while (mom8min >= mom8threshold and mom8threshold < mom8max):
             # Then there will be no points that satisfy subsequent mask, so raise the threshold so that at least some points are considered to be signal-free
             mom8sigma += 1
             mom8threshold = mom8sigma*scaledMAD + result['median'][0]
-            casalogPost("  %f>%f:  increasing mom8sigma to %d: %f" % (mom8min,mom8threshold,mom8sigma,mom8sigma*scaledMAD))
+            casalogPost("  %e>%e:  increasing mom8sigma to %d: %f" % (mom8min,mom8threshold,mom8sigma,mom8sigma*scaledMAD))
 
         mask = '"%s" > %.9f || "%s" < -%.9f' % (mom8, mom8threshold, mom8, mom8threshold)
         print("applying mask to mom8: ", mask)
@@ -4092,6 +6735,7 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
         # Build joint mask
         ####################
         os.system('rm -rf %s' % (jointMask))
+        print("Running makemask(inpimage='%s', mode='copy', inpmask=['%s','%s'], output='%s')" % (mom0, mom0mask, mom8mask, jointMask))
         makemask(inpimage=mom0, mode='copy', inpmask=[mom0mask, mom8mask], 
                  output=jointMask)
         if minbeamfrac > 0:
@@ -4120,6 +6764,7 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
                 # Build Mom 0 mask
                 ##################
                 os.system('rm -rf %s.mask2*' % (mom0))
+                print("running imstat('%s', mask='%s'<0.5)" % (mom0,jointMask))
                 classicResult = imstat(mom0, mask='"%s"<0.5'%jointMask, listit=imstatListit, verbose=imstatVerbose)
                 print("running imstat('%s', algorithm='chauvenet', maxiter=5, mask='%s'<0.5)" % (mom0,jointMask))
                 result = imstat(mom0, algorithm='chauvenet', maxiter=5, mask='"%s"<0.5'%jointMask, listit=imstatListit, verbose=imstatVerbose)
@@ -4130,10 +6775,13 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
                 if len(resultPositive['medabsdevmed']) == 0:
                     print("WARNING: zero-length results from mom0")
                 # reduce the sigma somewhat: 
-                if mom0minsnr == MOM0MINSNR_DEFAULT:
-                    mom0sigma2 = np.max([mom0minsnr-1,oneEvent(nptsInCube,0.5)])
-                else:
+                if False:
                     mom0sigma2 = mom0minsnr-1
+                else:  # Cycle 7
+                    if mom0minsnr == MOM0MINSNR_DEFAULT:
+                        mom0sigma2 = np.max([mom0minsnr-1,oneEvent(nptsInCube,0.5)])
+                    else:
+                        mom0sigma2 = mom0minsnr-1
                 mom0threshold = mom0sigma2*scaledMAD + result['median'][0]
                 casalogPost('++++++ phase 2 mom0sigma2=%f, npts=%d, scaledMAD=%f, median=%f' % (mom0sigma2, result['npts'][0], scaledMAD, result['median'][0]))
                 casalogPost('++++++ phase 2 mom0threshold = %f' % mom0threshold)
@@ -4154,13 +6802,17 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
                 classicResult = imstat(mom8, mask='"%s"<0.5'%jointMask, listit=imstatListit, verbose=imstatVerbose)
                 print("Running imstat('%s',algorithm='chauvenet',maxiter=5,mask='\"%s\"<0.5, listit=%s, verbose=%s)" % (mom8, jointMask, imstatListit, imstatVerbose))
                 result = imstat(mom8, algorithm='chauvenet', maxiter=5, mask='"%s"<0.5'%jointMask, listit=imstatListit, verbose=imstatVerbose)
-                mom8snr2 = classicResult['max'][0]/result['medabsdevmed'][0]
+                myMAD8 = result['medabsdevmed'][0]
+                if myMAD8 <= 0.0:
+                    # mom8 images can potentially have a majority of identical 0, if immoments(mask) does not avoid 0.0
+                    myMAD8 = result['sigma'][0]/1.4826
+                mom8snr2 = classicResult['max'][0]/myMAD8
                 if len(result['medabsdevmed']) == 0:
                     print("WARNING: zero-length results from mom8")
                 scaledMAD = result['medabsdevmed'][0]*1.4826
-                # reduce the sigma somewhat
                 if mom8minsnr == MOM8MINSNR_DEFAULT:
                     mom8sigma2 = np.max([mom8minsnr,oneEvent(nptsInCube,0.5)])
+#                    mom8sigma2 = np.max([mom8minsnr,oneEvent(nptsInCube//nchan,oneEventPoints)]) # was 0.5
                 else:
                     mom8sigma2 = mom8minsnr
                 mom8threshold = mom8sigma2*scaledMAD + result['median'][0]
@@ -4203,7 +6855,11 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
                 mom0snr3 = classicResult['max'][0]/result['medabsdevmed'][0]
                 classicResult = imstat(mom8, mask='"%s"<0.5'%jointMask, listit=imstatListit, verbose=imstatVerbose)
                 result = imstat(mom8, algorithm='chauvenet', maxiter=5, mask='"%s"<0.5'%jointMask, listit=imstatListit, verbose=imstatVerbose)
-                mom8snr3 = classicResult['max'][0]/result['medabsdevmed'][0]
+                myMAD8 = result['medabsdevmed'][0]
+                if myMAD8 < 0.0:
+                    # mom8 images can potentially have a majority of identical 0, if immoments(mask) does not avoid 0.0
+                    myMAD8 = result['sigma'][0] / 1.4826
+                mom8snr3 = classicResult['max'][0] / myMAD8
         else:
             print("Not doing phase 2 because both SNR < %.0f (%f,%f)" % (snrThreshold,mom0snr,mom8snr))
             os.system('rm -rf %s.mask2*' % (mom0))
@@ -4214,7 +6870,7 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
             meanSpectrumFile = os.path.join(outdir,os.path.basename(cube)+'.meanSpectrum.mom0mom8jointMask')
         mom0snrs = [mom0snr, mom0snr2, mom0snr3]
         mom8snrs = [mom8snr, mom8snr2, mom8snr3]
-        # if no pixels were found in the mask, then build one from PB>0.3, or use whole image if no PB is available.
+        # if no pixels were found in the mask, then build one from PB annulus, or use whole image if no PB is available.
         numberPixelsInMask = countPixelsAboveZero(jointMask)
         if not pixelsInMask or numberPixelsInMask < minPixelsInJointMask:
             pbBasedMask = True
@@ -4233,13 +6889,26 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
                 makemask(mode='copy', inpimage=myMask1chan, overwrite=True,
                          inpmask=myMask1chan+':mask0', output=jointMask)
     else:
-        mom0peak = 0
-        mom8peak = 0
-        mom0snrs = [None,None,None]
-        mom8snrs = [None,None,None]
+        classicResult = imstat(mom0, listit=imstatListit, verbose=imstatVerbose)
+        mom0peak = classicResult['max'][0]
+        result = imstat(mom0, algorithm='chauvenet', maxiter=5, listit=imstatListit, verbose=imstatVerbose)
+        mom0snr = classicResult['max'][0]/result['medabsdevmed'][0]
+        mom0snrs = [mom0snr,None,None]
         mom0threshold = 0
+        classicResult = imstat(mom8, listit=imstatListit, verbose=imstatVerbose)
+        mom8peak = classicResult['max'][0]
+        myMAD8 = result['medabsdevmed'][0]
+        mom8snr = classicResult['max'][0]/myMAD8
+        mom8snrs = [mom8snr,None,None]
         mom8threshold = 0
-        numberPixelsInMom8Mask = 0
+        if os.path.exists(mom8mask):
+            numberPixelsInMom8Mask = countPixelsAboveZero(mom8mask)
+        elif os.path.exists(userJointMask):
+            numberPixelsInMom8Mask = countPixelsAboveZero(userJointMask)
+            casalogPost("Using userJointMask to set numberPixelsInMom8Mask = %d" % (numberPixelsInMom8Mask))
+        else:
+            numberPixelsInMom8Mask = 0
+            casalogPost("Neither the mom8mask nor the userJointMask exists. Setting numberPixelsInMom8Mask = %d" % (numberPixelsInMom8Mask))
     if userJointMask != '':
         if numberOfChannelsInCube(userJointMask) > 1:
             jointMask = userJointMask + '.flattened'
@@ -4251,18 +6920,24 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
         else:
             jointMask = userJointMask
         if outdir == '':
-            meanSpectrumFile = cube+'.meanSpectrum.userJointMask'
+            if userJointMask.find('.amendedJointMask') > 0:  # special case name
+                meanSpectrumFile = cube+'.meanSpectrum.amendedJointMask'
+            else:
+                meanSpectrumFile = cube+'.meanSpectrum.userJointMask'
         else:
-            meanSpectrumFile = os.path.join(outdir,os.path.basename(cube)+'.meanSpectrum.userJointMask')
+            if userJointMask.find('.amendedJointMask') > 0:  # special case name
+                meanSpectrumFile = os.path.join(outdir,os.path.basename(cube)+'.meanSpectrum.amendedJointMask')
+            else:
+                meanSpectrumFile = os.path.join(outdir,os.path.basename(cube)+'.meanSpectrum.userJointMask')
 #        print("++++++++++++++++ Setting meanSpectrumFile = %s" % (meanSpectrumFile))
     computeFirstSpectrum = False
     if computeFirstSpectrum:
-        channels, frequency, intensity, normalized = computeStatisticalSpectrumFromMask(cube, jointMask1, pbcube, imageInfo, 'mean', normalizeByMAD, projectCode, higherAnnulusLevel, lowerAnnulusLevel, outdir)
+        channels, frequency, intensity, normalized = computeStatisticalSpectrumFromMask(cube, jointMask1, pbcube, imageInfo, statistic, normalizeByMAD, projectCode, higherAnnulusLevel, lowerAnnulusLevel, outdir, jointMask)
         writeMeanSpectrum(meanSpectrumFile+'_bidirectional', frequency, intensity, 
-                          intensity, mom0threshold, numberPixelsInMask, 
-                          nchan, mom8threshold, centralArcsec='mom0mom8jointMask', 
+                          intensity, mom0threshold, 
+                          nchan, numberPixelsInMask, mom8threshold, centralArcsec='mom0mom8jointMask', 
                           mask=False, iteration=0)
-    channels, frequency, intensity, normalized = computeStatisticalSpectrumFromMask(cube, jointMask, pbcube, imageInfo, 'mean', normalizeByMAD, projectCode, higherAnnulusLevel, lowerAnnulusLevel, outdir)
+    channels, frequency, intensity, normalized = computeStatisticalSpectrumFromMask(cube, jointMask, pbcube, imageInfo, statistic, normalizeByMAD, projectCode, higherAnnulusLevel, lowerAnnulusLevel, outdir, jointMask)
 
     numberPixelsInMask = countPixelsAboveZero(jointMask)
     if MAD(intensity) == 0.0:
@@ -4277,7 +6952,7 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
         print("Done imsubimage, made ", myMask1chan)
         makemask(mode='copy', inpimage=myMask1chan, overwrite=True,
                  inpmask=myMask1chan+':mask0', output=jointMask)
-        channels, frequency, intensity, normalized = computeStatisticalSpectrumFromMask(cube, jointMask, pbcube, imageInfo, 'mean', normalizeByMAD, projectCode, higherAnnulusLevel, lowerAnnulusLevel, outdir)
+        channels, frequency, intensity, normalized = computeStatisticalSpectrumFromMask(cube, jointMask, pbcube, imageInfo, statistic, normalizeByMAD, projectCode, higherAnnulusLevel, lowerAnnulusLevel, outdir, jointMask)
         numberPixelsInMask = countPixelsAboveZero(jointMask)
         initialQuadraticRemoved = False
         initialQuadraticImprovementRatio = 1.0
@@ -4287,10 +6962,30 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
         initialQuadraticRemoved = False
         initialQuadraticImprovementRatio = 1.0
     writeMeanSpectrum(meanSpectrumFile, frequency, intensity, 
-                      intensity, mom0threshold, numberPixelsInMask, 
-                      nchan, mom8threshold, centralArcsec='mom0mom8jointMask', 
+                      intensity, mom0threshold, 
+                      nchan, numberPixelsInMask, mom8threshold, centralArcsec='mom0mom8jointMask', 
                       mask=initialQuadraticRemoved, iteration=0)
-    return intensity, normalized, numberPixelsInMask, pbBasedMask, initialQuadraticRemoved, initialQuadraticImprovementRatio, mom0snrs, mom8snrs, regionsPruned, numberPixelsInMom8Mask, mom0peak, mom8peak
+    return intensity, normalized, numberPixelsInMask, pbBasedMask, initialQuadraticRemoved, initialQuadraticImprovementRatio, mom0snrs, mom8snrs, regionsPruned, numberPixelsInMom8Mask, mom0peak, mom8peak, jointMask
+
+def locatePBCube(cube):
+    if cube.find('.residual') >= 0: 
+        if os.path.islink(cube):
+            pbcube = os.readlink(cube).replace('.residual','.pb')
+        else:
+            pbcube = cube.replace('.residual','.pb')
+        if not os.path.exists(pbcube):
+            pbcube = None
+    elif cube.find('.image') >= 0:
+        # need this section for it to work on a clean cube instead of dirty cube
+        if os.path.islink(cube):
+            pbcube = os.readlink(cube).replace('.image','.pb')
+        else:
+            pbcube = cube.replace('.image','.pb')
+        if not os.path.exists(pbcube):
+            pbcube = None
+    else:
+        pbcube = None
+    return pbcube
 
 def oneEvent(npts, events=1.0, positive=True, verbose=False):
     """
@@ -4310,7 +7005,7 @@ def oneEvent(npts, events=1.0, positive=True, verbose=False):
     sigma = (2**0.5)*(scipy.special.erfinv(1-odds))
     return(sigma)
 
-def findOuterAnnulusForPBCube(pbcube, imstatListit, imstatVerbose):
+def findOuterAnnulusForPBCube(pbcube, imstatListit=False, imstatVerbose=False):
     """
     Given a PB cube, finds the minimum sensitivity value, then computes the
     corresponding higher value to form an annulus.  Returns 0.2-0.3 for normal
@@ -4323,22 +7018,25 @@ def findOuterAnnulusForPBCube(pbcube, imstatListit, imstatVerbose):
     """
     lowerAnnulusLevel = imstat(pbcube, listit=imstatListit, verbose=imstatVerbose)['min'][0]
     higherAnnulusLevel = gaussianBeamResponse(gaussianBeamOffset(lowerAnnulusLevel)/1.15, fwhm=1)
-    return lowerAnnulusLevel, higherAnnulusLevel
+    return np.max([0.21,lowerAnnulusLevel]), higherAnnulusLevel
 
-def computeStatisticalSpectrumFromMask(cube, jointmask, pbcube=None, imageInfo=None,
+def computeStatisticalSpectrumFromMask(cube, jointmask, pbimg=None, imageInfo=None,
                                        statistic='mean', normalizeByMAD=False,
-                                       projectCode='', higherAnnulusLevel=None, lowerAnnulusLevel=None, outdir=''):
+                                       projectCode='', higherAnnulusLevel=None, lowerAnnulusLevel=None, 
+                                       outdir='', jointMaskForNormalize=None):
     """
     New heuristic for Cycle 6 pipeline.  It is called by meanSpectrumFromMom0Mom8JointMask
     Uses ia.getprofile to compute the mean spectrum of a cube within a 
     masked area.
-    jointmask: a 2D or 3D mask indicating which pixels shall be used
-    pbcube: the path to the primary beam of this cube
+    jointmask: a 2D or 3D mask image indicating which pixels shall be used
+               or an expression with < or > along with a 2D or 3D mask image
+    jointMaskForNormalize: a 2D or 3D mask image to be used when normalizeByMAD==True
+    pbimg: the path to the primary beam of this cube, or a 2D primary beam with an expression
     statistic: passed to ia.getprofile via the 'function' parameter
     normalizeByMAD: if True, then create the inverse of the jointmask and 
       normalize the spectrum by the spectrum of 'xmadm' (scaled MAD) 
       computed on the inverse mask
-    Returns: three lists: channels, freqs(Hz), intensities, and a Boolean 
+    Returns: three arrays: channels, freqs(Hz), intensities, and a Boolean 
        which says if normalization was applied
     """
     chanInfo = numberOfChannelsInCube(cube, returnChannelWidth=True, returnFreqs=True) 
@@ -4347,15 +7045,26 @@ def computeStatisticalSpectrumFromMask(cube, jointmask, pbcube=None, imageInfo=N
 
     myia = iatool()
     myia.open(cube)
+    casalogPost("ia.open('%s')" % (cube))
     axis = findSpectralAxis(myia)
     casalogPost("Using jointmask = %s" % (jointmask))
-    if jointmask == '':
+    if jointmask == '' or jointmask.find('>') > 0 or jointmask.find('<') > 0:
+        # an expression was given
         jointmaskQuoted = jointmask
     else:
-        jointmaskQuoted = '"'+jointmask+'"'
-    casalogPost("Running ia.getprofile(axis=%d, function='%s', mask='%s', stretch=True)" % (axis,statistic, jointmaskQuoted))
+        # a filename was given
+        jointmaskQuoted = '"'+jointmask+'">0'
+    if pbimg != '':
+        if pbimg is not None:
+            if pbimg.find('"') < 0:
+                # a plain pbimg was given
+                pbimgExpression = '"%s">0.21' % (pbimg)
+            else:
+                pbimgExpression = pbimg
+            jointmaskQuoted += ' && ' + pbimgExpression
+    casalogPost("Running ia.getprofile(axis=%d, function='%s', mask='%s', stretch=True)" % (axis, statistic, jointmaskQuoted))
     casalogPost(" on the cube: %s" % (cube))
-    avgIntensity = myia.getprofile(axis=axis, function=statistic, mask=jointmaskQuoted,stretch=True)['values']
+    avgIntensity = myia.getprofile(axis=axis, function=statistic, mask=jointmaskQuoted, stretch=True)['values']
     myia.close()
 
 #   Note: I tried putting this stage here, but a strong line at spw center (2016.1.00484.L) 
@@ -4365,34 +7074,43 @@ def computeStatisticalSpectrumFromMask(cube, jointmask, pbcube=None, imageInfo=N
 
     normalized = False  # start off by assuming it won't get normalized
     if normalizeByMAD:
-        if pbcube is None:
-            pbcubeExists = False
-        elif not os.path.exists(pbcube):
-            casalogPost("Could not find primary beam cube: %s" % (pbcube))
-            pbcubeExists = False
+        if pbimg is None:
+            casalogPost("pbimg is None, will not attempt to use the sensitivity annulus")
+            pbimgExists = False
+        elif not os.path.exists(pbimg.lstrip('"').split('"')[0]):  # remove any > < expression
+            casalogPost("Could not find primary beam cube: %s" % (pbimg))
+            pbimgExists = False
         else:
-            pbcubeExists = True
-        if not pbcubeExists:
-            casalogPost("Computing potential normalization spectrum from outside the joint mask (to remove atmospheric features).")
-            casalogPost("**** Number of unmasked pixels in jointmask = %s" % (countUnmaskedPixels(jointmask)))
-            if jointmask.find('.joint.') > 0:
-                outsideMask = jointmask.replace('.joint.','.inverseJoint.')
+            pbimgExists = True
+        if not pbimgExists:
+            if jointMaskForNormalize in ['',None]:
+                outsideMaskQuoted = ''
             else:
-                outsideMask = jointmask + '.inverseJoint'
-                print("Generating outsideMask = %s" % (outsideMask))
-            mask = jointmaskQuoted + ' < 0.5'
-            print("Running imsubimage('%s', mask='%s', outfile='%s')" % (jointmask, mask, outsideMask))
-            os.system('rm -rf '+outsideMask)
-            imsubimage(jointmask, mask=mask, outfile=outsideMask)
-            print("**** Using unmasked pixels outside = ", countUnmaskedPixels(outsideMask))
-            outsideMaskQuoted = '"'+outsideMask+'"'
+                casalogPost("Computing potential normalization spectrum from outside the joint mask (to remove atmospheric features). jointmask=%s." % (jointMaskForNormalize))
+                casalogPost("**** Number of unmasked pixels in jointmask = %s" % (countUnmaskedPixels(jointMaskForNormalize)))
+                if jointMaskForNormalize.find('.joint.') > 0:
+                    outsideMask = jointMaskForNormalize.replace('.joint.','.inverseJoint.')
+                else:
+                    outsideMask = jointMaskForNormalize + '.inverseJoint'
+                    print("Generating outsideMask = %s" % (outsideMask))
+                mask = '"' + jointMaskForNormalize + '"<0.5' 
+                print("Running imsubimage('%s', mask='%s', outfile='%s')" % (jointMaskForNormalize, mask, outsideMask))
+                os.system('rm -rf '+outsideMask)
+                imsubimage(jointMaskForNormalize, mask=mask, outfile=outsideMask)
+                print("**** Using unmasked pixels outside = ", countUnmaskedPixels(outsideMask))
+                outsideMaskQuoted = '"'+outsideMask+'"'
         else:
-            # Use the annulus region from 0.2-0.3, unless image does not go out that far, in 
+            # Use the annulus region from 0.21-0.3, unless image does not go out that far, in 
             # which case we use a comparable annulus that begins at a higher level
             if higherAnnulusLevel is None:
-                lowerAnnulusLevel, higherAnnulusLevel = findOuterAnnulusForPBCube(pbcube, imstatListit, imstatVerbose)
+                pbimg = pbimg.lstrip('"').split('"')[0]
+                print("Running fc.findOuterAnnulusForPbcube('%s',False,False)" % (pbimg))
+                lowerAnnulusLevel, higherAnnulusLevel = findOuterAnnulusForPBCube(pbimg, imstatListit, imstatVerbose)
             casalogPost("Computing potential normalization spectrum from MAD of an outer annulus <%.2f (to remove atmospheric features)." % (higherAnnulusLevel))
-            outsideMaskQuoted = '"%s">%g && "%s"<%g && %s<0.5'%(pbcube,lowerAnnulusLevel,pbcube,higherAnnulusLevel,jointmaskQuoted)
+            if jointMaskForNormalize not in ['', None]:
+                outsideMaskQuoted = '"%s">%g && "%s"<%g && "%s"<0.5'%(pbimg,lowerAnnulusLevel,pbimg,higherAnnulusLevel,jointMaskForNormalize)
+            else:
+                outsideMaskQuoted = '"%s">%g && "%s"<%g'%(pbimg,lowerAnnulusLevel,pbimg,higherAnnulusLevel)
         myia.open(cube)
         casalogPost("Running ia.getprofile(axis=%d, function='xmadm', mask='%s', stretch=True)" % (axis, outsideMaskQuoted))
         xmadm = myia.getprofile(axis=axis, function='xmadm', mask=outsideMaskQuoted, stretch=True)['values']
@@ -4425,30 +7143,7 @@ def computeStatisticalSpectrumFromMask(cube, jointmask, pbcube=None, imageInfo=N
         newMADestimate = MAD(avgIntensityNormalized) # could raise this to account for processing
         avgIntensityNormalized = (avgIntensityNormalized-myMedian)*originalMAD/newMADestimate + originalMedian
 
-        ## Remove this once file creation once parameters are tuned.
-        # It is designed to be plottable in tt.plotNormalizationFromFile
-        if False:
-            if outdir == '':
-                textfile = cube+'.xmadm.txt'
-            else:
-                textfile = os.path.join(outdir,os.path.basename(cube) + '.xmadm.txt')
-            f = open(textfile,'w')
-            f.write('#channel  avgIntensity  avgIntensityOffset xmadm  xmadmNormToZero  normalizationFactor  normalizedIntensity  avgIntensityOutsideMask\n')
-            if imageInfo is None:
-                imageInfo = getImageInfo(cube)
-            ra,dec = rad2radec(imageInfo[9], imageInfo[10], delimiter=' ', verbose=False).split()
-            myia = iatool()
-            equinox = getEquinox(cube)
-            observatory = getTelescope(cube)
-            datestring = getDateObs(cube)
-            myia.close()
-            f0 = lsrkToTopo(frequency[0], datestring, ra, dec, equinox, observatory)
-            f1 = lsrkToTopo(frequency[-1], datestring, ra, dec, equinox, observatory) 
-            topoFrequency = np.linspace(f0,f1,nchan)
-            for i in range(len(xmadm)):
-                f.write('%4d %.9f %.9f %.9f %.9f %.9f %.9f %.9f %.f\n'%(i, avgIntensity[i], avgIntensityOffset[i], xmadm[i], xmadmNormToZero[i], normalizationFactor[i], avgIntensityNormalized[i], avgIntensityOutsideMask[i], topoFrequency[i]))
-            f.close()
-            print("Wrote ", textfile)
+        # Here is where you would put writeXmadmFile()
 
         # Here we use the highest common MAD because the number of pixels may 
         # be drastically different between the mask area and the 
@@ -4483,7 +7178,7 @@ def computeStatisticalSpectrumFromMask(cube, jointmask, pbcube=None, imageInfo=N
     channels = list(range(len(avgIntensity)))
     if nchan != len(channels):
         print("Discrepant number of channels!")
-    return channels, frequency, avgIntensity, normalized
+    return np.array(channels), frequency, avgIntensity, normalized
 
 def create_casa_quantity(myqatool,value,unit):
     """
@@ -4592,8 +7287,11 @@ def convertSelectionIntoChannelList(selection):
     selections = selection.split(';')
     mylist = []
     for myrange in selections:
-        [c0,c1] = myrange.split('~')
-        mylist += range(int(c0),int(c1))
+        if myrange.find('~') > 0:
+            [c0,c1] = myrange.split('~')
+            mylist += range(int(c0),int(c1)+1)
+        else: # single value
+            mylist += [int(myrange)]
     return np.array(mylist)
     
 def CalcAtmTransmissionForImage(img, imageInfo, chanInfo='', airmass=1.5, pwv=-1,
@@ -5334,10 +8032,76 @@ def gaussianBeamResponse(radius, fwhm):
     sigma = fwhm/2.3548
     gain = np.exp(-((radius/sigma)**2)*0.5)
     return(gain)
-                   
-#############################################################################
-# Functions below this point are not used by the Cycle 6 pipeline
-#############################################################################
+
+def imageSNRAnnulus(mymomDiff, jointMaskTest, jointMaskTestWithAnnulus, applyMaskToAll=True):                   
+    # Need 2 calls to get peak anywhere outside the joint mask, but median from annulus, and MAD the lower of the two possibilities
+    ignore2, momDiffPeakOutside, ignore0, ignore1 = imageSNR(mymomDiff, mask=jointMaskTest,
+                                                             useAnnulus=False, returnAllStats=True, applyMaskToAll=applyMaskToAll)
+    ignore1, ignore2, medianForSNR, madForSNR = imageSNR(mymomDiff, mask=jointMaskTest, maskWithAnnulus=jointMaskTestWithAnnulus, 
+                                                         useAnnulus=True, returnAllStats=True, applyMaskToAll=applyMaskToAll)
+    momDiffSNROutside = (momDiffPeakOutside - medianForSNR) / madForSNR
+    return momDiffSNROutside, momDiffPeakOutside
+
+def imageSNR(img, axes=[], mask='', maskWithAnnulus='', useAnnulus=False, verbose=False, applyMaskToAll=False, 
+             returnAllStats=True, returnFractionalDifference=False, usepb=''):
+    """
+    Uses imstat (which automatically applies the internal mask, i.e avoids the black edges 
+    of the image) to compute (max-median)/scaledMAD
+    axes: passed to imstat (use [0,1,2] to get a vector SNR per channel)
+    img: a 2D image or a cube
+    mask: additional mask image (or expression) to apply when computing everything but max
+    maskWithAnnulus: additional mask image (or expression) to use for median and MAD
+            if useAnnulus==True (but always take the smaller of the 2 possible MADs)
+    applyMaskToAll: also apply the provided mask when computing the max (default=False=anywhere)
+    returnAllStats: if True, then also return the peak, median and scaledMAD where the
+          peak has *not* had the median subtracted (in contrast to the SNR)
+    returnFractionalDifference: if True, then also return the fraction of negative pixels
+    usepb: (optional) name of a single-plane pb image to include in the mask (at >0.23 level)
+    -ToddHunter
+    """
+    if usepb != '':
+        mask += ' && "%s">0.23' % (usepb)
+    stats = imstat(img, axes=axes, mask=mask, listit=imstatListit)
+    if useAnnulus:
+        statsAnnulus = imstat(img, axes=axes, mask=maskWithAnnulus, listit=imstatListit)
+    if not applyMaskToAll:
+        stats_nomask = imstat(img, listit=imstatListit, axes=axes)
+        # replace max with the max over the whole image
+        stats['max'] = stats_nomask['max']
+    if useAnnulus:
+        # use the median from the annulus
+        casalogPost("median = %f, median from annulus = %f;  scMAD = %f, scMAD from annulus = %f" % (stats['median'],statsAnnulus['median'],stats['medabsdevmed']/.6745,statsAnnulus['medabsdevmed']/.6745))
+        stats['median'] = statsAnnulus['median']
+        # pick the lower of the two possible MADs; otherwise, do not use the rest of the statsAnnulus results
+        if statsAnnulus['medabsdevmed'] > 0 and stats['medabsdevmed'] > 0:
+            # keep it as an array of length 1
+            stats['medabsdevmed'] = np.array([np.min([statsAnnulus['medabsdevmed'], stats['medabsdevmed']])])
+        elif statsAnnulus['medabsdevmed'] > 0: # this means that stats['medabsdevmed'] is zero, so we replace it
+            stats['medabsdevmed'] = statsAnnulus['medabsdevmed']
+    if stats['medabsdevmed'] > 0:
+        snr = (stats['max']-stats['median'])/(stats['medabsdevmed']/.6745)
+        casalogPost('snr = (%f-%f)/%f = %f' % (stats['max'],stats['median'],stats['medabsdevmed']/.6745,snr))
+    else:
+        casalogPost('Because the MAD is zero, using the sigma instead in the calculation of SNR')
+        snr = (stats['max']-stats['median'])/stats['sigma']
+        casalogPost('snr = (%f-%f)/%f = %f' % (stats['max'],stats['median'],stats['sigma'],snr))
+    if type(snr) == list or type(snr) == np.ndarray:
+        if len(snr) == 1:
+            snr = snr[0]
+            mymax = stats['max'][0]
+            mymedian = stats['median'][0]
+            myscaledMAD = stats['medabsdevmed'][0]/.6745
+    if returnAllStats:
+        if returnFractionalDifference:
+            return snr, mymax, mymedian, myscaledMAD, fractionNegative
+        else:
+            return snr, mymax, mymedian, myscaledMAD
+    else:
+        return snr
+
+################################################################################
+# Functions below this point are not used by the Cycle 6 or 7 pipeline or PL2020
+################################################################################
 
 def meanSpectrum(img, nBaselineChannels=16, sigmaCube=3, verbose=False, 
                  nanBufferChannels=2, useAbsoluteValue=False,
@@ -5807,7 +8571,7 @@ def meanSpectrum(img, nBaselineChannels=16, sigmaCube=3, verbose=False,
     nchan, firstFreq, lastFreq, channelWidth = chanInfo
     frequency = np.linspace(firstFreq, lastFreq, nchan)
     writeMeanSpectrum(meanSpectrumFile, frequency, avgspectrum, nansReplaced, threshold,
-                      edgesUsed, nchan, nanmin, centralArcsec, mask, iteration)
+                      nchan, edgesUsed, nanmin, centralArcsec, mask, iteration)
     if (myrg is not None): myrg.done()
     return(avgspectrum, nansRemoved, nansReplaced, threshold, 
            edgesUsed, nchan, nanmin, percentagePixelsNotMasked)
@@ -6345,7 +9109,7 @@ def readMeanSpectrumFITSFile(meanSpectrumFile, unit=0, nanBufferChannels=1):
                                      nanBufferChannels=nanBufferChannels)
     return(avgspectrum, avgSpectrumNansReplaced, threshold,
            edgesUsed, nchan, nanmin, firstFreq, lastFreq)
-    
+
 def readPreviousMeanSpectrum(meanSpectrumFile, verbose=False, invert=False):
     """
     ++++++ This function is not used by the pipeline.
@@ -6354,6 +9118,10 @@ def readPreviousMeanSpectrum(meanSpectrumFile, verbose=False, invert=False):
     Note: only the intensity column(s) are returned, not the 
        channel/frequency columns.
     This function will not typically be used by the pipeline, only manual users.
+    Returns: 11 things:  
+           avgspectrum, avgSpectrumNansReplaced, threshold,
+           edgesUsed, nchan, nanmin, firstFreq, lastFreq, centralArcsec,
+           mask, percentagePixelsNotMasked
     """
     f = open(meanSpectrumFile, 'r')
     lines  = f.readlines()
@@ -6361,8 +9129,6 @@ def readPreviousMeanSpectrum(meanSpectrumFile, verbose=False, invert=False):
     if (len(lines) < 3):
         return None
     i = 0
-#    Might want to read this in someday
-#    centralArcsec = '-1'
     # Detect file type:
     if (lines[0].find('title: Spectral profile') > 0):
         # CASA viewer/au.ispec output file
@@ -6514,7 +9280,7 @@ def removeNaNs(a, replaceWithMin=False, verbose=False, nanBufferChannels=0,
 
 def splitListIntoHomogeneousLists(mylist):
     """
-    This function is called only by removeNaNs, and hence is not used in Cycle 6 pipeline.
+    This function is called only by removeNaNs, and hence is not used in Cycle 6-onward pipeline.
     Converts [1,1,1,2,2,3] into [[1,1,1],[2,2],[3]], etc.
     -Todd Hunter
     """
@@ -6552,9 +9318,12 @@ def removeZeros(a):
     return a
 
 def plotStatisticalSpectrumFromMask(cube, jointMask='', pbcube=None, 
-                                    statistic='mean', normalizeByMAD=False):
+                                    statistic='mean', normalizeByMAD=False, 
+                                    png='', jointMaskForNormalize=''):
     """
     Simple wrapper to call computeStatisticalSpectrumFromMask and plot it.
+    jointMask: either a mask image, or an expression with < or > on an mask 
+          image
     """
     if not os.path.exists(cube):
         print("Could not find cube")
@@ -6562,7 +9331,7 @@ def plotStatisticalSpectrumFromMask(cube, jointMask='', pbcube=None,
     statistics = statistic.split(',')
     jointMasks = jointMask.split(',')
     for jointMask in jointMasks:
-        if jointMask != '':
+        if jointMask != '' and jointMask.find('>') < 0 and jointMask.find('>') < 0:
             if not os.path.exists(jointMask):
                 print("Could not find jointmask")
                 return
@@ -6573,12 +9342,18 @@ def plotStatisticalSpectrumFromMask(cube, jointMask='', pbcube=None,
             jointMask = jointMasks[0]
         else:
             jointMask = jointMasks[i]
-        channels, frequency, intensity, normalized = computeStatisticalSpectrumFromMask(cube, jointMask, pbcube, statistic=statistic, normalizeByMAD=normalizeByMAD)
+        if jointMaskForNormalize == '':
+            myJointMaskForNormalize = jointMask
+        else:
+            myJointMaskForNormalize = jointMaskForNormalize
+        channels, frequency, intensity, normalized = computeStatisticalSpectrumFromMask(cube, jointMask, pbcube, statistic=statistic, normalizeByMAD=normalizeByMAD, jointMaskForNormalize=myJointMaskForNormalize)
         pl.plot(channels,intensity,'-',color=colors[i])
         pl.xlabel('Channel')
         pl.ylabel(statistic)
         print( "peak over MAD = ", np.max(intensity)/MAD(intensity))
-    png = cube + '.' + statistic + '.png'
+    pl.title(','.join([os.path.basename(cube), os.path.basename(jointMask)]))
+    if png == '':
+        png = cube + '.' + jointMask + '.' + statistic + '.png'
     pl.savefig(png)
     print("Wrote ", png)
     pl.draw()
@@ -6593,7 +9368,7 @@ def pruneMask(mymask, psfcube=None, minbeamfrac=0.3, prunesize=6.0, nchan=1, ove
     nchan: number of channels to process, will always be 1 in findContinuum's use case
     overwrite: if True, replaces mymask with pruned mask, putting original in mymask.prepruned
                if False, is simply creates: mymask.pruned, but only if it pruned anything
-    If all regions are pruned, it checks if it is ACA7m (maxBaseline < 60m) and if so, tried
+    If all regions are pruned, it checks if it is ACA7m (maxBaseline < 60m) and if so, tries
     again with minbeamfrac*0.5.
     """
     npruned = 0
@@ -6603,6 +9378,8 @@ def pruneMask(mymask, psfcube=None, minbeamfrac=0.3, prunesize=6.0, nchan=1, ove
     casalogPost('Pruning the joint mask')
     if psfcube is not None:
         myinfo = getImageInfo(psfcube)
+        # np.log(2) standard factor for solid angle was not in Cycles0..7
+#        pixelsPerBeam = myinfo[0]*myinfo[1]*np.pi/(4.*np.log(2))/np.abs(myinfo[3]*myinfo[4])
         pixelsPerBeam = myinfo[0]*myinfo[1]*np.pi/4./np.abs(myinfo[3]*myinfo[4])
         maxBaseline = myinfo[11] # in meters
         prunesize = np.max([4,int(pixelsPerBeam*minbeamfrac)])
@@ -6612,12 +9389,7 @@ def pruneMask(mymask, psfcube=None, minbeamfrac=0.3, prunesize=6.0, nchan=1, ove
     except:
         casalogPost("This casa does not contain the tool synthesismaskhandler(), so the joint mask cannot be pruned.")
         return npruned
-#    chanflag = np.zeros(nchan) # this used to work in python 2
-#    print("type(chanflag) = ", type(chanflag))
-#    chanflag = list(chanflag)
-#    print("type(chanflag) = ", type(chanflag))
     chanflag = np.zeros(nchan, dtype=bool)
-#    print("type(chanflag) = ", type(chanflag))
     mymask = mymask.rstrip('/')
     try:
         mydict = maskhandler.pruneregions(mymask, prunesize, chanflag)
@@ -6644,8 +9416,7 @@ def pruneMask(mymask, psfcube=None, minbeamfrac=0.3, prunesize=6.0, nchan=1, ove
     maskhandler.done()
     if overwrite:
         if npruned > 0:
-            if os.path.exists(mymask+'.prepruned'):
-                shutil.rmtree(mymask+'.prepruned')
+            removeIfNecessary(mymask+'.prepruned')
             os.rename(mymask, mymask+'.prepruned')
             os.rename(newmask, mymask)
             casalogPost("Updated joint mask after pruning %d region(s)" % (npruned))
@@ -6655,4 +9426,3 @@ def pruneMask(mymask, psfcube=None, minbeamfrac=0.3, prunesize=6.0, nchan=1, ove
     else:
         print("Pruned %d regions" % (npruned))
     return npruned
-

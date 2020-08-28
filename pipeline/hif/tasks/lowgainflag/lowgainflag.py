@@ -140,13 +140,19 @@ class Lowgainflag(basetask.StandardTaskTemplate):
             fnm_lo_limit=inputs.fnm_lo_limit,
             fnm_hi_limit=inputs.fnm_hi_limit)
 
+        # PIPE-566: append a rule to detect when a flagging view has no usable
+        # (unflagged) data at all for a spw (e.g. because gaincal could not
+        # compute any solutions). In this case the underlying (bad) data in the
+        # MS for this spw should get flagged explicitly.
+        rules.extend(flagger.make_flag_rules(flag_tmef1=True, tmef1_axis='Antenna1', tmef1_limit=1.0))
+
         # Construct the flagger task around the data view task and the
         # flagsetter task. 
         matrixflaggerinputs = flagger.Inputs(
             context=inputs.context, output_dir=inputs.output_dir,
             vis=inputs.vis, datatask=datatask, viewtask=viewtask,
             flagsettertask=flagsettertask, rules=rules, niter=inputs.niter,
-            extendfields=['field', 'timerange'], iter_datatask=True)
+            extendfields=['field', 'timerange'], iter_datatask=True, skip_fully_flagged=False)
         flaggertask = flagger(matrixflaggerinputs)
 
         # Execute the flagger task.

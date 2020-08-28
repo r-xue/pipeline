@@ -111,12 +111,12 @@ def space_comma(s):
 
 
         <%def name="fancybox_caption(plot)">
-          Plot of ${plot.y_axis} vs. ${plot.x_axis}
+          Plot of ${plot.y_axis} vs. ${plot.x_axis} for ${plot.parameters['type']},    Band: ${plot.parameters['bandname']}
         </%def>
 
 
         <%def name="caption_title(plot)">
-           ${plot.parameters['type']}
+           ${plot.parameters['type']}     Band: ${plot.parameters['bandname']}
         </%def>
 </%self:plot_group>
 

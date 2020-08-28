@@ -133,3 +133,5 @@ ${'is' if num_mses == 1 else 'are'} summarised below.</p>
 % else:
 <p>No representative target source is defined. Will try to fall back to existing science target sources in the imaging tasks.</p>
 % endif
+
+<%block name="addendum"></%block>

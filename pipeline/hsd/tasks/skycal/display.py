@@ -9,6 +9,7 @@ from pipeline.h.tasks.common.displays import common as common
 from pipeline.h.tasks.common.displays import bandpass as bandpass
 from ..common import display as sd_display
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 
 LOG = logging.get_logger(__name__)
 
@@ -261,6 +262,7 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
         self.figtype = str(figtype)
         LOG.info('figtype = {0}'.format(self.figtype))
 
+    @casa5style_plot
     def plot(self):
         context = self.context
         result = self.result
@@ -280,21 +282,22 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
         plot = None
         plots = []
         antenna_ids = [ant.id for ant in antennas]
-        field_ids = [v.id for v in fields]
+        field_strategy = ms.calibration_strategy['field_strategy']
 
         for spw in spw_ids:
             spw_id = spw
             LOG.debug('spw_id={0}'.format(spw_id))
             for antenna_id in antenna_ids:
                 LOG.debug('antenna_id={0}'.format(antenna_id))
-                for field_id in field_ids:
-                    field = fields[field_id]
-                    LOG.debug('field = {0}'.format(field))
+                n = 0
+                for field_id_target, field_id_reference in field_strategy.items():
+                    LOG.debug('field_id_target = {0}, field_id_reference = {1}'.format(field_id_target, field_id_reference))
+                    field = fields[field_id_target]
                     # make plots for the interval ratio (off-source/on-source) vs time;
                     with casatools.TableReader(calapp.gaintable) as tb:
-                        t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}&&FIELD_ID=={}'.format(spw_id, antenna_id, field_id), sortlist='TIME', columns='TIME, SPECTRAL_WINDOW_ID, INTERVAL')
+                        t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}&&FIELD_ID=={}'.format(spw_id, antenna_id, field_id_reference), sortlist='TIME', columns='TIME, SPECTRAL_WINDOW_ID, INTERVAL')
                         mjd = t.getcol('TIME')
-                        ms_target = ms.get_scans(scan_intent='TARGET', field=1)
+                        ms_target = ms.get_scans(scan_intent='TARGET', field=field_id_target)
                         ms_target0 = ms_target[0]
                         interval_unit = ms_target0.mean_interval(spw_id=spw_id)
                         interval_unit = interval_unit.total_seconds()
@@ -312,11 +315,12 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
                             ax = fig.add_subplot(1,1,1)
                             ax.xaxis.set_major_locator(sd_display.utc_locator(start_time=start_time, end_time=end_time))
                             ax.xaxis.set_major_formatter(sd_display.utc_formatter())
+                            ax.tick_params( axis='both', labelsize=10 )
                             antenna_name = antennas[antenna_id].name
                             field_name = field.clean_name
-                            pl.title('Interval vs. Time Plot\n{} Field:{} Antenna:{} Spw:{}'.format(vis, field_name, antenna_name, spw_id))
-                            pl.ylabel('Interval of Off-Source / Interval of On-Source')
-                            pl.xlabel("UTC")
+                            pl.title('Interval vs. Time Plot\n{} Field:{} Antenna:{} Spw:{}'.format(vis, field_name, antenna_name, spw_id), fontsize=12)
+                            pl.ylabel('Interval of Off-Source / Interval of On-Source', fontsize=10)
+                            pl.xlabel("UTC", fontsize=10)
                             ax.plot(mjd_list, interval, linestyle='None', marker=".", label="Interval of Off-Source\nUnit: {} seconds (Interval of On-Source)".format(interval_unit))
                             min_interval = numpy.min(interval)
                             max_interval = numpy.max(interval)
@@ -344,9 +348,11 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
                                     field=field_name,
                                     parameters=parameters)
                                 plots.append(plot)
+                    n += 1
         return plots
 
 
+@casa5style_plot
 def plot_elevation_difference(context, result, eldiff, threshold=3.0):
     """
     context 
@@ -384,12 +390,15 @@ def plot_elevation_difference(context, result, eldiff, threshold=3.0):
         a0 = pl.axes([0.125, 0.51, 0.775, 0.39])
         a0.xaxis.set_major_locator(sd_display.utc_locator(start_time=start_time, end_time=end_time))
         a0.xaxis.set_major_formatter(pl.NullFormatter())
-        pl.ylabel('Elevation [deg]')
+        a0.tick_params( axis='both', labelsize=10 )
+        pl.ylabel('Elevation [deg]', fontsize=10 )
+
         a1 = pl.axes([0.125, 0.11, 0.775, 0.39])
         a1.xaxis.set_major_locator(sd_display.utc_locator(start_time=start_time, end_time=end_time))
         a1.xaxis.set_major_formatter(sd_display.utc_formatter())
-        pl.ylabel('Elevation Difference [deg]')
-        pl.xlabel('UTC')
+        a1.tick_params( axis='both', labelsize=10 )
+        pl.ylabel('Elevation Difference [deg]', fontsize=10 )
+        pl.xlabel('UTC', fontsize=10 )
         return a0, a1
 
     def finalize_figure(figure_id, vis, field_name, antenna_name):
@@ -425,7 +434,8 @@ def plot_elevation_difference(context, result, eldiff, threshold=3.0):
         pl.legend(loc='best', numpoints=1, prop={'size': 'small'})
         pl.title('Elevation Difference between ON and OFF\n{} Field {} Antenna {}'.format(vis, 
                                                                                           field_name, 
-                                                                                          antenna_name))
+                                                                                          antenna_name),
+                 fontsize=12)
 
     def generate_plot(figure_id, vis, field_name, antenna_name):
         pl.figure(figure_id)

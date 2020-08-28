@@ -189,6 +189,10 @@ class Bandpassflag(basetask.StandardTaskTemplate):
                                                  intent=inputs.intent, flagsum=False, flagbackup=False)
             actask = applycal.IFApplycal(acinputs)
             acresult = self._executor.execute(actask)
+            # copy across the vis:callibrary dict to our result. This dict 
+            # will be inspected by the renderer to know if/which callibrary
+            # files should be copied across to the weblog stage directory
+            result.callib_map.update(acresult.callib_map)
 
             # Create "after calibration, before flagging" plots for the weblog.
             LOG.info('Creating "after calibration, before flagging" plots')
@@ -232,7 +236,7 @@ class Bandpassflag(basetask.StandardTaskTemplate):
             fsinputs = FlagdataSetter.Inputs(context=inputs.context, vis=inputs.vis, table=inputs.vis, inpfile=[])
             fstask = FlagdataSetter(fsinputs)
             fstask.flags_to_set(cafflags)
-            fsresult = self._executor.execute(fstask)
+            _ = self._executor.execute(fstask)
 
             # Check for need to update reference antennas, and apply to local
             # copy of the MS.

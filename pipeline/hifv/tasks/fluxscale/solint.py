@@ -1,6 +1,7 @@
 import os
 
 import numpy as np
+import collections
 
 import pipeline.hif.heuristics.findrefant as findrefant
 import pipeline.infrastructure as infrastructure
@@ -71,10 +72,48 @@ class Solint(basetask.StandardTaskTemplate):
 
     def prepare(self):
 
-        # Solint section
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        spw2band = m.get_vla_spw2band()
+        band2spw = collections.defaultdict(list)
+        spwobjlist = m.get_spectral_windows(science_windows_only=True)
+        listspws = [spw.id for spw in spwobjlist]
+        for spw, band in spw2band.items():
+            if spw in listspws:  # Science intents only
+                band2spw[band].append(str(spw))
+
+        longsolint = {}
+        gain_solint2 = {}
+        shortsol2 = {}
+        short_solint = {}
+        new_gain_solint1 = {}
+        bpdgain_touse = {}
+
         calMs = 'calibrators.ms'
         split_result = self._do_split(calMs)
-        (longsolint, gain_solint2) = self._do_determine_solint(calMs)
+
+        for band, spwlist in band2spw.items():
+            longsolint_band, gain_solint2_band, shortsol2_band, short_solint_band, \
+            new_gain_solint1_band, vis, bpdgain_touse_band = self._do_solint(band, spwlist, calMs)
+
+            longsolint[band] = longsolint_band
+            gain_solint2[band] = gain_solint2_band
+            shortsol2[band] = shortsol2_band
+            short_solint[band] = short_solint_band
+            new_gain_solint1[band] = new_gain_solint1_band
+            bpdgain_touse[band] = bpdgain_touse_band
+
+        return SolintResults(longsolint=longsolint, gain_solint2=gain_solint2, shortsol2=shortsol2,
+                             short_solint=short_solint, new_gain_solint1=new_gain_solint1, vis=vis,
+                             bpdgain_touse=bpdgain_touse)
+
+    def analyse(self, results):
+        return results
+
+    def _do_solint(self, band, spwlist, calMs):
+
+        # Solint section
+
+        (longsolint, gain_solint2) = self._do_determine_solint(calMs, ','.join(spwlist))
 
         try:
             self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
@@ -91,15 +130,16 @@ class Solint(basetask.StandardTaskTemplate):
         # Testgains section
         context = self.inputs.context
         tablebase = tableprefix + str(stage_number) + '_1.' + 'testgaincal'
-        table_suffix = ['.tbl', '3.tbl', '10.tbl', 'scan.tbl', 'limit.tbl']
+        table_suffix = ['_{!s}.tbl'.format(band), '3_{!s}.tbl'.format(band),
+                        '10_{!s}.tbl'.format(band), 'scan_{!s}.tbl'.format(band), 'limit_{!s}.tbl'.format(band)]
         soltimes = [1.0, 3.0, 10.0]
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         soltimes = [m.get_vla_max_integration_time() * x for x in soltimes]
 
-        solints = ['int', str(soltimes[1])+'s', str(soltimes[2])+'s']
+        solints = ['int', str(soltimes[1]) + 's', str(soltimes[2]) + 's']
         soltime = soltimes[0]
         solint = solints[0]
-        shortsol1 = context.evla['msinfo'][m.name].shortsol1
+        shortsol1 = context.evla['msinfo'][m.name].shortsol1[band]
         combtime = 'scan'
 
         refantfield = context.evla['msinfo'][m.name].calibrator_field_select_string
@@ -117,7 +157,7 @@ class Solint(basetask.StandardTaskTemplate):
 
         bpdgain_touse = tablebase + table_suffix[0]
         testgains_result = self._do_gtype_testgains(calMs, bpdgain_touse, solint=solint,
-                                                    context=context, combtime=combtime, refAnt=refAnt)
+                                                    context=context, combtime=combtime, refAnt=refAnt, spw=','.join(spwlist))
 
         flaggedSolnResult1 = getCalFlaggedSoln(bpdgain_touse)
         LOG.info("For solint = " + solint + " fraction of flagged solutions = " +
@@ -137,10 +177,10 @@ class Solint(basetask.StandardTaskTemplate):
             solint = solints[1]
 
             testgains_result = self._do_gtype_testgains(calMs, tablebase + table_suffix[1], solint=solint,
-                                                        context=context, combtime=combtime, refAnt=refAnt)
+                                                        context=context, combtime=combtime, refAnt=refAnt, spw=','.join(spwlist))
             flaggedSolnResult3 = getCalFlaggedSoln(tablebase + table_suffix[0])
 
-            LOG.info("For solint = "+solint+" fraction of flagged solutions = " +
+            LOG.info("For solint = " + solint + " fraction of flagged solutions = " +
                      str(flaggedSolnResult3['all']['fraction']))
             LOG.info("Median fraction of flagged solutions per antenna = " +
                      str(flaggedSolnResult3['antmedian']['fraction']))
@@ -159,9 +199,9 @@ class Solint(basetask.StandardTaskTemplate):
                     solint = solints[2]
 
                     testgains_result = self._do_gtype_testgains(calMs, tablebase + table_suffix[2], solint=solint,
-                                                                context=context, combtime=combtime, refAnt=refAnt)
+                                                                context=context, combtime=combtime, refAnt=refAnt, spw=','.join(spwlist))
                     flaggedSolnResult10 = getCalFlaggedSoln(tablebase + table_suffix[2])
-                    LOG.info("For solint = "+solint+" fraction of flagged solutions = " +
+                    LOG.info("For solint = " + solint + " fraction of flagged solutions = " +
                              str(flaggedSolnResult3['all']['fraction']))
                     LOG.info("Median fraction of flagged solutions per antenna = " +
                              str(flaggedSolnResult3['antmedian']['fraction']))
@@ -172,7 +212,7 @@ class Solint(basetask.StandardTaskTemplate):
                         fracFlaggedSolns10 = 1.0
 
                     if fracFlaggedSolns10 < fracFlaggedSolns3:
-                        shortsol2=soltime
+                        shortsol2 = soltime
                         bpdgain_touse = tablebase + table_suffix[2]
 
                         if fracFlaggedSolns10 > 0.05:
@@ -180,9 +220,9 @@ class Solint(basetask.StandardTaskTemplate):
                             combtime = ''
                             testgains_result = self._do_gtype_testgains(calMs, tablebase + table_suffix[3],
                                                                         solint=solint, context=context,
-                                                                        combtime=combtime, refAnt=refAnt)
+                                                                        combtime=combtime, refAnt=refAnt, spw=','.join(spwlist))
                             flaggedSolnResultScan = getCalFlaggedSoln(tablebase + table_suffix[3])
-                            LOG.info("For solint = "+solint+" fraction of flagged solutions = " +
+                            LOG.info("For solint = " + solint + " fraction of flagged solutions = " +
                                      str(flaggedSolnResult3['all']['fraction']))
                             LOG.info("Median fraction of flagged solutions per antenna = " +
                                      str(flaggedSolnResult3['antmedian']['fraction']))
@@ -205,7 +245,7 @@ class Solint(basetask.StandardTaskTemplate):
 
         short_solint = max(shortsol1, shortsol2)
         LOG.info("Short_solint determined from heuristics: " + str(short_solint))
-        new_gain_solint1 = str(short_solint)+'s'
+        new_gain_solint1 = str(short_solint) + 's'
 
         if self.inputs.limit_short_solint:
             LOG.warn("Short Solint limited by user keyword input to " + str(self.inputs.limit_short_solint))
@@ -232,10 +272,11 @@ class Solint(basetask.StandardTaskTemplate):
         # PIPE-696.  Need to compare short solint with int time and limit the precision.
         if short_solint == float("{:.6f}".format(m.get_vla_max_integration_time())):
             new_gain_solint1 = 'int'
-            LOG.info('The short solution interval used is: {!s} ({!s}).'.format(new_gain_solint1,str(short_solint)+'s'))
+            LOG.info(
+                'The short solution interval used is: {!s} ({!s}).'.format(new_gain_solint1, str(short_solint) + 's'))
 
             testgains_result = self._do_gtype_testgains(calMs, tablebase + table_suffix[4], solint=new_gain_solint1,
-                                                        context=context, combtime=combtime, refAnt=refAnt)
+                                                        context=context, combtime=combtime, refAnt=refAnt, spw=','.join(spwlist))
             bpdgain_touse = tablebase + table_suffix[4]
 
         LOG.info("Using short solint = " + str(new_gain_solint1))
@@ -243,12 +284,7 @@ class Solint(basetask.StandardTaskTemplate):
         if abs(longsolint - short_solint) <= soltime:
             LOG.warn('Short solint = long solint +/- integration time of {}s'.format(soltime))
 
-        return SolintResults(longsolint=longsolint, gain_solint2=gain_solint2, shortsol2=shortsol2,
-                             short_solint=short_solint, new_gain_solint1=new_gain_solint1, vis=self.inputs.vis,
-                             bpdgain_touse=bpdgain_touse)
-
-    def analyse(self, results):
-        return results
+        return longsolint, gain_solint2, shortsol2, short_solint, new_gain_solint1, self.inputs.vis, bpdgain_touse
 
     def _do_split(self, calMs):
 
@@ -280,7 +316,7 @@ class Solint(basetask.StandardTaskTemplate):
 
         return self._executor.execute(job)
 
-    def _do_determine_solint(self, calMs):
+    def _do_determine_solint(self, calMs, spw=''):
 
         durations = []
         old_spws = []
@@ -294,57 +330,64 @@ class Solint(basetask.StandardTaskTemplate):
             phase_scan_list = self.inputs.context.evla['msinfo'][m.name].phase_scan_select_string.split(',')
             phase_scan_list = [int(i) for i in phase_scan_list]
 
+            # Sub-select phase scan list per band
+            phase_scanids_perband = [scan.id for scan in m.get_scans(scan_id=phase_scan_list, spw=spw)]
+
             for kk in range(len(phase_scan_list)):
                 ii = phase_scan_list[kk]
+                if ii in phase_scanids_perband:
+                    try:
+                        # Collect beginning and ending times
+                        # Take max of end times and min of beginning times
+                        endtimes = [scan_summary[str(ii)][scankey]['EndTime'] for scankey in scan_summary[str(ii)]]
+                        begintimes = [scan_summary[str(ii)][scankey]['BeginTime'] for scankey in scan_summary[str(ii)]]
 
-                try:
-                    # Collect beginning and ending times
-                    # Take max of end times and min of beginning times
-                    endtimes = [scan_summary[str(ii)][scankey]['EndTime'] for scankey in scan_summary[str(ii)]]
-                    begintimes = [scan_summary[str(ii)][scankey]['BeginTime'] for scankey in scan_summary[str(ii)]]
+                        end_time = max(endtimes)
+                        begin_time = min(begintimes)
 
-                    end_time = max(endtimes)
-                    begin_time = min(begintimes)
+                        new_spws = scan_summary[str(ii)]['0']['SpwIds']
+                        new_field = scan_summary[str(ii)]['0']['FieldId']
 
-                    new_spws = scan_summary[str(ii)]['0']['SpwIds']
-                    new_field = scan_summary[str(ii)]['0']['FieldId']
+                        if ((kk > 0) and (phase_scan_list[kk-1] == ii-1) and
+                                (set(new_spws) == set(old_spws)) and (new_field == old_field)):
+                            # if contiguous scans, just increase the time on the previous one
+                            LOG.info("End time, old begin time {} {}".format(end_time, old_begin_time))
+                            durations[-1] = 86400*(end_time - old_begin_time)
+                        else:
+                            LOG.info("End time, begin time {} {}".format(end_time, begin_time))
+                            durations.append(86400*(end_time - begin_time))
+                            old_begin_time = begin_time
+                            LOG.info("append durations, old, begin:".format(durations, old_begin_time, begin_time))
+                        LOG.info("Scan "+str(ii)+" has "+str(durations[-1])+"s on source")
+                        old_spws = new_spws
+                        old_field = new_field
 
-                    if ((kk > 0) and (phase_scan_list[kk-1] == ii-1) and
-                            (set(new_spws) == set(old_spws)) and (new_field == old_field)):
-                        # if contiguous scans, just increase the time on the previous one
-                        LOG.info("End time, old begin time {} {}".format(end_time, old_begin_time))
-                        durations[-1] = 86400*(end_time - old_begin_time)
-                    else:
-                        LOG.info("End time, begin time {} {}".format(end_time, begin_time))
-                        durations.append(86400*(end_time - begin_time))
-                        old_begin_time = begin_time
-                        LOG.info("append durations, old, begin:".format(durations, old_begin_time, begin_time))
-                    LOG.info("Scan "+str(ii)+" has "+str(durations[-1])+"s on source")
-                    old_spws = new_spws
-                    old_field = new_field
-
-                except KeyError:
-                    LOG.warn("WARNING: scan "+str(ii)+" is completely flagged and missing from " + calMs)
+                    except KeyError:
+                        LOG.warn("WARNING: scan "+str(ii)+" is completely flagged and missing from " + calMs)
 
         longsolint = (np.max(durations)) * 1.01
         gain_solint2 = str(longsolint) + 's'
 
         return longsolint, gain_solint2
 
-    def _do_gtype_testgains(self, calMs, caltable, solint='int', context=None, combtime='scan', refAnt=None):
+    def _do_gtype_testgains(self, calMs, caltable, solint='int', context=None, combtime='scan', refAnt=None, spw=''):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
 
-        calibrator_scan_select_string=context.evla['msinfo'][m.name].calibrator_scan_select_string
+        calibrator_scan_select_string = context.evla['msinfo'][m.name].calibrator_scan_select_string
+
+        scanlist = [int(scan) for scan in calibrator_scan_select_string.split(',')]
+        scanids_perband = ','.join([str(scan.id) for scan in m.get_scans(scan_id=scanlist, spw=spw)])
+
         minBL_for_cal = m.vla_minbaselineforcal()
 
         task_args = {'vis': calMs,
                      'caltable': caltable,
                      'field': '',
-                     'spw': '',
+                     'spw': spw,
                      'intent': '',
                      'selectdata': True,
-                     'scan': calibrator_scan_select_string,
+                     'scan': scanids_perband,
                      'solint': solint,
                      'combine': combtime,
                      'preavg': -1.0,
@@ -363,7 +406,7 @@ class Solint(basetask.StandardTaskTemplate):
                      'uvrange': '',
                      'parang': True}
 
-        calscanslist = list(map(int, calibrator_scan_select_string.split(',')))
+        calscanslist = list(map(int, scanids_perband.split(',')))
         scanobjlist = m.get_scans(scan_id=calscanslist,
                                   scan_intent=['AMPLITUDE', 'BANDPASS', 'POLLEAKAGE', 'POLANGLE',
                                                'PHASE', 'POLARIZATION', 'CHECK'])

@@ -74,7 +74,7 @@ def rx_for_plot(plot):
     <li>Plots:</li>
     <ul>
         %if flux_plots:
-            <li><a href="#flux_vs_freq_comparison">Derived flux density vs catalogue flux density</a></li>
+            <li><a href="#flux_vs_freq_comparison">Calibrated flux density vs derived flux density vs catalogue flux density</a></li>
         %endif
         %if ampuv_allant_plots:
             <li><a href="#model">Flux calibrator model comparison</a></li>
@@ -133,8 +133,8 @@ def rx_for_plot(plot):
 % for single_result in [r for r in result if not r.applies_adopted]:
 		<tr>
 			<td>${os.path.basename(single_result.vis)}</td>
-                	<td>${single_result.uvrange}</td>
-                	<td>${single_result.resantenna.replace(',', ', ').replace('&', '')}</td>
+            <td>${single_result.uvrange}</td>
+            <td>${single_result.resantenna.replace(',', ', ').replace('&', '')}</td>
 		</tr>
 % endfor
 	</tbody>
@@ -149,17 +149,20 @@ def rx_for_plot(plot):
 	<caption>Phased-up Fluxscale Results</caption>
     <thead>
 	    <tr>
-	        <th scope="col" rowspan="3">Measurement Set</th>
-	        <th scope="col" rowspan="3">Field</th>
-	        <th scope="col" rowspan="3">Spw</th>
-	        <th scope="col" rowspan="3">Frequency Bandwidth (TOPO)</th>
-	        <th scope="col" colspan="4">Derived Flux Density</th>
-	        <th scope="col" rowspan="3">Flux Ratio (Derived / Catalog)</th>
-	        <th scope="col" rowspan="3">Spix</th>
+	        <th scope="col" rowspan="4">Measurement Set</th>
+	        <th scope="col" rowspan="4">Field</th>
+	        <th scope="col" rowspan="4">Spw</th>
+	        <th scope="col" rowspan="4">Frequency Bandwidth (TOPO)</th>
+	        <th scope="col" colspan="4">Derived Scaling Factor</th>
+	        <th scope="col" rowspan="4">Flux Ratio (Calibrated / Catalog)</th>
+	        <th scope="col" rowspan="4">Spix</th>
 		</tr>
 		<tr>
+	        <th scope="col" colspan="4">Calibrated Visibility Flux Density</th>
+        </tr>
+		<tr>
 	        <th scope="col" colspan="4">Catalog Flux Density</th>
-	        </tr>
+        </tr>
 		<tr>
 	        <th scope="col">I</th>
 	        <th scope="col">Q</th>
@@ -184,18 +187,18 @@ def rx_for_plot(plot):
 				  title_id="flux_vs_freq_comparison">
 
 	<%def name="title()">
-		Derived flux density vs catalogue flux density
+		Calibrated visibility flux density vs catalogue flux density
 	</%def>
 
 	<%def name="preamble()">
     <p>These plots show amplitude vs frequency for the non-AMPLITUDE calibrators in each measurement set, comparing the
-        pipeline-derived flux density <i>S</i><sub>derived</sub> to the catalogue flux
+        calibrated visibility flux density <i>S</i><sub>calibrated</sub> to the catalogue flux
         density<i>S</i><sub>catalogue</sub> reported by analysisUtils, online source catalogues, and/or recorded in the
         ASDM. In these plots, <i>S</i><sub>catalogue</sub> is extrapolated using the spectral index to cover the
         frequency range of the spectral windows.</p>
 
     <p>QA metrics are calculated by comparing the flux density ratio
-        <i>K</i><sub>spw</sub>=<i>S</i><sub>derived</sub>/<i>S</i><sub>catalogue</sub> for each spectral window to the
+        <i>K</i><sub>spw</sub>=<i>S</i><sub>calibrated</sub>/<i>S</i><sub>catalogue</sub> for each spectral window to the
         ratio for the highest SNR spectral window. This metric evaluates how consistent the relative flux calibration is
         from spectral window to spectral window for each calibrator; it does not evaluate whether the absolute flux
         calibration is reasonable as compared to the catalogue measurements. All QA scores based on this metric are
@@ -231,7 +234,11 @@ def rx_for_plot(plot):
 		        % for i, plot in enumerate(ampuv_allant_plots[ms][intent]):
 		        	<!--  Select on antenna -->
 		            <%
-		              antplot = ampuv_ant_plots[ms][intent][i]
+                        try:
+                            antplot = ampuv_ant_plots[ms][intent][i]
+                        except KeyError:
+                            # antplot may be skipped if identical to plot. See PIPE-33.
+                            antplot = None
 		            %>
 		            <div class="col-md-3">
 			            % if os.path.exists(plot.thumbnail):
@@ -263,7 +270,7 @@ def rx_for_plot(plot):
 							</div>
 			            % endif
 
-			            % if os.path.exists(antplot.thumbnail):
+			            % if antplot is not None and os.path.exists(antplot.thumbnail):
 			                <div class="thumbnail">
 			                    <a href="${os.path.relpath(antplot.abspath, pcontext.report_dir)}"
 								   title='<div class="pull-left">Baseband ${antplot.parameters["baseband"]} (spw ${antplot.parameters["spw"]}).<br>

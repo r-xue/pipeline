@@ -7,11 +7,11 @@ Created on 9 Sep 2014
 import os
 import shutil
 
-import pipeline.h.tasks.common.displays.flagging as flagging
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
-from pipeline.hif.tasks.common import flagging_renderer_utils as flagutils
+from ..common import flagging_renderer_utils as flagutils
+from ..common.displays import flagging
 
 LOG = logging.get_logger(__name__)
 
@@ -27,10 +27,15 @@ class T2_4MDetailsFlagDeterBaseRenderer(basetemplates.T2_4MDetailsDefaultRendere
         weblog_dir = os.path.join(pipeline_context.report_dir,
                                   'stage%s' % result.stage_number)
 
+        # calculate which intents to display in the flagging statistics table
+        intents_to_summarise = flagutils.intents_to_summarise(pipeline_context)
+        flag_table_intents = ['TOTAL', 'SCIENCE SPWS']
+        flag_table_intents.extend(intents_to_summarise)
+
         flag_totals = {}
         for r in result:
-            flag_totals = utils.dict_merge(flag_totals, 
-                                           flagutils.flags_for_result(r, pipeline_context))
+            flag_totals = utils.dict_merge(flag_totals,
+                                           flagutils.flags_for_result(r, pipeline_context, intents_to_summarise=intents_to_summarise))
 
             # copy template files across to weblog directory
             toggle_to_filenames = {'online': 'fileonline',
@@ -54,16 +59,6 @@ class T2_4MDetailsFlagDeterBaseRenderer(basetemplates.T2_4MDetailsDefaultRendere
 
             flagcmd_files[ms.basename] = flagcmds_path
 
-#         # collect the agent names
-#         agent_names = set()
-#         for r in result:
-#             agent_names.update([s['name'] for s in r.summaries])
-# 
-#         # get agent names in execution order
-#         order = ['before', 'online', 'template', 'autocorr', 'shadow', 
-#                  'intents', 'edgespw']
-#         agents = [s for s in order if s in agent_names]
-
         # return all agents so we get ticks and crosses against each one
         agents = ['before', 'intents', 'qa0', 'qa2', 'online', 'template', 'autocorr', 'shadow', 'edgespw']
 
@@ -75,7 +70,9 @@ class T2_4MDetailsFlagDeterBaseRenderer(basetemplates.T2_4MDetailsDefaultRendere
             'agents': agents,
             'dirname': weblog_dir,
             'flagcmds': flagcmd_files,
-            'flagplots': flagplots})
+            'flagplots': flagplots,
+            'flag_table_intents': flag_table_intents
+        })
 
     @staticmethod
     def flagplot(result, context):

@@ -17,7 +17,8 @@ class TargetflagResults(basetask.Results):
     def __init__(self):
         super(TargetflagResults, self).__init__()
         self.cafresult = None
-        self.plots = dict()
+        self.plots = {}
+        self.callib_map = {}
 
     def merge_with_context(self, context):
         """
@@ -76,6 +77,10 @@ class Targetflag(basetask.StandardTaskTemplate):
                 context=inputs.context, vis=inputs.vis, intent='TARGET', flagsum=False, flagbackup=False)
             actask = applycal.IFApplycal(acinputs)
             acresult = self._executor.execute(actask, merge=True)
+            # copy across the vis:callibrary dict to our result. This dict 
+            # will be inspected by the renderer to know if/which callibrary
+            # files should be copied across to the weblog stage directory
+            result.callib_map.update(acresult.callib_map)
 
             # Create back-up of flags after applycal but before correctedampflag.
             LOG.info('Creating back-up of "after_tgtflag_applycal" flagging state')
@@ -108,10 +113,8 @@ class Targetflag(basetask.StandardTaskTemplate):
             if cafflags:
                 # Make "after calibration, after flagging" plots for the weblog
                 LOG.info('Creating "after calibration, after flagging" plots')
-                result.plots['after'] = plot_fn(suffix='after')
+                result.plots['after'] = plot_fn(flagcmds=cafflags, suffix='after')
 
-        finally:
-            if cafflags:
                 # Restore the "after_tgtflag_applycal" backup of the flagging
                 # state, so that the "before plots" only show things needing
                 # to be flagged by correctedampflag
@@ -120,8 +123,9 @@ class Targetflag(basetask.StandardTaskTemplate):
                 self._executor.execute(task)
                 # Make "after calibration, before flagging" plots for the weblog
                 LOG.info('Creating "after calibration, before flagging" plots')
-                result.plots['before'] = plot_fn(suffix='before')
+                result.plots['before'] = plot_fn(flagcmds=cafflags, suffix='before')
 
+        finally:
             # Restore the "pre-targetflag" backup of the flagging state, to
             # undo any flags that were propagated from caltables to the MS by
             # the applycal call.
@@ -129,25 +133,26 @@ class Targetflag(basetask.StandardTaskTemplate):
             task = casa_tasks.flagmanager(vis=inputs.vis, mode='restore', versionname=flag_backup_name_pretgtf)
             self._executor.execute(task)
 
-            if cafflags:
-                # Re-apply the newly found flags from correctedampflag.
-                LOG.info('Re-applying flags from correctedampflag.')
-                fsinputs = FlagdataSetter.Inputs(context=inputs.context, vis=inputs.vis, table=inputs.vis, inpfile=[])
-                fstask = FlagdataSetter(fsinputs)
-                fstask.flags_to_set(cafflags)
-                fsresult = self._executor.execute(fstask)
+        if cafflags:
+            # Re-apply the newly found flags from correctedampflag.
+            LOG.info('Re-applying flags from correctedampflag.')
+            fsinputs = FlagdataSetter.Inputs(context=inputs.context, vis=inputs.vis, table=inputs.vis, inpfile=[])
+            fstask = FlagdataSetter(fsinputs)
+            fstask.flags_to_set(cafflags)
+            _ = self._executor.execute(fstask)
 
         return result
 
     def analyse(self, results):
         return results
 
-def create_plots(inputs, context, suffix=''):
+def create_plots(inputs, context, flagcmds, suffix=''):
     """
     Return amplitude vs time plots for the given data column.
 
     :param inputs: pipeline inputs
     :param context: pipeline context
+    :param flagcmds: list of FlagCmd objects
     :param suffix: optional component to add to the plot filenames
     :return: dict of (x axis type => str, [plots,...])
     """
@@ -158,9 +163,18 @@ def create_plots(inputs, context, suffix=''):
     calto = callibrary.CalTo(vis=inputs.vis)
     output_dir = context.output_dir
 
+    # Amplitude vs time plots
     amp_time_plots = AmpVsXChart('time', context, output_dir, calto, suffix=suffix).plot()
 
-    return {'time': amp_time_plots}
+    # Amplitude vs UV distance plots shall contain only the fields that were flagged
+    flagged_spws = {flagcmd.spw for flagcmd in flagcmds}
+    spw_field_dict = {int(spw): ','.join(sorted({flagcmd.field for flagcmd in flagcmds if flagcmd.spw==spw})) for spw in flagged_spws}
+    amp_uvdist_plots = AmpVsXChart('uvdist', context, output_dir, calto, suffix=suffix, field=spw_field_dict).plot()
+
+    for spw, field in spw_field_dict.items():
+        LOG.info(f'Fields flagged for {inputs.vis} spw {spw}: {field}')
+
+    return {'time': amp_time_plots, 'uvdist': amp_uvdist_plots}
 
 
 class AmpVsXChart(applycal_displays.SpwSummaryChart):

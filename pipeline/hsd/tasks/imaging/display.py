@@ -3,6 +3,7 @@ import os
 import time
 
 import numpy
+#TODO: pylab should be replaced by pyplot
 import pylab as pl
 from matplotlib.ticker import MultipleLocator
 
@@ -10,13 +11,14 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.displays.pointing as pointing
 import pipeline.infrastructure.renderer.logger as logger
-from pipeline.hsd.tasks.common import atmutil
+from pipeline.h.tasks.common import atmutil
 from pipeline.hsd.tasks.common.display import DPIDetail, DPISummary, SDImageDisplay, SDImageDisplayInputs, ShowPlot
 from pipeline.hsd.tasks.common.display import sd_polmap as polmap
 from pipeline.hsd.tasks.common.display import SDSparseMapPlotter
 from pipeline.hsd.tasks.common.display import NoData, NoDataThreshold
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure.displays.pointing import MapAxesManagerBase
+from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 
 # NoData = -32767.0
 # NoDataThreshold = NoData + 10000.0
@@ -135,14 +137,11 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
                         for t in tpmap_colorbar.ax.get_yticklabels():
                             newfontsize = t.get_fontsize()*0.5
                             t.set_fontsize(newfontsize)
-#                         #tpmap_colorbar.ax.set_title('[K km/s]')
-#                         tpmap_colorbar.ax.set_title('[%s]'%(self.image.brightnessunit))
-#                         lab = tpmap_colorbar.ax.title
-#                         lab.set_fontsize(newfontsize)
-                        tpmap_colorbar.ax.set_ylabel('[%s]' % self.image.brightnessunit, fontsize=newfontsize)
                     else:
                         tpmap_colorbar.mappable.set_clim((tmin, tmax))
                         tpmap_colorbar.draw_all()
+                    # set_clim and draw_all clears y-label
+                    tpmap_colorbar.ax.set_ylabel('[%s]' % self.image.brightnessunit, fontsize=newfontsize)
 
             # draw beam pattern
             if beam_circle is None:
@@ -275,11 +274,12 @@ class SDMomentMapDisplay(SDImageDisplay):
                         for t in tpmap_colorbar.ax.get_yticklabels():
                             newfontsize = t.get_fontsize()*0.5
                             t.set_fontsize(newfontsize)
-                        #if newfontsize is None: # no ticks in colorbar likely invalid TP map
-                        tpmap_colorbar.ax.set_ylabel('[%s]'%(self.brightnessunit), fontsize=newfontsize)
                     else:
                         tpmap_colorbar.mappable.set_clim((tmin, tmax))
                         tpmap_colorbar.draw_all()
+                    #if newfontsize is None: # no ticks in colorbar likely invalid TP map
+                    # set_clim and draw_all clears y-label
+                    tpmap_colorbar.ax.set_ylabel('[%s]'%(self.brightnessunit), fontsize=newfontsize)
 
             # draw beam pattern
             if beam_circle is None:
@@ -330,12 +330,10 @@ class ChannelMapAxesManager(ChannelAveragedAxesManager):
         self.nv = nv
         self.brightnessunit = brightnessunit
         self.nchmap = nh * nv
-        self.left = 2.15 / 3.0
-        self.width = 1.0 / 3.0 * 0.8
+        self.left = 2.10 / 3.0
+        self.width = 1.0 / 3.0 * 0.75
         self.bottom = 2.0 / 3.0 + 0.2 / 3.0
         self.height = 1.0 / 3.0 * 0.7
-
-        self.numeric_formatter = pl.FormatStrFormatter('%.2f')
 
         self._axes_integmap = None
         self._axes_integsp_full = None
@@ -345,7 +343,7 @@ class ChannelMapAxesManager(ChannelAveragedAxesManager):
     @property
     def axes_integmap(self):
         if self._axes_integmap is None:
-            axes = pl.axes([self.left, self.bottom, self.width, self.height])
+            axes = pl.axes([self.left, self.bottom, 0.98-self.left, self.height])
 
             axes.xaxis.set_major_formatter(self.xformatter)
             axes.yaxis.set_major_formatter(self.yformatter)
@@ -370,11 +368,12 @@ class ChannelMapAxesManager(ChannelAveragedAxesManager):
     @property
     def axes_integsp_full(self):
         if self._axes_integsp_full is None:
-            left = 1.0 / 3.0 + 0.1 / 3.0
+            left = 0.6-self.width
             axes = pl.axes([left, self.bottom, self.width, self.height])
-            axes.xaxis.set_major_formatter(self.numeric_formatter)
+            axes.xaxis.get_major_formatter().set_useOffset(False)
             pl.xticks(size=self.ticksize)
             pl.yticks(size=self.ticksize)
+
             pl.xlabel('Frequency (GHz)', size=self.ticksize)
             pl.ylabel('Intensity (%s)' % self.brightnessunit, size=self.ticksize)
             pl.title('Integrated Spectrum', size=self.ticksize)
@@ -386,7 +385,7 @@ class ChannelMapAxesManager(ChannelAveragedAxesManager):
     @property
     def axes_integsp_zoom(self):
         if self._axes_integsp_zoom is None:
-            left = 0.1 / 3.0
+            left = 0.3-self.width
             axes = pl.axes([left, self.bottom, self.width, self.height])
             pl.xticks(size=self.ticksize)
             pl.yticks(size=self.ticksize)
@@ -406,11 +405,18 @@ class ChannelMapAxesManager(ChannelAveragedAxesManager):
         return self._axes_chmap
 
     def __axes_chmap(self):
+#         chmap_hfrac = 0.92 # leave some room for colorbar
+#         offset = 0.01
         for i in range(self.nchmap):
             x = i % self.nh
             y = self.nv - int(i // self.nh) - 1
             left = 1.0 / float(self.nh) * x #(x + 0.05)
             width = 1.0 / float(self.nh) * 0.85 #0.9
+#             # an attempt to mitigate uneven plot size of panels in the right most column.
+#             left = chmap_hfrac / float(self.nh) * x + offset
+#             width = chmap_hfrac / float(self.nh)-offset
+#             if x==self.nh-1: # add width for colorbar to panels in the right most column
+#                 width = min(width*1.25, 1-offset-left)
             bottom = 1.0 / float((self.nv+2)) * (y + 0.05)
             height = 1.0 / float((self.nv+2)) * 0.85
             a = pl.axes([left, bottom, width, height])
@@ -474,7 +480,7 @@ class SDSparseMapDisplay(SDImageDisplay):
         increment = [0, 0]
         refpix[0], refval[0], increment[0] = self.image.direction_axis(0, unit='deg')
         refpix[1], refval[1], increment[1] = self.image.direction_axis(1, unit='deg')
-        plotter.setup_labels(refpix, refval, increment)
+        plotter.setup_labels_relative(refpix, refval, increment)
 
         if hasattr(self, 'showatm') and self.showatm is True:
             msid_list = numpy.unique(self.inputs.msid_list)
@@ -836,15 +842,13 @@ class SDChannelMapDisplay(SDImageDisplay):
                         if integmap_colorbar is None:
                             integmap_colorbar = pl.colorbar(shrink=0.8)
                             for t in integmap_colorbar.ax.get_yticklabels():
-                                newfontsize = t.get_fontsize()*0.5
-                                t.set_fontsize(newfontsize)
-#                             integmap_colorbar.ax.set_title('[%s km/s]'%(self.brightnessunit))
-#                             lab = integmap_colorbar.ax.title
-#                             lab.set_fontsize(newfontsize)
-                            integmap_colorbar.ax.set_ylabel('[%s km/s]' % self.brightnessunit, fontsize=newfontsize)
+                                newfontsize_integ = t.get_fontsize()*0.5
+                                t.set_fontsize(newfontsize_integ)
                         else:
                             integmap_colorbar.mappable.set_clim((Total.min(), Total.max()))
                             integmap_colorbar.draw_all()
+                        # set_clim and draw_all clears y-label
+                        integmap_colorbar.ax.set_ylabel('[%s km/s]' % self.brightnessunit, fontsize=newfontsize_integ)
 
                 # draw beam pattern
                 if beam_circle is None:
@@ -934,16 +938,14 @@ class SDChannelMapDisplay(SDImageDisplay):
                             if chmap_colorbar[y] is None:
                                 cb = pl.colorbar()
                                 for t in cb.ax.get_yticklabels():
-                                    newfontsize = t.get_fontsize()*0.5
-                                    t.set_fontsize(newfontsize)
-#                                 cb.ax.set_title('[%s km/s]'%(self.brightnessunit))
-#                                 lab=cb.ax.title
-#                                 lab.set_fontsize(newfontsize)
-                                cb.ax.set_ylabel('[%s km/s]' % self.brightnessunit, fontsize=newfontsize)
+                                    newfontsize_cmap = t.get_fontsize()*0.5
+                                    t.set_fontsize(newfontsize_cmap)
                                 chmap_colorbar[y] = cb
                             else:
                                 chmap_colorbar[y].mappable.set_clim(Vmin, Vmax)
                                 chmap_colorbar[y].draw_all()
+                            # set_clim and draw_all clears y-label
+                            chmap_colorbar[y].ax.set_ylabel('[%s km/s]' % self.brightnessunit, fontsize=newfontsize_cmap)
                         pl.title(Title[i], size=TickSize)
 
                 t4 = time.time()
@@ -1076,12 +1078,11 @@ class SDRmsMapDisplay(SDImageDisplay):
                         for t in rms_colorbar.ax.get_yticklabels():
                             newfontsize = t.get_fontsize()*0.5
                             t.set_fontsize(newfontsize)
-#                         rms_colorbar.ax.set_title('[%s]' % self.brightnessunit)
-#                         lab = rms_colorbar.ax.title
-                        rms_colorbar.ax.set_ylabel('[%s]' % self.brightnessunit)
                     else:
                         rms_colorbar.mappable.set_clim((rmsmin, rmsmax))
                         rms_colorbar.draw_all()
+                    # set_clim and draw_all clears y-label
+                    rms_colorbar.ax.set_ylabel('[%s]' % self.brightnessunit)
             del rms_map
 
             # draw beam pattern
@@ -1120,12 +1121,11 @@ class SDRmsMapDisplay(SDImageDisplay):
 
 
 class SpectralMapAxesManager(MapAxesManagerBase):
-    def __init__(self, nh, nv, brightnessunit, formatter, locator, ticksize):
+    def __init__(self, nh, nv, brightnessunit, locator, ticksize):
         super(SpectralMapAxesManager, self).__init__()
         self.nh = nh
         self.nv = nv
         self.brightnessunit = brightnessunit
-        self.formatter = formatter
         self.locator = locator
         self.ticksize = ticksize
 
@@ -1151,9 +1151,10 @@ class SpectralMapAxesManager(MapAxesManagerBase):
             #y1 = 1.0 / float(self.nv) * 0.7
             y1 = 1.0 / float(self.nv) * 0.65
             a = pl.axes([x0, y0, x1, y1])
-            a.xaxis.set_major_formatter(self.formatter)
+            a.xaxis.get_major_formatter().set_useOffset(False)
             a.xaxis.set_major_locator(self.locator)
             a.yaxis.set_label_coords(-0.22, 0.5)
+            a.yaxis.get_major_formatter().set_useOffset(False)
             a.title.set_y(0.95)
             a.title.set_size(self.ticksize)
             pl.ylabel('Intensity (%s)'%(self.brightnessunit), size=self.ticksize)
@@ -1244,9 +1245,6 @@ class SDSpectralMapDisplay(SDImageDisplay):
         Order = int(math.floor(math.log10(xtick)))
         NewTick = int(xtick / (10**Order) + 1) * (10**Order)
         FreqLocator = MultipleLocator(NewTick)
-        if Order < 0: FMT = '%%.%dfG' % (-Order)
-        else: FMT = '%.2fG'
-        Format = pl.FormatStrFormatter(FMT)
 
         (xrp, xrv, xic) = self.image.direction_axis(0)
         (yrp, yrv, yic) = self.image.direction_axis(1)
@@ -1254,7 +1252,7 @@ class SDSpectralMapDisplay(SDImageDisplay):
         plot_list = []
 
         axes_manager = SpectralMapAxesManager(NhPanel, NvPanel, self.brightnessunit,
-                                              Format, FreqLocator,
+                                              FreqLocator,
                                               TickSize)
         axes_list = axes_manager.axes_list
         plot_objects = []
@@ -1305,7 +1303,7 @@ class SDSpectralMapDisplay(SDImageDisplay):
                         pl.gcf().sca(a)
                         world_x = xrv + (_x - xrp) * xic
                         world_y = yrv + (_y - yrp) * yic
-                        title = '(IF, POL, X, Y) = (%s, %s, %s, %s)\n%s %s' % (self.spw, pol, _x, _y, HHMMSSss(world_x, 0), DDMMSSs(world_y, 0))
+                        title = '(IF, POL, X, Y) = (%s, %s, %s, %s)\n%s %s' % (self.spw, pol, _x, _y, HHMMSSss(world_x), DDMMSSs(world_y))
 #                         if self.num_valid_spectrum[_x][_y][pol] > 0:
                         if mask2d[_x][_y]:
                             plot_objects.extend(
@@ -1370,6 +1368,7 @@ class SDSpectralMapDisplay(SDImageDisplay):
 class SDSpectralImageDisplay(SDImageDisplay):
     MATPLOTLIB_FIGURE_ID = 8910
 
+    @casa5style_plot
     def plot(self):
         if ShowPlot: pl.ion()
         else: pl.ioff()

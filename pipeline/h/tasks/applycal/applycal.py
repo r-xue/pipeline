@@ -1,6 +1,7 @@
 import collections
 import copy
 import os
+from typing import Callable, Dict
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -10,6 +11,8 @@ import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
+from pipeline.infrastructure.callibrary import IntervalCalState
+
 from ...heuristics.fieldnames import IntentFieldnames
 
 __all__ = [
@@ -99,7 +102,7 @@ class ApplycalResults(basetask.Results):
     ApplycalResults is the results class for the pipeline Applycal task.
     """
 
-    def __init__(self, applied=None):
+    def __init__(self, applied=None, callib_map: Dict[str, str]=None):
         """
         Construct and return a new ApplycalResults.
 
@@ -111,10 +114,13 @@ class ApplycalResults(basetask.Results):
         """
         if applied is None:
             applied = []
+        if callib_map is None:
+            callib_map = {}
 
-        super(ApplycalResults, self).__init__()
+        super().__init__()
         self.applied = set()
         self.applied.update(applied)
+        self.callib_map = dict(callib_map)
 
     def merge_with_context(self, context):
         """
@@ -240,7 +246,14 @@ class Applycal(basetask.StandardTaskTemplate):
         flagdata_results = [job_result for job, job_result in zip(jobs, job_results) if job.fn_name == 'flagdata']
 
         applied_calapps = [callibrary.CalApplication(calto, calfroms) for calto, calfroms in merged.items()]
-        result = ApplycalResults(applied_calapps)
+
+        # give a dict like {'abc123.ms': 'path/to/callibrary'}. The use of
+        # dict assumes that there is only one jobrequest per MS, which is true
+        # when the CASA callibrary is used.
+        vis_to_callib = {job.kw['vis']: job.kw['callib'] for job in jobs
+                         if job.fn_name == 'applycal' and 'callib' in job.kw}
+
+        result = ApplycalResults(applied_calapps, callib_map=vis_to_callib)
 
         # add and reshape the flagdata results if required
         if inputs.flagsum:
@@ -365,7 +378,7 @@ def jobs_without_calapply(merged, inputs, mod_fn):
     return jobs
 
 
-def jobs_with_calapply(calstate, inputs, mod_fn):
+def jobs_with_calapply(calstate: IntervalCalState, inputs: ApplycalInputs, mod_fn: Callable):
     callibrary_file = '{}.s{}.{}.callibrary'.format(inputs.vis,
                                                     inputs.context.task_counter,
                                                     inputs.context.subtask_counter)

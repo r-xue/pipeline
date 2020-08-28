@@ -27,7 +27,7 @@ weblog.add_renderer(FlagBadDeformatters,
                     group_by=weblog.UNGROUPED)
 weblog.add_renderer(Checkflag, renderer.T2_4MDetailscheckflagRenderer(), group_by=weblog.UNGROUPED)
 weblog.add_renderer(Targetflag,
-                    basetemplates.T2_4MDetailsDefaultRenderer(uri='targetflag.mako', description='Targetflag'),
+                    basetemplates.T2_4MDetailsDefaultRenderer(uri='vlatargetflag.mako', description='Targetflag'),
                     group_by=weblog.UNGROUPED)
 weblog.add_renderer(Flagcal, basetemplates.T2_4MDetailsDefaultRenderer(uri='flagcal.mako', description='Flagcal'),
                     group_by=weblog.UNGROUPED)

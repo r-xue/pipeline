@@ -15,6 +15,9 @@
     original_productsize = '%.3g GB' % (result[0].original_productsize)
     cube_mitigated_productsize = '%.3g GB' % (result[0].cube_mitigated_productsize)
     mitigated_productsize = '%.3g GB' % (result[0].mitigated_productsize)
+    allowed_maximsize = '%d' % (result[0].allowed_maximsize)
+    original_maximsize = '%s' % (str(result[0].original_maximsize))
+    mitigated_maximsize = '%s' % (str(result[0].mitigated_maximsize))
     %>
     <p>
     Allowed maximum cube size: ${allowed_maxcubesize}
@@ -32,6 +35,15 @@
     Predicted product size after cube size mitigation: ${cube_mitigated_productsize}
     <br>
     Mitigated product size: ${mitigated_productsize}
+    % if result[0].allowed_maximsize != -1:
+        <br>
+        Allowed maximum imsize: ${allowed_maximsize}
+        <br>
+        Initial predicted imsize: ${original_maximsize}
+        <br>
+        Mitigated maximsize: ${mitigated_maximsize}
+        <br>
+    % endif
     <p>
     Size mitigation parameters for subsequent hif_makeimlist calls
     <table class="table">

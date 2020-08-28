@@ -15,14 +15,14 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         self.imaging_mode = 'VLASS-SE-CONT'
 
     # niter
-    def niter_correction(self, niter, cell, imsize, residual_max, threshold):
+    def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0):
         if niter:
             return int(niter)
         else:
             return 20000
 
     def niter(self):
-        return self.niter_correction(None, None, None, None, None)
+        return self.niter_correction(None, None, None, None, None, None)
 
     def deconvolver(self, specmode, spwspec):
         return 'mtmfs'
@@ -37,7 +37,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         return ['0.6arcsec']
 
     def imsize(self, fields=None, cell=None, primary_beam=None, sfpblimit=None, max_pixels=None, centreonly=None,
-               vislist=None):
+               vislist=None, spwspec=None):
         return [12150, 12150]
 
     def reffreq(self):
@@ -61,8 +61,8 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
     def uvtaper(self, beam_natural=None, protect_long=None):
         return []
 
-    def uvrange(self):
-        return None
+    def uvrange(self, field=None, spwspec=None):
+        return None, None
 
     def mask(self):
         return ''

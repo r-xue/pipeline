@@ -21,12 +21,13 @@ class FindContHeuristics(object):
             return ['NONE'], 'none'
 
         # Run continuum finder on cube
-        channel_selection, png_name, aggregate_bw, all_continuum = \
+        channel_selection, png_name, aggregate_bw, all_continuum, warning_strings = \
             findContinuum(img=dirty_cube,
                           pbcube=pb_cube,
                           psfcube=psf_cube,
                           singleContinuum=single_continuum,
-                          returnAllContinuumBoolean=True)
+                          returnAllContinuumBoolean=True,
+                          returnWarnings=True)
 
         # PIPE-74
         channel_counts = countChannelsInRanges(channel_selection)
@@ -45,4 +46,4 @@ class FindContHeuristics(object):
 
             frequency_ranges_GHz.extend([{'range': item, 'refer': 'LSRK'} for item in utils.chan_selection_to_frequencies(dirty_cube, channel_selection, 'GHz')])
 
-        return frequency_ranges_GHz, png_name, single_range_channel_fraction
+        return frequency_ranges_GHz, png_name, single_range_channel_fraction, warning_strings
