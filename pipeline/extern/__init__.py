@@ -13,5 +13,8 @@ import sortedcontainers
 sys.path.append(pkg_resources.resource_filename(__name__, 'intervaltree-2.1.0-py3.6.egg'))
 import intervaltree
 
+sys.path.append(pkg_resources.resource_filename(__name__, 'PyPubSub-4.0.3-py3.6.egg'))
+import pubsub
+
 from . import logutils
 from . import XmlObjectifier
