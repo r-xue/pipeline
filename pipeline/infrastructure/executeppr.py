@@ -29,7 +29,44 @@ __rethrow_casa_exceptions=True
 def executeppr(pprXmlFile, importonly=True, breakpoint='breakpoint',
                bpaction='ignore', loglevel='info', plotlevel='default',
                interactive=True):
-
+    """
+    Runs Pipeline Processing Request (PPR).
+    
+    Executes pipeline tasks based on instructions described in pprXmlFile.
+    
+    Args:
+        pprXmlFile: A string defining a path to PPR file.
+        importonly: Optional; A boolean to indicate to stop processing after
+            importing data or not.
+        breakpoint: Optional; A string defining a name of command that should
+            be considered as a break point.
+        bpaction: Optional; A string describing an action to be taken at the
+            breakpoint. Available actions are,
+            'ignore': ignores breakpoint in pprXmlFile.
+            'break': stop execution at the breakpoint in pprXmlFile.
+            'resume': resume the last context and restart processing after the
+                breakpoint in pprXmlFile.
+        loglevel: Optional; A string defining a logging level. Available levels
+            are, 'critical', 'error', 'warning', 'info', 'debug', 'todo', and 'trace'.
+        plotlevel: Optional; A string defining a plot level. Available levels are,
+            'all', 'default', and 'summary'
+        interactive: Optional; A boolean to indecate printing pipeline log to
+            STDOUT or not.
+    
+    Examples:
+       Only import EBs.
+       >>> executeppr('PPR_uid___A001_X14c3_X1dd.xml')
+       
+       Full execution of PPR.
+       >>> executeppr('PPR_uid___A001_X14c3_X1dd.xml', importonly=False)
+       
+       Run pipeline tasks up to the 'breakpoint' in PPR and save context.
+       >>> executeppr('PPR_uid___A001_X14c3_X1dd.xml', importonly=False, bpaction='break')
+       
+       Resume execution from the 'breakpoint' in PPR.
+       >>> executeppr('PPR_uid___A001_X14c3_X1dd.xml', importonly=False, bpaction='resume')
+       
+    """
     # Useful mode parameters
     echo_to_screen = interactive
     workingDir = None
