@@ -37,7 +37,9 @@ def executeppr(pprXmlFile, importonly=True, breakpoint='breakpoint',
     Args:
         pprXmlFile: A string defining a path to PPR file.
         importonly: Optional; A boolean to indicate to stop processing after
-            importing data or not.
+            importing data or not. If True, execution of PPR stops after
+            h*_importdata stage. The parameter has no effect if there is no
+            h*_impordata stage in PPR.
         breakpoint: Optional; A string defining a name of command that should
             be considered as a break point.
         bpaction: Optional; A string describing an action to be taken at the
@@ -50,7 +52,7 @@ def executeppr(pprXmlFile, importonly=True, breakpoint='breakpoint',
             are, 'critical', 'error', 'warning', 'info', 'debug', 'todo', and 'trace'.
         plotlevel: Optional; A string defining a plot level. Available levels are,
             'all', 'default', and 'summary'
-        interactive: Optional; A boolean to indecate printing pipeline log to
+        interactive: Optional; A boolean to indicate printing pipeline log to
             STDOUT or not.
     
     Examples:
