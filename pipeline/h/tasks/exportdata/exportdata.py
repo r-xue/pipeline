@@ -853,7 +853,7 @@ class ExportData(basetask.StandardTaskTemplate):
         LOG.info('Storing final flags for %s in %s', visname, tarfilename)
 
         # Define the directory to be saved
-        flagsname = os.path.join(visname + '.flagversions', 'flags.' + flag_version_name)
+        flagsname = os.path.join(vis + '.flagversions', 'flags.' + flag_version_name)
         LOG.info('Saving flag version %s', flag_version_name)
 
         # Define the versions list file to be saved
