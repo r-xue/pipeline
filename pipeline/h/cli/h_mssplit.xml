@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="h_mssplit" type="function">
 <shortdescription>Select data from calibrated MS(s) to form new MS(s) for imaging</shortdescription>
@@ -14,7 +14,7 @@ If pipeline mode is 'getinputs' then None is returned. Otherwise the results obj
 </description>
 <input>
 
-  <param subparam="true" name="vis" type="stringVec">
+  <param name="vis" subparam="true" type="stringVec">
     <shortdescription>The list of input MeasurementSets</shortdescription>
     <description>The list of input MeasurementSets to be transformed. Defaults to the
       list of MeasurementSets specified in the pipeline import data task.
@@ -25,7 +25,7 @@ If pipeline mode is 'getinputs' then None is returned. Otherwise the results obj
     <value/>
   </param>
 
-  <param subparam="true" name="outputvis" type="stringVec">
+  <param name="outputvis" subparam="true" type="stringVec">
      <shortdescription>The list of output split MeasurementSets</shortdescription>
      <description>The list of output split MeasurementSets. The output list must
       be the same length as the input list and the output names must be different
@@ -37,12 +37,13 @@ If pipeline mode is 'getinputs' then None is returned. Otherwise the results obj
      <value/>
   </param>
 
-  <param subparam="true" name="field" type="string">
+  <param name="field" subparam="true" type="string">
+    <shortdescription>Set of data selection field names or ids, \'\' for all</shortdescription>
     <description>Set of data selection field names or ids, \'\' for all</description>
     <value/>
   </param>
 
-  <param subparam="true" name="intent" type="string">
+  <param name="intent" subparam="true" type="string">
     <shortdescription>Set of data selection intents, \'\' for all</shortdescription>
     <description>Select intents to split
       default: '', All data is selected.
@@ -52,7 +53,7 @@ If pipeline mode is 'getinputs' then None is returned. Otherwise the results obj
     <value/>
   </param>
 
-  <param subparam="true" name="spw" type="string">
+  <param name="spw" subparam="true" type="string">
     <shortdescription>Set of data selection spectral window ids \'\' for all</shortdescription>
     <description>Select spectral windows to split.
       Can only use with pipelinemode='interactive'
@@ -62,7 +63,7 @@ If pipeline mode is 'getinputs' then None is returned. Otherwise the results obj
     <value/>
   </param>
 
-  <param subparam="true" name="datacolumn" type="string">
+  <param name="datacolumn" subparam="true" type="string">
     <shortdescription>The data columns to process</shortdescription>
     <description>Select spectral windows to split. The standard CASA options are supported.
       Can only use with pipelinemode='interactive'
@@ -131,12 +132,14 @@ If pipeline mode is 'getinputs' then None is returned. Otherwise the results obj
     </allowed>
   </param>
 
-  <param subparam="true" name="dryrun" type="bool">
+  <param name="dryrun" subparam="true" type="bool">
+    <shortdescription>Run the task (False) or display the command(True)</shortdescription>
     <description>Run the task (False) or display the command(True)</description>
     <value>False</value>
   </param>
 
-  <param subparam="true" name="acceptresults" type="bool">
+  <param name="acceptresults" subparam="true" type="bool">
+    <shortdescription>Add the results to the pipeline context</shortdescription>
     <description>Add the results to the pipeline context</description>
    <value>True</value>
   </param>
@@ -145,9 +148,9 @@ If pipeline mode is 'getinputs' then None is returned. Otherwise the results obj
   <constraints>
 
     <when param="pipelinemode">
-      <equals value="automatic" type="string">
+      <equals type="string" value="automatic">
       </equals>
-      <equals value="interactive" type="string">
+      <equals type="string" value="interactive">
         <default param="vis"><value type="stringVec"/></default>
         <default param="outputvis"><value type="stringVec"/></default>
         <default param="field"><value type="string"/></default>
@@ -157,7 +160,7 @@ If pipeline mode is 'getinputs' then None is returned. Otherwise the results obj
         <default param="dryrun"><value type="bool">False</value></default>
         <default param="acceptresults"><value type="bool">True</value></default>
       </equals>
-      <equals value="getinputs" type="string">
+      <equals type="string" value="getinputs">
         <default param="vis"><value type="stringVec"/></default>
         <default param="outputvis"><value type="stringVec"/></default>
         <default param="field"><value type="string"/></default>

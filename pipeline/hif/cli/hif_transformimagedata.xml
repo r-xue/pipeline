@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hif_transformimagedata" type="function">
 <shortdescription>Base transformimagedata task</shortdescription>
@@ -13,7 +13,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 </description>
 
 <input>
-    <param subparam="true" name="vis" type="stringVec">
+    <param name="vis" subparam="true" type="stringVec">
     <shortdescription>The list of input MeasurementSets</shortdescription>
         <description>List of visibility data files. These may be ASDMs, tar files of ASDMs,
             MSs, or tar files of MSs, If ASDM files are specified, they will be
@@ -24,31 +24,31 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
-    <param subparam="true" name="outputvis" type="string">
+    <param name="outputvis" subparam="true" type="string">
         <shortdescription>The output MeasurementSet</shortdescription>
         <description>The output MeasurementSet.</description>
         <value/>
     </param>
 
-    <param subparam="true" name="field" type="string">
+    <param name="field" subparam="true" type="string">
         <shortdescription>Set of data selection field names or ids, \'\' for all</shortdescription>
         <description>Set of data selection field names or ids, \'\' for all.</description>
         <value/>
     </param>
 
-    <param subparam="true" name="intent" type="string">
+    <param name="intent" subparam="true" type="string">
         <shortdescription>Set of data selection intents, \'\' for all</shortdescription>
         <description>Set of data selection intents, \'\' for all.</description>
         <value/>
     </param>
 
-    <param subparam="true" name="spw" type="string">
+    <param name="spw" subparam="true" type="string">
         <shortdescription>Set of data selection spectral window ids \'\' for all</shortdescription>
         <description>Set of data selection spectral window ids \'\' for all.</description>
         <value/>
     </param>
 
-    <param subparam="true" name="datacolumn" type="string">
+    <param name="datacolumn" subparam="true" type="string">
         <shortdescription>The data columns to process</shortdescription>
         <description>Select spectral windows to split. The standard CASA options are
             supported
@@ -110,7 +110,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>False</value>
     </param>
 
-    <param subparam="true" name="wtmode" type="string">
+    <param name="wtmode" subparam="true" type="string">
         <shortdescription>Weight initialization mode</shortdescription>
         <description>optional weight initialization mode when modify_weights=True</description>
         <value/>
@@ -133,7 +133,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         </allowed>
     </param>
 
-    <param subparam="true" name="dryrun" type="bool">
+    <param name="dryrun" subparam="true" type="bool">
         <shortdescription>Run the task (False) or display the command(True)</shortdescription>
         <description>Run the commands (True) or generate the commands to be run but
             do not execute (False).
@@ -141,7 +141,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>False</value>
     </param>
 
-    <param subparam="true" name="acceptresults" type="bool">
+    <param name="acceptresults" subparam="true" type="bool">
         <shortdescription>Add the results to the pipeline context</shortdescription>
         <description>Add the results of the task to the pipeline context (True) or
             reject them (False).
@@ -152,9 +152,9 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <constraints>
 
     <when param="pipelinemode">
-        <equals value="automatic" type="string">
+        <equals type="string" value="automatic">
         </equals>
-        <equals value="interactive" type="string">
+        <equals type="string" value="interactive">
             <default param="vis"><value type="stringVec"/></default>
             <default param="outputvis"><value type="stringVec"/></default>
             <default param="field"><value type="string"/></default>
@@ -164,7 +164,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
             <default param="dryrun"><value type="bool">False</value></default>
             <default param="acceptresults"><value type="bool">True</value></default>
         </equals>
-        <equals value="getinputs" type="string">
+        <equals type="string" value="getinputs">
             <default param="vis"><value type="stringVec"/></default>
             <default param="outputvis"><value type="stringVec"/></default>
             <default param="field"><value type="string"/></default>
@@ -174,8 +174,8 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
       </equals>
     </when>
     <when param="modify_weights">
-        <equals value="False" type="bool"/>
-        <equals value="True" type="bool">
+        <equals type="bool" value="False"/>
+        <equals type="bool" value="True">
             <default param="wtmode"><value type="string"/></default>
         </equals>
     </when>

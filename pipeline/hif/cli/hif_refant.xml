@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd">
 
 <task category="pipeline" name="hif_refant" type="function">
 
@@ -21,7 +21,7 @@ Issues
 </description>
 
 <input>
-	<param subparam="true" name="vis" type="stringVec">
+	<param name="vis" subparam="true" type="stringVec">
 	    <shortdescription>List of input MeasurementSets</shortdescription>
             <description>The list of input MeasurementSets. Defaults to the list of MeasurementSets
             in the pipeline context. Not available when pipelinemode='automatic'.
@@ -29,7 +29,7 @@ Issues
 	    <value/>
 	</param>			
 
-	<param subparam="true" name="field" type="string">
+	<param name="field" subparam="true" type="string">
 	    <shortdescription>List of field names or ids</shortdescription>
             <description>The comma delimited list of field names or field ids for which flagging
             scores are computed if hm_refant='automatic' and  flagging = True
@@ -38,7 +38,7 @@ Issues
 	    <value/>
 	</param>
 
-	<param subparam="true" name="spw" type="string">
+	<param name="spw" subparam="true" type="string">
 	    <shortdescription>List of spectral windows ids </shortdescription>
             <description>A string containing the comma delimited list of spectral window ids for
             which flagging scores are computed if hm_refant='automatic' and  flagging = True.
@@ -47,7 +47,7 @@ Issues
 	    <value/>
 	</param>
 
-	<param subparam="true" name="intent" type="string">
+	<param name="intent" subparam="true" type="string">
 	    <shortdescription>List of data selection intents</shortdescription>
             <description>A string containing a comma delimited list of intents against
             which the selected fields are matched. Defaults to all supported
@@ -69,7 +69,7 @@ Issues
 	    </allowed>
 	</param>
 
-	<param subparam="true" name="refant" type="string">
+	<param name="refant" subparam="true" type="string">
 	    <shortdescription>List of reference antennas</shortdescription>
             <description>The user supplied reference antenna for hm_refant='manual'. If
             no antenna list is supplied an empty list is returned.
@@ -77,7 +77,7 @@ Issues
 	    <value/>
 	</param>
 
-	<param subparam="true" name="geometry" type="bool">
+	<param name="geometry" subparam="true" type="bool">
 	    <shortdescription>Score by proximity to center of the array</shortdescription>
             <description>Score antenna by proximity to the center of the array. This
             option is quick as only the ANTENNA table must be read.
@@ -85,7 +85,7 @@ Issues
 	    <value>True</value>
 	</param>
 
-	<param subparam="true" name="flagging" type="bool">
+	<param name="flagging" subparam="true" type="bool">
 	    <shortdescription>Score by percentage of good data</shortdescription>
             <description>Score antennas by percentage of unflagged data.  This option
             requires computing flagging statistics.
@@ -108,14 +108,14 @@ Issues
 	    </allowed>
 	</param>
 
-	<param subparam="true" name="dryrun" type="bool">
+	<param name="dryrun" subparam="true" type="bool">
 	    <shortdescription>Run the task (False) or display the command (True)</shortdescription>
             <description>Run the task (False) or display the command (True)
             Available when pipelinemode='interactive'.</description>
 	    <value>False</value>
 	</param>
 	
-	<param subparam="true" name="acceptresults" type="bool">
+	<param name="acceptresults" subparam="true" type="bool">
 	    <shortdescription>Add the results into the pipeline context</shortdescription>
             <description>Add the results of the task to the pipeline context (True) or
             reject them (False). Available when pipelinemode='interactive'.</description>
@@ -131,9 +131,9 @@ Issues
 	
 	<constraints>
 	    <when param="pipelinemode">
-		<equals value="automatic" type="string">
+		<equals type="string" value="automatic">
 		</equals>
-		<equals value="interactive" type="string"> 
+		<equals type="string" value="interactive"> 
 		    <default param="vis"><value type="stringVec"/></default>
 		    <default param="field"><value type="string"/></default>
 		    <default param="intents"><value type="string">AMPLITUDE,BANDPASS,PHASE,POLARIZATION</value></default>
@@ -142,7 +142,7 @@ Issues
 		    <default param="acceptresults"><value type="bool">True</value></default>
 			<default param="refantignore"><value type="string"/></default>
 		</equals>
-		<equals value="getinputs" type="string"> 
+		<equals type="string" value="getinputs"> 
 		    <default param="vis"><value type="stringVec"/></default>
 		    <default param="field"><value type="string"/></default>
 		    <default param="intents"><value type="string">AMPLITUDE,BANDPASS,PHASE,POLARIZATION</value></default>
@@ -152,11 +152,11 @@ Issues
 	    </when>
 
 	    <when param="hm_refant">
-		<equals value="automatic" type="string"> 
+		<equals type="string" value="automatic"> 
 		    <default param="geometry"><value type="bool">True</value></default>
 		    <default param="flagging"><value type="bool">True</value></default>
 		</equals>
-		<equals value="manual" type="string"> 
+		<equals type="string" value="manual"> 
 		    <default param="refant"><value type="string"/></default>
 		</equals>
 	    </when>
