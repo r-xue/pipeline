@@ -46,14 +46,14 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   </param>
 
   <param name="hm_sidelobethreshold" subparam="true" type="double">
-     <description>sidelobethreshold * the max sidelobe level</description>
      <shortdescription>sidelobethreshold * the max sidelobe level</shortdescription>
+     <description>sidelobethreshold * the max sidelobe level</description>
      <value>-999.0</value>
   </param>
 
   <param name="hm_noisethreshold" subparam="true" type="double">
-     <description>noisethreshold * rms in residual image</description>
      <shortdescription>noisethreshold * rms in residual image</shortdescription>
+     <description>noisethreshold * rms in residual image</description>
      <value>-999.0</value>
   </param>
 
