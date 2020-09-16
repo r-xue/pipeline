@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hifv_applycals" type="function">
 <shortdescription>Applycals</shortdescription>
@@ -20,7 +20,7 @@ hif_export_calstate and hif_import_calstate.
         <value/>
     </param>
 
-   <param subparam="true" name="field" type="string">
+   <param name="field" subparam="true" type="string">
 	<shortdescription>Set of data selection field names or ids</shortdescription>
         <description>A string containing the list of field names or field ids to which
                      the calibration will be applied. Defaults to all fields in the pipeline
@@ -30,7 +30,7 @@ hif_export_calstate and hif_import_calstate.
 	<value/>
    </param>
 
-   <param subparam="true" name="intent" type="string">
+   <param name="intent" subparam="true" type="string">
 	<shortdescription>Set of data selection observing intents</shortdescription>
         <description>A string containing the list of intents against which the
                      selected fields will be matched. Defaults to all supported intents
@@ -40,7 +40,7 @@ hif_export_calstate and hif_import_calstate.
 	<value/>
    </param>
 
-   <param subparam="true" name="spw" type="string">
+   <param name="spw" subparam="true" type="string">
 	<shortdescription>Set of data selection spectral window/channels</shortdescription>
         <description>The list of spectral windows and channels to which the calibration
                      will be applied. Defaults to all science windows in the pipeline.
@@ -50,7 +50,7 @@ hif_export_calstate and hif_import_calstate.
 	<value/>
    </param>
 
-   <param subparam="true" name="antenna" type="string">
+   <param name="antenna" subparam="true" type="string">
 	<shortdescription>Set of data selection antenna ids</shortdescription>
         <description>The list of antennas to which the calibration will be applied.
                      Defaults to all antennas. Not currently supported.
@@ -84,22 +84,26 @@ hif_export_calstate and hif_import_calstate.
         </allowed>
     </param>
 
-    <param subparam="true" name="flagbackup" type="bool">
+    <param name="flagbackup" subparam="true" type="bool">
+	<shortdescription>Backup the flags before the apply.  Only can be set in pipelinemode=\'interactive\'.  </shortdescription>
 	<description>Backup the flags before the apply.  Only can be set in pipelinemode='interactive'.  </description>
 	<value type="bool">True</value>
     </param>
 
     <param name="flagsum" type="bool">
+	<shortdescription>Compute before and after flagging summary statistics</shortdescription>
 	<description>Compute before and after flagging summary statistics</description>
 	<value type="bool">True</value>
     </param>
 
-    <param subparam="true" name="flagdetailedsum" type="bool">
+    <param name="flagdetailedsum" subparam="true" type="bool">
+	<shortdescription>Compute detailed flagging statistics</shortdescription>
 	<description>Compute detailed flagging statistics</description>
 	<value type="bool">True</value>
     </param>
 
     <param name="gainmap" type="bool">
+	<shortdescription>Mode to map gainfields to scans.</shortdescription>
 	<description>Mode to map gainfields to scans.</description>
 	<value>False</value>
     </param>
@@ -120,7 +124,7 @@ hif_export_calstate and hif_import_calstate.
         </allowed>
     </param>
 
-    <param subparam="true" name="dryrun" type="bool">
+    <param name="dryrun" subparam="true" type="bool">
         <shortdescription>Run the task (False) or display task command (True)</shortdescription>
         <description>Run the commands (True) or generate the commands to be run but
                      do not execute (False).  This is a pipeline task execution mode.
@@ -128,7 +132,7 @@ hif_export_calstate and hif_import_calstate.
         <value>False</value>
     </param>
 
-    <param subparam="true" name="acceptresults" type="bool">
+    <param name="acceptresults" subparam="true" type="bool">
         <shortdescription>Add the results into the pipeline context</shortdescription>
         <description>Add the results of the task to the pipeline context (True) or
                      reject them (False).  This is a pipeline task execution mode.
@@ -138,8 +142,8 @@ hif_export_calstate and hif_import_calstate.
 
     <constraints>
         <when param="pipelinemode">
-	    <equals value="automatic" type="string"/>
-	    <equals value="interactive" type="string">
+	    <equals type="string" value="automatic"/>
+	    <equals type="string" value="interactive">
 	        <default param="vis"><value type="stringVec"/></default>
 	        <default param="field"><value type="string"/></default>
 	        <default param="intent"><value type="string"/></default>
@@ -149,7 +153,7 @@ hif_export_calstate and hif_import_calstate.
 	        <default param="dryrun"><value type="bool">False</value></default>
 	        <default param="acceptresults"><value type="bool">True</value></default>
 	    </equals>
-	    <equals value="getinputs" type="string">
+	    <equals type="string" value="getinputs">
 	        <default param="vis"><value type="stringVec"/></default>
 	        <default param="field"><value type="string"/></default>
 	        <default param="intent"><value type="string"/></default>
@@ -159,10 +163,10 @@ hif_export_calstate and hif_import_calstate.
 	    </equals>
         </when>
         <when param="flagsum">
-	    <equals value="True" type="bool">
+	    <equals type="bool" value="True">
 	        <default param="flagdetailedsum"><value type="bool">True</value></default>
 	    </equals>
-	    <equals value="False" type="bool">
+	    <equals type="bool" value="False">
 	    </equals>
         </when>
     </constraints>

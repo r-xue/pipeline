@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hif_checkproductsize" type="function">
 <shortdescription>Check imaging product size</shortdescription>
@@ -26,7 +26,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 </description>
 <input>
 
-  <param subparam="true" name="vis" type="stringVec">
+  <param name="vis" subparam="true" type="stringVec">
     <shortdescription>List of input MeasurementSets</shortdescription>
     <description>The list of input MeasurementSets. Defaults to the list of
                  MeasurementSets specified in the h_init or hif_importdata task.
@@ -37,7 +37,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value/>
   </param>
 
-  <param subparam="true" name="maxcubesize" type="double">
+  <param name="maxcubesize" subparam="true" type="double">
      <shortdescription>Maximum allowed cube size (mitigation goal)</shortdescription>
      <description>Maximum allowed cube size in gigabytes (mitigation goal)
          -1: automatic from performance parameters
@@ -45,7 +45,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
      <value>-1.0</value>
   </param>
 
-  <param subparam="true" name="maxcubelimit" type="double">
+  <param name="maxcubelimit" subparam="true" type="double">
      <shortdescription>Maximum allowed cube limit (mitigation failure limit)</shortdescription>
      <description>Maximum allowed cube limit in gigabytes (mitigation failure
          limit)
@@ -54,7 +54,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
      <value>-1.0</value>
   </param>
 
-  <param subparam="true" name="maxproductsize" type="double">
+  <param name="maxproductsize" subparam="true" type="double">
      <shortdescription>Maximum allowed product size (mitigation goal and failure limit)</shortdescription>
      <description>Maximum allowed product size in gigabytes (mitigation goal and
          failure limit)
@@ -63,7 +63,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
      <value>-1.0</value>
   </param>
 
-  <param subparam="true" name="maximsize" type="double">
+  <param name="maximsize" subparam="true" type="double">
      <shortdescription>Maximum allowed image pixel count</shortdescription>
      <description>Maximum allowed image count size (mitigation goal and hard
          maximum).
@@ -76,11 +76,13 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   </param>
 
   <param name="calcsb" type="bool">
+    <shortdescription>Force (re-)calculation of sensitivities and beams</shortdescription>
     <description>Force (re-)calculation of sensitivities and beams</description>
     <value>False</value>
   </param>
 
   <param name="parallel" type="string">
+    <shortdescription>Use MPI cluster where possible</shortdescription>
     <description>Use MPI cluster where possible</description>
     <value>automatic</value>
     <allowed kind="enum">
@@ -108,12 +110,13 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     </allowed>
   </param>
 
-  <param subparam="true" name="dryrun" type="bool">
+  <param name="dryrun" subparam="true" type="bool">
+    <shortdescription>Run the task (False) or just display the command (True)</shortdescription>
     <description>Run the task (False) or just display the command (True)</description>
     <value>False</value>
   </param>
 
-  <param subparam="true" name="acceptresults" type="bool">
+  <param name="acceptresults" subparam="true" type="bool">
     <shortdescription>Add the results to the pipeline context</shortdescription>
     <description>Add the results of the task to the pipeline context (True) or
                  reject them (False).
@@ -125,8 +128,8 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   <constraints>
 
     <when param="pipelinemode">
-      <equals value="automatic" type="string"/>
-      <equals value="interactive" type="string">
+      <equals type="string" value="automatic"/>
+      <equals type="string" value="interactive">
         <default param="vis"><value type="stringVec"/></default>
         <default param="maxcubesize"><value>-1.0</value></default>
         <default param="maxcubelimit"><value>-1.0</value></default>
@@ -135,7 +138,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <default param="dryrun"><value type="bool">False</value></default>
         <default param="acceptresults"><value type="bool">True</value></default>
       </equals>
-      <equals value="getinputs" type="string">
+      <equals type="string" value="getinputs">
         <default param="vis"><value type="stringVec"/></default>
         <default param="target_list"><value>{}</value></default>
       </equals>

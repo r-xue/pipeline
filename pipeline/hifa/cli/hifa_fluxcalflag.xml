@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hifa_fluxcalflag" type="function">
 
@@ -16,7 +16,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 </description>
 
 <input>
-    <param subparam="true" name="vis" type="stringVec">
+    <param name="vis" subparam="true" type="stringVec">
     <shortdescription>List of input MeasurementSets</shortdescription>
         <description>The list of input MeasurementSets. Defaults to the list of
             MeasurementSets defined in the pipeline context.
@@ -24,7 +24,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value/>
     </param>
 
-    <param subparam="true" name="field" type="string">
+    <param name="field" subparam="true" type="string">
     <shortdescription>List of field names or ids</shortdescription>
         <description>The list of field names or field ids for which the models are
             to be set. Defaults to all fields with intent 'AMPLITUDE'.
@@ -34,7 +34,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value type="string"/>
     </param>
 
-    <param subparam="true" name="intent" type="string">
+    <param name="intent" subparam="true" type="string">
         <shortdescription>Observing intent of flux calibrators</shortdescription>
         <description>A string containing a comma delimited list of intents against
             which the selected fields are matched. Defaults to all data
@@ -45,7 +45,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
-    <param subparam="true" name="spw" type="string">
+    <param name="spw" subparam="true" type="string">
     <shortdescription>List of spectral window ids</shortdescription>
         <description> The list of spectral windows and channels for which bandpasses are
             computed. Defaults to all science spectral windows.
@@ -79,27 +79,27 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value type="double">0.75</value>
     </param>
 
-    <param subparam="true" name="appendlines" type="bool">
+    <param name="appendlines" subparam="true" type="bool">
         <shortdescription>Append user defined line regions to the line dictionary</shortdescription>
         <description>Append user defined line regions to the line dictionary.</description>
         <value type="bool">False</value>
     </param>
 
-    <param subparam="true" name="linesfile" type="string">
+    <param name="linesfile" subparam="true" type="string">
         <shortdescription>File containing user defined lines</shortdescription>
         <description>
         </description>
         <value type="string"/>
     </param>
 
-    <param subparam="true" name="applyflags" type="bool">
+    <param name="applyflags" subparam="true" type="bool">
         <shortdescription>Apply the computed flag commands</shortdescription>
         <description>
         </description>
         <value type="bool">True</value>
     </param>
 
-    <param subparam="true" name="dryrun" type="bool">
+    <param name="dryrun" subparam="true" type="bool">
     <shortdescription>Run the task (False) or display the commands (True)</shortdescription>
         <description>Run the commands (True) or generate the commands to be run but
             do not execute (False).
@@ -107,7 +107,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value type="bool">False</value>
     </param>
 
-    <param subparam="true" name="acceptresults" type="bool">
+    <param name="acceptresults" subparam="true" type="bool">
     <shortdescription>Automatically accept results into the context</shortdescription>
         <description>Add the results of the task to the pipeline context (True) or
             reject them (False).
@@ -118,8 +118,8 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <constraints>
 
     <when param="pipelinemode">
-        <equals value="automatic" type="string"/>
-        <equals value="interactive" type="string">
+        <equals type="string" value="automatic"/>
+        <equals type="string" value="interactive">
         <default param="vis"><value type="stringVec"/></default>
         <default param="field"><value type="string"/></default>
         <default param="intent"><value type="string"/></default>
@@ -130,7 +130,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <default param="dryrun"><value type="bool">False</value></default>
         <default param="acceptresults"><value type="bool">True</value></default>
         </equals>
-        <equals value="getinputs" type="string">
+        <equals type="string" value="getinputs">
         <default param="vis"><value type="stringVec"/></default>
         <default param="field"><value type="string"/></default>
         <default param="intent"><value type="string"/></default>

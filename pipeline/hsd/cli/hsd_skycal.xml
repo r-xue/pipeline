@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hsd_skycal" type="function">
 <shortdescription>Calibrate data</shortdescription>
@@ -34,7 +34,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         </allowed>
     </param>
 
-    <param subparam="true" name="fraction" type="any">
+    <param name="fraction" subparam="true" type="any">
   	    <shortdescription>fraction of the OFF data to mark</shortdescription>
         <description>Sub-parameter for calmode. Edge marking parameter for
         'otf' and 'otfraster' mode. It specifies a number of OFF scans
@@ -46,7 +46,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value type="string">10%</value>
     </param>
 
-    <param subparam="true" name="noff" type="int">
+    <param name="noff" subparam="true" type="int">
   	    <shortdescription>number of the OFF data to mark</shortdescription>
         <description>Sub-parameter for calmode. Edge marking parameter for 'otfraster'
         mode. It is used to specify a number of OFF scans near edge directly
@@ -57,7 +57,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>-1</value>
     </param>
 
-    <param subparam="true" name="width" type="double">
+    <param name="width" subparam="true" type="double">
   	    <shortdescription>width of the pixel for edge detection</shortdescription>
         <description>Sub-parameter for calmode. Edge marking parameter for 'otf'
         mode. It specifies pixel width with respect to a median spatial
@@ -68,7 +68,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>0.5</value>
     </param>
 
-    <param subparam="true" name="elongated" type="bool">
+    <param name="elongated" subparam="true" type="bool">
   	    <shortdescription>whether observed area is elongated in one direction or not</shortdescription>
         <description>Sub-parameter for calmode. Edge marking parameter for
         'otf' mode. Please set True only if observed area is elongated
@@ -92,7 +92,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
       	</allowed>
     </param>
 
-    <param subparam="true" name="infiles" type="stringVec">
+    <param name="infiles" subparam="true" type="stringVec">
         <shortdescription>List of input files to be calibrated (default all)</shortdescription>
         <description>List of data files. These must be a name of MeasurementSets that
         are registered to context via hsd_importdata task.
@@ -101,13 +101,13 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
-    <param subparam="true" name="field" type="string">
+    <param name="field" subparam="true" type="string">
         <shortdescription>Field to be calibrated (default all)</shortdescription>
         <description>Data selection by field name.</description>
         <value/>
     </param>
 
-    <param subparam="true" name="spw" type="any">
+    <param name="spw" subparam="true" type="any">
         <shortdescription>select data by spw ids, e.g. \'3,5,7\' (\'\'=all)</shortdescription>
         <description>Data selection by spw. (defalut all spws)
 
@@ -118,7 +118,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value type="string"/>
     </param>
 
-    <param subparam="true" name="scan" type="any">
+    <param name="scan" subparam="true" type="any">
         <shortdescription>select data by scan numbers, e.g. \'21~23\' (\'\'=all)</shortdescription>
         <description>Data selection by scan number. (default all scans)
 
@@ -128,14 +128,14 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value type="string"/>
     </param>
 
-    <param subparam="true" name="dryrun" type="bool">
+    <param name="dryrun" subparam="true" type="bool">
       	<shortdescription>Run the task (False) or display task command (True)</shortdescription>
         <description>Run the commands (True) or generate the commands to be run but
         do not execute (False).</description>
       	<value>False</value>
     </param>
 
-    <param subparam="true" name="acceptresults" type="bool">
+    <param name="acceptresults" subparam="true" type="bool">
         <shortdescription>Add the results into the pipeline context</shortdescription>
         <description>Add the results of the task to the pipeline context (True) or
         reject them (False).</description>
@@ -157,9 +157,9 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
             </equals>
         </when>
 	<when param="pipelinemode">
-	    <equals value="automatic" type="string">
+	    <equals type="string" value="automatic">
 	    </equals>
-	    <equals value="interactive" type="string">
+	    <equals type="string" value="interactive">
                 <default param="infiles"><value type="stringVec"/></default>
                 <default param="field"><value type="string"/></default>
                 <default param="spw"><value type="string"/></default>
@@ -168,7 +168,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 		<default param="dryrun"><value type="bool">False</value></default>
 		<default param="acceptresults"><value type="bool">True</value></default>
 	    </equals>
-	    <equals value="getinputs" type="string">
+	    <equals type="string" value="getinputs">
                 <default param="infiles"><value type="stringVec"/></default>
                 <default param="field"><value type="string"/></default>
                 <default param="spw"><value type="string"/></default>

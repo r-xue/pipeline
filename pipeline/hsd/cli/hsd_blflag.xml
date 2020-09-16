@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hsd_blflag" type="function">
 <shortdescription>Flag spectra based on predefined criteria of single dish pipeline</shortdescription>
@@ -46,7 +46,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>True</value>
     </param>
         
-    <param subparam="true" name="tsys_thresh" type="double">
+    <param name="tsys_thresh" subparam="true" type="double">
         <shortdescription>Threshold for Tsys flag</shortdescription>
         <description>Threshold value for Tsys flag.
         </description>
@@ -62,7 +62,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>False</value>
     </param>
 
-    <param subparam="true" name="weath_thresh" type="double">
+    <param name="weath_thresh" subparam="true" type="double">
         <shortdescription>Threshold for weather flag</shortdescription>
         <description>Threshold value for weather flag.</description>
         <value>3.0</value>
@@ -76,7 +76,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>True</value>
     </param>
 
-    <param subparam="true" name="prfre_thresh" type="double">
+    <param name="prfre_thresh" subparam="true" type="double">
         <shortdescription>Threshold for EXPECTED RMS of pre-fit spectra flag</shortdescription>
         <description>Threshold value for flag by expected rms of pre-fit 
                      spectra. 
@@ -92,7 +92,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>True</value>
     </param>
 
-    <param subparam="true" name="pofre_thresh" type="double">
+    <param name="pofre_thresh" subparam="true" type="double">
         <shortdescription>Threshold for EXPECTED RMS of post-fit spectra flag</shortdescription>
         <description>Threshold value for flag by expected rms of post-fit 
                      spectra. 
@@ -108,7 +108,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>True</value>
     </param>
 
-    <param subparam="true" name="prfr_thresh" type="double">
+    <param name="prfr_thresh" subparam="true" type="double">
         <shortdescription>Threshold for RMS of pre-fit flag</shortdescription>
         <description>Threshold value for flag by rms of pre-fit spectra.</description>
         <value>4.5</value>
@@ -122,7 +122,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>True</value>
     </param>
 
-    <param subparam="true" name="pofr_thresh" type="double">
+    <param name="pofr_thresh" subparam="true" type="double">
         <shortdescription>Threshold for RMS of post-fit spectra flag</shortdescription>
         <description>Threshold value for flag by rms of post-fit spectra. 
         </description>
@@ -137,7 +137,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>True</value>
     </param>
 
-    <param subparam="true" name="prfrm_thresh" type="double">
+    <param name="prfrm_thresh" subparam="true" type="double">
         <shortdescription>Threshold for running mean of pre-fit spectra flag</shortdescription>
         <description>Threshold value for flag by running mean of pre-fit 
                      spectra. 
@@ -145,7 +145,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>5.5</value>
     </param>
 
-    <param subparam="true" name="prfrm_nmean" type="int">
+    <param name="prfrm_nmean" subparam="true" type="int">
         <shortdescription>Number of channels for running mean of pre-fit spectra flag</shortdescription>
         <description>Number of channels for running mean of pre-fit spectra.
         </description>
@@ -160,7 +160,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>True</value>
     </param>
 
-    <param subparam="true" name="pofrm_thresh" type="double">
+    <param name="pofrm_thresh" subparam="true" type="double">
         <shortdescription>Threshold for running mean of post-fit spectra flag</shortdescription>
         <description>Threshold value for flag by running mean of post-fit 
                      spectra. 
@@ -168,7 +168,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>5.0</value>
     </param>
 
-    <param subparam="true" name="pofrm_nmean" type="int">
+    <param name="pofrm_nmean" subparam="true" type="int">
         <shortdescription>Number of channels for running mean of post-fit spectra flag</shortdescription>
         <description>Number of channels for running mean of post-fit spectra.
         </description>
@@ -184,7 +184,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>False</value>
     </param>
 
-    <param subparam="true" name="user_thresh" type="double">
+    <param name="user_thresh" subparam="true" type="double">
         <shortdescription>Threshold for user flag</shortdescription>
         <description>Threshold value for flag by user-defined rule.
         </description>
@@ -216,7 +216,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         </allowed>
     </param>
 
-    <param subparam="true" name="infiles" type="stringVec">
+    <param name="infiles" subparam="true" type="stringVec">
         <shortdescription>List of input files to be flagged (\'\'=all)</shortdescription>
         <description>ASDM or MS files to be processed. This parameter behaves
                      as data selection parameter. The name specified by 
@@ -226,7 +226,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
-    <param subparam="true" name="antenna" type="string">
+    <param name="antenna" subparam="true" type="string">
             <shortdescription>select data by antenna names or ids, e.g. \'PM03,PM04\' (\'\'=all)</shortdescription>
             <description>Data selection by antenna names or ids.
                          example: 'PM03,PM04'
@@ -234,7 +234,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
             </description>
             <value type="string"/>
     </param>
-    <param subparam="true" name="field" type="string">
+    <param name="field" subparam="true" type="string">
             <shortdescription>select data by field names or ids, e.g. \'M100,Sgr*\' (\'\'=all)</shortdescription>
             <description>Data selection by field names or ids.
                          example: '*Sgr*,M100'
@@ -242,7 +242,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
             </description>
             <value type="string"/>
     </param>
-    <param subparam="true" name="spw" type="string">
+    <param name="spw" subparam="true" type="string">
             <shortdescription>select data by spectral windows, e.g. \'3,5,7\' (\'\'=all)</shortdescription>
             <description>Data selection by spw ids.
                          example: '3,4' (spw 3 and 4)
@@ -251,7 +251,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
             <value type="string"/>
     </param>
 
-    <param subparam="true" name="pol" type="string">
+    <param name="pol" subparam="true" type="string">
             <shortdescription>select data by polarizations, e.g. \'XX,YY\' (\'\'=all)</shortdescription>
             <description>Data selection by polarizations.
                          example: 'XX,YY' (correlation XX and YY)
@@ -260,7 +260,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
             <value type="string"/>
     </param>
 
-    <param subparam="true" name="dryrun" type="bool">
+    <param name="dryrun" subparam="true" type="bool">
         <shortdescription>Run the task (False) or display the task command (True)</shortdescription>
         <description>Run the commands (True) or generate the commands to be
                      run but do not execute (False).
@@ -268,7 +268,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>False</value>
     </param>
 
-    <param subparam="true" name="acceptresults" type="bool">
+    <param name="acceptresults" subparam="true" type="bool">
         <shortdescription>Add the results into the pipeline context</shortdescription>
         <description>Add the results of the task to the pipeline context (True)
                      or reject them (False).
@@ -276,7 +276,8 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>True</value>
     </param>
 
-    <param subparam="true" name="parallel" type="string">
+    <param name="parallel" subparam="true" type="string">
+        <shortdescription>Execute using CASA HPC functionality, if available.</shortdescription>
         <description>Execute using CASA HPC functionality, if available.</description>
             <value>automatic</value>
             <allowed kind="enum">
@@ -288,74 +289,74 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 
     <constraints>
         <when param="flag_tsys">
-            <equals value="True" type="bool">
+            <equals type="bool" value="True">
                 <default param="tsys_thresh"><value type="double">3.0</value></default>
             </equals>
-            <equals value="False" type="bool">
+            <equals type="bool" value="False">
             </equals>
         </when>
         <when param="flag_weath">
-            <equals value="False" type="bool">
+            <equals type="bool" value="False">
             </equals>
-            <equals value="True" type="bool">
+            <equals type="bool" value="True">
                 <default param="weath_thresh"><value type="double">3.0</value></default>
             </equals>
         </when>
         <when param="flag_prfre">
-            <equals value="True" type="bool">
+            <equals type="bool" value="True">
                 <default param="prfre_thresh"><value type="double">3.0</value></default>
             </equals>
-            <equals value="False" type="bool">
+            <equals type="bool" value="False">
             </equals>
         </when>
         <when param="flag_pofre">
-            <equals value="True" type="bool">
+            <equals type="bool" value="True">
                 <default param="pofre_thresh"><value type="double">1.3333</value></default>
             </equals>
-            <equals value="False" type="bool">
+            <equals type="bool" value="False">
             </equals>
         </when>
         <when param="flag_prfr">
-            <equals value="True" type="bool">
+            <equals type="bool" value="True">
                 <default param="prfr_thresh"><value type="double">4.5</value></default>
             </equals>
-            <equals value="False" type="bool">
+            <equals type="bool" value="False">
             </equals>
         </when>
         <when param="flag_pofr">
-            <equals value="True" type="bool">
+            <equals type="bool" value="True">
                 <default param="pofr_thresh"><value type="double">4.0</value></default>
             </equals>
-            <equals value="False" type="bool">
+            <equals type="bool" value="False">
             </equals>
         </when>
         <when param="flag_prfrm">
-            <equals value="True" type="bool">
+            <equals type="bool" value="True">
                 <default param="prfrm_thresh"><value type="double">5.5</value></default>
                 <default param="prfrm_nmean"><value type="int">5</value></default>
             </equals>
-            <equals value="False" type="bool">
+            <equals type="bool" value="False">
             </equals>
         </when>
         <when param="flag_pofrm">
-            <equals value="True" type="bool">
+            <equals type="bool" value="True">
                 <default param="pofrm_thresh"><value type="double">5.0</value></default>
                 <default param="pofrm_nmean"><value type="int">5</value></default>
             </equals>
-            <equals value="False" type="bool">
+            <equals type="bool" value="False">
             </equals>
         </when>
         <when param="flag_user">
-            <equals value="False" type="bool">
+            <equals type="bool" value="False">
             </equals>
-            <equals value="True" type="bool">
+            <equals type="bool" value="True">
                 <default param="user_thresh"><value type="double">5.0</value></default>
                             </equals>
         </when>
         <when param="pipelinemode">
-            <equals value="automatic" type="string">
+            <equals type="string" value="automatic">
             </equals>
-            <equals value="interactive" type="string">
+            <equals type="string" value="interactive">
                 <default param="infiles"><value type="stringVec"/></default>
                 <default param="antenna"><value type="string"/></default>
                 <default param="field"><value type="string"/></default>
@@ -365,7 +366,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
                 <default param="acceptresults"><value type="bool">True</value></default>
                 <default param="parallel"><value type="string">automatic</value></default>
             </equals>
-            <equals value="getinputs" type="string">
+            <equals type="string" value="getinputs">
                 <default param="infiles"><value type="stringVec"/></default>
                 <default param="antenna"><value type="string"/></default>
                 <default param="field"><value type="string"/></default>
