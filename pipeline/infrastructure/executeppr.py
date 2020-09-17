@@ -26,34 +26,33 @@ except Exception as e:
 __rethrow_casa_exceptions=True
 
 
-def executeppr(pprXmlFile, importonly=True, breakpoint='breakpoint',
-               bpaction='ignore', loglevel='info', plotlevel='default',
-               interactive=True):
+def executeppr(pprXmlFile: str, importonly: bool = True,
+               breakpoint: str = 'breakpoint', bpaction: str = 'ignore',
+               loglevel: str = 'info', plotlevel: str = 'default',
+               interactive: bool = True):
     """
     Runs Pipeline Processing Request (PPR).
     
     Executes pipeline tasks based on instructions described in pprXmlFile.
     
     Args:
-        pprXmlFile: A string defining a path to PPR file.
-        importonly: Optional; A boolean to indicate to stop processing after
-            importing data or not. If True, execution of PPR stops after
+        pprXmlFile: A path to PPR file.
+        importonly: Whether or not to indicate to stop processing after
+            importing data. If True, execution of PPR stops after
             h*_importdata stage. The parameter has no effect if there is no
             h*_impordata stage in PPR.
-        breakpoint: Optional; A string defining a name of command that should
-            be considered as a break point.
-        bpaction: Optional; A string describing an action to be taken at the
-            breakpoint. Available actions are,
+        breakpoint: A name of command that should be considered as a break point.
+        bpaction: An action to be taken at the breakpoint.
+            Available actions are,
             'ignore': ignores breakpoint in pprXmlFile.
             'break': stop execution at the breakpoint in pprXmlFile.
             'resume': resume the last context and restart processing after the
                 breakpoint in pprXmlFile.
-        loglevel: Optional; A string defining a logging level. Available levels
-            are, 'critical', 'error', 'warning', 'info', 'debug', 'todo', and 'trace'.
-        plotlevel: Optional; A string defining a plot level. Available levels are,
-            'all', 'default', and 'summary'
-        interactive: Optional; A boolean to indicate printing pipeline log to
-            STDOUT or not.
+        loglevel: A logging level. Available levels are, 'critical', 'error',
+            'warning', 'info', 'debug', 'todo', and 'trace'.
+        plotlevel: A plot level. Available levels are, 'all', 'default', and
+            'summary'
+        interactive: If True, print pipeline log to STDOUT.
     
     Examples:
        Only import EBs.
