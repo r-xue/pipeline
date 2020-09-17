@@ -488,15 +488,11 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
 
         # execute job
         # tentative soltion for tsdimaging speed issue
-        if phasecenter == 'TRACKFIELD':
-            image_job = casa_tasks.tsdimaging(**image_args)
-            self._executor.execute(image_job)
-            # tsdimaging changes the image filename, workaround to revert it
-            imagename_tmp = imagename + '.image'
-            os.rename( imagename_tmp, imagename )
-        else:
-            image_job = casa_tasks.sdimaging(**image_args)
-            self._executor.execute(image_job)
+        image_job = casa_tasks.tsdimaging(**image_args)
+        self._executor.execute(image_job)
+        # tsdimaging changes the image filename, workaround to revert it
+        imagename_tmp = imagename + '.image'
+        os.rename( imagename_tmp, imagename )
 
         # check imaging result
         imagename = image_args['outfile']
