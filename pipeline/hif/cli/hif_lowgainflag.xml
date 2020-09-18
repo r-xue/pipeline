@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hif_lowgainflag" type="function">
 
@@ -19,7 +19,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 </description>
 
 <input>
-  <param subparam="true" name="vis" type="stringVec">
+  <param name="vis" subparam="true" type="stringVec">
     <shortdescription>List of input MeasurementSets</shortdescription>
     <description>The list of input MeasurementSets. Defaults to the list of
                  MeasurementSets specified in the h_init or hif_importdata task.
@@ -30,7 +30,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value/>
   </param>
 
-  <param subparam="true" name="intent" type="string">
+  <param name="intent" subparam="true" type="string">
     <shortdescription>Data intent whose gains are to checked</shortdescription>
     <description>A string containing the list of intents to be checked for
                  antennas with deviant gains. The default is blank, which
@@ -39,7 +39,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value/>
   </param>
 
-  <param subparam="true" name="spw" type="string">
+  <param name="spw" subparam="true" type="string">
     <shortdescription>Spectral window ids whose gains are to be checked</shortdescription>
     <description>The list of spectral windows and channels to which the
                  calibration will be applied. Defaults to all science windows
@@ -50,7 +50,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value/>
   </param>
 
-  <param subparam="true" name="refant" type="string">
+  <param name="refant" subparam="true" type="string">
     <shortdescription>Reference antenna names</shortdescription>
     <description>A string containing a prioritized list of reference antenna
                  name(s) to be used to produce the gain table. Defaults to the
@@ -71,12 +71,14 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value>True</value>
   </param>
 
-  <param subparam="true" name="fnm_lo_limit" type="double">
+  <param name="fnm_lo_limit" subparam="true" type="double">
+    <shortdescription>Flag values lower than fnm_lo_limit * median</shortdescription>
     <description>Flag values lower than fnm_lo_limit * median</description>
     <value>0.5</value>
   </param>
 
-  <param subparam="true" name="fnm_hi_limit" type="double">
+  <param name="fnm_hi_limit" subparam="true" type="double">
+    <shortdescription>Flag values higher than fnm_hi_limit * median</shortdescription>
     <description>Flag values higher than fnm_hi_limit * median</description>
     <value>1.5</value>
   </param>
@@ -99,12 +101,13 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     </allowed>
   </param>
 
-  <param subparam="true" name="dryrun" type="bool">
+  <param name="dryrun" subparam="true" type="bool">
+    <shortdescription>Run the task (False) or just display the command (True)</shortdescription>
     <description>Run the task (False) or just display the command (True)</description>
     <value>False</value>
   </param>
 
-  <param subparam="true" name="acceptresults" type="bool">
+  <param name="acceptresults" subparam="true" type="bool">
     <shortdescription>Add the results to the pipeline context</shortdescription>
     <description>Add the results of the task to the pipeline context (True) or
                  reject them (False).
@@ -114,8 +117,8 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 
   <constraints>
     <when param="pipelinemode">
-      <equals value="automatic" type="string"/>
-      <equals value="interactive" type="string">
+      <equals type="string" value="automatic"/>
+      <equals type="string" value="interactive">
         <default param="vis"><value type="stringVec"/></default>
         <default param="intent"><value type="string"/></default>
         <default param="spw"><value type="string"/></default>
@@ -123,7 +126,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <default param="dryrun"><value type="bool">False</value></default>
         <default param="acceptresults"><value type="bool">True</value></default>
       </equals>
-      <equals value="getinputs" type="string">
+      <equals type="string" value="getinputs">
         <default param="vis"><value type="stringVec"/></default>
         <default param="intent"><value type="string"/></default>
         <default param="spw"><value type="string"/></default>
@@ -132,11 +135,11 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     </when>
 
     <when param="flag_nmedian">
-      <equals value="True" type="bool">
+      <equals type="bool" value="True">
         <default param="fnm_lo_limit"><value type="float">0.5</value></default>
         <default param="fnm_hi_limit"><value type="float">1.5</value></default>
       </equals>
-      <equals value="False" type="bool">
+      <equals type="bool" value="False">
       </equals>
     </when>
 

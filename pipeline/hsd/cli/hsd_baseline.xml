@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hsd_baseline" type="function">
 <shortdescription>Detect and validate spectral lines, subtract baseline by masking detected lines</shortdescription>
@@ -76,9 +76,9 @@
                      large mask exists at edge regardless of whatever fitfunc
                      or fitorder are specified. Condition for switching is as
                      follows:
-                         if nmask > nchan/2      => 1st order polynomial
-                         else if nmask > nchan/4 => 2nd order polynomial
-                         else                    => use fitfunc and fitorder
+                         if nmask &gt; nchan/2      =&gt; 1st order polynomial
+                         else if nmask &gt; nchan/4 =&gt; 2nd order polynomial
+                         else                    =&gt; use fitfunc and fitorder
                      where nmask is a number of channels for mask at edge while
                      nchan is a number of channels of entire spectral window.
         </description>
@@ -144,7 +144,7 @@
 	    <value type="string"/>
     </param>
 
-    <param subparam="true" name="linewindowmode" type="string">
+    <param name="linewindowmode" subparam="true" type="string">
         <shortdescription>Merge or replace given manual line window with line detection/validation result</shortdescription>
         <description>Merge or replace given manual line window with line
                      detection/validation result. If 'replace' is given, line
@@ -225,7 +225,7 @@
 	</allowed>
     </param>
 
-    <param subparam="true" name="infiles" type="stringVec">
+    <param name="infiles" subparam="true" type="stringVec">
         <shortdescription>List of input files to be calibrated (default all)</shortdescription>
         <description>List of data files. These must be a name of
                      MeasurementSets that are registered to context via
@@ -236,7 +236,7 @@
         <value/>
     </param>
 
-	<param subparam="true" name="field" type="string">
+	<param name="field" subparam="true" type="string">
 		<shortdescription>select data by field</shortdescription>
 		<description>Data selection by field.
                              example: '1' (select by FIELD_ID)
@@ -246,7 +246,7 @@
 	<value/>
 	</param>
 
-	<param subparam="true" name="antenna" type="string">
+	<param name="antenna" subparam="true" type="string">
 		<shortdescription>select data by antenna</shortdescription>
                 <description>Data selection by antenna.
                              example: '1' (select by ANTENNA_ID)
@@ -256,7 +256,7 @@
 		<value/>
 	</param>
 
-    <param subparam="true" name="spw" type="any">
+    <param name="spw" subparam="true" type="any">
             <shortdescription>select data by spw ids, e.g. \'3,5,7\' (\'\'=all)</shortdescription>
             <description>Data selection by spw.
                          example: '3,4' (generate caltable for spw 3 and 4)
@@ -267,7 +267,7 @@
             <value type="string"/>
     </param>
 
-    <param subparam="true" name="pol" type="any">
+    <param name="pol" subparam="true" type="any">
             <shortdescription>select data by polarizations, e.g. \'0~1\' (\'\'=all)</shortdescription>
             <description>Data selection by polarizations.
                          example: '0' (generate caltable for pol 0)
@@ -278,7 +278,7 @@
             <value type="string"/>
     </param>
 
-    <param subparam="true" name="dryrun" type="bool">
+    <param name="dryrun" subparam="true" type="bool">
 	<shortdescription>Run the task (False) or display task command (True)</shortdescription>
         <description>Run the commands (True) or generate the commands to be
                      run but do not execute (False).
@@ -286,7 +286,7 @@
 	<value>False</value>
     </param>
 
-    <param subparam="true" name="acceptresults" type="bool">
+    <param name="acceptresults" subparam="true" type="bool">
 	<shortdescription>Add the results into the pipeline context</shortdescription>
         <description>Add the results of the task to the pipeline context (True)
                      or reject them (False).
@@ -294,7 +294,8 @@
 	<value>True</value>
     </param>
 
-    <param subparam="true" name="parallel" type="string">
+    <param name="parallel" subparam="true" type="string">
+        <shortdescription>Execute using CASA HPC functionality, if available.</shortdescription>
         <description>Execute using CASA HPC functionality, if available.</description>
             <value>automatic</value>
             <allowed kind="enum">
@@ -306,14 +307,14 @@
 
     <constraints>
     <when param="linewindow">
-        <notequals value="" type="string">
+        <notequals type="string" value="">
             <default param="linewindowmode"><value type="string">replace</value></default>
         </notequals>
     </when>
 	<when param="pipelinemode">
-	    <equals value="automatic" type="string">
+	    <equals type="string" value="automatic">
 	    </equals>
-	    <equals value="interactive" type="string">
+	    <equals type="string" value="interactive">
                 <default param="infiles"><value type="stringVec"/></default>
                 <default param="field"><value type="string"/></default>
                 <default param="antenna"><value type="string"/></default>
@@ -323,7 +324,7 @@
 		<default param="dryrun"><value type="bool">False</value></default>
 		<default param="acceptresults"><value type="bool">True</value></default>
 	    </equals>
-	    <equals value="getinputs" type="string">
+	    <equals type="string" value="getinputs">
                 <default param="infiles"><value type="stringVec"/></default>
                 <default param="field"><value type="string"/></default>
                 <default param="antenna"><value type="string"/></default>
@@ -339,6 +340,6 @@
 <returns>any</returns>
 
 
-<example></example>
+<example/>
 </task>
 </casaxml>

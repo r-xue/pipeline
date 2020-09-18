@@ -91,7 +91,7 @@ def hifv_calimage_cont(vislist, importonly=False, pipelinemode='automatic', inte
         hif_makeimages(hm_masking='none', hm_cyclefactor=3.0)
 
         # Export the data
-        hifv_exportdata(imaging_products_only=True, pipelinemode=pipelinemode)
+        hifv_exportdata(pipelinemode=pipelinemode)
 
     except Exception as e:
         if str(e) == IMPORT_ONLY:

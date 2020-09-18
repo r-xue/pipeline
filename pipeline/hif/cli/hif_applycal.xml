@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hif_applycal" type="function">
 <shortdescription>Apply the calibration(s) to the data</shortdescription>
@@ -27,7 +27,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     the results object for the pipeline task is returned
 </description>
 <input>
-    <param subparam="true" name="vis" type="stringVec">
+    <param name="vis" subparam="true" type="stringVec">
 	<shortdescription>List of input MeasurementSets</shortdescription>
         <description>The list of input MeasurementSets. Defaults to the list of MeasurementSets
         in the pipeline context. Parameter is not available when pipelinemode='automatic'.
@@ -35,7 +35,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 	<value/>
    </param>
 
-   <param subparam="true" name="field" type="string">
+   <param name="field" subparam="true" type="string">
 	<shortdescription>Set of data selection field names or ids</shortdescription>
         <description>A string containing the list of field names or field ids to which
         the calibration will be applied. Defaults to all fields in the pipeline
@@ -44,7 +44,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 	<value/>
    </param>
 
-   <param subparam="true" name="intent" type="string">
+   <param name="intent" subparam="true" type="string">
 	<shortdescription>Set of data selection observing intents</shortdescription>
         <description>A string containing the list of intents against which the
         selected fields will be matched. Defaults to all supported intents
@@ -53,7 +53,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 	<value/>
    </param>
 
-   <param subparam="true" name="spw" type="string">
+   <param name="spw" subparam="true" type="string">
 	<shortdescription>Set of data selection spectral window/channels</shortdescription>
         <description>The list of spectral windows and channels to which the calibration
         will be applied. Defaults to all science windows in the pipeline
@@ -62,7 +62,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 	<value/>
    </param>
 
-   <param subparam="true" name="antenna" type="string">
+   <param name="antenna" subparam="true" type="string">
 	<shortdescription>Set of data selection antenna ids</shortdescription>
         <description>The list of antennas to which the calibration will be applied.
         Defaults to all antennas. Not currently supported.
@@ -94,22 +94,25 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         </allowed>
     </param>
 
-    <param subparam="true" name="calwt" type="boolVec">
+    <param name="calwt" subparam="true" type="boolVec">
+	<shortdescription>Calibrate the weights as well as the data</shortdescription>
 	<description>Calibrate the weights as well as the data</description>
 	<value><value>True</value></value>
     </param>
 
-    <param subparam="true" name="flagbackup" type="bool">
+    <param name="flagbackup" subparam="true" type="bool">
+	<shortdescription>Backup the flags before the apply</shortdescription>
 	<description>Backup the flags before the apply</description>
 	<value type="bool">True</value>
     </param>
 
     <param name="flagsum" type="bool">
+	<shortdescription>Compute before and after flagging summary statistics</shortdescription>
 	<description>Compute before and after flagging summary statistics</description>
 	<value type="bool">True</value>
     </param>
 
-    <param subparam="true" name="flagdetailedsum" type="bool">
+    <param name="flagdetailedsum" subparam="true" type="bool">
 	<shortdescription>Compute detailed flagging statistics</shortdescription>
         <description>Compute detailed before and after flagging statistics summaries.
         Parameter available only when if flagsum is True. </description>
@@ -131,14 +134,14 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 	</allowed>
     </param>
 
-    <param subparam="true" name="dryrun" type="bool">
+    <param name="dryrun" subparam="true" type="bool">
 	<shortdescription>Run task (False) or display the command(True)</shortdescription>
         <description>Run task (False) or display the command(True).
         Parameter is available only when pipelinemode='interactive'.</description>
 	<value type="bool">False</value>
     </param>
 
-    <param subparam="true" name="acceptresults" type="bool">
+    <param name="acceptresults" subparam="true" type="bool">
 	<shortdescription>Automatically accept results into the context</shortdescription>
         <description>Add the results of the task to the pipeline context (True) or
         reject them (False). Parameter is available only when pipelinemode='interactive'.</description>
@@ -147,8 +150,8 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 
     <constraints>
         <when param="pipelinemode">
-	    <equals value="automatic" type="string"/>
-	    <equals value="interactive" type="string">
+	    <equals type="string" value="automatic"/>
+	    <equals type="string" value="interactive">
 	        <default param="vis"><value type="stringVec"/></default>
 	        <default param="field"><value type="string"/></default>
 	        <default param="intent"><value type="string"/></default>
@@ -159,7 +162,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 	        <default param="dryrun"><value type="bool">False</value></default>
 	        <default param="acceptresults"><value type="bool">True</value></default>
 	    </equals>
-	    <equals value="getinputs" type="string">
+	    <equals type="string" value="getinputs">
 	        <default param="vis"><value type="stringVec"/></default>
 	        <default param="field"><value type="string"/></default>
 	        <default param="intent"><value type="string"/></default>
@@ -170,10 +173,10 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 	    </equals>
         </when>
         <when param="flagsum">
-	    <equals value="True" type="bool">
+	    <equals type="bool" value="True">
 	        <default param="flagdetailedsum"><value type="bool">True</value></default>
 	    </equals>
-	    <equals value="False" type="bool">
+	    <equals type="bool" value="False">
 	    </equals>
         </when>
     </constraints>

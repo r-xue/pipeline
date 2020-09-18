@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd">
 
 <task category="pipeline" name="hsd_flagdata" type="function">
 
@@ -20,7 +20,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 </description>
 
 <input>
-    <param subparam="true" name="vis" type="stringVec">
+    <param name="vis" subparam="true" type="stringVec">
         <shortdescription>List of input MeasurementSets to flag</shortdescription>
         <description>The list of input MeasurementSets. Defaults to the list of MeasurementSets
         defined in the pipeline context.</description>
@@ -45,15 +45,15 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>True</value>
     </param>
 
-    <param subparam="true" name="scannumber" type="string">
+    <param name="scannumber" subparam="true" type="string">
         <shortdescription>List of scans to be flagged</shortdescription>
         <description>A string containing a comma delimited list of scans to be
         flagged.
         </description>
-        <value></value>
+        <value/>
     </param>
 
-    <param subparam="true" name="intents" type="string">
+    <param name="intents" subparam="true" type="string">
         <shortdescription>List of intents of scans to be flagged</shortdescription>
         <description>A string containing a comma delimited list of intents against
         which the scans to be flagged are matched.
@@ -68,14 +68,14 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value type="bool">True</value>
     </param>
 
-    <param subparam="true" name="fracspw" type="any">
+    <param name="fracspw" subparam="true" type="any">
         <shortdescription>Fraction of baseline correlator edge channels to be flagged</shortdescription>
         <description>Fraction of the baseline correlator TDM edge channels to be flagged.</description>
         <any limittype="double string doubleArray" type="variant"/>
         <value type="string">1.875GHz</value>
     </param>
 
-    <param subparam="true" name="fracspwfps" type="double">
+    <param name="fracspwfps" subparam="true" type="double">
         <shortdescription>Fraction of ACA correlator edge channels to be flagged</shortdescription>
         <description>Fraction of the ACS correlator TDM edge channels to be flagged.</description>
         <value>0.048387</value>
@@ -87,7 +87,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value type="bool">True</value>
     </param>
 
-    <param subparam="true" name="fileonline" type="string">
+    <param name="fileonline" subparam="true" type="string">
         <shortdescription>File of online flags to be applied</shortdescription>
         <description>File containing the online flags. These are computed by the
         h_init or hif_importdata data tasks. If the online flags files
@@ -101,7 +101,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>True</value>
     </param>
 
-    <param subparam="true" name="filetemplate" type="stringVec">
+    <param name="filetemplate" subparam="true" type="stringVec">
         <shortdescription>File that contains the flagging template</shortdescription>
         <description>The name of a text file that contains the flagging template
         for RFI, birdies, telluric lines, etc.  If the template flags files
@@ -115,7 +115,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>True</value>
     </param>
 
-    <param subparam="true" name="filepointing" type="stringVec">
+    <param name="filepointing" subparam="true" type="stringVec">
         <shortdescription>File that contains the flagging template for pointing flag</shortdescription>
         <description>The name of a text file that contains the flagging template
         for pointing flag. If the template flags files is undefined a name of
@@ -123,7 +123,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
-    <param subparam="true" name="incompleteraster" type="bool">
+    <param name="incompleteraster" subparam="true" type="bool">
         <shortdescription>Apply commands to flag incomplete raster sequence</shortdescription>
         <description>Apply commands to flag incomplete raster sequence.
         If this is False, relevant commands in filepointing are
@@ -144,7 +144,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
       </allowed>
     </param>
 
-    <param subparam="true" name="tbuff" type="any">
+    <param name="tbuff" subparam="true" type="any">
         <shortdescription>List of time buffers (sec) to pad timerange in flag commands</shortdescription>
         <description>The time in seconds used to pad flagging command time intervals if
         hm_tbuff='manual'.</description>
@@ -153,11 +153,13 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     </param>
 
     <param name="qa0" type="bool">
+        <shortdescription>QA0 flags</shortdescription>
         <description>QA0 flags</description>
         <value>True</value>
     </param>
 
     <param name="qa2" type="bool">
+        <shortdescription>QA2 flags</shortdescription>
         <description>QA2 flags</description>
         <value>True</value>
     </param>
@@ -177,20 +179,20 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         </allowed>
     </param>
 
-    <param subparam="true" name="flagbackup" type="bool">
+    <param name="flagbackup" subparam="true" type="bool">
         <shortdescription>Backup pre-existing flags</shortdescription>
         <description>Back up any pre-existing flags before applying new ones.</description>
         <value type="bool">False</value>
     </param>
 
-    <param subparam="true" name="dryrun" type="bool">
+    <param name="dryrun" subparam="true" type="bool">
         <shortdescription>Run the task (False) or display the command (True)</shortdescription>
         <description>Run the commands (True) or generate the commands to be run but
         do not execute (False).</description>
         <value>False</value>
     </param>
 
-    <param subparam="true" name="acceptresults" type="bool">
+    <param name="acceptresults" subparam="true" type="bool">
         <shortdescription>Add the results into the pipeline context</shortdescription>
         <description>Add the results of the task to the pipeline context (True) or
         reject them (False).</description>
@@ -199,67 +201,67 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 
     <constraints>
         <when param="pipelinemode">
-            <equals value="automatic" type="string">
+            <equals type="string" value="automatic">
             </equals>
-            <equals value="interactive" type="string">
+            <equals type="string" value="interactive">
                 <default param="vis"><value type="stringVec"/></default>
                 <default param="flagbackup"><value type="bool">False</value></default>
                 <default param="dryrun"><value type="bool">False</value></default>
                 <default param="acceptresults"><value type="bool">True</value></default>
             </equals>
-            <equals value="getinputs" type="string">
+            <equals type="string" value="getinputs">
                 <default param="vis"><value type="stringVec"/></default>
                 <default param="flagbackup"><value type="bool">False</value></default>
             </equals>
         </when>
 
         <when param="scan">
-            <equals value="True" type="bool">
+            <equals type="bool" value="True">
                 <default param="scannumber"><value type="string"/></default>
                 <default param="intents"><value type="string">POINTING,FOCUS,ATMOSPHERE,SIDEBAND,CHECK</value></default>
             </equals>
-            <equals value="False" type="bool">
+            <equals type="bool" value="False">
             </equals>
         </when>
 
         <when param="edgespw">
-            <equals value="True" type="bool">
+            <equals type="bool" value="True">
                 <default param="fracspw"><value type="string">1.875GHz</value></default>
                 <default param="fracspwfps"><value type="double">0.048387</value></default>
             </equals>
-            <equals value="False" type="bool">
+            <equals type="bool" value="False">
             </equals>
         </when>
 
         <when param="online">
-            <equals value="True" type="bool">
+            <equals type="bool" value="True">
                 <default param="fileonline"><value type="string"/></default>
             </equals>
-            <equals value="False" type="bool">
+            <equals type="bool" value="False">
             </equals>
         </when>
 
         <when param="template">
-            <equals value="True" type="bool">
+            <equals type="bool" value="True">
                 <default param="filetemplate"><value type="stringVec"/></default>
             </equals>
-            <equals value="False" type="bool">
+            <equals type="bool" value="False">
             </equals>
         </when>
 
         <when param="pointing">
-            <equals value="True" type="bool">
+            <equals type="bool" value="True">
                 <default param="filepointing"><value type="stringVec"/></default>
                 <default param="incompleteraster"><value type="bool">True</value></default>
             </equals>
-            <equals value="False" type="bool">
+            <equals type="bool" value="False">
             </equals>
         </when>
 
         <when param="hm_tbuff">
-            <equals value="halfint" type="string">
+            <equals type="string" value="halfint">
             </equals>
-            <equals value="manual" type="string">
+            <equals type="string" value="manual">
                 <default param="tbuff"><value type="double">0.0</value></default>
             </equals>
         </when>

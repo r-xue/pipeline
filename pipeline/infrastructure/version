@@ -23,8 +23,10 @@ if ($gitbranch eq "main" || $gitbranch eq "master" || $gitbranch =~ "release/"){
 print ("$last_branch_tag $last_release_tag");
 my $headcommit=`git rev-parse HEAD`;
 
+$dirty_workspace = system("git", "diff", "--quiet");
+#print("\n$dirty_workspace\n");
 # No tag at all for branch
-if ($last_branch_tag eq "") {
+if ($last_branch_tag eq "" || $dirty_workspace ) {
     print (" dirty");
 # Check if the latest tag is the latest commit
 } else {

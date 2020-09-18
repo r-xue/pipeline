@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hsdn_restoredata" type="function">
 <shortdescription>Restore flagged and calibration single dish data from a pipeline run</shortdescription>
@@ -87,7 +87,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
-    <param subparam="true" name="infiles" type="stringVec">
+    <param name="infiles" subparam="true" type="stringVec">
         <shortdescription>List of input MeasurementSets</shortdescription>
         <description>List of input MeasurementSets.
 
@@ -95,7 +95,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
-    <param subparam="true" name="caltable" type="stringVec">
+    <param name="caltable" subparam="true" type="stringVec">
         <shortdescription>List of output caltable(s)</shortdescription>
         <description>Name of output gain calibration tables.
 
@@ -143,17 +143,20 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         </allowed>
     </param>
 
-    <param subparam="true" name="overwrite" type="bool">
+    <param name="overwrite" subparam="true" type="bool">
+        <shortdescription>Overwrite existing files on import</shortdescription>
         <description>Overwrite existing files on import</description>
         <value>False</value>
     </param>
 
-    <param subparam="true" name="nocopy" type="bool">
+    <param name="nocopy" subparam="true" type="bool">
+        <shortdescription>Disable copying of MS to working directory</shortdescription>
         <description>Disable copying of MS to working directory</description>
         <value>False</value>
     </param>
 
     <param name="createmms" type="string">
+        <shortdescription>Create an MMS</shortdescription>
         <description>Create an MMS</description>
     <value>automatic</value>
         <allowed kind="enum">
@@ -163,14 +166,14 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         </allowed>
     </param>
 
-    <param subparam="true" name="dryrun" type="bool">
+    <param name="dryrun" subparam="true" type="bool">
         <shortdescription>Run the task (False) or display task command (True)</shortdescription>
         <description>Run the commands (True) or generate the commands to be run but
         do not execute (False).</description>
         <value>False</value>
     </param>
 
-    <param subparam="true" name="acceptresults" type="bool">
+    <param name="acceptresults" subparam="true" type="bool">
         <shortdescription>Add the results into the pipeline context</shortdescription>
         <description>Add the results of the task to the pipeline context (True) or
         reject them (False).</description>
@@ -179,12 +182,12 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 
 <constraints>
     <when param="pipelinemode">
-          <equals value="automatic" type="string"></equals>
-          <equals value="interactive" type="string">
+          <equals type="string" value="automatic"/>
+          <equals type="string" value="interactive">
               <default param="dryrun"><value type="bool">False</value></default>
               <default param="acceptresults"><value type="bool">True</value></default>
           </equals>
-          <equals value="getinputs" type="string"></equals>
+          <equals type="string" value="getinputs"/>
     </when>
 </constraints>
 

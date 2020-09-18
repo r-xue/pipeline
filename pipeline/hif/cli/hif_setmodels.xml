@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hif_setmodels" type="function">
 <shortdescription>Set calibrator source models</shortdescription>
@@ -26,7 +26,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
             the results object for the pipeline task is returned
 </description>
 <input>
-    <param subparam="true" name="vis" type="string">
+    <param name="vis" subparam="true" type="string">
         <shortdescription>List of input MeasurementSets</shortdescription>
         <description>The list of input MeasurementSets. Defaults to the list of
             MeasurementSets specified in the pipeline context.
@@ -36,7 +36,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
-    <param subparam="true" name="reference" type="variant">
+    <param name="reference" subparam="true" type="variant">
         <shortdescription>Reference calibrator field name(s)</shortdescription>
         <description>A string containing a comma delimited list of  field names
             defining the reference calibrators. Defaults to field names with
@@ -47,7 +47,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value type="string"/>
     </param>
 
-    <param subparam="true" name="refintent" type="string">
+    <param name="refintent" subparam="true" type="string">
         <shortdescription>Observing intent of reference fields</shortdescription>
         <description>A string containing a comma delimited list of intents
             used to select the reference calibrators. Defaults to 'AMPLITUDE'.
@@ -57,7 +57,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>AMPLITUDE</value>
     </param>
 
-    <param subparam="true" name="transfer" type="variant">
+    <param name="transfer" subparam="true" type="variant">
         <shortdescription>Transfer calibrator field name(s)</shortdescription>
         <description>A string containing a comma delimited list of  field names
             defining the transfer calibrators. Defaults to field names with
@@ -68,7 +68,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value type="string"/>
     </param>
 
-    <param subparam="true" name="transintent" type="string">
+    <param name="transintent" subparam="true" type="string">
         <shortdescription>Observing intent of transfer fields</shortdescription>
         <description>A string containing a comma delimited list of intents
             defining the transfer calibrators. Defaults to 'BANDPASS,PHASE,CHECK'.
@@ -124,7 +124,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     </allowed>
     </param>
 
-    <param subparam="true" name="dryrun" type="bool">
+    <param name="dryrun" subparam="true" type="bool">
         <shortdescription>Run the task (False) or display commands (True)</shortdescription>
         <description>Run the commands (True) or generate the commands to be run but
             do not execute (False).
@@ -132,7 +132,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>False</value>
     </param>
 
-    <param subparam="true" name="acceptresults" type="bool">
+    <param name="acceptresults" subparam="true" type="bool">
         <shortdescription>Automatically accept results into context</shortdescription>
         <description>Add the results of the task to the pipeline context (True) or
             reject them (False).
@@ -142,8 +142,8 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 
     <constraints>
         <when param="pipelinemode">
-            <equals value="automatic" type="string"/>
-                <equals value="interactive" type="string">
+            <equals type="string" value="automatic"/>
+                <equals type="string" value="interactive">
                 <default param="vis">    <value type="stringVec"/></default>
                 <default param="reference">    <value type="string"/></default>
                 <default param="refintent">    <value type="string">AMPLITUDE</value></default>
@@ -152,7 +152,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
                 <default param="dryrun">    <value type="bool">False</value></default>
                 <default param="acceptresults">    <value type="bool">True</value></default>
             </equals>
-            <equals value="getinputs" type="string">
+            <equals type="string" value="getinputs">
                 <default param="vis">    <value type="stringVec"/></default>
                 <default param="reference">    <value type="string"/></default>
                 <default param="refintent">    <value type="string">AMPLITUDE</value></default>

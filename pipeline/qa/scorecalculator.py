@@ -2810,8 +2810,8 @@ def score_gfluxscale_k_spw(vis, field, spw_id, k_spw, ref_spw):
     else:
         score = 0.5
 
-    longmsg = ('Ratio of <i>S</i><sub>derived</sub>/<i>S</i><sub>catalogue</sub> for {} ({}) spw {} in {} differs by '
-               '{:.0%} from the ratio for the highest SNR spw ({})'
+    longmsg = ('Ratio of <i>S</i><sub>calibrated</sub>/<i>S</i><sub>catalogue</sub> for {} ({}) spw {} in {} differs by'
+               ' {:.0%} from the ratio for the highest SNR spw ({})'
                ''.format(utils.dequote(field.name), ','.join(field.intents), spw_id, vis, q_spw, ref_spw))
     shortmsg = 'Internal spw-spw consistency'
 
