@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hsd_k2jycal" type="function">
 
@@ -18,7 +18,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>False</value>
     </param>
 
-    <param subparam="true" name="endpoint" type="string">
+    <param name="endpoint" subparam="true" type="string">
         <shortdescription>Endpoint type (asdm, model-fit, interpolation)</shortdescription>
         <description>Which endpoints to use for query
         options: 'asdm', 'model-fit', 'interpolation'</description>
@@ -97,7 +97,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         </allowed>
     </param>
 
-    <param subparam="true" name="infiles" type="stringVec">
+    <param name="infiles" subparam="true" type="stringVec">
         <shortdescription>List of input MeasurementSets</shortdescription>
         <description>List of input MeasurementSets.
 
@@ -106,7 +106,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
-    <param subparam="true" name="caltable" type="stringVec">
+    <param name="caltable" subparam="true" type="stringVec">
         <shortdescription>List of output caltable(s)</shortdescription>
         <description>Name of output gain calibration tables.
 
@@ -114,14 +114,14 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
-    <param subparam="true" name="dryrun" type="bool">
+    <param name="dryrun" subparam="true" type="bool">
         <shortdescription>Run the task (False) or list commands (True)</shortdescription>
         <description>Run the commands (True) or generate the commands to be run but
         do not execute (False).</description>
         <value>False</value>
     </param>
 
-    <param subparam="true" name="acceptresults" type="bool">
+    <param name="acceptresults" subparam="true" type="bool">
         <shortdescription>Automatically apply results to context</shortdescription>
         <description>Add the results of the task to the pipeline context (True) or
         reject them (False).</description>
@@ -130,20 +130,20 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 
     <constraints>
         <when param="dbservice">
-            <equals value="False" type="bool"/>
-            <equals value="True" type="bool">
+            <equals type="bool" value="False"/>
+            <equals type="bool" value="True">
                 <default param="endpoint"><value type="string">asdm</value></default>
             </equals>
         </when>
         <when param="pipelinemode">
-            <equals value="automatic" type="string"/>
-            <equals value="interactive" type="string">
+            <equals type="string" value="automatic"/>
+            <equals type="string" value="interactive">
                 <default param="infiles"><value type="stringVec"/></default>
                 <default param="caltable"><value type="stringVec"/></default>
                 <default param="dryrun"><value type="bool">False</value></default>
                 <default param="acceptresults"><value type="bool">True</value></default>
             </equals>
-            <equals value="getinputs" type="string">
+            <equals type="string" value="getinputs">
                 <default param="vis"><value type="stringVec"/></default>
                 <default param="caltable"><value type="stringVec"/></default>
             </equals>

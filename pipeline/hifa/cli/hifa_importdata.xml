@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
     <task category="pipeline" name="hifa_importdata" type="function">
 
@@ -18,6 +18,7 @@
             </param>
 
             <param name="session" type="stringVec">
+                <shortdescription>List of visibility data sessions</shortdescription>
                 <description>List of visibility data sessions</description>
                 <value/>
             </param>
@@ -39,52 +40,62 @@
                 </allowed>
             </param>
 
-            <param subparam="true" name="asis" type="string">
+            <param name="asis" subparam="true" type="string">
+                <shortdescription>Extra ASDM tables to convert as is</shortdescription>
                 <description>Extra ASDM tables to convert as is</description>
                 <value>SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR CalPointing</value>
             </param>
 
-            <param subparam="true" name="process_caldevice" type="bool">
+            <param name="process_caldevice" subparam="true" type="bool">
+                <shortdescription>Import the caldevice table from the ASDM</shortdescription>
                 <description>Import the caldevice table from the ASDM</description>
                 <value>False</value>
             </param>
 
-            <param subparam="true" name="overwrite" type="bool">
+            <param name="overwrite" subparam="true" type="bool">
+                <shortdescription>Overwrite existing files on import</shortdescription>
                 <description>Overwrite existing files on import</description>
                 <value>False</value>
             </param>
 
-            <param subparam="true" name="nocopy" type="bool">
+            <param name="nocopy" subparam="true" type="bool">
+                <shortdescription>Disable copying of MS to working directory</shortdescription>
                 <description>Disable copying of MS to working directory</description>
                 <value>False</value>
             </param>
 
-            <param subparam="true" name="bdfflags" type="bool">
+            <param name="bdfflags" subparam="true" type="bool">
+                <shortdescription>Apply BDF flags on import</shortdescription>
                 <description>Apply BDF flags on import</description>
                 <value>True</value>
             </param>
 
             <param name="asimaging" type="bool">
+                <shortdescription>Import MeasurementSets as imaging MeasurementSets</shortdescription>
                 <description>Import MeasurementSets as imaging MeasurementSets</description>
                 <value>False</value>
             </param>
 
             <param name="lazy" type="bool">
+                <shortdescription>Use the lazy filler import</shortdescription>
                 <description>Use the lazy filler import</description>
                 <value>False</value>
             </param>
 
             <param name="dbservice" type="bool">
+                <shortdescription>Use the online flux catalog</shortdescription>
                 <description>Use the online flux catalog</description>
                 <value>False</value>
             </param>
 
-            <param subparam="true" name="ocorr_mode" type="string">
+            <param name="ocorr_mode" subparam="true" type="string">
+                <shortdescription>ALMA default set to ca</shortdescription>
                 <description>ALMA default set to ca</description>
                 <value>ca</value>
             </param>
 
             <param name="createmms" type="string">
+                <shortdescription>Create an MMS</shortdescription>
                 <description>Create an MMS</description>
                 <value>false</value>
                 <allowed kind="enum">
@@ -101,21 +112,23 @@
                 <value>0.0</value>
             </param>
 
-            <param subparam="true" name="dryrun" type="bool">
+            <param name="dryrun" subparam="true" type="bool">
+                <shortdescription>Run the task (False) or display task command (True)</shortdescription>
                 <description>Run the task (False) or display task command (True)</description>
                 <value>False</value>
             </param>
 
-            <param subparam="true" name="acceptresults" type="bool">
+            <param name="acceptresults" subparam="true" type="bool">
+                <shortdescription>Add the results into the pipeline context</shortdescription>
                 <description>Add the results into the pipeline context</description>
                 <value>True</value>
             </param>
 
             <constraints>
                 <when param="pipelinemode">
-                    <equals value="automatic" type="string">
+                    <equals type="string" value="automatic">
                     </equals>
-                    <equals value="interactive" type="string">
+                    <equals type="string" value="interactive">
                         <default param="asis">
                             <value type="string">SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR CalPointing</value>
                         </default>
@@ -141,7 +154,7 @@
                             <value type="bool">True</value>
                         </default>
                     </equals>
-                    <equals value="getinputs" type="string">
+                    <equals type="string" value="getinputs">
                         <default param="asis">
                             <value type="string">SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR</value>
                         </default>
