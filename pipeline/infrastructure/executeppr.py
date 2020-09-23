@@ -40,7 +40,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
         importonly: Whether or not to indicate to stop processing after
             importing data. If True, execution of PPR stops after
             h*_importdata stage. The parameter has no effect if there is no
-            h*_impordata stage in PPR.
+            h*_importdata stage in PPR.
         breakpoint: A name of command that should be considered as a break point.
         bpaction: An action to be taken at the breakpoint.
             Available actions are,
