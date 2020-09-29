@@ -625,7 +625,7 @@ class T1_3MRenderer(RendererBase):
                                             if field in f.name]
                             if len(intents_list) == 0:
                                 continue
-                            intents = ','.join(intents_list[0])
+                            intents = ','.join(sorted(intents_list[0]))
 
                             flagsummary = resultitem.flagsummary[field]
 
