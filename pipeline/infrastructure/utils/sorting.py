@@ -24,6 +24,7 @@ def numeric_sort(l):
     """
     Sort a list numerically, eg.
 
-    ['9,11,13,15', '11,13', '9'] -> ['9', '9,11,13,15', '11,13']
+    >>> numeric_sort(['9,11,13,15', '11,13', '9'])
+    ['9', '9,11,13,15', '11,13']
     """
     return sorted(l, key=_string_split_by_numbers)
