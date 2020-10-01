@@ -32,10 +32,16 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value>False</value>
   </param>
 
-    <param name="hm_perchanweightdensity" type="bool">
-        <description>Calculate the weight density for each channel independently</description>
-        <value>False</value>
-    </param>
+  <param name="hm_perchanweightdensity" type="bool">
+    <description>Calculate the weight density for each channel independently</description>
+    <value>False</value>
+  </param>
+
+  <param name="hm_weighting" type="string">
+    <shortdescription>Weighting scheme (natural,uniform,briggs,briggsabs[experimental],briggsbwtaper[experimental])</shortdescription>
+    <description>Weighting scheme (natural,uniform,briggs,briggsabs[experimental],briggsbwtaper[experimental])</description>
+    <value>briggs</value>
+  </param>
 
   <param name="parallel" type="string">
     <description>Use MPI cluster where possible</description>
