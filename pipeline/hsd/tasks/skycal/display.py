@@ -459,6 +459,9 @@ def plot_elevation_difference(context, result, eldiff, threshold=3.0):
                                field=field_name,
                                parameters=parameters)
         return plot
+        
+    def close_figure( figure_id ):
+        pl.close( figure_id )
 
     plots = []
     for field_id, eldiff_field in eldiff.items():
@@ -524,5 +527,8 @@ def plot_elevation_difference(context, result, eldiff, threshold=3.0):
             plots_per_field.append(plot)
 
         plots.extend(plots_per_field)
+
+    close_figure( figure0 )
+    close_figure( figure1 )
 
     return plots
