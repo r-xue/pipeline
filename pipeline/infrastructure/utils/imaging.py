@@ -8,6 +8,7 @@ import re
 from .. import casatools
 from .. import logging
 import numpy
+from typing import Union, Tuple, List, Dict, Any
 
 from .. import utils
 
@@ -16,13 +17,17 @@ LOG = logging.get_logger(__name__)
 __all__ = ['chan_selection_to_frequencies', 'freq_selection_to_channels', 'spw_intersect', 'update_sens_dict',
            'update_beams_dict', 'set_nested_dict', 'intersect_ranges', 'intersect_ranges_by_weight', 'merge_ranges', 'equal_to_n_digits']
 
-
-def _get_cube_freq_axis(img):
+def _get_cube_freq_axis(img: str) -> Tuple[float, float, str, float, int]:
     """
-    Get image cube frequency axis.
+    Get CASA image/cube frequency axis.
 
-    :param img:
-    :return:
+    Args:
+        img: CASA image/cube name
+
+    Returns:
+        Tuple of frequency axis components
+        (reference frequency, delta frequency per channel, frequency unit,
+         reference pixel, number of pixels of frequency axis)
     """
     iaTool = casatools.image
 
@@ -41,14 +46,17 @@ def _get_cube_freq_axis(img):
     return refFreq, deltaFreq, freqUnit, refPix, numPix
 
 
-def chan_selection_to_frequencies(img, selection, unit='GHz'):
+def chan_selection_to_frequencies(img: str, selection: str, unit: str = 'GHz') -> Union[List[float], List[str]]:
     """
-    Convert channel selection to frequency tuples.
+    Convert channel selection to frequency tuples for a given CASA cube.
 
-    :param img:
-    :param selection:
-    :param unit:
-    :return:
+    Args:
+        img: CASA cube name
+        selection: Channel selection string using CASA selection syntax
+        unit: Frequency unit
+
+    Returns:
+        List of pairs of frequency values (float) in the desired units
     """
 
     if selection in ('NONE', 'ALL'):
@@ -87,13 +95,16 @@ def chan_selection_to_frequencies(img, selection, unit='GHz'):
     return frequencies
 
 
-def freq_selection_to_channels(img, selection):
+def freq_selection_to_channels(img: str, selection: str) -> Union[List[int], List[str]]:
     """
-    Convert frequency selection to channel tuples.
+    Convert frequency selection to channel tuples for a given CASA cube.
 
-    :param img:
-    :param selection:
-    :return:
+    Args:
+        img: CASA cube name
+        selection: Frequency selection string using CASA syntax
+
+    Returns:
+        List of pairs of channel values (int)
     """
 
     if selection in ('NONE', 'ALL'):
@@ -146,14 +157,20 @@ def freq_selection_to_channels(img, selection):
     return channels
 
 
-def spw_intersect(spw_range, line_regions):
+def spw_intersect(spw_range: List[float], line_regions: List[List[float]]) -> List[List[float]]:
     """
-    Compute intersect between SPW frequency range and line frequency
-    ranges to be excluded.
+    This utility function takes a frequency range (as numbers with arbitrary
+    but common units) and computes the intersection with a list of frequency
+    ranges defining the regions of spectral lines. It returns the remaining
+    ranges excluding the line frequency ranges.
 
-    :param spw_range:
-    :param line_regions:
-    :return:
+    Args:
+        spw_range: List of two numbers defining the spw frequency range
+        line_regions: List of lists of pairs of numbers defining frequency ranges
+                      to be excluded
+
+    Returns:
+        List of lists of pairs of numbers defining the remaining frequency ranges
     """
     spw_sel_intervals = []
     for line_region in line_regions:
@@ -180,16 +197,19 @@ def spw_intersect(spw_range, line_regions):
     return spw_sel_intervals
 
 
-def update_sens_dict(dct, udct):
+def update_sens_dict(dct: Dict, udct: Dict) -> None:
     """
     Update a sensitivity dictionary. All generic solutions
     tried so far did not do the job. So this method assumes
     an explicit dictionary structure of
     ['<MS name>']['<field name']['<intent>'][<spw>]: {<sensitivity result>}.
 
-    :param dct:
-    :param udct:
-    :return:
+    Args:
+        dct:
+        udct:
+
+    Returns:
+        None. The main dictionary is modified in place.
     """
     for msname in udct:
         # Exclude special primary keys that are not MS names
@@ -208,16 +228,19 @@ def update_sens_dict(dct, udct):
                         dct[msname][field][intent][spw] = udct[msname][field][intent][spw]
 
 
-def update_beams_dict(dct, udct):
+def update_beams_dict(dct: Dict, udct: Dict) -> None:
     """
     Update a beams dictionary. All generic solutions
     tried so far did not do the job. So this method assumes
     an explicit dictionary structure of
     ['<field name']['<intent>'][<spwids>]: {<beam>}.
 
-    :param dct:
-    :param udct:
-    :return:
+    Args:
+        dct: Beams dictionary
+        udct: Beams update dictionary
+
+    Returns:
+        None. The main dictionary is modified in place.
     """
     for field in udct:
         # Exclude special primary keys that are not MS names
@@ -233,13 +256,23 @@ def update_beams_dict(dct, udct):
                     dct[field][intent][spwids] = udct[field][intent][spwids]
 
 
-def set_nested_dict(dct, keys, value):
+def set_nested_dict(dct: Dict, keys: Tuple[Any], value: Any) -> None:
     """
+    Set a hierarchy of dictionaries with given keys and value
+    for the lowest level key.
 
-    :param dct:
-    :param keys:
-    :param value:
-    :return:
+    >>> d = {}
+    >>> set_nested_dict(d, ('key1', 'key2', 'key3'), 1)
+    >>> print(d)
+    {'key1': {'key2': {'key3': 1}}}
+
+    Args:
+        dct: Any dictionary
+        keys: List of keys to build hierarchy
+        value: Value for lowest level key
+
+    Returns:
+        None. The dictionary is modified in place.
     """
     for key in keys[:-1]:
         dct = dct.setdefault(key, {})
@@ -340,4 +373,3 @@ def equal_to_n_digits(x, y, numdigits=7):
         return True
     except:
         return False
-
