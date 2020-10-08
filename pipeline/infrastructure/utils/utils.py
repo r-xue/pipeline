@@ -11,7 +11,6 @@ from typing import Union, List, Dict, Sequence
 
 import numpy as np
 
-from ...domain import MeasurementSet, Field
 from .conversion import range_to_list
 from .. import casatools
 from .. import logging
@@ -205,7 +204,7 @@ def fieldname_clean(field: str) -> str:
     return ''.join([c if c in allowed else '_' for c in field])
 
 
-def get_field_accessor(ms: MeasurementSet, field: Field):
+def get_field_accessor(ms, field):
     """Returns accessor to field name or field ID, if field name is ambiguous.
     """
     fields = ms.get_fields(name=field.name)
@@ -217,7 +216,7 @@ def get_field_accessor(ms: MeasurementSet, field: Field):
     return accessor
 
 
-def get_field_identifiers(ms: MeasurementSet) -> Dict:
+def get_field_identifiers(ms) -> Dict:
     """Maps numeric field IDs to field names.
 
     Get a dict of numeric field ID to unambiguous field identifier, using the
@@ -228,7 +227,7 @@ def get_field_identifiers(ms: MeasurementSet) -> Dict:
     return {field.id: field_name_accessors[field.id](field) for field in ms.fields}
 
 
-def get_receiver_type_for_spws(ms: MeasurementSet, spwids: Sequence) -> Dict:
+def get_receiver_type_for_spws(ms, spwids: Sequence) -> Dict:
     """Return dictionary of receiver types for requested spectral window IDs.
 
     If spwid is not found in MeasurementSet instance, then detector type is
