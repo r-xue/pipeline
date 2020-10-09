@@ -365,7 +365,7 @@ def safe_split(fields):
     :param fields:
     :return:
     """
-    return pyparsing.commaSeparatedList.parseString(str(fields))
+    return pyparsing.commaSeparatedList.parseString(str(fields)).asList()
 
 
 def dequote(s):
