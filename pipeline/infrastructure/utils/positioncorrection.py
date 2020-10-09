@@ -44,13 +44,14 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
             e.g. {'value': 34.1, 'unit': 'deg'}.
 
     Example:
-        >>> file = "VLASS1.1.ql.T19t20.J155950+333000.10.2048.v1.I.iter1.image.pbcor.tt0.subim.fits"
-        Mean time of observation
-        >>> datetime = pipeline.infrastructure.casatools.measures.epoch('utc', '2017-12-02T20:03:07.500')
-        VLA coordinates
-        >>> obslong = {'unit':'deg','value':-107.6}
-        >>> obslat = {'unit':'deg','value':34.1}
-        >>> do_wide_field_pos_cor(file, date_time=datetime, obs_long=obslong, obs_lat=obslat)
+        file = "VLASS1.1.ql.T19t20.J155950+333000.10.2048.v1.I.iter1.image.pbcor.tt0.subim.fits"
+        # Mean time of observation
+        datetime = pipeline.infrastructure.casatools.measures.epoch('utc', '2017-12-02T20:03:07.500')
+        # VLA coordinates
+        obslong = {'unit':'deg','value':-107.6}
+        obslat = {'unit':'deg','value':34.1}
+        # Correct reference positions in fits header
+        do_wide_field_pos_cor(file, date_time=datetime, obs_long=obslong, obs_lat=obslat)
     """
     # Obtain observatory geographic coordinates
     if (obs_long is None) or (obs_lat is None):
@@ -139,6 +140,14 @@ def calc_wide_field_pos_cor(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: Dict,
 
     Returns:
         A tuple containing RA and Dec offsets with units (in radians).
+
+    Examples:
+    >>> ra, dec = {'unit': 'deg', 'value': 239.9618166667}, {'unit': 'deg', 'value': 33.5}
+    >>> obslong, obslat =  {'unit': 'deg', 'value': -107.61833}, {'unit': 'deg', 'value': 33.90049},
+    >>> datetime = {'m0': {'unit': 'd', 'value': 58089.82306510417}, 'refer': 'UTC', 'type': 'epoch'}
+    >>> offset = calc_wide_field_pos_cor(ra=ra, dec=dec, obs_long=obslong, obs_lat=obslat, date_time=datetime)
+    >>> '{}{}'.format(offset[0]['value'], offset[0]['unit']), '{}{}'.format(offset[1]['value'], offset[1]['unit'])
+    ('3.696987011896662e-07rad', '4.588161874447812e-08rad')
     """
     # Get original coordinates in radians
     ra_rad = casatools.quanta.convert(ra, 'rad')['value']
