@@ -3,7 +3,7 @@ import pytest
 from .math import round_half_up
 
 def test_simple():
-    assert round_half_up(-1.055, prec=2) == -1.06
+    assert round_half_up(-1.055, precision=2) == -1.06
 
 
 test_params = [(-2.5, 0, -3), ("-3.5", 0, -4), (4.5, 0, 5), ("5.5", 0, 6),
@@ -19,4 +19,4 @@ def test_round_half_up(unrounded, precision, expected):
     the decimal place to round.
 
     """
-    assert round_half_up(unrounded, prec=precision) == expected
+    assert round_half_up(unrounded, precision=precision) == expected
