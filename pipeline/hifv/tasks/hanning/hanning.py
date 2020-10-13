@@ -16,7 +16,6 @@ class HanningInputs(vdp.StandardInputs):
 
     The class inherits from vdp.StandardInputs.
 
-
     """
     def __init__(self, context, vis=None):
         """
@@ -34,7 +33,6 @@ class HanningResults(basetask.Results):
     """Results class for the hifv_hanning pipeline smoothing task.  Used on VLA measurement sets.
 
     The class inherits from basetask.Results
-
 
     """
     def __init__(self, final=None, pool=None, preceding=None):
@@ -108,9 +106,7 @@ class Hanning(basetask.StandardTaskTemplate):
         return HanningResults()
 
     def analyse(self, results):
-        """
-        Determine the best parameters by analysing the given jobs before
-        returning any final jobs to execute.
+        """Determine the best parameters by analysing the given jobs before returning any final jobs to execute.
 
         Override method of basetask.StandardTaskTemplate.analyze()
 
