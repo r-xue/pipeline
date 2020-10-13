@@ -7,10 +7,12 @@ import collections
 import datetime
 import decimal
 import math
+from numbers import Number
 import os
 import re
 import string
 import typing
+from typing import Iterator, List, Sequence, Tuple, Union
 
 import cachetools
 import pyparsing
@@ -63,7 +65,8 @@ class LoggingLRUCache(cachetools.LRUCache):
 MSTOOL_SELECTEDINDICES_CACHE: typing.Dict[str, LoggingLRUCache] = {}
 
 
-def commafy(l, quotes=True, multi_prefix='', separator=', ', conjunction='and'):
+def commafy(l:Sequence[str], quotes:bool=True, multi_prefix:str='',
+        separator:str=', ', conjunction:str='and') -> str:
     """
     Return the textual description of the given list.
 
@@ -112,7 +115,7 @@ def commafy(l, quotes=True, multi_prefix='', separator=', ', conjunction='and'):
                 commafy(l[1:], separator=separator, quotes=quotes, conjunction=conjunction))
 
 
-def flatten(l):
+def flatten(l:Sequence[Number]) -> Iterator[Number]:
     """
     Flatten a list of lists into a single list
     """
@@ -124,7 +127,7 @@ def flatten(l):
             yield el
 
 
-def unix_seconds_to_datetime(unix_secs):
+def unix_seconds_to_datetime(unix_secs:Sequence[float]) -> Union[datetime, List[datetime]]:
     """
     Return the input list, specified in seconds elapsed since 1970-01-01,
     converted to the equivalent Python datetimes.
@@ -136,7 +139,7 @@ def unix_seconds_to_datetime(unix_secs):
     return datetimes if len(unix_secs) > 1 else datetimes[0]
 
 
-def mjd_seconds_to_datetime(mjd_secs):
+def mjd_seconds_to_datetime(mjd_secs:Sequence[float]) -> Union[datetime, List[datetime]]:
     """
     Return the input list, specified in MJD seconds, converted to the
     equivalent Python datetimes.
@@ -149,7 +152,7 @@ def mjd_seconds_to_datetime(mjd_secs):
     return unix_seconds_to_datetime(mjd_secs - unix_offset)
 
 
-def get_epoch_as_datetime(epoch):
+def get_epoch_as_datetime(epoch:Number) -> datetime:
     """
     Convert a CASA epoch measure into a Python datetime.
 
@@ -175,8 +178,9 @@ def get_epoch_as_datetime(epoch):
     return t
 
 
-def range_to_list(arg):
     """
+def range_to_list(arg:str) -> List[int]:
+    """Expand a numeric range expressed in CASA syntax to the list of integer.
     Expand a numeric range expressed in CASA syntax to the equivalent Python
     list of integers.
 
@@ -357,7 +361,7 @@ def _convert_arg_to_id(arg_name, ms_path, arg_val):
     return result
 
 
-def safe_split(fields):
+def safe_split(fields:str) -> List[str]:
     """
     Split a string containing field names into a list, taking account of
     field names within quotes.
@@ -368,7 +372,7 @@ def safe_split(fields):
     return pyparsing.commaSeparatedList.parseString(str(fields))
 
 
-def dequote(s):
+def dequote(s:str) -> str:
     """
     Remove any kind of quotes from a string to faciliate comparisons.
 
@@ -378,7 +382,7 @@ def dequote(s):
     return s.replace('"', '').replace("'", "")
 
 
-def format_datetime(dt, dp=0):
+def format_datetime(dt:datetime, dp:int=0) -> str:
     """
     Return a string representation of a Python datetime, including microseconds
     to the requested precision.
@@ -400,7 +404,7 @@ def format_datetime(dt, dp=0):
     return s + f.format(microsecs)[1:]
 
 
-def format_timedelta(td, dp=0):
+def format_timedelta(td:timedelta, dp:int=0) -> str:
     """
     Return a formatted string representation for the given timedelta
 
@@ -425,7 +429,7 @@ def format_timedelta(td, dp=0):
         return str(rounded)
 
 
-def _parse_spw(task_arg, all_spw_ids=None):
+def _parse_spw(task_arg:str, all_spw_ids:tuple=None):
     """
     Convert the CASA-style spw argument to a list of spw IDs.
 
