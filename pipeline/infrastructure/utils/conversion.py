@@ -6,7 +6,7 @@ types and assist in formatting objects as strings for presentation to the
 user.
 """
 import collections
-import datetime
+from datetime import datetime, timedelta
 import decimal
 import math
 from numbers import Number
@@ -161,7 +161,7 @@ def unix_seconds_to_datetime(unix_secs:Sequence[float]) -> Union[datetime, List[
         The equivalent Python datetimes. If given a list, a list is returned.
         If given a scalar, a scalar is returned.
     """
-    datetimes = [datetime.datetime.utcfromtimestamp(s) for s in unix_secs]
+    datetimes = [datetime.utcfromtimestamp(s) for s in unix_secs]
     return datetimes if len(unix_secs) > 1 else datetimes[0]
 
 
@@ -203,7 +203,7 @@ def get_epoch_as_datetime(epoch:Number) -> datetime:
     t = mt.getvalue(epoch_utc)['m0']
     t = qt.sub(t, base_time)
     t = qt.convert(t, 's')
-    t = datetime.datetime.utcfromtimestamp(qt.getvalue(t)[0])
+    t = datetime.utcfromtimestamp(qt.getvalue(t)[0])
 
     return t
 
@@ -465,7 +465,7 @@ def format_timedelta(td:timedelta, dp:int=0) -> str:
     secs = decimal.Decimal(td.seconds)
     microsecs = decimal.Decimal(td.microseconds) / decimal.Decimal('1e6')
     rounded_secs = (secs + microsecs).quantize(decimal.Decimal(10) ** -dp)
-    rounded = datetime.timedelta(days=td.days, seconds=math.floor(rounded_secs))
+    rounded = timedelta(days=td.days, seconds=math.floor(rounded_secs))
     # get rounded number of microseconds as an integer
     rounded_microsecs = int((rounded_secs % 1).shift(6))
     # .. which we can pad with zeroes..
