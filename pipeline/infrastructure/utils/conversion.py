@@ -93,9 +93,9 @@ def commafy(l:Sequence[str], quotes:bool=True, multi_prefix:str='',
         multi_prefix += ' '
 
     length = len(l)
-    if length is 0:
+    if length == 0:
         return ''
-    if length is 1:
+    if length == 1:
         if multi_prefix:
             prefix = ' '
         else:
@@ -105,7 +105,7 @@ def commafy(l:Sequence[str], quotes:bool=True, multi_prefix:str='',
             return '%s\'%s\'' % (prefix, l[0])
         else:
             return '%s%s' % (prefix, l[0])
-    if length is 2:
+    if length == 2:
         if quotes:
             return '%s\'%s\' %s \'%s\'' % (multi_prefix, l[0], conjunction, l[1])
         else:
