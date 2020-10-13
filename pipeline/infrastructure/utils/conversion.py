@@ -1,4 +1,6 @@
 """
+The conversion module contains utility functions.
+
 The conversion module contains utility functions that convert between data
 types and assist in formatting objects as strings for presentation to the
 user.
@@ -34,8 +36,7 @@ USE_CASA_PARSING_ROUTINES = True
 
 
 class LoggingLRUCache(cachetools.LRUCache):
-    """
-    'Least recently used' cache that logs when cache entries are evicted.
+    """'Least recently used' cache that logs when cache entries are evicted.
 
     Underestimating the required cache size leads to poor performance, as seen
     in PIPE-327, where a lack of cached entries for the 33 EBs leads to
@@ -43,12 +44,14 @@ class LoggingLRUCache(cachetools.LRUCache):
     tens of milliseconds. Hence, we want to be notified when the cache size
     limit is hit.
     """
+
     def __init__(self, name, *args, **kwargs):
         self.name = name
         super().__init__(*args, **kwargs)
 
     def popitem(self):
-        """
+        """Remove and return the (key, value) pair least recently used.
+
         Override popitem method to create a log entry when a cache entry is
         evicted.
         """
@@ -68,16 +71,19 @@ MSTOOL_SELECTEDINDICES_CACHE: typing.Dict[str, LoggingLRUCache] = {}
 def commafy(l:Sequence[str], quotes:bool=True, multi_prefix:str='',
         separator:str=', ', conjunction:str='and') -> str:
     """
-    Return the textual description of the given list.
+    Convert the string list into the textual description.
 
     For example: commafy(['a','b','c']) = "'a', 'b' and 'c'"
 
-    :param l:
-    :param quotes:
-    :param multi_prefix:
-    :param separator:
-    :param conjunction:
-    :return:
+    Args:
+        l: Python string list.
+        quotes: Default is True.
+        multi_prefix: Default is ''.
+        separator: Default is ', '.
+        conjunction: Default is 'and'.
+
+    Return:
+        The textual description of the given list.
     """
     if not isinstance(l, list) and isinstance(l, collections.Iterable):
         l = [i for i in l]
@@ -117,8 +123,26 @@ def commafy(l:Sequence[str], quotes:bool=True, multi_prefix:str='',
 
 def flatten(l:Sequence[Number]) -> Iterator[Number]:
     """
-    Flatten a list of lists into a single list
+    Flatten a list of lists into a single list without pipelineaq.QAScore.
+
+    >>> obj = flatten([1,2,[3,4,[5,6]],7])
+    >>> obj.__next__()
+    1
+    >>> obj.__next__()
+    2
+    >>> obj.__next__()
+    3
+
+    >>> list(flatten([1,2,[3,4,[5,6]],7]))
+    [1,2,3,4,5,6]
+
+    Args:
+        l: A list of list.
+    Yields:
+        Single list.
+
     """
+
     for el in l:
         if isinstance(el, collections.Iterable) and not isinstance(el, (str, pipelineqa.QAScore)):
             for sub in flatten(el):
@@ -129,11 +153,13 @@ def flatten(l:Sequence[Number]) -> Iterator[Number]:
 
 def unix_seconds_to_datetime(unix_secs:Sequence[float]) -> Union[datetime, List[datetime]]:
     """
-    Return the input list, specified in seconds elapsed since 1970-01-01,
-    converted to the equivalent Python datetimes.
+    Convert UNIX epoc times to the equivalent Python datetimes.
 
-    If given a list, a list is returned. If given a scalar, a scalar is
-    returned.
+    Args:
+        unix_secs: The list, specified in seconds elapsed since 1970-01-01
+    Returns:
+        The equivalent Python datetimes. If given a list, a list is returned.
+        If given a scalar, a scalar is returned.
     """
     datetimes = [datetime.datetime.utcfromtimestamp(s) for s in unix_secs]
     return datetimes if len(unix_secs) > 1 else datetimes[0]
@@ -141,11 +167,13 @@ def unix_seconds_to_datetime(unix_secs:Sequence[float]) -> Union[datetime, List[
 
 def mjd_seconds_to_datetime(mjd_secs:Sequence[float]) -> Union[datetime, List[datetime]]:
     """
-    Return the input list, specified in MJD seconds, converted to the
-    equivalent Python datetimes.
+    Convert MJD seconds to the equivalent Python datetimes.
 
-    If given a list, a list is returned. If given a scalar, a scalar is
-    returned.
+    Args:
+        mjd_secs: The list, specified in MJD seconds.
+    Returns:
+        The equivalent Python datetimes. If given a list, a list is returned.
+        If given a scalar, a scalar is returned.
     """
     # 1970-01-01 is JD 40587. 86400 = seconds in a day
     unix_offset = 40587 * 86400
@@ -156,8 +184,10 @@ def get_epoch_as_datetime(epoch:Number) -> datetime:
     """
     Convert a CASA epoch measure into a Python datetime.
 
-    :param epoch: CASA epoch to convert
-    :return: equivalent Python datetime
+    Params:
+        epoch: CASA epoch measure.
+    Returns:
+        The equivalent Python datetime.
     """
     mt = casatools.measures
     qt = casatools.quanta
@@ -178,9 +208,9 @@ def get_epoch_as_datetime(epoch:Number) -> datetime:
     return t
 
 
-    """
 def range_to_list(arg:str) -> List[int]:
     """Expand a numeric range expressed in CASA syntax to the list of integer.
+
     Expand a numeric range expressed in CASA syntax to the equivalent Python
     list of integers.
 
@@ -188,9 +218,10 @@ def range_to_list(arg:str) -> List[int]:
     >>> range_to_list('1~5,7~9')
     [1,2,3,4,5,7,8,9]
 
-    :param arg: CASA range to expand
-    :type arg: str
-    :return: list of integers
+    Params:
+        arg: The numeric range expressed in CASA syntax.
+    Returns:
+        The equivalent Python list of integers.
     """
     if arg == '':
         return []
@@ -220,16 +251,17 @@ def range_to_list(arg:str) -> List[int]:
 
 def to_CASA_intent(ms, intents):
     """
-    Convert pipeline intents back to the equivalent intents recorded in the
-    measurement set.
+    Convert pipeline intents back to the equivalent intents recorded in the measurement set.
 
     Example:
     >>> to_CASA_intent(ms, 'PHASE,BANDPASS')
     'CALIBRATE_PHASE_ON_SOURCE,CALIBRATE_BANDPASS_ON_SOURCE'
 
-    :param ms: MeasurementSet object
-    :param intents: pipeline intents to convert
-    :return: CASA intents
+    Params:
+        ms: MeasurementSet object.
+        intents: pipeline intents to convert.
+    Returns:
+        The CASA intents recorded.
     """
     obs_modes = ms.get_original_intent(intents)
     return ','.join(obs_modes)
@@ -239,9 +271,11 @@ def to_pipeline_intent(ms, intents):
     """
     Convert CASA intents to pipeline intents.
 
-    :param ms: MeasurementSet object
-    :param intents: CASA intents to convert
-    :return: pipeline intents
+    Params:
+        ms: MeasurementSet object
+        intents: CASA intents to convert
+    Returns:
+        The pipeline intents.
     """
     casa_intents = {i.strip('*') for i in intents.split(',') if i is not None}
 
@@ -258,10 +292,12 @@ def field_arg_to_id(ms_path, field_arg, all_fields):
     """
     Convert a string to the corresponding field IDs.
 
-    :param ms_path: the path to the measurement set
-    :param field_arg: the field selection in CASA format
-    :param all_fields: all Field objects, for use when CASA msselect is not used
-    :return: a list of field IDs
+    Params:
+        ms_path: the path to the measurement set.
+        field_arg: the field selection in CASA format.
+        all_fields: all Field objects, for use when CASA msselect is not used.
+    Returns:
+        A list of field IDs
     """
     if USE_CASA_PARSING_ROUTINES:
         try:
@@ -282,10 +318,13 @@ def spw_arg_to_id(ms_path, spw_arg, all_spws):
     """
     Convert a string to spectral window IDs and channels.
 
-    :param ms_path: the path to the measurement set
-    :param spw_arg: the spw selection in CASA format
-    :param all_spws: list of all SpectralWindow objects, for use when CASA msselect is not used.
-    :return: a list of (spw, chan_start, chan_end, step) lists
+    Params:
+        ms_path: the path to the measurement set.
+        spw_arg: the spw selection in CASA format.
+        all_spws: list of all SpectralWindow objects, for use when CASA msselect
+            is not used.
+    Returns:
+        A list of (spw, chan_start, chan_end, step) lists
     """
     if USE_CASA_PARSING_ROUTINES:
         all_indices = _convert_arg_to_id('spw', ms_path, str(spw_arg))
@@ -307,10 +346,12 @@ def ant_arg_to_id(ms_path, ant_arg, all_antennas):
     """
     Convert a string to the corresponding antenna IDs.
 
-    :param ms_path: the path to the measurement set
-    :param ant_arg: the antenna selection in CASA format
-    :param all_antennas: all antenna domain objects for use when CASA msselect is disabled
-    :return: a list of antenna IDs
+    Params
+        ms_path: the path to the measurement set
+        ant_arg: the antenna selection in CASA format
+        all_antennas: all antenna domain objects for use when CASA msselect is disabled
+    Returns
+        A list of antenna IDs
     """
     if USE_CASA_PARSING_ROUTINES:
         all_indices = _convert_arg_to_id('baseline', ms_path, str(ant_arg))
@@ -330,10 +371,12 @@ def _convert_arg_to_id(arg_name, ms_path, arg_val):
     runtime was created (via the MSSelectedIndicesCache class) and this
     function delegates to the instance held in the module namespace.
 
-    :param arg_name:
-    :param ms_path: the path to the measurement set
-    :param field_arg: the field argument formatted with CASA syntax.
-    :return: a set of field IDs
+    Params
+        arg_name:
+        ms_path: the path to the measurement set
+        field_arg: the field argument formatted with CASA syntax.
+    Returns
+        A set of field IDs
     """
     ms_basename = os.path.basename(ms_path)
     if ms_basename not in MSTOOL_SELECTEDINDICES_CACHE:
@@ -363,11 +406,12 @@ def _convert_arg_to_id(arg_name, ms_path, arg_val):
 
 def safe_split(fields:str) -> List[str]:
     """
-    Split a string containing field names into a list, taking account of
-    field names within quotes.
+    Split a string containing field names into a list, taking account of field names within quotes.
 
-    :param fields:
-    :return:
+    Params:
+        fields: A string containing field names.
+    Returns:
+        A list, taking account of field names within quotes.
     """
     return pyparsing.commaSeparatedList.parseString(str(fields))
 
@@ -376,20 +420,23 @@ def dequote(s:str) -> str:
     """
     Remove any kind of quotes from a string to faciliate comparisons.
 
-    :param s:
-    :return:
+    Params:
+        s: Strings.
+    Returns:
+        String removed any kind of quotes.
     """
     return s.replace('"', '').replace("'", "")
 
 
 def format_datetime(dt:datetime, dp:int=0) -> str:
     """
-    Return a string representation of a Python datetime, including microseconds
-    to the requested precision.
+    Return a string representation of a Python datetime, including microseconds to the requested precision.
 
-    :param dt: Python datetime to convert
-    :param dp: number of decimal places for microseconds (0=do not show)
-    :return: string date
+    Params:
+        dt: Python datetime.
+        dp: number of decimal places for microseconds (0=do not show).
+    Returns:
+        string date.
     """
     if dp > 6:
         raise ValueError('Cannot exceed 6 decimal places as datetime stores to microsecond precision')
@@ -406,11 +453,14 @@ def format_datetime(dt:datetime, dp:int=0) -> str:
 
 def format_timedelta(td:timedelta, dp:int=0) -> str:
     """
-    Return a formatted string representation for the given timedelta
+    Return a formatted string representation for the given timedelta.
 
-    :param td:
-    :param dp:
-    :return:
+    Params
+        td: timedelta.
+        dp: number of decimal places for microseconds (0=do not show).
+            The number should be natural number with 0.
+    Returns:
+        formatted string representation.
     """
     secs = decimal.Decimal(td.seconds)
     microsecs = decimal.Decimal(td.microseconds) / decimal.Decimal('1e6')
@@ -469,6 +519,11 @@ def _parse_spw(task_arg:str, all_spw_ids:tuple=None):
               </channels>
             </atom>
           </result>
+
+    Params:
+        task_arg:
+        all_spw_ids:
+    Returns:
     """
     if task_arg in (None, ''):
         return all_spw_ids
@@ -526,6 +581,14 @@ def _parse_spw(task_arg:str, all_spw_ids:tuple=None):
 
 
 def _parse_field(task_arg, fields=None):
+    """
+    Inner method.
+
+    Params:
+        task_arg:
+        fields:
+    Results:
+    """
     if task_arg in (None, ''):
         return [f.id for f in fields]
     if fields is None:
@@ -567,6 +630,14 @@ def _parse_field(task_arg, fields=None):
 
 
 def _parse_antenna(task_arg, antennas=None):
+    """
+    Inner method.
+
+    Params:
+        task_arg:
+        fields:
+    Results:
+    """
     if task_arg in (None, ''):
         return [a.id for a in antennas]
     if antennas is None:
@@ -618,4 +689,3 @@ def _parse_antenna(task_arg, antennas=None):
             results.add(ant)
 
     return sorted(list(results))
-
