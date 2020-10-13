@@ -15,7 +15,7 @@ import typing
 import cachetools
 import pyparsing
 
-from .. import casatools, logging, pipelineqa
+from .. import casatools, logging
 
 LOG = logging.get_logger(__name__)
 
@@ -84,9 +84,9 @@ def commafy(l, quotes=True, multi_prefix='', separator=', ', conjunction='and'):
         multi_prefix += ' '
 
     length = len(l)
-    if length is 0:
+    if length == 0:
         return ''
-    if length is 1:
+    if length == 1:
         if multi_prefix:
             prefix = ' '
         else:
@@ -96,7 +96,7 @@ def commafy(l, quotes=True, multi_prefix='', separator=', ', conjunction='and'):
             return '%s\'%s\'' % (prefix, l[0])
         else:
             return '%s%s' % (prefix, l[0])
-    if length is 2:
+    if length == 2:
         if quotes:
             return '%s\'%s\' %s \'%s\'' % (multi_prefix, l[0], conjunction, l[1])
         else:
@@ -211,7 +211,7 @@ def range_to_list(arg):
     # we can have multiple items separated by commas
     atoms = pyparsing.delimitedList(atomExpr, delim=',')('atoms')
 
-    return list(atoms.parseString(str(arg)))
+    return atoms.parseString(str(arg)).asList()
 
 
 def to_CASA_intent(ms, intents):
@@ -370,7 +370,7 @@ def safe_split(fields):
 
 def dequote(s):
     """
-    Remove any kind of quotes from a string to faciliate comparisons.
+    Remove any kind of quotes from a string to facilitate comparisons.
 
     :param s:
     :return:
@@ -614,4 +614,3 @@ def _parse_antenna(task_arg, antennas=None):
             results.add(ant)
 
     return sorted(list(results))
-
