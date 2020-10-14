@@ -440,7 +440,7 @@ def format_datetime(dt:datetime, dp:int=0) -> str:
     """
     if dp > 6:
         raise ValueError('Cannot exceed 6 decimal places as datetime stores to microsecond precision')
-    elif dp <= 0:
+    elif dp < 0:
         raise ValueError('Cannot set negative integer to dp as decimal places')
 
     s = dt.strftime('%Y-%m-%d %H:%M:%S')
@@ -461,7 +461,7 @@ def format_timedelta(td:timedelta, dp:int=0) -> str:
     Returns:
         formatted string representation.
     """
-    if dp <= 0:
+    if dp < 0:
         raise ValueError('Cannot set negative integer to dp as decimal places')
 
     secs = decimal.Decimal(td.seconds)
