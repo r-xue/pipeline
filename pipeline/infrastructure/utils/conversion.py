@@ -461,6 +461,9 @@ def format_timedelta(td:timedelta, dp:int=0) -> str:
     Returns:
         formatted string representation.
     """
+    if dp <= 0:
+        raise ValueError('Cannot set negative integer to dp as decimal places')
+
     secs = decimal.Decimal(td.seconds)
     microsecs = decimal.Decimal(td.microseconds) / decimal.Decimal('1e6')
     rounded_secs = (secs + microsecs).quantize(decimal.Decimal(10) ** -dp)
