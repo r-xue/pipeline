@@ -9,6 +9,7 @@ from .imaging import _get_cube_freq_axis, chan_selection_to_frequencies, \
 
 _get_cube_freq_axis_test_params = (('helms30_sci.spw16.cube', (214450186328.0, 15624760.100036621, 'Hz', 0.0, 117)),)
 
+@pytest.mark.skip(reason="Missing test cube.")
 @pytest.mark.parametrize("img, freq_axis", _get_cube_freq_axis_test_params)
 def test__get_cube_freq_axis(img, freq_axis):
     """
@@ -21,6 +22,7 @@ def test__get_cube_freq_axis(img, freq_axis):
 chan_selection_to_frequencies_test_params = (('helms30_sci.spw16.cube', '10~20', 'GHz', [(214.59862154895035, 214.77049391005076)]),
                                              ('helms30_sci.spw16.cube', '40~50;60~80', 'GHz', [(215.06736435195145, 215.23923671305187), (215.3798595539522, 215.70797951605297)]))
 
+@pytest.mark.skip(reason="Missing test cube.")
 @pytest.mark.parametrize("img, selection, unit, frequency_ranges", chan_selection_to_frequencies_test_params)
 def test_chan_selection_to_frequencies(img, selection, unit, frequency_ranges):
     """
@@ -33,6 +35,7 @@ def test_chan_selection_to_frequencies(img, selection, unit, frequency_ranges):
 freq_selection_to_channels_test_params = (('helms30_sci.spw16.cube', '214.5~214.9GHz', [(4, 28)]),
                                           ('helms30_sci.spw16.cube', '214.5~214.9GHz;215123.4~215567.8MHz', [(4, 28), (44, 71)]))
 
+@pytest.mark.skip(reason="Missing test cube.")
 @pytest.mark.parametrize("img, selection, channel_ranges", freq_selection_to_channels_test_params)
 def test_freq_selection_to_channels(img, selection, channel_ranges):
     """
