@@ -8,7 +8,7 @@ import re
 from .. import casatools
 from .. import logging
 import numpy
-from typing import Union, Tuple, List, Dict, Any
+from typing import Union, Tuple, List, Dict, Any, Generator
 
 from .. import utils
 
@@ -51,9 +51,9 @@ def chan_selection_to_frequencies(img: str, selection: str, unit: str = 'GHz') -
     Convert channel selection to frequency tuples for a given CASA cube.
 
     Args:
-        img: CASA cube name
+        img:       CASA cube name
         selection: Channel selection string using CASA selection syntax
-        unit: Frequency unit
+        unit:      Frequency unit
 
     Returns:
         List of pairs of frequency values (float) in the desired units
@@ -100,7 +100,7 @@ def freq_selection_to_channels(img: str, selection: str) -> Union[List[int], Lis
     Convert frequency selection to channel tuples for a given CASA cube.
 
     Args:
-        img: CASA cube name
+        img:       CASA cube name
         selection: Frequency selection string using CASA syntax
 
     Returns:
@@ -121,7 +121,7 @@ def freq_selection_to_channels(img: str, selection: str) -> Union[List[int], Lis
             LOG.error('No frequency axis found in %s.' % (img))
             return ['NONE']
 
-        p = re.compile('([\d.]*)(~)([\d.]*)(\D*)')
+        p = re.compile(r'([\d.]*)(~)([\d.]*)(\D*)')
         for frange in p.findall(selection.replace(';', '')):
             f0 = qaTool.convert('%s%s' % (frange[0], frange[3]), freqUnit)['value']
             f1 = qaTool.convert('%s%s' % (frange[2], frange[3]), freqUnit)['value']
@@ -165,7 +165,7 @@ def spw_intersect(spw_range: List[float], line_regions: List[List[float]]) -> Li
     ranges excluding the line frequency ranges.
 
     Args:
-        spw_range: List of two numbers defining the spw frequency range
+        spw_range:    List of two numbers defining the spw frequency range
         line_regions: List of lists of pairs of numbers defining frequency ranges
                       to be excluded
 
@@ -205,8 +205,8 @@ def update_sens_dict(dct: Dict, udct: Dict) -> None:
     ['<MS name>']['<field name']['<intent>'][<spw>]: {<sensitivity result>}.
 
     Args:
-        dct:
-        udct:
+        dct:  Sensitivities dictionary
+        udct: Sensitivities update dictionary
 
     Returns:
         None. The main dictionary is modified in place.
@@ -236,7 +236,7 @@ def update_beams_dict(dct: Dict, udct: Dict) -> None:
     ['<field name']['<intent>'][<spwids>]: {<beam>}.
 
     Args:
-        dct: Beams dictionary
+        dct:  Beams dictionary
         udct: Beams update dictionary
 
     Returns:
@@ -267,8 +267,8 @@ def set_nested_dict(dct: Dict, keys: Tuple[Any], value: Any) -> None:
     {'key1': {'key2': {'key3': 1}}}
 
     Args:
-        dct: Any dictionary
-        keys: List of keys to build hierarchy
+        dct:   Any dictionary
+        keys : List of keys to build hierarchy
         value: Value for lowest level key
 
     Returns:
@@ -279,38 +279,44 @@ def set_nested_dict(dct: Dict, keys: Tuple[Any], value: Any) -> None:
     dct[keys[-1]] = value
 
 
-def intersect_ranges(ranges):
+def intersect_ranges(ranges: List[Tuple[Union[float, int]]]) -> Tuple[Union[float, int]]:
     """
     Compute intersection of ranges.
 
-    :param ranges: list of tuples defining (frequency) intervals
-    :return:
+    Args:
+        ranges: List of tuples defining (frequency) intervals
+
+    Returns:
+        intersect_range: Tuple of two numbers defining the intersection
     """
     if len(ranges) == 0:
         return ()
     elif len(ranges) == 1:
         return ranges[0]
     else:
-        ref_range = ranges[0]
+        intersect_range = ranges[0]
         for myrange in ranges[1:]:
-            i0 = max(ref_range[0], myrange[0])
-            i1 = min(ref_range[1], myrange[1])
+            i0 = max(intersect_range[0], myrange[0])
+            i1 = min(intersect_range[1], myrange[1])
             if i0 <= i1:
-                ref_range = (i0, i1)
+                intersect_range = (i0, i1)
             else:
                 return ()
 
-        return ref_range
+        return intersect_range
 
 
-def intersect_ranges_by_weight(ranges, delta, threshold):
+def intersect_ranges_by_weight(ranges: List[Tuple[Union[float, int]]], delta: float, threshold: float) -> Tuple[float]:
     """
-    Compute intersection of ranges through weight arrays.
+    Compute intersection of ranges through weight arrays and a threshold.
 
-    :param ranges:    list of tuples defining frequency intervals
-    :param delta:     frequency step to be used for the intersection
-    :param threshold: threshold to be used for the intersection
-    :return:
+    Args:
+        ranges:    List of tuples defining frequency intervals
+        delta:     Frequency step to be used for the intersection
+        threshold: Threshold to be used for the intersection
+
+    Returns:
+        intersect_range: Tuple of two numbers defining the intersectio
     """
     if len(ranges) == 0:
         return ()
@@ -331,10 +337,15 @@ def intersect_ranges_by_weight(ranges, delta, threshold):
         return ()
 
 
-def merge_ranges(ranges):
+def merge_ranges(ranges: List[Tuple[Union[float, int]]]) -> Generator[List[Tuple[float]], None, None]:
     """
     Merge overlapping and adjacent ranges and yield the merged ranges
     in order. The argument must be an iterable of pairs (start, stop).
+
+    Args:
+        ranges: List of tuples of two numbers defining ranges
+    Returns:
+        Generator yielding tuples of merged ranges
 
     >>> list(merge_ranges([(5,7), (3,5), (-1,3)]))
     [(-1, 7)]
@@ -359,14 +370,17 @@ def merge_ranges(ranges):
     yield current_start, current_stop
 
 
-def equal_to_n_digits(x, y, numdigits=7):
+def equal_to_n_digits(x: float, y: float, numdigits: int = 7) -> bool:
     """
     Approximate equality check up to a given number of digits.
 
-    :param x:
-    :param y:
-    :param numdigits:
-    :return:
+    Args:
+        x: First floating point number
+        y: Second floating point number
+        numdigits: Number of digits to check
+
+    Returns:
+        Boolean
     """
     try:
         numpy.testing.assert_approx_equal(x, y, numdigits)
