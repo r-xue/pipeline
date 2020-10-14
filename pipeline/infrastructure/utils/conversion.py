@@ -440,11 +440,10 @@ def format_datetime(dt:datetime, dp:int=0) -> str:
     """
     if dp > 6:
         raise ValueError('Cannot exceed 6 decimal places as datetime stores to microsecond precision')
+    elif dp <= 0:
+        raise ValueError('Cannot set negative integer to dp as decimal places')
 
     s = dt.strftime('%Y-%m-%d %H:%M:%S')
-    if dp <= 0:
-        # Ignore microseconds
-        return s
 
     microsecs = dt.microsecond / 1e6
     f = '{0:.%sf}' % dp
