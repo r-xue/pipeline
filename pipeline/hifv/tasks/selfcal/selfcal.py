@@ -35,6 +35,15 @@ class SelfcalInputs(vdp.StandardInputs):
     overwrite_modelcol = vdp.VisDependentProperty(default=False)
     refantmode = 'strict'
 
+    @selfcalmode.postprocess
+    def selfcalmode(self, unprocessed):
+        if unprocessed not in ['VLASS', 'VLASS-SE']:
+            LOG.warning('Unkown selfcalmode \'%s\' was set. Known modes are [\'VLASS\',\'VLASS-SE\']. '
+                        'Continuing in \'VLASS\' mode.' % unprocessed)
+            return 'VLASS'
+        else:
+            return unprocessed
+
     def __init__(self, context, vis=None, refantignore=None, combine=None, selfcalmode=None, refantmode=None,
                  overwrite_modelcol=None):
         self.context = context
@@ -71,11 +80,6 @@ class Selfcal(basetask.StandardTaskTemplate):
         tableprefix = os.path.basename(self.inputs.vis) + '.' + 'hifv_selfcal.s'
 
         self.caltable = tableprefix + str(stage_number) + '_1.' + 'phase-self-cal.tbl'
-
-        if self.inputs.selfcalmode not in ['VLASS', 'VLASS-SE']:
-            LOG.warn('Unkown mode \`%s\` was set. Known modes are [\'VLASS\',\'VLASS-SE\']. '
-                     'Continuing in \'VLASS\' mode.' % self.inputs.selfcalmode)
-            self.inputs.selfcalmode = 'VLASS'
 
         LOG.info('Checking for model column')
         self._check_for_modelcolumn()
@@ -122,8 +126,6 @@ class Selfcal(basetask.StandardTaskTemplate):
         # VLASS-SE mode
         if self.inputs.selfcalmode == 'VLASS-SE':
             casa_task_args['minsnr'] = 5.0
-            # casa_task_args['refantmode'] = '' # TODO: overwrite VLASS mode default ('strict')?
-            # casa_task_args['combine'] = 'field,spw' # TODO: does order matter? (default is 'spw,field')
 
         job = casa_tasks.gaincal(**casa_task_args)
 
@@ -142,14 +144,13 @@ class Selfcal(basetask.StandardTaskTemplate):
         applycal_task_args = {'vis': self.inputs.vis,
                               'gaintable': self.caltable,
                               'interp': ['nearestPD'],
-                              'spwmap': [numspws*[lowestscispwid]],
+                              'spwmap': [numspws * [lowestscispwid]],
                               'parang': False,
                               'applymode': 'calonly'}
         # VLASS-SE mode
         if self.inputs.selfcalmode == 'VLASS-SE':
             applycal_task_args['calwt'] = False
             applycal_task_args['interp'] = ['nearest']
-            # applycal_task_args['spwmap'] = [18*['2']] # TODO: does this need to be a fixed value?
 
         job = casa_tasks.applycal(**applycal_task_args)
 
