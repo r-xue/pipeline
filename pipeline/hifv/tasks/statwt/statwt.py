@@ -18,6 +18,15 @@ class StatwtInputs(vdp.StandardInputs):
     overwrite_modelcol = vdp.VisDependentProperty(default=False)
     statwtmode = vdp.VisDependentProperty(default='VLA')
 
+    @datacolumn.postprocess
+    def datacolumn(self, unprocessed):
+        if self.statwtmode == 'VLASS-SE' and unprocessed != 'residual_data':
+            LOG.warning("Input datacolumn parameter is \'{}\', but the VLASS-SE default is \'residual_data\', "
+                        "using default value.".format(unprocessed))
+            return 'residual_data'
+        else:
+            return unprocessed
+
     def __init__(self, context, vis=None, datacolumn=None, overwrite_modelcol=None, statwtmode=None):
         super(StatwtInputs, self).__init__()
         self.context = context
@@ -54,7 +63,7 @@ class Statwt(basetask.StandardTaskTemplate):
             LOG.info('Checking for model column')
             self._check_for_modelcolumn()
 
-        if self.inputs.statwtmode not in ['VLA','VLASS-SE']:
+        if self.inputs.statwtmode not in ['VLA', 'VLASS-SE']:
             LOG.warn('Unkown mode \'%s\' was set. Known modes are [\'VLA\',\'VLASS-SE\']. '
                      'Continuing in \'VLA\' mode.' % self.inputs.statwtmode)
             self.inputs.statwtmode = 'VLA'
@@ -96,8 +105,6 @@ class Statwt(basetask.StandardTaskTemplate):
             task_args['minsamp'] = ''
             task_args['chanbin'] = 1
             task_args['timebin'] = '1yr'
-            # TODO: should it be set here or in the recipe via the task argument?
-            # task_args['datacolumn'] = 'residual data'
 
         if fielddict == {}:
             job = casa_tasks.statwt(**task_args)

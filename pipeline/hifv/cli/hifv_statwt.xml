@@ -16,13 +16,11 @@
     </param>
 
     <param name="datacolumn" type="string">
-    <shortdescription>Data column to use to compute weights. Supported values are 'data',
-        'corrected', 'residual', and 'residual_data' (case insensitive, minimum match
-        supported).</shortdescription>
-    <description>Data column to use to compute weights. Supported values are 'data',
-        'corrected', 'residual', and 'residual_data' (case insensitive, minimum match
-        supported).</description>
-    <value>corrected</value>
+        <shortdescription>Column used to compute weights</shortdescription>
+        <description>Data column used to compute weights. Supported values are
+                     &quot;data&quot;, &quot;corrected&quot;, &quot;residual&quot;, and &quot;residual_data&quot;
+                     (case insensitive, minimum match supported).</description>
+        <value>corrected</value>
     </param>
 
     <param name="pipelinemode" type="string">
@@ -53,7 +51,7 @@
                      Single Epoch ('VLASS-SE') use case. Note that the 'VLASS-SE'
                      mode is meant to be used with datacolumn='residual_data'.
                      Default is 'VLA'.</description>
-        <value>standard</value>
+        <value>VLA</value>
     </param>
 
     <param name="dryrun" subparam="true" type="bool">
