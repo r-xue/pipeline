@@ -16,13 +16,24 @@ LOG = infrastructure.get_logger(__name__)
 class StatwtInputs(vdp.StandardInputs):
     datacolumn = vdp.VisDependentProperty(default='corrected')
     overwrite_modelcol = vdp.VisDependentProperty(default=False)
+    statwtmode = vdp.VisDependentProperty(default='VLA')
 
-    def __init__(self, context, vis=None, datacolumn=None, overwrite_modelcol=None):
+    @datacolumn.postprocess
+    def datacolumn(self, unprocessed):
+        if self.statwtmode == 'VLASS-SE' and unprocessed != 'residual_data':
+            LOG.warning("Input datacolumn parameter is \'{}\', but the VLASS-SE default is \'residual_data\', "
+                        "using default value.".format(unprocessed))
+            return 'residual_data'
+        else:
+            return unprocessed
+
+    def __init__(self, context, vis=None, datacolumn=None, overwrite_modelcol=None, statwtmode=None):
         super(StatwtInputs, self).__init__()
         self.context = context
         self.vis = vis
         self.datacolumn = datacolumn
         self.overwrite_modelcol = overwrite_modelcol
+        self.statwtmode = statwtmode
 
 
 class StatwtResults(basetask.Results):
@@ -52,6 +63,11 @@ class Statwt(basetask.StandardTaskTemplate):
             LOG.info('Checking for model column')
             self._check_for_modelcolumn()
 
+        if self.inputs.statwtmode not in ['VLA', 'VLASS-SE']:
+            LOG.warn('Unkown mode \'%s\' was set. Known modes are [\'VLA\',\'VLASS-SE\']. '
+                     'Continuing in \'VLA\' mode.' % self.inputs.statwtmode)
+            self.inputs.statwtmode = 'VLA'
+
         fielddict = cont_file_to_CASA(self.inputs.vis, self.inputs.context)
         fields = ','.join(str(x) for x in fielddict) if fielddict != {} else ''
 
@@ -73,6 +89,8 @@ class Statwt(basetask.StandardTaskTemplate):
         if fielddict != {}:
             LOG.info('cont.dat file present.  Using VLA Spectral Line Heuristics for task statwt.')
 
+        # VLA (default mode)
+        # Note if default task_args changes, then 'vlass-se' case might need to be updated (PIPE-723)
         task_args = {'vis': self.inputs.vis,
                      'fitspw': '',
                      'fitcorr': '',
@@ -81,6 +99,12 @@ class Statwt(basetask.StandardTaskTemplate):
                      'field': '',
                      'spw': '',
                      'datacolumn': self.inputs.datacolumn}
+        # VLASS-SE
+        if self.inputs.statwtmode == 'VLASS-SE':
+            task_args['combine'] = 'field,scan,state,corr'
+            task_args['minsamp'] = ''
+            task_args['chanbin'] = 1
+            task_args['timebin'] = '1yr'
 
         if fielddict == {}:
             job = casa_tasks.statwt(**task_args)
@@ -97,9 +121,9 @@ class Statwt(basetask.StandardTaskTemplate):
 
             return statwt_result
 
-    def _do_flagsummary(self, name, field = ''):
+    def _do_flagsummary(self, name, field=''):
         fielddict = cont_file_to_CASA(self.inputs.vis, self.inputs.context)
-        job = casa_tasks.flagdata(name=name, vis = self.inputs.vis, field = field, mode='summary')
+        job = casa_tasks.flagdata(name=name, vis=self.inputs.vis, field=field, mode='summary')
         return self._executor.execute(job)
 
     def _check_for_modelcolumn(self):
