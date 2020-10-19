@@ -288,7 +288,7 @@ def to_pipeline_intent(ms, intents):
     return ','.join(pipeline_intents)
 
 
-def field_arg_to_id(ms_path, field_arg, all_fields):
+def field_arg_to_id(ms_path:str, field_arg, all_fields):
     """
     Convert a string to the corresponding field IDs.
 
@@ -314,7 +314,7 @@ def field_arg_to_id(ms_path, field_arg, all_fields):
         return _parse_field(field_arg, all_fields)
 
 
-def spw_arg_to_id(ms_path, spw_arg, all_spws):
+def spw_arg_to_id(ms_path:str, spw_arg, all_spws):
     """
     Convert a string to spectral window IDs and channels.
 
@@ -342,7 +342,7 @@ def spw_arg_to_id(ms_path, spw_arg, all_spws):
         return spws
 
 
-def ant_arg_to_id(ms_path, ant_arg, all_antennas):
+def ant_arg_to_id(ms_path:str, ant_arg, all_antennas):
     """
     Convert a string to the corresponding antenna IDs.
 
@@ -360,7 +360,7 @@ def ant_arg_to_id(ms_path, ant_arg, all_antennas):
         return _parse_antenna(ant_arg, all_antennas)
 
 
-def _convert_arg_to_id(arg_name, ms_path, arg_val):
+def _convert_arg_to_id(arg_name:str, ms_path:str, arg_val:str):
     """
     Parse the CASA input argument and return the matching IDs.
 
