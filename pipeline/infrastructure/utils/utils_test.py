@@ -150,12 +150,15 @@ for i, fn in enumerate(['Mars', 'Jupiter', 'Mars']):
     fields.append(m)
 
 # get_fields() is called only once in this test, therefore set return_value.
-params_get_field_accessor = [(Mock(spec=domain.MeasurementSet, **{'fields': fields[0:2],  # All fields names are unique
-                                                                  'get_fields.return_value': [fields[1]]}),
-                              fields[1], 'Jupiter'),
-                             (Mock(spec=domain.MeasurementSet, **{'fields': fields,  # Some field name 'Mars' repeats
-                                                                  'get_fields.return_value': [fields[0], fields[2]]}),
-                              fields[2], '3')]
+params_get_field_accessor = [
+    (Mock(spec=domain.MeasurementSet, **{
+        'fields': fields[0:2],
+        'get_fields.return_value': [fields[1]]
+    }), fields[1], 'Jupiter'),  # All fields names are unique
+    (Mock(spec=domain.MeasurementSet, **{
+        'fields': fields,
+        'get_fields.return_value': [fields[0], fields[2]]
+    }), fields[2], '3')]  # Field name 'Mars' repeats
 
 
 @pytest.mark.parametrize('ms, field, expected', params_get_field_accessor)
@@ -172,14 +175,17 @@ def test_get_field_accessor(ms, field, expected):
 
 # get_fields() returns all fields with the name given in argument, mock this behaviour
 # The method is called multiple times, therefore set side_effect.
-params_get_field_ids = [(Mock(spec=domain.MeasurementSet, **{'fields': fields[0:2],  # All fields names are unique
-                                                             'get_fields.side_effect': [[f] for f in fields[0:2]]}),
-                         {1: 'Mars', 2: 'Jupiter'}),
-                        (Mock(spec=domain.MeasurementSet, **{'fields': fields,  # Some field name 'Mars' repeats
-                                                             'get_fields.side_effect': [[fields[0], fields[2]],
-                                                                                        [fields[1]],
-                                                                                        [fields[0], fields[2]]]}),
-                         {1: '1', 2: 'Jupiter', 3: '3'})]
+params_get_field_ids = [
+    (Mock(spec=domain.MeasurementSet, **{
+        'fields': fields[0:2],
+        'get_fields.side_effect': [[f] for f in fields[0:2]]
+    }), {1: 'Mars', 2: 'Jupiter'}),  # All fields names are unique
+    (Mock(spec=domain.MeasurementSet, **{
+        'fields': fields,
+        'get_fields.side_effect': [[fields[0], fields[2]],
+                                   [fields[1]],
+                                   [fields[0], fields[2]]]
+    }), {1: '1', 2: 'Jupiter', 3: '3'})]  # Field name 'Mars' repeats
 
 
 @pytest.mark.parametrize('ms, expected', params_get_field_ids)
@@ -193,9 +199,11 @@ def test_get_field_identifiers(ms, expected):
     assert get_field_identifiers(ms=ms) == expected
 
 
-params_get_receiver_type_for_spws = [(Mock(spec=domain.MeasurementSet, **{'get_spectral_windows.side_effect':
-                                                                              [None, [Mock(**{'receiver': 'fake'})]]}),
-                                      [1, 2], {1: 'N/A', 2: 'fake'})]
+params_get_receiver_type_for_spws = [
+    (Mock(spec=domain.MeasurementSet, **{
+        'get_spectral_windows.side_effect': [None,
+                                             [Mock(**{'receiver': 'fake'})]]
+    }), [1, 2], {1: 'N/A', 2: 'fake'})]
 
 
 @pytest.mark.parametrize('ms, spwids, expected', params_get_receiver_type_for_spws)
