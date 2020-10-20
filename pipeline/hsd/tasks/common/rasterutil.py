@@ -23,20 +23,17 @@ MetaDataSet = collections.namedtuple(
     ['timestamp', 'dtrow', 'field', 'antenna', 'ra', 'dec', 'srctype', 'pflag'])
 
 
-def distance(x0, y0, x1, y1):
+def distance(x0: float, y0: float, x1: float, y1: float) -> float:
     """
     Compute distance between two points (x0, y0) and (x1, y1).
 
-    :param x0: x-coordinate value for point 0
-    :type x0: float
-    :param y0: y-coordinate value for point 0
-    :type y0: float
-    :param x1: x-coordinate value for point 1
-    :type x1: float
-    :param y1: y-coordinate value for point 1
-    :type y1: float
-    :return: distance between two points
-    :rtype: float
+    Args:
+        x0: x-coordinate value for point 0
+        y0: y-coordinate value for point 0
+        x1: x-coordinate value for point 1
+        y1: y-coordinate value for point 1
+
+    Return: distance between two points
     """
     _dx = x1 - x0
     _dy = y1 - y0
@@ -60,14 +57,15 @@ def read_readwrite_data(table):
     return pflag
 
 
-def read_datatable(datatable):
+def read_datatable(datatable: DataTableImpl) -> MetaDataSet:
     """
     extract necessary data from datatable instance.
 
-    :param datatable: datatable instance
-    :type datatable: DataTableImpl
-    :return: metadata
-    :rtype: MetaDataSet
+    Arg:
+        datatable: datatable instance
+
+    Return:
+        metadata:
     """
     timestamp, dtrow, ra, dec, srctype, antenna, field = read_readonly_data(datatable)
     pflag = read_readwrite_data(datatable)
@@ -83,16 +81,17 @@ def read_datatable(datatable):
     return metadata
 
 
-def from_context(context_dir):
+def from_context(context_dir: str) -> MetaDataSet:
     """
     read DataTable located in the context directory.
 
     NOTE: only one DataTable will be loaded for multi-EB run
 
-    :param context_dir: path to the pipeline context directory
-    :type context_dir: str
-    :return: metadata
-    :rtype: MetaDataSet
+    Arg:
+        context_dir: path to the pipeline context directory
+
+    Return:
+        metadata
     """
     datatable_dir = os.path.join(context_dir, 'MSDataTable.tbl')
     rotable = glob.glob(f'{datatable_dir}/*.ms/RO')[0]
@@ -124,33 +123,31 @@ def from_context(context_dir):
     return metadata
 
 
-def get_science_target_fields(metadata):
+def get_science_target_fields(metadata: MetaDataSet) -> ndarray:
     """
     Get list of field ids for science targets.
 
-    :param metadata: metadata
-    :type metadata: MetaDataSet
-    :return: list of field ids for science targets
-    :rtype: ndarray
+    Arg:
+        metadata: metadata
+
+    Return: 
+        list of field ids for science targets
     """
     return np.unique(metadata.field[metadata.srctype == 0])
 
 
-def filter_data(metadata, field_id, antenna_id, onsource=True):
+def filter_data(metadata: MetaDataSet, field_id: int, antenna_id: int, onsource: bool=True) -> MetaDataSet:
     """
     Filter metadata.
 
-    :param metadata: input metadata
-    :type metadata: MetaDataSet
-    :param field_id: field id
-    :type field_id: int
-    :param antenna_id: antenna id
-    :type antenna_id: int
-    :param onsource: take ON_SOURCE data only, defaults to True
-    :type onsource: bool, optional
-    :raises RuntimeError: filter causes empty result
-    :return: filtered metadata
-    :rtype: MetaDataSet
+    Args:
+        metadata: input metadata
+        field_id: field id
+        antenna_id: antenna id
+        onsource: take ON_SOURCE data only, defaults to True
+        RuntimeError: filter causes empty result
+
+    Return: filtered metadata
     """
     mask = np.logical_and(
         metadata.antenna == antenna_id,
@@ -183,14 +180,15 @@ def filter_data(metadata, field_id, antenna_id, onsource=True):
     return metadata2
 
 
-def squeeze_data(metadata):
+def squeeze_data(metadata: MetaDataSet) -> MetaDataSet:
     """
     Make timestamp in input metadata unique.
 
-    :param metadata: input metadata
-    :type metadata: MetaDataSet
-    :return: metadata without duplication of timestamp
-    :rtype: MetaDataSet
+    Arg:
+        metadata: input metadata
+
+    Return:
+        metadata without duplication of timestamp
     """
     utime, idx = np.unique(metadata.timestamp, return_index=True)
 
@@ -222,17 +220,18 @@ def squeeze_data(metadata):
     return metadata2
 
 
-def find_time_gap(timestamp):
+def find_time_gap(timestamp: ndarray) -> tuple:
     """
     Find time gap. Condition for gap is
 
       - time interval > 3 * median(time interval) for small gap
       - time gap > 3 * median(time gap) for large gap
 
-    :param timestamp: list of timestamp. no duplication. must be sorted in ascending order.
-    :type timestamp: ndarray
-    :return: list of small and large time gaps
-    :rtype: two-tuple of lists
+    Arg:
+        timestamp: list of timestamp. no duplication. must be sorted in ascending order.
+
+    Return:
+        list of small and large time gaps
     """
     dt = timestamp[1:] - timestamp[:-1]
     med = np.median(dt)
@@ -242,18 +241,18 @@ def find_time_gap(timestamp):
     return gsmall, glarge
 
 
-def gap_gen(gaplist, length=None):
+def gap_gen(gaplist: list, length: int=None) -> tuple:
     """
     Generate range of data (start and end indices) from
     given gap list. Return values, s and e, can be used to
     arr[s:e] to extract the data from the original array, arr.
 
-    :param gaplist: list of indices indicating gap
-    :type gaplist: list
-    :param length: total number of data, defaults to None
-    :type length: int, optional
-    :yield: start and end indices
-    :rtype: two tuple of integers
+    Args:
+        gaplist: list of indices indicating gap
+        length: total number of data, defaults to None
+
+    Yield:
+        start and end indices
     """
     n = -1 if length is None else length
     if len(gaplist) == 0:
@@ -265,21 +264,20 @@ def gap_gen(gaplist, length=None):
         yield gaplist[-1] + 1, n
 
 
-def get_raster_distance(ra, dec, gaplist):
+def get_raster_distance(ra: ndarray, dec: ndarray, gaplist: list) -> ndarray:
     """
     Compute list of distances between raster rows.
     Origin of the distance is the first raster row.
     Representative position of each raster row is
     its midpoint (mean position).
 
-    :param ra: list of RA
-    :type ra: ndarray
-    :param dec: list of Dec
-    :type dec: ndarray
-    :param gaplist: list of indices indicating gaps between raster rows
-    :type gaplist: list
-    :return: list of distances between raster rows
-    :rtype: ndarray
+    Args:
+        ra: list of RA
+        dec: list of Dec
+        gaplist: list of indices indicating gaps between raster rows
+
+    Return:
+        list of distances between raster rows
     """
     x1 = ra[:gaplist[0] + 1].mean()
     y1 = dec[:gaplist[0] + 1].mean()
@@ -291,7 +289,7 @@ def get_raster_distance(ra, dec, gaplist):
     return distance_list
 
 
-def find_raster_gap(timestamp, ra, dec, time_gap=None):
+def find_raster_gap(timestamp: ndarray, ra: ndarray, dec: ndarray, time_gap: ndarray=None) -> ndarray:
     """
     Find gaps between individual raster map. Returned list should be
     used in combination with gap_gen. Here is an example to plot
@@ -302,16 +300,13 @@ def find_raster_gap(timestamp, ra, dec, time_gap=None):
         for s, e in gap_gen(gap):
             plt.plot(ra[s:e], dec[s:e], '.')
 
-    :param timestamp: list of time stamp
-    :type timestamp: ndarray
-    :param ra: list of RA
-    :type ra: ndarray
-    :param dec: list of Dec
-    :type dec: ndarray
-    :param time_gap: list of index of time gaps, defaults to None
-    :type time_gap: ndarray, optional
-    :return: list of index indicating boundary between raster maps
-    :rtype: ndarray
+    Args:
+        timestamp: list of time stamp
+        dec: list of Dec
+        time_gap: list of index of time gaps, defaults to None
+
+    Return:
+        list of index indicating boundary between raster maps
     """
     if time_gap is None:
         timegap_small, _ = find_time_gap(timestamp)
@@ -325,7 +320,7 @@ def find_raster_gap(timestamp, ra, dec, time_gap=None):
     return raster_gap
 
 
-def flag_incomplete_raster(meta, raster_gap, nd_raster, nd_row):
+def flag_incomplete_raster(meta: MetaDataSet, raster_gap: list, nd_raster: int, nd_row: int) -> list:
     """
     flag incomplete raster map
     N: number of data per raster map
@@ -336,16 +331,14 @@ def flag_incomplete_raster(meta, raster_gap, nd_raster, nd_row):
       - if N[x] < MN + MM then flag whole data in raster map x
       - if N[x] > MN + MM then flag whole data in raster map x and later
 
-    :param meta: metadata object
-    :type meta: MetaDataSet
-    :param raster_gap: gap list
-    :type raster_gap: list
-    :param nd_raster: typical number of data per raster map (MN)
-    :type nd_raster: int
-    :param nd_row: typical number of data per raster row (MM)
-    :type nd_row: int
-    :return: list of index for raster map
-    :rtype: list
+    Args:
+        meta: metadata object
+        raster_gap: gap list
+        nd_raster: typical number of data per raster map (MN)
+        nd_row: typical number of data per raster row (MM)
+
+    Return:
+        list of index for raster map
     """
     gap = gap_gen(raster_gap, len(meta.timestamp))
     nd = np.asarray([e - s for s, e in gap])
@@ -369,7 +362,7 @@ def flag_incomplete_raster(meta, raster_gap, nd_raster, nd_row):
     return idx
 
 
-def flag_worm_eaten_raster(meta, raster_gap, nd_row):
+def flag_worm_eaten_raster(meta: MetaDataSet, raster_gap: list, nd_row: int) -> list:
     """
     flag raster map if number of continuous flagged data
     exceeds upper limit given by nd_row
@@ -379,14 +372,13 @@ def flag_worm_eaten_raster(meta, raster_gap, nd_row):
     logic:
       - if L[x] > MM then flag whole data in raster map x
 
-    :param meta: metadata object
-    :type meta: MetaDataSet
-    :param raster_gap: gap list
-    :type raster_gap: list
-    :param nd_row: typical number of data per raster row (MM)
-    :type nd_row: int
-    :return: list of index for raster map
-    :rtype: list
+    Args:
+        meta: metadata object
+        raster_gap: gap list
+        nd_row: typical number of data per raster row (MM)
+
+    Return:
+        list of index for raster map
     """
     gap = gap_gen(raster_gap, len(meta.timestamp))
     # flag
@@ -413,20 +405,18 @@ def flag_worm_eaten_raster(meta, raster_gap, nd_row):
     return idx
 
 
-def get_raster_flag_list(flagged1, flagged2, raster_gap, ndata):
+def get_raster_flag_list(flagged1: list, flagged2: list, raster_gap: list, ndata: int) -> ndarray:
     """
     Merge flag result and convert raster id to list of data index.
 
-    :param flagged1: list of flagged raster id
-    :type flagged1: list
-    :param flagged2: list of flagged raster id
-    :type flagged2: list
-    :param raster_gap: list of gaps between raster maps
-    :type raster_gap: list
-    :param ndata: total number of data points
-    :type ndata: int
-    :return: list of data ids to be flagged
-    :rtype: ndarray
+    Args:
+        flagged1: list of flagged raster id
+        flagged2: list of flagged raster id
+        raster_gap: list of gaps between raster maps
+        ndata: total number of data points
+
+    Return:
+        list of data ids to be flagged
     """
     flagged = set(flagged1).union(set(flagged2))
     gap = list(gap_gen(raster_gap, ndata))
@@ -435,15 +425,16 @@ def get_raster_flag_list(flagged1, flagged2, raster_gap, ndata):
     return data_ids
 
 
-def flag_raster_map(metadata):
+def flag_raster_map(metadata: MetaDataSet) -> list:
     """
     Return list of index to be flagged by flagging heuristics
     for raster scan
 
-    :param meta: metadata
-    :type meta: MetaDataSet
-    :return: per-antenna list of index to be flagged
-    :rtype: list
+    Arg:
+        meta: metadata
+
+    Return:
+        per-antenna list of index to be flagged
     """
     field_list = get_science_target_fields(metadata)
 
@@ -454,14 +445,15 @@ def flag_raster_map(metadata):
     return rows_merged
 
 
-def find_most_frequent(v):
+def find_most_frequent(v: ndarray) -> int:
     """
     Return the most frequent number (mode) in v.
 
-    :param v: data
-    :type v: ndarray
-    :return: most frequent number (mode)
-    :rtype: int
+    Arg:
+        v: data
+
+    Return:
+        most frequent number (mode)
     """
     values, counts = np.unique(v, return_counts=True)
     max_count = counts.max()
@@ -477,17 +469,17 @@ def find_most_frequent(v):
     return mode
 
 
-def flag_raster_map_per_field(metadata, field_id):
+def flag_raster_map_per_field(metadata: MetaDataSet, field_id: int) -> list:
     """
     Flag raster map based on two flagging heuristics for
     given field id.
 
-    :param metadata: metadata
-    :type metadata: MetaDataSet
-    :param field_id: field id to process
-    :type field_id: int
-    :return: per-antenna list of data ids to be flagged
-    :rtype: list of ndarray
+    Args:
+        metadata: metadata
+        field_id: field id to process
+
+    Return:
+        per-antenna list of data ids to be flagged
     """
     # metadata per antenna (with duplication)
     antenna_list = np.unique(metadata.antenna)
@@ -567,14 +559,14 @@ def flag_raster_map_per_field(metadata, field_id):
     return row_list
 
 
-def get_aspect(ax):
+def get_aspect(ax: Axes) -> float:
     """
     Compute aspect ratio of matplotlib figure.
 
-    :param ax: Axes object to examine
-    :type ax: Axes
-    :return: aspect ratio
-    :rtype: float
+    Arg:
+        ax: Axes object to examine
+
+    Return: aspect ratio
     """
     # Total figure size
     figW, figH = ax.get_figure().get_size_inches()
@@ -589,40 +581,36 @@ def get_aspect(ax):
     return disp_ratio / data_ratio
 
 
-def get_angle(dx, dy, aspect_ratio=1):
+def get_angle(dx: float, dy: float, aspect_ratio: float=1) -> float:
     """
     Compute tangential angle taking into account aspect ratio.
 
-    :param dx: length along x-axis
-    :type dx: float
-    :param dy: length along y-axis
-    :type dy: float
-    :param aspect_ratio: aspect_ratio, defaults to 1
-    :type aspect_ratio: float, optional
-    :return: tangential angle
-    :rtype: float
+    Args:
+        dx: length along x-axis
+        dy: length along y-axis
+        aspect_ratio: aspect_ratio, defaults to 1
+
+    Return:
+        tangential angle
     """
     offset = 30
     theta = math.degrees(math.atan2(dy * aspect_ratio, dx))
     return offset + theta
 
 
-def anim_gen(ra, dec, idx_generator, dist_list, cmap):
+def anim_gen(ra: ndarray, dec: ndarray, idx_generator: generator, dist_list: ndarray, cmap: ListedColorMap) -> tuple:
     """
     Generator for generate_animation.
 
-    :param ra: list of RA
-    :type ra: ndarray
-    :param dec: list of Dec
-    :type dec: ndarray
-    :param idx_generator: generator yielding start and end indices indicating raster row
-    :type idx_generator: generator
-    :param dist_list: distance list
-    :type dist_list: ndarray
-    :param cmap: color map
-    :type cmap: ListedColorMap
-    :yield: position, color, and boolean flag to clear existing plot
-    :rtype: tuple
+    Args:
+        ra: list of RA
+        dec: list of Dec
+        idx_generator: generator yielding start and end indices indicating raster row
+        dist_list: distance list
+        cmap: color map
+
+    Yield:
+        position, color, and boolean flag to clear existing plot
     """
     dist_prev = 0
     cidx = 0
@@ -644,14 +632,15 @@ def anim_gen(ra, dec, idx_generator, dist_list, cmap):
     yield None, None, color, raster_flag
 
 
-def animate(i):
+def animate(i: tuple) -> Lines2D:
     """
     Generate plot corresponding to single frame
 
-    :param i: position, color, and boolean flag to clear existing plot
-    :type i: tuple
-    :return: lines for this frame
-    :rtype: Lines2D
+    Arg:
+        i: position, color, and boolean flag to clear existing plot
+
+    Return:
+        lines for this frame
     """
     ra, dec, c, flag = i
     print(c)
@@ -670,18 +659,15 @@ def animate(i):
     return lines
 
 
-def generate_animation(ra, dec, gaplist, figfile='movie.gif'):
+def generate_animation(ra: ndarray, dec: ndarray, gaplist: list, figfile: str='movie.gif'):
     """
     Generate animation GIF file to illustrate observing pattern.
 
-    :param ra: list of RA
-    :type ra: ndarray
-    :param dec: list of Dec
-    :type dec: ndarray
-    :param gaplist: list of gaps between raster rows
-    :type gaplist: list
-    :param figfile: output file name, defaults to 'movie.gif'
-    :type figfile: str, optional
+    Args:
+        ra: list of RA
+        dec: list of Dec
+        gaplist: list of gaps between raster rows
+        figfile: output file name, defaults to 'movie.gif'
     """
     row_distance = get_raster_distance(ra, dec, gaplist)
     cmap = plt.get_cmap('tab10')
