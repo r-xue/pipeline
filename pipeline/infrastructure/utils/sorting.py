@@ -23,7 +23,7 @@ def natural_sort(input_list):
     Sort a list in natural order, eg.
 
     >>> natural_sort(["session10", "session10a", "session9", "session1"])
-    ["session1", "session9", "session10", "session10a"]
+    ['session1', 'session9', 'session10', 'session10a']
     """
     return sorted(input_list, key=natural_sort_key)
 
