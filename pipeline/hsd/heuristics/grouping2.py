@@ -10,23 +10,6 @@ class GroupByPosition2(api.Heuristic):
     """
     Grouping by RA/DEC position
     """
-
-    @staticmethod
-    def translate_pos_dict(pos_dict, rows, ids):
-        translated = {}
-        for pos, val in pos_dict.items():
-            key = rows[pos]
-            if val[0] == -1:
-                translated[key] = [[-1, rows[val[1]]], [ids[val[1]]]]
-            else:
-                translated[key] = [[rows[v] for v in val],
-                                   [ids[v] for v in val]]
-        return translated
-
-    @staticmethod
-    def translate_pos_gap(pos_gap, rows, ids):
-        return [ids[p] for p in pos_gap]
-
     def calculate(self, ra, dec, r_combine, r_allowance):
         """
         Grouping by RA/DEC position
@@ -121,21 +104,6 @@ class GroupByTime2(api.Heuristic):
     """
     Grouping by time sequence
     """
-
-    @staticmethod
-    def translate_time_table(time_table, rows, ids):
-        translated = [[], []]
-        for i in (0, 1):
-            for group in time_table[i]:
-                translated[i].append([[rows[v] for v in group],
-                                      [ids[v] for v in group]])
-        return translated
-
-    @staticmethod
-    def translate_time_gap(time_gap, rows, ids):
-        return [[ids[t] for t in time_gap[0]],
-                [ids[t] for t in time_gap[1]]]
-
     def calculate(self, timebase, time_diff):
         """
         Grouping by time sequence
