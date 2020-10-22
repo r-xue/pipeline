@@ -6,15 +6,15 @@ import pipeline.infrastructure.casatools as casatools
 
 from .grouping2 import GroupByPosition2
 from .grouping2 import GroupByTime2
+from .grouping2 import MergeGapTables2
 from .grouping2 import ThresholdForGroupByTime
 
 qa = casatools.quanta
 
 
 # TODO
-# test_GropuByTime2.calculate
-# test_ThresholdForGroupByTime_calculate
-# test_MergeGapTables2_calculate
+# test edge case
+# test error case
 
 def random_noise(n, mean=0, amp=1, rs=None):
     if rs is None:
@@ -138,6 +138,16 @@ def expected_time_gap_raster():
     return [[20], []]
 
 
+def expected_merge_table_psw():
+    return expected_time_table_psw()
+
+
+def expected_merge_table_raster():
+    tt_small = [list(range(i, i + 10)) for i in (0, 10, 20, 30)]
+    tt_large = [list(range(40))]
+    return [tt_small, tt_large]
+
+
 @pytest.mark.parametrize(
     "combine_radius, allowance_radius, expected_posdict, expected_posgap",
     [
@@ -212,3 +222,20 @@ def test_group_by_time(time_list, expected):
     time_table, time_gap = h.calculate(time_list, delta)
     assert time_table == expected[0]
     assert time_gap == expected[1]
+
+
+@pytest.mark.parametrize(
+    'time_gap, time_table, expected',
+    [
+        (expected_time_gap_psw(), expected_time_table_psw(), expected_merge_table_psw()),
+        (expected_time_gap_raster(), expected_time_table_raster(), expected_merge_table_raster()),
+    ]
+)
+def test_merge_gap_tables(time_gap, time_table, expected):
+    '''test merging gap tables'''
+    position_gaps = [10, 20, 30]
+    beam = np.zeros(40, dtype=int)
+    h = MergeGapTables2()
+    merge_table, merge_gap = h.calculate(time_gap, time_table, position_gaps, beam)
+    assert merge_table == expected
+    assert merge_gap == [position_gaps, time_gap[1]]
