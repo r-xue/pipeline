@@ -12,10 +12,6 @@ from .grouping2 import ThresholdForGroupByTime
 qa = casatools.quanta
 
 
-# TODO
-# test edge case
-# test error case
-
 def random_noise(n, mean=0, amp=1, rs=None):
     if rs is None:
         r = np.random.rand(n)
@@ -91,18 +87,6 @@ def fixture_position_raster():
     return generate_position_data_raster()
 
 
-@pytest.fixture(name='time_psw')
-@functools.lru_cache(1)
-def fixture_time_psw():
-    return generate_time_data_psw()
-
-
-@pytest.fixture(name='time_raster')
-@functools.lru_cache(1)
-def fixture_time_raster():
-    return generate_time_data_raster()
-
-
 @functools.lru_cache(1)
 def expected_posdict_normal():
     posdict = dict((i, [-1, (i // 10) * 10]) for i in range(40))
@@ -118,9 +102,24 @@ def expected_posdict_one():
     return posdict
 
 
+@functools.lru_cache(1)
+def group_one():
+    return [list(range(40))]
+
+
+@functools.lru_cache(1)
+def group_two():
+    return [list(range(i, i + 20)) for i in (0, 20)]
+
+
+@functools.lru_cache(1)
+def group_four():
+    return [list(range(i, i + 10)) for i in (0, 10, 20, 30)]
+
+
 def expected_time_table_psw():
-    tt_small = [list(range(i, i + 10)) for i in (0, 10, 20, 30)]
-    tt_large = [list(range(i, i + 20)) for i in (0, 20)]
+    tt_small = group_four()
+    tt_large = group_two()
     return [tt_small, tt_large]
 
 
@@ -129,8 +128,8 @@ def expected_time_gap_psw():
 
 
 def expected_time_table_raster():
-    tt_small = [list(range(i, i + 20)) for i in (0, 20)]
-    tt_large = [list(range(40))]
+    tt_small = group_two()
+    tt_large = group_one()
     return [tt_small, tt_large]
 
 
@@ -143,8 +142,8 @@ def expected_merge_table_psw():
 
 
 def expected_merge_table_raster():
-    tt_small = [list(range(i, i + 10)) for i in (0, 10, 20, 30)]
-    tt_large = [list(range(40))]
+    tt_small = group_four()
+    tt_large = group_one()
     return [tt_small, tt_large]
 
 
