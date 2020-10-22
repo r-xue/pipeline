@@ -5,6 +5,7 @@ import numpy as np
 import pipeline.infrastructure.casatools as casatools
 
 from .grouping2 import GroupByPosition2
+from .grouping2 import GroupByTime2
 from .grouping2 import ThresholdForGroupByTime
 
 qa = casatools.quanta
@@ -46,8 +47,8 @@ def generate_position_data_psw():
 
 def generate_time_data_psw():
     time_list = np.arange(40, dtype=float)
-    for g in [10, 20, 30]:
-        time_list[g:] += 9
+    for gap, incr in [(10, 9), (20, 59), (30, 9)]:
+        time_list[gap:] += incr
     return time_list
 
 
@@ -117,6 +118,26 @@ def expected_posdict_one():
     return posdict
 
 
+def expected_time_table_psw():
+    tt_small = [list(range(i, i + 10)) for i in (0, 10, 20, 30)]
+    tt_large = [list(range(i, i + 20)) for i in (0, 20)]
+    return [tt_small, tt_large]
+
+
+def expected_time_gap_psw():
+    return [[10, 20, 30], [20]]
+
+
+def expected_time_table_raster():
+    tt_small = [list(range(i, i + 20)) for i in (0, 20)]
+    tt_large = [list(range(40))]
+    return [tt_small, tt_large]
+
+
+def expected_time_gap_raster():
+    return [[20], []]
+
+
 @pytest.mark.parametrize(
     "combine_radius, allowance_radius, expected_posdict, expected_posgap",
     [
@@ -138,29 +159,29 @@ def test_group_by_position_psw(combine_radius, allowance_radius, expected_posdic
 
 
 @pytest.mark.parametrize(
-    "combine_radius, allowance_radius, expected_posdict, expected_posgap",
+    "combine_radius, allowance_radius, expected",
     [
-        (0.249, 0.01, expected_posdict_normal(), [20]),
-        (qa.quantity(0.249, 'deg'), 0.01, expected_posdict_normal(), [20]),
-        (0.249, qa.quantity(0.01, 'deg'), expected_posdict_normal(), [20]),
-        (qa.quantity(0.249, 'deg'), qa.quantity(0.01, 'deg'), expected_posdict_normal(), [20]),
+        (0.249, 0.01, (expected_posdict_normal(), [20])),
+        (qa.quantity(0.249, 'deg'), 0.01, (expected_posdict_normal(), [20])),
+        (0.249, qa.quantity(0.01, 'deg'), (expected_posdict_normal(), [20])),
+        (qa.quantity(0.249, 'deg'), qa.quantity(0.01, 'deg'), (expected_posdict_normal(), [20])),
         # too large allowance radius -> all gaps are detected
-        (0.249, 10, expected_posdict_normal(), list(range(1, 40))),
+        (0.249, 10, (expected_posdict_normal(), list(range(1, 40)))),
         # moderate allowance radius -> no gap is detected
-        (0.249, 1, expected_posdict_normal(), []),
+        (0.249, 1, (expected_posdict_normal(), [])),
         # too large combine radius -> only one group
-        (10, 0.01, expected_posdict_one(), [20]),
+        (10, 0.01, (expected_posdict_one(), [20])),
         # too small combine radius -> all data are separated
-        (1e-5, 0.01, dict((i, [i]) for i in range(40)), [20]),
+        (1e-5, 0.01, (dict((i, [i]) for i in range(40)), [20])),
     ]
 )
-def test_group_by_position_raster(combine_radius, allowance_radius, expected_posdict, expected_posgap, position_raster):
+def test_group_by_position_raster(combine_radius, allowance_radius, expected, position_raster):
     '''test grouping by position on raster pattern including some edge cases'''
     ra_list, dec_list = position_raster
     h = GroupByPosition2()
     posdict, posgap = h.calculate(ra_list, dec_list, combine_radius, allowance_radius)
-    assert posdict == expected_posdict
-    assert posgap == expected_posgap
+    assert posdict == expected[0]
+    assert posgap == expected[1]
 
 
 @pytest.mark.parametrize(
@@ -175,3 +196,19 @@ def test_threshold_for_time(time_list, expected_gaps):
     h = ThresholdForGroupByTime()
     gaps = h.calculate(time_list)
     assert gaps == expected_gaps
+
+
+@pytest.mark.parametrize(
+    'time_list, expected',
+    [
+        (generate_time_data_psw(), (expected_time_table_psw(), expected_time_gap_psw())),
+        (generate_time_data_raster(), (expected_time_table_raster(), expected_time_gap_raster())),
+    ]
+)
+def test_group_by_time(time_list, expected):
+    '''test grouping by time'''
+    h = GroupByTime2()
+    delta = time_list[1:] - time_list[:-1]
+    time_table, time_gap = h.calculate(time_list, delta)
+    assert time_table == expected[0]
+    assert time_gap == expected[1]
