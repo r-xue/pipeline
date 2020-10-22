@@ -5,6 +5,7 @@ import numpy as np
 import pipeline.infrastructure.casatools as casatools
 
 from .grouping2 import GroupByPosition2
+from .grouping2 import ThresholdForGroupByTime
 
 qa = casatools.quanta
 
@@ -43,6 +44,13 @@ def generate_position_data_psw():
     return ra_list, dec_list
 
 
+def generate_time_data_psw():
+    time_list = np.arange(40, dtype=float)
+    for g in [10, 20, 30]:
+        time_list[g:] += 9
+    return time_list
+
+
 def generate_position_data_raster():
     xlist = np.arange(0, 1, 0.05)
     xlist = [xlist, xlist[::-1]]
@@ -64,16 +72,34 @@ def generate_position_data_raster():
     return ra_list, dec_list
 
 
-@pytest.fixture(name='data_psw')
+def generate_time_data_raster():
+    time_list = np.arange(40, dtype=float)
+    time_list[20:] += 9
+    return time_list
+
+
+@pytest.fixture(name='position_psw')
 @functools.lru_cache(1)
-def fixture_data_psw():
+def fixture_position_psw():
     return generate_position_data_psw()
 
 
-@pytest.fixture(name='data_raster')
+@pytest.fixture(name='position_raster')
 @functools.lru_cache(1)
-def fixture_data_raster():
+def fixture_position_raster():
     return generate_position_data_raster()
+
+
+@pytest.fixture(name='time_psw')
+@functools.lru_cache(1)
+def fixture_time_psw():
+    return generate_time_data_psw()
+
+
+@pytest.fixture(name='time_raster')
+@functools.lru_cache(1)
+def fixture_time_raster():
+    return generate_time_data_raster()
 
 
 @functools.lru_cache(1)
@@ -102,9 +128,9 @@ def expected_posdict_one():
         (qa.quantity(0.4 * np.pi / 180, 'rad'), 0.05, expected_posdict_normal(), [10, 20, 30]),
     ]
 )
-def test_group_by_position_psw(combine_radius, allowance_radius, expected_posdict, expected_posgap, data_psw):
+def test_group_by_position_psw(combine_radius, allowance_radius, expected_posdict, expected_posgap, position_psw):
     '''test grouping by position on position switch pattern'''
-    ra_list, dec_list = data_psw
+    ra_list, dec_list = position_psw
     h = GroupByPosition2()
     posdict, posgap = h.calculate(ra_list, dec_list, combine_radius, allowance_radius)
     assert posdict == expected_posdict
@@ -128,10 +154,24 @@ def test_group_by_position_psw(combine_radius, allowance_radius, expected_posdic
         (1e-5, 0.01, dict((i, [i]) for i in range(40)), [20]),
     ]
 )
-def test_group_by_position_raster(combine_radius, allowance_radius, expected_posdict, expected_posgap, data_raster):
+def test_group_by_position_raster(combine_radius, allowance_radius, expected_posdict, expected_posgap, position_raster):
     '''test grouping by position on raster pattern including some edge cases'''
-    ra_list, dec_list = data_raster
+    ra_list, dec_list = position_raster
     h = GroupByPosition2()
     posdict, posgap = h.calculate(ra_list, dec_list, combine_radius, allowance_radius)
     assert posdict == expected_posdict
     assert posgap == expected_posgap
+
+
+@pytest.mark.parametrize(
+    'time_list, expected_gaps',
+    [
+        (generate_time_data_psw(), (5.0, 50.0)),
+        (generate_time_data_raster(), (5.0, 50.0)),
+    ]
+)
+def test_threshold_for_time(time_list, expected_gaps):
+    '''test evaluation of threshold for time grouping'''
+    h = ThresholdForGroupByTime()
+    gaps = h.calculate(time_list)
+    assert gaps == expected_gaps
