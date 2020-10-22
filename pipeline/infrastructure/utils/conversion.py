@@ -127,26 +127,20 @@ def flatten(l):
 def unix_seconds_to_datetime(unix_secs):
     """
     Return the input list, specified in seconds elapsed since 1970-01-01,
-    converted to the equivalent Python datetimes.
-
-    If given a list, a list is returned. If given a scalar, a scalar is
-    returned.
+    converted to the equivalent Python datetime objects.
     """
-    datetimes = [datetime.datetime.utcfromtimestamp(s) for s in unix_secs]
-    return datetimes if len(unix_secs) > 1 else datetimes[0]
+    return [datetime.datetime.utcfromtimestamp(s) for s in unix_secs]
 
 
 def mjd_seconds_to_datetime(mjd_secs):
     """
     Return the input list, specified in MJD seconds, converted to the
-    equivalent Python datetimes.
-
-    If given a list, a list is returned. If given a scalar, a scalar is
-    returned.
+    equivalent Python datetime objects.
     """
     # 1970-01-01 is JD 40587. 86400 = seconds in a day
     unix_offset = 40587 * 86400
-    return unix_seconds_to_datetime(mjd_secs - unix_offset)
+    mjd_secs_with_offsets = [s - unix_offset for s in mjd_secs]
+    return unix_seconds_to_datetime(mjd_secs_with_offsets)
 
 
 def get_epoch_as_datetime(epoch):
