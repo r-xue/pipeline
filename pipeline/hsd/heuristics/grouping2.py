@@ -1,26 +1,54 @@
-import numpy
+import numpy as np
+from numbers import Real
+from typing import NewType, Sequence, Tuple, Union
 
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure as infrastructure
 LOG = infrastructure.get_logger(__name__)
 
+Angle = NewType('Angle', Union[float, int, dict])
+
 
 class GroupByPosition2(api.Heuristic):
     """
     Grouping by RA/DEC position
     """
-    def calculate(self, ra, dec, r_combine, r_allowance):
-        """
-        Grouping by RA/DEC position
-            ra: list of R.A.
-            dec: list of DEC.
-            r_combine: inside r_combine will be grouped together
-            r_allowance: inside r_allowance are assumed to be the same position
-        Return(PosDict, PosGap):
-            PosDict: [ID1, ID2,..., IDN] if not referenced before
-                     [-1, IDK] if has a reference to rowK
-            PosGap: [IDX1, IDX2,...,IDXN]
+    def calculate(self, ra: np.ndarray, dec: np.ndarray, r_combine: Angle, r_allowance: Angle) -> Tuple:
+        """Grouping by RA/DEC position.
+
+        Divides data into groups by their positions in two
+        dimensional space which are given by ra and dec.
+        Groups data within the circle with the radius of
+        r_combine. Only position difference larger than
+        r_allowance are regarded as significant.
+
+        Args:
+            ra:
+              list of R.A.
+            dec:
+              list of DEC.
+            r_combine:
+              inside r_combine will be grouped together
+            r_allowance:
+              inside r_allowance are assumed to be the same position
+
+        Returns:
+            Two-tuple containing information on group membership
+            (PosDict) and boundaries between groups (PosGap).
+
+            PosDict is a dictionary whose keys are indices for
+            ra and dec. Values of PosDict are the list which
+            contains different value depending on whether the
+            position specified by the index is reference data
+            for the group or not. If k is reference index,
+            PosDict[k] lists indices for group member
+            ([ID1, ID2,..., IDN]). Otherwise, PosDict[k] is
+            [-1, m] where m is the index to reference data.
+
+            PosGap is a list of gaps in terms of array indices
+            for ra and dec ([IDX1, IDX2,...,IDXN]). Length of
+            PosGap is (number of groups) - 1.
         """
         qa = casatools.quanta
         if isinstance(r_combine, dict):
@@ -73,10 +101,10 @@ class GroupByPosition2(api.Heuristic):
         del SelectDict
 
         # Calculate thresholds to determine gaps
-        DeltaP = numpy.sqrt((ra[1:] - ra[:-1])**2.0 + (dec[1:] - dec[:-1])**2.0)
-        DeltaQ = numpy.take(DeltaP, numpy.nonzero(DeltaP > ThresholdAR)[0])
+        DeltaP = np.sqrt((ra[1:] - ra[:-1])**2.0 + (dec[1:] - dec[:-1])**2.0)
+        DeltaQ = np.take(DeltaP, np.nonzero(DeltaP > ThresholdAR)[0])
         if len(DeltaQ) != 0:
-            ThresholdP = numpy.median(DeltaQ) * 10.0
+            ThresholdP = np.median(DeltaQ) * 10.0
         else:
             ThresholdP = 0.0
         LOG.info('threshold:%s deg' % ThresholdP)
@@ -104,21 +132,44 @@ class GroupByTime2(api.Heuristic):
     """
     Grouping by time sequence
     """
-    def calculate(self, timebase, time_diff):
-        """
-        Grouping by time sequence
-            timebase: base list of time stamps for threshold estimation
-            time_diff: difference from the previous time stamp
-                time_diff is generated from timebase in most of the cases
-                timebase contains all time stamps and time_diff is created
-                from selected time stamps in other case
-        Return (TimeTable, TimeGap)
-            TimeTable: [[[index0,..,indexN],[indexXX..],..,[..]], [[],[],[]]]
-            TimeTable[0]: separated by small gaps (for process5 and 7)
-            TimeTable[1]: separated by large gaps (for process5 and 7)
+    def calculate(self, timebase: Sequence[Real], time_diff: Sequence[Real]) -> Tuple:
+        """Grouping by time sequence.
+
+        Divides data into groups by their difference (time_diff).
+        Two groups are defined based on "small" and "large" gaps,
+        which are internally computed by ThresholdForGroupByTime
+        heuristic. The time_diff is generated from timebase in
+        most of the cases. The timebase contains all time stamps
+        and time_diff is created from selected time stamps in
+        other case.
+
+        Args:
+            timebase:
+              base list of time stamps for threshold estimation
+            time_diff:
+              difference from the previous time stamp
+
+        Returns:
+            Two-tuple containing information on group membership
+            (TimeTable) and boundaries between groups (TimeGap).
+
+            TimeTable is the "list-of-list" whose items are the set
+            of indices for each group. TimeTable[0] is the groups
+            separaged by "small" gap while TimeTable[1] is for
+            groups separated by "large" gap. They are used for
+            baseline subtraction (hsd_baseline) and subsequent
+            flagging (hsd_blflag).
+
+            TimeTable: [[index0,..,indexN],[indexXX..],..,[..]]
+            TimeTable[0]: separated by small gaps
+            TimeTable[1]: separated by large gaps
+
+            TimeGap is the list of indices which indicate boundaries
+            for "small" and "large" gaps. These are used for plotting.
+
             TimeGap: [[rowX1, rowX2,...,rowXN], [rowY1, rowY2,...,rowYN]]
-            TimeGap[0]: small gap (for plot)
-            TimeGap[1]: large gap (for plot)
+            TimeGap[0]: small gap
+            TimeGap[1]: large gap
         """
         LOG.info('Grouping by Time...')
 
@@ -171,22 +222,45 @@ class GroupByTime2(api.Heuristic):
 
 
 class ThresholdForGroupByTime(api.Heuristic):
-    def calculate(self, timebase):
-        """
+    def calculate(self, timebase: Sequence[Real]) -> Tuple:
+        """Estimate thresholds for large and small time gaps.
+
         Estimate thresholds for large and small time gaps using
-        base list of time stamps.
+        base list of time stamps. Threshold for small time gap,
+        denoted as Threshold1, is computed from a median value
+        of nonzero time differences multiplied by five, i.e.,
+
+            dt = timebase[1:] - timebase[:-1]
+            Threhold1 = 5 * np.median(dt[dt != 0])
+
+        where timebase is assumed to be np.ndarray. Threshold
+        for large time gap, denoted as Threshold2, is computed
+        from a median value of time differences larger than
+        Threshold1 mutiplied by five, i.e.,
+
+            Threshold2 = 5 * np.median(
+                dt[np.logical_and(dt != 0, dt > Threshold1)]
+            )
+
+        Args:
+            timebase:
+              base list of time stamps for threshold estimation
+
+        Returns:
+            Two-tuple of threshold values for small and large
+            time gaps, respectively.
         """
-        ArrayTime = numpy.array(timebase)
+        ArrayTime = np.array(timebase)
 
         # 2009/2/5 adapted for multi beam which assumes to have identical time stamps
         # identical time stamps are rejected before determining thresholds
         # DeltaT: difference from the previous time stamp
         DeltaT = ArrayTime[1:] - ArrayTime[:-1]
-        DeltaT1 = numpy.take(DeltaT, numpy.nonzero(DeltaT)[0])
-        Threshold1 = numpy.median(DeltaT1) * 5.0
-        DeltaT2 = numpy.take(DeltaT1, numpy.nonzero(DeltaT1 > Threshold1)[0])
+        DeltaT1 = np.take(DeltaT, np.nonzero(DeltaT)[0])
+        Threshold1 = np.median(DeltaT1) * 5.0
+        DeltaT2 = np.take(DeltaT1, np.nonzero(DeltaT1 > Threshold1)[0])
         if len(DeltaT2) > 0:
-            Threshold2 = numpy.median(DeltaT2) * 5.0
+            Threshold2 = np.median(DeltaT2) * 5.0
         else:
             Threshold2 = Threshold1
 
@@ -200,16 +274,51 @@ class ThresholdForGroupByTime(api.Heuristic):
 
 
 class MergeGapTables2(api.Heuristic):
-    def calculate(self, TimeGap, TimeTable, PosGap, tBEAM):
-        """
-        Merge TimeGap Table and PosGap Table. PosGap is merged into TimeGap Table[0]: Small gap
-            TimeTable, TimeGap: output from GroupByTime2()
-            PosGap: output from GroupByPosition2()
-            DataTable: DataTable
-        Return (TimeTable, TimeGap)
-            TimeTable[0]: separated by small gaps (for process5 and 7)
-            TimeTable[1]: separated by large gaps (for process5 and 7)
-            format: [[[row1,...,rowN],[index1,...,indexN]],[[row2,...,rowM],[index2,...,indexM]]]
+    def calculate(self, TimeGap: list, TimeTable: list, PosGap: list, tBEAM: Sequence[int]) -> Tuple:
+        """Merge time gap and position gaps.
+
+        Merge time gap list (TimeGap) and position gap list (PosGap).
+        TimeTable and TimeGap should be the first and the second
+        elements of the return value of GroupByTime2 heuristic.
+        Also, PosGap should be the second element of the return value
+        of GroupByPosition2 heuristic. PosGap is merged into small
+        TimeGap (TimeGap[0]).
+
+        tBEAM is used to separate the data by beam for multi-beam
+        data.
+
+        Args:
+            TimeTable:
+              the first element of output from GroupByTime2 heuristic
+            TimeGap:
+              the second element of output from GroupByTime2 heuristic
+            PosGap:
+              the second element of output from GroupByPosition2()
+            tBEAM:
+              list of beam identifier.
+        Returns:
+            Two-tuple containing information on group membership
+            (TimeTable) and boundaries between groups (TimeGap).
+
+            TimeTable is the "list-of-list" whose items are the set
+            of indices for each group. TimeTable[0] is the groups
+            separaged by "small" gap while TimeTable[1] is for
+            groups separated by "large" gap. They are used for
+            baseline subtraction (hsd_baseline) and subsequent
+            flagging (hsd_blflag).
+
+            TimeTable: [[index0,..,indexN],[indexXX..],..,[..]]
+            TimeTable[0]: separated by small gaps
+            TimeTable[1]: separated by large gaps
+
+            TimeGap is the list of indices which indicate boundaries
+            for "small" and "large" gaps. The "small" gap is a merged
+            list of gaps for groups separated by small time gaps and
+            the ones grouped by positions. These are used for plotting.
+
+            TimeGap: [[rowX1, rowX2,...,rowXN], [rowY1, rowY2,...,rowYN]]
+            TimeGap[0]: small gap
+            TimeGap[1]: large gap
         """
 
         LOG.info('Merging Position and Time Gap tables...')
@@ -217,8 +326,8 @@ class MergeGapTables2(api.Heuristic):
         idxs = []
         for i in range(len(TimeTable[0])):
             idxs += TimeTable[0][i]
-        IDX = list(numpy.sort(numpy.array(idxs)))
-        tmpGap = list(numpy.sort(numpy.array(TimeGap[0] + PosGap)))
+        IDX = list(np.sort(np.array(idxs)))
+        tmpGap = list(np.sort(np.array(TimeGap[0] + PosGap)))
         NewGap = []
         if len(tmpGap) != 0:
             t = n = tmpGap[0]
