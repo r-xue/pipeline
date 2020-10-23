@@ -34,7 +34,6 @@ def test_dequote(inp, expected):
 
 
 @pytest.mark.parametrize("inp, expected", [
-    ([], []),
     ([1, 2], [1, 2]),
     ([[1], [2]], [1, 2]),
     ([[[1], [2]], [3]], [1, 2, 3]),
@@ -46,6 +45,14 @@ def test_flatten(inp, expected):
     it = flatten(inp)
     for el in expected:
         assert next(it) == el
+
+
+def test_flatten_empty():
+    """Test flatten() with empty input"""
+    with pytest.raises(StopIteration):
+        next(flatten([]))
+    with pytest.raises(StopIteration):
+        next(flatten(''))
 
 
 @pytest.mark.parametrize("inp, kwargs, expected", [
