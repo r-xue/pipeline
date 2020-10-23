@@ -153,7 +153,7 @@ def flatten(l:Sequence[Number]) -> Iterator[Number]:
             yield el
 
 
-def unix_seconds_to_datetime(unix_secs:Sequence[float]) -> Union[datetime, List[datetime]]:
+def unix_seconds_to_datetime(unix_secs:Sequence[Number]) -> Union[datetime, List[datetime]]:
     """
     Convert UNIX epoc times to the equivalent Python datetimes.
 
@@ -167,7 +167,7 @@ def unix_seconds_to_datetime(unix_secs:Sequence[float]) -> Union[datetime, List[
     return datetimes if len(unix_secs) > 1 else datetimes[0]
 
 
-def mjd_seconds_to_datetime(mjd_secs:Sequence[float]) -> Union[datetime, List[datetime]]:
+def mjd_seconds_to_datetime(mjd_secs:Sequence[Number]) -> Union[datetime, List[datetime]]:
     """
     Convert MJD seconds to the equivalent Python datetimes.
 
