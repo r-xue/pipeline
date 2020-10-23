@@ -40,7 +40,17 @@ def distance(x0: float, y0: float, x1: float, y1: float) -> float:
     return np.hypot(_dx, _dy)
 
 
-def read_readonly_data(table):
+def read_readonly_data(table) -> tuple:
+    """
+    extract necerrary data from datatable instance.
+    
+    Arg:
+        table: table instance
+    
+    Return:
+        tuple including timestamp, dtrow, ra, dec, srctype, antenna, field 
+        (each is ndarray column values taken from the table)
+    """
     timestamp = table.getcol('TIME')
     dtrow = np.arange(len(timestamp))
     ra = table.getcol('OFS_RA')
@@ -51,13 +61,22 @@ def read_readonly_data(table):
     return timestamp, dtrow, ra, dec, srctype, antenna, field
 
 
-def read_readwrite_data(table):
+def read_readwrite_data(table) -> ndarray:
+    """
+    extract necessary data from datatable instance.
+    
+    Arg:
+        table: table instance
+        
+    Return:
+        pflag: ndarray column value taken from the table
+    """
     pflags = table.getcol('FLAG_PERMANENT')
     pflag = pflags[0, datatable.OnlineFlagIndex, :]
     return pflag
 
 
-def read_datatable(datatable: DataTableImpl) -> MetaDataSet:
+def read_datatable(datatable):
     """
     extract necessary data from datatable instance.
 
@@ -65,7 +84,7 @@ def read_datatable(datatable: DataTableImpl) -> MetaDataSet:
         datatable: datatable instance
 
     Return:
-        metadata:
+        metadata: MetaDataSet
     """
     timestamp, dtrow, ra, dec, srctype, antenna, field = read_readonly_data(datatable)
     pflag = read_readwrite_data(datatable)
@@ -91,7 +110,7 @@ def from_context(context_dir: str) -> MetaDataSet:
         context_dir: path to the pipeline context directory
 
     Return:
-        metadata
+        metadata: MetaDataSet
     """
     datatable_dir = os.path.join(context_dir, 'MSDataTable.tbl')
     rotable = glob.glob(f'{datatable_dir}/*.ms/RO')[0]
@@ -320,7 +339,7 @@ def find_raster_gap(timestamp: ndarray, ra: ndarray, dec: ndarray, time_gap: nda
     return raster_gap
 
 
-def flag_incomplete_raster(meta: MetaDataSet, raster_gap: list, nd_raster: int, nd_row: int) -> list:
+def flag_incomplete_raster(meta, raster_gap: list, nd_raster: int, nd_row: int) -> list:
     """
     flag incomplete raster map
     N: number of data per raster map
