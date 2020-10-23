@@ -105,10 +105,6 @@ def capture_log(method):
     return capture
 
 
-def get_imaging_preferred(inputs):
-    return issubclass(inputs, api.ImagingMeasurementSetsPreferred)
-
-
 class ModeTask(api.Task):
     # override this if your inputs needs visibility of all measurement sets in
     # scope
