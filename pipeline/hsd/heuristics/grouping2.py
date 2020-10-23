@@ -14,7 +14,7 @@ class GroupByPosition2(api.Heuristic):
     """
     Grouping by RA/DEC position
     """
-    def calculate(self, ra: np.ndarray, dec: np.ndarray, r_combine: Angle, r_allowance: Angle) -> Tuple:
+    def calculate(self, ra: np.ndarray, dec: np.ndarray, r_combine: Angle, r_allowance: Angle) -> Tuple[dict, list]:
         """Grouping by RA/DEC position.
 
         Divides data into groups by their positions in two
@@ -132,7 +132,7 @@ class GroupByTime2(api.Heuristic):
     """
     Grouping by time sequence
     """
-    def calculate(self, timebase: Sequence[Real], time_diff: Sequence[Real]) -> Tuple:
+    def calculate(self, timebase: Sequence[Real], time_diff: Sequence[Real]) -> Tuple[list, list]:
         """Grouping by time sequence.
 
         Divides data into groups by their difference (time_diff).
@@ -222,7 +222,7 @@ class GroupByTime2(api.Heuristic):
 
 
 class ThresholdForGroupByTime(api.Heuristic):
-    def calculate(self, timebase: Sequence[Real]) -> Tuple:
+    def calculate(self, timebase: Sequence[Real]) -> Tuple[list, list]:
         """Estimate thresholds for large and small time gaps.
 
         Estimate thresholds for large and small time gaps using
@@ -274,7 +274,7 @@ class ThresholdForGroupByTime(api.Heuristic):
 
 
 class MergeGapTables2(api.Heuristic):
-    def calculate(self, TimeGap: list, TimeTable: list, PosGap: list, tBEAM: Sequence[int]) -> Tuple:
+    def calculate(self, TimeGap: list, TimeTable: list, PosGap: list, tBEAM: Sequence[int]) -> Tuple[list, list]:
         """Merge time gap and position gaps.
 
         Merge time gap list (TimeGap) and position gap list (PosGap).
