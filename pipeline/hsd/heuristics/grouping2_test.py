@@ -88,7 +88,7 @@ def fixture_position_raster():
 
 
 @functools.lru_cache(1)
-def expected_posdict_normal():
+def posdict_normal():
     posdict = dict((i, [-1, (i // 10) * 10]) for i in range(40))
     for i in range(0, 40, 10):
         posdict[i] = list(range(i, i + 10))
@@ -96,10 +96,18 @@ def expected_posdict_normal():
 
 
 @functools.lru_cache(1)
-def expected_posdict_one():
+def posdict_one():
     posdict = dict((i, [-1, 0]) for i in range(40))
     posdict[0] = list(range(40))
     return posdict
+
+
+def posgap_psw():
+    return [10, 20, 30]
+
+
+def posgap_raster():
+    return [20]
 
 
 @functools.lru_cache(1)
@@ -117,31 +125,31 @@ def group_four():
     return [list(range(i, i + 10)) for i in (0, 10, 20, 30)]
 
 
-def expected_time_table_psw():
+def time_table_psw():
     tt_small = group_four()
     tt_large = group_two()
     return [tt_small, tt_large]
 
 
-def expected_time_gap_psw():
+def time_gap_psw():
     return [[10, 20, 30], [20]]
 
 
-def expected_time_table_raster():
+def time_table_raster():
     tt_small = group_two()
     tt_large = group_one()
     return [tt_small, tt_large]
 
 
-def expected_time_gap_raster():
+def time_gap_raster():
     return [[20], []]
 
 
-def expected_merge_table_psw():
-    return expected_time_table_psw()
+def merge_table_psw():
+    return time_table_psw()
 
 
-def expected_merge_table_raster():
+def merge_table_raster():
     tt_small = group_four()
     tt_large = group_one()
     return [tt_small, tt_large]
@@ -150,12 +158,14 @@ def expected_merge_table_raster():
 @pytest.mark.parametrize(
     "combine_radius, allowance_radius, expected_posdict, expected_posgap",
     [
-        (0.4, 0.05, expected_posdict_normal(), [10, 20, 30]),
-        (qa.quantity(0.4, 'deg'), 0.05, expected_posdict_normal(), [10, 20, 30]),
-        (0.4, qa.quantity(0.05, 'deg'), expected_posdict_normal(), [10, 20, 30]),
-        (qa.quantity(0.4, 'deg'), qa.quantity(0.05, 'deg'), expected_posdict_normal(), [10, 20, 30]),
+        (0.4, 0.05, posdict_normal(), posgap_psw()),
+        (qa.quantity(0.4, 'deg'), 0.05, posdict_normal(), posgap_psw()),
+        (0.4, qa.quantity(0.05, 'deg'), posdict_normal(), posgap_psw()),
+        (qa.quantity(0.4, 'deg'), qa.quantity(0.05, 'deg'), posdict_normal(), posgap_psw()),
         # unit conversion: rad -> deg
-        (qa.quantity(0.4 * np.pi / 180, 'rad'), 0.05, expected_posdict_normal(), [10, 20, 30]),
+        (qa.quantity(0.4 * np.pi / 180, 'rad'), 0.05, posdict_normal(), posgap_psw()),
+        # unit conversion: arcsec -> deg
+        (qa.quantity(0.4 * 3600, 'arcsec'), 0.05, posdict_normal(), posgap_psw()),
     ]
 )
 def test_group_by_position_psw(combine_radius, allowance_radius, expected_posdict, expected_posgap, position_psw):
@@ -170,18 +180,18 @@ def test_group_by_position_psw(combine_radius, allowance_radius, expected_posdic
 @pytest.mark.parametrize(
     "combine_radius, allowance_radius, expected",
     [
-        (0.249, 0.01, (expected_posdict_normal(), [20])),
-        (qa.quantity(0.249, 'deg'), 0.01, (expected_posdict_normal(), [20])),
-        (0.249, qa.quantity(0.01, 'deg'), (expected_posdict_normal(), [20])),
-        (qa.quantity(0.249, 'deg'), qa.quantity(0.01, 'deg'), (expected_posdict_normal(), [20])),
+        (0.249, 0.01, (posdict_normal(), posgap_raster())),
+        (qa.quantity(0.249, 'deg'), 0.01, (posdict_normal(), posgap_raster())),
+        (0.249, qa.quantity(0.01, 'deg'), (posdict_normal(), posgap_raster())),
+        (qa.quantity(0.249, 'deg'), qa.quantity(0.01, 'deg'), (posdict_normal(), posgap_raster())),
         # too large allowance radius -> all gaps are detected
-        (0.249, 10, (expected_posdict_normal(), list(range(1, 40)))),
+        (0.249, 10, (posdict_normal(), list(range(1, 40)))),
         # moderate allowance radius -> no gap is detected
-        (0.249, 1, (expected_posdict_normal(), [])),
+        (0.249, 1, (posdict_normal(), [])),
         # too large combine radius -> only one group
-        (10, 0.01, (expected_posdict_one(), [20])),
+        (10, 0.01, (posdict_one(), posgap_raster())),
         # too small combine radius -> all data are separated
-        (1e-5, 0.01, (dict((i, [i]) for i in range(40)), [20])),
+        (1e-5, 0.01, (dict((i, [i]) for i in range(40)), posgap_raster())),
     ]
 )
 def test_group_by_position_raster(combine_radius, allowance_radius, expected, position_raster):
@@ -191,6 +201,18 @@ def test_group_by_position_raster(combine_radius, allowance_radius, expected, po
     posdict, posgap = h.calculate(ra_list, dec_list, combine_radius, allowance_radius)
     assert posdict == expected[0]
     assert posgap == expected[1]
+
+
+def test_group_by_posiition_error(position_psw):
+    ra_list, dec_list = position_psw
+    h = GroupByPosition2()
+
+    # GroupByPosition2 only accepts numpy.ndarray for RA/DEC data
+    with pytest.raises(AttributeError):
+        posdict, posgap = h.calculate(ra_list.tolist(), dec_list, 0.4, 0.05)
+
+    with pytest.raises(AttributeError):
+        posdict, posgap = h.calculate(ra_list, dec_list.tolist(), 0.4, 0.05)
 
 
 @pytest.mark.parametrize(
@@ -210,31 +232,40 @@ def test_threshold_for_time(time_list, expected_gaps):
 @pytest.mark.parametrize(
     'time_list, expected',
     [
-        (generate_time_data_psw(), (expected_time_table_psw(), expected_time_gap_psw())),
-        (generate_time_data_raster(), (expected_time_table_raster(), expected_time_gap_raster())),
+        (generate_time_data_psw(), (time_table_psw(), time_gap_psw())),
+        (generate_time_data_raster(), (time_table_raster(), time_gap_raster())),
+        # list input is allowed
+        (generate_time_data_psw().tolist(), (time_table_psw(), time_gap_psw())),
     ]
 )
 def test_group_by_time(time_list, expected):
     '''test grouping by time'''
     h = GroupByTime2()
-    delta = time_list[1:] - time_list[:-1]
-    time_table, time_gap = h.calculate(time_list, delta)
-    assert time_table == expected[0]
-    assert time_gap == expected[1]
+    time_list_np = np.asarray(time_list)
+    delta_np = time_list_np[1:] - time_list_np[:-1]
+
+    # delta can be either np.ndarray or list
+    for delta in [delta_np, delta_np.tolist()]:
+        time_table, time_gap = h.calculate(time_list, delta)
+        assert time_table == expected[0]
+        assert time_gap == expected[1]
 
 
 @pytest.mark.parametrize(
     'time_gap, time_table, expected',
     [
-        (expected_time_gap_psw(), expected_time_table_psw(), expected_merge_table_psw()),
-        (expected_time_gap_raster(), expected_time_table_raster(), expected_merge_table_raster()),
+        (time_gap_psw(), time_table_psw(), merge_table_psw()),
+        (time_gap_raster(), time_table_raster(), merge_table_raster()),
     ]
 )
 def test_merge_gap_tables(time_gap, time_table, expected):
     '''test merging gap tables'''
     position_gaps = [10, 20, 30]
-    beam = np.zeros(40, dtype=int)
+    beam_np = np.zeros(40, dtype=int)
     h = MergeGapTables2()
-    merge_table, merge_gap = h.calculate(time_gap, time_table, position_gaps, beam)
-    assert merge_table == expected
-    assert merge_gap == [position_gaps, time_gap[1]]
+
+    # beam can be either np.ndarray or list
+    for beam in (beam_np, beam_np.tolist()):
+        merge_table, merge_gap = h.calculate(time_gap, time_table, position_gaps, beam)
+        assert merge_table == expected
+        assert merge_gap == [position_gaps, time_gap[1]]
