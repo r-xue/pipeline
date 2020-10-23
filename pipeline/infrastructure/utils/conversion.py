@@ -73,7 +73,9 @@ def commafy(l:Sequence[str], quotes:bool=True, multi_prefix:str='',
     """
     Convert the string list into the textual description.
 
-    For example: commafy(['a','b','c']) = "'a', 'b' and 'c'"
+    For example:
+    >>> commafy(['a','b','c'])
+    "'a', 'b' and 'c'"
 
     Args:
         l: Python string list.
