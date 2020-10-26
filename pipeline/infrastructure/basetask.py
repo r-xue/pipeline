@@ -713,61 +713,23 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
             # list
             return ResultsList()
 
-        if isinstance(self.inputs, (vdp.StandardInputs, vdp.ModeInputs)):
-            to_split = ('calphasetable', 'targetphasetable', 'offsetstable')
-            split_properties = self._get_handled_headtails(to_split)
+        container = self.inputs
+        LOG.info('Equivalent CASA call: %s', container._pipeline_casa_task)
 
-            for name, ht in split_properties.items():
-                setattr(self.inputs, name, ht.head)
+        results = ResultsList()
+        try:
+            for inputs in container:
+                self.inputs = inputs
+                single_result = self.execute(dry_run=dry_run, **parameters)
 
-            refant_tail = None
-            if hasattr(self.inputs, 'refant'):
-                if isinstance(self.inputs.refant, list) and self.inputs.refant:
-                    refant_head = self.inputs.refant[0]
-                    refant_tail = self.inputs.refant[1:]
-                    self.inputs.refant = refant_head
+                if isinstance(single_result, ResultsList):
+                    results.extend(single_result)
+                else:
+                    results.append(single_result)
+            return results
+        finally:
+            self.inputs = container
 
-            head = self.inputs.vis[0]
-            tail = self.inputs.vis[1:]
-            try:
-                LOG.trace('Setting VISLIST_RESET_KEY prior to task execution')
-                setattr(self.inputs, VISLIST_RESET_KEY, True)
-                self.inputs.vis = head
-                results = ResultsList()
-                results.append(self.execute(dry_run=dry_run, **parameters))
-
-                self.inputs.vis = tail
-            finally:
-                LOG.trace('Deleting VISLIST_RESET_KEY after task execution')
-                delattr(self.inputs, VISLIST_RESET_KEY)
-
-            for name, ht in split_properties.items():
-                setattr(self.inputs, name, ht.tail)
-
-            if hasattr(self.inputs, 'refant') and refant_tail is not None:
-                self.inputs.refant = refant_tail
-
-            results.extend(self.execute(dry_run=dry_run, **parameters))
-
-        elif isinstance(self.inputs, vdp.InputsContainer):
-            container = self.inputs
-            LOG.info('Equivalent CASA call: %s', container._pipeline_casa_task)
-
-            results = ResultsList()
-            try:
-                for inputs in container:
-                    self.inputs = inputs
-                    single_result = self.execute(dry_run=dry_run, **parameters)
-
-                    if isinstance(single_result, ResultsList):
-                        results.extend(single_result)
-                    else:
-                        results.append(single_result)
-                return results
-            finally:
-                self.inputs = container
-
-        return results
 
     def _get_handled_headtails(self, names=None):
         handled = collections.OrderedDict()
