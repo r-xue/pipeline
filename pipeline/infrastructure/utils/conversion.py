@@ -187,7 +187,7 @@ def get_epoch_as_datetime(epoch:Number) -> datetime:
     """
     Convert a CASA epoch measure into a Python datetime.
 
-    Params:
+    Args:
         epoch: CASA epoch measure.
     Returns:
         The equivalent Python datetime.
@@ -221,7 +221,7 @@ def range_to_list(arg:str) -> List[int]:
     >>> range_to_list('1~5,7~9')
     [1,2,3,4,5,7,8,9]
 
-    Params:
+    Args:
         arg: The numeric range expressed in CASA syntax.
     Returns:
         The equivalent Python list of integers.
@@ -260,7 +260,7 @@ def to_CASA_intent(ms, intents):
     >>> to_CASA_intent(ms, 'PHASE,BANDPASS')
     'CALIBRATE_PHASE_ON_SOURCE,CALIBRATE_BANDPASS_ON_SOURCE'
 
-    Params:
+    Args:
         ms: MeasurementSet object.
         intents: pipeline intents to convert.
     Returns:
@@ -274,7 +274,7 @@ def to_pipeline_intent(ms, intents):
     """
     Convert CASA intents to pipeline intents.
 
-    Params:
+    Args:
         ms: MeasurementSet object
         intents: CASA intents to convert
     Returns:
@@ -295,7 +295,7 @@ def field_arg_to_id(ms_path:str, field_arg, all_fields):
     """
     Convert a string to the corresponding field IDs.
 
-    Params:
+    Args:
         ms_path: the path to the measurement set.
         field_arg: the field selection in CASA format.
         all_fields: all Field objects, for use when CASA msselect is not used.
@@ -321,7 +321,7 @@ def spw_arg_to_id(ms_path:str, spw_arg, all_spws):
     """
     Convert a string to spectral window IDs and channels.
 
-    Params:
+    Args:
         ms_path: the path to the measurement set.
         spw_arg: the spw selection in CASA format.
         all_spws: list of all SpectralWindow objects, for use when CASA msselect
@@ -349,7 +349,7 @@ def ant_arg_to_id(ms_path:str, ant_arg, all_antennas):
     """
     Convert a string to the corresponding antenna IDs.
 
-    Params
+    Args
         ms_path: the path to the measurement set
         ant_arg: the antenna selection in CASA format
         all_antennas: all antenna domain objects for use when CASA msselect is disabled
@@ -374,7 +374,7 @@ def _convert_arg_to_id(arg_name:str, ms_path:str, arg_val:str):
     runtime was created (via the MSSelectedIndicesCache class) and this
     function delegates to the instance held in the module namespace.
 
-    Params
+    Args
         arg_name:
         ms_path: the path to the measurement set
         field_arg: the field argument formatted with CASA syntax.
@@ -411,7 +411,7 @@ def safe_split(fields:str) -> List[str]:
     """
     Split a string containing field names into a list, taking account of field names within quotes.
 
-    Params:
+    Args:
         fields: A string containing field names.
     Returns:
         A list, taking account of field names within quotes.
@@ -423,7 +423,7 @@ def dequote(s:str) -> str:
     """
     Remove any kind of quotes from a string to faciliate comparisons.
 
-    Params:
+    Args:
         s: Strings.
     Returns:
         String removed any kind of quotes.
@@ -435,7 +435,7 @@ def format_datetime(dt:datetime, dp:int=0) -> str:
     """
     Return a string representation of a Python datetime, including microseconds to the requested precision.
 
-    Params:
+    Args:
         dt: Python datetime.
         dp: number of decimal places for microseconds (0=do not show).
     Returns:
@@ -457,7 +457,7 @@ def format_timedelta(td:timedelta, dp:int=0) -> str:
     """
     Return a formatted string representation for the given timedelta.
 
-    Params
+    Args
         td: timedelta.
         dp: number of decimal places for microseconds (0=do not show).
             The number should be natural number with 0.
@@ -525,7 +525,7 @@ def _parse_spw(task_arg:str, all_spw_ids:tuple=None):
             </atom>
           </result>
 
-    Params:
+    Args:
         task_arg:
         all_spw_ids:
     Returns:
@@ -589,7 +589,7 @@ def _parse_field(task_arg, fields=None):
     """
     Inner method.
 
-    Params:
+    Args:
         task_arg:
         fields:
     Results:
@@ -638,7 +638,7 @@ def _parse_antenna(task_arg, antennas=None):
     """
     Inner method.
 
-    Params:
+    Args:
         task_arg:
         fields:
     Results:
