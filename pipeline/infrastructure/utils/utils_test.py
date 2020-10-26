@@ -152,11 +152,9 @@ for i, fn in enumerate(['Mars', 'Jupiter', 'Mars']):
 # get_fields() is called only once in this test, therefore set return_value.
 params_get_field_accessor = [
     (Mock(spec=domain.MeasurementSet, **{
-        'fields': fields[0:2],
-        'get_fields.return_value': [fields[1]]
+         'get_fields.return_value': [fields[1]]
     }), fields[1], 'Jupiter'),  # All fields names are unique
     (Mock(spec=domain.MeasurementSet, **{
-        'fields': fields,
         'get_fields.return_value': [fields[0], fields[2]]
     }), fields[2], '3')]  # Field name 'Mars' repeats
 
