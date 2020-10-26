@@ -156,7 +156,7 @@ def flatten(l:Sequence[Any]) -> Iterator[Any]:
 
 def unix_seconds_to_datetime(unix_secs:Sequence[Number]) -> Union[datetime, List[datetime]]:
     """
-    Convert UNIX epoc times to the equivalent Python datetimes.
+    Convert UNIX epoch times to the equivalent Python datetimes.
 
     Args:
         unix_secs: The list, specified in seconds elapsed since 1970-01-01
