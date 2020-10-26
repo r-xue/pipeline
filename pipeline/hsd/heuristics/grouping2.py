@@ -1,20 +1,20 @@
 import numpy as np
 from numbers import Real
-from typing import NewType, Sequence, Tuple, Union
+from typing import Dict, List, NewType, Sequence, Tuple, Union
 
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure as infrastructure
 LOG = infrastructure.get_logger(__name__)
 
-Angle = NewType('Angle', Union[float, int, dict])
+Angle = NewType('Angle', Union[float, int, Dict])
 
 
 class GroupByPosition2(api.Heuristic):
     """
     Grouping by RA/DEC position
     """
-    def calculate(self, ra: np.ndarray, dec: np.ndarray, r_combine: Angle, r_allowance: Angle) -> Tuple[dict, list]:
+    def calculate(self, ra: np.ndarray, dec: np.ndarray, r_combine: Angle, r_allowance: Angle) -> Tuple[Dict, List]:
         """Grouping by RA/DEC position.
 
         Divides data into groups by their positions in two
@@ -132,7 +132,7 @@ class GroupByTime2(api.Heuristic):
     """
     Grouping by time sequence
     """
-    def calculate(self, timebase: Sequence[Real], time_diff: Sequence[Real]) -> Tuple[list, list]:
+    def calculate(self, timebase: Sequence[Real], time_diff: Sequence[Real]) -> Tuple[List, List]:
         """Grouping by time sequence.
 
         Divides data into groups by their difference (time_diff).
@@ -222,7 +222,7 @@ class GroupByTime2(api.Heuristic):
 
 
 class ThresholdForGroupByTime(api.Heuristic):
-    def calculate(self, timebase: Sequence[Real]) -> Tuple[list, list]:
+    def calculate(self, timebase: Sequence[Real]) -> Tuple[List, List]:
         """Estimate thresholds for large and small time gaps.
 
         Estimate thresholds for large and small time gaps using
@@ -274,7 +274,7 @@ class ThresholdForGroupByTime(api.Heuristic):
 
 
 class MergeGapTables2(api.Heuristic):
-    def calculate(self, TimeGap: list, TimeTable: list, PosGap: list, tBEAM: Sequence[int]) -> Tuple[list, list]:
+    def calculate(self, TimeGap: List, TimeTable: List, PosGap: List, tBEAM: Sequence[int]) -> Tuple[List, List]:
         """Merge time gap and position gaps.
 
         Merge time gap list (TimeGap) and position gap list (PosGap).
