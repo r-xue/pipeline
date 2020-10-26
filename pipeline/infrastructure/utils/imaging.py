@@ -316,7 +316,7 @@ def intersect_ranges_by_weight(ranges: List[Tuple[Union[float, int]]], delta: fl
         threshold: Threshold to be used for the intersection
 
     Returns:
-        intersect_range: Tuple of two numbers defining the intersectio
+        intersect_range: Tuple of two numbers defining the intersection
     """
     if len(ranges) == 0:
         return ()
