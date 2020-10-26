@@ -14,7 +14,7 @@ import os
 import re
 import string
 import typing
-from typing import Iterator, List, Sequence, Tuple, Union
+from typing import Any, Iterator, List, Sequence, Tuple, Union
 
 import cachetools
 import pyparsing
@@ -124,7 +124,7 @@ def commafy(l:Sequence[str], quotes:bool=True, multi_prefix:str='',
                 commafy(l[1:], separator=separator, quotes=quotes, conjunction=conjunction))
 
 
-def flatten(l:Sequence[Number]) -> Iterator[Number]:
+def flatten(l:Sequence[Any]) -> Iterator[Any]:
     """
     Flatten a list of lists into a single list without pipelineaq.QAScore.
 
@@ -136,11 +136,11 @@ def flatten(l:Sequence[Number]) -> Iterator[Number]:
     >>> obj.__next__()
     3
 
-    >>> list(flatten([1,2,[3,4,[5,6]],7]))
-    [1,2,3,4,5,6]
+    >>> list(flatten([1,2,['c',4,['e',6]],7]))
+    [1,2,c,4,e,6,7]
 
     Args:
-        l: A list of list.
+        l: A list with list or any object.
     Yields:
         Single list.
 
