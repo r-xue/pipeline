@@ -79,10 +79,11 @@ def commafy(l:Sequence[str], quotes:bool=True, multi_prefix:str='',
 
     Args:
         l: Python string list.
-        quotes: Default is True.
-        multi_prefix: Default is ''.
-        separator: Default is ', '.
-        conjunction: Default is 'and'.
+        quotes: If quote is True, 'l' arg elements are enclosed in quotes by each.
+        multi_prefix: If the 'l' arg has three or more elements, the 'multi_prefix'
+            attach to the head.
+        separator: The 'separator' arg is used as separator instead of ','.
+        conjunction: The 'conjunction' arg is used as conjunction instead of 'and'.
 
     Return:
         The textual description of the given list.
