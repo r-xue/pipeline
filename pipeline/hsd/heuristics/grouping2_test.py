@@ -87,123 +87,199 @@ def fixture_position_raster():
     return generate_position_data_raster()
 
 
-@functools.lru_cache(1)
-def posdict_normal():
-    posdict = dict((i, [-1, (i // 10) * 10]) for i in range(40))
-    for i in range(0, 40, 10):
-        posdict[i] = list(range(i, i + 10))
-    return posdict
-
-
-@functools.lru_cache(1)
-def posdict_one():
-    posdict = dict((i, [-1, 0]) for i in range(40))
-    posdict[0] = list(range(40))
-    return posdict
-
-
-def posgap_psw():
-    return [10, 20, 30]
-
-
-def posgap_raster():
-    return [20]
-
-
-@functools.lru_cache(1)
-def group_one():
-    return [list(range(40))]
-
-
-@functools.lru_cache(1)
-def group_two():
-    return [list(range(i, i + 20)) for i in (0, 20)]
-
-
-@functools.lru_cache(1)
-def group_four():
-    return [list(range(i, i + 10)) for i in (0, 10, 20, 30)]
-
-
-def time_table_psw():
-    tt_small = group_four()
-    tt_large = group_two()
-    return [tt_small, tt_large]
-
-
-def time_gap_psw():
-    return [[10, 20, 30], [20]]
-
-
-def time_table_raster():
-    tt_small = group_two()
-    tt_large = group_one()
-    return [tt_small, tt_large]
-
-
-def time_gap_raster():
-    return [[20], []]
-
-
-def merge_table_psw():
-    return time_table_psw()
-
-
-def merge_table_raster():
-    tt_small = group_four()
-    tt_large = group_one()
-    return [tt_small, tt_large]
-
-
 @pytest.mark.parametrize(
-    "combine_radius, allowance_radius, expected_posdict, expected_posgap",
+    "combine_radius, allowance_radius",
     [
-        (0.4, 0.05, posdict_normal(), posgap_psw()),
-        (qa.quantity(0.4, 'deg'), 0.05, posdict_normal(), posgap_psw()),
-        (0.4, qa.quantity(0.05, 'deg'), posdict_normal(), posgap_psw()),
-        (qa.quantity(0.4, 'deg'), qa.quantity(0.05, 'deg'), posdict_normal(), posgap_psw()),
+        (0.4, 0.05),
+        (qa.quantity(0.4, 'deg'), 0.05),
+        (0.4, qa.quantity(0.05, 'deg')),
+        (qa.quantity(0.4, 'deg'), qa.quantity(0.05, 'deg')),
         # unit conversion: rad -> deg
-        (qa.quantity(0.4 * np.pi / 180, 'rad'), 0.05, posdict_normal(), posgap_psw()),
+        (qa.quantity(0.4 * np.pi / 180, 'rad'), 0.05),
         # unit conversion: arcsec -> deg
-        (qa.quantity(0.4 * 3600, 'arcsec'), 0.05, posdict_normal(), posgap_psw()),
+        (qa.quantity(0.4 * 3600, 'arcsec'), 0.05),
     ]
 )
-def test_group_by_position_psw(combine_radius, allowance_radius, expected_posdict, expected_posgap, position_psw):
+def test_group_by_position_psw(combine_radius, allowance_radius, position_psw):
     '''test grouping by position on position switch pattern'''
     ra_list, dec_list = position_psw
     h = GroupByPosition2()
     posdict, posgap = h.calculate(ra_list, dec_list, combine_radius, allowance_radius)
+    expected_posdict = {
+        0: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        1: [-1, 0], 2: [-1, 0], 3: [-1, 0],
+        4: [-1, 0], 5: [-1, 0], 6: [-1, 0],
+        7: [-1, 0], 8: [-1, 0], 9: [-1, 0],
+        10: [10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+        11: [-1, 10], 12: [-1, 10], 13: [-1, 10],
+        14: [-1, 10], 15: [-1, 10], 16: [-1, 10],
+        17: [-1, 10], 18: [-1, 10], 19: [-1, 10],
+        20: [20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+        21: [-1, 20], 22: [-1, 20], 23: [-1, 20],
+        24: [-1, 20], 25: [-1, 20], 26: [-1, 20],
+        27: [-1, 20], 28: [-1, 20], 29: [-1, 20],
+        30: [30, 31, 32, 33, 34, 35, 36, 37, 38, 39],
+        31: [-1, 30], 32: [-1, 30], 33: [-1, 30],
+        34: [-1, 30], 35: [-1, 30], 36: [-1, 30],
+        37: [-1, 30], 38: [-1, 30], 39: [-1, 30],
+    }
+    expected_posgap = [10, 20, 30]
     assert posdict == expected_posdict
     assert posgap == expected_posgap
 
 
 @pytest.mark.parametrize(
-    "combine_radius, allowance_radius, expected",
+    "combine_radius, allowance_radius",
     [
-        (0.249, 0.01, (posdict_normal(), posgap_raster())),
-        (qa.quantity(0.249, 'deg'), 0.01, (posdict_normal(), posgap_raster())),
-        (0.249, qa.quantity(0.01, 'deg'), (posdict_normal(), posgap_raster())),
-        (qa.quantity(0.249, 'deg'), qa.quantity(0.01, 'deg'), (posdict_normal(), posgap_raster())),
-        # too large allowance radius -> all gaps are detected
-        (0.249, 10, (posdict_normal(), list(range(1, 40)))),
-        # moderate allowance radius -> no gap is detected
-        (0.249, 1, (posdict_normal(), [])),
-        # too large combine radius -> only one group
-        (10, 0.01, (posdict_one(), posgap_raster())),
-        # too small combine radius -> all data are separated
-        (1e-5, 0.01, (dict((i, [i]) for i in range(40)), posgap_raster())),
+        (0.249, 0.01),
+        (qa.quantity(0.249, 'deg'), 0.01),
+        (0.249, qa.quantity(0.01, 'deg')),
+        (qa.quantity(0.249, 'deg'), qa.quantity(0.01, 'deg')),
     ]
 )
-def test_group_by_position_raster(combine_radius, allowance_radius, expected, position_raster):
+def test_group_by_position_raster(combine_radius, allowance_radius, position_raster):
     '''test grouping by position on raster pattern including some edge cases'''
     ra_list, dec_list = position_raster
     h = GroupByPosition2()
     posdict, posgap = h.calculate(ra_list, dec_list, combine_radius, allowance_radius)
-    assert posdict == expected[0]
-    assert posgap == expected[1]
+    expected_posdict = {
+        0: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        1: [-1, 0], 2: [-1, 0], 3: [-1, 0],
+        4: [-1, 0], 5: [-1, 0], 6: [-1, 0],
+        7: [-1, 0], 8: [-1, 0], 9: [-1, 0],
+        10: [10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+        11: [-1, 10], 12: [-1, 10], 13: [-1, 10],
+        14: [-1, 10], 15: [-1, 10], 16: [-1, 10],
+        17: [-1, 10], 18: [-1, 10], 19: [-1, 10],
+        20: [20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+        21: [-1, 20], 22: [-1, 20], 23: [-1, 20],
+        24: [-1, 20], 25: [-1, 20], 26: [-1, 20],
+        27: [-1, 20], 28: [-1, 20], 29: [-1, 20],
+        30: [30, 31, 32, 33, 34, 35, 36, 37, 38, 39],
+        31: [-1, 30], 32: [-1, 30], 33: [-1, 30],
+        34: [-1, 30], 35: [-1, 30], 36: [-1, 30],
+        37: [-1, 30], 38: [-1, 30], 39: [-1, 30],
+    }
+    expected_posgap = [20]
+    assert posdict == expected_posdict
+    assert posgap == expected_posgap
+
+
+def test_group_by_position_too_large_allowance_radius(position_raster):
+    '''test grouping by position: too large allowance radius -> all gaps are detected'''
+    ra_list, dec_list = position_raster
+    h = GroupByPosition2()
+    combine_radius = 0.249
+    allowance_radius = 10
+    posdict, posgap = h.calculate(ra_list, dec_list, combine_radius, allowance_radius)
+    expected_posdict = {
+        0: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        1: [-1, 0], 2: [-1, 0], 3: [-1, 0],
+        4: [-1, 0], 5: [-1, 0], 6: [-1, 0],
+        7: [-1, 0], 8: [-1, 0], 9: [-1, 0],
+        10: [10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+        11: [-1, 10], 12: [-1, 10], 13: [-1, 10],
+        14: [-1, 10], 15: [-1, 10], 16: [-1, 10],
+        17: [-1, 10], 18: [-1, 10], 19: [-1, 10],
+        20: [20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+        21: [-1, 20], 22: [-1, 20], 23: [-1, 20],
+        24: [-1, 20], 25: [-1, 20], 26: [-1, 20],
+        27: [-1, 20], 28: [-1, 20], 29: [-1, 20],
+        30: [30, 31, 32, 33, 34, 35, 36, 37, 38, 39],
+        31: [-1, 30], 32: [-1, 30], 33: [-1, 30],
+        34: [-1, 30], 35: [-1, 30], 36: [-1, 30],
+        37: [-1, 30], 38: [-1, 30], 39: [-1, 30],
+    }
+    expected_posgap = [
+        1, 2, 3, 4, 5, 6, 7, 8, 9,
+        10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+        20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+        30, 31, 32, 33, 34, 35, 36, 37, 38, 39
+    ]
+    assert posdict == expected_posdict
+    assert posgap == expected_posgap
+
+
+def test_group_by_position_moderate_allowance_radius(position_raster):
+    '''test grouping by position: moderate allowance radius -> no gap is detected'''
+    ra_list, dec_list = position_raster
+    h = GroupByPosition2()
+    combine_radius = 0.249
+    allowance_radius = 1
+    posdict, posgap = h.calculate(ra_list, dec_list, combine_radius, allowance_radius)
+    expected_posdict = {
+        0: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        1: [-1, 0], 2: [-1, 0], 3: [-1, 0],
+        4: [-1, 0], 5: [-1, 0], 6: [-1, 0],
+        7: [-1, 0], 8: [-1, 0], 9: [-1, 0],
+        10: [10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+        11: [-1, 10], 12: [-1, 10], 13: [-1, 10],
+        14: [-1, 10], 15: [-1, 10], 16: [-1, 10],
+        17: [-1, 10], 18: [-1, 10], 19: [-1, 10],
+        20: [20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+        21: [-1, 20], 22: [-1, 20], 23: [-1, 20],
+        24: [-1, 20], 25: [-1, 20], 26: [-1, 20],
+        27: [-1, 20], 28: [-1, 20], 29: [-1, 20],
+        30: [30, 31, 32, 33, 34, 35, 36, 37, 38, 39],
+        31: [-1, 30], 32: [-1, 30], 33: [-1, 30],
+        34: [-1, 30], 35: [-1, 30], 36: [-1, 30],
+        37: [-1, 30], 38: [-1, 30], 39: [-1, 30],
+    }
+    expected_posgap = []
+    assert posdict == expected_posdict
+    assert posgap == expected_posgap
+
+
+def test_group_by_position_too_small_combine_radius(position_raster):
+    '''test grouping by position: too small combine radius -> all data are separated'''
+    ra_list, dec_list = position_raster
+    h = GroupByPosition2()
+    combine_radius = 1e-5
+    allowance_radius = 0.01
+    posdict, posgap = h.calculate(ra_list, dec_list, combine_radius, allowance_radius)
+    expected_posdict = {
+        0: [0], 1: [1], 2: [2], 3: [3], 4: [4],
+        5: [5], 6: [6], 7: [7], 8: [8], 9: [9],
+        10: [10], 11: [11], 12: [12], 13: [13], 14: [14],
+        15: [15], 16: [16], 17: [17], 18: [18], 19: [19],
+        20: [20], 21: [21], 22: [22], 23: [23], 24: [24],
+        25: [25], 26: [26], 27: [27], 28: [28], 29: [29],
+        30: [30], 31: [31], 32: [32], 33: [33], 34: [34],
+        35: [35], 36: [36], 37: [37], 38: [38], 39: [39],
+    }
+    expected_posgap = [20]
+    assert posdict == expected_posdict
+    assert posgap == expected_posgap
+
+
+def test_group_by_position_too_large_combine_radius(position_raster):
+    '''test grouping by position: too large combine radius -> only one group'''
+    ra_list, dec_list = position_raster
+    h = GroupByPosition2()
+    combine_radius = 10
+    allowance_radius = 0.01
+    posdict, posgap = h.calculate(ra_list, dec_list, combine_radius, allowance_radius)
+    expected_posdict = {
+        0: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+            10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+            20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+            30, 31, 32, 33, 34, 35, 36, 37, 38, 39],
+        1: [-1, 0], 2: [-1, 0], 3: [-1, 0], 4: [-1, 0],
+        5: [-1, 0], 6: [-1, 0], 7: [-1, 0], 8: [-1, 0], 9: [-1, 0],
+        10: [-1, 0], 11: [-1, 0], 12: [-1, 0], 13: [-1, 0], 14: [-1, 0],
+        15: [-1, 0], 16: [-1, 0], 17: [-1, 0], 18: [-1, 0], 19: [-1, 0],
+        20: [-1, 0], 21: [-1, 0], 22: [-1, 0], 23: [-1, 0], 24: [-1, 0],
+        25: [-1, 0], 26: [-1, 0], 27: [-1, 0], 28: [-1, 0], 29: [-1, 0],
+        30: [-1, 0], 31: [-1, 0], 32: [-1, 0], 33: [-1, 0], 34: [-1, 0],
+        35: [-1, 0], 36: [-1, 0], 37: [-1, 0], 38: [-1, 0], 39: [-1, 0],
+    }
+    expected_posgap = [20]
+    assert posdict == expected_posdict
+    assert posgap == expected_posgap
 
 
 def test_group_by_posiition_error(position_psw):
+    '''test grouping by position: error cases'''
     ra_list, dec_list = position_psw
     h = GroupByPosition2()
 
@@ -230,42 +306,126 @@ def test_threshold_for_time(time_list, expected_gaps):
 
 
 @pytest.mark.parametrize(
-    'time_list, expected',
+    'time_list',
     [
-        (generate_time_data_psw(), (time_table_psw(), time_gap_psw())),
-        (generate_time_data_raster(), (time_table_raster(), time_gap_raster())),
+        (generate_time_data_psw()),
         # list input is allowed
-        (generate_time_data_psw().tolist(), (time_table_psw(), time_gap_psw())),
+        (generate_time_data_psw().tolist()),
     ]
 )
-def test_group_by_time(time_list, expected):
-    '''test grouping by time'''
+def test_group_by_time_psw(time_list):
+    '''test grouping by time for position switch pattern'''
     h = GroupByTime2()
     time_list_np = np.asarray(time_list)
     delta_np = time_list_np[1:] - time_list_np[:-1]
 
+    expected_time_table = [
+        [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+         [10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+         [20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+         [30, 31, 32, 33, 34, 35, 36, 37, 38, 39]],
+        [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+          10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+         [20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+          30, 31, 32, 33, 34, 35, 36, 37, 38, 39]]
+    ]
+    expected_time_gap = [[10, 20, 30], [20]]
+
     # delta can be either np.ndarray or list
     for delta in [delta_np, delta_np.tolist()]:
         time_table, time_gap = h.calculate(time_list, delta)
-        assert time_table == expected[0]
-        assert time_gap == expected[1]
+        assert time_table == expected_time_table
+        assert time_gap == expected_time_gap
 
 
 @pytest.mark.parametrize(
-    'time_gap, time_table, expected',
+    'time_list',
     [
-        (time_gap_psw(), time_table_psw(), merge_table_psw()),
-        (time_gap_raster(), time_table_raster(), merge_table_raster()),
+        (generate_time_data_raster()),
+        # list input is allowed
+        (generate_time_data_raster().tolist()),
     ]
 )
-def test_merge_gap_tables(time_gap, time_table, expected):
-    '''test merging gap tables'''
-    position_gaps = [10, 20, 30]
+def test_group_by_time_raster(time_list):
+    '''test grouping by time for raster pattern'''
+    h = GroupByTime2()
+    time_list_np = np.asarray(time_list)
+    delta_np = time_list_np[1:] - time_list_np[:-1]
+
+    expected_time_table = [
+        [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+          10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+         [20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+          30, 31, 32, 33, 34, 35, 36, 37, 38, 39]],
+        [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+          10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+          20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+          30, 31, 32, 33, 34, 35, 36, 37, 38, 39]]
+    ]
+    expected_time_gap = [[20], []]
+
+    # delta can be either np.ndarray or list
+    for delta in [delta_np, delta_np.tolist()]:
+        time_table, time_gap = h.calculate(time_list, delta)
+        assert time_table == expected_time_table
+        assert time_gap == expected_time_gap
+
+
+def test_merge_gap_tables_psw():
+    '''test merging gap tables for position switch pattern'''
+    time_table = [
+        [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+         [10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+         [20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+         [30, 31, 32, 33, 34, 35, 36, 37, 38, 39]],
+        [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+          10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+         [20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+          30, 31, 32, 33, 34, 35, 36, 37, 38, 39]]
+    ]
+    time_gap = [[10, 20, 30], [20]]
+    position_gap = [10, 20, 30]
     beam_np = np.zeros(40, dtype=int)
     h = MergeGapTables2()
 
     # beam can be either np.ndarray or list
     for beam in (beam_np, beam_np.tolist()):
-        merge_table, merge_gap = h.calculate(time_gap, time_table, position_gaps, beam)
-        assert merge_table == expected
-        assert merge_gap == [position_gaps, time_gap[1]]
+        merge_table, merge_gap = h.calculate(time_gap, time_table, position_gap, beam)
+        assert merge_table == time_table
+        assert merge_gap == [position_gap, time_gap[1]]
+
+
+def test_merge_gap_tables_raster():
+    '''test merging gap tables for raster pattern'''
+    time_table = [
+        [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+          10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+         [20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+          30, 31, 32, 33, 34, 35, 36, 37, 38, 39]],
+        [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+          10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+          20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+          30, 31, 32, 33, 34, 35, 36, 37, 38, 39]]
+    ]
+    time_gap = [[20], []]
+    position_gap = [10, 20, 30]
+    beam_np = np.zeros(40, dtype=int)
+
+    expected_time_table = [
+        [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+         [10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+         [20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+         [30, 31, 32, 33, 34, 35, 36, 37, 38, 39]],
+        [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+          10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+          20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+          30, 31, 32, 33, 34, 35, 36, 37, 38, 39]]
+    ]
+
+    h = MergeGapTables2()
+
+    # beam can be either np.ndarray or list
+    for beam in (beam_np, beam_np.tolist()):
+        merge_table, merge_gap = h.calculate(time_gap, time_table, position_gap, beam)
+        assert merge_table == expected_time_table
+        assert merge_gap == [position_gap, time_gap[1]]
