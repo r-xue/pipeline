@@ -154,6 +154,7 @@ class _XmlObject:
     objects in the hierarchy that allow to access child nodes via the __call__
     method.
     """
+
     def __init__(self, elementsList):
         self.elementsList = elementsList
 
@@ -162,7 +163,8 @@ class _XmlObject:
             if len(self.elementsList) > 1:
                 if number is None:
                     msg = 'More than one XmlElement of type {}. Select one by passing a number (0 - {})' \
-                          ''.format(str(self.elementsList[0]._0elementName), str(len(self.elementsList)-1))
+                          ''.format(str(self.elementsList[0]._0elementName), str(
+                              len(self.elementsList) - 1))
                     raise XmlObjectifierError(msg)
                 elif number in range(0, len(self.elementsList)):
                     result = self.elementsList[number]
@@ -240,17 +242,20 @@ def _createLists(xmlObject, mapNameSpaces, nameSpaceMapping, skipChars):
                         else:
                             nameSpaceMapping[name_space_key] = ''
 
-                    element_name = element_name.replace(name_space_key, nameSpaceMapping[name_space_key])
+                    element_name = element_name.replace(
+                        name_space_key, nameSpaceMapping[name_space_key])
 
                 if not hasattr(xmlObject, element_name):
                     xml_elements_list = []
                     items.append(element_name)
                 else:
                     xml_elements_list = getattr(xmlObject, element_name)
-                my_xml_element = XmlElement(element, mapNameSpaces, nameSpaceMapping, skipChars)
+                my_xml_element = XmlElement(
+                    element, mapNameSpaces, nameSpaceMapping, skipChars)
                 xml_elements_list.append(my_xml_element)
                 setattr(xmlObject, element_name, copy(xml_elements_list))
-                setattr(xmlObject, element_name+'_obj', _XmlObject(copy(xml_elements_list)))
+                setattr(xmlObject, element_name + '_obj',
+                        _XmlObject(copy(xml_elements_list)))
 
         # Convert 1-item element lists to scalar elements
         for item in items:
@@ -286,6 +291,7 @@ class XmlObject(minidom.Document):
     Leading characters in the name space definitions can be skipped in the mapping
     by passing the optional "skipChars" argument.
     """
+
     def __init__(self, xmlString=None, fileName=None, skipChars='', mapNameSpaces=0):
         # The name space mapping needs to be known on all levels of the object
         # hierarchy.
@@ -371,10 +377,3 @@ class XmlObjectifierError(Exception):
 
     def __str__(self):
         return repr(self.msg)
-
-
-# APEX specific main to load the MBFITS XML definition.
-if __name__ == '__main__':
-    import interactive
-    myXmlObject = XmlObject(fileName='../../idl/MBFits.xml')
-    scanStructure = myXmlObject.Scan()
