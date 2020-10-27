@@ -65,6 +65,12 @@ def test_format_datetime(inp, kwargs, expected):
     assert format_datetime(inp, **kwargs) == expected
 
 
+def test_format_datetime_raises_exception_too_high_precision():
+    """Test format_datetime() when requesting too high precision"""
+    with pytest.raises(ValueError):
+        format_datetime(datetime.datetime(2020, 1, 1, 12, 34, 56, 7), dp=7)
+
+
 @pytest.mark.parametrize("inp, kwargs, expected", [
     (datetime.timedelta(days=1), {}, '1 day, 0:00:00'),
     (datetime.timedelta(days=9, seconds=8, microseconds=7, milliseconds=6), {'dp': 5}, '9 days, 0:00:08.00601'),
@@ -73,6 +79,12 @@ def test_format_datetime(inp, kwargs, expected):
 def test_format_timedelta(inp, kwargs, expected):
     """Test format_timedelta()"""
     assert format_timedelta(inp, **kwargs) == expected
+
+
+def test_format_timedelta_raises_exception_too_high_precision():
+    """Test format_timedelta() when requesting too high precision"""
+    with pytest.raises(ValueError):
+        format_timedelta(datetime.timedelta(days=1), dp=7)
 
 
 @pytest.mark.parametrize("inp, expected", [
