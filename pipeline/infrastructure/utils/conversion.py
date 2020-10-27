@@ -176,7 +176,7 @@ def range_to_list(arg):
 
     Example:
     >>> range_to_list('1~5,7~9')
-    [1,2,3,4,5,7,8,9]
+    [1, 2, 3, 4, 5, 7, 8, 9]
 
     :param arg: CASA range to expand
     :type arg: str
@@ -214,7 +214,7 @@ def to_CASA_intent(ms, intents):
     measurement set.
 
     Example:
-    >>> to_CASA_intent(ms, 'PHASE,BANDPASS')
+    > to_CASA_intent(ms, 'PHASE,BANDPASS')
     'CALIBRATE_PHASE_ON_SOURCE,CALIBRATE_BANDPASS_ON_SOURCE'
 
     :param ms: MeasurementSet object
