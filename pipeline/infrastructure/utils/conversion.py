@@ -412,7 +412,9 @@ def format_timedelta(td, dp=0):
     str_microsecs = '{0:06d}'.format(rounded_microsecs)
     # .. which we can append onto the end of the default timedelta string
     # representation
-    if dp:
+    if dp > 6:
+        raise ValueError('Cannot exceed 6 decimal places as datetime stores to microsecond precision')
+    elif 0 < dp <= 6:
         fraction = str_microsecs[0:dp]
         return str(rounded) + '.' + str(fraction)
     else:
