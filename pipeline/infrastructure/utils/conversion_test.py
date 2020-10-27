@@ -66,9 +66,9 @@ def test_format_datetime(inp, kwargs, expected):
 
 
 @pytest.mark.parametrize("inp, kwargs, expected", [
-    (datetime.timedelta(1), {}, '1 day, 0:00:00'),
-    (datetime.timedelta(9, 8, 7, 6), {'dp': 5}, '9 days, 0:00:08.00601'),
-    (datetime.timedelta(9, 8, 7, 6), {'dp': 6}, '9 days, 0:00:08.006007'),
+    (datetime.timedelta(days=1), {}, '1 day, 0:00:00'),
+    (datetime.timedelta(days=9, seconds=8, microseconds=7, milliseconds=6), {'dp': 5}, '9 days, 0:00:08.00601'),
+    (datetime.timedelta(days=9, seconds=8, microseconds=7, milliseconds=6), {'dp': 6}, '9 days, 0:00:08.006007'),
 ])
 def test_format_timedelta(inp, kwargs, expected):
     """Test format_timedelta()"""
