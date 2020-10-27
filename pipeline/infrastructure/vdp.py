@@ -427,7 +427,6 @@ class InputsContainer(object):
         scope_is_null = scope_null == scope_null.convert(scope_value)
 
         if scope_is_null:
-            # TODO SJW move fn to this module
             from . import basetask
             # note that for ModeInputs this queries whether the ModeInputs is
             # registered for imaging MSes, not the Inputs that is selected.
