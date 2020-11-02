@@ -271,7 +271,7 @@ def to_CASA_intent(ms, intents):
     return ','.join(obs_modes)
 
 
-def to_pipeline_intent(ms, intents):
+def to_pipeline_intent(ms, intents:str) -> str:
     """
     Convert CASA intents to pipeline intents.
 
