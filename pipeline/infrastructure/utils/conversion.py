@@ -591,9 +591,10 @@ def _parse_field(task_arg, fields=None):
     Inner method.
 
     Args:
-        task_arg:
-        fields:
+        task_arg: the field selection in CASA format.
+        fields: Field objects
     Results:
+        Returns a list of field IDs that matches field selection criteria
     """
     if task_arg in (None, ''):
         return [f.id for f in fields]
