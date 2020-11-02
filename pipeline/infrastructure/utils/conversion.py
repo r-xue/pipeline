@@ -292,7 +292,7 @@ def to_pipeline_intent(ms, intents):
     return ','.join(pipeline_intents)
 
 
-def field_arg_to_id(ms_path:str, field_arg, all_fields):
+def field_arg_to_id(ms_path:str, field_arg:Union[str, int], all_fields) -> List[int]:
     """
     Convert a string to the corresponding field IDs.
 
