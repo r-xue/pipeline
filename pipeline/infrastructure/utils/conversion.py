@@ -253,7 +253,7 @@ def range_to_list(arg:str) -> List[int]:
     return list(atoms.parseString(str(arg)))
 
 
-def to_CASA_intent(ms, intents):
+def to_CASA_intent(ms, intents:str) -> str:
     """
     Convert pipeline intents back to the equivalent intents recorded in the measurement set.
 
