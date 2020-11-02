@@ -71,10 +71,9 @@ MSTOOL_SELECTEDINDICES_CACHE: typing.Dict[str, LoggingLRUCache] = {}
 
 def commafy(l:Sequence[str], quotes:bool=True, multi_prefix:str='',
         separator:str=', ', conjunction:str='and') -> str:
-    """
-    Convert the string list into the textual description.
+    """Convert the string list into the textual description.
 
-    For example:
+    Example:
     >>> commafy(['a','b','c'])
     "'a', 'b' and 'c'"
 
@@ -126,9 +125,9 @@ def commafy(l:Sequence[str], quotes:bool=True, multi_prefix:str='',
 
 
 def flatten(l:Sequence[Any]) -> Iterator[Any]:
-    """
-    Flatten a list of lists into a single list without pipelineaq.QAScore.
+    """Flatten a list of lists into a single list without pipelineaq.QAScore.
 
+    Example:
     >>> obj = flatten([1,2,[3,4,[5,6]],7])
     >>> obj.__next__()
     1
@@ -156,8 +155,7 @@ def flatten(l:Sequence[Any]) -> Iterator[Any]:
 
 
 def unix_seconds_to_datetime(unix_secs:Sequence[Number]) -> Union[datetime, List[datetime]]:
-    """
-    Convert UNIX epoch times to the equivalent Python datetimes.
+    """Convert UNIX epoch times to the equivalent Python datetimes.
 
     Args:
         unix_secs: The list, specified in seconds elapsed since 1970-01-01
@@ -170,8 +168,7 @@ def unix_seconds_to_datetime(unix_secs:Sequence[Number]) -> Union[datetime, List
 
 
 def mjd_seconds_to_datetime(mjd_secs:Sequence[Number]) -> Union[datetime, List[datetime]]:
-    """
-    Convert MJD seconds to the equivalent Python datetimes.
+    """Convert MJD seconds to the equivalent Python datetimes.
 
     Args:
         mjd_secs: The list, specified in MJD seconds.
@@ -185,8 +182,7 @@ def mjd_seconds_to_datetime(mjd_secs:Sequence[Number]) -> Union[datetime, List[d
 
 
 def get_epoch_as_datetime(epoch:Number) -> datetime:
-    """
-    Convert a CASA epoch measure into a Python datetime.
+    """Convert a CASA epoch measure into a Python datetime.
 
     Args:
         epoch: CASA epoch measure.
@@ -254,8 +250,7 @@ def range_to_list(arg:str) -> List[int]:
 
 
 def to_CASA_intent(ms, intents:str) -> str:
-    """
-    Convert pipeline intents back to the equivalent intents recorded in the measurement set.
+    """Convert pipeline intents back to the equivalent intents recorded in the measurement set.
 
     Example:
     >>> to_CASA_intent(ms, 'PHASE,BANDPASS')
@@ -272,12 +267,11 @@ def to_CASA_intent(ms, intents:str) -> str:
 
 
 def to_pipeline_intent(ms, intents:str) -> str:
-    """
-    Convert CASA intents to pipeline intents.
+    """Convert CASA intents to pipeline intents.
 
     Args:
-        ms: MeasurementSet object
-        intents: CASA intents to convert
+        ms: MeasurementSet object.
+        intents: CASA intents to convert.
     Returns:
         The pipeline intents.
     """
@@ -293,15 +287,14 @@ def to_pipeline_intent(ms, intents:str) -> str:
 
 
 def field_arg_to_id(ms_path:str, field_arg:Union[str, int], all_fields) -> List[int]:
-    """
-    Convert a string to the corresponding field IDs.
+    """Convert a string to the corresponding field IDs.
 
     Args:
-        ms_path: the path to the measurement set.
-        field_arg: the field selection in CASA format.
-        all_fields: all Field objects, for use when CASA msselect is not used.
+        ms_path: A path to the measurement set.
+        field_arg: A field selection in CASA format.
+        all_fields: All Field objects, for use when CASA msselect is not used.
     Returns:
-        A list of field IDs
+        A list of field IDs.
     """
     if USE_CASA_PARSING_ROUTINES:
         try:
@@ -319,16 +312,15 @@ def field_arg_to_id(ms_path:str, field_arg:Union[str, int], all_fields) -> List[
 
 
 def spw_arg_to_id(ms_path:str, spw_arg:Union[str, int], all_spws) -> List[Tuple[int, int, int, int]]:
-    """
-    Convert a string to spectral window IDs and channels.
+    """Convert a string to spectral window IDs and channels.
 
     Args:
-        ms_path: the path to the measurement set.
-        spw_arg: the spw selection in CASA format.
-        all_spws: list of all SpectralWindow objects, for use when CASA msselect
+        ms_path: A path to the measurement set.
+        spw_arg: A spw selection in CASA format.
+        all_spws: List of all SpectralWindow objects, for use when CASA msselect
             is not used.
     Returns:
-        A list of (spw, chan_start, chan_end, step) lists
+        A list of (spw, chan_start, chan_end, step) lists.
     """
     if USE_CASA_PARSING_ROUTINES:
         all_indices = _convert_arg_to_id('spw', ms_path, str(spw_arg))
@@ -347,15 +339,14 @@ def spw_arg_to_id(ms_path:str, spw_arg:Union[str, int], all_spws) -> List[Tuple[
 
 
 def ant_arg_to_id(ms_path:str, ant_arg:Union[str, int], all_antennas) -> List[str]:
-    """
-    Convert a string to the corresponding antenna IDs.
+    """Convert a string to the corresponding antenna IDs.
 
     Args
-        ms_path: the path to the measurement set
-        ant_arg: the antenna selection in CASA format
-        all_antennas: all antenna domain objects for use when CASA msselect is disabled
+        ms_path: A path to the measurement set.
+        ant_arg: A antenna selection in CASA format.
+        all_antennas: All antenna domain objects for use when CASA msselect is disabled.
     Returns
-        A list of antenna IDs
+        A list of antenna IDs.
     """
     if USE_CASA_PARSING_ROUTINES:
         all_indices = _convert_arg_to_id('baseline', ms_path, str(ant_arg))
@@ -365,8 +356,7 @@ def ant_arg_to_id(ms_path:str, ant_arg:Union[str, int], all_antennas) -> List[st
 
 
 def _convert_arg_to_id(arg_name:str, ms_path:str, arg_val:str) -> Dict[str, np.ndarray[int]]:
-    """
-    Parse the CASA input argument and return the matching IDs.
+    """Parse the CASA input argument and return the matching IDs.
 
     Originally the cache was set on this function with the cache size fixed at
     import time (originally 1000). In PIPE-327 this cache size proved too
@@ -375,12 +365,12 @@ def _convert_arg_to_id(arg_name:str, ms_path:str, arg_val:str) -> Dict[str, np.n
     runtime was created (via the MSSelectedIndicesCache class) and this
     function delegates to the instance held in the module namespace.
 
-    Args
+    Args:
         arg_name:
-        ms_path: the path to the measurement set
-        field_arg: the field argument formatted with CASA syntax.
-    Returns
-        A set of field IDs
+        ms_path: A path to the measurement set
+        field_arg: A field argument formatted with CASA syntax.
+    Returns:
+        A set of field IDs.
     """
     ms_basename = os.path.basename(ms_path)
     if ms_basename not in MSTOOL_SELECTEDINDICES_CACHE:
@@ -409,8 +399,10 @@ def _convert_arg_to_id(arg_name:str, ms_path:str, arg_val:str) -> Dict[str, np.n
 
 
 def safe_split(fields:str) -> List[str]:
-    """
-    Split a string containing field names into a list, taking account of field names within quotes.
+    """Split a string containing field names into a list.
+
+    Split a string containing field names into a list, taking account of field
+    names within quotes.
 
     Args:
         fields: A string containing field names.
@@ -421,8 +413,7 @@ def safe_split(fields:str) -> List[str]:
 
 
 def dequote(s:str) -> str:
-    """
-    Remove any kind of quotes from a string to faciliate comparisons.
+    """Remove any kind of quotes from a string to faciliate comparisons.
 
     Args:
         s: Strings.
@@ -433,14 +424,16 @@ def dequote(s:str) -> str:
 
 
 def format_datetime(dt:datetime, dp:int=0) -> str:
-    """
-    Return a string representation of a Python datetime, including microseconds to the requested precision.
+    """Convert a datetime to a string representation of a Python datetime
+
+    Convert a string representation of a Python datetime, including microseconds
+    to the requested precision.
 
     Args:
         dt: Python datetime.
-        dp: number of decimal places for microseconds (0=do not show).
+        dp: A number of decimal places for microseconds (0=do not show).
     Returns:
-        string date.
+        String date.
     """
     if dp > 6:
         raise ValueError('Cannot exceed 6 decimal places as datetime stores to microsecond precision')
@@ -455,15 +448,14 @@ def format_datetime(dt:datetime, dp:int=0) -> str:
 
 
 def format_timedelta(td:timedelta, dp:int=0) -> str:
-    """
-    Return a formatted string representation for the given timedelta.
+    """Convert a timedelta to a formatted string representation.
 
     Args
-        td: timedelta.
-        dp: number of decimal places for microseconds (0=do not show).
+        td: A timedelta object.
+        dp: A number of decimal places for microseconds (0=do not show).
             The number should be natural number with 0.
     Returns:
-        formatted string representation.
+        Formatted string representation.
     """
     if dp < 0:
         raise ValueError('Cannot set negative integer to dp as decimal places')
@@ -486,8 +478,7 @@ def format_timedelta(td:timedelta, dp:int=0) -> str:
 
 
 def _parse_spw(task_arg:str, all_spw_ids:tuple=None):
-    """
-    Convert the CASA-style spw argument to a list of spw IDs.
+    """Convert the CASA-style spw argument to a list of spw IDs.
 
     Channel limits are also parsed in this function but are not currently
     used. The channel limits may be found as the channels property of an
@@ -587,14 +578,15 @@ def _parse_spw(task_arg:str, all_spw_ids:tuple=None):
 
 
 def _parse_field(task_arg:Optional[str], fields=None) -> List[int]:
-    """
+    """Convert the field section in CASA format to list of field IDs.
+
     Inner method.
 
     Args:
-        task_arg: the field selection in CASA format.
+        task_arg: The field selection in CASA format.
         fields: Field objects
     Results:
-        Returns a list of field IDs that matches field selection criteria
+        A list of field IDs that matches field selection criteria
     """
     if task_arg in (None, ''):
         return [f.id for f in fields]
@@ -637,14 +629,15 @@ def _parse_field(task_arg:Optional[str], fields=None) -> List[int]:
 
 
 def _parse_antenna(task_arg:Optional[str], antennas:Optional[Dict[str, np.ndarray[int]]]=None) -> List[int]:
-    """
+    """Convert the antenna selection in CASA format to a list of antenna IDs.
+
     Inner method.
 
     Args:
-        task_arg: the antenna selection in CASA format
-        antennas: antenna domain objects
+        task_arg: The antenna selection in CASA format.
+        antennas: Antenna domain objects.
     Results:
-        Returns a list of antenna IDs that matches antenna selection criteria
+        List of antenna IDs that matches antenna selection criteria.
     """
     if task_arg in (None, ''):
         return [a.id for a in antennas]
