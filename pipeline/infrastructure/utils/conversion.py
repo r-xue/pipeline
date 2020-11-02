@@ -484,38 +484,37 @@ def _parse_spw(task_arg:str, all_spw_ids:tuple=None):
     used. The channel limits may be found as the channels property of an
     atom.
 
-    Parsing the input '0:0~6^2,2:6~38^4 (0, 1, 4, 5, 6, 7)' results in the
-    following results data structure;
-
-          <result>
-            <atom>
-              <spws>
-                <ITEM>0</ITEM>
-              </spws>
-              <channels>
-                <ITEM>0</ITEM>
-                <ITEM>2</ITEM>
-                <ITEM>4</ITEM>
-                <ITEM>6</ITEM>
-              </channels>
-            </atom>
-            <atom>
-              <spws>
-                <ITEM>2</ITEM>
-              </spws>
-              <channels>
-                <ITEM>6</ITEM>
-                <ITEM>10</ITEM>
-                <ITEM>14</ITEM>
-                <ITEM>18</ITEM>
-                <ITEM>22</ITEM>
-                <ITEM>26</ITEM>
-                <ITEM>30</ITEM>
-                <ITEM>34</ITEM>
-                <ITEM>38</ITEM>
-              </channels>
-            </atom>
-          </result>
+    Example:
+    >>> _parse_spw('0:0~6^2,2:6~38^4 (0, 1, 4, 5, 6, 7)')
+    <result>
+    <atom>
+      <spws>
+        <ITEM>0</ITEM>
+      </spws>
+      <channels>
+        <ITEM>0</ITEM>
+        <ITEM>2</ITEM>
+        <ITEM>4</ITEM>
+        <ITEM>6</ITEM>
+      </channels>
+    </atom>
+    <atom>
+      <spws>
+        <ITEM>2</ITEM>
+      </spws>
+      <channels>
+        <ITEM>6</ITEM>
+        <ITEM>10</ITEM>
+        <ITEM>14</ITEM>
+        <ITEM>18</ITEM>
+        <ITEM>22</ITEM>
+        <ITEM>26</ITEM>
+        <ITEM>30</ITEM>
+        <ITEM>34</ITEM>
+        <ITEM>38</ITEM>
+      </channels>
+    </atom>
+    </result>
 
     Args:
         task_arg:
