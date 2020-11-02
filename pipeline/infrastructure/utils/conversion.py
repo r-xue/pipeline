@@ -15,7 +15,7 @@ import os
 import re
 import string
 import typing
-from typing import Any, Dict, Iterator, List, Sequence, Tuple, Union
+from typing import Any, Dict, Iterator, List, Optional, Sequence, Tuple, Union
 
 import cachetools
 import pyparsing
@@ -635,7 +635,7 @@ def _parse_field(task_arg, fields=None):
     return sorted(list(results))
 
 
-def _parse_antenna(task_arg, antennas=None):
+def _parse_antenna(task_arg:Optional[str], antennas:Optional[Dict[str, np.ndarray[int]]]=None) -> List[int]:
     """
     Inner method.
 
