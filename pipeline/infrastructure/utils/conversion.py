@@ -10,11 +10,12 @@ from datetime import datetime, timedelta
 import decimal
 import math
 from numbers import Number
+import numpy as np
 import os
 import re
 import string
 import typing
-from typing import Any, Iterator, List, Sequence, Tuple, Union
+from typing import Any, Dict, Iterator, List, Sequence, Tuple, Union
 
 import cachetools
 import pyparsing
@@ -363,7 +364,7 @@ def ant_arg_to_id(ms_path:str, ant_arg, all_antennas):
         return _parse_antenna(ant_arg, all_antennas)
 
 
-def _convert_arg_to_id(arg_name:str, ms_path:str, arg_val:str):
+def _convert_arg_to_id(arg_name:str, ms_path:str, arg_val:str) -> Dict[str, np.ndarray[int]]:
     """
     Parse the CASA input argument and return the matching IDs.
 
