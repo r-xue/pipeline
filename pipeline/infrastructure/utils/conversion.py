@@ -586,7 +586,7 @@ def _parse_spw(task_arg:str, all_spw_ids:tuple=None):
     return [Atom(spw=k, channels=v) for k, v in results.items()]
 
 
-def _parse_field(task_arg, fields=None):
+def _parse_field(task_arg:Optional[str], fields=None) -> List[int]:
     """
     Inner method.
 
