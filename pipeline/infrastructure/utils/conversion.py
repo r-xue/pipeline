@@ -318,7 +318,7 @@ def field_arg_to_id(ms_path:str, field_arg, all_fields):
         return _parse_field(field_arg, all_fields)
 
 
-def spw_arg_to_id(ms_path:str, spw_arg, all_spws):
+def spw_arg_to_id(ms_path:str, spw_arg:Union[str, int], all_spws) -> List[Tuple[int, int, int, int]]:
     """
     Convert a string to spectral window IDs and channels.
 
