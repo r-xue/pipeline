@@ -585,7 +585,7 @@ def _parse_field(task_arg:Optional[str], fields=None) -> List[int]:
     Args:
         task_arg: The field selection in CASA format.
         fields: Field objects
-    Results:
+    Returns:
         A list of field IDs that matches field selection criteria
     """
     if task_arg in (None, ''):
@@ -636,7 +636,7 @@ def _parse_antenna(task_arg:Optional[str], antennas:Optional[Dict[str, np.ndarra
     Args:
         task_arg: The antenna selection in CASA format.
         antennas: Antenna domain objects.
-    Results:
+    Returns:
         List of antenna IDs that matches antenna selection criteria.
     """
     if task_arg in (None, ''):
