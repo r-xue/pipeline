@@ -640,9 +640,10 @@ def _parse_antenna(task_arg, antennas=None):
     Inner method.
 
     Args:
-        task_arg:
-        fields:
+        task_arg: the antenna selection in CASA format
+        antennas: antenna domain objects
     Results:
+        Returns a list of antenna IDs that matches antenna selection criteria
     """
     if task_arg in (None, ''):
         return [a.id for a in antennas]
