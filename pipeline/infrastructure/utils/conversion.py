@@ -46,7 +46,7 @@ class LoggingLRUCache(cachetools.LRUCache):
     limit is hit.
     """
 
-    def __init__(self, name, *args, **kwargs):
+    def __init__(self, name:str, *args, **kwargs):
         self.name = name
         super().__init__(*args, **kwargs)
 
