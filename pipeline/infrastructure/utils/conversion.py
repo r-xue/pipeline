@@ -338,7 +338,7 @@ def spw_arg_to_id(ms_path:str, spw_arg:Union[str, int], all_spws) -> List[Tuple[
         return spws
 
 
-def ant_arg_to_id(ms_path:str, ant_arg:Union[str, int], all_antennas) -> List[str]:
+def ant_arg_to_id(ms_path:str, ant_arg:Union[str, int], all_antennas) -> List[int]:
     """Convert a string to the corresponding antenna IDs.
 
     Args
