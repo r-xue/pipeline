@@ -217,7 +217,6 @@ def plot_weather(vis='', figfile='', station=[], help=False):
             plt.xlim(manual_xlim)
 
         resizeFonts(adesc, myfontsize)
-#        plt.xlabel('Universal Time (%s)'%utdatestring(mjdsec[0]),size=mysize)
         plt.ylabel('Dew point (C)', size=mysize)
         adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 30))))
         adesc.xaxis.set_minor_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 10))))
@@ -239,7 +238,7 @@ def plot_weather(vis='', figfile='', station=[], help=False):
         plt.xlim(manual_xlim)
 
     resizeFonts(adesc, myfontsize)
-    plt.xlabel('Universal Time (%s)' % utdatestring(mjdsec[0]), size=mysize)
+    plt.xlabel('Universal Time (%s)' % get_date_string_from_mjd_seconds(mjdsec[0]), size=mysize)
     plt.ylabel('Wind speed (m/s)', size=mysize)
     adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 30))))
     adesc.xaxis.set_minor_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 10))))
@@ -251,7 +250,7 @@ def plot_weather(vis='', figfile='', station=[], help=False):
     pid += 1
 
     adesc = plt.subplot(3, 2, pid)
-    plt.xlabel('Universal Time (%s)' % utdatestring(mjdsec[0]), size=mysize)
+    plt.xlabel('Universal Time (%s)' % get_date_string_from_mjd_seconds(mjdsec[0]), size=mysize)
     plt.ylabel('Wind direction (deg)', size=mysize)
     plt.plot_date(timeplot, wind_direction, markersize=markersize)
     if len(unique_stations) > 1:
@@ -279,7 +278,10 @@ def plot_weather(vis='', figfile='', station=[], help=False):
     print("Wrote file = %s" % weather_file)
 
 
-def utdatestring(mjdsec):
+def get_date_string_from_mjd_seconds(mjdsec):
+    """
+    Get date as string from elapsed seconds since MJD epoch.
+    """
     return mjd_seconds_to_datetime(mjdsec).strftime('%Y-%m-%d')
 
 
