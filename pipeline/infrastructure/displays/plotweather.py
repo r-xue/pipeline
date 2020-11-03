@@ -1,4 +1,3 @@
-import datetime
 import math
 
 import matplotlib
@@ -280,43 +279,8 @@ def plot_weather(vis='', figfile='', station=[], help=False):
     print("Wrote file = %s" % weather_file)
 
 
-def mjdSecondsToMJDandUT(mjdsec):
-    """
-    Converts a value of MJD seconds into MJD, and into a UT date/time string.
-    For example:  2011-01-04 13:10:04 UT
-    Caveat: only works for a scalar input value
-    """
-    myme = casatools.measures()
-    myqa = casatools.quanta()
-
-    today = myme.epoch('utc', 'today')
-    mjd = mjdsec / 86400.
-    today['m0']['value'] = mjd
-    hhmmss = call_qa_time(today['m0'])
-    date = myqa.splitdate(today['m0'])
-    utstring = "%s-%02d-%02d %s UT" % (date['year'], date['month'], date['monthday'], hhmmss)
-    myme.done()
-
-    return mjd, utstring
-
-
-def call_qa_time(arg, form='', prec=0):
-    """
-    This is a wrapper for qa.time(), which in casa 3.5 returns a list of strings instead
-    of just a scalar string.
-    """
-    myqa = casatools.quanta()
-    result = myqa.time(arg, form=form, prec=prec)
-    if isinstance(result, (list, np.ndarray)):
-        return result[0]
-    else:
-        return result
-
-
 def utdatestring(mjdsec):
-    (mjd, date_time_string) = mjdSecondsToMJDandUT(mjdsec)
-    tokens = date_time_string.split()
-    return tokens[0]
+    return mjd_seconds_to_datetime(mjdsec).strftime('%Y-%m-%d')
 
 
 def ComputeDewPointCFromRHAndTempC(relativeHumidity, temperature):
