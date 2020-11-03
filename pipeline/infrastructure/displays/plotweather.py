@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import casatools
-
+from pipeline.infrastructure.utils.conversion import mjd_seconds_to_datetime
 
 
 def plot_weather(vis='', figfile='', station=[], help=False):
@@ -126,7 +126,7 @@ def plot_weather(vis='', figfile='', station=[], help=False):
         timerange = mytb.getcol('TIME_RANGE')
         obs_timerange = [np.min(timerange), np.max(timerange)]
         mytb.close()
-        manual_xlim = matplotlib.dates.date2num(mjdSecondsListToDateTime(obs_timerange))
+        manual_xlim = matplotlib.dates.date2num(mjd_seconds_to_datetime(obs_timerange))
         do_manual_xlim = True
     else:
         manual_xlim = None
@@ -140,11 +140,11 @@ def plot_weather(vis='', figfile='', station=[], help=False):
     markersize = 3
     plt.subplots_adjust(hspace=myhspace, wspace=mywspace)
     plt.title(vis)
-    list_of_date_times = mjdSecondsListToDateTime(mjdsec1)
+    list_of_date_times = mjd_seconds_to_datetime(mjdsec1)
     timeplot = matplotlib.dates.date2num(list_of_date_times)
     plt.plot_date(timeplot, pressure, markersize=markersize)
     if len(unique_stations) > 1:
-        list_of_date_times = mjdSecondsListToDateTime(mjdsec2)
+        list_of_date_times = mjd_seconds_to_datetime(mjdsec2)
         timeplot2 = matplotlib.dates.date2num(list_of_date_times)
         plt.plot_date(timeplot2, pressure2, markersize=markersize, color='r')
 
@@ -164,7 +164,7 @@ def plot_weather(vis='', figfile='', station=[], help=False):
     adesc = plt.subplot(322)
     plt.plot_date(timeplot, temperature, markersize=markersize)
     if len(unique_stations) > 1:
-        list_of_date_times = mjdSecondsListToDateTime(mjdsec2)
+        list_of_date_times = mjd_seconds_to_datetime(mjdsec2)
         timeplot2 = matplotlib.dates.date2num(list_of_date_times)
         plt.plot_date(timeplot2, temperature2, markersize=markersize, color='r')
 
@@ -188,7 +188,7 @@ def plot_weather(vis='', figfile='', station=[], help=False):
     adesc = plt.subplot(323)
     plt.plot_date(timeplot, relative_humidity, markersize=markersize)
     if len(unique_stations) > 1:
-        list_of_date_times = mjdSecondsListToDateTime(mjdsec2)
+        list_of_date_times = mjd_seconds_to_datetime(mjdsec2)
         timeplot2 = matplotlib.dates.date2num(list_of_date_times)
         plt.plot_date(timeplot2, relative_humidity2, markersize=markersize, color='r')
 
@@ -210,7 +210,7 @@ def plot_weather(vis='', figfile='', station=[], help=False):
         adesc = plt.subplot(3, 2, pid)
         plt.plot_date(timeplot, dew_point, markersize=markersize)
         if len(unique_stations) > 1:
-            list_of_date_times = mjdSecondsListToDateTime(mjdsec2)
+            list_of_date_times = mjd_seconds_to_datetime(mjdsec2)
             timeplot2 = matplotlib.dates.date2num(list_of_date_times)
             plt.plot_date(timeplot2, dew_point2, markersize=markersize, color='r')
 
@@ -232,7 +232,7 @@ def plot_weather(vis='', figfile='', station=[], help=False):
     adesc = plt.subplot(3, 2, pid)
     plt.plot_date(timeplot, wind_speed, markersize=markersize)
     if len(unique_stations) > 1:
-        list_of_date_times = mjdSecondsListToDateTime(mjdsec2)
+        list_of_date_times = mjd_seconds_to_datetime(mjdsec2)
         timeplot2 = matplotlib.dates.date2num(list_of_date_times)
         plt.plot_date(timeplot2, wind_speed2, markersize=markersize, color='r')
 
@@ -256,7 +256,7 @@ def plot_weather(vis='', figfile='', station=[], help=False):
     plt.ylabel('Wind direction (deg)', size=mysize)
     plt.plot_date(timeplot, wind_direction, markersize=markersize)
     if len(unique_stations) > 1:
-        list_of_date_times = mjdSecondsListToDateTime(mjdsec2)
+        list_of_date_times = mjd_seconds_to_datetime(mjdsec2)
         timeplot2 = matplotlib.dates.date2num(list_of_date_times)
         plt.plot_date(timeplot2, wind_direction2, markersize=markersize, color='r')
 
@@ -278,33 +278,6 @@ def plot_weather(vis='', figfile='', station=[], help=False):
     plt.savefig(weather_file)
     plt.draw()
     print("Wrote file = %s" % weather_file)
-
-
-def mjdSecondsListToDateTime(mjdsecList):
-    """
-    Takes a list of mjd seconds and converts it to a list of datetime structures.
-    """
-    myqa = casatools.quanta()
-    myme = casatools.measures()
-
-    dt = []
-    typelist = type(mjdsecList)
-    if not (typelist == list or typelist == np.ndarray):
-        mjdsecList = [mjdsecList]
-    for mjdsec in mjdsecList:
-        today = myme.epoch('utc', 'today')
-        mjd = mjdsec / 86400.
-        today['m0']['value'] = mjd
-        hhmmss = call_qa_time(today['m0'])
-        date = myqa.splitdate(today['m0'])  # date is now a dict
-        mydate = datetime.datetime.strptime('%d-%d-%d %d:%d:%d' %
-                                            (date['monthday'], date['month'], date['year'], date['hour'], date['min'],
-                                             date['sec']),
-                                            '%d-%m-%Y %H:%M:%S')
-        dt.append(mydate)
-    myme.done()
-
-    return dt
 
 
 def mjdSecondsToMJDandUT(mjdsec):
