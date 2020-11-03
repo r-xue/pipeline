@@ -255,7 +255,7 @@ merge_ranges_test_params = (([(5,7), (3,5), (-1,3)], [(-1, 7)]),
                             ([], []))
 
 @pytest.mark.parametrize("ranges, merged_ranges", merge_ranges_test_params)
-def test_intersect_ranges_by_weight(ranges, merged_ranges):
+def test_merge_ranges(ranges, merged_ranges):
     """
     Test merge_ranges()
     """
