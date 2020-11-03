@@ -4,7 +4,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
-import casatools
+import pipeline.infrastructure.casatools as casatools
 from pipeline.infrastructure.utils.conversion import mjd_seconds_to_datetime
 
 
@@ -26,24 +26,24 @@ def plot_weather(vis='', figfile='', station=[], help=False):
     myfontsize = 8
 
     try:
-        mytb = casatools.table()
-        mytb.open("%s/WEATHER" % vis)
+        # Fetch data from weather table in MS.
+        with casatools.TableReader(vis+"/WEATHER") as table:
+            available_cols = table.colnames()
+            mjdsec = table.getcol('TIME')
+            pressure = table.getcol('PRESSURE')
+            relative_humidity = table.getcol('REL_HUMIDITY')
+            temperature = table.getcol('TEMPERATURE')
+            # Nobeyama does not have DEW_POINT and NS_WX_STATION_ID
+            dew_point = table.getcol('DEW_POINT') if 'DEW_POINT' in available_cols else None
+            wind_direction = (180 / math.pi) * table.getcol('WIND_DIRECTION')
+            wind_speed = table.getcol('WIND_SPEED')
+            stations = table.getcol('NS_WX_STATION_ID') if 'NS_WX_STATION_ID' in available_cols else []
     except:
         print("Could not open WEATHER table.  Did you importasdm with asis='*'?")
         return
 
-    available_cols = mytb.colnames()
-    mjdsec = mytb.getcol('TIME')
     mjdsec1 = mjdsec
     vis = vis.split('/')[-1]
-    pressure = mytb.getcol('PRESSURE')
-    relative_humidity = mytb.getcol('REL_HUMIDITY')
-    temperature = mytb.getcol('TEMPERATURE')
-    # Nobeyama does not have DEW_POINT and NS_WX_STATION_ID
-    dew_point = mytb.getcol('DEW_POINT') if 'DEW_POINT' in available_cols else None
-    wind_direction = (180 / math.pi) * mytb.getcol('WIND_DIRECTION')
-    wind_speed = mytb.getcol('WIND_SPEED')
-    stations = mytb.getcol('NS_WX_STATION_ID') if 'NS_WX_STATION_ID' in available_cols else []
     unique_stations = np.unique(stations)
 
     if station:
@@ -117,14 +117,11 @@ def plot_weather(vis='', figfile='', station=[], help=False):
             print("dWVP=%f, aWVP=%f" % (dew_point_wvp[0], ambient_wvp[0]))
             relative_humidity = 100*(dew_point_wvp/ambient_wvp)
 
-    mytb.close()
-
     # take timerange from OBSERVATION table if there is only one unique timestamp
     if len(np.unique(mjdsec)) == 1:
-        mytb.open("%s/OBSERVATION" % vis)
-        timerange = mytb.getcol('TIME_RANGE')
+        with casatools.TableReader(vis+"/OBSERVATION") as table:
+            timerange = table.getcol('TIME_RANGE')
         obs_timerange = [np.min(timerange), np.max(timerange)]
-        mytb.close()
         manual_xlim = matplotlib.dates.date2num(mjd_seconds_to_datetime(obs_timerange))
         do_manual_xlim = True
     else:
