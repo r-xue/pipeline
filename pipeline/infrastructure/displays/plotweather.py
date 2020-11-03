@@ -8,17 +8,8 @@ import numpy as np
 import casatools
 
 
-def plotweather(vis='', figfile='', station=[], help=False):
-    """
-    Compiles and plots the major weather parameters for the specified ms.
-    Station can be a single integer or integer string, or a list of two integers.
-    The default empty list means to plot all data from up to 2 of the stations
-    present in the data.  The default plot file name will be 'vis'.weather.png.
-    """
-    return plotWeather(vis, figfile, station, help)
 
-
-def plotWeather(vis='', figfile='', station=[], help=False):
+def plot_weather(vis='', figfile='', station=[], help=False):
     """
     Compiles and plots the major weather parameters for the specified ms.
     Station can be a single integer or integer string, or a list of two integers.
@@ -26,7 +17,7 @@ def plotWeather(vis='', figfile='', station=[], help=False):
     present in the data.  The default plot file name will be 'vis'.weather.png.
     """
     if help:
-        print("plotWeather(vis='', figfile='', station=[])")
+        print("plot_weather(vis='', figfile='', station=[])")
         print("  Plots pressure, temperature, relative humidity, wind speed and direction.")
         print("Station can be a single integer or integer string, or a list of two integers.")
         print("The default empty list means to plot the data form up to 2 of the stations")
