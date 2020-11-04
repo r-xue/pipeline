@@ -309,7 +309,9 @@ class MergeGapTables2(api.Heuristic):
             baseline subtraction (hsd_baseline) and subsequent
             flagging (hsd_blflag).
 
-            TimeTable: [[index0,..,indexN],[indexXX..],..,[..]]
+            TimeTable:
+                [[[ismall00,...,ismall0M],[...],...,[ismallX0,...,ismallXN]],
+                 [[ilarge00,...,ilarge0P],[...],...,[ilargeY0,...,ilargeYQ]]]
             TimeTable[0]: separated by small gaps
             TimeTable[1]: separated by large gaps
 
