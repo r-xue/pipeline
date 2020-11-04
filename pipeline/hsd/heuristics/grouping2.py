@@ -28,13 +28,13 @@ class GroupByPosition2(api.Heuristic):
 
         Args:
             ra:
-              list of R.A.
+              List of R.A.
             dec:
-              list of DEC.
+              List of DEC.
             r_combine:
-              inside r_combine will be grouped together.
+              Data inside r_combine will be grouped together.
             r_allowance:
-              inside r_allowance are assumed to be the same position
+              Data inside r_allowance are assumed to be the same position.
 
         Returns:
             Two-tuple containing information on group membership
