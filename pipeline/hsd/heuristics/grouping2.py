@@ -22,6 +22,9 @@ class GroupByPosition2(api.Heuristic):
         Groups data within the circle with the radius of
         r_combine. Only position difference larger than
         r_allowance are regarded as significant.
+        For r_combine and r_allowance, specified values are
+        interpreted to be in degree unless their units are
+        explicitly given.
 
         Args:
             ra:
@@ -29,7 +32,7 @@ class GroupByPosition2(api.Heuristic):
             dec:
               list of DEC.
             r_combine:
-              inside r_combine will be grouped together
+              inside r_combine will be grouped together.
             r_allowance:
               inside r_allowance are assumed to be the same position
 
