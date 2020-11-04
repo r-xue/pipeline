@@ -1,16 +1,21 @@
 """
+The conversion module contains utility functions.
+
 The conversion module contains utility functions that convert between data
 types and assist in formatting objects as strings for presentation to the
 user.
 """
 import collections
-import datetime
 import decimal
 import math
+import numpy as np
 import os
 import re
 import string
 import typing
+from datetime import datetime, timedelta
+from numbers import Number
+from typing import Any, Dict, Iterator, List, Optional, Sequence, Tuple, Union
 
 import cachetools
 import pyparsing
@@ -32,8 +37,7 @@ USE_CASA_PARSING_ROUTINES = True
 
 
 class LoggingLRUCache(cachetools.LRUCache):
-    """
-    'Least recently used' cache that logs when cache entries are evicted.
+    """'Least recently used' cache that logs when cache entries are evicted.
 
     Underestimating the required cache size leads to poor performance, as seen
     in PIPE-327, where a lack of cached entries for the 33 EBs leads to
@@ -41,12 +45,13 @@ class LoggingLRUCache(cachetools.LRUCache):
     tens of milliseconds. Hence, we want to be notified when the cache size
     limit is hit.
     """
-    def __init__(self, name, *args, **kwargs):
+    def __init__(self, name: str, *args, **kwargs):
         self.name = name
         super().__init__(*args, **kwargs)
 
     def popitem(self):
-        """
+        """Remove and return the (key, value) pair least recently used.
+
         Override popitem method to create a log entry when a cache entry is
         evicted.
         """
@@ -63,18 +68,24 @@ class LoggingLRUCache(cachetools.LRUCache):
 MSTOOL_SELECTEDINDICES_CACHE: typing.Dict[str, LoggingLRUCache] = {}
 
 
-def commafy(l, quotes=True, multi_prefix='', separator=', ', conjunction='and'):
-    """
-    Return the textual description of the given list.
+def commafy(l: Sequence[str], quotes: bool = True, multi_prefix: str = '', separator: str = ', ',
+            conjunction: str = 'and') -> str:
+    """Convert the string list into the textual description.
 
-    For example: commafy(['a','b','c']) = "'a', 'b' and 'c'"
+    Example:
+    >>> commafy(['a','b','c'])
+    "'a', 'b' and 'c'"
 
-    :param l:
-    :param quotes:
-    :param multi_prefix:
-    :param separator:
-    :param conjunction:
-    :return:
+    Args:
+        l: Python string list.
+        quotes: If quote is True, 'l' arg elements are enclosed in quotes by each.
+        multi_prefix: If the 'l' arg has three or more elements, the 'multi_prefix'
+            attach to the head.
+        separator: The 'separator' arg is used as separator instead of ','.
+        conjunction: The 'conjunction' arg is used as conjunction instead of 'and'.
+
+    Return:
+        The textual description of the given list.
     """
     if not isinstance(l, list) and isinstance(l, collections.Iterable):
         l = [i for i in l]
@@ -112,9 +123,25 @@ def commafy(l, quotes=True, multi_prefix='', separator=', ', conjunction='and'):
                 commafy(l[1:], separator=separator, quotes=quotes, conjunction=conjunction))
 
 
-def flatten(l):
-    """
-    Flatten a list of lists into a single list
+def flatten(l: Sequence[Any]) -> Iterator[Any]:
+    """Flatten a list of lists into a single list without pipelineaq.QAScore.
+
+    Example:
+    >>> obj = flatten([1,2,[3,4,[5,6]],7])
+    >>> obj.__next__()
+    1
+    >>> obj.__next__()
+    2
+    >>> obj.__next__()
+    3
+
+    >>> list(flatten([1,2,['c',4,['e',6]],7]))
+    [1,2,c,4,e,6,7]
+
+    Args:
+        l: A list with list or any object.
+    Yields:
+        Single list.
     """
     for el in l:
         if isinstance(el, collections.Iterable) and not isinstance(el, str):
@@ -124,18 +151,27 @@ def flatten(l):
             yield el
 
 
-def unix_seconds_to_datetime(unix_secs):
+def unix_seconds_to_datetime(unix_secs: Sequence[Number]) -> Union[datetime, List[datetime]]:
+    """Convert list of UNIX epoch times to a list of equivalent datetime objects.
+
+    Args:
+        unix_secs: list of elapsed seconds since 1970-01-01
+    Returns:
+        List of equivalent Python datetime objects.
     """
-    Return the input list, specified in seconds elapsed since 1970-01-01,
-    converted to the equivalent Python datetime objects.
-    """
-    return [datetime.datetime.utcfromtimestamp(s) for s in unix_secs]
+    return [datetime.utcfromtimestamp(s) for s in unix_secs]
 
 
-def mjd_seconds_to_datetime(mjd_secs):
-    """
-    Return the input list, specified in MJD seconds, converted to the
+def mjd_seconds_to_datetime(mjd_secs: Sequence[Number]) -> List[datetime]:
+    """Convert list of MJD seconds to a list of equivalent datetime objects.
+
+    Convert the input list of elapsed seconds since MJD epoch to the
     equivalent Python datetime objects.
+
+    Args:
+        mjd_secs: list of elapsed seconds since MJD epoch
+    Returns:
+        List of equivalent Python datetime objects.
     """
     # 1970-01-01 is JD 40587. 86400 = seconds in a day
     unix_offset = 40587 * 86400
@@ -143,12 +179,13 @@ def mjd_seconds_to_datetime(mjd_secs):
     return unix_seconds_to_datetime(mjd_secs_with_offsets)
 
 
-def get_epoch_as_datetime(epoch):
-    """
-    Convert a CASA epoch measure into a Python datetime.
+def get_epoch_as_datetime(epoch: Number) -> datetime:
+    """Convert a CASA epoch measure into a Python datetime.
 
-    :param epoch: CASA epoch to convert
-    :return: equivalent Python datetime
+    Args:
+        epoch: CASA epoch measure.
+    Returns:
+        The equivalent Python datetime.
     """
     mt = casatools.measures
     qt = casatools.quanta
@@ -164,13 +201,14 @@ def get_epoch_as_datetime(epoch):
     t = mt.getvalue(epoch_utc)['m0']
     t = qt.sub(t, base_time)
     t = qt.convert(t, 's')
-    t = datetime.datetime.utcfromtimestamp(qt.getvalue(t)[0])
+    t = datetime.utcfromtimestamp(qt.getvalue(t)[0])
 
     return t
 
 
-def range_to_list(arg):
-    """
+def range_to_list(arg: str) -> List[int]:
+    """Expand a numeric range expressed in CASA syntax to the list of integer.
+
     Expand a numeric range expressed in CASA syntax to the equivalent Python
     list of integers.
 
@@ -178,9 +216,10 @@ def range_to_list(arg):
     >>> range_to_list('1~5,7~9')
     [1, 2, 3, 4, 5, 7, 8, 9]
 
-    :param arg: CASA range to expand
-    :type arg: str
-    :return: list of integers
+    Args:
+        arg: The numeric range expressed in CASA syntax.
+    Returns:
+        The equivalent Python list of integers.
     """
     if arg == '':
         return []
@@ -208,30 +247,31 @@ def range_to_list(arg):
     return atoms.parseString(str(arg)).asList()
 
 
-def to_CASA_intent(ms, intents):
-    """
-    Convert pipeline intents back to the equivalent intents recorded in the
-    measurement set.
+def to_CASA_intent(ms, intents: str) -> str:
+    """Convert pipeline intents back to the equivalent intents recorded in the measurement set.
 
     Example:
     > to_CASA_intent(ms, 'PHASE,BANDPASS')
     'CALIBRATE_PHASE_ON_SOURCE,CALIBRATE_BANDPASS_ON_SOURCE'
 
-    :param ms: MeasurementSet object
-    :param intents: pipeline intents to convert
-    :return: CASA intents
+    Args:
+        ms: MeasurementSet object.
+        intents: pipeline intents to convert.
+    Returns:
+        The CASA intents recorded.
     """
     obs_modes = ms.get_original_intent(intents)
     return ','.join(obs_modes)
 
 
-def to_pipeline_intent(ms, intents):
-    """
-    Convert CASA intents to pipeline intents.
+def to_pipeline_intent(ms, intents: str) -> str:
+    """Convert CASA intents to pipeline intents.
 
-    :param ms: MeasurementSet object
-    :param intents: CASA intents to convert
-    :return: pipeline intents
+    Args:
+        ms: MeasurementSet object.
+        intents: CASA intents to convert.
+    Returns:
+        The pipeline intents.
     """
     casa_intents = {i.strip('*') for i in intents.split(',') if i is not None}
 
@@ -244,14 +284,15 @@ def to_pipeline_intent(ms, intents):
     return ','.join(pipeline_intents)
 
 
-def field_arg_to_id(ms_path, field_arg, all_fields):
-    """
-    Convert a string to the corresponding field IDs.
+def field_arg_to_id(ms_path: str, field_arg: Union[str, int], all_fields) -> List[int]:
+    """Convert a string to the corresponding field IDs.
 
-    :param ms_path: the path to the measurement set
-    :param field_arg: the field selection in CASA format
-    :param all_fields: all Field objects, for use when CASA msselect is not used
-    :return: a list of field IDs
+    Args:
+        ms_path: A path to the measurement set.
+        field_arg: A field selection in CASA format.
+        all_fields: All Field objects, for use when CASA msselect is not used.
+    Returns:
+        A list of field IDs.
     """
     if USE_CASA_PARSING_ROUTINES:
         try:
@@ -268,14 +309,16 @@ def field_arg_to_id(ms_path, field_arg, all_fields):
         return _parse_field(field_arg, all_fields)
 
 
-def spw_arg_to_id(ms_path, spw_arg, all_spws):
-    """
-    Convert a string to spectral window IDs and channels.
+def spw_arg_to_id(ms_path: str, spw_arg: Union[str, int], all_spws) -> List[Tuple[int, int, int, int]]:
+    """Convert a string to spectral window IDs and channels.
 
-    :param ms_path: the path to the measurement set
-    :param spw_arg: the spw selection in CASA format
-    :param all_spws: list of all SpectralWindow objects, for use when CASA msselect is not used.
-    :return: a list of (spw, chan_start, chan_end, step) lists
+    Args:
+        ms_path: A path to the measurement set.
+        spw_arg: A spw selection in CASA format.
+        all_spws: List of all SpectralWindow objects, for use when CASA msselect
+            is not used.
+    Returns:
+        A list of (spw, chan_start, chan_end, step) lists.
     """
     if USE_CASA_PARSING_ROUTINES:
         all_indices = _convert_arg_to_id('spw', ms_path, str(spw_arg))
@@ -293,14 +336,15 @@ def spw_arg_to_id(ms_path, spw_arg, all_spws):
         return spws
 
 
-def ant_arg_to_id(ms_path, ant_arg, all_antennas):
-    """
-    Convert a string to the corresponding antenna IDs.
+def ant_arg_to_id(ms_path: str, ant_arg: Union[str, int], all_antennas) -> List[int]:
+    """Convert a string to the corresponding antenna IDs.
 
-    :param ms_path: the path to the measurement set
-    :param ant_arg: the antenna selection in CASA format
-    :param all_antennas: all antenna domain objects for use when CASA msselect is disabled
-    :return: a list of antenna IDs
+    Args
+        ms_path: A path to the measurement set.
+        ant_arg: A antenna selection in CASA format.
+        all_antennas: All antenna domain objects for use when CASA msselect is disabled.
+    Returns
+        A list of antenna IDs.
     """
     if USE_CASA_PARSING_ROUTINES:
         all_indices = _convert_arg_to_id('baseline', ms_path, str(ant_arg))
@@ -309,9 +353,8 @@ def ant_arg_to_id(ms_path, ant_arg, all_antennas):
         return _parse_antenna(ant_arg, all_antennas)
 
 
-def _convert_arg_to_id(arg_name, ms_path, arg_val):
-    """
-    Parse the CASA input argument and return the matching IDs.
+def _convert_arg_to_id(arg_name: str, ms_path: str, arg_val: str) -> Dict[str, np.ndarray[int]]:
+    """Parse the CASA input argument and return the matching IDs.
 
     Originally the cache was set on this function with the cache size fixed at
     import time (originally 1000). In PIPE-327 this cache size proved too
@@ -320,10 +363,12 @@ def _convert_arg_to_id(arg_name, ms_path, arg_val):
     runtime was created (via the MSSelectedIndicesCache class) and this
     function delegates to the instance held in the module namespace.
 
-    :param arg_name:
-    :param ms_path: the path to the measurement set
-    :param field_arg: the field argument formatted with CASA syntax.
-    :return: a set of field IDs
+    Args:
+        arg_name:
+        ms_path: A path to the measurement set
+        field_arg: A field argument formatted with CASA syntax.
+    Returns:
+        A set of field IDs.
     """
     ms_basename = os.path.basename(ms_path)
     if ms_basename not in MSTOOL_SELECTEDINDICES_CACHE:
@@ -351,61 +396,68 @@ def _convert_arg_to_id(arg_name, ms_path, arg_val):
     return result
 
 
-def safe_split(fields):
-    """
-    Split a string containing field names into a list, taking account of
-    field names within quotes.
+def safe_split(fields: str) -> List[str]:
+    """Split a string containing field names into a list.
 
-    :param fields:
-    :return:
+    Split a string containing field names into a list, taking account of field
+    names within quotes.
+
+    Args:
+        fields: A string containing field names.
+    Returns:
+        A list, taking account of field names within quotes.
     """
     return pyparsing.commaSeparatedList.parseString(str(fields)).asList()
 
 
-def dequote(s):
-    """
-    Remove any kind of quotes from a string to facilitate comparisons.
+def dequote(s: str) -> str:
+    """Remove any kind of quotes from a string to facilitate comparisons.
 
-    :param s:
-    :return:
+    Args:
+        s: Strings.
+    Returns:
+        String removed any kind of quotes.
     """
     return s.replace('"', '').replace("'", "")
 
 
-def format_datetime(dt, dp=0):
-    """
-    Return a string representation of a Python datetime, including microseconds
+def format_datetime(dt: datetime, dp: int = 0) -> str:
+    """Convert a datetime to a string representation of a Python datetime
+
+    Convert a string representation of a Python datetime, including microseconds
     to the requested precision.
 
-    :param dt: Python datetime to convert
-    :param dp: number of decimal places for microseconds (0=do not show)
-    :return: string date
+    Args:
+        dt: Python datetime.
+        dp: A number of decimal places for microseconds (0=do not show).
+    Returns:
+        String date.
     """
+    s = dt.strftime('%Y-%m-%d %H:%M:%S')
     if dp > 6:
         raise ValueError('Cannot exceed 6 decimal places as datetime stores to microsecond precision')
-
-    s = dt.strftime('%Y-%m-%d %H:%M:%S')
-    if dp <= 0:
-        # Ignore microseconds
+    elif 0 < dp <= 6:
+        microsecs = dt.microsecond / 1e6
+        f = '{0:.%sf}' % dp
+        return s + f.format(microsecs)[1:]
+    else:
         return s
 
-    microsecs = dt.microsecond / 1e6
-    f = '{0:.%sf}' % dp
-    return s + f.format(microsecs)[1:]
 
+def format_timedelta(td: timedelta, dp: int = 0) -> str:
+    """Convert a timedelta to a formatted string representation.
 
-def format_timedelta(td, dp=0):
-    """
-    Return a formatted string representation for the given timedelta
-
-    :param td:
-    :param dp:
-    :return:
+    Args
+        td: A timedelta object.
+        dp: A number of decimal places for microseconds (0=do not show).
+            The number should be natural number with 0.
+    Returns:
+        Formatted string representation.
     """
     secs = decimal.Decimal(td.seconds)
     microsecs = decimal.Decimal(td.microseconds) / decimal.Decimal('1e6')
     rounded_secs = (secs + microsecs).quantize(decimal.Decimal(10) ** -dp)
-    rounded = datetime.timedelta(days=td.days, seconds=math.floor(rounded_secs))
+    rounded = timedelta(days=td.days, seconds=math.floor(rounded_secs))
     # get rounded number of microseconds as an integer
     rounded_microsecs = int((rounded_secs % 1).shift(6))
     # .. which we can pad with zeroes..
@@ -421,46 +473,49 @@ def format_timedelta(td, dp=0):
         return str(rounded)
 
 
-def _parse_spw(task_arg, all_spw_ids=None):
-    """
-    Convert the CASA-style spw argument to a list of spw IDs.
+def _parse_spw(task_arg: str, all_spw_ids: tuple = None):
+    """Convert the CASA-style spw argument to a list of spw IDs.
 
     Channel limits are also parsed in this function but are not currently
     used. The channel limits may be found as the channels property of an
     atom.
 
-    Parsing the input '0:0~6^2,2:6~38^4 (0, 1, 4, 5, 6, 7)' results in the
-    following results data structure;
+    Example:
+    >>> _parse_spw('0:0~6^2,2:6~38^4 (0, 1, 4, 5, 6, 7)')
+    <result>
+    <atom>
+      <spws>
+        <ITEM>0</ITEM>
+      </spws>
+      <channels>
+        <ITEM>0</ITEM>
+        <ITEM>2</ITEM>
+        <ITEM>4</ITEM>
+        <ITEM>6</ITEM>
+      </channels>
+    </atom>
+    <atom>
+      <spws>
+        <ITEM>2</ITEM>
+      </spws>
+      <channels>
+        <ITEM>6</ITEM>
+        <ITEM>10</ITEM>
+        <ITEM>14</ITEM>
+        <ITEM>18</ITEM>
+        <ITEM>22</ITEM>
+        <ITEM>26</ITEM>
+        <ITEM>30</ITEM>
+        <ITEM>34</ITEM>
+        <ITEM>38</ITEM>
+      </channels>
+    </atom>
+    </result>
 
-          <result>
-            <atom>
-              <spws>
-                <ITEM>0</ITEM>
-              </spws>
-              <channels>
-                <ITEM>0</ITEM>
-                <ITEM>2</ITEM>
-                <ITEM>4</ITEM>
-                <ITEM>6</ITEM>
-              </channels>
-            </atom>
-            <atom>
-              <spws>
-                <ITEM>2</ITEM>
-              </spws>
-              <channels>
-                <ITEM>6</ITEM>
-                <ITEM>10</ITEM>
-                <ITEM>14</ITEM>
-                <ITEM>18</ITEM>
-                <ITEM>22</ITEM>
-                <ITEM>26</ITEM>
-                <ITEM>30</ITEM>
-                <ITEM>34</ITEM>
-                <ITEM>38</ITEM>
-              </channels>
-            </atom>
-          </result>
+    Args:
+        task_arg:
+        all_spw_ids:
+    Returns:
     """
     if task_arg in (None, ''):
         return all_spw_ids
@@ -517,7 +572,17 @@ def _parse_spw(task_arg, all_spw_ids=None):
     return [Atom(spw=k, channels=v) for k, v in results.items()]
 
 
-def _parse_field(task_arg, fields=None):
+def _parse_field(task_arg: Optional[str], fields=None) -> List[int]:
+    """Convert the field section in CASA format to list of field IDs.
+
+    Inner method.
+
+    Args:
+        task_arg: The field selection in CASA format.
+        fields: Field objects
+    Returns:
+        A list of field IDs that matches field selection criteria
+    """
     if task_arg in (None, ''):
         return [f.id for f in fields]
     if fields is None:
@@ -558,7 +623,17 @@ def _parse_field(task_arg, fields=None):
     return sorted(list(results))
 
 
-def _parse_antenna(task_arg, antennas=None):
+def _parse_antenna(task_arg: Optional[str], antennas: Optional[Dict[str, np.ndarray[int]]] = None) -> List[int]:
+    """Convert the antenna selection in CASA format to a list of antenna IDs.
+
+    Inner method.
+
+    Args:
+        task_arg: The antenna selection in CASA format.
+        antennas: Antenna domain objects.
+    Returns:
+        List of antenna IDs that matches antenna selection criteria.
+    """
     if task_arg in (None, ''):
         return [a.id for a in antennas]
     if antennas is None:
