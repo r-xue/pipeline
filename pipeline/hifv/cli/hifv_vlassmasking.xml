@@ -29,8 +29,21 @@
 
     <param name="maskingmode" type="string">
     <shortdescription>maskingmode</shortdescription>
-    <description>maskingmode</description>
+    <description>maskingmode options are vlass-se-tier-1 or vlass-se-tier-2</description>
     <value>vlass-se-tier-1</value>
+    </param>
+
+    <param name="catalog_search_size" type="any">
+    <shortdescription>catalog_search_size</shortdescription>
+    <description>catalog_search_size</description>
+    <value>1.5</value>
+    </param>
+
+    <param name="mask_shape" type="any">
+        <shortdescription>Mask_shape</shortdescription>
+        <description>Mask_shape</description>
+        <type>doubleVec</type>
+        <value type="doubleVec"/>
     </param>
 
     <param name="pipelinemode" type="string">

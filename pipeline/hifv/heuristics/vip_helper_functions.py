@@ -16,7 +16,10 @@ import pyfits
 import bdsf
 
 import pipeline.infrastructure.casatools as casatools
+import pipeline.infrastructure as infrastructure
+# import casatools.__casac__ as casac
 
+LOG = infrastructure.get_logger(__name__)
 
 def run_bdsf(infile=""):
     """
@@ -59,12 +62,11 @@ def mask_from_catalog(inext='iter0.model.tt0', outext="mask_from_cat.mask",
     Unchanged, CASA 5 compatible file is located at
     /home/vlass/packages/vip/mask-from-catalog/mask_from_catalog.py
     """
-    myia = casatools.image()
-    myim = casatools.imager()
-    myrg = casatools.regionmanager()
-    myqa = casatools.quanta()
 
-    import pdb; pdb.set_trace()
+    # myia = casatools.image()
+    #myim = casatools.imager()
+    #myrg = casatools.regionmanager()
+    #myqa = casatools.quanta()
 
     # the intention is that this finds the model from the 'iter0' dirty image
     # but it really just needs any image for the shape and csys
@@ -79,6 +81,17 @@ def mask_from_catalog(inext='iter0.model.tt0', outext="mask_from_cat.mask",
 
     mask_name = model_for_mask[0].replace(inext, outext)
 
+    with casatools.ImageReader(model_for_mask[0]) as myia:
+        mask_im = myia.newimagefromimage(infile=model_for_mask[0], outfile=mask_name, overwrite=True)
+        LOG.info('Created new mask image: {0}'.format(mask_name))
+        mask_shape = mask_im.shape()
+        mask_csys = mask_im.coordsys()
+        mask_dat = mask_im.getchunk() * 0  # should already equal zero, but let's just make sure
+        mask_im.putchunk(mask_dat)
+
+    ###############################
+
+    '''
     mask_im = myia.newimagefromimage(infile=model_for_mask[0], outfile=mask_name, overwrite=True)
     print('Created new mask image: {0}'.format(mask_name))
 
@@ -89,15 +102,19 @@ def mask_from_catalog(inext='iter0.model.tt0', outext="mask_from_cat.mask",
     mask_im.putchunk(mask_dat)
 
     myia.done()
+    '''
+    ##############################
 
     mask_refval_radians = mask_csys.referencevalue(format='q')['quantity']
 
-    mask_refval_ra_deg = myqa.convert(mask_refval_radians['*1'], 'deg')['value']
-    mask_refval_dec_deg = myqa.convert(mask_refval_radians['*2'], 'deg')['value']
+    qt = casatools.quanta
+
+    mask_refval_ra_deg = qt.convert(mask_refval_radians['*1'], 'deg')['value']
+    mask_refval_dec_deg = qt.convert(mask_refval_radians['*2'], 'deg')['value']
 
     catalog_within_dec_range = catalog_dat[(catalog_dat['DEC'] < mask_refval_dec_deg + catalog_search_size) & (
             catalog_dat['DEC'] > mask_refval_dec_deg - catalog_search_size)]
-    print('Reduced catalog from {0} rows to {1} rows within +/- {2} degrees declination of image phase center'.format(
+    LOG.info('Reduced catalog from {0} rows to {1} rows within +/- {2} degrees declination of image phase center'.format(
         catalog_dat.shape[0], catalog_within_dec_range.shape[0], catalog_search_size))
 
     # *** not tested for images near RA=0 or the NCP except in Josh's head ***
@@ -120,18 +137,18 @@ def mask_from_catalog(inext='iter0.model.tt0', outext="mask_from_cat.mask",
         catalog_within_ra_and_dec_range = catalog_within_dec_range[
             (catalog_within_dec_range['RA'] > catalog_ra_search_min) & (
                     catalog_within_dec_range['RA'] < catalog_ra_search_max)]
-    elif (catalog_ra_search_min < 0):
+    elif catalog_ra_search_min < 0:
         catalog_within_ra_and_dec_range = catalog_within_dec_range[
             (catalog_within_dec_range['RA'] > catalog_ra_search_min % 360) | (
                     catalog_within_dec_range['RA'] < catalog_ra_search_max)]
-    elif (catalog_ra_search_max > 360):
+    elif catalog_ra_search_max > 360:
         catalog_within_ra_and_dec_range = catalog_within_dec_range[
             (catalog_within_dec_range['RA'] > catalog_ra_search_min) | (
                     catalog_within_dec_range['RA'] < catalog_ra_search_max % 360)]
     else:
         catalog_within_ra_and_dec_range = catalog_within_dec_range
 
-    print('Further reduced catalog from {0} rows to {1} rows within +/- {2} degrees RA of image phase center'.format(
+    LOG.info('Further reduced catalog from {0} rows to {1} rows within +/- {2} degrees RA of image phase center'.format(
         catalog_within_dec_range.shape[0], catalog_within_ra_and_dec_range.shape[0], catalog_search_size))
 
     # catalog rows to region text file
@@ -150,19 +167,23 @@ def mask_from_catalog(inext='iter0.model.tt0', outext="mask_from_cat.mask",
             else:
                 rejected_rows.append(row)
 
-    print('Rejected {0} additional catalog rows outside the image'.format(len(rejected_rows)))
-    print('Wrote reduced catalog to region file: {0}'.format(parsed_catalog_crtf))
+    LOG.info('Rejected {0} additional catalog rows outside the image'.format(len(rejected_rows)))
+    LOG.info('Wrote reduced catalog to region file: {0}'.format(parsed_catalog_crtf))
 
     mask_im.done()
 
     # region text file to mask
+
+    myim = casatools.imager
+    myrg = casatools.regionmanager
+
     myRGN = myrg.fromtextfile(filename=parsed_catalog_crtf, shape=mask_shape, csys=mask_csys.torecord())
     myim.regiontoimagemask(mask=mask_name, region=myRGN)
-    print('Used region file to add masks to mask image')
+    LOG.info('Used region file to add masks to mask image')
 
     myim.done()
     myrg.done()
-    myqa.done()
+    # myqa.done()
 
 
 def edit_pybdsf_islands(catalog_fits_file='', r_squared_threshold=0.99,

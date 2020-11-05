@@ -5,8 +5,8 @@ from casatasks import casalog
 import pipeline.h.cli.utils as utils
 
 
-def hifv_vlassmasking(vis=None, phasecenter=None, vlass_ql_database=None, maskingmode=None,
-                      pipelinemode=None, dryrun=None, acceptresults=None):
+def hifv_vlassmasking(vis=None, phasecenter=None, vlass_ql_database=None, maskingmode=None, catalog_search_size=None,
+                      mask_shape=None, pipelinemode=None, dryrun=None, acceptresults=None):
 
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #
