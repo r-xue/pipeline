@@ -65,7 +65,6 @@ class GroupByPosition2(api.Heuristic):
         else:
             AllowanceRadius = r_allowance
 
-        ThresholdR = CombineRadius * CombineRadius
         ThresholdAR = AllowanceRadius * AllowanceRadius
         CombineDiameter = 2.0 * CombineRadius
 
@@ -74,9 +73,7 @@ class GroupByPosition2(api.Heuristic):
         PosDict = {}
         SelectDict = {}
         MinRA = ra.min()
-        MaxRA = ra.max()
         MinDEC = dec.min()
-        MaxDEC = dec.max()
         # Calculate the lattice position (sRA, sDEC) for each pointings
         # Create list of pointings (dictionary) for each lattice position
         for x in range(Nrows):
@@ -347,7 +344,6 @@ class MergeGapTables2(api.Heuristic):
         TimeGap[0] = NewGap
 
         SubTable1 = []
-        SubTable2 = []
         TimeTable[0] = []
         for index in range(len(IDX)):
             n = IDX[index]
