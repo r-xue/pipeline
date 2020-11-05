@@ -355,7 +355,7 @@ def ant_arg_to_id(ms_path:str, ant_arg:Union[str, int], all_antennas) -> List[in
         return _parse_antenna(ant_arg, all_antennas)
 
 
-def _convert_arg_to_id(arg_name:str, ms_path:str, arg_val:str) -> Dict[str, np.ndarray[int]]:
+def _convert_arg_to_id(arg_name:str, ms_path:str, arg_val:str) -> Dict[str, np.ndarray]:
     """Parse the CASA input argument and return the matching IDs.
 
     Originally the cache was set on this function with the cache size fixed at
@@ -627,7 +627,7 @@ def _parse_field(task_arg:Optional[str], fields=None) -> List[int]:
     return sorted(list(results))
 
 
-def _parse_antenna(task_arg:Optional[str], antennas:Optional[Dict[str, np.ndarray[int]]]=None) -> List[int]:
+def _parse_antenna(task_arg:Optional[str], antennas:Optional[Dict[str, np.ndarray]]=None) -> List[int]:
     """Convert the antenna selection in CASA format to a list of antenna IDs.
 
     Inner method.
