@@ -5,7 +5,7 @@ Created on 2013/07/02
 """
 import os
 
-import pylab as PL
+import matplotlib.pyplot as plt
 
 from .SDFlagRule import INVALID_STAT
 from ..common import display as sd_display
@@ -40,8 +40,8 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
     if FigFileDir == False:
         return
 
-    PL.ioff()
-    PL.figure(MATPLOTLIB_FIGURE_ID[8])
+    plt.ioff()
+    plt.figure(MATPLOTLIB_FIGURE_ID[8])
 
     if FigFileDir != False:
         if os.access(FigFileDir+'listofplots.txt', os.F_OK):
@@ -54,32 +54,32 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
         print(FigFileRoot+'.png', file=BrowserFile)
         BrowserFile.close()
 
-    PL.cla()
-    PL.clf()
-    figsize_org = PL.gcf().get_size_inches()
-    PL.gcf().set_size_inches(FIGSIZE_INCHES)
+    plt.cla()
+    plt.clf()
+    figsize_org = plt.gcf().get_size_inches()
+    plt.gcf().set_size_inches(FIGSIZE_INCHES)
     #PL.subplot(211)
-    PL.subplot(111)
+    plt.subplot(111)
     #PL.subplots_adjust(hspace=0.3)
-    PL.subplots_adjust(top=0.88, bottom=0.13, left=0.1, right=0.98)
-    t = PL.title(PlotData['title'], size=7)
+    plt.subplots_adjust(top=0.88, bottom=0.13, left=0.1, right=0.98)
+    t = plt.title(PlotData['title'], size=7)
     t.set_position((0.5, 1.05))
-    PL.xlabel(PlotData['xlabel'], size=6)
-    PL.ylabel(PlotData['ylabel'], size=7)
-    PL.xticks(size=6)
-    PL.yticks(size=6)
+    plt.xlabel(PlotData['xlabel'], size=6)
+    plt.ylabel(PlotData['ylabel'], size=7)
+    plt.xticks(size=6)
+    plt.yticks(size=6)
     if PlotData['isActive']:
-        PL.figtext(0.01, 0.99, "ACTIVE", horizontalalignment='left', verticalalignment='top', color='green', size=18,
-                   style='italic', weight='bold')
+        plt.figtext(0.01, 0.99, "ACTIVE", horizontalalignment='left', verticalalignment='top', color='green', size=18,
+                    style='italic', weight='bold')
     else:
-        PL.figtext(0.01, 0.99, "INACTIVE", horizontalalignment='left', verticalalignment='top', color='red', size=18,
-                   style='italic', weight='bold')
+        plt.figtext(0.01, 0.99, "INACTIVE", horizontalalignment='left', verticalalignment='top', color='red', size=18,
+                    style='italic', weight='bold')
 
     # X-scale
     xmin = min(PlotData['time'])
     xmax = max(PlotData['time'])
 
-    axes = PL.gcf().gca()
+    axes = plt.gcf().gca()
     axes.xaxis.set_major_locator(sd_display.utc_locator(start_time=xmin, end_time=xmax))
     axes.xaxis.set_major_formatter(sd_display.utc_formatter())
 
@@ -87,15 +87,15 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
     if PlotData['data'] is None:
         if PlotData['isActive']:
             raise Exception("Got no valid data for active flag type.")
-        PL.axis([xmin, xmax, 0.0, 1.0])
-        PL.figtext(0.5, 0.5, "NO DATA", horizontalalignment='center', verticalalignment='center', color='Gray', size=24,
-                   style='normal', weight='bold')
-        PL.ion()
-        PL.draw()
+        plt.axis([xmin, xmax, 0.0, 1.0])
+        plt.figtext(0.5, 0.5, "NO DATA", horizontalalignment='center', verticalalignment='center', color='Gray', size=24,
+                    style='normal', weight='bold')
+        plt.ion()
+        plt.draw()
         if FigFileDir != False:
             OldPlot = FigFileDir+FigFileRoot+'.png'
-            PL.savefig(OldPlot, format='png', dpi=DPIDetail)
-        PL.gcf().set_size_inches(figsize_org)
+            plt.savefig(OldPlot, format='png', dpi=DPIDetail)
+        plt.gcf().set_size_inches(figsize_org)
         return
 
     if len(PlotData['thre']) > 1:
@@ -150,44 +150,44 @@ def StatisticsPlot(PlotData, FigFileDir=False, FigFileRoot=False):
         x += 1
 
     # Plot
-    PL.plot(sd_display.mjd_to_plotval(data[4]), data[5], 's', markersize=1, markeredgecolor='0.5', markerfacecolor='0.5', label='flagged (online)')
-    PL.plot(sd_display.mjd_to_plotval(data[0]), data[1], 'o', markersize=1, markeredgecolor='b', markerfacecolor='b', label='data below threshold')
-    PL.plot(sd_display.mjd_to_plotval(data[2]), data[3], 'o', markersize=2, markeredgecolor='r', markerfacecolor='r', label='deviator')
-    PL.axhline(y=ScaleOut[0][0], linewidth=1, color='r', label='vertical limit (s)')
+    plt.plot(sd_display.mjd_to_plotval(data[4]), data[5], 's', markersize=1, markeredgecolor='0.5', markerfacecolor='0.5', label='flagged (online)')
+    plt.plot(sd_display.mjd_to_plotval(data[0]), data[1], 'o', markersize=1, markeredgecolor='b', markerfacecolor='b', label='data below threshold')
+    plt.plot(sd_display.mjd_to_plotval(data[2]), data[3], 'o', markersize=2, markeredgecolor='r', markerfacecolor='r', label='deviator')
+    plt.axhline(y=ScaleOut[0][0], linewidth=1, color='r', label='vertical limit (s)')
     if PlotData['threType'] != "plot":
-        PL.axhline(y=PlotData['thre'][0], linewidth=1, color='c', label=PlotData['threDesc'])
+        plt.axhline(y=PlotData['thre'][0], linewidth=1, color='c', label=PlotData['threDesc'])
         if LowRange:
-            PL.axhline(y=PlotData['thre'][1], linewidth=1, color='c')
-            PL.axhline(y=ScaleOut[1][0], linewidth=1, color='r')
+            plt.axhline(y=PlotData['thre'][1], linewidth=1, color='c')
+            plt.axhline(y=ScaleOut[1][0], linewidth=1, color='r')
     else:
-        PL.plot(sd_display.mjd_to_plotval(PlotData['time']), PlotData['thre'][0], '-', linewidth=1, color='c', label=PlotData['threDesc'])
+        plt.plot(sd_display.mjd_to_plotval(PlotData['time']), PlotData['thre'][0], '-', linewidth=1, color='c', label=PlotData['threDesc'])
 
     xmin, xmax = sd_display.mjd_to_plotval([xmin, xmax])
-    PL.axis([xmin, xmax, ymin, ymax])
+    plt.axis([xmin, xmax, ymin, ymax])
 
     if len(PlotData['gap']) > 0:
         for row in sd_display.mjd_to_plotval(PlotData['gap'][0]):
-            PL.axvline(x=row, linewidth=0.5, color='g', ymin=0.95)
+            plt.axvline(x=row, linewidth=0.5, color='g', ymin=0.95)
     if len(PlotData['gap']) > 1:
         for row in sd_display.mjd_to_plotval(PlotData['gap'][1]):
-            PL.axvline(x=row, linewidth=0.5, color='c', ymin=0.9, ymax=0.95)
+            plt.axvline(x=row, linewidth=0.5, color='c', ymin=0.9, ymax=0.95)
 
-    PL.axis([xmin, xmax, ymin, ymax])
-    PL.legend(loc='lower center', numpoints=1, ncol=5,
-              prop={'size': 7}, frameon=False,
-              bbox_to_anchor=(0.5, 0.99),
-              borderpad=0, handletextpad=0.5,
-              handlelength=1, columnspacing=1,
-              markerscale=2)
+    plt.axis([xmin, xmax, ymin, ymax])
+    plt.legend(loc='lower center', numpoints=1, ncol=5,
+               prop={'size': 7}, frameon=False,
+               bbox_to_anchor=(0.5, 0.99),
+               borderpad=0, handletextpad=0.5,
+               handlelength=1, columnspacing=1,
+               markerscale=2)
 
-    PL.ion()
-    PL.draw()
+    plt.ion()
+    plt.draw()
     if FigFileDir != False:
         OldPlot = FigFileDir+FigFileRoot+'.png'
-        PL.savefig(OldPlot, format='png', dpi=DPIDetail)
-    PL.gcf().set_size_inches(figsize_org)
+        plt.savefig(OldPlot, format='png', dpi=DPIDetail)
+    plt.gcf().set_size_inches(figsize_org)
 
-    PL.close()
+    plt.close()
 
     del data, ScaleOut
     return

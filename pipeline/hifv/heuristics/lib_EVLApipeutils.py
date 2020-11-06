@@ -38,6 +38,7 @@
 # 12/17/12 STM add phases to getCalStatistics
 ######################################################################
 import collections
+import numpy
 import casatools
 
 import pipeline.infrastructure.contfilehandler as contfilehandler
@@ -214,8 +215,6 @@ def getCalFlaggedSoln(calTable):
     """
     mytb = casatools.table()
 
-    import pylab as pl
-
     mytb.open(calTable)
     antCol = mytb.getcol('ANTENNA1')
     spwCol = mytb.getcol('SPECTRAL_WINDOW_ID')
@@ -346,8 +345,8 @@ def getCalFlaggedSoln(calTable):
     outDict['antmedian'] = {}
     for item in medDict:
         alist = medDict[item]
-        aarr = pl.array(alist)
-        amed = pl.median(aarr)
+        aarr = numpy.array(alist)
+        amed = numpy.median(aarr)
         outDict['antmedian'][item] = amed
     outDict['antmedian']['number'] = len(medDict['fraction'])
 
@@ -989,8 +988,6 @@ def getBCalStatistics(calTable,innerbuff=0.1):
 
     mytb = casatools.table()
 
-    import pylab as pl
-
     mytb.open(calTable)
 
     # Check that this is a B Jones table
@@ -1188,10 +1185,10 @@ def getBCalStatistics(calTable,innerbuff=0.1):
                 else:
                     cx = dataArr[poln][chan][iid]
                     # get quantities from complex data
-                    ampx = pl.absolute(cx)
-                    phasx = pl.angle(cx, deg=True)
-                    realx = pl.real(cx)
-                    imagx = pl.imag(cx)
+                    ampx = numpy.absolute(cx)
+                    phasx = numpy.angle(cx, deg=True)
+                    realx = numpy.real(cx)
+                    imagx = numpy.imag(cx)
                     #
                     # put in dictionary
                     cdict = {}

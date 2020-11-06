@@ -4,10 +4,10 @@ import operator
 import os
 
 import matplotlib.dates as dates
-import matplotlib.pyplot as pyplot
+import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import numpy as np
-import pylab
+
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
@@ -108,7 +108,7 @@ class WeatherChart(object):
             # plot weather does not close the plot! work around that here rather
             # than editing the code as we might lose the fix (again..)
             try:
-                pylab.close()
+                plt.close()
             except:
                 pass
 
@@ -246,10 +246,10 @@ class FieldVsTimeChart(object):
                                parameters={'vis': ms.basename})
             return plot
 
-        f = pylab.figure()
-        pylab.clf()
-        pylab.axes([0.1, 0.15, 0.8, 0.7])
-        ax = pylab.gca()
+        f = plt.figure()
+        plt.clf()
+        plt.axes([0.1, 0.15, 0.8, 0.7])
+        ax = plt.gca()
 
         nfield = len(ms.fields)
         for field in ms.fields:
@@ -300,16 +300,16 @@ class FieldVsTimeChart(object):
         ax.yaxis.set_major_locator(major_locator)
         ax.grid(True)
 
-        pylab.ylabel('Field ID')
+        plt.ylabel('Field ID')
         major_formatter = ticker.FormatStrFormatter('%d')
         ax.yaxis.set_major_formatter(major_formatter)
 
         # plot key
         self._plot_key()
 
-        pylab.savefig(filename)
-        pylab.clf()
-        pylab.close()
+        plt.savefig(filename)
+        plt.clf()
+        plt.close()
 
         plot = logger.Plot(filename,
                            x_axis='Time',
@@ -319,20 +319,20 @@ class FieldVsTimeChart(object):
         return plot
 
     def _plot_key(self):
-        pylab.axes([0.1, 0.8, 0.8, 0.2])
-        lims = pylab.axis()
-        pylab.axis('off')
+        plt.axes([0.1, 0.8, 0.8, 0.2])
+        lims = plt.axis()
+        plt.axis('off')
 
         x = 0.00
         size = [0.4, 0.4, 0.6, 0.6]
         for intent, colour in sorted(self._intent_colours.items(), key=operator.itemgetter(0)):
             if (intent in self.inputs.ms.intents) or 'UNKNOWN' in intent:
-                pylab.gca().fill([x, x+0.05, x+0.05, x], size, facecolor=colour,
+                plt.gca().fill([x, x+0.05, x+0.05, x], size, facecolor=colour,
                                  edgecolor=colour)
-                pylab.text(x+0.06, 0.4, intent, size=9, va='bottom', rotation=45)
+                plt.text(x+0.06, 0.4, intent, size=9, va='bottom', rotation=45)
                 x += 0.12
 
-        pylab.axis(lims)
+        plt.axis(lims)
 
     def _get_intents_to_plot(self, user_intents):
         intents = [intent for intent in sorted(self._intent_colours.keys(), key=operator.itemgetter(0))
@@ -436,7 +436,7 @@ class IntentVsTimeChart(object):
         if os.path.exists(self.inputs.output):
             return self._get_plot_object()
 
-        fig = pyplot.figure(figsize=(14, 9))
+        fig = plt.figure(figsize=(14, 9))
         ax = fig.add_subplot(111)
 
         ms = self.inputs.ms
@@ -474,14 +474,14 @@ class IntentVsTimeChart(object):
             figure=fig, ax=ax, datemin=obs_start, datemax=obs_end)
         ax.grid(True)
 
-        pyplot.title(
+        plt.title(
             'Measurement set: ' + ms.basename + ' - Start time:' +
             obs_start.strftime('%Y-%m-%dT%H:%M:%S') + ' End time:' +
             obs_end.strftime('%Y-%m-%dT%H:%M:%S'), fontsize=12)
 
         fig.savefig(self.inputs.output)
-        pylab.clf()
-        pylab.close()
+        plt.clf()
+        plt.close()
 
         return self._get_plot_object()
 
@@ -575,16 +575,16 @@ class PlotAntsChart(object):
             return self._get_plot_object()
 
         # map: with pad names
-        plf1 = pylab.figure(1)
-        pylab.clf()
+        plf1 = plt.figure(1)
+        plt.clf()
         if self.polarlog:
             self.draw_polarlog_ant_map_in_subplot(plf1)
         else:
             self.draw_pad_map_in_subplot(plf1, self.ms.antennas)
-        pylab.title('Antenna Positions for %s' % self.ms.basename)
-        pylab.savefig(self.figfile, format='png', density=108)
-        pylab.clf()
-        pylab.close()
+        plt.title('Antenna Positions for %s' % self.ms.basename)
+        plt.savefig(self.figfile, format='png', density=108)
+        plt.clf()
+        plt.close()
 
         return self._get_plot_object()
 
@@ -610,7 +610,7 @@ class PlotAntsChart(object):
         """
         Draw a map of pads and antennas on them.
 
-        plf: a pylab.figure instance
+        plf: a matplotlib.pyplot.figure instance
         pads: a dictionary of antennas {"Name": (X, Y, Z), ...}
         antennas: a dictionary of antennas {"AntennaName": "PadName", ...}
         xlimit, ylimit: lists (or tuples, arrays) for the x and y axis limits.
@@ -622,17 +622,17 @@ class PlotAntsChart(object):
         if showemptypads:
             for antenna in antennas:
                 padpos = self.get_position(antenna)
-                circ = pylab.Circle(padpos[:2], antenna.diameter/2.0)
+                circ = plt.Circle(padpos[:2], antenna.diameter/2.0)
                 subpl.add_artist(circ)
                 circ.set_alpha(0.5)
                 circ.set_facecolor([1.0, 1.0, 1.0])
                 tt = subpl.text(padpos[0]+antenna.diameter/2.0*1.3, padpos[1]-4., antenna.station)
-                pylab.setp(tt, size='small', alpha=0.5)
+                plt.setp(tt, size='small', alpha=0.5)
 
         (xmin, xmax, ymin, ymax) = (9e9, -9e9, 9e9, -9e9)
         for antenna in antennas:
             padpos = self.get_position(antenna)
-            circ = pylab.Circle(padpos[:2], radius=antenna.diameter/2.0)
+            circ = plt.Circle(padpos[:2], radius=antenna.diameter/2.0)
             subpl.add_artist(circ)
             circ.set_alpha(1.0)
             circ.set_facecolor([0.8, 0.8, 0.8])
@@ -672,7 +672,7 @@ class PlotAntsChart(object):
                [antenna.offset['latitude offset']['value']],
                [antenna.offset['elevation offset']['value']]]
 
-        return pylab.array(pos)
+        return np.array(pos)
 
     # This plot is adapted from the "plotPositionsLogarithmic" function
     # in the Analysis Utils written by Todd Hunter.
@@ -680,7 +680,7 @@ class PlotAntsChart(object):
         """
         Draw a polar-log map of antennas.
 
-        plf: a pylab.figure instance
+        plf: a matplotlib.pyplot.figure instance
         """
 
         # Get longitude and latitude offsets in meters for antennas.

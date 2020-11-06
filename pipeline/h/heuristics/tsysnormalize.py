@@ -8,7 +8,6 @@
 # Modified for Pipeline, Vincent Geers, 20 July 2016.
 
 import numpy as np
-import pylab as pb
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
@@ -154,11 +153,11 @@ def tsysNormalize(vis, tsysTable, newTsysTable, scaleSpws=[], verbose=False):
         with casatools.TableReader(tsysTable, nomodify=False) as table:
 
             # For convenience squish the useful columns into unique lists
-            tsysSpws = pb.unique(table.getcol("SPECTRAL_WINDOW_ID"))
-            tsysScans = pb.unique(table.getcol("SCAN_NUMBER"))
-            tsysTimes = pb.unique(table.getcol("TIME"))
-            tsysFields = pb.unique(table.getcol("FIELD_ID"))
-            tsysAntennas = pb.unique(table.getcol("ANTENNA1"))
+            tsysSpws = np.unique(table.getcol("SPECTRAL_WINDOW_ID"))
+            tsysScans = np.unique(table.getcol("SCAN_NUMBER"))
+            tsysTimes = np.unique(table.getcol("TIME"))
+            tsysFields = np.unique(table.getcol("FIELD_ID"))
+            tsysAntennas = np.unique(table.getcol("ANTENNA1"))
 
             if len(scaleSpws) < len(tsysSpws):
                 scaleSpws = []
@@ -177,7 +176,7 @@ def tsysNormalize(vis, tsysTable, newTsysTable, scaleSpws=[], verbose=False):
             refScans = {}
             for f in tsysFields:
                 scanFieldsTab = table.query('FIELD_ID==%d'%f)
-                fieldTsysScans = pb.unique(scanFieldsTab.getcol("SCAN_NUMBER"))
+                fieldTsysScans = np.unique(scanFieldsTab.getcol("SCAN_NUMBER"))
                 scanFieldsTab.close()
                 fieldAllScans = msmd.scansforfield(f)
                 fieldNonTsysScans = [x for x in fieldAllScans if x not in fieldTsysScans]
