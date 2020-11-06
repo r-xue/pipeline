@@ -5,8 +5,8 @@ import re
 import operator
 import os
 
-import matplotlib
-import matplotlib.pyplot as pyplot
+import matplotlib.dates
+import matplotlib.pyplot as plt
 import numpy
 
 import cachetools
@@ -186,7 +186,7 @@ class PlotmsCalLeaf(object):
             # plotcal with time as x axis seems to leave matplotlib
             # in an open state. Work around this by closing pyplot
             # after each call.
-            # pyplot.close()
+            # plt.close()
 
     def _get_figfile(self):
         fileparts = {
