@@ -136,7 +136,7 @@ def flatten(l: Sequence[Any]) -> Iterator[Any]:
     3
 
     >>> list(flatten([1,2,['c',4,['e',6]],7]))
-    [1,2,c,4,e,6,7]
+    [1, 2, 'c', 4, 'e', 6, 7]
 
     Args:
         l: A list with list or any object.
@@ -481,7 +481,7 @@ def _parse_spw(task_arg: str, all_spw_ids: tuple = None):
     atom.
 
     Example:
-    >>> _parse_spw('0:0~6^2,2:6~38^4 (0, 1, 4, 5, 6, 7)')
+    > _parse_spw('0:0~6^2,2:6~38^4 (0, 1, 4, 5, 6, 7)')
     <result>
     <atom>
       <spws>
