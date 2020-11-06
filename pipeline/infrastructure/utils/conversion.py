@@ -155,7 +155,7 @@ def unix_seconds_to_datetime(unix_secs: Sequence[Number]) -> Union[datetime, Lis
     """Convert list of UNIX epoch times to a list of equivalent datetime objects.
 
     Args:
-        unix_secs: list of elapsed seconds since 1970-01-01
+        unix_secs: list of elapsed seconds since 1970-01-01.
     Returns:
         List of equivalent Python datetime objects.
     """
@@ -169,7 +169,7 @@ def mjd_seconds_to_datetime(mjd_secs: Sequence[Number]) -> List[datetime]:
     equivalent Python datetime objects.
 
     Args:
-        mjd_secs: list of elapsed seconds since MJD epoch
+        mjd_secs: list of elapsed seconds since MJD epoch.
     Returns:
         List of equivalent Python datetime objects.
     """
@@ -364,11 +364,12 @@ def _convert_arg_to_id(arg_name: str, ms_path: str, arg_val: str) -> Dict[str, n
     function delegates to the instance held in the module namespace.
 
     Args:
-        arg_name:
+        arg_name: Name of selection argument to use in MS selection query
         ms_path: A path to the measurement set
-        field_arg: A field argument formatted with CASA syntax.
+        arg_val: Value for selection argument to use in MS selection query,
+            formatted with CASA syntax.
     Returns:
-        A set of field IDs.
+        A list of IDs matching the input selection.
     """
     ms_basename = os.path.basename(ms_path)
     if ms_basename not in MSTOOL_SELECTEDINDICES_CACHE:
@@ -414,7 +415,7 @@ def dequote(s: str) -> str:
     """Remove any kind of quotes from a string to facilitate comparisons.
 
     Args:
-        s: Strings.
+        s: A string.
     Returns:
         String removed any kind of quotes.
     """
@@ -422,16 +423,16 @@ def dequote(s: str) -> str:
 
 
 def format_datetime(dt: datetime, dp: int = 0) -> str:
-    """Convert a datetime to a string representation of a Python datetime
+    """Convert a datetime to a formatted string representation.
 
-    Convert a string representation of a Python datetime, including microseconds
-    to the requested precision.
+    Convert a Python datetime object into a string representation, including
+    microseconds to the requested precision.
 
     Args:
         dt: Python datetime.
         dp: A number of decimal places for microseconds (0=do not show).
     Returns:
-        String date.
+        Formatted string representation of datetime.
     """
     s = dt.strftime('%Y-%m-%d %H:%M:%S')
     if dp > 6:
@@ -447,12 +448,15 @@ def format_datetime(dt: datetime, dp: int = 0) -> str:
 def format_timedelta(td: timedelta, dp: int = 0) -> str:
     """Convert a timedelta to a formatted string representation.
 
+    Convert a Python timedelta object into a string representation, including
+    microseconds to the requested precision.
+
     Args
         td: A timedelta object.
         dp: A number of decimal places for microseconds (0=do not show).
             The number should be natural number with 0.
     Returns:
-        Formatted string representation.
+        Formatted string representation of timedelta.
     """
     secs = decimal.Decimal(td.seconds)
     microsecs = decimal.Decimal(td.microseconds) / decimal.Decimal('1e6')
