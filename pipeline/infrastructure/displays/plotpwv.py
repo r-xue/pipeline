@@ -1,4 +1,3 @@
-import datetime
 import math
 import os
 
@@ -9,6 +8,7 @@ from scipy.interpolate import splev, splrep
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
+from pipeline.infrastructure.utils.conversion import mjd_seconds_to_datetime
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -94,7 +94,7 @@ def plotPWV(ms, figfile='', plotrange=[0, 0, 0, 0], clip=True):
         antennaName = antennaName[matches]
 
     unique_antennas = np.unique(antennaName)
-    list_of_date_times = mjdSecondsListToDateTime(watertime)
+    list_of_date_times = mjd_seconds_to_datetime(watertime)
     timeplot = matplotlib.dates.date2num(list_of_date_times)
     for a in range(len(unique_antennas)):
         matches = np.where(unique_antennas[a] == np.array(antennaName))[0]
@@ -120,7 +120,7 @@ def plotPWV(ms, figfile='', plotrange=[0, 0, 0, 0], clip=True):
     if len(water) > 1:
         ius = splrep(watertime, water, s=len(watertime)-math.sqrt(2*len(watertime)), k=order)
         water = splev(regular_time, ius, der=0)
-    list_of_date_times = mjdSecondsListToDateTime(regular_time)
+    list_of_date_times = mjd_seconds_to_datetime(regular_time)
     timeplot = matplotlib.dates.date2num(list_of_date_times)
     plt.plot_date(timeplot, water, 'k-')
 
@@ -137,7 +137,8 @@ def plotPWV(ms, figfile='', plotrange=[0, 0, 0, 0], clip=True):
     for a in range(len(unique_antennas)):
         plt.text(xlim[1]+0.01*xrange+0.055*xrange*(a // 48), ylim[1]-0.024*yrange*(a % 48 - 2),
                  unique_antennas[a], color=overlayColors[a % len(overlayColors)], size=8)
-    plt.xlabel('Universal Time (%s)' % (utdatestring(watertime[0])))
+    date_string = mjd_seconds_to_datetime(watertime[0:])[0].strftime('%Y-%m-%d')
+    plt.xlabel('Universal Time (%s)' % date_string)
     plt.ylabel('PWV (mm)')
     adesc.xaxis.grid(True, which='major')
     adesc.yaxis.grid(True, which='major')
@@ -260,71 +261,6 @@ def MAD(a, c=0.6745, axis=0):
         m = np.median(np.fabs(aswp - d) / c, axis=0)
 
     return m
-
-
-def utdatestring(mjdsec):
-    (mjd, date_time_string) = mjdSecondsToMJDandUT(mjdsec)
-    tokens = date_time_string.split()
-    return tokens[0]
-
-
-def mjdSecondsToMJDandUT(mjdsec, prec=6):
-    """
-    Converts a value of MJD seconds into MJD, and into a UT date/time string.
-    prec: 6 means HH:MM:SS,  7 means HH:MM:SS.S
-    example: (56000.0, '2012-03-14 00:00:00 UT')
-    Caveat: only works for a scalar input value
-    """
-    me = casatools.measures
-    today = me.epoch('utc', 'today')
-    mjd = np.array(mjdsec) / 86400.
-    today['m0']['value'] = mjd
-
-    hhmmss = call_qa_time(today['m0'], prec=prec)
-    date = casatools.quanta.splitdate(today['m0'])
-    utstring = "%s-%02d-%02d %s UT" % (date['year'], date['month'], date['monthday'], hhmmss)
-
-    me.done()
-
-    return mjd, utstring
-
-
-def mjdSecondsListToDateTime(mjdsecList):
-    """
-    Takes a list of mjd seconds and converts it to a list of datetime
-    structures.
-    """
-    me = casatools.measures
-    dt = []
-    typelist = type(mjdsecList)
-    if not (typelist == list or typelist == np.ndarray):
-        mjdsecList = [mjdsecList]
-    for mjdsec in mjdsecList:
-        today = me.epoch('utc', 'today')
-        mjd = mjdsec / 86400.
-        today['m0']['value'] = mjd
-        hhmmss = call_qa_time(today['m0'])   # don't fully understand this
-        date = casatools.quanta.splitdate(today['m0'])  # date is now a dict
-        time_string = '%d-%d-%d %d:%d:%d.%06d' % (date['monthday'], date['month'], date['year'], date['hour'],
-                                                  date['min'], date['sec'], date['usec'])
-        mydate = datetime.datetime.strptime(time_string, '%d-%m-%Y %H:%M:%S.%f')
-        dt.append(mydate)
-    me.done()
-    return dt
-
-
-def call_qa_time(arg, form='', prec=0, showform=False):
-    """
-    This is a wrapper for qa.time(), which in casa 4.0.0 returns a list
-    of strings instead of just a scalar string.
-    """
-    if isinstance(arg, dict) and isinstance(arg['value'], (list, np.ndarray)):
-        arg['value'] = arg['value'][0]
-    result = casatools.quanta.time(arg, form=form, prec=prec, showform=showform)
-    if isinstance(result, (list, np.ndarray)):
-        return result[0]
-    else:
-        return result
 
 
 def RescaleXAxisTimeTicks(xlim, adesc):
