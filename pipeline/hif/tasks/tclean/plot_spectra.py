@@ -10,11 +10,10 @@ import matplotlib.ticker
 import numpy as np
 import pylab as pl
 
-import casatools
 from casatasks import imhead
 
-from pipeline.infrastructure import casatools as pl_casatools
 import pipeline.infrastructure as infrastructure
+from pipeline.infrastructure import casatools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -72,9 +71,7 @@ def numberOfChannelsInCube(img, returnFreqs=False, returnChannelWidth=False, ver
     -Todd Hunter
     """
 
-    lqa = pl_casatools.quanta
-
-    with pl_casatools.ImageReader(img) as image:
+    with casatools.ImageReader(img) as image:
         lcs = image.coordsys()
 
         try:
@@ -227,8 +224,8 @@ def frames(velocity=286.7, datestring="2005/11/01/00:00:00",
     * difference between LSRK-TOPO in Hz
     - Todd Hunter
     """
-    lme = pl_casatools.measures
-    lqa = pl_casatools.quanta
+    lme = casatools.measures
+    lqa = casatools.quanta
 
     if dec.find(':') >= 0:
         dec = dec.replace(':', '.')
@@ -346,8 +343,8 @@ def lsrkToRest(lsrkFrequency, velocityLSRK, datestring, ra, dec,
         if verbose:
             print("Warning: replacing colons with decimals in the dec field.")
     freqGHz = parseFrequencyArgumentToGHz(lsrkFrequency)
-    lqa = pl_casatools.quanta
-    lme = pl_casatools.measures
+    lqa = casatools.quanta
+    lme = casatools.measures
     velocityRadio = lqa.quantity(velocityLSRK, "km/s")
     position = lme.direction(equinox, ra, dec)
     obstime = lme.epoch('TAI', datestring)
@@ -437,7 +434,7 @@ def rad2radec(ra=0,dec=0,imfitdict=None, prec=5, verbose=True, component=0,
     if np.shape(ra) == (2, 1):
         dec = ra[1][0]
         ra = ra[0][0]
-    lqa = pl_casatools.quanta
+    lqa = casatools.quanta
     myra = lqa.formxxx('%.12frad' % ra, format='hms', prec=prec+1)
     mydec = lqa.formxxx('%.12frad' % dec, format='dms', prec=prec-1)
     if replaceDecDotsWithColons:
@@ -546,7 +543,7 @@ def CalcAtmTransmissionForImage(img, chanInfo='', airmass=1.5, pwv=-1,
     2 arrays: frequencies (in GHz) and values (Kelvin, or transmission: 0..1)
     """
 
-    with pl_casatools.ImageReader(img) as image:
+    with casatools.ImageReader(img) as image:
         lcs = image.coordsys()
         telescopeName = lcs.telescope()
         lcs.done()
@@ -598,11 +595,11 @@ def CalcAtmTransmissionForImage(img, chanInfo='', airmass=1.5, pwv=-1,
     numchanModel = numchan*1
     chansepModel = (topofreqs[-1]-topofreqs[0])/(numchanModel-1)
     nbands = 1
-    lqa = pl_casatools.quanta
+    lqa = casatools.quanta
     fCenter = lqa.quantity(reffreq, 'GHz')
     fResolution = lqa.quantity(chansepModel, 'GHz')
     fWidth = lqa.quantity(numchanModel*chansepModel, 'GHz')
-    myat = casatools.atmosphere()
+    myat = casatools.atmosphere
     myat.initAtmProfile(humidity=H, temperature=lqa.quantity(T, "K"),
                         altitude=lqa.quantity(altitude, "m"),
                         pressure=lqa.quantity(P, 'mbar'), atmType=midLatitudeWinter)
@@ -646,12 +643,11 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile):
     rec_info: dictionary of receiver information (type (DSB/TSB), LO1 frequency)
     """
 
-    qaTool = pl_casatools.quanta
-    myqa = casatools.quanta()
+    qaTool = casatools.quanta
 
     cube = os.path.basename(image_robust_rms_and_spectra['nonpbcor_imagename'])
     # Get spectral frame
-    with pl_casatools.ImageReader(cube) as image:
+    with casatools.ImageReader(cube) as image:
         lcs = image.coordsys()
         frame = lcs.referencecode('spectral')[0]
         lcs.done()
@@ -668,8 +664,8 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile):
     # x axes
     nchan = len(image_robust_rms_and_spectra['nonpbcor_image_cleanmask_spectrum'])
     channels = np.arange(1, nchan + 1)
-    freq_ch1 = qaTool.getvalue(myqa.convert(image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz'))
-    freq_chN = qaTool.getvalue(myqa.convert(image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))
+    freq_ch1 = qaTool.getvalue(qaTool.convert(image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz'))
+    freq_chN = qaTool.getvalue(qaTool.convert(image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))
     freqs = np.linspace(freq_ch1, freq_chN, nchan)
 
     # Flux density spectrum
@@ -741,7 +737,7 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile):
     pl.plot(freq, rescaledY, 'm-')
 
     if rec_info['type'] == 'DSB':
-        LO1 = float(qaTool.getvalue(myqa.convert(rec_info['LO1'], 'GHz')))
+        LO1 = float(qaTool.getvalue(qaTool.convert(rec_info['LO1'], 'GHz')))
         imageFreq0 = 2.0 * LO1 - freq[0]
         imageFreq1 = 2.0 * LO1 - freq[-1]
         chanInfo = [len(freq), imageFreq0, imageFreq1, -(freqs[1]-freqs[0])]
