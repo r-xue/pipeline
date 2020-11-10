@@ -169,13 +169,12 @@ def readPWVFromMS(vis):
     Reads all the PWV values from a measurement set, returning a list
     of lists:   [[mjdsec], [pwv], [antennaName]]
     """
-    mytb = casatools.table
     if os.path.exists("%s/ASDM_CALWVR" % vis):
-        mytb.open("%s/ASDM_CALWVR" % vis)
-        time = mytb.getcol('startValidTime')  # mjdsec
-        antenna = mytb.getcol('antennaName')
-        pwv = mytb.getcol('water')
-        mytb.close()
+        with casatools.TableReader(vis+"/ASDM_CALWVR") as table:
+            time = table.getcol('startValidTime')  # mjdsec
+            antenna = table.getcol('antennaName')
+            pwv = table.getcol('water')
+
         if len(pwv) < 1:
             LOG.info("The ASDM_CALWVR table is empty, switching to ASDM_CALATMOSPHERE")
             time, antenna, pwv = readPWVFromASDM_CALATMOSPHERE(vis)
@@ -205,12 +204,10 @@ def readPWVFromASDM_CALATMOSPHERE(vis):
             LOG.warn("Could not find measurement set")
             return
 
-    mytb = casatools.table
-    mytb.open("%s/ASDM_CALATMOSPHERE" % vis)
-    pwvtime = mytb.getcol('startValidTime')  # mjdsec
-    antenna = mytb.getcol('antennaName')
-    pwv = mytb.getcol('water')[0]  # There seem to be 2 identical entries per row, so take first one.
-    mytb.close()
+    with casatools.TableReader(vis + "/ASDM_CALATMOSPHERE") as table:
+        pwvtime = table.getcol('startValidTime')  # mjdsec
+        antenna = table.getcol('antennaName')
+        pwv = table.getcol('water')[0]  # There seem to be 2 identical entries per row, so take first one.
 
     return pwvtime, antenna, pwv
 
@@ -222,13 +219,10 @@ def getObservatoryName(ms):
     """
     Returns the observatory name in the specified ms.
     """
-
-    obsTable = ms+'/OBSERVATION'
+    obsTable = ms + '/OBSERVATION'
     try:
-        mytb = casatools.table
-        mytb.open(obsTable)
-        myName = mytb.getcell('TELESCOPE_NAME')
-        mytb.close()
+        with casatools.TableReader(obsTable) as table:
+            myName = table.getcell('TELESCOPE_NAME')
     except:
         LOG.warn("Could not open OBSERVATION table to get the telescope name: %s" % obsTable)
         myName = ''
