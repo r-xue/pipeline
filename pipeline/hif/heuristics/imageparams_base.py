@@ -1455,6 +1455,10 @@ class ImageParamsHeuristics(object):
         Calculate LSRK frequency intersection of a list of MSs for a
         given field and spw. Exclude flagged channels.
         """
+
+        cqa = pl_casatools.quanta
+        csu = pl_casatools.synthesisutils
+
         per_eb_flagged_freq_ranges = []
         per_eb_full_freq_ranges = []
         channel_widths = []
@@ -1490,12 +1494,13 @@ class ImageParamsHeuristics(object):
                 # Use unflagged edge channels to determine LSRK frequency range
                 if nfi.shape != (0,):
                     # Use the edges. Another heuristic will skip one extra channel later in the final frequency range.
-                    with pl_casatools.SelectvisReader(msname, field=field_id,
-                                                      spw='%s:%d~%d' % (real_spw, nfi[0], nfi[-1])) as imager:
-                        result = imager.advisechansel(getfreqrange=True, freqframe=frame)
+                    if frame in ('REST', 'SOURCE'):
+                        result = csu.advisechansel(msname=msname, fieldid=int(field_id), spwselection='%s:%d~%d' % (real_spw, nfi[0], nfi[-1]), getfreqrange=True, freqframe="SOURCE", ephemtable="TRACKFIELD")
+                    else:
+                        result = csu.advisechansel(msname=msname, fieldid=int(field_id), spwselection='%s:%d~%d' % (real_spw, nfi[0], nfi[-1]), getfreqrange=True, freqframe=frame)
 
-                    f0_flagged = result['freqstart']
-                    f1_flagged = result['freqend']
+                    f0_flagged = float(cqa.getvalue(cqa.convert(result['freqstart'], 'Hz')))
+                    f1_flagged = float(cqa.getvalue(cqa.convert(result['freqend'], 'Hz')))
 
                     per_field_flagged_freq_ranges.append((f0_flagged, f1_flagged))
                     # The frequency range from advisechansel is from channel edge
@@ -1505,11 +1510,15 @@ class ImageParamsHeuristics(object):
 
                     # Also get the full ranges to trim the final LSRK range for
                     # odd tunings near the LO range edges (PIPE-526).
-                    with pl_casatools.SelectvisReader(msname, field=field_id, spw='%s' % (real_spw)) as imager:
-                        result = imager.advisechansel(getfreqrange=True, freqframe=frame)
+                    #with pl_casatools.SelectvisReader(msname, field=field_id, spw='%s' % (real_spw)) as imager:
+                    #    result = imager.advisechansel(getfreqrange=True, freqframe=frame)
+                    if frame in ('REST', 'SOURCE'):
+                        result = csu.advisechansel(msname=msname, fieldid=int(field_id), spwselection='%s' % (real_spw), getfreqrange=True, freqframe="SOURCE", ephemtable="TRACKFIELD")
+                    else:
+                        result = csu.advisechansel(msname=msname, fieldid=int(field_id), spwselection='%s' % (real_spw), getfreqrange=True, freqframe=frame)
 
-                    f0_full = result['freqstart']
-                    f1_full = result['freqend']
+                    f0_full = float(cqa.getvalue(cqa.convert(result['freqstart'], 'Hz')))
+                    f1_full = float(cqa.getvalue(cqa.convert(result['freqend'], 'Hz')))
 
                     per_field_full_freq_ranges.append((f0_full, f1_full))
 

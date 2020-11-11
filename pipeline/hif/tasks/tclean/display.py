@@ -25,6 +25,10 @@ class CleanSummary(object):
         self.image_stats = image_stats
 
     def plot(self):
+
+        cqa = casatools.quanta
+        csu = casatools.synthesisutils
+
         stage_dir = os.path.join(self.context.report_dir, 
                                  'stage%d' % self.result.stage_number)
         if not os.path.exists(stage_dir):
@@ -173,7 +177,17 @@ class CleanSummary(object):
 
                     plotfile = '%s.spectrum.png' % (os.path.join(stage_dir, os.path.basename(imagename)))
 
-                    plot_spectra(r.image_robust_rms_and_spectra, rec_info, plotfile)
+                    # The continuum frequency ranges are currently (2020-11) given in LSRK only.
+                    # For ephemeris objects they need to be converted to REST/SOURCE frame.
+                    if r.is_eph_obj:
+                        field_ids = [f.id for f in ref_ms.fields if f.name == miscinfo['field']]
+                        result_lsrk = csu.advisechansel(msname=ref_ms.name, fieldid=field_ids[0], spwselection=str(real_spw), getfreqrange=True, freqframe="LSRK")
+                        result_rest = csu.advisechansel(msname=ref_ms.name, fieldid=field_ids[0], spwselection=str(real_spw), getfreqrange=True, freqframe="SOURCE", ephemtable="TRACKFIELD")
+                        lsrk2rest_scaling_factor = float(cqa.getvalue(cqa.convert(result_rest['freqstart'], 'Hz'))) / float(cqa.getvalue(cqa.convert(result_lsrk['freqstart'], 'Hz')))
+                    else:
+                        lsrk2rest_scaling_factor = 1.0
+
+                    plot_spectra(r.image_robust_rms_and_spectra, rec_info, plotfile, lsrk2rest_scaling_factor)
 
                     plot_wrappers.append(logger.Plot(plotfile, parameters=parameters))
 

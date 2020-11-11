@@ -636,7 +636,7 @@ def CalcAtmTransmissionForImage(img, chanInfo='', airmass=1.5, pwv=-1,
     return(newfreqs, values)
 
 
-def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile):
+def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile, lsrk2rest_scaling_factor = 1.0):
     """
     Takes a pipeline-produced cube and plots the spectrum within the clean
     mask (pixels with value=1 in the mask), and the noise spectrum from outside
@@ -732,6 +732,12 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile):
     for cont_freq_range in cont_freq_ranges:
         fLowGHz = qaTool.getvalue(qaTool.convert(qaTool.quantity(float(cont_freq_range[0]), cont_freq_range[3]), 'GHz'))
         fHighGHz = qaTool.getvalue(qaTool.convert(qaTool.quantity(float(cont_freq_range[2]), cont_freq_range[3]), 'GHz'))
+        if frame == 'REST':
+            cqa = pl_casatools.quanta
+            csu = pl_casatools.synthesisutils
+            if lsrk2rest_scaling_factor != 1.0:
+                fLowGHz *= lsrk2rest_scaling_factor
+                fHighGHz *= lsrk2rest_scaling_factor
         fcLevel = pl.ylim()[0]+yrange*0.025
         pl.plot([fLowGHz, fHighGHz], [fcLevel]*2, 'c-', lw=2)
 

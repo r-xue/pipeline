@@ -329,8 +329,7 @@ class Tclean(cleanbase.CleanBase):
             # To avoid noisy edge channels, use only the frequency
             # intersection and skip one channel on either end.
             if self.image_heuristics.is_eph_obj(inputs.field):
-                # Need to use TOPO until CASA can convert to REST
-                frame = 'TOPO'
+                frame = 'REST'
             else:
                 frame = 'LSRK'
             if0, if1, channel_width = self.image_heuristics.freq_intersection(inputs.vis, inputs.field, inputs.intent,
@@ -464,38 +463,13 @@ class Tclean(cleanbase.CleanBase):
                     inputs.nchan = int(utils.round_half_up((if1 - if0) / channel_width - 2)) - 2 * extra_skip_channels
 
             if inputs.start == '':
-                if self.image_heuristics.is_eph_obj(inputs.field):
-                    # For ephemeris objects we do not yet have the conversion to the
-                    # REST frame. The start of the frequency range is thus given in
-                    # channels. The offset accounts for drifts of fast moving objects.
-                    if sideband == 'LSB':
-                        if inputs.nbin not in (None, -1):
-                            inputs.start = int(utils.round_half_up((if1 - if0) / channel_width * inputs.nbin - 2)) - 1 - extra_skip_channels
-                        else:
-                            inputs.start = int(utils.round_half_up((if1 - if0) / channel_width - 2)) - 1 - extra_skip_channels
-                    else:
-                        inputs.start = extra_skip_channels
-                else:
-                    # tclean interprets the start frequency as the center of the
-                    # first channel. We have, however, an edge to edge range.
-                    # Thus shift by 0.5 channels if no start is supplied.
-                    inputs.start = '%.10fGHz' % ((if0 + 1.5 * channel_width) / 1e9)
+                # tclean interprets the start frequency as the center of the
+                # first channel. We have, however, an edge to edge range.
+                # Thus shift by 0.5 channels if no start is supplied.
+                inputs.start = '%.10fGHz' % ((if0 + 1.5 * channel_width) / 1e9)
 
             # Always adjust width to apply possible binning
-            if self.image_heuristics.is_eph_obj(inputs.field):
-                # For ephemeris objects we need to define the frequency axis in
-                # channels until CASA can convert to the REST frame.
-                if sideband == 'LSB':
-                    width_sign = -1
-                else:
-                    width_sign = 1
-
-                if inputs.nbin not in (None, -1):
-                    inputs.width = width_sign * inputs.nbin
-                else:
-                    inputs.width = width_sign
-            else:
-                inputs.width = '%.7fMHz' % (channel_width / 1e6)
+            inputs.width = '%.7fMHz' % (channel_width / 1e6)
 
         # Make sure there are LSRK selections if cont.dat/lines.dat exist.
         # For ALMA this is already done at the hif_makeimlist step. For VLASS
