@@ -839,13 +839,8 @@ class SDSparseMapPlotter(object):
         (_xmin, _xmax, _ymin, _ymax) = pl.axis()
         #pl.axis((_xmin,_xmax,spmin,spmax))
         pl.axis((global_xmin, global_xmax, spmin, spmax))
-
-#        LOG.info('vars(self)={}'.format(vars(self)))
+        
         LOG.info('self.edge = {}'.format(self.edge))
-        LOG.info('self.lines_averaged = {}'.format(self.lines_averaged))
-        LOG.info('self.deviation_mask = {}'.format(self.deviation_mask))
-        LOG.info('frequency = {}'.format(frequency))
-        LOG.info('len(frequency) = {}'.format(len(frequency)))
 
         if self.edge is not None:
             for ch1, ch2 in self.edge:
@@ -854,10 +849,8 @@ class SDSparseMapPlotter(object):
                 fedge1 = ch_to_freq(ch1-1, frequency)
                 fedge2 = ch_to_freq(len(frequency)-ch2-1, frequency)
                 fedge3 = ch_to_freq(len(frequency)-1, frequency)
-                LOG.info('fedge0, fedge1: [%s, %s]' % (fedge0, fedge1))
-                LOG.info('fedge2, fedge3: [%s, %s]' % (fedge2, fedge3))
                 plot_helper.axvspan(fedge0, fedge1, color='lightgray')
-                plot_helper.axvspan(fedge2, fedge3, color='gray')
+                plot_helper.axvspan(fedge2, fedge3, color='lightgray')
 
         if self.lines_averaged is not None:
             for chmin, chmax in self.lines_averaged:
@@ -931,13 +924,12 @@ class SDSparseMapPlotter(object):
 
                     if self.edge is not None:
                         for ch1, ch2 in self.edge:
-                            LOG.info('ch1, ch2: [%s, %s]' % (ch1, ch2))
                             fedge0 = ch_to_freq(0, frequency)
                             fedge1 = ch_to_freq(ch1-1, frequency)
                             fedge2 = ch_to_freq(len(frequency)-ch2-1, frequency)
                             fedge3 = ch_to_freq(len(frequency)-1, frequency)
                             plot_helper.axvspan(fedge0, fedge1, color='lightgray')
-                            plot_helper.axvspan(fedge2, fedge3, color='gray')
+                            plot_helper.axvspan(fedge2, fedge3, color='lightgray')
 
                     # elif self.lines_averaged is not None:
                     #     for chmin, chmax in self.lines_averaged:
