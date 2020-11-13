@@ -156,9 +156,6 @@ class BaselineSubtractionPlotManager(object):
         self.postfit_storage.resize_storage(num_ra, num_dec, num_pol, num_chan)
 
     @casa5style_plot
-#    def plot_spectra_with_fit(self, field_id, antenna_id, spw_id, org_direction,
-#                              grid_table=None, deviation_mask=None, channelmap_range=None,
-#                              showatm=True):
     def plot_spectra_with_fit(self, field_id, antenna_id, spw_id, org_direction,
                               grid_table=None, deviation_mask=None, channelmap_range=None,
                               edge=None, showatm=True):
@@ -186,10 +183,6 @@ class BaselineSubtractionPlotManager(object):
         data_desc = self.ms.get_data_description(spw=spw_id)
         num_pol = data_desc.num_polarizations
         self.pol_list = numpy.arange(num_pol, dtype=int)
-
-        LOG.info('deviation_mask in plotter.py = {}'.format(deviation_mask))
-        LOG.info('edge in plotter.py = {}'.format(edge))
-
         source_name = self.ms.fields[self.field_id].source.name.replace(' ', '_').replace('/', '_')
         LOG.debug('Generating plots for source {} ant {} spw {}',
                   source_name, self.antenna_id, self.spw_id)
@@ -210,10 +203,6 @@ class BaselineSubtractionPlotManager(object):
         else:
             atm_transmission = None
             atm_freq = None
-#        plot_list = self.plot_profile_map_with_fit(prefit_prefix, postfit_prefix, grid_table,
-#                                                   deviation_mask, line_range,
-#                                                   org_direction,
-#                                                   atm_transmission, atm_freq)
         plot_list = self.plot_profile_map_with_fit(prefit_prefix, postfit_prefix, grid_table,
                                                    deviation_mask, line_range,
                                                    org_direction,
@@ -247,9 +236,6 @@ class BaselineSubtractionPlotManager(object):
                     del plot
         return ret
 
-#    def plot_profile_map_with_fit(self, prefit_figfile_prefix, postfit_figfile_prefix, grid_table,
-#                                  deviation_mask, line_range,
-#                                  org_direction, atm_transmission, atm_frequency):
     def plot_profile_map_with_fit(self, prefit_figfile_prefix, postfit_figfile_prefix, grid_table,
                                   deviation_mask, line_range,
                                   org_direction, atm_transmission, atm_frequency, edge):
