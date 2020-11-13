@@ -2898,22 +2898,6 @@ def score_mom8_fc_image(mom8_fc_name, peak_snr, cube_chanScaled_MAD, outlier_thr
         field = info.get('field')
         spw = info.get('spw')
 
-    # Do not yet analyze the MOM8 FC image for ephemeris sources due to
-    # missing LSRK to REST frame conversion. Set the score to a fixed value
-    # of 0.89 (PIPE-704). To be revised when CAS-12012 is implemented.
-    if is_eph_obj:
-        LOG.info('The MOM0 FC and MOM8 FC images for ephemeris source {:s} may be in error due to LSRK to REST translation issues for the Findcont Channels. If the source has real line emission check results carefully. The MOM8 FC score has been fixed to 0.89 without analyzing the actual image.'.format(field))
-        score = 0.89
-        longmsg = 'MOM8 FC score for field {:s} spw {:s} was fixed to 0.89 due to LSRK to REST translation issues for the Findcont Channels. The peak SNR is {:#.5g}.'.format(field, spw, peak_snr)
-        shortmsg = 'MOM8 FC score fixed to 0.89'
-        weblog_location = pqa.WebLogLocation.ACCORDION
-
-        origin = pqa.QAOrigin(metric_name='score_mom8_fc_image',
-                              metric_score='Manually fixed value',
-                              metric_units='None')
-
-        return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, weblog_location=weblog_location)
-
     if peak_snr <= outlier_threshold:
         score = 1.0
         longmsg = 'MOM8 FC image for field {:s} spw {:s} has a peak SNR of {:#.5g} which is below the QA threshold.'.format(field, spw, peak_snr)
