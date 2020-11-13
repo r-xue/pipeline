@@ -167,7 +167,6 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         process_list = self.inputs.plan
         deviationmask_list = self.inputs.deviationmask
         LOG.info('deviationmask_list={}'.format(deviationmask_list))
-        LOG.info('edge in worker.py={}'.format(edge))
 
         field_id_list = self.inputs.field
         antenna_id_list = self.inputs.antenna
@@ -223,7 +222,6 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         deviationmask_list = self.inputs.deviationmask
         LOG.info('deviationmask_list={}'.format(deviationmask_list))
         formatted_edge = list(common.parseEdge(self.inputs.edge))
-        LOG.info('formatted_edge={}'.format(formatted_edge))
         status = plot_manager.initialize(ms, outfile)
         plot_list = []
         for (field_id, antenna_id, spw_id, grid_table, channelmap_range) in accum.iterate_all():
@@ -241,11 +239,6 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
                     raise RuntimeError("source_name {} not found in org_directions_dict (sources found are {})"
                                        "".format(source_name, list(org_directions_dict.keys())))
                 org_direction = org_directions_dict[source_name]
-                LOG.info('formatted_edge in worker.py = {}'.format(formatted_edge))
-#                plot_list.extend(plot_manager.plot_spectra_with_fit(field_id, antenna_id, spw_id,
-#                                                                    org_direction,
-#                                                                    grid_table,
-#                                                                    deviationmask, channelmap_range))
                 plot_list.extend(plot_manager.plot_spectra_with_fit(field_id, antenna_id, spw_id,
                                                                     org_direction,
                                                                     grid_table,
