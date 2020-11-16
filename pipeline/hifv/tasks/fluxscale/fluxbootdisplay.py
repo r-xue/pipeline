@@ -280,8 +280,6 @@ class residualsSummaryChart(object):
 
         webdicts = self.webdicts
 
-        # pb.clf()
-
         fig = plt.figure(figsize=(10, 6))
         ax1 = fig.add_subplot(111)
         ax2 = ax1.twiny()

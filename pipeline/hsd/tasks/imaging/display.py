@@ -122,7 +122,7 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
 
             # 2008/9/20 DEC Effect
             im = plt.imshow(Total, interpolation='nearest', aspect=self.aspect, extent=Extent)
-            #im = pl.imshow(Total, interpolation='nearest', aspect='equal', extent=Extent)
+            # im = plt.imshow(Total, interpolation='nearest', aspect='equal', extent=Extent)
             del Total
 
             xlim = axes_tpmap.get_xlim()
@@ -260,7 +260,7 @@ class SDMomentMapDisplay(SDImageDisplay):
 
             # 2008/9/20 DEC Effect
             im = plt.imshow(Total, interpolation='nearest', aspect=self.aspect, extent=Extent)
-            #im = pl.imshow(Total, interpolation='nearest', aspect='equal', extent=Extent)
+            # im = plt.imshow(Total, interpolation='nearest', aspect='equal', extent=Extent)
             tmin = Total.min()
             tmax = Total.max()
             del Total
@@ -460,11 +460,14 @@ class SDSparseMapDisplay(SDImageDisplay):
     def __plot_sparse_map(self):
 
         # Plotting routine
-        #Mark = '-b'
-        #if ShowPlot: pl.ion()
-        #else: pl.ioff()
-        #pl.figure(self.MATPLOTLIB_FIGURE_ID)
-        #if ShowPlot: pl.ioff()
+        # Mark = '-b'
+        # if ShowPlot:
+        #     plt.ion()
+        # else:
+        #     plt.ioff()
+        # plt.figure(self.MATPLOTLIB_FIGURE_ID)
+        # if ShowPlot:
+        #     plt.ioff()
 
         num_panel = min(max(self.x_max - self.x_min + 1, self.y_max - self.y_min + 1), self.MaxPanel)
         STEP = int((max(self.x_max - self.x_min + 1, self.y_max - self.y_min + 1) - 1) // num_panel) + 1
@@ -735,10 +738,13 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         # How to coordinate the map
         TickSize = 6
-        #if ShowPlot: pl.ion()
-        #else: pl.ioff()
-        #pl.figure(self.MATPLOTLIB_FIGURE_ID)
-        #if ShowPlot: pl.ioff()
+        # if ShowPlot:
+        #     plt.ion()
+        # else:
+        #     plt.ioff()
+        # plt.figure(self.MATPLOTLIB_FIGURE_ID)
+        # if ShowPlot:
+        #     plt.ioff()
 
         # 2008/9/20 Dec Effect has been taken into account
         #Aspect = 1.0 / math.cos(0.5 * (self.dec_min + self.dec_max) / 180.0 * 3.141592653)
@@ -836,7 +842,7 @@ class SDChannelMapDisplay(SDImageDisplay):
                 # 2008/9/20 DEC Effect
                 plt.gcf().sca(axes_integmap)
                 plotted_objects.append(plt.imshow(Total, interpolation='nearest', aspect=self.aspect, extent=Extent))
-                #im = pl.imshow(Total, interpolation='nearest', aspect='equal', extent=Extent)
+                # im = plt.imshow(Total, interpolation='nearest', aspect='equal', extent=Extent)
 
                 xlim = axes_integmap.get_xlim()
                 ylim = axes_integmap.get_ylim()
@@ -933,9 +939,11 @@ class SDChannelMapDisplay(SDImageDisplay):
                     return plot_list
 
                 for i in range(NMap):
-                    #im = pl.imshow(Map[i], vmin=Vmin, vmax=Vmax, interpolation='bilinear', aspect='equal', extent=Extent)
+                    # im = plt.imshow(Map[i], vmin=Vmin, vmax=Vmax, interpolation='bilinear', aspect='equal',
+                    #                 extent=Extent)
                     if Vmax != Vmin:
-                        #im = pl.imshow(Map[i], vmin=Vmin, vmax=Vmax, interpolation='nearest', aspect='equal', extent=ExtentCM)
+                        # im = plt.imshow(Map[i], vmin=Vmin, vmax=Vmax, interpolation='nearest', aspect='equal',
+                        #                 extent=ExtentCM)
                         plt.gcf().sca(axes_chmap[i])
                         plotted_objects.append(plt.imshow(Map[i], vmin=Vmin, vmax=Vmax, interpolation='nearest', aspect='equal', extent=ExtentCM))
                         x = i % self.NhPanel

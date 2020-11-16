@@ -21,6 +21,7 @@ LOG = infrastructure.get_logger(__name__)
 RArotation = pointing.RArotation
 DECrotation = pointing.DECrotation
 
+
 class ClusterValidationAxesManager(MapAxesManagerBase):
     def __init__(self, clusters_to_plot, nh, nv, aspect_ratio,
                  xformatter, yformatter, xlocator, ylocator,
@@ -42,10 +43,11 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
         self._legend = None
         self._axes = None
         self.legend_y = 0.85
+
     @property
     def axes_legend(self):
         if self._legend is None:
-            # self._legend = pl.axes([0.0, 0.85, 1.0, 0.15])
+            # self._legend = plt.axes([0.0, 0.85, 1.0, 0.15])
             self._legend = plt.axes([0.0, self.legend_y, 1.0, 1.0 - self.legend_y])
             self._legend.set_axis_off()
 
