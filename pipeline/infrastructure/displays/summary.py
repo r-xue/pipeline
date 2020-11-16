@@ -100,8 +100,7 @@ class WeatherChart(object):
         LOG.debug('Creating new Weather plot')
         try:
             # Based on the analysisUtils method
-            # analysisUtils.plotWeather(vis=self.ms.name, figfile=self.figfile)
-            plotweather.plotWeather(vis=self.ms.name, figfile=self.figfile)
+            plotweather.plot_weather(vis=self.ms.name, figfile=self.figfile)
         except:
             return None
         finally:
