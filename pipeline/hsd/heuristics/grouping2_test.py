@@ -151,7 +151,7 @@ def generate_time_data_raster():
     twenty continuous integrations. Integration time is assumed to
     be 1sec. There are time gap of 10 sec between rows.
 
-      0  1  2 ...  7  8  9   gap   10 11 ... 18 19
+      0  1  2 ... 17 18 19   gap   20 21 ... 38 39
     |--|--|--|...|--|--|--|-------|--|--|...|--|--|
     |     RASTER ROW 0    |       |  RASTER ROW 1 |
 
