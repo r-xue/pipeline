@@ -35,6 +35,27 @@ def random_noise(n, mean=0, amp=1, rs=None):
 
 
 def generate_position_data_psw():
+    """Generate position data for simulated position-switch observation
+
+    Generate position data for simulated position-switch observatin.
+    The observation consists of four positions in 2x2 grids, (0,0),
+    (0,1), (1,0), and (1,1). Each position has ten data that contains
+    random noise around commanded position.
+
+      y
+
+      |  (0,1)   (1,1)
+      |  +       +
+      |
+      |  (0,0)   (1,0)
+      |  +       +
+      |
+      -----------------  x
+
+    Returns:
+        tuple: two-tuple consisting of the list of x (R.A.) and
+               y (Dec.) directions
+    """
     xlist = [0, 1]
     ylist = [0, 1]
     rs = np.random.RandomState(seed=1234567)
@@ -56,6 +77,21 @@ def generate_position_data_psw():
 
 
 def generate_time_data_psw():
+    """Generate time series for simulated position-switch observation
+
+    Generate time series for simulated position-switch observation.
+    Observation consists of four fixed positions and each position
+    contains ten continuous integrations. Integration time is assumed
+    to be 1sec. There are time gaps between positions: 10sec, 60sec,
+    and 10sec, respectively.
+
+      0  1 ...  8  9   gap   10 ... 19   gap   ... 30 ... 39
+    |--|--|...|--|--|-------|--|...|--|-------|...|--|...|--|
+    |   POSITION 0  |       |  POS 1  |           |  POS 3  |
+
+    Returns:
+        list: time series
+    """
     time_list = np.arange(40, dtype=float)
     for gap, incr in [(10, 9), (20, 59), (30, 9)]:
         time_list[gap:] += incr
@@ -63,6 +99,30 @@ def generate_time_data_psw():
 
 
 def generate_position_data_raster():
+    """Generate position data for simulated OTF raster observation
+
+    Generate position data for simulated OTF raster observatin
+    along x-direction (R.A.). The observation consists of two raster
+    rows. Each row has twenty continuously taken data that contains
+    random noise around commanded position. Scanning directions are
+    opposite in these two rows.
+
+        y
+
+        |
+        |    <--------------------------------
+      1 -  + + + + + + + + + + + + + + + + + + + +
+        |
+        |
+      0 -  + + + + + + + + + + + + + + + + + + + +
+        |    -------------------------------->
+        |
+        -----------------------------------------------  x
+
+    Returns:
+        tuple: two-tuple consisting of the list of x (R.A.) and
+               y (Dec.) directions
+    """
     xlist = np.arange(0, 1, 0.05)
     xlist = [xlist, xlist[::-1]]
     ylist = [0, 1]
@@ -84,6 +144,20 @@ def generate_position_data_raster():
 
 
 def generate_time_data_raster():
+    """Generate time series for simulated OTF raster observation
+
+    Generate time series for simulated OTF raster observation.
+    Observation consists of two raster rows and each row contains
+    twenty continuous integrations. Integration time is assumed to
+    be 1sec. There are time gap of 10 sec between rows.
+
+      0  1  2 ...  7  8  9   gap   10 11 ... 18 19
+    |--|--|--|...|--|--|--|-------|--|--|...|--|--|
+    |     RASTER ROW 0    |       |  RASTER ROW 1 |
+
+    Returns:
+        list: time series
+    """
     time_list = np.arange(40, dtype=float)
     time_list[20:] += 9
     return time_list
