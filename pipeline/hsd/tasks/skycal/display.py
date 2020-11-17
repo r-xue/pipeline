@@ -1,6 +1,7 @@
 import os
 import pylab as pl
 import numpy
+import traceback
 
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.logger as logger
@@ -16,7 +17,7 @@ LOG = logging.get_logger(__name__)
 
 class SingleDishSkyCalDisplayBase(object):
     def init_with_field(self, context, result, field):
-        vis = self._vis 
+        vis = self._vis
         ms = context.observing_run.get_ms(vis)
         num_fields = len(ms.fields)
         if field.isdigit() and int(field) < num_fields:
@@ -48,8 +49,8 @@ class SingleDishSkyCalDisplayBase(object):
 
 class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, SingleDishSkyCalDisplayBase):
     def __init__(self, context, result, field):
-        super(SingleDishSkyCalAmpVsFreqSummaryChart, self).__init__(context, result, 
-                                                                    'freq', 'amp', 
+        super(SingleDishSkyCalAmpVsFreqSummaryChart, self).__init__(context, result,
+                                                                    'freq', 'amp',
                                                                     showatm=True,
                                                                     overlay='antenna',
                                                                     solutionTimeThresholdSeconds=3600.)
@@ -129,12 +130,12 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
         for spw_id in self._figfile:
             for antenna_id, figfile in self._figfile[spw_id].items():
                 new_figfile = figfile.replace(old_prefix, new_prefix)
-                self._figfile[spw_id][antenna_id] = new_figfile 
+                self._figfile[spw_id][antenna_id] = new_figfile
 
 
 class SingleDishPlotmsLeaf(object):
     """
-    Class to execute plotms and return a plot wrapper. Task arguments for plotms 
+    Class to execute plotms and return a plot wrapper. Task arguments for plotms
     is customized for single dish usecase.
     """
     def __init__(self, context, result, calapp, xaxis, yaxis, spw='', ant='', coloraxis='', **kwargs):
@@ -171,7 +172,7 @@ class SingleDishPlotmsLeaf(object):
         LOG.info('antenna: ID %s Name \'%s\'' % (self.antenna, self.antenna_selection))
 #        self.antenna_selection = '*&&&'
 
-        self._figroot = os.path.join(context.report_dir, 
+        self._figroot = os.path.join(context.report_dir,
                                      'stage%s' % result.stage_number)
 
     def plot(self):
@@ -187,12 +188,20 @@ class SingleDishPlotmsLeaf(object):
         figfile = os.path.join(self._figroot, '{prefix}.png'.format(prefix=prefix))
 
         task = self._create_task(title, figfile)
-        if os.path.exists(figfile):
-            LOG.debug('Returning existing plot')
-        else:
-            task.execute()
+        try:
+            if os.path.exists(figfile):
+                LOG.debug('Returning existing plot')
+            else:
+                task.execute()
 
-        return [self._get_plot_object(figfile, task)]
+            plot_objects = [self._get_plot_object(figfile, task)]
+        except Exception as e:
+            LOG.error(str(e))
+            LOG.debug(traceback.format_exc())
+            LOG.error('Failed to generate plot "{}"'.format(figfile))
+            plot_objects = []
+
+        return plot_objects
 
     def _create_task(self, title, figfile):
         task_args = {'vis': self.caltable,
@@ -239,20 +248,20 @@ class SingleDishPlotmsAntSpwComposite(common.AntSpwComposite):
 class SingleDishSkyCalAmpVsTimeSummaryChart(SingleDishPlotmsSpwComposite):
     def __init__(self, context, result, calapp):
         super(SingleDishSkyCalAmpVsTimeSummaryChart, self).__init__(context, result, calapp,
-                                                                    xaxis='time', yaxis='amp', 
+                                                                    xaxis='time', yaxis='amp',
                                                                     coloraxis='ant1')
 
 
 class SingleDishSkyCalAmpVsTimeDetailChart(SingleDishPlotmsAntSpwComposite):
     def __init__(self, context, result, calapp):
-        super(SingleDishSkyCalAmpVsTimeDetailChart, self).__init__(context, result, calapp, 
+        super(SingleDishSkyCalAmpVsTimeDetailChart, self).__init__(context, result, calapp,
                                                                    xaxis='time', yaxis='amp',
                                                                    coloraxis='corr')
-       
+
 
 class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, SingleDishSkyCalDisplayBase):
     """
-    Class to execute pyplot and return a plot (figure) of Interval vs. Time. 
+    Class to execute pyplot and return a plot (figure) of Interval vs. Time.
     If figtype='summary', the first spw is used, while all spw are used if figtype='detail'.
     """
     def __init__(self, context, result, calapp, figtype=''):
@@ -355,26 +364,26 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
 @casa5style_plot
 def plot_elevation_difference(context, result, eldiff, threshold=3.0):
     """
-    context 
+    context
     result
-    eldiff -- dictionary whose value is ElevationDifference named tuple instance that holds 
+    eldiff -- dictionary whose value is ElevationDifference named tuple instance that holds
                   'timeon': timestamp for ON-SOURCE pointings
                   'elon': ON-SOURCE elevation
                   'timecal': timestamp for OFF-SOURCE pointings
-                  'elcal': OFF-SOURCE elevation 
-                  'time0': timestamp for preceding OFF-SOURCE pointings 
+                  'elcal': OFF-SOURCE elevation
+                  'time0': timestamp for preceding OFF-SOURCE pointings
                   'eldiff0': elevation difference between ON-SOURCE and preceding OFF-SOURCE
                   'time1': timestamp for subsequent OFF-SOURCE pointings
                   'eldiff1': elevation difference between ON-SOURCE and subsequent OFF-SOURCE
-              eldiff is a nested dictionary whose first key is FIELD_ID for target, the second one 
-              is ANTENNA_ID, and the third one is SPW_ID. 
+              eldiff is a nested dictionary whose first key is FIELD_ID for target, the second one
+              is ANTENNA_ID, and the third one is SPW_ID.
     threhshold -- Elevation threshold for QA (default 3deg)
     """
     calapp = result.final[0]
     vis = calapp.calto.vis
     ms = context.observing_run.get_ms(vis)
 
-    figroot = os.path.join(context.report_dir, 
+    figroot = os.path.join(context.report_dir,
                            'stage%s' % result.stage_number)
 
     figure0 = 'PERANTENNA_PLOT'
@@ -432,8 +441,8 @@ def plot_elevation_difference(context, result, eldiff, threshold=3.0):
             if labelon and labeloff:
                 break
         pl.legend(loc='best', numpoints=1, prop={'size': 'small'})
-        pl.title('Elevation Difference between ON and OFF\n{} Field {} Antenna {}'.format(vis, 
-                                                                                          field_name, 
+        pl.title('Elevation Difference between ON and OFF\n{} Field {} Antenna {}'.format(vis,
+                                                                                          field_name,
                                                                                           antenna_name),
                  fontsize=12)
 
@@ -459,7 +468,7 @@ def plot_elevation_difference(context, result, eldiff, threshold=3.0):
                                field=field_name,
                                parameters=parameters)
         return plot
-        
+
     def close_figure( figure_id ):
         pl.close( figure_id )
 
