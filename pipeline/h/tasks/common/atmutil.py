@@ -19,6 +19,7 @@ import pipeline.extern.adopted as adopted
 
 class AtmType(object):
     """Atmosphere type enum class."""
+    
     tropical = 1
     midLatitudeSummer = 2
     midLatitudeWinter = 3
