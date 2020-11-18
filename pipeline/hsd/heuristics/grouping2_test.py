@@ -1,3 +1,4 @@
+"""Test for heuristics defined in grouping2.py."""
 import pytest
 
 import numpy as np
@@ -13,7 +14,7 @@ qa = casatools.quanta
 
 
 def random_noise(n: int, mean: int = 0, amp: int = 1, rs: np.random.mtrand.RandomState = None) -> np.ndarray:
-    """Generate random noise
+    """Generate random noise.
 
     Generate random noise with given mean and maximum amplitude.
     Seed for random noise can be specified.
@@ -35,7 +36,7 @@ def random_noise(n: int, mean: int = 0, amp: int = 1, rs: np.random.mtrand.Rando
 
 
 def generate_position_data_psw() -> Tuple[np.ndarray, np.ndarray]:
-    """Generate position data for simulated position-switch observation
+    """Generate position data for simulated position-switch observation.
 
     Generate position data for simulated position-switch observatin.
     The observation consists of four positions in 2x2 grids, (0,0),
@@ -77,7 +78,7 @@ def generate_position_data_psw() -> Tuple[np.ndarray, np.ndarray]:
 
 
 def generate_time_data_psw() -> Tuple[np.ndarray, np.ndarray]:
-    """Generate time series for simulated position-switch observation
+    """Generate time series for simulated position-switch observation.
 
     Generate time series for simulated position-switch observation.
     Observation consists of four fixed positions and each position
@@ -99,7 +100,7 @@ def generate_time_data_psw() -> Tuple[np.ndarray, np.ndarray]:
 
 
 def generate_position_data_raster() -> Tuple[np.ndarray, np.ndarray]:
-    """Generate position data for simulated OTF raster observation
+    """Generate position data for simulated OTF raster observation.
 
     Generate position data for simulated OTF raster observatin
     along x-direction (R.A.). The observation consists of two raster
@@ -144,7 +145,7 @@ def generate_position_data_raster() -> Tuple[np.ndarray, np.ndarray]:
 
 
 def generate_time_data_raster() -> np.ndarray:
-    """Generate time series for simulated OTF raster observation
+    """Generate time series for simulated OTF raster observation.
 
     Generate time series for simulated OTF raster observation.
     Observation consists of two raster rows and each row contains
@@ -177,7 +178,7 @@ def generate_time_data_raster() -> np.ndarray:
     ]
 )
 def test_group_by_position_psw(combine_radius, allowance_radius):
-    """test grouping by position on position switch pattern"""
+    """Test grouping by position on position switch pattern."""
     ra_list, dec_list = generate_position_data_psw()
     h = GroupByPosition2()
     posdict, posgap = h.calculate(ra_list, dec_list, combine_radius, allowance_radius)
@@ -214,7 +215,7 @@ def test_group_by_position_psw(combine_radius, allowance_radius):
     ]
 )
 def test_group_by_position_raster(combine_radius, allowance_radius):
-    """test grouping by position on raster pattern including some edge cases"""
+    """Test grouping by position on raster pattern including some edge cases."""
     ra_list, dec_list = generate_position_data_raster()
     h = GroupByPosition2()
     posdict, posgap = h.calculate(ra_list, dec_list, combine_radius, allowance_radius)
@@ -242,7 +243,7 @@ def test_group_by_position_raster(combine_radius, allowance_radius):
 
 
 def test_group_by_position_too_large_allowance_radius():
-    """test grouping by position: too large allowance radius -> all gaps are detected"""
+    """Test grouping by position: too large allowance radius -> all gaps are detected."""
     ra_list, dec_list = generate_position_data_raster()
     h = GroupByPosition2()
     combine_radius = 0.249
@@ -277,7 +278,7 @@ def test_group_by_position_too_large_allowance_radius():
 
 
 def test_group_by_position_moderate_allowance_radius():
-    """test grouping by position: moderate allowance radius -> no gap is detected"""
+    """Test grouping by position: moderate allowance radius -> no gap is detected."""
     ra_list, dec_list = generate_position_data_raster()
     h = GroupByPosition2()
     combine_radius = 0.249
@@ -307,7 +308,7 @@ def test_group_by_position_moderate_allowance_radius():
 
 
 def test_group_by_position_too_small_combine_radius():
-    """test grouping by position: too small combine radius -> all data are separated"""
+    """Test grouping by position: too small combine radius -> all data are separated."""
     ra_list, dec_list = generate_position_data_raster()
     h = GroupByPosition2()
     combine_radius = 1e-5
@@ -329,7 +330,7 @@ def test_group_by_position_too_small_combine_radius():
 
 
 def test_group_by_position_too_large_combine_radius():
-    """test grouping by position: too large combine radius -> only one group"""
+    """Test grouping by position: too large combine radius -> only one group."""
     ra_list, dec_list = generate_position_data_raster()
     h = GroupByPosition2()
     combine_radius = 10
@@ -355,7 +356,7 @@ def test_group_by_position_too_large_combine_radius():
 
 
 def test_group_by_posiition_error():
-    """test grouping by position: error cases"""
+    """Test grouping by position: error cases."""
     ra_list, dec_list = generate_position_data_psw()
     h = GroupByPosition2()
 
@@ -375,7 +376,7 @@ def test_group_by_posiition_error():
     ]
 )
 def test_threshold_for_time(time_list, expected_gaps):
-    """test evaluation of threshold for time grouping"""
+    """Test evaluation of threshold for time grouping."""
     h = ThresholdForGroupByTime()
     gaps = h.calculate(time_list)
     assert gaps == expected_gaps
@@ -390,7 +391,7 @@ def test_threshold_for_time(time_list, expected_gaps):
     ]
 )
 def test_group_by_time_psw(time_list):
-    """test grouping by time for position switch pattern"""
+    """Test grouping by time for position switch pattern."""
     h = GroupByTime2()
     time_list_np = np.asarray(time_list)
     delta_np = time_list_np[1:] - time_list_np[:-1]
@@ -423,7 +424,7 @@ def test_group_by_time_psw(time_list):
     ]
 )
 def test_group_by_time_raster(time_list):
-    """test grouping by time for raster pattern"""
+    """Test grouping by time for raster pattern."""
     h = GroupByTime2()
     time_list_np = np.asarray(time_list)
     delta_np = time_list_np[1:] - time_list_np[:-1]
@@ -448,7 +449,7 @@ def test_group_by_time_raster(time_list):
 
 
 def test_merge_gap_tables_psw():
-    """test merging gap tables for position switch pattern"""
+    """Test merging gap tables for position switch pattern."""
     time_table = [
         [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
          [10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
@@ -472,7 +473,7 @@ def test_merge_gap_tables_psw():
 
 
 def test_merge_gap_tables_raster():
-    """test merging gap tables for raster pattern"""
+    """Test merging gap tables for raster pattern."""
     time_table = [
         [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
           10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
