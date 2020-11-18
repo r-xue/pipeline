@@ -97,7 +97,7 @@ def generate_position_data_psw() -> Tuple[np.ndarray, np.ndarray]:
     return ra_list, dec_list
 
 
-def generate_time_data_psw() -> Tuple[np.ndarray, np.ndarray]:
+def generate_time_data_psw() -> np.ndarray:
     """Generate time series for simulated position-switch observation.
 
     Generate time series for simulated position-switch observation.
@@ -111,7 +111,7 @@ def generate_time_data_psw() -> Tuple[np.ndarray, np.ndarray]:
     |   POSITION 0  |       |  POS 1  |           |  POS 3  |
 
     Returns:
-        list: time series
+        np.ndarray: time series
     """
     time_list = np.arange(40, dtype=float)
     for gap, incr in [(10, 9), (20, 59), (30, 9)]:
@@ -177,7 +177,7 @@ def generate_time_data_raster() -> np.ndarray:
     |     RASTER ROW 0    |       |  RASTER ROW 1 |
 
     Returns:
-        list: time series
+        np.ndarray: time series
     """
     time_list = np.arange(40, dtype=float)
     time_list[20:] += 9
