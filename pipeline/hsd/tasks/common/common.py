@@ -90,8 +90,8 @@ class SingleDishResults(basetask.Results):
         return s
 
 
-### THIS CLASS WILL BE REMOVED SHORTLY.
-### IGNORE IN CODE REVIEW.
+# ToDO(ksugimoto) THIS CLASS WILL BE REMOVED SHORTLY.
+# TODO(ksugimoto) IGNORE IN CODE REVIEW.
 class ParameterContainerJob(object):
     """
     A container class to store task class object with parameter values.
