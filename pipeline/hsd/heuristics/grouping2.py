@@ -1,6 +1,6 @@
 #*******************************************************************************
 # ALMA - Atacama Large Millimeter Array
-# Copyright (c) ATC - Astronomy Technology Center - Royal Observatory Edinburgh, 2011
+# Copyright (c) NAOJ - National Astronomical Observatory of Japan, 2020
 # (in the framework of the ALMA collaboration).
 # All rights reserved.
 #
