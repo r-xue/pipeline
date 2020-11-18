@@ -1,6 +1,5 @@
 import pytest
 
-import functools
 import numpy as np
 import pipeline.infrastructure.casatools as casatools
 
@@ -163,18 +162,6 @@ def generate_time_data_raster():
     return time_list
 
 
-@pytest.fixture(name='position_psw')
-@functools.lru_cache(1)
-def fixture_position_psw():
-    return generate_position_data_psw()
-
-
-@pytest.fixture(name='position_raster')
-@functools.lru_cache(1)
-def fixture_position_raster():
-    return generate_position_data_raster()
-
-
 @pytest.mark.parametrize(
     "combine_radius, allowance_radius",
     [
@@ -188,9 +175,9 @@ def fixture_position_raster():
         (qa.quantity(0.4 * 3600, 'arcsec'), 0.05),
     ]
 )
-def test_group_by_position_psw(combine_radius, allowance_radius, position_psw):
+def test_group_by_position_psw(combine_radius, allowance_radius):
     """test grouping by position on position switch pattern"""
-    ra_list, dec_list = position_psw
+    ra_list, dec_list = generate_position_data_psw()
     h = GroupByPosition2()
     posdict, posgap = h.calculate(ra_list, dec_list, combine_radius, allowance_radius)
     expected_posdict = {
@@ -225,9 +212,9 @@ def test_group_by_position_psw(combine_radius, allowance_radius, position_psw):
         (qa.quantity(0.249, 'deg'), qa.quantity(0.01, 'deg')),
     ]
 )
-def test_group_by_position_raster(combine_radius, allowance_radius, position_raster):
+def test_group_by_position_raster(combine_radius, allowance_radius):
     """test grouping by position on raster pattern including some edge cases"""
-    ra_list, dec_list = position_raster
+    ra_list, dec_list = generate_position_data_raster()
     h = GroupByPosition2()
     posdict, posgap = h.calculate(ra_list, dec_list, combine_radius, allowance_radius)
     expected_posdict = {
@@ -253,9 +240,9 @@ def test_group_by_position_raster(combine_radius, allowance_radius, position_ras
     assert posgap == expected_posgap
 
 
-def test_group_by_position_too_large_allowance_radius(position_raster):
+def test_group_by_position_too_large_allowance_radius():
     """test grouping by position: too large allowance radius -> all gaps are detected"""
-    ra_list, dec_list = position_raster
+    ra_list, dec_list = generate_position_data_raster()
     h = GroupByPosition2()
     combine_radius = 0.249
     allowance_radius = 10
@@ -288,9 +275,9 @@ def test_group_by_position_too_large_allowance_radius(position_raster):
     assert posgap == expected_posgap
 
 
-def test_group_by_position_moderate_allowance_radius(position_raster):
+def test_group_by_position_moderate_allowance_radius():
     """test grouping by position: moderate allowance radius -> no gap is detected"""
-    ra_list, dec_list = position_raster
+    ra_list, dec_list = generate_position_data_raster()
     h = GroupByPosition2()
     combine_radius = 0.249
     allowance_radius = 1
@@ -318,9 +305,9 @@ def test_group_by_position_moderate_allowance_radius(position_raster):
     assert posgap == expected_posgap
 
 
-def test_group_by_position_too_small_combine_radius(position_raster):
+def test_group_by_position_too_small_combine_radius():
     """test grouping by position: too small combine radius -> all data are separated"""
-    ra_list, dec_list = position_raster
+    ra_list, dec_list = generate_position_data_raster()
     h = GroupByPosition2()
     combine_radius = 1e-5
     allowance_radius = 0.01
@@ -340,9 +327,9 @@ def test_group_by_position_too_small_combine_radius(position_raster):
     assert posgap == expected_posgap
 
 
-def test_group_by_position_too_large_combine_radius(position_raster):
+def test_group_by_position_too_large_combine_radius():
     """test grouping by position: too large combine radius -> only one group"""
-    ra_list, dec_list = position_raster
+    ra_list, dec_list = generate_position_data_raster()
     h = GroupByPosition2()
     combine_radius = 10
     allowance_radius = 0.01
@@ -366,9 +353,9 @@ def test_group_by_position_too_large_combine_radius(position_raster):
     assert posgap == expected_posgap
 
 
-def test_group_by_posiition_error(position_psw):
+def test_group_by_posiition_error():
     """test grouping by position: error cases"""
-    ra_list, dec_list = position_psw
+    ra_list, dec_list = generate_position_data_psw()
     h = GroupByPosition2()
 
     # GroupByPosition2 only accepts numpy.ndarray for RA/DEC data
