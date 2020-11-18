@@ -2,6 +2,7 @@ import pytest
 
 import numpy as np
 import pipeline.infrastructure.casatools as casatools
+from typing import Tuple
 
 from .grouping2 import GroupByPosition2
 from .grouping2 import GroupByTime2
@@ -11,7 +12,7 @@ from .grouping2 import ThresholdForGroupByTime
 qa = casatools.quanta
 
 
-def random_noise(n, mean=0, amp=1, rs=None):
+def random_noise(n: int, mean: int = 0, amp: int = 1, rs: np.random.mtrand.RandomState = None) -> np.ndarray:
     """Generate random noise
 
     Generate random noise with given mean and maximum amplitude.
@@ -33,7 +34,7 @@ def random_noise(n, mean=0, amp=1, rs=None):
     return (r - (0.5 - mean)) * amp / 0.5
 
 
-def generate_position_data_psw():
+def generate_position_data_psw() -> Tuple[np.ndarray, np.ndarray]:
     """Generate position data for simulated position-switch observation
 
     Generate position data for simulated position-switch observatin.
@@ -75,7 +76,7 @@ def generate_position_data_psw():
     return ra_list, dec_list
 
 
-def generate_time_data_psw():
+def generate_time_data_psw() -> Tuple[np.ndarray, np.ndarray]:
     """Generate time series for simulated position-switch observation
 
     Generate time series for simulated position-switch observation.
@@ -97,7 +98,7 @@ def generate_time_data_psw():
     return time_list
 
 
-def generate_position_data_raster():
+def generate_position_data_raster() -> Tuple[np.ndarray, np.ndarray]:
     """Generate position data for simulated OTF raster observation
 
     Generate position data for simulated OTF raster observatin
@@ -142,7 +143,7 @@ def generate_position_data_raster():
     return ra_list, dec_list
 
 
-def generate_time_data_raster():
+def generate_time_data_raster() -> np.ndarray:
     """Generate time series for simulated OTF raster observation
 
     Generate time series for simulated OTF raster observation.
