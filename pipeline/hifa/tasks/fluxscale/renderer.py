@@ -421,6 +421,7 @@ def create_flux_comparison_plots(context, output_dir, result, showatm=True):
         parameters = {
             'vis': ms.basename,
             'field': field.name,
+            'field_id': field.id,
             'intent': sorted(set(field.intents))
         }
         wrapper = logger.Plot(full_path, x_axis='frequency', y_axis='Flux Density', parameters=parameters)
