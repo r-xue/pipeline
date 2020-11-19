@@ -38,7 +38,9 @@
 # 12/17/12 STM add phases to getCalStatistics
 ######################################################################
 import collections
-import casatools
+from pipeline.infrastructure import casatools
+
+import numpy
 
 import pipeline.infrastructure.contfilehandler as contfilehandler
 import pipeline.infrastructure as infrastructure
@@ -212,17 +214,13 @@ def getCalFlaggedSoln(calTable):
         Out: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 
     """
-    mytb = casatools.table()
 
-    import pylab as pl
-
-    mytb.open(calTable)
-    antCol = mytb.getcol('ANTENNA1')
-    spwCol = mytb.getcol('SPECTRAL_WINDOW_ID')
-    fldCol = mytb.getcol('FIELD_ID')
-    #flagCol = mytb.getcol('FLAG')
-    flagVarCol = mytb.getvarcol('FLAG')
-    mytb.close()
+    with casatools.TableReader(calTable) as mytb:
+        antCol = mytb.getcol('ANTENNA1')
+        spwCol = mytb.getcol('SPECTRAL_WINDOW_ID')
+        fldCol = mytb.getcol('FIELD_ID')
+        #flagCol = mytb.getcol('FLAG')
+        flagVarCol = mytb.getvarcol('FLAG')
 
     # Initialize a list to hold the results
     # Get shape of FLAG
@@ -346,8 +344,8 @@ def getCalFlaggedSoln(calTable):
     outDict['antmedian'] = {}
     for item in medDict:
         alist = medDict[item]
-        aarr = pl.array(alist)
-        amed = pl.median(aarr)
+        aarr = numpy.array(alist)
+        amed = numpy.median(aarr)
         outDict['antmedian'][item] = amed
     outDict['antmedian']['number'] = len(medDict['fraction'])
 
@@ -493,7 +491,6 @@ def buildscans(msfile):
     #        find index for a desc, e.g. cordesclist.index(corrdesc)
     #
     ms = casatools.ms()
-    tb = casatools.table()
 
     # Access the MS
     try:
@@ -513,21 +510,21 @@ def buildscans(msfile):
 
     #
     # Find number of data description IDs
-    tb.open(msfile+"/DATA_DESCRIPTION")
-    ddspwarr=tb.getcol("SPECTRAL_WINDOW_ID")
-    ddpolarr=tb.getcol("POLARIZATION_ID")
-    tb.close()
+    with casatools.TableReader(msfile+"/DATA_DESCRIPTION") as tb:
+        ddspwarr=tb.getcol("SPECTRAL_WINDOW_ID")
+        ddpolarr=tb.getcol("POLARIZATION_ID")
+
     ddspwlist = ddspwarr.tolist()
     ddpollist = ddpolarr.tolist()
     ndd = len(ddspwlist)
     print('Found {} DataDescription IDs'.format(ndd))
     #
     # The SPECTRAL_WINDOW table
-    tb.open(msfile+"/SPECTRAL_WINDOW")
-    nchanarr=tb.getcol("NUM_CHAN")
-    spwnamearr=tb.getcol("NAME")
-    reffreqarr=tb.getcol("REF_FREQUENCY")
-    tb.close()
+    with casatools.TableReader(msfile+"/SPECTRAL_WINDOW") as tb:
+        nchanarr=tb.getcol("NUM_CHAN")
+        spwnamearr=tb.getcol("NAME")
+        reffreqarr=tb.getcol("REF_FREQUENCY")
+
     nspw = len(nchanarr)
     spwlookup = {}
     for isp in range(nspw):
@@ -538,29 +535,29 @@ def buildscans(msfile):
     print('Extracted information for {} SpectralWindows'.format(nspw))
     #
     # Now the polarizations (number of correlations in each pol id
-    tb.open(msfile+"/POLARIZATION")
-    ncorarr=tb.getcol("NUM_CORR")
-    # corr_type is in general variable shape, have to read row-by-row
-    # or use getvarcol to return into dictionary, we will iterate manually
-    npols = len(ncorarr)
-    polindex = {}
-    poldescr = {}
-    for ip in range(npols):
-        cort=tb.getcol("CORR_TYPE", startrow=ip, nrow=1)
-        (nct, nr) = cort.shape
-        cortypes = []
-        cordescs = []
-        for ict in range(nct):
-            cct = cort[ict][0]
-            cde = cordesclist[cct]
-            cortypes.append(cct)
-            cordescs.append(cde)
-        polindex[ip] = cortypes
-        poldescr[ip] = cordescs
-    # cortype is an array of npol, e.g. 5,6,7,8 is for RR,RL,LR,LL respectively
-    # for alma this would be 9,10,11,12 for XX,XY,YX,YY respectively
-    # cordesc are the strings associated with the types (enum for casa)
-    tb.close()
+    with casatools.TableReader(msfile+"/POLARIZATION") as tb:
+        ncorarr=tb.getcol("NUM_CORR")
+        # corr_type is in general variable shape, have to read row-by-row
+        # or use getvarcol to return into dictionary, we will iterate manually
+        npols = len(ncorarr)
+        polindex = {}
+        poldescr = {}
+        for ip in range(npols):
+            cort = tb.getcol("CORR_TYPE", startrow=ip, nrow=1)
+            (nct, nr) = cort.shape
+            cortypes = []
+            cordescs = []
+            for ict in range(nct):
+                cct = cort[ict][0]
+                cde = cordesclist[cct]
+                cortypes.append(cct)
+                cordescs.append(cde)
+            polindex[ip] = cortypes
+            poldescr[ip] = cordescs
+        # cortype is an array of npol, e.g. 5,6,7,8 is for RR,RL,LR,LL respectively
+        # for alma this would be 9,10,11,12 for XX,XY,YX,YY respectively
+        # cordesc are the strings associated with the types (enum for casa)
+
     print('Extracted information for {} Polarization Setups'.format(npols))
     #
     # Build the DD index
@@ -582,20 +579,18 @@ def buildscans(msfile):
         ddindex[idd]['corrdesc'] = poldescr[ipol]
     #
     # Now get raw scan intents from STATE table
-    tb.open(msfile+"/STATE")
-    intentarr=tb.getcol("OBS_MODE")
-    subscanarr=tb.getcol("SUB_SCAN")
-    tb.close()
+    with casatools.TableReader(msfile+"/STATE") as tb:
+        intentarr=tb.getcol("OBS_MODE")
+        subscanarr=tb.getcol("SUB_SCAN")
     intentlist = intentarr.tolist()
     subscanlist = subscanarr.tolist()
     nstates = intentlist.__len__()
     print('Found {} StateIds'.format(nstates))
     #
     # Now get FIELD table directions
-    tb.open(msfile+"/FIELD")
-    fnamearr=tb.getcol("NAME")
-    fpdirarr=tb.getcol("PHASE_DIR")
-    tb.close()
+    with casatools.TableReader(msfile+"/FIELD") as tb:
+        fnamearr=tb.getcol("NAME")
+        fpdirarr=tb.getcol("PHASE_DIR")
     flist = fnamearr.tolist()
     nfields = len(flist)
     (nd1, nd2, npf) = fpdirarr.shape
@@ -987,35 +982,27 @@ def getBCalStatistics(calTable,innerbuff=0.1):
     # Create the output dictionary
     outDict = {}
 
-    mytb = casatools.table()
+    with casatools.TableReader(calTable) as mytb:
 
-    import pylab as pl
+        # Check that this is a B Jones table
+        caltype = mytb.getkeyword('VisCal')
+        if caltype=='B Jones':
+            print('This is a B Jones table, proceeding')
+        else:
+            print('This is NOT a B Jones table, aborting')
+            return outDict
 
-    mytb.open(calTable)
+        antCol = mytb.getcol('ANTENNA1')
+        spwCol = mytb.getcol('SPECTRAL_WINDOW_ID')
+        fldCol = mytb.getcol('FIELD_ID')
 
-    # Check that this is a B Jones table
-    caltype = mytb.getkeyword('VisCal')
-    if caltype=='B Jones':
-        print('This is a B Jones table, proceeding')
-    else:
-        print('This is NOT a B Jones table, aborting')
-        return outDict
-
-    antCol = mytb.getcol('ANTENNA1')
-    spwCol = mytb.getcol('SPECTRAL_WINDOW_ID')
-    fldCol = mytb.getcol('FIELD_ID')
-
-    # these columns are possibly variable in size
-    #flagCol = mytb.getcol('FLAG')
-    flagVarCol = mytb.getvarcol('FLAG')
-    #dataCol = mytb.getcol('CPARAM')
-    dataVarCol = mytb.getvarcol('CPARAM')
-    mytb.close()
+        # these columns are possibly variable in size
+        flagVarCol = mytb.getvarcol('FLAG')
+        dataVarCol = mytb.getvarcol('CPARAM')
 
     # get names from ANTENNA table
-    mytb.open(calTable+'/ANTENNA')
-    antNameCol = mytb.getcol('NAME')
-    mytb.close()
+    with casatools.TableReader(calTable+'/ANTENNA') as mytb:
+        antNameCol = mytb.getcol('NAME')
     nant = len(antNameCol)
 
     antDict = {}
@@ -1023,9 +1010,8 @@ def getBCalStatistics(calTable,innerbuff=0.1):
         antDict[iant] = antNameCol[iant]
 
     # get names from SPECTRAL_WINDOW table
-    mytb.open(calTable+'/SPECTRAL_WINDOW')
-    spwNameCol = mytb.getcol('NAME')
-    mytb.close()
+    with casatools.TableReader(calTable+'/SPECTRAL_WINDOW') as mytb:
+        spwNameCol = mytb.getcol('NAME')
     nspw = len(spwNameCol)
 
     # get baseband list
@@ -1188,10 +1174,10 @@ def getBCalStatistics(calTable,innerbuff=0.1):
                 else:
                     cx = dataArr[poln][chan][iid]
                     # get quantities from complex data
-                    ampx = pl.absolute(cx)
-                    phasx = pl.angle(cx, deg=True)
-                    realx = pl.real(cx)
-                    imagx = pl.imag(cx)
+                    ampx = numpy.absolute(cx)
+                    phasx = numpy.angle(cx, deg=True)
+                    realx = numpy.real(cx)
+                    imagx = numpy.imag(cx)
                     #
                     # put in dictionary
                     cdict = {}
