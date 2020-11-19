@@ -50,14 +50,13 @@ class VlassmaskingInputs(vdp.StandardInputs):
     mask_shape = vdp.VisDependentProperty(default=[1024, 1024,    1,    1])
 
     def __init__(self, context, vis=None, phasecenter=None, vlass_ql_database=None, maskingmode=None,
-                 catalog_search_size=None, mask_shape=None):
+                 catalog_search_size=None):
         self.context = context
         self.vis = vis
         self.phasecenter = phasecenter
         self.vlass_ql_database = vlass_ql_database
         self.maskingmode = maskingmode
         self.catalog_search_size = catalog_search_size
-        self.mask_shape = mask_shape
 
 
 @task_registry.set_equivalent_casa_task('hifv_vlassmasking')
@@ -69,26 +68,29 @@ class Vlassmasking(basetask.StandardTaskTemplate):
 
         LOG.debug("This Vlassmasking class is running.")
 
-        # TODO:
-        # There needs to be a mechanism to have the shape and csys reference inputs for mask_from_catalog
-        # The task currently assumes images are on disk to retrieve that information.
-        # mask_from_catalog globs() the iter0.psf.tt0 files and gets the appropriate information
-
-        # Note that these parameters are just here for my benefit and reference of creating an image
+        # Note that these parameters are just here for reference of creating an image
         inext = 'iter0.psf.tt0'
         # Location of catalog file at the AOC
         # catalog_fits_file = '/home/vlass/packages/VLASS1Q.fits'
 
         imagename_base = 'VIP_'
-        imsize = 1024
-        cell = '2.0arcsec'
-        wprojplanes = 32
 
-        cfcache = './cfcache_imsize' + str(imsize) + '_cell' + cell + '_w' + str(wprojplanes) + '_conjT.cf'
-        cfcache_nowb = './cfcache_imsize' + str(imsize) + '_cell' + cell + '_w' + str(
-            wprojplanes) + '_conjT_psf_wbawp_False.cf'
+        shapelist = self.inputs.context.clean_list_pending[0]['imsize']
+        mask_shape = np.array([shapelist[0], shapelist[1], 1, 1])
+        phasecenter = self.inputs.context.clean_list_pending[0]['phasecenter']
+        cell = self.inputs.context.clean_list_pending[0]['cell']
+        frequency = self.inputs.context.clean_list_pending[0]['reffreq']
+        QLmask = 'QLcatmask.mask'
 
-        # Catalog masking function executed here.
+        # Test parameters for reference
+        # imsize = shapelist[0]
+        # wprojplanes = 32
+        # cfcache = './cfcache_imsize' + str(imsize) + '_cell' + cell + '_w' + str(wprojplanes) + '_conjT.cf'
+        # cfcache_nowb = './cfcache_imsize' + str(imsize) + '_cell' + cell + '_w' + str(
+        #     wprojplanes) + '_conjT_psf_wbawp_False.cf'
+        # phasecenter = 'J2000 13:33:35.814 +16.44.04.255'
+        # mask_shape = np.array([imsize, imsize, 1, 1])
+        # frequency = '3.0GHz'
 
         LOG.info("Executing with masking mode: {!s}".format(self.inputs.maskingmode))
 
@@ -96,21 +98,22 @@ class Vlassmasking(basetask.StandardTaskTemplate):
             if not os.path.exists(self.inputs.vlass_ql_database) and self.inputs.maskingmode == 'vlass-se-tier-1':
                 LOG.error("VLASS Quicklook database file {!s} does not exist.".format(self.inputs.vlass_ql_database))
 
-            # This command here is just for the sake of creating an image if need be
-            tclean_result = self.run_tclean('iter0', cfcache=cfcache_nowb, robust=-2.0, uvtaper='3arcsec',
-                                            calcres=False, parallel=False, wbawp=False)
+            # This command here is just for the sake of creating an image - no longer needed
+            # tclean_result = self.run_tclean('iter0', cfcache=cfcache_nowb, robust=-2.0, uvtaper='3arcsec',
+            #                                 calcres=False, parallel=False, wbawp=False)
 
             LOG.debug("Executing mask_from_catalog")
 
-            outext = "QLcatmask.mask"
+            outext = QLmask
             catalog_fits_file = self.inputs.vlass_ql_database
 
             mask_from_catalog(inext=inext, outext=outext,
                               catalog_fits_file=catalog_fits_file,
-                              catalog_search_size=self.inputs.catalog_search_size)
+                              catalog_search_size=self.inputs.catalog_search_size, mask_shape=mask_shape,
+                              frequency=frequency, cell=cell, phasecenter=phasecenter, mask_name=imagename_base+outext)
 
             outfile = ''
-            combinedmask = ''
+            combinedmask = imagename_base + outext
 
         elif self.inputs.maskingmode == 'vlass-se-tier-2':
             # hifv_vlassmasking(known_mask='tier-1', uniform_image='image_name', maskingmode='vlass-se-tier-2')
@@ -123,11 +126,12 @@ class Vlassmasking(basetask.StandardTaskTemplate):
 
             mask_from_catalog(inext=inext, outext=outext,
                               catalog_fits_file=catalog_fits_file,
-                              catalog_search_size=self.inputs.catalog_search_size)
+                              catalog_search_size=self.inputs.catalog_search_size, mask_shape=mask_shape,
+                              frequency=frequency, cell=cell, phasecenter=phasecenter, mask_name=imagename_base+outext)
 
             # combine first and 2nd order masks
             outfile = imagename_base + 'sum_of_masks.mask'
-            task = casa_tasks.immath(imagename=[imagename_base + 'secondmask.mask', imagename_base + 'QLcatmask.mask'],
+            task = casa_tasks.immath(imagename=[imagename_base + 'secondmask.mask', imagename_base + QLmask],
                                      expr='IM0+IM1', outfile=outfile)
 
             runtask = self._executor.execute(task)

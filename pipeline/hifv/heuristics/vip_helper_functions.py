@@ -39,7 +39,8 @@ def run_bdsf(infile=""):
 
 def mask_from_catalog(inext='iter0.model.tt0', outext="mask_from_cat.mask",
                       catalog_fits_file='/home/vlass/packages/VLASS1Q.fits',
-                      catalog_search_size=1.0):
+                      catalog_search_size=1.0, mask_shape=[], frequency='',
+                      cell='', phasecenter='', mask_name=''):
     """
     Construct a clean mask from a sky catalog and reference image.
 
@@ -48,6 +49,11 @@ def mask_from_catalog(inext='iter0.model.tt0', outext="mask_from_cat.mask",
     :param catalog_fits_file: Path to a PyBDSF sky catalog in FITS format.
     :param catalog_search_size: The half-width (in degrees) of the catalog search centered on the
         image's reference pixel.
+    :param mask_shape: two element list of the image (mask) size
+    :param frequency: string element and units '3.0GHz'
+    :param cell: string cell size '2.0arcsec'
+    :param phasecenter: Epoch leading string 'J2000 13:33:35.814 +16.44.04.255'
+    :param mask_name: string name of the mask to write out
     :return: returns nothing
 
     Example 1:
@@ -64,30 +70,56 @@ def mask_from_catalog(inext='iter0.model.tt0', outext="mask_from_cat.mask",
     """
 
     # myia = casatools.image()
-    #myim = casatools.imager()
-    #myrg = casatools.regionmanager()
-    #myqa = casatools.quanta()
+    # myim = casatools.imager()
+    # myrg = casatools.regionmanager()
+    # myqa = casatools.quanta()
 
+    # ----------------------------------------------------------------------------------
     # the intention is that this finds the model from the 'iter0' dirty image
     # but it really just needs any image for the shape and csys
-    model_for_mask = glob('*' + inext)
 
     hdu = pyfits.open(catalog_fits_file)
 
     catalog_dat = hdu[1].data
 
+    '''
+    model_for_mask = glob('*' + inext)
+
+    mask_name1 = model_for_mask[0].replace(inext, outext)
+
     if not (len(model_for_mask) == 1):
         raise Exception('Expected an ' + inext + ' image to use for masking')
 
-    mask_name = model_for_mask[0].replace(inext, outext)
+    with casatools.ImageReader(model_for_mask[0]) as testia:
+        mask_im1 = testia.newimagefromimage(infile=model_for_mask[0], outfile='VIPtest.im', overwrite=True)
+        LOG.info('Created new mask image: {0}'.format('VIPtest.im'))
+        mask_shape1 = mask_im1.shape()
+        mask_csys1 = mask_im1.coordsys()
+        mask_dat1 = mask_im1.getchunk() * 0  # should already equal zero, but let's just make sure
+        mask_im1.putchunk(mask_dat1)
+    '''
 
-    with casatools.ImageReader(model_for_mask[0]) as myia:
-        mask_im = myia.newimagefromimage(infile=model_for_mask[0], outfile=mask_name, overwrite=True)
-        LOG.info('Created new mask image: {0}'.format(mask_name))
-        mask_shape = mask_im.shape()
-        mask_csys = mask_im.coordsys()
-        mask_dat = mask_im.getchunk() * 0  # should already equal zero, but let's just make sure
-        mask_im.putchunk(mask_dat)
+    # --------------------------------------------------------------------------------------
+    rahr = phasecenter.split(' ')[1]
+    decdeg = phasecenter.split(' ')[2]
+
+    qt = casatools.quanta
+    myia = casatools.image
+
+    mask_im = myia.fromshape(mask_name, list(mask_shape), overwrite=True)
+    mask_csys = myia.coordsys()
+    mask_csys.setunits(['rad', 'rad', '', 'Hz'])
+    cell_rad = qt.convert(qt.quantity(cell), "rad")['value']
+    mask_csys.setincrement([-cell_rad, cell_rad], 'direction')
+    mask_csys.setreferencevalue([qt.convert(rahr, 'rad')['value'], qt.convert(decdeg, 'rad')['value']],
+                                type="direction")
+    mask_csys.setreferencevalue(frequency, 'spectral')
+    mask_csys.setincrement('1GHz', 'spectral')
+    myia.setbrightnessunit("Jy/pixel")
+    mask_csys.setobserver('Dr. Vlass Scientist')
+    mask_csys.setrestfrequency(frequency)
+    mask_csys.settelescope('EVLA')
+    myia.setcoordsys(mask_csys.torecord())
 
     ###############################
 
@@ -107,8 +139,6 @@ def mask_from_catalog(inext='iter0.model.tt0', outext="mask_from_cat.mask",
 
     mask_refval_radians = mask_csys.referencevalue(format='q')['quantity']
 
-    qt = casatools.quanta
-
     mask_refval_ra_deg = qt.convert(mask_refval_radians['*1'], 'deg')['value']
     mask_refval_dec_deg = qt.convert(mask_refval_radians['*2'], 'deg')['value']
 
@@ -126,7 +156,7 @@ def mask_from_catalog(inext='iter0.model.tt0', outext="mask_from_cat.mask",
     mask_dec_for_ra_search = np.max(
         np.abs([mask_refval_dec_deg - catalog_search_size, mask_refval_dec_deg + catalog_search_size]))
 
-    if (mask_dec_for_ra_search < 90):
+    if mask_dec_for_ra_search < 90:
         catalog_ra_search_min = mask_refval_ra_deg - catalog_search_size / np.cos(np.pi * mask_dec_for_ra_search / 180.)
         catalog_ra_search_max = mask_refval_ra_deg + catalog_search_size / np.cos(np.pi * mask_dec_for_ra_search / 180.)
     else:
@@ -160,7 +190,7 @@ def mask_from_catalog(inext='iter0.model.tt0', outext="mask_from_cat.mask",
 
         for row in catalog_within_ra_and_dec_range:
             numeric_dir = {'numeric': [np.pi * row['RA'] / 180., np.pi * row['DEC'] / 180.]}
-            pixel_dir = mask_im.topixel(numeric_dir)
+            pixel_dir = myia.topixel(numeric_dir)
 
             if np.all(pixel_dir['numeric'][:2] > 0) and np.all(pixel_dir['numeric'][:2] < mask_shape[0]):
                 out1.writelines(ellipse_region.format(row['RA'], row['DEC'], row['Maj'], row['Min'], row['PA']))
@@ -170,7 +200,7 @@ def mask_from_catalog(inext='iter0.model.tt0', outext="mask_from_cat.mask",
     LOG.info('Rejected {0} additional catalog rows outside the image'.format(len(rejected_rows)))
     LOG.info('Wrote reduced catalog to region file: {0}'.format(parsed_catalog_crtf))
 
-    mask_im.done()
+    myia.done()
 
     # region text file to mask
 
