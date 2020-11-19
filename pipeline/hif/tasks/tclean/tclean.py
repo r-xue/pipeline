@@ -252,7 +252,7 @@ class Tclean(cleanbase.CleanBase):
             inputs.pblimit = self.pblimit_image
 
         # Remove MSs that do not contain data for the given field(s)
-        scanidlist, visindexlist = self.image_heuristics.get_scanidlist(inputs.vis, inputs.field, inputs.intent)
+        _, visindexlist = self.image_heuristics.get_scanidlist(inputs.vis, inputs.field, inputs.intent)
         filtered_vislist = [inputs.vis[i] for i in visindexlist]
         if filtered_vislist != inputs.vis:
             inputs.vis = filtered_vislist
@@ -517,7 +517,7 @@ class Tclean(cleanbase.CleanBase):
                 if spwsel_spwid in ('ALL', '', 'NONE'):
                     spwsel_spwid_refer = 'LSRK'
                 else:
-                    spwsel_spwid_freqs, spwsel_spwid_refer = spwsel_spwid.split()
+                    _, spwsel_spwid_refer = spwsel_spwid.split()
 
                 if spwsel_spwid_refer != 'LSRK':
                     LOG.warn('Frequency selection is specified in %s but must be in LSRK' % spwsel_spwid_refer)
@@ -526,8 +526,7 @@ class Tclean(cleanbase.CleanBase):
             inputs.spwsel_all_cont = all_continuum
 
         # Get TOPO frequency ranges for all MSs
-        (spw_topo_freq_param, spw_topo_chan_param, spw_topo_freq_param_dict, spw_topo_chan_param_dict,
-         total_topo_bw, aggregate_topo_bw, aggregate_lsrk_bw) = self.image_heuristics.calc_topo_ranges(inputs)
+        (spw_topo_freq_param, _, _, spw_topo_chan_param_dict, _, _, aggregate_lsrk_bw) = self.image_heuristics.calc_topo_ranges(inputs)
 
         # Save continuum frequency ranges for later.
         if (inputs.specmode == 'cube') and (inputs.spwsel_lsrk.get('spw%s' % inputs.spw, None) not in (None,
@@ -541,13 +540,9 @@ class Tclean(cleanbase.CleanBase):
             # Override with manually set value
             sensitivity = qaTool.convert(inputs.sensitivity, 'Jy')['value']
             eff_ch_bw = 1.0
-            sens_bw = 1.0
         else:
             # Get a noise estimate from the CASA sensitivity calculator
-            (sensitivity,
-             eff_ch_bw,
-             sens_bw,
-             per_spw_cont_sensitivities_all_chan) = \
+            (sensitivity, eff_ch_bw, _, per_spw_cont_sensitivities_all_chan) = \
                 self.image_heuristics.calc_sensitivities(inputs.vis, inputs.field, inputs.intent, inputs.spw,
                                                          inputs.nbin, spw_topo_chan_param_dict, inputs.specmode,
                                                          inputs.gridder, inputs.cell, inputs.imsize, inputs.weighting,
@@ -647,8 +642,6 @@ class Tclean(cleanbase.CleanBase):
 
         inputs = self.inputs
 
-        cqa = casatools.quanta
-
         # Compute the dirty image
         LOG.info('Compute the dirty image')
         iteration = 0
@@ -666,12 +659,6 @@ class Tclean(cleanbase.CleanBase):
                     return result
                 elif bad_psf_channels.shape != (0,):
                     LOG.warn('Found bad PSF fits for SPW %s in channels %s' % (inputs.spw, ','.join(map(str, bad_psf_channels))))
-                    newcommonbeam_major_arcsec = cqa.getvalue(cqa.convert(newcommonbeam['major'], 'arcsec'))[0]
-                    newcommonbeam_minor_arcsec = cqa.getvalue(cqa.convert(newcommonbeam['minor'], 'arcsec'))[0]
-                    newcommonbeam_pa_deg = cqa.getvalue(cqa.convert(newcommonbeam['pa'], 'deg'))[0]
-                    # For Cycle 7 the new common beam shall not yet be used (PIPE-375).
-                    #LOG.warn('Replacing bad common beam for SPW %s with %#.3g x %#.3g arcsec @ %.1f deg' % (inputs.spw, newcommonbeam_major_arcsec, newcommonbeam_minor_arcsec, newcommonbeam_pa_deg))
-                    #inputs.restoringbeam = ['%#.3garcsec' % (newcommonbeam_major_arcsec), '%#.3garcsec' % (newcommonbeam_minor_arcsec), '%.1fdeg' % (newcommonbeam_pa_deg)]
 
         # Determine masking limits depending on PB
         extension = '.tt0' if result.multiterm else ''
@@ -748,8 +735,8 @@ class Tclean(cleanbase.CleanBase):
         while keep_iterating:
             # Create the name of the next clean mask from the root of the
             # previous residual image.
-            rootname, ext = os.path.splitext(result.residual)
-            rootname, ext = os.path.splitext(rootname)
+            rootname, _ = os.path.splitext(result.residual)
+            rootname, _ = os.path.splitext(rootname)
 
             # Delete any old files with this naming root
             filenames = glob.glob('%s.iter%s*' % (rootname, iteration))
@@ -1026,8 +1013,6 @@ class Tclean(cleanbase.CleanBase):
     # worked well, then this image should just contain noise.
     def _calc_mom0_8_fc(self, result):
 
-        context = self.inputs.context
-
         # Find max iteration that was performed.
         maxiter = max(result.iterations.keys())
 
@@ -1164,8 +1149,7 @@ class Tclean(cleanbase.CleanBase):
 
         See PIPE-558 (https://open-jira.nrao.edu/browse/PIPE-558).
         '''
-        context = self.inputs.context
-
+        
         # Find max iteration that was performed.
         maxiter = max(result.iterations.keys())
 

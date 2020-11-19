@@ -158,7 +158,7 @@ class ImageParamsHeuristics(object):
             p = re.compile('([\d.]*)(~)([\d.]*)(\D*)')
             try:
                 line_regions = p.findall(open(linesfile, 'r').read().replace('\n', '').replace(';', '').replace(' ', ''))
-            except Exception as e:
+            except Exception:
                 line_regions = []
             line_ranges_GHz = []
             for line_region in line_regions:
@@ -343,7 +343,6 @@ class ImageParamsHeuristics(object):
 
         # put code in try-block to ensure that imager.done gets
         # called at the end
-        cell = None
         valid_data = {}
         makepsf_beams = []
         try:
@@ -372,7 +371,7 @@ class ImageParamsHeuristics(object):
                              (str(makepsf_beam), field, intent, ','.join(map(str, sorted(spwids)))))
                     if makepsf_beam != 'invalid':
                         makepsf_beams.append(makepsf_beam)
-                except Exception as e:
+                except Exception:
                     local_known_beams['recalc'] = True
                     local_known_beams['robust'] = robust
                     local_known_beams['uvtaper'] = uvtaper
