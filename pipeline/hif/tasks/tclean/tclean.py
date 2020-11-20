@@ -659,6 +659,11 @@ class Tclean(cleanbase.CleanBase):
                     return result
                 elif bad_psf_channels.shape != (0,):
                     LOG.warn('Found bad PSF fits for SPW %s in channels %s' % (inputs.spw, ','.join(map(str, bad_psf_channels))))
+                    # For Cycle 7 the new common beam shall not yet be used (PIPE-375).
+                    # In the future, we might use the PIPE-375 method to calculate unskewed
+                    # common beam in case of PSF fit problems.  For implementation details see
+                    # https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/browse/pipeline/hif/tasks/tclean/tclean.py?at=9b8902e66bf44e644e612b1980e5aee5361e8ddd#607
+
 
         # Determine masking limits depending on PB
         extension = '.tt0' if result.multiterm else ''
