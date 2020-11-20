@@ -10,6 +10,7 @@ import string
 from typing import Union, List, Dict, Sequence
 
 import numpy as np
+import bisect
 
 from .conversion import range_to_list
 from .. import casatools
@@ -18,7 +19,8 @@ from .. import logging
 LOG = logging.get_logger(__name__)
 
 __all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_caltable_polarizations',
-           'flagged_intervals', 'get_field_identifiers', 'get_receiver_type_for_spws', 'get_casa_quantity']
+           'flagged_intervals', 'get_field_identifiers', 'get_receiver_type_for_spws', 'get_casa_quantity',
+           'get_si_prefix']
 
 
 def find_ranges(data: Union[str, List[int]]) -> str:
@@ -270,3 +272,52 @@ def get_casa_quantity(value: Union[None, Dict, str, float, int]) -> Dict:
         return casatools.quanta.quantity(value)
     else:
         return casatools.quanta.quantity(0.0)
+
+
+def get_si_prefix(value: float, select: str = 'mu', lztol: int = 0) -> tuple:
+    """Obtain the best SI unit prefix option for a numeric value,
+
+    A "best" SI prefix from a specified prefix collection is defined by minimizing :
+        * leading zeros (possibly to a specified tolerance limit, see `lztol`)
+        * significant digits before the decimal point
+    , after the prefix is applied.
+
+    Args:
+        value (float): the numerical value for picking the prefix
+        select (str, optional): SI prefix candidates, a substring of "yzafpnum kMGTPEZY") . 
+            Defaults to 'mu'.
+        lztol (int, optional): leading zeros tolerance. 
+            Defaults to 0 (avoid any leading zeros when possible)
+
+    Returns:
+        tuple: (prefix_string, prefix_scale)
+
+    Examples:
+
+    e.g. for frequency value in Hz
+    >>> get_si_prefix(10**7,select='kMGT')
+    ('M', 1000000.0)
+
+    e.g. for flux value in Jy
+    >>> get_si_prefix(1.0,select='um')
+    ('', 1.0)
+    >>> get_si_prefix(0.9,select='um')
+    ('m', 0.001)
+    >>> get_si_prefix(1e-4,select='um')
+    ('u', 1e-06)
+    >>> get_si_prefix(0.9,select='um',lztol=1)
+    ('', 1.0)
+
+    """
+
+    sp_tab = "yzafpnum kMGTPEZY"
+
+    sp_list, sp_scale = zip(*[(p, 10**((idx-8)*3.0))
+                              for idx, p in enumerate(sp_tab) if p in select+' '])
+    idx = bisect.bisect(sp_scale, abs(value)*10**lztol)
+    idx = max(idx-1, 0)
+
+    if sp_list[idx] is ' ':
+        return '', sp_scale[idx]
+    else:
+        return sp_list[idx], sp_scale[idx]
