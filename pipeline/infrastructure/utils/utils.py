@@ -275,7 +275,7 @@ def get_casa_quantity(value: Union[None, Dict, str, float, int]) -> Dict:
 
 
 def get_si_prefix(value: float, select: str = 'mu', lztol: int = 0) -> tuple:
-    """Obtain the best SI unit prefix option for a numeric value,
+    """Obtain the best SI unit prefix option for a numeric value.
 
     A "best" SI prefix from a specified prefix collection is defined by minimizing :
         * leading zeros (possibly to a specified tolerance limit, see `lztol`)
@@ -283,11 +283,11 @@ def get_si_prefix(value: float, select: str = 'mu', lztol: int = 0) -> tuple:
     , after the prefix is applied.
 
     Args:
-        value (float): the numerical value for picking the prefix
-        select (str, optional): SI prefix candidates, a substring of "yzafpnum kMGTPEZY") . 
+        value (float): the numerical value for picking the prefix.
+        select (str, optional): SI prefix candidates, a substring of "yzafpnum kMGTPEZY").
             Defaults to 'mu'.
-        lztol (int, optional): leading zeros tolerance. 
-            Defaults to 0 (avoid any leading zeros when possible)
+        lztol (int, optional): leading zeros tolerance.
+            Defaults to 0 (avoid any leading zeros when possible).
 
     Returns:
         tuple: (prefix_string, prefix_scale)
@@ -301,23 +301,25 @@ def get_si_prefix(value: float, select: str = 'mu', lztol: int = 0) -> tuple:
     e.g. for flux value in Jy
     >>> get_si_prefix(1.0,select='um')
     ('', 1.0)
-    >>> get_si_prefix(0.9,select='um')
+    >>> get_si_prefix(0.0,select='um')
+    ('', 1.0)
+    >>> get_si_prefix(-0.9,select='um')
     ('m', 0.001)
-    >>> get_si_prefix(1e-4,select='um')
-    ('u', 1e-06)
     >>> get_si_prefix(0.9,select='um',lztol=1)
+    ('', 1.0)
+    >>> get_si_prefix(1e-7,select='um')
+    ('u', 1e-06)
+    >>> get_si_prefix(1e3,select='um')
     ('', 1.0)
 
     """
-
-    sp_tab = "yzafpnum kMGTPEZY"
-
-    sp_list, sp_scale = zip(*[(p, 10**((idx-8)*3.0))
-                              for idx, p in enumerate(sp_tab) if p in select+' '])
-    idx = bisect.bisect(sp_scale, abs(value)*10**lztol)
-    idx = max(idx-1, 0)
-
-    if sp_list[idx] is ' ':
-        return '', sp_scale[idx]
+    if value == 0:
+        return '', 1.0
     else:
-        return sp_list[idx], sp_scale[idx]
+        sp_tab = "yzafpnum kMGTPEZY"
+        sp_list, sp_pow = zip(*[(p, (idx-8)*3.0)
+                                for idx, p in enumerate(sp_tab) if p in select+' '])
+        idx = bisect.bisect(sp_pow, np.log10(abs(value))+lztol)
+        idx = max(idx-1, 0)
+
+        return sp_list[idx].strip(), 10.**sp_pow[idx]

@@ -167,21 +167,20 @@ def make_flux_table(context, results):
                 fluxes = collections.defaultdict(lambda: 'N/A')
 
                 for stokes in ['I', 'Q', 'U', 'V']:
-                    try:                        
+                    try:
                         flux = getattr(measurement, stokes)
                         unc = getattr(measurement.uncertainty, stokes)
                         flux_jy = flux.to_units(measures.FluxDensityUnits.JANSKY)
                         if stokes == 'I':
                             flux_jy_I = flux_jy
                         unc_jy = unc.to_units(measures.FluxDensityUnits.JANSKY)
-
+                        sp_str, sp_scale = utils.get_si_prefix(flux_jy, lztol=0)
                         if flux_jy != 0 and unc_jy != 0:
                             unc_ratio = decimal.Decimal('100')*(unc_jy/flux_jy)
-                            uncertainty = ' &#177; %s (%0.1f%%)' % (str(unc), unc_ratio)
+                            fluxes[stokes] = '{:.3f} &#177 {:.3f} {} ({:.1f}%)'.format(
+                                float(flux_jy)/sp_scale, float(unc_jy)/sp_scale, sp_str+'Jy', unc_ratio)
                         else:
-                            uncertainty = ''
-
-                        fluxes[stokes] = '%s%s' % (flux, uncertainty)
+                            fluxes[stokes] = '{:.3f} {}'.format(float(flux_jy)/sp_scale, sp_str+'Jy')
                     except:
                         pass
 
@@ -228,17 +227,16 @@ def make_flux_table(context, results):
                             try:
                                 fsflux = getattr(fs_measurement, stokes)
                                 fsunc = getattr(fs_measurement.uncertainty, stokes)
-
                                 fsflux_jy = fsflux.to_units(measures.FluxDensityUnits.JANSKY)
                                 fsunc_jy = fsunc.to_units(measures.FluxDensityUnits.JANSKY)
-
+                                sp_str, sp_scale = utils.get_si_prefix(fsflux_jy, lztol=0)
                                 if fsflux_jy != 0 and fsunc_jy != 0:
                                     fsunc_ratio = decimal.Decimal('100') * (fsunc_jy / fsflux_jy)
-                                    fsunc_str = ' &#177; %s (%0.1f%%)' % (str(fsunc), fsunc_ratio)
+                                    fsfluxes[stokes] = '{:.3f} &#177 {:.3f} {} ({:.1f}%)'.format(
+                                        float(fsflux_jy)/sp_scale, float(fsunc_jy)/sp_scale, sp_str+'Jy', fsunc_ratio)
                                 else:
-                                    fsunc_str = ''
+                                    fsfluxes[stokes] = '{:.3f} {}'.format(float(fsflux_jy)/sp_scale, sp_str+'Jy')
 
-                                fsfluxes[stokes] = '%s%s' % (fsflux, fsunc_str)
                             except:
                                 pass
                         try:
