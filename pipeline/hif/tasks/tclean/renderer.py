@@ -243,7 +243,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     threshold_quantity = qaTool.convert(qaTool.quantity(r.threshold, 'Jy'), 'Jy')
                     sp_str, sp_scale = utils.get_si_prefix(threshold_quantity['value'], lztol=1)
                     row_cleaning_threshold = '{:.2g} {}'.format(
-                        threshold_quantity['value']/sp_scale, sp_str+threshold_quantity['unit'])
+                        threshold_quantity['value']/sp_scale, sp_str+brightness_unit)
                     if r.dirty_dynamic_range:
                         row_cleaning_threshold += '<br>Dirty DR: %.2g' % r.dirty_dynamic_range
                         row_cleaning_threshold += '<br>DR correction: %.2g' % r.DR_correction_factor
