@@ -303,10 +303,10 @@ class UVcontFit(basetask.StandardTaskTemplate):
                     LOG.info('Input continuum frequency ranges for MS %s and spw %d are %s' % (
                         inputs.ms.basename, int(spw_id), cranges_spwsel[sname][spw_id]))
                 try:
-                    # freq_ranges, chan_ranges, aggregate_lsrk_bw = contfile_handler.lsrk_to_topo(
+                    # freq_ranges, chan_ranges, aggregate_lsrk_bw = contfile_handler.to_topo(
                     #     cranges_spwsel[sname][spw_id], [inputs.vis], [rep_field_id], int(spw_id),
                     #     self.inputs.context.observing_run)
-                    freq_ranges, chan_ranges, aggregate_lsrk_bw = contfile_handler.lsrk_to_topo(
+                    freq_ranges, chan_ranges, aggregate_lsrk_bw = contfile_handler.to_topo(
                         cranges_spwsel[sname][spw_id], [inputs.vis], [rep_field_id], int(virtual_spw_id),
                         self.inputs.context.observing_run)
                     LOG.info('Output continuum frequency range for MS %s and spw %d are %s' % (

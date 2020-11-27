@@ -182,7 +182,9 @@ class CleanSummary(object):
                     if r.is_eph_obj:
                         field_ids = [f.id for f in ref_ms.fields if f.name == miscinfo['field']]
                         result_lsrk = csu.advisechansel(msname=ref_ms.name, fieldid=field_ids[0], spwselection=str(real_spw), getfreqrange=True, freqframe="LSRK")
+                        csu.done()
                         result_rest = csu.advisechansel(msname=ref_ms.name, fieldid=field_ids[0], spwselection=str(real_spw), getfreqrange=True, freqframe="SOURCE", ephemtable="TRACKFIELD")
+                        csu.done()
                         lsrk2rest_scaling_factor = float(cqa.getvalue(cqa.convert(result_rest['freqstart'], 'Hz'))) / float(cqa.getvalue(cqa.convert(result_lsrk['freqstart'], 'Hz')))
                     else:
                         lsrk2rest_scaling_factor = 1.0
