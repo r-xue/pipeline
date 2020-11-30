@@ -5,7 +5,7 @@ import string
 import matplotlib.dates as mdates
 import matplotlib.ticker as ticker
 import numpy as np
-import pylab as plt
+import matplotlib.pyplot as plt
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools

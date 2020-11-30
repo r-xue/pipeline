@@ -1,7 +1,7 @@
 import math
 from decimal import Decimal
 
-import matplotlib.pyplot
+import matplotlib.pyplot as plt
 import numpy
 import scipy.interpolate
 from matplotlib.lines import Line2D
@@ -52,7 +52,7 @@ def plot_mosaic(ms, source, figfile):
     x_label_offset = 0.02 * float(ra_range.to_units(ArcUnits.ARC_SECOND))
     y_label_offset = 0.02 * float(dec_range.to_units(ArcUnits.ARC_SECOND))
 
-    fig = matplotlib.pyplot.figure()
+    fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
 
     taper = antenna_taper_factor(ms.antenna_array.name)
@@ -125,7 +125,7 @@ def plot_mosaic(ms, source, figfile):
     ax.invert_xaxis()
 
     fig.savefig(figfile)
-    matplotlib.pyplot.close(fig)
+    plt.close(fig)
 
 
 def get_arc_formatter(precision):

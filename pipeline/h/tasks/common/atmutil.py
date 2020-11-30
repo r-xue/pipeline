@@ -2,7 +2,7 @@ import math
 import os
 
 import numpy
-import pylab as pl
+import matplotlib.pyplot as plt
 
 import pipeline.extern.adopted as adopted
 from pipeline.infrastructure import casatools
@@ -96,21 +96,21 @@ def test(pwv=1.0, elevation=45.0):
 
 
 def plot(frequency, dry_opacity, wet_opacity, transmission):
-    pl.clf()
-    a1 = pl.gcf().gca()
-    pl.plot(frequency, dry_opacity, label='dry')
-    pl.plot(frequency, wet_opacity, label='wet')
-    pl.legend(loc='upper left', bbox_to_anchor=(0., 0.5))
+    plt.clf()
+    a1 = plt.gcf().gca()
+    plt.plot(frequency, dry_opacity, label='dry')
+    plt.plot(frequency, wet_opacity, label='wet')
+    plt.legend(loc='upper left', bbox_to_anchor=(0., 0.5))
     a2 = a1.twinx()
-    a2.yaxis.set_major_formatter(pl.NullFormatter())
-    a2.yaxis.set_major_locator(pl.NullLocator())
-    pl.gcf().sca(a2)
-    pl.plot(frequency, transmission, 'm-')
+    a2.yaxis.set_major_formatter(plt.NullFormatter())
+    a2.yaxis.set_major_locator(plt.NullLocator())
+    plt.gcf().sca(a2)
+    plt.plot(frequency, transmission, 'm-')
     M = transmission.min()
     Y = 0.8
     ymin = (M - Y) / (1.0 - Y)
     ymax = transmission.max() + (1.0 - transmission.max()) * 0.1
-    pl.ylim([ymin, ymax])
+    plt.ylim([ymin, ymax])
 
 
 def get_spw_spec(vis, spw_id):

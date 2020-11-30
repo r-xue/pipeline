@@ -9,13 +9,14 @@
 <description>
 </description>
 <input>
-    <param type="stringArray" name="vis" subparam="true">
+    <param type="stringVec" name="vis" subparam="true">
 	<description>List of input visibility data</description>
 	<value></value>
     </param>
 
 
     <param type="string" name="pipelinemode">
+    <shortdescription>The pipeline operating mode</shortdescription>
 	<description>The pipeline operating mode</description>
 	<value>automatic</value>
 	<allowed kind="enum">
@@ -26,11 +27,13 @@
     </param>
 
     <param type="bool" name="dryrun" subparam="true">
+    <shortdescription>Run the task (False) or display task command (True)</shortdescription>
 	<description>Run the task (False) or display task command (True)</description>
 	<value>False</value>
     </param>
 
     <param type="bool" name="acceptresults" subparam="true">
+    <shortdescription>Add the results into the pipeline context</shortdescription>
 	<description>Add the results into the pipeline context</description>
 	<value>True</value>
     </param>
@@ -40,13 +43,13 @@
 	    <equals type="string" value="automatic">
 	    </equals>
 	    <equals type="string" value="interactive">
-                <default param="vis"><value type="stringArray"></value></default>
+                <default param="vis"><value type="stringVec"></value></default>
 
 		<default param="dryrun"><value type="bool">False</value></default>
 		<default param="acceptresults"><value type="bool">True</value></default>
 	    </equals>
 	    <equals type="string" value="getinputs">
-                <default param="vis"><value type="stringArray"></value></default>
+                <default param="vis"><value type="stringVec"></value></default>
 
 	    </equals>
 	</when>
@@ -54,13 +57,6 @@
 
 </input>
 
-<output>
-    <param type="any" name="results">
-        <description>The output results object</description>
-        <any type="variant"/>
-        <value></value>
-    </param>
-</output>
 <returns type="void"/>
 
 
