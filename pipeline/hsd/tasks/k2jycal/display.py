@@ -2,7 +2,7 @@ import collections
 import os
 
 import numpy
-import pylab as pl
+import matplotlib.pyplot as plt
 
 import pipeline.infrastructure.renderer.logger as logger
 from ..common.display import DPISummary
@@ -28,8 +28,8 @@ class K2JyHistDisplay(object):
             raise ValueError("valid_factors should be dictionary or an iterable")
 
     def plot(self):
-        pl.ioff()
-        pl.clf()
+        plt.ioff()
+        plt.clf()
 
         return list(self._plot())
 
@@ -65,16 +65,16 @@ class K2JyHistDisplay(object):
         minval = min(data.min(), medval*0.7)
         num_bin = int(numpy.ceil(max((maxval-minval)/bin_width, 1)))
 
-        pl.hist(factors, range=[minval, maxval], bins=num_bin,
+        plt.hist(factors, range=[minval, maxval], bins=num_bin,
                 histtype='barstacked', align='mid', label=labels)
-        #pl.hist(factors, bins='auto', histtype='barstacked', align='mid', label=labels)
-        pl.xlabel('Jy/K factor', fontsize=11)
-        pl.ylabel('Numbers', fontsize=11)
-        pl.title('Jy/K factors (SPW %d)' % self.spw, fontsize=11)
-        pl.legend(loc=1)
+        #plt.hist(factors, bins='auto', histtype='barstacked', align='mid', label=labels)
+        plt.xlabel('Jy/K factor', fontsize=11)
+        plt.ylabel('Numbers', fontsize=11)
+        plt.title('Jy/K factors (SPW %d)' % self.spw, fontsize=11)
+        plt.legend(loc=1)
 
         plotfile = os.path.join(self.stage_dir, 'jyperk_spw%s.png' % self.spw)
-        pl.savefig(plotfile, format='png', dpi=DPISummary)
+        plt.savefig(plotfile, format='png', dpi=DPISummary)
         plot = self._create_plot(plotfile, 'Jy/K factor', 'Number of MS, ant, and pol combinations')
         yield plot
 

@@ -5,8 +5,7 @@ import operator
 import os
 from typing import Optional
 
-import numpy
-import pylab
+import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
@@ -320,7 +319,7 @@ class MeasurementSet(object):
                     (self.basename))
 
                 # Now find the closest match to the center frequency
-                max_freqdiff = numpy.finfo('d').max
+                max_freqdiff = np.finfo('d').max
                 for spw in target_spws:
                     freqdiff = abs(float(spw.centre_frequency.value) - target_frequency_topo['m0']['value'])
                     if freqdiff < max_freqdiff:
@@ -523,11 +522,11 @@ class MeasurementSet(object):
         #     field_names = table.getcol('NAME')
 
         # with casatools.TableReader(vis) as table:
-        #     scanNums = sorted(numpy.unique(table.getcol('SCAN_NUMBER')))
+        #     scanNums = sorted(np.unique(table.getcol('SCAN_NUMBER')))
         #     field_scans = []
         #     for ii in range(0,numFields):
         #         subtable = table.query('FIELD_ID==%s'%ii)
-        #         field_scans.append(list(numpy.unique(subtable.getcol('SCAN_NUMBER'))))
+        #         field_scans.append(list(np.unique(subtable.getcol('SCAN_NUMBER'))))
         #         subtable.close()
 
         # field_scans is now a list of lists containing the scans for each field.
@@ -564,7 +563,7 @@ class MeasurementSet(object):
             integration_times.append(scan_summary[str(ii)]['0']['IntegrationTime'])
 
         maximum_integration_time = max(integration_times)
-        median_integration_time = numpy.median(integration_times)
+        median_integration_time = np.median(integration_times)
 
         int_time = maximum_integration_time
 
@@ -715,7 +714,7 @@ class MeasurementSet(object):
         # get observed DDIDs for specified field from MAIN
         with casatools.TableReader(vis) as table:
             st = table.query('FIELD_ID=='+str(field))
-            ddids = pylab.unique(st.getcol('DATA_DESC_ID'))
+            ddids = np.unique(st.getcol('DATA_DESC_ID'))
             st.close()
 
         # get SPW_IDs corresponding to those DDIDs
@@ -970,7 +969,7 @@ class MeasurementSet(object):
             taql = '(STATE_ID IN %s AND FIELD_ID IN %s)' % (state_ids, field_ids)
             with contextlib.closing(table.query(taql)) as subtable:
                 integration = subtable.getcol('INTERVAL')          
-            return numpy.median(integration)
+            return np.median(integration)
 
     def get_median_science_integration_time(self, intent=None, spw=None):
         """Get the median integration time for science targets used to get data for the given
@@ -1025,7 +1024,7 @@ class MeasurementSet(object):
             taql = '(STATE_ID IN %s AND FIELD_ID IN %s AND DATA_DESC_ID in %s)' % (science_state_ids, science_field_ids, science_spw_dd_ids)
             with contextlib.closing(table.query(taql)) as subtable:
                 integration = subtable.getcol('INTERVAL')          
-            return numpy.median(integration)
+            return np.median(integration)
 
     @property
     def reference_antenna(self):

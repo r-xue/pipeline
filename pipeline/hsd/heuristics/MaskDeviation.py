@@ -1,7 +1,7 @@
 import os
 
-import pylab as PL
-import numpy as NP
+import matplotlib.pyplot as plt
+import numpy as np
 
 import pipeline.infrastructure.api as api
 
@@ -100,7 +100,7 @@ class MaskDeviation(object):
             npol, nchan, nrow = r['flag'].shape
             self.nrow = npol * nrow
             self.nchan = nchan
-            self.data= NP.real(r[colname.lower()]).transpose((2, 0, 1)).reshape((nrow * npol, nchan))
+            self.data= np.real(r[colname.lower()]).transpose((2, 0, 1)).reshape((nrow * npol, nchan))
             self.flag = r['flag'].transpose((2, 0, 1)).reshape((nrow * npol, nchan))
 
         LOG.debug('MaskDeviation.ReadDataFromMS: %s %s'%(self.nrow, self.nchan))
@@ -121,19 +121,19 @@ class MaskDeviation(object):
             with_flag = False
         for i in range(self.nrow):
             if with_flag:
-                if NP.all(self.flag[i] == True):
+                if np.all(self.flag[i] == True):
                     continue
-                median = NP.median(self.data[i][self.flag[i] == False])
+                median = np.median(self.data[i][self.flag[i] == False])
                 std = self.data[i][self.flag[i] == False].std()
             else:
-                median = NP.median(self.data[i])
+                median = np.median(self.data[i])
                 std = self.data[i].std()
             # mask: True => valid, False => invalid
             mask = (self.data[i]<(median+threshold*std)) * (self.data[i]>(median-threshold*std))
             if with_flag:
-                medianval = NP.median(self.data[i][NP.logical_and(mask == True, self.flag[i] == False)])
+                medianval = np.median(self.data[i][np.logical_and(mask == True, self.flag[i] == False)])
             else:
-                medianval = NP.median(self.data[i][NP.where(mask == True)])
+                medianval = np.median(self.data[i][np.where(mask == True)])
             LOG.trace('MaskDeviation.SubtractMedian: row %s %s %s %s %s %s'%(i, median, std, medianval, mask.sum(), self.nchan))
             self.data[i] -= medianval
 
@@ -148,7 +148,7 @@ class MaskDeviation(object):
             with_flag = False
 
         if with_flag:
-            work_data = NP.ma.masked_array(self.data, self.flag)
+            work_data = np.ma.masked_array(self.data, self.flag)
         else:
             work_data = self.data
 
@@ -183,16 +183,16 @@ class MaskDeviation(object):
         mask = (stdSP>-99999)
 
         if with_flag:
-            mask = NP.logical_and(mask, self.stdSP.mask == False)
+            mask = np.logical_and(mask, self.stdSP.mask == False)
 
         Nmask0 = 0
         for i in range(iteration):
-            median = NP.median(stdSP[NP.where(mask == True)])
-            std = stdSP[NP.where(mask == True)].std()
+            median = np.median(stdSP[np.where(mask == True)])
+            std = stdSP[np.where(mask == True)].std()
             mask = stdSP<(median+threshold*std)
             #mask = (self.stdSP<(median+threshold*std)) * (self.stdSP>(median-threshold*std))
             if with_flag:
-                mask = NP.logical_and(mask, self.stdSP.mask == False)
+                mask = np.logical_and(mask, self.stdSP.mask == False)
             Nmask = mask.sum()
             LOG.trace('MaskDeviation.CalcRange: %s %s %s %s'%(median, std, Nmask, self.nchan))
             if Nmask == Nmask0: break
@@ -203,14 +203,14 @@ class MaskDeviation(object):
         mask = self.ExtendMask(mask, median+extension*std)
         LOG.trace('MaskDeviation.CalcRange: after ExtendMask %s'%(mask))
 
-        self.mask = NP.arange(self.nchan)[NP.where(mask == False)]
+        self.mask = np.arange(self.nchan)[np.where(mask == False)]
         LOG.trace('MaskDeviation.CalcRange: self.mask=%s'%(self.mask))
         RL = (mask*1)[1:]-(mask*1)[:-1]
         LOG.trace('MaskDeviation.CalcRange: RL=%s'%(RL))
-        L = NP.arange(self.nchan)[NP.where(RL==-1)]+1
-        R = NP.arange(self.nchan)[NP.where(RL==1)]
-        if len(self.mask) > 0 and self.mask[0] == 0: L = NP.insert(L, 0, 0)
-        if len(self.mask) > 0 and self.mask[-1] == self.nchan-1: R = NP.insert(R, len(R), self.nchan-1)
+        L = np.arange(self.nchan)[np.where(RL == -1)] + 1
+        R = np.arange(self.nchan)[np.where(RL == 1)]
+        if len(self.mask) > 0 and self.mask[0] == 0: L = np.insert(L, 0, 0)
+        if len(self.mask) > 0 and self.mask[-1] == self.nchan-1: R = np.insert(R, len(R), self.nchan - 1)
         self.masklist = []
         for i in range(len(L)):
             self.masklist.append([L[i], R[i]])
@@ -238,32 +238,32 @@ class MaskDeviation(object):
         """
         color = ['r', 'm', 'b', 'g', 'k']
         label = ['max', 'mean', 'min', 'STD', 'MASK']
-        PL.clf()
-        PL.plot(self.maxSP, color=color[0])
-        PL.plot(self.meanSP, color=color[1])
-        PL.plot(self.minSP, color=color[2])
-        PL.plot(self.stdSP, color=color[3])
-        PL.xlim(-10, self.nchan+9)
+        plt.clf()
+        plt.plot(self.maxSP, color=color[0])
+        plt.plot(self.meanSP, color=color[1])
+        plt.plot(self.minSP, color=color[2])
+        plt.plot(self.stdSP, color=color[3])
+        plt.xlim(-10, self.nchan + 9)
         posx = (self.nchan + 20) * 0.8 - 10
         deltax = (self.nchan + 20) * 0.05
         posy = (self.ymax - self.ymin) * 0.95 + self.ymin
         deltay = (self.ymax - self.ymin) * 0.06
         for i in range(len(label)):
-            PL.text(posx, posy - i * deltay, label[i], color=color[i])
-        PL.title(self.infile)
+            plt.text(posx, posy - i * deltay, label[i], color=color[i])
+        plt.title(self.infile)
 
     def PlotRange(self, L, R):
         """
         Plot masked range
         """
         if len(L)>0:
-            PL.vlines(L, self.ymin, self.ymax)
-            PL.vlines(R, self.ymin, self.ymax)
+            plt.vlines(L, self.ymin, self.ymax)
+            plt.vlines(R, self.ymin, self.ymax)
             Y = [(self.ymax-self.ymin)*0.8+self.ymin for x in range(len(L))]
-            PL.hlines(Y, L, R)
+            plt.hlines(Y, L, R)
 
     def SavePlot(self):
         """
         Save the plot in PNG format
         """
-        PL.savefig(self.infile+'.png', format='png')
+        plt.savefig(self.infile + '.png', format='png')
