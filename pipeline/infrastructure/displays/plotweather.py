@@ -46,6 +46,21 @@ def plot_weather(vis='', figfile='', station=[], help=False):
     vis = vis.split('/')[-1]
     unique_stations = np.unique(stations)
 
+    try:
+        with casatools.TableReader(vis + '/ASDM_STATION') as table:
+            station_names = table.getcol('name')
+    except:
+        print("Cound not open ASDM_STATION table. The Station IDs (instead of Names) will be used.")
+        station_names = None
+
+    unique_station_names = []
+    for station_id in unique_stations:
+        station_name = str(station_id)
+        if station_names is not None:
+            if any([wx_prefix.lower() in station_names[station_id].lower() for wx_prefix in ['WSTB', 'Meteo', 'OSF']]):
+                station_name = station_names[station_id].replace('Meteo',  '')
+        unique_station_names.append(station_name)
+
     if station:
         if isinstance(station, int):
             if station not in unique_stations:
@@ -177,9 +192,9 @@ def plot_weather(vis='', figfile='', station=[], help=False):
     adesc.xaxis.grid(True, which='major')
     adesc.yaxis.grid(True, which='major')
     if len(unique_stations) > 1:
-        plt.title('blue = station %d,  red = station %d' % (unique_stations[0], unique_stations[1]))
+        plt.title('blue = %s,  red = %s' % (unique_station_names[0], unique_station_names[1]))
     elif len(unique_stations) > 0:
-        plt.title('blue = station %d' % unique_stations[0])
+        plt.title('blue = station %s' % unique_station_names[0])
 
     adesc = plt.subplot(323)
     plt.plot_date(timeplot, relative_humidity, markersize=markersize)
@@ -327,69 +342,3 @@ def RescaleXAxisTimeTicks(xlim, adesc):
         adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 10))))
         adesc.xaxis.set_minor_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 2))))
 
-def getWeatherStationNames(vis, prefix=['WSTB','Meteo','OSF'], 
-                           returnNearestAntennas=False):
-    """
-    Returns a dictionary keyed by ALMA weather station ID, with the value
-    equal to the station name (e.g. 'WSTBn').
-    vis: single measurement set, list, or wildcard string
-    returnNearestAntennas: if True, then return a dictionary with keys being the 
-        weather station names and their values being dictionaries keyed by 'antenna' 
-        name, 'distance' in meters, and 'pad'.
-    If multiple measurement sets are specified, then return a dictionary of 
-    dictionaries keyed by the ms name.
-    -Todd Hunter
-
-    20201124 adapted from getWeatherStationNames of au (v 1.4989 2020/11/19 19:51:07)
-
-    """
-    if (type(vis) == str):
-        if (vis.find('*') >= 0):
-            vislist = sorted(glob.glob(vis))
-        else: # assume comma-delimited string
-            vislist = vis.split(',')
-    else:
-        vislist = vis
-    mydicts = {}
-    for vis in vislist:
-        if (not os.path.exists(vis)):
-            print("Could not find measurement set")
-            return
-        if (type(prefix) != list):
-            prefix = [prefix]
-        asdmStation = vis + '/ASDM_STATION'
-        if (not os.path.exists(asdmStation)):
-            print("This measurement set does not have an ASDM_STATION table.")
-            return
-        mytb = createCasaTool(tbtool)
-        mytb.open(asdmStation)
-        names = mytb.getcol('name')
-        mydict = {}
-        for i,name in enumerate(names):
-            for p in prefix:
-    #            print "Checking if %s contains %s" % (name.lower(),p.lower())
-                if (name.lower().find(p.lower()) >= 0):
-                    mydict[i] = name
-        mytb.close()
-        if (returnNearestAntennas):
-            stations = getWeatherStationPositions(vis)
-            posdict = antennaPosition(vis, verbose=False)
-            mydict = {}
-            pads = getAntennaPads(vis, keyByAntennaName=True)
-            for station in stations:
-                mindistance = 1e12
-                for antenna in list(posdict.keys()):
-                    distance = np.linalg.norm([posdict[antenna][0] - stations[station][0],
-                                               posdict[antenna][1] - stations[station][1],
-                                               posdict[antenna][2] - stations[station][2]])
-    #                print "Distance from %s to %s = %f" % (station, antenna, distance)
-                    if (mindistance > distance):
-                        mindistance = distance
-                        closestAntenna = antenna
-                pad = pads[closestAntenna]
-                mydict[station] = {'antenna': closestAntenna, 'distance': round(mindistance,1), 'pad': pad}
-        mydicts[vis] = mydict
-    if len(mydicts) == 1:
-        return(mydict)
-    else:
-        return(mydicts)
