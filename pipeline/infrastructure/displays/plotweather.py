@@ -326,3 +326,70 @@ def RescaleXAxisTimeTicks(xlim, adesc):
     elif xlim[1] - xlim[0] < 1/24.:
         adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 10))))
         adesc.xaxis.set_minor_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 2))))
+
+def getWeatherStationNames(vis, prefix=['WSTB','Meteo','OSF'], 
+                           returnNearestAntennas=False):
+    """
+    Returns a dictionary keyed by ALMA weather station ID, with the value
+    equal to the station name (e.g. 'WSTBn').
+    vis: single measurement set, list, or wildcard string
+    returnNearestAntennas: if True, then return a dictionary with keys being the 
+        weather station names and their values being dictionaries keyed by 'antenna' 
+        name, 'distance' in meters, and 'pad'.
+    If multiple measurement sets are specified, then return a dictionary of 
+    dictionaries keyed by the ms name.
+    -Todd Hunter
+
+    20201124 adapted from getWeatherStationNames of au (v 1.4989 2020/11/19 19:51:07)
+
+    """
+    if (type(vis) == str):
+        if (vis.find('*') >= 0):
+            vislist = sorted(glob.glob(vis))
+        else: # assume comma-delimited string
+            vislist = vis.split(',')
+    else:
+        vislist = vis
+    mydicts = {}
+    for vis in vislist:
+        if (not os.path.exists(vis)):
+            print("Could not find measurement set")
+            return
+        if (type(prefix) != list):
+            prefix = [prefix]
+        asdmStation = vis + '/ASDM_STATION'
+        if (not os.path.exists(asdmStation)):
+            print("This measurement set does not have an ASDM_STATION table.")
+            return
+        mytb = createCasaTool(tbtool)
+        mytb.open(asdmStation)
+        names = mytb.getcol('name')
+        mydict = {}
+        for i,name in enumerate(names):
+            for p in prefix:
+    #            print "Checking if %s contains %s" % (name.lower(),p.lower())
+                if (name.lower().find(p.lower()) >= 0):
+                    mydict[i] = name
+        mytb.close()
+        if (returnNearestAntennas):
+            stations = getWeatherStationPositions(vis)
+            posdict = antennaPosition(vis, verbose=False)
+            mydict = {}
+            pads = getAntennaPads(vis, keyByAntennaName=True)
+            for station in stations:
+                mindistance = 1e12
+                for antenna in list(posdict.keys()):
+                    distance = np.linalg.norm([posdict[antenna][0] - stations[station][0],
+                                               posdict[antenna][1] - stations[station][1],
+                                               posdict[antenna][2] - stations[station][2]])
+    #                print "Distance from %s to %s = %f" % (station, antenna, distance)
+                    if (mindistance > distance):
+                        mindistance = distance
+                        closestAntenna = antenna
+                pad = pads[closestAntenna]
+                mydict[station] = {'antenna': closestAntenna, 'distance': round(mindistance,1), 'pad': pad}
+        mydicts[vis] = mydict
+    if len(mydicts) == 1:
+        return(mydict)
+    else:
+        return(mydicts)
