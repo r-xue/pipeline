@@ -4,9 +4,11 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
+import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
 from pipeline.infrastructure.utils.conversion import mjd_seconds_to_datetime
 
+LOG = infrastructure.get_logger(__name__)
 
 def plot_weather(vis='', figfile='', station=[], help=False):
     """
@@ -16,11 +18,11 @@ def plot_weather(vis='', figfile='', station=[], help=False):
     present in the data.  The default plot file name will be 'vis'.weather.png.
     """
     if help:
-        print("plot_weather(vis='', figfile='', station=[])")
-        print("  Plots pressure, temperature, relative humidity, wind speed and direction.")
-        print("Station can be a single integer or integer string, or a list of two integers.")
-        print("The default empty list means to plot the data form up to 2 of the stations")
-        print("present in the data.  The default plot file name will be 'vis'.weather.png.")
+        LOG.info("plot_weather(vis='', figfile='', station=[])")
+        LOG.info("  Plots pressure, temperature, relative humidity, wind speed and direction.")
+        LOG.info("Station can be a single integer or integer string, or a list of two integers.")
+        LOG.info("The default empty list means to plot the data form up to 2 of the stations")
+        LOG.info("present in the data.  The default plot file name will be 'vis'.weather.png.")
         return
 
     myfontsize = 8
@@ -39,7 +41,7 @@ def plot_weather(vis='', figfile='', station=[], help=False):
             wind_speed = table.getcol('WIND_SPEED')
             stations = table.getcol('NS_WX_STATION_ID') if 'NS_WX_STATION_ID' in available_cols else []
     except:
-        print("Could not open WEATHER table.  Did you importasdm with asis='*'?")
+        LOG.info("Could not open WEATHER table.  Did you importasdm with asis='*'?")
         return
 
     mjdsec1 = mjdsec
@@ -50,7 +52,7 @@ def plot_weather(vis='', figfile='', station=[], help=False):
         with casatools.TableReader(vis + '/ASDM_STATION') as table:
             station_names = table.getcol('name')
     except:
-        print("Cound not open ASDM_STATION table. The Station IDs (instead of Names) will be used.")
+        LOG.info("Could not open ASDM_STATION table. The Station IDs (instead of Names) will be used.")
         station_names = None
 
     unique_station_names = []
@@ -64,28 +66,28 @@ def plot_weather(vis='', figfile='', station=[], help=False):
     if station:
         if isinstance(station, int):
             if station not in unique_stations:
-                print("Station %d is not in the data.  Present are: " % station, unique_stations)
+                LOG.info("Station %d is not in the data.  Present are: " % station, unique_stations)
                 return
             unique_stations = [station]
         elif isinstance(station, list):
             if len(station) > 2:
-                print("Only 2 stations can be overlaid.")
+                LOG.info("Only 2 stations can be overlaid.")
                 return
             if station[0] not in unique_stations:
-                print("Station %d is not in the data.  Present are: " % station[0], unique_stations)
+                LOG.info("Station %d is not in the data.  Present are: " % station[0], unique_stations)
                 return
             if station[1] not in unique_stations:
-                print("Station %d is not in the data.  Present are: " % station[1], unique_stations)
+                LOG.info("Station %d is not in the data.  Present are: " % station[1], unique_stations)
                 return
             unique_stations = station
         elif isinstance(station, str):
             if station.isdigit():
                 if int(station) not in unique_stations:
-                    print("Station %s is not in the data.  Present are: " % station, unique_stations)
+                    LOG.info("Station %s is not in the data.  Present are: " % station, unique_stations)
                     return
                 unique_stations = [int(station)]
             else:
-                print("Invalid station ID, it must be an integer, or list of integers.")
+                LOG.info("Invalid station ID, it must be an integer, or list of integers.")
                 return
 
     if len(unique_stations) > 1:
@@ -126,10 +128,10 @@ def plot_weather(vis='', figfile='', station=[], help=False):
             # dew point is all zero so it was not measured, so cap the rH at small non-zero value
             relative_humidity = 0.001 * np.ones(len(relative_humidity))
         else:
-            print("Replacing zeros in relative humidity with value computed from dew point and temperature.")
+            LOG.info("Replacing zeros in relative humidity with value computed from dew point and temperature.")
             dew_point_wvp = computeWVP(dew_point)
             ambient_wvp = computeWVP(temperature)
-            print("dWVP=%f, aWVP=%f" % (dew_point_wvp[0], ambient_wvp[0]))
+            LOG.info("dWVP=%f, aWVP=%f" % (dew_point_wvp[0], ambient_wvp[0]))
             relative_humidity = 100*(dew_point_wvp/ambient_wvp)
 
     # take timerange from OBSERVATION table if there is only one unique timestamp
@@ -296,7 +298,7 @@ def plot_weather(vis='', figfile='', station=[], help=False):
         weather_file = figfile
     plt.savefig(weather_file)
     plt.draw()
-    print("Wrote file = %s" % weather_file)
+    LOG.info("Wrote file = %s" % weather_file)
 
 
 def ComputeDewPointCFromRHAndTempC(relativeHumidity, temperature):
