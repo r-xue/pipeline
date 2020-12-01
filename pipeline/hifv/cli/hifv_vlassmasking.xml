@@ -15,12 +15,6 @@
 	<value/>
     </param>
 
-    <param name="phasecenter" type="string">
-    <shortdescription>Phase Center</shortdescription>
-    <description>Phase Center</description>
-    <value></value>
-    </param>
-
     <param name="vlass_ql_database" type="string">
     <shortdescription>vlass_ql_database</shortdescription>
     <description>vlass_ql_database</description>
@@ -37,13 +31,6 @@
     <shortdescription>catalog_search_size</shortdescription>
     <description>catalog_search_size</description>
     <value>1.5</value>
-    </param>
-
-    <param name="mask_shape" type="any">
-        <shortdescription>Mask_shape</shortdescription>
-        <description>Mask_shape</description>
-        <type>doubleVec</type>
-        <value type="doubleVec"/>
     </param>
 
     <param name="pipelinemode" type="string">
