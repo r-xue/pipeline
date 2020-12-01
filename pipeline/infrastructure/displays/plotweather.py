@@ -191,10 +191,16 @@ def plot_weather(vis='', figfile='', station=[], help=False):
     RescaleXAxisTimeTicks(plt.xlim(), adesc)
     adesc.xaxis.grid(True, which='major')
     adesc.yaxis.grid(True, which='major')
-    if len(unique_stations) > 1:
-        plt.title('blue = %s,  red = %s' % (unique_station_names[0], unique_station_names[1]))
-    elif len(unique_stations) > 0:
-        plt.title('blue = station %s' % unique_station_names[0])
+    
+    colors = ['b', 'r']
+    xinc = 0.4
+    labxstart = 0.5-(min(len(unique_station_names), 2)-1.0)*xinc/2.0
+    for idx, station_name in enumerate(unique_station_names):
+        if idx > 1:
+            continue
+        y0 = 1.05
+        plt.text(labxstart+idx*xinc, y0, station_name,
+                 color=colors[idx], transform=adesc.transAxes, ha='center')
 
     adesc = plt.subplot(323)
     plt.plot_date(timeplot, relative_humidity, markersize=markersize)
