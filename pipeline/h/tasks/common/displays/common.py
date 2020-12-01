@@ -5,8 +5,8 @@ import re
 import operator
 import os
 
-import matplotlib
-import matplotlib.pyplot as pyplot
+import matplotlib.dates
+import matplotlib.pyplot as plt
 import numpy
 
 import cachetools
@@ -177,16 +177,8 @@ class PlotmsCalLeaf(object):
             self._title += ' ant {}'.format(', '.join(ant.split(',')))
 
     def plot(self):
-        try:
-            plots = [self._get_plot_wrapper()]
-            return [p for p in plots if p is not None]
-        finally:
-            pass
-            # NOT applicable for plotms
-            # plotcal with time as x axis seems to leave matplotlib
-            # in an open state. Work around this by closing pyplot
-            # after each call.
-            # pyplot.close()
+        plots = [self._get_plot_wrapper()]
+        return [p for p in plots if p is not None]
 
     def _get_figfile(self):
         fileparts = {

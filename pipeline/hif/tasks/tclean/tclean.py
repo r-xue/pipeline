@@ -207,12 +207,8 @@ class Tclean(cleanbase.CleanBase):
                 os.system(mkcmd)
                 self.copy_products(os.path.join(image_name, old_pname), os.path.join(newname, new_pname))
             else:
-                if 'summaryplot.png' in image_name:
-                    LOG.info('Copying {} to {}'.format(image_name, newname))
-                    job = casa_tasks.copyfile(image_name, newname)
-                else:
-                    LOG.info('Copying {} to {}'.format(image_name, newname))
-                    job = casa_tasks.copytree(image_name, newname)
+                LOG.info('Copying {} to {}'.format(image_name, newname))
+                job = casa_tasks.copytree(image_name, newname)
                 self._executor.execute(job)
 
     def prepare(self):
@@ -849,13 +845,6 @@ class Tclean(cleanbase.CleanBase):
             LOG.info('    Residual cleanmask area rms: %s', residual_cleanmask_rms)
             LOG.info('    Residual max: %s', residual_max)
             LOG.info('    Residual min: %s', residual_min)
-
-            # Keep tclean summary plot
-            try:
-                move_job = casa_tasks.move('summaryplot_1.png', '%s.iter%s.summaryplot.png' % (rootname, iteration))
-                self._executor.execute(move_job)
-            except (IOError, OSError):
-                LOG.info('Could not save tclean summary plot.')
 
             # Up the iteration counter
             iteration += 1
