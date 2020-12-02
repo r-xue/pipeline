@@ -294,12 +294,15 @@ def edit_pybdsf_islands(catalog_fits_file='', r_squared_threshold=0.99,
 
     hdu[1].data = catalog_dat[~np.in1d(catalog_dat['Isl_id'], linear_islands)]
 
-    with open(catalog_fits_file.replace('.fits', '') + '.edited.fits', 'w') as out1:
+    edited_catalog_fits_file = catalog_fits_file.replace('.fits', '') + '.edited.fits'
+    with open(edited_catalog_fits_file, 'w') as out1:
         hdu.writeto(out1)
 
     hdu.close()
 
     print('wrote catalog of accepted islands to: {0}'.format(catalog_fits_file.replace('.fits', '') + '.edited.fits'))
+
+    return edited_catalog_fits_file
 
 
 def cat_to_ds9_rgn(catalog_fits_file, outfile='ds9.reg', region_color='red'):

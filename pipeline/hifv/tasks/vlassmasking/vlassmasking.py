@@ -7,7 +7,7 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tasks, task_registry
 import pipeline.infrastructure.casatools as casatools
 
-from pipeline.hifv.heuristics.vip_helper_functions import mask_from_catalog
+from pipeline.hifv.heuristics.vip_helper_functions import mask_from_catalog, edit_pybdsf_islands
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -158,12 +158,15 @@ class Vlassmasking(basetask.StandardTaskTemplate):
             LOG.debug("Executing mask_from_catalog masking mode = {!s}".format(self.inputs.maskingmode))
 
             outext = "secondmask.mask"
-            catalog_fits_file = imagename_base + 'iter1b.image.smooth5.cat.edited.fits'
-            if not os.path.exists(catalog_fits_file):
-                LOG.error("Catalog file {!s} does not exist.".format(catalog_fits_file))
+            initial_catalog_fits_file = imagename_base + 'iter1b.image.smooth5.cat.fits'
+
+            edited_catalog_fits_file = edit_pybdsf_islands(catalog_fits_file=initial_catalog_fits_file)
+
+            if not os.path.exists(edited_catalog_fits_file):
+                LOG.error("Catalog file {!s} does not exist.".format(edited_catalog_fits_file))
 
             mask_from_catalog(inext=inext, outext=outext,
-                              catalog_fits_file=catalog_fits_file,
+                              catalog_fits_file=edited_catalog_fits_file,
                               catalog_search_size=self.inputs.catalog_search_size, mask_shape=mask_shape,
                               frequency=frequency, cell=cell, phasecenter=phasecenter, mask_name=imagename_base+outext)
 
@@ -182,7 +185,7 @@ class Vlassmasking(basetask.StandardTaskTemplate):
         else:
             LOG.error("Invalid maskingmode input.")
 
-        return VlassmaskingResults(inext=inext, outext=outext, catalog_fits_file=catalog_fits_file,
+        return VlassmaskingResults(inext=inext, outext=outext, catalog_fits_file=edited_catalog_fits_file,
                                    catalog_search_size=1.5, outfile=outfile,
                                    combinedmask=combinedmask)
 
