@@ -47,8 +47,9 @@ class MaskSummary(object):
             # extension = '.tt0' if r.multiterm else ''
 
             # mask map
+            cmap = copy.deepcopy(matplotlib.cm.binary)
             plot_wrappers.append(sky.SkyDisplay().plot(self.context, r.combinedmask,
                                                        reportdir=stage_dir, intent='MASK',
-                                                       collapseFunction='mean'))
+                                                       collapseFunction='mean', cmap=cmap))
 
         return [p for p in plot_wrappers if p is not None]
