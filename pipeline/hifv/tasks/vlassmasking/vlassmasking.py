@@ -160,13 +160,13 @@ class Vlassmasking(basetask.StandardTaskTemplate):
             outext = "secondmask.mask"
             initial_catalog_fits_file = imagename_base + 'iter1b.image.smooth5.cat.fits'
 
-            edited_catalog_fits_file = edit_pybdsf_islands(catalog_fits_file=initial_catalog_fits_file)
+            catalog_fits_file = edit_pybdsf_islands(catalog_fits_file=initial_catalog_fits_file)
 
-            if not os.path.exists(edited_catalog_fits_file):
-                LOG.error("Catalog file {!s} does not exist.".format(edited_catalog_fits_file))
+            if not os.path.exists(catalog_fits_file):
+                LOG.error("Catalog file {!s} does not exist.".format(catalog_fits_file))
 
             mask_from_catalog(inext=inext, outext=outext,
-                              catalog_fits_file=edited_catalog_fits_file,
+                              catalog_fits_file=catalog_fits_file,
                               catalog_search_size=self.inputs.catalog_search_size, mask_shape=mask_shape,
                               frequency=frequency, cell=cell, phasecenter=phasecenter, mask_name=imagename_base+outext)
 
@@ -185,7 +185,7 @@ class Vlassmasking(basetask.StandardTaskTemplate):
         else:
             LOG.error("Invalid maskingmode input.")
 
-        return VlassmaskingResults(inext=inext, outext=outext, catalog_fits_file=edited_catalog_fits_file,
+        return VlassmaskingResults(inext=inext, outext=outext, catalog_fits_file=catalog_fits_file,
                                    catalog_search_size=1.5, outfile=outfile,
                                    combinedmask=combinedmask)
 
