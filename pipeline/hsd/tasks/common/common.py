@@ -17,7 +17,7 @@ LOG = infrastructure.get_logger(__name__)
 
 
 def absolute_path(name: str) -> str:
-    """Return an abcolute path of a given file."""
+    """Return an absolute path of a given file."""
     return os.path.abspath(os.path.expanduser(os.path.expandvars(name)))
 
 
@@ -39,7 +39,7 @@ class SingleDishResults(basetask.Results):
     """
     
     def __init__(self, task: Optional[basetask.StandardTaskTemplate]=None,
-                 success: Optional[bool]=None, outcome: Optional[dict]=None):
+                 success: Optional[bool]=None, outcome:  Any=None):
         """
         Initialize class attributes and super class.
         
@@ -90,7 +90,7 @@ class SingleDishResults(basetask.Results):
         return s
 
 
-# ToDO(ksugimoto) THIS CLASS WILL BE REMOVED SHORTLY.
+# TODO(ksugimoto) THIS CLASS WILL BE REMOVED SHORTLY.
 # TODO(ksugimoto) IGNORE IN CODE REVIEW.
 class ParameterContainerJob(object):
     """
