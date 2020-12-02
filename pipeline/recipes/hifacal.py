@@ -5,17 +5,6 @@ import sys
 import traceback
 import inspect
 
-# Make sure CASA exceptions are rethrown
-try:
-    if not __rethrow_casa_exceptions:
-        def_rethrow = False
-    else:
-        def_rethrow = __rethrow_casa_exceptions
-except:
-    def_rethrow = False
-
-__rethrow_casa_exceptions = True
-
 # Pipeline imports
 import pipeline.infrastructure.casatools as casatools
 
@@ -136,6 +125,3 @@ def hifacal(vislist, importonly=True, dbservice=False, pipelinemode='automatic',
 
         casatools.post_to_log("Terminating procedure execution ...",
                               echo_to_screen=echo_to_screen)
-
-        # Restore previous state
-        __rethrow_casa_exceptions = def_rethrow

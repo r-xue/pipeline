@@ -2,17 +2,6 @@
 
 import traceback
 
-# Make sure CASA exceptions are rethrown
-try:
-    if not __rethrow_casa_exceptions:
-        def_rethrow = False
-    else:
-        def_rethrow = __rethrow_casa_exceptions
-except:
-    def_rethrow = False
-
-__rethrow_casa_exceptions = False
-
 # CASA imports
 from h_init_cli import h_init_cli as h_init
 from hifv_importdata_cli import hifv_importdata_cli as hifv_importdata
@@ -86,6 +75,3 @@ def vlassSEIP_taper(vislist, editimlist_infile, importonly=False, pipelinemode='
 
         casatools.post_to_log("VLASS quick look imaging pipeline finished.  Terminating procedure execution ...",
                               echo_to_screen=echo_to_screen)
-
-        # Restore previous state
-        __rethrow_casa_exceptions = def_rethrow
