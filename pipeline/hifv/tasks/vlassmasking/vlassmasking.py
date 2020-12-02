@@ -1,7 +1,4 @@
 import os
-import re
-import shutil
-
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
@@ -16,9 +13,25 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class VlassmaskingResults(basetask.Results):
+    """Results class for the hifv_vlassmasking pipeline smoothing task.  Used on VLASS measurement sets.
+
+    The class inherits from basetask.Results
+
+    """
     def __init__(self, inext=None, outext=None, catalog_fits_file=None,
                  catalog_search_size=None, outfile=None,
                  combinedmask=None):
+        """
+        Args:
+            final(list): final list of tables (not used in this task)
+            pool(list): pool list (not used in this task)
+            preceding(list): preceding list (not used in this task)
+            catalog_fits_files(str): Path to a PyBDSF sky catalog in FITS format.
+                                     Default at AOC is '/home/vlass/packages/VLASS1Q.fits'
+            outfile(str): Output file - sum of masks
+            combinedmask(str):  Final combined mask
+
+        """
         super(VlassmaskingResults, self).__init__()
 
         self.inext = inext
@@ -32,7 +45,8 @@ class VlassmaskingResults(basetask.Results):
 
     def merge_with_context(self, context):
         """
-        See :method:`~pipeline.infrastructure.api.Results.merge_with_context`
+        Args:
+            context(:obj:): Pipeline context object
         """
         return
 
@@ -43,12 +57,28 @@ class VlassmaskingResults(basetask.Results):
 
 
 class VlassmaskingInputs(vdp.StandardInputs):
+    """Inputs class for the hifv_vlassmasking pipeline task.  Used in conjunction with VLASS measurement sets.
+
+    The class inherits from vdp.StandardInputs.
+
+    """
     vlass_ql_database = vdp.VisDependentProperty(default='/home/vlass/packages/VLASS1Q.fits')
     maskingmode = vdp.VisDependentProperty(default='vlass-se-tier-1')
     catalog_search_size = vdp.VisDependentProperty(default=1.5)
 
     def __init__(self, context, vis=None, vlass_ql_database=None, maskingmode=None,
                  catalog_search_size=None):
+        """
+            Args:
+            context (:obj:): Pipeline context
+            vis(str, optional): String name of the measurement set
+            vlass_ql_database(str): Path to a PyBDSF sky catalog in FITS format.
+                                    Default at AOC is '/home/vlass/packages/VLASS1Q.fits'
+            maskingmode(str): Two modes are: vlass-se-tier-1 (QL mask) and vlass-se-tier-2 (combined mask)
+            catalog_search_size (float): The half-width (in degrees) of the catalog search centered on the
+                                        image's reference pixel.
+        """
+
         self.context = context
         self.vis = vis
         self.vlass_ql_database = vlass_ql_database
@@ -59,16 +89,30 @@ class VlassmaskingInputs(vdp.StandardInputs):
 @task_registry.set_equivalent_casa_task('hifv_vlassmasking')
 @task_registry.set_casa_commands_comment('Add your task description for inclusion in casa_commands.log')
 class Vlassmasking(basetask.StandardTaskTemplate):
+    """Class for the hifv_vlassmasking pipeline task.  Used on VLASS measurement sets.
+
+        The class inherits from basetask.StandardTaskTemplate
+
+    """
     Inputs = VlassmaskingInputs
 
     def prepare(self):
+        """Method where the VLASS Masking operation is executed.
+
+        The mask creation steps are critical pieces of the VIP workflow. Mask creation uses islands
+        identified using pyBDSF and the process is described in detail in VLASS Memo #15. If the
+        image to be produced is in a region of the sky where no components were identified, this step
+        and subsequent steps will not succeed. Thus, several metrics are needed to evaluate the efficacy
+        of mask creation in this step.
+
+        Return:
+            VlassmaskingResults() type object, with output mask and metadata information
+        """
 
         LOG.debug("This Vlassmasking class is running.")
 
         # Note that these parameters are just here for reference of creating an image
         inext = 'iter0.psf.tt0'
-        # Location of catalog file at the AOC
-        # catalog_fits_file = '/home/vlass/packages/VLASS1Q.fits'
 
         imagename_base = 'VIP_'
 
@@ -80,6 +124,8 @@ class Vlassmasking(basetask.StandardTaskTemplate):
         QLmask = 'QLcatmask.mask'
 
         # Test parameters for reference
+        # Location of catalog file at the AOC
+        # catalog_fits_file = '/home/vlass/packages/VLASS1Q.fits'
         # imsize = shapelist[0]
         # wprojplanes = 32
         # cfcache = './cfcache_imsize' + str(imsize) + '_cell' + cell + '_w' + str(wprojplanes) + '_conjT.cf'
