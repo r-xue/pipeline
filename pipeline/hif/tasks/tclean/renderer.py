@@ -240,7 +240,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 row_cleaning_threshold = '-'
             else:
                 if r.threshold:
-                    threshold_quantity = qaTool.convert(qaTool.quantity(r.threshold, 'Jy'), 'Jy')
+                    threshold_quantity = qaTool.convert(r.threshold, 'Jy')
                     sp_str, sp_scale = utils.get_si_prefix(threshold_quantity['value'], lztol=1)
                     row_cleaning_threshold = '{:.2g} {}'.format(
                         threshold_quantity['value']/sp_scale, sp_str+brightness_unit)
