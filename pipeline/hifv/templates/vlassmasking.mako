@@ -8,12 +8,9 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 <%block name="title">Vlassmasking</%block>
 
 % for single_result in result:
-    <p>Inext:   <b>${single_result.inext}</b></p>
-    <p>Outext:  <b>${single_result.outext}</b></p>
     <p>Catalog: <b>${single_result.catalog_fits_file}</b></p>
-    <p>Catalog search size: <b>${single_result.catalog_search_size}</b></p>
-    <p>Outfile: <b>${single_result.outfile}</b></p>
-    <p>Combined Mask: <b>${single_result.combinedmask}</b></p>
+    <p>Catalog search size: <b>${single_result.catalog_search_size} degrees</b></p>
+    <p>Final Output Mask: <b>${single_result.combinedmask}</b></p>
 % endfor
 
 <hr>
@@ -26,7 +23,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 <%self:plot_group plot_dict="${summary_plots}" url_fn="${lambda ms:  'noop'}">
 
         <%def name="title()">
-            Mask summary plot
+            Summary plot for ${single_result.combinedmask}
         </%def>
 
         <%def name="preamble()">
@@ -38,10 +35,10 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
         </%def>
 
         <%def name="fancybox_caption(plot)">
-          Mask
+          ${single_result.combinedmask}
         </%def>
 
         <%def name="caption_title(plot)">
-           Mask
+           ${single_result.combinedmask}
         </%def>
 </%self:plot_group>

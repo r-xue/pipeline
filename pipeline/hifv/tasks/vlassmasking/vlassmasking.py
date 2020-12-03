@@ -18,7 +18,7 @@ class VlassmaskingResults(basetask.Results):
     The class inherits from basetask.Results
 
     """
-    def __init__(self, inext=None, outext=None, catalog_fits_file=None,
+    def __init__(self, catalog_fits_file=None,
                  catalog_search_size=None, outfile=None,
                  combinedmask=None):
         """
@@ -34,8 +34,6 @@ class VlassmaskingResults(basetask.Results):
         """
         super(VlassmaskingResults, self).__init__()
 
-        self.inext = inext
-        self.outext = outext
         self.catalog_fits_file = catalog_fits_file
         self.catalog_search_size = catalog_search_size
         self.outfile = outfile
@@ -111,9 +109,6 @@ class Vlassmasking(basetask.StandardTaskTemplate):
 
         LOG.debug("This Vlassmasking class is running.")
 
-        # Note that these parameters are just here for reference of creating an image
-        inext = 'iter0.psf.tt0'
-
         imagename_base = 'VIP_'
 
         shapelist = self.inputs.context.clean_list_pending[0]['imsize']
@@ -121,7 +116,10 @@ class Vlassmasking(basetask.StandardTaskTemplate):
         phasecenter = self.inputs.context.clean_list_pending[0]['phasecenter']
         cell = self.inputs.context.clean_list_pending[0]['cell']
         frequency = self.inputs.context.clean_list_pending[0]['reffreq']
-        QLmask = 'QLcatmask.mask'
+        QLmask = 'QLcatmask-tier1.mask'
+        catalog_fits_file = ''
+        outfile = ''
+        combinedmask = ''
 
         # Test parameters for reference
         # Location of catalog file at the AOC
@@ -143,21 +141,18 @@ class Vlassmasking(basetask.StandardTaskTemplate):
 
             LOG.debug("Executing mask_from_catalog masking mode = {!s}".format(self.inputs.maskingmode))
 
-            outext = QLmask
             catalog_fits_file = self.inputs.vlass_ql_database
 
-            mask_from_catalog(inext=inext, outext=outext,
-                              catalog_fits_file=catalog_fits_file,
+            mask_from_catalog(catalog_fits_file=catalog_fits_file,
                               catalog_search_size=self.inputs.catalog_search_size, mask_shape=mask_shape,
-                              frequency=frequency, cell=cell, phasecenter=phasecenter, mask_name=imagename_base+outext)
+                              frequency=frequency, cell=cell, phasecenter=phasecenter, mask_name=imagename_base+QLmask)
 
-            outfile = ''
-            combinedmask = imagename_base + outext
+            combinedmask = imagename_base + QLmask
 
         elif self.inputs.maskingmode == 'vlass-se-tier-2':
             LOG.debug("Executing mask_from_catalog masking mode = {!s}".format(self.inputs.maskingmode))
 
-            outext = "secondmask.mask"
+            suffix = "secondmask.mask"
             initial_catalog_fits_file = imagename_base + 'iter1b.image.smooth5.cat.fits'
 
             catalog_fits_file = edit_pybdsf_islands(catalog_fits_file=initial_catalog_fits_file)
@@ -165,27 +160,26 @@ class Vlassmasking(basetask.StandardTaskTemplate):
             if not os.path.exists(catalog_fits_file):
                 LOG.error("Catalog file {!s} does not exist.".format(catalog_fits_file))
 
-            mask_from_catalog(inext=inext, outext=outext,
-                              catalog_fits_file=catalog_fits_file,
+            mask_from_catalog(catalog_fits_file=catalog_fits_file,
                               catalog_search_size=self.inputs.catalog_search_size, mask_shape=mask_shape,
-                              frequency=frequency, cell=cell, phasecenter=phasecenter, mask_name=imagename_base+outext)
+                              frequency=frequency, cell=cell, phasecenter=phasecenter, mask_name=imagename_base+suffix)
 
-            # combine first and 2nd order masks
+            # combine first and second order masks
             outfile = imagename_base + 'sum_of_masks.mask'
-            task = casa_tasks.immath(imagename=[imagename_base + 'secondmask.mask', imagename_base + QLmask],
+            task = casa_tasks.immath(imagename=[imagename_base + suffix, imagename_base + QLmask],
                                      expr='IM0+IM1', outfile=outfile)
 
             runtask = self._executor.execute(task)
 
             myim = casatools.imager
             LOG.info("Executing imager.mask()...")
-            combinedmask = imagename_base + 'combined.mask'
-            myim.mask(image=outfile, mask=imagename_base + 'combined.mask', threshold=0.5)
+            combinedmask = imagename_base + 'combined-tier2.mask'
+            myim.mask(image=outfile, mask=combinedmask, threshold=0.5)
             myim.close()
         else:
             LOG.error("Invalid maskingmode input.")
 
-        return VlassmaskingResults(inext=inext, outext=outext, catalog_fits_file=catalog_fits_file,
+        return VlassmaskingResults(catalog_fits_file=catalog_fits_file,
                                    catalog_search_size=1.5, outfile=outfile,
                                    combinedmask=combinedmask)
 
