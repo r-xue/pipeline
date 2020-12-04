@@ -141,6 +141,27 @@ def plot_weather(vis='', figfile='', station=[], help=False):
             LOG.info("dWVP=%f, aWVP=%f" % (dew_point_wvp[0], ambient_wvp[0]))
             relative_humidity = 100*(dew_point_wvp/ambient_wvp)
 
+    if len(unique_stations) > 1:
+        if np.mean(temperature2) > 100:
+            # convert to Celsius
+            temperature2 -= 273.15
+        if dew_point2 is not None and np.mean(dew_point2) > 100:
+            dew_point2 -= 273.15
+        if dew_point2 is not None and np.mean(dew_point2) == 0:
+            # assume it is not measured and use NOAA formula to compute from humidity:
+            dew_point2 = ComputeDewPointCFromRHAndTempC(relative_humidity2, temperature2)
+        if np.mean(relative_humidity2) < 0.001:
+            if dew_point2 is None or np.count_nonzero(dew_point2) == 0:
+                # dew point is all zero so it was not measured, so cap the rH at small non-zero value
+                relative_humidity2 = 0.001 * np.ones(len(relative_humidity2))
+            else:
+                LOG.info("Replacing zeros in relative humidity with value computed from dew point and temperature.")
+                dew_point_wvp2 = computeWVP(dew_point2)
+                ambient_wvp2 = computeWVP(temperature2)
+                LOG.info("dWVP2=%f, aWVP2=%f" % (dew_point_wvp2[0], ambient_wvp2[0]))
+                relative_humidity2 = 100*(dew_point_wvp2/ambient_wvp2)
+
+
     # take timerange from OBSERVATION table if there is only one unique timestamp
     if len(np.unique(mjdsec)) == 1:
         with casatools.TableReader(vis+"/OBSERVATION") as table:
