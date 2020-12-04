@@ -1,13 +1,11 @@
 from typing import Union, List, Dict, Tuple
 from unittest.mock import MagicMock
-import operator
-import pytest
 
 import numpy as np
-
+import pytest
 
 from pipeline import domain
-from .. import casatools
+from .. import casa_tools
 from .utils import find_ranges, dict_merge, are_equal, approx_equal, flagged_intervals, \
     get_casa_quantity, get_num_caltable_polarizations, fieldname_for_casa, fieldname_clean, \
     get_field_accessor, get_field_identifiers, get_receiver_type_for_spws
@@ -19,14 +17,14 @@ def create_mock_field(name: str = 'Mars', field_id: int = 1, source_id: int = 1)
     Create a mock Field object.
 
     The name argument is used to determine the direction Field object attribute,
-    therefore use field names only that are known to the casatools.measure.direction()
+    therefore use field names only that are known to the casa_tools.measures.direction()
     tool.
 
     Returns:
         Instance of Field class.
     """
     return domain.Field(field_id=field_id, name=name, source_id=source_id, time=np.zeros(0),
-                        direction=casatools.measures.direction(name))
+                        direction=casa_tools.measures.direction(name))
 
 
 def create_mock_ms(name: str, field_name_list: List[str] = ['Mars'],

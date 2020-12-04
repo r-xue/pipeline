@@ -1,13 +1,15 @@
+import collections
+import copy
+
+import numpy as np
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import task_registry
-import collections
-import copy
-import numpy as np
-import pipeline.infrastructure.casatools as casatools
 from pipeline.hifv.heuristics import set_add_model_column_parameters
+from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure import task_registry
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -612,7 +614,7 @@ class Checkflag(basetask.StandardTaskTemplate):
 
     def _check_for_modelcolumn(self):
         ms = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        with casatools.TableReader(ms.name) as table:
+        with casa_tools.TableReader(ms.name) as table:
             if 'MODEL_DATA' not in table.colnames() or self.inputs.overwrite_modelcol:
                 LOG.info('Writing model data to {}'.format(ms.basename))
                 imaging_parameters = set_add_model_column_parameters(self.inputs.context)

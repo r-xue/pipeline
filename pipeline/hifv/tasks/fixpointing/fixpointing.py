@@ -4,11 +4,10 @@ import numpy as np
 import math
 from datetime import datetime
 
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure import casa_tasks, task_registry
+from pipeline.infrastructure import casa_tools, task_registry
 
 
 LOG = infrastructure.get_logger(__name__)
@@ -72,7 +71,7 @@ def fixpointing_offset_vlass(vis, intable='POINTING', antlist=[], timeoffset=[0.
             LOG.error('ERROR: could not find intable = ' + vis + '/' + intable)
             raise NameError('InTable not found')
 
-    with casatools.TableReader(vis + '/POINTING', nomodify=False) as tb:
+    with casa_tools.TableReader(vis + '/POINTING', nomodify=False) as tb:
         # tb.open(vis + '/POINTING', nomodify=False)
         ants = tb.getcol('ANTENNA_ID')
         ants = np.unique(ants)
@@ -88,7 +87,7 @@ def fixpointing_offset_vlass(vis, intable='POINTING', antlist=[], timeoffset=[0.
         tref = tb.getcolkeyword(tcol, 'MEASINFO')['Ref']
         # colkeyw['Ref']=dref
         # tb.putcolkeyword(col, 'MEASINFO', colkeyw)
-        casatools.measures.doframe(casatools.measures.observatory('VLA'))
+        casa_tools.measures.doframe(casa_tools.measures.observatory('VLA'))
         alltimes = tb.getcol('TIME')
         firsttime = alltimes[0]
         del (alltimes)

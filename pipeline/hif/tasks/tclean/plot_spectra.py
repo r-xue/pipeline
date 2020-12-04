@@ -6,14 +6,14 @@ import os
 import re
 from math import degrees
 
+import matplotlib.pyplot as plt
 import matplotlib.ticker
 import numpy as np
-import matplotlib.pyplot as plt
 
 from casatasks import imhead
 
 import pipeline.infrastructure as infrastructure
-from pipeline.infrastructure import casatools
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -71,7 +71,7 @@ def numberOfChannelsInCube(img, returnFreqs=False, returnChannelWidth=False, ver
     -Todd Hunter
     """
 
-    with casatools.ImageReader(img) as image:
+    with casa_tools.ImageReader(img) as image:
         lcs = image.coordsys()
 
         try:
@@ -224,8 +224,8 @@ def frames(velocity=286.7, datestring="2005/11/01/00:00:00",
     * difference between LSRK-TOPO in Hz
     - Todd Hunter
     """
-    lme = casatools.measures
-    lqa = casatools.quanta
+    lme = casa_tools.measures
+    lqa = casa_tools.quanta
 
     if dec.find(':') >= 0:
         dec = dec.replace(':', '.')
@@ -343,8 +343,8 @@ def lsrkToRest(lsrkFrequency, velocityLSRK, datestring, ra, dec,
         if verbose:
             print("Warning: replacing colons with decimals in the dec field.")
     freqGHz = parseFrequencyArgumentToGHz(lsrkFrequency)
-    lqa = casatools.quanta
-    lme = casatools.measures
+    lqa = casa_tools.quanta
+    lme = casa_tools.measures
     velocityRadio = lqa.quantity(velocityLSRK, "km/s")
     position = lme.direction(equinox, ra, dec)
     obstime = lme.epoch('TAI', datestring)
@@ -434,7 +434,7 @@ def rad2radec(ra=0,dec=0,imfitdict=None, prec=5, verbose=True, component=0,
     if np.shape(ra) == (2, 1):
         dec = ra[1][0]
         ra = ra[0][0]
-    lqa = casatools.quanta
+    lqa = casa_tools.quanta
     myra = lqa.formxxx('%.12frad' % ra, format='hms', prec=prec+1)
     mydec = lqa.formxxx('%.12frad' % dec, format='dms', prec=prec-1)
     if replaceDecDotsWithColons:
@@ -543,7 +543,7 @@ def CalcAtmTransmissionForImage(img, chanInfo='', airmass=1.5, pwv=-1,
     2 arrays: frequencies (in GHz) and values (Kelvin, or transmission: 0..1)
     """
 
-    with casatools.ImageReader(img) as image:
+    with casa_tools.ImageReader(img) as image:
         lcs = image.coordsys()
         telescopeName = lcs.telescope()
         lcs.done()
@@ -595,11 +595,11 @@ def CalcAtmTransmissionForImage(img, chanInfo='', airmass=1.5, pwv=-1,
     numchanModel = numchan*1
     chansepModel = (topofreqs[-1]-topofreqs[0])/(numchanModel-1)
     nbands = 1
-    lqa = casatools.quanta
+    lqa = casa_tools.quanta
     fCenter = lqa.quantity(reffreq, 'GHz')
     fResolution = lqa.quantity(chansepModel, 'GHz')
     fWidth = lqa.quantity(numchanModel*chansepModel, 'GHz')
-    myat = casatools.atmosphere
+    myat = casa_tools.atmosphere
     myat.initAtmProfile(humidity=H, temperature=lqa.quantity(T, "K"),
                         altitude=lqa.quantity(altitude, "m"),
                         pressure=lqa.quantity(P, 'mbar'), atmType=midLatitudeWinter)
@@ -643,11 +643,11 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile):
     rec_info: dictionary of receiver information (type (DSB/TSB), LO1 frequency)
     """
 
-    qaTool = casatools.quanta
+    qaTool = casa_tools.quanta
 
     cube = os.path.basename(image_robust_rms_and_spectra['nonpbcor_imagename'])
     # Get spectral frame
-    with casatools.ImageReader(cube) as image:
+    with casa_tools.ImageReader(cube) as image:
         lcs = image.coordsys()
         frame = lcs.referencecode('spectral')[0]
         lcs.done()

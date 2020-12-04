@@ -8,9 +8,9 @@ import urllib
 
 import numpy
 
-import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.domain.measures as measures
+import pipeline.infrastructure as infrastructure
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -333,9 +333,9 @@ def vis_to_uid(vis):
 
 
 def mjd_to_datestring(epoch):
-    # casatools
-    me = casatools.measures
-    qa = casatools.quanta
+    # casa_tools
+    me = casa_tools.measures
+    qa = casa_tools.quanta
 
     if epoch['refer'] != 'UTC':
         try:
@@ -355,7 +355,7 @@ def get_mean_frequency(spw):
 
 
 def get_mean_temperature(vis):
-    with casatools.TableReader(os.path.join(vis, 'WEATHER')) as tb:
+    with casa_tools.TableReader(os.path.join(vis, 'WEATHER')) as tb:
         valid_temperatures = numpy.ma.masked_array(
             tb.getcol('TEMPERATURE'),
             tb.getcol('TEMPERATURE_FLAG')
@@ -367,7 +367,7 @@ def get_mean_temperature(vis):
 def get_mean_elevation(context, vis, antenna_id):
     dt_name = context.observing_run.ms_datatable_name
     basename = os.path.basename(vis.rstrip('/'))
-    with casatools.TableReader(os.path.join(dt_name, basename, 'RO')) as tb:
+    with casa_tools.TableReader(os.path.join(dt_name, basename, 'RO')) as tb:
         try:
             t = tb.query('ANTENNA=={}&&SRCTYPE==0'.format(antenna_id))
             assert t.nrows() > 0
@@ -381,7 +381,7 @@ def get_mean_elevation(context, vis, antenna_id):
 def translate_spw(data, ms):
     vis = ms.name
     science_windows = numpy.asarray(ms.get_spectral_windows(science_windows_only=True))
-    with casatools.TableReader(os.path.join(vis, 'ASDM_SPECTRALWINDOW')) as tb:
+    with casa_tools.TableReader(os.path.join(vis, 'ASDM_SPECTRALWINDOW')) as tb:
         idcol = tb.getcol('spectralWindowId')
         namecol = tb.getcol('name')
 

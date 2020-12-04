@@ -1,15 +1,15 @@
+import functools
+
+import numpy as np
 import pytest
 
-import functools
-import numpy as np
-import pipeline.infrastructure.casatools as casatools
-
+from pipeline.infrastructure import casa_tools
 from .grouping2 import GroupByPosition2
 from .grouping2 import GroupByTime2
 from .grouping2 import MergeGapTables2
 from .grouping2 import ThresholdForGroupByTime
 
-qa = casatools.quanta
+qa = casa_tools.quanta
 
 
 def random_noise(n, mean=0, amp=1, rs=None):

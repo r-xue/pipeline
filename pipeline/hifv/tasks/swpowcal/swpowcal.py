@@ -1,10 +1,10 @@
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.heuristics import caltable as caltable_heuristic
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from . import resultobjects
 
 LOG = infrastructure.get_logger(__name__)
@@ -43,7 +43,7 @@ class Swpowcal(basetask.StandardTaskTemplate):
     def prepare(self):
         inputs = self.inputs
 
-        with casatools.MSReader(inputs.vis) as ms:
+        with casa_tools.MSReader(inputs.vis) as ms:
             ms_summary = ms.summary()
 
         startdate = ms_summary['BeginTime']
