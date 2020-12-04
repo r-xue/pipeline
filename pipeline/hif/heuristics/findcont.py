@@ -12,7 +12,7 @@ class FindContHeuristics(object):
     def __init__(self, context):
         self.context = context
 
-    def find_continuum(self, dirty_cube, pb_cube=None, psf_cube=None, single_continuum=False):
+    def find_continuum(self, dirty_cube, pb_cube=None, psf_cube=None, single_continuum=False, is_eph_obj=False):
         with casatools.ImageReader(dirty_cube) as image:
             stats = image.statistics()
 
@@ -44,6 +44,10 @@ class FindContHeuristics(object):
             else:
                 frequency_ranges_GHz = []
 
-            frequency_ranges_GHz.extend([{'range': item, 'refer': 'LSRK'} for item in utils.chan_selection_to_frequencies(dirty_cube, channel_selection, 'GHz')])
+            if is_eph_obj:
+                refer = 'SOURCE'
+            else:
+                refer = 'LSRK'
+            frequency_ranges_GHz.extend([{'range': item, 'refer': refer} for item in utils.chan_selection_to_frequencies(dirty_cube, channel_selection, 'GHz')])
 
         return frequency_ranges_GHz, png_name, single_range_channel_fraction, warning_strings

@@ -220,7 +220,6 @@ class ContFileHandler(object):
                             start = start if (start >= ctrim) else ctrim
                             stop = stop if (stop < (ctrim_nchan-ctrim)) else ctrim_nchan-ctrim-1
                         if stop >= start:
-                            print(1)
                             topo_chan_selection.append((start, stop))
                             result = suTool.advisechansel(msname=msname, fieldid=field,
                                                           spwselection='%d:%d~%d' % (real_spw_id, start, stop),

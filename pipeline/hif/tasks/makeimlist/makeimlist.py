@@ -802,12 +802,15 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                             if spwsel_spwid in ('ALL', '', 'NONE'):
                                 spwsel_spwid_freqs = ''
-                                spwsel_spwid_refer = 'LSRK'
+                                if target_heuristics.is_eph_obj(field_intent[0]):
+                                    spwsel_spwid_refer = 'SOURCE'
+                                else:
+                                    spwsel_spwid_refer = 'LSRK'
                             else:
                                 spwsel_spwid_freqs, spwsel_spwid_refer = spwsel_spwid.split()
 
-                            if spwsel_spwid_refer != 'LSRK':
-                                LOG.warn('Frequency selection is specified in %s but must be in LSRK'
+                            if spwsel_spwid_refer not in ('LSRK', 'SOURCE'):
+                                LOG.warn('Frequency selection is specified in %s but must be in LSRK or SOURCE'
                                          '' % spwsel_spwid_refer)
                                 # TODO: skip this field and/or spw ?
 

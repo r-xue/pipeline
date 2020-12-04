@@ -489,12 +489,15 @@ class Tclean(cleanbase.CleanBase):
                                                                                                         spwid))
 
                 if spwsel_spwid in ('ALL', '', 'NONE'):
-                    spwsel_spwid_refer = 'LSRK'
+                    if self.image_heuristics.is_eph_obj(inputs.field):
+                        spwsel_spwid_refer = 'SOURCE'
+                    else:
+                        spwsel_spwid_refer = 'LSRK'
                 else:
                     spwsel_spwid_freqs, spwsel_spwid_refer = spwsel_spwid.split()
 
-                if spwsel_spwid_refer != 'LSRK':
-                    LOG.warn('Frequency selection is specified in %s but must be in LSRK' % spwsel_spwid_refer)
+                if spwsel_spwid_refer not in ('LSRK', 'SOURCE'):
+                    LOG.warn('Frequency selection is specified in %s but must be in LSRK or SOURCE' % spwsel_spwid_refer)
 
                 inputs.spwsel_lsrk['spw%s' % spwid] = spwsel_spwid
             inputs.spwsel_all_cont = all_continuum

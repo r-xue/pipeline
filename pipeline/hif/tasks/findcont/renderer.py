@@ -86,6 +86,8 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         refer = 'TOPO'
                     elif (refers == 'LSRK').all():
                         refer = 'LSRK'
+                    elif (refers == 'SOURCE').all():
+                        refer = 'SOURCE'
                     else:
                         refer = 'UNDEFINED'
                     sorted_ranges = sorted(raw_ranges_for_spw, key=operator.itemgetter(0))
