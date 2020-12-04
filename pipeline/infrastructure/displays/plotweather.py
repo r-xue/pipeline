@@ -46,7 +46,7 @@ def plot_weather(vis='', figfile='', station=[], help=False):
 
     mjdsec1 = mjdsec
     vis = vis.split('/')[-1]
-    unique_stations = np.unique(stations)
+    unique_stations = list(np.unique(stations))
 
     try:
         with casatools.TableReader(vis + '/ASDM_STATION') as table:
@@ -62,6 +62,13 @@ def plot_weather(vis='', figfile='', station=[], help=False):
             if any([wx_prefix.lower() in station_names[station_id].lower() for wx_prefix in ['WSTB', 'Meteo', 'OSF']]):
                 station_name = station_names[station_id].replace('Meteo',  '')
         unique_station_names.append(station_name)
+
+    try:
+        meteoitinerant_idx = unique_station_names.index('Itinerant')
+        unique_station_names.append(unique_station_names.pop(meteoitinerant_idx))
+        unique_stations.append(unique_stations.pop(meteoitinerant_idx))
+    except ValueError:
+        pass
 
     if station:
         if isinstance(station, int):
