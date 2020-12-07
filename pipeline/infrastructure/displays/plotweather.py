@@ -63,6 +63,8 @@ def plot_weather(vis='', figfile='', station=[], help=False):
                 station_name = station_names[station_id].replace('Meteo',  '')
         unique_station_names.append(station_name)
 
+    # PIPE-31: deprioritize the station with "Itinerant" in name (typically: "MeteoItinerant"), 
+    # since it only has a wind sensor.
     try:
         meteoitinerant_idx = unique_station_names.index('Itinerant')
         unique_station_names.append(unique_station_names.pop(meteoitinerant_idx))
