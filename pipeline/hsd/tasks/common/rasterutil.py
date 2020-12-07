@@ -1,3 +1,4 @@
+"""Extract various informations of raster."""
 import argparse
 import collections
 import glob
@@ -42,7 +43,7 @@ def distance(x0: float, y0: float, x1: float, y1: float) -> float:
 
 def read_readonly_data(table: datatable.DataTableImpl) -> tuple:
     """
-    extract necerrary data from datatable instance.
+    Extract necerrary data from datatable instance.
     
     Args:
         table: datatable instance
@@ -63,7 +64,7 @@ def read_readonly_data(table: datatable.DataTableImpl) -> tuple:
 
 def read_readwrite_data(table: datatable.DataTableImpl) -> np.ndarray:
     """
-    extract necessary data from datatable instance.
+    Extract necessary data from datatable instance.
     
     Args:
         table: datatable instance
@@ -78,7 +79,7 @@ def read_readwrite_data(table: datatable.DataTableImpl) -> np.ndarray:
 
 def read_datatable(datatable: datatable.DataTableImpl) -> MetaDataSet:
     """
-    extract necessary data from datatable instance.
+    Extract necessary data from datatable instance.
 
     Args:
         datatable: datatable instance
@@ -103,7 +104,7 @@ def read_datatable(datatable: datatable.DataTableImpl) -> MetaDataSet:
 
 def from_context(context_dir: str) -> MetaDataSet:
     """
-    read DataTable located in the context directory.
+    Read DataTable located in the context directory.
 
     NOTE: only one DataTable will be loaded for multi-EB run
 
@@ -166,6 +167,8 @@ def filter_data(metadata: MetaDataSet, field_id: int, antenna_id: int, onsource:
         field_id: field id
         antenna_id: antenna id
         onsource: take ON_SOURCE data only, defaults to True
+    
+    Raises:
         RuntimeError: filter causes empty result
 
     Returns: filtered MetaDataSet
@@ -243,7 +246,7 @@ def squeeze_data(metadata: MetaDataSet) -> MetaDataSet:
 
 def find_time_gap(timestamp: np.ndarray) -> tuple:
     """
-    Find time gap. Condition for gap is
+    Find time gap. Condition for gap is following.
 
       - time interval > 3 * median(time interval) for small gap
       - time gap > 3 * median(time gap) for large gap
@@ -264,9 +267,10 @@ def find_time_gap(timestamp: np.ndarray) -> tuple:
 
 def gap_gen(gaplist: list, length: int=None) -> tuple:
     """
-    Generate range of data (start and end indices) from
-    given gap list. Return values, s and e, can be used to
-    arr[s:e] to extract the data from the original array, arr.
+    Generate range of data (start and end indices) from given gap list.
+    
+    Return values, s and e, can be used to arr[s:e] to extract the data from 
+    the original array, arr.
 
     Args:
         gaplist: list of indices indicating gap
@@ -288,9 +292,9 @@ def gap_gen(gaplist: list, length: int=None) -> tuple:
 def get_raster_distance(ra: np.ndarray, dec: np.ndarray, gaplist: list) -> np.ndarray:
     """
     Compute list of distances between raster rows.
+    
     Origin of the distance is the first raster row.
-    Representative position of each raster row is
-    its midpoint (mean position).
+    Representative position of each raster row is its midpoint (mean position).
 
     Args:
         ra: list of RA
@@ -312,9 +316,10 @@ def get_raster_distance(ra: np.ndarray, dec: np.ndarray, gaplist: list) -> np.nd
 
 def find_raster_gap(timestamp: np.ndarray, ra: np.ndarray, dec: np.ndarray, time_gap: np.ndarray=None) -> np.ndarray:
     """
-    Find gaps between individual raster map. Returned list should be
-    used in combination with gap_gen. Here is an example to plot
-    RA/DEC data per raster map:
+    Find gaps between individual raster map.
+    
+    Returned list should be used in combination with gap_gen. 
+    Here is an example to plot RA/DEC data per raster map:
 
         import maplotlib.pyplot as plt
         gap = find_raster_gap(timestamp, ra, dec)
@@ -344,7 +349,8 @@ def find_raster_gap(timestamp: np.ndarray, ra: np.ndarray, dec: np.ndarray, time
 
 def flag_incomplete_raster(meta:MetaDataSet, raster_gap: list, nd_raster: int, nd_row: int) -> np.ndarray:
     """
-    flag incomplete raster map
+    Flag incomplete raster map.
+
     N: number of data per raster map
     M: number of data per raster row
     MN: median of N => typical number of data per raster map
@@ -386,8 +392,8 @@ def flag_incomplete_raster(meta:MetaDataSet, raster_gap: list, nd_raster: int, n
 
 def flag_worm_eaten_raster(meta: MetaDataSet, raster_gap: list, nd_row: int) -> np.ndarray:
     """
-    flag raster map if number of continuous flagged data
-    exceeds upper limit given by nd_row
+    Flag raster map if number of continuous flagged data exceeds upper limit given by nd_row.
+
     M: number of data per raster row
     MM: median of M => typical number of data per raster row
     L: maximum length of continuous flagged data
@@ -449,8 +455,7 @@ def get_raster_flag_list(flagged1: list, flagged2: list, raster_gap: list, ndata
 
 def flag_raster_map(metadata: MetaDataSet) -> list:
     """
-    Return list of index to be flagged by flagging heuristics
-    for raster scan
+    Return list of index to be flagged by flagging heuristics for raster scan.
 
     Args:
         meta: input MetaDataSet to analyze
@@ -493,8 +498,7 @@ def find_most_frequent(v: np.ndarray) -> int:
 
 def flag_raster_map_per_field(metadata: MetaDataSet, field_id: int) -> list:
     """
-    Flag raster map based on two flagging heuristics for
-    given field id.
+    Flag raster map based on two flagging heuristics for given field id.
 
     Args:
         metadata: Input MetaDataSet to analyze
@@ -622,7 +626,7 @@ def get_angle(dx: float, dy: float, aspect_ratio: float=1) -> float:
 
 def anim_gen(ra: np.ndarray, dec: np.ndarray, idx_generator, dist_list: np.ndarray, cmap) -> tuple:
     """
-    Generator for generate_animation.
+    Generate position, color and boolean flag for generate_animation.
 
     Args:
         ra: list of RA
@@ -656,7 +660,7 @@ def anim_gen(ra: np.ndarray, dec: np.ndarray, idx_generator, dist_list: np.ndarr
 
 def animate(i: tuple):
     """
-    Generate plot corresponding to single frame
+    Generate plot corresponding to single frame.
 
     Args:
         i: position, color, and boolean flag to clear existing plot
