@@ -372,9 +372,3 @@ class XmlObjectifierError(Exception):
     def __str__(self):
         return repr(self.msg)
 
-
-# APEX specific main to load the MBFITS XML definition.
-if __name__ == '__main__':
-    import interactive
-    myXmlObject = XmlObject(fileName='../../idl/MBFits.xml')
-    scanStructure = myXmlObject.Scan()

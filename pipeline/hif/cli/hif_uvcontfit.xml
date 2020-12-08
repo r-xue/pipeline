@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hif_uvcontfit" type="function">
 <shortdescription>Fit the continuum in the UV plane</shortdescription>
@@ -10,7 +10,7 @@ the continuum in all channels. Fit orders less than 2 are strongly
 recommended. Spw window combination is not currently supported.
 </description>
 <input>
-  <param subparam="true" name="vis" type="stringVec">
+  <param name="vis" subparam="true" type="stringVec">
     <shortdescription>The name of the input visibility file</shortdescription>
     <description>The list of input MeasurementSets. Defaults to the list of
                  MeasurementSets specified in the h_init or hif_importdata task.
@@ -20,7 +20,7 @@ recommended. Spw window combination is not currently supported.
     <value/>
   </param>
 
-  <param subparam="true" name="caltable" type="stringVec">
+  <param name="caltable" subparam="true" type="stringVec">
     <shortdescription>The list of output Mueller matrix calibration tables</shortdescription>
     <description>The list of output Mueller matrix calibration tables one per
                  input MS. 
@@ -30,7 +30,7 @@ recommended. Spw window combination is not currently supported.
     <value/>
   </param>
 
-  <param subparam="true" name="contfile" type="string">
+  <param name="contfile" subparam="true" type="string">
     <shortdescription>Name of the input file of per source / spw continuum regions</shortdescription>
     <description>Name of the input file of per source / spw continuum regions
                  '': Defaults first to the file named in the context, next to a
@@ -39,7 +39,7 @@ recommended. Spw window combination is not currently supported.
     <value/>
   </param>
 
-  <param subparam="true" name="field" type="string">
+  <param name="field" subparam="true" type="string">
     <shortdescription>Select field(s) using id(s) or name(s)</shortdescription>
     <description>The list of field names or field ids for which UV continuum
                  fits are computed. Defaults to all fields.
@@ -48,7 +48,7 @@ recommended. Spw window combination is not currently supported.
     <value type="string"/>
   </param>
 
-  <param subparam="true" name="intent" type="string">
+  <param name="intent" subparam="true" type="string">
     <shortdescription>Select intents</shortdescription>
     <description>A string containing a comma delimited list of intents against
                  which the selected fields are matched.
@@ -57,7 +57,7 @@ recommended. Spw window combination is not currently supported.
     <value type="string"/>
   </param>
 
-  <param subparam="true" name="spw" type="string">
+  <param name="spw" subparam="true" type="string">
     <shortdescription>Spectral window / channels for fitting the continuum</shortdescription>
     <description>The list of spectral windows and channels for which uv
                  continuum fits are computed.
@@ -67,7 +67,7 @@ recommended. Spw window combination is not currently supported.
     <value/>
   </param>
 
-  <param subparam="true" name="combine" type="string">
+  <param name="combine" subparam="true" type="string">
     <shortdescription>Data axes to combine for the continuum estimation (none, spw and/or scan)</shortdescription>
     <description>Data axes to be combined for solving. Axes are 'scan', 'spw',
                  or ''.
@@ -77,12 +77,14 @@ recommended. Spw window combination is not currently supported.
   </param>
 
   <param name="solint" type="any">
+  <shortdescription>Time scale for the continuum fit</shortdescription>
   <description>Time scale for the continuum fit</description>
     <any type="variant"/>
     <value type="string">int</value>
   </param>
 
   <param name="fitorder" type="int">
+    <shortdescription>Polynomial order for the continuum fits</shortdescription>
     <description>Polynomial order for the continuum fits</description>
     <value>1</value>
   </param>
@@ -105,12 +107,13 @@ recommended. Spw window combination is not currently supported.
     </allowed>
   </param>
 
-  <param subparam="true" name="dryrun" type="bool">
+  <param name="dryrun" subparam="true" type="bool">
+    <shortdescription>Run the task (False) or just display the command (True)</shortdescription>
     <description>Run the task (False) or just display the command (True)</description>
     <value>False</value>
   </param>
 
-  <param subparam="true" name="acceptresults" type="bool">
+  <param name="acceptresults" subparam="true" type="bool">
     <shortdescription>Add the results to the pipeline context</shortdescription>
     <description>Add the results of the task to the pipeline context (True) or
                  reject them (False).
@@ -122,9 +125,9 @@ recommended. Spw window combination is not currently supported.
   <constraints>
 
     <when param="pipelinemode">
-      <equals value="automatic" type="string">
+      <equals type="string" value="automatic">
       </equals>
-      <equals value="interactive" type="string">
+      <equals type="string" value="interactive">
         <default param="vis"><value type="stringVec"/></default>
         <default param="caltable"><value type="stringVec"/></default>
         <default param="contfile"><value type="string"/></default>
@@ -135,7 +138,7 @@ recommended. Spw window combination is not currently supported.
         <default param="dryrun"><value type="bool">False</value></default>
         <default param="acceptresults"><value type="bool">True</value></default>
       </equals>
-      <equals value="getinputs" type="string">
+      <equals type="string" value="getinputs">
         <default param="vis"><value type="stringVec"/></default>
         <default param="caltable"><value type="stringVec"/></default>
         <default param="contfile"><value type="string"/></default>

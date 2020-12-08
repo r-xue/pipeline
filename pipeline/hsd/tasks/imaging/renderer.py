@@ -8,9 +8,7 @@ import pipeline.infrastructure.utils as utils
 import pipeline.domain.measures as measures
 import pipeline.infrastructure.filenamer as filenamer
 
-from ..common import renderer as sdsharedrenderer
 from ..common import utils as sdutils
-from ..common import compress
 
 from . import resultobjects
 from . import display

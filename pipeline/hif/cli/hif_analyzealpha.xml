@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hif_analyzealpha" type="function">
 <shortdescription>Base analyzealpha task</shortdescription>
@@ -9,7 +9,7 @@
   the results object for the pipeline task is returned.
 </description>
 <input>
-    <param subparam="true" name="vis" type="stringVec">
+    <param name="vis" subparam="true" type="stringVec">
         <shortdescription>List of input visibility data</shortdescription>
         <description>List of visisbility  data files. These may be ASDMs, tar files of ASDMs,
           MSs, or tar files of MSs, If ASDM files are specified, they will be
@@ -20,16 +20,19 @@
     </param>
 
     <param name="image" type="string">
+        <shortdescription>Restored subimage</shortdescription>
         <description>Restored subimage</description>
         <value/>
     </param>
 
     <param name="alphafile" type="string">
+        <shortdescription>Input spectral index map</shortdescription>
         <description>Input spectral index map</description>
         <value/>
     </param>
 
     <param name="alphaerrorfile" type="string">
+        <shortdescription>Input spectral index error map</shortdescription>
         <description>Input spectral index error map</description>
         <value/>
     </param>
@@ -51,27 +54,29 @@
         </allowed>
     </param>
 
-    <param subparam="true" name="dryrun" type="bool">
+    <param name="dryrun" subparam="true" type="bool">
+        <shortdescription>Run the task (False) or display task command (True)</shortdescription>
         <description>Run the task (False) or display task command (True)</description>
         <value>False</value>
     </param>
 
-    <param subparam="true" name="acceptresults" type="bool">
+    <param name="acceptresults" subparam="true" type="bool">
+        <shortdescription>Add the results into the pipeline context</shortdescription>
         <description>Add the results into the pipeline context</description>
         <value>True</value>
     </param>
 
     <constraints>
         <when param="pipelinemode">
-            <equals value="automatic" type="string">
+            <equals type="string" value="automatic">
             </equals>
-            <equals value="interactive" type="string">
+            <equals type="string" value="interactive">
                 <default param="vis"><value type="stringVec"/></default>
 
                 <default param="dryrun"><value type="bool">False</value></default>
                 <default param="acceptresults"><value type="bool">True</value></default>
             </equals>
-            <equals value="getinputs" type="string">
+            <equals type="string" value="getinputs">
                 <default param="vis"><value type="stringVec"/></default>
 
             </equals>

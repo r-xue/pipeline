@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hif_gaincal" type="function">
 
@@ -26,7 +26,7 @@ The 'gspline' (smooth) option is still under development in CASA.
 </description>
 
 <input>
-  <param subparam="true" name="vis" type="stringVec">
+  <param name="vis" subparam="true" type="stringVec">
     <shortdescription>List of input MeasurementSets</shortdescription>
     <description>The list of input MeasurementSets. Defaults to the list of
                  MeasurementSets specified in the h_init or hif_importdata task.
@@ -37,7 +37,7 @@ The 'gspline' (smooth) option is still under development in CASA.
     <value/>
   </param>
 
-  <param subparam="true" name="caltable" type="stringVec">
+  <param name="caltable" subparam="true" type="stringVec">
     <shortdescription>List of output caltables</shortdescription>
     <description>The list of output calibration tables. Defaults to the
                  standard pipeline naming convention.
@@ -47,7 +47,7 @@ The 'gspline' (smooth) option is still under development in CASA.
     <value type="string"/>
   </param>
 
-  <param subparam="true" name="field" type="string">
+  <param name="field" subparam="true" type="string">
     <shortdescription>Set of data selection field names or ids</shortdescription>
     <description>The list of field names or field ids for which gain solutions
                  are to be computed. Defaults to all fields with the standard
@@ -58,7 +58,7 @@ The 'gspline' (smooth) option is still under development in CASA.
     <value/>
   </param>
 
-  <param subparam="true" name="intent" type="string">
+  <param name="intent" subparam="true" type="string">
     <shortdescription>Set of data selection observing intents</shortdescription>
     <description>A string containing a comma delimited list of intents against
                  which the selected fields are matched. Defaults to *PHASE*.
@@ -68,7 +68,7 @@ The 'gspline' (smooth) option is still under development in CASA.
     <value/>
   </param>
 
-  <param subparam="true" name="spw" type="string">
+  <param name="spw" subparam="true" type="string">
     <shortdescription>Set of data selection spectral window/channels</shortdescription>
     <description>The list of spectral windows and channels for which gain
                  solutions are computed. Defaults to all science spectral
@@ -79,7 +79,8 @@ The 'gspline' (smooth) option is still under development in CASA.
     <value/>
   </param>
 
-  <param subparam="true" name="antenna" type="string">
+  <param name="antenna" subparam="true" type="string">
+    <shortdescription>Set of data selection antenna ids</shortdescription>
     <description>Set of data selection antenna ids</description>
     <value/>
   </param>
@@ -111,7 +112,7 @@ The 'gspline' (smooth) option is still under development in CASA.
     </allowed>
   </param>
 
-  <param subparam="true" name="solint" type="any">
+  <param name="solint" subparam="true" type="any">
     <shortdescription>Solution intervals</shortdescription>
     <description>Time solution intervals in CASA syntax. Works for
                  hm_gaintype='gtype' only.
@@ -122,7 +123,7 @@ The 'gspline' (smooth) option is still under development in CASA.
     <value type="string">inf</value>
   </param>
 
-  <param subparam="true" name="combine" type="string">
+  <param name="combine" subparam="true" type="string">
     <shortdescription>Data axes which to combine for solve (scan, spw, and/or field)</shortdescription>
     <description>Data axes to combine for solving. Options are  '', 'scan',
                  'spw', 'field' or any comma-separated combination. Works for
@@ -131,7 +132,7 @@ The 'gspline' (smooth) option is still under development in CASA.
     <value type="string"/>
   </param>
 
-  <param subparam="true" name="refant" type="string">
+  <param name="refant" subparam="true" type="string">
     <shortdescription>Reference antenna names</shortdescription>
     <description>Reference antenna name(s) in priority order. Defaults to most
                  recent values set in the pipeline context. If no reference
@@ -143,7 +144,7 @@ The 'gspline' (smooth) option is still under development in CASA.
     <value/>
   </param>
 
-  <param subparam="true" name="refantmode" type="string">
+  <param name="refantmode" subparam="true" type="string">
     <shortdescription>Reference antenna selection mode</shortdescription>
     <description>Controls how the refant is applied. Currently available
                  choices are 'flex', 'strict', and the default value of ''.
@@ -152,20 +153,21 @@ The 'gspline' (smooth) option is still under development in CASA.
 
                  Examples: refantmode='strict', refantmode=''
     </description>
-    <value></value>
+    <value/>
     <allowed kind="enum">
-      <value></value>
+      <value/>
       <value>flex</value>
       <value>strict</value>
     </allowed>
   </param>
 
-  <param subparam="true" name="solnorm" type="bool">
+  <param name="solnorm" subparam="true" type="bool">
+    <shortdescription>Normalize average solution amplitudes to 1.0</shortdescription>
     <description>Normalize average solution amplitudes to 1.0</description>
     <value>False</value>
   </param>
 
-  <param subparam="true" name="minblperant" type="int">
+  <param name="minblperant" subparam="true" type="int">
     <shortdescription>Minimum baselines per antenna required for solve</shortdescription>
     <description>Minimum number of baselines required per antenna for each
                  solve. Antennas with fewer baselines are excluded from
@@ -174,7 +176,7 @@ The 'gspline' (smooth) option is still under development in CASA.
     <value>4</value>
   </param>
 
-  <param subparam="true" name="minsnr" type="double">
+  <param name="minsnr" subparam="true" type="double">
     <shortdescription>Reject solutions below this SNR</shortdescription>
     <description>Solutions below this SNR are rejected. Works for
                  hm_gaintype='channel' only.
@@ -182,7 +184,7 @@ The 'gspline' (smooth) option is still under development in CASA.
     <value>3.0</value>
   </param>
 
-  <param subparam="true" name="smodel" type="doubleVec">
+  <param name="smodel" subparam="true" type="doubleVec">
     <shortdescription>Point source Stokes parameters for source model</shortdescription>
     <description>Point source Stokes parameters for source model (experimental).
                  Defaults to using standard MODEL_DATA column data.
@@ -192,7 +194,7 @@ The 'gspline' (smooth) option is still under development in CASA.
     <value/>
   </param>
 
-  <param subparam="true" name="splinetime" type="double">
+  <param name="splinetime" subparam="true" type="double">
     <shortdescription>Spline timescale(sec)</shortdescription>
     <description>Spline timescale (sec). Used for hm_gaintype='gspline'.
                  Typical splinetime should cover about 3 to 5 calibrator scans.
@@ -200,7 +202,7 @@ The 'gspline' (smooth) option is still under development in CASA.
     <value>3600.0</value>
   </param>
 
-  <param subparam="true" name="npointaver" type="int">
+  <param name="npointaver" subparam="true" type="int">
     <shortdescription>The phase-unwrapping algorithm</shortdescription>
     <description>Tune phase-unwrapping algorithm. Used for
                  hm_gaintype='gspline'. Keep at default value.
@@ -208,7 +210,7 @@ The 'gspline' (smooth) option is still under development in CASA.
     <value>3</value>
   </param>
 
-  <param subparam="true" name="phasewrap" type="double">
+  <param name="phasewrap" subparam="true" type="double">
     <shortdescription>Wrap the phase for jumps greater than this value (degrees)</shortdescription>
     <description>Wrap the phase for changes larger than this amount (degrees).
                  Used for hm_gaintype='gspline'. Keep at default value.
@@ -234,12 +236,13 @@ The 'gspline' (smooth) option is still under development in CASA.
     </allowed>
   </param>
 
-  <param subparam="true" name="dryrun" type="bool">
+  <param name="dryrun" subparam="true" type="bool">
+    <shortdescription>Run the task (False) or just display the command (True)</shortdescription>
     <description>Run the task (False) or just display the command (True)</description>
     <value type="bool">False</value>
   </param>
 
-  <param subparam="true" name="acceptresults" type="bool">
+  <param name="acceptresults" subparam="true" type="bool">
     <shortdescription>Add the results to the pipeline context</shortdescription>
     <description>Add the results of the task to the pipeline context (True) or
                  reject them (False).
@@ -249,13 +252,13 @@ The 'gspline' (smooth) option is still under development in CASA.
 
   <constraints>
     <when param="hm_gaintype">
-      <equals value="gtype" type="string">
+      <equals type="string" value="gtype">
         <default param="solint"><value type="string">inf</value></default>
         <default param="combine"><value type="string"/></default>
         <default param="minblperant"><value>4</value></default>
         <default param="minsnr"><value>3.0</value></default>
       </equals>
-      <equals value="gspline" type="string">
+      <equals type="string" value="gspline">
         <default param="splinetime"><value>3600.0</value></default>
         <default param="npointaver"><value>3</value></default>
         <default param="phasewrap"><value>180.0</value></default>
@@ -263,8 +266,8 @@ The 'gspline' (smooth) option is still under development in CASA.
     </when>
 
     <when param="pipelinemode">
-      <equals value="automatic" type="string"/>
-      <equals value="interactive" type="string">
+      <equals type="string" value="automatic"/>
+      <equals type="string" value="interactive">
         <default param="vis"><value type="stringVec"/></default>
         <default param="caltable"><value type="stringVec"/></default>
         <default param="field"><value type="string"/></default>
@@ -278,7 +281,7 @@ The 'gspline' (smooth) option is still under development in CASA.
         <default param="dryrun"><value type="bool">False</value></default>
         <default param="acceptresults"><value type="bool">True</value></default>
       </equals>
-      <equals value="getinputs" type="string">
+      <equals type="string" value="getinputs">
         <default param="vis"><value type="stringVec"/></default>
         <default param="caltable"><value type="stringVec"/></default>
         <default param="field"><value type="string"/></default>

@@ -26,10 +26,48 @@ except Exception as e:
 __rethrow_casa_exceptions=True
 
 
-def executeppr(pprXmlFile, importonly=True, breakpoint='breakpoint',
-               bpaction='ignore', loglevel='info', plotlevel='default',
-               interactive=True):
-
+def executeppr(pprXmlFile: str, importonly: bool = True,
+               breakpoint: str = 'breakpoint', bpaction: str = 'ignore',
+               loglevel: str = 'info', plotlevel: str = 'default',
+               interactive: bool = True):
+    """
+    Runs Pipeline Processing Request (PPR).
+    
+    Executes pipeline tasks based on instructions described in pprXmlFile.
+    
+    Args:
+        pprXmlFile: A path to PPR file.
+        importonly: Whether or not to indicate to stop processing after
+            importing data. If True, execution of PPR stops after
+            h*_importdata stage. The parameter has no effect if there is no
+            h*_importdata stage in PPR.
+        breakpoint: A name of command that should be considered as a break point.
+        bpaction: An action to be taken at the breakpoint.
+            Available actions are,
+            'ignore': ignores breakpoint in pprXmlFile.
+            'break': stop execution at the breakpoint in pprXmlFile.
+            'resume': resume the last context and restart processing after the
+                breakpoint in pprXmlFile.
+        loglevel: A logging level. Available levels are, 'critical', 'error',
+            'warning', 'info', 'debug', 'todo', and 'trace'.
+        plotlevel: A plot level. Available levels are, 'all', 'default', and
+            'summary'
+        interactive: If True, print pipeline log to STDOUT.
+    
+    Examples:
+       Only import EBs.
+       >>> executeppr('PPR_uid___A001_X14c3_X1dd.xml')
+       
+       Full execution of PPR.
+       >>> executeppr('PPR_uid___A001_X14c3_X1dd.xml', importonly=False)
+       
+       Run pipeline tasks up to the 'breakpoint' in PPR and save context.
+       >>> executeppr('PPR_uid___A001_X14c3_X1dd.xml', importonly=False, bpaction='break')
+       
+       Resume execution from the 'breakpoint' in PPR.
+       >>> executeppr('PPR_uid___A001_X14c3_X1dd.xml', importonly=False, bpaction='resume')
+       
+    """
     # Useful mode parameters
     echo_to_screen = interactive
     workingDir = None

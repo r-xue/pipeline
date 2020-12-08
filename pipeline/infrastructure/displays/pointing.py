@@ -2,7 +2,7 @@ import math
 import os
 
 import numpy
-import pylab as pl
+import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter, MultipleLocator, AutoLocator
 
 import pipeline.infrastructure as infrastructure
@@ -318,9 +318,9 @@ class PointingAxesManager(MapAxesManagerBase):
             self._axes.xaxis.set_major_locator(xlocator)
             self._axes.yaxis.set_major_locator(ylocator)
             xlabels = self._axes.get_xticklabels()
-            pl.setp(xlabels, 'rotation', xrotation, fontsize=8)
+            plt.setp(xlabels, 'rotation', xrotation, fontsize=8)
             ylabels = self._axes.get_yticklabels()
-            pl.setp(ylabels, 'rotation', yrotation, fontsize=8)
+            plt.setp(ylabels, 'rotation', yrotation, fontsize=8)
 
     @property
     def axes(self):
@@ -329,11 +329,11 @@ class PointingAxesManager(MapAxesManagerBase):
         return self._axes
 
     def __axes(self):
-        a = pl.axes([0.15, 0.2, 0.7, 0.7])
+        a = plt.axes([0.15, 0.2, 0.7, 0.7])
         xlabel, ylabel = self.get_axes_labels()
-        pl.xlabel(xlabel)
-        pl.ylabel(ylabel)
-        pl.title('')
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
+        plt.title('')
         return a
 
 
@@ -341,8 +341,8 @@ def draw_beam(axes, r, aspect, x_base, y_base, offset=1.0):
     xy = numpy.array([[r * (math.sin(t * 0.13) + offset) * aspect + x_base,
                        r * (math.cos(t * 0.13) + offset) + y_base]
                       for t in range(50)])
-    pl.gcf().sca(axes)
-    line = pl.plot(xy[:, 0], xy[:, 1], 'r-')
+    plt.gcf().sca(axes)
+    line = plt.plot(xy[:, 0], xy[:, 1], 'r-')
     return line[0]
 
 
@@ -378,26 +378,26 @@ def draw_pointing(axes_manager, RA, DEC, FLAG=None, plotfile=None, connect=True,
     if plotpolicy == 'plot':
         # Original
         plot_objects.extend(
-            pl.plot(RA, DEC, Mark, markersize=2, markeredgecolor='b', markerfacecolor='b')
+            plt.plot(RA, DEC, Mark, markersize=2, markeredgecolor='b', markerfacecolor='b')
             )
     elif plotpolicy == 'ignore':
         # Ignore Flagged Data
         filter = FLAG == 1
         plot_objects.extend(
-            pl.plot(RA[filter], DEC[filter], Mark, markersize=2, markeredgecolor='b', markerfacecolor='b')
+            plt.plot(RA[filter], DEC[filter], Mark, markersize=2, markeredgecolor='b', markerfacecolor='b')
             )
     elif plotpolicy == 'greyed':
         # Change Color 
         if connect is True:
-            plot_objects.extend(pl.plot(RA, DEC, 'g-'))
+            plot_objects.extend(plt.plot(RA, DEC, 'g-'))
         filter = FLAG == 1
         plot_objects.extend(
-            pl.plot(RA[filter], DEC[filter], 'o', markersize=2, markeredgecolor='b', markerfacecolor='b')
+            plt.plot(RA[filter], DEC[filter], 'o', markersize=2, markeredgecolor='b', markerfacecolor='b')
             )
         filter = FLAG == 0
         if numpy.any(filter == True):
             plot_objects.extend(
-                pl.plot(RA[filter], DEC[filter], 'o', markersize=2, markeredgecolor='grey', markerfacecolor='grey')
+                plt.plot(RA[filter], DEC[filter], 'o', markersize=2, markeredgecolor='grey', markerfacecolor='grey')
                 )
     # plot starting position with beam and end position 
     if len(circle) != 0:
@@ -406,11 +406,11 @@ def draw_pointing(axes_manager, RA, DEC, FLAG=None, plotfile=None, connect=True,
             )
         Mark = 'ro'
         plot_objects.extend(
-            pl.plot(RA[-1], DEC[-1], Mark, markersize=4, markeredgecolor='r', markerfacecolor='r')
+            plt.plot(RA[-1], DEC[-1], Mark, markersize=4, markeredgecolor='r', markerfacecolor='r')
             )
-    pl.axis([xmin, xmax, ymin, ymax])
+    plt.axis([xmin, xmax, ymin, ymax])
     if plotfile is not None:
-        pl.savefig(plotfile, format='png', dpi=DPISummary)
+        plt.savefig(plotfile, format='png', dpi=DPISummary)
 
     for obj in plot_objects:
         obj.remove()
@@ -524,10 +524,10 @@ class SingleDishPointingChart(object):
         self.axes_manager.direction_reference = datatable.direction_ref
         self.axes_manager.ofs_coord = self.ofs_coord
 
-        pl.clf()
+        plt.clf()
         draw_pointing(self.axes_manager, RA, DEC, FLAG, self.figfile, circle=[0.5*beam_size_in_deg],
                       ObsPattern=obs_pattern, plotpolicy='greyed')
-        pl.close()
+        plt.close()
 
         return self._get_plot_object()
 

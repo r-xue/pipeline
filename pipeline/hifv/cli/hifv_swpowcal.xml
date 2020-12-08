@@ -1,21 +1,24 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hifv_swpowcal" type="function">
 <shortdescription>Runs gencal in swpow mode</shortdescription>
 <description>
 </description>
 <input>
-    <param subparam="true" name="vis" type="stringVec">
+    <param name="vis" subparam="true" type="stringVec">
+	<shortdescription>List of input visibility data</shortdescription>
 	<description>List of input visibility data</description>
 	<value/>
     </param>
 
-    <param subparam="true" name="caltable" type="string">
+    <param name="caltable" subparam="true" type="string">
+	<shortdescription>String name of caltable</shortdescription>
 	<description>String name of caltable</description>
 	<value/>
     </param>
 
-    <param subparam="true" name="spw" type="any">
+    <param name="spw" subparam="true" type="any">
+        <shortdescription>Spectral-window/frequency/channel: \'\' ==&gt; all, spw=&quot;0:17~19&quot;</shortdescription>
         <description>Spectral-window/frequency/channel: '' ==&gt; all, spw=&quot;0:17~19&quot;</description>
         <type>string</type><type>stringVec</type>
         <value type="string"/>
@@ -37,7 +40,7 @@
         </allowed>
     </param>
 
-    <param subparam="true" name="dryrun" type="bool">
+    <param name="dryrun" subparam="true" type="bool">
         <shortdescription>Run the task (False) or display task command (True)</shortdescription>
         <description>Run the commands (True) or generate the commands to be run but
                      do not execute (False).  This is a pipeline task execution mode.
@@ -45,7 +48,7 @@
         <value>False</value>
     </param>
 
-    <param subparam="true" name="acceptresults" type="bool">
+    <param name="acceptresults" subparam="true" type="bool">
         <shortdescription>Add the results into the pipeline context</shortdescription>
         <description>Add the results of the task to the pipeline context (True) or
                      reject them (False).  This is a pipeline task execution mode.
@@ -56,15 +59,15 @@
 
     <constraints>
 	<when param="pipelinemode">
-	    <equals value="automatic" type="string">
+	    <equals type="string" value="automatic">
 	    </equals>
-	    <equals value="interactive" type="string">
+	    <equals type="string" value="interactive">
                 <default param="vis"><value type="stringVec"/></default>
                 <default param="caltable"><value type="stringVec"/></default>
 		<default param="dryrun"><value type="bool">False</value></default>
 		<default param="acceptresults"><value type="bool">True</value></default>
 	    </equals>
-	    <equals value="getinputs" type="string">
+	    <equals type="string" value="getinputs">
                 <default param="vis"><value type="stringVec"/></default>
                 <default param="caltable"><value type="stringVec"/></default>
 	    </equals>

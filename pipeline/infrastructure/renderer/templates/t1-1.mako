@@ -27,7 +27,7 @@ def tablerow_cmp(tr1, tr2):
         return (tr1.time_start > tr2.time_start) - (tr1.time_start < tr2.time_start)
     if tr1.session != tr2.session:
         # natural sort so that session9 comes before session10
-        name_sorted = sorted((tr1.session, tr2.session), key=utils.natural_sort)
+        name_sorted = utils.natural_sort((tr1.session, tr2.session))
         return -1 if name_sorted[0] == tr1.session else 1
     return 0
 

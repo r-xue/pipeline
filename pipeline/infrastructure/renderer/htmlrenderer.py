@@ -251,7 +251,7 @@ class Session(object):
                 return cmp(t1[0], t2[0])
             elif t1[1] != t2[1]:
                 # natural sort so that session9 comes before session10
-                name_sorted = sorted((t1[1], t2[1]), key=utils.natural_sort)
+                name_sorted = utils.natural_sort((t1[1], t2[1]))
                 return -1 if name_sorted[0] == t1[1] else 1
             else:
                 return 0
@@ -625,7 +625,7 @@ class T1_3MRenderer(RendererBase):
                                             if field in f.name]
                             if len(intents_list) == 0:
                                 continue
-                            intents = ','.join(intents_list[0])
+                            intents = ','.join(sorted(intents_list[0]))
 
                             flagsummary = resultitem.flagsummary[field]
 

@@ -7,6 +7,7 @@ import itertools
 import operator
 import re
 import string
+from typing import Union, List, Dict, Sequence
 
 import numpy as np
 
@@ -20,7 +21,18 @@ __all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_ca
            'flagged_intervals', 'get_field_identifiers', 'get_receiver_type_for_spws', 'get_casa_quantity']
 
 
-def find_ranges(data):
+def find_ranges(data: Union[str, List[int]]) -> str:
+    """Identify numeric ranges in string or list.
+
+    This utility function takes a string or a list of integers (e.g. spectral
+    window lists) and returns a string containing identified ranges.
+
+    Examples:
+    >>> find_ranges([1,2,3])
+    '1~3'
+    >>> find_ranges('1,2,3,5~12')
+    '1~3,5~12'
+    """
     if isinstance(data, str):
         # barf if channel ranges are also in data, eg. 23:1~10,24
         if ':' in data:
@@ -46,9 +58,21 @@ def find_ranges(data):
     return ','.join(ranges)
 
 
-def dict_merge(a, b):
-    """
-    Recursively merge dictionaries.
+def dict_merge(a: Dict, b: Union[Dict, any]) -> Dict:
+    """Recursively merge dictionaries.
+
+    This utility function recursively merges dictionaries. If second argument
+    (b) is a dictionary, then a copy of first argument (dictionary a) is created
+    and the elements of b are merged into the new dictionary. Otherwise return
+    argument b.
+
+    This utility function check the equivalence of array like objects. Two arrays
+    are equal if they have the same number of elements and elements of the same
+    index are equal.
+
+    Examples:
+    >>> dict_merge({'a': {'b': 1}}, {'c': 2})
+    {'a': {'b': 1}, 'c': 2}
     """
     if not isinstance(b, dict):
         return b
@@ -61,27 +85,46 @@ def dict_merge(a, b):
     return result
 
 
-def are_equal(a, b):
-    """
-    Return True if the contents of the given arrays are equal.
+def are_equal(a: Union[List, np.ndarray], b: Union[List, np.ndarray]) -> bool:
+    """Return True if the contents of the given arrays are equal.
+
+    This utility function check the equivalence of array like objects. Two arrays
+    are equal if they have the same number of elements and elements of the same
+    index are equal.
+
+    Examples:
+    >>> are_equal([1, 2, 3], [1, 2, 3])
+    True
+    >>> are_equal([1, 2, 3], [1, 2, 3, 4])
+    False
     """
     return len(a) == len(b) and len(a) == sum([1 for i, j in zip(a, b) if i == j])
 
 
-def approx_equal(x, y, tol=1e-15):
-    """
-    Return True if two numbers are equal within the given tolerance.
+def approx_equal(x: float, y: float, tol: float = 1e-15) -> bool:
+    """Return True if two numbers are equal within the given tolerance.
+
+    This utility function returns True if two numbers are equal within the
+    given tolerance.
+
+    Examples:
+    >>> approx_equal(1.0e-2, 1.2e-2, 1e-2)
+    True
+    >>> approx_equal(1.0e-2, 1.2e-2, 1e-3)
+    False
     """
     lo = min(x, y)
     hi = max(x, y)
     return (lo + 0.5 * tol) >= (hi - 0.5 * tol)
 
 
-def get_num_caltable_polarizations(caltable):
-    # it seems that the number of QA ID does not map directly to the number
-    # of polarisations for the spw in the MS, but the number of polarisations
-    # for the spw as held in the caltable.
+def get_num_caltable_polarizations(caltable: str) -> int:
+    """Obtain number of polarisations from calibration table.
 
+    Seemingly the number of QA ID does not map directly to the number of
+    polarisations for the spw in the MS, but the number of polarisations for
+    the spw as held in the caltable.
+    """
     with casatools.TableReader(caltable) as tb:
         col_shapes = set(tb.getcolshapestring('CPARAM'))
 
@@ -102,13 +145,16 @@ def get_num_caltable_polarizations(caltable):
     return int(col_pols.pop())
 
 
-def flagged_intervals(vec):
-    """
-    Find islands of non-zeros in the vector vec
-    Used to find contiguous flagged channels in a given spw.  Returns a list of tuples with the start and end channels.
+def flagged_intervals(vec: Union[List, np.ndarray]) -> List:
+    """Idendity isnads of ones in input array or list.
 
-    :param vec:
-    :return:
+    This utility function finds islands of ones in array or list provided in argument.
+    Used to find contiguous flagged channels in a given spw.  Returns a list of
+    tuples with the start and end channels.
+
+    Examples:
+    >>> flagged_intervals([0, 1, 0, 1, 1])
+    [(1, 1), (3, 4)]
     """
     if len(vec) == 0:
         return []
@@ -125,24 +171,42 @@ def flagged_intervals(vec):
     return list(zip(edges[::2], edges[1::2] - 1))
 
 
-def fieldname_for_casa(field):
+def fieldname_for_casa(field: str) -> str:
+    """Prepare field string to be used as CASA argument.
+
+    This utility function ensures that field string can be used as CASA argument.
+
+    If field contains special characters, then return field string enclose in
+    quotation marks, otherwise return unchanged string.
+
+    Examples:
+    >>> fieldname_for_casa('helm=30')
+    '"helm=30"'
+    """
     if field.isdigit() or field != fieldname_clean(field):
         return '"{0}"'.format(field)
     return field
 
 
-def fieldname_clean(field):
-    """
-    Indicate if the fieldname is allowed as-is.
+def fieldname_clean(field: str) -> str:
+    """Indicate if the fieldname is allowed as-is.
 
-    This property is used to determine whether the field name, when given
-    as a CASA argument, should be enclosed in quotes.
+    This utility function replaces special characters in string with underscore.
+    The return string is used in fieldname_for_casa() function to determine
+    whether the field name, when given as a CASA argument, should be enclosed
+    in quotes.
+
+    Examples:
+    >>> fieldname_clean('helm=30')
+    'helm_30'
     """
     allowed = string.ascii_letters + string.digits + '+-'
     return ''.join([c if c in allowed else '_' for c in field])
 
 
 def get_field_accessor(ms, field):
+    """Returns accessor to field name or field ID, if field name is ambiguous.
+    """
     fields = ms.get_fields(name=field.name)
     if len(fields) == 1:
         return operator.attrgetter('name')
@@ -152,8 +216,9 @@ def get_field_accessor(ms, field):
     return accessor
 
 
-def get_field_identifiers(ms):
-    """
+def get_field_identifiers(ms) -> Dict:
+    """Maps numeric field IDs to field names.
+
     Get a dict of numeric field ID to unambiguous field identifier, using the
     field name where possible and falling back to numeric field ID where the
     name is duplicated, for instance in mosaic pointings.
@@ -162,16 +227,18 @@ def get_field_identifiers(ms):
     return {field.id: field_name_accessors[field.id](field) for field in ms.fields}
 
 
-def get_receiver_type_for_spws(ms, spwids):
-    """
-    Return dictionary of receiver types for requested spectral window IDs.
+def get_receiver_type_for_spws(ms, spwids: Sequence) -> Dict:
+    """Return dictionary of receiver types for requested spectral window IDs.
 
-    :param ms: Measurement set to query for receiver types.
-    :type ms: domain.MeasurementSet.
-    :param spwids: list of spw ids to query for.
-    :type spwids: list of integers.
+    If spwid is not found in MeasurementSet instance, then detector type is
+    set to "N/A".
 
-    :return: dictionary of spwid: receiver type.
+    Args:
+        ms: MeasurementSet to query for receiver types.
+        spwids: list of spw ids (integers) to query for.
+
+    Returns:
+        A dictionary assigning receiver types as values to spwid keys.
     """
     rxmap = {}
     for spwid in spwids:
@@ -182,17 +249,22 @@ def get_receiver_type_for_spws(ms, spwids):
             rxmap[spwid] = spw[0].receiver
     return rxmap
 
-def get_casa_quantity(value):
-    """
-    Handles None values when calling CASA quanta.quantity() tool method
 
-    Starting with CASA 6, quanta.quantity() no longer accepts None as input.
+def get_casa_quantity(value: Union[None, Dict, str, float, int]) -> Dict:
+    """Wrapper around quanta.quantity() that handles None input.
 
-    Args:
-        value: CASA quantity, None, numeric or string to convert to quantity
+    Starting with CASA 6, quanta.quantity() no longer accepts None as input. This
+    utility function handles None values when calling CASA quanta.quantity() tool
+    method.
 
     Returns:
-        A CASA quanta.quantity
+        A CASA quanta.quantity (dictionary)
+
+    Examples:
+    >>> get_casa_quantity(None)
+    {'unit': '', 'value': 0.0}
+    >>> get_casa_quantity('10klambda')
+    {'unit': 'klambda', 'value': 10.0}
     """
     if value is not None:
         return casatools.quanta.quantity(value)

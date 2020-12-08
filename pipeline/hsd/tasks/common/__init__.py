@@ -20,5 +20,4 @@ from .utils import create_serial_job
 # constants 
 NoData = -32767.0
 
-from . import renderer
 from . import rasterutil

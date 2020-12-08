@@ -38,7 +38,9 @@
 # 12/17/12 STM add phases to getCalStatistics
 ######################################################################
 import collections
-import casatools
+from pipeline.infrastructure import casatools
+
+import numpy
 
 import pipeline.infrastructure.contfilehandler as contfilehandler
 import pipeline.infrastructure as infrastructure
@@ -212,21 +214,17 @@ def getCalFlaggedSoln(calTable):
         Out: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 
     """
-    mytb = casatools.table()
 
-    import pylab as pl
-
-    mytb.open(calTable)
-    antCol = mytb.getcol('ANTENNA1')
-    spwCol = mytb.getcol('SPECTRAL_WINDOW_ID')
-    fldCol = mytb.getcol('FIELD_ID')
-    #flagCol = mytb.getcol('FLAG')
-    flagVarCol = mytb.getvarcol('FLAG')
-    mytb.close()
+    with casatools.TableReader(calTable) as mytb:
+        antCol = mytb.getcol('ANTENNA1')
+        spwCol = mytb.getcol('SPECTRAL_WINDOW_ID')
+        fldCol = mytb.getcol('FIELD_ID')
+        # flagCol = mytb.getcol('FLAG')
+        flagVarCol = mytb.getvarcol('FLAG')
 
     # Initialize a list to hold the results
     # Get shape of FLAG
-    #(np,nc,ni) = flagCol.shape
+    # (np,nc,ni) = flagCol.shape
     rowlist = list(flagVarCol.keys())
     nrows = len(rowlist)
 
@@ -309,7 +307,7 @@ def getCalFlaggedSoln(calTable):
 
     outDict['all']['total'] = ntotal
     outDict['all']['flagged'] = nflagged
-    if ntotal>0:
+    if ntotal > 0:
         outDict['all']['fraction'] = float(nflagged)/float(ntotal)
     else:
         outDict['all']['fraction'] = 0.0
@@ -346,404 +344,12 @@ def getCalFlaggedSoln(calTable):
     outDict['antmedian'] = {}
     for item in medDict:
         alist = medDict[item]
-        aarr = pl.array(alist)
-        amed = pl.median(aarr)
+        aarr = numpy.array(alist)
+        amed = numpy.median(aarr)
         outDict['antmedian'][item] = amed
     outDict['antmedian']['number'] = len(medDict['fraction'])
 
     return outDict
-
-
-#Not used
-def buildscans(msfile):
-    """
-   buildscans:  compile scan information for msfile
-
-   Created S.T. Myers 2012-05-07  v1.0 
-   Updated S.T. Myers 2012-05-14  v1.1 add corrtype
-   Updated S.T. Myers 2012-06-27  v1.2 add corrdesc lookup
-   Updated S.T. Myers 2012-11-13  v2.0 STM casa 4.0 new calls
-
-   Usage:
-          from lib_EVLApipeutils import buildscans
-
-   Input:
-
-           msfile   -   name of MS
-
-   Output: scandict (return value)
-
-   Examples:
-
-   CASA <2>: from lib_EVLApipeutils import buildscans
-
-   CASA <3>: msfile = 'TRSR0045_sb600507.55900.ms'
-
-   CASA <4>: myscans = buildscans(msfile)
-   Getting scansummary from MS
-   Found 16 DataDescription IDs
-   Found 4 StateIds
-   Found 3422 times in DD=0
-   Found 3422 times in DD=1
-   Found 3422 times in DD=2
-   Found 3422 times in DD=3
-   Found 3422 times in DD=4
-   Found 3422 times in DD=5
-   Found 3422 times in DD=6
-   Found 3422 times in DD=7
-   Found 3422 times in DD=8
-   Found 3422 times in DD=9
-   Found 3422 times in DD=10
-   Found 3422 times in DD=11
-   Found 3422 times in DD=12
-   Found 3422 times in DD=13
-   Found 3422 times in DD=14
-   Found 3422 times in DD=15
-   Found total 54752 times
-   Found 175 scans min=1 max=180
-   Size of scandict in memory is 248 bytes
-
-   CASA <5>: myscans['Scans'][1]['intents']
-     Out[5]: 'CALIBRATE_AMPLI#UNSPECIFIED,UNSPECIFIED#UNSPECIFIED'
-
-   CASA <6>: myscans['Scans'][1]['dd']
-     Out[6]: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
-
-   CASA <7>: myscans['DataDescription'][0]
-     Out[7]: 
-   {'corrdesc': ['RR', 'RL', 'LR'', 'LL'],
-    'corrtype': [5, 6, 7, 8],
-    'ipol': 0,
-    'nchan': 64,
-    'npol': 4,
-    'reffreq': 994000000.0,
-    'spw': 0,
-    'spwname': 'Subband:0'}
-
-   CASA <8>: myscans['Scans'][1]['times'][0]
-     Out[8]: 
-   [4829843281.500001,
-    4829843282.5,
-    4829843283.5,
-    4829843284.5,
-    ...
-    4829843336.5]
-
-   The last of these returns the integration midpoints for scan 1 DD 0.
-
-   Note that to get spw and pol info you use the DD indexes from ['dd']
-   in the 'Scans' part to index into the 'DataDescription' info.
-
-   You can also list the keys available in the Scans sub-dictionary:
-
-   CASA <9>: myscans['Scans'][1].keys()
-     Out[9]: 
-   ['scan_mid',
-    'intents',
-    'field',
-    'dd',
-    'npol',
-    'rra',
-    'spw',
-    'scan_int',
-    'scan_start',
-    'times',
-    'scan_end',
-    'rdec']
-
-    """
-
-    # dictionary with lookup for correlation strings
-    # from http://casa.nrao.edu/docs/doxygen/html/classcasa_1_1Stokes.html
-    cordesclist = ['Undefined',
-                   'I',
-                   'Q',
-                   'U',
-                   'V',
-                   'RR',
-                   'RL',
-                   'LR',
-                   'LL',
-                   'XX',
-                   'XY',
-                   'YX',
-                   'YY',
-                   'RX',
-                   'RY',
-                   'LX',
-                   'LY',
-                   'XR',
-                   'XL',
-                   'YR',
-                   'YL',
-                   'PP',
-                   'PQ',
-                   'QP',
-                   'QQ',
-                   'RCircular',
-                   'LCircular',
-                   'Linear',
-                   'Ptotal',
-                   'Plinear',
-                   'PFtotal',
-                   'PFlinear',
-                   'Pangle' ]
-    #
-    # Usage: find desc for an index, e.g. cordesclist[corrtype]
-    #        find index for a desc, e.g. cordesclist.index(corrdesc)
-    #
-    ms = casatools.ms()
-    tb = casatools.table()
-
-    # Access the MS
-    try:
-        ms.open(msfile, nomodify=True)
-    except:
-        print("ERROR: failed to open ms tool on file {}".format(msfile))
-        exit(1)
-
-    print('Getting scansummary from MS')
-    # get the scan summary using ms.getscansummary method
-    #mysc = ms.getscansummary()
-    scd = ms.getscansummary()
-
-    # #nscans = len( mysc['summary'].keys() )
-    # nscans = len( scd.keys() )
-    # print 'Found '+str(nscans)+' scans'
-
-    #
-    # Find number of data description IDs
-    tb.open(msfile+"/DATA_DESCRIPTION")
-    ddspwarr=tb.getcol("SPECTRAL_WINDOW_ID")
-    ddpolarr=tb.getcol("POLARIZATION_ID")
-    tb.close()
-    ddspwlist = ddspwarr.tolist()
-    ddpollist = ddpolarr.tolist()
-    ndd = len(ddspwlist)
-    print('Found {} DataDescription IDs'.format(ndd))
-    #
-    # The SPECTRAL_WINDOW table
-    tb.open(msfile+"/SPECTRAL_WINDOW")
-    nchanarr=tb.getcol("NUM_CHAN")
-    spwnamearr=tb.getcol("NAME")
-    reffreqarr=tb.getcol("REF_FREQUENCY")
-    tb.close()
-    nspw = len(nchanarr)
-    spwlookup = {}
-    for isp in range(nspw):
-        spwlookup[isp] = {}
-        spwlookup[isp]['nchan'] = nchanarr[isp]
-        spwlookup[isp]['name'] = str( spwnamearr[isp] )
-        spwlookup[isp]['reffreq'] = reffreqarr[isp]
-    print('Extracted information for {} SpectralWindows'.format(nspw))
-    #
-    # Now the polarizations (number of correlations in each pol id
-    tb.open(msfile+"/POLARIZATION")
-    ncorarr=tb.getcol("NUM_CORR")
-    # corr_type is in general variable shape, have to read row-by-row
-    # or use getvarcol to return into dictionary, we will iterate manually
-    npols = len(ncorarr)
-    polindex = {}
-    poldescr = {}
-    for ip in range(npols):
-        cort=tb.getcol("CORR_TYPE", startrow=ip, nrow=1)
-        (nct, nr) = cort.shape
-        cortypes = []
-        cordescs = []
-        for ict in range(nct):
-            cct = cort[ict][0]
-            cde = cordesclist[cct]
-            cortypes.append(cct)
-            cordescs.append(cde)
-        polindex[ip] = cortypes
-        poldescr[ip] = cordescs
-    # cortype is an array of npol, e.g. 5,6,7,8 is for RR,RL,LR,LL respectively
-    # for alma this would be 9,10,11,12 for XX,XY,YX,YY respectively
-    # cordesc are the strings associated with the types (enum for casa)
-    tb.close()
-    print('Extracted information for {} Polarization Setups'.format(npols))
-    #
-    # Build the DD index
-    #
-    ddindex = {}
-    ncorlist=ncorarr.tolist()
-    for idd in range(ndd):
-        ddindex[idd] = {}
-        isp = ddspwlist[idd]
-        ddindex[idd]['spw'] = isp
-        ddindex[idd]['spwname'] = spwlookup[isp]['name']
-        ddindex[idd]['nchan'] = spwlookup[isp]['nchan']
-        ddindex[idd]['reffreq'] = spwlookup[isp]['reffreq']
-        #
-        ipol = ddpollist[idd]
-        ddindex[idd]['ipol'] = ipol
-        ddindex[idd]['npol'] = ncorlist[ipol]
-        ddindex[idd]['corrtype'] = polindex[ipol]
-        ddindex[idd]['corrdesc'] = poldescr[ipol]
-    #
-    # Now get raw scan intents from STATE table
-    tb.open(msfile+"/STATE")
-    intentarr=tb.getcol("OBS_MODE")
-    subscanarr=tb.getcol("SUB_SCAN")
-    tb.close()
-    intentlist = intentarr.tolist()
-    subscanlist = subscanarr.tolist()
-    nstates = intentlist.__len__()
-    print('Found {} StateIds'.format(nstates))
-    #
-    # Now get FIELD table directions
-    tb.open(msfile+"/FIELD")
-    fnamearr=tb.getcol("NAME")
-    fpdirarr=tb.getcol("PHASE_DIR")
-    tb.close()
-    flist = fnamearr.tolist()
-    nfields = len(flist)
-    (nd1, nd2, npf) = fpdirarr.shape
-    fielddict = {}
-    for ifld in range(nfields):
-        fielddict[ifld] = {}
-        fielddict[ifld]['name'] = flist[ifld]
-        # these are numpy.float64
-        fielddict[ifld]['rra'] = fpdirarr[0, 0, ifld]
-        fielddict[ifld]['rdec'] = fpdirarr[1, 0, ifld]
-    #
-    # Now compile list of visibility times and info
-    #
-    # Extract times from the Main Table
-    # Build lookup for DDs by scan_number
-    timdict = {}
-    ddlookup = {}
-    ddscantimes = {}
-    ntottimes=0
-    for idd in range(ndd):
-        # Select this DD (after reset if needed)
-        if idd>0: ms.selectinit(reset=True)
-        ms.selectinit(idd)
-        #recf = ms.getdata(["flag"])
-        #(nx,nc,ni) = recf['flag'].shape
-        # get the times
-        rect = ms.getdata(["time", "field_id", "scan_number"], ifraxis=True)
-        nt = rect['time'].shape[0]
-        ntottimes+=nt
-        print('Found {} times in DD={}'.format(nt, idd))
-        #
-        timdict[idd] = {}
-        timdict[idd]['time'] = rect['time']
-        timdict[idd]['field_id'] = rect['field_id']
-        timdict[idd]['scan_number'] = rect['scan_number']
-        #
-        for it in range(nt):
-            isc = rect['scan_number'][it]
-            tim = rect['time'][it]
-            if isc in ddlookup:
-                if ddlookup[isc].count(idd)<1:
-                    ddlookup[isc].append(idd)
-                if idd in ddscantimes[isc]:
-                    ddscantimes[isc][idd].append(tim)
-                else:
-                    ddscantimes[isc][idd] = [tim]
-            else:
-                ddlookup[isc] = [idd]
-                ddscantimes[isc] = {}
-                ddscantimes[isc][idd] = [tim]
-
-    #
-    print('Found total {} times'.format(ntottimes))
-
-    ms.close()
-
-    # compile a list of scan times 
-    #
-    #scd = mysc['summary']
-    scanlist = []
-    scanindex = {}
-    scl = list(scd.keys())
-    for sscan in scl:
-        isc = int(sscan)
-        scanlist.append(isc)
-        scanindex[isc]=sscan
-
-    scanlist.sort()
-
-    nscans = len(scanlist)
-    print('Found {} scans min={} max={}'.format(nscans, min(scanlist), max(scanlist)))
-
-    scantimes = []
-    scandict = {}
-
-    # Put DataDescription lookup into dictionary
-    scandict['DataDescription'] = ddindex
-
-    # Put Scan information in dictionary
-    scandict['Scans'] = {}
-    for isc in scanlist:
-        sscan = scanindex[isc]
-        # sub-scans, differentiated by StateId
-        subs = list(scd[sscan].keys())
-        #
-        scan_start = -1.
-        scan_end = -1.
-        for ss in subs:
-            bt = scd[sscan][ss]['BeginTime']
-            et = scd[sscan][ss]['EndTime']
-            if scan_start>0.:
-                if bt<scan_start:
-                    scan_start=bt
-            else:
-                scan_start=bt
-            if scan_end>0.:
-                if et>scan_end:
-                    scan_end=et
-            else:
-                scan_end=et
-        scan_mid = 0.5*(scan_start + scan_end)
-
-        scan_int = scd[sscan]['0']['IntegrationTime']
-
-        scantimes.append(scan_mid)
-
-        scandict['Scans'][isc] = {}
-        scandict['Scans'][isc]['scan_start'] = scan_start
-        scandict['Scans'][isc]['scan_end'] = scan_end
-        scandict['Scans'][isc]['scan_mid'] = scan_mid
-        scandict['Scans'][isc]['scan_int'] = scan_int
-
-        ifld = scd[sscan]['0']['FieldId']
-        scandict['Scans'][isc]['field'] = ifld
-        scandict['Scans'][isc]['rra'] = fielddict[ifld]['rra']
-        scandict['Scans'][isc]['rdec'] = fielddict[ifld]['rdec']
-
-        spws = scd[sscan]['0']['SpwIds']
-        scandict['Scans'][isc]['spw'] = spws.tolist()
-
-        # state id of first sub-scan
-        stateid = scd[sscan]['0']['StateId']
-        # get intents from STATE table
-        intents = intentlist[stateid]
-        # this is a string with comma-separated intents
-        scandict['Scans'][isc]['intents'] = intents
-
-        # DDs for this scan
-        ddlist = ddlookup[isc]
-        scandict['Scans'][isc]['dd'] = ddlist
-
-        # number of polarizations for this list of dds
-        ddnpollist = []
-        for idd in ddlist:
-            npol = ddindex[idd]['npol']
-            ddnpollist.append(npol)
-        scandict['Scans'][isc]['npol'] = ddnpollist
-
-        # visibility times per dd in this scan
-        #
-        scandict['Scans'][isc]['times'] = {}
-        for idd in ddlist:
-            scandict['Scans'][isc]['times'][idd] = ddscantimes[isc][idd]
-
-    mysize = scandict.__sizeof__()
-    print('Size of scandict in memory is {} bytes'.format(mysize))
-
-    return scandict
 
 
 def getBCalStatistics(calTable,innerbuff=0.1):
@@ -987,35 +593,27 @@ def getBCalStatistics(calTable,innerbuff=0.1):
     # Create the output dictionary
     outDict = {}
 
-    mytb = casatools.table()
+    with casatools.TableReader(calTable) as mytb:
 
-    import pylab as pl
+        # Check that this is a B Jones table
+        caltype = mytb.getkeyword('VisCal')
+        if caltype=='B Jones':
+            print('This is a B Jones table, proceeding')
+        else:
+            print('This is NOT a B Jones table, aborting')
+            return outDict
 
-    mytb.open(calTable)
+        antCol = mytb.getcol('ANTENNA1')
+        spwCol = mytb.getcol('SPECTRAL_WINDOW_ID')
+        fldCol = mytb.getcol('FIELD_ID')
 
-    # Check that this is a B Jones table
-    caltype = mytb.getkeyword('VisCal')
-    if caltype=='B Jones':
-        print('This is a B Jones table, proceeding')
-    else:
-        print('This is NOT a B Jones table, aborting')
-        return outDict
-
-    antCol = mytb.getcol('ANTENNA1')
-    spwCol = mytb.getcol('SPECTRAL_WINDOW_ID')
-    fldCol = mytb.getcol('FIELD_ID')
-
-    # these columns are possibly variable in size
-    #flagCol = mytb.getcol('FLAG')
-    flagVarCol = mytb.getvarcol('FLAG')
-    #dataCol = mytb.getcol('CPARAM')
-    dataVarCol = mytb.getvarcol('CPARAM')
-    mytb.close()
+        # these columns are possibly variable in size
+        flagVarCol = mytb.getvarcol('FLAG')
+        dataVarCol = mytb.getvarcol('CPARAM')
 
     # get names from ANTENNA table
-    mytb.open(calTable+'/ANTENNA')
-    antNameCol = mytb.getcol('NAME')
-    mytb.close()
+    with casatools.TableReader(calTable+'/ANTENNA') as mytb:
+        antNameCol = mytb.getcol('NAME')
     nant = len(antNameCol)
 
     antDict = {}
@@ -1023,9 +621,8 @@ def getBCalStatistics(calTable,innerbuff=0.1):
         antDict[iant] = antNameCol[iant]
 
     # get names from SPECTRAL_WINDOW table
-    mytb.open(calTable+'/SPECTRAL_WINDOW')
-    spwNameCol = mytb.getcol('NAME')
-    mytb.close()
+    with casatools.TableReader(calTable+'/SPECTRAL_WINDOW') as mytb:
+        spwNameCol = mytb.getcol('NAME')
     nspw = len(spwNameCol)
 
     # get baseband list
@@ -1058,9 +655,9 @@ def getBCalStatistics(calTable,innerbuff=0.1):
 
     # Initialize a list to hold the results
     # Get shape of FLAG
-    #(np,nc,ni) = flagCol.shape
+    # (np,nc,ni) = flagCol.shape
     # Get shape of CPARAM
-    #(np,nc,ni) = dataCol.shape
+    # (np,nc,ni) = dataCol.shape
     rowlist = list(dataVarCol.keys())
     nrows = len(rowlist)
 
@@ -1188,10 +785,10 @@ def getBCalStatistics(calTable,innerbuff=0.1):
                 else:
                     cx = dataArr[poln][chan][iid]
                     # get quantities from complex data
-                    ampx = pl.absolute(cx)
-                    phasx = pl.angle(cx, deg=True)
-                    realx = pl.real(cx)
-                    imagx = pl.imag(cx)
+                    ampx = numpy.absolute(cx)
+                    phasx = numpy.angle(cx, deg=True)
+                    realx = numpy.real(cx)
+                    imagx = numpy.imag(cx)
                     #
                     # put in dictionary
                     cdict = {}
@@ -1204,7 +801,7 @@ def getBCalStatistics(calTable,innerbuff=0.1):
                     # Data stats
                     # By antspw per poln
                     nx = outDict['antspw'][antIdx][spwIdx][poln]['all']['number']
-                    if nx==0:
+                    if nx == 0:
                         outDict['antspw'][antIdx][spwIdx][poln]['all']['number'] = 1
                         for quan in quants:
                             for val in vals:
@@ -1227,7 +824,7 @@ def getBCalStatistics(calTable,innerbuff=0.1):
                     outDict['antspw'][antIdx][spwIdx][poln]['all']['number'] += 1
                     # Now the rx-band stats
                     ny = outDict['antband'][antIdx][rx][bb]['all']['number']
-                    if ny==0:
+                    if ny == 0:
                         outDict['antband'][antIdx][rx][bb]['all']['number'] = 1
                         for quan in quants:
                             for val in vals:
@@ -1249,13 +846,13 @@ def getBCalStatistics(calTable,innerbuff=0.1):
                             outDict['antband'][antIdx][rx][bb]['all'][quan]['var'] = qy/float(ny+1)
                         outDict['antband'][antIdx][rx][bb]['all']['number'] += 1
                     #
-                    if fc>=fcrange[0] and fc<fcrange[1]:
+                    if fc >= fcrange[0] and fc < fcrange[1]:
                         # this chan lies in the "inner" part of the spw
                         ncinnergood += 1
                         # Data stats
                         # By antspw per poln
                         nx = outDict['antspw'][antIdx][spwIdx][poln]['inner']['number']
-                        if nx==0:
+                        if nx == 0:
                             outDict['antspw'][antIdx][spwIdx][poln]['inner']['number'] = 1
                             for quan in quants:
                                 for val in vals:
@@ -1278,7 +875,7 @@ def getBCalStatistics(calTable,innerbuff=0.1):
                                 outDict['antspw'][antIdx][spwIdx][poln]['inner']['number'] += 1
                         # Now the rx-band stats
                         ny = outDict['antband'][antIdx][rx][bb]['inner']['number']
-                        if ny==0:
+                        if ny == 0:
                             outDict['antband'][antIdx][rx][bb]['inner']['number'] = 1
                             for quan in quants:
                                 for val in vals:
@@ -1299,7 +896,6 @@ def getBCalStatistics(calTable,innerbuff=0.1):
                                 qy = ny*vary + (vy-meany)*(vy-runy)
                                 outDict['antband'][antIdx][rx][bb]['inner'][quan]['var'] = qy/float(ny+1)
                             outDict['antband'][antIdx][rx][bb]['inner']['number'] += 1
-
 
             npflagged = float(ncflagged)/float(nc)
             nflagged += float(ncflagged)/float(nc)

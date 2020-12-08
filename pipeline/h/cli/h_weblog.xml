@@ -1,6 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="h_weblog" type="function">
 <shortdescription>Open the pipeline weblog in a browser</shortdescription>
@@ -26,14 +24,14 @@
                 </allowed>
             </param>
 
-            <param type="string" name="relpath" subparam="true">
+            <param name="relpath" subparam="true" type="string">
                 <shortdescription>Relative path to weblog index.html</shortdescription>
                 <description>Relative path to the weblog index file. This file must be located
                     in a child directory of the CASA working directory. If relpath
                     is left unspecified, the most recent weblog will be located and
                     displayed.
                 </description>
-                <value></value>
+                <value/>
             </param>
 
             <constraints>
@@ -42,19 +40,19 @@
                 </equals>
                 <equals type="string" value="interactive">
                     <default param="relpath">
-                        <value type="string" />
+                        <value type="string"/>
                     </default>
                 </equals>
                 <equals type="string" value="getinputs">
                     <default param="relpath">
-                        <value type="string" />
+                        <value type="string"/>
                     </default>
                 </equals>
             </when>
             </constraints>
 
 </input>
-<example />
+<example/>
 Examples
 
 1. Open the most recent weblog
