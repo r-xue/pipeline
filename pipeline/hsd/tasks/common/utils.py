@@ -13,7 +13,6 @@ import numpy
 from pipeline.domain.datatable import OnlineFlagIndex
 from pipeline.domain import DataTable, Field, MeasurementSet, ObservingRun
 from pipeline.infrastructure import Context
-# import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.casatools as casatools
@@ -257,17 +256,6 @@ def is_nro(context: Context) -> bool:
     """
     mses = context.observing_run.measurement_sets
     return numpy.all([ms.antenna_array.name == 'NRO' for ms in mses])
-
-
-# def asdm_name(scantable_object):
-#     """
-#     Return ASDM name that target scantable belongs to.
-#     Assumptions are:
-#        - scantable is generated from MS
-#        - MS is generated from ASDM
-#        - MS name is <uid>.ms
-#     """
-#     return asdm_name_from_ms(scantable_object.ms)
 
 
 def asdm_name_from_ms(ms_domain: MeasurementSet) -> str:
@@ -689,23 +677,6 @@ def _get_index_list_for_ms(datatable: DataTable, vis_list: List[str],
                     yield row
 
 
-# TODO (ksugimoto): Remove unused method, get_index_list_for_ms2
-# def get_index_list_for_ms2(datatable, group_desc, member_list, srctype=None):
-#     # use time_table instead of data selection
-#     #online_flag = datatable.getcolslice('FLAG_PERMANENT', [0, OnlineFlagIndex], [-1, OnlineFlagIndex], 1)[0]
-#     #LOG.info('online_flag=%s'%(online_flag))
-#     for (_ms, _field, _ant, _spw) in iterate_group_member(group_desc, member_list):
-#         _vis = _ms.name
-#         time_table = datatable.get_timetable(_ant, _spw, None, os.path.basename(_vis), _field)
-#         # time table separated by large time gap
-#         the_table = time_table[1]
-#         for group in the_table:
-#             for row in group[1]:
-#                 permanent_flag = datatable.getcell('FLAG_PERMANENT', row)
-#                 online_flag = permanent_flag[:, OnlineFlagIndex]
-#                 if any(online_flag == 1):
-#                     yield row
-
 # TODO (ksugimoto): Remove unused parameter srctype
 # TODO (ksugimoto): rename function
 def get_index_list_for_ms3(datatable_dict: dict, group_desc: dict,
@@ -849,14 +820,6 @@ def get_valid_ms_members2(group_desc: dict, ms_filter: List[MeasurementSet],
                     (fieldsel.size == 0 or field_id in fieldsel) and
                     (antsel.size == 0 or ant_id in antsel)):
                 yield member_id
-
-
-# def _collect_logrecords(logger):
-#     capture_handlers = [h for h in logger.handlers if h.__class__.__name__ == 'CapturingHandler']
-#     logrecords = []
-#     for handler in capture_handlers:
-#         logrecords.extend(handler.buffer[:])
-#     return logrecords
 
 
 # TODO (ksugimoto): Move this to casatools module.
@@ -1275,12 +1238,6 @@ def __read_table(reader: Optional[Callable], method: Callable,
     return result
 
 
-# def _read_table(reader, table, vis):
-#     """Call __read_table with given parameters."""
-#     rows = __read_table(reader, table._read_table, vis)
-#     return rows
-
-
 # @profiler
 def make_spwid_map(srcvis: str, dstvis: str) -> dict:
     """
@@ -1294,13 +1251,6 @@ def make_spwid_map(srcvis: str, dstvis: str) -> dict:
         A spectral windpw (SpW) mapping dictionary. A key is SpW ID of srcvis
         and the value is that of dstvis.
     """
-#     src_spws = __read_table(casatools.MSMDReader,
-#                             tablereader.SpectralWindowTable.get_spectral_windows,
-#                             srcvis)
-#     dst_spws = __read_table(casatools.MSMDReader,
-#                             tablereader.SpectralWindowTable.get_spectral_windows,
-#                             dstvis)
-
     src_spws = __read_table(None, get_spw_properties, srcvis)
     dst_spws = __read_table(None, get_spw_properties, dstvis)
 
@@ -1442,25 +1392,6 @@ def get_datacolumn_name(vis: str) -> str:
             break
     assert colname is not None
     return colname
-
-
-# # helper functions for parallel execution
-# def create_serial_job(task_cls, task_args, context: Context):
-#     inputs = task_cls.Inputs(context, **task_args)
-#     task = task_cls(inputs)
-#     job = mpihelpers.SyncTask(task)
-#     LOG.debug('Serial Job: %s' % task)
-#     return job
-# 
-# 
-# def create_parallel_job(task_cls, task_args, context: Context):
-#     context_path = os.path.join(context.output_dir, context.name + '.context')
-#     if not os.path.exists(context_path):
-#         context.save(context_path)
-#     task = mpihelpers.Tier0PipelineTask(task_cls, task_args, context_path)
-#     job = mpihelpers.AsyncTask(task)
-#     LOG.debug('Parallel Job: %s' % task)
-#     return job
 
 
 def get_restfrequency(vis: str, spwid: int,
