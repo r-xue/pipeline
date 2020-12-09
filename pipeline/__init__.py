@@ -141,26 +141,6 @@ def stop_weblog():
             HTTP_SERVER = None
 
 
-#def initcli():
-#    print "Initializing cli..."
-#    mypath = pkg_resources.resource_filename(__name__, '')
-#    hifpath = mypath + "/hif/cli/hif.py"
-#    hpath = mypath + "/h/cli/h.py"
-#    hsdpath = mypath + "/hsd/cli/hsd.py"
-#    hifapath = mypath + "/hifa/cli/hifa.py"
-#    hifvpath = mypath + "/hifv/cli/hifv.py"
-#    hsdnpath = mypath + "/hsdn/cli/hsdn.py"
-#    myglobals = stack_frame_find()
-#
-#    execfile(hpath, myglobals)
-#    execfile(hifpath, myglobals)
-#    execfile(hsdpath, myglobals)
-#    execfile(hifapath, myglobals)
-#    execfile(hifvpath, myglobals)
-#    execfile(hsdnpath, myglobals)
-#    # exec('import pipeline.infrastructure.executeppr', myglobals)
-
-
 def initcli():
     LOG.info('Initializing cli...')
     my_globals = find_frame()
