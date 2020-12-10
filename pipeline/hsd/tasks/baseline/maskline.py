@@ -150,8 +150,9 @@ class MaskLine(basetask.StandardTaskTemplate):
         gridding_inputs = simplegrid.SDSimpleGridding.Inputs(context, group_id, member_list, parsed_window,
                                                              windowmode)
         gridding_task = simplegrid.SDSimpleGridding(gridding_inputs)
-        job = common.ParameterContainerJob(gridding_task, datatable_dict=dt_dict, index_list=index_list)
-        gridding_result = self._executor.execute(job, merge=False)
+        gridding_result = self._executor.execute(gridding_task, merge=False,
+                                                 datatable_dict=dt_dict,
+                                                 index_list=index_list)
         spectra = gridding_result.outcome['spectral_data']
         grid_table = gridding_result.outcome['grid_table']
         t1 = time.time()
@@ -179,9 +180,10 @@ class MaskLine(basetask.StandardTaskTemplate):
         detection_inputs = detection.DetectLine.Inputs(context, group_id, parsed_window, windowmode,
                                                        edge, broadline)
         line_finder = detection.DetectLine(detection_inputs)
-        job = common.ParameterContainerJob(line_finder, datatable_dict=dt_dict, grid_table=grid_table,
-                                           spectral_data=spectra)
-        detection_result = self._executor.execute(job, merge=False)
+        detection_result = self._executor.execute(line_finder, merge=False,
+                                                  datatable_dict=dt_dict,
+                                                  grid_table=grid_table,
+                                                  spectral_data=spectra)
         detect_signal = detection_result.signals
         t1 = time.time()
 
@@ -196,11 +198,13 @@ class MaskLine(basetask.StandardTaskTemplate):
                                                  grid_size, parsed_window, windowmode,
                                                  edge,
                                                  clusteringalgorithm=clusteringalgorithm)
-        line_validator = validator_cls(validation_inputs)
+        validator_task = validator_cls(validation_inputs)
         LOG.trace('len(index_list)={}', len(index_list))
-        job = common.ParameterContainerJob(line_validator, datatable_dict=dt_dict, index_list=index_list,
-                                           grid_table=grid_table, detect_signal=detect_signal)
-        validation_result = self._executor.execute(job, merge=False)
+        validation_result = self._executor.execute(validator_task, merge=False,
+                                                   datatable_dict=dt_dict,
+                                                   index_list=index_list,
+                                                   grid_table=grid_table,
+                                                   detect_signal=detect_signal)
         lines = validation_result.outcome['lines']
         if 'channelmap_range' in validation_result.outcome:
             channelmap_range = validation_result.outcome['channelmap_range']
