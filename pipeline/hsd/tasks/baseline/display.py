@@ -4,7 +4,7 @@ import os
 import string
 import time
 
-import pylab as pl
+import matplotlib.pyplot as plt
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
@@ -20,6 +20,7 @@ LOG = infrastructure.get_logger(__name__)
 
 RArotation = pointing.RArotation
 DECrotation = pointing.DECrotation
+
 
 class ClusterValidationAxesManager(MapAxesManagerBase):
     def __init__(self, clusters_to_plot, nh, nv, aspect_ratio,
@@ -42,11 +43,12 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
         self._legend = None
         self._axes = None
         self.legend_y = 0.85
+
     @property
     def axes_legend(self):
         if self._legend is None:
-            # self._legend = pl.axes([0.0, 0.85, 1.0, 0.15])
-            self._legend = pl.axes([0.0, self.legend_y, 1.0, 1.0-self.legend_y])
+            # self._legend = plt.axes([0.0, 0.85, 1.0, 0.15])
+            self._legend = plt.axes([0.0, self.legend_y, 1.0, 1.0 - self.legend_y])
             self._legend.set_axis_off()
 
         return self._legend
@@ -64,8 +66,8 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
             ix = loc % self.nh
             iy = int(loc // self.nh)
 
-            ( x0, y0, x1, y1, tpos_x, tpos_y ) = self.__calc_axes( pl.gcf(), ix, iy )
-            axes = pl.axes([x0, y0, x1, y1])
+            ( x0, y0, x1, y1, tpos_x, tpos_y ) = self.__calc_axes(plt.gcf(), ix, iy)
+            axes = plt.axes([x0, y0, x1, y1])
 
             # 2008/9/20 DEC Effect
             axes.set_aspect(self.aspect_ratio)
@@ -263,15 +265,15 @@ class ClusterDisplayWorker(object, metaclass=abc.ABCMeta):
 
     def plot(self):
         if ShowPlot:
-            pl.ion()
+            plt.ion()
         else:
-            pl.ioff()
-        pl.figure(self.MATPLOTLIB_FIGURE_ID)
+            plt.ioff()
+        plt.figure(self.MATPLOTLIB_FIGURE_ID)
         if ShowPlot:
-            pl.ioff()
+            plt.ioff()
 
-        pl.cla()
-        pl.clf()
+        plt.cla()
+        plt.clf()
 
         return list(self._plot())
 
@@ -297,19 +299,19 @@ class ClusterDisplayWorker(object, metaclass=abc.ABCMeta):
 class ClusterScoreDisplay(ClusterDisplayWorker):
     def _plot(self):
         ncluster, score = self.cluster['cluster_score']
-        pl.plot(ncluster, score, 'bx', markersize=10)
-        [xmin, xmax, ymin, ymax] = pl.axis()
-        pl.xlabel('Number of Clusters', fontsize=11)
-        pl.ylabel('Score (Lower is better)', fontsize=11)
-        pl.title('Score are plotted versus number of the cluster', fontsize=11)
-        pl.axis([0, xmax+1, ymin, ymax])
+        plt.plot(ncluster, score, 'bx', markersize=10)
+        [xmin, xmax, ymin, ymax] = plt.axis()
+        plt.xlabel('Number of Clusters', fontsize=11)
+        plt.ylabel('Score (Lower is better)', fontsize=11)
+        plt.title('Score are plotted versus number of the cluster', fontsize=11)
+        plt.axis([0, xmax + 1, ymin, ymax])
 
         if ShowPlot:
-            pl.draw()
+            plt.draw()
 
         plotfile = os.path.join(self.stage_dir,
                                 'cluster_score_group%s_spw%s_iter%s.png' % (self.group_id, self.spw, self.iteration))
-        pl.savefig(plotfile, format='png', dpi=DPIDetail)
+        plt.savefig(plotfile, format='png', dpi=DPIDetail)
         plot = self._create_plot(plotfile, 'cluster_score',
                                  'Number of Clusters', 'Score')
         yield plot
@@ -324,9 +326,9 @@ class ClusterPropertyDisplay(ClusterDisplayWorker):
         sorted_properties = sorted(properties)
         width = lines[:, 0]
         center = lines[:, 1]
-        pl.plot(center, width, 'bs', markersize=1)
-        [xmin, xmax, ymin, ymax] = pl.axis()
-        axes = pl.gcf().gca()
+        plt.plot(center, width, 'bs', markersize=1)
+        [xmin, xmax, ymin, ymax] = plt.axis()
+        axes = plt.gcf().gca()
         cluster_id = 0
         for [cx, cy, dummy, r] in sorted_properties:
             radius = r * scaling
@@ -334,20 +336,20 @@ class ClusterPropertyDisplay(ClusterDisplayWorker):
             x_base = cx
             y_base = cy * scaling
             pointing.draw_beam(axes, radius, aspect, x_base, y_base, offset=0)
-            pl.text(x_base, y_base, str(cluster_id), fontsize=10, color='red')
+            plt.text(x_base, y_base, str(cluster_id), fontsize=10, color='red')
             cluster_id += 1
-        pl.xlabel('Line Center (Channel)', fontsize=11)
-        pl.ylabel('Line Width (Channel)', fontsize=11)
-        pl.axis([xmin-1, xmax+1, 0, ymax+1])
-        pl.title('Clusters in the line Center-Width space\n\nRed Oval(s) shows each clustering region. '
+        plt.xlabel('Line Center (Channel)', fontsize=11)
+        plt.ylabel('Line Width (Channel)', fontsize=11)
+        plt.axis([xmin - 1, xmax + 1, 0, ymax + 1])
+        plt.title('Clusters in the line Center-Width space\n\nRed Oval(s) shows each clustering region. '
                  'Size of the oval represents cluster radius', fontsize=11)
 
         if ShowPlot:
-            pl.draw()
+            plt.draw()
 
         plotfile = os.path.join(self.stage_dir,
                                 'cluster_property_group%s_spw%s_iter%s.png' % (self.group_id, self.spw, self.iteration))
-        pl.savefig(plotfile, format='png', dpi=DPISummary)
+        plt.savefig(plotfile, format='png', dpi=DPISummary)
         plot = self._create_plot(plotfile, 'line_property',
                                  'Line Center', 'Line Width')
         yield plot
@@ -377,7 +379,7 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
         self.org_direction = org_direction
 
     def _plot(self):
-        pl.clf()
+        plt.clf()
 
         marks = ['gs', 'bs', 'cs', 'ys']
 
@@ -534,12 +536,12 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
                              verticalalignment='baseline', size=8 )
                 )
             if ShowPlot:
-                pl.draw()
+                plt.draw()
 
             plotfile = os.path.join(
                 self.stage_dir,
                 'cluster_group_%s_spw%s_iter%s_%s.png' % (self.group_id, self.spw, self.iteration, mode))
-            pl.savefig(plotfile, format='png', dpi=DPISummary)
+            plt.savefig(plotfile, format='png', dpi=DPISummary)
 
             for obj in plot_objects:
                 obj.remove()

@@ -81,11 +81,11 @@ def make_flux_table(context, results):
         if len(single_result.measurements) is 0:
             continue
 
-        for field_arg, measurements in single_result.measurements.items():
+        for field_arg in sorted(single_result.measurements, key=lambda f: ms_for_result.get_fields(f)[0].id):
             field = ms_for_result.get_fields(field_arg)[0]
             field_cell = '%s (#%s)' % (field.name, field.id)
 
-            for measurement in sorted(measurements, key=lambda m: int(m.spw_id)):
+            for measurement in sorted(single_result.measurements[field_arg], key=operator.attrgetter('spw_id')):
                 fluxes = collections.defaultdict(lambda: 'N/A')
                 for stokes in ['I', 'Q', 'U', 'V']:
                     try:                        

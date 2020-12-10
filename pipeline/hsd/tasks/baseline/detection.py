@@ -3,7 +3,7 @@ import collections
 import time
 import numpy
 import math
-import pylab as PL
+import matplotlib.pyplot as plt
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
@@ -247,13 +247,13 @@ class DetectLine(basetask.StandardTaskTemplate):
 
     def plot_detectrange(self, sp, protected, fname):
         print(protected, fname)
-        PL.clf()
-        PL.plot(sp)
-        ymin, ymax = PL.ylim()
+        plt.clf()
+        plt.plot(sp)
+        ymin, ymax = plt.ylim()
         for i in range(len(protected)):
             y = ymin + (ymax - ymin)/30.0 * (i + 1)
-            PL.plot(protected[i], (y, y), 'r')
-        PL.savefig(fname, format='png')
+            plt.plot(protected[i], (y, y), 'r')
+        plt.savefig(fname, format='png')
 
     def MaskBinning(self, data, Bin, offset=0):
         if Bin == 1:

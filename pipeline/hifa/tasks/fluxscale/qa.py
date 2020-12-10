@@ -234,7 +234,7 @@ def score_kspw(context, result):
         for m in other_measurements:
             catalogue_fluxes = [f for f in field.flux_densities
                                 if f.origin in EXTERNAL_SOURCES
-                                and f.spw_id == highest_snr_measurement.spw_id]
+                                and f.spw_id == m.spw_id]
             if not catalogue_fluxes:
                 LOG.info('No catalogue measurement for {} ({}) spw {}'.format(msg_fieldname, msg_intents, m.spw_id))
                 continue
