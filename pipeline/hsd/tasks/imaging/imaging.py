@@ -1040,7 +1040,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                                                                                      str(pol_names)))
             dt = datatable_dict[msobj.basename]
             _index_list = common.get_index_list_for_ms(dt, [msobj.basename], [antid], [fieldid],
-                                                       [spwid], srctype=0)
+                                                       [spwid])
             if len(_index_list) == 0: #this happens when permanent flag is set to all selection.
                 LOG.info('No unflagged row in DataTable. Skipping further calculation.')
                 continue
@@ -1180,7 +1180,7 @@ def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
     Returns a named Tuple
     """
     _index_list = common.get_index_list_for_ms(datatable, [msobj.name], [antid], [fieldid],
-                                                       [spwid], srctype=0)
+                                                       [spwid])
     timestamp = datatable.getcol('TIME').take(_index_list, axis=-1)
     ra = datatable.getcol('OFS_RA').take(_index_list, axis=-1)
     dec = datatable.getcol('OFS_DEC').take(_index_list, axis=-1)

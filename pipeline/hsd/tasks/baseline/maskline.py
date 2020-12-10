@@ -82,9 +82,8 @@ class MaskLine(basetask.StandardTaskTemplate):
         mses = context.observing_run.measurement_sets
         dt_dict = dict((ms.basename, DataTable(os.path.join(context.observing_run.ms_datatable_name, ms.basename)))
                        for ms in mses)
-        srctype = 0  # reference_data.calibration_strategy['srctype']
         t0 = time.time()
-        index_dict = utils.get_index_list_for_ms3(dt_dict, group_desc, member_list, srctype)
+        index_dict = utils.get_index_list_for_ms2(dt_dict, group_desc, member_list)
         t1 = time.time()
         LOG.info('Elapsed time for generating index_dict: {0} sec'.format(t1 - t0))
 

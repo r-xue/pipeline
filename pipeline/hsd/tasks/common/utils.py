@@ -608,11 +608,9 @@ def iterate_group_member(group_desc: dict,
         yield member.ms, member.field_id, member.antenna_id, member.spw_id
 
 
-# TODO (ksugimoto): Remove unused parameter srctype
 def get_index_list_for_ms(datatable: DataTable, vis_list: List[str],
                           antennaid_list: List[int], fieldid_list: List[int],
-                          spwid_list: List[int],
-                          srctype: Any=None)  -> numpy.ndarray:
+                          spwid_list: List[int])  -> numpy.ndarray:
     """
     Return an array of row IDs in datatable that matches selection.
     
@@ -625,20 +623,18 @@ def get_index_list_for_ms(datatable: DataTable, vis_list: List[str],
             elements of vis_list.
         spwid_list: A list of SpW IDs to select for a correspoinding
             elements of vis_list.
-        srctype: A source type selection. This parameter is ignored.
 
     Retruns:
         An array of row IDs in datatable
     """
     return numpy.fromiter(_get_index_list_for_ms(datatable, vis_list, antennaid_list, fieldid_list,
-                                                spwid_list, srctype), dtype=numpy.int64)
+                                                spwid_list), dtype=numpy.int64)
 
 
-# TODO (ksugimoto): Remove unused parameter srctype
 def _get_index_list_for_ms(datatable: DataTable, vis_list: List[str],
                            antennaid_list: List[int], fieldid_list: List[int],
-                           spwid_list: List[int],
-                           srctype: Any=None) -> Generator[int, None, None]:
+                           spwid_list: List[int]
+                           ) -> Generator[int, None, None]:
     """
     Yield row IDs in datatable that matches given selection criteria.
     
@@ -651,7 +647,6 @@ def _get_index_list_for_ms(datatable: DataTable, vis_list: List[str],
             elements of vis_list.
         spwid_list: A list of SpW IDs to select for a correspoinding
             elements of vis_list.
-        srctype: A source type selection. This parameter is ignored.
 
     Yields:
         Row IDs in datatable
@@ -677,11 +672,8 @@ def _get_index_list_for_ms(datatable: DataTable, vis_list: List[str],
                     yield row
 
 
-# TODO (ksugimoto): Remove unused parameter srctype
-# TODO (ksugimoto): rename function
-def get_index_list_for_ms3(datatable_dict: dict, group_desc: dict,
-                           member_list: List[int],
-                           srctype: Any=None) -> collections.defaultdict:
+def get_index_list_for_ms2(datatable_dict: dict, group_desc: dict,
+                           member_list: List[int]) -> collections.defaultdict:
     """
     Return row IDs of datatable correspond to selected reductions groups.
 
@@ -692,7 +684,6 @@ def get_index_list_for_ms3(datatable_dict: dict, group_desc: dict,
             group IDs and values are 
             pipeline.domain.singledish.MSReductionGroupDesc instances.
         member_id_list: A list of member IDs in group_desc to yield.
-        srctype: A source type selection. This parameter is ignored.
 
     Returns:
         Keys of the returned dictionary are names of MSes and values are numpy
