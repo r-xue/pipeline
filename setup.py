@@ -381,6 +381,7 @@ setuptools.setup(
                        '*.txt',
                        '*.woff',
                        '*.woff2',
-                       '*.xml']},
+                       '*.xml',
+                       'version']},
     zip_safe=False
 )

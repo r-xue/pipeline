@@ -94,8 +94,7 @@ except:
     pass
 
 import numpy as np
-#import matplotlib.pyplot as pl  # used through Cycle 7
-import pylab as pl
+import matplotlib.pyplot as plt
 import matplotlib.ticker
 import time as timeUtilities
 # Check if this is CASA6  CASA 6
@@ -190,9 +189,9 @@ def casalogPost(mystring, debug=True):
     origin = token[1].replace(',','_') + token[2]
     casalog.post(mystring.replace('\n',''), origin=origin)
     
-#if casaVersion >= '5.9' and pl.get_backend()=='TkAgg':
+#if casaVersion >= '5.9' and plt.get_backend()=='TkAgg':
 #    casalogPost('Setting classic style matplotlib due to TkAgg')
-#    pl.style.use('classic')  # it is supposed to preserve ratio of fontsize to plot size
+#    plt.style.use('classic')  # it is supposed to preserve ratio of fontsize to plot size
 
 SFC_FACTOR_WHEN_MOM8MASK_EXISTS = 0.8  # was 0.6 on Jan 26; 0.5 was too low on 2015.1.00131.S G09_0847+0045 spw 17
                                         # 0.8 was too high on 2018.1.00828.S
@@ -1255,12 +1254,12 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                 labelDesc = ax1.text(0.5,0.99-3*0.03, revertedAreaString, transform=ax1.transAxes, ha='center', size=fontsize-1)
                 labelDescs.append(labelDesc)
                 revertedPng = png.replace('.png','.reverted.png')
-                pl.savefig(revertedPng, dpi=dpi)
+                plt.savefig(revertedPng, dpi=dpi)
                 # put back the original label
                 labelDescs[-1].remove()
                 labelDesc = ax1.text(0.5,0.99-3*0.03, areaString, transform=ax1.transAxes, ha='center', size=fontsize-1)
                 labelDescs.append(labelDesc)
-                pl.draw()
+                plt.draw()
                 # Write out the original _findContinuum.dat file, for testing future improvements of heuristics
                 if (meanSpectrumFile == ''): 
                     meanSpectrumFile = buildMeanSpectrumFilename(img, meanSpectrumMethod, peakFilterFWHM, amendMaskIterationName)
@@ -1504,7 +1503,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                                                       extraMaskDecision2, autoLowerDecision,
                                                       intersectionOfSelections, useMomentDiff, 
                                                       warnings, channelRanges, sigmaUsedToAmendMask)
-                            pl.savefig(png, dpi=dpi)
+                            plt.savefig(png, dpi=dpi)
                         break # do not run a second round
                     else:
                         # The following step is needed, e.g. for Nessie_F1 spw 18 and 24
@@ -1668,7 +1667,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                                                       extraMaskDecision2, autoLowerDecision,
                                                       intersectionOfSelections, useMomentDiff, 
                                                       warnings, channelRanges, sigmaUsedToAmendMask)
-                    pl.savefig(png, dpi=dpi)
+                    plt.savefig(png, dpi=dpi)
                     break
                 else:
                     casalogPost("Extra Mask is needed")
@@ -1738,7 +1737,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                                                       extraMaskDecision2, autoLowerDecision,
                                                       intersectionOfSelections, useMomentDiff, 
                                                       warnings, channelRanges, sigmaUsedToAmendMask)
-                        pl.savefig(png, dpi=dpi)
+                        plt.savefig(png, dpi=dpi)
                         break
                     intersectionOfSelections = True
                     ###############################################################
@@ -1868,7 +1867,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                                                       warnings, channelRanges, sigmaUsedToAmendMask)
                         # give the modified figure a new name so that it does not overwrite the pre-extraMask png
                         png = png.replace('.amendedMask.meanSpectrum','.amendedMaskIntersect.meanSpectrum')
-                        pl.savefig(png, dpi=dpi)
+                        plt.savefig(png, dpi=dpi)
                         break
                     if len(amendMaskIterationNames) <= amendMaskIteration+1: # len will be 2 if amendMaskIterations was 1
                         extraMaskDecision = 'No'
@@ -1900,7 +1899,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                                                       intersectionOfSelections, useMomentDiff, 
                                                       warnings, channelRanges, sigmaUsedToAmendMask)
                         casalogPost('Stopping because amendMaskIterations was set less than 2')
-                        pl.savefig(png, dpi=dpi)
+                        plt.savefig(png, dpi=dpi)
                         break
                     # If Yes, do the extraMask procedure:
                     print("extraMaskSigmaUsed = %f, ExtraMaskLevel = %f" % (extraMaskSigmaUsed,ExtraMaskLevel))
@@ -1968,7 +1967,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                                                       intersectionOfSelections, useMomentDiff, 
                                                       warnings, channelRanges, sigmaUsedToAmendMask)
                         casalogPost('Stopping because amendMaskIterations was set less than 2')
-                        pl.savefig(png, dpi=dpi)
+                        plt.savefig(png, dpi=dpi)
                         break
                     # do the extraMaskProcedure:
                     # jointMaskTest will be the original mask, unless I take action here
@@ -2044,13 +2043,13 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                                                       extraMaskDecision2, autoLowerDecision,
                                                       intersectionOfSelections, useMomentDiff, 
                                                       warnings, channelRanges, sigmaUsedToAmendMask)
-                    pl.savefig(png, dpi=dpi)
+                    plt.savefig(png, dpi=dpi)
                     break
                 if amendMaskIterationName in ['.onlyExtraMask']: # ,'.autoLower']: 
                     # save the .original.meanSpectrum.*.png before modifying the channel ranges and legend below
                     # save the .amendedMask.meanSpectrum.*.png before modifying the channel ranges and legend below
                     casalogPost("Saving %s" % (png))
-                    pl.savefig(png, dpi=dpi)
+                    plt.savefig(png, dpi=dpi)
                 selection = convertChannelListIntoSelection(channelList)
                 if list(channelList) == list(channelList0):
                     if amendMaskIterationName == '.extraMask':
@@ -2198,7 +2197,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                     print("onlyExtraMask) Changing name of png: ", png)
                     png = png.replace('.original.meanSpectrum','.onlyExtraMaskIntersect.meanSpectrum')
                     casalogPost("Saving %s" % png)
-                    pl.savefig(png, dpi=dpi)
+                    plt.savefig(png, dpi=dpi)
                     # do not allow it to try a 3rd iteration, since we are done
                     break 
                 elif amendMaskIterationName == '.extraMask':  # new
@@ -2206,14 +2205,14 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                     png = png.replace('.extraMask.meanSpectrum','.extraMaskIntersect.meanSpectrum')
                     png = png.replace('.amendedMask.meanSpectrum','.extraMaskIntersect.meanSpectrum')
                     casalogPost("Saving %s" % png)
-                    pl.savefig(png, dpi=dpi)
+                    plt.savefig(png, dpi=dpi)
                     break # not needed if amendMaskIterations=2, but needed if it is 3
                 elif amendMaskIterationName == '.autoLower':  # new
                     print("autoLower) Changing name of png: ", png)
                     png = png.replace('.amendedMask.meanSpectrum','.autoLowerIntersect.meanSpectrum')
                     png = png.replace('.original.meanSpectrum','.autoLowerIntersect.meanSpectrum')
                     casalogPost("%s) Saving %s" % (amendMaskIterationName,png))
-                    pl.savefig(png, dpi=dpi)
+                    plt.savefig(png, dpi=dpi)
                     break # needed if amendMaskIterations == 3 and we did not amendMask
             # endif amendMaskIterationName in ['.extraMask','.onlyExtraMask','.autoLower']
         # endif meanSpectrumMethod=='mom0mom8jointMask' and (amendMask or checkIfMaskWouldHaveBeenAmended):
@@ -2382,7 +2381,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='', tr
                                                       warnings, channelRanges, sigmaUsedToAmendMask, replace=True, addedSelection=True)
                     if png == originalPng:
                         png = originalPng.replace('.png','_addedRange.png')
-                    pl.savefig(png, dpi=dpi)
+                    plt.savefig(png, dpi=dpi)
                     # but we *might* have made it worse, so check again
                     if momDiffCode is None:
                         code = mom8code
@@ -2664,7 +2663,7 @@ def compute4LetterCodeAndUpdateLegend(mom8fcPeak, mom8fcPeak0, mom8fcPeakOutside
     casalogPost("Drawing new areaString: %s" % (areaString))
     labelDesc = ax1.text(0.5,0.99-3*0.03, areaString, transform=ax1.transAxes, ha='center', size=fontsize-1)
     labelDescs.append(labelDesc)
-    pl.draw()
+    plt.draw()
     return labelDescs, areaString, mycode
 
 def updateChannelRangesOnPlot(labelDescs, selection, ax1, separator, avgspectrumAboveThreshold, 
@@ -3281,19 +3280,19 @@ def plotMeanSpectrum(meanSpectrumFile, plotfile='', selection=''):
         a,b,c,d = line.split()
         channel.append(int(a))
         intensity.append(float(c))
-    pl.clf()
-    pl.plot(channel,intensity,'k-')
-    pl.xlabel('Channel')
-    pl.ylabel('Intensity')
+    plt.clf()
+    plt.plot(channel, intensity, 'k-')
+    plt.xlabel('Channel')
+    plt.ylabel('Intensity')
     if selection != '':
         myChannelLists = splitListIntoContiguousLists(convertSelectionIntoChannelList(selection))
         for myChannelList in myChannelLists:
-            pl.plot(myChannelList,[0]*len(myChannelList),'c-',lw=2)
-    pl.draw()
+            plt.plot(myChannelList, [0] * len(myChannelList), 'c-', lw=2)
+    plt.draw()
     if plotfile != '':
         if plotfile == True:
             plotfile = meanSpectrumFile + '.png'
-        pl.savefig(plotfile)
+        plt.savefig(plotfile)
         print("Wrote ", plotfile)
 
 def readContDat(filename):
@@ -3534,7 +3533,7 @@ def drawYlabel(img, typeOfMeanSpectrum, meanSpectrumMethod, meanSpectrumThreshol
                 label += ' (not normalized by MAD)'
         else:
             label = 'Unknown method'
-    pl.ylabel(typeOfMeanSpectrum+' '+label, size=fontsize)
+    plt.ylabel(typeOfMeanSpectrum + ' ' + label, size=fontsize)
 
 def computeBandwidth(selection, channelWidth, loc=-1):
     """
@@ -3786,7 +3785,7 @@ def setYLimitsAvoidingEdgeChannels(avgspectrumAboveThreshold, mad, chan=1):
     2) Enforce a maximum dynamic range (peak-median)/mad so that weak features
        can be seen, allowing strongest ones to overflow the top.
     """
-    y0,y1 = pl.ylim()
+    y0,y1 = plt.ylim()
     y0naturalBuffer = np.min(avgspectrumAboveThreshold) - y0
     y1naturalBuffer = y1  - np.max(avgspectrumAboveThreshold)
     mymin = np.min(avgspectrumAboveThreshold[chan:-chan]) - y0naturalBuffer
@@ -3798,7 +3797,7 @@ def setYLimitsAvoidingEdgeChannels(avgspectrumAboveThreshold, mad, chan=1):
         casalogPost('Spectral dynamic range exceeds %d, limiting maximum y-axis value' % (DYNAMIC_RANGE_LIMIT_PLOT))
         mymax = DYNAMIC_RANGE_LIMIT_PLOT*mad + mymedian 
         highDynamicRange = True
-    pl.ylim([mymin, mymax]) 
+    plt.ylim([mymin, mymax])
     return highDynamicRange
 
 def ExpandYLimitsForLegend():
@@ -3806,11 +3805,11 @@ def ExpandYLimitsForLegend():
     Called by runFindContinuum.
     Make room for legend text at bottom and top of existing plot.
     """
-    ylim = pl.ylim()
+    ylim = plt.ylim()
     yrange = ylim[1]-ylim[0]
     ylim = [ylim[0]-yrange*0.05, ylim[1]+yrange*0.2]
-    pl.ylim(ylim)
-    return pl.ylim()
+    plt.ylim(ylim)
+    return plt.ylim()
 
 def pickRandomErrors(nvalues=1):
     """
@@ -3852,12 +3851,12 @@ def createNoisyQuadratic(n=1000, nsigma=3):
     y = pickRandomErrors(n)
     x0 = (x - n/2)
     y += 0.001*x0**2 
-    pl.clf()
-    pl.plot(x,y,'k-')
+    plt.clf()
+    plt.plot(x, y, 'k-')
     y1, idx, yfit = removeStatContQuadratic(y, nsigma, returnExtra=True)
-    pl.plot(x,yfit,'r-')
-    pl.plot(x,y1,'b-')
-    pl.draw()
+    plt.plot(x, yfit, 'r-')
+    plt.plot(x, y1, 'b-')
+    plt.draw()
     
 def removeStatContQuadratic(y, nsigma=2.0, returnExtra=False, minPercentage=50, makeMovie=False, img='', keepContinuum=True):
     """
@@ -3905,24 +3904,24 @@ def removeStatContQuadratic(y, nsigma=2.0, returnExtra=False, minPercentage=50, 
         else:
             fitUsed = True
         if makeMovie:
-            pl.clf()
-            pl.subplot(211)
-            pl.plot(x, y, 'k-', x[idx], yfit, 'r-', x[idx], y[idx], 'b-')
-            pl.plot([x[0],x[-1]], [np.median(y), np.median(y)], 'k--')
-            pl.title('%d points (ratio=%.2f)' % (len(idx), ratio))
+            plt.clf()
+            plt.subplot(211)
+            plt.plot(x, y, 'k-', x[idx], yfit, 'r-', x[idx], y[idx], 'b-')
+            plt.plot([x[0], x[-1]], [np.median(y), np.median(y)], 'k--')
+            plt.title('%d points (ratio=%.2f)' % (len(idx), ratio))
             if ylim is None:
-                ylim = pl.ylim()
+                ylim = plt.ylim()
             else:
-                pl.ylim(ylim)
-            pl.subplot(212)
-            pl.plot(x[idx], diff, 'k-')
-            pl.plot([x[0],x[-1]], [np.median(diff), np.median(diff)], 'k--')
+                plt.ylim(ylim)
+            plt.subplot(212)
+            plt.plot(x[idx], diff, 'k-')
+            plt.plot([x[0], x[-1]], [np.median(diff), np.median(diff)], 'k--')
             if fitUsed:
-                pl.title('quadratic and median removed')
+                plt.title('quadratic and median removed')
             else:
-                pl.title('median removed')
+                plt.title('median removed')
             png = img + 'fit%04d.png' % (len(y)-len(idx))
-            pl.savefig(png)
+            plt.savefig(png)
     if len(idx) < 3:
         casalogPost('Too few points (%d) to fit a quadratic' % (len(idx)))
         idx = x
@@ -4855,15 +4854,15 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
     #########################################
     labelDescs = []
     if amendMaskIterationName in ['.extraMask','.onlyExtraMask','.autoLower']:
-        pl.figure(2)
-    pl.clf()
-    if casaVersion >= '5.9' and pl.get_backend()=='TkAgg':
-        fig = pl.gcf()
+        plt.figure(2)
+    plt.clf()
+    if casaVersion >= '5.9' and plt.get_backend()== 'TkAgg':
+        fig = plt.gcf()
         casalogPost('Scaling figsize by 1.4 due to TkAgg')
         fig.set_size_inches(8.125*1.4, 6.12*1.4)  # 150dpi makes this 1218x918
     rows = 1
     cols = 1
-    ax1 = pl.subplot(rows,cols,1)
+    ax1 = plt.subplot(rows, cols, 1)
     if replaceNans:
         avgspectrumAboveThreshold = avgSpectrumNansReplaced
     else:
@@ -4873,8 +4872,8 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
     # value will be unpredictable, so we test for the method name too.
     if (edgesUsed == 2 or edgesUsed is None or 
         meanSpectrumMethod == 'mom0mom8jointMask'):
-        pl.plot(list(range(len(avgspectrumAboveThreshold))), 
-                avgspectrumAboveThreshold, 'r-')
+        plt.plot(list(range(len(avgspectrumAboveThreshold))),
+                 avgspectrumAboveThreshold, 'r-')
         drawYlabel(img, typeOfMeanSpectrum, meanSpectrumMethod, meanSpectrumThreshold,
                    peakFilterFWHM, fontsize, mask, useThresholdWithMask, normalized)
     elif (edgesUsed == 0):
@@ -4882,7 +4881,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
         # so don't show it.
         casalogPost("Not showing final %d channels of %d" % (skipchan,\
                len(avgspectrumAboveThreshold)))
-        pl.plot(list(range(len(avgspectrumAboveThreshold)-skipchan)), 
+        plt.plot(list(range(len(avgspectrumAboveThreshold) - skipchan)),
                 avgspectrumAboveThreshold[:-skipchan], 'r-')
         drawYlabel(img, typeOfMeanSpectrum,meanSpectrumMethod, meanSpectrumThreshold, 
                    peakFilterFWHM, fontsize, mask, useThresholdWithMask)
@@ -4892,7 +4891,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
         # there.
         casalogPost("Not showing first %d channels of %d" % (skipchan,\
                                    len(avgspectrumAboveThreshold)))
-        pl.plot(list(range(skipchan, len(avgspectrumAboveThreshold))),
+        plt.plot(list(range(skipchan, len(avgspectrumAboveThreshold))),
                 avgspectrumAboveThreshold[skipchan:], 'r-')
         drawYlabel(img, typeOfMeanSpectrum,meanSpectrumMethod, meanSpectrumThreshold, 
                    peakFilterFWHM, fontsize, mask, useThresholdWithMask)
@@ -4901,31 +4900,31 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
     if (baselineModeA == 'edge'):
         nEdgeChannels = nBaselineChannels/2
         if (edgesUsed == 0 or edgesUsed == 2):
-            pl.plot(list(range(nEdgeChannels)), avgspectrumAboveThreshold[:nEdgeChannels], 'm-', lw=3)
+            plt.plot(list(range(nEdgeChannels)), avgspectrumAboveThreshold[:nEdgeChannels], 'm-', lw=3)
         if (edgesUsed == 1 or edgesUsed == 2):
-            pl.plot(list(range(nchan-nEdgeChannels, nchan)), avgspectrumAboveThreshold[-nEdgeChannels:], 'm-', lw=3)
+            plt.plot(list(range(nchan - nEdgeChannels, nchan)), avgspectrumAboveThreshold[-nEdgeChannels:], 'm-', lw=3)
     if plotBaselinePoints:
-        pl.plot(allBaselineChannelsXY[0], allBaselineChannelsXY[1], 'b.', ms=3, mec='b')
+        plt.plot(allBaselineChannelsXY[0], allBaselineChannelsXY[1], 'b.', ms=3, mec='b')
     if plotQuadraticPoints and rmStatContQuadratic:
-        pl.plot(channelsFit, avgspectrumAboveThreshold[channelsFit], 'g.', ms=3, mec='g')
+        plt.plot(channelsFit, avgspectrumAboveThreshold[channelsFit], 'g.', ms=3, mec='g')
 #    channelSelections = []
     channelSelections = selection.split(separator)
     casalogPost('Drawing positive threshold at %g' % (threshold))
-    pl.plot(pl.xlim(), [threshold,threshold], 'k:')
-    ylims = pl.ylim()
-    pl.ylim([ylims[0], np.max([ylims[1],threshold])])
+    plt.plot(plt.xlim(), [threshold, threshold], 'k:')
+    ylims = plt.ylim()
+    plt.ylim([ylims[0], np.max([ylims[1], threshold])])
     if (negativeThreshold is not None):
-        pl.plot(pl.xlim(), [negativeThreshold,negativeThreshold], 'k:')
+        plt.plot(plt.xlim(), [negativeThreshold, negativeThreshold], 'k:')
         casalogPost('Drawing negative threshold at %g' % (negativeThreshold))
-        ylims = pl.ylim()
-        pl.ylim([np.min([ylims[0],negativeThreshold]), ylims[1]])
+        ylims = plt.ylim()
+        plt.ylim([np.min([ylims[0], negativeThreshold]), ylims[1]])
     casalogPost('Drawing observed median as dashed line at %g' % (median))
-    pl.plot(pl.xlim(), [median,median], 'b--')  # observed median (always lower than true for mode='min')
+    plt.plot(plt.xlim(), [median, median], 'b--')  # observed median (always lower than true for mode='min')
     casalogPost('Drawing inferredMedian as solid line at %g' % (medianTrue))
-    pl.plot(pl.xlim(), [medianTrue,medianTrue], 'k-')
+    plt.plot(plt.xlim(), [medianTrue, medianTrue], 'k-')
     if (baselineModeB == 'edge'):
-        pl.plot([nEdgeChannels, nEdgeChannels], pl.ylim(), 'k:')
-        pl.plot([nchan-nEdgeChannels, nchan-nEdgeChannels], pl.ylim(), 'k:')
+        plt.plot([nEdgeChannels, nEdgeChannels], plt.ylim(), 'k:')
+        plt.plot([nchan - nEdgeChannels, nchan - nEdgeChannels], plt.ylim(), 'k:')
     if (len(continuumChannels) > 0):
         labelDescs = plotChannelSelections(ax1, selection, separator, 
                            avgspectrumAboveThreshold, skipchan, medianTrue, 
@@ -4947,7 +4946,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
         titleText = projectCode + os.path.basename(img) + ' ' + transition
     ylim = ExpandYLimitsForLegend()
     xlim = [0,nchan-1]
-    pl.xlim(xlim)
+    plt.xlim(xlim)
     titlesize = np.min([fontsize,int(np.floor(fontsize*100.0/len(titleText)))])
     if tdmSpectrum(channelWidth,nchan):
         dm = 'TDM'
@@ -4976,14 +4975,14 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
         titleYoffset = 1.10
     else:
         titleYoffset = 1.08
-    pl.text(0.5, titleYoffset, titleText, size=titlesize, ha='center', transform=ax1.transAxes)
-    pl.ylim(ylim)
+    plt.text(0.5, titleYoffset, titleText, size=titlesize, ha='center', transform=ax1.transAxes)
+    plt.ylim(ylim)
 #  The following line seems to have zero effect.
 #    ax1.yaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%.2e'))
     ax2 = ax1.twiny()
-    pl.setp(ax1.get_xticklabels(), fontsize=fontsize)
-    pl.setp(ax1.get_yticklabels(), fontsize=fontsize)
-    pl.setp(ax2.get_xticklabels(), fontsize=fontsize)
+    plt.setp(ax1.get_xticklabels(), fontsize=fontsize)
+    plt.setp(ax1.get_yticklabels(), fontsize=fontsize)
+    plt.setp(ax2.get_xticklabels(), fontsize=fontsize)
     ax2.set_xlim(firstFreq*1e-9,lastFreq*1e-9)
     freqRange = np.abs(lastFreq-firstFreq)
     power = int(np.log10(freqRange))-9
@@ -5019,13 +5018,13 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
     if meanSpectrumMethod == 'mom0mom8jointMask':
         bottomLegend += ', pixMom8=%d' % (numberPixelsInMom8Mask)
     if bottomLegend != '':
-        pl.text(0.5,0.01,bottomLegend, ha='center', size=fontsize, 
-                transform=ax1.transAxes)
+        plt.text(0.5, 0.01, bottomLegend, ha='center', size=fontsize,
+                 transform=ax1.transAxes)
     effectiveSigma = sigmaFindContinuum*correctionFactor
     if meanSpectrumMethod.find('mean') >= 0:
-        pl.text(0.5,0.99-i*inc,'bl=(%s,%s), narrow=%s, sCube=%.1f, sigmaEff=%.2f*%.2f=%.2f, trim=%s' % (baselineModeA,baselineModeB,narrowString,sigmaCube,sigmaFindContinuum,correctionFactor,effectiveSigma,trimString),transform=ax1.transAxes, ha='center',size=fontsize)
+        plt.text(0.5, 0.99 - i * inc, 'bl=(%s,%s), narrow=%s, sCube=%.1f, sigmaEff=%.2f*%.2f=%.2f, trim=%s' % (baselineModeA, baselineModeB, narrowString, sigmaCube, sigmaFindContinuum, correctionFactor, effectiveSigma, trimString), transform=ax1.transAxes, ha='center', size=fontsize)
     else:
-        pl.text(
+        plt.text(
             0.5, 0.99-i*inc, ' baselineModeB=%s, narrow=%s, sigmaFC=%.2f*%.2f=%.2f, trim=%s, maxBase=%.0fm' %
             (baselineModeB, narrowString, sigmaFindContinuum, correctionFactor, effectiveSigma, trimString, maxBaseline),
             transform=ax1.transAxes, ha='center', size=fontsize-1)
@@ -5043,23 +5042,23 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
         casalogPost("maxPeakFeatureSigma=%f" % (maxPeakFeatureSigma))
         areaString = 'max: %.1f*mad=%.4f; %d ranges; ' % (peakFeatureSigma, peak, len(channelSelections))
     if (fullLegend):
-        pl.text(0.5,0.99-i*inc,'rms=MAD*1.4826: of baseline chans = %f, scaled by %.1f for all chans = %f'%(mad,correctionFactor,mad*correctionFactor), 
-                transform=ax1.transAxes, ha='center',size=fontsize)
+        plt.text(0.5, 0.99 - i * inc, 'rms=MAD*1.4826: of baseline chans = %f, scaled by %.1f for all chans = %f' % (mad, correctionFactor, mad * correctionFactor),
+                 transform=ax1.transAxes, ha='center', size=fontsize)
         i += 1
-        pl.text(0.017,0.99-i*inc,'lineStrength factor: %.2f' % (lineStrengthFactor), transform=ax1.transAxes, ha='left', size=fontsize)
-        pl.text(0.983,0.99-i*inc,'MAD*1.4826: of points below upper dotted line = %f' % (madOfPointsBelowThreshold),
-                transform=ax1.transAxes, ha='right', size=fontsize)
+        plt.text(0.017, 0.99 - i * inc, 'lineStrength factor: %.2f' % (lineStrengthFactor), transform=ax1.transAxes, ha='left', size=fontsize)
+        plt.text(0.983, 0.99 - i * inc, 'MAD*1.4826: of points below upper dotted line = %f' % (madOfPointsBelowThreshold),
+                 transform=ax1.transAxes, ha='right', size=fontsize)
         i += 1
-        pl.text(0.5,0.99-i*inc,'median: of %d baseline chans = %f, offset by %.1f*MAD for all chans = %f'%(nBaselineChannels, median,medianCorrectionFactor,medianTrue-median), 
-                transform=ax1.transAxes, ha='center', size=fontsize)
+        plt.text(0.5, 0.99 - i * inc, 'median: of %d baseline chans = %f, offset by %.1f*MAD for all chans = %f' % (nBaselineChannels, median, medianCorrectionFactor, medianTrue - median),
+                 transform=ax1.transAxes, ha='center', size=fontsize)
         i += 1
-        pl.text(0.5,0.99-i*inc,'chans>median: %d (sum=%.4f), chans<median: %d (sum=%.4f), ratio: %.2f (%.2f)'%(channelsAboveMedian,sumAboveMedian,channelsBelowMedian,sumBelowMedian,channelRatio,sumRatio),
-                transform=ax1.transAxes, ha='center', size=fontsize-1)
+        plt.text(0.5, 0.99 - i * inc, 'chans>median: %d (sum=%.4f), chans<median: %d (sum=%.4f), ratio: %.2f (%.2f)' % (channelsAboveMedian, sumAboveMedian, channelsBelowMedian, sumBelowMedian, channelRatio, sumRatio),
+                 transform=ax1.transAxes, ha='center', size=fontsize-1)
     if (negativeThreshold is not None):
-        pl.text(0.5,0.99-i*inc,'mad: %.3g; levs: %.3g, %.3g (dot); median: %.3g (solid), medmin: %.3g (dash)'%(mad, threshold,negativeThreshold,medianTrue,median), transform=ax1.transAxes, ha='center', size=fontsize-1)
+        plt.text(0.5, 0.99 - i * inc, 'mad: %.3g; levs: %.3g, %.3g (dot); median: %.3g (solid), medmin: %.3g (dash)' % (mad, threshold, negativeThreshold, medianTrue, median), transform=ax1.transAxes, ha='center', size=fontsize - 1)
     else:
-        pl.text(0.5,0.99-i*inc,'mad: %.3g; threshold: %.3g (dot); median: %.3g (solid), medmin: %.3g (dash)'%(mad,threshold,medianTrue,median), 
-                transform=ax1.transAxes, ha='center', size=fontsize)
+        plt.text(0.5, 0.99 - i * inc, 'mad: %.3g; threshold: %.3g (dot); median: %.3g (solid), medmin: %.3g (dash)' % (mad, threshold, medianTrue, median),
+                 transform=ax1.transAxes, ha='center', size=fontsize)
     i += 1
     if meanSpectrumMethod == 'mom0mom8jointMask':
         if pbBasedMask:
@@ -5078,15 +5077,15 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
         areaString += 'mean over area: whole field (%.2fMpix)' % (megapixels)
     else:
         areaString += 'mean over: central box of radius %.1f" (%.2fMpix)' % (centralArcsec,megapixels)
-    labelDesc = pl.text(0.5,0.99-i*inc,areaString, transform=ax1.transAxes, ha='center', size=fontsize-1)
+    labelDesc = plt.text(0.5, 0.99 - i * inc, areaString, transform=ax1.transAxes, ha='center', size=fontsize - 1)
     labelDescs.append(labelDesc)
     if (meanSpectrumMethodMessage != ''):
         if casaVersion >= '5.9.9':
             msmm_ylabel = -0.12
         else:
             msmm_ylabel = -0.10
-        pl.text(0.5,msmm_ylabel,meanSpectrumMethodMessage, 
-                transform=ax1.transAxes, ha='center', size=fontsize)
+        plt.text(0.5, msmm_ylabel, meanSpectrumMethodMessage,
+                 transform=ax1.transAxes, ha='center', size=fontsize)
         
     finalLine = ''
     if (len(mask) > 0):
@@ -5095,7 +5094,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
         else:
             finalLine += 'mask=%s' % (os.path.basename(mask))
         i += 1
-        pl.text(0.5, 0.99-i*inc, finalLine, transform=ax1.transAxes, ha='center', size=fontsize-1)
+        plt.text(0.5, 0.99 - i * inc, finalLine, transform=ax1.transAxes, ha='center', size=fontsize - 1)
         finalLine = ''
     if (slope is not None):
         if discardSlopeResult:
@@ -5110,15 +5109,15 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
             finalLine += 'linear slope: %g %s' % (roundFigures(slope,3),discarded)
     i += 1
 #   This is the line to use to put the legend in the top group of lines.
-#    pl.text(0.5, 0.99-i*inc, finalLine, transform=ax1.transAxes, ha='center', size=fontsize)
-    pl.text(0.5, 0.04, finalLine, transform=ax1.transAxes, 
-            ha='center', size=fontsize)
+#    plt.text(0.5, 0.99-i*inc, finalLine, transform=ax1.transAxes, ha='center', size=fontsize)
+    plt.text(0.5, 0.04, finalLine, transform=ax1.transAxes,
+             ha='center', size=fontsize)
 
     gigabytes = getMemorySize()/(1024.**3)
     if not regressionTest:
         # Write CVS version to plot legend
-        pl.text(1.06, -0.005-2*inc, ' '.join(version().split()[1:4]), size=8, 
-                transform=ax1.transAxes, ha='right')
+        plt.text(1.06, -0.005 - 2 * inc, ' '.join(version().split()[1:4]), size=8,
+                 transform=ax1.transAxes, ha='right')
         # Write CASA version to plot legend
         casaText = "CASA "+casaVersion+' (%.0f GB'%gigabytes
     else:
@@ -5128,7 +5127,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
         casaText += ')'
     else:
         casaText += ', but limited to %.0fGB)' % (byteLimit)
-    pl.text(-0.03, -0.005-2*inc, casaText, size=8, transform=ax1.transAxes, ha='left')
+    plt.text(-0.03, -0.005 - 2 * inc, casaText, size=8, transform=ax1.transAxes, ha='left')
     if (plotAtmosphere != '' and img != meanSpectrumFile):
         if (plotAtmosphere == 'tsky'):
             value = 'tsky'
@@ -5141,10 +5140,10 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
         if (value == 'transmission'):
             atmRescaled = ylim[0] + 0.3*yrange + atm*atmRange*yrange
             print("atmRescaled: min=%f, max=%f" % (np.min(atmRescaled), np.max(atmRescaled)))
-            pl.text(1.015, 0.3, '0%', color='m', transform=ax1.transAxes, ha='left', va='center')
-            pl.text(1.015, 0.8, '100%', color='m', transform=ax1.transAxes, ha='left', va='center')
-            pl.text(1.03, 0.55, 'Atmospheric Transmission', color='m', ha='center', va='center', 
-                    rotation=90, transform=ax1.transAxes, size=11)
+            plt.text(1.015, 0.3, '0%', color='m', transform=ax1.transAxes, ha='left', va='center')
+            plt.text(1.015, 0.8, '100%', color='m', transform=ax1.transAxes, ha='left', va='center')
+            plt.text(1.03, 0.55, 'Atmospheric Transmission', color='m', ha='center', va='center',
+                     rotation=90, transform=ax1.transAxes, size=11)
             for yt in np.arange(0.3, 0.81, 0.1):
                 xtickTrans,ytickTrans = np.array([[1,1.01],[yt,yt]])
                 line = matplotlib.lines.Line2D(xtickTrans,ytickTrans,color='m',transform=ax2.transAxes)
@@ -5152,27 +5151,27 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
                 line.set_clip_on(False)
         else:
             atmRescaled = ylim[0] + 0.3*yrange + atm*atmRange*yrange/300.
-            pl.text(1.015, 0.3, '0', color='m', transform=ax1.transAxes, ha='left', va='center')
-            pl.text(1.015, 0.8, '300', color='m', transform=ax1.transAxes, ha='left', va='center')
-            pl.text(1.03, 0.55, 'Sky temperature (K)', color='m', ha='center', va='center', 
-                    rotation=90, transform=ax1.transAxes, size=11)
+            plt.text(1.015, 0.3, '0', color='m', transform=ax1.transAxes, ha='left', va='center')
+            plt.text(1.015, 0.8, '300', color='m', transform=ax1.transAxes, ha='left', va='center')
+            plt.text(1.03, 0.55, 'Sky temperature (K)', color='m', ha='center', va='center',
+                     rotation=90, transform=ax1.transAxes, size=11)
             for yt in np.arange(0.3, 0.81, 0.1):
                 xtickTrans,ytickTrans = np.array([[1,1.01],[yt,yt]])
                 line = matplotlib.lines.Line2D(xtickTrans,ytickTrans,color='m',transform=ax2.transAxes)
                 ax1.add_line(line)
                 line.set_clip_on(False)
-        pl.text(1.06, 0.55, '(%.1f mm PWV, 1.5 airmass)'%pwv, color='m', ha='center', va='center', 
-                rotation=90, transform=ax1.transAxes, size=11)
-#        pl.plot(freqs, atmRescaled, 'w.', ms=0)  # need this to finalize the ylim value
-        ylim = pl.ylim()
+        plt.text(1.06, 0.55, '(%.1f mm PWV, 1.5 airmass)' % pwv, color='m', ha='center', va='center',
+                 rotation=90, transform=ax1.transAxes, size=11)
+#        plt.plot(freqs, atmRescaled, 'w.', ms=0)  # need this to finalize the ylim value
+        ylim = plt.ylim()
         yrange = ylim[1]-ylim[0]
         if (value == 'transmission'):
             atmRescaled = ylim[0] + 0.3*yrange + atm*atmRange*yrange
         else:
             atmRescaled = ylim[0] + 0.3*yrange + atm*atmRange*yrange/300.
-        pl.plot(freqs, atmRescaled, 'm-')
-        pl.ylim(ylim)  # restore the prior value (needed for CASA 5.0)
-    pl.draw()
+        plt.plot(freqs, atmRescaled, 'm-')
+        plt.ylim(ylim)  # restore the prior value (needed for CASA 5.0)
+    plt.draw()
     if (png == ''):
         if pngBasename:
             png = os.path.basename(img) + amendMaskIterationName
@@ -5210,15 +5209,15 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
     if (not os.access(pngdir, os.W_OK)):
         casalogPost("No permission to write to alternateDirectory. Will not save the plot.")
     else:
-        pl.savefig(png, dpi=dpi)
+        plt.savefig(png, dpi=dpi)
         casalogPost("Wrote png = %s" % (png))
     donetime = timeUtilities.time()
     casalogPost("%.1f sec elapsed in runFindContinuum" % (donetime-startTime))
     baselineMAD = mad
     if amendMaskIterationName in ['.extraMask','.onlyExtraMask','.autoLower']:
         # go back to original figure now
-        pl.close(2)
-        pl.figure(1)
+        plt.close(2)
+        plt.figure(1)
     return(selection, png, slope, channelWidth, nchan, useLowBaseline, mom0snrs, mom8snrs, useMiddleChannels, 
            selectionPreBluePruning, sigmaFindContinuum, jointMask, avgspectrumAboveThreshold, medianTrue, 
            labelDescs, ax1, ax2, threshold, areaString, RangesDropped, effectiveSigma, baselineMAD, upperXlabel,
@@ -5288,7 +5287,7 @@ def plotChannelSelections(ax1, selection, separator, avgspectrumAboveThreshold,
     else:
         ylevel = threshold - 0.5*(threshold-medianTrue)
         print("Setting cyan level to half the positive threshold dotted line")
-    yoffset = ylevel + 0.04*(pl.ylim()[1]-pl.ylim()[0])
+    yoffset = ylevel + 0.04*(plt.ylim()[1] - plt.ylim()[0])
     for i,ccstring in enumerate(channelSelections): 
         cc = [int(j) for j in ccstring.split('~')]
         labelDesc = ax1.plot(cc, np.ones(len(cc))*ylevel, '-', color=lineColor, lw=2)
@@ -9335,7 +9334,7 @@ def plotStatisticalSpectrumFromMask(cube, jointMask='', pbcube=None,
             if not os.path.exists(jointMask):
                 print("Could not find jointmask")
                 return
-    pl.clf()
+    plt.clf()
     colors = ['r','k','b']
     for i,statistic in enumerate(statistics):
         if len(jointMasks) == 1:
@@ -9347,16 +9346,16 @@ def plotStatisticalSpectrumFromMask(cube, jointMask='', pbcube=None,
         else:
             myJointMaskForNormalize = jointMaskForNormalize
         channels, frequency, intensity, normalized = computeStatisticalSpectrumFromMask(cube, jointMask, pbcube, statistic=statistic, normalizeByMAD=normalizeByMAD, jointMaskForNormalize=myJointMaskForNormalize)
-        pl.plot(channels,intensity,'-',color=colors[i])
-        pl.xlabel('Channel')
-        pl.ylabel(statistic)
+        plt.plot(channels, intensity, '-', color=colors[i])
+        plt.xlabel('Channel')
+        plt.ylabel(statistic)
         print( "peak over MAD = ", np.max(intensity)/MAD(intensity))
-    pl.title(','.join([os.path.basename(cube), os.path.basename(jointMask)]))
+    plt.title(','.join([os.path.basename(cube), os.path.basename(jointMask)]))
     if png == '':
         png = cube + '.' + jointMask + '.' + statistic + '.png'
-    pl.savefig(png)
+    plt.savefig(png)
     print("Wrote ", png)
-    pl.draw()
+    plt.draw()
     
 def pruneMask(mymask, psfcube=None, minbeamfrac=0.3, prunesize=6.0, nchan=1, overwrite=True):
     """

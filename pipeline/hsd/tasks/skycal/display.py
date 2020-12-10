@@ -1,6 +1,7 @@
 import os
-import pylab as pl
+import matplotlib.pyplot as plt
 import numpy
+import traceback
 
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.logger as logger
@@ -16,7 +17,7 @@ LOG = logging.get_logger(__name__)
 
 class SingleDishSkyCalDisplayBase(object):
     def init_with_field(self, context, result, field):
-        vis = self._vis 
+        vis = self._vis
         ms = context.observing_run.get_ms(vis)
         num_fields = len(ms.fields)
         if field.isdigit() and int(field) < num_fields:
@@ -48,8 +49,8 @@ class SingleDishSkyCalDisplayBase(object):
 
 class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, SingleDishSkyCalDisplayBase):
     def __init__(self, context, result, field):
-        super(SingleDishSkyCalAmpVsFreqSummaryChart, self).__init__(context, result, 
-                                                                    'freq', 'amp', 
+        super(SingleDishSkyCalAmpVsFreqSummaryChart, self).__init__(context, result,
+                                                                    'freq', 'amp',
                                                                     showatm=True,
                                                                     overlay='antenna',
                                                                     solutionTimeThresholdSeconds=3600.)
@@ -129,12 +130,12 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
         for spw_id in self._figfile:
             for antenna_id, figfile in self._figfile[spw_id].items():
                 new_figfile = figfile.replace(old_prefix, new_prefix)
-                self._figfile[spw_id][antenna_id] = new_figfile 
+                self._figfile[spw_id][antenna_id] = new_figfile
 
 
 class SingleDishPlotmsLeaf(object):
     """
-    Class to execute plotms and return a plot wrapper. Task arguments for plotms 
+    Class to execute plotms and return a plot wrapper. Task arguments for plotms
     is customized for single dish usecase.
     """
     def __init__(self, context, result, calapp, xaxis, yaxis, spw='', ant='', coloraxis='', **kwargs):
@@ -171,7 +172,7 @@ class SingleDishPlotmsLeaf(object):
         LOG.info('antenna: ID %s Name \'%s\'' % (self.antenna, self.antenna_selection))
 #        self.antenna_selection = '*&&&'
 
-        self._figroot = os.path.join(context.report_dir, 
+        self._figroot = os.path.join(context.report_dir,
                                      'stage%s' % result.stage_number)
 
     def plot(self):
@@ -187,12 +188,20 @@ class SingleDishPlotmsLeaf(object):
         figfile = os.path.join(self._figroot, '{prefix}.png'.format(prefix=prefix))
 
         task = self._create_task(title, figfile)
-        if os.path.exists(figfile):
-            LOG.debug('Returning existing plot')
-        else:
-            task.execute()
+        try:
+            if os.path.exists(figfile):
+                LOG.debug('Returning existing plot')
+            else:
+                task.execute()
 
-        return [self._get_plot_object(figfile, task)]
+            plot_objects = [self._get_plot_object(figfile, task)]
+        except Exception as e:
+            LOG.error(str(e))
+            LOG.debug(traceback.format_exc())
+            LOG.error('Failed to generate plot "{}"'.format(figfile))
+            plot_objects = []
+
+        return plot_objects
 
     def _create_task(self, title, figfile):
         task_args = {'vis': self.caltable,
@@ -239,20 +248,20 @@ class SingleDishPlotmsAntSpwComposite(common.AntSpwComposite):
 class SingleDishSkyCalAmpVsTimeSummaryChart(SingleDishPlotmsSpwComposite):
     def __init__(self, context, result, calapp):
         super(SingleDishSkyCalAmpVsTimeSummaryChart, self).__init__(context, result, calapp,
-                                                                    xaxis='time', yaxis='amp', 
+                                                                    xaxis='time', yaxis='amp',
                                                                     coloraxis='ant1')
 
 
 class SingleDishSkyCalAmpVsTimeDetailChart(SingleDishPlotmsAntSpwComposite):
     def __init__(self, context, result, calapp):
-        super(SingleDishSkyCalAmpVsTimeDetailChart, self).__init__(context, result, calapp, 
+        super(SingleDishSkyCalAmpVsTimeDetailChart, self).__init__(context, result, calapp,
                                                                    xaxis='time', yaxis='amp',
                                                                    coloraxis='corr')
-       
+
 
 class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, SingleDishSkyCalDisplayBase):
     """
-    Class to execute pyplot and return a plot (figure) of Interval vs. Time. 
+    Class to execute pyplot and return a plot (figure) of Interval vs. Time.
     If figtype='summary', the first spw is used, while all spw are used if figtype='detail'.
     """
     def __init__(self, context, result, calapp, figtype=''):
@@ -311,21 +320,21 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
                             mjd_list = sd_display.mjd_to_plotval(mjd_list)
                             start_time = numpy.min([numpy.min(x) for x in mjd_list if len(mjd_list) > 0])
                             end_time = numpy.max([numpy.max(x) for x in mjd_list if len(mjd_list) > 0])
-                            fig = pl.figure()
+                            fig = plt.figure()
                             ax = fig.add_subplot(1,1,1)
                             ax.xaxis.set_major_locator(sd_display.utc_locator(start_time=start_time, end_time=end_time))
                             ax.xaxis.set_major_formatter(sd_display.utc_formatter())
                             ax.tick_params( axis='both', labelsize=10 )
                             antenna_name = antennas[antenna_id].name
                             field_name = field.clean_name
-                            pl.title('Interval vs. Time Plot\n{} Field:{} Antenna:{} Spw:{}'.format(vis, field_name, antenna_name, spw_id), fontsize=12)
-                            pl.ylabel('Interval of Off-Source / Interval of On-Source', fontsize=10)
-                            pl.xlabel("UTC", fontsize=10)
+                            plt.title('Interval vs. Time Plot\n{} Field:{} Antenna:{} Spw:{}'.format(vis, field_name, antenna_name, spw_id), fontsize=12)
+                            plt.ylabel('Interval of Off-Source / Interval of On-Source', fontsize=10)
+                            plt.xlabel("UTC", fontsize=10)
                             ax.plot(mjd_list, interval, linestyle='None', marker=".", label="Interval of Off-Source\nUnit: {} seconds (Interval of On-Source)".format(interval_unit))
                             min_interval = numpy.min(interval)
                             max_interval = numpy.max(interval)
                             ax.set_ylim([min_interval-3.0, max_interval+3.0])
-                            pl.legend(bbox_to_anchor=(1, 1), loc='upper right', borderaxespad=1, fontsize=10)
+                            plt.legend(bbox_to_anchor=(1, 1), loc='upper right', borderaxespad=1, fontsize=10)
                             if figtype == "summary":
                                 prefix = vis + "_" + '{}'.format(antenna_name)+ "_" + '{}'.format(field_name) + "_summary_hsd_skycal_offinterval"
                             else:
@@ -333,8 +342,8 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
                             figroot = os.path.join(context.report_dir, 'stage%s' % result.stage_number)
                             figpath = os.path.join(figroot, '{prefix}.png'.format(prefix=prefix))
                             LOG.info('Plot of Interval vs Time: figpath = {0}'.format(figpath))
-                            pl.savefig(figpath)
-                            pl.close()
+                            plt.savefig(figpath)
+                            plt.close()
                             if os.path.exists(figpath):
                                 parameters = {
                                 'spw': spw_id,
@@ -355,26 +364,26 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
 @casa5style_plot
 def plot_elevation_difference(context, result, eldiff, threshold=3.0):
     """
-    context 
+    context
     result
-    eldiff -- dictionary whose value is ElevationDifference named tuple instance that holds 
+    eldiff -- dictionary whose value is ElevationDifference named tuple instance that holds
                   'timeon': timestamp for ON-SOURCE pointings
                   'elon': ON-SOURCE elevation
                   'timecal': timestamp for OFF-SOURCE pointings
-                  'elcal': OFF-SOURCE elevation 
-                  'time0': timestamp for preceding OFF-SOURCE pointings 
+                  'elcal': OFF-SOURCE elevation
+                  'time0': timestamp for preceding OFF-SOURCE pointings
                   'eldiff0': elevation difference between ON-SOURCE and preceding OFF-SOURCE
                   'time1': timestamp for subsequent OFF-SOURCE pointings
                   'eldiff1': elevation difference between ON-SOURCE and subsequent OFF-SOURCE
-              eldiff is a nested dictionary whose first key is FIELD_ID for target, the second one 
-              is ANTENNA_ID, and the third one is SPW_ID. 
+              eldiff is a nested dictionary whose first key is FIELD_ID for target, the second one
+              is ANTENNA_ID, and the third one is SPW_ID.
     threhshold -- Elevation threshold for QA (default 3deg)
     """
     calapp = result.final[0]
     vis = calapp.calto.vis
     ms = context.observing_run.get_ms(vis)
 
-    figroot = os.path.join(context.report_dir, 
+    figroot = os.path.join(context.report_dir,
                            'stage%s' % result.stage_number)
 
     figure0 = 'PERANTENNA_PLOT'
@@ -385,41 +394,41 @@ def plot_elevation_difference(context, result, eldiff, threshold=3.0):
                           for x in y.values() if len(x.timeon) > 0])
 
     def init_figure(figure_id):
-        pl.figure(figure_id)
-        pl.clf()
-        a0 = pl.axes([0.125, 0.51, 0.775, 0.39])
+        plt.figure(figure_id)
+        plt.clf()
+        a0 = plt.axes([0.125, 0.51, 0.775, 0.39])
         a0.xaxis.set_major_locator(sd_display.utc_locator(start_time=start_time, end_time=end_time))
-        a0.xaxis.set_major_formatter(pl.NullFormatter())
+        a0.xaxis.set_major_formatter(plt.NullFormatter())
         a0.tick_params( axis='both', labelsize=10 )
-        pl.ylabel('Elevation [deg]', fontsize=10 )
+        plt.ylabel('Elevation [deg]', fontsize=10)
 
-        a1 = pl.axes([0.125, 0.11, 0.775, 0.39])
+        a1 = plt.axes([0.125, 0.11, 0.775, 0.39])
         a1.xaxis.set_major_locator(sd_display.utc_locator(start_time=start_time, end_time=end_time))
         a1.xaxis.set_major_formatter(sd_display.utc_formatter())
         a1.tick_params( axis='both', labelsize=10 )
-        pl.ylabel('Elevation Difference [deg]', fontsize=10 )
-        pl.xlabel('UTC', fontsize=10 )
+        plt.ylabel('Elevation Difference [deg]', fontsize=10)
+        plt.xlabel('UTC', fontsize=10)
         return a0, a1
 
     def finalize_figure(figure_id, vis, field_name, antenna_name):
-        figure = pl.figure(figure_id)
+        figure = plt.figure(figure_id)
         axes = figure.axes
         assert len(axes) == 2
         a0 = axes[0]
         a1 = axes[1]
-        pl.gcf().sca(a1)
-        ymin, ymax = pl.ylim()
+        plt.gcf().sca(a1)
+        ymin, ymax = plt.ylim()
         dy = ymax - ymin
-        pl.ylim([0, max(ymax + 0.1 * dy, threshold + 0.1)])
+        plt.ylim([0, max(ymax + 0.1 * dy, threshold + 0.1)])
 
-        pl.axhline(threshold, color='red')
-        xmin, xmax = pl.xlim()
+        plt.axhline(threshold, color='red')
+        xmin, xmax = plt.xlim()
         dx = xmax - xmin
         x = xmax - 0.01 * dx
         y = threshold - 0.05
-        pl.text(x, y, 'QA threshold', ha='right', va='top', color='red', size='small')
+        plt.text(x, y, 'QA threshold', ha='right', va='top', color='red', size='small')
 
-        pl.gcf().sca(a0)
+        plt.gcf().sca(a0)
         labelon = False
         labeloff = False
         for l in a0.lines:
@@ -431,19 +440,19 @@ def plot_elevation_difference(context, result, eldiff, threshold=3.0):
                 labeloff = True
             if labelon and labeloff:
                 break
-        pl.legend(loc='best', numpoints=1, prop={'size': 'small'})
-        pl.title('Elevation Difference between ON and OFF\n{} Field {} Antenna {}'.format(vis, 
-                                                                                          field_name, 
-                                                                                          antenna_name),
-                 fontsize=12)
+        plt.legend(loc='best', numpoints=1, prop={'size': 'small'})
+        plt.title('Elevation Difference between ON and OFF\n{} Field {} Antenna {}'.format(vis,
+                                                                                           field_name,
+                                                                                           antenna_name),
+                  fontsize=12)
 
     def generate_plot(figure_id, vis, field_name, antenna_name):
-        pl.figure(figure_id)
+        plt.figure(figure_id)
         vis_prefix = '.'.join(vis.split('.')[:-1])
         figfile = 'elevation_difference_{}_{}_{}.png'.format(vis_prefix, field_name, antenna_name)
         figpath = os.path.join(figroot, figfile)
         #LOG.info('figpath={}'.format(figpath))
-        pl.savefig(figpath)
+        plt.savefig(figpath)
         plot = None
         if os.path.exists(figpath):
             parameters = {'intent': 'TARGET',
@@ -459,6 +468,9 @@ def plot_elevation_difference(context, result, eldiff, threshold=3.0):
                                field=field_name,
                                parameters=parameters)
         return plot
+
+    def close_figure( figure_id ):
+        plt.close(figure_id)
 
     plots = []
     for field_id, eldiff_field in eldiff.items():
@@ -524,5 +536,8 @@ def plot_elevation_difference(context, result, eldiff, threshold=3.0):
             plots_per_field.append(plot)
 
         plots.extend(plots_per_field)
+
+    close_figure( figure0 )
+    close_figure( figure1 )
 
     return plots
