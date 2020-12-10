@@ -21,6 +21,7 @@ import pipeline.infrastructure as infrastructure
 
 LOG = infrastructure.get_logger(__name__)
 
+
 def run_bdsf(infile=""):
     """
     Detect bright point sources and blobs on map.
@@ -35,6 +36,8 @@ def run_bdsf(infile=""):
     img.write_catalog(format='ds9', outfile=infile.replace('.fits', '.cat.ds9.reg'))
     img.export_image(outfile=infile + '.rms', img_type='rms', clobber=True)
     img.export_image(outfile=infile + '.island.mask', img_type='island_mask', clobber=True)
+
+    return img
 
 
 def mask_from_catalog(inext='iter0.model.tt0', outext="mask_from_cat.mask",
@@ -215,6 +218,61 @@ def mask_from_catalog(inext='iter0.model.tt0', outext="mask_from_cat.mask",
     myrg.done()
     # myqa.done()
 
+    number_islands_found = catalog_within_ra_and_dec_range.shape[0]
+
+    # -----------------------------------------------------------
+    LOG.info(' ')
+    LOG.info('Within one degree...')
+    catalog_search_size = 1.0
+
+    catalog_within_dec_range = catalog_dat[(catalog_dat['DEC'] < mask_refval_dec_deg + catalog_search_size) & (
+        catalog_dat['DEC'] > mask_refval_dec_deg - catalog_search_size)]
+    LOG.info(
+        'Reduced catalog from {0} rows to {1} rows within +/- {2} degrees declination of image phase center'.format(
+            catalog_dat.shape[0], catalog_within_dec_range.shape[0], catalog_search_size))
+
+    # *** not tested for images near RA=0 or the NCP except in Josh's head ***
+    # Catalog selection will use an RA range in degrees
+    # after dividing by the most extreme cos(dec)
+    # Selection will overshoot two image corners
+    # and these will be rejected later using myia.topixel
+
+    mask_dec_for_ra_search = np.max(
+        np.abs([mask_refval_dec_deg - catalog_search_size, mask_refval_dec_deg + catalog_search_size]))
+
+    if mask_dec_for_ra_search < 90:
+        catalog_ra_search_min = mask_refval_ra_deg - catalog_search_size / np.cos(np.pi * mask_dec_for_ra_search / 180.)
+        catalog_ra_search_max = mask_refval_ra_deg + catalog_search_size / np.cos(np.pi * mask_dec_for_ra_search / 180.)
+    else:
+        catalog_ra_search_min = 0
+        catalog_ra_search_max = 360
+
+    if (catalog_ra_search_min > 0) and (catalog_ra_search_max < 360):
+        catalog_within_ra_and_dec_range = catalog_within_dec_range[
+            (catalog_within_dec_range['RA'] > catalog_ra_search_min) & (
+                catalog_within_dec_range['RA'] < catalog_ra_search_max)]
+    elif catalog_ra_search_min < 0:
+        catalog_within_ra_and_dec_range = catalog_within_dec_range[
+            (catalog_within_dec_range['RA'] > catalog_ra_search_min % 360) | (
+                catalog_within_dec_range['RA'] < catalog_ra_search_max)]
+    elif catalog_ra_search_max > 360:
+        catalog_within_ra_and_dec_range = catalog_within_dec_range[
+            (catalog_within_dec_range['RA'] > catalog_ra_search_min) | (
+                catalog_within_dec_range['RA'] < catalog_ra_search_max % 360)]
+    else:
+        catalog_within_ra_and_dec_range = catalog_within_dec_range
+
+    LOG.info('Further reduced catalog from {0} rows to {1} rows within +/- {2} degrees RA of image phase center'.format(
+        catalog_within_dec_range.shape[0], catalog_within_ra_and_dec_range.shape[0], catalog_search_size))
+
+    LOG.info('End one degree...')
+    LOG.info(' ')
+    number_islands_found_onedeg = catalog_within_ra_and_dec_range.shape[0]
+
+    # -----------------------------------------------------------
+
+    return number_islands_found, number_islands_found_onedeg
+
 
 def edit_pybdsf_islands(catalog_fits_file='', r_squared_threshold=0.99,
                         n_gauss_threshold=10, gauss_size_threshold=100):
@@ -244,6 +302,7 @@ def edit_pybdsf_islands(catalog_fits_file='', r_squared_threshold=0.99,
     Copy of script located at:
     /users/jmarvil/scripts/edit_pybdsf_islands.py
     """
+
     hdu = pyfits.open(catalog_fits_file)
     catalog_dat = hdu[1].data
 
@@ -271,26 +330,26 @@ def edit_pybdsf_islands(catalog_fits_file='', r_squared_threshold=0.99,
         if r_value ** 2 > r_squared_threshold:
             linear_islands.append(island)
 
-    print('large islands: ', list(large_islands))
-    print('linear_islands: ', list(linear_islands))
-    print('numerous_islands: ', list(numerous_islands))
+    LOG.info('large islands: [%s]' % ', '.join(map(str, list(large_islands))))
+    LOG.info('linear_islands: [%s]' % ', '.join(map(str, list(linear_islands))))
+    LOG.info('numerous_islands: [%s]' % ', '.join(map(str, list(numerous_islands))))
 
     rejected_islands = list(set.union(set(large_islands), set(linear_islands), set(numerous_islands)))
-    print('rejected_islands: ', list(rejected_islands))
+    LOG.info('rejected_islands: [%s]' % ', '.join(map(str, list(rejected_islands))))
 
     cat_to_ds9_rgn(catalog_dat[np.in1d(catalog_dat['Isl_id'], rejected_islands)],
                    outfile=catalog_fits_file.replace('.fits', '') + '.rejected.ds9.reg',
                    region_color='red')
 
-    print('wrote region file of rejected islands to: {0}'.format(catalog_fits_file.replace('.fits', '')
-                                                                 + '.rejected.ds9.reg'))
+    LOG.info('wrote region file of rejected islands to: {0}'.format(catalog_fits_file.replace('.fits', '')
+                                                                    + '.rejected.ds9.reg'))
 
     cat_to_ds9_rgn(catalog_dat[~np.in1d(catalog_dat['Isl_id'], linear_islands)],
                    outfile=catalog_fits_file.replace('.fits', '') + '.accepted.ds9.reg',
                    region_color='green')
 
-    print('wrote region file of accepted islands to: {0}'.format(catalog_fits_file.replace('.fits', '')
-                                                                 + '.accepted.ds9.reg'))
+    LOG.info('wrote region file of accepted islands to: {0}'.format(catalog_fits_file.replace('.fits', '')
+                                                                    + '.accepted.ds9.reg'))
 
     hdu[1].data = catalog_dat[~np.in1d(catalog_dat['Isl_id'], linear_islands)]
 
@@ -300,7 +359,8 @@ def edit_pybdsf_islands(catalog_fits_file='', r_squared_threshold=0.99,
 
     hdu.close()
 
-    print('wrote catalog of accepted islands to: {0}'.format(catalog_fits_file.replace('.fits', '') + '.edited.fits'))
+    LOG.info('wrote catalog of accepted islands to: {0}'.format(catalog_fits_file.replace('.fits', '')
+                                                                + '.edited.fits'))
 
     return edited_catalog_fits_file
 

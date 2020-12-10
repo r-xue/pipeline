@@ -29,7 +29,7 @@
 
     <param name="catalog_search_size" type="any">
     <shortdescription>catalog_search_size</shortdescription>
-    <description>catalog_search_size</description>
+    <description>catalog_search_size in units of degrees</description>
     <value>1.5</value>
     </param>
 

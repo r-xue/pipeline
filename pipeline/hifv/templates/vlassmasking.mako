@@ -15,10 +15,13 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
 <hr>
 
-<p> Number of islands found: <b>${numfound}</b> </p>
-<p> Number of islands found (inner square degree): <b>${numaccepted}</b> </p>
+<p> Number of islands found: <b>${single_result.number_islands_found}</b> </p>
+<p> Number of islands found (inner square degree): <b>${single_result.number_islands_found_onedeg}</b> </p>
 
 <hr>
+
+<p> Fraction of pixels enclosed in the mask: <b>${"{:.{}f}".format(single_result.pixelfraction, 8)}</b> </p>
+<p> Fraction of pixels enclosed in the mask (inner square degree): <b>${"{:.{}f}".format(single_result.pixelfraction, 8)}</b> </p>
 
 <%self:plot_group plot_dict="${summary_plots}" url_fn="${lambda ms:  'noop'}">
 

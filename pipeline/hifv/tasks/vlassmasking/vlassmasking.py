@@ -1,13 +1,15 @@
 import os
 import numpy as np
 
+from casatasks import imsmooth
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tasks, task_registry
 import pipeline.infrastructure.casatools as casatools
 
-from pipeline.hifv.heuristics.vip_helper_functions import mask_from_catalog, edit_pybdsf_islands
+from pipeline.hifv.heuristics.vip_helper_functions import mask_from_catalog, edit_pybdsf_islands, run_bdsf
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -20,7 +22,8 @@ class VlassmaskingResults(basetask.Results):
     """
     def __init__(self, catalog_fits_file=None,
                  catalog_search_size=None, outfile=None,
-                 combinedmask=None):
+                 combinedmask=None, number_islands_found=None,
+                 number_islands_found_onedeg=None, pixelfraction=None):
         """
         Args:
             final(list): final list of tables (not used in this task)
@@ -38,6 +41,9 @@ class VlassmaskingResults(basetask.Results):
         self.catalog_search_size = catalog_search_size
         self.outfile = outfile
         self.combinedmask = combinedmask
+        self.number_islands_found = number_islands_found
+        self.number_islands_found_onedeg = number_islands_found_onedeg
+        self.pixelfraction = pixelfraction
 
         self.pipeline_casa_task = 'Vlassmasking'
 
@@ -104,7 +110,7 @@ class Vlassmasking(basetask.StandardTaskTemplate):
         of mask creation in this step.
 
         Return:
-            VlassmaskingResults() type object, with output mask and metadata information
+            VlassmaskingResults() type object, with final output mask name and metadata information
         """
 
         LOG.debug("This Vlassmasking class is running.")
@@ -120,6 +126,8 @@ class Vlassmasking(basetask.StandardTaskTemplate):
         catalog_fits_file = ''
         outfile = ''
         combinedmask = ''
+        number_islands_found = 0
+        number_islands_found_onedeg = 0
 
         # Test parameters for reference
         # Location of catalog file at the AOC
@@ -143,26 +151,35 @@ class Vlassmasking(basetask.StandardTaskTemplate):
 
             catalog_fits_file = self.inputs.vlass_ql_database
 
-            mask_from_catalog(catalog_fits_file=catalog_fits_file,
-                              catalog_search_size=self.inputs.catalog_search_size, mask_shape=mask_shape,
-                              frequency=frequency, cell=cell, phasecenter=phasecenter, mask_name=imagename_base+QLmask)
+            number_islands_found, \
+                number_islands_found_onedeg = mask_from_catalog(catalog_fits_file=catalog_fits_file,
+                                                                catalog_search_size=self.inputs.catalog_search_size,
+                                                                mask_shape=mask_shape, frequency=frequency, cell=cell,
+                                                                phasecenter=phasecenter,
+                                                                mask_name=imagename_base+QLmask)
 
             combinedmask = imagename_base + QLmask
 
         elif self.inputs.maskingmode == 'vlass-se-tier-2':
             LOG.debug("Executing mask_from_catalog masking mode = {!s}".format(self.inputs.maskingmode))
 
-            suffix = "secondmask.mask"
+            bdsf_fitsfile = self.bdsfcompute(imagename_base)
+
             initial_catalog_fits_file = imagename_base + 'iter1b.image.smooth5.cat.fits'
+
+            suffix = "secondmask.mask"
 
             catalog_fits_file = edit_pybdsf_islands(catalog_fits_file=initial_catalog_fits_file)
 
             if not os.path.exists(catalog_fits_file):
                 LOG.error("Catalog file {!s} does not exist.".format(catalog_fits_file))
 
-            mask_from_catalog(catalog_fits_file=catalog_fits_file,
-                              catalog_search_size=self.inputs.catalog_search_size, mask_shape=mask_shape,
-                              frequency=frequency, cell=cell, phasecenter=phasecenter, mask_name=imagename_base+suffix)
+            number_islands_found, \
+                number_islands_found_onedeg = mask_from_catalog(catalog_fits_file=catalog_fits_file,
+                                                                catalog_search_size=self.inputs.catalog_search_size,
+                                                                mask_shape=mask_shape, frequency=frequency, cell=cell,
+                                                                phasecenter=phasecenter,
+                                                                mask_name=imagename_base+suffix)
 
             # combine first and second order masks
             outfile = imagename_base + 'sum_of_masks.mask'
@@ -179,9 +196,35 @@ class Vlassmasking(basetask.StandardTaskTemplate):
         else:
             LOG.error("Invalid maskingmode input.")
 
+        # Compute fraction of pixels enclosed in the mask
+        with casatools.ImageReader(combinedmask) as myia:
+            computechunk = myia.getchunk()
+            pixelfraction = computechunk.sum() / computechunk.size
+
+        # Compute fraction of pixels enclosed in the inner square degree
+        # TODO
+
         return VlassmaskingResults(catalog_fits_file=catalog_fits_file,
                                    catalog_search_size=1.5, outfile=outfile,
-                                   combinedmask=combinedmask)
+                                   combinedmask=combinedmask, number_islands_found=number_islands_found,
+                                   number_islands_found_onedeg=number_islands_found_onedeg,
+                                   pixelfraction=pixelfraction)
 
     def analyse(self, results):
         return results
+
+    def bdsfcompute(self, imagename_base):
+
+        imsmooth(imagename=imagename_base + "iter1b.image.tt0", major='5arcsec', minor='5arcsec', pa='0deg',
+                 outfile=imagename_base + "iter1b.image.smooth5.tt0")
+
+        fitsimage = imagename_base + "iter1b.image.smooth5.fits"
+        export_task = casa_tasks.exportfits(imagename=imagename_base + "iter1b.image.smooth5.tt0",
+                                            fitsimage=fitsimage)
+        runtask = self._executor.execute(export_task)
+
+        # subprocess.call(['/users/jmarvil/scripts/run_bdsf.py',
+        #                  imagename_base+'iter1b.image.smooth5.fits'],env={'PYTHONPATH':''})
+        bdsf_result = run_bdsf(infile=fitsimage)
+
+        return fitsimage

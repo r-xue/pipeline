@@ -26,7 +26,7 @@ class T2_4MDetailsVlassmaskingRenderer(basetemplates.T2_4MDetailsDefaultRenderer
                  description='Produce a VLASS Mask',
                  always_rerender=False):
         super(T2_4MDetailsVlassmaskingRenderer, self).__init__(uri=uri,
-                description=description, always_rerender=always_rerender)
+                                                               description=description, always_rerender=always_rerender)
 
     def get_display_context(self, context, results):
         super_cls = super(T2_4MDetailsVlassmaskingRenderer, self)
@@ -43,6 +43,7 @@ class T2_4MDetailsVlassmaskingRenderer(basetemplates.T2_4MDetailsDefaultRenderer
             summary_plots[ms] = plots
 
         # Number of islands found
+        '''
         try:
             filelist = glob('*_iter1b.image.smooth5.cat.ds9.reg')
             found = subprocess.Popen(['wc', '-l', filelist[0]], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -50,19 +51,9 @@ class T2_4MDetailsVlassmaskingRenderer(basetemplates.T2_4MDetailsDefaultRenderer
             numfound = str(int(stdout.split()[0]) - 3)   # minus three to remove region header
         except Exception as e:
             numfound = ""
-
-        # Number of islands accepted
-        try:
-            filelist = glob('*_iter1b.image.smooth5.cat.accepted.ds9.reg')
-            accepted = subprocess.Popen(['wc', '-l', filelist[0]], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            stdout, stderr = accepted.communicate()
-            numaccepted = int(stdout.split()[0]) - 3  # minus three to remove region header
-        except Exception as e:
-            numaccepted = ""
+        '''
 
         ctx.update({'summary_plots': summary_plots,
-                    'dirname': weblog_dir,
-                    'numfound': numfound,
-                    'numaccepted': numaccepted})
+                    'dirname': weblog_dir})
 
         return ctx
