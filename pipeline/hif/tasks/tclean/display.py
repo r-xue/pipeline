@@ -176,8 +176,8 @@ class CleanSummary(object):
                         rec_info = {'type': 'TSB', 'LO1': '0GHz'}
 
                     plotfile = '%s.spectrum.png' % (os.path.join(stage_dir, os.path.basename(imagename)))
-
-                    plot_spectra(r.image_robust_rms_and_spectra, rec_info, plotfile)
+                    field_id = int(r.field_ids[0].split(',')[0])
+                    plot_spectra(r.image_robust_rms_and_spectra, rec_info, plotfile, ref_ms.name, str(real_spw), field_id)
 
                     plot_wrappers.append(logger.Plot(plotfile, parameters=parameters))
 

@@ -112,19 +112,20 @@ def numberOfChannelsInCube(img, returnFreqs=False, returnChannelWidth=False, ver
             return nchan
 
 
-# FIXME: function contains unresolved references, clean-up or remove if not needed by Pipeline.
-def cubeLSRKToTopo(img, freqrange='', prec=4, verbose=False,
-                   nchan=None, f0=None, f1=None, chanwidth=None,
-                   vis='', header=''):
+def cubeFrameToTopo(img, freqrange='', prec=4, verbose=False,
+                    nchan=None, f0=None, f1=None, chanwidth=None,
+                    msname='', spw='', fieldid=-1, header=''):
     """
     Reads the date of observation, central RA and Dec,
-    and observatory from an image cube header and then calls lsrkToTopo to
-    return the specified frequency range in TOPO (in Hz).
+    and observatory from an image cube header and then calls lsrkToTopo or
+    casaRestToTopo to return the specified frequency range in TOPO (in Hz).
     freqrange: desired range of frequencies (empty string or list = whole cube)
           floating point list of two frequencies, or a delimited string
           (delimiter = ',', '~' or space)
     prec: in fractions of Hz (only used to display the value when verbose=True)
-    vis: read date of observation from the specified measurement set
+    msname: MS name
+    spw: spectral window ID (string)
+    fieldid: field ID (integer)
     header: dictionary output by imheadlist
     -Todd Hunter
     """
@@ -151,15 +152,38 @@ def cubeLSRKToTopo(img, freqrange='', prec=4, verbose=False,
     ra, dec = rad2radec(header['crval1'], header['crval2'], delimiter=' ', verbose=False).split()
     equinox = header['equinox']
     observatory = header['telescope']
-    if vis == '':
-        datestring = header['date-obs']
+    datestring = header['date-obs']
+
+    with pl_casatools.ImageReader(img) as image:
+        lcs = image.coordsys()
+        freqFrame = lcs.referencecode('spectral')[0]
+        lcs.done()
+
+    if freqFrame == 'LSRK':
+        f0 = lsrkToTopo(startFreq, datestring, ra, dec, equinox, observatory, prec, verbose)
+        f1 = lsrkToTopo(stopFreq, datestring, ra, dec, equinox, observatory, prec, verbose)
+    elif freqFrame == 'REST':
+        # REST (or rather SOURCE) frame for ephemeris objects
+        if msname == '':
+            LOG.warn('No MS provided for SOURCE/REST to TOPO conversion. Skipping frame conversion.')
+            f0 = startFreq
+            f1 = stopFreq
+        else:
+            c0, c1 = casaRestToTopo(startFreq, stopFreq, msname, spw, fieldid)
+
+            # convert TOPO channel to TOPO frequency
+            with pl_casatools.MSMDReader(msname) as msmd:
+                chanfreqs = msmd.chanfreqs(int(spw))
+                f0 = chanfreqs[c0]
+                f1 = chanfreqs[c1]
+    elif freqFrame == 'TOPO':
+        f0 = startFreq
+        f1 = stopFreq
     else:
-#        datestring = getObservationStartDate(vis, measuresToolFormat=True)
-        # get the datetime stamp of the middle of the measurement set
-        # FIXME: fix unresolved reference and/or clean-up/remove function if not needed by Pipeline.
-        datestring = mjdsecToUT(np.mean(getObservationMJDSecRange(vis)), measuresToolFormat=True)
-    f0 = lsrkToTopo(startFreq, datestring, ra, dec, equinox, observatory, prec, verbose)
-    f1 = lsrkToTopo(stopFreq, datestring, ra, dec, equinox, observatory, prec, verbose)
+        LOG.warn('Unrecognized frequency frame type: %s. Skipping frame conversion.' % (freqFrame))
+        f0 = startFreq
+        f1 = stopFreq
+
     return np.array([f0, f1])
 
 
@@ -202,6 +226,33 @@ def restToTopo(restFrequency, velocityLSRK, datestring, ra, dec, equinox='J2000'
                                       observatory, verbose=verbose,
                                       restFreq=restFrequency, veltype=veltype)
     return topoFreqHz
+
+
+def casaRestToTopo(freqstart, freqend, msname, spw, fieldid):
+    """
+    Converts a range of SOURCE frame frequencies to TOPO channels in a 
+    specified measurement set.  The input frequencies should be the 
+    center frequencies of the edge channels in the cube.
+    freqstart: range start frequency in Hz
+    freqend: range end frequency in Hz
+    msname: MS name
+    spw: spectral window ID (string)
+    fieldid: field ID (integer)
+    """
+
+    lsu = pl_casatools.synthesisutils
+
+    # Figure out which channels in the ms were used to make the SOURCE frame cube
+    # this function expects the center frequency of each edge channel and returns channel number in ms/spw
+    result = lsu.advisechansel(msname=msname, freqframe='SOURCE',
+                               ephemtable='TRACKFIELD', fieldid=fieldid,
+                               freqstart='%sHz'%(str(freqstart)),
+                               freqend='%sHz'%(str(freqend)))
+    idx = np.where(result['spw'] == int(spw))[0]
+    startChan = result['start'][idx]
+    nchan = result['nchan'][idx]
+    stopChan = startChan + nchan - 1
+    return startChan, stopChan
 
 
 def frames(velocity=286.7, datestring="2005/11/01/00:00:00",
@@ -531,7 +582,7 @@ def imheadlist(vis, omitBeam=False):
 
 def CalcAtmTransmissionForImage(img, chanInfo='', airmass=1.5, pwv=-1,
                                 spectralaxis=-1, value='transmission', P=-1, H=-1,
-                                T=-1, altitude=-1):
+                                T=-1, altitude=-1, msname='', spw='', fieldid=-1):
     """
     This function is called by atmosphereVariation.
     Supported telescopes are VLA and ALMA (needed for default weather and PWV)
@@ -542,6 +593,9 @@ def CalcAtmTransmissionForImage(img, chanInfo='', airmass=1.5, pwv=-1,
     P: in mbar
     H: in percent
     T: in Kelvin
+    msname: MS name
+    spw: spectral window ID (string)
+    fieldid: field ID (integer)
     Returns:
     2 arrays: frequencies (in GHz) and values (Kelvin, or transmission: 0..1)
     """
@@ -556,14 +610,12 @@ def CalcAtmTransmissionForImage(img, chanInfo='', airmass=1.5, pwv=-1,
 
     freqs = np.linspace(chanInfo[1]*1e-9, chanInfo[2]*1e-9, chanInfo[0])
     numchan = len(freqs)
-    lsrkwidth = (chanInfo[2] - chanInfo[1])/(numchan-1)
-    result = cubeLSRKToTopo(img, chanInfo[1:3])
+    result = cubeFrameToTopo(img, chanInfo[1:3], msname=msname, spw=spw, fieldid=fieldid)
     if (result is None):
         topofreqs = freqs
     else:
         topoWidth = (result[1]-result[0])/(numchan-1)
         topofreqs = np.linspace(result[0], result[1], chanInfo[0]) * 1e-9
-        #print("Converted LSRK range,width (%f-%f,%f) to TOPO (%f-%f,%f) over %d channels" % (chanInfo[1]*1e-9, chanInfo[2]*1e-9,lsrkwidth,topofreqs[0],topofreqs[-1],topoWidth,numchan))
     P0 = 1000.0 # mbar
     H0 = 20.0   # percent
     T0 = 273.0  # Kelvin
@@ -602,7 +654,7 @@ def CalcAtmTransmissionForImage(img, chanInfo='', airmass=1.5, pwv=-1,
     fCenter = lqa.quantity(reffreq, 'GHz')
     fResolution = lqa.quantity(chansepModel, 'GHz')
     fWidth = lqa.quantity(numchanModel*chansepModel, 'GHz')
-    myat = casatools.atmosphere()
+    myat = pl_casatools.atmosphere
     myat.initAtmProfile(humidity=H, temperature=lqa.quantity(T, "K"),
                         altitude=lqa.quantity(altitude, "m"),
                         pressure=lqa.quantity(P, 'mbar'), atmType=midLatitudeWinter)
@@ -636,7 +688,7 @@ def CalcAtmTransmissionForImage(img, chanInfo='', airmass=1.5, pwv=-1,
     return(newfreqs, values)
 
 
-def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile):
+def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile, msname, spw, fieldid):
     """
     Takes a pipeline-produced cube and plots the spectrum within the clean
     mask (pixels with value=1 in the mask), and the noise spectrum from outside
@@ -644,6 +696,9 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile):
     has been mitigated).
     image_robust_rms_and_spectra: dictionary of spectra and metadata
     rec_info: dictionary of receiver information (type (DSB/TSB), LO1 frequency)
+    msname: name of representative MS
+    spw: spectral window (string)
+    fieldid: field ID (integer)
     """
 
     qaTool = pl_casatools.quanta
@@ -736,7 +791,7 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile):
         pl.plot([fLowGHz, fHighGHz], [fcLevel]*2, 'c-', lw=2)
 
     # Overlay atmosphere transmission
-    freq, transmission = CalcAtmTransmissionForImage(cube)
+    freq, transmission = CalcAtmTransmissionForImage(cube, msname=msname, spw=spw, fieldid=fieldid)
     rescaledY, edgeYvalue, zeroValue, zeroYValue, otherEdgeYvalue, edgeT, otherEdgeT, edgeValueAmplitude, otherEdgeValueAmplitude, zeroValueAmplitude = RescaleTrans(transmission, pl.ylim())
     pl.plot(freq, rescaledY, 'm-')
 
@@ -745,7 +800,7 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile):
         imageFreq0 = 2.0 * LO1 - freq[0]
         imageFreq1 = 2.0 * LO1 - freq[-1]
         chanInfo = [len(freq), imageFreq0, imageFreq1, -(freqs[1]-freqs[0])]
-        imageFreq, imageTransmission = CalcAtmTransmissionForImage(cube, chanInfo)
+        imageFreq, imageTransmission = CalcAtmTransmissionForImage(cube, chanInfo, msname=msname, spw=spw, fieldid=fieldid)
         results = RescaleTrans(imageTransmission, pl.ylim())
         rescaledImage = results[0]
         # You need to keep the signal sideband frequency range so that the overlay works!

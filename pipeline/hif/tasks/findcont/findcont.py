@@ -310,7 +310,8 @@ class FindCont(basetask.StandardTaskTemplate):
                                                            pb_cube='%s.pb' % findcont_basename,
                                                            psf_cube='%s.psf' % findcont_basename,
                                                            single_continuum=single_continuum,
-                                                           is_eph_obj=image_heuristics.is_eph_obj(target['field']))
+                                                           is_eph_obj=image_heuristics.is_eph_obj(target['field']),
+                                                           ref_ms_name=ref_ms.name)
                     # PIPE-74
                     if single_range_channel_fraction < 0.05:
                         LOG.warning('Only a single narrow range of channels was found for continuum in '
