@@ -2,7 +2,6 @@ import collections
 from itertools import chain
 from typing import List, Tuple, Dict, Callable, Set
 
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
@@ -10,6 +9,7 @@ import pipeline.qa.scorecalculator as qacalc
 from pipeline.domain.field import Field
 from pipeline.domain.measurementset import MeasurementSet
 from pipeline.h.tasks.exportdata import aqua
+from pipeline.infrastructure import casa_tools
 from .almaimportdata import ALMAImportDataResults
 
 LOG = logging.get_logger(__name__)
@@ -231,8 +231,8 @@ def parallactic_angle_at_epoch(f: Field, e: dict) -> float:
     :param e: CASA epoch
     :return: angular separation in degrees
     """
-    me = casatools.measures
-    qa = casatools.quanta
+    me = casa_tools.measures
+    qa = casa_tools.quanta
 
     try:
         me.doframe(me.observatory('ALMA'))

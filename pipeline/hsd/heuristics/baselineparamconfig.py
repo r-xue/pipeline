@@ -4,10 +4,10 @@ import collections
 import abc
 
 import pipeline.infrastructure.api as api
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.logging as logging
 # from pipeline.domain.datatable import DataTableImpl as DataTable
+from pipeline.infrastructure import casa_tools
 from . import fitorder
 from . import fragmentation
 
@@ -95,7 +95,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
     def __datacolumn(self, vis):
         colname = ''
         if isinstance(vis, str):
-            with casatools.TableReader(vis) as tb:
+            with casa_tools.TableReader(vis) as tb:
                 candidate_names = ['CORRECTED_DATA',
                                    'DATA',
                                    'FLOAT_DATA']
@@ -193,7 +193,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         # open blparam file (append mode)
         with open(blparam, 'a') as blparamfileobj:
 
-            with casatools.TableReader(vis) as tb:
+            with casa_tools.TableReader(vis) as tb:
                 for y in range(len(member_list)):
                     rows = member_list[y][0]
                     idxs = member_list[y][1]

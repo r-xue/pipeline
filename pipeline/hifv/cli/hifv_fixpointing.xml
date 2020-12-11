@@ -5,7 +5,7 @@
 <description>
 </description>
 <input>
-    <param name="vis" subparam="true" type="stringArray">
+    <param name="vis" subparam="true" type="stringVec">
 	<shortdescription>List of input visibility data</shortdescription>
 	<description>List of input visibility data</description>
 	<value/>
@@ -40,13 +40,13 @@
 	    <equals type="string" value="automatic">
 	    </equals>
 	    <equals type="string" value="interactive">
-                <default param="vis"><value type="stringArray"/></default>
+                <default param="vis"><value type="stringVec"/></default>
 
 		<default param="dryrun"><value type="bool">False</value></default>
 		<default param="acceptresults"><value type="bool">True</value></default>
 	    </equals>
 	    <equals type="string" value="getinputs">
-                <default param="vis"><value type="stringArray"/></default>
+                <default param="vis"><value type="stringVec"/></default>
 
 	    </equals>
 	</when>
@@ -54,13 +54,6 @@
 
 </input>
 
-<output>
-    <param name="results" type="any">
-        <description>The output results object</description>
-        <any type="variant"/>
-        <value/>
-    </param>
-</output>
 <returns type="void"/>
 
 

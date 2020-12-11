@@ -4,9 +4,9 @@ import os
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.casa_tasks as casa_tasks
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -170,14 +170,14 @@ class ampGainPerAntennaChart(object):
 
         times = []
         for bandname, bpdgain_touse in self.result.bpdgain_touse.items():
-            with casatools.TableReader(bpdgain_touse) as tb:
+            with casa_tools.TableReader(bpdgain_touse) as tb:
                 times.extend(tb.getcol('TIME'))
         mintime = np.min(times)
         maxtime = np.max(times)
 
         for bandname, bpdgain_touse in self.result.bpdgain_touse.items():
 
-            with casatools.TableReader(bpdgain_touse) as tb:
+            with casa_tools.TableReader(bpdgain_touse) as tb:
                 cpar = tb.getcol('CPARAM')
                 flgs = tb.getcol('FLAG')
             amps = np.abs(cpar)
@@ -261,14 +261,13 @@ class phaseGainPerAntennaChart(object):
 
         times = []
         for bandname, bpdgain_touse in self.result.bpdgain_touse.items():
-            with casatools.TableReader(bpdgain_touse) as tb:
+            with casa_tools.TableReader(bpdgain_touse) as tb:
                 times.extend(tb.getcol('TIME'))
         mintime = np.min(times)
         maxtime = np.max(times)
 
         for bandname, bpdgain_touse in self.result.bpdgain_touse.items():
-
-            with casatools.TableReader(bpdgain_touse) as tb:
+            with casa_tools.TableReader(bpdgain_touse) as tb:
                 cpar = tb.getcol('CPARAM')
                 flgs = tb.getcol('FLAG')
             amps = np.abs(cpar)
@@ -351,8 +350,7 @@ class bpSolAmpPerAntennaChart(object):
         plots = []
 
         for bandname, bpcaltablename in self.result.bpcaltable.items():
-
-            with casatools.TableReader(self.result.bpdgain_touse[bandname]) as tb:
+            with casa_tools.TableReader(self.result.bpdgain_touse[bandname]) as tb:
                 cpar = tb.getcol('CPARAM')
                 flgs = tb.getcol('FLAG')
             amps = np.abs(cpar)
@@ -360,7 +358,7 @@ class bpSolAmpPerAntennaChart(object):
             maxamp = np.max(amps[good])
             plotmax = maxamp
 
-            with casatools.TableReader(bpcaltablename) as tb:
+            with casa_tools.TableReader(bpcaltablename) as tb:
                 dataVarCol = tb.getvarcol('CPARAM')
                 flagVarCol = tb.getvarcol('FLAG')
 
@@ -462,8 +460,7 @@ class bpSolPhasePerAntennaChart(object):
         plots = []
 
         for bandname, bpcaltablename in self.result.bpcaltable.items():
-
-            with casatools.TableReader(result.bpdgain_touse[bandname]) as tb:
+            with casa_tools.TableReader(result.bpdgain_touse[bandname]) as tb:
                 cpar = tb.getcol('CPARAM')
                 flgs = tb.getcol('FLAG')
             amps = np.abs(cpar)
@@ -471,7 +468,7 @@ class bpSolPhasePerAntennaChart(object):
             maxamp = np.max(amps[good])
             plotmax = maxamp
 
-            with casatools.TableReader(bpcaltablename) as tb:
+            with casa_tools.TableReader(bpcaltablename) as tb:
                 dataVarCol = tb.getvarcol('CPARAM')
                 flagVarCol = tb.getvarcol('FLAG')
 

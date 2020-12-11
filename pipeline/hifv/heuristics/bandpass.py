@@ -2,17 +2,17 @@ import os
 
 import numpy as np
 
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from . import uvrange
 
 LOG = infrastructure.get_logger(__name__)
 
 
 def removeRows(caltable, spwids):
-    tb = casatools.table()
+    tb = casa_tools.table()
     tb.open(caltable, nomodify=False)
     for spwid in spwids:
         subtb = tb.query('SPECTRAL_WINDOW_ID == '+str(spwid))
@@ -35,7 +35,7 @@ def computeChanFlag(vis, caltable, context):
     m = context.observing_run.get_ms(vis)
     channels = m.get_vla_numchan()
 
-    with casatools.TableReader(caltable) as table:
+    with casa_tools.TableReader(caltable) as table:
         spwVarCol = table.getvarcol('SPECTRAL_WINDOW_ID')
         dataVarCol = table.getvarcol('CPARAM')
         flagVarCol = table.getvarcol('FLAG')

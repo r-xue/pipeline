@@ -1,12 +1,11 @@
 import math
 import os
 
+import matplotlib.pyplot as plt
 import numpy
-import pylab as pl
-
-import casatools
 
 import pipeline.extern.adopted as adopted
+from pipeline.infrastructure import casa_tools
 
 
 class AtmType(object):
@@ -31,7 +30,7 @@ def init_at(at, humidity=20.0, temperature=270.0, pressure=560.0,
     nchan: number of channels
     resolution: channel width [GHz]
     """
-    myqa = casatools.quanta()
+    myqa = casa_tools.quanta
     at.initAtmProfile(humidity=humidity,
                       temperature=myqa.quantity(temperature, 'K'),
                       altitude=myqa.quantity(altitude, 'm'),
@@ -80,8 +79,8 @@ def test(pwv=1.0, elevation=45.0):
     pwv: water vapor content [mm]
     elevation: elevation [deg]
     """
-    myat = casatools.atmosphere()
-    myqa = casatools.quanta()
+    myat = casa_tools.atmosphere
+    myqa = casa_tools.quanta
     init_at(myat)
     myat.setUserWH2O(myqa.quantity(pwv, 'mm'))
 
@@ -97,21 +96,21 @@ def test(pwv=1.0, elevation=45.0):
 
 
 def plot(frequency, dry_opacity, wet_opacity, transmission):
-    pl.clf()
-    a1 = pl.gcf().gca()
-    pl.plot(frequency, dry_opacity, label='dry')
-    pl.plot(frequency, wet_opacity, label='wet')
-    pl.legend(loc='upper left', bbox_to_anchor=(0., 0.5))
+    plt.clf()
+    a1 = plt.gcf().gca()
+    plt.plot(frequency, dry_opacity, label='dry')
+    plt.plot(frequency, wet_opacity, label='wet')
+    plt.legend(loc='upper left', bbox_to_anchor=(0., 0.5))
     a2 = a1.twinx()
-    a2.yaxis.set_major_formatter(pl.NullFormatter())
-    a2.yaxis.set_major_locator(pl.NullLocator())
-    pl.gcf().sca(a2)
-    pl.plot(frequency, transmission, 'm-')
+    a2.yaxis.set_major_formatter(plt.NullFormatter())
+    a2.yaxis.set_major_locator(plt.NullLocator())
+    plt.gcf().sca(a2)
+    plt.plot(frequency, transmission, 'm-')
     M = transmission.min()
     Y = 0.8
     ymin = (M - Y) / (1.0 - Y)
     ymax = transmission.max() + (1.0 - transmission.max()) * 0.1
-    pl.ylim([ymin, ymax])
+    plt.ylim([ymin, ymax])
 
 
 def get_spw_spec(vis, spw_id):
@@ -121,20 +120,14 @@ def get_spw_spec(vis, spw_id):
 
     return: center frequency [GHz], number of channels, and resolution [GHz]
     """
-    mytb = casatools.table()
-    mytb.open(os.path.join(vis, 'SPECTRAL_WINDOW'))
-    nrow = mytb.nrows()
-    if spw_id < 0 or spw_id >= nrow:
-        raise RuntimeError('spw_id {} is out of range'.format(spw_id))
-    try:
+    with casa_tools.TableReader(os.path.join(vis, 'SPECTRAL_WINDOW')) as mytb:
+        nrow = mytb.nrows()
+        if spw_id < 0 or spw_id >= nrow:
+            raise RuntimeError('spw_id {} is out of range'.format(spw_id))
         nchan = mytb.getcell('NUM_CHAN', spw_id)
-        bandwidth = mytb.getcell('TOTAL_BANDWIDTH', spw_id)
         chan_freq = mytb.getcell('CHAN_FREQ', spw_id)
-    finally:
-        mytb.close()
 
     center_freq = (chan_freq.min() + chan_freq.max()) / 2.0
-    #resolution = bandwidth / nchan
     resolution = chan_freq[1] - chan_freq[0]
 
     # Hz -> GHz
@@ -146,20 +139,18 @@ def get_spw_spec(vis, spw_id):
 
 
 def get_median_elevation(vis, antenna_id):
-    mytb = casatools.table()
-    mytb.open(os.path.join(vis, 'POINTING'))
-    tsel = mytb.query('ANTENNA_ID == {}'.format(antenna_id))
-    # default elevation
-    elevation = 45.0
-    try:
-        if tsel.nrows() > 0:
-            colkeywords = tsel.getcolkeywords('DIRECTION')
-            if colkeywords['MEASINFO']['Ref'] == 'AZELGEO':
-                elevation_list = tsel.getcol('DIRECTION')[1][0]
-                elevation = numpy.median(elevation_list) * 180.0 / math.pi
-    finally:
-        tsel.close()
-        mytb.close()
+    with casa_tools.TableReader(os.path.join(vis, 'POINTING')) as mytb:
+        tsel = mytb.query('ANTENNA_ID == {}'.format(antenna_id))
+        # default elevation
+        elevation = 45.0
+        try:
+            if tsel.nrows() > 0:
+                colkeywords = tsel.getcolkeywords('DIRECTION')
+                if colkeywords['MEASINFO']['Ref'] == 'AZELGEO':
+                    elevation_list = tsel.getcol('DIRECTION')[1][0]
+                    elevation = numpy.median(elevation_list) * 180.0 / math.pi
+        finally:
+            tsel.close()
 
     return elevation        
 
@@ -183,8 +174,8 @@ def get_transmission(vis, antenna_id=0, spw_id=0, doplot=False):
     # get median PWV using Todd's script
     (pwv, pwvmad) = adopted.getMedianPWV(vis=vis)
 
-    myat = casatools.atmosphere()
-    myqa = casatools.quanta()
+    myat = casa_tools.atmosphere
+    myqa = casa_tools.quanta
     init_at(myat, fcenter=center_freq, nchan=nchan, resolution=resolution)
     myat.setUserWH2O(myqa.quantity(pwv, 'mm'))
 

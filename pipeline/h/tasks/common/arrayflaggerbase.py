@@ -3,7 +3,7 @@ import os.path
 
 import numpy as np
 
-import pipeline.infrastructure.casatools as casatools
+from pipeline.infrastructure import casa_tools
 
 
 def channel_ranges(channels):
@@ -227,11 +227,11 @@ class FlagCmd(object):
             self.end_time = None
             if flag_time is not None:
                 self.start_time = flag_time - 0.5
-                start = casatools.quanta.quantity(self.start_time, 's')
-                start = casatools.quanta.time(start, form=['ymd'])
+                start = casa_tools.quanta.quantity(self.start_time, 's')
+                start = casa_tools.quanta.time(start, form=['ymd'])
                 self.end_time = flag_time + 0.5
-                end = casatools.quanta.quantity(self.end_time + 0.5, 's')
-                end = casatools.quanta.time(end, form=['ymd'])
+                end = casa_tools.quanta.quantity(self.end_time + 0.5, 's')
+                end = casa_tools.quanta.time(end, form=['ymd'])
                 flagcmd += " timerange='%s~%s'" % (start[0], end[0])
 
         # have to be careful with antenna as it may have been set during
@@ -253,11 +253,11 @@ class FlagCmd(object):
         # as part of flagcoords.
         if self.time is not None and 'timerange' not in flagcmd:
             self.start_time = self.time - 0.5
-            start = casatools.quanta.quantity(self.start_time, 's')
-            start = casatools.quanta.time(start, form=['ymd'])
+            start = casa_tools.quanta.quantity(self.start_time, 's')
+            start = casa_tools.quanta.time(start, form=['ymd'])
             self.end_time = self.time + 0.5
-            end = casatools.quanta.quantity(self.end_time + 0.5, 's')
-            end = casatools.quanta.time(end, form=['ymd'])
+            end = casa_tools.quanta.quantity(self.end_time + 0.5, 's')
+            end = casa_tools.quanta.time(end, form=['ymd'])
             flagcmd += " timerange='%s~%s'" % (start[0], end[0])
 
         # Add field to flagging command.

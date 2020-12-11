@@ -9,11 +9,11 @@ import re
 import string
 from typing import Union, List, Dict, Sequence
 
-import numpy as np
 import bisect
+import numpy as np
 
 from .conversion import range_to_list
-from .. import casatools
+from .. import casa_tools
 from .. import logging
 
 LOG = logging.get_logger(__name__)
@@ -127,7 +127,7 @@ def get_num_caltable_polarizations(caltable: str) -> int:
     polarisations for the spw in the MS, but the number of polarisations for
     the spw as held in the caltable.
     """
-    with casatools.TableReader(caltable) as tb:
+    with casa_tools.TableReader(caltable) as tb:
         col_shapes = set(tb.getcolshapestring('CPARAM'))
 
     # get the number of pols stored in the caltable, checking that this
@@ -269,9 +269,9 @@ def get_casa_quantity(value: Union[None, Dict, str, float, int]) -> Dict:
     {'unit': 'klambda', 'value': 10.0}
     """
     if value is not None:
-        return casatools.quanta.quantity(value)
+        return casa_tools.quanta.quantity(value)
     else:
-        return casatools.quanta.quantity(0.0)
+        return casa_tools.quanta.quantity(0.0)
 
 
 def get_si_prefix(value: float, select: str = 'mu', lztol: int = 0) -> tuple:

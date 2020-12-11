@@ -1,9 +1,9 @@
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.utils as utils
 from pipeline.extern.findContinuum import findContinuum
 from pipeline.extern.findContinuum import countChannelsInRanges
 from pipeline.extern.findContinuum import numberOfChannelsInCube
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -13,7 +13,7 @@ class FindContHeuristics(object):
         self.context = context
 
     def find_continuum(self, dirty_cube, pb_cube=None, psf_cube=None, single_continuum=False):
-        with casatools.ImageReader(dirty_cube) as image:
+        with casa_tools.ImageReader(dirty_cube) as image:
             stats = image.statistics()
 
         if stats['min'][0] == stats['max'][0]:
