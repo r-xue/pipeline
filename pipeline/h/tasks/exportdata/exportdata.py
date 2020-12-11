@@ -42,7 +42,6 @@ import pipeline as pipeline
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.imagelibrary as imagelibrary
 import pipeline.infrastructure.vdp as vdp
 from pipeline import environment
