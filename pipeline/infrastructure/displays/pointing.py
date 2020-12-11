@@ -1,3 +1,5 @@
+"""Pointing methods and classes."""
+
 import math
 import os
 from typing import List, Optional, Tuple
