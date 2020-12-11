@@ -1,5 +1,6 @@
 import math
 import os
+from typing import List, Optional, Tuple
 
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter, MultipleLocator, AutoLocator
@@ -23,7 +24,7 @@ dsyb = '$^\circ$'
 hsyb = ':'
 msyb = ':'
 
-def Deg2HMS(x, prec=0):
+def Deg2HMS(x: float, prec: int=0) -> List[str, str, str]:
     """
     Convert an angle in degree to hour angle.
 
@@ -45,7 +46,7 @@ def Deg2HMS(x, prec=0):
     return angle.split(':')
 
 
-def HHMM(x, pos=None):
+def HHMM(x: float, pos=None) -> str:
     """
     Convert an angle in degree to hour angle with HHMM format.
 
@@ -68,7 +69,7 @@ def HHMM(x, pos=None):
     return '%s%s%s' % (h, hsyb, m)
 
 
-def __format_hms(x, prec=0):
+def __format_hms(x: str, prec: int=0) -> str:
     """
     Convert an angle in degree to hour angle with hms format.
 
@@ -87,7 +88,7 @@ def __format_hms(x, prec=0):
     return '%s%s%s%s%s' % (h, hsyb, m, msyb, s)
 
 
-def HHMMSS(x, pos=None):
+def HHMMSS(x: str, pos=None) -> str:
     """
     Convert an angle in degree to hour angle with hms format.
 
@@ -105,7 +106,7 @@ def HHMMSS(x, pos=None):
     return __format_hms(x, prec=6)
 
 
-def HHMMSSs(x, pos=None):
+def HHMMSSs(x: str, pos=None):
     """
     Convert an angle in degree to hour angle with hms format.
 
@@ -123,7 +124,7 @@ def HHMMSSs(x, pos=None):
     return __format_hms(x, prec=7)
 
 
-def HHMMSSss(x, pos=None):
+def HHMMSSss(x: str, pos=None) -> str:
     """
     Convert an angle in degree to hour angle with hms format.
 
@@ -141,7 +142,7 @@ def HHMMSSss(x, pos=None):
     return __format_hms(x, prec=8)
 
 
-def HHMMSSsss(x, pos=None):
+def HHMMSSsss(x: str, pos=None) -> str:
     """Convert an angle in degree to hour angle with hms format.
 
     Example:
@@ -158,7 +159,7 @@ def HHMMSSsss(x, pos=None):
     return __format_hms(x, prec=9)
 
 
-def Deg2DMS(x, prec=0):
+def Deg2DMS(x: float, prec: int=0) -> List[str, str, str]:
     """
     Convert an angle in degree to dms angle (ddmmss.s).
 
@@ -188,7 +189,7 @@ def Deg2DMS(x, prec=0):
         return seg
 
 
-def DDMM(x, pos=None):
+def DDMM(x: float, pos=None) -> str:
     """Convert an angle in degree to dms angle with DDMM format.
 
     DDMM* function is used to set axis formatter of matplotlib plots.
@@ -210,7 +211,7 @@ def DDMM(x, pos=None):
     return '%s%s%s\'' % (d, dsyb, m)
 
 
-def __format_dms(x, prec=0):
+def __format_dms(x: float, prec: int=0) -> str:
     """
     Convert an angle in degree to dms angle in specified precision.
 
@@ -233,7 +234,7 @@ def __format_dms(x, prec=0):
     return '%s%s%s\'%s\"%s' % (d, dsyb, m, s, ss)
 
 
-def DDMMSS(x, pos=None):
+def DDMMSS(x: str, pos=None) -> str:
     """
     Convert an angle in degree to dms angle with DDMMSS.
 
@@ -249,7 +250,7 @@ def DDMMSS(x, pos=None):
     """
     return __format_dms(x, prec=6)
 
-def DDMMSSs(x, pos=None):
+def DDMMSSs(x: str, pos=None) -> str:
     """
     Convert an angle in degree to dms angle with DDMMSSs.
 
@@ -266,7 +267,7 @@ def DDMMSSs(x, pos=None):
     return __format_dms(x, prec=7)
 
 
-def DDMMSSss(x, pos=None):
+def DDMMSSss(x: str, pos=None) -> str:
     """
     Convert an angle in degree to dms angle with DDMMSSss.
 
@@ -283,7 +284,9 @@ def DDMMSSss(x, pos=None):
     return __format_dms(x, prec=8)
 
 
-def XYlabel(span, direction_reference, ofs_coord=False):
+def XYlabel(span: float, direction_reference: str, ofs_coord: bool=False)
+    -> Tuple[Union[GLGBlabel, RADEClabel]]:
+
     """
     Create labels for the x- and y-axes in plot.
 
@@ -300,7 +303,8 @@ def XYlabel(span, direction_reference, ofs_coord=False):
         return RADEClabel(span, ofs_coord)
 
 
-def GLGBlabel(span):
+def GLGBlabel(span: float)
+    -> Tuple[MultipleLocator, MultipleLocator, FuncFormatter, FuncFormatter]:
     """
     Create GLGB formart label.
 
@@ -349,7 +353,10 @@ def GLGBlabel(span):
     return (GLlocator, GBlocator, GLformatter, GBformatter)
 
 
-def RADEClabel(span, ofs_coord):
+def RADEClabel(span: float,
+        ofs_coord: bool
+    ) -> Tuple[MultipleLocator, MultipleLocator, FuncFormatter, FuncFormatter]:
+
     """
     Args:
         span:
@@ -411,28 +418,28 @@ def RADEClabel(span, ofs_coord):
 
 class MapAxesManagerBase(object):
     @property
-    def direction_reference(self):
+    def direction_reference(self) -> str:
         return self._direction_reference
 
     @direction_reference.setter
-    def direction_reference(self, value):
+    def direction_reference(self, value: str) -> None:
         if isinstance(value, str):
             self._direction_reference = value
 
     @property
-    def ofs_coord(self):
+    def ofs_coord(self) -> bool:
         return self._ofs_coord
 
     @ofs_coord.setter
-    def ofs_coord(self, value):
+    def ofs_coord(self, value: bool) -> None:
         if isinstance(value, bool):
             self._ofs_coord = value
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._direction_reference = None
         self._ofs_coord = None
 
-    def get_axes_labels(self):
+    def get_axes_labels(self) -> (str, str):
         """
         Returns:
             xlabel: xlabel in plot. Default is 'RA'.
@@ -459,31 +466,31 @@ class PointingAxesManager(MapAxesManagerBase):
     MATPLOTLIB_FIGURE_ID = 9005
 
     @property
-    def direction_reference(self):
+    def direction_reference(self) -> str:
         return self._direction_reference
 
     @direction_reference.setter
-    def direction_reference(self, value):
+    def direction_reference(self, value: str) -> None:
         if isinstance(value, str):
             self._direction_reference = value
 
     @property
-    def ofs_coord(self):
+    def ofs_coord(self) -> bool:
         return self._ofs_coord
 
     @ofs_coord.setter
-    def ofs_coord(self, value):
+    def ofs_coord(self, value: bool):
         if isinstance(value, bool):
             self._ofs_coord = value
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._axes = None
         self.is_initialized = False
         self._direction_reference = None
         self._ofs_coord = None
 
     def init_axes(self, xlocator, ylocator, xformatter, yformatter, xrotation, yrotation, aspect, xlim=None, ylim=None,
-                  reset=False):
+                  reset=False) -> None:
         """
         Set matplotlib axes.
 
@@ -521,12 +528,12 @@ class PointingAxesManager(MapAxesManagerBase):
             plt.setp(ylabels, 'rotation', yrotation, fontsize=8)
 
     @property
-    def axes(self):
+    def axes(self) -> matplotlib.axes._axes.Axes:
         if self._axes is None:
             self._axes = self.__axes()
         return self._axes
 
-    def __axes(self):
+    def __axes(self) -> matplotlib.axes._axes.Axes:
         a = plt.axes([0.15, 0.2, 0.7, 0.7])
         xlabel, ylabel = self.get_axes_labels()
         plt.xlabel(xlabel)
@@ -535,7 +542,8 @@ class PointingAxesManager(MapAxesManagerBase):
         return a
 
 
-def draw_beam(axes, r, aspect, x_base, y_base, offset=1.0):
+def draw_beam(axes, r: float, aspect: float, x_base: float, y_base: float,
+              offset: float=1.0):
     """
     Draw beam.
 
@@ -556,8 +564,16 @@ def draw_beam(axes, r, aspect, x_base, y_base, offset=1.0):
     return line[0]
 
 
-def draw_pointing(axes_manager, RA, DEC, FLAG=None, plotfile=None, connect=True, circle=[], ObsPattern=False,
-                  plotpolicy='ignore'):
+def draw_pointing(axes_manager: PointingAxesManager,
+                    RA: float,
+                    DEC: float,
+                    FLAG: Optional[int]=None,
+                    plotfile: Optional[str]=None,
+                    connect: bool=True,
+                    circle: List[Optional[float]]=[],
+                    ObsPattern: bool=False,
+                    plotpolicy: str='ignore'
+                ) -> None:
     """
     Draw pointing plots using matplotlib, export the plots and delete the matplotlib objects.
 
@@ -642,8 +658,15 @@ def draw_pointing(axes_manager, RA, DEC, FLAG=None, plotfile=None, connect=True,
 
 
 class SingleDishPointingChart(object):
-    def __init__(self, context, ms, antenna, target_field_id=None, reference_field_id=None, target_only=True,
-                 ofs_coord=False):
+    def __init__(self,
+                    context,
+                    ms,
+                    antenna,
+                    target_field_id: Optional[]=None,
+                    reference_field_id: Optional[]=None,
+                    target_only: bool=True,
+                    ofs_coord: bool=False
+                ) -> None:
         """
         Initialize SingleDishPointingChart class.
 
@@ -666,7 +689,7 @@ class SingleDishPointingChart(object):
         self.figfile = self._get_figfile()
         self.axes_manager = PointingAxesManager()
 
-    def __get_field(self, field_id):
+    def __get_field(self, field_id: Optional[int]) -> Optional[]:
         if field_id is not None:
             fields = self.ms.get_fields(field_id)
             assert len(fields) == 1
@@ -677,7 +700,7 @@ class SingleDishPointingChart(object):
             return None
 
     @casa5style_plot
-    def plot(self, revise_plot=False):
+    def plot(self, revise_plot: bool=False) -> Optional[Plot]:
         """
         Generate a plot object.
 
@@ -774,7 +797,7 @@ class SingleDishPointingChart(object):
 
         return self._get_plot_object()
 
-    def _get_figfile(self):
+    def _get_figfile(self) -> str:
         """
         Generate file path to export a plot.
 
@@ -802,7 +825,7 @@ class SingleDishPointingChart(object):
                                '%s.png'%(basename))
         return figfile
 
-    def _get_plot_object(self):
+    def _get_plot_object(self) -> Plot:
         """
         Generate a Plot object.
 
