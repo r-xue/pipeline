@@ -10,7 +10,7 @@ from pipeline.domain.datatable import OnlineFlagIndex
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
-import pipeline.infrastructure.renderer.logger as logger
+from pipeline.infrastructure.renderer.logger import Plot
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -823,7 +823,7 @@ class SingleDishPointingChart(object):
         else:
             xaxis = 'R.A.'
             yaxis = 'Declination'
-        return logger.Plot(self.figfile,
+        return Plot(self.figfile,
                            x_axis=xaxis,
                            y_axis=yaxis,
                            parameters={'vis': self.ms.basename,
