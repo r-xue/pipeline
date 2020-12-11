@@ -4,6 +4,7 @@ import math
 import os
 from typing import List, Optional, Tuple
 
+from matplotlib.axes._axes import Axes
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter, MultipleLocator, AutoLocator
 import numpy as np
@@ -520,12 +521,12 @@ class PointingAxesManager(MapAxesManagerBase):
             plt.setp(ylabels, 'rotation', yrotation, fontsize=8)
 
     @property
-    def axes(self) -> matplotlib.axes._axes.Axes:
+    def axes(self) -> Axes:
         if self._axes is None:
             self._axes = self.__axes()
         return self._axes
 
-    def __axes(self) -> matplotlib.axes._axes.Axes:
+    def __axes(self) -> Axes:
         a = plt.axes([0.15, 0.2, 0.7, 0.7])
         xlabel, ylabel = self.get_axes_labels()
         plt.xlabel(xlabel)
