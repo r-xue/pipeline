@@ -63,7 +63,7 @@ def HHMM(x: float, pos=None) -> str:
         x: An angle in degree.
         prec: Significant digits.
     Returns:
-        formated strings of hour, minute values.
+        formatted strings of hour, minute values.
     """
     (h, m, s) = Deg2HMS(x, prec=6)
     return '%s%s%s' % (h, hsyb, m)
@@ -81,7 +81,7 @@ def __format_hms(x: str, prec: int=0) -> str:
         x: An angle in degree.
         prec: Significant digits.
     Returns:
-        formated strings of hour, minute, and second values in a specified
+        formatted strings of hour, minute, and second values in a specified
         precision.
     """
     (h, m, s) = Deg2HMS(x, prec)
@@ -100,7 +100,7 @@ def HHMMSS(x: str, pos=None) -> str:
         x: An angle in degree.
         prec: Significant digits.
     Returns:
-        formated strings of hour, minute, and second values in a specified
+        formatted strings of hour, minute, and second values in a specified
         precision.
     """
     return __format_hms(x, prec=6)
@@ -118,7 +118,7 @@ def HHMMSSs(x: str, pos=None):
         x: An angle in degree.
         prec: Significant digits.
     Returns:
-        formated strings of hour, minute, and second values in a specified
+        formatted strings of hour, minute, and second values in a specified
         precision.
     """
     return __format_hms(x, prec=7)
@@ -136,7 +136,7 @@ def HHMMSSss(x: str, pos=None) -> str:
         x: An angle in degree.
         prec: Significant digits.
     Returns:
-        formated strings of hour, minute, and second values in a specified
+        formatted strings of hour, minute, and second values in a specified
         precision.
     """
     return __format_hms(x, prec=8)
@@ -153,7 +153,7 @@ def HHMMSSsss(x: str, pos=None) -> str:
         x: An angle in degree.
         prec: Significant digits.
     Returns:
-        formated strings of hour, minute, and second values in a specified
+        formatted strings of hour, minute, and second values in a specified
         precision.
     """
     return __format_hms(x, prec=9)
