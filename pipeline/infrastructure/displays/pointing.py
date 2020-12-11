@@ -1,16 +1,16 @@
 import math
 import os
 
-import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter, MultipleLocator, AutoLocator
+import numpy as np
 
-import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
-import pipeline.infrastructure.renderer.logger as logger
 from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.domain.datatable import OnlineFlagIndex
+import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.casatools as casatools
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
+import pipeline.infrastructure.renderer.logger as logger
 
 LOG = infrastructure.get_logger(__name__)
 
