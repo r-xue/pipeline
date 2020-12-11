@@ -29,7 +29,6 @@ msyb = ':'
 def Deg2HMS(x: float, prec: int=0) -> List[str, str, str]:
     """
     Convert an angle in degree to hour angle.
-
     Example:
     >>> Deg2HMS(20.123, prec=7)
     ['01', '20', '29.5']
@@ -51,7 +50,6 @@ def Deg2HMS(x: float, prec: int=0) -> List[str, str, str]:
 def HHMM(x: float, pos=None) -> str:
     """
     Convert an angle in degree to hour angle with HHMM format.
-
     HHMM* function is used to set axis formatter of matplotlib plots.
     The functions will be turned into matplotlib.ticker.FuncFormatter.
     The function should take two inputs, a tick value x and position pos.
@@ -74,7 +72,6 @@ def HHMM(x: float, pos=None) -> str:
 def __format_hms(x: str, prec: int=0) -> str:
     """
     Convert an angle in degree to hour angle with hms format.
-
     Example:
     >>> __format_hms(10.123)
     '00:40:30'
@@ -93,7 +90,6 @@ def __format_hms(x: str, prec: int=0) -> str:
 def HHMMSS(x: str, pos=None) -> str:
     """
     Convert an angle in degree to hour angle with hms format.
-
     Example:
     >>> HHMMSS(10.123)
     '00:40:30'
@@ -111,7 +107,6 @@ def HHMMSS(x: str, pos=None) -> str:
 def HHMMSSs(x: str, pos=None):
     """
     Convert an angle in degree to hour angle with hms format.
-
     Example:
     >>> HHMMSSs(10.123)
     '00:40:29.5'
@@ -129,7 +124,6 @@ def HHMMSSs(x: str, pos=None):
 def HHMMSSss(x: str, pos=None) -> str:
     """
     Convert an angle in degree to hour angle with hms format.
-
     Example:
     >>> HHMMSSss(10.123)
     '00:40:29.52'
@@ -146,7 +140,6 @@ def HHMMSSss(x: str, pos=None) -> str:
 
 def HHMMSSsss(x: str, pos=None) -> str:
     """Convert an angle in degree to hour angle with hms format.
-
     Example:
     >>> HHMMSSsss(10.123)
     '00:40:29.520'
@@ -164,7 +157,6 @@ def HHMMSSsss(x: str, pos=None) -> str:
 def Deg2DMS(x: float, prec: int=0) -> List[str, str, str]:
     """
     Convert an angle in degree to dms angle (ddmmss.s).
-
     Example:
     >>> Deg2DMS('+01.02.23.4', prec=1)
     ['+01', '02', '23.4']
@@ -193,7 +185,6 @@ def Deg2DMS(x: float, prec: int=0) -> List[str, str, str]:
 
 def DDMM(x: float, pos=None) -> str:
     """Convert an angle in degree to dms angle with DDMM format.
-
     DDMM* function is used to set axis formatter of matplotlib plots.
     The functions will be turned into matplotlib.ticker.FuncFormatter.
     The function should take two inputs, a tick value x and position pos.
@@ -216,7 +207,6 @@ def DDMM(x: float, pos=None) -> str:
 def __format_dms(x: float, prec: int=0) -> str:
     """
     Convert an angle in degree to dms angle in specified precision.
-
     Example:
     >>> __format_dms(10.123)
     '+10$^\\circ$07\'23"'
@@ -239,7 +229,6 @@ def __format_dms(x: float, prec: int=0) -> str:
 def DDMMSS(x: str, pos=None) -> str:
     """
     Convert an angle in degree to dms angle with DDMMSS.
-
     Example:
     >>> DDMMSS(10.123)
     '+10$^\\circ$07\'23"'
@@ -255,7 +244,6 @@ def DDMMSS(x: str, pos=None) -> str:
 def DDMMSSs(x: str, pos=None) -> str:
     """
     Convert an angle in degree to dms angle with DDMMSSs.
-
     Example:
     >>> DDMMSSs(10.123)
     '+10$^\\circ$07\'22".8'
@@ -272,7 +260,6 @@ def DDMMSSs(x: str, pos=None) -> str:
 def DDMMSSss(x: str, pos=None) -> str:
     """
     Convert an angle in degree to dms angle with DDMMSSss.
-
     Example:
     >>> DDMMSSss(10.123)
     '+10$^\\circ$07\'22".80'
@@ -288,10 +275,8 @@ def DDMMSSss(x: str, pos=None) -> str:
 
 def XYlabel(span: float, direction_reference: str, ofs_coord: bool=False)
     -> Tuple[Union[GLGBlabel, RADEClabel]]:
-
     """
     Create labels for the x- and y-axes in plot.
-
     Args:
         span:
         direction_reference:
@@ -309,7 +294,6 @@ def GLGBlabel(span: float)
     -> Tuple[MultipleLocator, MultipleLocator, FuncFormatter, FuncFormatter]:
     """
     Create GLGB formart label.
-
     Args:
         span:
     Returns:
@@ -358,7 +342,6 @@ def GLGBlabel(span: float)
 def RADEClabel(span: float,
         ofs_coord: bool
     ) -> Tuple[MultipleLocator, MultipleLocator, FuncFormatter, FuncFormatter]:
-
     """
     Args:
         span:
@@ -503,7 +486,6 @@ class PointingAxesManager(MapAxesManagerBase):
                   reset=False) -> None:
         """
         Set matplotlib axes.
-
         Args:
             xlocator:
             ylocator:
@@ -556,7 +538,6 @@ def draw_beam(axes, r: float, aspect: float, x_base: float, y_base: float,
               offset: float=1.0):
     """
     Draw beam.
-
     Args:
         axes: pyplot instance of the current axes.
         r:
@@ -586,7 +567,6 @@ def draw_pointing(axes_manager: PointingAxesManager,
                 ) -> None:
     """
     Draw pointing plots using matplotlib, export the plots and delete the matplotlib objects.
-
     Args:
         axes_manager: PointingAxesManager() instance.
         RA:
@@ -679,7 +659,6 @@ class SingleDishPointingChart(object):
                 ) -> None:
         """
         Initialize SingleDishPointingChart class.
-
         Args:
             context: pipeline.Pipeline().context
             ms: measurementSet instance.
@@ -713,7 +692,6 @@ class SingleDishPointingChart(object):
     def plot(self, revise_plot: bool=False) -> Optional[Plot]:
         """
         Generate a plot object.
-
         Results:
             A Plot object.
         """
@@ -810,7 +788,6 @@ class SingleDishPointingChart(object):
     def _get_figfile(self) -> str:
         """
         Generate file path to export a plot.
-
         Returns:
             file path to export a plot.
         """
@@ -838,7 +815,6 @@ class SingleDishPointingChart(object):
     def _get_plot_object(self) -> Plot:
         """
         Generate a Plot object.
-
         Returns:
             A Plot object.
         """
