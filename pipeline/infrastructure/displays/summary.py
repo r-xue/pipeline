@@ -8,18 +8,17 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import numpy as np
 
-
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain.measures import FrequencyUnits, DistanceUnits
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 from . import plotmosaic
 from . import plotpwv
 from . import plotweather
-from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 
 LOG = infrastructure.get_logger(__name__)
 DISABLE_PLOTMS = False
@@ -567,7 +566,7 @@ class PlotAntsChart(object):
         self.ms = ms
         self.polarlog = polarlog
         self.figfile = self._get_figfile()
-        self.site = casatools.measures.observatory(ms.antenna_array.name)
+        self.site = casa_tools.measures.observatory(ms.antenna_array.name)
 
     def plot(self):
         if os.path.exists(self.figfile):
@@ -1015,10 +1014,10 @@ def get_intent_subscan_time_ranges(msname, casa_intent, scanid):
     if not os.path.exists(msname):
         raise ValueError('Could not find: {}'.format(msname))
 
-    qt = casatools.quanta
-    mt = casatools.measures            
+    qt = casa_tools.quanta
+    mt = casa_tools.measures
 
-    with casatools.MSMDReader(msname) as msmd:
+    with casa_tools.MSMDReader(msname) as msmd:
         LOG.info('obtaining subscan start/end time of {} in scan {}'.format(casa_intent, scanid))
         # Define a reference SpW ID that matches a selected scan and intent
         # the first spw tend to be WVR in ALMA. Pick the last one instead.
@@ -1033,7 +1032,7 @@ def get_intent_subscan_time_ranges(msname, casa_intent, scanid):
 
     # obtain time unit and ref from MS.
     # msmd returns raw TIME values but not unit and reference.
-    with casatools.TableReader(msname) as tb:
+    with casa_tools.TableReader(msname) as tb:
         time_colkeywords = tb.getcolkeywords('TIME')
 
     time_unit = time_colkeywords['QuantumUnits'][0]

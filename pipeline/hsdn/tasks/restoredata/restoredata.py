@@ -3,10 +3,10 @@ import os
 import pipeline.h.tasks.restoredata.restoredata as restoredata
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure import task_registry
 from pipeline.hsd.tasks.applycal import applycal
+from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure import task_registry
 from . import ampcal
 from ..importdata import importdata as importdata
 
@@ -55,7 +55,7 @@ class NRORestoreDataResults(restoredata.RestoreDataResults):
                         # k2jy gaincal table
                         k2jytable = _calfrom.gaintable
                         k2jy_factor = {}
-                        with casatools.TableReader(k2jytable) as tb:
+                        with casa_tools.TableReader(k2jytable) as tb:
                             spws = tb.getcol('SPECTRAL_WINDOW_ID')
                             antennas = tb.getcol('ANTENNA1')
                             params = tb.getcol('CPARAM').real

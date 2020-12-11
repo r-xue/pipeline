@@ -3,10 +3,9 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
-import pipeline.infrastructure.api as api
-
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
+import pipeline.infrastructure.api as api
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -82,7 +81,7 @@ class MaskDeviation(object):
         LOG.debug('mssel=%s'%(mssel))
 
         if colname is None:
-            with casatools.TableReader(vis) as mytb:
+            with casa_tools.TableReader(vis) as mytb:
                 colnames = mytb.colnames()
             if 'CORRECTED_DATA' in colnames:
                 colname = 'corrected_data'
@@ -93,7 +92,7 @@ class MaskDeviation(object):
             else:
                 raise RuntimeError('{} doesn\'t have any data column (CORRECTED, FLOAT, DATA)'.format(os.path.basename(vis)))
 
-        with casatools.MSReader(vis) as myms:
+        with casa_tools.MSReader(vis) as myms:
             mssel['baseline'] = '%s&&&'%(antenna)
             myms.msselect(mssel)
             r = myms.getdata([colname, 'flag'])

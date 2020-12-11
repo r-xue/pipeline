@@ -1,11 +1,13 @@
 """Set of heuristics for data grouping."""
-import numpy as np
 from numbers import Real
 from typing import Dict, List, NewType, Sequence, Tuple, Union
 
-import pipeline.infrastructure.casatools as casatools
+import numpy as np
+
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure as infrastructure
+from pipeline.infrastructure import casa_tools
+
 LOG = infrastructure.get_logger(__name__)
 
 Angle = NewType('Angle', Union[float, int, Dict])
@@ -53,7 +55,7 @@ class GroupByPosition2(api.Heuristic):
             for ra and dec ([IDX1, IDX2,...,IDXN]). Length of
             PosGap is (number of groups) - 1.
         """
-        qa = casatools.quanta
+        qa = casa_tools.quanta
         if isinstance(r_combine, dict):
             # r_combine should be quantity
             CombineRadius = qa.convert(r_combine, 'deg')['value']

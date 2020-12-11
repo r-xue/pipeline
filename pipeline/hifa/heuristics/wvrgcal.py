@@ -1,6 +1,7 @@
 import numpy as np
+
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -82,7 +83,7 @@ class WvrgcalHeuristics(object):
 
         # get the median integration time for wvr data associated with
         # science targets, warn if there is a range of values
-        with casatools.TableReader(ms.name) as table:
+        with casa_tools.TableReader(ms.name) as table:
             taql = '''(STATE_ID IN %s AND FIELD_ID IN %s AND
               DATA_DESC_ID in %s)''' % (science_state_ids, science_field_ids, wvr_dd_ids)
             subtable = table.query(taql)
@@ -103,7 +104,7 @@ class WvrgcalHeuristics(object):
         self.science_integration = {}
         science_max_integration = {}
         science_min_integration = {}
-        with casatools.TableReader(ms.name) as table:
+        with casa_tools.TableReader(ms.name) as table:
             for spw in science_spws:
                 dd_id = ms.get_data_description(spw).id
                 taql = '''(STATE_ID IN %s AND FIELD_ID IN %s AND
@@ -145,10 +146,10 @@ class WvrgcalHeuristics(object):
         # add phase calibrator to tie if it's less than 15 degress from target
         tied_phases = []
         for phase in phases:
-            separation = casatools.measures.separation(phase[1], targets[0][1])
+            separation = casa_tools.measures.separation(phase[1], targets[0][1])
             LOG.info('Calibrator: %s distance from target: %s%s'
                      '' % (phase[0], separation['value'], separation['unit']))
-            if casatools.quanta.le(separation, '15deg'):
+            if casa_tools.quanta.le(separation, '15deg'):
                 tied_phases.append(phase[0])
         LOG.info('phase calibrators tied to target: %s' % tied_phases)
 
@@ -202,15 +203,14 @@ class WvrgcalHeuristics(object):
 
     def toffset(self):
         ms = self.context.observing_run.get_ms(name=self.vis)
-        start_time = casatools.quanta.quantity(
-          ms.start_time['m0']['value'], ms.start_time['m0']['unit'])
+        start_time = casa_tools.quanta.quantity(ms.start_time['m0']['value'], ms.start_time['m0']['unit'])
 
-        cut = casatools.quanta.quantity(56313, 'd')
-        if casatools.quanta.gt(start_time, cut):
-            LOG.info('MS taken after %s: toffset = 0' % casatools.quanta.time(cut, form=['fits']))
+        cut = casa_tools.quanta.quantity(56313, 'd')
+        if casa_tools.quanta.gt(start_time, cut):
+            LOG.info('MS taken after %s: toffset = 0' % casa_tools.quanta.time(cut, form=['fits']))
             return 0
         else:
-            LOG.info('MS taken before %s: toffset = -1' % casatools.quanta.time(cut, form=['fits']))
+            LOG.info('MS taken before %s: toffset = -1' % casa_tools.quanta.time(cut, form=['fits']))
             return -1
 
     def wvr_available(self):

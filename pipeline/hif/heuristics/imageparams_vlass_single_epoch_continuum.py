@@ -1,8 +1,9 @@
-import numpy
 import re
 
-import pipeline.infrastructure.casatools as casatools
+import numpy
+
 import pipeline.infrastructure as infrastructure
+from pipeline.infrastructure import casa_tools
 from .imageparams_base import ImageParamsHeuristics
 
 LOG = infrastructure.get_logger(__name__)
@@ -96,9 +97,9 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         # Created STM 2016-May-16 use center direction measure
         # Returns list of fields from msfile within a rectangular box of size distance
 
-        qa = casatools.quanta
-        me = casatools.measures
-        tb = casatools.table
+        qa = casa_tools.quanta
+        me = casa_tools.measures
+        tb = casa_tools.table
 
         msfile = self.vislist[0]
 

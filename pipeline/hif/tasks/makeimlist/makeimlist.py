@@ -5,10 +5,10 @@ import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hif.heuristics import imageparams_factory
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from .cleantarget import CleanTarget
 from .resultobjects import MakeImListResult
@@ -215,7 +215,7 @@ class MakeImList(basetask.StandardTaskTemplate):
         else:
             known_synthesized_beams = inputs.context.synthesized_beams
 
-        qaTool = casatools.quanta
+        qaTool = casa_tools.quanta
 
         result = MakeImListResult()
         result.clearlist = inputs.clearlist

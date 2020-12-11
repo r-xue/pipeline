@@ -4,9 +4,9 @@ import os
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.casa_tasks as casa_tasks
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -164,7 +164,7 @@ class semifinalphaseGainPerAntennaChart(object):
 
         times = []
         for bandname, bpdgain_touse in self.result.bpdgain_touse.items():
-            with casatools.TableReader(bpdgain_touse) as tb:
+            with casa_tools.TableReader(bpdgain_touse) as tb:
                 times.extend(tb.getcol('TIME'))
         mintime = np.min(times)
         maxtime = np.max(times)
@@ -251,7 +251,7 @@ class semifinalbpSolAmpPerAntennaChart(object):
 
         for bandname, bpcaltablename in self.result.bpcaltable.items():
 
-            with casatools.TableReader(self.result.bpcaltable[bandname]) as tb:
+            with casa_tools.TableReader(self.result.bpcaltable[bandname]) as tb:
                 dataVarCol = tb.getvarcol('CPARAM')
                 flagVarCol = tb.getvarcol('FLAG')
 
@@ -351,7 +351,7 @@ class semifinalbpSolPhasePerAntennaChart(object):
 
         for bandname, bpcaltablename in self.result.bpcaltable.items():
 
-            with casatools.TableReader(self.result.bpcaltable[bandname]) as tb:
+            with casa_tools.TableReader(self.result.bpcaltable[bandname]) as tb:
                 dataVarCol = tb.getvarcol('CPARAM')
                 flagVarCol = tb.getvarcol('FLAG')
 

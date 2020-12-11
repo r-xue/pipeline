@@ -1,11 +1,8 @@
 import collections
-from math import sqrt
 
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
-import pipeline.infrastructure.utils as utils
-import pipeline.infrastructure.renderer.logger as logger
-import pipeline.infrastructure.casatools as casatools
+from pipeline.infrastructure import casa_tools
 
 LOG = logging.get_logger(__name__)
 
@@ -31,7 +28,7 @@ class T2_4MDetailsCheckProductSizeRenderer(basetemplates.T2_4MDetailsDefaultRend
 
     def _get_table_rows(self, context, result):
 
-        cqa = casatools.quanta
+        cqa = casa_tools.quanta
 
         rows = []
 

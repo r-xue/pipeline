@@ -68,10 +68,10 @@ import string
 from casatasks.private import flaghelper
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.flagging import flagdeterbase
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 
 # ------------------------------------------------------------------------------
@@ -583,7 +583,7 @@ class FlagDeterVLA(flagdeterbase.FlagDeterBase):
 
         # Determination of baseband taken from original EVLA scripted pipeline
         # -----MS info script part
-        with casatools.TableReader(inputs.vis+'/SPECTRAL_WINDOW') as table:
+        with casa_tools.TableReader(inputs.vis + '/SPECTRAL_WINDOW') as table:
             reference_frequencies = table.getcol('REF_FREQUENCY')  # spwobj.ref_frequency
             spw_bandwidths = table.getcol('TOTAL_BANDWIDTH')  # spwobj.bandwidth
             originalBBClist = table.getcol('BBC_NO')  # spwobj.baseband
@@ -624,7 +624,7 @@ class FlagDeterVLA(flagdeterbase.FlagDeterBase):
                 low_spws.append(spwList[ii][0])
                 high_spws.append(spwList[ii][len(spwList[ii])-1])
 
-        quanta = casatools.quanta
+        quanta = casa_tools.quanta
         bandedge_hz = quanta.getvalue(quanta.convert('20MHz', 'Hz'))
         topSPW_list = []
         bottomSPW_list = []

@@ -56,7 +56,7 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.qaadapter as qaadapter
 import pipeline.infrastructure.utils as utils
 from pipeline import environment
-from pipeline.infrastructure import casatools
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.pipelineqa import QAScore
 
 LOG = logging.get_logger(__name__)
@@ -637,7 +637,7 @@ def xml_for_sensitivity(d):
     :return: XML element
     :rtype: xml.etree.cElementTree.Element
     """
-    qa = casatools.quanta
+    qa = casa_tools.quanta
 
     def value(quanta):
         return str(qa.getvalue(quanta)[0])
