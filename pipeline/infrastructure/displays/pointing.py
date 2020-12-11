@@ -419,19 +419,23 @@ def RADEClabel(span: float,
 class MapAxesManagerBase(object):
     @property
     def direction_reference(self) -> str:
+        """Get direction reference."""
         return self._direction_reference
 
     @direction_reference.setter
     def direction_reference(self, value: str) -> None:
+        """Set direction reference."""
         if isinstance(value, str):
             self._direction_reference = value
 
     @property
     def ofs_coord(self) -> bool:
+        """Get bool if the class is OFS coordinate."""
         return self._ofs_coord
 
     @ofs_coord.setter
     def ofs_coord(self, value: bool) -> None:
+        """Set bool if the class is OFS coordinate."""
         if isinstance(value, bool):
             self._ofs_coord = value
 
@@ -467,19 +471,23 @@ class PointingAxesManager(MapAxesManagerBase):
 
     @property
     def direction_reference(self) -> str:
+        """Get direction reference."""
         return self._direction_reference
 
     @direction_reference.setter
     def direction_reference(self, value: str) -> None:
+        """Set direction reference."""
         if isinstance(value, str):
             self._direction_reference = value
 
     @property
     def ofs_coord(self) -> bool:
+        """Get bool if the class is OFS coordinate."""
         return self._ofs_coord
 
     @ofs_coord.setter
     def ofs_coord(self, value: bool):
+        """Set bool if the class is OFS coordinate."""
         if isinstance(value, bool):
             self._ofs_coord = value
 
