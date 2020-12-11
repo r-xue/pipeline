@@ -1,11 +1,12 @@
 import os
+
 import numpy
-import pipeline.infrastructure.api as api
-import pipeline.infrastructure.casatools as casatools
+
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.api as api
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
-
 
 
 class MedianSNRNoAdapter(api.Heuristic):
@@ -27,7 +28,7 @@ class MedianSNRNoAdapter(api.Heuristic):
         spw = caltable.job.kw['spw']
 
         cal_desc = os.path.join(filename, 'CAL_DESC')        
-        with casatools.TableReader(cal_desc) as table:
+        with casa_tools.TableReader(cal_desc) as table:
             caldesc_2_spw = table.getcol('SPECTRAL_WINDOW_ID')[0]
             caldesc_id = numpy.arange(len(caldesc_2_spw))[caldesc_2_spw==int(spw)][0]
 
@@ -35,7 +36,7 @@ class MedianSNRNoAdapter(api.Heuristic):
         # cal_flag arrays is to correct for the fact that the calibration
         # table arrays all have the number of channels of the largest spw.
         # This should change in the future.
-        with casatools.TableReader(filename) as table:
+        with casa_tools.TableReader(filename) as table:
             taql = 'CAL_DESC_ID=={0}'.format(caldesc_id)
             subtable = table.query(query=taql)
             snr = subtable.getcol('SNR')
@@ -47,4 +48,3 @@ class MedianSNRNoAdapter(api.Heuristic):
             return numpy.median(valid_snr)
         else:
             return 0
-

@@ -5,8 +5,7 @@ import re
 import operator
 import os
 
-import matplotlib
-import matplotlib.pyplot as pyplot
+import matplotlib.dates
 import numpy
 
 import cachetools
@@ -14,10 +13,10 @@ import cachetools
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.callibrary as callibrary
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.renderer.logger as logger
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -177,16 +176,8 @@ class PlotmsCalLeaf(object):
             self._title += ' ant {}'.format(', '.join(ant.split(',')))
 
     def plot(self):
-        try:
-            plots = [self._get_plot_wrapper()]
-            return [p for p in plots if p is not None]
-        finally:
-            pass
-            # NOT applicable for plotms
-            # plotcal with time as x axis seems to leave matplotlib
-            # in an open state. Work around this by closing pyplot
-            # after each call.
-            # pyplot.close()
+        plots = [self._get_plot_wrapper()]
+        return [p for p in plots if p is not None]
 
     def _get_figfile(self):
         fileparts = {
@@ -297,7 +288,7 @@ class PlotbandpassLeaf(object):
         root, ext = os.path.splitext(self._figfile)
         # if spw is '', the spw component will be set to the first spw 
         if spw == '':
-            with casatools.TableReader(calapp.gaintable) as tb:
+            with casa_tools.TableReader(calapp.gaintable) as tb:
                 caltable_spws = set(tb.getcol('SPECTRAL_WINDOW_ID'))
             spw = min(caltable_spws)
 
@@ -429,7 +420,7 @@ class SpwComposite(LeafComposite):
 
     def __init__(self, context, result, calapp, xaxis, yaxis, ant='', pol='',
                  **kwargs):
-        with casatools.TableReader(calapp.gaintable) as tb:
+        with casa_tools.TableReader(calapp.gaintable) as tb:
             table_spws = set(tb.getcol('SPECTRAL_WINDOW_ID'))
 
         caltable_spws = [int(spw) for spw in table_spws]
@@ -448,7 +439,7 @@ class SpwAntComposite(LeafComposite):
 
     def __init__(self, context, result, calapp, xaxis, yaxis, pol='', ysamescale=False, **kwargs):
         # Identify spws in caltable.
-        with casatools.TableReader(calapp.gaintable) as tb:
+        with casa_tools.TableReader(calapp.gaintable) as tb:
             table_spws = set(tb.getcol('SPECTRAL_WINDOW_ID'))
         caltable_spws = [int(spw) for spw in table_spws]
 
@@ -488,7 +479,7 @@ class AntComposite(LeafComposite):
 
     def __init__(self, context, result, calapp, xaxis, yaxis, spw='', pol='',
                  **kwargs):
-        with casatools.TableReader(calapp.gaintable) as tb:
+        with casa_tools.TableReader(calapp.gaintable) as tb:
             table_ants = set(tb.getcol('ANTENNA1'))
 
         caltable_antennas = [int(ant) for ant in table_ants]
@@ -505,7 +496,7 @@ class AntSpwComposite(LeafComposite):
     leaf_class = None
 
     def __init__(self, context, result, calapp, xaxis, yaxis, pol='', **kwargs):
-        with casatools.TableReader(calapp.gaintable) as tb:
+        with casa_tools.TableReader(calapp.gaintable) as tb:
             table_ants = set(tb.getcol('ANTENNA1'))
 
         caltable_antennas = [int(ant) for ant in table_ants]
@@ -522,7 +513,7 @@ class SpwPolComposite(LeafComposite):
     leaf_class = None
 
     def __init__(self, context, result, calapp, xaxis, yaxis, ant='', **kwargs):
-        with casatools.TableReader(calapp.gaintable) as tb:
+        with casa_tools.TableReader(calapp.gaintable) as tb:
             table_spws = set(tb.getcol('SPECTRAL_WINDOW_ID'))
 
         caltable_spws = [int(spw) for spw in table_spws]
@@ -539,7 +530,7 @@ class AntSpwPolComposite(LeafComposite):
     leaf_class = None
 
     def __init__(self, context, result, calapp, xaxis, yaxis, **kwargs):
-        with casatools.TableReader(calapp.gaintable) as tb:
+        with casa_tools.TableReader(calapp.gaintable) as tb:
             table_ants = set(tb.getcol('ANTENNA1'))
 
         caltable_antennas = [int(ant) for ant in table_ants]
@@ -593,7 +584,7 @@ class CaltableWrapperFactory(object):
     @staticmethod
     def from_caltable(filename, gaincalamp=False):
         LOG.trace('CaltableWrapperFactory.from_caltable(%r)', filename)
-        with casatools.TableReader(filename) as tb:
+        with casa_tools.TableReader(filename) as tb:
             viscal = tb.getkeyword('VisCal')
             caltype = callibrary.CalFrom.get_caltype_for_viscal(viscal)
         if caltype == 'gaincal':
@@ -608,7 +599,7 @@ class CaltableWrapperFactory(object):
 
     @staticmethod
     def create_gaincal_wrapper(path, gaincalamp=False):
-        with casatools.TableReader(path) as tb:
+        with casa_tools.TableReader(path) as tb:
             time_mjd = tb.getcol('TIME')
             antenna1 = tb.getcol('ANTENNA1')
             spw = tb.getcol('SPECTRAL_WINDOW_ID')
@@ -631,7 +622,7 @@ class CaltableWrapperFactory(object):
 
     @staticmethod
     def create_param_wrapper(path, param):
-        with casatools.TableReader(path) as tb:
+        with casa_tools.TableReader(path) as tb:
             time_mjd = tb.getcol('TIME')
             antenna1 = tb.getcol('ANTENNA1')
             spw = tb.getcol('SPECTRAL_WINDOW_ID')

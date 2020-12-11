@@ -1,11 +1,12 @@
 import math
+
 import numpy as np
 import scipy.special as scipy
 
 from casatasks.private import solar_system_setjy as ss_setjy
 
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure as infrastructure
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -23,9 +24,9 @@ def antenna(ms, refsource, refant, peak_frac=0.7):
 
     # Get the observing time
     #     Make sure it is in MJD
-    obs_time = casatools.quanta.quantity(
+    obs_time = casa_tools.quanta.quantity(
       '%s%s' % (ms.start_time['m0']['value'], ms.start_time['m0']['unit']))
-    obs_time = casatools.quanta.convert(obs_time, 'd')
+    obs_time = casa_tools.quanta.convert(obs_time, 'd')
 
     # Determine the reference calibrator size
     try:
@@ -43,7 +44,7 @@ def antenna(ms, refsource, refant, peak_frac=0.7):
         rtn = ss_setjy.solar_system_setjy().solar_system_fd(
           source_name=name, MJDs=[obs_time['value']],
           frequencies=[[1.e9, 1.1e9]], observatory='ALMA',
-          casalog=casatools.casalog)
+          casalog=casa_tools.casalog)
         calibrator_size = max(rtn[3][0][:2])
     except:
         calibrator_size = None

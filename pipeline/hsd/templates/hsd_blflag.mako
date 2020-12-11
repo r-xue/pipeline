@@ -41,7 +41,8 @@ def make_detailed_table(result, stage_dir, fieldname):
            cell_elems = [asdm_name, spw, ant_name, pol, nrows, flags[0]]
            for nflg in flags:
                cell_elems.append(get_fraction(nflg, nrows))
-           htext = '<a class="replace-pre" href="%s">details</a>' % (os.path.join(rel_path, html_name),)
+#            htext = '<a class="replace-pre" href="%s">details</a>' % (os.path.join(rel_path, html_name),)
+           htext = '<a href="%s">details</a>' % (os.path.join(rel_path, html_name),)
            cell_elems.append(htext)
            if dovirtual:
                cell_elems.insert(1, vspw)

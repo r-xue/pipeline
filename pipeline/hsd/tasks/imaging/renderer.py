@@ -1,17 +1,15 @@
-import os
 import collections
+import os
 
-import pipeline.infrastructure.renderer.basetemplates as basetemplates
-import pipeline.infrastructure.casatools as casatools
-import pipeline.infrastructure.logging as logging
-import pipeline.infrastructure.utils as utils
 import pipeline.domain.measures as measures
 import pipeline.infrastructure.filenamer as filenamer
-
-from ..common import utils as sdutils
-
+import pipeline.infrastructure.logging as logging
+import pipeline.infrastructure.renderer.basetemplates as basetemplates
+import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure import casa_tools
 from . import resultobjects
 from . import display
+from ..common import utils as sdutils
 
 LOG = logging.get_logger(__name__)
 
@@ -33,7 +31,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
             'dovirtual': dovirtual
         })
 
-        cqa = casatools.quanta
+        cqa = casa_tools.quanta
         plots = []
         image_rms = []
         for r in results:

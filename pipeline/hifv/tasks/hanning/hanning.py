@@ -5,7 +5,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tasks
-import pipeline.infrastructure.casatools as casatools
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 
 LOG = infrastructure.get_logger(__name__)
@@ -139,7 +139,7 @@ class Hanning(basetask.StandardTaskTemplate):
             False if sdm_num_bin > 1; True otherwise
         """
 
-        with casatools.TableReader(self.inputs.vis + '/SPECTRAL_WINDOW') as table:
+        with casa_tools.TableReader(self.inputs.vis + '/SPECTRAL_WINDOW') as table:
             # effective_bw = table.getvarcol('EFFECTIVE_BW')
             # resolution = table.getvarcol('RESOLUTION')
             try:

@@ -5,12 +5,11 @@ import operator
 import os
 from typing import Optional
 
-import numpy
-import pylab
+import numpy as np
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure import casa_tools
 from . import measures
 from . import spectralwindow
 
@@ -156,8 +155,8 @@ class MeasurementSet(object):
             return None
 
     def get_representative_source_spw(self, source_name=None, source_spwid=None):
-        qa = casatools.quanta
-        cme = casatools.measures
+        qa = casa_tools.quanta
+        cme = casa_tools.measures
 
         # Get the representative target source object
         #   Use user name if source_name is supplied by user and it has TARGET intent.
@@ -320,7 +319,7 @@ class MeasurementSet(object):
                     (self.basename))
 
                 # Now find the closest match to the center frequency
-                max_freqdiff = numpy.finfo('d').max
+                max_freqdiff = np.finfo('d').max
                 for spw in target_spws:
                     freqdiff = abs(float(spw.centre_frequency.value) - target_frequency_topo['m0']['value'])
                     if freqdiff < max_freqdiff:
@@ -516,18 +515,18 @@ class MeasurementSet(object):
 
         vis = self.name
 
-        # with casatools.TableReader(vis + '/FIELD') as table:
+        # with casa_tools.TableReader(vis + '/FIELD') as table:
         #     numFields = table.nrows()
         #     field_positions = table.getcol('PHASE_DIR')
         #     field_ids = range(numFields)
         #     field_names = table.getcol('NAME')
 
-        # with casatools.TableReader(vis) as table:
-        #     scanNums = sorted(numpy.unique(table.getcol('SCAN_NUMBER')))
+        # with casa_tools.TableReader(vis) as table:
+        #     scanNums = sorted(np.unique(table.getcol('SCAN_NUMBER')))
         #     field_scans = []
         #     for ii in range(0,numFields):
         #         subtable = table.query('FIELD_ID==%s'%ii)
-        #         field_scans.append(list(numpy.unique(subtable.getcol('SCAN_NUMBER'))))
+        #         field_scans.append(list(np.unique(subtable.getcol('SCAN_NUMBER'))))
         #         subtable.close()
 
         # field_scans is now a list of lists containing the scans for each field.
@@ -540,14 +539,12 @@ class MeasurementSet(object):
 
         # Identify intents
 
-        with casatools.TableReader(vis + '/STATE') as table:
-            # casatools.table.open(vis+'/STATE')
+        with casa_tools.TableReader(vis + '/STATE') as table:
             intents = table.getcol('OBS_MODE')
-            # casatools.table.close()
 
         """Figure out integration time used"""
 
-        with casatools.MSReader(vis) as ms:
+        with casa_tools.MSReader(vis) as ms:
             scan_summary = ms.getscansummary()
             # ms_summary = ms.summary()
         # startdate=float(ms_summary['BeginTime'])
@@ -564,7 +561,7 @@ class MeasurementSet(object):
             integration_times.append(scan_summary[str(ii)]['0']['IntegrationTime'])
 
         maximum_integration_time = max(integration_times)
-        median_integration_time = numpy.median(integration_times)
+        median_integration_time = np.median(integration_times)
 
         int_time = maximum_integration_time
 
@@ -587,7 +584,7 @@ class MeasurementSet(object):
                        'PFlinear', 'Pangle']
 
         # From Steve Myers buildscans function
-        with casatools.TableReader(vis + '/DATA_DESCRIPTION') as table:
+        with casa_tools.TableReader(vis + '/DATA_DESCRIPTION') as table:
             # tb.open(msfile+"/DATA_DESCRIPTION")
             ddspwarr = table.getcol("SPECTRAL_WINDOW_ID")
             ddpolarr = table.getcol("POLARIZATION_ID")
@@ -596,7 +593,7 @@ class MeasurementSet(object):
         ddpollist = ddpolarr.tolist()
         ndd = len(ddspwlist)
 
-        with casatools.TableReader(vis + '/SPECTRAL_WINDOW') as table:
+        with casa_tools.TableReader(vis + '/SPECTRAL_WINDOW') as table:
             # tb.open(msfile+"/SPECTRAL_WINDOW")
             nchanarr = table.getcol("NUM_CHAN")
             spwnamearr = table.getcol("NAME")
@@ -610,7 +607,7 @@ class MeasurementSet(object):
             spwlookup[isp]['name'] = str(spwnamearr[isp])
             spwlookup[isp]['reffreq'] = reffreqarr[isp]
 
-        with casatools.TableReader(vis + '/POLARIZATION') as table:
+        with casa_tools.TableReader(vis + '/POLARIZATION') as table:
             # tb.open(msfile+"/POLARIZATION")
             ncorarr = table.getcol("NUM_CORR")
             npols = len(ncorarr)
@@ -713,13 +710,13 @@ class MeasurementSet(object):
         vis = self.name
 
         # get observed DDIDs for specified field from MAIN
-        with casatools.TableReader(vis) as table:
+        with casa_tools.TableReader(vis) as table:
             st = table.query('FIELD_ID=='+str(field))
-            ddids = pylab.unique(st.getcol('DATA_DESC_ID'))
+            ddids = np.unique(st.getcol('DATA_DESC_ID'))
             st.close()
 
         # get SPW_IDs corresponding to those DDIDs
-        with casatools.TableReader(vis+'/DATA_DESCRIPTION') as table:
+        with casa_tools.TableReader(vis+'/DATA_DESCRIPTION') as table:
             spws = table.getcol('SPECTRAL_WINDOW_ID')[ddids]
 
         # return as a list
@@ -730,7 +727,7 @@ class MeasurementSet(object):
 
         vis = self.name
 
-        with casatools.TableReader(vis+'/FIELD') as table:
+        with casa_tools.TableReader(vis+'/FIELD') as table:
             numFields = table.nrows()
             field_ids = list(range(numFields))
 
@@ -741,7 +738,7 @@ class MeasurementSet(object):
 
         vis = self.name
 
-        with casatools.TableReader(vis+'/FIELD') as table:
+        with casa_tools.TableReader(vis+'/FIELD') as table:
             field_names = table.getcol('NAME')
 
         return field_names
@@ -751,7 +748,7 @@ class MeasurementSet(object):
 
         vis = self.name
 
-        # with casatools.TableReader(vis+'/FIELD') as table:
+        # with casa_tools.TableReader(vis+'/FIELD') as table:
         #     numFields = table.nrows()
 
         # Map field IDs to spws
@@ -761,7 +758,7 @@ class MeasurementSet(object):
 
         spwlistint = [int(spw) for spw in spwlist]
 
-        with casatools.MSMDReader(vis) as msmd:
+        with casa_tools.MSMDReader(vis) as msmd:
             spwsforfieldsall = msmd.spwsforfields()
 
             if spwlist != []:
@@ -784,7 +781,7 @@ class MeasurementSet(object):
 
         vis = self.name
 
-        with casatools.TableReader(vis+'/SPECTRAL_WINDOW') as table:
+        with casa_tools.TableReader(vis+'/SPECTRAL_WINDOW') as table:
             channels = table.getcol('NUM_CHAN')
 
         return channels
@@ -795,7 +792,7 @@ class MeasurementSet(object):
         vis = self.name
         tst_delay_spw = ''
 
-        with casatools.TableReader(vis+'/SPECTRAL_WINDOW') as table:
+        with casa_tools.TableReader(vis+'/SPECTRAL_WINDOW') as table:
             channels = table.getcol('NUM_CHAN')
 
         numSpws = len(channels)
@@ -823,7 +820,7 @@ class MeasurementSet(object):
         vis = self.name
         tst_delay_spw = ''
 
-        with casatools.TableReader(vis+'/SPECTRAL_WINDOW') as table:
+        with casa_tools.TableReader(vis+'/SPECTRAL_WINDOW') as table:
             channels = table.getcol('NUM_CHAN')
 
         numSpws = len(channels)
@@ -847,7 +844,7 @@ class MeasurementSet(object):
         """Find VLA scans for quacking.  Quack! :)"""
 
         vis = self.name
-        with casatools.MSReader(vis) as ms:
+        with casa_tools.MSReader(vis) as ms:
             scan_summary = ms.getscansummary()
 
         integ_scan_list = []
@@ -877,7 +874,7 @@ class MeasurementSet(object):
 
         vis = self.name
 
-        with casatools.TableReader(vis+'/SPECTRAL_WINDOW') as table:
+        with casa_tools.TableReader(vis+'/SPECTRAL_WINDOW') as table:
             spw_names = table.getcol('NAME')
 
         # If the dataset is too old to have the bandname in it, assume that
@@ -966,11 +963,11 @@ class MeasurementSet(object):
         if not state_ids:
             state_ids = [-1] 
 
-        with casatools.TableReader(self.name) as table:
+        with casa_tools.TableReader(self.name) as table:
             taql = '(STATE_ID IN %s AND FIELD_ID IN %s)' % (state_ids, field_ids)
             with contextlib.closing(table.query(taql)) as subtable:
                 integration = subtable.getcol('INTERVAL')          
-            return numpy.median(integration)
+            return np.median(integration)
 
     def get_median_science_integration_time(self, intent=None, spw=None):
         """Get the median integration time for science targets used to get data for the given
@@ -1021,11 +1018,11 @@ class MeasurementSet(object):
 
         science_spw_dd_ids = [self.get_data_description(spw).id for spw in science_spws]
 
-        with casatools.TableReader(self.name) as table:
+        with casa_tools.TableReader(self.name) as table:
             taql = '(STATE_ID IN %s AND FIELD_ID IN %s AND DATA_DESC_ID in %s)' % (science_state_ids, science_field_ids, science_spw_dd_ids)
             with contextlib.closing(table.query(taql)) as subtable:
                 integration = subtable.getcol('INTERVAL')          
-            return numpy.median(integration)
+            return np.median(integration)
 
     @property
     def reference_antenna(self):

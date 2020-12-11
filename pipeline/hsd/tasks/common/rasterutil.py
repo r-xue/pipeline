@@ -3,17 +3,17 @@ import collections
 import glob
 import itertools
 import math
-from matplotlib.animation import FuncAnimation, ImageMagickWriter
-import matplotlib.pyplot as plt
-import numpy as np
-from operator import sub
 import os
 import sys
+from operator import sub
+
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.animation import FuncAnimation, ImageMagickWriter
 
 import pipeline.domain.datatable as datatable
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.logging as logging
-
+from pipeline.infrastructure import casa_tools
 
 LOG = logging.get_logger(__name__)
 
@@ -98,7 +98,7 @@ def from_context(context_dir):
     rotable = glob.glob(f'{datatable_dir}/*.ms/RO')[0]
     rwtable = glob.glob(f'{datatable_dir}/*.ms/RW')[0]
 
-    tb = casatools.table
+    tb = casa_tools.table
 
     tb.open(rotable)
     try:
