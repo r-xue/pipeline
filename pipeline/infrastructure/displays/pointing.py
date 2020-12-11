@@ -334,21 +334,21 @@ def GLGBlabel(span: float)
         GBlocator = AutoLocator()
 
     if span < 0.0001:
-        GLformatter=FuncFormatter(DDMMSSss)
-        GBformatter=FuncFormatter(DDMMSSss)
+        GLformatter = FuncFormatter(DDMMSSss)
+        GBformatter = FuncFormatter(DDMMSSss)
     elif span < 0.001:
-        GLformatter=FuncFormatter(DDMMSSs)
-        GBformatter=FuncFormatter(DDMMSSs)
+        GLformatter = FuncFormatter(DDMMSSs)
+        GBformatter = FuncFormatter(DDMMSSs)
     elif span < 0.01:
-        GLformatter=FuncFormatter(DDMMSS)
-        GBformatter=FuncFormatter(DDMMSS)
+        GLformatter = FuncFormatter(DDMMSS)
+        GBformatter = FuncFormatter(DDMMSS)
     elif span < 1.0:
-        GLformatter=FuncFormatter(DDMMSS)
+        GLformatter = FuncFormatter(DDMMSS)
         #GBformatter=FuncFormatter(DDMM)
-        GBformatter=FuncFormatter(DDMMSS)
+        GBformatter = FuncFormatter(DDMMSS)
     else:
-        GLformatter=FuncFormatter(DDMM)
-        GBformatter=FuncFormatter(DDMM)
+        GLformatter = FuncFormatter(DDMM)
+        GBformatter = FuncFormatter(DDMM)
 
     return (GLlocator, GBlocator, GLformatter, GBformatter)
 
@@ -383,35 +383,35 @@ def RADEClabel(span: float,
 
     if span < 0.0001:
         if ofs_coord:
-            RAformatter=FuncFormatter(DDMMSSss)
+            RAformatter = FuncFormatter(DDMMSSss)
         else:
-            RAformatter=FuncFormatter(HHMMSSsss)
-        DECformatter=FuncFormatter(DDMMSSss)
+            RAformatter = FuncFormatter(HHMMSSsss)
+        DECformatter = FuncFormatter(DDMMSSss)
     elif span < 0.001:
         if ofs_coord:
-            RAformatter=FuncFormatter(DDMMSSs)
+            RAformatter = FuncFormatter(DDMMSSs)
         else:
-            RAformatter=FuncFormatter(HHMMSSss)
-        DECformatter=FuncFormatter(DDMMSSs)
+            RAformatter = FuncFormatter(HHMMSSss)
+        DECformatter = FuncFormatter(DDMMSSs)
     elif span < 0.01:
         if ofs_coord:
-            RAformatter=FuncFormatter(DDMMSS)
+            RAformatter = FuncFormatter(DDMMSS)
         else:
-            RAformatter=FuncFormatter(HHMMSSs)
-        DECformatter=FuncFormatter(DDMMSS)
+            RAformatter = FuncFormatter(HHMMSSs)
+        DECformatter = FuncFormatter(DDMMSS)
     elif span < 1.0:
         if ofs_coord:
-            RAformatter=FuncFormatter(DDMMSS)
+            RAformatter = FuncFormatter(DDMMSS)
         else:
-            RAformatter=FuncFormatter(HHMMSS)
+            RAformatter = FuncFormatter(HHMMSS)
         #DECformatter=FuncFormatter(DDMM)
-        DECformatter=FuncFormatter(DDMMSS)
+        DECformatter = FuncFormatter(DDMMSS)
     else:
         if ofs_coord:
-            RAformatter=FuncFormatter(DDMM)
+            RAformatter = FuncFormatter(DDMM)
         else:
-            RAformatter=FuncFormatter(HHMM)
-        DECformatter=FuncFormatter(DDMM)
+            RAformatter = FuncFormatter(HHMM)
+        DECformatter = FuncFormatter(DDMM)
 
     return (RAlocator, DEClocator, RAformatter, DECformatter)
 
