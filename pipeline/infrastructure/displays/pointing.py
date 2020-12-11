@@ -1,7 +1,7 @@
 import math
 import os
 
-import numpy
+import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter, MultipleLocator, AutoLocator
 
@@ -151,7 +151,7 @@ def GLGBlabel(span):
             GBlocator = MultipleLocator(t)
             break
     #if DECt < 0: DEClocator = MultipleLocator(1/72000.0)
-    if t < 0: 
+    if t < 0:
         GLlocator = AutoLocator()
         GBlocator = AutoLocator()
 
@@ -338,7 +338,7 @@ class PointingAxesManager(MapAxesManagerBase):
 
 
 def draw_beam(axes, r, aspect, x_base, y_base, offset=1.0):
-    xy = numpy.array([[r * (math.sin(t * 0.13) + offset) * aspect + x_base,
+    xy = np.array([[r * (math.sin(t * 0.13) + offset) * aspect + x_base,
                        r * (math.cos(t * 0.13) + offset) + y_base]
                       for t in range(50)])
     plt.gcf().sca(axes)
@@ -387,7 +387,7 @@ def draw_pointing(axes_manager, RA, DEC, FLAG=None, plotfile=None, connect=True,
             plt.plot(RA[filter], DEC[filter], Mark, markersize=2, markeredgecolor='b', markerfacecolor='b')
             )
     elif plotpolicy == 'greyed':
-        # Change Color 
+        # Change Color
         if connect is True:
             plot_objects.extend(plt.plot(RA, DEC, 'g-'))
         filter = FLAG == 1
@@ -395,11 +395,11 @@ def draw_pointing(axes_manager, RA, DEC, FLAG=None, plotfile=None, connect=True,
             plt.plot(RA[filter], DEC[filter], 'o', markersize=2, markeredgecolor='b', markerfacecolor='b')
             )
         filter = FLAG == 0
-        if numpy.any(filter == True):
+        if np.any(filter == True):
             plot_objects.extend(
                 plt.plot(RA[filter], DEC[filter], 'o', markersize=2, markeredgecolor='grey', markerfacecolor='grey')
                 )
-    # plot starting position with beam and end position 
+    # plot starting position with beam and end position
     if len(circle) != 0:
         plot_objects.append(
                 draw_beam(a, circle[0], Aspect, RA[0], DEC[0], offset=0.0)
@@ -423,7 +423,7 @@ class SingleDishPointingChart(object):
         self.ms = ms
         self.antenna = antenna
         self.target_field = self.__get_field(target_field_id)
-        self.reference_field = self.__get_field(reference_field_id) 
+        self.reference_field = self.__get_field(reference_field_id)
         self.target_only = target_only
         self.ofs_coord = ofs_coord
         self.figfile = self._get_figfile()
@@ -476,11 +476,11 @@ class SingleDishPointingChart(object):
             if self.target_only == True:
                 srctypes = datatable.getcol('SRCTYPE')
                 func = lambda j, k, l: j == antenna_id and k == spw_id and l == 0
-                vfunc = numpy.vectorize(func)
+                vfunc = np.vectorize(func)
                 dt_rows = vfunc(antenna_ids, spw_ids, srctypes)
             else:
                 func = lambda j, k: j == antenna_id and k == spw_id
-                vfunc = numpy.vectorize(func)
+                vfunc = np.vectorize(func)
                 dt_rows = vfunc(antenna_ids, spw_ids)
         else:
             field_ids = datatable.getcol('FIELD_ID')
@@ -488,12 +488,12 @@ class SingleDishPointingChart(object):
                 srctypes = datatable.getcol('SRCTYPE')
                 field_id = [self.target_field.id]
                 func = lambda f, j, k, l: f in field_id and j == antenna_id and k == spw_id and l == 0
-                vfunc = numpy.vectorize(func)
+                vfunc = np.vectorize(func)
                 dt_rows = vfunc(field_ids, antenna_ids, spw_ids, srctypes)
             else:
                 field_id = [self.target_field.id, self.reference_field.id]
-                func = lambda f, j, k: f in field_id and j == antenna_id and k == spw_id 
-                vfunc = numpy.vectorize(func)
+                func = lambda f, j, k: f in field_id and j == antenna_id and k == spw_id
+                vfunc = np.vectorize(func)
                 dt_rows = vfunc(field_ids, antenna_ids, spw_ids)
 
         if self.ofs_coord == True:
@@ -513,8 +513,8 @@ class SingleDishPointingChart(object):
             LOG.warn('Skipping pointing plots.')
             return None
         DEC = datatable.getcol(deccol)[dt_rows]
-        FLAG = numpy.zeros(len(RA), dtype=int)
-        rows = numpy.where(dt_rows == True)[0]
+        FLAG = np.zeros(len(RA), dtype=int)
+        rows = np.where(dt_rows == True)[0]
         assert len(RA) == len(rows)
         for (i, row) in enumerate(rows):
             pflags = datatable.getcell('FLAG_PERMANENT', row)
@@ -547,8 +547,8 @@ class SingleDishPointingChart(object):
                 basename = 'target_pointing.%s'%(identifier)
         else:
             basename = 'whole_pointing.%s'%(identifier)
-        figfile = os.path.join(self.context.report_dir, 
-                               'session%s' % session_part, 
+        figfile = os.path.join(self.context.report_dir,
+                               'session%s' % session_part,
                                ms_part,
                                '%s.png'%(basename))
         return figfile
