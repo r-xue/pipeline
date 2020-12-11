@@ -670,8 +670,8 @@ class SingleDishPointingChart(object):
                     context,
                     ms,
                     antenna,
-                    target_field_id: Optional[]=None,
-                    reference_field_id: Optional[]=None,
+                    target_field_id=None,
+                    reference_field_id=None,
                     target_only: bool=True,
                     ofs_coord: bool=False
                 ) -> None:
@@ -697,7 +697,7 @@ class SingleDishPointingChart(object):
         self.figfile = self._get_figfile()
         self.axes_manager = PointingAxesManager()
 
-    def __get_field(self, field_id: Optional[int]) -> Optional[]:
+    def __get_field(self, field_id: Optional[int]):
         if field_id is not None:
             fields = self.ms.get_fields(field_id)
             assert len(fields) == 1
