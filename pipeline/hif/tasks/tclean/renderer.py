@@ -11,14 +11,14 @@ from random import randint
 
 import numpy
 
-import pipeline.infrastructure.casatools as casatools
-from pipeline.infrastructure import casa_tasks
-from . import display
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.renderer.rendererutils as rendererutils
 import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
+from . import display
 
 LOG = logging.get_logger(__name__)
 
@@ -52,7 +52,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         clean_results = makeimages_result.results
 
         weblog_dir = os.path.join(context.report_dir, 'stage%s' % results.stage_number)
-        qaTool = casatools.quanta
+        qaTool = casa_tools.quanta
 
         # Get results info
         image_rows = []
@@ -81,7 +81,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             image_path = r.iterations[maxiter]['image'].replace('.image', '.image%s' % extension)
 
             LOG.info('Getting properties of %s for the weblog' % image_path)
-            with casatools.ImageReader(image_path) as image:
+            with casa_tools.ImageReader(image_path) as image:
                 image_name = str(image.name(strippath=True))
                 info = image.miscinfo()
                 coordsys = image.coordsys()
@@ -140,7 +140,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             #
             try:
                 beam_pa = qaTool.convert(beam['positionangle'], 'deg')
-                row_beam_pa = casatools.quanta.tos(beam_pa, 1)
+                row_beam_pa = casa_tools.quanta.tos(beam_pa, 1)
             except:
                 row_beam_pa = '-'
 
@@ -176,16 +176,17 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     job = casa_tasks.imhead(image_path, mode='get', hdkey='restfreq')
                     restfreq = job.execute(dry_run=False)
                     rest_ghz = qaTool.convert(restfreq, 'GHz')
-                    row_frequency = '%s / %s (LSRK)' % (casatools.quanta.tos(centre_ghz, 4), casatools.quanta.tos(rest_ghz, 4))
+                    row_frequency = '%s / %s (LSRK)' % (casa_tools.quanta.tos(centre_ghz, 4),
+                                                        casa_tools.quanta.tos(rest_ghz, 4))
                 else:
-                    row_frequency = '%s (LSRK)' % casatools.quanta.tos(centre_ghz, 4)
+                    row_frequency = '%s (LSRK)' % casa_tools.quanta.tos(centre_ghz, 4)
             except:
                 row_frequency = '-'
 
             #
             # residual peak / scaled MAD
             #
-            with casatools.ImageReader(r.iterations[maxiter]['residual'] + extension) as residual:
+            with casa_tools.ImageReader(r.iterations[maxiter]['residual'] + extension) as residual:
                 residual_stats = residual.statistics(robust=True)
 
             residual_robust_rms = residual_stats.get('medabsdevmed')[0] * 1.4826  # see CAS-9631
@@ -239,7 +240,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 row_cleaning_threshold = '-'
             else:
                 if r.threshold:
-                    row_cleaning_threshold = '%.2g %s' % (casatools.quanta.convert(r.threshold, brightness_unit)['value'], brightness_unit)
+                    row_cleaning_threshold = '%.2g %s' % (casa_tools.quanta.convert(r.threshold, brightness_unit)['value'], brightness_unit)
                     if r.dirty_dynamic_range:
                         row_cleaning_threshold += '<br>Dirty DR: %.2g' % r.dirty_dynamic_range
                         row_cleaning_threshold += '<br>DR correction: %.2g' % r.DR_correction_factor
@@ -254,7 +255,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             nsigma_final = r.iterations[maxiter]['imaging_params']['nsigma']
 
             # dirty image statistics (iter 0)
-            with casatools.ImageReader(r.iterations[0]['residual'] + extension) as residual:
+            with casa_tools.ImageReader(r.iterations[0]['residual'] + extension) as residual:
                 initial_residual_stats = residual.statistics(robust=True)
 
             initial_nsigma_mad = nsigma_final * initial_residual_stats.get('medabsdevmed')[0] * 1.4826
@@ -514,7 +515,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         # construct the renderers so we know what the back/forward links will be
         # sort the rows so the links will be in the same order as the rows
-        image_rows.sort(key=lambda row: (row.image_file.split('.')[0], row.field, utils.natural_sort(row.spw), row.pol))
+        image_rows.sort(key=lambda row: (row.image_file.split('.')[0], row.field, utils.natural_sort_key(row.spw), row.pol))
         temp_urls = (None, None, None)
         qa_renderers = [TCleanPlotsRenderer(context, results, row.result, plots_dict, row.image_file.split('.')[0], row.field, str(row.spw), row.pol, temp_urls, row.cube_all_cont)
                         for row in image_rows]
@@ -543,7 +544,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             except:
                 final_rows.append(row)
         # primary sort images by vis, field, secondary sort on spw, then by pol
-        final_rows.sort(key=lambda row: (row.vis, row.field, utils.natural_sort(row.spw), row.pol))
+        final_rows.sort(key=lambda row: (row.vis, row.field, utils.natural_sort_key(row.spw), row.pol))
 
         chk_fit_rows = []
         for row in final_rows:

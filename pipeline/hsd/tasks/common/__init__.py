@@ -1,5 +1,4 @@
 from .common import SingleDishResults
-from .common import SingleDishTask
 from .common import ParameterContainerJob
 
 # utilities
@@ -20,5 +19,4 @@ from .utils import create_serial_job
 # constants 
 NoData = -32767.0
 
-from . import renderer
 from . import rasterutil

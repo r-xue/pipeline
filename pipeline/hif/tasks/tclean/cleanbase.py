@@ -5,13 +5,13 @@ import numpy as np
 import pipeline as pipeline
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.imageheader as imageheader
 from pipeline import environment
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from .resultobjects import TcleanResult
 
 LOG = infrastructure.get_logger(__name__)
@@ -262,8 +262,6 @@ class CleanBase(basetask.StandardTaskTemplate):
 
         context = self.inputs.context
         inputs = self.inputs
-
-        qaTool = casatools.quanta
 
         # Derive names of clean products for this iteration
         old_model_name = result.model
@@ -685,7 +683,7 @@ def rename_image(old_name, new_name, extensions=['']):
     """
     if old_name is not None:
         for extension in extensions:
-            with casatools.ImageReader('%s%s' % (old_name, extension)) as image:
+            with casa_tools.ImageReader('%s%s' % (old_name, extension)) as image:
                 image.rename(name=new_name, overwrite=True)
 
 

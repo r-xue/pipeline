@@ -5,7 +5,7 @@ import os
 
 import cachetools
 import matplotlib
-import matplotlib.pyplot as pyplot
+import matplotlib.pyplot as plt
 import numpy
 
 import pipeline.infrastructure as infrastructure
@@ -54,7 +54,7 @@ class WVRPhaseVsBaselineChart(object):
             return self._antennas[:]
 
         def label_antenna(self, axes):
-            pyplot.title('All Antennas', size=10)
+            plt.title('All Antennas', size=10)
 
         @property
         def antenna_filename_component(self):
@@ -282,8 +282,8 @@ class WVRPhaseVsBaselineChart(object):
 
         # create the figure: 2 rows x 1 column, sharing the X axis (baseline
         # length) 
-        fig, ((ax1, ax2)) = pyplot.subplots(2, 1, sharex=True)
-        pyplot.subplots_adjust(hspace=0.0, bottom=0.16)
+        fig, ((ax1, ax2)) = plt.subplots(2, 1, sharex=True)
+        plt.subplots_adjust(hspace=0.0, bottom=0.16)
 
         ax1.set_yscale('log')
         ax1.tick_params(labelsize=8, left=True, right=False, top=False, bottom=False)
@@ -358,18 +358,18 @@ class WVRPhaseVsBaselineChart(object):
         ax2.set_xlabel(x_axis_title, size=10)
         ax2.set_ylabel('degrees', size=10)
 
-        rax = pyplot.axes([0, 0, 1, 0.1], frame_on=False)
+        rax = plt.axes([0, 0, 1, 0.1], frame_on=False)
         rax.legend(plots, legend, prop={'size': 10}, numpoints=1,
                    loc='lower center', frameon=False, ncol=len(legend))
 
         spw_msg = 'SPW %s Correlation%s' % (spw.id,
                                             utils.commafy(corr_axes, quotes=False, multi_prefix='s'))
-        pyplot.text(0.0, 1.026, spw_msg, color='k',
-                    transform=ax1.transAxes, size=9)
-        pyplot.text(0.5, 1.15, '%s (%s)' % (scan_fields, scan_intents),
-                    color='k', transform=ax1.transAxes, ha='center', size=10)
-        pyplot.text(0.5, 1.026, 'All Antennas', color='k',
-                    transform=ax1.transAxes, ha='center', size=9)
+        plt.text(0.0, 1.026, spw_msg, color='k',
+                 transform=ax1.transAxes, size=9)
+        plt.text(0.5, 1.15, '%s (%s)' % (scan_fields, scan_intents),
+                 color='k', transform=ax1.transAxes, ha='center', size=10)
+        plt.text(0.5, 1.026, 'All Antennas', color='k',
+                 transform=ax1.transAxes, ha='center', size=9)
 
         scan_ids = [str(s.id) for s in scans]
         max_scans_for_msg = 8
@@ -383,19 +383,19 @@ class WVRPhaseVsBaselineChart(object):
         else:
             scan_txt = utils.commafy(scan_ids, multi_prefix='s',
                                      quotes=False, separator=',')
-        pyplot.text(1.0, 1.026, 'Scan%s' % scan_txt, color='k', ha='right',
-                    transform=ax1.transAxes, size=9)
+        plt.text(1.0, 1.026, 'Scan%s' % scan_txt, color='k', ha='right',
+                 transform=ax1.transAxes, size=9)
 
-        pyplot.text(0.012, 0.97, 'Median Absolute Deviation from Median Phase',
-                    color='k', transform=ax2.transAxes, ha='left', va='top',
-                    size=9)
-        pyplot.text(0.012, 0.97, 'Phase RMS without WVR / Phase RMS with WVR',
-                    color='k', transform=ax1.transAxes, ha='left', va='top',
-                    size=9)
+        plt.text(0.012, 0.97, 'Median Absolute Deviation from Median Phase',
+                 color='k', transform=ax2.transAxes, ha='left', va='top',
+                 size=9)
+        plt.text(0.012, 0.97, 'Phase RMS without WVR / Phase RMS with WVR',
+                 color='k', transform=ax1.transAxes, ha='left', va='top',
+                 size=9)
         if self._alt_refant_used:
-            pyplot.text(0.012, 0.89, 'Warning! Use of alternate refant detected; x-axis values may be unreliable',
-                        color='r', transform=ax1.transAxes, ha='left', va='top',
-                        size=9)
+            plt.text(0.012, 0.89, 'Warning! Use of alternate refant detected; x-axis values may be unreliable',
+                     color='r', transform=ax1.transAxes, ha='left', va='top',
+                     size=9)
 
         # We need to draw the canvas, otherwise the labels won't be positioned and
         # won't have values yet.
@@ -404,8 +404,8 @@ class WVRPhaseVsBaselineChart(object):
         ax2.set_yticklabels([t.get_text() for t in ax2.get_yticklabels()[0:-1]])
 
         figfile = self.get_figfile(spw, scans, helper.antenna_filename_component)
-        pyplot.savefig(figfile)
-        pyplot.close()
+        plt.savefig(figfile)
+        plt.close()
 
     def get_figfile(self, spw, scans, antennas):
         vis = os.path.basename(self.result.vis)
@@ -435,7 +435,7 @@ class WVRPhaseVsBaselineChart(object):
                           ' spw %s scan %s' % (spw.id, scan_ids))
                 LOG.exception(ex)
                 # close figure just in case state is transferred between calls
-                matplotlib.pyplot.clf()
+                plt.clf()
                 return None
 
         # the plot may not be created if all data for that antenna are flagged

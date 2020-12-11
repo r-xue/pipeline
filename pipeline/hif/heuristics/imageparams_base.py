@@ -16,12 +16,12 @@ from casatasks.private.imagerhelpers.input_parameters import ImagerParameters
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as pl_casatools
 import pipeline.infrastructure.contfilehandler as contfilehandler
 import pipeline.infrastructure.filenamer as filenamer
+import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.utils as utils
 from pipeline.hif.heuristics import mosaicoverlap
-import pipeline.infrastructure.mpihelpers as mpihelpers
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -89,7 +89,7 @@ class ImageParamsHeuristics(object):
 
         '''Calculate primary beam size in arcsec.'''
 
-        cqa = pl_casatools.quanta
+        cqa = casa_tools.quanta
 
         # get the diameter of the smallest antenna used among all vis sets
         antenna_ids = self.antenna_ids(intent)
@@ -163,8 +163,8 @@ class ImageParamsHeuristics(object):
             line_ranges_GHz = []
             for line_region in line_regions:
                 try:
-                    fLow = pl_casatools.quanta.convert('%s%s' % (line_region[0], line_region[3]), 'GHz')['value']
-                    fHigh = pl_casatools.quanta.convert('%s%s' % (line_region[2], line_region[3]), 'GHz')['value']
+                    fLow = casa_tools.quanta.convert('%s%s' % (line_region[0], line_region[3]), 'GHz')['value']
+                    fHigh = casa_tools.quanta.convert('%s%s' % (line_region[2], line_region[3]), 'GHz')['value']
                     line_ranges_GHz.append((fLow, fHigh))
                 except:
                     pass
@@ -308,14 +308,14 @@ class ImageParamsHeuristics(object):
                          force_calc=False, parallel='automatic', shift=False):
         """Calculate synthesized beam for a given field / spw selection."""
 
-        qaTool = pl_casatools.quanta
+        qaTool = casa_tools.quanta
 
         # Need to work on a local copy of known_beams to avoid setting the
         # method default value inadvertently
         local_known_beams = copy.deepcopy(known_beams)
 
         # reset state of imager
-        pl_casatools.imager.done()
+        casa_tools.imager.done()
 
         # get the spwids in spwspec - imager tool likes these rather than
         # a string
@@ -403,9 +403,9 @@ class ImageParamsHeuristics(object):
 
                             try:
                                 taql = '||'.join(['ANTENNA1==%d' % i for i in antenna_ids[os.path.basename(vis)]])
-                                rtn = pl_casatools.imager.selectvis(vis=vis,
-                                                                 field=field, spw=real_spwid, scan=scanids,
-                                                                 taql=taql, usescratch=False, writeaccess=False)
+                                rtn = casa_tools.imager.selectvis(vis=vis,
+                                                                  field=field, spw=real_spwid, scan=scanids,
+                                                                  taql=taql, usescratch=False, writeaccess=False)
                                 if rtn is True:
                                     # flag to say that imager has some valid data to work
                                     # on
@@ -433,8 +433,8 @@ class ImageParamsHeuristics(object):
 
                     # use imager.advise to get the maximum cell size
                     aipsfieldofview = '%4.1farcsec' % (2.0 * largest_primary_beam_size)
-                    rtn = pl_casatools.imager.advise(takeadvice=False, amplitudeloss=0.5, fieldofview=aipsfieldofview)
-                    pl_casatools.imager.done()
+                    rtn = casa_tools.imager.advise(takeadvice=False, amplitudeloss=0.5, fieldofview=aipsfieldofview)
+                    casa_tools.imager.done()
                     if not rtn[0]:
                         # advise can fail if all selected data are flagged
                         # - not documented but assuming bool in first field of returned
@@ -468,7 +468,7 @@ class ImageParamsHeuristics(object):
                             if nxpix_mosaic <= 2.0 * nxpix_sf and nypix_mosaic <= 2.0 * nypix_sf:
                                 imsize = imsize_mosaic
                             else:
-                                suTool = pl_casatools.synthesisutils
+                                suTool = casa_tools.synthesisutils
                                 nxpix = suTool.getOptimumSize(int(2.0 * nxpix_sf))
                                 nypix = suTool.getOptimumSize(int(2.0 * nypix_sf))
                                 suTool.done()
@@ -512,7 +512,7 @@ class ImageParamsHeuristics(object):
                         makepsf_imager.makePSF()
                         makepsf_imager.deleteTools()
 
-                        with pl_casatools.ImageReader('%s.psf' % (tmp_psf_filename)) as image:
+                        with casa_tools.ImageReader('%s.psf' % (tmp_psf_filename)) as image:
                             # Avoid bad PSFs
                             if all(qaTool.getvalue(qaTool.convert(image.restoringbeam()['minor'], 'arcsec')) > 1e-5):
                                 restoringbeam = image.restoringbeam()
@@ -536,7 +536,7 @@ class ImageParamsHeuristics(object):
                         for tmp_psf_image in tmp_psf_images:
                             shutil.rmtree(tmp_psf_image)
         finally:
-            pl_casatools.imager.done()
+            casa_tools.imager.done()
 
         if makepsf_beams != []:
             # beam that's good for all field/intents
@@ -554,7 +554,7 @@ class ImageParamsHeuristics(object):
 
         """Calculate cell size."""
 
-        cqa = pl_casatools.quanta
+        cqa = casa_tools.quanta
         try:
             cell_size = cqa.getvalue(cqa.convert(beam['minor'], 'arcsec')) / pixperbeam
             return ['%.2garcsec' % (cell_size)]
@@ -603,7 +603,7 @@ class ImageParamsHeuristics(object):
             vislist = self.vislist
 
         # reset state of imager
-        pl_casatools.imager.done()
+        casa_tools.imager.done()
 
         # put code in try-block to ensure that imager.done gets
         # called at the end
@@ -623,14 +623,15 @@ class ImageParamsHeuristics(object):
                         try:
                             antenna_ids = self.antenna_ids(field_intent[1], [os.path.basename(vis)])
                             taql = '||'.join(['ANTENNA1==%d' % i for i in antenna_ids[os.path.basename(vis)]])
-                            rtn = pl_casatools.imager.selectvis(vis=vis, field=field_intent[0],
-                                                             taql=taql, spw=real_spwspec,
-                                                             scan=scanids, usescratch=False, writeaccess=False)
+                            rtn = casa_tools.imager.selectvis(vis=vis, field=field_intent[0],
+                                                              taql=taql, spw=real_spwspec,
+                                                              scan=scanids, usescratch=False, writeaccess=False)
                             if rtn is True:
                                 aipsfieldofview = '%4.1farcsec' % (2.0 * self.largest_primary_beam_size(spwspec, field_intent[1]))
                                 # Need to run advise to check if the current selection is completely flagged
-                                rtn = pl_casatools.imager.advise(takeadvice=False, amplitudeloss=0.5, fieldofview=aipsfieldofview)
-                                pl_casatools.imager.done()
+                                rtn = casa_tools.imager.advise(takeadvice=False, amplitudeloss=0.5,
+                                                               fieldofview=aipsfieldofview)
+                                casa_tools.imager.done()
                                 if rtn[0]:
                                     valid_data[field_intent] = True
                         except:
@@ -641,7 +642,7 @@ class ImageParamsHeuristics(object):
                               (spwspec, field_intent[0]))
 
         finally:
-            pl_casatools.imager.done()
+            casa_tools.imager.done()
 
         return valid_data
 
@@ -664,8 +665,8 @@ class ImageParamsHeuristics(object):
     def phasecenter(self, fields, centreonly=True, vislist=None, shift_to_nearest_field=False,
                     primary_beam=None, intent='TARGET'):
 
-        cme = pl_casatools.measures
-        cqa = pl_casatools.quanta
+        cme = casa_tools.measures
+        cqa = casa_tools.quanta
 
         if vislist is None:
             vislist = self.vislist
@@ -902,7 +903,7 @@ class ImageParamsHeuristics(object):
 
     def representative_target(self):
 
-        cqa = pl_casatools.quanta
+        cqa = casa_tools.quanta
 
         repr_ms = self.observing_run.get_ms(self.vislist[0])
         repr_target = repr_ms.representative_target
@@ -1010,7 +1011,7 @@ class ImageParamsHeuristics(object):
         else:
             ignore, xspread, yspread = self.phasecenter(fields, centreonly=centreonly, vislist=vislist)
 
-        cqa = pl_casatools.quanta
+        cqa = casa_tools.quanta
 
         cellx = cell[0]
         if len(cell) > 1:
@@ -1048,7 +1049,7 @@ class ImageParamsHeuristics(object):
             nypix = min(nypix, max_pixels)
 
         # set nxpix, nypix to next highest 'composite number'
-        suTool = pl_casatools.synthesisutils
+        suTool = casa_tools.synthesisutils
         nxpix = suTool.getOptimumSize(nxpix)
         nypix = suTool.getOptimumSize(nypix)
         suTool.done()
@@ -1140,7 +1141,7 @@ class ImageParamsHeuristics(object):
 
         if (pb not in [None, '']):
             try:
-                iaTool = pl_casatools.image
+                iaTool = casa_tools.image
                 iaTool.open(pb)
                 nx, ny, np, nf = iaTool.shape()
 
@@ -1227,8 +1228,8 @@ class ImageParamsHeuristics(object):
 
         """Get per-MS IDs of field closest to the phase center."""
 
-        meTool = pl_casatools.measures
-        qaTool = pl_casatools.quanta
+        meTool = casa_tools.measures
+        qaTool = casa_tools.quanta
         ref_field_ids = []
 
         # Phase center coordinates
@@ -1261,8 +1262,8 @@ class ImageParamsHeuristics(object):
         topo_freq_ranges = []
         num_channels = []
 
-        meTool = pl_casatools.measures
-        qaTool = pl_casatools.quanta
+        meTool = casa_tools.measures
+        qaTool = casa_tools.quanta
 
         # Phase center coordinates
         pc_direc = meTool.source(inputs.phasecenter)
@@ -1387,7 +1388,7 @@ class ImageParamsHeuristics(object):
             dd_id = 0
 
         try:
-            with pl_casatools.MSReader(msname) as msTool:
+            with casa_tools.MSReader(msname) as msTool:
                 # CAS-8997 selectinit is required to avoid the 'Data shape varies...' warning message
                 msTool.selectinit(datadescid=dd_id)
                 # Antenna selection does not work (CAS-8757)
@@ -1490,8 +1491,8 @@ class ImageParamsHeuristics(object):
                 # Use unflagged edge channels to determine LSRK frequency range
                 if nfi.shape != (0,):
                     # Use the edges. Another heuristic will skip one extra channel later in the final frequency range.
-                    with pl_casatools.SelectvisReader(msname, field=field_id,
-                                                      spw='%s:%d~%d' % (real_spw, nfi[0], nfi[-1])) as imager:
+                    with casa_tools.SelectvisReader(msname, field=field_id,
+                                                    spw='%s:%d~%d' % (real_spw, nfi[0], nfi[-1])) as imager:
                         result = imager.advisechansel(getfreqrange=True, freqframe=frame)
 
                     f0_flagged = result['freqstart']
@@ -1505,7 +1506,7 @@ class ImageParamsHeuristics(object):
 
                     # Also get the full ranges to trim the final LSRK range for
                     # odd tunings near the LO range edges (PIPE-526).
-                    with pl_casatools.SelectvisReader(msname, field=field_id, spw='%s' % (real_spw)) as imager:
+                    with casa_tools.SelectvisReader(msname, field=field_id, spw='%s' % (real_spw)) as imager:
                         result = imager.advisechansel(getfreqrange=True, freqframe=frame)
 
                     f0_full = result['freqstart']
@@ -1586,7 +1587,7 @@ class ImageParamsHeuristics(object):
     def calc_sensitivities(self, vis, field, intent, spw, nbin, spw_topo_chan_param_dict, specmode, gridder, cell, imsize, weighting, robust, uvtaper, center_only=False, known_sensitivities={}, force_calc=False):
         """Compute sensitivity estimate using CASA."""
 
-        cqa = pl_casatools.quanta
+        cqa = casa_tools.quanta
 
         # Need to work on a local copy of known_sensitivities to avoid setting the
         # method default value inadvertently
@@ -1778,8 +1779,8 @@ class ImageParamsHeuristics(object):
             taql = '||'.join(['ANTENNA1==%d' % i for i in antenna_ids[os.path.basename(ms_do.name)]])
 
             try:
-                with pl_casatools.SelectvisReader(ms_do.name, spw='%s:%s' % (real_spwid, chanrange), field=field,
-                                               scan=scanids, taql=taql) as imTool:
+                with casa_tools.SelectvisReader(ms_do.name, spw='%s:%s' % (real_spwid, chanrange), field=field,
+                                                scan=scanids, taql=taql) as imTool:
                     imTool.defineimage(mode=specmode if specmode == 'cube' else 'mfs', spw=real_spwid, cellx=cell[0],
                                        celly=cell[0], nx=imsize[0], ny=imsize[1])
                     imTool.weight(type=weighting, rmode='norm', robust=robust)
@@ -1855,7 +1856,7 @@ class ImageParamsHeuristics(object):
             return niter
 
         # Estimate new niter based on circular mask
-        qaTool = pl_casatools.quanta
+        qaTool = casa_tools.quanta
 
         threshold_value = qaTool.convert(threshold, 'Jy')['value']
 
@@ -1996,10 +1997,10 @@ class ImageParamsHeuristics(object):
 
         """Check for bad psf fits."""
 
-        cqa = pl_casatools.quanta
+        cqa = casa_tools.quanta
 
         bad_psf_fit = False
-        with pl_casatools.ImageReader(psf_name) as image:
+        with casa_tools.ImageReader(psf_name) as image:
             try:
                 beams = image.restoringbeam()['beams']
                 bmaj = np.array([cqa.getvalue(cqa.convert(b['*0']['major'], 'arcsec')) for b in beams.values()])
@@ -2085,9 +2086,9 @@ class ImageParamsHeuristics(object):
         Leaves old beams in the PSF as is.
         """
 
-        cqa = pl_casatools.quanta
+        cqa = casa_tools.quanta
 
-        with pl_casatools.ImageReader(psf_filename) as image:
+        with casa_tools.ImageReader(psf_filename) as image:
             allbeams = image.restoringbeam()
             commonbeam = image.commonbeam()
             nchan = allbeams['nChannels']
@@ -2129,12 +2130,12 @@ class ImageParamsHeuristics(object):
                     image.setrestoringbeam( major=dummybeam['major'], minor=dummybeam['minor'], pa=dummybeam['positionangle'], channel=ii)
 
         ## Need to close and reopen for commonbeam() to see the new chan beams !
-        with pl_casatools.ImageReader(psf_filename) as image:
+        with casa_tools.ImageReader(psf_filename) as image:
             ## Recalculate common beam
             newcommonbeam = image.commonbeam()
 
         ## Reinstate the old beam to get back to the original iter0 product
-        with pl_casatools.ImageReader(psf_filename) as image:
+        with casa_tools.ImageReader(psf_filename) as image:
             for ii in range(0, nchan):
                 if weight[ii]==False:
                     beam = allbeams['beams']['*'+str(ii)]['*0']

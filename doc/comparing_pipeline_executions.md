@@ -62,20 +62,20 @@ pipeline.recipereducer.reduce(vis=['uid___A002_X30a93d_X43e'], loglevel='trace')
 Lowering the log level to TRACE will log all tool calls - including tools such
 as CASA quanta and measures. Records from these tools may be considered noise;
 you may prefer to leave the log level at DEBUG and selectively enable output
-for certain tools by editing `pipeline/infrastructure/casatools.py`. For
-example, to enable logging of calls the imager tool alone, edit `casatools.py`
+for certain tools by editing `pipeline/infrastructure/casa_tools.py`. For
+example, to enable logging of calls the imager tool alone, edit `casa_tools.py`
 and change the definition of the imager tool from
 ```
-imager = create_logging_class(casatools.imager)
+imager = create_logging_class(casa_tools.imager)
 ```
 to 
 ```
-imager = create_logging_class(casatools.imager, logging.DEBUG)
+imager = create_logging_class(casa_tools.imager, logging.DEBUG)
 ```
 To omit log records entirely, remove the `log_tool_invocations` decorating
 call, e.g., 
 ```
-imager = casatools.imager
+imager = casa_tools.imager
 ```
 ## Example
 Scenario: two branches have different code but should result in identical CASA

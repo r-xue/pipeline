@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="h_export_calstate" type="function">
 <shortdescription>Save the pipeline calibration state to disk</shortdescription>
@@ -26,11 +26,13 @@ file naming scheme, overwrite previous versions?
 
 <input>
     <param name="filename" type="string">
+        <shortdescription>Name for saved calibration state</shortdescription>
         <description>Name for saved calibration state</description>
         <value/>
     </param>
 
   <param name="state" type="string">
+    <shortdescription>The calibration state to export</shortdescription>
     <description>The calibration state to export</description>
     <value>active</value>
     <allowed kind="enum">

@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hifa_antpos" type="function">
 
@@ -34,7 +34,7 @@ provides an antenna position determination service.
 </description>
 
 <input>
-    <param subparam="true" name="vis" type="stringVec">
+    <param name="vis" subparam="true" type="stringVec">
         <shortdescription>List of input MeasurementSets</shortdescription>
         <description>List of input MeasurementSets. Defaults to the list of
             MeasurementSets specified in the pipeline context.
@@ -44,7 +44,7 @@ provides an antenna position determination service.
         <value/>
     </param>
 
-    <param subparam="true" name="caltable" type="stringVec">
+    <param name="caltable" subparam="true" type="stringVec">
         <shortdescription>List of output caltable(s)</shortdescription>
         <description>List of names for the output calibration tables. Defaults
             to the standard pipeline naming convention.
@@ -70,7 +70,7 @@ provides an antenna position determination service.
         </allowed>
     </param>
 
-    <param subparam="true" name="antenna" type="string">
+    <param name="antenna" subparam="true" type="string">
         <shortdescription>List of antennas to be corrected</shortdescription>
         <description>The list of antennas for which the positions are to be corrected
             if hm_antpos is 'manual'.
@@ -80,7 +80,7 @@ provides an antenna position determination service.
         <value/>
     </param>
 
-    <param subparam="true" name="offsets" type="doubleVec">
+    <param name="offsets" subparam="true" type="doubleVec">
         <shortdescription>List of position corrections one set per antenna</shortdescription>
         <description>The list of antenna offsets for each antenna in 'antennas'. Each
             offset is a set of 3 floating point numbers separated by commas, specified
@@ -91,7 +91,7 @@ provides an antenna position determination service.
         <value/>
     </param>
 
-    <param subparam="true" name="antposfile" type="string">
+    <param name="antposfile" subparam="true" type="string">
         <shortdescription>File containing antenna position corrections</shortdescription>
         <description>The file(s) containing the antenna offsets. Used if hm_antpos
             is 'file'.
@@ -115,7 +115,7 @@ provides an antenna position determination service.
         </allowed>
     </param>
 
-    <param subparam="true" name="dryrun" type="bool">
+    <param name="dryrun" subparam="true" type="bool">
         <shortdescription>Run the task (False) or list commands (True)</shortdescription>
         <description>Run the commands (True) or generate the commands to be run but
             do not execute (False).
@@ -123,7 +123,7 @@ provides an antenna position determination service.
        <value>False</value>
     </param>
 
-    <param subparam="true" name="acceptresults" type="bool">
+    <param name="acceptresults" subparam="true" type="bool">
         <shortdescription>Automatically accept results into context</shortdescription>
         <description>Automatically accept the results of the task into the pipeline context (True)
             or reject them (False).
@@ -133,26 +133,26 @@ provides an antenna position determination service.
 
     <constraints>
         <when param="hm_antpos">
-            <equals value="file" type="string">
+            <equals type="string" value="file">
                 <default param="antposfile"><value type="string"/></default>
             </equals>
-            <equals value="manual" type="string">
+            <equals type="string" value="manual">
                 <default param="antenna"><value type="string"/></default>
                 <default param="offsets"><value type="string"/></default>
             </equals>
-            <equals value="online" type="string">
+            <equals type="string" value="online">
             </equals>
         </when>
 
         <when param="pipelinemode">
-            <equals value="automatic" type="string"/>
-            <equals value="interactive" type="string">
+            <equals type="string" value="automatic"/>
+            <equals type="string" value="interactive">
                 <default param="vis"><value type="stringVec"/></default>
                 <default param="caltable"><value type="stringVec"/></default>
                 <default param="dryrun"><value type="bool">False</value></default>
                 <default param="acceptresults"><value type="bool">True</value></default>
             </equals>
-            <equals value="getinputs" type="string">
+            <equals type="string" value="getinputs">
                 <default param="vis"><value type="stringVec"/></default>
                 <default param="caltable"><value type="stringVec"/></default>
             </equals>

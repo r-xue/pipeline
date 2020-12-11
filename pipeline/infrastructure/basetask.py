@@ -4,7 +4,6 @@ import datetime
 import inspect
 import os
 import pickle
-import pprint
 import re
 import textwrap
 import traceback
@@ -13,11 +12,10 @@ import uuid
 from .mpihelpers import MPIEnvironment
 
 from . import api
-from . import casatools
+from . import casa_tools
 from . import eventbus
 from . import filenamer
 from . import jobrequest
-from . import launcher
 from . import logging
 from . import pipelineqa
 from . import project
@@ -81,7 +79,7 @@ def result_finaliser(method):
 def capture_log(method):
     def capture(self, *args, **kw):
         # get the size of the CASA log before task execution
-        logfile = casatools.log.logfile()
+        logfile = casa_tools.log.logfile()
         size_before = os.path.getsize(logfile)
 
         # execute the task
@@ -108,421 +106,6 @@ def capture_log(method):
 
         return result
     return capture
-
-
-class MandatoryInputsMixin(object):
-    @property
-    def context(self):
-        # A product of the prepare/analyse refactoring is that we always need
-        # a context. This message is to ensure it was set by the implementing
-        # subclass. We could remove this once refactoring is complete, but it
-        # should be a cheap comparison so we leave it in.
-        if not isinstance(self._context, launcher.Context):
-            msg = (self.__class__.__name__ + ' did not set the pipeline '
-                   'context')
-            raise TypeError(msg)  
-        return self._context
-
-    @context.setter
-    def context(self, value):
-        if not isinstance(value, launcher.Context):
-            msg = ('context must be a pipeline context. Got ' + 
-                   value.__class__.__name__ + '.')
-            raise TypeError(msg)  
-        self._context = value
-
-    @property
-    def ms(self):
-        """
-        Return the MeasurementSet for the current value of vis.
-
-        If vis is a list, a list of MeasurementSets will be returned.
-
-        :rtype: :class:`~pipeline.domain.MeasurementSet`
-        """
-        if isinstance(self.vis, list):
-            return self._handle_multiple_vis('ms')
-        try:
-            return self.context.observing_run.get_ms(name=self.vis)
-        except KeyError as e:
-            LOG.warn('No measurement set found for {!s}'.format(self.vis))
-            return None
-
-    @property
-    def vis(self):
-        """
-        Return the filenames of the measurement sets on which this task should
-        operate.
-
-        If vis is not set, this defaults to all measurement sets registered
-        with the context.
-        """ 
-        if self._vis is not None:
-            return self._vis
-
-        imaging_preferred = get_imaging_preferred(self.__class__)
-        return [ms.name for ms in self.context.observing_run.get_measurement_sets(imaging_preferred=imaging_preferred)]
-
-    @vis.setter    
-    def vis(self, value):
-        if value is None:
-            imaging_preferred = get_imaging_preferred(self.__class__)
-            vislist = [ms.name for ms in
-                       self.context.observing_run.get_measurement_sets(imaging_preferred=imaging_preferred)]
-        else:
-            vislist = value if isinstance(value, list) else [value, ]
-
-            # check that the context holds each vis specified by the user
-            for vis in vislist:
-                # get_ms throws a KeyError if the ms is not in the context 
-                self.context.observing_run.get_ms(name=vis)
-
-        # VISLIST_RESET_KEY is present when vis is set by handle_multivis.
-        # In this case we do not want to reset my_vislist, as handle_multivis is
-        # setting vis to the individual measurement sets
-        if not hasattr(self, VISLIST_RESET_KEY):
-            LOG.trace('Setting Inputs._my_vislist to %s' % vislist)
-            self._my_vislist = vislist
-        else:
-            LOG.trace('Leaving Inputs._my_vislist at current value of %s' 
-                      % self._my_vislist)
-
-        self._vis = value
-
-    @property
-    def output_dir(self):
-        if self._output_dir is None:
-            return self.context.output_dir
-        return self._output_dir        
-
-    @output_dir.setter
-    def output_dir(self, value):
-        self._output_dir = value
-
-
-def get_imaging_preferred(inputs):
-    return issubclass(inputs, api.ImagingMeasurementSetsPreferred)
-
-
-class OnTheFlyCalibrationMixin(object):
-    """
-    OnTheFlyCalibrationMixin provides a shared implementation for on-the-fly
-    calibration parameters (gaintable, spwmap, gaincurve, etc.) required by
-    some pipeline inputs.
-
-    As a mixin, this class is not intended to be instantiated; rather, it is
-    inherited by an Inputs that specifies on-the-fly calibration parameters.
-    Getting and setting any of these on-the-fly parameters will then use the
-    shared functionality defined here. 
-    """
-    @property
-    def opacity(self):
-        return self._opacity
-
-    @opacity.setter
-    def opacity(self, value):
-        self._opacity = value
-
-
-class StandardInputs(api.Inputs, MandatoryInputsMixin, metaclass=abc.ABCMeta):
-    """
-    StandardInputsTemplate is the standard base class for task Inputs classes.
-
-    StandardInputs provides a standard implementation for the the api.Inputs
-    interface. Inputs class with a
-    common implementation pattern and some common functionality. While it 
-    demands that subclasses implement some additional methods, in return it
-    allows tasks to manipulate these Inputs objects more easily.
-    """
-
-    def __init__(self, context, vis=None, output_dir=None):
-        super(StandardInputs, self).__init__()
-
-        # set MandatoryInputs properties
-        self.context = context
-        self.vis = vis
-        self.output_dir = output_dir
-
-    def _init_properties(self, properties=None, kw_ignore=None):
-        """
-        Set the instance properties using a dictionary of keyword/value pairs.
-        Properties named in kw_ignore will not be set.
-        """
-        if properties is None:
-            properties = {}
-        if kw_ignore is None:
-            kw_ignore = []
-        kw_ignore.append('self')
-
-        # set the value of each parameter to that given in the input arguments
-        # force context to be set first as some of the others depend on it.
-        setattr(self, 'context', properties['context'])
-        for k, v in properties.items():
-            if k not in kw_ignore:
-                try:
-                    setattr(self, k, v)
-                except AttributeError:
-                    # AttributeError is raised when attempting to set value of
-                    # read-only properties
-                    pass
-
-    def _get_task_args(self, ignore=()):
-        """
-        Express this class as a dictionary of CASA arguments, listing all
-        inputs except those named in ignore. 
-
-        The main purpose of the ignore argument is used to prevent an infinite
-        loop in :meth:`~CommonCalibrationInputs.caltable`, which determines the
-        value of caltable based on the value of the other CASA task arguments.
-        """
-        # get the signature of this Inputs class. We want to return a 
-        # of dictionary of all kw argument names except self, the 
-        # pipeline-specific arguments (context, output_dir, etc.) and
-        # caltable.
-        skip = ['self', 'context', 'output_dir', 'ms', 'calto', 'calstate']
-        skip.extend(ignore)
-        kw_names = [a for a in inspect.getargspec(self.__init__).args
-                    if a not in skip]
-        d = {}
-        for key in kw_names:
-            d[key] = getattr(self, key)
-
-        # add any read-only properties too
-        for k, v in inspect.getmembers(self.__class__, inspect.isdatadescriptor):
-            if k in d or k.startswith('_') or k in skip:
-                continue
-            try:
-                d[k] = v.fget(self)
-            except:
-                LOG.debug('Could not get input property %s' % k)
-
-        return d
-
-    def _handle_multiple_vis(self, property_name):
-        """
-        Return a list of property values, one for each measurement set given
-        in the Inputs.
-
-        Some Inputs properties are ms-dependent. This utility function is used
-        when multiple measurement sets are specified in the inputs. A list
-        will be returned containing a list of property values, one for each
-        measurement set specified in the inputs.
-        """
-        original = self.vis
-        # tell vis not to reset my_vislist when setting vis to the individual
-        # measurement sets
-        LOG.trace('setting VISLIST_RESET_KEY for _handle_multiple_vis(' + property_name + ')')
-        setattr(self, VISLIST_RESET_KEY, True)
-        try:
-            result = []
-            for vis in original: 
-                self.vis = vis
-                result.append(getattr(self, property_name))
-            return result
-        finally:
-            self.vis = original
-            LOG.trace('Deleting VISLIST_RESET_KEY after _handle_multiple_vis(' + property_name + ')')
-            delattr(self, VISLIST_RESET_KEY)
-
-    def to_casa_args(self):
-        """
-        Express these inputs as a dictionary of CASA arguments. The values
-        in the dictionary are in a format suitable for CASA and can be 
-        directly passed to the CASA task.
-
-        :rtype: a dictionary of string/??? kw/val pairs
-        """        
-        args = self._get_task_args()
-
-        # spw needs to be a string and not a number
-        if 'spw' in args:
-            args['spw'] = str(args['spw'])
-
-        # Handle VLA-specific arguments and peculiarities
-        ms = self.ms
-        if ms.antenna_array.name == 'VLA':
-            # CASA believes that VLA data are not labelled with calibration
-            # intent, so must remove the intent from the task call
-            args['intent'] = None
-
-        if args.get('intent', None) is not None:
-            args['intent'] = utils.to_CASA_intent(ms, args['intent'])
-
-        for k, v in args.items():
-            if v is None:
-                del args[k]        
-        return args
-
-    def __repr__(self):
-        return pprint.pformat(self.as_dict())
-
-    def as_dict(self):
-        return utils.collect_properties(self)
-
-
-class ModeInputs(api.Inputs):
-    """
-    ModeInputs is a facade for Inputs of a common task type, allowing the user
-    to switch between task implementations by changing the 'mode' parameter.
-
-    Extending classes should override the _modes dictionary with a set of 
-    key/value pairs, each pair mapping the mode name key to the task class
-    value.
-    """
-    _modes = {}
-
-    def __init__(self, context, mode=None, **parameters):
-        # create a dictionary of Inputs objects, one of each type
-        self._delegates = {}
-        for k, task_cls in self._modes.items():
-            self._delegates[k] = task_cls.Inputs(context)
-
-        # set the mode to the requested mode, thus setting the active Inputs
-        self.mode = mode
-
-        # set any parameters provided by the user
-        for k, v in parameters.items():
-            setattr(self, k, v)
-
-    def _handle_multiple_vis(self, property_name):
-        """
-        Return a list of property values, one for each measurement set given
-        in the Inputs.
-
-        Some Inputs properties are ms-dependent. This utility function is used
-        when multiple measurement sets are specified in the inputs. A list
-        will be returned containing a list of property values, one for each
-        measurement set specified in the inputs.
-        """
-        # _handle_multiple_vis must be present on the ModeInputs to allow 
-        # multi-vis properties on the top-level ModeInputs class. Failure to do
-        # so results in delegation to active._handle_multiple_vis for the
-        # multi-vis property, which then raises an AttributeError as the
-        # named top-level attribute does not exist in the lower-level delegate
-        # class.  
-        original = self.vis
-        try:
-            result = []
-            for vis in original: 
-                self.vis = vis
-                result.append(getattr(self, property_name))
-            return result
-        finally:
-            self.vis = original
-
-    def __getattr__(self, name):
-        # __getattr__ is only called when this object's __dict__ does not
-        # contain the requested property. When this happens, we delegate to
-        # the currently selected Inputs. First, however, we check whether 
-        # the requested property is one of the Python magic methods. If so, 
-        # we return the standard implementation. This is necessary for
-        # pickle, which checks for __getnewargs__ and __getstate__.
-        if name.startswith('__') and name.endswith('__'):
-            return super(ModeInputs, self).__getattr__(name)
-
-        LOG.trace('getattr delegating to %s for attribute \'%s\''
-                  '' % (self._active.__class__.__name__, name))
-        return getattr(self._active, name)
-
-    def __setattr__(self, name, val):
-        # If the property we're trying to set is one of this base class's
-        # private variables, add it to our __dict__ using the standard
-        # __setattr__ method
-        if name in ('_active', '_delegates', '_pipeline_casa_task', 
-                    VISLIST_RESET_KEY):
-            LOG.trace('Setting \'{0}\' attribute to \'{1}\' on \'{2}'
-                      '\' object'.format(name, val, self.__class__.__name__))
-            return super(ModeInputs, self).__setattr__(name, val)
-
-        # check whether this class has a getter/setter by this name. If so,
-        # allow the write to __dict__
-        for (fn_name, _) in inspect.getmembers(self.__class__, 
-                                               inspect.isdatadescriptor):
-            # our convention is to prefix the data variable for a 
-            # getter/setter with an underscore. 
-            if name in (fn_name, '_' + fn_name):
-                LOG.trace('Getter/setter found on {0}. Setting \'{1}\' '
-                          'attribute to \'{2}\''.format(self.__class__.__name__,
-                                                        name, val))
-                super(ModeInputs, self).__setattr__(name, val)
-
-                # overriding defaults of wrapped classes requires us to re-get
-                # the value after setting it, as the property setter of this 
-                # superclass has probably transformed it, eg. None => 'inf'.
-                # Furthermore, we do not return early, giving this function a
-                # chance to set the parameter - with this new value - on the
-                # wrapped classes too.
-                val = getattr(self, name)
-
-        # otherwise, set the said attribute on all of our delegate Inputs. In
-        # doing so, the user can switch mode at any time and have the new
-        # Inputs present with all their previously set parameters.
-        for d in self._delegates.values():
-            if hasattr(d, name):
-                LOG.trace(
-                    'Setting \'{0}\' attribute to \'{1}\' on \'{2}'
-                    '\' object'.format(name, val, d.__class__.__name__))
-                setattr(d, name, val)
-
-    @property
-    def mode(self):
-        return self._mode
-
-    @mode.setter
-    def mode(self, value):
-        if value not in self._modes:
-            keys = list(self._modes.keys())
-            msg = 'Mode must be one of \'{0}\' but got \'{1}\''.format(
-                '\', \''.join(keys[:-1]) + '\' or \'' + keys[-1], value)
-            LOG.error(msg)
-            raise ValueError(msg)
-
-        self._active = self._delegates[value]
-        self._mode = value
-
-    def get_task(self):
-        """
-        Get the task appropriate to the current Inputs.
-        """
-        task_cls = self._modes[self._mode]
-        return task_cls(self._active)
-
-    def to_casa_args(self):
-        return self._active.to_casa_args()
-
-    def as_dict(self):
-        props = utils.collect_properties(self._active)
-        props.update(utils.collect_properties(self))
-        return props  
-
-    def __repr__(self):
-        # get the arguments for this class's contructor
-        return pprint.pformat(self.as_dict())
-
-    @classmethod
-    def get_constructor_args(cls, ignore=('self', 'context')):
-        """
-        Get the union of all arguments accepted by this class's constructor.
-        """
-        all_args = set()
-
-        # get the arguments for this class's contructor
-        args = inspect.getargspec(cls.__init__).args
-        # and add them to our collection
-        all_args.update(args)        
-
-        # now do the same for each inputs class we can switch between         
-        for task_cls in cls._modes.values():
-            # get the arguments of the task Inputs constructor
-            args = inspect.getargspec(task_cls.Inputs.__init__).args 
-            # and add them to our set
-            all_args.update(args)        
-
-        if ignore is not None:
-            for i in ignore:
-                all_args.discard(i)
-
-        return all_args 
 
 
 class ModeTask(api.Task):
@@ -1151,61 +734,23 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
             # list
             return ResultsList()
 
-        if isinstance(self.inputs, (StandardInputs, ModeInputs)):
-            to_split = ('calphasetable', 'targetphasetable', 'offsetstable')
-            split_properties = self._get_handled_headtails(to_split)
+        container = self.inputs
+        LOG.info('Equivalent CASA call: %s', container._pipeline_casa_task)
 
-            for name, ht in split_properties.items():
-                setattr(self.inputs, name, ht.head)
+        results = ResultsList()
+        try:
+            for inputs in container:
+                self.inputs = inputs
+                single_result = self.execute(dry_run=dry_run, **parameters)
 
-            refant_tail = None
-            if hasattr(self.inputs, 'refant'):
-                if isinstance(self.inputs.refant, list) and self.inputs.refant:
-                    refant_head = self.inputs.refant[0]
-                    refant_tail = self.inputs.refant[1:]
-                    self.inputs.refant = refant_head
+                if isinstance(single_result, ResultsList):
+                    results.extend(single_result)
+                else:
+                    results.append(single_result)
+            return results
+        finally:
+            self.inputs = container
 
-            head = self.inputs.vis[0]
-            tail = self.inputs.vis[1:]
-            try:
-                LOG.trace('Setting VISLIST_RESET_KEY prior to task execution')
-                setattr(self.inputs, VISLIST_RESET_KEY, True)
-                self.inputs.vis = head
-                results = ResultsList()
-                results.append(self.execute(dry_run=dry_run, **parameters))
-
-                self.inputs.vis = tail
-            finally:
-                LOG.trace('Deleting VISLIST_RESET_KEY after task execution')
-                delattr(self.inputs, VISLIST_RESET_KEY)
-
-            for name, ht in split_properties.items():
-                setattr(self.inputs, name, ht.tail)
-
-            if hasattr(self.inputs, 'refant') and refant_tail is not None:
-                self.inputs.refant = refant_tail
-
-            results.extend(self.execute(dry_run=dry_run, **parameters))
-
-        elif isinstance(self.inputs, vdp.InputsContainer):
-            container = self.inputs
-            LOG.info('Equivalent CASA call: %s', container._pipeline_casa_task)
-
-            results = ResultsList()
-            try:
-                for inputs in container:
-                    self.inputs = inputs
-                    single_result = self.execute(dry_run=dry_run, **parameters)
-
-                    if isinstance(single_result, ResultsList):
-                        results.extend(single_result)
-                    else:
-                        results.append(single_result)
-                return results
-            finally:
-                self.inputs = container
-
-        return results
 
     def _get_handled_headtails(self, names=None):
         handled = collections.OrderedDict()

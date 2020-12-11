@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hif_rawflagchans" type="function">
 
@@ -47,7 +47,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 </description>
 
 <input>
-    <param subparam="true" name="vis" type="stringVec">
+    <param name="vis" subparam="true" type="stringVec">
         <shortdescription>List of input MeasurementSets</shortdescription>
         <description>List of input MeasurementSets.
 
@@ -57,7 +57,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
-    <param subparam="true" name="spw" type="string">
+    <param name="spw" subparam="true" type="string">
         <shortdescription>Set of data selection spectral windows, \'\' for all</shortdescription>
         <description>The list of spectral windows and channels to which the calibration
             will be applied. Defaults to all science windows in the pipeline
@@ -68,7 +68,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
-    <param subparam="true" name="intent" type="string">
+    <param name="intent" subparam="true" type="string">
         <shortdescription>Data intent to use in creating flagging view</shortdescription>
         <description>A string containing the list of intents to be checked for antennas
             with deviant gains. The default is blank, which causes the task to select
@@ -87,7 +87,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>True</value>
     </param>
 
-    <param subparam="true" name="fhl_limit" type="double">
+    <param name="fhl_limit" subparam="true" type="double">
         <shortdescription>Flag baseline/channels further from median than limit * MAD</shortdescription>
         <description>If flag_hilo is True then flag channel/baseline data
             further from the view median than fhl_limit * MAD.
@@ -95,7 +95,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>20.0</value>
     </param>
 
-    <param subparam="true" name="fhl_minsample" type="double">
+    <param name="fhl_minsample" subparam="true" type="double">
         <shortdescription>Minimum number of points in sample</shortdescription>
         <description>Do no flagging if the view median and MAD are derived
             from fewer than fhl_minsample view pixels.
@@ -112,7 +112,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>True</value>
     </param>
 
-    <param subparam="true" name="fbq_hilo_limit" type="double">
+    <param name="fbq_hilo_limit" subparam="true" type="double">
         <shortdescription>Note as \'suspect\' baseline/channels further from median than limit * MAD</shortdescription>
         <description>If flag_bad_quadrant is True then channel/baselines further
             from the view median than fbq_hilo_limit * MAD will be noted as
@@ -123,7 +123,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>8.0</value>
     </param>
 
-    <param subparam="true" name="fbq_antenna_frac_limit" type="double">
+    <param name="fbq_antenna_frac_limit" subparam="true" type="double">
         <shortdescription>Flag antenna quadrant if its fraction of \'suspect\' baseline/channels &gt; limit</shortdescription>
         <description>If flag_bad_quadrant is True and the fraction of
             suspect channel/baselines in a particular antenna/quadrant exceeds
@@ -133,7 +133,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>0.2</value>
     </param>
 
-    <param subparam="true" name="fbq_baseline_frac_limit" type="double">
+    <param name="fbq_baseline_frac_limit" subparam="true" type="double">
         <shortdescription>Flag baseline quadrant if its fraction of \'suspect\' baseline/channels &gt; limit</shortdescription>
         <description>If flag_bad_quadrant is True and the fraction of
             suspect channel/baselines in a particular baseline/quadrant exceeds
@@ -159,7 +159,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         </allowed>
     </param>
 
-    <param subparam="true" name="dryrun" type="bool">
+    <param name="dryrun" subparam="true" type="bool">
         <shortdescription>Run the task (False) or list commands (True)</shortdescription>
         <description>Run the commands (True) or generate the commands to be run but
             do not execute (False).
@@ -167,7 +167,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
        <value>False</value>
     </param>
 
-    <param subparam="true" name="acceptresults" type="bool">
+    <param name="acceptresults" subparam="true" type="bool">
         <shortdescription>Automatically apply results to context</shortdescription>
         <description>This parameter has no effect. The Tsyscal file is already
             in the pipeline context and is flagged in situ.
@@ -177,15 +177,15 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 
     <constraints>
         <when param="pipelinemode">
-            <equals value="automatic" type="string"/>
-            <equals value="interactive" type="string">
+            <equals type="string" value="automatic"/>
+            <equals type="string" value="interactive">
                 <default param="vis"><value type="stringVec"/></default>
                 <default param="intent"><value type="string"/></default>
                 <default param="spw"><value type="string"/></default>
                 <default param="dryrun"><value type="bool">False</value></default>
                 <default param="acceptresults"><value type="bool">True</value></default>
             </equals>
-            <equals value="getinputs" type="string">
+            <equals type="string" value="getinputs">
                 <default param="vis"><value type="stringVec"/></default>
                 <default param="intent"><value type="string"/></default>
                 <default param="spw"><value type="string"/></default>
@@ -193,21 +193,21 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         </when>
 
         <when param="flag_hilo">
-            <equals value="True" type="bool">
+            <equals type="bool" value="True">
                 <default param="fhl_limit"><value>20.0</value></default>
                 <default param="fhl_minsample"><value>5</value></default>
             </equals>
-            <equals value="False" type="bool">
+            <equals type="bool" value="False">
             </equals>
         </when>
 
         <when param="flag_bad_quadrant">
-            <equals value="True" type="bool">
+            <equals type="bool" value="True">
                 <default param="fbq_hilo_limit"><value>8.0</value></default>
                 <default param="fbq_antenna_frac_limit"><value>0.2</value></default>
                 <default param="fbq_baseline_frac_limit"><value>1.0</value></default>
             </equals>
-            <equals value="False" type="bool">
+            <equals type="bool" value="False">
             </equals>
         </when>
 

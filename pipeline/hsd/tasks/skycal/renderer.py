@@ -1,12 +1,11 @@
-import os
 import collections
+import os
 
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
 from pipeline.domain.datatable import DataTableImpl as DataTable
-
+from pipeline.infrastructure import casa_tools
 from . import skycal as skycal_task
 from . import display as skycal_display
 
@@ -224,7 +223,7 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
         reference_states = [state for state in ms.states if 'REFERENCE' in state.intents]
         state_ids = [state.id for state in reference_states]
         field_id = field.id
-        with casatools.TableReader(ms.name) as tb:
+        with casa_tools.TableReader(ms.name) as tb:
             t = tb.query('ANTENNA1==ANTENNA2 && FIELD_ID=={field} && DATA_DESC_ID={ddid} && STATE_ID IN {states}'
                          ''.format(field=field_id, ddid=data_desc_id, states=state_ids))
             rownumbers = t.rownumbers()
@@ -233,11 +232,11 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
             t.close()
             timeref = tb.getcolkeyword('TIME', 'MEASINFO')['Ref']
             timeunit = tb.getcolkeyword('TIME', 'QuantumUnits')[0]
-        with casatools.MSMDReader(ms.name) as msmd:
+        with casa_tools.MSMDReader(ms.name) as msmd:
             pointing_direction = msmd.pointingdirection(rownumbers[0])
             antenna_position = msmd.antennaposition(antenna_ids[0])
-        qa = casatools.quanta
-        me = casatools.measures
+        qa = casa_tools.quanta
+        me = casa_tools.measures
         epoch = me.epoch(rf=timeref, v0=qa.quantity(times[0], timeunit))
 
         LOG.debug('pointing_direction=%s' % pointing_direction)

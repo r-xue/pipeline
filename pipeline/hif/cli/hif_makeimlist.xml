@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hif_makeimlist" type="function">
 <shortdescription>Compute list of clean images to be produced</shortdescription>
@@ -27,7 +27,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 </description>
 <input>
 
-  <param subparam="true" name="vis" type="stringVec">
+  <param name="vis" subparam="true" type="stringVec">
     <shortdescription>List of input MeasurementSets</shortdescription>
     <description>The list of input MeasurementSets. Defaults to the list of
                  MeasurementSets specified in the h_init or hif_importdata task.
@@ -38,12 +38,13 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value/>
   </param>
 
-  <param subparam="true" name="imagename" type="string">
+  <param name="imagename" subparam="true" type="string">
+     <shortdescription>Prefix for output image names, &quot;&quot; for automatic.</shortdescription>
      <description>Prefix for output image names, &quot;&quot; for automatic.</description>
      <value/>
   </param>
 
-  <param subparam="true" name="intent" type="string">
+  <param name="intent" subparam="true" type="string">
     <shortdescription>Set of data selection intents</shortdescription>
     <description>Select intents for which associated fields will be imaged.
                  Possible choices are PHASE, BANDPASS, AMPLITUDE, CHECK and
@@ -54,7 +55,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value>TARGET</value>
   </param>
 
-  <param subparam="true" name="field" type="string">
+  <param name="field" subparam="true" type="string">
     <shortdescription>Set of data selection field names or ids, &quot;&quot; for all</shortdescription>
     <description>Select fields to image. Use field name(s) NOT id(s). Mosaics
                  are assumed to have common source / field names.  If intent is
@@ -66,7 +67,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value/>
   </param>
 
-  <param subparam="true" name="spw" type="string">
+  <param name="spw" subparam="true" type="string">
     <shortdescription>Set of data selection spectral window/channels, &quot;&quot; for automatic</shortdescription>
     <description>Select spectral windows to image.
                  &quot;&quot;: Images will be computed for all science spectral windows.
@@ -74,17 +75,19 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value/>
   </param>
 
-  <param subparam="true" name="contfile" type="string">
+  <param name="contfile" subparam="true" type="string">
+    <shortdescription>Name of file with frequency ranges to use for continuum images.</shortdescription>
     <description>Name of file with frequency ranges to use for continuum images.</description>
     <value/>
   </param>
 
-  <param subparam="true" name="linesfile" type="string">
+  <param name="linesfile" subparam="true" type="string">
+    <shortdescription>Name of file with line frequency ranges to exclude for continuum images.</shortdescription>
     <description>Name of file with line frequency ranges to exclude for continuum images.</description>
     <value/>
   </param>
 
-  <param subparam="true" name="uvrange" type="string">
+  <param name="uvrange" subparam="true" type="string">
     <shortdescription>Set of data selection uv ranges, &quot;&quot; for all.</shortdescription>
     <description>Select a set of uv ranges to image.
                  &quot;&quot;: All uv data is included
@@ -119,7 +122,8 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
       </allowed>
   </param>
 
-  <param subparam="true" name="outframe" type="string">
+  <param name="outframe" subparam="true" type="string">
+     <shortdescription>velocity frame of output image (LSRK, \'\' for automatic)</shortdescription>
      <description>velocity frame of output image (LSRK, '' for automatic)</description>
      <value/>
        <allowed kind="enum">
@@ -128,7 +132,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
        </allowed>
   </param>
 
-  <param subparam="true" name="hm_imsize" type="any">
+  <param name="hm_imsize" subparam="true" type="any">
     <shortdescription>Image X and Y size(s) in pixels or PB level (single fields), &quot;&quot; for automatic. Single value same for both. &quot;&lt;number&gt;pb&quot; for PB level.</shortdescription>
     <description>Image X and Y size in pixels or PB level for single fields.
                  The explicit sizes must be even and divisible by 2,3,5,7 only.
@@ -150,7 +154,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value type="string"/>
   </param>
 
-  <param subparam="true" name="hm_cell" type="stringVec">
+  <param name="hm_cell" subparam="true" type="stringVec">
     <shortdescription>Image X and Y cell size(s) with units or pixels per beam, &quot;&quot; for automatic. Single value same for both. &quot;&lt;number&gt;ppb&quot; for pixels per beam.</shortdescription>
     <description>Image X and Y cell sizes. &quot;&quot; computes the cell size based on
                  the UV coverage of all the fields to be imaged and uses a
@@ -164,7 +168,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value/>
   </param>
 
-  <param subparam="true" name="calmaxpix" type="int">
+  <param name="calmaxpix" subparam="true" type="int">
     <shortdescription>Maximum X and Y size of calibrator images in pixels</shortdescription>
     <description>Maximum image X or Y size in pixels if a calibrator is being
                  imaged ('PHASE', 'BANDPASS', 'AMPLITUDE' or 'FLUX' intent).
@@ -172,7 +176,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value>300</value>
   </param>
 
-  <param subparam="true" name="phasecenter" type="any">
+  <param name="phasecenter" subparam="true" type="any">
     <shortdescription>Image center (direction or field index, &quot;&quot; for automatic)</shortdescription>
     <description>Direction measure or field id of the image center.
                  The default phase center is set to the mean of the field
@@ -184,7 +188,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value type="string"/>
   </param>
 
-  <param subparam="true" name="nchan" type="int">
+  <param name="nchan" subparam="true" type="int">
     <shortdescription>Number of channels, -1 = all </shortdescription>
     <description>Total number of channels in the output image(s)
                  -1 selects enough channels to cover the data selected by
@@ -193,7 +197,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value>-1</value>
   </param>
 
-  <param subparam="true" name="start" type="any">
+  <param name="start" subparam="true" type="any">
     <shortdescription>Channel start, &quot;&quot; for automatic</shortdescription>
     <description>Start of image frequency axis as frequency or velocity.
                  &quot;&quot; selects start frequency automatically.
@@ -202,7 +206,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value type="string"/>
   </param>
 
-  <param subparam="true" name="width" type="any">
+  <param name="width" subparam="true" type="any">
     <shortdescription>Channel width, &quot;&quot; for automatic.</shortdescription>
     <description>Output channel width.
                  Difference in frequency between 2 selected channels for
@@ -213,7 +217,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value type="string"/>
   </param>
 
-  <param subparam="true" name="nbins" type="any">
+  <param name="nbins" subparam="true" type="any">
     <shortdescription>Channel binning factors per spw, &quot;&quot; for automatic.</shortdescription>
     <description>Channel binning factors for each spw.
                  Format: 'spw1:nb1,spw2:nb2,...' with optional wildcards: '*:nb'
@@ -224,7 +228,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value type="string"/>
   </param>
 
-  <param subparam="true" name="robust" type="double">
+  <param name="robust" subparam="true" type="double">
     <shortdescription>Briggs robustness parameter</shortdescription>
     <description>Briggs robustness parameter
                  Values range from -2.0 (uniform) to 2.0 (natural)
@@ -232,27 +236,32 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value>-999.0</value>
   </param>
 
-  <param subparam="true" name="uvtaper" type="stringVec">
+  <param name="uvtaper" subparam="true" type="stringVec">
+    <shortdescription>uv-taper on outer baselines</shortdescription>
     <description>uv-taper on outer baselines</description>
     <value/>
   </param>
 
-  <param subparam="true" name="clearlist" type="bool">
+  <param name="clearlist" subparam="true" type="bool">
+    <shortdescription>Clear any existing target list</shortdescription>
     <description>Clear any existing target list</description>
     <value>True</value>
   </param>
 
-  <param subparam="true" name="per_eb" type="bool">
+  <param name="per_eb" subparam="true" type="bool">
+    <shortdescription>Make an image target per EB</shortdescription>
     <description>Make an image target per EB</description>
     <value>False</value>
   </param>
 
   <param name="calcsb" type="bool">
+    <shortdescription>Force (re-)calculation of sensitivities and beams</shortdescription>
     <description>Force (re-)calculation of sensitivities and beams</description>
     <value>False</value>
   </param>
 
   <param name="parallel" type="string">
+    <shortdescription>Use MPI cluster where possible</shortdescription>
     <description>Use MPI cluster where possible</description>
     <value>automatic</value>
     <allowed kind="enum">
@@ -280,12 +289,13 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     </allowed>
   </param>
 
-  <param subparam="true" name="dryrun" type="bool">
+  <param name="dryrun" subparam="true" type="bool">
+    <shortdescription>Run the task (False) or just display the command (True)</shortdescription>
     <description>Run the task (False) or just display the command (True)</description>
     <value>False</value>
   </param>
 
-  <param subparam="true" name="acceptresults" type="bool">
+  <param name="acceptresults" subparam="true" type="bool">
     <shortdescription>Add the results to the pipeline context</shortdescription>
     <description>Add the results of the task to the pipeline context (True) or
                  reject them (False).
@@ -297,9 +307,9 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   <constraints>
 
     <when param="pipelinemode">
-      <equals value="automatic" type="string">
+      <equals type="string" value="automatic">
       </equals>
-      <equals value="interactive" type="string">
+      <equals type="string" value="interactive">
         <default param="vis"><value type="stringVec"/></default>
         <default param="imagename"><value type="string"/></default>
         <default param="intent"><value type="string"/></default>
@@ -322,7 +332,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <default param="dryrun"><value type="bool">False</value></default>
         <default param="acceptresults"><value type="bool">True</value></default>
       </equals>
-      <equals value="getinputs" type="string">
+      <equals type="string" value="getinputs">
         <default param="vis"><value type="stringVec"/></default>
         <default param="imagename"><value type="string"/></default>
         <default param="intent"><value type="string"/></default>
@@ -338,11 +348,11 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     </when>
 
     <when param="specmode">
-      <equals value="" type="string">
+      <equals type="string" value="">
       </equals>
-      <equals value="mfs" type="string">
+      <equals type="string" value="mfs">
       </equals>
-      <equals value="cube" type="string">
+      <equals type="string" value="cube">
         <default param="outframe"><value type="string"/></default>
       </equals>
     </when>

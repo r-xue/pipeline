@@ -8,13 +8,13 @@ import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.exceptions as exceptions
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.common import arrayflaggerbase
 from pipeline.h.tasks.common import flaggableviewresults
 from pipeline.h.tasks.common import ozone
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -55,7 +55,7 @@ def _log_outlier(msg):
     if LOG.isEnabledFor(logging.DEBUG):
         LOG.debug(msg)
         # Log outliers directly to CASA log (CAS-11313)
-        casatools.post_to_log(msg)
+        casa_tools.post_to_log(msg)
 
 
 class MatrixFlaggerInputs(vdp.StandardInputs):

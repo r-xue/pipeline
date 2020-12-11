@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hifa_gaincalsnr" type="function">
 
@@ -52,7 +52,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 
 <input>
 
-    <param subparam="true" name="vis" type="stringVec">
+    <param name="vis" subparam="true" type="stringVec">
         <shortdescription>List of input MeasurementSets</shortdescription>
         <description>The list of input MeasurementSets. Defaults to the list of
             MeasurementSets specified in the pipeline context.
@@ -62,7 +62,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
-    <param subparam="true" name="field" type="string">
+    <param name="field" subparam="true" type="string">
         <shortdescription>Set of data selection field names</shortdescription>
         <description>The list of field names of sources to be used for signal to noise
             estimation. Defaults to all fields with the standard intent.
@@ -72,7 +72,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
-    <param subparam="true" name="intent" type="string">
+    <param name="intent" subparam="true" type="string">
         <shortdescription>Set of data selection observing intents</shortdescription>
         <description>A string containing a comma delimited list of intents against which
             the selected fields are matched. Defaults to 'PHASE'.
@@ -82,7 +82,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>PHASE</value>
     </param>
 
-    <param subparam="true" name="spw" type="string">
+    <param name="spw" subparam="true" type="string">
         <shortdescription>Set of data selection spectral window ids</shortdescription>
         <description>The list of spectral windows and channels for which gain solutions are
             computed. Defaults to all the science spectral windows for which there are
@@ -126,7 +126,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         </allowed>
     </param>
 
-    <param subparam="true" name="maxfracflagged" type="double">
+    <param name="maxfracflagged" subparam="true" type="double">
         <shortdescription>The maximum fraction of data flagged per antenna (unsupported)</shortdescription>
         <description>The maximum fraction of an antenna that can be flagged
             before it is excluded from the signal to noise estimate.
@@ -153,7 +153,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         </allowed>
         </param>
 
-        <param subparam="true" name="dryrun" type="bool">
+        <param name="dryrun" subparam="true" type="bool">
         <shortdescription>Run task (False) or display the command(True)</shortdescription>
         <description>Run the commands (True) or generate the commands to be run but
             do not execute (False).
@@ -161,7 +161,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value type="bool">False</value>
         </param>
 
-        <param subparam="true" name="acceptresults" type="bool">
+        <param name="acceptresults" subparam="true" type="bool">
         <shortdescription>Automatically accept results into the context</shortdescription>
         <description> Add the results of the task to the pipeline context (True) or
             reject them (False).
@@ -172,15 +172,15 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <constraints>
 
         <when param="hm_nantennas">
-            <equals value="all" type="string"/>
-            <equals value="unflagged" type="string">
+            <equals type="string" value="all"/>
+            <equals type="string" value="unflagged">
              <default param="maxfracflagged"><value type="double">0.90</value></default>
             </equals>
         </when>
 
         <when param="pipelinemode">
-            <equals value="automatic" type="string"/>
-            <equals value="interactive" type="string">
+            <equals type="string" value="automatic"/>
+            <equals type="string" value="interactive">
              <default param="vis"><value type="stringVec"/></default>
              <default param="field"><value type="string"/></default>
              <default param="intent"><value type="string">PHASE</value></default>
@@ -188,7 +188,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
              <default param="dryrun"><value type="bool">False</value></default>
              <default param="acceptresults"><value type="bool">True</value></default>
             </equals>
-            <equals value="getinputs" type="string">
+            <equals type="string" value="getinputs">
              <default param="vis"><value type="stringVec"/></default>
              <default param="field"><value type="string"/></default>
              <default param="intent"><value type="string">PHASE</value></default>

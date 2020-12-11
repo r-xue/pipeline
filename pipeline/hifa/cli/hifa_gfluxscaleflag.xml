@@ -1,6 +1,6 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
-<task type="function" name="hifa_gfluxscaleflag" category="pipeline">
+<task category="pipeline" name="hifa_gfluxscaleflag" type="function">
 
 <shortdescription>Derive the flux density scale with flagging</shortdescription>
 
@@ -35,7 +35,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 </description>
 
 <input>
-    <param type="stringVec" name="vis" subparam="true">
+    <param name="vis" subparam="true" type="stringVec">
         <shortdescription>List of input MeasurementSets</shortdescription>
         <description>The list of input MeasurementSets. Defaults to the list of
             MeasurementSets specified in the pipeline context.
@@ -45,7 +45,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
-    <param type="string" name="intent" subparam="true">
+    <param name="intent" subparam="true" type="string">
         <shortdescription>Set of data selection intents</shortdescription>
         <description>A string containing a comma delimited list of intents against
             which the selected fields are matched. If undefined (default), it
@@ -59,7 +59,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
-    <param type="any" name="phaseupsolint" subparam="true">
+    <param name="phaseupsolint" subparam="true" type="any">
         <shortdescription>Phaseup correction solution interval</shortdescription>
         <description>The phase correction solution interval in CASA syntax.
 
@@ -69,7 +69,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value type="string">int</value>
     </param>
 
-    <param type="any" name="solint" subparam="true">
+    <param name="solint" subparam="true" type="any">
         <shortdescription>Solution intervals</shortdescription>
         <description>Time and channel solution intervals in CASA syntax.
 
@@ -79,13 +79,13 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value type="string">inf</value>
     </param>
 
-    <param type="double" name="minsnr" subparam="true">
+    <param name="minsnr" subparam="true" type="double">
         <shortdescription>Reject solutions below this SNR</shortdescription>
         <description>Solutions below this SNR are rejected.</description>
         <value>2.0</value>
     </param>
 
-    <param type="string" name="refant" subparam="true">
+    <param name="refant" subparam="true" type="string">
         <shortdescription>Reference antenna names</shortdescription>
         <description>Reference antenna names. Defaults to the value(s) stored in the
             pipeline context. If undefined in the pipeline context defaults to
@@ -96,7 +96,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
-    <param type="double" name="antnegsig" subparam="true">
+    <param name="antnegsig" subparam="true" type="double">
         <shortdescription>Lower sigma threshold for identifying outliers as a result of bad antennas within individual timestamps</shortdescription>
         <description>Lower sigma threshold for identifying outliers as a result of bad
             antennas within individual timestamps.
@@ -104,7 +104,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>4.0</value>
     </param>
 
-    <param type="double" name="antpossig" subparam="true">
+    <param name="antpossig" subparam="true" type="double">
         <shortdescription>Upper sigma threshold for identifying outliers as a result of bad antennas within individual timestamps</shortdescription>
         <description>Upper sigma threshold for identifying outliers as a result of bad
             antennas within individual timestamps.
@@ -112,7 +112,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>4.6</value>
     </param>
 
-    <param type="double" name="tmantint" subparam="true">
+    <param name="tmantint" subparam="true" type="double">
         <shortdescription>Threshold for maximum fraction of timestamps that are allowed to contain outliers</shortdescription>
         <description>Threshold for maximum fraction of timestamps that are allowed to
             contain outliers.
@@ -120,7 +120,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>0.063</value>
     </param>
 
-    <param type="double" name="tmint" subparam="true">
+    <param name="tmint" subparam="true" type="double">
         <shortdescription>Initial threshold for maximum fraction of &quot;outlier timestamps&quot; over &quot;total timestamps&quot; that a baseline may be a part of</shortdescription>
         <description> Initial threshold for maximum fraction of &quot;outlier timestamps&quot; over
             &quot;total timestamps&quot; that a baseline may be a part of.
@@ -128,7 +128,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>0.085</value>
     </param>
 
-    <param type="double" name="tmbl" subparam="true">
+    <param name="tmbl" subparam="true" type="double">
         <shortdescription>Initial threshold for maximum fraction of &quot;bad baselines&quot; over &quot;all baselines&quot; that an antenna may be a part of</shortdescription>
         <description>Initial threshold for maximum fraction of &quot;bad baselines&quot; over &quot;all
             baselines&quot; that an antenna may be a part of.
@@ -136,7 +136,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>0.175</value>
     </param>
 
-    <param type="double" name="antblnegsig" subparam="true">
+    <param name="antblnegsig" subparam="true" type="double">
         <shortdescription>Lower sigma threshold for identifying outliers as a result of &quot;bad baselines&quot; and/or &quot;bad antennas&quot; within baselines (across all timestamps)</shortdescription>
         <description>Lower sigma threshold for identifying outliers as a result of
             &quot;bad baselines&quot; and/or &quot;bad antennas&quot; within baselines, across all
@@ -145,7 +145,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>3.4</value>
     </param>
 
-    <param type="double" name="antblpossig" subparam="true">
+    <param name="antblpossig" subparam="true" type="double">
         <shortdescription>Upper sigma threshold for identifying outliers as a result of &quot;bad baselines&quot; and/or &quot;bad antennas&quot; within baselines (across all timestamps)</shortdescription>
         <description> Upper sigma threshold for identifying outliers as a result of
             &quot;bad baselines&quot; and/or &quot;bad antennas&quot; within baselines, across all
@@ -154,7 +154,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>3.2</value>
     </param>
 
-    <param type="double" name="relaxed_factor" subparam="true">
+    <param name="relaxed_factor" subparam="true" type="double">
         <shortdescription>Relaxed value to set the threshold scaling factor to under certain conditions (see task description)</shortdescription>
         <description>Relaxed value to set the threshold scaling factor to under
             certain conditions (see task description).
@@ -162,7 +162,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>2.0</value>
     </param>
 
-    <param type="int" name="niter" subparam="true">
+    <param name="niter" subparam="true" type="int">
         <shortdescription>Maximum number of times to iterate on evaluation of flagging heuristics.</shortdescription>
         <description>Maximum number of times to iterate on evaluation of flagging
             heuristics. If an iteration results in no new flags, then subsequent
@@ -171,7 +171,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>2</value>
     </param>
 
-    <param type="string" name="pipelinemode">
+    <param name="pipelinemode" type="string">
         <shortdescription>The pipeline operations mode</shortdescription>
         <description> The pipeline operating mode. In 'automatic' mode the pipeline
             determines the values of all context defined pipeline inputs automatically.
@@ -189,7 +189,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         </allowed>
     </param>
 
-    <param type="bool" name="dryrun" subparam="true">
+    <param name="dryrun" subparam="true" type="bool">
         <shortdescription>Run the task (False) or list commands (True)</shortdescription>
         <description>Run the commands (True) or generate the commands to be run but
             do not execute (False).
@@ -197,7 +197,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
        <value>False</value>
     </param>
 
-    <param type="bool" name="acceptresults" subparam="true">
+    <param name="acceptresults" subparam="true" type="bool">
         <shortdescription>Automatically apply results to context</shortdescription>
         <description>Add the results of the task to the pipeline context (True) or
             reject them (False).

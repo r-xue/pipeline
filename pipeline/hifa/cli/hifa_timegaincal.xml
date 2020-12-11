@@ -1,4 +1,4 @@
-<casaxml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 <task category="pipeline" name="hifa_timegaincal" type="function">
 
@@ -34,7 +34,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 </description>
 
 <input>
-    <param subparam="true" name="vis" type="stringVec">
+    <param name="vis" subparam="true" type="stringVec">
         <shortdescription>List of input MeasurementSets</shortdescription>
         <description>The list of input MeasurementSets. Defaults to the list of
             MeasurementSets specified in the pipeline context.
@@ -44,7 +44,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
-    <param subparam="true" name="calamptable" type="stringVec">
+    <param name="calamptable" subparam="true" type="stringVec">
         <shortdescription>List of diagnostic output amplitude caltables for calibrator targets</shortdescription>
         <description>The list of output diagnostic calibration amplitude tables for
             the calibration targets. Defaults to the standard pipeline naming
@@ -55,7 +55,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value type="string"/>
     </param>
 
-    <param subparam="true" name="offsetstable" type="stringVec">
+    <param name="offsetstable" subparam="true" type="stringVec">
         <shortdescription>List of diagnostic output phase offset caltables for calibrator targets</shortdescription>
         <description>The list of output diagnostic phase offset tables for the
             calibration targets. Defaults to the standard pipeline naming convention.
@@ -64,7 +64,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value type="string"/>
     </param>
 
-    <param subparam="true" name="calphasetable" type="stringVec">
+    <param name="calphasetable" subparam="true" type="stringVec">
         <shortdescription>List of output phase caltables for calibrator targets</shortdescription>
         <description>The list of output calibration phase tables for the
             calibration targets. Defaults to the standard pipeline naming convention.
@@ -73,7 +73,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value type="string"/>
     </param>
 
-    <param subparam="true" name="targetphasetable" type="stringVec">
+    <param name="targetphasetable" subparam="true" type="stringVec">
         <shortdescription>List of output phase caltables for science targets</shortdescription>
         <description>The list of output phase calibration tables for the science
             targets. Defaults to the standard pipeline naming convention.
@@ -83,7 +83,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value type="string"/>
     </param>
 
-    <param subparam="true" name="amptable" type="stringVec">
+    <param name="amptable" subparam="true" type="stringVec">
         <shortdescription>List of output amp caltables for science targets</shortdescription>
         <description>The list of output calibration amplitude tables for the
             calibration and science targets.
@@ -94,7 +94,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value type="string"/>
     </param>
 
-    <param subparam="true" name="field" type="string">
+    <param name="field" subparam="true" type="string">
         <shortdescription>Set of data selection field names or ids</shortdescription>
         <description>The list of field names or field ids for which gain solutions are to
             be computed. Defaults to all fields with the standard intent.
@@ -104,7 +104,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
-    <param subparam="true" name="intent" type="string">
+    <param name="intent" subparam="true" type="string">
         <shortdescription>Set of data selection observing intents</shortdescription>
         <description>A string containing a comma delimited list of intents against which
             the selected fields are matched. Defaults to the equivalent of
@@ -115,7 +115,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
-    <param subparam="true" name="spw" type="string">
+    <param name="spw" subparam="true" type="string">
         <shortdescription>Set of data selection spectral window/channels</shortdescription>
         <description>The list of spectral windows and channels for which gain solutions are
             computed. Defaults to all science spectral windows.
@@ -125,9 +125,9 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
-    <param subparam="true" name="antenna" type="string">
+    <param name="antenna" subparam="true" type="string">
         <shortdescription>Set of data selection antenna ids</shortdescription>
-        <description></description>
+        <description/>
         <value/>
     </param>
 
@@ -164,7 +164,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value type="string"/>
      </param>
 
-    <param subparam="true" name="refant" type="string">
+    <param name="refant" subparam="true" type="string">
         <shortdescription>Reference antenna names</shortdescription>
         <description>Reference antenna name(s) in priority order. Defaults to most recent
             values set in the pipeline context.  If no reference antenna is defined in
@@ -175,7 +175,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
-    <param subparam="true" name="refantmode" type="string">
+    <param name="refantmode" subparam="true" type="string">
         <shortdescription>Reference antenna selection mode</shortdescription>
         <description>Controls how the refant is applied. Currently available
                      choices are 'flex', 'strict', and the default value of ''.
@@ -184,15 +184,15 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 
                      Examples: refantmode='strict', refantmode=''
         </description>
-        <value></value>
+        <value/>
         <allowed kind="enum">
-            <value></value>
+            <value/>
             <value>flex</value>
             <value>strict</value>
         </allowed>
     </param>
 
-    <param subparam="true" name="solnorm" type="bool">
+    <param name="solnorm" subparam="true" type="bool">
         <shortdescription>Normalize average solution amplitudes to 1.0</shortdescription>
         <description>Normalise the gain solutions.</description>
         <value>False</value>
@@ -221,7 +221,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value>3.0</value>
     </param>
 
-    <param subparam="true" name="smodel" type="doubleVec">
+    <param name="smodel" subparam="true" type="doubleVec">
         <shortdescription>Point source Stokes parameters for source model</shortdescription>
         <description>Point source Stokes parameters for source model (experimental)
             Defaults to using standard MODEL_DATA column data.
@@ -247,7 +247,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         </allowed>
     </param>
 
-    <param subparam="true" name="dryrun" type="bool">
+    <param name="dryrun" subparam="true" type="bool">
         <shortdescription>Run task (False) or display the command(True)</shortdescription>
         <description>Run the commands (True) or generate the commands to be run but do not
             execute (False).
@@ -255,7 +255,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value type="bool">False</value>
     </param>
 
-    <param subparam="true" name="acceptresults" type="bool">
+    <param name="acceptresults" subparam="true" type="bool">
         <shortdescription>Automatically accept results into the context</shortdescription>
         <description>Add the results of the task to the pipeline context (True) or
             reject them (False).
@@ -265,8 +265,8 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 
     <constraints>
         <when param="pipelinemode">
-        <equals value="automatic" type="string"/>
-        <equals value="interactive" type="string">
+        <equals type="string" value="automatic"/>
+        <equals type="string" value="interactive">
             <default param="vis"><value type="stringVec"/></default>
             <default param="calamptable"><value type="stringVec"/></default>
             <default param="offsetstable"><value type="stringVec"/></default>
@@ -284,7 +284,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
             <default param="dryrun"><value type="bool">False</value></default>
             <default param="acceptresults"><value type="bool">True</value></default>
         </equals>
-        <equals value="getinputs" type="string">
+        <equals type="string" value="getinputs">
             <default param="vis"><value type="stringVec"/></default>
             <default param="calamptable"><value type="stringVec"/></default>
             <default param="offsetstable"><value type="stringVec"/></default>

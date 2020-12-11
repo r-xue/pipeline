@@ -9,7 +9,7 @@ import pprint
 
 from pipeline import environment
 from . import callibrary
-from . import casatools
+from . import casa_tools
 from . import eventbus
 from . import imagelibrary
 from . import logging
@@ -109,7 +109,7 @@ class Context(object):
         now = datetime.datetime.utcnow()
         self.name = name if name else now.strftime('pipeline-%Y%m%dT%H%M%S')
 
-        # domain depends on infrastructure.casatools, so infrastructure cannot
+        # domain depends on infrastructure.casa_tools, so infrastructure cannot
         # depend on domain hence the run-time import
         import pipeline.domain as domain
         self.observing_run = domain.ObservingRun()
@@ -316,7 +316,7 @@ class Pipeline(object):
         report_dir = context.report_dir
 
         # create a hard-link to the current CASA log in the report directory 
-        src = casatools.log.logfile()
+        src = casa_tools.log.logfile()
         dst = os.path.join(report_dir, os.path.basename(src))
         if not os.path.exists(dst):
             try:

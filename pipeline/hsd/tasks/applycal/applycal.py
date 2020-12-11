@@ -1,13 +1,14 @@
 import os
+
 import numpy
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
 from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.h.tasks.applycal.applycal import Applycal, ApplycalInputs, ApplycalResults
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 
 LOG = infrastructure.get_logger(__name__)
@@ -136,7 +137,7 @@ def set_unit(ms, calapp):
         data_unit = ''
 
     if data_unit != '':
-        with casatools.TableReader(ms.basename, nomodify=False) as tb:
+        with casa_tools.TableReader(ms.basename, nomodify=False) as tb:
             colnames = tb.colnames()
             target_columns = set(colnames) & set(['DATA', 'FLOAT_DATA', 'CORRECTED_DATA'])
             for col in target_columns:

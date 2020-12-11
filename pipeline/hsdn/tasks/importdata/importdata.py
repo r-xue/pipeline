@@ -8,7 +8,7 @@ import os
 import pipeline.h.tasks.importdata.importdata as importdata
 import pipeline.hsd.tasks.importdata.importdata as sd_importdata
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 
 LOG = infrastructure.get_logger(__name__)
@@ -76,13 +76,13 @@ class NROImportData(sd_importdata.SDImportData):
     def analyse(self, result):
         # get version information for merge2
         for ms in result.mses:
-            with casatools.TableReader(os.path.join(ms.name, 'OBSERVATION')) as tb:
+            with casa_tools.TableReader(os.path.join(ms.name, 'OBSERVATION')) as tb:
                 col = 'RELEASE_DATE'
                 release_dates = tb.getcol(col)
                 unit = tb.getcolkeywords(col)['QuantumUnits'][0]
             if len(release_dates) > 0:
                 release_date = release_dates[0]
-                qa = casatools.quanta
+                qa = casa_tools.quanta
                 merge2_version = qa.time(qa.quantity(release_date, unit), form='ymd')
                 if isinstance(merge2_version, list):
                     merge2_version = merge2_version[0]

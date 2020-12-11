@@ -4,12 +4,12 @@ import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.hifa.heuristics import imageprecheck
 from pipeline.hif.heuristics import imageparams_factory
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 
 LOG = infrastructure.get_logger(__name__)
@@ -120,7 +120,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
         inputs = self.inputs
         context = self.inputs.context
 
-        cqa = casatools.quanta
+        cqa = casa_tools.quanta
 
         calcsb = inputs.calcsb
         parallel = inputs.parallel

@@ -8,11 +8,11 @@ import casatasks.private.sdbeamutil as sdbeamutil
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.vdp as vdp
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.imagelibrary as imagelibrary
-from pipeline.infrastructure import casa_tasks
+import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataTable
+from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from . import resultobjects
 from .. import common
 from ..common import utils
@@ -46,7 +46,7 @@ def ALMAImageCoordinateUtil(context, ms_names, ant_list, spw_list, fieldid_list)
     is_known_eph_obj = ref_msobj.get_fields(ref_fieldid)[0].source.is_known_eph_obj
 
     # qa tool
-    qa = casatools.quanta
+    qa = casa_tools.quanta
     ### ALMA specific part ###
     # the number of pixels per beam
     grid_factor = 9.0
@@ -351,7 +351,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         # for ephemeris sources without ephemeris data in MS (eg. not for ALMA)
         # if not is_eph_obj:
         if is_known_eph_obj:
-            # me = casatools.measures
+            # me = casa_tools.measures
             # ephemeris_list = me.listcodes(me.direction())['extra']
             # known_ephemeris_list = numpy.delete( ephemeris_list, numpy.where(ephemeris_list=='COMET') )
             # if source_name.upper() in known_ephemeris_list:
@@ -398,14 +398,14 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
                 rest_freq_value = numpy.double(rest_freq.value)
                 rest_freq_unit = rest_freq.units['symbol']
             if rest_freq_value is not None:
-                qa = casatools.quanta
+                qa = casa_tools.quanta
                 restfreq = qa.tos(qa.quantity(rest_freq_value, rest_freq_unit))
             else:
                 raise RuntimeError("Could not get reference frequency of Spw %d" % ref_spwid)
         else:
             # restfreq is given by user
             # check if user provided restfreq is valid
-            qa = casatools.quanta
+            qa = casa_tools.quanta
             x = qa.quantity(restfreq)
             if x['value'] <= 0:
                 raise RuntimeError("Invalid restfreq '{0}' (must be positive)".format(restfreq))
@@ -436,7 +436,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
             phasecenter = 'TRACKFIELD'
             LOG.info( "phasecenter is overrided with \'TRACKFIELD\'" )
 
-        qa = casatools.quanta
+        qa = casa_tools.quanta
         image_args = {'mode': mode,
                       'intent': "OBSERVE_TARGET#ON_SOURCE",
                       'nchan': nchan,
@@ -508,7 +508,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         # Task sdimaging does not fail even if no data is gridded to image.
         # In that case, image is not masked, no restoring beam is set to
         # image, and all pixels in corresponding weight image is zero.
-        with casatools.ImageReader(weightname) as ia:
+        with casa_tools.ImageReader(weightname) as ia:
             sumsq = ia.statistics()['sumsq'][0]
         if sumsq == 0.0:
             LOG.warning("No valid pixel found in image, %s. Discarding the image from futher processing." % imagename)

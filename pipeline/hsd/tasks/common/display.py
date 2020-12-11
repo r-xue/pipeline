@@ -1,4 +1,3 @@
-
 import abc
 import datetime
 import math
@@ -6,14 +5,12 @@ import os
 
 import matplotlib.gridspec as gridspec
 import numpy
-import pylab as pl
+import matplotlib.pyplot as plt
 from matplotlib.dates import date2num, DateFormatter, MinuteLocator
-from matplotlib.ticker import FuncFormatter, MultipleLocator, AutoLocator
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.displays.pointing as pointing
-import pipeline.infrastructure.renderer.logger as logger
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -24,8 +21,8 @@ DPISummary = 90
 #DPIDetail = 120
 #DPIDetail = 130
 DPIDetail = 260
-LightSpeedQuantity = casatools.quanta.constants('c')
-LightSpeed = casatools.quanta.convert(LightSpeedQuantity, 'km/s')['value']  # speed of light in km/s
+LightSpeedQuantity = casa_tools.quanta.constants('c')
+LightSpeed = casa_tools.quanta.convert(LightSpeedQuantity, 'km/s')['value']  # speed of light in km/s
 
 sd_polmap = {0: 'XX', 1: 'YY', 2: 'XY', 3: 'YX'}
 
@@ -34,8 +31,8 @@ NoDataThreshold = NoData + 10000.0
 
 
 def mjd_to_datedict(val, unit='d'):
-    mjd = casatools.quanta.quantity(val, unit)
-    return casatools.quanta.splitdate(mjd)
+    mjd = casa_tools.quanta.quantity(val, unit)
+    return casa_tools.quanta.splitdate(mjd)
 
 
 def mjd_to_datetime(val):
@@ -105,22 +102,22 @@ class PlotObjectHandler(object):
         self.clear()
 
     def plot(self, *args, **kwargs):
-        object_list = pl.plot(*args, **kwargs)
+        object_list = plt.plot(*args, **kwargs)
         self.storage.extend(object_list)
         return object_list
 
     def text(self, *args, **kwargs):
-        object_list = pl.text(*args, **kwargs)
+        object_list = plt.text(*args, **kwargs)
         self.storage.append(object_list)
         return object_list
 
     def axvspan(self, *args, **kwargs):
-        object_list = pl.axvspan(*args, **kwargs)
+        object_list = plt.axvspan(*args, **kwargs)
         self.storage.append(object_list)
         return object_list
 
     def axhline(self, *args, **kwargs):
-        object_list = pl.axhline(*args, **kwargs)
+        object_list = plt.axhline(*args, **kwargs)
         self.storage.append(object_list)
         return object_list
 
@@ -146,9 +143,9 @@ class SingleDishDisplayInputs(object):
 
 class SpectralImage(object):
     def __init__(self, imagename):
-        qa = casatools.quanta
+        qa = casa_tools.quanta
         # read data to storage
-        with casatools.ImageReader(imagename) as ia:
+        with casa_tools.ImageReader(imagename) as ia:
             self.image_shape = ia.shape()
             coordsys = ia.coordsys()
             self._load_coordsys(coordsys)
@@ -221,7 +218,7 @@ class SpectralImage(object):
         return self._beamsize_in_deg
 
     def to_velocity(self, frequency, freq_unit='GHz'):
-        qa = casatools.quanta
+        qa = casa_tools.quanta
         if self.rest_frequency['unit'] != freq_unit:
             vrf = qa.convert(self.rest_frequency, freq_unit)['value']
         else:
@@ -235,7 +232,7 @@ class SpectralImage(object):
         return self.__axis(self.id_direction[idx], unit=unit)
 
     def __axis(self, idx, unit):
-        qa = casatools.quanta
+        qa = casa_tools.quanta
         refpix = self.refpixs[idx]
         refval = self.refvals[idx]
         increment = self.increments[idx]
@@ -359,7 +356,7 @@ class SDImageDisplay(object, metaclass=abc.ABCMeta):
 
     def init(self):
         self.image = SpectralImage(self.imagename)
-        qa = casatools.quanta
+        qa = casa_tools.quanta
         self.nchan = self.image.nchan
 #         self.data = self.image.data
 #         self.mask = self.image.mask
@@ -447,7 +444,7 @@ class SDImageDisplay(object, metaclass=abc.ABCMeta):
 
 def get_base_frequency(table, freqid, nchan):
     freq_table = os.path.join(table, 'FREQUENCIES')
-    with casatools.TableReader(freq_table) as tb:
+    with casa_tools.TableReader(freq_table) as tb:
         refpix = tb.getcell('REFPIX', freqid)
         refval = tb.getcell('REFVAL', freqid)
         increment = tb.getcell('INCREMENT', freqid)
@@ -457,7 +454,7 @@ def get_base_frequency(table, freqid, nchan):
 
 def get_base_frame(table):
     freq_table = os.path.join(table, 'FREQUENCIES')
-    with casatools.TableReader(freq_table) as tb:
+    with casa_tools.TableReader(freq_table) as tb:
         base_frame = tb.getkeyword('BASEFRAME')
     return base_frame
 
@@ -518,9 +515,9 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             self.figure_id = self.MATPLOTLIB_FIGURE_ID()
         else:
             self.figure_id = figure_id
-        self.figure = pl.figure(self.figure_id, dpi=DPIDetail)
+        self.figure = plt.figure(self.figure_id, dpi=DPIDetail)
         if clearpanel:
-            pl.clf()
+            plt.clf()
 
         _f = form4(self.nv)
         self.gs_top = gridspec.GridSpec(1, 1,
@@ -544,17 +541,17 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
     @property
     def axes_integsp(self):
         if self._axes_integsp is None:
-            pl.figure(self.figure_id)
-            axes = pl.subplot(self.gs_top[:,:])
+            plt.figure(self.figure_id)
+            axes = plt.subplot(self.gs_top[:, :])
             axes.cla()
             axes.xaxis.get_major_formatter().set_useOffset(False)
             axes.yaxis.get_major_formatter().set_useOffset(False)
-            pl.xlabel('Frequency(GHz)', size=(self.ticksize+1))
-            pl.ylabel('Intensity(%s)'%(self.brightnessunit), size=(self.ticksize+1))
-            pl.xticks(size=self.ticksize)
-            pl.yticks(size=self.ticksize)
-            #pl.title('Spatially Integrated Spectrum', size=(self.ticksize + 1))
-            pl.title('Spatially Averaged Spectrum', size=(self.ticksize + 1))
+            plt.xlabel('Frequency(GHz)', size=(self.ticksize + 1))
+            plt.ylabel('Intensity(%s)' % (self.brightnessunit), size=(self.ticksize + 1))
+            plt.xticks(size=self.ticksize)
+            plt.yticks(size=self.ticksize)
+            #plt.title('Spatially Integrated Spectrum', size=(self.ticksize + 1))
+            plt.title('Spatially Averaged Spectrum', size=(self.ticksize + 1))
 
             self._axes_integsp = axes
         return self._axes_integsp
@@ -562,7 +559,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
     @property
     def axes_spmap(self):
         if self._axes_spmap is None:
-            pl.figure(self.figure_id)
+            plt.figure(self.figure_id)
             self._axes_spmap = list(self.__axes_spmap())
 
         return self._axes_spmap
@@ -570,26 +567,26 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
     @property
     def axes_atm(self):
         if self._axes_atm is None:
-            pl.figure(self.figure_id)
+            plt.figure(self.figure_id)
             self._axes_atm = self.axes_integsp.twinx()
             self._axes_atm.set_position(self.axes_integsp.get_position())
             ylabel = self._axes_atm.set_ylabel('ATM Transmission', size=self.ticksize)
             ylabel.set_color('m')
             self._axes_atm.yaxis.set_tick_params(colors='m', labelsize=self.ticksize-1)
             self._axes_atm.yaxis.set_major_locator(
-                pl.MaxNLocator(nbins=4, integer=True, min_n_ticks=2)
+                plt.MaxNLocator(nbins=4, integer=True, min_n_ticks=2)
             )
             self._axes_atm.yaxis.set_major_formatter(
-                pl.FuncFormatter(lambda x, pos: '{}%'.format(int(x)))
+                plt.FuncFormatter(lambda x, pos: '{}%'.format(int(x)))
                 )
         return self._axes_atm
 
     @property
     def axes_chan(self):
         if self._axes_chan is None:
-            active = pl.gca()
+            active = plt.gca()
             try:
-                pl.figure(self.figure_id)
+                plt.figure(self.figure_id)
                 self.__adjust_integsp_for_chan()
                 self._axes_chan = self.axes_integsp.twiny()
                 self._axes_chan.set_position(self.axes_integsp.get_position())
@@ -598,15 +595,15 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
                 self._axes_chan.set_xlabel('Channel', size=self.ticksize - 1)
                 self._axes_chan.xaxis.set_label_coords(0.5, 1.11)
                 self._axes_chan.tick_params(axis='x', pad=0)
-                pl.xticks(size=self.ticksize - 1)
+                plt.xticks(size=self.ticksize - 1)
             finally:
-                pl.sca(active)
+                plt.sca(active)
         return self._axes_chan
 
     def __adjust_integsp_for_chan(self):
-        active = pl.gca()
+        active = plt.gca()
         try:
-            pl.sca(self._axes_integsp)
+            plt.sca(self._axes_integsp)
             a = self._axes_integsp
             bbox = a.get_position().get_points()
             blc = bbox[0]
@@ -619,15 +616,15 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             a.set_position((left, bottom, width, height))
             a.title.set_position((0.5, 1.2))
         finally:
-            pl.sca(active)
+            plt.sca(active)
 
     def __axes_spmap(self):
         for x in range(self.nh):
             for y in range(self.nv):
-                axes = pl.subplot(self.gs_bottom[self.nv - y - 1, self.nh - x])
+                axes = plt.subplot(self.gs_bottom[self.nv - y - 1, self.nh - x])
                 axes.cla()
-                axes.yaxis.set_major_locator(pl.NullLocator())
-                axes.xaxis.set_major_locator(pl.NullLocator())
+                axes.yaxis.set_major_locator(plt.NullLocator())
+                axes.xaxis.set_major_locator(plt.NullLocator())
 
                 yield axes
 
@@ -637,26 +634,26 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
         else:
             xaxislabel = pointing.HHMMSSss
         for x in range(self.nh):
-            a1 = pl.subplot(self.gs_bottom[-1, self.nh - x])
+            a1 = plt.subplot(self.gs_bottom[-1, self.nh - x])
             a1.set_axis_off()
             if len(a1.texts) == 0:
-                pl.text(0.5, 0.5, xaxislabel((label_ra[x][0]+label_ra[x][1])/2.0),
-                        horizontalalignment='center', verticalalignment='center', size=self.ticksize)
+                plt.text(0.5, 0.5, xaxislabel((label_ra[x][0] + label_ra[x][1]) / 2.0),
+                         horizontalalignment='center', verticalalignment='center', size=self.ticksize)
             else:
                 a1.texts[0].set_text(xaxislabel((label_ra[x][0]+label_ra[x][1])/2.0))
         for y in range(self.nv):
-            a1 = pl.subplot(self.gs_bottom[self.nv - y - 1, 0])
+            a1 = plt.subplot(self.gs_bottom[self.nv - y - 1, 0])
             a1.set_axis_off()
             if len(a1.texts) == 0:
-                pl.text(0.5, 0.5, pointing.DDMMSSs((label_dec[y][0]+label_dec[y][1])/2.0),
-                        horizontalalignment='center', verticalalignment='center', size=self.ticksize)
+                plt.text(0.5, 0.5, pointing.DDMMSSs((label_dec[y][0] + label_dec[y][1]) / 2.0),
+                         horizontalalignment='center', verticalalignment='center', size=self.ticksize)
             else:
                 a1.texts[0].set_text(pointing.DDMMSSs((label_dec[y][0]+label_dec[y][1])/2.0))
-        a1 = pl.subplot(self.gs_bottom[-1, 0])
+        a1 = plt.subplot(self.gs_bottom[-1, 0])
         a1.set_axis_off()
         ralabel, declabel = self.get_axes_labels()
-        pl.text(0.5, 1, declabel, horizontalalignment='center', verticalalignment='bottom', size=(self.ticksize+1))
-        pl.text(1, 0.5, ralabel, horizontalalignment='right', verticalalignment='center', size=(self.ticksize+1))
+        plt.text(0.5, 1, declabel, horizontalalignment='center', verticalalignment='bottom', size=(self.ticksize + 1))
+        plt.text(1, 0.5, ralabel, horizontalalignment='right', verticalalignment='center', size=(self.ticksize + 1))
 
 
 class SDSparseMapPlotter(object):
@@ -763,10 +760,10 @@ class SDSparseMapPlotter(object):
     def add_channel_axis(self, frequency):
         axes = self.axes.axes_chan
         f = numpy.asarray(frequency)
-        active = pl.gca()
-        pl.sca(axes)
-        pl.xlim((numpy.argmin(f), numpy.argmax(f)))
-        pl.sca(active)
+        active = plt.gca()
+        plt.sca(axes)
+        plt.xlim((numpy.argmin(f), numpy.argmax(f)))
+        plt.sca(active)
 
     def plot(self, map_data, averaged_data, frequency, fit_result=None, figfile=None):
         plot_helper = PlotObjectHandler()
@@ -828,13 +825,13 @@ class SDSparseMapPlotter(object):
 
         LOG.info('global_ymin=%s, global_ymax=%s' % (global_ymin, global_ymax))
 
-        pl.gcf().sca(self.axes.axes_integsp)
+        plt.gcf().sca(self.axes.axes_integsp)
         plot_helper.plot(frequency, averaged_data, color='b', linestyle='-', linewidth=0.4)
         if self.channel_axis is True:
             self.add_channel_axis(frequency)
-        (_xmin, _xmax, _ymin, _ymax) = pl.axis()
-        #pl.axis((_xmin,_xmax,spmin,spmax))
-        pl.axis((global_xmin, global_xmax, spmin, spmax))
+        (_xmin, _xmax, _ymin, _ymax) = plt.axis()
+        #plt.axis((_xmin,_xmax,spmin,spmax))
+        plt.axis((global_xmin, global_xmax, spmin, spmax))
         if self.lines_averaged is not None:
             for chmin, chmax in self.lines_averaged:
                 fmin = ch_to_freq(chmin, frequency)
@@ -848,7 +845,7 @@ class SDSparseMapPlotter(object):
                 fmax = ch_to_freq(chmax, frequency)
                 plot_helper.axvspan(fmin, fmax, ymin=0.95, ymax=1, color='red')
         if overlay_atm_transmission:
-            pl.gcf().sca(self.axes.axes_atm)
+            plt.gcf().sca(self.axes.axes_atm)
             amin = 100
             amax = 0
             for (_t, f) in zip(self.atm_transmission, self.atm_frequency):
@@ -870,7 +867,7 @@ class SDSparseMapPlotter(object):
                 elif ymax < 98:
                     ymax += 2
 
-            pl.axis((global_xmin, global_xmax, ymin, ymax))
+            plt.axis((global_xmin, global_xmax, ymin, ymax))
 
         is_valid_fit_result = (fit_result is not None and fit_result.shape == map_data.shape)
 
@@ -895,7 +892,7 @@ class SDSparseMapPlotter(object):
                         ymax = global_ymax
                     LOG.debug('Per panel scaling turned on: ymin=%s, ymax=%s (global ymin=%s, ymax=%s)' %
                               (ymin, ymax, global_ymin, global_ymax))
-                pl.gcf().sca(self.axes.axes_spmap[y+(self.nh-x-1)*self.nv])
+                plt.gcf().sca(self.axes.axes_spmap[y + (self.nh - x - 1) * self.nv])
                 if map_data[x][y].min() > NoDataThreshold:
                     plot_helper.plot(frequency, map_data[x][y], color='b', linestyle='-', linewidth=0.2)
                     if self.lines_map is not None and self.lines_map[x][y] is not None:
@@ -918,13 +915,13 @@ class SDSparseMapPlotter(object):
                 else:
                     plot_helper.text((xmin+xmax)/2.0, (ymin+ymax)/2.0, 'NO DATA', ha='center', va='center',
                                      size=(self.TickSize + 1))
-                pl.axis((xmin, xmax, ymin, ymax))
+                plt.axis((xmin, xmax, ymin, ymax))
 
         if ShowPlot:
-            pl.draw()
+            plt.draw()
 
         if figfile is not None:
-            pl.savefig(figfile, format='png', dpi=DPIDetail)
+            plt.savefig(figfile, format='png', dpi=DPIDetail)
         LOG.debug('figfile=\'%s\''%(figfile))
 
         plot_helper.clear()
@@ -932,7 +929,7 @@ class SDSparseMapPlotter(object):
         return True
 
     def done(self):
-        pl.close()
+        plt.close()
         del self.axes
 
 

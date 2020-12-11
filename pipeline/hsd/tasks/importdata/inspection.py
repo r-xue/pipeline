@@ -4,9 +4,9 @@ import re
 import numpy
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.domain.measures as measures
 import pipeline.domain.singledish as singledish
+from pipeline.infrastructure import casa_tools
 from ... import heuristics
 from . import reader
 
@@ -150,12 +150,12 @@ class SDInspection(object):
                     key = match
                 ### Check existance of antenna, spw, field combination in MS
                 ddid = ms.get_data_description(id=spw.id)
-                with casatools.TableReader(ms.name) as tb:
+                with casa_tools.TableReader(ms.name) as tb:
                     subtb = tb.query('DATA_DESC_ID==%d && FIELD_ID==%d' % (ddid.id, field.id),
                                      columns='ANTENNA1')
                     valid_antid = set(subtb.getcol('ANTENNA1'))
                     subtb.close()
-#                 myms = casatools.ms
+#                 myms = casa_tools.ms
 #                 valid_antid = myms.msseltoindex(vis=ms.name, spw=spw.id,
 #                                                 field=field_id, baseline='*&&&')['antenna1']
 #                 for antenna in ms.antennas:
@@ -231,7 +231,7 @@ class SDInspection(object):
         LOG.trace('by_spw=%s' % by_spw)
         LOG.trace('len(by_antenna)=%s len(by_spw)=%s' % (len(by_antenna), len(by_spw)))
 
-        qa = casatools.quanta
+        qa = casa_tools.quanta
 
         pos_heuristic2 = heuristics.GroupByPosition2()
         obs_heuristic2 = heuristics.ObservingPattern2()
@@ -476,7 +476,7 @@ class SDInspection(object):
                 spw_id = spw.id
                 center_frequency = float(spw.centre_frequency.convert_to(measures.FrequencyUnits.GIGAHERTZ).value)
                 beam_size = beam_size_heuristic(diameter=diameter, frequency=center_frequency)
-                beam_size_quantity = casatools.quanta.quantity(beam_size, 'arcsec')
+                beam_size_quantity = casa_tools.quanta.quantity(beam_size, 'arcsec')
                 beam_size_for_antenna[spw_id] = beam_size_quantity
             beam_sizes[antenna_id] = beam_size_for_antenna
         ms.beam_sizes = beam_sizes
