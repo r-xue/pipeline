@@ -443,7 +443,7 @@ class MapAxesManagerBase(object):
         self._direction_reference = None
         self._ofs_coord = None
 
-    def get_axes_labels(self) -> (str, str):
+    def get_axes_labels(self) -> Tuple[str, str]:
         """
         Returns:
             xlabel: xlabel in plot. Default is 'RA'.
