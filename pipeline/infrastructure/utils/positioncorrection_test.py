@@ -6,7 +6,7 @@ from typing import Union, Dict, Tuple
 import pyfits
 import pytest
 
-from .. import casatools
+from .. import casa_tools
 from .positioncorrection import do_wide_field_pos_cor, calc_wide_field_pos_cor
 
 test_params_fits = [('VLASS1.1.ql.T19t20.J155950+333000.fits',
@@ -74,17 +74,15 @@ def test_do_wide_field_corr(fitsname: str, obs_long: Dict[str, Union[str, float]
     # Obtain corrected reference coordinates
     with pyfits.open(fitsname, mode='readonly') as hdulist:
         header = hdulist[0].header
-        ra_deg_head = casatools.quanta.convert({'value': header['crval1'],
-                                                'unit': header['cunit1']}, 'deg')
-        dec_deg_head = casatools.quanta.convert({'value': header['crval2'],
-                                                 'unit': header['cunit2']}, 'deg')
+        ra_deg_head = casa_tools.quanta.convert({'value': header['crval1'], 'unit': header['cunit1']}, 'deg')
+        dec_deg_head = casa_tools.quanta.convert({'value': header['crval2'], 'unit': header['cunit2']}, 'deg')
 
     # Clean up
     os.remove(fitsname)
 
     # Compute relative error
-    ra_expected = casatools.quanta.convert(expected[0], 'deg')['value']
-    dec_expected = casatools.quanta.convert(expected[1], 'deg')['value']
+    ra_expected = casa_tools.quanta.convert(expected[0], 'deg')['value']
+    dec_expected = casa_tools.quanta.convert(expected[1], 'deg')['value']
 
     delta_ra = (ra_deg_head['value'] - ra_expected) / ra_expected
     delta_dec = (dec_deg_head['value'] - dec_expected) / dec_expected
@@ -108,11 +106,11 @@ def test_calc_wide_field_pos_cor(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: D
                                      date_time=date_time)
 
     # Compute relative error
-    ra_offset = casatools.quanta.convert(offset[0], 'deg')['value']
-    dec_offset = casatools.quanta.convert(offset[1], 'deg')['value']
+    ra_offset = casa_tools.quanta.convert(offset[0], 'deg')['value']
+    dec_offset = casa_tools.quanta.convert(offset[1], 'deg')['value']
 
-    ra_offset_expected = casatools.quanta.convert(offset_expected[0], 'deg')['value']
-    dec_offset_expected = casatools.quanta.convert(offset_expected[1], 'deg')['value']
+    ra_offset_expected = casa_tools.quanta.convert(offset_expected[0], 'deg')['value']
+    dec_offset_expected = casa_tools.quanta.convert(offset_expected[1], 'deg')['value']
 
     delta_ra = (ra_offset - ra_offset_expected) / ra_offset_expected
     delta_dec = (dec_offset - dec_offset_expected) / dec_offset_expected

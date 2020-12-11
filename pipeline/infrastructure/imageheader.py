@@ -5,8 +5,8 @@ import numpy as np
 
 import pipeline as pipeline
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 from pipeline import environment
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -65,7 +65,7 @@ def set_miscinfo(name, spw=None, field=None, nfield=None, type=None, iter=None, 
         else:
             imagename = name
 
-        with casatools.ImageReader(imagename) as image:
+        with casa_tools.ImageReader(imagename) as image:
             info = image.miscinfo()
             if imagename is not None:
                 filename_components = os.path.basename(imagename).split('.')

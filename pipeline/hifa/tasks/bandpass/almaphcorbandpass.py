@@ -4,7 +4,6 @@ import os
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
@@ -13,6 +12,7 @@ from pipeline.hif.tasks.bandpass import bandpassmode, bandpassworker
 from pipeline.hif.tasks.bandpass.common import BandpassResults
 from pipeline.hifa.tasks.bpsolint import bpsolint
 from pipeline.infrastructure import callibrary
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import exceptions
 from pipeline.infrastructure import task_registry
 
@@ -186,7 +186,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
 
         # Number of expected results.
         nexpected = len(snr_result.spwids)
-        quanta = casatools.quanta
+        quanta = casa_tools.quanta
 
         # Look for missing and bad solutions.
         #    Adjust the estimates for poor solutions to the
@@ -395,7 +395,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
     # Compute the bandpass using SNR estimates
     def _do_snr_bandpass(self, snr_result):
         inputs = self.inputs
-        quanta = casatools.quanta
+        quanta = casa_tools.quanta
 
         # Store original values of some parameters.
         orig_spw = inputs.spw
@@ -504,7 +504,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
 
         # Convert bandwidth input to CASA quantity and then on to pipeline
         # domain Frequency object
-        quanta = casatools.quanta
+        quanta = casa_tools.quanta
         bw_quantity = quanta.convert(quanta.quantity(inputs.phaseupbw), 'Hz')
         bandwidth = measures.Frequency(quanta.getvalue(bw_quantity)[0],
                                        measures.FrequencyUnits.HERTZ)
@@ -528,7 +528,7 @@ def _constrain_phaseupsolint(input_solint, integration_time, max_solint):
     which are greater than a specified maximum. The inputs and outputs
     are times in seconds in string quanta format '60.0s'
     """
-    quanta = casatools.quanta
+    quanta = casa_tools.quanta
 
     input_solint_q = quanta.quantity(input_solint)
     integration_time_q = quanta.quantity(integration_time)

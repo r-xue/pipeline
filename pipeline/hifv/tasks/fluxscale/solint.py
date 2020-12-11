@@ -1,15 +1,15 @@
+import collections
 import os
 
 import numpy as np
-import collections
 
 import pipeline.hif.heuristics.findrefant as findrefant
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hifv.heuristics import getCalFlaggedSoln, uvrange
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 
 LOG = infrastructure.get_logger(__name__)
@@ -322,7 +322,7 @@ class Solint(basetask.StandardTaskTemplate):
         old_spws = []
         old_field = ''
 
-        with casatools.MSReader(calMs) as ms:
+        with casa_tools.MSReader(calMs) as ms:
             scan_summary = ms.getscansummary()    
 
             m = self.inputs.context.observing_run.get_ms(self.inputs.vis)

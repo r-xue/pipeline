@@ -4,13 +4,13 @@ import os
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.contfilehandler as contfilehandler
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hif.heuristics import findcont
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from .resultobjects import FindContResult
 
@@ -63,7 +63,7 @@ class FindCont(basetask.StandardTaskTemplate):
             result.mitigation_error = True
             return result
 
-        qa_tool = casatools.quanta
+        qa_tool = casa_tools.quanta
 
         # make sure inputs.vis is a list, even if it is one that contains a
         # single measurement set

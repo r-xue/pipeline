@@ -1,6 +1,6 @@
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 from pipeline.hif.tasks.setmodel import display as setjy
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -12,7 +12,7 @@ class GFluxscaleSummaryChart(setjy.BasebandSummaryChart):
     def __init__(self, context, output_dir, calto, intent='', ydatacolumn='model', ant='', uvrange='', **overrides):
         # Get uvdist min/max  for horizontal axis
         try:
-            with casatools.MSReader(calto.vis) as msfile:
+            with casa_tools.MSReader(calto.vis) as msfile:
                 # Numpy arrays must be converted to standard Python primitives, otherwise
                 # the contained values cause problems with the underlying SWIG wrappers.
                 uvrangeplot = msfile.range(['uvdist'])['uvdist'].tolist()

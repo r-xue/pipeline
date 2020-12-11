@@ -47,6 +47,7 @@ import pipeline.infrastructure.imagelibrary as imagelibrary
 import pipeline.infrastructure.vdp as vdp
 from pipeline import environment
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.filenamer import fitsname
 from ..common import manifest
@@ -1244,7 +1245,7 @@ finally:
             LOG.info('Saving final image %s to FITS file %s', os.path.basename(image), os.path.basename(fitsfile))
 
             # PIPE-325: abbreviate 'spw' for FITS header when spw string is "too long"
-            with casatools.ImageReader(image) as img:
+            with casa_tools.ImageReader(image) as img:
                 info = img.miscinfo()
                 if ('spw' in info) and (len(info['spw']) >= 68):
                     spw_sorted = sorted([int(x) for x in info['spw'].split(',')])

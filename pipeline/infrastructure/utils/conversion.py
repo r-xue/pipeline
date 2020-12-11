@@ -20,7 +20,7 @@ from typing import Any, Dict, Iterator, List, Optional, Sequence, Tuple, Union
 import cachetools
 import pyparsing
 
-from .. import casatools, logging
+from .. import casa_tools, logging
 
 LOG = logging.get_logger(__name__)
 
@@ -187,8 +187,8 @@ def get_epoch_as_datetime(epoch: Number) -> datetime:
     Returns:
         The equivalent Python datetime.
     """
-    mt = casatools.measures
-    qt = casatools.quanta
+    mt = casa_tools.measures
+    qt = casa_tools.quanta
 
     # calculate UTC standard offset
     datetime_base = mt.epoch('UTC', '40587.0d')
@@ -389,7 +389,7 @@ def _convert_arg_to_id(arg_name: str, ms_path: str, arg_val: str) -> Dict[str, n
     except KeyError:
         taql = {arg_name: str(arg_val)}
         LOG.trace('Executing msselect({%r:%r} on %s', arg_name, arg_val, ms_path)
-        with casatools.MSReader(ms_path) as ms:
+        with casa_tools.MSReader(ms_path) as ms:
             ms.msselect(taql, onlyparse=True)
             result = ms.msselectedindices()
 

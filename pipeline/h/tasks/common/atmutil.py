@@ -1,11 +1,11 @@
 import math
 import os
 
-import numpy
 import matplotlib.pyplot as plt
+import numpy
 
 import pipeline.extern.adopted as adopted
-from pipeline.infrastructure import casatools
+from pipeline.infrastructure import casa_tools
 
 
 class AtmType(object):
@@ -30,7 +30,7 @@ def init_at(at, humidity=20.0, temperature=270.0, pressure=560.0,
     nchan: number of channels
     resolution: channel width [GHz]
     """
-    myqa = casatools.quanta
+    myqa = casa_tools.quanta
     at.initAtmProfile(humidity=humidity,
                       temperature=myqa.quantity(temperature, 'K'),
                       altitude=myqa.quantity(altitude, 'm'),
@@ -79,8 +79,8 @@ def test(pwv=1.0, elevation=45.0):
     pwv: water vapor content [mm]
     elevation: elevation [deg]
     """
-    myat = casatools.atmosphere
-    myqa = casatools.quanta
+    myat = casa_tools.atmosphere
+    myqa = casa_tools.quanta
     init_at(myat)
     myat.setUserWH2O(myqa.quantity(pwv, 'mm'))
 
@@ -120,7 +120,7 @@ def get_spw_spec(vis, spw_id):
 
     return: center frequency [GHz], number of channels, and resolution [GHz]
     """
-    with casatools.TableReader(os.path.join(vis, 'SPECTRAL_WINDOW')) as mytb:
+    with casa_tools.TableReader(os.path.join(vis, 'SPECTRAL_WINDOW')) as mytb:
         nrow = mytb.nrows()
         if spw_id < 0 or spw_id >= nrow:
             raise RuntimeError('spw_id {} is out of range'.format(spw_id))
@@ -139,7 +139,7 @@ def get_spw_spec(vis, spw_id):
 
 
 def get_median_elevation(vis, antenna_id):
-    with casatools.TableReader(os.path.join(vis, 'POINTING')) as mytb:
+    with casa_tools.TableReader(os.path.join(vis, 'POINTING')) as mytb:
         tsel = mytb.query('ANTENNA_ID == {}'.format(antenna_id))
         # default elevation
         elevation = 45.0
@@ -174,8 +174,8 @@ def get_transmission(vis, antenna_id=0, spw_id=0, doplot=False):
     # get median PWV using Todd's script
     (pwv, pwvmad) = adopted.getMedianPWV(vis=vis)
 
-    myat = casatools.atmosphere
-    myqa = casatools.quanta
+    myat = casa_tools.atmosphere
+    myqa = casa_tools.quanta
     init_at(myat, fcenter=center_freq, nchan=nchan, resolution=resolution)
     myat.setUserWH2O(myqa.quantity(pwv, 'mm'))
 

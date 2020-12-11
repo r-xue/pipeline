@@ -23,19 +23,20 @@
 # History:
 
 # package modules
-import os
 import copy
-import numpy as np
+import os
+import string
+
 import matplotlib
 import matplotlib.pyplot as plt
-import string
+import numpy as np
 from matplotlib.offsetbox import HPacker, TextArea, AnnotationBbox
 
 # alma modules
-from pipeline.hif.tasks.makeimages.resultobjects import MakeImagesResult
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.renderer.logger as logger
+from pipeline.hif.tasks.makeimages.resultobjects import MakeImagesResult
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -92,7 +93,7 @@ class SkyDisplay(object):
         if intent:
             field = '%s (%s)' % (field, intent)
 
-        with casatools.ImageReader(result) as image:
+        with casa_tools.ImageReader(result) as image:
             miscinfo = image.miscinfo()
 
         parameters = {k: miscinfo[k] for k in ['spw', 'pol', 'field', 'type', 'iter'] if k in miscinfo}
@@ -116,7 +117,7 @@ class SkyDisplay(object):
 
         LOG.info('Plotting %s' % result)
 
-        with casatools.ImageReader(result) as image:
+        with casa_tools.ImageReader(result) as image:
             try:
                 if collapseFunction == 'center':
                     collapsed = image.collapse(function='mean', chans=str(image.summary()['shape'][3]//2), axes=[2, 3])
@@ -215,7 +216,7 @@ class SkyDisplay(object):
                 self.plottext(1.05, yoff, 'Peak SNR: {:.5f}'.format(mom8_fc_peak_snr), 40)
 
             # plot beam
-            cqa = casatools.quanta
+            cqa = casa_tools.quanta
             if 'major' in beam:
                 bpa = beam['positionangle']
                 bpa = cqa.convert(bpa, 'rad')
