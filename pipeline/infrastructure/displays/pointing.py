@@ -25,9 +25,18 @@ msyb = ':'
 
 def Deg2HMS(x, prec=0):
     """
-    Converts an angle in degree to hour angle and returns a list of
-    strings of hour, minute, and second values in a specified precision,
-    e.g., ['01', '02', '23.4'] for '01:02:23.4'
+    Convert an angle in degree to hour angle.
+
+    Example:
+    >>> Deg2HMS(20.123, prec=7)
+    ['01', '20', '29.5']
+
+    Args:
+        x: An angle in degree.
+        prec: Significant digits.
+    Returns:
+        List of　strings of hour, minute, and second values in a specified
+        precision.
     """
     # Transform degree to HHMMSS.sss format
     xx = x % 360
@@ -36,50 +45,134 @@ def Deg2HMS(x, prec=0):
     return angle.split(':')
 
 
-# NOTE: a parameter 'pos'
-# HHMM* and DDMM* functions are used to set axis formatter of matplotlib plots.
-# The functions will be turned into matplotlib.ticker.FuncFormatter.
-# The function should take two inputs, a tick value x and position pos.
-# see also: https://matplotlib.org/3.3.0/api/ticker_api.html#matplotlib.ticker.FuncFormatter
 def HHMM(x, pos=None):
-    # HHMM format
+    """
+    Convert an angle in degree to hour angle with HHMM format.
+
+    HHMM* function is used to set axis formatter of matplotlib plots.
+    The functions will be turned into matplotlib.ticker.FuncFormatter.
+    The function should take two inputs, a tick value x and position pos.
+    see also: https://matplotlib.org/3.3.0/api/ticker_api.html#matplotlib.ticker.FuncFormatter
+
+    Example:
+    >>> HHMM(20.123)
+    '01:20'
+
+    Args:
+        x: An angle in degree.
+        prec: Significant digits.
+    Returns:
+        formated strings of hour, minute values.
+    """
     (h, m, s) = Deg2HMS(x, prec=6)
     return '%s%s%s' % (h, hsyb, m)
 
 
 def __format_hms(x, prec=0):
+    """
+    Convert an angle in degree to hour angle with hms format.
+
+    Example:
+    >>> __format_hms(10.123)
+    '00:40:30'
+
+    Args:
+        x: An angle in degree.
+        prec: Significant digits.
+    Returns:
+        formated strings of hour, minute, and second values in a specified
+        precision.
+    """
     (h, m, s) = Deg2HMS(x, prec)
     return '%s%s%s%s%s' % (h, hsyb, m, msyb, s)
 
 
 def HHMMSS(x, pos=None):
-    # HHMMSS format
+    """
+    Convert an angle in degree to hour angle with hms format.
+
+    Example:
+    >>> HHMMSS(10.123)
+    '00:40:30'
+
+    Args:
+        x: An angle in degree.
+        prec: Significant digits.
+    Returns:
+        formated strings of hour, minute, and second values in a specified
+        precision.
+    """
     return __format_hms(x, prec=6)
 
 
 def HHMMSSs(x, pos=None):
-    # HHMMSS.s format
+    """
+    Convert an angle in degree to hour angle with hms format.
+
+    Example:
+    >>> HHMMSSs(10.123)
+    '00:40:29.5'
+
+    Args:
+        x: An angle in degree.
+        prec: Significant digits.
+    Returns:
+        formated strings of hour, minute, and second values in a specified
+        precision.
+    """
     return __format_hms(x, prec=7)
 
 
 def HHMMSSss(x, pos=None):
-    # HHMMSS.ss format
+    """
+    Convert an angle in degree to hour angle with hms format.
+
+    Example:
+    >>> HHMMSSss(10.123)
+    '00:40:29.52'
+
+    Args:
+        x: An angle in degree.
+        prec: Significant digits.
+    Returns:
+        formated strings of hour, minute, and second values in a specified
+        precision.
+    """
     return __format_hms(x, prec=8)
 
 
 def HHMMSSsss(x, pos=None):
-    # HHMMSS.sss format
+    """Convert an angle in degree to hour angle with hms format.
+
+    Example:
+    >>> HHMMSSsss(10.123)
+    '00:40:29.520'
+
+    Args:
+        x: An angle in degree.
+        prec: Significant digits.
+    Returns:
+        formated strings of hour, minute, and second values in a specified
+        precision.
+    """
     return __format_hms(x, prec=9)
 
 
 def Deg2DMS(x, prec=0):
     """
-    Converts an angle in degree to dms angle (ddmmss.s) and returns a list of
-    strings of degree, arcminute, and arcsecond values in a specified precision,
-    e.g., ['+01', '02', '23.4'] for '+01.02.23.4'.
-    Note dgree string is always associated with a sign.
+    Convert an angle in degree to dms angle (ddmmss.s).
+
+    Example:
+    >>> Deg2DMS('+01.02.23.4', prec=1)
+    ['+01', '02', '23.4']
+
+    Args:
+        x: An angle in degree. Degree string is always associated with a sign.
+        prec: Significant digits.
+    Returns:
+        A list of strings of degree, arcminute, and arcsecond values in a
+        specified precision.
     """
-    # Transform degree to +ddmmss.ss format
     xxx = (x + 90) % 180 - 90
     xx = abs(xxx)
     sign = '-' if xxx < 0 else '+'
@@ -96,12 +189,42 @@ def Deg2DMS(x, prec=0):
 
 
 def DDMM(x, pos=None):
-    # +DDMM format
+    """Convert an angle in degree to dms angle with DDMM format.
+
+    DDMM* function is used to set axis formatter of matplotlib plots.
+    The functions will be turned into matplotlib.ticker.FuncFormatter.
+    The function should take two inputs, a tick value x and position pos.
+    see also: https://matplotlib.org/3.3.0/api/ticker_api.html#matplotlib.ticker.FuncFormatter
+
+    Example:
+    >>> Deg2DMS(10.123)
+    "+10$^\\circ$07'"
+
+    Args:
+        x: An angle in degree.
+        pos:
+    Returns:
+        A dms angle with DDMM format.
+    """
     (d, m, s) = Deg2DMS(x, prec=6)
     return '%s%s%s\'' % (d, dsyb, m)
 
 
 def __format_dms(x, prec=0):
+    """
+    Convert an angle in degree to dms angle in specified precision.
+
+    Example:
+    >>> __format_dms(10.123)
+    '+10$^\\circ$07\'23"'
+
+    Args:
+        x: An angle in degree. Degree string is always associated with a sign.
+        prec: Significant digits.
+    Returns:
+        String of degree, arcminute, and arcsecond values in a
+        specified precision.
+    """
     (d, m, s) = Deg2DMS(x, prec)
     # format desimal part of arcsec value separately
     xx = s.split('.')
@@ -111,20 +234,66 @@ def __format_dms(x, prec=0):
 
 
 def DDMMSS(x, pos=None):
-    # +DDMMSS format
+    """
+    Convert an angle in degree to dms angle with DDMMSS.
+
+    Example:
+    >>> DDMMSS(10.123)
+    '+10$^\\circ$07\'23"'
+
+    Args:
+        x: An angle in degree. Degree string is always associated with a sign.
+        pos:
+    Returns:
+        String of degree, arcminute, and arcsecond values with DDMMSS.
+    """
     return __format_dms(x, prec=6)
 
 def DDMMSSs(x, pos=None):
-    # +DDMMSS.s format
+    """
+    Convert an angle in degree to dms angle with DDMMSSs.
+
+    Example:
+    >>> DDMMSSs(10.123)
+    '+10$^\\circ$07\'22".8'
+
+    Args:
+        x: An angle in degree. Degree string is always associated with a sign.
+        pos:
+    Returns:
+        String of degree, arcminute, and arcsecond values with DDMMSSs.
+    """
     return __format_dms(x, prec=7)
 
 
 def DDMMSSss(x, pos=None):
-    # +DDMMSS.ss format
+    """
+    Convert an angle in degree to dms angle with DDMMSSss.
+
+    Example:
+    >>> DDMMSSss(10.123)
+    '+10$^\\circ$07\'22".80'
+
+    Args:
+        x: An angle in degree. Degree string is always associated with a sign.
+        pos:
+    Returns:
+        String of degree, arcminute, and arcsecond values with DDMMSSss.
+    """
     return __format_dms(x, prec=8)
 
 
 def XYlabel(span, direction_reference, ofs_coord=False):
+    """
+    Create labels for the x- and y-axes in plot.
+
+    Args:
+        span:
+        direction_reference:
+        ofs_coord:
+    Returns:
+        labels for the x- and y-axes in plot.
+    """
     if direction_reference.upper() == 'GALACTIC':
         return GLGBlabel(span)
     else:
@@ -133,7 +302,12 @@ def XYlabel(span, direction_reference, ofs_coord=False):
 
 def GLGBlabel(span):
     """
-    return (GLlocator, GBlocator, GLformatter, GBformatter) for Galactic coordinate
+    Create GLGB formart label.
+
+    Args:
+        span:
+    Returns:
+        (GLlocator, GBlocator, GLformatter, GBformatter) for Galactic coordinate
     """
     # RAtick = [15.0, 5.0, 2.5, 1.25, 1/2.0, 1/4.0, 1/12.0, 1/24.0, 1/48.0, 1/120.0, 1/240.0, 1/480.0, 1/1200.0,
     #           1/2400.0, 1/4800.0, 1/12000.0, 1/24000.0, 1/48000.0, -1.0]
@@ -177,7 +351,11 @@ def GLGBlabel(span):
 
 def RADEClabel(span, ofs_coord):
     """
-    return (RAlocator, DEClocator, RAformatter, DECformatter)
+    Args:
+        span:
+        ofs_coord:
+    Returns:
+        (RAlocator, DEClocator, RAformatter, DECformatter)
     """
     RAtick = [15.0, 5.0, 2.5, 1.25, 1/2.0, 1/4.0, 1/12.0, 1/24.0, 1/48.0, 1/120.0, 1/240.0, 1/480.0, 1/1200.0, 1/2400.0,
               1/4800.0, 1/12000.0, 1/24000.0, 1/48000.0, -1.0]
@@ -255,6 +433,11 @@ class MapAxesManagerBase(object):
         self._ofs_coord = None
 
     def get_axes_labels(self):
+        """
+        Returns:
+            xlabel: xlabel in plot. Default is 'RA'.
+            ylabel: ylabel in plot. Default is 'Dec'.
+        """
         # default label is RA/Dec
         xlabel = 'RA'
         ylabel = 'Dec'
@@ -301,6 +484,21 @@ class PointingAxesManager(MapAxesManagerBase):
 
     def init_axes(self, xlocator, ylocator, xformatter, yformatter, xrotation, yrotation, aspect, xlim=None, ylim=None,
                   reset=False):
+        """
+        Set matplotlib axes.
+
+        Args:
+            xlocator:
+            ylocator:
+            xformatter:
+            yformatter:
+            xrotation:
+            yrotation:
+            aspect:
+            xlim:
+            ylim:
+            reset:
+        """
         if self._axes is None:
             self._axes = self.__axes()
 
@@ -338,6 +536,18 @@ class PointingAxesManager(MapAxesManagerBase):
 
 
 def draw_beam(axes, r, aspect, x_base, y_base, offset=1.0):
+    """
+    Draw beam.
+
+    Args:
+        axes: pyplot instance of the current axes.
+        r:
+        aspect:
+        x_base:
+        y_base:
+        offset:
+    Returns:
+    """
     xy = np.array([[r * (math.sin(t * 0.13) + offset) * aspect + x_base,
                        r * (math.cos(t * 0.13) + offset) + y_base]
                       for t in range(50)])
@@ -348,6 +558,21 @@ def draw_beam(axes, r, aspect, x_base, y_base, offset=1.0):
 
 def draw_pointing(axes_manager, RA, DEC, FLAG=None, plotfile=None, connect=True, circle=[], ObsPattern=False,
                   plotpolicy='ignore'):
+    """
+    Draw pointing plots using matplotlib, export the plots and delete the matplotlib objects.
+
+    Args:
+        axes_manager: PointingAxesManager() instance.
+        RA:
+        DEC:
+        FLAG:
+        plotfile: A file path.
+        connect:
+        circle:
+        ObsPattern:
+        plotpolicy: The plotpolicy can be filled with 'plot', 'ignore' or
+            'greyed'.
+    """
     span = max(max(RA) - min(RA), max(DEC) - min(DEC))
     xmax = min(RA) - span / 10.0
     xmin = max(RA) + span / 10.0
@@ -419,6 +644,18 @@ def draw_pointing(axes_manager, RA, DEC, FLAG=None, plotfile=None, connect=True,
 class SingleDishPointingChart(object):
     def __init__(self, context, ms, antenna, target_field_id=None, reference_field_id=None, target_only=True,
                  ofs_coord=False):
+        """
+        Initialize SingleDishPointingChart class.
+
+        Args:
+            context: pipeline.Pipeline().context
+            ms: measurementSet instance.
+            antenna:
+            target_field_id:
+            reference_field_id:
+            target_only:
+            ofs_coord:
+        """
         self.context = context
         self.ms = ms
         self.antenna = antenna
@@ -441,6 +678,12 @@ class SingleDishPointingChart(object):
 
     @casa5style_plot
     def plot(self, revise_plot=False):
+        """
+        Generate a plot object.
+
+        Results:
+            A Plot object.
+        """
         if revise_plot == False and os.path.exists(self.figfile):
             return self._get_plot_object()
 
@@ -532,6 +775,12 @@ class SingleDishPointingChart(object):
         return self._get_plot_object()
 
     def _get_figfile(self):
+        """
+        Generate file path to export a plot.
+
+        Returns:
+            file path to export a plot.
+        """
         session_part = self.ms.session
         ms_part = self.ms.basename
         antenna_part = self.antenna.name
@@ -554,6 +803,12 @@ class SingleDishPointingChart(object):
         return figfile
 
     def _get_plot_object(self):
+        """
+        Generate a Plot object.
+
+        Returns:
+            A Plot object.
+        """
         intent = 'target' if self.target_only == True else 'target,reference'
         if self.target_field is None or self.reference_field is None:
             field_name = ''
