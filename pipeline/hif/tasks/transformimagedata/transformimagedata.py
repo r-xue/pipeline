@@ -3,11 +3,11 @@ import shutil
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.mstransform import mssplit
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 
 LOG = infrastructure.get_logger(__name__)
@@ -209,7 +209,7 @@ class Transformimagedata(mssplit.MsSplit):
 
         if inputs.clear_pointing:
             LOG.info('Removing POINTING table from ' + ms.name)
-            with casatools.TableReader(ms.name + '/POINTING', nomodify=False) as table:
+            with casa_tools.TableReader(ms.name + '/POINTING', nomodify=False) as table:
                 rows = table.rownumbers()
                 table.removerows(rows)
 

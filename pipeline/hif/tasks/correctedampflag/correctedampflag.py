@@ -6,12 +6,12 @@ import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.common import commonhelpermethods
 from pipeline.h.tasks.common.arrayflaggerbase import FlagCmd
 from pipeline.h.tasks.flagging.flagdatasetter import FlagdataSetter
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from .resultobjects import CorrectedampflagResults
 
@@ -1318,7 +1318,7 @@ class Correctedampflag(basetask.StandardTaskTemplate):
         nchans = ms.get_spectral_windows(str(spwid))[0].num_channels
 
         # Read in data from MS.
-        with casatools.MSReader(ms.name) as openms:
+        with casa_tools.MSReader(ms.name) as openms:
             try:
                 # Apply data selection, and set channel selection to take the
                 # average of all channels.

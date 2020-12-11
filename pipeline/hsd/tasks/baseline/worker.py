@@ -3,16 +3,16 @@ import os
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
-import pipeline.infrastructure.casatools as casatools
+import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataTable
 from pipeline.h.heuristics import caltable as caltable_heuristic
 from pipeline.hsd.heuristics import CubicSplineFitParamConfig
-from pipeline.domain import DataTable
-from .. import common
-from . import plotter
 from pipeline.hsd.tasks.common import utils as sdutils
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
+from . import plotter
+from .. import common
 
 _LOG = infrastructure.get_logger(__name__)
 LOG = sdutils.OnDemandStringParseLogger(_LOG)
@@ -27,7 +27,7 @@ class BaselineSubtractionInputsBase(vdp.StandardInputs):
     def colname(self):
         colname = ''
         if isinstance(self.vis, str):
-            with casatools.TableReader(self.vis) as tb:
+            with casa_tools.TableReader(self.vis) as tb:
                 candidate_names = ['CORRECTED_DATA',
                                    'DATA',
                                    'FLOAT_DATA']

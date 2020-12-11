@@ -11,7 +11,7 @@ from matplotlib.ticker import FuncFormatter
 import pipeline.domain.unitformat as unitformat
 import pipeline.infrastructure
 from pipeline.domain.measures import FrequencyUnits, DistanceUnits, Distance, ArcUnits, EquatorialArc
-from pipeline.infrastructure.casatools import quanta
+from pipeline.infrastructure.casa_tools import quanta
 
 LOG = pipeline.infrastructure.get_logger(__name__)
 

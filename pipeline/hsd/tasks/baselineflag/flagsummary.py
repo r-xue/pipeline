@@ -343,7 +343,7 @@ class SDBLFlagSummary(object):
         # Create Flagging Summary Page
         if FigFileDir != False:
             Filename = FigFileDir+FigFileRoot+'.html'
-            relpath = os.path.basename(FigFileDir.rstrip("/")) ### stage#
+#             relpath = os.path.basename(FigFileDir.rstrip("/")) ### stage#
             if os.access(Filename, os.F_OK):
                 os.remove(Filename)
             # Assuming single MS, antenna, field, spw, and polid
@@ -392,7 +392,8 @@ class SDBLFlagSummary(object):
             # Plot figures
             print('<HR>\nNote to all the plots below: short green vertical lines indicate position gaps; short cyan vertical lines indicate time gaps\n<HR>', file=Out)
             for name in plots:
-                print('<img src="%s/%s">\n<HR>' % (relpath, name), file=Out)
+#                 print('<img src="%s/%s">\n<HR>' % (relpath, name), file=Out)
+                print('<img src="./%s">\n<HR>' % (name), file=Out)
             print('</body>', file=Out)
             Out.close()
 

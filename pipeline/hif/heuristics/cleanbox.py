@@ -2,9 +2,9 @@ import os.path
 
 import numpy as np
 
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -12,7 +12,7 @@ LOG = infrastructure.get_logger(__name__)
 def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pblimit_image=0.2,
                          pblimit_cleanmask=0.3, cont_freq_ranges=None):
 
-    qaTool = casatools.quanta
+    qaTool = casa_tools.quanta
 
     if pb == '':
         pb = None
@@ -26,23 +26,23 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
     # cleaned
     model_sum = None
     if model is not None:
-        with casatools.ImageReader(model+extension) as image:
+        with casa_tools.ImageReader(model + extension) as image:
             model_stats = image.statistics(robust=False)
             model_sum = model_stats['sum'][0]
             LOG.debug('Sum of model: %s' % model_sum)
 
     LOG.debug('Fixing coordsys of pb and cleanmask')
-    with casatools.ImageReader(residual+extension) as image:
+    with casa_tools.ImageReader(residual + extension) as image:
         csys = image.coordsys()
     if pb is not None:
-        with casatools.ImageReader(pb+extension) as image:
+        with casa_tools.ImageReader(pb + extension) as image:
             image.setcoordsys(csys.torecord())
     if cleanmask is not None and os.path.exists(cleanmask):
-        with casatools.ImageReader(cleanmask) as image:
+        with casa_tools.ImageReader(cleanmask) as image:
             image.setcoordsys(csys.torecord())
     csys.done()
 
-    with casatools.ImageReader(residual+extension) as image:
+    with casa_tools.ImageReader(residual + extension) as image:
         # get the rms of the residual image inside the cleaned area
         LOG.todo('Cannot use dirname in mask')
         residual_cleanmask_rms = None
@@ -122,7 +122,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
     nonpbcor_image_statsmask = None
     if restored not in [None, '']:
         # get min and max of the pb-corrected cleaned result
-        with casatools.ImageReader(restored.replace('.image', '.image%s' % extension)) as image:
+        with casa_tools.ImageReader(restored.replace('.image', '.image%s' % extension)) as image:
             if pb is not None and os.path.exists(pb+extension):
                 have_mask = True
                 # Default is area pb > 0.3
@@ -141,7 +141,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                 # Restrict region to inner 25% x 25% of the image for calibrators to
                 # avoid picking up sidelobes (PIPE-611)
                 shape = image.shape()
-                rgTool = casatools.regionmanager
+                rgTool = casa_tools.regionmanager
                 nPixels = max(shape[0], shape[1])
                 region = rgTool.box([nPixels*0.375-1, nPixels*0.375-1, 0, 0], [nPixels*0.625-1, nPixels*0.625-1, shape[1]-1, shape[2]-1])
                 image_stats = image.statistics(mask=statsmask, region=region)
@@ -173,7 +173,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
             else:
                 raise 'Cannot handle clean mask name %s' % (os.path.basename(cleanmask))
 
-            with casatools.ImageReader(cleanmask) as image:
+            with casa_tools.ImageReader(cleanmask) as image:
                 flattened_mask_image = image.collapse(function='max', axes=[2, 3], outfile=flattened_mask)
                 try:
                     npoints_mask = flattened_mask_image.statistics(mask='"%s" > 0.1' % (os.path.basename(flattened_mask)), robust=False)['npts']
@@ -185,7 +185,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                     nonpbcor_image_cleanmask_npoints = 0
                 flattened_mask_image.done()
 
-        with casatools.ImageReader(nonpbcor_imagename) as image:
+        with casa_tools.ImageReader(nonpbcor_imagename) as image:
             # Get the image frequency axis for later plotting.
             imhead = image.summary(list=False)
             lcs = image.coordsys()
@@ -267,10 +267,10 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
 
                 # Filter continuum frequency ranges if given
                 if cont_freq_ranges not in (None, '', 'NONE', 'ALL'):
-                    # TODO: utils.freq_selection_to_channels uses casatools.image to get the frequency axis
+                    # TODO: utils.freq_selection_to_channels uses casa_tools.image to get the frequency axis
                     #       and closes the global pipeline image tool. The context manager wrapped tool
                     #       used in this "with" statement is a different instance, so this is OK, but stacked
-                    #       use of casatools.image might lead to unexpected results.
+                    #       use of casa_tools.image might lead to unexpected results.
                     cont_chan_ranges = utils.freq_selection_to_channels(nonpbcor_imagename, cont_freq_ranges)
                     cont_chan_indices = np.hstack([np.arange(start, stop+1) for start, stop in cont_chan_ranges])
                     nonpbcor_image_non_cleanmask_rms_vs_chan = image_stats['rms'][cont_chan_indices]

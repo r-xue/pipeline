@@ -6,7 +6,7 @@ import traceback
 import inspect
 
 # Pipeline imports
-import pipeline.infrastructure.casatools as casatools
+from pipeline.infrastructure import casa_tools
 
 IMPORT_ONLY = 'Import only'
 
@@ -16,7 +16,7 @@ def hifacal(vislist, importonly=True, dbservice=False, pipelinemode='automatic',
             interactive=True):
 
     echo_to_screen = interactive
-    casatools.post_to_log("Beginning ALMA calibration pipeline run ...")
+    casa_tools.post_to_log("Beginning ALMA calibration pipeline run ...")
 
     try:
         # Initialize the pipeline
@@ -110,18 +110,15 @@ def hifacal(vislist, importonly=True, dbservice=False, pipelinemode='automatic',
 
     except Exception as e:
         if str(e) == IMPORT_ONLY:
-            casatools.post_to_log("Exiting after import step ...",
-                                  echo_to_screen=echo_to_screen)
+            casa_tools.post_to_log("Exiting after import step ...", echo_to_screen=echo_to_screen)
         else:
-            casatools.post_to_log("Error in procedure execution ...",
-                                  echo_to_screen=echo_to_screen)
+            casa_tools.post_to_log("Error in procedure execution ...", echo_to_screen=echo_to_screen)
             errstr = traceback.format_exc()
-            casatools.post_to_log(errstr, echo_to_screen=echo_to_screen)
+            casa_tools.post_to_log(errstr, echo_to_screen=echo_to_screen)
 
     finally:
 
         # Save the results to the context
         h_save()
 
-        casatools.post_to_log("Terminating procedure execution ...",
-                              echo_to_screen=echo_to_screen)
+        casa_tools.post_to_log("Terminating procedure execution ...", echo_to_screen=echo_to_screen)

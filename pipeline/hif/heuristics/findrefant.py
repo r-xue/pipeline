@@ -35,7 +35,7 @@ import numpy
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import casatools
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -237,7 +237,7 @@ class RefAntHeuristics(object, metaclass=vdp.PipelineInputsMeta):
 
     def _get_names(self):
         antenna_table = os.path.join(self.vis, 'ANTENNA')
-        with casatools.TableReader(antenna_table) as table:
+        with casa_tools.TableReader(antenna_table) as table:
             names = table.getcol('NAME').tolist()
 
         # Remove ignored antennas
@@ -414,7 +414,7 @@ class RefAntGeometry:
 
         # Create the local instance of the table tool and open it with
         # the antenna subtable of the MS
-        with casatools.TableReader(self.vis + '/ANTENNA') as table:
+        with casa_tools.TableReader(self.vis + '/ANTENNA') as table:
 
             # Get the antenna information from the antenna table
             info = dict()
@@ -464,8 +464,8 @@ class RefAntGeometry:
     def _get_measures(self, info):
 
         # Create the local instances of the measures and quanta tools
-        meLoc = casatools.measures
-        qaLoc = casatools.quanta
+        meLoc = casa_tools.measures
+        qaLoc = casa_tools.quanta
 
         # Initialize the measures dictionary and the position and
         # position_keywords variables
@@ -534,7 +534,7 @@ class RefAntGeometry:
     def _get_latlongrad( self, info, measures ):
 
         # Create the local instance of the quanta tool
-        qaLoc = casatools.quanta
+        qaLoc = casa_tools.quanta
 
         # Get the radii, longitudes, and latitudes
         radii = dict()

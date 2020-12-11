@@ -11,11 +11,11 @@ def hifvcalvlass(vislist, importonly=False, pipelinemode='automatic', interactiv
     import pipeline
 
     # Pipeline imports
-    import pipeline.infrastructure.casatools as casatools
+    from pipeline.infrastructure import casa_tools
     pipeline.initcli()
 
     echo_to_screen = interactive
-    casatools.post_to_log("Beginning VLA Sky Survey pipeline calibration run ...")
+    casa_tools.post_to_log("Beginning VLA Sky Survey pipeline calibration run ...")
 
     try:
         # Initialize the pipeline
@@ -103,16 +103,16 @@ def hifvcalvlass(vislist, importonly=False, pipelinemode='automatic', interactiv
 
     except Exception as e:
         if str(e) == IMPORT_ONLY:
-            casatools.post_to_log("Exiting after import step ...", echo_to_screen=echo_to_screen)
+            casa_tools.post_to_log("Exiting after import step ...", echo_to_screen=echo_to_screen)
         else:
-            casatools.post_to_log("Error in procedure execution ...", echo_to_screen=echo_to_screen)
+            casa_tools.post_to_log("Error in procedure execution ...", echo_to_screen=echo_to_screen)
             errstr = traceback.format_exc()
-            casatools.post_to_log(errstr, echo_to_screen=echo_to_screen)
+            casa_tools.post_to_log(errstr, echo_to_screen=echo_to_screen)
 
     finally:
 
         # Save the results to the context
         h_save()
 
-        casatools.post_to_log("VLA CASA Pipeline finished.  Terminating procedure execution ...",
-                              echo_to_screen=echo_to_screen)
+        casa_tools.post_to_log("VLA CASA Pipeline finished.  Terminating procedure execution ...",
+                               echo_to_screen=echo_to_screen)

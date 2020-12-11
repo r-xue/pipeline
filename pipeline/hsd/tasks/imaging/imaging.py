@@ -1,23 +1,23 @@
 import collections
+import math
 import os
 
-import math
 import numpy
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.callibrary as callibrary
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.imageheader as imageheader
 import pipeline.infrastructure.utils as utils
+import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataTable
 from pipeline.extern import sensitivity_improvement
 from pipeline.h.heuristics import fieldnames
 from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
-from pipeline.domain import DataTable
 from . import gridding
 from . import sdcombine
 from . import weighting
@@ -187,7 +187,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         in_field = inputs.field
 #         antennalist = inputs.antennalist
         imagemode = inputs.mode.upper()
-        cqa = casatools.quanta
+        cqa = casa_tools.quanta
 
         # check if data is NRO
         is_nro = sdutils.is_nro(context)
@@ -450,7 +450,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                     # The rms and number of valid spectra is used to create RMS maps.
                     LOG.info('Additional Step. Make grid_table')
                     imagename = imager_result.outcome['image'].imagename
-                    with casatools.ImageReader(imagename) as ia:
+                    with casa_tools.ImageReader(imagename) as ia:
                         cs = ia.coordsys()
                         dircoords = [i for i in range(cs.naxes())
                                      if cs.axiscoordinatetypes()[i] == 'Direction']
@@ -503,7 +503,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
                     # define RMS ranges in image
                     LOG.info("Calculate spectral line and deviation mask frequency ranges in image.")
-                    with casatools.ImageReader(imagename) as ia:
+                    with casa_tools.ImageReader(imagename) as ia:
                         cs = ia.coordsys()
                         frequency_frame = cs.getconversiontype('spectral')
                         cs.done()
@@ -595,7 +595,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 LOG.info('Additional Step. Make grid_table')
                 imagename = imager_result.outcome['image'].imagename
                 org_direction = imager_result.outcome['image'].org_direction
-                with casatools.ImageReader(imagename) as ia:
+                with casa_tools.ImageReader(imagename) as ia:
                     cs = ia.coordsys()
                     dircoords = [i for i in range(cs.naxes())
                                  if cs.axiscoordinatetypes()[i] == 'Direction']
@@ -649,7 +649,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 rep_bw = ref_ms.representative_target[2]
                 rep_spwid = ref_ms.get_representative_source_spw()[1]
                 is_representative_spw = (rep_spwid==combined_spws[0] and rep_bw is not None)
-                with casatools.ImageReader(imagename) as ia:
+                with casa_tools.ImageReader(imagename) as ia:
                     cs = ia.coordsys()
                     faxis = cs.findaxisbyname('spectral')
                     num_chan = ia.shape()[faxis]
@@ -873,8 +873,8 @@ class SDImaging(basetask.StandardTaskTemplate):
             direction_ref = field.mdirection
             start_time = msobj.start_time
             end_time = msobj.end_time
-            me = casatools.measures
-            qa = casatools.quanta
+            me = casa_tools.measures
+            qa = casa_tools.quanta
             qmid_time = qa.quantity(start_time['m0'])
             qmid_time = qa.add(qmid_time, end_time['m0'])
             qmid_time = qa.div(qmid_time, 2.0)
@@ -1006,7 +1006,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             A quantum value of theoretical image RMS.
             The value of quantity will be negative when calculation is aborted, i.e., -1.0 Jy/beam
         """
-        cqa = casatools.quanta
+        cqa = casa_tools.quanta
         failed_rms = cqa.quantity(-1, imageunit)
         if len(infiles) == 0:
             LOG.error('No MS given to calculate a theoretical RMS. Aborting calculation of theoretical thermal noise.')
@@ -1045,7 +1045,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 LOG.info('No unflagged row in DataTable. Skipping further calculation.')
                 continue
             # effective BW
-            with casatools.MSMDReader(infile) as msmd:
+            with casa_tools.MSMDReader(infile) as msmd:
                 ms_chanwidth = numpy.abs(msmd.chanwidths(spwid).mean())
                 ms_effbw = msmd.chaneffbws(spwid).mean()
                 ms_nchan = msmd.nchan(spwid)
@@ -1111,7 +1111,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 LOG.warn('Could not find a sky caltable applied. '+error_msg)
                 return failed_rms
             LOG.info('Searching OFF scans in {}'.format(os.path.basename(skytab)))
-            with casatools.TableReader(skytab) as tb:
+            with casa_tools.TableReader(skytab) as tb:
                 t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}&&FIELD_ID=={}'.format(spwid, antid, sky_field), columns='INTERVAL')
                 if t.nrows == 0:
                     LOG.warn('No sky caltable row found for spw {}, antenna {}, field {} in {}. {}'.format(spwid, antid, sky_field, os.path.basename(skytab), error_msg))
@@ -1145,7 +1145,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 if not os.path.exists(k2jytab):
                     LOG.warn('Could not find a Jy/K caltable applied. '+error_msg)
                     return failed_rms
-                with casatools.TableReader(k2jytab) as tb:
+                with casa_tools.TableReader(k2jytab) as tb:
                     t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}'.format(spwid, antid), columns='CPARAM')
                     if t.nrows == 0:
                         LOG.warn('No Jy/K caltable row found for spw {}, antenna {} in {}. {}'.format(spwid, antid, os.path.basename(k2jytab), error_msg))
@@ -1200,7 +1200,7 @@ def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
     height_list = []
     first_row = None # RA and Dec of the first raster row
     
-    cqa = casatools.quanta
+    cqa = casa_tools.quanta
     map_center_dec = cqa.getvalue(cqa.convert(cqa.quantity(map_center_dec, datatable.getcolkeyword('DEC', 'UNIT')),'rad'))[0]
     dec_factor = numpy.abs(numpy.cos(map_center_dec))
     # loop over raster rows.

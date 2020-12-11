@@ -5,11 +5,11 @@ import traceback
 
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.logger as logger
-import pipeline.infrastructure.casatools as casatools
 from pipeline.h.tasks.common.displays import common as common
 from pipeline.h.tasks.common.displays import bandpass as bandpass
 from ..common import display as sd_display
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 
 LOG = logging.get_logger(__name__)
@@ -303,7 +303,7 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
                     LOG.debug('field_id_target = {0}, field_id_reference = {1}'.format(field_id_target, field_id_reference))
                     field = fields[field_id_target]
                     # make plots for the interval ratio (off-source/on-source) vs time;
-                    with casatools.TableReader(calapp.gaintable) as tb:
+                    with casa_tools.TableReader(calapp.gaintable) as tb:
                         t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}&&FIELD_ID=={}'.format(spw_id, antenna_id, field_id_reference), sortlist='TIME', columns='TIME, SPECTRAL_WINDOW_ID, INTERVAL')
                         mjd = t.getcol('TIME')
                         ms_target = ms.get_scans(scan_intent='TARGET', field=field_id_target)

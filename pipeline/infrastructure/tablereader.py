@@ -12,10 +12,10 @@ from functools import reduce
 import cachetools
 import numpy
 
-from . import casatools
-from . import logging
 import pipeline.domain as domain
 import pipeline.domain.measures as measures
+from . import casa_tools
+from . import logging
 
 LOG = logging.get_logger(__name__)
 
@@ -68,7 +68,7 @@ class MeasurementSetReader(object):
     @staticmethod
     def get_scans(msmd, ms):
         LOG.debug('Analysing scans in {0}'.format(ms.name))
-        with casatools.TableReader(ms.name) as openms:
+        with casa_tools.TableReader(ms.name) as openms:
             scan_number_col = openms.getcol('SCAN_NUMBER')
             time_col = openms.getcol('TIME')
             antenna1_col = openms.getcol('ANTENNA1')
@@ -79,8 +79,8 @@ class MeasurementSetReader(object):
             time_colkeywords = openms.getcolkeywords('TIME')
             time_unit = time_colkeywords['QuantumUnits'][0]
             time_ref = time_colkeywords['MEASINFO']['Ref']    
-            mt = casatools.measures
-            qt = casatools.quanta
+            mt = casa_tools.measures
+            qt = casa_tools.quanta
 
             scans = []
             statesforscans = msmd.statesforscans()
@@ -270,7 +270,7 @@ class MeasurementSetReader(object):
         ms = domain.MeasurementSet(ms_file)
 
         # populate ms properties with results of table readers 
-        with casatools.MSMDReader(ms_file) as msmd:
+        with casa_tools.MSMDReader(ms_file) as msmd:
             LOG.info('Populating ms.antenna_array...')
             ms.antenna_array = AntennaTable.get_antenna_array(msmd)
             LOG.info('Populating ms.spectral_windows...')
@@ -337,7 +337,7 @@ class MeasurementSetReader(object):
             # No MSMD functions to help populating the ASDM_EXECBLOCK table
             ms.array_name = ExecblockTable.get_execblock_info(ms)
 
-            with casatools.MSReader(ms.name) as openms:
+            with casa_tools.MSReader(ms.name) as openms:
                 for dd in ms.data_descriptions:
                     openms.selectinit(reset=True)
                     # CAS-11207: from ~CASA 5.3pre89 onwards, getdata fails if
@@ -381,7 +381,7 @@ class MeasurementSetReader(object):
 
     @staticmethod
     def _get_range(filename, column):
-        with casatools.MSReader(filename) as ms:
+        with casa_tools.MSReader(filename) as ms:
             data = ms.range([column])
             return list(data.values())[0]
 
@@ -489,7 +489,7 @@ class SpectralWindowTable(object):
         receiver_info = {}
         try:
             # Read in required columns from table.
-            with casatools.TableReader(receiver_table) as tb:
+            with casa_tools.TableReader(receiver_table) as tb:
                 # Extract the ASDM spw ids column.
                 spwids = tb.getcol('spectralWindowId')
 
@@ -643,7 +643,7 @@ class AntennaTable(object):
     def get_antennas(msmd):
         antenna_table = os.path.join(msmd.name(), 'ANTENNA')
         LOG.trace('Opening ANTENNA table to read ANTENNA.FLAG_ROW')
-        with casatools.TableReader(antenna_table) as table:
+        with casa_tools.TableReader(antenna_table) as table:
             flags = table.getcol('FLAG_ROW')
 
         antennas = []
@@ -654,8 +654,8 @@ class AntennaTable(object):
 
             position = msmd.antennaposition(i)
             offset = msmd.antennaoffset(i)
-            diameter_m = casatools.quanta.convert(msmd.antennadiameter(i), 'm')
-            diameter = casatools.quanta.getvalue(diameter_m)[0]
+            diameter_m = casa_tools.quanta.convert(msmd.antennadiameter(i), 'm')
+            diameter = casa_tools.quanta.getvalue(diameter_m)[0]
 
             antenna = domain.Antenna(i, name, station, position, offset, diameter)
             antennas.append(antenna)
@@ -727,7 +727,7 @@ class SBSummaryTable(object):
         sbsummary_table = os.path.join(msname, 'ASDM_SBSUMMARY')
         observing_modes = []
         try:
-            with casatools.TableReader(sbsummary_table) as tb:
+            with casa_tools.TableReader(sbsummary_table) as tb:
                 observing_mode = tb.getcol('observingMode')
                 for irow in range(tb.nrows()):
                     cell = observing_mode[:, irow]
@@ -755,10 +755,10 @@ class SBSummaryTable(object):
         but handle the more general case
         """
         LOG.debug('Analysing ASDM_SBSummary table')
-        qa = casatools.quanta
+        qa = casa_tools.quanta
         msname = _get_ms_name(ms)
         sbsummary_table = os.path.join(msname, 'ASDM_SBSUMMARY')        
-        with casatools.TableReader(sbsummary_table) as table:
+        with casa_tools.TableReader(sbsummary_table) as table:
             try:
                 scienceGoals = table.getcol('scienceGoal')
                 numScienceGoals = table.getcol('numScienceGoal')
@@ -896,7 +896,7 @@ class ExecblockTable(object):
         LOG.debug('Analysing ASDM_EXECBLOCK table')
         msname = _get_ms_name(ms)
         execblock_table = os.path.join(msname, 'ASDM_EXECBLOCK')        
-        with casatools.TableReader(execblock_table) as table:
+        with casa_tools.TableReader(execblock_table) as table:
             telescope_names = table.getcol('telescopeName')
             config_names = table.getcol('configName')
 
@@ -983,7 +983,7 @@ class SourceTable(object):
 
         eph_sourcenames = []
         for ephemeris_table in ephemeris_tables:
-            with casatools.TableReader(ephemeris_table) as tb:
+            with casa_tools.TableReader(ephemeris_table) as tb:
                 keywords = tb.getkeywords()
                 eph_sourcenames.append(keywords['NAME'])
 
@@ -997,7 +997,7 @@ class StateTable(object):
 
         LOG.trace('Opening STATE table to read STATE.OBS_MODE')
         state_table = os.path.join(msmd.name(), 'STATE')
-        with casatools.TableReader(state_table) as table:
+        with casa_tools.TableReader(state_table) as table:
             obs_modes = table.getcol('OBS_MODE')
 
         states = []
@@ -1018,13 +1018,13 @@ class StateTable(object):
 
         LOG.trace('Opening MS to read TIME keyword to avoid '
                   'msmd.timesforscan() units ambiguity')
-        with casatools.TableReader(msmd.name()) as table:
+        with casa_tools.TableReader(msmd.name()) as table:
             time_colkeywords = table.getcolkeywords('TIME')
             time_unit = time_colkeywords['QuantumUnits'][0]
             time_ref = time_colkeywords['MEASINFO']['Ref']    
 
-        me = casatools.measures
-        qa = casatools.quanta
+        me = casa_tools.measures
+        qa = casa_tools.quanta
 
         epoch_start = me.epoch(time_ref, qa.quantity(scan_start, time_unit))
         str_start = qa.time(epoch_start['m0'], form=['fits'])[0]
@@ -1045,7 +1045,7 @@ class FieldTable(object):
 
         LOG.trace('Opening FIELD table to read FIELD.SOURCE_TYPE')
         field_table = os.path.join(msmd.name(), 'FIELD')
-        with casatools.TableReader(field_table) as table:
+        with casa_tools.TableReader(field_table) as table:
             # TODO can this old code be removed? We've not handled non-APDMs
             # for a *long* time!
             #

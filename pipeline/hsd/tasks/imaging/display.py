@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.displays.pointing as pointing
 import pipeline.infrastructure.renderer.logger as logger
 from pipeline.h.tasks.common import atmutil
@@ -16,6 +15,7 @@ from pipeline.hsd.tasks.common.display import sd_polmap as polmap
 from pipeline.hsd.tasks.common.display import SDSparseMapPlotter
 from pipeline.hsd.tasks.common.display import NoData, NoDataThreshold
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.displays.pointing import MapAxesManagerBase
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 
@@ -509,8 +509,8 @@ class SDSparseMapDisplay(SDImageDisplay):
                     direction_ref = field.mdirection
                     start_time = ms.start_time
                     end_time = ms.end_time
-                    me = casatools.measures
-                    qa = casatools.quanta
+                    me = casa_tools.measures
+                    qa = casa_tools.quanta
                     qmid_time = qa.quantity(start_time['m0'])
                     qmid_time = qa.add(qmid_time, end_time['m0'])
                     qmid_time = qa.div(qmid_time, 2.0)
@@ -657,7 +657,7 @@ class SDChannelMapDisplay(SDImageDisplay):
         weightname = self.inputs.imagename + '.weight'
         new_id_stokes = 0 if self.id_stokes < self.id_spectral else 1
         # un-weighted image
-        unweight_ia = casatools.image.imagecalc(outfile='', pixels='"%s" * "%s"' % (imagename, weightname))
+        unweight_ia = casa_tools.image.imagecalc(outfile='', pixels='"%s" * "%s"' % (imagename, weightname))
 
         # if all pixels are masked, return fully masked array
         unweight_mask = unweight_ia.getchunk(getmask=True)
@@ -678,9 +678,9 @@ class SDChannelMapDisplay(SDImageDisplay):
         finally:
             collapsed_ia.close()
         # set mask to weight image
-        with casatools.ImageReader(imagename) as ia:
+        with casa_tools.ImageReader(imagename) as ia:
             maskname = ia.maskhandler('get')[0]
-        with casatools.ImageReader(weightname) as ia:
+        with casa_tools.ImageReader(weightname) as ia:
             if maskname!='T': #'T' is no mask (usually an image from completely flagged MSes)
                 ia.maskhandler('delete', [maskname])
                 ia.maskhandler('copy', ['%s:%s' % (imagename, maskname), maskname])
@@ -1189,7 +1189,7 @@ class SDSpectralMapDisplay(SDImageDisplay):
         return self.__plot_spectral_map()
 
     def __get_strides(self):
-        qa = casatools.quanta
+        qa = casa_tools.quanta
         units = self.image.units
         factors = []
         for idx in self.image.id_direction:

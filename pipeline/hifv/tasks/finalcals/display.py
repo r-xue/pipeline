@@ -5,9 +5,9 @@ import collections
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.casa_tasks as casa_tasks
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -172,7 +172,7 @@ class finalphaseGainPerAntennaChart(object):
             if spw in listspws:  # Science intents only
                 band2spw[band].append(str(spw))
 
-        with casatools.TableReader(result.bpdgain_touse) as tb:
+        with casa_tools.TableReader(result.bpdgain_touse) as tb:
             times = tb.getcol('TIME')
         mintime = np.min(times)
         maxtime = np.max(times)
@@ -259,7 +259,7 @@ class finalbpSolAmpPerAntennaChart(object):
 
         for bandname, spwlist in band2spw.items():
 
-            with casatools.TableReader(self.result.bpcaltable) as tb:
+            with casa_tools.TableReader(self.result.bpcaltable) as tb:
                 dataVarCol = tb.getvarcol('CPARAM')
                 flagVarCol = tb.getvarcol('FLAG')
 
@@ -369,7 +369,7 @@ class finalbpSolPhasePerAntennaChart(object):
 
         for bandname, spwlist in band2spw.items():
 
-            with casatools.TableReader(self.result.bpcaltable) as tb:
+            with casa_tools.TableReader(self.result.bpcaltable) as tb:
                 dataVarCol = tb.getvarcol('CPARAM')
                 flagVarCol = tb.getvarcol('FLAG')
 
@@ -480,7 +480,7 @@ class finalbpSolPhaseShortPerAntennaChart(object):
             if spw in listspws:  # Science intents only
                 band2spw[band].append(str(spw))
 
-        with casatools.TableReader(self.result.phaseshortgaincaltable) as tb:
+        with casa_tools.TableReader(self.result.phaseshortgaincaltable) as tb:
             times = tb.getcol('TIME')
         mintime = np.min(times)
         maxtime = np.max(times)
@@ -567,14 +567,14 @@ class finalAmpTimeCalPerAntennaChart(object):
             if spw in listspws:  # Science intents only
                 band2spw[band].append(str(spw))
 
-        with casatools.TableReader(self.result.finalampgaincaltable) as tb:
+        with casa_tools.TableReader(self.result.finalampgaincaltable) as tb:
             times = tb.getcol('TIME')
         mintime = np.min(times)
         maxtime = np.max(times)
 
         for bandname, spwlist in band2spw.items():
 
-            with casatools.TableReader(self.result.finalampgaincaltable) as tb:
+            with casa_tools.TableReader(self.result.finalampgaincaltable) as tb:
                 cpar = tb.getcol('CPARAM')
                 flgs = tb.getcol('FLAG')
             amps = np.abs(cpar)
@@ -666,7 +666,7 @@ class finalAmpFreqCalPerAntennaChart(object):
 
         for bandname, spwlist in band2spw.items():
 
-            with casatools.TableReader(self.result.finalampgaincaltable) as tb:
+            with casa_tools.TableReader(self.result.finalampgaincaltable) as tb:
                 cpar = tb.getcol('CPARAM')
                 flgs = tb.getcol('FLAG')
             amps = np.abs(cpar)
@@ -758,7 +758,7 @@ class finalPhaseGainCalPerAntennaChart(object):
             if spw in listspws:  # Science intents only
                 band2spw[band].append(str(spw))
 
-        with casatools.TableReader(self.result.finalphasegaincaltable) as tb:
+        with casa_tools.TableReader(self.result.finalphasegaincaltable) as tb:
             times = tb.getcol('TIME')
         mintime = np.min(times)
         maxtime = np.max(times)
