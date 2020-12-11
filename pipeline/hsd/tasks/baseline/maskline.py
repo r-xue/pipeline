@@ -6,9 +6,9 @@ import numpy
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
-import pipeline.infrastructure.casatools as casatools
 from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.domain.datatable import DataTableIndexer
+from pipeline.infrastructure import casa_tools
 from . import simplegrid
 from . import detection
 from . import validation
@@ -121,7 +121,7 @@ class MaskLine(basetask.StandardTaskTemplate):
         edge = self.inputs.edge
         broadline = self.inputs.broadline
         clusteringalgorithm = self.inputs.clusteringalgorithm
-        beam_size = casatools.quanta.convert(reference_data.beam_sizes[reference_antenna][reference_spw], 'deg')['value']
+        beam_size = casa_tools.quanta.convert(reference_data.beam_sizes[reference_antenna][reference_spw], 'deg')['value']
         observing_pattern = reference_data.observing_pattern[reference_antenna][reference_spw][reference_field]
 
         # parse window

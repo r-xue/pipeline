@@ -17,10 +17,10 @@ import os
 
 import numpy
 
-import pipeline.infrastructure.casatools as casatools
-from pipeline.h.heuristics import echoheuristic as echoheuristic
-import pipeline.infrastructure.adapters as adapters 
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.adapters as adapters
+from pipeline.h.heuristics import echoheuristic as echoheuristic
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -113,7 +113,7 @@ class PolynomialHeuristicAdapter(adapters.Adapter):
         # open the CAL_DESC sub-table and read the column that maps
         # CAL_DESC_ID to SPECTRAL_WINDOW_ID
         cal_desc = os.path.join(caltable.name, 'CAL_DESC')        
-        with casatools.TableReader(cal_desc) as table:
+        with casa_tools.TableReader(cal_desc) as table:
             caldesc_2_spw = table.getcol('SPECTRAL_WINDOW_ID')[0]
             caldesc_id = numpy.arange(len(caldesc_2_spw))[caldesc_2_spw == spw]
             if len(caldesc_id) > 0:
@@ -126,7 +126,7 @@ class PolynomialHeuristicAdapter(adapters.Adapter):
         # cal_flag arrays is to correct for the fact that the
         # calibration table arrays all have the number of channels
         # of the largest spw. This should change in the future.
-        with casatools.TableReader(caltable.name) as table:
+        with casa_tools.TableReader(caltable.name) as table:
             taql = 'CAL_DESC_ID=={0}'.format(caldesc_id) 
             subtable = table.query(query=taql)
             antenna1 = subtable.getcol('ANTENNA1')

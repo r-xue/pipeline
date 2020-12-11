@@ -4,9 +4,8 @@ import os
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
-
 from pipeline.h.tasks.common.displays import sky as sky
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -36,12 +35,12 @@ class CutoutimagesSummary(object):
                                                            vmin=-0.1, vmax=0.3))
             elif '.image.' in subimagename and '.pbcor' not in subimagename:
                 # PIPE-491 report non-pbcor stats and don't display images
-                with casatools.ImageReader(subimagename) as image:
+                with casa_tools.ImageReader(subimagename) as image:
                     self.result.image_stats = image.statistics(robust=True)
 
             elif '.residual.' in subimagename and '.pbcor.' not in subimagename:
                 # PIPE-491 report non-pbcor stats and don't display images
-                with casatools.ImageReader(subimagename) as image:
+                with casa_tools.ImageReader(subimagename) as image:
                     self.result.residual_stats = image.statistics(robust=True)
 
             elif '.image.pbcor.' in subimagename and '.rms.' not in subimagename:
@@ -50,14 +49,14 @@ class CutoutimagesSummary(object):
                                                            collapseFunction='mean',
                                                            vmin=-5 * self.result.RMSmedian,
                                                            vmax=20 * self.result.RMSmedian))
-                with casatools.ImageReader(subimagename) as image:
+                with casa_tools.ImageReader(subimagename) as image:
                     self.result.pbcor_stats = image.statistics(robust=True)
 
             elif '.rms.' in subimagename:
                 plot_wrappers.append(sky.SkyDisplay().plot(self.context, subimagename,
                                                            reportdir=stage_dir, intent='',
                                                            collapseFunction='mean'))
-                with casatools.ImageReader(subimagename) as image:
+                with casa_tools.ImageReader(subimagename) as image:
                     self.result.rms_stats = image.statistics(robust=True)
                     self.result.RMSmedian = self.result.rms_stats.get('median')[0]
                     arr = image.getchunk()
@@ -79,14 +78,14 @@ class CutoutimagesSummary(object):
                 plot_wrappers.append(sky.SkyDisplay().plot(self.context, subimagename,
                                                            reportdir=stage_dir, intent='',
                                                            collapseFunction='mean'))
-                with casatools.ImageReader(subimagename) as image:
+                with casa_tools.ImageReader(subimagename) as image:
                     self.result.pbcor_residual_stats = image.statistics(robust=True)
 
             elif '.pb.' in subimagename:
                 plot_wrappers.append(sky.SkyDisplay().plot(self.context, subimagename,
                                                            reportdir=stage_dir, intent='',
                                                            collapseFunction='mean'))
-                with casatools.ImageReader(subimagename) as image:
+                with casa_tools.ImageReader(subimagename) as image:
                     self.result.pb_stats = image.statistics(robust=True)
 
             else:

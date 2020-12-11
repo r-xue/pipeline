@@ -3,15 +3,15 @@ import collections
 import time
 import numpy
 import math
-import pylab as PL
+import matplotlib.pyplot as plt
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 import pipeline.h.heuristics as heuristics
 # import pipeline.domain.measures as measures
 # from pipeline.domain.datatable import DataTableImpl as DataTable
+from pipeline.infrastructure import casa_tools
 from .. import common
 from ..common import utils
 from . import rules
@@ -247,13 +247,13 @@ class DetectLine(basetask.StandardTaskTemplate):
 
     def plot_detectrange(self, sp, protected, fname):
         print(protected, fname)
-        PL.clf()
-        PL.plot(sp)
-        ymin, ymax = PL.ylim()
+        plt.clf()
+        plt.plot(sp)
+        ymin, ymax = plt.ylim()
         for i in range(len(protected)):
             y = ymin + (ymax - ymin)/30.0 * (i + 1)
-            PL.plot(protected[i], (y, y), 'r')
-        PL.savefig(fname, format='png')
+            plt.plot(protected[i], (y, y), 'r')
+        plt.savefig(fname, format='png')
 
     def MaskBinning(self, data, Bin, offset=0):
         if Bin == 1:
@@ -444,7 +444,7 @@ class LineWindowParser(object):
         self.science_spw = [x.id for x in self.ms.get_spectral_windows(science_windows_only=True)]
 
         # measure tool
-        self.me = casatools.measures
+        self.me = casa_tools.measures
 
     def parse(self, field_id):
         # convert self.window into dictionary
@@ -517,7 +517,7 @@ class LineWindowParser(object):
 
     def _string2dict(self, window):
         # utilize ms tool to convert selection string into lists
-        with casatools.MSReader(self.ms.name) as ms:
+        with casa_tools.MSReader(self.ms.name) as ms:
             try:
                 ms.msselect({'spw': window})
                 idx = ms.msselectedindices()
@@ -632,7 +632,7 @@ class LineWindowParser(object):
             return window
 
         # assuming that measure tool is properly initialized
-        qa = casatools.quanta
+        qa = casa_tools.quanta
         qfreq = [qa.quantity(x) for x in window]
         if qa.gt(qfreq[0], qfreq[1]):
             qfreq = [qfreq[1], qfreq[0]]
@@ -748,7 +748,7 @@ def test_parser(ms):
 
 # def get_restfrequency(vis, spwid, source_id):
 #     source_table = os.path.join(vis, 'SOURCE')
-#     with casatools.TableReader(source_table) as tb:
+#     with casa_tools.TableReader(source_table) as tb:
 #         tsel = tb.query('SOURCE_ID == {} && SPECTRAL_WINDOW_ID == {}'.format(source_id, spwid))
 #         try:
 #             if tsel.nrows() == 0:

@@ -4,12 +4,12 @@ from operator import itemgetter, attrgetter
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.heuristics import caltable as caltable_heuristic
 from pipeline.h.heuristics.tsysspwmap import tsysspwmap
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from . import resultobjects
 
@@ -293,8 +293,8 @@ def get_calapplications(ms, tsys_table, calfrom_defaults, origin, spw_map, is_si
             # For the fields for the current non-Tsys intent, we'll emulate the
             # CASA gainfield='nearest' option by selecting the spatially
             # closest Tsys field with the same tuning.
-            me = casatools.measures
-            qa = casatools.quanta
+            me = casa_tools.measures
+            qa = casa_tools.quanta
             for non_tsys_field in fields_with_intent:
                 non_tsys_direction = non_tsys_field.mdirection
 

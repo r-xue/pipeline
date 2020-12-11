@@ -7,7 +7,7 @@ import numpy as np
 from scipy.interpolate import splev, splrep
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.utils.conversion import mjd_seconds_to_datetime
 
 LOG = infrastructure.get_logger(__name__)
@@ -170,7 +170,7 @@ def readPWVFromMS(vis):
     of lists:   [[mjdsec], [pwv], [antennaName]]
     """
     if os.path.exists("%s/ASDM_CALWVR" % vis):
-        with casatools.TableReader(vis+"/ASDM_CALWVR") as table:
+        with casa_tools.TableReader(vis+"/ASDM_CALWVR") as table:
             time = table.getcol('startValidTime')  # mjdsec
             antenna = table.getcol('antennaName')
             pwv = table.getcol('water')
@@ -204,7 +204,7 @@ def readPWVFromASDM_CALATMOSPHERE(vis):
             LOG.warn("Could not find measurement set")
             return
 
-    with casatools.TableReader(vis + "/ASDM_CALATMOSPHERE") as table:
+    with casa_tools.TableReader(vis + "/ASDM_CALATMOSPHERE") as table:
         pwvtime = table.getcol('startValidTime')  # mjdsec
         antenna = table.getcol('antennaName')
         pwv = table.getcol('water')[0]  # There seem to be 2 identical entries per row, so take first one.
@@ -221,7 +221,7 @@ def getObservatoryName(ms):
     """
     obsTable = ms + '/OBSERVATION'
     try:
-        with casatools.TableReader(obsTable) as table:
+        with casa_tools.TableReader(obsTable) as table:
             myName = table.getcell('TELESCOPE_NAME')
     except:
         LOG.warn("Could not open OBSERVATION table to get the telescope name: %s" % obsTable)

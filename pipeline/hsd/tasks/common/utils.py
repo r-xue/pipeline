@@ -10,12 +10,12 @@ from typing import Any, Callable, Generator, Iterable, List, Optional, Sequence,
 
 import numpy
 
-from pipeline.domain.datatable import OnlineFlagIndex
-from pipeline.domain import DataTable, Field, MeasurementSet, ObservingRun
-from pipeline.infrastructure import Context
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.logging as logging
-import pipeline.infrastructure.casatools as casatools
+from pipeline.domain import DataTable, Field, MeasurementSet, ObservingRun
+from pipeline.domain.datatable import OnlineFlagIndex
+from pipeline.infrastructure import Context
+from pipeline.infrastructure import casa_tools
 from . import compress
 
 _LOG = infrastructure.get_logger(__name__)
@@ -24,22 +24,22 @@ _LOG = infrastructure.get_logger(__name__)
 class OnDemandStringParseLogger(object):
     """
     On-demand logging class.
-    
+
     To improve performance of logging, log messages are generated only if a
     log level of the messages are high enough to be printed.
-    
+
     Attributes:
         PRIORITY_MAP: A dictionary to map a loglevel of the class to that of
             logger.
         logger: A logger class object to post log messages.
     """
-    
+
     PRIORITY_MAP = {'warn': 'warning'}
 
     def __init__(self, logger: pyLogger):
         """
         Initialize class attributes.
-        
+
         Args:
             logger: A logger class object.
         """
@@ -50,13 +50,13 @@ class OnDemandStringParseLogger(object):
     def parse(msg_template: str, *args, **kwargs) -> str:
         """
         Return a formatted string.
-        
+
         Return an input string if msg_template is a simple string. If a format
         string is passed as msg_template, the string is formatted using the
         other input arguments and the formatted string is returned.
-        
+
         Args:
-            msg_template: A message string or a format string 
+            msg_template: A message string or a format string
             *args: Arguments to use in formatting of msg_template. Valid only
                 if the msg_template is a format string.
             **kwargs: Keyword arguments to use in formatting of msg_template.
@@ -67,7 +67,7 @@ class OnDemandStringParseLogger(object):
 
         Examples:
             >>> import logging
-            >>> pyLog = logging.getLogger('mylog') 
+            >>> pyLog = logging.getLogger('mylog')
             >>> logger = OnDemandStringParseLogger(pyLog)
 
             Simple string example
@@ -95,18 +95,18 @@ class OnDemandStringParseLogger(object):
     def _post(self, priority: str, msg_template: str, *args, **kwargs):
         """
         Generate and post a message to logger.
-        
+
         Generate a log message string only if the priority is high enough
         compared to the filtering level of a logger. Post the message string
         to the logger.
-        
+
         Args:
             priority: A priority of message.
-            msg_template: A message string or a format string 
+            msg_template: A message string or a format string
             *args: Arguments to use in formatting of msg_template. Valid only
                 if the msg_template is a format string.
             **kwargs: Keyword arguments to use in formatting of msg_template.
-                Valid only if the msg_template is a format string.            
+                Valid only if the msg_template is a format string.
         """
         key_for_level = self.PRIORITY_MAP.get(priority, priority)
         if self.logger.isEnabledFor(logging.LOGGING_LEVELS[key_for_level]):
@@ -115,22 +115,22 @@ class OnDemandStringParseLogger(object):
     def critical(self, msg_template: str, *args, **kwargs):
         """
         Print a critical level message to logger.
-        
+
         Args:
-            msg_template: A message string or a format string 
+            msg_template: A message string or a format string
             *args: Arguments to use in formatting of msg_template. Valid only
                 if the msg_template is a format string.
             **kwargs: Keyword arguments to use in formatting of msg_template.
-                Valid only if the msg_template is a format string. 
+                Valid only if the msg_template is a format string.
         """
         self._post('critical', msg_template, *args, **kwargs)
 
     def error(self, msg_template: str, *args, **kwargs):
         """
         Print an error level message to logger.
-        
+
         Args:
-            msg_template: A message string or a format string 
+            msg_template: A message string or a format string
             *args: Arguments to use in formatting of msg_template. Valid only
                 if the msg_template is a format string.
             **kwargs: Keyword arguments to use in formatting of msg_template.
@@ -141,9 +141,9 @@ class OnDemandStringParseLogger(object):
     def warn(self, msg_template: str, *args, **kwargs):
         """
         Print a warning level message to logger.
-        
+
         Args:
-            msg_template: A message string or a format string 
+            msg_template: A message string or a format string
             *args: Arguments to use in formatting of msg_template. Valid only
                 if the msg_template is a format string.
             **kwargs: Keyword arguments to use in formatting of msg_template.
@@ -154,9 +154,9 @@ class OnDemandStringParseLogger(object):
     def info(self, msg_template: str, *args, **kwargs):
         """
         Print an info level message to logger.
-        
+
         Args:
-            msg_template: A message string or a format string 
+            msg_template: A message string or a format string
             *args: Arguments to use in formatting of msg_template. Valid only
                 if the msg_template is a format string.
             **kwargs: Keyword arguments to use in formatting of msg_template.
@@ -167,9 +167,9 @@ class OnDemandStringParseLogger(object):
     def debug(self, msg_template: str, *args, **kwargs):
         """
         Print a debug level message to logger.
-        
+
         Args:
-            msg_template: A message string or a format string 
+            msg_template: A message string or a format string
             *args: Arguments to use in formatting of msg_template. Valid only
                 if the msg_template is a format string.
             **kwargs: Keyword arguments to use in formatting of msg_template.
@@ -180,9 +180,9 @@ class OnDemandStringParseLogger(object):
     def todo(self, msg_template: str, *args, **kwargs):
         """
         Print a todo level message to logger.
-        
+
         Args:
-            msg_template: A message string or a format string 
+            msg_template: A message string or a format string
             *args: Arguments to use in formatting of msg_template. Valid only
                 if the msg_template is a format string.
             **kwargs: Keyword arguments to use in formatting of msg_template.
@@ -193,9 +193,9 @@ class OnDemandStringParseLogger(object):
     def trace(self, msg_template: str, *args, **kwargs):
         """
         Print a trace level message to logger.
-        
+
         Args:
-            msg_template: A message string or a format string 
+            msg_template: A message string or a format string
             *args: Arguments to use in formatting of msg_template. Valid only
                 if the msg_template is a format string.
             **kwargs: Keyword arguments to use in formatting of msg_template.
@@ -210,7 +210,7 @@ LOG = OnDemandStringParseLogger(_LOG)
 def profiler(func: Callable):
     """
     Measure execution time of a decorated function.
-    
+
     Args:
         func: A function to be decorated.
     """
@@ -233,7 +233,7 @@ def require_virtual_spw_id_handling(observing_run: ObservingRun) -> bool:
 
     Args:
         observing_run: An ObservingRun instance to investigate.
-    
+
     Returns:
         True if SpW IDs across MeasurementSets in the ObservingRun.
     """
@@ -244,15 +244,15 @@ def require_virtual_spw_id_handling(observing_run: ObservingRun) -> bool:
 def is_nro(context: Context) -> bool:
     """
     Test if processing Nobeyama data or not.
-    
+
     This methods identifies Nobeyama data if all antennas in all
     MeasurementSets are Nobeyama ones.
-    
+
     Args:
         context: A Pipeline Context to be tested.
-        
+
     Returns:
-         True if identified as Nobeyama data. 
+         True if identified as Nobeyama data.
     """
     mses = context.observing_run.measurement_sets
     return numpy.all([ms.antenna_array.name == 'NRO' for ms in mses])
@@ -261,15 +261,15 @@ def is_nro(context: Context) -> bool:
 def asdm_name_from_ms(ms_domain: MeasurementSet) -> str:
     """
     Parse a name of MeasurementSet (MS) and return the ASDM name.
-    
+
     Return the name of original ASDM from which a given MS is created.
     Assumptions are:
        - MS is generated from an ASDM
        - MS name is <uid>.ms
-    
+
     Args:
         ms_doemain: An MS domain object.
-        
+
     Returtns:
         The name of ASDM.
     """
@@ -282,13 +282,13 @@ def asdm_name_from_ms(ms_domain: MeasurementSet) -> str:
 def get_parent_ms_idx(context: Context, msname: str) -> int:
     """
     Return an index of a given MeasurementSet (MS) in Pipeline Context.
-    
+
     This method maps both work_data and original MS to a proper index.
-    
+
     Args:
         context: A Pipeline Context to be investigated.
         msname: A name of MS to look into.
-    
+
     Returns:
         An index of MS in Context. The return value is -1 if no match is found.
     """
@@ -308,10 +308,10 @@ def get_parent_ms_idx(context: Context, msname: str) -> int:
 def get_parent_ms_name(context: Context, msname: str) -> str:
     """
     Return a name of corresponding parent MeasurementSet in Pipeline Context.
-    
+
     This method maps both work_data and original MeasurementSet (MS) to a
-    proper name of original MS. 
-    
+    proper name of original MS.
+
     Args:
         context: A Pipeline Context to be investigated.
         msname: A name of MS to look into.
@@ -326,9 +326,9 @@ def get_parent_ms_name(context: Context, msname: str) -> str:
 class ProgressTimer(object):
     """
     Show the progress bar on the console.
-    
+
     The progress bar is shown only if a given LogLevel is higher than INFO.
-    
+
     Attributes:
         currentLevel: A current progress (w.r.t. the length of pregress bar).
         curCount: A current count (w.r.t. the maximum count).
@@ -341,7 +341,7 @@ class ProgressTimer(object):
                  LogLevel: Union[int, str]='info'):
         """
         Initialize ProgressTimer class.
-        
+
         Args:
             length: The length of the progress bar in the numebr of characters.
             macCount: The maximum number of count to be considered as 100%.
@@ -366,7 +366,7 @@ class ProgressTimer(object):
     def count(self, increment: int=1):
         """
         Advance progress bar.
-        
+
         Args:
             increment: A count to be prgressed.
         """
@@ -383,14 +383,14 @@ class ProgressTimer(object):
 def parseEdge(edge: Union[float, List[float]]) -> Tuple[float, float]:
     """
     Convert a given edge value to a two-element-tuple.
-    
+
     Args:
         edge: An edge value.
-    
+
     Returns:
         A given edge is converted to a tuple with two elements each indicates
         the left and right edge (channels), respectively.
-    
+
     Examples:
         >>> parseEdge(100)
         (100, 100)
@@ -420,10 +420,10 @@ def mjd_to_datestring(t: float, unit: str='sec') -> str:
     Args:
         t: An MJD in UTC.
         unit: The unit of t. Supported units are 'sec' and 'day'.
-    
+
     Returns:
         A date string. Returns the origin of MJD if unsupported unit is given.
-    
+
     Examples:
         The default unit ('sec') example
         >>> mjd_to_datestring(5113612512.0)
@@ -431,7 +431,7 @@ def mjd_to_datestring(t: float, unit: str='sec') -> str:
 
         >>> mjd_to_datestring(59185.33, 'day')
         'Wed Dec  2 07:55:12 2020 UTC'
-        
+
         Invalid unit example
         >>> mjd_to_datestring(85226875.2, 'min')
         'Wed Nov 17 00:00:00 1858 UTC'
@@ -455,13 +455,13 @@ def mjd_to_datestring(t: float, unit: str='sec') -> str:
 def to_list(s: Any) -> Optional[Sequence[Any]]:
     """
     Convert the input argument to a list.
-    
+
     Args:
         s: Target of conversion.
-    
+
     Retruns:
         A list. No conversion is done if input is numpy.ndarray or None.
-    
+
     Examples:
         >>> to_list(5)
         [5]
@@ -476,13 +476,13 @@ def to_list(s: Any) -> Optional[Sequence[Any]]:
         [2.5, 5]
         >>> to_list('pipeline')
         ['pipeline']
-        >>> to_list('[a,b,c]')            
+        >>> to_list('[a,b,c]')
         ['a', 'b', 'c']
-        >>> to_list('pipeline,casa')             
+        >>> to_list('pipeline,casa')
         ['pipeline,casa']
-        >>> to_list(dict(a=1, b=2))              
+        >>> to_list(dict(a=1, b=2))
         [{'a': 1, 'b': 2}]
-        >>> to_list((2.5, 5))                    
+        >>> to_list((2.5, 5))
         [(2.5, 5)]
     """
     if s is None:
@@ -508,10 +508,10 @@ def to_list(s: Any) -> Optional[Sequence[Any]]:
 def to_bool(s: Any) -> Union[bool, str, None]:
     """
     Convert the input argument to a bool.
-    
+
     Args:
         s: Target of conversion.
-    
+
     Retruns:
         A bool. No conversion is done if input is None or string that does not
         interpret as True/False.
@@ -546,10 +546,10 @@ def to_bool(s: Any) -> Union[bool, str, None]:
 def to_numeric(s: Any) -> Any:
     """
     Convert the input argument to a number.
-    
+
     Args:
         s: Target of conversion.
-    
+
     Retruns:
         A value converted to a number. No conversion is done if input is not a
         string.
@@ -557,7 +557,7 @@ def to_numeric(s: Any) -> Any:
     Examples:
         >>> to_numeric(5)
         5
-        >>> to_numeric('5') 
+        >>> to_numeric('5')
         5.0
     """
     if s is None:
@@ -580,7 +580,7 @@ def get_mask_from_flagtra(flagtra: Sequence[int]) -> numpy.ndarray:
 
     Retruns:
         An integer array of mask (1=valid, 0=flagged).
-    
+
     Example:
         >>> get_mask_from_flagtra([1, 0, 0, 1])
         array([0, 1, 1, 0])
@@ -593,13 +593,13 @@ def iterate_group_member(group_desc: dict,
                          ) -> Iterable[Tuple[MeasurementSet, int, int, int]]:
     """
     Yeild reduction group members.
-    
+
     Args:
         group_desc: A reduction group dictionary. Keys of the dictionary are
-            group IDs and values are 
+            group IDs and values are
             pipeline.domain.singledish.MSReductionGroupDesc instances.
         member_id_list: A list of member IDs in group_desc to yield
-    
+
     Yields:
         A tuple of MeasurementSet instance, field, antenna, and SpW IDs.
     """
@@ -613,7 +613,7 @@ def get_index_list_for_ms(datatable: DataTable, vis_list: List[str],
                           spwid_list: List[int])  -> numpy.ndarray:
     """
     Return an array of row IDs in datatable that matches selection.
-    
+
     Args:
         datatable: A datatable instance.
         vis_list: A list of MeasurementSet (MS) name.
@@ -637,7 +637,7 @@ def _get_index_list_for_ms(datatable: DataTable, vis_list: List[str],
                            ) -> Generator[int, None, None]:
     """
     Yield row IDs in datatable that matches given selection criteria.
-    
+
     Args:
         datatable: A datatable instance.
         vis_list: A list of MeasurementSet (MS) name.
@@ -681,7 +681,7 @@ def get_index_list_for_ms2(datatable_dict: dict, group_desc: dict,
         datatable_dict: A dictionary that stores DataTable (values) of each
             MeasurementSet (MS). Keys of the dictionary is the name of MS.
         group_desc: A reduction group dictionary. Keys of the dictionary are
-            group IDs and values are 
+            group IDs and values are
             pipeline.domain.singledish.MSReductionGroupDesc instances.
         member_id_list: A list of member IDs in group_desc to yield.
 
@@ -717,16 +717,16 @@ def get_valid_ms_members(group_desc: dict, msname_filter: List[str],
                          spw_selection: str) -> Generator[int, None, None]:
     """
     Yield IDs of reduction groups that matches selection criteria.
-    
+
     Args:
         group_desc: A reduction group dictionary. Keys of the dictionary are
-            group IDs and values are 
+            group IDs and values are
             pipeline.domain.singledish.MSReductionGroupDesc instances.
         msname_filter: Names of MeasurementSets to select.
         ant_selection: Antenna selection syntax.
-        field_selection: Field selection syntax. 
+        field_selection: Field selection syntax.
         spw_selection: SpW selection syntax.
-    
+
     Yields:
         IDs of reduction group.
     """
@@ -757,8 +757,8 @@ def get_valid_ms_members(group_desc: dict, msname_filter: List[str],
                         if not _field_selection.startswith('"'):
                             _field_selection = '"{}"'.format(field_selection)
                 LOG.debug('field_selection = "{}"'.format(_field_selection))
-                mssel = casatools.ms.msseltoindex(vis=msobj.name, spw=spw_selection,
-                                                  field=_field_selection, baseline=ant_selection)
+                mssel = casa_tools.ms.msseltoindex(vis=msobj.name, spw=spw_selection,
+                                                   field=_field_selection, baseline=ant_selection)
             except RuntimeError as e:
                 LOG.trace('RuntimeError: {0}'.format(str(e)))
                 LOG.trace('vis="{0}" field_selection: "{1}"'.format(msobj.name, _field_selection))
@@ -777,16 +777,16 @@ def get_valid_ms_members2(group_desc: dict, ms_filter: List[MeasurementSet],
                           spw_selection: str) -> Generator[int, None, None]:
     """
     Yield IDs of reduction groups that matches selection criteria.
-    
+
     Args:
         group_desc: A reduction group dictionary. Keys of the dictionary are
-            group IDs and values are 
+            group IDs and values are
             pipeline.domain.singledish.MSReductionGroupDesc instances.
         ms_filter: A list of Measurementset domain objects.
         ant_selection: Antenna selection syntax.
-        field_selection: Field selection syntax. 
+        field_selection: Field selection syntax.
         spw_selection: SpW selection syntax.
-    
+
     Yields:
         IDs of reduction group.
     """
@@ -798,8 +798,8 @@ def get_valid_ms_members2(group_desc: dict, ms_filter: List[MeasurementSet],
         msobj = member.ms
         if msobj in ms_filter:
             try:
-                mssel = casatools.ms.msseltoindex(vis=msobj.name, spw=spw_selection,
-                                                  field=field_selection, baseline=ant_selection)
+                mssel = casa_tools.ms.msseltoindex(vis=msobj.name, spw=spw_selection,
+                                                   field=field_selection, baseline=ant_selection)
             except RuntimeError as e:
                 LOG.trace('RuntimeError: {0}'.format(str(e)))
                 LOG.trace('vis="{0}" field_selection: "{1}"'.format(msobj.name, field_selection))
@@ -818,18 +818,18 @@ def get_valid_ms_members2(group_desc: dict, ms_filter: List[MeasurementSet],
 def TableSelector(name: str, query: str) -> casatools.table:
     """
     Retun a CASA table tool instance of selected rows of a table.
-    
+
     Select a table rows with a query string and return a CASA table tool
     instance with selection.
-    
+
     Args:
         name: A path to table to be selected.
         query: A query string to select table rows.
-    
+
     Returns:
         CASA table tool instance with row selection.
     """
-    with casatools.TableReader(name) as tb:
+    with casa_tools.TableReader(name) as tb:
         tsel = tb.query(query)
         yield tsel
         tsel.close()
@@ -837,7 +837,7 @@ def TableSelector(name: str, query: str) -> casatools.table:
 
 class EchoDictionary(dict):
     """Dictionary that always returns key."""
-    
+
     def __getitem__(self, x):
         """Destructor of EchoDictionary class."""
         return x
@@ -847,9 +847,9 @@ def make_row_map_for_baselined_ms(ms: MeasurementSet,
                                   table_container=None) -> dict:
     """
     Make row mapping between a MeasurementSet (MS) and an associating MS.
-    
+
     Mapping is done between an input MS and work_data associated to it.
-    
+
     Args:
         ms: A MeasurementSet (MS) domain object.
         table_container: A container class that stores table tool instances
@@ -876,7 +876,7 @@ def make_row_map(src_ms: MeasurementSet, derived_vis: str,
                  ) -> dict:
     """
     Make row mapping between a source and a derived MeasurementSet (MS).
-    
+
     Args:
         src_ms: An MS domain object of source MS.
         derived_vis: A name of the MS that derives from the source MS.
@@ -933,13 +933,13 @@ def make_row_map(src_ms: MeasurementSet, derived_vis: str,
         taql = 'ANTENNA1 == ANTENNA2 && (%s)' % (' || '.join(['(SCAN_NUMBER == %s && FIELD_ID IN %s && STATE_ID IN %s)' % (scan, fields[scan], states[scan]) for scan in scan_numbers]))
     LOG.trace('taql=\'%s\'' % (taql))
 
-    with casatools.TableReader(os.path.join(vis0, 'OBSERVATION')) as tb:
+    with casa_tools.TableReader(os.path.join(vis0, 'OBSERVATION')) as tb:
         nrow_obs0 = tb.nrows()
-    with casatools.TableReader(os.path.join(vis0, 'PROCESSOR')) as tb:
+    with casa_tools.TableReader(os.path.join(vis0, 'PROCESSOR')) as tb:
         nrow_proc0 = tb.nrows()
-    with casatools.TableReader(os.path.join(vis1, 'OBSERVATION')) as tb:
+    with casa_tools.TableReader(os.path.join(vis1, 'OBSERVATION')) as tb:
         nrow_obs1 = tb.nrows()
-    with casatools.TableReader(os.path.join(vis1, 'PROCESSOR')) as tb:
+    with casa_tools.TableReader(os.path.join(vis1, 'PROCESSOR')) as tb:
         nrow_proc1 = tb.nrows()
 
     assert nrow_obs0 == nrow_obs1
@@ -949,7 +949,7 @@ def make_row_map(src_ms: MeasurementSet, derived_vis: str,
     is_unique_processor_id = nrow_proc0 == 1
 
     if src_tb is None:
-        with casatools.TableReader(vis0) as tb:
+        with casa_tools.TableReader(vis0) as tb:
             tsel = tb.query(taql)
             try:
                 if is_unique_observation_id:
@@ -999,7 +999,7 @@ def make_row_map(src_ms: MeasurementSet, derived_vis: str,
             tsel.close()
 
     if derived_tb is None:
-        with casatools.TableReader(vis1) as tb:
+        with casa_tools.TableReader(vis1) as tb:
             tsel = tb.query(taql)
             try:
                 if is_unique_observation_id:
@@ -1130,12 +1130,12 @@ def make_row_map(src_ms: MeasurementSet, derived_vis: str,
 class SpwSimpleView(object):
     """
     A simple class that holds an spectral windpw (SpW) ID and Name pair.
-    
+
     Attributes:
         id: A SpW ID.
         name: A SpW name.
     """
-    
+
     def __init__(self, spwid: int, name: str):
         """Initialize SpwSimpleView class."""
         self.id = spwid
@@ -1145,7 +1145,7 @@ class SpwSimpleView(object):
 class SpwDetailedView(object):
     """
     A class to store Spestral Window (SpW) settings.
-    
+
     Attributes:
         id: An SpW ID.
         name: A SpW name.
@@ -1160,7 +1160,7 @@ class SpwDetailedView(object):
                  max_frequency: float):
         """
         Initialize SpwDetailedView class.
-        
+
         Args:
             id: A spectral windpw (SpW) ID.
             name: A SpW name.
@@ -1180,14 +1180,14 @@ class SpwDetailedView(object):
 def get_spw_names(vis: str) -> List[SpwSimpleView]:
     """
     Return a list of SpWSimpleView of all spectral windpws in a MeasurementSet.
-    
+
     Args:
         vis: A path to MeasurementSet.
-    
+
     Returns:
         A list of SpWSimpleView instances of all spectral windpw in vis.
     """
-    with casatools.TableReader(os.path.join(vis, 'SPECTRAL_WINDOW')) as tb:
+    with casa_tools.TableReader(os.path.join(vis, 'SPECTRAL_WINDOW')) as tb:
         gen = (SpwSimpleView(i, tb.getcell('NAME', i)) for i in range(tb.nrows()))
         spws = list(gen)
     return spws
@@ -1196,14 +1196,14 @@ def get_spw_names(vis: str) -> List[SpwSimpleView]:
 def get_spw_properties(vis: str) -> List[SpwDetailedView]:
     """
     Return a list of SpwDetailedView of all spectral windpws in a MeasurementSet.
-    
+
     Args:
         vis: A path to MeasurementSet.
-    
+
     Returns:
         A list of SpwDetailedView instances of all spectral windpw in vis.
     """
-    with casatools.TableReader(os.path.join(vis, 'SPECTRAL_WINDOW')) as tb:
+    with casa_tools.TableReader(os.path.join(vis, 'SPECTRAL_WINDOW')) as tb:
         spws = []
         for irow in range(tb.nrows()):
             name = tb.getcell('NAME', irow)
@@ -1233,11 +1233,11 @@ def __read_table(reader: Optional[Callable], method: Callable,
 def make_spwid_map(srcvis: str, dstvis: str) -> dict:
     """
     Make mapping of spectral windpw IDs in two MeasurementSets (MS).
-    
+
     Args:
         srcvis: A path to source MS.
         dstvis: A path to the other MS.
-    
+
     Returns:
         A spectral windpw (SpW) mapping dictionary. A key is SpW ID of srcvis
         and the value is that of dstvis.
@@ -1284,10 +1284,10 @@ def _read_polarization_table(vis: str) -> List[PolarizationData]:
 
     This function used to be part of tablereader, which has since moved from
     direct table reading to using the MSMD tool.
-    
+
     Args:
         vis: A path to MeasurementSet.
-        
+
     Retruns:
         A list PolarizationData extracted from each row of POLARIZATION table.
     """
@@ -1315,11 +1315,11 @@ def _read_polarization_table(vis: str) -> List[PolarizationData]:
 def make_polid_map(srcvis: str, dstvis: str) -> dict:
     """
     Make mapping of Polarization IDs in two MeasurementSets (MS).
-    
+
     Args:
         srcvis: A path to source MS.
         dstvis: A path to the other MS.
-    
+
     Returns:
         A polarization mapping dictionary. A key is polarization ID of srcvis
         and the value is that of dstvis.
@@ -1343,16 +1343,16 @@ def make_polid_map(srcvis: str, dstvis: str) -> dict:
 def make_ddid_map(vis: str) -> dict:
     """
     Map polarization and spwctral window IDs to data description ID.
-    
+
     Args:
         vis: A name of MeasurementSet.
-    
+
     Returns:
         A dictionary that maps polarization (pol) and spectral windpw (SpW) IDs
         to data description ID. A key of dictionary is a tuple of
         (pol ID, SpW ID) and a value is the corresponding data description ID.
     """
-    with casatools.TableReader(os.path.join(vis, 'DATA_DESCRIPTION')) as tb:
+    with casa_tools.TableReader(os.path.join(vis, 'DATA_DESCRIPTION')) as tb:
         pol_ids = tb.getcol('POLARIZATION_ID')
         spw_ids = tb.getcol('SPECTRAL_WINDOW_ID')
         num_ddids = tb.nrows()
@@ -1368,13 +1368,13 @@ def get_datacolumn_name(vis: str) -> str:
 
     Args:
         vis: A path to MeasurementSet to analyze.
-    
+
     Returns:
         A name of data column. The CORRECTED_DATA is prioritied when multiple
         data columns exists.
     """
     colname_candidates = ['CORRECTED_DATA', 'FLOAT_DATA', 'DATA']
-    with casatools.TableReader(vis) as tb:
+    with casa_tools.TableReader(vis) as tb:
         colnames = tb.colnames()
     colname = None
     for name in colname_candidates:
@@ -1389,18 +1389,18 @@ def get_restfrequency(vis: str, spwid: int,
                       source_id: int) -> Optional[numpy.ndarray]:
     """
     Obtain the rest frequency of a given source and spectral windpw (SpW).
-    
+
     Args:
         vis: A path to MeasurementSet.
         spwid: A SpW ID to select.
         source_id: A source ID to select.
-    
+
     Returns:
         The first entry of the rest frequency in SOURCE table that matches
         selection.
     """
     source_table = os.path.join(vis, 'SOURCE')
-    with casatools.TableReader(source_table) as tb:
+    with casa_tools.TableReader(source_table) as tb:
         tsel = tb.query('SOURCE_ID == {} && SPECTRAL_WINDOW_ID == {}'.format(source_id, spwid))
         try:
             if tsel.nrows() == 0:
@@ -1417,7 +1417,7 @@ def get_restfrequency(vis: str, spwid: int,
 class RGAccumulator(object):
     """
     Accumulate metadata information of a reduction group.
-    
+
     Attributes:
         field: A list of field IDs.
         antenna: A list of antenna IDs.
@@ -1442,7 +1442,7 @@ class RGAccumulator(object):
                channelmap_range: Optional[List[int]]=None):
         """
         Add an entry to class.
-        
+
         Args:
             field_id: A field ID.
             antenna_id: An antenna ID.
@@ -1506,7 +1506,7 @@ class RGAccumulator(object):
                            None, None]:
         """
         Yield metadata registered.
-        
+
         Returns:
             A tuple of field, antenna, and spectral window, grid table and
             channel map range.
@@ -1527,7 +1527,7 @@ class RGAccumulator(object):
                        Tuple[int, int, int, Union[List[int], List[str]]]]:
         """
         Obtain a list of metadata registered.
-        
+
         Args:
             withpol: If True, polarizations will be returned in addtion to the
                 field, antenna, and spectral window IDs.
@@ -1554,10 +1554,10 @@ class RGAccumulator(object):
 def sort_fields(context: Context) -> List[Field]:
     """
     Obtain a set of field objects registered to a context.
-    
+
     Args:
         context: A Pipeline context to analyze.
-    
+
     Retruns:
         A list of unduplicated field objects in the other of MeasurementSet and
         fields that appears in Pipeline Context.
@@ -1577,18 +1577,18 @@ def sort_fields(context: Context) -> List[Field]:
 def get_brightness_unit(vis: str, defaultunit: str='Jy/beam') -> str:
     """
     Obtain a unit of data column of MeasurementSet.
-    
+
     Arg:
         vis: A path to MeasurementSet.
         defaultunit: A default unit in case unit is not available in any data
             column.
-    
+
     Returns:
         A unit of a data column in vis. The value of defaultunit is returned
         if not unit is available. CORRECTED_DATA is prioritized when multiple
         data columns are in the vis.
     """
-    with casatools.TableReader(vis) as tb:
+    with casa_tools.TableReader(vis) as tb:
         colnames = tb.colnames()
         target_columns = ['CORRECTED_DATA', 'FLOAT_DATA', 'DATA']
         bunit = defaultunit

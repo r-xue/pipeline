@@ -4,12 +4,12 @@ import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.common import commonhelpermethods
 from pipeline.h.tasks.common import commonresultobjects
 from pipeline.h.tasks.common import viewflaggers
 from pipeline.h.tasks.flagging.flagdatasetter import FlagdataSetter
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from .resultobjects import RawflagchansResults, RawflagchansDataResults, RawflagchansViewResults
 
@@ -245,7 +245,7 @@ class RawflagchansData(basetask.StandardTaskTemplate):
             ndata = np.zeros([len(corrs), nchans, nbaselines], np.int)
 
             # Open MS and read in required data.       
-            with casatools.MSReader(ms.name) as openms:
+            with casa_tools.MSReader(ms.name) as openms:
                 try:
                     openms.msselect({'scanintent': '*%s*' % self.inputs.intent, 'spw': str(spwid)})
                 except:
