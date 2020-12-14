@@ -357,10 +357,11 @@ def XYlabel(span: float, direction_reference: str, ofs_coord: bool=False
 def GLGBlabel(span: float
     ) -> Tuple[MultipleLocator, MultipleLocator, FuncFormatter, FuncFormatter]:
     """
-    Create GLGB formart label.
+    Create x- and y-axis formatters of plots suitable for a map in galactic coordinate.
 
     Args:
-        span:
+        span: The span of map axes in the unit of degrees. Both horizontal and
+            vertical axes are formatted using this value.
     Returns:
         (GLlocator, GBlocator, GLformatter, GBformatter) for Galactic coordinate
 
@@ -409,10 +410,11 @@ def RADEClabel(span: float,
         ofs_coord: bool
     ) -> Tuple[MultipleLocator, MultipleLocator, FuncFormatter, FuncFormatter]:
     """
-    Generate RADEC label.
+    Create x- and y-axis formatters of plots suitable for a map in general R.A. and Dec. coordinate.
 
     Args:
-        span:
+        span: The span of map axes in the unit of degrees. Both horizontal and
+            vertical axes are formatted using this value.
         ofs_coord:
     Returns:
         (RAlocator, DEClocator, RAformatter, DECformatter)
