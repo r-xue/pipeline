@@ -7,11 +7,11 @@ import time
 import matplotlib.pyplot as plt
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.displays.pointing as pointing
 from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.hsd.tasks.common.display import DPISummary, DPIDetail, SingleDishDisplayInputs, ShowPlot, LightSpeed
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.displays.pointing import MapAxesManagerBase
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 from ..common import direction_utils as dirutil
@@ -610,7 +610,7 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
         refpix = 0
         refval = spectral_window.channels.chan_freqs[0]
         increment = spectral_window.channels.chan_widths[0]
-        with casatools.TableReader(os.path.join(self.vis, 'SOURCE')) as tb:
+        with casa_tools.TableReader(os.path.join(self.vis, 'SOURCE')) as tb:
             tsel = tb.query('SOURCE_ID == %s && SPECTRAL_WINDOW_ID == %s' % (source_id, real_spw))
             try:
                 if tsel.nrows() == 0:

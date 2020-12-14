@@ -3,8 +3,8 @@ import math
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 from pipeline.h.tasks.common import commonresultobjects
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -70,7 +70,7 @@ def calculate_phase_rms(context, gaintable, qa_intent):
 
     try:
         phase_rms_results = {}
-        with casatools.TableReader(gaintable) as table:
+        with casa_tools.TableReader(gaintable) as table:
             vis = table.getkeyword('MSName')
 
             # access field names via domain object

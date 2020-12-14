@@ -17,11 +17,12 @@
 # * print messages to logger instead of STDOUT
 #######################################################################
 import os
+
 import scipy
 import numpy
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -48,7 +49,7 @@ def sensitivityImprovement(vis, spw, newchanwidth, useCAS8534=True,
          or a string with any common frequency units ('MHz' etc.) or 'km/s'
     -Todd Hunter
     """
-    mymsmd = casatools.msmd
+    mymsmd = casa_tools.msmd
     mymsmd.open(vis)
     N = onlineChannelAveraging(vis, spw, mymsmd)
     chanwidth = numpy.abs(mymsmd.chanwidths(spw)[0])  # Hz
@@ -56,7 +57,7 @@ def sensitivityImprovement(vis, spw, newchanwidth, useCAS8534=True,
     spwchan = mymsmd.nchan(spw)
     meanfreq = mymsmd.meanfreq(spw)
     mymsmd.close()
-    myqa = casatools.quanta
+    myqa = casa_tools.quanta
     if isinstance(newchanwidth, str):
         if newchanwidth.lower().find('km/s') > 0:
             velocity = float(newchanwidth.lower().replace('km/s', ''))
@@ -210,7 +211,7 @@ def onlineChannelAveraging(vis, spw, mymsmd=''):
     eff_bw = windowFunction('hanning', returnValue='dictionary')['EffectiveBW']
     close_tool = False
     if mymsmd == '':
-        mymsmd = casatools.msmd
+        mymsmd = casa_tools.msmd
         mymsmd.open(vis)
         close_tool = True
     chanwidths = mymsmd.chanwidths(spw)
@@ -219,7 +220,7 @@ def onlineChannelAveraging(vis, spw, mymsmd=''):
         if close_tool:
             mymsmd.close()
         return 1
-    cqa = casatools.quanta
+    cqa = casa_tools.quanta
     chanwidth = abs(chanwidths[0])
     chaneffwidth = mymsmd.chaneffbws(spw)[0]
 

@@ -11,7 +11,6 @@ import numpy
 
 import pipeline.domain.spectralwindow as spectralwindow
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 import pipeline.qa.scorecalculator as qacalc
@@ -20,6 +19,7 @@ from pipeline.h.tasks.common import commonfluxresults
 from pipeline.h.tasks.common.displays.common import CaltableWrapperFactory
 from pipeline.h.tasks.importdata.fluxes import ORIGIN_ANALYSIS_UTILS, ORIGIN_XML
 from pipeline.hifa.tasks.importdata.dbfluxes import ORIGIN_DB
+from pipeline.infrastructure import casa_tools
 from . import gcorfluxscale
 
 LOG = infrastructure.get_logger(__name__)
@@ -121,7 +121,7 @@ def score_kspw(context, result):
 
     # identify the caltable for this measurement set
     for caltable_path in context.callibrary.active.get_caltable(caltypes='tsys'):
-        with casatools.TableReader(caltable_path) as table:
+        with casa_tools.TableReader(caltable_path) as table:
             msname = table.getkeyword('MSName')
         if msname in vis:
             break
@@ -511,7 +511,7 @@ class CaltableWrapperFactory(object):
 
     @staticmethod
     def create_param_wrapper(path):
-        with casatools.TableReader(path) as tb:
+        with casa_tools.TableReader(path) as tb:
             colnames = tb.colnames()
             scalar_cols = [c for c in colnames if tb.isscalarcol(c)]
             var_cols = [c for c in colnames if tb.isvarcol(c)]
