@@ -30,6 +30,7 @@ msyb = ':'
 def Deg2HMS(x: float, prec: int=0) -> List[str, str, str]:
     """
     Convert an angle in degree to hour angle.
+
     Example:
     >>> Deg2HMS(20.123, prec=7)
     ['01', '20', '29.5']
@@ -52,6 +53,7 @@ def Deg2HMS(x: float, prec: int=0) -> List[str, str, str]:
 def HHMM(x: float, pos=None) -> str:
     """
     Convert an angle in degree to hour angle with HHMM format.
+
     HHMM* function is used to set axis formatter of matplotlib plots.
     The functions will be turned into matplotlib.ticker.FuncFormatter.
     The function should take two inputs, a tick value x and position pos.
@@ -75,6 +77,7 @@ def HHMM(x: float, pos=None) -> str:
 def __format_hms(x: str, prec: int=0) -> str:
     """
     Convert an angle in degree to hour angle with hms format.
+
     Example:
     >>> __format_hms(10.123)
     '00:40:30'
@@ -94,6 +97,7 @@ def __format_hms(x: str, prec: int=0) -> str:
 def HHMMSS(x: str, pos=None) -> str:
     """
     Convert an angle in degree to hour angle with hms format.
+
     Example:
     >>> HHMMSS(10.123)
     '00:40:30'
@@ -112,6 +116,7 @@ def HHMMSS(x: str, pos=None) -> str:
 def HHMMSSs(x: str, pos=None):
     """
     Convert an angle in degree to hour angle with hms format.
+
     Example:
     >>> HHMMSSs(10.123)
     '00:40:29.5'
@@ -130,6 +135,7 @@ def HHMMSSs(x: str, pos=None):
 def HHMMSSss(x: str, pos=None) -> str:
     """
     Convert an angle in degree to hour angle with hms format.
+
     Example:
     >>> HHMMSSss(10.123)
     '00:40:29.52'
@@ -147,6 +153,7 @@ def HHMMSSss(x: str, pos=None) -> str:
 
 def HHMMSSsss(x: str, pos=None) -> str:
     """Convert an angle in degree to hour angle with hms format.
+
     Example:
     >>> HHMMSSsss(10.123)
     '00:40:29.520'
@@ -163,8 +170,9 @@ def HHMMSSsss(x: str, pos=None) -> str:
 
 
 def Deg2DMS(x: float, prec: int=0) -> List[str, str, str]:
-    """
+    r"""
     Convert an angle in degree to dms angle (ddmmss.s).
+
     Example:
     >>> Deg2DMS('+01.02.23.4', prec=1)
     ['+01', '02', '23.4']
@@ -193,7 +201,8 @@ def Deg2DMS(x: float, prec: int=0) -> List[str, str, str]:
 
 
 def DDMM(x: float, pos=None) -> str:
-    """Convert an angle in degree to dms angle with DDMM format.
+    r"""Convert an angle in degree to dms angle with DDMM format.
+
     DDMM* function is used to set axis formatter of matplotlib plots.
     The functions will be turned into matplotlib.ticker.FuncFormatter.
     The function should take two inputs, a tick value x and position pos.
@@ -215,7 +224,7 @@ def DDMM(x: float, pos=None) -> str:
 
 
 def __format_dms(x: float, prec: int=0) -> str:
-    """
+    r"""
     Convert an angle in degree to dms angle in specified precision.
 
     Example:
@@ -239,7 +248,7 @@ def __format_dms(x: float, prec: int=0) -> str:
 
 
 def DDMMSS(x: str, pos=None) -> str:
-    """
+    r"""
     Convert an angle in degree to dms angle with DDMMSS.
 
     Example:
@@ -256,7 +265,7 @@ def DDMMSS(x: str, pos=None) -> str:
     return __format_dms(x, prec=6)
 
 def DDMMSSs(x: str, pos=None) -> str:
-    """
+    r"""
     Convert an angle in degree to dms angle with DDMMSSs.
 
     Example:
@@ -274,7 +283,7 @@ def DDMMSSs(x: str, pos=None) -> str:
 
 
 def DDMMSSss(x: str, pos=None) -> str:
-    """
+    r"""
     Convert an angle in degree to dms angle with DDMMSSss.
 
     Example:
@@ -365,6 +374,8 @@ def RADEClabel(span: float,
         ofs_coord: bool
     ) -> Tuple[MultipleLocator, MultipleLocator, FuncFormatter, FuncFormatter]:
     """
+    Generate RADEC label.
+
     Args:
         span:
         ofs_coord:
@@ -453,6 +464,8 @@ class MapAxesManagerBase(object):
 
     def get_axes_labels(self) -> Tuple[str, str]:
         """
+        Get axes labels.
+
         Returns:
             xlabel: xlabel in plot. Default is 'RA'.
             ylabel: ylabel in plot. Default is 'Dec'.
