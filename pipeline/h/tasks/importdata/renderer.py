@@ -9,11 +9,11 @@ import os
 import shutil
 from functools import reduce
 
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
 from pipeline.domain.measures import FrequencyUnits
+from pipeline.infrastructure import casa_tools
 
 LOG = logging.get_logger(__name__)
 
@@ -115,7 +115,7 @@ RepsourceTR = collections.namedtuple('RepsourceTR', 'vis source rfreq rbwidth sp
 def make_repsource_table(context, results):
     # will hold all the representative source table rows for the results
 
-    qa = casatools.quanta
+    qa = casa_tools.quanta
 
     rows = []
 

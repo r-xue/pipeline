@@ -6,15 +6,14 @@ import os
 import re
 from math import degrees
 
+import matplotlib.pyplot as plt
 import matplotlib.ticker
 import numpy as np
-import pylab as pl
 
-import casatools
 from casatasks import imhead
 
-from pipeline.infrastructure import casatools as pl_casatools
 import pipeline.infrastructure as infrastructure
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -26,7 +25,7 @@ def addFrequencyAxisAbove(ax1, firstFreq, lastFreq, freqType='', spw=None,
                           fontsize=10, showlabel=True, twinx=False,
                           ylimits=None, xlimits=None):
     """
-    Given the descriptor returned by pl.subplot, draws a frequency
+    Given the descriptor returned by plt.subplot, draws a frequency
     axis label at the top x-axis.
     firstFreq and lastFreq: in Hz
     twinx: if True, the create an independent y-axis on right edge
@@ -43,8 +42,8 @@ def addFrequencyAxisAbove(ax1, firstFreq, lastFreq, freqType='', spw=None,
         ax2 = ax1.twiny().twinx()
         ax2.set_ylabel('Per-channel noise (mJy/beam)', color='k')
         ax2.set_ylim(ylimits)
-        # ax2.set_xlabel does not work in this case, so use pl.text instead
-        pl.text(0.5, 1.055, label, ha='center', va='center', transform=pl.gca().transAxes, size=11)
+        # ax2.set_xlabel does not work in this case, so use plt.text instead
+        plt.text(0.5, 1.055, label, ha='center', va='center', transform=plt.gca().transAxes, size=11)
     else:
         ax2 = ax1.twiny()
         ax2.set_xlabel(label, size=fontsize)
@@ -72,9 +71,7 @@ def numberOfChannelsInCube(img, returnFreqs=False, returnChannelWidth=False, ver
     -Todd Hunter
     """
 
-    lqa = pl_casatools.quanta
-
-    with pl_casatools.ImageReader(img) as image:
+    with casa_tools.ImageReader(img) as image:
         lcs = image.coordsys()
 
         try:
@@ -154,7 +151,7 @@ def cubeFrameToTopo(img, freqrange='', prec=4, verbose=False,
     observatory = header['telescope']
     datestring = header['date-obs']
 
-    with pl_casatools.ImageReader(img) as image:
+    with casa_tools.ImageReader(img) as image:
         lcs = image.coordsys()
         freqFrame = lcs.referencecode('spectral')[0]
         lcs.done()
@@ -172,7 +169,7 @@ def cubeFrameToTopo(img, freqrange='', prec=4, verbose=False,
             c0, c1 = casaRestToTopo(startFreq, stopFreq, msname, spw, fieldid)
 
             # convert TOPO channel to TOPO frequency
-            with pl_casatools.MSMDReader(msname) as msmd:
+            with casa_tools.MSMDReader(msname) as msmd:
                 chanfreqs = msmd.chanfreqs(int(spw))
                 f0 = chanfreqs[c0]
                 f1 = chanfreqs[c1]
@@ -240,7 +237,7 @@ def casaRestToTopo(freqstart, freqend, msname, spw, fieldid):
     fieldid: field ID (integer)
     """
 
-    lsu = pl_casatools.synthesisutils
+    lsu = casa_tools.synthesisutils
 
     # Figure out which channels in the ms were used to make the SOURCE frame cube
     # this function expects the center frequency of each edge channel and returns channel number in ms/spw
@@ -278,8 +275,8 @@ def frames(velocity=286.7, datestring="2005/11/01/00:00:00",
     * difference between LSRK-TOPO in Hz
     - Todd Hunter
     """
-    lme = pl_casatools.measures
-    lqa = pl_casatools.quanta
+    lme = casa_tools.measures
+    lqa = casa_tools.quanta
 
     if dec.find(':') >= 0:
         dec = dec.replace(':', '.')
@@ -397,8 +394,8 @@ def lsrkToRest(lsrkFrequency, velocityLSRK, datestring, ra, dec,
         if verbose:
             print("Warning: replacing colons with decimals in the dec field.")
     freqGHz = parseFrequencyArgumentToGHz(lsrkFrequency)
-    lqa = pl_casatools.quanta
-    lme = pl_casatools.measures
+    lqa = casa_tools.quanta
+    lme = casa_tools.measures
     velocityRadio = lqa.quantity(velocityLSRK, "km/s")
     position = lme.direction(equinox, ra, dec)
     obstime = lme.epoch('TAI', datestring)
@@ -488,7 +485,7 @@ def rad2radec(ra=0,dec=0,imfitdict=None, prec=5, verbose=True, component=0,
     if np.shape(ra) == (2, 1):
         dec = ra[1][0]
         ra = ra[0][0]
-    lqa = pl_casatools.quanta
+    lqa = casa_tools.quanta
     myra = lqa.formxxx('%.12frad' % ra, format='hms', prec=prec+1)
     mydec = lqa.formxxx('%.12frad' % dec, format='dms', prec=prec-1)
     if replaceDecDotsWithColons:
@@ -600,7 +597,7 @@ def CalcAtmTransmissionForImage(img, chanInfo='', airmass=1.5, pwv=-1,
     2 arrays: frequencies (in GHz) and values (Kelvin, or transmission: 0..1)
     """
 
-    with pl_casatools.ImageReader(img) as image:
+    with casa_tools.ImageReader(img) as image:
         lcs = image.coordsys()
         telescopeName = lcs.telescope()
         lcs.done()
@@ -654,11 +651,11 @@ def CalcAtmTransmissionForImage(img, chanInfo='', airmass=1.5, pwv=-1,
     numchanModel = numchan*1
     chansepModel = (topofreqs[-1]-topofreqs[0])/(numchanModel-1)
     nbands = 1
-    lqa = pl_casatools.quanta
+    lqa = casa_tools.quanta
     fCenter = lqa.quantity(reffreq, 'GHz')
     fResolution = lqa.quantity(chansepModel, 'GHz')
     fWidth = lqa.quantity(numchanModel*chansepModel, 'GHz')
-    myat = pl_casatools.atmosphere
+    myat = casa_tools.atmosphere
     myat.initAtmProfile(humidity=H, temperature=lqa.quantity(T, "K"),
                         altitude=lqa.quantity(altitude, "m"),
                         pressure=lqa.quantity(P, 'mbar'), atmType=midLatitudeWinter)
@@ -706,12 +703,11 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile, msname, spw, 
     fieldid: field ID (integer)
     """
 
-    qaTool = pl_casatools.quanta
-    myqa = casatools.quanta()
+    qaTool = casa_tools.quanta
 
     cube = os.path.basename(image_robust_rms_and_spectra['nonpbcor_imagename'])
     # Get spectral frame
-    with pl_casatools.ImageReader(cube) as image:
+    with casa_tools.ImageReader(cube) as image:
         lcs = image.coordsys()
         frame = lcs.referencecode('spectral')[0]
         lcs.done()
@@ -720,16 +716,16 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile, msname, spw, 
     if unmaskedPixels is None:
         unmaskedPixels = 0
 
-    pl.clf()
-    desc = pl.subplot(111)
+    plt.clf()
+    desc = plt.subplot(111)
     units = 'mJy'
     fontsize = 9
 
     # x axes
     nchan = len(image_robust_rms_and_spectra['nonpbcor_image_cleanmask_spectrum'])
     channels = np.arange(1, nchan + 1)
-    freq_ch1 = qaTool.getvalue(myqa.convert(image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz'))
-    freq_chN = qaTool.getvalue(myqa.convert(image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))
+    freq_ch1 = qaTool.getvalue(qaTool.convert(image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz'))
+    freq_chN = qaTool.getvalue(qaTool.convert(image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))
     freqs = np.linspace(freq_ch1, freq_chN, nchan)
 
     # Flux density spectrum
@@ -737,28 +733,28 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile, msname, spw, 
     if unmaskedPixels > 0:
         mycolor = 'r'
         message = 'Red spectrum from %d pixels in flattened clean mask' % (unmaskedPixels)
-        pl.text(0.025, 0.96, message, transform=desc.transAxes, ha='left', fontsize=fontsize+1, color='r')
+        plt.text(0.025, 0.96, message, transform=desc.transAxes, ha='left', fontsize=fontsize + 1, color='r')
     else:
         mycolor = 'b'
         pblimit = image_robust_rms_and_spectra['nonpbcor_image_cleanmask_spectrum_pblimit']
-        pl.text(0.025, 0.96,
+        plt.text(0.025, 0.96,
                 'Blue spectrum is mean from pixels above the pb=%.2f level (no clean mask was found)' % pblimit,
-                transform=desc.transAxes, ha='left', fontsize=fontsize+1, color='b')
+                 transform=desc.transAxes, ha='left', fontsize=fontsize+1, color='b')
 
     # Noise spectrum
     noise = image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_robust_rms'] * 1000.
-    pl.text(0.025, 0.93, 'Black spectrum is per-channel scaled MAD from imstat annulus and outside clean mask',
-            transform=desc.transAxes, ha='left', fontsize=fontsize+1)
+    plt.text(0.025, 0.93, 'Black spectrum is per-channel scaled MAD from imstat annulus and outside clean mask',
+             transform=desc.transAxes, ha='left', fontsize=fontsize+1)
     # Turn off rightside y-axis ticks to make way for second y-axis
     desc.yaxis.set_ticks_position('left')
-    pl.plot(channels, intensity, '-', color=mycolor)
+    plt.plot(channels, intensity, '-', color=mycolor)
 
-    pl.xlabel('%d Channels' % len(channels))
-    pl.ylabel('Flux density (%s)' % units, color=mycolor)
-    pl.tick_params(axis='y', labelcolor=mycolor, color=mycolor)
+    plt.xlabel('%d Channels' % len(channels))
+    plt.ylabel('Flux density (%s)' % units, color=mycolor)
+    plt.tick_params(axis='y', labelcolor=mycolor, color=mycolor)
     # Give a buffer between final data point and y-axes in order
     # to be able to see high edge channel values
-    pl.xlim([channels[0]-len(channels)//100, channels[-1]+len(channels)//100])
+    plt.xlim([channels[0] - len(channels) // 100, channels[-1] + len(channels) // 100])
     freqDelta = (freqs[1]-freqs[0])*(len(channels)//100) # in Hz
     freqLimits = np.array([freqs[0]-freqDelta, freqs[-1]+freqDelta])  # Hz
 
@@ -776,15 +772,15 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile, msname, spw, 
     yrange = noiseLimits[1]-noiseLimits[0]
     noiseLimits[0] -= 0.1*yrange
     noiseLimits[1] += 0.1*yrange
-    pl.ylim(ylimits)
+    plt.ylim(ylimits)
 
     # Plot horizontal dotted line at zero intensity
-    pl.plot(pl.xlim(), [0, 0], 'k:')
-    pl.text(0.5, 1.085, cube, transform=desc.transAxes, fontsize=fontsize, ha='center')
-    addFrequencyAxisAbove(pl.gca(), freqs[0], freqs[-1], frame,
+    plt.plot(plt.xlim(), [0, 0], 'k:')
+    plt.text(0.5, 1.085, cube, transform=desc.transAxes, fontsize=fontsize, ha='center')
+    addFrequencyAxisAbove(plt.gca(), freqs[0], freqs[-1], frame,
                           twinx=True, ylimits=noiseLimits,
                           xlimits=freqLimits)
-    pl.plot(freqs*1e-9, noise, 'k-')
+    plt.plot(freqs * 1e-9, noise, 'k-')
 
     # Plot continuum frequency ranges
     fpattern = re.compile('([\d.]*)(~)([\d.]*)(\D*)')
@@ -792,30 +788,30 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile, msname, spw, 
     for cont_freq_range in cont_freq_ranges:
         fLowGHz = qaTool.getvalue(qaTool.convert(qaTool.quantity(float(cont_freq_range[0]), cont_freq_range[3]), 'GHz'))
         fHighGHz = qaTool.getvalue(qaTool.convert(qaTool.quantity(float(cont_freq_range[2]), cont_freq_range[3]), 'GHz'))
-        fcLevel = pl.ylim()[0]+yrange*0.025
-        pl.plot([fLowGHz, fHighGHz], [fcLevel]*2, 'c-', lw=2)
+        fcLevel = plt.ylim()[0] + yrange * 0.025
+        plt.plot([fLowGHz, fHighGHz], [fcLevel] * 2, 'c-', lw=2)
 
     # Overlay atmosphere transmission
     freq, transmission = CalcAtmTransmissionForImage(cube, msname=msname, spw=spw, fieldid=fieldid)
-    rescaledY, edgeYvalue, zeroValue, zeroYValue, otherEdgeYvalue, edgeT, otherEdgeT, edgeValueAmplitude, otherEdgeValueAmplitude, zeroValueAmplitude = RescaleTrans(transmission, pl.ylim())
-    pl.plot(freq, rescaledY, 'm-')
+    rescaledY, edgeYvalue, zeroValue, zeroYValue, otherEdgeYvalue, edgeT, otherEdgeT, edgeValueAmplitude, otherEdgeValueAmplitude, zeroValueAmplitude = RescaleTrans(transmission, plt.ylim())
+    plt.plot(freq, rescaledY, 'm-')
 
     if rec_info['type'] == 'DSB':
-        LO1 = float(qaTool.getvalue(myqa.convert(rec_info['LO1'], 'GHz')))
+        LO1 = float(qaTool.getvalue(qaTool.convert(rec_info['LO1'], 'GHz')))
         # Calculate image frequencies using TOPO frequencies from signal sideband.
         imageFreq0 = (2.0 * LO1 - freq[0]) * 1e9
         imageFreq1 = (2.0 * LO1 - freq[-1]) * 1e9
         chanInfo = [len(freq), imageFreq0, imageFreq1, float(-1e9 * (freq[1]-freq[0])), 'TOPO']
         imageFreq, imageTransmission = CalcAtmTransmissionForImage(cube, chanInfo, msname=msname, spw=spw, fieldid=fieldid)
-        results = RescaleTrans(imageTransmission, pl.ylim())
+        results = RescaleTrans(imageTransmission, plt.ylim())
         rescaledImage = results[0]
         # You need to keep the signal sideband frequency range so that the overlay works!
-        pl.plot(freq, rescaledImage, 'm--')
+        plt.plot(freq, rescaledImage, 'm--')
 
-    pl.draw()
-    fig = pl.gcf()
+    plt.draw()
+    fig = plt.gcf()
     fig.set_size_inches(8,6)
     fig.canvas.flush_events()
-    pl.savefig(plotfile)
-    pl.clf()
-    pl.close()
+    plt.savefig(plotfile)
+    plt.clf()
+    plt.close()

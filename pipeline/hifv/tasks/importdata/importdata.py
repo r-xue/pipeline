@@ -7,11 +7,11 @@ import numpy
 import pipeline.h.tasks.importdata.importdata as importdata
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hifv.heuristics.vlascanheuristics import VLAScanHeuristics
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 
 LOG = infrastructure.get_logger(__name__)
@@ -89,7 +89,7 @@ class VLAImportDataResults(basetask.Results):
         msinfo.calibratorIntents()
         msinfo.determine3C84()
 
-        with casatools.TableReader(ms) as table:
+        with casa_tools.TableReader(ms) as table:
             scanNums = sorted(numpy.unique(table.getcol('SCAN_NUMBER')))
 
         # Check for missing scans

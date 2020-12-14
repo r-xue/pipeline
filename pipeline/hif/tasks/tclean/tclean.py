@@ -1,19 +1,19 @@
-
 import glob
 import os
+
 import numpy as np
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api
-import pipeline.infrastructure.casatools as casatools
+import pipeline.infrastructure.imageheader as imageheader
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.pipelineqa as pipelineqa
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
-import pipeline.infrastructure.imageheader as imageheader
 from pipeline.hif.heuristics import imageparams_factory
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from . import cleanbase
 from .automaskthresholdsequence import AutoMaskThresholdSequence
@@ -207,12 +207,8 @@ class Tclean(cleanbase.CleanBase):
                 os.system(mkcmd)
                 self.copy_products(os.path.join(image_name, old_pname), os.path.join(newname, new_pname))
             else:
-                if 'summaryplot.png' in image_name:
-                    LOG.info('Copying {} to {}'.format(image_name, newname))
-                    job = casa_tasks.copyfile(image_name, newname)
-                else:
-                    LOG.info('Copying {} to {}'.format(image_name, newname))
-                    job = casa_tasks.copytree(image_name, newname)
+                LOG.info('Copying {} to {}'.format(image_name, newname))
+                job = casa_tasks.copytree(image_name, newname)
                 self._executor.execute(job)
 
     def prepare(self):
@@ -224,7 +220,7 @@ class Tclean(cleanbase.CleanBase):
                  inputs.intent, inputs.field, inputs.spw)
 
         per_spw_cont_sensitivities_all_chan = context.per_spw_cont_sensitivities_all_chan
-        qaTool = casatools.quanta
+        qaTool = casa_tools.quanta
 
         # if 'start' or 'width' are defined in velocity units, track these
         #  for conversion to frequency and back before and after tclean call. Added
@@ -624,7 +620,7 @@ class Tclean(cleanbase.CleanBase):
 
         inputs = self.inputs
 
-        cqa = casatools.quanta
+        cqa = casa_tools.quanta
 
         # Compute the dirty image
         LOG.info('Compute the dirty image')
@@ -827,13 +823,6 @@ class Tclean(cleanbase.CleanBase):
             LOG.info('    Residual max: %s', residual_max)
             LOG.info('    Residual min: %s', residual_min)
 
-            # Keep tclean summary plot
-            try:
-                move_job = casa_tasks.move('summaryplot_1.png', '%s.iter%s.summaryplot.png' % (rootname, iteration))
-                self._executor.execute(move_job)
-            except (IOError, OSError):
-                LOG.info('Could not save tclean summary plot.')
-
             # Up the iteration counter
             iteration += 1
 
@@ -862,9 +851,9 @@ class Tclean(cleanbase.CleanBase):
         # if 'start' or 'width' are defined in velocity units, convert from frequency back
         # to velocity before tclean call. Added to support SRDP ALMA optimized imaging.
         if self.start_as_velocity:
-            inputs.start = casatools.quanta.tos(self.start_as_velocity)
+            inputs.start = casa_tools.quanta.tos(self.start_as_velocity)
         if self.width_as_velocity:
-            inputs.width = casatools.quanta.tos(self.width_as_velocity)
+            inputs.width = casa_tools.quanta.tos(self.width_as_velocity)
 
         clean_inputs = cleanbase.CleanBase.Inputs(inputs.context,
                                                   output_dir=inputs.output_dir,
@@ -947,8 +936,7 @@ class Tclean(cleanbase.CleanBase):
         # will corrupt the table cache, so do things using only the
         # table tool.
         for vis in self.inputs.vis:
-            with casatools.TableReader('%s/POINTING' % vis,
-                                       nomodify=False) as table:
+            with casa_tools.TableReader('%s/POINTING' % vis, nomodify=False) as table:
                 # make a copy of the table
                 LOG.debug('Making copy of POINTING table')
                 copy = table.copy('%s/POINTING_COPY' % vis, valuecopy=True)
@@ -960,8 +948,7 @@ class Tclean(cleanbase.CleanBase):
     def _restore_pointing_table(self):
         for vis in self.inputs.vis:
             # restore the copy of the POINTING table
-            with casatools.TableReader('%s/POINTING_COPY' % vis,
-                                       nomodify=False) as table:
+            with casa_tools.TableReader('%s/POINTING_COPY' % vis, nomodify=False) as table:
                 LOG.debug('Copying back into POINTING table')
                 original = table.copy('%s/POINTING' % vis, valuecopy=True)
                 original.done()
@@ -1046,7 +1033,7 @@ class Tclean(cleanbase.CleanBase):
 
             # Create flattened PB over continuum channels
             flattened_pb_name = result.flux + extension + '.flattened_mom_0_8_fc'
-            with casatools.ImageReader(result.flux + extension) as image:
+            with casa_tools.ImageReader(result.flux + extension) as image:
                 flattened_pb = image.collapse(function='mean', axes=[2, 3], chans=cont_chan_ranges_str, outfile=flattened_pb_name)
                 flattened_pb.done()
 
@@ -1060,7 +1047,7 @@ class Tclean(cleanbase.CleanBase):
                 else:
                     raise 'Cannot handle clean mask name %s' % (os.path.basename(cleanmask))
 
-                with casatools.ImageReader(cleanmask) as image:
+                with casa_tools.ImageReader(cleanmask) as image:
                     flattened_mask_image = image.collapse(function='max', axes=[2, 3], chans=cont_chan_ranges_str, outfile=flattened_mask_name)
                     flattened_mask_image.done()
             else:
@@ -1069,7 +1056,7 @@ class Tclean(cleanbase.CleanBase):
             outlier_threshold = 5.0
 
             # Calculate statistics
-            with casatools.ImageReader(mom8fc_name) as image:
+            with casa_tools.ImageReader(mom8fc_name) as image:
                 # Get the min, max, median, MAD and number of pixels of the MOM8 FC image from the area excluding the cleaned area edges (PIPE-704)
                 statsmask = '"{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05)
                 stats = image.statistics(mask=statsmask, robust=True)
@@ -1095,7 +1082,7 @@ class Tclean(cleanbase.CleanBase):
                 statsmask = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, os.path.basename(flattened_pb_name), result.pblimit_cleanmask)
                 LOG.info('No cleanmask available to exclude for MOM8_FC RMS and peak SNR calculation. Calculating sigma, channel scaled MAD and peak SNR from annulus area of 1.05 x pblimit_image < pb < pblimit_cleanmask.')
 
-            with casatools.ImageReader(imagename) as image:
+            with casa_tools.ImageReader(imagename) as image:
                 stats_masked = image.statistics(mask=statsmask, stretch=True, robust=True, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5)
 
             cube_sigma = np.median(stats_masked.get('sigma')[cont_chan_indices])
@@ -1106,7 +1093,7 @@ class Tclean(cleanbase.CleanBase):
             LOG.info('MOM8_FC image {:s} has a maximum of {:#.5g}, median of {:#.5g} resulting in a Peak SNR of {:#.5g} times the channel scaled MAD of {:#.5g}.'.format(os.path.basename(mom8fc_name), image_max, image_median_annulus, peak_snr, cube_chanScaledMAD))
 
             # Calculate outlier fraction for QA scoring
-            with casatools.ImageReader(mom8fc_name) as image:
+            with casa_tools.ImageReader(mom8fc_name) as image:
                 statsmask = '"{:s}" > {:f} && "{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, mom8fc_name, outlier_threshold * cube_chanScaledMAD + image_median_annulus)
                 stats_outliers = image.statistics(mask=statsmask, robust=True)
                 npts = stats_outliers.get('npts')
@@ -1167,7 +1154,7 @@ class Tclean(cleanbase.CleanBase):
     def _to_frequency(self, velocity, restfreq):
         # f = f_rest * (1 - v/c)
         # https://www.iram.fr/IRAMFR/ARN/may95/node4.html
-        qa = casatools.quanta
+        qa = casa_tools.quanta
         light_speed = qa.getvalue(qa.convert(qa.constants('c'), 'km/s'))[0]
         velocity = qa.getvalue(qa.convert(qa.quantity(velocity), 'km/s'))[0]
         val = qa.getvalue(restfreq)[0] * (1 - velocity / light_speed)
@@ -1178,7 +1165,7 @@ class Tclean(cleanbase.CleanBase):
     def _to_velocity(self, frequency, restfreq, velo):
         # v = c * (f_rest - f) / f_rest
         # https://www.iram.fr/IRAMFR/ARN/may95/node4.html
-        qa = casatools.quanta
+        qa = casa_tools.quanta
         light_speed = qa.getvalue(qa.convert(qa.constants('c'), 'km/s'))[0]
         restfreq = qa.getvalue(qa.convert(restfreq, 'MHz'))[0]
         freq = qa.getvalue(qa.convert(frequency, 'MHz'))[0]
@@ -1190,7 +1177,7 @@ class Tclean(cleanbase.CleanBase):
     def _update_miscinfo(self, imagename, nfield, datamin, datamax):
 
         # Update metadata
-        with casatools.ImageReader(imagename) as image:
+        with casa_tools.ImageReader(imagename) as image:
             info = image.miscinfo()
 
             info['nfield'] = nfield

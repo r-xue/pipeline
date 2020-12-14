@@ -6,7 +6,7 @@ from .taskregistry import task_registry
 
 from . import api
 from . import callibrary
-from . import casatools
+from . import casa_tools
 from . import casa_tasks
 from . import contfilehandler
 from . import filenamer

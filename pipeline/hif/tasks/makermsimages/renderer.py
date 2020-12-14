@@ -3,9 +3,9 @@ import os
 import numpy
 
 from . import display as rmsimages
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
+from pipeline.infrastructure import casa_tools
 
 LOG = logging.get_logger(__name__)
 
@@ -31,8 +31,6 @@ class T2_4MDetailsMakermsimagesRenderer(basetemplates.T2_4MDetailsDefaultRendere
         # Holds a mapping of image name to image stats. This information is used to scale the MOM8 images.
         image_stats = {}
 
-        qaTool = casatools.quanta
-
         rmsplots = {}
 
         for r in results:
@@ -42,7 +40,7 @@ class T2_4MDetailsMakermsimagesRenderer(basetemplates.T2_4MDetailsDefaultRendere
                 image_path = rmsimagename
                 LOG.info('Getting properties of %s for the weblog.' % (image_path))
 
-                with casatools.ImageReader(image_path) as image:
+                with casa_tools.ImageReader(image_path) as image:
                     info = image.miscinfo()
                     spw = info.get('spw', None)
                     field = ''

@@ -13,7 +13,6 @@ import urllib
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hif.tasks.antpos import Antpos
 from pipeline.hifv.tasks.gaincurves import GainCurves
@@ -21,6 +20,7 @@ from pipeline.hifv.tasks.opcal import Opcal
 from pipeline.hifv.tasks.rqcal import Rqcal
 from pipeline.hifv.tasks.swpowcal import Swpowcal
 from pipeline.hifv.tasks.tecmaps import TecMaps
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from . import resultobjects
 
@@ -81,13 +81,12 @@ def correct_ant_posns(vis_name, print_offsets=False):
     #
     # get start date+time of observation
     #
-    with casatools.TableReader(vis_name+'/OBSERVATION') as table:
-        # observation = tb.open(vis_name+'/OBSERVATION')
+    with casa_tools.TableReader(vis_name+'/OBSERVATION') as table:
         time_range = table.getcol('TIME_RANGE')
 
     MJD_start_time = time_range[0][0] / 86400
-    q1 = casatools.quanta.quantity(time_range[0][0], 's')
-    date_time = casatools.quanta.time(q1, form='ymd')
+    q1 = casa_tools.quanta.quantity(time_range[0][0], 's')
+    date_time = casa_tools.quanta.time(q1, form='ymd')
     # date_time looks like: '2011/08/10/06:56:49'
     [obs_year, obs_month, obs_day, obs_time_string] = date_time[0].split('/')
     if int(obs_year) < 2010:
@@ -102,8 +101,7 @@ def correct_ant_posns(vis_name, print_offsets=False):
     #
     # get antenna to station mappings
     #
-    with casatools.TableReader(vis_name+'/ANTENNA') as table:
-        # observation = tb.open(vis_name+'/ANTENNA')
+    with casa_tools.TableReader(vis_name+'/ANTENNA') as table:
         ant_names = table.getcol('NAME')
         ant_stations = table.getcol('STATION')
     ant_num_stas = []
@@ -333,7 +331,7 @@ class Priorcals(basetask.StandardTaskTemplate):
         '''
         #print "ADDED TEST TROP VALUE"
         trdelscale = 1.23
-        tb = casatools.table()
+        tb = casa_tools.table()
         tb.open(antpos_caltable, nomodify=False)
         tb.putkeyword('VLATrDelCorr', trdelscale)
         tb.close()
@@ -344,7 +342,7 @@ class Priorcals(basetask.StandardTaskTemplate):
         # (Silent if required keyword absent, or has value=0.0)
         # antpostable = 'cal.antpos'
         trdelkw = 'VLATrDelCorr'
-        with casatools.TableReader(antpos_caltable) as tb:
+        with casa_tools.TableReader(antpos_caltable) as tb:
             if tb.keywordnames().count(trdelkw) == 1:
                 trdelscale = tb.getkeyword(trdelkw)
                 if trdelscale != 0.0:

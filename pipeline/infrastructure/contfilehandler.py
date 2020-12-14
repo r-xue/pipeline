@@ -11,7 +11,7 @@ import re
 
 import numpy as np
 
-from . import casatools
+from . import casa_tools
 from . import utils
 from . import logging
 
@@ -73,8 +73,8 @@ class ContFileHandler(object):
                             refer = 'TOPO'
                         elif cont_ranges['version'] == 2:
                             unit, refer = cont_region[3].split()
-                        fLow = casatools.quanta.convert('%s%s' % (cont_region[0], unit), 'GHz')['value']
-                        fHigh = casatools.quanta.convert('%s%s' % (cont_region[2], unit), 'GHz')['value']
+                        fLow = casa_tools.quanta.convert('%s%s' % (cont_region[0], unit), 'GHz')['value']
+                        fHigh = casa_tools.quanta.convert('%s%s' % (cont_region[2], unit), 'GHz')['value']
                         cont_ranges['fields'][field_name][spw_id].append({'range': (fLow, fHigh), 'refer': refer})
             except:
                 pass
@@ -179,8 +179,8 @@ class ContFileHandler(object):
 
         spw_id = int(spw_id)
 
-        qaTool = casatools.quanta
-        suTool = casatools.synthesisutils
+        qaTool = casa_tools.quanta
+        suTool = casa_tools.synthesisutils
 
         freq_ranges = []
         aggregate_frame_bw = '0.0GHz'

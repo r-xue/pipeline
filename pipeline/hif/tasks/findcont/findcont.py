@@ -6,13 +6,13 @@ import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.contfilehandler as contfilehandler
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hif.heuristics import findcont
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from .resultobjects import FindContResult
 
@@ -65,7 +65,7 @@ class FindCont(basetask.StandardTaskTemplate):
             result.mitigation_error = True
             return result
 
-        qaTool = casatools.quanta
+        qaTool = casa_tools.quanta
 
         # make sure inputs.vis is a list, even if it is one that contains a
         # single measurement set
@@ -353,7 +353,7 @@ class FindCont(basetask.StandardTaskTemplate):
     def _to_velocity(self, frequency, restfreq, velo):
         # v = c * (f_rest - f) / f_rest
         # https://www.iram.fr/IRAMFR/ARN/may95/node4.html
-        qa = casatools.quanta
+        qa = casa_tools.quanta
         light_speed = qa.getvalue(qa.convert(qa.constants('c'), 'km/s'))[0]
         restfreq = qa.getvalue(qa.convert(restfreq, 'MHz'))[0]
         freq = qa.getvalue(qa.convert(frequency, 'MHz'))[0]

@@ -3,14 +3,14 @@ import tempfile
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.mpihelpers as mpihelpers
+import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.h.tasks.common.sensitivity import Sensitivity
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import exceptions
 from pipeline.infrastructure import task_registry
-import pipeline.infrastructure.utils as utils
-from pipeline.h.tasks.common.sensitivity import Sensitivity
 from .resultobjects import MakeImagesResult
 from ..tclean import Tclean
 from ..tclean.resultobjects import TcleanResult
@@ -197,10 +197,10 @@ class MakeImages(basetask.StandardTaskTemplate):
         imname = result.image
         if not os.path.exists(imname):
             return None
-        cqa = casatools.quanta
+        cqa = casa_tools.quanta
         cell = target['cell'][0:2] if len(target['cell']) >= 2 else (target['cell'][0], target['cell'][0])
         # Image beam
-        with casatools.ImageReader(imname) as image:
+        with casa_tools.ImageReader(imname) as image:
             restoringbeam = image.restoringbeam()
             csys = image.coordsys()
             chanwidth_of_image = csys.increment(format='q', type='spectral')['quantity']['*1']

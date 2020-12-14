@@ -13,7 +13,7 @@ import cachetools
 import intervaltree
 from casatasks.private.callibrary import applycaltocallib
 
-from . import casatools, launcher, logging, utils
+from . import casa_tools, launcher, logging, utils
 
 LOG = logging.get_logger(__name__)
 
@@ -94,7 +94,7 @@ class CalApplication(object):
         calfroms = []
         for (gaintable, gainfield, interp, spwmap, calwt) in zipped:
             if os.path.exists(gaintable):
-                with casatools.TableReader(gaintable) as caltable:
+                with casa_tools.TableReader(gaintable) as caltable:
                     viscal = caltable.getkeyword('VisCal')
 
             else:

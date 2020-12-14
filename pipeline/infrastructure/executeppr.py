@@ -11,12 +11,12 @@ import traceback
 import pipeline
 import pipeline.extern.XmlObjectifier as XmlObjectifier
 import pipeline.infrastructure.argmapper as argmapper
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.project as project
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import exceptions
+from pipeline.infrastructure import task_registry
 
 # Make sure CASA exceptions are rethrown
 try:
@@ -76,8 +76,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
     try:
 
         # Decode the processing request
-        casatools.post_to_log("Analyzing pipeline processing request ...",
-                              echo_to_screen=echo_to_screen)
+        casa_tools.post_to_log("Analyzing pipeline processing request ...", echo_to_screen=echo_to_screen)
         info, structure, relativePath, intentsDict, asdmList, procedureName, commandsList = \
             _getFirstRequest(pprXmlFile)
 
@@ -92,10 +91,8 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
         if breakpoint != '':
             for command in commandsList:
                 if command[0] == breakpoint:
-                    casatools.post_to_log("    Found break point: " + breakpoint,
-                                          echo_to_screen=echo_to_screen)
-                    casatools.post_to_log("    Break point action is: " + bpaction,
-                                          echo_to_screen=echo_to_screen)
+                    casa_tools.post_to_log("    Found break point: " + breakpoint, echo_to_screen=echo_to_screen)
+                    casa_tools.post_to_log("    Break point action is: " + bpaction, echo_to_screen=echo_to_screen)
                     bpset = True
                     break
 
@@ -103,62 +100,47 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
         #     Resumes from the last context. Consider adding name
         if bpset and bpaction == 'resume':
             context = pipeline.Pipeline(context='last').context
-            casatools.post_to_log("    Resuming from last context",
-                                  echo_to_screen=echo_to_screen)
+            casa_tools.post_to_log("    Resuming from last context", echo_to_screen=echo_to_screen)
         else:
             context = pipeline.Pipeline(loglevel=loglevel, plotlevel=plotlevel,
                                         output_dir=workingDir).context
-            casatools.post_to_log("    Creating new pipeline context",
-                                  echo_to_screen=echo_to_screen)
+            casa_tools.post_to_log("    Creating new pipeline context", echo_to_screen=echo_to_screen)
 
     except Exception:
-        casatools.post_to_log("Beginning pipeline run ...",
-                              echo_to_screen=echo_to_screen)
-        casatools.post_to_log("For processing request: " + pprXmlFile,
-                              echo_to_screen=echo_to_screen)
+        casa_tools.post_to_log("Beginning pipeline run ...", echo_to_screen=echo_to_screen)
+        casa_tools.post_to_log("For processing request: " + pprXmlFile, echo_to_screen=echo_to_screen)
         traceback.print_exc(file=sys.stdout)
         errstr = traceback.format_exc()
-        casatools.post_to_log(errstr, echo_to_screen=echo_to_screen)
-        casatools.post_to_log("Terminating procedure execution ...",
-                              echo_to_screen=echo_to_screen)
+        casa_tools.post_to_log(errstr, echo_to_screen=echo_to_screen)
+        casa_tools.post_to_log("Terminating procedure execution ...", echo_to_screen=echo_to_screen)
         errorfile = utils.write_errorexit_file(workingDir, 'errorexit', 'txt')
         return
 
     # Request decoded, starting run.
-    casatools.post_to_log("Beginning pipeline run ...",
-                          echo_to_screen=echo_to_screen)
-    casatools.post_to_log("For processing request: " + pprXmlFile,
-                          echo_to_screen=echo_to_screen)
+    casa_tools.post_to_log("Beginning pipeline run ...", echo_to_screen=echo_to_screen)
+    casa_tools.post_to_log("For processing request: " + pprXmlFile, echo_to_screen=echo_to_screen)
 
     # Check for common error conditions.
     if relativePath == "":
-        casatools.post_to_log("    Undefined relative data path",
-                              echo_to_screen=echo_to_screen)
-        casatools.post_to_log("Terminating pipeline execution ...",
-                              echo_to_screen=echo_to_screen)
+        casa_tools.post_to_log("    Undefined relative data path", echo_to_screen=echo_to_screen)
+        casa_tools.post_to_log("Terminating pipeline execution ...", echo_to_screen=echo_to_screen)
         errorfile = utils.write_errorexit_file(workingDir, 'errorexit', 'txt')
         return
     elif len(asdmList) < 1:
-        casatools.post_to_log("    Empty ASDM list",
-                              echo_to_screen=echo_to_screen)
-        casatools.post_to_log("Terminating pipeline execution ...",
-                              echo_to_screen=echo_to_screen)
+        casa_tools.post_to_log("    Empty ASDM list", echo_to_screen=echo_to_screen)
+        casa_tools.post_to_log("Terminating pipeline execution ...", echo_to_screen=echo_to_screen)
         errorfile = utils.write_errorexit_file(workingDir, 'errorexit', 'txt')
         return
     elif len(commandsList) < 1:
-        casatools.post_to_log("    Empty commands list",
-                              echo_to_screen=echo_to_screen)
-        casatools.post_to_log("Terminating pipeline execution ...",
-                              echo_to_screen=echo_to_screen)
+        casa_tools.post_to_log("    Empty commands list", echo_to_screen=echo_to_screen)
+        casa_tools.post_to_log("Terminating pipeline execution ...", echo_to_screen=echo_to_screen)
         errorfile = utils.write_errorexit_file(workingDir, 'errorexit', 'txt')
         return
 
     # List project summary information
-    casatools.post_to_log("Project summary",
-                          echo_to_screen=echo_to_screen)
+    casa_tools.post_to_log("Project summary", echo_to_screen=echo_to_screen)
     for item in info:
-        casatools.post_to_log("    " + item[1][0] + item[1][1],
-                              echo_to_screen=echo_to_screen)
+        casa_tools.post_to_log("    " + item[1][0] + item[1][1], echo_to_screen=echo_to_screen)
     ds = dict(info)
     context.project_summary = project.ProjectSummary(
         proposal_code=ds['proposal_code'][1],
@@ -168,11 +150,9 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
         telescope=ds['telescope'][1])
 
     # List project structure information
-    casatools.post_to_log("Project structure",
-                          echo_to_screen=echo_to_screen)
+    casa_tools.post_to_log("Project structure", echo_to_screen=echo_to_screen)
     for item in structure:
-        casatools.post_to_log("    " + item[1][0] + item[1][1],
-                              echo_to_screen=echo_to_screen)
+        casa_tools.post_to_log("    " + item[1][0] + item[1][1], echo_to_screen=echo_to_screen)
     ds = dict(structure)
     context.project_structure = project.ProjectStructure(
         ous_entity_id = ds['ous_entity_id'][1],
@@ -194,16 +174,12 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
         sessionsDict = {}
 
     # Print the relative path
-    casatools.post_to_log("Directory structure",
-                          echo_to_screen=echo_to_screen)
-    casatools.post_to_log("    Working directory: " + workingDir,
-                          echo_to_screen=echo_to_screen)
-    casatools.post_to_log("    Raw data directory: " + rawDir,
-                          echo_to_screen=echo_to_screen)
+    casa_tools.post_to_log("Directory structure", echo_to_screen=echo_to_screen)
+    casa_tools.post_to_log("    Working directory: " + workingDir, echo_to_screen=echo_to_screen)
+    casa_tools.post_to_log("    Raw data directory: " + rawDir, echo_to_screen=echo_to_screen)
 
     # Construct the ASDM list
-    casatools.post_to_log("Number of ASDMs: " + str(len(asdmList)),
-                          echo_to_screen=echo_to_screen)
+    casa_tools.post_to_log("Number of ASDMs: " + str(len(asdmList)), echo_to_screen=echo_to_screen)
     files = []
     sessions = []
     defsession = 'session_1'
@@ -216,18 +192,14 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
                 break
         sessions.append(session)
         files.append(os.path.join(rawDir, asdm[1]))
-        casatools.post_to_log(
-            "    Session: " + session + "  ASDM: " + asdm[1],
-            echo_to_screen=echo_to_screen)
+        casa_tools.post_to_log("    Session: " + session + "  ASDM: " + asdm[1], echo_to_screen=echo_to_screen)
 
     # Paths for all these ASDM should be the same
     #     Add check for this ?
 
     # Beginning execution
-    casatools.post_to_log("\nStarting procedure execution ...\n",
-                          echo_to_screen=echo_to_screen)
-    casatools.post_to_log("Procedure name: " + procedureName + "\n",
-                          echo_to_screen=echo_to_screen)
+    casa_tools.post_to_log("\nStarting procedure execution ...\n", echo_to_screen=echo_to_screen)
+    casa_tools.post_to_log("Procedure name: " + procedureName + "\n", echo_to_screen=echo_to_screen)
 
     # Loop over the commands
     foundbp = False
@@ -236,7 +208,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
         # Get task name and arguments lists.
         casa_task = command[0]
         task_args = command[1]
-        casatools.set_log_origin(fromwhere=casa_task)
+        casa_tools.set_log_origin(fromwhere=casa_task)
 
         # Handle break point if one is set
         if bpset:
@@ -248,37 +220,33 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
             if casa_task == breakpoint:
                 foundbp = True
                 if bpaction == 'ignore':
-                    casatools.post_to_log("Ignoring breakpoint " + casa_task,
-                                          echo_to_screen=echo_to_screen)
+                    casa_tools.post_to_log("Ignoring breakpoint " + casa_task, echo_to_screen=echo_to_screen)
                     continue
                 elif bpaction == 'break':
-                    casatools.post_to_log(
-                        "Terminating execution at breakpoint " + casa_task,
-                        echo_to_screen=echo_to_screen)
+                    casa_tools.post_to_log("Terminating execution at breakpoint " + casa_task,
+                                           echo_to_screen=echo_to_screen)
                     break
                 elif bpaction == 'resume':
-                    casatools.post_to_log(
-                        "Resuming execution after breakpoint " + casa_task,
-                        echo_to_screen=echo_to_screen)
+                    casa_tools.post_to_log("Resuming execution after breakpoint " + casa_task,
+                                           echo_to_screen=echo_to_screen)
                     continue
             # Not the break point so check the resume case
             elif not foundbp and bpaction == 'resume':
-                casatools.post_to_log("Skipping task " + casa_task, echo_to_screen=echo_to_screen)
+                casa_tools.post_to_log("Skipping task " + casa_task, echo_to_screen=echo_to_screen)
                 continue
 
         # Execute
-        casatools.post_to_log("Executing command ..." + casa_task, echo_to_screen=echo_to_screen)
+        casa_tools.post_to_log("Executing command ..." + casa_task, echo_to_screen=echo_to_screen)
 
         # Execute the command
         try:
             pipeline_task_class = task_registry.get_pipeline_class_for_task(casa_task)
             pipeline_task_name = pipeline_task_class.__name__
-            casatools.post_to_log("    Using python class ..." + pipeline_task_name, echo_to_screen=echo_to_screen)
+            casa_tools.post_to_log("    Using python class ..." + pipeline_task_name, echo_to_screen=echo_to_screen)
 
             # List parameters
             for keyword, value in task_args.items():
-                casatools.post_to_log("    Parameter: " + \
-                                      keyword + " = " + str(value), echo_to_screen=echo_to_screen)
+                casa_tools.post_to_log("    Parameter: " + keyword + " = " + str(value), echo_to_screen=echo_to_screen)
 
             if pipeline_task_name == 'ImportData' or pipeline_task_name == 'RestoreData' or pipeline_task_name == 'NRORestoreData' \
                     or pipeline_task_name == 'ALMAImportData' or pipeline_task_name == 'ALMARestoreData'\
@@ -291,51 +259,47 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
             inputs = vdp.InputsContainer(pipeline_task_class, context, **remapped_args)
             task = pipeline_task_class(inputs)
             results = task.execute(dry_run=False)
-            casatools.post_to_log('Results ' + str(results), echo_to_screen=echo_to_screen)
+            casa_tools.post_to_log('Results ' + str(results), echo_to_screen=echo_to_screen)
 
             try:
                 results.accept(context)
             except Exception:
-                casatools.post_to_log(
-                    "Error: Failed to update context for " + pipeline_task_name,
-                    echo_to_screen=echo_to_screen)
+                casa_tools.post_to_log("Error: Failed to update context for " + pipeline_task_name,
+                                       echo_to_screen=echo_to_screen)
                 raise
 
             if pipeline_task_name == 'ImportData' and importonly:
-                casatools.post_to_log(
-                    "Terminating execution after running " + pipeline_task_name,
-                    echo_to_screen=echo_to_screen)
+                casa_tools.post_to_log("Terminating execution after running " + pipeline_task_name,
+                                       echo_to_screen=echo_to_screen)
                 break
 
             if pipeline_task_name == 'ALMAImportData' and importonly:
-                casatools.post_to_log(
-                    "Terminating execution after running " + pipeline_task_name,
-                    echo_to_screen=echo_to_screen)
+                casa_tools.post_to_log("Terminating execution after running " + pipeline_task_name,
+                                       echo_to_screen=echo_to_screen)
                 break
 
             if pipeline_task_name == 'VLAImportData' and importonly:
-                casatools.post_to_log(
-                    "Terminating execution after running " + pipeline_task_name,
-                    echo_to_screen=echo_to_screen)
+                casa_tools.post_to_log("Terminating execution after running " + pipeline_task_name,
+                                       echo_to_screen=echo_to_screen)
                 break
 
             if pipeline_task_name == 'SDImportData' and importonly:
-                casatools.post_to_log("Terminating execution after running " + pipeline_task_name,
-                                      echo_to_screen=echo_to_screen)
+                casa_tools.post_to_log("Terminating execution after running " + pipeline_task_name,
+                                       echo_to_screen=echo_to_screen)
                 break
 
             if pipeline_task_name == 'NROImportData' and importonly:
-                casatools.post_to_log("Terminating execution after running " + pipeline_task_name,
-                                      echo_to_screen=echo_to_screen)
+                casa_tools.post_to_log("Terminating execution after running " + pipeline_task_name,
+                                       echo_to_screen=echo_to_screen)
                 break
 
         except Exception:
             # Log message if an exception occurred that was not handled by
             # standardtask template (not turned into failed task result).
-            casatools.post_to_log("Unhandled error in executeppr while running pipeline task {}"
-                                  "".format(pipeline_task_name), echo_to_screen=echo_to_screen)
+            casa_tools.post_to_log("Unhandled error in executeppr while running pipeline task {}"
+                                   "".format(pipeline_task_name), echo_to_screen=echo_to_screen)
             errstr = traceback.format_exc()
-            casatools.post_to_log(errstr, echo_to_screen=echo_to_screen)
+            casa_tools.post_to_log(errstr, echo_to_screen=echo_to_screen)
             errorfile = utils.write_errorexit_file(workingDir, 'errorexit', 'txt')
             break
 
@@ -348,7 +312,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
 
             # Restore setting for rethrowing CASA exceptions.
             __rethrow_casa_exceptions = default__rethrow_casa_exceptions
-            casatools.set_log_origin(fromwhere='')
+            casa_tools.set_log_origin(fromwhere='')
 
             errorfile = utils.write_errorexit_file(workingDir, 'errorexit', 'txt')
             previous_tracebacks_as_string = "{}".format("\n".join([tb for tb in tracebacks]))
@@ -357,11 +321,10 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
     # Save the context
     context.save()
 
-    casatools.post_to_log("Terminating procedure execution ...",
-                          echo_to_screen=echo_to_screen)
+    casa_tools.post_to_log("Terminating procedure execution ...", echo_to_screen=echo_to_screen)
 
     __rethrow_casa_exceptions = default__rethrow_casa_exceptions
-    casatools.set_log_origin(fromwhere='')
+    casa_tools.set_log_origin(fromwhere='')
 
     return
 

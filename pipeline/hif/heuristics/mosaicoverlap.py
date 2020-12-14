@@ -1,8 +1,9 @@
 import math
+
 import numpy as np
 import scipy as sp
 
-import pipeline.infrastructure.casatools as casatools
+from pipeline.infrastructure import casa_tools
 
 # Physical constants
 #
@@ -164,7 +165,7 @@ def mosaicOverlapFactorVIS(vis, source, spw, diameter, fwhmfactor=1.13, taper=10
     """
 
     # Get the science fields and frequencies
-    with casatools.MSMDReader(vis) as msmd:
+    with casa_tools.MSMDReader(vis) as msmd:
 
         # Get the specified science fields
         if (source.isdigit()):
@@ -220,7 +221,7 @@ def mosaicOverlapFactorVIS(vis, source, spw, diameter, fwhmfactor=1.13, taper=10
     separationDict = {}
 
     # Loop over the fields examining the overlaps
-    with casatools.MSMDReader(vis) as msmd:
+    with casa_tools.MSMDReader(vis) as msmd:
         for i, f in enumerate(fields):
             for field in fields:
                 if f != field:

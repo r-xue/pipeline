@@ -5,7 +5,7 @@ TODO These utility functions should migrate to hif.tasks.common
 """
 import re
 
-from .. import casatools
+from .. import casa_tools
 from .. import logging
 import numpy
 from typing import Union, Tuple, List, Dict, Any, Generator
@@ -16,6 +16,7 @@ LOG = logging.get_logger(__name__)
 
 __all__ = ['chan_selection_to_frequencies', 'freq_selection_to_channels', 'spw_intersect', 'update_sens_dict',
            'update_beams_dict', 'set_nested_dict', 'intersect_ranges', 'intersect_ranges_by_weight', 'merge_ranges', 'equal_to_n_digits']
+
 
 def _get_cube_freq_axis(img: str) -> Tuple[float, float, str, float, int]:
     """
@@ -29,7 +30,7 @@ def _get_cube_freq_axis(img: str) -> Tuple[float, float, str, float, int]:
         (reference frequency, delta frequency per channel, frequency unit,
          reference pixel, number of pixels of frequency axis)
     """
-    iaTool = casatools.image
+    iaTool = casa_tools.image
 
     # Get frequency axis
     iaTool.open(img)
@@ -64,7 +65,7 @@ def chan_selection_to_frequencies(img: str, selection: str, unit: str = 'GHz') -
 
     frequencies = []
     if selection != '':
-        qaTool = casatools.quanta
+        qaTool = casa_tools.quanta
 
         # Get frequency axis
         try:
@@ -112,7 +113,7 @@ def freq_selection_to_channels(img: str, selection: str) -> Union[List[int], Lis
 
     channels = []
     if selection != '':
-        qaTool = casatools.quanta
+        qaTool = casa_tools.quanta
 
         # Get frequency axis
         try:
