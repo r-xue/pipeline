@@ -103,7 +103,7 @@ def __format_hms(x: float, prec: int=0) -> str:
 
 def HHMMSS(x: float, pos=None) -> str:
     """
-    Convert an angle in degree to hour angle with hms format.
+    Convert an angle in degree to hour angle with HHMMSS format.
 
     Example:
     >>> HHMMSS(10.123)
@@ -129,7 +129,7 @@ def HHMMSS(x: float, pos=None) -> str:
 
 def HHMMSSs(x: float, pos=None):
     """
-    Convert an angle in degree to hour angle with hms format.
+    Convert an angle in degree to hour angle with HHMMSSs format.
 
     Example:
     >>> HHMMSSs(10.123)
@@ -155,7 +155,7 @@ def HHMMSSs(x: float, pos=None):
 
 def HHMMSSss(x: float, pos=None) -> str:
     """
-    Convert an angle in degree to hour angle with hms format.
+    Convert an angle in degree to hour angle with HHMMSSss format.
 
     Example:
     >>> HHMMSSss(10.123)
@@ -180,7 +180,7 @@ def HHMMSSss(x: float, pos=None) -> str:
 
 
 def HHMMSSsss(x: float, pos=None) -> str:
-    """Convert an angle in degree to hour angle with hms format.
+    """Convert an angle in degree to hour angle with HHMMSSsss format.
 
     Example:
     >>> HHMMSSsss(10.123)
