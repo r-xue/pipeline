@@ -610,7 +610,11 @@ def CalcAtmTransmissionForImage(img, chanInfo='', airmass=1.5, pwv=-1,
 
     freqs = np.linspace(chanInfo[1]*1e-9, chanInfo[2]*1e-9, chanInfo[0])
     numchan = len(freqs)
-    result = cubeFrameToTopo(img, chanInfo[1:3], msname=msname, spw=spw, fieldid=fieldid)
+    # Make sure to not call conversion twice
+    if chanInfo[-1] != 'TOPO':
+        result = cubeFrameToTopo(img, chanInfo[1:3], msname=msname, spw=spw, fieldid=fieldid)
+    else:
+        result = None
     if (result is None):
         topofreqs = freqs
     else:
@@ -684,6 +688,7 @@ def CalcAtmTransmissionForImage(img, chanInfo='', airmass=1.5, pwv=-1,
         values = transmission
     else:
         values = TebbSky
+    myat.done()
     del myat
     return(newfreqs, values)
 
@@ -797,9 +802,10 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile, msname, spw, 
 
     if rec_info['type'] == 'DSB':
         LO1 = float(qaTool.getvalue(myqa.convert(rec_info['LO1'], 'GHz')))
-        imageFreq0 = 2.0 * LO1 - freq[0]
-        imageFreq1 = 2.0 * LO1 - freq[-1]
-        chanInfo = [len(freq), imageFreq0, imageFreq1, -(freqs[1]-freqs[0])]
+        # Calculate image frequencies using TOPO frequencies from signal sideband.
+        imageFreq0 = (2.0 * LO1 - freq[0]) * 1e9
+        imageFreq1 = (2.0 * LO1 - freq[-1]) * 1e9
+        chanInfo = [len(freq), imageFreq0, imageFreq1, float(-1e9 * (freq[1]-freq[0])), 'TOPO']
         imageFreq, imageTransmission = CalcAtmTransmissionForImage(cube, chanInfo, msname=msname, spw=spw, fieldid=fieldid)
         results = RescaleTrans(imageTransmission, pl.ylim())
         rescaledImage = results[0]
