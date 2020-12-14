@@ -281,7 +281,7 @@ def __format_dms(x: float, prec: int=0) -> str:
     return '%s%s%s\'%s\"%s' % (d, dsyb, m, s, ss)
 
 
-def DDMMSS(x: str, pos=None) -> str:
+def DDMMSS(x: float, pos=None) -> str:
     r"""
     Convert an angle in degree to dms angle with DDMMSS.
 
@@ -298,7 +298,7 @@ def DDMMSS(x: str, pos=None) -> str:
     """
     return __format_dms(x, prec=6)
 
-def DDMMSSs(x: str, pos=None) -> str:
+def DDMMSSs(x: float, pos=None) -> str:
     r"""
     Convert an angle in degree to dms angle with DDMMSSs.
 
@@ -316,7 +316,7 @@ def DDMMSSs(x: str, pos=None) -> str:
     return __format_dms(x, prec=7)
 
 
-def DDMMSSss(x: str, pos=None) -> str:
+def DDMMSSss(x: float, pos=None) -> str:
     r"""
     Convert an angle in degree to dms angle with DDMMSSss.
 
