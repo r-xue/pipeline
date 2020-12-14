@@ -65,7 +65,14 @@ def HHMM(x: float, pos=None) -> str:
 
     Args:
         x: An angle in degree.
-        prec: Significant digits.
+        pos: A position. Note, the parameter is ignored in this function.
+            Nevertheless it is necessary to have this parameter because of the
+            reason described in comment of the original code. HHMM* methods are
+            supposed to passed to matplotlib.ticker.FuncFormatter as the
+            parameter. The callable function passed to FuncFormatter must have
+            two input parameters, a tick value x and position pos. That is why
+            the parameter, 'pos', is defined in this method even though it is
+            not used in the function.
     Returns:
         formatted strings of hour, minute values.
 
@@ -104,7 +111,14 @@ def HHMMSS(x: str, pos=None) -> str:
 
     Args:
         x: An angle in degree.
-        prec: Significant digits.
+        pos: A position. Note, the parameter is ignored in this function.
+            Nevertheless it is necessary to have this parameter because of the
+            reason described in comment of the original code. HHMM* methods are
+            supposed to passed to matplotlib.ticker.FuncFormatter as the
+            parameter. The callable function passed to FuncFormatter must have
+            two input parameters, a tick value x and position pos. That is why
+            the parameter, 'pos', is defined in this method even though it is
+            not used in the function.
     Returns:
         formatted strings of hour, minute, and second values in a specified
         precision.
@@ -123,7 +137,14 @@ def HHMMSSs(x: str, pos=None):
 
     Args:
         x: An angle in degree.
-        prec: Significant digits.
+        pos: A position. Note, the parameter is ignored in this function.
+            Nevertheless it is necessary to have this parameter because of the
+            reason described in comment of the original code. HHMM* methods are
+            supposed to passed to matplotlib.ticker.FuncFormatter as the
+            parameter. The callable function passed to FuncFormatter must have
+            two input parameters, a tick value x and position pos. That is why
+            the parameter, 'pos', is defined in this method even though it is
+            not used in the function.
     Returns:
         formatted strings of hour, minute, and second values in a specified
         precision.
@@ -142,7 +163,14 @@ def HHMMSSss(x: str, pos=None) -> str:
 
     Args:
         x: An angle in degree.
-        prec: Significant digits.
+        pos: A position. Note, the parameter is ignored in this function.
+            Nevertheless it is necessary to have this parameter because of the
+            reason described in comment of the original code. HHMM* methods are
+            supposed to passed to matplotlib.ticker.FuncFormatter as the
+            parameter. The callable function passed to FuncFormatter must have
+            two input parameters, a tick value x and position pos. That is why
+            the parameter, 'pos', is defined in this method even though it is
+            not used in the function.
     Returns:
         formatted strings of hour, minute, and second values in a specified
         precision.
@@ -160,7 +188,14 @@ def HHMMSSsss(x: str, pos=None) -> str:
 
     Args:
         x: An angle in degree.
-        prec: Significant digits.
+        pos: A position. Note, the parameter is ignored in this function.
+            Nevertheless it is necessary to have this parameter because of the
+            reason described in comment of the original code. HHMM* methods are
+            supposed to passed to matplotlib.ticker.FuncFormatter as the
+            parameter. The callable function passed to FuncFormatter must have
+            two input parameters, a tick value x and position pos. That is why
+            the parameter, 'pos', is defined in this method even though it is
+            not used in the function.
     Returns:
         formatted strings of hour, minute, and second values in a specified
         precision.
