@@ -274,8 +274,8 @@ def DDMMSSss(x: str, pos=None) -> str:
     return __format_dms(x, prec=8)
 
 
-def XYlabel(span: float, direction_reference: str, ofs_coord: bool=False)
-    -> Tuple[Union[GLGBlabel, RADEClabel]]:
+def XYlabel(span: float, direction_reference: str, ofs_coord: bool=False
+            ) -> Tuple[Union[GLGBlabel, RADEClabel]]:
     """
     Create labels for the x- and y-axes in plot.
     Args:
@@ -291,8 +291,8 @@ def XYlabel(span: float, direction_reference: str, ofs_coord: bool=False)
         return RADEClabel(span, ofs_coord)
 
 
-def GLGBlabel(span: float)
-    -> Tuple[MultipleLocator, MultipleLocator, FuncFormatter, FuncFormatter]:
+def GLGBlabel(span: float
+    ) -> Tuple[MultipleLocator, MultipleLocator, FuncFormatter, FuncFormatter]:
     """
     Create GLGB formart label.
     Args:
