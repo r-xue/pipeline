@@ -7,13 +7,13 @@ import numpy as np
 import pipeline.domain as domain
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.common import commonfluxresults
 from pipeline.hifv.heuristics import find_EVLA_band
 from pipeline.hifv.heuristics import standard as standard
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 
 # Paper
@@ -29,30 +29,30 @@ def find_standards(positions):
     """
     # set the max separation as ~1'
     MAX_SEPARATION = 60*2.0e-5
-    position_3C48 = casatools.measures.direction('j2000', '1h37m41.299', '33d9m35.133')
+    position_3C48 = casa_tools.measures.direction('j2000', '1h37m41.299', '33d9m35.133')
     fields_3C48 = []
-    position_3C138 = casatools.measures.direction('j2000', '5h21m9.886', '16d38m22.051')
+    position_3C138 = casa_tools.measures.direction('j2000', '5h21m9.886', '16d38m22.051')
     fields_3C138 = []
-    position_3C147 = casatools.measures.direction('j2000', '5h42m36.138', '49d51m7.234')
+    position_3C147 = casa_tools.measures.direction('j2000', '5h42m36.138', '49d51m7.234')
     fields_3C147 = []
-    position_3C286 = casatools.measures.direction('j2000', '13h31m8.288', '30d30m32.959')
+    position_3C286 = casa_tools.measures.direction('j2000', '13h31m8.288', '30d30m32.959')
     fields_3C286 = []
 
     for ii in range(0, len(positions)):
-        position = casatools.measures.direction('j2000', str(positions[ii][0])+'rad', str(positions[ii][1])+'rad')
-        separation = casatools.measures.separation(position, position_3C48)['value'] * math.pi/180.0
+        position = casa_tools.measures.direction('j2000', str(positions[ii][0]) + 'rad', str(positions[ii][1]) + 'rad')
+        separation = casa_tools.measures.separation(position, position_3C48)['value'] * math.pi / 180.0
         if (separation < MAX_SEPARATION):
             fields_3C48.append(ii)
         else:
-            separation = casatools.measures.separation(position, position_3C138)['value'] * math.pi/180.0
+            separation = casa_tools.measures.separation(position, position_3C138)['value'] * math.pi / 180.0
             if (separation < MAX_SEPARATION):
                 fields_3C138.append(ii)
             else:
-                separation = casatools.measures.separation(position, position_3C147)['value'] * math.pi/180.0
+                separation = casa_tools.measures.separation(position, position_3C147)['value'] * math.pi / 180.0
                 if (separation < MAX_SEPARATION):
                     fields_3C147.append(ii)
                 else:
-                    separation = casatools.measures.separation(position, position_3C286)['value'] * math.pi/180.0
+                    separation = casa_tools.measures.separation(position, position_3C286)['value'] * math.pi / 180.0
                     if (separation < MAX_SEPARATION):
                         fields_3C286.append(ii)
 
@@ -66,7 +66,7 @@ def standard_sources(vis):
        the original EVLA scripted pipeline
     """
 
-    with casatools.TableReader(vis+'/FIELD') as table:
+    with casa_tools.TableReader(vis + '/FIELD') as table:
         field_positions = table.getcol('PHASE_DIR')
 
     positions = []
@@ -337,7 +337,7 @@ class VLASetjy(basetask.StandardTaskTemplate):
         # bands = spw2band.values()
 
         # Look in spectral window domain object as this information already exists!
-        with casatools.TableReader(self.inputs.vis+'/SPECTRAL_WINDOW') as table:
+        with casa_tools.TableReader(self.inputs.vis + '/SPECTRAL_WINDOW') as table:
             channels = table.getcol('NUM_CHAN')
             originalBBClist = table.getcol('BBC_NO')
             spw_bandwidths = table.getcol('TOTAL_BANDWIDTH')

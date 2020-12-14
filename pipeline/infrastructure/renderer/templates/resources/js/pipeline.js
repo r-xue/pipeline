@@ -1196,7 +1196,7 @@ ssh -L 30000:localhost:30000 remotepc</name>
                     onSuccess();
                 }
             }
-        }).fail(function(jqXHR, textStatus, errorThrown) {
+        }, "text").fail(function(jqXHR, textStatus, errorThrown) {
             $(target).html(failmsg);
         });
     };

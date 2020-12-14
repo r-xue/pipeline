@@ -1,8 +1,5 @@
-import numpy as np
-
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
-import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -17,7 +14,7 @@ class ImagePreCheckHeuristics(object):
     # We still calculate and post ratios in the weblog.
     def compare_beams(self, beam_0p0, beam_0p5, beam_1p0, beam_2p0, minAR, maxAR, maxBR):
 
-        cqa = casatools.quanta
+        cqa = casa_tools.quanta
 
         beams = {0.0: beam_0p0, 0.5: beam_0p5, 1.0: beam_1p0, 2.0: beam_2p0}
 

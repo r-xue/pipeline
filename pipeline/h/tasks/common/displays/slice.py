@@ -3,13 +3,13 @@ import os
 import string
 
 import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import numpy as np
-import pylab as plt
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.renderer.logger as logger
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -389,12 +389,12 @@ class SliceDisplay(object):
         if spectrumlineregions is not None:
             line_ranges = []
             for lineregion in spectrumlineregions:
-                qlr0 = casatools.quanta.quantity(lineregion[0])
-                qlr0 = casatools.quanta.convert(qlr0, 'Hz')
-                qlr0 = casatools.quanta.getvalue(qlr0) 
-                qlr1 = casatools.quanta.quantity(lineregion[1])
-                qlr1 = casatools.quanta.convert(qlr1, 'Hz')
-                qlr1 = casatools.quanta.getvalue(qlr1) 
+                qlr0 = casa_tools.quanta.quantity(lineregion[0])
+                qlr0 = casa_tools.quanta.convert(qlr0, 'Hz')
+                qlr0 = casa_tools.quanta.getvalue(qlr0)
+                qlr1 = casa_tools.quanta.quantity(lineregion[1])
+                qlr1 = casa_tools.quanta.convert(qlr1, 'Hz')
+                qlr1 = casa_tools.quanta.getvalue(qlr1)
                 line_ranges.append((qlr0, qlr1-qlr0))
             plt.broken_barh(line_ranges, (ymin, (ymax-ymin)/20.0),
                             facecolors='blue', edgecolors='blue')

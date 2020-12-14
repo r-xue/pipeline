@@ -84,16 +84,15 @@
 import math
 import os
 
-import matplotlib.pyplot as pl
+import matplotlib.pyplot as plt
 import numpy
 import numpy.ma as ma
 import scipy
 import scipy.stats.mstats
 
-import casatools
-
 import pipeline.infrastructure.utils as utils
 import pipeline.qa.utility.logs as logs
+from pipeline.infrastructure import casa_tools
 
 
 def rms(data):
@@ -358,127 +357,119 @@ def bpcal_calc(in_table, logger=''):
     # Get the list of spw ids actually in the caltable
     #    Should be handled by calanalysis tool meta data
     #    fetchers but is not.
-    tbLoc = casatools.table()
-    tbLoc.open(in_table)
-    spwidList = numpy.unique(tbLoc.getcol('SPECTRAL_WINDOW_ID')).tolist()
-    tbLoc.close()
+    with casa_tools.TableReader(in_table) as table:
+        spwidList = numpy.unique(table.getcol('SPECTRAL_WINDOW_ID')).tolist()
 
     # Create the local instance of the calibration analysis tool and open
     # the bandpass caltable
-    caLoc = casatools.calanalysis()
+    with casa_tools.CalAnalysis(in_table) as caLoc:
 
-    caLoc.open(in_table)
-
-    # Get the spw ids and corresponding number of channels in the
-    #    caltable meta data and remove values that are not represented
-    #    in the caltable.
-    full_spwList = caLoc.spw(name=False)
-    full_numchanList = caLoc.numchannel()
-    spwList = []
-    numchanList = []
-    for spwid, numchan in zip(full_spwList, full_numchanList):
-        if int(spwid) not in spwidList:
-            continue
-        spwList.append(spwid)
-        numchanList.append(numchan)
-
-    # Initialize the bandpass calibration statistics dictionary
-    bpcal_stats = dict()
-
-    # Get the amplitude fit statistics for each spectral window and time.
-    # The spectral window and channel range elements are appended to the
-    # result from ca.fit().  Effectively, the spectral window is another
-    # iteration axis.
-    bpcal_stats['AMPLITUDE_FIT'] = dict()
-    try:
-        for s in range(len(spwList)):
-            chanRange = bpcal_chanRangeList(numchanList[s])
-            if chanRange == []:
+        # Get the spw ids and corresponding number of channels in the
+        #    caltable meta data and remove values that are not represented
+        #    in the caltable.
+        full_spwList = caLoc.spw(name=False)
+        full_numchanList = caLoc.numchannel()
+        spwList = []
+        numchanList = []
+        for spwid, numchan in zip(full_spwList, full_numchanList):
+            if int(spwid) not in spwidList:
                 continue
-            spw = bpcal_spwChanString(spwList[s], chanRange)
-            f = caLoc.fit(spw=spw, axis='TIME', ap='AMPLITUDE',
-                          norm=True, order='LINEAR', type='LSQ',
-                          weight=False)
-            f['spw'] = int(spwList[s])
-            f['chanRange'] = chanRange
-            bpcal_stats['AMPLITUDE_FIT'][spwList[s]] = f
+            spwList.append(spwid)
+            numchanList.append(numchan)
 
-    except Exception as err:
-        origin = 'bpcal.bpcal_calc'
-        if logger != '':
-            logger.error(err.args[0], origin=origin)
-        raise Exception(err.args[0])
+        # Initialize the bandpass calibration statistics dictionary
+        bpcal_stats = dict()
 
-    # Get the phase fit statistics for each spectral window and time.  The
-    # spectral window and channel range elements are appended to the result
-    # from ca.fit().
-    bpcal_stats['PHASE_FIT'] = dict()
-    try:
-        # TODO: Use spwList directly, using "range" seems wrong.
-        for s in range(len(spwList)):
-            chanRange = bpcal_chanRangeList(numchanList[s])
-            if chanRange == []:
-                continue
-            spw = bpcal_spwChanString(spwList[s], chanRange)
-            f = caLoc.fit(spw=spw, axis='TIME', ap='PHASE',
-                          unwrap=True, jumpmax=0.1, order='LINEAR',
-                          type='LSQ', weight=False)
-            f['spw'] = int(spwList[s])
-            f['chanRange'] = chanRange
-            bpcal_stats['PHASE_FIT'][spwList[s]] = f
+        # Get the amplitude fit statistics for each spectral window and time.
+        # The spectral window and channel range elements are appended to the
+        # result from ca.fit().  Effectively, the spectral window is another
+        # iteration axis.
+        bpcal_stats['AMPLITUDE_FIT'] = dict()
+        try:
+            for s in range(len(spwList)):
+                chanRange = bpcal_chanRangeList(numchanList[s])
+                if chanRange == []:
+                    continue
+                spw = bpcal_spwChanString(spwList[s], chanRange)
+                f = caLoc.fit(spw=spw, axis='TIME', ap='AMPLITUDE',
+                              norm=True, order='LINEAR', type='LSQ',
+                              weight=False)
+                f['spw'] = int(spwList[s])
+                f['chanRange'] = chanRange
+                bpcal_stats['AMPLITUDE_FIT'][spwList[s]] = f
 
-    except Exception as err:
-        origin = 'bpcal.bpcal_calc'
-        if logger != '':
-            logger.error(err.args[0], origin=origin)
-        raise Exception(err.args[0])
+        except Exception as err:
+            origin = 'bpcal.bpcal_calc'
+            if logger != '':
+                logger.error(err.args[0], origin=origin)
+            raise Exception(err.args[0])
 
-    # Get the amplitudes and phases and calculate signal-to-noise ratios
-    bpcal_stats['AMPLITUDE'] = dict()
-    bpcal_stats['AMPLITUDE_SNR'] = dict()
-    bpcal_stats['PHASE'] = dict()
-    try:
-        for s in range(len(spwList)):
-            chanRange = [0, numchanList[s]-1]
+        # Get the phase fit statistics for each spectral window and time.  The
+        # spectral window and channel range elements are appended to the result
+        # from ca.fit().
+        bpcal_stats['PHASE_FIT'] = dict()
+        try:
+            # TODO: Use spwList directly, using "range" seems wrong.
+            for s in range(len(spwList)):
+                chanRange = bpcal_chanRangeList(numchanList[s])
+                if chanRange == []:
+                    continue
+                spw = bpcal_spwChanString(spwList[s], chanRange)
+                f = caLoc.fit(spw=spw, axis='TIME', ap='PHASE',
+                              unwrap=True, jumpmax=0.1, order='LINEAR',
+                              type='LSQ', weight=False)
+                f['spw'] = int(spwList[s])
+                f['chanRange'] = chanRange
+                bpcal_stats['PHASE_FIT'][spwList[s]] = f
 
-            # Consider full channel range. Any roll-off should be flagged
-            # already.
-            spw = spwList[s]
+        except Exception as err:
+            origin = 'bpcal.bpcal_calc'
+            if logger != '':
+                logger.error(err.args[0], origin=origin)
+            raise Exception(err.args[0])
 
-            bpcal_stats['AMPLITUDE'][spwList[s]] = dict()
-            bpcal_stats['AMPLITUDE'][spwList[s]]['spw'] = int(spwList[s])
-            bpcal_stats['AMPLITUDE'][spwList[s]]['chanRange'] = chanRange
-            bpcal_stats['PHASE'][spwList[s]] = dict()
-            bpcal_stats['PHASE'][spwList[s]]['spw'] = int(spwList[s])
-            bpcal_stats['PHASE'][spwList[s]]['chanRange'] = chanRange
-            bpcal_stats['AMPLITUDE_SNR'][spwList[s]] = dict()
-            bpcal_stats['AMPLITUDE_SNR'][spwList[s]]['spw'] = int(spwList[s])
-            bpcal_stats['AMPLITUDE_SNR'][spwList[s]]['chanRange'] = chanRange
+        # Get the amplitudes and phases and calculate signal-to-noise ratios
+        bpcal_stats['AMPLITUDE'] = dict()
+        bpcal_stats['AMPLITUDE_SNR'] = dict()
+        bpcal_stats['PHASE'] = dict()
+        try:
+            for s in range(len(spwList)):
+                chanRange = [0, numchanList[s]-1]
 
-            # Amplitude
-            bp_data = caLoc.get(spw=spw)
-            for pol in bp_data:
-                amp_values = numpy.ma.array(bp_data[pol]['value'], mask=bp_data[pol]['flag'])
-                bpcal_stats['AMPLITUDE'][spwList[s]][pol] = amp_values
-                amp_mean = numpy.ma.average(bpcal_stats['AMPLITUDE'][spwList[s]][pol])
-                amp_rms = rms(amp_values-amp_mean)
-                bpcal_stats['AMPLITUDE_SNR'][spwList[s]][pol] = amp_mean / amp_rms
+                # Consider full channel range. Any roll-off should be flagged
+                # already.
+                spw = spwList[s]
 
-            # Phase
-            bp_data = caLoc.get(spw=spw, ap='PHASE')
-            for pol in bp_data:
-                phase_values = numpy.ma.array(bp_data[pol]['value'], mask=bp_data[pol]['flag'])
-                bpcal_stats['PHASE'][spwList[s]][pol] = phase_values
+                bpcal_stats['AMPLITUDE'][spwList[s]] = dict()
+                bpcal_stats['AMPLITUDE'][spwList[s]]['spw'] = int(spwList[s])
+                bpcal_stats['AMPLITUDE'][spwList[s]]['chanRange'] = chanRange
+                bpcal_stats['PHASE'][spwList[s]] = dict()
+                bpcal_stats['PHASE'][spwList[s]]['spw'] = int(spwList[s])
+                bpcal_stats['PHASE'][spwList[s]]['chanRange'] = chanRange
+                bpcal_stats['AMPLITUDE_SNR'][spwList[s]] = dict()
+                bpcal_stats['AMPLITUDE_SNR'][spwList[s]]['spw'] = int(spwList[s])
+                bpcal_stats['AMPLITUDE_SNR'][spwList[s]]['chanRange'] = chanRange
 
-    except Exception as err:
-        origin = 'bpcal.bpcal_calc'
-        if logger != '':
-            logger.error(err.args[0], origin=origin)
-        raise Exception(err.args[0])
+                # Amplitude
+                bp_data = caLoc.get(spw=spw)
+                for pol in bp_data:
+                    amp_values = numpy.ma.array(bp_data[pol]['value'], mask=bp_data[pol]['flag'])
+                    bpcal_stats['AMPLITUDE'][spwList[s]][pol] = amp_values
+                    amp_mean = numpy.ma.average(bpcal_stats['AMPLITUDE'][spwList[s]][pol])
+                    amp_rms = rms(amp_values-amp_mean)
+                    bpcal_stats['AMPLITUDE_SNR'][spwList[s]][pol] = amp_mean / amp_rms
 
-    # Close the calibration analysis tool and delete the local instance
-    caLoc.close()
-    del caLoc
+                # Phase
+                bp_data = caLoc.get(spw=spw, ap='PHASE')
+                for pol in bp_data:
+                    phase_values = numpy.ma.array(bp_data[pol]['value'], mask=bp_data[pol]['flag'])
+                    bpcal_stats['PHASE'][spwList[s]][pol] = phase_values
+
+        except Exception as err:
+            origin = 'bpcal.bpcal_calc'
+            if logger != '':
+                logger.error(err.args[0], origin=origin)
+            raise Exception(err.args[0])
 
     # Return the dictionary containing the bandpass calibration statistics
     return bpcal_stats
@@ -525,7 +516,7 @@ def bpcal_write(bpcal_stats, out_table):
 
     # Create the local instance of the table tool, create the output main
     # table with a place holder data description, and close the table
-    tbLoc = casatools.table()
+    tbLoc = casa_tools.table
 
     tbLoc.create(out_table, bpcal_desc())
     tbLoc.addrows()
@@ -1828,12 +1819,12 @@ def bpcal_plot1(in_table, out_dir, stats_dict, spw, chanRange, iteration, ap):
 
     # Plot the bandpass calibration values and their errors with green
     # symbols.  Overwrite flagged data with red symbols.
-    pl.errorbar(frequency, value, yerr=valueErr, fmt='go', label='good')
+    plt.errorbar(frequency, value, yerr=valueErr, fmt='go', label='good')
 
     flag = stats_dict['flag']
     index = numpy.ma.where(flag == True)[0]
     if len(index) > 0:
-        pl.errorbar(frequency[index], value[index], yerr=valueErr[index], fmt='ro', label='flagged')
+        plt.errorbar(frequency[index], value[index], yerr=valueErr[index], fmt='ro', label='flagged')
 
     # Add the title to the plot, which contains the spectral window, feed,
     # antenna1, antenna2, and time
@@ -1848,36 +1839,36 @@ def bpcal_plot1(in_table, out_dir, stats_dict, spw, chanRange, iteration, ap):
     title += 'Feed = ' + feed + ', '
     title += 'Baseline = ' + ant1 + '&' + ant2 + ', '
     title += 'Time = ' + time
-    pl.title(title)
+    plt.title(title)
 
     # Add the x and y labels
-    pl.xlabel('Frequency (GHz)')
+    plt.xlabel('Frequency (GHz)')
 
     if apTemp == 'A':
-        pl.ylabel('Normalized Bandpass Amplitude')
+        plt.ylabel('Normalized Bandpass Amplitude')
     else:
-        pl.ylabel('Unwrapped Bandpass Phase')
+        plt.ylabel('Unwrapped Bandpass Phase')
 
     # If there is a valid model, add it as a line
     if stats_dict['validFit']:
         model = stats_dict['model']
-        pl.plot(frequency, model, 'b-', label='model')
+        plt.plot(frequency, model, 'b-', label='model')
 
     # Add the legen for all points plotted
-    pl.legend()
+    plt.legend()
 
     # Add annotations (RMS for amplitude and phase plots, delay for phase
     # plots)
     RMS = math.sqrt(stats_dict['resVar'])
     RMSS = 'Fit RMS = %.3e' % RMS
-    pl.annotate(RMSS, xycoords='figure fraction', xy=(0.15, 0.125))
+    plt.annotate(RMSS, xycoords='figure fraction', xy=(0.15, 0.125))
 
     if apTemp == 'P' and stats_dict['validFit']:
         delay = stats_dict['pars'][1] / (2.0*math.pi)
         delayErr = math.sqrt(stats_dict['vars'][1]) / (2.0*math.pi)
         delayS = 'Delay = %.3e' % delay
         delayS += ' +/- %.3e ns' % delayErr
-        pl.annotate(delayS, xycoords='figure fraction', xy=(0.15, 0.15))
+        plt.annotate(delayS, xycoords='figure fraction', xy=(0.15, 0.15))
 
     # Create the bandpass plot name based on amp/phase, spectral window
     # number, feed, antenna1, and antenna2
@@ -1898,8 +1889,8 @@ def bpcal_plot1(in_table, out_dir, stats_dict, spw, chanRange, iteration, ap):
     out_plot += '.png'
 
     # Save the plot to disk and clear
-    pl.savefig(out_plot)
-    pl.clf()
+    plt.savefig(out_plot)
+    plt.clf()
 
     # Return the bandpass plot name
     return out_plot
