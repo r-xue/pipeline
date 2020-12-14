@@ -8,21 +8,19 @@ import matplotlib.gridspec as gridspec
 import numpy
 import matplotlib.pyplot as plt
 from matplotlib.dates import date2num, DateFormatter, MinuteLocator
-from matplotlib.ticker import FuncFormatter, MultipleLocator, AutoLocator
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.displays.pointing as pointing
-import pipeline.infrastructure.renderer.logger as logger
 
 LOG = infrastructure.get_logger(__name__)
 
-#ShowPlot = True
+# ShowPlot = True
 ShowPlot = False
 
 DPISummary = 90
-#DPIDetail = 120
-#DPIDetail = 130
+# DPIDetail = 120
+# DPIDetail = 130
 DPIDetail = 260
 LightSpeedQuantity = casatools.quanta.constants('c')
 LightSpeed = casatools.quanta.convert(LightSpeedQuantity, 'km/s')['value']  # speed of light in km/s
@@ -84,16 +82,15 @@ def utc_locator(start_time=None, end_time=None):
     if start_time is None or end_time is None:
         return MinuteLocator()
     else:
-        dt = abs(end_time - start_time) * 1440.0 # day -> minutes
-        #print dt
+        dt = abs(end_time - start_time) * 1440.0  # day -> minutes
         if dt < 2:
             tick_interval = 1
         else:
-            tick_interval = max(int(dt/10), 2)
+            tick_interval = max(int(dt / 10), 2)
             tick_candidates = numpy.asarray([i for i in range(1, 61) if 60 % i == 0])
             tick_interval = tick_candidates[numpy.argmin(abs(tick_candidates - tick_interval))]
 
-        #print tick_interval
+        # print tick_interval
         return MinuteLocator(byminute=list(range(0, 60, tick_interval)))
 
 
@@ -156,16 +153,16 @@ class SpectralImage(object):
             self.data = ia.getchunk()
             self.mask = ia.getchunk(getmask=True)
             bottom = ia.toworld(numpy.zeros(len(self.image_shape), dtype=int), 'q')['quantity']
-            top = ia.toworld(self.image_shape-1, 'q')['quantity']
-            key = lambda x: '*%s'%(x+1)
-            ra_min = bottom[key(self.id_direction[0])]
-            ra_max = top[key(self.id_direction[0])]
+            top = ia.toworld(self.image_shape - 1, 'q')['quantity']
+            direction_keys = ['*{}'.format(x + 1) for x in self.id_direction]
+            ra_min = bottom[direction_keys[0]]
+            ra_max = top[direction_keys[0]]
             if qa.gt(ra_min, ra_max):
                 ra_min, ra_max = ra_max, ra_min
             self.ra_min = ra_min
             self.ra_max = ra_max
-            self.dec_min = bottom[key(self.id_direction[1])]
-            self.dec_max = top[key(self.id_direction[1])]
+            self.dec_min = bottom[direction_keys[1]]
+            self.dec_max = top[direction_keys[1]]
             self._brightnessunit = ia.brightnessunit()
             beam = ia.restoringbeam()
         self._beamsize_in_deg = qa.convert(qa.sqrt(qa.mul(beam['major'], beam['minor'])), 'deg')['value']
@@ -185,12 +182,12 @@ class SpectralImage(object):
 
     def _load_id_coord_types(self, coord_types):
         id_direction = coord_types.index('Direction')
-        self.id_direction = [id_direction, id_direction+1]
+        self.id_direction = [id_direction, id_direction + 1]
         self.id_spectral = coord_types.index('Spectral')
         self.id_stokes = coord_types.index('Stokes')
-        LOG.debug('id_direction=%s'%(self.id_direction))
-        LOG.debug('id_spectral=%s'%(self.id_spectral))
-        LOG.debug('id_stokes=%s'%(self.id_stokes))
+        LOG.debug('id_direction=%s', self.id_direction)
+        LOG.debug('id_spectral=%s', self.id_spectral)
+        LOG.debug('id_stokes=%s', self.id_stokes)
 
     @property
     def nx(self):
@@ -244,7 +241,6 @@ class SpectralImage(object):
         if _unit != unit:
             refval = qa.convert(qa.quantity(refval, _unit), unit)['value']
             increment = qa.convert(qa.quantity(increment, _unit), unit)['value']
-        #return numpy.array([refval+increment*(i-refpix) for i in xrange(self.nchan)])
         return (refpix, refval, increment)
 
 
@@ -307,7 +303,7 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
     @property
     def stage_dir(self):
         return os.path.join(self.context.report_dir,
-                            'stage%d'%(self.stage_number))
+                            'stage{}'.format(self.stage_number))
 
     @property
     def source(self):
@@ -327,7 +323,7 @@ class SDCalibrationDisplay(object, metaclass=abc.ABCMeta):
     def plot(self):
         results = self.inputs.result
         report_dir = self.inputs.context.report_dir
-        stage_dir = os.path.join(report_dir, 'stage%d'%(results.stage_number))
+        stage_dir = os.path.join(report_dir, 'stage{}'.format(results.stage_number))
         plots = []
         for result in results:
             if result is None or result.outcome is None:
@@ -369,7 +365,7 @@ class SDImageDisplay(object, metaclass=abc.ABCMeta):
         self.brightnessunit = self.image.brightnessunit
         self.direction_reference = self.image.direction_reference
         (refpix, refval, increment) = self.image.spectral_axis(unit='GHz')
-        self.frequency = numpy.array([refval+increment*(i-refpix) for i in range(self.nchan)])
+        self.frequency = numpy.array([refval + increment * (i - refpix) for i in range(self.nchan)])
         self.velocity = self.image.to_velocity(self.frequency, freq_unit='GHz')
         self.frequency_frame = self.image.frequency_frame
         self.x_max = self.nx - 1
@@ -382,14 +378,14 @@ class SDImageDisplay(object, metaclass=abc.ABCMeta):
         self.dec_max = qa.convert(self.image.dec_max, 'deg')['value']
         self.stokes_string = self.image.stokes_string
 
-        LOG.debug('(ra_min,ra_max)=(%s,%s)' % (self.ra_min, self.ra_max))
-        LOG.debug('(dec_min,dec_max)=(%s,%s)' % (self.dec_min, self.dec_max))
+        LOG.debug('(ra_min,ra_max)=(%s,%s)', self.ra_min, self.ra_max)
+        LOG.debug('(dec_min,dec_max)=(%s,%s)', self.dec_min, self.dec_max)
 
         self.beam_size = self.image.beam_size
         self.beam_radius = self.beam_size / 2.0
         self.grid_size = self.beam_size / 3.0
-        LOG.debug('beam_radius=%s'%(self.beam_radius))
-        LOG.debug('grid_size=%s'%(self.grid_size))
+        LOG.debug('beam_radius=%s', self.beam_radius)
+        LOG.debug('grid_size=%s', self.grid_size)
 
         # 2008/9/20 Dec Effect has been taken into account
         self.aspect = 1.0 / math.cos(0.5 * (self.dec_min + self.dec_max) / 180.0 * 3.141592653)
@@ -525,11 +521,11 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
         _f = form4(self.nv)
         self.gs_top = gridspec.GridSpec(1, 1,
                                         left=0.08,
-                                        bottom=1.0 - 1.0/_f, top=0.96)
-        self.gs_bottom = gridspec.GridSpec(self.nv+1, self.nh+1,
+                                        bottom=1.0 - 1.0 / _f, top=0.96)
+        self.gs_bottom = gridspec.GridSpec(self.nv + 1, self.nh + 1,
                                            hspace=0, wspace=0,
                                            left=0, right=0.95,
-                                           bottom=0.01, top=1.0 - 1.0/_f-0.07)
+                                           bottom=0.01, top=1.0 - 1.0 / _f - 0.07)
 #         self.gs_top = gridspec.GridSpec(1, 1,
 #                                         bottom=1.0 - 1.0/form3(self.nv), top=0.96)
 #         self.gs_bottom = gridspec.GridSpec(self.nv+1, self.nh+1,
@@ -550,10 +546,9 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             axes.xaxis.get_major_formatter().set_useOffset(False)
             axes.yaxis.get_major_formatter().set_useOffset(False)
             plt.xlabel('Frequency(GHz)', size=(self.ticksize + 1))
-            plt.ylabel('Intensity(%s)' % (self.brightnessunit), size=(self.ticksize + 1))
+            plt.ylabel('Intensity({})'.format(self.brightnessunit), size=(self.ticksize + 1))
             plt.xticks(size=self.ticksize)
             plt.yticks(size=self.ticksize)
-            #plt.title('Spatially Integrated Spectrum', size=(self.ticksize + 1))
             plt.title('Spatially Averaged Spectrum', size=(self.ticksize + 1))
 
             self._axes_integsp = axes
@@ -575,13 +570,13 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             self._axes_atm.set_position(self.axes_integsp.get_position())
             ylabel = self._axes_atm.set_ylabel('ATM Transmission', size=self.ticksize)
             ylabel.set_color('m')
-            self._axes_atm.yaxis.set_tick_params(colors='m', labelsize=self.ticksize-1)
+            self._axes_atm.yaxis.set_tick_params(colors='m', labelsize=self.ticksize - 1)
             self._axes_atm.yaxis.set_major_locator(
                 plt.MaxNLocator(nbins=4, integer=True, min_n_ticks=2)
             )
             self._axes_atm.yaxis.set_major_formatter(
                 plt.FuncFormatter(lambda x, pos: '{}%'.format(int(x)))
-                )
+            )
         return self._axes_atm
 
     @property
@@ -643,7 +638,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
                 plt.text(0.5, 0.5, xaxislabel((label_ra[x][0] + label_ra[x][1]) / 2.0),
                          horizontalalignment='center', verticalalignment='center', size=self.ticksize)
             else:
-                a1.texts[0].set_text(xaxislabel((label_ra[x][0]+label_ra[x][1])/2.0))
+                a1.texts[0].set_text(xaxislabel((label_ra[x][0] + label_ra[x][1]) / 2.0))
         for y in range(self.nv):
             a1 = plt.subplot(self.gs_bottom[self.nv - y - 1, 0])
             a1.set_axis_off()
@@ -651,7 +646,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
                 plt.text(0.5, 0.5, pointing.DDMMSSs((label_dec[y][0] + label_dec[y][1]) / 2.0),
                          horizontalalignment='center', verticalalignment='center', size=self.ticksize)
             else:
-                a1.texts[0].set_text(pointing.DDMMSSs((label_dec[y][0]+label_dec[y][1])/2.0))
+                a1.texts[0].set_text(pointing.DDMMSSs((label_dec[y][0] + label_dec[y][1]) / 2.0))
         a1 = plt.subplot(self.gs_bottom[-1, 0])
         a1.set_axis_off()
         ralabel, declabel = self.get_axes_labels()
@@ -703,7 +698,7 @@ class SDSparseMapPlotter(object):
         refpix = refpix_list[0]
         refval = refval_list[0]
         increment = increment_list[0]
-        #LOG.debug('axis 0: refpix,refval,increment=%s,%s,%s'%(refpix,refval,increment))
+        LOG.debug('axis 0: refpix,refval,increment=%s,%s,%s', refpix, refval, increment)
         for x in range(self.nh):
             x0 = (self.nh - x - 1) * self.step
             x1 = (self.nh - x - 2) * self.step + 1
@@ -712,7 +707,7 @@ class SDSparseMapPlotter(object):
         refpix = refpix_list[1]
         refval = refval_list[1]
         increment = increment_list[1]
-        #LOG.debug('axis 1: refpix,refval,increment=%s,%s,%s'%(refpix,refval,increment))
+        LOG.debug('axis 1: refpix,refval,increment=%s,%s,%s', refpix, refval, increment)
         for y in range(self.nv):
             y0 = y * self.step
             y1 = (y + 1) * self.step - 1
@@ -720,10 +715,10 @@ class SDSparseMapPlotter(object):
             LabelDEC[y][1] = refval + (y1 - refpix) * increment
         self.axes.setup_labels(LabelRA, LabelDEC)
 
-    def setup_labels_absolute( self, ralist, declist ):
+    def setup_labels_absolute(self, ralist, declist):
         assert self.step == 1  # this function is used only for step=1
-        LabelRA  = [[x,x] for x in ralist]
-        LabelDEC = [[y,y] for y in declist]
+        LabelRA = [[x, x] for x in ralist]
+        LabelDEC = [[y, y] for y in declist]
         self.axes.setup_labels(LabelRA, LabelDEC)
 
     def setup_lines(self, lines_averaged, lines_map=None):
@@ -781,11 +776,11 @@ class SDSparseMapPlotter(object):
             spmax += dsp * 0.4
         else:
             spmax += dsp * 0.1
-        LOG.debug('spmin=%s, spmax=%s' % (spmin, spmax))
+        LOG.debug('spmin=%s, spmax=%s', spmin, spmax)
 
         global_xmin = min(frequency[0], frequency[-1])
         global_xmax = max(frequency[0], frequency[-1])
-        LOG.debug('global_xmin=%s, global_xmax=%s' % (global_xmin, global_xmax))
+        LOG.debug('global_xmin=%s, global_xmax=%s', global_xmin, global_xmax)
 
         # Auto scaling
         # to eliminate max/min value due to bad pixel or bad fitting,
@@ -806,43 +801,42 @@ class SDSparseMapPlotter(object):
 #                                      dtype=numpy.float64)
 #             ListMin = numpy.fromiter((numpy.min(v.data[v.mask == False]) for v in valid_data),
 #                                      dtype=numpy.float64)
-            LOG.debug('ListMax from masked_array=%s'%(ListMax))
-            LOG.debug('ListMin from masked_array=%s'%(ListMin))
+            LOG.debug('ListMax from masked_array=%s', ListMax)
+            LOG.debug('ListMin from masked_array=%s', ListMin)
         else:
             ListMax = valid_data.max(axis=1)
             ListMin = valid_data.min(axis=1)
         del valid_data
         if len(ListMax) == 0 or len(ListMin) == 0:
             return False
-        #if isinstance(ListMin, numpy.ma.masked_array):
-        #    ListMin = ListMin.data[ListMin.mask == False]
-        #if isinstance(ListMax, numpy.ma.masked_array):
-        #    ListMax = ListMax.data[ListMax.mask == False]
-        LOG.debug('ListMax=%s' % (list(ListMax)))
-        LOG.debug('ListMin=%s' % (list(ListMin)))
-        global_ymax = numpy.sort(ListMax)[len(ListMax) - len(ListMax)//10 - 1]
-        global_ymin = numpy.sort(ListMin)[len(ListMin)//10]
+        # if isinstance(ListMin, numpy.ma.masked_array):
+        #     ListMin = ListMin.data[ListMin.mask == False]
+        # if isinstance(ListMax, numpy.ma.masked_array):
+        #     ListMax = ListMax.data[ListMax.mask == False]
+        LOG.debug('ListMax=%s', list(ListMax))
+        LOG.debug('ListMin=%s', list(ListMin))
+        global_ymax = numpy.sort(ListMax)[len(ListMax) - len(ListMax) // 10 - 1]
+        global_ymin = numpy.sort(ListMin)[len(ListMin) // 10]
         global_ymax = global_ymax + (global_ymax - global_ymin) * 0.2
         global_ymin = global_ymin - (global_ymax - global_ymin) * 0.1
         del ListMax, ListMin
 
-        LOG.info('global_ymin=%s, global_ymax=%s' % (global_ymin, global_ymax))
+        LOG.info('global_ymin=%s, global_ymax=%s', global_ymin, global_ymax)
 
         plt.gcf().sca(self.axes.axes_integsp)
         plot_helper.plot(frequency, averaged_data, color='b', linestyle='-', linewidth=0.4)
         if self.channel_axis is True:
             self.add_channel_axis(frequency)
         (_xmin, _xmax, _ymin, _ymax) = plt.axis()
-        #plt.axis((_xmin,_xmax,spmin,spmax))
         plt.axis((global_xmin, global_xmax, spmin, spmax))
         if self.lines_averaged is not None:
             for chmin, chmax in self.lines_averaged:
                 fmin = ch_to_freq(chmin, frequency)
                 fmax = ch_to_freq(chmax, frequency)
-                LOG.debug('plotting line range for mean spectrum: [%s, %s]' % (chmin, chmax))
+                LOG.debug('plotting line range for mean spectrum: [%s, %s]', chmin, chmax)
                 plot_helper.axvspan(fmin, fmax, color='cyan')
         if self.deviation_mask is not None:
-            LOG.debug('plotting deviation mask %s' % self.deviation_mask)
+            LOG.debug('plotting deviation mask %s', self.deviation_mask)
             for chmin, chmax in self.deviation_mask:
                 fmin = ch_to_freq(chmin, frequency)
                 fmax = ch_to_freq(chmax, frequency)
@@ -886,15 +880,15 @@ class SDSparseMapPlotter(object):
                     xmax = global_xmax
                     if map_data[x][y].min() > NoDataThreshold:
                         median = numpy.median(map_data[x][y])
-                        mad = numpy.median(map_data[x][y] - median)
+                        # mad = numpy.median(map_data[x][y] - median)
                         sigma = map_data[x][y].std()
                         ymin = median - 2.0 * sigma
                         ymax = median + 5.0 * sigma
                     else:
                         ymin = global_ymin
                         ymax = global_ymax
-                    LOG.debug('Per panel scaling turned on: ymin=%s, ymax=%s (global ymin=%s, ymax=%s)' %
-                              (ymin, ymax, global_ymin, global_ymax))
+                    LOG.debug('Per panel scaling turned on: ymin=%s, ymax=%s (global ymin=%s, ymax=%s)',
+                              ymin, ymax, global_ymin, global_ymax)
                 plt.gcf().sca(self.axes.axes_spmap[y + (self.nh - x - 1) * self.nv])
                 if map_data[x][y].min() > NoDataThreshold:
                     plot_helper.plot(frequency, map_data[x][y], color='b', linestyle='-', linewidth=0.2)
@@ -902,21 +896,21 @@ class SDSparseMapPlotter(object):
                         for chmin, chmax in self.lines_map[x][y]:
                             fmin = ch_to_freq(chmin, frequency)
                             fmax = ch_to_freq(chmax, frequency)
-                            LOG.debug('plotting line range for %s, %s: [%s, %s]' % (x, y, chmin, chmax))
+                            LOG.debug('plotting line range for %s, %s: [%s, %s]', x, y, chmin, chmax)
                             plot_helper.axvspan(fmin, fmax, color='cyan')
                     # elif self.lines_averaged is not None:
                     #     for chmin, chmax in self.lines_averaged:
                     #         fmin = ch_to_freq(chmin, frequency)
                     #         fmax = ch_to_freq(chmax, frequency)
-                    #         LOG.debug('plotting line range for %s, %s (reuse lines_averaged): [%s, %s]' %
-                    #                   (x, y, chmin, chmax))
+                    #         LOG.debug('plotting line range for %s, %s (reuse lines_averaged): [%s, %s]',
+                    #                   x, y, chmin, chmax)
                     #        plot_helper.axvspan(fmin, fmax, color='cyan')
                     if is_valid_fit_result:
                         plot_helper.plot(frequency, fit_result[x][y], color='r', linewidth=0.4)
                     elif self.reference_level is not None and ymin < self.reference_level and self.reference_level < ymax:
                         plot_helper.axhline(self.reference_level, color='r', linewidth=0.4)
                 else:
-                    plot_helper.text((xmin+xmax)/2.0, (ymin+ymax)/2.0, 'NO DATA', ha='center', va='center',
+                    plot_helper.text((xmin + xmax) / 2.0, (ymin + ymax) / 2.0, 'NO DATA', ha='center', va='center',
                                      size=(self.TickSize + 1))
                 plt.axis((xmin, xmax, ymin, ymax))
 
@@ -925,7 +919,7 @@ class SDSparseMapPlotter(object):
 
         if figfile is not None:
             plt.savefig(figfile, format='png', dpi=DPIDetail)
-        LOG.debug('figfile=\'%s\''%(figfile))
+        LOG.debug('figfile=\'%s\'', figfile)
 
         plot_helper.clear()
 
@@ -943,7 +937,7 @@ def ch_to_freq(ch, frequency):
         freq = frequency[0]
     elif ich >= len(frequency):
         freq = frequency[-1]
-    elif offset_min == 0 or ich == len(frequency) -1:
+    elif offset_min == 0 or ich == len(frequency) - 1:
         freq = frequency[ich]
     else:
         jch = ich + 1
