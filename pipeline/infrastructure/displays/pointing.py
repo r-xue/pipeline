@@ -208,6 +208,7 @@ def DDMM(x: float, pos=None) -> str:
 def __format_dms(x: float, prec: int=0) -> str:
     """
     Convert an angle in degree to dms angle in specified precision.
+
     Example:
     >>> __format_dms(10.123)
     '+10$^\\circ$07\'23"'
@@ -230,6 +231,7 @@ def __format_dms(x: float, prec: int=0) -> str:
 def DDMMSS(x: str, pos=None) -> str:
     """
     Convert an angle in degree to dms angle with DDMMSS.
+
     Example:
     >>> DDMMSS(10.123)
     '+10$^\\circ$07\'23"'
@@ -245,6 +247,7 @@ def DDMMSS(x: str, pos=None) -> str:
 def DDMMSSs(x: str, pos=None) -> str:
     """
     Convert an angle in degree to dms angle with DDMMSSs.
+
     Example:
     >>> DDMMSSs(10.123)
     '+10$^\\circ$07\'22".8'
@@ -261,6 +264,7 @@ def DDMMSSs(x: str, pos=None) -> str:
 def DDMMSSss(x: str, pos=None) -> str:
     """
     Convert an angle in degree to dms angle with DDMMSSss.
+
     Example:
     >>> DDMMSSss(10.123)
     '+10$^\\circ$07\'22".80'
@@ -278,6 +282,7 @@ def XYlabel(span: float, direction_reference: str, ofs_coord: bool=False
             ) -> Tuple[Union[GLGBlabel, RADEClabel]]:
     """
     Create labels for the x- and y-axes in plot.
+
     Args:
         span:
         direction_reference:
@@ -295,6 +300,7 @@ def GLGBlabel(span: float
     ) -> Tuple[MultipleLocator, MultipleLocator, FuncFormatter, FuncFormatter]:
     """
     Create GLGB formart label.
+
     Args:
         span:
     Returns:
@@ -487,6 +493,7 @@ class PointingAxesManager(MapAxesManagerBase):
                   reset=False) -> None:
         """
         Set matplotlib axes.
+
         Args:
             xlocator:
             ylocator:
@@ -539,6 +546,7 @@ def draw_beam(axes, r: float, aspect: float, x_base: float, y_base: float,
               offset: float=1.0):
     """
     Draw beam.
+
     Args:
         axes: pyplot instance of the current axes.
         r:
@@ -568,6 +576,7 @@ def draw_pointing(axes_manager: PointingAxesManager,
                 ) -> None:
     """
     Draw pointing plots using matplotlib, export the plots and delete the matplotlib objects.
+
     Args:
         axes_manager: PointingAxesManager() instance.
         RA:
@@ -660,6 +669,7 @@ class SingleDishPointingChart(object):
                 ) -> None:
         """
         Initialize SingleDishPointingChart class.
+
         Args:
             context: pipeline.Pipeline().context
             ms: measurementSet instance.
@@ -693,6 +703,7 @@ class SingleDishPointingChart(object):
     def plot(self, revise_plot: bool=False) -> Optional[Plot]:
         """
         Generate a plot object.
+
         Results:
             A Plot object.
         """
@@ -789,6 +800,7 @@ class SingleDishPointingChart(object):
     def _get_figfile(self) -> str:
         """
         Generate file path to export a plot.
+
         Returns:
             file path to export a plot.
         """
@@ -816,6 +828,7 @@ class SingleDishPointingChart(object):
     def _get_plot_object(self) -> Plot:
         """
         Generate a Plot object.
+
         Returns:
             A Plot object.
         """
