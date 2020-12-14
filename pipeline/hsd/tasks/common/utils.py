@@ -8,6 +8,7 @@ import sys
 import time
 from typing import Any, Callable, Generator, Iterable, List, Optional, Sequence, Union, Tuple
 
+import casatools
 import numpy
 
 import pipeline.infrastructure as infrastructure
@@ -813,7 +814,7 @@ def get_valid_ms_members2(group_desc: dict, ms_filter: List[MeasurementSet],
                 yield member_id
 
 
-# TODO (ksugimoto): Move this to casatools module.
+# TODO (ksugimoto): Move this to casa_tools module.
 @contextlib.contextmanager
 def TableSelector(name: str, query: str) -> casatools.table:
     """
@@ -871,8 +872,8 @@ def make_row_map_for_baselined_ms(ms: MeasurementSet,
 
 #@profiler
 def make_row_map(src_ms: MeasurementSet, derived_vis: str,
-                 src_tb: Optional[casatools._logging_table_cls]=None,
-                 derived_tb: Optional[casatools._logging_table_cls]=None
+                 src_tb: Optional[casa_tools._logging_table_cls]=None,
+                 derived_tb: Optional[casa_tools._logging_table_cls]=None
                  ) -> dict:
     """
     Make row mapping between a source and a derived MeasurementSet (MS).
@@ -1293,7 +1294,7 @@ def _read_polarization_table(vis: str) -> List[PolarizationData]:
     """
     LOG.debug('Analysing POLARIZATION table')
     polarization_table = os.path.join(vis, 'POLARIZATION')
-    with casatools.TableReader(polarization_table) as table:
+    with casa_tools.TableReader(polarization_table) as table:
         num_corrs = table.getcol('NUM_CORR')
         vcorr_types = table.getvarcol('CORR_TYPE')
         vcorr_products = table.getvarcol('CORR_PRODUCT')
