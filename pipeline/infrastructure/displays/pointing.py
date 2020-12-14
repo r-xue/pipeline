@@ -340,8 +340,9 @@ def XYlabel(span: float, direction_reference: str, ofs_coord: bool=False
     Create labels for the x- and y-axes in plot.
 
     Args:
-        span:
-        direction_reference:
+        span: The span of map axes in the unit of degrees. Both horizontal and
+            vertical axes are formatted using this value.
+        direction_reference: The direction reference (e.g., 'J2000')
         ofs_coord:
     Returns:
         labels for the x- and y-axes in plot.
