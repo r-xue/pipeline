@@ -8,13 +8,13 @@ import scipy.optimize as scpo
 import pipeline.hif.heuristics.findrefant as findrefant
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hifv.heuristics import standard as standard
 from pipeline.hifv.heuristics import find_EVLA_band, uvrange
 from pipeline.hifv.tasks.setmodel.vlasetjy import standard_sources
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 
 LOG = infrastructure.get_logger(__name__)
@@ -122,7 +122,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
             spw2band = m.get_vla_spw2band()
 
             # Look in spectral window domain object as this information already exists!
-            with casatools.TableReader(self.inputs.vis+'/SPECTRAL_WINDOW') as table:
+            with casa_tools.TableReader(self.inputs.vis + '/SPECTRAL_WINDOW') as table:
                 channels = table.getcol('NUM_CHAN')
                 originalBBClist = table.getcol('BBC_NO')
                 spw_bandwidths = table.getcol('TOTAL_BANDWIDTH')
@@ -248,7 +248,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
         bands = list(spw2band.values())
 
         # Look in spectral window domain object as this information already exists!
-        with casatools.TableReader(self.inputs.vis+'/SPECTRAL_WINDOW') as table:
+        with casa_tools.TableReader(self.inputs.vis + '/SPECTRAL_WINDOW') as table:
             channels = table.getcol('NUM_CHAN')
             originalBBClist = table.getcol('BBC_NO')
             spw_bandwidths = table.getcol('TOTAL_BANDWIDTH')

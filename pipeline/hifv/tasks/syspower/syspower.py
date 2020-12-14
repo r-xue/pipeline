@@ -9,8 +9,8 @@ import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.vdp as vdp
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 
 LOG = infrastructure.get_logger(__name__)
@@ -175,7 +175,7 @@ class Syspower(basetask.StandardTaskTemplate):
         LOG.info("Using flux field: {0}  (ID: {1})".format(field.name, flux_field))
 
         # get switched power from MS
-        with casatools.TableReader(self.inputs.vis + '/SYSPOWER') as tb:
+        with casa_tools.TableReader(self.inputs.vis + '/SYSPOWER') as tb:
             stb = tb.query('SPECTRAL_WINDOW_ID > '+str(min(spws)-1))  # VLASS specific?
             sp_time = stb.getcol('TIME')
             sp_ant = stb.getcol('ANTENNA_ID')
@@ -215,8 +215,8 @@ class Syspower(basetask.StandardTaskTemplate):
                         this_ant = 'ea' + r.groups()[0]
                         start_time = r.groups()[1].split('~')[0]
                         end_time = r.groups()[1].split('~')[1]
-                        start_time_sec = casatools.quanta.convert(casatools.quanta.quantity(start_time), 's')['value']
-                        end_time_sec = casatools.quanta.convert(casatools.quanta.quantity(end_time), 's')['value']
+                        start_time_sec = casa_tools.quanta.convert(casa_tools.quanta.quantity(start_time), 's')['value']
+                        end_time_sec = casa_tools.quanta.convert(casa_tools.quanta.quantity(end_time), 's')['value']
                         indices_to_flag = np.where((sorted_time >= start_time_sec) & (sorted_time <= end_time_sec))[0]
                         dat_online_flags[antenna_names.index(this_ant), indices_to_flag] = True
 
@@ -343,7 +343,7 @@ class Syspower(basetask.StandardTaskTemplate):
                     final_template.data[i, :, :, :] = 1.0
                     final_template.mask[i, :, :, :] = np.ma.nomask
 
-        with casatools.TableReader(rq_table, nomodify=False) as tb:
+        with casa_tools.TableReader(rq_table, nomodify=False) as tb:
             rq_time = tb.getcol('TIME')
             rq_spw = tb.getcol('SPECTRAL_WINDOW_ID')
             rq_par = tb.getcol('FPARAM')
@@ -386,7 +386,7 @@ class Syspower(basetask.StandardTaskTemplate):
             shutil.rmtree(template_table)
         shutil.copytree(rq_table, template_table)
 
-        with casatools.TableReader(template_table, nomodify=False) as tb:
+        with casa_tools.TableReader(template_table, nomodify=False) as tb:
             for i, this_ant in enumerate(antenna_ids):
                 for j, this_spw in enumerate(range(len(spws))):
                     hits = np.where((rq_ant == i) & (rq_spw == j + spw_offset))[0]

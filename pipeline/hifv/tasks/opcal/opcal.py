@@ -3,11 +3,11 @@ import numpy
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.heuristics import caltable as caltable_heuristic
 from pipeline.hifv.heuristics import find_EVLA_band
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from . import resultobjects
 
 LOG = infrastructure.get_logger(__name__)
@@ -16,7 +16,7 @@ LOG = infrastructure.get_logger(__name__)
 def _find_spw(vis, bands, context):
     """Identify spw information"""
 
-    with casatools.TableReader(vis+'/SPECTRAL_WINDOW') as table:
+    with casa_tools.TableReader(vis+'/SPECTRAL_WINDOW') as table:
         channels = table.getcol('NUM_CHAN')
         originalBBClist = table.getcol('BBC_NO')
         spw_bandwidths = table.getcol('TOTAL_BANDWIDTH')
@@ -80,7 +80,7 @@ class Opcal(basetask.StandardTaskTemplate):
         spw2band = m.get_vla_spw2band()
         bands = list(spw2band.values())
 
-        # with casatools.MSReader(inputs.vis) as ms:
+        # with casa_tools.MSReader(inputs.vis) as ms:
         #     ms_summary = ms.summary()
 
         # startdate = ms_summary['BeginTime']
@@ -88,7 +88,7 @@ class Opcal(basetask.StandardTaskTemplate):
         seasonal_weight = 1.0
 
         try:
-            with casatools.TableReader(self.inputs.vis + '/WEATHER') as table:
+            with casa_tools.TableReader(self.inputs.vis + '/WEATHER') as table:
                 numRows = table.nrows()
                 if numRows == 0:
                     LOG.warn("Weather station broken during this period, using 100% seasonal model for calculating the"

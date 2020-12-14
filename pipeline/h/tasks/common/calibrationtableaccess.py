@@ -4,7 +4,7 @@ import os
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -66,13 +66,13 @@ class CalibrationTableDataFiller(object):
 
     @staticmethod
     def _colnames(caltable):
-        with casatools.TableReader(caltable) as table:
+        with casa_tools.TableReader(caltable) as table:
             colnames = table.colnames()        
             return colnames
 
     @staticmethod
     def _readvis(caltable):
-        with casatools.TableReader(caltable) as table:
+        with casa_tools.TableReader(caltable) as table:
             vis = table.getkeyword('MSName')
             # return the absolute rather than the base filename as the vis may
             # not be visible from the current path, such as when the context 
@@ -87,7 +87,7 @@ class CalibrationTableDataFiller(object):
         LOG.debug('Analysing calibration table %s' % caltable)
         # works for new style calibration tables
         # to do. read in sub-tables ANTENNA, FIELD, HISTORY and SPECRAL_WINDOW
-        with casatools.TableReader(caltable) as table:
+        with casa_tools.TableReader(caltable) as table:
             coldata = []
             for colname in columns:
                 if colname in ['FPARAM', 'CPARAM', 'PARAMERR', 'FLAG', 'SNR']:

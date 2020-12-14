@@ -1,16 +1,16 @@
 """Test for heuristics defined in grouping2.py."""
-import pytest
-
-import numpy as np
-import pipeline.infrastructure.casatools as casatools
 from typing import Tuple
 
+import numpy as np
+import pytest
+
+from pipeline.infrastructure import casa_tools
 from .grouping2 import GroupByPosition2
 from .grouping2 import GroupByTime2
 from .grouping2 import MergeGapTables2
 from .grouping2 import ThresholdForGroupByTime
 
-qa = casatools.quanta
+qa = casa_tools.quanta
 
 
 def random_noise(n: int, mean: int = 0, amp: int = 1, rs: np.random.mtrand.RandomState = None) -> np.ndarray:

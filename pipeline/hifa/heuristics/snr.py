@@ -2,13 +2,14 @@ import collections
 import os
 import sys
 from copy import deepcopy
+
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 from pipeline.h.tasks.importdata.fluxes import ORIGIN_XML, ORIGIN_ANALYSIS_UTILS
 from pipeline.hifa.tasks.importdata.dbfluxes import ORIGIN_DB
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -470,7 +471,7 @@ def get_mediantemp(ms, tsys_spwlist, scan_list, antenna='', temptype='tsys'):
         LOG.debug ('scan %d start %s end %s' % (scan, startTime, endTime))
 
     # Get the syscal table meta data.
-    with casatools.TableReader(os.path.join(ms.name,  'SYSCAL')) as table:
+    with casa_tools.TableReader(os.path.join(ms.name, 'SYSCAL')) as table:
 
         # Get the antenna ids
         tsys_antennas = table.getcol('ANTENNA_ID')
@@ -482,8 +483,8 @@ def get_mediantemp(ms, tsys_spwlist, scan_list, antenna='', temptype='tsys'):
         time_colkeywords = table.getcolkeywords('TIME')
         time_unit = time_colkeywords['QuantumUnits'][0]
         time_ref = time_colkeywords['MEASINFO']['Ref']
-        mt = casatools.measures
-        qt = casatools.quanta
+        mt = casa_tools.measures
+        qt = casa_tools.quanta
 
         # Get time and intervals
         tsys_start_times = table.getcol('TIME')
@@ -548,7 +549,7 @@ def get_mediantemp(ms, tsys_spwlist, scan_list, antenna='', temptype='tsys'):
 
         # Loop over the rows
         medians = []
-        with casatools.TableReader(os.path.join(ms.name, 'SYSCAL')) as table:
+        with casa_tools.TableReader(os.path.join(ms.name, 'SYSCAL')) as table:
             for i in range(len(tsys_antennas)):
                 if tsys_spws[i] != spw:
                     continue
