@@ -40,6 +40,7 @@ def Deg2HMS(x: float, prec: int=0) -> List[str, str, str]:
     Returns:
         List of　strings of hour, minute, and second values in a specified
         precision.
+
     """
     # Transform degree to HHMMSS.sss format
     xx = x % 360
@@ -65,6 +66,7 @@ def HHMM(x: float, pos=None) -> str:
         prec: Significant digits.
     Returns:
         formatted strings of hour, minute values.
+
     """
     (h, m, s) = Deg2HMS(x, prec=6)
     return '%s%s%s' % (h, hsyb, m)
@@ -83,6 +85,7 @@ def __format_hms(x: str, prec: int=0) -> str:
     Returns:
         formatted strings of hour, minute, and second values in a specified
         precision.
+
     """
     (h, m, s) = Deg2HMS(x, prec)
     return '%s%s%s%s%s' % (h, hsyb, m, msyb, s)
@@ -101,6 +104,7 @@ def HHMMSS(x: str, pos=None) -> str:
     Returns:
         formatted strings of hour, minute, and second values in a specified
         precision.
+
     """
     return __format_hms(x, prec=6)
 
@@ -118,6 +122,7 @@ def HHMMSSs(x: str, pos=None):
     Returns:
         formatted strings of hour, minute, and second values in a specified
         precision.
+
     """
     return __format_hms(x, prec=7)
 
@@ -135,6 +140,7 @@ def HHMMSSss(x: str, pos=None) -> str:
     Returns:
         formatted strings of hour, minute, and second values in a specified
         precision.
+
     """
     return __format_hms(x, prec=8)
 
@@ -151,6 +157,7 @@ def HHMMSSsss(x: str, pos=None) -> str:
     Returns:
         formatted strings of hour, minute, and second values in a specified
         precision.
+
     """
     return __format_hms(x, prec=9)
 
@@ -168,6 +175,7 @@ def Deg2DMS(x: float, prec: int=0) -> List[str, str, str]:
     Returns:
         A list of strings of degree, arcminute, and arcsecond values in a
         specified precision.
+
     """
     xxx = (x + 90) % 180 - 90
     xx = abs(xxx)
@@ -200,6 +208,7 @@ def DDMM(x: float, pos=None) -> str:
         pos:
     Returns:
         A dms angle with DDMM format.
+
     """
     (d, m, s) = Deg2DMS(x, prec=6)
     return '%s%s%s\'' % (d, dsyb, m)
@@ -219,6 +228,7 @@ def __format_dms(x: float, prec: int=0) -> str:
     Returns:
         String of degree, arcminute, and arcsecond values in a
         specified precision.
+
     """
     (d, m, s) = Deg2DMS(x, prec)
     # format desimal part of arcsec value separately
@@ -241,6 +251,7 @@ def DDMMSS(x: str, pos=None) -> str:
         pos:
     Returns:
         String of degree, arcminute, and arcsecond values with DDMMSS.
+
     """
     return __format_dms(x, prec=6)
 
@@ -257,6 +268,7 @@ def DDMMSSs(x: str, pos=None) -> str:
         pos:
     Returns:
         String of degree, arcminute, and arcsecond values with DDMMSSs.
+
     """
     return __format_dms(x, prec=7)
 
@@ -274,6 +286,7 @@ def DDMMSSss(x: str, pos=None) -> str:
         pos:
     Returns:
         String of degree, arcminute, and arcsecond values with DDMMSSss.
+
     """
     return __format_dms(x, prec=8)
 
@@ -289,6 +302,7 @@ def XYlabel(span: float, direction_reference: str, ofs_coord: bool=False
         ofs_coord:
     Returns:
         labels for the x- and y-axes in plot.
+
     """
     if direction_reference.upper() == 'GALACTIC':
         return GLGBlabel(span)
@@ -305,6 +319,7 @@ def GLGBlabel(span: float
         span:
     Returns:
         (GLlocator, GBlocator, GLformatter, GBformatter) for Galactic coordinate
+
     """
     # RAtick = [15.0, 5.0, 2.5, 1.25, 1/2.0, 1/4.0, 1/12.0, 1/24.0, 1/48.0, 1/120.0, 1/240.0, 1/480.0, 1/1200.0,
     #           1/2400.0, 1/4800.0, 1/12000.0, 1/24000.0, 1/48000.0, -1.0]
@@ -355,6 +370,7 @@ def RADEClabel(span: float,
         ofs_coord:
     Returns:
         (RAlocator, DEClocator, RAformatter, DECformatter)
+
     """
     RAtick = [15.0, 5.0, 2.5, 1.25, 1/2.0, 1/4.0, 1/12.0, 1/24.0, 1/48.0, 1/120.0, 1/240.0, 1/480.0, 1/1200.0, 1/2400.0,
               1/4800.0, 1/12000.0, 1/24000.0, 1/48000.0, -1.0]
@@ -440,6 +456,7 @@ class MapAxesManagerBase(object):
         Returns:
             xlabel: xlabel in plot. Default is 'RA'.
             ylabel: ylabel in plot. Default is 'Dec'.
+
         """
         # default label is RA/Dec
         xlabel = 'RA'
@@ -505,6 +522,7 @@ class PointingAxesManager(MapAxesManagerBase):
             xlim:
             ylim:
             reset:
+
         """
         if self._axes is None:
             self._axes = self.__axes()
@@ -555,6 +573,7 @@ def draw_beam(axes, r: float, aspect: float, x_base: float, y_base: float,
         y_base:
         offset:
     Returns:
+
     """
     xy = np.array([[r * (math.sin(t * 0.13) + offset) * aspect + x_base,
                        r * (math.cos(t * 0.13) + offset) + y_base]
@@ -588,6 +607,7 @@ def draw_pointing(axes_manager: PointingAxesManager,
         ObsPattern:
         plotpolicy: The plotpolicy can be filled with 'plot', 'ignore' or
             'greyed'.
+
     """
     span = max(max(RA) - min(RA), max(DEC) - min(DEC))
     xmax = min(RA) - span / 10.0
@@ -678,6 +698,7 @@ class SingleDishPointingChart(object):
             reference_field_id:
             target_only:
             ofs_coord:
+
         """
         self.context = context
         self.ms = ms
@@ -706,6 +727,7 @@ class SingleDishPointingChart(object):
 
         Results:
             A Plot object.
+
         """
         if revise_plot == False and os.path.exists(self.figfile):
             return self._get_plot_object()
@@ -803,6 +825,7 @@ class SingleDishPointingChart(object):
 
         Returns:
             file path to export a plot.
+
         """
         session_part = self.ms.session
         ms_part = self.ms.basename
@@ -831,6 +854,7 @@ class SingleDishPointingChart(object):
 
         Returns:
             A Plot object.
+
         """
         intent = 'target' if self.target_only == True else 'target,reference'
         if self.target_field is None or self.reference_field is None:
