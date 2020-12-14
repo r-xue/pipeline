@@ -24,8 +24,8 @@ class CleanSummary(object):
 
     def plot(self):
 
-        cqa = casatools.quanta
-        csu = casatools.synthesisutils
+        cqa = casa_tools.quanta
+        csu = casa_tools.synthesisutils
 
         stage_dir = os.path.join(self.context.report_dir, 
                                  'stage%d' % self.result.stage_number)
