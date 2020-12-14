@@ -1,10 +1,11 @@
 import pytest
+from .. import casa_tools
 
 from .imaging import _get_cube_freq_axis, chan_selection_to_frequencies, \
                      freq_selection_to_channels, spw_intersect, \
                      update_sens_dict, update_beams_dict, set_nested_dict, \
                      intersect_ranges, intersect_ranges_by_weight, merge_ranges, \
-                     equal_to_n_digits
+                     equal_to_n_digits, velocity_to_frequency, frequency_to_velocity
 
 
 _get_cube_freq_axis_test_params = (('helms30_sci.spw16.cube', (214450186328.0, 15624760.100036621, 'Hz', 0.0, 117)),)
@@ -272,3 +273,29 @@ def test_equal_to_n_digits(x, y, numdigits, result):
     """
 
     assert equal_to_n_digits(x, y, numdigits) == result
+
+
+velocity_to_frequency_test_params = (('29.976248175km/s', '100.01GHz', '100.0GHz'),)
+
+@pytest.mark.parametrize("velocity, restfreq, result", velocity_to_frequency_test_params)
+def test_velocity_to_frequency(velocity, restfreq, result):
+    """
+    Test velocity_to_frequency()
+    """
+
+    cqa = casa_tools.quanta
+
+    assert cqa.eq(velocity_to_frequency(velocity, restfreq), result)
+
+
+frequency_to_velocity_test_params = (('100.0GHz', '100.01GHz', '29.976248175km/s'),)
+
+@pytest.mark.parametrize("frequency, restfreq, result", frequency_to_velocity_test_params)
+def test_frequency_to_velocity(frequency, restfreq, result):
+    """
+    Test frequency_to_velocity()
+    """
+
+    cqa = casa_tools.quanta
+
+    assert cqa.eq(frequency_to_velocity(frequency, restfreq), result)

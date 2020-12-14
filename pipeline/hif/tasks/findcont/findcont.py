@@ -212,7 +212,7 @@ class FindCont(basetask.StandardTaskTemplate):
                         channel_width_freq_TOPO = float(real_spwid_obj.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ))
                         freq0 = qaTool.quantity(centre_frequency_TOPO, 'Hz')
                         freq1 = qaTool.quantity(centre_frequency_TOPO + channel_width_freq_TOPO, 'Hz')
-                        channel_width_velo_TOPO = qaTool.getvalue(self._to_velocity(freq1, freq0, '0.0km/s'))[0]
+                        channel_width_velo_TOPO = float(qaTool.getvalue(qaTool.convert(utils.frequency_to_velocity(freq1, freq0), 'km/s')))
                         # Skip 1 km/s or at least 5 channels
                         extra_skip_channels = max(5, int(np.ceil(1.0 / abs(channel_width_velo_TOPO))))
                     else:
@@ -348,16 +348,3 @@ class FindCont(basetask.StandardTaskTemplate):
 
     def analyse(self, result):
         return result
-
-    # TODO: Copied from tclean.py -> factor out
-    def _to_velocity(self, frequency, restfreq, velo):
-        # v = c * (f_rest - f) / f_rest
-        # https://www.iram.fr/IRAMFR/ARN/may95/node4.html
-        qa = casa_tools.quanta
-        light_speed = qa.getvalue(qa.convert(qa.constants('c'), 'km/s'))[0]
-        restfreq = qa.getvalue(qa.convert(restfreq, 'MHz'))[0]
-        freq = qa.getvalue(qa.convert(frequency, 'MHz'))[0]
-        val = light_speed * ((restfreq - freq) / restfreq)
-        unit = qa.getunit(velo)
-        velocity = qa.tos(qa.quantity(val, unit))
-        return velocity
