@@ -6,10 +6,10 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter, MultipleLocator, AutoLocator
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.renderer.logger as logger
 from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.domain.datatable import OnlineFlagIndex
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 
 LOG = infrastructure.get_logger(__name__)
@@ -23,6 +23,7 @@ dsyb = '$^\circ$'
 hsyb = ':'
 msyb = ':'
 
+
 def Deg2HMS(x, prec=0):
     """
     Converts an angle in degree to hour angle and returns a list of
@@ -31,7 +32,7 @@ def Deg2HMS(x, prec=0):
     """
     # Transform degree to HHMMSS.sss format
     xx = x % 360
-    cqa = casatools.quanta
+    cqa = casa_tools.quanta
     angle = cqa.angle(cqa.quantity(xx, 'deg'), prec=prec, form=['time'])[0]
     return angle.split(':')
 
@@ -83,7 +84,7 @@ def Deg2DMS(x, prec=0):
     xxx = (x + 90) % 180 - 90
     xx = abs(xxx)
     sign = '-' if xxx < 0 else '+'
-    cqa = casatools.quanta
+    cqa = casa_tools.quanta
     dms_angle = cqa.angle(cqa.quantity(xx, 'deg'), prec=prec)[0]
     seg = dms_angle.split('.')
     assert len(seg) < 5 and len(seg) > 0
@@ -466,8 +467,8 @@ class SingleDishPointingChart(object):
             LOG.info('Skipping pointing plot')
             return None
         else: LOG.debug('Generate pointing plot using antenna=%d and spw=%d of %s' % (antenna_id, spw_id, ms.basename))
-        beam_size = casatools.quanta.convert(ms.beam_sizes[antenna_id][spw_id], 'deg')
-        beam_size_in_deg = casatools.quanta.getvalue(beam_size)
+        beam_size = casa_tools.quanta.convert(ms.beam_sizes[antenna_id][spw_id], 'deg')
+        beam_size_in_deg = casa_tools.quanta.getvalue(beam_size)
         obs_pattern = ms.observing_pattern[antenna_id][spw_id]
         antenna_ids = datatable.getcol('ANTENNA')
         spw_ids = datatable.getcol('IF')

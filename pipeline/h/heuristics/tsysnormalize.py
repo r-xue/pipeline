@@ -10,7 +10,7 @@
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -32,7 +32,7 @@ def getPower(vis, scan, spw, duration, fromEnd=False, skipStartSecs=1.0,
     """
 
     # Read in data from MS
-    with casatools.MSReader(vis) as ms:
+    with casa_tools.MSReader(vis) as ms:
         ms.selectinit(datadescid=spw)
         ms.selecttaql('SCAN_NUMBER==%d AND DATA_DESC_ID==%d AND ANTENNA1==ANTENNA2'%(scan, spw))
         d = ms.getdata([datacolname, 'axis_info'], ifraxis=True)
@@ -140,7 +140,7 @@ def tsysNormalize(vis, tsysTable, newTsysTable, scaleSpws=[], verbose=False):
     # a dictionary that has lower-case keys, regardless of whether 
     # the column was upper-case.
     # TODO: need a common solution for identifying data column.
-    with casatools.TableReader(vis) as tb:
+    with casa_tools.TableReader(vis) as tb:
         # SD will contain "FLOAT_DATA"
         if 'FLOAT_DATA' in tb.colnames():
             datacolname = 'float_data'
@@ -148,9 +148,9 @@ def tsysNormalize(vis, tsysTable, newTsysTable, scaleSpws=[], verbose=False):
         else:
             datacolname = 'data'
 
-    with casatools.MSMDReader(vis) as msmd:
+    with casa_tools.MSMDReader(vis) as msmd:
 
-        with casatools.TableReader(tsysTable, nomodify=False) as table:
+        with casa_tools.TableReader(tsysTable, nomodify=False) as table:
 
             # For convenience squish the useful columns into unique lists
             tsysSpws = np.unique(table.getcol("SPECTRAL_WINDOW_ID"))
@@ -243,7 +243,7 @@ def tsysNormalize(vis, tsysTable, newTsysTable, scaleSpws=[], verbose=False):
             copy = table.copy(newTsysTable)
             copy.close()    
 
-    with casatools.TableReader(newTsysTable, nomodify=False) as table:
+    with casa_tools.TableReader(newTsysTable, nomodify=False) as table:
         startRefPower = refPowers[tsysScans[0]]
         for i in range(1, len(tsysScans)):
             # need to adjust each successive Tsys

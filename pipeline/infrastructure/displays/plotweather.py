@@ -5,10 +5,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.utils.conversion import mjd_seconds_to_datetime
 
 LOG = infrastructure.get_logger(__name__)
+
 
 def plot_weather(vis='', figfile='', station=[], help=False):
     """
@@ -29,7 +30,7 @@ def plot_weather(vis='', figfile='', station=[], help=False):
 
     try:
         # Fetch data from weather table in MS.
-        with casatools.TableReader(vis+"/WEATHER") as table:
+        with casa_tools.TableReader(vis+"/WEATHER") as table:
             available_cols = table.colnames()
             mjdsec = table.getcol('TIME')
             pressure = table.getcol('PRESSURE')
@@ -49,7 +50,7 @@ def plot_weather(vis='', figfile='', station=[], help=False):
     unique_stations = np.unique(stations)
 
     try:
-        with casatools.TableReader(vis + '/ASDM_STATION') as table:
+        with casa_tools.TableReader(vis + '/ASDM_STATION') as table:
             station_names = table.getcol('name')
     except:
         LOG.info("Could not open ASDM_STATION table. The Station IDs (instead of Names) will be used.")
@@ -136,7 +137,7 @@ def plot_weather(vis='', figfile='', station=[], help=False):
 
     # take timerange from OBSERVATION table if there is only one unique timestamp
     if len(np.unique(mjdsec)) == 1:
-        with casatools.TableReader(vis+"/OBSERVATION") as table:
+        with casa_tools.TableReader(vis+"/OBSERVATION") as table:
             timerange = table.getcol('TIME_RANGE')
         obs_timerange = [np.min(timerange), np.max(timerange)]
         manual_xlim = matplotlib.dates.date2num(mjd_seconds_to_datetime(obs_timerange))

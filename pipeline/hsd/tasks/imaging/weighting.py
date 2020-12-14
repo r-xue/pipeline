@@ -5,8 +5,8 @@ import numpy
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
-import pipeline.infrastructure.casatools as casatools
 from pipeline.domain import DataTable
+from pipeline.infrastructure import casa_tools
 from .. import common
 
 LOG = infrastructure.get_logger(__name__)
@@ -118,11 +118,11 @@ class WeightMS(basetask.StandardTaskTemplate):
         antid = self.inputs.antenna
         fieldid = self.inputs.fieldid
         in_rows = []
-        with casatools.TableReader(os.path.join(infile, 'DATA_DESCRIPTION')) as tb:
+        with casa_tools.TableReader(os.path.join(infile, 'DATA_DESCRIPTION')) as tb:
             spwids = tb.getcol('SPECTRAL_WINDOW_ID')
             data_desc_id = numpy.where(spwids == spwid)[0][0]
 
-        with casatools.TableReader(infile) as tb:
+        with casa_tools.TableReader(infile) as tb:
             tsel = tb.query('DATA_DESC_ID==%d && FIELD_ID==%d && ANTENNA1==%d && ANTENNA2==%d' %
                             (data_desc_id, fieldid, antid, antid),
                             sortlist='TIME')
@@ -130,11 +130,11 @@ class WeightMS(basetask.StandardTaskTemplate):
                 in_rows = tsel.rownumbers() 
             tsel.close()
 
-        with casatools.TableReader(os.path.join(outfile, 'DATA_DESCRIPTION')) as tb:
+        with casa_tools.TableReader(os.path.join(outfile, 'DATA_DESCRIPTION')) as tb:
             spwids = tb.getcol('SPECTRAL_WINDOW_ID')
             data_desc_id = numpy.where(spwids == spwid)[0][0]
 
-        with casatools.TableReader(outfile) as tb:
+        with casa_tools.TableReader(outfile) as tb:
             tsel = tb.query('DATA_DESC_ID==%s && FIELD_ID==%d && ANTENNA1==%d && ANTENNA2==%d' %
                             (data_desc_id, fieldid, antid, antid),
                             sortlist='TIME')
@@ -215,7 +215,7 @@ class WeightMS(basetask.StandardTaskTemplate):
                         weight[row][ipol] = 0.0
 
         # put weight
-        with casatools.TableReader(outfile, nomodify=False) as tb:
+        with casa_tools.TableReader(outfile, nomodify=False) as tb:
             # The selection, tsel, contains all intents.
             # Need to match output element in selected table by rownumbers().
             tsel = tb.query('ROWNUMBER() IN %s' % (list(row_map.values())), style='python')
@@ -234,7 +234,7 @@ class WeightMS(basetask.StandardTaskTemplate):
         # set channel flag for min/max in each channel
         minmaxclip = False
         if minmaxclip:
-            with casatools.TableReader(outfile, nomodify=False) as tb:
+            with casa_tools.TableReader(outfile, nomodify=False) as tb:
                 tsel = tb.query('ROWNUMBER() IN %s' % (list(row_map.keys())),
                                 style='python')
                 if 'FLOAT_DATA' in tsel.colnames():
