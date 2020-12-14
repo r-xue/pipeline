@@ -7,7 +7,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tasks, task_registry
-import pipeline.infrastructure.casatools as casatools
+from pipeline.infrastructure import casa_tools
 
 from pipeline.hifv.heuristics.vip_helper_functions import mask_from_catalog, edit_pybdsf_islands, run_bdsf
 
@@ -188,7 +188,7 @@ class Vlassmasking(basetask.StandardTaskTemplate):
 
             runtask = self._executor.execute(task)
 
-            myim = casatools.imager
+            myim = casa_tools.imager
             LOG.info("Executing imager.mask()...")
             combinedmask = imagename_base + 'combined-tier2.mask'
             myim.mask(image=outfile, mask=combinedmask, threshold=0.5)
@@ -197,7 +197,7 @@ class Vlassmasking(basetask.StandardTaskTemplate):
             LOG.error("Invalid maskingmode input.")
 
         # Compute fraction of pixels enclosed in the mask
-        with casatools.ImageReader(combinedmask) as myia:
+        with casa_tools.ImageReader(combinedmask) as myia:
             computechunk = myia.getchunk()
             pixelfraction = computechunk.sum() / computechunk.size
 

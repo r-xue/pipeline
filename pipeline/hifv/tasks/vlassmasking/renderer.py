@@ -1,21 +1,8 @@
-import collections
-import itertools
 import os
-import string
-from random import randint
-import subprocess
 
-import numpy
-from glob import glob
-
-import pipeline.infrastructure.casatools as casatools
-from pipeline.infrastructure import casa_tasks
 from . import display
-import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
-import pipeline.infrastructure.renderer.rendererutils as rendererutils
-import pipeline.infrastructure.utils as utils
 
 
 LOG = logging.get_logger(__name__)

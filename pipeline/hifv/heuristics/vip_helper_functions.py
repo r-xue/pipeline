@@ -15,7 +15,7 @@ from scipy.stats import linregress
 import pyfits
 import bdsf
 
-import pipeline.infrastructure.casatools as casatools
+from pipeline.infrastructure import casa_tools
 import pipeline.infrastructure as infrastructure
 # import casatools.__casac__ as casac
 
@@ -106,8 +106,8 @@ def mask_from_catalog(inext='iter0.model.tt0', outext="mask_from_cat.mask",
     rahr = phasecenter.split(' ')[1]
     decdeg = phasecenter.split(' ')[2]
 
-    qt = casatools.quanta
-    myia = casatools.image
+    qt = casa_tools.quanta
+    myia = casa_tools.image
 
     mask_im = myia.fromshape(mask_name, list(mask_shape), overwrite=True)
     mask_csys = myia.coordsys()
@@ -207,8 +207,8 @@ def mask_from_catalog(inext='iter0.model.tt0', outext="mask_from_cat.mask",
 
     # region text file to mask
 
-    myim = casatools.imager
-    myrg = casatools.regionmanager
+    myim = casa_tools.imager
+    myrg = casa_tools.regionmanager
 
     myRGN = myrg.fromtextfile(filename=parsed_catalog_crtf, shape=mask_shape, csys=mask_csys.torecord())
     myim.regiontoimagemask(mask=mask_name, region=myRGN)
