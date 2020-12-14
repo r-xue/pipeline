@@ -43,7 +43,6 @@ def Deg2HMS(x: float, prec: int=0) -> List[str, str, str]:
         precision.
 
     """
-    # Transform degree to HHMMSS.sss format
     xx = x % 360
     cqa = casatools.quanta
     angle = cqa.angle(cqa.quantity(xx, 'deg'), prec=prec, form=['time'])[0]
