@@ -391,7 +391,7 @@ def equal_to_n_digits(x: float, y: float, numdigits: int = 7) -> bool:
         return False
 
 
-def velocity_to_frequency(velocity: Union[Dict, str], restfreq: Union[Dict, str]):
+def velocity_to_frequency(velocity: Union[Dict, str], restfreq: Union[Dict, str]) -> Union[Dict, str]:
     """
     Convert radial velocity to frequency using radio convention.
 
@@ -414,7 +414,7 @@ def velocity_to_frequency(velocity: Union[Dict, str], restfreq: Union[Dict, str]
     return frequency
 
 
-def frequency_to_velocity(frequency: Union[Dict, str], restfreq: Union[Dict, str]):
+def frequency_to_velocity(frequency: Union[Dict, str], restfreq: Union[Dict, str]) -> Union[Dict, str]:
     """
     Convert frequency to radial velocity using radio convention.
 
