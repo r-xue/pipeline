@@ -21,7 +21,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 <hr>
 
 <p> Fraction of pixels enclosed in the mask: <b>${"{:.{}f}".format(single_result.pixelfraction, 8)}</b> </p>
-<p> Fraction of pixels enclosed in the mask (inner square degree): <b>${"{:.{}f}".format(single_result.pixelfraction, 8)}</b> </p>
+<p> Fraction of pixels enclosed in the mask (inner square degree): <b> TBD </b> </p>
 
 <%self:plot_group plot_dict="${summary_plots}" url_fn="${lambda ms:  'noop'}">
 
