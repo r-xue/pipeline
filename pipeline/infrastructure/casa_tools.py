@@ -127,7 +127,6 @@ quanta = _logging_quanta_cls()
 regionmanager = _logging_regionmanager_cls()
 synthesisutils = _logging_synthesisutils_cls()
 table = _logging_table_cls()
-tableplot = _logging_table_cls()
 utils = _logging_utils_cls()
 
 log = casalog
@@ -229,7 +228,6 @@ __tools = [
     'quanta',
     'regionmanager',
     'table',
-    'tableplot',
     'utils',
 ]
 
