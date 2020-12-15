@@ -17,7 +17,7 @@
 
     <param name="vlass_ql_database" type="string">
     <shortdescription>vlass_ql_database</shortdescription>
-    <description>vlass_ql_database</description>
+    <description>vlass_ql_database - usage in Socorro: /home/vlass/packages/VLASS1Q.fits</description>
     <value></value>
     </param>
 
