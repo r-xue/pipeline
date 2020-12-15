@@ -1,4 +1,3 @@
-
 import abc
 import datetime
 import math
@@ -8,12 +7,10 @@ import matplotlib.gridspec as gridspec
 import numpy
 import matplotlib.pyplot as plt
 from matplotlib.dates import date2num, DateFormatter, MinuteLocator
-from matplotlib.ticker import FuncFormatter, MultipleLocator, AutoLocator
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.displays.pointing as pointing
-import pipeline.infrastructure.renderer.logger as logger
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -24,8 +21,8 @@ DPISummary = 90
 #DPIDetail = 120
 #DPIDetail = 130
 DPIDetail = 260
-LightSpeedQuantity = casatools.quanta.constants('c')
-LightSpeed = casatools.quanta.convert(LightSpeedQuantity, 'km/s')['value']  # speed of light in km/s
+LightSpeedQuantity = casa_tools.quanta.constants('c')
+LightSpeed = casa_tools.quanta.convert(LightSpeedQuantity, 'km/s')['value']  # speed of light in km/s
 
 sd_polmap = {0: 'XX', 1: 'YY', 2: 'XY', 3: 'YX'}
 
@@ -34,8 +31,8 @@ NoDataThreshold = NoData + 10000.0
 
 
 def mjd_to_datedict(val, unit='d'):
-    mjd = casatools.quanta.quantity(val, unit)
-    return casatools.quanta.splitdate(mjd)
+    mjd = casa_tools.quanta.quantity(val, unit)
+    return casa_tools.quanta.splitdate(mjd)
 
 
 def mjd_to_datetime(val):
@@ -146,9 +143,9 @@ class SingleDishDisplayInputs(object):
 
 class SpectralImage(object):
     def __init__(self, imagename):
-        qa = casatools.quanta
+        qa = casa_tools.quanta
         # read data to storage
-        with casatools.ImageReader(imagename) as ia:
+        with casa_tools.ImageReader(imagename) as ia:
             self.image_shape = ia.shape()
             coordsys = ia.coordsys()
             self._load_coordsys(coordsys)
@@ -221,7 +218,7 @@ class SpectralImage(object):
         return self._beamsize_in_deg
 
     def to_velocity(self, frequency, freq_unit='GHz'):
-        qa = casatools.quanta
+        qa = casa_tools.quanta
         if self.rest_frequency['unit'] != freq_unit:
             vrf = qa.convert(self.rest_frequency, freq_unit)['value']
         else:
@@ -235,7 +232,7 @@ class SpectralImage(object):
         return self.__axis(self.id_direction[idx], unit=unit)
 
     def __axis(self, idx, unit):
-        qa = casatools.quanta
+        qa = casa_tools.quanta
         refpix = self.refpixs[idx]
         refval = self.refvals[idx]
         increment = self.increments[idx]
@@ -359,7 +356,7 @@ class SDImageDisplay(object, metaclass=abc.ABCMeta):
 
     def init(self):
         self.image = SpectralImage(self.imagename)
-        qa = casatools.quanta
+        qa = casa_tools.quanta
         self.nchan = self.image.nchan
 #         self.data = self.image.data
 #         self.mask = self.image.mask
@@ -447,7 +444,7 @@ class SDImageDisplay(object, metaclass=abc.ABCMeta):
 
 def get_base_frequency(table, freqid, nchan):
     freq_table = os.path.join(table, 'FREQUENCIES')
-    with casatools.TableReader(freq_table) as tb:
+    with casa_tools.TableReader(freq_table) as tb:
         refpix = tb.getcell('REFPIX', freqid)
         refval = tb.getcell('REFVAL', freqid)
         increment = tb.getcell('INCREMENT', freqid)
@@ -457,7 +454,7 @@ def get_base_frequency(table, freqid, nchan):
 
 def get_base_frame(table):
     freq_table = os.path.join(table, 'FREQUENCIES')
-    with casatools.TableReader(freq_table) as tb:
+    with casa_tools.TableReader(freq_table) as tb:
         base_frame = tb.getkeyword('BASEFRAME')
     return base_frame
 

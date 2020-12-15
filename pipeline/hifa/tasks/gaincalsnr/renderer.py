@@ -3,10 +3,9 @@ import os
 
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.utils as utils
 
-#LOG = logging.get_logger(__name__)
+LOG = logging.get_logger(__name__)
 
 
 class T2_4MDetailsGaincalSnrRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -23,10 +22,9 @@ class T2_4MDetailsGaincalSnrRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
 GaincalSnrTR = collections.namedtuple('GaincalSnrTR', 'vis spw sensitivities snrs')
 
+
 def make_gaincalsnr_table(context, results):
     # will hold all the table rows for the results
-
-    qt = casatools.quanta
 
     rows = []
     for single_result in results:
@@ -52,4 +50,3 @@ def make_gaincalsnr_table(context, results):
             rows.append(tr)
 
     return utils.merge_td_columns(rows)
-

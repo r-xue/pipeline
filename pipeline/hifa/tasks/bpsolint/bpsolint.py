@@ -4,10 +4,10 @@ import numpy
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.common import calibrationtableaccess as caltableaccess
 from pipeline.hifa.heuristics import snr as snr_heuristics
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 
 LOG = infrastructure.get_logger(__name__)
@@ -420,7 +420,7 @@ def get_median_tsys_spectrum_from_caltable(tsysname, spwid, fieldid, interpolate
     """
     if not os.path.exists(tsysname):
         raise ValueError('Could not find Tsys caltable, %s' % tsysname)
-    with casatools.TableReader(tsysname) as tb:
+    with casa_tools.TableReader(tsysname) as tb:
         seltb = tb.query('SPECTRAL_WINDOW_ID == %s && FIELD_ID == %s' % (spwid, fieldid))
         if seltb.nrows() == 0:
             seltb.close()

@@ -7,11 +7,11 @@ import time
 
 import numpy
 
-import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.logging as logging
-import pipeline.infrastructure.casatools as casatools
+import pipeline.infrastructure.mpihelpers as mpihelpers
 from pipeline.domain.datatable import OnlineFlagIndex, DataTableIndexer
+from pipeline.infrastructure import casa_tools
 from . import compress
 
 _LOG = infrastructure.get_logger(__name__)
@@ -382,8 +382,8 @@ def get_valid_ms_members(group_desc, msname_filter, ant_selection, field_selecti
                         if not _field_selection.startswith('"'):
                             _field_selection = '"{}"'.format(field_selection)
                 LOG.debug('field_selection = "{}"'.format(_field_selection))
-                mssel = casatools.ms.msseltoindex(vis=msobj.name, spw=spw_selection,
-                                                  field=_field_selection, baseline=ant_selection)
+                mssel = casa_tools.ms.msseltoindex(vis=msobj.name, spw=spw_selection,
+                                                   field=_field_selection, baseline=ant_selection)
             except RuntimeError as e:
                 LOG.trace('RuntimeError: {0}'.format(str(e)))
                 LOG.trace('vis="{0}" field_selection: "{1}"'.format(msobj.name, _field_selection))
@@ -406,8 +406,8 @@ def get_valid_ms_members2(group_desc, ms_filter, ant_selection, field_selection,
         msobj = member.ms
         if msobj in ms_filter:
             try:
-                mssel = casatools.ms.msseltoindex(vis=msobj.name, spw=spw_selection,
-                                                  field=field_selection, baseline=ant_selection)
+                mssel = casa_tools.ms.msseltoindex(vis=msobj.name, spw=spw_selection,
+                                                   field=field_selection, baseline=ant_selection)
             except RuntimeError as e:
                 LOG.trace('RuntimeError: {0}'.format(str(e)))
                 LOG.trace('vis="{0}" field_selection: "{1}"'.format(msobj.name, field_selection))
@@ -431,7 +431,7 @@ def _collect_logrecords(logger):
 
 @contextlib.contextmanager
 def TableSelector(name, query):
-    with casatools.TableReader(name) as tb:
+    with casa_tools.TableReader(name) as tb:
         tsel = tb.query(query)
         yield tsel
         tsel.close()
@@ -517,13 +517,13 @@ def make_row_map(src_ms, derived_vis, src_tb=None, derived_tb=None):
         taql = 'ANTENNA1 == ANTENNA2 && (%s)' % (' || '.join(['(SCAN_NUMBER == %s && FIELD_ID IN %s && STATE_ID IN %s)' % (scan, fields[scan], states[scan]) for scan in scan_numbers]))
     LOG.trace('taql=\'%s\'' % (taql))
 
-    with casatools.TableReader(os.path.join(vis0, 'OBSERVATION')) as tb:
+    with casa_tools.TableReader(os.path.join(vis0, 'OBSERVATION')) as tb:
         nrow_obs0 = tb.nrows()
-    with casatools.TableReader(os.path.join(vis0, 'PROCESSOR')) as tb:
+    with casa_tools.TableReader(os.path.join(vis0, 'PROCESSOR')) as tb:
         nrow_proc0 = tb.nrows()
-    with casatools.TableReader(os.path.join(vis1, 'OBSERVATION')) as tb:
+    with casa_tools.TableReader(os.path.join(vis1, 'OBSERVATION')) as tb:
         nrow_obs1 = tb.nrows()
-    with casatools.TableReader(os.path.join(vis1, 'PROCESSOR')) as tb:
+    with casa_tools.TableReader(os.path.join(vis1, 'PROCESSOR')) as tb:
         nrow_proc1 = tb.nrows()
 
     assert nrow_obs0 == nrow_obs1
@@ -533,7 +533,7 @@ def make_row_map(src_ms, derived_vis, src_tb=None, derived_tb=None):
     is_unique_processor_id = nrow_proc0 == 1
 
     if src_tb is None:
-        with casatools.TableReader(vis0) as tb:
+        with casa_tools.TableReader(vis0) as tb:
             tsel = tb.query(taql)
             try:
                 if is_unique_observation_id:
@@ -583,7 +583,7 @@ def make_row_map(src_ms, derived_vis, src_tb=None, derived_tb=None):
             tsel.close()
 
     if derived_tb is None:
-        with casatools.TableReader(vis1) as tb:
+        with casa_tools.TableReader(vis1) as tb:
             tsel = tb.query(taql)
             try:
                 if is_unique_observation_id:
@@ -728,14 +728,14 @@ class SpwDetailedView(object):
 
 
 def get_spw_names(vis):
-    with casatools.TableReader(os.path.join(vis, 'SPECTRAL_WINDOW')) as tb:
+    with casa_tools.TableReader(os.path.join(vis, 'SPECTRAL_WINDOW')) as tb:
         gen = (SpwSimpleView(i, tb.getcell('NAME', i)) for i in range(tb.nrows()))
         spws = list(gen)
     return spws
 
 
 def get_spw_properties(vis):
-    with casatools.TableReader(os.path.join(vis, 'SPECTRAL_WINDOW')) as tb:
+    with casa_tools.TableReader(os.path.join(vis, 'SPECTRAL_WINDOW')) as tb:
         spws = []
         for irow in range(tb.nrows()):
             name = tb.getcell('NAME', irow)
@@ -766,10 +766,10 @@ def _read_table(reader, table, vis):
 
 # @profiler
 def make_spwid_map(srcvis, dstvis):
-#     src_spws = __read_table(casatools.MSMDReader,
+#     src_spws = __read_table(casa_tools.MSMDReader,
 #                             tablereader.SpectralWindowTable.get_spectral_windows,
 #                             srcvis)
-#     dst_spws = __read_table(casatools.MSMDReader,
+#     dst_spws = __read_table(casa_tools.MSMDReader,
 #                             tablereader.SpectralWindowTable.get_spectral_windows,
 #                             dstvis)
 
@@ -827,7 +827,7 @@ def make_polid_map(srcvis, dstvis):
 
 # @profiler
 def make_ddid_map(vis):
-    with casatools.TableReader(os.path.join(vis, 'DATA_DESCRIPTION')) as tb:
+    with casa_tools.TableReader(os.path.join(vis, 'DATA_DESCRIPTION')) as tb:
         pol_ids = tb.getcol('POLARIZATION_ID')
         spw_ids = tb.getcol('SPECTRAL_WINDOW_ID')
         num_ddids = tb.nrows()
@@ -839,7 +839,7 @@ def make_ddid_map(vis):
 
 def get_datacolumn_name(vis):
     colname_candidates = ['CORRECTED_DATA', 'FLOAT_DATA', 'DATA']
-    with casatools.TableReader(vis) as tb:
+    with casa_tools.TableReader(vis) as tb:
         colnames = tb.colnames()
     colname = None
     for name in colname_candidates:
@@ -878,7 +878,7 @@ def _read_polarization_table(vis):
     """
     LOG.debug('Analysing POLARIZATION table')
     polarization_table = os.path.join(vis, 'POLARIZATION')
-    with casatools.TableReader(polarization_table) as table:
+    with casa_tools.TableReader(polarization_table) as table:
         num_corrs = table.getcol('NUM_CORR')
         vcorr_types = table.getvarcol('CORR_TYPE')
         vcorr_products = table.getvarcol('CORR_PRODUCT')
@@ -898,7 +898,7 @@ def _read_polarization_table(vis):
 
 def get_restfrequency(vis, spwid, source_id):
     source_table = os.path.join(vis, 'SOURCE')
-    with casatools.TableReader(source_table) as tb:
+    with casa_tools.TableReader(source_table) as tb:
         tsel = tb.query('SOURCE_ID == {} && SPECTRAL_WINDOW_ID == {}'.format(source_id, spwid))
         try:
             if tsel.nrows() == 0:
@@ -1003,7 +1003,7 @@ def sort_fields(context):
 
 
 def get_brightness_unit(vis, defaultunit='Jy/beam'):
-    with casatools.TableReader(vis) as tb:
+    with casa_tools.TableReader(vis) as tb:
         colnames = tb.colnames()
         target_columns = ['CORRECTED_DATA', 'FLOAT_DATA', 'DATA']
         bunit = defaultunit

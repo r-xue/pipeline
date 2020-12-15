@@ -38,12 +38,12 @@
 # 12/17/12 STM add phases to getCalStatistics
 ######################################################################
 import collections
-from pipeline.infrastructure import casatools
 
 import numpy
 
-import pipeline.infrastructure.contfilehandler as contfilehandler
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.contfilehandler as contfilehandler
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -215,7 +215,7 @@ def getCalFlaggedSoln(calTable):
 
     """
 
-    with casatools.TableReader(calTable) as mytb:
+    with casa_tools.TableReader(calTable) as mytb:
         antCol = mytb.getcol('ANTENNA1')
         spwCol = mytb.getcol('SPECTRAL_WINDOW_ID')
         fldCol = mytb.getcol('FIELD_ID')
@@ -593,7 +593,7 @@ def getBCalStatistics(calTable,innerbuff=0.1):
     # Create the output dictionary
     outDict = {}
 
-    with casatools.TableReader(calTable) as mytb:
+    with casa_tools.TableReader(calTable) as mytb:
 
         # Check that this is a B Jones table
         caltype = mytb.getkeyword('VisCal')
@@ -612,7 +612,7 @@ def getBCalStatistics(calTable,innerbuff=0.1):
         dataVarCol = mytb.getvarcol('CPARAM')
 
     # get names from ANTENNA table
-    with casatools.TableReader(calTable+'/ANTENNA') as mytb:
+    with casa_tools.TableReader(calTable + '/ANTENNA') as mytb:
         antNameCol = mytb.getcol('NAME')
     nant = len(antNameCol)
 
@@ -621,7 +621,7 @@ def getBCalStatistics(calTable,innerbuff=0.1):
         antDict[iant] = antNameCol[iant]
 
     # get names from SPECTRAL_WINDOW table
-    with casatools.TableReader(calTable+'/SPECTRAL_WINDOW') as mytb:
+    with casa_tools.TableReader(calTable + '/SPECTRAL_WINDOW') as mytb:
         spwNameCol = mytb.getcol('NAME')
     nspw = len(spwNameCol)
 

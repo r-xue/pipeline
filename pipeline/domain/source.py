@@ -1,7 +1,7 @@
 import itertools
 import pprint
 
-import pipeline.infrastructure.casatools as casatools
+from pipeline.infrastructure import casa_tools
 
 
 _pprinter = pprint.PrettyPrinter()
@@ -28,7 +28,7 @@ class Source(object):
 
     @property
     def dec(self):
-        return casatools.quanta.formxxx(self.latitude, format='dms', prec=2)
+        return casa_tools.quanta.formxxx(self.latitude, format='dms', prec=2)
 
     @property
     def direction(self):
@@ -60,19 +60,19 @@ class Source(object):
 
     @property
     def proper_motion(self):
-        qa = casatools.quanta
+        qa = casa_tools.quanta
         return '%.3e %.3e %s' % (qa.getvalue(self.pm_x),
                                  qa.getvalue(self.pm_y),
                                  qa.getunit(self.pm_x))
 
     @property
     def ra(self):        
-        return casatools.quanta.formxxx(self.longitude, format='hms', prec=3)
+        return casa_tools.quanta.formxxx(self.longitude, format='hms', prec=3)
 
     # Galactic Longitude: it is usually expressed in DMS format
     @property
     def gl(self):
-        return casatools.quanta.formxxx(self.longitude, format='dms', prec=2)
+        return casa_tools.quanta.formxxx(self.longitude, format='dms', prec=2)
 
     # Galactic Latitude
     @property
@@ -80,7 +80,7 @@ class Source(object):
         return self.dec
 
     def __format_pm(self, axis):
-        qa = casatools.quanta
+        qa = casa_tools.quanta
         val = qa.getvalue(self._proper_motion[axis])
         units = qa.getunit(self._proper_motion[axis])
         return '' if val == 0 else '%.3e %s' % (val, units)

@@ -4,9 +4,9 @@ import shutil
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.imagelibrary as imagelibrary
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from .resultobjects import SDImagingResultItem
 
 LOG = infrastructure.get_logger(__name__)
@@ -67,8 +67,8 @@ class SDImageCombine(basetask.StandardTaskTemplate):
 
         # check uniformity of org_directions and feed org_direction
         threshold = 1E-5   #deg
-        me = casatools.measures
-        qa = casatools.quanta
+        me = casa_tools.measures
+        qa = casa_tools.quanta
         if len(org_directions) > 1:
             for idx in range(1, len(org_directions)):
                 if org_directions[0] is None:
@@ -94,7 +94,7 @@ class SDImageCombine(basetask.StandardTaskTemplate):
 
         if status is True:
             # Need to replace NaNs in masked pixels
-            with casatools.ImageReader(outfile) as ia:
+            with casa_tools.ImageReader(outfile) as ia:
                 # save default mask name
                 default_mask = ia.maskhandler('default')[0]
 
@@ -119,7 +119,7 @@ class SDImageCombine(basetask.StandardTaskTemplate):
             # dedault value to align with the parameter setting for sdimaging
             # (see worker.py).
             minweight = 0.1
-            with casatools.ImageReader(outweight) as ia:
+            with casa_tools.ImageReader(outweight) as ia:
                 # exclude 0 (and negative weights)
                 ia.calcmask('"{}" > 0.0'.format(get_safe_path(ia.name())), name='nonzero')
 
@@ -129,7 +129,7 @@ class SDImageCombine(basetask.StandardTaskTemplate):
             # re-evaluate mask
             threshold = minweight * median_weight[0]
             for imagename in [outfile, outweight]:
-                with casatools.ImageReader(imagename) as ia:
+                with casa_tools.ImageReader(imagename) as ia:
                     # new mask name
                     updated_mask = 'mask_combine'
 

@@ -14,7 +14,7 @@ from pipeline import environment
 from pipeline.h.tasks.common import manifest
 from pipeline.h.tasks.exportdata import exportdata
 from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import casatools
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure import utils
 
@@ -136,12 +136,12 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             # Apply position corrections to VLASS-QL product images (PIPE-587) and fix FITS header (PIPE-641)
             if img_mode == 'VLASS-QL':
                 # Mean antenna geographic coordinates
-                observatory = casatools.measures.observatory(self.inputs.context.project_summary.telescope)
+                observatory = casa_tools.measures.observatory(self.inputs.context.project_summary.telescope)
                 # Mean observing date
                 start_time = self.inputs.context.observing_run.start_datetime
                 end_time = self.inputs.context.observing_run.end_datetime
                 mid_time = start_time + (end_time - start_time) / 2
-                mid_time = casatools.measures.epoch('utc', mid_time.isoformat())
+                mid_time = casa_tools.measures.epoch('utc', mid_time.isoformat())
                 # Correction
                 utils.positioncorrection.do_wide_field_pos_cor(fitsfile, date_time=mid_time, obs_long=observatory['m0'],
                                                                obs_lat=observatory['m1'])

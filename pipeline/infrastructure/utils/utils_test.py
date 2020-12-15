@@ -1,8 +1,8 @@
 from typing import Union, List, Dict, Tuple
 from unittest.mock import Mock
-import pytest
 
 import numpy as np
+import pytest
 
 from pipeline import domain
 from .utils import find_ranges, dict_merge, are_equal, approx_equal, flagged_intervals, \

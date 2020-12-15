@@ -12,7 +12,6 @@ import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
@@ -24,6 +23,7 @@ from pipeline.hif.tasks import gaincal
 from pipeline.hif.tasks.fluxscale import fluxscale
 from pipeline.hif.tasks.setmodel import setjy
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import exceptions
 from pipeline.infrastructure import task_registry
 from . import fluxes
@@ -319,7 +319,7 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         ref_fieldid = {field.id for field in ms.fields if field.name == reference}
         transfer_fieldids = {field.id for field in ms.fields if field.name in transfer}
 
-        with casatools.TableReader(caltable) as table:
+        with casa_tools.TableReader(caltable) as table:
             fieldids = table.getcol('FIELD_ID')
 
         # warn if field IDs does not contains the amplitude and phase calibrators
@@ -619,7 +619,7 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         nchans = ms.get_spectral_windows(spwid)[0].num_channels
 
         # Read in data from MS.
-        with casatools.MSReader(ms.name) as openms:
+        with casa_tools.MSReader(ms.name) as openms:
             try:
                 # Apply data selection.
                 openms.msselect(data_selection)
