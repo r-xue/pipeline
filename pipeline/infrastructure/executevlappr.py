@@ -1,15 +1,20 @@
-# Execute the pipeline processing request
-#    Code first as module and convert to class if appropriate
-#    Factor and document properly  when details worked out    
-#
-# Turn some print statement into CASA log statements
-#
+"""Execute the pipeline processing request.
+
+Code first as module and convert to class if appropriate
+Factor and document properly  when details worked out
+
+Turn some print statement into CASA log statements
+
+Raises:
+    exceptions.PipelineException
+
+"""
 
 import os
 import sys
 import traceback
 
-import pipeline.extern.XmlObjectifier as XmlObjectifier
+from ..extern import XmlObjectifier
 
 from . import Pipeline
 from . import argmapper
@@ -26,9 +31,6 @@ try:
 except Exception as e:
     default__rethrow_casa_exceptions = False
 __rethrow_casa_exceptions=True
-
-# Setup path
-#sys.path.insert (0, os.path.expandvars("$SCIPIPE_HEURISTICS"))
 
 
 def executeppr (pprXmlFile, importonly=True, dry_run=False, loglevel='info',
