@@ -3,13 +3,8 @@ import os
 import numpy as np
 
 from casatasks import casalog
-from casatools import calibrater, ms, table
 
-# Get the tools
-#    ms and table tools are used by the ranges to channel converter
-mycb = calibrater()
-myms = ms()
-mytb = table()
+from pipeline.infrastructure import casa_tools
 
 
 # Notes
@@ -22,9 +17,11 @@ def uvcontfit(vis=None, caltable=None, field=None, intent=None, spw=None, combin
     # Python script
     casalog.origin('uvcontfit')
 
+    # Get instance of the 'calibrater' CASA tool.
+    mycb = casa_tools.calibrater
+
     # Run normal code
     try:
-
         # Determine the channels to be used in the fit
         #    Not sure why this was needed but leave code in place for now. What is wrong with frequency ranges ?
         # if spw.count('Hz'):
@@ -57,12 +54,12 @@ def uvcontfit(vis=None, caltable=None, field=None, intent=None, spw=None, combin
         # Solve for the continuum
         mycb.solve()
 
-        mycb.close()
-
     except Exception as instance:
         casalog.post('Error in uvcontfit: ' + str(instance), 'SEVERE')
-        mycb.close()                        # Harmless if cb is closed.
         raise Exception('Error in uvcontfit: ' + str(instance))
+    finally:
+        # Ensure that the calibrator tool gets closed.
+        mycb.close()
 
 
 def _new_quantityRangesToChannels(vis, field, infitspw, excludechans):
@@ -72,22 +69,21 @@ def _new_quantityRangesToChannels(vis, field, infitspw, excludechans):
     For excludeechans=True, it will select channels outside given by infitspw
     returns: list containing new channel ranges
     """
-    mytb.open(vis+'/SPECTRAL_WINDOW')
-    nspw = mytb.nrows()
-    mytb.close()
+    with casa_tools.TableReader(os.path.join(vis, 'SPECTRAL_WINDOW')) as mytb:
+        nspw = mytb.nrows()
 
     fullspwids = ', '.join(str(x) for x in range(nspw))
     tql = {'field': field, 'spw': fullspwids}
-    myms.open(vis)
-    myms.msselect(tql, True)
-    allsels = myms.msselectedindices()
-    myms.reset()
 
-    # input fitspw selection
-    tql['spw'] = infitspw
-    myms.msselect(tql, True)
-    usersels = myms.msselectedindices()['channel']
-    myms.close()
+    with casa_tools.MSReader(vis) as myms:
+        myms.msselect(tql, True)
+        allsels = myms.msselectedindices()
+        myms.reset()
+
+        # input fitspw selection
+        tql['spw'] = infitspw
+        myms.msselect(tql, True)
+        usersels = myms.msselectedindices()['channel']
 
     # sort the arrays so that chan ranges are
     # in order
