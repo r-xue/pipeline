@@ -1,6 +1,5 @@
 import os
 import shutil
-import urllib
 from typing import Union, Dict, Tuple
 
 import pyfits
@@ -9,17 +8,15 @@ import pytest
 from .. import casa_tools
 from .positioncorrection import do_wide_field_pos_cor, calc_wide_field_pos_cor
 
-test_params_fits = [('VLASS1.1.ql.T19t20.J155950+333000.fits',
+test_params_fits = [(casa_tools.ctsys.resolve('pl-unittest/VLASS1.1.ql.T19t20.J155950+333000.fits'),
                      {'unit': 'deg', 'value': -107.6183},
                      {'unit': 'deg', 'value': 33.90049},
-                     'https://www.cv.nrao.edu/~lszucs/',
                      ({'unit': 'deg', 'value': 239.9617912649343},
                       {'unit': 'deg', 'value': 33.49999737118265})
                      ),  # VLASS 1.1
-                    ('VLASS1.2.ql.T17t06.J041750+243000.fits',
+                    (casa_tools.ctsys.resolve('pl-unittest/VLASS1.2.ql.T17t06.J041750+243000.fits'),
                      {'unit': 'deg', 'value': -107.61833},
                      {'unit': 'deg', 'value': 33.90049},
-                     'https://www.cv.nrao.edu/~lszucs/',
                      ({'unit': 'deg', 'value': 64.45982059345977},
                       {'unit': 'deg', 'value': 24.49997953261358})
                      )]  # VLASS 1.2
@@ -44,10 +41,9 @@ test_params_func = [({'unit': 'deg', 'value': 239.9618166667},
                      )]
 
 
-@pytest.mark.skip(reason="Currently no general online pipeline date storage is available for test datasets.")
-@pytest.mark.parametrize('fitsname, obs_long, obs_lat, url, expected', test_params_fits)
+@pytest.mark.parametrize('fitsname, obs_long, obs_lat, expected', test_params_fits)
 def test_do_wide_field_corr(fitsname: str, obs_long: Dict[str, Union[str, float]],
-                            obs_lat: Dict[str, Union[str, float]], url: Union[str, None],
+                            obs_lat: Dict[str, Union[str, float]],
                             expected: Tuple[Dict, Dict], epsilon: float = 1.0e-9):
     """Test do_wide_field_corr()
 
@@ -60,25 +56,24 @@ def test_do_wide_field_corr(fitsname: str, obs_long: Dict[str, Union[str, float]
 
     The default tolerance (epsilon) value is equivalent to about 0.01 milliarcs.
     """
-    # Obtain FITS file
-    if url:
-        try:
-            with urllib.request.urlopen('{}/{}'.format(url, fitsname)) as response, open(fitsname, 'wb') as out_file:
-                shutil.copyfileobj(response, out_file)
-        except urllib.error.URLError as err:
-            print('No internet connection to test dataset URL {}'.format(err.reason))
+    # Check if FITS file exists
+    try:
+        local_fitsname = os.path.basename(fitsname)
+        shutil.copyfile(fitsname, local_fitsname)
+    except IOError:
+        print("FITS file is not accessible ({})".format(fitsname))
 
     # Correct the copied FITS file
-    do_wide_field_pos_cor(fitsname=fitsname, obs_long=obs_long, obs_lat=obs_lat)
+    do_wide_field_pos_cor(fitsname=local_fitsname, obs_long=obs_long, obs_lat=obs_lat)
 
     # Obtain corrected reference coordinates
-    with pyfits.open(fitsname, mode='readonly') as hdulist:
+    with pyfits.open(local_fitsname, mode='readonly') as hdulist:
         header = hdulist[0].header
         ra_deg_head = casa_tools.quanta.convert({'value': header['crval1'], 'unit': header['cunit1']}, 'deg')
         dec_deg_head = casa_tools.quanta.convert({'value': header['crval2'], 'unit': header['cunit2']}, 'deg')
 
     # Clean up
-    os.remove(fitsname)
+    os.remove(local_fitsname)
 
     # Compute relative error
     ra_expected = casa_tools.quanta.convert(expected[0], 'deg')['value']
