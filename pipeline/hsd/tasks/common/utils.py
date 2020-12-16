@@ -6,7 +6,7 @@ from logging import Logger as pyLogger
 import os
 import sys
 import time
-from typing import Any, Callable, Generator, Iterable, List, Optional, Sequence, Union, Tuple
+from typing import Any, Callable, Generator, Iterable, List, NewType, Optional, Sequence, Union, Tuple
 
 import casatools
 import numpy
@@ -20,6 +20,9 @@ from pipeline.infrastructure import casa_tools
 from . import compress
 
 _LOG = infrastructure.get_logger(__name__)
+
+TableLike = NewType('TableLike',
+                    Union[casa_tools._logging_table_cls, casatools.table])
 
 
 class OnDemandStringParseLogger(object):
@@ -48,7 +51,7 @@ class OnDemandStringParseLogger(object):
 #         self._func_list = [] # Un used?
 
     @staticmethod
-    def parse(msg_template: str, *args, **kwargs) -> str:
+    def parse(msg_template: str, *args: Any, **kwargs: Any) -> str:
         """
         Return a formatted string.
 
@@ -93,7 +96,8 @@ class OnDemandStringParseLogger(object):
         else:
             return msg_template.format(*args, **kwargs)
 
-    def _post(self, priority: str, msg_template: str, *args, **kwargs):
+    def _post(self, priority: str, msg_template: str, *args: Any,
+              **kwargs: Any):
         """
         Generate and post a message to logger.
 
@@ -113,7 +117,7 @@ class OnDemandStringParseLogger(object):
         if self.logger.isEnabledFor(logging.LOGGING_LEVELS[key_for_level]):
             getattr(self.logger, priority)(OnDemandStringParseLogger.parse(msg_template, *args, **kwargs))
 
-    def critical(self, msg_template: str, *args, **kwargs):
+    def critical(self, msg_template: str, *args: Any, **kwargs: Any):
         """
         Print a critical level message to logger.
 
@@ -126,7 +130,7 @@ class OnDemandStringParseLogger(object):
         """
         self._post('critical', msg_template, *args, **kwargs)
 
-    def error(self, msg_template: str, *args, **kwargs):
+    def error(self, msg_template: str, *args: Any, **kwargs: Any):
         """
         Print an error level message to logger.
 
@@ -139,7 +143,7 @@ class OnDemandStringParseLogger(object):
         """
         self._post('error', msg_template, *args, **kwargs)
 
-    def warn(self, msg_template: str, *args, **kwargs):
+    def warn(self, msg_template: str, *args: Any, **kwargs: Any):
         """
         Print a warning level message to logger.
 
@@ -152,7 +156,7 @@ class OnDemandStringParseLogger(object):
         """
         self._post('warning', msg_template, *args, **kwargs)
 
-    def info(self, msg_template: str, *args, **kwargs):
+    def info(self, msg_template: str, *args: Any, **kwargs: Any):
         """
         Print an info level message to logger.
 
@@ -165,7 +169,7 @@ class OnDemandStringParseLogger(object):
         """
         self._post('info', msg_template, *args, **kwargs)
 
-    def debug(self, msg_template: str, *args, **kwargs):
+    def debug(self, msg_template: str, *args: Any, **kwargs: Any):
         """
         Print a debug level message to logger.
 
@@ -178,7 +182,7 @@ class OnDemandStringParseLogger(object):
         """
         self._post('debug', msg_template, *args, **kwargs)
 
-    def todo(self, msg_template: str, *args, **kwargs):
+    def todo(self, msg_template: str, *args: Any, **kwargs: Any):
         """
         Print a todo level message to logger.
 
@@ -191,7 +195,7 @@ class OnDemandStringParseLogger(object):
         """
         self._post('todo', msg_template, *args, **kwargs)
 
-    def trace(self, msg_template: str, *args, **kwargs):
+    def trace(self, msg_template: str, *args: Any, **kwargs: Any):
         """
         Print a trace level message to logger.
 
@@ -522,8 +526,6 @@ def to_bool(s: Any) -> Union[bool, str, None]:
         False
         >>> to_bool('True')
         True
-        >>> to_bool('F')
-        False
         >>> to_bool(1.5)
         True
         >>> to_bool('Some_string')
@@ -534,9 +536,9 @@ def to_bool(s: Any) -> Union[bool, str, None]:
     elif isinstance(s, bool):
         return s
     elif isinstance(s, str):
-        if s.upper() == 'FALSE' or s == 'F':
+        if s.upper() == 'FALSE':
             return False
-        elif s.upper() == 'TRUE' or s == 'T':
+        elif s.upper() == 'TRUE':
             return True
         else:
             return s
@@ -872,9 +874,8 @@ def make_row_map_for_baselined_ms(ms: MeasurementSet,
 
 #@profiler
 def make_row_map(src_ms: MeasurementSet, derived_vis: str,
-                 src_tb: Optional[casa_tools._logging_table_cls]=None,
-                 derived_tb: Optional[casa_tools._logging_table_cls]=None
-                 ) -> dict:
+                 src_tb: Optional[TableLike]=None,
+                 derived_tb: Optional[TableLike]=None) -> dict:
     """
     Make row mapping between a source and a derived MeasurementSet (MS).
 
@@ -1501,9 +1502,7 @@ class RGAccumulator(object):
 
     def iterate_all(
             self
-            ) -> Generator[Tuple[int, int, int,
-                                 Union[dict, compress.CompressedObj, None],
-                                 List[int]],
+            ) -> Generator[Tuple[int, int, int, Optional[dict], List[int]],
                            None, None]:
         """
         Yield metadata registered.
