@@ -8,13 +8,13 @@ import pytest
 from .. import casa_tools
 from .positioncorrection import do_wide_field_pos_cor, calc_wide_field_pos_cor
 
-test_params_fits = [(casa_tools.ctsys.resolve('pl-unittest/VLASS1.1.ql.T19t20.J155950+333000.fits'),
+test_params_fits = [(casa_tools.utils.resolve('pl-unittest/VLASS1.1.ql.T19t20.J155950+333000.fits'),
                      {'unit': 'deg', 'value': -107.6183},
                      {'unit': 'deg', 'value': 33.90049},
                      ({'unit': 'deg', 'value': 239.9617912649343},
                       {'unit': 'deg', 'value': 33.49999737118265})
                      ),  # VLASS 1.1
-                    (casa_tools.ctsys.resolve('pl-unittest/VLASS1.2.ql.T17t06.J041750+243000.fits'),
+                    (casa_tools.utils.resolve('pl-unittest/VLASS1.2.ql.T17t06.J041750+243000.fits'),
                      {'unit': 'deg', 'value': -107.61833},
                      {'unit': 'deg', 'value': 33.90049},
                      ({'unit': 'deg', 'value': 64.45982059345977},

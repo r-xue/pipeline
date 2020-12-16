@@ -147,7 +147,6 @@ utils = _logging_utils_cls()
 vpmanager = _logging_vpmanager_cls()
 
 log = casalog
-ctsys = casatools.ctsys
 
 
 def post_to_log(comment='', echo_to_screen=True):
