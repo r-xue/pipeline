@@ -160,7 +160,10 @@ class Mstransform(basetask.StandardTaskTemplate):
         # Run CASA task
         mstransform_args = inputs.to_casa_args()
         mstransform_job = casa_tasks.mstransform(**mstransform_args)
-        self._executor.execute(mstransform_job)
+        try:
+            self._executor.execute(mstransform_job)
+        except OSError as ee:
+            LOG.warning(ee)
 
         # Copy across requisite XML files.
         self._copy_xml_files(inputs.vis, inputs.outputvis)
