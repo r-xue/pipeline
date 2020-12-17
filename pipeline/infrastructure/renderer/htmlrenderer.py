@@ -1034,6 +1034,9 @@ class T2_2_4Renderer(T2_2_XRendererBase):
         task = summary.AzElChart(context, ms)
         azel_plot = task.plot()
 
+        task = summary.SunTrackChart(context, ms)
+        suntrack_plot=task.plot()        
+
         task = summary.ElVsTimeChart(context, ms)
         el_vs_time_plot = task.plot()
 
@@ -1050,6 +1053,7 @@ class T2_2_4Renderer(T2_2_XRendererBase):
         return {'pcontext': context,
                 'ms': ms,
                 'azel_plot': azel_plot,
+                'suntrack_plot': suntrack_plot,
                 'el_vs_time_plot': el_vs_time_plot,
                 'plot_uv': plot_uv,
                 'dirname': dirname}
