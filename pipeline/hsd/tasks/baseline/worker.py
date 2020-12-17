@@ -4,6 +4,7 @@ import os
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.sessionutils as sessionutils
+from pipeline.infrastructure.utils import relative_path
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataTable
 from pipeline.h.heuristics import caltable as caltable_heuristic
@@ -50,8 +51,9 @@ class BaselineSubtractionInputsBase(vdp.StandardInputs):
         # baseline caltable filename
         if self.bloutput is None or len(self.bloutput) == 0:
             namer = caltable_heuristic.SDBaselinetable()
-            bloutput = namer.calculate(output_dir=self.output_dir,
-                                       stage=self.context.stage, **args)
+            bloutput = relative_path(namer.calculate(output_dir=self.output_dir,
+                                                            stage=self.context.stage,
+                                                            **args))
             args['bloutput'] = bloutput
         else:
             args['bloutput'] = self.bloutput

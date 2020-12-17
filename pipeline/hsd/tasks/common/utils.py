@@ -10,6 +10,7 @@ import numpy
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.mpihelpers as mpihelpers
+from pipeline.infrastructure.utils import absolute_path
 from pipeline.domain.datatable import OnlineFlagIndex, DataTableIndexer
 from pipeline.infrastructure import casa_tools
 from . import compress
@@ -361,7 +362,7 @@ def get_valid_ms_members(group_desc, msname_filter, ant_selection, field_selecti
         field_id = member.field_id
         ant_id = member.antenna_id
         msobj = member.ms
-        if msobj.name in [os.path.abspath(name) for name in msname_filter]:
+        if absolute_path(msobj.name) in [absolute_path(name) for name in msname_filter]:
             _field_selection = field_selection
             try:
                 nfields = len(msobj.fields)
