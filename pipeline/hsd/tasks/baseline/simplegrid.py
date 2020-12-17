@@ -8,8 +8,8 @@ import numpy
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
-import pipeline.infrastructure.casatools as casatools
 from pipeline.domain.datatable import DataTableIndexer
+from pipeline.infrastructure import casa_tools
 from .. import common
 from ..common import utils
 
@@ -107,7 +107,7 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
         real_spw = self.inputs.reference_member.spw_id
         reference_spw = self.inputs.context.observing_run.real2virtual_spw_id(real_spw, reference_data)
         beam_size = reference_data.beam_sizes[reference_antenna][real_spw]
-        grid_size = casatools.quanta.convert(beam_size, 'deg')['value']
+        grid_size = casa_tools.quanta.convert(beam_size, 'deg')['value']
 
         indexer = DataTableIndexer(self.inputs.context)
 
@@ -326,14 +326,14 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
         #for basename, entries in bind_to_grid.items():
         for ms in self.inputs.context.observing_run.measurement_sets:
             #AntID = antenna_list[i]
-            #with casatools.TableReader(infiles[i]) as tb:
+            # with casa_tools.TableReader(infiles[i]) as tb:
             entries = bind_to_grid[ms.basename]
             vis = ms.work_data
             ms_colname = utils.get_datacolumn_name(vis)
             rowmap = utils.make_row_map_for_baselined_ms(ms)
             LOG.debug('Start reading data from "{}"', os.path.basename(vis))
             LOG.debug('There are {} entries', len(entries))
-            with casatools.TableReader(vis) as tb:
+            with casa_tools.TableReader(vis) as tb:
                 #get = lambda col, row: tb.getcell(col, row)
                 #for entry in bind_to_grid[AntID]:
                 for entry in entries:

@@ -5,9 +5,9 @@ import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from .solsyslinesdict import SolarSystemLineList
 
@@ -464,7 +464,7 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
         imaxfreq = -1
 
         # Get frequencies
-        mse = casatools.ms
+        mse = casa_tools.ms
         mse.open(vis)
         a = mse.cvelfreqs(fieldids=[fieldid], spwids=[spwid], mode='frequency', outframe=refframe)
         mse.close()

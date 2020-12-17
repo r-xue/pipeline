@@ -92,7 +92,7 @@ import scipy.stats.mstats
 
 import pipeline.infrastructure.utils as utils
 import pipeline.qa.utility.logs as logs
-from pipeline.infrastructure import casatools
+from pipeline.infrastructure import casa_tools
 
 
 def rms(data):
@@ -357,12 +357,12 @@ def bpcal_calc(in_table, logger=''):
     # Get the list of spw ids actually in the caltable
     #    Should be handled by calanalysis tool meta data
     #    fetchers but is not.
-    with casatools.TableReader(in_table) as table:
+    with casa_tools.TableReader(in_table) as table:
         spwidList = numpy.unique(table.getcol('SPECTRAL_WINDOW_ID')).tolist()
 
     # Create the local instance of the calibration analysis tool and open
     # the bandpass caltable
-    with casatools.CalAnalysis(in_table) as caLoc:
+    with casa_tools.CalAnalysis(in_table) as caLoc:
 
         # Get the spw ids and corresponding number of channels in the
         #    caltable meta data and remove values that are not represented
@@ -516,7 +516,7 @@ def bpcal_write(bpcal_stats, out_table):
 
     # Create the local instance of the table tool, create the output main
     # table with a place holder data description, and close the table
-    tbLoc = casatools.table
+    tbLoc = casa_tools.table
 
     tbLoc.create(out_table, bpcal_desc())
     tbLoc.addrows()

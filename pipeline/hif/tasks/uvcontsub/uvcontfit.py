@@ -7,11 +7,11 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.contfilehandler as contfilehandler
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.heuristics import caltable as uvcaltable
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 
 LOG = infrastructure.get_logger(__name__)
@@ -331,8 +331,8 @@ class UVcontFit(basetask.StandardTaskTemplate):
         rep_field_name = ''
 
         # Get CASA tools
-        cqa = casatools.quanta
-        cme = casatools.measures
+        cqa = casa_tools.quanta
+        cme = casa_tools.measures
 
         # First estimate the phase center
 

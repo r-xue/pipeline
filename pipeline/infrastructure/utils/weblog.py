@@ -11,7 +11,7 @@ from functools import reduce
 import numpy
 
 from .conversion import flatten, to_pipeline_intent, spw_arg_to_id
-from .. import casatools
+from .. import casa_tools
 from .. import logging
 
 __all__ = ['OrderedDefaultdict', 'merge_td_columns', 'get_vis_from_plots', 'total_time_on_source',
@@ -121,7 +121,7 @@ def total_time_on_target_on_source(ms, autocorr_only=False):
     ant_ids = [a.id for a in ms.antennas]
     dds = [ms.get_data_description(spw=spw) for spw in science_spws]
     science_dds = numpy.unique([dd.id for dd in dds])
-    with casatools.TableReader(ms.name) as tb:
+    with casa_tools.TableReader(ms.name) as tb:
         for dd in science_dds:
             for a1 in ant_ids:
                 for a2 in ant_ids:

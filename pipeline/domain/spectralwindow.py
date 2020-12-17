@@ -4,9 +4,9 @@ import operator
 
 import numpy
 
-from . import measures
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
+from pipeline.infrastructure import casa_tools
+from . import measures
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -261,8 +261,8 @@ class SpectralWindow(object):
         self.id = spw_id
         self.bandwidth = measures.Frequency(bandwidth, measures.FrequencyUnits.HERTZ)
 
-        ref_freq_hz = casatools.quanta.convertfreq(ref_freq['m0'], 'Hz')
-        ref_freq_val = casatools.quanta.getvalue(ref_freq_hz)[0]
+        ref_freq_hz = casa_tools.quanta.convertfreq(ref_freq['m0'], 'Hz')
+        ref_freq_val = casa_tools.quanta.getvalue(ref_freq_hz)[0]
         self.ref_frequency = measures.Frequency(ref_freq_val, measures.FrequencyUnits.HERTZ)
         self._ref_frequency_frame = ref_freq['refer']
 
