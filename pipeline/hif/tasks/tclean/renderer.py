@@ -209,7 +209,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             if 'VLA' in r.imaging_mode:
                 row_sensitivity = '-'
             else:
-                row_sensitivity = '%.2g %s' % (r.sensitivity, brightness_unit)
+                sp_str, sp_scale = utils.get_si_prefix(r.sensitivity, lztol=1)
+                row_sensitivity = '{:.2g} {}'.format(r.sensitivity/sp_scale, sp_str+brightness_unit)
 
             #
             # clean iterations, for VLASS
@@ -240,7 +241,10 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 row_cleaning_threshold = '-'
             else:
                 if r.threshold:
-                    row_cleaning_threshold = '%.2g %s' % (casa_tools.quanta.convert(r.threshold, brightness_unit)['value'], brightness_unit)
+                    threshold_quantity = qaTool.convert(r.threshold, 'Jy')
+                    sp_str, sp_scale = utils.get_si_prefix(threshold_quantity['value'], lztol=1)
+                    row_cleaning_threshold = '{:.2g} {}'.format(
+                        threshold_quantity['value']/sp_scale, sp_str+brightness_unit)
                     if r.dirty_dynamic_range:
                         row_cleaning_threshold += '<br>Dirty DR: %.2g' % r.dirty_dynamic_range
                         row_cleaning_threshold += '<br>DR correction: %.2g' % r.DR_correction_factor
@@ -291,18 +295,23 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             #
             if nchan is None or r.image_rms is None:
                 row_non_pbcor = '-'
-            elif nchan == 1:
-                row_non_pbcor = '%#.2g %s' % (r.image_rms, brightness_unit)
             else:
-                row_non_pbcor = '%#.2g / %#.2g / %#.2g %s' % (r.image_rms, r.image_rms_min, r.image_rms_max, brightness_unit)
+                sp_str, sp_scale = utils.get_si_prefix(r.image_rms, lztol=1)
+                if nchan == 1:
+                    row_non_pbcor = '{:.2g} {}'.format(r.image_rms/sp_scale, sp_str+brightness_unit)
+                else:
+                    row_non_pbcor = '{:.2g} / {:.2g} / {:.2g} {}'.format(
+                        r.image_rms/sp_scale, r.image_rms_min/sp_scale, r.image_rms_max/sp_scale, sp_str+brightness_unit)
 
             #
             # pbcor image max / min cell
             #
-            if r.image_max is not None and r.image_min is not None:
-                row_pbcor = '%#.3g / %#.3g %s' % (r.image_max, r.image_min, brightness_unit)
-            else:
+            if r.image_max is None or r.image_min is None:
                 row_pbcor = '-'
+            else:
+                sp_str, sp_scale = utils.get_si_prefix(r.image_max, lztol=0)
+                row_pbcor = '{:.3g} / {:.3g} {}'.format(r.image_max/sp_scale,
+                                                        r.image_min/sp_scale, sp_str+brightness_unit)
 
             #
             # fractional bandwidth calculation
