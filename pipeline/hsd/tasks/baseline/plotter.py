@@ -5,16 +5,16 @@ import numpy
 import itertools
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.renderer.logger as logger
 from pipeline.h.tasks.common import atmutil
+from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 from ..common import utils
 from ..common import compress
 from ..common import display
 from ..common.display import sd_polmap
 from ..common import direction_utils as dirutil
-from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 
 _LOG = infrastructure.get_logger(__name__)
 LOG = utils.OnDemandStringParseLogger(_LOG)
@@ -494,7 +494,7 @@ def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table, org_
     each_grid = configure_2d_panel(xpanel, ypanel, num_grid_ra, num_grid_dec, num_plane)
     rowlist = [{} for i in range(num_dec * num_ra)]
 
-    # qa = casatools.quanta
+    # qa = casa_tools.quanta
     # if org_direction is None:
     #     ra_offset = 0
     #     dec_offset = 0
@@ -588,7 +588,7 @@ def get_data(infile, dtrows, num_ra, num_dec, num_chan, num_pol, rowlist, rowmap
         map_mask = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=bool)
 
     # column name for spectral data
-    with casatools.TableReader(infile) as tb:
+    with casa_tools.TableReader(infile) as tb:
         colnames = ['CORRECTED_DATA', 'DATA', 'FLOAT_DATA']
         colname = None
         for name in colnames:
@@ -682,7 +682,7 @@ def get_averaged_data(infile, dtrows, num_ra, num_dec, num_chan, num_pol, rowlis
         map_mask = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=bool)
 
     # column name for spectral data
-    with casatools.TableReader(infile) as tb:
+    with casa_tools.TableReader(infile) as tb:
         colnames = ['CORRECTED_DATA', 'DATA', 'FLOAT_DATA']
         colname = None
         for name in colnames:
@@ -725,7 +725,7 @@ def get_averaged_data(infile, dtrows, num_ra, num_dec, num_chan, num_pol, rowlis
 
 def get_lines(datatable, num_ra, num_pol, rowlist):
     lines_map = [collections.defaultdict(dict)] * num_pol
-    #with casatools.TableReader(rwtablename) as tb:
+    # with casa_tools.TableReader(rwtablename) as tb:
     for d in rowlist:
         ix = num_ra - 1 - d['RAID']
         iy = d['DECID']
@@ -758,7 +758,7 @@ def get_lines2(infile, datatable, num_ra, rowlist, polids, rowmap=None):
 #     num_plane = num_rows / (num_dec * num_ra)
 #     LOG.debug('num_ra={}, num_dec={}, num_plane={}, num_rows={}',
 #               num_ra, num_dec, num_plane, num_rows)
-    with casatools.TableReader(infile) as tb:
+    with casa_tools.TableReader(infile) as tb:
         for d in rowlist:
             ix = num_ra - 1 - d['RAID']
             iy = d['DECID']
@@ -808,7 +808,7 @@ def get_lines2(infile, datatable, num_ra, rowlist, polids, rowmap=None):
 #     #datatable = DataTable(context.observing_run.ms_datatable_name)
 #     rotablename = DataTable.get_rotable_name(context.observing_run.ms_datatable_name)
 #     rwtablename = DataTable.get_rwtable_name(context.observing_run.ms_datatable_name)
-#     with casatools.TableReader(rotablename) as tb:
+#     with casa_tools.TableReader(rotablename) as tb:
 #         dtrows = tb.getcol('ROW')
 #
 #     num_ra, num_dec, num_plane, refpix, refval, increment, rowlist = analyze_plot_table(context, dtrows, ms, antid, spwid, plot_table)

@@ -3,8 +3,8 @@ import itertools
 import string
 import os
 
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure as infrastructure
+from pipeline.infrastructure import casa_tools
 
 # the logger for this module
 LOG = infrastructure.get_logger(__name__)
@@ -121,13 +121,13 @@ def generate_script(context, scriptname, configname):
     cell = []
     imsize = []
     phasecenter = ''
-    qa = casatools.quanta
+    qa = casa_tools.quanta
     for image in images:
         s = image.split('.')[-6]
         i = int(s.replace('spw', ''))
         if i in spws:
             index = spws.index(i)
-            with casatools.ImageReader(image) as ia:
+            with casa_tools.ImageReader(image) as ia:
                 coordsys = ia.coordsys()
                 try:
                     imshape = ia.shape()

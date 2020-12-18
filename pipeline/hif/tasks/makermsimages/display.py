@@ -2,9 +2,8 @@ import collections
 import os
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
-
 from pipeline.h.tasks.common.displays import sky as sky
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -32,7 +31,7 @@ class RmsimagesSummary(object):
                                                        reportdir=stage_dir, intent='',
                                                        collapseFunction='mean'))
 
-            with casatools.ImageReader(rmsimagename) as image:
+            with casa_tools.ImageReader(rmsimagename) as image:
                 stats = image.statistics(robust=True)
                 self.result.max = stats.get('max')[0]
                 self.result.min = stats.get('min')[0]

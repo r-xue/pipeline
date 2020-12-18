@@ -8,12 +8,12 @@ import string
 import numpy
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.logging as logging
 from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.domain.datatable import DataTableColumnMaskList as ColMaskList
 from pipeline.domain.datatable import OnlineFlagIndex
 from pipeline.hsd.tasks.common import mjd_to_datestring, TableSelector
+from pipeline.infrastructure import casa_tools
 
 from ..common import rasterutil
 from ..common import direction_utils as dirutil
@@ -22,7 +22,7 @@ LOG = infrastructure.get_logger(__name__)
 
 
 def get_value_in_deg(quantity):
-    qa = casatools.quanta
+    qa = casa_tools.quanta
     return qa.getvalue(qa.convert(quantity, 'deg'))
 
 
@@ -33,7 +33,7 @@ def get_state_id(ms, spw, intent):
         modes = set(s.get_obs_mode_for_intent(intent))
         obs_modes.update(modes)
     state_ids = set()
-    with casatools.MSReader(ms.name) as msreader:
+    with casa_tools.MSReader(ms.name) as msreader:
         for obs_mode in obs_modes:
             msreader.msselect({'spw': spw, 'scanintent': obs_mode}, onlyparse=True)
             indices = msreader.msselectedindices()
@@ -67,7 +67,7 @@ def initialize_template(flagtemplate):
 
 
 def write_flagcmd(flagtemplate, antenna_id, timerange_list, reason=''):
-    qa = casatools.quanta
+    qa = casa_tools.quanta
     sanitized = reason.replace(' ', '_')
     template = string.Template(f"mode='manual' antenna='{antenna_id}&&&' timerange='$timerange' reason='SDPL:{sanitized}'\n")
 
@@ -314,7 +314,7 @@ class MetaDataReader(object):
 #             modes = set(s.get_obs_mode_for_intent(reference))
 #             obs_modes.update(modes)
 #         state_ids = set()
-#         with casatools.MSReader(name) as msreader:
+#         with casa_tools.MSReader(name) as msreader:
 #             for obs_mode in obs_modes:
 #                 msreader.msselect({'spw': spwsel, 'scanintent': obs_mode}, onlyparse=True)
 #                 indices = msreader.msselectedindices()
@@ -327,7 +327,7 @@ class MetaDataReader(object):
         mpositions = [ a.position for a in ms.antennas ]
 
         # get names of ephemeris sources (excludes 'COMET')
-        me = casatools.measures
+        me = casa_tools.measures
         direction_codes = me.listcodes( me.direction() )
         ephemeris_list = direction_codes['extra']
         known_ephemeris_list = numpy.delete( ephemeris_list, numpy.where(ephemeris_list=='COMET') )
@@ -337,7 +337,7 @@ class MetaDataReader(object):
         ephem_tables = {}   # epheris table name for each field_id if applicasble
         # ephem_tables to be "" for known_ephemeris_list and non-ephemeris sources
 
-        with casatools.TableReader(os.path.join(name, 'FIELD')) as tb:
+        with casa_tools.TableReader(os.path.join(name, 'FIELD')) as tb:
             field_ids = list(range(tb.nrows()))
             for field_id in list(set(field_ids)):
                 fields = ms.get_fields( field_id = field_id )
@@ -368,7 +368,7 @@ class MetaDataReader(object):
                     if len(ephem_table_files) == 1:
                         ephem_table_file = ephem_table_files[0]
                         # double check the source name in ephem_table_file
-                        with casatools.TableReader(ephem_table_file) as tb2:
+                        with casa_tools.TableReader(ephem_table_file) as tb2:
                             keywords = tb2.getkeywords()
                             if keywords['NAME'] != source_name:
                                 raise RuntimeError( "source name in ephemeris table {0} was {1}, inconsistent with {2}".format( ephem_table_file, keywords['NAME'], source_name ) )
@@ -403,8 +403,8 @@ class MetaDataReader(object):
                         antenna_id = tb.getcell( 'ANTENNA1', irow )
                         time_meas = tb.getcolkeyword( 'TIME', 'MEASINFO' )
                         time_frame = time_meas['Ref']
-                        me = casatools.measures
-                        qa = casatools.quanta
+                        me = casa_tools.measures
+                        qa = casa_tools.quanta
                         mepoch = me.epoch(rf=time_frame, v0=qa.quantity(mjd_in_sec, 's'))
                         antennas = self.ms.get_antenna(antenna_id)
                         assert len(antennas) == 1
@@ -415,7 +415,7 @@ class MetaDataReader(object):
                         org_direction = self.get_reference_direction( source_name, ephem_tables[field_id], is_known_eph_obj, mepoch, mposition, outref )
                         org_directions.update( {source_name:org_direction} );
 
-        with casatools.TableReader( os.path.join( name, 'FIELD' )) as tb:
+        with casa_tools.TableReader(os.path.join(name, 'FIELD')) as tb:
             field_ids = list(range(tb.nrows()))
             for field_id in list(set(field_ids)):
                 fields = ms.get_fields( field_id = field_id )
@@ -476,7 +476,7 @@ class MetaDataReader(object):
         Tel = numpy.zeros(nrow, dtype=numpy.float64)
         index = numpy.lexsort((Tant, Tmjd))
         LOG.info('Start reading direction (convert if necessary). It may take a while.')
-        with casatools.MSMDReader(name) as msmd:
+        with casa_tools.MSMDReader(name) as msmd:
             nprogress = 5000
             iprogress = 0
             last_mjd = None
@@ -502,8 +502,8 @@ class MetaDataReader(object):
                     Tofs_dec[irow] = last_result[7]
                     continue
 
-                me = casatools.measures
-                qa = casatools.quanta
+                me = casa_tools.measures
+                qa = casa_tools.quanta
                 mepoch = me.epoch(rf=time_frame, v0=qa.quantity(mjd_in_sec, 's'))
                 # now mposition is prepared in mpositions
                 # antennas = self.ms.get_antenna(antenna_id)
@@ -726,9 +726,8 @@ class MetaDataReader(object):
     def _get_azelref():
         return 'AZELGEO'
 
-
     def get_reference_direction( self, source_name, ephem_table, is_known_eph_obj, mepoch, mposition, outframe):
-        me = casatools.measures
+        me = casa_tools.measures
 
         if ephem_table != "":
             me.framecomet( ephem_table )

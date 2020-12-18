@@ -10,7 +10,7 @@ import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
-import pipeline.infrastructure.casatools as casatools
+from pipeline.infrastructure import casa_tools
 from . import csvfilereader
 
 from pipeline.h.tasks.applycal.renderer import *
@@ -22,6 +22,7 @@ LOG = logging.get_logger(__name__)
 JyperKTRV = collections.namedtuple('JyperKTRV', 'virtualspw msname realspw antenna pol factor')
 JyperKTR  = collections.namedtuple('JyperKTR',  'spw msname antenna pol factor')
 FlagTotal = collections.namedtuple('FlagSummary', 'flagged total')
+
 
 class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def __init__(self, uri='hsdn_restoredata.mako', 
@@ -314,7 +315,7 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
                 # scans = ms.get_scans(scan_intent='TARGET')
                 # for scan in scans:
                 #     fields.update([field.id for field in scan.fields])
-                with casatools.MSMDReader(vis) as msmd:
+                with casa_tools.MSMDReader(vis) as msmd:
                     fields.update(list(msmd.fieldsforintent("OBSERVE_TARGET#ON_SOURCE")))
 
                 # Science target detail plots. Note that summary plots go onto the
@@ -349,7 +350,6 @@ class T2_4MDetailsNRORestoreDataRenderer(basetemplates.T2_4MDetailsDefaultRender
                 pol_name not in factor_dict[vis][spwid][ant_name]):
             return None
         return factor_dict[vis][spwid][ant_name][pol_name]
-
 
     def plots_for_result(self, context, result, plotter_cls, intents, renderer_cls=None, **kwargs):
         vis = os.path.basename(result.inputs['vis'])

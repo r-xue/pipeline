@@ -6,9 +6,9 @@ from typing import List, Optional
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.pipelineqa import QAScore, WebLogLocation
 
 LOG = infrastructure.get_logger(__name__)
@@ -21,16 +21,16 @@ SCORE_THRESHOLD_SUBOPTIMAL = 0.9
 def printTsysFlags(tsystable, htmlreport):
     """Method that implements a version of printTsysFlags by Todd Hunter.
     """
-    with casatools.TableReader(tsystable) as mytb:
+    with casa_tools.TableReader(tsystable) as mytb:
         spws = mytb.getcol("SPECTRAL_WINDOW_ID")
 
-    with casatools.TableReader(tsystable+"/ANTENNA") as mytb:
+    with casa_tools.TableReader(tsystable+"/ANTENNA") as mytb:
         ant_names = mytb.getcol("NAME")
 
     with open(htmlreport, 'w') as stream:
         stream.write('<html>')
 
-        with casatools.TableReader(tsystable) as mytb:
+        with casa_tools.TableReader(tsystable) as mytb:
             for iant in range(len(ant_names)):
                 for spw in np.unique(spws):
 

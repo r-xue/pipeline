@@ -1,21 +1,23 @@
-import numpy as np
+"""Set of heuristics for data grouping."""
 from numbers import Real
 from typing import Dict, List, NewType, Sequence, Tuple, Union
 
-import pipeline.infrastructure.casatools as casatools
+import numpy as np
+
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure as infrastructure
+from pipeline.infrastructure import casa_tools
+
 LOG = infrastructure.get_logger(__name__)
 
 Angle = NewType('Angle', Union[float, int, Dict])
 
 
 class GroupByPosition2(api.Heuristic):
-    """
-    Grouping by RA/DEC position
-    """
+    """Grouping by RA/DEC position."""
+
     def calculate(self, ra: np.ndarray, dec: np.ndarray, r_combine: Angle, r_allowance: Angle) -> Tuple[Dict, List]:
-        """Grouping by RA/DEC position.
+        """Group data by RA/DEC position.
 
         Divides data into groups by their positions in two
         dimensional space which are given by ra and dec.
@@ -53,7 +55,7 @@ class GroupByPosition2(api.Heuristic):
             for ra and dec ([IDX1, IDX2,...,IDXN]). Length of
             PosGap is (number of groups) - 1.
         """
-        qa = casatools.quanta
+        qa = casa_tools.quanta
         if isinstance(r_combine, dict):
             # r_combine should be quantity
             CombineRadius = qa.convert(r_combine, 'deg')['value']
@@ -129,11 +131,10 @@ class GroupByPosition2(api.Heuristic):
 
 
 class GroupByTime2(api.Heuristic):
-    """
-    Grouping by time sequence
-    """
+    """Grouping by time sequence."""
+
     def calculate(self, timebase: Sequence[Real], time_diff: Sequence[Real]) -> Tuple[List, List]:
-        """Grouping by time sequence.
+        """Group data by time sequence.
 
         Divides data into groups by their difference (time_diff).
         Two groups are defined based on "small" and "large" gaps,
@@ -224,6 +225,8 @@ class GroupByTime2(api.Heuristic):
 
 
 class ThresholdForGroupByTime(api.Heuristic):
+    """Estimate thresholds for large and small time gaps."""
+
     def calculate(self, timebase: Sequence[Real]) -> Tuple[List, List]:
         """Estimate thresholds for large and small time gaps.
 
@@ -276,6 +279,8 @@ class ThresholdForGroupByTime(api.Heuristic):
 
 
 class MergeGapTables2(api.Heuristic):
+    """Merge time gap and position gaps."""
+
     def calculate(self, TimeGap: List, TimeTable: List, PosGap: List, tBEAM: Sequence[int]) -> Tuple[List, List]:
         """Merge time gap and position gaps.
 
@@ -324,7 +329,6 @@ class MergeGapTables2(api.Heuristic):
             TimeGap[0]: small gap
             TimeGap[1]: large gap
         """
-
         LOG.info('Merging Position and Time Gap tables...')
 
         idxs = []

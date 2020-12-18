@@ -3,14 +3,14 @@ Created on 11 Sep 2014
 
 @author: sjw
 """
-import collections
 import os
+
 import numpy as np
 
 import pipeline.hif.tasks.bandpass.renderer as baserenderer
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure import casa_tools
 
 LOG = logging.get_logger(__name__)
 
@@ -132,7 +132,7 @@ class T2_4MDetailsBandpassRenderer(baserenderer.T2_4MDetailsBandpassRenderer):
             return bpsolint
 
         # make sure freqsolint is a valid quanta
-        qa = casatools.quanta
+        qa = casa_tools.quanta
         try:
             qfreqsolint = qa.quantity(freqsolint)
         except:
