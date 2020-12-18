@@ -10,6 +10,7 @@ import re
 import string
 from typing import Union, List, Dict, Sequence, Optional
 
+import bisect
 import numpy as np
 
 from .conversion import range_to_list
@@ -20,7 +21,7 @@ LOG = logging.get_logger(__name__)
 
 __all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_caltable_polarizations',
            'flagged_intervals', 'get_field_identifiers', 'get_receiver_type_for_spws', 'get_casa_quantity',
-           'absolute_path', 'relative_path']
+           'get_si_prefix', 'absolute_path', 'relative_path']
 
 
 def find_ranges(data: Union[str, List[int]]) -> str:
@@ -272,6 +273,56 @@ def get_casa_quantity(value: Union[None, Dict, str, float, int]) -> Dict:
         return casa_tools.quanta.quantity(value)
     else:
         return casa_tools.quanta.quantity(0.0)
+
+def get_si_prefix(value: float, select: str = 'mu', lztol: int = 0) -> tuple:
+    """Obtain the best SI unit prefix option for a numeric value.
+
+    A "best" SI prefix from a specified prefix collection is defined by minimizing :
+        * leading zeros (possibly to a specified tolerance limit, see `lztol`)
+        * significant digits before the decimal point
+    , after the prefix is applied.
+
+    Args:
+        value (float): the numerical value for picking the prefix.
+        select (str, optional): SI prefix candidates, a substring of "yzafpnum kMGTPEZY").
+            Defaults to 'mu'.
+        lztol (int, optional): leading zeros tolerance.
+            Defaults to 0 (avoid any leading zeros when possible).
+
+    Returns:
+        tuple: (prefix_string, prefix_scale)
+
+    Examples:
+
+    e.g. for frequency value in Hz
+    >>> get_si_prefix(10**7,select='kMGT')
+    ('M', 1000000.0)
+
+    e.g. for flux value in Jy
+    >>> get_si_prefix(1.0,select='um')
+    ('', 1.0)
+    >>> get_si_prefix(0.0,select='um')
+    ('', 1.0)
+    >>> get_si_prefix(-0.9,select='um')
+    ('m', 0.001)
+    >>> get_si_prefix(0.9,select='um',lztol=1)
+    ('', 1.0)
+    >>> get_si_prefix(1e-7,select='um')
+    ('u', 1e-06)
+    >>> get_si_prefix(1e3,select='um')
+    ('', 1.0)
+
+    """
+    if value == 0:
+        return '', 1.0
+    else:
+        sp_tab = "yzafpnum kMGTPEZY"
+        sp_list, sp_pow = zip(*[(p, (idx-8)*3.0)
+                                for idx, p in enumerate(sp_tab) if p in select+' '])
+        idx = bisect.bisect(sp_pow, np.log10(abs(value))+lztol)
+        idx = max(idx-1, 0)
+
+        return sp_list[idx].strip(), 10.**sp_pow[idx]
 
 def absolute_path(name: str) -> str:
     """Return an absolute path of a given file."""
