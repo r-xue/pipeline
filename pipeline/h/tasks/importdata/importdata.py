@@ -324,7 +324,7 @@ class ImportData(basetask.StandardTaskTemplate):
         try:
             self._executor.execute(task)
         except Exception as ee:
-            LOG.warning(ee)
+            LOG.warning(f"Caught importasdm exception: {ee}")
 
         for xml_filename in ['Source.xml', 'SpectralWindow.xml', 'DataDescription.xml']:
             asdm_source = os.path.join(asdm, xml_filename)

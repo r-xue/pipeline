@@ -163,7 +163,7 @@ class Mstransform(basetask.StandardTaskTemplate):
         try:
             self._executor.execute(mstransform_job)
         except OSError as ee:
-            LOG.warning(ee)
+            LOG.warning(f"Caught mstransform exception: {ee}")
 
         # Copy across requisite XML files.
         self._copy_xml_files(inputs.vis, inputs.outputvis)
