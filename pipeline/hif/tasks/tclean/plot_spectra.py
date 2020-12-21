@@ -54,8 +54,20 @@ def addFrequencyAxisAbove(ax1, firstFreq, lastFreq, freqType='', spw=None,
     freqRange = np.abs(lastFreq-firstFreq)
     power = int(np.log10(freqRange))-9
     ax2.xaxis.set_major_locator(matplotlib.ticker.MultipleLocator(10**power))
-    if (len(ax2.get_xticks()) < 2):
+    numberOfTicks = 0
+    visibleTicks = []
+    for mytick in ax2.get_xticks():
+        if mytick*1e9 >= firstFreq and mytick*1e9 <= lastFreq:
+            numberOfTicks += 1
+            visibleTicks.append(mytick)
+    if (numberOfTicks < 2):
         ax2.xaxis.set_major_locator(matplotlib.ticker.MultipleLocator(0.5*10**power))
+        numberOfTicks = 0
+        visibleTicks = []
+        for mytick in ax2.get_xticks():
+            if mytick*1e9 >= firstFreq and mytick*1e9 <= lastFreq:
+                numberOfTicks += 1
+                visibleTicks.append(mytick)
     ax2.xaxis.set_minor_locator(matplotlib.ticker.MultipleLocator(0.1*10**power))
     ax2.xaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter(useOffset=False))
 
@@ -171,8 +183,12 @@ def cubeFrameToTopo(img, freqrange='', prec=4, verbose=False,
             # convert TOPO channel to TOPO frequency
             with casa_tools.MSMDReader(msname) as msmd:
                 chanfreqs = msmd.chanfreqs(int(spw))
-                f0 = chanfreqs[c0]
-                f1 = chanfreqs[c1]
+                if chanfreqs[1] > chanfreqs[0]:  # USB
+                    f0 = chanfreqs[c0]
+                    f1 = chanfreqs[c1]
+                else:
+                    f0 = chanfreqs[c1]
+                    f1 = chanfreqs[c0]
     elif freqFrame == 'TOPO':
         f0 = startFreq
         f1 = stopFreq

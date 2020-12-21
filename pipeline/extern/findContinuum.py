@@ -193,19 +193,19 @@ def version(showfile=True):
     """
     Returns the CVS revision number.
     """
-    myversion = "$Id: findContinuumCycle8.py,v 4.104 2020/12/10 18:42:59 we Exp $" 
+    myversion = "$Id: findContinuumCycle8.py,v 4.107 2020/12/18 17:35:25 we Exp $" 
     if (showfile):
         print("Loaded from %s" % (__file__))
     return myversion
 
-def casalogPost(mystring, debug=True):
+def casalogPost(mystring, debug=True, priority='INFO'):
     """
     Generates an INFO message prepended with the version number of findContinuum.
     """
     if (debug): print(mystring)
     token = version(False).split()
     origin = token[1].replace(',','_') + token[2]
-    casalog.post(mystring.replace('\n',''), origin=origin)
+    casalog.post(mystring.replace('\n',''), origin=origin, priority=priority)
     
 SFC_FACTOR_WHEN_MOM8MASK_EXISTS = 0.8  # was 0.6 on Jan 26; 0.5 was too low on 2015.1.00131.S G09_0847+0045 spw 17
                                         # 0.8 was too high on 2018.1.00828.S
@@ -291,6 +291,9 @@ MOM8MINSNR_DEFAULT = 4
 MOM0MINSNR_DEFAULT = 5
 
 def removeIfNecessary(imgname):
+    """
+    If an image exists, remote its directory tree.
+    """
     if os.path.exists(imgname):
         shutil.rmtree(imgname)
         if os.path.exists(imgname): 
@@ -2934,7 +2937,7 @@ def tooLittleBandwidth(selection, chanInfo, fraction=0.05):
     myfraction = aggBandwidthHz/float(channelWidth*nchan)
     if myfraction < fraction: # compute4LetterCodeAndUpdateLegend() keys on the presence of the word 'amount'
         warning = 'WARNING: Small amount of fractional bandwidth found (%.3f < %.3f) = LowBW' % (myfraction,fraction)
-        casalogPost(warning)
+        casalogPost(warning, priority='WARN')
         return warning
     else:
         casalogPost('Current fractional bandwidth is %.3f' % (myfraction))
@@ -2965,7 +2968,7 @@ def tooLittleSpread(selection, chanInfo, fraction=0.33):
     myfraction = spread/float(nchan*channelWidth)
     if myfraction < fraction:  # compute4LetterCodeAndUpdateLegend() keys on the presence of the word 'spread'
         warning = 'WARNING: Fractional spread of frequency coverage is small (%.3f < %.3f) = LowSpread' % (myfraction,fraction)
-        casalogPost(warning)
+        casalogPost(warning, priority='WARN')
         return warning
     return None
 
@@ -3402,21 +3405,23 @@ def writeContDat(meanSpectrumFile, selection, png, aggregateBandwidth,
             topoFreqRanges = [] # this will be a list of lists
             frame = getFreqType(img).upper()
             for v in vis:
-                casalogPost("Converting from %s to TOPO for vis = %s" % (frame,v))
+                casalogPost("Converting continuum ranges from %s to TOPO for vis = %s" % (frame,v))
                 vselection = ''
                 for i,s in enumerate(selection.split(';')):
                     c0,c1 = [int(j) for j in s.split('~')]
                     minFreq = np.min([lsrkfreqs[c0],lsrkfreqs[c1]])-0.5*abs(channelWidth*1e-9)
                     maxFreq = np.max([lsrkfreqs[c0],lsrkfreqs[c1]])+0.5*abs(channelWidth*1e-9)
                     freqRange = '%.5fGHz~%.5fGHz' % (minFreq,maxFreq)
-                    casalogPost("%s freqRange = %s" % (frame,str(freqRange)))
+                    casalogPost("%2d) %s channelRange in cube = %s" % (i, frame, s))
+                    casalogPost("    %s freqRange in cube = %s" % (frame,str(freqRange)))
                     if img == '':
-                        result = cubeFrameToTopo(img, imageInfo, freqRange, vis=v, nchan=nchan, f0=firstFreq, f1=lastFreq, chanwidth=channelWidth, source=source)*1e-9
+                        result, fromFrame = cubeFrameToTopo(img, imageInfo, freqRange, vis=v, nchan=nchan, f0=firstFreq, f1=lastFreq, chanwidth=channelWidth, source=source)
                     else:
-                        result = cubeFrameToTopo(img, imageInfo, freqRange, vis=v, source=source)*1e-9
+                        result, fromFrame = cubeFrameToTopo(img, imageInfo, freqRange, vis=v, source=source)
+                    result *= 1e-9 # convert from Hz to GHz
                     # pipeline calls uvcontfit with GHz label only on upper freq
                     freqRange = '%.5f~%.5fGHz' % (np.min(result),np.max(result))
-                    casalogPost("TOPO freqRange of cube = %s" % str(freqRange))
+                    casalogPost("    TOPO freqRange for this vis = %s" % str(freqRange))
                     if (i > 0): vselection += ';'
                     vselection += freqRange
                 f.write('%s %s\n' % (v,vselection))
@@ -5010,8 +5015,23 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
     freqRange = np.abs(lastFreq-firstFreq)
     power = int(np.log10(freqRange))-9
     ax2.xaxis.set_major_locator(matplotlib.ticker.MultipleLocator(10**power))
-    if (len(ax2.get_xticks()) < 2):
+    numberOfTicks = 0
+    visibleTicks = []
+    for mytick in ax2.get_xticks():
+        if mytick*1e9 >= firstFreq and mytick*1e9 <= lastFreq:
+            numberOfTicks += 1
+            visibleTicks.append(mytick)
+#    numberOfTicks = len(ax2.get_xticks()) # this is not reliable
+    print("Setting major locator to %f GHz, yielding %d visible major ticks: %s" % (10**power, numberOfTicks, str(visibleTicks)))
+    if (numberOfTicks < 2):
         ax2.xaxis.set_major_locator(matplotlib.ticker.MultipleLocator(0.5*10**power))
+        numberOfTicks = 0
+        visibleTicks = []
+        for mytick in ax2.get_xticks():
+            if mytick*1e9 >= firstFreq and mytick*1e9 <= lastFreq:
+                numberOfTicks += 1
+                visibleTicks.append(mytick)
+        print("Setting major locator to %f GHz to get %d visible major ticks: %s" % (0.5*10**power, numberOfTicks, str(visibleTicks)))
     ax2.xaxis.set_minor_locator(matplotlib.ticker.MultipleLocator(0.1*10**power))
     ax2.xaxis.set_major_formatter(matplotlib.ticker.ScalarFormatter(useOffset=False))
     aggregateBandwidth = computeBandwidth(selection, channelWidth, 1)
@@ -5851,7 +5871,7 @@ def findContinuumChannels(spectrum, nBaselineChannels=16, sigmaFindContinuum=3,
                          trimChannels, maxTrim, maxTrimFraction, verbose)
             selection = convertChannelListIntoSelection(channels)
             if selection == '':  # fix for PIPE-359
-                casalogPost("WARNING: all channels trimmed, which is quite rare.  Reverting to maxTrim=0.1.")
+                casalogPost("WARNING: all potential continuum channels trimmed, which is quite rare.  Reverting to maxTrim=0.1.", priority='WARN')
                 maxTrim = 0.1
                 channels = splitListIntoContiguousListsAndTrim(npts, originalChannels, 
                               trimChannels, maxTrim, maxTrimFraction, verbose)
@@ -6799,7 +6819,7 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
                 scaledMAD = result['medabsdevmed'][0]*1.4826
                 resultPositive = imstat(mom0, algorithm='chauvenet', maxiter=5, mask='"%s"<0.5'%jointMask, listit=imstatListit, verbose=imstatVerbose)
                 if len(resultPositive['medabsdevmed']) == 0:
-                    print("WARNING: zero-length results from mom0")
+                    casalogPost("WARNING: zero-length results from imstat(mom0)", priority='WARN')
                 # reduce the sigma somewhat: 
                 if False:
                     mom0sigma2 = mom0minsnr-1
@@ -7348,14 +7368,14 @@ def CalcAtmTransmissionForImage(img, imageInfo, chanInfo='', airmass=1.5, pwv=-1
     freqs = np.linspace(chanInfo[1]*1e-9, chanInfo[2]*1e-9, chanInfo[0])
     numchan = len(freqs)
     lsrkwidth = (chanInfo[2] - chanInfo[1])/(numchan-1)
-    result = cubeFrameToTopo(img, imageInfo, nchan=numchan, f0=chanInfo[1], f1=chanInfo[2], chanwidth=lsrkwidth, vis=vis, source=source)
+    result, fromFrame = cubeFrameToTopo(img, imageInfo, nchan=numchan, f0=chanInfo[1], f1=chanInfo[2], chanwidth=lsrkwidth, vis=vis, source=source)
     if (result is None):
         topofreqs = freqs
     else:
         topoWidth = (result[1]-result[0])/(numchan-1)
         topofreqs = np.linspace(result[0], result[1], chanInfo[0]) * 1e-9
-        frame = getFreqType(img).upper()
-        casalogPost("Converted %s range,width (%f-%f,%f) to TOPO (%f-%f,%f) over %d channels" % (frame, chanInfo[1]*1e-9, chanInfo[2]*1e-9,lsrkwidth,topofreqs[0],topofreqs[-1],topoWidth,numchan))
+        if fromFrame is not None:
+            casalogPost("Converted %s range, width (%f-%f, %f) to TOPO (%f-%f, %f) over %d channels" % (fromFrame, chanInfo[1]*1e-9, chanInfo[2]*1e-9,lsrkwidth,topofreqs[0],topofreqs[-1],topoWidth,numchan))
     P0 = 1000.0 # mbar
     H0 = 20.0   # percent
     T0 = 273.0  # Kelvin
@@ -7468,7 +7488,9 @@ def cubeFrameToTopo(img, imageInfo, freqrange='', prec=4, verbose=False,
     This function is called by CalcAtmTransmissionForImage and writeContDat.
     Reads the date of observation, central RA and Dec,
     and observatory from an image cube and then calls lsrkToTopo to
-    return the specified frequency range in TOPO.
+    return the specified frequency range in TOPO, and the name of the original 
+    frame that was converted (which will not be a REST-frame cube's frame if 
+    vis not specified).
     If the cube is in REST frame, it calls casaRestToTopo(), and if the cube is
     in LSRK frame, it calls lsrkToTopo().
     freqrange: desired range of frequencies (empty string or list = whole cube)
@@ -7517,25 +7539,37 @@ def cubeFrameToTopo(img, imageInfo, freqrange='', prec=4, verbose=False,
     myia.close()
     myType = getFreqType(img).upper()
     if myType == 'LSRK' or casaVersion < '6.2' or vis == '':
+        if myType == 'REST':
+            if casaVersion < '6.2':
+                casalogPost('WARNING: This CASA version is unable to convert from REST to TOPO. Converting from LSKR to TOPO instead.  Atmospheric overlay will not be quite right.', priority='WARN')
+            elif vis == '':
+                casalogPost('WARNING: This cube is in REST frame, but the vis parameter was not supplied. Converting from LSKR to TOPO instead.  Atmospheric overlay will not be quite right.', priority='WARN')
         f0 = lsrkToTopo(startFreq, datestring, ra, dec, equinox, observatory, prec, verbose)
         f1 = lsrkToTopo(stopFreq, datestring, ra, dec, equinox, observatory, prec, verbose) 
+        fromFrame = 'LSRK'
     elif myType == 'REST':
+        fromFrame = 'REST'
         spw = getSpwFromPipelineImageName(img)
         mymsmd = msmdtool()
         mymsmd.open(vis)
         fieldid = fieldIDForName(mymsmd, source)
         chanfreqs = mymsmd.chanfreqs(spw)
         mymsmd.close()
-        casalogPost("Calling fc.casaRestToTopo(%f, %f, %s, %d, %d)" % (startFreq, stopFreq, vis, spw, fieldid))
+        casalogPost("    Calling fc.casaRestToTopo(%f, %f, %s, %d, %d)" % (startFreq, stopFreq, vis, spw, fieldid))
         c0, c1 = casaRestToTopo(startFreq, stopFreq, vis, spw, fieldid)
         # convert TOPO channel to TOPO frequency
-        f0 = chanfreqs[c0]
-        f1 = chanfreqs[c1]
+        if chanfreqs[1] > chanfreqs[0]:  # USB
+            f0 = chanfreqs[c0]
+            f1 = chanfreqs[c1]
+        else:  # LSB
+            f0 = chanfreqs[c1]
+            f1 = chanfreqs[c0]
     else:
         casalogPost('Unrecognized frequency frame type: %s.  Skipping frame conversion.' % (myType))
         f0 = startFreq
         f1 = stopFreq
-    return(np.array([f0,f1]))
+        fromFrame = None
+    return(np.array([f0,f1]), fromFrame)
 
 def fieldIDForName(mymsmd, source):
     """
@@ -7557,10 +7591,10 @@ def fieldIDForName(mymsmd, source):
             break
     if len(intentfields) > 0:
         fieldid = np.intersect1d(intentfields,fieldids)[0]
-        casalogPost('Picked field ID %d for intent %s' % (fieldid,intent))
+        casalogPost('    Picked field ID %d for intent %s' % (fieldid,intent))
     else:
         fieldid = fieldids[0]
-        casalogPost('Picked field ID %d from %s' % (fieldid,str(fieldids)))
+        casalogPost('    Picked field ID %d from %s' % (fieldid,str(fieldids)))
     return fieldid
 
 def getObservationStartDate(vis, obsid=0, delimiter='-', measuresToolFormat=True):
@@ -7680,7 +7714,7 @@ def casaRestToTopo(restFrequency, restFrequency2, msname, spw, fieldid):
     startChan = mydict['start'][idx]
     nchan = mydict['nchan'][idx]
     stopChan = startChan + nchan - 1
-    print("TOPO channel range in ms: %d-%d" % (startChan,stopChan))
+    print("    TOPO channel range in ms: %d-%d" % (startChan,stopChan))
     return startChan, stopChan
 
 def lsrkToTopo(lsrkFrequency, datestring, ra, dec, equinox='J2000', 
