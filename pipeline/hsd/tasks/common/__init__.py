@@ -1,5 +1,4 @@
 from .common import SingleDishResults
-from .common import ParameterContainerJob
 
 # utilities
 from .utils import ProgressTimer
