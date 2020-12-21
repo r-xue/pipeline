@@ -27,7 +27,7 @@ dsyb = '$^\circ$'
 hsyb = ':'
 msyb = ':'
 
-def Deg2HMS(x: float, prec: int=0) -> List[str, str, str]:
+def Deg2HMS(x: float, prec: int=0) -> List[str]:
     """
     Convert an angle in degree to hour angle.
 
@@ -203,7 +203,7 @@ def HHMMSSsss(x: float, pos=None) -> str:
     return __format_hms(x, prec=9)
 
 
-def Deg2DMS(x: float, prec: int=0) -> List[str, str, str]:
+def Deg2DMS(x: float, prec: int=0) -> List[str]:
     r"""
     Convert an angle in degree to dms angle (ddmmss.s).
 
