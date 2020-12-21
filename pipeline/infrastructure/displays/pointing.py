@@ -334,26 +334,6 @@ def DDMMSSss(x: float, pos=None) -> str:
     return __format_dms(x, prec=8)
 
 
-def XYlabel(span: float, direction_reference: str, ofs_coord: bool=False
-            ) -> Tuple[Union[GLGBlabel, RADEClabel]]:
-    """
-    Create labels for the x- and y-axes in plot.
-
-    Args:
-        span: The span of map axes in the unit of degrees. Both horizontal and
-            vertical axes are formatted using this value.
-        direction_reference: The direction reference (e.g., 'J2000')
-        ofs_coord:
-    Returns:
-        labels for the x- and y-axes in plot.
-
-    """
-    if direction_reference.upper() == 'GALACTIC':
-        return GLGBlabel(span)
-    else:
-        return RADEClabel(span, ofs_coord)
-
-
 def GLGBlabel(span: float
     ) -> Tuple[MultipleLocator, MultipleLocator, FuncFormatter, FuncFormatter]:
     """
@@ -470,6 +450,26 @@ def RADEClabel(span: float,
         DECformatter = FuncFormatter(DDMM)
 
     return (RAlocator, DEClocator, RAformatter, DECformatter)
+
+
+def XYlabel(span: float, direction_reference: str, ofs_coord: bool=False
+            ) -> Tuple[Union[GLGBlabel, RADEClabel]]:
+    """
+    Create labels for the x- and y-axes in plot.
+
+    Args:
+        span: The span of map axes in the unit of degrees. Both horizontal and
+            vertical axes are formatted using this value.
+        direction_reference: The direction reference (e.g., 'J2000')
+        ofs_coord:
+    Returns:
+        labels for the x- and y-axes in plot.
+
+    """
+    if direction_reference.upper() == 'GALACTIC':
+        return GLGBlabel(span)
+    else:
+        return RADEClabel(span, ofs_coord)
 
 
 class MapAxesManagerBase(object):
