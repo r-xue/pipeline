@@ -2,7 +2,7 @@
 
 import math
 import os
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Union
 
 from matplotlib.axes._axes import Axes
 import matplotlib.pyplot as plt
