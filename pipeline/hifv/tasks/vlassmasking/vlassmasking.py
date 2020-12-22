@@ -115,7 +115,7 @@ class Vlassmasking(basetask.StandardTaskTemplate):
 
         LOG.debug("This Vlassmasking class is running.")
 
-        imagename_base = 'VIP_'
+        imagename_base = self._get_imagename_base()
 
         shapelist = self.inputs.context.clean_list_pending[0]['imsize']
         mask_shape = np.array([shapelist[0], shapelist[1], 1, 1])
@@ -152,11 +152,11 @@ class Vlassmasking(basetask.StandardTaskTemplate):
             catalog_fits_file = self.inputs.vlass_ql_database
 
             number_islands_found, \
-                number_islands_found_onedeg = mask_from_catalog(catalog_fits_file=catalog_fits_file,
-                                                                catalog_search_size=self.inputs.catalog_search_size,
-                                                                mask_shape=mask_shape, frequency=frequency, cell=cell,
-                                                                phasecenter=phasecenter,
-                                                                mask_name=imagename_base+QLmask)
+            number_islands_found_onedeg = mask_from_catalog(catalog_fits_file=catalog_fits_file,
+                                                            catalog_search_size=self.inputs.catalog_search_size,
+                                                            mask_shape=mask_shape, frequency=frequency, cell=cell,
+                                                            phasecenter=phasecenter,
+                                                            mask_name=imagename_base + QLmask)
 
             combinedmask = imagename_base + QLmask
 
@@ -175,11 +175,11 @@ class Vlassmasking(basetask.StandardTaskTemplate):
                 LOG.error("Catalog file {!s} does not exist.".format(catalog_fits_file))
 
             number_islands_found, \
-                number_islands_found_onedeg = mask_from_catalog(catalog_fits_file=catalog_fits_file,
-                                                                catalog_search_size=self.inputs.catalog_search_size,
-                                                                mask_shape=mask_shape, frequency=frequency, cell=cell,
-                                                                phasecenter=phasecenter,
-                                                                mask_name=imagename_base+suffix)
+            number_islands_found_onedeg = mask_from_catalog(catalog_fits_file=catalog_fits_file,
+                                                            catalog_search_size=self.inputs.catalog_search_size,
+                                                            mask_shape=mask_shape, frequency=frequency, cell=cell,
+                                                            phasecenter=phasecenter,
+                                                            mask_name=imagename_base + suffix)
 
             # combine first and second order masks
             outfile = imagename_base + 'sum_of_masks.mask'
@@ -228,3 +228,17 @@ class Vlassmasking(basetask.StandardTaskTemplate):
         bdsf_result = run_bdsf(infile=fitsimage)
 
         return fitsimage
+
+    def _get_imagename_base(self):
+        """
+        Returns base name for the mask.
+
+        If context.clean_list_pending is populated, then it will take 'imagename' parameter from the first imlist entry.
+        The 'STAGENUMBER' substring is replaced by the current stage number.
+        """
+        if 'imagename' in self.inputs.context.clean_list_pending[0].keys():
+            return self.inputs.context.clean_list_pending[0]['imagename'].replace('STAGENUMBER',
+                                                                                  str(self.inputs.context.stage))
+        else:
+            return 'VIP_'
+
