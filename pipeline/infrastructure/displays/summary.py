@@ -118,7 +118,7 @@ class SunTrackChart(object):
         ms_part = self.ms.basename
         return os.path.join(self.context.report_dir,
                             'session%s' % session_part,
-                            ms_part, 'suntrack.png')
+                            ms_part, 'solar_el_vs_time.png')
 
     def _get_plot_object(self):
         return logger.Plot(self.figfile,
