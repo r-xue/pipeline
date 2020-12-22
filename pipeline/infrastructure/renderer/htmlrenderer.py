@@ -1036,7 +1036,7 @@ class T2_2_4Renderer(T2_2_XRendererBase):
         azel_plot = task.plot()
 
         task = summary.SunTrackChart(context, ms)
-        suntrack_plot=task.plot()        
+        suntrack_plot = task.plot()
 
         task = summary.ElVsTimeChart(context, ms)
         el_vs_time_plot = task.plot()

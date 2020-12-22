@@ -100,7 +100,7 @@ class SunTrackChart(object):
         LOG.debug('Creating new SunTrack plot')
         try:
             # Based on the analysisUtils method
-            plotsuntrack.plot_suntrack(vis=self.ms.name, figfile=self.figfile)
+            plotsuntrack.plot_suntrack(vis=self.ms.name, figfile=self.figfile, elvstime=True)
         except:
             return None
         finally:
