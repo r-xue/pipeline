@@ -52,6 +52,17 @@ class VlassmaskingResults(basetask.Results):
         Args:
             context(:obj:): Pipeline context object
         """
+        # Update the mask name in clean list pending.
+        # NOTE: this is might be a temporary solution, later the mask name might be determined from context.results
+        # during hif_makeimages task run.
+        if len(context.clean_list_pending[0]) == 0:
+            LOG.warning('Clean list pending is empty. Mask name was not set for imaging target.')
+        elif 'mask' in context.clean_list_pending[0].keys() and context.clean_list_pending[0]['mask']:
+            LOG.warning('Clean list pending already contains a mask selection. Use the user specified mask.')
+        else:
+            context.clean_list_pending[0]['mask'] = self.combinedmask
+            LOG.info('Clean list pending updated with VLASS-SE mask. It is used in next hif_makeimages call.')
+
         return
 
     def __repr__(self):
