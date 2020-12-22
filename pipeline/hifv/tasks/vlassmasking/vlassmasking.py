@@ -126,7 +126,7 @@ class Vlassmasking(basetask.StandardTaskTemplate):
 
         LOG.debug("This Vlassmasking class is running.")
 
-        imagename_base = self._get_imagename_base()
+        maskname_base = self._get_maskname_base()
 
         shapelist = self.inputs.context.clean_list_pending[0]['imsize']
         mask_shape = np.array([shapelist[0], shapelist[1], 1, 1])
@@ -167,16 +167,16 @@ class Vlassmasking(basetask.StandardTaskTemplate):
                                                             catalog_search_size=self.inputs.catalog_search_size,
                                                             mask_shape=mask_shape, frequency=frequency, cell=cell,
                                                             phasecenter=phasecenter,
-                                                            mask_name=imagename_base + QLmask)
+                                                            mask_name=maskname_base + QLmask)
 
-            combinedmask = imagename_base + QLmask
+            combinedmask = maskname_base + QLmask
 
         elif self.inputs.maskingmode == 'vlass-se-tier-2':
             LOG.debug("Executing mask_from_catalog masking mode = {!s}".format(self.inputs.maskingmode))
 
-            bdsf_fitsfile = self.bdsfcompute(imagename_base)
+            bdsf_fitsfile = self.bdsfcompute(maskname_base)
 
-            initial_catalog_fits_file = imagename_base + 'iter1b.image.smooth5.cat.fits'
+            initial_catalog_fits_file = maskname_base + 'iter1b.image.smooth5.cat.fits'
 
             suffix = "secondmask.mask"
 
@@ -190,18 +190,18 @@ class Vlassmasking(basetask.StandardTaskTemplate):
                                                             catalog_search_size=self.inputs.catalog_search_size,
                                                             mask_shape=mask_shape, frequency=frequency, cell=cell,
                                                             phasecenter=phasecenter,
-                                                            mask_name=imagename_base + suffix)
+                                                            mask_name=maskname_base + suffix)
 
             # combine first and second order masks
-            outfile = imagename_base + 'sum_of_masks.mask'
-            task = casa_tasks.immath(imagename=[imagename_base + suffix, imagename_base + QLmask],
+            outfile = maskname_base + 'sum_of_masks.mask'
+            task = casa_tasks.immath(imagename=[maskname_base + suffix, maskname_base + QLmask],
                                      expr='IM0+IM1', outfile=outfile)
 
             runtask = self._executor.execute(task)
 
             myim = casa_tools.imager
             LOG.info("Executing imager.mask()...")
-            combinedmask = imagename_base + 'combined-tier2.mask'
+            combinedmask = maskname_base + 'combined-tier2.mask'
             myim.mask(image=outfile, mask=combinedmask, threshold=0.5)
             myim.close()
         else:
@@ -240,7 +240,7 @@ class Vlassmasking(basetask.StandardTaskTemplate):
 
         return fitsimage
 
-    def _get_imagename_base(self):
+    def _get_maskname_base(self):
         """
         Returns base name for the mask.
 
