@@ -158,7 +158,7 @@ class BaselineSubtractionPlotManager(object):
     @casa5style_plot
     def plot_spectra_with_fit(self, field_id, antenna_id, spw_id, org_direction,
                               grid_table=None, deviation_mask=None, channelmap_range=None,
-                              showatm=True):
+                              edge=None, showatm=True):
         """
         NB: spw_id is the real spw id.
         """
@@ -183,7 +183,6 @@ class BaselineSubtractionPlotManager(object):
         data_desc = self.ms.get_data_description(spw=spw_id)
         num_pol = data_desc.num_polarizations
         self.pol_list = numpy.arange(num_pol, dtype=int)
-
         source_name = self.ms.fields[self.field_id].source.name.replace(' ', '_').replace('/', '_')
         LOG.debug('Generating plots for source {} ant {} spw {}',
                   source_name, self.antenna_id, self.spw_id)
@@ -207,7 +206,7 @@ class BaselineSubtractionPlotManager(object):
         plot_list = self.plot_profile_map_with_fit(prefit_prefix, postfit_prefix, grid_table,
                                                    deviation_mask, line_range,
                                                    org_direction,
-                                                   atm_transmission, atm_freq)
+                                                   atm_transmission, atm_freq, edge)
         ret = []
         for plot_type, plots in plot_list.items():
             if plot_type == 'pre_fit':
@@ -239,7 +238,7 @@ class BaselineSubtractionPlotManager(object):
 
     def plot_profile_map_with_fit(self, prefit_figfile_prefix, postfit_figfile_prefix, grid_table,
                                   deviation_mask, line_range,
-                                  org_direction, atm_transmission, atm_frequency):
+                                  org_direction, atm_transmission, atm_frequency, edge):
         """
         plot_table format:
         [[0, 0, RA0, DEC0, [IDX00, IDX01, ...]],
@@ -313,6 +312,7 @@ class BaselineSubtractionPlotManager(object):
         plot_list['post_fit'] = {}
         plotter.setup_reference_level(0.0)
         plotter.set_deviation_mask(deviation_mask)
+        plotter.set_edge(edge)
         plotter.set_atm_transmission(atm_transmission, atm_frequency)
         plotter.set_global_scaling()
         if utils.is_nro(self.context):
