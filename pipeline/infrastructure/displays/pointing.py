@@ -473,35 +473,73 @@ def XYlabel(span: float, direction_reference: str, ofs_coord: bool=False
 
 
 class MapAxesManagerBase(object):
+    """Base class for MapAxesManager classes.
+
+    Holds information to construct direction coordinates.
+    """
     @property
     def direction_reference(self) -> str:
-        """Get direction reference."""
+        """Return direction reference frame.
+
+        String representing direction reference frame, such as
+        J2000, ICRS, or GALACTIC, is returned. In practice, any
+        string set by the user can be returned. It means that
+        it is user's responsibility to check the validity of the
+        returned value.
+
+        Returns:
+            str: Direction reference string.
+        """
         return self._direction_reference
 
     @direction_reference.setter
     def direction_reference(self, value: str) -> None:
-        """Set direction reference."""
+        """Set direction reference string.
+
+        Note that the method just accept given string
+        without any validity check.
+
+        Args:
+            value (str): direction reference string.
+        """
         if isinstance(value, str):
             self._direction_reference = value
 
     @property
     def ofs_coord(self) -> bool:
-        """Get bool if the class is OFS coordinate."""
+        """Check if the plot is in offset coordinate.
+
+        Returns:
+            bool: True if offset coordinate else False.
+        """
         return self._ofs_coord
 
     @ofs_coord.setter
     def ofs_coord(self, value: bool) -> None:
-        """Set bool if the class is OFS coordinate."""
+        """Turn on/off offset coordinate mode.
+
+        Args:
+            value (bool): Turn on (True) or off (False)
+                          offset coordinate mode.
+        """
         if isinstance(value, bool):
             self._ofs_coord = value
 
     def __init__(self) -> None:
+        """Constructor"""
         self._direction_reference = None
         self._ofs_coord = None
 
     def get_axes_labels(self) -> Tuple[str, str]:
         """
-        Get axes labels.
+        Get direction coordinate axes labels.
+
+        If direction reference is either J2000 or ICRS, returned
+        labels are 'RA (REF)' and 'Dec (REF)' where REF is
+        direction reference string (J2000 or ICRS). In offset
+        coordinate mode, labels are prefixed with 'Offset-'.
+        If direction reference is GALACTIC, labels will be
+        'GL' and 'GB'. Otherwise, labels are 'RA' and 'Dec'.
 
         Returns:
             xlabel: xlabel in plot. Default is 'RA'.
