@@ -5,6 +5,9 @@ import glob
 import itertools
 import math
 from matplotlib.animation import FuncAnimation, ImageMagickWriter
+from typing import List
+from typing import Tuple
+from typing import Optional
 import matplotlib.pyplot as plt
 import numpy as np
 from operator import sub
@@ -12,6 +15,7 @@ import os
 import sys
 
 import pipeline.domain.datatable as datatable
+from pipeline.domain.datatable import DataTableImpl
 import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.logging as logging
 
@@ -41,7 +45,7 @@ def distance(x0: float, y0: float, x1: float, y1: float) -> float:
     return np.hypot(_dx, _dy)
 
 
-def read_readonly_data(table: datatable.DataTableImpl) -> tuple:
+def read_readonly_data(table: DataTableImpl) -> tuple:
     """
     Extract necerrary data from datatable instance.
     
@@ -62,7 +66,7 @@ def read_readonly_data(table: datatable.DataTableImpl) -> tuple:
     return timestamp, dtrow, ra, dec, srctype, antenna, field
 
 
-def read_readwrite_data(table: datatable.DataTableImpl) -> np.ndarray:
+def read_readwrite_data(table: DataTableImpl) -> np.ndarray:
     """
     Extract necessary data from datatable instance.
     
@@ -77,7 +81,7 @@ def read_readwrite_data(table: datatable.DataTableImpl) -> np.ndarray:
     return pflag
 
 
-def read_datatable(datatable: datatable.DataTableImpl) -> MetaDataSet:
+def read_datatable(datatable: DataTableImpl) -> MetaDataSet:
     """
     Extract necessary data from datatable instance.
 
@@ -244,7 +248,7 @@ def squeeze_data(metadata: MetaDataSet) -> MetaDataSet:
     return metadata2
 
 
-def find_time_gap(timestamp: np.ndarray) -> tuple:
+def find_time_gap(timestamp: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     """
     Find time gap. Condition for gap is following.
 
@@ -265,7 +269,7 @@ def find_time_gap(timestamp: np.ndarray) -> tuple:
     return gsmall, glarge
 
 
-def gap_gen(gaplist: list, length: int=None) -> tuple:
+def gap_gen(gaplist: List, length: Optional[int]=None) -> tuple:
     """
     Generate range of data (start and end indices) from given gap list.
     
@@ -289,7 +293,7 @@ def gap_gen(gaplist: list, length: int=None) -> tuple:
         yield gaplist[-1] + 1, n
 
 
-def get_raster_distance(ra: np.ndarray, dec: np.ndarray, gaplist: list) -> np.ndarray:
+def get_raster_distance(ra: np.ndarray, dec: np.ndarray, gaplist: List) -> np.ndarray:
     """
     Compute list of distances between raster rows.
     
@@ -297,8 +301,8 @@ def get_raster_distance(ra: np.ndarray, dec: np.ndarray, gaplist: list) -> np.nd
     Representative position of each raster row is its midpoint (mean position).
 
     Args:
-        ra: list of RA
-        dec: list of Dec
+        ra: np.ndarray of RA
+        dec: np.ndarray of Dec
         gaplist: list of indices indicating gaps between raster rows
 
     Returns:
@@ -314,22 +318,23 @@ def get_raster_distance(ra: np.ndarray, dec: np.ndarray, gaplist: list) -> np.nd
     return distance_list
 
 
-def find_raster_gap(timestamp: np.ndarray, ra: np.ndarray, dec: np.ndarray, time_gap: np.ndarray=None) -> np.ndarray:
+def find_raster_gap(timestamp: np.ndarray, ra: np.ndarray, dec: np.ndarray, time_gap: Optional[np.ndarray]=None) -> np.ndarray:
     """
     Find gaps between individual raster map.
     
     Returned list should be used in combination with gap_gen. 
     Here is an example to plot RA/DEC data per raster map:
 
-        import maplotlib.pyplot as plt
-        gap = find_raster_gap(timestamp, ra, dec)
-        for s, e in gap_gen(gap):
-            plt.plot(ra[s:e], dec[s:e], '.')
+    Example:
+    >>> import maplotlib.pyplot as plt
+    >>> gap = find_raster_gap(timestamp, ra, dec)
+    >>> for s, e in gap_gen(gap):
+    >>>     plt.plot(ra[s:e], dec[s:e], '.')
 
     Args:
-        timestamp: list of time stamp
-        ra: list of R.A.
-        dec: list of Dec
+        timestamp: np.ndarray of time stamp
+        ra: np.ndarray of RA
+        dec: np.ndarray of Dec
         time_gap: list of index of time gaps, defaults to None
 
     Returns:
@@ -347,7 +352,7 @@ def find_raster_gap(timestamp: np.ndarray, ra: np.ndarray, dec: np.ndarray, time
     return raster_gap
 
 
-def flag_incomplete_raster(meta:MetaDataSet, raster_gap: list, nd_raster: int, nd_row: int) -> np.ndarray:
+def flag_incomplete_raster(meta:MetaDataSet, raster_gap: List, nd_raster: int, nd_row: int) -> np.ndarray:
     """
     Flag incomplete raster map.
 
@@ -390,7 +395,7 @@ def flag_incomplete_raster(meta:MetaDataSet, raster_gap: list, nd_raster: int, n
     return idx
 
 
-def flag_worm_eaten_raster(meta: MetaDataSet, raster_gap: list, nd_row: int) -> np.ndarray:
+def flag_worm_eaten_raster(meta: MetaDataSet, raster_gap: List, nd_row: int) -> np.ndarray:
     """
     Flag raster map if number of continuous flagged data exceeds upper limit given by nd_row.
 
@@ -433,7 +438,7 @@ def flag_worm_eaten_raster(meta: MetaDataSet, raster_gap: list, nd_row: int) -> 
     return idx
 
 
-def get_raster_flag_list(flagged1: list, flagged2: list, raster_gap: list, ndata: int) -> np.ndarray:
+def get_raster_flag_list(flagged1: List, flagged2: List, raster_gap: List, ndata: int) -> np.ndarray:
     """
     Merge flag result and convert raster id to list of data index.
 
@@ -453,7 +458,7 @@ def get_raster_flag_list(flagged1: list, flagged2: list, raster_gap: list, ndata
     return data_ids
 
 
-def flag_raster_map(metadata: MetaDataSet) -> list:
+def flag_raster_map(metadata: MetaDataSet) -> List:
     """
     Return list of index to be flagged by flagging heuristics for raster scan.
 
@@ -496,7 +501,7 @@ def find_most_frequent(v: np.ndarray) -> int:
     return mode
 
 
-def flag_raster_map_per_field(metadata: MetaDataSet, field_id: int) -> list:
+def flag_raster_map_per_field(metadata: MetaDataSet, field_id: int) -> List:
     """
     Flag raster map based on two flagging heuristics for given field id.
 
@@ -629,10 +634,10 @@ def anim_gen(ra: np.ndarray, dec: np.ndarray, idx_generator, dist_list: np.ndarr
     Generate position, color and boolean flag for generate_animation.
 
     Args:
-        ra: list of RA
-        dec: list of Dec
+        ra: np.ndarray of RA
+        dec: np.ndarray of Dec
         idx_generator: generator yielding start and end indices indicating raster row
-        dist_list: distance list
+        dist_list: np.ndarray of distance
         cmap: color map
 
     Yields:
@@ -685,7 +690,7 @@ def animate(i: tuple):
     return lines
 
 
-def generate_animation(ra: np.ndarray, dec: np.ndarray, gaplist: list, figfile: str='movie.gif'):
+def generate_animation(ra: np.ndarray, dec: np.ndarray, gaplist: List, figfile: str='movie.gif'):
     """
     Generate animation GIF file to illustrate observing pattern.
 
