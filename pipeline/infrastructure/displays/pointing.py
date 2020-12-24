@@ -3,10 +3,12 @@
 import math
 import os
 from typing import List, Optional, Tuple, Union
+from numbers import Integral
 
 from matplotlib.axes._axes import Axes
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter, MultipleLocator, AutoLocator
+from matplotlib.ticker import Locator, Formatter
 import numpy as np
 
 from pipeline.domain.datatable import DataTableImpl as DataTable
@@ -564,31 +566,46 @@ class MapAxesManagerBase(object):
 
 
 class PointingAxesManager(MapAxesManagerBase):
+    """Creates and manages Axes instance for pointing plot.
+
+    PointingAxesManager creates and manages matplotlib.axes.Axes
+    instance for pointing plot.
+    """
     MATPLOTLIB_FIGURE_ID = 9005
 
     def __init__(self) -> None:
+        """Constructor"""
         self._axes = None
         self.is_initialized = False
         self._direction_reference = None
         self._ofs_coord = None
 
-    def init_axes(self, xlocator, ylocator, xformatter, yformatter, xrotation, yrotation, aspect, xlim=None, ylim=None,
-                  reset=False) -> None:
+    def init_axes(self,
+                  xlocator: Locator, ylocator: Locator,
+                  xformatter: Formatter, yformatter: Formatter,
+                  xrotation: Integral, yrotation: Integral,
+                  aspect: Union[Integral, str],
+                  xlim: Optional[Tuple[Integral, Integral]]=None,
+                  ylim: Optional[Tuple[Integral, Integral]]=None,
+                  reset: bool=False) -> None:
         """
-        Set matplotlib axes.
+        Initialize matplotlib.axes.Axes instance.
 
         Args:
-            xlocator:
-            ylocator:
-            xformatter:
-            yformatter:
-            xrotation:
-            yrotation:
-            aspect:
-            xlim:
-            ylim:
-            reset:
-
+            xlocator: Locator instance for x-axis
+            ylocator: Locator instance for y-axis
+            xformatter: Formatter instance for x-axis
+            yformatter: Formatter instance for y-axis
+            xrotation: Rotation angle of x-axis label
+            yrotation: Rotation angle of y-axis label
+            aspect: Aspect ratio for the Axes. Acceptabe values
+                    are number (float or int) or 'auto' or 'equal'
+            xlim: Range of x-axis
+            ylim: Range of y-axis
+            reset: Reset Axes instance or not. It means that all
+                   the above parameters are applied only when
+                   reset is True or when the method is called
+                   for the first time.
         """
         if self._axes is None:
             self._axes = self.__axes()
@@ -613,11 +630,21 @@ class PointingAxesManager(MapAxesManagerBase):
 
     @property
     def axes(self) -> Axes:
+        """Direct access to Axes instance.
+
+        Returns:
+            Axes: Axes instance
+        """
         if self._axes is None:
             self._axes = self.__axes()
         return self._axes
 
     def __axes(self) -> Axes:
+        """Create Axes instance.
+
+        Returns:
+            Axes: Axes instance created by the method
+        """
         a = plt.axes([0.15, 0.2, 0.7, 0.7])
         xlabel, ylabel = self.get_axes_labels()
         plt.xlabel(xlabel)
