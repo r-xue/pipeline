@@ -57,12 +57,14 @@ class VlassmaskingResults(basetask.Results):
         # during hif_makeimages task run.
         if len(context.clean_list_pending[0]) == 0:
             LOG.warning('Clean list pending is empty. Mask name was not set for imaging target.')
+            return
         elif 'mask' in context.clean_list_pending[0].keys() and context.clean_list_pending[0]['mask']:
-            LOG.warning('Clean list pending already contains a mask selection. Use the user specified mask.')
+            LOG.warning('Clean list pending already contains a mask selection. Using {} instead of {}.'.format(
+                self.combinedmask, context.clean_list_pending[0]['mask']))
         else:
-            context.clean_list_pending[0]['mask'] = self.combinedmask
             LOG.info('Clean list pending updated with VLASS-SE mask. It is used in next hif_makeimages call.')
 
+        context.clean_list_pending[0]['mask'] = self.combinedmask
         return
 
     def __repr__(self):
@@ -203,7 +205,7 @@ class Vlassmasking(basetask.StandardTaskTemplate):
 
             myim = casa_tools.imager
             LOG.info("Executing imager.mask()...")
-            combinedmask = maskname_base + 'combined-tier2.mask'
+            combinedmask = maskname_base + '.combined-tier2.mask'
             myim.mask(image=outfile, mask=combinedmask, threshold=0.5)
             myim.close()
         else:
@@ -278,10 +280,10 @@ class Vlassmasking(basetask.StandardTaskTemplate):
         Obtain the mask name from the latest MakeImagesResult object in context.results.
         If not found, then construct mask name from maskname_base argument.
         """
-        for result in self.inputs.context.results[::-1]:
+        for result in self.inputs.context.results:
             result_meta = result.read()
             if hasattr(result_meta,'taskname') and result_meta.taskname == 'hifv_vlassmasking':
-                return result_meta.results.combinedmask
+                return [r.combinedmask for r in result_meta][0]
 
         # In case hif_makeimages result was not found.
         return maskname_base
