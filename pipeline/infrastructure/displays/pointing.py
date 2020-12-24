@@ -13,6 +13,7 @@ import numpy as np
 
 from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.domain.datatable import OnlineFlagIndex
+from pipeline.domain import MeasurementSet, Antenna
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casatools as casatools
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
@@ -656,17 +657,17 @@ class PointingAxesManager(MapAxesManagerBase):
 def draw_beam(axes, r: float, aspect: float, x_base: float, y_base: float,
               offset: float=1.0):
     """
-    Draw beam.
+    Draw circle indicating beam size.
 
     Args:
-        axes: pyplot instance of the current axes.
-        r:
-        aspect:
-        x_base:
-        y_base:
-        offset:
+        axes: Axes instance of the current axes.
+        r: Radius of the circle.
+        aspect: Aspect ratio of the circle.
+        x_base: X-axis coordinate of the center.
+        y_base: Y-axis coordinate of the center.
+        offset: Offset from the center specified by (x_base, y_base)
     Returns:
-
+        Line2D: matplotlib.lines.Line2D instance
     """
     xy = np.array([[r * (math.sin(t * 0.13) + offset) * aspect + x_base,
                        r * (math.cos(t * 0.13) + offset) + y_base]
@@ -677,30 +678,37 @@ def draw_beam(axes, r: float, aspect: float, x_base: float, y_base: float,
 
 
 def draw_pointing(axes_manager: PointingAxesManager,
-                    RA: float,
-                    DEC: float,
-                    FLAG: Optional[int]=None,
+                    RA: np.ndarray,
+                    DEC: np.ndarray,
+                    FLAG: Optional[np.ndarray]=None,
                     plotfile: Optional[str]=None,
                     connect: bool=True,
                     circle: List[Optional[float]]=[],
-                    ObsPattern: bool=False,
+                    ObsPattern: Optional[str]=None,
                     plotpolicy: str='ignore'
                 ) -> None:
     """
     Draw pointing plots using matplotlib, export the plots and delete the matplotlib objects.
 
-    Args:
-        axes_manager: PointingAxesManager() instance.
-        RA:
-        DEC:
-        FLAG:
-        plotfile: A file path.
-        connect:
-        circle:
-        ObsPattern:
-        plotpolicy: The plotpolicy can be filled with 'plot', 'ignore' or
-            'greyed'.
+    Flags are taken into account according to the policy specified by plotpolicy. Options are,
 
+      - 'plot': plot all the data regardless of they are flagged or not
+      - 'ignore': do not plot flagged points
+      - 'greyed': plot flagged points with different color (grey)
+
+    Args:
+        axes_manager: PointingAxesManager instance.
+        RA: List of horizontal (longitude) coordinate values.
+        DEC: List of vertical (latitude) coordinate values.
+        FLAG: List of flags. 1 is valid while 0 is invalid.
+        plotfile: A file path. If no path is provided, plot is not exported.
+        connect: Connect points by line or not.
+        circle: List of radius of the beam. Only first value is used.
+        ObsPattern: Observing pattern string. It is included in the plot title.
+                    If no string is provided, title is constructed without
+                    observing pattern.
+        plotpolicy: Policy to handle FLAG. The plotpolicy can be any one of
+                    'plot', 'ignore' or 'greyed'.
     """
     span = max(max(RA) - min(RA), max(DEC) - min(DEC))
     xmax = min(RA) - span / 10.0
@@ -723,7 +731,7 @@ def draw_pointing(axes_manager: PointingAxesManager,
                            xlim=(xmin, xmax),
                            ylim=(ymin, ymax))
     a = axes_manager.axes
-    if ObsPattern == False:
+    if ObsPattern is None:
         a.title.set_text('Telescope Pointing on the Sky')
     else:
         a.title.set_text('Telescope Pointing on the Sky\nPointing Pattern = %s' % ObsPattern)
@@ -771,26 +779,32 @@ def draw_pointing(axes_manager: PointingAxesManager,
 
 
 class SingleDishPointingChart(object):
+    """Generate pointing plots.
+
+    Generate pointing plot for given data, antenna, and field.
+    Data and antenna must be given as domain objects.
+    """
     def __init__(self,
-                    context,
-                    ms,
-                    antenna,
-                    target_field_id=None,
-                    reference_field_id=None,
-                    target_only: bool=True,
-                    ofs_coord: bool=False
+                 context: infrastructure.launcher.Context,
+                 ms: MeasurementSet,
+                 antenna: Antenna,
+                 target_field_id: Optional[int]=None,
+                 reference_field_id: Optional[int]=None,
+                 target_only: bool=True,
+                 ofs_coord: bool=False
                 ) -> None:
         """
         Initialize SingleDishPointingChart class.
 
         Args:
-            context: pipeline.Pipeline().context
-            ms: measurementSet instance.
-            antenna:
-            target_field_id:
-            reference_field_id:
-            target_only:
-            ofs_coord:
+            context: pipeline context object.
+            ms: MeasurementSet domain object.
+            antenna: Antenna domain object.
+            target_field_id: ID for target (ON_SOURCE) field.
+            reference_field_id: ID for reference (OFF_SOURCE) field.
+            target_only: Whether plot ON_SOURCE only (True) or
+                         both ON_SOURCE and OFF_SOURCE.
+            ofs_coord: Use offset coordinate or not.
 
         """
         self.context = context
@@ -804,6 +818,16 @@ class SingleDishPointingChart(object):
         self.axes_manager = PointingAxesManager()
 
     def __get_field(self, field_id: Optional[int]):
+        """Get field domain object.
+
+        If field_id is not given, None is returned.
+
+        Args:
+            field_id (Optional[int]): Field ID
+
+        Returns:
+            Field: Field domain object or None.
+        """
         if field_id is not None:
             fields = self.ms.get_fields(field_id)
             assert len(fields) == 1
@@ -818,9 +842,14 @@ class SingleDishPointingChart(object):
         """
         Generate a plot object.
 
-        Results:
-            A Plot object.
+        If plot file exists and revise_plot is False, Plot object
+        based on existing file is returned.
 
+        Args:
+            revice_plot: Overwrite existing plot or not.
+
+        Returns:
+            Plot: A Plot object.
         """
         if revise_plot == False and os.path.exists(self.figfile):
             return self._get_plot_object()
@@ -917,7 +946,7 @@ class SingleDishPointingChart(object):
         Generate file path to export a plot.
 
         Returns:
-            file path to export a plot.
+            str: file path to export a plot.
 
         """
         session_part = self.ms.session
@@ -946,7 +975,7 @@ class SingleDishPointingChart(object):
         Generate a Plot object.
 
         Returns:
-            A Plot object.
+            Plot: A Plot object.
 
         """
         intent = 'target' if self.target_only == True else 'target,reference'
