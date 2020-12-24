@@ -52,6 +52,7 @@ class EditimlistInputs(vdp.StandardInputs):
     search_radius_arcsec = vdp.VisDependentProperty(default=1000.0)
     conjbeams = vdp.VisDependentProperty(default=False)
     cfcache = vdp.VisDependentProperty(default='')
+    cfcache_nowb = vdp.VisDependentProperty(default='')
     cyclefactor = vdp.VisDependentProperty(default=-999.)
     cycleniter = vdp.VisDependentProperty(default=-999)
     datacolumn = vdp.VisDependentProperty(default='')
@@ -339,7 +340,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['niter'] = th.niter() if not inpdict['niter'] else inpdict['niter']
         imlist_entry['cyclefactor'] = inpdict['cyclefactor']
         imlist_entry['cycleniter'] = inpdict['cycleniter']
-        imlist_entry['cfcache'] = inpdict['cfcache']
+        imlist_entry['cfcache'], imlist_entry['cfcache_nowb'] = th.get_cfcaches(inpdict['cfcache'])
         imlist_entry['scales'] = th.scales() if not inpdict['scales'] else inpdict['scales']
         imlist_entry['uvtaper'] = (th.uvtaper() if not 'uvtaper' in inp.context.imaging_parameters
                                    else inp.context.imaging_parameters['uvtaper']) if not inpdict['uvtaper'] else inpdict['uvtaper']
@@ -431,6 +432,15 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['imagename'] = th.imagename(intent=imlist_entry['intent'], field=imlist_entry['field'],
                                                  spwspec=imlist_entry['spw'], specmode=imlist_entry['specmode'],
                                                  band=None) if not inpdict['imagename'] else inpdict['imagename']
+
+        # In this case field and spwspec is not needed in the filename, furthermore, imaging is done in multiple stages
+        # prepend the STAGENUMNER string in order to differentiate them. In TcleanInputs class this is replaced by the
+        # actual stage number string.
+        if 'VLASS-SE-CONT' == img_mode:
+            imagename = th.imagename(intent=imlist_entry['intent'], field=None, spwspec=None,
+                                     specmode=imlist_entry['specmode'],
+                                     band=None) if not inpdict['imagename'] else inpdict['imagename']
+            imlist_entry['imagename'] = 's{}.{}'.format('STAGENUMBER', imagename)
 
         for key, value in imlist_entry.items():
             LOG.info("{k} = {v}".format(k=key, v=value))

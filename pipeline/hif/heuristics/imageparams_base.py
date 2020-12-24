@@ -2141,3 +2141,19 @@ class ImageParamsHeuristics(object):
                     image.setrestoringbeam( major=beam['major'], minor=beam['minor'], pa=beam['positionangle'], channel=ii )
 
         return newcommonbeam, np.where(np.logical_not(weight))[0]
+
+    def get_cfcaches(self, cfcache: str):
+        """Parses comma separated cfcache string
+
+        Used to input wide band and non-wide band cfcaches at the same time in
+        VLASS-SE-CONT imaging mode.
+        """
+        return cfcache, None
+
+    def smallscalebias(self):
+        """A numerical control to bias the scales when using multi-scale or mtmfs algorithms"""
+        return None
+
+    def pointingoffsetsigdev(self):
+        """Tclean parameter"""
+        return None

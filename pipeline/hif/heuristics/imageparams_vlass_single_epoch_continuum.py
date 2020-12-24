@@ -11,6 +11,9 @@ LOG = infrastructure.get_logger(__name__)
 
 class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
 
+    # Update it explicitry in tclean._do_iterative_vlass_imaging()
+    vlass_stage = 0
+
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None, linesfile=None, imaging_params={}):
         ImageParamsHeuristics.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
         self.imaging_mode = 'VLASS-SE-CONT'
@@ -29,44 +32,48 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         return 'mtmfs'
 
     def robust(self):
-        return 1.0
+        if self.vlass_stage == 3:
+            return 1.0
+        else:
+            return -2.0
 
     def gridder(self, intent, field):
-        return 'mosaic'
+        # TODO: should be user switchable between awproject and mosaic
+        return 'awproject'
 
     def cell(self, beam=None, pixperbeam=None):
         return ['0.6arcsec']
 
     def imsize(self, fields=None, cell=None, primary_beam=None, sfpblimit=None, max_pixels=None, centreonly=None,
                vislist=None, spwspec=None):
-        return [12150, 12150]
+        return [16384, 16384]
 
     def reffreq(self):
         return '3.0GHz'
 
     def cyclefactor(self, iteration):
-        if iteration == 0:
-            return 1.
-        else:
-            return 3.
+        return 3.0
 
     def cycleniter(self, iteration):
-        if iteration == 0:
-            return 0
+        if self.vlass_stage == 3 and iteration > 0:
+            return 3000
         else:
-            return -1
+            return 5000
 
-    def scales(self):
-        return [0]
+    def scales(self, iteration=None):
+        if self.vlass_stage == 3 and iteration and iteration > 1:
+            return [0, 5, 12]
+        else:
+            return [0]
 
     def uvtaper(self, beam_natural=None, protect_long=None):
-        return []
+        if self.vlass_stage == 3:
+            return ''
+        else:
+            return '3arcsec'
 
     def uvrange(self, field=None, spwspec=None):
-        return None, None
-
-    def mask(self):
-        return ''
+        return '<12km', None
 
     def buffer_radius(self):
         return 1000.
@@ -87,7 +94,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         return False
 
     def conjbeams(self):
-        return False
+        return True
 
     def get_sensitivity(self, ms_do, field, intent, spw, chansel, specmode, cell, imsize, weighting, robust, uvtaper):
         return 0.0, None, None
@@ -195,9 +202,9 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
 
         return fieldlist
 
-    def keep_iterating(self, iteration, hm_masking, tclean_stopcode, dirty_dynamic_range, residual_max, residual_robust_rms, field, intent, spw, specmode):
-
-        '''Determine if another tclean iteration is necessary.'''
+    def keep_iterating(self, iteration, hm_masking, tclean_stopcode, dirty_dynamic_range, residual_max,
+                       residual_robust_rms, field, intent, spw, specmode):
+        """Determine if another tclean iteration is necessary."""
 
         if iteration == 0:
             return True, 'auto'
@@ -232,16 +239,27 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
             return 4.5
 
     def savemodel(self, iteration):
-        return 'none'
+        # Model is saved in first imaging cycle last iteration
+        if self.vlass_stage == 1 and iteration == 1:
+            return 'modelcolumn'
+        else:
+            return 'none'
 
     def datacolumn(self):
-        return 'data'
+        """Column parameter to be used as tclean argument
+        """
+        # First imaging stage use data column
+        if self.vlass_stage == 1:
+            return 'data'
+        # Subsequent stages use the self-calibrated and corrected column
+        else:
+            return 'corrected'
 
     def wprojplanes(self):
         return 32
 
     def rotatepastep(self):
-        return 5.
+        return 5.0
 
     def get_autobox_params(self, iteration, intent, specmode, robust):
 
@@ -267,3 +285,26 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         """clean flag to use pointing table."""
 
         return True
+
+    def get_cfcaches(self, cfcache: str):
+        """Parses comma separated cfcache string
+
+        Used to input wide band and non-wide band cfcaches at the same time in
+        VLASS-SE-CONT imaging mode.
+        """
+        if ',' in cfcache:
+            return [cfch.strip() for cfch in cfcache.split(',')]
+        else:
+            return cfcache, None
+
+    def smallscalebias(self):
+        """A numerical control to bias the scales when using multi-scale or mtmfs algorithms"""
+        return 0.4
+
+    def restoringbeam(self):
+        """Tclean parameter"""
+        return ['']
+
+    def pointingoffsetsigdev(self):
+        """Tclean parameter"""
+        return [300, 30]
