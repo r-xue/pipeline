@@ -135,40 +135,76 @@ def utc_locator(start_time: Optional[float]=None,
 
 
 class PlotObjectHandler(object):
+    """Manages lifecycle of matplotlib plot objects (lines, texts).
+
+    PlotObjectHandler is introduced to reuse existing matplotlib
+    Axes instance when generating a lot of similar plots. Since
+    construction of Axes instance is expensive operation,
+    PlotObjectHandler enables to reuse existing Axes instance
+    by destructing only plot objects drawn in the Axes.
+    """
     def __init__(self):
+        """Constructor"""
         self.storage = []
 
     def __del__(self):
+        """Destructor"""
         self.clear()
 
     def plot(self, *args, **kwargs):
+        """Wrapper method for matplotlib plot function.
+
+        See documentation for matplotlib.pyplot.plot for detail.
+        """
         object_list = plt.plot(*args, **kwargs)
         self.storage.extend(object_list)
         return object_list
 
     def text(self, *args, **kwargs):
+        """Wrapper method for matplotlib text function.
+
+        See documentation for matplotlib.pyplot.text for detail.
+        """
         object_list = plt.text(*args, **kwargs)
         self.storage.append(object_list)
         return object_list
 
     def axvspan(self, *args, **kwargs):
+        """Wrapper method for matplotlib axvspan function.
+
+        See documentation for matplotlib.pyplot.axvspan for detail.
+        """
         object_list = plt.axvspan(*args, **kwargs)
         self.storage.append(object_list)
         return object_list
 
     def axhline(self, *args, **kwargs):
+        """Wrapper method for matplotlib axhline function.
+
+        See documentation for matplotlib.pyplot.axhline for detail.
+        """
         object_list = plt.axhline(*args, **kwargs)
         self.storage.append(object_list)
         return object_list
 
     def clear(self):
+        """Remove all registered plot instances."""
         for obj in self.storage:
             obj.remove()
         self.storage = []
 
 
 class SingleDishDisplayInputs(object):
-    def __init__(self, context, result):
+    """Represents inputs to Display classes."""
+    def __init__(self,
+                 context: infrastructure.launcher.Context,
+                 result: infrastructure.api.Results):
+        """Constructor.
+
+        Args:
+            context (infrastructure.launcher.Context): Pipeline context.
+            result (infrastructure.api.Results): Pipeline task execution result.
+        """
         self.context = context
         self.result = result
 
