@@ -30,35 +30,18 @@ NoData = -32767.0
 NoDataThreshold = NoData + 10000.0
 
 
-def mjd_to_datedict(val, unit='d'):
-    mjd = casa_tools.quanta.quantity(val, unit)
-    return casa_tools.quanta.splitdate(mjd)
-
-
 def mjd_to_datetime(val):
-    mjd = mjd_to_datedict(val, unit='d')
+    qa = casa_tools.quanta
+    mjd = qa.splitdate(qa.quantity(val, 'd'))
     date_time = datetime.datetime(mjd['year'], mjd['month'],
                                   mjd['monthday'], mjd['hour'],
                                   mjd['min'], mjd['sec'])
     return date_time
 
 
-# vectorized version
-mjd_to_datetime_vectorized = np.vectorize(mjd_to_datetime)
-
-
 def mjd_to_plotval(mjd_list):
-    if len(mjd_list) == 0:
-        return []
-    datetime_list = mjd_to_datetime_vectorized(mjd_list)
+    datetime_list = [mjd_to_datetime(x) for x in mjd_list]
     return date2num(datetime_list)
-
-
-# def mjd_to_plotval2(mjd_list):
-#     datetime_list = np.fromiter(
-#         map(mjd_to_datetime, mjd_list), dtype=np.datetime64
-#     )
-#     return date2num(datetime_list)
 
 
 class CustomDateFormatter(DateFormatter):
