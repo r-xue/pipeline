@@ -43,11 +43,6 @@ def mjd_to_datetime(val):
     return date_time
 
 
-def mjd_to_datestring(val, fmt='%Y/%m/%d'):
-    date_time = mjd_to_datetime(val)
-    return date_time.strftime(fmt)
-
-
 # vectorized version
 mjd_to_datetime_vectorized = numpy.vectorize(mjd_to_datetime)
 
@@ -57,6 +52,13 @@ def mjd_to_plotval(mjd_list):
         return []
     datetime_list = mjd_to_datetime_vectorized(mjd_list)
     return date2num(datetime_list)
+
+
+# def mjd_to_plotval2(mjd_list):
+#     datetime_list = np.fromiter(
+#         map(mjd_to_datetime, mjd_list), dtype=np.datetime64
+#     )
+#     return date2num(datetime_list)
 
 
 class CustomDateFormatter(DateFormatter):
