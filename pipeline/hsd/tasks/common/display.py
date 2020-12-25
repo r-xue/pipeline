@@ -7,6 +7,7 @@ import matplotlib.gridspec as gridspec
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.dates import date2num, DateFormatter, MinuteLocator
+from typing import List, Optional, Union
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.displays.pointing as pointing
@@ -30,7 +31,15 @@ NoData = -32767.0
 NoDataThreshold = NoData + 10000.0
 
 
-def mjd_to_datetime(val):
+def mjd_to_datetime(val: float) -> datetime.datetime:
+    """Convert MJD to datetime instance.
+
+    Args:
+        val (float): MJD value in day.
+
+    Returns:
+        datetime.datetime: datetime instance
+    """
     qa = casa_tools.quanta
     mjd = qa.splitdate(qa.quantity(val, 'd'))
     date_time = datetime.datetime(mjd['year'], mjd['month'],
@@ -39,17 +48,37 @@ def mjd_to_datetime(val):
     return date_time
 
 
-def mjd_to_plotval(mjd_list):
+def mjd_to_plotval(mjd_list: Union[List[float], np.ndarray]) -> np.ndarray:
+    """Convert list of MJD values to Matplotlib dates.
+
+    Args:
+        mjd_list (Union[List[float], np.ndarray]): Sequence of MJD values in day.
+
+    Returns:
+        np.ndarray: Sequence of Matplotlib dates.
+    """
     datetime_list = [mjd_to_datetime(x) for x in mjd_list]
     return date2num(datetime_list)
 
 
 class CustomDateFormatter(DateFormatter):
+    """Customized date formatter.
+
+    Default format of the label is same as DateFormtter.
+    For the leftmost label as well as when date is changed,
+    this formatter puts extra label '%Y/%m/%d' beneath the
+    deafult one.
     """
-    Customized date formatter that puts YYYY/MM/DD under usual
-    tick labels at the beginning of tick and when date is changed.
-    """
-    def __call__(self, x, pos=0):
+    def __call__(self, x: float, pos: float=0) -> str:
+        """Return the label for tick value x at position pos.
+
+        Args:
+            x (float): tick value
+            pos (float, optional): position. Defaults to 0.
+
+        Returns:
+            str: tick label.
+        """
         fmt_saved = self.fmt
         if pos == 0 or x % 1.0 == 0.0:
             self.fmt = '%H:%M\n%Y/%m/%d'
@@ -58,11 +87,38 @@ class CustomDateFormatter(DateFormatter):
         return tick
 
 
-def utc_formatter(fmt='%H:%M'):
+def utc_formatter(fmt: str='%H:%M') -> CustomDateFormatter:
+    """Generate CustomDateFormatter instance.
+
+    Generate CustomDateFormatter instance with the format
+    given by fmt.
+
+    Args:
+        fmt (str, optional): Tick format. Defaults to '%H:%M'.
+
+    Returns:
+        CustomDateFormatter: formatter instance.
+    """
     return CustomDateFormatter(fmt)
 
 
-def utc_locator(start_time=None, end_time=None):
+def utc_locator(start_time: Optional[float]=None,
+                end_time: Optional[float]=None) -> MinuteLocator:
+    """Generate MinuteLocator instance.
+
+    Generate MinuteLocator instance. If either start_time or end_time is None,
+    default MinuteLocator instance is returned. Otherwise, tick interval is
+    adjusted according to start_time and end_time.
+
+    Args:
+        start_time (Optional[float], optional): Leftmost value of time sequence.
+            Can be minimum or maximum. Defaults to None.
+        end_time (Optional[float], optional): Rightmost value of time sequence.
+            Can be minimum or maximum. Defaults to None.
+
+    Returns:
+        MinuteLocator: locator instance.
+    """
     if start_time is None or end_time is None:
         return MinuteLocator()
     else:
