@@ -20,12 +20,13 @@ import pipeline as pipeline
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.displays.pointing as pointing
 import pipeline.infrastructure.displays.summary as summary
 import pipeline.infrastructure.logging as logging
 from pipeline import environment
-from pipeline.infrastructure import task_registry, utils
+from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import utils
 from pipeline.infrastructure.renderer.templates import resources
 from . import qaadapter, rendererutils, weblog
 from .. import pipelineqa
@@ -251,7 +252,7 @@ class Session(object):
                 return cmp(t1[0], t2[0])
             elif t1[1] != t2[1]:
                 # natural sort so that session9 comes before session10
-                name_sorted = sorted((t1[1], t2[1]), key=utils.natural_sort)
+                name_sorted = utils.natural_sort((t1[1], t2[1]))
                 return -1 if name_sorted[0] == t1[1] else 1
             else:
                 return 0
@@ -1856,7 +1857,7 @@ class LogCopier(object):
         # web log. This is Python 2.6 so we can't define the context managers
         # on the same line
         with open(output_file, 'a') as weblog:
-            with open(casatools.log.logfile(), 'r') as casalog:
+            with open(casa_tools.log.logfile(), 'r') as casalog:
                 to_append = [entry for entry in casalog 
                              if entry not in existing_entries]
             weblog.writelines(to_append)
@@ -2007,7 +2008,7 @@ def get_ms_attr_for_result(context, vis, accessor):
 
 
 def compute_az_el_to_field(field, epoch, observatory):
-    me = casatools.measures
+    me = casa_tools.measures
 
     me.doframe(epoch)
     me.doframe(me.observatory(observatory))

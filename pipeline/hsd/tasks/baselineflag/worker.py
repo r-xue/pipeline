@@ -9,13 +9,13 @@ import casatools
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as pl_casatools
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataTable
 from pipeline.domain.datatable import OnlineFlagIndex
 from pipeline.hsd.tasks.common import utils as sdutils
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from .flagsummary import _get_iteration
 from .. import common
 from .SDFlagRule import INVALID_STAT
@@ -926,10 +926,10 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
                     line.append("correlation='%s'" % ','.join(flagged_pols))
                 timeval = datatable.getcell('TIME', ID)
                 tbuff = datatable.getcell('EXPOSURE', ID)*0.5/86400.0
-                qtime_s = pl_casatools.quanta.quantity(timeval-tbuff, time_unit)
-                qtime_e = pl_casatools.quanta.quantity(timeval+tbuff, time_unit)
-                line += ["timerange='%s~%s'" % (pl_casatools.quanta.time(qtime_s, prec=9, form="ymd")[0],
-                                                pl_casatools.quanta.time(qtime_e, prec=9, form="ymd")[0]),
+                qtime_s = casa_tools.quanta.quantity(timeval - tbuff, time_unit)
+                qtime_e = casa_tools.quanta.quantity(timeval + tbuff, time_unit)
+                line += ["timerange='%s~%s'" % (casa_tools.quanta.time(qtime_s, prec=9, form="ymd")[0],
+                                                casa_tools.quanta.time(qtime_e, prec=9, form="ymd")[0]),
                          "reason='blflag'"]
                 fout.write(str(" ").join(line)+"\n")
         return valid_flag_commands

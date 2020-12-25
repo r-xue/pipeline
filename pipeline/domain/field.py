@@ -1,6 +1,6 @@
 import pprint
 
-import pipeline.infrastructure.casatools as casatools
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.utils import utils
 
 _pprinter = pprint.PrettyPrinter(width=1e99)
@@ -45,7 +45,7 @@ class Field(object):
 
     @property
     def dec(self):
-        return casatools.quanta.formxxx(self.latitude, format='dms', prec=2)
+        return casa_tools.quanta.formxxx(self.latitude, format='dms', prec=2)
 
     @property
     def frame(self):
@@ -83,12 +83,12 @@ class Field(object):
 
     @property
     def ra(self):        
-        return casatools.quanta.formxxx(self.longitude, format='hms', prec=3)
+        return casa_tools.quanta.formxxx(self.longitude, format='hms', prec=3)
 
     # Galactic Longitude: it is usually expressed in DMS format
     @property
     def gl(self):
-        return casatools.quanta.formxxx(self.longitude, format='dms', prec=2)
+        return casa_tools.quanta.formxxx(self.longitude, format='dms', prec=2)
 
     # Galactic Latitude
     @property

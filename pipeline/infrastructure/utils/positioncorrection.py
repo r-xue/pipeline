@@ -2,11 +2,12 @@
 Utilities used for correcting image center coordinates.
 """
 import os
-import pyfits
-import numpy as np
 from typing import Union, Dict, Tuple
 
-from .. import casatools
+import numpy as np
+import pyfits
+
+from .. import casa_tools
 from .. import logging
 
 LOG = logging.get_logger(__name__)
@@ -32,29 +33,30 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
 
     Args:
         fitsname: name (and path) of FITS file to be processed.
-        date_time: Mean date and time of observation in casatools.measure.epoch
+        date_time: Mean date and time of observation in casa_tools.measure.epoch
             format, if None use DATE-OBS FITS header value.
             e.g. {'m0': {'unit': 'd', 'value': 58089.83550347222},
                 'refer': 'UTC', 'type': 'epoch'}
-        obs_long: Geographic longitude of observatory, casatools.quanta.quantity
+        obs_long: Geographic longitude of observatory, casa_tools.quanta.quantity
             format. If None, then use VLA coordinate.
             e.g. {'value': -107.6, 'unit': 'deg'}.
-        obs_lat: Geographic latitude of observatory, casatools.quanta.quantity
+        obs_lat: Geographic latitude of observatory, casa_tools.quanta.quantity
             format. If None, then use VLA coordinate.
             e.g. {'value': 34.1, 'unit': 'deg'}.
 
     Example:
-        >>> file = "VLASS1.1.ql.T19t20.J155950+333000.10.2048.v1.I.iter1.image.pbcor.tt0.subim.fits"
-        Mean time of observation
-        >>> datetime = pipeline.infrastructure.casatools.measures.epoch('utc', '2017-12-02T20:03:07.500')
-        VLA coordinates
-        >>> obslong = {'unit':'deg','value':-107.6}
-        >>> obslat = {'unit':'deg','value':34.1}
-        >>> do_wide_field_pos_cor(file, date_time=datetime, obs_long=obslong, obs_lat=obslat)
+        file = "VLASS1.1.ql.T19t20.J155950+333000.10.2048.v1.I.iter1.image.pbcor.tt0.subim.fits"
+        # Mean time of observation
+        datetime = pipeline.infrastructure.casa_tools.measures.epoch('utc', '2017-12-02T20:03:07.500')
+        # VLA coordinates
+        obslong = {'unit':'deg','value':-107.6}
+        obslat = {'unit':'deg','value':34.1}
+        # Correct reference positions in fits header
+        do_wide_field_pos_cor(file, date_time=datetime, obs_long=obslong, obs_lat=obslat)
     """
     # Obtain observatory geographic coordinates
     if (obs_long is None) or (obs_lat is None):
-        observatory = casatools.measures.observatory('VLA')
+        observatory = casa_tools.measures.observatory('VLA')
         obs_long = observatory['m0']
         obs_lat = observatory['m1']
 
@@ -80,29 +82,29 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
             if date_time is None:
                 date_obs = header['date-obs']
                 timesys = header['timesys']
-                date_time = casatools.measures.epoch(timesys, date_obs)
+                date_time = casa_tools.measures.epoch(timesys, date_obs)
 
             # Compute correction
             offset = calc_wide_field_pos_cor(ra=ra_head, dec=dec_head, obs_long=obs_long,
                                              obs_lat=obs_lat, date_time=date_time)
 
             # Apply corrections
-            ra_rad_fixed = casatools.quanta.sub(
-                ra_head, casatools.quanta.div(offset[0], casatools.quanta.cos(dec_head)))
-            dec_rad_fixed = casatools.quanta.sub(dec_head, offset[1])
+            ra_rad_fixed = casa_tools.quanta.sub(
+                ra_head, casa_tools.quanta.div(offset[0], casa_tools.quanta.cos(dec_head)))
+            dec_rad_fixed = casa_tools.quanta.sub(dec_head, offset[1])
 
             # Update FITS image header, use degrees
-            header['crval1'] = casatools.quanta.convert(ra_rad_fixed, 'deg')['value']
+            header['crval1'] = casa_tools.quanta.convert(ra_rad_fixed, 'deg')['value']
             header['cunit1'] = 'deg'
-            header['crval2'] = casatools.quanta.convert(dec_rad_fixed, 'deg')['value']
+            header['crval2'] = casa_tools.quanta.convert(dec_rad_fixed, 'deg')['value']
             header['cunit2'] = 'deg'
 
             # Update history, "Position correction..." message should remain the last record in list.
-            messages = ['Uncorrected CRVAL1 = {:.12E} deg'.format(casatools.quanta.convert(ra_head, 'deg')['value']),
-                        'Uncorrected CRVAL2 = {:.12E} deg'.format(casatools.quanta.convert(dec_head, 'deg')['value']),
+            messages = ['Uncorrected CRVAL1 = {:.12E} deg'.format(casa_tools.quanta.convert(ra_head, 'deg')['value']),
+                        'Uncorrected CRVAL2 = {:.12E} deg'.format(casa_tools.quanta.convert(dec_head, 'deg')['value']),
                         'Position correction ({:.3E}/cos(CRVAL2), {:.3E}) arcsec applied'.format(
-                            casatools.quanta.convert(offset[0], 'arcsec')['value'] * -1.0,
-                            casatools.quanta.convert(offset[1], 'arcsec')['value'] * -1.0)]
+                            casa_tools.quanta.convert(offset[0], 'arcsec')['value'] * -1.0,
+                            casa_tools.quanta.convert(offset[1], 'arcsec')['value'] * -1.0)]
             for m in messages:
                 header.add_history(m)
 
@@ -133,26 +135,34 @@ def calc_wide_field_pos_cor(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: Dict,
         obs_lat: Geographic latitude of observatory.
         date_time: Date and time of observation.
 
-    The arguments are all in casatools.quanta format (dictionary containing
+    The arguments are all in casa_tools.quanta format (dictionary containing
     value (float) and unit (str)). The function internally uses radian units for
     computation. The arguments may have any convertible units.
 
     Returns:
         A tuple containing RA and Dec offsets with units (in radians).
+
+    Examples:
+    >>> ra, dec = {'unit': 'deg', 'value': 239.9618166667}, {'unit': 'deg', 'value': 33.5}
+    >>> obslong, obslat =  {'unit': 'deg', 'value': -107.61833}, {'unit': 'deg', 'value': 33.90049},
+    >>> datetime = {'m0': {'unit': 'd', 'value': 58089.82306510417}, 'refer': 'UTC', 'type': 'epoch'}
+    >>> offset = calc_wide_field_pos_cor(ra=ra, dec=dec, obs_long=obslong, obs_lat=obslat, date_time=datetime)
+    >>> '{}{}'.format(offset[0]['value'], offset[0]['unit']), '{}{}'.format(offset[1]['value'], offset[1]['unit'])
+    ('3.696987011896662e-07rad', '4.588161874447812e-08rad')
     """
     # Get original coordinates in radians
-    ra_rad = casatools.quanta.convert(ra, 'rad')['value']
-    dec_rad = casatools.quanta.convert(dec, 'rad')['value']
+    ra_rad = casa_tools.quanta.convert(ra, 'rad')['value']
+    dec_rad = casa_tools.quanta.convert(dec, 'rad')['value']
 
     # Mean geographic coordinates of antennas in radians
-    obs_long_rad = casatools.quanta.convert(obs_long, 'rad')['value']
-    obs_lat_rad = casatools.quanta.convert(obs_lat, 'rad')['value']
+    obs_long_rad = casa_tools.quanta.convert(obs_long, 'rad')['value']
+    obs_lat_rad = casa_tools.quanta.convert(obs_lat, 'rad')['value']
 
     # Greenwich Mean Sidereal Time
-    GMST = casatools.measures.measure(date_time, 'GMST1')
+    GMST = casa_tools.measures.measure(date_time, 'GMST1')
 
     # Local Sidereal Time
-    LST = casatools.quanta.convert(GMST['m0'], 'h')['value'] % 24.0 + np.rad2deg(obs_long_rad) / 15.0
+    LST = casa_tools.quanta.convert(GMST['m0'], 'h')['value'] % 24.0 + np.rad2deg(obs_long_rad) / 15.0
     if LST < 0:
         LST = LST + 24
     LST_rad = np.deg2rad(LST * 15)  # in radians

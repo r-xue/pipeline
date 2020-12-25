@@ -3,10 +3,9 @@ import copy
 
 import numpy as np
 
-import casatools
-
 import pipeline.qa.utility.scorers as scorers
 import pipeline.qa.utility.filters as filters
+from pipeline.infrastructure import casa_tools
 
 
 def gpcal(caltable):
@@ -25,13 +24,11 @@ def gpcal_calc(caltable):
 
     removeoutliers = True
 
-    caLoc = casatools.calanalysis()
-    caLoc.open(caltable)
-    antennaNames = caLoc.antenna1()
-    fieldNames = caLoc.field()
-    caLoc.close()
+    with casa_tools.CalAnalysis(caltable) as ca:
+        antennaNames = ca.antenna1()
+        fieldNames = ca.field()
 
-    tbLoc = casatools.table()
+    tbLoc = casa_tools.table
     tbLoc.open(caltable)
 
     fieldIds = np.unique(tbLoc.getcol('FIELD_ID')).tolist()

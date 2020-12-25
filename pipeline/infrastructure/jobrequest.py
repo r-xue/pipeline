@@ -11,6 +11,7 @@ import casaplotms
 import casatasks
 
 from . import logging
+from . import utils
 
 LOG = logging.get_logger(__name__)
 
@@ -89,12 +90,12 @@ def alphasort(argument):
             idxs = list(map(operator.itemgetter(1), g))
             start_idx = idxs[0]
             end_idx = idxs[-1] + 1
-            value[start_idx:end_idx] = sorted(value[start_idx:end_idx], key=natural_sort)
+            value[start_idx:end_idx] = utils.natural_sort(value[start_idx:end_idx])
 
     else:
         for attr_name, separator in attrs_and_separators.items():
             if name == attr_name and isinstance(value, str) and separator in value:
-                value = separator.join(sorted(value.split(separator), key=natural_sort))
+                value = separator.join(utils.natural_sort(value.split(separator)))
 
     return FunctionArg(name, value)
 
@@ -277,11 +278,6 @@ class JobRequest(object):
             new_o[k] = self._gen_hash(v)
 
         return hash(tuple(frozenset(new_o.items())))
-
-
-def natural_sort(s, _nsre=re.compile('([0-9]+)')):
-    return [int(text) if text.isdigit() else text.lower()
-            for text in re.split(_nsre, s)]
 
 
 def get_fn_name(fn):

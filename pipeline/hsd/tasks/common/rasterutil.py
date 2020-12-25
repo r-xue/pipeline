@@ -5,6 +5,7 @@ import glob
 import itertools
 import math
 from matplotlib.animation import FuncAnimation, ImageMagickWriter
+from pipeline.domain.datatable import DataTableImpl
 from typing import List
 from typing import Tuple
 from typing import Optional
@@ -13,12 +14,9 @@ import numpy as np
 from operator import sub
 import os
 import sys
-
 import pipeline.domain.datatable as datatable
-from pipeline.domain.datatable import DataTableImpl
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.logging as logging
-
+from pipeline.infrastructure import casa_tools
 
 LOG = logging.get_logger(__name__)
 
@@ -123,7 +121,7 @@ def from_context(context_dir: str) -> MetaDataSet:
     rotable = glob.glob(f'{datatable_dir}/*.ms/RO')[0]
     rwtable = glob.glob(f'{datatable_dir}/*.ms/RW')[0]
 
-    tb = casatools.table
+    tb = casa_tools.table
 
     tb.open(rotable)
     try:

@@ -8,8 +8,8 @@ import numpy
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
-import pipeline.infrastructure.casatools as casatools
 from pipeline.domain.datatable import DataTableIndexer
+from pipeline.infrastructure import casa_tools
 from .. import common
 from ..common import compress
 
@@ -136,7 +136,7 @@ class GriddingBase(basetask.StandardTaskTemplate):
         is_eph_obj = reference_data.get_fields(self.field[0])[0].source.is_eph_obj
         self.nchan = reference_spw.num_channels
         # beam size
-        grid_size = casatools.quanta.convert(reference_data.beam_sizes[self.antenna[0]][self.spw[0]], 'deg')['value']
+        grid_size = casa_tools.quanta.convert(reference_data.beam_sizes[self.antenna[0]][self.spw[0]], 'deg')['value']
         self.grid_ra = grid_size
         self.grid_dec = grid_size
 

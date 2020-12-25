@@ -1,7 +1,7 @@
 import os
 
 import numpy as np
-import pylab as pb
+import matplotlib.pyplot as plt
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
@@ -129,14 +129,14 @@ class modelfitSummaryChart(object):
         figfile = self.get_figfile()
 
         webdicts = self.webdicts
-        pb.clf()
+        plt.clf()
 
         mysize = 'small'
         colors = ['red', 'blue', 'green', 'cyan', 'yellow', 'orange', 'purple']
         colorcount = 0
         title = ''
 
-        fig = pb.figure(figsize=(10, 6))
+        fig = plt.figure(figsize=(10, 6))
         ax1 = fig.add_subplot(111)
         ax2 = ax1.twiny()
 
@@ -236,8 +236,8 @@ class modelfitSummaryChart(object):
         ax1.set_xlabel('log10 Frequency [Hz]', size=mysize)
         ax2.set_xlabel('Frequency [GHz]', size=mysize)
 
-        pb.savefig(figfile)
-        pb.close()
+        plt.savefig(figfile)
+        plt.close()
 
     def get_figfile(self):
         return os.path.join(self.context.report_dir,
@@ -280,9 +280,7 @@ class residualsSummaryChart(object):
 
         webdicts = self.webdicts
 
-        # pb.clf()
-
-        fig = pb.figure(figsize=(10, 6))
+        fig = plt.figure(figsize=(10, 6))
         ax1 = fig.add_subplot(111)
         ax2 = ax1.twiny()
 
@@ -350,8 +348,8 @@ class residualsSummaryChart(object):
         ax1.set_xlabel('log10 Frequency [Hz]', size=mysize)
         ax2.set_xlabel('Frequency [GHz]', size=mysize)
 
-        pb.savefig(figfile)
-        pb.close()
+        plt.savefig(figfile)
+        plt.close()
 
     def get_figfile(self):
         return os.path.join(self.context.report_dir,

@@ -1,7 +1,7 @@
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.vdp as vdp
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from . import bandpassmode
 from . import bandpassworker
@@ -94,7 +94,7 @@ class PhcorBandpass(bandpassworker.BandpassWorker):
 
         # Convert bandwidth input to CASA quantity and then on to pipeline
         # domain Frequency object
-        quanta = casatools.quanta
+        quanta = casa_tools.quanta
         bw_quantity = quanta.convert(quanta.quantity(inputs.phaseupbw), 'Hz')        
         bandwidth = measures.Frequency(quanta.getvalue(bw_quantity)[0], 
                                        measures.FrequencyUnits.HERTZ)

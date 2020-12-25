@@ -68,10 +68,9 @@ Full example of running Pipeline importdata task on CASA prompt:
 CASA <1>: h_init()
 CASA <2>: h_save()
 CASA <3>: import pipeline
-CASA <4>: import pipeline.infrastructure.casatools as casatools
-CASA <5>: hifv_importdata(vis=['../rawdata/13A-537.sb24066356.eb24324502.56514.05971091435'], session=['session_1'], overwrite=False)
-CASA <6>: h_save()
-CASA <7>: exit
+CASA <4>: hifv_importdata(vis=['../rawdata/13A-537.sb24066356.eb24324502.56514.05971091435'], session=['session_1'], overwrite=False)
+CASA <5>: h_save()
+CASA <6>: exit
 ```
 
 ```
