@@ -4,7 +4,7 @@ import math
 import os
 
 import matplotlib.gridspec as gridspec
-import numpy
+import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.dates import date2num, DateFormatter, MinuteLocator
 
@@ -44,7 +44,7 @@ def mjd_to_datetime(val):
 
 
 # vectorized version
-mjd_to_datetime_vectorized = numpy.vectorize(mjd_to_datetime)
+mjd_to_datetime_vectorized = np.vectorize(mjd_to_datetime)
 
 
 def mjd_to_plotval(mjd_list):
@@ -88,8 +88,8 @@ def utc_locator(start_time=None, end_time=None):
             tick_interval = 1
         else:
             tick_interval = max(int(dt / 10), 2)
-            tick_candidates = numpy.asarray([i for i in range(1, 61) if 60 % i == 0])
-            tick_interval = tick_candidates[numpy.argmin(abs(tick_candidates - tick_interval))]
+            tick_candidates = np.asarray([i for i in range(1, 61) if 60 % i == 0])
+            tick_interval = tick_candidates[np.argmin(abs(tick_candidates - tick_interval))]
 
         # print tick_interval
         return MinuteLocator(byminute=list(range(0, 60, tick_interval)))
@@ -153,7 +153,7 @@ class SpectralImage(object):
             coordsys.done()
             self.data = ia.getchunk()
             self.mask = ia.getchunk(getmask=True)
-            bottom = ia.toworld(numpy.zeros(len(self.image_shape), dtype=int), 'q')['quantity']
+            bottom = ia.toworld(np.zeros(len(self.image_shape), dtype=int), 'q')['quantity']
             top = ia.toworld(self.image_shape - 1, 'q')['quantity']
             direction_keys = ['*{}'.format(x + 1) for x in self.id_direction]
             ra_min = bottom[direction_keys[0]]
@@ -366,7 +366,7 @@ class SDImageDisplay(object, metaclass=abc.ABCMeta):
         self.brightnessunit = self.image.brightnessunit
         self.direction_reference = self.image.direction_reference
         (refpix, refval, increment) = self.image.spectral_axis(unit='GHz')
-        self.frequency = numpy.array([refval + increment * (i - refpix) for i in range(self.nchan)])
+        self.frequency = np.array([refval + increment * (i - refpix) for i in range(self.nchan)])
         self.velocity = self.image.to_velocity(self.frequency, freq_unit='GHz')
         self.frequency_frame = self.image.frequency_frame
         self.x_max = self.nx - 1
@@ -420,26 +420,26 @@ class SDImageDisplay(object, metaclass=abc.ABCMeta):
         return self.inputs.result.outcome['edge']
 
     def __reshape2d(self, array2d, dtype=None):
-        array3d = numpy.zeros((self.npol, self.ny, self.nx), dtype=dtype)
+        array3d = np.zeros((self.npol, self.ny, self.nx), dtype=dtype)
         if len(array2d) == self.npol:
-            each_len = numpy.array(list(map(len, array2d)))
-            if numpy.all(each_len == 0):
+            each_len = np.array(list(map(len, array2d)))
+            if np.all(each_len == 0):
                 # no valid data in the pixel
-                array3d = numpy.zeros((self.npol, self.ny, self.nx), dtype=dtype)
-            elif numpy.all(each_len == self.ny * self.nx):
+                array3d = np.zeros((self.npol, self.ny, self.nx), dtype=dtype)
+            elif np.all(each_len == self.ny * self.nx):
                 # all polarizations has valid data in each pixel
-                array3d = numpy.array(array2d).reshape((self.npol, self.ny, self.nx))
-            elif numpy.any(each_len == self.ny * self.nx):
+                array3d = np.array(array2d).reshape((self.npol, self.ny, self.nx))
+            elif np.any(each_len == self.ny * self.nx):
                 # probably one of the polarization components has no valid data
-                invalid_pols = numpy.where(each_len == 0)[0]
+                invalid_pols = np.where(each_len == 0)[0]
                 _array2d = []
                 for i in range(self.npol):
                     if i in invalid_pols:
-                        _array2d.append(numpy.zeros((self.ny * self.nx), dtype=dtype))
+                        _array2d.append(np.zeros((self.ny * self.nx), dtype=dtype))
                     else:
                         _array2d.append(array2d[i])
-                array3d = numpy.array(_array2d).reshape((self.npol, self.ny, self.nx))
-        return numpy.flipud(array3d.transpose())
+                array3d = np.array(_array2d).reshape((self.npol, self.ny, self.nx))
+        return np.flipud(array3d.transpose())
 
 
 def get_base_frequency(table, freqid, nchan):
@@ -448,7 +448,7 @@ def get_base_frequency(table, freqid, nchan):
         refpix = tb.getcell('REFPIX', freqid)
         refval = tb.getcell('REFVAL', freqid)
         increment = tb.getcell('INCREMENT', freqid)
-        chan_freq = numpy.array([refval + (i - refpix) * increment for i in range(nchan)])
+        chan_freq = np.array([refval + (i - refpix) * increment for i in range(nchan)])
     return chan_freq
 
 
@@ -694,8 +694,8 @@ class SDSparseMapPlotter(object):
         self.axes.direction_reference = value
 
     def setup_labels_relative(self, refpix_list, refval_list, increment_list):
-        LabelRA = numpy.zeros((self.nh, 2), numpy.float32) + NoData
-        LabelDEC = numpy.zeros((self.nv, 2), numpy.float32) + NoData
+        LabelRA = np.zeros((self.nh, 2), np.float32) + NoData
+        LabelDEC = np.zeros((self.nv, 2), np.float32) + NoData
         refpix = refpix_list[0]
         refval = refval_list[0]
         increment = increment_list[0]
@@ -758,10 +758,10 @@ class SDSparseMapPlotter(object):
 
     def add_channel_axis(self, frequency):
         axes = self.axes.axes_chan
-        f = numpy.asarray(frequency)
+        f = np.asarray(frequency)
         active = plt.gca()
         plt.sca(axes)
-        plt.xlim((numpy.argmin(f), numpy.argmax(f)))
+        plt.xlim((np.argmin(f), np.argmax(f)))
         plt.sca(active)
 
     def plot(self, map_data, averaged_data, frequency, fit_result=None, figfile=None):
@@ -786,22 +786,22 @@ class SDSparseMapPlotter(object):
         # Auto scaling
         # to eliminate max/min value due to bad pixel or bad fitting,
         #  1/10-th value from max and min are used instead
-        valid_index = numpy.where(map_data.min(axis=2) > NoDataThreshold)
+        valid_index = np.where(map_data.min(axis=2) > NoDataThreshold)
         valid_data = map_data[valid_index[0], valid_index[1], :]
         LOG.debug('valid_data.shape={shape}'.format(shape=valid_data.shape))
         del valid_index
-        if isinstance(map_data, numpy.ma.masked_array):
+        if isinstance(map_data, np.ma.masked_array):
             def stat_per_spectra(spectra, oper):
                 for v in spectra:
                     unmasked = v.data[v.mask == False]
                     if len(unmasked) > 0:
                         yield oper(unmasked)
-            ListMax = numpy.fromiter(stat_per_spectra(valid_data, numpy.max), dtype=numpy.float64)
-            ListMin = numpy.fromiter(stat_per_spectra(valid_data, numpy.min), dtype=numpy.float64)
-#             ListMax = numpy.fromiter((numpy.max(v.data[v.mask == False]) for v in valid_data),
-#                                      dtype=numpy.float64)
-#             ListMin = numpy.fromiter((numpy.min(v.data[v.mask == False]) for v in valid_data),
-#                                      dtype=numpy.float64)
+            ListMax = np.fromiter(stat_per_spectra(valid_data, np.max), dtype=np.float64)
+            ListMin = np.fromiter(stat_per_spectra(valid_data, np.min), dtype=np.float64)
+#             ListMax = np.fromiter((np.max(v.data[v.mask == False]) for v in valid_data),
+#                                      dtype=np.float64)
+#             ListMin = np.fromiter((np.min(v.data[v.mask == False]) for v in valid_data),
+#                                      dtype=np.float64)
             LOG.debug('ListMax from masked_array=%s', ListMax)
             LOG.debug('ListMin from masked_array=%s', ListMin)
         else:
@@ -810,14 +810,14 @@ class SDSparseMapPlotter(object):
         del valid_data
         if len(ListMax) == 0 or len(ListMin) == 0:
             return False
-        # if isinstance(ListMin, numpy.ma.masked_array):
+        # if isinstance(ListMin, np.ma.masked_array):
         #     ListMin = ListMin.data[ListMin.mask == False]
-        # if isinstance(ListMax, numpy.ma.masked_array):
+        # if isinstance(ListMax, np.ma.masked_array):
         #     ListMax = ListMax.data[ListMax.mask == False]
         LOG.debug('ListMax=%s', list(ListMax))
         LOG.debug('ListMin=%s', list(ListMin))
-        global_ymax = numpy.sort(ListMax)[len(ListMax) - len(ListMax) // 10 - 1]
-        global_ymin = numpy.sort(ListMin)[len(ListMin) // 10]
+        global_ymax = np.sort(ListMax)[len(ListMax) - len(ListMax) // 10 - 1]
+        global_ymin = np.sort(ListMin)[len(ListMin) // 10]
         global_ymax = global_ymax + (global_ymax - global_ymin) * 0.2
         global_ymin = global_ymin - (global_ymax - global_ymin) * 0.1
         del ListMax, ListMin
@@ -880,8 +880,8 @@ class SDSparseMapPlotter(object):
                     xmin = global_xmin
                     xmax = global_xmax
                     if map_data[x][y].min() > NoDataThreshold:
-                        median = numpy.median(map_data[x][y])
-                        # mad = numpy.median(map_data[x][y] - median)
+                        median = np.median(map_data[x][y])
+                        # mad = np.median(map_data[x][y] - median)
                         sigma = map_data[x][y].std()
                         ymin = median - 2.0 * sigma
                         ymax = median + 5.0 * sigma
