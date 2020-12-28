@@ -517,23 +517,6 @@ class SDImageDisplay(object, metaclass=abc.ABCMeta):
         return np.flipud(array3d.transpose())
 
 
-def get_base_frequency(table, freqid, nchan):
-    freq_table = os.path.join(table, 'FREQUENCIES')
-    with casa_tools.TableReader(freq_table) as tb:
-        refpix = tb.getcell('REFPIX', freqid)
-        refval = tb.getcell('REFVAL', freqid)
-        increment = tb.getcell('INCREMENT', freqid)
-        chan_freq = np.array([refval + (i - refpix) * increment for i in range(nchan)])
-    return chan_freq
-
-
-def get_base_frame(table):
-    freq_table = os.path.join(table, 'FREQUENCIES')
-    with casa_tools.TableReader(freq_table) as tb:
-        base_frame = tb.getkeyword('BASEFRAME')
-    return base_frame
-
-
 def drop_edge(array):
     # array should be two-dimensional (nchan,nrow)
     nchan = array.shape[0]
