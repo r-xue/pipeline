@@ -7,11 +7,15 @@ import matplotlib.gridspec as gridspec
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.dates import date2num, DateFormatter, MinuteLocator
-from typing import List, Optional, Union
+from typing import List, NewType, Optional, Tuple, Union
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.displays.pointing as pointing
 from pipeline.infrastructure import casa_tools
+from pipeline.domain.singledish import MSReductionGroupDesc
+from pipeline.infrastructure.renderer.logger import Plot
+
+CoordinateSystem = NewType('CoordinateSystem', Union[casa_tools._logging_coordsys_cls, casa_tools.casatools.coordsys])
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -209,7 +213,15 @@ class SingleDishDisplayInputs(object):
         self.result = result
 
     @property
-    def isnro(self):
+    def isnro(self) -> bool:
+        """Check if given datasets are taken by NRO45m telescope.
+
+        Raises:
+            RuntimeError: Data from two or more observatories are mixed.
+
+        Returns:
+            bool: True if data is from NRO45m, otherwise False
+        """
         arrays = {ms.antenna_array.name for ms in self.context.observing_run.measurement_sets}
         if len(arrays) != 1:
             raise RuntimeError('array name is not unique: {}'.format(list(arrays)))
@@ -218,7 +230,13 @@ class SingleDishDisplayInputs(object):
 
 
 class SpectralImage(object):
-    def __init__(self, imagename):
+    """Representation of four-dimensional spectral image."""
+    def __init__(self, imagename: str):
+        """Constructor.
+
+        Args:
+            imagename (str): Name of the image.
+        """
         qa = casa_tools.quanta
         # read data to storage
         with casa_tools.ImageReader(imagename) as ia:
@@ -243,7 +261,12 @@ class SpectralImage(object):
             beam = ia.restoringbeam()
         self._beamsize_in_deg = qa.convert(qa.sqrt(qa.mul(beam['major'], beam['minor'])), 'deg')['value']
 
-    def _load_coordsys(self, coordsys):
+    def _load_coordsys(self, coordsys: CoordinateSystem):
+        """Load axes information of coordinate system.
+
+        Args:
+            coordsys (CoordinateSystem): coordsys instance of the image.
+        """
         coord_types = coordsys.axiscoordinatetypes()
         self._load_id_coord_types(coord_types)
         self.units = coordsys.units()
@@ -256,7 +279,12 @@ class SpectralImage(object):
         self.refvals = coordsys.referencevalue()['numeric']
         self.increments = coordsys.increment()['numeric']
 
-    def _load_id_coord_types(self, coord_types):
+    def _load_id_coord_types(self, coord_types: CoordinateSystem):
+        """Load indices for coordinate axes.
+
+        Args:
+            coord_types (CoordinateSystem): coordsys instance of the image.
+        """
         id_direction = coord_types.index('Direction')
         self.id_direction = [id_direction, id_direction + 1]
         self.id_spectral = coord_types.index('Spectral')
@@ -266,34 +294,71 @@ class SpectralImage(object):
         LOG.debug('id_stokes=%s', self.id_stokes)
 
     @property
-    def nx(self):
+    def nx(self) -> int:
+        """Return number of pixels for horizontal (longitude) axis.
+
+        Returns:
+            int: Number of pixels for longitude axis.
+        """
         return self.image_shape[self.id_direction[0]]
 
     @property
-    def ny(self):
+    def ny(self) -> int:
+        """Return number of pixels for vertical (latitude) axis.
+
+        Returns:
+            int: Number of pixels for latitude axis.
+        """
         return self.image_shape[self.id_direction[1]]
 
     @property
-    def nchan(self):
+    def nchan(self) -> int:
+        """Return number of pixels (channels) for spectral axis.
+
+        Returns:
+            int: Number of channels.
+        """
         return self.image_shape[self.id_spectral]
 
     @property
-    def npol(self):
+    def npol(self) -> int:
+        """Return number of pixels (polarizations or correlations) for Stokes axis.
+
+        Returns:
+            int: Number of polarizations.
+        """
         return self.image_shape[self.id_stokes]
 
     @property
-    def brightnessunit(self):
+    def brightnessunit(self) -> str:
+        """Return brightness unit of the image.
+
+        Returns:
+            str: Unit string for brightness.
+        """
         return self._brightnessunit
-#         if self._brightnessunit.find('Jy') != -1:
-#             return 'Jy'
-#         else:
-#             return 'K'
 
     @property
-    def beam_size(self):
+    def beam_size(self) -> float:
+        """Return beam size (diameter) in degree.
+
+        Returns:
+            float: Beam diameter in deg.
+        """
         return self._beamsize_in_deg
 
-    def to_velocity(self, frequency, freq_unit='GHz'):
+    def to_velocity(self,
+                    frequency: Union[float, np.ndarray],
+                    freq_unit: str = 'GHz') -> Union[float, np.ndarray]:
+        """Convert frequency or array of frequency to velocity.
+
+        Args:
+            frequency (Union[float, np.ndarray]): Frequency value(s).
+            freq_unit (str, optional): Frequency Unit. Defaults to 'GHz'.
+
+        Returns:
+            Union[float, np.ndarray]: Velocity value(s).
+        """
         qa = casa_tools.quanta
         if self.rest_frequency['unit'] != freq_unit:
             vrf = qa.convert(self.rest_frequency, freq_unit)['value']
@@ -301,13 +366,54 @@ class SpectralImage(object):
             vrf = self.rest_frequency['value']
         return (1.0 - (frequency / vrf)) * LightSpeed
 
-    def spectral_axis(self, unit='GHz'):
+    def spectral_axis(self, unit: str = 'GHz') -> Tuple[float, float, float]:
+        """Return conversion information for spectral axis.
+
+        Three-tuple required for conversion between pixel and world spectral
+        axis is returned. The tuple consists of reference pixel, reverence value,
+        and increment for spectral axis.
+
+        Args:
+            unit (str, optional): Frequency unit. Defaults to 'GHz'.
+
+        Returns:
+            Tuple[float, float, float]: (refpix, refval, increment) for spectral axis.
+        """
         return self.__axis(self.id_spectral, unit=unit)
 
-    def direction_axis(self, idx, unit='deg'):
+    def direction_axis(self, idx: int, unit: str = 'deg') -> Tuple[float, float, float]:
+        """Return conversion information for direction axes.
+
+        Three-tuple required for conversion between pixel and world direction
+        axes is returned. The tuple consists of reference pixel, refrence value,
+        and increment for direction axis. Direction index must be given to specify
+        either longitude (0) or latitude (1) axis.
+
+        Args:
+            idx (int): Index for direction axes.
+            unit (str, optional): Direction unit. Defaults to 'deg'.
+
+        Returns:
+            Tuple[float, float, float]: (refpix, refval, increment) for direction axis
+                                        specified by idx.
+        """
         return self.__axis(self.id_direction[idx], unit=unit)
 
-    def __axis(self, idx, unit):
+    def __axis(self, idx: int, unit: str) -> Tuple[float, float, float]:
+        """Return conversion information for specified image axis.
+
+        Three-tuple required for conversion between pixel and world direction
+        axes is returned. The tuple consists of reference pixel, refrence value,
+        and increment for the axis specified by idx.
+
+        Args:
+            idx (int): Axis index.
+            unit (str): Unit string.
+
+        Returns:
+            Tuple[float, float, float]: (refpix, refval, increment) for
+                                        the axis specified by idx.
+        """
         qa = casa_tools.quanta
         refpix = self.refpixs[idx]
         refval = self.refvals[idx]
@@ -321,15 +427,34 @@ class SpectralImage(object):
 
 
 class SDImageDisplayInputs(SingleDishDisplayInputs):
-    def __init__(self, context, result):
+    """Manages input data for plotter classes for single dish images."""
+    def __init__(self,
+                 context: infrastructure.launcher.Context,
+                 result: infrastructure.api.Results):
+        """Constructor.
+
+        Args:
+            context (infrastructure.launcher.Context): Pipeline context.
+            result (infrastructure.api.Results): Pipeline task execution result.
+        """
         super(SDImageDisplayInputs, self).__init__(context, result)
 
     @property
-    def imagename(self):
+    def imagename(self) -> str:
+        """Return name of the single dish image.
+
+        Returns:
+            str: name of the image.
+        """
         return self.result.outcome['image'].imagename
 
     @property
-    def spw(self):
+    def spw(self) -> int:
+        """Return spectral window (spw) id for the image.
+
+        Returns:
+            int: Spectral window (spw) id.
+        """
         spwlist = self.result.outcome['image'].spwlist
         if isinstance(spwlist, list):
             return spwlist[0]
@@ -337,66 +462,155 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
             return spwlist
 
     @property
-    def vis(self):
+    def vis(self) -> Optional[str]:
+        """Return name of the MeasurementSet if available.
+
+        Returns:
+            Optional[str]: Name of the MeasurementSet if available.
+        """
         if 'vis' in self.result.outcome:
             return self.result.outcome['vis']
         else:
             return None
 
     @property
-    def antenna(self):
+    def antenna(self) -> str:
+        """Return name of the antenna registered to the image.
+
+        In single dish pipeline, per-antenna images are created
+        first, and then combined them into one image. For the
+        former case, antenna name is returned while the special
+        string "COMBINED" is returned.
+
+        Returns:
+            str: Name of the antenna.
+        """
         return self.result.outcome['image'].antenna
 
     @property
-    def reduction_group(self):
+    def reduction_group(self) -> MSReductionGroupDesc:
         """
         Retruns ReductionGroupDesc instance corresponding to the reduction group
         associated to the image
+
+        Returns:
+            MSReductionGroupDesc: description of reduction group.
         """
         group_id = self.result.outcome['reduction_group_id']
         return self.context.observing_run.ms_reduction_group[group_id]
 
     @property
-    def msid_list(self):
+    def msid_list(self) -> List[int]:
+        """Return list of indices for MeasurementSets
+
+        The list specifies the MeasurementSets that are used to
+        generate the image.
+
+        Returns:
+            List[int]: index list for MeasurementSets.
+        """
         return self.result.outcome['file_index']
 
     @property
-    def antennaid_list(self):
+    def antennaid_list(self) -> List[int]:
+        """Return list of antenna ids.
+
+        Return list of antenna ids corresponding to antenna
+        name returned by self.antenna. Order of the index is
+        consistent with self.msid_list, i.e. antnenaid_list[0]
+        corresponds to the antenna id for the MeasurementSet
+        specified by msid_list[0]. For 'COMBINED' antenna,
+        indices for all the antennas are returned.
+
+        Returns:
+            List[int]: List of antenna ids.
+        """
         return self.result.outcome['assoc_antennas']
 
     @property
-    def fieldid_list(self):
+    def fieldid_list(self) -> List[int]:
+        """Return list of field ids.
+
+        Return list of field ids. Order of the index is
+        consistent with self.msid_list, i.e. fieldid_list[0]
+        corresponds to the field id for the MeasurementSet
+        specified by msid_list[0].
+
+        Returns:
+            List[int]: List of field ids.
+        """
         return self.result.outcome['assoc_fields']
 
     @property
-    def spwid_list(self):
+    def spwid_list(self) -> List[int]:
+        """Return list of spectral windo (spw) ids.
+
+        Return list of spw ids. Order of the index is
+        consistent with self.msid_list, i.e. spwid_list[0]
+        corresponds to the spw id for the MeasurementSet
+        specified by msid_list[0].
+
+        Returns:
+            List[int]: List of spw ids.
+        """
         return self.result.outcome['assoc_spws']
 
     @property
-    def stage_number(self):
+    def stage_number(self) -> int:
+        """Return processing stage id.
+
+        Returns:
+            int: Stage number.
+        """
         return self.result.stage_number
 
     @property
-    def stage_dir(self):
+    def stage_dir(self) -> str:
+        """Return weblog subdirectory name for the stage.
+
+        Returns:
+            str: Name of weblog subdirectory name.
+        """
         return os.path.join(self.context.report_dir,
                             'stage{}'.format(self.stage_number))
 
     @property
-    def source(self):
+    def source(self) -> str:
+        """Return name of the target source.
+
+        Returns:
+            str: Target source name.
+        """
         return self.result.outcome['image'].sourcename
 
     @property
-    def contamination_plot(self):
+    def contamination_plot(self) -> str:
+        """Return file name of the contamination plot.
+
+        Returns:
+            str: File name of the contamination plot.
+        """
         return self.imagename.rstrip('/') + '.contamination.png'
 
 
 class SDCalibrationDisplay(object, metaclass=abc.ABCMeta):
+    """Base plotter class for single-dish calibration tasks"""
     Inputs = SingleDishDisplayInputs
 
-    def __init__(self, inputs):
+    def __init__(self, inputs: SingleDishDisplayInputs):
+        """Constructor.
+
+        Args:
+            inputs (SingleDishDisplayInputs): Inputs instance.
+        """
         self.inputs = inputs
 
-    def plot(self):
+    def plot(self) -> List[Plot]:
+        """Generate plots according to the provided results.
+
+        Returns:
+            List[Plot]: List of Plot instances.
+        """
         results = self.inputs.result
         report_dir = self.inputs.context.report_dir
         stage_dir = os.path.join(report_dir, 'stage{}'.format(results.stage_number))
@@ -412,14 +626,35 @@ class SDCalibrationDisplay(object, metaclass=abc.ABCMeta):
         return plots
 
     @abc.abstractmethod
-    def doplot(self, result, stage_dir):
+    def doplot(self, result: infrastructure.api.Results, stage_dir: str) -> Plot:
+        """Generate plot from the result instance.
+
+        This method must be implemented in the subclasses.
+        The result should be single Results instance rather than ResultsList.
+
+        Args:
+            result (infrastructure.api.Results): Pipeline task execution result.
+            stage_dir (str): Name of pipeline weblog subdirectory.
+
+        Raises:
+            NotImplementedError: This method is not implemented in the base class.
+
+        Returns:
+            Plot: Plot instance
+        """
         raise NotImplementedError()
 
 
 class SDImageDisplay(object, metaclass=abc.ABCMeta):
+    """Base plotter class for imaging tasks."""
     Inputs = SDImageDisplayInputs
 
-    def __init__(self, inputs):
+    def __init__(self, inputs: SDImageDisplayInputs):
+        """Constructor.
+
+        Args:
+            inputs (SDImageDisplayInputs): Inputs instance.
+        """
         self.inputs = inputs
         self.context = self.inputs.context
         self.stage_dir = self.inputs.stage_dir
@@ -430,11 +665,10 @@ class SDImageDisplay(object, metaclass=abc.ABCMeta):
         self.vis = self.inputs.vis
 
     def init(self):
+        """Initialize plotter using specifiec image."""
         self.image = SpectralImage(self.imagename)
         qa = casa_tools.quanta
         self.nchan = self.image.nchan
-#         self.data = self.image.data
-#         self.mask = self.image.mask
         self.nx = self.image.nx
         self.ny = self.image.ny
         self.npol = self.image.npol
@@ -467,40 +701,91 @@ class SDImageDisplay(object, metaclass=abc.ABCMeta):
         self.aspect = 1.0 / math.cos(0.5 * (self.dec_min + self.dec_max) / 180.0 * 3.141592653)
 
     @property
-    def data(self):
+    def data(self) -> Optional[np.ndarray]:
+        """Return image data as numpy float array.
+
+        Returns:
+            Optional[np.ndarray]: Image data.
+        """
         return self.image.data if self.image is not None else None
 
     @property
-    def mask(self):
+    def mask(self) -> Optional[np.ndarray]:
+        """Return image mask as numpy bool array.
+
+        Mask is True for valid pixels while False for invalid pixels.
+
+        Returns:
+            Optional[np.ndarray]: Image mask.
+        """
         return self.image.mask if self.image is not None else None
 
     @property
-    def id_spectral(self):
+    def id_spectral(self) -> int:
+        """Return axis index for spectral axis.
+
+        Returns:
+            int: Axis index for spectral axis.
+        """
         return self.image.id_spectral if self.image is not None else None
 
     @property
-    def id_stokes(self):
+    def id_stokes(self) -> int:
+        """Return axis index for Stokes or polarization axis.
+
+        Returns:
+            int: Axis index for polarization axis.
+        """
         return self.image.id_stokes if self.image is not None else None
 
     @property
-    def num_valid_spectrum(self):
-        return self.__reshape2d(self.inputs.result.outcome['validsp'], int)
+    def num_valid_spectrum(self) -> np.ndarray:
+        """Return number of valid spectral data accumulated to each position.
+
+        Returns:
+            np.ndarray: Number of valid spectral data per position.
+        """
+        return self.__reshape2d(self.inputs.result.outcome['validsp'])
 
     @property
-    def rms(self):
-        return self.__reshape2d(self.inputs.result.outcome['rms'], float)
+    def rms(self) -> np.ndarray:
+        """Return rms for each position.
+
+        Returns:
+            np.ndarray: Rms per position.
+        """
+        return self.__reshape2d(self.inputs.result.outcome['rms'])
 
     @property
-    def edge(self):
+    def edge(self) -> Tuple[int, int]:
+        """Return edge channels to exclude.
+
+        Returns:
+            Tuple[int, int]: Edge channels to exclude.
+        """
         return self.inputs.result.outcome['edge']
 
-    def __reshape2d(self, array2d, dtype=None):
-        array3d = np.zeros((self.npol, self.ny, self.nx), dtype=dtype)
+    def __reshape2d(self, array2d: np.ndarray) -> np.ndarray:
+        """Reshape input two-dimensional array into three-dimensional array.
+
+        Returned array should have the shape (nx, ny, npol) where nx is
+        number of pixels along horizontal direction (longitude) axis,
+        ny is number of pixels along vertical direction (latitude) axis,
+        and npol is number of polarizations or correlations.
+
+        Args:
+            array2d (np.ndarray): Two-dimensional array.
+
+        Returns:
+            np.ndarray: Resheped array.
+        """
+
+        array3d = np.zeros((self.npol, self.ny, self.nx), dtype=array2d.dtype)
         if len(array2d) == self.npol:
             each_len = np.array(list(map(len, array2d)))
             if np.all(each_len == 0):
                 # no valid data in the pixel
-                array3d = np.zeros((self.npol, self.ny, self.nx), dtype=dtype)
+                array3d = np.zeros((self.npol, self.ny, self.nx), dtype=array2d.dtype)
             elif np.all(each_len == self.ny * self.nx):
                 # all polarizations has valid data in each pixel
                 array3d = np.array(array2d).reshape((self.npol, self.ny, self.nx))
@@ -510,33 +795,28 @@ class SDImageDisplay(object, metaclass=abc.ABCMeta):
                 _array2d = []
                 for i in range(self.npol):
                     if i in invalid_pols:
-                        _array2d.append(np.zeros((self.ny * self.nx), dtype=dtype))
+                        _array2d.append(np.zeros((self.ny * self.nx), dtype=array2d.dtype))
                     else:
                         _array2d.append(array2d[i])
                 array3d = np.array(_array2d).reshape((self.npol, self.ny, self.nx))
         return np.flipud(array3d.transpose())
 
 
-def drop_edge(array):
-    # array should be two-dimensional (nchan,nrow)
-    nchan = array.shape[0]
-    a = None
-    if nchan > 2:
-        echan = max(1, int(nchan * 0.05))
-        a = array[echan:-echan, ::]
-    return a
-
-
-class TimeAxesManager(object):
-    def __init__(self):
-        self.locator = utc_locator()
-
-    def init(self, start_time=None, end_time=None):
-        self.locator = utc_locator(start_time, end_time)
-
-
+#
 # sparse profile map
-def form3(n):
+def form3(n: int) -> int:
+    """Return a factor for calculation of panel position.
+
+    For given integer, form4 provide a factor for the
+    calculation of vertical panel position for sparse
+    profile map.
+
+    Args:
+        n (int): Number of panels along vertical axis.
+
+    Returns:
+        float: Factor for panel position.
+    """
     if n <= 4:
         return 4
     elif n == 5:
@@ -547,7 +827,19 @@ def form3(n):
         return 8
 
 
-def form4(n):
+def form4(n: int) -> float:
+    """Return a factor for calculation of panel position.
+
+    For given integer, form4 provide a factor for the
+    calculation of vertical panel position for sparse
+    profile map.
+
+    Args:
+        n (int): Number of panels along vertical axis.
+
+    Returns:
+        float: Factor for panel position.
+    """
     if n <= 4:
         return 4
     elif n < 8:
