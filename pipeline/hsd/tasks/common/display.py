@@ -1048,6 +1048,7 @@ class SDSparseMapPlotter(object):
         self.reference_level = None
         self.global_scaling = True
         self.deviation_mask = None
+        self.edge = None
         self.atm_transmission = None
         self.atm_frequency = None
         self.channel_axis = False
@@ -1183,6 +1184,16 @@ class SDSparseMapPlotter(object):
         """
         self.deviation_mask = mask
 
+    def set_edge(self, edge: Tuple[int, int]):
+        """Set edge parameter.
+
+        Edge region specified by edge parameter is shaded with grey.
+
+        Args:
+            edge: Edge area to be shaded.
+        """
+        self.edge = edge
+
     def set_atm_transmission(self, transmission: List[float], frequency: List[float]):
         """Set atmospheric transmission data.
 
@@ -1316,6 +1327,17 @@ class SDSparseMapPlotter(object):
             self.add_channel_axis(frequency)
         (_xmin, _xmax, _ymin, _ymax) = plt.axis()
         plt.axis((global_xmin, global_xmax, spmin, spmax))
+        fedge_span = None
+        if self.edge is not None:
+            (ch1, ch2) = self.edge
+            LOG.info('ch1, ch2: [%s, %s]' % (ch1,ch2))
+            fedge0 = ch_to_freq(0, frequency)
+            fedge1 = ch_to_freq(ch1-1, frequency)
+            fedge2 = ch_to_freq(len(frequency)-ch2-1, frequency)
+            fedge3 = ch_to_freq(len(frequency)-1, frequency)
+            plot_helper.axvspan(fedge0, fedge1, color='lightgray')
+            plot_helper.axvspan(fedge2, fedge3, color='lightgray')
+            fedge_span = (fedge0, fedge1, fedge2, fedge3)
         if self.lines_averaged is not None:
             for chmin, chmax in self.lines_averaged:
                 fmin = ch_to_freq(chmin, frequency)
@@ -1385,6 +1407,10 @@ class SDSparseMapPlotter(object):
                             fmax = ch_to_freq(chmax, frequency)
                             LOG.debug('plotting line range for %s, %s: [%s, %s]', x, y, chmin, chmax)
                             plot_helper.axvspan(fmin, fmax, color='cyan')
+                    if fedge_span is not None:
+                        plot_helper.axvspan(fedge_span[0], fedge_span[1], color='lightgray')
+                        plot_helper.axvspan(fedge_span[2], fedge_span[3], color='lightgray')
+
                     # elif self.lines_averaged is not None:
                     #     for chmin, chmax in self.lines_averaged:
                     #         fmin = ch_to_freq(chmin, frequency)

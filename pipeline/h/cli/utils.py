@@ -133,16 +133,3 @@ def _print_inputs(casa_task, casa_args, task_inputs):
 
     print('Pipeline-derived inputs for {!s}:'.format(casa_task))
     pprint.pprint(casa_args)
-
-    # Resetting pipelinemode after a call to getinputs is not a good idea, as
-    # it makes it very easy to unintentionally execute and commit tasks to the
-    # context, plus the user most probably wants to tweak and call getinputs 
-    # multiple times until the parameters look correct
-#    a=inspect.stack()
-#    stacklevel=0
-#    for k in range(len(a)):
-#        if (string.find(a[k][1], 'ipython console') > 0):
-#            stacklevel=k
-#            break
-#    myf=sys._getframe(stacklevel).f_globals
-#    myf['pipelinemode'] = 'automatic'

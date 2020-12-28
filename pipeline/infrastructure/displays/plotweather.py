@@ -47,7 +47,7 @@ def plot_weather(vis='', figfile='', station=[], help=False):
 
     mjdsec1 = mjdsec
     vis = vis.split('/')[-1]
-    unique_stations = np.unique(stations)
+    unique_stations = list(np.unique(stations))
 
     try:
         with casa_tools.TableReader(vis + '/ASDM_STATION') as table:
@@ -63,6 +63,15 @@ def plot_weather(vis='', figfile='', station=[], help=False):
             if any([wx_prefix.lower() in station_names[station_id].lower() for wx_prefix in ['WSTB', 'Meteo', 'OSF']]):
                 station_name = station_names[station_id].replace('Meteo',  '')
         unique_station_names.append(station_name)
+
+    # PIPE-31: deprioritize the station with "Itinerant" in name (typically: "MeteoItinerant"), 
+    # since it only has a wind sensor.
+    try:
+        meteoitinerant_idx = unique_station_names.index('Itinerant')
+        unique_station_names.append(unique_station_names.pop(meteoitinerant_idx))
+        unique_stations.append(unique_stations.pop(meteoitinerant_idx))
+    except ValueError:
+        pass
 
     if station:
         if isinstance(station, int):
@@ -134,6 +143,27 @@ def plot_weather(vis='', figfile='', station=[], help=False):
             ambient_wvp = computeWVP(temperature)
             LOG.info("dWVP=%f, aWVP=%f" % (dew_point_wvp[0], ambient_wvp[0]))
             relative_humidity = 100*(dew_point_wvp/ambient_wvp)
+
+    if len(unique_stations) > 1:
+        if np.mean(temperature2) > 100:
+            # convert to Celsius
+            temperature2 -= 273.15
+        if dew_point2 is not None and np.mean(dew_point2) > 100:
+            dew_point2 -= 273.15
+        if dew_point2 is not None and np.mean(dew_point2) == 0:
+            # assume it is not measured and use NOAA formula to compute from humidity:
+            dew_point2 = ComputeDewPointCFromRHAndTempC(relative_humidity2, temperature2)
+        if np.mean(relative_humidity2) < 0.001:
+            if dew_point2 is None or np.count_nonzero(dew_point2) == 0:
+                # dew point is all zero so it was not measured, so cap the rH at small non-zero value
+                relative_humidity2 = 0.001 * np.ones(len(relative_humidity2))
+            else:
+                LOG.info("Replacing zeros in relative humidity with value computed from dew point and temperature.")
+                dew_point_wvp2 = computeWVP(dew_point2)
+                ambient_wvp2 = computeWVP(temperature2)
+                LOG.info("dWVP2=%f, aWVP2=%f" % (dew_point_wvp2[0], ambient_wvp2[0]))
+                relative_humidity2 = 100*(dew_point_wvp2/ambient_wvp2)
+
 
     # take timerange from OBSERVATION table if there is only one unique timestamp
     if len(np.unique(mjdsec)) == 1:
