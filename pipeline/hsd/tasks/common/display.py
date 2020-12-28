@@ -9,15 +9,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.dates import date2num, DateFormatter, MinuteLocator
 from matplotlib.axes import Axes
-from typing import Generator, List, NewType, Optional, Tuple, Union
+from typing import Generator, List, Optional, Tuple, Union
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.displays.pointing as pointing
 from pipeline.infrastructure import casa_tools
 from pipeline.domain.singledish import MSReductionGroupDesc
 from pipeline.infrastructure.renderer.logger import Plot
-
-CoordinateSystem = NewType('CoordinateSystem', Union[casa_tools._logging_coordsys_cls, casa_tools.casatools.coordsys])
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -267,7 +265,7 @@ class SpectralImage(object):
             beam = ia.restoringbeam()
         self._beamsize_in_deg = qa.convert(qa.sqrt(qa.mul(beam['major'], beam['minor'])), 'deg')['value']
 
-    def _load_coordsys(self, coordsys: CoordinateSystem):
+    def _load_coordsys(self, coordsys: casa_tools.casatools.coordsys):
         """Load axes information of coordinate system.
 
         Args:
@@ -285,7 +283,7 @@ class SpectralImage(object):
         self.refvals = coordsys.referencevalue()['numeric']
         self.increments = coordsys.increment()['numeric']
 
-    def _load_id_coord_types(self, coord_types: CoordinateSystem):
+    def _load_id_coord_types(self, coord_types: casa_tools.casatools.coordsys):
         """Load indices for coordinate axes.
 
         Args:
