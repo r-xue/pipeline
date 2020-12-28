@@ -252,9 +252,12 @@ class Vlassmasking(basetask.StandardTaskTemplate):
         If context.clean_list_pending is populated, then it will take 'imagename' parameter from the first imlist entry.
         The 'STAGENUMBER' substring is replaced by the current stage number.
         """
+        # TODO: context.stage for some reason returns x_1 instead of x_0. Until understood, force the latter.
         if 'imagename' in self.inputs.context.clean_list_pending[0].keys():
             return self.inputs.context.clean_list_pending[0]['imagename'].replace('STAGENUMBER',
-                                                                                  str(self.inputs.context.stage))
+                                                                                  '{}_0'.format(
+                                                                                      self.inputs.context.stage.split(
+                                                                                          '_')[0]))
         else:
             return 'VIP_'
 
