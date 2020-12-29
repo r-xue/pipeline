@@ -673,16 +673,13 @@ class Tclean(cleanbase.CleanBase):
         else:
             vlass_masks = [inputs.mask]
 
-        # Get task ordinal number
-        ordinal = self._get_task_stage_ordinal('hif_makeimages')
-
         # Compute PSF only
-        LOG.info('Compute PSF with wbawp=False')
+        LOG.info('Computing PSF with wbawp=False')
         iteration = 0
         # Replace main CFCache reference with the wbawp=False cache
         inputs.cfcache = cfcache_nowb
         result_psf = self._do_clean(iternum=iteration, cleanmask='', niter=0, threshold='0.0mJy',
-                                 sensitivity=sequence_manager.sensitivity, result=None, calcres=False)
+                                 sensitivity=sequence_manager.sensitivity, result=None, calcres=False, wbawp=False)
 
         # Rename PSF before they are overwritten in the text TClean call
         self._replace_psf(result_psf.psf, result_psf.psf + '.tmp')
@@ -695,7 +692,7 @@ class Tclean(cleanbase.CleanBase):
         result = self._do_clean(iternum=iteration, cleanmask='', niter=0, threshold='0.0mJy',
                                 sensitivity=sequence_manager.sensitivity, result=None)
 
-        LOG.info('Replace PSF with wbawp=False PSF')
+        LOG.info('Replacing PSF with wbawp=False PSF')
         # Remove *psf.tmp.* files with clear_origin=True argument
         self._replace_psf(result_psf.psf + '.tmp', result.psf, clear_origin=False) # TODO: origin maybe be removed in production?
         del result_psf  # Not needed in further steps
@@ -747,7 +744,7 @@ class Tclean(cleanbase.CleanBase):
             new_cleanmask = self._stage_copy_mask(mask)
             threshold = self.image_heuristics.threshold(iteration, sequence_manager.threshold, inputs.hm_masking)
             nsigma = self.image_heuristics.nsigma(iteration, inputs.hm_nsigma)
-            savemodel = self.image_heuristics.savemodel(iteration, ordinal)
+            savemodel = self.image_heuristics.savemodel(iteration)
 
             seq_result = sequence_manager.iteration(new_cleanmask, self.pblimit_image,
                                                     self.pblimit_cleanmask, iteration=iteration)
@@ -822,9 +819,11 @@ class Tclean(cleanbase.CleanBase):
         they will be deleted.
         """
         for tt in ['tt0', 'tt1', 'tt2']:
+            LOG.info("Copying {o}.{tt} to {t}.{tt}".format(o=origin, tt=tt, t=target))
             shutil.rmtree('{}.{}'.format(target, tt), ignore_errors=True)
             shutil.copytree('{}.{}'.format(origin, tt), '{}.{}'.format(target, tt))
             if clear_origin:
+                LOG.info("Deleting {}.{}".format(origin, tt))
                 shutil.rmtree('{}.{}'.format(origin, tt))
 
     def _stage_copy_mask(self, mask: str) -> str:
@@ -838,33 +837,17 @@ class Tclean(cleanbase.CleanBase):
         """
         if mask is not '':
             stage_mask = 's{:d}_0.{}'.format(self.inputs.context.task_counter, mask)
-            LOG.info('Creating stage copy ({}) of user mask ({}).'.format(stage_mask, mask))
+            LOG.info('Creating mask {} to {}'.format(mask, stage_mask))
             try:
                 if os.path.isdir(stage_mask):
-                    LOG.warn('Stage mask {} already exists and it will be overwritten.'.format(stage_mask))
+                    LOG.warn('Mask {} already exists and it will be overwritten.'.format(stage_mask))
                     shutil.rmtree(stage_mask)
                 shutil.copytree(mask, stage_mask)
-                pdb.set_trace()
                 return stage_mask
             except:
                 raise IOError('User mask cannot be copied to stage mask.')
         else:
             return mask
-
-    def _get_task_stage_ordinal(self, taskname='hifv_makeimages'):
-        """Get task ordinal number (how many times the task was called before in the pipeline execution).
-
-        The order number is determined by counting the number of previous execution of
-        the task, based on the content of the context.results list. The introduction
-        of this method is necessary because VLASS-SE-CONT imaging happens in multiple
-        stages (hif_makeimages calls). Imaging parameters change from stage to stage,
-        therefore it is necessary to know what is the current stage ordinal number.
-        """
-        stage = 1
-        for r in self.context.results:
-            # Note: taskname is not a ResultsList attribute in xml recipe runs for some reason
-            if taskname in r.read().pipeline_casa_task: stage += 1
-        return stage
 
     def _do_iterative_imaging(self, sequence_manager):
 
@@ -1088,7 +1071,7 @@ class Tclean(cleanbase.CleanBase):
         return result
 
     def _do_clean(self, iternum, cleanmask, niter, threshold, sensitivity, result, nsigma=None, savemodel=None,
-                  calcres=None, calcpsf=None):
+                  calcres=None, calcpsf=None, wbawp=None):
         """
         Do basic cleaning.
         """
@@ -1166,7 +1149,8 @@ class Tclean(cleanbase.CleanBase):
                                                   parallel=parallel,
                                                   heuristics=inputs.image_heuristics,
                                                   calcpsf=calcpsf,
-                                                  calcres=calcres)
+                                                  calcres=calcres,
+                                                  wbawp=wbawp)
         clean_task = cleanbase.CleanBase(clean_inputs)
 
         clean_result = self._executor.execute(clean_task)

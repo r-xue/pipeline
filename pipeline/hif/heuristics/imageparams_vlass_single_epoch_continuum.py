@@ -11,12 +11,12 @@ LOG = infrastructure.get_logger(__name__)
 
 class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
 
-    # Update it explicitry in tclean._do_iterative_vlass_imaging()
-    vlass_stage = 0
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None, linesfile=None, imaging_params={}):
         ImageParamsHeuristics.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
         self.imaging_mode = 'VLASS-SE-CONT'
+        # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
+        self.vlass_stage = 0
 
     # niter
     def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0):
