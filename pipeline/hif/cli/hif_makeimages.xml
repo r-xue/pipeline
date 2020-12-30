@@ -154,6 +154,12 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value>2.0</value>
   </param>
 
+  <param name="clearlist" subparam="true" type="bool">
+    <shortdescription>Clear target list</shortdescription>
+    <description>Clear target list in context after successful imaging</description>
+    <value>True</value>
+  </param>
+
   <param name="masklimit" subparam="true" type="int">
     <shortdescription>Times good mask pixels for cleaning</shortdescription>
     <description>Times good mask pixels for cleaning</description>
