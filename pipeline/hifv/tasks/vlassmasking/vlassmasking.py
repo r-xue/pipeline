@@ -163,11 +163,7 @@ class Vlassmasking(basetask.StandardTaskTemplate):
         elif self.inputs.maskingmode == 'vlass-se-tier-2':
             LOG.debug("Executing mask_from_catalog masking mode = {!s}".format(self.inputs.maskingmode))
 
-            # Obrain Tier 1 mask name
-            tier1_mask = maskname_base + QLmask if not self.inputs.context.clean_list_pending[0]['mask'] else self.inputs.context.clean_list_pending[0]['mask']
-
-            # Obtain image name
-            imagename_base = self._get_bdsf_imagename(maskname_base)
+            bdsf_fitsfile = self.bdsfcompute(imagename_base)
 
             initial_catalog_fits_file = imagename_base + 'iter1b.image.smooth5.cat.fits'
 
@@ -186,8 +182,9 @@ class Vlassmasking(basetask.StandardTaskTemplate):
                                                                 mask_name=imagename_base+suffix)
 
             # combine first and second order masks
-            outfile = maskname_base + '.sum_of_masks.mask'
-            task = casa_tasks.immath(imagename=[maskname_base + suffix, tier1_mask], expr='IM0+IM1', outfile=outfile)
+            outfile = imagename_base + 'sum_of_masks.mask'
+            task = casa_tasks.immath(imagename=[imagename_base + suffix, imagename_base + QLmask],
+                                     expr='IM0+IM1', outfile=outfile)
 
             runtask = self._executor.execute(task)
 

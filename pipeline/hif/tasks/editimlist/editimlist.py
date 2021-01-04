@@ -432,17 +432,6 @@ class Editimlist(basetask.StandardTaskTemplate):
                                                  spwspec=imlist_entry['spw'], specmode=imlist_entry['specmode'],
                                                  band=None) if not inpdict['imagename'] else inpdict['imagename']
 
-        # In this case field and spwspec is not needed in the filename, furthermore, imaging is done in multiple stages
-        # prepend the STAGENUMNER string in order to differentiate them. In TcleanInputs class this is replaced by the
-        # actual stage number string.
-        if 'VLASS-SE-CONT' == img_mode:
-            imagename = th.imagename(intent=imlist_entry['intent'], field=None, spwspec=None,
-                                     specmode=imlist_entry['specmode'],
-                                     band=None) if not inpdict['imagename'] else inpdict['imagename']
-            imlist_entry['imagename'] = 's{}.{}'.format('STAGENUMBER', imagename)
-            # Try to obtain previously computed mask name
-            imlist_entry['mask'] = th.mask(results_list=inp.context.results) if not inpdict['mask'] else inpdict['mask']
-
         for key, value in imlist_entry.items():
             LOG.info("{k} = {v}".format(k=key, v=value))
 
