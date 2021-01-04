@@ -26,6 +26,8 @@
         </ParameterSet>
     </ProcessingCommand>
 
+    <!-- Tier-1 (Quick Look) mask -->
+
     <ProcessingCommand>
         <Command xmlns="">hifv_vlassmasking</Command>
         <ParameterSet>
@@ -40,6 +42,8 @@
         </ParameterSet>
     </ProcessingCommand>
 
+    <!-- Image for self-calibration -->
+
     <ProcessingCommand>
         <Command xmlns="">hif_makeimages</Command>
         <ParameterSet>
@@ -47,12 +51,10 @@
                 <Keyword xmlns="">hm_masking</Keyword>
                 <Value xmlns="">manual</Value>
             </Parameter>
-            <Parameter>
-                <Keyword xmlns="">clearlist</Keyword>
-                <Value xmlns="">False</Value>
-            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
+
+    <!-- Self calibration -->
 
     <ProcessingCommand>
         <Command xmlns="">hifv_checkflag</Command>
@@ -114,6 +116,22 @@
         </ParameterSet>
     </ProcessingCommand>
 
+    <!-- Create tier-2 mask and compute final image -->
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_editimlist</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parameter_file</Keyword>
+                <Value xmlns="">SEIP_parameter.list</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">pblimit</Keyword>
+                <Value xmlns="">0.02</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
     <ProcessingCommand>
         <Command xmlns="">hifv_vlassmasking</Command>
         <ParameterSet>
@@ -123,6 +141,18 @@
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimages</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">hm_masking</Keyword>
+                <Value xmlns="">manual</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <!-- Finish recipe, export results -->
 
     <ProcessingCommand>
         <Command xmlns="">hifv_exportvlassdata</Command>
