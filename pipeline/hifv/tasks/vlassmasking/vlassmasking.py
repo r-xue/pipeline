@@ -176,6 +176,9 @@ class Vlassmasking(basetask.StandardTaskTemplate):
         elif self.inputs.maskingmode == 'vlass-se-tier-2':
             LOG.debug("Executing mask_from_catalog masking mode = {!s}".format(self.inputs.maskingmode))
 
+            # Obrain Tier 1 mask name
+            tier1_mask = maskname_base + QLmask if not self.inputs.context.clean_list_pending[0]['mask'] else self.inputs.context.clean_list_pending[0]['mask']
+
             # Obtain image name
             imagename_base = self._get_bdsf_imagename(maskname_base)
 
@@ -197,9 +200,7 @@ class Vlassmasking(basetask.StandardTaskTemplate):
 
             # combine first and second order masks
             outfile = maskname_base + '.sum_of_masks.mask'
-            task = casa_tasks.immath(imagename=[maskname_base + suffix,
-                                                self._get_tier1_maskname(maskname_base + QLmask)],
-                                     expr='IM0+IM1', outfile=outfile)
+            task = casa_tasks.immath(imagename=[maskname_base + suffix, tier1_mask], expr='IM0+IM1', outfile=outfile)
 
             runtask = self._executor.execute(task)
 
@@ -275,18 +276,3 @@ class Vlassmasking(basetask.StandardTaskTemplate):
 
         # In case hif_makeimages result was not found.
         return imagename_base + 'iter1b.image'
-
-    def _get_tier1_maskname(self, maskname_base):
-        """
-        Tier-1 mask name to be used for computing Tier-1 and Tier-2 combined mask.
-
-        Obtain the mask name from the latest MakeImagesResult object in context.results.
-        If not found, then construct mask name from maskname_base argument.
-        """
-        for result in self.inputs.context.results:
-            result_meta = result.read()
-            if hasattr(result_meta,'taskname') and result_meta.taskname == 'hifv_vlassmasking':
-                return [r.combinedmask for r in result_meta][0]
-
-        # In case hif_makeimages result was not found.
-        return maskname_base
