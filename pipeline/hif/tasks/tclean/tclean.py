@@ -741,7 +741,7 @@ class Tclean(cleanbase.CleanBase):
             rootname, ext = os.path.splitext(result.residual)
             rootname, ext = os.path.splitext(rootname)
 
-            new_cleanmask = self._stage_copy_mask(mask)
+            new_cleanmask = 's{:d}_0.{}'.format(self.inputs.context.task_counter, mask)
             threshold = self.image_heuristics.threshold(iteration, sequence_manager.threshold, inputs.hm_masking)
             nsigma = self.image_heuristics.nsigma(iteration, inputs.hm_nsigma)
             savemodel = self.image_heuristics.savemodel(iteration)
@@ -837,7 +837,7 @@ class Tclean(cleanbase.CleanBase):
         """
         if mask is not '':
             stage_mask = 's{:d}_0.{}'.format(self.inputs.context.task_counter, mask)
-            LOG.info('Creating mask {} to {}'.format(mask, stage_mask))
+            LOG.info('Copying mask {} to {}'.format(mask, stage_mask))
             try:
                 if os.path.isdir(stage_mask):
                     LOG.warn('Mask {} already exists and it will be overwritten.'.format(stage_mask))
