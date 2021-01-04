@@ -1,5 +1,6 @@
 import glob
 import os
+import re
 
 import numpy as np
 import shutil
@@ -741,7 +742,9 @@ class Tclean(cleanbase.CleanBase):
             rootname, ext = os.path.splitext(result.residual)
             rootname, ext = os.path.splitext(rootname)
 
-            new_cleanmask = 's{:d}_0.{}'.format(self.inputs.context.task_counter, mask)
+            # replace stage substring in copied mask name
+            new_cleanmask = 's{:d}_0.{}'.format(self.inputs.context.task_counter,
+                                                re.sub('s[0123456789]+_[0123456789]+.', '', mask, 1))
             threshold = self.image_heuristics.threshold(iteration, sequence_manager.threshold, inputs.hm_masking)
             nsigma = self.image_heuristics.nsigma(iteration, inputs.hm_nsigma)
             savemodel = self.image_heuristics.savemodel(iteration)
