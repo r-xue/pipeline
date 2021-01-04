@@ -9,7 +9,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.dates import date2num, DateFormatter, MinuteLocator
 from matplotlib.axes import Axes
-from typing import Generator, List, Optional, Tuple, Union
+from matplotlib.text import Text
+from matplotlib.patches import Polygon
+from matplotlib.lines import Line2D
+from typing import Generator, List, NoReturn, Optional, Tuple, Union
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.displays.pointing as pointing
@@ -149,15 +152,15 @@ class PlotObjectHandler(object):
     by destructing only plot objects drawn in the Axes.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Construct PlotObjectHandler instance."""
         self.storage = []
 
-    def __del__(self):
+    def __del__(self) -> None:
         """Destruct PlotObjectHandler instance."""
         self.clear()
 
-    def plot(self, *args, **kwargs):
+    def plot(self, *args, **kwargs) -> List[Line2D]:
         """Wrap the method for matplotlib plot function.
 
         See documentation for matplotlib.pyplot.plot for detail.
@@ -166,7 +169,7 @@ class PlotObjectHandler(object):
         self.storage.extend(object_list)
         return object_list
 
-    def text(self, *args, **kwargs):
+    def text(self, *args, **kwargs) -> Text:
         """Wrap the method for matplotlib text function.
 
         See documentation for matplotlib.pyplot.text for detail.
@@ -175,7 +178,7 @@ class PlotObjectHandler(object):
         self.storage.append(object_list)
         return object_list
 
-    def axvspan(self, *args, **kwargs):
+    def axvspan(self, *args, **kwargs) -> Polygon:
         """Wrap the method for matplotlib axvspan function.
 
         See documentation for matplotlib.pyplot.axvspan for detail.
@@ -184,7 +187,7 @@ class PlotObjectHandler(object):
         self.storage.append(object_list)
         return object_list
 
-    def axhline(self, *args, **kwargs):
+    def axhline(self, *args, **kwargs) -> Line2D:
         """Wrap the method for matplotlib axhline function.
 
         See documentation for matplotlib.pyplot.axhline for detail.
@@ -193,7 +196,7 @@ class PlotObjectHandler(object):
         self.storage.append(object_list)
         return object_list
 
-    def clear(self):
+    def clear(self) -> None:
         """Remove all registered plot instances."""
         for obj in self.storage:
             obj.remove()
@@ -205,7 +208,7 @@ class SingleDishDisplayInputs(object):
 
     def __init__(self,
                  context: infrastructure.launcher.Context,
-                 result: infrastructure.api.Results):
+                 result: infrastructure.api.Results) -> None:
         """Construct SingleDishDisplayInputs instance.
 
         Args:
@@ -235,7 +238,7 @@ class SingleDishDisplayInputs(object):
 class SpectralImage(object):
     """Representation of four-dimensional spectral image."""
 
-    def __init__(self, imagename: str):
+    def __init__(self, imagename: str) -> None:
         """Construct SpectralImage instance.
 
         Args:
@@ -265,7 +268,7 @@ class SpectralImage(object):
             beam = ia.restoringbeam()
         self._beamsize_in_deg = qa.convert(qa.sqrt(qa.mul(beam['major'], beam['minor'])), 'deg')['value']
 
-    def _load_coordsys(self, coordsys: casa_tools.casatools.coordsys):
+    def _load_coordsys(self, coordsys: casa_tools.casatools.coordsys) -> None:
         """Load axes information of coordinate system.
 
         Args:
@@ -283,7 +286,7 @@ class SpectralImage(object):
         self.refvals = coordsys.referencevalue()['numeric']
         self.increments = coordsys.increment()['numeric']
 
-    def _load_id_coord_types(self, coord_types: casa_tools.casatools.coordsys):
+    def _load_id_coord_types(self, coord_types: casa_tools.casatools.coordsys) -> None:
         """Load indices for coordinate axes.
 
         Args:
@@ -411,7 +414,7 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
 
     def __init__(self,
                  context: infrastructure.launcher.Context,
-                 result: infrastructure.api.Results):
+                 result: infrastructure.api.Results) -> None:
         """Construct SDImageDisplayInputs instance.
 
         Args:
@@ -553,7 +556,7 @@ class SDCalibrationDisplay(object, metaclass=abc.ABCMeta):
 
     Inputs = SingleDishDisplayInputs
 
-    def __init__(self, inputs: SingleDishDisplayInputs):
+    def __init__(self, inputs: SingleDishDisplayInputs) -> None:
         """Construct SDCalibrationDisplay instance.
 
         Args:
@@ -582,7 +585,7 @@ class SDCalibrationDisplay(object, metaclass=abc.ABCMeta):
         return plots
 
     @abc.abstractmethod
-    def doplot(self, result: infrastructure.api.Results, stage_dir: str) -> Plot:
+    def doplot(self, result: infrastructure.api.Results, stage_dir: str) -> NoReturn:
         """Generate plot from the result instance.
 
         This method must be implemented in the subclasses.
@@ -594,9 +597,6 @@ class SDCalibrationDisplay(object, metaclass=abc.ABCMeta):
 
         Raises:
             NotImplementedError: This method is not implemented in the base class.
-
-        Returns:
-            Plot: Plot instance
         """
         raise NotImplementedError()
 
@@ -606,7 +606,7 @@ class SDImageDisplay(object, metaclass=abc.ABCMeta):
 
     Inputs = SDImageDisplayInputs
 
-    def __init__(self, inputs: SDImageDisplayInputs):
+    def __init__(self, inputs: SDImageDisplayInputs) -> None:
         """Construct SDImageDisplay instance.
 
         Args:
@@ -621,7 +621,7 @@ class SDImageDisplay(object, metaclass=abc.ABCMeta):
         self.antenna = self.inputs.antenna
         self.vis = self.inputs.vis
 
-    def init(self):
+    def init(self) -> None:
         """Initialize plotter using specifiec image."""
         self.image = SpectralImage(self.imagename)
         qa = casa_tools.quanta
@@ -792,7 +792,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
     """
 
     def __init__(self, nh: int, nv: int, brightnessunit: str,
-                 ticksize: int, clearpanel: bool = True, figure_id: int = None):
+                 ticksize: int, clearpanel: bool = True, figure_id: int = None) -> None:
         """Construct SparseMapAxesManager instance.
 
         Args:
@@ -936,7 +936,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
                 plt.sca(active)
         return self._axes_chan
 
-    def __adjust_integsp_for_chan(self):
+    def __adjust_integsp_for_chan(self) -> None:
         """Adjust size of Axes for integrated spectrum for channel axis.
 
         Adjust size of Axes for integrated spectrum to locate channel axis
@@ -977,7 +977,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
 
     def setup_labels(self,
                      label_ra: Union[List[float], np.ndarray],
-                     label_dec: Union[List[float], np.ndarray]):
+                     label_dec: Union[List[float], np.ndarray]) -> None:
         """Set up position labels for sparse profile map.
 
         Set up position (longitude and latitude) labels for sparse
@@ -1024,7 +1024,7 @@ class SDSparseMapPlotter(object):
     """Plotter for sparse spectral map."""
 
     def __init__(self, nh: int, nv: int, step: int, brightnessunit: str,
-                 clearpanel: bool = True, figure_id: Optional[int] = None):
+                 clearpanel: bool = True, figure_id: Optional[int] = None) -> None:
         """Construct SDSparseMapPlotter instance.
 
         Args:
@@ -1072,14 +1072,14 @@ class SDSparseMapPlotter(object):
         return self.axes.direction_reference
 
     @direction_reference.setter
-    def direction_reference(self, value):
+    def direction_reference(self, value) -> None:
         """Set direction reference string."""
         self.axes.direction_reference = value
 
     def setup_labels_relative(self,
                               refpix_list: Tuple[float, float],
                               refval_list: Tuple[float, float],
-                              increment_list: Tuple[float, float]):
+                              increment_list: Tuple[float, float]) -> None:
         """Set up position labels.
 
         Set up position labels for both horizontal and vertical axes
@@ -1114,7 +1114,7 @@ class SDSparseMapPlotter(object):
             LabelDEC[y][1] = refval + (y1 - refpix) * increment
         self.axes.setup_labels(LabelRA, LabelDEC)
 
-    def setup_labels_absolute(self, ralist: List[float], declist: List[float]):
+    def setup_labels_absolute(self, ralist: List[float], declist: List[float]) -> None:
         """Set up position labels.
 
         Set up position labels for both horizontal and vertical axes
@@ -1132,7 +1132,7 @@ class SDSparseMapPlotter(object):
 
     def setup_lines(self,
                     lines_averaged: List[float],
-                    lines_map: Optional[List[float]] = None):
+                    lines_map: Optional[List[float]] = None) -> None:
         """Set detected lines.
 
         Provided lines are displayed as shaded area. Lines given to
@@ -1147,7 +1147,7 @@ class SDSparseMapPlotter(object):
         self.lines_averaged = lines_averaged
         self.lines_map = lines_map
 
-    def setup_reference_level(self, level: Optional[float] = 0.0):
+    def setup_reference_level(self, level: Optional[float] = 0.0) -> None:
         """Set reference level of the sparse profile map.
 
         If float value is given, red horizontal line at the value is
@@ -1158,7 +1158,7 @@ class SDSparseMapPlotter(object):
         """
         self.reference_level = level
 
-    def set_global_scaling(self):
+    def set_global_scaling(self) -> None:
         """Enable global scaling.
 
         Enable global scanling. Applies the same y-axis
@@ -1166,7 +1166,7 @@ class SDSparseMapPlotter(object):
         """
         self.global_scaling = True
 
-    def unset_global_scaling(self):
+    def unset_global_scaling(self) -> None:
         """Disable global scaling.
 
         Disable global scaling. Y-axis ranges of panels
@@ -1174,7 +1174,7 @@ class SDSparseMapPlotter(object):
         """
         self.global_scaling = False
 
-    def set_deviation_mask(self, mask):
+    def set_deviation_mask(self, mask) -> None:
         """Set deviation mask.
 
         Deviation mask ranges are displayed as red bar at
@@ -1182,7 +1182,7 @@ class SDSparseMapPlotter(object):
         """
         self.deviation_mask = mask
 
-    def set_edge(self, edge: Tuple[int, int]):
+    def set_edge(self, edge: Tuple[int, int]) -> None:
         """Set edge parameter.
 
         Edge region specified by edge parameter is shaded with grey.
@@ -1192,7 +1192,7 @@ class SDSparseMapPlotter(object):
         """
         self.edge = edge
 
-    def set_atm_transmission(self, transmission: List[float], frequency: List[float]):
+    def set_atm_transmission(self, transmission: List[float], frequency: List[float]) -> None:
         """Set atmospheric transmission data.
 
         If trasnmission and frequency are given properly, atmospheric
@@ -1210,12 +1210,12 @@ class SDSparseMapPlotter(object):
             self.atm_transmission.append(transmission)
             self.atm_frequency.append(frequency)
 
-    def unset_atm_transmission(self):
+    def unset_atm_transmission(self) -> None:
         """Disable displaying atmospheric transmission."""
         self.atm_transmission = None
         self.atm_frequency = None
 
-    def set_channel_axis(self):
+    def set_channel_axis(self) -> None:
         """Enable channel axis for integrated spectrum.
 
         Channel axis is displayed in the upper side of the Axes
@@ -1223,11 +1223,11 @@ class SDSparseMapPlotter(object):
         """
         self.channel_axis = True
 
-    def unset_channel_axis(self):
+    def unset_channel_axis(self) -> None:
         """Disable channel axis for integrated spectrum."""
         self.channel_axis = False
 
-    def add_channel_axis(self, frequency: List[float]):
+    def add_channel_axis(self, frequency: List[float]) -> None:
         """Add channel axis to integrated spectrum.
 
         Args:
@@ -1436,7 +1436,7 @@ class SDSparseMapPlotter(object):
 
         return True
 
-    def done(self):
+    def done(self) -> None:
         """Clean up plot."""
         plt.close()
         del self.axes
