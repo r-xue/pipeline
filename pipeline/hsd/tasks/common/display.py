@@ -1,6 +1,7 @@
 """Set of base classes and utility functions for display modules."""
 import abc
 import datetime
+import itertools
 import math
 import os
 
@@ -140,67 +141,6 @@ def utc_locator(start_time: Optional[float] = None,
 
         # print tick_interval
         return MinuteLocator(byminute=list(range(0, 60, tick_interval)))
-
-
-class PlotObjectHandler(object):
-    """Manage lifecycle of matplotlib plot objects (lines, texts).
-
-    PlotObjectHandler is introduced to reuse existing matplotlib
-    Axes instance when generating a lot of similar plots. Since
-    construction of Axes instance is expensive operation,
-    PlotObjectHandler enables to reuse existing Axes instance
-    by destructing only plot objects drawn in the Axes.
-    """
-
-    def __init__(self) -> None:
-        """Construct PlotObjectHandler instance."""
-        self.storage = []
-
-    def __del__(self) -> None:
-        """Destruct PlotObjectHandler instance."""
-        self.clear()
-
-    def plot(self, *args, **kwargs) -> List[Line2D]:
-        """Wrap the method for matplotlib plot function.
-
-        See documentation for matplotlib.pyplot.plot for detail.
-        """
-        object_list = plt.plot(*args, **kwargs)
-        self.storage.extend(object_list)
-        return object_list
-
-    def text(self, *args, **kwargs) -> Text:
-        """Wrap the method for matplotlib text function.
-
-        See documentation for matplotlib.pyplot.text for detail.
-        """
-        object_list = plt.text(*args, **kwargs)
-        self.storage.append(object_list)
-        return object_list
-
-    def axvspan(self, *args, **kwargs) -> Polygon:
-        """Wrap the method for matplotlib axvspan function.
-
-        See documentation for matplotlib.pyplot.axvspan for detail.
-        """
-        object_list = plt.axvspan(*args, **kwargs)
-        self.storage.append(object_list)
-        return object_list
-
-    def axhline(self, *args, **kwargs) -> Line2D:
-        """Wrap the method for matplotlib axhline function.
-
-        See documentation for matplotlib.pyplot.axhline for detail.
-        """
-        object_list = plt.axhline(*args, **kwargs)
-        self.storage.append(object_list)
-        return object_list
-
-    def clear(self) -> None:
-        """Remove all registered plot instances."""
-        for obj in self.storage:
-            obj.remove()
-        self.storage = []
 
 
 class SingleDishDisplayInputs(object):
@@ -1019,6 +959,26 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
         plt.text(0.5, 1, declabel, horizontalalignment='center', verticalalignment='bottom', size=(self.ticksize + 1))
         plt.text(1, 0.5, ralabel, horizontalalignment='right', verticalalignment='center', size=(self.ticksize + 1))
 
+    def clear_plot_objects(self) -> None:
+        """Remove all plot objects from Axes.
+
+        Remove all plot objects, which includes lines, patches, and texts,
+        from the Axes objects.
+        """
+        all_axes = [self._axes_integsp, self._axes_atm, self._axes_chan]
+        if self._axes_spmap is not None:
+            all_axes.extend(self._axes_spmap)
+        active_axes = [a for a in all_axes if a is not None]
+        LOG.trace('There are %s active axes objects', len(active_axes))
+        for a in active_axes:
+            LOG.trace('Axes: %s', a)
+            LOG.trace('Lines: %s', a.lines)
+            LOG.trace('Patches: %s', a.patches)
+            LOG.trace('Texts: %s', a.texts)
+            for obj in itertools.chain(a.lines[:], a.patches[:], a.texts[:]):
+                LOG.trace('Removing %s...', obj)
+                obj.remove()
+
 
 class SDSparseMapPlotter(object):
     """Plotter for sparse spectral map."""
@@ -1260,8 +1220,6 @@ class SDSparseMapPlotter(object):
         Returns:
             bool: Whether or not if plot is successful.
         """
-        plot_helper = PlotObjectHandler()
-
         overlay_atm_transmission = self.atm_transmission is not None
 
         spmin = averaged_data.min()
@@ -1320,7 +1278,7 @@ class SDSparseMapPlotter(object):
         LOG.info('global_ymin=%s, global_ymax=%s', global_ymin, global_ymax)
 
         plt.gcf().sca(self.axes.axes_integsp)
-        plot_helper.plot(frequency, averaged_data, color='b', linestyle='-', linewidth=0.4)
+        plt.plot(frequency, averaged_data, color='b', linestyle='-', linewidth=0.4)
         if self.channel_axis is True:
             self.add_channel_axis(frequency)
         (_xmin, _xmax, _ymin, _ymax) = plt.axis()
@@ -1333,21 +1291,21 @@ class SDSparseMapPlotter(object):
             fedge1 = ch_to_freq(ch1-1, frequency)
             fedge2 = ch_to_freq(len(frequency)-ch2-1, frequency)
             fedge3 = ch_to_freq(len(frequency)-1, frequency)
-            plot_helper.axvspan(fedge0, fedge1, color='lightgray')
-            plot_helper.axvspan(fedge2, fedge3, color='lightgray')
+            plt.axvspan(fedge0, fedge1, color='lightgray')
+            plt.axvspan(fedge2, fedge3, color='lightgray')
             fedge_span = (fedge0, fedge1, fedge2, fedge3)
         if self.lines_averaged is not None:
             for chmin, chmax in self.lines_averaged:
                 fmin = ch_to_freq(chmin, frequency)
                 fmax = ch_to_freq(chmax, frequency)
                 LOG.debug('plotting line range for mean spectrum: [%s, %s]', chmin, chmax)
-                plot_helper.axvspan(fmin, fmax, color='cyan')
+                plt.axvspan(fmin, fmax, color='cyan')
         if self.deviation_mask is not None:
             LOG.debug('plotting deviation mask %s', self.deviation_mask)
             for chmin, chmax in self.deviation_mask:
                 fmin = ch_to_freq(chmin, frequency)
                 fmax = ch_to_freq(chmax, frequency)
-                plot_helper.axvspan(fmin, fmax, ymin=0.95, ymax=1, color='red')
+                plt.axvspan(fmin, fmax, ymin=0.95, ymax=1, color='red')
         if overlay_atm_transmission:
             plt.gcf().sca(self.axes.axes_atm)
             amin = 100
@@ -1355,7 +1313,7 @@ class SDSparseMapPlotter(object):
             for (_t, f) in zip(self.atm_transmission, self.atm_frequency):
                 # fraction -> percentage
                 t = _t * 100
-                plot_helper.plot(f, t, color='m', linestyle='-', linewidth=0.4)
+                plt.plot(f, t, color='m', linestyle='-', linewidth=0.4)
                 amin = min(amin, t.min())
                 amax = max(amax, t.max())
 
@@ -1398,16 +1356,16 @@ class SDSparseMapPlotter(object):
                               ymin, ymax, global_ymin, global_ymax)
                 plt.gcf().sca(self.axes.axes_spmap[y + (self.nh - x - 1) * self.nv])
                 if map_data[x][y].min() > NoDataThreshold:
-                    plot_helper.plot(frequency, map_data[x][y], color='b', linestyle='-', linewidth=0.2)
+                    plt.plot(frequency, map_data[x][y], color='b', linestyle='-', linewidth=0.2)
                     if self.lines_map is not None and self.lines_map[x][y] is not None:
                         for chmin, chmax in self.lines_map[x][y]:
                             fmin = ch_to_freq(chmin, frequency)
                             fmax = ch_to_freq(chmax, frequency)
                             LOG.debug('plotting line range for %s, %s: [%s, %s]', x, y, chmin, chmax)
-                            plot_helper.axvspan(fmin, fmax, color='cyan')
+                            plt.axvspan(fmin, fmax, color='cyan')
                     if fedge_span is not None:
-                        plot_helper.axvspan(fedge_span[0], fedge_span[1], color='lightgray')
-                        plot_helper.axvspan(fedge_span[2], fedge_span[3], color='lightgray')
+                        plt.axvspan(fedge_span[0], fedge_span[1], color='lightgray')
+                        plt.axvspan(fedge_span[2], fedge_span[3], color='lightgray')
 
                     # elif self.lines_averaged is not None:
                     #     for chmin, chmax in self.lines_averaged:
@@ -1417,11 +1375,11 @@ class SDSparseMapPlotter(object):
                     #                   x, y, chmin, chmax)
                     #        plot_helper.axvspan(fmin, fmax, color='cyan')
                     if is_valid_fit_result:
-                        plot_helper.plot(frequency, fit_result[x][y], color='r', linewidth=0.4)
+                        plt.plot(frequency, fit_result[x][y], color='r', linewidth=0.4)
                     elif self.reference_level is not None and ymin < self.reference_level and self.reference_level < ymax:
-                        plot_helper.axhline(self.reference_level, color='r', linewidth=0.4)
+                        plt.axhline(self.reference_level, color='r', linewidth=0.4)
                 else:
-                    plot_helper.text((xmin + xmax) / 2.0, (ymin + ymax) / 2.0, 'NO DATA', ha='center', va='center',
+                    plt.text((xmin + xmax) / 2.0, (ymin + ymax) / 2.0, 'NO DATA', ha='center', va='center',
                                      size=(self.ticksize + 1))
                 plt.axis((xmin, xmax, ymin, ymax))
 
@@ -1432,7 +1390,7 @@ class SDSparseMapPlotter(object):
             plt.savefig(figfile, format='png', dpi=DPIDetail)
         LOG.debug('figfile=\'%s\'', figfile)
 
-        plot_helper.clear()
+        self.axes.clear_plot_objects()
 
         return True
 
