@@ -4,7 +4,6 @@ This module defines common single dish Results and task container Classes.
 Classes and Methods:
     absolute_path: A method to convert a path to an absolute path.
     SingleDishResults: Common single dish Results class.
-    ParameterContainerJob: A container class to store task with parameters. 
 """
 import os
 
@@ -88,40 +87,3 @@ class SingleDishResults(basetask.Results):
         # taskname = self.task if hasattr(self,'task') else 'none'
         s = '%s:\n\toutcome is %s' % (self.__class__.__name__, self._outcome_name())
         return s
-
-
-# TODO(ksugimoto) THIS CLASS WILL BE REMOVED SHORTLY.
-# TODO(ksugimoto) IGNORE IN CODE REVIEW.
-class ParameterContainerJob(object):
-    """
-    A container class to store task class object with parameter values.
-    
-    Attributes:
-        task: A task class object to execute.
-        parameters: A disctionary of task parameters (key: parameter name,
-            value: parameter value) to invoke task.
-    """
-    
-    def __init__(self, task: basetask.StandardTaskTemplate, **parameters):
-        """
-        Initialize class attributes.
-        
-        Args:
-            task: Task to be executed.
-            **parameters: Task parameters and their values to invoke task.
-        """
-        self.task = task
-        self.parameters = parameters
-
-    def execute(self, dry_run: bool=True) -> basetask.Results:
-        """
-        Invoke task using given parameters.
-        
-        Args:
-            dry_run: Run task if False, or only display commands if True. 
-        
-        Retruns:
-            A Result object of the task.
-        """
-        result = self.task.execute(dry_run, **self.parameters)
-        return result
