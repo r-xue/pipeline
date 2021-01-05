@@ -109,7 +109,7 @@ def direction_recover( ra:float, dec:float, org_direction:Direction ) -> Tuple[f
     return new_ra, new_dec
 
 
-def direction_convert(direction:Direction, mepoch:Epoch, mposition:Position, outframe:str) -> Tuple[Quantity, Quantity]
+def direction_convert(direction:Direction, mepoch:Epoch, mposition:Position, outframe:str) -> Tuple[Quantity, Quantity]:
     """  
     Convert the frame of the 'direction' to 'outframe'
 
