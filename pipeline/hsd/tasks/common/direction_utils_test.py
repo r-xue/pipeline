@@ -1,13 +1,13 @@
 import pytest
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
+from pipeline.infrastructure import casa_tools
 from pipeline.hsd.tasks.common.direction_utils import direction_shift, direction_offset, direction_recover, direction_convert
 
 LOG = infrastructure.get_logger(__name__)
 
-me = casatools.measures
-qa = casatools.quanta
+me = casa_tools.measures
+qa = casa_tools.quanta
 
 # ----------------------------------------------------------------------------
 
