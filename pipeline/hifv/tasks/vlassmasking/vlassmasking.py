@@ -56,7 +56,7 @@ class VlassmaskingResults(basetask.Results):
         # NOTE: this is might be a temporary solution, later the mask name might be determined from context.results
         # during hif_makeimages task run.
         if len(context.clean_list_pending[0]) == 0:
-            LOG.warning('Clean list pending is empty. Mask name was not set for imaging target.')
+            LOG.error('Clean list pending is empty. Mask name was not set for imaging target.')
             return
         elif 'mask' in context.clean_list_pending[0].keys() and context.clean_list_pending[0]['mask']:
             LOG.warning('Clean list pending already contains a mask selection. Using {} instead of {}.'.format(
