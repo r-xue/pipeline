@@ -551,6 +551,20 @@ class CleanBase(basetask.StandardTaskTemplate):
             tclean_job_parameters['calcres'] = False
             job = casa_tasks.tclean(**tclean_job_parameters)
             tclean_result2 = self._executor.execute(job)
+        # Up until CASA 6.1 writing the model column parallel is slow because
+        # additional computations are performed beside writing to disk.
+        # CASA 6.2 should solve this problem.
+        elif (tclean_job_parameters['parallel'] == True) and \
+             (tclean_job_parameters['savemodel'] == 'modelcolumn'):
+
+            tclean_job_parameters['savemodel'] = 'none'
+            job = casa_tasks.tclean(**tclean_job_parameters)
+            tclean_result = self._executor.execute(job)
+
+            tclean_job_parameters['savemodel'] = 'modelcolumn'
+            tclean_job_parameters['parallel'] = False
+            job = casa_tasks.tclean(**tclean_job_parameters)
+            tclean_result2 = self._executor.execute(job)
         else:
             job = casa_tasks.tclean(**tclean_job_parameters)
             tclean_result = self._executor.execute(job)
