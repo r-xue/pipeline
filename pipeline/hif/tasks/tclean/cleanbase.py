@@ -563,6 +563,9 @@ class CleanBase(basetask.StandardTaskTemplate):
 
             tclean_job_parameters['savemodel'] = 'modelcolumn'
             tclean_job_parameters['parallel'] = False
+            tclean_job_parameters['niter'] = 0
+            tclean_job_parameters['calcpsf'] = False
+            tclean_job_parameters['calcres'] = False
             job = casa_tasks.tclean(**tclean_job_parameters)
             tclean_result2 = self._executor.execute(job)
         else:
