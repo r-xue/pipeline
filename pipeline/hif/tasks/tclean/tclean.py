@@ -21,6 +21,7 @@ from . import cleanbase
 from .automaskthresholdsequence import AutoMaskThresholdSequence
 from .imagecentrethresholdsequence import ImageCentreThresholdSequence
 from .manualmaskthresholdsequence import ManualMaskThresholdSequence
+from .vlassmaskthresholdsequence import VlassMaskThresholdSequence
 from .nomaskthresholdsequence import NoMaskThresholdSequence
 from .resultobjects import TcleanResult
 
@@ -594,6 +595,14 @@ class Tclean(cleanbase.CleanBase):
             sequence_manager = AutoMaskThresholdSequence(multiterm=multiterm,
                                                          gridder=inputs.gridder, threshold=threshold,
                                                          sensitivity=sensitivity, niter=inputs.niter)
+
+        # VLASS-SE masking
+        # TODO: may introduce new hm_masking mode?
+        elif inputs.hm_masking == 'manual' and self.image_heuristics.imaging_mode == 'VLASS-SE-CONT':
+            sequence_manager = VlassMaskThresholdSequence(multiterm=multiterm, mask=inputs.mask,
+                                                          gridder=inputs.gridder, threshold=threshold,
+                                                          sensitivity=sensitivity, niter=inputs.niter)
+
         # Manually supplied mask
         elif inputs.hm_masking == 'manual':
             sequence_manager = ManualMaskThresholdSequence(multiterm=multiterm, mask=inputs.mask,
@@ -735,7 +744,10 @@ class Tclean(cleanbase.CleanBase):
         LOG.info('Continue cleaning')
         # Continue iterating (calcpsf and calcres are set automatically false)
         iteration = 1
-        do_not_copy_mask = False
+
+        # Do not reuse mask from earlier iteration stage. <imagename>.iter<n>.mask (copy of mask from iteration n-1)
+        # would lead to collision with new_cleanmask of nth iteration. VLASS-SE-CONT uses two different masks.
+        do_not_copy_mask = True
         for mask in vlass_masks:
             # Create the name of the next clean mask from the root of the
             # previous residual image.
@@ -828,29 +840,6 @@ class Tclean(cleanbase.CleanBase):
             if clear_origin:
                 LOG.info("Deleting {}.{}".format(origin, tt))
                 shutil.rmtree('{}.{}'.format(origin, tt))
-
-    def _stage_copy_mask(self, mask: str) -> str:
-        """Create a copy of user mask to be used in the current stage.
-
-        Args:
-            mask: user mask name (created by hifv_vlassmasking task)
-
-        Returns:
-            new mask name if input mask exists otherwise input is returned unchanged.
-        """
-        if mask is not '':
-            stage_mask = 's{:d}_0.{}'.format(self.inputs.context.task_counter, mask)
-            LOG.info('Copying mask {} to {}'.format(mask, stage_mask))
-            try:
-                if os.path.isdir(stage_mask):
-                    LOG.warn('Mask {} already exists and it will be overwritten.'.format(stage_mask))
-                    shutil.rmtree(stage_mask)
-                shutil.copytree(mask, stage_mask)
-                return stage_mask
-            except:
-                raise IOError('User mask cannot be copied to stage mask.')
-        else:
-            return mask
 
     def _do_iterative_imaging(self, sequence_manager):
 
