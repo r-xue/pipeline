@@ -1,9 +1,9 @@
 import numpy as np
 
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
 import pipeline.domain.measures as measures
+from pipeline.infrastructure import casa_tools
 from .imageparams_base import ImageParamsHeuristics
 
 LOG = infrastructure.get_logger(__name__)
@@ -40,7 +40,7 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
         if (beam_natural is None) and (protect_long is None):
             return []
 
-        cqa = casatools.quanta
+        cqa = casa_tools.quanta
 
         repr_target, repr_source, repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, sensitivityGoal = self.representative_target()
 
@@ -82,7 +82,7 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
     def dr_correction(self, threshold, dirty_dynamic_range, residual_max, intent, tlimit):
         """Adjustment of cleaning threshold due to dynamic range limitations."""
 
-        qaTool = casatools.quanta
+        qaTool = casa_tools.quanta
         maxEDR_used = False
         DR_correction_factor = 1.0
 
@@ -380,7 +380,7 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
         else:
             # Fallback to circular mask if auto-boxing fails.
             # CAS-10489: old centralregion option needs higher threshold
-            cqa = casatools.quanta
+            cqa = casa_tools.quanta
             return '%sJy' % (cqa.getvalue(cqa.mul(threshold, 2.0))[0])
 
     def intent(self):

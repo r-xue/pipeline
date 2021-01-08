@@ -12,7 +12,7 @@ import uuid
 from .mpihelpers import MPIEnvironment
 
 from . import api
-from . import casatools
+from . import casa_tools
 from . import filenamer
 from . import jobrequest
 from . import logging
@@ -76,7 +76,7 @@ def result_finaliser(method):
 def capture_log(method):
     def capture(self, *args, **kw):
         # get the size of the CASA log before task execution
-        logfile = casatools.log.logfile()
+        logfile = casa_tools.log.logfile()
         size_before = os.path.getsize(logfile)
 
         # execute the task
@@ -776,7 +776,7 @@ class Executor(object):
         :rtype: :class:`~pipeline.api.Result`
         """
         # execute the job, capturing its results object                
-        result = job.execute(dry_run=self._dry_run, *kwargs)
+        result = job.execute(dry_run=self._dry_run, **kwargs)
 
         if self._dry_run:
             return result

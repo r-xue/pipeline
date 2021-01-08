@@ -1,6 +1,5 @@
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
-import pipeline.infrastructure.logging as logging
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -12,7 +11,7 @@ def direction_shift( direction, reference, origin ):
     if direction['refer'] != reference['refer']:
         raise RuntimeError( "'refer' of reference and direction should be identical" )
 
-    me = casatools.measures
+    me = casa_tools.measures
     offset = me.separation( reference, origin )
     posang = me.posangle( reference, origin )
     new_direction = me.shift( direction, offset=offset, pa=posang )
@@ -25,7 +24,7 @@ def direction_offset( direction, reference ):
     if direction['refer'] != reference['refer']:
         raise RuntimeError( "'refer' of reference and direction should be identical" )
 
-    me = casatools.measures
+    me = casa_tools.measures
     offset = me.separation( reference, direction )
     posang = me.posangle( reference, direction )
 
@@ -37,8 +36,8 @@ def direction_offset( direction, reference ):
 
 
 def direction_recover( ra, dec, org_direction ):
-    me = casatools.measures
-    qa = casatools.quanta
+    me = casa_tools.measures
+    qa = casa_tools.quanta
 
     direction = me.direction( org_direction['refer'],
                               str(ra)+'deg', str(dec)+'deg' )
@@ -64,7 +63,7 @@ def direction_convert(direction, mepoch, mposition, outframe):
         return direction['m0'], direction['m1']
 
     # conversion using measures tool
-    me = casatools.measures
+    me = casa_tools.measures
     me.doframe(mepoch)
     me.doframe(mposition)
     out_direction = me.measure(direction, outframe)

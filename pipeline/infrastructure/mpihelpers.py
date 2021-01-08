@@ -290,9 +290,6 @@ if MPIEnvironment.is_mpi_enabled:
             __codepath = os.path.join(*_splitall(__file__)[0:-3])
             __client.push_command_request('sys.path.insert(0, %r)' % __codepath, block=True, target_server=mpi_server_list)
 
-            # LOG.warning('Executing tclean_pg import on MPI servers to work around import bug in CASA stable')
-            # __client.push_command_request('from tclean_pg import tclean_pg as tclean', block=True, target_server=mpi_server_list)
-
             __client.push_command_request('import pipeline', block=True, target_server=mpi_server_list)
             # __client.push_command_request('pipeline.infrastructure.logging.set_logging_level(level="trace")', block=True, target_server=mpi_server_list)
 

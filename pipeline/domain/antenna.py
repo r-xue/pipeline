@@ -2,7 +2,7 @@
 """
 import pprint
 
-import pipeline.infrastructure.casatools as casatools
+from pipeline.infrastructure import casa_tools
 
 _pprinter = pprint.PrettyPrinter()
 
@@ -60,7 +60,7 @@ class Antenna(object):
         self.latitude = position['m1']
         self.height = position['m2']
 
-        mt = casatools.measures
+        mt = casa_tools.measures
         self.direction = mt.direction(v0=self.longitude, v1=self.latitude)
 
     def __repr__(self):
@@ -74,7 +74,7 @@ class Antenna(object):
             self.diameter)
 
     def __str__(self):
-        qt = casatools.quanta
+        qt = casa_tools.quanta
         lon = qt.tos(self.longitude) 
         lat = qt.tos(self.latitude) 
         return '<Antenna {id} (lon={lon}, lat={lat})>'.format(

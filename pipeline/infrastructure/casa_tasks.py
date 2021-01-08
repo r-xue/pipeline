@@ -106,10 +106,6 @@ def imstat(*v, **k):
     return _get_job(casatasks.imstat, *v, **k)
 
 
-def imval(*v, **k):
-    return _get_job(casatasks.imval, *v, **k)
-
-
 def imsubimage(*v, **k):
     return _get_job(casatasks.imsubimage, *v, **k)
 
