@@ -5,18 +5,16 @@ import glob
 import itertools
 import math
 from matplotlib.animation import FuncAnimation, ImageMagickWriter
-from pipeline.domain.datatable import DataTableImpl
-from typing import List
-from typing import Tuple
-from typing import Optional
 import matplotlib.pyplot as plt
 import numpy as np
 from operator import sub
 import os
-import sys
 import pipeline.domain.datatable as datatable
+from pipeline.domain.datatable import DataTableImpl
 import pipeline.infrastructure.logging as logging
 from pipeline.infrastructure import casa_tools
+import sys
+from typing import List, Optional, Tuple
 
 LOG = logging.get_logger(__name__)
 
@@ -26,7 +24,7 @@ MetaDataSet = collections.namedtuple(
     ['timestamp', 'dtrow', 'field', 'antenna', 'ra', 'dec', 'srctype', 'pflag'])
 
 
-def distance(x0: float, y0: float, x1: float, y1: float) -> float:
+def distance(x0: float, y0: float, x1: float, y1: float) -> np.ndarray:
     """
     Compute distance between two points (x0, y0) and (x1, y1).
 
@@ -43,7 +41,7 @@ def distance(x0: float, y0: float, x1: float, y1: float) -> float:
     return np.hypot(_dx, _dy)
 
 
-def read_readonly_data(table: DataTableImpl) -> tuple:
+def read_readonly_data(table: DataTableImpl) -> Tuple[DataTableImpl, np.ndarray, DataTableImpl, DataTableImpl, DataTableImpl, DataTableImpl, DataTableImpl]:
     """
     Extract necerrary data from datatable instance.
     
@@ -72,7 +70,7 @@ def read_readwrite_data(table: DataTableImpl) -> np.ndarray:
         table: datatable instance
         
     Returns:
-        pflag: an array of online flag status
+        pflag: np.ndarray of online flag status
     """
     pflags = table.getcol('FLAG_PERMANENT')
     pflag = pflags[0, datatable.OnlineFlagIndex, :]
@@ -155,7 +153,7 @@ def get_science_target_fields(metadata: MetaDataSet) -> np.ndarray:
         metadata: MetaDataSet extracted from a datatable
 
     Returns: 
-        list of field ids for science targets
+        np.ndarray of field ids for science targets
     """
     return np.unique(metadata.field[metadata.srctype == 0])
 
@@ -267,7 +265,7 @@ def find_time_gap(timestamp: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     return gsmall, glarge
 
 
-def gap_gen(gaplist: List, length: Optional[int]=None) -> tuple:
+def gap_gen(gaplist: List[int], length: Optional[int]=None) -> Tuple[int, int]:
     """
     Generate range of data (start and end indices) from given gap list.
     
@@ -291,7 +289,7 @@ def gap_gen(gaplist: List, length: Optional[int]=None) -> tuple:
         yield gaplist[-1] + 1, n
 
 
-def get_raster_distance(ra: np.ndarray, dec: np.ndarray, gaplist: List) -> np.ndarray:
+def get_raster_distance(ra: np.ndarray, dec: np.ndarray, gaplist: List[int]) -> np.ndarray:
     """
     Compute list of distances between raster rows.
     
@@ -304,7 +302,7 @@ def get_raster_distance(ra: np.ndarray, dec: np.ndarray, gaplist: List) -> np.nd
         gaplist: list of indices indicating gaps between raster rows
 
     Returns:
-        list of distances between raster rows
+        np.ndarray of distances between raster rows
     """
     x1 = ra[:gaplist[0] + 1].mean()
     y1 = dec[:gaplist[0] + 1].mean()
@@ -333,10 +331,10 @@ def find_raster_gap(timestamp: np.ndarray, ra: np.ndarray, dec: np.ndarray, time
         timestamp: np.ndarray of time stamp
         ra: np.ndarray of RA
         dec: np.ndarray of Dec
-        time_gap: list of index of time gaps, defaults to None
+        time_gap: np.ndarray of index of time gaps, defaults to None
 
     Returns:
-        list of index indicating boundary between raster maps
+        np.ndarray of index indicating boundary between raster maps
     """
     if time_gap is None:
         timegap_small, _ = find_time_gap(timestamp)
@@ -350,7 +348,7 @@ def find_raster_gap(timestamp: np.ndarray, ra: np.ndarray, dec: np.ndarray, time
     return raster_gap
 
 
-def flag_incomplete_raster(meta:MetaDataSet, raster_gap: List, nd_raster: int, nd_row: int) -> np.ndarray:
+def flag_incomplete_raster(meta:MetaDataSet, raster_gap: List[int], nd_raster: int, nd_row: int) -> np.ndarray:
     """
     Flag incomplete raster map.
 
@@ -369,7 +367,7 @@ def flag_incomplete_raster(meta:MetaDataSet, raster_gap: List, nd_raster: int, n
         nd_row: typical number of data per raster row (MM)
 
     Returns:
-        list of index for raster map
+        np.ndarray of index for raster map
     """
     gap = gap_gen(raster_gap, len(meta.timestamp))
     nd = np.asarray([e - s for s, e in gap])
@@ -393,7 +391,7 @@ def flag_incomplete_raster(meta:MetaDataSet, raster_gap: List, nd_raster: int, n
     return idx
 
 
-def flag_worm_eaten_raster(meta: MetaDataSet, raster_gap: List, nd_row: int) -> np.ndarray:
+def flag_worm_eaten_raster(meta: MetaDataSet, raster_gap: List[int], nd_row: int) -> np.ndarray:
     """
     Flag raster map if number of continuous flagged data exceeds upper limit given by nd_row.
 
@@ -409,7 +407,7 @@ def flag_worm_eaten_raster(meta: MetaDataSet, raster_gap: List, nd_row: int) -> 
         nd_row: typical number of data per raster row (MM)
 
     Returns:
-        list of index for raster map
+        np.ndarray of index for raster map
     """
     gap = gap_gen(raster_gap, len(meta.timestamp))
     # flag
@@ -436,7 +434,7 @@ def flag_worm_eaten_raster(meta: MetaDataSet, raster_gap: List, nd_row: int) -> 
     return idx
 
 
-def get_raster_flag_list(flagged1: List, flagged2: List, raster_gap: List, ndata: int) -> np.ndarray:
+def get_raster_flag_list(flagged1: List[int], flagged2: List[int], raster_gap: List[int], ndata: int) -> np.ndarray:
     """
     Merge flag result and convert raster id to list of data index.
 
@@ -447,7 +445,7 @@ def get_raster_flag_list(flagged1: List, flagged2: List, raster_gap: List, ndata
         ndata: total number of data points
 
     Returns:
-        list of data ids to be flagged
+        np.ndarray of data ids to be flagged
     """
     flagged = set(flagged1).union(set(flagged2))
     gap = list(gap_gen(raster_gap, ndata))
@@ -456,15 +454,15 @@ def get_raster_flag_list(flagged1: List, flagged2: List, raster_gap: List, ndata
     return data_ids
 
 
-def flag_raster_map(metadata: MetaDataSet) -> List:
+def flag_raster_map(metadata: MetaDataSet) -> List[int]:
     """
     Return list of index to be flagged by flagging heuristics for raster scan.
 
     Args:
-        meta: input MetaDataSet to analyze
+        metadata: input MetaDataSet to analyze
 
     Returns:
-        per-antenna list of index to be flagged
+        per-antenna list of indice to be flagged
     """
     field_list = get_science_target_fields(metadata)
 
@@ -499,7 +497,7 @@ def find_most_frequent(v: np.ndarray) -> int:
     return mode
 
 
-def flag_raster_map_per_field(metadata: MetaDataSet, field_id: int) -> List:
+def flag_raster_map_per_field(metadata: MetaDataSet, field_id: int) -> List[int]:
     """
     Flag raster map based on two flagging heuristics for given field id.
 
@@ -627,7 +625,7 @@ def get_angle(dx: float, dy: float, aspect_ratio: float=1) -> float:
     return offset + theta
 
 
-def anim_gen(ra: np.ndarray, dec: np.ndarray, idx_generator, dist_list: np.ndarray, cmap) -> tuple:
+def anim_gen(ra: np.ndarray, dec: np.ndarray, idx_generator, dist_list: np.ndarray, cmap) -> Tuple[None, None, cmap, bool]:
     """
     Generate position, color and boolean flag for generate_animation.
 
@@ -661,7 +659,7 @@ def anim_gen(ra: np.ndarray, dec: np.ndarray, idx_generator, dist_list: np.ndarr
     yield None, None, color, raster_flag
 
 
-def animate(i: tuple):
+def animate(i: Tuple):
     """
     Generate plot corresponding to single frame.
 
@@ -688,13 +686,13 @@ def animate(i: tuple):
     return lines
 
 
-def generate_animation(ra: np.ndarray, dec: np.ndarray, gaplist: List, figfile: str='movie.gif'):
+def generate_animation(ra: np.ndarray, dec: np.ndarray, gaplist: List[int], figfile: str='movie.gif') -> None:
     """
     Generate animation GIF file to illustrate observing pattern.
 
     Args:
-        ra: list of RA
-        dec: list of Dec
+        ra: np.ndarray of RA
+        dec: np.ndarray of Dec
         gaplist: list of gaps between raster rows
         figfile: output file name, defaults to 'movie.gif'
     """
