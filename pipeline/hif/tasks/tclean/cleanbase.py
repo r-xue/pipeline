@@ -566,6 +566,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             tclean_job_parameters['niter'] = 0
             tclean_job_parameters['calcpsf'] = False
             tclean_job_parameters['calcres'] = False
+            tclean_job_parameters['mask'] = ''
             job = casa_tasks.tclean(**tclean_job_parameters)
             tclean_result2 = self._executor.execute(job)
         else:
