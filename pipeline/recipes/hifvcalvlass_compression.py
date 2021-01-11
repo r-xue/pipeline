@@ -103,6 +103,9 @@ def hifvcalvlass(vislist, importonly=False, pipelinemode='automatic', interactiv
         # Plotting Summary
         hifv_plotsummary(pipelinemode=pipelinemode)
 
+        # Apply time offsets to the pointing table
+        hifv_fixpointing(pipelinemode=pipelinemode)        
+
         # Make a list of expected point source calibrators to be cleaned
         # hif_makeimlist(intent='PHASE,BANDPASS', pipelinemode=pipelinemode)
 
