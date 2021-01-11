@@ -32,19 +32,24 @@ class testBPdcalsSummaryChart(object):
         delay_scan_select_string = self.context.evla['msinfo'][self.ms.name].delay_scan_select_string
 
         if prefix == 'BPcal':
-            job = casa_tasks.plotms(vis=self.ms.name, xaxis='freq', yaxis='amp', ydatacolumn='corrected', selectdata=True,
-                             field=bandpass_field_select_string, scan=bandpass_scan_select_string,
-                             correlation=corrstring, averagedata=True, avgtime='1e8', avgscan=True, transform=False,
-                             extendflag=False, iteraxis='', coloraxis='antenna2', plotrange=[], title='',
-                             xlabel='', ylabel='', showmajorgrid=False, showminorgrid=False, plotfile=figfile,
-                             overwrite=True, clearplots=True, showgui=False)
+            job = casa_tasks.plotms(vis=self.ms.name, xaxis='freq', yaxis='amp', ydatacolumn='corrected',
+                                    selectdata=True,
+                                    field=bandpass_field_select_string, scan=bandpass_scan_select_string,
+                                    correlation=corrstring, averagedata=True, avgtime='1e8', avgscan=True,
+                                    transform=False,
+                                    extendflag=False, iteraxis='', coloraxis='antenna2', plotrange=[], title='',
+                                    xlabel='', ylabel='', showmajorgrid=False, showminorgrid=False, plotfile=figfile,
+                                    overwrite=True, clearplots=True, showgui=False)
 
         if (delay_scan_select_string != bandpass_scan_select_string) and prefix == 'delaycal':
-            job = casa_tasks.plotms(vis=self.ms.name, xaxis='freq', yaxis='amp', ydatacolumn='corrected', selectdata=True,
-                             scan=delay_scan_select_string, correlation=corrstring, averagedata=True,
-                             avgtime='1e8', avgscan=True, transform=False, extendflag=False, iteraxis='',
-                             coloraxis='antenna2', plotrange=[], title='', xlabel='', ylabel='', showmajorgrid=False,
-                             showminorgrid=False, plotfile=figfile, overwrite=True, clearplots=True, showgui=False)
+            job = casa_tasks.plotms(vis=self.ms.name, xaxis='freq', yaxis='amp', ydatacolumn='corrected',
+                                    selectdata=True,
+                                    scan=delay_scan_select_string, correlation=corrstring, averagedata=True,
+                                    avgtime='1e8', avgscan=True, transform=False, extendflag=False, iteraxis='',
+                                    coloraxis='antenna2', plotrange=[], title='', xlabel='', ylabel='',
+                                    showmajorgrid=False,
+                                    showminorgrid=False, plotfile=figfile, overwrite=True, clearplots=True,
+                                    showgui=False)
 
         job.execute(dry_run=False)
 
@@ -142,7 +147,7 @@ class testDelaysPerAntennaChart(object):
                                                    'pol': '',
                                                    'ant': antName,
                                                    'bandname': bandname,
-                                                   'type': 'testdelay',
+                                                   'type': 'Test Delay',
                                                    'file': os.path.basename(figfile)})
                     plots.append(plot)
                 except Exception as ex:
@@ -231,7 +236,7 @@ class ampGainPerAntennaChart(object):
                                                    'pol': '',
                                                    'ant': antName,
                                                    'bandname': bandname,
-                                                   'type': 'ampgain',
+                                                   'type': 'Amp Gain',
                                                    'file': os.path.basename(figfile)})
                     plots.append(plot)
                 except Exception as ex:
@@ -301,11 +306,12 @@ class phaseGainPerAntennaChart(object):
                         LOG.debug("Plotting phase gain solutions {!s}".format(antName))
 
                         job = casa_tasks.plotms(vis=bpdgain_touse, xaxis='time', yaxis='phase', field='',
-                                         antenna=antPlot, spw='', timerange='',
-                                         coloraxis='', plotrange=[mintime, maxtime, -180, 180], symbolshape='circle',
-                                         title='G table: {!s}   Antenna: {!s}  Band: {!s}'.format(bpdgain_touse, antName, bandname),
-                                         titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
-                                         xconnector='line')
+                                                antenna=antPlot, spw='', timerange='',
+                                                coloraxis='', plotrange=[mintime, maxtime, -180, 180],
+                                                symbolshape='circle',
+                                                title='G table: {!s}   Antenna: {!s}  Band: {!s}'.format(bpdgain_touse, antName, bandname),
+                                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                                xconnector='line')
 
                         job.execute(dry_run=False)
 
@@ -321,7 +327,7 @@ class phaseGainPerAntennaChart(object):
                                                    'pol': '',
                                                    'ant': antName,
                                                    'bandname': bandname,
-                                                   'type': 'phasegain',
+                                                   'type': 'Phase Gain',
                                                    'file': os.path.basename(figfile)})
                     plots.append(plot)
                 except Exception as ex:
@@ -431,7 +437,7 @@ class bpSolAmpPerAntennaChart(object):
                                                    'pol': '',
                                                    'ant': antName,
                                                    'bandname': bandname,
-                                                   'type': 'bpsolamp',
+                                                   'type': 'Bandpass Amp Solution',
                                                    'file': os.path.basename(figfile)})
                     plots.append(plot)
                 except Exception as ex:
@@ -521,11 +527,11 @@ class bpSolPhasePerAntennaChart(object):
                         LOG.debug("Plotting phase bandpass solutions " + antName)
 
                         job = casa_tasks.plotms(vis=bpcaltablename, xaxis='freq', yaxis='phase', field='',
-                                         antenna=antPlot, spw='', timerange='', coloraxis='',
-                                         plotrange=[0, 0, -phaseplotmax, phaseplotmax], symbolshape='circle',
-                                         title='B table: {!s}   Antenna: {!s}  Band: {!s}'.format(bpcaltablename, antName, bandname),
-                                         titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
-                                         xconnector='step')
+                                                antenna=antPlot, spw='', timerange='', coloraxis='',
+                                                plotrange=[0, 0, -phaseplotmax, phaseplotmax], symbolshape='circle',
+                                                title='B table: {!s}   Antenna: {!s}  Band: {!s}'.format(bpcaltablename, antName, bandname),
+                                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                                xconnector='step')
 
                         job.execute(dry_run=False)
 
@@ -541,7 +547,7 @@ class bpSolPhasePerAntennaChart(object):
                                                    'pol': '',
                                                    'ant': antName,
                                                    'bandname': bandname,
-                                                   'type': 'bpsolphase',
+                                                   'type': 'Bandpass Phase Solution',
                                                    'file': os.path.basename(figfile)})
                     plots.append(plot)
                 except Exception as ex:
