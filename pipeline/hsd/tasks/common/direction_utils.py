@@ -1,3 +1,22 @@
+"""
+direction_utils.py: methods to convert coordinates for ephemeris sources
+
+Methods to convert coordinates of ephemeris sources for single-dish pipeline
+are accumulated here.
+For SD ephemeris sources, two types of coordinates are introduced, 
+'Shifted-direction' and 'Offset-direction'.
+Both coodinates deal with time-by-time observing direction when an ephemeris source
+is scanned (typically with raster scan).
+'Offset-direction' is a coordinate where the time-by-time direction is shifted 
+so that the source position is centered at the origin of the RA/Dec plane.
+In other words, diretions of each observing point during the scan are calculated
+as the offset from the ephemeris source.
+'Shifted-direction' is a coordinate where the time-by-time direction is shifted
+so that the source position is centered at 'origin' (or org_direction), 
+which is where the epheris source resided on the RA/Dec plane at the time of the 
+first on-source observing point in the dataset. 
+"""
+
 import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
 
@@ -16,22 +35,17 @@ __all__ = { 'direction_shift', 'direction_offset', 'direction_recover', 'directi
 
 def direction_shift( direction:Direction, reference:Direction, origin:Direction ) -> Direction:
     """                                     
-    Offsets the 'direction', following to shift 'reference' to 'origin'.              
+    Calculates the 'shifted-direction' of the observing point
 
-    Offsets the 'direction', so that it follows the 'reference' shifted to 'origin',
-    and returns the offseted-diretion in direction quantity.
-    Example : This feature can be used to create an image centerized at 'origin':                            
-              Providing the time-by-time position of the observing points ('direction')
-              together with the time-by-time position of the moving-source ('reference'),
-              the function shifts the "direction" so that the position of the moving-source
-              is centerized to "origin".                  
+    This method calculates the 'shifted-direction' of the observing point 
+    from the time-by-time diretion of obsering points and the moving source, and a given 'origin'. 
 
     Args:
         direction: direction to be converted  (eg. time-by-time position of observing points)
         reference: reference direction (eg. time-by-time position of the moving source on the sky)
         origin:    direction of the origin (eg. where to centerized the new image)           
     Returns:                           
-        shifted direction (reference centerized at origin)
+        shifted-direction (reference centerized at origin)
     """
     # check if 'refer's are all identical for each directions
     if origin['refer'] != reference['refer']:
@@ -49,22 +63,18 @@ def direction_shift( direction:Direction, reference:Direction, origin:Direction 
 
 def direction_offset( direction:Direction, reference:Direction ) -> Direction:
     """                               
-    Offsets the 'direction', following to shift 'reference' to the coordinate-origin (0, 0).
+    Calculates the 'offset-direction' of the observing point
 
-    Offsets the 'direction', so that it follows the 'reference' shifted to the coordinate-origin (0, 0),
-    and returns the offseted-diretion in direction quantity.     
-    This is equivallent to calling direction_shift( direction, reference, origin ) with the coordinate-origin (0, 0) as 'origin'.
+    This method calculates the 'offset-direction' of the observing point 
+    from the time-by-time diretion of obsering points and the moving source.
+    This is equivallent to calling direction_shift( direction, reference, origin ) with 
+    the coordinate-origin (0, 0) as 'origin'.
 
-    Example : This feature can be used to create an image centerized at the coordinate-origin (0, 0):
-              Providing the time-by-time position of the observing points ('direction')
-              together with the time-by-time position of the moving-source ('reference'),
-              the function shifts the 'direction' so that the position of the moving-source
-              is centerized at the coordinate-origin (0, 0).
-    Args:                                                 
+    Args:
         direction: direction to be converted  (eg. time-by-time position of observing points)
         reference: reference direction (eg. time-by-time position of the moving source on the sky)
-    Returns:           
-        shifted direction (reference centerized at the coordinate-origin)
+    Returns:                           
+        offset-direction (reference centerized at (0,0) )
     """
     # check if 'refer's are all identical for each directions
     if direction['refer'] != reference['refer']:
@@ -82,17 +92,17 @@ def direction_offset( direction:Direction, reference:Direction ) -> Direction:
 
 
 def direction_recover( ra:float, dec:float, org_direction:Direction ) -> Tuple[float, float]:
-    """                                                                                                      
-    Recovers the shift-coordinate from offset-coordinate
+    """
+    Recovers the 'Shifted-coordinate' from 'Offset-coordinate'
 
-    Recovers the shift-coordinate values from the offset-coordinate values.
+    Recovers the 'Shifted-coordinate' values from the specified 'Offset-coordinate' values.
 
     Args:                                                                        
-        ra:  ra of offset-corrdinate
-        dec: dec of offset-coordinate
+        ra:  ra of 'Offset-corrdinate'
+        dec: dec of 'Offset-coordinate'
         org_direction: direction of the origin
     Returns:                                                               
-        return value: ra, dec in shift-coordinate
+        return value: ra, dec in 'Shift-coordinate'
     """
     me = casa_tools.measures
     qa = casa_tools.quanta

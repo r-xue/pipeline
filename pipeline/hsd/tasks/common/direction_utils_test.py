@@ -1,3 +1,7 @@
+"""
+direction_utils_test.py : Unit tests for hsd/tasks/common/direction_utils.py
+"""
+
 import pytest
 
 import pipeline.infrastructure as infrastructure
@@ -33,17 +37,18 @@ test_params_shift   = [
 @pytest.mark.parametrize("direction, reference, origin, expected", test_params_shift)
 def test_direction_shift( direction, reference, origin, expected ):
     """ 
-    Test direction_shift()
+    Unit test for direction_shift(): quantitave test of calculations.
 
+    Unit test for direction_shift(): quantitave test of calculations.
     Args:
-      direction :
-      reference :
-      origin    :
+      direction : ( as noted for direction_shift() )
+      reference : ( as noted for direction_shift() )
+      origin    : ( as noted for direction_shift() )
       expected  : expected result
     Returns:
       (none)
     Raises:
-      AssertationError for tests failing
+      AssertationError if tests fail
     """
     epsdeg = qa.quantity( '1.0E-8deg' )
     result = direction_shift( direction, reference, origin )
@@ -63,12 +68,14 @@ test_params_shift_raise = [
 @pytest.mark.parametrize( "direction, reference, origin", test_params_shift_raise )
 def test_direction_shift_raise( direction, reference, origin ):
     """
-    Test direction_shift() to raise RuntimeError
+    Unit test for direction_shift(): test if RuntimeError is raised when it shoud be.
 
+    Unit test for direction_shift(): test if RuntimeError is raised when it shoud be.
+    This test passes inputs with inconsistent 'refer's to trigger RuntimeError.
     Args:
-      direction :
-      reference :
-      origin    :
+      direction : ( as noted for direction_shift() )
+      reference : ( as noted for direction_shift() )
+      origin    : ( as noted for direction_shift() )
     Returns:
       (none)
     """
@@ -96,11 +103,12 @@ test_params_offset  = [
 @pytest.mark.parametrize("direction, reference, expected", test_params_offset)
 def test_direction_offset( direction, reference, expected ):
     """ 
-    Test direction_offset()
+    Unit test for direction_offset(): quantitave test of calculations.
 
+    Unit test for direction_offset(): quantitave test of calculations.
     Args:
-      direction :
-      reference :
+      direction : ( as noted for direction_offset() )
+      reference : ( as noted for direction_offset() )
       expected  : expected result
     Returns:
       none
@@ -109,13 +117,6 @@ def test_direction_offset( direction, reference, expected ):
     """
     epsdeg = qa.quantity( '1.0E-8deg' )
     result = direction_offset( direction, reference )
-    ###
-#    LOG.info( "##### result2={}".format(( separation )))
-#    LOG.info( "##### result2={} {}".format(
-#        qa.convert( result['m0'], 'deg' ),
-#        qa.convert( result['m1'], 'deg' ) ))
-#    raise RuntimeError
-    ###
     separation = me.separation( result, expected )
     assert qa.lt( qa.abs(separation), epsdeg )
 
@@ -128,11 +129,13 @@ test_params_offset_raise  = [
 @pytest.mark.parametrize("direction, reference", test_params_offset_raise)
 def test_direction_offset_raise( direction, reference ):
     """ 
-    Test direction_offset to raise RuntimeError()
+    Unit test for direction_offset(): test if RuntimeError is raised when it shoud be.
 
+    Unit test for direction_offset(): test if RuntimeError is raised when it shoud be.
+    This test passes inputs with inconsistent 'refer's to trigger RuntimeError.
     Args:
-      direction :
-      reference :
+      direction : (as noted for direction_offset() )
+      reference : (as noted for direction_offset() )
     Returns:
       none
     Raises:
@@ -143,19 +146,26 @@ def test_direction_offset_raise( direction, reference ):
 
 # ----------------------------------------------------------------------------
 
-test_params_recover = [( 30.0, 20.0,  
-                         me.direction( 'J2000', '5deg', '10deg' ),
-                         37.34114334622996, 28.563899711023446
-                     )]
+test_params_recover = [
+    ( 30.0, 20.0,  
+      me.direction( 'J2000', '5deg', '10deg' ),
+      37.34114334622996, 28.563899711023446 ),
+    ( 30.0, 20.0,  
+      me.direction( 'J2000', '-20deg', '50deg' ),
+      40.9388073847553, 57.48507992443964 )
+]
+    
 
 @pytest.mark.parametrize("ra, dec, org_direction, expected_ra, expected_dec", test_params_recover)
 def test_direction_recover( ra, dec, org_direction, expected_ra, expected_dec ):
     """ 
-    Test direction_recover()
+    Unit test for direction_recover(): quantitave test of calculations.
 
+    Unit test for direction_recover(): quantitave test of calculations.
     Args:
-      ra, dec :
-      org_directiopn :
+      ra, dec : (as noted for direction_recover() )
+      org_directiopn : (as noted for direction_recover() )
+      expected_ra, expected_dec : expected results
     Returns:
       none
     Raises:
@@ -167,25 +177,33 @@ def test_direction_recover( ra, dec, org_direction, expected_ra, expected_dec ):
 
 # ----------------------------------------------------------------------------
 
-test_params_convert = [( me.direction( 'J2000', '10deg', '60deg' ),
-                         me.epoch( rf='UTC', v0=qa.quantity( '58000.0d' ) ),
-                         me.observatory( 'ALMA' ),
-                         'B1950',
-                         qa.quantity( '9.279004120033214deg' ), 
-                         qa.quantity( '59.7256831517683deg' ) 
-                     )]
+test_params_convert = [
+    ( me.direction( 'J2000', '10deg', '60deg' ),
+      me.epoch( rf='UTC', v0=qa.quantity( '58000.0d' ) ),
+      me.observatory( 'ALMA' ),
+      'B1950',
+      qa.quantity( '9.279004120033214deg' ), 
+      qa.quantity( '59.7256831517683deg' )),
+    ( me.direction( 'J2000', '10deg', '60deg' ),
+      me.epoch( rf='UTC', v0=qa.quantity( '58000.0d' ) ),
+      me.observatory( 'ALMA' ),
+      'J2000',
+      qa.quantity( '10deg' ), 
+      qa.quantity( '60deg' ))
+]
 
 @pytest.mark.parametrize("direction, mepoch, mposition, outframe, expected_ra, expected_dec", test_params_convert)
 def test_direction_convert( direction, mepoch, mposition, outframe, expected_ra, expected_dec ):
     """ 
-    Test direction_convert()
+    Unit test for direction_convert(): quantitave test of calculations.
 
+    Unit test for direction_convert(): quantitave test of calculations.
     Args:
-      direction :
-      mepoch :
-      mposition :
-      outframe :
-      expected_ra, expected_dec :
+      direction : ( as noted for direction_convert() )
+      mepoch :    ( as noted for direction_convert() )
+      mposition : ( as noted for direction_convert() )
+      outframe :  ( as noted for direction_convert() )
+      expected_ra, expected_dec : expected results
     Returns:
       none
     Raises:
