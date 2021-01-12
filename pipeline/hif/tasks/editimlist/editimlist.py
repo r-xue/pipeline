@@ -445,6 +445,8 @@ class Editimlist(basetask.StandardTaskTemplate):
                                      specmode=imlist_entry['specmode'],
                                      band=None) if not inpdict['imagename'] else inpdict['imagename']
             imlist_entry['imagename'] = 's{}.{}'.format('STAGENUMBER', imagename)
+            # Try to obtain previously computed mask name
+            imlist_entry['mask'] = th.mask(results_list=inp.context.results) if not inpdict['mask'] else inpdict['mask']
 
         for key, value in imlist_entry.items():
             LOG.info("{k} = {v}".format(k=key, v=value))

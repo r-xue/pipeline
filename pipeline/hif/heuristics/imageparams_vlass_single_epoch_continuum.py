@@ -75,6 +75,20 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
     def uvrange(self, field=None, spwspec=None):
         return '<12km', None
 
+    def mask(self, results_list=None):
+        """Tier-1 mask name to be used for computing Tier-1 and Tier-2 combined mask.
+
+            Obtain the mask name from the latest MakeImagesResult object in context.results.
+            If not found, then return empty string (as base heuristics)."""
+        if results_list and type(results_list) is list:
+            for result in results_list:
+                result_meta = result.read()
+                if hasattr(result_meta, 'taskname') and result_meta.taskname == 'hifv_vlassmasking':
+                    return [r.combinedmask for r in result_meta][0]
+
+        # In case hif_makeimages result was not found or results_list was not provided
+        return ""
+
     def buffer_radius(self):
         return 1000.
 

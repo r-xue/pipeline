@@ -6,7 +6,7 @@ import operator
 import xml.etree.cElementTree as eltree
 from xml.dom import minidom
 
-import pipeline.environment
+from pipeline import environment
 
 # # Set the command used to calculate MD5 (see infrastructure.renderer.logger)
 # CHECKSUM_CMD = None 
@@ -80,7 +80,7 @@ class PipelineManifest(object):
         # group node information by host
         root = eltree.SubElement(ous, 'execution_environment')
         groups = []
-        data = sorted(pipeline.environment.cluster_details, key=operator.itemgetter('hostname'))
+        data = sorted(environment.cluster_details, key=operator.itemgetter('hostname'))
         for _, g in itertools.groupby(data, operator.itemgetter('hostname')):
             groups.append(list(g))
 

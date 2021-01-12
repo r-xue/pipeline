@@ -381,8 +381,8 @@ class SDImaging(basetask.StandardTaskTemplate):
                                                        infiles=original_ms, outfiles=work_ms,
                                                        antenna=antids, spwid=spwids, fieldid=fieldids)
                 weighting_task = weighting.WeightMS(weighting_inputs)
-                job = common.ParameterContainerJob(weighting_task, datatable_dict=dt_dict)
-                weighting_result = self._executor.execute(job, merge=False)
+                weighting_result = self._executor.execute(weighting_task, merge=False,
+                                                          datatable_dict=dt_dict)
                 del weighting_result # Not used
 
                 # Step 2.
@@ -489,8 +489,8 @@ class SDImaging(basetask.StandardTaskTemplate):
                                                                  poltypes=_pols,
                                                                  nx=nx, ny=ny)
                         gridding_task = grid_task_class(gridding_inputs)
-                        job = common.ParameterContainerJob(gridding_task, datatable_dict=dt_dict)
-                        gridding_result = self._executor.execute(job, merge=False)
+                        gridding_result = self._executor.execute(gridding_task, merge=False,
+                                                                 datatable_dict=dt_dict)
 
                         # Extract RMS and number of spectra from grid_tables
                         if isinstance(gridding_result.outcome, compress.CompressedObj):
@@ -633,8 +633,8 @@ class SDImaging(basetask.StandardTaskTemplate):
                                                              poltypes=_pols,
                                                              nx=nx, ny=ny)
                     gridding_task = grid_task_class(gridding_inputs)
-                    job = common.ParameterContainerJob(gridding_task, datatable_dict=dt_dict)
-                    gridding_result = self._executor.execute(job, merge=False)
+                    gridding_result = self._executor.execute(gridding_task, merge=False,
+                                                             datatable_dict=dt_dict)
                     # Extract RMS and number of spectra from grid_tables
                     if isinstance(gridding_result.outcome, compress.CompressedObj):
                         grid_table = gridding_result.outcome.decompress()
@@ -1040,7 +1040,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                                                                                      str(pol_names)))
             dt = datatable_dict[msobj.basename]
             _index_list = common.get_index_list_for_ms(dt, [msobj.basename], [antid], [fieldid],
-                                                       [spwid], srctype=0)
+                                                       [spwid])
             if len(_index_list) == 0: #this happens when permanent flag is set to all selection.
                 LOG.info('No unflagged row in DataTable. Skipping further calculation.')
                 continue
@@ -1180,7 +1180,7 @@ def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
     Returns a named Tuple
     """
     _index_list = common.get_index_list_for_ms(datatable, [msobj.name], [antid], [fieldid],
-                                                       [spwid], srctype=0)
+                                                       [spwid])
     timestamp = datatable.getcol('TIME').take(_index_list, axis=-1)
     ra = datatable.getcol('OFS_RA').take(_index_list, axis=-1)
     dec = datatable.getcol('OFS_DEC').take(_index_list, axis=-1)
