@@ -52,6 +52,19 @@ class VlassmaskingResults(basetask.Results):
         Args:
             context(:obj:): Pipeline context object
         """
+        # Update the mask name in clean list pending.
+        # NOTE: this is might be a temporary solution, later the mask name might be determined from context.results
+        # during hif_makeimages task run.
+        if len(context.clean_list_pending[0]) == 0:
+            LOG.error('Clean list pending is empty. Mask name was not set for imaging target.')
+            return
+        elif 'mask' in context.clean_list_pending[0].keys() and context.clean_list_pending[0]['mask']:
+            LOG.warning('Clean list pending already contains a mask selection. Using {} instead of {}.'.format(
+                self.combinedmask, context.clean_list_pending[0]['mask']))
+        else:
+            LOG.info('Clean list pending updated with VLASS-SE mask. It is used in next hif_makeimages call.')
+
+        context.clean_list_pending[0]['mask'] = self.combinedmask
         return
 
     def __repr__(self):
@@ -115,14 +128,14 @@ class Vlassmasking(basetask.StandardTaskTemplate):
 
         LOG.debug("This Vlassmasking class is running.")
 
-        imagename_base = 'VIP_'
+        maskname_base = self._get_maskname_base()
 
         shapelist = self.inputs.context.clean_list_pending[0]['imsize']
         mask_shape = np.array([shapelist[0], shapelist[1], 1, 1])
         phasecenter = self.inputs.context.clean_list_pending[0]['phasecenter']
         cell = self.inputs.context.clean_list_pending[0]['cell']
         frequency = self.inputs.context.clean_list_pending[0]['reffreq']
-        QLmask = 'QLcatmask-tier1.mask'
+        QLmask = '.QLcatmask-tier1.mask'
         catalog_fits_file = ''
         outfile = ''
         combinedmask = ''
@@ -152,22 +165,26 @@ class Vlassmasking(basetask.StandardTaskTemplate):
             catalog_fits_file = self.inputs.vlass_ql_database
 
             number_islands_found, \
-                number_islands_found_onedeg = mask_from_catalog(catalog_fits_file=catalog_fits_file,
-                                                                catalog_search_size=self.inputs.catalog_search_size,
-                                                                mask_shape=mask_shape, frequency=frequency, cell=cell,
-                                                                phasecenter=phasecenter,
-                                                                mask_name=imagename_base+QLmask)
+            number_islands_found_onedeg = mask_from_catalog(catalog_fits_file=catalog_fits_file,
+                                                            catalog_search_size=self.inputs.catalog_search_size,
+                                                            mask_shape=mask_shape, frequency=frequency, cell=cell,
+                                                            phasecenter=phasecenter,
+                                                            mask_name=maskname_base + QLmask)
 
-            combinedmask = imagename_base + QLmask
+            combinedmask = maskname_base + QLmask
 
         elif self.inputs.maskingmode == 'vlass-se-tier-2':
             LOG.debug("Executing mask_from_catalog masking mode = {!s}".format(self.inputs.maskingmode))
 
-            bdsf_fitsfile = self.bdsfcompute(imagename_base)
+            # Obrain Tier 1 mask name
+            tier1_mask = maskname_base + QLmask if not self.inputs.context.clean_list_pending[0]['mask'] else self.inputs.context.clean_list_pending[0]['mask']
 
-            initial_catalog_fits_file = imagename_base + 'iter1b.image.smooth5.cat.fits'
+            # Obtain image name
+            imagename_base = self._get_bdsf_imagename(maskname_base)
 
-            suffix = "secondmask.mask"
+            initial_catalog_fits_file = self.bdsfcompute(imagename_base)
+
+            suffix = ".secondmask.mask"
 
             catalog_fits_file = edit_pybdsf_islands(catalog_fits_file=initial_catalog_fits_file)
 
@@ -175,22 +192,21 @@ class Vlassmasking(basetask.StandardTaskTemplate):
                 LOG.error("Catalog file {!s} does not exist.".format(catalog_fits_file))
 
             number_islands_found, \
-                number_islands_found_onedeg = mask_from_catalog(catalog_fits_file=catalog_fits_file,
-                                                                catalog_search_size=self.inputs.catalog_search_size,
-                                                                mask_shape=mask_shape, frequency=frequency, cell=cell,
-                                                                phasecenter=phasecenter,
-                                                                mask_name=imagename_base+suffix)
+            number_islands_found_onedeg = mask_from_catalog(catalog_fits_file=catalog_fits_file,
+                                                            catalog_search_size=self.inputs.catalog_search_size,
+                                                            mask_shape=mask_shape, frequency=frequency, cell=cell,
+                                                            phasecenter=phasecenter,
+                                                            mask_name=maskname_base + suffix)
 
             # combine first and second order masks
-            outfile = imagename_base + 'sum_of_masks.mask'
-            task = casa_tasks.immath(imagename=[imagename_base + suffix, imagename_base + QLmask],
-                                     expr='IM0+IM1', outfile=outfile)
+            outfile = maskname_base + '.sum_of_masks.mask'
+            task = casa_tasks.immath(imagename=[maskname_base + suffix, tier1_mask], expr='IM0+IM1', outfile=outfile)
 
             runtask = self._executor.execute(task)
 
             myim = casa_tools.imager
             LOG.info("Executing imager.mask()...")
-            combinedmask = imagename_base + 'combined-tier2.mask'
+            combinedmask = maskname_base + '.combined-tier2.mask'
             myim.mask(image=outfile, mask=combinedmask, threshold=0.5)
             myim.close()
         else:
@@ -215,11 +231,11 @@ class Vlassmasking(basetask.StandardTaskTemplate):
 
     def bdsfcompute(self, imagename_base):
 
-        imsmooth(imagename=imagename_base + "iter1b.image.tt0", major='5arcsec', minor='5arcsec', pa='0deg',
-                 outfile=imagename_base + "iter1b.image.smooth5.tt0")
+        imsmooth(imagename=imagename_base + ".tt0", major='5arcsec', minor='5arcsec', pa='0deg',
+                 outfile=imagename_base + ".smooth5.tt0")
 
-        fitsimage = imagename_base + "iter1b.image.smooth5.fits"
-        export_task = casa_tasks.exportfits(imagename=imagename_base + "iter1b.image.smooth5.tt0",
+        fitsimage = imagename_base + ".smooth5.fits"
+        export_task = casa_tasks.exportfits(imagename=imagename_base + ".smooth5.tt0",
                                             fitsimage=fitsimage)
         runtask = self._executor.execute(export_task)
 
@@ -227,4 +243,36 @@ class Vlassmasking(basetask.StandardTaskTemplate):
         #                  imagename_base+'iter1b.image.smooth5.fits'],env={'PYTHONPATH':''})
         bdsf_result = run_bdsf(infile=fitsimage)
 
-        return fitsimage
+        # Return the catalogue fits file name
+        return fitsimage.replace('.fits', '.cat.fits')
+
+    def _get_maskname_base(self):
+        """
+        Returns base name for the mask.
+
+        If context.clean_list_pending is populated, then it will take 'imagename' parameter from the first imlist entry.
+        The 'STAGENUMBER' substring is replaced by the current stage number.
+        """
+        # TODO: context.stage for some reason returns x_1 instead of x_0. Until understood, force the latter.
+        if 'imagename' in self.inputs.context.clean_list_pending[0].keys():
+            return self.inputs.context.clean_list_pending[0]['imagename'].replace('STAGENUMBER',
+                                                                                  '{}_0'.format(
+                                                                                      self.inputs.context.stage.split(
+                                                                                          '_')[0]))
+        else:
+            return 'VIP_'
+
+    def _get_bdsf_imagename(self, imagename_base):
+        """
+        Image file name to be used as input to BDSF blob finder.
+
+        Obtain the image name from the latest MakeImagesResult object in context.results.
+        If not found, then construct image name from imagename_base argument.
+        """
+        for result in self.inputs.context.results[::-1]:
+            result_meta = result.read()
+            if hasattr(result_meta, 'taskname') and result_meta.taskname == 'hif_makeimages':
+                return result_meta.results[0].iterations[1]['image']
+
+        # In case hif_makeimages result was not found.
+        return imagename_base + 'iter1b.image'
