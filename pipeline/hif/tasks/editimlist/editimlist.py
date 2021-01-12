@@ -52,6 +52,7 @@ class EditimlistInputs(vdp.StandardInputs):
     search_radius_arcsec = vdp.VisDependentProperty(default=1000.0)
     conjbeams = vdp.VisDependentProperty(default=False)
     cfcache = vdp.VisDependentProperty(default='')
+    cfcache_nowb = vdp.VisDependentProperty(default='')
     cyclefactor = vdp.VisDependentProperty(default=-999.)
     cycleniter = vdp.VisDependentProperty(default=-999)
     datacolumn = vdp.VisDependentProperty(default='')
@@ -324,6 +325,10 @@ class Editimlist(basetask.StandardTaskTemplate):
                                                             imaging_params=inp.context.imaging_parameters,
                                                             imaging_mode=img_mode)
 
+        # Determine current VLASS-SE-CONT imaging stage (used in heuristics to make decisions)
+        if 'VLASS-SE-CONT' == img_mode:
+            th.vlass_stage = self._get_task_stage_ordinal()
+
         imlist_entry['threshold'] = inpdict['threshold']
         imlist_entry['hm_nsigma'] = None if inpdict['nsigma'] in (None, -999.0) else float(inpdict['nsigma'])
 
@@ -339,7 +344,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['niter'] = th.niter() if not inpdict['niter'] else inpdict['niter']
         imlist_entry['cyclefactor'] = inpdict['cyclefactor']
         imlist_entry['cycleniter'] = inpdict['cycleniter']
-        imlist_entry['cfcache'] = inpdict['cfcache']
+        imlist_entry['cfcache'], imlist_entry['cfcache_nowb'] = th.get_cfcaches(inpdict['cfcache'])
         imlist_entry['scales'] = th.scales() if not inpdict['scales'] else inpdict['scales']
         imlist_entry['uvtaper'] = (th.uvtaper() if not 'uvtaper' in inp.context.imaging_parameters
                                    else inp.context.imaging_parameters['uvtaper']) if not inpdict['uvtaper'] else inpdict['uvtaper']
@@ -481,3 +486,18 @@ class Editimlist(basetask.StandardTaskTemplate):
 
     def analyse(self, result):
         return result
+
+    def _get_task_stage_ordinal(self, taskname='hifv_makeimages'):
+        """Get task ordinal number (how many times the task was called before in the pipeline execution).
+
+        The order number is determined by counting the number of previous execution of
+        the task, based on the content of the context.results list. The introduction
+        of this method is necessary because VLASS-SE-CONT imaging happens in multiple
+        stages (hif_makeimages calls). Imaging parameters change from stage to stage,
+        therefore it is necessary to know what is the current stage ordinal number.
+        """
+        ordinal = 1
+        for r in self.inputs.context.results:
+            # TODO: taskname is not a ResultsList attribute in xml recipe runs for some reason
+            if taskname in r.read().pipeline_casa_task: ordinal += 1
+        return ordinal

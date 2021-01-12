@@ -76,7 +76,10 @@ class CleanBaseInputs(vdp.StandardInputs):
     width = vdp.VisDependentProperty(default='')
     restfreq = vdp.VisDependentProperty(default=None)
     wprojplanes = vdp.VisDependentProperty(default=None)
+    wbawp = vdp.VisDependentProperty(default=None)
     rotatepastep = vdp.VisDependentProperty(default=None)
+    calcpsf = vdp.VisDependentProperty(default=None)
+    calcres = vdp.VisDependentProperty(default=None)
 
     # properties requiring some logic ----------------------------------------------------------------------------------
 
@@ -123,7 +126,8 @@ class CleanBaseInputs(vdp.StandardInputs):
                  hm_minpercentchange=None, hm_fastnoise=None, pblimit=None, niter=None, hm_nsigma=None,
                  hm_perchanweightdensity=None, hm_npixels=None, threshold=None, sensitivity=None, reffreq=None,
                  restfreq=None, conjbeams=None, is_per_eb=None, antenna=None, usepointing=None, mosweight=None,
-                 result=None, parallel=None, heuristics=None, rotatepastep=None, cfcache=None):
+                 result=None, parallel=None, heuristics=None, rotatepastep=None, cfcache=None, calcpsf=None,
+                 calcres=None, wbawp=None):
         self.context = context
         self.output_dir = output_dir
         self.vis = vis
@@ -191,8 +195,11 @@ class CleanBaseInputs(vdp.StandardInputs):
         self.usepointing = usepointing
         self.mosweight = mosweight
         self.wprojplanes = wprojplanes
+        self.wbawp = wbawp
         self.rotatepastep = rotatepastep
         self.heuristics = heuristics
+        self.calcpsf = calcpsf
+        self.calcres = calcres
 
 
 class CleanBase(basetask.StandardTaskTemplate):
@@ -329,7 +336,8 @@ class CleanBase(basetask.StandardTaskTemplate):
             'perchanweightdensity':  inputs.hm_perchanweightdensity,
             'npixels':    inputs.hm_npixels,
             'chanchunks':    chanchunks,
-            'parallel':      parallel
+            'parallel':      parallel,
+            'wbawp':         inputs.wbawp
             }
 
         # Set special phasecenter and outframe for ephemeris objects.
@@ -430,6 +438,12 @@ class CleanBase(basetask.StandardTaskTemplate):
             tclean_job_parameters['calcpsf'] = False
             tclean_job_parameters['calcres'] = False
 
+        # Allow setting calcpsf and calcres explicitly
+        if type(inputs.calcpsf) is bool:
+            tclean_job_parameters['calcpsf'] = inputs.calcpsf
+        if type(inputs.calcres) is bool:
+            tclean_job_parameters['calcres'] = inputs.calcres
+
         # Additional heuristics or task parameters
         if inputs.cyclefactor not in (None, -999):
             tclean_job_parameters['cyclefactor'] = inputs.cyclefactor
@@ -455,7 +469,7 @@ class CleanBase(basetask.StandardTaskTemplate):
         if inputs.scales:
             tclean_job_parameters['scales'] = inputs.scales
         else:
-            scales = inputs.heuristics.scales()
+            scales = inputs.heuristics.scales(iter)
             if scales:
                 tclean_job_parameters['scales'] = scales
 
@@ -511,6 +525,9 @@ class CleanBase(basetask.StandardTaskTemplate):
         tclean_job_parameters['nsigma'] = inputs.heuristics.nsigma(iter, inputs.hm_nsigma)
         tclean_job_parameters['wprojplanes'] = inputs.heuristics.wprojplanes()
         tclean_job_parameters['rotatepastep'] = inputs.heuristics.rotatepastep()
+        tclean_job_parameters['smallscalebias'] = inputs.heuristics.smallscalebias()
+        tclean_job_parameters['usepointing'] = inputs.heuristics.usepointing()
+        tclean_job_parameters['pointingoffsetsigdev'] = inputs.heuristics.pointingoffsetsigdev()
 
         # Up until CASA 5.2 it is necessary to run tclean calls with
         # restoringbeam == 'common' in two steps in HPC mode (CAS-10849).
@@ -532,6 +549,24 @@ class CleanBase(basetask.StandardTaskTemplate):
             tclean_job_parameters['restoringbeam'] = 'common'
             tclean_job_parameters['calcpsf'] = False
             tclean_job_parameters['calcres'] = False
+            job = casa_tasks.tclean(**tclean_job_parameters)
+            tclean_result2 = self._executor.execute(job)
+        # Up until CASA 6.1 writing the model column parallel is slow because
+        # additional computations are performed beside writing to disk.
+        # CASA 6.2 should solve this problem.
+        elif (tclean_job_parameters['parallel'] == True) and \
+             (tclean_job_parameters['savemodel'] == 'modelcolumn'):
+
+            tclean_job_parameters['savemodel'] = 'none'
+            job = casa_tasks.tclean(**tclean_job_parameters)
+            tclean_result = self._executor.execute(job)
+
+            tclean_job_parameters['savemodel'] = 'modelcolumn'
+            tclean_job_parameters['parallel'] = False
+            tclean_job_parameters['niter'] = 0
+            tclean_job_parameters['calcpsf'] = False
+            tclean_job_parameters['calcres'] = False
+            tclean_job_parameters['mask'] = ''
             job = casa_tasks.tclean(**tclean_job_parameters)
             tclean_result2 = self._executor.execute(job)
         else:
@@ -629,12 +664,13 @@ class CleanBase(basetask.StandardTaskTemplate):
                 result.set_image(iter=iter, image=image_name)
 
         # Store the residual.
-        imageheader.set_miscinfo(name=residual_name, spw=inputs.spw, field=inputs.field,
-                                 type='residual', iter=iter, multiterm=result.multiterm,
-                                 intent=inputs.intent, specmode=inputs.specmode,
-                                 is_per_eb=inputs.is_per_eb,
-                                 context=context)
-        result.set_residual(iter=iter, image=residual_name)
+        if os.path.exists('%s' % (residual_name.replace('.residual', '.residual.tt0' if result.multiterm else '.residual'))):
+            imageheader.set_miscinfo(name=residual_name, spw=inputs.spw, field=inputs.field,
+                                     type='residual', iter=iter, multiterm=result.multiterm,
+                                     intent=inputs.intent, specmode=inputs.specmode,
+                                     is_per_eb=inputs.is_per_eb,
+                                     context=context)
+            result.set_residual(iter=iter, image=residual_name)
 
         # Store the PSF.
         imageheader.set_miscinfo(name=psf_name, spw=inputs.spw, field=inputs.field,

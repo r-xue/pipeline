@@ -23,7 +23,7 @@ class VlassmaskingResults(basetask.Results):
     def __init__(self, catalog_fits_file=None,
                  catalog_search_size=None, outfile=None,
                  combinedmask=None, number_islands_found=None,
-                 number_islands_found_onedeg=None, pixelfraction=None):
+                 number_islands_found_onedeg=None, pixelfraction=None, maskingmode=None):
         """
         Args:
             final(list): final list of tables (not used in this task)
@@ -44,6 +44,7 @@ class VlassmaskingResults(basetask.Results):
         self.number_islands_found = number_islands_found
         self.number_islands_found_onedeg = number_islands_found_onedeg
         self.pixelfraction = pixelfraction
+        self.maskingmode = maskingmode
 
         self.pipeline_casa_task = 'Vlassmasking'
 
@@ -53,18 +54,16 @@ class VlassmaskingResults(basetask.Results):
             context(:obj:): Pipeline context object
         """
         # Update the mask name in clean list pending.
-        # NOTE: this is might be a temporary solution, later the mask name might be determined from context.results
-        # during hif_makeimages task run.
         if len(context.clean_list_pending[0]) == 0:
             LOG.error('Clean list pending is empty. Mask name was not set for imaging target.')
             return
         elif 'mask' in context.clean_list_pending[0].keys() and context.clean_list_pending[0]['mask']:
-            LOG.warning('Clean list pending already contains a mask selection. Using {} instead of {}.'.format(
-                self.combinedmask, context.clean_list_pending[0]['mask']))
+            LOG.warning('Updating existing clean list pending mask selection with {}.'.format(self.combinedmask))
         else:
-            LOG.info('Clean list pending updated with VLASS-SE mask. It is used in next hif_makeimages call.')
+            LOG.info('Setting clean list pending mask selection to {}.'.format(self.combinedmask))
 
-        context.clean_list_pending[0]['mask'] = self.combinedmask
+        # In tier-2 mode cleaning is done first with tier-1 mask (iter1 in tclean.py), then with combined mask (iter2)
+        context.clean_list_pending[0]['mask'] = [context.clean_list_pending[0]['mask'], self.combinedmask] if self.maskingmode == 'vlass-se-tier-2' else self.combinedmask
         return
 
     def __repr__(self):
@@ -224,7 +223,7 @@ class Vlassmasking(basetask.StandardTaskTemplate):
                                    catalog_search_size=1.5, outfile=outfile,
                                    combinedmask=combinedmask, number_islands_found=number_islands_found,
                                    number_islands_found_onedeg=number_islands_found_onedeg,
-                                   pixelfraction=pixelfraction)
+                                   pixelfraction=pixelfraction, maskingmode=self.inputs.maskingmode)
 
     def analyse(self, results):
         return results
