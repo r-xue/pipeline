@@ -1,23 +1,29 @@
-# Execute the pipeline processing request
-#    Code first as module and convert to class if appropriate
-#    Factor and document properly  when details worked out    
-#
-# Turn some print statement into CASA log statements
-#
+"""Execute the pipeline processing request.
+
+Code first as module and convert to class if appropriate
+Factor and document properly  when details worked out
+
+Turn some print statement into CASA log statements
+
+Raises:
+    exceptions.PipelineException
+
+"""
 
 import os
 import sys
 import traceback
 
-import pipeline
-import pipeline.extern.XmlObjectifier as XmlObjectifier
-import pipeline.infrastructure.argmapper as argmapper
-import pipeline.infrastructure.project as project
-import pipeline.infrastructure.utils as utils
-import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure import exceptions
-from pipeline.infrastructure import task_registry
+from ..extern import XmlObjectifier
+
+from . import Pipeline
+from . import argmapper
+from . import project
+from . import utils
+from . import vdp
+from . import casa_tools
+from . import exceptions
+from . import task_registry
 
 # Make sure CASA exceptions are rethrown
 try:
@@ -25,9 +31,6 @@ try:
 except Exception as e:
     default__rethrow_casa_exceptions = False
 __rethrow_casa_exceptions=True
-
-# Setup path
-#sys.path.insert (0, os.path.expandvars("$SCIPIPE_HEURISTICS"))
 
 
 def executeppr (pprXmlFile, importonly=True, dry_run=False, loglevel='info',
@@ -51,7 +54,7 @@ def executeppr (pprXmlFile, importonly=True, dry_run=False, loglevel='info',
             relativePath, "rawdata")
 
         # Get the pipeline context 
-        context = pipeline.Pipeline(loglevel=loglevel, plotlevel=plotlevel).context
+        context = Pipeline(loglevel=loglevel, plotlevel=plotlevel).context
 
     except Exception:
         casa_tools.post_to_log("Beginning pipeline run ...", echo_to_screen=echo_to_screen)

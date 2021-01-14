@@ -38,7 +38,6 @@ import shutil
 import sys
 import tarfile
 
-import pipeline as pipeline
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
@@ -727,7 +726,7 @@ class ExportData(basetask.StandardTaskTemplate):
         pipemanifest = self._init_pipemanifest(oussid)
         ouss = pipemanifest.set_ous(oussid)
         pipemanifest.add_casa_version(ouss, environment.casa_version_string)
-        pipemanifest.add_pipeline_version(ouss, pipeline.revision)
+        pipemanifest.add_pipeline_version(ouss, environment.pipeline_revision)
         pipemanifest.add_procedure_name(ouss, context.project_structure.recipe_name)
         pipemanifest.add_environment_info(ouss)
 

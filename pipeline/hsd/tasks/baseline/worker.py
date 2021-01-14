@@ -223,6 +223,7 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         accum = self.inputs.plan
         deviationmask_list = self.inputs.deviationmask
         LOG.info('deviationmask_list={}'.format(deviationmask_list))
+        formatted_edge = list(common.parseEdge(self.inputs.edge))
         status = plot_manager.initialize(ms, outfile)
         plot_list = []
         for (field_id, antenna_id, spw_id, grid_table, channelmap_range) in accum.iterate_all():
@@ -243,7 +244,7 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
                 plot_list.extend(plot_manager.plot_spectra_with_fit(field_id, antenna_id, spw_id,
                                                                     org_direction,
                                                                     grid_table,
-                                                                    deviationmask, channelmap_range))
+                                                                    deviationmask, channelmap_range, formatted_edge))
         plot_manager.finalize()
 
         results.outcome['plot_list'] = plot_list
