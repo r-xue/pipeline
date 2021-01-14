@@ -5,6 +5,7 @@ import glob
 import itertools
 import math
 from matplotlib.animation import FuncAnimation, ImageMagickWriter
+from matplotlib.lines import Line2D
 import matplotlib.pyplot as plt
 import numpy as np
 from operator import sub
@@ -625,7 +626,7 @@ def get_angle(dx: float, dy: float, aspect_ratio: float=1) -> float:
     return offset + theta
 
 
-def anim_gen(ra: np.ndarray, dec: np.ndarray, idx_generator, dist_list: np.ndarray, cmap) -> Tuple[None, None, cmap, bool]:
+def anim_gen(ra: np.ndarray, dec: np.ndarray, idx_generator: np.ndarray, dist_list: np.ndarray, cmap: Tuple[float, float, float, float]) -> Tuple[np.ndarray, np.ndarray, Tuple[float, float, float, float], bool]:
     """
     Generate position, color and boolean flag for generate_animation.
 
@@ -659,7 +660,7 @@ def anim_gen(ra: np.ndarray, dec: np.ndarray, idx_generator, dist_list: np.ndarr
     yield None, None, color, raster_flag
 
 
-def animate(i: Tuple):
+def animate(i: Tuple[np.ndarray, np.ndarray, Tuple[float, float, float, float], bool]) -> List[Line2D]:
     """
     Generate plot corresponding to single frame.
 
