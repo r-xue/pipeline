@@ -15,7 +15,7 @@ from pipeline.domain.datatable import DataTableImpl
 import pipeline.infrastructure.logging as logging
 from pipeline.infrastructure import casa_tools
 import sys
-from typing import List, Optional, Tuple
+from typing import Generator, List, Optional, Tuple
 
 LOG = logging.get_logger(__name__)
 
@@ -266,7 +266,7 @@ def find_time_gap(timestamp: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     return gsmall, glarge
 
 
-def gap_gen(gaplist: List[int], length: Optional[int]=None) -> Tuple[int, int]:
+def gap_gen(gaplist: List[int], length: Optional[int]=None) -> Generator[Tuple[int, int], None, None]:
     """
     Generate range of data (start and end indices) from given gap list.
     
@@ -626,7 +626,7 @@ def get_angle(dx: float, dy: float, aspect_ratio: float=1) -> float:
     return offset + theta
 
 
-def anim_gen(ra: np.ndarray, dec: np.ndarray, idx_generator: np.ndarray, dist_list: np.ndarray, cmap: Tuple[float, float, float, float]) -> Tuple[np.ndarray, np.ndarray, Tuple[float, float, float, float], bool]:
+def anim_gen(ra: np.ndarray, dec: np.ndarray, idx_generator: np.ndarray, dist_list: np.ndarray, cmap: Tuple[float, float, float, float]) -> Generator[Tuple[np.ndarray, np.ndarray, Tuple[float, float, float, float], bool], None, None]:
     """
     Generate position, color and boolean flag for generate_animation.
 
