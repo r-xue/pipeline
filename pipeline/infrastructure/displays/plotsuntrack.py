@@ -14,7 +14,7 @@ LOG = infrastructure.get_logger(__name__)
 def plot_suntrack(vis='', figfile='', elvstime=True):
     """
     Plots the solar az/el or time/el during a dataset, with one point per scan.
-    adpoted from au.plotSunDuringTrack()
+    Adopted from au.plotSunDuringTrack()
     """
 
     azimuth = []
