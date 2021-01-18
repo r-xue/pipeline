@@ -23,10 +23,6 @@ class CleanSummary(object):
         self.image_stats = image_stats
 
     def plot(self):
-
-        cqa = casa_tools.quanta
-        csu = casa_tools.synthesisutils
-
         stage_dir = os.path.join(self.context.report_dir, 
                                  'stage%d' % self.result.stage_number)
         if not os.path.exists(stage_dir):
