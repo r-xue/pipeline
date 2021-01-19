@@ -3,18 +3,19 @@ direction_utils.py: methods to convert coordinates for ephemeris sources
 
 Methods to convert coordinates of ephemeris sources for single-dish pipeline
 are accumulated here.
-For SD ephemeris sources, two types of coordinates are introduced, 
+For SD ephemeris sources, two types of coordinates are introduced:
 'Shifted-direction' and 'Offset-direction'.
-Both coodinates deal with time-by-time observing direction when an ephemeris source
-is scanned (typically with raster scan).
-'Offset-direction' is a coordinate where the time-by-time direction is shifted 
-so that the source position is centered at the origin of the RA/Dec plane.
-In other words, diretions of each observing point during the scan are calculated
-as the offset from the ephemeris source.
-'Shifted-direction' is a coordinate where the time-by-time direction is shifted
-so that the source position is centered at 'origin' (or org_direction), 
-which is where the epheris source resided on the RA/Dec plane at the time of the 
-first on-source observing point in the dataset. 
+Both coodinates deal with time-by-time observing direction 
+when an ephemeris source is scanned (typically with raster scan).
+'Offset-direction' is a coordinate-system where the time-by-time direction 
+is shifted so that the source position is centered at the origin (0 ,0)
+of the RA/Dec plane. In other words, diretions of each observing point 
+during the scan are calculated as the offset from the ephemeris source.
+'Shifted-direction' is a coordinate-system where 
+the time-by-time direction is shifted so that the source position 
+is centered at 'origin' (or org_direction), 
+which is where the epheris source resided on the RA/Dec plane 
+at the time of the first on-source observing point in the dataset. 
 """
 
 import pipeline.infrastructure as infrastructure
@@ -38,12 +39,16 @@ def direction_shift( direction:Direction, reference:Direction, origin:Direction 
     Calculates the 'shifted-direction' of the observing point
 
     This method calculates the 'shifted-direction' of the observing point 
-    from the time-by-time diretion of obsering points and the moving source, and a given 'origin'. 
+    from the time-by-time diretion of obsering points and the moving source, 
+    and a given 'origin'. 
 
     Args:
-        direction: direction to be converted  (eg. time-by-time position of observing points)
-        reference: reference direction (eg. time-by-time position of the moving source on the sky)
-        origin:    direction of the origin (eg. where to centerized the new image)           
+        direction: direction to be converted  
+                   (eg. time-by-time position of observing points)
+        reference: reference direction 
+                   (eg. time-by-time position of the moving source on the sky)
+        origin:    direction of the origin 
+                   (eg. where to centerized the new image)           
     Returns:                           
         shifted-direction (reference centerized at origin)
     """
@@ -67,12 +72,15 @@ def direction_offset( direction:Direction, reference:Direction ) -> Direction:
 
     This method calculates the 'offset-direction' of the observing point 
     from the time-by-time diretion of obsering points and the moving source.
-    This is equivallent to calling direction_shift( direction, reference, origin ) with 
+    This is equivallent to calling 
+    direction_shift( direction, reference, origin ) with 
     the coordinate-origin (0, 0) as 'origin'.
 
     Args:
-        direction: direction to be converted  (eg. time-by-time position of observing points)
-        reference: reference direction (eg. time-by-time position of the moving source on the sky)
+        direction: direction to be converted  
+                   (eg. time-by-time position of observing points)
+        reference: reference direction 
+                   (eg. time-by-time position of the moving source on the sky)
     Returns:                           
         offset-direction (reference centerized at (0,0) )
     """
@@ -95,10 +103,10 @@ def direction_recover( ra:float, dec:float, org_direction:Direction ) -> Tuple[f
     """
     Recovers the 'Shifted-coordinate' from 'Offset-coordinate'
 
-    Recovers the 'Shifted-coordinate' values from the specified 'Offset-coordinate' values.
+    Recovers the 'Shifted-coordinate' values from the specified 
+    'Offset-coordinate' values.
 
-    Args:                                                                        
-        ra:  ra of 'Offset-corrdinate'
+    Args:                                                                              ra:  ra of 'Offset-corrdinate'
         dec: dec of 'Offset-coordinate'
         org_direction: direction of the origin
     Returns:                                                               
@@ -124,7 +132,8 @@ def direction_convert(direction:Direction, mepoch:Epoch, mposition:Position, out
     Convert the frame of the 'direction' to 'outframe'
 
     Convert the 'frame' of the direction to that specified as 'outframe'.
-    If 'outframe' is identical to the frame of the 'direction', the original 'direction' will be returned.
+    If 'outframe' is identical to the frame of the 'direction', 
+    the original 'direction' will be returned.
 
     Args:
         direction:  original direction

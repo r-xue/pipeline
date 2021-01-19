@@ -111,7 +111,7 @@ def test_direction_offset( direction, reference, expected ):
       reference : ( as noted for direction_offset() )
       expected  : expected result
     Returns:
-      none
+      (none)
     Raises:
       AssertationError for tests failing
     """
@@ -137,7 +137,7 @@ def test_direction_offset_raise( direction, reference ):
       direction : (as noted for direction_offset() )
       reference : (as noted for direction_offset() )
     Returns:
-      none
+      (none)
     Raises:
       AssertationError for tests failing
     """
@@ -167,7 +167,7 @@ def test_direction_recover( ra, dec, org_direction, expected_ra, expected_dec ):
       org_directiopn : (as noted for direction_recover() )
       expected_ra, expected_dec : expected results
     Returns:
-      none
+      (none)
     Raises:
       AssertationError for tests failing
     """
@@ -205,7 +205,7 @@ def test_direction_convert( direction, mepoch, mposition, outframe, expected_ra,
       outframe :  ( as noted for direction_convert() )
       expected_ra, expected_dec : expected results
     Returns:
-      none
+      (none)
     Raises:
       AssertationError for tests failing
     """
