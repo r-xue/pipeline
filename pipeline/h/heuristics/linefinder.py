@@ -18,11 +18,11 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #*******************************************************************************
+"""Find indice of lines from spectrum data."""
 
 import numpy as np
-
 import pipeline.infrastructure.api as api
-
+from typing import List
 # from asap.asaplinefind import linefinder
 # from asap import _asap, scantable, rcParams
 
@@ -30,7 +30,22 @@ import pipeline.infrastructure.api as api
 class HeuristicsLineFinder(api.Heuristic):
     """
     """
-    def calculate(self, spectrum, threshold=7.0, min_nchan=3, avg_limit=2, box_size=2, tweak=False, mask=[], edge=None):
+    def calculate(self, spectrum: List[float], threshold: float=7.0, min_nchan: int=3, 
+                  avg_limit: int=2, box_size: int=2, tweak: bool=False, 
+                  mask: List=[], edge: List=None) -> List[int]:
+        """
+        Args:
+            spectrum: list of spectrum data
+            threshold: threshold value to detect lines
+            min_nchan: minimum value of nchan
+            avg_limit: average value of limit
+            box_size: value of box size
+            tweak: True or False of tweak
+            mask: list of indice of mask
+            edge: list of indice of edge
+        Returns:
+            ranges: list of indice of start and end of line range
+        """
         _spectrum = np.array(spectrum)
         if len(mask) == 0:
             mask = np.ones(len(_spectrum), dtype=np.int)
@@ -104,8 +119,16 @@ class HeuristicsLineFinder(api.Heuristic):
         #return len(ranges)/2
         return ranges
 
-    def tweak_lines(self, spectrum, ranges, edge, n_ignore=1):
+    def tweak_lines(self, spectrum: List[float], ranges: List[int], 
+                    edge: List[int], n_ignore: int=1) -> List[int]:
         """
+        Args:
+            spectrum: list of spectrum data
+            ranges: list of indice of line range
+            edge: list of indice of edge
+            n_ignore: number of ignore
+        Returns:
+            ranges: line of indice of start and end of line range
         """
         med = np.median(spectrum)
         mask = np.array(spectrum) >= med
