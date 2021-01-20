@@ -11,6 +11,8 @@ ranges = [8, 12]
 
 def test_simple() -> NoReturn:
     """
+    Simple unit test for calculate method.
+
     Args:
         none
     Returns:
@@ -23,6 +25,8 @@ def test_simple() -> NoReturn:
 
 def test_linefinder() -> NoReturn:
     """
+    Unit test for calculate method.
+
     Args:
         none
     Returns:
@@ -36,6 +40,8 @@ def test_linefinder() -> NoReturn:
 
 def test_tweak_lines() -> NoReturn:
     """
+    Unit test for tweak_lines method.
+
     Args:
         none
     Returns:
