@@ -28,12 +28,14 @@ from typing import List
 
 
 class HeuristicsLineFinder(api.Heuristic):
-    """
-    """
+    """Class including calculate method and tweak_lines method."""
+
     def calculate(self, spectrum: List[float], threshold: float=7.0, min_nchan: int=3, 
                   avg_limit: int=2, box_size: int=2, tweak: bool=False, 
                   mask: List=[], edge: List=None) -> List[int]:
         """
+        Calculate difference between each data and median of spectrum.
+
         Args:
             spectrum: list of spectrum data
             threshold: threshold value to detect lines
@@ -122,6 +124,8 @@ class HeuristicsLineFinder(api.Heuristic):
     def tweak_lines(self, spectrum: List[float], ranges: List[int], 
                     edge: List[int], n_ignore: int=1) -> List[int]:
         """
+        Calculate difference between each data and median of spectrum when the edge parameter is given.
+
         Args:
             spectrum: list of spectrum data
             ranges: list of indice of line range
