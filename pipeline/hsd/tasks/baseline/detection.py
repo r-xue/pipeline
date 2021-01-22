@@ -18,8 +18,7 @@ from . import rules
 
 NoData = common.NoData
 
-_LOG = infrastructure.get_logger(__name__)
-LOG = utils.OnDemandStringParseLogger(_LOG)
+LOG = infrastructure.get_logger(__name__)
 
 
 class DetectLineInputs(vdp.StandardInputs):
@@ -144,14 +143,14 @@ class DetectLine(basetask.StandardTaskTemplate):
         (nrow, nchan) = spectra.shape
 
         LOG.info('Search regions for protection against the background subtraction...')
-        LOG.info('DetectLine: Processing {} spectra...', nrow)
+        LOG.info('DetectLine: Processing %s spectra...', nrow)
 
         # Set edge mask region
         (EdgeL, EdgeR) = common.parseEdge(edge)
         Nedge = EdgeR + EdgeL
-        LOG.info('edge={}', edge)
-        LOG.info('EdgeL, EdgeR={}, {}', EdgeL, EdgeR)
-        LOG.info('Nedge={}', Nedge)
+        LOG.info('edge=%s', edge)
+        LOG.info('EdgeL, EdgeR=%s, %s', EdgeL, EdgeR)
+        LOG.info('Nedge=%s', Nedge)
         if Nedge >= nchan:
             message = 'Error: Edge masked region too large...'
             LOG.error(message)
@@ -173,7 +172,7 @@ class DetectLine(basetask.StandardTaskTemplate):
         Thre = Threshold * self.ThresholdFactor
 
         # Create progress timer
-        Timer = common.ProgressTimer(80, nrow, LOG.logger.level)
+        Timer = common.ProgressTimer(80, nrow, LOG.level)
         # 100.0: minimum number of channels for binned spectrum to detect lines
         MinChanBinSp = 50.0
         TmpRange = [4**i for i in range(int(math.ceil(math.log(len(spectra[0])/MinChanBinSp)/math.log(4))))]
@@ -189,11 +188,11 @@ class DetectLine(basetask.StandardTaskTemplate):
             ProcStartTime = time.time()
             Protected = []
             if len(grid_table[row][6]) == 0:
-                LOG.debug('Row {}: No spectrum', row)
+                LOG.debug('Row %s: No spectrum', row)
                 # No spectrum
                 Protected = [[-1, -1, 1]]
             else:
-                LOG.debug('Start Row {}', row)
+                LOG.debug('Start Row %s', row)
                 for [BINN, offset] in BinningRange:
                     MinNchan = (MinFWHM-2) // BINN + 2
                     SP = self.SpBinning(spectra[row], BINN, offset)
@@ -231,9 +230,9 @@ class DetectLine(basetask.StandardTaskTemplate):
                                   grid_table[row][5],  # DEC
                                   Protected]           # Protected Region
             ProcEndTime = time.time()
-            LOG.info('Channel ranges of detected lines for Row {}: {}', row, detect_signal[row][2])
+            LOG.info('Channel ranges of detected lines for Row %s: %s', row, detect_signal[row][2])
 
-            LOG.debug('End Row {}: Elapsed Time={:.1} sec', row, (ProcEndTime - ProcStartTime))
+            LOG.debug('End Row %s: Elapsed Time=%.1f sec', row, (ProcEndTime - ProcStartTime))
         del Timer
 
         #LOG.debug('DetectSignal = %s'%(detect_signal))
@@ -281,7 +280,7 @@ class DetectLine(basetask.StandardTaskTemplate):
         MinFWHM = int(rules.LineFinderRule['MinFWHM'])
 
         LOG.trace('line detection parameters: ')
-        LOG.trace('threshold (S/N per channel)={}, channels, edges to be dropped=[{}, {}]',
+        LOG.trace('threshold (S/N per channel)=%s, channels, edges to be dropped=[%s, %s]',
                   threshold, EdgeL, EdgeR)
         line_ranges = self.line_finder(spectrum=spectrum,
                                        threshold=threshold,
@@ -300,7 +299,7 @@ class DetectLine(basetask.StandardTaskTemplate):
             Width = line_ranges[y*2+1] - line_ranges[y*2] + 1
             ### 2011/05/16 allowance was moved to clustering analysis
             #allowance = int(Width/5)
-            LOG.debug('Ranges={}, Width={}', line_ranges[y*2:y*2+2], Width)
+            LOG.debug('Ranges=%s, Width=%s', line_ranges[y*2:y*2+2], Width)
             if (Width >= MinFWHM and Width <= MaxFWHM and line_ranges[y*2] > EdgeL and
                     line_ranges[y*2+1] < (nchan - 1 - EdgeR)):
                 protected.append([line_ranges[y*2], line_ranges[y*2+1]])
@@ -482,7 +481,7 @@ class LineWindowParser(object):
         self._measure_init(field_id)
         try:
             for spwid, _window in processed.items():
-                LOG.trace('_window={0} type {1}', _window, type(_window))
+                LOG.trace('_window=%s type %s', _window, type(_window))
                 new_window = self._freq2chan(spwid, _window)
                 if len(new_window) > 0 and not isinstance(new_window[0], list):
                     new_window = [new_window]
@@ -582,9 +581,9 @@ class LineWindowParser(object):
         if item_type in (list, numpy.ndarray):
             converted = []
             for w in window:
-                LOG.trace('_freq2chan: w={0} type {1}', w, type(w))
+                LOG.trace('_freq2chan: w=%s type %s', w, type(w))
                 _w = self._freq2chan(spwid, w)
-                LOG.trace('_freq2chan: _w={0} type {1}', _w, type(_w))
+                LOG.trace('_freq2chan: _w=%s type %s', _w, type(_w))
                 if len(_w) == 2:
                     converted.append(_w)
 
@@ -618,7 +617,7 @@ class LineWindowParser(object):
         assert spwid in processed
 
         new_window = sorted(processed[spwid])
-        LOG.trace('_freq2chan: new_window={0} type {1}', new_window, type(new_window))
+        LOG.trace('_freq2chan: new_window=%s type %s', new_window, type(new_window))
         if len(new_window) == 0:
             return []
         assert len(new_window) == 1
