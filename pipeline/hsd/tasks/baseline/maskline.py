@@ -15,8 +15,7 @@ from . import validation
 from .. import common
 from ..common import utils
 
-_LOG = infrastructure.get_logger(__name__)
-LOG = utils.OnDemandStringParseLogger(_LOG)
+LOG = infrastructure.get_logger(__name__)
 
 NoData = common.NoData
 
@@ -87,7 +86,7 @@ class MaskLine(basetask.StandardTaskTemplate):
         t1 = time.time()
         LOG.info('Elapsed time for generating index_dict: {0} sec'.format(t1 - t0))
 
-        LOG.debug('index_dict={}', index_dict)
+        LOG.debug('index_dict=%s', index_dict)
         # debugging
         t0 = time.time()
         indexer = DataTableIndexer(context)
@@ -97,7 +96,7 @@ class MaskLine(basetask.StandardTaskTemplate):
                     for i in index_dict[ms.basename]:
                         yield indexer.perms2serial(ms.basename, i)
         index_list = numpy.fromiter(_g(), dtype=numpy.int64)
-        LOG.info('index_list={}', index_list)
+        LOG.info('index_list=%s', index_list)
         t1 = time.time()
         LOG.info('Elapsed time for generating index_list: {0} sec'.format(t1 - t0))
         # LOG.trace('all(spwid == {}) ? {}', spwid_list[0], numpy.all(dt.getcol('IF').take(index_list) == spwid_list[0]))
@@ -132,7 +131,7 @@ class MaskLine(basetask.StandardTaskTemplate):
         LOG.debug('Members to be processed:')
         for (m, f, a, s) in utils.iterate_group_member(group_desc, member_list):#itertools.izip(vis_list, field_list, antenna_list, spwid_list):
             v = m.name
-            LOG.debug('MS "{}" Field {} Antenna {} Spw {}', os.path.basename(v), f, a, s)
+            LOG.debug('MS "%s" Field %s Antenna %s Spw %s', os.path.basename(v), f, a, s)
 
         # filename for input/output
         # ms_list = [context.observing_run.get_ms(vis) for vis in vis_list]
@@ -170,9 +169,9 @@ class MaskLine(basetask.StandardTaskTemplate):
 
             return result
 
-        LOG.trace('len(grid_table)={}, spectra.shape={}', len(grid_table), numpy.asarray(spectra).shape)
-        LOG.trace('grid_table={}', grid_table)
-        LOG.debug('PROFILE simplegrid: elapsed time is {} sec', t1 - t0)
+        LOG.trace('len(grid_table)=%s, spectra.shape=%s', len(grid_table), numpy.asarray(spectra).shape)
+        LOG.trace('grid_table=%s', grid_table)
+        LOG.debug('PROFILE simplegrid: elapsed time is %s sec', t1 - t0)
 
         # line finding
         t0 = time.time()
@@ -186,8 +185,8 @@ class MaskLine(basetask.StandardTaskTemplate):
         detect_signal = detection_result.signals
         t1 = time.time()
 
-        LOG.trace('detect_signal={}', detect_signal)
-        LOG.debug('PROFILE detection: elapsed time is {} sec', t1-t0)
+        LOG.trace('detect_signal=%s', detect_signal)
+        LOG.debug('PROFILE detection: elapsed time is %s sec', t1-t0)
 
         # line validation
         t0 = time.time()
@@ -198,7 +197,7 @@ class MaskLine(basetask.StandardTaskTemplate):
                                                  edge,
                                                  clusteringalgorithm=clusteringalgorithm)
         validator_task = validator_cls(validation_inputs)
-        LOG.trace('len(index_list)={}', len(index_list))
+        LOG.trace('len(index_list)=%s', len(index_list))
         validation_result = self._executor.execute(validator_task, merge=False,
                                                    datatable_dict=dt_dict,
                                                    index_list=index_list,
@@ -218,12 +217,12 @@ class MaskLine(basetask.StandardTaskTemplate):
         t1 = time.time()
 
         # LOG.debug('lines=%s'%(lines))
-        LOG.debug('PROFILE validation: elapsed time is {} sec', t1-t0)
+        LOG.debug('PROFILE validation: elapsed time is %s sec', t1-t0)
 
         # LOG.debug('cluster_info=%s'%(cluster_info))
 
         end_time = time.time()
-        LOG.debug('PROFILE execute: elapsed time is {} sec', end_time-start_time)
+        LOG.debug('PROFILE execute: elapsed time is %s sec', end_time-start_time)
 
         outcome = {'detected_lines': lines,
                    'channelmap_range': channelmap_range,
