@@ -398,7 +398,8 @@ def RADEClabel(span: float,
     Args:
         span: The span of map axes in the unit of degrees. Both horizontal and
             vertical axes are formatted using this value.
-        ofs_coord:
+        ofs_coord: Format of right ascension (R.A.) labels. If True, labels will
+            be in degree (DMS). Otherwise, it will be in hour angle (HMS).
     Returns:
         (RAlocator, DEClocator, RAformatter, DECformatter)
 
@@ -464,7 +465,10 @@ def XYlabel(span: float, direction_reference: str, ofs_coord: bool=False
         span: The span of map axes in the unit of degrees. Both horizontal and
             vertical axes are formatted using this value.
         direction_reference: The direction reference (e.g., 'J2000')
-        ofs_coord:
+        ofs_coord: Format of right ascension (R.A.) labels. If True, labels will
+            be in degree (DMS). Otherwise, it will be in hour angle (HMS). The
+            parameter is ignored if direction_reference is 'GALACTIC'. The right
+            ascension is always in DMS in that case.
     Returns:
         labels for the x- and y-axes in plot.
 
@@ -805,6 +809,8 @@ class SingleDishPointingChart(object):
             target_only: Whether plot ON_SOURCE only (True) or
                          both ON_SOURCE and OFF_SOURCE.
             ofs_coord: Use offset coordinate or not.
+                will be in degree (DMS). Otherwise, it will be in hour angle
+                (HMS). Use offset coordinate or not.
 
         """
         self.context = context
