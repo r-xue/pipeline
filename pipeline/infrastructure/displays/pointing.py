@@ -503,7 +503,7 @@ class MapAxesManagerBase(object):
         without any validity check.
 
         Args:
-            value (str): direction reference string.
+            value: direction reference string.
         """
         if isinstance(value, str):
             self._direction_reference = value
@@ -522,7 +522,7 @@ class MapAxesManagerBase(object):
         """Turn on/off offset coordinate mode.
 
         Args:
-            value (bool): Turn on (True) or off (False)
+            value: Turn on (True) or off (False)
                           offset coordinate mode.
         """
         if isinstance(value, bool):
@@ -823,7 +823,7 @@ class SingleDishPointingChart(object):
         If field_id is not given, None is returned.
 
         Args:
-            field_id (Optional[int]): Field ID
+            field_id: Field ID
 
         Returns:
             Field: Field domain object or None.
