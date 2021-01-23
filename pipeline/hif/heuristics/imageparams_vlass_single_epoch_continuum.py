@@ -83,7 +83,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         if results_list and type(results_list) is list:
             for result in results_list:
                 result_meta = result.read()
-                if hasattr(result_meta, 'taskname') and result_meta.taskname == 'hifv_vlassmasking':
+                if hasattr(result_meta, 'pipeline_casa_task') and result_meta.pipeline_casa_task.startswith('hifv_vlassmasking'):
                     return [r.combinedmask for r in result_meta][0]
 
         # In case hif_makeimages result was not found or results_list was not provided
