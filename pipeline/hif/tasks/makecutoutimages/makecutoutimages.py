@@ -124,8 +124,8 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
                 LOG.info("SubImagename: " + subimagename)
                 _, subimage_size = self._do_subim(imagename)
                 subimagenames.append(subimagename)
-
-        imlist.sort()
+        # TODO: Sorting is not strictly necessary because imlist is populated in order
+        imlist.sort(key= lambda x: x['imagename'])
         subimagenames.sort()
 
         return MakecutoutimagesResults(subimagelist=imlist, subimagenames=subimagenames, image_size=subimage_size)
