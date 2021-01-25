@@ -125,9 +125,6 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
                 _, subimage_size = self._do_subim(imagename)
                 subimagenames.append(subimagename)
 
-        imlist.sort()
-        subimagenames.sort()
-
         return MakecutoutimagesResults(subimagelist=imlist, subimagenames=subimagenames, image_size=subimage_size)
 
     def analyse(self, results):
