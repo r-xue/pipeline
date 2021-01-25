@@ -179,7 +179,7 @@ class Vlassmasking(basetask.StandardTaskTemplate):
             tier1_mask = maskname_base + QLmask if not self.inputs.context.clean_list_pending[0]['mask'] else self.inputs.context.clean_list_pending[0]['mask']
 
             # Obtain image name
-            imagename_base = self._get_bdsf_imagename(maskname_base)
+            imagename_base = self._get_bdsf_imagename(maskname_base, iter=1)
 
             initial_catalog_fits_file = self.bdsfcompute(imagename_base)
 
@@ -261,17 +261,20 @@ class Vlassmasking(basetask.StandardTaskTemplate):
         else:
             return 'VIP_'
 
-    def _get_bdsf_imagename(self, imagename_base):
+    def _get_bdsf_imagename(self, imagename_base, iter=1):
         """
         Image file name to be used as input to BDSF blob finder.
 
-        Obtain the image name from the latest MakeImagesResult object in context.results.
-        If not found, then construct image name from imagename_base argument.
+        Obtain the image name from the latest MakeImagesResult object in context.results. The iter parameter controlls
+        which iteration image name should be returned. In the current VLASS-SE-CONT workflow, iter=1.
+
+        If hif_makimages result is not found, then construct image name from imagename_base argument. This replicates 
+        the image name used in the VLASS Memo 15 VIP script.
         """
         for result in self.inputs.context.results[::-1]:
             result_meta = result.read()
-            if hasattr(result_meta, 'taskname') and result_meta.taskname == 'hif_makeimages':
-                return result_meta.results[0].iterations[1]['image']
+            if hasattr(result_meta, 'pipeline_casa_task') and result_meta.pipeline_casa_task.startswith('hif_makeimages'):
+                return result_meta.results[0].iterations[iter]['image']
 
         # In case hif_makeimages result was not found.
         return imagename_base + 'iter1b.image'
