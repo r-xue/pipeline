@@ -1,31 +1,37 @@
-
+"""Set of base classes and utility functions for display modules."""
 import abc
 import datetime
+import itertools
 import math
 import os
 
 import matplotlib.gridspec as gridspec
-import numpy
-import pylab as pl
+import numpy as np
+import matplotlib.pyplot as plt
 from matplotlib.dates import date2num, DateFormatter, MinuteLocator
-from matplotlib.ticker import FuncFormatter, MultipleLocator, AutoLocator
+from matplotlib.axes import Axes
+from matplotlib.text import Text
+from matplotlib.patches import Polygon
+from matplotlib.lines import Line2D
+from typing import Generator, List, NoReturn, Optional, Tuple, Union
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.displays.pointing as pointing
-import pipeline.infrastructure.renderer.logger as logger
+from pipeline.infrastructure import casa_tools
+from pipeline.domain.singledish import MSReductionGroupDesc
+from pipeline.infrastructure.renderer.logger import Plot
 
 LOG = infrastructure.get_logger(__name__)
 
-#ShowPlot = True
+# ShowPlot = True
 ShowPlot = False
 
 DPISummary = 90
-#DPIDetail = 120
-#DPIDetail = 130
+# DPIDetail = 120
+# DPIDetail = 130
 DPIDetail = 260
-LightSpeedQuantity = casatools.quanta.constants('c')
-LightSpeed = casatools.quanta.convert(LightSpeedQuantity, 'km/s')['value']  # speed of light in km/s
+LightSpeedQuantity = casa_tools.quanta.constants('c')
+LightSpeed = casa_tools.quanta.convert(LightSpeedQuantity, 'km/s')['value']  # speed of light in km/s
 
 sd_polmap = {0: 'XX', 1: 'YY', 2: 'XY', 3: 'YX'}
 
@@ -33,41 +39,55 @@ NoData = -32767.0
 NoDataThreshold = NoData + 10000.0
 
 
-def mjd_to_datedict(val, unit='d'):
-    mjd = casatools.quanta.quantity(val, unit)
-    return casatools.quanta.splitdate(mjd)
+def mjd_to_datetime(val: float) -> datetime.datetime:
+    """Convert MJD to datetime instance.
 
+    Args:
+        val: MJD value in day.
 
-def mjd_to_datetime(val):
-    mjd = mjd_to_datedict(val, unit='d')
+    Returns:
+        datetime.datetime: datetime instance
+    """
+    qa = casa_tools.quanta
+    mjd = qa.splitdate(qa.quantity(val, 'd'))
     date_time = datetime.datetime(mjd['year'], mjd['month'],
                                   mjd['monthday'], mjd['hour'],
                                   mjd['min'], mjd['sec'])
     return date_time
 
 
-def mjd_to_datestring(val, fmt='%Y/%m/%d'):
-    date_time = mjd_to_datetime(val)
-    return date_time.strftime(fmt)
+def mjd_to_plotval(mjd_list: Union[List[float], np.ndarray]) -> np.ndarray:
+    """Convert list of MJD values to Matplotlib dates.
 
+    Args:
+        mjd_list: Sequence of MJD values in day.
 
-# vectorized version
-mjd_to_datetime_vectorized = numpy.vectorize(mjd_to_datetime)
-
-
-def mjd_to_plotval(mjd_list):
-    if len(mjd_list) == 0:
-        return []
-    datetime_list = mjd_to_datetime_vectorized(mjd_list)
+    Returns:
+        np.ndarray: Sequence of Matplotlib dates.
+    """
+    datetime_list = [mjd_to_datetime(x) for x in mjd_list]
     return date2num(datetime_list)
 
 
 class CustomDateFormatter(DateFormatter):
+    """Customized date formatter.
+
+    Default format of the label is same as DateFormtter.
+    For the leftmost label as well as when date is changed,
+    this formatter puts extra label '%Y/%m/%d' beneath the
+    deafult one.
     """
-    Customized date formatter that puts YYYY/MM/DD under usual
-    tick labels at the beginning of tick and when date is changed.
-    """
-    def __call__(self, x, pos=0):
+
+    def __call__(self, x: float, pos: float = 0) -> str:
+        """Return the label for tick value x at position pos.
+
+        Args:
+            x: tick value
+            pos: position. Defaults to 0.
+
+        Returns:
+            str: tick label.
+        """
         fmt_saved = self.fmt
         if pos == 0 or x % 1.0 == 0.0:
             self.fmt = '%H:%M\n%Y/%m/%d'
@@ -76,67 +96,78 @@ class CustomDateFormatter(DateFormatter):
         return tick
 
 
-def utc_formatter(fmt='%H:%M'):
+def utc_formatter(fmt: str = '%H:%M') -> CustomDateFormatter:
+    """Generate CustomDateFormatter instance.
+
+    Generate CustomDateFormatter instance with the format
+    given by fmt.
+
+    Args:
+        fmt: Tick format. Defaults to '%H:%M'.
+
+    Returns:
+        CustomDateFormatter: formatter instance.
+    """
     return CustomDateFormatter(fmt)
 
 
-def utc_locator(start_time=None, end_time=None):
+def utc_locator(start_time: Optional[float] = None,
+                end_time: Optional[float] = None) -> MinuteLocator:
+    """Generate MinuteLocator instance.
+
+    Generate MinuteLocator instance. If either start_time or end_time is None,
+    default MinuteLocator instance is returned. Otherwise, tick interval is
+    adjusted according to start_time and end_time.
+
+    Args:
+        start_time: Leftmost value of time sequence.
+                    Can be minimum or maximum. Defaults to None.
+        end_time: Rightmost value of time sequence.
+                  Can be minimum or maximum. Defaults to None.
+
+    Returns:
+        MinuteLocator: locator instance.
+    """
     if start_time is None or end_time is None:
         return MinuteLocator()
     else:
-        dt = abs(end_time - start_time) * 1440.0 # day -> minutes
-        #print dt
+        dt = abs(end_time - start_time) * 1440.0  # day -> minutes
         if dt < 2:
             tick_interval = 1
         else:
-            tick_interval = max(int(dt/10), 2)
-            tick_candidates = numpy.asarray([i for i in range(1, 61) if 60 % i == 0])
-            tick_interval = tick_candidates[numpy.argmin(abs(tick_candidates - tick_interval))]
+            tick_interval = max(int(dt / 10), 2)
+            tick_candidates = np.asarray([i for i in range(1, 61) if 60 % i == 0])
+            tick_interval = tick_candidates[np.argmin(abs(tick_candidates - tick_interval))]
 
-        #print tick_interval
+        # print tick_interval
         return MinuteLocator(byminute=list(range(0, 60, tick_interval)))
 
 
-class PlotObjectHandler(object):
-    def __init__(self):
-        self.storage = []
-
-    def __del__(self):
-        self.clear()
-
-    def plot(self, *args, **kwargs):
-        object_list = pl.plot(*args, **kwargs)
-        self.storage.extend(object_list)
-        return object_list
-
-    def text(self, *args, **kwargs):
-        object_list = pl.text(*args, **kwargs)
-        self.storage.append(object_list)
-        return object_list
-
-    def axvspan(self, *args, **kwargs):
-        object_list = pl.axvspan(*args, **kwargs)
-        self.storage.append(object_list)
-        return object_list
-
-    def axhline(self, *args, **kwargs):
-        object_list = pl.axhline(*args, **kwargs)
-        self.storage.append(object_list)
-        return object_list
-
-    def clear(self):
-        for obj in self.storage:
-            obj.remove()
-        self.storage = []
-
-
 class SingleDishDisplayInputs(object):
-    def __init__(self, context, result):
+    """Represents inputs to Display classes."""
+
+    def __init__(self,
+                 context: infrastructure.launcher.Context,
+                 result: infrastructure.api.Results) -> None:
+        """Construct SingleDishDisplayInputs instance.
+
+        Args:
+            context: Pipeline context.
+            result: Pipeline task execution result.
+        """
         self.context = context
         self.result = result
 
     @property
-    def isnro(self):
+    def isnro(self) -> bool:
+        """Check if given datasets are taken by NRO45m telescope.
+
+        Raises:
+            RuntimeError: Data from two or more observatories are mixed.
+
+        Returns:
+            bool: True if data is from NRO45m, otherwise False
+        """
         arrays = {ms.antenna_array.name for ms in self.context.observing_run.measurement_sets}
         if len(arrays) != 1:
             raise RuntimeError('array name is not unique: {}'.format(list(arrays)))
@@ -145,32 +176,44 @@ class SingleDishDisplayInputs(object):
 
 
 class SpectralImage(object):
-    def __init__(self, imagename):
-        qa = casatools.quanta
+    """Representation of four-dimensional spectral image."""
+
+    def __init__(self, imagename: str) -> None:
+        """Construct SpectralImage instance.
+
+        Args:
+            imagename: Name of the image.
+        """
+        qa = casa_tools.quanta
         # read data to storage
-        with casatools.ImageReader(imagename) as ia:
+        with casa_tools.ImageReader(imagename) as ia:
             self.image_shape = ia.shape()
             coordsys = ia.coordsys()
             self._load_coordsys(coordsys)
             coordsys.done()
             self.data = ia.getchunk()
             self.mask = ia.getchunk(getmask=True)
-            bottom = ia.toworld(numpy.zeros(len(self.image_shape), dtype=int), 'q')['quantity']
-            top = ia.toworld(self.image_shape-1, 'q')['quantity']
-            key = lambda x: '*%s'%(x+1)
-            ra_min = bottom[key(self.id_direction[0])]
-            ra_max = top[key(self.id_direction[0])]
+            bottom = ia.toworld(np.zeros(len(self.image_shape), dtype=int), 'q')['quantity']
+            top = ia.toworld(self.image_shape - 1, 'q')['quantity']
+            direction_keys = ['*{}'.format(x + 1) for x in self.id_direction]
+            ra_min = bottom[direction_keys[0]]
+            ra_max = top[direction_keys[0]]
             if qa.gt(ra_min, ra_max):
                 ra_min, ra_max = ra_max, ra_min
             self.ra_min = ra_min
             self.ra_max = ra_max
-            self.dec_min = bottom[key(self.id_direction[1])]
-            self.dec_max = top[key(self.id_direction[1])]
+            self.dec_min = bottom[direction_keys[1]]
+            self.dec_max = top[direction_keys[1]]
             self._brightnessunit = ia.brightnessunit()
             beam = ia.restoringbeam()
         self._beamsize_in_deg = qa.convert(qa.sqrt(qa.mul(beam['major'], beam['minor'])), 'deg')['value']
 
-    def _load_coordsys(self, coordsys):
+    def _load_coordsys(self, coordsys: casa_tools.casatools.coordsys) -> None:
+        """Load axes information of coordinate system.
+
+        Args:
+            coordsys: coordsys instance of the image.
+        """
         coord_types = coordsys.axiscoordinatetypes()
         self._load_id_coord_types(coord_types)
         self.units = coordsys.units()
@@ -183,59 +226,118 @@ class SpectralImage(object):
         self.refvals = coordsys.referencevalue()['numeric']
         self.increments = coordsys.increment()['numeric']
 
-    def _load_id_coord_types(self, coord_types):
+    def _load_id_coord_types(self, coord_types: casa_tools.casatools.coordsys) -> None:
+        """Load indices for coordinate axes.
+
+        Args:
+            coord_types: coordsys instance of the image.
+        """
         id_direction = coord_types.index('Direction')
-        self.id_direction = [id_direction, id_direction+1]
+        self.id_direction = [id_direction, id_direction + 1]
         self.id_spectral = coord_types.index('Spectral')
         self.id_stokes = coord_types.index('Stokes')
-        LOG.debug('id_direction=%s'%(self.id_direction))
-        LOG.debug('id_spectral=%s'%(self.id_spectral))
-        LOG.debug('id_stokes=%s'%(self.id_stokes))
+        LOG.debug('id_direction=%s', self.id_direction)
+        LOG.debug('id_spectral=%s', self.id_spectral)
+        LOG.debug('id_stokes=%s', self.id_stokes)
 
     @property
-    def nx(self):
+    def nx(self) -> int:
+        """Return number of pixels for horizontal (longitude) axis."""
         return self.image_shape[self.id_direction[0]]
 
     @property
-    def ny(self):
+    def ny(self) -> int:
+        """Return number of pixels for vertical (latitude) axis."""
         return self.image_shape[self.id_direction[1]]
 
     @property
-    def nchan(self):
+    def nchan(self) -> int:
+        """Return number of pixels (channels) for spectral axis."""
         return self.image_shape[self.id_spectral]
 
     @property
-    def npol(self):
+    def npol(self) -> int:
+        """Return number of pixels (polarizations or correlations) for Stokes axis."""
         return self.image_shape[self.id_stokes]
 
     @property
-    def brightnessunit(self):
+    def brightnessunit(self) -> str:
+        """Return brightness unit of the image."""
         return self._brightnessunit
-#         if self._brightnessunit.find('Jy') != -1:
-#             return 'Jy'
-#         else:
-#             return 'K'
 
     @property
-    def beam_size(self):
+    def beam_size(self) -> float:
+        """Return beam diameter in degree."""
         return self._beamsize_in_deg
 
-    def to_velocity(self, frequency, freq_unit='GHz'):
-        qa = casatools.quanta
+    def to_velocity(self,
+                    frequency: Union[float, np.ndarray],
+                    freq_unit: str = 'GHz') -> Union[float, np.ndarray]:
+        """Convert frequency or array of frequency to velocity.
+
+        Args:
+            frequency: Frequency value(s).
+            freq_unit: Frequency Unit. Defaults to 'GHz'.
+
+        Returns:
+            Union[float, np.ndarray]: Velocity value(s).
+        """
+        qa = casa_tools.quanta
         if self.rest_frequency['unit'] != freq_unit:
             vrf = qa.convert(self.rest_frequency, freq_unit)['value']
         else:
             vrf = self.rest_frequency['value']
         return (1.0 - (frequency / vrf)) * LightSpeed
 
-    def spectral_axis(self, unit='GHz'):
+    def spectral_axis(self, unit: str = 'GHz') -> Tuple[float, float, float]:
+        """Return conversion information for spectral axis.
+
+        Three-tuple required for conversion between pixel and world spectral
+        axis is returned. The tuple consists of reference pixel, reverence value,
+        and increment for spectral axis.
+
+        Args:
+            unit: Frequency unit. Defaults to 'GHz'.
+
+        Returns:
+            Tuple[float, float, float]: (refpix, refval, increment) for spectral axis.
+        """
         return self.__axis(self.id_spectral, unit=unit)
 
-    def direction_axis(self, idx, unit='deg'):
+    def direction_axis(self, idx: int, unit: str = 'deg') -> Tuple[float, float, float]:
+        """Return conversion information for direction axes.
+
+        Three-tuple required for conversion between pixel and world direction
+        axes is returned. The tuple consists of reference pixel, refrence value,
+        and increment for direction axis. Direction index must be given to specify
+        either longitude (0) or latitude (1) axis.
+
+        Args:
+            idx: Index for direction axes.
+            unit: Direction unit. Defaults to 'deg'.
+
+        Returns:
+            Tuple[float, float, float]: (refpix, refval, increment) for direction axis
+                                        specified by idx.
+        """
         return self.__axis(self.id_direction[idx], unit=unit)
 
-    def __axis(self, idx, unit):
-        qa = casatools.quanta
+    def __axis(self, idx: int, unit: str) -> Tuple[float, float, float]:
+        """Return conversion information for specified image axis.
+
+        Three-tuple required for conversion between pixel and world direction
+        axes is returned. The tuple consists of reference pixel, refrence value,
+        and increment for the axis specified by idx.
+
+        Args:
+            idx: Axis index.
+            unit: Unit string.
+
+        Returns:
+            Tuple[float, float, float]: (refpix, refval, increment) for
+                                        the axis specified by idx.
+        """
+        qa = casa_tools.quanta
         refpix = self.refpixs[idx]
         refval = self.refvals[idx]
         increment = self.increments[idx]
@@ -244,20 +346,31 @@ class SpectralImage(object):
         if _unit != unit:
             refval = qa.convert(qa.quantity(refval, _unit), unit)['value']
             increment = qa.convert(qa.quantity(increment, _unit), unit)['value']
-        #return numpy.array([refval+increment*(i-refpix) for i in xrange(self.nchan)])
         return (refpix, refval, increment)
 
 
 class SDImageDisplayInputs(SingleDishDisplayInputs):
-    def __init__(self, context, result):
+    """Manages input data for plotter classes for single dish images."""
+
+    def __init__(self,
+                 context: infrastructure.launcher.Context,
+                 result: infrastructure.api.Results) -> None:
+        """Construct SDImageDisplayInputs instance.
+
+        Args:
+            context: Pipeline context.
+            result: Pipeline task execution result.
+        """
         super(SDImageDisplayInputs, self).__init__(context, result)
 
     @property
-    def imagename(self):
+    def imagename(self) -> str:
+        """Return name of the single dish image."""
         return self.result.outcome['image'].imagename
 
     @property
-    def spw(self):
+    def spw(self) -> int:
+        """Return spectral window (spw) id for the image."""
         spwlist = self.result.outcome['image'].spwlist
         if isinstance(spwlist, list):
             return spwlist[0]
@@ -265,69 +378,141 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
             return spwlist
 
     @property
-    def vis(self):
+    def vis(self) -> Optional[str]:
+        """Return name of the MeasurementSet if available.
+
+        If no MeasurementSet is associated with the result,
+        None is returned.
+        """
         if 'vis' in self.result.outcome:
             return self.result.outcome['vis']
         else:
             return None
 
     @property
-    def antenna(self):
+    def antenna(self) -> str:
+        """Return name of the antenna registered to the image.
+
+        In single dish pipeline, per-antenna images are created
+        first, and then combined them into one image. For the
+        former case, antenna name is returned while the special
+        string "COMBINED" is returned.
+
+        Returns:
+            str: Name of the antenna.
+        """
         return self.result.outcome['image'].antenna
 
     @property
-    def reduction_group(self):
-        """
-        Retruns ReductionGroupDesc instance corresponding to the reduction group
-        associated to the image
+    def reduction_group(self) -> MSReductionGroupDesc:
+        """Return ReductionGroupDesc instance.
+
+        Return ReductionGroupDesc instance corresponding to the reduction group
+        associated to the image.
         """
         group_id = self.result.outcome['reduction_group_id']
         return self.context.observing_run.ms_reduction_group[group_id]
 
     @property
-    def msid_list(self):
+    def msid_list(self) -> List[int]:
+        """Return list of indices for MeasurementSets.
+
+        The list specifies the MeasurementSets that are used to
+        generate the image.
+
+        Returns:
+            List[int]: index list for MeasurementSets.
+        """
         return self.result.outcome['file_index']
 
     @property
-    def antennaid_list(self):
+    def antennaid_list(self) -> List[int]:
+        """Return list of antenna ids.
+
+        Return list of antenna ids corresponding to antenna
+        name returned by self.antenna. Order of the index is
+        consistent with self.msid_list, i.e. antnenaid_list[0]
+        corresponds to the antenna id for the MeasurementSet
+        specified by msid_list[0]. For 'COMBINED' antenna,
+        indices for all the antennas are returned.
+
+        Returns:
+            List[int]: List of antenna ids.
+        """
         return self.result.outcome['assoc_antennas']
 
     @property
-    def fieldid_list(self):
+    def fieldid_list(self) -> List[int]:
+        """Return list of field ids.
+
+        Return list of field ids. Order of the index is
+        consistent with self.msid_list, i.e. fieldid_list[0]
+        corresponds to the field id for the MeasurementSet
+        specified by msid_list[0].
+
+        Returns:
+            List[int]: List of field ids.
+        """
         return self.result.outcome['assoc_fields']
 
     @property
-    def spwid_list(self):
+    def spwid_list(self) -> List[int]:
+        """Return list of spectral windo (spw) ids.
+
+        Return list of spw ids. Order of the index is
+        consistent with self.msid_list, i.e. spwid_list[0]
+        corresponds to the spw id for the MeasurementSet
+        specified by msid_list[0].
+
+        Returns:
+            List[int]: List of spw ids.
+        """
         return self.result.outcome['assoc_spws']
 
     @property
-    def stage_number(self):
+    def stage_number(self) -> int:
+        """Return Processing stage id."""
         return self.result.stage_number
 
     @property
-    def stage_dir(self):
+    def stage_dir(self) -> str:
+        """Return weblog subdirectory name for the stage."""
         return os.path.join(self.context.report_dir,
-                            'stage%d'%(self.stage_number))
+                            'stage{}'.format(self.stage_number))
 
     @property
-    def source(self):
+    def source(self) -> str:
+        """Return name of the target source."""
         return self.result.outcome['image'].sourcename
 
     @property
-    def contamination_plot(self):
+    def contamination_plot(self) -> str:
+        """Return file name of the contamination plot."""
         return self.imagename.rstrip('/') + '.contamination.png'
 
 
 class SDCalibrationDisplay(object, metaclass=abc.ABCMeta):
+    """Base plotter class for single-dish calibration tasks."""
+
     Inputs = SingleDishDisplayInputs
 
-    def __init__(self, inputs):
+    def __init__(self, inputs: SingleDishDisplayInputs) -> None:
+        """Construct SDCalibrationDisplay instance.
+
+        Args:
+            inputs: Inputs instance.
+        """
         self.inputs = inputs
 
-    def plot(self):
+    def plot(self) -> List[Plot]:
+        """Generate plots according to the provided results.
+
+        Returns:
+            List[Plot]: List of Plot instances.
+        """
         results = self.inputs.result
         report_dir = self.inputs.context.report_dir
-        stage_dir = os.path.join(report_dir, 'stage%d'%(results.stage_number))
+        stage_dir = os.path.join(report_dir, 'stage{}'.format(results.stage_number))
         plots = []
         for result in results:
             if result is None or result.outcome is None:
@@ -340,14 +525,33 @@ class SDCalibrationDisplay(object, metaclass=abc.ABCMeta):
         return plots
 
     @abc.abstractmethod
-    def doplot(self, result, stage_dir):
+    def doplot(self, result: infrastructure.api.Results, stage_dir: str) -> NoReturn:
+        """Generate plot from the result instance.
+
+        This method must be implemented in the subclasses.
+        The result should be single Results instance rather than ResultsList.
+
+        Args:
+            result: Pipeline task execution result.
+            stage_dir: Name of pipeline weblog subdirectory.
+
+        Raises:
+            NotImplementedError: This method is not implemented in the base class.
+        """
         raise NotImplementedError()
 
 
 class SDImageDisplay(object, metaclass=abc.ABCMeta):
+    """Base plotter class for imaging tasks."""
+
     Inputs = SDImageDisplayInputs
 
-    def __init__(self, inputs):
+    def __init__(self, inputs: SDImageDisplayInputs) -> None:
+        """Construct SDImageDisplay instance.
+
+        Args:
+            inputs: Inputs instance.
+        """
         self.inputs = inputs
         self.context = self.inputs.context
         self.stage_dir = self.inputs.stage_dir
@@ -357,19 +561,18 @@ class SDImageDisplay(object, metaclass=abc.ABCMeta):
         self.antenna = self.inputs.antenna
         self.vis = self.inputs.vis
 
-    def init(self):
+    def init(self) -> None:
+        """Initialize plotter using specifiec image."""
         self.image = SpectralImage(self.imagename)
-        qa = casatools.quanta
+        qa = casa_tools.quanta
         self.nchan = self.image.nchan
-#         self.data = self.image.data
-#         self.mask = self.image.mask
         self.nx = self.image.nx
         self.ny = self.image.ny
         self.npol = self.image.npol
         self.brightnessunit = self.image.brightnessunit
         self.direction_reference = self.image.direction_reference
         (refpix, refval, increment) = self.image.spectral_axis(unit='GHz')
-        self.frequency = numpy.array([refval+increment*(i-refpix) for i in range(self.nchan)])
+        self.frequency = np.array([refval + increment * (i - refpix) for i in range(self.nchan)])
         self.velocity = self.image.to_velocity(self.frequency, freq_unit='GHz')
         self.frequency_frame = self.image.frequency_frame
         self.x_max = self.nx - 1
@@ -382,106 +585,110 @@ class SDImageDisplay(object, metaclass=abc.ABCMeta):
         self.dec_max = qa.convert(self.image.dec_max, 'deg')['value']
         self.stokes_string = self.image.stokes_string
 
-        LOG.debug('(ra_min,ra_max)=(%s,%s)' % (self.ra_min, self.ra_max))
-        LOG.debug('(dec_min,dec_max)=(%s,%s)' % (self.dec_min, self.dec_max))
+        LOG.debug('(ra_min,ra_max)=(%s,%s)', self.ra_min, self.ra_max)
+        LOG.debug('(dec_min,dec_max)=(%s,%s)', self.dec_min, self.dec_max)
 
         self.beam_size = self.image.beam_size
         self.beam_radius = self.beam_size / 2.0
         self.grid_size = self.beam_size / 3.0
-        LOG.debug('beam_radius=%s'%(self.beam_radius))
-        LOG.debug('grid_size=%s'%(self.grid_size))
+        LOG.debug('beam_radius=%s', self.beam_radius)
+        LOG.debug('grid_size=%s', self.grid_size)
 
         # 2008/9/20 Dec Effect has been taken into account
         self.aspect = 1.0 / math.cos(0.5 * (self.dec_min + self.dec_max) / 180.0 * 3.141592653)
 
     @property
-    def data(self):
+    def data(self) -> Optional[np.ndarray]:
+        """Return image data as numpy float array."""
         return self.image.data if self.image is not None else None
 
     @property
-    def mask(self):
+    def mask(self) -> Optional[np.ndarray]:
+        """Return image mask as numpy bool array.
+
+        Mask is True for valid pixels while False for invalid pixels.
+
+        Returns:
+            Optional[np.ndarray]: Image mask.
+        """
         return self.image.mask if self.image is not None else None
 
     @property
-    def id_spectral(self):
+    def id_spectral(self) -> int:
+        """Return axis index for spectral axis."""
         return self.image.id_spectral if self.image is not None else None
 
     @property
-    def id_stokes(self):
+    def id_stokes(self) -> int:
+        """Return axis index for Stokes or polarization axis."""
         return self.image.id_stokes if self.image is not None else None
 
     @property
-    def num_valid_spectrum(self):
-        return self.__reshape2d(self.inputs.result.outcome['validsp'], int)
+    def num_valid_spectrum(self) -> np.ndarray:
+        """Return Number of valid spectral data accumulated to each position."""
+        return self.__reshape2d(self.inputs.result.outcome['validsp'])
 
     @property
-    def rms(self):
-        return self.__reshape2d(self.inputs.result.outcome['rms'], float)
+    def rms(self) -> np.ndarray:
+        """Return rms for each position."""
+        return self.__reshape2d(self.inputs.result.outcome['rms'])
 
     @property
-    def edge(self):
+    def edge(self) -> Tuple[int, int]:
+        """Return edge channels to exclude."""
         return self.inputs.result.outcome['edge']
 
-    def __reshape2d(self, array2d, dtype=None):
-        array3d = numpy.zeros((self.npol, self.ny, self.nx), dtype=dtype)
+    def __reshape2d(self, array2d: np.ndarray) -> np.ndarray:
+        """Reshape input two-dimensional array into three-dimensional array.
+
+        Returned array should have the shape (nx, ny, npol) where nx is
+        number of pixels along horizontal direction (longitude) axis,
+        ny is number of pixels along vertical direction (latitude) axis,
+        and npol is number of polarizations or correlations.
+
+        Args:
+            array2d: Two-dimensional array.
+
+        Returns:
+            np.ndarray: Resheped array.
+        """
+        array3d = np.zeros((self.npol, self.ny, self.nx), dtype=array2d.dtype)
         if len(array2d) == self.npol:
-            each_len = numpy.array(list(map(len, array2d)))
-            if numpy.all(each_len == 0):
+            each_len = np.array(list(map(len, array2d)))
+            if np.all(each_len == 0):
                 # no valid data in the pixel
-                array3d = numpy.zeros((self.npol, self.ny, self.nx), dtype=dtype)
-            elif numpy.all(each_len == self.ny * self.nx):
+                array3d = np.zeros((self.npol, self.ny, self.nx), dtype=array2d.dtype)
+            elif np.all(each_len == self.ny * self.nx):
                 # all polarizations has valid data in each pixel
-                array3d = numpy.array(array2d).reshape((self.npol, self.ny, self.nx))
-            elif numpy.any(each_len == self.ny * self.nx):
+                array3d = np.array(array2d).reshape((self.npol, self.ny, self.nx))
+            elif np.any(each_len == self.ny * self.nx):
                 # probably one of the polarization components has no valid data
-                invalid_pols = numpy.where(each_len == 0)[0]
+                invalid_pols = np.where(each_len == 0)[0]
                 _array2d = []
                 for i in range(self.npol):
                     if i in invalid_pols:
-                        _array2d.append(numpy.zeros((self.ny * self.nx), dtype=dtype))
+                        _array2d.append(np.zeros((self.ny * self.nx), dtype=array2d.dtype))
                     else:
                         _array2d.append(array2d[i])
-                array3d = numpy.array(_array2d).reshape((self.npol, self.ny, self.nx))
-        return numpy.flipud(array3d.transpose())
+                array3d = np.array(_array2d).reshape((self.npol, self.ny, self.nx))
+        return np.flipud(array3d.transpose())
 
 
-def get_base_frequency(table, freqid, nchan):
-    freq_table = os.path.join(table, 'FREQUENCIES')
-    with casatools.TableReader(freq_table) as tb:
-        refpix = tb.getcell('REFPIX', freqid)
-        refval = tb.getcell('REFVAL', freqid)
-        increment = tb.getcell('INCREMENT', freqid)
-        chan_freq = numpy.array([refval + (i - refpix) * increment for i in range(nchan)])
-    return chan_freq
-
-
-def get_base_frame(table):
-    freq_table = os.path.join(table, 'FREQUENCIES')
-    with casatools.TableReader(freq_table) as tb:
-        base_frame = tb.getkeyword('BASEFRAME')
-    return base_frame
-
-
-def drop_edge(array):
-    # array should be two-dimensional (nchan,nrow)
-    nchan = array.shape[0]
-    a = None
-    if nchan > 2:
-        echan = max(1, int(nchan * 0.05))
-        a = array[echan:-echan, ::]
-    return a
-
-
-class TimeAxesManager(object):
-    def __init__(self):
-        self.locator = utc_locator()
-
-    def init(self, start_time=None, end_time=None):
-        self.locator = utc_locator(start_time, end_time)
-
-
+#
 # sparse profile map
-def form3(n):
+def form3(n: int) -> int:
+    """Return a factor for calculation of panel position.
+
+    For given integer, form4 provide a factor for the
+    calculation of vertical panel position for sparse
+    profile map.
+
+    Args:
+        n: Number of panels along vertical axis.
+
+    Returns:
+        float: Factor for panel position.
+    """
     if n <= 4:
         return 4
     elif n == 5:
@@ -492,7 +699,19 @@ def form3(n):
         return 8
 
 
-def form4(n):
+def form4(n: int) -> float:
+    """Return a factor for calculation of panel position.
+
+    For given integer, form4 provide a factor for the
+    calculation of vertical panel position for sparse
+    profile map.
+
+    Args:
+        n: Number of panels along vertical axis.
+
+    Returns:
+        float: Factor for panel position.
+    """
     if n <= 4:
         return 4
     elif n < 8:
@@ -502,7 +721,28 @@ def form4(n):
 
 
 class SparseMapAxesManager(pointing.MapAxesManagerBase):
-    def __init__(self, nh, nv, brightnessunit, ticksize, clearpanel=True, figure_id=None):
+    """Creates and manages Axes instances for sparse profile map.
+
+    Sparse profile map consists of the following Axes:
+
+        - Integrated spectrum
+        - Atmospheric transmission (overlays integrated spectrum)
+        - Channel axis (optional, overlays integrated spectrum)
+        - Sparse profile map
+    """
+
+    def __init__(self, nh: int, nv: int, brightnessunit: str,
+                 ticksize: int, clearpanel: bool = True, figure_id: int = None) -> None:
+        """Construct SparseMapAxesManager instance.
+
+        Args:
+            nh: Number of panels along vertical axis.
+            nv: Number of panels along horizontal axis.
+            brightnessunit: Brightness unit.
+            ticksize: Size of tick label.
+            clearpanel: Clear existing Axes. Defaults to True.
+            figure_id: Figure id. Defaults to None.
+        """
         super(SparseMapAxesManager, self).__init__()
         self.nh = nh
         self.nv = nv
@@ -518,18 +758,18 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             self.figure_id = self.MATPLOTLIB_FIGURE_ID()
         else:
             self.figure_id = figure_id
-        self.figure = pl.figure(self.figure_id, dpi=DPIDetail)
+        self.figure = plt.figure(self.figure_id, dpi=DPIDetail)
         if clearpanel:
-            pl.clf()
+            plt.clf()
 
         _f = form4(self.nv)
         self.gs_top = gridspec.GridSpec(1, 1,
                                         left=0.08,
-                                        bottom=1.0 - 1.0/_f, top=0.96)
-        self.gs_bottom = gridspec.GridSpec(self.nv+1, self.nh+1,
+                                        bottom=1.0 - 1.0 / _f, top=0.96)
+        self.gs_bottom = gridspec.GridSpec(self.nv + 1, self.nh + 1,
                                            hspace=0, wspace=0,
                                            left=0, right=0.95,
-                                           bottom=0.01, top=1.0 - 1.0/_f-0.07)
+                                           bottom=0.01, top=1.0 - 1.0 / _f - 0.07)
 #         self.gs_top = gridspec.GridSpec(1, 1,
 #                                         bottom=1.0 - 1.0/form3(self.nv), top=0.96)
 #         self.gs_bottom = gridspec.GridSpec(self.nv+1, self.nh+1,
@@ -538,58 +778,91 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
 #                                            bottom=0.01, top=1.0 - 1.0/form3(self.nv)-0.07)
 
     @staticmethod
-    def MATPLOTLIB_FIGURE_ID():
+    def MATPLOTLIB_FIGURE_ID() -> int:
+        """Return default figure id."""
         return 8910
 
     @property
-    def axes_integsp(self):
+    def axes_integsp(self) -> Axes:
+        """Create Axes instance for integrated spectrum.
+
+        Creates and returns Axes instance for integrated or averaged
+        spectrum, which is located at the top of the figure.
+
+        Returns:
+            Axes: Axes instance for integrated spectrum.
+        """
         if self._axes_integsp is None:
-            pl.figure(self.figure_id)
-            axes = pl.subplot(self.gs_top[:,:])
+            plt.figure(self.figure_id)
+            axes = plt.subplot(self.gs_top[:, :])
             axes.cla()
             axes.xaxis.get_major_formatter().set_useOffset(False)
             axes.yaxis.get_major_formatter().set_useOffset(False)
-            pl.xlabel('Frequency(GHz)', size=(self.ticksize+1))
-            pl.ylabel('Intensity(%s)'%(self.brightnessunit), size=(self.ticksize+1))
-            pl.xticks(size=self.ticksize)
-            pl.yticks(size=self.ticksize)
-            #pl.title('Spatially Integrated Spectrum', size=(self.ticksize + 1))
-            pl.title('Spatially Averaged Spectrum', size=(self.ticksize + 1))
+            plt.xlabel('Frequency(GHz)', size=(self.ticksize + 1))
+            plt.ylabel('Intensity({})'.format(self.brightnessunit), size=(self.ticksize + 1))
+            plt.xticks(size=self.ticksize)
+            plt.yticks(size=self.ticksize)
+            plt.title('Spatially Averaged Spectrum', size=(self.ticksize + 1))
 
             self._axes_integsp = axes
         return self._axes_integsp
 
     @property
-    def axes_spmap(self):
+    def axes_spmap(self) -> List[Axes]:
+        """Create Axes instances for profile map.
+
+        Creates and returns list of Axes instances that constitutes
+        sparse profile map.
+
+        Returns:
+            List[Axes]: List of Axes instances for profile map.
+        """
         if self._axes_spmap is None:
-            pl.figure(self.figure_id)
+            plt.figure(self.figure_id)
             self._axes_spmap = list(self.__axes_spmap())
 
         return self._axes_spmap
 
     @property
-    def axes_atm(self):
+    def axes_atm(self) -> Axes:
+        """Create Axes instance for Atmospheric transmission profile.
+
+        Creates and returns Axes instance for Atmospheric transmission
+        profile that is calculated by Atmopheric Transmission at
+        Microwaves (ATM) model. The Axes overlays integrated spectrum.
+
+        Returns:
+            Axes: Axes instance for ATM transmission.
+        """
         if self._axes_atm is None:
-            pl.figure(self.figure_id)
+            plt.figure(self.figure_id)
             self._axes_atm = self.axes_integsp.twinx()
             self._axes_atm.set_position(self.axes_integsp.get_position())
             ylabel = self._axes_atm.set_ylabel('ATM Transmission', size=self.ticksize)
             ylabel.set_color('m')
-            self._axes_atm.yaxis.set_tick_params(colors='m', labelsize=self.ticksize-1)
+            self._axes_atm.yaxis.set_tick_params(colors='m', labelsize=self.ticksize - 1)
             self._axes_atm.yaxis.set_major_locator(
-                pl.MaxNLocator(nbins=4, integer=True, min_n_ticks=2)
+                plt.MaxNLocator(nbins=4, integer=True, min_n_ticks=2)
             )
             self._axes_atm.yaxis.set_major_formatter(
-                pl.FuncFormatter(lambda x, pos: '{}%'.format(int(x)))
-                )
+                plt.FuncFormatter(lambda x, pos: '{}%'.format(int(x)))
+            )
         return self._axes_atm
 
     @property
-    def axes_chan(self):
+    def axes_chan(self) -> Axes:
+        """Create Axes instance for channel axis.
+
+        Creates and returns Axes instance for channel axis on
+        integrated spectrum.
+
+        Returns:
+            Axes: Axes for channel axis.
+        """
         if self._axes_chan is None:
-            active = pl.gca()
+            active = plt.gca()
             try:
-                pl.figure(self.figure_id)
+                plt.figure(self.figure_id)
                 self.__adjust_integsp_for_chan()
                 self._axes_chan = self.axes_integsp.twiny()
                 self._axes_chan.set_position(self.axes_integsp.get_position())
@@ -598,15 +871,20 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
                 self._axes_chan.set_xlabel('Channel', size=self.ticksize - 1)
                 self._axes_chan.xaxis.set_label_coords(0.5, 1.11)
                 self._axes_chan.tick_params(axis='x', pad=0)
-                pl.xticks(size=self.ticksize - 1)
+                plt.xticks(size=self.ticksize - 1)
             finally:
-                pl.sca(active)
+                plt.sca(active)
         return self._axes_chan
 
-    def __adjust_integsp_for_chan(self):
-        active = pl.gca()
+    def __adjust_integsp_for_chan(self) -> None:
+        """Adjust size of Axes for integrated spectrum for channel axis.
+
+        Adjust size of Axes for integrated spectrum to locate channel axis
+        at the top of the panel.
+        """
+        active = plt.gca()
         try:
-            pl.sca(self._axes_integsp)
+            plt.sca(self._axes_integsp)
             a = self._axes_integsp
             bbox = a.get_position().get_points()
             blc = bbox[0]
@@ -619,48 +897,103 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             a.set_position((left, bottom, width, height))
             a.title.set_position((0.5, 1.2))
         finally:
-            pl.sca(active)
+            plt.sca(active)
 
-    def __axes_spmap(self):
+    def __axes_spmap(self) -> Generator[Axes, None, None]:
+        """Create Axes instances for sparse profile map.
+
+        Yields:
+            Generator[Axes, None, None]:
+                Axes instances corresponding to individual profile.
+        """
         for x in range(self.nh):
             for y in range(self.nv):
-                axes = pl.subplot(self.gs_bottom[self.nv - y - 1, self.nh - x])
+                axes = plt.subplot(self.gs_bottom[self.nv - y - 1, self.nh - x])
                 axes.cla()
-                axes.yaxis.set_major_locator(pl.NullLocator())
-                axes.xaxis.set_major_locator(pl.NullLocator())
+                axes.yaxis.set_major_locator(plt.NullLocator())
+                axes.xaxis.set_major_locator(plt.NullLocator())
 
                 yield axes
 
-    def setup_labels(self, label_ra, label_dec):
+    def setup_labels(self,
+                     label_ra: Union[List[float], np.ndarray],
+                     label_dec: Union[List[float], np.ndarray]) -> None:
+        """Set up position labels for sparse profile map.
+
+        Set up position (longitude and latitude) labels for sparse
+        profile map according to label_ra and label_dec, which are
+        the arrays with shape of (nh, 2) and (nv, 2) that hold
+        minimum and maximum positions for each panel, where nh and nv
+        are number of panels along horizontal and vertical axes.
+        Label value is the mean of minimum and maximum values of
+        positions and is converted to position string (HMS or DMS
+        format).
+
+        Args:
+            label_ra: min/max horizontal positions for each panel.
+            label_dec: min/max vertical positions for each panel.
+        """
         if self.direction_reference.upper() == 'GALACTIC':
             xaxislabel = pointing.DDMMSSs
         else:
             xaxislabel = pointing.HHMMSSss
         for x in range(self.nh):
-            a1 = pl.subplot(self.gs_bottom[-1, self.nh - x])
+            a1 = plt.subplot(self.gs_bottom[-1, self.nh - x])
             a1.set_axis_off()
             if len(a1.texts) == 0:
-                pl.text(0.5, 0.5, xaxislabel((label_ra[x][0]+label_ra[x][1])/2.0),
-                        horizontalalignment='center', verticalalignment='center', size=self.ticksize)
+                plt.text(0.5, 0.5, xaxislabel((label_ra[x][0] + label_ra[x][1]) / 2.0),
+                         horizontalalignment='center', verticalalignment='center', size=self.ticksize)
             else:
-                a1.texts[0].set_text(xaxislabel((label_ra[x][0]+label_ra[x][1])/2.0))
+                a1.texts[0].set_text(xaxislabel((label_ra[x][0] + label_ra[x][1]) / 2.0))
         for y in range(self.nv):
-            a1 = pl.subplot(self.gs_bottom[self.nv - y - 1, 0])
+            a1 = plt.subplot(self.gs_bottom[self.nv - y - 1, 0])
             a1.set_axis_off()
             if len(a1.texts) == 0:
-                pl.text(0.5, 0.5, pointing.DDMMSSs((label_dec[y][0]+label_dec[y][1])/2.0),
-                        horizontalalignment='center', verticalalignment='center', size=self.ticksize)
+                plt.text(0.5, 0.5, pointing.DDMMSSs((label_dec[y][0] + label_dec[y][1]) / 2.0),
+                         horizontalalignment='center', verticalalignment='center', size=self.ticksize)
             else:
-                a1.texts[0].set_text(pointing.DDMMSSs((label_dec[y][0]+label_dec[y][1])/2.0))
-        a1 = pl.subplot(self.gs_bottom[-1, 0])
+                a1.texts[0].set_text(pointing.DDMMSSs((label_dec[y][0] + label_dec[y][1]) / 2.0))
+        a1 = plt.subplot(self.gs_bottom[-1, 0])
         a1.set_axis_off()
         ralabel, declabel = self.get_axes_labels()
-        pl.text(0.5, 1, declabel, horizontalalignment='center', verticalalignment='bottom', size=(self.ticksize+1))
-        pl.text(1, 0.5, ralabel, horizontalalignment='right', verticalalignment='center', size=(self.ticksize+1))
+        plt.text(0.5, 1, declabel, horizontalalignment='center', verticalalignment='bottom', size=(self.ticksize + 1))
+        plt.text(1, 0.5, ralabel, horizontalalignment='right', verticalalignment='center', size=(self.ticksize + 1))
+
+    def clear_plot_objects(self) -> None:
+        """Remove all plot objects from Axes.
+
+        Remove all plot objects, which includes lines, patches, and texts,
+        from the Axes objects.
+        """
+        all_axes = [self._axes_integsp, self._axes_atm, self._axes_chan]
+        if self._axes_spmap is not None:
+            all_axes.extend(self._axes_spmap)
+        active_axes = [a for a in all_axes if a is not None]
+        LOG.trace('There are %s active axes objects', len(active_axes))
+        for a in active_axes:
+            LOG.trace('Axes: %s', a)
+            LOG.trace('Lines: %s', a.lines)
+            LOG.trace('Patches: %s', a.patches)
+            LOG.trace('Texts: %s', a.texts)
+            for obj in itertools.chain(a.lines[:], a.patches[:], a.texts[:]):
+                LOG.trace('Removing %s...', obj)
+                obj.remove()
 
 
 class SDSparseMapPlotter(object):
-    def __init__(self, nh, nv, step, brightnessunit, clearpanel=True, figure_id=None):
+    """Plotter for sparse spectral map."""
+
+    def __init__(self, nh: int, nv: int, step: int, brightnessunit: str,
+                 clearpanel: bool = True, figure_id: Optional[int] = None) -> None:
+        """Construct SDSparseMapPlotter instance.
+
+        Args:
+            nh: Number of panels along vertical axis.
+            nv: Number of panels along horizontal axis.
+            brightnessunit: Brightness unit.
+            clearpanel: Clear existing Axes. Defaults to True.
+            figure_id: Figure id. Defaults to None.
+        """
         self.step = step
         if step > 1:
             ticksize = 10 - int(max(nh, nv) * step // (step - 1)) // 2
@@ -673,37 +1006,58 @@ class SDSparseMapPlotter(object):
         self.reference_level = None
         self.global_scaling = True
         self.deviation_mask = None
+        self.edge = None
         self.atm_transmission = None
         self.atm_frequency = None
         self.channel_axis = False
 
     @property
-    def nh(self):
+    def nh(self) -> int:
+        """Return number of panels along horizontal axis."""
         return self.axes.nh
 
     @property
-    def nv(self):
+    def nv(self) -> int:
+        """Return number of panels along vertical axis."""
         return self.axes.nv
 
     @property
-    def TickSize(self):
+    def ticksize(self) -> int:
+        """Return tick label size."""
         return self.axes.ticksize
 
     @property
-    def direction_reference(self):
+    def direction_reference(self) -> str:
+        """Return direction reference string."""
         return self.axes.direction_reference
 
     @direction_reference.setter
-    def direction_reference(self, value):
+    def direction_reference(self, value) -> None:
+        """Set direction reference string."""
         self.axes.direction_reference = value
 
-    def setup_labels_relative(self, refpix_list, refval_list, increment_list):
-        LabelRA = numpy.zeros((self.nh, 2), numpy.float32) + NoData
-        LabelDEC = numpy.zeros((self.nv, 2), numpy.float32) + NoData
+    def setup_labels_relative(self,
+                              refpix_list: Tuple[float, float],
+                              refval_list: Tuple[float, float],
+                              increment_list: Tuple[float, float]) -> None:
+        """Set up position labels.
+
+        Set up position labels for both horizontal and vertical axes
+        according to reference pixels (refpix_list), reference values
+        (refval_list), and increments (increment_list), which should
+        be given as two-tuples or lists with at least two elements.
+
+        Args:
+            refpix_list: reference pixels.
+            refval_list: reference values.
+            increment_list: increments.
+        """
+        LabelRA = np.zeros((self.nh, 2), np.float32) + NoData
+        LabelDEC = np.zeros((self.nv, 2), np.float32) + NoData
         refpix = refpix_list[0]
         refval = refval_list[0]
         increment = increment_list[0]
-        #LOG.debug('axis 0: refpix,refval,increment=%s,%s,%s'%(refpix,refval,increment))
+        LOG.debug('axis 0: refpix,refval,increment=%s,%s,%s', refpix, refval, increment)
         for x in range(self.nh):
             x0 = (self.nh - x - 1) * self.step
             x1 = (self.nh - x - 2) * self.step + 1
@@ -712,7 +1066,7 @@ class SDSparseMapPlotter(object):
         refpix = refpix_list[1]
         refval = refval_list[1]
         increment = increment_list[1]
-        #LOG.debug('axis 1: refpix,refval,increment=%s,%s,%s'%(refpix,refval,increment))
+        LOG.debug('axis 1: refpix,refval,increment=%s,%s,%s', refpix, refval, increment)
         for y in range(self.nv):
             y0 = y * self.step
             y1 = (y + 1) * self.step - 1
@@ -720,29 +1074,95 @@ class SDSparseMapPlotter(object):
             LabelDEC[y][1] = refval + (y1 - refpix) * increment
         self.axes.setup_labels(LabelRA, LabelDEC)
 
-    def setup_labels_absolute( self, ralist, declist ):
+    def setup_labels_absolute(self, ralist: List[float], declist: List[float]) -> None:
+        """Set up position labels.
+
+        Set up position labels for both horizontal and vertical axes
+        according to the list of positions along horizontal (ralist)
+        and vertical (declist) axes.
+
+        Args:
+            ralist: List of horizontal position.
+            declist: List of vertical positions.
+        """
         assert self.step == 1  # this function is used only for step=1
-        LabelRA  = [[x,x] for x in ralist]
-        LabelDEC = [[y,y] for y in declist]
+        LabelRA = [[x, x] for x in ralist]
+        LabelDEC = [[y, y] for y in declist]
         self.axes.setup_labels(LabelRA, LabelDEC)
 
-    def setup_lines(self, lines_averaged, lines_map=None):
+    def setup_lines(self,
+                    lines_averaged: List[float],
+                    lines_map: Optional[List[float]] = None) -> None:
+        """Set detected lines.
+
+        Provided lines are displayed as shaded area. Lines given to
+        lines_averaged are displayed in the Axes for integrated
+        spectrum. Lines given to lines_map are interpreted as lines
+        for each panel of sparse profile map.
+
+        Args:
+            lines_averaged: Lines for integrated spectrum.
+            lines_map: Lines for sparse profile map. Defaults to None.
+        """
         self.lines_averaged = lines_averaged
         self.lines_map = lines_map
 
-    def setup_reference_level(self, level=0.0):
+    def setup_reference_level(self, level: Optional[float] = 0.0) -> None:
+        """Set reference level of the sparse profile map.
+
+        If float value is given, red horizontal line at the value is
+        displayed to each panel. If None is given, no line is diaplayed.
+
+        Args:
+            level: Reference level. Defaults to 0.0.
+        """
         self.reference_level = level
 
-    def set_global_scaling(self):
+    def set_global_scaling(self) -> None:
+        """Enable global scaling.
+
+        Enable global scanling. Applies the same y-axis
+        range to all panels in sparse profile map.
+        """
         self.global_scaling = True
 
-    def unset_global_scaling(self):
+    def unset_global_scaling(self) -> None:
+        """Disable global scaling.
+
+        Disable global scaling. Y-axis ranges of panels
+        in sparse profile map are adjusted individually.
+        """
         self.global_scaling = False
 
-    def set_deviation_mask(self, mask):
+    def set_deviation_mask(self, mask) -> None:
+        """Set deviation mask.
+
+        Deviation mask ranges are displayed as red bar at
+        the top of integrated spectrum.
+        """
         self.deviation_mask = mask
 
-    def set_atm_transmission(self, transmission, frequency):
+    def set_edge(self, edge: Tuple[int, int]) -> None:
+        """Set edge parameter.
+
+        Edge region specified by edge parameter is shaded with grey.
+
+        Args:
+            edge: Edge area to be shaded.
+        """
+        self.edge = edge
+
+    def set_atm_transmission(self, transmission: List[float], frequency: List[float]) -> None:
+        """Set atmospheric transmission data.
+
+        If trasnmission and frequency are given properly, atmospheric
+        transmission is overlaid to integrated spectrum as magenta line.
+        Number of elements for transmission and frequency must be the same.
+
+        Args:
+            transmission: Atmospheric transmission.
+            frequency: Frequency label.
+        """
         if self.atm_transmission is None:
             self.atm_transmission = [transmission]
             self.atm_frequency = [frequency]
@@ -750,27 +1170,56 @@ class SDSparseMapPlotter(object):
             self.atm_transmission.append(transmission)
             self.atm_frequency.append(frequency)
 
-    def unset_atm_transmission(self):
+    def unset_atm_transmission(self) -> None:
+        """Disable displaying atmospheric transmission."""
         self.atm_transmission = None
         self.atm_frequency = None
 
-    def set_channel_axis(self):
+    def set_channel_axis(self) -> None:
+        """Enable channel axis for integrated spectrum.
+
+        Channel axis is displayed in the upper side of the Axes
+        for integrated spectrum.
+        """
         self.channel_axis = True
 
-    def unset_channel_axis(self):
+    def unset_channel_axis(self) -> None:
+        """Disable channel axis for integrated spectrum."""
         self.channel_axis = False
 
-    def add_channel_axis(self, frequency):
+    def add_channel_axis(self, frequency: List[float]) -> None:
+        """Add channel axis to integrated spectrum.
+
+        Args:
+            frequency: Frequency label.
+        """
         axes = self.axes.axes_chan
-        f = numpy.asarray(frequency)
-        active = pl.gca()
-        pl.sca(axes)
-        pl.xlim((numpy.argmin(f), numpy.argmax(f)))
-        pl.sca(active)
+        f = np.asarray(frequency)
+        active = plt.gca()
+        plt.sca(axes)
+        plt.xlim((np.argmin(f), np.argmax(f)))
+        plt.sca(active)
 
-    def plot(self, map_data, averaged_data, frequency, fit_result=None, figfile=None):
-        plot_helper = PlotObjectHandler()
+    def plot(self,
+             map_data: np.ndarray, averaged_data: np.ndarray,
+             frequency: np.ndarray, fit_result: Optional[np.ndarray] = None,
+             figfile: Optional[str] = None) -> bool:
+        """Generate sparse profile map.
 
+        Generates sparse profile map. If fit_result is given, it is
+        indicated as red lines in sparse profile map. If figfile is
+        provided, the plot is exported to the file.
+
+        Args:
+            map_data: Data for sparse profile map.
+            averaged_data: Data for integrated spectrum.
+            frequency: Frequency label.
+            fit_result: Data for fit result. Defaults to None.
+            figfile: Name of the plot file. Defaults to None.
+
+        Returns:
+            bool: Whether or not if plot is successful.
+        """
         overlay_atm_transmission = self.atm_transmission is not None
 
         spmin = averaged_data.min()
@@ -781,80 +1230,90 @@ class SDSparseMapPlotter(object):
             spmax += dsp * 0.4
         else:
             spmax += dsp * 0.1
-        LOG.debug('spmin=%s, spmax=%s' % (spmin, spmax))
+        LOG.debug('spmin=%s, spmax=%s', spmin, spmax)
 
         global_xmin = min(frequency[0], frequency[-1])
         global_xmax = max(frequency[0], frequency[-1])
-        LOG.debug('global_xmin=%s, global_xmax=%s' % (global_xmin, global_xmax))
+        LOG.debug('global_xmin=%s, global_xmax=%s', global_xmin, global_xmax)
 
         # Auto scaling
         # to eliminate max/min value due to bad pixel or bad fitting,
         #  1/10-th value from max and min are used instead
-        valid_index = numpy.where(map_data.min(axis=2) > NoDataThreshold)
+        valid_index = np.where(map_data.min(axis=2) > NoDataThreshold)
         valid_data = map_data[valid_index[0], valid_index[1], :]
         LOG.debug('valid_data.shape={shape}'.format(shape=valid_data.shape))
         del valid_index
-        if isinstance(map_data, numpy.ma.masked_array):
+        if isinstance(map_data, np.ma.masked_array):
             def stat_per_spectra(spectra, oper):
                 for v in spectra:
                     unmasked = v.data[v.mask == False]
                     if len(unmasked) > 0:
                         yield oper(unmasked)
-            ListMax = numpy.fromiter(stat_per_spectra(valid_data, numpy.max), dtype=numpy.float64)
-            ListMin = numpy.fromiter(stat_per_spectra(valid_data, numpy.min), dtype=numpy.float64)
-#             ListMax = numpy.fromiter((numpy.max(v.data[v.mask == False]) for v in valid_data),
-#                                      dtype=numpy.float64)
-#             ListMin = numpy.fromiter((numpy.min(v.data[v.mask == False]) for v in valid_data),
-#                                      dtype=numpy.float64)
-            LOG.debug('ListMax from masked_array=%s'%(ListMax))
-            LOG.debug('ListMin from masked_array=%s'%(ListMin))
+            ListMax = np.fromiter(stat_per_spectra(valid_data, np.max), dtype=np.float64)
+            ListMin = np.fromiter(stat_per_spectra(valid_data, np.min), dtype=np.float64)
+#             ListMax = np.fromiter((np.max(v.data[v.mask == False]) for v in valid_data),
+#                                      dtype=np.float64)
+#             ListMin = np.fromiter((np.min(v.data[v.mask == False]) for v in valid_data),
+#                                      dtype=np.float64)
+            LOG.debug('ListMax from masked_array=%s', ListMax)
+            LOG.debug('ListMin from masked_array=%s', ListMin)
         else:
             ListMax = valid_data.max(axis=1)
             ListMin = valid_data.min(axis=1)
         del valid_data
         if len(ListMax) == 0 or len(ListMin) == 0:
             return False
-        #if isinstance(ListMin, numpy.ma.masked_array):
-        #    ListMin = ListMin.data[ListMin.mask == False]
-        #if isinstance(ListMax, numpy.ma.masked_array):
-        #    ListMax = ListMax.data[ListMax.mask == False]
-        LOG.debug('ListMax=%s' % (list(ListMax)))
-        LOG.debug('ListMin=%s' % (list(ListMin)))
-        global_ymax = numpy.sort(ListMax)[len(ListMax) - len(ListMax)//10 - 1]
-        global_ymin = numpy.sort(ListMin)[len(ListMin)//10]
+        # if isinstance(ListMin, np.ma.masked_array):
+        #     ListMin = ListMin.data[ListMin.mask == False]
+        # if isinstance(ListMax, np.ma.masked_array):
+        #     ListMax = ListMax.data[ListMax.mask == False]
+        LOG.debug('ListMax=%s', list(ListMax))
+        LOG.debug('ListMin=%s', list(ListMin))
+        global_ymax = np.sort(ListMax)[len(ListMax) - len(ListMax) // 10 - 1]
+        global_ymin = np.sort(ListMin)[len(ListMin) // 10]
         global_ymax = global_ymax + (global_ymax - global_ymin) * 0.2
         global_ymin = global_ymin - (global_ymax - global_ymin) * 0.1
         del ListMax, ListMin
 
-        LOG.info('global_ymin=%s, global_ymax=%s' % (global_ymin, global_ymax))
+        LOG.info('global_ymin=%s, global_ymax=%s', global_ymin, global_ymax)
 
-        pl.gcf().sca(self.axes.axes_integsp)
-        plot_helper.plot(frequency, averaged_data, color='b', linestyle='-', linewidth=0.4)
+        plt.gcf().sca(self.axes.axes_integsp)
+        plt.plot(frequency, averaged_data, color='b', linestyle='-', linewidth=0.4)
         if self.channel_axis is True:
             self.add_channel_axis(frequency)
-        (_xmin, _xmax, _ymin, _ymax) = pl.axis()
-        #pl.axis((_xmin,_xmax,spmin,spmax))
-        pl.axis((global_xmin, global_xmax, spmin, spmax))
+        (_xmin, _xmax, _ymin, _ymax) = plt.axis()
+        plt.axis((global_xmin, global_xmax, spmin, spmax))
+        fedge_span = None
+        if self.edge is not None:
+            (ch1, ch2) = self.edge
+            LOG.info('ch1, ch2: [%s, %s]' % (ch1,ch2))
+            fedge0 = ch_to_freq(0, frequency)
+            fedge1 = ch_to_freq(ch1-1, frequency)
+            fedge2 = ch_to_freq(len(frequency)-ch2-1, frequency)
+            fedge3 = ch_to_freq(len(frequency)-1, frequency)
+            plt.axvspan(fedge0, fedge1, color='lightgray')
+            plt.axvspan(fedge2, fedge3, color='lightgray')
+            fedge_span = (fedge0, fedge1, fedge2, fedge3)
         if self.lines_averaged is not None:
             for chmin, chmax in self.lines_averaged:
                 fmin = ch_to_freq(chmin, frequency)
                 fmax = ch_to_freq(chmax, frequency)
-                LOG.debug('plotting line range for mean spectrum: [%s, %s]' % (chmin, chmax))
-                plot_helper.axvspan(fmin, fmax, color='cyan')
+                LOG.debug('plotting line range for mean spectrum: [%s, %s]', chmin, chmax)
+                plt.axvspan(fmin, fmax, color='cyan')
         if self.deviation_mask is not None:
-            LOG.debug('plotting deviation mask %s' % self.deviation_mask)
+            LOG.debug('plotting deviation mask %s', self.deviation_mask)
             for chmin, chmax in self.deviation_mask:
                 fmin = ch_to_freq(chmin, frequency)
                 fmax = ch_to_freq(chmax, frequency)
-                plot_helper.axvspan(fmin, fmax, ymin=0.95, ymax=1, color='red')
+                plt.axvspan(fmin, fmax, ymin=0.95, ymax=1, color='red')
         if overlay_atm_transmission:
-            pl.gcf().sca(self.axes.axes_atm)
+            plt.gcf().sca(self.axes.axes_atm)
             amin = 100
             amax = 0
             for (_t, f) in zip(self.atm_transmission, self.atm_frequency):
                 # fraction -> percentage
                 t = _t * 100
-                plot_helper.plot(f, t, color='m', linestyle='-', linewidth=0.4)
+                plt.plot(f, t, color='m', linestyle='-', linewidth=0.4)
                 amin = min(amin, t.min())
                 amax = max(amax, t.max())
 
@@ -870,7 +1329,7 @@ class SDSparseMapPlotter(object):
                 elif ymax < 98:
                     ymax += 2
 
-            pl.axis((global_xmin, global_xmax, ymin, ymax))
+            plt.axis((global_xmin, global_xmax, ymin, ymax))
 
         is_valid_fit_result = (fit_result is not None and fit_result.shape == map_data.shape)
 
@@ -885,65 +1344,79 @@ class SDSparseMapPlotter(object):
                     xmin = global_xmin
                     xmax = global_xmax
                     if map_data[x][y].min() > NoDataThreshold:
-                        median = numpy.median(map_data[x][y])
-                        mad = numpy.median(map_data[x][y] - median)
+                        median = np.median(map_data[x][y])
+                        # mad = np.median(map_data[x][y] - median)
                         sigma = map_data[x][y].std()
                         ymin = median - 2.0 * sigma
                         ymax = median + 5.0 * sigma
                     else:
                         ymin = global_ymin
                         ymax = global_ymax
-                    LOG.debug('Per panel scaling turned on: ymin=%s, ymax=%s (global ymin=%s, ymax=%s)' %
-                              (ymin, ymax, global_ymin, global_ymax))
-                pl.gcf().sca(self.axes.axes_spmap[y+(self.nh-x-1)*self.nv])
+                    LOG.debug('Per panel scaling turned on: ymin=%s, ymax=%s (global ymin=%s, ymax=%s)',
+                              ymin, ymax, global_ymin, global_ymax)
+                plt.gcf().sca(self.axes.axes_spmap[y + (self.nh - x - 1) * self.nv])
                 if map_data[x][y].min() > NoDataThreshold:
-                    plot_helper.plot(frequency, map_data[x][y], color='b', linestyle='-', linewidth=0.2)
+                    plt.plot(frequency, map_data[x][y], color='b', linestyle='-', linewidth=0.2)
                     if self.lines_map is not None and self.lines_map[x][y] is not None:
                         for chmin, chmax in self.lines_map[x][y]:
                             fmin = ch_to_freq(chmin, frequency)
                             fmax = ch_to_freq(chmax, frequency)
-                            LOG.debug('plotting line range for %s, %s: [%s, %s]' % (x, y, chmin, chmax))
-                            plot_helper.axvspan(fmin, fmax, color='cyan')
+                            LOG.debug('plotting line range for %s, %s: [%s, %s]', x, y, chmin, chmax)
+                            plt.axvspan(fmin, fmax, color='cyan')
+                    if fedge_span is not None:
+                        plt.axvspan(fedge_span[0], fedge_span[1], color='lightgray')
+                        plt.axvspan(fedge_span[2], fedge_span[3], color='lightgray')
+
                     # elif self.lines_averaged is not None:
                     #     for chmin, chmax in self.lines_averaged:
                     #         fmin = ch_to_freq(chmin, frequency)
                     #         fmax = ch_to_freq(chmax, frequency)
-                    #         LOG.debug('plotting line range for %s, %s (reuse lines_averaged): [%s, %s]' %
-                    #                   (x, y, chmin, chmax))
+                    #         LOG.debug('plotting line range for %s, %s (reuse lines_averaged): [%s, %s]',
+                    #                   x, y, chmin, chmax)
                     #        plot_helper.axvspan(fmin, fmax, color='cyan')
                     if is_valid_fit_result:
-                        plot_helper.plot(frequency, fit_result[x][y], color='r', linewidth=0.4)
+                        plt.plot(frequency, fit_result[x][y], color='r', linewidth=0.4)
                     elif self.reference_level is not None and ymin < self.reference_level and self.reference_level < ymax:
-                        plot_helper.axhline(self.reference_level, color='r', linewidth=0.4)
+                        plt.axhline(self.reference_level, color='r', linewidth=0.4)
                 else:
-                    plot_helper.text((xmin+xmax)/2.0, (ymin+ymax)/2.0, 'NO DATA', ha='center', va='center',
-                                     size=(self.TickSize + 1))
-                pl.axis((xmin, xmax, ymin, ymax))
+                    plt.text((xmin + xmax) / 2.0, (ymin + ymax) / 2.0, 'NO DATA', ha='center', va='center',
+                                     size=(self.ticksize + 1))
+                plt.axis((xmin, xmax, ymin, ymax))
 
         if ShowPlot:
-            pl.draw()
+            plt.draw()
 
         if figfile is not None:
-            pl.savefig(figfile, format='png', dpi=DPIDetail)
-        LOG.debug('figfile=\'%s\''%(figfile))
+            plt.savefig(figfile, format='png', dpi=DPIDetail)
+        LOG.debug('figfile=\'%s\'', figfile)
 
-        plot_helper.clear()
+        self.axes.clear_plot_objects()
 
         return True
 
-    def done(self):
-        pl.close()
+    def done(self) -> None:
+        """Clean up plot."""
+        plt.close()
         del self.axes
 
 
-def ch_to_freq(ch, frequency):
+def ch_to_freq(ch: float, frequency: List[float]) -> float:
+    """Convert channel into frequency.
+
+    Args:
+        ch (float): Channel value.
+        frequency (List[float]): Frequency labels.
+
+    Returns:
+        float: Frequency value corresponding to ch.
+    """
     ich = int(ch)
     offset_min = ch - float(ich)
     if ich < 0:
         freq = frequency[0]
     elif ich >= len(frequency):
         freq = frequency[-1]
-    elif offset_min == 0 or ich == len(frequency) -1:
+    elif offset_min == 0 or ich == len(frequency) - 1:
         freq = frequency[ich]
     else:
         jch = ich + 1

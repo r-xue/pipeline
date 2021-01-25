@@ -1,15 +1,16 @@
 import re
+
 import numpy as np
 
+import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.filenamer as filenamer
-import pipeline.infrastructure.casatools as casatools
 from pipeline.infrastructure import casa_tasks
-import pipeline.domain.measures as measures
-
+from pipeline.infrastructure import casa_tools
 from .imageparams_base import ImageParamsHeuristics
 
 LOG = infrastructure.get_logger(__name__)
+
 
 class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
@@ -64,7 +65,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         else:
             spwids = self.spwids # set
         #
-        qa = casatools.quanta
+        qa = casa_tools.quanta
         #
         LOG.info('Computing uvrange heuristics for field="{:s}", spwsids={:s}'.format(field, ','.join([str(spw) for spw in spwids])))
 
@@ -178,7 +179,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             mask_frac_rad = 0.05
 
         # VLA specific threshold
-        threshold_vla = casatools.quanta.quantity(self.nsigma(0, None) * residual_robust_rms, 'Jy')
+        threshold_vla = casa_tools.quanta.quantity(self.nsigma(0, None) * residual_robust_rms, 'Jy')
 
         # Set allowed niter range
         max_niter = 1000000

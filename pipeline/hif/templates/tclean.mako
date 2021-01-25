@@ -3,7 +3,6 @@ rsc_path = ""
 import html
 import os.path
 import numpy as np
-import pipeline.infrastructure.casatools as casatools
 import pipeline.hif.tasks.tclean.renderer as clean_renderer
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.renderer.rendererutils as rendererutils

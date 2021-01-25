@@ -7,11 +7,11 @@ import numpy
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
-import pipeline.infrastructure.casatools as casatools
-from pipeline.h.heuristics import caltable as caltable_heuristic
 import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.h.heuristics import caltable as caltable_heuristic
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from .. import common
 
@@ -125,7 +125,7 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
             field_strategy = default_field_strategy
         else:
             field_strategy = {}
-            field_ids = casatools.ms.msseltoindex(vis=ms.name, field=args['field'])
+            field_ids = casa_tools.ms.msseltoindex(vis=ms.name, field=args['field'])
             for field_id in field_ids:
                 for target_id, reference_id in default_field_strategy.items():
                     if field_id == target_id:
@@ -172,14 +172,14 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
             job = casa_tasks.sdcal(**myargs)
 
             # execute job
-            LOG.debug('Table cache before sdcal: {}'.format(casatools.table.showcache()))
+            LOG.debug('Table cache before sdcal: {}'.format(casa_tools.table.showcache()))
             try:
                 self._executor.execute(job)
             finally:
-                LOG.debug('Table cache after sdcal: {}'.format(casatools.table.showcache()))
+                LOG.debug('Table cache after sdcal: {}'.format(casa_tools.table.showcache()))
 
             # check if caltable is empty
-            with casatools.TableReader(myargs['outfile']) as tb:
+            with casa_tools.TableReader(myargs['outfile']) as tb:
                 is_caltable_empty = tb.nrows() == 0
             if is_caltable_empty:
                 continue
@@ -325,7 +325,7 @@ def compute_elevation_difference(context, results):
         science_spw = ms.get_spectral_windows(science_windows_only=True)
 #         # choose representative spw based on representative frequency if it is available
 #         if hasattr(ms, 'representative_target') and ms.representative_target[1] is not None:
-#             qa = casatools.quanta
+#             qa = casa_tools.quanta
 #             rep_freq = ms.representative_target[1]
 #             centre_freqs = [qa.quantity(spw.centre_frequency.str_to_precision(16)) for spw in science_spw]
 #             freq_diffs = [abs(qa.sub(cf, rep_freq).convert('Hz')['value']) for cf in centre_freqs]
@@ -359,14 +359,14 @@ def compute_elevation_difference(context, results):
                     spw_id = spw.id
 
                     # get timestamp from caltable
-                    with casatools.TableReader(caltable) as tb:
+                    with casa_tools.TableReader(caltable) as tb:
                         selected = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}'.format(spw_id, antenna_id))
                         timecal = selected.getcol('TIME') / 86400.0  # sec -> day
                         selected.close()
 
                     # access DataTable to get elevation 
                     ro_datatable_name = os.path.join(context.observing_run.ms_datatable_name, ms.basename, 'RO')
-                    with casatools.TableReader(ro_datatable_name) as tb:
+                    with casa_tools.TableReader(ro_datatable_name) as tb:
                         selected = tb.query('IF=={}&&ANTENNA=={}&&FIELD_ID=={}&&SRCTYPE==0'
                                             ''.format(spw_id, antenna_id, field_id_on))
                         timeon = selected.getcol('TIME')

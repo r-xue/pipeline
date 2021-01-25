@@ -1,7 +1,7 @@
 from casatasks import casalog
 
-import pipeline
+from pipeline import show_weblog
 
 
 def h_weblog(pipelinemode=None, relpath=None):
-    pipeline.show_weblog(index_path=relpath)
+    show_weblog(index_path=relpath)

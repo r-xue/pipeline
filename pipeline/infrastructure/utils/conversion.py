@@ -6,21 +6,21 @@ types and assist in formatting objects as strings for presentation to the
 user.
 """
 import collections
-from datetime import datetime, timedelta
 import decimal
 import math
-from numbers import Number
 import numpy as np
 import os
 import re
 import string
 import typing
+from datetime import datetime, timedelta
+from numbers import Number
 from typing import Any, Dict, Iterator, List, Optional, Sequence, Tuple, Union
 
 import cachetools
 import pyparsing
 
-from .. import casatools, logging, pipelineqa
+from .. import casa_tools, logging
 
 LOG = logging.get_logger(__name__)
 
@@ -45,8 +45,7 @@ class LoggingLRUCache(cachetools.LRUCache):
     tens of milliseconds. Hence, we want to be notified when the cache size
     limit is hit.
     """
-
-    def __init__(self, name:str, *args, **kwargs):
+    def __init__(self, name: str, *args, **kwargs):
         self.name = name
         super().__init__(*args, **kwargs)
 
@@ -69,8 +68,8 @@ class LoggingLRUCache(cachetools.LRUCache):
 MSTOOL_SELECTEDINDICES_CACHE: typing.Dict[str, LoggingLRUCache] = {}
 
 
-def commafy(l:Sequence[str], quotes:bool=True, multi_prefix:str='',
-        separator:str=', ', conjunction:str='and') -> str:
+def commafy(l: Sequence[str], quotes: bool = True, multi_prefix: str = '', separator: str = ', ',
+            conjunction: str = 'and') -> str:
     """Convert the string list into the textual description.
 
     Example:
@@ -124,7 +123,7 @@ def commafy(l:Sequence[str], quotes:bool=True, multi_prefix:str='',
                 commafy(l[1:], separator=separator, quotes=quotes, conjunction=conjunction))
 
 
-def flatten(l:Sequence[Any]) -> Iterator[Any]:
+def flatten(l: Sequence[Any]) -> Iterator[Any]:
     """Flatten a list of lists into a single list without pipelineaq.QAScore.
 
     Example:
@@ -137,51 +136,50 @@ def flatten(l:Sequence[Any]) -> Iterator[Any]:
     3
 
     >>> list(flatten([1,2,['c',4,['e',6]],7]))
-    [1,2,c,4,e,6,7]
+    [1, 2, 'c', 4, 'e', 6, 7]
 
     Args:
         l: A list with list or any object.
     Yields:
         Single list.
-
     """
-
     for el in l:
-        if isinstance(el, collections.Iterable) and not isinstance(el, (str, pipelineqa.QAScore)):
+        if isinstance(el, collections.Iterable) and not isinstance(el, str):
             for sub in flatten(el):
                 yield sub
         else:
             yield el
 
 
-def unix_seconds_to_datetime(unix_secs:Sequence[Number]) -> Union[datetime, List[datetime]]:
-    """Convert UNIX epoch times to the equivalent Python datetimes.
+def unix_seconds_to_datetime(unix_secs: Sequence[Number]) -> Union[datetime, List[datetime]]:
+    """Convert list of UNIX epoch times to a list of equivalent datetime objects.
 
     Args:
-        unix_secs: The list, specified in seconds elapsed since 1970-01-01
+        unix_secs: list of elapsed seconds since 1970-01-01.
     Returns:
-        The equivalent Python datetimes. If given a list, a list is returned.
-        If given a scalar, a scalar is returned.
+        List of equivalent Python datetime objects.
     """
-    datetimes = [datetime.utcfromtimestamp(s) for s in unix_secs]
-    return datetimes if len(unix_secs) > 1 else datetimes[0]
+    return [datetime.utcfromtimestamp(s) for s in unix_secs]
 
 
-def mjd_seconds_to_datetime(mjd_secs:Sequence[Number]) -> Union[datetime, List[datetime]]:
-    """Convert MJD seconds to the equivalent Python datetimes.
+def mjd_seconds_to_datetime(mjd_secs: Sequence[Number]) -> List[datetime]:
+    """Convert list of MJD seconds to a list of equivalent datetime objects.
+
+    Convert the input list of elapsed seconds since MJD epoch to the
+    equivalent Python datetime objects.
 
     Args:
-        mjd_secs: The list, specified in MJD seconds.
+        mjd_secs: list of elapsed seconds since MJD epoch.
     Returns:
-        The equivalent Python datetimes. If given a list, a list is returned.
-        If given a scalar, a scalar is returned.
+        List of equivalent Python datetime objects.
     """
     # 1970-01-01 is JD 40587. 86400 = seconds in a day
     unix_offset = 40587 * 86400
-    return unix_seconds_to_datetime(mjd_secs - unix_offset)
+    mjd_secs_with_offsets = [s - unix_offset for s in mjd_secs]
+    return unix_seconds_to_datetime(mjd_secs_with_offsets)
 
 
-def get_epoch_as_datetime(epoch:Number) -> datetime:
+def get_epoch_as_datetime(epoch: Number) -> datetime:
     """Convert a CASA epoch measure into a Python datetime.
 
     Args:
@@ -189,8 +187,8 @@ def get_epoch_as_datetime(epoch:Number) -> datetime:
     Returns:
         The equivalent Python datetime.
     """
-    mt = casatools.measures
-    qt = casatools.quanta
+    mt = casa_tools.measures
+    qt = casa_tools.quanta
 
     # calculate UTC standard offset
     datetime_base = mt.epoch('UTC', '40587.0d')
@@ -208,7 +206,7 @@ def get_epoch_as_datetime(epoch:Number) -> datetime:
     return t
 
 
-def range_to_list(arg:str) -> List[int]:
+def range_to_list(arg: str) -> List[int]:
     """Expand a numeric range expressed in CASA syntax to the list of integer.
 
     Expand a numeric range expressed in CASA syntax to the equivalent Python
@@ -216,7 +214,7 @@ def range_to_list(arg:str) -> List[int]:
 
     Example:
     >>> range_to_list('1~5,7~9')
-    [1,2,3,4,5,7,8,9]
+    [1, 2, 3, 4, 5, 7, 8, 9]
 
     Args:
         arg: The numeric range expressed in CASA syntax.
@@ -246,14 +244,14 @@ def range_to_list(arg:str) -> List[int]:
     # we can have multiple items separated by commas
     atoms = pyparsing.delimitedList(atomExpr, delim=',')('atoms')
 
-    return list(atoms.parseString(str(arg)))
+    return atoms.parseString(str(arg)).asList()
 
 
-def to_CASA_intent(ms, intents:str) -> str:
+def to_CASA_intent(ms, intents: str) -> str:
     """Convert pipeline intents back to the equivalent intents recorded in the measurement set.
 
     Example:
-    >>> to_CASA_intent(ms, 'PHASE,BANDPASS')
+    > to_CASA_intent(ms, 'PHASE,BANDPASS')
     'CALIBRATE_PHASE_ON_SOURCE,CALIBRATE_BANDPASS_ON_SOURCE'
 
     Args:
@@ -266,7 +264,7 @@ def to_CASA_intent(ms, intents:str) -> str:
     return ','.join(obs_modes)
 
 
-def to_pipeline_intent(ms, intents:str) -> str:
+def to_pipeline_intent(ms, intents: str) -> str:
     """Convert CASA intents to pipeline intents.
 
     Args:
@@ -286,7 +284,7 @@ def to_pipeline_intent(ms, intents:str) -> str:
     return ','.join(pipeline_intents)
 
 
-def field_arg_to_id(ms_path:str, field_arg:Union[str, int], all_fields) -> List[int]:
+def field_arg_to_id(ms_path: str, field_arg: Union[str, int], all_fields) -> List[int]:
     """Convert a string to the corresponding field IDs.
 
     Args:
@@ -311,7 +309,7 @@ def field_arg_to_id(ms_path:str, field_arg:Union[str, int], all_fields) -> List[
         return _parse_field(field_arg, all_fields)
 
 
-def spw_arg_to_id(ms_path:str, spw_arg:Union[str, int], all_spws) -> List[Tuple[int, int, int, int]]:
+def spw_arg_to_id(ms_path: str, spw_arg: Union[str, int], all_spws) -> List[Tuple[int, int, int, int]]:
     """Convert a string to spectral window IDs and channels.
 
     Args:
@@ -338,7 +336,7 @@ def spw_arg_to_id(ms_path:str, spw_arg:Union[str, int], all_spws) -> List[Tuple[
         return spws
 
 
-def ant_arg_to_id(ms_path:str, ant_arg:Union[str, int], all_antennas) -> List[int]:
+def ant_arg_to_id(ms_path: str, ant_arg: Union[str, int], all_antennas) -> List[int]:
     """Convert a string to the corresponding antenna IDs.
 
     Args
@@ -355,7 +353,7 @@ def ant_arg_to_id(ms_path:str, ant_arg:Union[str, int], all_antennas) -> List[in
         return _parse_antenna(ant_arg, all_antennas)
 
 
-def _convert_arg_to_id(arg_name:str, ms_path:str, arg_val:str) -> Dict[str, np.ndarray]:
+def _convert_arg_to_id(arg_name: str, ms_path: str, arg_val: str) -> Dict[str, np.ndarray]:
     """Parse the CASA input argument and return the matching IDs.
 
     Originally the cache was set on this function with the cache size fixed at
@@ -366,11 +364,12 @@ def _convert_arg_to_id(arg_name:str, ms_path:str, arg_val:str) -> Dict[str, np.n
     function delegates to the instance held in the module namespace.
 
     Args:
-        arg_name:
+        arg_name: Name of selection argument to use in MS selection query
         ms_path: A path to the measurement set
-        field_arg: A field argument formatted with CASA syntax.
+        arg_val: Value for selection argument to use in MS selection query,
+            formatted with CASA syntax.
     Returns:
-        A set of field IDs.
+        A list of IDs matching the input selection.
     """
     ms_basename = os.path.basename(ms_path)
     if ms_basename not in MSTOOL_SELECTEDINDICES_CACHE:
@@ -390,7 +389,7 @@ def _convert_arg_to_id(arg_name:str, ms_path:str, arg_val:str) -> Dict[str, np.n
     except KeyError:
         taql = {arg_name: str(arg_val)}
         LOG.trace('Executing msselect({%r:%r} on %s', arg_name, arg_val, ms_path)
-        with casatools.MSReader(ms_path) as ms:
+        with casa_tools.MSReader(ms_path) as ms:
             ms.msselect(taql, onlyparse=True)
             result = ms.msselectedindices()
 
@@ -398,7 +397,7 @@ def _convert_arg_to_id(arg_name:str, ms_path:str, arg_val:str) -> Dict[str, np.n
     return result
 
 
-def safe_split(fields:str) -> List[str]:
+def safe_split(fields: str) -> List[str]:
     """Split a string containing field names into a list.
 
     Split a string containing field names into a list, taking account of field
@@ -409,57 +408,56 @@ def safe_split(fields:str) -> List[str]:
     Returns:
         A list, taking account of field names within quotes.
     """
-    return pyparsing.commaSeparatedList.parseString(str(fields))
+    return pyparsing.commaSeparatedList.parseString(str(fields)).asList()
 
 
-def dequote(s:str) -> str:
-    """Remove any kind of quotes from a string to faciliate comparisons.
+def dequote(s: str) -> str:
+    """Remove any kind of quotes from a string to facilitate comparisons.
 
     Args:
-        s: Strings.
+        s: A string.
     Returns:
         String removed any kind of quotes.
     """
     return s.replace('"', '').replace("'", "")
 
 
-def format_datetime(dt:datetime, dp:int=0) -> str:
-    """Convert a datetime to a string representation of a Python datetime
+def format_datetime(dt: datetime, dp: int = 0) -> str:
+    """Convert a datetime to a formatted string representation.
 
-    Convert a string representation of a Python datetime, including microseconds
-    to the requested precision.
+    Convert a Python datetime object into a string representation, including
+    microseconds to the requested precision.
 
     Args:
         dt: Python datetime.
         dp: A number of decimal places for microseconds (0=do not show).
     Returns:
-        String date.
+        Formatted string representation of datetime.
     """
+    s = dt.strftime('%Y-%m-%d %H:%M:%S')
     if dp > 6:
         raise ValueError('Cannot exceed 6 decimal places as datetime stores to microsecond precision')
-    elif dp < 0:
-        raise ValueError('Cannot set negative integer to dp as decimal places')
-
-    s = dt.strftime('%Y-%m-%d %H:%M:%S')
-
-    microsecs = dt.microsecond / 1e6
-    f = '{0:.%sf}' % dp
-    return s + f.format(microsecs)[1:]
+    elif 0 < dp <= 6:
+        microsecs = dt.microsecond / 1e6
+        f = '{0:.%sf}' % dp
+        return s + f.format(microsecs)[1:]
+    else:
+        return s
 
 
-def format_timedelta(td:timedelta, dp:int=0) -> str:
+def format_timedelta(td: timedelta, dp: int = 0) -> str:
     """Convert a timedelta to a formatted string representation.
+
+    Convert a Python timedelta object into a string representation, including
+    microseconds to the requested precision.
 
     Args
         td: A timedelta object.
         dp: A number of decimal places for microseconds (0=do not show).
             The number should be natural number with 0.
     Returns:
-        Formatted string representation.
+        Formatted string representation of timedelta.
     """
-    if dp < 0:
-        raise ValueError('Cannot set negative integer to dp as decimal places')
-
     secs = decimal.Decimal(td.seconds)
     microsecs = decimal.Decimal(td.microseconds) / decimal.Decimal('1e6')
     rounded_secs = (secs + microsecs).quantize(decimal.Decimal(10) ** -dp)
@@ -470,14 +468,16 @@ def format_timedelta(td:timedelta, dp:int=0) -> str:
     str_microsecs = '{0:06d}'.format(rounded_microsecs)
     # .. which we can append onto the end of the default timedelta string
     # representation
-    if dp:
+    if dp > 6:
+        raise ValueError('Cannot exceed 6 decimal places as datetime stores to microsecond precision')
+    elif 0 < dp <= 6:
         fraction = str_microsecs[0:dp]
         return str(rounded) + '.' + str(fraction)
     else:
         return str(rounded)
 
 
-def _parse_spw(task_arg:str, all_spw_ids:tuple=None):
+def _parse_spw(task_arg: str, all_spw_ids: tuple = None):
     """Convert the CASA-style spw argument to a list of spw IDs.
 
     Channel limits are also parsed in this function but are not currently
@@ -485,7 +485,7 @@ def _parse_spw(task_arg:str, all_spw_ids:tuple=None):
     atom.
 
     Example:
-    >>> _parse_spw('0:0~6^2,2:6~38^4 (0, 1, 4, 5, 6, 7)')
+    > _parse_spw('0:0~6^2,2:6~38^4 (0, 1, 4, 5, 6, 7)')
     <result>
     <atom>
       <spws>
@@ -576,7 +576,7 @@ def _parse_spw(task_arg:str, all_spw_ids:tuple=None):
     return [Atom(spw=k, channels=v) for k, v in results.items()]
 
 
-def _parse_field(task_arg:Optional[str], fields=None) -> List[int]:
+def _parse_field(task_arg: Optional[str], fields=None) -> List[int]:
     """Convert the field section in CASA format to list of field IDs.
 
     Inner method.
@@ -627,7 +627,7 @@ def _parse_field(task_arg:Optional[str], fields=None) -> List[int]:
     return sorted(list(results))
 
 
-def _parse_antenna(task_arg:Optional[str], antennas:Optional[Dict[str, np.ndarray]]=None) -> List[int]:
+def _parse_antenna(task_arg: Optional[str], antennas: Optional[Dict[str, np.ndarray]] = None) -> List[int]:
     """Convert the antenna selection in CASA format to a list of antenna IDs.
 
     Inner method.

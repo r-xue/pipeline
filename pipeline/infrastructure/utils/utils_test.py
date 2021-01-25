@@ -1,64 +1,13 @@
 from typing import Union, List, Dict, Tuple
-from unittest.mock import MagicMock
-import operator
-import pytest
+from unittest.mock import Mock
 
 import numpy as np
-
+import pytest
 
 from pipeline import domain
-from .. import casatools
 from .utils import find_ranges, dict_merge, are_equal, approx_equal, flagged_intervals, \
     get_casa_quantity, get_num_caltable_polarizations, fieldname_for_casa, fieldname_clean, \
     get_field_accessor, get_field_identifiers, get_receiver_type_for_spws
-
-
-# Create mock MeasurementSet instance
-def create_mock_field(name: str = 'Mars', field_id: int = 1, source_id: int = 1):
-    """
-    Create a mock Field object.
-
-    The name argument is used to determine the direction Field object attribute,
-    therefore use field names only that are known to the casatools.measure.direction()
-    tool.
-
-    Returns:
-        Instance of Field class.
-    """
-    return domain.Field(field_id=field_id, name=name, source_id=source_id, time=np.zeros(0),
-                        direction=casatools.measures.direction(name))
-
-
-def create_mock_ms(name: str, field_name_list: List[str] = ['Mars'],
-                   spw_return: Union[None, str] = None):
-    """
-    Create a mock MeasurementSet object.
-
-    Args:
-        name: arbitrary MeasurementSet name
-        field_name_list: list of fields to be stored in MeasurementSet
-        spw_return: mocked return value for MeasurementSet.get_spectral_windows() method.
-
-    Returns:
-        Instance of MeasurementSet class.
-    """
-    # Mock MeasurementSet
-    mock_ms = domain.MeasurementSet(name=name)
-
-    # Mock fields
-    for field_name in field_name_list:
-        mock_ms.fields.append(create_mock_field(field_name, field_id=len(mock_ms.fields)+1,
-                              source_id=len(mock_ms.fields)+1))
-
-    # Mock a spectral window
-    if type(spw_return) is str:
-        class SpwReceiver:
-            receiver = spw_return
-        spw_return = [SpwReceiver()]
-    mock_ms.get_spectral_windows = MagicMock(return_value=spw_return)
-
-    return mock_ms
-
 
 params_find_ranges = [('', ''), ([], ''), ('1:2', '1:2'), ([1, 2, 3], '1~3'),
                       (['5~12', '14', '16:17'], '5~12,14,16:17'),
@@ -191,35 +140,79 @@ def test_fieldname_clean(field: str, expected: str):
     assert fieldname_clean(field=field) == expected
 
 
-params_get_field_accessor = [(create_mock_ms('mock', ['Jupiter']), create_mock_field('Jupiter'),
-                              'Jupiter')]
+# Create mock Fields and MeasurementSets for testing get_field_accessor() and get_field_identifiers()
+# The Field name and id attributes, and MeasurementSet fields attribute and get_fields() methods are
+# accessed.
+fields = []
+for i, fn in enumerate(['Mars', 'Jupiter', 'Mars']):
+    m = Mock(spec=domain.Field, **{'id': i + 1})
+    m.name = fn  # Mock name and name attribute interfere, set attribute explicitly
+    fields.append(m)
+
+# get_fields() is called only once in this test, therefore set return_value.
+params_get_field_accessor = [
+    (Mock(spec=domain.MeasurementSet, **{
+         'get_fields.return_value': [fields[1]]
+    }), fields[1], 'Jupiter'),  # All fields names are unique
+    (Mock(spec=domain.MeasurementSet, **{
+        'get_fields.return_value': [fields[0], fields[2]]
+    }), fields[2], '3')]  # Field name 'Mars' repeats
 
 
 @pytest.mark.parametrize('ms, field, expected', params_get_field_accessor)
 def test_get_field_accessor(ms, field, expected):
     """Test get_field_accessor()
+
+    This utility function returns an attribute getter. If the field specified
+    in the argument is unique in the MeasurementSet, then the getter will access
+    the field name (name attribute), otherwise the getter will access the field
+    id (id attribute).
     """
     assert get_field_accessor(ms, field)(field) == expected
 
 
-params_get_field_ids = [(create_mock_ms('mock', ['Mars', 'Jupiter']), {1: 'Mars', 2: 'Jupiter'})]
+# get_fields() returns all fields with the name given in argument, mock this behaviour
+# The method is called multiple times, therefore set side_effect.
+params_get_field_ids = [
+    (Mock(spec=domain.MeasurementSet, **{
+        'fields': fields[0:2],
+        'get_fields.side_effect': [[f] for f in fields[0:2]]
+    }), {1: 'Mars', 2: 'Jupiter'}),  # All fields names are unique
+    (Mock(spec=domain.MeasurementSet, **{
+        'fields': fields,
+        'get_fields.side_effect': [[fields[0], fields[2]],
+                                   [fields[1]],
+                                   [fields[0], fields[2]]]
+    }), {1: '1', 2: 'Jupiter', 3: '3'})]  # Field name 'Mars' repeats
 
 
 @pytest.mark.parametrize('ms, expected', params_get_field_ids)
 def test_get_field_identifiers(ms, expected):
     """Test get_field_identifiers()
+
+    This utility function returns a dictionary with field ID keys and either
+    field name or str(field ID) values. The latter happens when a field name
+    occurs more than once.
     """
     assert get_field_identifiers(ms=ms) == expected
 
 
-params_get_receiver_type_for_spws = [(create_mock_ms('mock'), [1], {1: "N/A"}),
-                                     (create_mock_ms('mock', spw_return='fake'),
-                                      [1], {1: 'fake'})]
+params_get_receiver_type_for_spws = [
+    (Mock(spec=domain.MeasurementSet, **{
+        'get_spectral_windows.side_effect': [None,
+                                             [Mock(**{'receiver': 'fake'})]]
+    }), [1, 2], {1: 'N/A', 2: 'fake'})]
 
 
 @pytest.mark.parametrize('ms, spwids, expected', params_get_receiver_type_for_spws)
 def test_get_receiver_type_for_spws(ms, spwids, expected):
-    """Test get_receiver_type_for_spws()"""
+    """Test get_receiver_type_for_spws()
+
+    This utility function returns a dictionary with spectral window IDs (spwids
+    arguemnt) as keys and the associated receiver strings in the MeasurementSet
+    as values. If spectral window ID is not found in the MeasurementSet, then
+    the associated values is set to 'N/A'.
+    """
     assert get_receiver_type_for_spws(ms=ms, spwids=spwids) == expected
 
 

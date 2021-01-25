@@ -3,16 +3,16 @@ import os
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
-import pipeline.infrastructure.casatools as casatools
+import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataTable
 from pipeline.h.heuristics import caltable as caltable_heuristic
 from pipeline.hsd.heuristics import CubicSplineFitParamConfig
-from pipeline.domain import DataTable
-from .. import common
-from . import plotter
 from pipeline.hsd.tasks.common import utils as sdutils
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
+from . import plotter
+from .. import common
 
 _LOG = infrastructure.get_logger(__name__)
 LOG = sdutils.OnDemandStringParseLogger(_LOG)
@@ -27,7 +27,7 @@ class BaselineSubtractionInputsBase(vdp.StandardInputs):
     def colname(self):
         colname = ''
         if isinstance(self.vis, str):
-            with casatools.TableReader(self.vis) as tb:
+            with casa_tools.TableReader(self.vis) as tb:
                 candidate_names = ['CORRECTED_DATA',
                                    'DATA',
                                    'FLOAT_DATA']
@@ -221,6 +221,7 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         accum = self.inputs.plan
         deviationmask_list = self.inputs.deviationmask
         LOG.info('deviationmask_list={}'.format(deviationmask_list))
+        formatted_edge = list(common.parseEdge(self.inputs.edge))
         status = plot_manager.initialize(ms, outfile)
         plot_list = []
         for (field_id, antenna_id, spw_id, grid_table, channelmap_range) in accum.iterate_all():
@@ -241,7 +242,7 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
                 plot_list.extend(plot_manager.plot_spectra_with_fit(field_id, antenna_id, spw_id,
                                                                     org_direction,
                                                                     grid_table,
-                                                                    deviationmask, channelmap_range))
+                                                                    deviationmask, channelmap_range, formatted_edge))
         plot_manager.finalize()
 
         results.outcome['plot_list'] = plot_list

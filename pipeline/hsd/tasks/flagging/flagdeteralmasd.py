@@ -5,14 +5,14 @@ import shutil
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
+import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
 from pipeline.domain import DataTable
 from pipeline.h.tasks.flagging import flagdeterbase
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.displays import pointing
-import pipeline.infrastructure.utils as utils
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -90,7 +90,7 @@ class FlagDeterALMASingleDishResults(flagdeterbase.FlagDeterBaseResults):
 
         # regenerate pointing plots
         if not basetask.DISABLE_WEBLOG:
-            ephem_names = casatools.measures.listcodes(casatools.measures.direction())['extra']
+            ephem_names = casa_tools.measures.listcodes(casa_tools.measures.direction())['extra']
             valid_ephem_names = [x for x in ephem_names if x != 'COMET']
             LOG.info('Regenerate pointing plots to update flag information')
             msobj = context.observing_run.get_ms(self.inputs['vis'])
@@ -171,7 +171,7 @@ class FlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
     @property
     def bandwidth_limit(self):
         if isinstance(self.inputs.fracspw, str):
-            return casatools.quanta.convert(self.inputs.fracspw, 'Hz')['value']
+            return casa_tools.quanta.convert(self.inputs.fracspw, 'Hz')['value']
         else:
             return 1.875e9 # 1.875GHz
 
