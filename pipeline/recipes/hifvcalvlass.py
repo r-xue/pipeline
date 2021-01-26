@@ -86,7 +86,7 @@ def hifvcalvlass(vislist, importonly=False, pipelinemode='automatic', interactiv
         hifv_finalcals(pipelinemode=pipelinemode)
 
         # Polarization calibration
-        hifv_circfeedpolcal (pipelinemode=pipelinemode)
+        hifv_circfeedpolcal(pipelinemode=pipelinemode)
 
         # Flag the finalampgaincal.g calibration table
         hifv_flagcal(pipelinemode=pipelinemode)
