@@ -15,6 +15,8 @@ from . import casa_tools
 from . import utils
 from . import logging
 
+from typing import Union, Tuple, List, Dict, Any, Generator
+
 LOG = logging.get_logger(__name__)
 
 
@@ -166,7 +168,7 @@ class ContFileHandler(object):
 
         return cont_ranges_spwsel, all_continuum
 
-    def to_topo(self, selection, msnames, fields, spw_id, observing_run, ctrim=0, ctrim_nchan=-1):
+    def to_topo(self, selection: str, msnames: List[str], fields: List[Union[int, str]], spw_id: Union[int, str], observing_run: Any, ctrim: int = 0, ctrim_nchan: int = -1) -> Tuple[List[str], List[str], Dict]:
 
         frame_freq_selection, refer = selection.split()
         if refer not in ('LSRK', 'SOURCE'):
