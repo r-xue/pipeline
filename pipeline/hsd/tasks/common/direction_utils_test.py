@@ -1,5 +1,7 @@
 """
-direction_utils_test.py : Unit tests for hsd/tasks/common/direction_utils.py
+direction_utils_test.py : Unit tests for "hsd/tasks/common/direction_utils.py".
+
+Unit tests for "hsd/tasks/common/direction_utils.py"
 """
 
 import pytest
@@ -36,7 +38,7 @@ test_params_shift   = [
 
 @pytest.mark.parametrize("direction, reference, origin, expected", test_params_shift)
 def test_direction_shift( direction, reference, origin, expected ):
-    """ 
+    """
     Unit test for direction_shift(): quantitave test of calculations.
 
     Unit test for direction_shift(): quantitave test of calculations.
@@ -102,7 +104,7 @@ test_params_offset  = [
 
 @pytest.mark.parametrize("direction, reference, expected", test_params_offset)
 def test_direction_offset( direction, reference, expected ):
-    """ 
+    """
     Unit test for direction_offset(): quantitave test of calculations.
 
     Unit test for direction_offset(): quantitave test of calculations.
@@ -128,7 +130,7 @@ test_params_offset_raise  = [
 
 @pytest.mark.parametrize("direction, reference", test_params_offset_raise)
 def test_direction_offset_raise( direction, reference ):
-    """ 
+    """
     Unit test for direction_offset(): test if RuntimeError is raised when it shoud be.
 
     Unit test for direction_offset(): test if RuntimeError is raised when it shoud be.
@@ -158,7 +160,7 @@ test_params_recover = [
 
 @pytest.mark.parametrize("ra, dec, org_direction, expected_ra, expected_dec", test_params_recover)
 def test_direction_recover( ra, dec, org_direction, expected_ra, expected_dec ):
-    """ 
+    """
     Unit test for direction_recover(): quantitave test of calculations.
 
     Unit test for direction_recover(): quantitave test of calculations.
@@ -194,7 +196,7 @@ test_params_convert = [
 
 @pytest.mark.parametrize("direction, mepoch, mposition, outframe, expected_ra, expected_dec", test_params_convert)
 def test_direction_convert( direction, mepoch, mposition, outframe, expected_ra, expected_dec ):
-    """ 
+    """
     Unit test for direction_convert(): quantitave test of calculations.
 
     Unit test for direction_convert(): quantitave test of calculations.
@@ -209,7 +211,6 @@ def test_direction_convert( direction, mepoch, mposition, outframe, expected_ra,
     Raises:
       AssertationError for tests failing
     """
-
     epsdeg = qa.quantity( '1.0E-8deg' )
     result_ra, result_dec = direction_convert( direction, mepoch, mposition, outframe )
     assert qa.lt( qa.abs(qa.sub(result_ra, expected_ra)), epsdeg ) or qa.lt(  qa.abs(qa.sub(result_dec, expected_dec)), epsdeg ) 

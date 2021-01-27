@@ -1,5 +1,5 @@
 """
-direction_utils.py: methods to convert coordinates for ephemeris sources
+direction_utils.py: methods to convert coordinates for ephemeris sources.
 
 Methods to convert coordinates of ephemeris sources for single-dish pipeline
 are accumulated here.
@@ -23,23 +23,22 @@ from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
-import typing
-from typing import NewType, Dict, Union, Tuple
+from typing import Dict, NewType, Tuple, Union
 
 Quantity  = NewType( 'Quantity',  Dict )
-Direction = NewType( 'Direction', Union[Dict, None] )
-Epoch     = NewType( 'Epoch', Dict )
-Position  = NewType( 'Position', Dict )
+Direction = NewType( 'Direction', Dict )
+Epoch     = NewType( 'Epoch',     Dict )
+Position  = NewType( 'Position',  Dict )
 
 __all__ = { 'direction_shift', 'direction_offset', 'direction_recover', 'direction_convert' }
 
 
 def direction_shift( direction:Direction, reference:Direction, origin:Direction ) -> Direction:
-    """                                     
-    Calculates the 'shifted-direction' of the observing point
+    """
+    Calculate the 'shifted-direction' of the observing point.
 
-    This method calculates the 'shifted-direction' of the observing point 
-    from the time-by-time diretion of obsering points and the moving source, 
+    This method calculates the 'shifted-direction' of the observing point
+    from the time-by-time diretion of obsering points and the moving source,
     and a given 'origin'. 
 
     Args:
@@ -51,6 +50,8 @@ def direction_shift( direction:Direction, reference:Direction, origin:Direction 
                    (eg. where to centerized the new image)           
     Returns:                           
         shifted-direction (reference centerized at origin)
+    Raises:
+        RunTimeRrror: If 'refer's are inconsistent among direction, reference, and origin
     """
     # check if 'refer's are all identical for each directions
     if origin['refer'] != reference['refer']:
@@ -67,8 +68,8 @@ def direction_shift( direction:Direction, reference:Direction, origin:Direction 
 
 
 def direction_offset( direction:Direction, reference:Direction ) -> Direction:
-    """                               
-    Calculates the 'offset-direction' of the observing point
+    """
+    Calculate the 'offset-direction' of the observing point.
 
     This method calculates the 'offset-direction' of the observing point 
     from the time-by-time diretion of obsering points and the moving source.
@@ -83,6 +84,8 @@ def direction_offset( direction:Direction, reference:Direction ) -> Direction:
                    (eg. time-by-time position of the moving source on the sky)
     Returns:                           
         offset-direction (reference centerized at (0,0) )
+    Raises:
+        RunTimeError: If 'refer's of directoin and reference are inconsistent
     """
     # check if 'refer's are all identical for each directions
     if direction['refer'] != reference['refer']:
@@ -101,12 +104,13 @@ def direction_offset( direction:Direction, reference:Direction ) -> Direction:
 
 def direction_recover( ra:float, dec:float, org_direction:Direction ) -> Tuple[float, float]:
     """
-    Recovers the 'Shifted-coordinate' from 'Offset-coordinate'
+    Recovers the 'Shifted-coordinate' from 'Offset-coordinate'.
 
     Recovers the 'Shifted-coordinate' values from the specified 
     'Offset-coordinate' values.
 
-    Args:                                                                              ra:  ra of 'Offset-corrdinate'
+    Args:
+        ra:  ra of 'Offset-corrdinate'
         dec: dec of 'Offset-coordinate'
         org_direction: direction of the origin
     Returns:                                                               
@@ -128,8 +132,8 @@ def direction_recover( ra:float, dec:float, org_direction:Direction ) -> Tuple[f
 
 
 def direction_convert(direction:Direction, mepoch:Epoch, mposition:Position, outframe:str) -> Tuple[Quantity, Quantity]:
-    """  
-    Convert the frame of the 'direction' to 'outframe'
+    """
+    Convert the frame of the 'direction' to 'outframe'.
 
     Convert the 'frame' of the direction to that specified as 'outframe'.
     If 'outframe' is identical to the frame of the 'direction', 
