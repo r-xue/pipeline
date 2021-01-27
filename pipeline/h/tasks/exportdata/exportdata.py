@@ -569,9 +569,7 @@ class ExportData(basetask.StandardTaskTemplate):
         # and tar them up.
         flag_version_list = []
         for visfile in vislist:
-            flag_version_file = self._export_final_flagversion( \
-                context, visfile, flag_version_name, \
-                products_dir)
+            flag_version_file = self._export_final_flagversion(visfile, flag_version_name, products_dir)
             flag_version_list.append(flag_version_file)
 
         # Loop over the measurements sets in the working directory, and
@@ -841,8 +839,7 @@ class ExportData(basetask.StandardTaskTemplate):
             task = casa_tasks.flagmanager(vis=vis, mode='save', versionname=flag_version_name)
             self._executor.execute(task)
 
-    def _export_final_flagversion(self, context, vis, flag_version_name,
-                                  products_dir):
+    def _export_final_flagversion(self, vis, flag_version_name, products_dir):
         """
         Save the final flags version to a compressed tarfile in products.
         """
@@ -851,8 +848,9 @@ class ExportData(basetask.StandardTaskTemplate):
         tarfilename = visname + '.flagversions.tgz'
         LOG.info('Storing final flags for %s in %s', visname, tarfilename)
 
-        # Define the directory to be saved
+        # Define the directory to be saved, and where to store in tar archive.
         flagsname = os.path.join(vis + '.flagversions', 'flags.' + flag_version_name)
+        flagsarcname = os.path.join(visname + '.flagversions', 'flags.' + flag_version_name)
         LOG.info('Saving flag version %s', flag_version_name)
 
         # Define the versions list file to be saved
@@ -865,7 +863,7 @@ class ExportData(basetask.StandardTaskTemplate):
         # Create the tar file
         if not self._executor._dry_run:
             tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
-            tar.add(flagsname)
+            tar.add(flagsname, arcname=flagsarcname)
             tar.addfile(ti, io.BytesIO(line))
             tar.close()
 
