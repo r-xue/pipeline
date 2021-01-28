@@ -1,7 +1,5 @@
 import os
 
-from casarecipes import tec_maps
-
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
@@ -51,11 +49,4 @@ class ${taskname.capitalize()}(basetask.StandardTaskTemplate):
         task = casa_tasks.${taskname.lower()}cal(vis=self.inputs.vis, caltable='tempcal.${taskname.lower()}')
 
         return self._executor.execute(task)
-
-    def _do_tec_maps(self):
-
-        tec_maps.create(vis=self.vis, doplot=True, imname='iono')
-        # gencal_job = casa_tasks.gencal(**gencal_args)
-        gencal_job = casa_tasks.gencal(vis=self.vis, caltable='tec.cal', caltype='tecim', infile='iono.IGS_TEC.im')
-        self._executor.execute(gencal_job)
 
