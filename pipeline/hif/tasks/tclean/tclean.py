@@ -1,5 +1,6 @@
 import glob
 import os
+import pdb
 import re
 
 import numpy as np
@@ -598,7 +599,8 @@ class Tclean(cleanbase.CleanBase):
 
         # VLASS-SE masking
         # TODO: may introduce new hm_masking mode?
-        elif inputs.hm_masking == 'manual' and self.image_heuristics.imaging_mode == 'VLASS-SE-CONT':
+        elif inputs.hm_masking == 'manual' and self.image_heuristics.imaging_mode in ['VLASS-SE-CONT',
+                                                                                      'VLASS-SE-CONT-AWP-P001']:
             sequence_manager = VlassMaskThresholdSequence(multiterm=multiterm, mask=inputs.mask,
                                                           gridder=inputs.gridder, threshold=threshold,
                                                           sensitivity=sensitivity, niter=inputs.niter)
@@ -622,7 +624,7 @@ class Tclean(cleanbase.CleanBase):
         # not optimal. Thus, PSFs need to be created with the tclean parameter
         # wbawp set to False. The awproject mosaic cleaning then continued
         # with this PSF. CASA is expected to handle this with version 6.2.
-        if self.image_heuristics.imaging_mode == 'VLASS-SE-CONT':
+        if self.image_heuristics.imaging_mode in ['VLASS-SE-CONT', 'VLASS-SE-CONT-AWP-P001']:
             result = self._do_iterative_vlass_se_imaging(sequence_manager=sequence_manager)
         else:
             result = self._do_iterative_imaging(sequence_manager=sequence_manager)
@@ -683,6 +685,7 @@ class Tclean(cleanbase.CleanBase):
         else:
             vlass_masks = [inputs.mask]
 
+        pdb.set_trace()
         # Compute PSF only
         LOG.info('Computing PSF with wbawp=False')
         iteration = 0
@@ -694,6 +697,7 @@ class Tclean(cleanbase.CleanBase):
         # Rename PSF before they are overwritten in the text TClean call
         self._replace_psf(result_psf.psf, result_psf.psf + '.tmp')
 
+        pdb.set_trace()
         # Compute the dirty image
         LOG.info('Initialise tclean iter 0')
         iteration = 0
@@ -702,9 +706,10 @@ class Tclean(cleanbase.CleanBase):
         result = self._do_clean(iternum=iteration, cleanmask='', niter=0, threshold='0.0mJy',
                                 sensitivity=sequence_manager.sensitivity, result=None)
 
+        pdb.set_trace()
         LOG.info('Replacing PSF with wbawp=False PSF')
         # Remove *psf.tmp.* files with clear_origin=True argument
-        self._replace_psf(result_psf.psf + '.tmp', result.psf, clear_origin=False) # TODO: origin maybe be removed in production?
+        self._replace_psf(result_psf.psf + '.tmp', result.psf, clear_origin=True) # TODO: origin maybe be removed in production?
         del result_psf  # Not needed in further steps
 
         # Determine masking limits depending on PB
@@ -749,6 +754,7 @@ class Tclean(cleanbase.CleanBase):
         # would lead to collision with new_cleanmask of nth iteration. VLASS-SE-CONT uses two different masks.
         do_not_copy_mask = True
         for mask in vlass_masks:
+            pdb.set_trace()
             # Create the name of the next clean mask from the root of the
             # previous residual image.
             rootname, ext = os.path.splitext(result.residual)
@@ -767,6 +773,7 @@ class Tclean(cleanbase.CleanBase):
             # Use previous iterations's products as starting point
             old_pname = '%s.iter%s' % (rootname, iteration - 1)
             new_pname = '%s.iter%s' % (rootname, iteration)
+            pdb.set_trace()
             self.copy_products(os.path.basename(old_pname), os.path.basename(new_pname),
                                ignore='mask' if do_not_copy_mask else None)
 
