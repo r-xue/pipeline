@@ -598,7 +598,8 @@ class Tclean(cleanbase.CleanBase):
 
         # VLASS-SE masking
         # TODO: may introduce new hm_masking mode?
-        elif inputs.hm_masking == 'manual' and self.image_heuristics.imaging_mode == 'VLASS-SE-CONT':
+        elif inputs.hm_masking == 'manual' and self.image_heuristics.imaging_mode in ['VLASS-SE-CONT',
+                                                                                      'VLASS-SE-CONT-AWP-P001']:
             sequence_manager = VlassMaskThresholdSequence(multiterm=multiterm, mask=inputs.mask,
                                                           gridder=inputs.gridder, threshold=threshold,
                                                           sensitivity=sensitivity, niter=inputs.niter)
@@ -622,7 +623,7 @@ class Tclean(cleanbase.CleanBase):
         # not optimal. Thus, PSFs need to be created with the tclean parameter
         # wbawp set to False. The awproject mosaic cleaning then continued
         # with this PSF. CASA is expected to handle this with version 6.2.
-        if self.image_heuristics.imaging_mode == 'VLASS-SE-CONT':
+        if self.image_heuristics.imaging_mode in ['VLASS-SE-CONT', 'VLASS-SE-CONT-AWP-P001']:
             result = self._do_iterative_vlass_se_imaging(sequence_manager=sequence_manager)
         else:
             result = self._do_iterative_imaging(sequence_manager=sequence_manager)
@@ -704,7 +705,7 @@ class Tclean(cleanbase.CleanBase):
 
         LOG.info('Replacing PSF with wbawp=False PSF')
         # Remove *psf.tmp.* files with clear_origin=True argument
-        self._replace_psf(result_psf.psf + '.tmp', result.psf, clear_origin=False) # TODO: origin maybe be removed in production?
+        self._replace_psf(result_psf.psf + '.tmp', result.psf, clear_origin=True) # TODO: origin maybe be removed in production?
         del result_psf  # Not needed in further steps
 
         # Determine masking limits depending on PB

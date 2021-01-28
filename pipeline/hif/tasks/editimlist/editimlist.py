@@ -277,7 +277,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         # The default spw range for VLASS is 2~17. hif_makeimages() needs a csv list.
         # We set the imlist_entry spw before the heuristics object because the heursitics class
         # uses it in initialization.
-        if img_mode in ('VLASS-QL', 'VLASS-SE-CONT', 'VLASS-SE-CUBE', 'VLASS-SE-TAPER'):
+        if img_mode in ('VLASS-QL', 'VLASS-SE-CONT', 'VLASS-SE-CONT-AWP-P001', 'VLASS-SE-CUBE', 'VLASS-SE-TAPER'):
             if not inpdict['spw']:
                 imlist_entry['spw'] = ','.join([str(x) for x in range(2, 18)])
             else:
@@ -326,7 +326,7 @@ class Editimlist(basetask.StandardTaskTemplate):
                                                             imaging_mode=img_mode)
 
         # Determine current VLASS-SE-CONT imaging stage (used in heuristics to make decisions)
-        if 'VLASS-SE-CONT' == img_mode:
+        if img_mode in ['VLASS-SE-CONT', 'VLASS-SE-CONT-AWP-P001']:
             th.vlass_stage = self._get_task_stage_ordinal()
 
         imlist_entry['threshold'] = inpdict['threshold']
@@ -440,7 +440,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         # In this case field and spwspec is not needed in the filename, furthermore, imaging is done in multiple stages
         # prepend the STAGENUMNER string in order to differentiate them. In TcleanInputs class this is replaced by the
         # actual stage number string.
-        if 'VLASS-SE-CONT' == img_mode:
+        if img_mode in ['VLASS-SE-CONT', 'VLASS-SE-CONT-AWP-P001']:
             imagename = th.imagename(intent=imlist_entry['intent'], field=None, spwspec=None,
                                      specmode=imlist_entry['specmode'],
                                      band=None) if not inpdict['imagename'] else inpdict['imagename']

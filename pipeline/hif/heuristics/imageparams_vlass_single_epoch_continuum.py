@@ -11,9 +11,10 @@ LOG = infrastructure.get_logger(__name__)
 
 class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
 
-
-    def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None, linesfile=None, imaging_params={}):
-        ImageParamsHeuristics.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
+    def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
+                 linesfile=None, imaging_params={}):
+        ImageParamsHeuristics.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params, contfile,
+                                       linesfile, imaging_params)
         self.imaging_mode = 'VLASS-SE-CONT'
         # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
         self.vlass_stage = 0
@@ -83,7 +84,8 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         if results_list and type(results_list) is list:
             for result in results_list:
                 result_meta = result.read()
-                if hasattr(result_meta, 'pipeline_casa_task') and result_meta.pipeline_casa_task.startswith('hifv_vlassmasking'):
+                if hasattr(result_meta, 'pipeline_casa_task') and result_meta.pipeline_casa_task.startswith(
+                        'hifv_vlassmasking'):
                     return [r.combinedmask for r in result_meta][0]
 
         # In case hif_makeimages result was not found or results_list was not provided
@@ -322,3 +324,24 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
     def pointingoffsetsigdev(self):
         """Tclean parameter"""
         return [300, 30]
+
+
+class ImageParamsHeuristicsVlassSeContAWPP001(ImageParamsHeuristicsVlassSeCont):
+    """
+    Special heuristics case when gridder is awproject and the wprojplanes parameter
+    is set to 1 (in parent class it is 32).
+    """
+
+    def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
+                 linesfile=None, imaging_params={}):
+        ImageParamsHeuristicsVlassSeCont.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params,
+                                                  contfile, linesfile, imaging_params)
+        self.imaging_mode = 'VLASS-SE-CONT-AWP-P001'
+        # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
+        self.vlass_stage = 0
+
+    def wprojplanes(self):
+        return 1
+
+    def gridder(self, intent, field):
+        return 'awproject'
