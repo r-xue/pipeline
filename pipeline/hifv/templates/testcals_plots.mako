@@ -7,7 +7,7 @@ bandsort = {'4':0, 'P':1, 'L':2, 'S':3, 'C':4, 'X':5, 'U':6, 'K':7, 'A':8, 'Q':9
 
 <a id="topofpage"></a>
 <div class="page-header">
-	<h1>Test Delay Plots<button class="btn btn-default pull-right" onClick="javascript:window.history.back();">Back</button></h1>
+	<h1>${plots[0].parameters['type'].title()} Plots<button class="btn btn-default pull-right" onClick="javascript:window.history.back();">Back</button></h1>
 </div>
 
 <br>
