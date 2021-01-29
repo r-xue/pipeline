@@ -6,6 +6,7 @@ import math
 import os
 import sys
 from operator import sub
+import scipy
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -21,6 +22,20 @@ LOG = logging.get_logger(__name__)
 MetaDataSet = collections.namedtuple(
     'MetaDataSet',
     ['timestamp', 'dtrow', 'field', 'antenna', 'ra', 'dec', 'srctype', 'pflag'])
+
+
+def get_func_compute_mad():
+    # assuming X.Y.Z style version string
+    scipy_version = scipy.version.full_version
+    versioning = map(int, scipy_version.split('.'))
+    major = next(versioning)
+    minor = next(versioning)
+    if major > 1 or (major == 1 and minor >= 5):
+        return lambda x: scipy.stats.median_abs_deviation(x, scale='normal')
+    elif major == 1 and minor >= 3:
+        return scipy.stats.median_absolute_deviation
+    else:
+        raise NotImplementedError('No MAD function available in scipy. Use scipy 1.3 or higher.')
 
 
 def distance(x0, y0, x1, y1):
@@ -242,6 +257,46 @@ def find_time_gap(timestamp):
     return gsmall, glarge
 
 
+def find_position_gap(ra: np.ndarray, dec: np.ndarray) -> np.ndarray:
+    delta_ra = ra[1:] - ra[:-1]
+    delta_dec = dec[1:] - dec[:-1]
+    angle_abs = np.arctan2(np.abs(delta_dec), np.abs(delta_ra)).flatten()
+    compute_mad = get_func_compute_mad()
+    angle_median = np.median(angle_abs)
+    angle_mad = compute_mad(angle_abs)
+    distance = np.hypot(delta_ra, delta_dec).flatten()
+    distance_median = np.median(distance)
+    distance_mad = compute_mad(distance)
+    angle_threshold = np.pi / 4  # 45deg
+    factor = 10
+    angle_gap = np.where(np.abs(angle_abs - angle_median) > angle_threshold)[0]
+    #angle_gap = np.where(np.abs(angle_abs - angle_median) > factor * angle_mad)[0]
+    distance_gap = np.where(np.abs(distance - distance_median) > factor * distance_mad)[0]
+
+    return angle_gap, distance_gap
+
+
+def union_position_gap(gaps_list):
+    num_gaps = len(gaps_list)
+    assert num_gaps > 0
+    assert np.all([isinstance(g, (list, np.ndarray)) for g in gaps_list])
+
+    LOG.info(gaps_list)
+    gaps_union, counts = np.unique(np.concatenate(gaps_list), return_counts=True)
+
+    return gaps_union, counts
+
+
+def merge_position_gap(gaps_list):
+    num_gaps = len(gaps_list)
+    listed_gaps, counts = union_position_gap(gaps_list)
+    majority = num_gaps // 2 + 1
+    LOG.info('majority %s, counts=%s', majority, counts)
+    merged_gaps = listed_gaps[counts >= majority]
+
+    return merged_gaps
+
+
 def gap_gen(gaplist, length=None):
     """
     Generate range of data (start and end indices) from
@@ -291,37 +346,30 @@ def get_raster_distance(ra, dec, gaplist):
     return distance_list
 
 
-def find_raster_gap(timestamp, ra, dec, time_gap=None):
+def find_raster_gap(ra, dec, position_gap):
     """
     Find gaps between individual raster map. Returned list should be
     used in combination with gap_gen. Here is an example to plot
     RA/DEC data per raster map:
 
         import maplotlib.pyplot as plt
-        gap = find_raster_gap(timestamp, ra, dec)
+        gap = find_raster_gap(ra, dec)
         for s, e in gap_gen(gap):
             plt.plot(ra[s:e], dec[s:e], '.')
 
-    :param timestamp: list of time stamp
-    :type timestamp: ndarray
     :param ra: list of RA
     :type ra: ndarray
     :param dec: list of Dec
     :type dec: ndarray
-    :param time_gap: list of index of time gaps, defaults to None
-    :type time_gap: ndarray, optional
+    :param position_gap: list of index of position gaps
+    :type position_gap: ndarray
     :return: list of index indicating boundary between raster maps
     :rtype: ndarray
     """
-    if time_gap is None:
-        timegap_small, _ = find_time_gap(timestamp)
-    else:
-        timegap_small = time_gap
-
-    distance_list = get_raster_distance(ra, dec, timegap_small)
+    distance_list = get_raster_distance(ra, dec, position_gap)
     delta_distance = distance_list[1:] - distance_list[:-1]
     idx = np.where(delta_distance < 0)
-    raster_gap = timegap_small[idx]
+    raster_gap = position_gap[idx]
     return raster_gap
 
 
@@ -497,20 +545,27 @@ def flag_raster_map_per_field(metadata, field_id):
     meta_per_ant = [squeeze_data(meta) for meta in meta_per_ant_dup]
     ndata_per_ant = list(map(lambda x: len(x.timestamp), meta_per_ant))
 
-    # get time gap
-    time_gap_per_ant = [find_time_gap(m.timestamp)[0] for m in meta_per_ant]
-    LOG.trace('{} {}'.format(len(meta_per_ant), len(time_gap_per_ant)))
+    # get position gap
+    position_gap_per_ant = [find_position_gap(m.ra, m.dec) for m in meta_per_ant]
+    #position_gap_list = list(itertools.chain(*position_gap_per_ant))
+    gap_list0 = [x[0] for x in position_gap_per_ant]
+    gap_list1 = [x[1] for x in position_gap_per_ant]
+    merged0 = merge_position_gap(gap_list0)
+    merged1 = merge_position_gap(gap_list1)
+    merged_gap, _ = union_position_gap((merged0, merged1))
+    LOG.trace('Number of antenna: %s', len(meta_per_ant))
+    for i, g in enumerate(position_gap_per_ant):
+        LOG.trace('Gap list for antenna %s: %s, %s', i, g[0], g[1])
+    LOG.debug('merged_gap = %s', list(merged_gap))
 
     # get raster gap
     raster_gap_per_ant = [
-        find_raster_gap(m.timestamp, m.ra, m.dec, gap)
-        for m, gap in zip(meta_per_ant, time_gap_per_ant)
+        find_raster_gap(m.ra, m.dec, merged_gap) for m in meta_per_ant
     ]
 
     # compute number of data per raster row
     num_data_per_raster_row = [
-        [len(m.ra[s:e]) for s, e in gap_gen(gap)]
-        for m, gap in zip(meta_per_ant, time_gap_per_ant)
+        [len(m.ra[s:e]) for s, e in gap_gen(merged_gap)] for m in meta_per_ant
     ]
     LOG.trace(num_data_per_raster_row)
     nd_per_row_rep = find_most_frequent(
@@ -733,7 +788,7 @@ if __name__ == '__main__':
         print('ERROR: antenna {} for field {} does not exist'.format(args.antenna, field))
         sys.exit(1)
 
-    gsmall, glarge = find_time_gap(utime)
+    gap, _ = union_position_gap(find_position_gap(ura, udec))
 
     figfile = 'pointing.field{}ant{}.gif'.format(field, args.antenna)
-    generate_animation(ura, udec, gsmall, figfile=figfile)
+    generate_animation(ura, udec, gap, figfile=figfile)
