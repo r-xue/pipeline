@@ -55,6 +55,8 @@ class FindContResult(basetask.Results):
                                 refer = 'TOPO'
                             elif (refers == 'LSRK').all():
                                 refer = 'LSRK'
+                            elif (refers == 'SOURCE').all():
+                                refer = 'SOURCE'
                             else:
                                 refer = 'UNDEFINED'
                             spwsel['spw%s' % (spwid)] = '%s %s' % (spwsel['spw%s' % (spwid)], refer)
@@ -99,6 +101,8 @@ class FindContResult(basetask.Results):
                         refer = 'TOPO'
                     elif (refers == 'LSRK').all():
                         refer = 'LSRK'
+                    elif (refers == 'SOURCE').all():
+                        refer = 'SOURCE'
                     else:
                         refer = 'UNDEFINED'
                     repr += ' ' + refer

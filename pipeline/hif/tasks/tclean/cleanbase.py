@@ -229,8 +229,10 @@ class CleanBase(basetask.StandardTaskTemplate):
         if not inputs.result:
             plotdir = os.path.join(inputs.context.report_dir,
                                    'stage%s' % inputs.context.stage.split('_')[0])
+            field_ids = inputs.heuristics.field(inputs.intent, inputs.field)
             result = TcleanResult(vis=inputs.vis,
                                   sourcename=inputs.field,
+                                  field_ids=field_ids,
                                   intent=inputs.intent,
                                   spw=inputs.spw,
                                   orig_specmode=inputs.orig_specmode,
