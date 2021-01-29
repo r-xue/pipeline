@@ -69,10 +69,6 @@
                 <Keyword xmlns="">hm_masking</Keyword>
                 <Value xmlns="">manual</Value>
             </Parameter>
-            <Parameter>
-                <Keyword xmlns="">hm_perchanweightdensity</Keyword>
-                <Value xmlns="">True</Value>
-            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -135,10 +131,6 @@
                 <Keyword xmlns="">hm_masking</Keyword>
                 <Value xmlns="">manual</Value>
             </Parameter>
-            <Parameter>
-                <Keyword xmlns="">hm_perchanweightdensity</Keyword>
-                <Value xmlns="">True</Value>
-            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -174,10 +166,6 @@
             <Parameter>
                 <Keyword xmlns="">hm_masking</Keyword>
                 <Value xmlns="">manual</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">hm_perchanweightdensity</Keyword>
-                <Value xmlns="">True</Value>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
