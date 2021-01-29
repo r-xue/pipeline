@@ -42,7 +42,7 @@ def distance(x0: float, y0: float, x1: float, y1: float) -> np.ndarray:
     return np.hypot(_dx, _dy)
 
 
-def read_readonly_data(table: DataTableImpl) -> Tuple[DataTableImpl, np.ndarray, DataTableImpl, DataTableImpl, DataTableImpl, DataTableImpl, DataTableImpl]:
+def read_readonly_data(table: DataTableImpl) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """
     Extract necerrary data from datatable instance.
     
@@ -114,7 +114,7 @@ def from_context(context_dir: str) -> MetaDataSet:
 
     Returns:
         metadata: MetaDataSet which stores timestamp, dtrow, ra, dec, srctype, antenna, field
-        (each is ndaray column values taken from the table)
+        (each is ndarray column values taken from the table)
     """
     datatable_dir = os.path.join(context_dir, 'MSDataTable.tbl')
     rotable = glob.glob(f'{datatable_dir}/*.ms/RO')[0]
@@ -303,7 +303,7 @@ def get_raster_distance(ra: np.ndarray, dec: np.ndarray, gaplist: List[int]) -> 
         gaplist: list of indices indicating gaps between raster rows
 
     Returns:
-        np.ndarray of distances between raster rows
+        np.ndarray of the distances
     """
     x1 = ra[:gaplist[0] + 1].mean()
     y1 = dec[:gaplist[0] + 1].mean()
@@ -351,14 +351,14 @@ def find_raster_gap(timestamp: np.ndarray, ra: np.ndarray, dec: np.ndarray, time
 
 def flag_incomplete_raster(meta:MetaDataSet, raster_gap: List[int], nd_raster: int, nd_row: int) -> np.ndarray:
     """
-    Flag incomplete raster map.
+    Return IDs of incomplete raster map.
 
     N: number of data per raster map
     M: number of data per raster row
     MN: median of N => typical number of data per raster map
     MM: median of M => typical number of data per raster row
     logic:
-      - if N[x] < MN + MM then flag whole data in raster map x
+      - if N[x] < MN - MM then flag whole data in raster map x
       - if N[x] > MN + MM then flag whole data in raster map x and later
 
     Args:
@@ -368,7 +368,7 @@ def flag_incomplete_raster(meta:MetaDataSet, raster_gap: List[int], nd_raster: i
         nd_row: typical number of data per raster row (MM)
 
     Returns:
-        np.ndarray of index for raster map
+        np.ndarray of index for raster map to flag.
     """
     gap = gap_gen(raster_gap, len(meta.timestamp))
     nd = np.asarray([e - s for s, e in gap])
@@ -394,7 +394,7 @@ def flag_incomplete_raster(meta:MetaDataSet, raster_gap: List[int], nd_raster: i
 
 def flag_worm_eaten_raster(meta: MetaDataSet, raster_gap: List[int], nd_row: int) -> np.ndarray:
     """
-    Flag raster map if number of continuous flagged data exceeds upper limit given by nd_row.
+    Return IDs of raster map where number of continuous flagged data exceeds upper limit given by nd_row.
 
     M: number of data per raster row
     MM: median of M => typical number of data per raster row
@@ -408,7 +408,7 @@ def flag_worm_eaten_raster(meta: MetaDataSet, raster_gap: List[int], nd_row: int
         nd_row: typical number of data per raster row (MM)
 
     Returns:
-        np.ndarray of index for raster map
+        np.ndarray of index for raster map to flag.
     """
     gap = gap_gen(raster_gap, len(meta.timestamp))
     # flag
@@ -500,7 +500,10 @@ def find_most_frequent(v: np.ndarray) -> int:
 
 def flag_raster_map_per_field(metadata: MetaDataSet, field_id: int) -> List[int]:
     """
-    Flag raster map based on two flagging heuristics for given field id.
+    Return per antenna list of row IDs of datatable to be flagged for a given field ID.
+
+    Data to be flagged are identified based on two flagging heuristics of raster map, i.e.,
+    incomplete raster and the number of continuous flagged data.
 
     Args:
         metadata: Input MetaDataSet to analyze
@@ -626,7 +629,7 @@ def get_angle(dx: float, dy: float, aspect_ratio: float=1) -> float:
     return offset + theta
 
 
-def anim_gen(ra: np.ndarray, dec: np.ndarray, idx_generator: np.ndarray, dist_list: np.ndarray, cmap: Tuple[float, float, float, float]) -> Generator[Tuple[np.ndarray, np.ndarray, Tuple[float, float, float, float], bool], None, None]:
+def anim_gen(ra: np.ndarray, dec: np.ndarray, idx_generator: np.ndarray, dist_list: np.ndarray, cmap: Tuple[float, float, float, float]) -> Generator[Tuple[Optional[np.ndarray], Optional[np.ndarray], Tuple[float, float, float, float], bool], None, None]:
     """
     Generate position, color and boolean flag for generate_animation.
 
