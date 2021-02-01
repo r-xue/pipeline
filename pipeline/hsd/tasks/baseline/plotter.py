@@ -16,8 +16,7 @@ from ..common import display
 from ..common.display import sd_polmap
 from ..common import direction_utils as dirutil
 
-_LOG = infrastructure.get_logger(__name__)
-LOG = utils.OnDemandStringParseLogger(_LOG)
+LOG = infrastructure.get_logger(__name__)
 
 
 class PlotterPool(object):
@@ -25,7 +24,7 @@ class PlotterPool(object):
         self.pool = {}
         self.figure_id = display.SparseMapAxesManager.MATPLOTLIB_FIGURE_ID()
 
-    def create_plotter(self, num_ra, num_dec, num_plane, ralist, declist, 
+    def create_plotter(self, num_ra, num_dec, num_plane, ralist, declist,
                        direction_reference=None, brightnessunit='Jy/beam'):
 #         key = (num_ra, num_dec)
 #         if key in self.pool:
@@ -184,7 +183,7 @@ class BaselineSubtractionPlotManager(object):
         num_pol = data_desc.num_polarizations
         self.pol_list = numpy.arange(num_pol, dtype=int)
         source_name = self.ms.fields[self.field_id].source.name.replace(' ', '_').replace('/', '_')
-        LOG.debug('Generating plots for source {} ant {} spw {}',
+        LOG.debug('Generating plots for source %s ant %s spw %s',
                   source_name, self.antenna_id, self.spw_id)
 
         outprefix_template = lambda x: 'spectral_plot_%s_subtraction_%s_%s_ant%s_spw%s'%(x,
@@ -194,8 +193,8 @@ class BaselineSubtractionPlotManager(object):
                                                                                          self.virtual_spw_id)
         prefit_prefix = os.path.join(self.stage_dir, outprefix_template('before'))
         postfit_prefix = os.path.join(self.stage_dir, outprefix_template('after'))
-        LOG.debug('prefit_prefix=\'{}\'', os.path.basename(prefit_prefix))
-        LOG.debug('postfit_prefix=\'{}\'', os.path.basename(postfit_prefix))
+        LOG.debug('prefit_prefix=\'%s\'', os.path.basename(prefit_prefix))
+        LOG.debug('postfit_prefix=\'%s\'', os.path.basename(postfit_prefix))
 
         if showatm is True:
             atm_freq, atm_transmission = atmutil.get_transmission(vis=self.ms.name, antenna_id=self.antenna_id,
@@ -277,20 +276,20 @@ class BaselineSubtractionPlotManager(object):
         plotter = self.pool.create_plotter(num_ra, num_dec, num_plane, ralist, declist,
                                            direction_reference=self.datatable.direction_ref,
                                            brightnessunit=bunit)
-        LOG.debug('vis {} ant {} spw {} plotter figure id {} has {} axes',
+        LOG.debug('vis %s ant %s spw %s plotter figure id %s has %s axes',
                   ms.basename, antid, spwid, plotter.axes.figure_id, len(plotter.axes.figure.axes))
 #         LOG.info('axes list: {}', [x.__hash__()  for x in plotter.axes.figure.axes])
         spw = ms.spectral_windows[spwid]
         nchan = spw.num_channels
         data_desc = ms.get_data_description(spw=spw)
         npol = data_desc.num_polarizations
-        LOG.debug('nchan={}', nchan)
+        LOG.debug('nchan=%s', nchan)
 
         self.resize_storage(num_ra, num_dec, npol, nchan)
 
         frequency = numpy.fromiter((spw.channels.chan_freqs[i] * 1.0e-9 for i in range(nchan)),
                                    dtype=numpy.float64)  # unit in GHz
-        LOG.debug('frequency={}~{} (nchan={})',
+        LOG.debug('frequency=%s~%s (nchan=%s)',
                   frequency[0], frequency[-1], len(frequency))
 
         if rowmap is None:
@@ -484,7 +483,7 @@ def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table, org_
     num_grid_dec = plot_table[-1][1] + 1
     num_grid_ra = plot_table[-1][0] + 1
     num_plane = num_grid_rows // (num_grid_dec * num_grid_ra)
-    LOG.debug('num_grid_ra={}, num_grid_dec={}, num_plane={}, num_grid_rows={}',
+    LOG.debug('num_grid_ra=%a, num_grid_dec=%s, num_plane=%s, num_grid_rows=%s',
               num_grid_ra, num_grid_dec, num_plane, num_grid_rows)
     #each_grid = (range(i*num_plane, (i+1)*num_plane) for i in xrange(num_grid_dec * num_grid_ra))
     #rowlist = [{} for i in xrange(num_grid_dec * num_grid_ra)]
@@ -515,12 +514,12 @@ def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table, org_
         #             LOG.trace('Adding {} to dataids', i)
         #             yield i
         # dataids = numpy.fromiter(g(), dtype=numpy.int64)
-        dataids = BaselineSubtractionPlotManager.generate_plot_rowlist( ms_id, 
-                                                                        antid, 
-                                                                        virtual_spwid, 
-                                                                        polids, 
-                                                                        grid_table, 
-                                                                        plot_table, 
+        dataids = BaselineSubtractionPlotManager.generate_plot_rowlist( ms_id,
+                                                                        antid,
+                                                                        virtual_spwid,
+                                                                        polids,
+                                                                        grid_table,
+                                                                        plot_table,
                                                                         each_plane )
         #raid = plot_table[each_plane[0]][0]
         #decid = plot_table[each_plane[0]][1]
@@ -538,7 +537,7 @@ def analyze_plot_table(ms, ms_id, antid, virtual_spwid, polids, grid_table, org_
         rowlist[row_index].update(
                 {"RAID": raid, "DECID": decid, "RA": ra, "DEC": dec,
                  "IDS": dataids})
-        LOG.trace('RA {} DEC {}: dataids={}',
+        LOG.trace('RA %s DEC %s: dataids=%s',
                   raid, decid, dataids)
 
     return num_ra, num_dec, num_plane, rowlist
@@ -609,18 +608,18 @@ def get_data(infile, dtrows, num_ra, num_dec, num_chan, num_pol, rowlist, rowmap
                 for isort in sorted_index:
                     row = rows[isort]
                     mapped_row = rowmap[row]
-                    LOG.debug('row {}: mapped_row {}', row, mapped_row)
+                    LOG.debug('row %s: mapped_row %s', row, mapped_row)
                     this_data = tb.getcell(colname, mapped_row)
                     this_mask = tb.getcell('FLAG', mapped_row)
-                    LOG.trace('this_mask.shape={}', this_mask.shape)
+                    LOG.trace('this_mask.shape=%s', this_mask.shape)
                     for ipol in range(num_pol):
                         pmask = this_mask[ipol]
                         allflagged = numpy.all(pmask == True)
-                        LOG.trace('all(this_mask==True) = {}', allflagged)
+                        LOG.trace('all(this_mask==True) = %s', allflagged)
                         if allflagged == False:
                             idxperpol[ipol].append(idxs[isort])
                         else:
-                            LOG.debug('spectrum for pol {0} is completely flagged at {1}, {2} (row {3})',
+                            LOG.debug('spectrum for pol %s is completely flagged at %s, %s (row %s)',
                                       ipol, ix, iy, mapped_row)
                     binary_mask = numpy.asarray(numpy.logical_not(this_mask), dtype=int)
                     integrated_data += this_data.real * binary_mask
@@ -632,7 +631,7 @@ def get_data(infile, dtrows, num_ra, num_dec, num_chan, num_pol, rowlist, rowmap
                         midx = median_index(pidxs)
                         median_row = dtrows[pidxs[midx]]
                         mapped_row = rowmap[median_row]
-                        LOG.debug('median row for ({},{}) with pol {} is {} (mapped to {})',
+                        LOG.debug('median row for (%s,%s) with pol %s is %s (mapped to %s)',
                                   ix, iy, ipol, median_row, mapped_row)
                         this_data = tb.getcell(colname, mapped_row)
                         this_mask = tb.getcell('FLAG', mapped_row)
@@ -642,16 +641,16 @@ def get_data(infile, dtrows, num_ra, num_dec, num_chan, num_pol, rowlist, rowmap
                     else:
                         midxperpol.append(None)
             else:
-                LOG.debug('no data is available for ({},{})', ix, iy)
+                LOG.debug('no data is available for (%s,%s)', ix, iy)
                 midxperpol = [None for ipol in range(num_pol)]
             d['MEDIAN_INDEX'] = midxperpol
-            LOG.debug('MEDIAN_INDEX for {0}, {1} is {2}', ix, iy, midxperpol)
+            LOG.debug('MEDIAN_INDEX for %s, %s is %s', ix, iy, midxperpol)
     integrated_data_masked = numpy.ma.masked_array(integrated_data, num_accumulated == 0)
     integrated_data_masked /= num_accumulated
     map_data_masked = numpy.ma.masked_array(map_data, map_mask)
-    LOG.trace('integrated_data={}', integrated_data)
-    LOG.trace('num_accumulated={}', num_accumulated)
-    LOG.trace('map_data.shape={}', map_data.shape)
+    LOG.trace('integrated_data=%s', integrated_data)
+    LOG.trace('num_accumulated=%s', num_accumulated)
+    LOG.trace('map_data.shape=%s', map_data.shape)
 
     return integrated_data_masked, map_data_masked
 
@@ -703,22 +702,22 @@ def get_averaged_data(infile, dtrows, num_ra, num_dec, num_chan, num_pol, rowlis
                 for isort in sorted_index:
                     row = rows[isort]
                     mapped_row = rowmap[row]
-                    LOG.debug('row {}: mapped_row {}', row, mapped_row)
+                    LOG.debug('row %s: mapped_row %s', row, mapped_row)
                     this_data = tb.getcell(colname, mapped_row)
                     this_mask = tb.getcell('FLAG', mapped_row)
-                    LOG.trace('this_mask.shape={}', this_mask.shape)
+                    LOG.trace('this_mask.shape=%s', this_mask.shape)
                     binary_mask = numpy.asarray(numpy.logical_not(this_mask), dtype=int)
                     map_data[ix, iy] += this_data.real * binary_mask
                     num_accumulated[ix, iy] += binary_mask
             else:
-                LOG.debug('no data is available for ({},{})', ix, iy)
+                LOG.debug('no data is available for (%s,%s)', ix, iy)
     map_mask[:] = num_accumulated == 0
     map_data[map_mask] = display.NoDataThreshold
     map_data_masked = numpy.ma.masked_array(map_data, map_mask)
     map_data_masked /= num_accumulated
 #     LOG.trace('integrated_data={}', integrated_data)
-    LOG.trace('num_accumulated={}', num_accumulated)
-    LOG.trace('map_data.shape={}', map_data.shape)
+    LOG.trace('num_accumulated=%s', num_accumulated)
+    LOG.trace('map_data.shape=%s', map_data.shape)
 
     return map_data_masked
 
