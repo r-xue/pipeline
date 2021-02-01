@@ -34,7 +34,7 @@ def init_at(at: casatools.atmosphere, humidity: float=20.0,
             fcenter: float=100.0, nchan: float=4096, resolution: float=0.001):
     """
     Initialize atmospheric profile and spectral window setting.
-     
+
     Initialize atmospheric profile and spectral window setting in CASA
     atmosphere tool using input antenna site parameters and spectral window
     frequencies.
@@ -67,7 +67,7 @@ def init_at(at: casatools.atmosphere, humidity: float=20.0,
 def calc_airmass(elevation: float=45.0) -> float:
     """
     Calculate the relative airmass of a given elevation angle.
-    
+
     Args:
         elevation: An angle of elevation (unit: degree).
 
@@ -81,7 +81,7 @@ def calc_transmission(airmass: float, dry_opacity: Union[float, np.ndarray],
                       wet_opacity: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
     """
     Calculate total atmospheric transmission.
-    
+
     Calculate total atmospheric transmission from the zenith opacities and
     relative airmass.
     
@@ -152,6 +152,7 @@ def test(pwv: float=1.0, elevation: float=45.0) -> np.ndarray:
     myqa = casa_tools.quanta
     init_at(myat)
     myat.setUserWH2O(myqa.quantity(pwv, 'mm'))
+    frequency = myqa.getvalue(myqa.convert(myat.getSpectralWindow(), 'GHz'))
 
     airmass = calc_airmass(elevation)
 
@@ -159,7 +160,7 @@ def test(pwv: float=1.0, elevation: float=45.0) -> np.ndarray:
     wet_opacity = get_wet_opacity(myat)
     transmission = calc_transmission(airmass, dry_opacity, wet_opacity)
 
-    plot(dry_opacity, wet_opacity, transmission)
+    plot(frequency, dry_opacity, wet_opacity, transmission)
 
     return transmission
 
