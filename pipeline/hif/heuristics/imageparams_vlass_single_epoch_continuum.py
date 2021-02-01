@@ -1,4 +1,5 @@
 import re
+from typing import Union, Tuple
 
 import numpy
 
@@ -20,63 +21,75 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         self.vlass_stage = 0
 
     # niter
-    def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0):
+    def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0) -> int:
+        """Adjust niter value between cleaning iteration steps based on imaging parameters, mask and residual"""
         if niter:
             return int(niter)
         else:
             return 20000
 
-    def niter(self):
+    def niter(self) -> int:
+        """Tclean niter parameter heuristics."""
         return self.niter_correction(None, None, None, None, None, None)
 
-    def deconvolver(self, specmode, spwspec):
+    def deconvolver(self, specmode, spwspec) -> str:
+        """Tclean deconvolver parameter heuristics."""
         return 'mtmfs'
 
-    def robust(self):
+    def robust(self) -> float:
+        """Tclean robust parameter heuristics."""
         if self.vlass_stage == 3:
             return 1.0
         else:
             return -2.0
 
-    def gridder(self, intent, field):
-        # TODO: should be user switchable between awproject and mosaic
+    def gridder(self, intent, field) -> str:
+        """Tclean gridder parameter heuristics."""
         return 'awproject'
 
-    def cell(self, beam=None, pixperbeam=None):
+    def cell(self, beam=None, pixperbeam=None) -> Union[str, list]:
+        """Tclean cell parameter heuristics."""
         return ['0.6arcsec']
 
     def imsize(self, fields=None, cell=None, primary_beam=None, sfpblimit=None, max_pixels=None, centreonly=None,
-               vislist=None, spwspec=None):
+               vislist=None, spwspec=None) -> Union[list, int]:
+        """Tclean imsize parameter heuristics."""
         return [16384, 16384]
 
-    def reffreq(self):
+    def reffreq(self) -> str:
+        """Tclean reffreq parameter heuristics."""
         return '3.0GHz'
 
-    def cyclefactor(self, iteration):
+    def cyclefactor(self, iteration) -> float:
+        """Tclean cyclefactor parameter heuristics."""
         return 3.0
 
-    def cycleniter(self, iteration):
+    def cycleniter(self, iteration) -> int:
+        """Tclean cycleniter parameter heuristics."""
         if self.vlass_stage == 3 and iteration > 0:
             return 3000
         else:
             return 5000
 
-    def scales(self, iteration=None):
-        if self.vlass_stage == 3 and iteration and iteration > 1:
+    def scales(self, iteration: Union[int, None] = None) -> list:
+        """Tclean scales parameter heuristics."""
+        if self.vlass_stage == 3 and iteration in [1, 2]:
             return [0, 5, 12]
         else:
             return [0]
 
-    def uvtaper(self, beam_natural=None, protect_long=None):
+    def uvtaper(self, beam_natural=None, protect_long=None) -> str:
+        """Tclean uvtaped parameter heuristics."""
         if self.vlass_stage == 3:
             return ''
         else:
             return '3arcsec'
 
-    def uvrange(self, field=None, spwspec=None):
+    def uvrange(self, field=None, spwspec=None) -> tuple:
+        """Tclean uvrange parameter heuristics."""
         return '<12km', None
 
-    def mask(self, results_list=None):
+    def mask(self, results_list: Union[list, None] = None) -> str:
         """Tier-1 mask name to be used for computing Tier-1 and Tier-2 combined mask.
 
             Obtain the mask name from the latest MakeImagesResult object in context.results.
@@ -94,22 +107,27 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
     def buffer_radius(self):
         return 1000.
 
-    def specmode(self):
+    def specmode(self) -> str:
+        """Tclean specmode parameter heuristics."""
         return 'mfs'
 
-    def intent(self):
+    def intent(self) -> str:
+        """Tclean intent parameter heuristics."""
         return 'TARGET'
 
-    def nterms(self, spwspec):
+    def nterms(self, spwspec) -> int:
+        """Tclean stokes parameter heuristics."""
         return 2
 
-    def stokes(self):
+    def stokes(self) -> str:
+        """Tclean stokes parameter heuristics."""
         return 'I'
 
-    def pb_correction(self):
+    def pb_correction(self) -> bool:
         return False
 
-    def conjbeams(self):
+    def conjbeams(self) -> bool:
+        """Tclean conjbeams parameter heuristics."""
         return True
 
     def get_sensitivity(self, ms_do, field, intent, spw, chansel, specmode, cell, imsize, weighting, robust, uvtaper):
@@ -219,9 +237,8 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         return fieldlist
 
     def keep_iterating(self, iteration, hm_masking, tclean_stopcode, dirty_dynamic_range, residual_max,
-                       residual_robust_rms, field, intent, spw, specmode):
-        """Determine if another tclean iteration is necessary."""
-
+                       residual_robust_rms, field, intent, spw, specmode) -> Tuple[bool, str]:
+        """Determine whether another tclean iteration is necessary."""
         if iteration == 0:
             return True, 'auto'
         elif iteration == 1:
@@ -230,8 +247,8 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         else:
             return False, 'user'
 
-    def threshold(self, iteration, threshold, hm_masking):
-
+    def threshold(self, iteration: int, threshold: Union[str, float], hm_masking: str) -> Union[str, float]:
+        """Tclean threshold parameter heuristics."""
         if hm_masking == 'auto':
             return '0.0mJy'
         elif hm_masking == 'none':
@@ -242,26 +259,26 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         else:
             return threshold
 
-    def nsigma(self, iteration, hm_nsigma):
-
+    def nsigma(self, iteration: int, hm_nsigma: float) -> float:
+        """Tclean nsigma parameter heuristics."""
         if hm_nsigma:
             return hm_nsigma
-
         if iteration == 0:
-            return 0
-        elif iteration == 1:
             return 2.0
+        elif self.vlass_stage in [1, 2] and iteration >= 1:
+            return 5.0
         else:
-            return 4.5
+            return 3.0
 
-    def savemodel(self, iteration):
+    def savemodel(self, iteration: int) -> str:
+        """Tclean savemodel parameter heuristics."""
         # Model is saved in first imaging cycle last iteration
         if self.vlass_stage == 1 and iteration == 1:
             return 'modelcolumn'
         else:
             return 'none'
 
-    def datacolumn(self):
+    def datacolumn(self) -> str:
         """Column parameter to be used as tclean argument
         """
         # First imaging stage use data column
@@ -271,13 +288,15 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         else:
             return 'corrected'
 
-    def wprojplanes(self):
+    def wprojplanes(self) -> int:
+        """Tclean wprojplanes parameter heuristics."""
         return 32
 
-    def rotatepastep(self):
+    def rotatepastep(self) -> float:
+        """Tclean rotatepastep parameter heuristics."""
         return 5.0
 
-    def get_autobox_params(self, iteration, intent, specmode, robust):
+    def get_autobox_params(self, iteration, intent, specmode, robust) -> tuple:
 
         """Default auto-boxing parameters."""
 
@@ -297,31 +316,31 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         return (sidelobethreshold, noisethreshold, lownoisethreshold, negativethreshold, minbeamfrac,
                 growiterations, dogrowprune, minpercentchange, fastnoise)
 
-    def usepointing(self):
+    def usepointing(self) -> bool:
         """clean flag to use pointing table."""
 
         return True
 
-    def get_cfcaches(self, cfcache: str):
+    def get_cfcaches(self, cfcache: str) -> list:
         """Parses comma separated cfcache string
 
         Used to input wide band and non-wide band cfcaches at the same time in
         VLASS-SE-CONT imaging mode.
         """
         if ',' in cfcache:
-            return [cfch.strip() for cfch in cfcache.split(',')]
+            return [cfch.strip() for cfch in cfcache.split(',')][0:2]
         else:
-            return cfcache, None
+            return [cfcache, None]
 
-    def smallscalebias(self):
+    def smallscalebias(self) -> float:
         """A numerical control to bias the scales when using multi-scale or mtmfs algorithms"""
         return 0.4
 
-    def restoringbeam(self):
+    def restoringbeam(self) -> list:
         """Tclean parameter"""
-        return ['']
+        return []
 
-    def pointingoffsetsigdev(self):
+    def pointingoffsetsigdev(self) -> list:
         """Tclean parameter"""
         return [300, 30]
 
@@ -340,8 +359,10 @@ class ImageParamsHeuristicsVlassSeContAWPP001(ImageParamsHeuristicsVlassSeCont):
         # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
         self.vlass_stage = 0
 
-    def wprojplanes(self):
+    def wprojplanes(self) -> int:
+        """Tclean wprojplanes parameter heuristics."""
         return 1
 
-    def gridder(self, intent, field):
+    def gridder(self, intent, field) -> str:
+        """Tclean gridder parameter heuristics."""
         return 'awproject'

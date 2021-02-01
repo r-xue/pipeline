@@ -487,7 +487,7 @@ class Editimlist(basetask.StandardTaskTemplate):
     def analyse(self, result):
         return result
 
-    def _get_task_stage_ordinal(self, taskname='hifv_makeimages'):
+    def _get_task_stage_ordinal(self, taskname='hif_makeimages'):
         """Get task ordinal number (how many times the task was called before in the pipeline execution).
 
         The order number is determined by counting the number of previous execution of
