@@ -20,10 +20,18 @@ class VlassmaskingResults(basetask.Results):
     The class inherits from basetask.Results
 
     """
+
     def __init__(self, catalog_fits_file=None,
-                 catalog_search_size=None, outfile=None,
+                 catalog_search_size=None,
+                 tier1mask=None, tier2mask=None, outfile=None,
                  combinedmask=None, number_islands_found=None,
-                 number_islands_found_onedeg=None, pixelfraction=None, maskingmode=None):
+                 number_islands_found_onedeg=None,
+                 num_rejected_islands=None, num_rejected_islands_onedeg=None,
+                 pixelfractiontier1=None,
+                 pixelfractiontier2=None,
+                 pixelfractionfinal=None,
+                 plotmask=None,
+                 maskingmode=None):
         """
         Args:
             final(list): final list of tables (not used in this task)
@@ -39,11 +47,18 @@ class VlassmaskingResults(basetask.Results):
 
         self.catalog_fits_file = catalog_fits_file
         self.catalog_search_size = catalog_search_size
+        self.tier1mask = tier1mask
+        self.tier2mask = tier2mask
         self.outfile = outfile
         self.combinedmask = combinedmask
         self.number_islands_found = number_islands_found
         self.number_islands_found_onedeg = number_islands_found_onedeg
-        self.pixelfraction = pixelfraction
+        self.num_rejected_islands = num_rejected_islands
+        self.num_rejected_islands_onedeg = num_rejected_islands_onedeg
+        self.pixelfractiontier1 = pixelfractiontier1
+        self.pixelfractiontier2 = pixelfractiontier2
+        self.pixelfractionfinal = pixelfractionfinal
+        self.plotmask = plotmask
         self.maskingmode = maskingmode
 
         self.pipeline_casa_task = 'Vlassmasking'
@@ -136,10 +151,18 @@ class Vlassmasking(basetask.StandardTaskTemplate):
         frequency = self.inputs.context.clean_list_pending[0]['reffreq']
         QLmask = '.QLcatmask-tier1.mask'
         catalog_fits_file = ''
+        tier1mask = ''
+        tier2mask = ''
         outfile = ''
         combinedmask = ''
+        plotmask = ''
         number_islands_found = 0
         number_islands_found_onedeg = 0
+        num_rejected_islands = 0
+        num_rejected_islands_onedeg = 0
+        pixelfractiontier1 = 0.0
+        pixelfractiontier2 = 0.0
+        pixelfractionfinal = 0.0
 
         # Test parameters for reference
         # Location of catalog file at the AOC
@@ -163,20 +186,31 @@ class Vlassmasking(basetask.StandardTaskTemplate):
 
             catalog_fits_file = self.inputs.vlass_ql_database
 
+            tier1mask = maskname_base + QLmask
+
             number_islands_found, \
             number_islands_found_onedeg = mask_from_catalog(catalog_fits_file=catalog_fits_file,
                                                             catalog_search_size=self.inputs.catalog_search_size,
                                                             mask_shape=mask_shape, frequency=frequency, cell=cell,
                                                             phasecenter=phasecenter,
-                                                            mask_name=maskname_base + QLmask)
+                                                            mask_name=tier1mask)
 
-            combinedmask = maskname_base + QLmask
+            # Compute fraction of pixels enclosed in the tier-1 mask
+            with casa_tools.ImageReader(tier1mask) as myia:
+                computechunk = myia.getchunk()
+                pixelfractiontier1 = computechunk.sum() / computechunk.size
+
+            # Compute fraction of pixels enclosed in the inner square degree for the tier-1 mask
+            # TODO
+
+            combinedmask = tier1mask
+            plotmask = combinedmask
 
         elif self.inputs.maskingmode == 'vlass-se-tier-2':
             LOG.debug("Executing mask_from_catalog masking mode = {!s}".format(self.inputs.maskingmode))
 
-            # Obrain Tier 1 mask name
-            tier1_mask = maskname_base + QLmask if not self.inputs.context.clean_list_pending[0]['mask'] else self.inputs.context.clean_list_pending[0]['mask']
+            # Obtain Tier 1 mask name
+            tier1mask = maskname_base + QLmask if not self.inputs.context.clean_list_pending[0]['mask'] else self.inputs.context.clean_list_pending[0]['mask']
 
             # Obtain image name
             imagename_base = self._get_bdsf_imagename(maskname_base, iter=1)
@@ -184,8 +218,12 @@ class Vlassmasking(basetask.StandardTaskTemplate):
             initial_catalog_fits_file = self.bdsfcompute(imagename_base)
 
             suffix = ".secondmask.mask"
+            tier2mask = maskname_base + suffix
 
-            catalog_fits_file = edit_pybdsf_islands(catalog_fits_file=initial_catalog_fits_file)
+            catalog_fits_file, num_rejected_islands = edit_pybdsf_islands(catalog_fits_file=initial_catalog_fits_file)
+
+            # TODO
+            # num_rejected_islands_onedeg
 
             if not os.path.exists(catalog_fits_file):
                 LOG.error("Catalog file {!s} does not exist.".format(catalog_fits_file))
@@ -195,11 +233,11 @@ class Vlassmasking(basetask.StandardTaskTemplate):
                                                             catalog_search_size=self.inputs.catalog_search_size,
                                                             mask_shape=mask_shape, frequency=frequency, cell=cell,
                                                             phasecenter=phasecenter,
-                                                            mask_name=maskname_base + suffix)
+                                                            mask_name=tier2mask)
 
             # combine first and second order masks
             outfile = maskname_base + '.sum_of_masks.mask'
-            task = casa_tasks.immath(imagename=[maskname_base + suffix, tier1_mask], expr='IM0+IM1', outfile=outfile)
+            task = casa_tasks.immath(imagename=[tier2mask, tier1mask], expr='IM0+IM1', outfile=outfile)
 
             runtask = self._executor.execute(task)
 
@@ -208,22 +246,47 @@ class Vlassmasking(basetask.StandardTaskTemplate):
             combinedmask = maskname_base + '.combined-tier2.mask'
             myim.mask(image=outfile, mask=combinedmask, threshold=0.5)
             myim.close()
+
+            # Compute fraction of pixels enclosed in the tier-1 mask
+            with casa_tools.ImageReader(tier1mask) as myia:
+                computechunk = myia.getchunk()
+                pixelfractiontier1 = computechunk.sum() / computechunk.size
+
+            # Compute fraction of pixels enclosed in the inner square degree for the tier-1 mask
+            # TODO
+
+            # Compute fraction of pixels enclosed in the tier-2 mask
+            with casa_tools.ImageReader(tier2mask) as myia:
+                computechunk = myia.getchunk()
+                pixelfractiontier2 = computechunk.sum() / computechunk.size
+
+            # Compute fraction of pixels enclosed in the inner square degree for the tier-2 mask
+            # TODO
+
+            # Compute fraction of pixels enclosed in the final mask
+            with casa_tools.ImageReader(combinedmask) as myia:
+                computechunk = myia.getchunk()
+                pixelfractionfinal = computechunk.sum() / computechunk.size
+
+            # Compute fraction of pixels enclosed in the inner square degree for the final combined mask
+            # TODO
+
+            plotmask = combinedmask
         else:
             LOG.error("Invalid maskingmode input.")
 
-        # Compute fraction of pixels enclosed in the mask
-        with casa_tools.ImageReader(combinedmask) as myia:
-            computechunk = myia.getchunk()
-            pixelfraction = computechunk.sum() / computechunk.size
-
-        # Compute fraction of pixels enclosed in the inner square degree
-        # TODO
-
         return VlassmaskingResults(catalog_fits_file=catalog_fits_file,
-                                   catalog_search_size=1.5, outfile=outfile,
+                                   catalog_search_size=1.5,
+                                   tier1mask=tier1mask, tier2mask=tier2mask, outfile=outfile,
                                    combinedmask=combinedmask, number_islands_found=number_islands_found,
                                    number_islands_found_onedeg=number_islands_found_onedeg,
-                                   pixelfraction=pixelfraction, maskingmode=self.inputs.maskingmode)
+                                   num_rejected_islands=num_rejected_islands,
+                                   num_rejected_islands_onedeg=num_rejected_islands_onedeg,
+                                   pixelfractiontier1=pixelfractiontier1,
+                                   pixelfractiontier2=pixelfractiontier2,
+                                   pixelfractionfinal=pixelfractionfinal,
+                                   plotmask=plotmask,
+                                   maskingmode=self.inputs.maskingmode)
 
     def analyse(self, results):
         return results

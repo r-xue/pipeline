@@ -118,7 +118,6 @@ def mask_from_catalog(inext='iter0.model.tt0', outext="mask_from_cat.mask",
                                 type="direction")
     mask_csys.setreferencevalue(frequency, 'spectral')
     mask_csys.setincrement('1GHz', 'spectral')
-    myia.setbrightnessunit("Jy/pixel")
     mask_csys.setobserver('Dr. Vlass Scientist')
     mask_csys.setrestfrequency(frequency)
     mask_csys.settelescope('EVLA')
@@ -336,6 +335,7 @@ def edit_pybdsf_islands(catalog_fits_file='', r_squared_threshold=0.99,
 
     rejected_islands = list(set.union(set(large_islands), set(linear_islands), set(numerous_islands)))
     LOG.info('rejected_islands: [%s]' % ', '.join(map(str, list(rejected_islands))))
+    num_rejected_islands = len(list(rejected_islands))
 
     cat_to_ds9_rgn(catalog_dat[np.in1d(catalog_dat['Isl_id'], rejected_islands)],
                    outfile=catalog_fits_file.replace('.fits', '') + '.rejected.ds9.reg',
@@ -362,7 +362,7 @@ def edit_pybdsf_islands(catalog_fits_file='', r_squared_threshold=0.99,
     LOG.info('wrote catalog of accepted islands to: {0}'.format(catalog_fits_file.replace('.fits', '')
                                                                 + '.edited.fits'))
 
-    return edited_catalog_fits_file
+    return edited_catalog_fits_file, num_rejected_islands
 
 
 def cat_to_ds9_rgn(catalog_fits_file, outfile='ds9.reg', region_color='red'):

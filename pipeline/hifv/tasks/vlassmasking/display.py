@@ -45,7 +45,7 @@ class MaskSummary(object):
 
             # mask map
             cmap = copy.deepcopy(matplotlib.cm.binary)
-            plot_wrappers.append(sky.SkyDisplay().plot(self.context, r.combinedmask,
+            plot_wrappers.append(sky.SkyDisplay().plot(self.context, r.plotmask,
                                                        reportdir=stage_dir, intent='MASK',
                                                        collapseFunction='mean', cmap=cmap))
 
