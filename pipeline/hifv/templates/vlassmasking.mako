@@ -20,8 +20,8 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
         <hr>
 
-        <p> Fraction of pixels enclosed in the tier-1 mask: <b>${"{:.{}f}".format(single_result.pixelfractiontier1, 8)}</b> </p>
-        <p> Fraction of pixels enclosed in the tier-1 mask (inner square degree): <b> TBD </b> </p>
+        <p> Fraction of pixels enclosed in the tier-1 mask: <b>${"{:.{}f}".format(single_result.pixelfractions['tier1'], 8)}</b> </p>
+        <p> Fraction of pixels enclosed in the tier-1 mask (inner square degree): <b>${"{:.{}f}".format(single_result.pixelfractions['tier1_onedeg'], 8)}</b> </p>
 
         <hr>
 
@@ -42,14 +42,14 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
         <hr>
 
-        <p> Fraction of pixels enclosed in the tier-1 mask: <b>${"{:.{}f}".format(single_result.pixelfractiontier1, 8)}</b> </p>
-        <p> Fraction of pixels enclosed in the tier-1 mask (inner square degree): <b> TBD </b> </p>
+        <p> Fraction of pixels enclosed in the tier-1 mask: <b>${"{:.{}f}".format(single_result.pixelfractions['tier1'], 8)}</b> </p>
+        <p> Fraction of pixels enclosed in the tier-1 mask (inner square degree): <b>${"{:.{}f}".format(single_result.pixelfractions['tier1_onedeg'], 8)}</b> </p>
 
-        <p> Fraction of pixels enclosed in the tier-2 mask: <b>${"{:.{}f}".format(single_result.pixelfractiontier2, 8)}</b> </p>
-        <p> Fraction of pixels enclosed in the tier-2 mask (inner square degree): <b> TBD </b> </p>
+        <p> Fraction of pixels enclosed in the tier-2 mask: <b>${"{:.{}f}".format(single_result.pixelfractions['tier2'], 8)}</b> </p>
+        <p> Fraction of pixels enclosed in the tier-2 mask (inner square degree): <b>${"{:.{}f}".format(single_result.pixelfractions['tier2_onedeg'], 8)}</b> </p>
 
-        <p> Fraction of pixels enclosed in the final combined mask: <b>${"{:.{}f}".format(single_result.pixelfractionfinal, 8)}</b> </p>
-        <p> Fraction of pixels enclosed in the final combined mask (inner square degree): <b> TBD </b> </p>
+        <p> Fraction of pixels enclosed in the final combined mask: <b>${"{:.{}f}".format(single_result.pixelfractions['final'], 8)}</b> </p>
+        <p> Fraction of pixels enclosed in the final combined mask (inner square degree): <b>${"{:.{}f}".format(single_result.pixelfractions['final_onedeg'], 8)}</b> </p>
 
         <hr>
 

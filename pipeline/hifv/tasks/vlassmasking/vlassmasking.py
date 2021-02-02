@@ -27,9 +27,7 @@ class VlassmaskingResults(basetask.Results):
                  combinedmask=None, number_islands_found=None,
                  number_islands_found_onedeg=None,
                  num_rejected_islands=None, num_rejected_islands_onedeg=None,
-                 pixelfractiontier1=None,
-                 pixelfractiontier2=None,
-                 pixelfractionfinal=None,
+                 pixelfractions=None,
                  plotmask=None,
                  maskingmode=None):
         """
@@ -55,9 +53,7 @@ class VlassmaskingResults(basetask.Results):
         self.number_islands_found_onedeg = number_islands_found_onedeg
         self.num_rejected_islands = num_rejected_islands
         self.num_rejected_islands_onedeg = num_rejected_islands_onedeg
-        self.pixelfractiontier1 = pixelfractiontier1
-        self.pixelfractiontier2 = pixelfractiontier2
-        self.pixelfractionfinal = pixelfractionfinal
+        self.pixelfractions = pixelfractions
         self.plotmask = plotmask
         self.maskingmode = maskingmode
 
@@ -160,9 +156,14 @@ class Vlassmasking(basetask.StandardTaskTemplate):
         number_islands_found_onedeg = 0
         num_rejected_islands = 0
         num_rejected_islands_onedeg = 0
-        pixelfractiontier1 = 0.0
-        pixelfractiontier2 = 0.0
-        pixelfractionfinal = 0.0
+        pixelfractions = {'tier1': 0.0,
+                          'tier1_onedeg': 0.0,
+                          'tier2': 0.0,
+                          'tier2_onedeg': 0.0,
+                          'final': 0.0,
+                          'final_onedeg': 0.0
+                          }
+        widthdeg = 1.0
 
         # Test parameters for reference
         # Location of catalog file at the AOC
@@ -198,15 +199,22 @@ class Vlassmasking(basetask.StandardTaskTemplate):
             # Compute fraction of pixels enclosed in the tier-1 mask
             with casa_tools.ImageReader(tier1mask) as myia:
                 computechunk = myia.getchunk()
-                pixelfractiontier1 = computechunk.sum() / computechunk.size
+                pixelfractions['tier1'] = computechunk.sum() / computechunk.size
 
             # Compute fraction of pixels enclosed in the inner square degree for the tier-1 mask
-            # TODO
+            pixelfractions['tier1_onedeg'] = self._computepixelfraction(widthdeg, tier1mask)
+
+            LOG.info(" ")
+            LOG.info("Pixel fraction over entire tier-1 mask: {!s}".format(pixelfractions['tier1']))
+            LOG.info("Pixel fraction over inner {!s} degree of tier-1 mask: {!s}".format(widthdeg,
+                                                                                         pixelfractions['tier1_onedeg']))
+            LOG.info(" ")
 
             combinedmask = tier1mask
             plotmask = combinedmask
 
         elif self.inputs.maskingmode == 'vlass-se-tier-2':
+
             LOG.debug("Executing mask_from_catalog masking mode = {!s}".format(self.inputs.maskingmode))
 
             # Obtain Tier 1 mask name
@@ -250,26 +258,44 @@ class Vlassmasking(basetask.StandardTaskTemplate):
             # Compute fraction of pixels enclosed in the tier-1 mask
             with casa_tools.ImageReader(tier1mask) as myia:
                 computechunk = myia.getchunk()
-                pixelfractiontier1 = computechunk.sum() / computechunk.size
+                pixelfractions['tier1'] = computechunk.sum() / computechunk.size
 
             # Compute fraction of pixels enclosed in the inner square degree for the tier-1 mask
-            # TODO
+            pixelfractions['tier1_onedeg'] = self._computepixelfraction(widthdeg, tier1mask)
+
+            LOG.info(" ")
+            LOG.info("Pixel fraction over entire tier-1 mask: {!s}".format(pixelfractions['tier1']))
+            LOG.info("Pixel fraction over inner {!s} degree of tier-1 mask: {!s}".format(pixelfractions['tier1'],
+                                                                                         pixelfractions['tier1_onedeg']))
+            LOG.info(" ")
 
             # Compute fraction of pixels enclosed in the tier-2 mask
             with casa_tools.ImageReader(tier2mask) as myia:
                 computechunk = myia.getchunk()
-                pixelfractiontier2 = computechunk.sum() / computechunk.size
+                pixelfractions['tier2'] = computechunk.sum() / computechunk.size
 
             # Compute fraction of pixels enclosed in the inner square degree for the tier-2 mask
-            # TODO
+            pixelfractions['tier2_onedeg'] = self._computepixelfraction(widthdeg, tier2mask)
+
+            LOG.info(" ")
+            LOG.info("Pixel fraction over entire tier-2 mask: {!s}".format(pixelfractions['tier2']))
+            LOG.info("Pixel fraction over inner {!s} degree of tier-2 mask: {!s}".format(widthdeg,
+                                                                                         pixelfractions['tier2_onedeg'] ))
+            LOG.info(" ")
 
             # Compute fraction of pixels enclosed in the final mask
             with casa_tools.ImageReader(combinedmask) as myia:
                 computechunk = myia.getchunk()
-                pixelfractionfinal = computechunk.sum() / computechunk.size
+                pixelfractions['final'] = computechunk.sum() / computechunk.size
 
             # Compute fraction of pixels enclosed in the inner square degree for the final combined mask
-            # TODO
+            pixelfractions['final_ondeg'] = self._computepixelfraction(widthdeg, combinedmask)
+
+            LOG.info(" ")
+            LOG.info("Pixel fraction over entire final combined mask: {!s}".format(pixelfractions['final']))
+            LOG.info("Pixel fraction over inner {!s} degree of final combined mask: {!s}".format(widthdeg,
+                                                                                                 pixelfractions['final_ondeg']))
+            LOG.info(" ")
 
             plotmask = combinedmask
         else:
@@ -282,9 +308,7 @@ class Vlassmasking(basetask.StandardTaskTemplate):
                                    number_islands_found_onedeg=number_islands_found_onedeg,
                                    num_rejected_islands=num_rejected_islands,
                                    num_rejected_islands_onedeg=num_rejected_islands_onedeg,
-                                   pixelfractiontier1=pixelfractiontier1,
-                                   pixelfractiontier2=pixelfractiontier2,
-                                   pixelfractionfinal=pixelfractionfinal,
+                                   pixelfractions=pixelfractions,
                                    plotmask=plotmask,
                                    maskingmode=self.inputs.maskingmode)
 
@@ -341,3 +365,46 @@ class Vlassmasking(basetask.StandardTaskTemplate):
 
         # In case hif_makeimages result was not found.
         return imagename_base + 'iter1b.image'
+
+    def _computepixelfraction(self, widthdeg, maskimage):
+
+        with casa_tools.ImageReader(maskimage) as myia:
+            # myia = casa_tools.image
+            # myia.open(maskimage)
+            mask_csys = myia.coordsys()
+
+            xpixel = mask_csys.torecord()['direction0']['crpix'][0]
+            ypixel = mask_csys.torecord()['direction0']['crpix'][1]
+            xdelta = mask_csys.torecord()['direction0']['cdelt'][0]  # in radians
+            ydelta = mask_csys.torecord()['direction0']['cdelt'][1]  # in radians
+            onedeg = 1.0 * np.pi / 180.0  # conversion
+            # widthdeg = 0.4  # degrees
+            boxhalfxwidth = np.abs((onedeg * widthdeg / 2.0) / xdelta)
+            boxhalfywidth = np.abs((onedeg * widthdeg / 2.0) / ydelta)
+
+            blcx = xpixel - boxhalfxwidth
+            blcy = ypixel - boxhalfywidth
+            if blcx < 0:
+                blcx = 0
+            if blcy < 0:
+                blcy = 0
+            blc = [blcx, blcy]
+
+            trcx = xpixel + boxhalfxwidth
+            trcy = ypixel + boxhalfywidth
+            if trcx > myia.getchunk().shape[0]:
+                trcx = myia.getchunk().shape[0]
+            if trcy > myia.getchunk().shape[1]:
+                trcy = myia.getchunk().shape[1]
+            trc = [trcx, trcy]
+
+            myrg = casa_tools.regionmanager
+            r1 = myrg.box(blc=blc, trc=trc)
+
+            y = myia.getregion(r1)
+            pixelfraction = y.sum() / y.size
+
+            # myia.done()
+            myrg.done()
+
+        return pixelfraction
