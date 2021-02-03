@@ -18,8 +18,7 @@ spectrum_1 = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 5.0, 15.0,
                              (spectrum_1, 7.0, False, [], [7, 5], []),
                          ])
 
-def test_linefinder(spectrum: List[float], threshold: float=7.0, tweak: bool=False, 
-                    mask: List[bool]=[], edge: Optional[List[int]]=None, expected: List[int]) -> NoReturn:
+def test_linefinder(spectrum, threshold, tweak, mask, edge, expected) -> NoReturn:
     """
     Unit test for calculate method.
 
@@ -48,8 +47,7 @@ def test_linefinder(spectrum: List[float], threshold: float=7.0, tweak: bool=Fal
                              (spectrum_1, [20, 24], [0, 0], 1, [11, 24]),
                              (spectrum_1, [12, 20], [0, 0], 1, [11, 20]),                              
                          ])
-def test_tweak_lines(spectrum: List[float], ranges: List[int], edge: List[int], 
-                     n_ignore: int=1, expected: List[int]) -> NoReturn:
+def test_tweak_lines(spectrum, ranges, edge, n_ignore, expected) -> NoReturn:
     """
     Unit test for tweak_lines method.
 
