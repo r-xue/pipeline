@@ -344,6 +344,29 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         """Tclean parameter"""
         return [300, 30]
 
+    def fix_vlass_tier_1_mask_coors(self, image_name: str, mask_name: str):
+        """Workaround limited precision tclean phasecenter parameter conversion.
+
+        Tclean 6.1 truncates phase center coordinates at ~1E-7 precision. When a mask is provided to tclean
+        with higher precision reference coordinate, the truncation may lead to the interpolated mask to shift
+        by a pixel, resulting in slightly different tclean input and output mask.
+
+        To work around the problematic interpolation, the mask coordinate precision is reduced before tclean,
+        by copying coordinates from a tclean produced image (e.g. the PSF).
+
+        See CAS-13338 and PIPE-728"""
+        if self.vlass_stage == 1:
+            try:
+                LOG.debug('Fixing coordsys truncation issue in mask (see CAS-13338)')
+                with casa_tools.ImageReader(image_name) as image:
+                    csys = image.coordsys()
+                if new_cleanmask is not None:
+                    with casa_tools.ImageReader(mask_name) as image:
+                        image.setcoordsys(csys.torecord())
+                csys.done()
+            except Exception as ee:
+                LOG.warning(f"Not able to update Tier-1 mask coordinates, exception: {ee}")
+        return
 
 class ImageParamsHeuristicsVlassSeContAWPP001(ImageParamsHeuristicsVlassSeCont):
     """
