@@ -357,7 +357,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         See CAS-13338 and PIPE-728"""
         if self.vlass_stage == 1:
             try:
-                LOG.debug('Fixing coordsys truncation issue in mask (see CAS-13338)')
+                LOG.info('Fixing coordsys truncation issue in mask (see CAS-13338)')
                 with casa_tools.ImageReader(image_name) as image:
                     csys = image.coordsys()
                 if new_cleanmask is not None:
