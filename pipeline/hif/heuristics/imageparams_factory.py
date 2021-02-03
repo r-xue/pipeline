@@ -16,7 +16,7 @@ class ImageParamsHeuristicsFactory(object):
             return ImageParamsHeuristicsALMA(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
         elif imaging_mode == 'VLASS-QL':  # quick look
             return ImageParamsHeuristicsVlassQl(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
-        elif imaging_mode == 'VLASS-SE-CONT':  # single epoch continuum
+        elif imaging_mode in ['VLASS-SE-CONT', 'VLASS-SE-CONT-AWP-P032']:  # single epoch continuum
             return ImageParamsHeuristicsVlassSeCont(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
         elif imaging_mode == 'VLASS-SE-CONT-AWP-P001': # single epoch continuum, gridder=awproject, wprojplanes=1
             return ImageParamsHeuristicsVlassSeContAWPP001(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
