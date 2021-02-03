@@ -772,7 +772,6 @@ class Tclean(cleanbase.CleanBase):
                                ignore='mask' if do_not_copy_mask else None)
 
             # Update mask header to work around CAS-13338 (and PIPE-728)
-            LOG.debug('Fixing coordsys truncation issue in mask (see CAS-13338)')
             self.image_heuristics.fix_vlass_tier_1_mask_coors(glob.glob('%s.*psf.tt0' % new_pname)[0], new_cleanmask)
 
             LOG.info('Iteration %s: Clean control parameters' % iteration)
