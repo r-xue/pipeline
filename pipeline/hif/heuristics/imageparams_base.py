@@ -2157,3 +2157,7 @@ class ImageParamsHeuristics(object):
     def pointingoffsetsigdev(self):
         """Tclean parameter"""
         return None
+
+    def restoringbeam(self) -> Union[list, str, bool]:
+        """Tclean parameter"""
+        return None

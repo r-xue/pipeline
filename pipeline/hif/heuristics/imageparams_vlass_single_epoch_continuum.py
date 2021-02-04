@@ -336,9 +336,9 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         """A numerical control to bias the scales when using multi-scale or mtmfs algorithms"""
         return 0.4
 
-    def restoringbeam(self) -> list:
+    def restoringbeam(self) -> Union[list, str, bool]:
         """Tclean parameter"""
-        return []
+        return ''
 
     def pointingoffsetsigdev(self) -> list:
         """Tclean parameter"""
