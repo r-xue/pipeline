@@ -9,6 +9,18 @@ The three major peculiarities in the workflow:
 2) with awproject gridder the manual computation of PSFs with the wabwp tclean parameter turned off using different CFCaches for the two cases
 3) the use of self calibration.
 
+### Imaging modes
+
+The pipeline supports 3 VLASS-SE-CONT imaging modes (i.e. hif_editimlist parameter). The modes differ in gridder related tclean 
+parameters. 
+
+- VLASS-SE-CONT: default imaging mode
+- VLASS-SE-CONT-AWP-032: at the moment same as default imaging mode, i.e. tclean parameters `gridder='awproject'`, `wprojplanes=32`.
+  Essentially this implements the VLASS Memo 15 imaging workflow and configuration.
+- VLASS-SE-CONT-AWP-001: alternative `gridder='awproject'` imaging mode. It differs from the default mode by setting 
+`wprojplanes=1` in order to speed up imaging.
+- An additional, `gridder='mosaic'` based mode is discussed, but as of Feb. 2021 no decision is reached.
+
 ### Task level workflow
 
 The Memo 15 workflow consists of 3 imaging steps: 1) compute image (with Tier-1 mask, derived from QL database) that is 

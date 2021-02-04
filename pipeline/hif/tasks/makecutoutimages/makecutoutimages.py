@@ -104,7 +104,7 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
                 imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.psf') + '*.tt0'))
                 imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.image.residual.pbcor') + '*.tt0'))
                 imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.pb') + '*.tt0'))
-                if img_mode in ['VLASS-SE-CONT', 'VLASS-SE-CONT-AWP-001']:
+                if type(img_mode) is str and img_mode.startswith('VLASS-SE-CONT'):
                     imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.alpha')))
                     imagenames.extend(glob.glob(imageitem['imagename'].replace('.image', '.alpha.error')))
             else:

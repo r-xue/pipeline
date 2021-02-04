@@ -93,6 +93,8 @@
                     <value>VLA</value>
                     <value>VLASS-QL</value>
                     <value>VLASS-SE-CONT</value>
+                    <value>VLASS-SE-CONT-AWP-001</value>
+                    <value>VLASS-SE-CONT-AWP-032</value>
                     <value>VLASS-SE-TAPER</value>
                     <value>VLASS-SE-CUBE</value>
                 </allowed>
