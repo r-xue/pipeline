@@ -53,8 +53,8 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
         <hr>
 
-        <p> Fractional increase of masked pixels in final combined mask relative to Quicklook Mask: <b> TBD </b> </p>
-        <p> Fractional increase of masked pixels in final combined mask relative to Quicklook Mask (inner square degree): <b> TBD </b> </p>
+        <p> Fractional increase of masked pixels in final combined mask relative to Quicklook Mask: <b> ${single_result.relativefraction}</b> </p>
+        <p> Fractional increase of masked pixels in final combined mask relative to Quicklook Mask (inner square degree): <b> ${single_result.relativefraction_onedeg}</b> </p>
 
     % else:
         <p>Incompatible mode used in maskingmode input</P>

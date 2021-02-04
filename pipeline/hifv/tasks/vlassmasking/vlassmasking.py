@@ -28,6 +28,8 @@ class VlassmaskingResults(basetask.Results):
                  number_islands_found_onedeg=None,
                  num_rejected_islands=None, num_rejected_islands_onedeg=None,
                  pixelfractions=None,
+                 relativefraction=None,
+                 relativefraction_onedeg=None,
                  plotmask=None,
                  maskingmode=None):
         """
@@ -54,6 +56,8 @@ class VlassmaskingResults(basetask.Results):
         self.num_rejected_islands = num_rejected_islands
         self.num_rejected_islands_onedeg = num_rejected_islands_onedeg
         self.pixelfractions = pixelfractions
+        self.relativefraction = relativefraction
+        self.relativefraction_onedeg = relativefraction_onedeg
         self.plotmask = plotmask
         self.maskingmode = maskingmode
 
@@ -163,6 +167,8 @@ class Vlassmasking(basetask.StandardTaskTemplate):
                           'final': 0.0,
                           'final_onedeg': 0.0
                           }
+        relativefraction = 0.0
+        relativefraction_onedeg = 0.0
         widthdeg = 1.0
 
         # Test parameters for reference
@@ -202,7 +208,7 @@ class Vlassmasking(basetask.StandardTaskTemplate):
                 pixelfractions['tier1'] = computechunk.sum() / computechunk.size
 
             # Compute fraction of pixels enclosed in the inner square degree for the tier-1 mask
-            pixelfractions['tier1_onedeg'] = self._computepixelfraction(widthdeg, tier1mask)
+            pixelsum, pixelfractions['tier1_onedeg'] = self._computepixelfraction(widthdeg, tier1mask)
 
             LOG.info(" ")
             LOG.info("Pixel fraction over entire tier-1 mask: {!s}".format(pixelfractions['tier1']))
@@ -212,6 +218,9 @@ class Vlassmasking(basetask.StandardTaskTemplate):
 
             combinedmask = tier1mask
             plotmask = combinedmask
+
+            if number_islands_found_onedeg == 0 or pixelfractions['tier1_onedeg'] == 0.0:
+                LOG.error("No islands found or pixel fraction is zero.")
 
         elif self.inputs.maskingmode == 'vlass-se-tier-2':
 
@@ -258,10 +267,11 @@ class Vlassmasking(basetask.StandardTaskTemplate):
             # Compute fraction of pixels enclosed in the tier-1 mask
             with casa_tools.ImageReader(tier1mask) as myia:
                 computechunk = myia.getchunk()
+                tier1pixelsum = computechunk.sum()
                 pixelfractions['tier1'] = computechunk.sum() / computechunk.size
 
             # Compute fraction of pixels enclosed in the inner square degree for the tier-1 mask
-            pixelfractions['tier1_onedeg'] = self._computepixelfraction(widthdeg, tier1mask)
+            tier1pixelsum_onedeg, pixelfractions['tier1_onedeg'] = self._computepixelfraction(widthdeg, tier1mask)
 
             LOG.info(" ")
             LOG.info("Pixel fraction over entire tier-1 mask: {!s}".format(pixelfractions['tier1']))
@@ -272,10 +282,11 @@ class Vlassmasking(basetask.StandardTaskTemplate):
             # Compute fraction of pixels enclosed in the tier-2 mask
             with casa_tools.ImageReader(tier2mask) as myia:
                 computechunk = myia.getchunk()
+                tier2pixelsum = computechunk.sum()
                 pixelfractions['tier2'] = computechunk.sum() / computechunk.size
 
             # Compute fraction of pixels enclosed in the inner square degree for the tier-2 mask
-            pixelfractions['tier2_onedeg'] = self._computepixelfraction(widthdeg, tier2mask)
+            tier2pixelsum_onedeg, pixelfractions['tier2_onedeg'] = self._computepixelfraction(widthdeg, tier2mask)
 
             LOG.info(" ")
             LOG.info("Pixel fraction over entire tier-2 mask: {!s}".format(pixelfractions['tier2']))
@@ -286,10 +297,11 @@ class Vlassmasking(basetask.StandardTaskTemplate):
             # Compute fraction of pixels enclosed in the final mask
             with casa_tools.ImageReader(combinedmask) as myia:
                 computechunk = myia.getchunk()
+                finalpixelsum = computechunk.sum()
                 pixelfractions['final'] = computechunk.sum() / computechunk.size
 
             # Compute fraction of pixels enclosed in the inner square degree for the final combined mask
-            pixelfractions['final_ondeg'] = self._computepixelfraction(widthdeg, combinedmask)
+            finalpixelsum_onedeg, pixelfractions['final_ondeg'] = self._computepixelfraction(widthdeg, combinedmask)
 
             LOG.info(" ")
             LOG.info("Pixel fraction over entire final combined mask: {!s}".format(pixelfractions['final']))
@@ -297,7 +309,20 @@ class Vlassmasking(basetask.StandardTaskTemplate):
                                                                                                  pixelfractions['final_ondeg']))
             LOG.info(" ")
 
+            # Compute the fractional increase of masked pixels in Final mask relative to Quicklook Mask
+            # Compute the fractional increase of masked pixels in Final mask relative to Quicklook Mask in the inner
+            # square degree
+            relativefraction_str = str((finalpixelsum - tier1pixelsum) / tier1pixelsum) + ' =  (('+str(finalpixelsum) +' - '+str(tier1pixelsum) + ') /' + str(tier1pixelsum) + ')'
+            relativefraction_onedeg_str = str((finalpixelsum_onedeg - tier1pixelsum_onedeg) / tier1pixelsum_onedeg) + ' =  (('+str(finalpixelsum_onedeg) +' - '+str(tier1pixelsum_onedeg) + ') /' + str(tier1pixelsum_onedeg) +')'
+
+            LOG.info("Relative fraction: {!s}".format(relativefraction_str))
+            LOG.info("Relative fraction (inner square degree): {!s}".format(relativefraction_onedeg_str))
+
+            relativefraction = (finalpixelsum - tier1pixelsum) / tier1pixelsum
+            relativefraction_onedeg = (finalpixelsum_onedeg - tier1pixelsum_onedeg) / tier1pixelsum_onedeg
+
             plotmask = combinedmask
+
         else:
             LOG.error("Invalid maskingmode input.")
 
@@ -309,6 +334,8 @@ class Vlassmasking(basetask.StandardTaskTemplate):
                                    num_rejected_islands=num_rejected_islands,
                                    num_rejected_islands_onedeg=num_rejected_islands_onedeg,
                                    pixelfractions=pixelfractions,
+                                   relativefraction=relativefraction,
+                                   relativefraction_onedeg=relativefraction_onedeg,
                                    plotmask=plotmask,
                                    maskingmode=self.inputs.maskingmode)
 
@@ -402,9 +429,10 @@ class Vlassmasking(basetask.StandardTaskTemplate):
             r1 = myrg.box(blc=blc, trc=trc)
 
             y = myia.getregion(r1)
+            pixelsum = y.sum()
             pixelfraction = y.sum() / y.size
 
             # myia.done()
             myrg.done()
 
-        return pixelfraction
+        return pixelsum, pixelfraction
