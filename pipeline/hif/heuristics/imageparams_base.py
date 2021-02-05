@@ -1913,7 +1913,7 @@ class ImageParamsHeuristics(object):
     def cycleniter(self, iteration):
         return None
 
-    def scales(self):
+    def scales(self, iteration):
         return None
 
     def uvtaper(self, beam_natural=None, protect_long=None):
@@ -2061,7 +2061,7 @@ class ImageParamsHeuristics(object):
     def stokes(self):
         return 'I'
 
-    def mask(self):
+    def mask(self, results_list=None):
         return ''
 
     def specmode(self):
@@ -2148,16 +2148,16 @@ class ImageParamsHeuristics(object):
         Used to input wide band and non-wide band cfcaches at the same time in
         VLASS-SE-CONT imaging mode.
         """
-        return cfcache, None
+        return [cfcache, None]
 
     def smallscalebias(self):
         """A numerical control to bias the scales when using multi-scale or mtmfs algorithms"""
         return None
 
-    def pointingoffsetsigdev(self):
+    def restoringbeam(self):
         """Tclean parameter"""
         return None
 
-    def restoringbeam(self) -> Union[list, str, bool]:
+    def pointingoffsetsigdev(self):
         """Tclean parameter"""
         return None

@@ -78,18 +78,19 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         else:
             return [0]
 
-    def uvtaper(self, beam_natural=None, protect_long=None) -> str:
-        """Tclean uvtaped parameter heuristics."""
+    def uvtaper(self, beam_natural=None, protect_long=None) -> Union[str, list]:
+        """Tclean uvtaper parameter heuristics."""
         if self.vlass_stage == 3:
             return ''
         else:
-            return '3arcsec'
+            return ['3arcsec']
 
     def uvrange(self, field=None, spwspec=None) -> tuple:
         """Tclean uvrange parameter heuristics."""
         return '<12km', None
 
-    def mask(self, results_list: Union[list, None] = None) -> str:
+    def mask(self, hm_masking=None, rootname=None, iteration=None, mask=None,
+             results_list: Union[list, None] = None) -> str:
         """Tier-1 mask name to be used for computing Tier-1 and Tier-2 combined mask.
 
             Obtain the mask name from the latest MakeImagesResult object in context.results.
@@ -102,9 +103,9 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
                     return [r.combinedmask for r in result_meta][0]
 
         # In case hif_makeimages result was not found or results_list was not provided
-        return ""
+        return ''
 
-    def buffer_radius(self):
+    def buffer_radius(self) -> float:
         return 1000.
 
     def specmode(self) -> str:
@@ -115,8 +116,8 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         """Tclean intent parameter heuristics."""
         return 'TARGET'
 
-    def nterms(self, spwspec) -> int:
-        """Tclean stokes parameter heuristics."""
+    def nterms(self, spwspec) -> Union[int, None]:
+        """Tclean nterms parameter heuristics."""
         return 2
 
     def stokes(self) -> str:
@@ -259,7 +260,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         else:
             return threshold
 
-    def nsigma(self, iteration: int, hm_nsigma: float) -> float:
+    def nsigma(self, iteration: int, hm_nsigma: float) -> Union[float, None]:
         """Tclean nsigma parameter heuristics."""
         if hm_nsigma:
             return hm_nsigma
@@ -279,8 +280,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
             return 'none'
 
     def datacolumn(self) -> str:
-        """Column parameter to be used as tclean argument
-        """
+        """Column parameter to be used as tclean argument"""
         # First imaging stage use data column
         if self.vlass_stage == 1:
             return 'data'
@@ -318,7 +318,6 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
 
     def usepointing(self) -> bool:
         """clean flag to use pointing table."""
-
         return True
 
     def get_cfcaches(self, cfcache: str) -> list:

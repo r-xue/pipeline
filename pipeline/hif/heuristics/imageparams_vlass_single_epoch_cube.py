@@ -1,4 +1,5 @@
 import re
+from typing import Union, Tuple
 
 import numpy
 
@@ -17,70 +18,88 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristics):
 
     # niter
     def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0):
+        """Adjust niter value between cleaning iteration steps based on imaging parameters, mask and residual"""
         if niter:
             return int(niter)
         else:
             return 20000
 
-    def niter(self):
+    def niter(self) -> int:
+        """Tclean niter parameter heuristics."""
         return self.niter_correction(None, None, None, None, None, None)
 
-    def deconvolver(self, specmode, spwspec):
+    def deconvolver(self, specmode, spwspec) -> str:
+        """Tclean deconvolver parameter heuristics."""
         return 'mtmfs'
 
-    def robust(self):
+    def robust(self) -> float:
+        """Tclean robust parameter heuristics."""
         return 1.0
 
-    def gridder(self, intent, field):
+    def gridder(self, intent, field) -> str:
+        """Tclean gridder parameter heuristics."""
         return 'mosaic'
 
-    def cell(self, beam=None, pixperbeam=None):
+    def cell(self, beam=None, pixperbeam=None) -> Union[str, list]:
+        """Tclean cell parameter heuristics."""
         return ['0.6arcsec']
 
     def imsize(self, fields=None, cell=None, primary_beam=None, sfpblimit=None, max_pixels=None, centreonly=None,
-               vislist=None, spwspec=None):
+               vislist=None, spwspec=None) -> Union[list, int]:
         return [12150, 12150]
 
-    def reffreq(self):
+    def reffreq(self) -> str:
+        """Tclean reffreq parameter heuristics."""
         return '3.0GHz'
 
-    def cyclefactor(self, iteration):
+    def cyclefactor(self, iteration: int) -> float:
+        """Tclean cyclefactor parameter heuristics."""
         return 3.0
 
-    def cycleniter(self, iteration):
+    def cycleniter(self, iteration: int ) -> int:
+        """Tclean cycleniter parameter heuristics."""
         return 2000
 
-    def scales(self):
+    def scales(self, iteration: Union[int, None] = None) -> list:
+        """Tclean scales parameter heuristics."""
         return [0]
 
-    def uvtaper(self, beam_natural=None, protect_long=None):
+    def uvtaper(self, beam_natural=None, protect_long=None) -> Union[str, list]:
+        """Tclean uvtaper parameter heuristics."""
         return []
 
-    def uvrange(self, field=None, spwspec=None):
+    def uvrange(self, field=None, spwspec=None) -> tuple:
+        """Tclean uvrange parameter heuristics."""
         return None, None
 
-    def mask(self, hm_masking=None, rootname=None, iteration=None, mask=None):
+    def mask(self, hm_masking=None, rootname=None, iteration=None, mask=None,
+             results_list: Union[list, None] = None) -> str:
         return ''
 
-    def buffer_radius(self):
+    def buffer_radius(self) -> float:
         return 1000.
 
-    def specmode(self):
+    def specmode(self) -> str:
+        """Tclean specmode parameter heuristics."""
         return 'mfs'
 
-    def intent(self):
+    def intent(self) -> str:
+        """Tclean intent parameter heuristics."""
         return 'TARGET'
 
-    def nterms(self, spwspec):
+    def nterms(self, spwspec) -> int:
+        """Tclean stokes parameter heuristics."""
         return 2
 
-    def stokes(self):
+    def stokes(self) -> str:
+        """Tclean stokes parameter heuristics."""
         return 'IQU'
 
-    def pb_correction(self):
+    def pb_correction(self) -> bool:
         return False
 
-    def conjbeams(self):
+    def conjbeams(self) -> bool:
+        """Tclean conjbeams parameter heuristics."""
         return False
 
     def get_sensitivity(self, ms_do, field, intent, spw, chansel, specmode, cell, imsize, weighting, robust, uvtaper):
@@ -189,10 +208,9 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristics):
 
         return fieldlist
 
-    def keep_iterating(self, iteration, hm_masking, tclean_stopcode, dirty_dynamic_range, residual_max, residual_robust_rms, field, intent, spw, specmode):
-
-        '''Determine if another tclean iteration is necessary.'''
-
+    def keep_iterating(self, iteration, hm_masking, tclean_stopcode, dirty_dynamic_range, residual_max,
+                       residual_robust_rms, field, intent, spw, specmode) -> Tuple[bool, str]:
+        """Determine if another tclean iteration is necessary."""
         if iteration == 0:
             return True, hm_masking
         elif iteration == 1:
@@ -201,8 +219,8 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristics):
         else:
             return False, hm_masking
 
-    def threshold(self, iteration, threshold, hm_masking):
-
+    def threshold(self, iteration: int, threshold: Union[str, float], hm_masking: str) -> Union[str, float]:
+        """Tclean threshold parameter heuristics."""
         if hm_masking == 'auto':
             return '0.0mJy'
         elif hm_masking == 'none':
@@ -213,8 +231,8 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristics):
         else:
             return threshold
 
-    def nsigma(self, iteration, hm_nsigma):
-
+    def nsigma(self, iteration: int, hm_nsigma: float) -> Union[float, None]:
+        """Tclean nsigma parameter heuristics."""
         if hm_nsigma:
             return hm_nsigma
 
@@ -225,14 +243,14 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristics):
         else:
             return 4.5
 
-    def savemodel(self, iteration):
+    def savemodel(self, iteration: int) -> Union[str, None]:
+        """Tclean savemodel parameter heuristics."""
         return None
 
-    def usepointing(self):
+    def usepointing(self) -> bool:
         """clean flag to use pointing table."""
-
         return True
 
-    def wprojplanes(self):
-
+    def wprojplanes(self) -> int:
+        """Tclean wprojplanes parameter heuristics."""
         return 32
