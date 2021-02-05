@@ -60,7 +60,7 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristics):
         """Tclean cycleniter parameter heuristics."""
         return 2000
 
-    def scales(self, iteration: Union[int, None] = None) -> list:
+    def scales(self, iteration: int) -> list:
         """Tclean scales parameter heuristics."""
         return [0]
 
