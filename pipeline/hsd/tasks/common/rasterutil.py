@@ -50,8 +50,9 @@ def read_readonly_data(table: DataTableImpl) -> Tuple[np.ndarray, np.ndarray, np
         table: datatable instance
     
     Returns:
-        tuple including timestamp, dtrow, ra, dec, srctype, antenna, field 
-        (each is ndarray column values taken from the table)
+        A tuple that stores arrays of time stamps, row IDs, 
+        R.A., Dec., source types, antenna and field IDs of 
+        all rows in datable.
     """
     timestamp = table.getcol('TIME')
     dtrow = np.arange(len(timestamp))
@@ -86,8 +87,9 @@ def read_datatable(datatable: DataTableImpl) -> MetaDataSet:
         datatable: datatable instance
 
     Returns:
-        metadata: MetaDataSet which stores timestamp, dtrow, ra, dec, srctype, antenna, field
-        (each is ndarray column values taken from the table)
+        metadata: A MetaDataSet which stores arrays of time stamps, 
+        row IDs, R.A., Dec., source types, antenna and field IDs 
+        (each is in ndarray of column values taken from datatable).
     """
     timestamp, dtrow, ra, dec, srctype, antenna, field = read_readonly_data(datatable)
     pflag = read_readwrite_data(datatable)
@@ -113,8 +115,9 @@ def from_context(context_dir: str) -> MetaDataSet:
         context_dir: path to the pipeline context directory
 
     Returns:
-        metadata: MetaDataSet which stores timestamp, dtrow, ra, dec, srctype, antenna, field
-        (each is ndarray column values taken from the table)
+        metadata: A MetaDataSet which stores arrays of time stamps, 
+        row IDs, R.A., Dec., source types, antenna and field IDs 
+        (each is in ndarray of column values taken from datatable).
     """
     datatable_dir = os.path.join(context_dir, 'MSDataTable.tbl')
     rotable = glob.glob(f'{datatable_dir}/*.ms/RO')[0]
@@ -148,7 +151,7 @@ def from_context(context_dir: str) -> MetaDataSet:
 
 def get_science_target_fields(metadata: MetaDataSet) -> np.ndarray:
     """
-    Get list of field ids for science targets.
+    Get a list of unique field IDs of science targets.
 
     Args:
         metadata: MetaDataSet extracted from a datatable
@@ -292,10 +295,11 @@ def gap_gen(gaplist: List[int], length: Optional[int]=None) -> Generator[Tuple[i
 
 def get_raster_distance(ra: np.ndarray, dec: np.ndarray, gaplist: List[int]) -> np.ndarray:
     """
-    Compute list of distances between raster rows.
+    Compute distances between raster rows and the first row.
     
+    Compute distances between representative positions of raster rows and that of the first raster row.
     Origin of the distance is the first raster row.
-    Representative position of each raster row is its midpoint (mean position).
+    The representative position of each raster row is the mid point (mean position) of R.A. and Dec.
 
     Args:
         ra: np.ndarray of RA
@@ -303,7 +307,7 @@ def get_raster_distance(ra: np.ndarray, dec: np.ndarray, gaplist: List[int]) -> 
         gaplist: list of indices indicating gaps between raster rows
 
     Returns:
-        np.ndarray of the distances
+        np.ndarray of the distances.
     """
     x1 = ra[:gaplist[0] + 1].mean()
     y1 = dec[:gaplist[0] + 1].mean()
@@ -359,7 +363,7 @@ def flag_incomplete_raster(meta:MetaDataSet, raster_gap: List[int], nd_raster: i
     MM: median of M => typical number of data per raster row
     logic:
       - if N[x] < MN - MM then flag whole data in raster map x
-      - if N[x] > MN + MM then flag whole data in raster map x and later
+      - if N[x] > MN - MM then flag whole data in raster map x and later
 
     Args:
         meta: input MetaDataSet to analyze
