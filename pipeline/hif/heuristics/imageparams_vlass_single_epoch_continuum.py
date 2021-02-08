@@ -359,11 +359,14 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
             try:
                 LOG.info('Fixing coordsys truncation issue in mask (see CAS-13338)')
                 with casa_tools.ImageReader(image_name) as image:
-                    csys = image.coordsys()
-                if new_cleanmask is not None:
-                    with casa_tools.ImageReader(mask_name) as image:
-                        image.setcoordsys(csys.torecord())
-                csys.done()
+                    csys_image = image.coordsys()
+                with casa_tools.ImageReader(mask_name) as image:
+                    csys_mask = image.coordsys()
+                    # Overwrite mask reference coordinate if it differs from image reference coordinate
+                    if not all(csys_image.torecord()['direction0']['crval'] == csys_mask.torecord()['direction0']['crval']):
+                        image.setcoordsys(csys_image.torecord())
+                csys_image.done()
+                csys_mask.done()
             except Exception as ee:
                 LOG.warning(f"Not able to update Tier-1 mask coordinates, exception: {ee}")
         return
