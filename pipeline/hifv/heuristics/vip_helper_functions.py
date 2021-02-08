@@ -272,9 +272,19 @@ def mask_from_catalog(inext='iter0.model.tt0', outext="mask_from_cat.mask",
 
     return number_islands_found, number_islands_found_onedeg
 
+def is_inside_window(obj, min_ra, min_dec, max_ra, max_dec):
+    ra_angle = Angle(f'{ra}d')
+    dec_angle = Angle(f'{dec}d')
+    if ra_angle.is_within_bounds(lower=min_ra, upper=max_ra) \
+            and dec_angle.is_within_bounds(lower=min_dec, max=max_dec):
+        return True
+    else:
+        print(f'Out: {obj}')
+        return False
 
 def edit_pybdsf_islands(catalog_fits_file='', r_squared_threshold=0.99,
-                        n_gauss_threshold=10, gauss_size_threshold=100):
+                        n_gauss_threshold=10, gauss_size_threshold=100,
+                        phasecenter=None):
     """
     Reject islands from a sky catalog based on simple heuristics.
     Writes out a new catalog ending in '.edited.fits'
@@ -287,7 +297,8 @@ def edit_pybdsf_islands(catalog_fits_file='', r_squared_threshold=0.99,
         Islands with more than this many components are rejected.
     :param gauss_size_threshold: Maximum component size in arcsec.
         Islands with one or more component larger than this size are rejected.
-    :return: returns nothing
+    :param phasecenter: Phase center string of format: 'J2000 13:33:35.814 +16.44.04.255'
+    :return: returns edited_catalog_fits_file, num_rejected_islands, num_rejected_islands_onedeg
 
     Example 1:
     sys.path.append('<path-to-folder-containing-this-file>')
@@ -337,6 +348,34 @@ def edit_pybdsf_islands(catalog_fits_file='', r_squared_threshold=0.99,
     LOG.info('rejected_islands: [%s]' % ', '.join(map(str, list(rejected_islands))))
     num_rejected_islands = len(list(rejected_islands))
 
+    from astropy.coordinates import Angle, SkyCoord, ICRS, Galactic, FK4, FK5
+    import astropy.units as u
+    rahrstr = phasecenter.split(' ')[1] + ' hours'
+    declist = phasecenter.split(' ')[2].split('.')
+    decdegstr = declist[0] + ':' + declist[1] + ':' + declist[2] + '.' + declist[3] + ' degrees'
+    phasecentcoord = SkyCoord(ra=Angle(rahrstr), dec=Angle(decdegstr), frame=ICRS)
+    racat = catalog_dat['RA']   # degrees from FITS file
+    deccat = catalog_dat['DEC']  # degrees from FITS file
+    catalog = SkyCoord(ra=racat, dec=deccat, unit=(u.deg, u.deg), frame=ICRS)
+
+    # ###If searching within 1 degree radius (fast for scalars - one phase center coordinate)
+    # d2d = phasecentcoord.separation(catalog)
+    # catalogmsk = d2d < 1 * u.deg
+    # ###Searching two catalogs (better for vectors)
+    # idxscalarc, idxcatalog, d2d, d3d = catalog.search_around_sky(phasecentcoord, 1 * u.deg)
+
+    # ###Searching within a 1 degree "box"
+    catalogmsk = []
+    boxwidth = Angle('0.5d')
+    for catentry in catalog:
+        if catentry.ra.is_within_bounds(lower=phasecentcoord.ra-boxwidth, upper=phasecentcoord.ra+boxwidth) \
+            and catentry.dec.is_within_bounds(lower=phasecentcoord.dec-boxwidth, upper=phasecentcoord.dec+boxwidth):
+            catalogmsk.append(True)
+        else:
+            catalogmsk.append(False)
+
+    num_rejected_islands_onedeg = sum(catalogmsk)
+
     cat_to_ds9_rgn(catalog_dat[np.in1d(catalog_dat['Isl_id'], rejected_islands)],
                    outfile=catalog_fits_file.replace('.fits', '') + '.rejected.ds9.reg',
                    region_color='red')
@@ -362,7 +401,7 @@ def edit_pybdsf_islands(catalog_fits_file='', r_squared_threshold=0.99,
     LOG.info('wrote catalog of accepted islands to: {0}'.format(catalog_fits_file.replace('.fits', '')
                                                                 + '.edited.fits'))
 
-    return edited_catalog_fits_file, num_rejected_islands
+    return edited_catalog_fits_file, num_rejected_islands, num_rejected_islands_onedeg
 
 
 def cat_to_ds9_rgn(catalog_fits_file, outfile='ds9.reg', region_color='red'):

@@ -237,10 +237,8 @@ class Vlassmasking(basetask.StandardTaskTemplate):
             suffix = ".secondmask.mask"
             tier2mask = maskname_base + suffix
 
-            catalog_fits_file, num_rejected_islands = edit_pybdsf_islands(catalog_fits_file=initial_catalog_fits_file)
-
-            # TODO
-            # num_rejected_islands_onedeg
+            catalog_fits_file, num_rejected_islands, num_rejected_islands_onedeg\
+                = edit_pybdsf_islands(catalog_fits_file=initial_catalog_fits_file, phasecenter=phasecenter)
 
             if not os.path.exists(catalog_fits_file):
                 LOG.error("Catalog file {!s} does not exist.".format(catalog_fits_file))
@@ -301,12 +299,12 @@ class Vlassmasking(basetask.StandardTaskTemplate):
                 pixelfractions['final'] = computechunk.sum() / computechunk.size
 
             # Compute fraction of pixels enclosed in the inner square degree for the final combined mask
-            finalpixelsum_onedeg, pixelfractions['final_ondeg'] = self._computepixelfraction(widthdeg, combinedmask)
+            finalpixelsum_onedeg, pixelfractions['final_onedeg'] = self._computepixelfraction(widthdeg, combinedmask)
 
             LOG.info(" ")
             LOG.info("Pixel fraction over entire final combined mask: {!s}".format(pixelfractions['final']))
             LOG.info("Pixel fraction over inner {!s} degree of final combined mask: {!s}".format(widthdeg,
-                                                                                                 pixelfractions['final_ondeg']))
+                                                                                                 pixelfractions['final_onedeg']))
             LOG.info(" ")
 
             # Compute the fractional increase of masked pixels in Final mask relative to Quicklook Mask

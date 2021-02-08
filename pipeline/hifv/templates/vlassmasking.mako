@@ -38,7 +38,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
         <p> Number of new islands found: <b>${single_result.number_islands_found}</b> </p>
         <p> Number of new islands found (inner square degree): <b>${single_result.number_islands_found_onedeg}</b> </p>
         <p> Number of new islands rejected (tier-2): <b>${single_result.num_rejected_islands}</b> </p>
-        <p> Number of new islands rejected (tier-2, inner square degree)  TBD: <b>${single_result.num_rejected_islands_onedeg}</b> </p>
+        <p> Number of new islands rejected (tier-2, inner square degree): <b>${single_result.num_rejected_islands_onedeg}</b> </p>
 
         <hr>
 
@@ -53,11 +53,11 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
         <hr>
 
-        <p> Fractional increase of masked pixels in final combined mask relative to Quicklook Mask: <b> ${single_result.relativefraction}</b> </p>
-        <p> Fractional increase of masked pixels in final combined mask relative to Quicklook Mask (inner square degree): <b> ${single_result.relativefraction_onedeg}</b> </p>
+        <p> Fractional increase of masked pixels in final combined mask relative to Quicklook Mask: <b>${"{:.{}f}".format(single_result.relativefraction*100.0, 2)}% increase</b> </p>
+        <p> Fractional increase of masked pixels in final combined mask relative to Quicklook Mask (inner square degree): <b>${"{:.{}f}".format(single_result.relativefraction_onedeg*100.0, 2)}% increase</b> </p>
 
     % else:
-        <p>Incompatible mode used in maskingmode input</P>
+        <p>Incompatible mode used in maskingmode input</p>
     % endif
 
 
