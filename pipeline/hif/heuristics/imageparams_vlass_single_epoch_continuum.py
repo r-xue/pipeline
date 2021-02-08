@@ -357,13 +357,16 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         See CAS-13338 and PIPE-728"""
         if self.vlass_stage == 1:
             try:
-                LOG.info('Fixing coordsys truncation issue in mask (see CAS-13338)')
                 with casa_tools.ImageReader(image_name) as image:
                     csys_image = image.coordsys()
                 with casa_tools.ImageReader(mask_name) as image:
                     csys_mask = image.coordsys()
                     # Overwrite mask reference coordinate if it differs from image reference coordinate
-                    if not all(csys_image.torecord()['direction0']['crval'] == csys_mask.torecord()['direction0']['crval']):
+                    delta_ra, delta_dec = csys_image.torecord()['direction0']['crval'] - \
+                                          csys_mask.torecord()['direction0']['crval']
+                    if delta_ra != 0.0 or delta_dec != 0.0:
+                        LOG.info('Modifying {mask:s} reference coordinates by delta_ra: {ra:.4E} arcsec, delta_dec: {dec:.4E} arcsec (see CAS-13338)'.format(
+                            mask=mask_name, ra=numpy.rad2deg(delta_ra) * 3600., dec=numpy.rad2deg(delta_dec)*3600.))
                         image.setcoordsys(csys_image.torecord())
                 csys_image.done()
                 csys_mask.done()
