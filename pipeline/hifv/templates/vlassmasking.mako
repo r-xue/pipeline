@@ -16,7 +16,6 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
         <tr><td width="30%">Tier 1 Mask         </td><td><b>${single_result.tier1mask}</b></td></tr>
         </tbody>
         </table>
-        <hr>
 
         <table class="table table-bordered table-striped table-condensed" summary="New islands found" width="60%">
         <tbody>
@@ -24,7 +23,6 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
         <tr><td width="30%">Number of new islands found (inner square degree) </td><td><b>${single_result.number_islands_found_onedeg}</b></td></tr>
         </tbody>
         </table>
-        <hr>
 
         <table class="table table-bordered table-striped table-condensed" summary="New islands found" width="60%">
         <tbody>
@@ -32,7 +30,6 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
         <tr><td width="30%">Fraction of pixels enclosed in the tier-1 mask (inner square degree) </td><td><b>${"{:.{}f}".format(single_result.pixelfractions['tier1_onedeg'], 8)}</b></td></tr>
         </tbody>
         </table>
-        <hr>
 
     % elif single_result.inputs['maskingmode'] == 'vlass-se-tier-2':
 
@@ -46,8 +43,6 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
         </tbody>
         </table>
 
-        <hr>
-
         <table class="table table-bordered table-striped table-condensed" summary="New islands found" width="60%">
         <tbody>
         <tr><td width="30%">Number of new islands found </td><td> <b>${single_result.number_islands_found}</b></td></tr>
@@ -56,8 +51,6 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
         <tr><td width="30%">Number of new islands rejected (tier-2, inner square degree) </td><td> <b>${single_result.num_rejected_islands_onedeg}</b></td></tr>
         </tbody>
         </table>
-
-        <hr>
 
         <table class="table table-bordered table-striped table-condensed" summary="Pixel fractions enclosed" width="60%">
         <tbody>
@@ -71,8 +64,6 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
         <tr><td width="30%">Fraction of pixels enclosed in the final combined mask (inner square degree) </td><td> <b>${"{:.{}f}".format(single_result.pixelfractions['final_onedeg'], 8)}</b></td></tr>
         </tbody>
         </table>
-
-        <hr>
 
         <table class="table table-bordered table-striped table-condensed" summary="Increase in masked pixels" width="60%">
         <tbody>
