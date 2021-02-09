@@ -1913,7 +1913,7 @@ class ImageParamsHeuristics(object):
     def cycleniter(self, iteration):
         return None
 
-    def scales(self, iteration):
+    def scales(self, iteration=None):
         return None
 
     def uvtaper(self, beam_natural=None, protect_long=None):

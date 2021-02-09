@@ -69,7 +69,7 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
         else:
             return 500
 
-    def scales(self, iteration: int) -> list:
+    def scales(self, iteration: Union[int, None] = None) -> list:
         """Tclean scales parameter heuristics."""
         return [0]
 
