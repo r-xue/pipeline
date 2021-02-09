@@ -343,6 +343,35 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         """Tclean parameter"""
         return [300, 30]
 
+    def fix_vlass_tier_1_mask_coors(self, image_name: str, mask_name: str):
+        """Workaround limited precision tclean phasecenter parameter conversion.
+
+        Tclean 6.1 truncates phase center coordinates at ~1E-7 precision. When a mask is provided to tclean
+        with higher precision reference coordinate, the truncation may lead to the interpolated mask to shift
+        by a pixel, resulting in slightly different tclean input and output mask.
+
+        To work around the problematic interpolation, the mask coordinate precision is reduced before tclean,
+        by copying coordinates from a tclean produced image (e.g. the PSF).
+
+        See CAS-13338 and PIPE-728"""
+        if self.vlass_stage == 1:
+            try:
+                with casa_tools.ImageReader(image_name) as image:
+                    csys_image = image.coordsys()
+                with casa_tools.ImageReader(mask_name) as image:
+                    csys_mask = image.coordsys()
+                    # Overwrite mask reference coordinate if it differs from image reference coordinate
+                    delta_ra, delta_dec = csys_image.torecord()['direction0']['crval'] - \
+                                          csys_mask.torecord()['direction0']['crval']
+                    if delta_ra != 0.0 or delta_dec != 0.0:
+                        LOG.info('Modifying {mask:s} reference coordinates by delta_ra: {ra:.4E} arcsec, delta_dec: {dec:.4E} arcsec (see CAS-13338)'.format(
+                            mask=mask_name, ra=numpy.rad2deg(delta_ra) * 3600., dec=numpy.rad2deg(delta_dec)*3600.))
+                        image.setcoordsys(csys_image.torecord())
+                csys_image.done()
+                csys_mask.done()
+            except Exception as ee:
+                LOG.warning(f"Not able to update Tier-1 mask coordinates, exception: {ee}")
+        return
 
 class ImageParamsHeuristicsVlassSeContAWPP001(ImageParamsHeuristicsVlassSeCont):
     """
