@@ -28,22 +28,28 @@ class PbcorimagesSummary(object):
             os.mkdir(stage_dir)
 
         LOG.info("Making PNG pbcor images for weblog")
-        plot_wrappers = []
+        plot_dict = {}
+        self.result.residual_stats = {}
+        self.result.pbcor_stats = {}
 
-        for pbcorimagename in self.result.pbcorimagenames:
-            plot_wrappers.append(sky.SkyDisplay().plot(self.context, pbcorimagename,
-                                                       reportdir=stage_dir, intent='',
-                                                       collapseFunction='mean'))
-            if 'residual.pbcor' in pbcorimagename:
-                with casa_tools.ImageReader(pbcorimagename) as image:
-                    self.result.residual_stats = image.statistics(robust=True)
-            elif 'image.pbcor' in pbcorimagename:
-                with casa_tools.ImageReader(pbcorimagename) as image:
-                    self.result.pbcor_stats = image.statistics(robust=True)
-            else:
-                plot_wrappers.append(ImageHistDisplay(self.context, pbcorimagename, reportdir=stage_dir).plot())
+        for basename, pbcor_images in self.result.pbcorimagenames.items():
+            plot_wrappers = []
+            for pbcor_imagename in pbcor_images:
 
-        return [p for p in plot_wrappers if p is not None]
+                plot_wrappers.append(sky.SkyDisplay().plot(self.context, pbcor_imagename,
+                                                           reportdir=stage_dir, intent='',
+                                                           collapseFunction='mean'))
+                if 'residual.pbcor' in pbcor_imagename:
+                    with casa_tools.ImageReader(pbcor_imagename) as image:
+                        self.result.residual_stats[basename] = image.statistics(robust=True)
+                elif 'image.pbcor' in pbcor_imagename:
+                    with casa_tools.ImageReader(pbcor_imagename) as image:
+                        self.result.pbcor_stats[basename] = image.statistics(robust=True)
+                else:
+                    plot_wrappers.append(ImageHistDisplay(self.context, pbcor_imagename, reportdir=stage_dir).plot())
+            plot_dict[basename] = [p for p in plot_wrappers if p is not None]
+
+        return plot_dict
 
 
 class ImageHistDisplay(object):

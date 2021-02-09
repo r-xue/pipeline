@@ -8,9 +8,9 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class PbcorResults(basetask.Results):
-    def __init__(self, pbcorimagenames=[]):
+    def __init__(self, pbcorimagenames={}):
         super(PbcorResults, self).__init__()
-        self.pbcorimagenames = pbcorimagenames[:]
+        self.pbcorimagenames = pbcorimagenames
 
     def __repr__(self):
         # return 'PbcorResults:\n\t{0}'.format(
@@ -31,25 +31,28 @@ class Pbcor(basetask.StandardTaskTemplate):
 
     def prepare(self):
 
-        imlist = self.inputs.context.sciimlist.get_imlist()
-        pbcor_list = []
-        for image in imlist:
+        sci_imlist = self.inputs.context.sciimlist.get_imlist()
+        pbcor_dict = {}
+        for sci_im in sci_imlist:
 
-            imgname = image['imagename']
-            pbname = imgname[:imgname.rfind('.image')] + '.pb'
-            resname = imgname[:imgname.rfind('.image')] + '.residual'
-            term_ext = '.tt0' if image['multiterm'] else ''
+            imgname = sci_im['imagename']
+            basename = imgname[:imgname.rfind('.image')]
+            pbname = basename + '.pb'
+            resname = basename + '.residual'
+            term_ext = '.tt0' if sci_im['multiterm'] else ''
 
-            pbcor_list.append(pbname+term_ext)
-            for basename in [imgname, resname]:
-                task = casa_tasks.impbcor(imagename=basename+term_ext, pbimage=pbname+term_ext,
-                                          outfile=basename+'.pbcor'+term_ext, mode='divide', cutoff=-1.0, stretch=False)
+            pbcor_images = []
+            for inpname in [imgname, resname]:
+                task = casa_tasks.impbcor(imagename=inpname+term_ext, pbimage=pbname+term_ext,
+                                          outfile=inpname+'.pbcor'+term_ext, mode='divide', cutoff=-1.0, stretch=False)
                 self._executor.execute(task)
-                pbcor_list.append(basename+'.pbcor'+term_ext)
+                pbcor_images.append(inpname+'.pbcor'+term_ext)
+            pbcor_images.append(pbname+term_ext)
 
-            LOG.info("PBCOR image names: " + ','.join(pbcor_list))
+            LOG.info("PBCOR image names: " + ','.join(pbcor_images))
+            pbcor_dict[basename] = pbcor_images
 
-        return PbcorResults(pbcorimagenames=pbcor_list)
+        return PbcorResults(pbcorimagenames=pbcor_dict)
 
     def analyse(self, results):
         return results
