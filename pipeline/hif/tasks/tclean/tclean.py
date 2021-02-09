@@ -202,6 +202,16 @@ class Tclean(cleanbase.CleanBase):
             except Exception as e:
                 LOG.warning('Exception while deleting %s: %s' % (filename, e))
 
+    def rm_iter_files(self, rootname, iteration):
+        # Delete any old files with this naming root
+        filenames = glob.glob('%s.iter%s*' % (rootname, iteration))
+        for filename in filenames:
+            try:
+                rmtree_job = casa_tasks.rmtree(filename)
+                self._executor.execute(rmtree_job)
+            except Exception as e:
+                LOG.warning('Exception while deleting %s: %s' % (filename, e))
+
     def copy_products(self, old_pname, new_pname, ignore=None):
         imlist = glob.glob('%s.*' % (old_pname))
         imlist = [xx for xx in imlist if ignore is None or ignore not in xx]
@@ -661,7 +671,8 @@ class Tclean(cleanbase.CleanBase):
         """VLASS-SE-CONT imaging mode specific cleaning and imaging cycle
 
         This method implements the following workflow:
-         1) Compute PSF with cfcache_nowb (wbapw=False)
+         1a) Compute PSF with cfcache_nowb (wbapw=False)
+         1b) Create a copy of the PSF, delete products from 1a
          2) Initialise TClean with cfcache (wbapw=True)
          3) Replace 2) PSF with 1) PSF
          4) Continue imaging, clean according heuristics
@@ -694,11 +705,16 @@ class Tclean(cleanbase.CleanBase):
                                  sensitivity=sequence_manager.sensitivity, result=None, calcres=False, wbawp=False)
 
         # Rename PSF before they are overwritten in the text TClean call
-        self._replace_psf(result_psf.psf, result_psf.psf + '.tmp')
+        self._replace_psf(result_psf.psf, result_psf.psf.replace('iter%s' % iteration, 'tmp'))
 
         # Compute the dirty image
         LOG.info('Initialise tclean iter 0')
         iteration = 0
+        # Delete any old files with this naming root
+        rootname, _ = os.path.splitext(result_psf.psf)
+        rootname, _ = os.path.splitext(rootname)
+        self.rm_iter_files(rootname, iteration)
+
         # Restore main CFCache reference
         inputs.cfcache = cfcache
         result = self._do_clean(iternum=iteration, cleanmask='', niter=0, threshold='0.0mJy',
@@ -706,7 +722,7 @@ class Tclean(cleanbase.CleanBase):
 
         LOG.info('Replacing PSF with wbawp=False PSF')
         # Remove *psf.tmp.* files with clear_origin=True argument
-        self._replace_psf(result_psf.psf + '.tmp', result.psf, clear_origin=True) # TODO: origin maybe be removed in production?
+        self._replace_psf(result_psf.psf.replace('iter%s' % iteration, 'tmp'), result.psf, clear_origin=False)
         del result_psf  # Not needed in further steps
 
         # Determine masking limits depending on PB
@@ -755,6 +771,9 @@ class Tclean(cleanbase.CleanBase):
             # previous residual image.
             rootname, ext = os.path.splitext(result.residual)
             rootname, ext = os.path.splitext(rootname)
+
+            # Delete any old files with this naming root
+            self.rm_iter_files(rootname, iteration)
 
             # replace stage substring in copied mask name
             new_cleanmask = 's{:d}_0.{}'.format(self.inputs.context.task_counter,
@@ -949,13 +968,7 @@ class Tclean(cleanbase.CleanBase):
             rootname, _ = os.path.splitext(rootname)
 
             # Delete any old files with this naming root
-            filenames = glob.glob('%s.iter%s*' % (rootname, iteration))
-            for filename in filenames:
-                try:
-                    rmtree_job = casa_tasks.rmtree(filename)
-                    self._executor.execute(rmtree_job)
-                except Exception as e:
-                    LOG.warning('Exception while deleting %s: %s' % (filename, e))
+            self.rm_iter_files(rootname, iteration)
 
             if inputs.hm_masking == 'auto':
                 new_cleanmask = '%s.iter%s.mask' % (rootname, iteration)
