@@ -354,17 +354,17 @@ def edit_pybdsf_islands(catalog_fits_file='', r_squared_threshold=0.99,
     declist = phasecenter.split(' ')[2].split('.')
     decdegstr = declist[0] + ':' + declist[1] + ':' + declist[2] + '.' + declist[3] + ' degrees'
     phasecentcoord = SkyCoord(ra=Angle(rahrstr), dec=Angle(decdegstr), frame=ICRS)
-    racat = catalog_dat['RA']   # degrees from FITS file
-    deccat = catalog_dat['DEC']  # degrees from FITS file
+    racat = catalog_dat['RA']   # degrees from FITS file column
+    deccat = catalog_dat['DEC']  # degrees from FITS file column
     catalog = SkyCoord(ra=racat, dec=deccat, unit=(u.deg, u.deg), frame=ICRS)
 
-    # ###If searching within 1 degree radius (fast for scalars - one phase center coordinate)
+    # ### If searching within 1 degree radius (fast for scalars - one phase center coordinate)
     # d2d = phasecentcoord.separation(catalog)
     # catalogmsk = d2d < 1 * u.deg
-    # ###Searching two catalogs (better for vectors)
+    # ### Searching two catalogs (better for vectors)
     # idxscalarc, idxcatalog, d2d, d3d = catalog.search_around_sky(phasecentcoord, 1 * u.deg)
 
-    # ###Searching within a 1 degree "box"
+    # ### Searching within a 1 degree box centered around the phase center
     catalogmsk = []
     boxwidth = Angle('0.5d')
     for catentry in catalog:
@@ -374,7 +374,19 @@ def edit_pybdsf_islands(catalog_fits_file='', r_squared_threshold=0.99,
         else:
             catalogmsk.append(False)
 
-    num_rejected_islands_onedeg = sum(catalogmsk)
+    # Determine if any of the rejected islands (via index in the catalog) are in the inner square degree
+    rejected_islands_onedeg = []
+    for catidx, boolvalue in enumerate(catalogmsk):
+        if catalog_dat['Isl_id'][catidx] in rejected_islands and boolvalue is True:
+            rejected_islands_onedeg.append(catalog_dat['Isl_id'][catidx])
+
+    num_rejected_islands_onedeg = len(np.unique(rejected_islands_onedeg))
+
+    # Dump information for debug analysis if needed
+    # import pickle
+    # pickle.dump(catalog_dat, open("catalog_dat.p", "wb"))
+    # pickle.dump(catalogmsk, open("catalogmsk.p", "wb"))
+    # pickle.dump(rejected_islands, open("rejected_islands.p", "wb"))
 
     cat_to_ds9_rgn(catalog_dat[np.in1d(catalog_dat['Isl_id'], rejected_islands)],
                    outfile=catalog_fits_file.replace('.fits', '') + '.rejected.ds9.reg',
