@@ -94,7 +94,7 @@ def cont_file_to_CASA(vis, context, contfile='cont.dat'):
                 cranges_spwsel[sname] = collections.OrderedDict()
                 cranges_spwsel[sname][spw_id], _ = contfile_handler.get_merged_selection(sname, spw_id)
 
-                freq_ranges, chan_ranges, aggregate_lsrk_bw = contfile_handler.lsrk_to_topo(
+                freq_ranges, chan_ranges, aggregate_lsrk_bw = contfile_handler.to_topo(
                     cranges_spwsel[sname][spw_id], [vis], [field_id], int(spw_id),
                     context.observing_run)
                 freq_ranges_list = freq_ranges[0].split(';')

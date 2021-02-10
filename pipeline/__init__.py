@@ -15,12 +15,12 @@ from . import infrastructure
 
 from .infrastructure import Pipeline, Context
 
-import pipeline.h
-import pipeline.hif
-import pipeline.hifa
-import pipeline.hsd
-import pipeline.hifv
-import pipeline.hsdn
+from . import h
+from . import hif
+from . import hifa
+from . import hsd
+from . import hifv
+from . import hsdn
 
 from .domain import measures
 from casashell.private.stack_manip import find_frame
@@ -185,4 +185,4 @@ log_host_environment()
 
 # FINALLY import executeppr. Do so as late as possible in pipeline module
 # because executeppr make use of a part of pipeline module.
-import pipeline.infrastructure.executeppr
+from .infrastructure import executeppr

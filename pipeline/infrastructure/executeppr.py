@@ -1,22 +1,29 @@
-# Execute the pipeline processing request
-#    Code first as module and convert to class if appropriate
-#    Factor and document properly  when details worked out    
-#
-# Turn some print statement into CASA log statements
-#
+"""Execute the pipeline processing request.
+
+Code first as module and convert to class if appropriate
+Factor and document properly  when details worked out
+
+Turn some print statement into CASA log statements
+
+Raises:
+    exceptions.PipelineException
+
+"""
+
 import os
 import sys
 import traceback
 
-import pipeline
-import pipeline.extern.XmlObjectifier as XmlObjectifier
-import pipeline.infrastructure.argmapper as argmapper
-import pipeline.infrastructure.project as project
-import pipeline.infrastructure.utils as utils
-import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure import exceptions
-from pipeline.infrastructure import task_registry
+from ..extern import XmlObjectifier
+
+from . import Pipeline
+from . import argmapper
+from . import project
+from . import utils
+from . import vdp
+from . import casa_tools
+from . import exceptions
+from . import task_registry
 
 
 def executeppr(pprXmlFile: str, importonly: bool = True,
@@ -92,10 +99,10 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
         # Get the pipeline context
         #     Resumes from the last context. Consider adding name
         if bpset and bpaction == 'resume':
-            context = pipeline.Pipeline(context='last').context
+            context = Pipeline(context='last').context
             casa_tools.post_to_log("    Resuming from last context", echo_to_screen=echo_to_screen)
         else:
-            context = pipeline.Pipeline(loglevel=loglevel, plotlevel=plotlevel,
+            context = Pipeline(loglevel=loglevel, plotlevel=plotlevel,
                                         output_dir=workingDir).context
             casa_tools.post_to_log("    Creating new pipeline context", echo_to_screen=echo_to_screen)
 

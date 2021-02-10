@@ -67,11 +67,8 @@ class Analyzealpha(basetask.StandardTaskTemplate):
             if not alphaerrorfile:
                 alphaerrorfile = glob.glob(imlist[0]['imagename'].replace('.image.subim', '.alpha.error'))[0]
 
-            #
-            # The following is example code to extract the value from the .alpha and .alpha.error
-            # images (for wideband continuum MTMFS with nterms>1)
-            #
-            # Run imstat on the restored tt0 I subimage
+            # Extract the value from the .alpha and .alpha.error images (for wideband continuum MTMFS with nterms>1)
+            # 
             with casa_tools.ImageReader(subimagefile) as image:
                 stats = image.statistics(robust=False)
 
@@ -84,34 +81,19 @@ class Analyzealpha(basetask.StandardTaskTemplate):
 
                 subim_worldcoords = image.toworld(stats['maxpos'][:2], 's')
 
-            # Set up a box string for that max pixel
-            # mybox = '%i,%i,%i,%i' % (maxposx, maxposy, maxposx, maxposy)
-
             # Extract the value of that pixel from the alpha subimage
             with casa_tools.ImageReader(alphafile) as image:
                 # TODO possibly replace round with round_half_up in python3 pipeline
                 alpha_val = image.pixelvalue(image.topixel(subim_worldcoords)['numeric'][:2].round())
-            # try:
-            #     task = casa_tasks.imval(imagename=alphafile, box=mybox)
-            #     alpha_val = self._executor.execute(task)
-            # except:
-            #     alpha_val = -999.
 
             alpha_at_max = alpha_val['value']['value']
-            # alpha_at_max = alpha_val['data'][0]
             alpha_string = '{:.3f}'.format(alpha_at_max)
 
             # Extract the value of that pixel from the alphaerror subimage
             with casa_tools.ImageReader(alphaerrorfile) as image:
                 # TODO possibly replace round with round_half_up in python3 pipeline
                 alphaerror_val = image.pixelvalue(image.topixel(subim_worldcoords)['numeric'][:2].round())
-            # try:
-            #     task = casa_tasks.imval(imagename=alphaerrorfile, box=mybox)
-            #     alphaerror_val = self._executor.execute(task)
-            # except:
-            #     alphaerror_val = -999.
             alphaerror_at_max = alphaerror_val['value']['value']
-            # alphaerror_at_max = alphaerror_val['data'][0]
             alphaerror_string = '{:.3f}'.format(alphaerror_at_max)
 
             alpha_and_error = '%s +/- %s' % (alpha_string, alphaerror_string)
