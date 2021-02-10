@@ -15,7 +15,8 @@ from .. import utils
 LOG = logging.get_logger(__name__)
 
 __all__ = ['chan_selection_to_frequencies', 'freq_selection_to_channels', 'spw_intersect', 'update_sens_dict',
-           'update_beams_dict', 'set_nested_dict', 'intersect_ranges', 'intersect_ranges_by_weight', 'merge_ranges', 'equal_to_n_digits']
+           'update_beams_dict', 'set_nested_dict', 'intersect_ranges', 'intersect_ranges_by_weight', 'merge_ranges', 'equal_to_n_digits',
+           'velocity_to_frequency', 'frequency_to_velocity']
 
 
 def _get_cube_freq_axis(img: str) -> Tuple[float, float, str, float, int]:
@@ -388,3 +389,49 @@ def equal_to_n_digits(x: float, y: float, numdigits: int = 7) -> bool:
         return True
     except:
         return False
+
+
+def velocity_to_frequency(velocity: Union[Dict, str], restfreq: Union[Dict, str]) -> Union[Dict, str]:
+    """
+    Convert radial velocity to frequency using radio convention.
+
+    f = f_rest * (1 - v/c)
+
+    Args:
+        velocity: velocity quantity
+        restfreq: rest frequency quantity
+
+    Returns:
+        Frequency quantity in units of restfreq
+    """
+
+    cqa = casa_tools.quanta
+    light_speed = float(cqa.getvalue(cqa.convert(cqa.constants('c'), 'km/s')))
+    velocity = float(cqa.getvalue(cqa.convert(cqa.quantity(velocity), 'km/s')))
+    val = float(cqa.getvalue(restfreq)) * (1 - velocity / light_speed)
+    unit = cqa.getunit(restfreq)
+    frequency = cqa.tos(cqa.quantity(val, unit))
+    return frequency
+
+
+def frequency_to_velocity(frequency: Union[Dict, str], restfreq: Union[Dict, str]) -> Union[Dict, str]:
+    """
+    Convert frequency to radial velocity using radio convention.
+
+    v = c * (f_rest - f) / f_rest
+
+    Args:
+        frequency: frequency quantity
+        restfreq: rest frequency quantity
+
+    Returns:
+        Velocity quantity in units of km/s
+    """
+
+    cqa = casa_tools.quanta
+    light_speed = float(cqa.getvalue(cqa.convert(cqa.constants('c'), 'km/s')))
+    restfreq = float(cqa.getvalue(cqa.convert(restfreq, 'MHz')))
+    freq = float(cqa.getvalue(cqa.convert(frequency, 'MHz')))
+    val = light_speed * ((restfreq - freq) / restfreq)
+    velocity = cqa.tos(cqa.quantity(val, 'km/s'))
+    return velocity
