@@ -33,8 +33,8 @@ class HeuristicsLineFinder(api.Heuristic):
 
     This class inherits Heuristic class.
     Methods:
-    calculate: Override calculate method in the super class.
-    tweak_lines: A helper function to tweak spectral line ranges.
+        calculate: Override calculate method in the super class.
+        tweak_lines: A helper function to tweak spectral line ranges.
     """
 
     def calculate(self, spectrum: List[float], threshold: float=7.0, tweak: bool=False, 
