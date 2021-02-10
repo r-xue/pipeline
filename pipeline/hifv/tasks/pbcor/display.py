@@ -1,6 +1,7 @@
 import collections
 import os
 
+import numpy as np
 import matplotlib.pyplot as plt
 
 import pipeline.infrastructure as infrastructure
@@ -46,7 +47,8 @@ class PbcorimagesSummary(object):
                     with casa_tools.ImageReader(pbcor_imagename) as image:
                         self.result.pbcor_stats[basename] = image.statistics(robust=True)
                 else:
-                    plot_wrappers.append(ImageHistDisplay(self.context, pbcor_imagename, reportdir=stage_dir).plot())
+                    plot_wrappers.append(ImageHistDisplay(self.context, pbcor_imagename,
+                                                          reportdir=stage_dir, boxsize=0.5).plot())
             plot_dict[basename] = [p for p in plot_wrappers if p is not None]
 
         return plot_dict
@@ -55,18 +57,13 @@ class PbcorimagesSummary(object):
 class ImageHistDisplay(object):
     """
     A display class to generate histogram of a CASA image
-    # to do: 
-    #   make region / chanel selections work
-    #   plot stats-ROI-boundary back in the "sky" plot
     """
 
-    def __init__(self, context, imagename, reportdir='./', region='', box='-1,-1', chans=''):
+    def __init__(self, context, imagename, reportdir='./', boxsize=0.2):
         self.context = context
         self.imagename = imagename
         self.reportdir = reportdir
-        self.region = region
-        self.box = box
-        self.chans = chans
+        self.boxsize = boxsize
         self.figfile = self._get_figfile()
 
     def plot(self):
@@ -76,15 +73,23 @@ class ImageHistDisplay(object):
 
         LOG.debug('Creating new image histogram plot')
         try:
-            with casa_tools.ImageReader(self.imagename) as myia:
-                im_val = myia.getchunk()
+            subim = self._get_image_chunk(self.imagename, boxsize=self.boxsize)
+            nchanpol = subim.shape[2]*subim.shape[3]
             fig, ax = plt.subplots()
-            ax.hist(im_val.ravel(), bins=20,
+            ax.hist(subim.ravel(), bins=10,
                     histtype='barstacked', align='mid', label='')
-            ax.set_xlabel('Primary Beam Reponse')
+            ax.set_xlabel('Primary Beam Response')
             ax.set_ylabel('Num. of Pixel')
-            ax.set_title('PB histogram')
+            with casa_tools.ImageReader(self.imagename) as myia:
+                im_csys = myia.coordsys()
+                spaxelarea = np.prod(np.degrees(np.abs(im_csys.increment()['numeric'][0:2])))
+
+            ax_secy = ax.secondary_yaxis('right', functions=(lambda npix: npix/nchanpol*spaxelarea,
+                                                             lambda area: area/spaxelarea*nchanpol))
+            ax_secy.set_ylabel('Area [deg$^2$]')
+            ax.set_title('PB histogram (inner {:.2f} deg$^2$)'.format(self.boxsize))
             LOG.debug('Saving new image histogram plot to {}'.format(self.figfile))
+            fig.tight_layout()
             fig.savefig(self.figfile)
         except:
             return None
@@ -101,3 +106,27 @@ class ImageHistDisplay(object):
                            x_axis='Pixel Value',
                            y_axis='Histogram',
                            parameters={'placeholder': 'placeholder'})
+
+    def _get_image_chunk(self, imagename, boxsize=0.1):
+        """Return the pixel values from the image file with a box centered at the image reference point.
+
+        imagename
+            input casa image name
+        boxsize
+            box size in degree
+        Returns:
+            pixel values
+        """
+
+        with casa_tools.ImageReader(imagename) as myia:
+
+            im_csys = myia.coordsys()
+            ref_pix = im_csys.referencepixel()['numeric'][0:2]
+            box_pix = np.radians(boxsize)/np.abs(im_csys.increment()['numeric'][0:2])
+            blc = ref_pix-box_pix/2
+            trc = ref_pix+box_pix/2
+
+            # ia.getchunk can take care of out-region query.
+            im_val = myia.getchunk(blc, trc)
+
+        return im_val
