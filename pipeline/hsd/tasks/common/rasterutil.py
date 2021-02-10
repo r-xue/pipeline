@@ -260,7 +260,7 @@ def find_time_gap(timestamp):
 def find_position_gap(ra: np.ndarray, dec: np.ndarray) -> np.ndarray:
     delta_ra = ra[1:] - ra[:-1]
     delta_dec = dec[1:] - dec[:-1]
-    angle_abs = np.arctan2(np.abs(delta_dec), np.abs(delta_ra)).flatten()
+    angle_abs = np.abs(np.arctan2(delta_dec, delta_ra)).flatten()
     compute_mad = get_func_compute_mad()
     angle_median = np.median(angle_abs)
     angle_mad = compute_mad(angle_abs)
