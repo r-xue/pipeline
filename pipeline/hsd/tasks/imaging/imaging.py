@@ -35,7 +35,7 @@ LOG = infrastructure.get_logger(__name__)
 SensitivityInfo = collections.namedtuple('SensitivityInfo', 'sensitivity representative frequency_range')
 # RasterInfo: width=map extent along scan, height=map extent perpendicular to scan
 #             angle=scan direction w.r.t. horizontal coordinate, row_separation=separation between raster rows.
-RasterInfo = collections.namedtuple('RasterInfo', 'width height scan_angle row_separation row_duration') 
+RasterInfo = collections.namedtuple('RasterInfo', 'width height scan_angle row_separation row_duration')
 
 
 class SDImagingInputs(vdp.StandardInputs):
@@ -991,7 +991,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                                         pols, cell, bandwidth, imageunit, datatable_dict):
         """
         Calculate theoretical RMS of an image (PIPE-657).
-        
+
         Parameters:
             infiles: a list of MS names
             antids: a list of antenna IDs, e.g., [3, 3]
@@ -1157,15 +1157,15 @@ class SDImaging(basetask.StandardTaskTemplate):
             c_proj = numpy.sqrt( (cy_val* numpy.sin(ang))**2 + (cx_val*numpy.cos(ang))**2)
             inv_variant_on = effBW * numpy.abs(cx_val * cy_val) * t_on_act / width / height
             inv_variant_off = effBW * c_proj * t_sub_off * t_on_act / t_sub_on / height
-            
+
             for ipol in polids:
-                sq_rms += (jy_per_k*mean_tsys_per_pol[ipol])**2 * (conv2d**2/inv_variant_on + conv1d**2/inv_variant_off) 
+                sq_rms += (jy_per_k*mean_tsys_per_pol[ipol])**2 * (conv2d**2/inv_variant_on + conv1d**2/inv_variant_off)
                 N += 1.0
 
         theoretical_rms = numpy.sqrt(sq_rms)/N
         LOG.info('Theoretical RMS of image = {} {}'.format(theoretical_rms, imageunit))
         return cqa.quantity(theoretical_rms, imageunit)
-    
+
 
 def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
     """
@@ -1189,8 +1189,9 @@ def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
     radec_unit = datatable.getcolkeyword('OFS_RA', 'UNIT')
     assert radec_unit == datatable.getcolkeyword('OFS_DEC', 'UNIT')
     exp_unit = datatable.getcolkeyword('EXPOSURE', 'UNIT')
-    gap_s, gap_l = rasterutil.find_time_gap(timestamp) #gap_s stores the last index in a raster row.
-    gap_r = rasterutil.find_raster_gap(timestamp, ra, dec, gap_s) #gap_r stores the last index in a raster iteration.
+    #gap_s, gap_l = rasterutil.find_time_gap(timestamp) #gap_s stores the last index in a raster row.
+    gap_pos, _ = rasterutil.union_position_gap(rasterutil.find_position_gap(ra, dec))
+    gap_r = rasterutil.find_raster_gap(ra, dec, gap_pos) #gap_r stores the last index in a raster iteration.
     duration = []
     num_integration = []
     delta_ra = []
@@ -1199,13 +1200,13 @@ def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
     center_dec = []
     height_list = []
     first_row = None # RA and Dec of the first raster row
-    
+
     cqa = casa_tools.quanta
     map_center_dec = cqa.getvalue(cqa.convert(cqa.quantity(map_center_dec, datatable.getcolkeyword('DEC', 'UNIT')),'rad'))[0]
     dec_factor = numpy.abs(numpy.cos(map_center_dec))
     # loop over raster rows.
     # rasterutil.gap_gen returns 'start index' and 'end index+1' of each raster row
-    for start_idx, end_idx in rasterutil.gap_gen(gap_s):
+    for start_idx, end_idx in rasterutil.gap_gen(gap_pos):
         duration.append(numpy.sum(exposure[start_idx:end_idx]))
         num_integration.append(end_idx-start_idx)
         delta_ra.append((ra[end_idx-1]-ra[start_idx])*dec_factor)
@@ -1247,5 +1248,4 @@ def _analyze_raster_pattern(datatable, msobj, fieldid, spwid, antid, polid):
     LOG.info('- Raster row separation = {}'.format(cqa.tos(raster_info.row_separation)))
     LOG.info('- Raster row scan duration = {}'.format(cqa.tos(cqa.convert(raster_info.row_duration, 's'))))
     return raster_info
-        
-    
+
