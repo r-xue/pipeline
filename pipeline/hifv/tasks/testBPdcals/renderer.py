@@ -1,5 +1,6 @@
 import contextlib
 import os
+import collections
 
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
@@ -13,13 +14,14 @@ LOG = logging.get_logger(__name__)
 class VLASubPlotRenderer(object):
     #template = 'testdelays_plots.html'
 
-    def __init__(self, context, result, plots, json_path, template, filename_prefix):
+    def __init__(self, context, result, plots, json_path, template, filename_prefix, bandlist):
         self.context = context
         self.result = result
         self.plots = plots
         self.ms = os.path.basename(self.result.inputs['vis'])
         self.template = template
         self.filename_prefix = filename_prefix
+        self.bandlist = bandlist
 
         self.summary_plots = {}
         self.testdelay_subpages = {}
@@ -50,7 +52,8 @@ class VLASubPlotRenderer(object):
                 'ampgain_subpages': self.ampgain_subpages,
                 'phasegain_subpages': self.phasegain_subpages,
                 'bpsolamp_subpages': self.bpsolamp_subpages,
-                'bpsolphase_subpages': self.bpsolphase_subpages}
+                'bpsolphase_subpages': self.bpsolphase_subpages,
+                'bandlist': self.bandlist}
 
     @property
     def dirname(self):
@@ -99,7 +102,20 @@ class T2_4MDetailstestBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         bpsolamp_subpages = {}
         bpsolphase_subpages = {}
 
+        band2spw = collections.defaultdict(list)
+
         for result in results:
+
+            m = context.observing_run.get_ms(result.inputs['vis'])
+            spw2band = m.get_vla_spw2band()
+            spwobjlist = m.get_spectral_windows(science_windows_only=True)
+            listspws = [spw.id for spw in spwobjlist]
+            for spw, band in spw2band.items():
+                if spw in listspws:  # Science intents only
+                    band2spw[band].append(str(spw))
+
+            bandlist = [band for band in band2spw.keys()]
+            # LOG.info("BAND LIST: " + ','.join(bandlist))
 
             plotter = testBPdcalsdisplay.testBPdcalsSummaryChart(context, result)
             plots = plotter.plot()
@@ -112,7 +128,7 @@ class T2_4MDetailstestBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             json_path = plotter.json_filename
 
             # write the html for each MS to disk
-            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'testdelays_plots.mako', 'testdelays')
+            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'testcals_plots.mako', 'testdelays', bandlist)
             with renderer.get_file() as fileobj:
                 fileobj.write(renderer.render())
                 testdelay_subpages[ms] = renderer.filename
@@ -123,7 +139,7 @@ class T2_4MDetailstestBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             json_path = plotter.json_filename
 
             # write the html for each MS to disk
-            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'ampgain_plots.mako', 'ampgain')
+            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'testcals_plots.mako', 'ampgain', bandlist)
             with renderer.get_file() as fileobj:
                 fileobj.write(renderer.render())
                 ampgain_subpages[ms] = renderer.filename
@@ -134,7 +150,7 @@ class T2_4MDetailstestBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             json_path = plotter.json_filename
 
             # write the html for each MS to disk
-            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'phasegain_plots.mako', 'phasegain')
+            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'testcals_plots.mako', 'phasegain', bandlist)
             with renderer.get_file() as fileobj:
                 fileobj.write(renderer.render())
                 phasegain_subpages[ms] = renderer.filename
@@ -145,7 +161,7 @@ class T2_4MDetailstestBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             json_path = plotter.json_filename
 
             # write the html for each MS to disk
-            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'bpsolamp_plots.mako', 'bpsolamp')
+            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'testcals_plots.mako', 'bpsolamp', bandlist)
             with renderer.get_file() as fileobj:
                 fileobj.write(renderer.render())
                 bpsolamp_subpages[ms] = renderer.filename
@@ -156,7 +172,7 @@ class T2_4MDetailstestBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             json_path = plotter.json_filename
 
             # write the html for each MS to disk
-            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'bpsolphase_plots.mako', 'bpsolphase')
+            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'testcals_plots.mako', 'bpsolphase', bandlist)
             with renderer.get_file() as fileobj:
                 fileobj.write(renderer.render())
                 bpsolphase_subpages[ms] = renderer.filename

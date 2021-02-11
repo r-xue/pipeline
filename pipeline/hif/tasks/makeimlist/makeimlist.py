@@ -5,10 +5,10 @@ import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hif.heuristics import imageparams_factory
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from .cleantarget import CleanTarget
 from .resultobjects import MakeImListResult
@@ -215,7 +215,7 @@ class MakeImList(basetask.StandardTaskTemplate):
         else:
             known_synthesized_beams = inputs.context.synthesized_beams
 
-        qaTool = casatools.quanta
+        qaTool = casa_tools.quanta
 
         result = MakeImListResult()
         result.clearlist = inputs.clearlist
@@ -802,12 +802,15 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                             if spwsel_spwid in ('ALL', '', 'NONE'):
                                 spwsel_spwid_freqs = ''
-                                spwsel_spwid_refer = 'LSRK'
+                                if target_heuristics.is_eph_obj(field_intent[0]):
+                                    spwsel_spwid_refer = 'SOURCE'
+                                else:
+                                    spwsel_spwid_refer = 'LSRK'
                             else:
                                 spwsel_spwid_freqs, spwsel_spwid_refer = spwsel_spwid.split()
 
-                            if spwsel_spwid_refer != 'LSRK':
-                                LOG.warn('Frequency selection is specified in %s but must be in LSRK'
+                            if spwsel_spwid_refer not in ('LSRK', 'SOURCE'):
+                                LOG.warn('Frequency selection is specified in %s but must be in LSRK or SOURCE'
                                          '' % spwsel_spwid_refer)
                                 # TODO: skip this field and/or spw ?
 

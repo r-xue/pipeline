@@ -61,12 +61,11 @@ class SDBLFlagSummary(object):
         for (a, f, s, p) in zip(antid_list, fieldid_list, spwid_list, pols_list):
             LOG.debug('\t%s: Antenna %s Field %d Spw %d Pol %s'%(ms.basename, a, f, s, p))
 
-        # output directory
+        # create output directory, stage#, manually
         stage_number = self.context.task_counter
         FigFileDir = (self.context.report_dir+"/stage%d" % stage_number)
-        ### WORKAROUND to GENERATE stage# dir manually
         if not os.path.exists(FigFileDir):
-            os.mkdir(FigFileDir)
+            os.makedirs(FigFileDir, exist_ok=True)  #handle race condition in Tier-0 operation gracefully
         FigFileDir += "/"
 
         flagSummary = []
@@ -344,7 +343,7 @@ class SDBLFlagSummary(object):
         # Create Flagging Summary Page
         if FigFileDir != False:
             Filename = FigFileDir+FigFileRoot+'.html'
-            relpath = os.path.basename(FigFileDir.rstrip("/")) ### stage#
+#             relpath = os.path.basename(FigFileDir.rstrip("/")) ### stage#
             if os.access(Filename, os.F_OK):
                 os.remove(Filename)
             # Assuming single MS, antenna, field, spw, and polid
@@ -393,7 +392,8 @@ class SDBLFlagSummary(object):
             # Plot figures
             print('<HR>\nNote to all the plots below: short green vertical lines indicate position gaps; short cyan vertical lines indicate time gaps\n<HR>', file=Out)
             for name in plots:
-                print('<img src="%s/%s">\n<HR>' % (relpath, name), file=Out)
+#                 print('<img src="%s/%s">\n<HR>' % (relpath, name), file=Out)
+                print('<img src="./%s">\n<HR>' % (name), file=Out)
             print('</body>', file=Out)
             Out.close()
 

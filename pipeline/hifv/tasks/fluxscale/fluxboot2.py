@@ -7,13 +7,13 @@ import numpy as np
 import pipeline.hif.heuristics.findrefant as findrefant
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hifv.heuristics import find_EVLA_band, uvrange
 from pipeline.hifv.heuristics import standard as standard
 from pipeline.hifv.tasks.setmodel.vlasetjy import standard_sources
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 
 LOG = infrastructure.get_logger(__name__)
@@ -157,7 +157,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
             spw2band = m.get_vla_spw2band()
 
             # Look in spectral window domain object as this information already exists!
-            with casatools.TableReader(self.inputs.vis + '/SPECTRAL_WINDOW') as table:
+            with casa_tools.TableReader(self.inputs.vis + '/SPECTRAL_WINDOW') as table:
                 spw_bandwidths = table.getcol('TOTAL_BANDWIDTH')
                 reference_frequencies = table.getcol('REF_FREQUENCY')
 
@@ -377,6 +377,9 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
         fluxscale_result = []
 
+        # Filter down to only science spectral windows
+        scispws = [spw.id for spw in m.get_spectral_windows(science_windows_only=True)]
+
         for field in calfieldlist:
             fitorder = self.inputs.fitorder
             spwlist = []
@@ -387,7 +390,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
 
                 spwlist = list(np.unique(spwlist))
                 spwlist.sort()
-                spwlist = [str(spwid) for spwid in spwlist]
+                spwlist = [str(spwid) for spwid in spwlist if spwid in scispws]
 
                 fitorder = self.find_fitorder(spwlist)
             elif self.inputs.fitorder > -1:
@@ -494,7 +497,7 @@ class Fluxboot2(basetask.StandardTaskTemplate):
         bands = list(spw2band.values())
 
         # Look in spectral window domain object as this information already exists!
-        with casatools.TableReader(self.inputs.vis + '/SPECTRAL_WINDOW') as table:
+        with casa_tools.TableReader(self.inputs.vis + '/SPECTRAL_WINDOW') as table:
             spw_bandwidths = table.getcol('TOTAL_BANDWIDTH')
             reference_frequencies = table.getcol('REF_FREQUENCY')
 

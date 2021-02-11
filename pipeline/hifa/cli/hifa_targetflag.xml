@@ -1,8 +1,6 @@
-<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
-<task type="function" name="hifa_targetflag" category="pipeline">
+<task category="pipeline" name="hifa_targetflag" type="function">
 <shortdescription>Flag target source outliers</shortdescription>
 <description>
 This task flags very obvious target source outliers. The calibration tables and
@@ -12,7 +10,7 @@ flags are applied and the calibration library is restored to the state before
 calling this task.
 </description>
 <input>
-    <param subparam="true" name="vis" type="stringVec">
+    <param name="vis" subparam="true" type="stringVec">
         <shortdescription>List of input MeasurementSets</shortdescription>
         <description>The list of input MeasurementSets. Defaults to the list of
                      MeasurementSets specified in the h_init or hif_importdata task.
@@ -41,12 +39,13 @@ calling this task.
         </allowed>
     </param>
 
-    <param type="bool" name="dryrun" subparam="true">
+    <param name="dryrun" subparam="true" type="bool">
+        <shortdescription>Run the task (False) or display task command (True)</shortdescription>
         <description>Run the task (False) or display task command (True)</description>
         <value>False</value>
     </param>
 
-    <param subparam="true" name="acceptresults" type="bool">
+    <param name="acceptresults" subparam="true" type="bool">
         <shortdescription>Add the results into the pipeline context</shortdescription>
         <description>Add the results of the task to the pipeline context (True) or
                      reject them (False).
@@ -59,13 +58,13 @@ calling this task.
             <equals type="string" value="automatic">
             </equals>
             <equals type="string" value="interactive">
-                <default param="vis"><value type="stringVec"></value></default>
+                <default param="vis"><value type="stringVec"/></default>
 
                 <default param="dryrun"><value type="bool">False</value></default>
                 <default param="acceptresults"><value type="bool">True</value></default>
             </equals>
             <equals type="string" value="getinputs">
-                <default param="vis"><value type="stringVec"></value></default>
+                <default param="vis"><value type="stringVec"/></default>
 
             </equals>
         </when>

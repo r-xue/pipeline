@@ -2,9 +2,8 @@ import collections
 import os
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
-
 from pipeline.h.tasks.common.displays import sky as sky
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -32,13 +31,13 @@ class PbcorimagesSummary(object):
                 plot_wrappers.append(sky.SkyDisplay().plot(self.context, pbcorimagename,
                                                            reportdir=stage_dir, intent='',
                                                            collapseFunction='mean'))
-                with casatools.ImageReader(pbcorimagename) as image:
+                with casa_tools.ImageReader(pbcorimagename) as image:
                     self.result.residual_stats = image.statistics(robust=True)
             elif 'image.pbcor' in pbcorimagename:
                 plot_wrappers.append(sky.SkyDisplay().plot(self.context, pbcorimagename,
                                                            reportdir=stage_dir, intent='',
                                                            collapseFunction='mean'))
-                with casatools.ImageReader(pbcorimagename) as image:
+                with casa_tools.ImageReader(pbcorimagename) as image:
                     self.result.pbcor_stats = image.statistics(robust=True)
             else:
                 plot_wrappers.append(sky.SkyDisplay().plot(self.context, pbcorimagename,

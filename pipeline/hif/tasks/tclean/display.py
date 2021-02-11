@@ -3,13 +3,11 @@ import copy
 import os
 
 import matplotlib
-import numpy as np
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.renderer.logger as logger
-import pipeline.infrastructure.utils as utils
 from pipeline.h.tasks.common.displays import sky as sky
+from pipeline.infrastructure import casa_tools
 from .plot_spectra import plot_spectra
 
 LOG = infrastructure.get_logger(__name__)
@@ -77,7 +75,7 @@ class CleanSummary(object):
                     if collapse_function == 'max':
                         if image_path not in self.image_stats:
                             LOG.trace('No cached image statistics found for {!s}'.format(image_path))
-                            with casatools.ImageReader(image_path) as image:
+                            with casa_tools.ImageReader(image_path) as image:
                                 stats = image.statistics(robust=False)
                                 image_rms = stats.get('rms')[0]
                                 image_max = stats.get('max')[0]
@@ -146,7 +144,7 @@ class CleanSummary(object):
                 # cube spectra for this iteration
                 if ('cube' in iteration.get('image', '')) or ('repBW' in iteration.get('image', '')):
                     imagename = r.image_robust_rms_and_spectra['nonpbcor_imagename']
-                    with casatools.ImageReader(imagename) as image:
+                    with casa_tools.ImageReader(imagename) as image:
                         miscinfo = image.miscinfo()
 
                     parameters = {k: miscinfo[k] for k in ['spw', 'iter'] if k in miscinfo}
@@ -172,8 +170,8 @@ class CleanSummary(object):
                         rec_info = {'type': 'TSB', 'LO1': '0GHz'}
 
                     plotfile = '%s.spectrum.png' % (os.path.join(stage_dir, os.path.basename(imagename)))
-
-                    plot_spectra(r.image_robust_rms_and_spectra, rec_info, plotfile)
+                    field_id = int(r.field_ids[0].split(',')[0])
+                    plot_spectra(r.image_robust_rms_and_spectra, rec_info, plotfile, ref_ms.name, str(real_spw), field_id)
 
                     plot_wrappers.append(logger.Plot(plotfile, parameters=parameters))
 

@@ -1,7 +1,7 @@
 import numpy
 
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.logging as logging
+from pipeline.infrastructure import casa_tools
 
 LOG = logging.get_logger(__name__)
 
@@ -36,7 +36,7 @@ class MSWrapper(object):
         data_selection = dict(scan=str(scan), spw=str(spw))
         colnames = ['antenna1', 'antenna2', 'flag', 'time', 'corrected_amplitude', 'corrected_data', 'corrected_phase']
 
-        with casatools.MSReader(filename) as openms:
+        with casa_tools.MSReader(filename) as openms:
             openms.msselect(data_selection)
             raw_data = openms.getdata(colnames)
             axis_info = openms.getdata(['axis_info'])

@@ -69,7 +69,8 @@ class MinifyJSCommand(distutils.cmd.Command):
                 'holder.js',                                # placeholders for missing images
                 'lazyload.js',                              # only load images when they become visible
                 'jquery.fancybox.js',                       # fancybox
-                'plotcmd.js',                               # pipeline plugin for fancybox
+                'plotcmd.js',                               # fancybox plugin to show originating plot command
+                'tcleancmd.js',                             # fancybox plugin to show originating tclean command
                 'purl.js',                                  # URL inspection
                 'bootstrap.js',                             # bootstrap
                 'pipeline.js',                              # pipeline
@@ -380,6 +381,7 @@ setuptools.setup(
                        '*.txt',
                        '*.woff',
                        '*.woff2',
-                       '*.xml']},
+                       '*.xml',
+                       'version']},
     zip_safe=False
 )

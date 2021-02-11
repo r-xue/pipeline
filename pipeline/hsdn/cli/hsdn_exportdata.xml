@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hsdn_exportdata" type="function">
 <shortdescription>Prepare single dish data for export</shortdescription>
@@ -23,7 +23,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
    the results object for the pipeline task is returned.
 </description>
 <input>
-    <param subparam="true" name="pprfile" type="string">
+    <param name="pprfile" subparam="true" type="string">
         <shortdescription>The pipeline processing request (PPR) file to be exported</shortdescription>
         <description>Name of the pipeline processing request to be exported. Defaults
         to a file matching the template 'PPR_*.xml'.
@@ -32,7 +32,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
     
-    <param subparam="true" name="targetimages" type="stringVec">
+    <param name="targetimages" subparam="true" type="stringVec">
         <shortdescription>List of target CASA images to be exported</shortdescription>
         <description>List of science target images to be exported. Defaults to all
         science target images recorded in the pipeline context.
@@ -41,7 +41,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
     
-    <param subparam="true" name="products_dir" type="string">
+    <param name="products_dir" subparam="true" type="string">
         <shortdescription>The data products directory</shortdescription>
         <description>Name of the data products subdirectory. Defaults to './'
         Parameter is not available when pipelinemode='automatic'.
@@ -64,14 +64,14 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 	</allowed>
     </param>
 
-    <param subparam="true" name="dryrun" type="bool">
+    <param name="dryrun" subparam="true" type="bool">
 	<shortdescription>Run the task (False) or display task command (True)</shortdescription>
         <description>Run the task (False) or display task command (True).
         Only available when pipelinemode='interactive'.</description>
 	<value>False</value>
     </param>
 
-    <param subparam="true" name="acceptresults" type="bool">
+    <param name="acceptresults" subparam="true" type="bool">
 	<shortdescription>Add the results into the pipeline context</shortdescription>
         <description>Add the results of the task to the pipeline context (True) or
         reject them (False). Only available when pipelinemode='interactive'.</description>
@@ -80,16 +80,16 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 
     <constraints>
 	<when param="pipelinemode">
-	    <equals value="automatic" type="string">
+	    <equals type="string" value="automatic">
 	    </equals>
-	    <equals value="interactive" type="string">
+	    <equals type="string" value="interactive">
 		<default param="pprfile"><value type="string"/></default>
 		<default param="targetimages"><value type="stringVec"/></default>
         <default param="products_dir"><value type="string"/></default>
 		<default param="dryrun"><value type="bool">False</value></default>
 		<default param="acceptresults"><value type="bool">True</value></default>
 	    </equals>
-	    <equals value="getinputs" type="string">
+	    <equals type="string" value="getinputs">
 		<default param="pprfile"><value type="string"/></default>
 		<default param="targetimages"><value type="stringVec"/></default>
         <default param="products_dir"><value type="string"/></default>

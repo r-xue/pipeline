@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hif_setjy" type="function">
 
@@ -19,7 +19,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 </description>
 
 <input>
-    <param subparam="true" name="vis" type="stringVec">
+    <param name="vis" subparam="true" type="stringVec">
         <shortdescription>List of input MeasurementSets</shortdescription>
         <description>The list of input MeasurementSets. Defaults to the list of
             MeasurementSets defined in the pipeline context.
@@ -27,7 +27,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
-    <param subparam="true" name="field" type="string">
+    <param name="field" subparam="true" type="string">
     <shortdescription>List of field names or ids</shortdescription>
         <description>The list of field names or field ids for which the models are
             to be set. Defaults to all fields with intent '*AMPLITUDE*'.
@@ -37,7 +37,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value type="string"/>
     </param>
 
-    <param subparam="true" name="intent" type="string">
+    <param name="intent" subparam="true" type="string">
         <shortdescription>Observing intent of flux calibrators</shortdescription>
         <description>A string containing a comma delimited list of intents against
             which the selected fields are matched. Defaults to all data
@@ -48,7 +48,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
-    <param subparam="true" name="spw" type="string">
+    <param name="spw" subparam="true" type="string">
         <shortdescription>List of spectral window ids</shortdescription>
         <description>The list of spectral windows and channels for which bandpasses are
             computed. Defaults to all science spectral windows.
@@ -58,7 +58,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
-    <param subparam="true" name="model" type="string">
+    <param name="model" subparam="true" type="string">
     <shortdescription>File location for field model</shortdescription>
         <description>Model image for setting model visibilities. Not fully
             supported.
@@ -68,7 +68,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value/>
     </param>
 
-    <param subparam="true" name="reffile" type="string">
+    <param name="reffile" subparam="true" type="string">
         <shortdescription>Path to file with fluxes for non-solar system calibrators</shortdescription>
         <description>Path to a file containing flux densities for calibrators unknown to
             CASA. Values given in this file take precedence over the CASA-derived
@@ -81,13 +81,13 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value/>
     </param>
 
-    <param subparam="true" name="normfluxes" type="bool">
+    <param name="normfluxes" subparam="true" type="bool">
         <shortdescription>Normalize lookup fluxes</shortdescription>
         <description>Normalize lookup fluxes.</description>
         <value>False</value>
     </param>
 
-    <param subparam="true" name="reffreq" type="string">
+    <param name="reffreq" subparam="true" type="string">
         <shortdescription>Reference frequency for spix</shortdescription>
         <description>The reference frequency for spix, given with units. Provided to
             avoid division by zero. If the flux density is being scaled by spectral
@@ -114,7 +114,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value type="int">-1</value>
     </param>
 
-    <param subparam="true" name="spix" type="double">
+    <param name="spix" subparam="true" type="double">
         <shortdescription>Spectral index of fluxdensity</shortdescription>
         <description>Spectral index for fluxdensity S = fluxdensity * (freq/reffreq)**spix
             Only used if fluxdensity is being used. If fluxdensity is positive, and
@@ -164,7 +164,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         </allowed>
    </param>
 
-    <param subparam="true" name="dryrun" type="bool">
+    <param name="dryrun" subparam="true" type="bool">
         <shortdescription>Run the task (False) or display the commands (True)</shortdescription>
         <description>Run the commands (True) or generate the commands to be run but
             do not execute (False).
@@ -172,7 +172,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <value type="bool">False</value>
     </param>
 
-    <param subparam="true" name="acceptresults" type="bool">
+    <param name="acceptresults" subparam="true" type="bool">
         <shortdescription>Automatically accept results into the context</shortdescription>
         <description>Add the results of the task to the pipeline context (True) or
             reject them (False).
@@ -183,8 +183,8 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <constraints>
 
     <when param="pipelinemode">
-        <equals value="automatic" type="string"/>
-        <equals value="interactive" type="string">
+        <equals type="string" value="automatic"/>
+        <equals type="string" value="interactive">
             <default param="vis"><value type="stringVec"/></default>
             <default param="field"><value type="string"/></default>
             <default param="intent"><value type="string"/></default>
@@ -195,7 +195,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
             <default param="dryrun"><value type="bool">False</value></default>
             <default param="acceptresults"><value type="bool">True</value></default>
         </equals>
-        <equals value="getinputs" type="string">
+        <equals type="string" value="getinputs">
             <default param="vis"><value type="stringVec"/></default>
             <default param="field"><value type="string"/></default>
             <default param="intent"><value type="string"/></default>
@@ -207,7 +207,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     </when>
 
         <when param="fluxdensity">
-           <notequals value="-1" type="int">
+           <notequals type="int" value="-1">
               <default param="spix"><value type="int">0</value></default>
               <default param="reffreq"><value type="string">1GHz</value></default>
            </notequals>

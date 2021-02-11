@@ -1,8 +1,8 @@
 <%!
 rsc_path = ""
 import os
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.renderer.htmlrenderer as hr
+from pipeline.infrastructure import casa_tools
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 
@@ -12,7 +12,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 This task had an error!
 %else:
 <%
-cqa = casatools.quanta
+cqa = casa_tools.quanta
 real_repr_target = result[0].real_repr_target
 repr_source = result[0].repr_source
 repr_spw = '%s' % (result[0].repr_spw)

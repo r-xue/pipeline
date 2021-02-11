@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hif_findcont" type="function">
 <shortdescription>Find continuum frequency ranges</shortdescription>
@@ -10,7 +10,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 </description>
 <input>
 
-  <param subparam="true" name="vis" type="stringVec">
+  <param name="vis" subparam="true" type="stringVec">
     <shortdescription>List of input MeasurementSets</shortdescription>
     <description>The list of input MeasurementSets. Defaults to the list of
                  MeasurementSets specified in the h_init or hif_importdata task.
@@ -21,18 +21,21 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value/>
   </param>
 
-  <param subparam="true" name="target_list" type="any">
+  <param name="target_list" subparam="true" type="any">
     <any type="variant"/>
+    <shortdescription>Dictionary specifying targets to be imaged; blank will read list from context</shortdescription>
     <description>Dictionary specifying targets to be imaged; blank will read list from context</description>
     <value>{}</value>
   </param>
 
   <param name="mosweight" type="bool">
+    <shortdescription>Mosaic weighting</shortdescription>
     <description>Mosaic weighting</description>
     <value>False</value>
   </param>
 
   <param name="hm_perchanweightdensity" type="bool">
+    <shortdescription>Calculate the weight density for each channel independently</shortdescription>
     <description>Calculate the weight density for each channel independently</description>
     <value>False</value>
   </param>
@@ -44,6 +47,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   </param>
 
   <param name="parallel" type="string">
+    <shortdescription>Use MPI cluster where possible</shortdescription>
     <description>Use MPI cluster where possible</description>
     <value>automatic</value>
     <allowed kind="enum">
@@ -71,12 +75,13 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     </allowed>
   </param>
 
-  <param subparam="true" name="dryrun" type="bool">
+  <param name="dryrun" subparam="true" type="bool">
+    <shortdescription>Run the task (False) or just display the command (True)</shortdescription>
     <description>Run the task (False) or just display the command (True)</description>
     <value>False</value>
   </param>
 
-  <param subparam="true" name="acceptresults" type="bool">
+  <param name="acceptresults" subparam="true" type="bool">
     <shortdescription>Add the results to the pipeline context</shortdescription>
     <description>Add the results of the task to the pipeline context (True) or
                  reject them (False).
@@ -88,14 +93,14 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   <constraints>
 
     <when param="pipelinemode">
-      <equals value="automatic" type="string"/>
-      <equals value="interactive" type="string">
+      <equals type="string" value="automatic"/>
+      <equals type="string" value="interactive">
         <default param="vis"><value type="stringVec"/></default>
         <default param="target_list"><value>{}</value></default>
         <default param="dryrun"><value type="bool">False</value></default>
         <default param="acceptresults"><value type="bool">True</value></default>
       </equals>
-      <equals value="getinputs" type="string">
+      <equals type="string" value="getinputs">
         <default param="vis"><value type="stringVec"/></default>
         <default param="target_list"><value>{}</value></default>
       </equals>

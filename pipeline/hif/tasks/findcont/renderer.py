@@ -4,22 +4,22 @@ Created on 24 Aug 2015
 @author: sjw
 """
 import collections
+import copy
+import glob
 import operator
 import os
 import shutil
-import glob
-import copy
 
 import numpy
 import matplotlib
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure.logging as logging
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.h.tasks.common.displays as displays
+from pipeline.infrastructure import casa_tools
 
 LOG = logging.get_logger(__name__)
 
@@ -86,6 +86,8 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         refer = 'TOPO'
                     elif (refers == 'LSRK').all():
                         refer = 'LSRK'
+                    elif (refers == 'SOURCE').all():
+                        refer = 'SOURCE'
                     else:
                         refer = 'UNDEFINED'
                     sorted_ranges = sorted(raw_ranges_for_spw, key=operator.itemgetter(0))
@@ -155,7 +157,7 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         else:
             return 'No plot available'
 
-        with casatools.ImageReader(src) as image:
+        with casa_tools.ImageReader(src) as image:
             info = image.miscinfo()
             info['type'] = masktype
             info['spw'] = spw

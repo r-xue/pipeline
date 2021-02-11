@@ -2,8 +2,6 @@ import collections
 
 import numpy
 
-import casatools
-
 import pipeline.domain.measures as measures
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
@@ -43,8 +41,6 @@ class TcleanQAHandler(pqa.QAPlugin):
                 result.qa.pool.append(pqa.QAScore(0.0, longmsg=result.error.longmsg, shortmsg=result.error.shortmsg, weblog_location=pqa.WebLogLocation.UNSET))
 
             # Image RMS based score
-            qaTool = casatools.quanta()
-
             try:
                 # For the score we compare the image RMS with the DR corrected
                 # sensitivity as an estimate of the expected RMS.
@@ -80,14 +76,12 @@ class TcleanQAHandler(pqa.QAPlugin):
                 origin = pqa.QAOrigin(metric_name='image rms / sensitivity',
                                       metric_score=(result.image_rms, result.dr_corrected_sensitivity),
                                       metric_units='Jy / beam')
-                weblog_location = pqa.WebLogLocation.UNSET
             except Exception as e:
                 LOG.warning('Exception scoring imaging result by RMS: %s. Setting score to -0.1.' % (e))
                 rms_score = -0.1
                 longmsg = 'Exception scoring imaging result by RMS: %s. Setting score to -0.1.' % (e)
                 shortmsg = 'Exception scoring imaging result by RMS'
                 origin = pqa.QAOrigin(metric_name='N/A', metric_score='N/A', metric_units='N/A')
-                weblog_location = pqa.WebLogLocation.UNSET
 
             # Add score to pool
             result.qa.pool.append(pqa.QAScore(rms_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
@@ -110,7 +104,6 @@ class TcleanQAHandler(pqa.QAPlugin):
                 try:
                     mses = [context.observing_run.get_ms(name=vis) for vis in result.inputs['vis']]
                     fieldname = result.sourcename
-                    intent = result.intent
                     spwid = int(result.spw)
                     imagename = result.image
                     rms = result.image_rms

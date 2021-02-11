@@ -200,10 +200,6 @@
     <ProcessingCommand>
         <Command xmlns="">hifv_exportdata</Command>
         <ParameterSet>
-          <Parameter>
-            <Keyword xmlns="">imaging_products_only</Keyword>
-            <Value xmlns="">True</Value>
-          </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 

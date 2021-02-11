@@ -49,16 +49,23 @@ pipeline.pages = pipeline.pages || function() {
             pipeline.appContainer.redirectPreAnchorTarget();
 
             // load the stage given in the URL
-            var logfile = $.url().param("logfile");
+            const logfile = $.url().param("logfile");
 
             if (logfile) {
-                var onSuccess = [function() {
+                const onGet = [function (data) {
+                    // PIPE-792: escape HTML characters in CASA log
+                    return UTILS.escapeHtml(data);
+                }];
+                const onSuccess = [function() {
                     pipeline.appContainer.addPreMarkup(logfile);
                     pipeline.appContainer.setTitle(logfile);
                     pipeline.history.pushState(logfile);
                 }];
-                pipeline.appContainer.load(logfile, onSuccess);
+
+                pipeline.appContainer.load(logfile, onSuccess, onGet);
             }
+
+            pipeline.history.pushState();
         };
 
         return innerModule;
@@ -509,7 +516,7 @@ pipeline.appContainer = pipeline.appContainer || (function() {
         }
     };
 
-    module.load = function(href, onSuccess) {
+    module.load = function(href, onSuccess, onGet) {
         loadedHref = href;
         isPreFormatted = false;
         title = "Untitled";
@@ -522,6 +529,15 @@ pipeline.appContainer = pipeline.appContainer || (function() {
             onSuccess = [];
         }
 
+        // set onGet to [] if undefined; wrap in list if scalar
+        if (onGet) {
+            if (!(onGet instanceof Array)) {
+                onGet = [onGet]
+            }
+        } else {
+            onGet = [];
+        }
+
         var container = module.getSelector();
         onSuccess.push(function() {
             module.redirectPreAnchorTarget(container);
@@ -531,9 +547,9 @@ pipeline.appContainer = pipeline.appContainer || (function() {
         // HTML, bypassing the javascript parts of the page which would
         // otherwise load repeatedly
         if (href === undefined) {
-            href = document.URL + " #mainbody";
+            href = document.URL + "#mainbody";
         }
-        UTILS.loadContent(container, href, onSuccess);
+        UTILS.loadContent(container, href, onSuccess, onGet);
     };
 
     module.addPreMarkup = function(pageTitle) {
@@ -565,15 +581,20 @@ pipeline.appContainer = pipeline.appContainer || (function() {
             // return.
             pipeline.history.replaceState();
 
-            var title = $(this).data("title");
+            const title = $(this).data("title");
 
-            var onSuccess = [function() {
+            // PIPE-792: escape HTML characters present in raw CASA log
+            const onGet = [function (data) {
+                return UTILS.escapeHtml(data);
+            }];
+
+            const onSuccess = [function() {
                 pipeline.appContainer.addPreMarkup(title);
                 pipeline.appContainer.setTitle(title);
                 pipeline.history.pushState(title);
             }];
 
-            pipeline.appContainer.load(this.href, onSuccess);
+            pipeline.appContainer.load(this.href, onSuccess, onGet);
         });
     };
 
@@ -841,7 +862,7 @@ pipeline.detailsframe = pipeline.detailsframe || (function() {
         module.load(href, onSuccess);
     };
 
-    module.load = function(href, onSuccess) {
+    module.load = function(href, onSuccess, onGet) {
         if (onSuccess) {
             if (!(onSuccess instanceof Array)) {
                 onSuccess = [onSuccess]
@@ -850,12 +871,20 @@ pipeline.detailsframe = pipeline.detailsframe || (function() {
             onSuccess = [];
         }
 
-        var container = module.getSelector();
+        if (onGet) {
+            if (!(onGet instanceof Array)) {
+                onGet = [onGet]
+            }
+        } else {
+            onGet = [];
+        }
+
+        const container = module.getSelector();
         onSuccess.push(function() {
             UTILS.redirectAnchorTarget(container);
             UTILS.redirectPreAnchorTarget(container);
         });
-        UTILS.loadContent(container, href, onSuccess);
+        UTILS.loadContent(container, href, onSuccess, onGet);
 
         loadedHref = href;
         isPreFormatted = false;
@@ -1050,23 +1079,42 @@ var UTILS = (function() {
             // return.
             pipeline.history.replaceState();
 
-            var title = $(this).data("title") || $.url(this.href).attr('file');
+            const title = $(this).data("title") || $.url(this.href).attr('file');
 
-            var onSuccess = [function() {
+            const onGet = [function (data) {
+                // PIPE-792: escape HTML characters in CASA log
+                return UTILS.escapeHtml(data);
+            }];
+
+            const onSuccess = [function() {
                 pipeline.msselector.setVisible(false);
                 pipeline.detailsframe.addPreMarkup(title);
                 pipeline.history.pushState();
             }];
 
-            pipeline.detailsframe.load(this.href, onSuccess);
+            pipeline.detailsframe.load(this.href, onSuccess, onGet);
         });
     };
 
-    module.loadContent = function(target, href, onSuccess) {
-        $(target).html("<div class=\"page-header\"><h1><span class=\"glyphicon glyphicon-refresh spinning\" style=\"vertical-align:top\"></span> Loading...</h1></div>");
-        $(target).load(href, function(response, status, xhr) {
-            if (status === "error") {
-                let msg =`<h1>Error: cannot load content</h1>
+    module.escapeHtml = function(unescaped) {
+        const entityMap = {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;',
+          '/': '&#x2F;',
+          '`': '&#x60;',
+          '=': '&#x3D;'
+        };
+
+        return String(unescaped).replace(/[&<>"'`=\/]/g, function (s) {
+        return entityMap[s];
+        });
+    }
+
+    module.loadContent = function(target, href, onSuccess, onGet) {
+        const failmsg =`<h1>Error: cannot load content</h1>
 <p class="lead">Browser security prevents the weblog from displaying the requested content.</p>
 <p>Your browser cannot display the requested web log page. This error can occur when attempting to view the web log
     while the pipeline is running and web log content is still being generated. If the pipeline is not running yet
@@ -1122,21 +1170,34 @@ ssh -L 30000:localhost:30000 remotepc</name>
 /Applications/Chrome.app/Contents/MacOS/Chrome --disable-web-security --user-data-dir=~/tmp
 </pre>
 </samp>`;
-                $(target).html(msg);// + xhr.status + " " + xhr.statusText);
-            }
 
-            if (status === "success") {
-                if (onSuccess) {
-                    // keep compatibility with scalar callback function
-                    if (onSuccess instanceof Array) {
-                        for (var i = 0; i < onSuccess.length; i++) {
-                            onSuccess[i]();
-                        }
-                    } else {
-                        onSuccess();
-                    }
+        // display 'loading' spinner
+        $(target).html("<div class=\"page-header\"><h1><span class=\"glyphicon glyphicon-refresh spinning\" style=\"vertical-align:top\"></span> Loading...</h1></div>");
+
+        // load data but do not display it..
+        $.get(href, function(data) {
+            // .. because first we must run the unprocessed content through the optional onGet function(s)
+            if (onGet) {
+                for (let i = 0; i < onGet.length; i++) {
+                    data = onGet[i](data);
                 }
             }
+            // ... and only then set the inner content
+            $(target).html(data);
+
+            // with the HTML set, run any post-processing functions
+            if (onSuccess) {
+                // keep compatibility with scalar callback function
+                if (onSuccess instanceof Array) {
+                    for (let i = 0; i < onSuccess.length; i++) {
+                        onSuccess[i]();
+                    }
+                } else {
+                    onSuccess();
+                }
+            }
+        }, "text").fail(function(jqXHR, textStatus, errorThrown) {
+            $(target).html(failmsg);
         });
     };
 

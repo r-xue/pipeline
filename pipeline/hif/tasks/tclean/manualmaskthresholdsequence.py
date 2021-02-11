@@ -1,5 +1,5 @@
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure as infrastructure
+from pipeline.infrastructure import casa_tools
 from .basecleansequence import BaseCleanSequence
 
 LOG = infrastructure.get_logger(__name__)
@@ -22,7 +22,7 @@ class ManualMaskThresholdSequence(BaseCleanSequence):
             raise Exception('no data for iteration')
 
         if iteration == 1:
-            tbTool = casatools.table
+            tbTool = casa_tools.table
             tbTool.open(self.mask)
             tbTool.copy(new_cleanmask)
             tbTool.done()

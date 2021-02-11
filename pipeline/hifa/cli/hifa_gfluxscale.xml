@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hifa_gfluxscale" type="function">
 
@@ -45,7 +45,7 @@ with code which uses the values returned from the CASA fluxscale task.
 </description>
 
 <input>
-    <param subparam="true" name="vis" type="string">
+    <param name="vis" subparam="true" type="string">
         <shortdescription>List of input MeasurementSets</shortdescription>
         <description>The list of input MeasurementSets. Defaults to the list of MeasurementSets
             specified in the pipeline context
@@ -55,7 +55,7 @@ with code which uses the values returned from the CASA fluxscale task.
         <value/>
     </param>
 
-    <param subparam="true" name="reference" type="variant">
+    <param name="reference" subparam="true" type="variant">
         <shortdescription>Reference calibrator field name(s)</shortdescription>
         <description>A string containing a comma delimited list of field names
             defining the reference calibrators. Defaults to field names with
@@ -66,7 +66,7 @@ with code which uses the values returned from the CASA fluxscale task.
         <value type="string"/>
     </param>
 
-    <param subparam="true" name="transfer" type="variant">
+    <param name="transfer" subparam="true" type="variant">
         <shortdescription>Transfer calibrator field name(s)</shortdescription>
         <description>A string containing a comma delimited list of field names
             defining the transfer calibrators. Defaults to field names with
@@ -77,7 +77,7 @@ with code which uses the values returned from the CASA fluxscale task.
         <value type="string"/>
     </param>
 
-    <param subparam="true" name="refintent" type="string">
+    <param name="refintent" subparam="true" type="string">
         <shortdescription>Observing intent of reference fields</shortdescription>
         <description>A string containing a comma delimited list of intents
             used to select the reference calibrators. Defaults to 'AMPLITUDE'.
@@ -87,7 +87,7 @@ with code which uses the values returned from the CASA fluxscale task.
         <value/>
     </param>
 
-    <param subparam="true" name="transintent" type="string">
+    <param name="transintent" subparam="true" type="string">
         <shortdescription>Observing intent of transfer fields</shortdescription>
         <description>A string containing a comma delimited list of intents
             defining the transfer calibrators. Defaults to
@@ -98,7 +98,7 @@ with code which uses the values returned from the CASA fluxscale task.
         <value/>
     </param>
 
-    <param subparam="true" name="refspwmap" type="intVec">
+    <param name="refspwmap" subparam="true" type="intVec">
         <shortdescription>Map across spectral window boundaries</shortdescription>
         <description>Vector of spectral window ids enabling scaling across
             spectral windows. Defaults to no scaling.
@@ -109,7 +109,7 @@ with code which uses the values returned from the CASA fluxscale task.
         <value/>
     </param>
 
-    <param subparam="true" name="reffile" type="string">
+    <param name="reffile" subparam="true" type="string">
         <shortdescription>Path to file with fluxes for non-solar system calibrators</shortdescription>
         <description>Path to a file containing flux densities for calibrators unknown to
             CASA. Values given in this file take precedence over the CASA-derived
@@ -151,7 +151,7 @@ with code which uses the values returned from the CASA fluxscale task.
         <value>2.0</value>
     </param>
 
-    <param subparam="true" name="refant" type="string">
+    <param name="refant" subparam="true" type="string">
         <shortdescription>The name or ID of the reference antenna</shortdescription>
         <description>A string specifying the reference antenna(s). By default this is read
             from the context.
@@ -176,7 +176,7 @@ with code which uses the values returned from the CASA fluxscale task.
         </allowed>
     </param>
 
-    <param subparam="true" name="antenna" type="string">
+    <param name="antenna" subparam="true" type="string">
         <shortdescription>Antennas to be used in fluxscale</shortdescription>
         <description>A comma delimited string specifying the antenna names or ids to be
             used for the fluxscale determination. Used in hm_resolvedcals='manual' mode.
@@ -186,7 +186,7 @@ with code which uses the values returned from the CASA fluxscale task.
         <value/>
     </param>
 
-    <param subparam="true" name="peak_fraction" type="double">
+    <param name="peak_fraction" subparam="true" type="double">
         <shortdescription>Fraction of peak visibility at uv-distance limit of antennas to be used</shortdescription>
         <description>The limiting UV distance from the reference antenna for antennas
             to be included in the flux calibration. Defined as the point where the
@@ -211,7 +211,7 @@ with code which uses the values returned from the CASA fluxscale task.
         </allowed>
     </param>
 
-    <param subparam="true" name="dryrun" type="bool">
+    <param name="dryrun" subparam="true" type="bool">
         <shortdescription>Run the task (False) or display commands (True)</shortdescription>
         <description>Run the commands (True) or generate the commands to be run but do not
             execute (False).
@@ -219,7 +219,7 @@ with code which uses the values returned from the CASA fluxscale task.
         <value>False</value>
     </param>
 
-    <param subparam="true" name="acceptresults" type="bool">
+    <param name="acceptresults" subparam="true" type="bool">
         <shortdescription>Automatically accept results into context</shortdescription>
         <description>Add the results of the task to the pipeline context (True) or
             reject them (False).
@@ -229,8 +229,8 @@ with code which uses the values returned from the CASA fluxscale task.
 
     <constraints>
         <when param="pipelinemode">
-            <equals value="automatic" type="string"/>
-            <equals value="interactive" type="string">
+            <equals type="string" value="automatic"/>
+            <equals type="string" value="interactive">
                 <default param="vis"><value type="stringVec"/></default>
                 <default param="reference"><value type="string"/></default>
                 <default param="transfer"><value type="string"/></default>
@@ -243,7 +243,7 @@ with code which uses the values returned from the CASA fluxscale task.
                 <default param="dryrun"><value type="bool">False</value></default>
                 <default param="acceptresults"><value type="bool">True</value></default>
             </equals>
-            <equals value="getinputs" type="string">
+            <equals type="string" value="getinputs">
                 <default param="vis"><value type="stringVec"/></default>
                 <default param="reference"><value type="string"/></default>
                 <default param="transfer"><value type="string"/></default>
@@ -257,10 +257,10 @@ with code which uses the values returned from the CASA fluxscale task.
         </when>
 
         <when param="hm_resolvedcals">
-            <equals value="automatic" type="string">
+            <equals type="string" value="automatic">
                 <default param="peak_fraction"><value type="double">0.2</value></default>
             </equals>
-            <equals value="manual" type="string">
+            <equals type="string" value="manual">
                 <default param="antenna"><value type="string"/></default>
             </equals>
         </when>

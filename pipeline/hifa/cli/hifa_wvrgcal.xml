@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hifa_wvrgcal" type="function">
 
@@ -17,7 +17,7 @@ wvr gain table is not accepted into the context for subsequent use.
 </description>
     
 <input>
-    <param subparam="true" name="vis" type="stringVec">
+    <param name="vis" subparam="true" type="stringVec">
         <shortdescription>List of input visibility files</shortdescription>
         <description>List of input visibility files.
 
@@ -28,7 +28,7 @@ wvr gain table is not accepted into the context for subsequent use.
         <value/>
     </param>
       
-    <param subparam="true" name="caltable" type="stringVec">
+    <param name="caltable" subparam="true" type="stringVec">
         <shortdescription>List of output gain calibration tables</shortdescription>
         <description>List of output gain calibration tables.
 
@@ -39,7 +39,7 @@ wvr gain table is not accepted into the context for subsequent use.
 	<value/>
     </param>
 
-    <param subparam="true" name="offsetstable" type="stringVec">
+    <param name="offsetstable" subparam="true" type="stringVec">
         <shortdescription>List of input temperature offsets table files</shortdescription>
         <description>List of input temperature offsets table files to subtract from
     WVR measurements before calculating phase corrections.
@@ -64,7 +64,7 @@ wvr gain table is not accepted into the context for subsequent use.
         </allowed>
     </param>
 
-    <param subparam="true" name="toffset" type="double">
+    <param name="toffset" subparam="true" type="double">
         <shortdescription>Time offset (sec) between IF and WVR data</shortdescription>
         <description>Time offset (sec) between interferometric and WVR data.</description>
 	<value>0</value>
@@ -80,7 +80,7 @@ wvr gain table is not accepted into the context for subsequent use.
 	<value>True</value>
     </param>
       
-    <param subparam="true" name="sourceflag" type="stringVec">
+    <param name="sourceflag" subparam="true" type="stringVec">
 	<shortdescription>Flag the WVR data for these source(s)</shortdescription>
     <description>Flag the WVR data for these source(s) as bad and do not produce
     corrections for it. Requires segsource=True.
@@ -90,7 +90,7 @@ wvr gain table is not accepted into the context for subsequent use.
 	<value/>
    </param>
 
-   <param subparam="true" name="hm_tie" type="string">
+   <param name="hm_tie" subparam="true" type="string">
      <shortdescription>Tie computation heuristics method</shortdescription>
      <description>If 'manual', set the 'tie' parameter to the user-specified value.
     If 'automatic', set the 'tie' parameter to include with the
@@ -104,7 +104,7 @@ wvr gain table is not accepted into the context for subsequent use.
        </allowed>
    </param>
 
-    <param subparam="true" name="tie" type="stringVec">
+    <param name="tie" subparam="true" type="stringVec">
         <shortdescription>Sources for which to use the same atmospheric phase correction coefficients</shortdescription>
         <description>Use the same atmospheric phase correction coefficients when 
     calculating the wvr correction for all sources in the 'tie'. If 'tie'
@@ -116,7 +116,7 @@ wvr gain table is not accepted into the context for subsequent use.
         <value/>
     </param>
       
-    <param subparam="true" name="nsol" type="int">
+    <param name="nsol" subparam="true" type="int">
         <shortdescription>Number of solutions for phase correction coefficients</shortdescription>
         <description>Number of solutions for phase correction coefficients during this
     observation, evenly distributed in time throughout the observation. It
@@ -133,7 +133,7 @@ wvr gain table is not accepted into the context for subsequent use.
 	<value>False</value>
     </param>
             
-    <param subparam="true" name="wvrflag" type="stringVec">
+    <param name="wvrflag" subparam="true" type="stringVec">
 	<shortdescription>Flag the WVR data for these antenna(s) replace with interpolated values</shortdescription>
     <description>Flag the WVR data for the listed antennas as bad and replace 
     their data with values interpolated from the 3 nearest antennas with
@@ -158,7 +158,7 @@ wvr gain table is not accepted into the context for subsequent use.
         </allowed>
     </param>
       
-    <param subparam="true" name="smooth" type="string">
+    <param name="smooth" subparam="true" type="string">
 	<shortdescription>Smooth WVR data on the given timescale before calculating the correction</shortdescription>
     <description>Smooth WVR data on this timescale before calculating the correction.
     Ignored unless hm_smooth='manual'.
@@ -166,7 +166,7 @@ wvr gain table is not accepted into the context for subsequent use.
 	<value/>
     </param>
       
-    <param subparam="true" name="scale" type="double">
+    <param name="scale" subparam="true" type="double">
 	<shortdescription>Scale the entire phase correction by this factor</shortdescription>
     <description>Scale the entire phase correction by this factor.</description>
 	<value>1.</value>
@@ -205,7 +205,7 @@ wvr gain table is not accepted into the context for subsequent use.
       <value>0.8</value>
     </param>
 
-    <param subparam="true" name="refant" type="string">
+    <param name="refant" subparam="true" type="string">
       <shortdescription>Ranked list of reference antennas</shortdescription>
       <description>Ranked comma delimited list of reference antennas.
 
@@ -281,12 +281,12 @@ wvr gain table is not accepted into the context for subsequent use.
         </allowed>
     </param>
 
-    <param subparam="true" name="dryrun" type="bool">
+    <param name="dryrun" subparam="true" type="bool">
         <shortdescription>Run the task (False) or display the command(True)</shortdescription>
         <value>False</value>
     </param>
 
-    <param subparam="true" name="acceptresults" type="bool">
+    <param name="acceptresults" subparam="true" type="bool">
        <shortdescription>Add the results to the pipeline context</shortdescription>
        <value>True</value>
     </param>
@@ -294,8 +294,8 @@ wvr gain table is not accepted into the context for subsequent use.
     <constraints>
 
         <when param="pipelinemode">
-            <equals value="automatic" type="string"/>
-            <equals value="interactive" type="string">
+            <equals type="string" value="automatic"/>
+            <equals type="string" value="interactive">
                 <default param="vis"><value type="stringVec"/></default>
                 <default param="caltable"><value type="stringVec"/></default>
                 <default param="offsetstable"><value type="stringVec"/></default>
@@ -305,7 +305,7 @@ wvr gain table is not accepted into the context for subsequent use.
                 <default param="dryrun"><value type="bool">False</value></default>
                 <default param="acceptresults"><value type="bool">True</value></default>
             </equals>
-            <equals value="getinputs" type="string">
+            <equals type="string" value="getinputs">
                 <default param="vis"><value type="stringVec"/></default>
                 <default param="caltable"><value type="stringVec"/></default>
                 <default param="offsetstable"><value type="stringVec"/></default>
@@ -317,17 +317,17 @@ wvr gain table is not accepted into the context for subsequent use.
 
         <when param="hm_smooth">
 
-	    <equals value="automatic" type="string">
+	    <equals type="string" value="automatic">
 	    </equals>
-	    <equals value="manual" type="string">
+	    <equals type="string" value="manual">
 	        <default param="smooth"><value type="string"/></default>
 	    </equals>
         </when>
 
         <when param="hm_tie">
-            <equals value="automatic" type="string">
+            <equals type="string" value="automatic">
             </equals>
-            <equals value="manual" type="string">
+            <equals type="string" value="manual">
                 <default param="sourceflag"><value type="stringVec"/></default>
                 <default param="tie"><value type="stringVec"/></default>
                 <default param="segsource"><value type="bool">False</value></default>
@@ -336,9 +336,9 @@ wvr gain table is not accepted into the context for subsequent use.
         </when>
 
         <when param="hm_toffset">
-	    <equals value="automatic" type="string">
+	    <equals type="string" value="automatic">
 	    </equals>
-	    <equals value="manual" type="string">
+	    <equals type="string" value="manual">
 	        <default param="toffset"><value type="double">0</value></default>
 	    </equals>
         </when>

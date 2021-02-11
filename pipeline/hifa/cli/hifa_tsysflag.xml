@@ -1,6 +1,6 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
-<task type="function" name="hifa_tsysflag" category="pipeline">
+<task category="pipeline" name="hifa_tsysflag" type="function">
 
 <shortdescription>Flag deviant system temperatures for ALMA interferometry measurements. This
     is done by running a sequence of flagging subtasks, each looking for a
@@ -45,13 +45,13 @@
 </description>
 
 <input>
-    <param type="stringVec" name="vis" subparam="true">
+    <param name="vis" subparam="true" type="stringVec">
         <shortdescription>List of input MeasurementSets (Not used) </shortdescription>
         <description>List of input MeasurementSets (Not used).</description>
         <value/>
     </param>
 
-    <param type="stringVec" name="caltable" subparam="true">
+    <param name="caltable" subparam="true" type="stringVec">
         <shortdescription>List of input caltables</shortdescription>
         <description>List of input Tsys calibration tables.
 
@@ -61,13 +61,13 @@
         <value/>
     </param>
 
-    <param type="bool" name="flag_nmedian">
+    <param name="flag_nmedian" type="bool">
         <shortdescription>True to flag Tsys spectra with high median value</shortdescription>
         <description>True to flag Tsys spectra with high median value.</description>
         <value>True</value>
     </param>
 
-    <param type="double" name="fnm_limit" subparam="true">
+    <param name="fnm_limit" subparam="true" type="double">
         <shortdescription>Flag spectra with median greater than fnm_limit * median over all spectra</shortdescription>
         <description>Flag spectra with median value higher than fnm_limit * median
             of this measure over all spectra.
@@ -75,32 +75,32 @@
         <value>2.0</value>
     </param>
 
-    <param type="bool" name="fnm_byfield" subparam="true">
+    <param name="fnm_byfield" subparam="true" type="bool">
         <shortdescription>Evaluate the nmedian metric separately for each field.</shortdescription>
         <description>Evaluate the nmedian metric separately for each field.</description>
         <value>True</value>
     </param>
 
-    <param type="bool" name="flag_derivative">
+    <param name="flag_derivative" type="bool">
         <shortdescription>True to flag Tsys spectra with high median derivative</shortdescription>
         <description>True to flag Tsys spectra with high median derivative.</description>
         <value>True</value>
     </param>
 
-    <param type="double" name="fd_max_limit" subparam="true">
+    <param name="fd_max_limit" subparam="true" type="double">
         <shortdescription>Flag spectra with median derivative higher than fd_max_limit * median of this measure over all spectra</shortdescription>
         <description>Flag spectra with median derivative higher than
             fd_max_limit * median of this measure over all spectra.</description>
         <value>13.0</value>
     </param>
 
-    <param type="bool" name="flag_edgechans">
+    <param name="flag_edgechans" type="bool">
         <shortdescription>True to flag edges of Tsys spectra</shortdescription>
         <description>True to flag edges of Tsys spectra.</description>
         <value>True</value>
     </param>
 
-    <param type="double" name="fe_edge_limit" subparam="true">
+    <param name="fe_edge_limit" subparam="true" type="double">
         <shortdescription>Flag channels whose channel to channel difference greater than fe_edge_limit * median across spectrum</shortdescription>
         <description>Flag channels whose channel to channel difference &gt;
             fe_edge_limit * median across spectrum.
@@ -108,7 +108,7 @@
         <value>3.0</value>
     </param>
 
-    <param type="bool" name="flag_fieldshape">
+    <param name="flag_fieldshape" type="bool">
         <shortdescription>True to flag Tsys spectra with a radically different shape to those of the ff_refintent</shortdescription>
         <description>True to flag Tsys spectra with a radically different
             shape to those of the ff_refintent.
@@ -116,7 +116,7 @@
         <value>True</value>
     </param>
 
-    <param type="string" name="ff_refintent" subparam="true">
+    <param name="ff_refintent" subparam="true" type="string">
         <shortdescription>Data intent providing the reference shape for \'flag_fieldshape\'</shortdescription>
         <description>Data intent that provides the reference shape for
             'flag_fieldshape'.
@@ -124,20 +124,20 @@
         <value>BANDPASS</value>
     </param>
 
-    <param type="double" name="ff_max_limit" subparam="true">
+    <param name="ff_max_limit" subparam="true" type="double">
         <shortdescription>Flag Tsys spectra with \'fieldshape\' metric greater than ff_max_limit</shortdescription>
         <description>Flag Tsys spectra with 'fieldshape' metric values &gt;
             ff_max_limit.</description>
         <value>13</value>
     </param>
 
-    <param type="bool" name="flag_birdies">
+    <param name="flag_birdies" type="bool">
         <shortdescription>True to flag channels covering sharp spectral features</shortdescription>
         <description>True to flag channels covering sharp spectral features.</description>
         <value>True</value>
     </param>
 
-    <param type="double" name="fb_sharps_limit" subparam="true">
+    <param name="fb_sharps_limit" subparam="true" type="double">
         <shortdescription>Flag channels bracketing a channel to channel difference greater than fb_sharps_limit</shortdescription>
         <description>Flag channels bracketing a channel to channel
             difference &gt; fb_sharps_limit.
@@ -145,7 +145,7 @@
         <value>0.05</value>
     </param>
 
-    <param type="bool" name="flag_toomany">
+    <param name="flag_toomany" type="bool">
         <shortdescription>True to flag Tsys spectra for which a proportion of timestamps or proportion of antennas that are entirely flagged exceeds their respective thresholds.</shortdescription>
         <description>True to flag Tsys spectra for which a proportion of
             antennas for given timestamp and/or proportion of antennas that are
@@ -154,7 +154,7 @@
         <value>True</value>
     </param>
 
-    <param type="double" name="tmf1_limit" subparam="true">
+    <param name="tmf1_limit" subparam="true" type="double">
         <shortdescription>Flag all Tsys spectra within a timestamp for an antenna if proportion flagged already exceeds tmf1_limit</shortdescription>
         <description>Flag Tsys spectra for all antennas in a timestamp and spw if
             proportion of antennas already flagged in this timestamp and spw exceeds
@@ -163,7 +163,7 @@
         <value>0.666</value>
     </param>
 
-    <param type="double" name="tmef1_limit" subparam="true">
+    <param name="tmef1_limit" subparam="true" type="double">
         <shortdescription>Flag all Tsys spectra for all antennas in a spw, if proportion of antennas that are already entirely flagged in all timestamps exceeds tmef1_limit</shortdescription>
         <description>Flag Tsys spectra for all antennas and all timestamps
             in a spw, if proportion of antennas that are already entirely flagged
@@ -172,7 +172,7 @@
         <value>0.666</value>
     </param>
 
-    <param type="string" name="metric_order">
+    <param name="metric_order" type="string">
         <shortdescription>Order in which to evaluate the flagging metric(s); inactive metrics are skipped.</shortdescription>
         <description>Order in which to evaluate the flagging metrics that are
             enables. Disabled metrics are skipped.
@@ -180,7 +180,7 @@
         <value>nmedian,derivative,edgechans,fieldshape,birdies,toomany</value>
     </param>
 
-    <param type="bool" name="normalize_tsys">
+    <param name="normalize_tsys" type="bool">
         <shortdescription>Normalize Tsys prior to computing the flagging metric(s)</shortdescription>
         <description>True to create a normalized Tsys table that is used to
             evaluate the Tsys flagging metrics. All newly found flags are also applied
@@ -190,7 +190,7 @@
         <value>False</value>
     </param>
 
-	<param type="stringVec" name="filetemplate">
+	<param name="filetemplate" type="stringVec">
 	    <shortdescription>File containing manual Tsys flags to apply.</shortdescription>
       <description>The name of a text file that contains the manual Tsys flagging
           template. If the template flags file is undefined, a name of the form
@@ -199,7 +199,7 @@
 	    <value/>
 	</param>
 
-    <param type="string" name="pipelinemode">
+    <param name="pipelinemode" type="string">
         <shortdescription>The pipeline operations mode</shortdescription>
         <description>The pipeline operating mode. In 'automatic' mode the pipeline
             determines the values of all context defined pipeline inputs automatically.
@@ -215,7 +215,7 @@
         </allowed>
     </param>
 
-    <param type="bool" name="dryrun" subparam="true">
+    <param name="dryrun" subparam="true" type="bool">
         <shortdescription>Run the task (False) or list commands (True)</shortdescription>
         <description>Run the commands (True) or generate the commands to be run but
             do not execute (False).
@@ -223,7 +223,7 @@
         <value>False</value>
     </param>
 
-    <param type="bool" name="acceptresults" subparam="true">
+    <param name="acceptresults" subparam="true" type="bool">
         <shortdescription>Automatically apply results to context</shortdescription>
         <description>Add the results of the task to the pipeline context (True) or
             reject them (False).
