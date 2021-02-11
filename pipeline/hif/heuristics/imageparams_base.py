@@ -1601,6 +1601,10 @@ class ImageParamsHeuristics(object):
         # method default value inadvertently
         local_known_sensitivities = copy.deepcopy(known_sensitivities)
 
+        # The imTool knows only 'briggs' weighting
+        if weighting == 'briggsbwtaper':
+            weighting = 'briggs'
+
         sensitivities = []
         eff_ch_bw = 0.0
         sens_bws = {}

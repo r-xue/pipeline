@@ -22,6 +22,7 @@ LOG = infrastructure.get_logger(__name__)
 class FindContInputs(vdp.StandardInputs):
     parallel = vdp.VisDependentProperty(default='automatic')
     hm_perchanweightdensity = vdp.VisDependentProperty(default=False)
+    hm_weighting = vdp.VisDependentProperty(default='briggs')
 
     @vdp.VisDependentProperty(null_input=['', None, {}])
     def target_list(self):
@@ -31,7 +32,7 @@ class FindContInputs(vdp.StandardInputs):
         return copy.deepcopy(self.context.clean_list_pending)
 
     def __init__(self, context, output_dir=None, vis=None, target_list=None, mosweight=None,
-                 hm_perchanweightdensity=None, parallel=None):
+                 hm_perchanweightdensity=None, hm_weighting=None, parallel=None):
         super(FindContInputs, self).__init__()
         self.context = context
         self.output_dir = output_dir
@@ -40,6 +41,7 @@ class FindContInputs(vdp.StandardInputs):
         self.target_list = target_list
         self.mosweight = mosweight
         self.hm_perchanweightdensity = hm_perchanweightdensity
+        self.hm_weighting = hm_weighting
         self.parallel = parallel
 
 
@@ -292,7 +294,7 @@ class FindCont(basetask.StandardTaskTemplate):
                                             mosweight=mosweight, perchanweightdensity=inputs.hm_perchanweightdensity,
                                             pblimit=0.2, niter=0, threshold='0mJy', deconvolver='hogbom',
                                             interactive=False, imsize=target['imsize'], cell=target['cell'],
-                                            phasecenter=phasecenter, stokes='I', weighting='briggs',
+                                            phasecenter=phasecenter, stokes='I', weighting=inputs.hm_weighting,
                                             robust=robust, uvtaper=uvtaper, npixels=0, restoration=False,
                                             restoringbeam=[], pbcor=False, usepointing=usepointing,
                                             savemodel='none', chanchunks=chanchunks, parallel=parallel)
