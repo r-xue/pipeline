@@ -272,15 +272,6 @@ def mask_from_catalog(inext='iter0.model.tt0', outext="mask_from_cat.mask",
 
     return number_islands_found, number_islands_found_onedeg
 
-def is_inside_window(obj, min_ra, min_dec, max_ra, max_dec):
-    ra_angle = Angle(f'{ra}d')
-    dec_angle = Angle(f'{dec}d')
-    if ra_angle.is_within_bounds(lower=min_ra, upper=max_ra) \
-            and dec_angle.is_within_bounds(lower=min_dec, max=max_dec):
-        return True
-    else:
-        print(f'Out: {obj}')
-        return False
 
 def edit_pybdsf_islands(catalog_fits_file='', r_squared_threshold=0.99,
                         n_gauss_threshold=10, gauss_size_threshold=100,
