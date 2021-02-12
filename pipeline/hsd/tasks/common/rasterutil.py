@@ -362,8 +362,8 @@ def flag_incomplete_raster(meta:MetaDataSet, raster_gap: List[int], nd_raster: i
     MN: median of N => typical number of data per raster map
     MM: median of M => typical number of data per raster row
     logic:
-      - if N[x] < MN - MM then flag whole data in raster map x
-      - if N[x] > MN + MM then flag whole data in raster map x and later
+      - if N[x] <= MN - MM then flag whole data in raster map x
+      - if N[x] >= MN + MM then flag whole data in raster map x and later
 
     Args:
         meta: input MetaDataSet to analyze
