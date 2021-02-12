@@ -14,8 +14,7 @@ from pipeline.infrastructure import casa_tools
 from . import plotter
 from .. import common
 
-_LOG = infrastructure.get_logger(__name__)
-LOG = sdutils.OnDemandStringParseLogger(_LOG)
+LOG = infrastructure.get_logger(__name__)
 
 
 class BaselineSubtractionInputsBase(vdp.StandardInputs):
@@ -171,17 +170,17 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         field_id_list = self.inputs.field
         antenna_id_list = self.inputs.antenna
         spw_id_list = self.inputs.spw
-        LOG.debug('subgroup member for {vis}:\n\tfield: {field}\n\tantenna: {antenna}\n\tspw: {spw}',
-                  vis=ms.basename,
-                  field=field_id_list,
-                  antenna=antenna_id_list,
-                  spw=spw_id_list)
+        LOG.debug('subgroup member for %s:\n\tfield: %s\n\tantenna: %s\n\tspw: %s',
+                  ms.basename,
+                  field_id_list,
+                  antenna_id_list,
+                  spw_id_list)
 
         # initialization of blparam file
         # blparam file needs to be removed before starting iteration through
         # reduction group
         if os.path.exists(blparam):
-            LOG.debug('Cleaning up blparam file for {vis}', vis=vis)
+            LOG.debug('Cleaning up blparam file for %s', vis)
             os.remove(blparam)
 
         #datatable = DataTable(context.observing_run.ms_datatable_name)
@@ -221,11 +220,12 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         accum = self.inputs.plan
         deviationmask_list = self.inputs.deviationmask
         LOG.info('deviationmask_list={}'.format(deviationmask_list))
+        formatted_edge = list(common.parseEdge(self.inputs.edge))
         status = plot_manager.initialize(ms, outfile)
         plot_list = []
         for (field_id, antenna_id, spw_id, grid_table, channelmap_range) in accum.iterate_all():
 
-            LOG.info('field {0} antenna {1} spw {2}', field_id, antenna_id, spw_id)
+            LOG.info('field %s antenna %s spw %s', field_id, antenna_id, spw_id)
             if (field_id, antenna_id, spw_id) in deviationmask_list:
                 deviationmask = deviationmask_list[(field_id, antenna_id, spw_id)]
             else:
@@ -241,7 +241,7 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
                 plot_list.extend(plot_manager.plot_spectra_with_fit(field_id, antenna_id, spw_id,
                                                                     org_direction,
                                                                     grid_table,
-                                                                    deviationmask, channelmap_range))
+                                                                    deviationmask, channelmap_range, formatted_edge))
         plot_manager.finalize()
 
         results.outcome['plot_list'] = plot_list

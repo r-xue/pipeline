@@ -158,7 +158,7 @@ class ImageParamsHeuristics(object):
             p = re.compile('([\d.]*)(~)([\d.]*)(\D*)')
             try:
                 line_regions = p.findall(open(linesfile, 'r').read().replace('\n', '').replace(';', '').replace(' ', ''))
-            except Exception as e:
+            except Exception:
                 line_regions = []
             line_ranges_GHz = []
             for line_region in line_regions:
@@ -309,6 +309,7 @@ class ImageParamsHeuristics(object):
         """Calculate synthesized beam for a given field / spw selection."""
 
         qaTool = casa_tools.quanta
+        suTool = casa_tools.synthesisutils
 
         # Need to work on a local copy of known_beams to avoid setting the
         # method default value inadvertently
@@ -343,7 +344,6 @@ class ImageParamsHeuristics(object):
 
         # put code in try-block to ensure that imager.done gets
         # called at the end
-        cell = None
         valid_data = {}
         makepsf_beams = []
         try:
@@ -372,7 +372,7 @@ class ImageParamsHeuristics(object):
                              (str(makepsf_beam), field, intent, ','.join(map(str, sorted(spwids)))))
                     if makepsf_beam != 'invalid':
                         makepsf_beams.append(makepsf_beam)
-                except Exception as e:
+                except Exception:
                     local_known_beams['recalc'] = True
                     local_known_beams['robust'] = robust
                     local_known_beams['uvtaper'] = uvtaper
@@ -468,7 +468,6 @@ class ImageParamsHeuristics(object):
                             if nxpix_mosaic <= 2.0 * nxpix_sf and nypix_mosaic <= 2.0 * nypix_sf:
                                 imsize = imsize_mosaic
                             else:
-                                suTool = casa_tools.synthesisutils
                                 nxpix = suTool.getOptimumSize(int(2.0 * nxpix_sf))
                                 nypix = suTool.getOptimumSize(int(2.0 * nypix_sf))
                                 suTool.done()
@@ -1012,6 +1011,7 @@ class ImageParamsHeuristics(object):
             ignore, xspread, yspread = self.phasecenter(fields, centreonly=centreonly, vislist=vislist)
 
         cqa = casa_tools.quanta
+        csu = casa_tools.synthesisutils
 
         cellx = cell[0]
         if len(cell) > 1:
@@ -1049,10 +1049,9 @@ class ImageParamsHeuristics(object):
             nypix = min(nypix, max_pixels)
 
         # set nxpix, nypix to next highest 'composite number'
-        suTool = casa_tools.synthesisutils
-        nxpix = suTool.getOptimumSize(nxpix)
-        nypix = suTool.getOptimumSize(nypix)
-        suTool.done()
+        nxpix = csu.getOptimumSize(nxpix)
+        nypix = csu.getOptimumSize(nypix)
+        csu.done()
 
         return [nxpix, nypix]
 
@@ -1293,9 +1292,9 @@ class ImageParamsHeuristics(object):
             if 'spw%s' % (spwid) in inputs.spwsel_lsrk:
                 if (inputs.spwsel_lsrk['spw%s' % (spwid)] not in ['ALL', '', 'NONE']):
                     freq_selection, refer = inputs.spwsel_lsrk['spw%s' % (spwid)].split()
-                    if (refer == 'LSRK'):
+                    if (refer in ('LSRK', 'SOURCE', 'REST')):
                         # Convert to TOPO
-                        topo_freq_selections, topo_chan_selections, aggregate_spw_lsrk_bw = contfile_handler.lsrk_to_topo(inputs.spwsel_lsrk['spw%s' % (spwid)], inputs.vis, ref_field_ids, spwid, self.observing_run)
+                        topo_freq_selections, topo_chan_selections, aggregate_spw_lsrk_bw = contfile_handler.to_topo(inputs.spwsel_lsrk['spw%s' % (spwid)], inputs.vis, ref_field_ids, spwid, self.observing_run)
                         spw_topo_freq_param_lists.append(['%s:%s' % (spwid, topo_freq_selection.split()[0]) for topo_freq_selection in topo_freq_selections])
                         spw_topo_chan_param_lists.append(['%s:%s' % (spwid, topo_chan_selection.split()[0]) for topo_chan_selection in topo_chan_selections])
                         for i in range(len(inputs.vis)):
@@ -1306,7 +1305,7 @@ class ImageParamsHeuristics(object):
                             f1, sep, f2, unit = p.findall(topo_freq_range)[0]
                             topo_freq_ranges.append((float(f1), float(f2)))
                     else:
-                        LOG.warning('Cannot convert frequency selection properly to TOPO. Using plain ranges for all MSs.')
+                        LOG.warning('Cannot convert {!s} frequency selection properly to TOPO. Using plain ranges for all MSs.'.format(refer))
                         spw_topo_freq_param_lists.append(['%s:%s' % (spwid, freq_selection)] * len(inputs.vis))
                         # TODO: Need to derive real channel ranges
                         spw_topo_chan_param_lists.append(['%s:0~%s' % (spwid, spw_info.num_channels - 1)] * len(inputs.vis))
@@ -1456,6 +1455,10 @@ class ImageParamsHeuristics(object):
         Calculate LSRK frequency intersection of a list of MSs for a
         given field and spw. Exclude flagged channels.
         """
+
+        cqa = casa_tools.quanta
+        csu = casa_tools.synthesisutils
+
         per_eb_flagged_freq_ranges = []
         per_eb_full_freq_ranges = []
         channel_widths = []
@@ -1491,12 +1494,14 @@ class ImageParamsHeuristics(object):
                 # Use unflagged edge channels to determine LSRK frequency range
                 if nfi.shape != (0,):
                     # Use the edges. Another heuristic will skip one extra channel later in the final frequency range.
-                    with casa_tools.SelectvisReader(msname, field=field_id,
-                                                    spw='%s:%d~%d' % (real_spw, nfi[0], nfi[-1])) as imager:
-                        result = imager.advisechansel(getfreqrange=True, freqframe=frame)
+                    if frame in ('REST', 'SOURCE'):
+                        result = csu.advisechansel(msname=msname, fieldid=int(field_id), spwselection='%s:%d~%d' % (real_spw, nfi[0], nfi[-1]), getfreqrange=True, freqframe='SOURCE', ephemtable='TRACKFIELD')
+                    else:
+                        result = csu.advisechansel(msname=msname, fieldid=int(field_id), spwselection='%s:%d~%d' % (real_spw, nfi[0], nfi[-1]), getfreqrange=True, freqframe=frame)
+                    csu.done()
 
-                    f0_flagged = result['freqstart']
-                    f1_flagged = result['freqend']
+                    f0_flagged = float(cqa.getvalue(cqa.convert(result['freqstart'], 'Hz')))
+                    f1_flagged = float(cqa.getvalue(cqa.convert(result['freqend'], 'Hz')))
 
                     per_field_flagged_freq_ranges.append((f0_flagged, f1_flagged))
                     # The frequency range from advisechansel is from channel edge
@@ -1506,11 +1511,14 @@ class ImageParamsHeuristics(object):
 
                     # Also get the full ranges to trim the final LSRK range for
                     # odd tunings near the LO range edges (PIPE-526).
-                    with casa_tools.SelectvisReader(msname, field=field_id, spw='%s' % (real_spw)) as imager:
-                        result = imager.advisechansel(getfreqrange=True, freqframe=frame)
+                    if frame in ('REST', 'SOURCE'):
+                        result = csu.advisechansel(msname=msname, fieldid=int(field_id), spwselection='%s' % (real_spw), getfreqrange=True, freqframe='SOURCE', ephemtable='TRACKFIELD')
+                    else:
+                        result = csu.advisechansel(msname=msname, fieldid=int(field_id), spwselection='%s' % (real_spw), getfreqrange=True, freqframe=frame)
+                    csu.done()
 
-                    f0_full = result['freqstart']
-                    f1_full = result['freqend']
+                    f0_full = float(cqa.getvalue(cqa.convert(result['freqstart'], 'Hz')))
+                    f1_full = float(cqa.getvalue(cqa.convert(result['freqend'], 'Hz')))
 
                     per_field_full_freq_ranges.append((f0_full, f1_full))
 

@@ -248,7 +248,7 @@ class Tclean(cleanbase.CleanBase):
             inputs.pblimit = self.pblimit_image
 
         # Remove MSs that do not contain data for the given field(s)
-        scanidlist, visindexlist = self.image_heuristics.get_scanidlist(inputs.vis, inputs.field, inputs.intent)
+        _, visindexlist = self.image_heuristics.get_scanidlist(inputs.vis, inputs.field, inputs.intent)
         filtered_vislist = [inputs.vis[i] for i in visindexlist]
         if filtered_vislist != inputs.vis:
             inputs.vis = filtered_vislist
@@ -325,8 +325,7 @@ class Tclean(cleanbase.CleanBase):
             # To avoid noisy edge channels, use only the frequency
             # intersection and skip one channel on either end.
             if self.image_heuristics.is_eph_obj(inputs.field):
-                # Need to use TOPO until CASA can convert to REST
-                frame = 'TOPO'
+                frame = 'REST'
             else:
                 frame = 'LSRK'
             if0, if1, channel_width = self.image_heuristics.freq_intersection(inputs.vis, inputs.field, inputs.intent,
@@ -353,7 +352,7 @@ class Tclean(cleanbase.CleanBase):
                 #    then back again before the tclean call
                 if 'm/' in inputs.start:
                     self.start_as_velocity = qaTool.quantity(inputs.start)
-                    inputs.start = self._to_frequency(inputs.start, inputs.restfreq)
+                    inputs.start = utils.velocity_to_frequency(inputs.start, inputs.restfreq)
                     self.start_as_frequency = inputs.start
 
                 if0 = qaTool.convert(inputs.start, 'Hz')['value']
@@ -388,7 +387,7 @@ class Tclean(cleanbase.CleanBase):
                 if 'm/' in inputs.width:
                     self.width_as_velocity = qaTool.quantity(inputs.width)
                     start_plus_width = qaTool.add(self.start_as_velocity, inputs.width)
-                    start_plus_width_freq = self._to_frequency(start_plus_width, inputs.restfreq)
+                    start_plus_width_freq = utils.velocity_to_frequency(start_plus_width, inputs.restfreq)
                     inputs.width = qaTool.sub(start_plus_width_freq, inputs.start)
                     self.width_as_frequency = inputs.width
 
@@ -430,7 +429,7 @@ class Tclean(cleanbase.CleanBase):
                 channel_width_freq_TOPO = float(real_spw_obj.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ))
                 freq0 = qaTool.quantity(centre_frequency_TOPO, 'Hz')
                 freq1 = qaTool.quantity(centre_frequency_TOPO + channel_width_freq_TOPO, 'Hz')
-                channel_width_velo_TOPO = qaTool.getvalue(self._to_velocity(freq1, freq0, '0.0km/s'))[0]
+                channel_width_velo_TOPO = float(qaTool.getvalue(qaTool.convert(utils.frequency_to_velocity(freq1, freq0), 'km/s')))
                 # Skip 1 km/s or at least 5 channels
                 extra_skip_channels = max(5, int(np.ceil(1.0 / abs(channel_width_velo_TOPO))))
             else:
@@ -460,38 +459,13 @@ class Tclean(cleanbase.CleanBase):
                     inputs.nchan = int(utils.round_half_up((if1 - if0) / channel_width - 2)) - 2 * extra_skip_channels
 
             if inputs.start == '':
-                if self.image_heuristics.is_eph_obj(inputs.field):
-                    # For ephemeris objects we do not yet have the conversion to the
-                    # REST frame. The start of the frequency range is thus given in
-                    # channels. The offset accounts for drifts of fast moving objects.
-                    if sideband == 'LSB':
-                        if inputs.nbin not in (None, -1):
-                            inputs.start = int(utils.round_half_up((if1 - if0) / channel_width * inputs.nbin - 2)) - 1 - extra_skip_channels
-                        else:
-                            inputs.start = int(utils.round_half_up((if1 - if0) / channel_width - 2)) - 1 - extra_skip_channels
-                    else:
-                        inputs.start = extra_skip_channels
-                else:
-                    # tclean interprets the start frequency as the center of the
-                    # first channel. We have, however, an edge to edge range.
-                    # Thus shift by 0.5 channels if no start is supplied.
-                    inputs.start = '%.10fGHz' % ((if0 + 1.5 * channel_width) / 1e9)
+                # tclean interprets the start frequency as the center of the
+                # first channel. We have, however, an edge to edge range.
+                # Thus shift by 0.5 channels if no start is supplied.
+                inputs.start = '%.10fGHz' % ((if0 + 1.5 * channel_width) / 1e9)
 
             # Always adjust width to apply possible binning
-            if self.image_heuristics.is_eph_obj(inputs.field):
-                # For ephemeris objects we need to define the frequency axis in
-                # channels until CASA can convert to the REST frame.
-                if sideband == 'LSB':
-                    width_sign = -1
-                else:
-                    width_sign = 1
-
-                if inputs.nbin not in (None, -1):
-                    inputs.width = width_sign * inputs.nbin
-                else:
-                    inputs.width = width_sign
-            else:
-                inputs.width = '%.7fMHz' % (channel_width / 1e6)
+            inputs.width = '%.7fMHz' % (channel_width / 1e6)
 
         # Make sure there are LSRK selections if cont.dat/lines.dat exist.
         # For ALMA this is already done at the hif_makeimlist step. For VLASS
@@ -511,19 +485,21 @@ class Tclean(cleanbase.CleanBase):
                                                                                                         spwid))
 
                 if spwsel_spwid in ('ALL', '', 'NONE'):
-                    spwsel_spwid_refer = 'LSRK'
+                    if self.image_heuristics.is_eph_obj(inputs.field):
+                        spwsel_spwid_refer = 'SOURCE'
+                    else:
+                        spwsel_spwid_refer = 'LSRK'
                 else:
-                    spwsel_spwid_freqs, spwsel_spwid_refer = spwsel_spwid.split()
+                    _, spwsel_spwid_refer = spwsel_spwid.split()
 
-                if spwsel_spwid_refer != 'LSRK':
-                    LOG.warn('Frequency selection is specified in %s but must be in LSRK' % spwsel_spwid_refer)
+                if spwsel_spwid_refer not in ('LSRK', 'SOURCE'):
+                    LOG.warn('Frequency selection is specified in %s but must be in LSRK or SOURCE' % spwsel_spwid_refer)
 
                 inputs.spwsel_lsrk['spw%s' % spwid] = spwsel_spwid
             inputs.spwsel_all_cont = all_continuum
 
         # Get TOPO frequency ranges for all MSs
-        (spw_topo_freq_param, spw_topo_chan_param, spw_topo_freq_param_dict, spw_topo_chan_param_dict,
-         total_topo_bw, aggregate_topo_bw, aggregate_lsrk_bw) = self.image_heuristics.calc_topo_ranges(inputs)
+        (spw_topo_freq_param, _, _, spw_topo_chan_param_dict, _, _, aggregate_lsrk_bw) = self.image_heuristics.calc_topo_ranges(inputs)
 
         # Save continuum frequency ranges for later.
         if (inputs.specmode == 'cube') and (inputs.spwsel_lsrk.get('spw%s' % inputs.spw, None) not in (None,
@@ -537,13 +513,9 @@ class Tclean(cleanbase.CleanBase):
             # Override with manually set value
             sensitivity = qaTool.convert(inputs.sensitivity, 'Jy')['value']
             eff_ch_bw = 1.0
-            sens_bw = 1.0
         else:
             # Get a noise estimate from the CASA sensitivity calculator
-            (sensitivity,
-             eff_ch_bw,
-             sens_bw,
-             per_spw_cont_sensitivities_all_chan) = \
+            (sensitivity, eff_ch_bw, _, per_spw_cont_sensitivities_all_chan) = \
                 self.image_heuristics.calc_sensitivities(inputs.vis, inputs.field, inputs.intent, inputs.spw,
                                                          inputs.nbin, spw_topo_chan_param_dict, inputs.specmode,
                                                          inputs.gridder, inputs.cell, inputs.imsize, inputs.weighting,
@@ -643,8 +615,6 @@ class Tclean(cleanbase.CleanBase):
 
         inputs = self.inputs
 
-        cqa = casa_tools.quanta
-
         # Compute the dirty image
         LOG.info('Compute the dirty image')
         iteration = 0
@@ -662,12 +632,11 @@ class Tclean(cleanbase.CleanBase):
                     return result
                 elif bad_psf_channels.shape != (0,):
                     LOG.warn('Found bad PSF fits for SPW %s in channels %s' % (inputs.spw, ','.join(map(str, bad_psf_channels))))
-                    newcommonbeam_major_arcsec = cqa.getvalue(cqa.convert(newcommonbeam['major'], 'arcsec'))[0]
-                    newcommonbeam_minor_arcsec = cqa.getvalue(cqa.convert(newcommonbeam['minor'], 'arcsec'))[0]
-                    newcommonbeam_pa_deg = cqa.getvalue(cqa.convert(newcommonbeam['pa'], 'deg'))[0]
                     # For Cycle 7 the new common beam shall not yet be used (PIPE-375).
-                    #LOG.warn('Replacing bad common beam for SPW %s with %#.3g x %#.3g arcsec @ %.1f deg' % (inputs.spw, newcommonbeam_major_arcsec, newcommonbeam_minor_arcsec, newcommonbeam_pa_deg))
-                    #inputs.restoringbeam = ['%#.3garcsec' % (newcommonbeam_major_arcsec), '%#.3garcsec' % (newcommonbeam_minor_arcsec), '%.1fdeg' % (newcommonbeam_pa_deg)]
+                    # In the future, we might use the PIPE-375 method to calculate unskewed
+                    # common beam in case of PSF fit problems.  For implementation details see
+                    # https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/browse/pipeline/hif/tasks/tclean/tclean.py?at=9b8902e66bf44e644e612b1980e5aee5361e8ddd#607
+
 
         # Determine masking limits depending on PB
         extension = '.tt0' if result.multiterm else ''
@@ -744,8 +713,8 @@ class Tclean(cleanbase.CleanBase):
         while keep_iterating:
             # Create the name of the next clean mask from the root of the
             # previous residual image.
-            rootname, ext = os.path.splitext(result.residual)
-            rootname, ext = os.path.splitext(rootname)
+            rootname, _ = os.path.splitext(result.residual)
+            rootname, _ = os.path.splitext(rootname)
 
             # Delete any old files with this naming root
             filenames = glob.glob('%s.iter%s*' % (rootname, iteration))
@@ -1013,8 +982,6 @@ class Tclean(cleanbase.CleanBase):
     # worked well, then this image should just contain noise.
     def _calc_mom0_8_fc(self, result):
 
-        context = self.inputs.context
-
         # Find max iteration that was performed.
         maxiter = max(result.iterations.keys())
 
@@ -1151,7 +1118,6 @@ class Tclean(cleanbase.CleanBase):
 
         See PIPE-558 (https://open-jira.nrao.edu/browse/PIPE-558).
         '''
-        context = self.inputs.context
 
         # Find max iteration that was performed.
         maxiter = max(result.iterations.keys())
@@ -1173,29 +1139,6 @@ class Tclean(cleanbase.CleanBase):
         self._calc_moment_image(imagename=imagename, moments=[8], outfile=mom8_name, chans='', iter=maxiter)
         # Update the result.
         result.set_mom8(maxiter, mom8_name)
-
-    def _to_frequency(self, velocity, restfreq):
-        # f = f_rest * (1 - v/c)
-        # https://www.iram.fr/IRAMFR/ARN/may95/node4.html
-        qa = casa_tools.quanta
-        light_speed = qa.getvalue(qa.convert(qa.constants('c'), 'km/s'))[0]
-        velocity = qa.getvalue(qa.convert(qa.quantity(velocity), 'km/s'))[0]
-        val = qa.getvalue(restfreq)[0] * (1 - velocity / light_speed)
-        unit = qa.getunit(restfreq)
-        frequency = qa.tos(qa.quantity(val, unit))
-        return frequency
-
-    def _to_velocity(self, frequency, restfreq, velo):
-        # v = c * (f_rest - f) / f_rest
-        # https://www.iram.fr/IRAMFR/ARN/may95/node4.html
-        qa = casa_tools.quanta
-        light_speed = qa.getvalue(qa.convert(qa.constants('c'), 'km/s'))[0]
-        restfreq = qa.getvalue(qa.convert(restfreq, 'MHz'))[0]
-        freq = qa.getvalue(qa.convert(frequency, 'MHz'))[0]
-        val = light_speed * ((restfreq - freq) / restfreq)
-        unit = qa.getunit(velo)
-        velocity = qa.tos(qa.quantity(val, unit))
-        return velocity
 
     def _update_miscinfo(self, imagename, nfield, datamin, datamax):
 

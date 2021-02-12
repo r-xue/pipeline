@@ -797,7 +797,7 @@ class Executor(object):
         :rtype: :class:`~pipeline.api.Result`
         """
         # execute the job, capturing its results object                
-        result = job.execute(dry_run=self._dry_run, *kwargs)
+        result = job.execute(dry_run=self._dry_run, **kwargs)
 
         if self._dry_run:
             return result
