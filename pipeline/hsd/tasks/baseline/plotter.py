@@ -259,7 +259,7 @@ class BaselineSubtractionPlotManager(object):
 
         # get brightnessunit from MS
         # default is Jy/beam
-        bunit = utils.get_brightness_unit(ms.basename, defaultunit='Jy/beam')
+        bunit = utils.get_brightness_unit(ms.name, defaultunit='Jy/beam')
 
         # grid_table is baseed on virtual spw id
         num_ra, num_dec, num_plane, rowlist = analyze_plot_table(ms,
