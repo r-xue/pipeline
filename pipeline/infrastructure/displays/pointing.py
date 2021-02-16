@@ -251,7 +251,14 @@ def DDMM(x: float, pos=None) -> str:
 
     Args:
         x: An angle in degree.
-        pos:
+        pos: A position. Note, the parameter is ignored in this function.
+            Nevertheless it is necessary to have this parameter because of the
+            reason described in comment of the original code. HHMM* methods are
+            supposed to passed to matplotlib.ticker.FuncFormatter as the
+            parameter. The callable function passed to FuncFormatter must have
+            two input parameters, a tick value x and position pos. That is why
+            the parameter, 'pos', is defined in this method even though it is
+            not used in the function.
     Returns:
         A dms angle with DDMM format.
 
@@ -294,7 +301,14 @@ def DDMMSS(x: float, pos=None) -> str:
 
     Args:
         x: An angle in degree. Degree string is always associated with a sign.
-        pos:
+        pos: A position. Note, the parameter is ignored in this function.
+            Nevertheless it is necessary to have this parameter because of the
+            reason described in comment of the original code. HHMM* methods are
+            supposed to passed to matplotlib.ticker.FuncFormatter as the
+            parameter. The callable function passed to FuncFormatter must have
+            two input parameters, a tick value x and position pos. That is why
+            the parameter, 'pos', is defined in this method even though it is
+            not used in the function.
     Returns:
         String of degree, arcminute, and arcsecond values with DDMMSS.
 
@@ -311,7 +325,14 @@ def DDMMSSs(x: float, pos=None) -> str:
 
     Args:
         x: An angle in degree. Degree string is always associated with a sign.
-        pos:
+        pos: A position. Note, the parameter is ignored in this function.
+            Nevertheless it is necessary to have this parameter because of the
+            reason described in comment of the original code. HHMM* methods are
+            supposed to passed to matplotlib.ticker.FuncFormatter as the
+            parameter. The callable function passed to FuncFormatter must have
+            two input parameters, a tick value x and position pos. That is why
+            the parameter, 'pos', is defined in this method even though it is
+            not used in the function.
     Returns:
         String of degree, arcminute, and arcsecond values with DDMMSSs.
 
@@ -329,7 +350,14 @@ def DDMMSSss(x: float, pos=None) -> str:
 
     Args:
         x: An angle in degree. Degree string is always associated with a sign.
-        pos:
+        pos: A position. Note, the parameter is ignored in this function.
+            Nevertheless it is necessary to have this parameter because of the
+            reason described in comment of the original code. HHMM* methods are
+            supposed to passed to matplotlib.ticker.FuncFormatter as the
+            parameter. The callable function passed to FuncFormatter must have
+            two input parameters, a tick value x and position pos. That is why
+            the parameter, 'pos', is defined in this method even though it is
+            not used in the function.
     Returns:
         String of degree, arcminute, and arcsecond values with DDMMSSss.
 
