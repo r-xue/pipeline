@@ -48,7 +48,7 @@ class PbcorimagesSummary(object):
                         self.result.pbcor_stats[basename] = image.statistics(robust=True)
                 else:
                     plot_wrappers.append(ImageHistDisplay(self.context, pbcor_imagename,
-                                                          reportdir=stage_dir, boxsize=0.5).plot())
+                                                          reportdir=stage_dir, boxsize=1.0).plot())
             plot_dict[basename] = [p for p in plot_wrappers if p is not None]
 
         return plot_dict
@@ -97,7 +97,6 @@ class ImageHistDisplay(object):
         return self._get_plot_object()
 
     def _get_figfile(self):
-
         return os.path.join(self.reportdir,
                             self.imagename+'.hist.png')
 
