@@ -274,7 +274,7 @@ def DDMM(x: float, pos=None) -> str:
         x: An angle in degree.
         pos: A position. Note, the parameter is ignored in this function.
             Nevertheless it is necessary to have this parameter because of the
-            reason described in comment of the original code. HHMM* methods are
+            reason described in comment of the original code. DDMM* methods are
             supposed to passed to matplotlib.ticker.FuncFormatter as the
             parameter. The callable function passed to FuncFormatter must have
             two input parameters, a tick value x and position pos. That is why
@@ -329,7 +329,7 @@ def DDMMSS(x: float, pos=None) -> str:
         x: An angle in degree. Degree string is always associated with a sign.
         pos: A position. Note, the parameter is ignored in this function.
             Nevertheless it is necessary to have this parameter because of the
-            reason described in comment of the original code. HHMM* methods are
+            reason described in comment of the original code. DDMM* methods are
             supposed to passed to matplotlib.ticker.FuncFormatter as the
             parameter. The callable function passed to FuncFormatter must have
             two input parameters, a tick value x and position pos. That is why
@@ -358,7 +358,7 @@ def DDMMSSs(x: float, pos=None) -> str:
         x: An angle in degree. Degree string is always associated with a sign.
         pos: A position. Note, the parameter is ignored in this function.
             Nevertheless it is necessary to have this parameter because of the
-            reason described in comment of the original code. HHMM* methods are
+            reason described in comment of the original code. DDMM* methods are
             supposed to passed to matplotlib.ticker.FuncFormatter as the
             parameter. The callable function passed to FuncFormatter must have
             two input parameters, a tick value x and position pos. That is why
@@ -388,7 +388,7 @@ def DDMMSSss(x: float, pos=None) -> str:
         x: An angle in degree. Degree string is always associated with a sign.
         pos: A position. Note, the parameter is ignored in this function.
             Nevertheless it is necessary to have this parameter because of the
-            reason described in comment of the original code. HHMM* methods are
+            reason described in comment of the original code. DDMM* methods are
             supposed to passed to matplotlib.ticker.FuncFormatter as the
             parameter. The callable function passed to FuncFormatter must have
             two input parameters, a tick value x and position pos. That is why
