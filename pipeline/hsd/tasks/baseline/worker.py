@@ -44,7 +44,7 @@ class BaselineSubtractionInputsBase(vdp.StandardInputs):
 
         # blparam
         if self.blparam is None or len(self.blparam) == 0:
-            args['blparam'] = prefix + '_blparam.txt'
+            args['blparam'] = relative_path(os.path.join(self.output_dir, prefix + '_blparam.txt'))
         else:
             args['blparam'] = self.blparam
 
@@ -62,7 +62,7 @@ class BaselineSubtractionInputsBase(vdp.StandardInputs):
         if ('outfile' not in args or
                 args['outfile'] is None or
                 len(args['outfile']) == 0):
-            args['outfile'] = self.vis.rstrip('/') + '_bl'
+            args['outfile'] = relative_path(os.path.join(self.output_dir, prefix + '_bl'))
 
         args['datacolumn'] = self.DATACOLUMN[self.colname]
 
