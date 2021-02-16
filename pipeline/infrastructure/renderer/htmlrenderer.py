@@ -29,7 +29,10 @@ from pipeline.infrastructure import task_registry
 from pipeline.infrastructure import utils
 from pipeline.infrastructure.renderer.templates import resources
 from . import qaadapter, rendererutils, weblog
+from .. import eventbus
 from .. import pipelineqa
+from ..eventbus import WebLogStageRenderingStartedEvent, WebLogStageRenderingCompleteEvent, \
+    WebLogStageRenderingAbnormalExitEvent
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -1621,11 +1624,22 @@ class T2_4MDetailsRenderer(object):
             try:
                 LOG.trace('Writing %s output to %s', renderer.__class__.__name__,
                           path)
+
+                event = WebLogStageRenderingStartedEvent(context_name=context.name, stage_number=result.stage_number)
+                eventbus.send_message(event)
+
                 fileobj.write(renderer.render(context, result))
+
+                event = WebLogStageRenderingCompleteEvent(context_name=context.name, stage_number=result.stage_number)
+                eventbus.send_message(event)
+
             except:
                 LOG.warning('Template generation failed for %s', cls.__name__)
                 LOG.debug(mako.exceptions.text_error_template().render())
                 fileobj.write(mako.exceptions.html_error_template().render().decode(sys.stdout.encoding))
+
+                event = WebLogStageRenderingAbnormalExitEvent(context_name=context.name, stage_number=result.stage_number)
+                eventbus.send_message(event)
 
 
 def wrap_in_resultslist(task_result):
