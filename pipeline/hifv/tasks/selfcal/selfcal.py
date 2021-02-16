@@ -139,7 +139,7 @@ class Selfcal(basetask.StandardTaskTemplate):
         spwsobjlist = m.get_spectral_windows(science_windows_only=True)
         spws = [int(spw.id) for spw in spwsobjlist]
         numspws = len(m.get_spectral_windows(science_windows_only=False))
-        lowestscispwid = str(min(spws))  # PIPE-101
+        lowestscispwid = min(spws)  # PIPE-101, PIPE-1042: spwmap parameter in applycal must be a list of integers
 
         # VLASS mode
         applycal_task_args = {'vis': self.inputs.vis,
