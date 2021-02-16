@@ -107,6 +107,11 @@ def HHMMSS(x: float, pos=None) -> str:
     """
     Convert an angle in degree to hour angle with HHMMSS format.
 
+    HHMM* function is used to set axis formatter of matplotlib plots.
+    The functions will be turned into matplotlib.ticker.FuncFormatter.
+    The function should take two inputs, a tick value x and position pos.
+    see also: https://matplotlib.org/3.3.0/api/ticker_api.html#matplotlib.ticker.FuncFormatter
+
     Example:
     >>> HHMMSS(10.123)
     '00:40:30'
@@ -132,6 +137,11 @@ def HHMMSS(x: float, pos=None) -> str:
 def HHMMSSs(x: float, pos=None):
     """
     Convert an angle in degree to hour angle with HHMMSSs format.
+
+    HHMM* function is used to set axis formatter of matplotlib plots.
+    The functions will be turned into matplotlib.ticker.FuncFormatter.
+    The function should take two inputs, a tick value x and position pos.
+    see also: https://matplotlib.org/3.3.0/api/ticker_api.html#matplotlib.ticker.FuncFormatter
 
     Example:
     >>> HHMMSSs(10.123)
@@ -159,6 +169,11 @@ def HHMMSSss(x: float, pos=None) -> str:
     """
     Convert an angle in degree to hour angle with HHMMSSss format.
 
+    HHMM* function is used to set axis formatter of matplotlib plots.
+    The functions will be turned into matplotlib.ticker.FuncFormatter.
+    The function should take two inputs, a tick value x and position pos.
+    see also: https://matplotlib.org/3.3.0/api/ticker_api.html#matplotlib.ticker.FuncFormatter
+
     Example:
     >>> HHMMSSss(10.123)
     '00:40:29.52'
@@ -182,7 +197,13 @@ def HHMMSSss(x: float, pos=None) -> str:
 
 
 def HHMMSSsss(x: float, pos=None) -> str:
-    """Convert an angle in degree to hour angle with HHMMSSsss format.
+    """
+    Convert an angle in degree to hour angle with HHMMSSsss format.
+
+    HHMM* function is used to set axis formatter of matplotlib plots.
+    The functions will be turned into matplotlib.ticker.FuncFormatter.
+    The function should take two inputs, a tick value x and position pos.
+    see also: https://matplotlib.org/3.3.0/api/ticker_api.html#matplotlib.ticker.FuncFormatter
 
     Example:
     >>> HHMMSSsss(10.123)
@@ -295,6 +316,11 @@ def DDMMSS(x: float, pos=None) -> str:
     r"""
     Convert an angle in degree to dms angle with DDMMSS.
 
+    DDMM* function is used to set axis formatter of matplotlib plots.
+    The functions will be turned into matplotlib.ticker.FuncFormatter.
+    The function should take two inputs, a tick value x and position pos.
+    see also: https://matplotlib.org/3.3.0/api/ticker_api.html#matplotlib.ticker.FuncFormatter
+
     Example:
     >>> DDMMSS(10.123)
     '+10$^\\circ$07\'23"'
@@ -318,6 +344,11 @@ def DDMMSS(x: float, pos=None) -> str:
 def DDMMSSs(x: float, pos=None) -> str:
     r"""
     Convert an angle in degree to dms angle with DDMMSSs.
+
+    DDMM* function is used to set axis formatter of matplotlib plots.
+    The functions will be turned into matplotlib.ticker.FuncFormatter.
+    The function should take two inputs, a tick value x and position pos.
+    see also: https://matplotlib.org/3.3.0/api/ticker_api.html#matplotlib.ticker.FuncFormatter
 
     Example:
     >>> DDMMSSs(10.123)
@@ -343,6 +374,11 @@ def DDMMSSs(x: float, pos=None) -> str:
 def DDMMSSss(x: float, pos=None) -> str:
     r"""
     Convert an angle in degree to dms angle with DDMMSSss.
+
+    DDMM* function is used to set axis formatter of matplotlib plots.
+    The functions will be turned into matplotlib.ticker.FuncFormatter.
+    The function should take two inputs, a tick value x and position pos.
+    see also: https://matplotlib.org/3.3.0/api/ticker_api.html#matplotlib.ticker.FuncFormatter
 
     Example:
     >>> DDMMSSss(10.123)
