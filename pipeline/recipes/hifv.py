@@ -4,18 +4,6 @@ import traceback
 
 # sys.path.insert (0, os.path.expandvars("$SCIPIPE_HEURISTICS"))
 
-# Make sure CASA exceptions are rethrown
-try:
-    if not  __rethrow_casa_exceptions:
-        def_rethrow = False
-    else:
-        def_rethrow = __rethrow_casa_exceptions
-except:
-    def_rethrow = False
-
-__rethrow_casa_exceptions = False
-
-
 # IMPORT_ONLY = 'Import only'
 IMPORT_ONLY = ''
 
@@ -133,6 +121,3 @@ def hifv (vislist, importonly=False, pipelinemode='automatic', interactive=True)
 
         casa_tools.post_to_log("VLA CASA Pipeline finished.  Terminating procedure execution ...",
                                echo_to_screen=echo_to_screen)
-
-        # Restore previous state
-        __rethrow_casa_exceptions = def_rethrow

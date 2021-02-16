@@ -151,8 +151,7 @@ class ALMAExportData(exportdata.ExportData):
         task_string = "    hifa_restoredata (vis=%s, session=%s, ocorr_mode='%s')" % (tmpvislist, session_list,
                                                                                       ocorr_mode)
 
-        template = '''__rethrow_casa_exceptions = True
-h_init()
+        template = '''h_init()
 try:
 %s
 finally:
