@@ -348,7 +348,9 @@ class CleanBase(basetask.StandardTaskTemplate):
             tclean_job_parameters['outframe'] = ''
             # 2018-07-10: Parallel imaging of ephemeris objects does not
             # yet work (see CAS-11631)
-            tclean_job_parameters['parallel'] = False
+            # 2021-02-16: PIPE-981 asks for allowing parallelized tclean
+            # runs for ephemeris sources.
+            #tclean_job_parameters['parallel'] = False
         else:
             tclean_job_parameters['phasecenter'] = inputs.phasecenter
             tclean_job_parameters['outframe'] = inputs.outframe
