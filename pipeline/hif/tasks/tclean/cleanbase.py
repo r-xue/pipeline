@@ -516,31 +516,34 @@ class CleanBase(basetask.StandardTaskTemplate):
         tclean_job_parameters['wprojplanes'] = inputs.heuristics.wprojplanes()
         tclean_job_parameters['rotatepastep'] = inputs.heuristics.rotatepastep()
 
-        # Up until CASA 5.2 it is necessary to run tclean calls with
+        # Up until CASA 6.1 (including) it is was necessary to run tclean calls with
         # restoringbeam == 'common' in two steps in HPC mode (CAS-10849).
-        if (tclean_job_parameters['parallel'] == True) and \
-           (tclean_job_parameters['specmode'] == 'cube') and \
-           (tclean_job_parameters['restoration'] == True) and \
-           (tclean_job_parameters['restoringbeam'] == 'common'):
+        #
+        # With CASA 6.2.0-57 the cube refactor is in place and the two step
+        # process is no longer needed (PIPE-980).
+        #if (tclean_job_parameters['parallel'] == True) and \
+        #   (tclean_job_parameters['specmode'] == 'cube') and \
+        #   (tclean_job_parameters['restoration'] == True) and \
+        #   (tclean_job_parameters['restoringbeam'] == 'common'):
 
             # CAS-11322 asks to temporarily leave restoration set to True
             # DMU, 2018-06-01
-            #tclean_job_parameters['restoration'] = False
-            tclean_job_parameters['restoringbeam'] = ''
-            job = casa_tasks.tclean(**tclean_job_parameters)
-            tclean_result = self._executor.execute(job)
+        #    #tclean_job_parameters['restoration'] = False
+        #    tclean_job_parameters['restoringbeam'] = ''
+        #    job = casa_tasks.tclean(**tclean_job_parameters)
+        #    tclean_result = self._executor.execute(job)
 
-            tclean_job_parameters['parallel'] = False
-            tclean_job_parameters['niter'] = 0
-            tclean_job_parameters['restoration'] = True
-            tclean_job_parameters['restoringbeam'] = 'common'
-            tclean_job_parameters['calcpsf'] = False
-            tclean_job_parameters['calcres'] = False
-            job = casa_tasks.tclean(**tclean_job_parameters)
-            tclean_result2 = self._executor.execute(job)
-        else:
-            job = casa_tasks.tclean(**tclean_job_parameters)
-            tclean_result = self._executor.execute(job)
+        #    tclean_job_parameters['parallel'] = False
+        #    tclean_job_parameters['niter'] = 0
+        #    tclean_job_parameters['restoration'] = True
+        #    tclean_job_parameters['restoringbeam'] = 'common'
+        #    tclean_job_parameters['calcpsf'] = False
+        #    tclean_job_parameters['calcres'] = False
+        #    job = casa_tasks.tclean(**tclean_job_parameters)
+        #    tclean_result2 = self._executor.execute(job)
+        #else:
+        job = casa_tasks.tclean(**tclean_job_parameters)
+        tclean_result = self._executor.execute(job)
 
         # Record last tclean command for weblog
         result.set_tclean_command(str(job))
