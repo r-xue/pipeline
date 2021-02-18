@@ -13,6 +13,7 @@ from .mpihelpers import MPIEnvironment
 
 from . import api
 from . import casa_tools
+from . import eventbus
 from . import filenamer
 from . import jobrequest
 from . import logging
@@ -21,6 +22,8 @@ from . import project
 from . import task_registry
 from . import utils
 from . import vdp
+from .eventbus import TaskStartedEvent, TaskCompleteEvent, TaskAbnormalExitEvent
+from .eventbus import ResultAcceptingEvent, ResultAcceptedEvent, ResultAcceptErrorEvent
 
 LOG = logging.get_logger(__name__)
 
@@ -219,6 +222,9 @@ class Results(api.Results):
         Accept these results, registering objects with the context and incrementing
         stage counters as necessary in preparation for the next task.
         """
+        event = ResultAcceptingEvent(context_name=context.name, stage_number=self.stage_number)
+        eventbus.send_message(event)
+
         if context is None:
             # context will be none when called from a CASA interactive 
             # session. When this happens, we need to locate the global context
@@ -320,6 +326,9 @@ class Results(api.Results):
                 utils.mkdir_p(os.path.dirname(path))
                 with open(path, 'wb') as outfile:
                     pickle.dump(context, outfile, -1)
+
+        event = ResultAcceptedEvent(context_name=context.name, stage_number=self.stage_number)
+        eventbus.send_message(event)
 
     def _check_for_remerge(self, context):
         """
@@ -580,7 +589,11 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
                      self.inputs.context.task_counter)
             self.inputs.context.subtask_counter = 0
 
-            # log the invoked pipeline task and its comment to 
+            event = TaskStartedEvent(context_name=self.inputs.context.name,
+                                     stage_number=self.inputs.context.task_counter)
+            eventbus.send_message(event)
+
+            # log the invoked pipeline task and its comment to
             # casa_commands.log
             _log_task(self, dry_run)
 
@@ -640,6 +653,10 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
             else:
                 result.logrecords.extend(handler.buffer)
 
+            event = TaskCompleteEvent(context_name=self.inputs.context.name,
+                                      stage_number=self.inputs.context.task_counter)
+            eventbus.send_message(event)
+
             return result
 
         except Exception as ex:
@@ -667,6 +684,10 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
                     result.logrecords = handler.buffer
                 else:
                     result.logrecords.extend(handler.buffer)
+
+                event = TaskAbnormalExitEvent(context_name=self.inputs.context.name,
+                                              stage_number=self.inputs.context.task_counter)
+                eventbus.send_message(event)
 
                 return result
             else:
@@ -891,8 +912,7 @@ def write_pipeline_casa_tasks(context):
         state_commands += ['context.set_state({!r}, {!r}, {!r})'.format(cls, name, value)
                            for cls, name, value in project.get_state(o)]
 
-    template = '''__rethrow_casa_exceptions = True
-context = h_init()
+    template = '''context = h_init()
 %s
 try:
 %s

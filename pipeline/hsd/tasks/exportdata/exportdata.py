@@ -424,8 +424,7 @@ class SDExportData(exportdata.ExportData):
             state_commands += ['context.set_state({!r}, {!r}, {!r})'.format(cls, name, value)
                                for cls, name, value in project.get_state(o)]
 
-        template = '''__rethrow_casa_exceptions = True
-context = h_init()
+        template = '''context = h_init()
 %s
 try:
 %s

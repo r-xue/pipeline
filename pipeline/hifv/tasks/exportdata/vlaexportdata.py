@@ -124,8 +124,7 @@ class VLAExportData(exportdata.ExportData):
 
         task_string += "\n    hifv_statwt(pipelinemode='automatic')"
 
-        template = '''__rethrow_casa_exceptions = True
-h_init()
+        template = '''h_init()
 try:
 %s
 finally:
