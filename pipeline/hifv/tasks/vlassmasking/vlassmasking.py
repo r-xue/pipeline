@@ -27,9 +27,9 @@ class VlassmaskingResults(basetask.Results):
                  combinedmask=None, number_islands_found=None,
                  number_islands_found_onedeg=None,
                  num_rejected_islands=None, num_rejected_islands_onedeg=None,
-                 pixelfractiontier1=None,
-                 pixelfractiontier2=None,
-                 pixelfractionfinal=None,
+                 pixelfractions=None,
+                 relativefraction=None,
+                 relativefraction_onedeg=None,
                  plotmask=None,
                  maskingmode=None):
         """
@@ -55,9 +55,9 @@ class VlassmaskingResults(basetask.Results):
         self.number_islands_found_onedeg = number_islands_found_onedeg
         self.num_rejected_islands = num_rejected_islands
         self.num_rejected_islands_onedeg = num_rejected_islands_onedeg
-        self.pixelfractiontier1 = pixelfractiontier1
-        self.pixelfractiontier2 = pixelfractiontier2
-        self.pixelfractionfinal = pixelfractionfinal
+        self.pixelfractions = pixelfractions
+        self.relativefraction = relativefraction
+        self.relativefraction_onedeg = relativefraction_onedeg
         self.plotmask = plotmask
         self.maskingmode = maskingmode
 
@@ -160,9 +160,16 @@ class Vlassmasking(basetask.StandardTaskTemplate):
         number_islands_found_onedeg = 0
         num_rejected_islands = 0
         num_rejected_islands_onedeg = 0
-        pixelfractiontier1 = 0.0
-        pixelfractiontier2 = 0.0
-        pixelfractionfinal = 0.0
+        pixelfractions = {'tier1': 0.0,
+                          'tier1_onedeg': 0.0,
+                          'tier2': 0.0,
+                          'tier2_onedeg': 0.0,
+                          'final': 0.0,
+                          'final_onedeg': 0.0
+                          }
+        relativefraction = 0.0
+        relativefraction_onedeg = 0.0
+        widthdeg = 1.0
 
         # Test parameters for reference
         # Location of catalog file at the AOC
@@ -198,15 +205,25 @@ class Vlassmasking(basetask.StandardTaskTemplate):
             # Compute fraction of pixels enclosed in the tier-1 mask
             with casa_tools.ImageReader(tier1mask) as myia:
                 computechunk = myia.getchunk()
-                pixelfractiontier1 = computechunk.sum() / computechunk.size
+                pixelfractions['tier1'] = computechunk.sum() / computechunk.size
 
             # Compute fraction of pixels enclosed in the inner square degree for the tier-1 mask
-            # TODO
+            pixelsum, pixelfractions['tier1_onedeg'] = self._computepixelfraction(widthdeg, tier1mask)
+
+            LOG.info(" ")
+            LOG.info("Pixel fraction over entire tier-1 mask: {!s}".format(pixelfractions['tier1']))
+            LOG.info("Pixel fraction over inner {!s} degree of tier-1 mask: {!s}".format(widthdeg,
+                                                                                         pixelfractions['tier1_onedeg']))
+            LOG.info(" ")
 
             combinedmask = tier1mask
             plotmask = combinedmask
 
+            if number_islands_found_onedeg == 0 or pixelfractions['tier1_onedeg'] == 0.0:
+                LOG.error("No islands found or pixel fraction is zero.")
+
         elif self.inputs.maskingmode == 'vlass-se-tier-2':
+
             LOG.debug("Executing mask_from_catalog masking mode = {!s}".format(self.inputs.maskingmode))
 
             # Obtain Tier 1 mask name
@@ -220,10 +237,8 @@ class Vlassmasking(basetask.StandardTaskTemplate):
             suffix = ".secondmask.mask"
             tier2mask = maskname_base + suffix
 
-            catalog_fits_file, num_rejected_islands = edit_pybdsf_islands(catalog_fits_file=initial_catalog_fits_file)
-
-            # TODO
-            # num_rejected_islands_onedeg
+            catalog_fits_file, num_rejected_islands, num_rejected_islands_onedeg\
+                = edit_pybdsf_islands(catalog_fits_file=initial_catalog_fits_file, phasecenter=phasecenter)
 
             if not os.path.exists(catalog_fits_file):
                 LOG.error("Catalog file {!s} does not exist.".format(catalog_fits_file))
@@ -250,28 +265,62 @@ class Vlassmasking(basetask.StandardTaskTemplate):
             # Compute fraction of pixels enclosed in the tier-1 mask
             with casa_tools.ImageReader(tier1mask) as myia:
                 computechunk = myia.getchunk()
-                pixelfractiontier1 = computechunk.sum() / computechunk.size
+                tier1pixelsum = computechunk.sum()
+                pixelfractions['tier1'] = computechunk.sum() / computechunk.size
 
             # Compute fraction of pixels enclosed in the inner square degree for the tier-1 mask
-            # TODO
+            tier1pixelsum_onedeg, pixelfractions['tier1_onedeg'] = self._computepixelfraction(widthdeg, tier1mask)
+
+            LOG.info(" ")
+            LOG.info("Pixel fraction over entire tier-1 mask: {!s}".format(pixelfractions['tier1']))
+            LOG.info("Pixel fraction over inner {!s} degree of tier-1 mask: {!s}".format(pixelfractions['tier1'],
+                                                                                         pixelfractions['tier1_onedeg']))
+            LOG.info(" ")
 
             # Compute fraction of pixels enclosed in the tier-2 mask
             with casa_tools.ImageReader(tier2mask) as myia:
                 computechunk = myia.getchunk()
-                pixelfractiontier2 = computechunk.sum() / computechunk.size
+                tier2pixelsum = computechunk.sum()
+                pixelfractions['tier2'] = computechunk.sum() / computechunk.size
 
             # Compute fraction of pixels enclosed in the inner square degree for the tier-2 mask
-            # TODO
+            tier2pixelsum_onedeg, pixelfractions['tier2_onedeg'] = self._computepixelfraction(widthdeg, tier2mask)
+
+            LOG.info(" ")
+            LOG.info("Pixel fraction over entire tier-2 mask: {!s}".format(pixelfractions['tier2']))
+            LOG.info("Pixel fraction over inner {!s} degree of tier-2 mask: {!s}".format(widthdeg,
+                                                                                         pixelfractions['tier2_onedeg'] ))
+            LOG.info(" ")
 
             # Compute fraction of pixels enclosed in the final mask
             with casa_tools.ImageReader(combinedmask) as myia:
                 computechunk = myia.getchunk()
-                pixelfractionfinal = computechunk.sum() / computechunk.size
+                finalpixelsum = computechunk.sum()
+                pixelfractions['final'] = computechunk.sum() / computechunk.size
 
             # Compute fraction of pixels enclosed in the inner square degree for the final combined mask
-            # TODO
+            finalpixelsum_onedeg, pixelfractions['final_onedeg'] = self._computepixelfraction(widthdeg, combinedmask)
+
+            LOG.info(" ")
+            LOG.info("Pixel fraction over entire final combined mask: {!s}".format(pixelfractions['final']))
+            LOG.info("Pixel fraction over inner {!s} degree of final combined mask: {!s}".format(widthdeg,
+                                                                                                 pixelfractions['final_onedeg']))
+            LOG.info(" ")
+
+            # Compute the fractional increase of masked pixels in Final mask relative to Quicklook Mask
+            # Compute the fractional increase of masked pixels in Final mask relative to Quicklook Mask in the inner
+            # square degree
+            relativefraction_str = str((finalpixelsum - tier1pixelsum) / tier1pixelsum) + ' =  (('+str(finalpixelsum) +' - '+str(tier1pixelsum) + ') /' + str(tier1pixelsum) + ')'
+            relativefraction_onedeg_str = str((finalpixelsum_onedeg - tier1pixelsum_onedeg) / tier1pixelsum_onedeg) + ' =  (('+str(finalpixelsum_onedeg) +' - '+str(tier1pixelsum_onedeg) + ') /' + str(tier1pixelsum_onedeg) +')'
+
+            LOG.info("Relative fraction: {!s}".format(relativefraction_str))
+            LOG.info("Relative fraction (inner square degree): {!s}".format(relativefraction_onedeg_str))
+
+            relativefraction = (finalpixelsum - tier1pixelsum) / tier1pixelsum
+            relativefraction_onedeg = (finalpixelsum_onedeg - tier1pixelsum_onedeg) / tier1pixelsum_onedeg
 
             plotmask = combinedmask
+
         else:
             LOG.error("Invalid maskingmode input.")
 
@@ -282,9 +331,9 @@ class Vlassmasking(basetask.StandardTaskTemplate):
                                    number_islands_found_onedeg=number_islands_found_onedeg,
                                    num_rejected_islands=num_rejected_islands,
                                    num_rejected_islands_onedeg=num_rejected_islands_onedeg,
-                                   pixelfractiontier1=pixelfractiontier1,
-                                   pixelfractiontier2=pixelfractiontier2,
-                                   pixelfractionfinal=pixelfractionfinal,
+                                   pixelfractions=pixelfractions,
+                                   relativefraction=relativefraction,
+                                   relativefraction_onedeg=relativefraction_onedeg,
                                    plotmask=plotmask,
                                    maskingmode=self.inputs.maskingmode)
 
@@ -341,3 +390,47 @@ class Vlassmasking(basetask.StandardTaskTemplate):
 
         # In case hif_makeimages result was not found.
         return imagename_base + 'iter1b.image'
+
+    def _computepixelfraction(self, widthdeg, maskimage):
+
+        with casa_tools.ImageReader(maskimage) as myia:
+            # myia = casa_tools.image
+            # myia.open(maskimage)
+            mask_csys = myia.coordsys()
+
+            xpixel = mask_csys.torecord()['direction0']['crpix'][0]
+            ypixel = mask_csys.torecord()['direction0']['crpix'][1]
+            xdelta = mask_csys.torecord()['direction0']['cdelt'][0]  # in radians
+            ydelta = mask_csys.torecord()['direction0']['cdelt'][1]  # in radians
+            onedeg = 1.0 * np.pi / 180.0  # conversion
+            # widthdeg = 0.4  # degrees
+            boxhalfxwidth = np.abs((onedeg * widthdeg / 2.0) / xdelta)
+            boxhalfywidth = np.abs((onedeg * widthdeg / 2.0) / ydelta)
+
+            blcx = xpixel - boxhalfxwidth
+            blcy = ypixel - boxhalfywidth
+            if blcx < 0:
+                blcx = 0
+            if blcy < 0:
+                blcy = 0
+            blc = [blcx, blcy]
+
+            trcx = xpixel + boxhalfxwidth
+            trcy = ypixel + boxhalfywidth
+            if trcx > myia.getchunk().shape[0]:
+                trcx = myia.getchunk().shape[0]
+            if trcy > myia.getchunk().shape[1]:
+                trcy = myia.getchunk().shape[1]
+            trc = [trcx, trcy]
+
+            myrg = casa_tools.regionmanager
+            r1 = myrg.box(blc=blc, trc=trc)
+
+            y = myia.getregion(r1)
+            pixelsum = y.sum()
+            pixelfraction = y.sum() / y.size
+
+            # myia.done()
+            myrg.done()
+
+        return pixelsum, pixelfraction
