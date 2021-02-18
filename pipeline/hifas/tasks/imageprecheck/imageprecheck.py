@@ -1,16 +1,19 @@
 import math
-import pipeline.infrastructure.vdp as vdp
-from pipeline.h.tasks.common.sensitivity import Sensitivity
+
 import pipeline.domain.measures as measures
+import pipeline.hifa.tasks.imageprecheck.imageprecheck as hifa_task_imageprecheck
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api
-from pipeline.infrastructure import task_registry
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.utils as utils
-from pipeline.hifa.heuristics import imageprecheck
+import pipeline.infrastructure.vdp as vdp
+from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.hif.heuristics import imageparams_factory
-import pipeline.hifa.tasks.imageprecheck.imageprecheck as hifa_task_imageprecheck
+from pipeline.hifa.heuristics import imageprecheck
+from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure import task_registry
+
 LOG = infrastructure.get_logger(__name__)
+
 
 class ImagePreCheckResults(hifa_task_imageprecheck.ImagePreCheckResults):
     def __init__(self, real_repr_target=False, repr_target='', repr_source='', repr_spw=None,
@@ -104,7 +107,7 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
         inputs = self.inputs
         context = self.inputs.context
 
-        cqa = casatools.quanta
+        cqa = casa_tools.quanta
 
         calcsb = inputs.calcsb
         parallel = inputs.parallel
@@ -538,7 +541,7 @@ class ImagePreCheck(hifa_task_imageprecheck.ImagePreCheck):
         # Determine uvtaper based on equations from Ryan Loomis,
         # https://open-confluence.nrao.edu/display/NAASC/Data+Processing%3A+Imaging+Tips
         # See PIPE-704.
-        cqa = casatools.quanta
+        cqa = casa_tools.quanta
 
         bmajor = 1.0 / cqa.getvalue(cqa.convert(beam_natural['major'], 'arcsec'))
         bminor = 1.0 / cqa.getvalue(cqa.convert(beam_natural['minor'], 'arcsec'))

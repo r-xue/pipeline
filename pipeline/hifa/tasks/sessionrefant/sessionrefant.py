@@ -10,7 +10,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hif.tasks import gaincal
-from pipeline.infrastructure import casatools
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import sessionutils
 from pipeline.infrastructure import task_registry
 from .resultobjects import SessionRefAntResults
@@ -285,7 +285,7 @@ class SessionRefAnt(basetask.StandardTaskTemplate):
                 antenna_id = ms.get_antenna(antenna)[0].id
 
                 # Test whether antenna appears in caltable.
-                with casatools.TableReader(calapp.gaintable) as tb:
+                with casa_tools.TableReader(calapp.gaintable) as tb:
                     ants = tb.getcol('ANTENNA1')
                     if antenna_id not in ants:
                         LOG.warning("Antenna {} ({}) not found in caltable {}"
@@ -296,7 +296,7 @@ class SessionRefAnt(basetask.StandardTaskTemplate):
                 nonzero = 0
                 for spw in calapp.spw.split(','):
                     # Retrieve phase data from caltable for specified antenna and current spw.
-                    with casatools.TableReader(calapp.gaintable) as tb:
+                    with casa_tools.TableReader(calapp.gaintable) as tb:
                         taql = "ANTENNA1 == {} && SPECTRAL_WINDOW_ID == {}".format(antenna_id, spw)
                         with contextlib.closing(tb.query(taql)) as subtb:
                             phases = subtb.getcol('CPARAM')

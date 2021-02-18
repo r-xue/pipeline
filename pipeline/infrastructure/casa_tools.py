@@ -100,15 +100,10 @@ def create_logging_class(cls, level=logging.TRACE, to_log=None):
 # loglevel=INFO. The default log level is TRACE.
 #
 # Example:
-# _logging_imager_cls = create_logging_class(casatools.imager, logging.DEBUG)
-_logging_agentflagger_cls = create_logging_class(casatools.agentflagger)
 _logging_atmosphere_cls = create_logging_class(casatools.atmosphere)
 _logging_calanalysis_cls = create_logging_class(casatools.calanalysis)
 _logging_calibrater_cls = create_logging_class(casatools.calibrater)
-_logging_componentlist_cls = create_logging_class(casatools.componentlist)
-_logging_coordsys_cls = create_logging_class(casatools.coordsys)
 _logging_image_cls = create_logging_class(casatools.image)
-_logging_imagepol_cls = create_logging_class(casatools.imagepol)
 _logging_imager_cls = create_logging_class(casatools.imager,
                                            level=logging.INFO, to_log=('selectvis', 'apparentsens', 'advise'))
 _logging_measures_cls = create_logging_class(casatools.measures)
@@ -116,35 +111,23 @@ _logging_ms_cls = create_logging_class(casatools.ms)
 _logging_msmd_cls = create_logging_class(casatools.msmetadata)
 _logging_quanta_cls = create_logging_class(casatools.quanta)
 _logging_regionmanager_cls = create_logging_class(casatools.regionmanager)
-_logging_simulator_cls = create_logging_class(casatools.simulator)
-_logging_spectralline_cls = create_logging_class(casatools.spectralline)
 _logging_synthesisutils_cls = create_logging_class(casatools.synthesisutils)
 _logging_table_cls = create_logging_class(casatools.table)
-_logging_tableplot_cls = create_logging_class(casatools.table)
 _logging_utils_cls = create_logging_class(casatools.utils.utils)
-_logging_vpmanager_cls = create_logging_class(casatools.vpmanager)
 
-agentflagger = _logging_agentflagger_cls()
 atmosphere = _logging_atmosphere_cls()
 calanalysis = _logging_calanalysis_cls()
 calibrater = _logging_calibrater_cls()
-componentlist = _logging_componentlist_cls()
-coordsys = _logging_coordsys_cls()
 image = _logging_image_cls()
-imagepol = _logging_imagepol_cls()
 imager = _logging_imager_cls()
 measures = _logging_measures_cls()
 ms = _logging_ms_cls()
 msmd = _logging_msmd_cls()
 quanta = _logging_quanta_cls()
 regionmanager = _logging_regionmanager_cls()
-simulator = _logging_simulator_cls()
-spectralline = _logging_spectralline_cls()
 synthesisutils = _logging_synthesisutils_cls()
 table = _logging_table_cls()
-tableplot = _logging_table_cls()
 utils = _logging_utils_cls()
-vpmanager = _logging_vpmanager_cls()
 
 log = casalog
 
@@ -227,35 +210,25 @@ def selectvis_context_manager(tool_cls):
 # context managers for frequently used CASA tools
 CalAnalysis = context_manager_factory(_logging_calanalysis_cls)
 ImageReader = context_manager_factory(_logging_image_cls)
-ImagerReader = context_manager_factory(_logging_imager_cls)
 MSReader = context_manager_factory(_logging_ms_cls, finalisers=['done'])
 TableReader = context_manager_factory(_logging_table_cls, finalisers=['done'])
 MSMDReader = context_manager_factory(_logging_msmd_cls)
 SelectvisReader = selectvis_context_manager(_logging_imager_cls)
-AgentFlagger = context_manager_factory(_logging_agentflagger_cls)
 
 # C extensions cannot be pickled, so ignore the CASA logger on pickle and
 # replace with it with the current CASA logger on unpickle
 __tools = [
-    'agentflagger',
     'atmosphere',
     'calibrater',
-    'componentlist',
-    'coordsys',
     'image',
-    'imagepol',
     'imager',
     'log',
     'measures',
     'ms',
     'quanta',
     'regionmanager',
-    'simulator',
-    'spectralline',
     'table',
-    'tableplot',
     'utils',
-    'vpmanager',
 ]
 
 for tool in __tools:

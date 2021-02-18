@@ -14,9 +14,9 @@ want to create task "foo" in the package "hif", I could do one of the following.
     
     Within CASA:
     ```python
-     from pipeline.infrastructure.new_pipeline_task import new_pipeline_task
-       newtask = new_pipeline_task.NewTask()
-       newtask.create('hif', 'foo', 'foo')
+    from pipeline.infrastructure.new_pipeline_task import new_pipeline_task
+    newtask = new_pipeline_task.NewTask()
+    newtask.create('hif', 'foo', 'foo')
     ```
     
 * If you want to give the task module file a different name than the task itself, use the module parameter.  For example, if task is 'foo'

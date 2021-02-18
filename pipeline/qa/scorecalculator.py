@@ -10,20 +10,20 @@ import math
 import operator
 import os
 from typing import List
-from scipy.special import erf
 
 import numpy as np
+from scipy.special import erf
 
 import pipeline.domain as domain
 import pipeline.domain.measures as measures
 import pipeline.infrastructure.basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.renderer.rendererutils as rutils
 import pipeline.infrastructure.utils as utils
 import pipeline.qa.checksource as checksource
 from pipeline.domain.datatable import OnlineFlagIndex
+from pipeline.infrastructure import casa_tools
 
 __all__ = ['score_polintents',                                # ALMA specific
            'score_bands',                                     # ALMA specific
@@ -735,9 +735,9 @@ def score_ephemeris_coordinates(mses):
     num_mses = len(mses)
     all_ok = True
     complaints = []
-    zero_direction = casatools.measures.direction('j2000', '0.0deg', '0.0deg')
-    zero_ra = casatools.quanta.formxxx(zero_direction['m0'], format='hms', prec=3)
-    zero_dec = casatools.quanta.formxxx(zero_direction['m1'], format='dms', prec=2)
+    zero_direction = casa_tools.measures.direction('j2000', '0.0deg', '0.0deg')
+    zero_ra = casa_tools.quanta.formxxx(zero_direction['m0'], format='hms', prec=3)
+    zero_dec = casa_tools.quanta.formxxx(zero_direction['m1'], format='dms', prec=2)
 
     applies_to = set()
 
@@ -976,7 +976,7 @@ def countbaddelays(m, delaytable, delaymax):
         Dictionary with antenna name as key
     """
     delaydict = collections.defaultdict(list)
-    with casatools.TableReader(delaytable) as tb:
+    with casa_tools.TableReader(delaytable) as tb:
         spws = np.unique(tb.getcol('SPECTRAL_WINDOW_ID'))
         for ispw in spws:
             tbspw = tb.query(query='SPECTRAL_WINDOW_ID==' + str(ispw), name='byspw')
@@ -1004,7 +1004,7 @@ def score_total_data_vla_delay(filename, m):
     For each antenna with delays > 200 ns, reduce score by 0.1
     """
 
-    with casatools.TableReader(filename) as tb:
+    with casa_tools.TableReader(filename) as tb:
         fpar = tb.getcol('FPARAM')
         delays = np.abs(fpar)  # Units of nanoseconds
         maxdelay = np.max(delays)
@@ -2218,8 +2218,8 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
     The fit is performed using pixels in a circular regions
     around the center of the image
     """
-    qa = casatools.quanta
-    me = casatools.measures
+    qa = casa_tools.quanta
+    me = casa_tools.measures
 
     # Get the reference direction of the check source field
     #    There is at least one field with check source intent
@@ -2546,7 +2546,7 @@ def generate_metric_mask(context, result, cs, mask):
         _fieldlist = field_list[_index]
         _spwlist = spw_list[_index]
 
-        with casatools.TableReader(rotable_name) as tb:
+        with casa_tools.TableReader(rotable_name) as tb:
             unit_ra = tb.getcolkeyword('OFS_RA', 'UNIT')
             unit_dec = tb.getcolkeyword('OFS_DEC', 'UNIT')
             tsel = tb.query('SRCTYPE==0&&ANTENNA IN {}&&FIELD_ID IN {}&&IF IN {}'.format(list(_antlist), list(_fieldlist), list(_spwlist)))
@@ -2555,7 +2555,7 @@ def generate_metric_mask(context, result, cs, mask):
             rows = tsel.rownumbers()
             tsel.close()
 
-        with casatools.TableReader(rwtable_name) as tb:
+        with casa_tools.TableReader(rwtable_name) as tb:
             permanent_flag = tb.getcol('FLAG_PERMANENT').take(rows, axis=2)
             online_flag.extend(permanent_flag[0, OnlineFlagIndex])
 
@@ -2576,7 +2576,7 @@ def generate_metric_mask(context, result, cs, mask):
     metric_mask = np.empty(imshape, dtype=bool)
     metric_mask[:] = False
 
-    qa = casatools.quanta
+    qa = casa_tools.quanta
 
     # template measure for world-pixel conversion
     # 2019/06/03 TN
@@ -2645,8 +2645,8 @@ def generate_metric_mask(context, result, cs, mask):
 
 
 def direction_recover( ra, dec, org_direction ):
-    me = casatools.measures
-    qa = casatools.quanta
+    me = casa_tools.measures
+    qa = casa_tools.quanta
 
     direction = me.direction( org_direction['refer'],
                               str(ra)+'deg', str(dec)+'deg' )
@@ -2689,7 +2689,7 @@ def score_sdimage_masked_pixels(context, result):
     imagename = image_item.imagename
 
     LOG.debug('imagename = {}'.format(imagename))
-    with casatools.ImageReader(imagename) as ia:
+    with casa_tools.ImageReader(imagename) as ia:
         # get mask
         # Mask Definition: True is valid, False is invalid.
         mask = ia.getchunk(getmask=True)
@@ -2893,26 +2893,10 @@ def score_mom8_fc_image(mom8_fc_name, peak_snr, cube_chanScaled_MAD, outlier_thr
     """
 
     outlier_fraction = n_outlier_pixels / n_pixels
-    with casatools.ImageReader(mom8_fc_name) as image:
+    with casa_tools.ImageReader(mom8_fc_name) as image:
         info = image.miscinfo()
         field = info.get('field')
         spw = info.get('spw')
-
-    # Do not yet analyze the MOM8 FC image for ephemeris sources due to
-    # missing LSRK to REST frame conversion. Set the score to a fixed value
-    # of 0.89 (PIPE-704). To be revised when CAS-12012 is implemented.
-    if is_eph_obj:
-        LOG.info('The MOM0 FC and MOM8 FC images for ephemeris source {:s} may be in error due to LSRK to REST translation issues for the Findcont Channels. If the source has real line emission check results carefully. The MOM8 FC score has been fixed to 0.89 without analyzing the actual image.'.format(field))
-        score = 0.89
-        longmsg = 'MOM8 FC score for field {:s} spw {:s} was fixed to 0.89 due to LSRK to REST translation issues for the Findcont Channels. The peak SNR is {:#.5g}.'.format(field, spw, peak_snr)
-        shortmsg = 'MOM8 FC score fixed to 0.89'
-        weblog_location = pqa.WebLogLocation.ACCORDION
-
-        origin = pqa.QAOrigin(metric_name='score_mom8_fc_image',
-                              metric_score='Manually fixed value',
-                              metric_units='None')
-
-        return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, weblog_location=weblog_location)
 
     if peak_snr <= outlier_threshold:
         score = 1.0

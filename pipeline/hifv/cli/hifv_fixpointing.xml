@@ -1,21 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" ?>
-<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
+<?xml-stylesheet type="text/xsl" ?><casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
-<task type="function" name="hifv_fixpointing" category="pipeline">
+<task category="pipeline" name="hifv_fixpointing" type="function">
 <shortdescription>Base fixpointing task</shortdescription>
 <description>
 </description>
 <input>
-    <param type="stringArray" name="vis" subparam="true">
+    <param name="vis" subparam="true" type="stringVec">
+	<shortdescription>List of input visibility data</shortdescription>
 	<description>List of input visibility data</description>
-	<value></value>
+	<value/>
     </param>
 
 
-    <param type="string" name="pipelinemode">
+    <param name="pipelinemode" type="string">
+	<shortdescription>The pipeline operating mode</shortdescription>
 	<description>The pipeline operating mode</description>
 	<value>automatic</value>
 	<allowed kind="enum">
@@ -25,12 +23,14 @@
 	</allowed>
     </param>
 
-    <param type="bool" name="dryrun" subparam="true">
+    <param name="dryrun" subparam="true" type="bool">
+	<shortdescription>Run the task (False) or display task command (True)</shortdescription>
 	<description>Run the task (False) or display task command (True)</description>
 	<value>False</value>
     </param>
 
-    <param type="bool" name="acceptresults" subparam="true">
+    <param name="acceptresults" subparam="true" type="bool">
+	<shortdescription>Add the results into the pipeline context</shortdescription>
 	<description>Add the results into the pipeline context</description>
 	<value>True</value>
     </param>
@@ -40,13 +40,13 @@
 	    <equals type="string" value="automatic">
 	    </equals>
 	    <equals type="string" value="interactive">
-                <default param="vis"><value type="stringArray"></value></default>
+                <default param="vis"><value type="stringVec"/></default>
 
 		<default param="dryrun"><value type="bool">False</value></default>
 		<default param="acceptresults"><value type="bool">True</value></default>
 	    </equals>
 	    <equals type="string" value="getinputs">
-                <default param="vis"><value type="stringArray"></value></default>
+                <default param="vis"><value type="stringVec"/></default>
 
 	    </equals>
 	</when>
@@ -54,13 +54,6 @@
 
 </input>
 
-<output>
-    <param type="any" name="results">
-        <description>The output results object</description>
-        <any type="variant"/>
-        <value></value>
-    </param>
-</output>
 <returns type="void"/>
 
 

@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hif_makeimages" type="function">
 <shortdescription>Compute clean map</shortdescription>
@@ -12,7 +12,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 </description>
 <input>
 
-  <param subparam="true" name="vis" type="stringVec">
+  <param name="vis" subparam="true" type="stringVec">
     <shortdescription>List of input MeasurementSets</shortdescription>
     <description>The list of input MeasurementSets. Defaults to the list of
                  MeasurementSets specified in the h_init or hif_importdata task.
@@ -23,8 +23,9 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value/>
   </param>
 
-  <param subparam="true" name="target_list" type="any">
+  <param name="target_list" subparam="true" type="any">
     <any type="variant"/>
+    <shortdescription>Dictionary specifying targets to be imaged; blank will read list from context</shortdescription>
     <description>Dictionary specifying targets to be imaged; blank will read list from context</description>
     <value>{}</value>
   </param>
@@ -44,82 +45,104 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
        </allowed>
   </param>
 
-  <param subparam="true" name="hm_sidelobethreshold" type="double">
+  <param name="hm_sidelobethreshold" subparam="true" type="double">
+     <shortdescription>sidelobethreshold * the max sidelobe level</shortdescription>
      <description>sidelobethreshold * the max sidelobe level</description>
      <value>-999.0</value>
   </param>
 
-  <param subparam="true" name="hm_noisethreshold" type="double">
+  <param name="hm_noisethreshold" subparam="true" type="double">
+     <shortdescription>noisethreshold * rms in residual image</shortdescription>
      <description>noisethreshold * rms in residual image</description>
      <value>-999.0</value>
   </param>
 
-  <param subparam="true" name="hm_lownoisethreshold" type="double">
+  <param name="hm_lownoisethreshold" subparam="true" type="double">
+     <shortdescription>lownoisethreshold * rms in residual image</shortdescription>
      <description>lownoisethreshold * rms in residual image</description>
      <value>-999.0</value>
   </param>
 
-  <param subparam="true" name="hm_negativethreshold" type="double">
+  <param name="hm_negativethreshold" subparam="true" type="double">
+     <shortdescription>negativethreshold * rms in residual image</shortdescription>
      <description>negativethreshold * rms in residual image</description>
      <value>-999.0</value>
   </param>
 
-  <param subparam="true" name="hm_minbeamfrac" type="double">
+  <param name="hm_minbeamfrac" subparam="true" type="double">
+     <shortdescription>Minimum beam fraction for pruning</shortdescription>
      <description>Minimum beam fraction for pruning</description>
      <value>-999.0</value>
   </param>
 
-  <param subparam="true" name="hm_growiterations" type="int">
+  <param name="hm_growiterations" subparam="true" type="int">
+     <shortdescription>Number of binary dilation iterations for growing the mask</shortdescription>
      <description>Number of binary dilation iterations for growing the mask</description>
      <value>-999</value>
   </param>
 
-  <param subparam="true" name="hm_dogrowprune" type="bool">
+  <param name="hm_dogrowprune" subparam="true" type="bool">
+    <shortdescription>Do pruning on the grow mask</shortdescription>
     <description>Do pruning on the grow mask</description>
     <value>True</value>
   </param>
 
-  <param subparam="true" name="hm_minpercentchange" type="double">
+  <param name="hm_minpercentchange" subparam="true" type="double">
+     <shortdescription>Mask size change threshold</shortdescription>
      <description>Mask size change threshold</description>
      <value>-999.0</value>
   </param>
 
   <param name="hm_fastnoise" type="bool">
+    <shortdescription>Faster noise calucation for automask or nsigma stopping</shortdescription>
     <description>Faster noise calucation for automask or nsigma stopping</description>
     <value>True</value>
   </param>
 
   <param name="hm_nsigma" type="double">
+    <shortdescription>Multiplicative factor for rms-based threshold stopping</shortdescription>
     <description>Multiplicative factor for rms-based threshold stopping</description>
     <value>0.0</value>
   </param>
 
   <param name="hm_perchanweightdensity" type="bool">
+    <shortdescription>Calculate the weight density for each channel independently</shortdescription>
     <description>Calculate the weight density for each channel independently</description>
     <value>False</value>
   </param>
 
   <param name="hm_npixels" type="int">
+    <shortdescription>Number of pixels to determine uv-cell size for super-uniform weighting</shortdescription>
     <description>Number of pixels to determine uv-cell size for super-uniform weighting</description>
     <value>0</value>
   </param>
 
   <param name="hm_cyclefactor" type="double">
+    <shortdescription>Scaling on PSF sidelobe level to compute the minor-cycle stopping threshold</shortdescription>
     <description>Scaling on PSF sidelobe level to compute the minor-cycle stopping threshold</description>
     <value>-999.0</value>
   </param>
 
   <param name="hm_minpsffraction" type="double">
+    <shortdescription>PSF fraction that marks the max depth of cleaning in the minor cycle</shortdescription>
     <description>PSF fraction that marks the max depth of cleaning in the minor cycle</description>
     <value>-999.0</value>
   </param>
 
   <param name="hm_maxpsffraction" type="double">
+    <shortdescription>PSF fraction that marks the minimum depth of cleaning in the minor cycle</shortdescription>
     <description>PSF fraction that marks the minimum depth of cleaning in the minor cycle</description>
     <value>-999.0</value>
   </param>
 
+  <param name="hm_weighting" type="string">
+    <shortdescription>Weighting scheme (natural,uniform,briggs,briggsabs[experimental],briggsbwtaper[experimental])</shortdescription>
+    <description>Weighting scheme (natural,uniform,briggs,briggsabs[experimental],briggsbwtaper[experimental])</description>
+    <value>briggs</value>
+  </param>
+
   <param name="hm_cleaning" type="string">
+    <shortdescription>Pipeline cleaning mode </shortdescription>
     <description>Pipeline cleaning mode </description>
     <value/>
     <allowed kind="enum">
@@ -131,27 +154,32 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     </allowed>
   </param>
 
-  <param subparam="true" name="tlimit" type="double">
+  <param name="tlimit" subparam="true" type="double">
+    <shortdescription>Times the sensitivity limit for cleaning</shortdescription>
     <description>Times the sensitivity limit for cleaning</description>
     <value>2.0</value>
   </param>
 
-  <param subparam="true" name="masklimit" type="int">
+  <param name="masklimit" subparam="true" type="int">
+    <shortdescription>Times good mask pixels for cleaning</shortdescription>
     <description>Times good mask pixels for cleaning</description>
     <value>4</value>
   </param>
 
   <param name="cleancontranges" type="bool">
+    <shortdescription>Clean continuum frequency ranges in cubes</shortdescription>
     <description>Clean continuum frequency ranges in cubes</description>
     <value>False</value>
   </param>
 
   <param name="calcsb" type="bool">
+    <shortdescription>Force (re-)calculation of sensitivities and beams</shortdescription>
     <description>Force (re-)calculation of sensitivities and beams</description>
     <value>False</value>
   </param>
 
   <param name="mosweight" type="bool">
+    <shortdescription>Mosaic weighting</shortdescription>
     <description>Mosaic weighting</description>
     <value>False</value>
   </param>
@@ -173,6 +201,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   </param>
 
   <param name="parallel" type="string">
+    <shortdescription>Clean images using MPI cluster</shortdescription>
     <description>Clean images using MPI cluster</description>
     <value>automatic</value>
     <allowed kind="enum">
@@ -200,13 +229,16 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     </allowed>
   </param>
 
-  <param subparam="true" name="dryrun" type="bool">
+  <param name="dryrun" subparam="true" type="bool">
+    <shortdescription>Run the task (False) or just display the command (True)
+    </shortdescription>
     <description>Run the task (False) or just display the command (True)
     </description>
     <value>False</value>
   </param>
 
-  <param subparam="true" name="acceptresults" type="bool">
+  <param name="acceptresults" subparam="true" type="bool">
+    <shortdescription>Add the results to the pipeline context</shortdescription>
     <description>Add the results to the pipeline context</description>
    <value>True</value>
   </param>
@@ -215,14 +247,14 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   <constraints>
 
     <when param="pipelinemode">
-      <equals value="automatic" type="string"/>
-      <equals value="interactive" type="string">
+      <equals type="string" value="automatic"/>
+      <equals type="string" value="interactive">
         <default param="vis"><value type="stringVec"/></default>
         <default param="target_list"><value>{}</value></default>
         <default param="dryrun"><value type="bool">False</value></default>
         <default param="acceptresults"><value type="bool">True</value></default>
       </equals>
-      <equals value="getinputs" type="string">
+      <equals type="string" value="getinputs">
         <default param="vis"><value type="stringVec"/></default>
         <default param="target_list"><value>{}</value></default>
       </equals>

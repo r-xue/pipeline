@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hifv_restoredata" type="function">
 <shortdescription>Restore flagged and calibration interferometry data from a pipeline run</shortdescription>
@@ -47,6 +47,9 @@
     </param>
 
     <param name="session" type="stringVec">
+	<shortdescription>List of sessions one per visibility file.  Only can be set in pipelinemode=\'interactive\'.
+                 Example: session=[\'session_3\']
+    </shortdescription>
 	<description>List of sessions one per visibility file.  Only can be set in pipelinemode='interactive'.
                  Example: session=['session_3']
     </description>
@@ -65,6 +68,11 @@
     </param>
 
     <param name="copytoraw" type="bool">
+	<shortdescription>Copy calibration and flagging tables from products_dir to
+                 rawdata_dir directory.
+                 Only can be set in pipelinemode=\'interactive\'.
+                 Example: copytoraw=False.
+    </shortdescription>
 	<description>Copy calibration and flagging tables from products_dir to
                  rawdata_dir directory.
                  Only can be set in pipelinemode='interactive'.
@@ -74,6 +82,9 @@
     </param>
 
     <param name="rawdata_dir" type="string">
+	<shortdescription>The rawdata directory.
+                 Only can be set in pipelinemode=\'interactive\'.
+                 Example: rawdata_dir=\'myrawdatapath\'</shortdescription>
 	<description>The rawdata directory.
                  Only can be set in pipelinemode='interactive'.
                  Example: rawdata_dir='myrawdatapath'</description>
@@ -81,21 +92,27 @@
     </param>
 
     <param name="lazy" type="bool">
+	<shortdescription>Use the lazy filler option.  Only can be set in pipelinemode=\'interactive\'.</shortdescription>
 	<description>Use the lazy filler option.  Only can be set in pipelinemode='interactive'.</description>
 	<value>False</value>
     </param>
 
     <param name="bdfflags" type="bool">
+	<shortdescription>Set the BDF flags.  Only can be set in pipelinemode=\'interactive\'.</shortdescription>
 	<description>Set the BDF flags.  Only can be set in pipelinemode='interactive'.</description>
 	<value>False</value>
     </param>
 
     <param name="ocorr_mode" type="string">
+	<shortdescription>Correlation import mode</shortdescription>
 	<description>Correlation import mode</description>
 	<value>co</value>
     </param>
 
     <param name="gainmap" type="bool">
+	<shortdescription>If True, map gainfields to a particular list of scans when
+                 applying calibration tables.
+    </shortdescription>
 	<description>If True, map gainfields to a particular list of scans when
                  applying calibration tables.
     </description>
@@ -103,6 +120,7 @@
     </param>
 
     <param name="asis" type="string">
+	<shortdescription>List of tables to import asis.  Only can be set in pipelinemode=\'interactive\'.</shortdescription>
 	<description>List of tables to import asis.  Only can be set in pipelinemode='interactive'.</description>
 	<value/>
     </param>
@@ -124,7 +142,7 @@
         </allowed>
     </param>
 
-    <param subparam="true" name="dryrun" type="bool">
+    <param name="dryrun" subparam="true" type="bool">
         <shortdescription>Run the task (False) or display task command (True)</shortdescription>
         <description>Run the commands (True) or generate the commands to be run but
                      do not execute (False).  This is a pipeline task execution mode.
@@ -132,7 +150,7 @@
         <value>False</value>
     </param>
 
-    <param subparam="true" name="acceptresults" type="bool">
+    <param name="acceptresults" subparam="true" type="bool">
         <shortdescription>Add the results into the pipeline context</shortdescription>
         <description>Add the results of the task to the pipeline context (True) or
                      reject them (False).  This is a pipeline task execution mode.
@@ -142,13 +160,13 @@
 
     <constraints>
 	<when param="pipelinemode">
-	    <equals value="automatic" type="string">
+	    <equals type="string" value="automatic">
 	    </equals>
-	    <equals value="interactive" type="string">
+	    <equals type="string" value="interactive">
 		<default param="dryrun"><value type="bool">False</value></default>
 		<default param="acceptresults"><value type="bool">True</value></default>
 	    </equals>
-	    <equals value="getinputs" type="string">
+	    <equals type="string" value="getinputs">
 	    </equals>
 	</when>
     </constraints>

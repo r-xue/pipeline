@@ -27,6 +27,7 @@ import enum
 import operator
 from typing import Optional, Set, List
 
+from . import eventbus
 from . import logging
 
 LOG = logging.get_logger(__name__)

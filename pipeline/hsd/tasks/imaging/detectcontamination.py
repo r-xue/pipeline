@@ -10,8 +10,8 @@ import matplotlib.pyplot as plt
 import collections
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.displays.pointing as pointing
+from pipeline.infrastructure import casa_tools
 from ..common import display as sd_display
 
 LOG = infrastructure.get_logger(__name__)
@@ -193,7 +193,7 @@ def warn_deep_absorption_feature(masked_average_spectrum, imageitem=None):
 # Function for reading FITS and its header (CASA version)
 def read_fits(input):
     LOG.info("FITS: {}".format(input))
-    with casatools.ImageReader(input) as ia:
+    with casa_tools.ImageReader(input) as ia:
         cube = ia.getchunk()
         csys = ia.coordsys()
         increments = csys.increment()
@@ -224,7 +224,7 @@ def detect_contamination(context, imageitem):
     (refpix, refval, increment) = image_obj.spectral_axis(unit='GHz')
     frequency = np.array([refval + increment * (i - refpix) for i in range(naxis3)])
     fspec = FrequencySpec(unit='GHz', data=frequency)
-    qa = casatools.quanta
+    qa = casa_tools.quanta
     minra = qa.convert(image_obj.ra_min, 'deg')['value']
     maxra = qa.convert(image_obj.ra_max, 'deg')['value']
     mindec = qa.convert(image_obj.dec_min, 'deg')['value']

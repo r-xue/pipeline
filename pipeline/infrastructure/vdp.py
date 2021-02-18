@@ -427,11 +427,10 @@ class InputsContainer(object):
         scope_is_null = scope_null == scope_null.convert(scope_value)
 
         if scope_is_null:
-            # TODO SJW move fn to this module
             from . import basetask
             # note that for ModeInputs this queries whether the ModeInputs is
             # registered for imaging MSes, not the Inputs that is selected.
-            imaging_preferred = basetask.get_imaging_preferred(self._task_cls.Inputs)
+            imaging_preferred = issubclass(self._task_cls.Inputs, api.ImagingMeasurementSetsPreferred)
             ms_pool = self._context.observing_run.get_measurement_sets(imaging_preferred=imaging_preferred)
             named_args[self._scope_attr] = [ms.name for ms in ms_pool]
 

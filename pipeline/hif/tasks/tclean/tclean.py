@@ -1,19 +1,19 @@
-
 import glob
 import os
+
 import numpy as np
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api
-import pipeline.infrastructure.casatools as casatools
+import pipeline.infrastructure.imageheader as imageheader
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.pipelineqa as pipelineqa
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
-import pipeline.infrastructure.imageheader as imageheader
 from pipeline.hif.heuristics import imageparams_factory
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from . import cleanbase
 from .automaskthresholdsequence import AutoMaskThresholdSequence
@@ -207,12 +207,8 @@ class Tclean(cleanbase.CleanBase):
                 os.system(mkcmd)
                 self.copy_products(os.path.join(image_name, old_pname), os.path.join(newname, new_pname))
             else:
-                if 'summaryplot.png' in image_name:
-                    LOG.info('Copying {} to {}'.format(image_name, newname))
-                    job = casa_tasks.copyfile(image_name, newname)
-                else:
-                    LOG.info('Copying {} to {}'.format(image_name, newname))
-                    job = casa_tasks.copytree(image_name, newname)
+                LOG.info('Copying {} to {}'.format(image_name, newname))
+                job = casa_tasks.copytree(image_name, newname)
                 self._executor.execute(job)
 
     def prepare(self):
@@ -224,7 +220,7 @@ class Tclean(cleanbase.CleanBase):
                  inputs.intent, inputs.field, inputs.spw)
 
         per_spw_cont_sensitivities_all_chan = context.per_spw_cont_sensitivities_all_chan
-        qaTool = casatools.quanta
+        qaTool = casa_tools.quanta
 
         # if 'start' or 'width' are defined in velocity units, track these
         #  for conversion to frequency and back before and after tclean call. Added
@@ -252,7 +248,7 @@ class Tclean(cleanbase.CleanBase):
             inputs.pblimit = self.pblimit_image
 
         # Remove MSs that do not contain data for the given field(s)
-        scanidlist, visindexlist = self.image_heuristics.get_scanidlist(inputs.vis, inputs.field, inputs.intent)
+        _, visindexlist = self.image_heuristics.get_scanidlist(inputs.vis, inputs.field, inputs.intent)
         filtered_vislist = [inputs.vis[i] for i in visindexlist]
         if filtered_vislist != inputs.vis:
             inputs.vis = filtered_vislist
@@ -329,8 +325,7 @@ class Tclean(cleanbase.CleanBase):
             # To avoid noisy edge channels, use only the frequency
             # intersection and skip one channel on either end.
             if self.image_heuristics.is_eph_obj(inputs.field):
-                # Need to use TOPO until CASA can convert to REST
-                frame = 'TOPO'
+                frame = 'REST'
             else:
                 frame = 'LSRK'
             if0, if1, channel_width = self.image_heuristics.freq_intersection(inputs.vis, inputs.field, inputs.intent,
@@ -357,7 +352,7 @@ class Tclean(cleanbase.CleanBase):
                 #    then back again before the tclean call
                 if 'm/' in inputs.start:
                     self.start_as_velocity = qaTool.quantity(inputs.start)
-                    inputs.start = self._to_frequency(inputs.start, inputs.restfreq)
+                    inputs.start = utils.velocity_to_frequency(inputs.start, inputs.restfreq)
                     self.start_as_frequency = inputs.start
 
                 if0 = qaTool.convert(inputs.start, 'Hz')['value']
@@ -392,7 +387,7 @@ class Tclean(cleanbase.CleanBase):
                 if 'm/' in inputs.width:
                     self.width_as_velocity = qaTool.quantity(inputs.width)
                     start_plus_width = qaTool.add(self.start_as_velocity, inputs.width)
-                    start_plus_width_freq = self._to_frequency(start_plus_width, inputs.restfreq)
+                    start_plus_width_freq = utils.velocity_to_frequency(start_plus_width, inputs.restfreq)
                     inputs.width = qaTool.sub(start_plus_width_freq, inputs.start)
                     self.width_as_frequency = inputs.width
 
@@ -434,7 +429,7 @@ class Tclean(cleanbase.CleanBase):
                 channel_width_freq_TOPO = float(real_spw_obj.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ))
                 freq0 = qaTool.quantity(centre_frequency_TOPO, 'Hz')
                 freq1 = qaTool.quantity(centre_frequency_TOPO + channel_width_freq_TOPO, 'Hz')
-                channel_width_velo_TOPO = qaTool.getvalue(self._to_velocity(freq1, freq0, '0.0km/s'))[0]
+                channel_width_velo_TOPO = float(qaTool.getvalue(qaTool.convert(utils.frequency_to_velocity(freq1, freq0), 'km/s')))
                 # Skip 1 km/s or at least 5 channels
                 extra_skip_channels = max(5, int(np.ceil(1.0 / abs(channel_width_velo_TOPO))))
             else:
@@ -464,38 +459,13 @@ class Tclean(cleanbase.CleanBase):
                     inputs.nchan = int(utils.round_half_up((if1 - if0) / channel_width - 2)) - 2 * extra_skip_channels
 
             if inputs.start == '':
-                if self.image_heuristics.is_eph_obj(inputs.field):
-                    # For ephemeris objects we do not yet have the conversion to the
-                    # REST frame. The start of the frequency range is thus given in
-                    # channels. The offset accounts for drifts of fast moving objects.
-                    if sideband == 'LSB':
-                        if inputs.nbin not in (None, -1):
-                            inputs.start = int(utils.round_half_up((if1 - if0) / channel_width * inputs.nbin - 2)) - 1 - extra_skip_channels
-                        else:
-                            inputs.start = int(utils.round_half_up((if1 - if0) / channel_width - 2)) - 1 - extra_skip_channels
-                    else:
-                        inputs.start = extra_skip_channels
-                else:
-                    # tclean interprets the start frequency as the center of the
-                    # first channel. We have, however, an edge to edge range.
-                    # Thus shift by 0.5 channels if no start is supplied.
-                    inputs.start = '%.10fGHz' % ((if0 + 1.5 * channel_width) / 1e9)
+                # tclean interprets the start frequency as the center of the
+                # first channel. We have, however, an edge to edge range.
+                # Thus shift by 0.5 channels if no start is supplied.
+                inputs.start = '%.10fGHz' % ((if0 + 1.5 * channel_width) / 1e9)
 
             # Always adjust width to apply possible binning
-            if self.image_heuristics.is_eph_obj(inputs.field):
-                # For ephemeris objects we need to define the frequency axis in
-                # channels until CASA can convert to the REST frame.
-                if sideband == 'LSB':
-                    width_sign = -1
-                else:
-                    width_sign = 1
-
-                if inputs.nbin not in (None, -1):
-                    inputs.width = width_sign * inputs.nbin
-                else:
-                    inputs.width = width_sign
-            else:
-                inputs.width = '%.7fMHz' % (channel_width / 1e6)
+            inputs.width = '%.7fMHz' % (channel_width / 1e6)
 
         # Make sure there are LSRK selections if cont.dat/lines.dat exist.
         # For ALMA this is already done at the hif_makeimlist step. For VLASS
@@ -515,19 +485,21 @@ class Tclean(cleanbase.CleanBase):
                                                                                                         spwid))
 
                 if spwsel_spwid in ('ALL', '', 'NONE'):
-                    spwsel_spwid_refer = 'LSRK'
+                    if self.image_heuristics.is_eph_obj(inputs.field):
+                        spwsel_spwid_refer = 'SOURCE'
+                    else:
+                        spwsel_spwid_refer = 'LSRK'
                 else:
-                    spwsel_spwid_freqs, spwsel_spwid_refer = spwsel_spwid.split()
+                    _, spwsel_spwid_refer = spwsel_spwid.split()
 
-                if spwsel_spwid_refer != 'LSRK':
-                    LOG.warn('Frequency selection is specified in %s but must be in LSRK' % spwsel_spwid_refer)
+                if spwsel_spwid_refer not in ('LSRK', 'SOURCE'):
+                    LOG.warn('Frequency selection is specified in %s but must be in LSRK or SOURCE' % spwsel_spwid_refer)
 
                 inputs.spwsel_lsrk['spw%s' % spwid] = spwsel_spwid
             inputs.spwsel_all_cont = all_continuum
 
         # Get TOPO frequency ranges for all MSs
-        (spw_topo_freq_param, spw_topo_chan_param, spw_topo_freq_param_dict, spw_topo_chan_param_dict,
-         total_topo_bw, aggregate_topo_bw, aggregate_lsrk_bw) = self.image_heuristics.calc_topo_ranges(inputs)
+        (spw_topo_freq_param, _, _, spw_topo_chan_param_dict, _, _, aggregate_lsrk_bw) = self.image_heuristics.calc_topo_ranges(inputs)
 
         # Save continuum frequency ranges for later.
         if (inputs.specmode == 'cube') and (inputs.spwsel_lsrk.get('spw%s' % inputs.spw, None) not in (None,
@@ -541,13 +513,9 @@ class Tclean(cleanbase.CleanBase):
             # Override with manually set value
             sensitivity = qaTool.convert(inputs.sensitivity, 'Jy')['value']
             eff_ch_bw = 1.0
-            sens_bw = 1.0
         else:
             # Get a noise estimate from the CASA sensitivity calculator
-            (sensitivity,
-             eff_ch_bw,
-             sens_bw,
-             per_spw_cont_sensitivities_all_chan) = \
+            (sensitivity, eff_ch_bw, _, per_spw_cont_sensitivities_all_chan) = \
                 self.image_heuristics.calc_sensitivities(inputs.vis, inputs.field, inputs.intent, inputs.spw,
                                                          inputs.nbin, spw_topo_chan_param_dict, inputs.specmode,
                                                          inputs.gridder, inputs.cell, inputs.imsize, inputs.weighting,
@@ -647,8 +615,6 @@ class Tclean(cleanbase.CleanBase):
 
         inputs = self.inputs
 
-        cqa = casatools.quanta
-
         # Compute the dirty image
         LOG.info('Compute the dirty image')
         iteration = 0
@@ -666,12 +632,11 @@ class Tclean(cleanbase.CleanBase):
                     return result
                 elif bad_psf_channels.shape != (0,):
                     LOG.warn('Found bad PSF fits for SPW %s in channels %s' % (inputs.spw, ','.join(map(str, bad_psf_channels))))
-                    newcommonbeam_major_arcsec = cqa.getvalue(cqa.convert(newcommonbeam['major'], 'arcsec'))[0]
-                    newcommonbeam_minor_arcsec = cqa.getvalue(cqa.convert(newcommonbeam['minor'], 'arcsec'))[0]
-                    newcommonbeam_pa_deg = cqa.getvalue(cqa.convert(newcommonbeam['pa'], 'deg'))[0]
                     # For Cycle 7 the new common beam shall not yet be used (PIPE-375).
-                    #LOG.warn('Replacing bad common beam for SPW %s with %#.3g x %#.3g arcsec @ %.1f deg' % (inputs.spw, newcommonbeam_major_arcsec, newcommonbeam_minor_arcsec, newcommonbeam_pa_deg))
-                    #inputs.restoringbeam = ['%#.3garcsec' % (newcommonbeam_major_arcsec), '%#.3garcsec' % (newcommonbeam_minor_arcsec), '%.1fdeg' % (newcommonbeam_pa_deg)]
+                    # In the future, we might use the PIPE-375 method to calculate unskewed
+                    # common beam in case of PSF fit problems.  For implementation details see
+                    # https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/browse/pipeline/hif/tasks/tclean/tclean.py?at=9b8902e66bf44e644e612b1980e5aee5361e8ddd#607
+
 
         # Determine masking limits depending on PB
         extension = '.tt0' if result.multiterm else ''
@@ -748,8 +713,8 @@ class Tclean(cleanbase.CleanBase):
         while keep_iterating:
             # Create the name of the next clean mask from the root of the
             # previous residual image.
-            rootname, ext = os.path.splitext(result.residual)
-            rootname, ext = os.path.splitext(rootname)
+            rootname, _ = os.path.splitext(result.residual)
+            rootname, _ = os.path.splitext(rootname)
 
             # Delete any old files with this naming root
             filenames = glob.glob('%s.iter%s*' % (rootname, iteration))
@@ -850,13 +815,6 @@ class Tclean(cleanbase.CleanBase):
             LOG.info('    Residual max: %s', residual_max)
             LOG.info('    Residual min: %s', residual_min)
 
-            # Keep tclean summary plot
-            try:
-                move_job = casa_tasks.move('summaryplot_1.png', '%s.iter%s.summaryplot.png' % (rootname, iteration))
-                self._executor.execute(move_job)
-            except (IOError, OSError):
-                LOG.info('Could not save tclean summary plot.')
-
             # Up the iteration counter
             iteration += 1
 
@@ -885,9 +843,9 @@ class Tclean(cleanbase.CleanBase):
         # if 'start' or 'width' are defined in velocity units, convert from frequency back
         # to velocity before tclean call. Added to support SRDP ALMA optimized imaging.
         if self.start_as_velocity:
-            inputs.start = casatools.quanta.tos(self.start_as_velocity)
+            inputs.start = casa_tools.quanta.tos(self.start_as_velocity)
         if self.width_as_velocity:
-            inputs.width = casatools.quanta.tos(self.width_as_velocity)
+            inputs.width = casa_tools.quanta.tos(self.width_as_velocity)
 
         clean_inputs = cleanbase.CleanBase.Inputs(inputs.context,
                                                   output_dir=inputs.output_dir,
@@ -970,8 +928,7 @@ class Tclean(cleanbase.CleanBase):
         # will corrupt the table cache, so do things using only the
         # table tool.
         for vis in self.inputs.vis:
-            with casatools.TableReader('%s/POINTING' % vis,
-                                       nomodify=False) as table:
+            with casa_tools.TableReader('%s/POINTING' % vis, nomodify=False) as table:
                 # make a copy of the table
                 LOG.debug('Making copy of POINTING table')
                 copy = table.copy('%s/POINTING_COPY' % vis, valuecopy=True)
@@ -983,8 +940,7 @@ class Tclean(cleanbase.CleanBase):
     def _restore_pointing_table(self):
         for vis in self.inputs.vis:
             # restore the copy of the POINTING table
-            with casatools.TableReader('%s/POINTING_COPY' % vis,
-                                       nomodify=False) as table:
+            with casa_tools.TableReader('%s/POINTING_COPY' % vis, nomodify=False) as table:
                 LOG.debug('Copying back into POINTING table')
                 original = table.copy('%s/POINTING' % vis, valuecopy=True)
                 original.done()
@@ -1025,8 +981,6 @@ class Tclean(cleanbase.CleanBase):
     # in the line-free (aka continuum) channels. If the continuum subtraction
     # worked well, then this image should just contain noise.
     def _calc_mom0_8_fc(self, result):
-
-        context = self.inputs.context
 
         # Find max iteration that was performed.
         maxiter = max(result.iterations.keys())
@@ -1069,7 +1023,7 @@ class Tclean(cleanbase.CleanBase):
 
             # Create flattened PB over continuum channels
             flattened_pb_name = result.flux + extension + '.flattened_mom_0_8_fc'
-            with casatools.ImageReader(result.flux + extension) as image:
+            with casa_tools.ImageReader(result.flux + extension) as image:
                 flattened_pb = image.collapse(function='mean', axes=[2, 3], chans=cont_chan_ranges_str, outfile=flattened_pb_name)
                 flattened_pb.done()
 
@@ -1083,7 +1037,7 @@ class Tclean(cleanbase.CleanBase):
                 else:
                     raise 'Cannot handle clean mask name %s' % (os.path.basename(cleanmask))
 
-                with casatools.ImageReader(cleanmask) as image:
+                with casa_tools.ImageReader(cleanmask) as image:
                     flattened_mask_image = image.collapse(function='max', axes=[2, 3], chans=cont_chan_ranges_str, outfile=flattened_mask_name)
                     flattened_mask_image.done()
             else:
@@ -1092,7 +1046,7 @@ class Tclean(cleanbase.CleanBase):
             outlier_threshold = 5.0
 
             # Calculate statistics
-            with casatools.ImageReader(mom8fc_name) as image:
+            with casa_tools.ImageReader(mom8fc_name) as image:
                 # Get the min, max, median, MAD and number of pixels of the MOM8 FC image from the area excluding the cleaned area edges (PIPE-704)
                 statsmask = '"{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05)
                 stats = image.statistics(mask=statsmask, robust=True)
@@ -1118,7 +1072,7 @@ class Tclean(cleanbase.CleanBase):
                 statsmask = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, os.path.basename(flattened_pb_name), result.pblimit_cleanmask)
                 LOG.info('No cleanmask available to exclude for MOM8_FC RMS and peak SNR calculation. Calculating sigma, channel scaled MAD and peak SNR from annulus area of 1.05 x pblimit_image < pb < pblimit_cleanmask.')
 
-            with casatools.ImageReader(imagename) as image:
+            with casa_tools.ImageReader(imagename) as image:
                 stats_masked = image.statistics(mask=statsmask, stretch=True, robust=True, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5)
 
             cube_sigma = np.median(stats_masked.get('sigma')[cont_chan_indices])
@@ -1129,7 +1083,7 @@ class Tclean(cleanbase.CleanBase):
             LOG.info('MOM8_FC image {:s} has a maximum of {:#.5g}, median of {:#.5g} resulting in a Peak SNR of {:#.5g} times the channel scaled MAD of {:#.5g}.'.format(os.path.basename(mom8fc_name), image_max, image_median_annulus, peak_snr, cube_chanScaledMAD))
 
             # Calculate outlier fraction for QA scoring
-            with casatools.ImageReader(mom8fc_name) as image:
+            with casa_tools.ImageReader(mom8fc_name) as image:
                 statsmask = '"{:s}" > {:f} && "{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, mom8fc_name, outlier_threshold * cube_chanScaledMAD + image_median_annulus)
                 stats_outliers = image.statistics(mask=statsmask, robust=True)
                 npts = stats_outliers.get('npts')
@@ -1164,7 +1118,6 @@ class Tclean(cleanbase.CleanBase):
 
         See PIPE-558 (https://open-jira.nrao.edu/browse/PIPE-558).
         '''
-        context = self.inputs.context
 
         # Find max iteration that was performed.
         maxiter = max(result.iterations.keys())
@@ -1187,33 +1140,10 @@ class Tclean(cleanbase.CleanBase):
         # Update the result.
         result.set_mom8(maxiter, mom8_name)
 
-    def _to_frequency(self, velocity, restfreq):
-        # f = f_rest * (1 - v/c)
-        # https://www.iram.fr/IRAMFR/ARN/may95/node4.html
-        qa = casatools.quanta
-        light_speed = qa.getvalue(qa.convert(qa.constants('c'), 'km/s'))[0]
-        velocity = qa.getvalue(qa.convert(qa.quantity(velocity), 'km/s'))[0]
-        val = qa.getvalue(restfreq)[0] * (1 - velocity / light_speed)
-        unit = qa.getunit(restfreq)
-        frequency = qa.tos(qa.quantity(val, unit))
-        return frequency
-
-    def _to_velocity(self, frequency, restfreq, velo):
-        # v = c * (f_rest - f) / f_rest
-        # https://www.iram.fr/IRAMFR/ARN/may95/node4.html
-        qa = casatools.quanta
-        light_speed = qa.getvalue(qa.convert(qa.constants('c'), 'km/s'))[0]
-        restfreq = qa.getvalue(qa.convert(restfreq, 'MHz'))[0]
-        freq = qa.getvalue(qa.convert(frequency, 'MHz'))[0]
-        val = light_speed * ((restfreq - freq) / restfreq)
-        unit = qa.getunit(velo)
-        velocity = qa.tos(qa.quantity(val, unit))
-        return velocity
-
     def _update_miscinfo(self, imagename, nfield, datamin, datamax):
 
         # Update metadata
-        with casatools.ImageReader(imagename) as image:
+        with casa_tools.ImageReader(imagename) as image:
             info = image.miscinfo()
 
             info['nfield'] = nfield

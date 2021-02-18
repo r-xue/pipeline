@@ -1,9 +1,9 @@
 import collections
 import decimal
 
-import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.domain.measures as measures
+import pipeline.infrastructure as infrastructure
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -213,7 +213,7 @@ def simple_n2wspwmap(allspws, scispws, maxnarrowbw, maxbwfrac, samebb):
     #      maxbwfrac - Width must be > maxbwfrac * maximum bandwidth for a match
     #         samebb - If possible match within a baseband
 
-    quanta = casatools.quanta
+    quanta = casa_tools.quanta
 
     # Find the maximum science spw bandwidth for each science receiver band.
     bwmaxdict = {}

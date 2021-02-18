@@ -15,12 +15,12 @@ from . import infrastructure
 
 from .infrastructure import Pipeline, Context
 
-import pipeline.h
-import pipeline.hif
-import pipeline.hifa
-import pipeline.hsd
-import pipeline.hifv
-import pipeline.hsdn
+from . import h
+from . import hif
+from . import hifa
+from . import hsd
+from . import hifv
+from . import hsdn
 
 from .domain import measures
 from casashell.private.stack_manip import find_frame
@@ -141,26 +141,6 @@ def stop_weblog():
             HTTP_SERVER = None
 
 
-#def initcli():
-#    print "Initializing cli..."
-#    mypath = pkg_resources.resource_filename(__name__, '')
-#    hifpath = mypath + "/hif/cli/hif.py"
-#    hpath = mypath + "/h/cli/h.py"
-#    hsdpath = mypath + "/hsd/cli/hsd.py"
-#    hifapath = mypath + "/hifa/cli/hifa.py"
-#    hifvpath = mypath + "/hifv/cli/hifv.py"
-#    hsdnpath = mypath + "/hsdn/cli/hsdn.py"
-#    myglobals = stack_frame_find()
-#
-#    execfile(hpath, myglobals)
-#    execfile(hifpath, myglobals)
-#    execfile(hsdpath, myglobals)
-#    execfile(hifapath, myglobals)
-#    execfile(hifvpath, myglobals)
-#    execfile(hsdnpath, myglobals)
-#    # exec('import pipeline.infrastructure.executeppr', myglobals)
-
-
 def initcli():
     LOG.info('Initializing cli...')
     my_globals = find_frame()
@@ -205,4 +185,4 @@ log_host_environment()
 
 # FINALLY import executeppr. Do so as late as possible in pipeline module
 # because executeppr make use of a part of pipeline module.
-import pipeline.infrastructure.executeppr
+from .infrastructure import executeppr

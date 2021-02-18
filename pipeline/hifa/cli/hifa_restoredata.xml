@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hifa_restoredata" type="function">
 
@@ -162,7 +162,7 @@ Issues
 	</allowed>
     </param>
 
-    <param subparam="true" name="dryrun" type="bool">
+    <param name="dryrun" subparam="true" type="bool">
         <shortdescription>Run the task (False) or display task command (True)</shortdescription>
         <description>Run the commands (False) or generate the commands to be
                       run but do not execute (True).
@@ -171,7 +171,7 @@ Issues
 	<value>False</value>
     </param>
 
-    <param subparam="true" name="acceptresults" type="bool">
+    <param name="acceptresults" subparam="true" type="bool">
         <shortdescription>Add the results into the pipeline context</shortdescription>
         <description>Add the results of the task to the pipeline context (True)
                      or reject them (False).
@@ -181,13 +181,13 @@ Issues
 
     <constraints>
 	<when param="pipelinemode">
-	    <equals value="automatic" type="string">
+	    <equals type="string" value="automatic">
 	    </equals>
-	    <equals value="interactive" type="string">
+	    <equals type="string" value="interactive">
 		<default param="dryrun"><value type="bool">False</value></default>
 		<default param="acceptresults"><value type="bool">True</value></default>
 	    </equals>
-	    <equals value="getinputs" type="string">
+	    <equals type="string" value="getinputs">
 	    </equals>
 	</when>
     </constraints>

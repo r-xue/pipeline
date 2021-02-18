@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="hif_bandpass" type="function">
 <shortdescription>Compute bandpass calibration solutions</shortdescription>
@@ -38,7 +38,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
 </description>
 <input>
 
-  <param subparam="true" name="vis" type="stringVec">
+  <param name="vis" subparam="true" type="stringVec">
     <shortdescription>List of input MeasurementSets</shortdescription>
     <description>The list of input MeasurementSets. Defaults to the list of
                  MeasurementSets specified in the h_init or hif_importdata task.
@@ -49,7 +49,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value/>
   </param>
 
-  <param subparam="true" name="caltable" type="stringVec">
+  <param name="caltable" subparam="true" type="stringVec">
     <shortdescription>List of output caltables</shortdescription>
     <description>The list of output calibration tables. Defaults to the
                  standard pipeline naming convention.
@@ -59,7 +59,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value/>
   </param>
 
-  <param subparam="true" name="field" type="string">
+  <param name="field" subparam="true" type="string">
     <shortdescription>Set of data selection field names or ids</shortdescription>
     <description>The list of field names or field ids for which bandpasses are
                  computed. Defaults to all fields.
@@ -69,7 +69,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value/>
   </param>
 
-  <param subparam="true" name="intent" type="string">
+  <param name="intent" subparam="true" type="string">
     <shortdescription>Set of data selection intents</shortdescription>
     <description>A string containing a comma delimited list of intents against
                  which the selected fields are matched.  Defaults to all data
@@ -80,7 +80,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value/>
   </param>
 
-  <param subparam="true" name="spw" type="string">
+  <param name="spw" subparam="true" type="string">
     <shortdescription>Set of data selection spectral window/channels</shortdescription>
     <description>The list of spectral windows and channels for which bandpasses
                  are computed. Defaults to all science spectral windows.
@@ -90,7 +90,8 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value/>
   </param>
 
-  <param subparam="true" name="antenna" type="string">
+  <param name="antenna" subparam="true" type="string">
+    <shortdescription>Set of data selection antenna IDs</shortdescription>
     <description>Set of data selection antenna IDs</description>
     <value/>
   </param>
@@ -103,7 +104,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value>True</value>
   </param>
 
-  <param subparam="true" name="phaseupsolint" type="any">
+  <param name="phaseupsolint" subparam="true" type="any">
     <shortdescription>Phaseup correction solution interval</shortdescription>
     <description>The phase correction solution interval in CASA syntax. 
                  Used when phaseup is True.
@@ -114,7 +115,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value type="string">int</value>
   </param>
 
-  <param subparam="true" name="phaseupbw" type="string">
+  <param name="phaseupbw" subparam="true" type="string">
     <shortdescription>Bandwidth to use for phaseup</shortdescription>
     <description>Bandwidth to be used for phaseup. Defaults to 500MHz.
                  Used when phaseup is True.
@@ -145,7 +146,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value>scan</value>
   </param>
 
-  <param subparam="true" name="refant" type="string">
+  <param name="refant" subparam="true" type="string">
     <shortdescription>Reference antenna names</shortdescription>
     <description>Reference antenna names. Defaults to the value(s) stored in
                  the pipeline context. If undefined in the pipeline context
@@ -157,11 +158,12 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   </param>
 
   <param name="solnorm" type="bool">
+    <shortdescription>Normalise the bandpass solution</shortdescription>
     <description>Normalise the bandpass solution</description>
     <value type="bool">True</value>
   </param>
 
-  <param subparam="true" name="minblperant" type="int">
+  <param name="minblperant" subparam="true" type="int">
     <shortdescription>Minimum baselines per antenna required for solve</shortdescription>
     <description>Minimum number of baselines required per antenna for each
                  solve. Antennas with fewer baselines are excluded from
@@ -170,7 +172,8 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     <value>4</value>
   </param>
 
-  <param subparam="true" name="minsnr" type="double">
+  <param name="minsnr" subparam="true" type="double">
+    <shortdescription>Reject solutions below this SNR</shortdescription>
     <description>Reject solutions below this SNR</description>
     <value>3.0</value>
   </param>
@@ -193,12 +196,13 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
     </allowed>
   </param>
 
-  <param subparam="true" name="dryrun" type="bool">
+  <param name="dryrun" subparam="true" type="bool">
+    <shortdescription>Run the task (False) or just display the command (True)</shortdescription>
     <description>Run the task (False) or just display the command (True)</description>
     <value>False</value>
   </param>
 
-  <param subparam="true" name="acceptresults" type="bool">
+  <param name="acceptresults" subparam="true" type="bool">
     <shortdescription>Add the results to the pipeline context</shortdescription>
     <description>Add the results of the task to the pipeline context (True) or
                  reject them (False).
@@ -209,17 +213,17 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
   <constraints>
 
     <when param="phaseup">
-      <equals value="True" type="bool">
+      <equals type="bool" value="True">
         <default param="phaseupsolint"><value type="string">int</value></default>
         <default param="phaseupbw"><value type="string"/></default>
       </equals>
-      <equals value="False" type="bool">
+      <equals type="bool" value="False">
       </equals>
     </when>
 
     <when param="pipelinemode">
-      <equals value="automatic" type="string"/>
-      <equals value="interactive" type="string">
+      <equals type="string" value="automatic"/>
+      <equals type="string" value="interactive">
         <default param="vis"><value type="stringVec"/></default>
         <default param="caltable"><value type="stringVec"/></default>
         <default param="field"><value type="string"/></default>
@@ -231,7 +235,7 @@ results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
         <default param="dryrun"><value type="bool">False</value></default>
         <default param="acceptresults"><value type="bool">True</value></default>
       </equals>
-      <equals value="getinputs" type="string">
+      <equals type="string" value="getinputs">
         <default param="vis"><value type="stringVec"/></default>
         <default param="caltable"><value type="stringVec"/></default>
         <default param="field"><value type="string"/></default>

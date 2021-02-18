@@ -3,14 +3,14 @@ import tempfile
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.mpihelpers as mpihelpers
+import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.h.tasks.common.sensitivity import Sensitivity
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import exceptions
 from pipeline.infrastructure import task_registry
-import pipeline.infrastructure.utils as utils
-from pipeline.h.tasks.common.sensitivity import Sensitivity
 from .resultobjects import MakeImagesResult
 from ..tclean import Tclean
 from ..tclean.resultobjects import TcleanResult
@@ -38,10 +38,10 @@ class MakeImagesInputs(vdp.StandardInputs):
     hm_negativethreshold = vdp.VisDependentProperty(default=-999.0)
     hm_noisethreshold = vdp.VisDependentProperty(default=-999.0)
     hm_sidelobethreshold = vdp.VisDependentProperty(default=-999.0)
+    hm_weighting = vdp.VisDependentProperty(default='briggs')
     masklimit = vdp.VisDependentProperty(default=2.0)
     parallel = vdp.VisDependentProperty(default='automatic')
     tlimit = vdp.VisDependentProperty(default=2.0)
-    weighting = vdp.VisDependentProperty(default='briggs')
     overwrite_on_export = vdp.VisDependentProperty(default=True)
 
     @vdp.VisDependentProperty(null_input=['', None, {}])
@@ -60,17 +60,16 @@ class MakeImagesInputs(vdp.StandardInputs):
                  hm_lownoisethreshold=None, hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None,
                  hm_dogrowprune=None, hm_minpercentchange=None, hm_fastnoise=None, hm_nsigma=None,
                  hm_perchanweightdensity=None, hm_npixels=None, hm_cyclefactor=None, hm_minpsffraction=None,
-                 hm_maxpsffraction=None, hm_cleaning=None, tlimit=None, masklimit=None,
+                 hm_maxpsffraction=None, hm_weighting=None, hm_cleaning=None, tlimit=None, masklimit=None,
                  cleancontranges=None, calcsb=None, mosweight=None, overwrite_on_export=None,
                  parallel=None,
                  # Extra parameters
-                 weighting=None):
+                 ):
         self.context = context
         self.output_dir = output_dir
         self.vis = vis
 
         self.target_list = target_list
-        self.weighting = weighting
         self.hm_masking = hm_masking
         self.hm_sidelobethreshold = hm_sidelobethreshold
         self.hm_noisethreshold = hm_noisethreshold
@@ -88,6 +87,7 @@ class MakeImagesInputs(vdp.StandardInputs):
         self.hm_cyclefactor = hm_cyclefactor
         self.hm_minpsffraction = hm_minpsffraction
         self.hm_maxpsffraction = hm_maxpsffraction
+        self.hm_weighting = hm_weighting
         self.tlimit = tlimit
         self.masklimit = masklimit
         self.cleancontranges = cleancontranges
@@ -197,10 +197,10 @@ class MakeImages(basetask.StandardTaskTemplate):
         imname = result.image
         if not os.path.exists(imname):
             return None
-        cqa = casatools.quanta
+        cqa = casa_tools.quanta
         cell = target['cell'][0:2] if len(target['cell']) >= 2 else (target['cell'][0], target['cell'][0])
         # Image beam
-        with casatools.ImageReader(imname) as image:
+        with casa_tools.ImageReader(imname) as image:
             restoringbeam = image.restoringbeam()
             csys = image.coordsys()
             chanwidth_of_image = csys.increment(format='q', type='spectral')['quantity']['*1']
@@ -305,7 +305,7 @@ class CleanTaskFactory(object):
             'output_dir': inputs.output_dir,
             'vis': inputs.vis,
             # set the weighting type
-            'weighting': inputs.weighting,
+            'weighting': inputs.hm_weighting,
             # other vals
             'tlimit': inputs.tlimit,
             'masklimit': inputs.masklimit,

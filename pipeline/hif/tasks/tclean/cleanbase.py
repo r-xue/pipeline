@@ -5,13 +5,13 @@ import numpy as np
 import pipeline as pipeline
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.imageheader as imageheader
 from pipeline import environment
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from .resultobjects import TcleanResult
 
 LOG = infrastructure.get_logger(__name__)
@@ -229,8 +229,10 @@ class CleanBase(basetask.StandardTaskTemplate):
         if not inputs.result:
             plotdir = os.path.join(inputs.context.report_dir,
                                    'stage%s' % inputs.context.stage.split('_')[0])
+            field_ids = inputs.heuristics.field(inputs.intent, inputs.field)
             result = TcleanResult(vis=inputs.vis,
                                   sourcename=inputs.field,
+                                  field_ids=field_ids,
                                   intent=inputs.intent,
                                   spw=inputs.spw,
                                   orig_specmode=inputs.orig_specmode,
@@ -262,8 +264,6 @@ class CleanBase(basetask.StandardTaskTemplate):
 
         context = self.inputs.context
         inputs = self.inputs
-
-        qaTool = casatools.quanta
 
         # Derive names of clean products for this iteration
         old_model_name = result.model
@@ -348,7 +348,9 @@ class CleanBase(basetask.StandardTaskTemplate):
             tclean_job_parameters['outframe'] = ''
             # 2018-07-10: Parallel imaging of ephemeris objects does not
             # yet work (see CAS-11631)
-            tclean_job_parameters['parallel'] = False
+            # 2021-02-16: PIPE-981 asks for allowing parallelized tclean
+            # runs for ephemeris sources.
+            #tclean_job_parameters['parallel'] = False
         else:
             tclean_job_parameters['phasecenter'] = inputs.phasecenter
             tclean_job_parameters['outframe'] = inputs.outframe
@@ -685,7 +687,7 @@ def rename_image(old_name, new_name, extensions=['']):
     """
     if old_name is not None:
         for extension in extensions:
-            with casatools.ImageReader('%s%s' % (old_name, extension)) as image:
+            with casa_tools.ImageReader('%s%s' % (old_name, extension)) as image:
                 image.rename(name=new_name, overwrite=True)
 
 

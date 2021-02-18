@@ -38,16 +38,15 @@ import shutil
 import sys
 import tarfile
 
-import pipeline as pipeline
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.imagelibrary as imagelibrary
 import pipeline.infrastructure.vdp as vdp
 from pipeline import environment
 from pipeline.infrastructure.filenamer import fitsname
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from ..common import manifest
 
@@ -735,7 +734,7 @@ class ExportData(basetask.StandardTaskTemplate):
         pipemanifest = self._init_pipemanifest(oussid)
         ouss = pipemanifest.set_ous(oussid)
         pipemanifest.add_casa_version(ouss, environment.casa_version_string)
-        pipemanifest.add_pipeline_version(ouss, pipeline.revision)
+        pipemanifest.add_pipeline_version(ouss, environment.pipeline_revision)
         pipemanifest.add_procedure_name(ouss, context.project_structure.recipe_name)
         pipemanifest.add_environment_info(ouss)
 
@@ -1144,8 +1143,7 @@ class ExportData(basetask.StandardTaskTemplate):
             tmpvislist.append(filename)
         task_string = "    hif_restoredata(vis=%s, session=%s, ocorr_mode='%s')" % (tmpvislist, session_list, ocorr_mode)
 
-        template = '''__rethrow_casa_exceptions = True
-h_init()
+        template = '''h_init()
 try:
 %s
 finally:
@@ -1340,7 +1338,7 @@ finally:
                                                                     os.path.basename(fitsfile)))
 
             # PIPE-325: abbreviate 'spw' for FITS header when spw string is "too long"
-            with casatools.ImageReader(image) as img:
+            with casa_tools.ImageReader(image) as img:
                 info = img.miscinfo()
                 if ('spw' in info) and (len(info['spw']) >= 68):
                     spw_sorted = sorted([int(x) for x in info['spw'].split(',')])

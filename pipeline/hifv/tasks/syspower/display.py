@@ -1,7 +1,7 @@
 import os
 
 import numpy as np
-import pylab as pb
+import matplotlib.pyplot as plt
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
@@ -32,19 +32,19 @@ class syspowerBoxChart(object):
         clip_sp_template = self.result.clip_sp_template
 
         LOG.info("Creating syspower box chart...")
-        pb.clf()
+        plt.clf()
         dshape = dat_common.shape
         ant_dat = np.reshape(dat_common, newshape=(dshape[0], np.product(dshape[1:])))
         ant_dat = np.ma.array(ant_dat)
         ant_dat.mask = np.ma.getmaskarray(ant_dat)
         ant_dat = np.ma.masked_outside(ant_dat, clip_sp_template[0], clip_sp_template[1])
         ant_dat_filtered = [ant_dat[i][~ant_dat.mask[i]] for i in range(dshape[0])]
-        pb.boxplot(ant_dat_filtered, whis=10, sym='.')
-        pb.xticks(rotation=45)
-        pb.ylim(clip_sp_template[0], clip_sp_template[1])
-        pb.ylabel('Template Pdiff')
-        pb.xlabel('Antenna')
-        pb.savefig(figfile)
+        plt.boxplot(ant_dat_filtered, whis=10, sym='.')
+        plt.xticks(rotation=45)
+        plt.ylim(clip_sp_template[0], clip_sp_template[1])
+        plt.ylabel('Template Pdiff')
+        plt.xlabel('Antenna')
+        plt.savefig(figfile)
 
     def get_figfile(self, prefix):
         return os.path.join(self.context.report_dir, 'stage%s' % self.result.stage_number,
@@ -91,7 +91,7 @@ class syspowerBarChart(object):
         clip_sp_template = self.result.clip_sp_template
 
         LOG.info("Creating syspower bar chart...")
-        pb.clf()
+        plt.clf()
         dshape = dat_common.shape
         ant_dat = np.reshape(dat_common, newshape=(dshape[0], np.product(dshape[1:])))
         ant_dat = np.ma.array(ant_dat)
@@ -100,12 +100,12 @@ class syspowerBarChart(object):
 
         # fraction of flagged data in Pdiff template
         percent_flagged_by_antenna = [100. * np.sum(ant_dat.mask[i]) / ant_dat.mask[i].size for i in range(dshape[0])]
-        pb.bar(list(range(dshape[0])), percent_flagged_by_antenna, color='red')
-        pb.xticks(rotation=45)
-        pb.ylabel('Fraction of Flagged Solutions (%)')
-        pb.xlabel('Antenna')
+        plt.bar(list(range(dshape[0])), percent_flagged_by_antenna, color='red')
+        plt.xticks(rotation=45)
+        plt.ylabel('Fraction of Flagged Solutions (%)')
+        plt.xlabel('Antenna')
 
-        pb.savefig(figfile)
+        plt.savefig(figfile)
 
     def get_figfile(self, prefix):
         return os.path.join(self.context.report_dir, 'stage%s' % self.result.stage_number,

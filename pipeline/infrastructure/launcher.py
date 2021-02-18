@@ -9,17 +9,19 @@ import pprint
 
 from pipeline import environment
 from . import callibrary
-from . import casatools
+from . import casa_tools
+from . import eventbus
 from . import imagelibrary
 from . import logging
 from . import project
 from . import utils
+from .eventbus import ContextCreatedEvent, ContextResumedEvent
 
 LOG = logging.get_logger(__name__)
 
 
 # minimum allowed CASA revision. Set to 0 or None to disable
-MIN_CASA_REVISION = [5, 9, 9, 919]
+MIN_CASA_REVISION = [6, 2, 0, 79]
 # maximum allowed CASA revision. Set to 0 or None to disable
 MAX_CASA_REVISION = None
 
@@ -107,7 +109,7 @@ class Context(object):
         now = datetime.datetime.utcnow()
         self.name = name if name else now.strftime('pipeline-%Y%m%dT%H%M%S')
 
-        # domain depends on infrastructure.casatools, so infrastructure cannot
+        # domain depends on infrastructure.casa_tools, so infrastructure cannot
         # depend on domain hence the run-time import
         import pipeline.domain as domain
         self.observing_run = domain.ObservingRun()
@@ -151,6 +153,9 @@ class Context(object):
         self.logs['casa_commands'] = 'casa_commands.log'
         self.logs['pipeline_script'] = 'casa_pipescript.py'
         self.logs['pipeline_restore_script'] = 'casa_piperestorescript.py'
+
+        event = ContextCreatedEvent(context_name=self.name, output_dir=self.output_dir)
+        eventbus.send_message(event)
 
     @property
     def stage(self):
@@ -293,6 +298,9 @@ class Pipeline(object):
                 last_context = utils.pickle_load(context_file)
                 self.context = last_context
 
+                event = ContextResumedEvent(context_name=last_context.name, output_dir=last_context.output_dir)
+                eventbus.send_message(event)
+
             for k, v in path_overrides.items():
                 setattr(self.context, k, v)
 
@@ -308,7 +316,7 @@ class Pipeline(object):
         report_dir = context.report_dir
 
         # create a hard-link to the current CASA log in the report directory 
-        src = casatools.log.logfile()
+        src = casa_tools.log.logfile()
         dst = os.path.join(report_dir, os.path.basename(src))
         if not os.path.exists(dst):
             try:

@@ -1,4 +1,4 @@
-<casaxml xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://casa.nrao.edu/schema/psetTypes.html">
+<casaxml xmlns="http://casa.nrao.edu/schema/psetTypes.html" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://casa.nrao.edu/schema/casa.xsd file:///opt/casa/code/xmlcasa/xml/casa.xsd">
 
 <task category="pipeline" name="h_import_calstate" type="function">
 <shortdescription>Import a calibration state from disk</shortdescription>
@@ -13,6 +13,7 @@ to the state created by earlier calls.
 
 <input>
     <param name="filename" type="string">
+        <shortdescription>Name of the saved calibration state</shortdescription>
         <description>Name of the saved calibration state</description>
         <value/>
     </param>
