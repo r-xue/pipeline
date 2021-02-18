@@ -10,7 +10,13 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 <p>Flag possible RFI using rflag and tfcrop; checkflagmode=${result[0].inputs['checkflagmode']}</p>
 
 
-% if result[0].inputs['checkflagmode'] in ('bpd','allcals', 'bpd-vlass', 'allcals-vlass'):
+% if result[0].inputs['checkflagmode'] in ('bpd','allcals', 'bpd-vlass', 'allcals-vlass', 'vlass-imaging'):
+
+<%
+plot_caption = 'Calibrated bandpass after flagging'
+if  result[0].inputs['checkflagmode'] == 'vlass-imaging':
+    plot_caption = 'Calibrated targets after flagging'
+%>
 
 <%self:plot_group plot_dict="${summary_plots}"
                                   url_fn="${lambda ms:  'noop'}">
@@ -30,12 +36,12 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
 
         <%def name="fancybox_caption(plot)">
-          Calibrated bandpass after flagging
+            ${plot_caption}
         </%def>
 
 
         <%def name="caption_title(plot)">
-           Calibrated bandpass after flagging
+            ${plot_caption}
         </%def>
 </%self:plot_group>
 

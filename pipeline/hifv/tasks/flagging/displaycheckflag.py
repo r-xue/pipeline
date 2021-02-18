@@ -23,17 +23,19 @@ class checkflagSummaryChart(object):
             plots = [self.get_plot_wrapper('BPcal'), self.get_plot_wrapper('delaycal')]
         if self.result.inputs['checkflagmode'] == 'allcals' or self.result.inputs['checkflagmode'] == 'allcals-vlass':
             plots = [self.get_plot_wrapper('allcals')]
+        if self.result.inputs['checkflagmode'] == 'vlass-imaging':
+            plots = [self.get_plot_wrapper('targets-vlass')]            
         return [p for p in plots if p is not None]
 
     def create_plot(self, prefix):
         figfile = self.get_figfile(prefix)
 
-        bandpass_field_select_string = self.context.evla['msinfo'][self.ms.name].bandpass_field_select_string
-        bandpass_scan_select_string = self.context.evla['msinfo'][self.ms.name].bandpass_scan_select_string
         corrstring = self.ms.get_vla_corrstring()
-        delay_scan_select_string = self.context.evla['msinfo'][self.ms.name].delay_scan_select_string
 
         if self.result.inputs['checkflagmode'] == 'bpd' or self.result.inputs['checkflagmode'] == 'bpd-vlass':
+            bandpass_field_select_string = self.context.evla['msinfo'][self.ms.name].bandpass_field_select_string
+            bandpass_scan_select_string = self.context.evla['msinfo'][self.ms.name].bandpass_scan_select_string
+            delay_scan_select_string = self.context.evla['msinfo'][self.ms.name].delay_scan_select_string
             if prefix == 'BPcal':
                 job = casa_tasks.plotms(vis=self.ms.name, xaxis='freq', yaxis='amp', ydatacolumn='corrected',
                                         selectdata=True, field=bandpass_field_select_string,
@@ -65,6 +67,16 @@ class checkflagSummaryChart(object):
 
             job.execute(dry_run=False)
 
+        if self.result.inputs['checkflagmode'] == 'vlass-imaging':
+            job = casa_tasks.plotms(vis=self.ms.name, xaxis='freq', yaxis='amp', ydatacolumn='data',
+                                    selectdata=True, scan='', correlation=corrstring,
+                                    averagedata=True, avgtime='1e8', avgscan=False, transform=False, extendflag=False,
+                                    iteraxis='', coloraxis='antenna2', plotrange=[], title='', xlabel='', ylabel='',
+                                    showmajorgrid=False, showminorgrid=False, plotfile=figfile, overwrite=True,
+                                    clearplots=True, showgui=False)
+
+            job.execute(dry_run=False)
+
     def get_figfile(self, prefix):
         return os.path.join(self.context.report_dir,
                             'stage%s' % self.result.stage_number,
@@ -73,12 +85,14 @@ class checkflagSummaryChart(object):
     def get_plot_wrapper(self, prefix):
         figfile = self.get_figfile(prefix)
 
-        bandpass_scan_select_string = self.context.evla['msinfo'][self.ms.name].bandpass_scan_select_string
-        delay_scan_select_string = self.context.evla['msinfo'][self.ms.name].delay_scan_select_string
+        if prefix == 'delaycal':
+            bandpass_scan_select_string = self.context.evla['msinfo'][self.ms.name].bandpass_scan_select_string
+            delay_scan_select_string = self.context.evla['msinfo'][self.ms.name].delay_scan_select_string
+            plot_delaycal = bandpass_scan_select_string != delay_scan_select_string
+        else:
+            plot_delaycal = False
 
-        if (prefix == 'BPcal' or
-                ((delay_scan_select_string != bandpass_scan_select_string) and prefix == 'delaycal') or
-                prefix == 'allcals' or prefix == 'allcals-vlass'):
+        if (prefix == 'BPcal' or plot_delaycal or prefix == 'allcals' or prefix == 'allcals-vlass' or prefix == 'targets-vlass'):
             wrapper = logger.Plot(figfile, x_axis='freq', y_axis='amp',
                                   parameters={'vis': self.ms.basename,
                                               'type': prefix,

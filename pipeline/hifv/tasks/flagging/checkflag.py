@@ -35,12 +35,13 @@ class CheckflagResults(basetask.Results):
         if jobs is None:
             jobs = []
         if summary_stats is None:
-            summary_stats = {}
+            summary_stats = []
 
         super(CheckflagResults, self).__init__()
 
         self.jobs = jobs
         self.summary_stats = summary_stats
+        self.plots = {}
 
     def __repr__(self):
         s = 'Checkflag (rflag mode) results:\n'
