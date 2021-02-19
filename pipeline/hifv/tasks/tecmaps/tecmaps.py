@@ -1,4 +1,4 @@
-from casarecipes import tec_maps
+from casatasks.private import tec_maps
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask

@@ -229,8 +229,10 @@ class CleanBase(basetask.StandardTaskTemplate):
         if not inputs.result:
             plotdir = os.path.join(inputs.context.report_dir,
                                    'stage%s' % inputs.context.stage.split('_')[0])
+            field_ids = inputs.heuristics.field(inputs.intent, inputs.field)
             result = TcleanResult(vis=inputs.vis,
                                   sourcename=inputs.field,
+                                  field_ids=field_ids,
                                   intent=inputs.intent,
                                   spw=inputs.spw,
                                   orig_specmode=inputs.orig_specmode,
@@ -346,7 +348,9 @@ class CleanBase(basetask.StandardTaskTemplate):
             tclean_job_parameters['outframe'] = ''
             # 2018-07-10: Parallel imaging of ephemeris objects does not
             # yet work (see CAS-11631)
-            tclean_job_parameters['parallel'] = False
+            # 2021-02-16: PIPE-981 asks for allowing parallelized tclean
+            # runs for ephemeris sources.
+            #tclean_job_parameters['parallel'] = False
         else:
             tclean_job_parameters['phasecenter'] = inputs.phasecenter
             tclean_job_parameters['outframe'] = inputs.outframe
@@ -512,31 +516,14 @@ class CleanBase(basetask.StandardTaskTemplate):
         tclean_job_parameters['wprojplanes'] = inputs.heuristics.wprojplanes()
         tclean_job_parameters['rotatepastep'] = inputs.heuristics.rotatepastep()
 
-        # Up until CASA 5.2 it is necessary to run tclean calls with
+        # Up until CASA 6.1 (including) it is was necessary to run tclean calls with
         # restoringbeam == 'common' in two steps in HPC mode (CAS-10849).
-        if (tclean_job_parameters['parallel'] == True) and \
-           (tclean_job_parameters['specmode'] == 'cube') and \
-           (tclean_job_parameters['restoration'] == True) and \
-           (tclean_job_parameters['restoringbeam'] == 'common'):
+        # With CASA 6.2.0-57 the cube refactor is in place and the two step
+        # process is no longer needed (PIPE-980). See removed code at:
+        # https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/browse/pipeline/hif/tasks/tclean/cleanbase.py?at=15e495a29d0bfc93892c65eceb660d61a1805790#521
 
-            # CAS-11322 asks to temporarily leave restoration set to True
-            # DMU, 2018-06-01
-            #tclean_job_parameters['restoration'] = False
-            tclean_job_parameters['restoringbeam'] = ''
-            job = casa_tasks.tclean(**tclean_job_parameters)
-            tclean_result = self._executor.execute(job)
-
-            tclean_job_parameters['parallel'] = False
-            tclean_job_parameters['niter'] = 0
-            tclean_job_parameters['restoration'] = True
-            tclean_job_parameters['restoringbeam'] = 'common'
-            tclean_job_parameters['calcpsf'] = False
-            tclean_job_parameters['calcres'] = False
-            job = casa_tasks.tclean(**tclean_job_parameters)
-            tclean_result2 = self._executor.execute(job)
-        else:
-            job = casa_tasks.tclean(**tclean_job_parameters)
-            tclean_result = self._executor.execute(job)
+        job = casa_tasks.tclean(**tclean_job_parameters)
+        tclean_result = self._executor.execute(job)
 
         # Record last tclean command for weblog
         result.set_tclean_command(str(job))

@@ -61,7 +61,7 @@ def plot_weather(vis='', figfile='', station=[], help=False):
         station_name = str(station_id)
         if station_names is not None:
             if any([wx_prefix.lower() in station_names[station_id].lower() for wx_prefix in ['WSTB', 'Meteo', 'OSF']]):
-                station_name = station_names[station_id].replace('Meteo',  '')
+                station_name = station_names[station_id]
         unique_station_names.append(station_name)
 
     # PIPE-31: deprioritize the station with "Itinerant" in name (typically: "MeteoItinerant"), 

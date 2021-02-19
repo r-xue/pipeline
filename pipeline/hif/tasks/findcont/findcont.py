@@ -1,6 +1,8 @@
 import copy
 import os
+import numpy as np
 
+import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
@@ -20,6 +22,7 @@ LOG = infrastructure.get_logger(__name__)
 class FindContInputs(vdp.StandardInputs):
     parallel = vdp.VisDependentProperty(default='automatic')
     hm_perchanweightdensity = vdp.VisDependentProperty(default=False)
+    hm_weighting = vdp.VisDependentProperty(default='briggs')
 
     @vdp.VisDependentProperty(null_input=['', None, {}])
     def target_list(self):
@@ -29,7 +32,7 @@ class FindContInputs(vdp.StandardInputs):
         return copy.deepcopy(self.context.clean_list_pending)
 
     def __init__(self, context, output_dir=None, vis=None, target_list=None, mosweight=None,
-                 hm_perchanweightdensity=None, parallel=None):
+                 hm_perchanweightdensity=None, hm_weighting=None, parallel=None):
         super(FindContInputs, self).__init__()
         self.context = context
         self.output_dir = output_dir
@@ -38,6 +41,7 @@ class FindContInputs(vdp.StandardInputs):
         self.target_list = target_list
         self.mosweight = mosweight
         self.hm_perchanweightdensity = hm_perchanweightdensity
+        self.hm_weighting = hm_weighting
         self.parallel = parallel
 
 
@@ -63,7 +67,7 @@ class FindCont(basetask.StandardTaskTemplate):
             result.mitigation_error = True
             return result
 
-        qa_tool = casa_tools.quanta
+        qaTool = casa_tools.quanta
 
         # make sure inputs.vis is a list, even if it is one that contains a
         # single measurement set
@@ -138,13 +142,22 @@ class FindCont(basetask.StandardTaskTemplate):
                         # Remove MSs that do not contain data for the given field(s)
                         vislist = [inputs.vis[i] for i in visindexlist]
 
-                    # To avoid noisy edge channels, use only the LSRK frequency
+                    # Need to make an LSRK or SOURCE/REST (ephemeris sources) cube to get
+                    # the real ranges in the source frame.
+                    # The LSRK or SOURCE/REST ranges will need to be translated to the
+                    # individual TOPO ranges for the involved MSs in hif_tclean.
+                    if image_heuristics.is_eph_obj(target['field']):
+                        frame = 'REST'
+                    else:
+                        frame = 'LSRK'
+
+                    # To avoid noisy edge channels, use only the LSRK or SOURCE/REST frequency
                     # intersection and skip one channel on either end.
                     # Use only the current spw ID here !
-                    if0, if1, channel_width = image_heuristics.freq_intersection(vislist, target['field'], target['intent'], spwid)
+                    if0, if1, channel_width = image_heuristics.freq_intersection(vislist, target['field'], target['intent'], spwid, frame)
                     if (if0 == -1) or (if1 == -1):
-                        LOG.error('No LSRK frequency intersect among selected MSs for Field %s '
-                                  'SPW %s' % (target['field'], spwid))
+                        LOG.error('No %d frequency intersect among selected MSs for Field %s '
+                                  'SPW %s' % (frame, target['field'], spwid))
                         cont_ranges['fields'][source_name][spwid] = ['NONE']
                         result_cont_ranges[source_name][spwid] = {
                             'cont_ranges': ['NONE'],
@@ -159,7 +172,7 @@ class FindCont(basetask.StandardTaskTemplate):
                     channel_width_auto = channel_width
 
                     if target['start'] != '':
-                        if0 = qa_tool.convert(target['start'], 'Hz')['value']
+                        if0 = qaTool.convert(target['start'], 'Hz')['value']
                         if if0 < if0_auto:
                             LOG.error('Supplied start frequency %s < f_low_native for Field %s '
                                       'SPW %s' % (target['start'], target['field'], target['spw']))
@@ -172,7 +185,7 @@ class FindCont(basetask.StandardTaskTemplate):
                         continue
 
                     if target['width'] != '':
-                        channel_width_manual = qa_tool.convert(target['width'], 'Hz')['value']
+                        channel_width_manual = qaTool.convert(target['width'], 'Hz')['value']
                         if channel_width_manual < channel_width_auto:
                             LOG.error('User supplied channel width smaller than native value of %s GHz for Field %s '
                                       'SPW %s' % (channel_width_auto, target['field'], target['spw']))
@@ -185,6 +198,28 @@ class FindCont(basetask.StandardTaskTemplate):
                         LOG.info('Applying binning factor %d' % (target['nbin']))
                         channel_width *= target['nbin']
 
+                    # Get spw sideband
+                    ref_ms = context.observing_run.get_ms(vislist[0])
+                    real_spwid = context.observing_run.virtual2real_spw_id(int(spwid), ref_ms)
+                    real_spwid_obj = ref_ms.get_spectral_window(real_spwid)
+                    if real_spwid_obj.sideband == '-1':
+                        sideband = 'LSB'
+                    else:
+                        sideband = 'USB'
+
+                    if image_heuristics.is_eph_obj(target['field']):
+                        # Determine extra channels to skip for ephemeris objects to
+                        # account for fast moving objects.
+                        centre_frequency_TOPO = float(real_spwid_obj.centre_frequency.to_units(measures.FrequencyUnits.HERTZ))
+                        channel_width_freq_TOPO = float(real_spwid_obj.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ))
+                        freq0 = qaTool.quantity(centre_frequency_TOPO, 'Hz')
+                        freq1 = qaTool.quantity(centre_frequency_TOPO + channel_width_freq_TOPO, 'Hz')
+                        channel_width_velo_TOPO = float(qaTool.getvalue(qaTool.convert(utils.frequency_to_velocity(freq1, freq0), 'km/s')))
+                        # Skip 1 km/s or at least 5 channels
+                        extra_skip_channels = max(5, int(np.ceil(1.0 / abs(channel_width_velo_TOPO))))
+                    else:
+                        extra_skip_channels = 0
+
                     if target['nchan'] not in (None, -1):
                         if1 = if0 + channel_width * target['nchan']
                         if if1 > if1_auto:
@@ -192,6 +227,14 @@ class FindCont(basetask.StandardTaskTemplate):
                                       'SPW %s' % (if1, target['field'], target['spw']))
                             continue
                         LOG.info('Using supplied nchan %d' % (target['nchan']))
+                        nchan = target['nchan']
+                    else:
+                        # Skip edge channels and extra channels if no nchan is supplied.
+                        # Adjust to binning since the normal nchan heuristics already includes it.
+                        if target['nbin'] not in (None, -1):
+                            nchan = int(utils.round_half_up((if1 - if0) / channel_width - 2)) - 2 * int(extra_skip_channels // target['nbin'])
+                        else:
+                            nchan = int(utils.round_half_up((if1 - if0) / channel_width - 2)) - 2 * extra_skip_channels
 
                     # tclean interprets the start frequency as the center of the
                     # first channel. We have, however, an edge to edge range.
@@ -203,12 +246,6 @@ class FindCont(basetask.StandardTaskTemplate):
 
                     width = '%.7fMHz' % (channel_width / 1e6)
 
-                    # Skip edge channels if no nchan is supplied
-                    if target['nchan'] in (None, -1):
-                        nchan = int(utils.round_half_up((if1 - if0) / channel_width - 2))
-                    else:
-                        nchan = target['nchan']
-
                     # Starting with CASA 4.7.79 tclean can calculate chanchunks automatically.
                     chanchunks = -1
 
@@ -216,30 +253,23 @@ class FindCont(basetask.StandardTaskTemplate):
 
                     real_spwsel = context.observing_run.get_real_spwsel([str(spwid)]*len(vislist), vislist)
 
-                    # Need to make an LSRK cube to get the real ranges in the source frame.
-                    # The LSRK ranges will need to be translated to the individual TOPO
-                    # ranges for the involved MSs.
-
                     # Set special phasecenter for ephemeris objects.
                     # Needs to be done here since the explicit coordinates are
                     # used in heuristics methods upstream.
                     if image_heuristics.is_eph_obj(target['field']):
                         phasecenter = 'TRACKFIELD'
                         parallel = False
+                        # 'REST' does not yet work (see CAS-8965, CAS-9997)
+                        #outframe = 'REST'
+                        outframe = ''
+                        specmode = 'cubesource'
                     else:
                         phasecenter = target['phasecenter']
+                        outframe = 'LSRK'
+                        specmode = 'cube'
 
                     # PIPE-107 requests using a fixed robust value of 1.0.
                     robust = 1.0
-
-                    # Keep old code to use the general robust choice around
-                    # until the general weighting and beam size discussion
-                    # is settled (CAS-7210 etc.).
-                    #
-                    #if target['robust'] not in (-999, -999., None):
-                    #    robust = target['robust']
-                    #else:
-                    #    robust = None
 
                     if target['uvtaper'] not in ([], None):
                         uvtaper = target['uvtaper']
@@ -260,30 +290,30 @@ class FindCont(basetask.StandardTaskTemplate):
                                             antenna=antenna, spw=real_spwsel,
                                             intent=utils.to_CASA_intent(inputs.ms[0], target['intent']),
                                             field=target['field'], start=start, width=width, nchan=nchan,
-                                            outframe='LSRK', scan=scanidlist, specmode='cube', gridder=gridder,
+                                            outframe=outframe, scan=scanidlist, specmode=specmode, gridder=gridder,
                                             mosweight=mosweight, perchanweightdensity=inputs.hm_perchanweightdensity,
                                             pblimit=0.2, niter=0, threshold='0mJy', deconvolver='hogbom',
                                             interactive=False, imsize=target['imsize'], cell=target['cell'],
-                                            phasecenter=phasecenter, stokes='I', weighting='briggs',
+                                            phasecenter=phasecenter, stokes='I', weighting=inputs.hm_weighting,
                                             robust=robust, uvtaper=uvtaper, npixels=0, restoration=False,
                                             restoringbeam=[], pbcor=False, usepointing=usepointing,
                                             savemodel='none', chanchunks=chanchunks, parallel=parallel)
                     self._executor.execute(job)
 
                     # Try detecting continuum frequency ranges
-                    ref_ms = context.observing_run.measurement_sets[0]
 
                     # Determine the representative source name and spwid for the ms
                     repsource_name, repsource_spwid = ref_ms.get_representative_source_spw()
 
-                    real_spwid = inputs.context.observing_run.virtual2real_spw_id(int(spwid), ref_ms)
-                    spw_transitions = ref_ms.get_spectral_window(spwid).transitions
+                    spw_transitions = ref_ms.get_spectral_window(real_spwid).transitions
                     single_continuum = any(['Single_Continuum' in t for t in spw_transitions])
                     (cont_range, png, single_range_channel_fraction, warning_strings) = \
                         findcont_heuristics.find_continuum(dirty_cube='%s.residual' % findcont_basename,
                                                            pb_cube='%s.pb' % findcont_basename,
                                                            psf_cube='%s.psf' % findcont_basename,
-                                                           single_continuum=single_continuum)
+                                                           single_continuum=single_continuum,
+                                                           is_eph_obj=image_heuristics.is_eph_obj(target['field']),
+                                                           ref_ms_name=ref_ms.name)
                     # PIPE-74
                     if single_range_channel_fraction < 0.05:
                         LOG.warning('Only a single narrow range of channels was found for continuum in '

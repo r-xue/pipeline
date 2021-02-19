@@ -10,16 +10,18 @@ import pprint
 from pipeline import environment
 from . import callibrary
 from . import casa_tools
+from . import eventbus
 from . import imagelibrary
 from . import logging
 from . import project
 from . import utils
+from .eventbus import ContextCreatedEvent, ContextResumedEvent
 
 LOG = logging.get_logger(__name__)
 
 
 # minimum allowed CASA revision. Set to 0 or None to disable
-MIN_CASA_REVISION = [5, 9, 9, 919]
+MIN_CASA_REVISION = [6, 2, 0, 79]
 # maximum allowed CASA revision. Set to 0 or None to disable
 MAX_CASA_REVISION = None
 
@@ -151,6 +153,9 @@ class Context(object):
         self.logs['casa_commands'] = 'casa_commands.log'
         self.logs['pipeline_script'] = 'casa_pipescript.py'
         self.logs['pipeline_restore_script'] = 'casa_piperestorescript.py'
+
+        event = ContextCreatedEvent(context_name=self.name, output_dir=self.output_dir)
+        eventbus.send_message(event)
 
     @property
     def stage(self):
@@ -292,6 +297,9 @@ class Pipeline(object):
                 LOG.info('Reading context from file {0}'.format(context))
                 last_context = utils.pickle_load(context_file)
                 self.context = last_context
+
+                event = ContextResumedEvent(context_name=last_context.name, output_dir=last_context.output_dir)
+                eventbus.send_message(event)
 
             for k, v in path_overrides.items():
                 setattr(self.context, k, v)
