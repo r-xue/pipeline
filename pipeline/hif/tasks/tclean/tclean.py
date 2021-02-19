@@ -202,14 +202,9 @@ class Tclean(cleanbase.CleanBase):
         imlist = [xx for xx in imlist if ignore is None or ignore not in xx]
         for image_name in imlist:
             newname = image_name.replace(old_pname, new_pname)
-            if image_name == old_pname + '.workdirectory':
-                mkcmd = 'mkdir '+ newname
-                os.system(mkcmd)
-                self.copy_products(os.path.join(image_name, old_pname), os.path.join(newname, new_pname))
-            else:
-                LOG.info('Copying {} to {}'.format(image_name, newname))
-                job = casa_tasks.copytree(image_name, newname)
-                self._executor.execute(job)
+            LOG.info('Copying {} to {}'.format(image_name, newname))
+            job = casa_tasks.copytree(image_name, newname)
+            self._executor.execute(job)
 
     def prepare(self):
         inputs = self.inputs
