@@ -13,24 +13,6 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
-        <Command xmlns="">hif_transformimagedata</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">datacolumn</Keyword>
-                <Value xmlns="">corrected</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">clear_pointing</Keyword>
-                <Value xmlns="">True</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">modify_weights</Keyword>
-                <Value xmlns="">False</Value>
-            </Parameter>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
         <Command xmlns="">hif_editimlist</Command>
         <ParameterSet>
             <Parameter>
@@ -40,6 +22,28 @@
             <Parameter>
                 <Keyword xmlns="">pblimit</Keyword>
                 <Value xmlns="">0.02</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_transformimagedata</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">datacolumn</Keyword>
+                <Value xmlns="">data</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">clear_pointing</Keyword>
+                <Value xmlns="">False</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">modify_weights</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">wtmode</Keyword>
+                <Value xmlns="">nyq</Value>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
