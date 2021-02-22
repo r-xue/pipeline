@@ -34,11 +34,39 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
 
     % for ms, ms_plots in plot_dict.items():
         <%
+            # PIPE-8: the following checks whether the subpage for plots has
+            # been created, and creates a valid link to the subpage.
+            #
+            # This determination assumes that the three paths (report path,
+            # weblog stage path, subpage path) are provided as all relative
+            # paths, or all absolute paths. Providing a mix of absolute and
+            # relative paths may lead to an invalid path to the subpage, and
+            # thus to a broken link to the subpage.
             relurl = url_fn(ms)
             if relurl:
-                subpage_abspath = os.path.join(pcontext.report_dir, dirname, relurl)
-                subpage_path = os.path.relpath(subpage_abspath, pcontext.report_dir)
+                # Check whether weblog stage path contains common path
+                # with report dir, and if so, determine actual relative path.
+                stage_cpath = os.path.commonpath([pcontext.report_dir, dirname])
+                if stage_cpath:
+                    stage_relpath = os.path.relpath(dirname, stage_cpath)
+                else:
+                    stage_relpath = dirname
+
+                # Check whether subpage path contains common path
+                # with weblog stage dir, and if so, determine actual relative path.
+                subpage_cpath = os.path.commonpath([dirname, relurl])
+                if subpage_cpath:
+                    subpage_relpath = os.path.relpath(relurl, subpage_cpath)
+                else:
+                    subpage_relpath = relurl
+
+                # Combine paths, and check for existence.
+                report_abspath = os.path.abspath(pcontext.report_dir)
+                subpage_abspath = os.path.join(report_abspath, stage_relpath, subpage_relpath)
                 subpage_exists = os.path.exists(subpage_abspath)
+
+                # Get path to subpage relative to report dir for link.
+                subpage_path = os.path.relpath(subpage_abspath, report_abspath)
             else:
                 subpage_exists = false
         %>
