@@ -8,7 +8,6 @@ import numpy
 
 from casatasks.private.imagerhelpers.imager_parallel_continuum import PyParallelContSynthesisImager
 from casatasks.private.imagerhelpers.input_parameters import ImagerParameters
-from casatasks import imhead
 
 import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
