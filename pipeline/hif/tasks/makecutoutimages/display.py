@@ -44,6 +44,11 @@ class CutoutimagesSummary(object):
                     self.result.residual_stats = image.statistics(robust=True)
 
             elif '.image.pbcor.' in subimagename and '.rms.' not in subimagename:
+
+                with casa_tools.ImageReader(subimagename) as image:
+                    self.result.rms_stats = image.statistics(robust=True)
+                    self.result.RMSmedian = self.result.rms_stats.get('median')[0]
+
                 plot_wrappers.append(sky.SkyDisplay().plot(self.context, subimagename,
                                                            reportdir=stage_dir, intent='',
                                                            collapseFunction='mean',
