@@ -33,6 +33,10 @@ class Pbcor(basetask.StandardTaskTemplate):
 
         sci_imlist = self.inputs.context.sciimlist.get_imlist()
         pbcor_dict = {}
+
+        # PIPE-1048: hifv_pbcor should only pbcorrect final products
+        sci_imlist=[sci_imlist[-1]]
+
         for sci_im in sci_imlist:
 
             imgname = sci_im['imagename']
