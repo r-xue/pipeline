@@ -531,47 +531,12 @@ class CleanBase(basetask.StandardTaskTemplate):
         pbcor_image_name = '%s.%s.iter%s.image.pbcor' % (inputs.imagename, inputs.stokes, iter)
 
         if inputs.niter > 0:
-            if 'stopcode' in tclean_result:
-                # Serial tclean result
-                tclean_stopcode = tclean_result['stopcode']
-                tclean_iterdone = tclean_result['iterdone']
-                tclean_niter = tclean_result['niter']
-            else:
-                # Parallel tclean result structure is currently (2017-03) different
-                tclean_stopcodes = [tclean_result[key][int(key.replace('node', ''))]['stopcode']
-                                    for key in tclean_result]
-                # Bump up any error condition (8, 6, 5, 4, 3, 1) to the
-                # reporting level.
-                if 8 in tclean_stopcodes:
-                    tclean_stopcode = 8
-                elif 6 in tclean_stopcodes:
-                    tclean_stopcode = 6
-                elif 5 in tclean_stopcodes:
-                    tclean_stopcode = 5
-                elif 4 in tclean_stopcodes:
-                    tclean_stopcode = 4
-                elif 3 in tclean_stopcodes:
-                    tclean_stopcode = 3
-                elif 1 in tclean_stopcodes:
-                    tclean_stopcode = 1
-                elif (np.array(tclean_stopcodes) == 7).all():
-                    # If zero masks (stopcode 7) occur only in a subset of
-                    # frequency regions, they should not be reported.
-                    tclean_stopcode = 7
-                elif 2 in tclean_stopcodes:
-                    # Normal stop based on threshold
-                    tclean_stopcode = 2
-                else:
-                    # This should not happen. Just a fallback. Will cause
-                    # stop code reason evaluation to fail later on.
-                    tclean_stopcode = 0
-                tclean_iterdone = sum([tclean_result[key][int(key.replace('node', ''))]['iterdone']
-                                       for key in tclean_result])
-                tclean_niter = max([tclean_result[key][int(key.replace('node', ''))]['niter']
-                                    for key in tclean_result])
+            tclean_stopcode = tclean_result['stopcode']
+            tclean_iterdone = tclean_result['iterdone']
+            tclean_niter = tclean_result['niter']
 
             LOG.info('tclean used %d iterations' % tclean_iterdone)
-            if (tclean_stopcode == 1) and (tclean_iterdone >= tclean_niter):
+            if tclean_stopcode == 1:
                 result.error = CleanBaseError('tclean reached niter limit. Field: %s SPW: %s' %
                                               (inputs.field, inputs.spw), 'Reached niter limit')
                 LOG.warning('tclean reached niter limit of %d for %s / spw%s !' %
