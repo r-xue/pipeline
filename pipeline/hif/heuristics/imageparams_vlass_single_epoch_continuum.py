@@ -397,7 +397,6 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
 
         See CAS-13338 and PIPE-728
         """
-        import pdb; pdb.set_trace()
         qaTool = casa_tools.quanta
         do_parallel = mpihelpers.parse_mpi_input_parameter(parallel)
 
