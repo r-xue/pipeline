@@ -52,9 +52,10 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
                 else:
                     stage_relpath = dirname
 
-                # Check whether subpage path contains common path
-                # with weblog stage dir, and if so, determine actual relative path.
-                subpage_cpath = os.path.commonpath([dirname, relurl])
+                # Check whether subpage path contains common path with the
+                # report + weblog stage path, and if so, determine actual
+                # relative path.
+                subpage_cpath = os.path.commonpath([os.path.join(pcontext.report_dir, stage_relpath), relurl])
                 if subpage_cpath:
                     subpage_relpath = os.path.relpath(relurl, subpage_cpath)
                 else:
