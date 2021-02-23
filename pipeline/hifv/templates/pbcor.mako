@@ -7,75 +7,81 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
 <%block name="title">Primary beam corrected images (tt0 when multi-term)</%block>
 
-<p>Primary beam corrected images</p>
+% for ms,ms_pbcorplots in pbcorplots.items():
 
-<%
-    # restored stats
-    pbcor_min = plotter.result.pbcor_stats.get('min')[0]
-    pbcor_max = plotter.result.pbcor_stats.get('max')[0]
-    pbcor_sigma = plotter.result.pbcor_stats.get('sigma')[0]
-    pbcor_madRMS = plotter.result.pbcor_stats.get('medabsdevmed')[0] * 1.4826  # see CAS-9631 
-    pbcor_unit = 'Jy/beam'
+    <%self:plot_group plot_dict="${ms_pbcorplots}"
+                                    url_fn="${lambda basename:  'noop'}">
 
-    # residual of pb corrected image stats
-    residual_min = plotter.result.residual_stats.get('min')[0]
-    residual_max = plotter.result.residual_stats.get('max')[0]
-    residual_sigma = plotter.result.residual_stats.get('sigma')[0]
-    residual_madRMS = plotter.result.residual_stats.get('medabsdevmed')[0] * 1.4826  # see CAS-9631 
-    residual_unit = 'Jy/beam'
-%>
+            <%def name="title()">
+            ${ms}
+            </%def>
 
-<table class="table">
-    <tr>
-        <th></th>
-        <th>restored</th>
-        <th>residual</th>
-    </tr>
-    <tr>
-        <td><strong>maximum</strong></td>
-        <td>${'{:.4e}'.format(pbcor_max)} ${pbcor_unit}</td>
-        <td>${'{:.4e}'.format(residual_max)} ${residual_unit}</td>
-    </tr>
-    <tr>
-        <td><strong>minimum</strong></td>
-        <td>${'{:.4e}'.format(pbcor_min)} ${pbcor_unit}</td>
-        <td>${'{:.4e}'.format(residual_min)} ${residual_unit}</td>
-    </tr>
-    <tr>
-        <td><strong>sigma</strong></td>
-        <td>${'{:.4e}'.format(pbcor_sigma)}  ${pbcor_unit}</td>
-        <td>${'{:.4e}'.format(residual_sigma)} ${residual_unit}</td>
-    </tr>
-    <tr>
-        <td><strong>MAD rms</strong></td>
-        <td>${'{:.4e}'.format(pbcor_madRMS)} ${pbcor_unit}</td>
-        <td>${'{:.4e}'.format(residual_madRMS)} ${residual_unit}</td>
-    </tr>
-</table>
+            <%def name="preamble()">
+            </%def>
 
-<%self:plot_group plot_dict="${pbcorplots}"
-                                  url_fn="${lambda ms:  'noop'}">
+            <%def name="ms_preamble(basename)">
 
-        <%def name="title()">
-            Primary Beam Corrected images (tt0 when multi-term)
-        </%def>
+            <%
+                # restored stats
+                pbcor_min = plotter.result.pbcor_stats[basename].get('min')[0]
+                pbcor_max = plotter.result.pbcor_stats[basename].get('max')[0]
+                pbcor_sigma = plotter.result.pbcor_stats[basename].get('sigma')[0]
+                pbcor_madRMS = plotter.result.pbcor_stats[basename].get('medabsdevmed')[0] * 1.4826  # see CAS-9631 
+                pbcor_unit = 'Jy/beam'
 
-        <%def name="preamble()">
+                # residual of pb corrected image stats
+                residual_min = plotter.result.residual_stats[basename].get('min')[0]
+                residual_max = plotter.result.residual_stats[basename].get('max')[0]
+                residual_sigma = plotter.result.residual_stats[basename].get('sigma')[0]
+                residual_madRMS = plotter.result.residual_stats[basename].get('medabsdevmed')[0] * 1.4826  # see CAS-9631 
+                residual_unit = 'Jy/beam'
+            %>       
 
-
-        </%def>
-
-
-        <%def name="mouseover(plot)">${plot.basename}</%def>
+            <table class="table">
+                <tr>
+                    <th></th>
+                    <th>restored</th>
+                    <th>residual</th>
+                </tr>
+                <tr>
+                    <td><strong>maximum</strong></td>
+                    <td>${'{:.4e}'.format(pbcor_max)} ${pbcor_unit}</td>
+                    <td>${'{:.4e}'.format(residual_max)} ${residual_unit}</td>
+                </tr>
+                <tr>
+                    <td><strong>minimum</strong></td>
+                    <td>${'{:.4e}'.format(pbcor_min)} ${pbcor_unit}</td>
+                    <td>${'{:.4e}'.format(residual_min)} ${residual_unit}</td>
+                </tr>
+                <tr>
+                    <td><strong>sigma</strong></td>
+                    <td>${'{:.4e}'.format(pbcor_sigma)}  ${pbcor_unit}</td>
+                    <td>${'{:.4e}'.format(residual_sigma)} ${residual_unit}</td>
+                </tr>
+                <tr>
+                    <td><strong>MAD rms</strong></td>
+                    <td>${'{:.4e}'.format(pbcor_madRMS)} ${pbcor_unit}</td>
+                    <td>${'{:.4e}'.format(residual_madRMS)} ${residual_unit}</td>
+                </tr>
+            </table>                   
 
 
-
-        <%def name="fancybox_caption(plot)">
-          primary beam corrected plot (tt0 when multi-term)
-        </%def>
+            </%def>
 
 
-        <%def name="caption_title(plot)">
-           ${plot.basename}
-        </%def>
-</%self:plot_group>
+
+            <%def name="mouseover(plot)">${plot.basename}</%def>
+
+
+
+            <%def name="fancybox_caption(plot)">
+            primary beam corrected plot (tt0 when multi-term)
+            </%def>
+
+
+            <%def name="caption_title(plot)">
+            ${plot.basename}
+            </%def>
+    </%self:plot_group>
+
+% endfor
